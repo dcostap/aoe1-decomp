@@ -7,6 +7,10 @@ This project is a C++ reconstruction of the original *Age of Empires (1997)* sou
 *   **Architecture:** Windows x86 (32-bit). Pointers are **4 bytes**.
 *   **Memory Alignment:** Strict 1-byte packing for all game structures.
     *   Header files must use `#pragma pack(push, 1)` and `#pragma pack(pop)`.
+*   **Memory Layout Parity:** Even if binary matching is not the goal, **Layout Matching** is mandatory.
+    *   The engine uses raw memory serialization for multiplayer (sending/receiving structs as byte blobs).
+    *   The engine uses hardcoded byte offsets in assembly (e.g., `*(char*)(this + 0x18)`) which the decompiler might not always resolve to named members.
+    *   **How to follow:** Always include manual padding (e.g., `uchar _pad_18[2];`) to ensure every named member sits at the exact hex offset identified in the Ghidra dump. Use `static_assert(sizeof(T) == 0xSize, "...")` to verify.
 *   **VTable Integrity:** Virtual function order is the only way the engine identifies methods. Do **not** reorder virtual functions.
 *   **Inheritance:** 
     *   `RGE_...` classes: The base engine (Realtime Game Engine).

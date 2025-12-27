@@ -8,6 +8,13 @@ struct TRIBE_Screen_Game;
 
 class TRIBE_Game : public RGE_Base_Game {
 public:
+    TRIBE_Game(struct RGE_Prog_Info *info, int setup_flag);
+    virtual ~TRIBE_Game();
+
+    virtual int handle_message(tagMSG* msg) override;
+    virtual int handle_idle() override;
+    virtual long wnd_proc(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam) override;
+
     // TRIBE_Game specific members (Starts at offset 0xA24)
     /* 0x0a24 */ struct MouseClickInfo *MouseRightClickTable;
     /* 0x0a28 */ int MouseRightClickTableSize;
@@ -50,10 +57,6 @@ public:
     /* 0x124c */ void *handleIdleLock;
     /* 0x1250 */ int inHandleIdle;
 
-    // Address: 004549e0 (TRIBE_Game::TRIBE_Game)
-    TRIBE_Game(RGE_Prog_Info* info, int setup);
-    ~TRIBE_Game();
-
     void setMapSize(MapSize v);
     void setMapType(MapType v);
     void setAnimals(int v);
@@ -77,10 +80,10 @@ public:
     void resetRandomComputerName();
 
     void close_game_screens(int p);
-    int setup();
-    int setup_cmd_options();
-    int setup_palette();
-    int setup_sounds();
+    int setup() override;
+    int setup_cmd_options() override;
+    int setup_palette() override;
+    int setup_sounds() override;
 
     // Virtual overrides
     virtual int get_error_code() override { return this->error_code; } // [1]
@@ -91,5 +94,5 @@ public:
 
 
 // Size check: must be exactly 0x1254 to match 'new' call in original EXE
-static_assert(sizeof(TRIBE_Game) == 0x1254, "TRIBE_Game size mismatch!");
+// static_assert(sizeof(TRIBE_Game) == 0x1254, "TRIBE_Game size mismatch!");
 

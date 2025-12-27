@@ -7,14 +7,14 @@ if %errorlevel% neq 0 (
 )
 
 echo Compiling...
-cl /EHsc /std:c++17 src/verify_sizes.cpp src/tribe/TRIBE_Game.cpp src/rge/RGE_Base_Game.cpp src/rge/TRegistry.cpp src/rge/TCommunications_Handler.cpp src/rge/RESFILE.cpp user32.lib gdi32.lib kernel32.lib ole32.lib /Fe:verify.exe
+cl /EHsc /std:c++17 src/verify_sizes.cpp src/tribe/*.cpp src/rge/*.cpp user32.lib gdi32.lib kernel32.lib ole32.lib ddraw.lib /Fe:verify.exe
 if %errorlevel% neq 0 (
     echo Compilation of verify.exe Failed!
     exit /b %errorlevel%
 )
 
 echo Compiling empiresx.exe...
-cl /EHsc /std:c++17 src/main.cpp src/tribe/TRIBE_Game.cpp src/rge/RGE_Base_Game.cpp src/rge/TRegistry.cpp src/rge/TCommunications_Handler.cpp src/rge/RESFILE.cpp user32.lib gdi32.lib kernel32.lib ole32.lib /Fe:empiresx.exe
+cl /EHsc /std:c++17 src/main.cpp src/tribe/*.cpp src/rge/*.cpp user32.lib gdi32.lib kernel32.lib ole32.lib ddraw.lib /Fe:empiresx.exe
 if %errorlevel% neq 0 (
     echo Compilation of empiresx.exe Failed!
     exit /b %errorlevel%

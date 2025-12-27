@@ -1,29 +1,21 @@
 #include "RGE_Base_Game.h"
 #include "RGE_Prog_Info.h"
-#include <stdio.h>
+#include "TDrawSystem.h"
+#include "TDrawArea.h"
+#include "TPanelSystem.h"
+#include "TMousePointer.h"
+#include "TRegistry.h"
+#include "TCommunications_Handler.h"
+#include <windows.h>
+#include <cstdio>
 
 // Global pointers
 RGE_Base_Game* rge_base_game = nullptr;
 void* StringTable = nullptr;
-int do_draw_log = 0;
-int safe_draw_log = 0;
-char draw_log_name[260] = {0};
-void* draw_log = nullptr; // FILE*
-void* AppInst = nullptr;
-void* AppWnd = nullptr;
-void* chat = nullptr;
-void* comm = nullptr;
-void* Regs = nullptr;
-void* sound_driver = nullptr;
-void* driveInfo = nullptr;
-int debugActions = 0;
-void* actionFile = nullptr;
-int do_fps_log = 0;
-void* fps_log = nullptr;
-int do_debug_random = 0;
-int wrote_debug_random_log = 0;
+extern void* panel_system;
+HINSTANCE AppInst = nullptr;
+HWND AppWnd = nullptr;
 
-// Address: 0x0041B7C0
 RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int setup_flag) {
     this->player_game_info = nullptr;
     this->random_game_seed = -1;
@@ -32,13 +24,6 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int setup_flag) {
     this->save_random_map_seed = -1;
     this->quick_build = 0;
     
-    // Virtual table is handled by C++
-    
-    do_draw_log = 0;
-    safe_draw_log = 0;
-    draw_log_name[0] = 0;
-    draw_log = nullptr;
-
     setVersion(1.0f);
     setScenarioGame(0);
     setCampaignGame(0);
@@ -111,7 +96,7 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int setup_flag) {
     this->mouse_blit_sync = 0;
     this->is_mouse_on = 1;
     this->windows_mouse = 1;
-    this->mouse_cursor = LoadCursorA(nullptr, IDC_ARROW);
+    this->mouse_cursor = LoadCursorA(nullptr, (LPCSTR)IDC_ARROW);
     this->font_num = 0;
     this->fonts = nullptr;
     
@@ -140,7 +125,6 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int setup_flag) {
         this->timings[i].accum_time = 0;
         this->timings[i].last_time = 0;
         this->timings[i].max_time = 0;
-        // Remaining fields...
     }
 
     this->do_show_timings = 0;
@@ -148,13 +132,7 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int setup_flag) {
     this->do_show_ai = 0;
     this->save_check_for_cd = 1;
     
-    AppInst = this->prog_info->instance;
-    AppWnd = nullptr;
-    chat = nullptr;
-    comm = nullptr;
-    Regs = nullptr;
-    sound_driver = nullptr;
-    driveInfo = nullptr;
+    AppInst = (HINSTANCE)this->prog_info->instance;
     this->scenario_info = nullptr;
 
     for (int i = 0; i < 9; ++i) {
@@ -176,13 +154,9 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int setup_flag) {
     this->display_selected_ids = 0;
 }
 
-RGE_Base_Game::~RGE_Base_Game() {
-    // Basic cleanup
-}
+RGE_Base_Game::~RGE_Base_Game() {}
 
-int RGE_Base_Game::get_error_code() {
-    return this->error_code;
-}
+int RGE_Base_Game::get_error_code() { return this->error_code; }
 
 void RGE_Base_Game::setVersion(float v) { this->rge_game_options.versionValue = v; }
 void RGE_Base_Game::setScenarioGame(int v) { this->rge_game_options.scenarioGameValue = (uchar)v; }
@@ -204,91 +178,235 @@ void RGE_Base_Game::setColoredChat(int v) { this->rge_game_options.coloredChatVa
 void RGE_Base_Game::setGameDeveloperMode(int v) { this->rge_game_options.gameDeveloperModeValue = (uchar)v; }
 void RGE_Base_Game::setDifficulty(int v) { this->rge_game_options.difficultyValue = (uchar)v; }
 void RGE_Base_Game::setPlayerCDAndVersion(int p, char v) { if(p>=0 && p<9) this->rge_game_options.playerCDAndVersionValue[p] = (uchar)v; }
-void RGE_Base_Game::setPlayerHasCD(int p, int v) { /* Stub */ }
-void RGE_Base_Game::setPlayerVersion(int p, char v) { /* Stub */ }
+void RGE_Base_Game::setPlayerHasCD(int p, int v) {}
+void RGE_Base_Game::setPlayerVersion(int p, char v) {}
 void RGE_Base_Game::setPlayerTeam(int p, int v) { if(p>=0 && p<9) this->rge_game_options.playerTeamValue[p] = (uchar)v; }
 void RGE_Base_Game::setPathFinding(char v) { this->pathFindingValue = (uchar)v; }
 void RGE_Base_Game::setMpPathFinding(char v) { this->rge_game_options.mpPathFindingValue = (uchar)v; }
 void RGE_Base_Game::setNumberPlayers(int v) { this->rge_game_options.numberPlayersValue = (uchar)v; }
 
-#include "TRegistry.h"
-#include "TCommunications_Handler.h"
-#include <windows.h> // For WinMain loop and MessageBox
+int RGE_Base_Game::setup_registry() {
+    this->registry = new TRegistry(this->prog_info->registry_key);
+    return 1;
+}
 
-// ... (existing code)
-
-int RGE_Base_Game::setup_registry() { return 1; }
 int RGE_Base_Game::setup_debugging_log() { return 1; }
+int RGE_Base_Game::setup_cmd_options() { return 1; }
+LRESULT CALLBACK rge_base_game_wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
+    if (rge_base_game) {
+        return rge_base_game->wnd_proc(hwnd, msg, wparam, lparam);
+    }
+    return DefWindowProcA(hwnd, msg, wparam, lparam);
+}
+
+int RGE_Base_Game::setup_class() {
+    if (this->prog_info->prev_instance) {
+        return 1;
+    }
+
+    WNDCLASSA cls;
+    memset(&cls, 0, sizeof(cls));
+    cls.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
+    cls.lpfnWndProc = rge_base_game_wnd_proc;
+    cls.hInstance = (HINSTANCE)this->prog_info->instance;
+    cls.hIcon = LoadIconA((HINSTANCE)this->prog_info->instance, this->prog_info->icon_name);
+    cls.hCursor = nullptr;
+    cls.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+    cls.lpszMenuName = this->prog_info->menu_name[0] ? this->prog_info->menu_name : nullptr;
+    cls.lpszClassName = this->prog_info->prog_name;
+
+    if (RegisterClassA(&cls)) {
+        return 1;
+    }
+    return 0;
+}
+
+int RGE_Base_Game::setup_main_window() {
+    int screen_w = GetSystemMetrics(SM_CXSCREEN);
+    int screen_h = GetSystemMetrics(SM_CYSCREEN);
+
+    DWORD style;
+    int x, y, w, h;
+
+    if (this->prog_info->full_screen == 0 && 
+        (screen_w != this->prog_info->main_wid || screen_h != this->prog_info->main_hgt)) {
+        style = WS_OVERLAPPEDWINDOW;
+        x = CW_USEDEFAULT;
+        y = CW_USEDEFAULT;
+        w = this->prog_info->main_wid;
+        h = this->prog_info->main_hgt;
+    } else {
+        style = WS_POPUP | WS_VISIBLE;
+        x = 0;
+        y = 0;
+        w = screen_w;
+        h = screen_h;
+    }
+
+    this->prog_window = CreateWindowExA(
+        0,
+        this->prog_info->prog_name,
+        this->prog_info->prog_title,
+        style,
+        x, y, w, h,
+        nullptr, nullptr, (HINSTANCE)this->prog_info->instance, nullptr
+    );
+
+    if (!this->prog_window) {
+        return 0;
+    }
+
+    if (style & WS_OVERLAPPEDWINDOW) {
+        RECT rect;
+        rect.left = 0;
+        rect.top = 0;
+        rect.right = this->prog_info->main_wid;
+        rect.bottom = this->prog_info->main_hgt;
+        AdjustWindowRect(&rect, style, FALSE);
+        SetWindowPos((HWND)this->prog_window, nullptr, 0, 0, rect.right - rect.left, rect.bottom - rect.top, SWP_NOMOVE | SWP_NOZORDER);
+    }
+
+    ShowWindow((HWND)this->prog_window, SW_SHOW);
+    UpdateWindow((HWND)this->prog_window);
+    SetFocus((HWND)this->prog_window);
+
+    AppWnd = (HWND)this->prog_window;
+    return 1;
+}
+
+int RGE_Base_Game::setup_graphics_system() {
+    this->draw_system = new TDrawSystem();
+    if (!this->draw_system) return 0;
+
+    if (this->draw_system->Init(AppInst, (HWND)this->prog_window, nullptr, 1, 1, 800, 600, 0)) {
+        this->draw_area = this->draw_system->DrawArea;
+        return 1;
+    }
+    return 0;
+}
+
+int RGE_Base_Game::setup_palette() { return 1; }
+
+int RGE_Base_Game::setup_mouse() {
+    this->mouse_pointer = new TMousePointer(0);
+    if (this->mouse_pointer) {
+        this->mouse_pointer->setup(0, this->draw_area, this->prog_info->cursor_file, 0, 0);
+        return 1;
+    }
+    return 0;
+}
+
+int RGE_Base_Game::setup_chat() { return 1; }
+int RGE_Base_Game::setup_sounds() { return 1; }
+int RGE_Base_Game::setup_music_system() { return 1; }
+int RGE_Base_Game::setup_sound_system() { return 1; }
+
+int RGE_Base_Game::setup_comm() {
+    this->comm_handler = new TCommunications_Handler();
+    return 1;
+}
+
+int RGE_Base_Game::setup_blank_screen() {
+    if (this->draw_area) {
+        this->draw_area->Clear(0, 0);
+    }
+    return 1;
+}
+
+int RGE_Base_Game::setup_shapes() { return 1; }
+int RGE_Base_Game::setup_fonts() { return 1; }
+int RGE_Base_Game::setup_map_save_area() { return 1; }
 
 int RGE_Base_Game::setup() {
-    int val = TRegistry::RegGetInt(this->registry, 1, "Screen Size");
-    if (val == 800) {
-        this->prog_info->main_wid = 800;
-        this->prog_info->main_hgt = 600;
-    } else if (val == 1024) {
-        this->prog_info->main_wid = 1024;
-        this->prog_info->main_hgt = 768;
-    } else if (val == 1280) {
-        this->prog_info->main_wid = 1280;
-        this->prog_info->main_hgt = 1024;
-    }
-    
-    val = TRegistry::RegGetInt(this->registry, 1, "Rollover Text");
-    this->rollover = (val == 2) ? 0 : 1;
+    if (this->setup_class() == 0) { this->error_code = 2; return 0; }
+    if (this->setup_registry() == 0) { this->error_code = 3; return 0; }
+    if (this->setup_debugging_log() == 0) { this->error_code = 4; return 0; }
+    if (this->setup_cmd_options() == 0) { this->error_code = 5; return 0; }
+    if (this->setup_main_window() == 0) { this->error_code = 6; return 0; }
+    if (this->setup_graphics_system() == 0) { this->error_code = 7; return 0; }
+    if (this->setup_palette() == 0) { this->error_code = 8; return 0; }
+    if (this->setup_mouse() == 0) { this->error_code = 9; return 0; }
+    if (this->setup_chat() == 0) { this->error_code = 10; return 0; }
+    if (this->setup_sounds() == 0) { this->error_code = 11; return 0; }
+    if (this->setup_music_system() == 0) { this->error_code = 12; return 0; }
+    if (this->setup_sound_system() == 0) { this->error_code = 13; return 0; }
+    if (this->setup_comm() == 0) { this->error_code = 14; return 0; }
+    if (this->setup_blank_screen() == 0) { this->error_code = 15; return 0; }
+    if (this->setup_shapes() == 0) { this->error_code = 16; return 0; }
+    if (this->setup_fonts() == 0) { this->error_code = 17; return 0; }
+    if (this->setup_map_save_area() == 0) { this->error_code = 18; return 0; }
 
-    val = TRegistry::RegGetInt(this->registry, 1, "Mouse Style");
-    if (val == 2) this->prog_info->interface_style = 2;
-    else if (val == 1) this->prog_info->interface_style = 1;
-
-    // Stubbing other registry reads for brevity but implementing structure...
-
-    StringTable = (void *)LoadLibraryA(this->string_dll_name);
-    if (StringTable == nullptr) {
-        // Warn but proceed for testing
-        MessageBoxA(nullptr, "Warning: language.dll not found. Proceeding with dummy table.", "Setup Warning", MB_OK);
-        StringTable = (void*)1; // Dummy non-null handle
-        this->error_code = 0;   // Clear error
-        // return 0; // Don't return failure
-    }
-
-    // Call vtable stubs (using indices from analysis)
-    // 25: stub_25()
-    this->stub_25();
-    
-    // ... Skipping many checks for now to get basic flow ...
-
-    // 26: stub_26
-    this->stub_26();
-
-    // The main flow returns 1 on success
+    this->prog_ready = 1;
     return 1;
 }
 
 int RGE_Base_Game::run() {
     MSG msg;
     while (true) {
-        while (true) {
-            // Check pause status
-            if (!this->prog_active || (this->prog_mode != 4 && this->prog_mode != 2) || 
+        while (this->prog_active == 0 || (this->prog_mode != 4 && this->prog_mode != 2) ||
                (this->comm_handler && TCommunications_Handler::IsPaused(this->comm_handler))) {
-                if (!GetMessageA(&msg, nullptr, 0, 0)) return msg.wParam;
+            if (GetMessageA(&msg, nullptr, 0, 0) == 0) {
+                return msg.wParam;
+            }
+            TranslateMessage(&msg);
+            DispatchMessageA(&msg);
+        }
+
+        if (PeekMessageA(&msg, nullptr, 0, 0, PM_REMOVE)) {
+            if (msg.message == WM_QUIT) {
+                break;
+            }
+            if (this->handle_message(&msg)) {
                 TranslateMessage(&msg);
                 DispatchMessageA(&msg);
-            } else {
-                if (PeekMessageA(&msg, nullptr, 0, 0, PM_REMOVE)) break;
-                // Idle loop (vtable 47)
-                this->stub_47(); // handle_idle
             }
+        } else {
+            this->handle_idle();
         }
-        if (msg.message == WM_QUIT) break;
-        
-        // Window Proc (vtable 46) - wait, DispatchMessage handles this usually, 
-        // but the code had an explicit call: (**(code **)(this->_padding_ + 0xb8))(&msg.message);
-        // This looks like a pre-process hook or direct call.
-        // Let's assume standard loop for now effectively, except the game loop logic.
-        
-        TranslateMessage(&msg);
-        DispatchMessageA(&msg);
     }
     return msg.wParam;
+}
+
+long RGE_Base_Game::wnd_proc(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam) {
+    switch (msg) {
+    case WM_PAINT:
+        this->paint(hwnd, msg, wparam, lparam);
+        return 0;
+    case WM_ACTIVATEAPP:
+        if (wparam) {
+            this->paint_activate();
+        } else {
+            this->paint_deactivate();
+        }
+        this->activate(hwnd, msg, wparam, lparam);
+        return 0;
+    case WM_SIZE:
+        this->size(hwnd, msg, wparam, lparam);
+        return 0;
+    case WM_KEYDOWN:
+    case WM_SYSKEYDOWN:
+        this->key_down(wparam, lparam);
+        break;
+    case WM_COMMAND:
+        this->command(LOWORD(wparam), HIWORD(wparam));
+        break;
+    case WM_CLOSE:
+        this->close(hwnd, msg, wparam, lparam);
+        return 0;
+    case WM_DESTROY:
+        this->destroy(hwnd, msg, wparam, lparam);
+        PostQuitMessage(0);
+        return 0;
+    }
+
+    return DefWindowProcA(hwnd, msg, wparam, lparam);
+}
+
+int RGE_Base_Game::handle_message(tagMSG* msg) {
+    return 1;
+}
+
+int RGE_Base_Game::handle_idle() {
+    if (!this->prog_ready || !this->prog_window) return 0;
+    return 1;
 }

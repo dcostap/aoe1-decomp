@@ -41,6 +41,7 @@ struct TRIBE_Game_Options {
     /* 0x68 */ uchar startingUnitsValue;
     /* 0x69 */ uchar deathMatchValue;
     /* 0x6a */ uchar popLimitValue;
+    /* 0x6b */ uchar _pad_6b;
 };
 #pragma pack(pop)
 

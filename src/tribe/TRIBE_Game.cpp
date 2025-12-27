@@ -141,14 +141,14 @@ int TRIBE_Game::setup() {
     // Resource initialization
     // Check for Makeres arg omitted for now logic complexity
     
-    RESFILE_open_new_resource_file("sounds.drs", "tribe", nullptr, 1);
-    RESFILE_open_new_resource_file("graphics.drs", "tribe", nullptr, 0);
-    RESFILE_open_new_resource_file("Interfac.drs", "tribe", nullptr, 0);
-    RESFILE_open_new_resource_file("sounds.drs", "tribe", "data", 1);
-    RESFILE_open_new_resource_file("graphics.drs", "tribe", "data", 0);
-    RESFILE_open_new_resource_file("Terrain.drs", "tribe", "data", 0);
-    RESFILE_open_new_resource_file("Border.drs", "tribe", "data", 0);
-    RESFILE_open_new_resource_file("Interfac.drs", "tribe", "data", 0);
+    RESFILE_open_new_resource_file("sounds.drs", "tribe", "data2\\", 1);
+    RESFILE_open_new_resource_file("graphics.drs", "tribe", "data2\\", 0);
+    RESFILE_open_new_resource_file("Interfac.drs", "tribe", "data2\\", 0);
+    RESFILE_open_new_resource_file("sounds.drs", "tribe", "data\\", 1);
+    RESFILE_open_new_resource_file("graphics.drs", "tribe", "data\\", 0);
+    RESFILE_open_new_resource_file("Terrain.drs", "tribe", "data\\", 0);
+    RESFILE_open_new_resource_file("Border.drs", "tribe", "data\\", 0);
+    RESFILE_open_new_resource_file("Interfac.drs", "tribe", "data\\", 0);
 
     if (RGE_Base_Game::setup() == 0) return 0;
     
@@ -158,7 +158,6 @@ int TRIBE_Game::setup() {
         // Warn but proceed for testing
         MessageBoxA(nullptr, "Warning: languagex.dll not found. Proceeding with dummy table.", "Setup Warning", MB_OK);
         StringTableX = (void*)1; 
-        // return 0;
     }
     
     // SetPaletteEntries omitted/stubbed
@@ -167,9 +166,38 @@ int TRIBE_Game::setup() {
 }
 
 int TRIBE_Game::setup_cmd_options() { return 1; }
-int TRIBE_Game::setup_palette() { return 1; }
-int TRIBE_Game::setup_sounds() { return 1; }
+int TRIBE_Game::setup_palette() { 
+    // STUB: Original address 0x00461636
+    return RGE_Base_Game::setup_palette(); 
+}
+int TRIBE_Game::setup_sounds() { 
+    // STUB: Original address 0x00461892
+    return RGE_Base_Game::setup_sounds(); 
+}
 
 int TRIBE_Game::run() { return RGE_Base_Game::run(); }
+int TRIBE_Game::handle_idle() {
+    if (RGE_Base_Game::handle_idle() == 0) return 0;
+    
+    // STUB: TRIBE specific idle
+    return 1;
+}
+int TRIBE_Game::handle_message(tagMSG* msg) {
+    return RGE_Base_Game::handle_message(msg);
+}
+
+long TRIBE_Game::wnd_proc(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam) {
+    if (msg == WM_MOUSEMOVE) {
+        if (this->windows_mouse == 1) {
+            SetCursor(nullptr);
+        }
+    } else if (msg == WM_SETFOCUS) {
+        // TODO: input handling
+    } else if ((msg == WM_LBUTTONDOWN || msg == WM_RBUTTONDOWN) && this->windows_mouse == 1) {
+        // TODO: stop video
+    }
+    return RGE_Base_Game::wnd_proc(hwnd, msg, wparam, lparam);
+}
+
 void TRIBE_Game::show_error(int id, char* buf, int s) { RGE_Base_Game::show_error(id, buf, s); }
 void TRIBE_Game::fatal_exit(int a, int b, int c, char* d, int e) { RGE_Base_Game::fatal_exit(a, b, c, d, e); }

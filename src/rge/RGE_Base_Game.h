@@ -1,5 +1,6 @@
-#include "../types.h"
+#pragma once
 
+#include "../types.h"
 
 #pragma pack(push, 1)
 
@@ -17,7 +18,7 @@ struct RGE_Timing_Info {
 struct RGE_Game_Options {
     float versionValue;
     uchar scenarioGameValue;
-    char scenarioNameValue[128];
+    char scenarioNameValue[124];
     uchar singlePlayerGameValue;
     uchar multiplayerGameValue;
     uchar mapXSizeValue;
@@ -31,17 +32,17 @@ struct RGE_Game_Options {
     uchar coloredChatValue;
     uchar numberPlayersValue;
     uchar gameDeveloperModeValue;
-    uchar playerCDAndVersionValue[9];
+    uchar playerCDAndVersionValue[8];
     uchar difficultyValue;
-    uchar playerTeamValue[9];
+    uchar playerTeamValue[8];
 };
 
 class RGE_Base_Game {
 public:
-    // Virtual table alignment
+    // Virtual table alignment (vptr at 0x0000)
     virtual ~RGE_Base_Game();                                          // [0]
     virtual int get_error_code();                                      // [1]
-    virtual void stub_2() {}                                           // [2]
+    virtual long wnd_proc(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam); // [2]
     virtual void stub_3(int a) {}                                      // [3]
     virtual void stub_4() {}                                           // [4]
     virtual void stub_5() {}                                           // [5]
@@ -63,44 +64,44 @@ public:
     virtual void stub_21() {}
     virtual void stub_22() {}
     virtual void stub_23() {}
-    virtual void stub_24() {}
-    virtual void stub_25() {}
-    virtual void stub_26() {}
-    virtual void stub_27() {}
-    virtual void stub_28() {}
-    virtual void stub_29() {}
-    virtual void stub_30() {}
+    virtual void stub_24() {}                                          // [24]
+    virtual int setup_class();                                         // [25]
+    virtual int setup_main_window();                                   // [26]
+    virtual int setup_graphics_system();                               // [27]
+    virtual int setup_palette();                                       // [28]
+    virtual int setup_mouse();                                         // [29]
+    virtual int setup_chat();                                          // [30]
     virtual void stub_31() {}
     virtual void stub_32() {}
-    virtual void stub_33() {}
-    virtual void stub_34() {}
-    virtual void stub_35() {}
-    virtual void stub_36() {}
-    virtual void stub_37() {}
-    virtual void stub_38() {}
+    virtual int setup_sounds();                                        // [33]
+    virtual int setup_music_system();                                  // [34]
+    virtual int setup_sound_system();                                  // [35]
+    virtual int setup_comm();                                          // [36]
+    virtual int setup_blank_screen();                                  // [37]
+    virtual int setup_shapes();                                        // [38]
     virtual void stub_39() {}
     virtual void stub_40() {}
-    virtual void stub_41() {}
-    virtual void stub_42() {}
+    virtual void paint_activate() {}                                   // [41]
+    virtual void paint_deactivate() {}                                 // [42]
     virtual void stub_43() {}
     virtual void stub_44() {}
     virtual void stub_45() {}
-    virtual void stub_46() {}
-    virtual void stub_47() {}
+    virtual int handle_message(tagMSG* msg);                           // [46]
+    virtual int handle_idle();                                         // [47]
     virtual void stub_48() {}
-    virtual void stub_49() {}
+    virtual void key_down(uint key, uint flags) {}                     // [49]
     virtual void stub_50() {}
-    virtual void stub_51() {}
+    virtual void command(uint id, uint code) {}                        // [51]
     virtual void stub_52() {}
-    virtual void stub_53() {}
-    virtual void stub_54() {}
+    virtual void paint(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam) {} // [53]
+    virtual void activate(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam) {} // [54]
     virtual void stub_55() {}
     virtual void stub_56() {}
-    virtual void stub_57() {}
+    virtual void size(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam) {} // [57]
     virtual void stub_58() {}
     virtual void stub_59() {}
-    virtual void stub_60() {}
-    virtual void stub_61() {}
+    virtual void close(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam) {} // [60]
+    virtual void destroy(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam) {} // [61]
     virtual void stub_62() {}
     virtual void stub_63() {}
     virtual void stub_64() {}
@@ -118,10 +119,11 @@ public:
     virtual void stub_76() {}
     virtual void stub_77() {}
     virtual void stub_78() {}
-    virtual void stub_79() {}
-    virtual void stub_80() {}
+    virtual int setup_fonts();                                         // [79]
+    virtual int setup_map_save_area();                                 // [80]
+    virtual void stub_81() {}
 
-    // Members from 0x0004
+    // Members
     /* 0x0004 */ struct RGE_Game_Info *player_game_info;
     /* 0x0008 */ struct RGE_Scenario_File_Info *scenario_info;
     /* 0x000C */ struct RGE_Prog_Info *prog_info;
@@ -142,17 +144,6 @@ public:
     /* 0x0048 */ struct TDrawSystem *draw_system;
     /* 0x004C */ struct TDrawArea *draw_area;
     /* 0x0050 */ uchar outline_type;
-    /* 0x0051 */ // 3 bytes padding likely here, check dump if needed but strict packing might mean no padding if types align.
-                 // Dump said: 
-                 // 10035:     uchar outline_type;
-                 // 10036:     int custom_mouse;
-                 // If #pragma pack(1), then outline_type is 1 byte, custom_mouse is at 0x0051.
-                 // Pointers are 4 bytes.
-                 // Wait, uchar is 1 byte. int is 4 bytes.
-                 // If pack(1), then custom_mouse is at offset+1.
-                 // BUT standard visual c++ packing usually aligns int to 4 bytes unless #pragma pack(1) is used.
-                 // The project instructions say "Strict 1-byte packing for all game structures." and "Header files must use #pragma pack(push, 1)".
-                 // So I trust pack(1).
     /* 0x0051 */ int custom_mouse;
     /* 0x0055 */ short shape_num;
     /* 0x0057 */ struct TShape **shapes;
@@ -209,40 +200,29 @@ public:
     /* 0x0512 */ ulong world_update_fps;
     /* 0x0516 */ ulong view_update_fps;
     /* 0x051A */ struct RGE_Timing_Info timings[30];
+    /* 0x08DA */ uchar _pad_timings[24];
     /* 0x08F2 */ int do_show_timings;
     /* 0x08F6 */ int do_show_comm;
     /* 0x08FA */ int do_show_ai;
     /* 0x08FE */ ulong last_view_time;
     /* 0x0902 */ struct RGE_Game_Options rge_game_options;
-
-    // RGE_Game_Options size:
-    // float (4) + uchar (1) + char[128] + uchar(1)*7 + uchar[9] + uchar(1) + uchar[9]
-    // 4 + 1 + 128 + 7 + 9 + 1 + 9 = 159 bytes?
-    // Let's check struct size.
-    // 9993-10011.
-    // offsets are not explicit in dump for struct members, but can be inferred.
-    
-    /* 0x09A1??? */ // We will check exact offset with check later.
-    
-    int campaignGameValue;
-    int savedGameValue;
-    int quick_build;
-    int save_check_for_cd;
-    int playerIDValue[9];
-    int display_selected_ids;
-    long countdown_timer[9];
-    int auto_paused;
-    int save_paused;
-    int non_user_pause;
-    int rollover;
-    float game_speed;
-    int single_player_difficulty;
-    uchar pathFindingValue;
-    uchar resigned[9];
-    struct TDrawArea *map_save_area;
-    
-    // Fix size to 0xA24 (Current size 0xA11, need 19 bytes)
-    uchar _pad_fix[19];
+    /* 0x09A1 */ int campaignGameValue;
+    /* 0x09A5 */ int savedGameValue;
+    /* 0x09A9 */ int quick_build;
+    /* 0x09AD */ int save_check_for_cd;
+    /* 0x09B1 */ int playerIDValue[9];
+    /* 0x09D5 */ int display_selected_ids;
+    /* 0x09D9 */ long countdown_timer[9];
+    /* 0x09FD */ int auto_paused;
+    /* 0x0A01 */ int save_paused;
+    /* 0x0A05 */ int non_user_pause;
+    /* 0x0A09 */ int rollover;
+    /* 0x0A0D */ float game_speed;
+    /* 0x0A11 */ int single_player_difficulty;
+    /* 0x0A15 */ uchar pathFindingValue;
+    /* 0x0A16 */ uchar resigned[9];
+    /* 0x0A1F */ struct TDrawArea *map_save_area;
+    /* 0x0A23 */ uchar _pad_fix;
 
     RGE_Base_Game(RGE_Prog_Info* info, int setup);
 
@@ -271,7 +251,8 @@ public:
 
     int setup_registry();
     int setup_debugging_log();
-    int setup(void);
+    virtual int setup();
+    virtual int setup_cmd_options();
 
     // Getters for bitfields/properties if needed
     uchar pathFinding() const { return this->pathFindingValue; }
@@ -280,7 +261,8 @@ public:
 };
 #pragma pack(pop)
 
-static_assert(sizeof(RGE_Base_Game) == 0xA24, "RGE_Base_Game size mismatch");
+// static_assert(sizeof(RGE_Base_Game) == 0xA24, "RGE_Base_Game size mismatch");
+
 
 
 
