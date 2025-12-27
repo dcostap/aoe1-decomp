@@ -52,7 +52,16 @@ public:
 
     // Address: 004549e0 (TRIBE_Game::TRIBE_Game)
     TRIBE_Game(RGE_Prog_Info* info, int setup);
+    ~TRIBE_Game();
+
+    // Virtual overrides
+    virtual int get_error_code() override { return this->error_code; } // [1]
+    virtual int run() override; // [6]
+    virtual void show_error(int id, char* buf, int s) override; // [8]
+    virtual void fatal_exit(int a, int b, int c, char* d, int e) override; // [10]
 };
+
 
 // Size check: must be exactly 0x1254 to match 'new' call in original EXE
 static_assert(sizeof(TRIBE_Game) == 0x1254, "TRIBE_Game size mismatch!");
+

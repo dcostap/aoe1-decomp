@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.15)
+
 project(AoE1Decomp LANGUAGES CXX)
 
 # 1. Force 32-bit (x86) check
@@ -16,8 +17,10 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
 # Add new .cpp files here as you create them
 set(SOURCES
     src/main.cpp
+    src/rge/RGE_Base_Game.cpp
     src/tribe/TRIBE_Game.cpp
 )
+
 
 # 4. Define the Executable
 add_executable(AoE1Decomp WIN32 ${SOURCES})
@@ -48,4 +51,16 @@ if (MSVC)
   
   # Optional: Helpful for decompilation to see precise memory offsets in maps
   target_link_options(AoE1Decomp PRIVATE /MAP) 
+endif()
+
+# Verification Executable
+add_executable(verify_sizes 
+    src/verify_sizes.cpp 
+    src/tribe/TRIBE_Game.cpp 
+    src/rge/RGE_Base_Game.cpp
+)
+target_include_directories(verify_sizes PRIVATE src)
+target_link_libraries(verify_sizes PRIVATE user32 gdi32 kernel32 ole32)
+if (MSVC)
+    target_link_options(verify_sizes PRIVATE /SUBSYSTEM:CONSOLE)
 endif()
