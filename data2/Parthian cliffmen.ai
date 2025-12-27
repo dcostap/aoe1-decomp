@@ -1,0 +1,40 @@
+//Parthian Cliffmen
+//Tool Age Attack
+//Version 2.0: July 1, 1998
+//
+//GT Street
+ 
+U83       Man                  8      109          
+B12       Barracks1            1      -1           
+T83       Man                  5      109       2
+U39       Soldier-Cavalry3_Arc 2      87     
+U83       Man                  2      109          
+B84       Market1              1      -1           
+U37       Soldier-Cavalry1     2      101
+B104      Temple1              1      -1
+T39       Soldier-Cavalry3_Arc 2      87     
+U83       Man                  2      109          
+T39       Soldier-Cavalry3_Arc 2      87     
+U125      Priest               2      104
+T83       Man                  2      109       2
+R22     Astrology              1      104  
+B49       Siege_Workshop       1      -1     
+R117    Iron-Shield            1      103
+U35       Soldier-Catapult1    1      49     
+T37       Soldier-Cavalry1     2      101        
+B49       Siege_Workshop       1      -1
+R52     Metallurgy             1      103         
+T35       Soldier-Catapult1    1      49
+T37       Soldier-Cavalry1     4      101
+R50     Chain_Mail_-_Cavalry   1      103       
+U83       Man                  2      109        
+B82       Government_Center    1      -1
+R21     Mysticism              1      104    
+U39       Soldier-Cavalry3_Arc 6      87     
+U125      Priest               2      104
+U37       Soldier-Cavalry1     4      101
+R78     Cataphracts            1      101
+U35       Soldier-Catapult1    4      49     
+
+//End
+

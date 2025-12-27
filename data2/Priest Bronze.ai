@@ -1,0 +1,89 @@
+//Priest Bronze 
+//12 Priests, 8 Phalanx, 4 catapults, 4 camels
+//retrains: 2 slingers, 2 archers, 1 scout
+//15-8 villagers
+//Revision 2: 7/02/97: Continue research into the Iron Age
+//Revision 3: 7/16/97: Market moved up; Scouts on limited retrain
+//Revision 4: 8/ 1/97: Moved Govt Center to Iron Age
+//Revision 5: 6/09/98: X-Pack revisions; exchanged 2 clubmen for 
+//slingers; added Medicine
+//Revision 6: removed farms, clubmen; replaced ballistas with catapults, added
+//camels in place of some cats, reduced archer retrains. 
+//
+//By Ensemble Studios
+ 
+B109      Town_Center1         1      -1     
+U83       Man                  8      109    
+B12       Barracks1            1      -1     
+U83       Man                  7      109    
+
+C101    Tool_Age               1      109    
+B84       Market1              1      -1     
+T83       Man                  2      109    2
+R16     Watch_Tower            1      68     
+B79       Watch_Tower          3      -1     
+T347      Slinger              2      12     1
+B87       Range1               1      -1     
+T83       Man                  2      109    2
+U4        Soldier-Archer1      2      87     1
+B101      Stable1              1      -1     
+R40     Leather_Armor_-_Soldie 1      103    
+T299      Soldier-Scout        1      101    2
+B50       Farm                 2      -1     
+R46     Tool_Working           1      103    
+T83       Man                  2      109    2
+R108    Gold_Mining            1      84     
+R81     Domestication          1      84     
+R63     Axe                    1      12     
+B50       Farm                 2      -1     
+
+C102    Bronze_Age             1      109    
+B104      Temple1              1      -1     
+U125      Priest               1      104       
+B0        Academy              1      -1     
+T83       Man                  2      109    2
+B104      Temple1              1      -1     
+U93       Soldier-Phal1        2      0   
+U125      Priest               1      104       
+R28     Wheel                  1      84     
+U93       Soldier-Phal1        2      0      
+U125      Priest               2      104    
+B50       Farm                 2      -1     
+U338      Soldier-Camel        2      101
+B104      Temple1              2      -1     
+U125      Priest               2      104    
+R21     Mysticism              1      104    
+U93       Soldier-Phal1        2      0      
+R24     Polytheism             1      104    
+R43     Scale_Armor_-_Soldiers 1      103    
+B79       Watch_Tower          2      -1     
+R42     Leather_Armor_Mounted  1      103    
+U338      Soldier-Camel        2      101
+U125      Priest               2      104    
+U93       Soldier-Phal1        2      0      
+R51     Metal_Working          1      103    
+R47     Bronze_Shield          1      103    
+U125      Priest               2      104    
+R12     Sentry_Tower           1      68     
+B49       Siege_Workshop       1      -1     
+U35       Soldier-Catapult1    2      49     
+U93       Soldier-Phal1        4      0      
+
+C103    Iron_Age               1      109    
+R19     Monotheism             1      104    
+U125      Priest               2      104
+R20     Fanaticism             1      104    
+R45     Scale_Armor_-_Cavalry  1      103    
+R18     Afterlife              1      104    
+R211    Medicine               1      104
+B82       Government_Center    1      -1     
+R15     Guard_Tower            1      68     
+B79       Watch_Tower          1      -1            
+R48     Chain_Mail_-_Soldiers  1      103    
+R54     Heavy_Catapult         1      49     
+U35       Soldier-Catapult1    5      49     
+   
+B276      Wonder               1      -1     
+
+//End
+

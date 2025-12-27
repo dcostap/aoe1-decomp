@@ -1,0 +1,54 @@
+//Tony.ai  
+//Version 1.0: July 14, 1998
+//
+//By GT Street
+
+
+B109      Town_Center1         1      -1           
+U83       Man                  4      109
+T83       Man                  4      109     1
+B12       Barracks1            1      -1
+T75       Infantry3            4      12
+B79       Watch_Tower          2      -1
+B84       Market1              1      -1           
+R7      Trireme                1      45          
+B79    Watch_Tower             1      -1
+U75       Infantry3            4      12
+R66     Longsword              1      12
+R9      Trireme_with_Catapult  1      45
+T83       Man                  2      109
+T75       Infantry3            4      12
+U17       Boat-Trans1          2      45
+B79    Watch_Tower             1      -1
+T75       Infantry3            2      12
+B49       Siege_Workshop       1      -1
+U250      Boat-War4            2      45
+B82       Government_Center    1      -1
+R54     Heavy_Catapult         1      49
+T83       Man                  2      109
+R110    Craftmanship           1      84
+U35       Soldier-Catapult1    2      49
+R35     Engineering            1      82
+B104      Temple1              1      -1
+R106    Ballistics             1      82
+B12       Barracks1            1      -1
+R20     Fanaticism             1      104
+R52     Metallurgy             1      103
+U250      Boat-War4            2      45
+B79    Watch_Tower             2      -1
+R77     Legion                 1      12
+R36     Massive_Catapult       1      49
+U125      Priest               2      104
+U35       Soldier-Catapult1    3      49
+U250      Boat-War4            2      45
+R25     Juggernaught           1      45
+R24     Polytheism             1      104
+U250      Boat-War4            6      45
+U35       Soldier-Catapult1    2      49
+U75       Infantry3            18      12
+U35       Soldier-Catapult1    4      49
+B79    Watch_Tower             10      -1
+
+//End
+
+

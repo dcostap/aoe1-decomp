@@ -1,0 +1,64 @@
+Setting up VS 2022 x86 environment...
+**********************************************************************
+** Visual Studio 2022 Developer Command Prompt v17.0
+** Copyright (c) 2022 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x86'
+Compiling...
+Microsoft (R) C/C++ Optimizing Compiler Version 19.36.32537 for x86
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+verify_sizes.cpp
+TRIBE_Game.cpp
+RGE_Base_Game.cpp
+TRegistry.cpp
+TCommunications_Handler.cpp
+RESFILE.cpp
+Generating Code...
+Microsoft (R) Incremental Linker Version 14.36.32537.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+/out:verify.exe 
+verify_sizes.obj 
+TRIBE_Game.obj 
+RGE_Base_Game.obj 
+TRegistry.obj 
+TCommunications_Handler.obj 
+RESFILE.obj 
+user32.lib 
+gdi32.lib 
+kernel32.lib 
+ole32.lib 
+Compiling empiresx.exe...
+Microsoft (R) C/C++ Optimizing Compiler Version 19.36.32537 for x86
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+main.cpp
+TRIBE_Game.cpp
+RGE_Base_Game.cpp
+TRegistry.cpp
+TCommunications_Handler.cpp
+RESFILE.cpp
+Generating Code...
+Microsoft (R) Incremental Linker Version 14.36.32537.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+/out:empiresx.exe 
+main.obj 
+TRIBE_Game.obj 
+RGE_Base_Game.obj 
+TRegistry.obj 
+TCommunications_Handler.obj 
+RESFILE.obj 
+user32.lib 
+gdi32.lib 
+kernel32.lib 
+ole32.lib 
+Running Verification...
+Verifying Struct Sizes (Runtime Check)...
+RGE_Base_Game: Actual=0xA24, Expected=0xA24, Diff=2596
+  Offset rge_game_options: 0x8EA
+  Size   RGE_Game_Options: 0xA5
+TRIBE_Game:    Actual=0x1254, Expected=0x1254, Diff=4692
+  Offset MouseRightClickTable: 0xA24 (Expected 0xA24)
+  Offset tribe_game_options:   0xA7C

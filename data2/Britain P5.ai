@@ -1,0 +1,23 @@
+//Britain P5 - Picts
+//June 29, 1997
+//
+//By GT Street
+ 
+
+B109      Town_Center1         1      -1
+T83       Man                  3      109      
+T347      Soldier-Slinger      2      12       2   
+R63     Axe                    1      12       
+T73       Soldier-Inf1         2      12       2        
+T83       Man                  3      109      
+T347      Soldier-Slinger      2      12
+R40     Leather_Armor_-_Soldie 1      103 
+B101      Stable1              1      -1
+T299      Soldier-Scout        2      101       1
+T347      Soldier-Slinger      2      12
+T73       Soldier-Inf1         8      12               
+T347      Soldier-Slinger      8      12
+       
+//End
+
+

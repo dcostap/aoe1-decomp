@@ -1,0 +1,17 @@
+//Pirates p2.ai
+//7/9/98 
+//By Ensemble Studios
+ 
+
+U83       Man                  6      109    
+U347      Soldier-Slinger      4      12       
+U4        Soldier-Archer1      3      87   
+U19       Boat-War1            2      45
+T83       Man                  2      109    2
+U19       Boat-War1            4      45
+U4        Soldier-Archer1      3      87   
+
+
+//End
+
+

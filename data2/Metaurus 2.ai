@@ -1,0 +1,70 @@
+//Infantry Tool
+//
+//
+//
+//By Ensemble Studios
+
+
+
+C102    Bronze_Age             1      109  
+B84       Market1              1      -1  
+B87       Range1               1      -1            
+B49       Siege_Workshop       1      -1  
+U83       Man                  5      109        
+R64     Short_Sword            1      12       
+B82       Government_Center    1      -1     
+R28     Wheel                  1      84       
+B12       Barracks1            1      -1       
+U75       Soldier-Inf3         4      12       
+U83       Man                  3      109  
+  
+U75       Soldier-Inf3         2      12  
+R56     Improved_Bow           1      87       
+U35       Soldier-Catapult1    2      49   
+U83       Man                  3      109 
+R44     Scale_Armor_-_Archers  1      103 
+R107    Wood_Working           1      84  
+U75       Soldier-Inf3         2      12                  
+R65     Broad_Sword            1      12
+U75       Soldier-Inf3         2      12
+U83       Man                  3      109                     
+U35       Soldier-Catapult1    1      49   
+U37       Soldier-Cavalry1     5     101  
+U75       Soldier-Inf3         2      12 
+U5        Soldier-Archer2      5      87          
+R12     Sentry_Tower           1      68  
+U35       Soldier-Catapult1    2      49   
+U75       Soldier-Inf3         3      12   
+U5        Soldier-Archer2      5      87
+U37       Soldier-Cavalry1     5     101          
+
+C103    Iron_Age               1      109    
+U75       Soldier-Inf3         2      12         
+      
+  
+    
+U125      Priest               1      104         
+
+R110    Craftmanship           1      84   
+U5        Soldier-Archer2      5      87   
+ 
+U35       Soldier-Catapult1    1      49   
+     
+R51     Metal_Working          1      103
+U125      Priest               1      104             
+R52     Metalurgy              1      103    
+U75       Soldier-Inf3         2      12         
+R43     Scale_Armor_-_Soldiers 1      103
+U125      Priest               1      104
+R24     Polytheism             1      104    
+U125      Priest               1      104
+B79       Watch_Tower          2      -1
+R20     Fanaticism             1      104
+R47     Bronze_Shield          1      103
+U125      Priest               1      104
+R18     Afterlife              1      104
+R15     Guard_Tower            1      68     
+R77     Legion                 1      12     
+
+//End
+

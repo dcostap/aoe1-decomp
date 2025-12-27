@@ -1,0 +1,50 @@
+//Cleo.ai  
+//Version 1.0: July 14, 1998
+//
+//By GT Street
+
+B109      Town_Center1         1      -1           
+U83       Man                  4      109
+T83       Man                  4      109     1
+B12       Barracks1            1      -1
+B87       Range1               1      -1     
+R7      Trireme                1      45
+U5        Soldier-Archer2      2      87            
+R9      Trireme_with_Catapult  1      45
+R15     Guard_Tower            1      68     
+T83       Man                  2      109
+U5        Soldier-Archer2      2      87   
+U17       Boat-Trans1          2      45
+B79    Watch_Tower             1      -1
+U250      Boat-War4            2      45
+B49       Siege_Workshop       1      -1
+R37     Alchemy                1      82    
+U250      Boat-War4            2      45
+B82       Government_Center    1      -1
+T83       Man                  2      109
+R110    Craftmanship           1      84
+U35       Soldier-Catapult1    2      49
+U41       Soldier-Chariot2     3      87  
+R35     Engineering            1      82
+B104      Temple1              1      -1
+R106    Ballistics             1      82
+R52     Metallurgy             1      103
+U250      Boat-War4            2      45
+B79    Watch_Tower             2      -1
+U125      Priest               2      104
+U35       Soldier-Catapult1    3      49
+U250      Boat-War4            2      45
+R25     Juggernaught           1      45
+R24     Polytheism             1      104
+R2      Catapult_Tower         1      68     
+U250      Boat-War4            6      45
+R49     Chain_Mail_-_Archers   1      103    
+U35       Soldier-Catapult1    2      49
+U5        Soldier-Archer2      4      87   
+U35       Soldier-Catapult1    4      49
+U250      Boat-War4            6      45
+B79    Watch_Tower             10      -1
+
+//End
+
+

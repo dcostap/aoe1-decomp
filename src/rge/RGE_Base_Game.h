@@ -39,17 +39,87 @@ struct RGE_Game_Options {
 class RGE_Base_Game {
 public:
     // Virtual table alignment
-    virtual ~RGE_Base_Game() {}                                        // [0]
-    virtual int get_error_code() { return 0; }                         // [1]
+    virtual ~RGE_Base_Game();                                          // [0]
+    virtual int get_error_code();                                      // [1]
     virtual void stub_2() {}                                           // [2]
-    virtual void stub_3() {}                                           // [3]
+    virtual void stub_3(int a) {}                                      // [3]
     virtual void stub_4() {}                                           // [4]
     virtual void stub_5() {}                                           // [5]
-    virtual int run() { return 0; }                                    // [6]
+    virtual int run();                                                 // [6]
     virtual void stub_7() {}                                           // [7]
     virtual void show_error(int id, char* buf, int s) {}               // [8]
     virtual void stub_9() {}                                           // [9]
     virtual void fatal_exit(int a, int b, int c, char* d, int e) {}    // [10]
+    virtual void stub_11() {}
+    virtual void stub_12() {}
+    virtual void stub_13() {}
+    virtual void stub_14() {}
+    virtual void stub_15() {}
+    virtual void stub_16() {}
+    virtual void stub_17() {}
+    virtual void stub_18() {}
+    virtual void stub_19() {}
+    virtual void stub_20() {}
+    virtual void stub_21() {}
+    virtual void stub_22() {}
+    virtual void stub_23() {}
+    virtual void stub_24() {}
+    virtual void stub_25() {}
+    virtual void stub_26() {}
+    virtual void stub_27() {}
+    virtual void stub_28() {}
+    virtual void stub_29() {}
+    virtual void stub_30() {}
+    virtual void stub_31() {}
+    virtual void stub_32() {}
+    virtual void stub_33() {}
+    virtual void stub_34() {}
+    virtual void stub_35() {}
+    virtual void stub_36() {}
+    virtual void stub_37() {}
+    virtual void stub_38() {}
+    virtual void stub_39() {}
+    virtual void stub_40() {}
+    virtual void stub_41() {}
+    virtual void stub_42() {}
+    virtual void stub_43() {}
+    virtual void stub_44() {}
+    virtual void stub_45() {}
+    virtual void stub_46() {}
+    virtual void stub_47() {}
+    virtual void stub_48() {}
+    virtual void stub_49() {}
+    virtual void stub_50() {}
+    virtual void stub_51() {}
+    virtual void stub_52() {}
+    virtual void stub_53() {}
+    virtual void stub_54() {}
+    virtual void stub_55() {}
+    virtual void stub_56() {}
+    virtual void stub_57() {}
+    virtual void stub_58() {}
+    virtual void stub_59() {}
+    virtual void stub_60() {}
+    virtual void stub_61() {}
+    virtual void stub_62() {}
+    virtual void stub_63() {}
+    virtual void stub_64() {}
+    virtual void stub_65() {}
+    virtual void stub_66() {}
+    virtual void stub_67() {}
+    virtual void stub_68() {}
+    virtual void stub_69() {}
+    virtual void stub_70() {}
+    virtual void stub_71() {}
+    virtual void stub_72() {}
+    virtual void stub_73() {}
+    virtual void stub_74() {}
+    virtual void stub_75() {}
+    virtual void stub_76() {}
+    virtual void stub_77() {}
+    virtual void stub_78() {}
+    virtual void stub_79() {}
+    virtual void stub_80() {}
 
     // Members from 0x0004
     /* 0x0004 */ struct RGE_Game_Info *player_game_info;
@@ -175,6 +245,37 @@ public:
     uchar _pad_fix[19];
 
     RGE_Base_Game(RGE_Prog_Info* info, int setup);
+
+    void setVersion(float v);
+    void setScenarioGame(int v);
+    void setCampaignGame(int v);
+    void setSavedGame(int v);
+    void setSinglePlayerGame(int v);
+    void setMultiplayerGame(int v);
+    void setMapSize(int x, int y, int z);
+    void setAllowCheatCodes(int v);
+    void setCheatNotification(int v);
+    void setFullVisibility(int v);
+    void setFogOfWar(int v);
+    void setColoredChat(int v);
+    void setGameDeveloperMode(int v);
+    void setDifficulty(int v);
+    void setPlayerCDAndVersion(int p, char v);
+    void setPlayerHasCD(int p, int v);
+    void setPlayerVersion(int p, char v);
+    void setPlayerTeam(int p, int v);
+    void setPathFinding(char v);
+    void setMpPathFinding(char v);
+    void setNumberPlayers(int v);
+    void setScenarioName(const char* name);
+
+    int setup_registry();
+    int setup_debugging_log();
+    int setup(void);
+
+    // Getters for bitfields/properties if needed
+    uchar pathFinding() const { return this->pathFindingValue; }
+    uchar mpPathFinding() const { return this->rge_game_options.mpPathFindingValue; }
 
 };
 #pragma pack(pop)

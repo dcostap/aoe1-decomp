@@ -54,6 +54,34 @@ public:
     TRIBE_Game(RGE_Prog_Info* info, int setup);
     ~TRIBE_Game();
 
+    void setMapSize(MapSize v);
+    void setMapType(MapType v);
+    void setAnimals(int v);
+    void setPredators(int v);
+    void setVictoryType(VictoryType v, int a);
+    void setAllowTrading(int v);
+    void setLongCombat(int v);
+    void setRandomizePositions(int v);
+    void setFullTechTree(int v);
+    void setResourceLevel(ResourceLevel v);
+    void setStartingAge(Age v);
+    void setStartingUnits(int v);
+    void setDeathMatch(char v);
+    void setPopLimit(char v);
+    void setQuickStartGame(char v);
+    void setRandomStartValue(int v);
+    void setCivilization(int p, int v);
+    void setScenarioPlayer(int p, int v);
+    void setPlayerColor(int p, int v);
+    void setComputerName(int p, int v);
+    void resetRandomComputerName();
+
+    void close_game_screens(int p);
+    int setup();
+    int setup_cmd_options();
+    int setup_palette();
+    int setup_sounds();
+
     // Virtual overrides
     virtual int get_error_code() override { return this->error_code; } // [1]
     virtual int run() override; // [6]

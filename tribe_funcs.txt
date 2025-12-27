@@ -1,0 +1,508 @@
+      TRIBE_Game::test_scenario((TRIBE_Game *)rge_base_game,pcVar3);
+          TRIBE_Game::start_scenario_editor((TRIBE_Game *)rge_base_game,(char *)0x0,0);
+    piVar3 = (int *)TRIBE_Game::TRIBE_Game
+  iVar2 = TRIBE_Game::randomizePositions((TRIBE_Game *)rge_base_game);
+  AVar2 = TRIBE_Game::startingAge((TRIBE_Game *)rge_base_game);
+      TRIBE_Game::quit_game((TRIBE_Game *)rge_base_game);
+    TRIBE_Game::restart_game((TRIBE_Game *)rge_base_game);
+    TRIBE_Game::setVictoryType((TRIBE_Game *)rge_base_game,VictoryDefault,0);
+    TRIBE_Game::setDeathMatch((TRIBE_Game *)rge_base_game,'\0');
+    TRIBE_Game::setQuickStartGame((TRIBE_Game *)rge_base_game,'\0');
+    TRIBE_Game::setAnimals((TRIBE_Game *)rge_base_game,1);
+    TRIBE_Game::setPredators((TRIBE_Game *)rge_base_game,1);
+    TRIBE_Game::setRandomizePositions((TRIBE_Game *)rge_base_game,0);
+    TRIBE_Game::setLongCombat((TRIBE_Game *)rge_base_game,0);
+    TRIBE_Game::setAllowTrading((TRIBE_Game *)rge_base_game,1);
+    TRIBE_Game::setFullTechTree((TRIBE_Game *)rge_base_game,0);
+    TRIBE_Game::setResourceLevel((TRIBE_Game *)rge_base_game,DefaultResources);
+    TRIBE_Game::setStartingAge((TRIBE_Game *)rge_base_game,DefaultAge);
+    TRIBE_Game::setStartingUnits((TRIBE_Game *)rge_base_game,0);
+        TRIBE_Game::setScenarioPlayer((TRIBE_Game *)rge_base_game,uVar5,iVar6);
+        TRIBE_Game::setPlayerColor((TRIBE_Game *)rge_base_game,uVar5,iVar6 + 1);
+            iVar2 = TRIBE_Game::scenarioPlayer((TRIBE_Game *)rge_base_game,iVar6);
+              iVar2 = TRIBE_Game::scenarioPlayer((TRIBE_Game *)rge_base_game,0);
+              TRIBE_Game::setScenarioPlayer((TRIBE_Game *)rge_base_game,iVar6,iVar2);
+              iVar2 = TRIBE_Game::playerColor((TRIBE_Game *)rge_base_game,0);
+              TRIBE_Game::setPlayerColor((TRIBE_Game *)rge_base_game,iVar6,iVar2);
+        TRIBE_Game::setScenarioPlayer((TRIBE_Game *)rge_base_game,0,iVar4);
+        TRIBE_Game::setPlayerColor((TRIBE_Game *)rge_base_game,0,(int)this_01);
+      iVar4 = TRIBE_Game::start_game((TRIBE_Game *)rge_base_game,0);
+        TRIBE_Game::show_status_message((TRIBE_Game *)rge_base_game,iVar3,&s_scr3,0xc385);
+                  TRIBE_Game::do_game_over((TRIBE_Game *)rge_base_game);
+            TRIBE_Game::close_game_screens((TRIBE_Game *)rge_base_game,0);
+    TRIBE_Game::goto_notification_loc((TRIBE_Game *)rge_base_game);
+        TRIBE_Game::goto_notification_loc((TRIBE_Game *)rge_base_game);
+    TRIBE_Game::show_status_message((TRIBE_Game *)rge_base_game,str + 4,(char *)0x0,-1);
+    TRIBE_Game::close_status_message((TRIBE_Game *)rge_base_game);
+      TRIBE_Game::restart_game((TRIBE_Game *)rge_base_game);
+      TRIBE_Game::restart_game((TRIBE_Game *)rge_base_game);
+        TRIBE_Game::do_game_over((TRIBE_Game *)rge_base_game);
+  TRIBE_Game::do_game_over((TRIBE_Game *)rge_base_game);
+    iVar3 = TRIBE_Game::start_menu((TRIBE_Game *)rge_base_game);
+                  pcVar9 = TRIBE_Game::get_save_game_name((TRIBE_Game *)rge_base_game);
+          iVar6 = TRIBE_Game::load_game((TRIBE_Game *)rge_base_game,fileName + 4);
+        iVar1 = TRIBE_Game::load_db_files((TRIBE_Game *)rge_base_game);
+      TRIBE_Game::setMapSize((TRIBE_Game *)rge_base_game,Large);
+      TRIBE_Game::setMapType((TRIBE_Game *)rge_base_game,MVar7);
+    TRIBE_Game::setVictoryType((TRIBE_Game *)rge_base_game,VictoryDefault,0);
+    TRIBE_Game::setAnimals((TRIBE_Game *)rge_base_game,1);
+    TRIBE_Game::setPredators((TRIBE_Game *)rge_base_game,1);
+    TRIBE_Game::setRandomizePositions((TRIBE_Game *)rge_base_game,0);
+    TRIBE_Game::setLongCombat((TRIBE_Game *)rge_base_game,0);
+    TRIBE_Game::setAllowTrading((TRIBE_Game *)rge_base_game,1);
+    TRIBE_Game::setFullTechTree((TRIBE_Game *)rge_base_game,0);
+    TRIBE_Game::setResourceLevel((TRIBE_Game *)rge_base_game,DefaultResources);
+    TRIBE_Game::setStartingAge((TRIBE_Game *)rge_base_game,DefaultAge);
+    TRIBE_Game::setStartingUnits((TRIBE_Game *)rge_base_game,0);
+    TRIBE_Game::setQuickStartGame((TRIBE_Game *)rge_base_game,'\0');
+    TRIBE_Game::setMapSize((TRIBE_Game *)rge_base_game,Large);
+    TRIBE_Game::setMapType((TRIBE_Game *)rge_base_game,MostlyLand);
+    TRIBE_Game::setVictoryType((TRIBE_Game *)rge_base_game,VictoryDefault,0);
+    TRIBE_Game::setAnimals((TRIBE_Game *)rge_base_game,1);
+    TRIBE_Game::setPredators((TRIBE_Game *)rge_base_game,1);
+    TRIBE_Game::setRandomizePositions((TRIBE_Game *)rge_base_game,0);
+    TRIBE_Game::setLongCombat((TRIBE_Game *)rge_base_game,0);
+    TRIBE_Game::setAllowTrading((TRIBE_Game *)rge_base_game,1);
+    TRIBE_Game::setFullTechTree((TRIBE_Game *)rge_base_game,0);
+    TRIBE_Game::setResourceLevel((TRIBE_Game *)rge_base_game,DefaultResources);
+    TRIBE_Game::setStartingAge((TRIBE_Game *)rge_base_game,DefaultAge);
+    TRIBE_Game::setStartingUnits((TRIBE_Game *)rge_base_game,0);
+    TRIBE_Game::setDeathMatch((TRIBE_Game *)rge_base_game,'\0');
+    TRIBE_Game::setQuickStartGame((TRIBE_Game *)rge_base_game,'\0');
+      TRIBE_Game::setCivilization
+      TRIBE_Game::setScenarioPlayer((TRIBE_Game *)rge_base_game,iVar5,iVar5);
+      TRIBE_Game::setPlayerColor((TRIBE_Game *)rge_base_game,iVar5,(uint)this->defaultColor[iVar5]);
+      TRIBE_Game::setComputerName((TRIBE_Game *)rge_base_game,iVar5,0);
+          TRIBE_Game::setPlayerColor((TRIBE_Game *)rge_base_game,iVar5,lVar6);
+          TRIBE_Game::setCivilization((TRIBE_Game *)rge_base_game,iVar5,lVar6);
+            TRIBE_Game::setScenarioPlayer((TRIBE_Game *)rge_base_game,0,lVar6);
+          TRIBE_Game::setScenarioPlayer((TRIBE_Game *)rge_base_game,iVar5,lVar6);
+    iVar13 = TRIBE_Game::scenarioPlayer((TRIBE_Game *)rge_base_game,0);
+      TRIBE_Game::setScenarioPlayer((TRIBE_Game *)rge_base_game,iVar5,iVar12);
+        TRIBE_Game::setScenarioPlayer((TRIBE_Game *)rge_base_game,uVar12,lVar8);
+          iVar3 = TRIBE_Game::playerColor((TRIBE_Game *)rge_base_game,uVar12);
+            iVar3 = TRIBE_Game::playerColor((TRIBE_Game *)rge_base_game,uVar12);
+     (iVar3 = TRIBE_Game::randomizePositions((TRIBE_Game *)rge_base_game), iVar3 != 0)) {
+        iVar3 = TRIBE_Game::civilization((TRIBE_Game *)rge_base_game,iVar5);
+          iVar3 = TRIBE_Game::civilization((TRIBE_Game *)rge_base_game,iVar5);
+          TRIBE_Game::setCivilization((TRIBE_Game *)rge_base_game,iVar5,iVar3 + -0x32);
+        iVar10 = TRIBE_Game::playerColor((TRIBE_Game *)rge_base_game,iVar5);
+        iVar10 = TRIBE_Game::civilization((TRIBE_Game *)rge_base_game,iVar5);
+        TRIBE_Game::setPlayerColor((TRIBE_Game *)rge_base_game,iVar3,temp_color[iVar3 + 1]);
+        TRIBE_Game::setCivilization((TRIBE_Game *)rge_base_game,iVar3,temp_civ[iVar3 + 1]);
+  iVar3 = TRIBE_Game::start_game((TRIBE_Game *)rge_base_game,0);
+          TRIBE_Game::setScenarioPlayer((TRIBE_Game *)rge_base_game,uVar5,local_28);
+             (uVar6 = TRIBE_Game::civilization((TRIBE_Game *)rge_base_game,uVar8), user3 != uVar6))
+            TRIBE_Game::setCivilization((TRIBE_Game *)rge_base_game,uVar8,user3);
+            iVar12 = TRIBE_Game::scenarioPlayer((TRIBE_Game *)rge_base_game,uVar8);
+              TRIBE_Game::setScenarioPlayer((TRIBE_Game *)rge_base_game,uVar8,iVar4);
+             (uVar6 = TRIBE_Game::playerColor((TRIBE_Game *)rge_base_game,uVar8), user1 != uVar6)) {
+            TRIBE_Game::setPlayerColor((TRIBE_Game *)rge_base_game,uVar8,user1);
+            iVar4 = TRIBE_Game::civilization((TRIBE_Game *)rge_base_game,uVar8);
+              TRIBE_Game::setCivilization((TRIBE_Game *)rge_base_game,uVar8,iVar12);
+            uVar5 = TRIBE_Game::scenarioPlayer((TRIBE_Game *)rge_base_game,uVar8);
+              TRIBE_Game::setScenarioPlayer((TRIBE_Game *)rge_base_game,uVar8,uVar8);
+            uVar5 = TRIBE_Game::playerColor((TRIBE_Game *)rge_base_game,uVar8);
+              TRIBE_Game::setPlayerColor((TRIBE_Game *)rge_base_game,uVar8,(uint)bVar2);
+        iVar4 = TRIBE_Game::civilization((TRIBE_Game *)rge_base_game,iVar12);
+          iVar4 = TRIBE_Game::civilization((TRIBE_Game *)rge_base_game,iVar12);
+          TRIBE_Game::setCivilization((TRIBE_Game *)rge_base_game,iVar12,iVar4 + -0x32);
+    TRIBE_Game::start_game((TRIBE_Game *)rge_base_game,0);
+          iVar4 = TRIBE_Game::civilization((TRIBE_Game *)rge_base_game,iVar12);
+            iVar4 = TRIBE_Game::civilization((TRIBE_Game *)rge_base_game,iVar12);
+            TRIBE_Game::setCivilization((TRIBE_Game *)rge_base_game,iVar12,iVar4 + -0x32);
+                iVar3 = TRIBE_Game::playerColor((TRIBE_Game *)rge_base_game,uVar14);
+                iVar4 = TRIBE_Game::playerColor((TRIBE_Game *)rge_base_game,uVar11);
+                  iVar3 = TRIBE_Game::civilization((TRIBE_Game *)rge_base_game,uVar11);
+                  TRIBE_Game::setCivilization((TRIBE_Game *)rge_base_game,uVar14,iVar3 + 0x32);
+        iVar3 = TRIBE_Game::playerColor((TRIBE_Game *)rge_base_game,iVar4);
+          iVar3 = TRIBE_Game::civilization((TRIBE_Game *)rge_base_game,iVar4);
+          iVar3 = TRIBE_Game::scenarioPlayer((TRIBE_Game *)rge_base_game,iVar4);
+          TRIBE_Game::setScenarioPlayer((TRIBE_Game *)rge_base_game,iVar5,iVar7);
+          TRIBE_Game::setPlayerColor
+        TRIBE_Game::setScenarioPlayer((TRIBE_Game *)rge_base_game,iVar7,iVar7);
+        TRIBE_Game::setPlayerColor
+    uVar3 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
+    MVar10 = TRIBE_Game::mapSize((TRIBE_Game *)rge_base_game);
+    MVar11 = TRIBE_Game::mapType((TRIBE_Game *)rge_base_game);
+  VVar12 = TRIBE_Game::victoryType((TRIBE_Game *)rge_base_game);
+    TRIBE_Game::victoryAmount((TRIBE_Game *)rge_base_game);
+  AVar13 = TRIBE_Game::startingAge((TRIBE_Game *)rge_base_game);
+  RVar14 = TRIBE_Game::resourceLevel((TRIBE_Game *)rge_base_game);
+  iVar5 = TRIBE_Game::randomizePositions((TRIBE_Game *)rge_base_game);
+  iVar5 = TRIBE_Game::fullTechTree((TRIBE_Game *)rge_base_game);
+  bVar4 = TRIBE_Game::popLimit((TRIBE_Game *)rge_base_game);
+      TRIBE_Game::setCivilization
+      TRIBE_Game::setPlayerColor((TRIBE_Game *)rge_base_game,iVar1,iVar4);
+          TRIBE_Game::setScenarioPlayer((TRIBE_Game *)rge_base_game,iVar4,iVar5);
+          TRIBE_Game::setCivilization((TRIBE_Game *)rge_base_game,iVar4,iVar1);
+          TRIBE_Game::setPlayerColor((TRIBE_Game *)rge_base_game,iVar4,iVar5 + 1);
+          iVar5 = TRIBE_Game::scenarioPlayer((TRIBE_Game *)rge_base_game,iVar4);
+            iVar5 = TRIBE_Game::scenarioPlayer((TRIBE_Game *)rge_base_game,0);
+            TRIBE_Game::setScenarioPlayer((TRIBE_Game *)rge_base_game,iVar4,iVar5);
+            iVar5 = TRIBE_Game::civilization((TRIBE_Game *)rge_base_game,0);
+            TRIBE_Game::setCivilization((TRIBE_Game *)rge_base_game,iVar4,iVar5);
+            iVar5 = TRIBE_Game::playerColor((TRIBE_Game *)rge_base_game,0);
+            TRIBE_Game::setPlayerColor((TRIBE_Game *)rge_base_game,iVar4,iVar5);
+      TRIBE_Game::setScenarioPlayer((TRIBE_Game *)rge_base_game,0,iVar1);
+      TRIBE_Game::setCivilization((TRIBE_Game *)rge_base_game,0,first_any_color);
+      TRIBE_Game::setPlayerColor((TRIBE_Game *)rge_base_game,0,local_4);
+    uVar3 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
+    MVar7 = TRIBE_Game::mapSize((TRIBE_Game *)rge_base_game);
+    MVar8 = TRIBE_Game::mapType((TRIBE_Game *)rge_base_game);
+  VVar9 = TRIBE_Game::victoryType((TRIBE_Game *)rge_base_game);
+    TRIBE_Game::victoryAmount((TRIBE_Game *)rge_base_game);
+  AVar11 = TRIBE_Game::startingAge((TRIBE_Game *)rge_base_game);
+  RVar12 = TRIBE_Game::resourceLevel((TRIBE_Game *)rge_base_game);
+  iVar6 = TRIBE_Game::randomizePositions((TRIBE_Game *)rge_base_game);
+  iVar6 = TRIBE_Game::fullTechTree((TRIBE_Game *)rge_base_game);
+  bVar4 = TRIBE_Game::popLimit((TRIBE_Game *)rge_base_game);
+      TRIBE_Game::quit_game((TRIBE_Game *)rge_base_game);
+    param_2 = TRIBE_Game::get_save_game_name((TRIBE_Game *)rge_base_game);
+            iVar6 = TRIBE_Game::save_game((TRIBE_Game *)rge_base_game,pcVar9);
+            iVar6 = TRIBE_Game::save_scenario((TRIBE_Game *)rge_base_game,pcVar9);
+          iVar6 = TRIBE_Game::save_game((TRIBE_Game *)rge_base_game,this->fileName);
+        iVar6 = TRIBE_Game::save_scenario((TRIBE_Game *)rge_base_game,this->fileName);
+  TRIBE_Game::show_status_message((TRIBE_Game *)rge_base_game,0x450,(char *)0x0,-1);
+    iVar3 = TRIBE_Game::start_menu((TRIBE_Game *)rge_base_game);
+        TRIBE_Game::start_scenario_editor((TRIBE_Game *)rge_base_game,(char *)0x0,0);
+              iVar19 = TRIBE_Game::start_menu((TRIBE_Game *)rge_base_game);
+              TRIBE_Game::start_scenario_editor((TRIBE_Game *)rge_base_game,(char *)0x0,0);
+  TRIBE_Game::start_scenario_editor((TRIBE_Game *)rge_base_game,(char *)0x0,0);
+      TRIBE_Game::show_status_message((TRIBE_Game *)rge_base_game,0x44d,(char *)0x0,-1);
+    iVar1 = TRIBE_Game::load_game_data((TRIBE_Game *)rge_base_game);
+        TRIBE_Game::close_status_message((TRIBE_Game *)rge_base_game);
+    TRIBE_Game::show_status_message((TRIBE_Game *)rge_base_game,iVar1,(char *)0x0,-1);
+  iVar2 = TRIBE_Game::start_menu((TRIBE_Game *)rge_base_game);
+        TRIBE_Game::show_status_message((TRIBE_Game *)rge_base_game,0x450,(char *)0x0,-1);
+          TRIBE_Game::close_status_message((TRIBE_Game *)rge_base_game);
+          TRIBE_Game::close_status_message((TRIBE_Game *)rge_base_game);
+            iVar3 = TRIBE_Game::start_menu((TRIBE_Game *)rge_base_game);
+            TRIBE_Game::start_scenario_editor((TRIBE_Game *)rge_base_game,(char *)0x0,0);
+  TRIBE_Game::show_status_message((TRIBE_Game *)rge_base_game,0x450,(char *)0x0,-1);
+    TRIBE_Game::close_status_message((TRIBE_Game *)rge_base_game);
+      TRIBE_Game::start_scenario_editor((TRIBE_Game *)rge_base_game,(char *)0x0,0);
+          TRIBE_Game::start_scenario_editor((TRIBE_Game *)rge_base_game,fileName + 4,0);
+  TRIBE_Game::setDeathMatch((TRIBE_Game *)rge_base_game,'\0');
+      (uVar3 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game), uVar3 == '\0')))) {
+      (uVar3 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game), uVar3 != '\0')))) {
+    uVar1 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
+  MVar5 = TRIBE_Game::mapSize((TRIBE_Game *)rge_base_game);
+  MVar7 = TRIBE_Game::mapType((TRIBE_Game *)rge_base_game);
+  VVar8 = TRIBE_Game::victoryType((TRIBE_Game *)rge_base_game);
+  iVar9 = TRIBE_Game::randomizePositions((TRIBE_Game *)rge_base_game);
+  iVar9 = TRIBE_Game::fullTechTree((TRIBE_Game *)rge_base_game);
+  RVar10 = TRIBE_Game::resourceLevel((TRIBE_Game *)rge_base_game);
+  AVar11 = TRIBE_Game::startingAge((TRIBE_Game *)rge_base_game);
+    bVar2 = TRIBE_Game::popLimit((TRIBE_Game *)rge_base_game);
+  VVar8 = TRIBE_Game::victoryType((TRIBE_Game *)rge_base_game);
+    iVar3 = TRIBE_Game::victoryAmount((TRIBE_Game *)rge_base_game);
+  VVar8 = TRIBE_Game::victoryType((TRIBE_Game *)rge_base_game);
+    iVar3 = TRIBE_Game::victoryAmount((TRIBE_Game *)rge_base_game);
+  TRIBE_Game::setDeathMatch((TRIBE_Game *)rge_base_game,lVar1 == -1);
+  TRIBE_Game::setVictoryType((TRIBE_Game *)rge_base_game,VVar3,lVar1);
+    TRIBE_Game::setMapSize((TRIBE_Game *)rge_base_game,MVar5);
+    TRIBE_Game::setMapType((TRIBE_Game *)rge_base_game,MVar6);
+  TRIBE_Game::setRandomizePositions((TRIBE_Game *)rge_base_game,(uint)(iVar4 == 0));
+  TRIBE_Game::setFullTechTree((TRIBE_Game *)rge_base_game,iVar4);
+  TRIBE_Game::setResourceLevel((TRIBE_Game *)rge_base_game,RVar8);
+    TRIBE_Game::setPopLimit((TRIBE_Game *)rge_base_game,(uchar)lVar1);
+  TRIBE_Game::setStartingAge((TRIBE_Game *)rge_base_game,AVar7);
+      TRIBE_Game::setDeathMatch((TRIBE_Game *)rge_base_game,'\0');
+      TRIBE_Game::setQuickStartGame((TRIBE_Game *)rge_base_game,'\0');
+          TRIBE_Game::setDeathMatch((TRIBE_Game *)rge_base_game,'\0');
+          TRIBE_Game::setQuickStartGame((TRIBE_Game *)rge_base_game,'\0');
+      TRIBE_Game::setDeathMatch((TRIBE_Game *)rge_base_game,'\x01');
+      TRIBE_Game::setQuickStartGame((TRIBE_Game *)rge_base_game,'\0');
+        TRIBE_Game::create_game_screen((TRIBE_Game *)rge_base_game);
+      uVar4 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
+    TRIBE_Game::close_game_screens((TRIBE_Game *)rge_base_game,1);
+    TRIBE_Game::save_game((TRIBE_Game *)rge_base_game,fileName + 4);
+    TRIBE_Game::do_game_over((TRIBE_Game *)rge_base_game);
+    iVar2 = TRIBE_Game::fullTechTree((TRIBE_Game *)rge_base_game);
+  MVar6 = TRIBE_Game::mapType((TRIBE_Game *)rge_base_game);
+      MVar8 = TRIBE_Game::mapSize((TRIBE_Game *)rge_base_game);
+      VVar9 = TRIBE_Game::victoryType((TRIBE_Game *)rge_base_game);
+      MVar6 = TRIBE_Game::mapType((TRIBE_Game *)rge_base_game);
+        MVar8 = TRIBE_Game::mapSize((TRIBE_Game *)rge_base_game);
+        VVar9 = TRIBE_Game::victoryType((TRIBE_Game *)rge_base_game);
+        MVar6 = TRIBE_Game::mapType((TRIBE_Game *)rge_base_game);
+          TRIBE_Game::add_notification_loc((TRIBE_Game *)rge_base_game,lVar4,lVar3);
+  uVar2 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
+  uVar2 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
+  uVar2 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
+  uVar1 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
+  uVar1 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
+  uVar1 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
+  uVar1 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
+  uVar1 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
+  uVar1 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
+  uVar1 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
+  uVar1 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
+  uVar1 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
+  uVar1 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
+  uVar1 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
+  uVar1 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
+  uVar1 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
+  uVar1 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
+  uVar1 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
+  uVar1 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
+// public: __thiscall TRIBE_Game::TRIBE_Game(struct RGE_Prog_Info *,int)
+TRIBE_Game * __thiscall TRIBE_Game::TRIBE_Game(TRIBE_Game *this,RGE_Prog_Info *param_1,int param_2)
+// public: virtual void * __thiscall TRIBE_Game::`vector deleting destructor'(unsigned int)
+void * __thiscall TRIBE_Game::_vector_deleting_destructor_(TRIBE_Game *this,uint param_1)
+// public: virtual __thiscall TRIBE_Game::~TRIBE_Game(void)
+void __thiscall TRIBE_Game::~TRIBE_Game(TRIBE_Game *this)
+// public: void __thiscall TRIBE_Game::close_game_screens(int)
+void __thiscall TRIBE_Game::close_game_screens(TRIBE_Game *this,int param_1)
+// protected: virtual int __thiscall TRIBE_Game::setup(void)
+int __thiscall TRIBE_Game::setup(TRIBE_Game *this)
+// public: virtual int __thiscall TRIBE_Game::setup_cmd_options(void)
+int __thiscall TRIBE_Game::setup_cmd_options(TRIBE_Game *this)
+// protected: virtual int __thiscall TRIBE_Game::setup_palette(void)
+int __thiscall TRIBE_Game::setup_palette(TRIBE_Game *this)
+// protected: virtual int __thiscall TRIBE_Game::setup_sounds(void)
+int __thiscall TRIBE_Game::setup_sounds(TRIBE_Game *this)
+// protected: virtual class RGE_Game_World * __thiscall TRIBE_Game::create_world(void)
+RGE_Game_World * __thiscall TRIBE_Game::create_world(TRIBE_Game *this)
+// public: virtual void __thiscall TRIBE_Game::set_game_mode(int,int)
+void __thiscall TRIBE_Game::set_game_mode(TRIBE_Game *this,int param_1,int param_2)
+// public: virtual void __thiscall TRIBE_Game::set_player(short)
+void __thiscall TRIBE_Game::set_player(TRIBE_Game *this,short param_1)
+// public: void __thiscall TRIBE_Game::set_save_game_name(char *)
+void __thiscall TRIBE_Game::set_save_game_name(TRIBE_Game *this,char *param_1)
+// public: void __thiscall TRIBE_Game::set_load_game_name(char *)
+void __thiscall TRIBE_Game::set_load_game_name(TRIBE_Game *this,char *param_1)
+// public: virtual char * __thiscall TRIBE_Game::get_string(long,char *,int)
+char * __thiscall TRIBE_Game::get_string(TRIBE_Game *this,long param_1,char *param_2,int param_3)
+// public: virtual char * __thiscall TRIBE_Game::get_string2(int,long,long,char *,int)
+TRIBE_Game::get_string2
+// public: virtual class TPanel * __thiscall TRIBE_Game::get_view_panel(void)
+TPanel * __thiscall TRIBE_Game::get_view_panel(TRIBE_Game *this)
+// public: virtual class TPanel * __thiscall TRIBE_Game::get_map_panel(void)
+TPanel * __thiscall TRIBE_Game::get_map_panel(TRIBE_Game *this)
+// public: char * __thiscall TRIBE_Game::get_save_game_name(void)
+char * __thiscall TRIBE_Game::get_save_game_name(TRIBE_Game *this)
+// public: char * __thiscall TRIBE_Game::get_load_game_name(void)
+char * __thiscall TRIBE_Game::get_load_game_name(TRIBE_Game *this)
+// public: virtual class RGE_Scenario_Header * __thiscall TRIBE_Game::new_scenario_header(int)
+RGE_Scenario_Header * __thiscall TRIBE_Game::new_scenario_header(TRIBE_Game *this,int param_1)
+// public: virtual class RGE_Scenario_Header * __thiscall TRIBE_Game::new_scenario_header(class
+TRIBE_Game::new_scenario_header(TRIBE_Game *this,RGE_Scenario *param_1)
+// public: virtual class RGE_Scenario * __thiscall TRIBE_Game::new_scenario_info(int)
+RGE_Scenario * __thiscall TRIBE_Game::new_scenario_info(TRIBE_Game *this,int param_1)
+// public: void __thiscall TRIBE_Game::show_error_message(int)
+void __thiscall TRIBE_Game::show_error_message(TRIBE_Game *this,int param_1)
+// public: void __thiscall TRIBE_Game::show_status_message(char *,char *,long)
+TRIBE_Game::show_status_message(TRIBE_Game *this,char *param_1,char *param_2,long param_3)
+// public: void __thiscall TRIBE_Game::show_status_message(int,char *,long)
+TRIBE_Game::show_status_message(TRIBE_Game *this,int param_1,char *param_2,long param_3)
+// public: void __thiscall TRIBE_Game::close_status_message(void)
+void __thiscall TRIBE_Game::close_status_message(TRIBE_Game *this)
+// public: int __thiscall TRIBE_Game::start_video(int,char *)
+int __thiscall TRIBE_Game::start_video(TRIBE_Game *this,int param_1,char *param_2)
+  TRIBE_Game::video_wnd_proc((TRIBE_Game *)rge_base_game,param_1,param_2,param_3,param_4);
+// public: void __thiscall TRIBE_Game::stop_video(unsigned char)
+void __thiscall TRIBE_Game::stop_video(TRIBE_Game *this,uchar param_1)
+// public: int __thiscall TRIBE_Game::start_campaign_menu(void)
+int __thiscall TRIBE_Game::start_campaign_menu(TRIBE_Game *this)
+// public: int __thiscall TRIBE_Game::start_menu(void)
+int __thiscall TRIBE_Game::start_menu(TRIBE_Game *this)
+// public: void __thiscall TRIBE_Game::quit_game(void)
+void __thiscall TRIBE_Game::quit_game(TRIBE_Game *this)
+// public: void __thiscall TRIBE_Game::restart_game(void)
+void __thiscall TRIBE_Game::restart_game(TRIBE_Game *this)
+// public: int __thiscall TRIBE_Game::load_db_files(void)
+int __thiscall TRIBE_Game::load_db_files(TRIBE_Game *this)
+// public: int __thiscall TRIBE_Game::load_game_data(void)
+int __thiscall TRIBE_Game::load_game_data(TRIBE_Game *this)
+// public: int __thiscall TRIBE_Game::save_game(char *)
+int __thiscall TRIBE_Game::save_game(TRIBE_Game *this,char *param_1)
+// public: int __thiscall TRIBE_Game::save_scenario(char *)
+int __thiscall TRIBE_Game::save_scenario(TRIBE_Game *this,char *param_1)
+// public: virtual void __thiscall TRIBE_Game::calc_timing_text(void)
+void __thiscall TRIBE_Game::calc_timing_text(TRIBE_Game *this)
+// public: virtual void __thiscall TRIBE_Game::show_timings(void)
+void __thiscall TRIBE_Game::show_timings(TRIBE_Game *this)
+// public: virtual void __thiscall TRIBE_Game::show_comm(void)
+void __thiscall TRIBE_Game::show_comm(TRIBE_Game *this)
+// public: virtual void __thiscall TRIBE_Game::show_ai(void)
+void __thiscall TRIBE_Game::show_ai(TRIBE_Game *this)
+// public: virtual void __thiscall TRIBE_Game::notification(int,long,long,long,long)
+TRIBE_Game::notification
+// public: int __thiscall TRIBE_Game::start_game(int)
+int __thiscall TRIBE_Game::start_game(TRIBE_Game *this,int param_1)
+// public: int __thiscall TRIBE_Game::test_scenario(char *)
+int __thiscall TRIBE_Game::test_scenario(TRIBE_Game *this,char *param_1)
+// public: int __thiscall TRIBE_Game::start_scenario(char *)
+int __thiscall TRIBE_Game::start_scenario(TRIBE_Game *this,char *param_1)
+// public: int __thiscall TRIBE_Game::load_game(char *)
+int __thiscall TRIBE_Game::load_game(TRIBE_Game *this,char *param_1)
+// public: void __thiscall TRIBE_Game::do_game_over(void)
+void __thiscall TRIBE_Game::do_game_over(TRIBE_Game *this)
+// protected: int __thiscall TRIBE_Game::create_game(int)
+int __thiscall TRIBE_Game::create_game(TRIBE_Game *this,int param_1)
+// public: int __thiscall TRIBE_Game::create_game_screen(void)
+int __thiscall TRIBE_Game::create_game_screen(TRIBE_Game *this)
+// public: virtual int __thiscall TRIBE_Game::processCheatCode(int,char *)
+int __thiscall TRIBE_Game::processCheatCode(TRIBE_Game *this,int param_1,char *param_2)
+// protected: void __thiscall TRIBE_Game::let_game_begin(void)
+void __thiscall TRIBE_Game::let_game_begin(TRIBE_Game *this)
+// public: int __thiscall TRIBE_Game::start_scenario_editor(char *,int)
+int __thiscall TRIBE_Game::start_scenario_editor(TRIBE_Game *this,char *param_1,int param_2)
+// public: virtual void __thiscall TRIBE_Game::send_game_options(void)
+void __thiscall TRIBE_Game::send_game_options(TRIBE_Game *this)
+// public: virtual void __thiscall TRIBE_Game::receive_game_options(void)
+void __thiscall TRIBE_Game::receive_game_options(TRIBE_Game *this)
+// public: void __thiscall TRIBE_Game::set_tribe_options(struct TRIBE_Game::TRIBE_Game_Options *)
+void __thiscall TRIBE_Game::set_tribe_options(TRIBE_Game *this,TRIBE_Game_Options *param_1)
+// public: void __thiscall TRIBE_Game::get_tribe_options(struct TRIBE_Game::TRIBE_Game_Options *)
+void __thiscall TRIBE_Game::get_tribe_options(TRIBE_Game *this,TRIBE_Game_Options *param_1)
+// public: enum TRIBE_Game::MapSize __thiscall TRIBE_Game::mapSize(void)const 
+MapSize __thiscall TRIBE_Game::mapSize(TRIBE_Game *this)
+// public: void __thiscall TRIBE_Game::setMapSize(enum TRIBE_Game::MapSize)
+void __thiscall TRIBE_Game::setMapSize(TRIBE_Game *this,MapSize param_1)
+// public: enum TRIBE_Game::MapType __thiscall TRIBE_Game::mapType(void)const 
+MapType __thiscall TRIBE_Game::mapType(TRIBE_Game *this)
+// public: void __thiscall TRIBE_Game::setMapType(enum TRIBE_Game::MapType)
+void __thiscall TRIBE_Game::setMapType(TRIBE_Game *this,MapType param_1)
+// public: int __thiscall TRIBE_Game::animals(void)const 
+int __thiscall TRIBE_Game::animals(TRIBE_Game *this)
+// public: void __thiscall TRIBE_Game::setAnimals(int)
+void __thiscall TRIBE_Game::setAnimals(TRIBE_Game *this,int param_1)
+// public: int __thiscall TRIBE_Game::predators(void)const 
+int __thiscall TRIBE_Game::predators(TRIBE_Game *this)
+// public: void __thiscall TRIBE_Game::setPredators(int)
+void __thiscall TRIBE_Game::setPredators(TRIBE_Game *this,int param_1)
+// public: enum TRIBE_Game::VictoryType __thiscall TRIBE_Game::victoryType(void)const 
+VictoryType __thiscall TRIBE_Game::victoryType(TRIBE_Game *this)
+// public: int __thiscall TRIBE_Game::victoryAmount(void)const 
+int __thiscall TRIBE_Game::victoryAmount(TRIBE_Game *this)
+// public: void __thiscall TRIBE_Game::setVictoryType(enum TRIBE_Game::VictoryType,int)
+void __thiscall TRIBE_Game::setVictoryType(TRIBE_Game *this,VictoryType param_1,int param_2)
+// public: int __thiscall TRIBE_Game::civilization(int)
+int __thiscall TRIBE_Game::civilization(TRIBE_Game *this,int param_1)
+// public: void __thiscall TRIBE_Game::setCivilization(int,int)
+void __thiscall TRIBE_Game::setCivilization(TRIBE_Game *this,int param_1,int param_2)
+// public: int __thiscall TRIBE_Game::scenarioPlayer(int)
+int __thiscall TRIBE_Game::scenarioPlayer(TRIBE_Game *this,int param_1)
+// public: void __thiscall TRIBE_Game::setScenarioPlayer(int,int)
+void __thiscall TRIBE_Game::setScenarioPlayer(TRIBE_Game *this,int param_1,int param_2)
+// public: int __thiscall TRIBE_Game::playerColor(int)
+int __thiscall TRIBE_Game::playerColor(TRIBE_Game *this,int param_1)
+// public: void __thiscall TRIBE_Game::setPlayerColor(int,int)
+void __thiscall TRIBE_Game::setPlayerColor(TRIBE_Game *this,int param_1,int param_2)
+// public: int __thiscall TRIBE_Game::computerName(int)
+int __thiscall TRIBE_Game::computerName(TRIBE_Game *this,int param_1)
+// public: void __thiscall TRIBE_Game::setComputerName(int,int)
+void __thiscall TRIBE_Game::setComputerName(TRIBE_Game *this,int param_1,int param_2)
+// public: int __thiscall TRIBE_Game::allowTrading(void)
+int __thiscall TRIBE_Game::allowTrading(TRIBE_Game *this)
+// public: int __thiscall TRIBE_Game::longCombat(void)
+int __thiscall TRIBE_Game::longCombat(TRIBE_Game *this)
+// public: int __thiscall TRIBE_Game::randomizePositions(void)
+int __thiscall TRIBE_Game::randomizePositions(TRIBE_Game *this)
+// public: int __thiscall TRIBE_Game::fullTechTree(void)
+int __thiscall TRIBE_Game::fullTechTree(TRIBE_Game *this)
+// public: enum TRIBE_Game::ResourceLevel __thiscall TRIBE_Game::resourceLevel(void)
+ResourceLevel __thiscall TRIBE_Game::resourceLevel(TRIBE_Game *this)
+// public: enum TRIBE_Game::Age __thiscall TRIBE_Game::startingAge(void)
+Age __thiscall TRIBE_Game::startingAge(TRIBE_Game *this)
+// public: int __thiscall TRIBE_Game::startingUnits(void)
+int __thiscall TRIBE_Game::startingUnits(TRIBE_Game *this)
+// public: unsigned char __thiscall TRIBE_Game::deathMatch(void)
+uchar __thiscall TRIBE_Game::deathMatch(TRIBE_Game *this)
+// public: unsigned char __thiscall TRIBE_Game::popLimit(void)
+uchar __thiscall TRIBE_Game::popLimit(TRIBE_Game *this)
+// public: unsigned char __thiscall TRIBE_Game::quickStartGame(void)
+uchar __thiscall TRIBE_Game::quickStartGame(TRIBE_Game *this)
+// public: int __thiscall TRIBE_Game::randomStartValue(void)
+int __thiscall TRIBE_Game::randomStartValue(TRIBE_Game *this)
+// public: void __thiscall TRIBE_Game::setAllowTrading(int)
+void __thiscall TRIBE_Game::setAllowTrading(TRIBE_Game *this,int param_1)
+// public: void __thiscall TRIBE_Game::setLongCombat(int)
+void __thiscall TRIBE_Game::setLongCombat(TRIBE_Game *this,int param_1)
+// public: void __thiscall TRIBE_Game::setRandomizePositions(int)
+void __thiscall TRIBE_Game::setRandomizePositions(TRIBE_Game *this,int param_1)
+// public: void __thiscall TRIBE_Game::setFullTechTree(int)
+void __thiscall TRIBE_Game::setFullTechTree(TRIBE_Game *this,int param_1)
+// public: void __thiscall TRIBE_Game::setResourceLevel(enum TRIBE_Game::ResourceLevel)
+void __thiscall TRIBE_Game::setResourceLevel(TRIBE_Game *this,ResourceLevel param_1)
+// public: void __thiscall TRIBE_Game::setStartingAge(enum TRIBE_Game::Age)
+void __thiscall TRIBE_Game::setStartingAge(TRIBE_Game *this,Age param_1)
+// public: void __thiscall TRIBE_Game::setStartingUnits(int)
+void __thiscall TRIBE_Game::setStartingUnits(TRIBE_Game *this,int param_1)
+// public: void __thiscall TRIBE_Game::setDeathMatch(unsigned char)
+void __thiscall TRIBE_Game::setDeathMatch(TRIBE_Game *this,uchar param_1)
+// public: void __thiscall TRIBE_Game::setPopLimit(unsigned char)
+void __thiscall TRIBE_Game::setPopLimit(TRIBE_Game *this,uchar param_1)
+// public: void __thiscall TRIBE_Game::setQuickStartGame(unsigned char)
+void __thiscall TRIBE_Game::setQuickStartGame(TRIBE_Game *this,uchar param_1)
+// public: void __thiscall TRIBE_Game::setRandomStartValue(int)
+void __thiscall TRIBE_Game::setRandomStartValue(TRIBE_Game *this,int param_1)
+// public: virtual char * __thiscall TRIBE_Game::gameSummary(void)
+char * __thiscall TRIBE_Game::gameSummary(TRIBE_Game *this)
+// public: virtual long __stdcall TRIBE_Game::wnd_proc(void *,unsigned int,unsigned int,long)
+long TRIBE_Game::wnd_proc(void *param_1,uint param_2,uint param_3,long param_4)
+// public: virtual int __thiscall TRIBE_Game::handle_idle(void)
+int __thiscall TRIBE_Game::handle_idle(TRIBE_Game *this)
+// public: virtual int __thiscall TRIBE_Game::handle_query_new_palette(void *,unsigned int,unsigned
+TRIBE_Game::handle_query_new_palette
+// public: virtual int __thiscall TRIBE_Game::handle_activate(void *,unsigned int,unsigned int,long)
+TRIBE_Game::handle_activate(TRIBE_Game *this,void *param_1,uint param_2,uint param_3,long param_4)
+// public: virtual int __thiscall TRIBE_Game::action_user_command(unsigned long,unsigned long)
+int __thiscall TRIBE_Game::action_user_command(TRIBE_Game *this,ulong param_1,ulong param_2)
+// public: virtual int __thiscall TRIBE_Game::action_key_down(unsigned long,int,int,int,int)
+TRIBE_Game::action_key_down
+// public: virtual int __thiscall TRIBE_Game::action_close(void)
+int __thiscall TRIBE_Game::action_close(TRIBE_Game *this)
+// public: char * __thiscall TRIBE_Game::game_over_msg(void)
+char * __thiscall TRIBE_Game::game_over_msg(TRIBE_Game *this)
+// public: long __thiscall TRIBE_Game::get_achievement_info(unsigned char,char * *)
+long __thiscall TRIBE_Game::get_achievement_info(TRIBE_Game *this,uchar param_1,char **param_2)
+// public: int __thiscall TRIBE_Game::randomComputerName(int)
+int __thiscall TRIBE_Game::randomComputerName(TRIBE_Game *this,int param_1)
+// public: void __thiscall TRIBE_Game::resetRandomComputerName(void)
+void __thiscall TRIBE_Game::resetRandomComputerName(TRIBE_Game *this)
+// public: long __thiscall TRIBE_Game::video_wnd_proc(void *,unsigned int,unsigned int,long)
+TRIBE_Game::video_wnd_proc(TRIBE_Game *this,void *param_1,uint param_2,uint param_3,long param_4)
+// public: void __thiscall TRIBE_Game::SetClickTables(struct MouseClickInfo *,int,struct
+TRIBE_Game::SetClickTables
+// public: virtual void __thiscall TRIBE_Game::set_interface_messages(void)
+void __thiscall TRIBE_Game::set_interface_messages(TRIBE_Game *this)
+// public: int __thiscall TRIBE_Game::setup_video_system(void)
+int __thiscall TRIBE_Game::setup_video_system(TRIBE_Game *this)
+// public: void __thiscall TRIBE_Game::shutdown_video_system(void)
+void __thiscall TRIBE_Game::shutdown_video_system(TRIBE_Game *this)
+// public: void __thiscall TRIBE_Game::disconnect_multiplayer_game(void)
+void __thiscall TRIBE_Game::disconnect_multiplayer_game(TRIBE_Game *this)
+// public: void __thiscall TRIBE_Game::add_notification_loc(long,long)
+void __thiscall TRIBE_Game::add_notification_loc(TRIBE_Game *this,long param_1,long param_2)
+// public: void __thiscall TRIBE_Game::goto_notification_loc(void)
+void __thiscall TRIBE_Game::goto_notification_loc(TRIBE_Game *this)
+    MVar2 = TRIBE_Game::mapSize((TRIBE_Game *)rge_base_game);
+    MVar3 = TRIBE_Game::mapType((TRIBE_Game *)rge_base_game);
+    VVar4 = TRIBE_Game::victoryType((TRIBE_Game *)rge_base_game);
+     (VVar7 = TRIBE_Game::victoryType((TRIBE_Game *)rge_base_game), VVar7 == VictoryDefault))
+  VVar7 = TRIBE_Game::victoryType((TRIBE_Game *)rge_base_game);
+  MVar8 = TRIBE_Game::mapSize((TRIBE_Game *)rge_base_game);
+    MVar9 = TRIBE_Game::mapType((TRIBE_Game *)rge_base_game);
+  AVar10 = TRIBE_Game::startingAge((TRIBE_Game *)rge_base_game);
+  RVar11 = TRIBE_Game::resourceLevel((TRIBE_Game *)rge_base_game);
+  iVar19 = TRIBE_Game::randomizePositions((TRIBE_Game *)rge_base_game);
+  iVar19 = TRIBE_Game::fullTechTree((TRIBE_Game *)rge_base_game);
+  uVar6 = TRIBE_Game::popLimit((TRIBE_Game *)rge_base_game);
+       (VVar7 = TRIBE_Game::victoryType((TRIBE_Game *)rge_base_game), VVar7 != VictoryDefault)) {
+      iVar19 = TRIBE_Game::victoryAmount((TRIBE_Game *)rge_base_game);
+      VVar7 = TRIBE_Game::victoryType((TRIBE_Game *)rge_base_game);
+      VVar7 = TRIBE_Game::victoryType((TRIBE_Game *)rge_base_game);
+  iVar19 = TRIBE_Game::allowTrading((TRIBE_Game *)rge_base_game);
+  iVar19 = TRIBE_Game::longCombat((TRIBE_Game *)rge_base_game);
+  iVar19 = TRIBE_Game::fullTechTree((TRIBE_Game *)rge_base_game);
+  RVar11 = TRIBE_Game::resourceLevel((TRIBE_Game *)rge_base_game);
+  uVar4 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
+  AVar10 = TRIBE_Game::startingAge((TRIBE_Game *)rge_base_game);
+          bVar5 = TRIBE_Game::popLimit((TRIBE_Game *)rge_base_game);
+        iVar2 = TRIBE_Game::civilization((TRIBE_Game *)rge_base_game,iVar8);
+        iVar2 = TRIBE_Game::playerColor((TRIBE_Game *)rge_base_game,iVar8);
+    TRIBE_Game::get_tribe_options

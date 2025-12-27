@@ -1,0 +1,64 @@
+//Gaul Cavalry 
+//June 18th 1998
+//
+//By GT Street
+ 
+T83       Man                  8      109          
+B12       Barracks1            1      -1           
+B84       Market1              1      -1           
+T83       Man                  2      109        
+R28     Wheel                  1      84           
+T83       Man                  2      109   
+B101      Stable1              1      -1       
+T37       Soldier-Cavalry1     2      101        
+B87       Range1               1      -1     
+U37       Soldier-Cavalry1     2      101
+R64     Short_Sword            1      12       
+T75       Soldier-Inf3         2      12               
+B101      Stable1              1      -1       
+T37       Soldier-Cavalry1     4      101
+B49       Siege_Workshop       1      -1
+B79       Watch_Tower          1      -1
+T37       Soldier-Cavalry1     1      101        
+R12     Sentry_Tower           1      68       
+T37       Soldier-Cavalry1     1      101
+T75       Soldier-Inf3         4      12       
+B79       Watch_Tower          1      -1        
+R46     Tool_Working           1      103          
+T37       Soldier-Cavalry1     2      101        
+R51     Metal_Working          1      103          
+T37       Soldier-Cavalry1     2      101
+B79       Watch_Tower          1      -1
+U75       Soldier-Inf3         2      12               
+B104      Temple1              1      -1
+T83       Man                  2      109          
+U37       Soldier-Cavalry1     2      101
+U35       Soldier-Catapult1    1      49     
+R42     Leather_Armor_Mounted  1      103 
+U125      Priest               1      104
+R45     Scale_Armor_-_Cavalry  1      103    
+B101      Stable1              1      -1
+B79       Watch_Tower          1      -1                 
+U35       Soldier-Catapult1    1      49     
+B82       Government_Center    1      -1
+T83       Man                  2      109           
+
+C103    Iron_Age               1      109    
+B49       Siege_Workshop       1      -1           
+U35       Soldier-Catapult1    1      49     
+R24     Polytheism             1      104    
+R71     Heavy_Cavalry          1      101
+U35       Soldier-Catapult1    1      49     
+R18     Afterlife              1      104    
+U125      Priest               1      104
+R52     Metalurgy              1      103    
+R50     Chain_Mail_-_Cavalry   1      103
+T83       Man                  2      109
+U75       Soldier-Inf3         2      12           
+U125      Priest               2      104
+R78     Cataphracts            1      101    
+U125      Priest               1      104
+U37       Soldier-Cavalry1     12      101
+
+//End
+
