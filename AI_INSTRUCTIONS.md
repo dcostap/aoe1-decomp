@@ -16,6 +16,7 @@ This project is a C++ reconstruction of the original *Age of Empires (1997)* sou
     *   `RGE_...` classes: The base engine (Realtime Game Engine).
     *   `TRIBE_...` classes: The Age of Empires specific logic.
 *   **Standard Types:** Use `uchar`, `ushort`, `ulong` (defined in `src/types.h`).
+*   **Verification:** Use `build/verify.exe` to confirm layout parity. It is the source of truth for offsets. If `verify.exe` reports a mismatch, the C++ header must be adjusted regardless of what the Ghidra dump suggests.
 
 ## 3. Directory Structure
 *   `src/rge/`: Engine-level headers/logic (Graphics, Sound, Base Classes).
@@ -36,6 +37,12 @@ When tasked with implementing a class or function:
 6.  **Annotate Addresses:** Every function **must** include a comment with its origin hex address (find this in Ghidra or via `LAB_...` labels in the dump).
 
 ## 5. Coding Standards
+
+### Debug Logging & Divergence
+*   **Marker for Divergence:** Use `#ifdef _DEBUG` to wrap any code that is **not** faithful to the original source (e.g., debug logging, console attachment, GDI test renders, or convenience hacks). This makes it clear where the reconstruction diverges from the original logic.
+*   Redirect `stdout` and `stderr` to `build/debug.log` in `main.cpp`.
+*   Use `printf` for logging. Avoid `MessageBox` for initialization success; use the console/log file instead.
+*   Keep log frequency reasonable (e.g., log every 1000th iteration for high-frequency loops).
 
 ### Function Headers
 ```cpp
@@ -79,6 +86,8 @@ void TRIBE_Game::update() {
 *   Maintain the split between `.h` (definition) and `.cpp` (implementation).
 *   Use `static_assert(sizeof(ClassName) == 0xXXXX, "Size mismatch");` at the bottom of header files to verify structure sizes against the `operator_new` calls found in the dump.
 *   If you find global variables (starting with `DAT_`), suggest placing them in a `Globals.h/cpp` file or as static members.
+*   **Build Artifacts:** All `.obj`, `.exe`, `.pdb`, and `.log` files must reside in the `build/` directory. The project root must remain clean (source and data only).
+*   **Resource Loading:** When implementing file loading (DRS, DLLs, .dat), always include a fallback to the `data2/` directory to support modern installation layouts.
 
 ***
 

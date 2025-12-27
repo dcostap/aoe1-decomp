@@ -38,6 +38,10 @@ int main() {
     printf("  Offset terrain_types: 0x%X\n", (int)offsetof(RGE_Map, terrain_types));
     printf("  Offset border_types:  0x%X\n", (int)offsetof(RGE_Map, border_types));
     printf("  Offset map_row_offset: 0x%X\n", (int)offsetof(RGE_Map, map_row_offset));
+    printf("  Offset any_frame_change: 0x%X\n", (int)offsetof(RGE_Map, any_frame_change));
+    printf("  Offset search_map:    0x%X\n", (int)offsetof(RGE_Map, search_map));
+    printf("  Offset random_map:    0x%X\n", (int)offsetof(RGE_Map, random_map));
+    printf("  Offset unit_manager:  0x%X\n", (int)offsetof(RGE_Map, unit_manager));
     printf("  Size RGE_Tile_Set:    0x%X\n", (int)sizeof(RGE_Tile_Set));
     printf("  Size RGE_Border_Set:  0x%X\n", (int)sizeof(RGE_Border_Set));
 

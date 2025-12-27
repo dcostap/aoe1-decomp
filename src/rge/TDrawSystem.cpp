@@ -3,9 +3,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifdef _DEBUG
+#define LOG_PAINT 0 // Set to 1 to see every paint call
+#endif
+
 TDrawSystem::TDrawSystem() {
     memset(this, 0, sizeof(TDrawSystem));
     this->ColorBits = 8;
+
+    // Initialize palette with some basic colors
+    for (int i = 0; i < 256; ++i) {
+        this->palette[i].peRed = (BYTE)i;
+        this->palette[i].peGreen = (BYTE)i;
+        this->palette[i].peBlue = (BYTE)i;
+        this->palette[i].peFlags = 0;
+    }
+    // Make index 3 green
+    this->palette[3].peRed = 0;
+    this->palette[3].peGreen = 255;
+    this->palette[3].peBlue = 0;
+    // Make index 4 blue
+    this->palette[4].peRed = 0;
+    this->palette[4].peGreen = 0;
+    this->palette[4].peBlue = 255;
 }
 
 TDrawSystem::~TDrawSystem() {
@@ -38,10 +58,16 @@ int TDrawSystem::Init(HINSTANCE instance, HWND window, void *palette, int draw_t
     this->ScreenHeight = height;
     
     if (draw_type == 1) { // GDI?
-        return 0; // Not implemented
+#ifdef _DEBUG
+        printf("TDrawSystem::Init: GDI not implemented\n");
+#endif
+        return 0;
     }
 
-    if (DirectDrawCreate(NULL, &this->DirDraw, NULL) != DD_OK) {
+    if (DirectDrawCreateEx(NULL, (void**)&this->DirDraw, IID_IDirectDraw7, NULL) != DD_OK) {
+#ifdef _DEBUG
+        printf("TDrawSystem::Init: DirectDrawCreateEx failed\n");
+#endif
         this->ErrorCode = 1;
         return 0;
     }
@@ -50,15 +76,24 @@ int TDrawSystem::Init(HINSTANCE instance, HWND window, void *palette, int draw_t
 
     if (this->ScreenMode == 1) { // Windowed
         if (this->DirDraw->SetCooperativeLevel(this->Wnd, DDSCL_NORMAL) != DD_OK) {
+#ifdef _DEBUG
+            printf("TDrawSystem::Init: SetCooperativeLevel failed\n");
+#endif
             this->ErrorCode = 1;
             return 0;
         }
     } else { // Fullscreen
         if (this->DirDraw->SetCooperativeLevel(this->Wnd, DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN) != DD_OK) {
+#ifdef _DEBUG
+            printf("TDrawSystem::Init: SetCooperativeLevel Fullscreen failed\n");
+#endif
             this->ErrorCode = 1;
             return 0;
         }
-        if (this->DirDraw->SetDisplayMode(width, height, 8) != DD_OK) {
+        if (this->DirDraw->SetDisplayMode(width, height, 8, 0, 0) != DD_OK) {
+#ifdef _DEBUG
+            printf("TDrawSystem::Init: SetDisplayMode failed\n");
+#endif
             this->ErrorCode = 1;
             return 0;
         }
@@ -66,22 +101,28 @@ int TDrawSystem::Init(HINSTANCE instance, HWND window, void *palette, int draw_t
     }
 
     // Palette setup
-    if (this->Pal) {
-        // GetPaletteEntries(this->Pal, 0, 256, entries);
-    }
     if (this->DirDraw->CreatePalette(DDPCAPS_8BIT | DDPCAPS_ALLOW256, this->palette, &this->DirDrawPal, NULL) != DD_OK) {
+#ifdef _DEBUG
+        printf("TDrawSystem::Init: CreatePalette failed\n");
+#endif
         this->ErrorCode = 1;
         return 0;
     }
 
     // Clipper setup
     if (this->DirDraw->CreateClipper(0, &this->Clipper, NULL) != DD_OK) {
+#ifdef _DEBUG
+        printf("TDrawSystem::Init: CreateClipper failed\n");
+#endif
         this->ErrorCode = 1;
         return 0;
     }
     this->Clipper->SetHWnd(0, this->Wnd);
 
     if (!this->CreateSurfaces()) {
+#ifdef _DEBUG
+        printf("TDrawSystem::Init: CreateSurfaces failed\n");
+#endif
         this->ErrorCode = 1;
         return 0;
     }
@@ -92,13 +133,16 @@ int TDrawSystem::Init(HINSTANCE instance, HWND window, void *palette, int draw_t
 int TDrawSystem::CreateSurfaces() {
     if (this->DrawType == 2) { // DirectDraw
         if (this->PrimarySurface == NULL) {
-            DDSURFACEDESC ddsd;
+            DDSURFACEDESC2 ddsd;
             memset(&ddsd, 0, sizeof(ddsd));
             ddsd.dwSize = sizeof(ddsd);
             ddsd.dwFlags = DDSD_CAPS;
             ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
 
             if (this->DirDraw->CreateSurface(&ddsd, &this->PrimarySurface, NULL) != DD_OK) {
+#ifdef _DEBUG
+                printf("TDrawSystem::CreateSurfaces: CreateSurface Primary failed\n");
+#endif
                 return 0;
             }
 
@@ -113,21 +157,41 @@ int TDrawSystem::CreateSurfaces() {
             if (this->ScreenMode == 1) {
                 RECT rect;
                 GetClientRect(this->Wnd, &rect);
-                this->PrimaryArea->Init(this, rect.right, rect.bottom, 0, 1);
+                if (!this->PrimaryArea->Init(this, rect.right, rect.bottom, 0, 1)) {
+#ifdef _DEBUG
+                    printf("TDrawSystem::CreateSurfaces: PrimaryArea Init failed\n");
+#endif
+                    return 0;
+                }
             } else {
-                this->PrimaryArea->Init(this, this->ScreenWidth, this->ScreenHeight, 0, 1);
+                if (!this->PrimaryArea->Init(this, this->ScreenWidth, this->ScreenHeight, 0, 1)) {
+#ifdef _DEBUG
+                    printf("TDrawSystem::CreateSurfaces: PrimaryArea Init Fullscreen failed\n");
+#endif
+                    return 0;
+                }
             }
         }
     }
 
     if (this->DrawArea == NULL) {
-        this->DrawArea = new TDrawArea("Back Buffer", 0);
+        this->DrawArea = new TDrawArea("Back Buffer", 1); // Use system memory for 8-bit windowed
         if (this->ScreenMode == 1) {
             RECT rect;
             GetClientRect(this->Wnd, &rect);
-            this->DrawArea->Init(this, rect.right, rect.bottom, 0, 0);
+            if (!this->DrawArea->Init(this, rect.right, rect.bottom, 0, 0)) {
+#ifdef _DEBUG
+                printf("TDrawSystem::CreateSurfaces: DrawArea Init failed\n");
+#endif
+                return 0;
+            }
         } else {
-            this->DrawArea->Init(this, this->ScreenWidth, this->ScreenHeight, 0, 0);
+            if (!this->DrawArea->Init(this, this->ScreenWidth, this->ScreenHeight, 0, 0)) {
+#ifdef _DEBUG
+                printf("TDrawSystem::CreateSurfaces: DrawArea Init Fullscreen failed\n");
+#endif
+                return 0;
+            }
         }
     }
 
@@ -135,5 +199,39 @@ int TDrawSystem::CreateSurfaces() {
 }
 
 void TDrawSystem::Paint(RECT *rect) {
-    // STUB
+    if (this->DrawType == 2 && this->PrimarySurface && this->DrawArea && this->DrawArea->DrawSurface) {
+        if (this->PrimarySurface->IsLost() == DDERR_SURFACELOST) {
+            this->PrimarySurface->Restore();
+        }
+        if (this->DrawArea->DrawSurface->IsLost() == DDERR_SURFACELOST) {
+            this->DrawArea->DrawSurface->Restore();
+        }
+
+        HRESULT hr;
+        if (this->ScreenMode == 1) { // Windowed
+            POINT pt = {0, 0};
+            ClientToScreen(this->Wnd, &pt);
+            RECT dest;
+            GetClientRect(this->Wnd, &dest);
+            OffsetRect(&dest, pt.x, pt.y);
+#ifdef _DEBUG
+            static int paint_log_count = 0;
+            if (paint_log_count < 3) {
+                printf("TDrawSystem::Paint: dest=[%d,%d,%d,%d] src_rect=[%d,%d,%d,%d]\n", 
+                    dest.left, dest.top, dest.right, dest.bottom,
+                    rect ? rect->left : 0, rect ? rect->top : 0, rect ? rect->right : 0, rect ? rect->bottom : 0);
+                paint_log_count++;
+            }
+#endif
+            hr = this->PrimarySurface->Blt(&dest, this->DrawArea->DrawSurface, rect, DDBLT_WAIT, nullptr);
+        } else { // Fullscreen
+            hr = this->PrimarySurface->Blt(rect, this->DrawArea->DrawSurface, rect, DDBLT_WAIT, nullptr);
+        }
+
+        if (hr != DD_OK) {
+#ifdef _DEBUG
+            printf("TDrawSystem::Paint: Blt failed with %08X\n", hr);
+#endif
+        }
+    }
 }

@@ -1,5 +1,6 @@
 #include "RGE_Base_Game.h"
 #include "RGE_Prog_Info.h"
+#include "RGE_Game_World.h"
 #include "TDrawSystem.h"
 #include "TDrawArea.h"
 #include "TPanelSystem.h"
@@ -278,7 +279,7 @@ int RGE_Base_Game::setup_graphics_system() {
     this->draw_system = new TDrawSystem();
     if (!this->draw_system) return 0;
 
-    if (this->draw_system->Init(AppInst, (HWND)this->prog_window, nullptr, 1, 1, 800, 600, 0)) {
+    if (this->draw_system->Init(AppInst, (HWND)this->prog_window, nullptr, 2, this->prog_info->full_screen ? 0 : 1, 800, 600, 0)) {
         this->draw_area = this->draw_system->DrawArea;
         return 1;
     }
@@ -342,9 +343,19 @@ int RGE_Base_Game::setup() {
 
 int RGE_Base_Game::run() {
     MSG msg;
+#ifdef _DEBUG
+    printf("RGE_Base_Game::run: Entering loop. active=%d, mode=%d\n", this->prog_active, this->prog_mode);
+#endif
     while (true) {
         while (this->prog_active == 0 || (this->prog_mode != 4 && this->prog_mode != 2) ||
                (this->comm_handler && TCommunications_Handler::IsPaused(this->comm_handler))) {
+#ifdef _DEBUG
+            static int last_mode = -1;
+            if (this->prog_mode != last_mode) {
+                printf("RGE_Base_Game::run: Blocking in inner loop. active=%d, mode=%d\n", this->prog_active, this->prog_mode);
+                last_mode = this->prog_mode;
+            }
+#endif
             if (GetMessageA(&msg, nullptr, 0, 0) == 0) {
                 return msg.wParam;
             }
@@ -352,10 +363,25 @@ int RGE_Base_Game::run() {
             DispatchMessageA(&msg);
         }
 
+#ifdef _DEBUG
+        static bool loop_started = false;
+        if (!loop_started) {
+            printf("RGE_Base_Game::run: Outer loop active\n");
+            loop_started = true;
+        }
+#endif
+
         if (PeekMessageA(&msg, nullptr, 0, 0, PM_REMOVE)) {
             if (msg.message == WM_QUIT) {
                 break;
             }
+#ifdef _DEBUG
+            static uint last_msg = 0;
+            if (msg.message != last_msg && msg.message != WM_MOUSEMOVE && msg.message != WM_PAINT) {
+                printf("RGE_Base_Game::run: Msg %04X\n", msg.message);
+                last_msg = msg.message;
+            }
+#endif
             if (this->handle_message(&msg)) {
                 TranslateMessage(&msg);
                 DispatchMessageA(&msg);
@@ -365,6 +391,15 @@ int RGE_Base_Game::run() {
         }
     }
     return msg.wParam;
+}
+
+void RGE_Base_Game::close(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam) {
+    DestroyWindow(hwnd);
+}
+
+void RGE_Base_Game::destroy(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam) {
+    this->prog_active = 0;
+    this->prog_ready = 0;
 }
 
 long RGE_Base_Game::wnd_proc(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam) {
@@ -406,7 +441,44 @@ int RGE_Base_Game::handle_message(tagMSG* msg) {
     return 1;
 }
 
+void RGE_Base_Game::paint(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam) {
+#ifdef _DEBUG
+    static int paint_count = 0;
+    if (paint_count % 1000 == 0) {
+        printf("RGE_Base_Game::paint: count=%d world=%p draw_system=%p\n", paint_count, this->world, this->draw_system);
+    }
+    paint_count++;
+#endif
+    if (this->world) {
+        this->world->draw();
+    }
+    if (this->draw_system) {
+        this->draw_system->Paint(nullptr);
+    }
+
+    if (hwnd) {
+        ValidateRect(hwnd, nullptr);
+    }
+}
+
 int RGE_Base_Game::handle_idle() {
+#ifdef _DEBUG
+    static int idle_count = 0;
+    if (idle_count == 0) {
+        printf("RGE_Base_Game::handle_idle: First call. ready=%d, window=%p, world=%p\n", this->prog_ready, this->prog_window, this->world);
+    }
+    if (idle_count % 10000 == 0) {
+        printf("RGE_Base_Game::handle_idle: count=%d\n", idle_count);
+    }
+    idle_count++;
+#endif
+
     if (!this->prog_ready || !this->prog_window) return 0;
+    
+    if (this->world) {
+        this->world->update();
+        this->paint((HWND)this->prog_window, 0, 0, 0);
+    }
+    
     return 1;
 }

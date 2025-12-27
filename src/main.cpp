@@ -5,6 +5,16 @@
 
 // Define the WinMain entry point
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+#ifdef _DEBUG
+    AllocConsole();
+    freopen("CONOUT$", "w", stdout);
+    freopen("CONOUT$", "w", stderr);
+    // Also redirect to a file for the AI to read
+    freopen("build\\debug.log", "w", stdout);
+    setvbuf(stdout, NULL, _IONBF, 0);
+    printf("AoE Decomp: Debug Console Initialized\n");
+#endif
+
     // 1. Initialize RGE_Prog_Info
     RGE_Prog_Info prog_info;
     memset(&prog_info, 0, sizeof(RGE_Prog_Info));
@@ -70,6 +80,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     // 2. Create TRIBE_Game instance
     TRIBE_Game* game = new TRIBE_Game(&prog_info, 1);
     
+#ifdef _DEBUG
+    printf("TRIBE_Game created, error_code=%d\n", game->error_code);
+#endif
+    
     if (game->error_code != 0) {
         char err_msg[100];
         sprintf(err_msg, "Game initialization failed with error code: %d", game->error_code);
@@ -78,12 +92,19 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         return 1;
     }
 
-    MessageBoxA(NULL, "Game Initialized Successfully! Starting Run Loop...", "AoE Decomp", MB_OK);
+    // 3. Start a new game (Map generation)
+#ifdef _DEBUG
+    printf("Calling start_game(0)...\n");
+#endif
+    game->start_game(0);
 
-    // 3. Run the Game Loop
+#ifdef _DEBUG
+    printf("Calling run()...\n");
+#endif
+    // 4. Run the Game Loop
     int result = game->run();
     
-    // 4. Cleanup
+    // 5. Cleanup
     delete game;
     
     return result;

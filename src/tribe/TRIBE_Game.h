@@ -85,6 +85,9 @@ public:
     int setup_palette() override;
     int setup_sounds() override;
 
+    int start_game(int param_1);
+    int create_game(int param_1);
+
     // Virtual overrides
     virtual int get_error_code() override { return this->error_code; } // [1]
     virtual int run() override; // [6]

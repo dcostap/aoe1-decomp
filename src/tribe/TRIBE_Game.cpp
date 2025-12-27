@@ -1,5 +1,7 @@
 #include "TRIBE_Game.h"
 #include "../rge/RGE_Prog_Info.h"
+#include "../rge/RGE_Game_World.h"
+#include "../rge/RGE_Map.h"
 #include <stdio.h>
 #include <string.h>
 #include "../rge/RESFILE.h"
@@ -139,6 +141,9 @@ void TRIBE_Game::close_game_screens(int p) { /* Stub */ }
 // ... (existing code, don't repeat includes here in replace, just target the setup function and top)
 
 int TRIBE_Game::setup() {
+#ifdef _DEBUG
+    printf("TRIBE_Game::setup: Starting...\n");
+#endif
     if (this->prog_info->instance == nullptr) {
         return 0;
     }
@@ -182,10 +187,21 @@ int TRIBE_Game::setup() {
 
     StringTableX = (void*)LoadLibraryA(language_dll);
     if (!StringTableX) {
+        char path[260];
+        sprintf(path, "data2\\%s", language_dll);
+        StringTableX = (void*)LoadLibraryA(path);
+    }
+    if (!StringTableX) {
+#ifdef _DEBUG
+        printf("TRIBE_Game::setup: Failed to load language DLL\n");
+#endif
         this->error_code = 1;
         return 0;
     }
     
+#ifdef _DEBUG
+    printf("TRIBE_Game::setup: Success\n");
+#endif
     return 1;
 }
 
@@ -197,6 +213,40 @@ int TRIBE_Game::setup_palette() {
 int TRIBE_Game::setup_sounds() { 
     // STUB: Original address 0x00461892
     return RGE_Base_Game::setup_sounds(); 
+}
+
+int TRIBE_Game::start_game(int param_1) {
+#ifdef _DEBUG
+    printf("TRIBE_Game::start_game: Starting...\n");
+#endif
+    // Simplified start_game
+    if (this->create_game(0)) {
+        this->prog_mode = 2; // Set to game mode
+#ifdef _DEBUG
+        printf("TRIBE_Game::start_game: Success, mode set to 2\n");
+#endif
+        return 1;
+    }
+    return 0;
+}
+
+int TRIBE_Game::create_game(int param_1) {
+#ifdef _DEBUG
+    printf("TRIBE_Game::create_game: Creating world and map...\n");
+#endif
+    // Simplified create_game
+    if (this->world) {
+        delete this->world;
+    }
+    this->world = new RGE_Game_World();
+    
+    if (this->world->map) {
+        delete this->world->map;
+    }
+    this->world->map = new RGE_Map();
+    this->world->map->new_map(120, 120); // Standard medium size
+
+    return 1;
 }
 
 int TRIBE_Game::run() { return RGE_Base_Game::run(); }

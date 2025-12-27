@@ -8,8 +8,12 @@
 
 class RGE_Game_World {
 public:
+    RGE_Game_World();
     // Virtual table alignment (vptr at 0x0000)
     virtual ~RGE_Game_World();
+
+    void draw();
+    void update();
 
     /* 0x0004 */ ulong world_time;
     /* 0x0008 */ ulong old_world_time;

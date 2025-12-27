@@ -4,6 +4,8 @@
 #include "RGE_Object_List.h"
 #include "RGE_Tile.h"
 
+class TDrawArea;
+
 #pragma pack(push, 1)
 
 struct RGE_Tile_Size {
@@ -84,8 +86,8 @@ struct RGE_Border_Set {
 };
 
 struct RGE_Map {
-    void *vfptr;
     void *unused_04;
+    void *unused_08;
     struct RGE_Tile *map;
     long map_width;
     long map_height;
@@ -110,11 +112,9 @@ struct RGE_Map {
     short block_beg_col;
     short block_end_col;
     uchar any_frame_change;
-    char padding_any_frame_change[3];
     uchar *search_map;
     uchar **search_map_rows;
     uchar map_visible_flag;
-    uchar fog_flag;
     struct RGE_RMM_Database_Controller *random_map;
     struct RGE_Game_World *game_world;
     struct RGE_Zone_Map_List *map_zones;
@@ -123,6 +123,12 @@ struct RGE_Map {
 
     RGE_Map();
     virtual ~RGE_Map();
+
+    void new_map(long width, long height);
+    void draw(TDrawArea *render_area, int x, int y, int width, int height);
+
+    void load_terrain_types(struct RGE_Sound **sounds);
+    void load_border_types(struct RGE_Sound **sounds);
 };
 
 #pragma pack(pop)

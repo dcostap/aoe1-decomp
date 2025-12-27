@@ -93,15 +93,15 @@ public:
     virtual void stub_50() {}
     virtual void command(uint id, uint code) {}                        // [51]
     virtual void stub_52() {}
-    virtual void paint(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam) {} // [53]
+    virtual void paint(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam); // [53]
     virtual void activate(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam) {} // [54]
     virtual void stub_55() {}
     virtual void stub_56() {}
     virtual void size(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam) {} // [57]
     virtual void stub_58() {}
     virtual void stub_59() {}
-    virtual void close(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam) {} // [60]
-    virtual void destroy(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam) {} // [61]
+    virtual void close(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam); // [60]
+    virtual void destroy(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam); // [61]
     virtual void stub_62() {}
     virtual void stub_63() {}
     virtual void stub_64() {}
@@ -260,6 +260,8 @@ public:
 
 };
 #pragma pack(pop)
+
+extern RGE_Base_Game *rge_base_game;
 
 // static_assert(sizeof(RGE_Base_Game) == 0xA24, "RGE_Base_Game size mismatch");
 

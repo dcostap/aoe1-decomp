@@ -19,7 +19,7 @@ class TDrawArea {
 public:
     /* 0x0000 */ TDrawSystem *DrawSystem;
     /* 0x0004 */ HWND Wnd;
-    /* 0x0008 */ IDirectDrawSurface *DrawSurface;
+    /* 0x0008 */ IDirectDrawSurface7 *DrawSurface;
     /* 0x000C */ int UsingVidMem;
     /* 0x0010 */ HDC DrawDc;
     /* 0x0014 */ BITMAPINFO256 *BitmapInfo;
