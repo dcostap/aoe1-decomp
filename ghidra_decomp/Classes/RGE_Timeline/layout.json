@@ -1,0 +1,43 @@
+{
+    "size": 20, 
+    "vtable": [
+        {
+            "signature": "void * `vector_deleting_destructor'(RGE_Timeline * this, uint param_1)", 
+            "index": 0, 
+            "name": "`vector_deleting_destructor'"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 4, 
+            "type": "RGE_Game_World *", 
+            "size": 4, 
+            "name": "world"
+        }, 
+        {
+            "offset": 8, 
+            "type": "RGE_Time_Entry *", 
+            "size": 4, 
+            "name": "time_list"
+        }, 
+        {
+            "offset": 12, 
+            "type": "short", 
+            "size": 2, 
+            "name": "list_num"
+        }, 
+        {
+            "offset": 14, 
+            "type": "short", 
+            "size": 2, 
+            "name": "avail_id"
+        }, 
+        {
+            "offset": 16, 
+            "type": "float", 
+            "size": 4, 
+            "name": "old_time"
+        }
+    ], 
+    "name": "RGE_Timeline"
+}

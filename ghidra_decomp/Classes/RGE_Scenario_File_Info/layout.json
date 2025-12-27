@@ -1,0 +1,25 @@
+{
+    "size": 268, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "char[260]", 
+            "size": 260, 
+            "name": "filename"
+        }, 
+        {
+            "offset": 260, 
+            "type": "long", 
+            "size": 4, 
+            "name": "scenario_num"
+        }, 
+        {
+            "offset": 264, 
+            "type": "RGE_Scenario_File_Entry *", 
+            "size": 4, 
+            "name": "scenarios"
+        }
+    ], 
+    "name": "RGE_Scenario_File_Info"
+}

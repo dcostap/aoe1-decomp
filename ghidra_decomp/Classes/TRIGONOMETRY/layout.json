@@ -1,0 +1,55 @@
+{
+    "size": 71296, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "float[4096]", 
+            "size": 16384, 
+            "name": "sines"
+        }, 
+        {
+            "offset": 16384, 
+            "type": "float[4096]", 
+            "size": 16384, 
+            "name": "cose"
+        }, 
+        {
+            "offset": 32768, 
+            "type": "float[4096]", 
+            "size": 16384, 
+            "name": "tane"
+        }, 
+        {
+            "offset": 49152, 
+            "type": "float[4096]", 
+            "size": 16384, 
+            "name": "atane"
+        }, 
+        {
+            "offset": 65536, 
+            "type": "float[360]", 
+            "size": 1440, 
+            "name": "sine360"
+        }, 
+        {
+            "offset": 66976, 
+            "type": "float[360]", 
+            "size": 1440, 
+            "name": "cose360"
+        }, 
+        {
+            "offset": 68416, 
+            "type": "float[360]", 
+            "size": 1440, 
+            "name": "tane360"
+        }, 
+        {
+            "offset": 69856, 
+            "type": "float[360]", 
+            "size": 1440, 
+            "name": "atane360"
+        }
+    ], 
+    "name": "TRIGONOMETRY"
+}

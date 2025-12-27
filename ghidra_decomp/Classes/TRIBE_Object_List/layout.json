@@ -1,0 +1,387 @@
+{
+    "size": 12, 
+    "vtable": [
+        {
+            "signature": "void load(TRIBE_Object_List * this, uchar param_1, int param_2, RGE_Game_World * param_3)", 
+            "index": 0, 
+            "name": "load"
+        }, 
+        {
+            "signature": "void * `vector_deleting_destructor'(TRIBE_Gaia * this, uint param_1)", 
+            "index": 1, 
+            "name": "`vector_deleting_destructor'"
+        }, 
+        {
+            "signature": "void set_game_status(RGE_Player * this, uchar param_1)", 
+            "index": 2, 
+            "name": "set_game_status"
+        }, 
+        {
+            "signature": "void do_resign(RGE_Player * this, int param_1)", 
+            "index": 3, 
+            "name": "do_resign"
+        }, 
+        {
+            "signature": "void changeToHumanPlayer(TRIBE_Player * this)", 
+            "index": 4, 
+            "name": "changeToHumanPlayer"
+        }, 
+        {
+            "signature": "void changeToComputerPlayer(TRIBE_Player * this)", 
+            "index": 5, 
+            "name": "changeToComputerPlayer"
+        }, 
+        {
+            "signature": "char * aiStatus(TRIBE_Player * this, int param_1)", 
+            "index": 6, 
+            "name": "aiStatus"
+        }, 
+        {
+            "signature": "int isEnemy(RGE_Player * this, int param_1)", 
+            "index": 7, 
+            "name": "isEnemy"
+        }, 
+        {
+            "signature": "int isAlly(RGE_Player * this, int param_1)", 
+            "index": 8, 
+            "name": "isAlly"
+        }, 
+        {
+            "signature": "int isNeutral(RGE_Player * this, int param_1)", 
+            "index": 9, 
+            "name": "isNeutral"
+        }, 
+        {
+            "signature": "int isAllNeutral(RGE_Player * this)", 
+            "index": 10, 
+            "name": "isAllNeutral"
+        }, 
+        {
+            "signature": "void setDiplomaticStance(TRIBE_Player * this, int param_1, int param_2)", 
+            "index": 11, 
+            "name": "setDiplomaticStance"
+        }, 
+        {
+            "signature": "void loadAIInformation(TRIBE_Player * this, char * param_1, char * param_2, char * param_3, int param_4, int param_5)", 
+            "index": 12, 
+            "name": "loadAIInformation"
+        }, 
+        {
+            "signature": "void sendUnitAIOrder(RGE_Player * this, int param_1, int param_2, int param_3, int param_4, int param_5, float param_6, float param_7, float param_8, float param_9, int param_10, int param_11, int param_12)", 
+            "index": 13, 
+            "name": "sendUnitAIOrder"
+        }, 
+        {
+            "signature": "void processAIOrder(RGE_Player * this, int param_1, int param_2, int param_3, int param_4, int param_5, float param_6, float param_7, float param_8, float param_9, int param_10, int param_11, int param_12)", 
+            "index": 14, 
+            "name": "processAIOrder"
+        }, 
+        {
+            "signature": "void kickAI(TRIBE_Player * this, int param_1)", 
+            "index": 15, 
+            "name": "kickAI"
+        }, 
+        {
+            "signature": "int strategicNumber(TRIBE_Player * this, int param_1)", 
+            "index": 16, 
+            "name": "strategicNumber"
+        }, 
+        {
+            "signature": "void sendGameOrder(RGE_Player * this, RGE_Static_Object * param_1, RGE_Static_Object * param_2, float param_3, float param_4)", 
+            "index": 17, 
+            "name": "sendGameOrder"
+        }, 
+        {
+            "signature": "void sendAddWaypointCommand(RGE_Player * this, int param_1, XYZBYTEPoint * param_2, int param_3)", 
+            "index": 18, 
+            "name": "sendAddWaypointCommand"
+        }, 
+        {
+            "signature": "void processAddWaypointCommand(RGE_Player * this, int param_1, XYZBYTEPoint * param_2, int param_3)", 
+            "index": 19, 
+            "name": "processAddWaypointCommand"
+        }, 
+        {
+            "signature": "void sendPlayCommand(RGE_Player * this, int param_1, int * param_2, int param_3, int param_4, int param_5)", 
+            "index": 20, 
+            "name": "sendPlayCommand"
+        }, 
+        {
+            "signature": "void sendPlayCommand(RGE_Player * this, int param_1, int param_2, int param_3)", 
+            "index": 21, 
+            "name": "sendPlayCommand"
+        }, 
+        {
+            "signature": "int sendAICommand(TRIBE_Player * this, int param_1, int param_2, int param_3, int param_4, int param_5)", 
+            "index": 22, 
+            "name": "sendAICommand"
+        }, 
+        {
+            "signature": "int objectCostByType(TRIBE_Player * this, int param_1)", 
+            "index": 23, 
+            "name": "objectCostByType"
+        }, 
+        {
+            "signature": "void trackUnitGather(TRIBE_Player * this, int param_1, int param_2, int param_3)", 
+            "index": 24, 
+            "name": "trackUnitGather"
+        }, 
+        {
+            "signature": "RGE_Static_Object * make_scenario_obj(TRIBE_Player * this, float param_1, float param_2, float param_3, short param_4, uchar param_5, float param_6)", 
+            "index": 25, 
+            "name": "make_scenario_obj"
+        }, 
+        {
+            "signature": "void scenario_save(TRIBE_Player * this, int param_1)", 
+            "index": 26, 
+            "name": "scenario_save"
+        }, 
+        {
+            "signature": "void scenario_load(TRIBE_Player * this, int param_1, long * param_2, float param_3)", 
+            "index": 27, 
+            "name": "scenario_load"
+        }, 
+        {
+            "signature": "void scenario_postsave(RGE_Player * this, int param_1)", 
+            "index": 28, 
+            "name": "scenario_postsave"
+        }, 
+        {
+            "signature": "void scenario_postload(TRIBE_Player * this, int param_1, long * param_2, float param_3)", 
+            "index": 29, 
+            "name": "scenario_postload"
+        }, 
+        {
+            "signature": "void load(TRIBE_Player * this, int param_1)", 
+            "index": 30, 
+            "name": "load"
+        }, 
+        {
+            "signature": "void add_attribute_num(TRIBE_Player * this, short param_1, float param_2, uchar param_3)", 
+            "index": 31, 
+            "name": "add_attribute_num"
+        }, 
+        {
+            "signature": "void update(TRIBE_Gaia * this)", 
+            "index": 32, 
+            "name": "update"
+        }, 
+        {
+            "signature": "void update_dopplegangers(TRIBE_Player * this)", 
+            "index": 33, 
+            "name": "update_dopplegangers"
+        }, 
+        {
+            "signature": "void save(TRIBE_Gaia * this, int param_1)", 
+            "index": 34, 
+            "name": "save"
+        }, 
+        {
+            "signature": "void save2(RGE_Player * this, int param_1)", 
+            "index": 35, 
+            "name": "save2"
+        }, 
+        {
+            "signature": "void save_info(RGE_Player * this, int param_1)", 
+            "index": 36, 
+            "name": "save_info"
+        }, 
+        {
+            "signature": "void random_start(TRIBE_Gaia * this)", 
+            "index": 37, 
+            "name": "random_start"
+        }, 
+        {
+            "signature": "RGE_Static_Object * make_new_object(TRIBE_Player * this, long param_1, float param_2, float param_3, float param_4, int param_5)", 
+            "index": 38, 
+            "name": "make_new_object"
+        }, 
+        {
+            "signature": "void analyize_selected_objects(TRIBE_Player * this)", 
+            "index": 39, 
+            "name": "analyize_selected_objects"
+        }, 
+        {
+            "signature": "int get_mouse_pointer_action_vars(TRIBE_Player * this, int param_1, int * param_2, int * param_3)", 
+            "index": 40, 
+            "name": "get_mouse_pointer_action_vars"
+        }, 
+        {
+            "signature": "uchar command_make_move(RGE_Player * this, RGE_Static_Object * param_1, float param_2, float param_3)", 
+            "index": 41, 
+            "name": "command_make_move"
+        }, 
+        {
+            "signature": "uchar command_make_work(RGE_Player * this, RGE_Static_Object * param_1, float param_2, float param_3)", 
+            "index": 42, 
+            "name": "command_make_work"
+        }, 
+        {
+            "signature": "uchar command_make_do(RGE_Player * this, RGE_Static_Object * param_1, float param_2, float param_3)", 
+            "index": 43, 
+            "name": "command_make_do"
+        }, 
+        {
+            "signature": "uchar command_stop(RGE_Player * this)", 
+            "index": 44, 
+            "name": "command_stop"
+        }, 
+        {
+            "signature": "uchar command_place_object(RGE_Player * this, short param_1, float param_2, float param_3, float param_4)", 
+            "index": 45, 
+            "name": "command_place_object"
+        }, 
+        {
+            "signature": "uchar command_add_attribute(RGE_Player * this, int param_1, float param_2)", 
+            "index": 46, 
+            "name": "command_add_attribute"
+        }, 
+        {
+            "signature": "uchar command_give_attribute(RGE_Player * this, int param_1, int param_2, float param_3)", 
+            "index": 47, 
+            "name": "command_give_attribute"
+        }, 
+        {
+            "signature": "uchar command_formation(RGE_Player * this, int param_1)", 
+            "index": 48, 
+            "name": "command_formation"
+        }, 
+        {
+            "signature": "uchar command_stand_ground(RGE_Player * this)", 
+            "index": 49, 
+            "name": "command_stand_ground"
+        }, 
+        {
+            "signature": "uchar command_create_group(RGE_Player * this, int param_1, int * param_2, int param_3, float param_4)", 
+            "index": 50, 
+            "name": "command_create_group"
+        }, 
+        {
+            "signature": "uchar command_add_to_group(RGE_Player * this, int param_1, int param_2, float param_3)", 
+            "index": 51, 
+            "name": "command_add_to_group"
+        }, 
+        {
+            "signature": "uchar command_remove_from_group(RGE_Player * this, int param_1, int param_2)", 
+            "index": 52, 
+            "name": "command_remove_from_group"
+        }, 
+        {
+            "signature": "uchar command_destroy_group(RGE_Player * this, int param_1)", 
+            "index": 53, 
+            "name": "command_destroy_group"
+        }, 
+        {
+            "signature": "uchar command_resign(RGE_Player * this, int param_1, int param_2)", 
+            "index": 54, 
+            "name": "command_resign"
+        }, 
+        {
+            "signature": "uchar command_add_waypoint(RGE_Player * this, float param_1, float param_2, float param_3)", 
+            "index": 55, 
+            "name": "command_add_waypoint"
+        }, 
+        {
+            "signature": "RGE_Object_Node * addObject(TRIBE_Player * this, RGE_Static_Object * param_1, int param_2, int param_3)", 
+            "index": 56, 
+            "name": "addObject"
+        }, 
+        {
+            "signature": "void removeObject(TRIBE_Player * this, RGE_Static_Object * param_1, int param_2, int param_3, RGE_Object_Node * param_4)", 
+            "index": 57, 
+            "name": "removeObject"
+        }, 
+        {
+            "signature": "void logMessage(TRIBE_Player * this, char * param_1, ...)", 
+            "index": 58, 
+            "name": "logMessage"
+        }, 
+        {
+            "signature": "void notify(TRIBE_Player * this, int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)", 
+            "index": 59, 
+            "name": "notify"
+        }, 
+        {
+            "signature": "void logStatus(TRIBE_Player * this, _iobuf * param_1, int param_2)", 
+            "index": 60, 
+            "name": "logStatus"
+        }, 
+        {
+            "signature": "void load_victory(TRIBE_Player * this, int param_1, long * param_2, uchar param_3)", 
+            "index": 61, 
+            "name": "load_victory"
+        }, 
+        {
+            "signature": "void new_victory(TRIBE_Player * this)", 
+            "index": 62, 
+            "name": "new_victory"
+        }, 
+        {
+            "signature": "uchar command_give_attribute(TRIBE_Player * this, int param_1, int param_2, float param_3, float param_4)", 
+            "index": 63, 
+            "name": "command_give_attribute"
+        }, 
+        {
+            "signature": "void buildObject(TRIBE_Player * this, int param_1, int param_2, float param_3, float param_4, int param_5)", 
+            "index": 64, 
+            "name": "buildObject"
+        }, 
+        {
+            "signature": "void cancelBuild(TRIBE_Player * this, int param_1, int param_2, int param_3, float param_4, float param_5, int param_6, int param_7)", 
+            "index": 65, 
+            "name": "cancelBuild"
+        }, 
+        {
+            "signature": "void registerBuild(TRIBE_Player * this, RGE_Static_Object * param_1, int param_2)", 
+            "index": 66, 
+            "name": "registerBuild"
+        }, 
+        {
+            "signature": "void trainUnit(TRIBE_Player * this, int param_1, int param_2, int param_3)", 
+            "index": 67, 
+            "name": "trainUnit"
+        }, 
+        {
+            "signature": "void cancelTrain(TRIBE_Player * this, int param_1, int param_2, int param_3, int param_4)", 
+            "index": 68, 
+            "name": "cancelTrain"
+        }, 
+        {
+            "signature": "void registerTrain(TRIBE_Player * this, int param_1, int param_2, int param_3, int param_4)", 
+            "index": 69, 
+            "name": "registerTrain"
+        }, 
+        {
+            "signature": "void research(TRIBE_Player * this, int param_1, int param_2, int param_3)", 
+            "index": 70, 
+            "name": "research"
+        }, 
+        {
+            "signature": "void cancelResearch(TRIBE_Player * this, int param_1, int param_2, int param_3, int param_4)", 
+            "index": 71, 
+            "name": "cancelResearch"
+        }, 
+        {
+            "signature": "void registerResearch(TRIBE_Player * this, int param_1, int param_2, int param_3)", 
+            "index": 72, 
+            "name": "registerResearch"
+        }, 
+        {
+            "signature": "void taskTrader(TRIBE_Player * this, int param_1, int param_2, int param_3, float param_4, float param_5)", 
+            "index": 73, 
+            "name": "taskTrader"
+        }, 
+        {
+            "signature": "void taskResourceGatherer(TRIBE_Player * this, int param_1, int param_2, int param_3, float param_4, float param_5)", 
+            "index": 74, 
+            "name": "taskResourceGatherer"
+        }, 
+        {
+            "signature": "void notifyAI(TRIBE_Player * this, int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)", 
+            "index": 75, 
+            "name": "notifyAI"
+        }
+    ], 
+    "members": [], 
+    "name": "TRIBE_Object_List"
+}

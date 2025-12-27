@@ -1,0 +1,711 @@
+// Class: TListPanel
+// Function: TListPanel
+// Address: 004782a0
+/* public: __thiscall TListPanel::TListPanel(void) */
+
+TListPanel * __thiscall TListPanel::TListPanel(TListPanel *this)
+{
+  TTextPanel::TTextPanel((TTextPanel *)this);
+  this->_padding_ = 0;
+  this->mouse_scroll_last_time = 0;
+  this->mouse_scroll_up = 0;
+  this->mouse_scroll_down = 0;
+  this->auto_track = 0;
+  this->drawHighlightBar = 1;
+  this->_padding_ = (int)&_vftable_;
+  *(undefined1 *)((int)&this->_padding_ + 2) = 4;
+  this->_padding_ = 1;
+  this->mouse_scroll_interval = 0x32;
+  this->_padding_ = 1;
+  this->_padding_ = 1;
+  this->_padding_ = 1;
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: `vector_deleting_destructor'
+// Address: 00478310
+/* public: virtual void * __thiscall TListPanel::`vector deleting destructor'(unsigned int) */
+
+void * __thiscall TListPanel::_vector_deleting_destructor_(TListPanel *this,uint param_1)
+{
+  ~TListPanel(this);
+  if ((param_1 & 1) != 0) {
+    operator_delete(this);
+  }
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: ~TListPanel
+// Address: 00478330
+/* public: virtual __thiscall TListPanel::~TListPanel(void) */
+
+void __thiscall TListPanel::~TListPanel(TListPanel *this)
+{
+  this->_padding_ = (int)&_vftable_;
+  TTextPanel::~TTextPanel((TTextPanel *)this);
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_auto_track
+// Address: 00478340
+/* public: void __thiscall TListPanel::set_auto_track(int) */
+
+void __thiscall TListPanel::set_auto_track(TListPanel *this,int param_1)
+{
+  this->auto_track = param_1;
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_bevel_info
+// Address: 00478350
+/* public: virtual void __thiscall TListPanel::set_bevel_info(int,int,int,int,int,int,int) */
+
+void __thiscall
+TListPanel::set_bevel_info
+          (TListPanel *this,int param_1,int param_2,int param_3,int param_4,int param_5,int param_6,
+          int param_7)
+{
+  switch(param_1) {
+  default:
+    this->_padding_ = 1;
+    break;
+  case 3:
+  case 6:
+    this->_padding_ = 2;
+    break;
+  case 4:
+  case 7:
+    this->_padding_ = 3;
+  }
+  TTextPanel::set_bevel_info
+            ((TTextPanel *)this,param_1,param_2,param_3,param_4,param_5,param_6,param_7);
+  if (this->_padding_ == 0) {
+    this->_padding_ = 1;
+    TTextPanel::calc_draw_info((TTextPanel *)this,1);
+  }
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: handle_idle
+// Address: 004783f0
+// [HELPER] s_C__msdev_work_age1_x1_Pnl_lst_cp: "C:\msdev\work\age1_x1\Pnl_lst.cpp"
+/* public: virtual long __thiscall TListPanel::handle_idle(void) */
+
+long __thiscall TListPanel::handle_idle(TListPanel *this)
+{
+  short sVar1;
+  ulong uVar2;
+  
+  TPanel::handle_idle((TPanel *)this);
+  if ((this->mouse_scroll_up != 0) || (this->mouse_scroll_down != 0)) {
+    uVar2 = debug_timeGetTime(s_C__msdev_work_age1_x1_Pnl_lst_cp,0x6c);
+    if (this->mouse_scroll_interval <= uVar2 - this->mouse_scroll_last_time) {
+      this->mouse_scroll_last_time = uVar2;
+      if (this->mouse_scroll_up != 0) {
+        sVar1 = (short)this->_padding_;
+        if ((short)this->_padding_ != sVar1) {
+          scroll_cur_line(this,'\x01',sVar1,1);
+        }
+        scroll_cur_line(this,'\x03',0,1);
+        return 0;
+      }
+      sVar1 = *(short *)((int)&this->_padding_ + 2);
+      if ((short)this->_padding_ != sVar1) {
+        scroll_cur_line(this,'\x01',sVar1,1);
+      }
+      scroll_cur_line(this,'\x02',0,1);
+    }
+  }
+  return 0;
+}
+
+// --------------------------------------------------
+
+// Function: mouse_move_action
+// Address: 004784a0
+/* public: virtual long __thiscall TListPanel::mouse_move_action(long,long,int,int) */
+
+long __thiscall
+TListPanel::mouse_move_action(TListPanel *this,long param_1,long param_2,int param_3,int param_4)
+{
+  short sVar1;
+  int iVar2;
+  
+  if (this->auto_track == 0) {
+    return 0;
+  }
+  iVar2 = (**(code **)(this->_padding_ + 0xbc))(param_1,param_2);
+  if (iVar2 == 0) {
+    return 0;
+  }
+  sVar1 = item_at(this,param_1,param_2);
+  if (((short)this->_padding_ <= sVar1) && (sVar1 <= *(short *)((int)&this->_padding_ + 2))) {
+    goto_item(this,param_1,param_2);
+  }
+  return 1;
+}
+
+// --------------------------------------------------
+
+// Function: mouse_left_down_action
+// Address: 00478510
+/* public: virtual long __thiscall TListPanel::mouse_left_down_action(long,long,int,int) */
+
+long __thiscall
+TListPanel::mouse_left_down_action
+          (TListPanel *this,long param_1,long param_2,int param_3,int param_4)
+{
+  TPanel::capture_mouse((TPanel *)this);
+  goto_item(this,param_1,param_2);
+  return 1;
+}
+
+// --------------------------------------------------
+
+// Function: mouse_left_move_action
+// Address: 00478540
+// [HELPER] s_C__msdev_work_age1_x1_Pnl_lst_cp: "C:\msdev\work\age1_x1\Pnl_lst.cpp"
+/* public: virtual long __thiscall TListPanel::mouse_left_move_action(long,long,int,int) */
+
+long __thiscall
+TListPanel::mouse_left_move_action
+          (TListPanel *this,long param_1,long param_2,int param_3,int param_4)
+{
+  ulong uVar1;
+  int iVar2;
+  
+  iVar2 = this->_padding_;
+  if (iVar2 <= param_2) {
+    if (param_2 < this->_padding_ + iVar2) {
+      this->mouse_scroll_up = 0;
+      this->mouse_scroll_down = 0;
+      goto_item(this,param_1,param_2);
+      return 1;
+    }
+    if (iVar2 <= param_2) {
+      if (param_2 <= this->_padding_ + -1 + iVar2) {
+        this->mouse_scroll_up = 0;
+        this->mouse_scroll_down = 0;
+        return 1;
+      }
+      this->mouse_scroll_up = 0;
+      if (this->mouse_scroll_down != 0) {
+        return 1;
+      }
+      this->mouse_scroll_down = 1;
+      iVar2 = 0xba;
+      goto LAB_004785ce;
+    }
+  }
+  this->mouse_scroll_down = 0;
+  if (this->mouse_scroll_up != 0) {
+    return 1;
+  }
+  this->mouse_scroll_up = 1;
+  iVar2 = 0xb1;
+LAB_004785ce:
+  uVar1 = debug_timeGetTime(s_C__msdev_work_age1_x1_Pnl_lst_cp,iVar2);
+  this->mouse_scroll_last_time = uVar1 - this->mouse_scroll_interval;
+  return 1;
+}
+
+// --------------------------------------------------
+
+// Function: mouse_left_up_action
+// Address: 00478610
+/* public: virtual long __thiscall TListPanel::mouse_left_up_action(long,long,int,int) */
+
+long __thiscall
+TListPanel::mouse_left_up_action(TListPanel *this,long param_1,long param_2,int param_3,int param_4)
+{
+  short sVar1;
+  
+  TPanel::release_mouse((TPanel *)this);
+  this->mouse_scroll_up = 0;
+  this->mouse_scroll_down = 0;
+  if ((((int *)this->_padding_ != (int *)0x0) && (sVar1 = (short)this->_padding_, -1 < sVar1)) &&
+     (sVar1 < (short)this->_padding_)) {
+    (**(code **)(*(int *)this->_padding_ + 0xb4))(this,2,(int)sVar1,0);
+  }
+  return 1;
+}
+
+// --------------------------------------------------
+
+// Function: mouse_left_dbl_click_action
+// Address: 00478660
+/* public: virtual long __thiscall TListPanel::mouse_left_dbl_click_action(long,long,int,int) */
+
+long __thiscall
+TListPanel::mouse_left_dbl_click_action
+          (TListPanel *this,long param_1,long param_2,int param_3,int param_4)
+{
+  short sVar1;
+  
+  goto_item(this,param_1,param_2);
+  if ((((int *)this->_padding_ != (int *)0x0) && (sVar1 = (short)this->_padding_, -1 < sVar1)) &&
+     (sVar1 < (short)this->_padding_)) {
+    (**(code **)(*(int *)this->_padding_ + 0xb4))(this,3,(int)sVar1,0);
+  }
+  return 1;
+}
+
+// --------------------------------------------------
+
+// Function: item_at
+// Address: 004786b0
+/* public: short __thiscall TListPanel::item_at(long,long) */
+
+short __thiscall TListPanel::item_at(TListPanel *this,long param_1,long param_2)
+{
+  int iVar1;
+  int iVar2;
+  
+  iVar1 = this->_padding_;
+  if (iVar1 == 0) {
+    iVar2 = this->_padding_;
+  }
+  else {
+    iVar2 = this->_padding_ + -1 + iVar1 * 2;
+  }
+  return (short)((((param_2 - this->_padding_) - this->_padding_) - iVar1) / iVar2) +
+         (short)this->_padding_;
+}
+
+// --------------------------------------------------
+
+// Function: goto_item
+// Address: 00478700
+/* public: void __thiscall TListPanel::goto_item(long,long) */
+
+void __thiscall TListPanel::goto_item(TListPanel *this,long param_1,long param_2)
+{
+  short sVar1;
+  int iVar2;
+  
+  iVar2 = 1;
+  sVar1 = item_at(this,param_1,param_2);
+  scroll_cur_line(this,'\x01',sVar1,iVar2);
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: key_down_action
+// Address: 00478730
+/* public: virtual long __thiscall TListPanel::key_down_action(long,short,int,int,int) */
+
+long __thiscall
+TListPanel::key_down_action
+          (TListPanel *this,long param_1,short param_2,int param_3,int param_4,int param_5)
+{
+  short sVar1;
+  
+  switch(param_1) {
+  case 0xd:
+    break;
+  default:
+    return 0;
+  case 0x21:
+    scroll_cur_line(this,'\x05',0,1);
+    return 1;
+  case 0x22:
+    scroll_cur_line(this,'\x04',0,1);
+    return 1;
+  case 0x23:
+    scroll_cur_line(this,'\a',0,1);
+    return 1;
+  case 0x24:
+    scroll_cur_line(this,'\x06',0,1);
+    return 1;
+  case 0x26:
+    scroll_cur_line(this,'\x03',0,1);
+    return 1;
+  case 0x28:
+    scroll_cur_line(this,'\x02',0,1);
+    return 1;
+  }
+  if ((((int *)this->_padding_ != (int *)0x0) && (sVar1 = (short)this->_padding_, -1 < sVar1)) &&
+     (sVar1 < (short)this->_padding_)) {
+    (**(code **)(*(int *)this->_padding_ + 0xb4))(this,3,(int)sVar1,0);
+  }
+  return 1;
+}
+
+// --------------------------------------------------
+
+// Function: char_action
+// Address: 00478850
+/* public: virtual long __thiscall TListPanel::char_action(long,short) */
+
+long __thiscall TListPanel::char_action(TListPanel *this,long param_1,short param_2)
+{
+  int iVar1;
+  int iVar2;
+  undefined4 *puVar3;
+  int iVar4;
+  
+  iVar1 = toupper(param_1);
+  iVar4 = 0;
+  for (puVar3 = (undefined4 *)this->_padding_; puVar3 != (undefined4 *)0x0;
+      puVar3 = (undefined4 *)puVar3[3]) {
+    if (((short)this->_padding_ < iVar4) && (iVar2 = toupper((int)*(char *)*puVar3), iVar2 == iVar1)
+       ) goto LAB_004788da;
+    iVar4 = iVar4 + 1;
+  }
+  if (0 < (short)this->_padding_) {
+    puVar3 = (undefined4 *)this->_padding_;
+    iVar4 = 0;
+    if (puVar3 != (undefined4 *)0x0) {
+      while (iVar2 = toupper((int)*(char *)*puVar3), iVar2 != iVar1) {
+        iVar4 = iVar4 + 1;
+        if ((short)this->_padding_ <= iVar4) {
+          return 0;
+        }
+        puVar3 = (undefined4 *)puVar3[3];
+        if (puVar3 == (undefined4 *)0x0) {
+          return 0;
+        }
+      }
+LAB_004788da:
+      scroll_cur_line(this,'\x01',(short)iVar4,1);
+      return 1;
+    }
+  }
+  return 0;
+}
+
+// --------------------------------------------------
+
+// Function: action
+// Address: 00478900
+/* public: virtual long __thiscall TListPanel::action(class TPanel *,long,unsigned long,unsigned
+   long) */
+
+long __thiscall
+TListPanel::action(TListPanel *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
+{
+  long lVar1;
+  
+  lVar1 = TTextPanel::action((TTextPanel *)this,param_1,param_2,param_3,param_4);
+  return lVar1;
+}
+
+// --------------------------------------------------
+
+// Function: scroll_cur_line
+// Address: 00478920
+/* public: void __thiscall TListPanel::scroll_cur_line(unsigned char,short,int) */
+
+void __thiscall
+TListPanel::scroll_cur_line(TListPanel *this,uchar param_1,short param_2,int param_3)
+{
+  short sVar1;
+  short sVar2;
+  short sVar3;
+  uchar uVar4;
+  
+  sVar1 = (short)this->_padding_;
+  switch(param_1) {
+  case '\x01':
+    *(short *)&this->_padding_ = param_2;
+    if (param_2 < 0) {
+      *(undefined2 *)&this->_padding_ = 0;
+    }
+    else {
+      sVar2 = (short)this->_padding_;
+      if (sVar2 + -1 < (int)param_2) {
+        *(short *)&this->_padding_ = sVar2 + -1;
+      }
+    }
+    sVar2 = (short)this->_padding_;
+    if (sVar2 < (short)this->_padding_) {
+      TTextPanel::scroll((TTextPanel *)this,'\x01',sVar2,param_3);
+    }
+    else {
+      sVar3 = *(short *)((int)&this->_padding_ + 2);
+      if (sVar3 < sVar2) {
+        TTextPanel::scroll((TTextPanel *)this,'\0',sVar2 - sVar3,param_3);
+      }
+    }
+    goto switchD_00478941_default;
+  case '\x02':
+    if ((sVar1 < (short)this->_padding_) ||
+       (sVar3 = *(short *)((int)&this->_padding_ + 2), sVar3 < sVar1)) {
+      sVar3 = *(short *)((int)&this->_padding_ + 2);
+      *(short *)&this->_padding_ = sVar3;
+    }
+    sVar2 = (short)this->_padding_;
+    if (sVar3 <= sVar2) {
+      if ((int)sVar2 < (short)this->_padding_ + -1) {
+        *(short *)&this->_padding_ = sVar2 + 1;
+        TTextPanel::scroll((TTextPanel *)this,'\x02',0,param_3);
+      }
+      goto switchD_00478941_default;
+    }
+    sVar2 = sVar2 + 1;
+    break;
+  case '\x03':
+    sVar3 = (short)this->_padding_;
+    if ((sVar1 < sVar3) || (*(short *)((int)&this->_padding_ + 2) < sVar1)) {
+      *(short *)&this->_padding_ = sVar3;
+    }
+    sVar2 = (short)this->_padding_;
+    if (sVar2 <= sVar3) {
+      if (0 < sVar2) {
+        *(short *)&this->_padding_ = sVar2 + -1;
+        TTextPanel::scroll((TTextPanel *)this,'\x03',0,param_3);
+      }
+      goto switchD_00478941_default;
+    }
+    sVar2 = sVar2 + -1;
+    break;
+  case '\x04':
+    if ((sVar1 < (short)this->_padding_) ||
+       (sVar2 = *(short *)((int)&this->_padding_ + 2), sVar2 < sVar1)) {
+      sVar2 = *(short *)((int)&this->_padding_ + 2);
+      *(short *)&this->_padding_ = sVar2;
+    }
+    if ((short)this->_padding_ != sVar2) goto LAB_00478b14;
+    uVar4 = '\x04';
+    goto LAB_00478b26;
+  case '\x05':
+    sVar2 = (short)this->_padding_;
+    if ((sVar1 < sVar2) || (*(short *)((int)&this->_padding_ + 2) < sVar1)) {
+      *(short *)&this->_padding_ = sVar2;
+    }
+    if ((short)this->_padding_ == sVar2) {
+      TTextPanel::scroll((TTextPanel *)this,'\x05',0,param_3);
+      *(short *)&this->_padding_ = (short)this->_padding_;
+      goto switchD_00478941_default;
+    }
+    goto LAB_00478b14;
+  case '\x06':
+    TTextPanel::scroll((TTextPanel *)this,'\x06',0,param_3);
+    sVar2 = (short)this->_padding_;
+LAB_00478b14:
+    *(short *)&this->_padding_ = sVar2;
+    goto switchD_00478941_default;
+  case '\a':
+    uVar4 = '\a';
+LAB_00478b26:
+    TTextPanel::scroll((TTextPanel *)this,uVar4,0,param_3);
+    sVar2 = *(short *)((int)&this->_padding_ + 2);
+    break;
+  default:
+    goto switchD_00478941_default;
+  }
+  *(short *)&this->_padding_ = sVar2;
+switchD_00478941_default:
+  (**(code **)(this->_padding_ + 0x20))(1);
+  sVar2 = (short)this->_padding_;
+  if ((((sVar2 != sVar1) && ((int *)this->_padding_ != (int *)0x0)) && (-1 < sVar2)) &&
+     (sVar2 < (short)this->_padding_)) {
+    (**(code **)(*(int *)this->_padding_ + 0xb4))(this,1,(int)sVar2,0);
+  }
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: draw
+// Address: 00478ba0
+// [HELPER] s_pnl_lst__draw: "pnl_lst::draw"
+/* WARNING: Variable defined which should be unmapped: old_font */
+/* public: virtual void __thiscall TListPanel::draw(void) */
+
+void __thiscall TListPanel::draw(TListPanel *this)
+{
+  void *pvVar1;
+  undefined4 uVar2;
+  short sVar3;
+  int iVar4;
+  short sVar5;
+  ulong uVar6;
+  ulong uVar7;
+  void *old_font;
+  int iStack_8;
+  
+  sVar5 = 0;
+  this->_padding_ = 0;
+  if (((this->_padding_ != 0) && (this->_padding_ != 0)) && (this->_padding_ != 0)) {
+    TTextPanel::draw_background((TTextPanel *)this);
+    iVar4 = this->_padding_;
+    (**(code **)(iVar4 + 0x28))(0);
+    pvVar1 = TDrawArea::GetDc((TDrawArea *)this->_padding_,s_pnl_lst__draw);
+    if (pvVar1 != (void *)0x0) {
+      SelectClipRgn(pvVar1,this->_padding_);
+      uVar2 = SelectObject(pvVar1,this->_padding_);
+      SetBkMode(pvVar1,1);
+      sVar3 = (short)this->_padding_;
+      if (sVar3 <= *(short *)((int)&this->_padding_ + 2)) {
+        do {
+          if (((this->drawHighlightBar == 0) || ((this->_padding_ == 0 && (this->_padding_ == 0))))
+             || ((int)sVar5 + (int)(short)this->_padding_ != (int)(short)this->_padding_)) {
+            uVar7 = this->_padding_;
+            uVar6 = this->_padding_;
+          }
+          else {
+            uVar7 = this->_padding_;
+            uVar6 = this->_padding_;
+          }
+          TTextPanel::draw_line((TTextPanel *)this,pvVar1,sVar5,sVar3,uVar6,uVar7);
+          sVar3 = sVar3 + 1;
+          sVar5 = sVar5 + 1;
+        } while (sVar3 <= *(short *)((int)&this->_padding_ + 2));
+      }
+      SelectObject(pvVar1,uVar2);
+      SelectClipRgn(pvVar1,0);
+      TDrawArea::ReleaseDc((TDrawArea *)this->_padding_,s_pnl_lst__draw);
+      iVar4 = iStack_8;
+    }
+    TTextPanel::draw_border((TTextPanel *)this);
+    draw_highlight_bar(this);
+    (**(code **)(iVar4 + 0x2c))();
+  }
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: draw_highlight_bar
+// Address: 00478cd0
+// [HELPER] s_pnl_lst__draw_highlight_bar: "pnl_lst::draw_highlight_bar"
+/* WARNING: Variable defined which should be unmapped: r */
+/* public: void __thiscall TListPanel::draw_highlight_bar(void) */
+
+void __thiscall TListPanel::draw_highlight_bar(TListPanel *this)
+{
+  int iVar1;
+  int iVar2;
+  uchar uVar3;
+  uchar uVar4;
+  uchar uVar5;
+  uchar uVar6;
+  uchar uVar7;
+  uchar uVar8;
+  short sVar9;
+  void *pvVar10;
+  uchar *puVar11;
+  int iVar12;
+  int iVar13;
+  tagRECT r;
+  int local_4;
+  
+  if (this->drawHighlightBar == 0) {
+    return;
+  }
+  sVar9 = (short)this->_padding_;
+  if (sVar9 < (short)this->_padding_) {
+    return;
+  }
+  if (*(short *)((int)&this->_padding_ + 2) < sVar9) {
+    return;
+  }
+  pvVar10 = TDrawArea::GetDc((TDrawArea *)this->_padding_,s_pnl_lst__draw_highlight_bar);
+  if (pvVar10 == (void *)0x0) goto switchD_00478d96_default;
+  sVar9 = (short)this->_padding_;
+  TTextPanel::calc_line_pos
+            ((TTextPanel *)this,pvVar10,sVar9 - (short)this->_padding_,sVar9,(tagRECT *)&r.top,
+             (long *)0x0);
+  TDrawArea::ReleaseDc((TDrawArea *)this->_padding_,s_pnl_lst__draw_highlight_bar);
+  puVar11 = TDrawArea::Lock((TDrawArea *)this->_padding_,s_pnl_lst__draw_highlight_bar,1);
+  if (puVar11 == (uchar *)0x0) goto switchD_00478d96_default;
+  iVar1 = this->_padding_ + this->_padding_;
+  iVar13 = r.right - this->_padding_;
+  iVar12 = ((this->_padding_ + this->_padding_) - this->_padding_) + -1;
+  iVar2 = local_4 + this->_padding_;
+  switch(this->_padding_) {
+  case 0:
+  case 1:
+    TDrawArea::DrawRect((TDrawArea *)this->_padding_,iVar1,iVar13,iVar12,iVar2,0xff);
+    break;
+  case 2:
+    TDrawArea::DrawBevel
+              ((TDrawArea *)this->_padding_,iVar1,iVar13,iVar12,iVar2,(uchar)this->_padding_,
+               *(uchar *)((int)&this->_padding_ + 1));
+    break;
+  case 3:
+    TDrawArea::DrawBevel2
+              ((TDrawArea *)this->_padding_,iVar1,iVar13,iVar12,iVar2,(uchar)this->_padding_,
+               *(uchar *)((int)&this->_padding_ + 1),(uchar)this->_padding_,
+               *(uchar *)((int)&this->_padding_ + 1));
+    break;
+  case 4:
+    uVar7 = *(uchar *)((int)&this->_padding_ + 1);
+    uVar3 = (uchar)this->_padding_;
+    uVar4 = *(uchar *)((int)&this->_padding_ + 3);
+    uVar5 = *(uchar *)((int)&this->_padding_ + 2);
+    uVar8 = *(uchar *)((int)&this->_padding_ + 1);
+    uVar6 = (uchar)this->_padding_;
+    goto LAB_00478e99;
+  case 5:
+    TDrawArea::DrawBevel
+              ((TDrawArea *)this->_padding_,iVar1,iVar13,iVar12,iVar2,
+               *(uchar *)((int)&this->_padding_ + 1),(uchar)this->_padding_);
+    break;
+  case 6:
+    TDrawArea::DrawBevel2
+              ((TDrawArea *)this->_padding_,iVar1,iVar13,iVar12,iVar2,
+               *(uchar *)((int)&this->_padding_ + 1),(uchar)this->_padding_,
+               *(uchar *)((int)&this->_padding_ + 1),(uchar)this->_padding_);
+    break;
+  case 7:
+    uVar7 = (uchar)this->_padding_;
+    uVar3 = *(uchar *)((int)&this->_padding_ + 1);
+    uVar4 = *(uchar *)((int)&this->_padding_ + 2);
+    uVar5 = *(uchar *)((int)&this->_padding_ + 3);
+    uVar8 = (uchar)this->_padding_;
+    uVar6 = *(uchar *)((int)&this->_padding_ + 1);
+LAB_00478e99:
+    TDrawArea::DrawBevel3
+              ((TDrawArea *)this->_padding_,iVar1,iVar13,iVar12,iVar2,uVar6,uVar8,uVar5,uVar4,uVar3,
+               uVar7);
+  }
+switchD_00478d96_default:
+  TDrawArea::Unlock((TDrawArea *)this->_padding_,s_pnl_lst__draw_highlight_bar);
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: setDrawHighlightBar
+// Address: 00478ee0
+/* public: void __thiscall TListPanel::setDrawHighlightBar(int) */
+
+void __thiscall TListPanel::setDrawHighlightBar(TListPanel *this,int param_1)
+{
+  this->drawHighlightBar = param_1;
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_focus
+// Address: 00478ef0
+/* public: virtual void __thiscall TListPanel::set_focus(int) */
+
+void __thiscall TListPanel::set_focus(TListPanel *this,int param_1)
+{
+  short sVar1;
+  
+  TPanel::set_focus((TPanel *)this,param_1);
+  if ((((this->_padding_ != 0) && ((int *)this->_padding_ != (int *)0x0)) &&
+      (sVar1 = (short)this->_padding_, -1 < sVar1)) && (sVar1 < (short)this->_padding_)) {
+    (**(code **)(*(int *)this->_padding_ + 0xb4))(this,1,(int)sVar1,0);
+  }
+  return;
+}
+
+// --------------------------------------------------
+

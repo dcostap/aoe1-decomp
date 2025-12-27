@@ -17,6 +17,7 @@ extern void* panel_system;
 HINSTANCE AppInst = nullptr;
 HWND AppWnd = nullptr;
 
+// Address: 0x0041b693
 RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int setup_flag) {
     this->player_game_info = nullptr;
     this->random_game_seed = -1;

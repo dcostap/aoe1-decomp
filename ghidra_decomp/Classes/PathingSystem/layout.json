@@ -1,0 +1,289 @@
+{
+    "size": 1170680, 
+    "vtable": [
+        {
+            "signature": "void * `vector_deleting_destructor'(PathingSystem * this, uint param_1)", 
+            "index": 0, 
+            "name": "`vector_deleting_destructor'"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 4, 
+            "type": "int", 
+            "size": 4, 
+            "name": "xSizeValue"
+        }, 
+        {
+            "offset": 8, 
+            "type": "int", 
+            "size": 4, 
+            "name": "ySizeValue"
+        }, 
+        {
+            "offset": 12, 
+            "type": "uchar[255][255]", 
+            "size": 65025, 
+            "name": "facetValue"
+        }, 
+        {
+            "offset": 65040, 
+            "type": "int[255][255]", 
+            "size": 260100, 
+            "name": "MGP_costValue"
+        }, 
+        {
+            "offset": 325140, 
+            "type": "MGP_FloatHeap[65026]", 
+            "size": 520208, 
+            "name": "MGP_openPaths"
+        }, 
+        {
+            "offset": 845348, 
+            "type": "uchar[1020][255]", 
+            "size": 260100, 
+            "name": "obstructionValue"
+        }, 
+        {
+            "offset": 1105448, 
+            "type": "uchar[255][255]", 
+            "size": 65025, 
+            "name": "miscValue"
+        }, 
+        {
+            "offset": 1170476, 
+            "type": "int", 
+            "size": 4, 
+            "name": "numberOpenPathsValue"
+        }, 
+        {
+            "offset": 1170480, 
+            "type": "MGP_FloatHeap", 
+            "size": 8, 
+            "name": "MGP_bestTraversedPath"
+        }, 
+        {
+            "offset": 1170488, 
+            "type": "int", 
+            "size": 4, 
+            "name": "numberTraversedPathsValue"
+        }, 
+        {
+            "offset": 1170492, 
+            "type": "RGE_Map *", 
+            "size": 4, 
+            "name": "mapValue"
+        }, 
+        {
+            "offset": 1170496, 
+            "type": "RGE_Game_World *", 
+            "size": 4, 
+            "name": "worldValue"
+        }, 
+        {
+            "offset": 1170500, 
+            "type": "RGE_Moving_Object *", 
+            "size": 4, 
+            "name": "currentObject"
+        }, 
+        {
+            "offset": 1170504, 
+            "type": "int", 
+            "size": 4, 
+            "name": "currentObjectInObMap"
+        }, 
+        {
+            "offset": 1170508, 
+            "type": "int", 
+            "size": 4, 
+            "name": "currentTargetID"
+        }, 
+        {
+            "offset": 1170512, 
+            "type": "float *", 
+            "size": 4, 
+            "name": "currentTerrainTable"
+        }, 
+        {
+            "offset": 1170516, 
+            "type": "float", 
+            "size": 4, 
+            "name": "currentXOffset"
+        }, 
+        {
+            "offset": 1170520, 
+            "type": "float", 
+            "size": 4, 
+            "name": "currentYOffset"
+        }, 
+        {
+            "offset": 1170524, 
+            "type": "int", 
+            "size": 4, 
+            "name": "currentTerrainException1"
+        }, 
+        {
+            "offset": 1170528, 
+            "type": "int", 
+            "size": 4, 
+            "name": "currentTerrainException2"
+        }, 
+        {
+            "offset": 1170532, 
+            "type": "ManagedArray<int>", 
+            "size": 16, 
+            "name": "initialCollidingObjects"
+        }, 
+        {
+            "offset": 1170548, 
+            "type": "int", 
+            "size": 4, 
+            "name": "startOfPath"
+        }, 
+        {
+            "offset": 1170552, 
+            "type": "int", 
+            "size": 4, 
+            "name": "checkTerrainOnFirstPass"
+        }, 
+        {
+            "offset": 1170556, 
+            "type": "XYPoint", 
+            "size": 8, 
+            "name": "initialTile"
+        }, 
+        {
+            "offset": 1170564, 
+            "type": "XYPoint", 
+            "size": 8, 
+            "name": "minTarget"
+        }, 
+        {
+            "offset": 1170572, 
+            "type": "XYPoint", 
+            "size": 8, 
+            "name": "maxTarget"
+        }, 
+        {
+            "offset": 1170580, 
+            "type": "XYPoint", 
+            "size": 8, 
+            "name": "minInitialPosition"
+        }, 
+        {
+            "offset": 1170588, 
+            "type": "XYPoint", 
+            "size": 8, 
+            "name": "maxInitialPosition"
+        }, 
+        {
+            "offset": 1170596, 
+            "type": "float", 
+            "size": 4, 
+            "name": "averageNumWaypoints"
+        }, 
+        {
+            "offset": 1170600, 
+            "type": "float", 
+            "size": 4, 
+            "name": "averagePathLength"
+        }, 
+        {
+            "offset": 1170604, 
+            "type": "float", 
+            "size": 4, 
+            "name": "averagePathIterations"
+        }, 
+        {
+            "offset": 1170608, 
+            "type": "int", 
+            "size": 4, 
+            "name": "numAttempts"
+        }, 
+        {
+            "offset": 1170612, 
+            "type": "int", 
+            "size": 4, 
+            "name": "numFails"
+        }, 
+        {
+            "offset": 1170616, 
+            "type": "int", 
+            "size": 4, 
+            "name": "numSuccesses"
+        }, 
+        {
+            "offset": 1170620, 
+            "type": "int", 
+            "size": 4, 
+            "name": "numInitialPathsValue"
+        }, 
+        {
+            "offset": 1170624, 
+            "type": "int", 
+            "size": 4, 
+            "name": "numContinuePathsValue"
+        }, 
+        {
+            "offset": 1170628, 
+            "type": "int", 
+            "size": 4, 
+            "name": "numCanPathsValue"
+        }, 
+        {
+            "offset": 1170632, 
+            "type": "int", 
+            "size": 4, 
+            "name": "MGP_closestTargetDistance"
+        }, 
+        {
+            "offset": 1170636, 
+            "type": "float", 
+            "size": 4, 
+            "name": "averageClosestTargetDistance"
+        }, 
+        {
+            "offset": 1170640, 
+            "type": "float", 
+            "size": 4, 
+            "name": "averageSuccessTime"
+        }, 
+        {
+            "offset": 1170644, 
+            "type": "float", 
+            "size": 4, 
+            "name": "averageFailTime"
+        }, 
+        {
+            "offset": 1170648, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "CurrentFacetMask"
+        }, 
+        {
+            "offset": 1170652, 
+            "type": "int", 
+            "size": 4, 
+            "name": "currentUnobstructibleGroupID"
+        }, 
+        {
+            "offset": 1170656, 
+            "type": "int", 
+            "size": 4, 
+            "name": "currentUnobstructiblePlayerID"
+        }, 
+        {
+            "offset": 1170660, 
+            "type": "ManagedArray<int>", 
+            "size": 16, 
+            "name": "currentUnobstructibles"
+        }, 
+        {
+            "offset": 1170676, 
+            "type": "int", 
+            "size": 4, 
+            "name": "aiPS"
+        }
+    ], 
+    "name": "PathingSystem"
+}

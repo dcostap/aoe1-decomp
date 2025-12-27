@@ -1,0 +1,279 @@
+// Class: TribeEndScreen
+// Function: TribeEndScreen
+// Address: 004936d0
+// [HELPER] s_End_Screen: "End Screen"
+// [HELPER] s_OK: "OK"
+// [HELPER] s_bgA1024: "bgA1024"
+// [HELPER] s_bgA640: "bgA640"
+// [HELPER] s_bgA800: "bgA800"
+/* public: __thiscall TribeEndScreen::TribeEndScreen(char *,char * *,int) */
+
+TribeEndScreen * __thiscall
+TribeEndScreen::TribeEndScreen(TribeEndScreen *this,char *param_1,char **param_2,int param_3)
+{
+  char cVar1;
+  int iVar2;
+  int iVar3;
+  long lVar4;
+  TPicturePanel *pTVar5;
+  RGE_Font *pRVar6;
+  TTextPanel *pTVar7;
+  TDigital *pTVar8;
+  TButtonPanel *this_00;
+  uint uVar9;
+  uint uVar10;
+  char *pcVar11;
+  char *pcVar12;
+  char *pcVar13;
+  undefined4 *unaff_FS_OFFSET;
+  TTextPanel *local_20;
+  char backgroundName [10];
+  undefined4 local_c;
+  code *pcStack_8;
+  int local_4;
+  
+  local_4 = 0xffffffff;
+  pcStack_8 = FUN_0055eb74;
+  local_c = *unaff_FS_OFFSET;
+  *unaff_FS_OFFSET = &local_c;
+  backgroundName._0_4_ = this;
+  TScreenPanel::TScreenPanel((TScreenPanel *)this,s_End_Screen);
+  this->_padding_ = (int)&_vftable_;
+  local_4 = 0;
+  lVar4 = TScreenPanel::setup((TScreenPanel *)this,rge_base_game->draw_area,(char *)0x0,0,1);
+  if (lVar4 == 0) {
+    this->_padding_ = 1;
+  }
+  else {
+    iVar2 = *(int *)(this->_padding_ + 0x18);
+    if (iVar2 < 800) {
+      pcVar11 = &s_bgA640;
+    }
+    else {
+      pcVar11 = s_bgA800;
+      if (0x3ff < iVar2) {
+        pcVar11 = s_bgA1024;
+      }
+    }
+    pcVar13 = backgroundName;
+    uVar9 = 0xffffffff;
+    do {
+      pcVar12 = pcVar11;
+      if (uVar9 == 0) break;
+      uVar9 = uVar9 - 1;
+      pcVar12 = pcVar11 + 1;
+      cVar1 = *pcVar11;
+      pcVar11 = pcVar12;
+    } while (cVar1 != '\0');
+    uVar9 = ~uVar9;
+    pcVar11 = pcVar12 + -uVar9;
+    for (uVar10 = uVar9 >> 2; pcVar13 = pcVar13 + 4, uVar10 != 0; uVar10 = uVar10 - 1) {
+      *(undefined4 *)pcVar13 = *(undefined4 *)pcVar11;
+      pcVar11 = pcVar11 + 4;
+    }
+    for (uVar9 = uVar9 & 3; uVar9 != 0; uVar9 = uVar9 - 1) {
+      *pcVar13 = *pcVar11;
+      pcVar11 = pcVar11 + 1;
+      pcVar13 = pcVar13 + 1;
+    }
+    pTVar5 = (TPicturePanel *)operator_new(0x11c);
+    local_4._0_1_ = 1;
+    if (pTVar5 == (TPicturePanel *)0x0) {
+      pTVar5 = (TPicturePanel *)0x0;
+    }
+    else {
+      pTVar5 = (TPicturePanel *)TPicturePanel::TPicturePanel(pTVar5);
+    }
+    local_4._0_1_ = 0;
+    this->background = pTVar5;
+    if (pTVar5 == (TPicturePanel *)0x0) {
+      this->_padding_ = 1;
+    }
+    else {
+      lVar4 = TPicturePanel::setup
+                        (pTVar5,(TDrawArea *)this->_padding_,(TPanel *)this,0,0,0,0,
+                         backgroundName + 4,-1,0,1);
+      if (lVar4 == 0) {
+        this->_padding_ = 1;
+      }
+      else {
+        iVar2 = (this->_padding_ * 0x1e0) / 0x1e0;
+        iVar3 = (this->_padding_ * 0x280) / 0x280;
+        (**(code **)(this->background->_padding_ + 0x18))(2,0,0,0,0,iVar3,iVar3,iVar2,iVar2,0,0,0,0)
+        ;
+        pRVar6 = RGE_Base_Game::get_font(rge_base_game,1);
+        pTVar7 = (TTextPanel *)operator_new(0x188);
+        local_4._0_1_ = 2;
+        if (pTVar7 == (TTextPanel *)0x0) {
+          local_20 = (TTextPanel *)0x0;
+        }
+        else {
+          local_20 = (TTextPanel *)TTextPanel::TTextPanel(pTVar7);
+        }
+        local_4._0_1_ = 0;
+        this->title = local_20;
+        if (local_20 == (TTextPanel *)0x0) {
+          this->_padding_ = 1;
+        }
+        else {
+          TTextPanel::setup(local_20,(TDrawArea *)this->_padding_,(TPanel *)this->background,
+                            (this->_padding_ * 0x14) / 0x280,(this->_padding_ * 0x14) / 0x1e0,
+                            (this->_padding_ * 600) / 0x280,(this->_padding_ * 0x1e) / 0x1e0,
+                            pRVar6->font,pRVar6->font_wid,pRVar6->font_hgt,(char *)0x0,0,'\0',0,'\0'
+                            ,0,param_1);
+          pTVar7 = (TTextPanel *)operator_new(0x188);
+          local_4._0_1_ = 3;
+          if (pTVar7 == (TTextPanel *)0x0) {
+            pTVar7 = (TTextPanel *)0x0;
+          }
+          else {
+            pTVar7 = (TTextPanel *)TTextPanel::TTextPanel(pTVar7);
+          }
+          local_4._0_1_ = 0;
+          this->text = pTVar7;
+          if (pTVar7 == (TTextPanel *)0x0) {
+            this->_padding_ = 1;
+          }
+          else {
+            pRVar6 = RGE_Base_Game::get_font(rge_base_game,0xb);
+            TTextPanel::setup(this->text,(TDrawArea *)this->_padding_,(TPanel *)this->background,
+                              (this->_padding_ * 0x14) / 0x280,(this->_padding_ * 0x46) / 0x1e0,
+                              (this->_padding_ * 600) / 0x280,(this->_padding_ * 0x154) / 0x1e0,
+                              pRVar6->font,pRVar6->font_wid,pRVar6->font_hgt,(char *)0x0,0,'\0',0,
+                              '\0',0,(char *)0x0);
+            (**(code **)(this->text->_padding_ + 0xe0))(param_2,param_3);
+            TTextPanel::set_alignment(this->text,AlignCenter,AlignCenter);
+            TTextPanel::scroll(this->text,'\x06',0,1);
+            pTVar8 = RGE_Base_Game::get_sound(rge_base_game,0);
+            pRVar6 = RGE_Base_Game::get_font(rge_base_game,0);
+            this_00 = (TButtonPanel *)operator_new(0x2b8);
+            local_4._0_1_ = 4;
+            if (this_00 == (TButtonPanel *)0x0) {
+              param_1 = (char *)0x0;
+            }
+            else {
+              param_1 = (char *)TButtonPanel::TButtonPanel(this_00);
+            }
+            local_4 = (uint)local_4._1_3_ << 8;
+            this->okButton = (TButtonPanel *)param_1;
+            if (param_1 == (char *)0x0) {
+              this->_padding_ = 1;
+            }
+            else {
+              TButtonPanel::setup((TButtonPanel *)param_1,(TDrawArea *)this->_padding_,
+                                  (TPanel *)this->background,(this->_padding_ * 0xaa) / 0x280,
+                                  (this->_padding_ * 0x1ae) / 0x1e0,(this->_padding_ * 300) / 0x280,
+                                  (this->_padding_ * 0x28) / 0x1e0,DrawTextA,pTVar8,NotifyAction,0);
+              TButtonPanel::set_text_info
+                        (this->okButton,s_OK,pRVar6->font,pRVar6->font_wid,pRVar6->font_hgt,-1,-1);
+              TPanel::set_curr_child((TPanel *)this,(TPanel *)this->background);
+              TPanel::set_curr_child((TPanel *)this->background,(TPanel *)this->text);
+            }
+          }
+        }
+      }
+    }
+  }
+  *unaff_FS_OFFSET = local_c;
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: `scalar_deleting_destructor'
+// Address: 00493be0
+/* public: virtual void * __thiscall TribeEndScreen::`scalar deleting destructor'(unsigned int) */
+
+void * __thiscall TribeEndScreen::_scalar_deleting_destructor_(TribeEndScreen *this,uint param_1)
+{
+  ~TribeEndScreen(this);
+  if ((param_1 & 1) != 0) {
+    operator_delete(this);
+  }
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: ~TribeEndScreen
+// Address: 00493c00
+/* public: virtual __thiscall TribeEndScreen::~TribeEndScreen(void) */
+
+void __thiscall TribeEndScreen::~TribeEndScreen(TribeEndScreen *this)
+{
+  undefined4 *unaff_FS_OFFSET;
+  undefined4 uStack_c;
+  code *pcStack_8;
+  undefined4 local_4;
+  
+  pcStack_8 = FUN_0055eb88;
+  uStack_c = *unaff_FS_OFFSET;
+  *unaff_FS_OFFSET = &uStack_c;
+  this->_padding_ = (int)&_vftable_;
+  local_4 = 0;
+  if (this->title != (TTextPanel *)0x0) {
+    (**(code **)this->title->_padding_)(1);
+  }
+  if (this->text != (TTextPanel *)0x0) {
+    (**(code **)this->text->_padding_)(1);
+  }
+  if (this->okButton != (TButtonPanel *)0x0) {
+    (**(code **)this->okButton->_padding_)(1);
+  }
+  if (this->background != (TPicturePanel *)0x0) {
+    (**(code **)this->background->_padding_)(1);
+  }
+  local_4 = 0xffffffff;
+  TScreenPanel::~TScreenPanel((TScreenPanel *)this);
+  *unaff_FS_OFFSET = uStack_c;
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: action
+// Address: 00493c90
+// [HELPER] s_Achievements_Screen: "Achievements Screen"
+// [HELPER] s_End_Screen: "End Screen"
+/* protected: virtual long __thiscall TribeEndScreen::action(class TPanel *,long,unsigned
+   long,unsigned long) */
+
+long __thiscall
+TribeEndScreen::action
+          (TribeEndScreen *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
+{
+  TribeAchievementsScreen *this_00;
+  char *pcVar1;
+  long lVar2;
+  undefined4 *unaff_FS_OFFSET;
+  int iVar3;
+  undefined4 local_c;
+  code *pcStack_8;
+  undefined4 local_4;
+  
+  local_c = *unaff_FS_OFFSET;
+  local_4 = 0xffffffff;
+  pcStack_8 = FUN_0055ebab;
+  *unaff_FS_OFFSET = &local_c;
+  if ((param_1 != (TPanel *)0x0) && (param_2 == 1)) {
+    this_00 = (TribeAchievementsScreen *)operator_new(0x5f8);
+    local_4 = 0;
+    if (this_00 != (TribeAchievementsScreen *)0x0) {
+      iVar3 = 1;
+                    /* language.dll match for 0x269e: "Achievements" */
+      pcVar1 = TPanel::get_string((TPanel *)this,0x269e);
+      TribeAchievementsScreen::TribeAchievementsScreen(this_00,pcVar1,iVar3);
+    }
+    local_4 = 0xffffffff;
+    TPanelSystem::setCurrentPanel(&panel_system,s_Achievements_Screen,0);
+    TPanelSystem::destroyPanel(&panel_system,s_End_Screen);
+    *unaff_FS_OFFSET = local_c;
+    return 1;
+  }
+  lVar2 = TEasy_Panel::action((TEasy_Panel *)this,param_1,param_2,param_3,param_4);
+  *unaff_FS_OFFSET = local_c;
+  return lVar2;
+}
+
+// --------------------------------------------------
+

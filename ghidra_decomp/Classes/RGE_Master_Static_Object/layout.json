@@ -1,0 +1,468 @@
+{
+    "size": 184, 
+    "vtable": [
+        {
+            "signature": "void * `scalar_deleting_destructor'(RGE_Master_Static_Object * this, uint param_1)", 
+            "index": 0, 
+            "name": "`scalar_deleting_destructor'"
+        }, 
+        {
+            "signature": "void copy_obj(RGE_Master_Static_Object * this, RGE_Master_Static_Object * param_1)", 
+            "index": 1, 
+            "name": "copy_obj"
+        }, 
+        {
+            "signature": "void modify(RGE_Master_Static_Object * this, float param_1, uchar param_2)", 
+            "index": 2, 
+            "name": "modify"
+        }, 
+        {
+            "signature": "void modify_delta(RGE_Master_Static_Object * this, float param_1, uchar param_2)", 
+            "index": 3, 
+            "name": "modify_delta"
+        }, 
+        {
+            "signature": "void modify_percent(RGE_Master_Static_Object * this, float param_1, uchar param_2)", 
+            "index": 4, 
+            "name": "modify_percent"
+        }, 
+        {
+            "signature": "void save(RGE_Master_Static_Object * this, int param_1)", 
+            "index": 5, 
+            "name": "save"
+        }, 
+        {
+            "signature": "RGE_Static_Object * make_new_obj(RGE_Master_Static_Object * this, RGE_Player * param_1, float param_2, float param_3, float param_4)", 
+            "index": 6, 
+            "name": "make_new_obj"
+        }, 
+        {
+            "signature": "RGE_Master_Static_Object * make_new_master(RGE_Master_Static_Object * this)", 
+            "index": 7, 
+            "name": "make_new_master"
+        }, 
+        {
+            "signature": "uchar check_placement(RGE_Master_Static_Object * this, RGE_Player * param_1, float param_2, float param_3, int * param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8, uchar param_9, uchar param_10)", 
+            "index": 8, 
+            "name": "check_placement"
+        }, 
+        {
+            "signature": "uchar alignment(RGE_Master_Static_Object * this, float * param_1, float * param_2, RGE_Game_World * param_3, uchar param_4)", 
+            "index": 9, 
+            "name": "alignment"
+        }, 
+        {
+            "signature": "long calc_base_damage_ability(RGE_Master_Static_Object * this, RGE_Master_Combat_Object * param_1)", 
+            "index": 10, 
+            "name": "calc_base_damage_ability"
+        }, 
+        {
+            "signature": "void play_command_sound(RGE_Master_Static_Object * this)", 
+            "index": 11, 
+            "name": "play_command_sound"
+        }, 
+        {
+            "signature": "void play_move_sound(RGE_Master_Static_Object * this)", 
+            "index": 12, 
+            "name": "play_move_sound"
+        }, 
+        {
+            "signature": "void draw(RGE_Master_Static_Object * this, TDrawArea * param_1, short param_2, short param_3, RGE_Color_Table * param_4, long param_5, long param_6, int param_7, uchar param_8)", 
+            "index": 13, 
+            "name": "draw"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 4, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "master_type"
+        }, 
+        {
+            "offset": 8, 
+            "type": "char *", 
+            "size": 4, 
+            "name": "name"
+        }, 
+        {
+            "offset": 12, 
+            "type": "short", 
+            "size": 2, 
+            "name": "string_id"
+        }, 
+        {
+            "offset": 14, 
+            "type": "short", 
+            "size": 2, 
+            "name": "string_id2"
+        }, 
+        {
+            "offset": 16, 
+            "type": "short", 
+            "size": 2, 
+            "name": "id"
+        }, 
+        {
+            "offset": 18, 
+            "type": "short", 
+            "size": 2, 
+            "name": "copy_id"
+        }, 
+        {
+            "offset": 20, 
+            "type": "short", 
+            "size": 2, 
+            "name": "object_group"
+        }, 
+        {
+            "offset": 24, 
+            "type": "RGE_Sprite *", 
+            "size": 4, 
+            "name": "sprite"
+        }, 
+        {
+            "offset": 28, 
+            "type": "RGE_Sprite *", 
+            "size": 4, 
+            "name": "death_sprite"
+        }, 
+        {
+            "offset": 32, 
+            "type": "RGE_Sprite *", 
+            "size": 4, 
+            "name": "undead_sprite"
+        }, 
+        {
+            "offset": 36, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "undead_flag"
+        }, 
+        {
+            "offset": 38, 
+            "type": "short", 
+            "size": 2, 
+            "name": "hp"
+        }, 
+        {
+            "offset": 40, 
+            "type": "float", 
+            "size": 4, 
+            "name": "los"
+        }, 
+        {
+            "offset": 44, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "obj_max"
+        }, 
+        {
+            "offset": 48, 
+            "type": "float", 
+            "size": 4, 
+            "name": "radius_x"
+        }, 
+        {
+            "offset": 52, 
+            "type": "float", 
+            "size": 4, 
+            "name": "radius_y"
+        }, 
+        {
+            "offset": 56, 
+            "type": "float", 
+            "size": 4, 
+            "name": "radius_z"
+        }, 
+        {
+            "offset": 60, 
+            "type": "RGE_Sound *", 
+            "size": 4, 
+            "name": "selected_sound"
+        }, 
+        {
+            "offset": 64, 
+            "type": "RGE_Sound *", 
+            "size": 4, 
+            "name": "created_sound"
+        }, 
+        {
+            "offset": 68, 
+            "type": "RGE_Sound *", 
+            "size": 4, 
+            "name": "death_sound"
+        }, 
+        {
+            "offset": 72, 
+            "type": "short", 
+            "size": 2, 
+            "name": "death_spawn_obj_id"
+        }, 
+        {
+            "offset": 74, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "sort_number"
+        }, 
+        {
+            "offset": 75, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "can_be_built_on"
+        }, 
+        {
+            "offset": 76, 
+            "type": "short", 
+            "size": 2, 
+            "name": "button_pict"
+        }, 
+        {
+            "offset": 78, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "hide_in_scenario_editor"
+        }, 
+        {
+            "offset": 80, 
+            "type": "short", 
+            "size": 2, 
+            "name": "portrait_pict"
+        }, 
+        {
+            "offset": 82, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "available"
+        }, 
+        {
+            "offset": 84, 
+            "type": "short", 
+            "size": 2, 
+            "name": "tile_req1"
+        }, 
+        {
+            "offset": 86, 
+            "type": "short", 
+            "size": 2, 
+            "name": "tile_req2"
+        }, 
+        {
+            "offset": 88, 
+            "type": "short", 
+            "size": 2, 
+            "name": "center_tile_req1"
+        }, 
+        {
+            "offset": 90, 
+            "type": "short", 
+            "size": 2, 
+            "name": "center_tile_req2"
+        }, 
+        {
+            "offset": 92, 
+            "type": "float", 
+            "size": 4, 
+            "name": "construction_radius_x"
+        }, 
+        {
+            "offset": 96, 
+            "type": "float", 
+            "size": 4, 
+            "name": "construction_radius_y"
+        }, 
+        {
+            "offset": 100, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "elevation_flag"
+        }, 
+        {
+            "offset": 101, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "fog_flag"
+        }, 
+        {
+            "offset": 102, 
+            "type": "short", 
+            "size": 2, 
+            "name": "terrain"
+        }, 
+        {
+            "offset": 104, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "movement_type"
+        }, 
+        {
+            "offset": 106, 
+            "type": "short[3]", 
+            "size": 6, 
+            "name": "attribute_type_held"
+        }, 
+        {
+            "offset": 112, 
+            "type": "float[3]", 
+            "size": 12, 
+            "name": "attribute_amount_held"
+        }, 
+        {
+            "offset": 124, 
+            "type": "short", 
+            "size": 2, 
+            "name": "attribute_max_amount"
+        }, 
+        {
+            "offset": 128, 
+            "type": "float", 
+            "size": 4, 
+            "name": "attribute_rot"
+        }, 
+        {
+            "offset": 132, 
+            "type": "float", 
+            "size": 4, 
+            "name": "multiple_attribute_mod"
+        }, 
+        {
+            "offset": 136, 
+            "type": "uchar[3]", 
+            "size": 3, 
+            "name": "attribute_flag"
+        }, 
+        {
+            "offset": 139, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "area_effect_object_level"
+        }, 
+        {
+            "offset": 140, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "combat_level"
+        }, 
+        {
+            "offset": 141, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "select_level"
+        }, 
+        {
+            "offset": 142, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "map_draw_level"
+        }, 
+        {
+            "offset": 143, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "unit_level"
+        }, 
+        {
+            "offset": 144, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "map_color"
+        }, 
+        {
+            "offset": 145, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "attack_reaction"
+        }, 
+        {
+            "offset": 146, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "convert_terrain_flag"
+        }, 
+        {
+            "offset": 147, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "damage_sprite_num"
+        }, 
+        {
+            "offset": 148, 
+            "type": "RGE_Damage_Sprite_Info *", 
+            "size": 4, 
+            "name": "damage_sprites"
+        }, 
+        {
+            "offset": 152, 
+            "type": "long", 
+            "size": 4, 
+            "name": "help_string_id"
+        }, 
+        {
+            "offset": 156, 
+            "type": "long", 
+            "size": 4, 
+            "name": "help_page_id"
+        }, 
+        {
+            "offset": 160, 
+            "type": "long", 
+            "size": 4, 
+            "name": "hotkey_id"
+        }, 
+        {
+            "offset": 164, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "recyclable"
+        }, 
+        {
+            "offset": 165, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "track_as_resource"
+        }, 
+        {
+            "offset": 166, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "create_doppleganger_on_death"
+        }, 
+        {
+            "offset": 167, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "resource_group"
+        }, 
+        {
+            "offset": 168, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "draw_flag"
+        }, 
+        {
+            "offset": 169, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "draw_color"
+        }, 
+        {
+            "offset": 172, 
+            "type": "float", 
+            "size": 4, 
+            "name": "outline_radius_x"
+        }, 
+        {
+            "offset": 176, 
+            "type": "float", 
+            "size": 4, 
+            "name": "outline_radius_y"
+        }, 
+        {
+            "offset": 180, 
+            "type": "float", 
+            "size": 4, 
+            "name": "outline_radius_z"
+        }
+    ], 
+    "name": "RGE_Master_Static_Object"
+}

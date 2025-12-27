@@ -1,0 +1,25 @@
+{
+    "size": 64, 
+    "vtable": [
+        {
+            "signature": "void * `scalar_deleting_destructor'(istream * this, uint param_1)", 
+            "index": 0, 
+            "name": "`scalar_deleting_destructor'"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 4, 
+            "type": "int", 
+            "size": 4, 
+            "name": "_fGline"
+        }, 
+        {
+            "offset": 8, 
+            "type": "int", 
+            "size": 4, 
+            "name": "x_gcount"
+        }
+    ], 
+    "name": "istream"
+}

@@ -1,0 +1,428 @@
+// Class: TRIBE_Action_Artifact
+// Function: TRIBE_Action_Artifact
+// Address: 004ccba0
+/* public: __thiscall TRIBE_Action_Artifact::TRIBE_Action_Artifact(int,class RGE_Action_Object *) */
+
+TRIBE_Action_Artifact * __thiscall
+TRIBE_Action_Artifact::TRIBE_Action_Artifact
+          (TRIBE_Action_Artifact *this,int param_1,RGE_Action_Object *param_2)
+{
+  RGE_Action::RGE_Action((RGE_Action *)this,param_1,param_2,1);
+  *(undefined ***)this = &_vftable_;
+  *(undefined2 *)&this->field_0x4 = 0x6b;
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: `vector_deleting_destructor'
+// Address: 004ccbd0
+/* public: virtual void * __thiscall TRIBE_Action_Artifact::`vector deleting destructor'(unsigned
+   int) */
+
+void * __thiscall
+TRIBE_Action_Artifact::_vector_deleting_destructor_(TRIBE_Action_Artifact *this,uint param_1)
+{
+  ~TRIBE_Action_Artifact(this);
+  if ((param_1 & 1) != 0) {
+    operator_delete(this);
+  }
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: ~TRIBE_Action_Artifact
+// Address: 004ccbf0
+/* public: virtual __thiscall TRIBE_Action_Artifact::~TRIBE_Action_Artifact(void) */
+
+void __thiscall TRIBE_Action_Artifact::~TRIBE_Action_Artifact(TRIBE_Action_Artifact *this)
+{
+  RGE_Action_List *this_00;
+  
+  *(undefined ***)this = &RGE_Action::_vftable_;
+  RGE_Action::set_target_obj((RGE_Action *)this,(RGE_Static_Object *)0x0);
+  RGE_Action::set_target_obj2((RGE_Action *)this,(RGE_Static_Object *)0x0);
+  this_00 = *(RGE_Action_List **)&this->field_0x34;
+  if (this_00 != (RGE_Action_List *)0x0) {
+    RGE_Action_List::~RGE_Action_List(this_00);
+    operator_delete(this_00);
+    *(undefined4 *)&this->field_0x34 = 0;
+  }
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: TRIBE_Action_Artifact
+// Address: 004ccc00
+/* public: __thiscall TRIBE_Action_Artifact::TRIBE_Action_Artifact(class RGE_Action_Object *,class
+   RGE_Task *,class RGE_Static_Object *) */
+
+TRIBE_Action_Artifact * __thiscall
+TRIBE_Action_Artifact::TRIBE_Action_Artifact
+          (TRIBE_Action_Artifact *this,RGE_Action_Object *param_1,RGE_Task *param_2,
+          RGE_Static_Object *param_3)
+{
+  RGE_Action::RGE_Action((RGE_Action *)this,param_1,1);
+  *(undefined ***)this = &_vftable_;
+  *(undefined2 *)&this->field_0x4 = 0x6b;
+  *(RGE_Task **)&this->field_0x30 = param_2;
+  *(RGE_Static_Object **)&this->field_0x10 = param_3;
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: TRIBE_Action_Artifact
+// Address: 004ccc30
+/* public: __thiscall TRIBE_Action_Artifact::TRIBE_Action_Artifact(class RGE_Action_Object *,class
+   RGE_Task *,float,float,float) */
+
+TRIBE_Action_Artifact * __thiscall
+TRIBE_Action_Artifact::TRIBE_Action_Artifact
+          (TRIBE_Action_Artifact *this,RGE_Action_Object *param_1,RGE_Task *param_2,float param_3,
+          float param_4,float param_5)
+{
+  RGE_Action::RGE_Action((RGE_Action *)this,param_1,1);
+  *(RGE_Task **)&this->field_0x30 = param_2;
+  *(float *)&this->field_0x24 = param_4;
+  *(undefined ***)this = &_vftable_;
+  *(undefined2 *)&this->field_0x4 = 0x6b;
+  *(float *)&this->field_0x20 = param_3;
+  *(float *)&this->field_0x28 = param_5;
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: first_in_stack
+// Address: 004ccc70
+/* public: virtual void __thiscall TRIBE_Action_Artifact::first_in_stack(unsigned char) */
+
+void __thiscall TRIBE_Action_Artifact::first_in_stack(TRIBE_Action_Artifact *this,uchar param_1)
+{
+  if (param_1 != '\0') {
+    if (*(int *)&this->field_0x10 != 0) {
+      (**(code **)(*(int *)this + 0x5c))(5);
+      return;
+    }
+    if ((*(int *)&this->field_0x20 != -0x40800000) && (*(int *)&this->field_0x24 != -0x40800000)) {
+      (**(code **)(*(int *)this + 0x5c))(4);
+      return;
+    }
+    (**(code **)(*(int *)this + 0x5c))(6);
+  }
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_state
+// Address: 004cccb0
+/* protected: virtual void __thiscall TRIBE_Action_Artifact::set_state(unsigned char) */
+
+void __thiscall TRIBE_Action_Artifact::set_state(TRIBE_Action_Artifact *this,uchar param_1)
+{
+  int iVar1;
+  RGE_Action_Move_To *pRVar2;
+  RGE_Action *pRVar3;
+  undefined4 *unaff_FS_OFFSET;
+  undefined4 local_c;
+  code *pcStack_8;
+  undefined4 local_4;
+  
+  local_c = *unaff_FS_OFFSET;
+  local_4 = 0xffffffff;
+  pcStack_8 = FUN_0055fd76;
+  *unaff_FS_OFFSET = &local_c;
+  this->field_0xc = param_1;
+  if (param_1 == '\x04') {
+    RGE_Action_List::delete_list(*(RGE_Action_List **)&this->field_0x34);
+    pRVar2 = (RGE_Action_Move_To *)operator_new(0x44);
+    local_4 = 0;
+    if (pRVar2 == (RGE_Action_Move_To *)0x0) {
+      pRVar3 = (RGE_Action *)0x0;
+    }
+    else {
+      pRVar3 = (RGE_Action *)
+               RGE_Action_Move_To::RGE_Action_Move_To
+                         (pRVar2,*(RGE_Action_Object **)&this->field_0x8,*(float *)&this->field_0x20
+                          ,*(float *)&this->field_0x24,*(float *)&this->field_0x28,0.0,
+                          *(RGE_Sprite **)(*(int *)&this->field_0x30 + 0x34));
+    }
+  }
+  else {
+    if (param_1 != '\x05') {
+      if (param_1 == '\n') {
+        *(undefined4 *)&this->field_0x2c = 0x40400000;
+        *unaff_FS_OFFSET = local_c;
+        return;
+      }
+      goto LAB_004ccdd6;
+    }
+    RGE_Action_List::delete_list(*(RGE_Action_List **)&this->field_0x34);
+    iVar1 = *(int *)&this->field_0x10;
+    *(undefined4 *)&this->field_0x20 = *(undefined4 *)(iVar1 + 0x38);
+    *(undefined4 *)&this->field_0x24 = *(undefined4 *)(iVar1 + 0x3c);
+    *(undefined4 *)&this->field_0x28 = *(undefined4 *)(iVar1 + 0x40);
+    *(undefined4 *)&this->field_0x10 = 0;
+    pRVar2 = (RGE_Action_Move_To *)operator_new(0x44);
+    local_4 = 1;
+    if (pRVar2 == (RGE_Action_Move_To *)0x0) {
+      pRVar3 = (RGE_Action *)0x0;
+    }
+    else {
+      pRVar3 = (RGE_Action *)
+               RGE_Action_Move_To::RGE_Action_Move_To
+                         (pRVar2,*(RGE_Action_Object **)&this->field_0x8,*(float *)&this->field_0x20
+                          ,*(float *)&this->field_0x24,*(float *)&this->field_0x28,0.0,
+                          *(RGE_Sprite **)(*(int *)&this->field_0x30 + 0x34));
+    }
+  }
+  if (pRVar3 != (RGE_Action *)0x0) {
+    local_4 = 0xffffffff;
+    RGE_Action_List::add_action(*(RGE_Action_List **)&this->field_0x34,pRVar3);
+    (**(code **)(*(int *)this + 0x5c))(6);
+  }
+LAB_004ccdd6:
+  *unaff_FS_OFFSET = local_c;
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: update
+// Address: 004ccdf0
+/* public: virtual unsigned char __thiscall TRIBE_Action_Artifact::update(void) */
+
+uchar __thiscall TRIBE_Action_Artifact::update(TRIBE_Action_Artifact *this)
+{
+  float fVar1;
+  float fVar2;
+  byte bVar3;
+  RGE_Player *pRVar4;
+  
+  bVar3 = (**(code **)(**(int **)&this->field_0x34 + 0xc))();
+  if ((bVar3 != 0) && (bVar3 < 4)) {
+    RGE_Action_List::delete_list(*(RGE_Action_List **)&this->field_0x34);
+  }
+  switch(this->field_0xc) {
+  case 1:
+    return '\x01';
+  default:
+    return '\0';
+  case 6:
+    break;
+  case 10:
+    fVar1 = *(float *)&this->field_0x2c -
+            *(float *)(*(int *)(*(int *)(*(int *)&this->field_0x8 + 0xc) + 0x3c) + 0x84);
+    fVar2 = (float)(double)DAT_00574f08;
+    *(float *)&this->field_0x2c = fVar1;
+    if (fVar2 < fVar1) {
+      return '\0';
+    }
+    (**(code **)(*(int *)this + 0x5c))(6);
+    return '\0';
+  case 100:
+    (**(code **)(**(int **)&this->field_0x8 + 0x44))
+              (**(undefined4 **)(*(int *)((*(int **)&this->field_0x8)[3] + 0x3c) + 0x40));
+    (**(code **)(*(int *)this + 0x5c))(6);
+    return '\0';
+  }
+  pRVar4 = check_ownership(this);
+  if (pRVar4 == (RGE_Player *)0x0) {
+    (**(code **)(*(int *)this + 0x5c))(10);
+    return '\0';
+  }
+  RGE_Action_List::delete_list(*(RGE_Action_List **)&this->field_0x34);
+  (**(code **)(**(int **)&this->field_0x8 + 0x44))(pRVar4);
+  return '\0';
+}
+
+// --------------------------------------------------
+
+// Function: check_ownership
+// Address: 004ccf30
+/* WARNING: Variable defined which should be unmapped: x1 */
+/* protected: class RGE_Player * __thiscall TRIBE_Action_Artifact::check_ownership(void) */
+
+RGE_Player * __thiscall TRIBE_Action_Artifact::check_ownership(TRIBE_Action_Artifact *this)
+{
+  short sVar1;
+  int iVar2;
+  int *piVar3;
+  int iVar4;
+  short sVar5;
+  short sVar6;
+  short sVar7;
+  char *pcVar8;
+  uint uVar9;
+  short sVar10;
+  int iVar11;
+  int iVar12;
+  uint uVar13;
+  int iVar14;
+  char *pcVar15;
+  short x1;
+  short x0;
+  RGE_Map *map;
+  uchar *player_list;
+  short player_num;
+  
+  iVar11 = *(int *)&this->field_0x8;
+  map._0_2_ = __ftol();
+  sVar5 = __ftol();
+  x0 = __ftol();
+  sVar6 = __ftol();
+  iVar11 = *(int *)(*(int *)(iVar11 + 0xc) + 0x3c);
+  iVar2 = *(int *)(iVar11 + 0x28);
+  sVar1 = *(short *)(iVar11 + 0x3c);
+  uVar13 = (uint)sVar1;
+  pcVar8 = (char *)calloc(uVar13,1);
+  if (0 < sVar1) {
+    pcVar15 = pcVar8;
+    for (uVar9 = uVar13 >> 2; uVar9 != 0; uVar9 = uVar9 - 1) {
+      pcVar15[0] = '\0';
+      pcVar15[1] = '\0';
+      pcVar15[2] = '\0';
+      pcVar15[3] = '\0';
+      pcVar15 = pcVar15 + 4;
+    }
+    for (uVar13 = uVar13 & 3; uVar13 != 0; uVar13 = uVar13 - 1) {
+      *pcVar15 = '\0';
+      pcVar15 = pcVar15 + 1;
+    }
+  }
+  if ((short)map < 0) {
+    map._0_2_ = 0;
+  }
+  if (sVar5 < 0) {
+    sVar5 = 0;
+  }
+  if (*(int *)(iVar2 + 8) <= (int)x0) {
+    x0 = *(short *)(iVar2 + 8) + -1;
+  }
+  if (*(int *)(iVar2 + 0xc) <= (int)sVar6) {
+    sVar6 = *(short *)(iVar2 + 0xc) + -1;
+  }
+  if (sVar5 <= sVar6) {
+    player_list = (uchar *)(sVar5 * 4);
+    iVar11 = ((int)sVar6 - (int)sVar5) + 1;
+    do {
+      if ((short)map <= x0) {
+        iVar14 = (short)map * 0x18;
+        iVar12 = ((int)x0 - (int)(short)map) + 1;
+        do {
+          for (piVar3 = *(int **)(*(int *)(player_list + *(int *)(iVar2 + 0x8d8c)) + 0x10 + iVar14);
+              piVar3 != (int *)0x0; piVar3 = (int *)piVar3[1]) {
+            iVar4 = *piVar3;
+            sVar5 = *(short *)(*(int *)(iVar4 + 8) + 0x14);
+            if ((((sVar5 != 1) && (sVar5 != 0xb)) && (sVar5 != 0x1e)) &&
+               (*(char *)(iVar4 + 0x48) == '\x02')) {
+              pcVar8[*(short *)(*(int *)(iVar4 + 0xc) + 0x4a)] =
+                   pcVar8[*(short *)(*(int *)(iVar4 + 0xc) + 0x4a)] + '\x01';
+            }
+          }
+          iVar14 = iVar14 + 0x18;
+          iVar12 = iVar12 + -1;
+        } while (iVar12 != 0);
+      }
+      player_list = player_list + 4;
+      iVar11 = iVar11 + -1;
+    } while (iVar11 != 0);
+  }
+  sVar7 = 1;
+  sVar5 = -1;
+  sVar10 = 0;
+  pcVar15 = pcVar8;
+  sVar6 = 0;
+  if (1 < sVar1) {
+    do {
+      sVar10 = sVar6;
+      if (pcVar15[1] != '\0') {
+        sVar10 = sVar10 + 1;
+        sVar5 = sVar7;
+      }
+      sVar7 = sVar7 + 1;
+      pcVar15 = pcVar15 + 1;
+      sVar6 = sVar10;
+    } while (sVar7 < sVar1);
+  }
+  free(pcVar8);
+  if (((sVar10 == 1) && (0 < sVar5)) &&
+     (iVar11 = *(int *)(*(int *)&this->field_0x8 + 0xc), sVar5 != *(short *)(iVar11 + 0x4a))) {
+    return *(RGE_Player **)(*(int *)(*(int *)(iVar11 + 0x3c) + 0x40) + sVar5 * 4);
+  }
+  return (RGE_Player *)0x0;
+}
+
+// --------------------------------------------------
+
+// Function: stop
+// Address: 004cd120
+/* protected: virtual int __thiscall TRIBE_Action_Artifact::stop(void) */
+
+int __thiscall TRIBE_Action_Artifact::stop(TRIBE_Action_Artifact *this)
+{
+  (**(code **)(*(int *)this + 0x5c))(6);
+  return 1;
+}
+
+// --------------------------------------------------
+
+// Function: move_to
+// Address: 004cd130
+/* protected: virtual int __thiscall TRIBE_Action_Artifact::move_to(class RGE_Static_Object
+   *,float,float,float) */
+
+int __thiscall
+TRIBE_Action_Artifact::move_to
+          (TRIBE_Action_Artifact *this,RGE_Static_Object *param_1,float param_2,float param_3,
+          float param_4)
+{
+  *(float *)&this->field_0x20 = param_2;
+  *(float *)&this->field_0x24 = param_3;
+  *(float *)&this->field_0x28 = param_4;
+  (**(code **)(*(int *)this + 0x5c))(4);
+  return 1;
+}
+
+// --------------------------------------------------
+
+// Function: work
+// Address: 004cd160
+/* protected: virtual int __thiscall TRIBE_Action_Artifact::work(class RGE_Static_Object
+   *,float,float,float) */
+
+int __thiscall
+TRIBE_Action_Artifact::work
+          (TRIBE_Action_Artifact *this,RGE_Static_Object *param_1,float param_2,float param_3,
+          float param_4)
+{
+  if (param_1 != (RGE_Static_Object *)0x0) {
+    *(RGE_Static_Object **)&this->field_0x10 = param_1;
+    (**(code **)(*(int *)this + 0x5c))(5);
+    return 1;
+  }
+  *(float *)&this->field_0x20 = param_2;
+  *(float *)&this->field_0x24 = param_3;
+  *(float *)&this->field_0x28 = param_4;
+  (**(code **)(*(int *)this + 0x5c))(4);
+  return 1;
+}
+
+// --------------------------------------------------
+
+// Function: reset_owner
+// Address: 004cd1a0
+/* public: void __thiscall TRIBE_Action_Artifact::reset_owner(void) */
+
+void __thiscall TRIBE_Action_Artifact::reset_owner(TRIBE_Action_Artifact *this)
+{
+  (**(code **)(*(int *)this + 0x5c))(100);
+  return;
+}
+
+// --------------------------------------------------
+

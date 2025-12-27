@@ -1,0 +1,647 @@
+{
+    "size": 4692, 
+    "vtable": [
+        {
+            "signature": "void * `vector_deleting_destructor'(TRIBE_Game * this, uint param_1)", 
+            "index": 0, 
+            "name": "`vector_deleting_destructor'"
+        }, 
+        {
+            "signature": "int run(RGE_Base_Game * this)", 
+            "index": 1, 
+            "name": "run"
+        }, 
+        {
+            "signature": "long wnd_proc(void * param_1, uint param_2, uint param_3, long param_4)", 
+            "index": 2, 
+            "name": "wnd_proc"
+        }, 
+        {
+            "signature": "void set_prog_mode(RGE_Base_Game * this, int param_1)", 
+            "index": 3, 
+            "name": "set_prog_mode"
+        }, 
+        {
+            "signature": "void set_game_mode(TRIBE_Game * this, int param_1, int param_2)", 
+            "index": 4, 
+            "name": "set_game_mode"
+        }, 
+        {
+            "signature": "void set_player(TRIBE_Game * this, short param_1)", 
+            "index": 5, 
+            "name": "set_player"
+        }, 
+        {
+            "signature": "int get_error_code(RGE_Base_Game * this)", 
+            "index": 6, 
+            "name": "get_error_code"
+        }, 
+        {
+            "signature": "char * get_string(RGE_Base_Game * this, int param_1, long param_2, char * param_3, int param_4)", 
+            "index": 7, 
+            "name": "get_string"
+        }, 
+        {
+            "signature": "char * get_string(TRIBE_Game * this, long param_1, char * param_2, int param_3)", 
+            "index": 8, 
+            "name": "get_string"
+        }, 
+        {
+            "signature": "char * get_string(RGE_Base_Game * this, long param_1)", 
+            "index": 9, 
+            "name": "get_string"
+        }, 
+        {
+            "signature": "char * get_string2(TRIBE_Game * this, int param_1, long param_2, long param_3, char * param_4, int param_5)", 
+            "index": 10, 
+            "name": "get_string2"
+        }, 
+        {
+            "signature": "TPanel * get_view_panel(TRIBE_Game * this)", 
+            "index": 11, 
+            "name": "get_view_panel"
+        }, 
+        {
+            "signature": "TPanel * get_map_panel(TRIBE_Game * this)", 
+            "index": 12, 
+            "name": "get_map_panel"
+        }, 
+        {
+            "signature": "RGE_Scenario_Header * new_scenario_header(TRIBE_Game * this, RGE_Scenario * param_1)", 
+            "index": 13, 
+            "name": "new_scenario_header"
+        }, 
+        {
+            "signature": "RGE_Scenario_Header * new_scenario_header(TRIBE_Game * this, int param_1)", 
+            "index": 14, 
+            "name": "new_scenario_header"
+        }, 
+        {
+            "signature": "RGE_Scenario * new_scenario_info(TRIBE_Game * this, int param_1)", 
+            "index": 15, 
+            "name": "new_scenario_info"
+        }, 
+        {
+            "signature": "void notification(TRIBE_Game * this, int param_1, long param_2, long param_3, long param_4, long param_5)", 
+            "index": 16, 
+            "name": "notification"
+        }, 
+        {
+            "signature": "int reset_comm(RGE_Base_Game * this)", 
+            "index": 17, 
+            "name": "reset_comm"
+        }, 
+        {
+            "signature": "void send_game_options(TRIBE_Game * this)", 
+            "index": 18, 
+            "name": "send_game_options"
+        }, 
+        {
+            "signature": "void receive_game_options(TRIBE_Game * this)", 
+            "index": 19, 
+            "name": "receive_game_options"
+        }, 
+        {
+            "signature": "char * gameSummary(TRIBE_Game * this)", 
+            "index": 20, 
+            "name": "gameSummary"
+        }, 
+        {
+            "signature": "int processCheatCode(TRIBE_Game * this, int param_1, char * param_2)", 
+            "index": 21, 
+            "name": "processCheatCode"
+        }, 
+        {
+            "signature": "int setup_music_system(RGE_Base_Game * this)", 
+            "index": 22, 
+            "name": "setup_music_system"
+        }, 
+        {
+            "signature": "void shutdown_music_system(RGE_Base_Game * this)", 
+            "index": 23, 
+            "name": "shutdown_music_system"
+        }, 
+        {
+            "signature": "int setup(TRIBE_Game * this)", 
+            "index": 24, 
+            "name": "setup"
+        }, 
+        {
+            "signature": "int setup_cmd_options(TRIBE_Game * this)", 
+            "index": 25, 
+            "name": "setup_cmd_options"
+        }, 
+        {
+            "signature": "int setup_class(RGE_Base_Game * this)", 
+            "index": 26, 
+            "name": "setup_class"
+        }, 
+        {
+            "signature": "int setup_main_window(RGE_Base_Game * this)", 
+            "index": 27, 
+            "name": "setup_main_window"
+        }, 
+        {
+            "signature": "int setup_graphics_system(RGE_Base_Game * this)", 
+            "index": 28, 
+            "name": "setup_graphics_system"
+        }, 
+        {
+            "signature": "int setup_palette(TRIBE_Game * this)", 
+            "index": 29, 
+            "name": "setup_palette"
+        }, 
+        {
+            "signature": "int setup_mouse(RGE_Base_Game * this)", 
+            "index": 30, 
+            "name": "setup_mouse"
+        }, 
+        {
+            "signature": "int setup_registry(RGE_Base_Game * this)", 
+            "index": 31, 
+            "name": "setup_registry"
+        }, 
+        {
+            "signature": "int setup_debugging_log(RGE_Base_Game * this)", 
+            "index": 32, 
+            "name": "setup_debugging_log"
+        }, 
+        {
+            "signature": "int setup_chat(RGE_Base_Game * this)", 
+            "index": 33, 
+            "name": "setup_chat"
+        }, 
+        {
+            "signature": "int setup_comm(RGE_Base_Game * this)", 
+            "index": 34, 
+            "name": "setup_comm"
+        }, 
+        {
+            "signature": "int setup_sound_system(RGE_Base_Game * this)", 
+            "index": 35, 
+            "name": "setup_sound_system"
+        }, 
+        {
+            "signature": "int setup_fonts(RGE_Base_Game * this)", 
+            "index": 36, 
+            "name": "setup_fonts"
+        }, 
+        {
+            "signature": "int setup_sounds(TRIBE_Game * this)", 
+            "index": 37, 
+            "name": "setup_sounds"
+        }, 
+        {
+            "signature": "int setup_shapes(RGE_Base_Game * this)", 
+            "index": 38, 
+            "name": "setup_shapes"
+        }, 
+        {
+            "signature": "int setup_blank_screen(RGE_Base_Game * this)", 
+            "index": 39, 
+            "name": "setup_blank_screen"
+        }, 
+        {
+            "signature": "void setup_timings(RGE_Base_Game * this)", 
+            "index": 40, 
+            "name": "setup_timings"
+        }, 
+        {
+            "signature": "void stop_sound_system(RGE_Base_Game * this)", 
+            "index": 41, 
+            "name": "stop_sound_system"
+        }, 
+        {
+            "signature": "int restart_sound_system(RGE_Base_Game * this)", 
+            "index": 42, 
+            "name": "restart_sound_system"
+        }, 
+        {
+            "signature": "void stop_music_system(RGE_Base_Game * this)", 
+            "index": 43, 
+            "name": "stop_music_system"
+        }, 
+        {
+            "signature": "int restart_music_system(RGE_Base_Game * this)", 
+            "index": 44, 
+            "name": "restart_music_system"
+        }, 
+        {
+            "signature": "RGE_Game_World * create_world(TRIBE_Game * this)", 
+            "index": 45, 
+            "name": "create_world"
+        }, 
+        {
+            "signature": "int handle_message(RGE_Base_Game * this, tagMSG * param_1)", 
+            "index": 46, 
+            "name": "handle_message"
+        }, 
+        {
+            "signature": "int handle_idle(TRIBE_Game * this)", 
+            "index": 47, 
+            "name": "handle_idle"
+        }, 
+        {
+            "signature": "int handle_mouse_move(RGE_Base_Game * this, void * param_1, uint param_2, uint param_3, long param_4)", 
+            "index": 48, 
+            "name": "handle_mouse_move"
+        }, 
+        {
+            "signature": "int handle_key_down(RGE_Base_Game * this, void * param_1, uint param_2, uint param_3, long param_4)", 
+            "index": 49, 
+            "name": "handle_key_down"
+        }, 
+        {
+            "signature": "int handle_user_command(RGE_Base_Game * this, void * param_1, uint param_2, uint param_3, long param_4)", 
+            "index": 50, 
+            "name": "handle_user_command"
+        }, 
+        {
+            "signature": "int handle_command(RGE_Base_Game * this, void * param_1, uint param_2, uint param_3, long param_4)", 
+            "index": 51, 
+            "name": "handle_command"
+        }, 
+        {
+            "signature": "int handle_music_done(RGE_Base_Game * this, void * param_1, uint param_2, uint param_3, long param_4)", 
+            "index": 52, 
+            "name": "handle_music_done"
+        }, 
+        {
+            "signature": "int handle_paint(RGE_Base_Game * this, void * param_1, uint param_2, uint param_3, long param_4)", 
+            "index": 53, 
+            "name": "handle_paint"
+        }, 
+        {
+            "signature": "int handle_activate(TRIBE_Game * this, void * param_1, uint param_2, uint param_3, long param_4)", 
+            "index": 54, 
+            "name": "handle_activate"
+        }, 
+        {
+            "signature": "int handle_init_menu(RGE_Base_Game * this, void * param_1, uint param_2, uint param_3, long param_4)", 
+            "index": 55, 
+            "name": "handle_init_menu"
+        }, 
+        {
+            "signature": "int handle_exit_menu(RGE_Base_Game * this, void * param_1, uint param_2, uint param_3, long param_4)", 
+            "index": 56, 
+            "name": "handle_exit_menu"
+        }, 
+        {
+            "signature": "int handle_size(RGE_Base_Game * this, void * param_1, uint param_2, uint param_3, long param_4)", 
+            "index": 57, 
+            "name": "handle_size"
+        }, 
+        {
+            "signature": "int handle_palette_changed(RGE_Base_Game * this, void * param_1, uint param_2, uint param_3, long param_4)", 
+            "index": 58, 
+            "name": "handle_palette_changed"
+        }, 
+        {
+            "signature": "int handle_query_new_palette(TRIBE_Game * this, void * param_1, uint param_2, uint param_3, long param_4)", 
+            "index": 59, 
+            "name": "handle_query_new_palette"
+        }, 
+        {
+            "signature": "int handle_close(RGE_Base_Game * this, void * param_1, uint param_2, uint param_3, long param_4)", 
+            "index": 60, 
+            "name": "handle_close"
+        }, 
+        {
+            "signature": "int handle_destroy(RGE_Base_Game * this, void * param_1, uint param_2, uint param_3, long param_4)", 
+            "index": 61, 
+            "name": "handle_destroy"
+        }, 
+        {
+            "signature": "int action_update(RGE_Base_Game * this)", 
+            "index": 62, 
+            "name": "action_update"
+        }, 
+        {
+            "signature": "int action_mouse_move(RGE_Base_Game * this, long param_1, long param_2, int param_3, int param_4, int param_5, int param_6)", 
+            "index": 63, 
+            "name": "action_mouse_move"
+        }, 
+        {
+            "signature": "int action_key_down(TRIBE_Game * this, ulong param_1, int param_2, int param_3, int param_4, int param_5)", 
+            "index": 64, 
+            "name": "action_key_down"
+        }, 
+        {
+            "signature": "int action_user_command(TRIBE_Game * this, ulong param_1, ulong param_2)", 
+            "index": 65, 
+            "name": "action_user_command"
+        }, 
+        {
+            "signature": "int action_command(RGE_Base_Game * this, ulong param_1, ulong param_2)", 
+            "index": 66, 
+            "name": "action_command"
+        }, 
+        {
+            "signature": "int action_music_done(RGE_Base_Game * this)", 
+            "index": 67, 
+            "name": "action_music_done"
+        }, 
+        {
+            "signature": "int action_activate(RGE_Base_Game * this)", 
+            "index": 68, 
+            "name": "action_activate"
+        }, 
+        {
+            "signature": "int action_deactivate(RGE_Base_Game * this)", 
+            "index": 69, 
+            "name": "action_deactivate"
+        }, 
+        {
+            "signature": "int action_init_menu(RGE_Base_Game * this)", 
+            "index": 70, 
+            "name": "action_init_menu"
+        }, 
+        {
+            "signature": "int action_exit_menu(RGE_Base_Game * this)", 
+            "index": 71, 
+            "name": "action_exit_menu"
+        }, 
+        {
+            "signature": "int action_size(RGE_Base_Game * this)", 
+            "index": 72, 
+            "name": "action_size"
+        }, 
+        {
+            "signature": "int action_close(TRIBE_Game * this)", 
+            "index": 73, 
+            "name": "action_close"
+        }, 
+        {
+            "signature": "void calc_timings(RGE_Base_Game * this)", 
+            "index": 74, 
+            "name": "calc_timings"
+        }, 
+        {
+            "signature": "void calc_timing_text(TRIBE_Game * this)", 
+            "index": 75, 
+            "name": "calc_timing_text"
+        }, 
+        {
+            "signature": "void show_timings(TRIBE_Game * this)", 
+            "index": 76, 
+            "name": "show_timings"
+        }, 
+        {
+            "signature": "void show_comm(TRIBE_Game * this)", 
+            "index": 77, 
+            "name": "show_comm"
+        }, 
+        {
+            "signature": "void show_ai(TRIBE_Game * this)", 
+            "index": 78, 
+            "name": "show_ai"
+        }, 
+        {
+            "signature": "int setup_map_save_area(RGE_Base_Game * this)", 
+            "index": 79, 
+            "name": "setup_map_save_area"
+        }, 
+        {
+            "signature": "void set_interface_messages(TRIBE_Game * this)", 
+            "index": 80, 
+            "name": "set_interface_messages"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 2596, 
+            "type": "MouseClickInfo *", 
+            "size": 4, 
+            "name": "MouseRightClickTable"
+        }, 
+        {
+            "offset": 2600, 
+            "type": "int", 
+            "size": 4, 
+            "name": "MouseRightClickTableSize"
+        }, 
+        {
+            "offset": 2604, 
+            "type": "MouseClickInfo *", 
+            "size": 4, 
+            "name": "MouseLeftClickTable"
+        }, 
+        {
+            "offset": 2608, 
+            "type": "int", 
+            "size": 4, 
+            "name": "MouseLeftClickTableSize"
+        }, 
+        {
+            "offset": 2612, 
+            "type": "long[9]", 
+            "size": 36, 
+            "name": "queue_is_waiting_on_pop_counter"
+        }, 
+        {
+            "offset": 2648, 
+            "type": "int[9]", 
+            "size": 36, 
+            "name": "random_civ"
+        }, 
+        {
+            "offset": 2684, 
+            "type": "TRIBE_Game_Options", 
+            "size": 108, 
+            "name": "tribe_game_options"
+        }, 
+        {
+            "offset": 2792, 
+            "type": "char[260]", 
+            "size": 260, 
+            "name": "testing_scenario"
+        }, 
+        {
+            "offset": 3052, 
+            "type": "void *", 
+            "size": 4, 
+            "name": "video_window"
+        }, 
+        {
+            "offset": 3056, 
+            "type": "int", 
+            "size": 4, 
+            "name": "cur_video"
+        }, 
+        {
+            "offset": 3060, 
+            "type": "void *", 
+            "size": 4, 
+            "name": "old_video_wnd_proc"
+        }, 
+        {
+            "offset": 3064, 
+            "type": "int", 
+            "size": 4, 
+            "name": "video_paused"
+        }, 
+        {
+            "offset": 3068, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "last_video_time"
+        }, 
+        {
+            "offset": 3072, 
+            "type": "int", 
+            "size": 4, 
+            "name": "video_setup"
+        }, 
+        {
+            "offset": 3076, 
+            "type": "int", 
+            "size": 4, 
+            "name": "video_double_size"
+        }, 
+        {
+            "offset": 3080, 
+            "type": "int", 
+            "size": 4, 
+            "name": "video_changed_res"
+        }, 
+        {
+            "offset": 3084, 
+            "type": "int", 
+            "size": 4, 
+            "name": "video_hi_color"
+        }, 
+        {
+            "offset": 3088, 
+            "type": "long", 
+            "size": 4, 
+            "name": "video_save_res_wid"
+        }, 
+        {
+            "offset": 3092, 
+            "type": "long", 
+            "size": 4, 
+            "name": "video_save_res_hgt"
+        }, 
+        {
+            "offset": 3096, 
+            "type": "void *", 
+            "size": 4, 
+            "name": "video_save_palette"
+        }, 
+        {
+            "offset": 3100, 
+            "type": "int", 
+            "size": 4, 
+            "name": "started_menu_music"
+        }, 
+        {
+            "offset": 3104, 
+            "type": "int", 
+            "size": 4, 
+            "name": "show_object_id"
+        }, 
+        {
+            "offset": 3108, 
+            "type": "TRIBE_Screen_Game *", 
+            "size": 4, 
+            "name": "game_screen"
+        }, 
+        {
+            "offset": 3112, 
+            "type": "long[5]", 
+            "size": 20, 
+            "name": "notification_loc_x"
+        }, 
+        {
+            "offset": 3132, 
+            "type": "long[5]", 
+            "size": 20, 
+            "name": "notification_loc_y"
+        }, 
+        {
+            "offset": 3152, 
+            "type": "long", 
+            "size": 4, 
+            "name": "current_notification_loc"
+        }, 
+        {
+            "offset": 3156, 
+            "type": "long", 
+            "size": 4, 
+            "name": "current_notification_recalled"
+        }, 
+        {
+            "offset": 3160, 
+            "type": "char[260]", 
+            "size": 260, 
+            "name": "startup_scenario"
+        }, 
+        {
+            "offset": 3420, 
+            "type": "char[260]", 
+            "size": 260, 
+            "name": "startup_game"
+        }, 
+        {
+            "offset": 3680, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "auto_exit_time"
+        }, 
+        {
+            "offset": 3684, 
+            "type": "char[260]", 
+            "size": 260, 
+            "name": "save_game_name"
+        }, 
+        {
+            "offset": 3944, 
+            "type": "char[260]", 
+            "size": 260, 
+            "name": "load_game_name"
+        }, 
+        {
+            "offset": 4204, 
+            "type": "char[256]", 
+            "size": 256, 
+            "name": "timing_text2"
+        }, 
+        {
+            "offset": 4460, 
+            "type": "int[9]", 
+            "size": 36, 
+            "name": "save_humanity"
+        }, 
+        {
+            "offset": 4496, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "quick_start_game"
+        }, 
+        {
+            "offset": 4500, 
+            "type": "int", 
+            "size": 4, 
+            "name": "random_start_value"
+        }, 
+        {
+            "offset": 4504, 
+            "type": "uchar[18][10]", 
+            "size": 180, 
+            "name": "computerNameUsed"
+        }, 
+        {
+            "offset": 4684, 
+            "type": "void *", 
+            "size": 4, 
+            "name": "handleIdleLock"
+        }, 
+        {
+            "offset": 4688, 
+            "type": "int", 
+            "size": 4, 
+            "name": "inHandleIdle"
+        }
+    ], 
+    "name": "TRIBE_Game"
+}

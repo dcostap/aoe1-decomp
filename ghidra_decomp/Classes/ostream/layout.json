@@ -1,0 +1,19 @@
+{
+    "size": 60, 
+    "vtable": [
+        {
+            "signature": "void * `scalar_deleting_destructor'(ostream * this, uint param_1)", 
+            "index": 0, 
+            "name": "`scalar_deleting_destructor'"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 4, 
+            "type": "int", 
+            "size": 4, 
+            "name": "x_floatused"
+        }
+    ], 
+    "name": "ostream"
+}

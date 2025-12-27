@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+// Address: 0x004439B0
 TDrawArea::TDrawArea(const char *name, int system_mem) {
     memset(this, 0, sizeof(TDrawArea));
     this->SystemMemOnly = system_mem;
@@ -12,12 +13,14 @@ TDrawArea::TDrawArea(const char *name, int system_mem) {
     }
 }
 
+// Address: 0x00443A40
 TDrawArea::~TDrawArea() {
     if (this->Name) {
         free(this->Name);
     }
 }
 
+// Address: 0x00443B00
 int TDrawArea::Init(TDrawSystem *draw_system, int width, int height, int using_vid_mem, int is_primary_surface) {
     this->DrawSystem = draw_system;
     this->IsPrimarySurface = is_primary_surface;
@@ -29,6 +32,7 @@ int TDrawArea::Init(TDrawSystem *draw_system, int width, int height, int using_v
     return (this->DrawSurface != nullptr);
 }
 
+// Address: 0x00443C00
 void TDrawArea::SetSize(int width, int height, int extended_lines) {
     if (width < 1) width = 1;
     if (height < 1) height = 1;
@@ -123,6 +127,7 @@ void TDrawArea::SetSize(int width, int height, int extended_lines) {
     this->SetClipRect(nullptr);
 }
 
+// Address: 0x00443F00
 void TDrawArea::Clear(RECT *rect, int color) {
     if (this->DrawSurface) {
         DDBLTFX ddbltfx;

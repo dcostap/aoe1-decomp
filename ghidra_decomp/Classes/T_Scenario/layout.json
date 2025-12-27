@@ -1,0 +1,112 @@
+{
+    "size": 20812, 
+    "vtable": [
+        {
+            "signature": "RGE_Static_Object * get_object_pointer(T_Scenario * this, int param_1)", 
+            "index": 0, 
+            "name": "get_object_pointer"
+        }, 
+        {
+            "signature": "void * `vector_deleting_destructor'(T_Scenario * this, uint param_1)", 
+            "index": 1, 
+            "name": "`vector_deleting_destructor'"
+        }, 
+        {
+            "signature": "void rehook(T_Scenario * this)", 
+            "index": 2, 
+            "name": "rehook"
+        }, 
+        {
+            "signature": "void save(T_Scenario * this, int param_1)", 
+            "index": 3, 
+            "name": "save"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 6544, 
+            "type": "Player_Start_Info[16]", 
+            "size": 256, 
+            "name": "player_info"
+        }, 
+        {
+            "offset": 6800, 
+            "type": "Victory_StartInfo", 
+            "size": 24, 
+            "name": "victory"
+        }, 
+        {
+            "offset": 6824, 
+            "type": "SP_Victory_Info[16][12]", 
+            "size": 11520, 
+            "name": "sp_victory"
+        }, 
+        {
+            "offset": 18344, 
+            "type": "Friendliness[16]", 
+            "size": 1024, 
+            "name": "Opponent"
+        }, 
+        {
+            "offset": 19368, 
+            "type": "int[16]", 
+            "size": 64, 
+            "name": "AlliedVictory"
+        }, 
+        {
+            "offset": 19432, 
+            "type": "int", 
+            "size": 4, 
+            "name": "victory_all_flag"
+        }, 
+        {
+            "offset": 19436, 
+            "type": "int", 
+            "size": 4, 
+            "name": "is_multi_player_flag"
+        }, 
+        {
+            "offset": 19440, 
+            "type": "int", 
+            "size": 4, 
+            "name": "which_player"
+        }, 
+        {
+            "offset": 19444, 
+            "type": "int[16][20]", 
+            "size": 1280, 
+            "name": "DisabledTechnology"
+        }, 
+        {
+            "offset": 20724, 
+            "type": "int[3]", 
+            "size": 12, 
+            "name": "ScenarioOptions"
+        }, 
+        {
+            "offset": 20736, 
+            "type": "int[16]", 
+            "size": 64, 
+            "name": "PlayerAge"
+        }, 
+        {
+            "offset": 20800, 
+            "type": "int", 
+            "size": 4, 
+            "name": "mp_victory_type"
+        }, 
+        {
+            "offset": 20804, 
+            "type": "int", 
+            "size": 4, 
+            "name": "victory_score"
+        }, 
+        {
+            "offset": 20808, 
+            "type": "int", 
+            "size": 4, 
+            "name": "victory_time"
+        }
+    ], 
+    "name": "T_Scenario"
+}

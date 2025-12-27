@@ -1,0 +1,51 @@
+{
+    "size": 80, 
+    "vtable": [
+        {
+            "signature": "void * `vector_deleting_destructor'(AIPlayBook * this, uint param_1)", 
+            "index": 0, 
+            "name": "`vector_deleting_destructor'"
+        }, 
+        {
+            "signature": "int convertTargetNameToIntType(AIPlayBook * this, char * param_1)", 
+            "index": 1, 
+            "name": "convertTargetNameToIntType"
+        }, 
+        {
+            "signature": "int convertTargetCharacteristicNameToIntType(AIPlayBook * this, char * param_1)", 
+            "index": 2, 
+            "name": "convertTargetCharacteristicNameToIntType"
+        }, 
+        {
+            "signature": "int convertUnitNameToIntType(AIPlayBook * this, char * param_1)", 
+            "index": 3, 
+            "name": "convertUnitNameToIntType"
+        }, 
+        {
+            "signature": "int convertUnitToIntType(AIPlayBook * this, RGE_Static_Object * param_1)", 
+            "index": 4, 
+            "name": "convertUnitToIntType"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 4, 
+            "type": "int", 
+            "size": 4, 
+            "name": "numberPlaysValue"
+        }, 
+        {
+            "offset": 8, 
+            "type": "char[65]", 
+            "size": 65, 
+            "name": "nameValue"
+        }, 
+        {
+            "offset": 76, 
+            "type": "AIPlay *", 
+            "size": 4, 
+            "name": "plays"
+        }
+    ], 
+    "name": "AIPlayBook"
+}

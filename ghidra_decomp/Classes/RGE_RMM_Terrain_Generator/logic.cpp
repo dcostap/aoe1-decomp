@@ -1,0 +1,781 @@
+// Class: RGE_RMM_Terrain_Generator
+// Function: RGE_RMM_Terrain_Generator
+// Address: 004888e0
+/* public: __thiscall RGE_RMM_Terrain_Generator::RGE_RMM_Terrain_Generator(class RGE_Map *,class
+   RGE_Random_Map_Module *,struct RGE_Terrain_Info *) */
+
+RGE_RMM_Terrain_Generator * __thiscall
+RGE_RMM_Terrain_Generator::RGE_RMM_Terrain_Generator
+          (RGE_RMM_Terrain_Generator *this,RGE_Map *param_1,RGE_Random_Map_Module *param_2,
+          RGE_Terrain_Info *param_3)
+{
+  int iVar1;
+  RGE_Terrain_Info *pRVar2;
+  
+  RGE_Random_Map_Module::RGE_Random_Map_Module((RGE_Random_Map_Module *)this,param_1,param_2,'\x01')
+  ;
+  this->_padding_ = (int)&_vftable_;
+  pRVar2 = &this->info;
+  for (iVar1 = 0x4a6; iVar1 != 0; iVar1 = iVar1 + -1) {
+    pRVar2->terrain[0].terrain_size = param_3->terrain[0].terrain_size;
+    param_3 = (RGE_Terrain_Info *)&param_3->terrain[0].terrain_generated;
+    pRVar2 = (RGE_Terrain_Info *)&pRVar2->terrain[0].terrain_generated;
+  }
+  this->_padding_ = 0x40000000;
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: generate
+// Address: 00488920
+/* WARNING: Variable defined which should be unmapped: index */
+/* public: virtual unsigned char __thiscall RGE_RMM_Terrain_Generator::generate(void) */
+
+uchar __thiscall RGE_RMM_Terrain_Generator::generate(RGE_RMM_Terrain_Generator *this)
+{
+  float fVar1;
+  RGE_Terrain_Info_Line RVar2;
+  long lVar3;
+  RGE_Zone_Map *pRVar4;
+  float *pfVar5;
+  int iVar6;
+  int iVar7;
+  undefined4 *puVar8;
+  undefined4 *puVar9;
+  undefined1 in_stack_fffffe40 [20];
+  undefined4 uVar10;
+  undefined4 uVar11;
+  long index;
+  float terrain_table [99];
+  
+  generate_modifiers(this);
+  pfVar5 = terrain_table;
+  terrain_table[0] = 0.0;
+  do {
+    pfVar5 = pfVar5 + 1;
+    fVar1 = (float)(int)terrain_table[0];
+    terrain_table[0] = (float)((int)terrain_table[0] + 1);
+    *pfVar5 = fVar1;
+  } while ((int)terrain_table[0] < 99);
+  uVar10 = 0x488964;
+  lVar3 = RGE_Zone_Map_List::create_zone_map
+                    (*(RGE_Zone_Map_List **)(this->_padding_ + 0x8dc4),terrain_table + 1,99);
+  uVar11 = 0x488973;
+  pRVar4 = RGE_Zone_Map_List::get_zone_map(*(RGE_Zone_Map_List **)(this->_padding_ + 0x8dc4),lVar3);
+  this->map_zone = pRVar4;
+  iVar7 = 0;
+  if (0 < (this->info).terrain_num) {
+    terrain_table[0] = (float)&this->info;
+    do {
+      puVar8 = (undefined4 *)terrain_table[0];
+      puVar9 = (undefined4 *)&stack0xfffffe40;
+      for (iVar6 = 8; iVar6 != 0; iVar6 = iVar6 + -1) {
+        *puVar9 = *puVar8;
+        puVar8 = puVar8 + 1;
+        puVar9 = puVar9 + 1;
+      }
+      RVar2.base_terrain_type = uVar10;
+      RVar2.terrain_size = in_stack_fffffe40._0_4_;
+      RVar2.terrain_generated = in_stack_fffffe40._4_4_;
+      RVar2.terrain_type = in_stack_fffffe40._8_4_;
+      RVar2.clumps = in_stack_fffffe40._12_4_;
+      RVar2.spacing = in_stack_fffffe40._16_4_;
+      RVar2.clumpiness_factor = uVar11;
+      RVar2.avoid_hot_spots = lVar3;
+      base_terrain_generate(this,RVar2);
+      iVar7 = iVar7 + 1;
+      terrain_table[0] = (float)((int)terrain_table[0] + 0x20);
+    } while (iVar7 < (this->info).terrain_num);
+  }
+  check_borders(this);
+  return '\x01';
+}
+
+// --------------------------------------------------
+
+// Function: water
+// Address: 004889d0
+/* protected: unsigned char __thiscall RGE_RMM_Terrain_Generator::water(unsigned char) */
+
+uchar __thiscall RGE_RMM_Terrain_Generator::water(RGE_RMM_Terrain_Generator *this,uchar param_1)
+{
+  if (param_1 == '\x01') {
+    return param_1;
+  }
+  if (param_1 == '\x04') {
+    return '\x01';
+  }
+  return param_1 == '\x16';
+}
+
+// --------------------------------------------------
+
+// Function: check_borders
+// Address: 004889f0
+/* WARNING: Variable defined which should be unmapped: max_y */
+/* protected: void __thiscall RGE_RMM_Terrain_Generator::check_borders(void) */
+
+void __thiscall RGE_RMM_Terrain_Generator::check_borders(RGE_RMM_Terrain_Generator *this)
+{
+  int iVar1;
+  int iVar2;
+  bool bVar3;
+  uchar uVar4;
+  int iVar5;
+  int iVar6;
+  int iVar7;
+  long max_y;
+  long x;
+  long max_x;
+  
+  iVar6 = 0;
+  iVar1 = this->_padding_ + -1;
+  iVar5 = this->_padding_;
+  iVar2 = iVar5 + -1;
+  if (0 < this->_padding_) {
+    do {
+      iVar7 = 0;
+      max_x = 0;
+      if (0 < iVar5) {
+        do {
+          uVar4 = water(this,*(byte *)(*(int *)(this->_padding_ + iVar6 * 4) + 5 + iVar7) & 0x1f);
+          if (uVar4 == '\0') {
+            bVar3 = false;
+            if (((0 < iVar6) &&
+                (uVar4 = water(this,*(byte *)(*(int *)(this->_padding_ + -4 + iVar6 * 4) + 5 + iVar7
+                                             ) & 0x1f), uVar4 != '\0')) ||
+               ((iVar6 < iVar1 &&
+                (uVar4 = water(this,*(byte *)(*(int *)(this->_padding_ + 4 + iVar6 * 4) + 5 + iVar7)
+                                    & 0x1f), uVar4 != '\0')))) {
+              bVar3 = true;
+            }
+            if ((0 < iVar7) &&
+               (((uVar4 = water(this,*(byte *)(*(int *)(this->_padding_ + iVar6 * 4) + -0x13 + iVar7
+                                              ) & 0x1f), uVar4 != '\0' ||
+                 ((0 < iVar6 &&
+                  (uVar4 = water(this,*(byte *)(*(int *)(this->_padding_ + -4 + iVar6 * 4) + -0x13 +
+                                               iVar7) & 0x1f), uVar4 != '\0')))) ||
+                ((iVar6 < iVar1 &&
+                 (uVar4 = water(this,*(byte *)(*(int *)(this->_padding_ + 4 + iVar6 * 4) + -0x13 +
+                                              iVar7) & 0x1f), uVar4 != '\0')))))) {
+              bVar3 = true;
+            }
+            if ((max_x < iVar2) &&
+               (((uVar4 = water(this,*(byte *)(*(int *)(this->_padding_ + iVar6 * 4) + 0x1d + iVar7)
+                                     & 0x1f), uVar4 != '\0' ||
+                 ((0 < iVar6 &&
+                  (uVar4 = water(this,*(byte *)(*(int *)(this->_padding_ + -4 + iVar6 * 4) + 0x1d +
+                                               iVar7) & 0x1f), uVar4 != '\0')))) ||
+                ((iVar6 < iVar1 &&
+                 (uVar4 = water(this,*(byte *)(*(int *)(this->_padding_ + 4 + iVar6 * 4) + 0x1d +
+                                              iVar7) & 0x1f), uVar4 != '\0')))))) {
+              bVar3 = true;
+            }
+            if (bVar3) {
+              iVar5 = *(int *)(this->_padding_ + iVar6 * 4);
+              *(byte *)(iVar5 + 5 + iVar7) = *(byte *)(iVar5 + 5 + iVar7) & 0xe2 | 2;
+            }
+          }
+          iVar5 = this->_padding_;
+          max_x = max_x + 1;
+          iVar7 = iVar7 + 0x18;
+        } while (max_x < iVar5);
+      }
+      iVar6 = iVar6 + 1;
+    } while (iVar6 < this->_padding_);
+  }
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: check_terrain
+// Address: 00488b90
+/* protected: unsigned char __thiscall RGE_RMM_Terrain_Generator::check_terrain(unsigned
+   char,long,long,long,unsigned char) */
+
+uchar __thiscall
+RGE_RMM_Terrain_Generator::check_terrain
+          (RGE_RMM_Terrain_Generator *this,uchar param_1,long param_2,long param_3,long param_4,
+          uchar param_5)
+{
+  int iVar1;
+  int iVar2;
+  byte bVar3;
+  int iVar4;
+  int iVar5;
+  byte *pbVar6;
+  int iVar7;
+  int *piVar8;
+  int iVar9;
+  long count;
+  long index1;
+  long i_base_terrain;
+  
+  index1 = 1;
+  index1._0_1_ = '\x01';
+  if (0 < param_4) {
+    iVar4 = param_2 - param_4;
+    iVar5 = param_3 - param_4;
+    iVar2 = param_2 + param_4;
+    param_4 = param_3 + param_4;
+    if (iVar4 < 0) {
+      iVar4 = 0;
+    }
+    if (iVar5 < 0) {
+      iVar5 = 0;
+    }
+    if (this->_padding_ <= iVar2) {
+      iVar2 = this->_padding_ + -1;
+    }
+    if (this->_padding_ <= param_4) {
+      param_4 = this->_padding_ + -1;
+    }
+    iVar7 = *(int *)(this->_padding_ + iVar5 * 4);
+    piVar8 = (int *)(this->_padding_ + iVar5 * 4);
+    for (; iVar5 <= param_4; iVar5 = iVar5 + 1) {
+      if (iVar4 <= iVar2) {
+        pbVar6 = (byte *)(iVar7 + iVar4 * 0x18 + 5);
+        iVar7 = iVar4;
+        do {
+          bVar3 = *pbVar6 & 0x1f;
+          if (((bVar3 != param_5) &&
+              ((*pbVar6 & 0x1f) != *(byte *)(this->_padding_ + 0xba + (uint)param_5 * 0x198))) &&
+             (bVar3 != param_1)) {
+            return '\0';
+          }
+          iVar7 = iVar7 + 1;
+          pbVar6 = pbVar6 + 0x18;
+        } while (iVar7 <= iVar2);
+      }
+      piVar8 = piVar8 + 1;
+      iVar7 = *piVar8;
+    }
+  }
+  iVar2 = param_2 + -2;
+  iVar5 = param_3 + -2;
+  iVar4 = param_2 + 2;
+  iVar7 = param_3 + 2;
+  if (iVar2 < 0) {
+    iVar2 = 0;
+  }
+  if (iVar5 < 0) {
+    iVar5 = 0;
+  }
+  if (this->_padding_ <= iVar4) {
+    iVar4 = this->_padding_ + -1;
+  }
+  if (this->_padding_ <= iVar7) {
+    iVar7 = this->_padding_ + -1;
+  }
+  iVar9 = this->_padding_ + iVar5 * 4;
+  iVar1 = *(int *)(this->_padding_ + iVar5 * 4);
+  if (iVar5 <= iVar7) {
+    param_2 = (iVar7 - iVar5) + 1;
+    do {
+      if (iVar2 <= iVar4) {
+        pbVar6 = (byte *)(iVar1 + iVar2 * 0x18 + 5);
+        iVar5 = (iVar4 - iVar2) + 1;
+        do {
+          if ((*pbVar6 & 0x1f) == param_1) {
+            index1 = index1 + 1;
+          }
+          pbVar6 = pbVar6 + 0x18;
+          iVar5 = iVar5 + -1;
+        } while (iVar5 != 0);
+      }
+      iVar1 = *(int *)(iVar9 + 4);
+      iVar9 = iVar9 + 4;
+      param_2 = param_2 + -1;
+    } while (param_2 != 0);
+  }
+  return (uchar)index1;
+}
+
+// --------------------------------------------------
+
+// Function: generate_modifiers
+// Address: 00488d50
+/* WARNING: Variable defined which should be unmapped: modifier */
+/* protected: void __thiscall RGE_RMM_Terrain_Generator::generate_modifiers(void) */
+
+void __thiscall RGE_RMM_Terrain_Generator::generate_modifiers(RGE_RMM_Terrain_Generator *this)
+{
+  int iVar1;
+  uint uVar2;
+  uint uVar3;
+  int iVar4;
+  long *plVar5;
+  undefined4 *puVar6;
+  int iVar7;
+  long modifier;
+  int local_c;
+  int local_8;
+  
+  uVar2 = this->_padding_ * this->_padding_;
+  iVar4 = 0;
+  puVar6 = (undefined4 *)this->_padding_;
+  for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    *puVar6 = 0;
+    puVar6 = puVar6 + 1;
+  }
+  for (uVar2 = uVar2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+    *(undefined1 *)puVar6 = 0;
+    puVar6 = (undefined4 *)((int)puVar6 + 1);
+  }
+  if (0 < this->_padding_) {
+    do {
+      iVar7 = 0;
+      if (0 < this->_padding_) {
+        do {
+          local_8 = (this->info).hot_spot_num;
+          local_c = 0;
+          iVar1 = 0;
+          if (0 < local_8) {
+            plVar5 = &(this->info).hot_spots[0].y;
+            do {
+              iVar1 = __ftol();
+              if (0 < plVar5[1] - iVar1) {
+                local_c = local_c + plVar5[2] * (plVar5[1] - iVar1);
+              }
+              plVar5 = plVar5 + 4;
+              local_8 = local_8 + -1;
+              iVar1 = local_c;
+            } while (local_8 != 0);
+          }
+          if (iVar1 < 0x65) {
+            *(char *)(*(int *)(this->_padding_ + iVar4 * 4) + iVar7) = (char)iVar1;
+          }
+          else {
+            *(undefined1 *)(*(int *)(this->_padding_ + iVar4 * 4) + iVar7) = 0x65;
+          }
+          iVar7 = iVar7 + 1;
+        } while (iVar7 < this->_padding_);
+      }
+      iVar4 = iVar4 + 1;
+    } while (iVar4 < this->_padding_);
+  }
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: fig_chance
+// Address: 00488e40
+/* protected: float __thiscall RGE_RMM_Terrain_Generator::fig_chance(long,long,long,long) */
+
+float __thiscall
+RGE_RMM_Terrain_Generator::fig_chance
+          (RGE_RMM_Terrain_Generator *this,long param_1,long param_2,long param_3,long param_4)
+{
+  return (float)(0xfa - param_4 * param_1);
+}
+
+// --------------------------------------------------
+
+// Function: count_map_tiles
+// Address: 00488e60
+/* protected: long __thiscall RGE_RMM_Terrain_Generator::count_map_tiles(unsigned char) */
+
+long __thiscall
+RGE_RMM_Terrain_Generator::count_map_tiles(RGE_RMM_Terrain_Generator *this,uchar param_1)
+{
+  uint uVar1;
+  uint uVar2;
+  int iVar3;
+  
+  iVar3 = 0;
+  uVar2 = *(uint *)this->_padding_;
+  uVar1 = uVar2 + this->_padding_ * this->_padding_ * 0x18;
+  for (; uVar2 < uVar1; uVar2 = uVar2 + 0x18) {
+    if ((*(byte *)(uVar2 + 5) & 0x1f) == param_1) {
+      iVar3 = iVar3 + 1;
+    }
+  }
+  return iVar3;
+}
+
+// --------------------------------------------------
+
+// Function: link_stack_randomly
+// Address: 00488ea0
+// [HELPER] s_C__msdev_work_age1_x1_rmm_terr_c: "C:\msdev\work\age1_x1\rmm_terr.cpp"
+/* WARNING: Variable defined which should be unmapped: max_y */
+/* protected: void __thiscall RGE_RMM_Terrain_Generator::link_stack_randomly(struct Map_Stack
+   *,unsigned char) */
+
+void __thiscall
+RGE_RMM_Terrain_Generator::link_stack_randomly
+          (RGE_RMM_Terrain_Generator *this,Map_Stack *param_1,uchar param_2)
+{
+  Map_Stack *pMVar1;
+  int iVar2;
+  int iVar3;
+  Map_Stack *pMVar4;
+  Map_Stack *pMVar5;
+  int iVar6;
+  int iVar7;
+  long max_y;
+  
+  pMVar5 = param_1;
+  iVar2 = this->_padding_;
+  iVar3 = this->_padding_;
+  pMVar4 = (Map_Stack *)this->_padding_;
+  pMVar4->prev = param_1;
+  pMVar1 = pMVar4 + iVar2 * iVar3 + -1;
+  pMVar4->next = pMVar4 + 1;
+  param_1->next = pMVar4;
+  pMVar1->next = (Map_Stack *)0x0;
+  pMVar1->prev = pMVar1 + -1;
+  pMVar4 = pMVar4 + 1;
+  while (pMVar4 < pMVar1) {
+    pMVar4->next = pMVar4 + 1;
+    pMVar4->prev = pMVar4 + -1;
+    pMVar4 = pMVar4 + 1;
+  }
+  iVar6 = this->_padding_ * this->_padding_;
+  param_1 = (Map_Stack *)((int)(iVar6 + (iVar6 >> 0x1f & 7U)) >> 3);
+  if (0 < (int)param_1) {
+    do {
+      iVar6 = debug_rand(s_C__msdev_work_age1_x1_rmm_terr_c,0x10f);
+      iVar7 = debug_rand(s_C__msdev_work_age1_x1_rmm_terr_c,0x110);
+      RGE_Random_Map_Module::add_stack_node
+                ((RGE_Random_Map_Module *)this,pMVar5,
+                 (Map_Stack *)
+                 (*(int *)(this->_padding_ + ((iVar7 * (iVar2 + -1)) / 0x7fff) * 4) +
+                 ((iVar6 * (iVar3 + -1)) / 0x7fff) * 0x18));
+      param_1 = (Map_Stack *)((int)&param_1[-1].prev + 3);
+    } while (param_1 != (Map_Stack *)0x0);
+  }
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: remove_area_from_lists
+// Address: 00488f90
+/* protected: void __thiscall RGE_RMM_Terrain_Generator::remove_area_from_lists(long,long,long) */
+
+void __thiscall
+RGE_RMM_Terrain_Generator::remove_area_from_lists
+          (RGE_RMM_Terrain_Generator *this,long param_1,long param_2,long param_3)
+{
+  int iVar1;
+  int iVar2;
+  int iVar3;
+  int iVar4;
+  int iVar5;
+  int iVar6;
+  
+  iVar4 = param_1 - param_3;
+  iVar2 = param_2 - param_3;
+  iVar3 = param_3 + param_1;
+  iVar1 = param_3 + param_2;
+  if (iVar4 < 0) {
+    iVar4 = 0;
+  }
+  if (iVar2 < 0) {
+    iVar2 = 0;
+  }
+  if (this->_padding_ <= iVar3) {
+    iVar3 = this->_padding_ + -1;
+  }
+  if (this->_padding_ <= iVar1) {
+    iVar1 = this->_padding_ + -1;
+  }
+  for (; iVar2 <= iVar1; iVar2 = iVar2 + 1) {
+    if (iVar4 <= iVar3) {
+      iVar5 = iVar4 * 0x18;
+      iVar6 = (iVar3 - iVar4) + 1;
+      do {
+        RGE_Random_Map_Module::remove_stack_node
+                  ((RGE_Random_Map_Module *)this,
+                   (Map_Stack *)(*(int *)(this->_padding_ + iVar2 * 4) + iVar5));
+        iVar5 = iVar5 + 0x18;
+        iVar6 = iVar6 + -1;
+      } while (iVar6 != 0);
+    }
+  }
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: base_terrain_generate
+// Address: 00489030
+// [HELPER] s_C__msdev_work_age1_x1_rmm_terr_c: "C:\msdev\work\age1_x1\rmm_terr.cpp"
+/* WARNING: Variable defined which should be unmapped: y */
+/* protected: unsigned char __thiscall RGE_RMM_Terrain_Generator::base_terrain_generate(struct
+   RGE_Terrain_Info_Line) */
+
+uchar __thiscall
+RGE_RMM_Terrain_Generator::base_terrain_generate
+          (RGE_RMM_Terrain_Generator *this,RGE_Terrain_Info_Line param_1)
+{
+  uchar uVar1;
+  uchar uVar2;
+  byte bVar3;
+  Map_Stack *pMVar4;
+  int iVar5;
+  RGE_Terrain_Hot_Spots *pRVar6;
+  Map_Stack *pMVar7;
+  int iVar8;
+  byte bVar9;
+  long y;
+  long x;
+  float chance;
+  float fStack_a4c;
+  uchar done;
+  long base_area;
+  int local_a44;
+  long index1;
+  long clump_size;
+  float in_zone;
+  long max_y;
+  long max_x;
+  Map_Stack loc_stack;
+  uchar terrain_fairness_zones_visited [99];
+  uchar terrain_fairness_zones [99];
+  Map_Stack stack [99];
+  
+  iVar8 = 0;
+  loc_stack.x = this->_padding_ + -1;
+  in_zone = 0.0;
+  max_x = this->_padding_ + -1;
+  fStack_a4c = 0.0;
+  if ((param_1.avoid_hot_spots == 2) && (0 < (this->info).hot_spot_num)) {
+    pRVar6 = (this->info).hot_spots;
+    do {
+      uVar1 = RGE_Zone_Map::get_zone_info(this->map_zone,pRVar6->x,pRVar6->y);
+      terrain_fairness_zones[iVar8 + 4] = uVar1;
+      iVar5 = (this->info).hot_spot_num;
+      terrain_fairness_zones_visited[iVar8 + 4] = '\0';
+      iVar8 = iVar8 + 1;
+      pRVar6 = pRVar6 + 1;
+    } while (iVar8 < iVar5);
+  }
+  pMVar7 = (Map_Stack *)&stack[0].y;
+  iVar8 = 99;
+  do {
+    RGE_Random_Map_Module::init_stack((RGE_Random_Map_Module *)this,pMVar7);
+    pMVar7 = pMVar7 + 1;
+    iVar8 = iVar8 + -1;
+  } while (iVar8 != 0);
+  loc_stack.prev = (Map_Stack *)0x0;
+  terrain_fairness_zones_visited[0] = '\0';
+  terrain_fairness_zones_visited[1] = '\0';
+  terrain_fairness_zones_visited[2] = '\0';
+  terrain_fairness_zones_visited[3] = '\0';
+  uVar1 = (uchar)param_1.base_terrain_type;
+  link_stack_randomly(this,(Map_Stack *)&loc_stack.y,uVar1);
+  local_a44 = __ftol();
+  local_a44 = local_a44 * 2;
+  if (local_a44 < 2) {
+    local_a44 = 2;
+  }
+  clump_size = 0;
+  bVar9 = (byte)param_1.terrain_type;
+  if (0 < param_1.clumps) {
+    pMVar7 = (Map_Stack *)&stack[0].y;
+    do {
+      pMVar4 = RGE_Random_Map_Module::pop_stack
+                         ((RGE_Random_Map_Module *)this,(Map_Stack *)&loc_stack.y,(long *)&chance,&x
+                          ,(float *)&max_y);
+      if (pMVar4 == (Map_Stack *)0x0) break;
+      if ((((*(byte *)(*(int *)(this->_padding_ + x * 4) + 5 + (int)chance * 0x18) & 0x1f) ==
+            param_1.base_terrain_type) &&
+          (uVar2 = check_terrain(this,bVar9,(long)chance,x,param_1.spacing,uVar1), uVar2 != '\0'))
+         && ((param_1.avoid_hot_spots == 0 ||
+             (*(char *)(*(int *)(this->_padding_ + x * 4) + (int)chance) == '\0')))) {
+        remove_area_from_lists(this,(long)chance,x,local_a44);
+        iVar8 = *(int *)(this->_padding_ + x * 4);
+        bVar3 = *(byte *)(iVar8 + 5 + (int)chance * 0x18);
+        *(byte *)(iVar8 + 5 + (int)chance * 0x18) = (bVar9 ^ bVar3) & 0x1f ^ bVar3;
+        if (0 < (int)chance) {
+          RGE_Random_Map_Module::push_stack
+                    ((RGE_Random_Map_Module *)this,pMVar7,(int)chance + -1,x,0.0,0.0);
+        }
+        if (0 < x) {
+          RGE_Random_Map_Module::push_stack
+                    ((RGE_Random_Map_Module *)this,pMVar7,(long)chance,x + -1,0.0,0.0);
+        }
+        if ((int)chance < this->_padding_ + -1) {
+          RGE_Random_Map_Module::push_stack
+                    ((RGE_Random_Map_Module *)this,pMVar7,(int)chance + 1,x,0.0,0.0);
+        }
+        if (x < this->_padding_ + -1) {
+          RGE_Random_Map_Module::push_stack
+                    ((RGE_Random_Map_Module *)this,pMVar7,(long)chance,x + 1,0.0,0.0);
+        }
+        in_zone = (float)((int)in_zone + 1);
+        clump_size = clump_size + 1;
+        pMVar7 = pMVar7 + 1;
+        uVar2 = RGE_Zone_Map::get_zone_info(this->map_zone,(long)chance,x);
+        if (param_1.avoid_hot_spots == 2) {
+          iVar8 = (this->info).hot_spot_num;
+          iVar5 = 0;
+          if (0 < iVar8) {
+            do {
+              if ((terrain_fairness_zones[iVar5 + 4] == uVar2) &&
+                 (terrain_fairness_zones_visited[iVar5 + 4] == '\0')) {
+                terrain_fairness_zones_visited[iVar5 + 4] = '\x01';
+                fStack_a4c = (float)((int)fStack_a4c + 1);
+              }
+              iVar5 = iVar5 + 1;
+            } while (iVar5 < iVar8);
+          }
+        }
+      }
+    } while (clump_size < param_1.clumps);
+  }
+  if ((param_1.avoid_hot_spots == 2) && ((int)fStack_a4c < (this->info).hot_spot_num)) {
+    pMVar7 = (Map_Stack *)&stack[clump_size].y;
+    do {
+      pMVar4 = RGE_Random_Map_Module::pop_stack
+                         ((RGE_Random_Map_Module *)this,(Map_Stack *)&loc_stack.y,(long *)&chance,&x
+                          ,(float *)&max_y);
+      if (pMVar4 == (Map_Stack *)0x0) break;
+      if ((((*(byte *)(*(int *)(this->_padding_ + x * 4) + 5 + (int)chance * 0x18) & 0x1f) ==
+            param_1.base_terrain_type) &&
+          (uVar2 = check_terrain(this,bVar9,(long)chance,x,param_1.spacing,uVar1), uVar2 != '\0'))
+         && (*(byte *)(*(int *)(this->_padding_ + x * 4) + (int)chance) < 0x1e)) {
+        uVar2 = RGE_Zone_Map::get_zone_info(this->map_zone,(long)chance,x);
+        iVar8 = (this->info).hot_spot_num;
+        iVar5 = 0;
+        if (0 < iVar8) {
+          do {
+            if ((terrain_fairness_zones[iVar5 + 4] == uVar2) &&
+               (terrain_fairness_zones_visited[iVar5 + 4] == '\0')) break;
+            iVar5 = iVar5 + 1;
+          } while (iVar5 < iVar8);
+        }
+        if (iVar5 != iVar8) {
+          fStack_a4c = (float)((int)fStack_a4c + 1);
+          terrain_fairness_zones_visited[iVar5 + 4] = '\x01';
+          remove_area_from_lists(this,(long)chance,x,local_a44);
+          iVar8 = *(int *)(this->_padding_ + x * 4);
+          bVar3 = *(byte *)(iVar8 + 5 + (int)chance * 0x18);
+          *(byte *)(iVar8 + 5 + (int)chance * 0x18) = (bVar9 ^ bVar3) & 0x1f ^ bVar3;
+          if (0 < (int)chance) {
+            RGE_Random_Map_Module::push_stack
+                      ((RGE_Random_Map_Module *)this,pMVar7,(int)chance + -1,x,0.0,0.0);
+          }
+          if (0 < x) {
+            RGE_Random_Map_Module::push_stack
+                      ((RGE_Random_Map_Module *)this,pMVar7,(long)chance,x + -1,0.0,0.0);
+          }
+          if ((int)chance < this->_padding_ + -1) {
+            RGE_Random_Map_Module::push_stack
+                      ((RGE_Random_Map_Module *)this,pMVar7,(int)chance + 1,x,0.0,0.0);
+          }
+          if (x < this->_padding_ + -1) {
+            RGE_Random_Map_Module::push_stack
+                      ((RGE_Random_Map_Module *)this,pMVar7,(long)chance,x + 1,0.0,0.0);
+          }
+          in_zone = (float)((int)in_zone + 1);
+          clump_size = clump_size + 1;
+          pMVar7 = pMVar7 + 1;
+        }
+      }
+    } while ((int)fStack_a4c < (this->info).hot_spot_num);
+  }
+  do {
+    base_area._3_1_ = '\x01';
+    if (0 < clump_size) {
+      pMVar7 = (Map_Stack *)&stack[0].y;
+      local_a44 = clump_size;
+      do {
+        if ((((int)in_zone < param_1.terrain_size) &&
+            (pMVar4 = RGE_Random_Map_Module::pop_stack
+                                ((RGE_Random_Map_Module *)this,pMVar7,(long *)&chance,&x,
+                                 (float *)&max_y), pMVar4 != (Map_Stack *)0x0)) &&
+           ((base_area._3_1_ = '\0', param_1.avoid_hot_spots == 0 ||
+            (iVar8 = debug_rand(s_C__msdev_work_age1_x1_rmm_terr_c,0x1c6),
+            (int)(uint)*(byte *)(*(int *)(this->_padding_ + x * 4) + (int)chance) <=
+            (iVar8 * 100) / 0x7fff)))) {
+          iVar8 = *(int *)(this->_padding_ + x * 4) + (int)chance * 0x18;
+          bVar3 = check_terrain(this,bVar9,(long)chance,x,param_1.spacing,uVar1);
+          if (((*(byte *)(iVar8 + 5) & 0x1f) == param_1.base_terrain_type) && (bVar3 != 0)) {
+            fStack_a4c = fig_chance(this,(uint)bVar3,(long)chance,x,param_1.clumpiness_factor);
+            if (param_1.avoid_hot_spots != 0) {
+              index1 = (long)*(byte *)(*(int *)(this->_padding_ + x * 4) + (int)chance);
+              fStack_a4c = (float)index1 + fStack_a4c;
+            }
+            *(byte *)(iVar8 + 5) = (bVar9 ^ *(byte *)(iVar8 + 5)) & 0x1f ^ *(byte *)(iVar8 + 5);
+            if ((0 < (int)chance) &&
+               ((*(byte *)(iVar8 + -0x13) & 0x1f) == param_1.base_terrain_type)) {
+              iVar5 = debug_rand(s_C__msdev_work_age1_x1_rmm_terr_c,0x1d5);
+              index1 = (iVar5 * 100) / 0x7fff;
+              RGE_Random_Map_Module::push_stack
+                        ((RGE_Random_Map_Module *)this,pMVar7,(int)chance + -1,x,0.0,
+                         (float)index1 + fStack_a4c);
+            }
+            if (((int)chance < loc_stack.x) &&
+               ((*(byte *)(iVar8 + 0x1d) & 0x1f) == param_1.base_terrain_type)) {
+              iVar5 = debug_rand(s_C__msdev_work_age1_x1_rmm_terr_c,0x1d7);
+              index1 = (iVar5 * 100) / 0x7fff;
+              RGE_Random_Map_Module::push_stack
+                        ((RGE_Random_Map_Module *)this,pMVar7,(int)chance + 1,x,0.0,
+                         (float)index1 + fStack_a4c);
+            }
+            if ((0 < x) &&
+               ((*(byte *)(iVar8 + this->_padding_ * -0x18 + 5) & 0x1f) == param_1.base_terrain_type
+               )) {
+              iVar5 = debug_rand(s_C__msdev_work_age1_x1_rmm_terr_c,0x1d9);
+              index1 = (iVar5 * 100) / 0x7fff;
+              RGE_Random_Map_Module::push_stack
+                        ((RGE_Random_Map_Module *)this,pMVar7,(long)chance,x + -1,0.0,
+                         (float)index1 + fStack_a4c);
+            }
+            if ((x < max_x) &&
+               ((*(byte *)(iVar8 + 5 + this->_padding_ * 0x18) & 0x1f) == param_1.base_terrain_type)
+               ) {
+              iVar8 = debug_rand(s_C__msdev_work_age1_x1_rmm_terr_c,0x1db);
+              index1 = (iVar8 * 100) / 0x7fff;
+              RGE_Random_Map_Module::push_stack
+                        ((RGE_Random_Map_Module *)this,pMVar7,(long)chance,x + 1,0.0,
+                         (float)index1 + fStack_a4c);
+            }
+            in_zone = (float)((int)in_zone + 1);
+          }
+        }
+        pMVar7 = pMVar7 + 1;
+        local_a44 = local_a44 + -1;
+      } while (local_a44 != 0);
+    }
+  } while (base_area._3_1_ == '\0');
+  if (0 < param_1.clumps) {
+    pMVar7 = (Map_Stack *)&stack[0].y;
+    local_a44 = param_1.clumps;
+    do {
+      pMVar4 = RGE_Random_Map_Module::pop_stack
+                         ((RGE_Random_Map_Module *)this,pMVar7,(long *)&chance,&x,(float *)&max_y);
+      while (pMVar4 != (Map_Stack *)0x0) {
+        iVar8 = *(int *)(this->_padding_ + x * 4) + (int)chance * 0x18;
+        if (((((0 < (int)chance) && ((*(byte *)(iVar8 + -0x13) & 0x1f) == bVar9)) &&
+             ((int)chance < loc_stack.x)) && ((*(byte *)(iVar8 + 0x1d) & 0x1f) == bVar9)) ||
+           (((0 < x && ((*(byte *)(iVar8 + this->_padding_ * -0x18 + 5) & 0x1f) == bVar9)) &&
+            ((max_x < x && ((*(byte *)(iVar8 + 5 + this->_padding_ * 0x18) & 0x1f) == bVar9)))))) {
+          *(byte *)(iVar8 + 5) = (bVar9 ^ *(byte *)(iVar8 + 5)) & 0x1f ^ *(byte *)(iVar8 + 5);
+        }
+        pMVar4 = RGE_Random_Map_Module::pop_stack
+                           ((RGE_Random_Map_Module *)this,pMVar7,(long *)&chance,&x,(float *)&max_y)
+        ;
+      }
+      pMVar7 = pMVar7 + 1;
+      local_a44 = local_a44 + -1;
+    } while (local_a44 != 0);
+  }
+  pMVar7 = (Map_Stack *)&stack[0].y;
+  iVar8 = 99;
+  do {
+    RGE_Random_Map_Module::deinit_stack((RGE_Random_Map_Module *)this,pMVar7);
+    pMVar7 = pMVar7 + 1;
+    iVar8 = iVar8 + -1;
+  } while (iVar8 != 0);
+  return '\x01';
+}
+
+// --------------------------------------------------
+

@@ -1,0 +1,42 @@
+{
+    "size": 12, 
+    "vtable": [
+        {
+            "signature": "RGE_Action * create_action(TRIBE_Action_List * this, int param_1, short param_2)", 
+            "index": 0, 
+            "name": "create_action"
+        }, 
+        {
+            "signature": "RGE_Action * create_task_action(TRIBE_Action_List * this, RGE_Task * param_1, RGE_Static_Object * param_2, float param_3, float param_4, float param_5)", 
+            "index": 1, 
+            "name": "create_task_action"
+        }, 
+        {
+            "signature": "uchar inside_obj_update(RGE_Action_List * this)", 
+            "index": 2, 
+            "name": "inside_obj_update"
+        }, 
+        {
+            "signature": "uchar update(RGE_Action_List * this)", 
+            "index": 3, 
+            "name": "update"
+        }, 
+        {
+            "signature": "void get_action_name(TRIBE_Action_List * this, char * param_1)", 
+            "index": 4, 
+            "name": "get_action_name"
+        }, 
+        {
+            "signature": "void copy_obj(RGE_Action_List * this, RGE_Master_Action_Object * param_1)", 
+            "index": 5, 
+            "name": "copy_obj"
+        }, 
+        {
+            "signature": "void copy_obj_sprites(RGE_Action_List * this, RGE_Master_Action_Object * param_1, RGE_Task * param_2, RGE_Task * param_3)", 
+            "index": 6, 
+            "name": "copy_obj_sprites"
+        }
+    ], 
+    "members": [], 
+    "name": "TRIBE_Action_List"
+}

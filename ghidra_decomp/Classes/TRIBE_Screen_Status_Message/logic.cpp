@@ -1,0 +1,403 @@
+// Class: TRIBE_Screen_Status_Message
+// Function: TRIBE_Screen_Status_Message
+// Address: 004b7140
+// [HELPER] s_Achievements_Screen: "Achievements Screen"
+// [HELPER] s_scr2: "scr2"
+// [HELPER] s_scr3: "scr3"
+/* public: __thiscall TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(char *,char *,char
+   *,long) */
+
+TRIBE_Screen_Status_Message * __thiscall
+TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message
+          (TRIBE_Screen_Status_Message *this,char *param_1,char *param_2,char *param_3,long param_4)
+{
+  char cVar1;
+  TEasy_Panel *this_00;
+  TEasy_Panel *pTVar2;
+  char *pcVar3;
+  int iVar4;
+  long lVar5;
+  uint uVar6;
+  uint uVar7;
+  char *pcVar8;
+  char *pcVar9;
+  undefined4 *unaff_FS_OFFSET;
+  char info_file [260];
+  undefined4 local_c;
+  code *pcStack_8;
+  undefined4 local_4;
+  
+  local_4 = 0xffffffff;
+  pcStack_8 = FUN_0055f77b;
+  local_c = *unaff_FS_OFFSET;
+  *unaff_FS_OFFSET = &local_c;
+  info_file._0_4_ = this;
+  TScreenPanel::TScreenPanel((TScreenPanel *)this,param_1);
+  local_4 = 0;
+  this->_padding_ = (int)&_vftable_;
+  this->message = (TTextPanel *)0x0;
+  this_00 = (TEasy_Panel *)TPanelSystem::currentPanel(&panel_system);
+  if ((param_3 == (char *)0x0) && (param_4 == -1)) {
+    if ((this_00 == (TEasy_Panel *)0x0) ||
+       (pTVar2 = (TEasy_Panel *)TPanelSystem::panel(&panel_system,s_Achievements_Screen),
+       this_00 == pTVar2)) {
+      info_file[4] = '\0';
+      param_4 = -1;
+    }
+    else {
+      pcVar3 = TEasy_Panel::get_info_file(this_00);
+      uVar6 = 0xffffffff;
+      pcVar8 = info_file;
+      do {
+        pcVar9 = pcVar3;
+        if (uVar6 == 0) break;
+        uVar6 = uVar6 - 1;
+        pcVar9 = pcVar3 + 1;
+        cVar1 = *pcVar3;
+        pcVar3 = pcVar9;
+      } while (cVar1 != '\0');
+      uVar6 = ~uVar6;
+      pcVar3 = pcVar9 + -uVar6;
+      for (uVar7 = uVar6 >> 2; pcVar8 = pcVar8 + 4, uVar7 != 0; uVar7 = uVar7 - 1) {
+        *(undefined4 *)pcVar8 = *(undefined4 *)pcVar3;
+        pcVar3 = pcVar3 + 4;
+      }
+      for (uVar6 = uVar6 & 3; uVar6 != 0; uVar6 = uVar6 - 1) {
+        *pcVar8 = *pcVar3;
+        pcVar3 = pcVar3 + 1;
+        pcVar8 = pcVar8 + 1;
+      }
+      param_4 = TEasy_Panel::get_info_id(this_00);
+    }
+  }
+  else {
+    uVar6 = 0xffffffff;
+    do {
+      pcVar8 = param_3;
+      if (uVar6 == 0) break;
+      uVar6 = uVar6 - 1;
+      pcVar8 = param_3 + 1;
+      cVar1 = *param_3;
+      param_3 = pcVar8;
+    } while (cVar1 != '\0');
+    uVar6 = ~uVar6;
+    pcVar3 = info_file;
+    pcVar8 = pcVar8 + -uVar6;
+    for (uVar7 = uVar6 >> 2; pcVar3 = pcVar3 + 4, uVar7 != 0; uVar7 = uVar7 - 1) {
+      *(undefined4 *)pcVar3 = *(undefined4 *)pcVar8;
+      pcVar8 = pcVar8 + 4;
+    }
+    for (uVar6 = uVar6 & 3; uVar6 != 0; uVar6 = uVar6 - 1) {
+      *pcVar3 = *pcVar8;
+      pcVar8 = pcVar8 + 1;
+      pcVar3 = pcVar3 + 1;
+    }
+  }
+  if (info_file[4] == '\0') {
+    iVar4 = RGE_Base_Game::multiplayerGame(rge_base_game);
+    if (iVar4 == 0) {
+      uVar6 = 0xffffffff;
+      pcVar8 = &s_scr2;
+      do {
+        pcVar3 = pcVar8;
+        if (uVar6 == 0) break;
+        uVar6 = uVar6 - 1;
+        pcVar3 = pcVar8 + 1;
+        cVar1 = *pcVar8;
+        pcVar8 = pcVar3;
+      } while (cVar1 != '\0');
+      uVar6 = ~uVar6;
+      pcVar8 = pcVar3 + -uVar6;
+      pcVar3 = info_file + 4;
+      for (uVar7 = uVar6 >> 2; uVar7 != 0; uVar7 = uVar7 - 1) {
+        *(undefined4 *)pcVar3 = *(undefined4 *)pcVar8;
+        pcVar8 = pcVar8 + 4;
+        pcVar3 = pcVar3 + 4;
+      }
+      param_4 = 0xc384;
+      for (uVar6 = uVar6 & 3; uVar6 != 0; uVar6 = uVar6 - 1) {
+        *pcVar3 = *pcVar8;
+        pcVar8 = pcVar8 + 1;
+        pcVar3 = pcVar3 + 1;
+      }
+    }
+    else {
+      uVar6 = 0xffffffff;
+      pcVar8 = &s_scr3;
+      do {
+        pcVar3 = pcVar8;
+        if (uVar6 == 0) break;
+        uVar6 = uVar6 - 1;
+        pcVar3 = pcVar8 + 1;
+        cVar1 = *pcVar8;
+        pcVar8 = pcVar3;
+      } while (cVar1 != '\0');
+      uVar6 = ~uVar6;
+      pcVar8 = pcVar3 + -uVar6;
+      pcVar3 = info_file + 4;
+      for (uVar7 = uVar6 >> 2; uVar7 != 0; uVar7 = uVar7 - 1) {
+        *(undefined4 *)pcVar3 = *(undefined4 *)pcVar8;
+        pcVar8 = pcVar8 + 4;
+        pcVar3 = pcVar3 + 4;
+      }
+      param_4 = 0xc385;
+      for (uVar6 = uVar6 & 3; uVar6 != 0; uVar6 = uVar6 - 1) {
+        *pcVar3 = *pcVar8;
+        pcVar8 = pcVar8 + 1;
+        pcVar3 = pcVar3 + 1;
+      }
+    }
+  }
+  lVar5 = TScreenPanel::setup((TScreenPanel *)this,rge_base_game->draw_area,info_file + 4,param_4,0)
+  ;
+  if (lVar5 == 0) {
+    this->_padding_ = 1;
+  }
+  else {
+    TEasy_Panel::set_ideal_size((TEasy_Panel *)this,0x280,0x1e0);
+    TEasy_Panel::create_text
+              ((TEasy_Panel *)this,(TPanel *)this,&this->message,param_2,0x28,0x28,0x230,400,4,1,1,1
+              );
+  }
+  *unaff_FS_OFFSET = local_c;
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: `vector_deleting_destructor'
+// Address: 004b7310
+/* public: virtual void * __thiscall TRIBE_Screen_Status_Message::`vector deleting
+   destructor'(unsigned int) */
+
+void * __thiscall
+TRIBE_Screen_Status_Message::_vector_deleting_destructor_
+          (TRIBE_Screen_Status_Message *this,uint param_1)
+{
+  ~TRIBE_Screen_Status_Message(this);
+  if ((param_1 & 1) != 0) {
+    operator_delete(this);
+  }
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: TRIBE_Screen_Status_Message
+// Address: 004b7330
+// [HELPER] s_Achievements_Screen: "Achievements Screen"
+// [HELPER] s_scr2: "scr2"
+// [HELPER] s_scr3: "scr3"
+/* public: __thiscall TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(char *,long,char
+   *,long) */
+
+TRIBE_Screen_Status_Message * __thiscall
+TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message
+          (TRIBE_Screen_Status_Message *this,char *param_1,long param_2,char *param_3,long param_4)
+{
+  char cVar1;
+  TEasy_Panel *this_00;
+  TEasy_Panel *pTVar2;
+  char *pcVar3;
+  int iVar4;
+  long lVar5;
+  uint uVar6;
+  uint uVar7;
+  char *pcVar8;
+  char *pcVar9;
+  undefined4 *unaff_FS_OFFSET;
+  char info_file [260];
+  undefined4 local_c;
+  code *pcStack_8;
+  undefined4 local_4;
+  
+  local_4 = 0xffffffff;
+  pcStack_8 = FUN_0055f79b;
+  local_c = *unaff_FS_OFFSET;
+  *unaff_FS_OFFSET = &local_c;
+  info_file._0_4_ = this;
+  TScreenPanel::TScreenPanel((TScreenPanel *)this,param_1);
+  local_4 = 0;
+  this->_padding_ = (int)&_vftable_;
+  this->message = (TTextPanel *)0x0;
+  this_00 = (TEasy_Panel *)TPanelSystem::currentPanel(&panel_system);
+  if ((param_3 == (char *)0x0) && (param_4 == -1)) {
+    if ((this_00 == (TEasy_Panel *)0x0) ||
+       (pTVar2 = (TEasy_Panel *)TPanelSystem::panel(&panel_system,s_Achievements_Screen),
+       this_00 == pTVar2)) {
+      info_file[4] = '\0';
+      param_4 = -1;
+    }
+    else {
+      pcVar3 = TEasy_Panel::get_info_file(this_00);
+      uVar6 = 0xffffffff;
+      pcVar8 = info_file;
+      do {
+        pcVar9 = pcVar3;
+        if (uVar6 == 0) break;
+        uVar6 = uVar6 - 1;
+        pcVar9 = pcVar3 + 1;
+        cVar1 = *pcVar3;
+        pcVar3 = pcVar9;
+      } while (cVar1 != '\0');
+      uVar6 = ~uVar6;
+      pcVar3 = pcVar9 + -uVar6;
+      for (uVar7 = uVar6 >> 2; pcVar8 = pcVar8 + 4, uVar7 != 0; uVar7 = uVar7 - 1) {
+        *(undefined4 *)pcVar8 = *(undefined4 *)pcVar3;
+        pcVar3 = pcVar3 + 4;
+      }
+      for (uVar6 = uVar6 & 3; uVar6 != 0; uVar6 = uVar6 - 1) {
+        *pcVar8 = *pcVar3;
+        pcVar3 = pcVar3 + 1;
+        pcVar8 = pcVar8 + 1;
+      }
+      param_4 = TEasy_Panel::get_info_id(this_00);
+    }
+  }
+  else {
+    uVar6 = 0xffffffff;
+    do {
+      pcVar8 = param_3;
+      if (uVar6 == 0) break;
+      uVar6 = uVar6 - 1;
+      pcVar8 = param_3 + 1;
+      cVar1 = *param_3;
+      param_3 = pcVar8;
+    } while (cVar1 != '\0');
+    uVar6 = ~uVar6;
+    pcVar3 = info_file;
+    pcVar8 = pcVar8 + -uVar6;
+    for (uVar7 = uVar6 >> 2; pcVar3 = pcVar3 + 4, uVar7 != 0; uVar7 = uVar7 - 1) {
+      *(undefined4 *)pcVar3 = *(undefined4 *)pcVar8;
+      pcVar8 = pcVar8 + 4;
+    }
+    for (uVar6 = uVar6 & 3; uVar6 != 0; uVar6 = uVar6 - 1) {
+      *pcVar3 = *pcVar8;
+      pcVar8 = pcVar8 + 1;
+      pcVar3 = pcVar3 + 1;
+    }
+  }
+  if (info_file[4] == '\0') {
+    iVar4 = RGE_Base_Game::multiplayerGame(rge_base_game);
+    if (iVar4 == 0) {
+      uVar6 = 0xffffffff;
+      pcVar8 = &s_scr2;
+      do {
+        pcVar3 = pcVar8;
+        if (uVar6 == 0) break;
+        uVar6 = uVar6 - 1;
+        pcVar3 = pcVar8 + 1;
+        cVar1 = *pcVar8;
+        pcVar8 = pcVar3;
+      } while (cVar1 != '\0');
+      uVar6 = ~uVar6;
+      pcVar8 = pcVar3 + -uVar6;
+      pcVar3 = info_file + 4;
+      for (uVar7 = uVar6 >> 2; uVar7 != 0; uVar7 = uVar7 - 1) {
+        *(undefined4 *)pcVar3 = *(undefined4 *)pcVar8;
+        pcVar8 = pcVar8 + 4;
+        pcVar3 = pcVar3 + 4;
+      }
+      param_4 = 0xc384;
+      for (uVar6 = uVar6 & 3; uVar6 != 0; uVar6 = uVar6 - 1) {
+        *pcVar3 = *pcVar8;
+        pcVar8 = pcVar8 + 1;
+        pcVar3 = pcVar3 + 1;
+      }
+    }
+    else {
+      uVar6 = 0xffffffff;
+      pcVar8 = &s_scr3;
+      do {
+        pcVar3 = pcVar8;
+        if (uVar6 == 0) break;
+        uVar6 = uVar6 - 1;
+        pcVar3 = pcVar8 + 1;
+        cVar1 = *pcVar8;
+        pcVar8 = pcVar3;
+      } while (cVar1 != '\0');
+      uVar6 = ~uVar6;
+      pcVar8 = pcVar3 + -uVar6;
+      pcVar3 = info_file + 4;
+      for (uVar7 = uVar6 >> 2; uVar7 != 0; uVar7 = uVar7 - 1) {
+        *(undefined4 *)pcVar3 = *(undefined4 *)pcVar8;
+        pcVar8 = pcVar8 + 4;
+        pcVar3 = pcVar3 + 4;
+      }
+      param_4 = 0xc385;
+      for (uVar6 = uVar6 & 3; uVar6 != 0; uVar6 = uVar6 - 1) {
+        *pcVar3 = *pcVar8;
+        pcVar8 = pcVar8 + 1;
+        pcVar3 = pcVar3 + 1;
+      }
+    }
+  }
+  lVar5 = TScreenPanel::setup((TScreenPanel *)this,rge_base_game->draw_area,info_file + 4,param_4,0)
+  ;
+  if (lVar5 == 0) {
+    this->_padding_ = 1;
+  }
+  else {
+    TEasy_Panel::set_ideal_size((TEasy_Panel *)this,0x280,0x1e0);
+    TEasy_Panel::create_text
+              ((TEasy_Panel *)this,(TPanel *)this,&this->message,param_2,0x28,0x28,0x230,400,4,1,1,1
+              );
+  }
+  *unaff_FS_OFFSET = local_c;
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: ~TRIBE_Screen_Status_Message
+// Address: 004b7500
+/* public: virtual __thiscall TRIBE_Screen_Status_Message::~TRIBE_Screen_Status_Message(void) */
+
+void __thiscall
+TRIBE_Screen_Status_Message::~TRIBE_Screen_Status_Message(TRIBE_Screen_Status_Message *this)
+{
+  undefined4 *unaff_FS_OFFSET;
+  undefined4 local_c;
+  code *pcStack_8;
+  undefined4 local_4;
+  
+  pcStack_8 = FUN_0055f7b8;
+  local_c = *unaff_FS_OFFSET;
+  *unaff_FS_OFFSET = &local_c;
+  this->_padding_ = (int)&_vftable_;
+  local_4 = 0;
+  TPanel::delete_panel((TPanel *)this,(TPanel **)&this->message);
+  local_4 = 0xffffffff;
+  TScreenPanel::~TScreenPanel((TScreenPanel *)this);
+  *unaff_FS_OFFSET = local_c;
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_text
+// Address: 004b7560
+/* public: void __thiscall TRIBE_Screen_Status_Message::set_text(char *) */
+
+void __thiscall
+TRIBE_Screen_Status_Message::set_text(TRIBE_Screen_Status_Message *this,char *param_1)
+{
+  (**(code **)(this->message->_padding_ + 0xe8))(param_1);
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_text
+// Address: 004b7580
+/* public: void __thiscall TRIBE_Screen_Status_Message::set_text(long) */
+
+void __thiscall
+TRIBE_Screen_Status_Message::set_text(TRIBE_Screen_Status_Message *this,long param_1)
+{
+  (**(code **)(this->message->_padding_ + 0xe4))(param_1);
+  return;
+}
+
+// --------------------------------------------------
+

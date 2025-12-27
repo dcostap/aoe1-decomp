@@ -1,0 +1,19 @@
+{
+    "size": 8, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "void *", 
+            "size": 4, 
+            "name": "HostHWND"
+        }, 
+        {
+            "offset": 4, 
+            "type": "long", 
+            "size": 4, 
+            "name": "LastReportedError"
+        }
+    ], 
+    "name": "RGE_Comm_Error"
+}

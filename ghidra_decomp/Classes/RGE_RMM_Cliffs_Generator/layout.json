@@ -1,0 +1,30 @@
+{
+    "size": 1288, 
+    "vtable": [
+        {
+            "signature": "uchar generate(RGE_RMM_Cliffs_Generator * this)", 
+            "index": 0, 
+            "name": "generate"
+        }, 
+        {
+            "signature": "uchar generate(RGE_RMM_Controller * this)", 
+            "index": 1, 
+            "name": "generate"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 48, 
+            "type": "RGE_Cliffs_Info", 
+            "size": 1216, 
+            "name": "info"
+        }, 
+        {
+            "offset": 1264, 
+            "type": "Map_Stack", 
+            "size": 24, 
+            "name": "valid_cliff_sites"
+        }
+    ], 
+    "name": "RGE_RMM_Cliffs_Generator"
+}

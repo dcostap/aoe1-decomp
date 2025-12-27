@@ -1,0 +1,43 @@
+{
+    "size": 24, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "char *", 
+            "size": 4, 
+            "name": "HoldMsg"
+        }, 
+        {
+            "offset": 4, 
+            "type": "uint", 
+            "size": 4, 
+            "name": "Serial"
+        }, 
+        {
+            "offset": 8, 
+            "type": "uint", 
+            "size": 4, 
+            "name": "Length"
+        }, 
+        {
+            "offset": 12, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "dcoFromID"
+        }, 
+        {
+            "offset": 16, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "dcoReceiveID"
+        }, 
+        {
+            "offset": 20, 
+            "type": "uint", 
+            "size": 4, 
+            "name": "fromPlayer"
+        }
+    ], 
+    "name": "HOLDER"
+}

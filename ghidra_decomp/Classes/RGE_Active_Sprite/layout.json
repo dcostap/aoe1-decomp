@@ -1,0 +1,107 @@
+{
+    "size": 20, 
+    "vtable": [
+        {
+            "signature": "void * `scalar_deleting_destructor'(RGE_Active_Sprite * this, uint param_1)", 
+            "index": 0, 
+            "name": "`scalar_deleting_destructor'"
+        }, 
+        {
+            "signature": "void set_offset(RGE_Active_Sprite * this, long param_1, long param_2)", 
+            "index": 1, 
+            "name": "set_offset"
+        }, 
+        {
+            "signature": "void save(RGE_Active_Sprite * this, int param_1)", 
+            "index": 2, 
+            "name": "save"
+        }, 
+        {
+            "signature": "void update(RGE_Active_Sprite * this, float param_1, float param_2)", 
+            "index": 3, 
+            "name": "update"
+        }, 
+        {
+            "signature": "void draw(RGE_Active_Sprite * this, short param_1, long param_2, long param_3, long param_4, long param_5, RGE_Color_Table * param_6, TDrawArea * param_7)", 
+            "index": 4, 
+            "name": "draw"
+        }, 
+        {
+            "signature": "void normal_draw(RGE_Active_Sprite * this, short param_1, long param_2, long param_3, RGE_Color_Table * param_4, TDrawArea * param_5)", 
+            "index": 5, 
+            "name": "normal_draw"
+        }, 
+        {
+            "signature": "void shadow_draw(RGE_Active_Sprite * this, short param_1, long param_2, long param_3, RGE_Color_Table * param_4, TDrawArea * param_5, uchar param_6)", 
+            "index": 6, 
+            "name": "shadow_draw"
+        }, 
+        {
+            "signature": "short what_frame(RGE_Active_Sprite * this)", 
+            "index": 7, 
+            "name": "what_frame"
+        }, 
+        {
+            "signature": "uchar is_animating(RGE_Active_Sprite * this)", 
+            "index": 8, 
+            "name": "is_animating"
+        }, 
+        {
+            "signature": "void set_frame(RGE_Active_Sprite * this, short param_1)", 
+            "index": 9, 
+            "name": "set_frame"
+        }, 
+        {
+            "signature": "uchar frame_passed(RGE_Active_Sprite * this, short param_1)", 
+            "index": 10, 
+            "name": "frame_passed"
+        }, 
+        {
+            "signature": "uchar looped(RGE_Active_Sprite * this)", 
+            "index": 11, 
+            "name": "looped"
+        }, 
+        {
+            "signature": "short get_facetindex(RGE_Active_Sprite * this, short param_1)", 
+            "index": 12, 
+            "name": "get_facetindex"
+        }, 
+        {
+            "signature": "uchar get_frame(RGE_Active_Sprite * this, short * param_1, short * param_2, short * param_3, short * param_4, long param_5)", 
+            "index": 13, 
+            "name": "get_frame"
+        }, 
+        {
+            "signature": "void setToFirstFrame(RGE_Active_Sprite * this)", 
+            "index": 14, 
+            "name": "setToFirstFrame"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 4, 
+            "type": "RGE_Sprite *", 
+            "size": 4, 
+            "name": "sprite"
+        }, 
+        {
+            "offset": 8, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "type"
+        }, 
+        {
+            "offset": 12, 
+            "type": "long", 
+            "size": 4, 
+            "name": "offset_x"
+        }, 
+        {
+            "offset": 16, 
+            "type": "long", 
+            "size": 4, 
+            "name": "offset_y"
+        }
+    ], 
+    "name": "RGE_Active_Sprite"
+}

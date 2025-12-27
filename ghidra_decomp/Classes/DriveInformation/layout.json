@@ -1,0 +1,37 @@
+{
+    "size": 628, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "int", 
+            "size": 4, 
+            "name": "initialDriveValue"
+        }, 
+        {
+            "offset": 4, 
+            "type": "char[256]", 
+            "size": 256, 
+            "name": "initialDirectoryValue"
+        }, 
+        {
+            "offset": 260, 
+            "type": "int", 
+            "size": 4, 
+            "name": "currentDriveValue"
+        }, 
+        {
+            "offset": 264, 
+            "type": "char[256]", 
+            "size": 256, 
+            "name": "currentDirectoryValue"
+        }, 
+        {
+            "offset": 520, 
+            "type": "int[27]", 
+            "size": 108, 
+            "name": "driveValues"
+        }
+    ], 
+    "name": "DriveInformation"
+}

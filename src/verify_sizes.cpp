@@ -5,52 +5,74 @@
 #include "rge/TDrawArea.h"
 #include "rge/RGE_Game_World.h"
 
+#define CHECK_SIZE(cls, exp) \
+    { \
+        int sz = (int)sizeof(cls); \
+        printf("%-15s: Actual=0x%04X, Expected=0x%04X, Diff=%-4d [%s]\n", #cls, sz, exp, sz - exp, (sz == exp ? "OK" : "NOT OK")); \
+    }
+
+#define CHECK_OFFSET(cls, mem, exp) \
+    { \
+        int off = (int)offsetof(cls, mem); \
+        printf("  Offset %-22s: 0x%04X (Expected 0x%04X) [%s]\n", #mem, off, exp, (off == exp ? "OK" : "NOT OK")); \
+    }
+
+#define CHECK_NESTED_SIZE(cls, exp) \
+    { \
+        int sz = (int)sizeof(cls); \
+        printf("  Size   %-22s: 0x%04X (Expected 0x%04X) [%s]\n", #cls, sz, exp, (sz == exp ? "OK" : "NOT OK")); \
+    }
+
 int main() {
     printf("Verifying Struct Sizes (Runtime Check)...\n");
     
     // RGE_Base_Game
-    printf("RGE_Base_Game: Actual=0x%X, Expected=0xA24, Diff=%d\n", (int)sizeof(RGE_Base_Game), (int)sizeof(RGE_Base_Game) - 0xA24);
-    printf("  Offset rge_game_options: 0x%X\n", (int)offsetof(RGE_Base_Game, rge_game_options));
-    printf("  Size   RGE_Game_Options: 0x%X\n", (int)sizeof(RGE_Game_Options));
+    CHECK_SIZE(RGE_Base_Game, 0xA24);
+    CHECK_OFFSET(RGE_Base_Game, rge_game_options, 0x902);
+    CHECK_NESTED_SIZE(RGE_Game_Options, 0x9F);
     
     // TRIBE_Game
-    printf("TRIBE_Game:    Actual=0x%X, Expected=0x1254, Diff=%d\n", (int)sizeof(TRIBE_Game), (int)sizeof(TRIBE_Game) - 0x1254);
-    printf("  Offset MouseRightClickTable: 0x%X (Expected 0xA24)\n", (int)offsetof(TRIBE_Game, MouseRightClickTable));
-    printf("  Offset tribe_game_options:   0x%X\n", (int)offsetof(TRIBE_Game, tribe_game_options));
+    CHECK_SIZE(TRIBE_Game, 0x1254);
+    CHECK_OFFSET(TRIBE_Game, MouseRightClickTable, 0xA24);
+    CHECK_OFFSET(TRIBE_Game, tribe_game_options, 0xA7C);
 
     // TDrawSystem
-    printf("TDrawSystem:   Actual=0x%X, Expected=0x47C, Diff=%d\n", (int)sizeof(TDrawSystem), (int)sizeof(TDrawSystem) - 0x47C);
-    printf("  Offset palette: 0x%X (Expected 0x78)\n", (int)offsetof(TDrawSystem, palette));
-    printf("  Offset DrawType: 0x%X (Expected 0x478)\n", (int)offsetof(TDrawSystem, DrawType));
+    CHECK_SIZE(TDrawSystem, 0x47C);
+    CHECK_OFFSET(TDrawSystem, palette, 0x78);
+    CHECK_OFFSET(TDrawSystem, DrawType, 0x478);
 
     // TDrawArea
-    printf("TDrawArea:     Actual=0x%X, Expected=0xF9, Diff=%d\n", (int)sizeof(TDrawArea), (int)sizeof(TDrawArea) - 0xF9);
-    printf("  Offset SurfaceDesc: 0x%X (Expected 0x79)\n", (int)offsetof(TDrawArea, SurfaceDesc));
-    printf("  Offset Name:        0x%X (Expected 0xF5)\n", (int)offsetof(TDrawArea, Name));
+    CHECK_SIZE(TDrawArea, 0xFD);
+    CHECK_OFFSET(TDrawArea, SurfaceDesc, 0x7D);
+    CHECK_OFFSET(TDrawArea, Name, 0xF9);
 
     // RGE_Game_World
-    printf("RGE_Game_World: Actual=0x%X, Expected=0xF8, Diff=%d\n", (int)sizeof(RGE_Game_World), (int)sizeof(RGE_Game_World) - 0xF8);
-    printf("  Offset players: 0x%X (Expected 0x3A)\n", (int)offsetof(RGE_Game_World, players));
+    CHECK_SIZE(RGE_Game_World, 0xF8);
+    CHECK_OFFSET(RGE_Game_World, players, 0x3A);
 
     // RGE_Map
-    printf("RGE_Map:        Actual=0x%X, Expected=0x8DD0, Diff=%d\n", (int)sizeof(RGE_Map), (int)sizeof(RGE_Map) - 0x8DD0);
-    printf("  Offset tilesizes:     0x%X\n", (int)offsetof(RGE_Map, tilesizes));
-    printf("  Offset terrain_types: 0x%X\n", (int)offsetof(RGE_Map, terrain_types));
-    printf("  Offset border_types:  0x%X\n", (int)offsetof(RGE_Map, border_types));
-    printf("  Offset map_row_offset: 0x%X\n", (int)offsetof(RGE_Map, map_row_offset));
-    printf("  Offset any_frame_change: 0x%X\n", (int)offsetof(RGE_Map, any_frame_change));
-    printf("  Offset search_map:    0x%X\n", (int)offsetof(RGE_Map, search_map));
-    printf("  Offset random_map:    0x%X\n", (int)offsetof(RGE_Map, random_map));
-    printf("  Offset unit_manager:  0x%X\n", (int)offsetof(RGE_Map, unit_manager));
-    printf("  Size RGE_Tile_Set:    0x%X\n", (int)sizeof(RGE_Tile_Set));
-    printf("  Size RGE_Border_Set:  0x%X\n", (int)sizeof(RGE_Border_Set));
+    CHECK_SIZE(RGE_Map, 0x8DD0);
+    CHECK_OFFSET(RGE_Map, tilesizes, 0x18);
+    CHECK_OFFSET(RGE_Map, terrain_types, 0x8C);
+    CHECK_OFFSET(RGE_Map, border_types, 0x338C);
+    CHECK_OFFSET(RGE_Map, map_row_offset, 0x8D8C);
+    CHECK_OFFSET(RGE_Map, any_frame_change, 0x8DAC);
+    CHECK_OFFSET(RGE_Map, search_map, 0x8DB0);
+    CHECK_OFFSET(RGE_Map, random_map, 0x8DBC);
+    CHECK_OFFSET(RGE_Map, unit_manager, 0x8DCC);
+    CHECK_NESTED_SIZE(RGE_Tile_Set, 0x198);
+    CHECK_NESTED_SIZE(RGE_Border_Set, 0x5A0);
 
     // RGE_Player
-    printf("RGE_Player:     Actual=0x%X, Expected=0x1D8, Diff=%d\n", (int)sizeof(RGE_Player), (int)sizeof(RGE_Player) - 0x1D8);
-    printf("  Offset tile_list:     0x%X\n", (int)offsetof(RGE_Player, tile_list));
-    printf("  Offset unitDiplomacy: 0x%X\n", (int)offsetof(RGE_Player, unitDiplomacy));
-    printf("  Offset sel_list:      0x%X\n", (int)offsetof(RGE_Player, sel_list));
-    printf("  Offset groups_used:   0x%X\n", (int)offsetof(RGE_Player, groups_used));
+    CHECK_SIZE(RGE_Player, 0x220);
+    CHECK_NESTED_SIZE(RGE_Tile_List, 0x14);
+    CHECK_OFFSET(RGE_Player, master_object_num, 0x22);
+    CHECK_OFFSET(RGE_Player, id, 0x4A);
+    CHECK_OFFSET(RGE_Player, culture, 0x54);
+    CHECK_OFFSET(RGE_Player, tile_list, 0x58);
+    CHECK_OFFSET(RGE_Player, unitDiplomacy, 0x88);
+    CHECK_OFFSET(RGE_Player, sel_list, 0x134);
+    CHECK_OFFSET(RGE_Player, groups_used, 0x19E);
 
     return 0;
 }

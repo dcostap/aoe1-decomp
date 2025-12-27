@@ -1,0 +1,115 @@
+{
+    "size": 1692, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "ready"
+        }, 
+        {
+            "offset": 1, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "mute"
+        }, 
+        {
+            "offset": 4, 
+            "type": "void *", 
+            "size": 4, 
+            "name": "main_wnd"
+        }, 
+        {
+            "offset": 8, 
+            "type": "IDirectSound *", 
+            "size": 4, 
+            "name": "direct_sound"
+        }, 
+        {
+            "offset": 12, 
+            "type": "IDirectSoundBuffer *", 
+            "size": 4, 
+            "name": "primary_buffer"
+        }, 
+        {
+            "offset": 16, 
+            "type": "long", 
+            "size": 4, 
+            "name": "dsrval"
+        }, 
+        {
+            "offset": 20, 
+            "type": "long", 
+            "size": 4, 
+            "name": "start_volume"
+        }, 
+        {
+            "offset": 24, 
+            "type": "long", 
+            "size": 4, 
+            "name": "volume"
+        }, 
+        {
+            "offset": 28, 
+            "type": "char[260]", 
+            "size": 260, 
+            "name": "path"
+        }, 
+        {
+            "offset": 288, 
+            "type": "int", 
+            "size": 4, 
+            "name": "mixer_open"
+        }, 
+        {
+            "offset": 292, 
+            "type": "void *", 
+            "size": 4, 
+            "name": "mixer_handle"
+        }, 
+        {
+            "offset": 296, 
+            "type": "tagMIXERLINEA", 
+            "size": 168, 
+            "name": "mixer_line_info"
+        }, 
+        {
+            "offset": 464, 
+            "type": "tagMIXERLINECONTROLSA", 
+            "size": 24, 
+            "name": "mixer_line_controls"
+        }, 
+        {
+            "offset": 488, 
+            "type": "tagMIXERCONTROLA", 
+            "size": 148, 
+            "name": "mixer_volume_control"
+        }, 
+        {
+            "offset": 636, 
+            "type": "tMIXERCONTROLDETAILS", 
+            "size": 24, 
+            "name": "mixer_volume_details"
+        }, 
+        {
+            "offset": 660, 
+            "type": "tMIXERCONTROLDETAILS_UNSIGNED", 
+            "size": 4, 
+            "name": "mixer_volume_value"
+        }, 
+        {
+            "offset": 664, 
+            "type": "TDigital *[256]", 
+            "size": 1024, 
+            "name": "sound_play_list"
+        }, 
+        {
+            "offset": 1688, 
+            "type": "int", 
+            "size": 4, 
+            "name": "play_list_count"
+        }
+    ], 
+    "name": "TSound_Driver"
+}

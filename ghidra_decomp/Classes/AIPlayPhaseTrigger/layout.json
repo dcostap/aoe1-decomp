@@ -1,0 +1,43 @@
+{
+    "size": 20, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "typeValue"
+        }, 
+        {
+            "offset": 4, 
+            "type": "int", 
+            "size": 4, 
+            "name": "value1Value"
+        }, 
+        {
+            "offset": 8, 
+            "type": "int", 
+            "size": 4, 
+            "name": "value2Value"
+        }, 
+        {
+            "offset": 12, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "phaseValue"
+        }, 
+        {
+            "offset": 13, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "nextPhaseValue"
+        }, 
+        {
+            "offset": 16, 
+            "type": "int", 
+            "size": 4, 
+            "name": "randomnessValue"
+        }
+    ], 
+    "name": "AIPlayPhaseTrigger"
+}

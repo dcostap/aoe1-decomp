@@ -1,0 +1,37 @@
+{
+    "size": 256, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "void *", 
+            "size": 4, 
+            "name": "HostWnd"
+        }, 
+        {
+            "offset": 4, 
+            "type": "int[10]", 
+            "size": 40, 
+            "name": "chatGroupPlayers"
+        }, 
+        {
+            "offset": 44, 
+            "type": "char *[51]", 
+            "size": 204, 
+            "name": "Chat"
+        }, 
+        {
+            "offset": 248, 
+            "type": "int", 
+            "size": 4, 
+            "name": "CurrentMsgNo"
+        }, 
+        {
+            "offset": 252, 
+            "type": "TTaunt *", 
+            "size": 4, 
+            "name": "taunt"
+        }
+    ], 
+    "name": "TChat"
+}

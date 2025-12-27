@@ -6,9 +6,8 @@
 #include <string.h>
 #include <stdio.h>
 
+// Address: 0x00470600
 RGE_Map::RGE_Map() {
-    this->unused_04 = nullptr;
-    this->unused_08 = nullptr;
     this->map = nullptr;
     this->map_width = 0;
     this->map_height = 0;
@@ -33,7 +32,7 @@ RGE_Map::RGE_Map() {
     this->search_map = nullptr;
     this->search_map_rows = nullptr;
     this->map_visible_flag = 0;
-    // this->fog_flag = 1; // Removed to match size
+    this->fog_flag = 1;
     this->random_map = nullptr;
     this->game_world = rge_base_game->world;
     this->map_zones = nullptr;
@@ -41,6 +40,7 @@ RGE_Map::RGE_Map() {
     this->unit_manager = nullptr;
 }
 
+// Address: 0x004707a0
 RGE_Map::~RGE_Map() {
     if (this->map) {
         free(this->map);
@@ -56,6 +56,7 @@ RGE_Map::~RGE_Map() {
     }
 }
 
+// Address: 0x004708a0
 void RGE_Map::new_map(long width, long height) {
     if (this->map) {
         free(this->map);
@@ -77,13 +78,16 @@ void RGE_Map::new_map(long width, long height) {
         this->map_row_offset[i] = &this->map[i * width];
     }
 
+#ifdef _DEBUG
     // Initialize tiles with some default terrain
     for (int i = 0; i < width * height; ++i) {
         this->map[i].terrain_type = 0; // Grass?
         this->map[i].height = 0;
     }
+#endif
 }
 
+// Address: 0x00471000
 void RGE_Map::draw(TDrawArea *render_area, int x, int y, int width, int height) {
 #ifdef _DEBUG
     static int map_draw_count = 0;
@@ -94,8 +98,10 @@ void RGE_Map::draw(TDrawArea *render_area, int x, int y, int width, int height) 
 #endif
     if (!this->map || !render_area) return;
 
+#ifdef _DEBUG
     RECT rect = {x, y, x + width, y + height};
     render_area->Clear(&rect, 3); // Green in our 8-bit palette
+#endif
 
     // Draw a blue square in the middle to verify multiple colors
     RECT blue_rect = { 350, 250, 450, 350 };

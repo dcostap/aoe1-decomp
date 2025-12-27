@@ -1,0 +1,49 @@
+{
+    "size": 112, 
+    "vtable": [
+        {
+            "signature": "void * `scalar_deleting_destructor'(ResourceItem * this, uint param_1)", 
+            "index": 0, 
+            "name": "`scalar_deleting_destructor'"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 4, 
+            "type": "ResourceItem *", 
+            "size": 4, 
+            "name": "next"
+        }, 
+        {
+            "offset": 8, 
+            "type": "ResourceItem *", 
+            "size": 4, 
+            "name": "prev"
+        }, 
+        {
+            "offset": 12, 
+            "type": "int[8]", 
+            "size": 32, 
+            "name": "valueValue"
+        }, 
+        {
+            "offset": 44, 
+            "type": "int[8]", 
+            "size": 32, 
+            "name": "sortedValue"
+        }, 
+        {
+            "offset": 76, 
+            "type": "int[8]", 
+            "size": 32, 
+            "name": "sortedIndexValue"
+        }, 
+        {
+            "offset": 108, 
+            "type": "int", 
+            "size": 4, 
+            "name": "numberValue"
+        }
+    ], 
+    "name": "ResourceItem"
+}

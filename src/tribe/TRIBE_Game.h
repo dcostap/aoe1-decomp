@@ -97,5 +97,5 @@ public:
 
 
 // Size check: must be exactly 0x1254 to match 'new' call in original EXE
-// static_assert(sizeof(TRIBE_Game) == 0x1254, "TRIBE_Game size mismatch!");
+static_assert(sizeof(TRIBE_Game) == 0x1254, "TRIBE_Game size mismatch!");
 

@@ -1,0 +1,25 @@
+{
+    "size": 12, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "int", 
+            "size": 4, 
+            "name": "mapWidth"
+        }, 
+        {
+            "offset": 4, 
+            "type": "int", 
+            "size": 4, 
+            "name": "mapHeight"
+        }, 
+        {
+            "offset": 8, 
+            "type": "ulong *", 
+            "size": 4, 
+            "name": "UnifiedVisibleMap"
+        }
+    ], 
+    "name": "RGE_Unified_Visible_Map"
+}

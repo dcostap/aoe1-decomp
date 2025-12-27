@@ -19,6 +19,7 @@ public:
 
     struct RGE_Object_Node *list;
     short number_of_objects;
+    short _pad;
 
     RGE_Object_List();
     void removeAllObjects();
@@ -26,3 +27,5 @@ public:
 };
 
 #pragma pack(pop)
+
+static_assert(sizeof(RGE_Object_List) == 0xC, "RGE_Object_List size mismatch");

@@ -1,0 +1,2557 @@
+{
+    "size": 308, 
+    "vtable": [
+        {
+            "signature": "void * `scalar_deleting_destructor'(TribeCivilianUnitAIModule * this, uint param_1)", 
+            "index": 0, 
+            "name": "`scalar_deleting_destructor'"
+        }, 
+        {
+            "signature": "void save(UnitAIModule * this, int param_1)", 
+            "index": 1, 
+            "name": "save"
+        }, 
+        {
+            "signature": "void load(UnitAIModule * this, int param_1)", 
+            "index": 2, 
+            "name": "load"
+        }, 
+        {
+            "signature": "RGE_Player * owner(UnitAIModule * this)", 
+            "index": 3, 
+            "name": "owner"
+        }, 
+        {
+            "signature": "int order(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4, float param_5, float param_6, float param_7, float param_8, int param_9, int param_10, int param_11)", 
+            "index": 4, 
+            "name": "order"
+        }, 
+        {
+            "signature": "int notify(UnitAIModule * this, int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)", 
+            "index": 5, 
+            "name": "notify"
+        }, 
+        {
+            "signature": "int notifyCommander(UnitAIModule * this, int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)", 
+            "index": 6, 
+            "name": "notifyCommander"
+        }, 
+        {
+            "signature": "int notifyCommander(UnitAIModule * this, NotifyEvent * param_1)", 
+            "index": 7, 
+            "name": "notifyCommander"
+        }, 
+        {
+            "signature": "void search(UnitAIModule * this)", 
+            "index": 8, 
+            "name": "search"
+        }, 
+        {
+            "signature": "int importantWhenDead(TribeCivilianUnitAIModule * this, int param_1)", 
+            "index": 9, 
+            "name": "importantWhenDead"
+        }, 
+        {
+            "signature": "int retryableOrder(TribeCivilianUnitAIModule * this, int param_1)", 
+            "index": 10, 
+            "name": "retryableOrder"
+        }, 
+        {
+            "signature": "int actionRequiresLiveTarget(UnitAIModule * this, int param_1)", 
+            "index": 11, 
+            "name": "actionRequiresLiveTarget"
+        }, 
+        {
+            "signature": "int bestUnitToAttack(UnitAIModule * this, int param_1, int param_2, float * param_3)", 
+            "index": 12, 
+            "name": "bestUnitToAttack"
+        }, 
+        {
+            "signature": "int mostDangerousEnemy(UnitAIModule * this, float * param_1)", 
+            "index": 13, 
+            "name": "mostDangerousEnemy"
+        }, 
+        {
+            "signature": "int weakestEnemy(UnitAIModule * this, float * param_1)", 
+            "index": 14, 
+            "name": "weakestEnemy"
+        }, 
+        {
+            "signature": "int closestAttacker(UnitAIModule * this, float * param_1)", 
+            "index": 15, 
+            "name": "closestAttacker"
+        }, 
+        {
+            "signature": "int closestObject(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4, int * param_5)", 
+            "index": 16, 
+            "name": "closestObject"
+        }, 
+        {
+            "signature": "int closestResourceObject(UnitAIModule * this, int param_1, int * param_2)", 
+            "index": 17, 
+            "name": "closestResourceObject"
+        }, 
+        {
+            "signature": "int closestUndiscoveredTile(UnitAIModule * this, int * param_1, int * param_2, int param_3)", 
+            "index": 18, 
+            "name": "closestUndiscoveredTile"
+        }, 
+        {
+            "signature": "void logDebug(UnitAIModule * this, char * param_1, ...)", 
+            "index": 19, 
+            "name": "logDebug"
+        }, 
+        {
+            "signature": "int canAttackUnit(TribeCivilianUnitAIModule * this, RGE_Static_Object * param_1)", 
+            "index": 20, 
+            "name": "canAttackUnit"
+        }, 
+        {
+            "signature": "int canAttackUnitAtNeutrality(TribeCivilianUnitAIModule * this, int param_1)", 
+            "index": 21, 
+            "name": "canAttackUnitAtNeutrality"
+        }, 
+        {
+            "signature": "int stopObject(UnitAIModule * this, int param_1)", 
+            "index": 22, 
+            "name": "stopObject"
+        }, 
+        {
+            "signature": "int attackObject(TribeCivilianUnitAIModule * this, int param_1, int param_2)", 
+            "index": 23, 
+            "name": "attackObject"
+        }, 
+        {
+            "signature": "int attackRoundupObject(UnitAIModule * this, int param_1)", 
+            "index": 24, 
+            "name": "attackRoundupObject"
+        }, 
+        {
+            "signature": "int huntObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 25, 
+            "name": "huntObject"
+        }, 
+        {
+            "signature": "int gatherObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 26, 
+            "name": "gatherObject"
+        }, 
+        {
+            "signature": "int convertObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 27, 
+            "name": "convertObject"
+        }, 
+        {
+            "signature": "int healObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 28, 
+            "name": "healObject"
+        }, 
+        {
+            "signature": "int repairObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 29, 
+            "name": "repairObject"
+        }, 
+        {
+            "signature": "int buildObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 30, 
+            "name": "buildObject"
+        }, 
+        {
+            "signature": "int tradeWithObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 31, 
+            "name": "tradeWithObject"
+        }, 
+        {
+            "signature": "int explore(UnitAIModule * this, int param_1, int param_2, int param_3)", 
+            "index": 32, 
+            "name": "explore"
+        }, 
+        {
+            "signature": "int enterObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 33, 
+            "name": "enterObject"
+        }, 
+        {
+            "signature": "int unload(UnitAIModule * this, int param_1, float param_2, float param_3)", 
+            "index": 34, 
+            "name": "unload"
+        }, 
+        {
+            "signature": "int transportObject(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 35, 
+            "name": "transportObject"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, float param_1, float param_2, float param_3, float param_4, int param_5)", 
+            "index": 36, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 37, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 38, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int evasiveMoveTo(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 39, 
+            "name": "evasiveMoveTo"
+        }, 
+        {
+            "signature": "int intelligentEvasiveMoveTo(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4, int param_5)", 
+            "index": 40, 
+            "name": "intelligentEvasiveMoveTo"
+        }, 
+        {
+            "signature": "int runAwayFromAttackers(UnitAIModule * this, int param_1)", 
+            "index": 41, 
+            "name": "runAwayFromAttackers"
+        }, 
+        {
+            "signature": "int followObject(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 42, 
+            "name": "followObject"
+        }, 
+        {
+            "signature": "int defendObject(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 43, 
+            "name": "defendObject"
+        }, 
+        {
+            "signature": "int defendPosition(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 44, 
+            "name": "defendPosition"
+        }, 
+        {
+            "signature": "int seekAndDestroy(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4)", 
+            "index": 45, 
+            "name": "seekAndDestroy"
+        }, 
+        {
+            "signature": "int exploreAndDestroy(UnitAIModule * this, int param_1, int param_2, int param_3)", 
+            "index": 46, 
+            "name": "exploreAndDestroy"
+        }, 
+        {
+            "signature": "int importantObject(UnitAIModule * this, int param_1)", 
+            "index": 47, 
+            "name": "importantObject"
+        }, 
+        {
+            "signature": "int convertToLOSResourceType(TribeCivilianUnitAIModule * this, int param_1)", 
+            "index": 48, 
+            "name": "convertToLOSResourceType"
+        }, 
+        {
+            "signature": "int canConvert(UnitAIModule * this, int param_1)", 
+            "index": 49, 
+            "name": "canConvert"
+        }, 
+        {
+            "signature": "int processOrder(UnitAIModule * this, OrderEvent * param_1, int param_2)", 
+            "index": 50, 
+            "name": "processOrder"
+        }, 
+        {
+            "signature": "int processNotify(TribeCivilianUnitAIModule * this, NotifyEvent * param_1, ulong param_2)", 
+            "index": 51, 
+            "name": "processNotify"
+        }, 
+        {
+            "signature": "void processGroupNotify(UnitAIModule * this, NotifyEvent * param_1)", 
+            "index": 52, 
+            "name": "processGroupNotify"
+        }, 
+        {
+            "signature": "int processIdle(TribeCivilianUnitAIModule * this, int param_1)", 
+            "index": 53, 
+            "name": "processIdle"
+        }, 
+        {
+            "signature": "int processMisc(TribeCivilianUnitAIModule * this)", 
+            "index": 54, 
+            "name": "processMisc"
+        }, 
+        {
+            "signature": "int processRetryableOrder(UnitAIModule * this)", 
+            "index": 55, 
+            "name": "processRetryableOrder"
+        }, 
+        {
+            "signature": "void * `vector_deleting_destructor'(TribePriestUnitAIModule * this, uint param_1)", 
+            "index": 56, 
+            "name": "`vector_deleting_destructor'"
+        }, 
+        {
+            "signature": "void save(UnitAIModule * this, int param_1)", 
+            "index": 57, 
+            "name": "save"
+        }, 
+        {
+            "signature": "void load(UnitAIModule * this, int param_1)", 
+            "index": 58, 
+            "name": "load"
+        }, 
+        {
+            "signature": "RGE_Player * owner(UnitAIModule * this)", 
+            "index": 59, 
+            "name": "owner"
+        }, 
+        {
+            "signature": "int order(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4, float param_5, float param_6, float param_7, float param_8, int param_9, int param_10, int param_11)", 
+            "index": 60, 
+            "name": "order"
+        }, 
+        {
+            "signature": "int notify(UnitAIModule * this, int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)", 
+            "index": 61, 
+            "name": "notify"
+        }, 
+        {
+            "signature": "int notifyCommander(UnitAIModule * this, int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)", 
+            "index": 62, 
+            "name": "notifyCommander"
+        }, 
+        {
+            "signature": "int notifyCommander(UnitAIModule * this, NotifyEvent * param_1)", 
+            "index": 63, 
+            "name": "notifyCommander"
+        }, 
+        {
+            "signature": "void search(UnitAIModule * this)", 
+            "index": 64, 
+            "name": "search"
+        }, 
+        {
+            "signature": "int importantWhenDead(UnitAIModule * this, int param_1)", 
+            "index": 65, 
+            "name": "importantWhenDead"
+        }, 
+        {
+            "signature": "int retryableOrder(TribePriestUnitAIModule * this, int param_1)", 
+            "index": 66, 
+            "name": "retryableOrder"
+        }, 
+        {
+            "signature": "int actionRequiresLiveTarget(UnitAIModule * this, int param_1)", 
+            "index": 67, 
+            "name": "actionRequiresLiveTarget"
+        }, 
+        {
+            "signature": "int bestUnitToAttack(UnitAIModule * this, int param_1, int param_2, float * param_3)", 
+            "index": 68, 
+            "name": "bestUnitToAttack"
+        }, 
+        {
+            "signature": "int mostDangerousEnemy(UnitAIModule * this, float * param_1)", 
+            "index": 69, 
+            "name": "mostDangerousEnemy"
+        }, 
+        {
+            "signature": "int weakestEnemy(UnitAIModule * this, float * param_1)", 
+            "index": 70, 
+            "name": "weakestEnemy"
+        }, 
+        {
+            "signature": "int closestAttacker(UnitAIModule * this, float * param_1)", 
+            "index": 71, 
+            "name": "closestAttacker"
+        }, 
+        {
+            "signature": "int closestObject(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4, int * param_5)", 
+            "index": 72, 
+            "name": "closestObject"
+        }, 
+        {
+            "signature": "int closestResourceObject(UnitAIModule * this, int param_1, int * param_2)", 
+            "index": 73, 
+            "name": "closestResourceObject"
+        }, 
+        {
+            "signature": "int closestUndiscoveredTile(UnitAIModule * this, int * param_1, int * param_2, int param_3)", 
+            "index": 74, 
+            "name": "closestUndiscoveredTile"
+        }, 
+        {
+            "signature": "void logDebug(UnitAIModule * this, char * param_1, ...)", 
+            "index": 75, 
+            "name": "logDebug"
+        }, 
+        {
+            "signature": "int canAttackUnit(TribePriestUnitAIModule * this, RGE_Static_Object * param_1)", 
+            "index": 76, 
+            "name": "canAttackUnit"
+        }, 
+        {
+            "signature": "int canAttackUnitAtNeutrality(UnitAIModule * this, int param_1)", 
+            "index": 77, 
+            "name": "canAttackUnitAtNeutrality"
+        }, 
+        {
+            "signature": "int stopObject(UnitAIModule * this, int param_1)", 
+            "index": 78, 
+            "name": "stopObject"
+        }, 
+        {
+            "signature": "int attackObject(TribePriestUnitAIModule * this, int param_1, int param_2)", 
+            "index": 79, 
+            "name": "attackObject"
+        }, 
+        {
+            "signature": "int attackRoundupObject(UnitAIModule * this, int param_1)", 
+            "index": 80, 
+            "name": "attackRoundupObject"
+        }, 
+        {
+            "signature": "int huntObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 81, 
+            "name": "huntObject"
+        }, 
+        {
+            "signature": "int gatherObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 82, 
+            "name": "gatherObject"
+        }, 
+        {
+            "signature": "int convertObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 83, 
+            "name": "convertObject"
+        }, 
+        {
+            "signature": "int healObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 84, 
+            "name": "healObject"
+        }, 
+        {
+            "signature": "int repairObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 85, 
+            "name": "repairObject"
+        }, 
+        {
+            "signature": "int buildObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 86, 
+            "name": "buildObject"
+        }, 
+        {
+            "signature": "int tradeWithObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 87, 
+            "name": "tradeWithObject"
+        }, 
+        {
+            "signature": "int explore(UnitAIModule * this, int param_1, int param_2, int param_3)", 
+            "index": 88, 
+            "name": "explore"
+        }, 
+        {
+            "signature": "int enterObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 89, 
+            "name": "enterObject"
+        }, 
+        {
+            "signature": "int unload(UnitAIModule * this, int param_1, float param_2, float param_3)", 
+            "index": 90, 
+            "name": "unload"
+        }, 
+        {
+            "signature": "int transportObject(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 91, 
+            "name": "transportObject"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, float param_1, float param_2, float param_3, float param_4, int param_5)", 
+            "index": 92, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 93, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 94, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int evasiveMoveTo(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 95, 
+            "name": "evasiveMoveTo"
+        }, 
+        {
+            "signature": "int intelligentEvasiveMoveTo(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4, int param_5)", 
+            "index": 96, 
+            "name": "intelligentEvasiveMoveTo"
+        }, 
+        {
+            "signature": "int runAwayFromAttackers(UnitAIModule * this, int param_1)", 
+            "index": 97, 
+            "name": "runAwayFromAttackers"
+        }, 
+        {
+            "signature": "int followObject(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 98, 
+            "name": "followObject"
+        }, 
+        {
+            "signature": "int defendObject(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 99, 
+            "name": "defendObject"
+        }, 
+        {
+            "signature": "int defendPosition(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 100, 
+            "name": "defendPosition"
+        }, 
+        {
+            "signature": "int seekAndDestroy(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4)", 
+            "index": 101, 
+            "name": "seekAndDestroy"
+        }, 
+        {
+            "signature": "int exploreAndDestroy(UnitAIModule * this, int param_1, int param_2, int param_3)", 
+            "index": 102, 
+            "name": "exploreAndDestroy"
+        }, 
+        {
+            "signature": "int importantObject(UnitAIModule * this, int param_1)", 
+            "index": 103, 
+            "name": "importantObject"
+        }, 
+        {
+            "signature": "int convertToLOSResourceType(UnitAIModule * this, int param_1)", 
+            "index": 104, 
+            "name": "convertToLOSResourceType"
+        }, 
+        {
+            "signature": "int canConvert(TribePriestUnitAIModule * this, int param_1)", 
+            "index": 105, 
+            "name": "canConvert"
+        }, 
+        {
+            "signature": "int processOrder(UnitAIModule * this, OrderEvent * param_1, int param_2)", 
+            "index": 106, 
+            "name": "processOrder"
+        }, 
+        {
+            "signature": "int processNotify(TribePriestUnitAIModule * this, NotifyEvent * param_1, ulong param_2)", 
+            "index": 107, 
+            "name": "processNotify"
+        }, 
+        {
+            "signature": "void processGroupNotify(UnitAIModule * this, NotifyEvent * param_1)", 
+            "index": 108, 
+            "name": "processGroupNotify"
+        }, 
+        {
+            "signature": "int processIdle(TribePriestUnitAIModule * this, int param_1)", 
+            "index": 109, 
+            "name": "processIdle"
+        }, 
+        {
+            "signature": "int processMisc(TribePriestUnitAIModule * this)", 
+            "index": 110, 
+            "name": "processMisc"
+        }, 
+        {
+            "signature": "int processRetryableOrder(UnitAIModule * this)", 
+            "index": 111, 
+            "name": "processRetryableOrder"
+        }, 
+        {
+            "signature": "int bestUnitToHeal(TribePriestUnitAIModule * this, int param_1, float * param_2)", 
+            "index": 112, 
+            "name": "bestUnitToHeal"
+        }, 
+        {
+            "signature": "int bestUnitToConvert(TribePriestUnitAIModule * this, float * param_1)", 
+            "index": 113, 
+            "name": "bestUnitToConvert"
+        }, 
+        {
+            "signature": "void * `scalar_deleting_destructor'(TribeTradeShipUnitAIModule * this, uint param_1)", 
+            "index": 114, 
+            "name": "`scalar_deleting_destructor'"
+        }, 
+        {
+            "signature": "void save(UnitAIModule * this, int param_1)", 
+            "index": 115, 
+            "name": "save"
+        }, 
+        {
+            "signature": "void load(UnitAIModule * this, int param_1)", 
+            "index": 116, 
+            "name": "load"
+        }, 
+        {
+            "signature": "RGE_Player * owner(UnitAIModule * this)", 
+            "index": 117, 
+            "name": "owner"
+        }, 
+        {
+            "signature": "int order(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4, float param_5, float param_6, float param_7, float param_8, int param_9, int param_10, int param_11)", 
+            "index": 118, 
+            "name": "order"
+        }, 
+        {
+            "signature": "int notify(UnitAIModule * this, int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)", 
+            "index": 119, 
+            "name": "notify"
+        }, 
+        {
+            "signature": "int notifyCommander(UnitAIModule * this, int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)", 
+            "index": 120, 
+            "name": "notifyCommander"
+        }, 
+        {
+            "signature": "int notifyCommander(UnitAIModule * this, NotifyEvent * param_1)", 
+            "index": 121, 
+            "name": "notifyCommander"
+        }, 
+        {
+            "signature": "void search(UnitAIModule * this)", 
+            "index": 122, 
+            "name": "search"
+        }, 
+        {
+            "signature": "int importantWhenDead(UnitAIModule * this, int param_1)", 
+            "index": 123, 
+            "name": "importantWhenDead"
+        }, 
+        {
+            "signature": "int retryableOrder(UnitAIModule * this, int param_1)", 
+            "index": 124, 
+            "name": "retryableOrder"
+        }, 
+        {
+            "signature": "int actionRequiresLiveTarget(UnitAIModule * this, int param_1)", 
+            "index": 125, 
+            "name": "actionRequiresLiveTarget"
+        }, 
+        {
+            "signature": "int bestUnitToAttack(UnitAIModule * this, int param_1, int param_2, float * param_3)", 
+            "index": 126, 
+            "name": "bestUnitToAttack"
+        }, 
+        {
+            "signature": "int mostDangerousEnemy(UnitAIModule * this, float * param_1)", 
+            "index": 127, 
+            "name": "mostDangerousEnemy"
+        }, 
+        {
+            "signature": "int weakestEnemy(UnitAIModule * this, float * param_1)", 
+            "index": 128, 
+            "name": "weakestEnemy"
+        }, 
+        {
+            "signature": "int closestAttacker(UnitAIModule * this, float * param_1)", 
+            "index": 129, 
+            "name": "closestAttacker"
+        }, 
+        {
+            "signature": "int closestObject(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4, int * param_5)", 
+            "index": 130, 
+            "name": "closestObject"
+        }, 
+        {
+            "signature": "int closestResourceObject(UnitAIModule * this, int param_1, int * param_2)", 
+            "index": 131, 
+            "name": "closestResourceObject"
+        }, 
+        {
+            "signature": "int closestUndiscoveredTile(UnitAIModule * this, int * param_1, int * param_2, int param_3)", 
+            "index": 132, 
+            "name": "closestUndiscoveredTile"
+        }, 
+        {
+            "signature": "void logDebug(UnitAIModule * this, char * param_1, ...)", 
+            "index": 133, 
+            "name": "logDebug"
+        }, 
+        {
+            "signature": "int canAttackUnit(UnitAIModule * this, RGE_Static_Object * param_1)", 
+            "index": 134, 
+            "name": "canAttackUnit"
+        }, 
+        {
+            "signature": "int canAttackUnitAtNeutrality(UnitAIModule * this, int param_1)", 
+            "index": 135, 
+            "name": "canAttackUnitAtNeutrality"
+        }, 
+        {
+            "signature": "int stopObject(UnitAIModule * this, int param_1)", 
+            "index": 136, 
+            "name": "stopObject"
+        }, 
+        {
+            "signature": "int attackObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 137, 
+            "name": "attackObject"
+        }, 
+        {
+            "signature": "int attackRoundupObject(UnitAIModule * this, int param_1)", 
+            "index": 138, 
+            "name": "attackRoundupObject"
+        }, 
+        {
+            "signature": "int huntObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 139, 
+            "name": "huntObject"
+        }, 
+        {
+            "signature": "int gatherObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 140, 
+            "name": "gatherObject"
+        }, 
+        {
+            "signature": "int convertObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 141, 
+            "name": "convertObject"
+        }, 
+        {
+            "signature": "int healObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 142, 
+            "name": "healObject"
+        }, 
+        {
+            "signature": "int repairObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 143, 
+            "name": "repairObject"
+        }, 
+        {
+            "signature": "int buildObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 144, 
+            "name": "buildObject"
+        }, 
+        {
+            "signature": "int tradeWithObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 145, 
+            "name": "tradeWithObject"
+        }, 
+        {
+            "signature": "int explore(UnitAIModule * this, int param_1, int param_2, int param_3)", 
+            "index": 146, 
+            "name": "explore"
+        }, 
+        {
+            "signature": "int enterObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 147, 
+            "name": "enterObject"
+        }, 
+        {
+            "signature": "int unload(UnitAIModule * this, int param_1, float param_2, float param_3)", 
+            "index": 148, 
+            "name": "unload"
+        }, 
+        {
+            "signature": "int transportObject(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 149, 
+            "name": "transportObject"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, float param_1, float param_2, float param_3, float param_4, int param_5)", 
+            "index": 150, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 151, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 152, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int evasiveMoveTo(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 153, 
+            "name": "evasiveMoveTo"
+        }, 
+        {
+            "signature": "int intelligentEvasiveMoveTo(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4, int param_5)", 
+            "index": 154, 
+            "name": "intelligentEvasiveMoveTo"
+        }, 
+        {
+            "signature": "int runAwayFromAttackers(UnitAIModule * this, int param_1)", 
+            "index": 155, 
+            "name": "runAwayFromAttackers"
+        }, 
+        {
+            "signature": "int followObject(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 156, 
+            "name": "followObject"
+        }, 
+        {
+            "signature": "int defendObject(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 157, 
+            "name": "defendObject"
+        }, 
+        {
+            "signature": "int defendPosition(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 158, 
+            "name": "defendPosition"
+        }, 
+        {
+            "signature": "int seekAndDestroy(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4)", 
+            "index": 159, 
+            "name": "seekAndDestroy"
+        }, 
+        {
+            "signature": "int exploreAndDestroy(UnitAIModule * this, int param_1, int param_2, int param_3)", 
+            "index": 160, 
+            "name": "exploreAndDestroy"
+        }, 
+        {
+            "signature": "int importantObject(UnitAIModule * this, int param_1)", 
+            "index": 161, 
+            "name": "importantObject"
+        }, 
+        {
+            "signature": "int convertToLOSResourceType(UnitAIModule * this, int param_1)", 
+            "index": 162, 
+            "name": "convertToLOSResourceType"
+        }, 
+        {
+            "signature": "int canConvert(UnitAIModule * this, int param_1)", 
+            "index": 163, 
+            "name": "canConvert"
+        }, 
+        {
+            "signature": "int processOrder(UnitAIModule * this, OrderEvent * param_1, int param_2)", 
+            "index": 164, 
+            "name": "processOrder"
+        }, 
+        {
+            "signature": "int processNotify(TribeTradeShipUnitAIModule * this, NotifyEvent * param_1, ulong param_2)", 
+            "index": 165, 
+            "name": "processNotify"
+        }, 
+        {
+            "signature": "void processGroupNotify(UnitAIModule * this, NotifyEvent * param_1)", 
+            "index": 166, 
+            "name": "processGroupNotify"
+        }, 
+        {
+            "signature": "int processIdle(TribeTradeShipUnitAIModule * this, int param_1)", 
+            "index": 167, 
+            "name": "processIdle"
+        }, 
+        {
+            "signature": "int processMisc(UnitAIModule * this)", 
+            "index": 168, 
+            "name": "processMisc"
+        }, 
+        {
+            "signature": "int processRetryableOrder(UnitAIModule * this)", 
+            "index": 169, 
+            "name": "processRetryableOrder"
+        }, 
+        {
+            "signature": "void * `scalar_deleting_destructor'(TribeTransportShipUnitAIModule * this, uint param_1)", 
+            "index": 170, 
+            "name": "`scalar_deleting_destructor'"
+        }, 
+        {
+            "signature": "void save(UnitAIModule * this, int param_1)", 
+            "index": 171, 
+            "name": "save"
+        }, 
+        {
+            "signature": "void load(UnitAIModule * this, int param_1)", 
+            "index": 172, 
+            "name": "load"
+        }, 
+        {
+            "signature": "RGE_Player * owner(UnitAIModule * this)", 
+            "index": 173, 
+            "name": "owner"
+        }, 
+        {
+            "signature": "int order(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4, float param_5, float param_6, float param_7, float param_8, int param_9, int param_10, int param_11)", 
+            "index": 174, 
+            "name": "order"
+        }, 
+        {
+            "signature": "int notify(UnitAIModule * this, int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)", 
+            "index": 175, 
+            "name": "notify"
+        }, 
+        {
+            "signature": "int notifyCommander(UnitAIModule * this, int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)", 
+            "index": 176, 
+            "name": "notifyCommander"
+        }, 
+        {
+            "signature": "int notifyCommander(UnitAIModule * this, NotifyEvent * param_1)", 
+            "index": 177, 
+            "name": "notifyCommander"
+        }, 
+        {
+            "signature": "void search(UnitAIModule * this)", 
+            "index": 178, 
+            "name": "search"
+        }, 
+        {
+            "signature": "int importantWhenDead(UnitAIModule * this, int param_1)", 
+            "index": 179, 
+            "name": "importantWhenDead"
+        }, 
+        {
+            "signature": "int retryableOrder(UnitAIModule * this, int param_1)", 
+            "index": 180, 
+            "name": "retryableOrder"
+        }, 
+        {
+            "signature": "int actionRequiresLiveTarget(UnitAIModule * this, int param_1)", 
+            "index": 181, 
+            "name": "actionRequiresLiveTarget"
+        }, 
+        {
+            "signature": "int bestUnitToAttack(UnitAIModule * this, int param_1, int param_2, float * param_3)", 
+            "index": 182, 
+            "name": "bestUnitToAttack"
+        }, 
+        {
+            "signature": "int mostDangerousEnemy(UnitAIModule * this, float * param_1)", 
+            "index": 183, 
+            "name": "mostDangerousEnemy"
+        }, 
+        {
+            "signature": "int weakestEnemy(UnitAIModule * this, float * param_1)", 
+            "index": 184, 
+            "name": "weakestEnemy"
+        }, 
+        {
+            "signature": "int closestAttacker(UnitAIModule * this, float * param_1)", 
+            "index": 185, 
+            "name": "closestAttacker"
+        }, 
+        {
+            "signature": "int closestObject(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4, int * param_5)", 
+            "index": 186, 
+            "name": "closestObject"
+        }, 
+        {
+            "signature": "int closestResourceObject(UnitAIModule * this, int param_1, int * param_2)", 
+            "index": 187, 
+            "name": "closestResourceObject"
+        }, 
+        {
+            "signature": "int closestUndiscoveredTile(UnitAIModule * this, int * param_1, int * param_2, int param_3)", 
+            "index": 188, 
+            "name": "closestUndiscoveredTile"
+        }, 
+        {
+            "signature": "void logDebug(UnitAIModule * this, char * param_1, ...)", 
+            "index": 189, 
+            "name": "logDebug"
+        }, 
+        {
+            "signature": "int canAttackUnit(UnitAIModule * this, RGE_Static_Object * param_1)", 
+            "index": 190, 
+            "name": "canAttackUnit"
+        }, 
+        {
+            "signature": "int canAttackUnitAtNeutrality(UnitAIModule * this, int param_1)", 
+            "index": 191, 
+            "name": "canAttackUnitAtNeutrality"
+        }, 
+        {
+            "signature": "int stopObject(UnitAIModule * this, int param_1)", 
+            "index": 192, 
+            "name": "stopObject"
+        }, 
+        {
+            "signature": "int attackObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 193, 
+            "name": "attackObject"
+        }, 
+        {
+            "signature": "int attackRoundupObject(UnitAIModule * this, int param_1)", 
+            "index": 194, 
+            "name": "attackRoundupObject"
+        }, 
+        {
+            "signature": "int huntObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 195, 
+            "name": "huntObject"
+        }, 
+        {
+            "signature": "int gatherObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 196, 
+            "name": "gatherObject"
+        }, 
+        {
+            "signature": "int convertObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 197, 
+            "name": "convertObject"
+        }, 
+        {
+            "signature": "int healObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 198, 
+            "name": "healObject"
+        }, 
+        {
+            "signature": "int repairObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 199, 
+            "name": "repairObject"
+        }, 
+        {
+            "signature": "int buildObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 200, 
+            "name": "buildObject"
+        }, 
+        {
+            "signature": "int tradeWithObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 201, 
+            "name": "tradeWithObject"
+        }, 
+        {
+            "signature": "int explore(UnitAIModule * this, int param_1, int param_2, int param_3)", 
+            "index": 202, 
+            "name": "explore"
+        }, 
+        {
+            "signature": "int enterObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 203, 
+            "name": "enterObject"
+        }, 
+        {
+            "signature": "int unload(UnitAIModule * this, int param_1, float param_2, float param_3)", 
+            "index": 204, 
+            "name": "unload"
+        }, 
+        {
+            "signature": "int transportObject(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 205, 
+            "name": "transportObject"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, float param_1, float param_2, float param_3, float param_4, int param_5)", 
+            "index": 206, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 207, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 208, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int evasiveMoveTo(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 209, 
+            "name": "evasiveMoveTo"
+        }, 
+        {
+            "signature": "int intelligentEvasiveMoveTo(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4, int param_5)", 
+            "index": 210, 
+            "name": "intelligentEvasiveMoveTo"
+        }, 
+        {
+            "signature": "int runAwayFromAttackers(UnitAIModule * this, int param_1)", 
+            "index": 211, 
+            "name": "runAwayFromAttackers"
+        }, 
+        {
+            "signature": "int followObject(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 212, 
+            "name": "followObject"
+        }, 
+        {
+            "signature": "int defendObject(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 213, 
+            "name": "defendObject"
+        }, 
+        {
+            "signature": "int defendPosition(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 214, 
+            "name": "defendPosition"
+        }, 
+        {
+            "signature": "int seekAndDestroy(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4)", 
+            "index": 215, 
+            "name": "seekAndDestroy"
+        }, 
+        {
+            "signature": "int exploreAndDestroy(UnitAIModule * this, int param_1, int param_2, int param_3)", 
+            "index": 216, 
+            "name": "exploreAndDestroy"
+        }, 
+        {
+            "signature": "int importantObject(UnitAIModule * this, int param_1)", 
+            "index": 217, 
+            "name": "importantObject"
+        }, 
+        {
+            "signature": "int convertToLOSResourceType(UnitAIModule * this, int param_1)", 
+            "index": 218, 
+            "name": "convertToLOSResourceType"
+        }, 
+        {
+            "signature": "int canConvert(UnitAIModule * this, int param_1)", 
+            "index": 219, 
+            "name": "canConvert"
+        }, 
+        {
+            "signature": "int processOrder(UnitAIModule * this, OrderEvent * param_1, int param_2)", 
+            "index": 220, 
+            "name": "processOrder"
+        }, 
+        {
+            "signature": "int processNotify(TribeTransportShipUnitAIModule * this, NotifyEvent * param_1, ulong param_2)", 
+            "index": 221, 
+            "name": "processNotify"
+        }, 
+        {
+            "signature": "void processGroupNotify(UnitAIModule * this, NotifyEvent * param_1)", 
+            "index": 222, 
+            "name": "processGroupNotify"
+        }, 
+        {
+            "signature": "int processIdle(TribeTransportShipUnitAIModule * this, int param_1)", 
+            "index": 223, 
+            "name": "processIdle"
+        }, 
+        {
+            "signature": "int processMisc(UnitAIModule * this)", 
+            "index": 224, 
+            "name": "processMisc"
+        }, 
+        {
+            "signature": "int processRetryableOrder(UnitAIModule * this)", 
+            "index": 225, 
+            "name": "processRetryableOrder"
+        }, 
+        {
+            "signature": "void * `scalar_deleting_destructor'(TribeFishingShipUnitAIModule * this, uint param_1)", 
+            "index": 226, 
+            "name": "`scalar_deleting_destructor'"
+        }, 
+        {
+            "signature": "void save(UnitAIModule * this, int param_1)", 
+            "index": 227, 
+            "name": "save"
+        }, 
+        {
+            "signature": "void load(UnitAIModule * this, int param_1)", 
+            "index": 228, 
+            "name": "load"
+        }, 
+        {
+            "signature": "RGE_Player * owner(UnitAIModule * this)", 
+            "index": 229, 
+            "name": "owner"
+        }, 
+        {
+            "signature": "int order(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4, float param_5, float param_6, float param_7, float param_8, int param_9, int param_10, int param_11)", 
+            "index": 230, 
+            "name": "order"
+        }, 
+        {
+            "signature": "int notify(UnitAIModule * this, int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)", 
+            "index": 231, 
+            "name": "notify"
+        }, 
+        {
+            "signature": "int notifyCommander(UnitAIModule * this, int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)", 
+            "index": 232, 
+            "name": "notifyCommander"
+        }, 
+        {
+            "signature": "int notifyCommander(UnitAIModule * this, NotifyEvent * param_1)", 
+            "index": 233, 
+            "name": "notifyCommander"
+        }, 
+        {
+            "signature": "void search(UnitAIModule * this)", 
+            "index": 234, 
+            "name": "search"
+        }, 
+        {
+            "signature": "int importantWhenDead(TribeFishingShipUnitAIModule * this, int param_1)", 
+            "index": 235, 
+            "name": "importantWhenDead"
+        }, 
+        {
+            "signature": "int retryableOrder(UnitAIModule * this, int param_1)", 
+            "index": 236, 
+            "name": "retryableOrder"
+        }, 
+        {
+            "signature": "int actionRequiresLiveTarget(UnitAIModule * this, int param_1)", 
+            "index": 237, 
+            "name": "actionRequiresLiveTarget"
+        }, 
+        {
+            "signature": "int bestUnitToAttack(UnitAIModule * this, int param_1, int param_2, float * param_3)", 
+            "index": 238, 
+            "name": "bestUnitToAttack"
+        }, 
+        {
+            "signature": "int mostDangerousEnemy(UnitAIModule * this, float * param_1)", 
+            "index": 239, 
+            "name": "mostDangerousEnemy"
+        }, 
+        {
+            "signature": "int weakestEnemy(UnitAIModule * this, float * param_1)", 
+            "index": 240, 
+            "name": "weakestEnemy"
+        }, 
+        {
+            "signature": "int closestAttacker(UnitAIModule * this, float * param_1)", 
+            "index": 241, 
+            "name": "closestAttacker"
+        }, 
+        {
+            "signature": "int closestObject(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4, int * param_5)", 
+            "index": 242, 
+            "name": "closestObject"
+        }, 
+        {
+            "signature": "int closestResourceObject(UnitAIModule * this, int param_1, int * param_2)", 
+            "index": 243, 
+            "name": "closestResourceObject"
+        }, 
+        {
+            "signature": "int closestUndiscoveredTile(UnitAIModule * this, int * param_1, int * param_2, int param_3)", 
+            "index": 244, 
+            "name": "closestUndiscoveredTile"
+        }, 
+        {
+            "signature": "void logDebug(UnitAIModule * this, char * param_1, ...)", 
+            "index": 245, 
+            "name": "logDebug"
+        }, 
+        {
+            "signature": "int canAttackUnit(UnitAIModule * this, RGE_Static_Object * param_1)", 
+            "index": 246, 
+            "name": "canAttackUnit"
+        }, 
+        {
+            "signature": "int canAttackUnitAtNeutrality(UnitAIModule * this, int param_1)", 
+            "index": 247, 
+            "name": "canAttackUnitAtNeutrality"
+        }, 
+        {
+            "signature": "int stopObject(UnitAIModule * this, int param_1)", 
+            "index": 248, 
+            "name": "stopObject"
+        }, 
+        {
+            "signature": "int attackObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 249, 
+            "name": "attackObject"
+        }, 
+        {
+            "signature": "int attackRoundupObject(UnitAIModule * this, int param_1)", 
+            "index": 250, 
+            "name": "attackRoundupObject"
+        }, 
+        {
+            "signature": "int huntObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 251, 
+            "name": "huntObject"
+        }, 
+        {
+            "signature": "int gatherObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 252, 
+            "name": "gatherObject"
+        }, 
+        {
+            "signature": "int convertObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 253, 
+            "name": "convertObject"
+        }, 
+        {
+            "signature": "int healObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 254, 
+            "name": "healObject"
+        }, 
+        {
+            "signature": "int repairObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 255, 
+            "name": "repairObject"
+        }, 
+        {
+            "signature": "int buildObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 256, 
+            "name": "buildObject"
+        }, 
+        {
+            "signature": "int tradeWithObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 257, 
+            "name": "tradeWithObject"
+        }, 
+        {
+            "signature": "int explore(UnitAIModule * this, int param_1, int param_2, int param_3)", 
+            "index": 258, 
+            "name": "explore"
+        }, 
+        {
+            "signature": "int enterObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 259, 
+            "name": "enterObject"
+        }, 
+        {
+            "signature": "int unload(UnitAIModule * this, int param_1, float param_2, float param_3)", 
+            "index": 260, 
+            "name": "unload"
+        }, 
+        {
+            "signature": "int transportObject(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 261, 
+            "name": "transportObject"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, float param_1, float param_2, float param_3, float param_4, int param_5)", 
+            "index": 262, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 263, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 264, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int evasiveMoveTo(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 265, 
+            "name": "evasiveMoveTo"
+        }, 
+        {
+            "signature": "int intelligentEvasiveMoveTo(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4, int param_5)", 
+            "index": 266, 
+            "name": "intelligentEvasiveMoveTo"
+        }, 
+        {
+            "signature": "int runAwayFromAttackers(UnitAIModule * this, int param_1)", 
+            "index": 267, 
+            "name": "runAwayFromAttackers"
+        }, 
+        {
+            "signature": "int followObject(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 268, 
+            "name": "followObject"
+        }, 
+        {
+            "signature": "int defendObject(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 269, 
+            "name": "defendObject"
+        }, 
+        {
+            "signature": "int defendPosition(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 270, 
+            "name": "defendPosition"
+        }, 
+        {
+            "signature": "int seekAndDestroy(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4)", 
+            "index": 271, 
+            "name": "seekAndDestroy"
+        }, 
+        {
+            "signature": "int exploreAndDestroy(UnitAIModule * this, int param_1, int param_2, int param_3)", 
+            "index": 272, 
+            "name": "exploreAndDestroy"
+        }, 
+        {
+            "signature": "int importantObject(UnitAIModule * this, int param_1)", 
+            "index": 273, 
+            "name": "importantObject"
+        }, 
+        {
+            "signature": "int convertToLOSResourceType(TribeFishingShipUnitAIModule * this, int param_1)", 
+            "index": 274, 
+            "name": "convertToLOSResourceType"
+        }, 
+        {
+            "signature": "int canConvert(UnitAIModule * this, int param_1)", 
+            "index": 275, 
+            "name": "canConvert"
+        }, 
+        {
+            "signature": "int processOrder(UnitAIModule * this, OrderEvent * param_1, int param_2)", 
+            "index": 276, 
+            "name": "processOrder"
+        }, 
+        {
+            "signature": "int processNotify(TribeFishingShipUnitAIModule * this, NotifyEvent * param_1, ulong param_2)", 
+            "index": 277, 
+            "name": "processNotify"
+        }, 
+        {
+            "signature": "void processGroupNotify(UnitAIModule * this, NotifyEvent * param_1)", 
+            "index": 278, 
+            "name": "processGroupNotify"
+        }, 
+        {
+            "signature": "int processIdle(TribeFishingShipUnitAIModule * this, int param_1)", 
+            "index": 279, 
+            "name": "processIdle"
+        }, 
+        {
+            "signature": "int processMisc(UnitAIModule * this)", 
+            "index": 280, 
+            "name": "processMisc"
+        }, 
+        {
+            "signature": "int processRetryableOrder(UnitAIModule * this)", 
+            "index": 281, 
+            "name": "processRetryableOrder"
+        }, 
+        {
+            "signature": "void * `scalar_deleting_destructor'(TribeSoldierUnitAIModule * this, uint param_1)", 
+            "index": 282, 
+            "name": "`scalar_deleting_destructor'"
+        }, 
+        {
+            "signature": "void save(UnitAIModule * this, int param_1)", 
+            "index": 283, 
+            "name": "save"
+        }, 
+        {
+            "signature": "void load(UnitAIModule * this, int param_1)", 
+            "index": 284, 
+            "name": "load"
+        }, 
+        {
+            "signature": "RGE_Player * owner(UnitAIModule * this)", 
+            "index": 285, 
+            "name": "owner"
+        }, 
+        {
+            "signature": "int order(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4, float param_5, float param_6, float param_7, float param_8, int param_9, int param_10, int param_11)", 
+            "index": 286, 
+            "name": "order"
+        }, 
+        {
+            "signature": "int notify(UnitAIModule * this, int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)", 
+            "index": 287, 
+            "name": "notify"
+        }, 
+        {
+            "signature": "int notifyCommander(UnitAIModule * this, int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)", 
+            "index": 288, 
+            "name": "notifyCommander"
+        }, 
+        {
+            "signature": "int notifyCommander(UnitAIModule * this, NotifyEvent * param_1)", 
+            "index": 289, 
+            "name": "notifyCommander"
+        }, 
+        {
+            "signature": "void search(UnitAIModule * this)", 
+            "index": 290, 
+            "name": "search"
+        }, 
+        {
+            "signature": "int importantWhenDead(UnitAIModule * this, int param_1)", 
+            "index": 291, 
+            "name": "importantWhenDead"
+        }, 
+        {
+            "signature": "int retryableOrder(UnitAIModule * this, int param_1)", 
+            "index": 292, 
+            "name": "retryableOrder"
+        }, 
+        {
+            "signature": "int actionRequiresLiveTarget(UnitAIModule * this, int param_1)", 
+            "index": 293, 
+            "name": "actionRequiresLiveTarget"
+        }, 
+        {
+            "signature": "int bestUnitToAttack(UnitAIModule * this, int param_1, int param_2, float * param_3)", 
+            "index": 294, 
+            "name": "bestUnitToAttack"
+        }, 
+        {
+            "signature": "int mostDangerousEnemy(UnitAIModule * this, float * param_1)", 
+            "index": 295, 
+            "name": "mostDangerousEnemy"
+        }, 
+        {
+            "signature": "int weakestEnemy(UnitAIModule * this, float * param_1)", 
+            "index": 296, 
+            "name": "weakestEnemy"
+        }, 
+        {
+            "signature": "int closestAttacker(UnitAIModule * this, float * param_1)", 
+            "index": 297, 
+            "name": "closestAttacker"
+        }, 
+        {
+            "signature": "int closestObject(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4, int * param_5)", 
+            "index": 298, 
+            "name": "closestObject"
+        }, 
+        {
+            "signature": "int closestResourceObject(UnitAIModule * this, int param_1, int * param_2)", 
+            "index": 299, 
+            "name": "closestResourceObject"
+        }, 
+        {
+            "signature": "int closestUndiscoveredTile(UnitAIModule * this, int * param_1, int * param_2, int param_3)", 
+            "index": 300, 
+            "name": "closestUndiscoveredTile"
+        }, 
+        {
+            "signature": "void logDebug(UnitAIModule * this, char * param_1, ...)", 
+            "index": 301, 
+            "name": "logDebug"
+        }, 
+        {
+            "signature": "int canAttackUnit(TribeSoldierUnitAIModule * this, RGE_Static_Object * param_1)", 
+            "index": 302, 
+            "name": "canAttackUnit"
+        }, 
+        {
+            "signature": "int canAttackUnitAtNeutrality(TribeSoldierUnitAIModule * this, int param_1)", 
+            "index": 303, 
+            "name": "canAttackUnitAtNeutrality"
+        }, 
+        {
+            "signature": "int stopObject(UnitAIModule * this, int param_1)", 
+            "index": 304, 
+            "name": "stopObject"
+        }, 
+        {
+            "signature": "int attackObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 305, 
+            "name": "attackObject"
+        }, 
+        {
+            "signature": "int attackRoundupObject(UnitAIModule * this, int param_1)", 
+            "index": 306, 
+            "name": "attackRoundupObject"
+        }, 
+        {
+            "signature": "int huntObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 307, 
+            "name": "huntObject"
+        }, 
+        {
+            "signature": "int gatherObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 308, 
+            "name": "gatherObject"
+        }, 
+        {
+            "signature": "int convertObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 309, 
+            "name": "convertObject"
+        }, 
+        {
+            "signature": "int healObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 310, 
+            "name": "healObject"
+        }, 
+        {
+            "signature": "int repairObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 311, 
+            "name": "repairObject"
+        }, 
+        {
+            "signature": "int buildObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 312, 
+            "name": "buildObject"
+        }, 
+        {
+            "signature": "int tradeWithObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 313, 
+            "name": "tradeWithObject"
+        }, 
+        {
+            "signature": "int explore(UnitAIModule * this, int param_1, int param_2, int param_3)", 
+            "index": 314, 
+            "name": "explore"
+        }, 
+        {
+            "signature": "int enterObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 315, 
+            "name": "enterObject"
+        }, 
+        {
+            "signature": "int unload(UnitAIModule * this, int param_1, float param_2, float param_3)", 
+            "index": 316, 
+            "name": "unload"
+        }, 
+        {
+            "signature": "int transportObject(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 317, 
+            "name": "transportObject"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, float param_1, float param_2, float param_3, float param_4, int param_5)", 
+            "index": 318, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 319, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 320, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int evasiveMoveTo(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 321, 
+            "name": "evasiveMoveTo"
+        }, 
+        {
+            "signature": "int intelligentEvasiveMoveTo(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4, int param_5)", 
+            "index": 322, 
+            "name": "intelligentEvasiveMoveTo"
+        }, 
+        {
+            "signature": "int runAwayFromAttackers(UnitAIModule * this, int param_1)", 
+            "index": 323, 
+            "name": "runAwayFromAttackers"
+        }, 
+        {
+            "signature": "int followObject(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 324, 
+            "name": "followObject"
+        }, 
+        {
+            "signature": "int defendObject(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 325, 
+            "name": "defendObject"
+        }, 
+        {
+            "signature": "int defendPosition(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 326, 
+            "name": "defendPosition"
+        }, 
+        {
+            "signature": "int seekAndDestroy(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4)", 
+            "index": 327, 
+            "name": "seekAndDestroy"
+        }, 
+        {
+            "signature": "int exploreAndDestroy(UnitAIModule * this, int param_1, int param_2, int param_3)", 
+            "index": 328, 
+            "name": "exploreAndDestroy"
+        }, 
+        {
+            "signature": "int importantObject(UnitAIModule * this, int param_1)", 
+            "index": 329, 
+            "name": "importantObject"
+        }, 
+        {
+            "signature": "int convertToLOSResourceType(UnitAIModule * this, int param_1)", 
+            "index": 330, 
+            "name": "convertToLOSResourceType"
+        }, 
+        {
+            "signature": "int canConvert(UnitAIModule * this, int param_1)", 
+            "index": 331, 
+            "name": "canConvert"
+        }, 
+        {
+            "signature": "int processOrder(UnitAIModule * this, OrderEvent * param_1, int param_2)", 
+            "index": 332, 
+            "name": "processOrder"
+        }, 
+        {
+            "signature": "int processNotify(TribeSoldierUnitAIModule * this, NotifyEvent * param_1, ulong param_2)", 
+            "index": 333, 
+            "name": "processNotify"
+        }, 
+        {
+            "signature": "void processGroupNotify(UnitAIModule * this, NotifyEvent * param_1)", 
+            "index": 334, 
+            "name": "processGroupNotify"
+        }, 
+        {
+            "signature": "int processIdle(TribeSoldierUnitAIModule * this, int param_1)", 
+            "index": 335, 
+            "name": "processIdle"
+        }, 
+        {
+            "signature": "int processMisc(UnitAIModule * this)", 
+            "index": 336, 
+            "name": "processMisc"
+        }, 
+        {
+            "signature": "int processRetryableOrder(UnitAIModule * this)", 
+            "index": 337, 
+            "name": "processRetryableOrder"
+        }, 
+        {
+            "signature": "void * `vector_deleting_destructor'(TribeArtifactUnitAIModule * this, uint param_1)", 
+            "index": 338, 
+            "name": "`vector_deleting_destructor'"
+        }, 
+        {
+            "signature": "void save(UnitAIModule * this, int param_1)", 
+            "index": 339, 
+            "name": "save"
+        }, 
+        {
+            "signature": "void load(UnitAIModule * this, int param_1)", 
+            "index": 340, 
+            "name": "load"
+        }, 
+        {
+            "signature": "RGE_Player * owner(UnitAIModule * this)", 
+            "index": 341, 
+            "name": "owner"
+        }, 
+        {
+            "signature": "int order(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4, float param_5, float param_6, float param_7, float param_8, int param_9, int param_10, int param_11)", 
+            "index": 342, 
+            "name": "order"
+        }, 
+        {
+            "signature": "int notify(UnitAIModule * this, int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)", 
+            "index": 343, 
+            "name": "notify"
+        }, 
+        {
+            "signature": "int notifyCommander(UnitAIModule * this, int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)", 
+            "index": 344, 
+            "name": "notifyCommander"
+        }, 
+        {
+            "signature": "int notifyCommander(UnitAIModule * this, NotifyEvent * param_1)", 
+            "index": 345, 
+            "name": "notifyCommander"
+        }, 
+        {
+            "signature": "void search(UnitAIModule * this)", 
+            "index": 346, 
+            "name": "search"
+        }, 
+        {
+            "signature": "int importantWhenDead(UnitAIModule * this, int param_1)", 
+            "index": 347, 
+            "name": "importantWhenDead"
+        }, 
+        {
+            "signature": "int retryableOrder(UnitAIModule * this, int param_1)", 
+            "index": 348, 
+            "name": "retryableOrder"
+        }, 
+        {
+            "signature": "int actionRequiresLiveTarget(UnitAIModule * this, int param_1)", 
+            "index": 349, 
+            "name": "actionRequiresLiveTarget"
+        }, 
+        {
+            "signature": "int bestUnitToAttack(UnitAIModule * this, int param_1, int param_2, float * param_3)", 
+            "index": 350, 
+            "name": "bestUnitToAttack"
+        }, 
+        {
+            "signature": "int mostDangerousEnemy(UnitAIModule * this, float * param_1)", 
+            "index": 351, 
+            "name": "mostDangerousEnemy"
+        }, 
+        {
+            "signature": "int weakestEnemy(UnitAIModule * this, float * param_1)", 
+            "index": 352, 
+            "name": "weakestEnemy"
+        }, 
+        {
+            "signature": "int closestAttacker(UnitAIModule * this, float * param_1)", 
+            "index": 353, 
+            "name": "closestAttacker"
+        }, 
+        {
+            "signature": "int closestObject(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4, int * param_5)", 
+            "index": 354, 
+            "name": "closestObject"
+        }, 
+        {
+            "signature": "int closestResourceObject(UnitAIModule * this, int param_1, int * param_2)", 
+            "index": 355, 
+            "name": "closestResourceObject"
+        }, 
+        {
+            "signature": "int closestUndiscoveredTile(UnitAIModule * this, int * param_1, int * param_2, int param_3)", 
+            "index": 356, 
+            "name": "closestUndiscoveredTile"
+        }, 
+        {
+            "signature": "void logDebug(UnitAIModule * this, char * param_1, ...)", 
+            "index": 357, 
+            "name": "logDebug"
+        }, 
+        {
+            "signature": "int canAttackUnit(UnitAIModule * this, RGE_Static_Object * param_1)", 
+            "index": 358, 
+            "name": "canAttackUnit"
+        }, 
+        {
+            "signature": "int canAttackUnitAtNeutrality(UnitAIModule * this, int param_1)", 
+            "index": 359, 
+            "name": "canAttackUnitAtNeutrality"
+        }, 
+        {
+            "signature": "int stopObject(UnitAIModule * this, int param_1)", 
+            "index": 360, 
+            "name": "stopObject"
+        }, 
+        {
+            "signature": "int attackObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 361, 
+            "name": "attackObject"
+        }, 
+        {
+            "signature": "int attackRoundupObject(UnitAIModule * this, int param_1)", 
+            "index": 362, 
+            "name": "attackRoundupObject"
+        }, 
+        {
+            "signature": "int huntObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 363, 
+            "name": "huntObject"
+        }, 
+        {
+            "signature": "int gatherObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 364, 
+            "name": "gatherObject"
+        }, 
+        {
+            "signature": "int convertObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 365, 
+            "name": "convertObject"
+        }, 
+        {
+            "signature": "int healObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 366, 
+            "name": "healObject"
+        }, 
+        {
+            "signature": "int repairObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 367, 
+            "name": "repairObject"
+        }, 
+        {
+            "signature": "int buildObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 368, 
+            "name": "buildObject"
+        }, 
+        {
+            "signature": "int tradeWithObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 369, 
+            "name": "tradeWithObject"
+        }, 
+        {
+            "signature": "int explore(UnitAIModule * this, int param_1, int param_2, int param_3)", 
+            "index": 370, 
+            "name": "explore"
+        }, 
+        {
+            "signature": "int enterObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 371, 
+            "name": "enterObject"
+        }, 
+        {
+            "signature": "int unload(UnitAIModule * this, int param_1, float param_2, float param_3)", 
+            "index": 372, 
+            "name": "unload"
+        }, 
+        {
+            "signature": "int transportObject(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 373, 
+            "name": "transportObject"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, float param_1, float param_2, float param_3, float param_4, int param_5)", 
+            "index": 374, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 375, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 376, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int evasiveMoveTo(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 377, 
+            "name": "evasiveMoveTo"
+        }, 
+        {
+            "signature": "int intelligentEvasiveMoveTo(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4, int param_5)", 
+            "index": 378, 
+            "name": "intelligentEvasiveMoveTo"
+        }, 
+        {
+            "signature": "int runAwayFromAttackers(UnitAIModule * this, int param_1)", 
+            "index": 379, 
+            "name": "runAwayFromAttackers"
+        }, 
+        {
+            "signature": "int followObject(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 380, 
+            "name": "followObject"
+        }, 
+        {
+            "signature": "int defendObject(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 381, 
+            "name": "defendObject"
+        }, 
+        {
+            "signature": "int defendPosition(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 382, 
+            "name": "defendPosition"
+        }, 
+        {
+            "signature": "int seekAndDestroy(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4)", 
+            "index": 383, 
+            "name": "seekAndDestroy"
+        }, 
+        {
+            "signature": "int exploreAndDestroy(UnitAIModule * this, int param_1, int param_2, int param_3)", 
+            "index": 384, 
+            "name": "exploreAndDestroy"
+        }, 
+        {
+            "signature": "int importantObject(UnitAIModule * this, int param_1)", 
+            "index": 385, 
+            "name": "importantObject"
+        }, 
+        {
+            "signature": "int convertToLOSResourceType(UnitAIModule * this, int param_1)", 
+            "index": 386, 
+            "name": "convertToLOSResourceType"
+        }, 
+        {
+            "signature": "int canConvert(UnitAIModule * this, int param_1)", 
+            "index": 387, 
+            "name": "canConvert"
+        }, 
+        {
+            "signature": "int processOrder(UnitAIModule * this, OrderEvent * param_1, int param_2)", 
+            "index": 388, 
+            "name": "processOrder"
+        }, 
+        {
+            "signature": "int processNotify(TribeArtifactUnitAIModule * this, NotifyEvent * param_1, ulong param_2)", 
+            "index": 389, 
+            "name": "processNotify"
+        }, 
+        {
+            "signature": "void processGroupNotify(UnitAIModule * this, NotifyEvent * param_1)", 
+            "index": 390, 
+            "name": "processGroupNotify"
+        }, 
+        {
+            "signature": "int processIdle(TribeArtifactUnitAIModule * this, int param_1)", 
+            "index": 391, 
+            "name": "processIdle"
+        }, 
+        {
+            "signature": "int processMisc(TribeArtifactUnitAIModule * this)", 
+            "index": 392, 
+            "name": "processMisc"
+        }, 
+        {
+            "signature": "int processRetryableOrder(UnitAIModule * this)", 
+            "index": 393, 
+            "name": "processRetryableOrder"
+        }, 
+        {
+            "signature": "void * `scalar_deleting_destructor'(TribeTowerUnitAIModule * this, uint param_1)", 
+            "index": 394, 
+            "name": "`scalar_deleting_destructor'"
+        }, 
+        {
+            "signature": "void save(UnitAIModule * this, int param_1)", 
+            "index": 395, 
+            "name": "save"
+        }, 
+        {
+            "signature": "void load(UnitAIModule * this, int param_1)", 
+            "index": 396, 
+            "name": "load"
+        }, 
+        {
+            "signature": "RGE_Player * owner(UnitAIModule * this)", 
+            "index": 397, 
+            "name": "owner"
+        }, 
+        {
+            "signature": "int order(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4, float param_5, float param_6, float param_7, float param_8, int param_9, int param_10, int param_11)", 
+            "index": 398, 
+            "name": "order"
+        }, 
+        {
+            "signature": "int notify(UnitAIModule * this, int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)", 
+            "index": 399, 
+            "name": "notify"
+        }, 
+        {
+            "signature": "int notifyCommander(UnitAIModule * this, int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)", 
+            "index": 400, 
+            "name": "notifyCommander"
+        }, 
+        {
+            "signature": "int notifyCommander(UnitAIModule * this, NotifyEvent * param_1)", 
+            "index": 401, 
+            "name": "notifyCommander"
+        }, 
+        {
+            "signature": "void search(UnitAIModule * this)", 
+            "index": 402, 
+            "name": "search"
+        }, 
+        {
+            "signature": "int importantWhenDead(UnitAIModule * this, int param_1)", 
+            "index": 403, 
+            "name": "importantWhenDead"
+        }, 
+        {
+            "signature": "int retryableOrder(UnitAIModule * this, int param_1)", 
+            "index": 404, 
+            "name": "retryableOrder"
+        }, 
+        {
+            "signature": "int actionRequiresLiveTarget(UnitAIModule * this, int param_1)", 
+            "index": 405, 
+            "name": "actionRequiresLiveTarget"
+        }, 
+        {
+            "signature": "int bestUnitToAttack(UnitAIModule * this, int param_1, int param_2, float * param_3)", 
+            "index": 406, 
+            "name": "bestUnitToAttack"
+        }, 
+        {
+            "signature": "int mostDangerousEnemy(UnitAIModule * this, float * param_1)", 
+            "index": 407, 
+            "name": "mostDangerousEnemy"
+        }, 
+        {
+            "signature": "int weakestEnemy(UnitAIModule * this, float * param_1)", 
+            "index": 408, 
+            "name": "weakestEnemy"
+        }, 
+        {
+            "signature": "int closestAttacker(UnitAIModule * this, float * param_1)", 
+            "index": 409, 
+            "name": "closestAttacker"
+        }, 
+        {
+            "signature": "int closestObject(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4, int * param_5)", 
+            "index": 410, 
+            "name": "closestObject"
+        }, 
+        {
+            "signature": "int closestResourceObject(UnitAIModule * this, int param_1, int * param_2)", 
+            "index": 411, 
+            "name": "closestResourceObject"
+        }, 
+        {
+            "signature": "int closestUndiscoveredTile(UnitAIModule * this, int * param_1, int * param_2, int param_3)", 
+            "index": 412, 
+            "name": "closestUndiscoveredTile"
+        }, 
+        {
+            "signature": "void logDebug(UnitAIModule * this, char * param_1, ...)", 
+            "index": 413, 
+            "name": "logDebug"
+        }, 
+        {
+            "signature": "int canAttackUnit(TribeTowerUnitAIModule * this, RGE_Static_Object * param_1)", 
+            "index": 414, 
+            "name": "canAttackUnit"
+        }, 
+        {
+            "signature": "int canAttackUnitAtNeutrality(TribeTowerUnitAIModule * this, int param_1)", 
+            "index": 415, 
+            "name": "canAttackUnitAtNeutrality"
+        }, 
+        {
+            "signature": "int stopObject(UnitAIModule * this, int param_1)", 
+            "index": 416, 
+            "name": "stopObject"
+        }, 
+        {
+            "signature": "int attackObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 417, 
+            "name": "attackObject"
+        }, 
+        {
+            "signature": "int attackRoundupObject(UnitAIModule * this, int param_1)", 
+            "index": 418, 
+            "name": "attackRoundupObject"
+        }, 
+        {
+            "signature": "int huntObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 419, 
+            "name": "huntObject"
+        }, 
+        {
+            "signature": "int gatherObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 420, 
+            "name": "gatherObject"
+        }, 
+        {
+            "signature": "int convertObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 421, 
+            "name": "convertObject"
+        }, 
+        {
+            "signature": "int healObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 422, 
+            "name": "healObject"
+        }, 
+        {
+            "signature": "int repairObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 423, 
+            "name": "repairObject"
+        }, 
+        {
+            "signature": "int buildObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 424, 
+            "name": "buildObject"
+        }, 
+        {
+            "signature": "int tradeWithObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 425, 
+            "name": "tradeWithObject"
+        }, 
+        {
+            "signature": "int explore(UnitAIModule * this, int param_1, int param_2, int param_3)", 
+            "index": 426, 
+            "name": "explore"
+        }, 
+        {
+            "signature": "int enterObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 427, 
+            "name": "enterObject"
+        }, 
+        {
+            "signature": "int unload(UnitAIModule * this, int param_1, float param_2, float param_3)", 
+            "index": 428, 
+            "name": "unload"
+        }, 
+        {
+            "signature": "int transportObject(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 429, 
+            "name": "transportObject"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, float param_1, float param_2, float param_3, float param_4, int param_5)", 
+            "index": 430, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 431, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 432, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int evasiveMoveTo(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 433, 
+            "name": "evasiveMoveTo"
+        }, 
+        {
+            "signature": "int intelligentEvasiveMoveTo(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4, int param_5)", 
+            "index": 434, 
+            "name": "intelligentEvasiveMoveTo"
+        }, 
+        {
+            "signature": "int runAwayFromAttackers(UnitAIModule * this, int param_1)", 
+            "index": 435, 
+            "name": "runAwayFromAttackers"
+        }, 
+        {
+            "signature": "int followObject(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 436, 
+            "name": "followObject"
+        }, 
+        {
+            "signature": "int defendObject(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 437, 
+            "name": "defendObject"
+        }, 
+        {
+            "signature": "int defendPosition(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 438, 
+            "name": "defendPosition"
+        }, 
+        {
+            "signature": "int seekAndDestroy(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4)", 
+            "index": 439, 
+            "name": "seekAndDestroy"
+        }, 
+        {
+            "signature": "int exploreAndDestroy(UnitAIModule * this, int param_1, int param_2, int param_3)", 
+            "index": 440, 
+            "name": "exploreAndDestroy"
+        }, 
+        {
+            "signature": "int importantObject(UnitAIModule * this, int param_1)", 
+            "index": 441, 
+            "name": "importantObject"
+        }, 
+        {
+            "signature": "int convertToLOSResourceType(UnitAIModule * this, int param_1)", 
+            "index": 442, 
+            "name": "convertToLOSResourceType"
+        }, 
+        {
+            "signature": "int canConvert(UnitAIModule * this, int param_1)", 
+            "index": 443, 
+            "name": "canConvert"
+        }, 
+        {
+            "signature": "int processOrder(UnitAIModule * this, OrderEvent * param_1, int param_2)", 
+            "index": 444, 
+            "name": "processOrder"
+        }, 
+        {
+            "signature": "int processNotify(UnitAIModule * this, NotifyEvent * param_1, ulong param_2)", 
+            "index": 445, 
+            "name": "processNotify"
+        }, 
+        {
+            "signature": "void processGroupNotify(UnitAIModule * this, NotifyEvent * param_1)", 
+            "index": 446, 
+            "name": "processGroupNotify"
+        }, 
+        {
+            "signature": "int processIdle(UnitAIModule * this, int param_1)", 
+            "index": 447, 
+            "name": "processIdle"
+        }, 
+        {
+            "signature": "int processMisc(UnitAIModule * this)", 
+            "index": 448, 
+            "name": "processMisc"
+        }, 
+        {
+            "signature": "int processRetryableOrder(UnitAIModule * this)", 
+            "index": 449, 
+            "name": "processRetryableOrder"
+        }, 
+        {
+            "signature": "void * `scalar_deleting_destructor'(TribeBuildingUnitAIModule * this, uint param_1)", 
+            "index": 450, 
+            "name": "`scalar_deleting_destructor'"
+        }, 
+        {
+            "signature": "void save(UnitAIModule * this, int param_1)", 
+            "index": 451, 
+            "name": "save"
+        }, 
+        {
+            "signature": "void load(UnitAIModule * this, int param_1)", 
+            "index": 452, 
+            "name": "load"
+        }, 
+        {
+            "signature": "RGE_Player * owner(UnitAIModule * this)", 
+            "index": 453, 
+            "name": "owner"
+        }, 
+        {
+            "signature": "int order(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4, float param_5, float param_6, float param_7, float param_8, int param_9, int param_10, int param_11)", 
+            "index": 454, 
+            "name": "order"
+        }, 
+        {
+            "signature": "int notify(UnitAIModule * this, int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)", 
+            "index": 455, 
+            "name": "notify"
+        }, 
+        {
+            "signature": "int notifyCommander(UnitAIModule * this, int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)", 
+            "index": 456, 
+            "name": "notifyCommander"
+        }, 
+        {
+            "signature": "int notifyCommander(UnitAIModule * this, NotifyEvent * param_1)", 
+            "index": 457, 
+            "name": "notifyCommander"
+        }, 
+        {
+            "signature": "void search(UnitAIModule * this)", 
+            "index": 458, 
+            "name": "search"
+        }, 
+        {
+            "signature": "int importantWhenDead(UnitAIModule * this, int param_1)", 
+            "index": 459, 
+            "name": "importantWhenDead"
+        }, 
+        {
+            "signature": "int retryableOrder(UnitAIModule * this, int param_1)", 
+            "index": 460, 
+            "name": "retryableOrder"
+        }, 
+        {
+            "signature": "int actionRequiresLiveTarget(UnitAIModule * this, int param_1)", 
+            "index": 461, 
+            "name": "actionRequiresLiveTarget"
+        }, 
+        {
+            "signature": "int bestUnitToAttack(UnitAIModule * this, int param_1, int param_2, float * param_3)", 
+            "index": 462, 
+            "name": "bestUnitToAttack"
+        }, 
+        {
+            "signature": "int mostDangerousEnemy(UnitAIModule * this, float * param_1)", 
+            "index": 463, 
+            "name": "mostDangerousEnemy"
+        }, 
+        {
+            "signature": "int weakestEnemy(UnitAIModule * this, float * param_1)", 
+            "index": 464, 
+            "name": "weakestEnemy"
+        }, 
+        {
+            "signature": "int closestAttacker(UnitAIModule * this, float * param_1)", 
+            "index": 465, 
+            "name": "closestAttacker"
+        }, 
+        {
+            "signature": "int closestObject(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4, int * param_5)", 
+            "index": 466, 
+            "name": "closestObject"
+        }, 
+        {
+            "signature": "int closestResourceObject(UnitAIModule * this, int param_1, int * param_2)", 
+            "index": 467, 
+            "name": "closestResourceObject"
+        }, 
+        {
+            "signature": "int closestUndiscoveredTile(UnitAIModule * this, int * param_1, int * param_2, int param_3)", 
+            "index": 468, 
+            "name": "closestUndiscoveredTile"
+        }, 
+        {
+            "signature": "void logDebug(UnitAIModule * this, char * param_1, ...)", 
+            "index": 469, 
+            "name": "logDebug"
+        }, 
+        {
+            "signature": "int canAttackUnit(UnitAIModule * this, RGE_Static_Object * param_1)", 
+            "index": 470, 
+            "name": "canAttackUnit"
+        }, 
+        {
+            "signature": "int canAttackUnitAtNeutrality(UnitAIModule * this, int param_1)", 
+            "index": 471, 
+            "name": "canAttackUnitAtNeutrality"
+        }, 
+        {
+            "signature": "int stopObject(UnitAIModule * this, int param_1)", 
+            "index": 472, 
+            "name": "stopObject"
+        }, 
+        {
+            "signature": "int attackObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 473, 
+            "name": "attackObject"
+        }, 
+        {
+            "signature": "int attackRoundupObject(UnitAIModule * this, int param_1)", 
+            "index": 474, 
+            "name": "attackRoundupObject"
+        }, 
+        {
+            "signature": "int huntObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 475, 
+            "name": "huntObject"
+        }, 
+        {
+            "signature": "int gatherObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 476, 
+            "name": "gatherObject"
+        }, 
+        {
+            "signature": "int convertObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 477, 
+            "name": "convertObject"
+        }, 
+        {
+            "signature": "int healObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 478, 
+            "name": "healObject"
+        }, 
+        {
+            "signature": "int repairObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 479, 
+            "name": "repairObject"
+        }, 
+        {
+            "signature": "int buildObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 480, 
+            "name": "buildObject"
+        }, 
+        {
+            "signature": "int tradeWithObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 481, 
+            "name": "tradeWithObject"
+        }, 
+        {
+            "signature": "int explore(UnitAIModule * this, int param_1, int param_2, int param_3)", 
+            "index": 482, 
+            "name": "explore"
+        }, 
+        {
+            "signature": "int enterObject(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 483, 
+            "name": "enterObject"
+        }, 
+        {
+            "signature": "int unload(UnitAIModule * this, int param_1, float param_2, float param_3)", 
+            "index": 484, 
+            "name": "unload"
+        }, 
+        {
+            "signature": "int transportObject(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 485, 
+            "name": "transportObject"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, float param_1, float param_2, float param_3, float param_4, int param_5)", 
+            "index": 486, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 487, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int moveTo(UnitAIModule * this, int param_1, int param_2)", 
+            "index": 488, 
+            "name": "moveTo"
+        }, 
+        {
+            "signature": "int evasiveMoveTo(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 489, 
+            "name": "evasiveMoveTo"
+        }, 
+        {
+            "signature": "int intelligentEvasiveMoveTo(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4, int param_5)", 
+            "index": 490, 
+            "name": "intelligentEvasiveMoveTo"
+        }, 
+        {
+            "signature": "int runAwayFromAttackers(UnitAIModule * this, int param_1)", 
+            "index": 491, 
+            "name": "runAwayFromAttackers"
+        }, 
+        {
+            "signature": "int followObject(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 492, 
+            "name": "followObject"
+        }, 
+        {
+            "signature": "int defendObject(UnitAIModule * this, int param_1, float param_2, int param_3)", 
+            "index": 493, 
+            "name": "defendObject"
+        }, 
+        {
+            "signature": "int defendPosition(UnitAIModule * this, float param_1, float param_2, float param_3, int param_4)", 
+            "index": 494, 
+            "name": "defendPosition"
+        }, 
+        {
+            "signature": "int seekAndDestroy(UnitAIModule * this, int param_1, int param_2, int param_3, int param_4)", 
+            "index": 495, 
+            "name": "seekAndDestroy"
+        }, 
+        {
+            "signature": "int exploreAndDestroy(UnitAIModule * this, int param_1, int param_2, int param_3)", 
+            "index": 496, 
+            "name": "exploreAndDestroy"
+        }, 
+        {
+            "signature": "int importantObject(UnitAIModule * this, int param_1)", 
+            "index": 497, 
+            "name": "importantObject"
+        }, 
+        {
+            "signature": "int convertToLOSResourceType(UnitAIModule * this, int param_1)", 
+            "index": 498, 
+            "name": "convertToLOSResourceType"
+        }, 
+        {
+            "signature": "int canConvert(UnitAIModule * this, int param_1)", 
+            "index": 499, 
+            "name": "canConvert"
+        }, 
+        {
+            "signature": "int processOrder(UnitAIModule * this, OrderEvent * param_1, int param_2)", 
+            "index": 500, 
+            "name": "processOrder"
+        }, 
+        {
+            "signature": "int processNotify(TribeBuildingUnitAIModule * this, NotifyEvent * param_1, ulong param_2)", 
+            "index": 501, 
+            "name": "processNotify"
+        }, 
+        {
+            "signature": "void processGroupNotify(UnitAIModule * this, NotifyEvent * param_1)", 
+            "index": 502, 
+            "name": "processGroupNotify"
+        }, 
+        {
+            "signature": "int processIdle(TribeBuildingUnitAIModule * this, int param_1)", 
+            "index": 503, 
+            "name": "processIdle"
+        }, 
+        {
+            "signature": "int processMisc(UnitAIModule * this)", 
+            "index": 504, 
+            "name": "processMisc"
+        }, 
+        {
+            "signature": "int processRetryableOrder(UnitAIModule * this)", 
+            "index": 505, 
+            "name": "processRetryableOrder"
+        }, 
+        {
+            "signature": "RGE_Task * create_task(RGE_Task_List * this, short param_1, short param_2)", 
+            "index": 506, 
+            "name": "create_task"
+        }, 
+        {
+            "signature": "RGE_Task * get_target_task(RGE_Task_List * this, RGE_Action_Object * param_1, RGE_Static_Object * param_2, float param_3, float param_4, float param_5)", 
+            "index": 507, 
+            "name": "get_target_task"
+        }, 
+        {
+            "signature": "int is_attack_task(RGE_Task_List * this, RGE_Task * param_1)", 
+            "index": 508, 
+            "name": "is_attack_task"
+        }, 
+        {
+            "signature": "int check_task(RGE_Task_List * this, RGE_Task * param_1, RGE_Action_Object * param_2, RGE_Static_Object * param_3)", 
+            "index": 509, 
+            "name": "check_task"
+        }
+    ], 
+    "members": [], 
+    "name": "TribeCivilianUnitAIModule"
+}

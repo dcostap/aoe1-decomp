@@ -1,0 +1,25 @@
+{
+    "size": 12, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "int", 
+            "size": 4, 
+            "name": "xValue"
+        }, 
+        {
+            "offset": 4, 
+            "type": "int", 
+            "size": 4, 
+            "name": "yValue"
+        }, 
+        {
+            "offset": 8, 
+            "type": "int", 
+            "size": 4, 
+            "name": "zValue"
+        }
+    ], 
+    "name": "XYZ"
+}

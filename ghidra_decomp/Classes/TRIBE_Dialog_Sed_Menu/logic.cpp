@@ -1,0 +1,333 @@
+// Class: TRIBE_Dialog_Sed_Menu
+// Function: TRIBE_Dialog_Sed_Menu
+// Address: 00440140
+// [HELPER] s_Scenario_Menu_Dialog: "Scenario Menu Dialog"
+/* public: __thiscall TRIBE_Dialog_Sed_Menu::TRIBE_Dialog_Sed_Menu(class TRIBE_Screen_Sed *) */
+
+TRIBE_Dialog_Sed_Menu * __thiscall
+TRIBE_Dialog_Sed_Menu::TRIBE_Dialog_Sed_Menu(TRIBE_Dialog_Sed_Menu *this,TRIBE_Screen_Sed *param_1)
+{
+  TButtonPanel *pTVar1;
+  long lVar2;
+  char *pcVar3;
+  TDrawArea *pTVar4;
+  int iVar5;
+  TButtonPanel **ppTVar6;
+  undefined4 *unaff_FS_OFFSET;
+  long lVar7;
+  long lVar8;
+  undefined4 local_c;
+  code *pcStack_8;
+  undefined4 local_4;
+  
+  local_4 = 0xffffffff;
+  pcStack_8 = FUN_0055d1b8;
+  local_c = *unaff_FS_OFFSET;
+  *unaff_FS_OFFSET = &local_c;
+  TDialogPanel::TDialogPanel((TDialogPanel *)this,s_Scenario_Menu_Dialog);
+  this->scenario_editor = param_1;
+  this->title = (TTextPanel *)0x0;
+  this->_padding_ = (int)&_vftable_;
+  ppTVar6 = this->buttons;
+  for (iVar5 = 7; iVar5 != 0; iVar5 = iVar5 + -1) {
+    *ppTVar6 = (TButtonPanel *)0x0;
+    ppTVar6 = ppTVar6 + 1;
+  }
+  iVar5 = 1;
+  local_4 = 0;
+  lVar2 = TEasy_Panel::get_popup_info_id((TEasy_Panel *)param_1);
+  pcVar3 = TEasy_Panel::get_popup_info_file((TEasy_Panel *)param_1);
+  lVar8 = 400;
+  lVar7 = 0x1cc;
+  pTVar4 = TPanel::renderArea((TPanel *)param_1);
+  iVar5 = TDialogPanel::setup((TDialogPanel *)this,pTVar4,(TPanel *)param_1,lVar7,lVar8,pcVar3,lVar2
+                              ,iVar5);
+  if (iVar5 != 0) {
+                    /* language.dll match for 0x2443: "Quit to Main Menu" */
+    iVar5 = TEasy_Panel::create_button
+                      ((TEasy_Panel *)this,(TPanel *)this,this->buttons,0x2443,0,0x1e,0x14,400,0x28,
+                       0,0,0);
+    if (iVar5 != 0) {
+                    /* language.dll match for 0x2441: "Save" */
+      iVar5 = TEasy_Panel::create_button
+                        ((TEasy_Panel *)this,(TPanel *)this,this->buttons + 1,0x2441,0,0x1e,0x46,400
+                         ,0x28,0,0,0);
+      if (iVar5 != 0) {
+                    /* language.dll match for 0x2442: "Save As" */
+        iVar5 = TEasy_Panel::create_button
+                          ((TEasy_Panel *)this,(TPanel *)this,this->buttons + 2,0x2442,0,0x1e,0x78,
+                           400,0x28,0,0,0);
+        if (iVar5 != 0) {
+                    /* language.dll match for 0x2445: "Edit Scenario" */
+          iVar5 = TEasy_Panel::create_button
+                            ((TEasy_Panel *)this,(TPanel *)this,this->buttons + 3,0x2445,0,0x1e,0xaa
+                             ,400,0x28,0,0,0);
+          if (iVar5 != 0) {
+                    /* language.dll match for 0x242e: "Create Scenario" */
+            iVar5 = TEasy_Panel::create_button
+                              ((TEasy_Panel *)this,(TPanel *)this,this->buttons + 4,0x242e,0,0x1e,
+                               0xdc,400,0x28,0,0,0);
+            if (iVar5 != 0) {
+                    /* language.dll match for 0x2446: "Test" */
+              iVar5 = TEasy_Panel::create_button
+                                ((TEasy_Panel *)this,(TPanel *)this,this->buttons + 5,0x2446,0,0x1e,
+                                 0x10e,400,0x28,0,0,0);
+              if (iVar5 != 0) {
+                    /* language.dll match for 0x2444: "Cancel" */
+                iVar5 = TEasy_Panel::create_button
+                                  ((TEasy_Panel *)this,(TPanel *)this,this->buttons + 6,0x2444,0,
+                                   0x1e,0x154,400,0x28,0,0,0);
+                if (iVar5 != 0) {
+                  pTVar1 = this->buttons[6];
+                  pTVar1->hotkey = 0x1b;
+                  pTVar1->hotkey_shift = 0;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  *unaff_FS_OFFSET = local_c;
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: `scalar_deleting_destructor'
+// Address: 00440340
+/* public: virtual void * __thiscall TRIBE_Dialog_Sed_Menu::`scalar deleting destructor'(unsigned
+   int) */
+
+void * __thiscall
+TRIBE_Dialog_Sed_Menu::_scalar_deleting_destructor_(TRIBE_Dialog_Sed_Menu *this,uint param_1)
+{
+  ~TRIBE_Dialog_Sed_Menu(this);
+  if ((param_1 & 1) != 0) {
+    operator_delete(this);
+  }
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: ~TRIBE_Dialog_Sed_Menu
+// Address: 00440360
+// [HELPER] s_New_Dialog: "New Dialog"
+// [HELPER] s_Open_Dialog: "Open Dialog"
+/* public: virtual __thiscall TRIBE_Dialog_Sed_Menu::~TRIBE_Dialog_Sed_Menu(void) */
+
+void __thiscall TRIBE_Dialog_Sed_Menu::~TRIBE_Dialog_Sed_Menu(TRIBE_Dialog_Sed_Menu *this)
+{
+  int iVar1;
+  TButtonPanel **ppTVar2;
+  undefined4 *unaff_FS_OFFSET;
+  undefined4 local_c;
+  code *pcStack_8;
+  undefined4 local_4;
+  
+  pcStack_8 = FUN_0055d1d8;
+  local_c = *unaff_FS_OFFSET;
+  *unaff_FS_OFFSET = &local_c;
+  this->_padding_ = (int)&_vftable_;
+  local_4 = 0;
+  TPanelSystem::destroyPanel(&panel_system,&s_Open_Dialog);
+  TPanelSystem::destroyPanel(&panel_system,&s_New_Dialog);
+  TPanel::delete_panel((TPanel *)this,(TPanel **)&this->title);
+  ppTVar2 = this->buttons;
+  iVar1 = 7;
+  do {
+    TPanel::delete_panel((TPanel *)this,(TPanel **)ppTVar2);
+    ppTVar2 = ppTVar2 + 1;
+    iVar1 = iVar1 + -1;
+  } while (iVar1 != 0);
+  local_4 = 0xffffffff;
+  TDialogPanel::~TDialogPanel((TDialogPanel *)this);
+  *unaff_FS_OFFSET = local_c;
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: action
+// Address: 00440400
+// [HELPER] s_New_Dialog: "New Dialog"
+// [HELPER] s_Open_Dialog: "Open Dialog"
+// [HELPER] s_Scenario_Editor_Open: "Scenario Editor Open"
+// [HELPER] s_Scenario_Editor_Screen: "Scenario Editor Screen"
+// [HELPER] s_Scenario_Menu_Dialog: "Scenario Menu Dialog"
+/* public: virtual long __thiscall TRIBE_Dialog_Sed_Menu::action(class TPanel *,long,unsigned
+   long,unsigned long) */
+
+long __thiscall
+TRIBE_Dialog_Sed_Menu::action
+          (TRIBE_Dialog_Sed_Menu *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
+{
+  byte bVar1;
+  TRIBE_Screen_Sed *this_00;
+  long lVar2;
+  char *pcVar3;
+  byte *pbVar4;
+  int iVar5;
+  TRIBE_Screen_Sed_Open *this_01;
+  byte *pbVar6;
+  undefined4 *unaff_FS_OFFSET;
+  bool bVar7;
+  undefined4 local_c;
+  code *pcStack_8;
+  undefined4 local_4;
+  
+  local_c = *unaff_FS_OFFSET;
+  local_4 = 0xffffffff;
+  pcStack_8 = FUN_0055d1fb;
+  *unaff_FS_OFFSET = &local_c;
+  this_00 = this->scenario_editor;
+  if (param_2 == 1) {
+    if ((TButtonPanel *)param_1 == this->buttons[0]) {
+      TPanelSystem::setCurrentPanel(&panel_system,s_Scenario_Editor_Screen,0);
+      TPanelSystem::destroyPanel(&panel_system,s_Scenario_Menu_Dialog);
+      TRIBE_Screen_Sed::command_quit(this_00);
+      lVar2 = 1;
+      goto LAB_00440782;
+    }
+    if ((TButtonPanel *)param_1 == this->buttons[1]) {
+      TPanelSystem::setCurrentPanel(&panel_system,s_Scenario_Editor_Screen,0);
+      TPanelSystem::destroyPanel(&panel_system,s_Scenario_Menu_Dialog);
+      TRIBE_Screen_Sed::command_save(this_00,'\x01','\0');
+      lVar2 = 1;
+      goto LAB_00440782;
+    }
+    if ((TButtonPanel *)param_1 == this->buttons[2]) {
+      TPanelSystem::setCurrentPanel(&panel_system,s_Scenario_Editor_Screen,0);
+      TPanelSystem::destroyPanel(&panel_system,s_Scenario_Menu_Dialog);
+      TRIBE_Screen_Sed::command_save_as(this_00,'\0');
+      lVar2 = 1;
+      goto LAB_00440782;
+    }
+    if ((TButtonPanel *)param_1 == this->buttons[3]) {
+      TPanelSystem::setCurrentPanel(&panel_system,s_Scenario_Editor_Screen,0);
+      TPanelSystem::destroyPanel(&panel_system,s_Scenario_Menu_Dialog);
+      TRIBE_Screen_Sed::command_open(this_00);
+      lVar2 = 1;
+      goto LAB_00440782;
+    }
+    if ((TButtonPanel *)param_1 == this->buttons[4]) {
+      TPanelSystem::setCurrentPanel(&panel_system,s_Scenario_Editor_Screen,0);
+      TPanelSystem::destroyPanel(&panel_system,s_Scenario_Menu_Dialog);
+      TRIBE_Screen_Sed::command_new(this_00);
+      lVar2 = 1;
+      goto LAB_00440782;
+    }
+    if ((TButtonPanel *)param_1 != this->buttons[5]) {
+      if ((TButtonPanel *)param_1 == this->buttons[6]) {
+        TPanelSystem::setCurrentPanel(&panel_system,s_Scenario_Editor_Screen,0);
+        TPanelSystem::destroyPanel(&panel_system,s_Scenario_Menu_Dialog);
+        lVar2 = 1;
+        goto LAB_00440782;
+      }
+      goto LAB_004405d2;
+    }
+    TPanelSystem::setCurrentPanel(&panel_system,s_Scenario_Editor_Screen,0);
+    TPanelSystem::destroyPanel(&panel_system,s_Scenario_Menu_Dialog);
+    pcVar3 = TRIBE_Screen_Sed::scenario_save_defaulted(this_00);
+    if (pcVar3 != (char *)0x0) {
+      TRIBE_Game::test_scenario((TRIBE_Game *)rge_base_game,pcVar3);
+      lVar2 = 1;
+      goto LAB_00440782;
+    }
+LAB_0044076a:
+    TPanelSystem::destroyPanel(&panel_system,s_Scenario_Menu_Dialog);
+LAB_00440779:
+    lVar2 = 1;
+  }
+  else {
+LAB_004405d2:
+    if (param_1 != (TPanel *)0x0) {
+      pcVar3 = TPanel::panelName(param_1);
+      if (pcVar3 != (char *)0x0) {
+        pbVar6 = &s_New_Dialog;
+        pbVar4 = (byte *)TPanel::panelName(param_1);
+        do {
+          bVar1 = *pbVar4;
+          bVar7 = bVar1 < *pbVar6;
+          if (bVar1 != *pbVar6) {
+LAB_00440619:
+            iVar5 = (1 - (uint)bVar7) - (uint)(bVar7 != 0);
+            goto LAB_0044061e;
+          }
+          if (bVar1 == 0) break;
+          bVar1 = pbVar4[1];
+          bVar7 = bVar1 < pbVar6[1];
+          if (bVar1 != pbVar6[1]) goto LAB_00440619;
+          pbVar4 = pbVar4 + 2;
+          pbVar6 = pbVar6 + 2;
+        } while (bVar1 != 0);
+        iVar5 = 0;
+LAB_0044061e:
+        if (iVar5 != 0) goto LAB_0044068b;
+        TPanelSystem::setCurrentPanel(&panel_system,s_Scenario_Editor_Screen,0);
+        TPanelSystem::destroyPanel(&panel_system,&s_New_Dialog);
+        TPanelSystem::destroyPanel(&panel_system,s_Scenario_Menu_Dialog);
+        if (param_2 == 0) {
+          TRIBE_Screen_Sed::command_quick_save(this_00);
+LAB_00440668:
+          TPanelSystem::destroyPanel(&panel_system,s_Scenario_Menu_Dialog);
+          TRIBE_Game::start_scenario_editor((TRIBE_Game *)rge_base_game,(char *)0x0,0);
+        }
+        else if (param_2 == 1) goto LAB_00440668;
+LAB_00440765:
+        if (param_2 == 2) goto LAB_0044076a;
+        goto LAB_00440779;
+      }
+LAB_0044068b:
+      pcVar3 = TPanel::panelName(param_1);
+      if (pcVar3 != (char *)0x0) {
+        pbVar6 = &s_Open_Dialog;
+        pbVar4 = (byte *)TPanel::panelName(param_1);
+        do {
+          bVar1 = *pbVar4;
+          bVar7 = bVar1 < *pbVar6;
+          if (bVar1 != *pbVar6) {
+LAB_004406ca:
+            iVar5 = (1 - (uint)bVar7) - (uint)(bVar7 != 0);
+            goto LAB_004406cf;
+          }
+          if (bVar1 == 0) break;
+          bVar1 = pbVar4[1];
+          bVar7 = bVar1 < pbVar6[1];
+          if (bVar1 != pbVar6[1]) goto LAB_004406ca;
+          pbVar4 = pbVar4 + 2;
+          pbVar6 = pbVar6 + 2;
+        } while (bVar1 != 0);
+        iVar5 = 0;
+LAB_004406cf:
+        if (iVar5 == 0) {
+          TPanelSystem::setCurrentPanel(&panel_system,s_Scenario_Editor_Screen,0);
+          TPanelSystem::destroyPanel(&panel_system,&s_Open_Dialog);
+          TPanelSystem::destroyPanel(&panel_system,s_Scenario_Menu_Dialog);
+          if (param_2 == 0) {
+            TRIBE_Screen_Sed::command_quick_save(this_00);
+          }
+          else if (param_2 != 1) goto LAB_00440765;
+          this_01 = (TRIBE_Screen_Sed_Open *)operator_new(0x490);
+          local_4 = 0;
+          if (this_01 != (TRIBE_Screen_Sed_Open *)0x0) {
+            TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open(this_01);
+          }
+          local_4 = 0xffffffff;
+          TPanelSystem::setCurrentPanel(&panel_system,s_Scenario_Editor_Open,0);
+          TPanelSystem::destroyPanel(&panel_system,s_Scenario_Menu_Dialog);
+          goto LAB_00440765;
+        }
+      }
+    }
+    lVar2 = 0;
+  }
+LAB_00440782:
+  *unaff_FS_OFFSET = local_c;
+  return lVar2;
+}
+
+// --------------------------------------------------
+

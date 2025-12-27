@@ -1,0 +1,840 @@
+// Class: RGE_Action_Attack
+// Function: RGE_Action_Attack
+// Address: 00401000
+/* public: __thiscall RGE_Action_Attack::RGE_Action_Attack(int,class RGE_Action_Object *) */
+
+RGE_Action_Attack * __thiscall
+RGE_Action_Attack::RGE_Action_Attack(RGE_Action_Attack *this,int param_1,RGE_Action_Object *param_2)
+{
+  RGE_Sprite *pRVar1;
+  undefined4 *unaff_FS_OFFSET;
+  undefined4 local_c;
+  code *pcStack_8;
+  undefined4 local_4;
+  
+  local_4 = 0xffffffff;
+  pcStack_8 = FUN_0055c0b8;
+  local_c = *unaff_FS_OFFSET;
+  *unaff_FS_OFFSET = &local_c;
+  RGE_Action::RGE_Action((RGE_Action *)this,param_1,param_2,1);
+  local_4 = 0;
+  this->_padding_ = (int)&_vftable_;
+  *(undefined2 *)&this->_padding_ = 9;
+  rge_read(param_1,&this->range,4);
+  rge_read(param_1,&this->min_range,4);
+  rge_read(param_1,&this->missile_id,2);
+  rge_read(param_1,&this->fire_missile_at_frame,2);
+  rge_read(param_1,&this->need_to_attack,1);
+  rge_read(param_1,&this->was_same_owner,1);
+  rge_read(param_1,&this->indirect_fire_flag,1);
+  rge_read(param_1,&param_2,2);
+  pRVar1 = RGE_Static_Object::get_sprite_pointer
+                     ((RGE_Static_Object *)this->_padding_,(short)param_2);
+  this->move_sprite = pRVar1;
+  rge_read(param_1,&param_2,2);
+  pRVar1 = RGE_Static_Object::get_sprite_pointer
+                     ((RGE_Static_Object *)this->_padding_,(short)param_2);
+  this->fight_sprite = pRVar1;
+  rge_read(param_1,&param_2,2);
+  pRVar1 = RGE_Static_Object::get_sprite_pointer
+                     ((RGE_Static_Object *)this->_padding_,(short)param_2);
+  this->wait_sprite = pRVar1;
+  *unaff_FS_OFFSET = local_c;
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: `vector_deleting_destructor'
+// Address: 00401150
+/* public: virtual void * __thiscall RGE_Action_Attack::`vector deleting destructor'(unsigned int)
+    */
+
+void * __thiscall
+RGE_Action_Attack::_vector_deleting_destructor_(RGE_Action_Attack *this,uint param_1)
+{
+  ~RGE_Action_Attack(this);
+  if ((param_1 & 1) != 0) {
+    operator_delete(this);
+  }
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: RGE_Action_Attack
+// Address: 00401170
+/* public: __thiscall RGE_Action_Attack::RGE_Action_Attack(class RGE_Action_Object *,class
+   RGE_Static_Object *,class RGE_Sprite *,class RGE_Sprite *,class RGE_Sprite
+   *,float,float,short,short) */
+
+RGE_Action_Attack * __thiscall
+RGE_Action_Attack::RGE_Action_Attack
+          (RGE_Action_Attack *this,RGE_Action_Object *param_1,RGE_Static_Object *param_2,
+          RGE_Sprite *param_3,RGE_Sprite *param_4,RGE_Sprite *param_5,float param_6,float param_7,
+          short param_8,short param_9)
+{
+  float fVar1;
+  int iVar2;
+  bool bVar3;
+  RGE_Sprite *pRVar4;
+  undefined4 *unaff_FS_OFFSET;
+  undefined4 local_c;
+  code *pcStack_8;
+  undefined4 local_4;
+  
+  local_4 = 0xffffffff;
+  pcStack_8 = FUN_0055c0d8;
+  local_c = *unaff_FS_OFFSET;
+  *unaff_FS_OFFSET = &local_c;
+  RGE_Action::RGE_Action((RGE_Action *)this,param_1,1);
+  local_4 = 0;
+  this->_padding_ = (int)&_vftable_;
+  *(undefined2 *)&this->_padding_ = 9;
+  RGE_Action::set_target_obj((RGE_Action *)this,param_2);
+  this->wait_sprite = param_5;
+  this->range = param_6;
+  this->min_range = param_7;
+  this->missile_id = param_8;
+  this->_padding_ = -0x40800000;
+  this->_padding_ = -0x40800000;
+  this->_padding_ = -0x40800000;
+  this->move_sprite = param_3;
+  this->fight_sprite = param_4;
+  this->fire_missile_at_frame = param_9;
+  this->need_to_attack = '\0';
+  this->indirect_fire_flag = '\0';
+  if ((param_2 == (RGE_Static_Object *)0x0) || (param_2->owner != (RGE_Player *)param_1->_padding_))
+{
+    this->was_same_owner = '\0';
+  }
+  else {
+    this->was_same_owner = '\x01';
+  }
+  if (param_3 == (RGE_Sprite *)0x0) {
+    iVar2 = *(int *)(this->_padding_ + 8);
+    pRVar4 = *(RGE_Sprite **)(iVar2 + 0xc0);
+    if (pRVar4 == (RGE_Sprite *)0x0) {
+      pRVar4 = *(RGE_Sprite **)(iVar2 + 0xbc);
+    }
+    this->move_sprite = pRVar4;
+  }
+  if (param_4 == (RGE_Sprite *)0x0) {
+    this->fight_sprite = *(RGE_Sprite **)(*(int *)(this->_padding_ + 8) + 0xfc);
+  }
+  if (param_5 == (RGE_Sprite *)0x0) {
+    this->wait_sprite = *(RGE_Sprite **)(*(int *)(this->_padding_ + 8) + 0x18);
+  }
+  if ((param_6 == (float)DAT_0056e0b8._0_4_) &&
+     (fVar1 = *(float *)(*(int *)(this->_padding_ + 8) + 0x114),
+     bVar3 = fVar1 == (float)DAT_0056e0b8._0_4_, this->range = fVar1, bVar3)) {
+    this->range = 0.4;
+  }
+  *unaff_FS_OFFSET = local_c;
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: RGE_Action_Attack
+// Address: 004012b0
+/* public: __thiscall RGE_Action_Attack::RGE_Action_Attack(class RGE_Action_Object
+   *,float,float,float,class RGE_Sprite *,class RGE_Sprite *,class RGE_Sprite
+   *,float,float,short,short) */
+
+RGE_Action_Attack * __thiscall
+RGE_Action_Attack::RGE_Action_Attack
+          (RGE_Action_Attack *this,RGE_Action_Object *param_1,float param_2,float param_3,
+          float param_4,RGE_Sprite *param_5,RGE_Sprite *param_6,RGE_Sprite *param_7,float param_8,
+          float param_9,short param_10,short param_11)
+{
+  float fVar1;
+  int iVar2;
+  bool bVar3;
+  RGE_Sprite *pRVar4;
+  
+  RGE_Action::RGE_Action((RGE_Action *)this,param_1,1);
+  this->_padding_ = (int)param_2;
+  this->range = param_8;
+  this->min_range = param_9;
+  this->_padding_ = (int)param_4;
+  this->_padding_ = (int)param_3;
+  this->missile_id = param_10;
+  this->_padding_ = (int)&_vftable_;
+  *(undefined2 *)&this->_padding_ = 9;
+  this->move_sprite = param_5;
+  this->fight_sprite = param_6;
+  this->wait_sprite = param_7;
+  this->fire_missile_at_frame = param_11;
+  this->need_to_attack = '\0';
+  this->was_same_owner = '\0';
+  this->indirect_fire_flag = '\x02';
+  if (param_5 == (RGE_Sprite *)0x0) {
+    iVar2 = *(int *)(this->_padding_ + 8);
+    pRVar4 = *(RGE_Sprite **)(iVar2 + 0xc0);
+    if (pRVar4 == (RGE_Sprite *)0x0) {
+      pRVar4 = *(RGE_Sprite **)(iVar2 + 0xbc);
+    }
+    this->move_sprite = pRVar4;
+  }
+  if (param_6 == (RGE_Sprite *)0x0) {
+    this->fight_sprite = *(RGE_Sprite **)(*(int *)(this->_padding_ + 8) + 0xfc);
+  }
+  if (param_7 == (RGE_Sprite *)0x0) {
+    this->wait_sprite = *(RGE_Sprite **)(*(int *)(this->_padding_ + 8) + 0x18);
+  }
+  if ((param_8 == (float)DAT_0056e0b8._0_4_) &&
+     (fVar1 = *(float *)(*(int *)(this->_padding_ + 8) + 0x114),
+     bVar3 = fVar1 == (float)DAT_0056e0b8._0_4_, this->range = fVar1, bVar3)) {
+    this->range = 0.4;
+  }
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: ~RGE_Action_Attack
+// Address: 004013a0
+/* public: virtual __thiscall RGE_Action_Attack::~RGE_Action_Attack(void) */
+
+void __thiscall RGE_Action_Attack::~RGE_Action_Attack(RGE_Action_Attack *this)
+{
+  this->_padding_ = (int)&_vftable_;
+  RGE_Action::~RGE_Action((RGE_Action *)this);
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: save
+// Address: 004013b0
+/* public: virtual void __thiscall RGE_Action_Attack::save(int) */
+
+void __thiscall RGE_Action_Attack::save(RGE_Action_Attack *this,int param_1)
+{
+  RGE_Sprite *pRVar1;
+  int iVar2;
+  undefined2 extraout_var;
+  undefined2 extraout_var_00;
+  
+  iVar2 = param_1;
+  RGE_Action::save((RGE_Action *)this,param_1);
+  rge_write(iVar2,&this->range,4);
+  rge_write(iVar2,&this->min_range,4);
+  rge_write(iVar2,&this->missile_id,2);
+  rge_write(iVar2,&this->fire_missile_at_frame,2);
+  rge_write(iVar2,&this->need_to_attack,1);
+  rge_write(iVar2,&this->was_same_owner,1);
+  rge_write(iVar2,&this->indirect_fire_flag,1);
+  if (this->move_sprite == (RGE_Sprite *)0x0) {
+    param_1 = -1;
+  }
+  else {
+    param_1 = CONCAT22(extraout_var,this->move_sprite->id);
+  }
+  rge_write(iVar2,&param_1,2);
+  pRVar1 = this->fight_sprite;
+  if (pRVar1 == (RGE_Sprite *)0x0) {
+    param_1 = -1;
+  }
+  else {
+    param_1 = CONCAT22((short)((uint)pRVar1 >> 0x10),pRVar1->id);
+  }
+  rge_write(iVar2,&param_1,2);
+  if (this->wait_sprite == (RGE_Sprite *)0x0) {
+    param_1 = -1;
+  }
+  else {
+    param_1 = CONCAT22(extraout_var_00,this->wait_sprite->id);
+  }
+  rge_write(iVar2,&param_1,2);
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: first_in_stack
+// Address: 004014b0
+/* WARNING: Variable defined which should be unmapped: rangeStatus */
+/* public: virtual void __thiscall RGE_Action_Attack::first_in_stack(unsigned char) */
+
+void __thiscall RGE_Action_Attack::first_in_stack(RGE_Action_Attack *this,uchar param_1)
+{
+  UnitAIModule *pUVar1;
+  int iVar2;
+  float10 fVar3;
+  int rangeStatus;
+  RGE_Action_Attack *pRStack_4;
+  
+  pRStack_4 = this;
+  fVar3 = (float10)(**(code **)(*(int *)this->_padding_ + 0xfc))();
+  if (fVar3 != (float10)(double)DAT_0056e0b8._8_8_) {
+    pUVar1 = RGE_Static_Object::unitAI((RGE_Static_Object *)this->_padding_);
+    if (pUVar1 != (UnitAIModule *)0x0) {
+      pUVar1 = RGE_Static_Object::unitAI((RGE_Static_Object *)this->_padding_);
+      iVar2 = UnitAIModule::currentOrder(pUVar1);
+      if (iVar2 == 0x2d5) goto LAB_004014fc;
+    }
+    (**(code **)(this->_padding_ + 0x5c))(4);
+    return;
+  }
+LAB_004014fc:
+  pRStack_4 = (RGE_Action_Attack *)0xffffffff;
+  iVar2 = ready_to_attack(this,(int *)&pRStack_4);
+  if ((iVar2 == 0) && (pRStack_4 != (RGE_Action_Attack *)0x1)) {
+    (**(code **)(this->_padding_ + 0x5c))(0xd);
+    return;
+  }
+  (**(code **)(this->_padding_ + 0x5c))(6);
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: stop
+// Address: 00401540
+/* public: virtual int __thiscall RGE_Action_Attack::stop(void) */
+
+int __thiscall RGE_Action_Attack::stop(RGE_Action_Attack *this)
+{
+  (**(code **)(this->_padding_ + 0x5c))(1);
+  return 1;
+}
+
+// --------------------------------------------------
+
+// Function: set_state
+// Address: 00401550
+/* protected: virtual void __thiscall RGE_Action_Attack::set_state(unsigned char) */
+
+void __thiscall RGE_Action_Attack::set_state(RGE_Action_Attack *this,uchar param_1)
+{
+  RGE_Action *this_00;
+  int iVar1;
+  RGE_Sprite *pRVar2;
+  undefined4 unaff_ESI;
+  undefined4 *unaff_FS_OFFSET;
+  undefined3 in_stack_00000005;
+  undefined4 local_c;
+  code *pcStack_8;
+  undefined4 local_4;
+  
+  local_c = *unaff_FS_OFFSET;
+  local_4 = 0xffffffff;
+  pcStack_8 = FUN_0055c106;
+  *unaff_FS_OFFSET = &local_c;
+  RGE_Action_List::delete_list((RGE_Action_List *)this->_padding_);
+  *(char *)&this->_padding_ = (char)_param_1;
+  switch((uint)_param_1 & 0xff) {
+  case 1:
+  case 0xd:
+  case 0xe:
+    iVar1 = *(int *)this->_padding_;
+LAB_0040172c:
+    pRVar2 = this->wait_sprite;
+    break;
+  case 2:
+    this->indirect_fire_flag = '\0';
+    *unaff_FS_OFFSET = local_c;
+    return;
+  default:
+    goto switchD_0040158f_caseD_3;
+  case 4:
+    if (this->indirect_fire_flag != '\0') {
+      this->indirect_fire_flag = this->indirect_fire_flag + 0xff;
+    }
+    if (this->_padding_ == 0) {
+      _param_1 = (RGE_Action_Move_To *)operator_new(0x44);
+      local_4 = 1;
+      if (_param_1 != (RGE_Action_Move_To *)0x0) {
+        this_00 = (RGE_Action *)
+                  RGE_Action_Move_To::RGE_Action_Move_To
+                            (_param_1,(RGE_Action_Object *)this->_padding_,(float)this->_padding_,
+                             (float)this->_padding_,(float)this->_padding_,this->range,
+                             this->move_sprite);
+        goto LAB_0040162e;
+      }
+    }
+    else {
+      _param_1 = (RGE_Action_Move_To *)operator_new(0x44);
+      local_4 = 0;
+      if (_param_1 != (RGE_Action_Move_To *)0x0) {
+        this_00 = (RGE_Action *)
+                  RGE_Action_Move_To::RGE_Action_Move_To
+                            (_param_1,(RGE_Action_Object *)this->_padding_,
+                             (RGE_Static_Object *)this->_padding_,this->range,this->move_sprite);
+        goto LAB_0040162e;
+      }
+    }
+    this_00 = (RGE_Action *)0x0;
+LAB_0040162e:
+    local_4 = 0xffffffff;
+    if (this_00 == (RGE_Action *)0x0) {
+      if ((char)this->_padding_ == '\0') {
+        iVar1 = ((int *)this->_padding_)[1];
+        (**(code **)(*(int *)this->_padding_ + 0x148))(iVar1,iVar1,0x1f9,0x262,0,0);
+      }
+      (**(code **)(this->_padding_ + 0x5c))(1);
+      *unaff_FS_OFFSET = unaff_ESI;
+      return;
+    }
+    RGE_Action_List::add_action((RGE_Action_List *)this->_padding_,this_00);
+    RGE_Action::setSubAction(this_00,'\x01');
+    this->_padding_ = 0;
+    *unaff_FS_OFFSET = local_c;
+    return;
+  case 6:
+    if ((this->indirect_fire_flag != '\0') && (this->_padding_ != 0)) {
+      this->indirect_fire_flag = '\0';
+    }
+    _param_1 = (RGE_Action_Move_To *)0xffffffff;
+    iVar1 = ready_to_attack(this,(int *)&param_1);
+    if (iVar1 != 0) {
+      RGE_Combat_Object::reset_attack_timer((RGE_Combat_Object *)this->_padding_);
+      (**(code **)(this->_padding_ + 0x5c))(7);
+      *unaff_FS_OFFSET = unaff_ESI;
+      return;
+    }
+    iVar1 = *(int *)this->_padding_;
+    if (this->missile_id != -1) goto LAB_0040172c;
+    pRVar2 = this->fight_sprite;
+    break;
+  case 7:
+    (**(code **)(*(int *)this->_padding_ + 0x38))(this->fight_sprite);
+    this->need_to_attack = '\x01';
+    *unaff_FS_OFFSET = unaff_ESI;
+    return;
+  }
+  (**(code **)(iVar1 + 0x38))(pRVar2);
+switchD_0040158f_caseD_3:
+  *unaff_FS_OFFSET = local_c;
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: update
+// Address: 00401780
+/* WARNING: Variable defined which should be unmapped: rangeStatus */
+/* public: virtual unsigned char __thiscall RGE_Action_Attack::update(void) */
+
+uchar __thiscall RGE_Action_Attack::update(RGE_Action_Attack *this)
+{
+  byte bVar1;
+  int *piVar2;
+  code *pcVar3;
+  int iVar4;
+  undefined1 uVar5;
+  char cVar6;
+  RGE_Static_Object *pRVar7;
+  int iVar8;
+  undefined2 uVar9;
+  undefined4 uVar10;
+  int rangeStatus;
+  RGE_Action_Attack *pRStack_4;
+  
+  this->_padding_ =
+       (int)(*(float *)(*(int *)(*(int *)(this->_padding_ + 0xc) + 0x3c) + 0x84) +
+            (float)this->_padding_);
+  pRStack_4 = this;
+  if ((this->_padding_ != -1) &&
+     (pRVar7 = RGE_Game_World::object
+                         (*(RGE_Game_World **)(*(int *)(this->_padding_ + 0xc) + 0x3c),
+                          this->_padding_), pRVar7 == (RGE_Static_Object *)0x0)) {
+LAB_004017e3:
+    iVar8 = this->_padding_;
+    (**(code **)(iVar8 + 0x54))(0);
+    (**(code **)(iVar8 + 0x5c))(2);
+    return '\x05';
+  }
+  if ((this->_padding_ != -1) &&
+     (pRVar7 = RGE_Game_World::object
+                         (*(RGE_Game_World **)(*(int *)(this->_padding_ + 0xc) + 0x3c),
+                          this->_padding_), pRVar7 == (RGE_Static_Object *)0x0)) {
+    (**(code **)(this->_padding_ + 0x58))(0);
+  }
+  iVar8 = this->_padding_;
+  if (iVar8 != 0) {
+    if (2 < *(byte *)(iVar8 + 0x48)) goto LAB_004017e3;
+    if (((iVar8 != 0) &&
+        (piVar2 = *(int **)(this->_padding_ + 0xc), *(short *)((int)piVar2 + 0x4a) != 0)) &&
+       (iVar8 = (**(code **)(*piVar2 + 0x1c))((int)*(short *)(*(int *)(iVar8 + 0xc) + 0x4a)),
+       iVar8 != 0)) {
+      (**(code **)(this->_padding_ + 0x5c))(1);
+      cVar6 = (char)this->_padding_;
+      goto joined_r0x004018c4;
+    }
+  }
+  if ((this->_padding_ != 0) && (*(int *)(this->_padding_ + 0x20) != 0)) {
+    iVar8 = this->_padding_;
+    uVar10 = 1;
+LAB_004018ba:
+    (**(code **)(iVar8 + 0x5c))(uVar10);
+    cVar6 = (char)this->_padding_;
+joined_r0x004018c4:
+    if (cVar6 == '\0') {
+      iVar8 = ((int *)this->_padding_)[1];
+      (**(code **)(*(int *)this->_padding_ + 0x148))(iVar8,iVar8,0x1fb,600,this->_padding_,0);
+    }
+    return '\x04';
+  }
+  bVar1 = (byte)this->_padding_;
+  switch(bVar1) {
+  case 1:
+    return '\x01';
+  case 2:
+    cVar6 = (**(code **)(**(int **)(this->_padding_ + 0x18) + 0x24))
+                      (*(undefined4 *)(this->_padding_ + 0x10));
+    if (cVar6 == '\x01') {
+      iVar8 = this->_padding_;
+      (**(code **)(iVar8 + 0x54))(0);
+      if ((char)this->_padding_ == '\0') {
+        iVar4 = ((int *)this->_padding_)[1];
+        (**(code **)(*(int *)this->_padding_ + 0x148))(iVar4,iVar4,0x1fa,600,0,0);
+      }
+      (**(code **)(iVar8 + 0x5c))(1);
+      return (-((char)this->_padding_ != '\x01') & 0xfdU) + 5;
+    }
+    break;
+  case 4:
+    uVar5 = (**(code **)(*(int *)this->_padding_ + 0xc))();
+    switch(uVar5) {
+    case 1:
+    case 2:
+      (**(code **)(this->_padding_ + 0x5c))(6);
+      return '\0';
+    case 3:
+      (**(code **)(this->_padding_ + 0x5c))(0xd);
+      if ((char)this->_padding_ != '\0') {
+        return '\x03';
+      }
+      goto switchD_0040185b_caseD_d;
+    case 4:
+      iVar8 = this->_padding_;
+      uVar10 = 0xe;
+      break;
+    default:
+      goto switchD_0040185b_caseD_3;
+    }
+    goto LAB_004018ba;
+  case 6:
+    pRStack_4 = (RGE_Action_Attack *)0xffffffff;
+    iVar8 = ready_to_attack(this,(int *)&pRStack_4);
+    if (iVar8 != 0) {
+      RGE_Combat_Object::reset_attack_timer((RGE_Combat_Object *)this->_padding_);
+      (**(code **)(this->_padding_ + 0x5c))(7);
+      return '\0';
+    }
+    break;
+  case 7:
+    uVar9 = (undefined2)(bVar1 - 1 >> 0x10);
+    if (this->need_to_attack == '\0') {
+      uVar10 = (**(code **)(*(int *)this->_padding_ + 0x7c))();
+      if ((char)uVar10 == '\x01') {
+        if ((this->_padding_ == 0) && (this->indirect_fire_flag == '\0')) {
+          (**(code **)(this->_padding_ + 0x5c))(2);
+          return '\0';
+        }
+        RGE_Combat_Object::reset_attack_timer((RGE_Combat_Object *)this->_padding_);
+        pcVar3 = *(code **)(this->_padding_ + 0x5c);
+        (*pcVar3)(6);
+        cVar6 = (char)this->_padding_;
+        if (cVar6 == '\r') {
+          return '\0';
+        }
+        if (cVar6 == '\x04') {
+          return '\0';
+        }
+        uVar10 = (*pcVar3)(7);
+      }
+      uVar9 = (undefined2)((uint)uVar10 >> 0x10);
+      if (this->need_to_attack == '\0') {
+        cVar6 = (**(code **)(**(int **)(this->_padding_ + 0x18) + 0x24))
+                          (*(undefined4 *)(this->_padding_ + 0x10));
+        if ((cVar6 != '\x01') && ((*(byte *)(*(int *)(this->_padding_ + 0x10) + 0x70) & 1) != 0)) {
+          return '\0';
+        }
+        if ((this->_padding_ == 0) && (this->indirect_fire_flag == '\0')) {
+          (**(code **)(this->_padding_ + 0x5c))(2);
+          return '\0';
+        }
+        (**(code **)(this->_padding_ + 0x5c))(6);
+        return '\0';
+      }
+    }
+    uVar10 = CONCAT22(uVar9,this->fire_missile_at_frame);
+    if (this->fire_missile_at_frame == 0) {
+      pRStack_4 = (RGE_Action_Attack *)(int)*(short *)(*(int *)(this->_padding_ + 0x10) + 0x5e);
+      uVar10 = __ftol();
+    }
+    cVar6 = (**(code **)(**(int **)(this->_padding_ + 0x18) + 0x20))
+                      (*(undefined4 *)(this->_padding_ + 0x10),uVar10);
+    if (cVar6 != '\0') {
+      do_attack(this);
+      return '\0';
+    }
+    break;
+  case 0xd:
+switchD_0040185b_caseD_d:
+    iVar8 = ((int *)this->_padding_)[1];
+    (**(code **)(*(int *)this->_padding_ + 0x148))(iVar8,iVar8,0x1f9,600,0,0);
+    return '\x03';
+  }
+switchD_0040185b_caseD_3:
+  return '\0';
+}
+
+// --------------------------------------------------
+
+// Function: work
+// Address: 00401ad0
+/* public: virtual int __thiscall RGE_Action_Attack::work(class RGE_Static_Object
+   *,float,float,float) */
+
+int __thiscall
+RGE_Action_Attack::work
+          (RGE_Action_Attack *this,RGE_Static_Object *param_1,float param_2,float param_3,
+          float param_4)
+{
+  char cVar1;
+  int iVar2;
+  
+  if (param_1 == (RGE_Static_Object *)0x0) {
+    return 0;
+  }
+  if (param_1 == (RGE_Static_Object *)this->_padding_) {
+    cVar1 = (char)this->_padding_;
+    if (cVar1 == '\x04') {
+      return 1;
+    }
+    if (cVar1 == '\x06') {
+      return 1;
+    }
+    if (cVar1 == '\a') {
+      return 1;
+    }
+  }
+  iVar2 = this->_padding_;
+  this->indirect_fire_flag = '\0';
+  (**(code **)(iVar2 + 0x54))(param_1);
+  (**(code **)(iVar2 + 0x5c))(4);
+  return 1;
+}
+
+// --------------------------------------------------
+
+// Function: ready_to_attack
+// Address: 00401b30
+/* WARNING: Variable defined which should be unmapped: y_change */
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* protected: int __thiscall RGE_Action_Attack::ready_to_attack(int &) */
+
+int __thiscall RGE_Action_Attack::ready_to_attack(RGE_Action_Attack *this,int *param_1)
+{
+  float fVar1;
+  short sVar2;
+  RGE_Static_Object *pRVar3;
+  char cVar4;
+  uchar uVar5;
+  int iVar6;
+  UnitAIModule *pUVar7;
+  int iVar8;
+  float10 fVar9;
+  float fVar10;
+  float fVar11;
+  float y_change;
+  float z_change;
+  
+  cVar4 = (**(code **)(*(int *)this->_padding_ + 0x1f0))
+                    (this->_padding_,this->_padding_,this->_padding_);
+  if (cVar4 == '\0') {
+    return 0;
+  }
+  iVar8 = this->_padding_;
+  if (iVar8 == 0) {
+    fVar10 = RGE_Static_Object::distance_to_position
+                       ((RGE_Static_Object *)this->_padding_,(float)this->_padding_,
+                        (float)this->_padding_,(float)this->_padding_);
+    if (fVar10 < this->min_range) {
+      *(undefined4 *)z_change = 0;
+LAB_00401d71:
+      if ((char)this->_padding_ == '\0') {
+        iVar8 = ((int *)this->_padding_)[1];
+        (**(code **)(*(int *)this->_padding_ + 0x148))(iVar8,iVar8,0x1fe,0,0,0);
+      }
+      fVar9 = (float10)(**(code **)(*(int *)this->_padding_ + 0xfc))();
+      if (fVar9 != (float10)(double)DAT_0056e0b8._8_8_) {
+        pUVar7 = RGE_Static_Object::unitAI((RGE_Static_Object *)this->_padding_);
+        if (pUVar7 == (UnitAIModule *)0x0) {
+          return 0;
+        }
+        pUVar7 = RGE_Static_Object::unitAI((RGE_Static_Object *)this->_padding_);
+        iVar8 = UnitAIModule::currentOrder(pUVar7);
+        if (iVar8 != 0x2d5) {
+          return 0;
+        }
+      }
+      (**(code **)(this->_padding_ + 0x5c))(0xd);
+      return 0;
+    }
+    iVar8 = *(int *)(this->_padding_ + 8);
+    fVar11 = *(float *)(iVar8 + 0x30);
+    fVar1 = *(float *)(iVar8 + 0x34);
+    if (fVar10 <= (SQRT(fVar1 * fVar1 + fVar11 * fVar11) + this->range) - _DAT_0056e0cc)
+    goto LAB_00401ea0;
+    *(undefined4 *)z_change = 2;
+  }
+  else {
+    if (((0 < *(short *)(*(int *)(iVar8 + 0xc) + 0x4a)) &&
+        (sVar2 = *(short *)(*(int *)(iVar8 + 8) + 0x14), sVar2 != 3)) && (sVar2 != 0x1b)) {
+      iVar8 = __ftol();
+      iVar6 = __ftol();
+      uVar5 = RGE_Visible_Map::get_visible
+                        (*(RGE_Visible_Map **)(*(int *)(this->_padding_ + 0xc) + 0x38),iVar6,iVar8);
+      if (uVar5 == '\0') {
+        (**(code **)(this->_padding_ + 0x5c))(0xd);
+        return 0;
+      }
+      if ((uVar5 == 0x80) && (*(char *)(*(int *)(this->_padding_ + 8) + 0x65) == '\0')) {
+        (**(code **)(this->_padding_ + 0x5c))(0xd);
+        return 0;
+      }
+    }
+    pRVar3 = (RGE_Static_Object *)this->_padding_;
+    if (((pRVar3->world_x == (float)this->_padding_) && (pRVar3->world_y == (float)this->_padding_))
+       && (pRVar3->world_z == (float)this->_padding_)) {
+LAB_00401ea0:
+      *(undefined4 *)z_change = 1;
+      cVar4 = (**(code **)(*(int *)this->_padding_ + 0x7c))();
+      return (uint)(cVar4 != '\0');
+    }
+    fVar11 = pRVar3->world_x - (float)this->_padding_;
+    fVar1 = pRVar3->world_y - (float)this->_padding_;
+    fVar10 = pRVar3->world_z - (float)this->_padding_;
+    if (((((fVar11 <= ram0x0056e0c8) && (_DAT_0056e0d0 <= fVar11)) && (fVar1 <= ram0x0056e0c8)) &&
+        ((_DAT_0056e0d0 <= fVar1 && (fVar10 <= ram0x0056e0c8)))) && (_DAT_0056e0d0 <= fVar10))
+    goto LAB_00401ea0;
+    fVar11 = RGE_Static_Object::distance_to_object((RGE_Static_Object *)this->_padding_,pRVar3);
+    iVar8 = *(int *)(this->_padding_ + 8);
+    fVar1 = *(float *)(iVar8 + 0x30);
+    fVar10 = *(float *)(iVar8 + 0x34);
+    if (fVar11 < this->min_range) {
+      *(undefined4 *)z_change = 0;
+      goto LAB_00401d71;
+    }
+    if (fVar11 <= (SQRT(fVar10 * fVar10 + fVar1 * fVar1) + this->range) - _DAT_0056e0cc) {
+      iVar8 = this->_padding_;
+      this->_padding_ = *(int *)(iVar8 + 0x38);
+      this->_padding_ = *(int *)(iVar8 + 0x3c);
+      this->_padding_ = *(int *)(iVar8 + 0x40);
+      goto LAB_00401ea0;
+    }
+    *(undefined4 *)z_change = 2;
+  }
+  if ((char)this->_padding_ == '\0') {
+    iVar8 = ((int *)this->_padding_)[1];
+    (**(code **)(*(int *)this->_padding_ + 0x148))(iVar8,iVar8,0x1fd,0,0,0);
+  }
+  fVar9 = (float10)(**(code **)(*(int *)this->_padding_ + 0xfc))();
+  if (fVar9 == (float10)(double)DAT_0056e0b8._8_8_) {
+LAB_00401e78:
+    (**(code **)(this->_padding_ + 0x5c))(0xd);
+    return 0;
+  }
+  pUVar7 = RGE_Static_Object::unitAI((RGE_Static_Object *)this->_padding_);
+  if (pUVar7 != (UnitAIModule *)0x0) {
+    pUVar7 = RGE_Static_Object::unitAI((RGE_Static_Object *)this->_padding_);
+    iVar8 = UnitAIModule::currentOrder(pUVar7);
+    if (iVar8 == 0x2d5) goto LAB_00401e78;
+  }
+  (**(code **)(this->_padding_ + 0x5c))(4);
+  return 0;
+}
+
+// --------------------------------------------------
+
+// Function: do_attack
+// Address: 00401ec0
+/* protected: void __thiscall RGE_Action_Attack::do_attack(void) */
+
+void __thiscall RGE_Action_Attack::do_attack(RGE_Action_Attack *this)
+{
+  int *piVar1;
+  
+  piVar1 = (int *)this->_padding_;
+  if (this->_padding_ != 0) {
+    (**(code **)(*piVar1 + 0x224))(this->_padding_,piVar1);
+    this->need_to_attack = '\0';
+    return;
+  }
+  (**(code **)(*piVar1 + 0x220))(this->_padding_,this->_padding_,this->_padding_,piVar1);
+  this->need_to_attack = '\0';
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: copy_obj_sprites
+// Address: 00401f00
+/* protected: virtual void __thiscall RGE_Action_Attack::copy_obj_sprites(class
+   RGE_Master_Action_Object *,class RGE_Task *,class RGE_Task *) */
+
+void __thiscall
+RGE_Action_Attack::copy_obj_sprites
+          (RGE_Action_Attack *this,RGE_Master_Action_Object *param_1,RGE_Task *param_2,
+          RGE_Task *param_3)
+{
+  RGE_Sprite *pRVar1;
+  
+  pRVar1 = this->move_sprite;
+  if (pRVar1 != (RGE_Sprite *)0x0) {
+    if (((param_2 == (RGE_Task *)0x0) || (param_3 == (RGE_Task *)0x0)) ||
+       (pRVar1 != param_2->move_sprite)) {
+      if (pRVar1 != *(RGE_Sprite **)(*(int *)(this->_padding_ + 8) + 0xbc)) goto LAB_00401f3f;
+      pRVar1 = (RGE_Sprite *)param_1->_padding_;
+    }
+    else {
+      pRVar1 = param_3->move_sprite;
+    }
+    this->move_sprite = pRVar1;
+  }
+LAB_00401f3f:
+  pRVar1 = this->fight_sprite;
+  if (pRVar1 == (RGE_Sprite *)0x0) goto LAB_00401f81;
+  if (param_2 == (RGE_Task *)0x0) {
+LAB_00401f6a:
+    if (pRVar1 != *(RGE_Sprite **)(*(int *)(this->_padding_ + 8) + 0xfc)) goto LAB_00401f81;
+    pRVar1 = (RGE_Sprite *)param_1[1]._padding_;
+  }
+  else if ((param_3 == (RGE_Task *)0x0) || (pRVar1 != param_2->work_sprite)) {
+    if ((param_2 == (RGE_Task *)0x0) ||
+       ((param_3 == (RGE_Task *)0x0 || (pRVar1 != param_2->work_sprite2)))) goto LAB_00401f6a;
+    pRVar1 = param_3->work_sprite2;
+  }
+  else {
+    pRVar1 = param_3->work_sprite;
+  }
+  this->fight_sprite = pRVar1;
+LAB_00401f81:
+  pRVar1 = this->wait_sprite;
+  if (pRVar1 != (RGE_Sprite *)0x0) {
+    if (param_2 != (RGE_Task *)0x0) {
+      if ((param_3 != (RGE_Task *)0x0) && (pRVar1 == param_2->work_sprite)) {
+        this->wait_sprite = param_3->work_sprite;
+        return;
+      }
+      if ((param_2 != (RGE_Task *)0x0) &&
+         ((param_3 != (RGE_Task *)0x0 && (pRVar1 == param_2->work_sprite2)))) {
+        this->wait_sprite = param_3->work_sprite2;
+        return;
+      }
+    }
+    if (pRVar1 == *(RGE_Sprite **)(*(int *)(this->_padding_ + 8) + 0x18)) {
+      this->wait_sprite = (RGE_Sprite *)param_1->_padding_;
+    }
+  }
+  return;
+}
+
+// --------------------------------------------------
+

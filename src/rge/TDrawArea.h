@@ -37,20 +37,21 @@ public:
     /* 0x0041 */ int SystemMemOnly;
     /* 0x0045 */ RECT ClipRect;
     /* 0x0055 */ uchar *LastBits;
-    /* 0x0059 */ void **DisplayOffsets;
-    /* 0x005D */ void **CurDisplayOffsets;
-    /* 0x0061 */ int DisplayOffsetsSz;
-    /* 0x0065 */ int ExtendedLines;
-    /* 0x0069 */ void **FloatOffsets;
-    /* 0x006D */ int Float_X_Delta;
-    /* 0x0071 */ int Float_Y_Delta;
-    /* 0x0075 */ int FloatOffsetsSz;
-    /* 0x0079 */ DDSURFACEDESC SurfaceDesc; // 0x6c bytes
-    /* 0x00E5 */ int Orien;
-    /* 0x00E9 */ TSpan_List_Manager *SpanList;
-    /* 0x00ED */ TSpan_List_Manager *CurSpanList;
-    /* 0x00F1 */ RGE_Color_Table *shadow_color_table;
-    /* 0x00F5 */ char *Name;
+    /* 0x0059 */ int LastPitch;
+    /* 0x005D */ void **DisplayOffsets;
+    /* 0x0061 */ void **CurDisplayOffsets;
+    /* 0x0065 */ int DisplayOffsetsSz;
+    /* 0x0069 */ int ExtendedLines;
+    /* 0x006D */ void **FloatOffsets;
+    /* 0x0071 */ int Float_X_Delta;
+    /* 0x0075 */ int Float_Y_Delta;
+    /* 0x0079 */ int FloatOffsetsSz;
+    /* 0x007D */ DDSURFACEDESC SurfaceDesc; // 0x6c bytes
+    /* 0x00E9 */ int Orien;
+    /* 0x00ED */ TSpan_List_Manager *SpanList;
+    /* 0x00F1 */ TSpan_List_Manager *CurSpanList;
+    /* 0x00F5 */ RGE_Color_Table *shadow_color_table;
+    /* 0x00F9 */ char *Name;
 
     TDrawArea(const char *name, int system_mem_only);
     ~TDrawArea();
@@ -63,4 +64,4 @@ public:
 
 #pragma pack(pop)
 
-static_assert(sizeof(TDrawArea) == 0xF9, "TDrawArea size mismatch");
+static_assert(sizeof(TDrawArea) == 0xFD, "TDrawArea size mismatch");

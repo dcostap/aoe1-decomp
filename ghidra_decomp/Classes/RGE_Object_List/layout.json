@@ -1,0 +1,25 @@
+{
+    "size": 12, 
+    "vtable": [
+        {
+            "signature": "void load(RGE_Object_List * this, uchar param_1, int param_2, RGE_Game_World * param_3)", 
+            "index": 0, 
+            "name": "load"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 4, 
+            "type": "RGE_Object_Node *", 
+            "size": 4, 
+            "name": "list"
+        }, 
+        {
+            "offset": 8, 
+            "type": "short", 
+            "size": 2, 
+            "name": "number_of_objects"
+        }
+    ], 
+    "name": "RGE_Object_List"
+}

@@ -1,0 +1,25 @@
+{
+    "size": 12, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "Tech_Tree *", 
+            "size": 4, 
+            "name": "tech_tree"
+        }, 
+        {
+            "offset": 4, 
+            "type": "short", 
+            "size": 2, 
+            "name": "tech_tree_num"
+        }, 
+        {
+            "offset": 8, 
+            "type": "TRIBE_World *", 
+            "size": 4, 
+            "name": "world"
+        }
+    ], 
+    "name": "TRIBE_Tech"
+}

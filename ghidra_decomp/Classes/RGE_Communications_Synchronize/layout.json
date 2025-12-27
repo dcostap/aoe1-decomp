@@ -1,0 +1,85 @@
+{
+    "size": 2028, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "TCommunications_Handler *", 
+            "size": 4, 
+            "name": "Comm"
+        }, 
+        {
+            "offset": 4, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "CheckTime"
+        }, 
+        {
+            "offset": 8, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "CheckTurn"
+        }, 
+        {
+            "offset": 12, 
+            "type": "int", 
+            "size": 4, 
+            "name": "StopOnSyncFail"
+        }, 
+        {
+            "offset": 16, 
+            "type": "int", 
+            "size": 4, 
+            "name": "DialogOnSyncFail"
+        }, 
+        {
+            "offset": 20, 
+            "type": "int", 
+            "size": 4, 
+            "name": "SendChatMsgs"
+        }, 
+        {
+            "offset": 24, 
+            "type": "int", 
+            "size": 4, 
+            "name": "NewData"
+        }, 
+        {
+            "offset": 28, 
+            "type": "int", 
+            "size": 4, 
+            "name": "LastResult"
+        }, 
+        {
+            "offset": 32, 
+            "type": "uint", 
+            "size": 4, 
+            "name": "Offset"
+        }, 
+        {
+            "offset": 36, 
+            "type": "int", 
+            "size": 4, 
+            "name": "DoChecksums"
+        }, 
+        {
+            "offset": 40, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "LastWorldRandom"
+        }, 
+        {
+            "offset": 44, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "GameWorldChecksum"
+        }, 
+        {
+            "offset": 48, 
+            "type": "CHECKSUMARRAY[55]", 
+            "size": 1980, 
+            "name": "Check"
+        }
+    ], 
+    "name": "RGE_Communications_Synchronize"
+}

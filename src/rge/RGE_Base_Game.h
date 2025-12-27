@@ -263,7 +263,7 @@ public:
 
 extern RGE_Base_Game *rge_base_game;
 
-// static_assert(sizeof(RGE_Base_Game) == 0xA24, "RGE_Base_Game size mismatch");
+static_assert(sizeof(RGE_Base_Game) == 0xA24, "RGE_Base_Game size mismatch");
 
 
 

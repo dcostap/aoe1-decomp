@@ -80,3 +80,5 @@ public:
 };
 
 #pragma pack(pop)
+
+static_assert(sizeof(RGE_Game_World) == 0xF8, "RGE_Game_World size mismatch");

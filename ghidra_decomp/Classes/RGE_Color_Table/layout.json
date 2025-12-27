@@ -1,0 +1,49 @@
+{
+    "size": 296, 
+    "vtable": [
+        {
+            "signature": "void * `scalar_deleting_destructor'(RGE_Color_Table * this, uint param_1)", 
+            "index": 0, 
+            "name": "`scalar_deleting_destructor'"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 4, 
+            "type": "char[30]", 
+            "size": 30, 
+            "name": "color_table_name"
+        }, 
+        {
+            "offset": 34, 
+            "type": "short", 
+            "size": 2, 
+            "name": "resource_id"
+        }, 
+        {
+            "offset": 36, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "type"
+        }, 
+        {
+            "offset": 37, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "map_color"
+        }, 
+        {
+            "offset": 38, 
+            "type": "short", 
+            "size": 2, 
+            "name": "id"
+        }, 
+        {
+            "offset": 40, 
+            "type": "uchar[256]", 
+            "size": 256, 
+            "name": "table"
+        }
+    ], 
+    "name": "RGE_Color_Table"
+}

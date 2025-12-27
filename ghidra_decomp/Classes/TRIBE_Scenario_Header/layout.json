@@ -1,0 +1,50 @@
+{
+    "size": 28, 
+    "vtable": [
+        {
+            "signature": "long get_size(TRIBE_Scenario_Header * this)", 
+            "index": 0, 
+            "name": "get_size"
+        }, 
+        {
+            "signature": "void save(TRIBE_Scenario_Header * this, int param_1)", 
+            "index": 1, 
+            "name": "save"
+        }, 
+        {
+            "signature": "RGE_Static_Object * get_object_pointer(T_Scenario * this, int param_1)", 
+            "index": 2, 
+            "name": "get_object_pointer"
+        }, 
+        {
+            "signature": "void * `vector_deleting_destructor'(T_Scenario * this, uint param_1)", 
+            "index": 3, 
+            "name": "`vector_deleting_destructor'"
+        }, 
+        {
+            "signature": "void rehook(T_Scenario * this)", 
+            "index": 4, 
+            "name": "rehook"
+        }, 
+        {
+            "signature": "void save(T_Scenario * this, int param_1)", 
+            "index": 5, 
+            "name": "save"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 20, 
+            "type": "int", 
+            "size": 4, 
+            "name": "any_sp_victory"
+        }, 
+        {
+            "offset": 24, 
+            "type": "int", 
+            "size": 4, 
+            "name": "active_player_count"
+        }
+    ], 
+    "name": "TRIBE_Scenario_Header"
+}

@@ -1,0 +1,97 @@
+{
+    "size": 60, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "VSpan_Node * *", 
+            "size": 4, 
+            "name": "Zone_Ptrs"
+        }, 
+        {
+            "offset": 4, 
+            "type": "int *", 
+            "size": 4, 
+            "name": "Zone_Size_Ptrs"
+        }, 
+        {
+            "offset": 8, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Used_Zones"
+        }, 
+        {
+            "offset": 12, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Max_Zones"
+        }, 
+        {
+            "offset": 16, 
+            "type": "VSpan_Node *", 
+            "size": 4, 
+            "name": "Free_Head"
+        }, 
+        {
+            "offset": 20, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Free_Pool_Zone"
+        }, 
+        {
+            "offset": 24, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Free_Pool_Index"
+        }, 
+        {
+            "offset": 28, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Total_Blocks"
+        }, 
+        {
+            "offset": 32, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Free_Blocks"
+        }, 
+        {
+            "offset": 36, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Default_Grow_Size"
+        }, 
+        {
+            "offset": 40, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Element_Size"
+        }, 
+        {
+            "offset": 44, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Alloc_Count"
+        }, 
+        {
+            "offset": 48, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Dealloc_Count"
+        }, 
+        {
+            "offset": 52, 
+            "type": "int", 
+            "size": 4, 
+            "name": "NewZone_Count"
+        }, 
+        {
+            "offset": 56, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Reset_Count"
+        }
+    ], 
+    "name": "TSpan_Node_List"
+}

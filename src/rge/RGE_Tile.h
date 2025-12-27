@@ -20,3 +20,5 @@ struct RGE_Tile {
 };
 
 #pragma pack(pop)
+
+static_assert(sizeof(RGE_Tile) == 0x18, "RGE_Tile size mismatch");

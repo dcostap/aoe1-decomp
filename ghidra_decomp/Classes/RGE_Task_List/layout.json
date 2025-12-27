@@ -1,0 +1,40 @@
+{
+    "size": 12, 
+    "vtable": [
+        {
+            "signature": "RGE_Task * create_task(RGE_Task_List * this, short param_1, short param_2)", 
+            "index": 0, 
+            "name": "create_task"
+        }, 
+        {
+            "signature": "RGE_Task * get_target_task(RGE_Task_List * this, RGE_Action_Object * param_1, RGE_Static_Object * param_2, float param_3, float param_4, float param_5)", 
+            "index": 1, 
+            "name": "get_target_task"
+        }, 
+        {
+            "signature": "int is_attack_task(RGE_Task_List * this, RGE_Task * param_1)", 
+            "index": 2, 
+            "name": "is_attack_task"
+        }, 
+        {
+            "signature": "int check_task(RGE_Task_List * this, RGE_Task * param_1, RGE_Action_Object * param_2, RGE_Static_Object * param_3)", 
+            "index": 3, 
+            "name": "check_task"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 4, 
+            "type": "RGE_Task * *", 
+            "size": 4, 
+            "name": "list"
+        }, 
+        {
+            "offset": 8, 
+            "type": "short", 
+            "size": 2, 
+            "name": "list_num"
+        }
+    ], 
+    "name": "RGE_Task_List"
+}

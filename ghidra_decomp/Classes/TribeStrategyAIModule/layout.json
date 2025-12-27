@@ -1,0 +1,195 @@
+{
+    "size": 1528, 
+    "vtable": [
+        {
+            "signature": "void * `vector_deleting_destructor'(TribeStrategyAIModule * this, uint param_1)", 
+            "index": 0, 
+            "name": "`vector_deleting_destructor'"
+        }, 
+        {
+            "signature": "int loggingHistory(AIModule * this)", 
+            "index": 1, 
+            "name": "loggingHistory"
+        }, 
+        {
+            "signature": "void setLogHistory(AIModule * this, int param_1)", 
+            "index": 2, 
+            "name": "setLogHistory"
+        }, 
+        {
+            "signature": "void toggleLogHistory(AIModule * this)", 
+            "index": 3, 
+            "name": "toggleLogHistory"
+        }, 
+        {
+            "signature": "void setHistoryFilename(AIModule * this, char * param_1)", 
+            "index": 4, 
+            "name": "setHistoryFilename"
+        }, 
+        {
+            "signature": "int loggingCommonHistory(AIModule * this)", 
+            "index": 5, 
+            "name": "loggingCommonHistory"
+        }, 
+        {
+            "signature": "void setLogCommonHistory(AIModule * this, int param_1)", 
+            "index": 6, 
+            "name": "setLogCommonHistory"
+        }, 
+        {
+            "signature": "void toggleLogCommonHistory(AIModule * this)", 
+            "index": 7, 
+            "name": "toggleLogCommonHistory"
+        }, 
+        {
+            "signature": "int loadState(AIModule * this, char * param_1)", 
+            "index": 8, 
+            "name": "loadState"
+        }, 
+        {
+            "signature": "int saveState(AIModule * this, char * param_1)", 
+            "index": 9, 
+            "name": "saveState"
+        }, 
+        {
+            "signature": "int gleanState(AIModule * this, int param_1)", 
+            "index": 10, 
+            "name": "gleanState"
+        }, 
+        {
+            "signature": "int processMessage(AIModule * this, AIModuleMessage * param_1)", 
+            "index": 11, 
+            "name": "processMessage"
+        }, 
+        {
+            "signature": "int update(TribeStrategyAIModule * this, int param_1)", 
+            "index": 12, 
+            "name": "update"
+        }, 
+        {
+            "signature": "void setCallbackMessage(AIModule * this, AIModuleMessage * param_1)", 
+            "index": 13, 
+            "name": "setCallbackMessage"
+        }, 
+        {
+            "signature": "int filterOutMessage(AIModule * this, AIModuleMessage * param_1)", 
+            "index": 14, 
+            "name": "filterOutMessage"
+        }, 
+        {
+            "signature": "int save(TribeStrategyAIModule * this, int param_1)", 
+            "index": 15, 
+            "name": "save"
+        }, 
+        {
+            "signature": "void * `scalar_deleting_destructor'(TacticalAIGroup * this, uint param_1)", 
+            "index": 16, 
+            "name": "`scalar_deleting_destructor'"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 240, 
+            "type": "TribeMainDecisionAIModule *", 
+            "size": 4, 
+            "name": "md"
+        }, 
+        {
+            "offset": 244, 
+            "type": "int", 
+            "size": 4, 
+            "name": "currentVictoryConditionValue"
+        }, 
+        {
+            "offset": 248, 
+            "type": "char[257]", 
+            "size": 257, 
+            "name": "ruleSetNameValue"
+        }, 
+        {
+            "offset": 508, 
+            "type": "int", 
+            "size": 4, 
+            "name": "targetIDValue"
+        }, 
+        {
+            "offset": 512, 
+            "type": "int", 
+            "size": 4, 
+            "name": "targetTypeValue"
+        }, 
+        {
+            "offset": 516, 
+            "type": "int", 
+            "size": 4, 
+            "name": "secondTargetIDValue"
+        }, 
+        {
+            "offset": 520, 
+            "type": "int", 
+            "size": 4, 
+            "name": "secondTargetTypeValue"
+        }, 
+        {
+            "offset": 524, 
+            "type": "Waypoint", 
+            "size": 16, 
+            "name": "targetPoint1Value"
+        }, 
+        {
+            "offset": 540, 
+            "type": "Waypoint", 
+            "size": 16, 
+            "name": "targetPoint2Value"
+        }, 
+        {
+            "offset": 556, 
+            "type": "int", 
+            "size": 4, 
+            "name": "targetAttributeValue"
+        }, 
+        {
+            "offset": 560, 
+            "type": "int", 
+            "size": 4, 
+            "name": "targetNumberValue"
+        }, 
+        {
+            "offset": 564, 
+            "type": "int", 
+            "size": 4, 
+            "name": "victoryConditionChangeTimeout"
+        }, 
+        {
+            "offset": 568, 
+            "type": "ManagedArray<int>", 
+            "size": 16, 
+            "name": "vcRuleSet"
+        }, 
+        {
+            "offset": 584, 
+            "type": "ManagedArray<int>", 
+            "size": 16, 
+            "name": "executingRules"
+        }, 
+        {
+            "offset": 600, 
+            "type": "ManagedArray<int>", 
+            "size": 16, 
+            "name": "idleRules"
+        }, 
+        {
+            "offset": 616, 
+            "type": "VictoryConditionRuleSystem", 
+            "size": 908, 
+            "name": "vcRules"
+        }, 
+        {
+            "offset": 1524, 
+            "type": "int", 
+            "size": 4, 
+            "name": "difficultyLevel"
+        }
+    ], 
+    "name": "TribeStrategyAIModule"
+}

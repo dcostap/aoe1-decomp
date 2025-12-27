@@ -8,10 +8,12 @@
 
 ResFileHdr *DAT_0086b254 = nullptr;
 
+// Address: 0x00444500
 void RESFILE_build_res_file(const char* name, const char* dir, const char* ext) {
     // STUB: Original logic for building resource files from .rm files
 }
 
+// Address: 0x00444600
 void RESFILE_open_new_resource_file(const char* name, const char* dir, const char* ext, int flag) {
     char resFile[260];
     sprintf(resFile, "%s%s", ext ? ext : "", name);
@@ -71,6 +73,7 @@ void RESFILE_open_new_resource_file(const char* name, const char* dir, const cha
     }
 }
 
+// Address: 0x00444800
 int RESFILE_locate_resource(ulong type, ulong id, int *handle, int *offset, uchar **mapped_ptr, int *size) {
     ResFileHdr *curr = DAT_0086b254;
     *handle = -1;

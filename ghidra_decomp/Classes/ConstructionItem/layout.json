@@ -1,0 +1,158 @@
+{
+    "size": 128, 
+    "vtable": [
+        {
+            "signature": "void * `scalar_deleting_destructor'(ConstructionItem * this, uint param_1)", 
+            "index": 0, 
+            "name": "`scalar_deleting_destructor'"
+        }, 
+        {
+            "signature": "void * `scalar_deleting_destructor'(ConstructionAIModule * this, uint param_1)", 
+            "index": 1, 
+            "name": "`scalar_deleting_destructor'"
+        }, 
+        {
+            "signature": "int loggingHistory(AIModule * this)", 
+            "index": 2, 
+            "name": "loggingHistory"
+        }, 
+        {
+            "signature": "void setLogHistory(AIModule * this, int param_1)", 
+            "index": 3, 
+            "name": "setLogHistory"
+        }, 
+        {
+            "signature": "void toggleLogHistory(AIModule * this)", 
+            "index": 4, 
+            "name": "toggleLogHistory"
+        }, 
+        {
+            "signature": "void setHistoryFilename(AIModule * this, char * param_1)", 
+            "index": 5, 
+            "name": "setHistoryFilename"
+        }, 
+        {
+            "signature": "int loggingCommonHistory(AIModule * this)", 
+            "index": 6, 
+            "name": "loggingCommonHistory"
+        }, 
+        {
+            "signature": "void setLogCommonHistory(AIModule * this, int param_1)", 
+            "index": 7, 
+            "name": "setLogCommonHistory"
+        }, 
+        {
+            "signature": "void toggleLogCommonHistory(AIModule * this)", 
+            "index": 8, 
+            "name": "toggleLogCommonHistory"
+        }, 
+        {
+            "signature": "int loadState(AIModule * this, char * param_1)", 
+            "index": 9, 
+            "name": "loadState"
+        }, 
+        {
+            "signature": "int saveState(AIModule * this, char * param_1)", 
+            "index": 10, 
+            "name": "saveState"
+        }, 
+        {
+            "signature": "int gleanState(AIModule * this, int param_1)", 
+            "index": 11, 
+            "name": "gleanState"
+        }, 
+        {
+            "signature": "int processMessage(AIModule * this, AIModuleMessage * param_1)", 
+            "index": 12, 
+            "name": "processMessage"
+        }, 
+        {
+            "signature": "int update(AIModule * this, int param_1)", 
+            "index": 13, 
+            "name": "update"
+        }, 
+        {
+            "signature": "void setCallbackMessage(AIModule * this, AIModuleMessage * param_1)", 
+            "index": 14, 
+            "name": "setCallbackMessage"
+        }, 
+        {
+            "signature": "int filterOutMessage(AIModule * this, AIModuleMessage * param_1)", 
+            "index": 15, 
+            "name": "filterOutMessage"
+        }, 
+        {
+            "signature": "int save(ConstructionAIModule * this, int param_1)", 
+            "index": 16, 
+            "name": "save"
+        }, 
+        {
+            "signature": "int loadConstructionPlan(ConstructionAIModule * this, char * param_1, int param_2, int param_3, float param_4, float param_5, float param_6)", 
+            "index": 17, 
+            "name": "loadConstructionPlan"
+        }, 
+        {
+            "signature": "ConstructionItem * placeStructure(ConstructionAIModule * this, BuildItem * param_1)", 
+            "index": 18, 
+            "name": "placeStructure"
+        }, 
+        {
+            "signature": "void setBuilt(ConstructionAIModule * this, ConstructionItem * param_1, int param_2)", 
+            "index": 19, 
+            "name": "setBuilt"
+        }, 
+        {
+            "signature": "int unplaceStructure(ConstructionAIModule * this, float param_1, float param_2, int param_3)", 
+            "index": 20, 
+            "name": "unplaceStructure"
+        }, 
+        {
+            "signature": "int unplaceStructure(ConstructionAIModule * this, ConstructionItem * param_1, int param_2)", 
+            "index": 21, 
+            "name": "unplaceStructure"
+        }, 
+        {
+            "signature": "void decrementBuildAttempts(ConstructionAIModule * this, float param_1, float param_2, int param_3)", 
+            "index": 22, 
+            "name": "decrementBuildAttempts"
+        }, 
+        {
+            "signature": "void incrementBuildAttempts(ConstructionAIModule * this, float param_1, float param_2, int param_3)", 
+            "index": 23, 
+            "name": "incrementBuildAttempts"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 108, 
+            "type": "ConstructionItem *", 
+            "size": 4, 
+            "name": "next"
+        }, 
+        {
+            "offset": 112, 
+            "type": "ConstructionItem *", 
+            "size": 4, 
+            "name": "prev"
+        }, 
+        {
+            "offset": 116, 
+            "type": "int", 
+            "size": 4, 
+            "name": "inProgressValue"
+        }, 
+        {
+            "offset": 120, 
+            "type": "int", 
+            "size": 4, 
+            "name": "builtValue"
+        }, 
+        {
+            "offset": 124, 
+            "type": "int", 
+            "size": 4, 
+            "name": "buildAttemptsValue"
+        }
+    ], 
+    "name": "ConstructionItem"
+}

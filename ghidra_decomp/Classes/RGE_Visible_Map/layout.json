@@ -1,0 +1,91 @@
+{
+    "size": 56, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "uchar * *", 
+            "size": 4, 
+            "name": "map_offsets"
+        }, 
+        {
+            "offset": 4, 
+            "type": "RGE_Game_World *", 
+            "size": 4, 
+            "name": "world"
+        }, 
+        {
+            "offset": 8, 
+            "type": "RGE_Player *", 
+            "size": 4, 
+            "name": "player"
+        }, 
+        {
+            "offset": 12, 
+            "type": "RGE_Map *", 
+            "size": 4, 
+            "name": "map"
+        }, 
+        {
+            "offset": 16, 
+            "type": "uchar *", 
+            "size": 4, 
+            "name": "visible_map"
+        }, 
+        {
+            "offset": 20, 
+            "type": "int", 
+            "size": 4, 
+            "name": "widthValue"
+        }, 
+        {
+            "offset": 24, 
+            "type": "int", 
+            "size": 4, 
+            "name": "heightValue"
+        }, 
+        {
+            "offset": 28, 
+            "type": "int", 
+            "size": 4, 
+            "name": "numberTilesExploredValue"
+        }, 
+        {
+            "offset": 32, 
+            "type": "int", 
+            "size": 4, 
+            "name": "numberTotalTilesValue"
+        }, 
+        {
+            "offset": 36, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "PlayerVisibleMaskValue"
+        }, 
+        {
+            "offset": 40, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "PlayerVisibleMaskInvertValue"
+        }, 
+        {
+            "offset": 44, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "PlayerExploredMaskValue"
+        }, 
+        {
+            "offset": 48, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "PlayerExploredMaskInvertValue"
+        }, 
+        {
+            "offset": 52, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "input_csum"
+        }
+    ], 
+    "name": "RGE_Visible_Map"
+}

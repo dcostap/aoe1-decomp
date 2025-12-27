@@ -1,0 +1,37 @@
+{
+    "size": 408, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "TDigital *[4]", 
+            "size": 16, 
+            "name": "Audio"
+        }, 
+        {
+            "offset": 16, 
+            "type": "int", 
+            "size": 4, 
+            "name": "LastAudioPlayed"
+        }, 
+        {
+            "offset": 20, 
+            "type": "char[255]", 
+            "size": 255, 
+            "name": "TBuff"
+        }, 
+        {
+            "offset": 275, 
+            "type": "char[128]", 
+            "size": 128, 
+            "name": "TauntDir"
+        }, 
+        {
+            "offset": 404, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Mute"
+        }
+    ], 
+    "name": "TTaunt"
+}

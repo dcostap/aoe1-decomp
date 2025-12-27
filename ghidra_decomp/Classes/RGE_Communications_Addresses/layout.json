@@ -1,0 +1,49 @@
+{
+    "size": 548, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "TCommunications_Handler *", 
+            "size": 4, 
+            "name": "comm"
+        }, 
+        {
+            "offset": 4, 
+            "type": "WSAData", 
+            "size": 400, 
+            "name": "wsaData"
+        }, 
+        {
+            "offset": 404, 
+            "type": "char[128]", 
+            "size": 128, 
+            "name": "hostname"
+        }, 
+        {
+            "offset": 532, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Status"
+        }, 
+        {
+            "offset": 536, 
+            "type": "uint", 
+            "size": 4, 
+            "name": "AddressesAvailable"
+        }, 
+        {
+            "offset": 540, 
+            "type": "uint", 
+            "size": 4, 
+            "name": "AliasesAvailable"
+        }, 
+        {
+            "offset": 544, 
+            "type": "IPAD *", 
+            "size": 4, 
+            "name": "pIPAD"
+        }
+    ], 
+    "name": "RGE_Communications_Addresses"
+}

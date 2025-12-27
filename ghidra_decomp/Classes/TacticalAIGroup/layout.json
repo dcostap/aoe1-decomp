@@ -1,0 +1,229 @@
+{
+    "size": 816, 
+    "vtable": [
+        {
+            "signature": "void * `scalar_deleting_destructor'(TacticalAIGroup * this, uint param_1)", 
+            "index": 0, 
+            "name": "`scalar_deleting_destructor'"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 4, 
+            "type": "TacticalAIGroup *", 
+            "size": 4, 
+            "name": "next"
+        }, 
+        {
+            "offset": 8, 
+            "type": "TacticalAIGroup *", 
+            "size": 4, 
+            "name": "prev"
+        }, 
+        {
+            "offset": 12, 
+            "type": "int", 
+            "size": 4, 
+            "name": "idValue"
+        }, 
+        {
+            "offset": 16, 
+            "type": "int", 
+            "size": 4, 
+            "name": "inUseValue"
+        }, 
+        {
+            "offset": 20, 
+            "type": "int", 
+            "size": 4, 
+            "name": "typeValue"
+        }, 
+        {
+            "offset": 24, 
+            "type": "int", 
+            "size": 4, 
+            "name": "subTypeValue"
+        }, 
+        {
+            "offset": 28, 
+            "type": "int[40]", 
+            "size": 160, 
+            "name": "unitsValue"
+        }, 
+        {
+            "offset": 188, 
+            "type": "int[40]", 
+            "size": 160, 
+            "name": "unitsOriginalHitPointsValue"
+        }, 
+        {
+            "offset": 348, 
+            "type": "int", 
+            "size": 4, 
+            "name": "numberUnitsValue"
+        }, 
+        {
+            "offset": 352, 
+            "type": "int", 
+            "size": 4, 
+            "name": "desiredNumberUnitsValue"
+        }, 
+        {
+            "offset": 356, 
+            "type": "int", 
+            "size": 4, 
+            "name": "commanderValue"
+        }, 
+        {
+            "offset": 360, 
+            "type": "int", 
+            "size": 4, 
+            "name": "originalHitPointsValue"
+        }, 
+        {
+            "offset": 364, 
+            "type": "int", 
+            "size": 4, 
+            "name": "originalUnitNumberValue"
+        }, 
+        {
+            "offset": 368, 
+            "type": "Waypoint", 
+            "size": 16, 
+            "name": "locationValue"
+        }, 
+        {
+            "offset": 384, 
+            "type": "int", 
+            "size": 4, 
+            "name": "actionValue"
+        }, 
+        {
+            "offset": 388, 
+            "type": "int", 
+            "size": 4, 
+            "name": "targetValue"
+        }, 
+        {
+            "offset": 392, 
+            "type": "int", 
+            "size": 4, 
+            "name": "targetTypeValue"
+        }, 
+        {
+            "offset": 396, 
+            "type": "Waypoint", 
+            "size": 16, 
+            "name": "targetLocationValue"
+        }, 
+        {
+            "offset": 412, 
+            "type": "Waypoint", 
+            "size": 16, 
+            "name": "gatherLocationValue"
+        }, 
+        {
+            "offset": 428, 
+            "type": "Waypoint", 
+            "size": 16, 
+            "name": "retreatLocationValue"
+        }, 
+        {
+            "offset": 444, 
+            "type": "int", 
+            "size": 4, 
+            "name": "priorityValue"
+        }, 
+        {
+            "offset": 448, 
+            "type": "int", 
+            "size": 4, 
+            "name": "waitCodeValue"
+        }, 
+        {
+            "offset": 452, 
+            "type": "int", 
+            "size": 4, 
+            "name": "assistGroupIDValue"
+        }, 
+        {
+            "offset": 456, 
+            "type": "int", 
+            "size": 4, 
+            "name": "assistGroupTypeValue"
+        }, 
+        {
+            "offset": 460, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "consecutiveIdleUnitCountValue"
+        }, 
+        {
+            "offset": 464, 
+            "type": "int", 
+            "size": 4, 
+            "name": "playNumberValue"
+        }, 
+        {
+            "offset": 468, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "numberAttackWaypointsValue"
+        }, 
+        {
+            "offset": 469, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "currentAttackWaypointValue"
+        }, 
+        {
+            "offset": 472, 
+            "type": "Waypoint[15]", 
+            "size": 240, 
+            "name": "attackWaypoints"
+        }, 
+        {
+            "offset": 712, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "consecutiveGatherAttemptsValue"
+        }, 
+        {
+            "offset": 716, 
+            "type": "int", 
+            "size": 4, 
+            "name": "numberObjectsToDestroyValue"
+        }, 
+        {
+            "offset": 720, 
+            "type": "int[20]", 
+            "size": 80, 
+            "name": "objectsToDestroyValue"
+        }, 
+        {
+            "offset": 800, 
+            "type": "int", 
+            "size": 4, 
+            "name": "objectsToDestroyOwnerValue"
+        }, 
+        {
+            "offset": 804, 
+            "type": "int", 
+            "size": 4, 
+            "name": "objectsToDestroyCommanderZoneValue"
+        }, 
+        {
+            "offset": 808, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "lastAttackRoundupTime"
+        }, 
+        {
+            "offset": 812, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "lastAddedUnitTimeValue"
+        }
+    ], 
+    "name": "TacticalAIGroup"
+}

@@ -1,0 +1,37 @@
+{
+    "size": 24, 
+    "vtable": [
+        {
+            "signature": "void do_command_give_attribute(RGE_Command * this, RGE_Command_Give_Attribute * param_1)", 
+            "index": 0, 
+            "name": "do_command_give_attribute"
+        }, 
+        {
+            "signature": "void * `vector_deleting_destructor'(TRIBE_Command * this, uint param_1)", 
+            "index": 1, 
+            "name": "`vector_deleting_destructor'"
+        }, 
+        {
+            "signature": "void do_command(TRIBE_Command * this, void * param_1)", 
+            "index": 2, 
+            "name": "do_command"
+        }, 
+        {
+            "signature": "void command_give_attribute(RGE_Command * this, int param_1, int param_2, int param_3, float param_4)", 
+            "index": 3, 
+            "name": "command_give_attribute"
+        }, 
+        {
+            "signature": "void do_command_give_attribute(TRIBE_Command * this, TRIBE_Command_Give_Attribute * param_1)", 
+            "index": 4, 
+            "name": "do_command_give_attribute"
+        }, 
+        {
+            "signature": "void command_give_attribute(TRIBE_Command * this, int param_1, int param_2, int param_3, float param_4, float param_5)", 
+            "index": 5, 
+            "name": "command_give_attribute"
+        }
+    ], 
+    "members": [], 
+    "name": "TRIBE_Command"
+}

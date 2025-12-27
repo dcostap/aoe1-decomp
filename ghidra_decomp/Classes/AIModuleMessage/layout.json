@@ -1,0 +1,160 @@
+{
+    "size": 312, 
+    "vtable": [
+        {
+            "signature": "void * `scalar_deleting_destructor'(AIModuleMessage * this, uint param_1)", 
+            "index": 0, 
+            "name": "`scalar_deleting_destructor'"
+        }, 
+        {
+            "signature": "void * `scalar_deleting_destructor'(AIModule * this, uint param_1)", 
+            "index": 1, 
+            "name": "`scalar_deleting_destructor'"
+        }, 
+        {
+            "signature": "int loggingHistory(AIModule * this)", 
+            "index": 2, 
+            "name": "loggingHistory"
+        }, 
+        {
+            "signature": "void setLogHistory(AIModule * this, int param_1)", 
+            "index": 3, 
+            "name": "setLogHistory"
+        }, 
+        {
+            "signature": "void toggleLogHistory(AIModule * this)", 
+            "index": 4, 
+            "name": "toggleLogHistory"
+        }, 
+        {
+            "signature": "void setHistoryFilename(AIModule * this, char * param_1)", 
+            "index": 5, 
+            "name": "setHistoryFilename"
+        }, 
+        {
+            "signature": "int loggingCommonHistory(AIModule * this)", 
+            "index": 6, 
+            "name": "loggingCommonHistory"
+        }, 
+        {
+            "signature": "void setLogCommonHistory(AIModule * this, int param_1)", 
+            "index": 7, 
+            "name": "setLogCommonHistory"
+        }, 
+        {
+            "signature": "void toggleLogCommonHistory(AIModule * this)", 
+            "index": 8, 
+            "name": "toggleLogCommonHistory"
+        }, 
+        {
+            "signature": "int loadState(AIModule * this, char * param_1)", 
+            "index": 9, 
+            "name": "loadState"
+        }, 
+        {
+            "signature": "int saveState(AIModule * this, char * param_1)", 
+            "index": 10, 
+            "name": "saveState"
+        }, 
+        {
+            "signature": "int gleanState(AIModule * this, int param_1)", 
+            "index": 11, 
+            "name": "gleanState"
+        }, 
+        {
+            "signature": "int processMessage(AIModule * this, AIModuleMessage * param_1)", 
+            "index": 12, 
+            "name": "processMessage"
+        }, 
+        {
+            "signature": "int update(AIModule * this, int param_1)", 
+            "index": 13, 
+            "name": "update"
+        }, 
+        {
+            "signature": "void setCallbackMessage(AIModule * this, AIModuleMessage * param_1)", 
+            "index": 14, 
+            "name": "setCallbackMessage"
+        }, 
+        {
+            "signature": "int filterOutMessage(AIModule * this, AIModuleMessage * param_1)", 
+            "index": 15, 
+            "name": "filterOutMessage"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 4, 
+            "type": "int", 
+            "size": 4, 
+            "name": "id"
+        }, 
+        {
+            "offset": 8, 
+            "type": "char[128]", 
+            "size": 128, 
+            "name": "text"
+        }, 
+        {
+            "offset": 136, 
+            "type": "int", 
+            "size": 4, 
+            "name": "priority"
+        }, 
+        {
+            "offset": 140, 
+            "type": "AIModuleID", 
+            "size": 72, 
+            "name": "sender"
+        }, 
+        {
+            "offset": 212, 
+            "type": "AIModuleID", 
+            "size": 72, 
+            "name": "recipient"
+        }, 
+        {
+            "offset": 284, 
+            "type": "long", 
+            "size": 4, 
+            "name": "data1"
+        }, 
+        {
+            "offset": 288, 
+            "type": "long", 
+            "size": 4, 
+            "name": "data2"
+        }, 
+        {
+            "offset": 292, 
+            "type": "long", 
+            "size": 4, 
+            "name": "data3"
+        }, 
+        {
+            "offset": 296, 
+            "type": "AIModuleMessage *", 
+            "size": 4, 
+            "name": "callbackMessage"
+        }, 
+        {
+            "offset": 300, 
+            "type": "int", 
+            "size": 4, 
+            "name": "timeStamp"
+        }, 
+        {
+            "offset": 304, 
+            "type": "AIModuleMessage *", 
+            "size": 4, 
+            "name": "next"
+        }, 
+        {
+            "offset": 308, 
+            "type": "AIModuleMessage *", 
+            "size": 4, 
+            "name": "prev"
+        }
+    ], 
+    "name": "AIModuleMessage"
+}

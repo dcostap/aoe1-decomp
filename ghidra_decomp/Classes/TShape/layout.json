@@ -1,0 +1,55 @@
+{
+    "size": 32, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "uchar *", 
+            "size": 4, 
+            "name": "shape"
+        }, 
+        {
+            "offset": 4, 
+            "type": "int", 
+            "size": 4, 
+            "name": "load_type"
+        }, 
+        {
+            "offset": 8, 
+            "type": "int", 
+            "size": 4, 
+            "name": "load_size"
+        }, 
+        {
+            "offset": 12, 
+            "type": "Shape_Header *", 
+            "size": 4, 
+            "name": "shape_header"
+        }, 
+        {
+            "offset": 16, 
+            "type": "Shape_File_Header *", 
+            "size": 4, 
+            "name": "head"
+        }, 
+        {
+            "offset": 20, 
+            "type": "Shape_Offsets *", 
+            "size": 4, 
+            "name": "offsets"
+        }, 
+        {
+            "offset": 24, 
+            "type": "SLhape_File_Header *", 
+            "size": 4, 
+            "name": "FShape"
+        }, 
+        {
+            "offset": 28, 
+            "type": "Shape_Info *", 
+            "size": 4, 
+            "name": "shape_info"
+        }
+    ], 
+    "name": "TShape"
+}

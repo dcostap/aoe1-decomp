@@ -1,0 +1,31 @@
+{
+    "size": 16, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "int *", 
+            "size": 4, 
+            "name": "value"
+        }, 
+        {
+            "offset": 4, 
+            "type": "int", 
+            "size": 4, 
+            "name": "numberValue"
+        }, 
+        {
+            "offset": 8, 
+            "type": "int", 
+            "size": 4, 
+            "name": "desiredNumberValue"
+        }, 
+        {
+            "offset": 12, 
+            "type": "int", 
+            "size": 4, 
+            "name": "maximumSizeValue"
+        }
+    ], 
+    "name": "ManagedArray<int>"
+}

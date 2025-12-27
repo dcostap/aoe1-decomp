@@ -1,0 +1,181 @@
+{
+    "size": 120, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "char[13]", 
+            "size": 13, 
+            "name": "pict_name"
+        }, 
+        {
+            "offset": 16, 
+            "type": "long", 
+            "size": 4, 
+            "name": "resource_id"
+        }, 
+        {
+            "offset": 20, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "loaded"
+        }, 
+        {
+            "offset": 24, 
+            "type": "RGE_Color_Table * *", 
+            "size": 4, 
+            "name": "color_tables"
+        }, 
+        {
+            "offset": 28, 
+            "type": "TShape *", 
+            "size": 4, 
+            "name": "shape"
+        }, 
+        {
+            "offset": 32, 
+            "type": "long", 
+            "size": 4, 
+            "name": "last_time"
+        }, 
+        {
+            "offset": 36, 
+            "type": "long", 
+            "size": 4, 
+            "name": "delta_time"
+        }, 
+        {
+            "offset": 40, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "color_flag"
+        }, 
+        {
+            "offset": 41, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "draw_level"
+        }, 
+        {
+            "offset": 42, 
+            "type": "short", 
+            "size": 2, 
+            "name": "color_table"
+        }, 
+        {
+            "offset": 44, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "transparent_picking_flag"
+        }, 
+        {
+            "offset": 46, 
+            "type": "short", 
+            "size": 2, 
+            "name": "box_x1"
+        }, 
+        {
+            "offset": 48, 
+            "type": "short", 
+            "size": 2, 
+            "name": "box_y1"
+        }, 
+        {
+            "offset": 50, 
+            "type": "short", 
+            "size": 2, 
+            "name": "box_x2"
+        }, 
+        {
+            "offset": 52, 
+            "type": "short", 
+            "size": 2, 
+            "name": "box_y2"
+        }, 
+        {
+            "offset": 54, 
+            "type": "short", 
+            "size": 2, 
+            "name": "draw_list_num"
+        }, 
+        {
+            "offset": 56, 
+            "type": "RGE_Picture_List *", 
+            "size": 4, 
+            "name": "draw_list"
+        }, 
+        {
+            "offset": 60, 
+            "type": "RGE_Sound *", 
+            "size": 4, 
+            "name": "main_sound"
+        }, 
+        {
+            "offset": 64, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "micro_man_sound"
+        }, 
+        {
+            "offset": 68, 
+            "type": "RGE_Sound_List *", 
+            "size": 4, 
+            "name": "sound_list"
+        }, 
+        {
+            "offset": 72, 
+            "type": "char[21]", 
+            "size": 21, 
+            "name": "name"
+        }, 
+        {
+            "offset": 94, 
+            "type": "short", 
+            "size": 2, 
+            "name": "frame_num"
+        }, 
+        {
+            "offset": 96, 
+            "type": "short", 
+            "size": 2, 
+            "name": "facet_num"
+        }, 
+        {
+            "offset": 100, 
+            "type": "float", 
+            "size": 4, 
+            "name": "base_speed"
+        }, 
+        {
+            "offset": 104, 
+            "type": "float", 
+            "size": 4, 
+            "name": "duration"
+        }, 
+        {
+            "offset": 108, 
+            "type": "float", 
+            "size": 4, 
+            "name": "pause_between_loops"
+        }, 
+        {
+            "offset": 112, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "flag"
+        }, 
+        {
+            "offset": 114, 
+            "type": "short", 
+            "size": 2, 
+            "name": "id"
+        }, 
+        {
+            "offset": 116, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "mirror_flag"
+        }
+    ], 
+    "name": "RGE_Sprite"
+}

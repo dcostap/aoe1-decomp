@@ -1,0 +1,411 @@
+// Class: TRIBE_Screen_Sed_Open
+// Function: TRIBE_Screen_Sed_Open
+// Address: 004b33d0
+// [HELPER] s_Scenario_Editor_Open: "Scenario Editor Open"
+/* WARNING: Variable defined which should be unmapped: from_panel */
+/* public: __thiscall TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open(void) */
+
+TRIBE_Screen_Sed_Open * __thiscall
+TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open(TRIBE_Screen_Sed_Open *this)
+{
+  TListPanel **ppTVar1;
+  TButtonPanel **ppTVar2;
+  char cVar3;
+  TDrawArea *pTVar4;
+  TButtonPanel *pTVar5;
+  char *pcVar6;
+  long lVar7;
+  char *pcVar8;
+  uint uVar9;
+  uint uVar10;
+  char *pcVar11;
+  undefined4 *unaff_FS_OFFSET;
+  int iVar12;
+  TEasy_Panel *from_panel;
+  TPanel *tabList [4];
+  char info_file [260];
+  undefined4 local_c;
+  code *pcStack_8;
+  undefined4 local_4;
+  
+  local_4 = 0xffffffff;
+  pcStack_8 = FUN_0055f5db;
+  local_c = *unaff_FS_OFFSET;
+  *unaff_FS_OFFSET = &local_c;
+  info_file._0_4_ = this;
+  TScreenPanel::TScreenPanel((TScreenPanel *)this,s_Scenario_Editor_Open);
+  ppTVar1 = &this->list;
+  local_4 = 0;
+  this->_padding_ = (int)&_vftable_;
+  this->title = (TTextPanel *)0x0;
+  *ppTVar1 = (TListPanel *)0x0;
+  this->scrollbar = (TScrollBarPanel *)0x0;
+  this->okButton = (TButtonPanel *)0x0;
+  this->cancelButton = (TButtonPanel *)0x0;
+  this->deleteButton = (TButtonPanel *)0x0;
+  tabList[0] = TPanelSystem::currentPanel(&panel_system);
+  pcVar6 = TEasy_Panel::get_info_file((TEasy_Panel *)tabList[0]);
+  uVar9 = 0xffffffff;
+  pcVar8 = info_file;
+  do {
+    pcVar11 = pcVar6;
+    if (uVar9 == 0) break;
+    uVar9 = uVar9 - 1;
+    pcVar11 = pcVar6 + 1;
+    cVar3 = *pcVar6;
+    pcVar6 = pcVar11;
+  } while (cVar3 != '\0');
+  uVar9 = ~uVar9;
+  iVar12 = 1;
+  pcVar6 = pcVar11 + -uVar9;
+  for (uVar10 = uVar9 >> 2; pcVar8 = pcVar8 + 4, uVar10 != 0; uVar10 = uVar10 - 1) {
+    *(undefined4 *)pcVar8 = *(undefined4 *)pcVar6;
+    pcVar6 = pcVar6 + 4;
+  }
+  for (uVar9 = uVar9 & 3; uVar9 != 0; uVar9 = uVar9 - 1) {
+    *pcVar8 = *pcVar6;
+    pcVar6 = pcVar6 + 1;
+    pcVar8 = pcVar8 + 1;
+  }
+  pTVar4 = rge_base_game->draw_area;
+  lVar7 = TEasy_Panel::get_info_id((TEasy_Panel *)tabList[0]);
+  lVar7 = TScreenPanel::setup((TScreenPanel *)this,pTVar4,info_file + 4,lVar7,iVar12);
+  if (lVar7 == 0) {
+    this->_padding_ = 1;
+  }
+  else {
+    TEasy_Panel::setup_shadow_area((TEasy_Panel *)this,0);
+    TEasy_Panel::set_ideal_size((TEasy_Panel *)this,0x280,0x1e0);
+                    /* language.dll match for 0x24cd: "Select Scenario" */
+    iVar12 = TEasy_Panel::create_text
+                       ((TEasy_Panel *)this,(TPanel *)this,&this->title,0x24cd,0x14,0x14,600,0x1e,1,
+                        1,0,0);
+    if (iVar12 != 0) {
+      iVar12 = TEasy_Panel::create_list
+                         ((TEasy_Panel *)this,(TPanel *)this,ppTVar1,0x14,0x46,600,0x154,0xb);
+      if (iVar12 != 0) {
+        iVar12 = TEasy_Panel::create_auto_scrollbar
+                           ((TEasy_Panel *)this,&this->scrollbar,(TTextPanel *)*ppTVar1,0x14);
+        if (iVar12 != 0) {
+                    /* language.dll match for 0xfa1: "OK" */
+          iVar12 = TEasy_Panel::create_button
+                             ((TEasy_Panel *)this,(TPanel *)this,&this->okButton,0xfa1,0,0x1e,0x1b8,
+                              0xb4,0x1e,0,0,0);
+          if (iVar12 != 0) {
+            ppTVar2 = &this->deleteButton;
+                    /* language.dll match for 0x24c9: "Delete" */
+            iVar12 = TEasy_Panel::create_button
+                               ((TEasy_Panel *)this,(TPanel *)this,ppTVar2,0x24c9,0,0xe6,0x1b8,0xb4,
+                                0x1e,0,0,0);
+            if (iVar12 != 0) {
+                    /* language.dll match for 0xfa2: "Cancel" */
+              iVar12 = TEasy_Panel::create_button
+                                 ((TEasy_Panel *)this,(TPanel *)this,&this->cancelButton,0xfa2,0,
+                                  0x1ae,0x1b8,0xb4,0x1e,0,0,0);
+              if (iVar12 != 0) {
+                pTVar5 = this->cancelButton;
+                pTVar5->hotkey = 0x1b;
+                pTVar5->hotkey_shift = 0;
+                pTVar5 = *ppTVar2;
+                pTVar5->hotkey_shift = 0;
+                pTVar5->hotkey = 0x2e;
+                fillList(this);
+                pcVar8 = TTextPanel::currentLine((TTextPanel *)*ppTVar1);
+                if (*pcVar8 == '\0') {
+                  TButtonPanel::set_disabled(this->okButton,1);
+                  TButtonPanel::set_disabled(*ppTVar2,1);
+                }
+                TPanel::set_curr_child((TPanel *)this,(TPanel *)*ppTVar1);
+                tabList[2] = (TPanel *)this->okButton;
+                tabList[1] = (TPanel *)*ppTVar1;
+                tabList[3] = (TPanel *)*ppTVar2;
+                TPanel::set_tab_order((TPanel *)this,tabList + 1,4);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  *unaff_FS_OFFSET = local_c;
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: `scalar_deleting_destructor'
+// Address: 004b3680
+/* public: virtual void * __thiscall TRIBE_Screen_Sed_Open::`scalar deleting destructor'(unsigned
+   int) */
+
+void * __thiscall
+TRIBE_Screen_Sed_Open::_scalar_deleting_destructor_(TRIBE_Screen_Sed_Open *this,uint param_1)
+{
+  ~TRIBE_Screen_Sed_Open(this);
+  if ((param_1 & 1) != 0) {
+    operator_delete(this);
+  }
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: ~TRIBE_Screen_Sed_Open
+// Address: 004b36a0
+/* public: virtual __thiscall TRIBE_Screen_Sed_Open::~TRIBE_Screen_Sed_Open(void) */
+
+void __thiscall TRIBE_Screen_Sed_Open::~TRIBE_Screen_Sed_Open(TRIBE_Screen_Sed_Open *this)
+{
+  undefined4 *unaff_FS_OFFSET;
+  undefined4 local_c;
+  code *pcStack_8;
+  undefined4 local_4;
+  
+  pcStack_8 = FUN_0055f5f8;
+  local_c = *unaff_FS_OFFSET;
+  *unaff_FS_OFFSET = &local_c;
+  this->_padding_ = (int)&_vftable_;
+  local_4 = 0;
+  TPanel::delete_panel((TPanel *)this,(TPanel **)&this->title);
+  TPanel::delete_panel((TPanel *)this,(TPanel **)&this->list);
+  TPanel::delete_panel((TPanel *)this,(TPanel **)&this->scrollbar);
+  TPanel::delete_panel((TPanel *)this,(TPanel **)&this->okButton);
+  TPanel::delete_panel((TPanel *)this,(TPanel **)&this->cancelButton);
+  TPanel::delete_panel((TPanel *)this,(TPanel **)&this->deleteButton);
+  local_4 = 0xffffffff;
+  TScreenPanel::~TScreenPanel((TScreenPanel *)this);
+  *unaff_FS_OFFSET = local_c;
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: fillList
+// Address: 004b3740
+// [HELPER] s__s__scn: "%s*.scn"
+// [HELPER] s__s__scx: "%s*.scx"
+/* WARNING: Variable defined which should be unmapped: file_name */
+/* protected: void __thiscall TRIBE_Screen_Sed_Open::fillList(void) */
+
+void __thiscall TRIBE_Screen_Sed_Open::fillList(TRIBE_Screen_Sed_Open *this)
+{
+  char cVar1;
+  TListPanel *pTVar2;
+  int iVar3;
+  int iVar4;
+  uint uVar5;
+  char *pcVar6;
+  char file_name [260];
+  _finddata_t fileInfo;
+  
+  TTextPanel::empty_list((TTextPanel *)this->list);
+  this->list->_padding_ = 1;
+  sprintf(file_name + 4,s__s__scn,rge_base_game->prog_info->scenario_dir);
+  iVar3 = __findfirst(file_name + 4,&fileInfo.time_create);
+  iVar4 = iVar3;
+  while (iVar4 != -1) {
+    uVar5 = 0xffffffff;
+    pcVar6 = fileInfo.name + 4;
+    do {
+      if (uVar5 == 0) break;
+      uVar5 = uVar5 - 1;
+      cVar1 = *pcVar6;
+      pcVar6 = pcVar6 + 1;
+    } while (cVar1 != '\0');
+    strncpy(file_name + 4,fileInfo.name + 4,~uVar5 - 5);
+    pTVar2 = this->list;
+    file_name[~uVar5 - 1] = '\0';
+    TTextPanel::append_line((TTextPanel *)pTVar2,file_name + 4,0);
+    iVar4 = __findnext(iVar3,&fileInfo.time_create);
+  }
+  sprintf(file_name + 4,s__s__scx,rge_base_game->prog_info->scenario_dir);
+  iVar3 = __findfirst(file_name + 4,&fileInfo.time_create);
+  iVar4 = iVar3;
+  do {
+    if (iVar4 == -1) {
+      return;
+    }
+    uVar5 = 0xffffffff;
+    pcVar6 = fileInfo.name + 4;
+    do {
+      if (uVar5 == 0) break;
+      uVar5 = uVar5 - 1;
+      cVar1 = *pcVar6;
+      pcVar6 = pcVar6 + 1;
+    } while (cVar1 != '\0');
+    strncpy(file_name + 4,fileInfo.name + 4,~uVar5 - 5);
+    pTVar2 = this->list;
+    file_name[~uVar5 - 1] = '\0';
+    TTextPanel::append_line((TTextPanel *)pTVar2,file_name + 4,0);
+    iVar4 = __findnext(iVar3,&fileInfo.time_create);
+  } while( true );
+}
+
+// --------------------------------------------------
+
+// Function: action
+// Address: 004b38a0
+// [HELPER] s_Cancel_Dialog: "Cancel Dialog"
+// [HELPER] s_Scenario_Editor_Menu: "Scenario Editor Menu"
+// [HELPER] s_Scenario_Editor_Open: "Scenario Editor Open"
+// [HELPER] s_Scenario_Editor_Screen: "Scenario Editor Screen"
+// [HELPER] s__s_s_scn: "%s%s.scn"
+// [HELPER] s__s_s_scx: "%s%s.scx"
+// [HELPER] s__s_scn: "%s.scn"
+// [HELPER] s__s_scx: "%s.scx"
+/* protected: virtual long __thiscall TRIBE_Screen_Sed_Open::action(class TPanel *,long,unsigned
+   long,unsigned long) */
+
+long __thiscall
+TRIBE_Screen_Sed_Open::action
+          (TRIBE_Screen_Sed_Open *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
+{
+  byte bVar1;
+  RGE_Prog_Info *pRVar2;
+  char *pcVar3;
+  byte *pbVar4;
+  int iVar5;
+  long lVar6;
+  TPanel *pTVar7;
+  byte *pbVar8;
+  undefined4 *unaff_FS_OFFSET;
+  bool bVar9;
+  char *pcVar10;
+  _OFSTRUCT of;
+  char fileName [257];
+  char text [556];
+  undefined4 local_c;
+  code *pcStack_8;
+  undefined4 local_4;
+  
+  local_c = *unaff_FS_OFFSET;
+  local_4 = 0xffffffff;
+  pcStack_8 = FUN_0055f61e;
+  *unaff_FS_OFFSET = &local_c;
+  if (param_1 != (TPanel *)0x0) {
+    pcVar3 = TPanel::panelName(param_1);
+    if (pcVar3 != (char *)0x0) {
+      pbVar8 = &s_Cancel_Dialog;
+      pbVar4 = (byte *)TPanel::panelName(param_1);
+      do {
+        bVar1 = *pbVar4;
+        bVar9 = bVar1 < *pbVar8;
+        if (bVar1 != *pbVar8) {
+LAB_004b3916:
+          iVar5 = (1 - (uint)bVar9) - (uint)(bVar9 != 0);
+          goto LAB_004b391b;
+        }
+        if (bVar1 == 0) break;
+        bVar1 = pbVar4[1];
+        bVar9 = bVar1 < pbVar8[1];
+        if (bVar1 != pbVar8[1]) goto LAB_004b3916;
+        pbVar4 = pbVar4 + 2;
+        pbVar8 = pbVar8 + 2;
+      } while (bVar1 != 0);
+      iVar5 = 0;
+LAB_004b391b:
+      if (iVar5 != 0) goto LAB_004b3a04;
+      TPanelSystem::destroyPanel(&panel_system,&s_Cancel_Dialog);
+      if (param_2 == 0) {
+        pRVar2 = rge_base_game->prog_info;
+        pcVar3 = TTextPanel::currentLine((TTextPanel *)this->list);
+        sprintf(&of.Reserved1,s__s_s_scn,pRVar2->scenario_dir,pcVar3);
+        __unlink(&of.Reserved1);
+        pRVar2 = rge_base_game->prog_info;
+        pcVar3 = TTextPanel::currentLine((TTextPanel *)this->list);
+        sprintf(&of.Reserved1,s__s_s_scx,pRVar2->scenario_dir,pcVar3);
+        __unlink(&of.Reserved1);
+        lVar6 = TTextPanel::get_line((TTextPanel *)this->list);
+        TTextPanel::delete_line((TTextPanel *)this->list,lVar6);
+        pcVar3 = TTextPanel::currentLine((TTextPanel *)this->list);
+        if (*pcVar3 == '\0') {
+          TButtonPanel::set_disabled(this->okButton,1);
+          TButtonPanel::set_disabled(this->deleteButton,1);
+          lVar6 = 1;
+          goto LAB_004b3c70;
+        }
+      }
+      goto LAB_004b3c50;
+    }
+LAB_004b3a04:
+    if (((TButtonPanel *)param_1 == this->deleteButton) && (param_2 == 1)) {
+      pcVar3 = TTextPanel::currentLine((TTextPanel *)this->list);
+      if (*pcVar3 != '\0') {
+                    /* language.dll match for 0x24ca: "Are you sure you want to delete the file
+                       \\n'%s'?" */
+        TPanel::get_string((TPanel *)this,0x24ca,(char *)&of.Reserved1,0x100);
+        pcVar3 = TTextPanel::currentLine((TTextPanel *)this->list);
+        sprintf(text + 4,&of.Reserved1,pcVar3);
+        TEasy_Panel::popupYesNoDialog((TEasy_Panel *)this,text + 4,&s_Cancel_Dialog,0x1c2,100);
+      }
+    }
+    if ((TListPanel *)param_1 != this->list) {
+      if ((TButtonPanel *)param_1 == this->okButton) {
+        if (param_2 != 1) goto LAB_004b3c57;
+        iVar5 = TTextPanel::numberLines((TTextPanel *)this->list);
+        if (0 < iVar5) {
+          pRVar2 = rge_base_game->prog_info;
+          pcVar3 = TTextPanel::currentLine((TTextPanel *)this->list);
+          sprintf(fileName + 4,s__s_s_scn,pRVar2->scenario_dir,pcVar3);
+          iVar5 = OpenFile(fileName + 4,&of.Reserved1,0x4000);
+          if (iVar5 == -1) {
+            pRVar2 = rge_base_game->prog_info;
+            pcVar3 = TTextPanel::currentLine((TTextPanel *)this->list);
+            sprintf(fileName + 4,s__s_s_scx,pRVar2->scenario_dir,pcVar3);
+            iVar5 = OpenFile(fileName + 4,&of.Reserved1,0x4000);
+            if (iVar5 == -1) {
+                    /* language.dll match for 0x24cf: "Cannot load that scenario." */
+              TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x24cf,(char *)0x0,0x1c2,100);
+              lVar6 = 1;
+              goto LAB_004b3c70;
+            }
+            pcVar3 = TTextPanel::currentLine((TTextPanel *)this->list);
+            pcVar10 = s__s_scx;
+          }
+          else {
+            pcVar3 = TTextPanel::currentLine((TTextPanel *)this->list);
+            pcVar10 = s__s_scn;
+          }
+          sprintf(fileName + 4,pcVar10,pcVar3);
+          TRIBE_Game::start_scenario_editor((TRIBE_Game *)rge_base_game,fileName + 4,0);
+          lVar6 = 1;
+          goto LAB_004b3c70;
+        }
+      }
+      else {
+        if (((TButtonPanel *)param_1 != this->cancelButton) || (param_2 != 1)) goto LAB_004b3c57;
+        pTVar7 = TPanelSystem::panel(&panel_system,s_Scenario_Editor_Screen);
+        if (pTVar7 == (TPanel *)0x0) {
+          of._0_4_ = operator_new(0x490);
+          local_4 = 0;
+          if ((TRIBE_Screen_Sed_Menu *)of._0_4_ != (TRIBE_Screen_Sed_Menu *)0x0) {
+            TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu((TRIBE_Screen_Sed_Menu *)of._0_4_);
+          }
+          local_4 = 0xffffffff;
+          pcVar3 = s_Scenario_Editor_Menu;
+        }
+        else {
+          pcVar3 = s_Scenario_Editor_Screen;
+        }
+        TPanelSystem::setCurrentPanel(&panel_system,pcVar3,0);
+        TPanelSystem::destroyPanel(&panel_system,s_Scenario_Editor_Open);
+      }
+LAB_004b3c50:
+      lVar6 = 1;
+      goto LAB_004b3c70;
+    }
+    if (param_2 == 3) {
+      (**(code **)(this->_padding_ + 0xb4))(this->okButton,1,0,0);
+      lVar6 = 1;
+      goto LAB_004b3c70;
+    }
+  }
+LAB_004b3c57:
+  lVar6 = TEasy_Panel::action((TEasy_Panel *)this,param_1,param_2,param_3,param_4);
+LAB_004b3c70:
+  *unaff_FS_OFFSET = local_c;
+  return lVar6;
+}
+
+// --------------------------------------------------
+

@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 
+// Address: 0x00456600
 RGE_Game_World::RGE_Game_World() {
     this->world_time = 0;
     this->old_world_time = 0;
@@ -40,12 +41,14 @@ RGE_Game_World::RGE_Game_World() {
     this->curr_player = 0;
 }
 
+// Address: 0x00456800
 RGE_Game_World::~RGE_Game_World() {
     if (this->map) {
         delete this->map;
     }
 }
 
+// Address: 0x00457000
 void RGE_Game_World::draw() {
 #ifdef _DEBUG
     static int world_draw_count = 0;

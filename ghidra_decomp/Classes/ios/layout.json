@@ -1,0 +1,85 @@
+{
+    "size": 52, 
+    "vtable": [
+        {
+            "signature": "void * `vector_deleting_destructor'(ios * this, uint param_1)", 
+            "index": 0, 
+            "name": "`vector_deleting_destructor'"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 4, 
+            "type": "streambuf *", 
+            "size": 4, 
+            "name": "bp"
+        }, 
+        {
+            "offset": 8, 
+            "type": "int", 
+            "size": 4, 
+            "name": "state"
+        }, 
+        {
+            "offset": 12, 
+            "type": "int", 
+            "size": 4, 
+            "name": "ispecial"
+        }, 
+        {
+            "offset": 16, 
+            "type": "int", 
+            "size": 4, 
+            "name": "ospecial"
+        }, 
+        {
+            "offset": 20, 
+            "type": "int", 
+            "size": 4, 
+            "name": "isfx_special"
+        }, 
+        {
+            "offset": 24, 
+            "type": "int", 
+            "size": 4, 
+            "name": "osfx_special"
+        }, 
+        {
+            "offset": 28, 
+            "type": "int", 
+            "size": 4, 
+            "name": "x_delbuf"
+        }, 
+        {
+            "offset": 32, 
+            "type": "ostream *", 
+            "size": 4, 
+            "name": "x_tie"
+        }, 
+        {
+            "offset": 36, 
+            "type": "long", 
+            "size": 4, 
+            "name": "x_flags"
+        }, 
+        {
+            "offset": 40, 
+            "type": "int", 
+            "size": 4, 
+            "name": "x_precision"
+        }, 
+        {
+            "offset": 44, 
+            "type": "char", 
+            "size": 1, 
+            "name": "x_fill"
+        }, 
+        {
+            "offset": 48, 
+            "type": "int", 
+            "size": 4, 
+            "name": "x_width"
+        }
+    ], 
+    "name": "ios"
+}

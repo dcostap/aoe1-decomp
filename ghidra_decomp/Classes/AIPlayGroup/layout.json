@@ -1,0 +1,19 @@
+{
+    "size": 12, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "uchar[6]", 
+            "size": 6, 
+            "name": "minValue"
+        }, 
+        {
+            "offset": 6, 
+            "type": "uchar[6]", 
+            "size": 6, 
+            "name": "maxValue"
+        }
+    ], 
+    "name": "AIPlayGroup"
+}

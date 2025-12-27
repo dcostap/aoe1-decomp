@@ -1,0 +1,37 @@
+{
+    "size": 56, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "TimeSent"
+        }, 
+        {
+            "offset": 4, 
+            "type": "uint", 
+            "size": 4, 
+            "name": "Serial"
+        }, 
+        {
+            "offset": 8, 
+            "type": "char *", 
+            "size": 4, 
+            "name": "ResendMsg"
+        }, 
+        {
+            "offset": 12, 
+            "type": "uint", 
+            "size": 4, 
+            "name": "Length"
+        }, 
+        {
+            "offset": 16, 
+            "type": "uint[10]", 
+            "size": 40, 
+            "name": "DestMap"
+        }
+    ], 
+    "name": "RESENDER"
+}

@@ -1,0 +1,19 @@
+{
+    "size": 9604, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "SPs[100]", 
+            "size": 9600, 
+            "name": "Service"
+        }, 
+        {
+            "offset": 9600, 
+            "type": "int", 
+            "size": 4, 
+            "name": "ServiceCount"
+        }
+    ], 
+    "name": "TCommunications_Services"
+}

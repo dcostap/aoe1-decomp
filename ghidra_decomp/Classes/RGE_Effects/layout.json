@@ -1,0 +1,35 @@
+{
+    "size": 12, 
+    "vtable": [
+        {
+            "signature": "void * `vector_deleting_destructor'(RGE_Effects * this, uint param_1)", 
+            "index": 0, 
+            "name": "`vector_deleting_destructor'"
+        }, 
+        {
+            "signature": "void save(RGE_Effects * this, int param_1)", 
+            "index": 1, 
+            "name": "save"
+        }, 
+        {
+            "signature": "void do_effect(RGE_Effects * this, short param_1, RGE_Player * param_2)", 
+            "index": 2, 
+            "name": "do_effect"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 4, 
+            "type": "RGE_Effect *", 
+            "size": 4, 
+            "name": "effects"
+        }, 
+        {
+            "offset": 8, 
+            "type": "long", 
+            "size": 4, 
+            "name": "effect_num"
+        }
+    ], 
+    "name": "RGE_Effects"
+}

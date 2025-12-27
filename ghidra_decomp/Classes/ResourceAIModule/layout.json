@@ -1,0 +1,125 @@
+{
+    "size": 268, 
+    "vtable": [
+        {
+            "signature": "void * `vector_deleting_destructor'(ResourceAIModule * this, uint param_1)", 
+            "index": 0, 
+            "name": "`vector_deleting_destructor'"
+        }, 
+        {
+            "signature": "int loggingHistory(AIModule * this)", 
+            "index": 1, 
+            "name": "loggingHistory"
+        }, 
+        {
+            "signature": "void setLogHistory(AIModule * this, int param_1)", 
+            "index": 2, 
+            "name": "setLogHistory"
+        }, 
+        {
+            "signature": "void toggleLogHistory(AIModule * this)", 
+            "index": 3, 
+            "name": "toggleLogHistory"
+        }, 
+        {
+            "signature": "void setHistoryFilename(AIModule * this, char * param_1)", 
+            "index": 4, 
+            "name": "setHistoryFilename"
+        }, 
+        {
+            "signature": "int loggingCommonHistory(AIModule * this)", 
+            "index": 5, 
+            "name": "loggingCommonHistory"
+        }, 
+        {
+            "signature": "void setLogCommonHistory(AIModule * this, int param_1)", 
+            "index": 6, 
+            "name": "setLogCommonHistory"
+        }, 
+        {
+            "signature": "void toggleLogCommonHistory(AIModule * this)", 
+            "index": 7, 
+            "name": "toggleLogCommonHistory"
+        }, 
+        {
+            "signature": "int loadState(AIModule * this, char * param_1)", 
+            "index": 8, 
+            "name": "loadState"
+        }, 
+        {
+            "signature": "int saveState(AIModule * this, char * param_1)", 
+            "index": 9, 
+            "name": "saveState"
+        }, 
+        {
+            "signature": "int gleanState(AIModule * this, int param_1)", 
+            "index": 10, 
+            "name": "gleanState"
+        }, 
+        {
+            "signature": "int processMessage(ResourceAIModule * this, AIModuleMessage * param_1)", 
+            "index": 11, 
+            "name": "processMessage"
+        }, 
+        {
+            "signature": "int update(ResourceAIModule * this, int param_1)", 
+            "index": 12, 
+            "name": "update"
+        }, 
+        {
+            "signature": "void setCallbackMessage(ResourceAIModule * this, AIModuleMessage * param_1)", 
+            "index": 13, 
+            "name": "setCallbackMessage"
+        }, 
+        {
+            "signature": "int filterOutMessage(ResourceAIModule * this, AIModuleMessage * param_1)", 
+            "index": 14, 
+            "name": "filterOutMessage"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 240, 
+            "type": "MainDecisionAIModule *", 
+            "size": 4, 
+            "name": "md"
+        }, 
+        {
+            "offset": 244, 
+            "type": "int", 
+            "size": 4, 
+            "name": "numberResourcesValue"
+        }, 
+        {
+            "offset": 248, 
+            "type": "int *", 
+            "size": 4, 
+            "name": "resourceValue"
+        }, 
+        {
+            "offset": 252, 
+            "type": "int *", 
+            "size": 4, 
+            "name": "minValue"
+        }, 
+        {
+            "offset": 256, 
+            "type": "int *", 
+            "size": 4, 
+            "name": "maxValue"
+        }, 
+        {
+            "offset": 260, 
+            "type": "int * *", 
+            "size": 4, 
+            "name": "resourceTypesValue"
+        }, 
+        {
+            "offset": 264, 
+            "type": "int *", 
+            "size": 4, 
+            "name": "numberResourceTypesValue"
+        }
+    ], 
+    "name": "ResourceAIModule"
+}

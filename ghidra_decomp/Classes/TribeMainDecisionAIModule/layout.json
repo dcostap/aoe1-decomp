@@ -1,0 +1,252 @@
+{
+    "size": 75208, 
+    "vtable": [
+        {
+            "signature": "void * `scalar_deleting_destructor'(TribeMainDecisionAIModule * this, uint param_1)", 
+            "index": 0, 
+            "name": "`scalar_deleting_destructor'"
+        }, 
+        {
+            "signature": "int loggingHistory(AIModule * this)", 
+            "index": 1, 
+            "name": "loggingHistory"
+        }, 
+        {
+            "signature": "void setLogHistory(TribeMainDecisionAIModule * this, int param_1)", 
+            "index": 2, 
+            "name": "setLogHistory"
+        }, 
+        {
+            "signature": "void toggleLogHistory(AIModule * this)", 
+            "index": 3, 
+            "name": "toggleLogHistory"
+        }, 
+        {
+            "signature": "void setHistoryFilename(AIModule * this, char * param_1)", 
+            "index": 4, 
+            "name": "setHistoryFilename"
+        }, 
+        {
+            "signature": "int loggingCommonHistory(AIModule * this)", 
+            "index": 5, 
+            "name": "loggingCommonHistory"
+        }, 
+        {
+            "signature": "void setLogCommonHistory(AIModule * this, int param_1)", 
+            "index": 6, 
+            "name": "setLogCommonHistory"
+        }, 
+        {
+            "signature": "void toggleLogCommonHistory(AIModule * this)", 
+            "index": 7, 
+            "name": "toggleLogCommonHistory"
+        }, 
+        {
+            "signature": "int loadState(AIModule * this, char * param_1)", 
+            "index": 8, 
+            "name": "loadState"
+        }, 
+        {
+            "signature": "int saveState(AIModule * this, char * param_1)", 
+            "index": 9, 
+            "name": "saveState"
+        }, 
+        {
+            "signature": "int gleanState(AIModule * this, int param_1)", 
+            "index": 10, 
+            "name": "gleanState"
+        }, 
+        {
+            "signature": "int processMessage(AIModule * this, AIModuleMessage * param_1)", 
+            "index": 11, 
+            "name": "processMessage"
+        }, 
+        {
+            "signature": "int update(TribeMainDecisionAIModule * this, int param_1)", 
+            "index": 12, 
+            "name": "update"
+        }, 
+        {
+            "signature": "void setCallbackMessage(AIModule * this, AIModuleMessage * param_1)", 
+            "index": 13, 
+            "name": "setCallbackMessage"
+        }, 
+        {
+            "signature": "int filterOutMessage(AIModule * this, AIModuleMessage * param_1)", 
+            "index": 14, 
+            "name": "filterOutMessage"
+        }, 
+        {
+            "signature": "int save(TribeMainDecisionAIModule * this, int param_1)", 
+            "index": 15, 
+            "name": "save"
+        }, 
+        {
+            "signature": "int addObject(TribeMainDecisionAIModule * this, RGE_Static_Object * param_1)", 
+            "index": 16, 
+            "name": "addObject"
+        }, 
+        {
+            "signature": "int removeObject(TribeMainDecisionAIModule * this, int param_1)", 
+            "index": 17, 
+            "name": "removeObject"
+        }, 
+        {
+            "signature": "int objectGroupThatCanPerformAction(TribeMainDecisionAIModule * this, int param_1)", 
+            "index": 18, 
+            "name": "objectGroupThatCanPerformAction"
+        }, 
+        {
+            "signature": "int canPerformAction(TribeMainDecisionAIModule * this, int param_1, int param_2)", 
+            "index": 19, 
+            "name": "canPerformAction"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 260, 
+            "type": "TribeBuildAIModule", 
+            "size": 1472, 
+            "name": "buildAI"
+        }, 
+        {
+            "offset": 1732, 
+            "type": "TribeConstructionAIModule", 
+            "size": 792, 
+            "name": "constructionAI"
+        }, 
+        {
+            "offset": 2524, 
+            "type": "DiplomacyAIModule", 
+            "size": 336, 
+            "name": "diplomacyAI"
+        }, 
+        {
+            "offset": 2860, 
+            "type": "EmotionalAIModule", 
+            "size": 448, 
+            "name": "emotionalAI"
+        }, 
+        {
+            "offset": 3308, 
+            "type": "TribeInformationAIModule", 
+            "size": 65680, 
+            "name": "informationAI"
+        }, 
+        {
+            "offset": 68988, 
+            "type": "TribeResourceAIModule", 
+            "size": 248, 
+            "name": "resourceAI"
+        }, 
+        {
+            "offset": 69236, 
+            "type": "TribeStrategyAIModule", 
+            "size": 1528, 
+            "name": "strategyAI"
+        }, 
+        {
+            "offset": 70764, 
+            "type": "TribeTacticalAIModule", 
+            "size": 4108, 
+            "name": "tacticalAI"
+        }, 
+        {
+            "offset": 74872, 
+            "type": "TradeAIModule", 
+            "size": 244, 
+            "name": "tradeAI"
+        }, 
+        {
+            "offset": 75116, 
+            "type": "TRIBE_Player *", 
+            "size": 4, 
+            "name": "aiPlayer"
+        }, 
+        {
+            "offset": 75120, 
+            "type": "int", 
+            "size": 4, 
+            "name": "firstUpdate"
+        }, 
+        {
+            "offset": 75124, 
+            "type": "int", 
+            "size": 4, 
+            "name": "veryFirstUpdate"
+        }, 
+        {
+            "offset": 75128, 
+            "type": "int", 
+            "size": 4, 
+            "name": "updateDelay"
+        }, 
+        {
+            "offset": 75132, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "lastDiplomacyUpdateTime"
+        }, 
+        {
+            "offset": 75136, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "lastTacticalUpdateTime"
+        }, 
+        {
+            "offset": 75140, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "lastTributeChatTime"
+        }, 
+        {
+            "offset": 75144, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "tributeChatTimeout"
+        }, 
+        {
+            "offset": 75148, 
+            "type": "int", 
+            "size": 4, 
+            "name": "waitingOnTribute"
+        }, 
+        {
+            "offset": 75152, 
+            "type": "int", 
+            "size": 4, 
+            "name": "tributeExpirationTimeout"
+        }, 
+        {
+            "offset": 75156, 
+            "type": "int", 
+            "size": 4, 
+            "name": "tributeAddressed"
+        }, 
+        {
+            "offset": 75160, 
+            "type": "int", 
+            "size": 4, 
+            "name": "tributeAmount"
+        }, 
+        {
+            "offset": 75164, 
+            "type": "int", 
+            "size": 4, 
+            "name": "decidedInitialDiplomacy"
+        }, 
+        {
+            "offset": 75168, 
+            "type": "int", 
+            "size": 4, 
+            "name": "requiredDiplomacyTributeAmount"
+        }, 
+        {
+            "offset": 75172, 
+            "type": "int[9]", 
+            "size": 36, 
+            "name": "tributeGiven"
+        }
+    ], 
+    "name": "TribeMainDecisionAIModule"
+}

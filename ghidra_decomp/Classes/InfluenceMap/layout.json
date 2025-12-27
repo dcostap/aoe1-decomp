@@ -1,0 +1,142 @@
+{
+    "size": 40, 
+    "vtable": [
+        {
+            "signature": "void * `scalar_deleting_destructor'(InfluenceMap * this, uint param_1)", 
+            "index": 0, 
+            "name": "`scalar_deleting_destructor'"
+        }, 
+        {
+            "signature": "void * `vector_deleting_destructor'(RGE_Master_Action_Object * this, uint param_1)", 
+            "index": 1, 
+            "name": "`vector_deleting_destructor'"
+        }, 
+        {
+            "signature": "void copy_obj(RGE_Master_Action_Object * this, RGE_Master_Static_Object * param_1)", 
+            "index": 2, 
+            "name": "copy_obj"
+        }, 
+        {
+            "signature": "void modify(RGE_Master_Action_Object * this, float param_1, uchar param_2)", 
+            "index": 3, 
+            "name": "modify"
+        }, 
+        {
+            "signature": "void modify_delta(RGE_Master_Action_Object * this, float param_1, uchar param_2)", 
+            "index": 4, 
+            "name": "modify_delta"
+        }, 
+        {
+            "signature": "void modify_percent(RGE_Master_Action_Object * this, float param_1, uchar param_2)", 
+            "index": 5, 
+            "name": "modify_percent"
+        }, 
+        {
+            "signature": "void save(RGE_Master_Action_Object * this, int param_1)", 
+            "index": 6, 
+            "name": "save"
+        }, 
+        {
+            "signature": "RGE_Static_Object * make_new_obj(RGE_Master_Action_Object * this, RGE_Player * param_1, float param_2, float param_3, float param_4)", 
+            "index": 7, 
+            "name": "make_new_obj"
+        }, 
+        {
+            "signature": "RGE_Master_Static_Object * make_new_master(RGE_Master_Action_Object * this)", 
+            "index": 8, 
+            "name": "make_new_master"
+        }, 
+        {
+            "signature": "uchar check_placement(RGE_Master_Static_Object * this, RGE_Player * param_1, float param_2, float param_3, int * param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8, uchar param_9, uchar param_10)", 
+            "index": 9, 
+            "name": "check_placement"
+        }, 
+        {
+            "signature": "uchar alignment(RGE_Master_Static_Object * this, float * param_1, float * param_2, RGE_Game_World * param_3, uchar param_4)", 
+            "index": 10, 
+            "name": "alignment"
+        }, 
+        {
+            "signature": "long calc_base_damage_ability(RGE_Master_Static_Object * this, RGE_Master_Combat_Object * param_1)", 
+            "index": 11, 
+            "name": "calc_base_damage_ability"
+        }, 
+        {
+            "signature": "void play_command_sound(RGE_Master_Action_Object * this)", 
+            "index": 12, 
+            "name": "play_command_sound"
+        }, 
+        {
+            "signature": "void play_move_sound(RGE_Master_Action_Object * this)", 
+            "index": 13, 
+            "name": "play_move_sound"
+        }, 
+        {
+            "signature": "void draw(RGE_Master_Static_Object * this, TDrawArea * param_1, short param_2, short param_3, RGE_Color_Table * param_4, long param_5, long param_6, int param_7, uchar param_8)", 
+            "index": 14, 
+            "name": "draw"
+        }, 
+        {
+            "signature": "RGE_Task_List * create_task_list(RGE_Master_Action_Object * this)", 
+            "index": 15, 
+            "name": "create_task_list"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 4, 
+            "type": "int", 
+            "size": 4, 
+            "name": "xSizeValue"
+        }, 
+        {
+            "offset": 8, 
+            "type": "int", 
+            "size": 4, 
+            "name": "ySizeValue"
+        }, 
+        {
+            "offset": 12, 
+            "type": "int", 
+            "size": 4, 
+            "name": "xReferencePointValue"
+        }, 
+        {
+            "offset": 16, 
+            "type": "int", 
+            "size": 4, 
+            "name": "yReferencePointValue"
+        }, 
+        {
+            "offset": 20, 
+            "type": "uchar *", 
+            "size": 4, 
+            "name": "valueValue"
+        }, 
+        {
+            "offset": 24, 
+            "type": "uchar * *", 
+            "size": 4, 
+            "name": "rowValue"
+        }, 
+        {
+            "offset": 28, 
+            "type": "int", 
+            "size": 4, 
+            "name": "coverageCountValue"
+        }, 
+        {
+            "offset": 32, 
+            "type": "int", 
+            "size": 4, 
+            "name": "connectionCountValue"
+        }, 
+        {
+            "offset": 36, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "unchangeableLimitValue"
+        }
+    ], 
+    "name": "InfluenceMap"
+}

@@ -1,0 +1,217 @@
+{
+    "size": 256, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "TDrawSystem *", 
+            "size": 4, 
+            "name": "DrawSystem"
+        }, 
+        {
+            "offset": 4, 
+            "type": "void *", 
+            "size": 4, 
+            "name": "Wnd"
+        }, 
+        {
+            "offset": 8, 
+            "type": "uchar *", 
+            "size": 4, 
+            "name": "Bits"
+        }, 
+        {
+            "offset": 12, 
+            "type": "BITMAPINFO256 *", 
+            "size": 4, 
+            "name": "BitmapInfo"
+        }, 
+        {
+            "offset": 16, 
+            "type": "void *", 
+            "size": 4, 
+            "name": "Bitmap"
+        }, 
+        {
+            "offset": 20, 
+            "type": "void *", 
+            "size": 4, 
+            "name": "OldBitmap"
+        }, 
+        {
+            "offset": 24, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Width"
+        }, 
+        {
+            "offset": 28, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Height"
+        }, 
+        {
+            "offset": 32, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Pitch"
+        }, 
+        {
+            "offset": 36, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Orien"
+        }, 
+        {
+            "offset": 40, 
+            "type": "tagRECT", 
+            "size": 16, 
+            "name": "ClipRect"
+        }, 
+        {
+            "offset": 56, 
+            "type": "void *", 
+            "size": 4, 
+            "name": "DrawDc"
+        }, 
+        {
+            "offset": 60, 
+            "type": "IDirectDrawSurface *", 
+            "size": 4, 
+            "name": "DrawSurface"
+        }, 
+        {
+            "offset": 64, 
+            "type": "_DDSURFACEDESC", 
+            "size": 108, 
+            "name": "SurfaceDesc"
+        }, 
+        {
+            "offset": 172, 
+            "type": "DrawAreaNode *", 
+            "size": 4, 
+            "name": "Node"
+        }, 
+        {
+            "offset": 176, 
+            "type": "char *", 
+            "size": 4, 
+            "name": "Name"
+        }, 
+        {
+            "offset": 180, 
+            "type": "uchar *", 
+            "size": 4, 
+            "name": "LastBits"
+        }, 
+        {
+            "offset": 184, 
+            "type": "int", 
+            "size": 4, 
+            "name": "LastPitch"
+        }, 
+        {
+            "offset": 188, 
+            "type": "void * *", 
+            "size": 4, 
+            "name": "DisplayOffsets"
+        }, 
+        {
+            "offset": 192, 
+            "type": "void * *", 
+            "size": 4, 
+            "name": "CurDisplayOffsets"
+        }, 
+        {
+            "offset": 196, 
+            "type": "void * *", 
+            "size": 4, 
+            "name": "FloatOffsets"
+        }, 
+        {
+            "offset": 200, 
+            "type": "RGE_Color_Table *", 
+            "size": 4, 
+            "name": "shadow_color_table"
+        }, 
+        {
+            "offset": 204, 
+            "type": "TSpan_List_Manager *", 
+            "size": 4, 
+            "name": "SpanList"
+        }, 
+        {
+            "offset": 208, 
+            "type": "TSpan_List_Manager *", 
+            "size": 4, 
+            "name": "CurSpanList"
+        }, 
+        {
+            "offset": 212, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Float_X_Delta"
+        }, 
+        {
+            "offset": 216, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Float_Y_Delta"
+        }, 
+        {
+            "offset": 220, 
+            "type": "int", 
+            "size": 4, 
+            "name": "DisplayOffsetsSz"
+        }, 
+        {
+            "offset": 224, 
+            "type": "int", 
+            "size": 4, 
+            "name": "FloatOffsetsSz"
+        }, 
+        {
+            "offset": 228, 
+            "type": "int", 
+            "size": 4, 
+            "name": "SystemMemOnly"
+        }, 
+        {
+            "offset": 232, 
+            "type": "int", 
+            "size": 4, 
+            "name": "UsingVidMem"
+        }, 
+        {
+            "offset": 236, 
+            "type": "int", 
+            "size": 4, 
+            "name": "UseTrans"
+        }, 
+        {
+            "offset": 240, 
+            "type": "int", 
+            "size": 4, 
+            "name": "IsPrimarySurface"
+        }, 
+        {
+            "offset": 244, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Restored"
+        }, 
+        {
+            "offset": 248, 
+            "type": "int", 
+            "size": 4, 
+            "name": "ExtendedLines"
+        }, 
+        {
+            "offset": 252, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "TransColor"
+        }
+    ], 
+    "name": "TDrawArea"
+}

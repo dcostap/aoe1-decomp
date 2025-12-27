@@ -86,40 +86,42 @@ struct RGE_Border_Set {
 };
 
 struct RGE_Map {
-    void *unused_04;
-    void *unused_08;
-    struct RGE_Tile *map;
-    long map_width;
-    long map_height;
-    long world_width;
-    long world_height;
-    struct RGE_Tile_Size tilesizes[19];
-    struct RGE_Tile_Set terrain_types[32];
-    struct RGE_Border_Set border_types[16];
-    struct RGE_Tile **map_row_offset;
-    short num_terrain;
-    short num_borders;
-    short max_terrain;
-    short tile_width;
-    short tile_height;
-    short tile_half_height;
-    short tile_half_width;
-    short elev_height;
-    short cur_row;
-    short cur_col;
-    short block_beg_row;
-    short block_end_row;
-    short block_beg_col;
-    short block_end_col;
-    uchar any_frame_change;
-    uchar *search_map;
-    uchar **search_map_rows;
-    uchar map_visible_flag;
-    struct RGE_RMM_Database_Controller *random_map;
-    struct RGE_Game_World *game_world;
-    struct RGE_Zone_Map_List *map_zones;
-    struct RGE_Unified_Visible_Map *unified_vis_map;
-    struct Visible_Unit_Manager *unit_manager;
+    /* 0x0004 */ struct RGE_Tile *map;
+    /* 0x0008 */ long map_width;
+    /* 0x000c */ long map_height;
+    /* 0x0010 */ long world_width;
+    /* 0x0014 */ long world_height;
+    /* 0x0018 */ struct RGE_Tile_Size tilesizes[19];
+    /* 0x008a */ short _pad_8a;
+    /* 0x008c */ struct RGE_Tile_Set terrain_types[32];
+    /* 0x338c */ struct RGE_Border_Set border_types[16];
+    /* 0x8d8c */ struct RGE_Tile **map_row_offset;
+    /* 0x8d90 */ short num_terrain;
+    /* 0x8d92 */ short num_borders;
+    /* 0x8d94 */ short max_terrain;
+    /* 0x8d96 */ short tile_width;
+    /* 0x8d98 */ short tile_height;
+    /* 0x8d9a */ short tile_half_height;
+    /* 0x8d9c */ short tile_half_width;
+    /* 0x8d9e */ short elev_height;
+    /* 0x8da0 */ short cur_row;
+    /* 0x8da2 */ short cur_col;
+    /* 0x8da4 */ short block_beg_row;
+    /* 0x8da6 */ short block_end_row;
+    /* 0x8da8 */ short block_beg_col;
+    /* 0x8daa */ short block_end_col;
+    /* 0x8dac */ uchar any_frame_change;
+    /* 0x8dad */ uchar _pad_8dad[3];
+    /* 0x8db0 */ uchar *search_map;
+    /* 0x8db4 */ uchar **search_map_rows;
+    /* 0x8db8 */ uchar map_visible_flag;
+    /* 0x8db9 */ uchar fog_flag;
+    /* 0x8dba */ uchar _pad_8dba[2];
+    /* 0x8dbc */ struct RGE_RMM_Database_Controller *random_map;
+    /* 0x8dc0 */ struct RGE_Game_World *game_world;
+    /* 0x8dc4 */ struct RGE_Zone_Map_List *map_zones;
+    /* 0x8dc8 */ struct RGE_Unified_Visible_Map *unified_vis_map;
+    /* 0x8dcc */ struct Visible_Unit_Manager *unit_manager;
 
     RGE_Map();
     virtual ~RGE_Map();
@@ -130,5 +132,7 @@ struct RGE_Map {
     void load_terrain_types(struct RGE_Sound **sounds);
     void load_border_types(struct RGE_Sound **sounds);
 };
+
+static_assert(sizeof(RGE_Map) == 0x8DD0, "RGE_Map size mismatch");
 
 #pragma pack(pop)

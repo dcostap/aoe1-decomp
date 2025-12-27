@@ -1,0 +1,79 @@
+{
+    "size": 48, 
+    "vtable": [
+        {
+            "signature": "uchar generate(RGE_Random_Map_Module * this)", 
+            "index": 0, 
+            "name": "generate"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 4, 
+            "type": "RGE_Random_Map_Module *", 
+            "size": 4, 
+            "name": "parent"
+        }, 
+        {
+            "offset": 8, 
+            "type": "RGE_Random_Map_Module_List *", 
+            "size": 4, 
+            "name": "list"
+        }, 
+        {
+            "offset": 12, 
+            "type": "RGE_Map *", 
+            "size": 4, 
+            "name": "map"
+        }, 
+        {
+            "offset": 16, 
+            "type": "RGE_Tile * *", 
+            "size": 4, 
+            "name": "map_row_offset"
+        }, 
+        {
+            "offset": 20, 
+            "type": "long", 
+            "size": 4, 
+            "name": "map_width"
+        }, 
+        {
+            "offset": 24, 
+            "type": "long", 
+            "size": 4, 
+            "name": "map_height"
+        }, 
+        {
+            "offset": 28, 
+            "type": "float", 
+            "size": 4, 
+            "name": "schedule"
+        }, 
+        {
+            "offset": 32, 
+            "type": "uchar *", 
+            "size": 4, 
+            "name": "search_map"
+        }, 
+        {
+            "offset": 36, 
+            "type": "uchar * *", 
+            "size": 4, 
+            "name": "search_map_rows"
+        }, 
+        {
+            "offset": 40, 
+            "type": "Map_Stack *", 
+            "size": 4, 
+            "name": "stack_array"
+        }, 
+        {
+            "offset": 44, 
+            "type": "Map_Stack * *", 
+            "size": 4, 
+            "name": "stack_offsets"
+        }
+    ], 
+    "name": "RGE_Random_Map_Module"
+}

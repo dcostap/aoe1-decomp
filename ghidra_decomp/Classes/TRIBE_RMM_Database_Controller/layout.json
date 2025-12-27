@@ -1,0 +1,42 @@
+{
+    "size": 20316, 
+    "vtable": [
+        {
+            "signature": "uchar generate(TRIBE_RMM_Database_Controller * this)", 
+            "index": 0, 
+            "name": "generate"
+        }, 
+        {
+            "signature": "void add_land_module(TRIBE_RMM_Database_Controller * this, uchar param_1)", 
+            "index": 1, 
+            "name": "add_land_module"
+        }, 
+        {
+            "signature": "void add_terrain_module(TRIBE_RMM_Database_Controller * this)", 
+            "index": 2, 
+            "name": "add_terrain_module"
+        }, 
+        {
+            "signature": "void add_object_module(TRIBE_RMM_Database_Controller * this)", 
+            "index": 3, 
+            "name": "add_object_module"
+        }, 
+        {
+            "signature": "void add_elevation_module(TRIBE_RMM_Database_Controller * this)", 
+            "index": 4, 
+            "name": "add_elevation_module"
+        }, 
+        {
+            "signature": "uchar init(TRIBE_RMM_Database_Controller * this, RGE_Map * param_1, RGE_Game_World * param_2, uchar param_3, long param_4, uchar param_5)", 
+            "index": 5, 
+            "name": "init"
+        }, 
+        {
+            "signature": "uchar de_init(TRIBE_RMM_Database_Controller * this)", 
+            "index": 6, 
+            "name": "de_init"
+        }
+    ], 
+    "members": [], 
+    "name": "TRIBE_RMM_Database_Controller"
+}

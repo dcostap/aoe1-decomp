@@ -1,0 +1,1770 @@
+// Class: TButtonPanel
+// Function: TButtonPanel
+// Address: 00471ec0
+/* public: __thiscall TButtonPanel::TButtonPanel(void) */
+
+TButtonPanel * __thiscall TButtonPanel::TButtonPanel(TButtonPanel *this)
+{
+  long *plVar1;
+  short *psVar2;
+  int iVar3;
+  
+  TPanel::TPanel((TPanel *)this);
+  this->buttonTypeValue = Normal;
+  this->drawTypeValue = DrawClear;
+  this->notifyTypeValue = NotifyAction;
+  this->auto_pic_pos = 1;
+  this->all_hot = 1;
+  this->text_x = -1;
+  this->text_y = -1;
+  this->num_states = 1;
+  this->bevel_type = 1;
+  this->sound_number = -1;
+  this->sound = (TDigital *)0x0;
+  this->pic_x = 0;
+  this->pic_y = 0;
+  this->draw_reverse = 0;
+  this->font = (void *)0x0;
+  this->font_wid = 0;
+  this->font_hgt = 0;
+  this->cur_state = 0;
+  this->is_down = 0;
+  this->radio_buttons = (TButtonPanel **)0x0;
+  this->num_radio_buttons = 0;
+  this->button_down_time = 0;
+  this->hotkey = 0;
+  this->hotkey_shift = 0;
+  this->bevel_color1 = '\0';
+  this->bevel_color2 = '\0';
+  this->bevel_color3 = '\0';
+  this->bevel_color4 = '\0';
+  this->bevel_color5 = '\0';
+  this->bevel_color6 = '\0';
+  this->key_down = 0;
+  this->disabled = 0;
+  this->_padding_ = (int)&_vftable_;
+  *(undefined1 *)((int)&this->_padding_ + 2) = 3;
+  psVar2 = this->pic_index;
+  plVar1 = this->id2;
+  iVar3 = 9;
+  do {
+    plVar1[-9] = 0;
+    *plVar1 = 0;
+    plVar1[0xd] = 0;
+    *psVar2 = -1;
+    plVar1[0x20] = 0;
+    plVar1[0x29] = 0;
+    plVar1[0x3c] = 0xffffff;
+    plVar1[0x45] = 0;
+    plVar1[0x4e] = 0xffff;
+    plVar1[0x57] = 0;
+    psVar2 = psVar2 + 1;
+    plVar1 = plVar1 + 1;
+    iVar3 = iVar3 + -1;
+  } while (iVar3 != 0);
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: `scalar_deleting_destructor'
+// Address: 00472010
+/* public: virtual void * __thiscall TButtonPanel::`scalar deleting destructor'(unsigned int) */
+
+void * __thiscall TButtonPanel::_scalar_deleting_destructor_(TButtonPanel *this,uint param_1)
+{
+  ~TButtonPanel(this);
+  if ((param_1 & 1) != 0) {
+    operator_delete(this);
+  }
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: ~TButtonPanel
+// Address: 00472030
+/* public: virtual __thiscall TButtonPanel::~TButtonPanel(void) */
+
+void __thiscall TButtonPanel::~TButtonPanel(TButtonPanel *this)
+{
+  int iVar1;
+  char **ppcVar2;
+  
+  iVar1 = 9;
+  this->_padding_ = (int)&_vftable_;
+  ppcVar2 = this->text2;
+  do {
+    if (ppcVar2[-9] != (char *)0x0) {
+      free(ppcVar2[-9]);
+      ppcVar2[-9] = (char *)0x0;
+    }
+    if (*ppcVar2 != (char *)0x0) {
+      free(*ppcVar2);
+      *ppcVar2 = (char *)0x0;
+    }
+    ppcVar2 = ppcVar2 + 1;
+    iVar1 = iVar1 + -1;
+  } while (iVar1 != 0);
+  if (this->radio_buttons != (TButtonPanel **)0x0) {
+    free(this->radio_buttons);
+    this->radio_buttons = (TButtonPanel **)0x0;
+  }
+  TPanel::~TPanel((TPanel *)this);
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: setup
+// Address: 004720a0
+/* public: long __thiscall TButtonPanel::setup(class TDrawArea *,class TPanel
+   *,long,long,long,long,enum TButtonPanel::DrawType,class TDigital *,enum
+   TButtonPanel::NotifyType,long) */
+
+long __thiscall
+TButtonPanel::setup(TButtonPanel *this,TDrawArea *param_1,TPanel *param_2,long param_3,long param_4,
+                   long param_5,long param_6,DrawType param_7,TDigital *param_8,NotifyType param_9,
+                   long param_10)
+{
+  TPanel::setup((TPanel *)this,param_1,param_2,param_3,param_4,param_5,param_6,'\0');
+  this->notifyTypeValue = param_9;
+  this->drawTypeValue = param_7;
+  set_sound(this,param_8);
+  set_id(this,0,param_10,0);
+  return 1;
+}
+
+// --------------------------------------------------
+
+// Function: buttonType
+// Address: 00472110
+/* public: enum TButtonPanel::ButtonType __thiscall TButtonPanel::buttonType(void)const  */
+
+ButtonType __thiscall TButtonPanel::buttonType(TButtonPanel *this)
+{
+  return this->buttonTypeValue;
+}
+
+// --------------------------------------------------
+
+// Function: drawType
+// Address: 00472120
+/* public: enum TButtonPanel::DrawType __thiscall TButtonPanel::drawType(void)const  */
+
+DrawType __thiscall TButtonPanel::drawType(TButtonPanel *this)
+{
+  return this->drawTypeValue;
+}
+
+// --------------------------------------------------
+
+// Function: notifyType
+// Address: 00472130
+/* public: enum TButtonPanel::NotifyType __thiscall TButtonPanel::notifyType(void)const  */
+
+NotifyType __thiscall TButtonPanel::notifyType(TButtonPanel *this)
+{
+  return this->notifyTypeValue;
+}
+
+// --------------------------------------------------
+
+// Function: setDrawType
+// Address: 00472140
+/* public: void __thiscall TButtonPanel::setDrawType(enum TButtonPanel::DrawType) */
+
+void __thiscall TButtonPanel::setDrawType(TButtonPanel *this,DrawType param_1)
+{
+  this->drawTypeValue = param_1;
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: setButtonType
+// Address: 00472150
+/* public: void __thiscall TButtonPanel::setButtonType(enum TButtonPanel::ButtonType) */
+
+void __thiscall TButtonPanel::setButtonType(TButtonPanel *this,ButtonType param_1)
+{
+  this->buttonTypeValue = param_1;
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_picture_info
+// Address: 00472160
+/* public: void __thiscall TButtonPanel::set_picture_info(class TShape *,short,long,long,int,int) */
+
+void __thiscall
+TButtonPanel::set_picture_info
+          (TButtonPanel *this,TShape *param_1,short param_2,long param_3,long param_4,int param_5,
+          int param_6)
+{
+  this->pic_x = param_3;
+  this->pic_y = param_4;
+  this->all_hot = param_5;
+  this->auto_pic_pos = param_6;
+  set_picture(this,0,param_1,param_2);
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_text_info
+// Address: 004721a0
+/* public: void __thiscall TButtonPanel::set_text_info(char *,void *,long,long,long,long) */
+
+void __thiscall
+TButtonPanel::set_text_info
+          (TButtonPanel *this,char *param_1,void *param_2,long param_3,long param_4,long param_5,
+          long param_6)
+{
+  set_text_pos(this,param_5,param_6);
+  set_text(this,0,param_1);
+  set_font(this,param_2,param_3,param_4);
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_text_info
+// Address: 004721e0
+/* public: void __thiscall TButtonPanel::set_text_info(long,void *,long,long,long,long) */
+
+void __thiscall
+TButtonPanel::set_text_info
+          (TButtonPanel *this,long param_1,void *param_2,long param_3,long param_4,long param_5,
+          long param_6)
+{
+  set_text_pos(this,param_5,param_6);
+  set_text(this,0,param_1);
+  set_font(this,param_2,param_3,param_4);
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_text_pos
+// Address: 00472220
+/* public: void __thiscall TButtonPanel::set_text_pos(long,long) */
+
+void __thiscall TButtonPanel::set_text_pos(TButtonPanel *this,long param_1,long param_2)
+{
+  this->text_x = param_1;
+  this->text_y = param_2;
+  (**(code **)(this->_padding_ + 0x20))(1);
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_radio_info
+// Address: 00472240
+/* public: void __thiscall TButtonPanel::set_radio_info(class TButtonPanel * *,short) */
+
+void __thiscall
+TButtonPanel::set_radio_info(TButtonPanel *this,TButtonPanel **param_1,short param_2)
+{
+  TButtonPanel **ppTVar1;
+  int iVar2;
+  int iVar3;
+  
+  this->buttonTypeValue = Radio;
+  if (this->radio_buttons != (TButtonPanel **)0x0) {
+    free(this->radio_buttons);
+    this->radio_buttons = (TButtonPanel **)0x0;
+  }
+  if (param_2 != 0) {
+    iVar3 = (int)param_2;
+    this->num_radio_buttons = param_2;
+    ppTVar1 = (TButtonPanel **)calloc(iVar3,4);
+    this->radio_buttons = ppTVar1;
+    if (0 < param_2) {
+      iVar2 = 0;
+      do {
+        *(undefined4 *)((int)this->radio_buttons + iVar2) = *(undefined4 *)((int)param_1 + iVar2);
+        iVar2 = iVar2 + 4;
+        iVar3 = iVar3 + -1;
+      } while (iVar3 != 0);
+    }
+  }
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_state_info
+// Address: 004722c0
+/* public: void __thiscall TButtonPanel::set_state_info(short) */
+
+void __thiscall TButtonPanel::set_state_info(TButtonPanel *this,short param_1)
+{
+  this->buttonTypeValue = State;
+  this->num_states = param_1;
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_id
+// Address: 004722e0
+/* public: void __thiscall TButtonPanel::set_id(short,long,long) */
+
+void __thiscall TButtonPanel::set_id(TButtonPanel *this,short param_1,long param_2,long param_3)
+{
+  this->id[param_1] = param_2;
+  this->id2[param_1] = param_3;
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_picture
+// Address: 00472300
+/* public: void __thiscall TButtonPanel::set_picture(short,class TShape *,short) */
+
+void __thiscall
+TButtonPanel::set_picture(TButtonPanel *this,short param_1,TShape *param_2,short param_3)
+{
+  this->pic[param_1] = param_2;
+  this->pic_index[param_1] = param_3;
+  (**(code **)(this->_padding_ + 0x20))(1);
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_text
+// Address: 00472330
+/* public: void __thiscall TButtonPanel::set_text(short,char *) */
+
+void __thiscall TButtonPanel::set_text(TButtonPanel *this,short param_1,char *param_2)
+{
+  char cVar1;
+  int iVar2;
+  char *pcVar3;
+  short sVar4;
+  uint uVar5;
+  uint uVar6;
+  int iVar7;
+  char *pcVar8;
+  int iVar9;
+  char *pcVar10;
+  
+  iVar7 = (int)param_1;
+  if (this->text1[iVar7] != (char *)0x0) {
+    free(this->text1[iVar7]);
+    this->text1[iVar7] = (char *)0x0;
+  }
+  if (this->text2[iVar7] != (char *)0x0) {
+    free(this->text2[iVar7]);
+    this->text2[iVar7] = (char *)0x0;
+  }
+  if ((param_2 != (char *)0x0) && (*param_2 != '\0')) {
+    iVar2 = strchr(param_2,10);
+    if (iVar2 == 0) {
+      iVar9 = -1;
+      pcVar3 = param_2;
+      do {
+        if (iVar9 == 0) break;
+        iVar9 = iVar9 + -1;
+        cVar1 = *pcVar3;
+        pcVar3 = pcVar3 + 1;
+      } while (cVar1 != '\0');
+      sVar4 = ~(ushort)iVar9 - 1;
+    }
+    else {
+      sVar4 = (short)iVar2 - (short)param_2;
+    }
+    iVar9 = (int)sVar4;
+    pcVar3 = (char *)calloc(iVar9 + 1,1);
+    this->text1[iVar7] = pcVar3;
+    if (pcVar3 != (char *)0x0) {
+      strncpy(pcVar3,param_2,iVar9);
+      this->text1[iVar7][iVar9] = '\0';
+      if (iVar2 != 0) {
+        uVar5 = 0xffffffff;
+        pcVar3 = (char *)(iVar2 + 1);
+        do {
+          if (uVar5 == 0) break;
+          uVar5 = uVar5 - 1;
+          cVar1 = *pcVar3;
+          pcVar3 = pcVar3 + 1;
+        } while (cVar1 != '\0');
+        pcVar3 = (char *)calloc(~uVar5,1);
+        this->text2[iVar7] = pcVar3;
+        if (pcVar3 != (char *)0x0) {
+          uVar5 = 0xffffffff;
+          pcVar8 = (char *)(iVar2 + 1);
+          do {
+            pcVar10 = pcVar8;
+            if (uVar5 == 0) break;
+            uVar5 = uVar5 - 1;
+            pcVar10 = pcVar8 + 1;
+            cVar1 = *pcVar8;
+            pcVar8 = pcVar10;
+          } while (cVar1 != '\0');
+          uVar5 = ~uVar5;
+          pcVar8 = pcVar10 + -uVar5;
+          for (uVar6 = uVar5 >> 2; uVar6 != 0; uVar6 = uVar6 - 1) {
+            *(undefined4 *)pcVar3 = *(undefined4 *)pcVar8;
+            pcVar8 = pcVar8 + 4;
+            pcVar3 = pcVar3 + 4;
+          }
+          for (uVar5 = uVar5 & 3; uVar5 != 0; uVar5 = uVar5 - 1) {
+            *pcVar3 = *pcVar8;
+            pcVar8 = pcVar8 + 1;
+            pcVar3 = pcVar3 + 1;
+          }
+        }
+      }
+    }
+  }
+  (**(code **)(this->_padding_ + 0x20))(1);
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_text
+// Address: 00472440
+/* public: void __thiscall TButtonPanel::set_text(short,char *,char *) */
+
+void __thiscall TButtonPanel::set_text(TButtonPanel *this,short param_1,char *param_2,char *param_3)
+{
+  char cVar1;
+  char *pcVar2;
+  uint uVar3;
+  uint uVar4;
+  int iVar5;
+  char *pcVar6;
+  
+  iVar5 = (int)param_1;
+  if (this->text1[iVar5] != (char *)0x0) {
+    free(this->text1[iVar5]);
+    this->text1[iVar5] = (char *)0x0;
+  }
+  if (this->text2[iVar5] != (char *)0x0) {
+    free(this->text2[iVar5]);
+    this->text2[iVar5] = (char *)0x0;
+  }
+  if ((param_2 != (char *)0x0) && (*param_2 != '\0')) {
+    uVar3 = 0xffffffff;
+    pcVar2 = param_2;
+    do {
+      if (uVar3 == 0) break;
+      uVar3 = uVar3 - 1;
+      cVar1 = *pcVar2;
+      pcVar2 = pcVar2 + 1;
+    } while (cVar1 != '\0');
+    pcVar2 = (char *)calloc(~uVar3,1);
+    this->text1[iVar5] = pcVar2;
+    if (pcVar2 != (char *)0x0) {
+      uVar3 = 0xffffffff;
+      do {
+        pcVar6 = param_2;
+        if (uVar3 == 0) break;
+        uVar3 = uVar3 - 1;
+        pcVar6 = param_2 + 1;
+        cVar1 = *param_2;
+        param_2 = pcVar6;
+      } while (cVar1 != '\0');
+      uVar3 = ~uVar3;
+      pcVar6 = pcVar6 + -uVar3;
+      for (uVar4 = uVar3 >> 2; uVar4 != 0; uVar4 = uVar4 - 1) {
+        *(undefined4 *)pcVar2 = *(undefined4 *)pcVar6;
+        pcVar6 = pcVar6 + 4;
+        pcVar2 = pcVar2 + 4;
+      }
+      for (uVar3 = uVar3 & 3; uVar3 != 0; uVar3 = uVar3 - 1) {
+        *pcVar2 = *pcVar6;
+        pcVar6 = pcVar6 + 1;
+        pcVar2 = pcVar2 + 1;
+      }
+      if ((param_3 != (char *)0x0) && (*param_3 != '\0')) {
+        uVar3 = 0xffffffff;
+        pcVar2 = param_3;
+        do {
+          if (uVar3 == 0) break;
+          uVar3 = uVar3 - 1;
+          cVar1 = *pcVar2;
+          pcVar2 = pcVar2 + 1;
+        } while (cVar1 != '\0');
+        pcVar2 = (char *)calloc(~uVar3,1);
+        this->text2[iVar5] = pcVar2;
+        if (pcVar2 != (char *)0x0) {
+          uVar3 = 0xffffffff;
+          do {
+            pcVar6 = param_3;
+            if (uVar3 == 0) break;
+            uVar3 = uVar3 - 1;
+            pcVar6 = param_3 + 1;
+            cVar1 = *param_3;
+            param_3 = pcVar6;
+          } while (cVar1 != '\0');
+          uVar3 = ~uVar3;
+          pcVar6 = pcVar6 + -uVar3;
+          for (uVar4 = uVar3 >> 2; uVar4 != 0; uVar4 = uVar4 - 1) {
+            *(undefined4 *)pcVar2 = *(undefined4 *)pcVar6;
+            pcVar6 = pcVar6 + 4;
+            pcVar2 = pcVar2 + 4;
+          }
+          for (uVar3 = uVar3 & 3; uVar3 != 0; uVar3 = uVar3 - 1) {
+            *pcVar2 = *pcVar6;
+            pcVar6 = pcVar6 + 1;
+            pcVar2 = pcVar2 + 1;
+          }
+        }
+      }
+    }
+  }
+  (**(code **)(this->_padding_ + 0x20))(1);
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_text
+// Address: 00472540
+/* WARNING: Variable defined which should be unmapped: str */
+/* public: void __thiscall TButtonPanel::set_text(short,long) */
+
+void __thiscall TButtonPanel::set_text(TButtonPanel *this,short param_1,long param_2)
+{
+  char str [256];
+  
+  TPanel::get_string((TPanel *)this,param_2,str + 4,0x100);
+  set_text(this,param_1,str + 4);
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_text
+// Address: 00472580
+/* WARNING: Variable defined which should be unmapped: str2 */
+/* public: void __thiscall TButtonPanel::set_text(short,long,long) */
+
+void __thiscall TButtonPanel::set_text(TButtonPanel *this,short param_1,long param_2,long param_3)
+{
+  char str2 [256];
+  char str1 [256];
+  
+  TPanel::get_string((TPanel *)this,param_2,str1 + 4,0x100);
+  TPanel::get_string((TPanel *)this,param_3,str2 + 4,0x100);
+  set_text(this,param_1,str1 + 4,str2 + 4);
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_font
+// Address: 004725f0
+/* public: void __thiscall TButtonPanel::set_font(void *,long,long) */
+
+void __thiscall TButtonPanel::set_font(TButtonPanel *this,void *param_1,long param_2,long param_3)
+{
+  this->font = param_1;
+  this->font_wid = param_2;
+  this->font_hgt = param_3;
+  (**(code **)(this->_padding_ + 0x20))(1);
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_text_color
+// Address: 00472620
+/* public: void __thiscall TButtonPanel::set_text_color(int,unsigned long,unsigned long) */
+
+void __thiscall
+TButtonPanel::set_text_color(TButtonPanel *this,int param_1,ulong param_2,ulong param_3)
+{
+  if ((-1 < param_1) && (param_1 < 9)) {
+    this->text_color1[param_1] = param_2;
+    this->text_color2[param_1] = param_3;
+    (**(code **)(this->_padding_ + 0x20))(1);
+  }
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_highlight_text_color
+// Address: 00472650
+/* public: void __thiscall TButtonPanel::set_highlight_text_color(int,unsigned long,unsigned long)
+    */
+
+void __thiscall
+TButtonPanel::set_highlight_text_color(TButtonPanel *this,int param_1,ulong param_2,ulong param_3)
+{
+  if ((-1 < param_1) && (param_1 < 9)) {
+    this->highlight_text_color1[param_1] = param_2;
+    this->highlight_text_color2[param_1] = param_3;
+    (**(code **)(this->_padding_ + 0x20))(1);
+  }
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_sound
+// Address: 00472680
+/* public: void __thiscall TButtonPanel::set_sound(class TDigital *) */
+
+void __thiscall TButtonPanel::set_sound(TButtonPanel *this,TDigital *param_1)
+{
+  this->sound = param_1;
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_radio_button
+// Address: 00472690
+/* public: void __thiscall TButtonPanel::set_radio_button(void) */
+
+void __thiscall TButtonPanel::set_radio_button(TButtonPanel *this)
+{
+  int iVar1;
+  
+  iVar1 = 0;
+  if (0 < this->num_radio_buttons) {
+    do {
+      this->radio_buttons[iVar1]->is_down = 0;
+      (**(code **)(this->radio_buttons[iVar1]->_padding_ + 0xe0))(0);
+      iVar1 = iVar1 + 1;
+    } while (iVar1 < this->num_radio_buttons);
+  }
+  if ((this->drawTypeValue == DrawTextA) || (this->drawTypeValue == DrawFillAndText)) {
+    this->is_down = 1;
+  }
+  (**(code **)(this->_padding_ + 0xe0))(1);
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_state
+// Address: 00472700
+/* public: virtual void __thiscall TButtonPanel::set_state(short) */
+
+void __thiscall TButtonPanel::set_state(TButtonPanel *this,short param_1)
+{
+  this->cur_state = param_1;
+  (**(code **)(this->_padding_ + 0x20))(1);
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_state_by_id
+// Address: 00472720
+/* public: void __thiscall TButtonPanel::set_state_by_id(long) */
+
+void __thiscall TButtonPanel::set_state_by_id(TButtonPanel *this,long param_1)
+{
+  int iVar1;
+  long *plVar2;
+  
+  iVar1 = 0;
+  if (0 < this->num_states) {
+    plVar2 = this->id;
+    while (*plVar2 != param_1) {
+      iVar1 = iVar1 + 1;
+      plVar2 = plVar2 + 1;
+      if (this->num_states <= iVar1) {
+        return;
+      }
+    }
+    this->cur_state = (short)iVar1;
+    (**(code **)(this->_padding_ + 0x20))(1);
+  }
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_bevel_info
+// Address: 00472760
+/* public: void __thiscall TButtonPanel::set_bevel_info(int,int,int,int,int,int,int) */
+
+void __thiscall
+TButtonPanel::set_bevel_info
+          (TButtonPanel *this,int param_1,int param_2,int param_3,int param_4,int param_5,
+          int param_6,int param_7)
+{
+  this->bevel_type = param_1;
+  this->bevel_color1 = (uchar)param_2;
+  this->bevel_color2 = (uchar)param_3;
+  this->bevel_color3 = (uchar)param_4;
+  this->bevel_color4 = (uchar)param_5;
+  this->bevel_color5 = (uchar)param_6;
+  this->bevel_color6 = (uchar)param_7;
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_disabled
+// Address: 004727b0
+/* public: void __thiscall TButtonPanel::set_disabled(int) */
+
+void __thiscall TButtonPanel::set_disabled(TButtonPanel *this,int param_1)
+{
+  this->disabled = param_1;
+  (**(code **)(this->_padding_ + 0x20))(1);
+  if (this->disabled != 0) {
+    this->_padding_ = 0;
+    return;
+  }
+  this->_padding_ = 1;
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_rect
+// Address: 004727f0
+/* public: virtual void __thiscall TButtonPanel::set_rect(long,long,long,long) */
+
+void __thiscall
+TButtonPanel::set_rect(TButtonPanel *this,long param_1,long param_2,long param_3,long param_4)
+{
+  TPanel::set_rect((TPanel *)this,param_1,param_2,param_3,param_4);
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: get_state
+// Address: 00472810
+/* public: int __thiscall TButtonPanel::get_state(void) */
+
+int __thiscall TButtonPanel::get_state(TButtonPanel *this)
+{
+  return (int)this->cur_state;
+}
+
+// --------------------------------------------------
+
+// Function: get_id
+// Address: 00472820
+/* public: long __thiscall TButtonPanel::get_id(void) */
+
+long __thiscall TButtonPanel::get_id(TButtonPanel *this)
+{
+  return this->id[this->cur_state];
+}
+
+// --------------------------------------------------
+
+// Function: get_id2
+// Address: 00472830
+/* public: long __thiscall TButtonPanel::get_id2(void) */
+
+long __thiscall TButtonPanel::get_id2(TButtonPanel *this)
+{
+  return this->id2[this->cur_state];
+}
+
+// --------------------------------------------------
+
+// Function: get_text
+// Address: 00472840
+/* public: int __thiscall TButtonPanel::get_text(short,char * *,char * *) */
+
+int __thiscall
+TButtonPanel::get_text(TButtonPanel *this,short param_1,char **param_2,char **param_3)
+{
+  if (param_1 == -1) {
+    param_1 = this->cur_state;
+  }
+  *param_2 = this->text1[param_1];
+  *param_3 = this->text2[param_1];
+  return (uint)(*param_2 != (char *)0x0);
+}
+
+// --------------------------------------------------
+
+// Function: get_text_color
+// Address: 00472880
+/* public: void __thiscall TButtonPanel::get_text_color(short,unsigned long *,unsigned long *) */
+
+void __thiscall
+TButtonPanel::get_text_color(TButtonPanel *this,short param_1,ulong *param_2,ulong *param_3)
+{
+  if (param_1 == -1) {
+    param_1 = this->cur_state;
+  }
+  *param_2 = this->text_color1[param_1];
+  *param_3 = this->text_color2[param_1];
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: draw
+// Address: 004728c0
+// [HELPER] s_pnl_btn__draw2: "pnl_btn::draw2"
+// [HELPER] s_pnl_btn__draw: "pnl_btn::draw"
+/* WARNING: Variable defined which should be unmapped: text */
+/* public: virtual void __thiscall TButtonPanel::draw(void) */
+
+void __thiscall TButtonPanel::draw(TButtonPanel *this)
+{
+  char cVar1;
+  uchar uVar2;
+  short sVar3;
+  int *piVar4;
+  DrawType DVar5;
+  uchar *puVar6;
+  long lVar7;
+  void *pvVar8;
+  int iVar9;
+  long lVar10;
+  int iVar11;
+  uchar uVar12;
+  char *pcVar13;
+  int iVar14;
+  int iVar15;
+  code *pcVar16;
+  undefined4 unaff_EDI;
+  int iVar17;
+  char *pcVar18;
+  undefined4 uVar19;
+  char *text;
+  long y;
+  long x;
+  long calc_x;
+  long x_max;
+  long x_min;
+  long y_max;
+  long y_min;
+  void *old_font;
+  int iStack_10;
+  tagSIZE text_size;
+  
+  if (((((TDrawArea *)this->_padding_ == (TDrawArea *)0x0) || (this->_padding_ == 0)) ||
+      (this->_padding_ == 0)) || (this->drawTypeValue == DrawClear)) {
+    this->_padding_ = 0;
+    return;
+  }
+  if (this->drawTypeValue == DrawFillAndText) {
+    TDrawArea::Clear((TDrawArea *)this->_padding_,(tagRECT *)&this->_padding_,
+                     (uint)*(byte *)((int)&this->_padding_ + 3));
+  }
+  else {
+    piVar4 = (int *)this->_padding_;
+    if (piVar4 != (int *)0x0) {
+      if ((this->bevel_type < 2) || (4 < this->bevel_type)) {
+        if (piVar4[0x21] == 0) {
+          (**(code **)(*piVar4 + 0x34))(&this->_padding_);
+        }
+      }
+      else {
+        (**(code **)(*piVar4 + 0x3c))(&this->_padding_);
+      }
+    }
+  }
+  iVar14 = this->_padding_;
+  uVar19 = 0;
+  text_size.cx = iVar14;
+  (**(code **)(iVar14 + 0x28))(0);
+  DVar5 = this->drawTypeValue;
+  if ((((DVar5 == DrawPicture) || (DVar5 == DrawPictureAndText)) || (DVar5 == DrawBevelPicture)) &&
+     (puVar6 = TDrawArea::Lock((TDrawArea *)this->_padding_,s_pnl_btn__draw,1),
+     puVar6 != (uchar *)0x0)) {
+    if (this->pic[this->cur_state] != (TShape *)0x0) {
+      if (this->auto_pic_pos != 0) {
+        TShape::shape_minmax
+                  (this->pic[this->cur_state],&x_min,&y_min,&x_max,&y_max,
+                   (int)this->pic_index[this->cur_state]);
+        this->pic_x = (int)(short)(((short)(this->_padding_ / 2) -
+                                   (short)(((x_max - x_min) + 1) / 2)) - (short)x_min);
+        this->pic_y = (int)(short)(((short)(this->_padding_ / 2) -
+                                   (short)(((y_max - y_min) + 1) / 2)) - (short)y_min);
+      }
+      lVar10 = this->pic_y + this->_padding_;
+      lVar7 = this->pic_x + this->_padding_;
+      if (this->draw_reverse == 0) {
+        if (this->is_down != 0) {
+LAB_00472a41:
+          lVar7 = lVar7 + 1;
+          lVar10 = lVar10 + -1;
+        }
+      }
+      else if (this->is_down == 0) goto LAB_00472a41;
+      TShape::shape_draw(this->pic[this->cur_state],(TDrawArea *)this->_padding_,lVar7,lVar10,
+                         (int)this->pic_index[this->cur_state],'\0',(uchar *)0x0);
+    }
+    TDrawArea::Unlock((TDrawArea *)this->_padding_,s_pnl_btn__draw);
+  }
+  DVar5 = this->drawTypeValue;
+  if ((((DVar5 == DrawTextA) || (DVar5 == DrawPictureAndText)) || (DVar5 == DrawFillAndText)) &&
+     (pvVar8 = TDrawArea::GetDc((TDrawArea *)this->_padding_,s_pnl_btn__draw), pvVar8 != (void *)0x0
+     )) {
+    SelectClipRgn(pvVar8,this->_padding_);
+    old_font = (void *)SelectObject(pvVar8,this->font);
+    SetBkMode(pvVar8,1);
+    iVar14 = this->text_x;
+    if (iVar14 == -1) {
+      iVar14 = this->_padding_ / 2;
+    }
+    iVar9 = this->text_y;
+    if (iVar9 == -1) {
+      iVar9 = this->_padding_ / 2;
+    }
+    pcVar13 = this->text1[this->cur_state];
+    if (pcVar13 == (char *)0x0) {
+      pcVar13 = this->text1[0];
+    }
+    if (pcVar13 != (char *)0x0) {
+      iVar11 = -1;
+      pcVar18 = pcVar13;
+      do {
+        if (iVar11 == 0) break;
+        iVar11 = iVar11 + -1;
+        cVar1 = *pcVar18;
+        pcVar18 = pcVar18 + 1;
+      } while (cVar1 != '\0');
+      iVar11 = (int)(short)(~(ushort)iVar11 - 1);
+      GetTextExtentPoint32A(pvVar8,pcVar13,iVar11,&text_size);
+      iVar17 = (iVar14 - text_size.cx / 2) + this->_padding_;
+      sVar3 = this->cur_state;
+      if (this->text2[sVar3] == (char *)0x0) {
+        iVar15 = this->font_hgt / 2;
+      }
+      else {
+        iVar15 = this->font_hgt;
+      }
+      iVar15 = (iVar9 - iVar15) + this->_padding_;
+      if (this->draw_reverse == 0) {
+        if (this->is_down != 0) {
+LAB_00472bbc:
+          iVar17 = iVar17 + 1;
+          iVar15 = iVar15 + -1;
+        }
+      }
+      else if (this->is_down == 0) goto LAB_00472bbc;
+      if (this->_padding_ == 0) {
+        SetTextColor(pvVar8,this->text_color2[sVar3]);
+        TextOutA(pvVar8,iVar17 + -1,iVar15 + 1,pcVar13,iVar11);
+        SetTextColor(pvVar8,this->text_color1[this->cur_state]);
+        TextOutA(pvVar8,iVar17,iVar15,pcVar13,iVar11);
+        pcVar16 = TextOutA_exref;
+      }
+      else {
+        SetTextColor(pvVar8,this->highlight_text_color2[sVar3]);
+        TextOutA(pvVar8,iVar17 + -1,iVar15 + 1,pcVar13,iVar11);
+        SetTextColor(pvVar8,this->highlight_text_color1[this->cur_state]);
+        pcVar16 = TextOutA_exref;
+        TextOutA(pvVar8,iVar17,iVar15,pcVar13,iVar11);
+      }
+      pcVar13 = this->text2[this->cur_state];
+      if (pcVar13 == (char *)0x0) {
+        pcVar13 = this->text2[0];
+      }
+      if (pcVar13 != (char *)0x0) {
+        iVar11 = -1;
+        pcVar18 = pcVar13;
+        do {
+          if (iVar11 == 0) break;
+          iVar11 = iVar11 + -1;
+          cVar1 = *pcVar18;
+          pcVar18 = pcVar18 + 1;
+        } while (cVar1 != '\0');
+        iVar11 = (int)(short)(~(ushort)iVar11 - 1);
+        GetTextExtentPoint32A(pvVar8,pcVar13,iVar11,&text_size);
+        x = (iVar14 - text_size.cx / 2) + this->_padding_;
+        y = iVar9 + this->_padding_;
+        if (this->draw_reverse == 0) {
+          if (this->is_down != 0) {
+LAB_00472d03:
+            x = x + 1;
+            y = y + -1;
+          }
+        }
+        else if (this->is_down == 0) goto LAB_00472d03;
+        iVar14 = iVar11;
+        if (this->_padding_ == 0) {
+          SetTextColor(pvVar8,this->text_color2[this->cur_state]);
+          (*pcVar16)(pvVar8,x + -1,y + 1,pcVar13,iVar11);
+          SetTextColor(pvVar8,this->text_color1[this->cur_state]);
+        }
+        else {
+          SetTextColor(pvVar8,this->highlight_text_color2[this->cur_state]);
+          (*pcVar16)(pvVar8,x + -1,y + 1,pcVar13,iVar11);
+          SetTextColor(pvVar8,this->highlight_text_color1[this->cur_state]);
+        }
+        (*pcVar16)(pvVar8,unaff_EDI,uVar19,iVar14,iVar11);
+      }
+    }
+    SelectObject(pvVar8,old_font);
+    SelectClipRgn(pvVar8,0);
+    TDrawArea::ReleaseDc((TDrawArea *)this->_padding_,s_pnl_btn__draw);
+    iVar14 = iStack_10;
+  }
+  DVar5 = this->drawTypeValue;
+  if ((((DVar5 != DrawTextA) && (DVar5 != DrawPictureAndText)) &&
+      ((DVar5 != DrawFillAndText && (DVar5 != DrawBevelPicture)))) ||
+     (puVar6 = TDrawArea::Lock((TDrawArea *)this->_padding_,s_pnl_btn__draw2,1),
+     puVar6 == (uchar *)0x0)) goto LAB_004730d9;
+  if (this->disabled == 0) {
+    if (this->draw_reverse == 0) {
+      iVar9 = this->is_down;
+    }
+    else {
+      iVar9 = this->is_down;
+    }
+    if (iVar9 == 0) {
+      switch(this->bevel_type) {
+      case 1:
+        TDrawArea::DrawRect((TDrawArea *)this->_padding_,this->_padding_ + 1,this->_padding_ + 1,
+                            this->_padding_ + -2 + this->_padding_,
+                            this->_padding_ + -2 + this->_padding_,0xff);
+        break;
+      case 2:
+        uVar2 = this->bevel_color1;
+        iVar9 = this->_padding_;
+        iVar11 = this->_padding_;
+        uVar12 = this->bevel_color6;
+        goto LAB_00473024;
+      case 3:
+        TDrawArea::DrawBevel21
+                  ((TDrawArea *)this->_padding_,this->_padding_,this->_padding_,
+                   this->_padding_ + -1 + this->_padding_,this->_padding_ + -1 + this->_padding_,
+                   this->bevel_color6,this->bevel_color5,this->bevel_color2,this->bevel_color1);
+        break;
+      case 4:
+        TDrawArea::DrawBevel32
+                  ((TDrawArea *)this->_padding_,this->_padding_,this->_padding_,
+                   this->_padding_ + -1 + this->_padding_,this->_padding_ + -1 + this->_padding_,
+                   this->bevel_color6,this->bevel_color5,this->bevel_color4,this->bevel_color3,
+                   this->bevel_color2,this->bevel_color1);
+      }
+    }
+    else {
+      switch(this->bevel_type) {
+      case 1:
+        TDrawArea::DrawVertLine
+                  ((TDrawArea *)this->_padding_,this->_padding_ + -1 + this->_padding_,
+                   this->_padding_ + 1,this->_padding_ + -1,'\0');
+        TDrawArea::DrawHorzLine
+                  ((TDrawArea *)this->_padding_,this->_padding_ + 1,
+                   this->_padding_ + -1 + this->_padding_,this->_padding_ + -1,'\0');
+        TDrawArea::DrawRect((TDrawArea *)this->_padding_,this->_padding_,this->_padding_,
+                            this->_padding_ + -2 + this->_padding_,
+                            this->_padding_ + -2 + this->_padding_,0xff);
+        break;
+      case 2:
+        uVar2 = this->bevel_color6;
+        iVar9 = this->_padding_;
+        iVar11 = this->_padding_;
+        uVar12 = this->bevel_color1;
+LAB_00473024:
+        TDrawArea::DrawBevel
+                  ((TDrawArea *)this->_padding_,iVar11,iVar9,this->_padding_ + -1 + iVar11,
+                   this->_padding_ + -1 + iVar9,uVar12,uVar2);
+        break;
+      case 3:
+        TDrawArea::DrawBevel2
+                  ((TDrawArea *)this->_padding_,this->_padding_,this->_padding_,
+                   this->_padding_ + -1 + this->_padding_,this->_padding_ + -1 + this->_padding_,
+                   this->bevel_color1,this->bevel_color2,this->bevel_color5,this->bevel_color6);
+        break;
+      case 4:
+        TDrawArea::DrawBevel3
+                  ((TDrawArea *)this->_padding_,this->_padding_,this->_padding_,
+                   this->_padding_ + -1 + this->_padding_,this->_padding_ + -1 + this->_padding_,
+                   this->bevel_color1,this->bevel_color2,this->bevel_color3,this->bevel_color4,
+                   this->bevel_color5,this->bevel_color6);
+      }
+    }
+  }
+  else {
+    TDrawArea::DrawRect((TDrawArea *)this->_padding_,this->_padding_,this->_padding_,
+                        this->_padding_ + -1 + this->_padding_,
+                        this->_padding_ + -1 + this->_padding_,this->bevel_color6);
+    TDrawArea::DrawRect((TDrawArea *)this->_padding_,this->_padding_ + 1,this->_padding_ + 1,
+                        this->_padding_ + -2 + this->_padding_,
+                        this->_padding_ + -2 + this->_padding_,this->bevel_color1);
+  }
+  TDrawArea::Unlock((TDrawArea *)this->_padding_,s_pnl_btn__draw2);
+LAB_004730d9:
+  (**(code **)(iVar14 + 0x2c))();
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: handle_mouse_down
+// Address: 00473120
+/* public: virtual long __thiscall TButtonPanel::handle_mouse_down(unsigned char,long,long,int,int)
+    */
+
+long __thiscall
+TButtonPanel::handle_mouse_down
+          (TButtonPanel *this,uchar param_1,long param_2,long param_3,int param_4,int param_5)
+{
+  int iVar1;
+  long lVar2;
+  uchar unaff_BL;
+  
+  if (this->_padding_ == 0) {
+    return 0;
+  }
+  if (this->_padding_ != 0) {
+    return 0;
+  }
+  iVar1 = (**(code **)(this->_padding_ + 0xe4))(param_2,param_3);
+  if (iVar1 == 0) {
+    return 0;
+  }
+  lVar2 = TPanel::handle_mouse_down((TPanel *)this,unaff_BL,param_2,param_3,param_2,param_3);
+  return lVar2;
+}
+
+// --------------------------------------------------
+
+// Function: mouse_left_dbl_click_action
+// Address: 00473180
+/* public: virtual long __thiscall TButtonPanel::mouse_left_dbl_click_action(long,long,int,int) */
+
+long __thiscall
+TButtonPanel::mouse_left_dbl_click_action
+          (TButtonPanel *this,long param_1,long param_2,int param_3,int param_4)
+{
+  return 0;
+}
+
+// --------------------------------------------------
+
+// Function: mouse_left_down_action
+// Address: 00473190
+// [HELPER] s_C__msdev_work_age1_x1_Pnl_btn_cp: "C:\msdev\work\age1_x1\Pnl_btn.cpp"
+/* public: virtual long __thiscall TButtonPanel::mouse_left_down_action(long,long,int,int) */
+
+long __thiscall
+TButtonPanel::mouse_left_down_action
+          (TButtonPanel *this,long param_1,long param_2,int param_3,int param_4)
+{
+  int iVar1;
+  ulong uVar2;
+  
+  if (this->disabled != 0) {
+    return 0;
+  }
+  if (this->sound != (TDigital *)0x0) {
+    iVar1 = TDigital::is_playing(this->sound);
+    if (iVar1 != 0) {
+      TDigital::stop(this->sound);
+    }
+    TDigital::play(this->sound);
+  }
+  TPanel::capture_mouse((TPanel *)this);
+  this->is_down = 1;
+  uVar2 = debug_timeGetTime(s_C__msdev_work_age1_x1_Pnl_btn_cp,0x372);
+  this->button_down_time = uVar2;
+  (**(code **)(this->_padding_ + 0x20))(1);
+  if ((int *)this->_padding_ != (int *)0x0) {
+    (**(code **)(*(int *)this->_padding_ + 0xb4))
+              (this,2,this->id[this->cur_state],this->id2[this->cur_state]);
+  }
+  return 1;
+}
+
+// --------------------------------------------------
+
+// Function: mouse_left_move_action
+// Address: 00473240
+// [HELPER] s_C__msdev_work_age1_x1_Pnl_btn_cp: "C:\msdev\work\age1_x1\Pnl_btn.cpp"
+/* public: virtual long __thiscall TButtonPanel::mouse_left_move_action(long,long,int,int) */
+
+long __thiscall
+TButtonPanel::mouse_left_move_action
+          (TButtonPanel *this,long param_1,long param_2,int param_3,int param_4)
+{
+  int iVar1;
+  int *piVar2;
+  uint uVar3;
+  int iVar4;
+  ulong uVar5;
+  
+  iVar1 = this->_padding_;
+  iVar4 = (**(code **)(iVar1 + 0xbc))(param_1,param_2);
+  uVar3 = (uint)(iVar4 != 0);
+  if (this->is_down != uVar3) {
+    this->is_down = uVar3;
+    if (uVar3 != 0) {
+      uVar5 = debug_timeGetTime(s_C__msdev_work_age1_x1_Pnl_btn_cp,0x389);
+      this->button_down_time = uVar5;
+    }
+    (**(code **)(iVar1 + 0x20))(1);
+    piVar2 = (int *)this->_padding_;
+    if (this->is_down == 0) {
+      if (piVar2 != (int *)0x0) {
+        (**(code **)(*piVar2 + 0xb4))(this,3,this->id[this->cur_state],this->id2[this->cur_state]);
+      }
+    }
+    else if (piVar2 != (int *)0x0) {
+      (**(code **)(*piVar2 + 0xb4))(this,2,this->id[this->cur_state],this->id2[this->cur_state]);
+      return 1;
+    }
+  }
+  return 1;
+}
+
+// --------------------------------------------------
+
+// Function: mouse_left_up_action
+// Address: 00473310
+/* public: virtual long __thiscall TButtonPanel::mouse_left_up_action(long,long,int,int) */
+
+long __thiscall
+TButtonPanel::mouse_left_up_action
+          (TButtonPanel *this,long param_1,long param_2,int param_3,int param_4)
+{
+  TPanel::release_mouse((TPanel *)this);
+  if (this->is_down != 0) {
+    if (this->buttonTypeValue != Radio) {
+      this->is_down = 0;
+    }
+    (**(code **)(this->_padding_ + 0x20))(1);
+    SendMessageA(*(undefined4 *)(this->_padding_ + 4),0xf,0,0);
+    do_action(this);
+    return 1;
+  }
+  if ((this->buttonTypeValue == Radio) && (this->cur_state == 1)) {
+    this->is_down = 1;
+    (**(code **)(this->_padding_ + 0x20))(1);
+  }
+  return 1;
+}
+
+// --------------------------------------------------
+
+// Function: mouse_right_dbl_click_action
+// Address: 00473390
+/* public: virtual long __thiscall TButtonPanel::mouse_right_dbl_click_action(long,long,int,int) */
+
+long __thiscall
+TButtonPanel::mouse_right_dbl_click_action
+          (TButtonPanel *this,long param_1,long param_2,int param_3,int param_4)
+{
+  return 0;
+}
+
+// --------------------------------------------------
+
+// Function: mouse_right_down_action
+// Address: 004733a0
+// [HELPER] s_C__msdev_work_age1_x1_Pnl_btn_cp: "C:\msdev\work\age1_x1\Pnl_btn.cpp"
+/* public: virtual long __thiscall TButtonPanel::mouse_right_down_action(long,long,int,int) */
+
+long __thiscall
+TButtonPanel::mouse_right_down_action
+          (TButtonPanel *this,long param_1,long param_2,int param_3,int param_4)
+{
+  int iVar1;
+  ulong uVar2;
+  
+  if (this->disabled != 0) {
+    return 0;
+  }
+  if (this->sound != (TDigital *)0x0) {
+    iVar1 = TDigital::is_playing(this->sound);
+    if (iVar1 != 0) {
+      TDigital::stop(this->sound);
+    }
+    TDigital::play(this->sound);
+  }
+  TPanel::capture_mouse((TPanel *)this);
+  this->is_down = 1;
+  uVar2 = debug_timeGetTime(s_C__msdev_work_age1_x1_Pnl_btn_cp,0x3cc);
+  this->button_down_time = uVar2;
+  (**(code **)(this->_padding_ + 0x20))(1);
+  if ((int *)this->_padding_ != (int *)0x0) {
+    (**(code **)(*(int *)this->_padding_ + 0xb4))
+              (this,5,this->id[this->cur_state],this->id2[this->cur_state]);
+  }
+  return 1;
+}
+
+// --------------------------------------------------
+
+// Function: mouse_right_move_action
+// Address: 00473450
+// [HELPER] s_C__msdev_work_age1_x1_Pnl_btn_cp: "C:\msdev\work\age1_x1\Pnl_btn.cpp"
+/* public: virtual long __thiscall TButtonPanel::mouse_right_move_action(long,long,int,int) */
+
+long __thiscall
+TButtonPanel::mouse_right_move_action
+          (TButtonPanel *this,long param_1,long param_2,int param_3,int param_4)
+{
+  int iVar1;
+  int *piVar2;
+  uint uVar3;
+  int iVar4;
+  ulong uVar5;
+  
+  iVar1 = this->_padding_;
+  iVar4 = (**(code **)(iVar1 + 0xbc))(param_1,param_2);
+  uVar3 = (uint)(iVar4 != 0);
+  if (this->is_down != uVar3) {
+    this->is_down = uVar3;
+    if (uVar3 != 0) {
+      uVar5 = debug_timeGetTime(s_C__msdev_work_age1_x1_Pnl_btn_cp,0x3e3);
+      this->button_down_time = uVar5;
+    }
+    (**(code **)(iVar1 + 0x20))(1);
+    piVar2 = (int *)this->_padding_;
+    if (this->is_down == 0) {
+      if (piVar2 != (int *)0x0) {
+        (**(code **)(*piVar2 + 0xb4))(this,6,this->id[this->cur_state],this->id2[this->cur_state]);
+      }
+    }
+    else if (piVar2 != (int *)0x0) {
+      (**(code **)(*piVar2 + 0xb4))(this,5,this->id[this->cur_state],this->id2[this->cur_state]);
+      return 1;
+    }
+  }
+  return 1;
+}
+
+// --------------------------------------------------
+
+// Function: mouse_right_up_action
+// Address: 00473520
+/* public: virtual long __thiscall TButtonPanel::mouse_right_up_action(long,long,int,int) */
+
+long __thiscall
+TButtonPanel::mouse_right_up_action
+          (TButtonPanel *this,long param_1,long param_2,int param_3,int param_4)
+{
+  TPanel::release_mouse((TPanel *)this);
+  if (this->is_down != 0) {
+    if (this->buttonTypeValue != Radio) {
+      this->is_down = 0;
+    }
+    (**(code **)(this->_padding_ + 0x20))(1);
+    SendMessageA(*(undefined4 *)(this->_padding_ + 4),0xf,0,0);
+    do_right_action(this,param_3);
+    return 1;
+  }
+  if ((this->buttonTypeValue == Radio) && (this->cur_state == 1)) {
+    this->is_down = 1;
+    (**(code **)(this->_padding_ + 0x20))(1);
+  }
+  return 1;
+}
+
+// --------------------------------------------------
+
+// Function: handle_key_down
+// Address: 004735b0
+// [HELPER] s_C__msdev_work_age1_x1_Pnl_btn_cp: "C:\msdev\work\age1_x1\Pnl_btn.cpp"
+/* public: virtual long __thiscall TButtonPanel::handle_key_down(long,short,int,int,int) */
+
+long __thiscall
+TButtonPanel::handle_key_down
+          (TButtonPanel *this,long param_1,short param_2,int param_3,int param_4,int param_5)
+{
+  int iVar1;
+  ulong uVar2;
+  long lVar3;
+  
+  if (((((this->_padding_ != 0) && (this->disabled == 0)) && (param_3 == 0)) &&
+      (((param_4 == 0 && (this->hotkey != 0)) &&
+       ((param_1 == this->hotkey && (this->key_down == 0)))))) &&
+     ((this->hotkey_shift == 0 || (param_5 == this->hotkey_shift)))) {
+    if (((this->_padding_ != 0) && ((TPanel *)this->_padding_ != (TPanel *)0x0)) &&
+       (this->_padding_ == 0)) {
+      TPanel::set_curr_child((TPanel *)this->_padding_,(TPanel *)this);
+    }
+    if (this->sound != (TDigital *)0x0) {
+      iVar1 = TDigital::is_playing(this->sound);
+      if (iVar1 != 0) {
+        TDigital::stop(this->sound);
+      }
+      TDigital::play(this->sound);
+    }
+    this->key_down = param_1;
+    this->is_down = 1;
+    uVar2 = debug_timeGetTime(s_C__msdev_work_age1_x1_Pnl_btn_cp,0x421);
+    this->button_down_time = uVar2;
+    (**(code **)(this->_padding_ + 0x20))(1);
+    if ((int *)this->_padding_ != (int *)0x0) {
+      (**(code **)(*(int *)this->_padding_ + 0xb4))
+                (this,2,this->id[this->cur_state],this->id2[this->cur_state]);
+    }
+    return 1;
+  }
+  lVar3 = TPanel::handle_key_down((TPanel *)this,param_1,param_2,param_3,param_4,param_5);
+  return lVar3;
+}
+
+// --------------------------------------------------
+
+// Function: key_down_action
+// Address: 004736f0
+// [HELPER] s_C__msdev_work_age1_x1_Pnl_btn_cp: "C:\msdev\work\age1_x1\Pnl_btn.cpp"
+/* public: virtual long __thiscall TButtonPanel::key_down_action(long,short,int,int,int) */
+
+long __thiscall
+TButtonPanel::key_down_action
+          (TButtonPanel *this,long param_1,short param_2,int param_3,int param_4,int param_5)
+{
+  int iVar1;
+  ulong uVar2;
+  TPanel *this_00;
+  TPanel *pTVar3;
+  
+  if (this->key_down == 0) {
+    switch(param_1) {
+    case 0xd:
+    case 0x20:
+      if (this->disabled != 0) {
+        return 0;
+      }
+      if (param_3 != 0) {
+        return 0;
+      }
+      if (param_4 != 0) {
+        return 0;
+      }
+      if (this->sound != (TDigital *)0x0) {
+        iVar1 = TDigital::is_playing(this->sound);
+        if (iVar1 != 0) {
+          TDigital::stop(this->sound);
+        }
+        TDigital::play(this->sound);
+      }
+      this->key_down = param_1;
+      this->is_down = 1;
+      uVar2 = debug_timeGetTime(s_C__msdev_work_age1_x1_Pnl_btn_cp,1099);
+      this->button_down_time = uVar2;
+      (**(code **)(this->_padding_ + 0x20))(1);
+      if ((int *)this->_padding_ == (int *)0x0) {
+        return 1;
+      }
+      (**(code **)(*(int *)this->_padding_ + 0xb4))
+                (this,2,this->id[this->cur_state],this->id2[this->cur_state]);
+      return 1;
+    default:
+      goto switchD_0047371a_caseD_e;
+    case 0x26:
+      if (param_3 != 0) {
+        return 1;
+      }
+      if (param_4 != 0) {
+        return 1;
+      }
+      if (this->_padding_ == 0) {
+        return 1;
+      }
+      this_00 = (TPanel *)this->_padding_;
+      if (this_00 == (TPanel *)0x0) {
+        return 1;
+      }
+      pTVar3 = (TPanel *)this->_padding_;
+      break;
+    case 0x28:
+      if (param_3 != 0) {
+        return 1;
+      }
+      if (param_4 != 0) {
+        return 1;
+      }
+      if (this->_padding_ == 0) {
+        return 1;
+      }
+      this_00 = (TPanel *)this->_padding_;
+      if (this_00 == (TPanel *)0x0) {
+        return 1;
+      }
+      pTVar3 = (TPanel *)this->_padding_;
+    }
+    if (pTVar3 == (TPanel *)0x0) {
+      return 1;
+    }
+    TPanel::set_curr_child(this_00,pTVar3);
+    return 1;
+  }
+switchD_0047371a_caseD_e:
+  return 0;
+}
+
+// --------------------------------------------------
+
+// Function: wnd_proc
+// Address: 00473890
+/* public: virtual long __thiscall TButtonPanel::wnd_proc(void *,unsigned int,unsigned int,long) */
+
+long __thiscall
+TButtonPanel::wnd_proc(TButtonPanel *this,void *param_1,uint param_2,uint param_3,long param_4)
+{
+  long lVar1;
+  
+  if (((param_2 == 0x101) && (this->key_down != 0)) && (param_3 == this->key_down)) {
+    this->key_down = 0;
+    if (this->buttonTypeValue != Radio) {
+      this->is_down = 0;
+    }
+    (**(code **)(this->_padding_ + 0x20))(1);
+    SendMessageA(*(undefined4 *)(this->_padding_ + 4),0xf,0,0);
+    do_action(this);
+    return 1;
+  }
+  lVar1 = TPanel::wnd_proc((TPanel *)this,param_1,param_2,param_3,param_4);
+  return lVar1;
+}
+
+// --------------------------------------------------
+
+// Function: char_action
+// Address: 00473920
+/* public: virtual long __thiscall TButtonPanel::char_action(long,short) */
+
+long __thiscall TButtonPanel::char_action(TButtonPanel *this,long param_1,short param_2)
+{
+  return 0;
+}
+
+// --------------------------------------------------
+
+// Function: hit_button
+// Address: 00473930
+/* public: virtual int __thiscall TButtonPanel::hit_button(long,long) */
+
+int __thiscall TButtonPanel::hit_button(TButtonPanel *this,long param_1,long param_2)
+{
+  uchar uVar1;
+  int iVar2;
+  
+  iVar2 = (**(code **)(this->_padding_ + 0xbc))(param_1,param_2);
+  if (iVar2 == 0) {
+    return 0;
+  }
+  if (this->all_hot == 0) {
+    if (this->pic[this->cur_state] != (TShape *)0x0) {
+      uVar1 = TShape::shape_check(this->pic[this->cur_state],
+                                  (param_1 - this->pic_x) - this->_padding_,
+                                  (param_2 - this->pic_y) - this->_padding_,
+                                  (int)this->pic_index[this->cur_state]);
+      return (uint)(uVar1 != '\0');
+    }
+  }
+  return 1;
+}
+
+// --------------------------------------------------
+
+// Function: do_action
+// Address: 004739b0
+/* public: void __thiscall TButtonPanel::do_action(void) */
+
+void __thiscall TButtonPanel::do_action(TButtonPanel *this)
+{
+  short sVar1;
+  
+  if (this->buttonTypeValue == State) {
+    if ((int)this->cur_state == this->num_states + -1) {
+      (**(code **)(this->_padding_ + 0xe0))(0);
+    }
+    else {
+      (**(code **)(this->_padding_ + 0xe0))((ushort)this->cur_state + 1);
+    }
+  }
+  else if (this->buttonTypeValue == Radio) {
+    set_radio_button(this);
+  }
+  if ((int *)this->_padding_ != (int *)0x0) {
+    (**(code **)(*(int *)this->_padding_ + 0xb4))
+              (this,3,this->id[this->cur_state],this->id2[this->cur_state]);
+  }
+  if (this->notifyTypeValue == NotifyAction) {
+    if ((int *)this->_padding_ != (int *)0x0) {
+      (**(code **)(*(int *)this->_padding_ + 0xb4))
+                (this,1,this->id[this->cur_state],this->id2[this->cur_state]);
+      return;
+    }
+  }
+  else {
+    sVar1 = this->cur_state;
+    if ((this->id[sVar1] != 0) || (this->id2[sVar1] != 0)) {
+      SendMessageA(*(undefined4 *)(this->_padding_ + 4),0x111,this->id[sVar1],this->id2[sVar1]);
+    }
+  }
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: do_right_action
+// Address: 00473aa0
+/* public: void __thiscall TButtonPanel::do_right_action(int) */
+
+void __thiscall TButtonPanel::do_right_action(TButtonPanel *this,int param_1)
+{
+  long lVar1;
+  long lVar2;
+  
+  if (this->buttonTypeValue == State) {
+    if ((int)this->cur_state == this->num_states + -1) {
+      (**(code **)(this->_padding_ + 0xe0))(0);
+    }
+    else {
+      (**(code **)(this->_padding_ + 0xe0))((ushort)this->cur_state + 1);
+    }
+  }
+  else if (this->buttonTypeValue == Radio) {
+    set_radio_button(this);
+  }
+  lVar1 = this->id[this->cur_state];
+  lVar2 = this->id2[this->cur_state];
+  if ((int *)this->_padding_ != (int *)0x0) {
+    (**(code **)(*(int *)this->_padding_ + 0xb4))(this,6,lVar1,lVar2);
+  }
+  if (this->notifyTypeValue == NotifyAction) {
+    if ((int *)this->_padding_ != (int *)0x0) {
+      (**(code **)(*(int *)this->_padding_ + 0xb4))(this,4,lVar1,lVar2);
+      return;
+    }
+  }
+  else if ((this->id[this->cur_state] != 0) || (this->id2[this->cur_state] != 0)) {
+    SendMessageA(*(undefined4 *)(this->_padding_ + 4),0x111,lVar1,lVar2);
+  }
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: reset
+// Address: 00473b80
+/* public: void __thiscall TButtonPanel::reset(void) */
+
+void __thiscall TButtonPanel::reset(TButtonPanel *this)
+{
+  TPanel::release_mouse((TPanel *)this);
+  if (this->is_down != 0) {
+    if (this->buttonTypeValue != Radio) {
+      this->is_down = 0;
+    }
+    (**(code **)(this->_padding_ + 0x20))(1);
+  }
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: set_sound_number
+// Address: 00473bb0
+/* public: void __thiscall TButtonPanel::set_sound_number(int) */
+
+void __thiscall TButtonPanel::set_sound_number(TButtonPanel *this,int param_1)
+{
+  this->sound_number = param_1;
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: stop_sound_system
+// Address: 00473bc0
+/* public: virtual void __thiscall TButtonPanel::stop_sound_system(void) */
+
+void __thiscall TButtonPanel::stop_sound_system(TButtonPanel *this)
+{
+  if (this->sound != (TDigital *)0x0) {
+    this->sound = (TDigital *)0x0;
+  }
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: restart_sound_system
+// Address: 00473be0
+/* public: virtual int __thiscall TButtonPanel::restart_sound_system(void) */
+
+int __thiscall TButtonPanel::restart_sound_system(TButtonPanel *this)
+{
+  TDigital *pTVar1;
+  
+  if (this->sound_number != -1) {
+    pTVar1 = RGE_Base_Game::get_sound(rge_base_game,this->sound_number);
+    this->sound = pTVar1;
+  }
+  return 1;
+}
+
+// --------------------------------------------------
+
+// Function: ~TButtonPanel
+// Address: 004754ae
+void __thiscall TButtonPanel::~TButtonPanel(TButtonPanel *this)
+{
+  int iVar1;
+  char **ppcVar2;
+  
+  iVar1 = 9;
+  this->_padding_ = (int)&_vftable_;
+  ppcVar2 = this->text2;
+  do {
+    if (ppcVar2[-9] != (char *)0x0) {
+      free(ppcVar2[-9]);
+      ppcVar2[-9] = (char *)0x0;
+    }
+    if (*ppcVar2 != (char *)0x0) {
+      free(*ppcVar2);
+      *ppcVar2 = (char *)0x0;
+    }
+    ppcVar2 = ppcVar2 + 1;
+    iVar1 = iVar1 + -1;
+  } while (iVar1 != 0);
+  if (this->radio_buttons != (TButtonPanel **)0x0) {
+    free(this->radio_buttons);
+    this->radio_buttons = (TButtonPanel **)0x0;
+  }
+  TPanel::~TPanel((TPanel *)this);
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: ~TButtonPanel
+// Address: 00519e8e
+void __thiscall TButtonPanel::~TButtonPanel(TButtonPanel *this)
+{
+  int iVar1;
+  char **ppcVar2;
+  
+  iVar1 = 9;
+  this->_padding_ = (int)&_vftable_;
+  ppcVar2 = this->text2;
+  do {
+    if (ppcVar2[-9] != (char *)0x0) {
+      free(ppcVar2[-9]);
+      ppcVar2[-9] = (char *)0x0;
+    }
+    if (*ppcVar2 != (char *)0x0) {
+      free(*ppcVar2);
+      *ppcVar2 = (char *)0x0;
+    }
+    ppcVar2 = ppcVar2 + 1;
+    iVar1 = iVar1 + -1;
+  } while (iVar1 != 0);
+  if (this->radio_buttons != (TButtonPanel **)0x0) {
+    free(this->radio_buttons);
+    this->radio_buttons = (TButtonPanel **)0x0;
+  }
+  TPanel::~TPanel((TPanel *)this);
+  return;
+}
+
+// --------------------------------------------------
+

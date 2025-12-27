@@ -4,6 +4,7 @@
 #include "rge/RGE_Prog_Info.h"
 
 // Define the WinMain entry point
+// Address: 0x004549e0
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 #ifdef _DEBUG
     AllocConsole();

@@ -1,0 +1,467 @@
+// Class: RGE_RMM_Land_Generator
+// Function: RGE_RMM_Land_Generator
+// Address: 00485200
+/* public: __thiscall RGE_RMM_Land_Generator::RGE_RMM_Land_Generator(class RGE_Map *,class
+   RGE_Random_Map_Module *,struct RGE_Land_Info *) */
+
+RGE_RMM_Land_Generator * __thiscall
+RGE_RMM_Land_Generator::RGE_RMM_Land_Generator
+          (RGE_RMM_Land_Generator *this,RGE_Map *param_1,RGE_Random_Map_Module *param_2,
+          RGE_Land_Info *param_3)
+{
+  int iVar1;
+  RGE_Land_Info *pRVar2;
+  
+  RGE_Random_Map_Module::RGE_Random_Map_Module((RGE_Random_Map_Module *)this,param_1,param_2,'\x01')
+  ;
+  this->_padding_ = (int)&_vftable_;
+  this->_padding_ = 0x3f800000;
+  pRVar2 = &this->info;
+  for (iVar1 = 0x50e; iVar1 != 0; iVar1 = iVar1 + -1) {
+    pRVar2->land[0].land_size = param_3->land[0].land_size;
+    param_3 = (RGE_Land_Info *)&param_3->land[0].terrain_type;
+    pRVar2 = (RGE_Land_Info *)&pRVar2->land[0].terrain_type;
+  }
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: generate
+// Address: 00485240
+/* public: virtual unsigned char __thiscall RGE_RMM_Land_Generator::generate(void) */
+
+uchar __thiscall RGE_RMM_Land_Generator::generate(RGE_RMM_Land_Generator *this)
+{
+  undefined1 uVar1;
+  uint uVar2;
+  uint uVar3;
+  undefined4 *puVar4;
+  
+  RGE_Random_Map_Module::clear_stack((RGE_Random_Map_Module *)this);
+  uVar1 = (undefined1)(this->info).land_num;
+  uVar2 = this->_padding_ * this->_padding_;
+  puVar4 = (undefined4 *)this->_padding_;
+  for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    *puVar4 = CONCAT22(CONCAT11(uVar1,uVar1),CONCAT11(uVar1,uVar1));
+    puVar4 = puVar4 + 1;
+  }
+  for (uVar2 = uVar2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+    *(undefined1 *)puVar4 = uVar1;
+    puVar4 = (undefined4 *)((int)puVar4 + 1);
+  }
+  RGE_Map::set_terrain
+            ((RGE_Map *)this->_padding_,(RGE_Player *)0x0,(RGE_Game_World *)0x0,0,0,
+             (short)this->_padding_ + -1,(short)this->_padding_ + -1,(this->info).base_terrain,
+             '\x01',0);
+  base_land_generate(this);
+  RGE_Map::clean_terrain
+            ((RGE_Map *)this->_padding_,0,0,this->_padding_,this->_padding_,
+             (this->info).base_terrain);
+  return '\x01';
+}
+
+// --------------------------------------------------
+
+// Function: check_terrain_and_zone
+// Address: 004852d0
+/* WARNING: Variable defined which should be unmapped: count */
+/* protected: unsigned char __thiscall RGE_RMM_Land_Generator::check_terrain_and_zone(unsigned
+   char,unsigned char,long,long) */
+
+uchar __thiscall
+RGE_RMM_Land_Generator::check_terrain_and_zone
+          (RGE_RMM_Land_Generator *this,uchar param_1,uchar param_2,long param_3,long param_4)
+{
+  int iVar1;
+  int iVar2;
+  int *piVar3;
+  int iVar4;
+  long count;
+  long octogon_y1;
+  long cx0;
+  long cx1;
+  long y1;
+  long x0;
+  long x1;
+  
+  octogon_y1 = 0;
+  iVar1 = (this->info).land[param_2].area;
+  iVar4 = param_4 - iVar1;
+  __ftol();
+  if ((uint)*(byte *)(*(int *)(this->_padding_ + param_4 * 4) + param_3) != (this->info).land_num) {
+    return '\0';
+  }
+  if (param_4 + iVar1 < iVar4) {
+    return '\0';
+  }
+  piVar3 = (int *)(this->_padding_ + iVar4 * 4);
+  do {
+    if (iVar4 < 0) {
+      if (param_4 + -2 < iVar4) {
+        octogon_y1 = octogon_y1 + 5;
+      }
+    }
+    else {
+      iVar2 = param_3 - iVar1;
+      if (iVar4 < this->_padding_) {
+        for (; iVar2 <= param_3 + iVar1; iVar2 = iVar2 + 1) {
+          if (iVar2 < 0) {
+            if (param_3 + -2 < iVar2) {
+              octogon_y1 = octogon_y1 + 1;
+            }
+          }
+          else if (iVar2 < this->_padding_) {
+            if (*(byte *)(iVar2 + *piVar3) == (this->info).land[param_2].zone) {
+              if ((((param_4 + -2 <= iVar4) && (iVar4 <= param_4 + 2)) && (param_3 + -2 <= iVar2))
+                 && (iVar2 <= param_3 + 2)) {
+                octogon_y1 = octogon_y1 + 1;
+              }
+            }
+            else if ((int)(uint)*(byte *)(iVar2 + *piVar3) < (this->info).land_num) {
+              return '\0';
+            }
+          }
+          else if (iVar2 < param_3 + 2) {
+            octogon_y1 = octogon_y1 + 1;
+          }
+        }
+      }
+      else if (iVar4 < param_4 + 2) {
+        octogon_y1 = octogon_y1 + 5;
+      }
+    }
+    iVar4 = iVar4 + 1;
+    piVar3 = piVar3 + 1;
+  } while (iVar4 <= param_4 + iVar1);
+  return (uchar)octogon_y1;
+}
+
+// --------------------------------------------------
+
+// Function: chance
+// Address: 00485480
+/* protected: unsigned char __thiscall RGE_RMM_Land_Generator::chance(long,long,long) */
+
+uchar __thiscall
+RGE_RMM_Land_Generator::chance(RGE_RMM_Land_Generator *this,long param_1,long param_2,long param_3)
+{
+  byte bVar1;
+  long lVar2;
+  int iVar3;
+  int iVar4;
+  int iVar5;
+  int iVar6;
+  int iVar7;
+  
+  lVar2 = param_3;
+  bVar1 = (this->info).land[param_3].wall_fade;
+  param_3 = (long)bVar1;
+  if (bVar1 == 0) {
+    iVar5 = 0;
+  }
+  else {
+    iVar5 = (this->info).land[lVar2].wall_1_avoidance_line;
+    iVar4 = (this->info).land[lVar2].wall_3_avoidance_line;
+    iVar3 = iVar5 - param_1;
+    iVar7 = param_1 - iVar4;
+    iVar6 = iVar3;
+    if (iVar3 <= iVar7) {
+      iVar6 = iVar7;
+    }
+    iVar3 = iVar3 + iVar5;
+    iVar7 = iVar7 + (this->_padding_ - iVar4);
+    if (iVar3 <= iVar7) {
+      iVar3 = iVar7;
+    }
+    iVar5 = (this->info).land[lVar2].wall_2_avoidance_line;
+    if (iVar3 < 1) {
+      iVar5 = iVar5 - param_2;
+      iVar4 = -(this->info).land[lVar2].wall_4_avoidance_line;
+    }
+    else {
+      iVar4 = iVar3 - (this->info).land[lVar2].wall_4_avoidance_line;
+      iVar5 = (iVar5 + iVar3) - param_2;
+    }
+    iVar3 = iVar4 + param_2;
+    if (iVar4 + param_2 < iVar5) {
+      iVar3 = iVar5;
+    }
+    if (iVar6 < 0) {
+      iVar6 = 0;
+    }
+    if (iVar3 < 0) {
+      iVar3 = 0;
+    }
+    iVar5 = (iVar3 + iVar6) * param_3;
+    if (99 < iVar5) {
+      return 'e';
+    }
+  }
+  return (uchar)iVar5;
+}
+
+// --------------------------------------------------
+
+// Function: base_land_generate
+// Address: 00485520
+// [HELPER] s_C__msdev_work_age1_x1_rmm_land_c: "C:\msdev\work\age1_x1\rmm_land.cpp"
+/* WARNING: Variable defined which should be unmapped: y */
+/* protected: unsigned char __thiscall RGE_RMM_Land_Generator::base_land_generate(void) */
+
+uchar __thiscall RGE_RMM_Land_Generator::base_land_generate(RGE_RMM_Land_Generator *this)
+{
+  uchar uVar1;
+  Map_Stack *pMVar2;
+  byte bVar3;
+  byte bVar4;
+  Map_Stack *pMVar5;
+  Map_Stack *pMVar7;
+  RGE_Tile *pRVar8;
+  int iVar9;
+  int iVar10;
+  int iVar11;
+  long *plVar12;
+  long lVar13;
+  uchar *puVar14;
+  long y;
+  long x;
+  long local_b0c;
+  Map_Stack *local_b08;
+  long index1;
+  long index3;
+  RGE_Tile *tile;
+  int iStack_af8;
+  uchar done;
+  uchar zone;
+  char local_af1;
+  long index2;
+  long x1;
+  uchar terrain;
+  long max_y;
+  long max_x;
+  float in_zone;
+  long land_size [99];
+  Map_Stack stack [99];
+  uint uVar6;
+  
+  index3 = 0;
+  in_zone = (float)(this->_padding_ + -1);
+  max_x = this->_padding_ + -1;
+  if (0 < (this->info).land_num) {
+    local_b08 = (Map_Stack *)&stack[0].y;
+    max_y = (long)(land_size + 1);
+    plVar12 = &(this->info).land[0].base_size;
+    do {
+      index1 = (long)plVar12;
+      RGE_Random_Map_Module::init_stack((RGE_Random_Map_Module *)this,local_b08);
+      iVar11 = plVar12[-2];
+      iVar10 = plVar12[-1];
+      *(undefined4 *)max_y = 0;
+      iVar9 = *plVar12;
+      _terrain = iVar11 - iVar9;
+      pRVar8 = (RGE_Tile *)(iVar10 - iVar9);
+      iVar11 = iVar11 + iVar9;
+      iVar10 = iVar10 + iVar9;
+      if (_terrain < 0) {
+        _terrain = 0;
+      }
+      if ((int)pRVar8 < 0) {
+        pRVar8 = (RGE_Tile *)0x0;
+      }
+      if (this->_padding_ <= iVar11) {
+        iVar11 = this->_padding_ + -1;
+      }
+      if (this->_padding_ <= iVar10) {
+        iVar10 = this->_padding_ + -1;
+      }
+      RGE_Map::set_terrain
+                ((RGE_Map *)this->_padding_,(RGE_Player *)0x0,(RGE_Game_World *)0x0,(short)_terrain,
+                 (short)pRVar8,(short)iVar11,(short)iVar10,*(uchar *)(index1 + -0xc),'\x01',0);
+      bVar3 = *(byte *)(index1 + 8);
+      index2 = CONCAT31(index2._1_3_,bVar3);
+      land_size[bVar3 + 1] = ((iVar11 - _terrain) + 1) * ((iVar10 - (int)pRVar8) + 1);
+      for (tile = pRVar8; iVar9 = _terrain, (int)tile <= iVar10;
+          tile = (RGE_Tile *)((int)&tile->screen_xpos + 1)) {
+        while (iVar9 <= iVar11) {
+          *(byte *)(*(int *)(this->_padding_ + (int)tile * 4) + -1 + iVar9 + 1) = bVar3;
+          iVar9 = iVar9 + 1;
+        }
+      }
+      if ((0 < _terrain) && (x1 = (long)pRVar8, (int)pRVar8 <= iVar10)) {
+        tile = (RGE_Tile *)(float)index3;
+        iStack_af8 = _terrain + -1;
+        do {
+          RGE_Random_Map_Module::push_stack
+                    ((RGE_Random_Map_Module *)this,local_b08,iStack_af8,x1,(float)tile,0.0);
+          x1 = x1 + 1;
+        } while (x1 <= iVar10);
+      }
+      if ((0 < (int)pRVar8) && (x1 = _terrain, _terrain <= iVar11)) {
+        tile = (RGE_Tile *)(float)index3;
+        do {
+          RGE_Random_Map_Module::push_stack
+                    ((RGE_Random_Map_Module *)this,local_b08,x1,(long)&pRVar8[-1].objects.field_0xb,
+                     (float)tile,0.0);
+          x1 = x1 + 1;
+        } while (x1 <= iVar11);
+      }
+      if ((iVar11 < this->_padding_ + -1) && ((int)pRVar8 <= iVar10)) {
+        tile = (RGE_Tile *)(float)index3;
+        do {
+          RGE_Random_Map_Module::push_stack
+                    ((RGE_Random_Map_Module *)this,local_b08,iVar11 + 1,(long)pRVar8,(float)tile,0.0
+                    );
+          pRVar8 = (RGE_Tile *)((int)&pRVar8->screen_xpos + 1);
+        } while ((int)pRVar8 <= iVar10);
+      }
+      if ((iVar10 < this->_padding_ + -1) && (_terrain <= iVar11)) {
+        tile = (RGE_Tile *)(float)index3;
+        iVar9 = _terrain;
+        do {
+          RGE_Random_Map_Module::push_stack
+                    ((RGE_Random_Map_Module *)this,local_b08,iVar9,iVar10 + 1,(float)tile,0.0);
+          iVar9 = iVar9 + 1;
+        } while (iVar9 <= iVar11);
+      }
+      index3 = index3 + 1;
+      max_y = max_y + 4;
+      plVar12 = (long *)(index1 + 0x34);
+      local_b08 = local_b08 + 1;
+      index1 = (long)plVar12;
+    } while (index3 < (this->info).land_num);
+  }
+  do {
+    local_af1 = '\x01';
+    index3 = 0;
+    if (0 < (this->info).land_num) {
+      index1 = (long)(land_size + 1);
+      local_b08 = (Map_Stack *)&stack[0].y;
+      plVar12 = &(this->info).land[0].clumpiness_factor;
+      do {
+        lVar13 = index3;
+        index2 = *(long *)index1;
+        if ((index2 < ((RGE_Land_Info_Line *)(plVar12 + -7))->land_size) &&
+           (pMVar5 = RGE_Random_Map_Module::pop_stack
+                               ((RGE_Random_Map_Module *)this,local_b08,&local_b0c,&x,
+                                (float *)land_size), pMVar5 != (Map_Stack *)0x0)) {
+          local_af1 = '\0';
+          bVar3 = chance(this,local_b0c,x,lVar13);
+          iVar11 = debug_rand(s_C__msdev_work_age1_x1_rmm_land_c,299);
+          if ((iVar11 * 100) / 0x7fff < (int)(uint)bVar3) {
+            *(undefined1 *)(*(int *)(this->_padding_ + x * 4) + local_b0c) = 0xff;
+          }
+          else {
+            iStack_af8 = *(int *)(this->_padding_ + x * 4) + local_b0c * 0x18;
+            bVar3 = (byte)plVar12[-6];
+            max_y = CONCAT31(max_y._1_3_,bVar3);
+            bVar4 = check_terrain_and_zone(this,bVar3,(uchar)lVar13,local_b0c,x);
+            uVar6 = (uint)bVar4;
+            lVar13 = index3;
+            if (((uint)*(byte *)(*(int *)(this->_padding_ + x * 4) + local_b0c) ==
+                 (this->info).land_num) && (uVar6 != 0)) {
+              *(byte *)(iStack_af8 + 5) =
+                   (bVar3 ^ *(byte *)(iStack_af8 + 5)) & 0x1f ^ *(byte *)(iStack_af8 + 5);
+              *(uchar *)(*(int *)(this->_padding_ + x * 4) + local_b0c) = *(uchar *)(plVar12 + -1);
+              pMVar5 = local_b08;
+              if ((0 < local_b0c) &&
+                 ((uint)*(byte *)(*(int *)(this->_padding_ + x * 4) + -1 + local_b0c) ==
+                  (this->info).land_num)) {
+                iVar11 = debug_rand(s_C__msdev_work_age1_x1_rmm_land_c,0x138);
+                pMVar5 = local_b08;
+                iStack_af8 = ((iVar11 * 100) / 0x7fff - uVar6 * *plVar12) + 0xfa;
+                RGE_Random_Map_Module::push_stack
+                          ((RGE_Random_Map_Module *)this,local_b08,local_b0c + -1,x,0.0,
+                           (float)iStack_af8);
+              }
+              if ((local_b0c < (int)in_zone) &&
+                 ((uint)*(byte *)(*(int *)(this->_padding_ + x * 4) + 1 + local_b0c) ==
+                  (this->info).land_num)) {
+                iVar11 = debug_rand(s_C__msdev_work_age1_x1_rmm_land_c,0x13b);
+                iStack_af8 = ((iVar11 * 100) / 0x7fff - uVar6 * *plVar12) + 0xfa;
+                RGE_Random_Map_Module::push_stack
+                          ((RGE_Random_Map_Module *)this,pMVar5,local_b0c + 1,x,0.0,
+                           (float)iStack_af8);
+              }
+              if ((0 < x) &&
+                 ((uint)*(byte *)(*(int *)(this->_padding_ + -4 + x * 4) + local_b0c) ==
+                  (this->info).land_num)) {
+                iVar11 = debug_rand(s_C__msdev_work_age1_x1_rmm_land_c,0x13e);
+                iStack_af8 = ((iVar11 * 100) / 0x7fff - uVar6 * *plVar12) + 0xfa;
+                RGE_Random_Map_Module::push_stack
+                          ((RGE_Random_Map_Module *)this,pMVar5,local_b0c,x + -1,0.0,
+                           (float)iStack_af8);
+              }
+              if ((x < max_x) &&
+                 ((uint)*(byte *)(*(int *)(this->_padding_ + 4 + x * 4) + local_b0c) ==
+                  (this->info).land_num)) {
+                iVar11 = debug_rand(s_C__msdev_work_age1_x1_rmm_land_c,0x141);
+                iStack_af8 = ((iVar11 * 100) / 0x7fff - uVar6 * *plVar12) + 0xfa;
+                RGE_Random_Map_Module::push_stack
+                          ((RGE_Random_Map_Module *)this,pMVar5,local_b0c,x + 1,0.0,
+                           (float)iStack_af8);
+              }
+              *(long *)index1 = index2 + 1;
+              lVar13 = index3;
+            }
+          }
+        }
+        index3 = lVar13 + 1;
+        plVar12 = plVar12 + 0xd;
+        local_b08 = local_b08 + 1;
+        index1 = index1 + 4;
+      } while (index3 < (this->info).land_num);
+    }
+  } while (local_af1 == '\0');
+  index3 = 0;
+  if (0 < (this->info).land_num) {
+    pMVar5 = (Map_Stack *)&stack[0].y;
+    puVar14 = &(this->info).land[0].zone;
+    do {
+      uVar1 = *puVar14;
+      max_y = CONCAT31(max_y._1_3_,(char)*(long *)(puVar14 + -0x14));
+      index1 = (long)pMVar5;
+      index2 = (long)puVar14;
+      pMVar7 = RGE_Random_Map_Module::pop_stack
+                         ((RGE_Random_Map_Module *)this,pMVar5,&local_b0c,&x,(float *)land_size);
+      pMVar2 = (Map_Stack *)index1;
+      while (pMVar7 != (Map_Stack *)0x0) {
+        iVar11 = *(int *)(this->_padding_ + x * 4) + local_b0c * 0x18;
+        if (((((0 < local_b0c) &&
+              (iVar10 = *(int *)(this->_padding_ + x * 4) + local_b0c,
+              *(uchar *)(iVar10 + -1) == uVar1)) && (local_b0c < (int)in_zone)) &&
+            (*(uchar *)(iVar10 + 1) == uVar1)) ||
+           (((0 < x && (*(uchar *)(*(int *)(this->_padding_ + -4 + x * 4) + local_b0c) == uVar1)) &&
+            ((x < max_x && (*(uchar *)(*(int *)(this->_padding_ + 4 + x * 4) + local_b0c) == uVar1))
+            )))) {
+          bVar3 = *(byte *)(iVar11 + 5);
+          *(byte *)(iVar11 + 5) = ((byte)max_y ^ bVar3) & 0x1f ^ bVar3;
+        }
+        index1 = (long)pMVar2;
+        pMVar7 = RGE_Random_Map_Module::pop_stack
+                           ((RGE_Random_Map_Module *)this,pMVar2,&local_b0c,&x,(float *)land_size);
+        pMVar5 = pMVar2;
+        puVar14 = (uchar *)index2;
+        pMVar2 = (Map_Stack *)index1;
+      }
+      index3 = index3 + 1;
+      puVar14 = puVar14 + 0x34;
+      pMVar5 = pMVar5 + 1;
+      index1 = (long)pMVar5;
+      index2 = (long)puVar14;
+    } while (index3 < (this->info).land_num);
+  }
+  iVar11 = 0;
+  if (0 < (this->info).land_num) {
+    pMVar5 = (Map_Stack *)&stack[0].y;
+    do {
+      RGE_Random_Map_Module::deinit_stack((RGE_Random_Map_Module *)this,pMVar5);
+      iVar11 = iVar11 + 1;
+      pMVar5 = pMVar5 + 1;
+    } while (iVar11 < (this->info).land_num);
+  }
+  return '\x01';
+}
+
+// --------------------------------------------------
+

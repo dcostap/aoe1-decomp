@@ -1,0 +1,79 @@
+{
+    "size": 104, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "TSpan_Node_List", 
+            "size": 60, 
+            "name": "VSList"
+        }, 
+        {
+            "offset": 60, 
+            "type": "VSpan_Node * *", 
+            "size": 4, 
+            "name": "Line_Head_Ptrs"
+        }, 
+        {
+            "offset": 64, 
+            "type": "VSpan_Node * *", 
+            "size": 4, 
+            "name": "Line_Tail_Ptrs"
+        }, 
+        {
+            "offset": 68, 
+            "type": "int *", 
+            "size": 4, 
+            "name": "LeftMostPx"
+        }, 
+        {
+            "offset": 72, 
+            "type": "int *", 
+            "size": 4, 
+            "name": "RightMostPx"
+        }, 
+        {
+            "offset": 76, 
+            "type": "int *", 
+            "size": 4, 
+            "name": "Span_Count"
+        }, 
+        {
+            "offset": 80, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Num_Lines"
+        }, 
+        {
+            "offset": 84, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Num_Pixels"
+        }, 
+        {
+            "offset": 88, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Min_Span_Px"
+        }, 
+        {
+            "offset": 92, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Max_Span_Px"
+        }, 
+        {
+            "offset": 96, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Min_Line"
+        }, 
+        {
+            "offset": 100, 
+            "type": "int", 
+            "size": 4, 
+            "name": "Max_Line"
+        }
+    ], 
+    "name": "TSpan_List_Manager"
+}

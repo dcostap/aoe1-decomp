@@ -1,0 +1,37 @@
+{
+    "size": 20, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "char *", 
+            "size": 4, 
+            "name": "stringValue"
+        }, 
+        {
+            "offset": 4, 
+            "type": "int", 
+            "size": 4, 
+            "name": "lengthValue"
+        }, 
+        {
+            "offset": 8, 
+            "type": "int", 
+            "size": 4, 
+            "name": "numWordsValue"
+        }, 
+        {
+            "offset": 12, 
+            "type": "int", 
+            "size": 4, 
+            "name": "indexValue"
+        }, 
+        {
+            "offset": 16, 
+            "type": "int", 
+            "size": 4, 
+            "name": "currentWordValue"
+        }
+    ], 
+    "name": "DString"
+}

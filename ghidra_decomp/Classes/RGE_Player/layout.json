@@ -1,0 +1,3059 @@
+{
+    "size": 544, 
+    "vtable": [
+        {
+            "signature": "void * `scalar_deleting_destructor'(RGE_Player * this, uint param_1)", 
+            "index": 0, 
+            "name": "`scalar_deleting_destructor'"
+        }, 
+        {
+            "signature": "void set_game_status(RGE_Player * this, uchar param_1)", 
+            "index": 1, 
+            "name": "set_game_status"
+        }, 
+        {
+            "signature": "void do_resign(RGE_Player * this, int param_1)", 
+            "index": 2, 
+            "name": "do_resign"
+        }, 
+        {
+            "signature": "void changeToHumanPlayer(RGE_Player * this)", 
+            "index": 3, 
+            "name": "changeToHumanPlayer"
+        }, 
+        {
+            "signature": "void changeToComputerPlayer(RGE_Player * this)", 
+            "index": 4, 
+            "name": "changeToComputerPlayer"
+        }, 
+        {
+            "signature": "char * aiStatus(RGE_Player * this, int param_1)", 
+            "index": 5, 
+            "name": "aiStatus"
+        }, 
+        {
+            "signature": "int isEnemy(RGE_Player * this, int param_1)", 
+            "index": 6, 
+            "name": "isEnemy"
+        }, 
+        {
+            "signature": "int isAlly(RGE_Player * this, int param_1)", 
+            "index": 7, 
+            "name": "isAlly"
+        }, 
+        {
+            "signature": "int isNeutral(RGE_Player * this, int param_1)", 
+            "index": 8, 
+            "name": "isNeutral"
+        }, 
+        {
+            "signature": "int isAllNeutral(RGE_Player * this)", 
+            "index": 9, 
+            "name": "isAllNeutral"
+        }, 
+        {
+            "signature": "void setDiplomaticStance(RGE_Player * this, int param_1, int param_2)", 
+            "index": 10, 
+            "name": "setDiplomaticStance"
+        }, 
+        {
+            "signature": "void loadAIInformation(RGE_Player * this, char * param_1, char * param_2, char * param_3, int param_4, int param_5)", 
+            "index": 11, 
+            "name": "loadAIInformation"
+        }, 
+        {
+            "signature": "void sendUnitAIOrder(RGE_Player * this, int param_1, int param_2, int param_3, int param_4, int param_5, float param_6, float param_7, float param_8, float param_9, int param_10, int param_11, int param_12)", 
+            "index": 12, 
+            "name": "sendUnitAIOrder"
+        }, 
+        {
+            "signature": "void processAIOrder(RGE_Player * this, int param_1, int param_2, int param_3, int param_4, int param_5, float param_6, float param_7, float param_8, float param_9, int param_10, int param_11, int param_12)", 
+            "index": 13, 
+            "name": "processAIOrder"
+        }, 
+        {
+            "signature": "void kickAI(RGE_Player * this, int param_1)", 
+            "index": 14, 
+            "name": "kickAI"
+        }, 
+        {
+            "signature": "int strategicNumber(RGE_Player * this, int param_1)", 
+            "index": 15, 
+            "name": "strategicNumber"
+        }, 
+        {
+            "signature": "void sendGameOrder(RGE_Player * this, RGE_Static_Object * param_1, RGE_Static_Object * param_2, float param_3, float param_4)", 
+            "index": 16, 
+            "name": "sendGameOrder"
+        }, 
+        {
+            "signature": "void sendAddWaypointCommand(RGE_Player * this, int param_1, XYZBYTEPoint * param_2, int param_3)", 
+            "index": 17, 
+            "name": "sendAddWaypointCommand"
+        }, 
+        {
+            "signature": "void processAddWaypointCommand(RGE_Player * this, int param_1, XYZBYTEPoint * param_2, int param_3)", 
+            "index": 18, 
+            "name": "processAddWaypointCommand"
+        }, 
+        {
+            "signature": "void sendPlayCommand(RGE_Player * this, int param_1, int * param_2, int param_3, int param_4, int param_5)", 
+            "index": 19, 
+            "name": "sendPlayCommand"
+        }, 
+        {
+            "signature": "void sendPlayCommand(RGE_Player * this, int param_1, int param_2, int param_3)", 
+            "index": 20, 
+            "name": "sendPlayCommand"
+        }, 
+        {
+            "signature": "int sendAICommand(RGE_Player * this, int param_1, int param_2, int param_3, int param_4, int param_5)", 
+            "index": 21, 
+            "name": "sendAICommand"
+        }, 
+        {
+            "signature": "int objectCostByType(RGE_Player * this, int param_1)", 
+            "index": 22, 
+            "name": "objectCostByType"
+        }, 
+        {
+            "signature": "void trackUnitGather(RGE_Player * this, int param_1, int param_2, int param_3)", 
+            "index": 23, 
+            "name": "trackUnitGather"
+        }, 
+        {
+            "signature": "RGE_Static_Object * make_scenario_obj(RGE_Player * this, float param_1, float param_2, float param_3, short param_4, uchar param_5, float param_6)", 
+            "index": 24, 
+            "name": "make_scenario_obj"
+        }, 
+        {
+            "signature": "void scenario_save(RGE_Player * this, int param_1)", 
+            "index": 25, 
+            "name": "scenario_save"
+        }, 
+        {
+            "signature": "void scenario_load(RGE_Player * this, int param_1, long * param_2, float param_3)", 
+            "index": 26, 
+            "name": "scenario_load"
+        }, 
+        {
+            "signature": "void scenario_postsave(RGE_Player * this, int param_1)", 
+            "index": 27, 
+            "name": "scenario_postsave"
+        }, 
+        {
+            "signature": "void scenario_postload(RGE_Player * this, int param_1, long * param_2, float param_3)", 
+            "index": 28, 
+            "name": "scenario_postload"
+        }, 
+        {
+            "signature": "void load(RGE_Player * this, int param_1)", 
+            "index": 29, 
+            "name": "load"
+        }, 
+        {
+            "signature": "void add_attribute_num(RGE_Player * this, short param_1, float param_2, uchar param_3)", 
+            "index": 30, 
+            "name": "add_attribute_num"
+        }, 
+        {
+            "signature": "void update(RGE_Player * this)", 
+            "index": 31, 
+            "name": "update"
+        }, 
+        {
+            "signature": "void update_dopplegangers(RGE_Player * this)", 
+            "index": 32, 
+            "name": "update_dopplegangers"
+        }, 
+        {
+            "signature": "void save(RGE_Player * this, int param_1)", 
+            "index": 33, 
+            "name": "save"
+        }, 
+        {
+            "signature": "void save2(RGE_Player * this, int param_1)", 
+            "index": 34, 
+            "name": "save2"
+        }, 
+        {
+            "signature": "void save_info(RGE_Player * this, int param_1)", 
+            "index": 35, 
+            "name": "save_info"
+        }, 
+        {
+            "signature": "void random_start(RGE_Player * this)", 
+            "index": 36, 
+            "name": "random_start"
+        }, 
+        {
+            "signature": "RGE_Static_Object * make_new_object(RGE_Player * this, long param_1, float param_2, float param_3, float param_4, int param_5)", 
+            "index": 37, 
+            "name": "make_new_object"
+        }, 
+        {
+            "signature": "void analyize_selected_objects(RGE_Player * this)", 
+            "index": 38, 
+            "name": "analyize_selected_objects"
+        }, 
+        {
+            "signature": "int get_mouse_pointer_action_vars(RGE_Player * this, int param_1, int * param_2, int * param_3)", 
+            "index": 39, 
+            "name": "get_mouse_pointer_action_vars"
+        }, 
+        {
+            "signature": "uchar command_make_move(RGE_Player * this, RGE_Static_Object * param_1, float param_2, float param_3)", 
+            "index": 40, 
+            "name": "command_make_move"
+        }, 
+        {
+            "signature": "uchar command_make_work(RGE_Player * this, RGE_Static_Object * param_1, float param_2, float param_3)", 
+            "index": 41, 
+            "name": "command_make_work"
+        }, 
+        {
+            "signature": "uchar command_make_do(RGE_Player * this, RGE_Static_Object * param_1, float param_2, float param_3)", 
+            "index": 42, 
+            "name": "command_make_do"
+        }, 
+        {
+            "signature": "uchar command_stop(RGE_Player * this)", 
+            "index": 43, 
+            "name": "command_stop"
+        }, 
+        {
+            "signature": "uchar command_place_object(RGE_Player * this, short param_1, float param_2, float param_3, float param_4)", 
+            "index": 44, 
+            "name": "command_place_object"
+        }, 
+        {
+            "signature": "uchar command_add_attribute(RGE_Player * this, int param_1, float param_2)", 
+            "index": 45, 
+            "name": "command_add_attribute"
+        }, 
+        {
+            "signature": "uchar command_give_attribute(RGE_Player * this, int param_1, int param_2, float param_3)", 
+            "index": 46, 
+            "name": "command_give_attribute"
+        }, 
+        {
+            "signature": "uchar command_formation(RGE_Player * this, int param_1)", 
+            "index": 47, 
+            "name": "command_formation"
+        }, 
+        {
+            "signature": "uchar command_stand_ground(RGE_Player * this)", 
+            "index": 48, 
+            "name": "command_stand_ground"
+        }, 
+        {
+            "signature": "uchar command_create_group(RGE_Player * this, int param_1, int * param_2, int param_3, float param_4)", 
+            "index": 49, 
+            "name": "command_create_group"
+        }, 
+        {
+            "signature": "uchar command_add_to_group(RGE_Player * this, int param_1, int param_2, float param_3)", 
+            "index": 50, 
+            "name": "command_add_to_group"
+        }, 
+        {
+            "signature": "uchar command_remove_from_group(RGE_Player * this, int param_1, int param_2)", 
+            "index": 51, 
+            "name": "command_remove_from_group"
+        }, 
+        {
+            "signature": "uchar command_destroy_group(RGE_Player * this, int param_1)", 
+            "index": 52, 
+            "name": "command_destroy_group"
+        }, 
+        {
+            "signature": "uchar command_resign(RGE_Player * this, int param_1, int param_2)", 
+            "index": 53, 
+            "name": "command_resign"
+        }, 
+        {
+            "signature": "uchar command_add_waypoint(RGE_Player * this, float param_1, float param_2, float param_3)", 
+            "index": 54, 
+            "name": "command_add_waypoint"
+        }, 
+        {
+            "signature": "RGE_Object_Node * addObject(RGE_Player * this, RGE_Static_Object * param_1, int param_2, int param_3)", 
+            "index": 55, 
+            "name": "addObject"
+        }, 
+        {
+            "signature": "void removeObject(RGE_Player * this, RGE_Static_Object * param_1, int param_2, int param_3, RGE_Object_Node * param_4)", 
+            "index": 56, 
+            "name": "removeObject"
+        }, 
+        {
+            "signature": "void logMessage(RGE_Player * this, char * param_1, ...)", 
+            "index": 57, 
+            "name": "logMessage"
+        }, 
+        {
+            "signature": "void notify(RGE_Player * this, int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)", 
+            "index": 58, 
+            "name": "notify"
+        }, 
+        {
+            "signature": "void logStatus(RGE_Player * this, _iobuf * param_1, int param_2)", 
+            "index": 59, 
+            "name": "logStatus"
+        }, 
+        {
+            "signature": "void load_victory(RGE_Player * this, int param_1, long * param_2, uchar param_3)", 
+            "index": 60, 
+            "name": "load_victory"
+        }, 
+        {
+            "signature": "void new_victory(RGE_Player * this)", 
+            "index": 61, 
+            "name": "new_victory"
+        }, 
+        {
+            "signature": "void * `scalar_deleting_destructor'(TButtonPanel * this, uint param_1)", 
+            "index": 62, 
+            "name": "`scalar_deleting_destructor'"
+        }, 
+        {
+            "signature": "long setup(TPanel * this, TDrawArea * param_1, TPanel * param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7)", 
+            "index": 63, 
+            "name": "setup"
+        }, 
+        {
+            "signature": "void set_rect(TPanel * this, tagRECT param_1)", 
+            "index": 64, 
+            "name": "set_rect"
+        }, 
+        {
+            "signature": "void set_rect(TButtonPanel * this, long param_1, long param_2, long param_3, long param_4)", 
+            "index": 65, 
+            "name": "set_rect"
+        }, 
+        {
+            "signature": "void set_color(TPanel * this, uchar param_1)", 
+            "index": 66, 
+            "name": "set_color"
+        }, 
+        {
+            "signature": "void set_active(TPanel * this, int param_1)", 
+            "index": 67, 
+            "name": "set_active"
+        }, 
+        {
+            "signature": "void set_positioning(TPanel * this, PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel * param_10, TPanel * param_11, TPanel * param_12, TPanel * param_13)", 
+            "index": 68, 
+            "name": "set_positioning"
+        }, 
+        {
+            "signature": "void set_fixed_position(TPanel * this, long param_1, long param_2, long param_3, long param_4)", 
+            "index": 69, 
+            "name": "set_fixed_position"
+        }, 
+        {
+            "signature": "void set_redraw(TPanel * this, RedrawMode param_1)", 
+            "index": 70, 
+            "name": "set_redraw"
+        }, 
+        {
+            "signature": "void set_overlapped_redraw(TPanel * this, TPanel * param_1, TPanel * param_2, RedrawMode param_3)", 
+            "index": 71, 
+            "name": "set_overlapped_redraw"
+        }, 
+        {
+            "signature": "void draw_setup(TPanel * this, int param_1)", 
+            "index": 72, 
+            "name": "draw_setup"
+        }, 
+        {
+            "signature": "void draw_finish(TPanel * this)", 
+            "index": 73, 
+            "name": "draw_finish"
+        }, 
+        {
+            "signature": "void draw(TButtonPanel * this)", 
+            "index": 74, 
+            "name": "draw"
+        }, 
+        {
+            "signature": "void draw_rect(TPanel * this, tagRECT * param_1)", 
+            "index": 75, 
+            "name": "draw_rect"
+        }, 
+        {
+            "signature": "void draw_offset(TPanel * this, long param_1, long param_2, tagRECT * param_3)", 
+            "index": 76, 
+            "name": "draw_offset"
+        }, 
+        {
+            "signature": "void draw_rect2(TPanel * this, tagRECT * param_1)", 
+            "index": 77, 
+            "name": "draw_rect2"
+        }, 
+        {
+            "signature": "void draw_offset2(TPanel * this, long param_1, long param_2, tagRECT * param_3)", 
+            "index": 78, 
+            "name": "draw_offset2"
+        }, 
+        {
+            "signature": "void paint(TPanel * this)", 
+            "index": 79, 
+            "name": "paint"
+        }, 
+        {
+            "signature": "long wnd_proc(TButtonPanel * this, void * param_1, uint param_2, uint param_3, long param_4)", 
+            "index": 80, 
+            "name": "wnd_proc"
+        }, 
+        {
+            "signature": "long handle_idle(TPanel * this)", 
+            "index": 81, 
+            "name": "handle_idle"
+        }, 
+        {
+            "signature": "long handle_size(TPanel * this, long param_1, long param_2)", 
+            "index": 82, 
+            "name": "handle_size"
+        }, 
+        {
+            "signature": "long handle_paint(TPanel * this)", 
+            "index": 83, 
+            "name": "handle_paint"
+        }, 
+        {
+            "signature": "long handle_key_down(TButtonPanel * this, long param_1, short param_2, int param_3, int param_4, int param_5)", 
+            "index": 84, 
+            "name": "handle_key_down"
+        }, 
+        {
+            "signature": "long handle_char(TPanel * this, long param_1, short param_2)", 
+            "index": 85, 
+            "name": "handle_char"
+        }, 
+        {
+            "signature": "long handle_command(TPanel * this, uint param_1, long param_2)", 
+            "index": 86, 
+            "name": "handle_command"
+        }, 
+        {
+            "signature": "long handle_user_command(TPanel * this, uint param_1, long param_2)", 
+            "index": 87, 
+            "name": "handle_user_command"
+        }, 
+        {
+            "signature": "long handle_timer_command(TPanel * this, uint param_1, long param_2)", 
+            "index": 88, 
+            "name": "handle_timer_command"
+        }, 
+        {
+            "signature": "long handle_scroll(TPanel * this, long param_1, long param_2)", 
+            "index": 89, 
+            "name": "handle_scroll"
+        }, 
+        {
+            "signature": "long handle_mouse_down(TButtonPanel * this, uchar param_1, long param_2, long param_3, int param_4, int param_5)", 
+            "index": 90, 
+            "name": "handle_mouse_down"
+        }, 
+        {
+            "signature": "long handle_mouse_move(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 91, 
+            "name": "handle_mouse_move"
+        }, 
+        {
+            "signature": "long handle_mouse_up(TPanel * this, uchar param_1, long param_2, long param_3, int param_4, int param_5)", 
+            "index": 92, 
+            "name": "handle_mouse_up"
+        }, 
+        {
+            "signature": "long handle_mouse_dbl_click(TPanel * this, uchar param_1, long param_2, long param_3, int param_4, int param_5)", 
+            "index": 93, 
+            "name": "handle_mouse_dbl_click"
+        }, 
+        {
+            "signature": "long mouse_move_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 94, 
+            "name": "mouse_move_action"
+        }, 
+        {
+            "signature": "long mouse_left_down_action(TButtonPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 95, 
+            "name": "mouse_left_down_action"
+        }, 
+        {
+            "signature": "long mouse_left_hold_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 96, 
+            "name": "mouse_left_hold_action"
+        }, 
+        {
+            "signature": "long mouse_left_move_action(TButtonPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 97, 
+            "name": "mouse_left_move_action"
+        }, 
+        {
+            "signature": "long mouse_left_up_action(TButtonPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 98, 
+            "name": "mouse_left_up_action"
+        }, 
+        {
+            "signature": "long mouse_left_dbl_click_action(TButtonPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 99, 
+            "name": "mouse_left_dbl_click_action"
+        }, 
+        {
+            "signature": "long mouse_right_down_action(TButtonPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 100, 
+            "name": "mouse_right_down_action"
+        }, 
+        {
+            "signature": "long mouse_right_hold_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 101, 
+            "name": "mouse_right_hold_action"
+        }, 
+        {
+            "signature": "long mouse_right_move_action(TButtonPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 102, 
+            "name": "mouse_right_move_action"
+        }, 
+        {
+            "signature": "long mouse_right_up_action(TButtonPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 103, 
+            "name": "mouse_right_up_action"
+        }, 
+        {
+            "signature": "long mouse_right_dbl_click_action(TButtonPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 104, 
+            "name": "mouse_right_dbl_click_action"
+        }, 
+        {
+            "signature": "long key_down_action(TButtonPanel * this, long param_1, short param_2, int param_3, int param_4, int param_5)", 
+            "index": 105, 
+            "name": "key_down_action"
+        }, 
+        {
+            "signature": "long char_action(TButtonPanel * this, long param_1, short param_2)", 
+            "index": 106, 
+            "name": "char_action"
+        }, 
+        {
+            "signature": "long action(TPanel * this, TPanel * param_1, long param_2, ulong param_3, ulong param_4)", 
+            "index": 107, 
+            "name": "action"
+        }, 
+        {
+            "signature": "void get_true_render_rect(TPanel * this, tagRECT * param_1)", 
+            "index": 108, 
+            "name": "get_true_render_rect"
+        }, 
+        {
+            "signature": "int is_inside(TPanel * this, long param_1, long param_2)", 
+            "index": 109, 
+            "name": "is_inside"
+        }, 
+        {
+            "signature": "void set_focus(TPanel * this, int param_1)", 
+            "index": 110, 
+            "name": "set_focus"
+        }, 
+        {
+            "signature": "void set_tab_order(TPanel * this, TPanel * param_1, TPanel * param_2)", 
+            "index": 111, 
+            "name": "set_tab_order"
+        }, 
+        {
+            "signature": "void set_tab_order(TPanel * this, TPanel * * param_1, short param_2)", 
+            "index": 112, 
+            "name": "set_tab_order"
+        }, 
+        {
+            "signature": "uchar get_help_info(TPanel * this, char * * param_1, long * param_2, long param_3, long param_4)", 
+            "index": 113, 
+            "name": "get_help_info"
+        }, 
+        {
+            "signature": "void stop_sound_system(TButtonPanel * this)", 
+            "index": 114, 
+            "name": "stop_sound_system"
+        }, 
+        {
+            "signature": "int restart_sound_system(TButtonPanel * this)", 
+            "index": 115, 
+            "name": "restart_sound_system"
+        }, 
+        {
+            "signature": "void take_snapshot(TPanel * this)", 
+            "index": 116, 
+            "name": "take_snapshot"
+        }, 
+        {
+            "signature": "void handle_reactivate(TPanel * this)", 
+            "index": 117, 
+            "name": "handle_reactivate"
+        }, 
+        {
+            "signature": "void set_state(TButtonPanel * this, short param_1)", 
+            "index": 118, 
+            "name": "set_state"
+        }, 
+        {
+            "signature": "int hit_button(TButtonPanel * this, long param_1, long param_2)", 
+            "index": 119, 
+            "name": "hit_button"
+        }, 
+        {
+            "signature": "void * `vector_deleting_destructor'(TDialogPanel * this, uint param_1)", 
+            "index": 120, 
+            "name": "`vector_deleting_destructor'"
+        }, 
+        {
+            "signature": "long setup(TPanel * this, TDrawArea * param_1, TPanel * param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7)", 
+            "index": 121, 
+            "name": "setup"
+        }, 
+        {
+            "signature": "void set_rect(TPanel * this, tagRECT param_1)", 
+            "index": 122, 
+            "name": "set_rect"
+        }, 
+        {
+            "signature": "void set_rect(TPanel * this, long param_1, long param_2, long param_3, long param_4)", 
+            "index": 123, 
+            "name": "set_rect"
+        }, 
+        {
+            "signature": "void set_color(TPanel * this, uchar param_1)", 
+            "index": 124, 
+            "name": "set_color"
+        }, 
+        {
+            "signature": "void set_active(TPanel * this, int param_1)", 
+            "index": 125, 
+            "name": "set_active"
+        }, 
+        {
+            "signature": "void set_positioning(TPanel * this, PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel * param_10, TPanel * param_11, TPanel * param_12, TPanel * param_13)", 
+            "index": 126, 
+            "name": "set_positioning"
+        }, 
+        {
+            "signature": "void set_fixed_position(TPanel * this, long param_1, long param_2, long param_3, long param_4)", 
+            "index": 127, 
+            "name": "set_fixed_position"
+        }, 
+        {
+            "signature": "void set_redraw(TPanel * this, RedrawMode param_1)", 
+            "index": 128, 
+            "name": "set_redraw"
+        }, 
+        {
+            "signature": "void set_overlapped_redraw(TPanel * this, TPanel * param_1, TPanel * param_2, RedrawMode param_3)", 
+            "index": 129, 
+            "name": "set_overlapped_redraw"
+        }, 
+        {
+            "signature": "void draw_setup(TEasy_Panel * this, int param_1)", 
+            "index": 130, 
+            "name": "draw_setup"
+        }, 
+        {
+            "signature": "void draw_finish(TPanel * this)", 
+            "index": 131, 
+            "name": "draw_finish"
+        }, 
+        {
+            "signature": "void draw(TEasy_Panel * this)", 
+            "index": 132, 
+            "name": "draw"
+        }, 
+        {
+            "signature": "void draw_rect(TPanel * this, tagRECT * param_1)", 
+            "index": 133, 
+            "name": "draw_rect"
+        }, 
+        {
+            "signature": "void draw_offset(TPanel * this, long param_1, long param_2, tagRECT * param_3)", 
+            "index": 134, 
+            "name": "draw_offset"
+        }, 
+        {
+            "signature": "void draw_rect2(TPanel * this, tagRECT * param_1)", 
+            "index": 135, 
+            "name": "draw_rect2"
+        }, 
+        {
+            "signature": "void draw_offset2(TPanel * this, long param_1, long param_2, tagRECT * param_3)", 
+            "index": 136, 
+            "name": "draw_offset2"
+        }, 
+        {
+            "signature": "void paint(TPanel * this)", 
+            "index": 137, 
+            "name": "paint"
+        }, 
+        {
+            "signature": "long wnd_proc(TPanel * this, void * param_1, uint param_2, uint param_3, long param_4)", 
+            "index": 138, 
+            "name": "wnd_proc"
+        }, 
+        {
+            "signature": "long handle_idle(TPanel * this)", 
+            "index": 139, 
+            "name": "handle_idle"
+        }, 
+        {
+            "signature": "long handle_size(TPanel * this, long param_1, long param_2)", 
+            "index": 140, 
+            "name": "handle_size"
+        }, 
+        {
+            "signature": "long handle_paint(TPanel * this)", 
+            "index": 141, 
+            "name": "handle_paint"
+        }, 
+        {
+            "signature": "long handle_key_down(TPanel * this, long param_1, short param_2, int param_3, int param_4, int param_5)", 
+            "index": 142, 
+            "name": "handle_key_down"
+        }, 
+        {
+            "signature": "long handle_char(TPanel * this, long param_1, short param_2)", 
+            "index": 143, 
+            "name": "handle_char"
+        }, 
+        {
+            "signature": "long handle_command(TPanel * this, uint param_1, long param_2)", 
+            "index": 144, 
+            "name": "handle_command"
+        }, 
+        {
+            "signature": "long handle_user_command(TPanel * this, uint param_1, long param_2)", 
+            "index": 145, 
+            "name": "handle_user_command"
+        }, 
+        {
+            "signature": "long handle_timer_command(TPanel * this, uint param_1, long param_2)", 
+            "index": 146, 
+            "name": "handle_timer_command"
+        }, 
+        {
+            "signature": "long handle_scroll(TPanel * this, long param_1, long param_2)", 
+            "index": 147, 
+            "name": "handle_scroll"
+        }, 
+        {
+            "signature": "long handle_mouse_down(TEasy_Panel * this, uchar param_1, long param_2, long param_3, int param_4, int param_5)", 
+            "index": 148, 
+            "name": "handle_mouse_down"
+        }, 
+        {
+            "signature": "long handle_mouse_move(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 149, 
+            "name": "handle_mouse_move"
+        }, 
+        {
+            "signature": "long handle_mouse_up(TPanel * this, uchar param_1, long param_2, long param_3, int param_4, int param_5)", 
+            "index": 150, 
+            "name": "handle_mouse_up"
+        }, 
+        {
+            "signature": "long handle_mouse_dbl_click(TPanel * this, uchar param_1, long param_2, long param_3, int param_4, int param_5)", 
+            "index": 151, 
+            "name": "handle_mouse_dbl_click"
+        }, 
+        {
+            "signature": "long mouse_move_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 152, 
+            "name": "mouse_move_action"
+        }, 
+        {
+            "signature": "long mouse_left_down_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 153, 
+            "name": "mouse_left_down_action"
+        }, 
+        {
+            "signature": "long mouse_left_hold_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 154, 
+            "name": "mouse_left_hold_action"
+        }, 
+        {
+            "signature": "long mouse_left_move_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 155, 
+            "name": "mouse_left_move_action"
+        }, 
+        {
+            "signature": "long mouse_left_up_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 156, 
+            "name": "mouse_left_up_action"
+        }, 
+        {
+            "signature": "long mouse_left_dbl_click_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 157, 
+            "name": "mouse_left_dbl_click_action"
+        }, 
+        {
+            "signature": "long mouse_right_down_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 158, 
+            "name": "mouse_right_down_action"
+        }, 
+        {
+            "signature": "long mouse_right_hold_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 159, 
+            "name": "mouse_right_hold_action"
+        }, 
+        {
+            "signature": "long mouse_right_move_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 160, 
+            "name": "mouse_right_move_action"
+        }, 
+        {
+            "signature": "long mouse_right_up_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 161, 
+            "name": "mouse_right_up_action"
+        }, 
+        {
+            "signature": "long mouse_right_dbl_click_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 162, 
+            "name": "mouse_right_dbl_click_action"
+        }, 
+        {
+            "signature": "long key_down_action(TPanel * this, long param_1, short param_2, int param_3, int param_4, int param_5)", 
+            "index": 163, 
+            "name": "key_down_action"
+        }, 
+        {
+            "signature": "long char_action(TPanel * this, long param_1, short param_2)", 
+            "index": 164, 
+            "name": "char_action"
+        }, 
+        {
+            "signature": "long action(TEasy_Panel * this, TPanel * param_1, long param_2, ulong param_3, ulong param_4)", 
+            "index": 165, 
+            "name": "action"
+        }, 
+        {
+            "signature": "void get_true_render_rect(TPanel * this, tagRECT * param_1)", 
+            "index": 166, 
+            "name": "get_true_render_rect"
+        }, 
+        {
+            "signature": "int is_inside(TPanel * this, long param_1, long param_2)", 
+            "index": 167, 
+            "name": "is_inside"
+        }, 
+        {
+            "signature": "void set_focus(TDialogPanel * this, int param_1)", 
+            "index": 168, 
+            "name": "set_focus"
+        }, 
+        {
+            "signature": "void set_tab_order(TPanel * this, TPanel * param_1, TPanel * param_2)", 
+            "index": 169, 
+            "name": "set_tab_order"
+        }, 
+        {
+            "signature": "void set_tab_order(TPanel * this, TPanel * * param_1, short param_2)", 
+            "index": 170, 
+            "name": "set_tab_order"
+        }, 
+        {
+            "signature": "uchar get_help_info(TPanel * this, char * * param_1, long * param_2, long param_3, long param_4)", 
+            "index": 171, 
+            "name": "get_help_info"
+        }, 
+        {
+            "signature": "void stop_sound_system(TPanel * this)", 
+            "index": 172, 
+            "name": "stop_sound_system"
+        }, 
+        {
+            "signature": "int restart_sound_system(TPanel * this)", 
+            "index": 173, 
+            "name": "restart_sound_system"
+        }, 
+        {
+            "signature": "void take_snapshot(TPanel * this)", 
+            "index": 174, 
+            "name": "take_snapshot"
+        }, 
+        {
+            "signature": "void handle_reactivate(TPanel * this)", 
+            "index": 175, 
+            "name": "handle_reactivate"
+        }, 
+        {
+            "signature": "void draw_background(TEasy_Panel * this, int param_1)", 
+            "index": 176, 
+            "name": "draw_background"
+        }, 
+        {
+            "signature": "void set_ideal_size(TEasy_Panel * this, long param_1, long param_2)", 
+            "index": 177, 
+            "name": "set_ideal_size"
+        }, 
+        {
+            "signature": "int create_button(TEasy_Panel * this, TPanel * param_1, TButtonPanel * * param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, long param_10, long param_11)", 
+            "index": 178, 
+            "name": "create_button"
+        }, 
+        {
+            "signature": "int create_button(TEasy_Panel * this, TPanel * param_1, TButtonPanel * * param_2, char * param_3, char * param_4, long param_5, long param_6, long param_7, long param_8, long param_9, long param_10, long param_11)", 
+            "index": 179, 
+            "name": "create_button"
+        }, 
+        {
+            "signature": "int create_check_box(TEasy_Panel * this, TPanel * param_1, TButtonPanel * * param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8)", 
+            "index": 180, 
+            "name": "create_check_box"
+        }, 
+        {
+            "signature": "int create_radio_button(TEasy_Panel * this, TPanel * param_1, TButtonPanel * * param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8)", 
+            "index": 181, 
+            "name": "create_radio_button"
+        }, 
+        {
+            "signature": "int create_text(TEasy_Panel * this, TPanel * param_1, TTextPanel * * param_2, int param_3, long param_4, long param_5, long param_6, long param_7, long param_8, int param_9, int param_10, int param_11)", 
+            "index": 182, 
+            "name": "create_text"
+        }, 
+        {
+            "signature": "int create_text(TEasy_Panel * this, TPanel * param_1, TTextPanel * * param_2, char * * param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, int param_10, int param_11)", 
+            "index": 183, 
+            "name": "create_text"
+        }, 
+        {
+            "signature": "int create_text(TEasy_Panel * this, TPanel * param_1, TTextPanel * * param_2, char * param_3, long param_4, long param_5, long param_6, long param_7, long param_8, int param_9, int param_10, int param_11)", 
+            "index": 184, 
+            "name": "create_text"
+        }, 
+        {
+            "signature": "int create_input(TEasy_Panel * this, TPanel * param_1, TInputPanel * * param_2, char * param_3, short param_4, FormatType param_5, long param_6, long param_7, long param_8, long param_9, long param_10)", 
+            "index": 185, 
+            "name": "create_input"
+        }, 
+        {
+            "signature": "int create_edit(TEasy_Panel * this, TPanel * param_1, TEditPanel * * param_2, char * param_3, short param_4, FormatType param_5, long param_6, long param_7, long param_8, long param_9, long param_10, int param_11, int param_12)", 
+            "index": 186, 
+            "name": "create_edit"
+        }, 
+        {
+            "signature": "int create_drop_down(TEasy_Panel * this, TPanel * param_1, TDropDownPanel * * param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9)", 
+            "index": 187, 
+            "name": "create_drop_down"
+        }, 
+        {
+            "signature": "int create_list(TEasy_Panel * this, TPanel * param_1, TListPanel * * param_2, long param_3, long param_4, long param_5, long param_6, long param_7)", 
+            "index": 188, 
+            "name": "create_list"
+        }, 
+        {
+            "signature": "int create_scrollbar(TEasy_Panel * this, TPanel * param_1, TScrollBarPanel * * param_2, TTextPanel * param_3, long param_4, long param_5, long param_6, long param_7, long param_8)", 
+            "index": 189, 
+            "name": "create_scrollbar"
+        }, 
+        {
+            "signature": "int create_auto_scrollbar(TEasy_Panel * this, TScrollBarPanel * * param_1, TTextPanel * param_2, long param_3)", 
+            "index": 190, 
+            "name": "create_auto_scrollbar"
+        }, 
+        {
+            "signature": "int create_vert_slider(TEasy_Panel * this, TPanel * param_1, TVerticalSliderPanel * * param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9)", 
+            "index": 191, 
+            "name": "create_vert_slider"
+        }, 
+        {
+            "signature": "int create_horz_slider(TEasy_Panel * this, TPanel * param_1, THorizontalSliderPanel * * param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9)", 
+            "index": 192, 
+            "name": "create_horz_slider"
+        }, 
+        {
+            "signature": "void position_panel(TEasy_Panel * this, TPanel * param_1, long param_2, long param_3, long param_4, long param_5)", 
+            "index": 193, 
+            "name": "position_panel"
+        }, 
+        {
+            "signature": "int setup(TDialogPanel * this, TDrawArea * param_1, TPanel * param_2, long param_3, long param_4, uchar param_5, int param_6)", 
+            "index": 194, 
+            "name": "setup"
+        }, 
+        {
+            "signature": "int setup(TDialogPanel * this, TDrawArea * param_1, TPanel * param_2, long param_3, long param_4, char * param_5, long param_6, int param_7)", 
+            "index": 195, 
+            "name": "setup"
+        }, 
+        {
+            "signature": "void * `scalar_deleting_destructor'(TDropDownPanel * this, uint param_1)", 
+            "index": 196, 
+            "name": "`scalar_deleting_destructor'"
+        }, 
+        {
+            "signature": "long setup(TPanel * this, TDrawArea * param_1, TPanel * param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7)", 
+            "index": 197, 
+            "name": "setup"
+        }, 
+        {
+            "signature": "void set_rect(TPanel * this, tagRECT param_1)", 
+            "index": 198, 
+            "name": "set_rect"
+        }, 
+        {
+            "signature": "void set_rect(TDropDownPanel * this, long param_1, long param_2, long param_3, long param_4)", 
+            "index": 199, 
+            "name": "set_rect"
+        }, 
+        {
+            "signature": "void set_color(TPanel * this, uchar param_1)", 
+            "index": 200, 
+            "name": "set_color"
+        }, 
+        {
+            "signature": "void set_active(TPanel * this, int param_1)", 
+            "index": 201, 
+            "name": "set_active"
+        }, 
+        {
+            "signature": "void set_positioning(TPanel * this, PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel * param_10, TPanel * param_11, TPanel * param_12, TPanel * param_13)", 
+            "index": 202, 
+            "name": "set_positioning"
+        }, 
+        {
+            "signature": "void set_fixed_position(TPanel * this, long param_1, long param_2, long param_3, long param_4)", 
+            "index": 203, 
+            "name": "set_fixed_position"
+        }, 
+        {
+            "signature": "void set_redraw(TPanel * this, RedrawMode param_1)", 
+            "index": 204, 
+            "name": "set_redraw"
+        }, 
+        {
+            "signature": "void set_overlapped_redraw(TPanel * this, TPanel * param_1, TPanel * param_2, RedrawMode param_3)", 
+            "index": 205, 
+            "name": "set_overlapped_redraw"
+        }, 
+        {
+            "signature": "void draw_setup(TPanel * this, int param_1)", 
+            "index": 206, 
+            "name": "draw_setup"
+        }, 
+        {
+            "signature": "void draw_finish(TPanel * this)", 
+            "index": 207, 
+            "name": "draw_finish"
+        }, 
+        {
+            "signature": "void draw(TDropDownPanel * this)", 
+            "index": 208, 
+            "name": "draw"
+        }, 
+        {
+            "signature": "void draw_rect(TPanel * this, tagRECT * param_1)", 
+            "index": 209, 
+            "name": "draw_rect"
+        }, 
+        {
+            "signature": "void draw_offset(TPanel * this, long param_1, long param_2, tagRECT * param_3)", 
+            "index": 210, 
+            "name": "draw_offset"
+        }, 
+        {
+            "signature": "void draw_rect2(TPanel * this, tagRECT * param_1)", 
+            "index": 211, 
+            "name": "draw_rect2"
+        }, 
+        {
+            "signature": "void draw_offset2(TPanel * this, long param_1, long param_2, tagRECT * param_3)", 
+            "index": 212, 
+            "name": "draw_offset2"
+        }, 
+        {
+            "signature": "void paint(TPanel * this)", 
+            "index": 213, 
+            "name": "paint"
+        }, 
+        {
+            "signature": "long wnd_proc(TPanel * this, void * param_1, uint param_2, uint param_3, long param_4)", 
+            "index": 214, 
+            "name": "wnd_proc"
+        }, 
+        {
+            "signature": "long handle_idle(TPanel * this)", 
+            "index": 215, 
+            "name": "handle_idle"
+        }, 
+        {
+            "signature": "long handle_size(TPanel * this, long param_1, long param_2)", 
+            "index": 216, 
+            "name": "handle_size"
+        }, 
+        {
+            "signature": "long handle_paint(TPanel * this)", 
+            "index": 217, 
+            "name": "handle_paint"
+        }, 
+        {
+            "signature": "long handle_key_down(TDropDownPanel * this, long param_1, short param_2, int param_3, int param_4, int param_5)", 
+            "index": 218, 
+            "name": "handle_key_down"
+        }, 
+        {
+            "signature": "long handle_char(TPanel * this, long param_1, short param_2)", 
+            "index": 219, 
+            "name": "handle_char"
+        }, 
+        {
+            "signature": "long handle_command(TPanel * this, uint param_1, long param_2)", 
+            "index": 220, 
+            "name": "handle_command"
+        }, 
+        {
+            "signature": "long handle_user_command(TPanel * this, uint param_1, long param_2)", 
+            "index": 221, 
+            "name": "handle_user_command"
+        }, 
+        {
+            "signature": "long handle_timer_command(TPanel * this, uint param_1, long param_2)", 
+            "index": 222, 
+            "name": "handle_timer_command"
+        }, 
+        {
+            "signature": "long handle_scroll(TPanel * this, long param_1, long param_2)", 
+            "index": 223, 
+            "name": "handle_scroll"
+        }, 
+        {
+            "signature": "long handle_mouse_down(TDropDownPanel * this, uchar param_1, long param_2, long param_3, int param_4, int param_5)", 
+            "index": 224, 
+            "name": "handle_mouse_down"
+        }, 
+        {
+            "signature": "long handle_mouse_move(TDropDownPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 225, 
+            "name": "handle_mouse_move"
+        }, 
+        {
+            "signature": "long handle_mouse_up(TDropDownPanel * this, uchar param_1, long param_2, long param_3, int param_4, int param_5)", 
+            "index": 226, 
+            "name": "handle_mouse_up"
+        }, 
+        {
+            "signature": "long handle_mouse_dbl_click(TPanel * this, uchar param_1, long param_2, long param_3, int param_4, int param_5)", 
+            "index": 227, 
+            "name": "handle_mouse_dbl_click"
+        }, 
+        {
+            "signature": "long mouse_move_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 228, 
+            "name": "mouse_move_action"
+        }, 
+        {
+            "signature": "long mouse_left_down_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 229, 
+            "name": "mouse_left_down_action"
+        }, 
+        {
+            "signature": "long mouse_left_hold_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 230, 
+            "name": "mouse_left_hold_action"
+        }, 
+        {
+            "signature": "long mouse_left_move_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 231, 
+            "name": "mouse_left_move_action"
+        }, 
+        {
+            "signature": "long mouse_left_up_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 232, 
+            "name": "mouse_left_up_action"
+        }, 
+        {
+            "signature": "long mouse_left_dbl_click_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 233, 
+            "name": "mouse_left_dbl_click_action"
+        }, 
+        {
+            "signature": "long mouse_right_down_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 234, 
+            "name": "mouse_right_down_action"
+        }, 
+        {
+            "signature": "long mouse_right_hold_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 235, 
+            "name": "mouse_right_hold_action"
+        }, 
+        {
+            "signature": "long mouse_right_move_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 236, 
+            "name": "mouse_right_move_action"
+        }, 
+        {
+            "signature": "long mouse_right_up_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 237, 
+            "name": "mouse_right_up_action"
+        }, 
+        {
+            "signature": "long mouse_right_dbl_click_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 238, 
+            "name": "mouse_right_dbl_click_action"
+        }, 
+        {
+            "signature": "long key_down_action(TPanel * this, long param_1, short param_2, int param_3, int param_4, int param_5)", 
+            "index": 239, 
+            "name": "key_down_action"
+        }, 
+        {
+            "signature": "long char_action(TPanel * this, long param_1, short param_2)", 
+            "index": 240, 
+            "name": "char_action"
+        }, 
+        {
+            "signature": "long action(TDropDownPanel * this, TPanel * param_1, long param_2, ulong param_3, ulong param_4)", 
+            "index": 241, 
+            "name": "action"
+        }, 
+        {
+            "signature": "void get_true_render_rect(TPanel * this, tagRECT * param_1)", 
+            "index": 242, 
+            "name": "get_true_render_rect"
+        }, 
+        {
+            "signature": "int is_inside(TPanel * this, long param_1, long param_2)", 
+            "index": 243, 
+            "name": "is_inside"
+        }, 
+        {
+            "signature": "void set_focus(TPanel * this, int param_1)", 
+            "index": 244, 
+            "name": "set_focus"
+        }, 
+        {
+            "signature": "void set_tab_order(TDropDownPanel * this, TPanel * param_1, TPanel * param_2)", 
+            "index": 245, 
+            "name": "set_tab_order"
+        }, 
+        {
+            "signature": "void set_tab_order(TPanel * this, TPanel * * param_1, short param_2)", 
+            "index": 246, 
+            "name": "set_tab_order"
+        }, 
+        {
+            "signature": "uchar get_help_info(TPanel * this, char * * param_1, long * param_2, long param_3, long param_4)", 
+            "index": 247, 
+            "name": "get_help_info"
+        }, 
+        {
+            "signature": "void stop_sound_system(TPanel * this)", 
+            "index": 248, 
+            "name": "stop_sound_system"
+        }, 
+        {
+            "signature": "int restart_sound_system(TPanel * this)", 
+            "index": 249, 
+            "name": "restart_sound_system"
+        }, 
+        {
+            "signature": "void take_snapshot(TPanel * this)", 
+            "index": 250, 
+            "name": "take_snapshot"
+        }, 
+        {
+            "signature": "void handle_reactivate(TPanel * this)", 
+            "index": 251, 
+            "name": "handle_reactivate"
+        }, 
+        {
+            "signature": "void * `vector_deleting_destructor'(TDropDownButtonPanel * this, uint param_1)", 
+            "index": 252, 
+            "name": "`vector_deleting_destructor'"
+        }, 
+        {
+            "signature": "long setup(TPanel * this, TDrawArea * param_1, TPanel * param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7)", 
+            "index": 253, 
+            "name": "setup"
+        }, 
+        {
+            "signature": "void set_rect(TPanel * this, tagRECT param_1)", 
+            "index": 254, 
+            "name": "set_rect"
+        }, 
+        {
+            "signature": "void set_rect(TButtonPanel * this, long param_1, long param_2, long param_3, long param_4)", 
+            "index": 255, 
+            "name": "set_rect"
+        }, 
+        {
+            "signature": "void set_color(TPanel * this, uchar param_1)", 
+            "index": 256, 
+            "name": "set_color"
+        }, 
+        {
+            "signature": "void set_active(TPanel * this, int param_1)", 
+            "index": 257, 
+            "name": "set_active"
+        }, 
+        {
+            "signature": "void set_positioning(TPanel * this, PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel * param_10, TPanel * param_11, TPanel * param_12, TPanel * param_13)", 
+            "index": 258, 
+            "name": "set_positioning"
+        }, 
+        {
+            "signature": "void set_fixed_position(TPanel * this, long param_1, long param_2, long param_3, long param_4)", 
+            "index": 259, 
+            "name": "set_fixed_position"
+        }, 
+        {
+            "signature": "void set_redraw(TPanel * this, RedrawMode param_1)", 
+            "index": 260, 
+            "name": "set_redraw"
+        }, 
+        {
+            "signature": "void set_overlapped_redraw(TPanel * this, TPanel * param_1, TPanel * param_2, RedrawMode param_3)", 
+            "index": 261, 
+            "name": "set_overlapped_redraw"
+        }, 
+        {
+            "signature": "void draw_setup(TPanel * this, int param_1)", 
+            "index": 262, 
+            "name": "draw_setup"
+        }, 
+        {
+            "signature": "void draw_finish(TPanel * this)", 
+            "index": 263, 
+            "name": "draw_finish"
+        }, 
+        {
+            "signature": "void draw(TButtonPanel * this)", 
+            "index": 264, 
+            "name": "draw"
+        }, 
+        {
+            "signature": "void draw_rect(TPanel * this, tagRECT * param_1)", 
+            "index": 265, 
+            "name": "draw_rect"
+        }, 
+        {
+            "signature": "void draw_offset(TPanel * this, long param_1, long param_2, tagRECT * param_3)", 
+            "index": 266, 
+            "name": "draw_offset"
+        }, 
+        {
+            "signature": "void draw_rect2(TPanel * this, tagRECT * param_1)", 
+            "index": 267, 
+            "name": "draw_rect2"
+        }, 
+        {
+            "signature": "void draw_offset2(TPanel * this, long param_1, long param_2, tagRECT * param_3)", 
+            "index": 268, 
+            "name": "draw_offset2"
+        }, 
+        {
+            "signature": "void paint(TPanel * this)", 
+            "index": 269, 
+            "name": "paint"
+        }, 
+        {
+            "signature": "long wnd_proc(TButtonPanel * this, void * param_1, uint param_2, uint param_3, long param_4)", 
+            "index": 270, 
+            "name": "wnd_proc"
+        }, 
+        {
+            "signature": "long handle_idle(TPanel * this)", 
+            "index": 271, 
+            "name": "handle_idle"
+        }, 
+        {
+            "signature": "long handle_size(TPanel * this, long param_1, long param_2)", 
+            "index": 272, 
+            "name": "handle_size"
+        }, 
+        {
+            "signature": "long handle_paint(TPanel * this)", 
+            "index": 273, 
+            "name": "handle_paint"
+        }, 
+        {
+            "signature": "long handle_key_down(TButtonPanel * this, long param_1, short param_2, int param_3, int param_4, int param_5)", 
+            "index": 274, 
+            "name": "handle_key_down"
+        }, 
+        {
+            "signature": "long handle_char(TPanel * this, long param_1, short param_2)", 
+            "index": 275, 
+            "name": "handle_char"
+        }, 
+        {
+            "signature": "long handle_command(TPanel * this, uint param_1, long param_2)", 
+            "index": 276, 
+            "name": "handle_command"
+        }, 
+        {
+            "signature": "long handle_user_command(TPanel * this, uint param_1, long param_2)", 
+            "index": 277, 
+            "name": "handle_user_command"
+        }, 
+        {
+            "signature": "long handle_timer_command(TPanel * this, uint param_1, long param_2)", 
+            "index": 278, 
+            "name": "handle_timer_command"
+        }, 
+        {
+            "signature": "long handle_scroll(TPanel * this, long param_1, long param_2)", 
+            "index": 279, 
+            "name": "handle_scroll"
+        }, 
+        {
+            "signature": "long handle_mouse_down(TButtonPanel * this, uchar param_1, long param_2, long param_3, int param_4, int param_5)", 
+            "index": 280, 
+            "name": "handle_mouse_down"
+        }, 
+        {
+            "signature": "long handle_mouse_move(TDropDownButtonPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 281, 
+            "name": "handle_mouse_move"
+        }, 
+        {
+            "signature": "long handle_mouse_up(TPanel * this, uchar param_1, long param_2, long param_3, int param_4, int param_5)", 
+            "index": 282, 
+            "name": "handle_mouse_up"
+        }, 
+        {
+            "signature": "long handle_mouse_dbl_click(TPanel * this, uchar param_1, long param_2, long param_3, int param_4, int param_5)", 
+            "index": 283, 
+            "name": "handle_mouse_dbl_click"
+        }, 
+        {
+            "signature": "long mouse_move_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 284, 
+            "name": "mouse_move_action"
+        }, 
+        {
+            "signature": "long mouse_left_down_action(TButtonPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 285, 
+            "name": "mouse_left_down_action"
+        }, 
+        {
+            "signature": "long mouse_left_hold_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 286, 
+            "name": "mouse_left_hold_action"
+        }, 
+        {
+            "signature": "long mouse_left_move_action(TButtonPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 287, 
+            "name": "mouse_left_move_action"
+        }, 
+        {
+            "signature": "long mouse_left_up_action(TButtonPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 288, 
+            "name": "mouse_left_up_action"
+        }, 
+        {
+            "signature": "long mouse_left_dbl_click_action(TButtonPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 289, 
+            "name": "mouse_left_dbl_click_action"
+        }, 
+        {
+            "signature": "long mouse_right_down_action(TButtonPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 290, 
+            "name": "mouse_right_down_action"
+        }, 
+        {
+            "signature": "long mouse_right_hold_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 291, 
+            "name": "mouse_right_hold_action"
+        }, 
+        {
+            "signature": "long mouse_right_move_action(TButtonPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 292, 
+            "name": "mouse_right_move_action"
+        }, 
+        {
+            "signature": "long mouse_right_up_action(TButtonPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 293, 
+            "name": "mouse_right_up_action"
+        }, 
+        {
+            "signature": "long mouse_right_dbl_click_action(TButtonPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 294, 
+            "name": "mouse_right_dbl_click_action"
+        }, 
+        {
+            "signature": "long key_down_action(TButtonPanel * this, long param_1, short param_2, int param_3, int param_4, int param_5)", 
+            "index": 295, 
+            "name": "key_down_action"
+        }, 
+        {
+            "signature": "long char_action(TButtonPanel * this, long param_1, short param_2)", 
+            "index": 296, 
+            "name": "char_action"
+        }, 
+        {
+            "signature": "long action(TPanel * this, TPanel * param_1, long param_2, ulong param_3, ulong param_4)", 
+            "index": 297, 
+            "name": "action"
+        }, 
+        {
+            "signature": "void get_true_render_rect(TPanel * this, tagRECT * param_1)", 
+            "index": 298, 
+            "name": "get_true_render_rect"
+        }, 
+        {
+            "signature": "int is_inside(TPanel * this, long param_1, long param_2)", 
+            "index": 299, 
+            "name": "is_inside"
+        }, 
+        {
+            "signature": "void set_focus(TPanel * this, int param_1)", 
+            "index": 300, 
+            "name": "set_focus"
+        }, 
+        {
+            "signature": "void set_tab_order(TPanel * this, TPanel * param_1, TPanel * param_2)", 
+            "index": 301, 
+            "name": "set_tab_order"
+        }, 
+        {
+            "signature": "void set_tab_order(TPanel * this, TPanel * * param_1, short param_2)", 
+            "index": 302, 
+            "name": "set_tab_order"
+        }, 
+        {
+            "signature": "uchar get_help_info(TPanel * this, char * * param_1, long * param_2, long param_3, long param_4)", 
+            "index": 303, 
+            "name": "get_help_info"
+        }, 
+        {
+            "signature": "void stop_sound_system(TButtonPanel * this)", 
+            "index": 304, 
+            "name": "stop_sound_system"
+        }, 
+        {
+            "signature": "int restart_sound_system(TButtonPanel * this)", 
+            "index": 305, 
+            "name": "restart_sound_system"
+        }, 
+        {
+            "signature": "void take_snapshot(TPanel * this)", 
+            "index": 306, 
+            "name": "take_snapshot"
+        }, 
+        {
+            "signature": "void handle_reactivate(TPanel * this)", 
+            "index": 307, 
+            "name": "handle_reactivate"
+        }, 
+        {
+            "signature": "void set_state(TButtonPanel * this, short param_1)", 
+            "index": 308, 
+            "name": "set_state"
+        }, 
+        {
+            "signature": "int hit_button(TButtonPanel * this, long param_1, long param_2)", 
+            "index": 309, 
+            "name": "hit_button"
+        }, 
+        {
+            "signature": "void * `vector_deleting_destructor'(TEditPanel * this, uint param_1)", 
+            "index": 310, 
+            "name": "`vector_deleting_destructor'"
+        }, 
+        {
+            "signature": "long setup(TPanel * this, TDrawArea * param_1, TPanel * param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7)", 
+            "index": 311, 
+            "name": "setup"
+        }, 
+        {
+            "signature": "void set_rect(TPanel * this, tagRECT param_1)", 
+            "index": 312, 
+            "name": "set_rect"
+        }, 
+        {
+            "signature": "void set_rect(TEditPanel * this, long param_1, long param_2, long param_3, long param_4)", 
+            "index": 313, 
+            "name": "set_rect"
+        }, 
+        {
+            "signature": "void set_color(TPanel * this, uchar param_1)", 
+            "index": 314, 
+            "name": "set_color"
+        }, 
+        {
+            "signature": "void set_active(TEditPanel * this, int param_1)", 
+            "index": 315, 
+            "name": "set_active"
+        }, 
+        {
+            "signature": "void set_positioning(TPanel * this, PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel * param_10, TPanel * param_11, TPanel * param_12, TPanel * param_13)", 
+            "index": 316, 
+            "name": "set_positioning"
+        }, 
+        {
+            "signature": "void set_fixed_position(TPanel * this, long param_1, long param_2, long param_3, long param_4)", 
+            "index": 317, 
+            "name": "set_fixed_position"
+        }, 
+        {
+            "signature": "void set_redraw(TEditPanel * this, RedrawMode param_1)", 
+            "index": 318, 
+            "name": "set_redraw"
+        }, 
+        {
+            "signature": "void set_overlapped_redraw(TPanel * this, TPanel * param_1, TPanel * param_2, RedrawMode param_3)", 
+            "index": 319, 
+            "name": "set_overlapped_redraw"
+        }, 
+        {
+            "signature": "void draw_setup(TPanel * this, int param_1)", 
+            "index": 320, 
+            "name": "draw_setup"
+        }, 
+        {
+            "signature": "void draw_finish(TPanel * this)", 
+            "index": 321, 
+            "name": "draw_finish"
+        }, 
+        {
+            "signature": "void draw(TEditPanel * this)", 
+            "index": 322, 
+            "name": "draw"
+        }, 
+        {
+            "signature": "void draw_rect(TPanel * this, tagRECT * param_1)", 
+            "index": 323, 
+            "name": "draw_rect"
+        }, 
+        {
+            "signature": "void draw_offset(TPanel * this, long param_1, long param_2, tagRECT * param_3)", 
+            "index": 324, 
+            "name": "draw_offset"
+        }, 
+        {
+            "signature": "void draw_rect2(TPanel * this, tagRECT * param_1)", 
+            "index": 325, 
+            "name": "draw_rect2"
+        }, 
+        {
+            "signature": "void draw_offset2(TPanel * this, long param_1, long param_2, tagRECT * param_3)", 
+            "index": 326, 
+            "name": "draw_offset2"
+        }, 
+        {
+            "signature": "void paint(TEditPanel * this)", 
+            "index": 327, 
+            "name": "paint"
+        }, 
+        {
+            "signature": "long wnd_proc(TEditPanel * this, void * param_1, uint param_2, uint param_3, long param_4)", 
+            "index": 328, 
+            "name": "wnd_proc"
+        }, 
+        {
+            "signature": "long handle_idle(TPanel * this)", 
+            "index": 329, 
+            "name": "handle_idle"
+        }, 
+        {
+            "signature": "long handle_size(TPanel * this, long param_1, long param_2)", 
+            "index": 330, 
+            "name": "handle_size"
+        }, 
+        {
+            "signature": "long handle_paint(TPanel * this)", 
+            "index": 331, 
+            "name": "handle_paint"
+        }, 
+        {
+            "signature": "long handle_key_down(TPanel * this, long param_1, short param_2, int param_3, int param_4, int param_5)", 
+            "index": 332, 
+            "name": "handle_key_down"
+        }, 
+        {
+            "signature": "long handle_char(TPanel * this, long param_1, short param_2)", 
+            "index": 333, 
+            "name": "handle_char"
+        }, 
+        {
+            "signature": "long handle_command(TPanel * this, uint param_1, long param_2)", 
+            "index": 334, 
+            "name": "handle_command"
+        }, 
+        {
+            "signature": "long handle_user_command(TPanel * this, uint param_1, long param_2)", 
+            "index": 335, 
+            "name": "handle_user_command"
+        }, 
+        {
+            "signature": "long handle_timer_command(TPanel * this, uint param_1, long param_2)", 
+            "index": 336, 
+            "name": "handle_timer_command"
+        }, 
+        {
+            "signature": "long handle_scroll(TPanel * this, long param_1, long param_2)", 
+            "index": 337, 
+            "name": "handle_scroll"
+        }, 
+        {
+            "signature": "long handle_mouse_down(TEditPanel * this, uchar param_1, long param_2, long param_3, int param_4, int param_5)", 
+            "index": 338, 
+            "name": "handle_mouse_down"
+        }, 
+        {
+            "signature": "long handle_mouse_move(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 339, 
+            "name": "handle_mouse_move"
+        }, 
+        {
+            "signature": "long handle_mouse_up(TPanel * this, uchar param_1, long param_2, long param_3, int param_4, int param_5)", 
+            "index": 340, 
+            "name": "handle_mouse_up"
+        }, 
+        {
+            "signature": "long handle_mouse_dbl_click(TPanel * this, uchar param_1, long param_2, long param_3, int param_4, int param_5)", 
+            "index": 341, 
+            "name": "handle_mouse_dbl_click"
+        }, 
+        {
+            "signature": "long mouse_move_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 342, 
+            "name": "mouse_move_action"
+        }, 
+        {
+            "signature": "long mouse_left_down_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 343, 
+            "name": "mouse_left_down_action"
+        }, 
+        {
+            "signature": "long mouse_left_hold_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 344, 
+            "name": "mouse_left_hold_action"
+        }, 
+        {
+            "signature": "long mouse_left_move_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 345, 
+            "name": "mouse_left_move_action"
+        }, 
+        {
+            "signature": "long mouse_left_up_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 346, 
+            "name": "mouse_left_up_action"
+        }, 
+        {
+            "signature": "long mouse_left_dbl_click_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 347, 
+            "name": "mouse_left_dbl_click_action"
+        }, 
+        {
+            "signature": "long mouse_right_down_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 348, 
+            "name": "mouse_right_down_action"
+        }, 
+        {
+            "signature": "long mouse_right_hold_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 349, 
+            "name": "mouse_right_hold_action"
+        }, 
+        {
+            "signature": "long mouse_right_move_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 350, 
+            "name": "mouse_right_move_action"
+        }, 
+        {
+            "signature": "long mouse_right_up_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 351, 
+            "name": "mouse_right_up_action"
+        }, 
+        {
+            "signature": "long mouse_right_dbl_click_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 352, 
+            "name": "mouse_right_dbl_click_action"
+        }, 
+        {
+            "signature": "long key_down_action(TPanel * this, long param_1, short param_2, int param_3, int param_4, int param_5)", 
+            "index": 353, 
+            "name": "key_down_action"
+        }, 
+        {
+            "signature": "long char_action(TPanel * this, long param_1, short param_2)", 
+            "index": 354, 
+            "name": "char_action"
+        }, 
+        {
+            "signature": "long action(TPanel * this, TPanel * param_1, long param_2, ulong param_3, ulong param_4)", 
+            "index": 355, 
+            "name": "action"
+        }, 
+        {
+            "signature": "void get_true_render_rect(TPanel * this, tagRECT * param_1)", 
+            "index": 356, 
+            "name": "get_true_render_rect"
+        }, 
+        {
+            "signature": "int is_inside(TPanel * this, long param_1, long param_2)", 
+            "index": 357, 
+            "name": "is_inside"
+        }, 
+        {
+            "signature": "void set_focus(TEditPanel * this, int param_1)", 
+            "index": 358, 
+            "name": "set_focus"
+        }, 
+        {
+            "signature": "void set_tab_order(TPanel * this, TPanel * param_1, TPanel * param_2)", 
+            "index": 359, 
+            "name": "set_tab_order"
+        }, 
+        {
+            "signature": "void set_tab_order(TPanel * this, TPanel * * param_1, short param_2)", 
+            "index": 360, 
+            "name": "set_tab_order"
+        }, 
+        {
+            "signature": "uchar get_help_info(TPanel * this, char * * param_1, long * param_2, long param_3, long param_4)", 
+            "index": 361, 
+            "name": "get_help_info"
+        }, 
+        {
+            "signature": "void stop_sound_system(TPanel * this)", 
+            "index": 362, 
+            "name": "stop_sound_system"
+        }, 
+        {
+            "signature": "int restart_sound_system(TPanel * this)", 
+            "index": 363, 
+            "name": "restart_sound_system"
+        }, 
+        {
+            "signature": "void take_snapshot(TPanel * this)", 
+            "index": 364, 
+            "name": "take_snapshot"
+        }, 
+        {
+            "signature": "void handle_reactivate(TEditPanel * this)", 
+            "index": 365, 
+            "name": "handle_reactivate"
+        }, 
+        {
+            "signature": "void * `scalar_deleting_destructor'(TInputPanel * this, uint param_1)", 
+            "index": 366, 
+            "name": "`scalar_deleting_destructor'"
+        }, 
+        {
+            "signature": "long setup(TPanel * this, TDrawArea * param_1, TPanel * param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7)", 
+            "index": 367, 
+            "name": "setup"
+        }, 
+        {
+            "signature": "void set_rect(TPanel * this, tagRECT param_1)", 
+            "index": 368, 
+            "name": "set_rect"
+        }, 
+        {
+            "signature": "void set_rect(TTextPanel * this, long param_1, long param_2, long param_3, long param_4)", 
+            "index": 369, 
+            "name": "set_rect"
+        }, 
+        {
+            "signature": "void set_color(TPanel * this, uchar param_1)", 
+            "index": 370, 
+            "name": "set_color"
+        }, 
+        {
+            "signature": "void set_active(TTextPanel * this, int param_1)", 
+            "index": 371, 
+            "name": "set_active"
+        }, 
+        {
+            "signature": "void set_positioning(TPanel * this, PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel * param_10, TPanel * param_11, TPanel * param_12, TPanel * param_13)", 
+            "index": 372, 
+            "name": "set_positioning"
+        }, 
+        {
+            "signature": "void set_fixed_position(TPanel * this, long param_1, long param_2, long param_3, long param_4)", 
+            "index": 373, 
+            "name": "set_fixed_position"
+        }, 
+        {
+            "signature": "void set_redraw(TPanel * this, RedrawMode param_1)", 
+            "index": 374, 
+            "name": "set_redraw"
+        }, 
+        {
+            "signature": "void set_overlapped_redraw(TPanel * this, TPanel * param_1, TPanel * param_2, RedrawMode param_3)", 
+            "index": 375, 
+            "name": "set_overlapped_redraw"
+        }, 
+        {
+            "signature": "void draw_setup(TPanel * this, int param_1)", 
+            "index": 376, 
+            "name": "draw_setup"
+        }, 
+        {
+            "signature": "void draw_finish(TPanel * this)", 
+            "index": 377, 
+            "name": "draw_finish"
+        }, 
+        {
+            "signature": "void draw(TInputPanel * this)", 
+            "index": 378, 
+            "name": "draw"
+        }, 
+        {
+            "signature": "void draw_rect(TPanel * this, tagRECT * param_1)", 
+            "index": 379, 
+            "name": "draw_rect"
+        }, 
+        {
+            "signature": "void draw_offset(TPanel * this, long param_1, long param_2, tagRECT * param_3)", 
+            "index": 380, 
+            "name": "draw_offset"
+        }, 
+        {
+            "signature": "void draw_rect2(TPanel * this, tagRECT * param_1)", 
+            "index": 381, 
+            "name": "draw_rect2"
+        }, 
+        {
+            "signature": "void draw_offset2(TPanel * this, long param_1, long param_2, tagRECT * param_3)", 
+            "index": 382, 
+            "name": "draw_offset2"
+        }, 
+        {
+            "signature": "void paint(TPanel * this)", 
+            "index": 383, 
+            "name": "paint"
+        }, 
+        {
+            "signature": "long wnd_proc(TPanel * this, void * param_1, uint param_2, uint param_3, long param_4)", 
+            "index": 384, 
+            "name": "wnd_proc"
+        }, 
+        {
+            "signature": "long handle_idle(TInputPanel * this)", 
+            "index": 385, 
+            "name": "handle_idle"
+        }, 
+        {
+            "signature": "long handle_size(TPanel * this, long param_1, long param_2)", 
+            "index": 386, 
+            "name": "handle_size"
+        }, 
+        {
+            "signature": "long handle_paint(TPanel * this)", 
+            "index": 387, 
+            "name": "handle_paint"
+        }, 
+        {
+            "signature": "long handle_key_down(TPanel * this, long param_1, short param_2, int param_3, int param_4, int param_5)", 
+            "index": 388, 
+            "name": "handle_key_down"
+        }, 
+        {
+            "signature": "long handle_char(TPanel * this, long param_1, short param_2)", 
+            "index": 389, 
+            "name": "handle_char"
+        }, 
+        {
+            "signature": "long handle_command(TPanel * this, uint param_1, long param_2)", 
+            "index": 390, 
+            "name": "handle_command"
+        }, 
+        {
+            "signature": "long handle_user_command(TPanel * this, uint param_1, long param_2)", 
+            "index": 391, 
+            "name": "handle_user_command"
+        }, 
+        {
+            "signature": "long handle_timer_command(TPanel * this, uint param_1, long param_2)", 
+            "index": 392, 
+            "name": "handle_timer_command"
+        }, 
+        {
+            "signature": "long handle_scroll(TPanel * this, long param_1, long param_2)", 
+            "index": 393, 
+            "name": "handle_scroll"
+        }, 
+        {
+            "signature": "long handle_mouse_down(TPanel * this, uchar param_1, long param_2, long param_3, int param_4, int param_5)", 
+            "index": 394, 
+            "name": "handle_mouse_down"
+        }, 
+        {
+            "signature": "long handle_mouse_move(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 395, 
+            "name": "handle_mouse_move"
+        }, 
+        {
+            "signature": "long handle_mouse_up(TPanel * this, uchar param_1, long param_2, long param_3, int param_4, int param_5)", 
+            "index": 396, 
+            "name": "handle_mouse_up"
+        }, 
+        {
+            "signature": "long handle_mouse_dbl_click(TPanel * this, uchar param_1, long param_2, long param_3, int param_4, int param_5)", 
+            "index": 397, 
+            "name": "handle_mouse_dbl_click"
+        }, 
+        {
+            "signature": "long mouse_move_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 398, 
+            "name": "mouse_move_action"
+        }, 
+        {
+            "signature": "long mouse_left_down_action(TTextPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 399, 
+            "name": "mouse_left_down_action"
+        }, 
+        {
+            "signature": "long mouse_left_hold_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 400, 
+            "name": "mouse_left_hold_action"
+        }, 
+        {
+            "signature": "long mouse_left_move_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 401, 
+            "name": "mouse_left_move_action"
+        }, 
+        {
+            "signature": "long mouse_left_up_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 402, 
+            "name": "mouse_left_up_action"
+        }, 
+        {
+            "signature": "long mouse_left_dbl_click_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 403, 
+            "name": "mouse_left_dbl_click_action"
+        }, 
+        {
+            "signature": "long mouse_right_down_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 404, 
+            "name": "mouse_right_down_action"
+        }, 
+        {
+            "signature": "long mouse_right_hold_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 405, 
+            "name": "mouse_right_hold_action"
+        }, 
+        {
+            "signature": "long mouse_right_move_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 406, 
+            "name": "mouse_right_move_action"
+        }, 
+        {
+            "signature": "long mouse_right_up_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 407, 
+            "name": "mouse_right_up_action"
+        }, 
+        {
+            "signature": "long mouse_right_dbl_click_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 408, 
+            "name": "mouse_right_dbl_click_action"
+        }, 
+        {
+            "signature": "long key_down_action(TInputPanel * this, long param_1, short param_2, int param_3, int param_4, int param_5)", 
+            "index": 409, 
+            "name": "key_down_action"
+        }, 
+        {
+            "signature": "long char_action(TInputPanel * this, long param_1, short param_2)", 
+            "index": 410, 
+            "name": "char_action"
+        }, 
+        {
+            "signature": "long action(TTextPanel * this, TPanel * param_1, long param_2, ulong param_3, ulong param_4)", 
+            "index": 411, 
+            "name": "action"
+        }, 
+        {
+            "signature": "void get_true_render_rect(TPanel * this, tagRECT * param_1)", 
+            "index": 412, 
+            "name": "get_true_render_rect"
+        }, 
+        {
+            "signature": "int is_inside(TPanel * this, long param_1, long param_2)", 
+            "index": 413, 
+            "name": "is_inside"
+        }, 
+        {
+            "signature": "void set_focus(TInputPanel * this, int param_1)", 
+            "index": 414, 
+            "name": "set_focus"
+        }, 
+        {
+            "signature": "void set_tab_order(TPanel * this, TPanel * param_1, TPanel * param_2)", 
+            "index": 415, 
+            "name": "set_tab_order"
+        }, 
+        {
+            "signature": "void set_tab_order(TPanel * this, TPanel * * param_1, short param_2)", 
+            "index": 416, 
+            "name": "set_tab_order"
+        }, 
+        {
+            "signature": "uchar get_help_info(TPanel * this, char * * param_1, long * param_2, long param_3, long param_4)", 
+            "index": 417, 
+            "name": "get_help_info"
+        }, 
+        {
+            "signature": "void stop_sound_system(TPanel * this)", 
+            "index": 418, 
+            "name": "stop_sound_system"
+        }, 
+        {
+            "signature": "int restart_sound_system(TPanel * this)", 
+            "index": 419, 
+            "name": "restart_sound_system"
+        }, 
+        {
+            "signature": "void take_snapshot(TPanel * this)", 
+            "index": 420, 
+            "name": "take_snapshot"
+        }, 
+        {
+            "signature": "void handle_reactivate(TPanel * this)", 
+            "index": 421, 
+            "name": "handle_reactivate"
+        }, 
+        {
+            "signature": "void set_text(TInputPanel * this, char * * param_1, short param_2)", 
+            "index": 422, 
+            "name": "set_text"
+        }, 
+        {
+            "signature": "void set_text(TTextPanel * this, long param_1)", 
+            "index": 423, 
+            "name": "set_text"
+        }, 
+        {
+            "signature": "void set_text(TInputPanel * this, char * param_1)", 
+            "index": 424, 
+            "name": "set_text"
+        }, 
+        {
+            "signature": "void set_bevel_info(TTextPanel * this, int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7)", 
+            "index": 425, 
+            "name": "set_bevel_info"
+        }, 
+        {
+            "signature": "void * `vector_deleting_destructor'(TListPanel * this, uint param_1)", 
+            "index": 426, 
+            "name": "`vector_deleting_destructor'"
+        }, 
+        {
+            "signature": "long setup(TPanel * this, TDrawArea * param_1, TPanel * param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7)", 
+            "index": 427, 
+            "name": "setup"
+        }, 
+        {
+            "signature": "void set_rect(TPanel * this, tagRECT param_1)", 
+            "index": 428, 
+            "name": "set_rect"
+        }, 
+        {
+            "signature": "void set_rect(TTextPanel * this, long param_1, long param_2, long param_3, long param_4)", 
+            "index": 429, 
+            "name": "set_rect"
+        }, 
+        {
+            "signature": "void set_color(TPanel * this, uchar param_1)", 
+            "index": 430, 
+            "name": "set_color"
+        }, 
+        {
+            "signature": "void set_active(TTextPanel * this, int param_1)", 
+            "index": 431, 
+            "name": "set_active"
+        }, 
+        {
+            "signature": "void set_positioning(TPanel * this, PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel * param_10, TPanel * param_11, TPanel * param_12, TPanel * param_13)", 
+            "index": 432, 
+            "name": "set_positioning"
+        }, 
+        {
+            "signature": "void set_fixed_position(TPanel * this, long param_1, long param_2, long param_3, long param_4)", 
+            "index": 433, 
+            "name": "set_fixed_position"
+        }, 
+        {
+            "signature": "void set_redraw(TPanel * this, RedrawMode param_1)", 
+            "index": 434, 
+            "name": "set_redraw"
+        }, 
+        {
+            "signature": "void set_overlapped_redraw(TPanel * this, TPanel * param_1, TPanel * param_2, RedrawMode param_3)", 
+            "index": 435, 
+            "name": "set_overlapped_redraw"
+        }, 
+        {
+            "signature": "void draw_setup(TPanel * this, int param_1)", 
+            "index": 436, 
+            "name": "draw_setup"
+        }, 
+        {
+            "signature": "void draw_finish(TPanel * this)", 
+            "index": 437, 
+            "name": "draw_finish"
+        }, 
+        {
+            "signature": "void draw(TListPanel * this)", 
+            "index": 438, 
+            "name": "draw"
+        }, 
+        {
+            "signature": "void draw_rect(TPanel * this, tagRECT * param_1)", 
+            "index": 439, 
+            "name": "draw_rect"
+        }, 
+        {
+            "signature": "void draw_offset(TPanel * this, long param_1, long param_2, tagRECT * param_3)", 
+            "index": 440, 
+            "name": "draw_offset"
+        }, 
+        {
+            "signature": "void draw_rect2(TPanel * this, tagRECT * param_1)", 
+            "index": 441, 
+            "name": "draw_rect2"
+        }, 
+        {
+            "signature": "void draw_offset2(TPanel * this, long param_1, long param_2, tagRECT * param_3)", 
+            "index": 442, 
+            "name": "draw_offset2"
+        }, 
+        {
+            "signature": "void paint(TPanel * this)", 
+            "index": 443, 
+            "name": "paint"
+        }, 
+        {
+            "signature": "long wnd_proc(TPanel * this, void * param_1, uint param_2, uint param_3, long param_4)", 
+            "index": 444, 
+            "name": "wnd_proc"
+        }, 
+        {
+            "signature": "long handle_idle(TListPanel * this)", 
+            "index": 445, 
+            "name": "handle_idle"
+        }, 
+        {
+            "signature": "long handle_size(TPanel * this, long param_1, long param_2)", 
+            "index": 446, 
+            "name": "handle_size"
+        }, 
+        {
+            "signature": "long handle_paint(TPanel * this)", 
+            "index": 447, 
+            "name": "handle_paint"
+        }, 
+        {
+            "signature": "long handle_key_down(TPanel * this, long param_1, short param_2, int param_3, int param_4, int param_5)", 
+            "index": 448, 
+            "name": "handle_key_down"
+        }, 
+        {
+            "signature": "long handle_char(TPanel * this, long param_1, short param_2)", 
+            "index": 449, 
+            "name": "handle_char"
+        }, 
+        {
+            "signature": "long handle_command(TPanel * this, uint param_1, long param_2)", 
+            "index": 450, 
+            "name": "handle_command"
+        }, 
+        {
+            "signature": "long handle_user_command(TPanel * this, uint param_1, long param_2)", 
+            "index": 451, 
+            "name": "handle_user_command"
+        }, 
+        {
+            "signature": "long handle_timer_command(TPanel * this, uint param_1, long param_2)", 
+            "index": 452, 
+            "name": "handle_timer_command"
+        }, 
+        {
+            "signature": "long handle_scroll(TPanel * this, long param_1, long param_2)", 
+            "index": 453, 
+            "name": "handle_scroll"
+        }, 
+        {
+            "signature": "long handle_mouse_down(TPanel * this, uchar param_1, long param_2, long param_3, int param_4, int param_5)", 
+            "index": 454, 
+            "name": "handle_mouse_down"
+        }, 
+        {
+            "signature": "long handle_mouse_move(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 455, 
+            "name": "handle_mouse_move"
+        }, 
+        {
+            "signature": "long handle_mouse_up(TPanel * this, uchar param_1, long param_2, long param_3, int param_4, int param_5)", 
+            "index": 456, 
+            "name": "handle_mouse_up"
+        }, 
+        {
+            "signature": "long handle_mouse_dbl_click(TPanel * this, uchar param_1, long param_2, long param_3, int param_4, int param_5)", 
+            "index": 457, 
+            "name": "handle_mouse_dbl_click"
+        }, 
+        {
+            "signature": "long mouse_move_action(TListPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 458, 
+            "name": "mouse_move_action"
+        }, 
+        {
+            "signature": "long mouse_left_down_action(TListPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 459, 
+            "name": "mouse_left_down_action"
+        }, 
+        {
+            "signature": "long mouse_left_hold_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 460, 
+            "name": "mouse_left_hold_action"
+        }, 
+        {
+            "signature": "long mouse_left_move_action(TListPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 461, 
+            "name": "mouse_left_move_action"
+        }, 
+        {
+            "signature": "long mouse_left_up_action(TListPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 462, 
+            "name": "mouse_left_up_action"
+        }, 
+        {
+            "signature": "long mouse_left_dbl_click_action(TListPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 463, 
+            "name": "mouse_left_dbl_click_action"
+        }, 
+        {
+            "signature": "long mouse_right_down_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 464, 
+            "name": "mouse_right_down_action"
+        }, 
+        {
+            "signature": "long mouse_right_hold_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 465, 
+            "name": "mouse_right_hold_action"
+        }, 
+        {
+            "signature": "long mouse_right_move_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 466, 
+            "name": "mouse_right_move_action"
+        }, 
+        {
+            "signature": "long mouse_right_up_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 467, 
+            "name": "mouse_right_up_action"
+        }, 
+        {
+            "signature": "long mouse_right_dbl_click_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 468, 
+            "name": "mouse_right_dbl_click_action"
+        }, 
+        {
+            "signature": "long key_down_action(TListPanel * this, long param_1, short param_2, int param_3, int param_4, int param_5)", 
+            "index": 469, 
+            "name": "key_down_action"
+        }, 
+        {
+            "signature": "long char_action(TListPanel * this, long param_1, short param_2)", 
+            "index": 470, 
+            "name": "char_action"
+        }, 
+        {
+            "signature": "long action(TListPanel * this, TPanel * param_1, long param_2, ulong param_3, ulong param_4)", 
+            "index": 471, 
+            "name": "action"
+        }, 
+        {
+            "signature": "void get_true_render_rect(TPanel * this, tagRECT * param_1)", 
+            "index": 472, 
+            "name": "get_true_render_rect"
+        }, 
+        {
+            "signature": "int is_inside(TPanel * this, long param_1, long param_2)", 
+            "index": 473, 
+            "name": "is_inside"
+        }, 
+        {
+            "signature": "void set_focus(TListPanel * this, int param_1)", 
+            "index": 474, 
+            "name": "set_focus"
+        }, 
+        {
+            "signature": "void set_tab_order(TPanel * this, TPanel * param_1, TPanel * param_2)", 
+            "index": 475, 
+            "name": "set_tab_order"
+        }, 
+        {
+            "signature": "void set_tab_order(TPanel * this, TPanel * * param_1, short param_2)", 
+            "index": 476, 
+            "name": "set_tab_order"
+        }, 
+        {
+            "signature": "uchar get_help_info(TPanel * this, char * * param_1, long * param_2, long param_3, long param_4)", 
+            "index": 477, 
+            "name": "get_help_info"
+        }, 
+        {
+            "signature": "void stop_sound_system(TPanel * this)", 
+            "index": 478, 
+            "name": "stop_sound_system"
+        }, 
+        {
+            "signature": "int restart_sound_system(TPanel * this)", 
+            "index": 479, 
+            "name": "restart_sound_system"
+        }, 
+        {
+            "signature": "void take_snapshot(TPanel * this)", 
+            "index": 480, 
+            "name": "take_snapshot"
+        }, 
+        {
+            "signature": "void handle_reactivate(TPanel * this)", 
+            "index": 481, 
+            "name": "handle_reactivate"
+        }, 
+        {
+            "signature": "void set_text(TTextPanel * this, char * * param_1, short param_2)", 
+            "index": 482, 
+            "name": "set_text"
+        }, 
+        {
+            "signature": "void set_text(TTextPanel * this, long param_1)", 
+            "index": 483, 
+            "name": "set_text"
+        }, 
+        {
+            "signature": "void set_text(TTextPanel * this, char * param_1)", 
+            "index": 484, 
+            "name": "set_text"
+        }, 
+        {
+            "signature": "void set_bevel_info(TListPanel * this, int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7)", 
+            "index": 485, 
+            "name": "set_bevel_info"
+        }, 
+        {
+            "signature": "void * `scalar_deleting_destructor'(TMessagePanel * this, uint param_1)", 
+            "index": 486, 
+            "name": "`scalar_deleting_destructor'"
+        }, 
+        {
+            "signature": "long setup(TPanel * this, TDrawArea * param_1, TPanel * param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7)", 
+            "index": 487, 
+            "name": "setup"
+        }, 
+        {
+            "signature": "void set_rect(TPanel * this, tagRECT param_1)", 
+            "index": 488, 
+            "name": "set_rect"
+        }, 
+        {
+            "signature": "void set_rect(TMessagePanel * this, long param_1, long param_2, long param_3, long param_4)", 
+            "index": 489, 
+            "name": "set_rect"
+        }, 
+        {
+            "signature": "void set_color(TPanel * this, uchar param_1)", 
+            "index": 490, 
+            "name": "set_color"
+        }, 
+        {
+            "signature": "void set_active(TPanel * this, int param_1)", 
+            "index": 491, 
+            "name": "set_active"
+        }, 
+        {
+            "signature": "void set_positioning(TPanel * this, PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel * param_10, TPanel * param_11, TPanel * param_12, TPanel * param_13)", 
+            "index": 492, 
+            "name": "set_positioning"
+        }, 
+        {
+            "signature": "void set_fixed_position(TPanel * this, long param_1, long param_2, long param_3, long param_4)", 
+            "index": 493, 
+            "name": "set_fixed_position"
+        }, 
+        {
+            "signature": "void set_redraw(TPanel * this, RedrawMode param_1)", 
+            "index": 494, 
+            "name": "set_redraw"
+        }, 
+        {
+            "signature": "void set_overlapped_redraw(TPanel * this, TPanel * param_1, TPanel * param_2, RedrawMode param_3)", 
+            "index": 495, 
+            "name": "set_overlapped_redraw"
+        }, 
+        {
+            "signature": "void draw_setup(TPanel * this, int param_1)", 
+            "index": 496, 
+            "name": "draw_setup"
+        }, 
+        {
+            "signature": "void draw_finish(TPanel * this)", 
+            "index": 497, 
+            "name": "draw_finish"
+        }, 
+        {
+            "signature": "void draw(TMessagePanel * this)", 
+            "index": 498, 
+            "name": "draw"
+        }, 
+        {
+            "signature": "void draw_rect(TPanel * this, tagRECT * param_1)", 
+            "index": 499, 
+            "name": "draw_rect"
+        }, 
+        {
+            "signature": "void draw_offset(TPanel * this, long param_1, long param_2, tagRECT * param_3)", 
+            "index": 500, 
+            "name": "draw_offset"
+        }, 
+        {
+            "signature": "void draw_rect2(TPanel * this, tagRECT * param_1)", 
+            "index": 501, 
+            "name": "draw_rect2"
+        }, 
+        {
+            "signature": "void draw_offset2(TPanel * this, long param_1, long param_2, tagRECT * param_3)", 
+            "index": 502, 
+            "name": "draw_offset2"
+        }, 
+        {
+            "signature": "void paint(TPanel * this)", 
+            "index": 503, 
+            "name": "paint"
+        }, 
+        {
+            "signature": "long wnd_proc(TPanel * this, void * param_1, uint param_2, uint param_3, long param_4)", 
+            "index": 504, 
+            "name": "wnd_proc"
+        }, 
+        {
+            "signature": "long handle_idle(TMessagePanel * this)", 
+            "index": 505, 
+            "name": "handle_idle"
+        }, 
+        {
+            "signature": "long handle_size(TPanel * this, long param_1, long param_2)", 
+            "index": 506, 
+            "name": "handle_size"
+        }, 
+        {
+            "signature": "long handle_paint(TPanel * this)", 
+            "index": 507, 
+            "name": "handle_paint"
+        }, 
+        {
+            "signature": "long handle_key_down(TPanel * this, long param_1, short param_2, int param_3, int param_4, int param_5)", 
+            "index": 508, 
+            "name": "handle_key_down"
+        }, 
+        {
+            "signature": "long handle_char(TPanel * this, long param_1, short param_2)", 
+            "index": 509, 
+            "name": "handle_char"
+        }, 
+        {
+            "signature": "long handle_command(TPanel * this, uint param_1, long param_2)", 
+            "index": 510, 
+            "name": "handle_command"
+        }, 
+        {
+            "signature": "long handle_user_command(TPanel * this, uint param_1, long param_2)", 
+            "index": 511, 
+            "name": "handle_user_command"
+        }, 
+        {
+            "signature": "long handle_timer_command(TPanel * this, uint param_1, long param_2)", 
+            "index": 512, 
+            "name": "handle_timer_command"
+        }, 
+        {
+            "signature": "long handle_scroll(TPanel * this, long param_1, long param_2)", 
+            "index": 513, 
+            "name": "handle_scroll"
+        }, 
+        {
+            "signature": "long handle_mouse_down(TMessagePanel * this, uchar param_1, long param_2, long param_3, int param_4, int param_5)", 
+            "index": 514, 
+            "name": "handle_mouse_down"
+        }, 
+        {
+            "signature": "long handle_mouse_move(TMessagePanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 515, 
+            "name": "handle_mouse_move"
+        }, 
+        {
+            "signature": "long handle_mouse_up(TMessagePanel * this, uchar param_1, long param_2, long param_3, int param_4, int param_5)", 
+            "index": 516, 
+            "name": "handle_mouse_up"
+        }, 
+        {
+            "signature": "long handle_mouse_dbl_click(TPanel * this, uchar param_1, long param_2, long param_3, int param_4, int param_5)", 
+            "index": 517, 
+            "name": "handle_mouse_dbl_click"
+        }, 
+        {
+            "signature": "long mouse_move_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 518, 
+            "name": "mouse_move_action"
+        }, 
+        {
+            "signature": "long mouse_left_down_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 519, 
+            "name": "mouse_left_down_action"
+        }, 
+        {
+            "signature": "long mouse_left_hold_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 520, 
+            "name": "mouse_left_hold_action"
+        }, 
+        {
+            "signature": "long mouse_left_move_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 521, 
+            "name": "mouse_left_move_action"
+        }, 
+        {
+            "signature": "long mouse_left_up_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 522, 
+            "name": "mouse_left_up_action"
+        }, 
+        {
+            "signature": "long mouse_left_dbl_click_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 523, 
+            "name": "mouse_left_dbl_click_action"
+        }, 
+        {
+            "signature": "long mouse_right_down_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 524, 
+            "name": "mouse_right_down_action"
+        }, 
+        {
+            "signature": "long mouse_right_hold_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 525, 
+            "name": "mouse_right_hold_action"
+        }, 
+        {
+            "signature": "long mouse_right_move_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 526, 
+            "name": "mouse_right_move_action"
+        }, 
+        {
+            "signature": "long mouse_right_up_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 527, 
+            "name": "mouse_right_up_action"
+        }, 
+        {
+            "signature": "long mouse_right_dbl_click_action(TPanel * this, long param_1, long param_2, int param_3, int param_4)", 
+            "index": 528, 
+            "name": "mouse_right_dbl_click_action"
+        }, 
+        {
+            "signature": "long key_down_action(TPanel * this, long param_1, short param_2, int param_3, int param_4, int param_5)", 
+            "index": 529, 
+            "name": "key_down_action"
+        }, 
+        {
+            "signature": "long char_action(TPanel * this, long param_1, short param_2)", 
+            "index": 530, 
+            "name": "char_action"
+        }, 
+        {
+            "signature": "long action(TPanel * this, TPanel * param_1, long param_2, ulong param_3, ulong param_4)", 
+            "index": 531, 
+            "name": "action"
+        }, 
+        {
+            "signature": "void get_true_render_rect(TMessagePanel * this, tagRECT * param_1)", 
+            "index": 532, 
+            "name": "get_true_render_rect"
+        }, 
+        {
+            "signature": "int is_inside(TPanel * this, long param_1, long param_2)", 
+            "index": 533, 
+            "name": "is_inside"
+        }, 
+        {
+            "signature": "void set_focus(TPanel * this, int param_1)", 
+            "index": 534, 
+            "name": "set_focus"
+        }, 
+        {
+            "signature": "void set_tab_order(TPanel * this, TPanel * param_1, TPanel * param_2)", 
+            "index": 535, 
+            "name": "set_tab_order"
+        }, 
+        {
+            "signature": "void set_tab_order(TPanel * this, TPanel * * param_1, short param_2)", 
+            "index": 536, 
+            "name": "set_tab_order"
+        }, 
+        {
+            "signature": "uchar get_help_info(TPanel * this, char * * param_1, long * param_2, long param_3, long param_4)", 
+            "index": 537, 
+            "name": "get_help_info"
+        }, 
+        {
+            "signature": "void stop_sound_system(TPanel * this)", 
+            "index": 538, 
+            "name": "stop_sound_system"
+        }, 
+        {
+            "signature": "int restart_sound_system(TPanel * this)", 
+            "index": 539, 
+            "name": "restart_sound_system"
+        }, 
+        {
+            "signature": "void take_snapshot(TPanel * this)", 
+            "index": 540, 
+            "name": "take_snapshot"
+        }, 
+        {
+            "signature": "void handle_reactivate(TPanel * this)", 
+            "index": 541, 
+            "name": "handle_reactivate"
+        }, 
+        {
+            "signature": "void set_font(TMessagePanel * this, void * param_1, long param_2, long param_3)", 
+            "index": 542, 
+            "name": "set_font"
+        }
+    ], 
+    "members": [
+        {
+            "offset": 4, 
+            "type": "int", 
+            "size": 4, 
+            "name": "computerPlayerValue"
+        }, 
+        {
+            "offset": 8, 
+            "type": "int", 
+            "size": 4, 
+            "name": "pathingAttemptCapValue"
+        }, 
+        {
+            "offset": 12, 
+            "type": "int", 
+            "size": 4, 
+            "name": "pathingDelayCapValue"
+        }, 
+        {
+            "offset": 16, 
+            "type": "int", 
+            "size": 4, 
+            "name": "currentUpdatePathingAttemptsValue"
+        }, 
+        {
+            "offset": 20, 
+            "type": "long", 
+            "size": 4, 
+            "name": "checksum"
+        }, 
+        {
+            "offset": 24, 
+            "type": "long", 
+            "size": 4, 
+            "name": "position_checksum"
+        }, 
+        {
+            "offset": 28, 
+            "type": "long", 
+            "size": 4, 
+            "name": "action_checksum"
+        }, 
+        {
+            "offset": 32, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "checksum_created_this_update"
+        }, 
+        {
+            "offset": 34, 
+            "type": "short", 
+            "size": 2, 
+            "name": "master_object_num"
+        }, 
+        {
+            "offset": 36, 
+            "type": "RGE_Master_Static_Object * *", 
+            "size": 4, 
+            "name": "master_objects"
+        }, 
+        {
+            "offset": 40, 
+            "type": "RGE_Object_List *", 
+            "size": 4, 
+            "name": "objects"
+        }, 
+        {
+            "offset": 44, 
+            "type": "RGE_Object_List *", 
+            "size": 4, 
+            "name": "sleeping_objects"
+        }, 
+        {
+            "offset": 48, 
+            "type": "RGE_Object_List *", 
+            "size": 4, 
+            "name": "doppleganger_objects"
+        }, 
+        {
+            "offset": 52, 
+            "type": "RGE_Victory_Conditions *", 
+            "size": 4, 
+            "name": "victory_conditions"
+        }, 
+        {
+            "offset": 56, 
+            "type": "RGE_Visible_Map *", 
+            "size": 4, 
+            "name": "visible"
+        }, 
+        {
+            "offset": 60, 
+            "type": "RGE_Game_World *", 
+            "size": 4, 
+            "name": "world"
+        }, 
+        {
+            "offset": 64, 
+            "type": "RGE_Doppleganger_Creator *", 
+            "size": 4, 
+            "name": "doppleganger_creator"
+        }, 
+        {
+            "offset": 68, 
+            "type": "char *", 
+            "size": 4, 
+            "name": "name"
+        }, 
+        {
+            "offset": 72, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "type"
+        }, 
+        {
+            "offset": 74, 
+            "type": "short", 
+            "size": 2, 
+            "name": "id"
+        }, 
+        {
+            "offset": 76, 
+            "type": "short", 
+            "size": 2, 
+            "name": "attribute_num"
+        }, 
+        {
+            "offset": 80, 
+            "type": "float *", 
+            "size": 4, 
+            "name": "attributes"
+        }, 
+        {
+            "offset": 84, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "culture"
+        }, 
+        {
+            "offset": 88, 
+            "type": "RGE_Tile_List", 
+            "size": 20, 
+            "name": "tile_list"
+        }, 
+        {
+            "offset": 108, 
+            "type": "RGE_Tile_List", 
+            "size": 20, 
+            "name": "diam_tile_list"
+        }, 
+        {
+            "offset": 128, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "game_status"
+        }, 
+        {
+            "offset": 129, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "resigned"
+        }, 
+        {
+            "offset": 132, 
+            "type": "uchar *", 
+            "size": 4, 
+            "name": "relations"
+        }, 
+        {
+            "offset": 136, 
+            "type": "int[9]", 
+            "size": 36, 
+            "name": "unitDiplomacy"
+        }, 
+        {
+            "offset": 172, 
+            "type": "int[9]", 
+            "size": 36, 
+            "name": "mutualAlly"
+        }, 
+        {
+            "offset": 208, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "mutualExploredMask"
+        }, 
+        {
+            "offset": 212, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "mutualVisibleMask"
+        }, 
+        {
+            "offset": 216, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "nonMutualVisibleMask"
+        }, 
+        {
+            "offset": 220, 
+            "type": "ulong[9]", 
+            "size": 36, 
+            "name": "RemoveVisibleBits"
+        }, 
+        {
+            "offset": 256, 
+            "type": "int", 
+            "size": 4, 
+            "name": "allied_LOS_Enable"
+        }, 
+        {
+            "offset": 260, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "allied_victory"
+        }, 
+        {
+            "offset": 261, 
+            "type": "uchar", 
+            "size": 1, 
+            "name": "master_player_id"
+        }, 
+        {
+            "offset": 264, 
+            "type": "RGE_Color_Table *", 
+            "size": 4, 
+            "name": "color_table"
+        }, 
+        {
+            "offset": 268, 
+            "type": "long", 
+            "size": 4, 
+            "name": "tribe_effect"
+        }, 
+        {
+            "offset": 272, 
+            "type": "Visible_Resource_Manager *", 
+            "size": 4, 
+            "name": "VR_List"
+        }, 
+        {
+            "offset": 276, 
+            "type": "float", 
+            "size": 4, 
+            "name": "view_x"
+        }, 
+        {
+            "offset": 280, 
+            "type": "float", 
+            "size": 4, 
+            "name": "view_y"
+        }, 
+        {
+            "offset": 284, 
+            "type": "short", 
+            "size": 2, 
+            "name": "map_x"
+        }, 
+        {
+            "offset": 286, 
+            "type": "short", 
+            "size": 2, 
+            "name": "map_y"
+        }, 
+        {
+            "offset": 288, 
+            "type": "short", 
+            "size": 2, 
+            "name": "selected_start_col"
+        }, 
+        {
+            "offset": 290, 
+            "type": "short", 
+            "size": 2, 
+            "name": "selected_start_row"
+        }, 
+        {
+            "offset": 292, 
+            "type": "short", 
+            "size": 2, 
+            "name": "selected_end_col"
+        }, 
+        {
+            "offset": 294, 
+            "type": "short", 
+            "size": 2, 
+            "name": "selected_end_row"
+        }, 
+        {
+            "offset": 296, 
+            "type": "short", 
+            "size": 2, 
+            "name": "replacement_terrain"
+        }, 
+        {
+            "offset": 298, 
+            "type": "short", 
+            "size": 2, 
+            "name": "replacement_overlay"
+        }, 
+        {
+            "offset": 300, 
+            "type": "short", 
+            "size": 2, 
+            "name": "replacement_overlay_shape"
+        }, 
+        {
+            "offset": 304, 
+            "type": "RGE_Static_Object *", 
+            "size": 4, 
+            "name": "selected_obj"
+        }, 
+        {
+            "offset": 308, 
+            "type": "RGE_Static_Object *[25]", 
+            "size": 100, 
+            "name": "sel_list"
+        }, 
+        {
+            "offset": 408, 
+            "type": "ulong", 
+            "size": 4, 
+            "name": "sel_object_properties"
+        }, 
+        {
+            "offset": 412, 
+            "type": "short", 
+            "size": 2, 
+            "name": "sel_count"
+        }, 
+        {
+            "offset": 414, 
+            "type": "uchar[127]", 
+            "size": 127, 
+            "name": "groups_used"
+        }
+    ], 
+    "name": "RGE_Player"
+}

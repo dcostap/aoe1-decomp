@@ -1,0 +1,19 @@
+{
+    "size": 40, 
+    "vtable": [], 
+    "members": [
+        {
+            "offset": 0, 
+            "type": "DString", 
+            "size": 20, 
+            "name": "keyValue"
+        }, 
+        {
+            "offset": 20, 
+            "type": "DString", 
+            "size": 20, 
+            "name": "valueValue"
+        }
+    ], 
+    "name": "DKeyString"
+}
