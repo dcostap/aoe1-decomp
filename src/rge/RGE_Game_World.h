@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../types.h"
+#include "RGE_Map.h"
+#include "RGE_Player.h"
 
 #pragma pack(push, 1)
 

@@ -1,4 +1,5 @@
 #include "TRIBE_Game.h"
+#include "../rge/RGE_Prog_Info.h"
 #include <stdio.h>
 #include <string.h>
 #include "../rge/RESFILE.h"
@@ -138,29 +139,52 @@ void TRIBE_Game::close_game_screens(int p) { /* Stub */ }
 // ... (existing code, don't repeat includes here in replace, just target the setup function and top)
 
 int TRIBE_Game::setup() {
-    // Resource initialization
-    // Check for Makeres arg omitted for now logic complexity
+    if (this->prog_info->instance == nullptr) {
+        return 0;
+    }
+
+    // Check for makeres
+    if (strstr(this->prog_info->cmd_line, "makeres") || 
+        strstr(this->prog_info->cmd_line, "Makeres") || 
+        strstr(this->prog_info->cmd_line, "MAKERES")) {
+        RESFILE_build_res_file("graphics.rm", "resource", this->prog_info->resource_dir);
+        RESFILE_build_res_file("sounds.rm", "resource", this->prog_info->resource_dir);
+        RESFILE_build_res_file("interfac.rm", "resource", this->prog_info->resource_dir);
+    }
+
+    RESFILE_open_new_resource_file("sounds.drs", "tribe", this->prog_info->resource_dir, 1);
+    RESFILE_open_new_resource_file("graphics.drs", "tribe", this->prog_info->resource_dir, 0);
+    RESFILE_open_new_resource_file("Interfac.drs", "tribe", this->prog_info->resource_dir, 0);
     
     RESFILE_open_new_resource_file("sounds.drs", "tribe", "data2\\", 1);
     RESFILE_open_new_resource_file("graphics.drs", "tribe", "data2\\", 0);
+    RESFILE_open_new_resource_file("Terrain.drs", "tribe", "data2\\", 0);
+    RESFILE_open_new_resource_file("Border.drs", "tribe", "data2\\", 0);
     RESFILE_open_new_resource_file("Interfac.drs", "tribe", "data2\\", 0);
-    RESFILE_open_new_resource_file("sounds.drs", "tribe", "data\\", 1);
-    RESFILE_open_new_resource_file("graphics.drs", "tribe", "data\\", 0);
-    RESFILE_open_new_resource_file("Terrain.drs", "tribe", "data\\", 0);
-    RESFILE_open_new_resource_file("Border.drs", "tribe", "data\\", 0);
-    RESFILE_open_new_resource_file("Interfac.drs", "tribe", "data\\", 0);
 
     if (RGE_Base_Game::setup() == 0) return 0;
+
+    char language_dll[100];
+    strcpy(language_dll, "languagex.dll");
     
-    // Load StringTableX
-    StringTableX = LoadLibraryA("languagex.dll");
-    if (!StringTableX) {
-        // Warn but proceed for testing
-        MessageBoxA(nullptr, "Warning: languagex.dll not found. Proceeding with dummy table.", "Setup Warning", MB_OK);
-        StringTableX = (void*)1; 
+    // Check for custom language DLL in command line
+    char* lang_ptr = strstr(this->prog_info->cmd_line, "STRING=");
+    if (lang_ptr) {
+        lang_ptr += 7;
+        char* end_ptr = lang_ptr;
+        while (*end_ptr && *end_ptr != ' ') end_ptr++;
+        int len = end_ptr - lang_ptr;
+        if (len > 0 && len < 99) {
+            strncpy(language_dll, lang_ptr, len);
+            language_dll[len] = '\0';
+        }
     }
-    
-    // SetPaletteEntries omitted/stubbed
+
+    StringTableX = (void*)LoadLibraryA(language_dll);
+    if (!StringTableX) {
+        this->error_code = 1;
+        return 0;
+    }
     
     return 1;
 }

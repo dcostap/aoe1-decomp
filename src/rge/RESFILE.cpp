@@ -8,6 +8,10 @@
 
 ResFileHdr *DAT_0086b254 = nullptr;
 
+void RESFILE_build_res_file(const char* name, const char* dir, const char* ext) {
+    // STUB: Original logic for building resource files from .rm files
+}
+
 void RESFILE_open_new_resource_file(const char* name, const char* dir, const char* ext, int flag) {
     char resFile[260];
     sprintf(resFile, "%s%s", ext ? ext : "", name);
@@ -152,8 +156,4 @@ void RESFILE_close_new_resource_file(const char *name) {
         prev = curr;
         curr = curr->next;
     }
-}
-
-void RESFILE_build_res_file(const char* name, const char* dir, const char* ext) {
-    // STUB
 }

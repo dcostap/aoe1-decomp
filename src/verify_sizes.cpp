@@ -32,5 +32,21 @@ int main() {
     printf("RGE_Game_World: Actual=0x%X, Expected=0xF8, Diff=%d\n", (int)sizeof(RGE_Game_World), (int)sizeof(RGE_Game_World) - 0xF8);
     printf("  Offset players: 0x%X (Expected 0x3A)\n", (int)offsetof(RGE_Game_World, players));
 
+    // RGE_Map
+    printf("RGE_Map:        Actual=0x%X, Expected=0x8DD0, Diff=%d\n", (int)sizeof(RGE_Map), (int)sizeof(RGE_Map) - 0x8DD0);
+    printf("  Offset tilesizes:     0x%X\n", (int)offsetof(RGE_Map, tilesizes));
+    printf("  Offset terrain_types: 0x%X\n", (int)offsetof(RGE_Map, terrain_types));
+    printf("  Offset border_types:  0x%X\n", (int)offsetof(RGE_Map, border_types));
+    printf("  Offset map_row_offset: 0x%X\n", (int)offsetof(RGE_Map, map_row_offset));
+    printf("  Size RGE_Tile_Set:    0x%X\n", (int)sizeof(RGE_Tile_Set));
+    printf("  Size RGE_Border_Set:  0x%X\n", (int)sizeof(RGE_Border_Set));
+
+    // RGE_Player
+    printf("RGE_Player:     Actual=0x%X, Expected=0x1D8, Diff=%d\n", (int)sizeof(RGE_Player), (int)sizeof(RGE_Player) - 0x1D8);
+    printf("  Offset tile_list:     0x%X\n", (int)offsetof(RGE_Player, tile_list));
+    printf("  Offset unitDiplomacy: 0x%X\n", (int)offsetof(RGE_Player, unitDiplomacy));
+    printf("  Offset sel_list:      0x%X\n", (int)offsetof(RGE_Player, sel_list));
+    printf("  Offset groups_used:   0x%X\n", (int)offsetof(RGE_Player, groups_used));
+
     return 0;
 }
