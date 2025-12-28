@@ -17,7 +17,6 @@
 // Static string for snapshot filename
 static char s_C__AOE__03d_BMP[] = "C:\\AOE_%03d.BMP";
 
-// Address: 0x004bd8b0
 TSpan_List_Manager::TSpan_List_Manager(int width, int height) 
     : VSList(((width + 31 + ((width + 31) >> 31 & 31)) >> 5) * height, height << 4, 16)
 {
@@ -36,7 +35,6 @@ TSpan_List_Manager::TSpan_List_Manager(int width, int height)
     this->Span_Count     = (int *)calloc(this->Num_Lines, sizeof(int));
 }
 
-// Address: 0x004bd9a0
 TSpan_List_Manager::~TSpan_List_Manager() {
     if (this->Line_Head_Ptrs) free(this->Line_Head_Ptrs);
     if (this->Line_Tail_Ptrs) free(this->Line_Tail_Ptrs);
@@ -47,7 +45,6 @@ TSpan_List_Manager::~TSpan_List_Manager() {
     // this->VSList destructor called automatically
 }
 
-// Address: 0x004bda00
 void TSpan_List_Manager::SetSpanRegions(int x1, int y1, int x2, int y2) {
     int left = (x2 < x1) ? x2 : x1;
     int right = (x2 < x1) ? x1 : x2;
@@ -72,7 +69,6 @@ void TSpan_List_Manager::SetSpanRegions(int x1, int y1, int x2, int y2) {
     }
 }
 
-// Address: 0x004bda70
 void TSpan_List_Manager::ResetAll() {
     this->VSList.ReclaimAllNodes();
 
@@ -84,7 +80,6 @@ void TSpan_List_Manager::ResetAll() {
     memset(this->Span_Count, 0, this->Num_Lines * sizeof(int));
 }
 
-// Address: 0x004bdb00
 void TSpan_List_Manager::AddSpan(int x1, int x2, int y) {
     if (y < this->Min_Line || y > this->Max_Line) return;
 
@@ -317,7 +312,6 @@ void TSpan_List_Manager::AddSpan(int x1, int x2, int y) {
     }
 }
 
-// Address: 004bdea0
 void TSpan_List_Manager::AddShape(TShape *shape, int frame, int x, int y, int flag) {
     if (!shape || !shape->FShape) return;
     
@@ -375,7 +369,6 @@ void TSpan_List_Manager::AddShape(TShape *shape, int frame, int x, int y, int fl
     }
 }
 
-// Address: 004bdfa0
 void TSpan_List_Manager::AddShape_Align(uchar *data, Shape_Info *info, int x, int y, int flag) {
     if (!info) return;
     
@@ -410,7 +403,6 @@ void TSpan_List_Manager::AddShape_Align(uchar *data, Shape_Info *info, int x, in
     }
 }
 
-// Address: 004be090
 void TSpan_List_Manager::AddLine_Align(int x1, int y1, int x2, int y2) {
     // Adds a line to the span list, aligned to 4-pixel chunks. 
     // Used for fog of war/visibility lines.
@@ -490,7 +482,6 @@ void TSpan_List_Manager::AddLine_Align(int x1, int y1, int x2, int y2) {
     }
 }
 
-// Address: 004be1f0
 void TSpan_List_Manager::AddMiniList(VSpanMiniList *list, int x_off, int y_off) {
     if (!list) return;
     while (list->Y_delta != 0xFF) { // 0xFF (-1 char) terminator
@@ -500,7 +491,6 @@ void TSpan_List_Manager::AddMiniList(VSpanMiniList *list, int x_off, int y_off) 
     }
 }
 
-// Address: 004be240
 void TSpan_List_Manager::SubtractMiniList(VSpanMiniList *list, int x_off, int y_off) {
     if (!list) return;
     while (list->Y_delta != 0xFF) { // 0xFF terminator (actually char 255)
@@ -509,7 +499,6 @@ void TSpan_List_Manager::SubtractMiniList(VSpanMiniList *list, int x_off, int y_
     }
 }
 
-// Address: 004be290
 void TSpan_List_Manager::DeleteSpan(int x1, int x2, int y) {
     // Inverse of AddSpan - removes range [x1, x2] from line y
     if (y < this->Min_Line || y > this->Max_Line) return;
@@ -598,7 +587,6 @@ void TSpan_List_Manager::DeleteSpan(int x1, int x2, int y) {
     }
 }
 
-// Address: 004be4b0
 void TSpan_List_Manager::DeleteShape(TShape *shape, int frame, int x, int y, int flag) {
     if (!shape || !shape->FShape) return;
     
@@ -639,7 +627,6 @@ void TSpan_List_Manager::DeleteShape(TShape *shape, int frame, int x, int y, int
     }
 }
 
-// Address: 004be5b0
 int TSpan_List_Manager::PointVisible(int x, int y) {
     if (y >= 0 && y < this->Num_Lines) {
         VSpan_Node *curr = this->Line_Head_Ptrs[y];
@@ -651,7 +638,6 @@ int TSpan_List_Manager::PointVisible(int x, int y) {
     return 0;
 }
 
-// Address: 004be5f0
 void TSpan_List_Manager::Merge_n_Align(TSpan_List_Manager *list1, TSpan_List_Manager *list2) {
     ResetAll();
     
@@ -674,7 +660,6 @@ void TSpan_List_Manager::Merge_n_Align(TSpan_List_Manager *list1, TSpan_List_Man
     }
 }
 
-// Address: 004be690
 void TSpan_List_Manager::AlignamizeSpans() {
     for (int y = 0; y < this->Num_Lines; y++) {
         VSpan_Node *curr = this->Line_Head_Ptrs[y];
@@ -709,7 +694,6 @@ void TSpan_List_Manager::AlignamizeSpans() {
     }
 }
 
-// Address: 004bead0
 int TSpan_List_Manager::DecodeLine(uchar *buffer, int y, uchar color, int width) {
     if (y < 0 || y >= this->Num_Lines) return 0;
     
@@ -730,7 +714,6 @@ int TSpan_List_Manager::DecodeLine(uchar *buffer, int y, uchar color, int width)
     return drawn;
 }
 
-// Address: 004beb10
 void TSpan_List_Manager::take_snapshot(char *filename_fmt, int *seq, TDrawArea *draw_area, int color_base, TSpan_List_Manager **others, int *colors, int count) {
     
     #pragma pack(push, 1)

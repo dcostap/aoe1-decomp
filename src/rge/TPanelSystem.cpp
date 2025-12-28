@@ -6,7 +6,6 @@
 #include <string.h>
 
 // Helper function to read palette
-// Address: 0x00444A00 (approx)
 void *ReadPalette(const char *name, int id, int flag) {
 #ifdef _DEBUG
     printf("ReadPalette: name=%s id=%d\n", name ? name : "NULL", id);

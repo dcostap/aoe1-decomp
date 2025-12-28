@@ -134,14 +134,12 @@ void RGE_Game_World::scenario_init(int a, RGE_Game_World* world) {}
 int RGE_Game_World::addObject(RGE_Static_Object* obj) { return 0; }
 int RGE_Game_World::removeObject(int id) { return 0; }
 
-// Address: 0x00456800
 RGE_Game_World::~RGE_Game_World() {
     if (this->map) {
         delete this->map;
     }
 }
 
-// Address: 0x00457000
 void RGE_Game_World::draw() {
     if (this->map) {
         this->map->draw(rge_base_game->draw_area, 0, 0, 800, 600);

@@ -17,7 +17,6 @@ int* player_dropped[9] = {0}; // Assumed array size from context
 int quick_start_game_mode = 0;
 TPanelSystem panel_system;
 
-// Address: 0x00521116
 TRIBE_Game::TRIBE_Game(RGE_Prog_Info* info, int setup_flag) 
     : RGE_Base_Game(info, 0) 
 {
@@ -103,7 +102,6 @@ TRIBE_Game::TRIBE_Game(RGE_Prog_Info* info, int setup_flag)
     }
 }
 
-// Address: 0x0052139e
 TRIBE_Game::~TRIBE_Game() {
     close_game_screens(1);
     // Panel destruction stubs...
@@ -113,56 +111,33 @@ TRIBE_Game::~TRIBE_Game() {
     }
 }
 
-// Address: 0x005291f7
 void TRIBE_Game::setMapSize(MapSize v) { this->tribe_game_options.mapSizeValue = v; }
-// Address: 0x005292a7
 void TRIBE_Game::setMapType(MapType v) { this->tribe_game_options.mapTypeValue = (TRIBE_MapType)v; }
-// Address: 0x005292c7
 void TRIBE_Game::setAnimals(int v) { this->tribe_game_options.animalsValue = v; }
-// Address: 0x005292e7
 void TRIBE_Game::setPredators(int v) { this->tribe_game_options.predatorsValue = v; }
-// Address: 0x00529317
 void TRIBE_Game::setVictoryType(VictoryType v, int a) { 
     this->tribe_game_options.victoryTypeValue = (TRIBE_VictoryType)v; 
     this->tribe_game_options.victoryAmountValue = a;
 }
-// Address: 0x00529337
 void TRIBE_Game::setAllowTrading(int v) { this->tribe_game_options.allowTradingValue = (uchar)v; }
-// Address: 0x00529362
 void TRIBE_Game::setLongCombat(int v) { this->tribe_game_options.longCombatValue = (uchar)v; }
-// Address: 0x00529392
 void TRIBE_Game::setRandomizePositions(int v) { this->tribe_game_options.randomizePositionsValue = (uchar)v; }
-// Address: 0x005293c2
 void TRIBE_Game::setFullTechTree(int v) { this->tribe_game_options.fullTechTreeValue = (uchar)v; }
-// Address: 0x005294b7
 void TRIBE_Game::setResourceLevel(ResourceLevel v) { this->tribe_game_options.resourceLevelValue = v; }
-// Address: 0x005294cd
 void TRIBE_Game::setStartingAge(Age v) { this->tribe_game_options.startingAgeValue = v; }
-// Address: 0x005294dd
 void TRIBE_Game::setStartingUnits(int v) { this->tribe_game_options.startingUnitsValue = (uchar)v; }
-// Address: 0x005294ed
 void TRIBE_Game::setDeathMatch(char v) { this->tribe_game_options.deathMatchValue = (uchar)v; }
-// Address: 0x005294fd
 void TRIBE_Game::setPopLimit(char v) { this->tribe_game_options.popLimitValue = (uchar)v; }
-// Address: 0x0052950d
 void TRIBE_Game::setQuickStartGame(char v) { this->quick_start_game = (uchar)v; }
-// Address: 0x0052951d
 void TRIBE_Game::setRandomStartValue(int v) { this->random_start_value = v; }
-// Address: 0x0052952d
 void TRIBE_Game::setCivilization(int p, int v) { if(p>=0 && p<9) this->tribe_game_options.civilizationValue[p] = (uchar)v; }
-// Address: 0x0052953d
 void TRIBE_Game::setScenarioPlayer(int p, int v) { if(p>=0 && p<9) this->tribe_game_options.scenarioPlayerValue[p] = v; }
-// Address: 0x0052954d
 void TRIBE_Game::setPlayerColor(int p, int v) { if(p>=0 && p<9) this->tribe_game_options.playerColorValue[p] = (uchar)v; }
-// Address: 0x0052955d
 void TRIBE_Game::setComputerName(int p, int v) { if(p>=0 && p<9) this->tribe_game_options.computerNameValue[p] = (uchar)v; }
-// Address: 0x0052a16b
 void TRIBE_Game::resetRandomComputerName() { /* Stub */ }
 
-// Address: 0x00521783
 void TRIBE_Game::close_game_screens(int p) { /* Stub */ }
 
-// Address: 0x00525bd0
 int TRIBE_Game::setup() {
 #ifdef _DEBUG
     printf("TRIBE_Game::setup: Starting...\n");
@@ -234,20 +209,16 @@ int TRIBE_Game::setup() {
     return 1;
 }
 
-// Address: 0x0052957d
 int TRIBE_Game::setup_cmd_options() { return 1; }
-// Address: 0x00461636
 int TRIBE_Game::setup_palette() { 
     // STUB: Original address 0x00461636
     return RGE_Base_Game::setup_palette(); 
 }
-// Address: 0x00461892
 int TRIBE_Game::setup_sounds() { 
     // STUB: Original address 0x00461892
     return RGE_Base_Game::setup_sounds(); 
 }
 
-// Address: 0x00526e55
 int TRIBE_Game::start_game(int param_1) {
 #ifdef _DEBUG
     printf("TRIBE_Game::start_game: Starting...\n");
@@ -263,7 +234,6 @@ int TRIBE_Game::start_game(int param_1) {
     return 0;
 }
 
-// Address: 0x00526f00
 int TRIBE_Game::create_game(int param_1) {
 #ifdef _DEBUG
     printf("TRIBE_Game::create_game: Creating world and map...\n");

@@ -10,7 +10,6 @@
 // Constructor / Destructor
 // ========================================================================
 
-// Address: 0x00470600
 RGE_Map::RGE_Map() {
     this->map = nullptr;
     this->map_width = 0;
@@ -49,7 +48,6 @@ RGE_Map::RGE_Map() {
     this->unit_manager = nullptr;
 }
 
-// Address: 0x004707a0
 RGE_Map::~RGE_Map() {
     if (this->map) {
         free(this->map);
@@ -95,7 +93,6 @@ void RGE_Map::save(int param_1) { /* Stub */ }
 // Non-virtual Methods
 // ========================================================================
 
-// Address: 0x004708a0
 void RGE_Map::new_map(long width, long height) {
     if (this->map) {
         free(this->map);
@@ -126,7 +123,6 @@ void RGE_Map::new_map(long width, long height) {
 #endif
 }
 
-// Address: 0x00471000
 void RGE_Map::draw(TDrawArea *render_area, int x, int y, int width, int height) {
 #ifdef _DEBUG
     static int map_draw_count = 0;

@@ -9,7 +9,6 @@
 
 int DDSys_CanColorFill = 1;
 
-// Address: 0x00443000
 TDrawSystem::TDrawSystem() {
     memset(this, 0, sizeof(TDrawSystem));
     this->ColorBits = 8;
@@ -31,11 +30,9 @@ TDrawSystem::TDrawSystem() {
     this->palette[4].peBlue = 255;
 }
 
-// Address: 0x00443100
 TDrawSystem::~TDrawSystem() {
 }
 
-// Address: 0x00443200
 void TDrawSystem::CheckAvailModes(int full_screen) {
     // Simplified: assume common modes are available
     this->ModeAvail640 = 1;
@@ -44,7 +41,6 @@ void TDrawSystem::CheckAvailModes(int full_screen) {
     this->ModeAvail1280 = 1;
 }
 
-// Address: 0x00443300
 int TDrawSystem::IsModeAvail(int width, int height, int color_bits) {
     if (color_bits != 8) return 0;
     if (width == 640 && height == 480) return this->ModeAvail640;
@@ -54,7 +50,6 @@ int TDrawSystem::IsModeAvail(int width, int height, int color_bits) {
     return 0;
 }
 
-// Address: 0x00443400
 int TDrawSystem::Init(HINSTANCE instance, HWND window, void *palette, int draw_type, int screen_mode, int width, int height, int system_mem) {
     this->Inst = instance;
     this->Wnd = window;
@@ -137,7 +132,6 @@ int TDrawSystem::Init(HINSTANCE instance, HWND window, void *palette, int draw_t
     return 1;
 }
 
-// Address: 0x00443500
 int TDrawSystem::CreateSurfaces() {
     if (this->DrawType == 2) { // DirectDraw
         if (this->PrimarySurface == NULL) {
@@ -206,7 +200,6 @@ int TDrawSystem::CreateSurfaces() {
     return 1;
 }
 
-// Address: 0x00443600
 void TDrawSystem::Paint(RECT *rect) {
     if (this->DrawType == 2 && this->PrimarySurface && this->DrawArea && this->DrawArea->DrawSurface) {
         if (this->PrimarySurface->IsLost() == DDERR_SURFACELOST) {

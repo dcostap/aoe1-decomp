@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Address: 0x004bd5e0
 TSpan_Node_List::TSpan_Node_List(int initial_size, int grow_size, int element_size) {
     this->Free_Pool_Zone = -1;
     this->Free_Pool_Index = -1;
@@ -22,7 +21,6 @@ TSpan_Node_List::TSpan_Node_List(int initial_size, int grow_size, int element_si
     this->InitNewZone(initial_size);
 }
 
-// Address: 0x004bd640
 TSpan_Node_List::~TSpan_Node_List() {
     if (this->Used_Zones > 0) {
         for (int i = 0; i < this->Used_Zones; i++) {
@@ -35,7 +33,6 @@ TSpan_Node_List::~TSpan_Node_List() {
     if (this->Zone_Size_Ptrs) free(this->Zone_Size_Ptrs);
 }
 
-// Address: 0x004bd690
 void TSpan_Node_List::SetNumZones(int count) {
     if (this->Max_Zones > count) return; // Logic says <=, effectively growing or initializing
 
@@ -58,7 +55,6 @@ void TSpan_Node_List::SetNumZones(int count) {
     this->Max_Zones = count;
 }
 
-// Address: 0x004bd720
 void TSpan_Node_List::InitNewZone(int size) {
     if (this->Used_Zones == this->Max_Zones) {
         this->SetNumZones(this->Used_Zones + 4);
@@ -86,7 +82,6 @@ void TSpan_Node_List::InitNewZone(int size) {
     }
 }
 
-// Address: 0x004bd790
 VSpan_Node* TSpan_Node_List::GetNode() {
     if (this->Free_Blocks == 0) {
         this->InitNewZone(this->Default_Grow_Size);
@@ -122,7 +117,6 @@ VSpan_Node* TSpan_Node_List::GetNode() {
     return &node[idx];
 }
 
-// Address: 0x004bd800
 void TSpan_Node_List::FreeNode(VSpan_Node *node) {
     node->Next = this->Free_Head;
     node->Prev = nullptr;
@@ -130,7 +124,6 @@ void TSpan_Node_List::FreeNode(VSpan_Node *node) {
     this->Free_Blocks++;
 }
 
-// Address: 0x004bd820
 int TSpan_Node_List::FreeThread(VSpan_Node *head, VSpan_Node *tail) {
     int count = 0;
     if (!head) return 0;
@@ -168,7 +161,6 @@ int TSpan_Node_List::FreeThread(VSpan_Node *head, VSpan_Node *tail) {
     return count;
 }
 
-// Address: 0x004bd880
 void TSpan_Node_List::ReclaimAllNodes() {
     this->Free_Head = nullptr;
     this->Free_Pool_Zone = 0;
@@ -177,7 +169,6 @@ void TSpan_Node_List::ReclaimAllNodes() {
     this->Reset_Count++;
 }
 
-// Address: 0x004bd8a0
 void TSpan_Node_List::ResetStats() {
     this->Alloc_Count = 0;
     this->Dealloc_Count = 0;

@@ -8,7 +8,6 @@
 // Helper global or define from engine
 extern int DDSys_CanColorFill; 
 
-// Address: 0x004439B0 (Matches Ghidra 00443de0 TDrawArea::TDrawArea)
 TDrawArea::TDrawArea(const char *name, int system_mem) {
     this->DrawSystem = nullptr;
     this->Wnd = nullptr;
@@ -74,7 +73,6 @@ TDrawArea::TDrawArea(const char *name, int system_mem) {
     }
 }
 
-// Address: 0x00443A40 (Matches Ghidra 00443f10 TDrawArea::~TDrawArea)
 TDrawArea::~TDrawArea() {
     // Linked List Node Removal
     if (this->Node) {
@@ -213,7 +211,6 @@ uchar* TDrawArea::Lock(const char* name, int wait) {
     return this->Bits;
 }
 
-// Address: 0x00444300 (Matches Ghidra 00444300 TDrawArea::Unlock)
 void TDrawArea::Unlock(const char* name) {
     if (!this->DrawSystem || this->DrawSystem->DrawType == 1) return;
 
@@ -223,7 +220,6 @@ void TDrawArea::Unlock(const char* name) {
     }
 }
 
-// Address: 0x00446340
 void TDrawArea::GetPalette(PALETTEENTRY *param_1) {
     // Logic from decomp: copies from DrawSystem palette
     if (this->DrawSystem && param_1) {
