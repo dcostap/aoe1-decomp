@@ -1,14 +1,38 @@
+#define _CRT_SECURE_NO_WARNINGS // For freopen in MSVC
 #include <windows.h>
 #include <stdio.h>
-#include "tribe/TRIBE_Game.h"
+#include <string.h>
 #include "rge/RGE_Prog_Info.h"
+#include "tribe/Tribe_Game.h"
 
 // [HELPER] Global GUIDs defined in globals.json / Decomp
 // GUIDs: Data1, Data2, Data3, {Data4[0]..Data4[7]}
 const GUID _TRIBE_GUID = { 0x3B3F4596, 0x46A8, 0xF2E8, { 0xE2, 0xEB, 0xD1, 0x11, 0x83, 0x9B, 0x00, 0x60 } };
 const GUID _ZONE_GUID  = { 0x08F50797, 0x46AA, 0xF2E8, { 0xE2, 0xEB, 0xD1, 0x11, 0x83, 0x9B, 0x00, 0x60 } };
 
+#define _DEBUG 1
+
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+    
+    // Rule 4: Debugging & Temporary Code
+#ifdef _DEBUG
+    // 1. Allocate a console so we can theoretically see output if we didn't redirect
+    AllocConsole();
+
+    // 2. Redirect stdout and stderr to "debug.log" in the current directory (build/)
+    // Mode "w" creates the file if missing, and truncates it (empties it) if it exists.
+    freopen("build/debug.log", "w", stdout);
+    freopen("build/debug.log", "w", stderr);
+
+    // 3. Disable buffering. This is CRITICAL for debugging crashes. 
+    // Without this, the crash might happen before the buffer flushes to the file.
+    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stderr, NULL, _IONBF, 0);
+
+    printf("[SYSTEM] Debug Logging Started.\n");
+    printf("[SYSTEM] Output redirected to debug.log\n");
+#endif
+
     RGE_Prog_Info info;
     // Zero init to be safe, though decomp manually inits fields
     memset(&info, 0, sizeof(RGE_Prog_Info));
@@ -62,9 +86,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     info.auto_scroll = 1;
     info.mouse_scroll_edge = 1;
     info.mouse_scroll_interval = 3;
-    info.key_scroll_interval = 4; // Decomp float 0x40800000 -> 4.0? But struct is ulong?
-                                  // Common issue in AoE1 decomp: union-like behavior or cast.
-                                  // Assuming 4 based on context.
+    info.key_scroll_interval = 4; 
     info.key_scroll_object_move = 4.0f;
     info.interface_style = -0x3333; // 13107 in dec? Likely specific flag.
     info.main_wid = 800;
@@ -79,12 +101,23 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     
     int error_code = 0;
 
+#ifdef _DEBUG
+    printf("[MAIN] Game object created. Checking if valid...\n");
+#endif
+
     if (game) {
         // [VTABLE OFFSET 6]: setup()
         int setup_res = game->setup();
 
+#ifdef _DEBUG
+        printf("[MAIN] setup() returned: %d\n", setup_res);
+#endif
+
         if (setup_res == 0) {
             // [VTABLE OFFSET 1]: run()
+#ifdef _DEBUG
+            printf("[MAIN] Running game loop...\n");
+#endif
             error_code = game->run();
 
             // [VTABLE OFFSET 6]: setup() (Cleanup phase?)
@@ -103,14 +136,21 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
             // 0x7d1 = 2001 ("Error")
             game->get_string(2001, title_buf, 256);
             
-            // [VTABLE OFFSET 10]: Display error (likely internal popup or format)
-            // For now, mirroring behavior with MessageBox
+            // [VTABLE OFFSET 10]: Display error
             sprintf(msg_buf, "Setup failed: %d", setup_res);
+            
+#ifdef _DEBUG
+            printf("[MAIN] Error: %s - %s\n", title_buf, msg_buf);
+#endif
             MessageBoxA(NULL, msg_buf, title_buf, MB_OK | MB_ICONSTOP);
             
             delete game;
         }
     }
+
+#ifdef _DEBUG
+    printf("[MAIN] Exiting WinMain with code: %d\n", error_code);
+#endif
 
     return error_code;
 }
