@@ -70,14 +70,14 @@ RGE_Game_World::RGE_Game_World() {
 }
 
 // Virtual function stub implementations
-uchar RGE_Game_World::data_load_world(void* file) { return 1; }
+uchar RGE_Game_World::data_load_world(_iobuf* file) { return 1; }
 uchar RGE_Game_World::data_load_terrain_tables(char* path) { return 1; }
 uchar RGE_Game_World::data_load_players(char* path) { return 1; }
 uchar RGE_Game_World::data_load_objects(char* path) { return 1; }
 uchar RGE_Game_World::data_load_sounds(char* path) { return 1; }
 uchar RGE_Game_World::data_load_color_tables(char* path) { return 1; }
 uchar RGE_Game_World::data_load_sprites(char* path) { return 1; }
-void RGE_Game_World::data_load_players_type(short a, short b, void* file) {}
+void RGE_Game_World::data_load_players_type(short a, short b, _iobuf* file) {}
 void RGE_Game_World::data_load_effects(char* path) {}
 void RGE_Game_World::data_load_map(char* a, char* b, char* c, char* d, short e, short f, short g, RGE_Sound** h, char* i) {}
 void RGE_Game_World::data_load_random_map(char* a, char* b, char* c, char* d) {}
@@ -88,32 +88,32 @@ void RGE_Game_World::color_table_init(int a) {}
 void RGE_Game_World::terrain_tables_init(int a) {}
 void RGE_Game_World::init_sounds(int a, TSound_Driver* b) {}
 void RGE_Game_World::init_sprites(int a) {}
-void RGE_Game_World::map_init(int a, TSound_Driver* b) {}
+void RGE_Game_World::map_init(int a, TSound_Driver *b) {}
 void RGE_Game_World::effects_init(int a) {}
 void RGE_Game_World::master_player_init(int a) {}
-void RGE_Game_World::command_init(int a, void* b) {}
-void RGE_Game_World::world_init(int a, TSound_Driver* b, void* c) {}
+void RGE_Game_World::command_init(int a, TCommunications_Handler* b) {}
+void RGE_Game_World::world_init(int a, TSound_Driver* b, TCommunications_Handler* c) {}
 void RGE_Game_World::setup_gaia() {}
-void RGE_Game_World::setup_players(void* player_info) {}
-uchar RGE_Game_World::new_random_game(void* player_info) { return 1; }
+void RGE_Game_World::setup_players(RGE_Player_Info* player_info) {}
+uchar RGE_Game_World::new_random_game(RGE_Player_Info* player_info) { return 1; }
 void RGE_Game_World::save(int a) {}
 void RGE_Game_World::scenario_make_player(short a, uchar b, uchar c, uchar d, char* e) {}
 void RGE_Game_World::scenario_make_map(int a) {}
-uchar RGE_Game_World::load_scenario(void* player_info) { return 1; }
-uchar RGE_Game_World::load_scenario(char* path, void* player_info) { return 1; }
-void RGE_Game_World::load_scenario1(int a, void* player_info) {}
-void RGE_Game_World::load_scenario2(int a, void* player_info) {}
-void RGE_Game_World::load_scenario3(int a, void* player_info) {}
-void RGE_Game_World::load_scenario4(int a, void* player_info) {}
-void RGE_Game_World::load_scenario5(int a, void* player_info) {}
-void RGE_Game_World::load_scenario6(int a, void* player_info) {}
-void RGE_Game_World::load_scenario7(int a, void* player_info) {}
-void RGE_Game_World::load_scenario8(int a, void* player_info) {}
-void RGE_Game_World::logStatus(void* file, int a) {}
+uchar RGE_Game_World::load_scenario(RGE_Player_Info* player_info) { return 1; }
+uchar RGE_Game_World::load_scenario(char* path, RGE_Player_Info* player_info) { return 1; }
+void RGE_Game_World::load_scenario1(int a, RGE_Player_Info* player_info) {}
+void RGE_Game_World::load_scenario2(int a, RGE_Player_Info* player_info) {}
+void RGE_Game_World::load_scenario3(int a, RGE_Player_Info* player_info) {}
+void RGE_Game_World::load_scenario4(int a, RGE_Player_Info* player_info) {}
+void RGE_Game_World::load_scenario5(int a, RGE_Player_Info* player_info) {}
+void RGE_Game_World::load_scenario6(int a, RGE_Player_Info* player_info) {}
+void RGE_Game_World::load_scenario7(int a, RGE_Player_Info* player_info) {}
+void RGE_Game_World::load_scenario8(int a, RGE_Player_Info* player_info) {}
+void RGE_Game_World::logStatus(_iobuf* file, int a) {}
 void RGE_Game_World::setup_player_colors() {}
-void RGE_Game_World::setup_player_colors(void* player_info) {}
+void RGE_Game_World::setup_player_colors(RGE_Player_Info* player_info) {}
 uchar RGE_Game_World::data_load(char* a, char* b) { return 1; }
-uchar RGE_Game_World::init(char* a, TSound_Driver* b, void* c) { return 1; }
+uchar RGE_Game_World::init(char* a, TSound_Driver* b, TCommunications_Handler* c) { return 1; }
 void RGE_Game_World::turn_sound_off() {}
 void RGE_Game_World::del_game_info() {}
 uchar RGE_Game_World::update() { return 1; }
@@ -121,8 +121,8 @@ uchar RGE_Game_World::get_game_state() { return this->game_state; }
 uchar RGE_Game_World::check_game_state() { return this->game_state; }
 uchar RGE_Game_World::load_world(int a) { return 1; }
 uchar RGE_Game_World::load_game(char* path) { return 1; }
-uchar RGE_Game_World::new_game(void* player_info, int a) { return 1; }
-uchar RGE_Game_World::new_scenario(void* player_info, int a) { return 1; }
+uchar RGE_Game_World::new_game(RGE_Player_Info* player_info, int a) { return 1; }
+uchar RGE_Game_World::new_scenario(RGE_Player_Info* player_info, int a) { return 1; }
 uchar RGE_Game_World::save_game(char* path) { return 1; }
 void RGE_Game_World::base_save(char* path) {}
 void RGE_Game_World::base_save(int a) {}
@@ -143,13 +143,6 @@ RGE_Game_World::~RGE_Game_World() {
 
 // Address: 0x00457000
 void RGE_Game_World::draw() {
-#ifdef _DEBUG
-    static int world_draw_count = 0;
-    if (world_draw_count % 1000 == 0) {
-        printf("RGE_Game_World::draw: count=%d map=%p draw_area=%p\n", world_draw_count, this->map, rge_base_game ? rge_base_game->draw_area : nullptr);
-    }
-    world_draw_count++;
-#endif
     if (this->map) {
         this->map->draw(rge_base_game->draw_area, 0, 0, 800, 600);
     }
