@@ -6,6 +6,10 @@
 #include <string.h>
 #include <stdio.h>
 
+// ========================================================================
+// Constructor / Destructor
+// ========================================================================
+
 // Address: 0x00470600
 RGE_Map::RGE_Map() {
     this->map = nullptr;
@@ -13,6 +17,11 @@ RGE_Map::RGE_Map() {
     this->map_height = 0;
     this->world_width = 0;
     this->world_height = 0;
+    
+    memset(this->tilesizes, 0, sizeof(this->tilesizes));
+    memset(this->terrain_types, 0, sizeof(this->terrain_types));
+    memset(this->border_types, 0, sizeof(this->border_types));
+
     this->map_row_offset = nullptr;
     this->num_terrain = 0;
     this->num_borders = 0;
@@ -34,7 +43,7 @@ RGE_Map::RGE_Map() {
     this->map_visible_flag = 0;
     this->fog_flag = 1;
     this->random_map = nullptr;
-    this->game_world = rge_base_game->world;
+    this->game_world = rge_base_game ? rge_base_game->world : nullptr;
     this->map_zones = nullptr;
     this->unified_vis_map = nullptr;
     this->unit_manager = nullptr;
@@ -55,6 +64,36 @@ RGE_Map::~RGE_Map() {
         free(this->search_map_rows);
     }
 }
+
+// ========================================================================
+// Virtual Methods (Stubs)
+// ========================================================================
+
+void RGE_Map::data_load_random_map(int param_1) { /* Stub */ }
+
+void RGE_Map::load_random_map(char *param_1, char *param_2, char *param_3, char *param_4) { /* Stub */ }
+
+uchar RGE_Map::do_terrain_brush(long param_1, long param_2, long param_3, uchar param_4) { return 0; }
+
+uchar RGE_Map::do_terrain_brush_stroke(long param_1, long param_2, long param_3, long param_4, long param_5, uchar param_6) { return 0; }
+
+uchar RGE_Map::do_elevation_brush(long param_1, long param_2, long param_3, uchar param_4) { return 0; }
+
+uchar RGE_Map::do_elevation_brush_stroke(long param_1, long param_2, long param_3, long param_4, long param_5, uchar param_6) { return 0; }
+
+uchar RGE_Map::do_cliff_brush(long param_1, long param_2, uchar param_3, uchar param_4) { return 0; }
+
+uchar RGE_Map::do_cliff_brush_stroke(long param_1, long param_2, long param_3, long param_4, uchar param_5, uchar param_6) { return 0; }
+
+void RGE_Map::map_generate(struct RGE_Player *param_1, struct RGE_Game_World *param_2, struct RGE_Player_Info *param_3, uchar *param_4) { /* Stub */ }
+
+void RGE_Map::map_generate2(struct RGE_Game_World *param_1, long param_2, long param_3, uchar param_4, long param_5) { /* Stub */ }
+
+void RGE_Map::save(int param_1) { /* Stub */ }
+
+// ========================================================================
+// Non-virtual Methods
+// ========================================================================
 
 // Address: 0x004708a0
 void RGE_Map::new_map(long width, long height) {

@@ -1,25 +1,26 @@
 #pragma once
 #include "../types.h"
 
-#pragma pack(push, 1)
-
 struct resfile_header {
-    char banner_msg[40];
-    char version[4];
-    char password[12];
-    int num_res_types;
-    int directory_size;
+    /* 0x00 */ char banner_msg[40];
+    /* 0x28 */ char version[4];
+    /* 0x2C */ char password[12];
+    /* 0x38 */ int num_res_types;
+    /* 0x3C */ int directory_size;
 };
 
 struct ResFileHdr {
-    uchar *mapped_file;
-    int handle;
-    struct resfile_header *header;
-    struct ResFileHdr *next;
-    char res_name[260];
+    /* 0x00 */ uchar *mapped_file;
+    /* 0x04 */ int handle;
+    /* 0x08 */ struct resfile_header *header;
+    /* 0x0C */ struct ResFileHdr *next;
+    /* 0x10 */ char res_name[260];
 };
 
-#pragma pack(pop)
+// MANDATORY VERIFICATION
+static_assert(sizeof(resfile_header) == 0x40, "resfile_header size mismatch");
+static_assert(sizeof(ResFileHdr) == 276, "ResFileHdr size mismatch");
+static_assert(offsetof(ResFileHdr, res_name) == 0x10, "res_name offset");
 
 void RESFILE_build_res_file(const char* name, const char* dir, const char* ext);
 void RESFILE_open_new_resource_file(const char* name, const char* dir, const char* ext, int flag);

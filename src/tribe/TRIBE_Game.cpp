@@ -285,21 +285,19 @@ int TRIBE_Game::create_game(int param_1) {
 #endif
 }
 
-// Address: 0x00521690
+// Virtual function implementations
 int TRIBE_Game::run() { return RGE_Base_Game::run(); }
-// Address: 0x005216a0
+
 int TRIBE_Game::handle_idle() {
     if (RGE_Base_Game::handle_idle() == 0) return 0;
-    
-    // STUB: TRIBE specific idle
+    // TRIBE specific idle - stub
     return 1;
 }
-// Address: 0x005216b0
+
 int TRIBE_Game::handle_message(tagMSG* msg) {
     return RGE_Base_Game::handle_message(msg);
 }
 
-// Address: 0x005216c0
 long TRIBE_Game::wnd_proc(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam) {
     if (msg == WM_MOUSEMOVE) {
         if (this->windows_mouse == 1) {
@@ -313,7 +311,29 @@ long TRIBE_Game::wnd_proc(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam) {
     return RGE_Base_Game::wnd_proc(hwnd, msg, wparam, lparam);
 }
 
-// Address: 0x005216d0
-void TRIBE_Game::show_error(int id, char* buf, int s) { RGE_Base_Game::show_error(id, buf, s); }
-// Address: 0x005216e0
-void TRIBE_Game::fatal_exit(int a, int b, int c, char* d, int e) { RGE_Base_Game::fatal_exit(a, b, c, d, e); }
+// Stub implementations for virtual overrides
+void TRIBE_Game::set_game_mode(int mode, int sub_mode) { RGE_Base_Game::set_game_mode(mode, sub_mode); }
+void TRIBE_Game::set_player(short player_id) { RGE_Base_Game::set_player(player_id); }
+char* TRIBE_Game::get_string(long a, char* b, int c) { return RGE_Base_Game::get_string(a, b, c); }
+char* TRIBE_Game::get_string2(int a, long b, long c, char* d, int e) { return RGE_Base_Game::get_string2(a, b, c, d, e); }
+void* TRIBE_Game::get_view_panel() { return RGE_Base_Game::get_view_panel(); }
+void* TRIBE_Game::get_map_panel() { return RGE_Base_Game::get_map_panel(); }
+void* TRIBE_Game::new_scenario_header(void* scenario) { return RGE_Base_Game::new_scenario_header(scenario); }
+void* TRIBE_Game::new_scenario_header(int a) { return RGE_Base_Game::new_scenario_header(a); }
+void* TRIBE_Game::new_scenario_info(int a) { return RGE_Base_Game::new_scenario_info(a); }
+void TRIBE_Game::notification(int a, long b, long c, long d, long e) { RGE_Base_Game::notification(a, b, c, d, e); }
+void TRIBE_Game::send_game_options() { RGE_Base_Game::send_game_options(); }
+void TRIBE_Game::receive_game_options() { RGE_Base_Game::receive_game_options(); }
+char* TRIBE_Game::gameSummary() { return RGE_Base_Game::gameSummary(); }
+int TRIBE_Game::processCheatCode(int a, char* b) { return RGE_Base_Game::processCheatCode(a, b); }
+RGE_Game_World* TRIBE_Game::create_world() { return RGE_Base_Game::create_world(); }
+int TRIBE_Game::handle_activate(void* hwnd, uint msg, uint wparam, long lparam) { return RGE_Base_Game::handle_activate(hwnd, msg, wparam, lparam); }
+int TRIBE_Game::handle_query_new_palette(void* hwnd, uint msg, uint wparam, long lparam) { return RGE_Base_Game::handle_query_new_palette(hwnd, msg, wparam, lparam); }
+int TRIBE_Game::action_key_down(ulong key, int a, int b, int c, int d) { return RGE_Base_Game::action_key_down(key, a, b, c, d); }
+int TRIBE_Game::action_user_command(ulong a, ulong b) { return RGE_Base_Game::action_user_command(a, b); }
+int TRIBE_Game::action_close() { return RGE_Base_Game::action_close(); }
+void TRIBE_Game::calc_timing_text() { RGE_Base_Game::calc_timing_text(); }
+void TRIBE_Game::show_timings() { RGE_Base_Game::show_timings(); }
+void TRIBE_Game::show_comm() { RGE_Base_Game::show_comm(); }
+void TRIBE_Game::show_ai() { RGE_Base_Game::show_ai(); }
+void TRIBE_Game::set_interface_messages() { RGE_Base_Game::set_interface_messages(); }

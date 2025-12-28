@@ -5,14 +5,13 @@
 
 struct DrawAreaNode;
 
-#pragma pack(push, 1)
-
 struct DrawAreaNode {
     TDrawArea *DrawArea;
     DrawAreaNode *PrevNode;
     DrawAreaNode *NextNode;
 };
 
+// TDrawSystem - 1148 bytes per layout.json
 class TDrawSystem {
 public:
     /* 0x0000 */ HINSTANCE Inst;
@@ -48,7 +47,7 @@ public:
     /* 0x0078 */ PALETTEENTRY palette[256];
     /* 0x0478 */ unsigned char DrawType;
     /* 0x0479 */ unsigned char ScreenMode;
-    /* 0x047A */ unsigned char _pad_47a[2]; // Padding to 0x47C
+    // Compiler adds 2 bytes padding to reach 1148 bytes
 
     TDrawSystem();
     ~TDrawSystem();
@@ -60,6 +59,7 @@ public:
     void Paint(RECT *rect);
 };
 
-#pragma pack(pop)
-
+// MANDATORY VERIFICATION
 static_assert(sizeof(TDrawSystem) == 0x47C, "TDrawSystem size mismatch");
+static_assert(offsetof(TDrawSystem, palette) == 0x78, "palette offset");
+static_assert(offsetof(TDrawSystem, DrawType) == 0x478, "DrawType offset");

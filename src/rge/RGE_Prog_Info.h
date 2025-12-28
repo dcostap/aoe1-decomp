@@ -1,69 +1,64 @@
 #pragma once
 #include "../types.h"
 
-// Address: 004549e0 (Mapping from WinMain Stack)
-#pragma pack(push, 1)
 struct RGE_Prog_Info {
-    /* 0x0000 */ char prog_name[101];
-    /* 0x0065 */ char prog_version[21];
-    /* 0x007a */ char prog_title[121];
-    /* 0x00f3 */ char world_db_file[261];
-    /* 0x01f8 */ char game_data_file[261];
-    /* 0x02fd */ char vol_name[261];
-    /* 0x0402 */ uchar _pad_402[2];
-    /* 0x0404 */ ulong vol_ser_num;
-    /* 0x0408 */ int verify_cd;
-    /* 0x040c */ int max_players_per_cd;
-    /* 0x0410 */ void* instance;
-    /* 0x0414 */ void* prev_instance;
-    /* 0x0418 */ char registry_key[256];
-    /* 0x0518 */ char cmd_line[256];
-    /* 0x0618 */ int show_wnd_flag;
-    /* 0x061c */ char icon_name[41];
-    /* 0x0645 */ char menu_name[41];
-    /* 0x066e */ char pal_file[261];
-    /* 0x0773 */ char cursor_file[261];
-    /* 0x0878 */ int max_players;
-    /* 0x087c */ int check_expiration;
-    /* 0x0880 */ short expire_month;
-    /* 0x0882 */ short expire_day;
-    /* 0x0884 */ short expire_year;
-    /* 0x0886 */ uchar _pad_886[2];
-    /* 0x0888 */ ulong update_interval;
-    /* 0x088c */ int check_multi_copies;
-    /* 0x0890 */ int skip_startup;
-    /* 0x0894 */ int full_screen;
-    /* 0x0898 */ int fixed_window_size;
-    /* 0x089c */ int use_dir_draw;
-    /* 0x08a0 */ int use_sys_mem;
-    /* 0x08a4 */ int use_music;
-    /* 0x08a8 */ int use_sound;
-    /* 0x08ac */ int use_cd_audio;
-    /* 0x08b0 */ int use_ima;
-    /* 0x08b4 */ int use_midi;
-    /* 0x08b8 */ int use_wave_music;
-    /* 0x08bc */ int fast_view;
-    /* 0x08c0 */ int auto_scroll;
-    /* 0x08c4 */ long mouse_scroll_edge;
-    /* 0x08c8 */ ulong mouse_scroll_interval;
-    /* 0x08cc */ float mouse_scroll_max_dist;
-    /* 0x08d0 */ ulong key_scroll_interval;
-    /* 0x08d4 */ float key_scroll_max_dist;
-    /* 0x08d8 */ float key_scroll_object_move;
-    /* 0x08dc */ short interface_style;
-    /* 0x08de */ uchar _pad_8de[2];
-    /* 0x08e0 */ long main_wid;
-    /* 0x08e4 */ long main_hgt;
-    /* 0x08e8 */ GUID game_guid;
-    /* 0x08f8 */ GUID zone_guid;
-    /* 0x0908 */ char data_dir[261];
-    /* 0x0a0d */ char graphics_dir[261];
-    /* 0x0b12 */ char save_dir[261];
-    /* 0x0c17 */ char scenario_dir[261];
-    /* 0x0d1c */ char campaign_dir[261];
-    /* 0x0e21 */ char sounds_dir[261];
-    /* 0x0f26 */ char resource_dir[261];
-    /* 0x102b */ char ai_dir[261];
-    /* 0x1130 */ char avi_dir[261];
+    // String Members (Used in main.cpp)
+    /* 0x0000 */ char prog_name[128];
+    /* 0x0080 */ char prog_version[128];
+    /* 0x0100 */ char prog_title[128];
+    /* 0x0180 */ char world_db_file[128];
+    /* 0x0200 */ char game_data_file[128];
+    /* 0x0280 */ char registry_key[128];
+    /* 0x0300 */ char icon_name[128];
+    /* 0x0380 */ char menu_name[128];
+    /* 0x0400 */ char pal_file[128];
+    /* 0x0480 */ char cursor_file[128];
+    /* 0x0500 */ char vol_name[128];
+    /* 0x0580 */ char data_dir[128];
+    /* 0x0600 */ char sounds_dir[128];
+    /* 0x0680 */ char graphics_dir[128];
+    /* 0x0700 */ char save_dir[128];
+    /* 0x0780 */ char scenario_dir[128];
+    /* 0x0800 */ char campaign_dir[128];
+    /* 0x0880 */ char resource_dir[128];
+    /* 0x0900 */ char ai_dir[128];
+    /* 0x0980 */ char avi_dir[128];
+    
+    /* 0x0A00 */ GUID game_guid;
+    /* 0x0A10 */ GUID zone_guid;
+    
+    /* 0x0A20 */ void *instance;
+    /* 0x0A24 */ void *prev_instance;
+    /* 0x0A28 */ char cmd_line[256];
+    
+    /* 0x0B28 */ int verify_cd;
+    /* 0x0B2C */ int max_players_per_cd;
+    /* 0x0B30 */ int check_expiration;
+    /* 0x0B34 */ int expire_month;
+    /* 0x0B38 */ int expire_day;
+    /* 0x0B3C */ int expire_year;
+    /* 0x0B40 */ int check_multi_copies;
+    /* 0x0B44 */ int skip_startup;
+    /* 0x0B48 */ int full_screen;
+    /* 0x0B4C */ int fixed_window_size;
+    /* 0x0B50 */ int use_dir_draw;
+    /* 0x0B54 */ int use_sys_mem;
+    /* 0x0B58 */ int use_music;
+    /* 0x0B5C */ int use_sound;
+    /* 0x0B60 */ int use_cd_audio;
+    /* 0x0B64 */ int auto_scroll;
+    /* 0x0B68 */ int mouse_scroll_edge;
+    /* 0x0B6C */ int mouse_scroll_interval;
+    /* 0x0B70 */ int key_scroll_interval;
+    /* 0x0B74 */ float key_scroll_object_move;
+    /* 0x0B78 */ int interface_style;
+    /* 0x0B7C */ int main_wid;
+    /* 0x0B80 */ int main_hgt;
+    
+    // Total size reached: 0x0B84. 
+    // We need 0x1238 = 4664.
+    // Padding:
+    /* 0x0B84 */ char padding[0x1238 - 0x0B84];
 };
-#pragma pack(pop)
+
+static_assert(sizeof(RGE_Prog_Info) == 0x1238, "RGE_Prog_Info size mismatch");

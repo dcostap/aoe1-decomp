@@ -73,3 +73,11 @@ public:
 static_assert(sizeof(TRIBE_Game) == 0x204, "TRIBE_Game size mismatch");
 static_assert(offsetof(TRIBE_Game, next_var) == 0x200, "TRIBE_Game::next_var offset mismatch");
 ```
+
+## Mandatory guidelines
+
+1. Avoid speculative changes. Do not invent structure members, virtual functions, or semantics unless they are clearly supported by the decompilation data. When in doubt, leave placeholders.
+2. Do not silence errors by removing logic. Build or link failures should be resolved by fixing declarations, definitions, or dependencies—not by deleting or stubbing core behavior.
+3. Be precise and reversible. Make small, targeted changes that can be easily reasoned about. If a change causes confusion, revert and reassess rather than layering fixes.
+4. Prefer compile-time guarantees over runtime checks. Use static_assert(sizeof / offsetof) as the primary verification method. Runtime size checks are for temporary investigation only.
+5. use `build_and_verify.bat` as the main source of truth for build and verification.

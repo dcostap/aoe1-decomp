@@ -8,12 +8,6 @@ if %errorlevel% neq 0 (
 
 if not exist "build" mkdir build
 
-echo Compiling...
-cl /EHsc /std:c++17 /D_DEBUG /Fo"build\\" src/verify_sizes.cpp src/tribe/*.cpp src/rge/*.cpp user32.lib gdi32.lib kernel32.lib ole32.lib ddraw.lib dxguid.lib /Fe"build\\verify.exe"
-if %errorlevel% neq 0 (
-    echo Compilation of verify.exe Failed!
-    exit /b %errorlevel%
-)
 
 echo Compiling empiresx.exe...
 cl /EHsc /std:c++17 /D_DEBUG /Fo"build\\" src/main.cpp src/tribe/*.cpp src/rge/*.cpp user32.lib gdi32.lib kernel32.lib ole32.lib ddraw.lib dxguid.lib /Fe"build\\empiresx.exe"
@@ -22,5 +16,3 @@ if %errorlevel% neq 0 (
     exit /b %errorlevel%
 )
 
-echo Running Verification...
-build\verify.exe

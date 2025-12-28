@@ -1,11 +1,19 @@
 #pragma once
-#include <windows.h>
+#include "../types.h"
+
+// Forward declarations
+class TPanel;
+struct PanelNode;
 
 class TPanelSystem {
 public:
-    static void release_palette(void **panel_system, void *palette);
-    static void *get_palette(void **panel_system, const char *pal_file, int id);
-    static void setCurrentPanel(void **panel_system, const char *name, int id);
-    static void destroyPanel(void **panel_system, const char *name);
-    static void *panel(void **panel_system, const char *name);
+    static void release_palette(TPanelSystem *ps, void *pal);
+    static void *get_palette(TPanelSystem *ps, const char *pal_file, int id);
+    static void setCurrentPanel(TPanelSystem *ps, const char *name, int id);
+    static void destroyPanel(TPanelSystem *ps, const char *name);
+    static void *panel(TPanelSystem *ps, const char *name);
+
+    char placeholder[2776];
 };
+
+static_assert(sizeof(TPanelSystem) == 2776, "TPanelSystem size mismatch");

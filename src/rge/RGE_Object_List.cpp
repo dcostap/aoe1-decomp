@@ -7,6 +7,10 @@ RGE_Object_List::RGE_Object_List() {
     this->number_of_objects = 0;
 }
 
+void RGE_Object_List::load(uchar param_1, int param_2, struct RGE_Game_World *param_3) {
+    // Stub
+}
+
 // Address: 0x0046F020
 RGE_Object_List::~RGE_Object_List() {
     this->removeAllObjects();
