@@ -57,6 +57,7 @@ public:
     int Init(HINSTANCE instance, HWND window, void *palette, int draw_type, int screen_mode, int width, int height, int system_mem);
     int CreateSurfaces();
     void Paint(RECT *rect);
+    void ModifyPalette(int start, int count, PALETTEENTRY *entries);
 };
 
 // MANDATORY VERIFICATION

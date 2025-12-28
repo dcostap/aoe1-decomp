@@ -7,11 +7,9 @@
 // Address: 0x004549e0
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 #ifdef _DEBUG
-    AllocConsole();
-    freopen("CONOUT$", "w", stdout);
-    freopen("CONOUT$", "w", stderr);
-    // Also redirect to a file for the AI to read
+    // AllocConsole();
     freopen("build\\debug.log", "w", stdout);
+    freopen("build\\debug.log", "w", stderr);
     setvbuf(stdout, NULL, _IONBF, 0);
     printf("AoE Decomp: Debug Console Initialized\n");
 #endif
@@ -51,6 +49,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     // Engine Flags
     prog_info.instance = hInstance;
     prog_info.prev_instance = hPrevInstance;
+    prog_info.show_wnd_flag = nCmdShow;
     prog_info.cmd_line[0] = '\0'; // Should copy lpCmdLine if needed
     if (lpCmdLine) strncpy(prog_info.cmd_line, lpCmdLine, 255);
 

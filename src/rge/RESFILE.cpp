@@ -17,7 +17,9 @@ void RESFILE_build_res_file(const char* name, const char* dir, const char* ext) 
 void RESFILE_open_new_resource_file(const char* name, const char* dir, const char* ext, int flag) {
     char resFile[260];
     sprintf(resFile, "%s%s", ext ? ext : "", name);
-
+#ifdef _DEBUG
+    printf("RESFILE_open_new_resource_file: %s\n", resFile);
+#endif
     int fHandle = -1;
     uchar *mapped_file_data = nullptr;
 
@@ -29,10 +31,26 @@ void RESFILE_open_new_resource_file(const char* name, const char* dir, const cha
             if (hMap != NULL) {
                 mapped_file_data = (uchar *)MapViewOfFile(hMap, FILE_MAP_READ, 0, 0, 0);
                 CloseHandle(hMap);
+#ifdef _DEBUG
+                if (mapped_file_data) printf("RESFILE: Mapped %s at %p\n", resFile, mapped_file_data);
+                else printf("RESFILE: MapViewOfFile failed for %s\n", resFile);
+#endif
+            } else {
+#ifdef _DEBUG
+                printf("RESFILE: CreateFileMapping failed for %s\n", resFile);
+#endif
             }
+        } else {
+#ifdef _DEBUG
+            printf("RESFILE: CreateFile failed for %s (Error %d)\n", resFile, GetLastError());
+#endif
         }
     } else {
         fHandle = _open(resFile, _O_BINARY | _O_RDONLY);
+#ifdef _DEBUG
+        if (fHandle != -1) printf("RESFILE: Opened %s (handle %d)\n", resFile, fHandle);
+        else printf("RESFILE: _open failed for %s\n", resFile);
+#endif
     }
 
     if (fHandle == -1 && mapped_file_data == nullptr) {
@@ -63,6 +81,34 @@ void RESFILE_open_new_resource_file(const char* name, const char* dir, const cha
         _read(fHandle, hdr->header, rHeader.directory_size);
     }
 
+#ifdef _DEBUG
+    if (hdr->header) {
+        printf("RESFILE: %s has %d types\n", resFile, hdr->header->num_res_types);
+        struct type_entry {
+            ulong id;
+            int offset;
+            int count;
+        } *types = (type_entry *)((char *)hdr->header + 0x40);
+        for (int i = 0; i < hdr->header->num_res_types; i++) {
+            printf("  Type %c%c%c%c (%08X) count %d\n", 
+                (char)(types[i].id & 0xFF), (char)((types[i].id >> 8) & 0xFF),
+                (char)((types[i].id >> 16) & 0xFF), (char)((types[i].id >> 24) & 0xFF),
+                types[i].id, types[i].count);
+            
+            if (types[i].id == 0x62696E61) { // bina
+                struct res_entry {
+                    ulong id;
+                    int offset;
+                    int size;
+                } *res = (res_entry *)((char *)hdr->header + types[i].offset);
+                for (int j = 0; j < types[i].count; j++) {
+                    printf("    ID %d size %d\n", res[j].id, res[j].size);
+                }
+            }
+        }
+    }
+#endif
+
     // Add to linked list
     if (DAT_0086b254 == nullptr) {
         DAT_0086b254 = hdr;
@@ -84,6 +130,7 @@ int RESFILE_locate_resource(ulong type, ulong id, int *handle, int *offset, ucha
     while (curr) {
         resfile_header *h = curr->header;
         if (h) {
+            // printf("RESFILE_locate_resource: Checking %s\n", curr->res_name);
             int num_types = h->num_res_types;
             struct type_entry {
                 ulong id;
@@ -121,6 +168,9 @@ uchar * RESFILE_load(ulong type, ulong id, int *size, int *out_flag) {
     uchar *mapped_ptr;
     
     if (RESFILE_locate_resource(type, id, &handle, &offset, &mapped_ptr, &res_size)) {
+#ifdef _DEBUG
+        printf("RESFILE_load: Found type=%08X id=%d size=%d\n", type, id, res_size);
+#endif
         *size = res_size;
         if (mapped_ptr) {
             *out_flag = 0;

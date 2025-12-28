@@ -29,36 +29,37 @@ struct RGE_Prog_Info {
     
     /* 0x0A20 */ void *instance;
     /* 0x0A24 */ void *prev_instance;
-    /* 0x0A28 */ char cmd_line[256];
+    /* 0x0A28 */ int show_wnd_flag;
+    /* 0x0A2C */ char cmd_line[256];
     
-    /* 0x0B28 */ int verify_cd;
-    /* 0x0B2C */ int max_players_per_cd;
-    /* 0x0B30 */ int check_expiration;
-    /* 0x0B34 */ int expire_month;
-    /* 0x0B38 */ int expire_day;
-    /* 0x0B3C */ int expire_year;
-    /* 0x0B40 */ int check_multi_copies;
-    /* 0x0B44 */ int skip_startup;
-    /* 0x0B48 */ int full_screen;
-    /* 0x0B4C */ int fixed_window_size;
-    /* 0x0B50 */ int use_dir_draw;
-    /* 0x0B54 */ int use_sys_mem;
-    /* 0x0B58 */ int use_music;
-    /* 0x0B5C */ int use_sound;
-    /* 0x0B60 */ int use_cd_audio;
-    /* 0x0B64 */ int auto_scroll;
-    /* 0x0B68 */ int mouse_scroll_edge;
-    /* 0x0B6C */ int mouse_scroll_interval;
-    /* 0x0B70 */ int key_scroll_interval;
-    /* 0x0B74 */ float key_scroll_object_move;
-    /* 0x0B78 */ int interface_style;
-    /* 0x0B7C */ int main_wid;
-    /* 0x0B80 */ int main_hgt;
+    /* 0x0B2C */ int verify_cd;
+    /* 0x0B30 */ int max_players_per_cd;
+    /* 0x0B34 */ int check_expiration;
+    /* 0x0B38 */ int expire_month;
+    /* 0x0B3C */ int expire_day;
+    /* 0x0B40 */ int expire_year;
+    /* 0x0B44 */ int check_multi_copies;
+    /* 0x0B48 */ int skip_startup;
+    /* 0x0B4C */ int full_screen;
+    /* 0x0B50 */ int fixed_window_size;
+    /* 0x0B54 */ int use_dir_draw;
+    /* 0x0B58 */ int use_sys_mem;
+    /* 0x0B5C */ int use_music;
+    /* 0x0B60 */ int use_sound;
+    /* 0x0B64 */ int use_cd_audio;
+    /* 0x0B68 */ int auto_scroll;
+    /* 0x0B6C */ int mouse_scroll_edge;
+    /* 0x0B70 */ int mouse_scroll_interval;
+    /* 0x0B74 */ int key_scroll_interval;
+    /* 0x0B78 */ float key_scroll_object_move;
+    /* 0x0B7C */ int interface_style;
+    /* 0x0B80 */ int main_wid;
+    /* 0x0B84 */ int main_hgt;
     
-    // Total size reached: 0x0B84. 
+    // Total size reached: 0x0B88. 
     // We need 0x1238 = 4664.
     // Padding:
-    /* 0x0B84 */ char padding[0x1238 - 0x0B84];
+    /* 0x0B88 */ char padding[0x1238 - 0x0B88];
 };
 
 static_assert(sizeof(RGE_Prog_Info) == 0x1238, "RGE_Prog_Info size mismatch");

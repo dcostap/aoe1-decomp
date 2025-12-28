@@ -2,6 +2,7 @@
 #include "../rge/RGE_Prog_Info.h"
 #include "../rge/RGE_Game_World.h"
 #include "../rge/RGE_Map.h"
+#include "../rge/TPanelSystem.h"
 #include <stdio.h>
 #include <string.h>
 #include "../rge/RESFILE.h"
@@ -14,7 +15,7 @@ int out_of_sync = 0;
 int out_of_sync2 = 0;
 int* player_dropped[9] = {0}; // Assumed array size from context
 int quick_start_game_mode = 0;
-void* panel_system = nullptr;
+TPanelSystem panel_system;
 
 // Address: 0x00521116
 TRIBE_Game::TRIBE_Game(RGE_Prog_Info* info, int setup_flag) 
@@ -97,7 +98,7 @@ TRIBE_Game::TRIBE_Game(RGE_Prog_Info* info, int setup_flag)
 
     if (setup_flag != 0) {
         if (setup() == 0) {
-            // Error handling?
+            this->error_code = 1;
         }
     }
 }

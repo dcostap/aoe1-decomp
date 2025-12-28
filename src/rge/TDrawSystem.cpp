@@ -242,3 +242,14 @@ void TDrawSystem::Paint(RECT *rect) {
         }
     }
 }
+
+void TDrawSystem::ModifyPalette(int start, int count, PALETTEENTRY *entries) {
+    if (start < 0 || start >= 256) return;
+    if (start + count > 256) count = 256 - start;
+
+    memcpy(&this->palette[start], entries, count * sizeof(PALETTEENTRY));
+
+    if (this->DirDrawPal) {
+        this->DirDrawPal->SetEntries(0, start, count, entries);
+    }
+}
