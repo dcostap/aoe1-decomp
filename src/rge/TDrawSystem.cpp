@@ -221,24 +221,17 @@ void TDrawSystem::Paint(RECT *rect) {
             RECT dest;
             GetClientRect(this->Wnd, &dest);
             OffsetRect(&dest, pt.x, pt.y);
-#ifdef _DEBUG
-            static int paint_log_count = 0;
-            if (paint_log_count < 3) {
-                printf("TDrawSystem::Paint: dest=[%d,%d,%d,%d] src_rect=[%d,%d,%d,%d]\n", 
-                    dest.left, dest.top, dest.right, dest.bottom,
-                    rect ? rect->left : 0, rect ? rect->top : 0, rect ? rect->right : 0, rect ? rect->bottom : 0);
-                paint_log_count++;
-            }
-#endif
             hr = this->PrimarySurface->Blt(&dest, this->DrawArea->DrawSurface, rect, DDBLT_WAIT, nullptr);
         } else { // Fullscreen
             hr = this->PrimarySurface->Blt(rect, this->DrawArea->DrawSurface, rect, DDBLT_WAIT, nullptr);
         }
 
         if (hr != DD_OK) {
-#ifdef _DEBUG
-            printf("TDrawSystem::Paint: Blt failed with %08X\n", hr);
-#endif
+            static int blt_error_count = 0;
+            if (blt_error_count < 10) {
+                printf("TDrawSystem::Paint: Blt failed with %08X\n", hr);
+                blt_error_count++;
+            }
         }
     }
 }

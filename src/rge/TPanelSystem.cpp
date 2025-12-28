@@ -1,4 +1,5 @@
 #include "TPanelSystem.h"
+#include "TPanel.h"
 #include "RESFILE.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,7 +13,7 @@ void *ReadPalette(const char *name, int id, int flag) {
 #endif
     int size = 0;
     int out_flag = 0;
-    uchar *data = RESFILE_load(0x62696e61, id, &size, &out_flag); // 'bina'
+    uchar *data = RESFILE_load(0x62696e61, id, &out_flag, &size); // 'bina'
     
     if (!data) {
 #ifdef _DEBUG

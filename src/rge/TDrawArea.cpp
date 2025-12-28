@@ -89,13 +89,10 @@ void TDrawArea::SetSize(int width, int height, int extended_lines) {
 
             HRESULT hr = this->DrawSystem->DirDraw->CreateSurface(&ddsd, &this->DrawSurface, NULL);
             if (hr == DDERR_INVALIDPIXELFORMAT) {
-#ifdef _DEBUG
-                printf("TDrawArea::SetSize: 8-bit failed, trying desktop format...\n");
-#endif
                 ddsd.dwFlags &= ~DDSD_PIXELFORMAT;
                 hr = this->DrawSystem->DirDraw->CreateSurface(&ddsd, &this->DrawSurface, NULL);
             }
-
+            
             if (hr == DD_OK) {
                 if (this->DrawSystem->DirDrawPal) {
                     this->DrawSurface->SetPalette(this->DrawSystem->DirDrawPal);
@@ -133,7 +130,14 @@ void TDrawArea::Clear(RECT *rect, int color) {
         DDBLTFX ddbltfx;
         memset(&ddbltfx, 0, sizeof(ddbltfx));
         ddbltfx.dwSize = sizeof(ddbltfx);
-        ddbltfx.dwFillColor = color;
+        
+        uint fill_color = color;
+        if (this->SurfaceDesc.ddpfPixelFormat.dwRGBBitCount == 32 && color >= 0 && color < 256) {
+            PALETTEENTRY *pal = this->DrawSystem->palette;
+            fill_color = (pal[color].peRed << 16) | (pal[color].peGreen << 8) | pal[color].peBlue;
+        }
+        
+        ddbltfx.dwFillColor = fill_color;
         HRESULT hr = this->DrawSurface->Blt(rect, nullptr, nullptr, DDBLT_COLORFILL | DDBLT_WAIT, &ddbltfx);
         if (hr != DD_OK) {
 #ifdef _DEBUG
@@ -160,5 +164,29 @@ void TDrawArea::SetClipRect(RECT *rect) {
         this->ClipRect.top = 0;
         this->ClipRect.right = this->Width - 1;
         this->ClipRect.bottom = this->Height - 1;
+    }
+}
+uchar* TDrawArea::Lock(const char* name, int wait) {
+    if (this->DrawSurface) {
+        if (this->Bits) return this->Bits;
+
+        DDSURFACEDESC2 ddsd;
+        memset(&ddsd, 0, sizeof(ddsd));
+        ddsd.dwSize = sizeof(ddsd);
+        
+        HRESULT hr = this->DrawSurface->Lock(nullptr, &ddsd, (wait ? DDLOCK_WAIT : 0), nullptr);
+        if (hr == DD_OK) {
+            this->Bits = (uchar*)ddsd.lpSurface;
+            this->Pitch = ddsd.lPitch;
+            return this->Bits;
+        }
+    }
+    return this->Bits;
+}
+
+void TDrawArea::Unlock(const char* name) {
+    if (this->DrawSurface && this->Bits) {
+        this->DrawSurface->Unlock(nullptr);
+        this->Bits = nullptr;
     }
 }

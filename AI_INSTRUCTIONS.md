@@ -81,3 +81,10 @@ static_assert(offsetof(TRIBE_Game, next_var) == 0x200, "TRIBE_Game::next_var off
 3. Be precise and reversible. Make small, targeted changes that can be easily reasoned about. If a change causes confusion, revert and reassess rather than layering fixes.
 4. Prefer compile-time guarantees over runtime checks. Use static_assert(sizeof / offsetof) as the primary verification method. Runtime size checks are for temporary investigation only.
 5. use `build_and_verify.bat` as the main source of truth for build and verification.
+6. YOUR SEARCH TOOL ISN'T RELIABLE CAUSE THERE ARE A LOT OF FILES IN THE DECOMPILATION FOLDER, RUN THIS POWERSHELL COMMAND INSTEAD TO SEARCH EFFECTIVELY FOR STRINGS (USES REGEX BY DEFAULT):
+
+```
+Get-ChildItem -Path .\ghidra_decomp -Recurse -File |
+  Select-String -Pattern '<your search regex string goes here>' -SimpleMatch |
+  ForEach-Object { "{0}:{1}: {2}" -f $_.Path, $_.LineNumber, $_.Line.Trim() }
+```

@@ -24,6 +24,6 @@ static_assert(offsetof(ResFileHdr, res_name) == 0x10, "res_name offset");
 
 void RESFILE_build_res_file(const char* name, const char* dir, const char* ext);
 void RESFILE_open_new_resource_file(const char* name, const char* dir, const char* ext, int flag);
-uchar * RESFILE_load(ulong type, ulong id, int *size, int *out_flag);
+uchar * RESFILE_load(ulong type, ulong id, int *out_flag, int *size);
 int RESFILE_locate_resource(ulong type, ulong id, int *handle, int *offset, uchar **mapped_ptr, int *size);
 void RESFILE_close_new_resource_file(const char *name);

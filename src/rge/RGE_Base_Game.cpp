@@ -5,6 +5,8 @@
 #include "TDrawSystem.h"
 #include "TDrawArea.h"
 #include "TPanelSystem.h"
+#include "RESFILE.h"
+#include "TShape.h"
 #include <stdio.h>
 
 RGE_Base_Game* rge_base_game = nullptr;
@@ -42,6 +44,12 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info *info, int setup_flag) {
 
 RGE_Base_Game::~RGE_Base_Game() {
     if (this->world) delete this->world;
+    if (this->shapes) {
+        for (int i = 0; i < this->shape_num; i++) {
+            if (this->shapes[i]) delete this->shapes[i];
+        }
+        free(this->shapes);
+    }
 }
 
 int RGE_Base_Game::setup() {
@@ -52,6 +60,7 @@ int RGE_Base_Game::setup() {
     if (!this->setup_main_window()) return 0;
     if (!this->setup_palette()) return 0;
     if (!this->setup_graphics_system()) return 0;
+    if (!this->setup_shapes()) return 0;
     
     this->prog_ready = 1;
     return 1;
@@ -88,8 +97,17 @@ int RGE_Base_Game::handle_idle() {
             printf("RGE_Base_Game::handle_idle: frame %d\n", frame_count);
         }
 
-        // Cycle colors to show it's alive
-        this->draw_area->Clear(nullptr, (frame_count / 10) % 256);
+        // Clear to black
+        this->draw_area->Clear(nullptr, 0);
+
+        // Draw the loaded shape
+        if (this->shapes[0] && this->shapes[0]->is_loaded()) {
+            if (this->draw_area->Lock("handle_idle", 1)) {
+                this->shapes[0]->shape_draw(this->draw_area, 0, 0, 0);
+                this->draw_area->Unlock("handle_idle");
+            }
+        }
+
         this->draw_system->Paint(nullptr);
     }
     Sleep(1);
@@ -159,8 +177,8 @@ int RGE_Base_Game::setup_main_window() {
         height = this->prog_info->main_hgt;
     } else {
         style = WS_OVERLAPPEDWINDOW;
-        x = CW_USEDEFAULT;
-        y = CW_USEDEFAULT;
+        x = 0;
+        y = 0;
         width = this->prog_info->main_wid;
         height = this->prog_info->main_hgt;
 
@@ -297,7 +315,30 @@ int RGE_Base_Game::setup_chat() { return 1; }
 int RGE_Base_Game::setup_comm() { return 1; }
 int RGE_Base_Game::setup_sound_system() { return 1; }
 int RGE_Base_Game::setup_fonts() { return 1; }
-int RGE_Base_Game::setup_shapes() { return 1; }
+int RGE_Base_Game::setup_shapes() {
+    this->shape_num = 3;
+    this->shapes = (TShape **)calloc(3, sizeof(TShape *));
+    if (!this->shapes) return 0;
+
+    this->shapes[0] = new TShape("groupnum.shp", 50403);
+    if (!this->shapes[0]->shape && !this->shapes[0]->FShape) {
+        printf("RGE_Base_Game::setup_shapes: 50403 failed, trying 50100...\n");
+        delete this->shapes[0];
+        this->shapes[0] = new TShape("interfac.slp", 50100);
+    }
+    this->shapes[1] = new TShape("waypoint.shp", 50404);
+    this->shapes[2] = new TShape("moveto.shp", 50405);
+
+    for (int i = 0; i < 3; i++) {
+        if (this->shapes[i] && !this->shapes[i]->is_loaded()) {
+#ifdef _DEBUG
+            printf("RGE_Base_Game::setup_shapes: Failed to load shape %d\n", i);
+#endif
+        }
+    }
+
+    return 1;
+}
 int RGE_Base_Game::setup_blank_screen() { return 1; }
 void RGE_Base_Game::setup_timings() {}
 void RGE_Base_Game::stop_sound_system() {}

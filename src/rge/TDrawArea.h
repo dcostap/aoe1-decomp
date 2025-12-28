@@ -59,6 +59,8 @@ public:
     int Init(TDrawSystem* draw_system, int width, int height, int using_vid_mem, int is_primary_surface);
     void SetSize(int width, int height, int extended_lines);
     void Clear(RECT* rect, int color);
+    uchar* Lock(const char* name, int wait);
+    void Unlock(const char* name);
     void SetClipRect(RECT* rect);
 };
 

@@ -95,15 +95,13 @@ void RESFILE_open_new_resource_file(const char* name, const char* dir, const cha
                 (char)((types[i].id >> 16) & 0xFF), (char)((types[i].id >> 24) & 0xFF),
                 types[i].id, types[i].count);
             
-            if (types[i].id == 0x62696E61) { // bina
-                struct res_entry {
-                    ulong id;
-                    int offset;
-                    int size;
-                } *res = (res_entry *)((char *)hdr->header + types[i].offset);
-                for (int j = 0; j < types[i].count; j++) {
-                    printf("    ID %d size %d\n", res[j].id, res[j].size);
-                }
+            struct res_entry {
+                ulong id;
+                int offset;
+                int size;
+            } *res = (res_entry *)((char *)hdr->header + types[i].offset);
+            for (int j = 0; j < types[i].count; j++) {
+                printf("    ID %d size %d\n", res[j].id, res[j].size);
             }
         }
     }
@@ -163,7 +161,7 @@ int RESFILE_locate_resource(ulong type, ulong id, int *handle, int *offset, ucha
     return 0;
 }
 
-uchar * RESFILE_load(ulong type, ulong id, int *size, int *out_flag) {
+uchar * RESFILE_load(ulong type, ulong id, int *out_flag, int *size) {
     int handle, offset, res_size;
     uchar *mapped_ptr;
     
@@ -171,12 +169,12 @@ uchar * RESFILE_load(ulong type, ulong id, int *size, int *out_flag) {
 #ifdef _DEBUG
         printf("RESFILE_load: Found type=%08X id=%d size=%d\n", type, id, res_size);
 #endif
-        *size = res_size;
+        if (size) *size = res_size;
         if (mapped_ptr) {
-            *out_flag = 0;
+            if (out_flag) *out_flag = 0;
             return mapped_ptr + offset;
         } else {
-            *out_flag = 1;
+            if (out_flag) *out_flag = 1;
             uchar *data = (uchar *)malloc(res_size);
             if (data) {
                 _lseek(handle, offset, SEEK_SET);
