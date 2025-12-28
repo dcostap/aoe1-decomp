@@ -7,6 +7,8 @@
 #define LOG_PAINT 0 // Set to 1 to see every paint call
 #endif
 
+int DDSys_CanColorFill = 1;
+
 // Address: 0x00443000
 TDrawSystem::TDrawSystem() {
     memset(this, 0, sizeof(TDrawSystem));
@@ -69,7 +71,7 @@ int TDrawSystem::Init(HINSTANCE instance, HWND window, void *palette, int draw_t
         return 0;
     }
 
-    if (DirectDrawCreateEx(NULL, (void**)&this->DirDraw, IID_IDirectDraw7, NULL) != DD_OK) {
+    if (DirectDrawCreate(NULL, &this->DirDraw, NULL) != DD_OK) {
 #ifdef _DEBUG
         printf("TDrawSystem::Init: DirectDrawCreateEx failed\n");
 #endif
@@ -95,7 +97,7 @@ int TDrawSystem::Init(HINSTANCE instance, HWND window, void *palette, int draw_t
             this->ErrorCode = 1;
             return 0;
         }
-        if (this->DirDraw->SetDisplayMode(width, height, 8, 0, 0) != DD_OK) {
+        if (this->DirDraw->SetDisplayMode(width, height, 8) != DD_OK) {
 #ifdef _DEBUG
             printf("TDrawSystem::Init: SetDisplayMode failed\n");
 #endif
@@ -139,7 +141,7 @@ int TDrawSystem::Init(HINSTANCE instance, HWND window, void *palette, int draw_t
 int TDrawSystem::CreateSurfaces() {
     if (this->DrawType == 2) { // DirectDraw
         if (this->PrimarySurface == NULL) {
-            DDSURFACEDESC2 ddsd;
+            DDSURFACEDESC ddsd;
             memset(&ddsd, 0, sizeof(ddsd));
             ddsd.dwSize = sizeof(ddsd);
             ddsd.dwFlags = DDSD_CAPS;

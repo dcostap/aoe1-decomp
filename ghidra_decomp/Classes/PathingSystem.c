@@ -1,0 +1,2123 @@
+// Class: PathingSystem
+// Size:  0x11DCF8
+//
+// VTable Layout:
+// [00] `vector_deleting_destructor'
+//
+// Member Layout:
+// [0x004] int xSizeValue
+// [0x008] int ySizeValue
+// [0x00C] uchar[255][255] facetValue (sz: 0xFE01)
+// [0xFE10] int[255][255] MGP_costValue (sz: 0x3F804)
+// [0x4F614] MGP_FloatHeap[65026] MGP_openPaths (sz: 0x7F010)
+// [0xCE624] uchar[1020][255] obstructionValue (sz: 0x3F804)
+// [0x10DE28] uchar[255][255] miscValue (sz: 0xFE01)
+// [0x11DC2C] int numberOpenPathsValue
+// [0x11DC30] MGP_FloatHeap MGP_bestTraversedPath (sz: 0x8)
+// [0x11DC38] int numberTraversedPathsValue
+// [0x11DC3C] RGE_Map * mapValue
+// [0x11DC40] RGE_Game_World * worldValue
+// [0x11DC44] RGE_Moving_Object * currentObject
+// [0x11DC48] int currentObjectInObMap
+// [0x11DC4C] int currentTargetID
+// [0x11DC50] float * currentTerrainTable
+// [0x11DC54] float currentXOffset
+// [0x11DC58] float currentYOffset
+// [0x11DC5C] int currentTerrainException1
+// [0x11DC60] int currentTerrainException2
+// [0x11DC64] ManagedArray<int> initialCollidingObjects (sz: 0x10)
+// [0x11DC74] int startOfPath
+// [0x11DC78] int checkTerrainOnFirstPass
+// [0x11DC7C] XYPoint initialTile (sz: 0x8)
+// [0x11DC84] XYPoint minTarget (sz: 0x8)
+// [0x11DC8C] XYPoint maxTarget (sz: 0x8)
+// [0x11DC94] XYPoint minInitialPosition (sz: 0x8)
+// [0x11DC9C] XYPoint maxInitialPosition (sz: 0x8)
+// [0x11DCA4] float averageNumWaypoints
+// [0x11DCA8] float averagePathLength
+// [0x11DCAC] float averagePathIterations
+// [0x11DCB0] int numAttempts
+// [0x11DCB4] int numFails
+// [0x11DCB8] int numSuccesses
+// [0x11DCBC] int numInitialPathsValue
+// [0x11DCC0] int numContinuePathsValue
+// [0x11DCC4] int numCanPathsValue
+// [0x11DCC8] int MGP_closestTargetDistance
+// [0x11DCCC] float averageClosestTargetDistance
+// [0x11DCD0] float averageSuccessTime
+// [0x11DCD4] float averageFailTime
+// [0x11DCD8] uchar CurrentFacetMask
+// [0x11DCDC] int currentUnobstructibleGroupID
+// [0x11DCE0] int currentUnobstructiblePlayerID
+// [0x11DCE4] ManagedArray<int> currentUnobstructibles (sz: 0x10)
+// [0x11DCF4] int aiPS
+// ----------------------------------------------------------------
+
+// Function: PathingSystem
+// Address: 0046b0f0
+/* public: __thiscall PathingSystem::PathingSystem(int,int,int,class RGE_Map *,class RGE_Game_World
+   *) */
+
+PathingSystem * __thiscall
+PathingSystem::PathingSystem
+          (PathingSystem *this,int param_1,int param_2,int param_3,RGE_Map *param_4,
+          RGE_Game_World *param_5)
+{
+  int *piVar1;
+  int **ppiVar2;
+  undefined4 *unaff_FS_OFFSET;
+  undefined4 local_c;
+  code *pcStack_8;
+  undefined4 local_4;
+  
+  pcStack_8 = FUN_0055e1ec;
+  local_c = *unaff_FS_OFFSET;
+  *unaff_FS_OFFSET = &local_c;
+  (this->initialCollidingObjects).value = (int *)0x0;
+  (this->initialCollidingObjects).numberValue = 0;
+  (this->initialCollidingObjects).desiredNumberValue = 0;
+  (this->initialCollidingObjects).maximumSizeValue = 0;
+  (this->currentUnobstructibles).value = (int *)0x0;
+  (this->currentUnobstructibles).numberValue = 0;
+  (this->currentUnobstructibles).desiredNumberValue = 0;
+  (this->currentUnobstructibles).maximumSizeValue = 0;
+  this->aiPS = param_3;
+  this->xSizeValue = -1;
+  this->ySizeValue = -1;
+  this->currentTerrainException1 = -1;
+  this->currentTerrainException2 = -1;
+  local_4 = 1;
+  this->_padding_ = (int)&_vftable_;
+  this->numberOpenPathsValue = 0;
+  this->numberTraversedPathsValue = 0;
+  this->mapValue = (RGE_Map *)0x0;
+  this->worldValue = (RGE_Game_World *)0x0;
+  this->currentObject = (RGE_Moving_Object *)0x0;
+  this->averageNumWaypoints = 0.0;
+  this->averagePathLength = 0.0;
+  this->averagePathIterations = 0.0;
+  this->averageClosestTargetDistance = 0.0;
+  this->numAttempts = 0;
+  this->numFails = 0;
+  this->numSuccesses = 0;
+  this->numInitialPathsValue = 0;
+  this->numContinuePathsValue = 0;
+  this->numCanPathsValue = 0;
+  this->averageSuccessTime = 0.0;
+  this->averageFailTime = 0.0;
+  initialize(this,param_1,param_2,param_4,param_5);
+  initMisc(this,'\0');
+  zeroObstructionMap(this);
+  ppiVar2 = &DiagionalDistance;
+  do {
+    piVar1 = (int *)__ftol();
+    *ppiVar2 = piVar1;
+    ppiVar2 = ppiVar2 + 1;
+  } while ((int)ppiVar2 < 0x74d440);
+  *unaff_FS_OFFSET = local_c;
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: `vector_deleting_destructor'
+// Address: 0046b250
+/* public: virtual void * __thiscall PathingSystem::`vector deleting destructor'(unsigned int) */
+
+void * __thiscall PathingSystem::_vector_deleting_destructor_(PathingSystem *this,uint param_1)
+{
+  ~PathingSystem(this);
+  if ((param_1 & 1) != 0) {
+    operator_delete(this);
+  }
+  return this;
+}
+
+// --------------------------------------------------
+
+// Function: ~PathingSystem
+// Address: 0046b270
+/* public: virtual __thiscall PathingSystem::~PathingSystem(void) */
+
+void __thiscall PathingSystem::~PathingSystem(PathingSystem *this)
+{
+  int *piVar1;
+  undefined4 *unaff_FS_OFFSET;
+  undefined4 local_c;
+  code *pcStack_8;
+  undefined4 local_4;
+  
+  local_c = *unaff_FS_OFFSET;
+  pcStack_8 = FUN_0055e20e;
+  *unaff_FS_OFFSET = &local_c;
+  this->_padding_ = (int)&_vftable_;
+  piVar1 = (this->currentUnobstructibles).value;
+  local_4 = 0;
+  if (piVar1 != (int *)0x0) {
+    operator_delete(piVar1);
+    (this->currentUnobstructibles).value = (int *)0x0;
+  }
+  (this->currentUnobstructibles).numberValue = 0;
+  (this->currentUnobstructibles).desiredNumberValue = 0;
+  (this->currentUnobstructibles).maximumSizeValue = 0;
+  piVar1 = (this->initialCollidingObjects).value;
+  local_4 = 0xffffffff;
+  if (piVar1 != (int *)0x0) {
+    operator_delete(piVar1);
+    (this->initialCollidingObjects).value = (int *)0x0;
+  }
+  (this->initialCollidingObjects).numberValue = 0;
+  (this->initialCollidingObjects).desiredNumberValue = 0;
+  (this->initialCollidingObjects).maximumSizeValue = 0;
+  *unaff_FS_OFFSET = local_c;
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: initialize
+// Address: 0046b310
+/* public: int __thiscall PathingSystem::initialize(int,int,class RGE_Map *,class RGE_Game_World *)
+    */
+
+int __thiscall
+PathingSystem::initialize
+          (PathingSystem *this,int param_1,int param_2,RGE_Map *param_3,RGE_Game_World *param_4)
+{
+  this->mapValue = param_3;
+  this->worldValue = param_4;
+  if (param_3 != (RGE_Map *)0x0) {
+    this->xSizeValue = param_3->map_width;
+    this->ySizeValue = param_3->map_height;
+    this->CurrentFacetMask = 0xf0;
+    return 1;
+  }
+  this->ySizeValue = param_2;
+  this->xSizeValue = param_1;
+  this->CurrentFacetMask = 0xf0;
+  return 1;
+}
+
+// --------------------------------------------------
+
+// Function: printToFile
+// Address: 0046b360
+// [HELPER] s_FILENAME___s_: "FILENAME: %s\n"
+// [HELPER] s_R_03d__: "R%03d: "
+// [HELPER] s__04d_: "%04d "
+// [HELPER] s__1d: "%1d"
+// [HELPER] s__: "}"
+// [HELPER] s___1d: " %1d"
+// [HELPER] s___Dimensions___d_X__d_: "  Dimensions: %d X %d\n"
+// [HELPER] s____R_03d__: "  :R%03d\n\n"
+// [HELPER] s______: "---- "
+// [HELPER] s_______: "      "
+// [HELPER] s________: "       "
+// [HELPER] s_wa: "wa"
+/* public: void __thiscall PathingSystem::printToFile(char *) */
+
+void __thiscall PathingSystem::printToFile(PathingSystem *this,char *param_1)
+{
+  uchar uVar1;
+  int iVar2;
+  uint uVar3;
+  uint uVar4;
+  uint uVar5;
+  int iVar6;
+  uint uVar7;
+  char *pcVar8;
+  
+  if (param_1 != (char *)0x0) {
+    iVar2 = fopen(param_1,s_wa);
+    if (iVar2 != 0) {
+      fprintf(iVar2,s_FILENAME___s_,param_1);
+      fprintf(iVar2,s___Dimensions___d_X__d_,this->xSizeValue << 2,this->ySizeValue << 2);
+      fprintf(iVar2,&s__);
+      fprintf(iVar2,s________);
+      iVar6 = 0;
+      if (0 < this->xSizeValue) {
+        do {
+          fprintf(iVar2,s__04d_,iVar6);
+          iVar6 = iVar6 + 1;
+        } while (iVar6 < this->xSizeValue);
+      }
+      fprintf(iVar2,&s__);
+      fprintf(iVar2,s________);
+      iVar6 = 0;
+      if (0 < this->xSizeValue) {
+        do {
+          fprintf(iVar2,s______,iVar6);
+          iVar6 = iVar6 + 1;
+        } while (iVar6 < this->xSizeValue);
+      }
+      fprintf(iVar2,&s__);
+      uVar7 = 0;
+      if (0 < this->ySizeValue << 2) {
+        do {
+          uVar3 = (int)uVar7 >> 0x1f;
+          if (((uVar7 ^ uVar3) - uVar3 & 3 ^ uVar3) == uVar3) {
+            fprintf(iVar2,s_R_03d__,(int)(uVar7 + (uVar3 & 3)) >> 2);
+          }
+          else {
+            fprintf(iVar2,s_______);
+          }
+          uVar5 = 0;
+          if (0 < this->xSizeValue << 2) {
+            do {
+              uVar4 = (int)uVar5 >> 0x1f;
+              if (((uVar5 ^ uVar4) - uVar4 & 3 ^ uVar4) == uVar4) {
+                uVar1 = obstruction(this,uVar5,uVar7);
+                pcVar8 = s___1d;
+              }
+              else {
+                uVar1 = obstruction(this,uVar5,uVar7);
+                pcVar8 = s__1d;
+              }
+              fprintf(iVar2,pcVar8,uVar1);
+              uVar5 = uVar5 + 1;
+            } while ((int)uVar5 < this->xSizeValue * 4);
+          }
+          uVar5 = uVar7 + 1;
+          uVar4 = (int)uVar5 >> 0x1f;
+          if (((uVar5 ^ uVar4) - uVar4 & 3 ^ uVar4) == uVar4) {
+            pcVar8 = s____R_03d__;
+          }
+          else {
+            pcVar8 = &s__;
+          }
+          fprintf(iVar2,pcVar8,(int)(uVar7 + (uVar3 & 3)) >> 2);
+          uVar7 = uVar5;
+        } while ((int)uVar5 < this->ySizeValue * 4);
+      }
+      fprintf(iVar2,&s__);
+      fclose(iVar2);
+    }
+  }
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: lookupMisc
+// Address: 0046b550
+/* public: unsigned char __thiscall PathingSystem::lookupMisc(int,int) */
+
+uchar __thiscall PathingSystem::lookupMisc(PathingSystem *this,int param_1,int param_2)
+{
+  return this->miscValue[param_1][param_2];
+}
+
+// --------------------------------------------------
+
+// Function: setMisc
+// Address: 0046b570
+/* public: void __thiscall PathingSystem::setMisc(int,int,unsigned char) */
+
+void __thiscall PathingSystem::setMisc(PathingSystem *this,int param_1,int param_2,uchar param_3)
+{
+  this->miscValue[param_1][param_2] = param_3;
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: initMisc
+// Address: 0046b590
+/* public: void __thiscall PathingSystem::initMisc(unsigned char) */
+
+void __thiscall PathingSystem::initMisc(PathingSystem *this,uchar param_1)
+{
+  int iVar1;
+  uchar (*pauVar2) [255];
+  
+  pauVar2 = this->miscValue;
+  for (iVar1 = 0x3f80; iVar1 != 0; iVar1 = iVar1 + -1) {
+    *(uint *)*pauVar2 = CONCAT22(CONCAT11(param_1,param_1),CONCAT11(param_1,param_1));
+    pauVar2 = (uchar (*) [255])(*pauVar2 + 4);
+  }
+  (*pauVar2)[0] = param_1;
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: zeroObstructionMap
+// Address: 0046b5c0
+/* public: void __thiscall PathingSystem::zeroObstructionMap(void) */
+
+void __thiscall PathingSystem::zeroObstructionMap(PathingSystem *this)
+{
+  int iVar1;
+  uchar (*pauVar2) [255];
+  
+  pauVar2 = this->obstructionValue;
+  for (iVar1 = 0xfe01; iVar1 != 0; iVar1 = iVar1 + -1) {
+    *(uchar *)((int)pauVar2 + 0) = '\0';
+    *(uchar *)((int)pauVar2 + 1) = '\0';
+    *(uchar *)((int)pauVar2 + 2) = '\0';
+    *(uchar *)((int)pauVar2 + 3) = '\0';
+    pauVar2 = (uchar (*) [255])(*pauVar2 + 4);
+  }
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: obstruction
+// Address: 0046b5e0
+// [HELPER] ObstructionValueShift: "06040200"
+/* public: unsigned char __thiscall PathingSystem::obstruction(int,int) */
+
+uchar __thiscall PathingSystem::obstruction(PathingSystem *this,int param_1,int param_2)
+{
+  return this->obstructionValue[param_1][param_2 >> 2] >>
+         (*(byte *)((int)&ObstructionValueShift + (param_2 & 3U)) & 0x1f) & 3;
+}
+
+// --------------------------------------------------
+
+// Function: incrementObstruction
+// Address: 0046b620
+// [HELPER] ObstructionValueMask: "3fcff3fc"
+// [HELPER] ObstructionValueShift: "06040200"
+/* public: void __thiscall PathingSystem::incrementObstruction(int,int) */
+
+void __thiscall PathingSystem::incrementObstruction(PathingSystem *this,int param_1,int param_2)
+{
+  byte bVar1;
+  byte bVar2;
+  byte bVar3;
+  
+  bVar1 = this->obstructionValue[param_1][param_2 >> 2];
+  bVar2 = *(byte *)((int)&ObstructionValueShift + (param_2 & 3U));
+  bVar3 = bVar1 >> (bVar2 & 0x1f) & 3;
+  if (bVar3 < 3) {
+    this->obstructionValue[param_1][param_2 >> 2] =
+         *(byte *)((int)&ObstructionValueMask + (param_2 & 3U)) & bVar1 |
+         bVar3 + 1 << (bVar2 & 0x1f);
+  }
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: decrementObstruction
+// Address: 0046b680
+// [HELPER] ObstructionValueMask: "3fcff3fc"
+// [HELPER] ObstructionValueShift: "06040200"
+/* public: void __thiscall PathingSystem::decrementObstruction(int,int) */
+
+void __thiscall PathingSystem::decrementObstruction(PathingSystem *this,int param_1,int param_2)
+{
+  byte bVar1;
+  byte bVar2;
+  byte bVar3;
+  
+  bVar1 = this->obstructionValue[param_1][param_2 >> 2];
+  bVar2 = *(byte *)((int)&ObstructionValueShift + (param_2 & 3U));
+  bVar3 = bVar1 >> (bVar2 & 0x1f) & 3;
+  if (bVar3 != 0) {
+    this->obstructionValue[param_1][param_2 >> 2] =
+         *(byte *)((int)&ObstructionValueMask + (param_2 & 3U)) & bVar1 |
+         bVar3 - 1 << (bVar2 & 0x1f);
+  }
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: findTilePath
+// Address: 0046b6e0
+// [HELPER] ObstructionValueShift: "06040200"
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* public: int __thiscall PathingSystem::findTilePath(int,int,int,int,class RGE_Moving_Object
+   *,float,int,int,float *,int,int,int,int,int,int) */
+
+int __thiscall
+PathingSystem::findTilePath
+          (PathingSystem *this,int param_1,int param_2,int param_3,int param_4,
+          RGE_Moving_Object *param_5,float param_6,int param_7,int param_8,float *param_9,
+          int param_10,int param_11,int param_12,int param_13,int param_14,int param_15)
+{
+  XYPoint *pXVar1;
+  MGP_FloatHeap *pMVar2;
+  MGP_FloatHeap *pMVar3;
+  uchar uVar4;
+  uchar uVar5;
+  RGE_Player *this_00;
+  ulong *puVar6;
+  bool bVar7;
+  uchar uVar8;
+  ushort uVar9;
+  uint uVar10;
+  int iVar11;
+  uchar *puVar12;
+  int *piVar13;
+  RGE_Static_Object *pRVar14;
+  int iVar15;
+  int iVar16;
+  int iVar17;
+  int iVar18;
+  int iVar19;
+  int iVar20;
+  int iVar21;
+  uint uVar22;
+  int iVar23;
+  uint uVar24;
+  uchar *puVar25;
+  int iVar26;
+  float fVar27;
+  uint uVar28;
+  Path *pPVar29;
+  RGE_Map *pRVar30;
+  int iVar31;
+  uint uVar32;
+  byte bVar33;
+  uint uVar34;
+  RGE_Moving_Object *pRVar35;
+  uint uVar36;
+  uint uVar37;
+  int iVar38;
+  uint uVar39;
+  uint uVar40;
+  byte *pbVar41;
+  uchar (*pauVar42) [255];
+  int iVar43;
+  float10 fVar44;
+  XYPoint bestPathPoint;
+  XYPoint temp;
+  int newTotal;
+  uint local_50;
+  float unobstructibleObjectHitpoints;
+  int MGP_goalTolerance;
+  int SkipBit;
+  uint local_34;
+  uint local_30;
+  int iterations;
+  int i;
+  int local_24;
+  int numberIterationCap;
+  int yDeltaDown;
+  int xDeltaRight;
+  int yDeltaUp;
+  int xDeltaLeft;
+  int yDeltaDown4;
+  int xDeltaRight4;
+  
+  pRVar35 = param_5;
+  if ((((((param_1 < 0) || (param_2 < 0)) || (iVar11 = this->xSizeValue, iVar11 < param_1)) ||
+       ((iVar11 < param_2 || (param_3 < 0)))) || (param_4 < 0)) ||
+     ((iVar11 < param_3 || (iVar11 < param_4)))) {
+    if (param_8 != 1) {
+      return 0;
+    }
+    pPVar29 = &param_5->pathValue;
+    if (param_5->storePathInExceptionPath != '\0') {
+      pPVar29 = &param_5->exceptionPathValue;
+    }
+LAB_0046d1eb:
+    Path::killPath(pPVar29);
+    return 0;
+  }
+  if (_DAT_00570e54 < param_6) {
+    iVar11 = param_3;
+    iVar26 = param_1;
+    if (param_3 < param_1) {
+      iVar11 = param_1;
+      iVar26 = param_3;
+    }
+    iVar15 = param_2;
+    iVar16 = param_4;
+    if (param_4 < param_2) {
+      iVar15 = param_4;
+      iVar16 = param_2;
+    }
+    uVar10 = iVar11 - iVar26;
+    uVar34 = iVar16 - iVar15;
+    if ((int)uVar10 < (int)uVar34) {
+      iVar11 = uVar34 - uVar10;
+    }
+    else {
+      iVar11 = uVar10 - uVar34;
+      uVar10 = uVar34;
+    }
+    if ((float)(int)((&DiagionalDistance)[uVar10 & 0xff] + iVar11 * 4) < param_6 * _DAT_00570e58) {
+      if (param_9 != (float *)0x0) {
+        *param_9 = 0.0;
+      }
+      if (param_8 != 1) {
+        return 1;
+      }
+      pPVar29 = &param_5->pathValue;
+      if (param_5->storePathInExceptionPath != '\0') {
+        pPVar29 = &param_5->exceptionPathValue;
+      }
+      Path::killPath(pPVar29);
+      return 1;
+    }
+    fVar44 = (float10)(**(code **)(param_5->_padding_ + 0xfc))();
+    if (fVar44 == (float10)_DAT_00570e5c) {
+      if (param_9 != (float *)0x0) {
+        *param_9 = 0.0;
+      }
+      if (param_8 != 1) {
+        return 0;
+      }
+      pPVar29 = &pRVar35->pathValue;
+      if (pRVar35->storePathInExceptionPath != '\0') {
+        Path::killPath(&pRVar35->exceptionPathValue);
+        return 0;
+      }
+      goto LAB_0046d1eb;
+    }
+  }
+  this->currentObject = pRVar35;
+  this->currentTerrainTable = this->worldValue->terrains[*(short *)(pRVar35->_padding_ + 0x66)];
+  this->currentTerrainException1 = pRVar35->currentTerrainException1;
+  this->currentTerrainException2 = pRVar35->currentTerrainException2;
+  this->currentUnobstructiblePlayerID = param_14;
+  this->currentUnobstructibleGroupID = param_15;
+  (this->currentUnobstructibles).numberValue = 0;
+  if (MapPathsDisplay != 0) {
+    pRVar30 = this->mapValue;
+    iVar11 = 0;
+    if (0 < pRVar30->map_height) {
+      do {
+        iVar26 = 0;
+        if (0 < pRVar30->map_width) {
+          puVar12 = &pRVar30->map_row_offset[iVar11]->draw_attribute;
+          do {
+            iVar26 = iVar26 + 1;
+            *puVar12 = *puVar12 & 0x70;
+            puVar12 = puVar12 + 0x18;
+          } while (iVar26 < this->mapValue->map_width);
+        }
+        pRVar30 = this->mapValue;
+        iVar11 = iVar11 + 1;
+      } while (iVar11 < pRVar30->map_height);
+    }
+    piVar13 = (int *)(**(code **)(rge_base_game->_padding_ + 0x2c))();
+    (**(code **)(*piVar13 + 0x20))(2);
+  }
+  (this->minTarget).x = param_3 * 4;
+  (this->minTarget).y = param_4 * 4;
+  this->currentTargetID = param_7;
+  (this->maxTarget).x = param_3 * 4 + 3;
+  (this->maxTarget).y = param_4 * 4 + 3;
+  if (param_7 != -1) {
+    pRVar14 = RGE_Game_World::object(this->worldValue,param_7);
+    if (pRVar14 == (RGE_Static_Object *)0x0) {
+      this->currentTargetID = -1;
+    }
+    else {
+      iVar11 = __ftol();
+      (this->minTarget).x = iVar11;
+      iVar11 = __ftol();
+      (this->minTarget).y = iVar11;
+      iVar11 = __ftol();
+      (this->maxTarget).x = iVar11;
+      iVar11 = __ftol();
+      (this->maxTarget).y = iVar11;
+    }
+  }
+  this->startOfPath = 1;
+  this->checkTerrainOnFirstPass = param_11;
+  iVar11 = RGE_Static_Object::removeFromObstructionMap
+                     ((RGE_Static_Object *)this->currentObject,this->aiPS);
+  iVar26 = 1;
+  this->currentObjectInObMap = iVar11;
+  fVar44 = (float10)floor((double)(float)this->currentObject->_padding_);
+  fVar27 = (float)(fVar44 - (float10)_DAT_00570e64);
+  fVar44 = (float10)floor((double)(float)this->currentObject->_padding_);
+  iVar11 = passable(this,this->currentObject,(float)(fVar44 - (float10)_DAT_00570e64),fVar27,iVar26)
+  ;
+  if (iVar11 == 0) {
+    fVar44 = (float10)floor((double)(float)pRVar35->_padding_);
+    this->currentXOffset = (float)((float10)(float)pRVar35->_padding_ - fVar44);
+    fVar44 = (float10)floor((double)(float)pRVar35->_padding_);
+    this->currentYOffset = (float)((float10)(float)pRVar35->_padding_ - fVar44);
+  }
+  else {
+    this->currentXOffset = 0.5;
+    this->currentYOffset = 0.5;
+  }
+  pRVar35 = this->currentObject;
+  if ((9 < pRVar35->continueCounter) && (param_14 = 0, 0 < pRVar35->_padding_)) {
+    do {
+      iVar11 = param_14;
+      if ((pRVar35->_padding_ + -1 < param_14) &&
+         (param_15 = (int)operator_new(param_14 * 4 + 4), (void *)param_15 != (void *)0x0)) {
+        iVar26 = 0;
+        if (0 < pRVar35->_padding_) {
+          do {
+            if (iVar11 + 1 <= iVar26) break;
+            *(undefined4 *)(param_15 + iVar26 * 4) =
+                 *(undefined4 *)(pRVar35->_padding_ + iVar26 * 4);
+            iVar26 = iVar26 + 1;
+            iVar11 = param_14;
+          } while (iVar26 < pRVar35->_padding_);
+        }
+        operator_delete((void *)pRVar35->_padding_);
+        pRVar35->_padding_ = param_15;
+        pRVar35->_padding_ = iVar11 + 1;
+      }
+      pRVar14 = RGE_Game_World::object(this->worldValue,*(int *)(pRVar35->_padding_ + iVar11 * 4));
+      if ((pRVar14 != (RGE_Static_Object *)0x0) && (pRVar14->id != this->currentObject->_padding_))
+{
+        uVar10 = (**(code **)(pRVar14->_padding_ + 0x130))();
+        param_14 = uVar10 & 0xff;
+        fVar44 = (float10)(**(code **)(pRVar14->_padding_ + 0xf4))();
+        param_7 = (int)pRVar14[2].inside_obj;
+        if ((param_14 != 0) ||
+           ((fVar44 != (float10)_DAT_00570e5c || (_DAT_00570e5c < (float)param_7)))) {
+          RGE_Static_Object::removeFromObstructionMap(pRVar14,this->aiPS);
+        }
+      }
+      pRVar35 = this->currentObject;
+      param_14 = iVar11 + 1;
+    } while (param_14 < pRVar35->_padding_);
+  }
+  pRVar35 = this->currentObject;
+  iVar11 = __ftol();
+  (this->minInitialPosition).x = iVar11;
+  if (iVar11 < 0) {
+    (this->minInitialPosition).x = 0;
+  }
+  iVar11 = __ftol();
+  (this->minInitialPosition).y = iVar11;
+  if (iVar11 < 0) {
+    (this->minInitialPosition).y = 0;
+  }
+  iVar11 = __ftol();
+  pXVar1 = &this->maxInitialPosition;
+  iVar26 = this->xSizeValue * 4;
+  pXVar1->x = iVar11;
+  if (iVar26 < iVar11) {
+    pXVar1->x = iVar26;
+  }
+  iVar26 = __ftol();
+  iVar11 = this->ySizeValue;
+  (this->maxInitialPosition).y = iVar26;
+  iVar11 = iVar11 * 4;
+  if (iVar11 < iVar26) {
+    (this->maxInitialPosition).y = iVar11;
+  }
+  RGE_Moving_Object::setInitialPoints(pRVar35,&this->minInitialPosition,pXVar1);
+  (this->initialTile).y = param_2;
+  bVar33 = this->CurrentFacetMask;
+  (this->initialTile).x = param_1;
+  this->MGP_closestTargetDistance = -1;
+  if (bVar33 < 0xf0) {
+    this->CurrentFacetMask = bVar33 + 8;
+  }
+  else {
+    this->CurrentFacetMask = '\0';
+    pauVar42 = this->facetValue;
+    for (iVar11 = 0x3f80; iVar11 != 0; iVar11 = iVar11 + -1) {
+      *(uchar *)((int)pauVar42 + 0) = 0xff;
+      *(uchar *)((int)pauVar42 + 1) = 0xff;
+      *(uchar *)((int)pauVar42 + 2) = 0xff;
+      *(uchar *)((int)pauVar42 + 3) = 0xff;
+      pauVar42 = (uchar (*) [255])(*pauVar42 + 4);
+    }
+    (*pauVar42)[0] = 0xff;
+  }
+  this->numberOpenPathsValue = 1;
+  this->numberTraversedPathsValue = 0;
+  iVar11 = param_3;
+  iVar26 = param_1;
+  if (param_3 < param_1) {
+    iVar11 = param_1;
+    iVar26 = param_3;
+  }
+  iVar15 = param_2;
+  iVar16 = param_4;
+  if (param_4 < param_2) {
+    iVar15 = param_4;
+    iVar16 = param_2;
+  }
+  uVar10 = iVar11 - iVar26;
+  uVar34 = iVar16 - iVar15;
+  if ((int)uVar10 < (int)uVar34) {
+    iVar11 = uVar34 - uVar10;
+  }
+  else {
+    iVar11 = uVar10 - uVar34;
+    uVar10 = uVar34;
+  }
+  param_14 = (int)((&DiagionalDistance)[uVar10 & 0xff] + iVar11 * 4);
+  this->MGP_costValue[param_1][param_2] = param_14;
+  this->MGP_openPaths[1].total = param_14;
+  (this->MGP_bestTraversedPath).total = param_14;
+  this->MGP_openPaths[1].x = (uchar)param_1;
+  this->MGP_openPaths[1].y = (uchar)param_2;
+  this->MGP_openPaths[0].total = -2000000000;
+  (this->MGP_bestTraversedPath).x = (uchar)param_1;
+  (this->MGP_bestTraversedPath).y = (uchar)param_2;
+  if ((float)param_13 <= param_6) {
+    iVar11 = __ftol();
+  }
+  else {
+    iVar11 = param_13 << 4;
+  }
+  iVar26 = this->currentObject->_padding_;
+  param_1 = *(int *)(iVar26 + 0x34);
+  param_6 = (this->currentXOffset - _DAT_00570e68) - *(float *)(iVar26 + 0x30);
+  iVar26 = __ftol();
+  iVar26 = iVar26 + -100;
+  iVar15 = __ftol();
+  iVar15 = iVar15 + -100;
+  param_14 = (int)((this->currentYOffset - _DAT_00570e68) - (float)param_1);
+  iVar16 = __ftol();
+  param_1 = (int)((float)param_1 + this->currentYOffset);
+  iVar16 = iVar16 + -100;
+  iVar17 = __ftol();
+  iVar17 = iVar17 + -100;
+  iVar18 = __ftol();
+  param_7 = -400 - iVar18;
+  iVar18 = __ftol();
+  iVar18 = -400 - iVar18;
+  iVar19 = __ftol();
+  param_11 = -400 - iVar19;
+  iVar19 = __ftol();
+  iterations = 0;
+  param_2 = (param_4 - param_2) * (param_4 - param_2);
+  iVar20 = __ftol();
+  iVar20 = (int)(iVar20 + (iVar20 >> 0x1f & 0xfU)) >> 4;
+  if (iVar20 < 0xb) {
+    numberIterationCap = (iVar20 * numberPathingIterations) / 10;
+  }
+  else {
+    numberIterationCap = (iVar20 * numberPathingIterations) / 100;
+  }
+  this_00 = (RGE_Player *)this->currentObject->_padding_;
+  if ((this_00->id == 0) && (100 < numberIterationCap)) {
+    numberIterationCap = 100;
+  }
+  iVar21 = RGE_Player::computerPlayer(this_00);
+  if (iVar21 == 1) {
+    numberIterationCap = (iVar20 * 0x9c4) / 100;
+  }
+  if (0 < this->numberOpenPathsValue) {
+LAB_0046bf0e:
+    if ((((numberPathingIterations == -1) || (param_10 != 1)) || (iterations <= numberIterationCap))
+       && (iterations < 0x4e21)) {
+      uVar34 = (uint)this->MGP_openPaths[1].x;
+      uVar10 = (uint)this->MGP_openPaths[1].y;
+      if (MapPathsDisplay != 0) {
+        this->mapValue->map_row_offset[uVar10][uVar34].draw_attribute = 0x81;
+      }
+      uVar36._0_1_ = this->MGP_openPaths[1].x;
+      uVar36._1_1_ = this->MGP_openPaths[1].y;
+      uVar36._2_2_ = this->MGP_openPaths[1].next;
+      uVar36 = uVar36 & 0xff;
+      temp.y = *(uint *)&this->MGP_openPaths[1].y & 0xff;
+      param_2 = (param_4 - temp.y) * (param_4 - temp.y);
+      iVar20 = __ftol();
+      if ((this->MGP_closestTargetDistance == -1) || (iVar20 < this->MGP_closestTargetDistance)) {
+        this->MGP_closestTargetDistance = iVar20;
+      }
+      if (iVar11 <= iVar20) {
+        if (iVar20 < (this->MGP_bestTraversedPath).total) {
+          uVar4 = this->MGP_openPaths[1].x;
+          (this->MGP_bestTraversedPath).total = iVar20;
+          (this->MGP_bestTraversedPath).x = uVar4;
+          (this->MGP_bestTraversedPath).y = this->MGP_openPaths[1].y;
+        }
+        param_6 = 1.4013e-45;
+        this->numberTraversedPathsValue = this->numberTraversedPathsValue + 1;
+        iVar20 = this->numberOpenPathsValue;
+        this->MGP_openPaths[1].x = this->MGP_openPaths[iVar20].x;
+        this->MGP_openPaths[1].y = this->MGP_openPaths[iVar20].y;
+        this->MGP_openPaths[1].total = this->MGP_openPaths[iVar20].total;
+        iVar20 = iVar20 + -1;
+        this->numberOpenPathsValue = iVar20;
+        uVar4 = this->MGP_openPaths[1].x;
+        uVar5 = this->MGP_openPaths[1].y;
+        param_2 = CONCAT31(param_2._1_3_,uVar4);
+        param_15 = this->MGP_openPaths[1].total;
+        param_1 = CONCAT31(param_1._1_3_,uVar5);
+        if (1 < iVar20 / 2) {
+          do {
+            param_14 = iVar20;
+            fVar27 = (float)((int)param_6 * 2);
+            if (((int)fVar27 < param_14) &&
+               (this->MGP_openPaths[(int)param_6 * 2 + 1].total <
+                this->MGP_openPaths[(int)param_6 * 2].total)) {
+              fVar27 = (float)((int)fVar27 + 1);
+            }
+            if (param_15 < this->MGP_openPaths[(int)fVar27].total) break;
+            pMVar2 = this->MGP_openPaths + (int)fVar27;
+            uVar8 = pMVar2->y;
+            uVar9 = pMVar2->next;
+            pMVar3 = this->MGP_openPaths + (int)param_6;
+            pMVar3->x = pMVar2->x;
+            pMVar3->y = uVar8;
+            pMVar3->next = uVar9;
+            this->MGP_openPaths[(int)param_6].total = this->MGP_openPaths[(int)fVar27].total;
+            param_14 = this->numberOpenPathsValue;
+            param_6 = fVar27;
+            iVar20 = param_14;
+          } while ((int)fVar27 < param_14 / 2);
+        }
+        if (param_6 != 1.4013e-45) {
+          this->MGP_openPaths[(int)param_6].x = uVar4;
+          this->MGP_openPaths[(int)param_6].y = uVar5;
+          this->MGP_openPaths[(int)param_6].total = param_15;
+        }
+        i = 0;
+        SkipBit = 1;
+        temp.x = uVar36;
+LAB_0046c153:
+        switch(i) {
+        case 0:
+          uVar36 = uVar36 - param_13;
+          temp.y = temp.y - param_13;
+          temp.x = uVar36;
+          break;
+        case 1:
+        case 2:
+          uVar36 = uVar36 + param_13;
+          temp.x = uVar36;
+          break;
+        case 3:
+          iVar20 = param_13;
+          goto LAB_0046c1a0;
+        case 4:
+          temp.y = temp.y + param_13;
+          break;
+        case 5:
+        case 6:
+          uVar36 = uVar36 - param_13;
+          temp.x = uVar36;
+          break;
+        case 7:
+          iVar20 = -param_13;
+LAB_0046c1a0:
+          temp.y = temp.y + iVar20;
+        }
+        bVar33 = this->facetValue[uVar34][uVar10];
+        if ((bVar33 & 0xf8) == this->CurrentFacetMask) {
+          uVar22 = bVar33 & 7;
+        }
+        else {
+          uVar22 = 8;
+        }
+        if ((((((uint)(&FacetSkipMask)[uVar22] & SkipBit) != 0) || ((int)uVar36 < 0)) ||
+            (temp.y < 0)) ||
+           (((this->xSizeValue <= (int)uVar36 || (this->ySizeValue <= temp.y)) ||
+            ((uVar36 == (this->initialTile).x && (temp.y == (this->initialTile).y))))))
+        goto LAB_0046ca94;
+        param_2 = (temp.y - uVar10) * (temp.y - uVar10);
+        param_1 = __ftol();
+        iVar20 = this->MGP_costValue[uVar34][uVar10];
+        uVar36 = param_3;
+        uVar22 = uVar34;
+        if (param_3 < (int)uVar34) {
+          uVar36 = uVar34;
+          uVar22 = param_3;
+        }
+        uVar39 = uVar10;
+        uVar37 = param_4;
+        if (param_4 < (int)uVar10) {
+          uVar39 = param_4;
+          uVar37 = uVar10;
+        }
+        uVar36 = uVar36 - uVar22;
+        uVar37 = uVar37 - uVar39;
+        if ((int)uVar36 < (int)uVar37) {
+          iVar21 = uVar37 - uVar36;
+        }
+        else {
+          iVar21 = uVar36 - uVar37;
+          uVar36 = uVar37;
+        }
+        iVar23 = param_3;
+        iVar43 = temp.x;
+        if (param_3 < temp.x) {
+          iVar23 = temp.x;
+          iVar43 = param_3;
+        }
+        iVar31 = temp.y;
+        iVar38 = param_4;
+        if (param_4 < temp.y) {
+          iVar31 = param_4;
+          iVar38 = temp.y;
+        }
+        uVar22 = iVar23 - iVar43;
+        uVar39 = iVar38 - iVar31;
+        if ((int)uVar22 < (int)uVar39) {
+          iVar23 = uVar39 - uVar22;
+        }
+        else {
+          iVar23 = uVar22 - uVar39;
+          uVar22 = uVar39;
+        }
+        iVar21 = (int)(&DiagionalDistance)[uVar22 & 0xff] +
+                 param_1 + iVar20 + (iVar23 * 0x10 -
+                                    (int)((&DiagionalDistance)[uVar36 & 0xff] + iVar21 * 4));
+        puVar12 = this->facetValue[temp.x] + temp.y;
+        bVar33 = *puVar12;
+        param_2._1_3_ = (undefined3)((uint)iVar20 >> 8);
+        param_2 = CONCAT31(param_2._1_3_,bVar33);
+        if ((bVar33 & 0xf8) == this->CurrentFacetMask) {
+          bVar33 = bVar33 & 7;
+        }
+        else {
+          bVar33 = 0xff;
+        }
+        uVar36 = temp.x;
+        if ((bVar33 < 8) && (this->MGP_costValue[temp.x][temp.y] <= iVar21)) goto LAB_0046ca94;
+        uVar39 = uVar10;
+        uVar37 = temp.y;
+        uVar40 = temp.x;
+        uVar22 = uVar34;
+        switch(i) {
+        case 0:
+          uVar32 = iVar26 + temp.x;
+          uVar24 = temp.y + iVar16;
+          param_1 = param_7 + temp.x * 4;
+          break;
+        case 1:
+          uVar24 = temp.y + iVar16;
+          uVar32 = iVar26 + uVar34;
+          param_1 = param_7 + uVar34 * 4;
+          break;
+        case 2:
+          uVar22 = temp.y;
+          goto LAB_0046c3ef;
+        case 3:
+          uVar22 = uVar10;
+LAB_0046c3ef:
+          param_14 = iVar17 + uVar10;
+          param_1 = param_7 + uVar34 * 4;
+          uVar24 = iVar16 + uVar22;
+          uVar32 = iVar26 + uVar34;
+          uVar28 = temp.x + iVar15;
+          param_6 = (float)(param_11 + uVar22 * 4);
+          param_2 = iVar18 + temp.x * 4;
+          goto LAB_0046c51b;
+        case 4:
+          uVar32 = iVar26 + uVar34;
+          uVar24 = iVar16 + uVar10;
+          uVar28 = temp.x + iVar15;
+          param_14 = iVar17 + temp.y;
+          goto LAB_0046c50f;
+        case 5:
+          goto LAB_0046c489;
+        case 6:
+          uVar22 = temp.x;
+LAB_0046c489:
+          param_14 = iVar17 + temp.y;
+          uVar24 = iVar16 + uVar10;
+          uVar28 = iVar15 + uVar34;
+          uVar32 = iVar26 + uVar22;
+          uVar40 = uVar34;
+          goto LAB_0046c50f;
+        case 7:
+          uVar32 = iVar26 + temp.x;
+          uVar24 = iVar16 + uVar10;
+          param_1 = param_7 + temp.x * 4;
+          uVar37 = uVar10;
+          break;
+        default:
+          param_14 = temp.y;
+          uVar24 = temp.y;
+          uVar28 = temp.x;
+          uVar32 = temp.x;
+          uVar22 = temp.x;
+          uVar39 = temp.y;
+LAB_0046c50f:
+          param_6 = (float)(param_11 + uVar39 * 4);
+          param_1 = param_7 + uVar22 * 4;
+          param_2 = iVar18 + uVar40 * 4;
+          uVar39 = temp.y;
+          goto LAB_0046c51b;
+        }
+        param_14 = iVar17 + uVar10;
+        uVar28 = iVar15 + uVar34;
+        param_6 = (float)(param_11 + uVar37 * 4);
+        param_2 = iVar18 + uVar34 * 4;
+LAB_0046c51b:
+        param_15 = (-400 - iVar19) + uVar39 * 4;
+        if ((int)uVar32 < 0) {
+          uVar32 = uVar32 + 1;
+        }
+        if ((int)uVar24 < 0) {
+          uVar24 = uVar24 + 1;
+        }
+        if (param_1 < 0) {
+          param_1 = param_1 + 1;
+        }
+        if ((int)param_6 < 0) {
+          param_6 = (float)((int)param_6 + 1);
+        }
+        pRVar30 = this->mapValue;
+        if (((int)(uVar28 & 0xff) < pRVar30->map_width) &&
+           ((int)(param_14 & 0xffU) < pRVar30->map_height)) {
+          local_34 = uVar24 & 0xff;
+          if ((byte)uVar24 <= (byte)param_14) {
+            do {
+              local_30 = uVar32 & 0xff;
+              if ((byte)uVar32 <= (byte)uVar28) {
+                pbVar41 = &pRVar30->map_row_offset[local_34][uVar32 & 0xff].field_0x6;
+                do {
+                  if (((this->initialTile).x != local_30) || ((this->initialTile).y != local_34)) {
+                    uVar22 = pbVar41[-1] & 0x1f;
+                    if (((uVar22 != this->currentTerrainException1) &&
+                        ((uVar22 != this->currentTerrainException2 &&
+                         (this->currentTerrainTable[uVar22] <= (float)_DAT_00570e80)))) &&
+                       (((*pbVar41 & 0xf) == 0 ||
+                        (this->currentTerrainTable
+                         [this->mapValue->border_types[*pbVar41 & 0xf].underlay_terrain] <=
+                         (float)_DAT_00570e80)))) goto LAB_0046c674;
+                  }
+                  pbVar41 = pbVar41 + 0x18;
+                  bVar33 = (char)local_30 + 1;
+                  local_30 = (uint)bVar33;
+                } while (bVar33 <= (byte)uVar28);
+              }
+              bVar33 = (char)local_34 + 1;
+              local_34 = (uint)bVar33;
+            } while (bVar33 <= (byte)param_14);
+          }
+          local_24 = 1;
+        }
+        else {
+LAB_0046c674:
+          local_24 = 0xfe;
+        }
+        param_14 = local_24;
+        if ((local_24 == 1) && (param_12 == 1)) {
+          bVar7 = false;
+          iVar20 = (param_15 - (int)param_6) + -1;
+          if (iVar20 < 0) {
+            param_14 = 1;
+          }
+          else if ((iVar20 < 0x18) &&
+                  (((((this->maxTarget).x < param_1 || ((this->maxTarget).y < (int)param_6)) ||
+                    (param_2 < (this->minTarget).x)) || (param_15 < (this->minTarget).y)))) {
+            iVar20 = ((uint)param_6 & 3) + iVar20 * 4;
+            puVar6 = (&ObstructionMasks)[iVar20 * 2];
+            uVar22 = *(uint *)((int)&DAT_00584f24 + iVar20 * 8);
+            if (uVar22 == 0) {
+              if (param_1 < param_2) {
+                puVar25 = this->obstructionValue[param_1] + ((int)param_6 >> 2);
+                do {
+                  if ((*(uint *)puVar25 & (uint)puVar6) != 0) goto LAB_0046c826;
+                  param_1 = param_1 + 1;
+                  puVar25 = puVar25 + 0xff;
+                } while (param_1 < param_2);
+              }
+            }
+            else if (param_1 < param_2) {
+              puVar25 = this->obstructionValue[param_1] + ((int)param_6 >> 2);
+              do {
+                if (((*(uint *)puVar25 & (uint)puVar6) != 0) ||
+                   ((*(uint *)(puVar25 + 4) & uVar22) != 0)) {
+                  param_14 = 0xfe;
+                  param_1 = (int)puVar6;
+                  goto LAB_0046c83b;
+                }
+                param_1 = param_1 + 1;
+                puVar25 = puVar25 + 0xff;
+              } while (param_1 < param_2);
+              param_14 = 1;
+              param_1 = (int)puVar6;
+              goto LAB_0046c83b;
+            }
+            param_14 = 1;
+            param_1 = (int)puVar6;
+          }
+          else {
+            if (param_1 < param_2) {
+              fVar27 = param_6;
+              iVar20 = param_1 * 0xff;
+              iVar23 = param_1;
+              do {
+                for (; param_1 = iVar20, (int)fVar27 < param_15; fVar27 = (float)((int)fVar27 + 1))
+{
+                  if ((this->obstructionValue[0][param_1 + ((int)fVar27 >> 2)] >>
+                       (*(byte *)((int)&ObstructionValueShift + ((uint)fVar27 & 3)) & 0x1f) & 3) !=
+                      0) {
+                    puVar6 = (ulong *)param_1;
+                    if (((this->currentTargetID == -1) || (iVar23 < (this->minTarget).x)) ||
+                       (((this->maxTarget).x < iVar23 ||
+                        (((int)fVar27 < (this->minTarget).y || ((this->maxTarget).y < (int)fVar27)))
+                        ))) goto LAB_0046c826;
+                    bVar7 = true;
+                  }
+                  iVar20 = param_1;
+                }
+                iVar23 = iVar23 + 1;
+                param_1 = param_1 + 0xff;
+                fVar27 = param_6;
+                iVar20 = param_1;
+              } while (iVar23 < param_2);
+            }
+            param_14 = (int)!bVar7;
+          }
+        }
+        goto LAB_0046c83b;
+      }
+      if ((param_8 == 1) && (iVar11 = copyPath(this,param_13), iVar11 == 0)) {
+        pPVar29 = &param_5->pathValue;
+        if (param_5->storePathInExceptionPath != '\0') {
+          pPVar29 = &param_5->exceptionPathValue;
+        }
+        Path::killPath(pPVar29);
+        pRVar35 = this->currentObject;
+        param_13 = 0;
+        if (0 < pRVar35->_padding_) {
+          do {
+            iVar11 = param_13;
+            if ((pRVar35->_padding_ + -1 < param_13) &&
+               (param_4 = (int)operator_new(param_13 * 4 + 4), (void *)param_4 != (void *)0x0)) {
+              iVar26 = 0;
+              if (0 < pRVar35->_padding_) {
+                do {
+                  if (iVar11 + 1 <= iVar26) break;
+                  *(undefined4 *)(param_4 + iVar26 * 4) =
+                       *(undefined4 *)(pRVar35->_padding_ + iVar26 * 4);
+                  iVar26 = iVar26 + 1;
+                  iVar11 = param_13;
+                } while (iVar26 < pRVar35->_padding_);
+              }
+              operator_delete((void *)pRVar35->_padding_);
+              pRVar35->_padding_ = param_4;
+              pRVar35->_padding_ = iVar11 + 1;
+            }
+            pRVar14 = RGE_Game_World::object
+                                (this->worldValue,*(int *)(pRVar35->_padding_ + iVar11 * 4));
+            if ((((pRVar14 != (RGE_Static_Object *)0x0) &&
+                 (pRVar14->id != this->currentObject->_padding_)) &&
+                (pRVar14->lastInObstructionMapValue == '\x01')) &&
+               (pRVar14->inside_obj == (RGE_Static_Object *)0x0)) {
+              RGE_Static_Object::addToObstructionMap(pRVar14,this->aiPS);
+            }
+            pRVar35 = this->currentObject;
+            param_13 = iVar11 + 1;
+          } while (param_13 < pRVar35->_padding_);
+        }
+        goto LAB_0046d19f;
+      }
+      if (param_9 != (float *)0x0) {
+        *param_9 = (float)this->MGP_costValue[uVar34][uVar10];
+      }
+      pRVar35 = this->currentObject;
+      param_13 = 0;
+      if (0 < pRVar35->_padding_) {
+        do {
+          iVar11 = param_13;
+          if ((pRVar35->_padding_ + -1 < param_13) &&
+             (param_4 = (int)operator_new(param_13 * 4 + 4), (void *)param_4 != (void *)0x0)) {
+            iVar26 = 0;
+            if (0 < pRVar35->_padding_) {
+              do {
+                if (iVar11 + 1 <= iVar26) break;
+                *(undefined4 *)(param_4 + iVar26 * 4) =
+                     *(undefined4 *)(pRVar35->_padding_ + iVar26 * 4);
+                iVar26 = iVar26 + 1;
+                iVar11 = param_13;
+              } while (iVar26 < pRVar35->_padding_);
+            }
+            operator_delete((void *)pRVar35->_padding_);
+            pRVar35->_padding_ = param_4;
+            pRVar35->_padding_ = iVar11 + 1;
+          }
+          pRVar14 = RGE_Game_World::object
+                              (this->worldValue,*(int *)(pRVar35->_padding_ + iVar11 * 4));
+          if ((((pRVar14 != (RGE_Static_Object *)0x0) &&
+               (pRVar14->id != this->currentObject->_padding_)) &&
+              (pRVar14->lastInObstructionMapValue == '\x01')) &&
+             (pRVar14->inside_obj == (RGE_Static_Object *)0x0)) {
+            RGE_Static_Object::addToObstructionMap(pRVar14,this->aiPS);
+          }
+          pRVar35 = this->currentObject;
+          param_13 = iVar11 + 1;
+        } while (param_13 < pRVar35->_padding_);
+      }
+      goto LAB_0046ceaf;
+    }
+  }
+LAB_0046cedf:
+  iVar11 = this->numberOpenPathsValue;
+  this->numberOpenPathsValue = iVar11 + 1;
+  this->MGP_openPaths[iVar11 + 1].x = (this->MGP_bestTraversedPath).x;
+  this->MGP_openPaths[this->numberOpenPathsValue].y = (this->MGP_bestTraversedPath).y;
+  this->MGP_openPaths[this->numberOpenPathsValue].total = 0;
+  iVar11 = this->numberOpenPathsValue;
+  if (0 < iVar11) {
+    uVar4 = this->MGP_openPaths[iVar11].x;
+    uVar5 = this->MGP_openPaths[iVar11].y;
+    iVar16 = iVar11 / 2;
+    param_4 = CONCAT31(param_4._1_3_,uVar4);
+    param_3 = CONCAT31(param_3._1_3_,uVar5);
+    param_2 = this->MGP_openPaths[iVar11].total;
+    iVar26 = this->MGP_openPaths[iVar16].total;
+    iVar15 = iVar11;
+    while (param_2 < iVar26) {
+      pMVar2 = this->MGP_openPaths + iVar16;
+      uVar8 = pMVar2->y;
+      uVar9 = pMVar2->next;
+      pMVar3 = this->MGP_openPaths + iVar15;
+      pMVar3->x = pMVar2->x;
+      pMVar3->y = uVar8;
+      pMVar3->next = uVar9;
+      this->MGP_openPaths[iVar15].total = this->MGP_openPaths[iVar16].total;
+      iVar15 = iVar15 / 2;
+      iVar16 = iVar16 / 2;
+      iVar26 = this->MGP_openPaths[iVar16].total;
+    }
+    if (iVar15 != iVar11) {
+      this->MGP_openPaths[iVar15].x = uVar4;
+      this->MGP_openPaths[iVar15].y = uVar5;
+      this->MGP_openPaths[iVar15].total = param_2;
+    }
+  }
+  if ((param_8 == 1) && (iVar11 = copyPath(this,param_13), iVar11 == 0)) {
+    pPVar29 = &param_5->pathValue;
+    if (param_5->storePathInExceptionPath != '\0') {
+      pPVar29 = &param_5->exceptionPathValue;
+    }
+    Path::killPath(pPVar29);
+    pRVar35 = this->currentObject;
+    param_13 = 0;
+    if (0 < pRVar35->_padding_) {
+      do {
+        iVar11 = param_13;
+        if ((pRVar35->_padding_ + -1 < param_13) &&
+           (param_4 = (int)operator_new(param_13 * 4 + 4), (void *)param_4 != (void *)0x0)) {
+          iVar26 = 0;
+          if (0 < pRVar35->_padding_) {
+            do {
+              if (iVar11 + 1 <= iVar26) break;
+              *(undefined4 *)(param_4 + iVar26 * 4) =
+                   *(undefined4 *)(pRVar35->_padding_ + iVar26 * 4);
+              iVar26 = iVar26 + 1;
+              iVar11 = param_13;
+            } while (iVar26 < pRVar35->_padding_);
+          }
+          operator_delete((void *)pRVar35->_padding_);
+          pRVar35->_padding_ = param_4;
+          pRVar35->_padding_ = iVar11 + 1;
+        }
+        pRVar14 = RGE_Game_World::object(this->worldValue,*(int *)(pRVar35->_padding_ + iVar11 * 4))
+        ;
+        if (((pRVar14 != (RGE_Static_Object *)0x0) &&
+            (pRVar14->id != this->currentObject->_padding_)) &&
+           ((pRVar14->lastInObstructionMapValue == '\x01' &&
+            (pRVar14->inside_obj == (RGE_Static_Object *)0x0)))) {
+          RGE_Static_Object::addToObstructionMap(pRVar14,this->aiPS);
+        }
+        pRVar35 = this->currentObject;
+        param_13 = iVar11 + 1;
+      } while (param_13 < pRVar35->_padding_);
+    }
+  }
+  else {
+    if (param_9 != (float *)0x0) {
+      *param_9 = (float)(this->MGP_bestTraversedPath).total;
+    }
+    pRVar35 = this->currentObject;
+    param_13 = 0;
+    if (0 < pRVar35->_padding_) {
+      do {
+        iVar11 = param_13;
+        if ((pRVar35->_padding_ + -1 < param_13) &&
+           (param_4 = (int)operator_new(param_13 * 4 + 4), (void *)param_4 != (void *)0x0)) {
+          iVar26 = 0;
+          if (0 < pRVar35->_padding_) {
+            do {
+              if (iVar11 + 1 <= iVar26) break;
+              *(undefined4 *)(param_4 + iVar26 * 4) =
+                   *(undefined4 *)(pRVar35->_padding_ + iVar26 * 4);
+              iVar26 = iVar26 + 1;
+              iVar11 = param_13;
+            } while (iVar26 < pRVar35->_padding_);
+          }
+          operator_delete((void *)pRVar35->_padding_);
+          pRVar35->_padding_ = param_4;
+          pRVar35->_padding_ = iVar11 + 1;
+        }
+        pRVar14 = RGE_Game_World::object(this->worldValue,*(int *)(pRVar35->_padding_ + iVar11 * 4))
+        ;
+        if ((((pRVar14 != (RGE_Static_Object *)0x0) &&
+             (pRVar14->id != this->currentObject->_padding_)) &&
+            (pRVar14->lastInObstructionMapValue == '\x01')) &&
+           (pRVar14->inside_obj == (RGE_Static_Object *)0x0)) {
+          RGE_Static_Object::addToObstructionMap(pRVar14,this->aiPS);
+        }
+        pRVar35 = this->currentObject;
+        param_13 = iVar11 + 1;
+      } while (param_13 < pRVar35->_padding_);
+    }
+  }
+  goto LAB_0046d19f;
+LAB_0046c826:
+  param_1 = (int)puVar6;
+  param_14 = 0xfe;
+LAB_0046c83b:
+  param_6 = 0.0;
+  unobstructibleObjectHitpoints = 0.0;
+  if (param_14 == 0xfe) {
+    if (this->currentUnobstructibleGroupID == -1) goto LAB_0046ca94;
+    iVar20 = temp.x + -1;
+    if (iVar20 < 0) {
+      iVar20 = 0;
+    }
+    iVar23 = 0;
+    param_2 = 0;
+    while (((iVar20 <= temp.x + 1 && (iVar20 < this->xSizeValue)) && (iVar23 == 0))) {
+      iVar43 = temp.y + -1;
+      if (iVar43 < 0) {
+        iVar43 = 0;
+      }
+      param_15 = temp.y + 1;
+      if (iVar43 <= param_15) {
+        do {
+          if ((this->ySizeValue <= iVar43) || (iVar23 != 0)) break;
+          param_1 = iVar23;
+          iVar23 = RGE_Game_World::objectGroupOnTile
+                             (this->worldValue,this->currentUnobstructiblePlayerID,
+                              this->currentUnobstructibleGroupID,iVar20,iVar43,&param_1);
+          if (iVar23 == -1) {
+            if (0 < param_1) {
+              param_2 = 1;
+            }
+          }
+          else {
+            pRVar14 = RGE_Game_World::object(this->worldValue,iVar23);
+            if (pRVar14 != (RGE_Static_Object *)0x0) {
+              unobstructibleObjectHitpoints = pRVar14->hp;
+              param_6 = 1.4013e-45;
+            }
+          }
+          iVar43 = iVar43 + 1;
+          iVar23 = param_2;
+        } while (iVar43 <= param_15);
+      }
+      iVar20 = iVar20 + 1;
+    }
+    if (iVar23 == 1) goto LAB_0046ca94;
+  }
+  iVar21 = iVar21 + (uint)this->miscValue[temp.x][temp.y] * 0x10;
+  if (param_6 == 1.4013e-45) {
+    if (unobstructibleObjectHitpoints < _DAT_00570e88) {
+      iVar21 = iVar21 + 0x10;
+    }
+    else {
+      iVar21 = iVar21 + 0x3c;
+    }
+  }
+  bVar33 = this->facetValue[uVar34][uVar10];
+  if ((bVar33 & 0xf8) == this->CurrentFacetMask) {
+    local_50 = bVar33 & 0xffffff07;
+  }
+  else {
+    local_50 = 0xff;
+  }
+  if (i != local_50) {
+    iVar21 = iVar21 + 1;
+  }
+  if (param_14 == 0) {
+    iVar21 = 0;
+  }
+  this->MGP_costValue[temp.x][temp.y] = iVar21;
+  *puVar12 = (byte)i & 7 | this->CurrentFacetMask;
+  iVar20 = this->numberOpenPathsValue;
+  this->numberOpenPathsValue = iVar20 + 1;
+  this->MGP_openPaths[iVar20 + 1].x = (uchar)temp.x;
+  this->MGP_openPaths[this->numberOpenPathsValue].y = (uchar)temp.y;
+  this->MGP_openPaths[this->numberOpenPathsValue].total = iVar21;
+  iVar20 = this->numberOpenPathsValue;
+  if (0 < iVar20) {
+    uVar4 = this->MGP_openPaths[iVar20].x;
+    uVar5 = this->MGP_openPaths[iVar20].y;
+    iVar43 = iVar20 / 2;
+    param_2 = CONCAT31(param_2._1_3_,uVar4);
+    param_1 = CONCAT31(param_1._1_3_,uVar5);
+    param_6 = (float)this->MGP_openPaths[iVar20].total;
+    iVar21 = this->MGP_openPaths[iVar43].total;
+    iVar23 = iVar20;
+    while ((int)param_6 < iVar21) {
+      pMVar2 = this->MGP_openPaths + iVar43;
+      uVar8 = pMVar2->y;
+      uVar9 = pMVar2->next;
+      pMVar3 = this->MGP_openPaths + iVar23;
+      pMVar3->x = pMVar2->x;
+      pMVar3->y = uVar8;
+      pMVar3->next = uVar9;
+      this->MGP_openPaths[iVar23].total = this->MGP_openPaths[iVar43].total;
+      iVar23 = iVar23 / 2;
+      iVar43 = iVar43 / 2;
+      iVar21 = this->MGP_openPaths[iVar43].total;
+    }
+    if (iVar23 != iVar20) {
+      this->MGP_openPaths[iVar23].x = uVar4;
+      this->MGP_openPaths[iVar23].y = uVar5;
+      this->MGP_openPaths[iVar23].total = (int)param_6;
+    }
+  }
+  if (param_14 == 0) {
+    if ((param_8 == 1) && (iVar11 = copyPath(this,param_13), iVar11 == 0)) {
+      pPVar29 = &param_5->pathValue;
+      if (param_5->storePathInExceptionPath != '\0') {
+        pPVar29 = &param_5->exceptionPathValue;
+      }
+      Path::killPath(pPVar29);
+      pRVar35 = this->currentObject;
+      param_13 = 0;
+      if (0 < pRVar35->_padding_) goto LAB_0046cd11;
+      goto LAB_0046d19f;
+    }
+    if (param_9 != (float *)0x0) {
+      *param_9 = (float)this->MGP_costValue[uVar34][uVar10];
+    }
+    pRVar35 = this->currentObject;
+    param_13 = 0;
+    if (0 < pRVar35->_padding_) goto LAB_0046cdfd;
+    goto LAB_0046ceaf;
+  }
+LAB_0046ca94:
+  i = i + 1;
+  SkipBit = SkipBit << 1;
+  if (7 < i) goto code_r0x0046caa9;
+  goto LAB_0046c153;
+code_r0x0046caa9:
+  iterations = iterations + 1;
+  this->startOfPath = 0;
+  if (this->numberOpenPathsValue < 1) goto LAB_0046cedf;
+  goto LAB_0046bf0e;
+  while( true ) {
+    pRVar14 = RGE_Game_World::object(this->worldValue,*(int *)(pRVar35->_padding_ + iVar11 * 4));
+    if ((((pRVar14 != (RGE_Static_Object *)0x0) && (pRVar14->id != this->currentObject->_padding_))
+        && (pRVar14->lastInObstructionMapValue == '\x01')) &&
+       (pRVar14->inside_obj == (RGE_Static_Object *)0x0)) {
+      RGE_Static_Object::addToObstructionMap(pRVar14,this->aiPS);
+    }
+    pRVar35 = this->currentObject;
+    param_13 = iVar11 + 1;
+    if (pRVar35->_padding_ <= param_13) break;
+LAB_0046cdfd:
+    iVar11 = param_13;
+    if ((pRVar35->_padding_ + -1 < param_13) &&
+       (param_4 = (int)operator_new(param_13 * 4 + 4), (void *)param_4 != (void *)0x0)) {
+      iVar26 = 0;
+      if (0 < pRVar35->_padding_) {
+        do {
+          if (iVar11 + 1 <= iVar26) break;
+          *(undefined4 *)(param_4 + iVar26 * 4) = *(undefined4 *)(pRVar35->_padding_ + iVar26 * 4);
+          iVar26 = iVar26 + 1;
+          iVar11 = param_13;
+        } while (iVar26 < pRVar35->_padding_);
+      }
+      operator_delete((void *)pRVar35->_padding_);
+      pRVar35->_padding_ = param_4;
+      pRVar35->_padding_ = iVar11 + 1;
+    }
+  }
+LAB_0046ceaf:
+  if ((this->currentObjectInObMap == 1) &&
+     ((RGE_Static_Object *)this->currentObject->_padding_ == (RGE_Static_Object *)0x0)) {
+    RGE_Static_Object::addToObstructionMap((RGE_Static_Object *)this->currentObject,this->aiPS);
+  }
+  return 1;
+  while( true ) {
+    pRVar14 = RGE_Game_World::object(this->worldValue,*(int *)(pRVar35->_padding_ + iVar11 * 4));
+    if (((pRVar14 != (RGE_Static_Object *)0x0) && (pRVar14->id != this->currentObject->_padding_))
+       && ((pRVar14->lastInObstructionMapValue == '\x01' &&
+           (pRVar14->inside_obj == (RGE_Static_Object *)0x0)))) {
+      RGE_Static_Object::addToObstructionMap(pRVar14,this->aiPS);
+    }
+    pRVar35 = this->currentObject;
+    param_13 = iVar11 + 1;
+    if (pRVar35->_padding_ <= param_13) break;
+LAB_0046cd11:
+    iVar11 = param_13;
+    if ((pRVar35->_padding_ + -1 < param_13) &&
+       (param_4 = (int)operator_new(param_13 * 4 + 4), (void *)param_4 != (void *)0x0)) {
+      iVar26 = 0;
+      if (0 < pRVar35->_padding_) {
+        do {
+          if (iVar11 + 1 <= iVar26) break;
+          *(undefined4 *)(param_4 + iVar26 * 4) = *(undefined4 *)(pRVar35->_padding_ + iVar26 * 4);
+          iVar26 = iVar26 + 1;
+          iVar11 = param_13;
+        } while (iVar26 < pRVar35->_padding_);
+      }
+      operator_delete((void *)pRVar35->_padding_);
+      pRVar35->_padding_ = param_4;
+      pRVar35->_padding_ = iVar11 + 1;
+    }
+  }
+LAB_0046d19f:
+  if ((this->currentObjectInObMap == 1) &&
+     ((RGE_Static_Object *)this->currentObject->_padding_ == (RGE_Static_Object *)0x0)) {
+    RGE_Static_Object::addToObstructionMap((RGE_Static_Object *)this->currentObject,this->aiPS);
+    return 0;
+  }
+  return 0;
+}
+
+// --------------------------------------------------
+
+// Function: incrementInitialPaths
+// Address: 0046d250
+/* public: void __thiscall PathingSystem::incrementInitialPaths(void) */
+
+void __thiscall PathingSystem::incrementInitialPaths(PathingSystem *this)
+{
+  this->numInitialPathsValue = this->numInitialPathsValue + 1;
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: incrementContinuePaths
+// Address: 0046d260
+/* public: void __thiscall PathingSystem::incrementContinuePaths(void) */
+
+void __thiscall PathingSystem::incrementContinuePaths(PathingSystem *this)
+{
+  this->numContinuePathsValue = this->numContinuePathsValue + 1;
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: incrementCanPaths
+// Address: 0046d270
+/* public: void __thiscall PathingSystem::incrementCanPaths(void) */
+
+void __thiscall PathingSystem::incrementCanPaths(PathingSystem *this)
+{
+  this->numCanPathsValue = this->numCanPathsValue + 1;
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: passable
+// Address: 0046d280
+// [HELPER] ObstructionValueShift: "06040200"
+/* WARNING: Variable defined which should be unmapped: minY */
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* public: int __thiscall PathingSystem::passable(class RGE_Moving_Object *,float,float,int) */
+
+int __thiscall
+PathingSystem::passable
+          (PathingSystem *this,RGE_Moving_Object *param_1,float param_2,float param_3,int param_4)
+{
+  bool bVar1;
+  int iVar2;
+  int iVar3;
+  int iVar4;
+  int iVar5;
+  uint uVar6;
+  int iVar7;
+  uint uVar8;
+  uint uVar9;
+  byte bVar10;
+  uint uVar11;
+  byte *pbVar12;
+  uchar *puVar13;
+  byte bVar14;
+  uint uVar15;
+  int iVar17;
+  int minY;
+  float yRadius;
+  int maxY;
+  uint local_14;
+  int inObMap;
+  uint uVar16;
+  
+  this->currentObject = param_1;
+  this->currentTerrainTable = this->worldValue->terrains[*(short *)(param_1->_padding_ + 0x66)];
+  (this->initialTile).x = -1;
+  (this->initialTile).y = -1;
+  (this->minInitialPosition).x = -1;
+  (this->minInitialPosition).y = -1;
+  (this->maxInitialPosition).x = -1;
+  (this->maxInitialPosition).y = -1;
+  floor((double)param_2);
+  floor((double)param_3);
+  iVar2 = __ftol();
+  iVar3 = __ftol();
+  iVar3 = iVar2 * 4 - iVar3;
+  iVar17 = iVar3 + -400;
+  iVar4 = __ftol();
+  iVar5 = __ftol();
+  iVar5 = iVar4 * 4 - iVar5;
+  uVar6 = iVar5 - 400;
+  iVar7 = __ftol();
+  iVar7 = (iVar2 * 4 - iVar7) + -400;
+  iVar2 = __ftol();
+  iVar2 = (iVar4 * 4 - iVar2) + -400;
+  if (iVar17 < 0) {
+    iVar17 = iVar3 + -399;
+  }
+  if ((int)uVar6 < 0) {
+    uVar6 = iVar5 - 399;
+  }
+  uVar8 = (int)uVar6 >> 2;
+  if (param_4 != 0) {
+    uVar11 = iVar7 >> 2;
+    uVar15 = iVar17 >> 2;
+    bVar10 = (byte)(iVar2 >> 2);
+    if (this->mapValue->map_width <= (int)(uVar11 & 0xff)) {
+      return 0;
+    }
+    if (this->mapValue->map_height <= (int)(iVar2 >> 2 & 0xffU)) {
+      return 0;
+    }
+    maxY = uVar8 & 0xff;
+    if ((byte)uVar8 <= bVar10) {
+      uVar9 = uVar11;
+      uVar16 = uVar15;
+      do {
+        local_14 = uVar16 & 0xff;
+        if ((byte)uVar16 <= (byte)uVar9) {
+          pbVar12 = &this->mapValue->map_row_offset[maxY][uVar15 & 0xff].field_0x6;
+          do {
+            if (((this->initialTile).x != local_14) || ((this->initialTile).y != maxY)) {
+              uVar9 = pbVar12[-1] & 0x1f;
+              if ((uVar9 != this->currentTerrainException1) &&
+                 ((uVar9 != this->currentTerrainException2 &&
+                  (this->currentTerrainTable[uVar9] <= (float)_DAT_00570e80)))) {
+                if ((*pbVar12 & 0xf) == 0) {
+                  return 0;
+                }
+                if (this->currentTerrainTable
+                    [this->mapValue->border_types[*pbVar12 & 0xf].underlay_terrain] <=
+                    (float)_DAT_00570e80) {
+                  return 0;
+                }
+              }
+            }
+            pbVar12 = pbVar12 + 0x18;
+            bVar14 = (char)uVar16 + 1;
+            uVar16 = (uint)bVar14;
+            local_14 = (uint)bVar14;
+          } while (bVar14 <= (byte)uVar11);
+          uVar16 = uVar15 & 0xff;
+          uVar9 = uVar11 & 0xff;
+        }
+        bVar14 = (char)maxY + 1;
+        maxY = (int)bVar14;
+      } while (bVar14 <= bVar10);
+    }
+  }
+  iVar3 = RGE_Static_Object::removeFromObstructionMap((RGE_Static_Object *)param_1,this->aiPS);
+  bVar1 = false;
+  iVar4 = (iVar2 - uVar6) + -1;
+  if (-1 < iVar4) {
+    if ((iVar4 < 0x18) &&
+       (((((this->maxTarget).x < iVar17 || ((this->maxTarget).y < (int)uVar6)) ||
+         (iVar7 < (this->minTarget).x)) || (iVar2 < (this->minTarget).y)))) {
+      iVar2 = (uVar6 & 3) + iVar4 * 4;
+      uVar6 = *(uint *)((int)&DAT_00584f24 + iVar2 * 8);
+      if (uVar6 == 0) {
+        if (iVar17 < iVar7) {
+          puVar13 = this->obstructionValue[iVar17] + uVar8;
+          do {
+            if ((*(uint *)puVar13 & (uint)(&ObstructionMasks)[iVar2 * 2]) != 0) goto LAB_0046d6d7;
+            iVar17 = iVar17 + 1;
+            puVar13 = puVar13 + 0xff;
+          } while (iVar17 < iVar7);
+        }
+      }
+      else if (iVar17 < iVar7) {
+        puVar13 = this->obstructionValue[iVar17] + uVar8;
+        do {
+          if (((*(uint *)puVar13 & (uint)(&ObstructionMasks)[iVar2 * 2]) != 0) ||
+             ((*(uint *)(puVar13 + 4) & uVar6) != 0)) goto LAB_0046d6d7;
+          iVar17 = iVar17 + 1;
+          puVar13 = puVar13 + 0xff;
+        } while (iVar17 < iVar7);
+      }
+    }
+    else {
+      if (iVar17 < iVar7) {
+        iVar4 = iVar17 * 0xff;
+        uVar8 = uVar6;
+        do {
+          for (; (int)uVar8 < iVar2; uVar8 = uVar8 + 1) {
+            if ((this->obstructionValue[0][iVar4 + ((int)uVar8 >> 2)] >>
+                 (*(byte *)((int)&ObstructionValueShift + (uVar8 & 3)) & 0x1f) & 3) != 0) {
+              if (((this->currentTargetID == -1) || (iVar17 < (this->minTarget).x)) ||
+                 (((this->maxTarget).x < iVar17 ||
+                  (((int)uVar8 < (this->minTarget).y || ((this->maxTarget).y < (int)uVar8))))))
+              goto LAB_0046d6d7;
+              bVar1 = true;
+            }
+          }
+          iVar17 = iVar17 + 1;
+          iVar4 = iVar4 + 0xff;
+          uVar8 = uVar6;
+        } while (iVar17 < iVar7);
+      }
+      if (bVar1) {
+LAB_0046d6d7:
+        if ((iVar3 != 0) && (param_1->_padding_ == 0)) {
+          RGE_Static_Object::addToObstructionMap((RGE_Static_Object *)param_1,this->aiPS);
+        }
+        return 0;
+      }
+    }
+  }
+  if ((iVar3 != 0) && (param_1->_padding_ == 0)) {
+    RGE_Static_Object::addToObstructionMap((RGE_Static_Object *)param_1,this->aiPS);
+  }
+  return 1;
+}
+
+// --------------------------------------------------
+
+// Function: checksum
+// Address: 0046d740
+/* public: long __thiscall PathingSystem::checksum(void) */
+
+long __thiscall PathingSystem::checksum(PathingSystem *this)
+{
+  int iVar1;
+  uchar (*pauVar2) [255];
+  uint uVar3;
+  int iVar4;
+  
+  uVar3 = 0;
+  pauVar2 = this->obstructionValue;
+  iVar4 = 0x3fc;
+  do {
+    iVar1 = 0;
+    do {
+      uVar3 = uVar3 ^ (*pauVar2)[iVar1];
+      iVar1 = iVar1 + 1;
+    } while (iVar1 < 0xff);
+    pauVar2 = pauVar2 + 1;
+    iVar4 = iVar4 + -1;
+  } while (iVar4 != 0);
+  return uVar3;
+}
+
+// --------------------------------------------------
+
+// Function: printState
+// Address: 0046d770
+// [HELPER] s_____The_open_paths_: "    The open paths:"
+// [HELPER] s_____There_are__d_open_paths_and_: "    There are %d open paths and %d traversed paths."
+// [HELPER] s________5d____d___d___total__d__f: "      %5d: (%d, %d), total=%d, facet=%d."
+/* protected: void __thiscall PathingSystem::printState(class RGE_Moving_Object *) */
+
+void __thiscall PathingSystem::printState(PathingSystem *this,RGE_Moving_Object *param_1)
+{
+  byte bVar1;
+  code *pcVar2;
+  uchar *puVar3;
+  int iVar4;
+  
+  pcVar2 = *(code **)(param_1->_padding_ + 0x144);
+  (*pcVar2)(param_1,s_____There_are__d_open_paths_and_,this->numberOpenPathsValue,
+            this->numberTraversedPathsValue);
+  (*pcVar2)(param_1,s_____The_open_paths_);
+  iVar4 = 1;
+  if (0 < this->numberOpenPathsValue) {
+    puVar3 = &this->MGP_openPaths[1].y;
+    do {
+      bVar1 = this->facetValue[((MGP_FloatHeap *)(puVar3 + -1))->x][*puVar3];
+      if ((bVar1 & 0xf8) == this->CurrentFacetMask) {
+        bVar1 = bVar1 & 7;
+      }
+      else {
+        bVar1 = 0xff;
+      }
+      (*pcVar2)(param_1,s________5d____d___d___total__d__f,iVar4,
+                (uint)((MGP_FloatHeap *)(puVar3 + -1))->x,(uint)*puVar3,*(int *)(puVar3 + 3),bVar1);
+      iVar4 = iVar4 + 1;
+      puVar3 = puVar3 + 8;
+    } while (iVar4 <= this->numberOpenPathsValue);
+  }
+  return;
+}
+
+// --------------------------------------------------
+
+// Function: copyPath
+// Address: 0046d830
+/* WARNING: Variable defined which should be unmapped: currentFacet */
+/* protected: int __thiscall PathingSystem::copyPath(int) */
+
+int __thiscall PathingSystem::copyPath(PathingSystem *this,int param_1)
+{
+  MGP_FloatHeap *pMVar1;
+  byte bVar2;
+  RGE_Moving_Object *pRVar3;
+  int iVar4;
+  ushort uVar5;
+  int iVar6;
+  char cVar7;
+  int iVar8;
+  int iVar9;
+  int iVar10;
+  int *piVar11;
+  int iVar12;
+  Path *pPVar13;
+  char cVar14;
+  uint uVar15;
+  uint uVar16;
+  uchar currentFacet;
+  int tWY2;
+  int tWX2;
+  int tWY1;
+  int fooX;
+  int fooY;
+  int objectCountOnTile;
+  BYTEPoint temp;
+  uchar local_18;
+  byte bStack_17;
+  Waypoint wp;
+  
+  pRVar3 = this->currentObject;
+  pPVar13 = &pRVar3->pathValue;
+  if (pRVar3->storePathInExceptionPath != '\0') {
+    pPVar13 = &pRVar3->exceptionPathValue;
+  }
+  Path::killPath(pPVar13);
+  pMVar1 = this->MGP_openPaths + 1;
+  local_18 = pMVar1->x;
+  bStack_17 = this->MGP_openPaths[1].y;
+  uVar5._0_1_ = pMVar1->x;
+  uVar5._1_1_ = pMVar1->y;
+  uVar15 = (uint)bStack_17;
+  uVar16 = uVar5 & 0xff;
+  bVar2 = this->facetValue[uVar16][uVar15];
+  if ((bVar2 & 0xf8) == this->CurrentFacetMask) {
+    tWY2 = bVar2 & 0xffffff07;
+  }
+  else {
+    tWY2 = 0xff;
+  }
+  pRVar3 = this->currentObject;
+  wp.y = (float)uVar16 + this->currentXOffset;
+  wp.z = (float)uVar15 + this->currentYOffset;
+  wp._12_4_ = pRVar3->_padding_;
+  pPVar13 = &pRVar3->pathValue;
+  if (pRVar3->storePathInExceptionPath != '\0') {
+    pPVar13 = &pRVar3->exceptionPathValue;
+  }
+  Path::initToStart(pPVar13);
+  cVar14 = -1;
+  do {
+    if (((this->initialTile).x == uVar16) && ((this->initialTile).y == uVar15)) {
+      pRVar3 = this->currentObject;
+      if (pRVar3->storePathInExceptionPath == '\0') {
+        iVar8 = Path::insertAtCurrent(&pRVar3->pathValue,(Waypoint *)&wp.y);
+        if (iVar8 == 0) {
+          return 0;
+        }
+      }
+      else {
+        iVar8 = Path::insertAtCurrent(&pRVar3->exceptionPathValue,(Waypoint *)&wp.y);
+        if (iVar8 == 0) {
+          return 0;
+        }
+      }
+      return 1;
+    }
+    cVar7 = (char)tWY2;
+    if ((char)tWY2 != cVar14) {
+      pRVar3 = this->currentObject;
+      if (pRVar3->storePathInExceptionPath == '\0') {
+        iVar8 = Path::insertAtCurrent(&pRVar3->pathValue,(Waypoint *)&wp.y);
+      }
+      else {
+        iVar8 = Path::insertAtCurrent(&pRVar3->exceptionPathValue,(Waypoint *)&wp.y);
+      }
+      if (iVar8 == 0) {
+        return 0;
+      }
+    }
+    if (this->currentUnobstructibleGroupID != -1) {
+      iVar8 = uVar16 - 1;
+      tWY1 = uVar16 + 1;
+      if (iVar8 < 0) {
+        iVar8 = 0;
+        tWY1 = uVar16 + 2;
+      }
+      else if (this->xSizeValue <= tWY1) {
+        iVar8 = uVar16 - 2;
+        tWY1 = this->xSizeValue + -1;
+      }
+      fooX = uVar15 - 1;
+      tWX2 = uVar15 + 1;
+      if (fooX < 0) {
+        tWX2 = uVar15 + 2;
+        fooX = 0;
+      }
+      else if (this->ySizeValue <= tWX2) {
+        fooX = uVar15 - 2;
+        tWX2 = this->ySizeValue + -1;
+      }
+      for (; iVar6 = fooX, iVar8 <= tWY1; iVar8 = iVar8 + 1) {
+        for (; iVar6 <= tWX2; iVar6 = iVar6 + 1) {
+          _temp = 0;
+          iVar9 = RGE_Game_World::objectGroupOnTile
+                            (this->worldValue,this->currentUnobstructiblePlayerID,
+                             this->currentUnobstructibleGroupID,iVar8,iVar6,(int *)&temp);
+          if (iVar9 != -1) {
+            iVar4 = (this->currentUnobstructibles).numberValue;
+            iVar10 = 0;
+            if (0 < iVar4) {
+              do {
+                if ((this->currentUnobstructibles).maximumSizeValue <= iVar10) break;
+                if ((this->currentUnobstructibles).value[iVar10] == iVar9) goto LAB_0046dacf;
+                iVar10 = iVar10 + 1;
+              } while (iVar10 < iVar4);
+            }
+            if ((this->currentUnobstructibles).maximumSizeValue + -1 < iVar4) {
+              iVar4 = iVar4 + 1;
+              piVar11 = (int *)operator_new(iVar4 * 4);
+              if (piVar11 != (int *)0x0) {
+                iVar10 = 0;
+                if (0 < (this->currentUnobstructibles).maximumSizeValue) {
+                  do {
+                    if (iVar4 <= iVar10) break;
+                    iVar12 = iVar10 + 1;
+                    piVar11[iVar10] = (this->currentUnobstructibles).value[iVar10];
+                    iVar10 = iVar12;
+                  } while (iVar12 < (this->currentUnobstructibles).maximumSizeValue);
+                }
+                operator_delete((this->currentUnobstructibles).value);
+                (this->currentUnobstructibles).value = piVar11;
+                (this->currentUnobstructibles).maximumSizeValue = iVar4;
+              }
+            }
+            (this->currentUnobstructibles).value[(this->currentUnobstructibles).numberValue] = iVar9
+            ;
+            (this->currentUnobstructibles).numberValue =
+                 (this->currentUnobstructibles).numberValue + 1;
+          }
+LAB_0046dacf:
+        }
+      }
+    }
+    switch(tWY2) {
+    case 0:
+      local_18 = local_18 + (char)param_1;
+      bStack_17 = bStack_17 + (char)param_1;
+      break;
+    case 1:
+      bStack_17 = bStack_17 + (char)param_1;
+      break;
+    case 2:
+      local_18 = local_18 - (char)param_1;
+      bStack_17 = bStack_17 + (char)param_1;
+      break;
+    case 3:
+      local_18 = local_18 - (char)param_1;
+      break;
+    case 4:
+      local_18 = local_18 - (char)param_1;
+      bStack_17 = bStack_17 - (char)param_1;
+      break;
+    case 5:
+      bStack_17 = bStack_17 - (char)param_1;
+      break;
+    case 6:
+      local_18 = local_18 + (char)param_1;
+      bStack_17 = bStack_17 - (char)param_1;
+      break;
+    case 7:
+      local_18 = local_18 + (char)param_1;
+    }
+    uVar15 = (uint)bStack_17;
+    uVar16 = CONCAT11(bStack_17,local_18) & 0xff;
+    bVar2 = this->facetValue[uVar16][uVar15];
+    if ((bVar2 & 0xf8) == this->CurrentFacetMask) {
+      tWY2 = bVar2 & 0xffffff07;
+    }
+    else {
+      tWY2 = 0xff;
+    }
+    wp.y = (float)uVar16 + this->currentXOffset;
+    wp.z = (float)uVar15 + this->currentYOffset;
+    cVar14 = cVar7;
+  } while( true );
+}
+
+// --------------------------------------------------
+
+// Function: copyUnobstructibles
+// Address: 0046dcb0
+/* WARNING: Variable defined which should be unmapped: i */
+/* public: void __thiscall PathingSystem::copyUnobstructibles(class ManagedArray<int> &) */
+
+void __thiscall PathingSystem::copyUnobstructibles(PathingSystem *this,ManagedArray<int> *param_1)
+{
+  int *piVar1;
+  int iVar2;
+  int iVar3;
+  int iVar4;
+  int iVar5;
+  int iVar6;
+  int i;
+  
+  iVar6 = (this->currentUnobstructibles).numberValue;
+  do {
+    if (iVar6 < 0) {
+      return;
+    }
+    if ((this->currentUnobstructibles).maximumSizeValue + -1 < iVar6) {
+      piVar1 = (int *)operator_new(iVar6 * 4 + 4);
+      if (piVar1 != (int *)0x0) {
+        iVar2 = 0;
+        if (0 < (this->currentUnobstructibles).maximumSizeValue) {
+          do {
+            if (iVar6 + 1 <= iVar2) break;
+            iVar3 = iVar2 + 1;
+            piVar1[iVar2] = (this->currentUnobstructibles).value[iVar2];
+            iVar2 = iVar3;
+          } while (iVar3 < (this->currentUnobstructibles).maximumSizeValue);
+        }
+        operator_delete((this->currentUnobstructibles).value);
+        (this->currentUnobstructibles).value = piVar1;
+        (this->currentUnobstructibles).maximumSizeValue = iVar6 + 1;
+      }
+    }
+    iVar2 = param_1->numberValue;
+    iVar3 = (this->currentUnobstructibles).value[iVar6];
+    iVar4 = 0;
+    if (0 < iVar2) {
+      do {
+        if (param_1->maximumSizeValue <= iVar4) break;
+        if (param_1->value[iVar4] == iVar3) goto LAB_0046ddc8;
+        iVar4 = iVar4 + 1;
+      } while (iVar4 < iVar2);
+    }
+    if (param_1->maximumSizeValue + -1 < iVar2) {
+      iVar2 = iVar2 + 1;
+      piVar1 = (int *)operator_new(iVar2 * 4);
+      if (piVar1 != (int *)0x0) {
+        iVar4 = 0;
+        if (0 < param_1->maximumSizeValue) {
+          do {
+            if (iVar2 <= iVar4) break;
+            iVar5 = iVar4 + 1;
+            piVar1[iVar4] = param_1->value[iVar4];
+            iVar4 = iVar5;
+          } while (iVar5 < param_1->maximumSizeValue);
+        }
+        operator_delete(param_1->value);
+        param_1->value = piVar1;
+        param_1->maximumSizeValue = iVar2;
+      }
+    }
+    param_1->value[param_1->numberValue] = iVar3;
+    param_1->numberValue = param_1->numberValue + 1;
+LAB_0046ddc8:
+    iVar6 = iVar6 + -1;
+  } while( true );
+}
+
+// --------------------------------------------------
+

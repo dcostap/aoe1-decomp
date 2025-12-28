@@ -20,8 +20,8 @@ public:
     /* 0x000C */ TDrawArea *DrawArea;
     /* 0x0010 */ TDrawArea *PrimaryArea;
     /* 0x0014 */ DrawAreaNode *DrawAreaList;
-    /* 0x0018 */ IDirectDraw7 *DirDraw;
-    /* 0x001C */ IDirectDrawSurface7 *PrimarySurface;
+    /* 0x0018 */ IDirectDraw *DirDraw;
+    /* 0x001C */ IDirectDrawSurface *PrimarySurface;
     /* 0x0020 */ IDirectDrawClipper *Clipper;
     /* 0x0024 */ IDirectDrawPalette *DirDrawPal;
     /* 0x0028 */ unsigned int Flags;
