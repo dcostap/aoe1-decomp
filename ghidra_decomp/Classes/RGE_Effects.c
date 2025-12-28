@@ -326,35 +326,3 @@ void __thiscall RGE_Effects::do_effect(RGE_Effects *this,short param_1,RGE_Playe
 
 // --------------------------------------------------
 
-// Function: ~RGE_Effects
-// Address: 0050d49e
-void __thiscall RGE_Effects::~RGE_Effects(RGE_Effects *this)
-{
-  RGE_Effect_Command *pRVar1;
-  int iVar2;
-  short sVar3;
-  
-  sVar3 = 0;
-  this->_padding_ = (int)&_vftable_;
-  if (0 < this->effect_num) {
-    iVar2 = 0;
-    do {
-      pRVar1 = this->effects[iVar2].effect_list;
-      if (pRVar1 != (RGE_Effect_Command *)0x0) {
-        free(pRVar1);
-      }
-      sVar3 = sVar3 + 1;
-      this->effects[iVar2].effect_list = (RGE_Effect_Command *)0x0;
-      iVar2 = (int)sVar3;
-    } while (iVar2 < this->effect_num);
-  }
-  if (this->effects != (RGE_Effect *)0x0) {
-    free(this->effects);
-    this->effects = (RGE_Effect *)0x0;
-  }
-  this->effect_num = 0;
-  return;
-}
-
-// --------------------------------------------------
-

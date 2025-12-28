@@ -76,34 +76,6 @@ void __thiscall RGE_Zone_Map_List::RGE_Zone_Map_List(RGE_Zone_Map_List *this,RGE
 
 // --------------------------------------------------
 
-// Function: delete_zone_maps
-// Address: 00547259
-void __thiscall RGE_Zone_Map_List::delete_zone_maps(RGE_Zone_Map_List *this)
-{
-  RGE_Zone_Map *this_00;
-  int iVar1;
-  
-  if ((this->zone_maps != (RGE_Zone_Map **)0x0) && (0 < this->zone_map_num)) {
-    iVar1 = 0;
-    if (0 < this->zone_map_num) {
-      do {
-        this_00 = this->zone_maps[iVar1];
-        if (this_00 != (RGE_Zone_Map *)0x0) {
-          RGE_Zone_Map::~RGE_Zone_Map(this_00);
-          operator_delete(this_00);
-        }
-        iVar1 = iVar1 + 1;
-      } while (iVar1 < this->zone_map_num);
-    }
-    free(this->zone_maps);
-    this->zone_maps = (RGE_Zone_Map **)0x0;
-    this->zone_map_num = 0;
-  }
-  return;
-}
-
-// --------------------------------------------------
-
 // Function: ~RGE_Zone_Map_List
 // Address: 00547260
 /* public: __thiscall RGE_Zone_Map_List::~RGE_Zone_Map_List(void) */

@@ -1133,14 +1133,3 @@ long __thiscall RGE_Action_Object::get_action_checksum(RGE_Action_Object *this)
 
 // --------------------------------------------------
 
-// Function: rehook
-// Address: 0045a8ff
-void __thiscall RGE_Action_Object::rehook(RGE_Action_Object *this)
-{
-  RGE_Static_Object::rehook((RGE_Static_Object *)this);
-  RGE_Action_List::rehook(this->actions);
-  return;
-}
-
-// --------------------------------------------------
-

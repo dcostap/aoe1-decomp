@@ -5897,46 +5897,6 @@ LAB_005198fc:
 
 // --------------------------------------------------
 
-// Function: ~TRIBE_Player
-// Address: 00519bbe
-void __thiscall TRIBE_Player::~TRIBE_Player(TRIBE_Player *this)
-{
-  TRIBE_Player_Tech *this_00;
-  TRIBE_History_Info *this_01;
-  undefined4 *unaff_FS_OFFSET;
-  undefined4 uStack_c;
-  code *pcStack_8;
-  undefined4 uStack_4;
-  
-  pcStack_8 = FUN_005611d8;
-  uStack_c = *unaff_FS_OFFSET;
-  *unaff_FS_OFFSET = &uStack_c;
-  this->_padding_ = (int)&_vftable_;
-  this_00 = this->tech_tree;
-  uStack_4 = 0;
-  if (this_00 != (TRIBE_Player_Tech *)0x0) {
-    TRIBE_Player_Tech::~TRIBE_Player_Tech(this_00);
-    operator_delete(this_00);
-    this->tech_tree = (TRIBE_Player_Tech *)0x0;
-  }
-  if (this->playerAI != (TribeMainDecisionAIModule *)0x0) {
-    (**(code **)this->playerAI->_padding_)(1);
-    this->playerAI = (TribeMainDecisionAIModule *)0x0;
-  }
-  this_01 = this->history;
-  if (this_01 != (TRIBE_History_Info *)0x0) {
-    TRIBE_History_Info::~TRIBE_History_Info(this_01);
-    operator_delete(this_01);
-    this->history = (TRIBE_History_Info *)0x0;
-  }
-  uStack_4 = 0xffffffff;
-  RGE_Player::~RGE_Player((RGE_Player *)this);
-  *unaff_FS_OFFSET = uStack_c;
-  return;
-}
-
-// --------------------------------------------------
-
 // Function: scenario_postload
 // Address: 00519d50
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */

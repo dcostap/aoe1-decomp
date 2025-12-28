@@ -1422,18 +1422,3 @@ int __thiscall AIPlayBook::convertUnitToIntType(AIPlayBook *this,RGE_Static_Obje
 
 // --------------------------------------------------
 
-// Function: ~AIPlayBook
-// Address: 004e68ee
-void __thiscall AIPlayBook::~AIPlayBook(AIPlayBook *this)
-{
-  this->_padding_ = (int)&_vftable_;
-  if (this->plays != (AIPlay *)0x0) {
-    this->numberPlaysValue = 0;
-    operator_delete(this->plays);
-    this->plays = (AIPlay *)0x0;
-  }
-  return;
-}
-
-// --------------------------------------------------
-

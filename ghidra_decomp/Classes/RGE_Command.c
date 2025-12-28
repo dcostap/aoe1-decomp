@@ -2350,18 +2350,3 @@ RGE_Command::command_group_waypoint
 
 // --------------------------------------------------
 
-// Function: ~RGE_Command
-// Address: 0050975e
-void __thiscall RGE_Command::~RGE_Command(RGE_Command *this)
-{
-  this->_padding_ = (int)&_vftable_;
-  this->world = (RGE_Game_World *)0x0;
-  this->com_hand = (TCommunications_Handler *)0x0;
-  if (this->last_order != (uchar *)0x0) {
-    free(this->last_order);
-  }
-  return;
-}
-
-// --------------------------------------------------
-

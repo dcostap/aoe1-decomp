@@ -1747,18 +1747,6 @@ void __thiscall TTextPanel::setCurrentLineNumber(TTextPanel *this,int param_1)
 
 // --------------------------------------------------
 
-// Function: get_text
-// Address: 0047dc6d
-char * __thiscall TTextPanel::get_text(TTextPanel *this)
-{
-  char *pcVar1;
-  
-  pcVar1 = get_text(this,(int)this->cur_line);
-  return pcVar1;
-}
-
-// --------------------------------------------------
-
 // Function: currentLine
 // Address: 0047dc70
 /* public: char * __thiscall TTextPanel::currentLine(void) */
@@ -2403,36 +2391,6 @@ long __thiscall TTextPanel::get_id(TTextPanel *this,long param_1)
     iVar2 = iVar2 + 1;
   } while (pTVar1 != (TextNode *)0x0);
   return -1;
-}
-
-// --------------------------------------------------
-
-// Function: free_text
-// Address: 0047e36e
-void __thiscall TTextPanel::free_text(TTextPanel *this)
-{
-  TextNode *pTVar1;
-  TextNode *pTVar2;
-  
-  pTVar2 = this->list;
-  if (this->list != (TextNode *)0x0) {
-    do {
-      if (pTVar2->text != (char *)0x0) {
-        free(pTVar2->text);
-      }
-      if (pTVar2->text2 != (char *)0x0) {
-        free(pTVar2->text2);
-      }
-      pTVar1 = pTVar2->next_node;
-      free(pTVar2);
-      pTVar2 = pTVar1;
-    } while (pTVar1 != (TextNode *)0x0);
-    this->list = (TextNode *)0x0;
-  }
-  this->num_lines = 0;
-  calc_draw_info(this,1);
-  (**(code **)(this->_padding_ + 0x20))(1);
-  return;
 }
 
 // --------------------------------------------------

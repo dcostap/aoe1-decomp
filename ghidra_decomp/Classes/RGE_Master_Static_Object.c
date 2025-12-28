@@ -1738,21 +1738,3 @@ RGE_Master_Static_Object::calc_base_damage_ability
 
 // --------------------------------------------------
 
-// Function: ~RGE_Master_Static_Object
-// Address: 0050f20e
-void __thiscall RGE_Master_Static_Object::~RGE_Master_Static_Object(RGE_Master_Static_Object *this)
-{
-  this->_padding_ = (int)&_vftable_;
-  if (this->name != (char *)0x0) {
-    free(this->name);
-    this->name = (char *)0x0;
-  }
-  if (this->damage_sprites != (RGE_Damage_Sprite_Info *)0x0) {
-    free(this->damage_sprites);
-    this->damage_sprites = (RGE_Damage_Sprite_Info *)0x0;
-  }
-  return;
-}
-
-// --------------------------------------------------
-

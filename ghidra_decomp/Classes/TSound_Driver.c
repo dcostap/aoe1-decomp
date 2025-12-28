@@ -48,34 +48,6 @@ TSound_Driver::TSound_Driver(TSound_Driver *this,void *param_1,char *param_2)
 
 // --------------------------------------------------
 
-// Function: exit
-// Address: 004bc5bf
-void __thiscall TSound_Driver::exit(TSound_Driver *this)
-{
-  IDirectSoundBuffer *pIVar1;
-  IDirectSound *pIVar2;
-  
-  close_mixer(this);
-  if (this->ready != '\0') {
-    ds_stream_exit();
-    pIVar1 = this->primary_buffer;
-    if (pIVar1 != (IDirectSoundBuffer *)0x0) {
-      (**(code **)((int)*pIVar1 + 0x48))(pIVar1);
-      (**(code **)((int)*this->primary_buffer + 8))(this->primary_buffer);
-      this->primary_buffer = (IDirectSoundBuffer *)0x0;
-    }
-    pIVar2 = this->direct_sound;
-    if (pIVar2 != (IDirectSound *)0x0) {
-      (**(code **)((int)*pIVar2 + 8))(pIVar2);
-      this->direct_sound = (IDirectSound *)0x0;
-    }
-    this->ready = '\0';
-  }
-  return;
-}
-
-// --------------------------------------------------
-
 // Function: ~TSound_Driver
 // Address: 004bc5c0
 /* public: __thiscall TSound_Driver::~TSound_Driver(void) */

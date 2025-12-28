@@ -457,33 +457,3 @@ short __thiscall RGE_Dialog_List::get_cur_id(RGE_Dialog_List *this)
 
 // --------------------------------------------------
 
-// Function: ~RGE_Dialog_List
-// Address: 0050b48e
-void __thiscall RGE_Dialog_List::~RGE_Dialog_List(RGE_Dialog_List *this)
-{
-  int iVar1;
-  
-  this->_padding_ = (int)&_vftable_;
-  if (this->list_text != (char **)0x0) {
-    iVar1 = 0;
-    if (0 < this->list_size) {
-      do {
-        if (this->list_text[iVar1] != (char *)0x0) {
-          free(this->list_text[iVar1]);
-        }
-        iVar1 = iVar1 + 1;
-      } while (iVar1 < this->list_size);
-    }
-    free(this->list_text);
-    this->list_text = (char **)0x0;
-  }
-  if (this->list_info != (rdlg_list_info *)0x0) {
-    free(this->list_info);
-    this->list_info = (rdlg_list_info *)0x0;
-  }
-  TListDialog::~TListDialog((TListDialog *)this);
-  return;
-}
-
-// --------------------------------------------------
-

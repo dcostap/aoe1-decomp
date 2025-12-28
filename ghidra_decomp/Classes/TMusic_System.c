@@ -118,49 +118,6 @@ TMusic_System::TMusic_System
 
 // --------------------------------------------------
 
-// Function: close_device
-// Address: 00461a19
-void __thiscall TMusic_System::close_device(TMusic_System *this)
-{
-  uchar uVar1;
-  
-  if (this->device_open != 0) {
-    stop_track(this);
-    uVar1 = this->music_type;
-    if (uVar1 == '\x01') {
-      if (this->start_volume != 1) {
-        set_volume(this,this->start_volume,0);
-        this->start_volume = 1;
-      }
-      close_mixer(this);
-      mciSendCommandA(this->device_id,0x804,2,0);
-      this->device_id = 0;
-      this->device_open = 0;
-      this->track_count = 0;
-    }
-    else {
-      if (uVar1 == '\x02') {
-        if (this->start_volume != 1) {
-          set_volume(this,this->start_volume,0);
-          this->start_volume = 1;
-        }
-        close_mixer(this);
-        this->device_open = 0;
-        this->track_count = 0;
-        return;
-      }
-      if (uVar1 == '\x03') {
-        this->track_count = 0;
-        this->device_open = 0;
-        return;
-      }
-    }
-  }
-  return;
-}
-
-// --------------------------------------------------
-
 // Function: ~TMusic_System
 // Address: 00461a20
 /* public: __thiscall TMusic_System::~TMusic_System(void) */

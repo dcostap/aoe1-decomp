@@ -4192,17 +4192,3 @@ void __thiscall RGE_Player::new_victory(RGE_Player *this)
 
 // --------------------------------------------------
 
-// Function: update_dopplegangers
-// Address: 0051261d
-void __thiscall RGE_Player::update_dopplegangers(RGE_Player *this)
-{
-  if (MouseSystem != (TMousePointer *)0x0) {
-    TMousePointer::Poll(MouseSystem);
-  }
-  RGE_Object_List::update(this->doppleganger_objects);
-  RGE_Doppleganger_Creator::perform_doppleganger_checks(this->doppleganger_creator);
-  return;
-}
-
-// --------------------------------------------------
-

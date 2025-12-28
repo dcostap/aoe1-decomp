@@ -71,28 +71,6 @@ TDebuggingLog * __thiscall TDebuggingLog::TDebuggingLog(TDebuggingLog *this)
 
 // --------------------------------------------------
 
-// Function: CloseLog
-// Address: 0043629b
-// [HELPER] s_Closing_debug_log_file___s__: "Closing debug log file '%s'."
-// [HELPER] s_Log_file_is_closed: "Log file is closed"
-void __thiscall TDebuggingLog::CloseLog(TDebuggingLog *this)
-{
-  TDebuggingLog *this_00;
-  
-  if (this->LogToFile != 0) {
-    if (this->Filename != (char *)0x0) {
-      Log(this,(char *)this,s_Closing_debug_log_file___s__,this->Filename);
-    }
-    Time(this);
-    Log(this_00,(char *)this,s_Log_file_is_closed);
-    fclose(logstream);
-    this->LogIsOpen = 0;
-  }
-  return;
-}
-
-// --------------------------------------------------
-
 // Function: ~TDebuggingLog
 // Address: 004362a0
 // [HELPER] s_Closing_debug_log_file___s__: "Closing debug log file '%s'."
