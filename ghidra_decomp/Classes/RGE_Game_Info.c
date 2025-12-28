@@ -13,9 +13,6 @@
 // Function: RGE_Game_Info
 // Address: 0044d1a0
 // [HELPER] s_1_00: "1.00"
-/* WARNING: Variable defined which should be unmapped: version */
-/* public: __thiscall RGE_Game_Info::RGE_Game_Info(char *) */
-
 RGE_Game_Info * __thiscall RGE_Game_Info::RGE_Game_Info(RGE_Game_Info *this,char *param_1)
 {
   long *plVar1;
@@ -120,8 +117,6 @@ LAB_0044d2e3:
 
 // Function: ~RGE_Game_Info
 // Address: 0044d300
-/* public: __thiscall RGE_Game_Info::~RGE_Game_Info(void) */
-
 void __thiscall RGE_Game_Info::~RGE_Game_Info(RGE_Game_Info *this)
 {
   RGE_Campaign *this_00;
@@ -170,8 +165,6 @@ void __thiscall RGE_Game_Info::~RGE_Game_Info(RGE_Game_Info *this)
 // Address: 0044d3b0
 // [HELPER] s_1_00: "1.00"
 // [HELPER] s__PIF_Creating_Player_Info_File: "(PIF)Creating Player Info File"
-/* public: void __thiscall RGE_Game_Info::save(char *) */
-
 void __thiscall RGE_Game_Info::save(RGE_Game_Info *this,char *param_1)
 {
   long *plVar1;
@@ -230,8 +223,6 @@ void __thiscall RGE_Game_Info::save(RGE_Game_Info *this,char *param_1)
 // Address: 0044d470
 // [HELPER] s__s__cpn: "%s*.cpn"
 // [HELPER] s__s__cpx: "%s*.cpx"
-/* public: void __thiscall RGE_Game_Info::find_campaigns(void) */
-
 void __thiscall RGE_Game_Info::find_campaigns(RGE_Game_Info *this)
 {
   int iVar1;
@@ -343,8 +334,6 @@ void __thiscall RGE_Game_Info::find_campaigns(RGE_Game_Info *this)
 
 // Function: add_new_person
 // Address: 0044d710
-/* public: unsigned char __thiscall RGE_Game_Info::add_new_person(char *) */
-
 uchar __thiscall RGE_Game_Info::add_new_person(RGE_Game_Info *this,char *param_1)
 {
   RGE_Person_Info **ppRVar1;
@@ -397,8 +386,6 @@ uchar __thiscall RGE_Game_Info::add_new_person(RGE_Game_Info *this,char *param_1
 
 // Function: set_current_person
 // Address: 0044d7d0
-/* public: unsigned char __thiscall RGE_Game_Info::set_current_person(long) */
-
 uchar __thiscall RGE_Game_Info::set_current_person(RGE_Game_Info *this,long param_1)
 {
   if (param_1 < this->people_num) {
@@ -413,8 +400,6 @@ uchar __thiscall RGE_Game_Info::set_current_person(RGE_Game_Info *this,long para
 
 // Function: set_current_campaign
 // Address: 0044d7f0
-/* public: unsigned char __thiscall RGE_Game_Info::set_current_campaign(long) */
-
 uchar __thiscall RGE_Game_Info::set_current_campaign(RGE_Game_Info *this,long param_1)
 {
   int iVar1;
@@ -432,8 +417,6 @@ uchar __thiscall RGE_Game_Info::set_current_campaign(RGE_Game_Info *this,long pa
 
 // Function: set_current_scenario
 // Address: 0044d820
-/* public: unsigned char __thiscall RGE_Game_Info::set_current_scenario(long) */
-
 uchar __thiscall RGE_Game_Info::set_current_scenario(RGE_Game_Info *this,long param_1)
 {
   int iVar1;
@@ -451,8 +434,6 @@ uchar __thiscall RGE_Game_Info::set_current_scenario(RGE_Game_Info *this,long pa
 
 // Function: get_people_list
 // Address: 0044d850
-/* public: long __thiscall RGE_Game_Info::get_people_list(char * * *,long &) */
-
 long __thiscall RGE_Game_Info::get_people_list(RGE_Game_Info *this,char ***param_1,long *param_2)
 {
   char **ppcVar1;
@@ -479,8 +460,6 @@ long __thiscall RGE_Game_Info::get_people_list(RGE_Game_Info *this,char ***param
 
 // Function: get_campaign_list
 // Address: 0044d8c0
-/* public: long __thiscall RGE_Game_Info::get_campaign_list(char * * *,long &) */
-
 long __thiscall RGE_Game_Info::get_campaign_list(RGE_Game_Info *this,char ***param_1,long *param_2)
 {
   char **ppcVar1;
@@ -512,8 +491,6 @@ long __thiscall RGE_Game_Info::get_campaign_list(RGE_Game_Info *this,char ***par
 
 // Function: get_scenario_list
 // Address: 0044d940
-/* public: long __thiscall RGE_Game_Info::get_scenario_list(char * * *,long &) */
-
 long __thiscall RGE_Game_Info::get_scenario_list(RGE_Game_Info *this,char ***param_1,long *param_2)
 {
   int iVar1;
@@ -535,8 +512,6 @@ long __thiscall RGE_Game_Info::get_scenario_list(RGE_Game_Info *this,char ***par
 
 // Function: get_current_scenario
 // Address: 0044d990
-/* public: long __thiscall RGE_Game_Info::get_current_scenario(void) */
-
 long __thiscall RGE_Game_Info::get_current_scenario(RGE_Game_Info *this)
 {
   int iVar1;
@@ -554,8 +529,6 @@ long __thiscall RGE_Game_Info::get_current_scenario(RGE_Game_Info *this)
 
 // Function: get_current_campaign
 // Address: 0044d9b0
-/* public: long __thiscall RGE_Game_Info::get_current_campaign(void) */
-
 long __thiscall RGE_Game_Info::get_current_campaign(RGE_Game_Info *this)
 {
   int iVar1;
@@ -573,8 +546,6 @@ long __thiscall RGE_Game_Info::get_current_campaign(RGE_Game_Info *this)
 
 // Function: get_current_player
 // Address: 0044d9d0
-/* public: long __thiscall RGE_Game_Info::get_current_player(void) */
-
 long __thiscall RGE_Game_Info::get_current_player(RGE_Game_Info *this)
 {
   return this->current_person;
@@ -584,8 +555,6 @@ long __thiscall RGE_Game_Info::get_current_player(RGE_Game_Info *this)
 
 // Function: get_current_player_name
 // Address: 0044d9e0
-/* public: char * __thiscall RGE_Game_Info::get_current_player_name(void) */
-
 char * __thiscall RGE_Game_Info::get_current_player_name(RGE_Game_Info *this)
 {
   char *pcVar1;
@@ -601,8 +570,6 @@ char * __thiscall RGE_Game_Info::get_current_player_name(RGE_Game_Info *this)
 
 // Function: notify_of_scenario_complete
 // Address: 0044da00
-/* public: void __thiscall RGE_Game_Info::notify_of_scenario_complete(void) */
-
 void __thiscall RGE_Game_Info::notify_of_scenario_complete(RGE_Game_Info *this)
 {
   int iVar1;
@@ -619,8 +586,6 @@ void __thiscall RGE_Game_Info::notify_of_scenario_complete(RGE_Game_Info *this)
 
 // Function: open_scenario
 // Address: 0044da30
-/* public: int __thiscall RGE_Game_Info::open_scenario(void) */
-
 int __thiscall RGE_Game_Info::open_scenario(RGE_Game_Info *this)
 {
   int iVar1;
@@ -637,8 +602,6 @@ int __thiscall RGE_Game_Info::open_scenario(RGE_Game_Info *this)
 
 // Function: remove_player
 // Address: 0044da50
-/* public: void __thiscall RGE_Game_Info::remove_player(long) */
-
 void __thiscall RGE_Game_Info::remove_player(RGE_Game_Info *this,long param_1)
 {
   RGE_Person_Info *this_00;

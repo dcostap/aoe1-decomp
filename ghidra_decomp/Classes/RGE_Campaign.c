@@ -11,8 +11,6 @@
 // Address: 00423230
 // [HELPER] s_FILE_NOT_FOUND: "FILE NOT FOUND"
 // [HELPER] s__s_s: "%s%s"
-/* public: __thiscall RGE_Campaign::RGE_Campaign(char *) */
-
 RGE_Campaign * __thiscall RGE_Campaign::RGE_Campaign(RGE_Campaign *this,char *param_1)
 {
   char cVar1;
@@ -76,8 +74,6 @@ RGE_Campaign * __thiscall RGE_Campaign::RGE_Campaign(RGE_Campaign *this,char *pa
 // Address: 00423330
 // [HELPER] s_1_00: "1.00"
 // [HELPER] s__s_s: "%s%s"
-/* public: __thiscall RGE_Campaign::RGE_Campaign(char *,char *,long,char * *,char * *) */
-
 RGE_Campaign * __thiscall
 RGE_Campaign::RGE_Campaign
           (RGE_Campaign *this,char *param_1,char *param_2,long param_3,char **param_4,char **param_5
@@ -193,8 +189,6 @@ RGE_Campaign::RGE_Campaign
 
 // Function: ~RGE_Campaign
 // Address: 00423480
-/* public: __thiscall RGE_Campaign::~RGE_Campaign(void) */
-
 void __thiscall RGE_Campaign::~RGE_Campaign(RGE_Campaign *this)
 {
   if (this->scenario_offsets != (RGE_Scenario_Offset *)0x0) {
@@ -209,8 +203,6 @@ void __thiscall RGE_Campaign::~RGE_Campaign(RGE_Campaign *this)
 // Function: create_file
 // Address: 004234b0
 // [HELPER] s__s_s: "%s%s"
-/* public: void __thiscall RGE_Campaign::create_file(void) */
-
 void __thiscall RGE_Campaign::create_file(RGE_Campaign *this)
 {
   int iVar1;
@@ -266,8 +258,6 @@ void __thiscall RGE_Campaign::create_file(RGE_Campaign *this)
 
 // Function: open_scenario
 // Address: 00423690
-/* public: int __thiscall RGE_Campaign::open_scenario(long) */
-
 int __thiscall RGE_Campaign::open_scenario(RGE_Campaign *this,long param_1)
 {
   int iVar1;
@@ -287,8 +277,6 @@ int __thiscall RGE_Campaign::open_scenario(RGE_Campaign *this,long param_1)
 
 // Function: get_name
 // Address: 00423710
-/* public: char * __thiscall RGE_Campaign::get_name(void) */
-
 char * __thiscall RGE_Campaign::get_name(RGE_Campaign *this)
 {
   return (this->campaign_header).name;
@@ -298,8 +286,6 @@ char * __thiscall RGE_Campaign::get_name(RGE_Campaign *this)
 
 // Function: scenario_number
 // Address: 00423720
-/* public: long __thiscall RGE_Campaign::scenario_number(void) */
-
 long __thiscall RGE_Campaign::scenario_number(RGE_Campaign *this)
 {
   return (this->campaign_header).scenario_num;
@@ -309,8 +295,6 @@ long __thiscall RGE_Campaign::scenario_number(RGE_Campaign *this)
 
 // Function: scenario_info
 // Address: 00423730
-/* public: long __thiscall RGE_Campaign::scenario_info(char * * *) */
-
 long __thiscall RGE_Campaign::scenario_info(RGE_Campaign *this,char ***param_1)
 {
   char **ppcVar1;
@@ -335,8 +319,6 @@ long __thiscall RGE_Campaign::scenario_info(RGE_Campaign *this,char ***param_1)
 
 // Function: get_scenario_name
 // Address: 004237a0
-/* public: char * __thiscall RGE_Campaign::get_scenario_name(long) */
-
 char * __thiscall RGE_Campaign::get_scenario_name(RGE_Campaign *this,long param_1)
 {
   return this->scenario_offsets[param_1].name;

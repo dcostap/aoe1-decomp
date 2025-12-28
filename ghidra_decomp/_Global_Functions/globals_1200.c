@@ -4,7 +4,6 @@
 // XREFS: ~ConstructionAIModule
 void FUN_0055c5c4(void)
 {
-                    /* Symbol Ref: {@symbol $L30954} */
   ___CxxFrameHandler();
   return;
 }
@@ -16,7 +15,6 @@ void FUN_0055c5c4(void)
 // XREFS: loadConstructionPlan
 void FUN_0055c5de(void)
 {
-                    /* Symbol Ref: {@symbol $L30983} */
   ___CxxFrameHandler();
   return;
 }
@@ -28,7 +26,6 @@ void FUN_0055c5de(void)
 // XREFS: DiplomacyAIModule
 void FUN_0055c5f8(void)
 {
-                    /* Symbol Ref: {@symbol $L32373} */
   ___CxxFrameHandler();
   return;
 }
@@ -40,7 +37,6 @@ void FUN_0055c5f8(void)
 // XREFS: EmotionalAIModule
 void FUN_0055c618(void)
 {
-                    /* Symbol Ref: {@symbol $L30415} */
   ___CxxFrameHandler();
   return;
 }
@@ -52,7 +48,6 @@ void FUN_0055c618(void)
 // XREFS: MainDecisionAIModule
 void FUN_0055c638(void)
 {
-                    /* Symbol Ref: {@symbol $L33669} */
   ___CxxFrameHandler();
   return;
 }
@@ -64,7 +59,6 @@ void FUN_0055c638(void)
 // XREFS: MainDecisionAIModule
 void FUN_0055c666(void)
 {
-                    /* Symbol Ref: {@symbol $L33741} */
   ___CxxFrameHandler();
   return;
 }
@@ -77,8 +71,6 @@ void FUN_0055c666(void)
 void FUN_0055c670(void)
 {
   int unaff_EBP;
-  
-                    /* Symbol Ref: {@symbol $L33751} */
   AIModule::~AIModule(*(AIModule **)(unaff_EBP + -0x18));
   return;
 }
@@ -90,7 +82,6 @@ void FUN_0055c670(void)
 // XREFS: ~MainDecisionAIModule
 void FUN_0055c678(void)
 {
-                    /* Symbol Ref: {@symbol $L33760} */
   ___CxxFrameHandler();
   return;
 }
@@ -102,7 +93,6 @@ void FUN_0055c678(void)
 // XREFS: AIModuleMessage
 void FUN_0055c69e(void)
 {
-                    /* Symbol Ref: {@symbol $L30686} */
   ___CxxFrameHandler();
   return;
 }
@@ -114,7 +104,6 @@ void FUN_0055c69e(void)
 // XREFS: AIModuleMessage
 void FUN_0055c6be(void)
 {
-                    /* Symbol Ref: {@symbol $L30701} */
   ___CxxFrameHandler();
   return;
 }
@@ -126,7 +115,6 @@ void FUN_0055c6be(void)
 // XREFS: AIModuleMessage
 void FUN_0055c6ec(void)
 {
-                    /* Symbol Ref: {@symbol $L30712} */
   ___CxxFrameHandler();
   return;
 }
@@ -138,7 +126,6 @@ void FUN_0055c6ec(void)
 // XREFS: ~AIModuleMessage
 void FUN_0055c71c(void)
 {
-                    /* Symbol Ref: {@symbol $L30727} */
   ___CxxFrameHandler();
   return;
 }
@@ -150,7 +137,6 @@ void FUN_0055c71c(void)
 // XREFS: loadPlays
 void FUN_0055c73e(void)
 {
-                    /* Symbol Ref: {@symbol $L33850} */
   ___CxxFrameHandler();
   return;
 }
@@ -162,7 +148,6 @@ void FUN_0055c73e(void)
 // XREFS: ResearchAIModule
 void FUN_0055c758(void)
 {
-                    /* Symbol Ref: {@symbol $L30745} */
   ___CxxFrameHandler();
   return;
 }
@@ -174,7 +159,6 @@ void FUN_0055c758(void)
 // XREFS: ResearchAIModule
 void FUN_0055c7a5(void)
 {
-                    /* Symbol Ref: {@symbol $L30774} */
   ___CxxFrameHandler();
   return;
 }
@@ -186,7 +170,6 @@ void FUN_0055c7a5(void)
 // XREFS: ~ResearchAIModule
 void FUN_0055c7c6(void)
 {
-                    /* Symbol Ref: {@symbol $L30785} */
   ___CxxFrameHandler();
   return;
 }
@@ -199,8 +182,6 @@ void FUN_0055c7c6(void)
 void FUN_0055c7d0(void)
 {
   int unaff_EBP;
-  
-                    /* Symbol Ref: {@symbol $L30810} */
   ResourceItem::~ResourceItem((ResourceItem *)(unaff_EBP + -0x17c));
   return;
 }
@@ -213,8 +194,6 @@ void FUN_0055c7d0(void)
 void FUN_0055c7db(void)
 {
   int unaff_EBP;
-  
-                    /* Symbol Ref: {@symbol $L30811} */
   operator_delete(*(void **)(unaff_EBP + -0x1c0));
   return;
 }
@@ -226,7 +205,6 @@ void FUN_0055c7db(void)
 // XREFS: loadTechnologyTree
 void FUN_0055c7e9(void)
 {
-                    /* Symbol Ref: {@symbol $L30821} */
   ___CxxFrameHandler();
   return;
 }
@@ -238,7 +216,6 @@ void FUN_0055c7e9(void)
 // XREFS: ResourceAIModule
 void FUN_0055c808(void)
 {
-                    /* Symbol Ref: {@symbol $L30572} */
   ___CxxFrameHandler();
   return;
 }
@@ -250,7 +227,6 @@ void FUN_0055c808(void)
 // XREFS: ~ResourceAIModule
 void FUN_0055c828(void)
 {
-                    /* Symbol Ref: {@symbol $L30594} */
   ___CxxFrameHandler();
   return;
 }
@@ -262,7 +238,6 @@ void FUN_0055c828(void)
 // XREFS: TechnologyItem
 void FUN_0055c853(void)
 {
-                    /* Symbol Ref: {@symbol $L30183} */
   ___CxxFrameHandler();
   return;
 }
@@ -274,7 +249,6 @@ void FUN_0055c853(void)
 // XREFS: TechnologyItem
 void FUN_0055c86b(void)
 {
-                    /* Symbol Ref: {@symbol $L30199} */
   ___CxxFrameHandler();
   return;
 }
@@ -286,7 +260,6 @@ void FUN_0055c86b(void)
 // XREFS: UnitAIModule
 void FUN_0055c88b(void)
 {
-                    /* Symbol Ref: {@symbol $L38368} */
   ___CxxFrameHandler();
   return;
 }
@@ -298,7 +271,6 @@ void FUN_0055c88b(void)
 // XREFS: ~UnitAIModule
 void FUN_0055c8ab(void)
 {
-                    /* Symbol Ref: {@symbol $L38392} */
   ___CxxFrameHandler();
   return;
 }
@@ -310,7 +282,6 @@ void FUN_0055c8ab(void)
 // XREFS: load
 void FUN_0055c8cb(void)
 {
-                    /* Symbol Ref: {@symbol $L38494} */
   ___CxxFrameHandler();
   return;
 }
@@ -322,7 +293,6 @@ void FUN_0055c8cb(void)
 // XREFS: setPlayStatus
 void FUN_0055c8eb(void)
 {
-                    /* Symbol Ref: {@symbol $L39279} */
   ___CxxFrameHandler();
   return;
 }
@@ -334,7 +304,6 @@ void FUN_0055c8eb(void)
 // XREFS: processOrder
 void FUN_0055c90b(void)
 {
-                    /* Symbol Ref: {@symbol $L39353} */
   ___CxxFrameHandler();
   return;
 }
@@ -346,7 +315,6 @@ void FUN_0055c90b(void)
 // XREFS: RGE_Animated_Object
 void FUN_0055c928(void)
 {
-                    /* Symbol Ref: {@symbol $L33060} */
   ___CxxFrameHandler();
   return;
 }
@@ -358,7 +326,6 @@ void FUN_0055c928(void)
 // XREFS: RGE_Animated_Object
 void FUN_0055c948(void)
 {
-                    /* Symbol Ref: {@symbol $L33079} */
   ___CxxFrameHandler();
   return;
 }
@@ -370,7 +337,6 @@ void FUN_0055c948(void)
 // XREFS: load_node
 void FUN_0055c976(void)
 {
-                    /* Symbol Ref: {@symbol $L31971} */
   ___CxxFrameHandler();
   return;
 }
@@ -383,8 +349,6 @@ void FUN_0055c976(void)
 void FUN_0055c980(void)
 {
   int unaff_EBP;
-  
-                    /* Symbol Ref: {@symbol $L30565} */
   RGE_Active_Sprite::~RGE_Active_Sprite(*(RGE_Active_Sprite **)(unaff_EBP + -0x10));
   return;
 }
@@ -396,7 +360,6 @@ void FUN_0055c980(void)
 // XREFS: RGE_Active_Animated_Sprite
 void FUN_0055c988(void)
 {
-                    /* Symbol Ref: {@symbol $L30574} */
   ___CxxFrameHandler();
   return;
 }
@@ -408,7 +371,6 @@ void FUN_0055c988(void)
 // XREFS: RGE_Active_Animated_Sprite
 void FUN_0055c9a8(void)
 {
-                    /* Symbol Ref: {@symbol $L30589} */
   ___CxxFrameHandler();
   return;
 }
@@ -420,7 +382,6 @@ void FUN_0055c9a8(void)
 // XREFS: setup
 void FUN_0055c9f8(void)
 {
-                    /* Symbol Ref: {@symbol $L44035} */
   ___CxxFrameHandler();
   return;
 }
@@ -432,7 +393,6 @@ void FUN_0055c9f8(void)
 // XREFS: new_scenario_header
 void FUN_0055ca1b(void)
 {
-                    /* Symbol Ref: {@symbol $L44223} */
   ___CxxFrameHandler();
   return;
 }
@@ -444,7 +404,6 @@ void FUN_0055ca1b(void)
 // XREFS: new_scenario_header
 void FUN_0055ca3b(void)
 {
-                    /* Symbol Ref: {@symbol $L44237} */
   ___CxxFrameHandler();
   return;
 }
@@ -456,7 +415,6 @@ void FUN_0055ca3b(void)
 // XREFS: new_scenario_info
 void FUN_0055ca5b(void)
 {
-                    /* Symbol Ref: {@symbol $L44251} */
   ___CxxFrameHandler();
   return;
 }
@@ -468,7 +426,6 @@ void FUN_0055ca5b(void)
 // XREFS: setup_graphics_system
 void FUN_0055ca7b(void)
 {
-                    /* Symbol Ref: {@symbol $L44349} */
   ___CxxFrameHandler();
   return;
 }
@@ -480,7 +437,6 @@ void FUN_0055ca7b(void)
 // XREFS: setup_mouse
 void FUN_0055ca9b(void)
 {
-                    /* Symbol Ref: {@symbol $L44364} */
   ___CxxFrameHandler();
   return;
 }
@@ -492,7 +448,6 @@ void FUN_0055ca9b(void)
 // XREFS: setup_chat
 void FUN_0055cabb(void)
 {
-                    /* Symbol Ref: {@symbol $L44377} */
   ___CxxFrameHandler();
   return;
 }
@@ -504,7 +459,6 @@ void FUN_0055cabb(void)
 // XREFS: setup_registry
 void FUN_0055cadb(void)
 {
-                    /* Symbol Ref: {@symbol $L44390} */
   ___CxxFrameHandler();
   return;
 }
@@ -516,7 +470,6 @@ void FUN_0055cadb(void)
 // XREFS: setup_debugging_log
 void FUN_0055cafb(void)
 {
-                    /* Symbol Ref: {@symbol $L44403} */
   ___CxxFrameHandler();
   return;
 }
@@ -528,7 +481,6 @@ void FUN_0055cafb(void)
 // XREFS: setup_comm
 void FUN_0055cb1b(void)
 {
-                    /* Symbol Ref: {@symbol $L44416} */
   ___CxxFrameHandler();
   return;
 }
@@ -540,7 +492,6 @@ void FUN_0055cb1b(void)
 // XREFS: setup_sound_system
 void FUN_0055cb3b(void)
 {
-                    /* Symbol Ref: {@symbol $L44444} */
   ___CxxFrameHandler();
   return;
 }
@@ -552,7 +503,6 @@ void FUN_0055cb3b(void)
 // XREFS: setup_music_system
 void FUN_0055cb5e(void)
 {
-                    /* Symbol Ref: {@symbol $L44471} */
   ___CxxFrameHandler();
   return;
 }
@@ -564,7 +514,6 @@ void FUN_0055cb5e(void)
 // XREFS: setup_shapes
 void FUN_0055cb91(void)
 {
-                    /* Symbol Ref: {@symbol $L44497} */
   ___CxxFrameHandler();
   return;
 }
@@ -576,7 +525,6 @@ void FUN_0055cb91(void)
 // XREFS: setup_sounds
 void FUN_0055cbc1(void)
 {
-                    /* Symbol Ref: {@symbol $L44524} */
   ___CxxFrameHandler();
   return;
 }
@@ -588,7 +536,6 @@ void FUN_0055cbc1(void)
 // XREFS: setup_blank_screen
 void FUN_0055cbdb(void)
 {
-                    /* Symbol Ref: {@symbol $L44544} */
   ___CxxFrameHandler();
   return;
 }
@@ -600,7 +547,6 @@ void FUN_0055cbdb(void)
 // XREFS: create_world
 void FUN_0055cbfb(void)
 {
-                    /* Symbol Ref: {@symbol $L44614} */
   ___CxxFrameHandler();
   return;
 }
@@ -612,7 +558,6 @@ void FUN_0055cbfb(void)
 // XREFS: setup_map_save_area
 void FUN_0055cc1b(void)
 {
-                    /* Symbol Ref: {@symbol $L44985} */
   ___CxxFrameHandler();
   return;
 }
@@ -624,7 +569,6 @@ void FUN_0055cc1b(void)
 // XREFS: TChat
 void FUN_0055cc3b(void)
 {
-                    /* Symbol Ref: {@symbol $L30992} */
   ___CxxFrameHandler();
   return;
 }
@@ -636,7 +580,6 @@ void FUN_0055cc3b(void)
 // XREFS: RGE_Communications_Addresses
 void FUN_0055cc5b(void)
 {
-                    /* Symbol Ref: {@symbol $L32555} */
   ___CxxFrameHandler();
   return;
 }
@@ -648,7 +591,6 @@ void FUN_0055cc5b(void)
 // XREFS: TCommunications_Handler
 void FUN_0055ccbd(void)
 {
-                    /* Symbol Ref: {@symbol $L37634} */
   ___CxxFrameHandler();
   return;
 }
@@ -660,7 +602,6 @@ void FUN_0055ccbd(void)
 // XREFS: TEST
 void FUN_0055ccdb(void)
 {
-                    /* Symbol Ref: {@symbol $L38030} */
   ___CxxFrameHandler();
   return;
 }
@@ -672,7 +613,6 @@ void FUN_0055ccdb(void)
 // XREFS: UnlinkCurrentLevel
 void FUN_0055cd1c(void)
 {
-                    /* Symbol Ref: {@symbol $L38486} */
   ___CxxFrameHandler();
   return;
 }
@@ -684,7 +624,6 @@ void FUN_0055cd1c(void)
 // XREFS: RGE_Lobby
 void FUN_0055cd3b(void)
 {
-                    /* Symbol Ref: {@symbol $L33463} */
   ___CxxFrameHandler();
   return;
 }
@@ -696,7 +635,6 @@ void FUN_0055cd3b(void)
 // XREFS: RGE_Combat_Object
 void FUN_0055cd58(void)
 {
-                    /* Symbol Ref: {@symbol $L36440} */
   ___CxxFrameHandler();
   return;
 }
@@ -708,7 +646,6 @@ void FUN_0055cd58(void)
 // XREFS: RGE_Combat_Object
 void FUN_0055cd78(void)
 {
-                    /* Symbol Ref: {@symbol $L36455} */
   ___CxxFrameHandler();
   return;
 }
@@ -720,7 +657,6 @@ void FUN_0055cd78(void)
 // XREFS: ~RGE_Combat_Object
 void FUN_0055cd98(void)
 {
-                    /* Symbol Ref: {@symbol $L36466} */
   ___CxxFrameHandler();
   return;
 }
@@ -732,7 +668,6 @@ void FUN_0055cd98(void)
 // XREFS: attack
 void FUN_0055cdbb(void)
 {
-                    /* Symbol Ref: {@symbol $L36593} */
   ___CxxFrameHandler();
   return;
 }
@@ -744,7 +679,6 @@ void FUN_0055cdbb(void)
 // XREFS: attack
 void FUN_0055cddb(void)
 {
-                    /* Symbol Ref: {@symbol $L36606} */
   ___CxxFrameHandler();
   return;
 }
@@ -756,7 +690,6 @@ void FUN_0055cddb(void)
 // XREFS: moveTo
 void FUN_0055cdfb(void)
 {
-                    /* Symbol Ref: {@symbol $L36622} */
   ___CxxFrameHandler();
   return;
 }
@@ -768,7 +701,6 @@ void FUN_0055cdfb(void)
 // XREFS: moveTo
 void FUN_0055ce1b(void)
 {
-                    /* Symbol Ref: {@symbol $L36639} */
   ___CxxFrameHandler();
   return;
 }
@@ -780,7 +712,6 @@ void FUN_0055ce1b(void)
 // XREFS: gather
 void FUN_0055ce3b(void)
 {
-                    /* Symbol Ref: {@symbol $L36655} */
   ___CxxFrameHandler();
   return;
 }
@@ -792,7 +723,6 @@ void FUN_0055ce3b(void)
 // XREFS: explore
 void FUN_0055ce5b(void)
 {
-                    /* Symbol Ref: {@symbol $L36669} */
   ___CxxFrameHandler();
   return;
 }
@@ -804,7 +734,6 @@ void FUN_0055ce5b(void)
 // XREFS: enter
 void FUN_0055ce7b(void)
 {
-                    /* Symbol Ref: {@symbol $L36683} */
   ___CxxFrameHandler();
   return;
 }
@@ -816,7 +745,6 @@ void FUN_0055ce7b(void)
 // XREFS: transport
 void FUN_0055ce9b(void)
 {
-                    /* Symbol Ref: {@symbol $L36697} */
   ___CxxFrameHandler();
   return;
 }
@@ -828,7 +756,6 @@ void FUN_0055ce9b(void)
 // XREFS: unload
 void FUN_0055cebb(void)
 {
-                    /* Symbol Ref: {@symbol $L36711} */
   ___CxxFrameHandler();
   return;
 }
@@ -840,7 +767,6 @@ void FUN_0055cebb(void)
 // XREFS: AllocateQueue
 void FUN_0055cedb(void)
 {
-                    /* Symbol Ref: {@symbol $L32736} */
   ___CxxFrameHandler();
   return;
 }
@@ -852,7 +778,6 @@ void FUN_0055cedb(void)
 // XREFS: RGE_Communications_Speed
 void FUN_0055cf06(void)
 {
-                    /* Symbol Ref: {@symbol $L34335} */
   ___CxxFrameHandler();
   return;
 }
@@ -865,8 +790,6 @@ void FUN_0055cf06(void)
 void FUN_0055cf10(void)
 {
   int unaff_EBP;
-  
-                    /* Symbol Ref: {@symbol $L37725} */
   TPanel::~TPanel(*(TPanel **)(unaff_EBP + -0x10));
   return;
 }
@@ -878,7 +801,6 @@ void FUN_0055cf10(void)
 // XREFS: ~RGE_Diamond_Map
 void FUN_0055cf18(void)
 {
-                    /* Symbol Ref: {@symbol $L37730} */
   ___CxxFrameHandler();
   return;
 }
@@ -890,7 +812,6 @@ void FUN_0055cf18(void)
 // XREFS: set_bitmap
 void FUN_0055cf3b(void)
 {
-                    /* Symbol Ref: {@symbol $L37769} */
   ___CxxFrameHandler();
   return;
 }
@@ -902,7 +823,6 @@ void FUN_0055cf3b(void)
 // XREFS: create_surfaces
 void FUN_0055cf5b(void)
 {
-                    /* Symbol Ref: {@symbol $L37817} */
   ___CxxFrameHandler();
   return;
 }
@@ -914,7 +834,6 @@ void FUN_0055cf5b(void)
 // XREFS: TribeAboutDialog
 void FUN_0055cf89(void)
 {
-                    /* Symbol Ref: {@symbol $L33221} */
   ___CxxFrameHandler();
   return;
 }
@@ -926,7 +845,6 @@ void FUN_0055cf89(void)
 // XREFS: ~TribeAboutDialog
 void FUN_0055cfa8(void)
 {
-                    /* Symbol Ref: {@symbol $L33237} */
   ___CxxFrameHandler();
   return;
 }
@@ -938,7 +856,6 @@ void FUN_0055cfa8(void)
 // XREFS: action
 void FUN_0055cfcb(void)
 {
-                    /* Symbol Ref: {@symbol $L33252} */
   ___CxxFrameHandler();
   return;
 }
@@ -950,7 +867,6 @@ void FUN_0055cfcb(void)
 // XREFS: TribeConfigDialog
 void FUN_0055cfe8(void)
 {
-                    /* Symbol Ref: {@symbol $L44204} */
   ___CxxFrameHandler();
   return;
 }
@@ -962,7 +878,6 @@ void FUN_0055cfe8(void)
 // XREFS: ~TribeConfigDialog
 void FUN_0055d008(void)
 {
-                    /* Symbol Ref: {@symbol $L44277} */
   ___CxxFrameHandler();
   return;
 }
@@ -974,7 +889,6 @@ void FUN_0055d008(void)
 // XREFS: TribeDiplomacyDialog
 void FUN_0055d047(void)
 {
-                    /* Symbol Ref: {@symbol $L43057} */
   ___CxxFrameHandler();
   return;
 }
@@ -986,7 +900,6 @@ void FUN_0055d047(void)
 // XREFS: ~TribeDiplomacyDialog
 void FUN_0055d068(void)
 {
-                    /* Symbol Ref: {@symbol $L43166} */
   ___CxxFrameHandler();
   return;
 }
@@ -998,7 +911,6 @@ void FUN_0055d068(void)
 // XREFS: THelpDialog
 void FUN_0055d088(void)
 {
-                    /* Symbol Ref: {@symbol $L35818} */
   ___CxxFrameHandler();
   return;
 }
@@ -1010,7 +922,6 @@ void FUN_0055d088(void)
 // XREFS: THelpDialog
 void FUN_0055d0a8(void)
 {
-                    /* Symbol Ref: {@symbol $L35832} */
   ___CxxFrameHandler();
   return;
 }
@@ -1022,7 +933,6 @@ void FUN_0055d0a8(void)
 // XREFS: ~THelpDialog
 void FUN_0055d0c8(void)
 {
-                    /* Symbol Ref: {@symbol $L35858} */
   ___CxxFrameHandler();
   return;
 }
@@ -1034,7 +944,6 @@ void FUN_0055d0c8(void)
 // XREFS: ~TListDialog
 void FUN_0055d0e8(void)
 {
-                    /* Symbol Ref: {@symbol $L34692} */
   ___CxxFrameHandler();
   return;
 }
@@ -1046,7 +955,6 @@ void FUN_0055d0e8(void)
 // XREFS: TribeMenuDialog
 void FUN_0055d108(void)
 {
-                    /* Symbol Ref: {@symbol $L39459} */
   ___CxxFrameHandler();
   return;
 }
@@ -1058,7 +966,6 @@ void FUN_0055d108(void)
 // XREFS: ~TribeMenuDialog
 void FUN_0055d128(void)
 {
-                    /* Symbol Ref: {@symbol $L39475} */
   ___CxxFrameHandler();
   return;
 }
@@ -1070,7 +977,6 @@ void FUN_0055d128(void)
 // XREFS: action
 void FUN_0055d182(void)
 {
-                    /* Symbol Ref: {@symbol $L39521} */
   ___CxxFrameHandler();
   return;
 }
@@ -1082,7 +988,6 @@ void FUN_0055d182(void)
 // XREFS: ~TMessageDialog
 void FUN_0055d198(void)
 {
-                    /* Symbol Ref: {@symbol $L34485} */
   ___CxxFrameHandler();
   return;
 }
@@ -1094,7 +999,6 @@ void FUN_0055d198(void)
 // XREFS: TRIBE_Dialog_Sed_Menu
 void FUN_0055d1b8(void)
 {
-                    /* Symbol Ref: {@symbol $L38553} */
   ___CxxFrameHandler();
   return;
 }
@@ -1106,7 +1010,6 @@ void FUN_0055d1b8(void)
 // XREFS: ~TRIBE_Dialog_Sed_Menu
 void FUN_0055d1d8(void)
 {
-                    /* Symbol Ref: {@symbol $L38569} */
   ___CxxFrameHandler();
   return;
 }
@@ -1118,7 +1021,6 @@ void FUN_0055d1d8(void)
 // XREFS: action
 void FUN_0055d1fb(void)
 {
-                    /* Symbol Ref: {@symbol $L38592} */
   ___CxxFrameHandler();
   return;
 }
@@ -1130,7 +1032,6 @@ void FUN_0055d1fb(void)
 // XREFS: TribeSendMessageDialog
 void FUN_0055d223(void)
 {
-                    /* Symbol Ref: {@symbol $L47347} */
   ___CxxFrameHandler();
   return;
 }
@@ -1142,7 +1043,6 @@ void FUN_0055d223(void)
 // XREFS: ~TribeSendMessageDialog
 void FUN_0055d238(void)
 {
-                    /* Symbol Ref: {@symbol $L47373} */
   ___CxxFrameHandler();
   return;
 }
@@ -1154,7 +1054,6 @@ void FUN_0055d238(void)
 // XREFS: TribeSendQuickMessageDialog
 void FUN_0055d258(void)
 {
-                    /* Symbol Ref: {@symbol $L47452} */
   ___CxxFrameHandler();
   return;
 }
@@ -1166,7 +1065,6 @@ void FUN_0055d258(void)
 // XREFS: ~TribeSendQuickMessageDialog
 void FUN_0055d278(void)
 {
-                    /* Symbol Ref: {@symbol $L47472} */
   ___CxxFrameHandler();
   return;
 }
@@ -1178,7 +1076,6 @@ void FUN_0055d278(void)
 // XREFS: RGE_Doppleganger_Object
 void FUN_0055d298(void)
 {
-                    /* Symbol Ref: {@symbol $L33758} */
   ___CxxFrameHandler();
   return;
 }
@@ -1190,7 +1087,6 @@ void FUN_0055d298(void)
 // XREFS: RGE_Doppleganger_Object
 void FUN_0055d2b8(void)
 {
-                    /* Symbol Ref: {@symbol $L33785} */
   ___CxxFrameHandler();
   return;
 }
@@ -1202,7 +1098,6 @@ void FUN_0055d2b8(void)
 // XREFS: CreateSurfaces
 void FUN_0055d2ec(void)
 {
-                    /* Symbol Ref: {@symbol $L33652} */
   ___CxxFrameHandler();
   return;
 }
@@ -1214,7 +1109,6 @@ void FUN_0055d2ec(void)
 // XREFS: SetSize
 void FUN_0055d30e(void)
 {
-                    /* Symbol Ref: {@symbol $L33773} */
   ___CxxFrameHandler();
   return;
 }
@@ -1226,7 +1120,6 @@ void FUN_0055d30e(void)
 // XREFS: SetClipRect
 void FUN_0055d32b(void)
 {
-                    /* Symbol Ref: {@symbol $L33820} */
   ___CxxFrameHandler();
   return;
 }
@@ -1238,7 +1131,6 @@ void FUN_0055d32b(void)
 // XREFS: operator+
 void FUN_0055d35f(void)
 {
-                    /* Symbol Ref: {@symbol $L2277} */
   ___CxxFrameHandler();
   return;
 }
@@ -1250,7 +1142,6 @@ void FUN_0055d35f(void)
 // XREFS: contains
 void FUN_0055d378(void)
 {
-                    /* Symbol Ref: {@symbol $L2298} */
   ___CxxFrameHandler();
   return;
 }
@@ -1262,7 +1153,6 @@ void FUN_0055d378(void)
 // XREFS: word
 void FUN_0055d398(void)
 {
-                    /* Symbol Ref: {@symbol $L2321} */
   ___CxxFrameHandler();
   return;
 }
@@ -1274,7 +1164,6 @@ void FUN_0055d398(void)
 // XREFS: nextWord
 void FUN_0055d3cf(void)
 {
-                    /* Symbol Ref: {@symbol $L2338} */
   ___CxxFrameHandler();
   return;
 }
@@ -1286,7 +1175,6 @@ void FUN_0055d3cf(void)
 // XREFS: subString
 void FUN_0055d3ff(void)
 {
-                    /* Symbol Ref: {@symbol $L2360} */
   ___CxxFrameHandler();
   return;
 }
@@ -1298,7 +1186,6 @@ void FUN_0055d3ff(void)
 // XREFS: append
 void FUN_0055d418(void)
 {
-                    /* Symbol Ref: {@symbol $L2373} */
   ___CxxFrameHandler();
   return;
 }
@@ -1310,7 +1197,6 @@ void FUN_0055d418(void)
 // XREFS: stripTrailing
 void FUN_0055d438(void)
 {
-                    /* Symbol Ref: {@symbol $L2388} */
   ___CxxFrameHandler();
   return;
 }
@@ -1322,7 +1208,6 @@ void FUN_0055d438(void)
 // XREFS: stripLeading
 void FUN_0055d458(void)
 {
-                    /* Symbol Ref: {@symbol $L2403} */
   ___CxxFrameHandler();
   return;
 }
@@ -1334,7 +1219,6 @@ void FUN_0055d458(void)
 // XREFS: asUppercase
 void FUN_0055d48b(void)
 {
-                    /* Symbol Ref: {@symbol $L2424} */
   ___CxxFrameHandler();
   return;
 }
@@ -1346,7 +1230,6 @@ void FUN_0055d48b(void)
 // XREFS: asLowercase
 void FUN_0055d4bb(void)
 {
-                    /* Symbol Ref: {@symbol $L2440} */
   ___CxxFrameHandler();
   return;
 }
@@ -1358,7 +1241,6 @@ void FUN_0055d4bb(void)
 // XREFS: DKeyString
 void FUN_0055d4d8(void)
 {
-                    /* Symbol Ref: {@symbol $L2455} */
   ___CxxFrameHandler();
   return;
 }
@@ -1370,7 +1252,6 @@ void FUN_0055d4d8(void)
 // XREFS: DKeyString
 void FUN_0055d508(void)
 {
-                    /* Symbol Ref: {@symbol $L2468} */
   ___CxxFrameHandler();
   return;
 }
@@ -1382,7 +1263,6 @@ void FUN_0055d508(void)
 // XREFS: ~DKeyString
 void FUN_0055d528(void)
 {
-                    /* Symbol Ref: {@symbol $L2479} */
   ___CxxFrameHandler();
   return;
 }
@@ -1394,7 +1274,6 @@ void FUN_0055d528(void)
 // XREFS: setKey
 void FUN_0055d548(void)
 {
-                    /* Symbol Ref: {@symbol $L2493} */
   ___CxxFrameHandler();
   return;
 }
@@ -1406,7 +1285,6 @@ void FUN_0055d548(void)
 // XREFS: setValue
 void FUN_0055d568(void)
 {
-                    /* Symbol Ref: {@symbol $L2507} */
   ___CxxFrameHandler();
   return;
 }
@@ -1418,7 +1296,6 @@ void FUN_0055d568(void)
 // XREFS: RGE_Person_Info
 void FUN_0055d58b(void)
 {
-                    /* Symbol Ref: {@symbol $L31470} */
   ___CxxFrameHandler();
   return;
 }
@@ -1430,7 +1307,6 @@ void FUN_0055d58b(void)
 // XREFS: set_current_campaign
 void FUN_0055d5ab(void)
 {
-                    /* Symbol Ref: {@symbol $L31510} */
   ___CxxFrameHandler();
   return;
 }
@@ -1442,7 +1318,6 @@ void FUN_0055d5ab(void)
 // XREFS: RGE_Game_Info
 void FUN_0055d5cb(void)
 {
-                    /* Symbol Ref: {@symbol $L31541} */
   ___CxxFrameHandler();
   return;
 }
@@ -1454,7 +1329,6 @@ void FUN_0055d5cb(void)
 // XREFS: find_campaigns
 void FUN_0055d5fc(void)
 {
-                    /* Symbol Ref: {@symbol $L31606} */
   ___CxxFrameHandler();
   return;
 }
@@ -1466,7 +1340,6 @@ void FUN_0055d5fc(void)
 // XREFS: add_new_person
 void FUN_0055d61b(void)
 {
-                    /* Symbol Ref: {@symbol $L31619} */
   ___CxxFrameHandler();
   return;
 }
@@ -1478,7 +1351,6 @@ void FUN_0055d61b(void)
 // XREFS: RGE_Master_Action_Object
 void FUN_0055d638(void)
 {
-                    /* Symbol Ref: {@symbol $L34514} */
   ___CxxFrameHandler();
   return;
 }
@@ -1490,7 +1362,6 @@ void FUN_0055d638(void)
 // XREFS: RGE_Master_Action_Object
 void FUN_0055d658(void)
 {
-                    /* Symbol Ref: {@symbol $L34528} */
   ___CxxFrameHandler();
   return;
 }
@@ -1502,7 +1373,6 @@ void FUN_0055d658(void)
 // XREFS: RGE_Master_Action_Object
 void FUN_0055d678(void)
 {
-                    /* Symbol Ref: {@symbol $L34538} */
   ___CxxFrameHandler();
   return;
 }
@@ -1514,7 +1384,6 @@ void FUN_0055d678(void)
 // XREFS: ~RGE_Master_Action_Object
 void FUN_0055d698(void)
 {
-                    /* Symbol Ref: {@symbol $L34573} */
   ___CxxFrameHandler();
   return;
 }
@@ -1526,7 +1395,6 @@ void FUN_0055d698(void)
 // XREFS: create_task_list
 void FUN_0055d6bb(void)
 {
-                    /* Symbol Ref: {@symbol $L34587} */
   ___CxxFrameHandler();
   return;
 }
@@ -1538,7 +1406,6 @@ void FUN_0055d6bb(void)
 // XREFS: make_new_obj
 void FUN_0055d6db(void)
 {
-                    /* Symbol Ref: {@symbol $L34602} */
   ___CxxFrameHandler();
   return;
 }
@@ -1550,7 +1417,6 @@ void FUN_0055d6db(void)
 // XREFS: make_new_master
 void FUN_0055d6fb(void)
 {
-                    /* Symbol Ref: {@symbol $L34616} */
   ___CxxFrameHandler();
   return;
 }
@@ -1562,7 +1428,6 @@ void FUN_0055d6fb(void)
 // XREFS: RGE_Master_Animated_Object
 void FUN_0055d718(void)
 {
-                    /* Symbol Ref: {@symbol $L32941} */
   ___CxxFrameHandler();
   return;
 }
@@ -1574,7 +1439,6 @@ void FUN_0055d718(void)
 // XREFS: RGE_Master_Animated_Object
 void FUN_0055d738(void)
 {
-                    /* Symbol Ref: {@symbol $L32955} */
   ___CxxFrameHandler();
   return;
 }
@@ -1586,7 +1450,6 @@ void FUN_0055d738(void)
 // XREFS: RGE_Master_Animated_Object
 void FUN_0055d758(void)
 {
-                    /* Symbol Ref: {@symbol $L32965} */
   ___CxxFrameHandler();
   return;
 }
@@ -1598,7 +1461,6 @@ void FUN_0055d758(void)
 // XREFS: make_new_obj
 void FUN_0055d77b(void)
 {
-                    /* Symbol Ref: {@symbol $L32991} */
   ___CxxFrameHandler();
   return;
 }
@@ -1610,7 +1472,6 @@ void FUN_0055d77b(void)
 // XREFS: make_new_master
 void FUN_0055d79b(void)
 {
-                    /* Symbol Ref: {@symbol $L33005} */
   ___CxxFrameHandler();
   return;
 }
@@ -1622,7 +1483,6 @@ void FUN_0055d79b(void)
 // XREFS: RGE_Master_Combat_Object
 void FUN_0055d7b8(void)
 {
-                    /* Symbol Ref: {@symbol $L34901} */
   ___CxxFrameHandler();
   return;
 }
@@ -1634,7 +1494,6 @@ void FUN_0055d7b8(void)
 // XREFS: RGE_Master_Combat_Object
 void FUN_0055d7d8(void)
 {
-                    /* Symbol Ref: {@symbol $L34915} */
   ___CxxFrameHandler();
   return;
 }
@@ -1646,7 +1505,6 @@ void FUN_0055d7d8(void)
 // XREFS: RGE_Master_Combat_Object
 void FUN_0055d7f8(void)
 {
-                    /* Symbol Ref: {@symbol $L34925} */
   ___CxxFrameHandler();
   return;
 }
@@ -1658,7 +1516,6 @@ void FUN_0055d7f8(void)
 // XREFS: make_new_obj
 void FUN_0055d81b(void)
 {
-                    /* Symbol Ref: {@symbol $L34972} */
   ___CxxFrameHandler();
   return;
 }
@@ -1670,7 +1527,6 @@ void FUN_0055d81b(void)
 // XREFS: make_new_master
 void FUN_0055d83b(void)
 {
-                    /* Symbol Ref: {@symbol $L34986} */
   ___CxxFrameHandler();
   return;
 }
@@ -1682,7 +1538,6 @@ void FUN_0055d83b(void)
 // XREFS: RGE_Master_Doppleganger_Object
 void FUN_0055d858(void)
 {
-                    /* Symbol Ref: {@symbol $L33057} */
   ___CxxFrameHandler();
   return;
 }
@@ -1694,7 +1549,6 @@ void FUN_0055d858(void)
 // XREFS: RGE_Master_Doppleganger_Object
 void FUN_0055d878(void)
 {
-                    /* Symbol Ref: {@symbol $L33071} */
   ___CxxFrameHandler();
   return;
 }
@@ -1706,7 +1560,6 @@ void FUN_0055d878(void)
 // XREFS: RGE_Master_Doppleganger_Object
 void FUN_0055d898(void)
 {
-                    /* Symbol Ref: {@symbol $L33081} */
   ___CxxFrameHandler();
   return;
 }
@@ -1718,7 +1571,6 @@ void FUN_0055d898(void)
 // XREFS: make_new_obj
 void FUN_0055d8bb(void)
 {
-                    /* Symbol Ref: {@symbol $L33106} */
   ___CxxFrameHandler();
   return;
 }
@@ -1730,7 +1582,6 @@ void FUN_0055d8bb(void)
 // XREFS: make_new_master
 void FUN_0055d8db(void)
 {
-                    /* Symbol Ref: {@symbol $L33121} */
   ___CxxFrameHandler();
   return;
 }
@@ -1742,7 +1593,6 @@ void FUN_0055d8db(void)
 // XREFS: RGE_Master_Missile_Object
 void FUN_0055d8f8(void)
 {
-                    /* Symbol Ref: {@symbol $L34693} */
   ___CxxFrameHandler();
   return;
 }
@@ -1754,7 +1604,6 @@ void FUN_0055d8f8(void)
 // XREFS: RGE_Master_Missile_Object
 void FUN_0055d918(void)
 {
-                    /* Symbol Ref: {@symbol $L34707} */
   ___CxxFrameHandler();
   return;
 }
@@ -1766,7 +1615,6 @@ void FUN_0055d918(void)
 // XREFS: RGE_Master_Missile_Object
 void FUN_0055d938(void)
 {
-                    /* Symbol Ref: {@symbol $L34717} */
   ___CxxFrameHandler();
   return;
 }
@@ -1778,7 +1626,6 @@ void FUN_0055d938(void)
 // XREFS: make_new_obj
 void FUN_0055d95b(void)
 {
-                    /* Symbol Ref: {@symbol $L34743} */
   ___CxxFrameHandler();
   return;
 }
@@ -1790,7 +1637,6 @@ void FUN_0055d95b(void)
 // XREFS: make_new_master
 void FUN_0055d97b(void)
 {
-                    /* Symbol Ref: {@symbol $L34757} */
   ___CxxFrameHandler();
   return;
 }
@@ -1802,7 +1648,6 @@ void FUN_0055d97b(void)
 // XREFS: RGE_Master_Moving_Object
 void FUN_0055d998(void)
 {
-                    /* Symbol Ref: {@symbol $L34318} */
   ___CxxFrameHandler();
   return;
 }
@@ -1814,7 +1659,6 @@ void FUN_0055d998(void)
 // XREFS: RGE_Master_Moving_Object
 void FUN_0055d9b8(void)
 {
-                    /* Symbol Ref: {@symbol $L34332} */
   ___CxxFrameHandler();
   return;
 }
@@ -1826,7 +1670,6 @@ void FUN_0055d9b8(void)
 // XREFS: RGE_Master_Moving_Object
 void FUN_0055d9d8(void)
 {
-                    /* Symbol Ref: {@symbol $L34342} */
   ___CxxFrameHandler();
   return;
 }
@@ -1838,7 +1681,6 @@ void FUN_0055d9d8(void)
 // XREFS: make_new_obj
 void FUN_0055d9fb(void)
 {
-                    /* Symbol Ref: {@symbol $L34376} */
   ___CxxFrameHandler();
   return;
 }
@@ -1850,7 +1692,6 @@ void FUN_0055d9fb(void)
 // XREFS: make_new_master
 void FUN_0055da1b(void)
 {
-                    /* Symbol Ref: {@symbol $L34390} */
   ___CxxFrameHandler();
   return;
 }
@@ -1862,7 +1703,6 @@ void FUN_0055da1b(void)
 // XREFS: make_new_obj
 void FUN_0055da3b(void)
 {
-                    /* Symbol Ref: {@symbol $L36580} */
   ___CxxFrameHandler();
   return;
 }
@@ -1874,7 +1714,6 @@ void FUN_0055da3b(void)
 // XREFS: make_new_master
 void FUN_0055da5b(void)
 {
-                    /* Symbol Ref: {@symbol $L36596} */
   ___CxxFrameHandler();
   return;
 }
@@ -1886,7 +1725,6 @@ void FUN_0055da5b(void)
 // XREFS: _WinMain@16
 void FUN_0055da7e(void)
 {
-                    /* Symbol Ref: {@symbol $L31141} */
   ___CxxFrameHandler();
   return;
 }
@@ -1898,7 +1736,6 @@ void FUN_0055da7e(void)
 // XREFS: data_load_random_map
 void FUN_0055da9b(void)
 {
-                    /* Symbol Ref: {@symbol $L36752} */
   ___CxxFrameHandler();
   return;
 }
@@ -1910,7 +1747,6 @@ void FUN_0055da9b(void)
 // XREFS: load_random_map
 void FUN_0055dabb(void)
 {
-                    /* Symbol Ref: {@symbol $L36767} */
   ___CxxFrameHandler();
   return;
 }
@@ -1922,7 +1758,6 @@ void FUN_0055dabb(void)
 // XREFS: new_map
 void FUN_0055daf1(void)
 {
-                    /* Symbol Ref: {@symbol $L36823} */
   ___CxxFrameHandler();
   return;
 }
@@ -1934,7 +1769,6 @@ void FUN_0055daf1(void)
 // XREFS: load_map
 void FUN_0055db0b(void)
 {
-                    /* Symbol Ref: {@symbol $L37089} */
   ___CxxFrameHandler();
   return;
 }
@@ -1946,7 +1780,6 @@ void FUN_0055db0b(void)
 // XREFS: load_terrain_types
 void FUN_0055db2b(void)
 {
-                    /* Symbol Ref: {@symbol $L37117} */
   ___CxxFrameHandler();
   return;
 }
@@ -1958,7 +1791,6 @@ void FUN_0055db2b(void)
 // XREFS: load_border_types
 void FUN_0055db4b(void)
 {
-                    /* Symbol Ref: {@symbol $L37148} */
   ___CxxFrameHandler();
   return;
 }
@@ -1970,7 +1802,6 @@ void FUN_0055db4b(void)
 // XREFS: RGE_Missile_Object
 void FUN_0055db68(void)
 {
-                    /* Symbol Ref: {@symbol $L35191} */
   ___CxxFrameHandler();
   return;
 }
@@ -1982,7 +1813,6 @@ void FUN_0055db68(void)
 // XREFS: RGE_Missile_Object
 void FUN_0055db88(void)
 {
-                    /* Symbol Ref: {@symbol $L35210} */
   ___CxxFrameHandler();
   return;
 }
@@ -1994,7 +1824,6 @@ void FUN_0055db88(void)
 // XREFS: init_missile
 void FUN_0055dbab(void)
 {
-                    /* Symbol Ref: {@symbol $L35234} */
   ___CxxFrameHandler();
   return;
 }
@@ -2006,7 +1835,6 @@ void FUN_0055dbab(void)
 // XREFS: init_missile
 void FUN_0055dbcb(void)
 {
-                    /* Symbol Ref: {@symbol $L35247} */
   ___CxxFrameHandler();
   return;
 }
@@ -2018,7 +1846,6 @@ void FUN_0055dbcb(void)
 // XREFS: make_object_collision_list
 void FUN_0055dbeb(void)
 {
-                    /* Symbol Ref: {@symbol $L35283} */
   ___CxxFrameHandler();
   return;
 }
@@ -2030,7 +1857,6 @@ void FUN_0055dbeb(void)
 // XREFS: setup
 void FUN_0055dc0e(void)
 {
-                    /* Symbol Ref: {@symbol $L32254} */
   ___CxxFrameHandler();
   return;
 }
@@ -2042,7 +1868,6 @@ void FUN_0055dc0e(void)
 // XREFS: LoadCursors
 void FUN_0055dc2b(void)
 {
-                    /* Symbol Ref: {@symbol $L32294} */
   ___CxxFrameHandler();
   return;
 }
@@ -2054,7 +1879,6 @@ void FUN_0055dc2b(void)
 // XREFS: create_surfaces
 void FUN_0055dc56(void)
 {
-                    /* Symbol Ref: {@symbol $L32332} */
   ___CxxFrameHandler();
   return;
 }
@@ -2067,8 +1891,6 @@ void FUN_0055dc56(void)
 void FUN_0055dc60(void)
 {
   int unaff_EBP;
-  
-                    /* Symbol Ref: {@symbol $L37614} */
   RGE_Animated_Object::~RGE_Animated_Object(*(RGE_Animated_Object **)(unaff_EBP + -0x10));
   return;
 }
@@ -2081,8 +1903,6 @@ void FUN_0055dc60(void)
 void FUN_0055dc68(void)
 {
   int unaff_EBP;
-  
-                    /* Symbol Ref: {@symbol $L37615} */
   Path::~Path((Path *)(*(int *)(unaff_EBP + -0x10) + 0xa4));
   return;
 }
@@ -2095,8 +1915,6 @@ void FUN_0055dc68(void)
 void FUN_0055dc76(void)
 {
   int unaff_EBP;
-  
-                    /* Symbol Ref: {@symbol $L37616} */
   Path::~Path((Path *)(*(int *)(unaff_EBP + -0x10) + 0xd8));
   return;
 }
@@ -2108,7 +1926,6 @@ void FUN_0055dc76(void)
 // XREFS: RGE_Moving_Object
 void FUN_0055dc84(void)
 {
-                    /* Symbol Ref: {@symbol $L37622} */
   ___CxxFrameHandler();
   return;
 }
@@ -2120,7 +1937,6 @@ void FUN_0055dc84(void)
 // XREFS: RGE_Moving_Object
 void FUN_0055dcb4(void)
 {
-                    /* Symbol Ref: {@symbol $L37644} */
   ___CxxFrameHandler();
   return;
 }
@@ -2132,7 +1948,6 @@ void FUN_0055dcb4(void)
 // XREFS: ~RGE_Moving_Object
 void FUN_0055dce4(void)
 {
-                    /* Symbol Ref: {@symbol $L37660} */
   ___CxxFrameHandler();
   return;
 }
@@ -2144,7 +1959,6 @@ void FUN_0055dce4(void)
 // XREFS: recycle_in_to_game
 void FUN_0055dcf8(void)
 {
-                    /* Symbol Ref: {@symbol $L37676} */
   ___CxxFrameHandler();
   return;
 }
@@ -2156,7 +1970,6 @@ void FUN_0055dcf8(void)
 // XREFS: load_master_object
 void FUN_0055dd5d(void)
 {
-                    /* Symbol Ref: {@symbol $L30760} */
   ___CxxFrameHandler();
   return;
 }
@@ -2168,7 +1981,6 @@ void FUN_0055dd5d(void)
 // XREFS: load_object
 void FUN_0055ddbd(void)
 {
-                    /* Symbol Ref: {@symbol $L30811} */
   ___CxxFrameHandler();
   return;
 }
@@ -2180,7 +1992,6 @@ void FUN_0055ddbd(void)
 // XREFS: load
 void FUN_0055de1d(void)
 {
-                    /* Symbol Ref: {@symbol $L36141} */
   ___CxxFrameHandler();
   return;
 }
@@ -2192,7 +2003,6 @@ void FUN_0055de1d(void)
 // XREFS: TEasy_Panel
 void FUN_0055de38(void)
 {
-                    /* Symbol Ref: {@symbol $L36358} */
   ___CxxFrameHandler();
   return;
 }
@@ -2204,7 +2014,6 @@ void FUN_0055de38(void)
 // XREFS: TEasy_Panel
 void FUN_0055de58(void)
 {
-                    /* Symbol Ref: {@symbol $L36388} */
   ___CxxFrameHandler();
   return;
 }
@@ -2216,7 +2025,6 @@ void FUN_0055de58(void)
 // XREFS: ~TEasy_Panel
 void FUN_0055de78(void)
 {
-                    /* Symbol Ref: {@symbol $L36400} */
   ___CxxFrameHandler();
   return;
 }
@@ -2228,7 +2036,6 @@ void FUN_0055de78(void)
 // XREFS: setup_shadow_area
 void FUN_0055de9e(void)
 {
-                    /* Symbol Ref: {@symbol $L36443} */
   ___CxxFrameHandler();
   return;
 }
@@ -2240,7 +2047,6 @@ void FUN_0055de9e(void)
 // XREFS: set_background
 void FUN_0055decc(void)
 {
-                    /* Symbol Ref: {@symbol $L36534} */
   ___CxxFrameHandler();
   return;
 }
@@ -2252,7 +2058,6 @@ void FUN_0055decc(void)
 // XREFS: set_background2
 void FUN_0055defc(void)
 {
-                    /* Symbol Ref: {@symbol $L36567} */
   ___CxxFrameHandler();
   return;
 }
@@ -2264,7 +2069,6 @@ void FUN_0055defc(void)
 // XREFS: set_palette
 void FUN_0055df1e(void)
 {
-                    /* Symbol Ref: {@symbol $L36588} */
   ___CxxFrameHandler();
   return;
 }
@@ -2276,7 +2080,6 @@ void FUN_0055df1e(void)
 // XREFS: set_button_pics
 void FUN_0055df4c(void)
 {
-                    /* Symbol Ref: {@symbol $L36634} */
   ___CxxFrameHandler();
   return;
 }
@@ -2288,7 +2091,6 @@ void FUN_0055df4c(void)
 // XREFS: set_shadow_amount
 void FUN_0055df6e(void)
 {
-                    /* Symbol Ref: {@symbol $L36653} */
   ___CxxFrameHandler();
   return;
 }
@@ -2300,7 +2102,6 @@ void FUN_0055df6e(void)
 // XREFS: create_button
 void FUN_0055df8b(void)
 {
-                    /* Symbol Ref: {@symbol $L36712} */
   ___CxxFrameHandler();
   return;
 }
@@ -2312,7 +2113,6 @@ void FUN_0055df8b(void)
 // XREFS: create_check_box
 void FUN_0055dfab(void)
 {
-                    /* Symbol Ref: {@symbol $L36729} */
   ___CxxFrameHandler();
   return;
 }
@@ -2324,7 +2124,6 @@ void FUN_0055dfab(void)
 // XREFS: create_radio_button
 void FUN_0055dfcb(void)
 {
-                    /* Symbol Ref: {@symbol $L36745} */
   ___CxxFrameHandler();
   return;
 }
@@ -2336,7 +2135,6 @@ void FUN_0055dfcb(void)
 // XREFS: create_text
 void FUN_0055dfeb(void)
 {
-                    /* Symbol Ref: {@symbol $L36762} */
   ___CxxFrameHandler();
   return;
 }
@@ -2348,7 +2146,6 @@ void FUN_0055dfeb(void)
 // XREFS: create_text
 void FUN_0055e00b(void)
 {
-                    /* Symbol Ref: {@symbol $L36780} */
   ___CxxFrameHandler();
   return;
 }
@@ -2360,7 +2157,6 @@ void FUN_0055e00b(void)
 // XREFS: create_input
 void FUN_0055e02b(void)
 {
-                    /* Symbol Ref: {@symbol $L36798} */
   ___CxxFrameHandler();
   return;
 }
@@ -2372,7 +2168,6 @@ void FUN_0055e02b(void)
 // XREFS: create_edit
 void FUN_0055e04b(void)
 {
-                    /* Symbol Ref: {@symbol $L36814} */
   ___CxxFrameHandler();
   return;
 }
@@ -2384,7 +2179,6 @@ void FUN_0055e04b(void)
 // XREFS: create_drop_down
 void FUN_0055e06b(void)
 {
-                    /* Symbol Ref: {@symbol $L36837} */
   ___CxxFrameHandler();
   return;
 }
@@ -2396,7 +2190,6 @@ void FUN_0055e06b(void)
 // XREFS: create_list
 void FUN_0055e08b(void)
 {
-                    /* Symbol Ref: {@symbol $L36856} */
   ___CxxFrameHandler();
   return;
 }
@@ -2408,7 +2201,6 @@ void FUN_0055e08b(void)
 // XREFS: create_scrollbar
 void FUN_0055e0ab(void)
 {
-                    /* Symbol Ref: {@symbol $L36873} */
   ___CxxFrameHandler();
   return;
 }

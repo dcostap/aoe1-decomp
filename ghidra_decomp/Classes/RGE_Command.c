@@ -17,9 +17,6 @@
 
 // Function: RGE_Command
 // Address: 00433d40
-/* public: __thiscall RGE_Command::RGE_Command(class RGE_Game_World *,class TCommunications_Handler
-   *) */
-
 void __thiscall
 RGE_Command::RGE_Command(RGE_Command *this,RGE_Game_World *param_1,TCommunications_Handler *param_2)
 {
@@ -35,8 +32,6 @@ RGE_Command::RGE_Command(RGE_Command *this,RGE_Game_World *param_1,TCommunicatio
 
 // Function: `vector_deleting_destructor'
 // Address: 00433d70
-/* public: virtual void * __thiscall RGE_Command::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall RGE_Command::_vector_deleting_destructor_(RGE_Command *this,uint param_1)
 {
   ~RGE_Command(this);
@@ -50,8 +45,6 @@ void * __thiscall RGE_Command::_vector_deleting_destructor_(RGE_Command *this,ui
 
 // Function: ~RGE_Command
 // Address: 00433d90
-/* public: virtual __thiscall RGE_Command::~RGE_Command(void) */
-
 void __thiscall RGE_Command::~RGE_Command(RGE_Command *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -67,8 +60,6 @@ void __thiscall RGE_Command::~RGE_Command(RGE_Command *this)
 
 // Function: reset_communications
 // Address: 00433db0
-/* public: void __thiscall RGE_Command::reset_communications(class TCommunications_Handler *) */
-
 void __thiscall
 RGE_Command::reset_communications(RGE_Command *this,TCommunications_Handler *param_1)
 {
@@ -80,8 +71,6 @@ RGE_Command::reset_communications(RGE_Command *this,TCommunications_Handler *par
 
 // Function: get_obj
 // Address: 00433dc0
-/* protected: class RGE_Static_Object * __thiscall RGE_Command::get_obj(struct RGE_Obj_Info) */
-
 RGE_Static_Object * __thiscall RGE_Command::get_obj(RGE_Command *this,RGE_Obj_Info param_1)
 {
   RGE_Static_Object *pRVar1;
@@ -97,8 +86,6 @@ RGE_Static_Object * __thiscall RGE_Command::get_obj(RGE_Command *this,RGE_Obj_In
 
 // Function: do_commands
 // Address: 00433de0
-/* public: void __thiscall RGE_Command::do_commands(void) */
-
 void __thiscall RGE_Command::do_commands(RGE_Command *this)
 {
   code *pcVar1;
@@ -122,11 +109,8 @@ void __thiscall RGE_Command::do_commands(RGE_Command *this)
 
 // Function: do_command
 // Address: 00433e20
-/* public: virtual void __thiscall RGE_Command::do_command(void *) */
-
 void __thiscall RGE_Command::do_command(RGE_Command *this,void *param_1)
 {
-                    /* WARNING: Load size is inaccurate */
   switch(*param_1) {
   case 0:
     do_command_order(this,(RGE_Command_Order *)param_1);
@@ -187,10 +171,6 @@ void __thiscall RGE_Command::do_command(RGE_Command *this,void *param_1)
 
 // Function: do_command_order
 // Address: 00433f20
-/* WARNING: Variable defined which should be unmapped: adjustedYLocation */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: void __thiscall RGE_Command::do_command_order(struct RGE_Command_Order *) */
-
 void __thiscall RGE_Command::do_command_order(RGE_Command *this,RGE_Command_Order *param_1)
 {
   byte bVar1;
@@ -334,8 +314,6 @@ void __thiscall RGE_Command::do_command_order(RGE_Command *this,RGE_Command_Orde
 
 // Function: do_command_stop
 // Address: 00434290
-/* protected: void __thiscall RGE_Command::do_command_stop(struct RGE_Command_Stop *) */
-
 void __thiscall RGE_Command::do_command_stop(RGE_Command *this,RGE_Command_Stop *param_1)
 {
   RGE_Static_Object *this_00;
@@ -358,8 +336,6 @@ void __thiscall RGE_Command::do_command_stop(RGE_Command *this,RGE_Command_Stop 
 
 // Function: do_command_pause
 // Address: 004342e0
-/* protected: void __thiscall RGE_Command::do_command_pause(struct RGE_Command_Pause *) */
-
 void __thiscall RGE_Command::do_command_pause(RGE_Command *this,RGE_Command_Pause *param_1)
 {
   RGE_Static_Object *pRVar1;
@@ -381,9 +357,6 @@ void __thiscall RGE_Command::do_command_pause(RGE_Command *this,RGE_Command_Paus
 
 // Function: do_command_work
 // Address: 00434320
-/* WARNING: Variable defined which should be unmapped: index */
-/* protected: void __thiscall RGE_Command::do_command_work(struct RGE_Command_Order *) */
-
 void __thiscall RGE_Command::do_command_work(RGE_Command *this,RGE_Command_Order *param_1)
 {
   int iVar1;
@@ -434,10 +407,6 @@ void __thiscall RGE_Command::do_command_work(RGE_Command *this,RGE_Command_Order
 
 // Function: do_command_move
 // Address: 00434400
-/* WARNING: Variable defined which should be unmapped: adjustedYLocation */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: void __thiscall RGE_Command::do_command_move(struct RGE_Command_Order *) */
-
 void __thiscall RGE_Command::do_command_move(RGE_Command *this,RGE_Command_Order *param_1)
 {
   RGE_Command_Order *pRVar1;
@@ -641,8 +610,6 @@ void __thiscall RGE_Command::do_command_move(RGE_Command *this,RGE_Command_Order
 
 // Function: do_command_create
 // Address: 004348b0
-/* protected: void __thiscall RGE_Command::do_command_create(struct RGE_Command_Create *) */
-
 void __thiscall RGE_Command::do_command_create(RGE_Command *this,RGE_Command_Create *param_1)
 {
   RGE_Player *pRVar1;
@@ -657,9 +624,6 @@ void __thiscall RGE_Command::do_command_create(RGE_Command *this,RGE_Command_Cre
 
 // Function: do_command_add_attribute
 // Address: 004348f0
-/* protected: void __thiscall RGE_Command::do_command_add_attribute(struct RGE_Command_Add_Attribute
-   *) */
-
 void __thiscall
 RGE_Command::do_command_add_attribute(RGE_Command *this,RGE_Command_Add_Attribute *param_1)
 {
@@ -672,9 +636,6 @@ RGE_Command::do_command_add_attribute(RGE_Command *this,RGE_Command_Add_Attribut
 
 // Function: do_command_give_attribute
 // Address: 00434920
-/* protected: virtual void __thiscall RGE_Command::do_command_give_attribute(struct
-   RGE_Command_Give_Attribute *) */
-
 void __thiscall
 RGE_Command::do_command_give_attribute(RGE_Command *this,RGE_Command_Give_Attribute *param_1)
 {
@@ -708,10 +669,6 @@ RGE_Command::do_command_give_attribute(RGE_Command *this,RGE_Command_Give_Attrib
 
 // Function: do_command_formation
 // Address: 00434a00
-/* WARNING: Variable defined which should be unmapped: tempY */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: void __thiscall RGE_Command::do_command_formation(struct RGE_Command_Formation *) */
-
 void __thiscall RGE_Command::do_command_formation(RGE_Command *this,RGE_Command_Formation *param_1)
 {
   RGE_Command_Formation *pRVar1;
@@ -852,8 +809,6 @@ LAB_00434c8e:
 
 // Function: do_command_ai_order
 // Address: 00434d40
-/* protected: void __thiscall RGE_Command::do_command_ai_order(struct RGE_Command_AI_Order *) */
-
 void __thiscall RGE_Command::do_command_ai_order(RGE_Command *this,RGE_Command_AI_Order *param_1)
 {
   RGE_Static_Object *this_00;
@@ -873,10 +828,6 @@ void __thiscall RGE_Command::do_command_ai_order(RGE_Command *this,RGE_Command_A
 
 // Function: do_command_group_ai_order
 // Address: 00434dc0
-/* WARNING: Variable defined which should be unmapped: targetY */
-/* protected: void __thiscall RGE_Command::do_command_group_ai_order(struct
-   RGE_Command_Group_AI_Order *) */
-
 void __thiscall
 RGE_Command::do_command_group_ai_order(RGE_Command *this,RGE_Command_Group_AI_Order *param_1)
 {
@@ -925,8 +876,6 @@ RGE_Command::do_command_group_ai_order(RGE_Command *this,RGE_Command_Group_AI_Or
 
 // Function: do_command_resign
 // Address: 00434eb0
-/* protected: void __thiscall RGE_Command::do_command_resign(struct RGE_Command_Resign *) */
-
 void __thiscall RGE_Command::do_command_resign(RGE_Command *this,RGE_Command_Resign *param_1)
 {
   int iVar1;
@@ -963,9 +912,6 @@ void __thiscall RGE_Command::do_command_resign(RGE_Command *this,RGE_Command_Res
 
 // Function: do_command_add_waypoint
 // Address: 00434f70
-/* protected: void __thiscall RGE_Command::do_command_add_waypoint(struct RGE_Command_Add_Waypoint
-   *) */
-
 void __thiscall
 RGE_Command::do_command_add_waypoint(RGE_Command *this,RGE_Command_Add_Waypoint *param_1)
 {
@@ -983,9 +929,6 @@ RGE_Command::do_command_add_waypoint(RGE_Command *this,RGE_Command_Add_Waypoint 
 
 // Function: do_command_group_waypoint
 // Address: 00434fb0
-/* protected: void __thiscall RGE_Command::do_command_group_waypoint(struct
-   RGE_Command_Group_Waypoint *) */
-
 void __thiscall
 RGE_Command::do_command_group_waypoint(RGE_Command *this,RGE_Command_Group_Waypoint *param_1)
 {
@@ -1014,9 +957,6 @@ RGE_Command::do_command_group_waypoint(RGE_Command *this,RGE_Command_Group_Waypo
 
 // Function: do_command_create_group
 // Address: 00435020
-/* protected: void __thiscall RGE_Command::do_command_create_group(struct RGE_Command_Create_Group
-   *) */
-
 void __thiscall
 RGE_Command::do_command_create_group(RGE_Command *this,RGE_Command_Create_Group *param_1)
 {
@@ -1035,9 +975,6 @@ RGE_Command::do_command_create_group(RGE_Command *this,RGE_Command_Create_Group 
 
 // Function: do_command_add_to_group
 // Address: 00435060
-/* protected: void __thiscall RGE_Command::do_command_add_to_group(struct RGE_Command_Add_To_Group
-   *) */
-
 void __thiscall
 RGE_Command::do_command_add_to_group(RGE_Command *this,RGE_Command_Add_To_Group *param_1)
 {
@@ -1054,9 +991,6 @@ RGE_Command::do_command_add_to_group(RGE_Command *this,RGE_Command_Add_To_Group 
 
 // Function: do_command_remove_from_group
 // Address: 004350a0
-/* protected: void __thiscall RGE_Command::do_command_remove_from_group(struct
-   RGE_Command_Remove_From_Group *) */
-
 void __thiscall
 RGE_Command::do_command_remove_from_group(RGE_Command *this,RGE_Command_Remove_From_Group *param_1)
 {
@@ -1073,9 +1007,6 @@ RGE_Command::do_command_remove_from_group(RGE_Command *this,RGE_Command_Remove_F
 
 // Function: do_command_destroy_group
 // Address: 004350e0
-/* protected: void __thiscall RGE_Command::do_command_destroy_group(struct RGE_Command_Destroy_Group
-   *) */
-
 void __thiscall
 RGE_Command::do_command_destroy_group(RGE_Command *this,RGE_Command_Destroy_Group *param_1)
 {
@@ -1092,10 +1023,6 @@ RGE_Command::do_command_destroy_group(RGE_Command *this,RGE_Command_Destroy_Grou
 
 // Function: duplicate_check_command_order
 // Address: 00435110
-/* WARNING: Variable defined which should be unmapped: last_units */
-/* protected: unsigned char __thiscall RGE_Command::duplicate_check_command_order(struct
-   RGE_Command_Order *) */
-
 uchar __thiscall
 RGE_Command::duplicate_check_command_order(RGE_Command *this,RGE_Command_Order *param_1)
 {
@@ -1140,9 +1067,6 @@ RGE_Command::duplicate_check_command_order(RGE_Command *this,RGE_Command_Order *
 
 // Function: duplicate_check_command_stop
 // Address: 004351b0
-/* protected: unsigned char __thiscall RGE_Command::duplicate_check_command_stop(struct
-   RGE_Command_Stop *) */
-
 uchar __thiscall
 RGE_Command::duplicate_check_command_stop(RGE_Command *this,RGE_Command_Stop *param_1)
 {
@@ -1175,9 +1099,6 @@ RGE_Command::duplicate_check_command_stop(RGE_Command *this,RGE_Command_Stop *pa
 
 // Function: close_check_for_duplicate_orders
 // Address: 00435210
-/* protected: unsigned char __thiscall RGE_Command::close_check_for_duplicate_orders(unsigned char
-   *) */
-
 uchar __thiscall RGE_Command::close_check_for_duplicate_orders(RGE_Command *this,uchar *param_1)
 {
   uchar uVar1;
@@ -1205,9 +1126,6 @@ uchar __thiscall RGE_Command::close_check_for_duplicate_orders(RGE_Command *this
 // Function: check_for_duplicate_orders
 // Address: 00435260
 // [HELPER] s_C__msdev_work_age1_x1_Command_cp: "C:\msdev\work\age1_x1\Command.cpp"
-/* protected: unsigned char __thiscall RGE_Command::check_for_duplicate_orders(unsigned char *,long)
-    */
-
 uchar __thiscall
 RGE_Command::check_for_duplicate_orders(RGE_Command *this,uchar *param_1,long param_2)
 {
@@ -1230,8 +1148,6 @@ RGE_Command::check_for_duplicate_orders(RGE_Command *this,uchar *param_1,long pa
 // Function: submit
 // Address: 004352c0
 // [HELPER] s_C__msdev_work_age1_x1_Command_cp: "C:\msdev\work\age1_x1\Command.cpp"
-/* protected: void __thiscall RGE_Command::submit(void *,long) */
-
 void __thiscall RGE_Command::submit(RGE_Command *this,void *param_1,long param_2)
 {
   uchar uVar1;
@@ -1257,9 +1173,6 @@ void __thiscall RGE_Command::submit(RGE_Command *this,void *param_1,long param_2
 // Address: 00435320
 // [HELPER] s_X: "X"
 // [HELPER] s_______: "      "
-/* public: void __thiscall RGE_Command::command_order(class RGE_Static_Object * *,short,class
-   RGE_Static_Object *,float,float) */
-
 void __thiscall
 RGE_Command::command_order
           (RGE_Command *this,RGE_Static_Object **param_1,short param_2,RGE_Static_Object *param_3,
@@ -1335,9 +1248,6 @@ RGE_Command::command_order
 // Address: 00435420
 // [HELPER] s_X: "X"
 // [HELPER] s_______: "      "
-/* WARNING: Variable defined which should be unmapped: size */
-/* public: void __thiscall RGE_Command::command_stop(class RGE_Static_Object * *,short) */
-
 void __thiscall
 RGE_Command::command_stop(RGE_Command *this,RGE_Static_Object **param_1,short param_2)
 {
@@ -1398,8 +1308,6 @@ RGE_Command::command_stop(RGE_Command *this,RGE_Static_Object **param_1,short pa
 // Address: 004354f0
 // [HELPER] s_X: "X"
 // [HELPER] s_______: "      "
-/* public: void __thiscall RGE_Command::command_stop(int,int *,int) */
-
 void __thiscall RGE_Command::command_stop(RGE_Command *this,int param_1,int *param_2,int param_3)
 {
   int iVar1;
@@ -1450,8 +1358,6 @@ void __thiscall RGE_Command::command_stop(RGE_Command *this,int param_1,int *par
 // Function: command_pause
 // Address: 004355a0
 // [HELPER] s_______: "      "
-/* public: void __thiscall RGE_Command::command_pause(int,int *,int) */
-
 void __thiscall RGE_Command::command_pause(RGE_Command *this,int param_1,int *param_2,int param_3)
 {
   int iVar1;
@@ -1491,9 +1397,6 @@ void __thiscall RGE_Command::command_pause(RGE_Command *this,int param_1,int *pa
 // Address: 00435620
 // [HELPER] s_X: "X"
 // [HELPER] s_______: "      "
-/* public: void __thiscall RGE_Command::command_work(class RGE_Static_Object * *,short,class
-   RGE_Static_Object *,float,float) */
-
 void __thiscall
 RGE_Command::command_work
           (RGE_Command *this,RGE_Static_Object **param_1,short param_2,RGE_Static_Object *param_3,
@@ -1569,8 +1472,6 @@ RGE_Command::command_work
 // Address: 00435720
 // [HELPER] s_X: "X"
 // [HELPER] s_______: "      "
-/* public: void __thiscall RGE_Command::command_work(int,int *,int,int,int,float,float) */
-
 void __thiscall
 RGE_Command::command_work
           (RGE_Command *this,int param_1,int *param_2,int param_3,int param_4,int param_5,
@@ -1633,9 +1534,6 @@ RGE_Command::command_work
 // Address: 00435810
 // [HELPER] s_X: "X"
 // [HELPER] s_______: "      "
-/* public: void __thiscall RGE_Command::command_move(class RGE_Static_Object * *,short,class
-   RGE_Static_Object *,float,float) */
-
 void __thiscall
 RGE_Command::command_move
           (RGE_Command *this,RGE_Static_Object **param_1,short param_2,RGE_Static_Object *param_3,
@@ -1705,8 +1603,6 @@ RGE_Command::command_move
 // Address: 00435900
 // [HELPER] s_X: "X"
 // [HELPER] s_______: "      "
-/* public: void __thiscall RGE_Command::command_move(int,int *,int,int,int,float,float) */
-
 void __thiscall
 RGE_Command::command_move
           (RGE_Command *this,int param_1,int *param_2,int param_3,int param_4,int param_5,
@@ -1763,8 +1659,6 @@ RGE_Command::command_move
 // Function: command_create
 // Address: 004359c0
 // [HELPER] s_______: "      "
-/* public: void __thiscall RGE_Command::command_create(short,short,float,float,float) */
-
 void __thiscall
 RGE_Command::command_create
           (RGE_Command *this,short param_1,short param_2,float param_3,float param_4,float param_5)
@@ -1789,8 +1683,6 @@ RGE_Command::command_create
 // Function: command_add_attribute
 // Address: 00435a30
 // [HELPER] s_______: "      "
-/* public: void __thiscall RGE_Command::command_add_attribute(int,int,float) */
-
 void __thiscall
 RGE_Command::command_add_attribute(RGE_Command *this,int param_1,int param_2,float param_3)
 {
@@ -1812,8 +1704,6 @@ RGE_Command::command_add_attribute(RGE_Command *this,int param_1,int param_2,flo
 // Function: command_give_attribute
 // Address: 00435a80
 // [HELPER] s_______: "      "
-/* public: virtual void __thiscall RGE_Command::command_give_attribute(int,int,int,float) */
-
 void __thiscall
 RGE_Command::command_give_attribute
           (RGE_Command *this,int param_1,int param_2,int param_3,float param_4)
@@ -1838,8 +1728,6 @@ RGE_Command::command_give_attribute
 // Address: 00435ae0
 // [HELPER] s_X: "X"
 // [HELPER] s_______: "      "
-/* public: void __thiscall RGE_Command::command_formation(class RGE_Static_Object * *,int,int) */
-
 void __thiscall
 RGE_Command::command_formation
           (RGE_Command *this,RGE_Static_Object **param_1,int param_2,int param_3)
@@ -1899,8 +1787,6 @@ RGE_Command::command_formation
 // Address: 00435bb0
 // [HELPER] s_X: "X"
 // [HELPER] s_______: "      "
-/* public: void __thiscall RGE_Command::command_create_group(int,int,int *,int,float) */
-
 void __thiscall
 RGE_Command::command_create_group
           (RGE_Command *this,int param_1,int param_2,int *param_3,int param_4,float param_5)
@@ -1912,8 +1798,6 @@ RGE_Command::command_create_group
   char *pcVar5;
   int *piVar6;
   int iVar7;
-  
-                    /* language.dll match for 0x74: "Copperplate Gothic Light" */
   puVar2 = (undefined1 *)calloc(1,0x74);
   *puVar2 = 8;
   puVar2[1] = (undefined1)param_1;
@@ -1940,7 +1824,6 @@ RGE_Command::command_create_group
     pcVar5 = pRVar4->master_obj->name;
   }
   TDebuggingLog::Log(L,(char *)L,s_______>SEND_CMD_CRT_GROUP__CNT__,param_4,param_1,pcVar5);
-                    /* language.dll match for 0x74: "Copperplate Gothic Light" */
   submit(this,puVar2,0x74);
   return;
 }
@@ -1951,8 +1834,6 @@ RGE_Command::command_create_group
 // Address: 00435c50
 // [HELPER] s_X: "X"
 // [HELPER] s_______: "      "
-/* public: void __thiscall RGE_Command::command_add_to_group(int,int,int,float) */
-
 void __thiscall
 RGE_Command::command_add_to_group
           (RGE_Command *this,int param_1,int param_2,int param_3,float param_4)
@@ -1986,8 +1867,6 @@ RGE_Command::command_add_to_group
 // Address: 00435cd0
 // [HELPER] s_X: "X"
 // [HELPER] s_______: "      "
-/* public: void __thiscall RGE_Command::command_remove_from_group(int,int,int) */
-
 void __thiscall
 RGE_Command::command_remove_from_group(RGE_Command *this,int param_1,int param_2,int param_3)
 {
@@ -2021,8 +1900,6 @@ RGE_Command::command_remove_from_group(RGE_Command *this,int param_1,int param_2
 // Function: command_destroy_group
 // Address: 00435d40
 // [HELPER] s_______: "      "
-/* public: void __thiscall RGE_Command::command_destroy_group(int,int) */
-
 void __thiscall RGE_Command::command_destroy_group(RGE_Command *this,int param_1,int param_2)
 {
   undefined1 *puVar1;
@@ -2042,10 +1919,6 @@ void __thiscall RGE_Command::command_destroy_group(RGE_Command *this,int param_1
 // Address: 00435d90
 // [HELPER] s_X: "X"
 // [HELPER] s_______: "      "
-/* public: void __thiscall
-   RGE_Command::command_ai_order(int,int,int,int,int,int,float,float,float,float,unsigned
-   char,unsigned char,unsigned char) */
-
 void __thiscall
 RGE_Command::command_ai_order
           (RGE_Command *this,int param_1,int param_2,int param_3,int param_4,int param_5,int param_6
@@ -2100,9 +1973,6 @@ RGE_Command::command_ai_order
 // Address: 00435ea0
 // [HELPER] s_X: "X"
 // [HELPER] s_______: "      "
-/* public: void __thiscall RGE_Command::command_group_ai_order(int,int,class RGE_Static_Object *
-   *,short,int,int,int,float,float,float,float,unsigned char,unsigned char,unsigned char) */
-
 void __thiscall
 RGE_Command::command_group_ai_order
           (RGE_Command *this,int param_1,int param_2,RGE_Static_Object **param_3,short param_4,
@@ -2182,8 +2052,6 @@ RGE_Command::command_group_ai_order
 // Function: command_resign
 // Address: 00435fe0
 // [HELPER] s_______: "      "
-/* public: void __thiscall RGE_Command::command_resign(int,int,int) */
-
 void __thiscall RGE_Command::command_resign(RGE_Command *this,int param_1,int param_2,int param_3)
 {
   undefined1 *puVar1;
@@ -2205,8 +2073,6 @@ void __thiscall RGE_Command::command_resign(RGE_Command *this,int param_1,int pa
 // Address: 00436030
 // [HELPER] s_X: "X"
 // [HELPER] s_______: "      "
-/* public: void __thiscall RGE_Command::command_add_waypoint(int,int,struct XYZBYTEPoint *,int) */
-
 void __thiscall
 RGE_Command::command_add_waypoint
           (RGE_Command *this,int param_1,int param_2,XYZBYTEPoint *param_3,int param_4)
@@ -2253,9 +2119,6 @@ RGE_Command::command_add_waypoint
 // Address: 004360d0
 // [HELPER] s_X: "X"
 // [HELPER] s_______: "      "
-/* public: void __thiscall RGE_Command::command_add_waypoint(int,int,unsigned char,unsigned
-   char,unsigned char) */
-
 void __thiscall
 RGE_Command::command_add_waypoint
           (RGE_Command *this,int param_1,int param_2,uchar param_3,uchar param_4,uchar param_5)
@@ -2291,9 +2154,6 @@ RGE_Command::command_add_waypoint
 // Address: 00436150
 // [HELPER] s_X: "X"
 // [HELPER] s_______: "      "
-/* public: void __thiscall RGE_Command::command_group_waypoint(class RGE_Static_Object *
-   *,short,unsigned char,unsigned char) */
-
 void __thiscall
 RGE_Command::command_group_waypoint
           (RGE_Command *this,RGE_Static_Object **param_1,short param_2,uchar param_3,uchar param_4)

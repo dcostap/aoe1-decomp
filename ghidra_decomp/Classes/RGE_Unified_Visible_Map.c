@@ -9,8 +9,6 @@
 
 // Function: RGE_Unified_Visible_Map
 // Address: 0053ce80
-/* public: __thiscall RGE_Unified_Visible_Map::RGE_Unified_Visible_Map(int,int) */
-
 RGE_Unified_Visible_Map * __thiscall
 RGE_Unified_Visible_Map::RGE_Unified_Visible_Map
           (RGE_Unified_Visible_Map *this,int param_1,int param_2)
@@ -37,9 +35,6 @@ RGE_Unified_Visible_Map::RGE_Unified_Visible_Map
 
 // Function: RGE_Unified_Visible_Map
 // Address: 0053cee0
-/* public: __thiscall RGE_Unified_Visible_Map::RGE_Unified_Visible_Map(int,class RGE_Game_World *)
-    */
-
 RGE_Unified_Visible_Map * __thiscall
 RGE_Unified_Visible_Map::RGE_Unified_Visible_Map
           (RGE_Unified_Visible_Map *this,int param_1,RGE_Game_World *param_2)
@@ -57,9 +52,6 @@ RGE_Unified_Visible_Map::RGE_Unified_Visible_Map
 
 // Function: load
 // Address: 0053cf10
-/* WARNING: Variable defined which should be unmapped: oh */
-/* public: void __thiscall RGE_Unified_Visible_Map::load(int) */
-
 void __thiscall RGE_Unified_Visible_Map::load(RGE_Unified_Visible_Map *this,int param_1)
 {
   int *piVar1;
@@ -94,8 +86,6 @@ void __thiscall RGE_Unified_Visible_Map::load(RGE_Unified_Visible_Map *this,int 
 
 // Function: ~RGE_Unified_Visible_Map
 // Address: 0053cfc0
-/* public: __thiscall RGE_Unified_Visible_Map::~RGE_Unified_Visible_Map(void) */
-
 void __thiscall RGE_Unified_Visible_Map::~RGE_Unified_Visible_Map(RGE_Unified_Visible_Map *this)
 {
   this->mapHeight = 0;
@@ -110,8 +100,6 @@ void __thiscall RGE_Unified_Visible_Map::~RGE_Unified_Visible_Map(RGE_Unified_Vi
 
 // Function: save
 // Address: 0053cff0
-/* public: void __thiscall RGE_Unified_Visible_Map::save(int) */
-
 void __thiscall RGE_Unified_Visible_Map::save(RGE_Unified_Visible_Map *this,int param_1)
 {
   int iVar1;
@@ -129,8 +117,6 @@ void __thiscall RGE_Unified_Visible_Map::save(RGE_Unified_Visible_Map *this,int 
 
 // Function: reset
 // Address: 0053d040
-/* public: void __thiscall RGE_Unified_Visible_Map::reset(void) */
-
 void __thiscall RGE_Unified_Visible_Map::reset(RGE_Unified_Visible_Map *this)
 {
   uint uVar1;
@@ -155,8 +141,6 @@ void __thiscall RGE_Unified_Visible_Map::reset(RGE_Unified_Visible_Map *this)
 
 // Function: Set_Map_Offsets
 // Address: 0053d070
-/* private: void __thiscall RGE_Unified_Visible_Map::Set_Map_Offsets(void) */
-
 void __thiscall RGE_Unified_Visible_Map::Set_Map_Offsets(RGE_Unified_Visible_Map *this)
 {
   int iVar1;
@@ -188,8 +172,6 @@ void __thiscall RGE_Unified_Visible_Map::Set_Map_Offsets(RGE_Unified_Visible_Map
 
 // Function: suppress_updates
 // Address: 0053d0c0
-/* public: void __thiscall RGE_Unified_Visible_Map::suppress_updates(int) */
-
 void __thiscall RGE_Unified_Visible_Map::suppress_updates(RGE_Unified_Visible_Map *this,int param_1)
 {
   Map_Update_Suppresion = param_1;

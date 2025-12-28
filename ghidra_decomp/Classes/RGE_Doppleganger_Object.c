@@ -144,10 +144,6 @@
 
 // Function: RGE_Doppleganger_Object
 // Address: 004418a0
-/* public: __thiscall RGE_Doppleganger_Object::RGE_Doppleganger_Object(class
-   RGE_Master_Doppleganger_Object *,class RGE_Player *,float,float,float,int,class RGE_Static_Object
-   *) */
-
 RGE_Doppleganger_Object * __thiscall
 RGE_Doppleganger_Object::RGE_Doppleganger_Object
           (RGE_Doppleganger_Object *this,RGE_Master_Doppleganger_Object *param_1,RGE_Player *param_2
@@ -222,9 +218,6 @@ RGE_Doppleganger_Object::RGE_Doppleganger_Object
 
 // Function: `scalar_deleting_destructor'
 // Address: 00441a40
-/* public: virtual void * __thiscall RGE_Doppleganger_Object::`scalar deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 RGE_Doppleganger_Object::_scalar_deleting_destructor_(RGE_Doppleganger_Object *this,uint param_1)
 {
@@ -239,8 +232,6 @@ RGE_Doppleganger_Object::_scalar_deleting_destructor_(RGE_Doppleganger_Object *t
 
 // Function: ~RGE_Doppleganger_Object
 // Address: 00441a60
-/* public: virtual __thiscall RGE_Doppleganger_Object::~RGE_Doppleganger_Object(void) */
-
 void __thiscall RGE_Doppleganger_Object::~RGE_Doppleganger_Object(RGE_Doppleganger_Object *this)
 {
   undefined4 *puVar1;
@@ -336,10 +327,6 @@ void __thiscall RGE_Doppleganger_Object::~RGE_Doppleganger_Object(RGE_Dopplegang
 
 // Function: RGE_Doppleganger_Object
 // Address: 00441a70
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: __thiscall RGE_Doppleganger_Object::RGE_Doppleganger_Object(int,class RGE_Game_World
-   *,int) */
-
 RGE_Doppleganger_Object * __thiscall
 RGE_Doppleganger_Object::RGE_Doppleganger_Object
           (RGE_Doppleganger_Object *this,int param_1,RGE_Game_World *param_2,int param_3)
@@ -390,9 +377,6 @@ RGE_Doppleganger_Object::RGE_Doppleganger_Object
 
 // Function: recycle_in_to_game
 // Address: 00441bb0
-/* public: virtual void __thiscall RGE_Doppleganger_Object::recycle_in_to_game(class
-   RGE_Master_Static_Object *,class RGE_Player *,float,float,float,class RGE_Static_Object *) */
-
 void __thiscall
 RGE_Doppleganger_Object::recycle_in_to_game
           (RGE_Doppleganger_Object *this,RGE_Master_Static_Object *param_1,RGE_Player *param_2,
@@ -465,9 +449,6 @@ RGE_Doppleganger_Object::recycle_in_to_game
 
 // Function: setup
 // Address: 00441d30
-/* protected: virtual int __thiscall RGE_Doppleganger_Object::setup(class
-   RGE_Master_Doppleganger_Object *,class RGE_Player *,float,float,float) */
-
 int __thiscall
 RGE_Doppleganger_Object::setup
           (RGE_Doppleganger_Object *this,RGE_Master_Doppleganger_Object *param_1,RGE_Player *param_2
@@ -492,8 +473,6 @@ RGE_Doppleganger_Object::setup
 
 // Function: setup
 // Address: 00441da0
-/* protected: virtual int __thiscall RGE_Doppleganger_Object::setup(int,class RGE_Game_World *) */
-
 int __thiscall
 RGE_Doppleganger_Object::setup(RGE_Doppleganger_Object *this,int param_1,RGE_Game_World *param_2)
 {
@@ -514,8 +493,6 @@ RGE_Doppleganger_Object::setup(RGE_Doppleganger_Object *this,int param_1,RGE_Gam
 
 // Function: rehook
 // Address: 00441e00
-/* public: virtual void __thiscall RGE_Doppleganger_Object::rehook(void) */
-
 void __thiscall RGE_Doppleganger_Object::rehook(RGE_Doppleganger_Object *this)
 {
   RGE_Master_Static_Object *pRVar1;
@@ -558,8 +535,6 @@ LAB_00441e63:
 // Function: update
 // Address: 00441eb0
 // [HELPER] s_DIE_DOP____d__id__d_own__d_: "DIE DOP (@%d) id=%d own=%d\n"
-/* public: virtual unsigned char __thiscall RGE_Doppleganger_Object::update(void) */
-
 uchar __thiscall RGE_Doppleganger_Object::update(RGE_Doppleganger_Object *this)
 {
   uint uVar1;
@@ -605,9 +580,6 @@ LAB_00441ee1:
 
 // Function: save
 // Address: 00441f80
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual void __thiscall RGE_Doppleganger_Object::save(int) */
-
 void __thiscall RGE_Doppleganger_Object::save(RGE_Doppleganger_Object *this,int param_1)
 {
   int iVar1;
@@ -641,8 +613,6 @@ void __thiscall RGE_Doppleganger_Object::save(RGE_Doppleganger_Object *this,int 
 
 // Function: validate
 // Address: 00442050
-/* public: virtual void __thiscall RGE_Doppleganger_Object::validate(void) */
-
 void __thiscall RGE_Doppleganger_Object::validate(RGE_Doppleganger_Object *this)
 {
   short sVar1;

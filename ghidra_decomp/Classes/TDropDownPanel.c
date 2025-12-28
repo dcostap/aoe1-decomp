@@ -375,8 +375,6 @@
 
 // Function: TDropDownPanel
 // Address: 00473ed0
-/* public: __thiscall TDropDownPanel::TDropDownPanel(void) */
-
 TDropDownPanel * __thiscall TDropDownPanel::TDropDownPanel(TDropDownPanel *this)
 {
   TPanel::TPanel((TPanel *)this);
@@ -398,8 +396,6 @@ TDropDownPanel * __thiscall TDropDownPanel::TDropDownPanel(TDropDownPanel *this)
 
 // Function: `scalar_deleting_destructor'
 // Address: 00473f30
-/* public: virtual void * __thiscall TDropDownPanel::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall TDropDownPanel::_scalar_deleting_destructor_(TDropDownPanel *this,uint param_1)
 {
   ~TDropDownPanel(this);
@@ -413,8 +409,6 @@ void * __thiscall TDropDownPanel::_scalar_deleting_destructor_(TDropDownPanel *t
 
 // Function: ~TDropDownPanel
 // Address: 00473f50
-/* public: virtual __thiscall TDropDownPanel::~TDropDownPanel(void) */
-
 void __thiscall TDropDownPanel::~TDropDownPanel(TDropDownPanel *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -442,10 +436,6 @@ void __thiscall TDropDownPanel::~TDropDownPanel(TDropDownPanel *this)
 // Function: setup
 // Address: 00473fd0
 // [HELPER] s_: ""
-/* public: long __thiscall TDropDownPanel::setup(class TDrawArea *,class TPanel *,void
-   *,long,long,int,unsigned char,int,unsigned char,long,long,long,long,short,short,long,long,char
-   *,long,long,char * *,short,long,char *,char *,char *,char *,long,long) */
-
 long __thiscall
 TDropDownPanel::setup
           (TDropDownPanel *this,TDrawArea *param_1,TPanel *param_2,void *param_3,long param_4,
@@ -572,8 +562,6 @@ TDropDownPanel::setup
 
 // Function: draw
 // Address: 00474340
-/* public: virtual void __thiscall TDropDownPanel::draw(void) */
-
 void __thiscall TDropDownPanel::draw(TDropDownPanel *this)
 {
   int iVar1;
@@ -600,9 +588,6 @@ void __thiscall TDropDownPanel::draw(TDropDownPanel *this)
 
 // Function: handle_mouse_down
 // Address: 00474350
-/* public: virtual long __thiscall TDropDownPanel::handle_mouse_down(unsigned
-   char,long,long,int,int) */
-
 long __thiscall
 TDropDownPanel::handle_mouse_down
           (TDropDownPanel *this,uchar param_1,long param_2,long param_3,int param_4,int param_5)
@@ -636,8 +621,6 @@ TDropDownPanel::handle_mouse_down
 
 // Function: handle_mouse_move
 // Address: 00474400
-/* public: virtual long __thiscall TDropDownPanel::handle_mouse_move(long,long,int,int) */
-
 long __thiscall
 TDropDownPanel::handle_mouse_move
           (TDropDownPanel *this,long param_1,long param_2,int param_3,int param_4)
@@ -652,9 +635,6 @@ TDropDownPanel::handle_mouse_move
 
 // Function: handle_mouse_up
 // Address: 00474420
-/* public: virtual long __thiscall TDropDownPanel::handle_mouse_up(unsigned char,long,long,int,int)
-    */
-
 long __thiscall
 TDropDownPanel::handle_mouse_up
           (TDropDownPanel *this,uchar param_1,long param_2,long param_3,int param_4,int param_5)
@@ -669,8 +649,6 @@ TDropDownPanel::handle_mouse_up
 
 // Function: handle_key_down
 // Address: 00474450
-/* public: virtual long __thiscall TDropDownPanel::handle_key_down(long,short,int,int,int) */
-
 long __thiscall
 TDropDownPanel::handle_key_down
           (TDropDownPanel *this,long param_1,short param_2,int param_3,int param_4,int param_5)
@@ -690,9 +668,6 @@ TDropDownPanel::handle_key_down
 
 // Function: action
 // Address: 004744a0
-/* public: virtual long __thiscall TDropDownPanel::action(class TPanel *,long,unsigned long,unsigned
-   long) */
-
 long __thiscall
 TDropDownPanel::action
           (TDropDownPanel *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -724,8 +699,6 @@ TDropDownPanel::action
 
 // Function: set_rect
 // Address: 00474550
-/* public: virtual void __thiscall TDropDownPanel::set_rect(long,long,long,long) */
-
 void __thiscall
 TDropDownPanel::set_rect(TDropDownPanel *this,long param_1,long param_2,long param_3,long param_4)
 {
@@ -750,8 +723,6 @@ TDropDownPanel::set_rect(TDropDownPanel *this,long param_1,long param_2,long par
 
 // Function: set_val_text_color
 // Address: 004745e0
-/* public: void __thiscall TDropDownPanel::set_val_text_color(unsigned long,unsigned long) */
-
 void __thiscall TDropDownPanel::set_val_text_color(TDropDownPanel *this,ulong param_1,ulong param_2)
 {
   if (this->val_panel != (TTextPanel *)0x0) {
@@ -764,8 +735,6 @@ void __thiscall TDropDownPanel::set_val_text_color(TDropDownPanel *this,ulong pa
 
 // Function: set_draw_style
 // Address: 00474600
-/* public: void __thiscall TDropDownPanel::set_draw_style(enum TDropDownPanel::DrawStyle) */
-
 void __thiscall TDropDownPanel::set_draw_style(TDropDownPanel *this,DrawStyle param_1)
 {
   DropdownMode DVar1;
@@ -783,8 +752,6 @@ void __thiscall TDropDownPanel::set_draw_style(TDropDownPanel *this,DrawStyle pa
 
 // Function: set_draw_val_rect
 // Address: 00474630
-/* public: void __thiscall TDropDownPanel::set_draw_val_rect(int) */
-
 void __thiscall TDropDownPanel::set_draw_val_rect(TDropDownPanel *this,int param_1)
 {
   this->draw_val_rect = param_1;
@@ -799,8 +766,6 @@ void __thiscall TDropDownPanel::set_draw_val_rect(TDropDownPanel *this,int param
 
 // Function: set_bevel_info
 // Address: 00474670
-/* public: void __thiscall TDropDownPanel::set_bevel_info(int,int,int,int,int,int,int) */
-
 void __thiscall
 TDropDownPanel::set_bevel_info
           (TDropDownPanel *this,int param_1,int param_2,int param_3,int param_4,int param_5,
@@ -896,8 +861,6 @@ TDropDownPanel::set_bevel_info
 
 // Function: set_buttons
 // Address: 00474820
-/* public: void __thiscall TDropDownPanel::set_buttons(class TShape *,int,int,int,int,int) */
-
 void __thiscall
 TDropDownPanel::set_buttons
           (TDropDownPanel *this,TShape *param_1,int param_2,int param_3,int param_4,int param_5,
@@ -923,9 +886,6 @@ TDropDownPanel::set_buttons
 
 // Function: set_mode
 // Address: 00474880
-/* WARNING: Variable defined which should be unmapped: parent_y */
-/* public: void __thiscall TDropDownPanel::set_mode(enum TDropDownPanel::DropdownMode) */
-
 void __thiscall TDropDownPanel::set_mode(TDropDownPanel *this,DropdownMode param_1)
 {
   uchar uVar1;
@@ -1195,8 +1155,6 @@ void __thiscall TDropDownPanel::set_mode(TDropDownPanel *this,DropdownMode param
 
 // Function: numberLines
 // Address: 00475110
-/* public: int __thiscall TDropDownPanel::numberLines(void) */
-
 int __thiscall TDropDownPanel::numberLines(TDropDownPanel *this)
 {
   int iVar1;
@@ -1212,8 +1170,6 @@ int __thiscall TDropDownPanel::numberLines(TDropDownPanel *this)
 
 // Function: currentLineNumber
 // Address: 00475130
-/* public: int __thiscall TDropDownPanel::currentLineNumber(void) */
-
 int __thiscall TDropDownPanel::currentLineNumber(TDropDownPanel *this)
 {
   int iVar1;
@@ -1229,8 +1185,6 @@ int __thiscall TDropDownPanel::currentLineNumber(TDropDownPanel *this)
 
 // Function: setCurrentLineNumber
 // Address: 00475150
-/* public: void __thiscall TDropDownPanel::setCurrentLineNumber(int) */
-
 void __thiscall TDropDownPanel::setCurrentLineNumber(TDropDownPanel *this,int param_1)
 {
   set_line(this,param_1);
@@ -1241,8 +1195,6 @@ void __thiscall TDropDownPanel::setCurrentLineNumber(TDropDownPanel *this,int pa
 
 // Function: setCurrentLineId
 // Address: 00475160
-/* public: void __thiscall TDropDownPanel::setCurrentLineId(int) */
-
 void __thiscall TDropDownPanel::setCurrentLineId(TDropDownPanel *this,int param_1)
 {
   int iVar1;
@@ -1266,8 +1218,6 @@ void __thiscall TDropDownPanel::setCurrentLineId(TDropDownPanel *this,int param_
 
 // Function: currentLine
 // Address: 004751c0
-/* public: char * __thiscall TDropDownPanel::currentLine(void) */
-
 char * __thiscall TDropDownPanel::currentLine(TDropDownPanel *this)
 {
   char *pcVar1;
@@ -1283,8 +1233,6 @@ char * __thiscall TDropDownPanel::currentLine(TDropDownPanel *this)
 
 // Function: set_tab_order
 // Address: 004751e0
-/* public: virtual void __thiscall TDropDownPanel::set_tab_order(class TPanel *,class TPanel *) */
-
 void __thiscall TDropDownPanel::set_tab_order(TDropDownPanel *this,TPanel *param_1,TPanel *param_2)
 {
   TPanel::set_tab_order((TPanel *)this,param_1,param_2);
@@ -1298,8 +1246,6 @@ void __thiscall TDropDownPanel::set_tab_order(TDropDownPanel *this,TPanel *param
 
 // Function: set_sorted
 // Address: 00475210
-/* public: void __thiscall TDropDownPanel::set_sorted(int) */
-
 void __thiscall TDropDownPanel::set_sorted(TDropDownPanel *this,int param_1)
 {
   if (this->list_panel != (TListPanel *)0x0) {
@@ -1312,8 +1258,6 @@ void __thiscall TDropDownPanel::set_sorted(TDropDownPanel *this,int param_1)
 
 // Function: get_sorted
 // Address: 00475230
-/* public: int __thiscall TDropDownPanel::get_sorted(void) */
-
 int __thiscall TDropDownPanel::get_sorted(TDropDownPanel *this)
 {
   if (this->list_panel != (TListPanel *)0x0) {
@@ -1326,8 +1270,6 @@ int __thiscall TDropDownPanel::get_sorted(TDropDownPanel *this)
 
 // Function: set_line
 // Address: 00475250
-/* public: void __thiscall TDropDownPanel::set_line(long) */
-
 void __thiscall TDropDownPanel::set_line(TDropDownPanel *this,long param_1)
 {
   int iVar1;
@@ -1349,8 +1291,6 @@ void __thiscall TDropDownPanel::set_line(TDropDownPanel *this,long param_1)
 
 // Function: append_line
 // Address: 004752a0
-/* public: int __thiscall TDropDownPanel::append_line(char *,long) */
-
 int __thiscall TDropDownPanel::append_line(TDropDownPanel *this,char *param_1,long param_2)
 {
   int iVar1;
@@ -1366,8 +1306,6 @@ int __thiscall TDropDownPanel::append_line(TDropDownPanel *this,char *param_1,lo
 
 // Function: append_line
 // Address: 004752d0
-/* public: int __thiscall TDropDownPanel::append_line(long,long) */
-
 int __thiscall TDropDownPanel::append_line(TDropDownPanel *this,long param_1,long param_2)
 {
   int iVar1;
@@ -1383,8 +1321,6 @@ int __thiscall TDropDownPanel::append_line(TDropDownPanel *this,long param_1,lon
 
 // Function: insert_line
 // Address: 00475300
-/* public: int __thiscall TDropDownPanel::insert_line(long,char *,long) */
-
 int __thiscall
 TDropDownPanel::insert_line(TDropDownPanel *this,long param_1,char *param_2,long param_3)
 {
@@ -1401,8 +1337,6 @@ TDropDownPanel::insert_line(TDropDownPanel *this,long param_1,char *param_2,long
 
 // Function: insert_line
 // Address: 00475330
-/* public: int __thiscall TDropDownPanel::insert_line(long,long,long) */
-
 int __thiscall
 TDropDownPanel::insert_line(TDropDownPanel *this,long param_1,long param_2,long param_3)
 {
@@ -1419,8 +1353,6 @@ TDropDownPanel::insert_line(TDropDownPanel *this,long param_1,long param_2,long 
 
 // Function: delete_line
 // Address: 00475360
-/* public: int __thiscall TDropDownPanel::delete_line(long) */
-
 int __thiscall TDropDownPanel::delete_line(TDropDownPanel *this,long param_1)
 {
   int iVar1;
@@ -1436,8 +1368,6 @@ int __thiscall TDropDownPanel::delete_line(TDropDownPanel *this,long param_1)
 
 // Function: get_line
 // Address: 00475380
-/* public: long __thiscall TDropDownPanel::get_line(void) */
-
 long __thiscall TDropDownPanel::get_line(TDropDownPanel *this)
 {
   long lVar1;
@@ -1453,8 +1383,6 @@ long __thiscall TDropDownPanel::get_line(TDropDownPanel *this)
 
 // Function: get_line
 // Address: 004753a0
-/* public: long __thiscall TDropDownPanel::get_line(long) */
-
 long __thiscall TDropDownPanel::get_line(TDropDownPanel *this,long param_1)
 {
   long lVar1;
@@ -1470,8 +1398,6 @@ long __thiscall TDropDownPanel::get_line(TDropDownPanel *this,long param_1)
 
 // Function: get_line
 // Address: 004753c0
-/* public: long __thiscall TDropDownPanel::get_line(char *) */
-
 long __thiscall TDropDownPanel::get_line(TDropDownPanel *this,char *param_1)
 {
   long lVar1;
@@ -1487,8 +1413,6 @@ long __thiscall TDropDownPanel::get_line(TDropDownPanel *this,char *param_1)
 
 // Function: get_text
 // Address: 004753e0
-/* public: char * __thiscall TDropDownPanel::get_text(void) */
-
 char * __thiscall TDropDownPanel::get_text(TDropDownPanel *this)
 {
   char *pcVar1;
@@ -1504,8 +1428,6 @@ char * __thiscall TDropDownPanel::get_text(TDropDownPanel *this)
 
 // Function: get_text
 // Address: 00475400
-/* public: char * __thiscall TDropDownPanel::get_text(long) */
-
 char * __thiscall TDropDownPanel::get_text(TDropDownPanel *this,long param_1)
 {
   char *pcVar1;
@@ -1521,8 +1443,6 @@ char * __thiscall TDropDownPanel::get_text(TDropDownPanel *this,long param_1)
 
 // Function: get_id
 // Address: 00475420
-/* public: long __thiscall TDropDownPanel::get_id(void) */
-
 long __thiscall TDropDownPanel::get_id(TDropDownPanel *this)
 {
   long lVar1;
@@ -1538,8 +1458,6 @@ long __thiscall TDropDownPanel::get_id(TDropDownPanel *this)
 
 // Function: get_id
 // Address: 00475440
-/* public: long __thiscall TDropDownPanel::get_id(long) */
-
 long __thiscall TDropDownPanel::get_id(TDropDownPanel *this,long param_1)
 {
   long lVar1;
@@ -1555,8 +1473,6 @@ long __thiscall TDropDownPanel::get_id(TDropDownPanel *this,long param_1)
 
 // Function: empty_list
 // Address: 00475460
-/* public: void __thiscall TDropDownPanel::empty_list(void) */
-
 void __thiscall TDropDownPanel::empty_list(TDropDownPanel *this)
 {
   if (this->list_panel != (TListPanel *)0x0) {

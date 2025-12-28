@@ -320,12 +320,6 @@ long pnl_sub_wnd_proc(void *param_1,uint param_2,uint param_3,long param_4)
 // Address: 00476422
 // XREFS: None
 // [HELPER] s_10: "10"
-/* WARNING: Instruction at (ram,0x00476498) overlaps instruction at (ram,0x00476493)
-    */
-/* WARNING: Control flow encountered bad instruction data */
-/* WARNING (jumptable): Unable to track spacebase fully for stack */
-/* WARNING: Unable to track spacebase fully for stack */
-
 undefined4 __fastcall FUN_00476422(int param_1,int param_2)
 {
   int iVar1;
@@ -357,7 +351,6 @@ undefined4 __fastcall FUN_00476422(int param_1,int param_2)
     pcVar2 = (char *)((int)&this->_padding_ + 3);
     *pcVar2 = *pcVar2 + cVar5;
     this[0xaf]._padding_ = this[0xaf]._padding_ >> 1;
-                    /* WARNING: Bad instruction - Truncating control flow here */
     halt_baddata();
   }
   *(char *)(in_EAX + -0x6f6f6f70) = *(char *)(in_EAX + -0x6f6f6f70) + (char)param_2;
@@ -666,9 +659,6 @@ LAB_004768c7:
 // Address: 00477729
 // XREFS: None
 // [HELPER] s_pnl_inp__draw: "pnl_inp::draw"
-/* WARNING: Instruction at (ram,0x0047778e) overlaps instruction at (ram,0x0047778d)
-    */
-
 void __fastcall FUN_00477729(TTextPanel *param_1,undefined4 param_2)
 {
   byte *pbVar1;
@@ -1565,8 +1555,6 @@ LAB_0047d8dd:
 // Function: operator==
 // Address: 0047e4b0
 // XREFS: None
-/* int __cdecl operator==(class XYZ const &,class XYZ const &) */
-
 int __cdecl operator==(XYZ *param_1,XYZ *param_2)
 {
   if (((param_1->xValue == param_2->xValue) && (param_1->yValue == param_2->yValue)) &&
@@ -1581,8 +1569,6 @@ int __cdecl operator==(XYZ *param_1,XYZ *param_2)
 // Function: operator!=
 // Address: 0047e4e0
 // XREFS: None
-/* int __cdecl operator!=(class XYZ const &,class XYZ const &) */
-
 int __cdecl operator!=(XYZ *param_1,XYZ *param_2)
 {
   if (((param_1->xValue == param_2->xValue) && (param_1->yValue == param_2->yValue)) &&
@@ -1597,8 +1583,6 @@ int __cdecl operator!=(XYZ *param_1,XYZ *param_2)
 // Function: rdlg_list_compare
 // Address: 0047eaa0
 // XREFS: sort_list
-/* int __cdecl rdlg_list_compare(void const *,void const *) */
-
 int __cdecl rdlg_list_compare(void *param_1,void *param_2)
 {
   int iVar1;
@@ -1625,8 +1609,6 @@ int __cdecl rdlg_list_compare(void *param_1,void *param_2)
 // [HELPER] s_Error__Reading_resfile_header_da: "Error: Reading resfile header data."
 // [HELPER] s_RESOURCE_ERROR: "RESOURCE ERROR"
 // [HELPER] s__s_s: "%s%s"
-/* void __cdecl RESFILE_open_new_resource_file(char *,char *,char *,int) */
-
 void __cdecl RESFILE_open_new_resource_file(char *param_1,char *param_2,char *param_3,int param_4)
 {
   char cVar1;
@@ -1655,7 +1637,6 @@ void __cdecl RESFILE_open_new_resource_file(char *param_1,char *param_2,char *pa
   fHandle = -1;
   sprintf(resFile,s__s_s,param_3,param_1);
   if (param_4 == 0) {
-                    /* language.dll match for 0x80: "Arial" */
     iVar7 = CreateFileA(resFile,0x80000000,1,0,4,0x80,0);
     if (iVar7 != -1) {
       iVar8 = CreateFileMappingA(iVar7,0,2,0,0,0);
@@ -1856,8 +1837,6 @@ LAB_0047f0d1:
 // Function: RESFILE_close_new_resource_file
 // Address: 0047f180
 // XREFS: ~TRIBE_Game
-/* void __cdecl RESFILE_close_new_resource_file(char *) */
-
 void __cdecl RESFILE_close_new_resource_file(char *param_1)
 {
   int *piVar1;
@@ -1927,10 +1906,6 @@ LAB_0047f1c6:
 // Function: RESFILE_locate_resource
 // Address: 0047f230
 // XREFS: RESFILE_load
-/* WARNING: Variable defined which should be unmapped: p */
-/* int __cdecl RESFILE_locate_resource(unsigned long,unsigned long,int &,int &,unsigned char * &,int
-   &) */
-
 int __cdecl
 RESFILE_locate_resource
           (ulong param_1,ulong param_2,int *param_3,int *param_4,uchar **param_5,int *param_6)
@@ -1995,9 +1970,6 @@ RESFILE_locate_resource
 // [HELPER] s_Error__Out_of_memory_in_res_read: "Error: Out of memory in res_read_bin."
 // [HELPER] s_Error__unable_to_read_resource: "Error: unable to read resource"
 // [HELPER] s_RESOURCE_ERROR: "RESOURCE ERROR"
-/* WARNING: Variable defined which should be unmapped: error_string */
-/* unsigned char * __cdecl RESFILE_load(unsigned long,unsigned long,int &,int &) */
-
 uchar * __cdecl RESFILE_load(ulong param_1,ulong param_2,int *param_3,int *param_4)
 {
   ulong uVar1;
@@ -2055,9 +2027,6 @@ uchar * __cdecl RESFILE_load(ulong param_1,ulong param_2,int *param_3,int *param
 // [HELPER] s__: "}"
 // [HELPER] s_temp: "temp"
 // [HELPER] s_w_: "w+"
-/* WARNING: Variable defined which should be unmapped: rLoadType */
-/* int __cdecl RESFILE_Extract_to_File(unsigned long,unsigned long,char *,struct _iobuf * &) */
-
 int __cdecl RESFILE_Extract_to_File(ulong param_1,ulong param_2,char *param_3,_iobuf **param_4)
 {
   char cVar1;
@@ -2129,8 +2098,6 @@ int __cdecl RESFILE_Extract_to_File(ulong param_1,ulong param_2,char *param_3,_i
 // Function: RESFILE_Set_Missing_Flag
 // Address: 0047f580
 // XREFS: setup_cmd_options
-/* void __cdecl RESFILE_Set_Missing_Flag(int) */
-
 void __cdecl RESFILE_Set_Missing_Flag(int param_1)
 {
   DAT_0086b258 = param_1;
@@ -2142,8 +2109,6 @@ void __cdecl RESFILE_Set_Missing_Flag(int param_1)
 // Function: RESFILE_Decommit_Mapped_Memory
 // Address: 0047f590
 // XREFS: ~TShape
-/* int __cdecl RESFILE_Decommit_Mapped_Memory(unsigned char *,int) */
-
 int __cdecl RESFILE_Decommit_Mapped_Memory(uchar *param_1,int param_2)
 {
   int iVar1;
@@ -2180,9 +2145,6 @@ int __cdecl RESFILE_Decommit_Mapped_Memory(uchar *param_1,int param_2)
 // [HELPER] s__s__s: "%s\n%s"
 // [HELPER] s__s_s: "%s%s"
 // [HELPER] s_r: "r"
-/* WARNING: Variable defined which should be unmapped: ID_List */
-/* int __cdecl RESFILE_build_res_file(char *,char *,char *) */
-
 int __cdecl RESFILE_build_res_file(char *param_1,char *param_2,char *param_3)
 {
   char cVar1;
@@ -2552,9 +2514,6 @@ LAB_0047fba1:
 // Function: BUILDRES_get_files_resource_type
 // Address: 0047fc50
 // XREFS: RESFILE_build_res_file
-/* WARNING: Variable defined which should be unmapped: extension */
-/* unsigned long __cdecl BUILDRES_get_files_resource_type(char *) */
-
 ulong __cdecl BUILDRES_get_files_resource_type(char *param_1)
 {
   undefined *puVar1;
@@ -2619,8 +2578,6 @@ ulong __cdecl BUILDRES_get_files_resource_type(char *param_1)
 // Function: rge_fake_open
 // Address: 0047fd30
 // XREFS: open_scenario
-/* int __cdecl rge_fake_open(int,int) */
-
 int __cdecl rge_fake_open(int param_1,int param_2)
 {
   if (-1 < param_1) {
@@ -2641,8 +2598,6 @@ int __cdecl rge_fake_open(int param_1,int param_2)
 // Function: rge_open
 // Address: 0047fd90
 // XREFS: RGE_Game_Info, RGE_Scenario_File_Info, get_scenario_header, get_scenario_info, init, loadLearnInfo, loadUnitHistory, load_game, load_scenario, reload_scenarios
-/* int __cdecl rge_open(char *,int) */
-
 int __cdecl rge_open(char *param_1,int param_2)
 {
   int iVar1;
@@ -2669,8 +2624,6 @@ int __cdecl rge_open(char *param_1,int param_2)
 // Function: rge_open
 // Address: 0047fe20
 // XREFS: base_save, save, save_game, save_scenario, ~TribeInformationAIModule
-/* int __cdecl rge_open(char *,int,int) */
-
 int __cdecl rge_open(char *param_1,int param_2,int param_3)
 {
   int iVar1;
@@ -2697,8 +2650,6 @@ int __cdecl rge_open(char *param_1,int param_2,int param_3)
 // Function: rge_fake_close
 // Address: 0047feb0
 // XREFS: None
-/* int __cdecl rge_fake_close(int) */
-
 int __cdecl rge_fake_close(int param_1)
 {
   if ((-1 < param_1) && (param_1 == DAT_0086b260)) {
@@ -2724,8 +2675,6 @@ int __cdecl rge_fake_close(int param_1)
 // Function: rge_close
 // Address: 0047ff30
 // XREFS: RGE_Game_Info, RGE_Scenario_File_Info, base_save, get_scenario_header, get_scenario_info, init, loadLearnInfo, loadUnitHistory, load_game, load_scenario, load_scenario1, load_scenario2 (... +11 more)
-/* int __cdecl rge_close(int) */
-
 int __cdecl rge_close(int param_1)
 {
   int iVar1;
@@ -2761,8 +2710,6 @@ int __cdecl rge_close(int param_1)
 // Function: rge_read_uncompressed
 // Address: 00480000
 // XREFS: RGE_Scenario_File_Info, RGE_Scenario_Header, TRIBE_Scenario_Header, get_scenario_header, get_scenario_info, load_scenario, load_scenario3, load_scenario4, load_scenario5, load_scenario6, load_scenario7, load_scenario8 (... +1 more)
-/* void __cdecl rge_read_uncompressed(int,void *,int) */
-
 void __cdecl rge_read_uncompressed(int param_1,void *param_2,int param_3)
 {
   if ((-1 < param_1) && (param_1 == DAT_0086b260)) {
@@ -2777,8 +2724,6 @@ void __cdecl rge_read_uncompressed(int param_1,void *param_2,int param_3)
 // Function: rge_write_uncompressed
 // Address: 00480040
 // XREFS: save, save_scenario, write_scenario_header
-/* void __cdecl rge_write_uncompressed(int,void *,int) */
-
 void __cdecl rge_write_uncompressed(int param_1,void *param_2,int param_3)
 {
   int iVar1;
@@ -2797,9 +2742,6 @@ void __cdecl rge_write_uncompressed(int param_1,void *param_2,int param_3)
 // Function: rge_read
 // Address: 00480080
 // XREFS: BuildAIModule, ConstructionAIModule, DiplomacyAIModule, EmotionalAIModule, MainDecisionAIModule, RGE_Action_Attack, RGE_Action_Gather, RGE_Action_Missile, RGE_Action_Move_To, RGE_Active_Animated_Sprite, RGE_Active_Sprite, RGE_Campaign_Info (... +62 more)
-/* WARNING: Variable defined which should be unmapped: temp_max */
-/* void __cdecl rge_read(int,void *,int) */
-
 void __cdecl rge_read(int param_1,void *param_2,int param_3)
 {
   int iVar1;
@@ -2886,8 +2828,6 @@ void __cdecl rge_read(int param_1,void *param_2,int param_3)
 // Function: rge_buffer_full
 // Address: 00480290
 // XREFS: rge_write
-/* int __cdecl rge_buffer_full(unsigned char *,int) */
-
 int __cdecl rge_buffer_full(uchar *param_1,int param_2)
 {
   int iVar1;
@@ -2904,8 +2844,6 @@ int __cdecl rge_buffer_full(uchar *param_1,int param_2)
 // Function: rge_write
 // Address: 004802c0
 // XREFS: Save, base_save, save, save2, save_game, save_map, save_scenario, scenario_postsave, scenario_save, ~TribeInformationAIModule
-/* void __cdecl rge_write(int,void *,int) */
-
 void __cdecl rge_write(int param_1,void *param_2,int param_3)
 {
   int iVar1;
@@ -2940,8 +2878,6 @@ void __cdecl rge_write(int param_1,void *param_2,int param_3)
 // Function: FUN_00482081
 // Address: 00482081
 // XREFS: None
-/* WARNING: Unable to track spacebase fully for stack */
-
 void __fastcall FUN_00482081(RGE_Random_Map_Module *param_1,char *param_2)
 {
   char *pcVar1;
@@ -3199,9 +3135,6 @@ int __fastcall FUN_0048287e(int param_1,int param_2)
 // XREFS: None
 // [HELPER] s_C__msdev_work_age1_x1_rmm_tdbc_c: "C:\msdev\work\age1_x1\rmm_tdbc.cpp"
 // [HELPER] s_Random_Map_land_initilization__r: "Random Map land initilization, rand: %d"
-/* WARNING: Instruction at (ram,0x00487977) overlaps instruction at (ram,0x00487975)
-    */
-
 void __fastcall FUN_0048790a(RGE_RMM_Database_Controller *param_1,undefined4 param_2)
 {
   byte *pbVar1;
@@ -3809,8 +3742,6 @@ void FUN_0048e1c6(void)
 // Address: 0048f085
 // XREFS: None
 // [HELPER] s_scr_ach__draw: "scr_ach::draw"
-/* WARNING: Unable to track spacebase fully for stack */
-
 void __fastcall FUN_0048f085(TScreenPanel *param_1,int param_2)
 {
   code *pcVar1;
@@ -3921,9 +3852,6 @@ void FUN_00491c42(void)
 // Address: 00493420
 // XREFS: handle_idle
 // [HELPER] s_C__msdev_work_age1_x1_scr_cred_c: "C:\msdev\work\age1_x1\scr_cred.cpp"
-/* void __cdecl RGE_fade_palette_start(class TDrawArea *,struct tagPALETTEENTRY,float,unsigned
-   char,struct tagPALETTEENTRY *,int,int) */
-
 void __cdecl
 RGE_fade_palette_start
           (TDrawArea *param_1,tagPALETTEENTRY param_2,float param_3,uchar param_4,
@@ -3980,10 +3908,6 @@ RGE_fade_palette_start
 // Address: 00493540
 // XREFS: handle_idle
 // [HELPER] s_C__msdev_work_age1_x1_scr_cred_c: "C:\msdev\work\age1_x1\scr_cred.cpp"
-/* WARNING: Variable defined which should be unmapped: delta_time */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* int __cdecl RGE_fade_palette_step(void) */
-
 int __cdecl RGE_fade_palette_step(void)
 {
   float fVar1;
@@ -4033,10 +3957,6 @@ LAB_00493687:
 // Function: FUN_00498026
 // Address: 00498026
 // XREFS: None
-/* WARNING: Instruction at (ram,0x00498260) overlaps instruction at (ram,0x0049825f)
-    */
-/* WARNING: Control flow encountered bad instruction data */
-
 undefined4 __fastcall FUN_00498026(uint *param_1,uint *param_2)
 {
   byte *pbVar1;
@@ -4179,8 +4099,6 @@ code_r0x00498090:
     *puVar23 = *puVar23 | (uint)puVar23;
     *puVar23 = *puVar23 | (uint)puVar23;
     *param_2 = *param_2 | in_EAX;
-                    /* WARNING: Could not recover jumptable at 0x004980bf. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
     uVar8 = (**(code **)(in_EAX + *(int *)(in_EAX + 0x8b080706) + -0x53ffb689))();
     return uVar8;
   }
@@ -4216,7 +4134,6 @@ code_r0x004980a1:
     if (!CARRY1(bVar5,bVar6) && cVar24 != '\0') {
       unaff_EDI = unaff_EDI + -1;
       if ((POPCOUNT((uint)unaff_EDI & 0xff) & 1U) != 0) {
-                    /* WARNING: Bad instruction - Truncating control flow here */
         halt_baddata();
       }
       goto code_r0x00498123;
@@ -4694,9 +4611,6 @@ void FUN_00498943(void)
 // Function: FUN_004992c9
 // Address: 004992c9
 // XREFS: None
-/* WARNING: Stack frame is not setup normally: Input value of stackpointer is not used */
-/* WARNING: This function may have set the stack pointer */
-
 void __fastcall FUN_004992c9(undefined4 *param_1)
 {
   TRIBE_Screen_Game *this;
@@ -5000,8 +4914,6 @@ void __fastcall FUN_0049ad3b(int param_1,int param_2)
 // Function: scr_game_score_compare
 // Address: 0049b000
 // XREFS: reset_score_display
-/* int __cdecl scr_game_score_compare(void const *,void const *) */
-
 int __cdecl scr_game_score_compare(void *param_1,void *param_2)
 {
   UNK_0086bab9._3_4_ = param_2;
@@ -5884,11 +5796,8 @@ void __fastcall FUN_004aa6e6(int param_1,int param_2)
 // Function: FUN_004aab4a
 // Address: 004aab4a
 // XREFS: None
-/* WARNING: Control flow encountered bad instruction data */
-
 void FUN_004aab4a(void)
 {
-                    /* WARNING: Bad instruction - Truncating control flow here */
   halt_baddata();
 }
 
@@ -5926,8 +5835,6 @@ void __fastcall FUN_004aadbf(int param_1,int param_2)
 // Function: TRIBE_Screen_Sed_unit_list_compare
 // Address: 004ab2d0
 // XREFS: set_unit_player
-/* int __cdecl TRIBE_Screen_Sed_unit_list_compare(void const *,void const *) */
-
 int __cdecl TRIBE_Screen_Sed_unit_list_compare(void *param_1,void *param_2)
 {
   int iVar1;
@@ -5948,12 +5855,6 @@ int __cdecl TRIBE_Screen_Sed_unit_list_compare(void *param_1,void *param_2)
 // [HELPER] s_OKDialog: "OKDialog"
 // [HELPER] s_Scenario_Editor_Open: "Scenario Editor Open"
 // [HELPER] s_Scenario_Editor_Screen: "Scenario Editor Screen"
-/* WARNING (jumptable): Stack frame is not setup normally: Input value of stackpointer is not used
-    */
-/* WARNING: Stack frame is not setup normally: Input value of stackpointer is not used */
-/* WARNING: This function may have set the stack pointer */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-
 undefined4 FUN_004abc31(void)
 {
   undefined1 *puVar1;
@@ -7533,8 +7434,6 @@ LAB_004abe5f:
 // Function: FUN_004ad06e
 // Address: 004ad06e
 // XREFS: None
-/* WARNING: Stack frame is not setup normally: Input value of stackpointer is not used */
-
 void FUN_004ad06e(void)
 {
   char cVar1;
@@ -7766,10 +7665,6 @@ LAB_004ae57f:
 // Function: FUN_004ae5cf
 // Address: 004ae5cf
 // XREFS: None
-/* WARNING: Instruction at (ram,0x004ae631) overlaps instruction at (ram,0x004ae62f)
-    */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-
 void FUN_004ae5cf(void)
 {
   float *pfVar1;
@@ -7990,9 +7885,6 @@ void FUN_004af2d2(void)
 // [HELPER] s_No_Culture: "No Culture"
 // [HELPER] s_Phoenician: "Phoenician"
 // [HELPER] s_Sumerian: "Sumerian"
-/* WARNING: Instruction at (ram,0x004b80ad) overlaps instruction at (ram,0x004b80ac)
-    */
-
 undefined6 __fastcall FUN_004b8042(int param_1,undefined2 param_2,undefined4 param_3)
 {
   char *pcVar1;
@@ -8077,8 +7969,6 @@ switchD_004b8079_caseD_5:
 // Address: 004b93fd
 // XREFS: None
 // [HELPER] s_RGL_shape_draw: "RGL_shape_draw"
-/* WARNING: Unable to track spacebase fully for stack */
-
 uchar __fastcall FUN_004b93fd(TShape *param_1,char *param_2)
 {
   char *pcVar1;
@@ -8576,9 +8466,6 @@ FUN_004c218d(RGE_Static_Object *param_1,short param_2,TDrawArea *param_3,TDrawAr
 // Function: FUN_004c2206
 // Address: 004c2206
 // XREFS: None
-/* WARNING (jumptable): Unable to track spacebase fully for stack */
-/* WARNING: Unable to track spacebase fully for stack */
-
 void __fastcall FUN_004c2206(RGE_Static_Object *param_1,int *param_2)
 {
   uint *puVar1;
@@ -8871,8 +8758,6 @@ void FUN_004c66a2(void)
 // Function: FUN_004cbccb
 // Address: 004cbccb
 // XREFS: None
-/* WARNING: Control flow encountered bad instruction data */
-
 void __fastcall FUN_004cbccb(char *param_1)
 {
   undefined4 in_EAX;
@@ -8882,7 +8767,6 @@ void __fastcall FUN_004cbccb(char *param_1)
   *(uint *)(param_1 + -0x449fffb4) = *(uint *)(param_1 + -0x449fffb4) | unaff_EDI;
   *param_1 = *param_1 + 'L';
   cRambcbb004c = cRambcbb004c + (char)((uint)in_EAX >> 8) + unaff_BL;
-                    /* WARNING: Bad instruction - Truncating control flow here */
   halt_baddata();
 }
 
@@ -8891,8 +8775,6 @@ void __fastcall FUN_004cbccb(char *param_1)
 // Function: lines_intersect
 // Address: 004cbd30
 // XREFS: higher_check_for_cliff
-/* int __cdecl lines_intersect(float,float,float,float,float,float,float,float) */
-
 int __cdecl
 lines_intersect(float param_1,float param_2,float param_3,float param_4,float param_5,float param_6,
                float param_7,float param_8)
@@ -9067,8 +8949,6 @@ Low-level Error: Symbol $$undef0000000d extends beyond the end of the address sp
 // Address: 004ce02d
 // XREFS: None
 // [HELPER] s_C__msdev_work_age1_x1_tact_cnv_c: "C:\msdev\work\age1_x1\tact_cnv.cpp"
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-
 undefined4 __fastcall FUN_004ce02d(int *param_1)
 {
   short sVar1;
@@ -9234,9 +9114,6 @@ switchD_004ce17c_caseD_0:
 // Function: FUN_004ce3fa
 // Address: 004ce3fa
 // XREFS: None
-/* WARNING: Instruction at (ram,0x004ce49b) overlaps instruction at (ram,0x004ce49a)
-    */
-
 int __fastcall FUN_004ce3fa(int param_1,int param_2)
 {
   byte *pbVar1;
@@ -9367,11 +9244,8 @@ code_r0x004ce48f:
 // Function: FUN_004cecc6
 // Address: 004cecc6
 // XREFS: None
-/* WARNING: Control flow encountered bad instruction data */
-
 void FUN_004cecc6(void)
 {
-                    /* WARNING: Bad instruction - Truncating control flow here */
   halt_baddata();
 }
 
@@ -9536,8 +9410,6 @@ int __fastcall FUN_004cfe93(char *param_1,int param_2)
 // Function: FUN_004d0517
 // Address: 004d0517
 // XREFS: None
-/* WARNING: Control flow encountered bad instruction data */
-
 void __fastcall FUN_004d0517(int param_1,int param_2)
 {
   int in_EAX;
@@ -9550,7 +9422,6 @@ void __fastcall FUN_004d0517(int param_1,int param_2)
   *(int *)(unaff_EBP + -1) = *(int *)(unaff_EBP + -1) + param_1;
   *(char *)(param_2 + 2) = *(char *)(param_2 + 2) + cVar1;
   *(char *)(param_2 + -0x15ffb2fe) = *(char *)(param_2 + -0x15ffb2fe) + cVar1;
-                    /* WARNING: Bad instruction - Truncating control flow here */
   halt_baddata();
 }
 
@@ -9601,8 +9472,6 @@ undefined4 __fastcall FUN_004d1533(int *param_1,int param_2)
 // Function: FUN_004d1b79
 // Address: 004d1b79
 // XREFS: None
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-
 undefined2 __fastcall FUN_004d1b79(uint param_1,undefined4 param_2)
 {
   byte bVar1;
@@ -10543,9 +10412,6 @@ long __fastcall FUN_004e6841(char *param_1,char param_2)
 // Function: FUN_004e7646
 // Address: 004e7646
 // XREFS: None
-/* WARNING: Instruction at (ram,0x004e76a5) overlaps instruction at (ram,0x004e76a3)
-    */
-
 undefined4 __fastcall
 FUN_004e7646(byte *param_1,char *param_2,undefined4 param_3,undefined4 param_4,int param_5,
             undefined4 param_6,undefined4 param_7)
@@ -11292,10 +11158,6 @@ LAB_004e8c26:
 // Function: FUN_004e8c42
 // Address: 004e8c42
 // XREFS: None
-/* WARNING: Instruction at (ram,0x004e8d01) overlaps instruction at (ram,0x004e8cff)
-    */
-/* WARNING: Control flow encountered bad instruction data */
-
 undefined4 __fastcall FUN_004e8c42(uint param_1,undefined4 param_2)
 {
   char *pcVar1;
@@ -11365,7 +11227,6 @@ code_r0x004e8c99:
       UNLOCK();
 code_r0x004e8cf1:
       *puVar10 = uVar5;
-                    /* WARNING: Bad instruction - Truncating control flow here */
       halt_baddata();
     }
     cVar8 = (char)((uint)in_EAX >> 8);
@@ -11423,8 +11284,6 @@ code_r0x004e8cf5:
 // Address: 004e90e9
 // XREFS: None
 // [HELPER] s_: ""
-/* WARNING: Unable to track spacebase fully for stack */
-
 StrategyAIModule * FUN_004e90e9(void)
 {
   char cVar1;
@@ -11540,9 +11399,6 @@ void FUN_004ecd1f(void)
 // Function: FUN_004f0b62
 // Address: 004f0b62
 // XREFS: None
-/* WARNING: Instruction at (ram,0x004f0b78) overlaps instruction at (ram,0x004f0b77)
-    */
-
 char * __fastcall FUN_004f0b62(char param_1,uint *param_2)
 {
   char *pcVar1;
@@ -12905,7 +12761,6 @@ void FUN_005024b3(void)
 code_r0x005024b3:
   iVar3 = 0x28;
 LAB_005024b8:
-                    /* language.dll match for 0x65: "1" */
   iVar4 = 0x65;
 LAB_005024bd:
   iVar1 = TRIBE_Player::objectAvailable
@@ -13161,9 +13016,6 @@ uint __fastcall FUN_005025ca(int param_1,int param_2)
 // XREFS: None
 // [HELPER] s_C__msdev_work_age1_x1_taiuaimd_c: "C:\msdev\work\age1_x1\taiuaimd.cpp"
 // [HELPER] s___d_call_stopObject__s__d_: "#%d call stopObject %s %d\n"
-/* WARNING: Removing unreachable block (ram,0x00504ef5) */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-
 int __fastcall FUN_00504dc6(UnitAIModule *param_1,int *param_2)
 {
   code *pcVar1;
@@ -13622,8 +13474,6 @@ int __thiscall FUN_00505dc7(UnitAIModule *param_1,NotifyEvent *param_2,ulong par
 // Address: 00505fa9
 // XREFS: None
 // [HELPER] s_C__msdev_work_age1_x1_taiuaimd_c: "C:\msdev\work\age1_x1\taiuaimd.cpp"
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-
 undefined4 __fastcall FUN_00505fa9(undefined4 param_1,char param_2)
 {
   RGE_Static_Object *pRVar1;
@@ -13860,11 +13710,8 @@ undefined8 __fastcall FUN_005103f3(char *param_1,undefined4 param_2)
 // Function: FUN_00513f95
 // Address: 00513f95
 // XREFS: None
-/* WARNING: Control flow encountered bad instruction data */
-
 void FUN_00513f95(void)
 {
-                    /* WARNING: Bad instruction - Truncating control flow here */
   halt_baddata();
 }
 
@@ -13907,8 +13754,6 @@ void __fastcall FUN_005159ba(int *param_1,int param_2)
   uVar6 = CONCAT31(uVar7,cVar5) & 0xffffff10;
   piStack_8 = param_1;
   if (uVar6 - 0x201 < 0xc) {
-                    /* WARNING: Jumptable with 0 entries at 0x005159f1 */
-                    /* WARNING: Treating indirect jump as call */
     (*(code *)(&switchD_005159f1::switchdataD_00515b88)[*(byte *)(uVar6 + 0x51599b)])();
     return;
   }
@@ -14883,9 +14728,6 @@ LAB_00517639:
 // Address: 005177e7
 // XREFS: None
 // [HELPER] s_Setting_up_as_Egyptians_: "Setting up as Egyptians."
-/* WARNING: Instruction at (ram,0x00517bcc) overlaps instruction at (ram,0x00517bca)
-    */
-
 ushort * __fastcall FUN_005177e7(char *param_1,int param_2,ushort *param_3)
 {
   ushort *puVar1;
@@ -15252,8 +15094,6 @@ void __fastcall FUN_00519465(undefined4 param_1,int param_2)
   *(char *)(&uStack_14 + param_2) = *(char *)(&uStack_14 + param_2) + cVar1;
   *(char *)(param_2 + -0x6c) = *(char *)(param_2 + -0x6c) + cVar3;
   *(char *)(in_EAX + 0x6a909090) = *(char *)(in_EAX + 0x6a909090) + (char)param_2;
-                    /* WARNING: Could not recover jumptable at 0x00519491. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (**(code **)(in_EAX + -0x65))(uVar2);
   return;
 }
@@ -15486,9 +15326,6 @@ int __fastcall FUN_0051dc3f(int *param_1,undefined4 param_2)
 // XREFS: None
 // [HELPER] s__02ld__02ld__02ld___3_1f_: "%02ld:%02ld:%02ld (%3.1f)"
 // [HELPER] s_tpnl_tim__render_to_image_buffer: "tpnl_tim::render_to_image_buffer"
-/* WARNING: Instruction at (ram,0x0051e2fc) overlaps instruction at (ram,0x0051e2f9)
-    */
-
 int * __fastcall FUN_0051e293(int param_1,undefined1 *param_2)
 {
   TPanel *pTVar1;
@@ -15643,8 +15480,6 @@ void FUN_0051f2e5(void)
 // Function: FUN_00520032
 // Address: 00520032
 // XREFS: None
-/* WARNING: Control flow encountered bad instruction data */
-
 void __fastcall FUN_00520032(char *param_1,undefined4 param_2)
 {
   byte bVar1;
@@ -15679,7 +15514,6 @@ void __fastcall FUN_00520032(char *param_1,undefined4 param_2)
                             CONCAT11((char)((uint)extraout_ECX >> 8) + (char)extraout_ECX,
                                      (char)extraout_ECX));
   *pcVar6 = *pcVar6 + '\x01';
-                    /* WARNING: Bad instruction - Truncating control flow here */
   halt_baddata();
 }
 
@@ -15867,8 +15701,6 @@ uint __fastcall FUN_00520d25(int param_1,int param_2)
 // Address: 00520fc0
 // XREFS: processCheatCode, setup_cmd_options
 // [HELPER] s_1_tpnl_tim_cpp_0058b760: "1\tpnl_tim.cpp"
-/* void __cdecl encrypt_codes(char *,char *,int) */
-
 void __cdecl encrypt_codes(char *param_1,char *param_2,int param_3)
 {
   char cVar1;
@@ -15906,9 +15738,6 @@ void __cdecl encrypt_codes(char *param_1,char *param_2,int param_3)
 // [HELPER] s_a: "a"
 // [HELPER] s_c__aoerun_txt: "c:\aoerun.txt"
 // [HELPER] s_w: "w"
-/* WARNING: Variable defined which should be unmapped: stime */
-/* void __cdecl run_log(char *,int) */
-
 void __cdecl run_log(char *param_1,int param_2)
 {
   undefined4 uVar1;
@@ -15955,9 +15784,6 @@ void __cdecl run_log(char *param_1,int param_2)
 // Address: 0052321f
 // XREFS: None
 // [HELPER] s_Scenario_Editor_Screen: "Scenario Editor Screen"
-/* WARNING: Instruction at (ram,0x00523467) overlaps instruction at (ram,0x00523465)
-    */
-
 TPanel * __fastcall FUN_0052321f(undefined4 param_1,int *param_2)
 {
   char *pcVar1;
@@ -16509,8 +16335,6 @@ void FUN_0052c3d3(void)
 // Function: FUN_0052c8a1
 // Address: 0052c8a1
 // XREFS: None
-/* WARNING: Control flow encountered bad instruction data */
-
 int __fastcall FUN_0052c8a1(RGE_Task_List *param_1,RGE_Task *param_2)
 {
   char *in_EAX;
@@ -16520,7 +16344,6 @@ int __fastcall FUN_0052c8a1(RGE_Task_List *param_1,RGE_Task *param_2)
   bool in_OF;
   
   if (in_OF) {
-                    /* WARNING: Bad instruction - Truncating control flow here */
     halt_baddata();
   }
   cVar2 = (char)((uint)param_2 >> 8);
@@ -16996,8 +16819,6 @@ void __fastcall FUN_005310de(byte *param_1,int param_2)
 // Function: FUN_005316bd
 // Address: 005316bd
 // XREFS: None
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-
 RGE_Victory_Conditions * __fastcall FUN_005316bd(undefined4 param_1,int *param_2)
 {
   long *plVar1;
@@ -17290,11 +17111,8 @@ void __fastcall FUN_00531f71(RGE_Victory_Conditions *param_1,char param_2)
 // Function: FUN_00532e9f
 // Address: 00532e9f
 // XREFS: None
-/* WARNING: Control flow encountered bad instruction data */
-
 void FUN_00532e9f(void)
 {
-                    /* WARNING: Bad instruction - Truncating control flow here */
   halt_baddata();
 }
 
@@ -18091,9 +17909,6 @@ LAB_005368a9:
 // XREFS: None
 // [HELPER] s_C__msdev_work_age1_x1_view_cpp: "C:\msdev\work\age1_x1\view.cpp"
 // [HELPER] s_view__view_function_terrain: "view::view_function_terrain"
-/* WARNING: Instruction at (ram,0x00536ba3) overlaps instruction at (ram,0x00536b9d)
-    */
-
 undefined4 __fastcall FUN_00536b03(int param_1,char *param_2)
 {
   byte *pbVar1;
@@ -19224,8 +19039,6 @@ void __fastcall FUN_0053b475(int param_1,char param_2)
 // Function: log_map_call
 // Address: 0053d150
 // XREFS: explore_all, explore_terrain, explore_terrain_sq, set_all, unexplore_terrain, unexplore_terrain_sq
-/* void __cdecl log_map_call(int,int,int,int,int,int,int,int,int) */
-
 void __cdecl
 log_map_call(int param_1,int param_2,int param_3,int param_4,int param_5,int param_6,int param_7,
             int param_8,int param_9)
@@ -19271,8 +19084,6 @@ log_map_call(int param_1,int param_2,int param_3,int param_4,int param_5,int par
 // [HELPER] s__wt____d__plyr____d__id____d__x1: " wt = %d, plyr = %d, id = %d, x1=%d, y1=%d, x2=%d, y2=%d, s=%d\n"
 // [HELPER] s_c__aoeexlog_txt: "c:\aoeexlog.txt"
 // [HELPER] s_w: "w"
-/* void __cdecl dump_vismap_log(void) */
-
 void __cdecl dump_vismap_log(void)
 {
   bool bVar1;
@@ -19411,11 +19222,8 @@ FUN_0053e7b3(undefined4 param_1,undefined4 param_2,undefined4 param_3,undefined4
 // Function: FUN_0053e8e9
 // Address: 0053e8e9
 // XREFS: None
-/* WARNING: Control flow encountered bad instruction data */
-
 void FUN_0053e8e9(void)
 {
-                    /* WARNING: Bad instruction - Truncating control flow here */
   halt_baddata();
 }
 
@@ -19434,8 +19242,6 @@ void FUN_0053e8e9(void)
 // [HELPER] s__d: "%d"
 // [HELPER] s_player__d_: "player %d\n"
 // [HELPER] s_updating_player_visibilites___wt: "updating player visibilites @ wt=%d\n"
-/* WARNING: Restarted to delay deadcode elimination for space: stack */
-
 void FUN_0054627a(void)
 {
   uint *puVar1;
@@ -19479,7 +19285,6 @@ void FUN_0054627a(void)
   puStack000000c0 = (undefined1 *)&stack0x00000038;
   *(char *)(in_stack_00000024 + 0x62) =
        *(char *)(in_stack_00000024 + 0x62) + (char)in_stack_0000002c;
-                    /* WARNING: Ignoring partial resolution of indirect */
   cStack0000003c = cStack0000003c + (char)in_stack_00000050;
   iStack00000038 = (int)&stack0x0000003c + (int)in_stack_00000050;
   uStack000000cc = in_stack_00000044;
@@ -19697,8 +19502,6 @@ void FUN_0054627a(void)
 // Function: zone_pop
 // Address: 00546720
 // XREFS: do_zone_map_area
-/* unsigned char __cdecl zone_pop(struct Zone_Queue * *,struct Zone_Queue * *,long &,long &) */
-
 uchar __cdecl zone_pop(Zone_Queue **param_1,Zone_Queue **param_2,long *param_3,long *param_4)
 {
   Zone_Queue *pZVar1;
@@ -19722,8 +19525,6 @@ uchar __cdecl zone_pop(Zone_Queue **param_1,Zone_Queue **param_2,long *param_3,l
 // Function: zone_push
 // Address: 00546770
 // XREFS: do_zone_map_area
-/* void __cdecl zone_push(struct Zone_Queue * *,struct Zone_Queue * *,long,long) */
-
 void __cdecl zone_push(Zone_Queue **param_1,Zone_Queue **param_2,long param_3,long param_4)
 {
   Zone_Queue *pZVar1;
@@ -19748,8 +19549,6 @@ void __cdecl zone_push(Zone_Queue **param_1,Zone_Queue **param_2,long param_3,lo
 // XREFS: IsDPlay501a
 void _VerQueryValueA_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547530. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   VerQueryValueA();
   return;
 }
@@ -19761,8 +19560,6 @@ void _VerQueryValueA_16(void)
 // XREFS: IsDPlay501a
 void _GetFileVersionInfoA_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547536. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetFileVersionInfoA();
   return;
 }

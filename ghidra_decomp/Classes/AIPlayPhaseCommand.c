@@ -11,8 +11,6 @@
 
 // Function: AIPlayPhaseCommand
 // Address: 0040e930
-/* public: __thiscall AIPlayPhaseCommand::AIPlayPhaseCommand(void) */
-
 void __thiscall AIPlayPhaseCommand::AIPlayPhaseCommand(AIPlayPhaseCommand *this)
 {
   this->groupValue = '\0';
@@ -27,9 +25,6 @@ void __thiscall AIPlayPhaseCommand::AIPlayPhaseCommand(AIPlayPhaseCommand *this)
 
 // Function: AIPlayPhaseCommand
 // Address: 0040e950
-/* public: __thiscall AIPlayPhaseCommand::AIPlayPhaseCommand(unsigned char,unsigned
-   char,int,int,int) */
-
 void __thiscall
 AIPlayPhaseCommand::AIPlayPhaseCommand
           (AIPlayPhaseCommand *this,uchar param_1,uchar param_2,int param_3,int param_4,int param_5)
@@ -46,8 +41,6 @@ AIPlayPhaseCommand::AIPlayPhaseCommand
 
 // Function: AIPlayPhaseCommand
 // Address: 0040e980
-/* public: __thiscall AIPlayPhaseCommand::AIPlayPhaseCommand(unsigned char,char *,int,int,int) */
-
 AIPlayPhaseCommand * __thiscall
 AIPlayPhaseCommand::AIPlayPhaseCommand
           (AIPlayPhaseCommand *this,uchar param_1,char *param_2,int param_3,int param_4,int param_5)
@@ -67,8 +60,6 @@ AIPlayPhaseCommand::AIPlayPhaseCommand
 
 // Function: nameType
 // Address: 0040e9c0
-/* public: char * __thiscall AIPlayPhaseCommand::nameType(void)const  */
-
 char * __thiscall AIPlayPhaseCommand::nameType(AIPlayPhaseCommand *this)
 {
   char *pcVar1;
@@ -89,8 +80,6 @@ char * __thiscall AIPlayPhaseCommand::nameType(AIPlayPhaseCommand *this)
 // [HELPER] s_ResetHitPoints: "ResetHitPoints"
 // [HELPER] s_Retreat: "Retreat"
 // [HELPER] s_Wait: "Wait"
-/* protected: unsigned char __thiscall AIPlayPhaseCommand::convertToIntType(char *)const  */
-
 uchar __thiscall AIPlayPhaseCommand::convertToIntType(AIPlayPhaseCommand *this,char *param_1)
 {
   byte bVar1;
@@ -286,8 +275,6 @@ LAB_0040eb8b:
 // [HELPER] s_ResetHitPoints: "ResetHitPoints"
 // [HELPER] s_Retreat: "Retreat"
 // [HELPER] s_Wait: "Wait"
-/* protected: char * __thiscall AIPlayPhaseCommand::convertToNameType(unsigned char)const  */
-
 char * __thiscall AIPlayPhaseCommand::convertToNameType(AIPlayPhaseCommand *this,uchar param_1)
 {
   switch(param_1) {

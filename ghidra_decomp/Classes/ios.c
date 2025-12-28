@@ -21,8 +21,6 @@
 
 // Function: ios
 // Address: 0055b110
-/* protected: __thiscall ios::ios(void) */
-
 void __thiscall ios::ios(ios *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -43,8 +41,6 @@ void __thiscall ios::ios(ios *this)
 
 // Function: `vector_deleting_destructor'
 // Address: 0055b150
-/* public: virtual void * __thiscall ios::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall ios::_vector_deleting_destructor_(ios *this,uint param_1)
 {
   ~ios(this);
@@ -58,8 +54,6 @@ void * __thiscall ios::_vector_deleting_destructor_(ios *this,uint param_1)
 
 // Function: ios
 // Address: 0055b170
-/* public: __thiscall ios::ios(class streambuf *) */
-
 void __thiscall ios::ios(ios *this,streambuf *param_1)
 {
   this->bp = param_1;
@@ -80,8 +74,6 @@ void __thiscall ios::ios(ios *this,streambuf *param_1)
 
 // Function: ios
 // Address: 0055b1b0
-/* protected: __thiscall ios::ios(class ios const &) */
-
 ios * __thiscall ios::ios(ios *this,ios *param_1)
 {
   this->bp = (streambuf *)0x0;
@@ -95,8 +87,6 @@ ios * __thiscall ios::ios(ios *this,ios *param_1)
 
 // Function: ~ios
 // Address: 0055b1e0
-/* public: virtual __thiscall ios::~ios(void) */
-
 void __thiscall ios::~ios(ios *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -112,8 +102,6 @@ void __thiscall ios::~ios(ios *this)
 
 // Function: init
 // Address: 0055b210
-/* protected: void __thiscall ios::init(class streambuf *) */
-
 void __thiscall ios::init(ios *this,streambuf *param_1)
 {
   if ((this->x_delbuf != 0) && (this->bp != (streambuf *)0x0)) {
@@ -132,8 +120,6 @@ void __thiscall ios::init(ios *this,streambuf *param_1)
 
 // Function: operator=
 // Address: 0055b250
-/* protected: class ios & __thiscall ios::operator=(class ios const &) */
-
 ios * __thiscall ios::operator=(ios *this,ios *param_1)
 {
   uint uVar1;
@@ -155,8 +141,6 @@ ios * __thiscall ios::operator=(ios *this,ios *param_1)
 
 // Function: xalloc
 // Address: 0055b290
-/* public: static int __cdecl ios::xalloc(void) */
-
 int __cdecl ios::xalloc(void)
 {
   long *plVar1;
@@ -188,8 +172,6 @@ int __cdecl ios::xalloc(void)
 
 // Function: bitalloc
 // Address: 0055b310
-/* public: static long __cdecl ios::bitalloc(void) */
-
 long __cdecl ios::bitalloc(void)
 {
   x_maxbit = x_maxbit << 1;

@@ -32,15 +32,12 @@
 
 // Function: TRIBE_Action_Build
 // Address: 004cd1b0
-/* public: __thiscall TRIBE_Action_Build::TRIBE_Action_Build(int,class RGE_Action_Object *) */
-
 TRIBE_Action_Build * __thiscall
 TRIBE_Action_Build::TRIBE_Action_Build
           (TRIBE_Action_Build *this,int param_1,RGE_Action_Object *param_2)
 {
   RGE_Action::RGE_Action((RGE_Action *)this,param_1,param_2,1);
   *(undefined ***)this = &_vftable_;
-                    /* language.dll match for 0x65: "1" */
   *(undefined2 *)&this->field_0x4 = 0x65;
   return this;
 }
@@ -49,9 +46,6 @@ TRIBE_Action_Build::TRIBE_Action_Build
 
 // Function: `vector_deleting_destructor'
 // Address: 004cd1e0
-/* public: virtual void * __thiscall TRIBE_Action_Build::`vector deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 TRIBE_Action_Build::_vector_deleting_destructor_(TRIBE_Action_Build *this,uint param_1)
 {
@@ -66,8 +60,6 @@ TRIBE_Action_Build::_vector_deleting_destructor_(TRIBE_Action_Build *this,uint p
 
 // Function: ~TRIBE_Action_Build
 // Address: 004cd200
-/* public: virtual __thiscall TRIBE_Action_Build::~TRIBE_Action_Build(void) */
-
 void __thiscall TRIBE_Action_Build::~TRIBE_Action_Build(TRIBE_Action_Build *this)
 {
   RGE_Action_List *this_00;
@@ -88,9 +80,6 @@ void __thiscall TRIBE_Action_Build::~TRIBE_Action_Build(TRIBE_Action_Build *this
 
 // Function: TRIBE_Action_Build
 // Address: 004cd210
-/* public: __thiscall TRIBE_Action_Build::TRIBE_Action_Build(class RGE_Action_Object *,class
-   RGE_Task *,class RGE_Static_Object *) */
-
 TRIBE_Action_Build * __thiscall
 TRIBE_Action_Build::TRIBE_Action_Build
           (TRIBE_Action_Build *this,RGE_Action_Object *param_1,RGE_Task *param_2,
@@ -108,7 +97,6 @@ TRIBE_Action_Build::TRIBE_Action_Build
   RGE_Action::RGE_Action((RGE_Action *)this,param_1,1);
   local_4 = 0;
   *(undefined ***)this = &_vftable_;
-                    /* language.dll match for 0x65: "1" */
   *(undefined2 *)&this->field_0x4 = 0x65;
   *(RGE_Task **)&this->field_0x30 = param_2;
   if ((param_3 == (RGE_Static_Object *)0x0) ||
@@ -126,9 +114,6 @@ TRIBE_Action_Build::TRIBE_Action_Build
 
 // Function: TRIBE_Action_Build
 // Address: 004cd2a0
-/* public: __thiscall TRIBE_Action_Build::TRIBE_Action_Build(class RGE_Action_Object *,class
-   RGE_Task *,float,float,float) */
-
 TRIBE_Action_Build * __thiscall
 TRIBE_Action_Build::TRIBE_Action_Build
           (TRIBE_Action_Build *this,RGE_Action_Object *param_1,RGE_Task *param_2,float param_3,
@@ -148,8 +133,6 @@ TRIBE_Action_Build::TRIBE_Action_Build
 
 // Function: first_in_stack
 // Address: 004cd2e0
-/* public: virtual void __thiscall TRIBE_Action_Build::first_in_stack(unsigned char) */
-
 void __thiscall TRIBE_Action_Build::first_in_stack(TRIBE_Action_Build *this,uchar param_1)
 {
   if (param_1 == '\0') {
@@ -168,8 +151,6 @@ void __thiscall TRIBE_Action_Build::first_in_stack(TRIBE_Action_Build *this,ucha
 
 // Function: set_state
 // Address: 004cd310
-/* protected: virtual void __thiscall TRIBE_Action_Build::set_state(unsigned char) */
-
 void __thiscall TRIBE_Action_Build::set_state(TRIBE_Action_Build *this,uchar param_1)
 {
   int iVar1;
@@ -305,9 +286,6 @@ switchD_004cd347_caseD_5:
 
 // Function: update
 // Address: 004cd5e0
-/* WARNING: Variable defined which should be unmapped: work */
-/* public: virtual unsigned char __thiscall TRIBE_Action_Build::update(void) */
-
 uchar __thiscall TRIBE_Action_Build::update(TRIBE_Action_Build *this)
 {
   int iVar1;
@@ -444,8 +422,6 @@ switchD_004cd71f_caseD_3:
 
 // Function: stop
 // Address: 004cd910
-/* public: virtual int __thiscall TRIBE_Action_Build::stop(void) */
-
 int __thiscall TRIBE_Action_Build::stop(TRIBE_Action_Build *this)
 {
   (**(code **)(*(int *)this + 0x5c))(2);
@@ -456,9 +432,6 @@ int __thiscall TRIBE_Action_Build::stop(TRIBE_Action_Build *this)
 
 // Function: move_to
 // Address: 004cd920
-/* public: virtual int __thiscall TRIBE_Action_Build::move_to(class RGE_Static_Object
-   *,float,float,float) */
-
 int __thiscall
 TRIBE_Action_Build::move_to
           (TRIBE_Action_Build *this,RGE_Static_Object *param_1,float param_2,float param_3,
@@ -479,9 +452,6 @@ TRIBE_Action_Build::move_to
 
 // Function: work
 // Address: 004cd960
-/* public: virtual int __thiscall TRIBE_Action_Build::work(class RGE_Static_Object
-   *,float,float,float) */
-
 int __thiscall
 TRIBE_Action_Build::work
           (TRIBE_Action_Build *this,RGE_Static_Object *param_1,float param_2,float param_3,

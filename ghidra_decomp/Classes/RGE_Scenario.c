@@ -44,8 +44,6 @@
 
 // Function: RGE_Scenario
 // Address: 0048ad60
-/* public: __thiscall RGE_Scenario::RGE_Scenario(class RGE_Game_World *) */
-
 RGE_Scenario * __thiscall RGE_Scenario::RGE_Scenario(RGE_Scenario *this,RGE_Game_World *param_1)
 {
   RGE_Timeline *pRVar1;
@@ -91,8 +89,6 @@ RGE_Scenario * __thiscall RGE_Scenario::RGE_Scenario(RGE_Scenario *this,RGE_Game
 
 // Function: `scalar_deleting_destructor'
 // Address: 0048adf0
-/* public: virtual void * __thiscall RGE_Scenario::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall RGE_Scenario::_scalar_deleting_destructor_(RGE_Scenario *this,uint param_1)
 {
   ~RGE_Scenario(this);
@@ -106,10 +102,6 @@ void * __thiscall RGE_Scenario::_scalar_deleting_destructor_(RGE_Scenario *this,
 
 // Function: RGE_Scenario
 // Address: 0048ae10
-/* WARNING: Variable defined which should be unmapped: length */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: __thiscall RGE_Scenario::RGE_Scenario(int,class RGE_Game_World *) */
-
 RGE_Scenario * __thiscall
 RGE_Scenario::RGE_Scenario(RGE_Scenario *this,int param_1,RGE_Game_World *param_2)
 {
@@ -374,8 +366,6 @@ LAB_0048b152:
 
 // Function: get_object_pointer
 // Address: 0048b580
-/* protected: virtual class RGE_Static_Object * __thiscall RGE_Scenario::get_object_pointer(int) */
-
 RGE_Static_Object * __thiscall RGE_Scenario::get_object_pointer(RGE_Scenario *this,int param_1)
 {
   return (RGE_Static_Object *)0x0;
@@ -385,8 +375,6 @@ RGE_Static_Object * __thiscall RGE_Scenario::get_object_pointer(RGE_Scenario *th
 
 // Function: rehook
 // Address: 0048b590
-/* public: virtual void __thiscall RGE_Scenario::rehook(void) */
-
 void __thiscall RGE_Scenario::rehook(RGE_Scenario *this)
 {
   return;
@@ -396,8 +384,6 @@ void __thiscall RGE_Scenario::rehook(RGE_Scenario *this)
 
 // Function: ~RGE_Scenario
 // Address: 0048b5a0
-/* public: virtual __thiscall RGE_Scenario::~RGE_Scenario(void) */
-
 void __thiscall RGE_Scenario::~RGE_Scenario(RGE_Scenario *this)
 {
   TPicture *this_00;
@@ -456,8 +442,6 @@ void __thiscall RGE_Scenario::~RGE_Scenario(RGE_Scenario *this)
 
 // Function: InitializeTextValues
 // Address: 0048b6c0
-/* public: void __thiscall RGE_Scenario::InitializeTextValues(void) */
-
 void __thiscall RGE_Scenario::InitializeTextValues(RGE_Scenario *this)
 {
   char cVar1;
@@ -471,10 +455,7 @@ void __thiscall RGE_Scenario::InitializeTextValues(RGE_Scenario *this)
   PlayerName *pPVar9;
   char none_string [30];
   char default_string [30];
-  
-                    /* language.dll match for 0x2775: " <None> " */
   (**(code **)(rge_base_game->_padding_ + 0x20))(0x2775,none_string + 4,0x1e);
-                    /* language.dll match for 0x277b: "Random" */
   (**(code **)(rge_base_game->_padding_ + 0x20))(0x277b,none_string + 0x18,0x1e);
   this->description = (char *)0x0;
   this->hints = (char *)0x0;
@@ -706,8 +687,6 @@ void __thiscall RGE_Scenario::InitializeTextValues(RGE_Scenario *this)
 
 // Function: Set_scenario_name
 // Address: 0048b910
-/* public: void __thiscall RGE_Scenario::Set_scenario_name(char *) */
-
 void __thiscall RGE_Scenario::Set_scenario_name(RGE_Scenario *this,char *param_1)
 {
   char cVar1;
@@ -749,8 +728,6 @@ void __thiscall RGE_Scenario::Set_scenario_name(RGE_Scenario *this,char *param_1
 
 // Function: Set_description
 // Address: 0048b950
-/* public: void __thiscall RGE_Scenario::Set_description(char *) */
-
 void __thiscall RGE_Scenario::Set_description(RGE_Scenario *this,char *param_1)
 {
   Set_message(this,param_1,0);
@@ -761,8 +738,6 @@ void __thiscall RGE_Scenario::Set_description(RGE_Scenario *this,char *param_1)
 
 // Function: Set_Cine_PreGame
 // Address: 0048b960
-/* public: void __thiscall RGE_Scenario::Set_Cine_PreGame(char *) */
-
 void __thiscall RGE_Scenario::Set_Cine_PreGame(RGE_Scenario *this,char *param_1)
 {
   char cVar1;
@@ -804,8 +779,6 @@ void __thiscall RGE_Scenario::Set_Cine_PreGame(RGE_Scenario *this,char *param_1)
 
 // Function: Set_Cine_Victory
 // Address: 0048b9a0
-/* public: void __thiscall RGE_Scenario::Set_Cine_Victory(char *) */
-
 void __thiscall RGE_Scenario::Set_Cine_Victory(RGE_Scenario *this,char *param_1)
 {
   char cVar1;
@@ -847,8 +820,6 @@ void __thiscall RGE_Scenario::Set_Cine_Victory(RGE_Scenario *this,char *param_1)
 
 // Function: Set_Cine_Loss
 // Address: 0048b9e0
-/* public: void __thiscall RGE_Scenario::Set_Cine_Loss(char *) */
-
 void __thiscall RGE_Scenario::Set_Cine_Loss(RGE_Scenario *this,char *param_1)
 {
   char cVar1;
@@ -890,8 +861,6 @@ void __thiscall RGE_Scenario::Set_Cine_Loss(RGE_Scenario *this,char *param_1)
 
 // Function: Set_Mission_Bmp
 // Address: 0048ba20
-/* public: void __thiscall RGE_Scenario::Set_Mission_Bmp(char *) */
-
 void __thiscall RGE_Scenario::Set_Mission_Bmp(RGE_Scenario *this,char *param_1)
 {
   char cVar1;
@@ -933,8 +902,6 @@ void __thiscall RGE_Scenario::Set_Mission_Bmp(RGE_Scenario *this,char *param_1)
 
 // Function: Set_BuildList
 // Address: 0048ba60
-/* public: void __thiscall RGE_Scenario::Set_BuildList(int,char *,int) */
-
 void __thiscall
 RGE_Scenario::Set_BuildList(RGE_Scenario *this,int param_1,char *param_2,int param_3)
 {
@@ -992,8 +959,6 @@ RGE_Scenario::Set_BuildList(RGE_Scenario *this,int param_1,char *param_2,int par
 
 // Function: Set_CityPlan
 // Address: 0048bad0
-/* public: void __thiscall RGE_Scenario::Set_CityPlan(int,char *,int) */
-
 void __thiscall RGE_Scenario::Set_CityPlan(RGE_Scenario *this,int param_1,char *param_2,int param_3)
 {
   char cVar1;
@@ -1050,8 +1015,6 @@ void __thiscall RGE_Scenario::Set_CityPlan(RGE_Scenario *this,int param_1,char *
 
 // Function: Set_player_AI
 // Address: 0048bb40
-/* public: void __thiscall RGE_Scenario::Set_player_AI(int,char *,int) */
-
 void __thiscall
 RGE_Scenario::Set_player_AI(RGE_Scenario *this,int param_1,char *param_2,int param_3)
 {
@@ -1109,8 +1072,6 @@ RGE_Scenario::Set_player_AI(RGE_Scenario *this,int param_1,char *param_2,int par
 
 // Function: Set_Version
 // Address: 0048bbb0
-/* public: void __thiscall RGE_Scenario::Set_Version(float) */
-
 void __thiscall RGE_Scenario::Set_Version(RGE_Scenario *this,float param_1)
 {
   this->Version = param_1;
@@ -1121,8 +1082,6 @@ void __thiscall RGE_Scenario::Set_Version(RGE_Scenario *this,float param_1)
 
 // Function: Set_player_Type
 // Address: 0048bbc0
-/* public: void __thiscall RGE_Scenario::Set_player_Type(int,int) */
-
 void __thiscall RGE_Scenario::Set_player_Type(RGE_Scenario *this,int param_1,int param_2)
 {
   if ((-1 < param_1) && (param_1 < 0x10)) {
@@ -1135,8 +1094,6 @@ void __thiscall RGE_Scenario::Set_player_Type(RGE_Scenario *this,int param_1,int
 
 // Function: Set_player_Civ
 // Address: 0048bbe0
-/* public: void __thiscall RGE_Scenario::Set_player_Civ(int,int) */
-
 void __thiscall RGE_Scenario::Set_player_Civ(RGE_Scenario *this,int param_1,int param_2)
 {
   if ((-1 < param_1) && (param_1 < 0x10)) {
@@ -1149,8 +1106,6 @@ void __thiscall RGE_Scenario::Set_player_Civ(RGE_Scenario *this,int param_1,int 
 
 // Function: Set_player_Active
 // Address: 0048bc00
-/* public: void __thiscall RGE_Scenario::Set_player_Active(int,int) */
-
 void __thiscall RGE_Scenario::Set_player_Active(RGE_Scenario *this,int param_1,int param_2)
 {
   if ((-1 < param_1) && (param_1 < 0x10)) {
@@ -1163,8 +1118,6 @@ void __thiscall RGE_Scenario::Set_player_Active(RGE_Scenario *this,int param_1,i
 
 // Function: SetPlayerName
 // Address: 0048bc20
-/* public: void __thiscall RGE_Scenario::SetPlayerName(int,char *) */
-
 void __thiscall RGE_Scenario::SetPlayerName(RGE_Scenario *this,int param_1,char *param_2)
 {
   char cVar1;
@@ -1199,8 +1152,6 @@ void __thiscall RGE_Scenario::SetPlayerName(RGE_Scenario *this,int param_1,char 
 
 // Function: Get_scenario_name
 // Address: 0048bc60
-/* public: char * __thiscall RGE_Scenario::Get_scenario_name(void) */
-
 char * __thiscall RGE_Scenario::Get_scenario_name(RGE_Scenario *this)
 {
   return this->scenario_name;
@@ -1210,8 +1161,6 @@ char * __thiscall RGE_Scenario::Get_scenario_name(RGE_Scenario *this)
 
 // Function: Get_description
 // Address: 0048bc70
-/* public: char * __thiscall RGE_Scenario::Get_description(void) */
-
 char * __thiscall RGE_Scenario::Get_description(RGE_Scenario *this)
 {
   return this->description;
@@ -1221,8 +1170,6 @@ char * __thiscall RGE_Scenario::Get_description(RGE_Scenario *this)
 
 // Function: Get_Cine_PreGame
 // Address: 0048bc80
-/* public: char * __thiscall RGE_Scenario::Get_Cine_PreGame(void) */
-
 char * __thiscall RGE_Scenario::Get_Cine_PreGame(RGE_Scenario *this)
 {
   return this->Cine_PreGame;
@@ -1232,8 +1179,6 @@ char * __thiscall RGE_Scenario::Get_Cine_PreGame(RGE_Scenario *this)
 
 // Function: Get_Cine_Victory
 // Address: 0048bc90
-/* public: char * __thiscall RGE_Scenario::Get_Cine_Victory(void) */
-
 char * __thiscall RGE_Scenario::Get_Cine_Victory(RGE_Scenario *this)
 {
   return this->Cine_Victory;
@@ -1243,8 +1188,6 @@ char * __thiscall RGE_Scenario::Get_Cine_Victory(RGE_Scenario *this)
 
 // Function: Get_Cine_Loss
 // Address: 0048bca0
-/* public: char * __thiscall RGE_Scenario::Get_Cine_Loss(void) */
-
 char * __thiscall RGE_Scenario::Get_Cine_Loss(RGE_Scenario *this)
 {
   return this->Cine_Loss;
@@ -1254,8 +1197,6 @@ char * __thiscall RGE_Scenario::Get_Cine_Loss(RGE_Scenario *this)
 
 // Function: Get_Mission_Bmp
 // Address: 0048bcb0
-/* public: char * __thiscall RGE_Scenario::Get_Mission_Bmp(void) */
-
 char * __thiscall RGE_Scenario::Get_Mission_Bmp(RGE_Scenario *this)
 {
   return this->Mission_Bmp;
@@ -1269,9 +1210,6 @@ char * __thiscall RGE_Scenario::Get_Mission_Bmp(RGE_Scenario *this)
 // [HELPER] s__s: "%s"
 // [HELPER] s__s_s_ai: "%s%s.ai"
 // [HELPER] s__stemp_buildlist_d_tmp: "%stemp_buildlist%d.tmp"
-/* WARNING: Variable defined which should be unmapped: random_str */
-/* public: char * __thiscall RGE_Scenario::Get_BuildList(int,int) */
-
 char * __thiscall RGE_Scenario::Get_BuildList(RGE_Scenario *this,int param_1,int param_2)
 {
   char cVar1;
@@ -1299,7 +1237,6 @@ char * __thiscall RGE_Scenario::Get_BuildList(RGE_Scenario *this,int param_1,int
   abStack_18c[5] = 0x27;
   abStack_18c[6] = 0;
   abStack_18c[7] = 0;
-                    /* language.dll match for 0x277b: "Random" */
   iVar8 = -1;
   abStack_18c[0] = 0xe6;
   abStack_18c[1] = 0xbc;
@@ -1310,7 +1247,6 @@ char * __thiscall RGE_Scenario::Get_BuildList(RGE_Scenario *this,int param_1,int
   abStack_18c[1] = 0;
   abStack_18c[2] = 0;
   abStack_18c[3] = 0;
-                    /* language.dll match for 0x2775: " <None> " */
   (**(code **)(rge_base_game->_padding_ + 0x20))(0x2775,random_str + 0x2c);
   iVar4 = GetTempPathA(0x104,none_str + 0x20);
   if (iVar4 == 0) {
@@ -1407,9 +1343,6 @@ LAB_0048be4a:
 // [HELPER] s__s: "%s"
 // [HELPER] s__s_s_cty: "%s%s.cty"
 // [HELPER] s__stemp_CityPlan_d_tmp: "%stemp_CityPlan%d.tmp"
-/* WARNING: Variable defined which should be unmapped: random_str */
-/* public: char * __thiscall RGE_Scenario::Get_CityPlan(int,int) */
-
 char * __thiscall RGE_Scenario::Get_CityPlan(RGE_Scenario *this,int param_1,int param_2)
 {
   char cVar1;
@@ -1437,7 +1370,6 @@ char * __thiscall RGE_Scenario::Get_CityPlan(RGE_Scenario *this,int param_1,int 
   abStack_18c[5] = 0x27;
   abStack_18c[6] = 0;
   abStack_18c[7] = 0;
-                    /* language.dll match for 0x277b: "Random" */
   iVar8 = -1;
   abStack_18c[0] = 0xe6;
   abStack_18c[1] = 0xbe;
@@ -1448,7 +1380,6 @@ char * __thiscall RGE_Scenario::Get_CityPlan(RGE_Scenario *this,int param_1,int 
   abStack_18c[1] = 0;
   abStack_18c[2] = 0;
   abStack_18c[3] = 0;
-                    /* language.dll match for 0x2775: " <None> " */
   (**(code **)(rge_base_game->_padding_ + 0x20))(0x2775,random_str + 0x2c);
   iVar3 = GetTempPathA(0x104,none_str + 0x20);
   if (iVar3 == 0) {
@@ -1541,9 +1472,6 @@ LAB_0048c04a:
 
 // Function: Get_Version
 // Address: 0048c0d0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: float __thiscall RGE_Scenario::Get_Version(void) */
-
 float __thiscall RGE_Scenario::Get_Version(RGE_Scenario *this)
 {
   return _DAT_00572178;
@@ -1557,9 +1485,6 @@ float __thiscall RGE_Scenario::Get_Version(RGE_Scenario *this)
 // [HELPER] s__s: "%s"
 // [HELPER] s__s_s_per: "%s%s.per"
 // [HELPER] s__stemp_AiRules_d_tmp: "%stemp_AiRules%d.tmp"
-/* WARNING: Variable defined which should be unmapped: random_str */
-/* public: char * __thiscall RGE_Scenario::Get_player_AI(int,int) */
-
 char * __thiscall RGE_Scenario::Get_player_AI(RGE_Scenario *this,int param_1,int param_2)
 {
   char cVar1;
@@ -1587,7 +1512,6 @@ char * __thiscall RGE_Scenario::Get_player_AI(RGE_Scenario *this,int param_1,int
   abStack_18c[5] = 0x27;
   abStack_18c[6] = 0;
   abStack_18c[7] = 0;
-                    /* language.dll match for 0x277b: "Random" */
   iVar8 = -1;
   abStack_18c[0] = 6;
   abStack_18c[1] = 0xc1;
@@ -1598,7 +1522,6 @@ char * __thiscall RGE_Scenario::Get_player_AI(RGE_Scenario *this,int param_1,int
   abStack_18c[1] = 0;
   abStack_18c[2] = 0;
   abStack_18c[3] = 0;
-                    /* language.dll match for 0x2775: " <None> " */
   (**(code **)(rge_base_game->_padding_ + 0x20))(0x2775,random_str + 0x2c);
   iVar3 = GetTempPathA(0x104,none_str + 0x20);
   if (iVar3 == 0) {
@@ -1691,8 +1614,6 @@ LAB_0048c26a:
 
 // Function: GetPlayerPosture
 // Address: 0048c2f0
-/* public: int __thiscall RGE_Scenario::GetPlayerPosture(int) */
-
 int __thiscall RGE_Scenario::GetPlayerPosture(RGE_Scenario *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 9)) {
@@ -1716,8 +1637,6 @@ int __thiscall RGE_Scenario::GetPlayerPosture(RGE_Scenario *this,int param_1)
 
 // Function: GetPlayerName
 // Address: 0048c360
-/* public: char * __thiscall RGE_Scenario::GetPlayerName(int) */
-
 char * __thiscall RGE_Scenario::GetPlayerName(RGE_Scenario *this,int param_1)
 {
   return this->player_name[param_1].Name;
@@ -1727,8 +1646,6 @@ char * __thiscall RGE_Scenario::GetPlayerName(RGE_Scenario *this,int param_1)
 
 // Function: Get_player_Type
 // Address: 0048c370
-/* public: int __thiscall RGE_Scenario::Get_player_Type(int) */
-
 int __thiscall RGE_Scenario::Get_player_Type(RGE_Scenario *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 0x10)) {
@@ -1741,8 +1658,6 @@ int __thiscall RGE_Scenario::Get_player_Type(RGE_Scenario *this,int param_1)
 
 // Function: Get_player_Civ
 // Address: 0048c390
-/* public: int __thiscall RGE_Scenario::Get_player_Civ(int) */
-
 int __thiscall RGE_Scenario::Get_player_Civ(RGE_Scenario *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 0x10)) {
@@ -1755,8 +1670,6 @@ int __thiscall RGE_Scenario::Get_player_Civ(RGE_Scenario *this,int param_1)
 
 // Function: Get_player_Active
 // Address: 0048c3b0
-/* public: int __thiscall RGE_Scenario::Get_player_Active(int) */
-
 int __thiscall RGE_Scenario::Get_player_Active(RGE_Scenario *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 0x10)) {
@@ -1769,8 +1682,6 @@ int __thiscall RGE_Scenario::Get_player_Active(RGE_Scenario *this,int param_1)
 
 // Function: update
 // Address: 0048c3d0
-/* public: void __thiscall RGE_Scenario::update(void) */
-
 void __thiscall RGE_Scenario::update(RGE_Scenario *this)
 {
   if (this->time_line != (RGE_Timeline *)0x0) {
@@ -1788,10 +1699,6 @@ void __thiscall RGE_Scenario::update(RGE_Scenario *this)
 // [HELPER] s__s_s_ai: "%s%s.ai"
 // [HELPER] s__s_s_cty: "%s%s.cty"
 // [HELPER] s__s_s_per: "%s%s.per"
-/* WARNING: Variable defined which should be unmapped: length */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual void __thiscall RGE_Scenario::save(int) */
-
 void __thiscall RGE_Scenario::save(RGE_Scenario *this,int param_1)
 {
   float *pfVar1;
@@ -2183,8 +2090,6 @@ LAB_0048c7f6:
 
 // Function: active_player_count
 // Address: 0048cc20
-/* public: int __thiscall RGE_Scenario::active_player_count(void) */
-
 int __thiscall RGE_Scenario::active_player_count(RGE_Scenario *this)
 {
   int iVar1;
@@ -2207,8 +2112,6 @@ int __thiscall RGE_Scenario::active_player_count(RGE_Scenario *this)
 
 // Function: any_player_count
 // Address: 0048cc50
-/* public: int __thiscall RGE_Scenario::any_player_count(void) */
-
 int __thiscall RGE_Scenario::any_player_count(RGE_Scenario *this)
 {
   int iVar1;
@@ -2234,8 +2137,6 @@ int __thiscall RGE_Scenario::any_player_count(RGE_Scenario *this)
 
 // Function: computer_player_count
 // Address: 0048cc80
-/* public: int __thiscall RGE_Scenario::computer_player_count(void) */
-
 int __thiscall RGE_Scenario::computer_player_count(RGE_Scenario *this)
 {
   int iVar1;
@@ -2261,8 +2162,6 @@ int __thiscall RGE_Scenario::computer_player_count(RGE_Scenario *this)
 
 // Function: Set_conquest_victory
 // Address: 0048ccb0
-/* public: void __thiscall RGE_Scenario::Set_conquest_victory(unsigned char) */
-
 void __thiscall RGE_Scenario::Set_conquest_victory(RGE_Scenario *this,uchar param_1)
 {
   this->victory_conquest = param_1;
@@ -2273,8 +2172,6 @@ void __thiscall RGE_Scenario::Set_conquest_victory(RGE_Scenario *this,uchar para
 
 // Function: Get_conquest_victory
 // Address: 0048ccc0
-/* public: unsigned char __thiscall RGE_Scenario::Get_conquest_victory(void) */
-
 uchar __thiscall RGE_Scenario::Get_conquest_victory(RGE_Scenario *this)
 {
   return this->victory_conquest;
@@ -2284,8 +2181,6 @@ uchar __thiscall RGE_Scenario::Get_conquest_victory(RGE_Scenario *this)
 
 // Function: add_description
 // Address: 0048ccd0
-/* public: void __thiscall RGE_Scenario::add_description(char *) */
-
 void __thiscall RGE_Scenario::add_description(RGE_Scenario *this,char *param_1)
 {
   if (this->description == (char *)0x0) {
@@ -2300,8 +2195,6 @@ void __thiscall RGE_Scenario::add_description(RGE_Scenario *this,char *param_1)
 
 // Function: Set_message
 // Address: 0048cd10
-/* public: void __thiscall RGE_Scenario::Set_message(char *,long) */
-
 void __thiscall RGE_Scenario::Set_message(RGE_Scenario *this,char *param_1,long param_2)
 {
   char cVar1;
@@ -2385,8 +2278,6 @@ void __thiscall RGE_Scenario::Set_message(RGE_Scenario *this,char *param_1,long 
 
 // Function: Get_message
 // Address: 0048ce40
-/* public: char * __thiscall RGE_Scenario::Get_message(long) */
-
 char * __thiscall RGE_Scenario::Get_message(RGE_Scenario *this,long param_1)
 {
   switch(param_1) {

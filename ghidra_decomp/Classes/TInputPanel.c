@@ -198,8 +198,6 @@
 
 // Function: TInputPanel
 // Address: 00476c10
-/* public: __thiscall TInputPanel::TInputPanel(void) */
-
 TInputPanel * __thiscall TInputPanel::TInputPanel(TInputPanel *this)
 {
   ulong uVar1;
@@ -240,8 +238,6 @@ TInputPanel * __thiscall TInputPanel::TInputPanel(TInputPanel *this)
 
 // Function: `scalar_deleting_destructor'
 // Address: 00476cd0
-/* public: virtual void * __thiscall TInputPanel::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall TInputPanel::_scalar_deleting_destructor_(TInputPanel *this,uint param_1)
 {
   ~TInputPanel(this);
@@ -255,8 +251,6 @@ void * __thiscall TInputPanel::_scalar_deleting_destructor_(TInputPanel *this,ui
 
 // Function: ~TInputPanel
 // Address: 00476cf0
-/* public: virtual __thiscall TInputPanel::~TInputPanel(void) */
-
 void __thiscall TInputPanel::~TInputPanel(TInputPanel *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -290,10 +284,6 @@ void __thiscall TInputPanel::~TInputPanel(TInputPanel *this)
 // Function: setup
 // Address: 00476d80
 // [HELPER] s_C__msdev_work_age1_x1_Pnl_inp_cp: "C:\msdev\work\age1_x1\Pnl_inp.cpp"
-/* public: long __thiscall TInputPanel::setup(class TDrawArea *,class TPanel
-   *,long,long,long,long,void *,long,long,char *,int,unsigned char,int,unsigned char,unsigned
-   char,short,class TDigital *,char *,enum TInputPanel::FormatType) */
-
 long __thiscall
 TInputPanel::setup(TInputPanel *this,TDrawArea *param_1,TPanel *param_2,long param_3,long param_4,
                   long param_5,long param_6,void *param_7,long param_8,long param_9,char *param_10,
@@ -359,8 +349,6 @@ TInputPanel::setup(TInputPanel *this,TDrawArea *param_1,TPanel *param_2,long par
 // Function: set_focus
 // Address: 00476ee0
 // [HELPER] s_C__msdev_work_age1_x1_Pnl_inp_cp: "C:\msdev\work\age1_x1\Pnl_inp.cpp"
-/* public: virtual void __thiscall TInputPanel::set_focus(int) */
-
 void __thiscall TInputPanel::set_focus(TInputPanel *this,int param_1)
 {
   ulong uVar1;
@@ -378,8 +366,6 @@ void __thiscall TInputPanel::set_focus(TInputPanel *this,int param_1)
 
 // Function: set_format
 // Address: 00476f20
-/* public: void __thiscall TInputPanel::set_format(enum TInputPanel::FormatType) */
-
 void __thiscall TInputPanel::set_format(TInputPanel *this,FormatType param_1)
 {
   this->format_type = param_1;
@@ -391,8 +377,6 @@ void __thiscall TInputPanel::set_format(TInputPanel *this,FormatType param_1)
 // Function: handle_idle
 // Address: 00476f30
 // [HELPER] s_C__msdev_work_age1_x1_Pnl_inp_cp: "C:\msdev\work\age1_x1\Pnl_inp.cpp"
-/* public: virtual long __thiscall TInputPanel::handle_idle(void) */
-
 long __thiscall TInputPanel::handle_idle(TInputPanel *this)
 {
   ulong uVar1;
@@ -416,8 +400,6 @@ long __thiscall TInputPanel::handle_idle(TInputPanel *this)
 // Function: char_action
 // Address: 00476fa0
 // [HELPER] s_10: "10"
-/* public: virtual long __thiscall TInputPanel::char_action(long,short) */
-
 long __thiscall TInputPanel::char_action(TInputPanel *this,long param_1,short param_2)
 {
   FormatType FVar1;
@@ -511,8 +493,6 @@ LAB_004771e4:
 
 // Function: key_down_action
 // Address: 00477220
-/* public: virtual long __thiscall TInputPanel::key_down_action(long,short,int,int,int) */
-
 long __thiscall
 TInputPanel::key_down_action
           (TInputPanel *this,long param_1,short param_2,int param_3,int param_4,int param_5)
@@ -746,9 +726,6 @@ LAB_00477711:
 // Function: draw
 // Address: 004777c0
 // [HELPER] s_pnl_inp__draw: "pnl_inp::draw"
-/* WARNING: Variable defined which should be unmapped: cursor_x_offset */
-/* public: virtual void __thiscall TInputPanel::draw(void) */
-
 void __thiscall TInputPanel::draw(TInputPanel *this)
 {
   int iVar1;
@@ -801,8 +778,6 @@ void __thiscall TInputPanel::draw(TInputPanel *this)
 
 // Function: set_text
 // Address: 00477910
-/* public: virtual void __thiscall TInputPanel::set_text(char *) */
-
 void __thiscall TInputPanel::set_text(TInputPanel *this,char *param_1)
 {
   char *pcVar1;
@@ -836,8 +811,6 @@ void __thiscall TInputPanel::set_text(TInputPanel *this,char *param_1)
 
 // Function: set_text
 // Address: 00477990
-/* public: virtual void __thiscall TInputPanel::set_text(char * *,short) */
-
 void __thiscall TInputPanel::set_text(TInputPanel *this,char **param_1,short param_2)
 {
   return;
@@ -847,8 +820,6 @@ void __thiscall TInputPanel::set_text(TInputPanel *this,char **param_1,short par
 
 // Function: get_input_buffer
 // Address: 004779a0
-/* public: char * __thiscall TInputPanel::get_input_buffer(void) */
-
 char * __thiscall TInputPanel::get_input_buffer(TInputPanel *this)
 {
   return this->input_buffer;
@@ -858,8 +829,6 @@ char * __thiscall TInputPanel::get_input_buffer(TInputPanel *this)
 
 // Function: append_character
 // Address: 004779b0
-/* protected: int __thiscall TInputPanel::append_character(long) */
-
 int __thiscall TInputPanel::append_character(TInputPanel *this,long param_1)
 {
   int iVar1;
@@ -874,8 +843,6 @@ int __thiscall TInputPanel::append_character(TInputPanel *this,long param_1)
 // Function: insert_character
 // Address: 004779d0
 // [HELPER] s_C__msdev_work_age1_x1_Pnl_inp_cp: "C:\msdev\work\age1_x1\Pnl_inp.cpp"
-/* protected: int __thiscall TInputPanel::insert_character(long) */
-
 int __thiscall TInputPanel::insert_character(TInputPanel *this,long param_1)
 {
   char *pcVar1;
@@ -924,9 +891,6 @@ int __thiscall TInputPanel::insert_character(TInputPanel *this,long param_1)
 // Function: delete_character
 // Address: 00477af0
 // [HELPER] s_C__msdev_work_age1_x1_Pnl_inp_cp: "C:\msdev\work\age1_x1\Pnl_inp.cpp"
-/* WARNING: Variable defined which should be unmapped: cur_dest */
-/* protected: int __thiscall TInputPanel::delete_character(void) */
-
 int __thiscall TInputPanel::delete_character(TInputPanel *this)
 {
   bool bVar1;
@@ -1002,8 +966,6 @@ LAB_00477c15:
 
 // Function: backspace_character
 // Address: 00477c90
-/* protected: int __thiscall TInputPanel::backspace_character(void) */
-
 int __thiscall TInputPanel::backspace_character(TInputPanel *this)
 {
   int iVar1;
@@ -1021,10 +983,6 @@ int __thiscall TInputPanel::backspace_character(TInputPanel *this)
 // Function: paste
 // Address: 00477cb0
 // [HELPER] s_C__msdev_work_age1_x1_Pnl_inp_cp: "C:\msdev\work\age1_x1\Pnl_inp.cpp"
-/* WARNING: Function: __alloca_probe replaced with injection: alloca_probe */
-/* WARNING: Variable defined which should be unmapped: data_handle */
-/* protected: int __thiscall TInputPanel::paste(void) */
-
 int __thiscall TInputPanel::paste(TInputPanel *this)
 {
   int iVar1;
@@ -1106,8 +1064,6 @@ int __thiscall TInputPanel::paste(TInputPanel *this)
 
 // Function: reformat
 // Address: 00477e90
-/* protected: void __thiscall TInputPanel::reformat(void) */
-
 void __thiscall TInputPanel::reformat(TInputPanel *this)
 {
   short sVar1;
@@ -1134,8 +1090,6 @@ void __thiscall TInputPanel::reformat(TInputPanel *this)
 
 // Function: calc_input_pos
 // Address: 00477ef0
-/* protected: void __thiscall TInputPanel::calc_input_pos(void) */
-
 void __thiscall TInputPanel::calc_input_pos(TInputPanel *this)
 {
   undefined4 *puVar1;
@@ -1180,8 +1134,6 @@ void __thiscall TInputPanel::calc_input_pos(TInputPanel *this)
 
 // Function: calc_cur_line_col
 // Address: 00478010
-/* protected: void __thiscall TInputPanel::calc_cur_line_col(void) */
-
 void __thiscall TInputPanel::calc_cur_line_col(TInputPanel *this)
 {
   short *psVar1;
@@ -1229,8 +1181,6 @@ void __thiscall TInputPanel::calc_cur_line_col(TInputPanel *this)
 
 // Function: is_blank
 // Address: 00478150
-/* public: int __thiscall TInputPanel::is_blank(void) */
-
 int __thiscall TInputPanel::is_blank(TInputPanel *this)
 {
   char *pcVar1;
@@ -1252,9 +1202,6 @@ int __thiscall TInputPanel::is_blank(TInputPanel *this)
 
 // Function: get_trimmed_str
 // Address: 004781a0
-/* WARNING: Variable defined which should be unmapped: temp_str */
-/* public: char * __thiscall TInputPanel::get_trimmed_str(char *,int) */
-
 char * __thiscall TInputPanel::get_trimmed_str(TInputPanel *this,char *param_1,int param_2)
 {
   char cVar1;

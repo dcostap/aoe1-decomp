@@ -367,8 +367,6 @@
 // [HELPER] s_: ""
 // [HELPER] s_Single_Player_Menu: "Single Player Menu"
 // [HELPER] s_scr2: "scr2"
-/* public: __thiscall TribeSPMenuScreen::TribeSPMenuScreen(void) */
-
 TribeSPMenuScreen * __thiscall TribeSPMenuScreen::TribeSPMenuScreen(TribeSPMenuScreen *this)
 {
   TButtonPanel *pTVar1;
@@ -408,12 +406,10 @@ TribeSPMenuScreen * __thiscall TribeSPMenuScreen::TribeSPMenuScreen(TribeSPMenuS
   }
   this->close_button = (TButtonPanel *)0x0;
   TEasy_Panel::set_ideal_size((TEasy_Panel *)this,0x280,0x1e0);
-                    /* language.dll match for 0x2404: "Single Player Menu" */
   iVar4 = TEasy_Panel::create_text
                     ((TEasy_Panel *)this,(TPanel *)this,&this->title,0x2404,0x14,0x14,600,0x1e,1,1,0
                      ,0);
   if (iVar4 != 0) {
-                    /* language.dll match for 0x76: "B" */
     iVar4 = 0x76;
     ppTVar5 = ppTVar6;
     do {
@@ -425,23 +421,16 @@ TribeSPMenuScreen * __thiscall TribeSPMenuScreen::TribeSPMenuScreen(TribeSPMenuS
       ppTVar5 = ppTVar5 + 1;
     } while (iVar4 < 0x1a2);
     ppTVar5 = &this->close_button;
-                    /* language.dll match for 0x3ea: "X" */
     iVar4 = TEasy_Panel::create_button
                       ((TEasy_Panel *)this,(TPanel *)this,ppTVar5,0x3ea,0,0,0,0,0,-1,-1,0);
     if (iVar4 != 0) {
       (**(code **)((*ppTVar5)->_padding_ + 0x14))(1);
       (**(code **)((*ppTVar5)->_padding_ + 0x18))(9,4,4,4,4,0x11,0x11,0x11,0x11,0,0,0,0);
-                    /* language.dll match for 0x240a: "Random Map" */
       TButtonPanel::set_text(*ppTVar6,0,0x240a);
-                    /* language.dll match for 0x2408: "Campaign" */
       TButtonPanel::set_text(this->button[1],0,0x2408);
-                    /* language.dll match for 0x240b: "Death Match" */
       TButtonPanel::set_text(this->button[2],0,0x240b);
-                    /* language.dll match for 0x2405: "Scenario" */
       TButtonPanel::set_text(this->button[3],0,0x2405);
-                    /* language.dll match for 0x2407: "Saved Game" */
       TButtonPanel::set_text(this->button[4],0,0x2407);
-                    /* language.dll match for 0x2409: "Cancel" */
       TButtonPanel::set_text(this->button[5],0,0x2409);
       pTVar1 = this->button[5];
       pTVar1->hotkey = 0x1b;
@@ -464,9 +453,6 @@ LAB_004b6bc8:
 
 // Function: `vector_deleting_destructor'
 // Address: 004b6be0
-/* public: virtual void * __thiscall TribeSPMenuScreen::`vector deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 TribeSPMenuScreen::_vector_deleting_destructor_(TribeSPMenuScreen *this,uint param_1)
 {
@@ -481,8 +467,6 @@ TribeSPMenuScreen::_vector_deleting_destructor_(TribeSPMenuScreen *this,uint par
 
 // Function: ~TribeSPMenuScreen
 // Address: 004b6c00
-/* public: virtual __thiscall TribeSPMenuScreen::~TribeSPMenuScreen(void) */
-
 void __thiscall TribeSPMenuScreen::~TribeSPMenuScreen(TribeSPMenuScreen *this)
 {
   int iVar1;
@@ -516,8 +500,6 @@ void __thiscall TribeSPMenuScreen::~TribeSPMenuScreen(TribeSPMenuScreen *this)
 
 // Function: handle_idle
 // Address: 004b6c90
-/* public: virtual long __thiscall TribeSPMenuScreen::handle_idle(void) */
-
 long __thiscall TribeSPMenuScreen::handle_idle(TribeSPMenuScreen *this)
 {
   long lVar1;
@@ -539,9 +521,6 @@ long __thiscall TribeSPMenuScreen::handle_idle(TribeSPMenuScreen *this)
 // [HELPER] s_Name_Selection_Screen: "Name Selection Screen"
 // [HELPER] s_Select_Scenario_Screen: "Select Scenario Screen"
 // [HELPER] s_Single_Player_Menu: "Single Player Menu"
-/* public: virtual long __thiscall TribeSPMenuScreen::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TribeSPMenuScreen::action
           (TribeSPMenuScreen *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -640,7 +619,6 @@ TribeSPMenuScreen::action
         else {
           if ((TButtonPanel *)param_1 == this->button[5]) {
             RGE_Base_Game::disable_input(rge_base_game);
-                    /* language.dll match for 0x4b0: "Ready" */
             param_1 = (TPanel *)operator_new(0x4b0);
             local_4 = 6;
             if ((TRIBE_Screen_Main_Menu *)param_1 != (TRIBE_Screen_Main_Menu *)0x0) {

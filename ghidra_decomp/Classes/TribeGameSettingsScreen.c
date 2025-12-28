@@ -507,8 +507,6 @@
 // [HELPER] s__d: "%d"
 // [HELPER] s_scr2: "scr2"
 // [HELPER] s_scr3: "scr3"
-/* public: __thiscall TribeGameSettingsScreen::TribeGameSettingsScreen(void) */
-
 TribeGameSettingsScreen * __thiscall
 TribeGameSettingsScreen::TribeGameSettingsScreen(TribeGameSettingsScreen *this)
 {
@@ -569,11 +567,9 @@ TribeGameSettingsScreen::TribeGameSettingsScreen(TribeGameSettingsScreen *this)
   }
   TEasy_Panel::setup_shadow_area((TEasy_Panel *)this,0);
   TEasy_Panel::set_ideal_size((TEasy_Panel *)this,0x280,0x1e0);
-                    /* language.dll match for 0x2616: "Scenario Settings" */
   iVar9 = TEasy_Panel::create_text
                     ((TEasy_Panel *)this,(TPanel *)this,&this->title,0x2616,0x14,10,600,0x1e,1,1,0,1
                     );
-                    /* language.dll match for 0x29a0: "Map Size" */
   if ((iVar9 != 0) &&
      (iVar9 = TEasy_Panel::create_text
                         ((TEasy_Panel *)this,(TPanel *)this,&this->mapSizeLabel,0x29a0,0x14,0xd8,
@@ -583,22 +579,13 @@ TribeGameSettingsScreen::TribeGameSettingsScreen(TribeGameSettingsScreen *this)
                       ((TEasy_Panel *)this,(TPanel *)this,ppTVar1,0xb4,100,0x14,0xec,0xb4,0x18,0xb);
     if (iVar9 != 0) {
       TDropDownPanel::empty_list(*ppTVar1);
-                    /* language.dll match for 0x2973: "Tiny" */
       TDropDownPanel::append_line(*ppTVar1,0x2973,0);
-                    /* language.dll match for 0x2974: "Small" */
       TDropDownPanel::append_line(*ppTVar1,0x2974,1);
-                    /* language.dll match for 0x2975: "Medium" */
       TDropDownPanel::append_line(*ppTVar1,0x2975,2);
-                    /* language.dll match for 0x2976: "Large" */
       TDropDownPanel::append_line(*ppTVar1,0x2976,3);
-                    /* language.dll match for 0x2977: "Huge" */
       TDropDownPanel::append_line(*ppTVar1,0x2977,4);
-                    /* language.dll match for 0x2978: "Gigantic" */
       TDropDownPanel::append_line(*ppTVar1,0x2978,5);
-                    /* language.dll match for 0x762a: "Select the map size. The larger the map, the
-                       longer the game." */
       TPanel::set_help_info((TPanel *)*ppTVar1,0x762a,-1);
-                    /* language.dll match for 0x25db: "Map Type" */
       iVar9 = TEasy_Panel::create_text
                         ((TEasy_Panel *)this,(TPanel *)this,&this->mapTypeLabel,0x25db,0xdc,0xd8,
                          0xb4,0x14,0xb,0,0,0);
@@ -609,29 +596,16 @@ TribeGameSettingsScreen::TribeGameSettingsScreen(TribeGameSettingsScreen *this)
                            0xb);
         if (iVar9 != 0) {
           TDropDownPanel::empty_list(*ppTVar1);
-                    /* language.dll match for 0x296a: "Small Islands" */
           TDropDownPanel::append_line(*ppTVar1,0x296a,0);
-                    /* language.dll match for 0x296b: "Large Islands" */
           TDropDownPanel::append_line(*ppTVar1,0x296b,1);
-                    /* language.dll match for 0x296c: "Coastal" */
           TDropDownPanel::append_line(*ppTVar1,0x296c,2);
-                    /* language.dll match for 0x296d: "Inland" */
           TDropDownPanel::append_line(*ppTVar1,0x296d,3);
-                    /* language.dll match for 0x296e: "Highland" */
           TDropDownPanel::append_line(*ppTVar1,0x296e,4);
-                    /* language.dll match for 0x296f: "Continental" */
           TDropDownPanel::append_line(*ppTVar1,0x296f,5);
-                    /* language.dll match for 0x2970: "Mediterranean" */
           TDropDownPanel::append_line(*ppTVar1,0x2970,6);
-                    /* language.dll match for 0x2971: "Hill Country" */
           TDropDownPanel::append_line(*ppTVar1,0x2971,7);
-                    /* language.dll match for 0x2972: "Narrows"
-                       language.dll match for 0x2972: "******* SIZE *******" */
           TDropDownPanel::append_line(*ppTVar1,0x2972,8);
-                    /* language.dll match for 0x762b: "Select the distribution of land and water on
-                       the map." */
           TPanel::set_help_info((TPanel *)*ppTVar1,0x762b,-1);
-                    /* language.dll match for 0x2a34: "Victory Condition" */
           iVar9 = TEasy_Panel::create_text
                             ((TEasy_Panel *)this,(TPanel *)this,&this->victoryTypeLabel,0x2a34,0x14,
                              0x108,0xb4,0x14,0xb,0,0,0);
@@ -645,23 +619,14 @@ TribeGameSettingsScreen::TribeGameSettingsScreen(TribeGameSettingsScreen *this)
               iVar9 = RGE_Base_Game::scenarioGame(rge_base_game);
               lVar12 = 0;
               if (iVar9 != 0) {
-                    /* language.dll match for 0x10e7: "Default" */
                 TDropDownPanel::append_line(*ppTVar1,0x10e7,0);
                 lVar12 = 9;
               }
-                    /* language.dll match for 0x10ec: "Standard" */
               TDropDownPanel::append_line(*ppTVar1,0x10ec,lVar12);
-                    /* language.dll match for 0x10e1: "Conquest" */
               TDropDownPanel::append_line(*ppTVar1,0x10e1,1);
-                    /* language.dll match for 0x10e9: "Time Limit" */
               TDropDownPanel::append_line(*ppTVar1,0x10e9,7);
-                    /* language.dll match for 0x10ea: "Score" */
               TDropDownPanel::append_line(*ppTVar1,0x10ea,8);
-                    /* language.dll match for 0x762c: "Select the victory condition. The first
-                       civilization (or team) to achieve the victory condition wins the game. For
-                       more information about the victory conditions, click More Help." */
               TPanel::set_help_info((TPanel *)*ppTVar1,0x762c,0x25f0a);
-                    /* language.dll match for 0x10e9: "Time Limit" */
               iVar9 = TEasy_Panel::create_text
                                 ((TEasy_Panel *)this,(TPanel *)this,&this->timeLabel,0x10e9,0x14,
                                  0x138,0xb4,0x14,0xb,0,0,0);
@@ -672,25 +637,14 @@ TribeGameSettingsScreen::TribeGameSettingsScreen(TribeGameSettingsScreen *this)
                                    0xb4,0x18,0xb);
                 if (iVar9 != 0) {
                   TDropDownPanel::empty_list(*ppTVar1);
-                    /* language.dll match for 0x2634: "15,000 years (2:00 hr)" */
                   TDropDownPanel::append_line(*ppTVar1,0x2634,15000);
-                    /* language.dll match for 0x2635: "13,000 years (1:45 hr)" */
                   TDropDownPanel::append_line(*ppTVar1,0x2635,13000);
-                    /* language.dll match for 0x2636: "11,000 years (1:30 hr)" */
                   TDropDownPanel::append_line(*ppTVar1,0x2636,11000);
-                    /* language.dll match for 0x2637: "9,000 years (1:15 hr)" */
                   TDropDownPanel::append_line(*ppTVar1,0x2637,9000);
-                    /* language.dll match for 0x2638: "7,000 years (60 min)" */
                   TDropDownPanel::append_line(*ppTVar1,0x2638,7000);
-                    /* language.dll match for 0x2639: "5,000 years (40 min)" */
                   TDropDownPanel::append_line(*ppTVar1,0x2639,5000);
-                    /* language.dll match for 0x263a: "3,000 years (25 min)" */
                   TDropDownPanel::append_line(*ppTVar1,0x263a,3000);
-                    /* language.dll match for 0x763b: "Select the time limit for the game. The
-                       civilization with the highest score at the end of the time limit wins the
-                       game." */
                   TPanel::set_help_info((TPanel *)*ppTVar1,0x763b,-1);
-                    /* language.dll match for 0x10ea: "Score" */
                   iVar9 = TEasy_Panel::create_text
                                     ((TEasy_Panel *)this,(TPanel *)this,&this->scoreLabel,0x10ea,
                                      0x14,0x138,0xb4,0x14,0xb,0,0,0);
@@ -703,12 +657,10 @@ TribeGameSettingsScreen::TribeGameSettingsScreen(TribeGameSettingsScreen *this)
                       TDropDownPanel::empty_list(*ppTVar1);
                       TDropDownPanel::append_line(*ppTVar1,s_3000,3000);
                       TDropDownPanel::append_line(*ppTVar1,s_2700,0xa8c);
-                    /* language.dll match for 0x960: "********** TRIBE ERRORS **********" */
                       TDropDownPanel::append_line(*ppTVar1,s_2400,0x960);
                       TDropDownPanel::append_line(*ppTVar1,s_2100,0x834);
                       TDropDownPanel::append_line(*ppTVar1,s_1800,0x708);
                       TDropDownPanel::append_line(*ppTVar1,s_1500,0x5dc);
-                    /* language.dll match for 0x4b0: "Ready" */
                       TDropDownPanel::append_line(*ppTVar1,s_1200,0x4b0);
                       TDropDownPanel::append_line(*ppTVar1,s_900,900);
                       TDropDownPanel::append_line(*ppTVar1,s_800,800);
@@ -717,11 +669,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen(TribeGameSettingsScreen *this)
                       TDropDownPanel::append_line(*ppTVar1,s_500,500);
                       TDropDownPanel::append_line(*ppTVar1,s_400,400);
                       TDropDownPanel::append_line(*ppTVar1,s_300,300);
-                    /* language.dll match for 0x763c: "Select the score for the game. The first
-                       civilization to achieve this score or military conquest wins the game." */
                       TPanel::set_help_info((TPanel *)*ppTVar1,0x763c,-1);
-                    /* language.dll match for 0x25d9: "This scenario contains Individual Victory
-                       conditions that cannot be customized." */
                       iVar9 = TEasy_Panel::create_text
                                         ((TEasy_Panel *)this,(TPanel *)this,&this->victoryFixedText,
                                          0x25d9,0x14,0x108,0xb4,0x5c,0xb,1,1,1);
@@ -732,7 +680,6 @@ TribeGameSettingsScreen::TribeGameSettingsScreen(TribeGameSettingsScreen *this)
                                    *(undefined1 *)((int)&this->_padding_ + 2),
                                    *(undefined1 *)((int)&this->_padding_ + 3),(char)this->_padding_,
                                    *(undefined1 *)((int)&this->_padding_ + 1));
-                    /* language.dll match for 0x2606: "Starting Age" */
                         iVar9 = TEasy_Panel::create_text
                                           ((TEasy_Panel *)this,(TPanel *)this,&this->ageLabel,0x2606
                                            ,0xdc,0x108,0xb4,0x14,0xb,0,0,0);
@@ -743,24 +690,13 @@ TribeGameSettingsScreen::TribeGameSettingsScreen(TribeGameSettingsScreen *this)
                                              0xdc,0x11c,0xb4,0x18,0xb);
                           if (iVar9 != 0) {
                             TDropDownPanel::empty_list(*ppTVar1);
-                    /* language.dll match for 0x10e7: "Default" */
                             TDropDownPanel::append_line(*ppTVar1,0x10e7,0);
-                    /* language.dll match for 0x106e: "Nomad" */
                             TDropDownPanel::append_line(*ppTVar1,0x106e,1);
-                    /* language.dll match for 0x1069: "Stone Age" */
                             TDropDownPanel::append_line(*ppTVar1,0x1069,2);
-                    /* language.dll match for 0x106a: "Tool Age" */
                             TDropDownPanel::append_line(*ppTVar1,0x106a,3);
-                    /* language.dll match for 0x106b: "Bronze Age" */
                             TDropDownPanel::append_line(*ppTVar1,0x106b,4);
-                    /* language.dll match for 0x106c: "Iron Age" */
                             TDropDownPanel::append_line(*ppTVar1,0x106c,5);
-                    /* language.dll match for 0x7631: "Select the age at which the game begins. For
-                       example, Bronze Age indicates that all Stone Age and Tool Age technology has
-                       been completed. Nomad indicates that the game starts in the Stone Age and you
-                       choose where to build your Town Center." */
                             TPanel::set_help_info((TPanel *)*ppTVar1,0x7631,-1);
-                    /* language.dll match for 0x2607: "Resources" */
                             iVar9 = TEasy_Panel::create_text
                                               ((TEasy_Panel *)this,(TPanel *)this,
                                                &this->resourcesLabel,0x2607,0xdc,0x138,0xb4,0x14,0xb
@@ -772,16 +708,10 @@ TribeGameSettingsScreen::TribeGameSettingsScreen(TribeGameSettingsScreen *this)
                                                  ,0xdc,0x14c,0xb4,0x18,0xb);
                               if (iVar9 != 0) {
                                 TDropDownPanel::empty_list(*ppTVar1);
-                    /* language.dll match for 0x10e7: "Default" */
                                 TDropDownPanel::append_line(*ppTVar1,0x10e7,0);
-                    /* language.dll match for 0x2609: "Medium" */
                                 TDropDownPanel::append_line(*ppTVar1,0x2609,2);
-                    /* language.dll match for 0x260a: "High" */
                                 TDropDownPanel::append_line(*ppTVar1,0x260a,3);
-                    /* language.dll match for 0x7632: "Select the quantity of resources (food, wood,
-                       stone, and gold) in each player's stockpile when the game begins." */
                                 TPanel::set_help_info((TPanel *)*ppTVar1,0x7632,-1);
-                    /* language.dll match for 0x260d: "Path Finding" */
                                 iVar9 = TEasy_Panel::create_text
                                                   ((TEasy_Panel *)this,(TPanel *)this,
                                                    &this->pathingLabel,0x260d,0x1a4,0x138,0xb4,0x14,
@@ -793,19 +723,12 @@ TribeGameSettingsScreen::TribeGameSettingsScreen(TribeGameSettingsScreen *this)
                                                      ,100,0x1a4,0x14c,0xb4,0x18,0xb);
                                   if (iVar9 != 0) {
                                     TDropDownPanel::empty_list(*ppTVar1);
-                    /* language.dll match for 0x260e: "Default" */
                                     TDropDownPanel::append_line(*ppTVar1,0x260e,0);
-                    /* language.dll match for 0x260f: "Medium" */
                                     TDropDownPanel::append_line(*ppTVar1,0x260f,1);
-                    /* language.dll match for 0x2610: "High" */
                                     TDropDownPanel::append_line(*ppTVar1,0x2610,2);
-                    /* language.dll match for 0x763e: "Select the path finding capability. The
-                       higher the value, the better paths units can find to get from one place to
-                       another. Higher values also require faster machines." */
                                     TPanel::set_help_info((TPanel *)*ppTVar1,0x763e,-1);
                                     iVar9 = RGE_Base_Game::multiplayerGame(rge_base_game);
                                     if (iVar9 != 0) {
-                    /* language.dll match for 0x2613: "Population Limit" */
                                       iVar9 = TEasy_Panel::create_text
                                                         ((TEasy_Panel *)this,(TPanel *)this,
                                                          &this->limitLabel,0x2613,0x1a4,0xd8,0xb4,
@@ -823,12 +746,8 @@ TribeGameSettingsScreen::TribeGameSettingsScreen(TribeGameSettingsScreen *this)
                                         TDropDownPanel::append_line(*ppTVar1,num_str + 4,iVar9);
                                         iVar9 = iVar9 + 0x19;
                                       } while (iVar9 < 0xc9);
-                    /* language.dll match for 0x763f: "Select the maximum number of units a player
-                       can create or train. The recommended value is 50. Also, higher values require
-                       faster machines." */
                                       TPanel::set_help_info((TPanel *)*ppTVar1,0x763f,-1);
                                     }
-                    /* language.dll match for 0x2bcf: "Difficulty Level" */
                                     iVar9 = TEasy_Panel::create_text
                                                       ((TEasy_Panel *)this,(TPanel *)this,
                                                        &this->difficultyLabel,0x2bcf,0x1a4,0x108,
@@ -840,64 +759,39 @@ TribeGameSettingsScreen::TribeGameSettingsScreen(TribeGameSettingsScreen *this)
                                                          0xb4,100,0x1a4,0x11c,0xb4,0x18,0xb);
                                       if (iVar9 != 0) {
                                         TDropDownPanel::empty_list(*ppTVar1);
-                    /* language.dll match for 0x2bd4: "Easiest" */
                                         TDropDownPanel::append_line(*ppTVar1,0x2bd4,4);
-                    /* language.dll match for 0x2bd3: "Easy" */
                                         TDropDownPanel::append_line(*ppTVar1,0x2bd3,3);
-                    /* language.dll match for 0x2bd2: "Moderate" */
                                         TDropDownPanel::append_line(*ppTVar1,0x2bd2,2);
-                    /* language.dll match for 0x2bd1: "Hard" */
                                         TDropDownPanel::append_line(*ppTVar1,0x2bd1,1);
-                    /* language.dll match for 0x2bd0: "Hardest" */
                                         TDropDownPanel::append_line(*ppTVar1,0x2bd0,0);
-                    /* language.dll match for 0x763d: "Select the skill of civilizations controlled
-                       by the computer." */
                                         TPanel::set_help_info((TPanel *)*ppTVar1,0x763d,-1);
                                         iVar9 = TEasy_Panel::create_check_box
                                                           ((TEasy_Panel *)this,(TPanel *)this,
                                                            this->optionButton,10,0x168,0x1e,0x1e,0,0
                                                           );
-                    /* language.dll match for 0x2601: "Fixed Positions" */
                                         if ((iVar9 != 0) &&
                                            (iVar9 = TEasy_Panel::create_text
                                                               ((TEasy_Panel *)this,(TPanel *)this,
                                                                this->optionText,0x2601,0x28,0x168,
                                                                0xaa,0x1e,0xb,0,1,0), iVar9 != 0)) {
-                    /* language.dll match for 0x7633: "If there is a check in the box, players begin
-                       the game in fixed (clockwise) positions based on the player number. Team
-                       members with consecutive player numbers are located adjacent to each other on
-                       the map. Otherwise, players begin the game in random locations on the map."
-                        */
                                           TPanel::set_help_info
                                                     ((TPanel *)this->optionButton[0],0x7633,-1);
                                           iVar9 = TEasy_Panel::create_check_box
                                                             ((TEasy_Panel *)this,(TPanel *)this,
                                                              this->optionButton + 2,0xdc,0x168,0x1e,
                                                              0x1e,0,0);
-                    /* language.dll match for 0x2604: "Full Tech Tree" */
                                           if ((iVar9 != 0) &&
                                              (iVar9 = TEasy_Panel::create_text
                                                                 ((TEasy_Panel *)this,(TPanel *)this,
                                                                  this->optionText + 2,0x2604,0xfa,
                                                                  0x168,0xaa,0x1e,0xb,0,1,0),
                                              iVar9 != 0)) {
-                    /* language.dll match for 0x7637: "If there is a check in the box, all
-                       civilizations can research all technologies and build all units in the game
-                       (except Fire Galleys) and the special attributes usually associated with each
-                       civilization are removed. Otherwise, each civilization can research limited
-                       technology and has special attributes."
-                       language.dll match for 0x7637: "If there is a check in the box, all
-                       civilizations can research all technologies in the game and the special
-                       attributes usually associated with each civilization are removed. Otherwise,
-                       each civilization can research limited technology and has special
-                       attributes." */
                                             TPanel::set_help_info
                                                       ((TPanel *)this->optionButton[2],0x7637,-1);
                                             iVar9 = TEasy_Panel::create_check_box
                                                               ((TEasy_Panel *)this,(TPanel *)this,
                                                                this->optionButton + 1,0x1ae,0x168,
                                                                0x1e,0x1e,0,0);
-                    /* language.dll match for 0x25fc: "Reveal Map" */
                                             if ((iVar9 != 0) &&
                                                (iVar9 = TEasy_Panel::create_text
                                                                   ((TEasy_Panel *)this,
@@ -905,9 +799,6 @@ TribeGameSettingsScreen::TribeGameSettingsScreen(TribeGameSettingsScreen *this)
                                                                    this->optionText + 1,0x25fc,0x1cc
                                                                    ,0x168,0xaa,0x1e,0xb,0,1,0),
                                                iVar9 != 0)) {
-                    /* language.dll match for 0x7634: "If there is a check in the box, the map
-                       terrain is revealed at the beginning of the game. Otherwise, it is revealed
-                       as you explore." */
                                               TPanel::set_help_info
                                                         ((TPanel *)this->optionButton[1],0x7634,-1);
                                               iVar9 = RGE_Base_Game::multiplayerGame(rge_base_game);
@@ -917,7 +808,6 @@ TribeGameSettingsScreen::TribeGameSettingsScreen(TribeGameSettingsScreen *this)
                                                                    (TPanel *)this,
                                                                    this->optionButton + 3,0x1ae,
                                                                    0x18b,0x1e,0x1e,0,0);
-                    /* language.dll match for 0x25fb: "Enable Cheating" */
                                                 if ((iVar9 == 0) ||
                                                    (iVar9 = TEasy_Panel::create_text
                                                                       ((TEasy_Panel *)this,
@@ -926,8 +816,6 @@ TribeGameSettingsScreen::TribeGameSettingsScreen(TribeGameSettingsScreen *this)
                                                                        0x1cc,0x18b,0xa5,0x1e,0xb,0,1
                                                                        ,0), iVar9 == 0))
                                                 goto LAB_004b57d9;
-                    /* language.dll match for 0x7638: "If there is a check in the box, players can
-                       use the cheat codes." */
                                                 TPanel::set_help_info
                                                           ((TPanel *)this->optionButton[3],0x7638,-1
                                                           );
@@ -964,10 +852,8 @@ TribeGameSettingsScreen::TribeGameSettingsScreen(TribeGameSettingsScreen *this)
                                                             ((TTextPanel *)*ppTVar2,0);
                                                 }
                                                 else {
-                    /* language.dll match for 0x25fd: "Loading list of scenarios..." */
                                                   (**(code **)((*ppTVar2)->_padding_ + 0xe4))
                                                             (0x25fd);
-                    /* language.dll match for 0x7639: "Select the scenario to play." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)*ppTVar2,0x7639,-1);
                                                   iVar9 = TEasy_Panel::create_auto_scrollbar
@@ -995,7 +881,6 @@ TribeGameSettingsScreen::TribeGameSettingsScreen(TribeGameSettingsScreen *this)
                                                                    ,lVar13,lVar14,lVar15,iVar17,
                                                                    iVar16,iVar18);
                                                 if (iVar9 != 0) {
-                    /* language.dll match for 0x25ff: "Players" */
                                                   iVar9 = TEasy_Panel::create_text
                                                                     ((TEasy_Panel *)this,
                                                                      (TPanel *)this,
@@ -1013,7 +898,6 @@ TribeGameSettingsScreen::TribeGameSettingsScreen(TribeGameSettingsScreen *this)
                                                     this->missionTextWidth = this->scenarioListWidth
                                                     ;
                                                     this->missionTextY = iVar9;
-                    /* language.dll match for 0x2600: "Scenario Instructions" */
                                                     this->missionTextX = this->scenarioListX;
                                                     this->missionTextHeight = 0x104 - iVar9;
                                                     iVar9 = TEasy_Panel::create_text
@@ -1050,14 +934,11 @@ TribeGameSettingsScreen::TribeGameSettingsScreen(TribeGameSettingsScreen *this)
                                                                            &this->missionScrollbar,
                                                                            *ppTVar3,0x14);
                                                         if (iVar9 != 0) {
-                    /* language.dll match for 0x763a: "Explains what you must do to win the game."
-                        */
                                                           TPanel::set_help_info
                                                                     ((TPanel *)
                                                                      this->missionScrollbar,0x763a,
                                                                      -1);
                                                           ppTVar4 = &this->okButton;
-                    /* language.dll match for 0xfa1: "OK" */
                                                           iVar9 = TEasy_Panel::create_button
                                                                             ((TEasy_Panel *)this,
                                                                              (TPanel *)this,ppTVar4,
@@ -1068,7 +949,6 @@ TribeGameSettingsScreen::TribeGameSettingsScreen(TribeGameSettingsScreen *this)
                                                                       ((TPanel *)*ppTVar4,0x7531,-1)
                                                             ;
                                                             ppTVar5 = &this->cancelButton;
-                    /* language.dll match for 0xfa2: "Cancel" */
                                                             iVar9 = TEasy_Panel::create_button
                                                                               ((TEasy_Panel *)this,
                                                                                (TPanel *)this,
@@ -1082,7 +962,6 @@ TribeGameSettingsScreen::TribeGameSettingsScreen(TribeGameSettingsScreen *this)
                                                               TPanel::set_help_info
                                                                         ((TPanel *)*ppTVar5,0x7532,
                                                                          -1);
-                    /* language.dll match for 0xfa9: "?" */
                                                               iVar9 = TEasy_Panel::create_button
                                                                                 ((TEasy_Panel *)this
                                                                                  ,(TPanel *)this,
@@ -1138,9 +1017,6 @@ LAB_004b57d9:
 
 // Function: `vector_deleting_destructor'
 // Address: 004b57f0
-/* public: virtual void * __thiscall TribeGameSettingsScreen::`vector deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TribeGameSettingsScreen::_vector_deleting_destructor_(TribeGameSettingsScreen *this,uint param_1)
 {
@@ -1155,8 +1031,6 @@ TribeGameSettingsScreen::_vector_deleting_destructor_(TribeGameSettingsScreen *t
 
 // Function: init_vars
 // Address: 004b5810
-/* protected: void __thiscall TribeGameSettingsScreen::init_vars(void) */
-
 void __thiscall TribeGameSettingsScreen::init_vars(TribeGameSettingsScreen *this)
 {
   TTextPanel **ppTVar1;
@@ -1217,8 +1091,6 @@ void __thiscall TribeGameSettingsScreen::init_vars(TribeGameSettingsScreen *this
 
 // Function: ~TribeGameSettingsScreen
 // Address: 004b5920
-/* public: virtual __thiscall TribeGameSettingsScreen::~TribeGameSettingsScreen(void) */
-
 void __thiscall TribeGameSettingsScreen::~TribeGameSettingsScreen(TribeGameSettingsScreen *this)
 {
   int iVar1;
@@ -1299,8 +1171,6 @@ void __thiscall TribeGameSettingsScreen::~TribeGameSettingsScreen(TribeGameSetti
 // Function: handle_idle
 // Address: 004b5bb0
 // [HELPER] s_C__msdev_work_age1_x1_scr_set_cp: "C:\msdev\work\age1_x1\scr_set.cpp"
-/* public: virtual long __thiscall TribeGameSettingsScreen::handle_idle(void) */
-
 long __thiscall TribeGameSettingsScreen::handle_idle(TribeGameSettingsScreen *this)
 {
   int iVar1;
@@ -1340,9 +1210,6 @@ LAB_004b5c5e:
 
 // Function: handle_user_command
 // Address: 004b5c70
-/* public: virtual long __thiscall TribeGameSettingsScreen::handle_user_command(unsigned int,long)
-    */
-
 long __thiscall
 TribeGameSettingsScreen::handle_user_command
           (TribeGameSettingsScreen *this,uint param_1,long param_2)
@@ -1362,9 +1229,6 @@ TribeGameSettingsScreen::handle_user_command
 
 // Function: action
 // Address: 004b5cb0
-/* protected: virtual long __thiscall TribeGameSettingsScreen::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TribeGameSettingsScreen::action
           (TribeGameSettingsScreen *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -1429,9 +1293,6 @@ LAB_004b5dd2:
 // [HELPER] s_2___8: "2 - 8"
 // [HELPER] s__d: "%d"
 // [HELPER] s__d____d: "%d - %d"
-/* WARNING: Variable defined which should be unmapped: i */
-/* protected: void __thiscall TribeGameSettingsScreen::fillScenarios(void) */
-
 void __thiscall TribeGameSettingsScreen::fillScenarios(TribeGameSettingsScreen *this)
 {
   char cVar1;
@@ -1597,7 +1458,6 @@ LAB_004b5ef6:
       (uVar3 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game), uVar3 == '\0')))) {
     lVar9 = -2;
     pcVar11 = s_2___8;
-                    /* language.dll match for 0x25b5: "Random Map" */
     pcVar5 = TPanel::get_string((TPanel *)this,0x25b5);
     TTextPanel::insert_line((TTextPanel *)this->scenarioList,0,pcVar5,pcVar11,lVar9);
     this->scenario_line_offset = this->scenario_line_offset + -1;
@@ -1608,7 +1468,6 @@ LAB_004b5ef6:
       (uVar3 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game), uVar3 != '\0')))) {
     lVar9 = -1;
     pcVar11 = s_2___8;
-                    /* language.dll match for 0x2617: "Death Match" */
     pcVar5 = TPanel::get_string((TPanel *)this,0x2617);
     TTextPanel::insert_line((TTextPanel *)this->scenarioList,1,pcVar5,pcVar11,lVar9);
     this->scenario_line_offset = this->scenario_line_offset + -1;
@@ -1621,8 +1480,6 @@ LAB_004b5ef6:
 // Function: fillMissionText
 // Address: 004b6160
 // [HELPER] s_: ""
-/* protected: void __thiscall TribeGameSettingsScreen::fillMissionText(void) */
-
 void __thiscall TribeGameSettingsScreen::fillMissionText(TribeGameSettingsScreen *this)
 {
   long lVar1;
@@ -1632,13 +1489,9 @@ void __thiscall TribeGameSettingsScreen::fillMissionText(TribeGameSettingsScreen
   lVar1 = TTextPanel::get_line((TTextPanel *)this->scenarioList);
   lVar2 = TTextPanel::get_id((TTextPanel *)this->scenarioList);
   if (lVar2 == -2) {
-                    /* language.dll match for 0x25dc: "This is a game played on a random map.  The
-                       next screen allows you to change random map settings." */
     (**(code **)(this->missionText->_padding_ + 0xe4))(0x25dc);
   }
   else if (lVar2 == -1) {
-                    /* language.dll match for 0x2618: "A game played on a random map where each
-                       player gets 20,000 of each resource." */
     (**(code **)(this->missionText->_padding_ + 0xe4))(0x2618);
   }
   else {
@@ -1662,8 +1515,6 @@ void __thiscall TribeGameSettingsScreen::fillMissionText(TribeGameSettingsScreen
 
 // Function: getSettings
 // Address: 004b6230
-/* protected: void __thiscall TribeGameSettingsScreen::getSettings(void) */
-
 void __thiscall TribeGameSettingsScreen::getSettings(TribeGameSettingsScreen *this)
 {
   uchar uVar1;
@@ -1773,8 +1624,6 @@ LAB_004b62c3:
 // Function: sendSettings
 // Address: 004b6500
 // [HELPER] s_: ""
-/* protected: void __thiscall TribeGameSettingsScreen::sendSettings(void) */
-
 void __thiscall TribeGameSettingsScreen::sendSettings(TribeGameSettingsScreen *this)
 {
   long lVar1;
@@ -1867,9 +1716,6 @@ void __thiscall TribeGameSettingsScreen::sendSettings(TribeGameSettingsScreen *t
 
 // Function: activatePanels
 // Address: 004b6740
-/* WARNING: Variable defined which should be unmapped: tabList */
-/* protected: void __thiscall TribeGameSettingsScreen::activatePanels(void) */
-
 void __thiscall TribeGameSettingsScreen::activatePanels(TribeGameSettingsScreen *this)
 {
   TButtonPanel *pTVar1;
@@ -1944,8 +1790,6 @@ void __thiscall TribeGameSettingsScreen::activatePanels(TribeGameSettingsScreen 
 
 // Function: activateVictoryPanels
 // Address: 004b6870
-/* protected: void __thiscall TribeGameSettingsScreen::activateVictoryPanels(void) */
-
 void __thiscall TribeGameSettingsScreen::activateVictoryPanels(TribeGameSettingsScreen *this)
 {
   long lVar1;

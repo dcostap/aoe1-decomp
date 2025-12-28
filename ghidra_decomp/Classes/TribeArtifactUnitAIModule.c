@@ -180,9 +180,6 @@
 
 // Function: TribeArtifactUnitAIModule
 // Address: 00507880
-/* public: __thiscall TribeArtifactUnitAIModule::TribeArtifactUnitAIModule(class RGE_Static_Object
-   *,int) */
-
 TribeArtifactUnitAIModule * __thiscall
 TribeArtifactUnitAIModule::TribeArtifactUnitAIModule
           (TribeArtifactUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
@@ -234,9 +231,6 @@ TribeArtifactUnitAIModule::TribeArtifactUnitAIModule
 
 // Function: `vector_deleting_destructor'
 // Address: 00507a00
-/* public: virtual void * __thiscall TribeArtifactUnitAIModule::`vector deleting
-   destructor'(unsigned int) */
-
 void * __thiscall
 TribeArtifactUnitAIModule::_vector_deleting_destructor_
           (TribeArtifactUnitAIModule *this,uint param_1)
@@ -252,8 +246,6 @@ TribeArtifactUnitAIModule::_vector_deleting_destructor_
 
 // Function: ~TribeArtifactUnitAIModule
 // Address: 00507a20
-/* public: virtual __thiscall TribeArtifactUnitAIModule::~TribeArtifactUnitAIModule(void) */
-
 void __thiscall
 TribeArtifactUnitAIModule::~TribeArtifactUnitAIModule(TribeArtifactUnitAIModule *this)
 {
@@ -301,9 +293,6 @@ TribeArtifactUnitAIModule::~TribeArtifactUnitAIModule(TribeArtifactUnitAIModule 
 // Address: 00507a30
 // [HELPER] s_C__msdev_work_age1_x1_taiuaimd_c: "C:\msdev\work\age1_x1\taiuaimd.cpp"
 // [HELPER] s___d_call_stopObject__s__d_: "#%d call stopObject %s %d\n"
-/* protected: virtual int __thiscall TribeArtifactUnitAIModule::processNotify(struct NotifyEvent
-   *,unsigned long) */
-
 int __thiscall
 TribeArtifactUnitAIModule::processNotify
           (TribeArtifactUnitAIModule *this,NotifyEvent *param_1,ulong param_2)
@@ -549,8 +538,6 @@ switchD_00507a55_caseD_1f4:
 
 // Function: processIdle
 // Address: 00507e90
-/* protected: virtual int __thiscall TribeArtifactUnitAIModule::processIdle(int) */
-
 int __thiscall TribeArtifactUnitAIModule::processIdle(TribeArtifactUnitAIModule *this,int param_1)
 {
   int iVar1;
@@ -577,8 +564,6 @@ int __thiscall TribeArtifactUnitAIModule::processIdle(TribeArtifactUnitAIModule 
 // Address: 00507ef0
 // [HELPER] s_C__msdev_work_age1_x1_taiuaimd_c: "C:\msdev\work\age1_x1\taiuaimd.cpp"
 // [HELPER] s___d_call_stopObject__s__d_: "#%d call stopObject %s %d\n"
-/* protected: virtual int __thiscall TribeArtifactUnitAIModule::processMisc(void) */
-
 int __thiscall TribeArtifactUnitAIModule::processMisc(TribeArtifactUnitAIModule *this)
 {
   int iVar1;

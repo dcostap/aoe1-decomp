@@ -28,8 +28,6 @@
 // Function: AIModuleID
 // Address: 0040dd90
 // [HELPER] s_: ""
-/* public: __thiscall AIModuleID::AIModuleID(char *,int) */
-
 AIModuleID * __thiscall AIModuleID::AIModuleID(AIModuleID *this,char *param_1,int param_2)
 {
   char cVar1;
@@ -74,8 +72,6 @@ AIModuleID * __thiscall AIModuleID::AIModuleID(AIModuleID *this,char *param_1,in
 
 // Function: `vector_deleting_destructor'
 // Address: 0040ddf0
-/* public: virtual void * __thiscall AIModuleID::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall AIModuleID::_vector_deleting_destructor_(AIModuleID *this,uint param_1)
 {
   ~AIModuleID(this);
@@ -89,8 +85,6 @@ void * __thiscall AIModuleID::_vector_deleting_destructor_(AIModuleID *this,uint
 
 // Function: ~AIModuleID
 // Address: 0040de10
-/* public: virtual __thiscall AIModuleID::~AIModuleID(void) */
-
 void __thiscall AIModuleID::~AIModuleID(AIModuleID *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -102,8 +96,6 @@ void __thiscall AIModuleID::~AIModuleID(AIModuleID *this)
 // Function: setID
 // Address: 0040de20
 // [HELPER] s_: ""
-/* public: void __thiscall AIModuleID::setID(int,char *) */
-
 void __thiscall AIModuleID::setID(AIModuleID *this,int param_1,char *param_2)
 {
   char cVar1;

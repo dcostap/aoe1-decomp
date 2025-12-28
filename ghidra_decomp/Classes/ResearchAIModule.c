@@ -33,8 +33,6 @@
 // Address: 00411670
 // [HELPER] s_: ""
 // [HELPER] s_Research_AI: "Research AI"
-/* public: __thiscall ResearchAIModule::ResearchAIModule(void *,int) */
-
 ResearchAIModule * __thiscall
 ResearchAIModule::ResearchAIModule(ResearchAIModule *this,void *param_1,int param_2)
 {
@@ -93,8 +91,6 @@ ResearchAIModule::ResearchAIModule(ResearchAIModule *this,void *param_1,int para
 
 // Function: `scalar_deleting_destructor'
 // Address: 00411720
-/* public: virtual void * __thiscall ResearchAIModule::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall
 ResearchAIModule::_scalar_deleting_destructor_(ResearchAIModule *this,uint param_1)
 {
@@ -110,9 +106,6 @@ ResearchAIModule::_scalar_deleting_destructor_(ResearchAIModule *this,uint param
 // Function: ResearchAIModule
 // Address: 00411740
 // [HELPER] s_Research_AI: "Research AI"
-/* WARNING: Variable defined which should be unmapped: tempInt */
-/* public: __thiscall ResearchAIModule::ResearchAIModule(int,int) */
-
 ResearchAIModule * __thiscall
 ResearchAIModule::ResearchAIModule(ResearchAIModule *this,int param_1,int param_2)
 {
@@ -239,8 +232,6 @@ ResearchAIModule::ResearchAIModule(ResearchAIModule *this,int param_1,int param_
 
 // Function: ~ResearchAIModule
 // Address: 00411940
-/* public: virtual __thiscall ResearchAIModule::~ResearchAIModule(void) */
-
 void __thiscall ResearchAIModule::~ResearchAIModule(ResearchAIModule *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -268,8 +259,6 @@ void __thiscall ResearchAIModule::~ResearchAIModule(ResearchAIModule *this)
 
 // Function: setMainDecisionAI
 // Address: 004119b0
-/* public: void __thiscall ResearchAIModule::setMainDecisionAI(class MainDecisionAIModule *) */
-
 void __thiscall
 ResearchAIModule::setMainDecisionAI(ResearchAIModule *this,MainDecisionAIModule *param_1)
 {
@@ -281,9 +270,6 @@ ResearchAIModule::setMainDecisionAI(ResearchAIModule *this,MainDecisionAIModule 
 
 // Function: save
 // Address: 004119c0
-/* WARNING: Variable defined which should be unmapped: tempInt */
-/* public: virtual int __thiscall ResearchAIModule::save(int) */
-
 int __thiscall ResearchAIModule::save(ResearchAIModule *this,int param_1)
 {
   char cVar1;
@@ -401,8 +387,6 @@ int __thiscall ResearchAIModule::save(ResearchAIModule *this,int param_1)
 
 // Function: resourceCost
 // Address: 00411b40
-/* public: class ResourceItem * __thiscall ResearchAIModule::resourceCost(int) */
-
 ResourceItem * __thiscall ResearchAIModule::resourceCost(ResearchAIModule *this,int param_1)
 {
   TechnologyItem *this_00;
@@ -420,8 +404,6 @@ ResourceItem * __thiscall ResearchAIModule::resourceCost(ResearchAIModule *this,
 
 // Function: buildable
 // Address: 00411b60
-/* public: virtual int __thiscall ResearchAIModule::buildable(class BuildItem *) */
-
 int __thiscall ResearchAIModule::buildable(ResearchAIModule *this,BuildItem *param_1)
 {
   return 1;
@@ -431,8 +413,6 @@ int __thiscall ResearchAIModule::buildable(ResearchAIModule *this,BuildItem *par
 
 // Function: research
 // Address: 00411b70
-/* public: virtual void __thiscall ResearchAIModule::research(class BuildItem *) */
-
 void __thiscall ResearchAIModule::research(ResearchAIModule *this,BuildItem *param_1)
 {
   return;
@@ -445,8 +425,6 @@ void __thiscall ResearchAIModule::research(ResearchAIModule *this,BuildItem *par
 // [HELPER] s_NONE: "NONE"
 // [HELPER] s_NULL: "NULL"
 // [HELPER] s___c_d__s___d___d__d__d__d__d___d: "%*c%d %s %*d %*d %d %d %d %d %*d %*d %*d %*d %*d %*d"
-/* public: int __thiscall ResearchAIModule::loadTechnologyTree(char *) */
-
 int __thiscall ResearchAIModule::loadTechnologyTree(ResearchAIModule *this,char *param_1)
 {
   char cVar1;
@@ -650,8 +628,6 @@ LAB_00411de2:
 
 // Function: numberTechnologyItems
 // Address: 00411e00
-/* public: int __thiscall ResearchAIModule::numberTechnologyItems(void)const  */
-
 int __thiscall ResearchAIModule::numberTechnologyItems(ResearchAIModule *this)
 {
   return this->techTreeLengthValue;
@@ -661,8 +637,6 @@ int __thiscall ResearchAIModule::numberTechnologyItems(ResearchAIModule *this)
 
 // Function: technologyTreeName
 // Address: 00411e10
-/* public: char * __thiscall ResearchAIModule::technologyTreeName(void) */
-
 char * __thiscall ResearchAIModule::technologyTreeName(ResearchAIModule *this)
 {
   return this->techTreeNameValue;
@@ -672,8 +646,6 @@ char * __thiscall ResearchAIModule::technologyTreeName(ResearchAIModule *this)
 
 // Function: removeOldTechTree
 // Address: 00411e20
-/* protected: void __thiscall ResearchAIModule::removeOldTechTree(void) */
-
 void __thiscall ResearchAIModule::removeOldTechTree(ResearchAIModule *this)
 {
   TechnologyItem *pTVar1;
@@ -697,8 +669,6 @@ void __thiscall ResearchAIModule::removeOldTechTree(ResearchAIModule *this)
 
 // Function: item
 // Address: 00411e70
-/* protected: class TechnologyItem * __thiscall ResearchAIModule::item(int) */
-
 TechnologyItem * __thiscall ResearchAIModule::item(ResearchAIModule *this,int param_1)
 {
   int iVar1;

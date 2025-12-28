@@ -59,8 +59,6 @@
 // Function: TMousePointer
 // Address: 0045ae50
 // [HELPER] s_C__msdev_work_age1_x1_Mouseptr_c: "C:\msdev\work\age1_x1\Mouseptr.cpp"
-/* public: __thiscall TMousePointer::TMousePointer(int) */
-
 TMousePointer * __thiscall TMousePointer::TMousePointer(TMousePointer *this,int param_1)
 {
   tagRECT *ptVar1;
@@ -163,8 +161,6 @@ TMousePointer * __thiscall TMousePointer::TMousePointer(TMousePointer *this,int 
 
 // Function: ~TMousePointer
 // Address: 0045b000
-/* public: __thiscall TMousePointer::~TMousePointer(void) */
-
 void __thiscall TMousePointer::~TMousePointer(TMousePointer *this)
 {
   TShape *this_00;
@@ -184,8 +180,6 @@ void __thiscall TMousePointer::~TMousePointer(TMousePointer *this)
 
 // Function: Shutdown_Mouse
 // Address: 0045b040
-/* public: int __thiscall TMousePointer::Shutdown_Mouse(void) */
-
 int __thiscall TMousePointer::Shutdown_Mouse(TMousePointer *this)
 {
   if (this->Shutdown != 0) {
@@ -212,8 +206,6 @@ int __thiscall TMousePointer::Shutdown_Mouse(TMousePointer *this)
 
 // Function: Restore_Mouse
 // Address: 0045b0a0
-/* public: int __thiscall TMousePointer::Restore_Mouse(class TDrawArea *) */
-
 int __thiscall TMousePointer::Restore_Mouse(TMousePointer *this,TDrawArea *param_1)
 {
   int iVar1;
@@ -243,8 +235,6 @@ int __thiscall TMousePointer::Restore_Mouse(TMousePointer *this,TDrawArea *param
 // Function: setup
 // Address: 0045b120
 // [HELPER] s__s_slp: "%s.slp"
-/* public: int __thiscall TMousePointer::setup(int,class TDrawArea *,char *,int,int) */
-
 int __thiscall
 TMousePointer::setup
           (TMousePointer *this,int param_1,TDrawArea *param_2,char *param_3,int param_4,int param_5)
@@ -317,8 +307,6 @@ LAB_0045b267:
 
 // Function: set_game_mode
 // Address: 0045b290
-/* public: void __thiscall TMousePointer::set_game_mode(int) */
-
 void __thiscall TMousePointer::set_game_mode(TMousePointer *this,int param_1)
 {
   this->GameMode = param_1;
@@ -329,8 +317,6 @@ void __thiscall TMousePointer::set_game_mode(TMousePointer *this,int param_1)
 
 // Function: set_game_enable
 // Address: 0045b2a0
-/* public: void __thiscall TMousePointer::set_game_enable(int) */
-
 void __thiscall TMousePointer::set_game_enable(TMousePointer *this,int param_1)
 {
   this->GameEnabled = param_1;
@@ -341,8 +327,6 @@ void __thiscall TMousePointer::set_game_enable(TMousePointer *this,int param_1)
 
 // Function: get_game_enable
 // Address: 0045b2b0
-/* public: int __thiscall TMousePointer::get_game_enable(void) */
-
 int __thiscall TMousePointer::get_game_enable(TMousePointer *this)
 {
   return this->GameEnabled;
@@ -352,8 +336,6 @@ int __thiscall TMousePointer::get_game_enable(TMousePointer *this)
 
 // Function: in_game_mode
 // Address: 0045b2c0
-/* public: int __thiscall TMousePointer::in_game_mode(void) */
-
 int __thiscall TMousePointer::in_game_mode(TMousePointer *this)
 {
   if ((this->GameMode != 0) && (this->GameEnabled != 0)) {
@@ -366,8 +348,6 @@ int __thiscall TMousePointer::in_game_mode(TMousePointer *this)
 
 // Function: set_game_window
 // Address: 0045b2e0
-/* public: void __thiscall TMousePointer::set_game_window(int,int,int,int) */
-
 void __thiscall
 TMousePointer::set_game_window(TMousePointer *this,int param_1,int param_2,int param_3,int param_4)
 {
@@ -384,9 +364,6 @@ TMousePointer::set_game_window(TMousePointer *this,int param_1,int param_2,int p
 // Address: 0045b310
 // [HELPER] s__s_slp: "%s.slp"
 // [HELPER] s_mouseptr__LoadCursors: "mouseptr::LoadCursors"
-/* WARNING: Variable defined which should be unmapped: LoadOk */
-/* public: int __thiscall TMousePointer::LoadCursors(char *,int,int) */
-
 int __thiscall TMousePointer::LoadCursors(TMousePointer *this,char *param_1,int param_2,int param_3)
 {
   Shape_Info *pSVar1;
@@ -511,8 +488,6 @@ LAB_0045b546:
 
 // Function: delete_surfaces
 // Address: 0045b560
-/* public: void __thiscall TMousePointer::delete_surfaces(void) */
-
 void __thiscall TMousePointer::delete_surfaces(TMousePointer *this)
 {
   TDrawArea *pTVar1;
@@ -552,8 +527,6 @@ void __thiscall TMousePointer::delete_surfaces(TMousePointer *this)
 // Address: 0045b5d0
 // [HELPER] s_Mouse_Cursor___d: "Mouse Cursor #%d"
 // [HELPER] s_Mouse_Save_area: "Mouse Save area"
-/* public: int __thiscall TMousePointer::create_surfaces(void) */
-
 int __thiscall TMousePointer::create_surfaces(TMousePointer *this)
 {
   TDrawArea *pTVar1;
@@ -631,9 +604,6 @@ LAB_0045b745:
 
 // Function: update_mouse_position
 // Address: 0045b760
-/* WARNING: Variable defined which should be unmapped: point */
-/* public: int __thiscall TMousePointer::update_mouse_position(void) */
-
 int __thiscall TMousePointer::update_mouse_position(TMousePointer *this)
 {
   int iVar1;
@@ -758,9 +728,6 @@ int __thiscall TMousePointer::update_mouse_position(TMousePointer *this)
 // Address: 0045ba60
 // [HELPER] s_C__msdev_work_age1_x1_Mouseptr_c: "C:\msdev\work\age1_x1\Mouseptr.cpp"
 // [HELPER] s_mouseptr__draw: "mouseptr::draw"
-/* WARNING: Variable defined which should be unmapped: lplpDDClipper */
-/* public: void __thiscall TMousePointer::draw(int) */
-
 void __thiscall TMousePointer::draw(TMousePointer *this,int param_1)
 {
   tagRECT *ptVar1;
@@ -879,8 +846,6 @@ void __thiscall TMousePointer::draw(TMousePointer *this,int param_1)
 
 // Function: erase
 // Address: 0045bd60
-/* public: void __thiscall TMousePointer::erase(void) */
-
 void __thiscall TMousePointer::erase(TMousePointer *this)
 {
   IDirectDrawSurface *pIVar1;
@@ -911,8 +876,6 @@ void __thiscall TMousePointer::erase(TMousePointer *this)
 
 // Function: set_facet
 // Address: 0045be20
-/* public: void __thiscall TMousePointer::set_facet(int) */
-
 void __thiscall TMousePointer::set_facet(TMousePointer *this,int param_1)
 {
   Shape_Info *pSVar1;
@@ -934,8 +897,6 @@ void __thiscall TMousePointer::set_facet(TMousePointer *this,int param_1)
 
 // Function: set_game_facet
 // Address: 0045be80
-/* public: void __thiscall TMousePointer::set_game_facet(int) */
-
 void __thiscall TMousePointer::set_game_facet(TMousePointer *this,int param_1)
 {
   Shape_Info *pSVar1;
@@ -957,8 +918,6 @@ void __thiscall TMousePointer::set_game_facet(TMousePointer *this,int param_1)
 
 // Function: off
 // Address: 0045bee0
-/* public: void __thiscall TMousePointer::off(void) */
-
 void __thiscall TMousePointer::off(TMousePointer *this)
 {
   if (this->Shutdown == 0) {
@@ -977,8 +936,6 @@ void __thiscall TMousePointer::off(TMousePointer *this)
 
 // Function: on
 // Address: 0045bf40
-/* public: void __thiscall TMousePointer::on(void) */
-
 void __thiscall TMousePointer::on(TMousePointer *this)
 {
   undefined4 uVar1;
@@ -997,8 +954,6 @@ void __thiscall TMousePointer::on(TMousePointer *this)
 
 // Function: reset
 // Address: 0045bf80
-/* public: void __thiscall TMousePointer::reset(void) */
-
 void __thiscall TMousePointer::reset(TMousePointer *this)
 {
   this->save_area_valid = 0;
@@ -1010,9 +965,6 @@ void __thiscall TMousePointer::reset(TMousePointer *this)
 
 // Function: center
 // Address: 0045bf90
-/* WARNING: Variable defined which should be unmapped: win_rect */
-/* public: void __thiscall TMousePointer::center(void) */
-
 void __thiscall TMousePointer::center(TMousePointer *this)
 {
   TDrawSystem *pTVar1;
@@ -1036,9 +988,6 @@ void __thiscall TMousePointer::center(TMousePointer *this)
 // Address: 0045c010
 // [HELPER] s_C__msdev_work_age1_x1_Mouseptr_c: "C:\msdev\work\age1_x1\Mouseptr.cpp"
 // [HELPER] s_mouseptr__poll: "mouseptr::poll"
-/* WARNING: Variable defined which should be unmapped: lplpDDClipper */
-/* public: void __thiscall TMousePointer::Poll(void) */
-
 void __thiscall TMousePointer::Poll(TMousePointer *this)
 {
   tagRECT *ptVar1;
@@ -1167,8 +1116,6 @@ void __thiscall TMousePointer::Poll(TMousePointer *this)
 
 // Function: GetDDBltError
 // Address: 0045c300
-/* public: int __thiscall TMousePointer::GetDDBltError(long) */
-
 int __thiscall TMousePointer::GetDDBltError(TMousePointer *this,long param_1)
 {
   if (param_1 < -0x7fffbffa) {

@@ -16,8 +16,6 @@
 
 // Function: TRIBE_Scenario_Header
 // Address: 0052a990
-/* public: __thiscall TRIBE_Scenario_Header::TRIBE_Scenario_Header(class T_Scenario *) */
-
 TRIBE_Scenario_Header * __thiscall
 TRIBE_Scenario_Header::TRIBE_Scenario_Header(TRIBE_Scenario_Header *this,T_Scenario *param_1)
 {
@@ -46,8 +44,6 @@ TRIBE_Scenario_Header::TRIBE_Scenario_Header(TRIBE_Scenario_Header *this,T_Scena
 
 // Function: TRIBE_Scenario_Header
 // Address: 0052a9f0
-/* public: __thiscall TRIBE_Scenario_Header::TRIBE_Scenario_Header(int) */
-
 TRIBE_Scenario_Header * __thiscall
 TRIBE_Scenario_Header::TRIBE_Scenario_Header(TRIBE_Scenario_Header *this,int param_1)
 {
@@ -77,8 +73,6 @@ TRIBE_Scenario_Header::TRIBE_Scenario_Header(TRIBE_Scenario_Header *this,int par
 
 // Function: get_size
 // Address: 0052aa70
-/* public: virtual long __thiscall TRIBE_Scenario_Header::get_size(void) */
-
 long __thiscall TRIBE_Scenario_Header::get_size(TRIBE_Scenario_Header *this)
 {
   long lVar1;
@@ -91,8 +85,6 @@ long __thiscall TRIBE_Scenario_Header::get_size(TRIBE_Scenario_Header *this)
 
 // Function: save
 // Address: 0052aa80
-/* public: virtual void __thiscall TRIBE_Scenario_Header::save(int) */
-
 void __thiscall TRIBE_Scenario_Header::save(TRIBE_Scenario_Header *this,int param_1)
 {
   RGE_Scenario_Header::save((RGE_Scenario_Header *)this,param_1);

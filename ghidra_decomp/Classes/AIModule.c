@@ -35,8 +35,6 @@
 
 // Function: loadState
 // Address: 004087f0
-/* public: virtual int __thiscall AIModule::loadState(char *) */
-
 int __thiscall AIModule::loadState(AIModule *this,char *param_1)
 {
   return 0;
@@ -46,8 +44,6 @@ int __thiscall AIModule::loadState(AIModule *this,char *param_1)
 
 // Function: saveState
 // Address: 00408800
-/* public: virtual int __thiscall AIModule::saveState(char *) */
-
 int __thiscall AIModule::saveState(AIModule *this,char *param_1)
 {
   return 0;
@@ -57,8 +53,6 @@ int __thiscall AIModule::saveState(AIModule *this,char *param_1)
 
 // Function: gleanState
 // Address: 00408810
-/* public: virtual int __thiscall AIModule::gleanState(int) */
-
 int __thiscall AIModule::gleanState(AIModule *this,int param_1)
 {
   return 0;
@@ -70,8 +64,6 @@ int __thiscall AIModule::gleanState(AIModule *this,int param_1)
 // Address: 0040e220
 // [HELPER] s_: ""
 // [HELPER] s_Unknown: "Unknown"
-/* public: __thiscall AIModule::AIModule(void) */
-
 AIModule * __thiscall AIModule::AIModule(AIModule *this)
 {
   char cVar1;
@@ -121,8 +113,6 @@ AIModule * __thiscall AIModule::AIModule(AIModule *this)
 
 // Function: `scalar_deleting_destructor'
 // Address: 0040e2b0
-/* public: virtual void * __thiscall AIModule::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall AIModule::_scalar_deleting_destructor_(AIModule *this,uint param_1)
 {
   ~AIModule(this);
@@ -137,8 +127,6 @@ void * __thiscall AIModule::_scalar_deleting_destructor_(AIModule *this,uint par
 // Function: AIModule
 // Address: 0040e2d0
 // [HELPER] s_Unknown: "Unknown"
-/* public: __thiscall AIModule::AIModule(char *,int,int,void *) */
-
 AIModule * __thiscall
 AIModule::AIModule(AIModule *this,char *param_1,int param_2,int param_3,void *param_4)
 {
@@ -189,8 +177,6 @@ AIModule::AIModule(AIModule *this,char *param_1,int param_2,int param_3,void *pa
 
 // Function: ~AIModule
 // Address: 0040e360
-/* public: virtual __thiscall AIModule::~AIModule(void) */
-
 void __thiscall AIModule::~AIModule(AIModule *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -206,8 +192,6 @@ void __thiscall AIModule::~AIModule(AIModule *this)
 
 // Function: id
 // Address: 0040e3a0
-/* public: class AIModuleID __thiscall AIModule::id(void)const  */
-
 AIModuleID * __thiscall AIModule::id(AIModule *this,AIModuleID *__return_storage_ptr__)
 {
   int iVar1;
@@ -231,8 +215,6 @@ AIModuleID * __thiscall AIModule::id(AIModule *this,AIModuleID *__return_storage
 
 // Function: idNumber
 // Address: 0040e3d0
-/* public: int __thiscall AIModule::idNumber(void)const  */
-
 int __thiscall AIModule::idNumber(AIModule *this)
 {
   return (this->idValue).id;
@@ -242,8 +224,6 @@ int __thiscall AIModule::idNumber(AIModule *this)
 
 // Function: playerNumber
 // Address: 0040e3e0
-/* public: int __thiscall AIModule::playerNumber(void)const  */
-
 int __thiscall AIModule::playerNumber(AIModule *this)
 {
   return this->playerNumberValue;
@@ -253,8 +233,6 @@ int __thiscall AIModule::playerNumber(AIModule *this)
 
 // Function: playerName
 // Address: 0040e3f0
-/* public: char * __thiscall AIModule::playerName(void)const  */
-
 char * __thiscall AIModule::playerName(AIModule *this)
 {
   return this->playerNameValue;
@@ -265,8 +243,6 @@ char * __thiscall AIModule::playerName(AIModule *this)
 // Function: setPlayer
 // Address: 0040e400
 // [HELPER] s_Unknown: "Unknown"
-/* public: void __thiscall AIModule::setPlayer(int,char *) */
-
 void __thiscall AIModule::setPlayer(AIModule *this,int param_1,char *param_2)
 {
   char cVar1;
@@ -310,8 +286,6 @@ void __thiscall AIModule::setPlayer(AIModule *this,int param_1,char *param_2)
 
 // Function: start
 // Address: 0040e450
-/* public: void __thiscall AIModule::start(void) */
-
 void __thiscall AIModule::start(AIModule *this)
 {
   this->runningValue = 1;
@@ -322,8 +296,6 @@ void __thiscall AIModule::start(AIModule *this)
 
 // Function: stop
 // Address: 0040e460
-/* public: void __thiscall AIModule::stop(void) */
-
 void __thiscall AIModule::stop(AIModule *this)
 {
   this->runningValue = 0;
@@ -334,8 +306,6 @@ void __thiscall AIModule::stop(AIModule *this)
 
 // Function: toggleRun
 // Address: 0040e470
-/* public: void __thiscall AIModule::toggleRun(void) */
-
 void __thiscall AIModule::toggleRun(AIModule *this)
 {
   this->runningValue = (uint)(this->runningValue == 0);
@@ -346,8 +316,6 @@ void __thiscall AIModule::toggleRun(AIModule *this)
 
 // Function: togglePause
 // Address: 0040e490
-/* public: void __thiscall AIModule::togglePause(void) */
-
 void __thiscall AIModule::togglePause(AIModule *this)
 {
   this->pausedValue = (uint)(this->pausedValue == 0);
@@ -358,8 +326,6 @@ void __thiscall AIModule::togglePause(AIModule *this)
 
 // Function: step
 // Address: 0040e4b0
-/* public: void __thiscall AIModule::step(void) */
-
 void __thiscall AIModule::step(AIModule *this)
 {
   return;
@@ -369,8 +335,6 @@ void __thiscall AIModule::step(AIModule *this)
 
 // Function: running
 // Address: 0040e4c0
-/* public: int __thiscall AIModule::running(void)const  */
-
 int __thiscall AIModule::running(AIModule *this)
 {
   return this->runningValue;
@@ -380,8 +344,6 @@ int __thiscall AIModule::running(AIModule *this)
 
 // Function: paused
 // Address: 0040e4d0
-/* public: int __thiscall AIModule::paused(void)const  */
-
 int __thiscall AIModule::paused(AIModule *this)
 {
   return this->pausedValue;
@@ -391,8 +353,6 @@ int __thiscall AIModule::paused(AIModule *this)
 
 // Function: loggingHistory
 // Address: 0040e4e0
-/* public: virtual int __thiscall AIModule::loggingHistory(void)const  */
-
 int __thiscall AIModule::loggingHistory(AIModule *this)
 {
   return this->logHistoryValue;
@@ -402,8 +362,6 @@ int __thiscall AIModule::loggingHistory(AIModule *this)
 
 // Function: setLogHistory
 // Address: 0040e4f0
-/* public: virtual void __thiscall AIModule::setLogHistory(int) */
-
 void __thiscall AIModule::setLogHistory(AIModule *this,int param_1)
 {
   return;
@@ -413,8 +371,6 @@ void __thiscall AIModule::setLogHistory(AIModule *this,int param_1)
 
 // Function: toggleLogHistory
 // Address: 0040e500
-/* public: virtual void __thiscall AIModule::toggleLogHistory(void) */
-
 void __thiscall AIModule::toggleLogHistory(AIModule *this)
 {
   return;
@@ -424,8 +380,6 @@ void __thiscall AIModule::toggleLogHistory(AIModule *this)
 
 // Function: loggingCommonHistory
 // Address: 0040e510
-/* public: virtual int __thiscall AIModule::loggingCommonHistory(void)const  */
-
 int __thiscall AIModule::loggingCommonHistory(AIModule *this)
 {
   return this->logCommonHistoryValue;
@@ -439,8 +393,6 @@ int __thiscall AIModule::loggingCommonHistory(AIModule *this)
 // [HELPER] s_Common_AI_History_File_Started__: "Common AI History File Started %s"
 // [HELPER] s_c__aoeai_txt: "c:\aoeai.txt"
 // [HELPER] s_wa: "wa"
-/* public: virtual void __thiscall AIModule::setLogCommonHistory(int) */
-
 void __thiscall AIModule::setLogCommonHistory(AIModule *this,int param_1)
 {
   undefined4 uVar1;
@@ -468,8 +420,6 @@ void __thiscall AIModule::setLogCommonHistory(AIModule *this,int param_1)
 
 // Function: toggleLogCommonHistory
 // Address: 0040e5c0
-/* public: virtual void __thiscall AIModule::toggleLogCommonHistory(void) */
-
 void __thiscall AIModule::toggleLogCommonHistory(AIModule *this)
 {
   return;
@@ -479,8 +429,6 @@ void __thiscall AIModule::toggleLogCommonHistory(AIModule *this)
 
 // Function: setHistoryFilename
 // Address: 0040e5d0
-/* public: virtual void __thiscall AIModule::setHistoryFilename(char *) */
-
 void __thiscall AIModule::setHistoryFilename(AIModule *this,char *param_1)
 {
   return;
@@ -490,8 +438,6 @@ void __thiscall AIModule::setHistoryFilename(AIModule *this,char *param_1)
 
 // Function: intelligenceLevel
 // Address: 0040e5e0
-/* public: int __thiscall AIModule::intelligenceLevel(void)const  */
-
 int __thiscall AIModule::intelligenceLevel(AIModule *this)
 {
   return this->intelligenceLevelValue;
@@ -501,8 +447,6 @@ int __thiscall AIModule::intelligenceLevel(AIModule *this)
 
 // Function: setIntelligenceLevel
 // Address: 0040e5f0
-/* public: int __thiscall AIModule::setIntelligenceLevel(int) */
-
 int __thiscall AIModule::setIntelligenceLevel(AIModule *this,int param_1)
 {
   this->intelligenceLevelValue = param_1;
@@ -521,8 +465,6 @@ int __thiscall AIModule::setIntelligenceLevel(AIModule *this,int param_1)
 
 // Function: priority
 // Address: 0040e630
-/* public: int __thiscall AIModule::priority(void)const  */
-
 int __thiscall AIModule::priority(AIModule *this)
 {
   return this->priorityValue;
@@ -532,8 +474,6 @@ int __thiscall AIModule::priority(AIModule *this)
 
 // Function: setPriority
 // Address: 0040e640
-/* public: int __thiscall AIModule::setPriority(int) */
-
 int __thiscall AIModule::setPriority(AIModule *this,int param_1)
 {
   this->priorityValue = param_1;
@@ -552,8 +492,6 @@ int __thiscall AIModule::setPriority(AIModule *this,int param_1)
 
 // Function: incrementPriority
 // Address: 0040e680
-/* public: int __thiscall AIModule::incrementPriority(int) */
-
 int __thiscall AIModule::incrementPriority(AIModule *this,int param_1)
 {
   int iVar1;
@@ -566,8 +504,6 @@ int __thiscall AIModule::incrementPriority(AIModule *this,int param_1)
 
 // Function: decrementPriority
 // Address: 0040e6a0
-/* public: int __thiscall AIModule::decrementPriority(int) */
-
 int __thiscall AIModule::decrementPriority(AIModule *this,int param_1)
 {
   int iVar1;
@@ -580,8 +516,6 @@ int __thiscall AIModule::decrementPriority(AIModule *this,int param_1)
 
 // Function: sendMessage
 // Address: 0040e6c0
-/* public: int __thiscall AIModule::sendMessage(class AIModuleMessage *,int) */
-
 int __thiscall AIModule::sendMessage(AIModule *this,AIModuleMessage *param_1,int param_2)
 {
   return 0;
@@ -591,8 +525,6 @@ int __thiscall AIModule::sendMessage(AIModule *this,AIModuleMessage *param_1,int
 
 // Function: receiveMessage
 // Address: 0040e6d0
-/* public: void __thiscall AIModule::receiveMessage(class AIModuleMessage *) */
-
 void __thiscall AIModule::receiveMessage(AIModule *this,AIModuleMessage *param_1)
 {
   return;
@@ -602,8 +534,6 @@ void __thiscall AIModule::receiveMessage(AIModule *this,AIModuleMessage *param_1
 
 // Function: processMessage
 // Address: 0040e6e0
-/* public: virtual int __thiscall AIModule::processMessage(class AIModuleMessage *) */
-
 int __thiscall AIModule::processMessage(AIModule *this,AIModuleMessage *param_1)
 {
   return 0;
@@ -613,8 +543,6 @@ int __thiscall AIModule::processMessage(AIModule *this,AIModuleMessage *param_1)
 
 // Function: update
 // Address: 0040e6f0
-/* public: virtual int __thiscall AIModule::update(int) */
-
 int __thiscall AIModule::update(AIModule *this,int param_1)
 {
   return 0;
@@ -624,8 +552,6 @@ int __thiscall AIModule::update(AIModule *this,int param_1)
 
 // Function: setCallbackMessage
 // Address: 0040e700
-/* public: virtual void __thiscall AIModule::setCallbackMessage(class AIModuleMessage *) */
-
 void __thiscall AIModule::setCallbackMessage(AIModule *this,AIModuleMessage *param_1)
 {
   return;
@@ -635,8 +561,6 @@ void __thiscall AIModule::setCallbackMessage(AIModule *this,AIModuleMessage *par
 
 // Function: messageLimit
 // Address: 0040e710
-/* public: int __thiscall AIModule::messageLimit(void) */
-
 int __thiscall AIModule::messageLimit(AIModule *this)
 {
   return 0;
@@ -646,8 +570,6 @@ int __thiscall AIModule::messageLimit(AIModule *this)
 
 // Function: setMessageLimit
 // Address: 0040e720
-/* public: void __thiscall AIModule::setMessageLimit(int) */
-
 void __thiscall AIModule::setMessageLimit(AIModule *this,int param_1)
 {
   return;
@@ -657,8 +579,6 @@ void __thiscall AIModule::setMessageLimit(AIModule *this,int param_1)
 
 // Function: callbackLimit
 // Address: 0040e730
-/* public: int __thiscall AIModule::callbackLimit(void) */
-
 int __thiscall AIModule::callbackLimit(AIModule *this)
 {
   return 0;
@@ -668,8 +588,6 @@ int __thiscall AIModule::callbackLimit(AIModule *this)
 
 // Function: setCallbackLimit
 // Address: 0040e740
-/* public: void __thiscall AIModule::setCallbackLimit(int) */
-
 void __thiscall AIModule::setCallbackLimit(AIModule *this,int param_1)
 {
   return;
@@ -679,8 +597,6 @@ void __thiscall AIModule::setCallbackLimit(AIModule *this,int param_1)
 
 // Function: messageTimeout
 // Address: 0040e750
-/* public: int __thiscall AIModule::messageTimeout(void) */
-
 int __thiscall AIModule::messageTimeout(AIModule *this)
 {
   return 0;
@@ -690,8 +606,6 @@ int __thiscall AIModule::messageTimeout(AIModule *this)
 
 // Function: setMessageTimeout
 // Address: 0040e760
-/* public: void __thiscall AIModule::setMessageTimeout(int) */
-
 void __thiscall AIModule::setMessageTimeout(AIModule *this,int param_1)
 {
   return;
@@ -701,8 +615,6 @@ void __thiscall AIModule::setMessageTimeout(AIModule *this,int param_1)
 
 // Function: purgeMessages
 // Address: 0040e770
-/* public: int __thiscall AIModule::purgeMessages(class AIModuleID) */
-
 int __thiscall AIModule::purgeMessages(AIModule *this,AIModuleID param_1)
 {
   AIModuleID::~AIModuleID(&param_1);
@@ -713,8 +625,6 @@ int __thiscall AIModule::purgeMessages(AIModule *this,AIModuleID param_1)
 
 // Function: purgeMessagesWithID
 // Address: 0040e780
-/* public: int __thiscall AIModule::purgeMessagesWithID(class AIModuleID,int) */
-
 int __thiscall AIModule::purgeMessagesWithID(AIModule *this,AIModuleID param_1,int param_2)
 {
   AIModuleID::~AIModuleID(&param_1);
@@ -725,8 +635,6 @@ int __thiscall AIModule::purgeMessagesWithID(AIModule *this,AIModuleID param_1,i
 
 // Function: purgeMessagesWithPriorityBelow
 // Address: 0040e790
-/* public: int __thiscall AIModule::purgeMessagesWithPriorityBelow(class AIModuleID,int) */
-
 int __thiscall
 AIModule::purgeMessagesWithPriorityBelow(AIModule *this,AIModuleID param_1,int param_2)
 {
@@ -738,8 +646,6 @@ AIModule::purgeMessagesWithPriorityBelow(AIModule *this,AIModuleID param_1,int p
 
 // Function: purgeMessagesWithData
 // Address: 0040e7a0
-/* public: int __thiscall AIModule::purgeMessagesWithData(class AIModuleID,int,int,long) */
-
 int __thiscall
 AIModule::purgeMessagesWithData
           (AIModule *this,AIModuleID param_1,int param_2,int param_3,long param_4)
@@ -752,8 +658,6 @@ AIModule::purgeMessagesWithData
 
 // Function: purgeCallbacks
 // Address: 0040e7b0
-/* public: int __thiscall AIModule::purgeCallbacks(class AIModuleID) */
-
 int __thiscall AIModule::purgeCallbacks(AIModule *this,AIModuleID param_1)
 {
   AIModuleID::~AIModuleID(&param_1);
@@ -764,8 +668,6 @@ int __thiscall AIModule::purgeCallbacks(AIModule *this,AIModuleID param_1)
 
 // Function: purgeCallbacksWithID
 // Address: 0040e7c0
-/* public: int __thiscall AIModule::purgeCallbacksWithID(class AIModuleID,int) */
-
 int __thiscall AIModule::purgeCallbacksWithID(AIModule *this,AIModuleID param_1,int param_2)
 {
   AIModuleID::~AIModuleID(&param_1);
@@ -776,8 +678,6 @@ int __thiscall AIModule::purgeCallbacksWithID(AIModule *this,AIModuleID param_1,
 
 // Function: purgeCallbacksWithPriorityBelow
 // Address: 0040e7d0
-/* public: int __thiscall AIModule::purgeCallbacksWithPriorityBelow(class AIModuleID,int) */
-
 int __thiscall
 AIModule::purgeCallbacksWithPriorityBelow(AIModule *this,AIModuleID param_1,int param_2)
 {
@@ -789,8 +689,6 @@ AIModule::purgeCallbacksWithPriorityBelow(AIModule *this,AIModuleID param_1,int 
 
 // Function: purgeCallbacksWithData
 // Address: 0040e7e0
-/* public: int __thiscall AIModule::purgeCallbacksWithData(class AIModuleID,int,int,long) */
-
 int __thiscall
 AIModule::purgeCallbacksWithData
           (AIModule *this,AIModuleID param_1,int param_2,int param_3,long param_4)
@@ -803,8 +701,6 @@ AIModule::purgeCallbacksWithData
 
 // Function: checkMessageLimit
 // Address: 0040e7f0
-/* protected: void __thiscall AIModule::checkMessageLimit(void) */
-
 void __thiscall AIModule::checkMessageLimit(AIModule *this)
 {
   return;
@@ -814,8 +710,6 @@ void __thiscall AIModule::checkMessageLimit(AIModule *this)
 
 // Function: checkCallbackLimit
 // Address: 0040e800
-/* protected: void __thiscall AIModule::checkCallbackLimit(void) */
-
 void __thiscall AIModule::checkCallbackLimit(AIModule *this)
 {
   return;
@@ -825,8 +719,6 @@ void __thiscall AIModule::checkCallbackLimit(AIModule *this)
 
 // Function: filterOutMessage
 // Address: 0040e810
-/* protected: virtual int __thiscall AIModule::filterOutMessage(class AIModuleMessage *) */
-
 int __thiscall AIModule::filterOutMessage(AIModule *this,AIModuleMessage *param_1)
 {
   return 0;
@@ -836,8 +728,6 @@ int __thiscall AIModule::filterOutMessage(AIModule *this,AIModuleMessage *param_
 
 // Function: logHistory
 // Address: 0040e820
-/* public: void __cdecl AIModule::logHistory(char *,...) */
-
 void __thiscall AIModule::logHistory(AIModule *this,char *param_1,...)
 {
   return;
@@ -849,9 +739,6 @@ void __thiscall AIModule::logHistory(AIModule *this,char *param_1,...)
 // Address: 0040e830
 // [HELPER] s_P__d_: "P#%d\n"
 // [HELPER] s_P__d__s___s_: "P#%d %s: %s\n"
-/* WARNING: Variable defined which should be unmapped: textOut */
-/* public: void __cdecl AIModule::logCommonHistory(char *,...) */
-
 void __thiscall AIModule::logCommonHistory(AIModule *this,char *param_1,...)
 {
   char cVar1;
@@ -887,8 +774,6 @@ void __thiscall AIModule::logCommonHistory(AIModule *this,char *param_1,...)
 
 // Function: logDebug
 // Address: 0040e8e0
-/* public: void __cdecl AIModule::logDebug(char *,...) */
-
 void __thiscall AIModule::logDebug(AIModule *this,char *param_1,...)
 {
   return;
@@ -898,8 +783,6 @@ void __thiscall AIModule::logDebug(AIModule *this,char *param_1,...)
 
 // Function: processFrame
 // Address: 0040e8f0
-/* protected: int __thiscall AIModule::processFrame(void) */
-
 int __thiscall AIModule::processFrame(AIModule *this)
 {
   return this->processFrameValue;
@@ -909,8 +792,6 @@ int __thiscall AIModule::processFrame(AIModule *this)
 
 // Function: incrementProcessFrame
 // Address: 0040e900
-/* protected: void __thiscall AIModule::incrementProcessFrame(void) */
-
 void __thiscall AIModule::incrementProcessFrame(AIModule *this)
 {
   int iVar1;
@@ -927,8 +808,6 @@ void __thiscall AIModule::incrementProcessFrame(AIModule *this)
 
 // Function: timeDifference
 // Address: 0040e920
-/* protected: int __thiscall AIModule::timeDifference(class AIModuleMessage *) */
-
 int __thiscall AIModule::timeDifference(AIModule *this,AIModuleMessage *param_1)
 {
   return 0;

@@ -37,8 +37,6 @@
 
 // Function: ConstructionItem
 // Address: 0040a820
-/* public: __thiscall ConstructionItem::ConstructionItem(void) */
-
 ConstructionItem * __thiscall ConstructionItem::ConstructionItem(ConstructionItem *this)
 {
   BaseItem::BaseItem((BaseItem *)this);
@@ -55,8 +53,6 @@ ConstructionItem * __thiscall ConstructionItem::ConstructionItem(ConstructionIte
 
 // Function: `scalar_deleting_destructor'
 // Address: 0040a850
-/* public: virtual void * __thiscall ConstructionItem::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall
 ConstructionItem::_scalar_deleting_destructor_(ConstructionItem *this,uint param_1)
 {
@@ -71,9 +67,6 @@ ConstructionItem::_scalar_deleting_destructor_(ConstructionItem *this,uint param
 
 // Function: ConstructionItem
 // Address: 0040a870
-/* public: __thiscall
-   ConstructionItem::ConstructionItem(float,float,float,float,float,float,int,char *) */
-
 ConstructionItem * __thiscall
 ConstructionItem::ConstructionItem
           (ConstructionItem *this,float param_1,float param_2,float param_3,float param_4,
@@ -94,8 +87,6 @@ ConstructionItem::ConstructionItem
 
 // Function: ConstructionItem
 // Address: 0040a8d0
-/* public: __thiscall ConstructionItem::ConstructionItem(class ConstructionItem *) */
-
 ConstructionItem * __thiscall
 ConstructionItem::ConstructionItem(ConstructionItem *this,ConstructionItem *param_1)
 {
@@ -113,8 +104,6 @@ ConstructionItem::ConstructionItem(ConstructionItem *this,ConstructionItem *para
 
 // Function: ConstructionItem
 // Address: 0040a910
-/* public: __thiscall ConstructionItem::ConstructionItem(class ConstructionItem const &) */
-
 ConstructionItem * __thiscall
 ConstructionItem::ConstructionItem(ConstructionItem *this,ConstructionItem *param_1)
 {
@@ -132,8 +121,6 @@ ConstructionItem::ConstructionItem(ConstructionItem *this,ConstructionItem *para
 
 // Function: ~ConstructionItem
 // Address: 0040a950
-/* public: virtual __thiscall ConstructionItem::~ConstructionItem(void) */
-
 void __thiscall ConstructionItem::~ConstructionItem(ConstructionItem *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -145,8 +132,6 @@ void __thiscall ConstructionItem::~ConstructionItem(ConstructionItem *this)
 
 // Function: inProgress
 // Address: 0040aa00
-/* public: int __thiscall ConstructionItem::inProgress(void)const  */
-
 int __thiscall ConstructionItem::inProgress(ConstructionItem *this)
 {
   return this->inProgressValue;
@@ -156,8 +141,6 @@ int __thiscall ConstructionItem::inProgress(ConstructionItem *this)
 
 // Function: built
 // Address: 0040aa10
-/* public: int __thiscall ConstructionItem::built(void)const  */
-
 int __thiscall ConstructionItem::built(ConstructionItem *this)
 {
   return this->builtValue;
@@ -167,8 +150,6 @@ int __thiscall ConstructionItem::built(ConstructionItem *this)
 
 // Function: buildAttempts
 // Address: 0040aa20
-/* public: int __thiscall ConstructionItem::buildAttempts(void)const  */
-
 int __thiscall ConstructionItem::buildAttempts(ConstructionItem *this)
 {
   return this->buildAttemptsValue;
@@ -178,8 +159,6 @@ int __thiscall ConstructionItem::buildAttempts(ConstructionItem *this)
 
 // Function: setInProgress
 // Address: 0040aa30
-/* public: void __thiscall ConstructionItem::setInProgress(int) */
-
 void __thiscall ConstructionItem::setInProgress(ConstructionItem *this,int param_1)
 {
   this->inProgressValue = param_1;
@@ -190,8 +169,6 @@ void __thiscall ConstructionItem::setInProgress(ConstructionItem *this,int param
 
 // Function: setBuilt
 // Address: 0040aa40
-/* public: void __thiscall ConstructionItem::setBuilt(int) */
-
 void __thiscall ConstructionItem::setBuilt(ConstructionItem *this,int param_1)
 {
   this->builtValue = param_1;
@@ -202,8 +179,6 @@ void __thiscall ConstructionItem::setBuilt(ConstructionItem *this,int param_1)
 
 // Function: incrementBuildAttempts
 // Address: 0040aa50
-/* public: void __thiscall ConstructionItem::incrementBuildAttempts(void) */
-
 void __thiscall ConstructionItem::incrementBuildAttempts(ConstructionItem *this)
 {
   this->buildAttemptsValue = this->buildAttemptsValue + 1;
@@ -214,8 +189,6 @@ void __thiscall ConstructionItem::incrementBuildAttempts(ConstructionItem *this)
 
 // Function: decrementBuildAttempts
 // Address: 0040aa60
-/* public: void __thiscall ConstructionItem::decrementBuildAttempts(void) */
-
 void __thiscall ConstructionItem::decrementBuildAttempts(ConstructionItem *this)
 {
   int iVar1;
@@ -232,8 +205,6 @@ void __thiscall ConstructionItem::decrementBuildAttempts(ConstructionItem *this)
 
 // Function: setBuildAttempts
 // Address: 0040aa80
-/* public: void __thiscall ConstructionItem::setBuildAttempts(int) */
-
 void __thiscall ConstructionItem::setBuildAttempts(ConstructionItem *this,int param_1)
 {
   this->buildAttemptsValue = param_1;

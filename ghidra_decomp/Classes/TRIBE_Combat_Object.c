@@ -159,9 +159,6 @@
 
 // Function: TRIBE_Combat_Object
 // Address: 004ca0f0
-/* public: __thiscall TRIBE_Combat_Object::TRIBE_Combat_Object(class TRIBE_Master_Combat_Object
-   *,class RGE_Player *,float,float,float,int) */
-
 TRIBE_Combat_Object * __thiscall
 TRIBE_Combat_Object::TRIBE_Combat_Object
           (TRIBE_Combat_Object *this,TRIBE_Master_Combat_Object *param_1,RGE_Player *param_2,
@@ -192,9 +189,6 @@ TRIBE_Combat_Object::TRIBE_Combat_Object
 
 // Function: `vector_deleting_destructor'
 // Address: 004ca180
-/* public: virtual void * __thiscall TRIBE_Combat_Object::`vector deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 TRIBE_Combat_Object::_vector_deleting_destructor_(TRIBE_Combat_Object *this,uint param_1)
 {
@@ -209,8 +203,6 @@ TRIBE_Combat_Object::_vector_deleting_destructor_(TRIBE_Combat_Object *this,uint
 
 // Function: TRIBE_Combat_Object
 // Address: 004ca1a0
-/* public: __thiscall TRIBE_Combat_Object::TRIBE_Combat_Object(int,class RGE_Game_World *,int) */
-
 TRIBE_Combat_Object * __thiscall
 TRIBE_Combat_Object::TRIBE_Combat_Object
           (TRIBE_Combat_Object *this,int param_1,RGE_Game_World *param_2,int param_3)
@@ -238,9 +230,6 @@ TRIBE_Combat_Object::TRIBE_Combat_Object
 
 // Function: ~TRIBE_Combat_Object
 // Address: 004ca210
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual __thiscall TRIBE_Combat_Object::~TRIBE_Combat_Object(void) */
-
 void __thiscall TRIBE_Combat_Object::~TRIBE_Combat_Object(TRIBE_Combat_Object *this)
 {
   short sVar1;
@@ -286,10 +275,6 @@ void __thiscall TRIBE_Combat_Object::~TRIBE_Combat_Object(TRIBE_Combat_Object *t
 
 // Function: setup
 // Address: 004ca300
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall TRIBE_Combat_Object::setup(class TRIBE_Master_Combat_Object
-   *,class RGE_Player *,float,float,float) */
-
 int __thiscall
 TRIBE_Combat_Object::setup
           (TRIBE_Combat_Object *this,TRIBE_Master_Combat_Object *param_1,RGE_Player *param_2,
@@ -331,8 +316,6 @@ TRIBE_Combat_Object::setup
 
 // Function: setup
 // Address: 004ca3e0
-/* protected: virtual int __thiscall TRIBE_Combat_Object::setup(int,class RGE_Game_World *) */
-
 int __thiscall
 TRIBE_Combat_Object::setup(TRIBE_Combat_Object *this,int param_1,RGE_Game_World *param_2)
 {
@@ -397,9 +380,6 @@ LAB_004ca4c1:
 
 // Function: create_action_list
 // Address: 004ca510
-/* public: virtual class RGE_Action_List * __thiscall TRIBE_Combat_Object::create_action_list(void)
-    */
-
 RGE_Action_List * __thiscall TRIBE_Combat_Object::create_action_list(TRIBE_Combat_Object *this)
 {
   TRIBE_Action_List *this_00;
@@ -429,8 +409,6 @@ RGE_Action_List * __thiscall TRIBE_Combat_Object::create_action_list(TRIBE_Comba
 
 // Function: save
 // Address: 004ca570
-/* public: virtual void __thiscall TRIBE_Combat_Object::save(int) */
-
 void __thiscall TRIBE_Combat_Object::save(TRIBE_Combat_Object *this,int param_1)
 {
   int iVar1;
@@ -456,9 +434,6 @@ void __thiscall TRIBE_Combat_Object::save(TRIBE_Combat_Object *this,int param_1)
 
 // Function: update
 // Address: 004ca5f0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall TRIBE_Combat_Object::update(void) */
-
 uchar __thiscall TRIBE_Combat_Object::update(TRIBE_Combat_Object *this)
 {
   bool bVar1;
@@ -483,8 +458,6 @@ uchar __thiscall TRIBE_Combat_Object::update(TRIBE_Combat_Object *this)
 
 // Function: modify
 // Address: 004ca640
-/* public: virtual void __thiscall TRIBE_Combat_Object::modify(float,unsigned char) */
-
 void __thiscall TRIBE_Combat_Object::modify(TRIBE_Combat_Object *this,float param_1,uchar param_2)
 {
   int iVar1;
@@ -525,9 +498,6 @@ void __thiscall TRIBE_Combat_Object::modify(TRIBE_Combat_Object *this,float para
 
 // Function: transform
 // Address: 004ca700
-/* public: virtual void __thiscall TRIBE_Combat_Object::transform(class RGE_Master_Static_Object *)
-    */
-
 void __thiscall
 TRIBE_Combat_Object::transform(TRIBE_Combat_Object *this,RGE_Master_Static_Object *param_1)
 {
@@ -548,8 +518,6 @@ TRIBE_Combat_Object::transform(TRIBE_Combat_Object *this,RGE_Master_Static_Objec
 
 // Function: set_object_state
 // Address: 004ca740
-/* public: virtual void __thiscall TRIBE_Combat_Object::set_object_state(unsigned char) */
-
 void __thiscall TRIBE_Combat_Object::set_object_state(TRIBE_Combat_Object *this,uchar param_1)
 {
   if ((((*(char *)(*(int *)(this->_padding_ + 0x3c) + 0x1d) == '\0') && (2 < param_1)) &&
@@ -565,12 +533,8 @@ void __thiscall TRIBE_Combat_Object::set_object_state(TRIBE_Combat_Object *this,
 
 // Function: cancel_object
 // Address: 004ca780
-/* public: virtual void __thiscall TRIBE_Combat_Object::cancel_object(void) */
-
 void __thiscall TRIBE_Combat_Object::cancel_object(TRIBE_Combat_Object *this)
 {
-                    /* WARNING: Could not recover jumptable at 0x004ca782. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (**(code **)(this->_padding_ + 0x6c))();
   return;
 }
@@ -580,9 +544,6 @@ void __thiscall TRIBE_Combat_Object::cancel_object(TRIBE_Combat_Object *this)
 // Function: die_die_die
 // Address: 004ca790
 // [HELPER] die_die_die: " "
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual void __thiscall TRIBE_Combat_Object::die_die_die(void) */
-
 void __thiscall TRIBE_Combat_Object::die_die_die(TRIBE_Combat_Object *this)
 {
   short sVar1;
@@ -607,11 +568,6 @@ void __thiscall TRIBE_Combat_Object::die_die_die(TRIBE_Combat_Object *this)
 
 // Function: damage
 // Address: 004ca7f0
-/* WARNING: Variable defined which should be unmapped: temp_hp */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual void __thiscall TRIBE_Combat_Object::damage(int,struct RGE_Armor_Weapon_Info
-   *,float,class RGE_Player *,class RGE_Static_Object *) */
-
 void __thiscall
 TRIBE_Combat_Object::damage
           (TRIBE_Combat_Object *this,int param_1,RGE_Armor_Weapon_Info *param_2,float param_3,
@@ -646,8 +602,6 @@ TRIBE_Combat_Object::damage
 
 // Function: change_ownership
 // Address: 004ca8c0
-/* protected: virtual void __thiscall TRIBE_Combat_Object::change_ownership(class RGE_Player *) */
-
 void __thiscall TRIBE_Combat_Object::change_ownership(TRIBE_Combat_Object *this,RGE_Player *param_1)
 {
   int *piVar1;
@@ -708,10 +662,6 @@ void __thiscall TRIBE_Combat_Object::change_ownership(TRIBE_Combat_Object *this,
 
 // Function: calc_attack_modifier
 // Address: 004caa00
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual float __thiscall TRIBE_Combat_Object::calc_attack_modifier(class
-   RGE_Static_Object *) */
-
 float __thiscall
 TRIBE_Combat_Object::calc_attack_modifier(TRIBE_Combat_Object *this,RGE_Static_Object *param_1)
 {
@@ -735,9 +685,6 @@ TRIBE_Combat_Object::calc_attack_modifier(TRIBE_Combat_Object *this,RGE_Static_O
 
 // Function: attack
 // Address: 004caa50
-/* public: virtual unsigned char __thiscall TRIBE_Combat_Object::attack(class RGE_Static_Object
-   *,class RGE_Combat_Object *) */
-
 uchar __thiscall
 TRIBE_Combat_Object::attack
           (TRIBE_Combat_Object *this,RGE_Static_Object *param_1,RGE_Combat_Object *param_2)
@@ -746,7 +693,6 @@ TRIBE_Combat_Object::attack
   
   if (((-1 < *(short *)(this->_padding_ + 0x124)) && (param_1 != (RGE_Static_Object *)0x0)) &&
      (0 < param_1->owner->id)) {
-                    /* language.dll match for 0x70: "B" */
     (**(code **)(param_1->owner->_padding_ + 0x94))
               (0x70,this->_padding_,this->_padding_,this->_padding_,0);
   }
@@ -759,10 +705,6 @@ TRIBE_Combat_Object::attack
 // Function: do_attack
 // Address: 004caaa0
 // [HELPER] s_C__msdev_work_age1_x1_t_c_obj_cp: "C:\msdev\work\age1_x1\t_c_obj.cpp"
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall TRIBE_Combat_Object::do_attack(class RGE_Static_Object
-   *,class RGE_Combat_Object *,float,float,float) */
-
 uchar __thiscall
 TRIBE_Combat_Object::do_attack
           (TRIBE_Combat_Object *this,RGE_Static_Object *param_1,RGE_Combat_Object *param_2,
@@ -806,8 +748,6 @@ TRIBE_Combat_Object::do_attack
 
 // Function: get_armor
 // Address: 004cac10
-/* public: virtual void __thiscall TRIBE_Combat_Object::get_armor(short &,short &) */
-
 void __thiscall
 TRIBE_Combat_Object::get_armor(TRIBE_Combat_Object *this,short *param_1,short *param_2)
 {
@@ -836,8 +776,6 @@ TRIBE_Combat_Object::get_armor(TRIBE_Combat_Object *this,short *param_1,short *p
 
 // Function: get_pierce_armor
 // Address: 004cac80
-/* public: virtual void __thiscall TRIBE_Combat_Object::get_pierce_armor(short &,short &) */
-
 void __thiscall
 TRIBE_Combat_Object::get_pierce_armor(TRIBE_Combat_Object *this,short *param_1,short *param_2)
 {
@@ -866,10 +804,6 @@ TRIBE_Combat_Object::get_pierce_armor(TRIBE_Combat_Object *this,short *param_1,s
 
 // Function: reposition_artifact
 // Address: 004cace0
-/* WARNING: Variable defined which should be unmapped: y_pos */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall TRIBE_Combat_Object::reposition_artifact(void) */
-
 void __thiscall TRIBE_Combat_Object::reposition_artifact(TRIBE_Combat_Object *this)
 {
   int iVar1;
@@ -1000,8 +934,6 @@ LAB_004cafd9:
 
 // Function: can_debark
 // Address: 004cb040
-/* public: int __thiscall TRIBE_Combat_Object::can_debark(void) */
-
 int __thiscall TRIBE_Combat_Object::can_debark(TRIBE_Combat_Object *this)
 {
   if (*(char *)(this->_padding_ + 0x8f) != '\a') {
@@ -1014,8 +946,6 @@ int __thiscall TRIBE_Combat_Object::can_debark(TRIBE_Combat_Object *this)
 
 // Function: hunt
 // Address: 004cb060
-/* public: virtual int __thiscall TRIBE_Combat_Object::hunt(int,int) */
-
 int __thiscall TRIBE_Combat_Object::hunt(TRIBE_Combat_Object *this,int param_1,int param_2)
 {
   int iVar1;
@@ -1093,8 +1023,6 @@ LAB_004cb196:
 
 // Function: convert
 // Address: 004cb1b0
-/* public: virtual int __thiscall TRIBE_Combat_Object::convert(int,int) */
-
 int __thiscall TRIBE_Combat_Object::convert(TRIBE_Combat_Object *this,int param_1,int param_2)
 {
   int iVar1;
@@ -1172,8 +1100,6 @@ LAB_004cb2e6:
 
 // Function: heal
 // Address: 004cb300
-/* public: virtual int __thiscall TRIBE_Combat_Object::heal(int,int) */
-
 int __thiscall TRIBE_Combat_Object::heal(TRIBE_Combat_Object *this,int param_1,int param_2)
 {
   int iVar1;
@@ -1251,8 +1177,6 @@ LAB_004cb436:
 
 // Function: repair
 // Address: 004cb450
-/* public: virtual int __thiscall TRIBE_Combat_Object::repair(int,int) */
-
 int __thiscall TRIBE_Combat_Object::repair(TRIBE_Combat_Object *this,int param_1,int param_2)
 {
   int iVar1;
@@ -1334,8 +1258,6 @@ LAB_004cb5a1:
 
 // Function: build
 // Address: 004cb5c0
-/* public: virtual int __thiscall TRIBE_Combat_Object::build(int,int) */
-
 int __thiscall TRIBE_Combat_Object::build(TRIBE_Combat_Object *this,int param_1,int param_2)
 {
   int iVar1;
@@ -1413,8 +1335,6 @@ LAB_004cb6f6:
 
 // Function: trade
 // Address: 004cb710
-/* public: virtual int __thiscall TRIBE_Combat_Object::trade(int,int) */
-
 int __thiscall TRIBE_Combat_Object::trade(TRIBE_Combat_Object *this,int param_1,int param_2)
 {
   int iVar1;
@@ -1492,9 +1412,6 @@ LAB_004cb846:
 
 // Function: keepGatheringWhenObjectIsOut
 // Address: 004cb860
-/* public: virtual unsigned char __thiscall
-   TRIBE_Combat_Object::keepGatheringWhenObjectIsOut(int)const  */
-
 uchar __thiscall
 TRIBE_Combat_Object::keepGatheringWhenObjectIsOut(TRIBE_Combat_Object *this,int param_1)
 {
@@ -1508,8 +1425,6 @@ TRIBE_Combat_Object::keepGatheringWhenObjectIsOut(TRIBE_Combat_Object *this,int 
 
 // Function: produceWhenKilledBy
 // Address: 004cb880
-/* public: virtual unsigned char __thiscall TRIBE_Combat_Object::produceWhenKilledBy(int)const  */
-
 uchar __thiscall TRIBE_Combat_Object::produceWhenKilledBy(TRIBE_Combat_Object *this,int param_1)
 {
   short sVar1;
@@ -1525,8 +1440,6 @@ uchar __thiscall TRIBE_Combat_Object::produceWhenKilledBy(TRIBE_Combat_Object *t
 
 // Function: useSameZoneDropsite
 // Address: 004cb8b0
-/* public: virtual unsigned char __thiscall TRIBE_Combat_Object::useSameZoneDropsite(void)const  */
-
 uchar __thiscall TRIBE_Combat_Object::useSameZoneDropsite(TRIBE_Combat_Object *this)
 {
   short sVar1;
@@ -1542,8 +1455,6 @@ uchar __thiscall TRIBE_Combat_Object::useSameZoneDropsite(TRIBE_Combat_Object *t
 
 // Function: initUnitAI
 // Address: 004cb8d0
-/* protected: virtual void __thiscall TRIBE_Combat_Object::initUnitAI(void) */
-
 void __thiscall TRIBE_Combat_Object::initUnitAI(TRIBE_Combat_Object *this)
 {
   short sVar1;
@@ -1758,11 +1669,6 @@ switchD_004cb902_caseD_5:
 
 // Function: higher_check_for_cliff
 // Address: 004cbd40
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual int __thiscall TRIBE_Combat_Object::higher_check_for_cliff(class
-   RGE_Static_Object *,int,int,float,float,float,float,class RGE_Map *,class RGE_Static_Object
-   *,float &,int &) */
-
 int __thiscall
 TRIBE_Combat_Object::higher_check_for_cliff
           (TRIBE_Combat_Object *this,RGE_Static_Object *param_1,int param_2,int param_3,
@@ -1827,11 +1733,6 @@ TRIBE_Combat_Object::higher_check_for_cliff
 
 // Function: higher_than_target
 // Address: 004cbef0
-/* WARNING: Variable defined which should be unmapped: StartY */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual int __thiscall TRIBE_Combat_Object::higher_than_target(class RGE_Static_Object *)
-    */
-
 int __thiscall
 TRIBE_Combat_Object::higher_than_target(TRIBE_Combat_Object *this,RGE_Static_Object *param_1)
 {
@@ -1949,12 +1850,6 @@ TRIBE_Combat_Object::higher_than_target(TRIBE_Combat_Object *this,RGE_Static_Obj
 // Function: area_attack
 // Address: 004cc1b0
 // [HELPER] s_C__msdev_work_age1_x1_t_c_obj_cp: "C:\msdev\work\age1_x1\t_c_obj.cpp"
-/* WARNING: Variable defined which should be unmapped: attack_modifier */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual unsigned char __thiscall
-   TRIBE_Combat_Object::area_attack(float,float,float,class RGE_Combat_Object *,class
-   RGE_Static_Object *) */
-
 uchar __thiscall
 TRIBE_Combat_Object::area_attack
           (TRIBE_Combat_Object *this,float param_1,float param_2,float param_3,
@@ -2079,8 +1974,6 @@ TRIBE_Combat_Object::area_attack
 
 // Function: heal
 // Address: 004cc4c0
-/* protected: virtual unsigned char __thiscall TRIBE_Combat_Object::heal(float) */
-
 uchar __thiscall TRIBE_Combat_Object::heal(TRIBE_Combat_Object *this,float param_1)
 {
   short sVar1;
@@ -2113,8 +2006,6 @@ uchar __thiscall TRIBE_Combat_Object::heal(TRIBE_Combat_Object *this,float param
 
 // Function: canRepair
 // Address: 004cc570
-/* protected: virtual int __thiscall TRIBE_Combat_Object::canRepair(void) */
-
 int __thiscall TRIBE_Combat_Object::canRepair(TRIBE_Combat_Object *this)
 {
   float fVar1;
@@ -2131,8 +2022,6 @@ int __thiscall TRIBE_Combat_Object::canRepair(TRIBE_Combat_Object *this)
 
 // Function: do_repair
 // Address: 004cc5b0
-/* public: void __thiscall TRIBE_Combat_Object::do_repair(class RGE_Static_Object *) */
-
 void __thiscall TRIBE_Combat_Object::do_repair(TRIBE_Combat_Object *this,RGE_Static_Object *param_1)
 {
   bool bVar1;

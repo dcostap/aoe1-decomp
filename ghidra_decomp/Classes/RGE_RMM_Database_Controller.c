@@ -29,10 +29,6 @@
 // [HELPER] s__d__d__d__d__d__d__d__d__d: "%d %d %d %d %d %d %d %d %d"
 // [HELPER] s__d__d__d__d__d__d__d__d__d__d__d: "%d %d %d %d %d %d %d %d %d %d %d %d"
 // [HELPER] s_r: "r"
-/* WARNING: Variable defined which should be unmapped: infile */
-/* public: __thiscall RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(char *,char *,char
-   *,char *) */
-
 RGE_RMM_Database_Controller * __thiscall
 RGE_RMM_Database_Controller::RGE_RMM_Database_Controller
           (RGE_RMM_Database_Controller *this,char *param_1,char *param_2,char *param_3,char *param_4
@@ -230,9 +226,6 @@ LAB_00482c49:
 
 // Function: RGE_RMM_Database_Controller
 // Address: 00483020
-/* WARNING: Variable defined which should be unmapped: index */
-/* public: __thiscall RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(int) */
-
 RGE_RMM_Database_Controller * __thiscall
 RGE_RMM_Database_Controller::RGE_RMM_Database_Controller
           (RGE_RMM_Database_Controller *this,int param_1)
@@ -326,8 +319,6 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller
 
 // Function: ~RGE_RMM_Database_Controller
 // Address: 00483200
-/* public: __thiscall RGE_RMM_Database_Controller::~RGE_RMM_Database_Controller(void) */
-
 void __thiscall
 RGE_RMM_Database_Controller::~RGE_RMM_Database_Controller(RGE_RMM_Database_Controller *this)
 {
@@ -383,9 +374,6 @@ RGE_RMM_Database_Controller::~RGE_RMM_Database_Controller(RGE_RMM_Database_Contr
 
 // Function: save
 // Address: 004832e0
-/* WARNING: Variable defined which should be unmapped: index */
-/* public: unsigned char __thiscall RGE_RMM_Database_Controller::save(int) */
-
 uchar __thiscall RGE_RMM_Database_Controller::save(RGE_RMM_Database_Controller *this,int param_1)
 {
   int *piVar1;
@@ -455,8 +443,6 @@ uchar __thiscall RGE_RMM_Database_Controller::save(RGE_RMM_Database_Controller *
 
 // Function: generate
 // Address: 00483430
-/* public: virtual unsigned char __thiscall RGE_RMM_Database_Controller::generate(void) */
-
 uchar __thiscall RGE_RMM_Database_Controller::generate(RGE_RMM_Database_Controller *this)
 {
   uchar uVar1;
@@ -480,7 +466,6 @@ uchar __thiscall RGE_RMM_Database_Controller::generate(RGE_RMM_Database_Controll
               (this_00,(RGE_Map *)this->_padding_,(RGE_Random_Map_Module *)this,&this->terrain_info)
     ;
   }
-                    /* language.dll match for 0x1468: "Stone path 5" */
   local_4 = 0xffffffff;
   this_01 = (RGE_RMM_Land_Generator *)operator_new(0x1468);
   local_4 = 1;
@@ -514,9 +499,6 @@ uchar __thiscall RGE_RMM_Database_Controller::generate(RGE_RMM_Database_Controll
 
 // Function: init
 // Address: 00483540
-/* public: virtual unsigned char __thiscall RGE_RMM_Database_Controller::init(class RGE_Map *,class
-   RGE_Game_World *,unsigned char,long,unsigned char) */
-
 uchar __thiscall
 RGE_RMM_Database_Controller::init
           (RGE_RMM_Database_Controller *this,RGE_Map *param_1,RGE_Game_World *param_2,uchar param_3,
@@ -542,8 +524,6 @@ RGE_RMM_Database_Controller::init
 
 // Function: de_init
 // Address: 004835a0
-/* public: virtual unsigned char __thiscall RGE_RMM_Database_Controller::de_init(void) */
-
 uchar __thiscall RGE_RMM_Database_Controller::de_init(RGE_RMM_Database_Controller *this)
 {
   undefined4 *puVar1;
@@ -574,11 +554,6 @@ uchar __thiscall RGE_RMM_Database_Controller::de_init(RGE_RMM_Database_Controlle
 // [HELPER] s_________Random_Map_calc_land_end: "********Random Map calc land end (point3) "
 // [HELPER] s_________Random_Map_calc_land_sta: "********Random Map calc land start, rand: %d"
 // [HELPER] s_________Random_Map_calc_land_xy_: "********Random Map calc land xy player %d (%d, %d)"
-/* WARNING: Variable defined which should be unmapped: mid_x1 */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: void __thiscall RGE_RMM_Database_Controller::calc_land_start(long,long,long,struct
-   RGE_Land_Data_Entry *) */
-
 void __thiscall
 RGE_RMM_Database_Controller::calc_land_start
           (RGE_RMM_Database_Controller *this,long param_1,long param_2,long param_3,
@@ -726,8 +701,6 @@ LAB_004838b7:
 
 // Function: add_land_module
 // Address: 00483a20
-/* protected: virtual void __thiscall RGE_RMM_Database_Controller::add_land_module(unsigned char) */
-
 void __thiscall
 RGE_RMM_Database_Controller::add_land_module(RGE_RMM_Database_Controller *this,uchar param_1)
 {
@@ -1131,9 +1104,6 @@ LAB_00483fe3:
 
 // Function: add_terrain_module
 // Address: 00484160
-/* WARNING: Variable defined which should be unmapped: index */
-/* protected: virtual void __thiscall RGE_RMM_Database_Controller::add_terrain_module(void) */
-
 void __thiscall RGE_RMM_Database_Controller::add_terrain_module(RGE_RMM_Database_Controller *this)
 {
   int iVar1;
@@ -1216,9 +1186,6 @@ void __thiscall RGE_RMM_Database_Controller::add_terrain_module(RGE_RMM_Database
 
 // Function: add_object_module
 // Address: 00484320
-/* WARNING: Variable defined which should be unmapped: index1 */
-/* protected: virtual void __thiscall RGE_RMM_Database_Controller::add_object_module(void) */
-
 void __thiscall RGE_RMM_Database_Controller::add_object_module(RGE_RMM_Database_Controller *this)
 {
   int iVar1;
@@ -1294,9 +1261,6 @@ void __thiscall RGE_RMM_Database_Controller::add_object_module(RGE_RMM_Database_
 
 // Function: add_elevation_module
 // Address: 00484470
-/* WARNING: Variable defined which should be unmapped: index2 */
-/* protected: virtual void __thiscall RGE_RMM_Database_Controller::add_elevation_module(void) */
-
 void __thiscall RGE_RMM_Database_Controller::add_elevation_module(RGE_RMM_Database_Controller *this)
 {
   int iVar1;

@@ -145,10 +145,6 @@
 // [HELPER] s_Move: "Move"
 // [HELPER] s_Obj: "Obj"
 // [HELPER] s_Terr: "Terr"
-/* public: __thiscall RGE_Panel_Tool_Box::RGE_Panel_Tool_Box(class TDrawArea *,class TPanel
-   *,long,long,long,long,void *,long,long,class TDigital *,class TScreenPanel *,class RGE_View
-   *,class RGE_Diamond_Map *) */
-
 RGE_Panel_Tool_Box * __thiscall
 RGE_Panel_Tool_Box::RGE_Panel_Tool_Box
           (RGE_Panel_Tool_Box *this,TDrawArea *param_1,TPanel *param_2,long param_3,long param_4,
@@ -240,7 +236,6 @@ RGE_Panel_Tool_Box::RGE_Panel_Tool_Box
           this->_padding_ = 1;
         }
         else {
-                    /* language.dll match for 0x68: "Arial" */
           TButtonPanel::setup(pTVar2,(TDrawArea *)this->_padding_,(TPanel *)this,0x68,0,0x32,0x1e,
                               DrawTextA,param_10,NotifyAction,0);
           TButtonPanel::set_text_info(this->move_mode_button,&s_Move,param_7,param_8,param_9,-1,-1);
@@ -352,9 +347,6 @@ RGE_Panel_Tool_Box::RGE_Panel_Tool_Box
 
 // Function: `vector_deleting_destructor'
 // Address: 00489e70
-/* public: virtual void * __thiscall RGE_Panel_Tool_Box::`vector deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 RGE_Panel_Tool_Box::_vector_deleting_destructor_(RGE_Panel_Tool_Box *this,uint param_1)
 {
@@ -369,8 +361,6 @@ RGE_Panel_Tool_Box::_vector_deleting_destructor_(RGE_Panel_Tool_Box *this,uint p
 
 // Function: ~RGE_Panel_Tool_Box
 // Address: 00489e90
-/* public: virtual __thiscall RGE_Panel_Tool_Box::~RGE_Panel_Tool_Box(void) */
-
 void __thiscall RGE_Panel_Tool_Box::~RGE_Panel_Tool_Box(RGE_Panel_Tool_Box *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -416,9 +406,6 @@ void __thiscall RGE_Panel_Tool_Box::~RGE_Panel_Tool_Box(RGE_Panel_Tool_Box *this
 // Address: 00489f50
 // [HELPER] s_Object_List_Dialog: "Object List Dialog"
 // [HELPER] s_Terrain_List_Dialog: "Terrain List Dialog"
-/* public: virtual long __thiscall RGE_Panel_Tool_Box::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 RGE_Panel_Tool_Box::action
           (RGE_Panel_Tool_Box *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -454,7 +441,6 @@ RGE_Panel_Tool_Box::action
       return 1;
     }
     if (((TButtonPanel *)param_1 == this->object_mode_button) && (param_2 == 1)) {
-                    /* language.dll match for 0x4bc: "Intentional drop of Ser#%d  Cmd=%d '%c' " */
       this_00 = (RGE_Dialog_List *)operator_new(0x4bc);
       local_4 = 0;
       if (this_00 == (RGE_Dialog_List *)0x0) {
@@ -466,7 +452,6 @@ RGE_Panel_Tool_Box::action
       local_4 = 0xffffffff;
       this->dialog = pTVar4;
       if (pTVar4 != (TPanel *)0x0) {
-                    /* language.dll match for 0x232a: "Select Object" */
         pcVar5 = TPanel::get_string((TPanel *)this,0x232a);
         iVar11 = 1;
         lVar6 = TEasy_Panel::get_popup_info_id((TEasy_Panel *)this->screen_panel);
@@ -592,9 +577,6 @@ LAB_0048a307:
 
 // Function: key_down_action
 // Address: 0048a320
-/* WARNING: Variable defined which should be unmapped: y2 */
-/* public: virtual long __thiscall RGE_Panel_Tool_Box::key_down_action(long,short,int,int,int) */
-
 long __thiscall
 RGE_Panel_Tool_Box::key_down_action
           (RGE_Panel_Tool_Box *this,long param_1,short param_2,int param_3,int param_4,int param_5)
@@ -678,8 +660,6 @@ RGE_Panel_Tool_Box::key_down_action
 
 // Function: game_mode_changed
 // Address: 0048a520
-/* public: void __thiscall RGE_Panel_Tool_Box::game_mode_changed(int,int) */
-
 void __thiscall
 RGE_Panel_Tool_Box::game_mode_changed(RGE_Panel_Tool_Box *this,int param_1,int param_2)
 {
@@ -726,8 +706,6 @@ RGE_Panel_Tool_Box::game_mode_changed(RGE_Panel_Tool_Box *this,int param_1,int p
 
 // Function: draw
 // Address: 0048a640
-/* public: virtual void __thiscall RGE_Panel_Tool_Box::draw(void) */
-
 void __thiscall RGE_Panel_Tool_Box::draw(RGE_Panel_Tool_Box *this)
 {
   int iVar1;

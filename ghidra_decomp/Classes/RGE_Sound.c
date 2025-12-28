@@ -14,8 +14,6 @@
 // [HELPER] s__d__s__hd: "%d %s %hd"
 // [HELPER] s__hd: "%hd"
 // [HELPER] s__wav: ".wav"
-/* public: __thiscall RGE_Sound::RGE_Sound(struct _iobuf *,short) */
-
 RGE_Sound * __thiscall RGE_Sound::RGE_Sound(RGE_Sound *this,_iobuf *param_1,short param_2)
 {
   short *psVar1;
@@ -100,8 +98,6 @@ RGE_Sound * __thiscall RGE_Sound::RGE_Sound(RGE_Sound *this,_iobuf *param_1,shor
 
 // Function: RGE_Sound
 // Address: 004bbf30
-/* public: __thiscall RGE_Sound::RGE_Sound(int,class TSound_Driver *) */
-
 RGE_Sound * __thiscall RGE_Sound::RGE_Sound(RGE_Sound *this,int param_1,TSound_Driver *param_2)
 {
   short *psVar1;
@@ -162,8 +158,6 @@ RGE_Sound * __thiscall RGE_Sound::RGE_Sound(RGE_Sound *this,int param_1,TSound_D
 
 // Function: RGE_Sound
 // Address: 004bc070
-/* public: __thiscall RGE_Sound::RGE_Sound(void) */
-
 void __thiscall RGE_Sound::RGE_Sound(RGE_Sound *this)
 {
   this->play_at_update_count = 0;
@@ -176,8 +170,6 @@ void __thiscall RGE_Sound::RGE_Sound(RGE_Sound *this)
 
 // Function: ~RGE_Sound
 // Address: 004bc080
-/* public: __thiscall RGE_Sound::~RGE_Sound(void) */
-
 void __thiscall RGE_Sound::~RGE_Sound(RGE_Sound *this)
 {
   char *pcVar1;
@@ -217,8 +209,6 @@ void __thiscall RGE_Sound::~RGE_Sound(RGE_Sound *this)
 
 // Function: save
 // Address: 004bc0f0
-/* public: void __thiscall RGE_Sound::save(int) */
-
 void __thiscall RGE_Sound::save(RGE_Sound *this,int param_1)
 {
   short sVar1;
@@ -247,8 +237,6 @@ void __thiscall RGE_Sound::save(RGE_Sound *this,int param_1)
 
 // Function: restart_sound
 // Address: 004bc190
-/* public: void __thiscall RGE_Sound::restart_sound(class TSound_Driver *) */
-
 void __thiscall RGE_Sound::restart_sound(RGE_Sound *this,TSound_Driver *param_1)
 {
   char *pcVar1;
@@ -312,8 +300,6 @@ void __thiscall RGE_Sound::restart_sound(RGE_Sound *this,TSound_Driver *param_1)
 
 // Function: update
 // Address: 004bc270
-/* public: void __thiscall RGE_Sound::update(unsigned long) */
-
 void __thiscall RGE_Sound::update(RGE_Sound *this,ulong param_1)
 {
   RGE_Sound_Info *pRVar1;
@@ -340,8 +326,6 @@ void __thiscall RGE_Sound::update(RGE_Sound *this,ulong param_1)
 
 // Function: set_cache_time
 // Address: 004bc2d0
-/* public: void __thiscall RGE_Sound::set_cache_time(unsigned long) */
-
 void __thiscall RGE_Sound::set_cache_time(RGE_Sound *this,ulong param_1)
 {
   this->cache_time = param_1;
@@ -352,8 +336,6 @@ void __thiscall RGE_Sound::set_cache_time(RGE_Sound *this,ulong param_1)
 
 // Function: play_at_update
 // Address: 004bc2e0
-/* public: void __thiscall RGE_Sound::play_at_update(void) */
-
 void __thiscall RGE_Sound::play_at_update(RGE_Sound *this)
 {
   this->play_at_update_count = this->play_at_update_count + 1;
@@ -364,8 +346,6 @@ void __thiscall RGE_Sound::play_at_update(RGE_Sound *this)
 
 // Function: update_play
 // Address: 004bc2f0
-/* public: void __thiscall RGE_Sound::update_play(void) */
-
 void __thiscall RGE_Sound::update_play(RGE_Sound *this)
 {
   if (0 < this->play_at_update_count) {
@@ -382,9 +362,6 @@ void __thiscall RGE_Sound::update_play(RGE_Sound *this)
 // [HELPER] s_C__msdev_work_age1_x1_Sound_cpp: "C:\msdev\work\age1_x1\Sound.cpp"
 // [HELPER] s__: "}"
 // [HELPER] s___s: "{%s"
-/* WARNING: Variable defined which should be unmapped: s */
-/* public: void __thiscall RGE_Sound::play(int) */
-
 void __thiscall RGE_Sound::play(RGE_Sound *this,int param_1)
 {
   RGE_Sound_Info *pRVar1;
@@ -449,8 +426,6 @@ void __thiscall RGE_Sound::play(RGE_Sound *this,int param_1)
 // Function: get_file_name
 // Address: 004bc470
 // [HELPER] s_C__msdev_work_age1_x1_Sound_cpp: "C:\msdev\work\age1_x1\Sound.cpp"
-/* public: char * __thiscall RGE_Sound::get_file_name(void) */
-
 char * __thiscall RGE_Sound::get_file_name(RGE_Sound *this)
 {
   TDigital *pTVar1;
@@ -484,8 +459,6 @@ char * __thiscall RGE_Sound::get_file_name(RGE_Sound *this)
 
 // Function: stop
 // Address: 004bc4f0
-/* public: void __thiscall RGE_Sound::stop(void) */
-
 void __thiscall RGE_Sound::stop(RGE_Sound *this)
 {
   TDigital *this_00;
@@ -511,8 +484,6 @@ void __thiscall RGE_Sound::stop(RGE_Sound *this)
 
 // Function: is_playing
 // Address: 004bc540
-/* public: int __thiscall RGE_Sound::is_playing(void) */
-
 int __thiscall RGE_Sound::is_playing(RGE_Sound *this)
 {
   TDigital *this_00;

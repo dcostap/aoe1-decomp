@@ -115,8 +115,6 @@ LAB_0056cc20:
           uVar6 = uVar6 - (iVar9 - piVar10[3]);
           DAT_0088c044._0_4_ = 0x56cbc0;
         }
-                    /* WARNING: Could not recover jumptable at 0x0056cdc5. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
         (**(code **)((uint)(byte)(cVar4 + (char)DAT_0088c044._8_4_ & 3U |
                                   *(byte *)(uVar6 + 0x56b300) | DAT_0088c044._4_1_) * 4 + 0x56ab00))
                   ();
@@ -149,8 +147,6 @@ LAB_0056cc20:
           uVar6 = uVar6 - (iVar9 - piVar10[3]);
           DAT_0088c044._0_4_ = 0x56cbc0;
         }
-                    /* WARNING: Could not recover jumptable at 0x0056ce75. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
         (**(code **)((uint)(byte)(cVar4 + (char)DAT_0088c044._8_4_ & 3U |
                                   *(byte *)(uVar6 + 0x56b300) | DAT_0088c044._4_1_) * 4 + 0x56a700))
                   ();
@@ -183,8 +179,6 @@ LAB_0056cc20:
           uVar6 = uVar6 - (iVar9 - piVar10[3]);
           DAT_0088c044._0_4_ = 0x56cbc0;
         }
-                    /* WARNING: Could not recover jumptable at 0x0056cf15. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
         (**(code **)((uint)(byte)(cVar4 + (char)DAT_0088c044._8_4_ & 3U |
                                   *(byte *)(uVar6 + 0x56b300) | DAT_0088c044._4_1_) * 4 + 0x56a700))
                   ();
@@ -202,8 +196,6 @@ LAB_0056cc20:
   case 0xb:
     goto switchD_0056cc42_caseD_b;
   case 0xe:
-                    /* WARNING: Could not recover jumptable at 0x0056cc65. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
     (**(code **)(&DAT_0056b480 + (uint)(bVar1 >> 4) * 4))();
     return;
   case 0xf:
@@ -222,8 +214,6 @@ LAB_0056cc20:
         sVar7 = sVar7 - ((short)iVar9 - (short)piVar10[3]);
         DAT_0088c044._0_4_ = 0x56cbc0;
       }
-                    /* WARNING: Could not recover jumptable at 0x0056cceb. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
       (**(code **)((uint)(byte)(cVar4 + (char)DAT_0088c044._8_4_ & 3U | DAT_0088c044._4_1_ |
                                *(byte *)((byte)(-(char)((ushort)sVar7 >> 8) & 0x80U | (byte)sVar7) +
                                         0x56b300)) * 4 + 0x56a300))();
@@ -256,8 +246,6 @@ switchD_0056cc42_caseD_b:
         uVar6 = uVar6 - (iVar9 - piVar10[3]);
         DAT_0088c044._0_4_ = 0x56cbc0;
       }
-                    /* WARNING: Could not recover jumptable at 0x0056cfa5. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
       (**(code **)((uint)(byte)(cVar4 + (char)DAT_0088c044._8_4_ & 3U | *(byte *)(uVar6 + 0x56b300)
                                | DAT_0088c044._4_1_) * 4 + 0x56af00))();
       return;
@@ -278,8 +266,6 @@ LAB_0056d0a0:
     bVar5 = (byte)iVar8;
     switch(bVar1 & 0xf) {
     default:
-                    /* WARNING: Could not recover jumptable at 0x0056d0f4. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
       DAT_0088c03c = piVar3;
       (**(code **)((uint)(byte)(bVar5 & 3 | *(byte *)((bVar1 >> 2) + 0x56b300) | DAT_0088c044._4_1_)
                    * 4 + 0x56a300))();
@@ -292,8 +278,6 @@ LAB_0056d0a0:
       pbVar11 = pbVar12;
       break;
     case 2:
-                    /* WARNING: Could not recover jumptable at 0x0056d120. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
       DAT_0088c03c = piVar3;
       (**(code **)((uint)(byte)(bVar5 & 3 | DAT_0088c044._4_1_ |
                                *(byte *)((-(char)(((uint)bVar1 << 4) >> 8) & 0x80U | *pbVar12) +
@@ -308,8 +292,6 @@ LAB_0056d0a0:
       if (uVar6 == 0) {
         uVar6 = (uint)*pbVar12;
       }
-                    /* WARNING: Could not recover jumptable at 0x0056d17f. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
       DAT_0088c03c = piVar3;
       (**(code **)((uint)(byte)(bVar5 & 3 | *(byte *)(uVar6 + 0x56b300) | DAT_0088c044._4_1_) * 4 +
                   0x56ab00))();
@@ -319,8 +301,6 @@ LAB_0056d0a0:
       if (uVar6 == 0) {
         uVar6 = (uint)*pbVar12;
       }
-                    /* WARNING: Could not recover jumptable at 0x0056d1d1. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
       DAT_0088c03c = piVar3;
       (**(code **)((uint)(byte)(bVar5 & 3 | *(byte *)(uVar6 + 0x56b300) | DAT_0088c044._4_1_) * 4 +
                   0x56a700))();
@@ -330,8 +310,6 @@ LAB_0056d0a0:
       if (uVar6 == 0) {
         uVar6 = (uint)*pbVar12;
       }
-                    /* WARNING: Could not recover jumptable at 0x0056d211. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
       DAT_0088c03c = piVar3;
       (**(code **)((uint)(byte)(bVar5 & 3 | *(byte *)(uVar6 + 0x56b300) | DAT_0088c044._4_1_) * 4 +
                   0x56a700))();
@@ -341,15 +319,11 @@ LAB_0056d0a0:
       if (uVar6 == 0) {
         uVar6 = (uint)*pbVar12;
       }
-                    /* WARNING: Could not recover jumptable at 0x0056d241. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
       DAT_0088c03c = piVar3;
       (**(code **)((uint)(byte)(bVar5 & 3 | *(byte *)(uVar6 + 0x56b300) | DAT_0088c044._4_1_) * 4 +
                   0x56af00))();
       return;
     case 0xe:
-                    /* WARNING: Could not recover jumptable at 0x0056d0c5. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
       DAT_0088c03c = piVar3;
       (**(code **)(&DAT_0056b4c0 + (uint)(bVar1 >> 4) * 4))();
       return;

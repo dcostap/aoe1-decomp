@@ -23,9 +23,6 @@
 
 // Function: RGE_Master_Doppleganger_Object
 // Address: 004510c0
-/* public: __thiscall RGE_Master_Doppleganger_Object::RGE_Master_Doppleganger_Object(class
-   RGE_Master_Doppleganger_Object *,int) */
-
 RGE_Master_Doppleganger_Object * __thiscall
 RGE_Master_Doppleganger_Object::RGE_Master_Doppleganger_Object
           (RGE_Master_Doppleganger_Object *this,RGE_Master_Doppleganger_Object *param_1,int param_2)
@@ -54,9 +51,6 @@ RGE_Master_Doppleganger_Object::RGE_Master_Doppleganger_Object
 
 // Function: `scalar_deleting_destructor'
 // Address: 00451120
-/* public: virtual void * __thiscall RGE_Master_Doppleganger_Object::`scalar deleting
-   destructor'(unsigned int) */
-
 void * __thiscall
 RGE_Master_Doppleganger_Object::_scalar_deleting_destructor_
           (RGE_Master_Doppleganger_Object *this,uint param_1)
@@ -72,9 +66,6 @@ RGE_Master_Doppleganger_Object::_scalar_deleting_destructor_
 
 // Function: RGE_Master_Doppleganger_Object
 // Address: 00451140
-/* public: __thiscall RGE_Master_Doppleganger_Object::RGE_Master_Doppleganger_Object(int,class
-   RGE_Sprite * *,class RGE_Sound * *,int) */
-
 RGE_Master_Doppleganger_Object * __thiscall
 RGE_Master_Doppleganger_Object::RGE_Master_Doppleganger_Object
           (RGE_Master_Doppleganger_Object *this,int param_1,RGE_Sprite **param_2,RGE_Sound **param_3
@@ -104,9 +95,6 @@ RGE_Master_Doppleganger_Object::RGE_Master_Doppleganger_Object
 
 // Function: RGE_Master_Doppleganger_Object
 // Address: 004511b0
-/* public: __thiscall RGE_Master_Doppleganger_Object::RGE_Master_Doppleganger_Object(struct _iobuf
-   *,class RGE_Sprite * *,class RGE_Sound * *,short,int) */
-
 RGE_Master_Doppleganger_Object * __thiscall
 RGE_Master_Doppleganger_Object::RGE_Master_Doppleganger_Object
           (RGE_Master_Doppleganger_Object *this,_iobuf *param_1,RGE_Sprite **param_2,
@@ -136,9 +124,6 @@ RGE_Master_Doppleganger_Object::RGE_Master_Doppleganger_Object
 
 // Function: setup
 // Address: 00451230
-/* protected: int __thiscall RGE_Master_Doppleganger_Object::setup(class
-   RGE_Master_Doppleganger_Object *) */
-
 int __thiscall
 RGE_Master_Doppleganger_Object::setup
           (RGE_Master_Doppleganger_Object *this,RGE_Master_Doppleganger_Object *param_1)
@@ -154,9 +139,6 @@ RGE_Master_Doppleganger_Object::setup
 
 // Function: setup
 // Address: 00451250
-/* protected: int __thiscall RGE_Master_Doppleganger_Object::setup(int,class RGE_Sprite * *,class
-   RGE_Sound * *) */
-
 int __thiscall
 RGE_Master_Doppleganger_Object::setup
           (RGE_Master_Doppleganger_Object *this,int param_1,RGE_Sprite **param_2,RGE_Sound **param_3
@@ -171,9 +153,6 @@ RGE_Master_Doppleganger_Object::setup
 
 // Function: setup
 // Address: 00451280
-/* protected: int __thiscall RGE_Master_Doppleganger_Object::setup(struct _iobuf *,class RGE_Sprite
-   * *,class RGE_Sound * *,short) */
-
 int __thiscall
 RGE_Master_Doppleganger_Object::setup
           (RGE_Master_Doppleganger_Object *this,_iobuf *param_1,RGE_Sprite **param_2,
@@ -190,9 +169,6 @@ RGE_Master_Doppleganger_Object::setup
 
 // Function: ~RGE_Master_Doppleganger_Object
 // Address: 004512c0
-/* public: virtual __thiscall RGE_Master_Doppleganger_Object::~RGE_Master_Doppleganger_Object(void)
-    */
-
 void __thiscall
 RGE_Master_Doppleganger_Object::~RGE_Master_Doppleganger_Object
           (RGE_Master_Doppleganger_Object *this)
@@ -206,10 +182,6 @@ RGE_Master_Doppleganger_Object::~RGE_Master_Doppleganger_Object
 
 // Function: make_new_obj
 // Address: 004512d0
-/* public: virtual class RGE_Static_Object * __thiscall
-   RGE_Master_Doppleganger_Object::make_new_obj(class RGE_Player *,float,float,float,class
-   RGE_Static_Object *) */
-
 RGE_Static_Object * __thiscall
 RGE_Master_Doppleganger_Object::make_new_obj
           (RGE_Master_Doppleganger_Object *this,RGE_Player *param_1,float param_2,float param_3,
@@ -251,9 +223,6 @@ RGE_Master_Doppleganger_Object::make_new_obj
 
 // Function: make_new_master
 // Address: 004513b0
-/* public: virtual class RGE_Master_Static_Object * __thiscall
-   RGE_Master_Doppleganger_Object::make_new_master(void) */
-
 RGE_Master_Static_Object * __thiscall
 RGE_Master_Doppleganger_Object::make_new_master(RGE_Master_Doppleganger_Object *this)
 {
@@ -283,9 +252,6 @@ RGE_Master_Doppleganger_Object::make_new_master(RGE_Master_Doppleganger_Object *
 
 // Function: copy_obj
 // Address: 00451420
-/* public: virtual void __thiscall RGE_Master_Doppleganger_Object::copy_obj(class
-   RGE_Master_Static_Object *) */
-
 void __thiscall
 RGE_Master_Doppleganger_Object::copy_obj
           (RGE_Master_Doppleganger_Object *this,RGE_Master_Static_Object *param_1)
@@ -298,8 +264,6 @@ RGE_Master_Doppleganger_Object::copy_obj
 
 // Function: save
 // Address: 00451430
-/* public: virtual void __thiscall RGE_Master_Doppleganger_Object::save(int) */
-
 void __thiscall
 RGE_Master_Doppleganger_Object::save(RGE_Master_Doppleganger_Object *this,int param_1)
 {

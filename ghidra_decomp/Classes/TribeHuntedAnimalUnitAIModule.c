@@ -64,9 +64,6 @@
 
 // Function: TribeHuntedAnimalUnitAIModule
 // Address: 00503bb0
-/* public: __thiscall TribeHuntedAnimalUnitAIModule::TribeHuntedAnimalUnitAIModule(class
-   RGE_Static_Object *,int) */
-
 TribeHuntedAnimalUnitAIModule * __thiscall
 TribeHuntedAnimalUnitAIModule::TribeHuntedAnimalUnitAIModule
           (TribeHuntedAnimalUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
@@ -115,9 +112,6 @@ TribeHuntedAnimalUnitAIModule::TribeHuntedAnimalUnitAIModule
 
 // Function: `scalar_deleting_destructor'
 // Address: 00503d00
-/* public: virtual void * __thiscall TribeHuntedAnimalUnitAIModule::`scalar deleting
-   destructor'(unsigned int) */
-
 void * __thiscall
 TribeHuntedAnimalUnitAIModule::_scalar_deleting_destructor_
           (TribeHuntedAnimalUnitAIModule *this,uint param_1)
@@ -133,8 +127,6 @@ TribeHuntedAnimalUnitAIModule::_scalar_deleting_destructor_
 
 // Function: ~TribeHuntedAnimalUnitAIModule
 // Address: 00503d20
-/* public: virtual __thiscall TribeHuntedAnimalUnitAIModule::~TribeHuntedAnimalUnitAIModule(void) */
-
 void __thiscall
 TribeHuntedAnimalUnitAIModule::~TribeHuntedAnimalUnitAIModule(TribeHuntedAnimalUnitAIModule *this)
 {
@@ -180,9 +172,6 @@ TribeHuntedAnimalUnitAIModule::~TribeHuntedAnimalUnitAIModule(TribeHuntedAnimalU
 
 // Function: processNotify
 // Address: 00503d30
-/* protected: virtual int __thiscall TribeHuntedAnimalUnitAIModule::processNotify(struct NotifyEvent
-   *,unsigned long) */
-
 int __thiscall
 TribeHuntedAnimalUnitAIModule::processNotify
           (TribeHuntedAnimalUnitAIModule *this,NotifyEvent *param_1,ulong param_2)
@@ -243,10 +232,6 @@ LAB_00503e0b:
 
 // Function: processIdle
 // Address: 00503e30
-/* WARNING: Variable defined which should be unmapped: yDiff */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall TribeHuntedAnimalUnitAIModule::processIdle(int) */
-
 int __thiscall
 TribeHuntedAnimalUnitAIModule::processIdle(TribeHuntedAnimalUnitAIModule *this,int param_1)
 {

@@ -68,9 +68,6 @@
 
 // Function: TribeBuildingUnitAIModule
 // Address: 00508170
-/* public: __thiscall TribeBuildingUnitAIModule::TribeBuildingUnitAIModule(class RGE_Static_Object
-   *,int) */
-
 TribeBuildingUnitAIModule * __thiscall
 TribeBuildingUnitAIModule::TribeBuildingUnitAIModule
           (TribeBuildingUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
@@ -122,9 +119,6 @@ TribeBuildingUnitAIModule::TribeBuildingUnitAIModule
 
 // Function: `scalar_deleting_destructor'
 // Address: 005082f0
-/* public: virtual void * __thiscall TribeBuildingUnitAIModule::`scalar deleting
-   destructor'(unsigned int) */
-
 void * __thiscall
 TribeBuildingUnitAIModule::_scalar_deleting_destructor_
           (TribeBuildingUnitAIModule *this,uint param_1)
@@ -140,8 +134,6 @@ TribeBuildingUnitAIModule::_scalar_deleting_destructor_
 
 // Function: ~TribeBuildingUnitAIModule
 // Address: 00508310
-/* public: virtual __thiscall TribeBuildingUnitAIModule::~TribeBuildingUnitAIModule(void) */
-
 void __thiscall
 TribeBuildingUnitAIModule::~TribeBuildingUnitAIModule(TribeBuildingUnitAIModule *this)
 {
@@ -187,9 +179,6 @@ TribeBuildingUnitAIModule::~TribeBuildingUnitAIModule(TribeBuildingUnitAIModule 
 
 // Function: processNotify
 // Address: 00508320
-/* protected: virtual int __thiscall TribeBuildingUnitAIModule::processNotify(struct NotifyEvent
-   *,unsigned long) */
-
 int __thiscall
 TribeBuildingUnitAIModule::processNotify
           (TribeBuildingUnitAIModule *this,NotifyEvent *param_1,ulong param_2)
@@ -336,8 +325,6 @@ LAB_00508402:
 
 // Function: processIdle
 // Address: 00508660
-/* protected: virtual int __thiscall TribeBuildingUnitAIModule::processIdle(int) */
-
 int __thiscall TribeBuildingUnitAIModule::processIdle(TribeBuildingUnitAIModule *this,int param_1)
 {
   return 5;

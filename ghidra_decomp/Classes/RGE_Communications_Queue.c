@@ -13,8 +13,6 @@
 
 // Function: RGE_Communications_Queue
 // Address: 00431720
-/* public: __thiscall RGE_Communications_Queue::RGE_Communications_Queue(int) */
-
 RGE_Communications_Queue * __thiscall
 RGE_Communications_Queue::RGE_Communications_Queue(RGE_Communications_Queue *this,int param_1)
 {
@@ -35,8 +33,6 @@ RGE_Communications_Queue::RGE_Communications_Queue(RGE_Communications_Queue *thi
 
 // Function: ~RGE_Communications_Queue
 // Address: 00431760
-/* public: __thiscall RGE_Communications_Queue::~RGE_Communications_Queue(void) */
-
 void __thiscall RGE_Communications_Queue::~RGE_Communications_Queue(RGE_Communications_Queue *this)
 {
   MsgQueue *pMVar1;
@@ -53,8 +49,6 @@ void __thiscall RGE_Communications_Queue::~RGE_Communications_Queue(RGE_Communic
 
 // Function: AllocateQueue
 // Address: 00431810
-/* protected: int __thiscall RGE_Communications_Queue::AllocateQueue(unsigned int) */
-
 int __thiscall RGE_Communications_Queue::AllocateQueue(RGE_Communications_Queue *this,uint param_1)
 {
   undefined1 *puVar1;
@@ -157,9 +151,6 @@ int __thiscall RGE_Communications_Queue::AllocateQueue(RGE_Communications_Queue 
 
 // Function: ExpectedNextSequence
 // Address: 004319e0
-/* public: unsigned char __thiscall RGE_Communications_Queue::ExpectedNextSequence(unsigned
-   long,unsigned int) */
-
 uchar __thiscall
 RGE_Communications_Queue::ExpectedNextSequence
           (RGE_Communications_Queue *this,ulong param_1,uint param_2)
@@ -191,8 +182,6 @@ RGE_Communications_Queue::ExpectedNextSequence
 
 // Function: QueuedForTurn
 // Address: 00431a40
-/* protected: unsigned int __thiscall RGE_Communications_Queue::QueuedForTurn(unsigned long) */
-
 uint __thiscall
 RGE_Communications_Queue::QueuedForTurn(RGE_Communications_Queue *this,ulong param_1)
 {
@@ -217,8 +206,6 @@ RGE_Communications_Queue::QueuedForTurn(RGE_Communications_Queue *this,ulong par
 
 // Function: FlushAll
 // Address: 00431a70
-/* public: void __thiscall RGE_Communications_Queue::FlushAll(void) */
-
 void __thiscall RGE_Communications_Queue::FlushAll(RGE_Communications_Queue *this)
 {
   FlushTurnRange(this,0,0);
@@ -229,10 +216,6 @@ void __thiscall RGE_Communications_Queue::FlushAll(RGE_Communications_Queue *thi
 
 // Function: FlushTurnRange
 // Address: 00431a80
-/* WARNING: Variable defined which should be unmapped: Count */
-/* public: unsigned int __thiscall RGE_Communications_Queue::FlushTurnRange(unsigned long,unsigned
-   long) */
-
 uint __thiscall
 RGE_Communications_Queue::FlushTurnRange(RGE_Communications_Queue *this,ulong param_1,ulong param_2)
 {
@@ -274,9 +257,6 @@ RGE_Communications_Queue::FlushTurnRange(RGE_Communications_Queue *this,ulong pa
 // Address: 00431b10
 // [HELPER] s_Flushing_queue_for_player__d: "Flushing queue for player %d"
 // [HELPER] s_Remove_Q___d_Seq__d_ToExecute__l: "Remove Q #%d Seq=%d ToExecute %ld From P#%d Size=%d Code=%d Ctrl=%d "
-/* WARNING: Variable defined which should be unmapped: i */
-/* public: void __thiscall RGE_Communications_Queue::FlushForPlayer(unsigned int) */
-
 void __thiscall
 RGE_Communications_Queue::FlushForPlayer(RGE_Communications_Queue *this,uint param_1)
 {
@@ -317,8 +297,6 @@ RGE_Communications_Queue::FlushForPlayer(RGE_Communications_Queue *this,uint par
 
 // Function: FlushForTurn
 // Address: 00431bd0
-/* public: unsigned int __thiscall RGE_Communications_Queue::FlushForTurn(unsigned long) */
-
 uint __thiscall RGE_Communications_Queue::FlushForTurn(RGE_Communications_Queue *this,ulong param_1)
 {
   uint uVar1;
@@ -331,8 +309,6 @@ uint __thiscall RGE_Communications_Queue::FlushForTurn(RGE_Communications_Queue 
 
 // Function: FlushThruTurn
 // Address: 00431be0
-/* public: unsigned int __thiscall RGE_Communications_Queue::FlushThruTurn(unsigned long) */
-
 uint __thiscall
 RGE_Communications_Queue::FlushThruTurn(RGE_Communications_Queue *this,ulong param_1)
 {
@@ -346,10 +322,6 @@ RGE_Communications_Queue::FlushThruTurn(RGE_Communications_Queue *this,ulong par
 
 // Function: AddItem
 // Address: 00431bf0
-/* WARNING: Variable defined which should be unmapped: i */
-/* public: int __thiscall RGE_Communications_Queue::AddItem(unsigned long,void *,unsigned
-   long,unsigned int,unsigned char,int) */
-
 int __thiscall
 RGE_Communications_Queue::AddItem
           (RGE_Communications_Queue *this,ulong param_1,void *param_2,ulong param_3,uint param_4,
@@ -393,13 +365,11 @@ RGE_Communications_Queue::AddItem
   pcVar5 = (char *)operator_new(param_3 + 1);
   pMVar2[local_4].msgptr = pcVar5;
   if (pcVar5 != (char *)0x0) {
-                    /* WARNING: Load size is inaccurate */
     for (uVar6 = param_3 >> 2; uVar6 != 0; uVar6 = uVar6 - 1) {
       *(undefined4 *)pcVar5 = *param_2;
       param_2 = (char *)((int)param_2 + 4);
       pcVar5 = pcVar5 + 4;
     }
-                    /* WARNING: Load size is inaccurate */
     for (uVar6 = param_3 & 3; uVar6 != 0; uVar6 = uVar6 - 1) {
       *pcVar5 = *param_2;
       param_2 = (char *)((int)param_2 + 1);
@@ -420,8 +390,6 @@ RGE_Communications_Queue::AddItem
 
 // Function: GetQueueDepth
 // Address: 00431d10
-/* public: unsigned int __thiscall RGE_Communications_Queue::GetQueueDepth(void) */
-
 uint __thiscall RGE_Communications_Queue::GetQueueDepth(RGE_Communications_Queue *this)
 {
   return this->QueueDepth;
@@ -431,8 +399,6 @@ uint __thiscall RGE_Communications_Queue::GetQueueDepth(RGE_Communications_Queue
 
 // Function: GetHighQueueDepth
 // Address: 00431d20
-/* public: unsigned int __thiscall RGE_Communications_Queue::GetHighQueueDepth(void) */
-
 uint __thiscall RGE_Communications_Queue::GetHighQueueDepth(RGE_Communications_Queue *this)
 {
   return this->HighQueueDepth;
@@ -442,9 +408,6 @@ uint __thiscall RGE_Communications_Queue::GetHighQueueDepth(RGE_Communications_Q
 
 // Function: GetSpecificItem
 // Address: 00431d30
-/* public: void * __thiscall RGE_Communications_Queue::GetSpecificItem(unsigned int,unsigned
-   long,unsigned char,unsigned int *) */
-
 void * __thiscall
 RGE_Communications_Queue::GetSpecificItem
           (RGE_Communications_Queue *this,uint param_1,ulong param_2,uchar param_3,uint *param_4)
@@ -478,8 +441,6 @@ RGE_Communications_Queue::GetSpecificItem
 
 // Function: GetNextItemSingle
 // Address: 00431dd0
-/* public: void * __thiscall RGE_Communications_Queue::GetNextItemSingle(void) */
-
 void * __thiscall RGE_Communications_Queue::GetNextItemSingle(RGE_Communications_Queue *this)
 {
   uint uVar1;
@@ -511,9 +472,6 @@ void * __thiscall RGE_Communications_Queue::GetNextItemSingle(RGE_Communications
 
 // Function: GetNextItemOrdered
 // Address: 00431e40
-/* WARNING: Variable defined which should be unmapped: SendMsg */
-/* public: void * __thiscall RGE_Communications_Queue::GetNextItemOrdered(unsigned long) */
-
 void * __thiscall
 RGE_Communications_Queue::GetNextItemOrdered(RGE_Communications_Queue *this,ulong param_1)
 {
@@ -564,8 +522,6 @@ RGE_Communications_Queue::GetNextItemOrdered(RGE_Communications_Queue *this,ulon
 
 // Function: GetNextSequence
 // Address: 00431f10
-/* public: unsigned char __thiscall RGE_Communications_Queue::GetNextSequence(unsigned long) */
-
 uchar __thiscall
 RGE_Communications_Queue::GetNextSequence(RGE_Communications_Queue *this,ulong param_1)
 {
@@ -585,8 +541,6 @@ RGE_Communications_Queue::GetNextSequence(RGE_Communications_Queue *this,ulong p
 
 // Function: TestShowQueue
 // Address: 00431f50
-/* public: void __thiscall RGE_Communications_Queue::TestShowQueue(void) */
-
 void __thiscall RGE_Communications_Queue::TestShowQueue(RGE_Communications_Queue *this)
 {
   return;

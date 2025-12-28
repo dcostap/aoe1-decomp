@@ -82,8 +82,6 @@
 // Function: TRIBE_World
 // Address: 0052df60
 // [HELPER] s_data_aoe_ply: "data\aoe.ply"
-/* public: __thiscall TRIBE_World::TRIBE_World(void) */
-
 TRIBE_World * __thiscall TRIBE_World::TRIBE_World(TRIBE_World *this)
 {
   TribeAIPlayBook *this_00;
@@ -130,8 +128,6 @@ TRIBE_World * __thiscall TRIBE_World::TRIBE_World(TRIBE_World *this)
 
 // Function: `scalar_deleting_destructor'
 // Address: 0052e020
-/* public: virtual void * __thiscall TRIBE_World::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall TRIBE_World::_scalar_deleting_destructor_(TRIBE_World *this,uint param_1)
 {
   ~TRIBE_World(this);
@@ -145,8 +141,6 @@ void * __thiscall TRIBE_World::_scalar_deleting_destructor_(TRIBE_World *this,ui
 
 // Function: ~TRIBE_World
 // Address: 0052e040
-/* public: virtual __thiscall TRIBE_World::~TRIBE_World(void) */
-
 void __thiscall TRIBE_World::~TRIBE_World(TRIBE_World *this)
 {
   TRIBE_Tech *this_00;
@@ -183,9 +177,6 @@ void __thiscall TRIBE_World::~TRIBE_World(TRIBE_World *this)
 // [HELPER] s_Scenario__________________s_: "Scenario:                %s\n"
 // [HELPER] s_Victory_Condition_________s_: "Victory Condition:       %s\n"
 // [HELPER] s_________________________________: "\n\n\n*****************************************************\n"
-/* WARNING: Variable defined which should be unmapped: clock */
-/* protected: virtual void __thiscall TRIBE_World::logStatus(struct _iobuf *,int) */
-
 void __thiscall TRIBE_World::logStatus(TRIBE_World *this,_iobuf *param_1,int param_2)
 {
   char cVar1;
@@ -279,9 +270,6 @@ void __thiscall TRIBE_World::logStatus(TRIBE_World *this,_iobuf *param_1,int par
 
 // Function: data_load_players_type
 // Address: 0052e220
-/* public: virtual void __thiscall TRIBE_World::data_load_players_type(short,short,struct _iobuf *)
-    */
-
 void __thiscall
 TRIBE_World::data_load_players_type(TRIBE_World *this,short param_1,short param_2,_iobuf *param_3)
 {
@@ -318,9 +306,6 @@ TRIBE_World::data_load_players_type(TRIBE_World *this,short param_1,short param_
 
 // Function: data_load_map
 // Address: 0052e2b0
-/* public: virtual void __thiscall TRIBE_World::data_load_map(char *,char *,char *,char
-   *,short,short,short,class RGE_Sound * *,char *) */
-
 void __thiscall
 TRIBE_World::data_load_map
           (TRIBE_World *this,char *param_1,char *param_2,char *param_3,char *param_4,short param_5,
@@ -359,9 +344,6 @@ TRIBE_World::data_load_map
 // Function: data_load_world
 // Address: 0052e350
 // [HELPER] s__s_: "%s\n"
-/* WARNING: Variable defined which should be unmapped: tech_file */
-/* public: virtual unsigned char __thiscall TRIBE_World::data_load_world(struct _iobuf *) */
-
 uchar __thiscall TRIBE_World::data_load_world(TRIBE_World *this,_iobuf *param_1)
 {
   TRIBE_Tech *pTVar1;
@@ -400,9 +382,6 @@ uchar __thiscall TRIBE_World::data_load_world(TRIBE_World *this,_iobuf *param_1)
 
 // Function: init_player_type
 // Address: 0052e400
-/* public: virtual unsigned char __thiscall TRIBE_World::init_player_type(int,short,unsigned char)
-    */
-
 uchar __thiscall
 TRIBE_World::init_player_type(TRIBE_World *this,int param_1,short param_2,uchar param_3)
 {
@@ -444,8 +423,6 @@ TRIBE_World::init_player_type(TRIBE_World *this,int param_1,short param_2,uchar 
 
 // Function: map_init
 // Address: 0052e4c0
-/* public: virtual void __thiscall TRIBE_World::map_init(int,class TSound_Driver *) */
-
 void __thiscall TRIBE_World::map_init(TRIBE_World *this,int param_1,TSound_Driver *param_2)
 {
   TRIBE_Map *this_00;
@@ -476,8 +453,6 @@ void __thiscall TRIBE_World::map_init(TRIBE_World *this,int param_1,TSound_Drive
 
 // Function: command_init
 // Address: 0052e530
-/* public: virtual void __thiscall TRIBE_World::command_init(int,class TCommunications_Handler *) */
-
 void __thiscall
 TRIBE_World::command_init(TRIBE_World *this,int param_1,TCommunications_Handler *param_2)
 {
@@ -509,8 +484,6 @@ TRIBE_World::command_init(TRIBE_World *this,int param_1,TCommunications_Handler 
 
 // Function: scenario_init
 // Address: 0052e590
-/* public: virtual void __thiscall TRIBE_World::scenario_init(int,class RGE_Game_World *) */
-
 void __thiscall TRIBE_World::scenario_init(TRIBE_World *this,int param_1,RGE_Game_World *param_2)
 {
   T_Scenario *this_00;
@@ -541,8 +514,6 @@ void __thiscall TRIBE_World::scenario_init(TRIBE_World *this,int param_1,RGE_Gam
 
 // Function: scenario_init
 // Address: 0052e5f0
-/* public: virtual void __thiscall TRIBE_World::scenario_init(class RGE_Game_World *) */
-
 void __thiscall TRIBE_World::scenario_init(TRIBE_World *this,RGE_Game_World *param_1)
 {
   T_Scenario *this_00;
@@ -573,8 +544,6 @@ void __thiscall TRIBE_World::scenario_init(TRIBE_World *this,RGE_Game_World *par
 
 // Function: effects_init
 // Address: 0052e650
-/* public: virtual void __thiscall TRIBE_World::effects_init(int) */
-
 void __thiscall TRIBE_World::effects_init(TRIBE_World *this,int param_1)
 {
   TRIBE_Effects *this_00;
@@ -605,9 +574,6 @@ void __thiscall TRIBE_World::effects_init(TRIBE_World *this,int param_1)
 
 // Function: world_init
 // Address: 0052e6b0
-/* public: virtual void __thiscall TRIBE_World::world_init(int,class TSound_Driver *,class
-   TCommunications_Handler *) */
-
 void __thiscall
 TRIBE_World::world_init
           (TRIBE_World *this,int param_1,TSound_Driver *param_2,TCommunications_Handler *param_3)
@@ -646,9 +612,6 @@ TRIBE_World::world_init
 
 // Function: init
 // Address: 0052e750
-/* public: virtual unsigned char __thiscall TRIBE_World::init(char *,class TSound_Driver *,class
-   TCommunications_Handler *) */
-
 uchar __thiscall
 TRIBE_World::init(TRIBE_World *this,char *param_1,TSound_Driver *param_2,
                  TCommunications_Handler *param_3)
@@ -663,8 +626,6 @@ TRIBE_World::init(TRIBE_World *this,char *param_1,TSound_Driver *param_2,
 
 // Function: base_save
 // Address: 0052e770
-/* public: virtual void __thiscall TRIBE_World::base_save(int) */
-
 void __thiscall TRIBE_World::base_save(TRIBE_World *this,int param_1)
 {
   RGE_Game_World::base_save((RGE_Game_World *)this,param_1);
@@ -676,8 +637,6 @@ void __thiscall TRIBE_World::base_save(TRIBE_World *this,int param_1)
 
 // Function: save
 // Address: 0052e790
-/* public: virtual void __thiscall TRIBE_World::save(int) */
-
 void __thiscall TRIBE_World::save(TRIBE_World *this,int param_1)
 {
   RGE_Game_World::save((RGE_Game_World *)this,param_1);
@@ -695,8 +654,6 @@ void __thiscall TRIBE_World::save(TRIBE_World *this,int param_1)
 
 // Function: load_player
 // Address: 0052e830
-/* public: virtual void __thiscall TRIBE_World::load_player(int,unsigned char,short) */
-
 void __thiscall TRIBE_World::load_player(TRIBE_World *this,int param_1,uchar param_2,short param_3)
 {
   TRIBE_Gaia *this_00;
@@ -751,8 +708,6 @@ LAB_0052e8e8:
 // Function: setup_gaia
 // Address: 0052e920
 // [HELPER] s_GAIA: "GAIA"
-/* public: virtual void __thiscall TRIBE_World::setup_gaia(void) */
-
 void __thiscall TRIBE_World::setup_gaia(TRIBE_World *this)
 {
   TRIBE_Gaia *this_00;
@@ -784,8 +739,6 @@ void __thiscall TRIBE_World::setup_gaia(TRIBE_World *this)
 
 // Function: setup_players
 // Address: 0052e990
-/* public: virtual void __thiscall TRIBE_World::setup_players(struct RGE_Player_Info &) */
-
 void __thiscall TRIBE_World::setup_players(TRIBE_World *this,RGE_Player_Info *param_1)
 {
   RGE_Player_Info *pRVar1;
@@ -853,9 +806,6 @@ LAB_0052ea8b:
 
 // Function: check_destructables
 // Address: 0052eac0
-/* public: void __thiscall TRIBE_World::check_destructables(short,short,float,float,unsigned char)
-    */
-
 void __thiscall
 TRIBE_World::check_destructables
           (TRIBE_World *this,short param_1,short param_2,float param_3,float param_4,uchar param_5)
@@ -952,9 +902,6 @@ TRIBE_World::check_destructables
 
 // Function: scenario_make_player
 // Address: 0052ecf0
-/* public: virtual void __thiscall TRIBE_World::scenario_make_player(short,unsigned char,unsigned
-   char,unsigned char,char *) */
-
 void __thiscall
 TRIBE_World::scenario_make_player
           (TRIBE_World *this,short param_1,uchar param_2,uchar param_3,uchar param_4,char *param_5)
@@ -1009,9 +956,6 @@ LAB_0052edd3:
 
 // Function: load_world
 // Address: 0052edf0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall TRIBE_World::load_world(int) */
-
 uchar __thiscall TRIBE_World::load_world(TRIBE_World *this,int param_1)
 {
   uchar uVar1;
@@ -1065,10 +1009,6 @@ uchar __thiscall TRIBE_World::load_world(TRIBE_World *this,int param_1)
 // [HELPER] s_NOFOODCAP: "NOFOODCAP"
 // [HELPER] s_SYSTEM2: "SYSTEM2"
 // [HELPER] s__s__s: "%s\n%s"
-/* WARNING: Function: __alloca_probe replaced with injection: alloca_probe */
-/* WARNING: Variable defined which should be unmapped: victoryAmount */
-/* public: virtual unsigned char __thiscall TRIBE_World::new_game(struct RGE_Player_Info &,int) */
-
 uchar __thiscall TRIBE_World::new_game(TRIBE_World *this,RGE_Player_Info *param_1,int param_2)
 {
   char cVar1;
@@ -1158,15 +1098,12 @@ uchar __thiscall TRIBE_World::new_game(TRIBE_World *this,RGE_Player_Info *param_
     break;
   case VictoryScore:
     iVar19 = rge_base_game->_padding_;
-                    /* language.dll match for 0x265e: "Score Game: Win this game by achieving the
-                       specified score." */
   }
   (**(code **)(iVar19 + 0x20))();
 switchD_0052f009_caseD_2:
   MVar8 = TRIBE_Game::mapSize((TRIBE_Game *)rge_base_game);
   switch(MVar8) {
   case Tiny:
-                    /* language.dll match for 0x2973: "Tiny" */
     pcVar13 = (char *)(**(code **)(rge_base_game->_padding_ + 0x24))();
     goto LAB_0052f0fa;
   case Small:
@@ -1179,11 +1116,9 @@ switchD_0052f009_caseD_2:
     iVar19 = rge_base_game->_padding_;
     break;
   case Huge:
-                    /* language.dll match for 0x2977: "Huge" */
     iVar19 = rge_base_game->_padding_;
     break;
   case Humongous:
-                    /* language.dll match for 0x2978: "Gigantic" */
     iVar19 = rge_base_game->_padding_;
     break;
   default:
@@ -1213,7 +1148,6 @@ LAB_0052f0fa:
     pcVar21 = pcVar21 + 1;
   }
 switchD_0052f095_default:
-                    /* language.dll match for 0x25da: "Map Size: %s" */
   (**(code **)(rge_base_game->_padding_ + 0x24))();
   sprintf();
   pcStack_133c = (char *)0x52f165;
@@ -1247,8 +1181,6 @@ switchD_0052f095_default:
       iVar19 = rge_base_game->_padding_;
       break;
     case Isthmas:
-                    /* language.dll match for 0x2972: "Narrows"
-                       language.dll match for 0x2972: "******* SIZE *******" */
       iVar19 = rge_base_game->_padding_;
       break;
     default:
@@ -1278,7 +1210,6 @@ switchD_0052f095_default:
       pcVar21 = pcVar21 + 1;
     }
 switchD_0052f18f_default:
-                    /* language.dll match for 0x25b6: "Map Type: %s" */
     (**(code **)(rge_base_game->_padding_ + 0x24))();
     sprintf();
     pcStack_133c = (char *)0x52f289;
@@ -1292,7 +1223,6 @@ switchD_0052f18f_default:
     iVar19 = rge_base_game->_padding_;
   }
   (**(code **)(iVar19 + 0x20))();
-                    /* language.dll match for 0x25e4: "Age: %s" */
   pcStack_133c = (char *)0x25e4;
   pcStack_1340 = (char *)0x52f2f5;
   pcStack_1340 = (char *)(**(code **)(rge_base_game->_padding_ + 0x24))();
@@ -1309,7 +1239,6 @@ switchD_0052f18f_default:
   RVar11 = TRIBE_Game::resourceLevel((TRIBE_Game *)rge_base_game);
   pcStack_133c = (char *)0x100;
   if (RVar11 == DefaultResources) {
-                    /* language.dll match for 0x10e7: "Default" */
     iStack_1344 = 0x10e7;
   }
   else {
@@ -1319,7 +1248,6 @@ switchD_0052f18f_default:
   apcStack_135c[5] = (char *)0x52f361;
   (**(code **)(rge_base_game->_padding_ + 0x20))();
   apcStack_135c[5] = &stack0xffffecd4;
-                    /* language.dll match for 0x25e5: "Resources: %s" */
   apcStack_135c[4] = (char *)0x25e5;
   apcStack_135c[3] = (char *)0x52f376;
   apcStack_135c[3] = (char *)(**(code **)(rge_base_game->_padding_ + 0x24))();
@@ -1344,7 +1272,6 @@ switchD_0052f18f_default:
   (**(code **)(iVar19 + 0x20))();
   apcStack_135c[0] = str1 + 0xd4;
   apcStack_135c[1] = (char *)0x100;
-                    /* language.dll match for 0x25e0: "Difficulty Level: %s" */
   uStack_1360 = 0x25e0;
   ppcStack_1364 = (char **)0x52f3fa;
   (**(code **)(rge_base_game->_padding_ + 0x20))();
@@ -1364,7 +1291,6 @@ switchD_0052f18f_default:
   ppcStack_1368 = apcStack_135c + 5;
   ppcStack_1364 = (char **)0x100;
   if (iVar19 == 0) {
-                    /* language.dll match for 0xfa3: "Yes" */
     pcStack_136c = (char *)0xfa3;
   }
   else {
@@ -1373,7 +1299,6 @@ switchD_0052f18f_default:
   ppcStack_1370 = (char **)0x52f46c;
   (**(code **)(rge_base_game->_padding_ + 0x20))();
   ppcStack_1370 = apcStack_135c + 2;
-                    /* language.dll match for 0x25e9: "Fixed Positions: %s" */
   pcStack_1374 = (char *)0x25e9;
   ppcStack_1378 = (char **)0x52f481;
   ppcStack_1378 = (char **)(**(code **)(rge_base_game->_padding_ + 0x24))();
@@ -1386,7 +1311,6 @@ switchD_0052f18f_default:
   pcStack_1374 = (char *)0x52f4c2;
   iVar19 = RGE_Base_Game::fullVisibility(rge_base_game);
   if (iVar19 == 0) {
-                    /* language.dll match for 0xfa4: "No" */
     pcStack_1374 = (char *)0xfa4;
   }
   else {
@@ -1417,7 +1341,6 @@ switchD_0052f18f_default:
     ppcVar22 = (char **)((int)ppcVar22 + 1);
   }
   ppcStack_1378 = apcStack_135c;
-                    /* language.dll match for 0x25b8: "Reveal Map: %s" */
   pcStack_137c = (char *)0x25b8;
   uVar14 = (**(code **)(rge_base_game->_padding_ + 0x24))();
   sprintf(str1 + 0xb0,uVar14);
@@ -1427,14 +1350,12 @@ switchD_0052f18f_default:
   iVar19 = TRIBE_Game::fullTechTree((TRIBE_Game *)rge_base_game);
   pcStack_137c = (char *)0x100;
   if (iVar19 == 0) {
-                    /* language.dll match for 0xfa4: "No" */
     uVar14 = 0xfa4;
   }
   else {
     uVar14 = 0xfa3;
   }
   (**(code **)(rge_base_game->_padding_ + 0x20))(uVar14,&uStack_1360);
-                    /* language.dll match for 0x25ec: "Full Tech Tree: %s" */
   uVar14 = (**(code **)(rge_base_game->_padding_ + 0x24))(0x25ec,&pcStack_136c);
   sprintf(str1 + 0xa0,uVar14);
   sprintf(str3 + 0xa0,s__s__s,str3 + 0xa0,str1 + 0xa0);
@@ -1442,7 +1363,6 @@ switchD_0052f18f_default:
   if (iVar19 != 0) {
     iVar19 = RGE_Base_Game::allowCheatCodes(rge_base_game);
     if (iVar19 == 0) {
-                    /* language.dll match for 0xfa4: "No" */
       uVar14 = 0xfa4;
     }
     else {
@@ -1471,7 +1391,6 @@ switchD_0052f18f_default:
       pcVar13 = pcVar13 + 1;
       ppcVar22 = (char **)((int)ppcVar22 + 1);
     }
-                    /* language.dll match for 0x25bb: "Enable Cheating: %s" */
     uVar14 = (**(code **)(rge_base_game->_padding_ + 0x24))(0x25bb,&pcStack_1374);
     sprintf(str1 + 0xa0,uVar14);
     sprintf(str3 + 0xa0,s__s__s,str3 + 0xa0,str1 + 0xa0);
@@ -1488,12 +1407,10 @@ switchD_0052f18f_default:
     bVar5 = RGE_Base_Game::mpPathFinding(rge_base_game);
   }
   (**(code **)(iVar19 + 0x20))(bVar5 + 0x260e,pppcVar23,uVar14);
-                    /* language.dll match for 0x25f1: "Path Finding: %s" */
   uVar14 = (**(code **)(rge_base_game->_padding_ + 0x24))(0x25f1,&pcStack_137c);
   sprintf(str1 + 0x90,uVar14);
   sprintf(str3 + 0x90,s__s__s,str3 + 0x90,str1 + 0x90);
   uVar6 = TRIBE_Game::popLimit((TRIBE_Game *)rge_base_game);
-                    /* language.dll match for 0x25f0: "Population Limit: %d" */
   (**(code **)(rge_base_game->_padding_ + 0x24))(0x25f0,uVar6);
   sprintf();
   sprintf();
@@ -1979,9 +1896,6 @@ LAB_0052f765:
 
 // Function: new_scenario
 // Address: 00530370
-/* public: virtual unsigned char __thiscall TRIBE_World::new_scenario(struct RGE_Player_Info &,int)
-    */
-
 uchar __thiscall TRIBE_World::new_scenario(TRIBE_World *this,RGE_Player_Info *param_1,int param_2)
 {
   uchar uVar1;
@@ -2005,10 +1919,6 @@ uchar __thiscall TRIBE_World::new_scenario(TRIBE_World *this,RGE_Player_Info *pa
 
 // Function: check_game_state
 // Address: 005303f0
-/* WARNING: Variable defined which should be unmapped: i */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall TRIBE_World::check_game_state(void) */
-
 uchar __thiscall TRIBE_World::check_game_state(TRIBE_World *this)
 {
   TRIBE_Player *pTVar1;
@@ -2194,7 +2104,6 @@ uchar __thiscall TRIBE_World::check_game_state(TRIBE_World *this)
                     ppTVar7 = ppTVar7 + 1;
                   } while (iVar13 != 0);
                 }
-                    /* language.dll match for 0x72: "21" */
                 (**(code **)(rge_base_game->_padding_ + 0x40))
                           (0x72,(int)*(short *)((int)&pTVar1->_padding_ + 2),0,0,0);
               }
@@ -2236,7 +2145,6 @@ uchar __thiscall TRIBE_World::check_game_state(TRIBE_World *this)
                     ppTVar7 = ppTVar7 + 1;
                   } while (iVar13 != 0);
                 }
-                    /* language.dll match for 0x73: "B" */
                 (**(code **)(rge_base_game->_padding_ + 0x40))
                           (0x73,(int)*(short *)((int)&pTVar1->_padding_ + 2),0,0,0);
               }
@@ -2284,7 +2192,6 @@ uchar __thiscall TRIBE_World::check_game_state(TRIBE_World *this)
                     ppTVar7 = ppTVar7 + 1;
                   } while (iVar13 != 0);
                 }
-                    /* language.dll match for 0x74: "Copperplate Gothic Light" */
                 (**(code **)(rge_base_game->_padding_ + 0x40))
                           (0x74,(int)*(short *)((int)&pTVar1->_padding_ + 2),0,0,0);
               }
@@ -2326,7 +2233,6 @@ uchar __thiscall TRIBE_World::check_game_state(TRIBE_World *this)
                     ppTVar7 = ppTVar7 + 1;
                   } while (iVar13 != 0);
                 }
-                    /* language.dll match for 0x75: "12" */
                 (**(code **)(rge_base_game->_padding_ + 0x40))
                           (0x75,(int)*(short *)((int)&pTVar1->_padding_ + 2),0,0,0);
               }
@@ -2347,8 +2253,6 @@ uchar __thiscall TRIBE_World::check_game_state(TRIBE_World *this)
 
 // Function: get_achievement
 // Address: 00530a70
-/* public: long __thiscall TRIBE_World::get_achievement(unsigned char,char * *) */
-
 long __thiscall TRIBE_World::get_achievement(TRIBE_World *this,uchar param_1,char **param_2)
 {
   TRIBE_Player *this_00;
@@ -2371,8 +2275,6 @@ long __thiscall TRIBE_World::get_achievement(TRIBE_World *this,uchar param_1,cha
 
 // Function: send_cheat
 // Address: 00530ac0
-/* public: void __thiscall TRIBE_World::send_cheat(short) */
-
 void __thiscall TRIBE_World::send_cheat(TRIBE_World *this,short param_1)
 {
   TRIBE_Command::command_cheat((TRIBE_Command *)this->_padding_,(short)this->_padding_,param_1);
@@ -2384,8 +2286,6 @@ void __thiscall TRIBE_World::send_cheat(TRIBE_World *this,short param_1)
 // Function: cheat
 // Address: 00530ae0
 // [HELPER] die_die_die: " "
-/* public: void __thiscall TRIBE_World::cheat(short,short) */
-
 void __thiscall TRIBE_World::cheat(TRIBE_World *this,short param_1,short param_2)
 {
   int *piVar1;
@@ -2420,7 +2320,6 @@ void __thiscall TRIBE_World::cheat(TRIBE_World *this,short param_1,short param_2
       break;
     case 2:
       if (0 < param_1) {
-                    /* language.dll match for 0x7f: "N" */
         (**(code **)(*(int *)this->_padding_ + 8))
                   (0x7f,*(undefined4 *)(this->_padding_ + param_1 * 4));
         return;
@@ -2428,7 +2327,6 @@ void __thiscall TRIBE_World::cheat(TRIBE_World *this,short param_1,short param_2
       break;
     case 3:
       if (0 < param_1) {
-                    /* language.dll match for 0x80: "Arial" */
         (**(code **)(*(int *)this->_padding_ + 8))
                   (0x80,*(undefined4 *)(this->_padding_ + param_1 * 4));
         return;
@@ -2436,19 +2334,16 @@ void __thiscall TRIBE_World::cheat(TRIBE_World *this,short param_1,short param_2
       break;
     case 4:
       if (0 < param_1) {
-                    /* language.dll match for 0x81: "10" */
         (**(code **)(*(int *)this->_padding_ + 8))
                   (0x81,*(undefined4 *)(this->_padding_ + param_1 * 4));
         return;
       }
       break;
     case 5:
-                    /* language.dll match for 0x82: "B" */
       (**(code **)(*(int *)this->_padding_ + 8))(0x82,*(undefined4 *)this->_padding_);
       return;
     case 6:
       if (0 < param_1) {
-                    /* language.dll match for 0x83: "Arial" */
         (**(code **)(*(int *)this->_padding_ + 8))
                   (0x83,*(undefined4 *)(this->_padding_ + param_1 * 4));
         return;
@@ -2456,7 +2351,6 @@ void __thiscall TRIBE_World::cheat(TRIBE_World *this,short param_1,short param_2
       break;
     case 7:
       if (0 < param_1) {
-                    /* language.dll match for 0x84: "8" */
         (**(code **)(*(int *)this->_padding_ + 8))
                   (0x84,*(undefined4 *)(this->_padding_ + param_1 * 4));
         return;
@@ -2464,7 +2358,6 @@ void __thiscall TRIBE_World::cheat(TRIBE_World *this,short param_1,short param_2
       break;
     case 8:
       if (0 < param_1) {
-                    /* language.dll match for 0x85: "N" */
         (**(code **)(*(int *)this->_padding_ + 8))
                   (0x85,*(undefined4 *)(this->_padding_ + param_1 * 4));
         return;
@@ -2585,7 +2478,6 @@ void __thiscall TRIBE_World::cheat(TRIBE_World *this,short param_1,short param_2
       break;
     case 0x66:
       RGE_Player::win_game_now(*(RGE_Player **)(this->_padding_ + param_1 * 4));
-                    /* language.dll match for 0x68: "Arial" */
       *(undefined1 *)((int)&this->_padding_ + 2) = 0x68;
       return;
     case 0x67:
@@ -2648,9 +2540,6 @@ void __thiscall TRIBE_World::cheat(TRIBE_World *this,short param_1,short param_2
 
 // Function: fill_in_score
 // Address: 00531240
-/* WARNING: Variable defined which should be unmapped: hi_player */
-/* public: void __thiscall TRIBE_World::fill_in_score(struct TRIBE_Zone_High_Score_Info &,long) */
-
 void __thiscall
 TRIBE_World::fill_in_score(TRIBE_World *this,TRIBE_Zone_High_Score_Info *param_1,long param_2)
 {
@@ -2736,9 +2625,6 @@ TRIBE_World::fill_in_score(TRIBE_World *this,TRIBE_Zone_High_Score_Info *param_1
 
 // Function: send_zone_score_info
 // Address: 00531350
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: void __thiscall TRIBE_World::send_zone_score_info(void) */
-
 void __thiscall TRIBE_World::send_zone_score_info(TRIBE_World *this)
 {
   char cVar1;

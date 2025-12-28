@@ -33,8 +33,6 @@
 
 // Function: TRIBE_Action_Hunt
 // Address: 004cf090
-/* public: __thiscall TRIBE_Action_Hunt::TRIBE_Action_Hunt(int,class RGE_Action_Object *) */
-
 TRIBE_Action_Hunt * __thiscall
 TRIBE_Action_Hunt::TRIBE_Action_Hunt(TRIBE_Action_Hunt *this,int param_1,RGE_Action_Object *param_2)
 {
@@ -50,7 +48,6 @@ TRIBE_Action_Hunt::TRIBE_Action_Hunt(TRIBE_Action_Hunt *this,int param_1,RGE_Act
   RGE_Action::RGE_Action((RGE_Action *)this,param_1,param_2,1);
   local_4 = 0;
   this->_padding_ = (int)&_vftable_;
-                    /* language.dll match for 0x6e: "Copperplate Gothic Light" */
   *(undefined2 *)&this->_padding_ = 0x6e;
   rge_read(param_1,&this->targetType,4);
   *unaff_FS_OFFSET = local_c;
@@ -61,9 +58,6 @@ TRIBE_Action_Hunt::TRIBE_Action_Hunt(TRIBE_Action_Hunt *this,int param_1,RGE_Act
 
 // Function: `scalar_deleting_destructor'
 // Address: 004cf100
-/* public: virtual void * __thiscall TRIBE_Action_Hunt::`scalar deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 TRIBE_Action_Hunt::_scalar_deleting_destructor_(TRIBE_Action_Hunt *this,uint param_1)
 {
@@ -78,8 +72,6 @@ TRIBE_Action_Hunt::_scalar_deleting_destructor_(TRIBE_Action_Hunt *this,uint par
 
 // Function: ~TRIBE_Action_Hunt
 // Address: 004cf120
-/* public: virtual __thiscall TRIBE_Action_Hunt::~TRIBE_Action_Hunt(void) */
-
 void __thiscall TRIBE_Action_Hunt::~TRIBE_Action_Hunt(TRIBE_Action_Hunt *this)
 {
   RGE_Action_List *this_00;
@@ -100,9 +92,6 @@ void __thiscall TRIBE_Action_Hunt::~TRIBE_Action_Hunt(TRIBE_Action_Hunt *this)
 
 // Function: TRIBE_Action_Hunt
 // Address: 004cf130
-/* public: __thiscall TRIBE_Action_Hunt::TRIBE_Action_Hunt(class RGE_Action_Object *,class RGE_Task
-   *,class RGE_Static_Object *) */
-
 TRIBE_Action_Hunt * __thiscall
 TRIBE_Action_Hunt::TRIBE_Action_Hunt
           (TRIBE_Action_Hunt *this,RGE_Action_Object *param_1,RGE_Task *param_2,
@@ -121,7 +110,6 @@ TRIBE_Action_Hunt::TRIBE_Action_Hunt
   this->_padding_ = (int)param_2;
   local_4 = 0;
   this->_padding_ = (int)&_vftable_;
-                    /* language.dll match for 0x6e: "Copperplate Gothic Light" */
   *(undefined2 *)&this->_padding_ = 0x6e;
   RGE_Action::set_target_obj((RGE_Action *)this,param_3);
   if ((param_3 != (RGE_Static_Object *)0x0) && (param_3->object_state < 7)) {
@@ -138,9 +126,6 @@ TRIBE_Action_Hunt::TRIBE_Action_Hunt
 
 // Function: TRIBE_Action_Hunt
 // Address: 004cf1c0
-/* public: __thiscall TRIBE_Action_Hunt::TRIBE_Action_Hunt(class RGE_Action_Object *,class RGE_Task
-   *,float,float,float) */
-
 TRIBE_Action_Hunt * __thiscall
 TRIBE_Action_Hunt::TRIBE_Action_Hunt
           (TRIBE_Action_Hunt *this,RGE_Action_Object *param_1,RGE_Task *param_2,float param_3,
@@ -161,8 +146,6 @@ TRIBE_Action_Hunt::TRIBE_Action_Hunt
 
 // Function: save
 // Address: 004cf210
-/* public: virtual void __thiscall TRIBE_Action_Hunt::save(int) */
-
 void __thiscall TRIBE_Action_Hunt::save(TRIBE_Action_Hunt *this,int param_1)
 {
   RGE_Action::save((RGE_Action *)this,param_1);
@@ -174,8 +157,6 @@ void __thiscall TRIBE_Action_Hunt::save(TRIBE_Action_Hunt *this,int param_1)
 
 // Function: first_in_stack
 // Address: 004cf240
-/* public: virtual void __thiscall TRIBE_Action_Hunt::first_in_stack(unsigned char) */
-
 void __thiscall TRIBE_Action_Hunt::first_in_stack(TRIBE_Action_Hunt *this,uchar param_1)
 {
   short sVar1;
@@ -220,8 +201,6 @@ void __thiscall TRIBE_Action_Hunt::first_in_stack(TRIBE_Action_Hunt *this,uchar 
 
 // Function: set_state
 // Address: 004cf300
-/* protected: virtual void __thiscall TRIBE_Action_Hunt::set_state(unsigned char) */
-
 void __thiscall TRIBE_Action_Hunt::set_state(TRIBE_Action_Hunt *this,uchar param_1)
 {
   RGE_Sound *this_00;
@@ -469,10 +448,6 @@ switchD_004cf338_caseD_4:
 
 // Function: update
 // Address: 004cf860
-/* WARNING: Variable defined which should be unmapped: give_amount */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall TRIBE_Action_Hunt::update(void) */
-
 uchar __thiscall TRIBE_Action_Hunt::update(TRIBE_Action_Hunt *this)
 {
   short sVar1;
@@ -752,8 +727,6 @@ LAB_004cfdf5:
 
 // Function: get_move_sprite
 // Address: 004cff20
-/* protected: class RGE_Sprite * __thiscall TRIBE_Action_Hunt::get_move_sprite(void) */
-
 RGE_Sprite * __thiscall TRIBE_Action_Hunt::get_move_sprite(TRIBE_Action_Hunt *this)
 {
   int iVar1;
@@ -772,8 +745,6 @@ RGE_Sprite * __thiscall TRIBE_Action_Hunt::get_move_sprite(TRIBE_Action_Hunt *th
 
 // Function: get_wait_sprite
 // Address: 004cff50
-/* protected: class RGE_Sprite * __thiscall TRIBE_Action_Hunt::get_wait_sprite(void) */
-
 RGE_Sprite * __thiscall TRIBE_Action_Hunt::get_wait_sprite(TRIBE_Action_Hunt *this)
 {
   short sVar1;
@@ -795,8 +766,6 @@ RGE_Sprite * __thiscall TRIBE_Action_Hunt::get_wait_sprite(TRIBE_Action_Hunt *th
 
 // Function: stop
 // Address: 004cff90
-/* public: virtual int __thiscall TRIBE_Action_Hunt::stop(void) */
-
 int __thiscall TRIBE_Action_Hunt::stop(TRIBE_Action_Hunt *this)
 {
   int iVar1;
@@ -814,9 +783,6 @@ int __thiscall TRIBE_Action_Hunt::stop(TRIBE_Action_Hunt *this)
 
 // Function: move_to
 // Address: 004cffd0
-/* public: virtual int __thiscall TRIBE_Action_Hunt::move_to(class RGE_Static_Object
-   *,float,float,float) */
-
 int __thiscall
 TRIBE_Action_Hunt::move_to
           (TRIBE_Action_Hunt *this,RGE_Static_Object *param_1,float param_2,float param_3,
@@ -857,9 +823,6 @@ TRIBE_Action_Hunt::move_to
 
 // Function: work
 // Address: 004d0080
-/* public: virtual int __thiscall TRIBE_Action_Hunt::work(class RGE_Static_Object
-   *,float,float,float) */
-
 int __thiscall
 TRIBE_Action_Hunt::work
           (TRIBE_Action_Hunt *this,RGE_Static_Object *param_1,float param_2,float param_3,

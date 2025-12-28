@@ -33,8 +33,6 @@
 
 // Function: RGE_Action_Gather
 // Address: 00402ea0
-/* public: __thiscall RGE_Action_Gather::RGE_Action_Gather(int,class RGE_Action_Object *) */
-
 RGE_Action_Gather * __thiscall
 RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Gather *this,int param_1,RGE_Action_Object *param_2)
 {
@@ -60,9 +58,6 @@ RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Gather *this,int param_1,RGE_Act
 
 // Function: `vector_deleting_destructor'
 // Address: 00402f10
-/* public: virtual void * __thiscall RGE_Action_Gather::`vector deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 RGE_Action_Gather::_vector_deleting_destructor_(RGE_Action_Gather *this,uint param_1)
 {
@@ -77,8 +72,6 @@ RGE_Action_Gather::_vector_deleting_destructor_(RGE_Action_Gather *this,uint par
 
 // Function: ~RGE_Action_Gather
 // Address: 00402f30
-/* public: virtual __thiscall RGE_Action_Gather::~RGE_Action_Gather(void) */
-
 void __thiscall RGE_Action_Gather::~RGE_Action_Gather(RGE_Action_Gather *this)
 {
   RGE_Action_List *this_00;
@@ -99,9 +92,6 @@ void __thiscall RGE_Action_Gather::~RGE_Action_Gather(RGE_Action_Gather *this)
 
 // Function: RGE_Action_Gather
 // Address: 00402f40
-/* public: __thiscall RGE_Action_Gather::RGE_Action_Gather(class RGE_Action_Object *,class RGE_Task
-   *,class RGE_Static_Object *) */
-
 RGE_Action_Gather * __thiscall
 RGE_Action_Gather::RGE_Action_Gather
           (RGE_Action_Gather *this,RGE_Action_Object *param_1,RGE_Task *param_2,
@@ -136,9 +126,6 @@ RGE_Action_Gather::RGE_Action_Gather
 
 // Function: RGE_Action_Gather
 // Address: 00402fd0
-/* public: __thiscall RGE_Action_Gather::RGE_Action_Gather(class RGE_Action_Object *,class RGE_Task
-   *,float,float,float) */
-
 RGE_Action_Gather * __thiscall
 RGE_Action_Gather::RGE_Action_Gather
           (RGE_Action_Gather *this,RGE_Action_Object *param_1,RGE_Task *param_2,float param_3,
@@ -159,8 +146,6 @@ RGE_Action_Gather::RGE_Action_Gather
 
 // Function: save
 // Address: 00403020
-/* public: virtual void __thiscall RGE_Action_Gather::save(int) */
-
 void __thiscall RGE_Action_Gather::save(RGE_Action_Gather *this,int param_1)
 {
   RGE_Action::save((RGE_Action *)this,param_1);
@@ -172,8 +157,6 @@ void __thiscall RGE_Action_Gather::save(RGE_Action_Gather *this,int param_1)
 
 // Function: first_in_stack
 // Address: 00403050
-/* public: virtual void __thiscall RGE_Action_Gather::first_in_stack(unsigned char) */
-
 void __thiscall RGE_Action_Gather::first_in_stack(RGE_Action_Gather *this,uchar param_1)
 {
   short sVar1;
@@ -218,8 +201,6 @@ void __thiscall RGE_Action_Gather::first_in_stack(RGE_Action_Gather *this,uchar 
 
 // Function: set_state
 // Address: 00403110
-/* protected: virtual void __thiscall RGE_Action_Gather::set_state(unsigned char) */
-
 void __thiscall RGE_Action_Gather::set_state(RGE_Action_Gather *this,uchar param_1)
 {
   short sVar1;
@@ -421,10 +402,6 @@ switchD_00403147_caseD_4:
 
 // Function: update
 // Address: 00403590
-/* WARNING: Variable defined which should be unmapped: give_amount */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall RGE_Action_Gather::update(void) */
-
 uchar __thiscall RGE_Action_Gather::update(RGE_Action_Gather *this)
 {
   short sVar1;
@@ -701,8 +678,6 @@ switchD_0040366f_caseD_1:
 
 // Function: get_move_sprite
 // Address: 00403c60
-/* protected: class RGE_Sprite * __thiscall RGE_Action_Gather::get_move_sprite(void) */
-
 RGE_Sprite * __thiscall RGE_Action_Gather::get_move_sprite(RGE_Action_Gather *this)
 {
   int iVar1;
@@ -721,8 +696,6 @@ RGE_Sprite * __thiscall RGE_Action_Gather::get_move_sprite(RGE_Action_Gather *th
 
 // Function: get_wait_sprite
 // Address: 00403c90
-/* protected: class RGE_Sprite * __thiscall RGE_Action_Gather::get_wait_sprite(void) */
-
 RGE_Sprite * __thiscall RGE_Action_Gather::get_wait_sprite(RGE_Action_Gather *this)
 {
   short sVar1;
@@ -744,8 +717,6 @@ RGE_Sprite * __thiscall RGE_Action_Gather::get_wait_sprite(RGE_Action_Gather *th
 
 // Function: stop
 // Address: 00403cd0
-/* public: virtual int __thiscall RGE_Action_Gather::stop(void) */
-
 int __thiscall RGE_Action_Gather::stop(RGE_Action_Gather *this)
 {
   (**(code **)(this->_padding_ + 0x5c))(2);
@@ -756,9 +727,6 @@ int __thiscall RGE_Action_Gather::stop(RGE_Action_Gather *this)
 
 // Function: move_to
 // Address: 00403ce0
-/* public: virtual int __thiscall RGE_Action_Gather::move_to(class RGE_Static_Object
-   *,float,float,float) */
-
 int __thiscall
 RGE_Action_Gather::move_to
           (RGE_Action_Gather *this,RGE_Static_Object *param_1,float param_2,float param_3,
@@ -799,9 +767,6 @@ RGE_Action_Gather::move_to
 
 // Function: work
 // Address: 00403d90
-/* public: virtual int __thiscall RGE_Action_Gather::work(class RGE_Static_Object
-   *,float,float,float) */
-
 int __thiscall
 RGE_Action_Gather::work
           (RGE_Action_Gather *this,RGE_Static_Object *param_1,float param_2,float param_3,

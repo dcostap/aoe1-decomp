@@ -24,8 +24,6 @@
 // Function: InformationAIModule
 // Address: 0040cd90
 // [HELPER] s_InfAI: "InfAI"
-/* public: __thiscall InformationAIModule::InformationAIModule(void *,int) */
-
 InformationAIModule * __thiscall
 InformationAIModule::InformationAIModule(InformationAIModule *this,void *param_1,int param_2)
 {
@@ -38,9 +36,6 @@ InformationAIModule::InformationAIModule(InformationAIModule *this,void *param_1
 
 // Function: `vector_deleting_destructor'
 // Address: 0040cdc0
-/* public: virtual void * __thiscall InformationAIModule::`vector deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 InformationAIModule::_vector_deleting_destructor_(InformationAIModule *this,uint param_1)
 {
@@ -55,8 +50,6 @@ InformationAIModule::_vector_deleting_destructor_(InformationAIModule *this,uint
 
 // Function: ~InformationAIModule
 // Address: 0040cde0
-/* public: virtual __thiscall InformationAIModule::~InformationAIModule(void) */
-
 void __thiscall InformationAIModule::~InformationAIModule(InformationAIModule *this)
 {
   *(undefined ***)this = &_vftable_;

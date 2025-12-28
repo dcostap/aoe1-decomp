@@ -32,8 +32,6 @@
 
 // Function: RGE_Action_Make
 // Address: 004049b0
-/* public: __thiscall RGE_Action_Make::RGE_Action_Make(int,class RGE_Action_Object *) */
-
 RGE_Action_Make * __thiscall
 RGE_Action_Make::RGE_Action_Make(RGE_Action_Make *this,int param_1,RGE_Action_Object *param_2)
 {
@@ -47,8 +45,6 @@ RGE_Action_Make::RGE_Action_Make(RGE_Action_Make *this,int param_1,RGE_Action_Ob
 
 // Function: `vector_deleting_destructor'
 // Address: 004049e0
-/* public: virtual void * __thiscall RGE_Action_Make::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall RGE_Action_Make::_vector_deleting_destructor_(RGE_Action_Make *this,uint param_1)
 {
   ~RGE_Action_Make(this);
@@ -62,8 +58,6 @@ void * __thiscall RGE_Action_Make::_vector_deleting_destructor_(RGE_Action_Make 
 
 // Function: ~RGE_Action_Make
 // Address: 00404a00
-/* public: virtual __thiscall RGE_Action_Make::~RGE_Action_Make(void) */
-
 void __thiscall RGE_Action_Make::~RGE_Action_Make(RGE_Action_Make *this)
 {
   RGE_Action_List *this_00;
@@ -84,9 +78,6 @@ void __thiscall RGE_Action_Make::~RGE_Action_Make(RGE_Action_Make *this)
 
 // Function: RGE_Action_Make
 // Address: 00404a10
-/* public: __thiscall RGE_Action_Make::RGE_Action_Make(class RGE_Action_Object *,class RGE_Task *)
-    */
-
 RGE_Action_Make * __thiscall
 RGE_Action_Make::RGE_Action_Make(RGE_Action_Make *this,RGE_Action_Object *param_1,RGE_Task *param_2)
 {
@@ -101,8 +92,6 @@ RGE_Action_Make::RGE_Action_Make(RGE_Action_Make *this,RGE_Action_Object *param_
 
 // Function: first_in_stack
 // Address: 00404a40
-/* public: virtual void __thiscall RGE_Action_Make::first_in_stack(unsigned char) */
-
 void __thiscall RGE_Action_Make::first_in_stack(RGE_Action_Make *this,uchar param_1)
 {
   short sVar1;
@@ -120,8 +109,6 @@ void __thiscall RGE_Action_Make::first_in_stack(RGE_Action_Make *this,uchar para
 
 // Function: set_state
 // Address: 00404a70
-/* protected: virtual void __thiscall RGE_Action_Make::set_state(unsigned char) */
-
 void __thiscall RGE_Action_Make::set_state(RGE_Action_Make *this,uchar param_1)
 {
   this->field_0xc = param_1;
@@ -134,9 +121,6 @@ void __thiscall RGE_Action_Make::set_state(RGE_Action_Make *this,uchar param_1)
 
 // Function: update
 // Address: 00404a90
-/* WARNING: Variable defined which should be unmapped: work */
-/* public: virtual unsigned char __thiscall RGE_Action_Make::update(void) */
-
 uchar __thiscall RGE_Action_Make::update(RGE_Action_Make *this)
 {
   int iVar1;
@@ -163,7 +147,6 @@ uchar __thiscall RGE_Action_Make::update(RGE_Action_Make *this)
         iVar3 = rge_base_game->_padding_;
         uVar6 = __ftol();
         uVar6 = __ftol(uVar6);
-                    /* language.dll match for 0x7e: "10" */
         (**(code **)(iVar3 + 0x40))
                   (0x7e,(int)*(short *)(iVar2 + 0x4a),*(undefined4 *)(iVar1 + 4),uVar6);
         (**(code **)(**(int **)&this->field_0x8 + 0x6c))();

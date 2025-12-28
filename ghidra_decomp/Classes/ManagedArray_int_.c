@@ -10,8 +10,6 @@
 
 // Function: ~ManagedArray<int>
 // Address: 00408d20
-/* public: __thiscall ManagedArray<int>::~ManagedArray<int>(void) */
-
 void __thiscall ManagedArray<int>::~ManagedArray<int>(ManagedArray<int> *this)
 {
   if (this->value != (int *)0x0) {
@@ -28,8 +26,6 @@ void __thiscall ManagedArray<int>::~ManagedArray<int>(ManagedArray<int> *this)
 
 // Function: resize
 // Address: 004147a0
-/* protected: int __thiscall ManagedArray<int>::resize(int) */
-
 int __thiscall ManagedArray<int>::resize(ManagedArray<int> *this,int param_1)
 {
   int *piVar1;
@@ -59,8 +55,6 @@ int __thiscall ManagedArray<int>::resize(ManagedArray<int> *this,int param_1)
 
 // Function: contains
 // Address: 004de980
-/* public: int __thiscall ManagedArray<int>::contains(int const &) */
-
 int __thiscall ManagedArray<int>::contains(ManagedArray<int> *this,int *param_1)
 {
   int iVar1;
@@ -84,8 +78,6 @@ int __thiscall ManagedArray<int>::contains(ManagedArray<int> *this,int *param_1)
 
 // Function: add
 // Address: 004de9d0
-/* public: int __thiscall ManagedArray<int>::add(int) */
-
 int __thiscall ManagedArray<int>::add(ManagedArray<int> *this,int param_1)
 {
   int iVar1;
@@ -131,8 +123,6 @@ int __thiscall ManagedArray<int>::add(ManagedArray<int> *this,int param_1)
 
 // Function: operator[]
 // Address: 004ea750
-/* public: int & __thiscall ManagedArray<int>::operator[](int) */
-
 int * __thiscall ManagedArray<int>::operator[](ManagedArray<int> *this,int param_1)
 {
   int iVar1;
@@ -165,8 +155,6 @@ int * __thiscall ManagedArray<int>::operator[](ManagedArray<int> *this,int param
 
 // Function: remove
 // Address: 004f1390
-/* public: int __thiscall ManagedArray<int>::remove(int) */
-
 int __thiscall ManagedArray<int>::remove(ManagedArray<int> *this,int param_1)
 {
   int iVar1;

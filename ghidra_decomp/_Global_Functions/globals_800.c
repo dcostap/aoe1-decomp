@@ -81,8 +81,6 @@ LAB_0054efd8:
 // Function: strncmp
 // Address: 0054efe0
 // XREFS: BUILDRES_get_files_resource_type, FUN_0047f076, load, show_message, show_message2
-/* strncmp */
-
 uint __cdecl strncmp(char *param_1,char *param_2,uint param_3)
 {
   char cVar1;
@@ -131,8 +129,6 @@ uint __cdecl strncmp(char *param_1,char *param_2,uint param_3)
 // Function: qsort
 // Address: 0054f020
 // XREFS: reset_score_display, set_unit_player, sort_list
-/* qsort */
-
 void __cdecl qsort(uint param_1,uint param_2,uint param_3,code *param_4)
 {
   uint uVar1;
@@ -272,8 +268,6 @@ void FUN_0054f230(undefined1 *param_1,undefined1 *param_2,int param_3)
 // Function: fseek
 // Address: 0054f260
 // XREFS: RESFILE_Extract_to_File
-/* fseek */
-
 int __cdecl fseek(int param_1,int param_2,int param_3)
 {
   uint uVar1;
@@ -309,8 +303,6 @@ int __cdecl fseek(int param_1,int param_2,int param_3)
 // Function: fwrite
 // Address: 0054f300
 // XREFS: RESFILE_Extract_to_File, fputs
-/* fwrite */
-
 uint __cdecl fwrite(char *param_1,uint param_2,uint param_3,int *param_4)
 {
   int *piVar1;
@@ -398,9 +390,6 @@ LAB_0054f419:
 // Function: ceil
 // Address: 0054f450
 // XREFS: changeInfluenceMap, evaluateCivilianDistribution, setupBoatGroups, setupSoldierGroups
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* ceil */
-
 float10 __cdecl ceil(undefined4 param_1,undefined4 param_2)
 {
   double dVar1;
@@ -521,8 +510,6 @@ LAB_0054f5ed:
 // Function: strlen
 // Address: 0054f600
 // XREFS: TRIBE_Tech, save
-/* strlen */
-
 char * __cdecl strlen(uint *param_1)
 {
   uint uVar1;
@@ -827,8 +814,6 @@ void FUN_0054f9ba(void)
 // Function: FUN_0054f9cf
 // Address: 0054f9cf
 // XREFS: None
-/* WARNING: Stack frame is not setup normally: Input value of stackpointer is not used */
-
 void FUN_0054f9cf(void)
 {
   int iVar1;
@@ -1127,8 +1112,6 @@ void FUN_0054ff06(void)
 // Function: FUN_0054ff13
 // Address: 0054ff13
 // XREFS: None
-/* WARNING: Stack frame is not setup normally: Input value of stackpointer is not used */
-
 void FUN_0054ff13(void)
 {
   int iVar1;
@@ -1256,8 +1239,6 @@ void FUN_005500a9(void)
 // Function: FUN_005500b6
 // Address: 005500b6
 // XREFS: None
-/* WARNING: Stack frame is not setup normally: Input value of stackpointer is not used */
-
 undefined4 FUN_005500b6(void)
 {
   int iVar1;
@@ -1451,8 +1432,6 @@ undefined4 FUN_0055035b(void)
 // Function: FUN_00550361
 // Address: 00550361
 // XREFS: None
-/* WARNING: Stack frame is not setup normally: Input value of stackpointer is not used */
-
 void FUN_00550361(void)
 {
   int unaff_EBP;
@@ -1470,8 +1449,6 @@ void FUN_00550361(void)
 // Function: _DestructExceptionObject
 // Address: 00550390
 // XREFS: FUN_0054fb10, FUN_005500ea
-/* void __cdecl _DestructExceptionObject(struct EHExceptionRecord *,unsigned char) */
-
 void __cdecl _DestructExceptionObject(EHExceptionRecord *param_1,uchar param_2)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -1510,8 +1487,6 @@ bool FUN_005503da(void)
 // Function: FUN_005503e5
 // Address: 005503e5
 // XREFS: None
-/* WARNING: Stack frame is not setup normally: Input value of stackpointer is not used */
-
 void FUN_005503e5(void)
 {
   int unaff_EBP;
@@ -1547,8 +1522,6 @@ int FUN_00550410(int param_1,int *param_2)
 // Function: __CallSettingFrame@12
 // Address: 00550440
 // XREFS: _CallCatchBlock2, ___FrameUnwindToState
-/* WARNING: Restarted to delay deadcode elimination for space: stack */
-
 void __CallSettingFrame_12(undefined4 param_1,undefined4 param_2,int param_3)
 {
   code *pcVar1;
@@ -1567,8 +1540,6 @@ void __CallSettingFrame_12(undefined4 param_1,undefined4 param_2,int param_3)
 // Function: terminate
 // Address: 00550490
 // XREFS: FUN_0054d8a0, FUN_0054fb10, FUN_0054ff50, FUN_00550361, FUN_005503e5, FUN_0055059e, __CxxUnhandledExceptionFilter, __pInconsistency, __pUnexpected, _inconsistency, unexpected
-/* void __cdecl terminate(void) */
-
 void __cdecl terminate(void)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -1606,8 +1577,6 @@ undefined4 FUN_005504d1(void)
 // Function: FUN_005504d7
 // Address: 005504d7
 // XREFS: None
-/* WARNING: Stack frame is not setup normally: Input value of stackpointer is not used */
-
 void FUN_005504d7(void)
 {
   int unaff_EBP;
@@ -1651,8 +1620,6 @@ void FUN_00550504(void)
 // Function: unexpected
 // Address: 00550520
 // XREFS: None
-/* void __cdecl unexpected(void) */
-
 void __cdecl unexpected(void)
 {
   if (__pUnexpected != (_func_void *)0x0) {
@@ -1667,8 +1634,6 @@ void __cdecl unexpected(void)
 // Function: _inconsistency
 // Address: 00550530
 // XREFS: FUN_0054fb10, FUN_00550180, _GetRangeOfTrysToCheck, ___FrameUnwindToState, ___InternalCxxFrameHandler
-/* void __cdecl _inconsistency(void) */
-
 void __cdecl _inconsistency(void)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -1706,8 +1671,6 @@ undefined4 FUN_00550571(void)
 // Function: FUN_00550577
 // Address: 00550577
 // XREFS: None
-/* WARNING: Stack frame is not setup normally: Input value of stackpointer is not used */
-
 void FUN_00550577(void)
 {
   int unaff_EBP;
@@ -1762,8 +1725,6 @@ void __setdefaultprecision(void)
 // Function: __ms_p5_test_fdiv
 // Address: 005505e0
 // XREFS: __ms_p5_mp_test_fdiv
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-
 undefined4 __ms_p5_test_fdiv(void)
 {
   if (_DAT_00577b20 < 0.0) {
@@ -2138,8 +2099,6 @@ void FUN_00550b70(char *param_1,int param_2)
 // Function: _set_new_handler
 // Address: 00550ba0
 // XREFS: None
-/* int (__cdecl*__cdecl _set_new_handler(int (__cdecl*)(unsigned int)))(unsigned int) */
-
 _func_int_uint * __cdecl _set_new_handler(_func_int_uint *param_1)
 {
   _func_int_uint *p_Var1;
@@ -2154,8 +2113,6 @@ _func_int_uint * __cdecl _set_new_handler(_func_int_uint *param_1)
 // Function: _query_new_handler
 // Address: 00550bb0
 // XREFS: None
-/* int (__cdecl*__cdecl _query_new_handler(void))(unsigned int) */
-
 _func_int_uint * __cdecl _query_new_handler(void)
 {
   return _pnhHeap;
@@ -3767,7 +3724,6 @@ LAB_00552c03:
       if ((iVar13 != 0) &&
          (((puVar9 == (undefined4 *)0x65 || (puVar9 == (undefined4 *)0x45)) &&
           (iVar7 = local_1c4 + -1, bVar18 = local_1c4 != 0, local_1c4 = iVar7, bVar18)))) {
-                    /* language.dll match for 0x65: "1" */
         *pcVar14 = 'e';
         pcVar16 = pcVar14 + 1;
         local_1cc = local_1cc + 1;
@@ -3860,7 +3816,6 @@ LAB_00552812:
             lVar19 = local_19c;
           }
           else {
-                    /* language.dll match for 0x6f: "12" */
             uVar5 = 0x6f;
             local_1bc = 0x6f;
             lVar19 = local_19c;
@@ -3900,7 +3855,6 @@ LAB_005528f4:
               uVar10 = (byte)__pctype[(int)puVar9 * 2] & 0x80;
             }
             else {
-                    /* language.dll match for 0x80: "Arial" */
               uVar10 = __isctype(puVar9,0x80);
               lVar19 = local_19c;
             }
@@ -3964,7 +3918,6 @@ LAB_00552aea:
               uVar5 = (byte)__pctype[(int)puVar9 * 2] & 0x80;
             }
             else {
-                    /* language.dll match for 0x80: "Arial" */
               uVar5 = __isctype(puVar9,0x80);
             }
             if (uVar5 != 0) {
@@ -5083,8 +5036,6 @@ void FUN_00553aa0(int param_1,int param_2,uint param_3,int param_4,int param_5,i
 // Function: gmtime
 // Address: 00553c40
 // XREFS: FUN_0054ca20, localtime
-/* gmtime */
-
 undefined4 __cdecl gmtime(int *param_1)
 {
   bool bVar1;
@@ -5383,7 +5334,6 @@ void __ioinit(void)
   do {
     piVar6 = ___pioinfo + iVar3 * 2;
     if (___pioinfo[iVar3 * 2] == -1) {
-                    /* language.dll match for 0x81: "10" */
       *(undefined1 *)(piVar6 + 1) = 0x81;
       if (iVar3 == 0) {
         iVar4 = -10;
@@ -5643,15 +5593,11 @@ int FUN_00554510(int param_1)
   
   if (param_1 == -2) {
     DAT_00888284 = 1;
-                    /* WARNING: Could not recover jumptable at 0x0055452d. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
     iVar1 = GetOEMCP();
     return iVar1;
   }
   if (param_1 == -3) {
     DAT_00888284 = 1;
-                    /* WARNING: Could not recover jumptable at 0x00554542. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
     iVar1 = GetACP();
     return iVar1;
   }
@@ -6121,8 +6067,6 @@ uint FUN_00554bc4(undefined4 param_1,uint param_2)
 // Function: __chsize
 // Address: 00554c70
 // XREFS: __sopen
-/* WARNING: Function: __alloca_probe replaced with injection: alloca_probe */
-
 int __chsize(uint param_1,int param_2)
 {
   int iVar1;
@@ -7285,8 +7229,6 @@ int __ctrlfp(void)
 // Function: __set_statfp
 // Address: 00556240
 // XREFS: __handle_exc
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-
 void __set_statfp(void)
 {
   return;
@@ -7297,8 +7239,6 @@ void __set_statfp(void)
 // Function: realloc
 // Address: 005562a0
 // XREFS: ___crtsetenv, __onexit
-/* realloc */
-
 undefined4 * __cdecl realloc(undefined4 *param_1,uint param_2)
 {
   undefined4 *puVar1;
@@ -7431,8 +7371,6 @@ int __msize(undefined4 param_1)
 // Function: ftell
 // Address: 00556480
 // XREFS: fseek
-/* ftell */
-
 int __cdecl ftell(undefined4 *param_1)
 {
   uint uVar1;
@@ -7569,7 +7507,6 @@ undefined4 __XcptFilter(undefined4 param_1,undefined4 param_2)
         __fpecode = 0x85;
       }
       else if (iVar6 == -0x3fffff73) {
-                    /* language.dll match for 0x82: "B" */
         __fpecode = 0x82;
       }
       else if (iVar6 == -0x3fffff71) {
@@ -8526,8 +8463,6 @@ undefined4 FUN_00557286(int param_1)
 // Function: __CxxUnhandledExceptionFilter
 // Address: 005572c0
 // XREFS: __CxxSetUnhandledExceptionFilter
-/* long __stdcall __CxxUnhandledExceptionFilter(struct _EXCEPTION_POINTERS *) */
-
 long __CxxUnhandledExceptionFilter(_EXCEPTION_POINTERS *param_1)
 {
   int *piVar1;
@@ -8553,8 +8488,6 @@ long __CxxUnhandledExceptionFilter(_EXCEPTION_POINTERS *param_1)
 // Function: __CxxSetUnhandledExceptionFilter
 // Address: 00557320
 // XREFS: None
-/* void __cdecl __CxxSetUnhandledExceptionFilter(void) */
-
 void __cdecl __CxxSetUnhandledExceptionFilter(void)
 {
   DAT_008883e8 = SetUnhandledExceptionFilter(__CxxUnhandledExceptionFilter);
@@ -8566,8 +8499,6 @@ void __cdecl __CxxSetUnhandledExceptionFilter(void)
 // Function: __CxxRestoreUnhandledExceptionFilter
 // Address: 00557340
 // XREFS: None
-/* void __cdecl __CxxRestoreUnhandledExceptionFilter(void) */
-
 void __cdecl __CxxRestoreUnhandledExceptionFilter(void)
 {
   SetUnhandledExceptionFilter(DAT_008883e8);
@@ -8579,8 +8510,6 @@ void __cdecl __CxxRestoreUnhandledExceptionFilter(void)
 // Function: _ValidateRead
 // Address: 00557350
 // XREFS: FUN_0054fb10, FUN_00550180
-/* int __cdecl _ValidateRead(void const *,unsigned int) */
-
 int __cdecl _ValidateRead(void *param_1,uint param_2)
 {
   int iVar1;
@@ -8594,8 +8523,6 @@ int __cdecl _ValidateRead(void *param_1,uint param_2)
 // Function: _ValidateWrite
 // Address: 00557370
 // XREFS: FUN_00550180
-/* int __cdecl _ValidateWrite(void *,unsigned int) */
-
 int __cdecl _ValidateWrite(void *param_1,uint param_2)
 {
   int iVar1;
@@ -8609,8 +8536,6 @@ int __cdecl _ValidateWrite(void *param_1,uint param_2)
 // Function: _ValidateExecute
 // Address: 00557390
 // XREFS: FUN_00550180, __CxxUnhandledExceptionFilter
-/* int __cdecl _ValidateExecute(int (__stdcall*)(void)) */
-
 int __cdecl _ValidateExecute(_func_int *param_1)
 {
   int iVar1;
@@ -8624,8 +8549,6 @@ int __cdecl _ValidateExecute(_func_int *param_1)
 // Function: memmove
 // Address: 005573b0
 // XREFS: FUN_00550180, FUN_00550b70, FUN_00554659
-/* memmove */
-
 undefined4 * __cdecl memmove(undefined4 *param_1,undefined4 *param_2,uint param_3)
 {
   uint uVar1;

@@ -32,8 +32,6 @@
 
 // Function: RGE_Action_Bird
 // Address: 00401fe0
-/* public: __thiscall RGE_Action_Bird::RGE_Action_Bird(int,class RGE_Action_Object *) */
-
 RGE_Action_Bird * __thiscall
 RGE_Action_Bird::RGE_Action_Bird(RGE_Action_Bird *this,int param_1,RGE_Action_Object *param_2)
 {
@@ -47,8 +45,6 @@ RGE_Action_Bird::RGE_Action_Bird(RGE_Action_Bird *this,int param_1,RGE_Action_Ob
 
 // Function: `vector_deleting_destructor'
 // Address: 00402010
-/* public: virtual void * __thiscall RGE_Action_Bird::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall RGE_Action_Bird::_vector_deleting_destructor_(RGE_Action_Bird *this,uint param_1)
 {
   ~RGE_Action_Bird(this);
@@ -62,8 +58,6 @@ void * __thiscall RGE_Action_Bird::_vector_deleting_destructor_(RGE_Action_Bird 
 
 // Function: ~RGE_Action_Bird
 // Address: 00402030
-/* public: virtual __thiscall RGE_Action_Bird::~RGE_Action_Bird(void) */
-
 void __thiscall RGE_Action_Bird::~RGE_Action_Bird(RGE_Action_Bird *this)
 {
   RGE_Action_List *this_00;
@@ -84,9 +78,6 @@ void __thiscall RGE_Action_Bird::~RGE_Action_Bird(RGE_Action_Bird *this)
 
 // Function: RGE_Action_Bird
 // Address: 00402040
-/* public: __thiscall RGE_Action_Bird::RGE_Action_Bird(class RGE_Action_Object *,class RGE_Task
-   *,float,float,float) */
-
 RGE_Action_Bird * __thiscall
 RGE_Action_Bird::RGE_Action_Bird
           (RGE_Action_Bird *this,RGE_Action_Object *param_1,RGE_Task *param_2,float param_3,
@@ -106,8 +97,6 @@ RGE_Action_Bird::RGE_Action_Bird
 
 // Function: first_in_stack
 // Address: 00402080
-/* public: virtual void __thiscall RGE_Action_Bird::first_in_stack(unsigned char) */
-
 void __thiscall RGE_Action_Bird::first_in_stack(RGE_Action_Bird *this,uchar param_1)
 {
   int *piVar1;
@@ -127,8 +116,6 @@ void __thiscall RGE_Action_Bird::first_in_stack(RGE_Action_Bird *this,uchar para
 // Function: set_state
 // Address: 004020c0
 // [HELPER] s_C__msdev_work_age1_x1_act_bird_c: "C:\msdev\work\age1_x1\act_bird.cpp"
-/* protected: virtual void __thiscall RGE_Action_Bird::set_state(unsigned char) */
-
 void __thiscall RGE_Action_Bird::set_state(RGE_Action_Bird *this,uchar param_1)
 {
   int *piVar1;
@@ -163,8 +150,6 @@ void __thiscall RGE_Action_Bird::set_state(RGE_Action_Bird *this,uchar param_1)
 // Function: update
 // Address: 00402180
 // [HELPER] s_C__msdev_work_age1_x1_act_bird_c: "C:\msdev\work\age1_x1\act_bird.cpp"
-/* public: virtual unsigned char __thiscall RGE_Action_Bird::update(void) */
-
 uchar __thiscall RGE_Action_Bird::update(RGE_Action_Bird *this)
 {
   int iVar1;
@@ -191,10 +176,8 @@ uchar __thiscall RGE_Action_Bird::update(RGE_Action_Bird *this)
     *unaff_FS_OFFSET = local_c;
     return '\x01';
   case 3:
-                    /* language.dll match for 0x84: "8" */
     iVar1 = *(int *)(*(int *)(*(int *)(*(int *)&this->field_0x8 + 0xc) + 0x3c) + 0x28);
     iVar3 = debug_rand(s_C__msdev_work_age1_x1_act_bird_c,0x84);
-                    /* language.dll match for 0x85: "N" */
     *(float *)&this->field_0x20 = (float)((iVar3 * *(int *)(iVar1 + 8)) / 0x7fff);
     iVar3 = debug_rand(s_C__msdev_work_age1_x1_act_bird_c,0x85);
     *(float *)&this->field_0x24 = (float)((iVar3 * *(int *)(iVar1 + 0xc)) / 0x7fff);

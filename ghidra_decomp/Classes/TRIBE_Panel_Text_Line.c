@@ -149,9 +149,6 @@
 
 // Function: TRIBE_Panel_Text_Line
 // Address: 00520d70
-/* public: __thiscall TRIBE_Panel_Text_Line::TRIBE_Panel_Text_Line(class TDrawArea *,class TPanel
-   *,void *) */
-
 TRIBE_Panel_Text_Line * __thiscall
 TRIBE_Panel_Text_Line::TRIBE_Panel_Text_Line
           (TRIBE_Panel_Text_Line *this,TDrawArea *param_1,TPanel *param_2,void *param_3)
@@ -185,9 +182,6 @@ TRIBE_Panel_Text_Line::TRIBE_Panel_Text_Line
 
 // Function: `scalar_deleting_destructor'
 // Address: 00520e00
-/* public: virtual void * __thiscall TRIBE_Panel_Text_Line::`scalar deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TRIBE_Panel_Text_Line::_scalar_deleting_destructor_(TRIBE_Panel_Text_Line *this,uint param_1)
 {
@@ -202,8 +196,6 @@ TRIBE_Panel_Text_Line::_scalar_deleting_destructor_(TRIBE_Panel_Text_Line *this,
 
 // Function: ~TRIBE_Panel_Text_Line
 // Address: 00520e20
-/* public: virtual __thiscall TRIBE_Panel_Text_Line::~TRIBE_Panel_Text_Line(void) */
-
 void __thiscall TRIBE_Panel_Text_Line::~TRIBE_Panel_Text_Line(TRIBE_Panel_Text_Line *this)
 {
   int iVar1;
@@ -243,8 +235,6 @@ void __thiscall TRIBE_Panel_Text_Line::~TRIBE_Panel_Text_Line(TRIBE_Panel_Text_L
 
 // Function: set_info
 // Address: 00520e30
-/* public: void __thiscall TRIBE_Panel_Text_Line::set_info(unsigned char,char *,long) */
-
 void __thiscall
 TRIBE_Panel_Text_Line::set_info
           (TRIBE_Panel_Text_Line *this,uchar param_1,char *param_2,long param_3)
@@ -317,8 +307,6 @@ LAB_00520e79:
 // Function: draw
 // Address: 00520ed0
 // [HELPER] s_tpnl_txl__draw: "tpnl_txl::draw"
-/* public: virtual void __thiscall TRIBE_Panel_Text_Line::draw(void) */
-
 void __thiscall TRIBE_Panel_Text_Line::draw(TRIBE_Panel_Text_Line *this)
 {
   char cVar1;

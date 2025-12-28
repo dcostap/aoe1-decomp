@@ -9,8 +9,6 @@
 // Function: DKeyString
 // Address: 004475d0
 // [HELPER] s_: ""
-/* public: __thiscall DKeyString::DKeyString(void) */
-
 DKeyString * __thiscall DKeyString::DKeyString(DKeyString *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -33,8 +31,6 @@ DKeyString * __thiscall DKeyString::DKeyString(DKeyString *this)
 
 // Function: DKeyString
 // Address: 00447620
-/* public: __thiscall DKeyString::DKeyString(class DString,class DString) */
-
 DKeyString * __thiscall DKeyString::DKeyString(DKeyString *this,DString param_1,DString param_2)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -61,8 +57,6 @@ DKeyString * __thiscall DKeyString::DKeyString(DKeyString *this,DString param_1,
 
 // Function: ~DKeyString
 // Address: 004476a0
-/* public: __thiscall DKeyString::~DKeyString(void) */
-
 void __thiscall DKeyString::~DKeyString(DKeyString *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -85,8 +79,6 @@ void __thiscall DKeyString::~DKeyString(DKeyString *this)
 
 // Function: key
 // Address: 004476f0
-/* public: class DString __thiscall DKeyString::key(void)const  */
-
 DString * __thiscall DKeyString::key(DKeyString *this,DString *__return_storage_ptr__)
 {
   <NoType> ___ReturnUdt;
@@ -99,8 +91,6 @@ DString * __thiscall DKeyString::key(DKeyString *this,DString *__return_storage_
 
 // Function: setKey
 // Address: 00447710
-/* public: void __thiscall DKeyString::setKey(class DString) */
-
 void __thiscall DKeyString::setKey(DKeyString *this,DString param_1)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -123,8 +113,6 @@ void __thiscall DKeyString::setKey(DKeyString *this,DString param_1)
 
 // Function: value
 // Address: 00447760
-/* public: class DString __thiscall DKeyString::value(void)const  */
-
 DString * __thiscall DKeyString::value(DKeyString *this,DString *__return_storage_ptr__)
 {
   <NoType> ___ReturnUdt;
@@ -137,8 +125,6 @@ DString * __thiscall DKeyString::value(DKeyString *this,DString *__return_storag
 
 // Function: setValue
 // Address: 00447780
-/* public: void __thiscall DKeyString::setValue(class DString) */
-
 void __thiscall DKeyString::setValue(DKeyString *this,DString param_1)
 {
   undefined4 *unaff_FS_OFFSET;

@@ -24,8 +24,6 @@
 
 // Function: TPanelSystem
 // Address: 00463be0
-/* public: __thiscall TPanelSystem::TPanelSystem(void) */
-
 TPanelSystem * __thiscall TPanelSystem::TPanelSystem(TPanelSystem *this)
 {
   int *piVar1;
@@ -64,8 +62,6 @@ TPanelSystem * __thiscall TPanelSystem::TPanelSystem(TPanelSystem *this)
 
 // Function: ~TPanelSystem
 // Address: 00463c50
-/* public: __thiscall TPanelSystem::~TPanelSystem(void) */
-
 void __thiscall TPanelSystem::~TPanelSystem(TPanelSystem *this)
 {
   PanelNode *pPVar1;
@@ -115,8 +111,6 @@ void __thiscall TPanelSystem::~TPanelSystem(TPanelSystem *this)
 
 // Function: currentPanel
 // Address: 00463d00
-/* public: class TPanel * __thiscall TPanelSystem::currentPanel(void)const  */
-
 TPanel * __thiscall TPanelSystem::currentPanel(TPanelSystem *this)
 {
   return this->currentPanelValue;
@@ -126,8 +120,6 @@ TPanel * __thiscall TPanelSystem::currentPanel(TPanelSystem *this)
 
 // Function: previousPanel
 // Address: 00463d10
-/* public: class TPanel * __thiscall TPanelSystem::previousPanel(void)const  */
-
 TPanel * __thiscall TPanelSystem::previousPanel(TPanelSystem *this)
 {
   TPanel *pTVar1;
@@ -143,8 +135,6 @@ TPanel * __thiscall TPanelSystem::previousPanel(TPanelSystem *this)
 
 // Function: mouseOwner
 // Address: 00463d20
-/* public: class TPanel * __thiscall TPanelSystem::mouseOwner(void)const  */
-
 TPanel * __thiscall TPanelSystem::mouseOwner(TPanelSystem *this)
 {
   return this->mouseOwnerValue;
@@ -154,8 +144,6 @@ TPanel * __thiscall TPanelSystem::mouseOwner(TPanelSystem *this)
 
 // Function: keyboardOwner
 // Address: 00463d30
-/* public: class TPanel * __thiscall TPanelSystem::keyboardOwner(void)const  */
-
 TPanel * __thiscall TPanelSystem::keyboardOwner(TPanelSystem *this)
 {
   return this->keyboardOwnerValue;
@@ -165,8 +153,6 @@ TPanel * __thiscall TPanelSystem::keyboardOwner(TPanelSystem *this)
 
 // Function: modalPanel
 // Address: 00463d40
-/* public: class TPanel * __thiscall TPanelSystem::modalPanel(void)const  */
-
 TPanel * __thiscall TPanelSystem::modalPanel(TPanelSystem *this)
 {
   return this->modalPanelValue;
@@ -176,8 +162,6 @@ TPanel * __thiscall TPanelSystem::modalPanel(TPanelSystem *this)
 
 // Function: panel
 // Address: 00463d50
-/* public: class TPanel * __thiscall TPanelSystem::panel(char *) */
-
 TPanel * __thiscall TPanelSystem::panel(TPanelSystem *this,char *param_1)
 {
   PanelNode *pPVar1;
@@ -193,8 +177,6 @@ TPanel * __thiscall TPanelSystem::panel(TPanelSystem *this,char *param_1)
 
 // Function: numberActivePanels
 // Address: 00463d70
-/* public: int __thiscall TPanelSystem::numberActivePanels(void)const  */
-
 int __thiscall TPanelSystem::numberActivePanels(TPanelSystem *this)
 {
   return this->numberActivePanelsValue;
@@ -204,8 +186,6 @@ int __thiscall TPanelSystem::numberActivePanels(TPanelSystem *this)
 
 // Function: addPanel
 // Address: 00463d80
-/* public: int __thiscall TPanelSystem::addPanel(class TPanel *,int,int) */
-
 int __thiscall TPanelSystem::addPanel(TPanelSystem *this,TPanel *param_1,int param_2,int param_3)
 {
   char *pcVar1;
@@ -236,8 +216,6 @@ int __thiscall TPanelSystem::addPanel(TPanelSystem *this,TPanel *param_1,int par
 
 // Function: removePanel
 // Address: 00463e10
-/* public: int __thiscall TPanelSystem::removePanel(char *) */
-
 int __thiscall TPanelSystem::removePanel(TPanelSystem *this,char *param_1)
 {
   PanelNode *pPVar1;
@@ -260,8 +238,6 @@ int __thiscall TPanelSystem::removePanel(TPanelSystem *this,char *param_1)
 
 // Function: setCurrentPanel
 // Address: 00463e60
-/* public: int __thiscall TPanelSystem::setCurrentPanel(char *,int) */
-
 int __thiscall TPanelSystem::setCurrentPanel(TPanelSystem *this,char *param_1,int param_2)
 {
   PanelNode *pPVar1;
@@ -283,8 +259,6 @@ int __thiscall TPanelSystem::setCurrentPanel(TPanelSystem *this,char *param_1,in
 
 // Function: restorePreviousPanel
 // Address: 00463eb0
-/* public: int __thiscall TPanelSystem::restorePreviousPanel(int) */
-
 int __thiscall TPanelSystem::restorePreviousPanel(TPanelSystem *this,int param_1)
 {
   TPanel *this_00;
@@ -324,8 +298,6 @@ int __thiscall TPanelSystem::restorePreviousPanel(TPanelSystem *this,int param_1
 
 // Function: setMouseOwner
 // Address: 00463f40
-/* public: void __thiscall TPanelSystem::setMouseOwner(class TPanel *) */
-
 void __thiscall TPanelSystem::setMouseOwner(TPanelSystem *this,TPanel *param_1)
 {
   this->mouseOwnerValue = param_1;
@@ -336,8 +308,6 @@ void __thiscall TPanelSystem::setMouseOwner(TPanelSystem *this,TPanel *param_1)
 
 // Function: setKeyboardOwner
 // Address: 00463f50
-/* public: void __thiscall TPanelSystem::setKeyboardOwner(class TPanel *) */
-
 void __thiscall TPanelSystem::setKeyboardOwner(TPanelSystem *this,TPanel *param_1)
 {
   this->keyboardOwnerValue = param_1;
@@ -348,8 +318,6 @@ void __thiscall TPanelSystem::setKeyboardOwner(TPanelSystem *this,TPanel *param_
 
 // Function: setModalPanel
 // Address: 00463f60
-/* public: void __thiscall TPanelSystem::setModalPanel(class TPanel *) */
-
 void __thiscall TPanelSystem::setModalPanel(TPanelSystem *this,TPanel *param_1)
 {
   int iVar1;
@@ -392,8 +360,6 @@ LAB_00463fac:
 
 // Function: setCurrentPanelModal
 // Address: 00463ff0
-/* public: void __thiscall TPanelSystem::setCurrentPanelModal(void) */
-
 void __thiscall TPanelSystem::setCurrentPanelModal(TPanelSystem *this)
 {
   TPanel *pTVar1;
@@ -410,8 +376,6 @@ void __thiscall TPanelSystem::setCurrentPanelModal(TPanelSystem *this)
 
 // Function: restorePreviousModalPanel
 // Address: 00464010
-/* public: int __thiscall TPanelSystem::restorePreviousModalPanel(void) */
-
 int __thiscall TPanelSystem::restorePreviousModalPanel(TPanelSystem *this)
 {
   TPanel *pTVar1;
@@ -434,8 +398,6 @@ int __thiscall TPanelSystem::restorePreviousModalPanel(TPanelSystem *this)
 
 // Function: destroyPanel
 // Address: 00464060
-/* public: int __thiscall TPanelSystem::destroyPanel(char *) */
-
 int __thiscall TPanelSystem::destroyPanel(TPanelSystem *this,char *param_1)
 {
   PanelNode *pPVar1;
@@ -473,8 +435,6 @@ int __thiscall TPanelSystem::destroyPanel(TPanelSystem *this,char *param_1)
 
 // Function: inSystem
 // Address: 00464100
-/* public: int __thiscall TPanelSystem::inSystem(char *) */
-
 int __thiscall TPanelSystem::inSystem(TPanelSystem *this,char *param_1)
 {
   PanelNode *pPVar1;
@@ -487,8 +447,6 @@ int __thiscall TPanelSystem::inSystem(TPanelSystem *this,char *param_1)
 
 // Function: inSystem
 // Address: 00464120
-/* public: int __thiscall TPanelSystem::inSystem(class TPanel *) */
-
 int __thiscall TPanelSystem::inSystem(TPanelSystem *this,TPanel *param_1)
 {
   char *pcVar1;
@@ -508,8 +466,6 @@ int __thiscall TPanelSystem::inSystem(TPanelSystem *this,TPanel *param_1)
 
 // Function: setup
 // Address: 00464150
-/* protected: int __thiscall TPanelSystem::setup(void) */
-
 int __thiscall TPanelSystem::setup(TPanelSystem *this)
 {
   PanelNode *pPVar1;
@@ -535,8 +491,6 @@ int __thiscall TPanelSystem::setup(TPanelSystem *this)
 
 // Function: findPanelNode
 // Address: 004641b0
-/* protected: struct PanelNode * __thiscall TPanelSystem::findPanelNode(char *) */
-
 PanelNode * __thiscall TPanelSystem::findPanelNode(TPanelSystem *this,char *param_1)
 {
   byte bVar1;
@@ -602,8 +556,6 @@ LAB_00464247:
 
 // Function: setCurrentPanel
 // Address: 00464260
-/* protected: void __thiscall TPanelSystem::setCurrentPanel(class TPanel *,int) */
-
 void __thiscall TPanelSystem::setCurrentPanel(TPanelSystem *this,TPanel *param_1,int param_2)
 {
   int iVar1;
@@ -629,8 +581,6 @@ void __thiscall TPanelSystem::setCurrentPanel(TPanelSystem *this,TPanel *param_1
 // Function: get_palette
 // Address: 004642c0
 // [HELPER] s__s_pal: "%s.pal"
-/* public: void * __thiscall TPanelSystem::get_palette(char *,long) */
-
 void * __thiscall TPanelSystem::get_palette(TPanelSystem *this,char *param_1,long param_2)
 {
   char cVar1;
@@ -766,8 +716,6 @@ LAB_00464395:
 
 // Function: release_palette
 // Address: 00464480
-/* public: void __thiscall TPanelSystem::release_palette(void *) */
-
 void __thiscall TPanelSystem::release_palette(TPanelSystem *this,void *param_1)
 {
   void **ppvVar1;
@@ -797,8 +745,6 @@ void __thiscall TPanelSystem::release_palette(TPanelSystem *this,void *param_1)
 
 // Function: DisableIME
 // Address: 004644e0
-/* public: void __thiscall TPanelSystem::DisableIME(void) */
-
 void __thiscall TPanelSystem::DisableIME(TPanelSystem *this)
 {
   ulong uVar1;
@@ -815,8 +761,6 @@ void __thiscall TPanelSystem::DisableIME(TPanelSystem *this)
 
 // Function: EnableIME
 // Address: 00464510
-/* public: void __thiscall TPanelSystem::EnableIME(void) */
-
 void __thiscall TPanelSystem::EnableIME(TPanelSystem *this)
 {
   if ((this->Imc != 0) && (this->ImeEnabled == 0)) {
@@ -829,8 +773,6 @@ void __thiscall TPanelSystem::EnableIME(TPanelSystem *this)
 
 // Function: IsIMEEnabled
 // Address: 00464540
-/* public: int __thiscall TPanelSystem::IsIMEEnabled(void) */
-
 int __thiscall TPanelSystem::IsIMEEnabled(TPanelSystem *this)
 {
   return this->ImeEnabled;
@@ -840,8 +782,6 @@ int __thiscall TPanelSystem::IsIMEEnabled(TPanelSystem *this)
 
 // Function: TurnIMEOn
 // Address: 00464550
-/* public: void __thiscall TPanelSystem::TurnIMEOn(void) */
-
 void __thiscall TPanelSystem::TurnIMEOn(TPanelSystem *this)
 {
   if (((this->ImeOn == 0) && (this->ImeEnabled != 0)) && (this->Imc != 0)) {
@@ -855,8 +795,6 @@ void __thiscall TPanelSystem::TurnIMEOn(TPanelSystem *this)
 
 // Function: TurnIMEOff
 // Address: 00464590
-/* public: void __thiscall TPanelSystem::TurnIMEOff(void) */
-
 void __thiscall TPanelSystem::TurnIMEOff(TPanelSystem *this)
 {
   if (((this->ImeOn != 0) && (this->ImeEnabled != 0)) && (this->Imc != 0)) {
@@ -870,8 +808,6 @@ void __thiscall TPanelSystem::TurnIMEOff(TPanelSystem *this)
 
 // Function: IsIMEOn
 // Address: 004645d0
-/* public: int __thiscall TPanelSystem::IsIMEOn(void) */
-
 int __thiscall TPanelSystem::IsIMEOn(TPanelSystem *this)
 {
   return this->ImeOn;
@@ -881,8 +817,6 @@ int __thiscall TPanelSystem::IsIMEOn(TPanelSystem *this)
 
 // Function: GetInputEnabled
 // Address: 004645e0
-/* public: int __thiscall TPanelSystem::GetInputEnabled(void) */
-
 int __thiscall TPanelSystem::GetInputEnabled(TPanelSystem *this)
 {
   return this->InputEnabled;
@@ -892,8 +826,6 @@ int __thiscall TPanelSystem::GetInputEnabled(TPanelSystem *this)
 
 // Function: EnableInput
 // Address: 004645f0
-/* public: void __thiscall TPanelSystem::EnableInput(void) */
-
 void __thiscall TPanelSystem::EnableInput(TPanelSystem *this)
 {
   this->InputEnabled = 1;
@@ -904,8 +836,6 @@ void __thiscall TPanelSystem::EnableInput(TPanelSystem *this)
 
 // Function: DisableInput
 // Address: 00464600
-/* public: void __thiscall TPanelSystem::DisableInput(void) */
-
 void __thiscall TPanelSystem::DisableInput(TPanelSystem *this)
 {
   this->InputEnabled = 0;
@@ -916,8 +846,6 @@ void __thiscall TPanelSystem::DisableInput(TPanelSystem *this)
 
 // Function: stop_sound_system
 // Address: 00464610
-/* public: void __thiscall TPanelSystem::stop_sound_system(void) */
-
 void __thiscall TPanelSystem::stop_sound_system(TPanelSystem *this)
 {
   PanelNode *pPVar1;
@@ -936,8 +864,6 @@ void __thiscall TPanelSystem::stop_sound_system(TPanelSystem *this)
 
 // Function: restart_sound_system
 // Address: 00464640
-/* public: int __thiscall TPanelSystem::restart_sound_system(void) */
-
 int __thiscall TPanelSystem::restart_sound_system(TPanelSystem *this)
 {
   PanelNode *pPVar1;
@@ -960,9 +886,6 @@ int __thiscall TPanelSystem::restart_sound_system(TPanelSystem *this)
 
 // Function: restore_system_colors
 // Address: 00464680
-/* WARNING: Variable defined which should be unmapped: colors */
-/* public: void __thiscall TPanelSystem::restore_system_colors(void) */
-
 void __thiscall TPanelSystem::restore_system_colors(TPanelSystem *this)
 {
   ulong uVar1;
@@ -987,8 +910,6 @@ void __thiscall TPanelSystem::restore_system_colors(TPanelSystem *this)
 
 // Function: set_restore
 // Address: 004646f0
-/* public: void __thiscall TPanelSystem::set_restore(void) */
-
 void __thiscall TPanelSystem::set_restore(TPanelSystem *this)
 {
   PanelNode *pPVar1;

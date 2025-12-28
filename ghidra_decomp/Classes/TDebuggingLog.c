@@ -21,8 +21,6 @@
 // Address: 00436220
 // [HELPER] s_C__APPLOGERR_TXT: "C:\APPLOGERR.TXT"
 // [HELPER] s____Logging___: "===Logging==="
-/* public: __thiscall TDebuggingLog::TDebuggingLog(void) */
-
 TDebuggingLog * __thiscall TDebuggingLog::TDebuggingLog(TDebuggingLog *this)
 {
   char cVar1;
@@ -75,8 +73,6 @@ TDebuggingLog * __thiscall TDebuggingLog::TDebuggingLog(TDebuggingLog *this)
 // Address: 004362a0
 // [HELPER] s_Closing_debug_log_file___s__: "Closing debug log file '%s'."
 // [HELPER] s_Log_file_is_closed: "Log file is closed"
-/* public: __thiscall TDebuggingLog::~TDebuggingLog(void) */
-
 void __thiscall TDebuggingLog::~TDebuggingLog(TDebuggingLog *this)
 {
   TDebuggingLog *this_00;
@@ -98,8 +94,6 @@ void __thiscall TDebuggingLog::~TDebuggingLog(TDebuggingLog *this)
 // Function: LogFile
 // Address: 004362b0
 // [HELPER] s_Logging_to_File__s: "Logging to File %s"
-/* public: void __thiscall TDebuggingLog::LogFile(int) */
-
 void __thiscall TDebuggingLog::LogFile(TDebuggingLog *this,int param_1)
 {
   char *pcVar1;
@@ -121,8 +115,6 @@ void __thiscall TDebuggingLog::LogFile(TDebuggingLog *this,int param_1)
 // Function: LogOutput
 // Address: 004362f0
 // [HELPER] s_Logging_to_OUTPUT__s: "Logging to OUTPUT %s"
-/* public: void __thiscall TDebuggingLog::LogOutput(int) */
-
 void __thiscall TDebuggingLog::LogOutput(TDebuggingLog *this,int param_1)
 {
   char *pcVar1;
@@ -144,8 +136,6 @@ void __thiscall TDebuggingLog::LogOutput(TDebuggingLog *this,int param_1)
 // Function: LogTimestamp
 // Address: 00436330
 // [HELPER] s_Timestamp_milliseconds__s: "Timestamp milliseconds %s"
-/* public: void __thiscall TDebuggingLog::LogTimestamp(int) */
-
 void __thiscall TDebuggingLog::LogTimestamp(TDebuggingLog *this,int param_1)
 {
   char *pcVar1;
@@ -162,8 +152,6 @@ void __thiscall TDebuggingLog::LogTimestamp(TDebuggingLog *this,int param_1)
 // Function: LogDateTimestamp
 // Address: 00436360
 // [HELPER] s_Date___Time_stamp_s: "Date & Time stamp%s"
-/* public: void __thiscall TDebuggingLog::LogDateTimestamp(int) */
-
 void __thiscall TDebuggingLog::LogDateTimestamp(TDebuggingLog *this,int param_1)
 {
   char *pcVar1;
@@ -187,10 +175,6 @@ void __thiscall TDebuggingLog::LogDateTimestamp(TDebuggingLog *this,int param_1)
 // [HELPER] s_: ""
 // [HELPER] s_C__msdev_work_age1_x1_Debuglog_c: "C:\msdev\work\age1_x1\Debuglog.cpp"
 // [HELPER] s__: "}"
-/* WARNING: Variable defined which should be unmapped: ltime */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall TDebuggingLog::Time(void) */
-
 void __thiscall TDebuggingLog::Time(TDebuggingLog *this)
 {
   float fVar1;
@@ -202,8 +186,6 @@ void __thiscall TDebuggingLog::Time(TDebuggingLog *this)
   TDebuggingLog *this_00;
   long ltime;
   float fTicksElapsed;
-  
-                    /* language.dll match for 0x78: "10" */
   uVar2 = debug_timeGetTime(s_C__msdev_work_age1_x1_Debuglog_c,0x78);
   time();
   iVar3 = localtime();
@@ -225,8 +207,6 @@ void __thiscall TDebuggingLog::Time(TDebuggingLog *this)
 // Function: FlushToDisk
 // Address: 00436430
 // [HELPER] s_Flush_queue_each_message__s: "Flush queue each message %s"
-/* public: void __thiscall TDebuggingLog::FlushToDisk(int) */
-
 void __thiscall TDebuggingLog::FlushToDisk(TDebuggingLog *this,int param_1)
 {
   char *pcVar1;
@@ -248,8 +228,6 @@ void __thiscall TDebuggingLog::FlushToDisk(TDebuggingLog *this,int param_1)
 // Function: LogSequence
 // Address: 00436470
 // [HELPER] s_Sequence_numbering_s: "Sequence numbering%s"
-/* public: void __thiscall TDebuggingLog::LogSequence(int) */
-
 void __thiscall TDebuggingLog::LogSequence(TDebuggingLog *this,int param_1)
 {
   char *pcVar1;
@@ -276,9 +254,6 @@ void __thiscall TDebuggingLog::LogSequence(TDebuggingLog *this,int param_1)
 // [HELPER] s_C__msdev_work_age1_x1_Debuglog_c: "C:\msdev\work\age1_x1\Debuglog.cpp"
 // [HELPER] s_Log_file__s_is_opened: "Log file %s is opened"
 // [HELPER] s_wt: "wt"
-/* WARNING: Variable defined which should be unmapped: nLoop */
-/* public: void __thiscall TDebuggingLog::OpenLog(void) */
-
 void __thiscall TDebuggingLog::OpenLog(TDebuggingLog *this)
 {
   char *pcVar1;
@@ -348,8 +323,6 @@ void __thiscall TDebuggingLog::OpenLog(TDebuggingLog *this)
 
 // Function: FlushLog
 // Address: 004365a0
-/* public: void __thiscall TDebuggingLog::FlushLog(void) */
-
 void __thiscall TDebuggingLog::FlushLog(TDebuggingLog *this)
 {
   if (this->LogToFile != 0) {
@@ -364,8 +337,6 @@ void __thiscall TDebuggingLog::FlushLog(TDebuggingLog *this)
 // Address: 004365c0
 // [HELPER] s_Closing_debug_log_file___s__: "Closing debug log file '%s'."
 // [HELPER] s_Log_file_is_closed: "Log file is closed"
-/* public: void __thiscall TDebuggingLog::CloseLog(void) */
-
 void __thiscall TDebuggingLog::CloseLog(TDebuggingLog *this)
 {
   TDebuggingLog *this_00;
@@ -391,9 +362,6 @@ void __thiscall TDebuggingLog::CloseLog(TDebuggingLog *this)
 // [HELPER] s___: "]\n"
 // [HELPER] s__ld__: "%ld |"
 // [HELPER] s__s_s_s_s_s_: "%s%s%s%s%s\n"
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __cdecl TDebuggingLog::Log(char *,...) */
-
 void __thiscall TDebuggingLog::Log(TDebuggingLog *this,char *param_1,...)
 {
   char cVar1;
@@ -515,8 +483,6 @@ void __thiscall TDebuggingLog::Log(TDebuggingLog *this,char *param_1,...)
 // Address: 00436810
 // [HELPER] s__has_been_deactivated_: " has been deactivated."
 // [HELPER] s__is_now_ACTIVE_: " is now ACTIVE."
-/* protected: char * __thiscall TDebuggingLog::YesOrNo(int) */
-
 char * __thiscall TDebuggingLog::YesOrNo(TDebuggingLog *this,int param_1)
 {
   char *pcVar1;

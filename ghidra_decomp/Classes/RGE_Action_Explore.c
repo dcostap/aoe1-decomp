@@ -32,8 +32,6 @@
 
 // Function: RGE_Action_Explore
 // Address: 00402b40
-/* public: __thiscall RGE_Action_Explore::RGE_Action_Explore(int,class RGE_Action_Object *) */
-
 RGE_Action_Explore * __thiscall
 RGE_Action_Explore::RGE_Action_Explore
           (RGE_Action_Explore *this,int param_1,RGE_Action_Object *param_2)
@@ -48,9 +46,6 @@ RGE_Action_Explore::RGE_Action_Explore
 
 // Function: `scalar_deleting_destructor'
 // Address: 00402b70
-/* public: virtual void * __thiscall RGE_Action_Explore::`scalar deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 RGE_Action_Explore::_scalar_deleting_destructor_(RGE_Action_Explore *this,uint param_1)
 {
@@ -65,8 +60,6 @@ RGE_Action_Explore::_scalar_deleting_destructor_(RGE_Action_Explore *this,uint p
 
 // Function: ~RGE_Action_Explore
 // Address: 00402b90
-/* public: virtual __thiscall RGE_Action_Explore::~RGE_Action_Explore(void) */
-
 void __thiscall RGE_Action_Explore::~RGE_Action_Explore(RGE_Action_Explore *this)
 {
   RGE_Action_List *this_00;
@@ -87,9 +80,6 @@ void __thiscall RGE_Action_Explore::~RGE_Action_Explore(RGE_Action_Explore *this
 
 // Function: RGE_Action_Explore
 // Address: 00402ba0
-/* public: __thiscall RGE_Action_Explore::RGE_Action_Explore(class RGE_Action_Object *,class
-   RGE_Task *,float,float,float) */
-
 RGE_Action_Explore * __thiscall
 RGE_Action_Explore::RGE_Action_Explore
           (RGE_Action_Explore *this,RGE_Action_Object *param_1,RGE_Task *param_2,float param_3,
@@ -109,8 +99,6 @@ RGE_Action_Explore::RGE_Action_Explore
 
 // Function: first_in_stack
 // Address: 00402be0
-/* public: virtual void __thiscall RGE_Action_Explore::first_in_stack(unsigned char) */
-
 void __thiscall RGE_Action_Explore::first_in_stack(RGE_Action_Explore *this,uchar param_1)
 {
   if (*(int *)&this->field_0x20 == -0x40800000) {
@@ -125,8 +113,6 @@ void __thiscall RGE_Action_Explore::first_in_stack(RGE_Action_Explore *this,ucha
 
 // Function: set_state
 // Address: 00402c00
-/* protected: virtual void __thiscall RGE_Action_Explore::set_state(unsigned char) */
-
 void __thiscall RGE_Action_Explore::set_state(RGE_Action_Explore *this,uchar param_1)
 {
   int iVar1;
@@ -203,8 +189,6 @@ void __thiscall RGE_Action_Explore::set_state(RGE_Action_Explore *this,uchar par
 
 // Function: update
 // Address: 00402d90
-/* public: virtual unsigned char __thiscall RGE_Action_Explore::update(void) */
-
 uchar __thiscall RGE_Action_Explore::update(RGE_Action_Explore *this)
 {
   char cVar1;
@@ -246,9 +230,6 @@ uchar __thiscall RGE_Action_Explore::update(RGE_Action_Explore *this)
 
 // Function: work
 // Address: 00402e40
-/* public: virtual int __thiscall RGE_Action_Explore::work(class RGE_Static_Object
-   *,float,float,float) */
-
 int __thiscall
 RGE_Action_Explore::work
           (RGE_Action_Explore *this,RGE_Static_Object *param_1,float param_2,float param_3,

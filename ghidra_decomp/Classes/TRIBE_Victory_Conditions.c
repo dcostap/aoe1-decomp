@@ -76,9 +76,6 @@
 
 // Function: TRIBE_Victory_Conditions
 // Address: 0052c8f0
-/* public: __thiscall TRIBE_Victory_Conditions::TRIBE_Victory_Conditions(class RGE_Player *,int,long
-   *,unsigned char) */
-
 TRIBE_Victory_Conditions * __thiscall
 TRIBE_Victory_Conditions::TRIBE_Victory_Conditions
           (TRIBE_Victory_Conditions *this,RGE_Player *param_1,int param_2,long *param_3,
@@ -94,8 +91,6 @@ TRIBE_Victory_Conditions::TRIBE_Victory_Conditions
 
 // Function: TRIBE_Victory_Conditions
 // Address: 0052c920
-/* public: __thiscall TRIBE_Victory_Conditions::TRIBE_Victory_Conditions(class RGE_Player *) */
-
 TRIBE_Victory_Conditions * __thiscall
 TRIBE_Victory_Conditions::TRIBE_Victory_Conditions
           (TRIBE_Victory_Conditions *this,RGE_Player *param_1)
@@ -109,8 +104,6 @@ TRIBE_Victory_Conditions::TRIBE_Victory_Conditions
 
 // Function: ~TRIBE_Victory_Conditions
 // Address: 0052c940
-/* public: __thiscall TRIBE_Victory_Conditions::~TRIBE_Victory_Conditions(void) */
-
 void __thiscall TRIBE_Victory_Conditions::~TRIBE_Victory_Conditions(TRIBE_Victory_Conditions *this)
 {
   *(undefined ***)this = &_vftable_;
@@ -122,9 +115,6 @@ void __thiscall TRIBE_Victory_Conditions::~TRIBE_Victory_Conditions(TRIBE_Victor
 
 // Function: handle_condition
 // Address: 0052c950
-/* public: virtual void __thiscall TRIBE_Victory_Conditions::handle_condition(struct
-   RGE_Victory_Entry *) */
-
 void __thiscall
 TRIBE_Victory_Conditions::handle_condition
           (TRIBE_Victory_Conditions *this,RGE_Victory_Entry *param_1)
@@ -141,8 +131,6 @@ TRIBE_Victory_Conditions::handle_condition
 
 // Function: handle_tech
 // Address: 0052c970
-/* protected: void __thiscall TRIBE_Victory_Conditions::handle_tech(struct RGE_Victory_Entry *) */
-
 void __thiscall
 TRIBE_Victory_Conditions::handle_tech(TRIBE_Victory_Conditions *this,RGE_Victory_Entry *param_1)
 {
@@ -163,8 +151,6 @@ TRIBE_Victory_Conditions::handle_tech(TRIBE_Victory_Conditions *this,RGE_Victory
 
 // Function: add_tech
 // Address: 0052c9b0
-/* public: unsigned char __thiscall TRIBE_Victory_Conditions::add_tech(unsigned char,long) */
-
 uchar __thiscall
 TRIBE_Victory_Conditions::add_tech(TRIBE_Victory_Conditions *this,uchar param_1,long param_2)
 {

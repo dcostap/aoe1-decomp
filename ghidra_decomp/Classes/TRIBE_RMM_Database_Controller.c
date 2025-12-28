@@ -15,9 +15,6 @@
 
 // Function: TRIBE_RMM_Database_Controller
 // Address: 004876c0
-/* public: __thiscall TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller(char *,char
-   *,char *,char *) */
-
 TRIBE_RMM_Database_Controller * __thiscall
 TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller
           (TRIBE_RMM_Database_Controller *this,char *param_1,char *param_2,char *param_3,
@@ -33,8 +30,6 @@ TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller
 
 // Function: TRIBE_RMM_Database_Controller
 // Address: 004876f0
-/* public: __thiscall TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller(int) */
-
 TRIBE_RMM_Database_Controller * __thiscall
 TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller
           (TRIBE_RMM_Database_Controller *this,int param_1)
@@ -50,10 +45,6 @@ TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller
 // Function: init
 // Address: 00487710
 // [HELPER] s_C__msdev_work_age1_x1_rmm_tdbc_c: "C:\msdev\work\age1_x1\rmm_tdbc.cpp"
-/* WARNING: Variable defined which should be unmapped: base_cliff_size */
-/* public: virtual unsigned char __thiscall TRIBE_RMM_Database_Controller::init(class RGE_Map
-   *,class RGE_Game_World *,unsigned char,long,unsigned char) */
-
 uchar __thiscall
 TRIBE_RMM_Database_Controller::init
           (TRIBE_RMM_Database_Controller *this,RGE_Map *param_1,RGE_Game_World *param_2,
@@ -183,8 +174,6 @@ TRIBE_RMM_Database_Controller::init
 
 // Function: de_init
 // Address: 00487930
-/* public: virtual unsigned char __thiscall TRIBE_RMM_Database_Controller::de_init(void) */
-
 uchar __thiscall TRIBE_RMM_Database_Controller::de_init(TRIBE_RMM_Database_Controller *this)
 {
   RGE_RMM_Database_Controller::de_init((RGE_RMM_Database_Controller *)this);
@@ -197,9 +186,6 @@ uchar __thiscall TRIBE_RMM_Database_Controller::de_init(TRIBE_RMM_Database_Contr
 // Address: 00487940
 // [HELPER] s_C__msdev_work_age1_x1_rmm_tdbc_c: "C:\msdev\work\age1_x1\rmm_tdbc.cpp"
 // [HELPER] s_Random_Map_land_initilization__r: "Random Map land initilization, rand: %d"
-/* protected: virtual void __thiscall TRIBE_RMM_Database_Controller::add_land_module(unsigned char)
-    */
-
 void __thiscall
 TRIBE_RMM_Database_Controller::add_land_module(TRIBE_RMM_Database_Controller *this,uchar param_1)
 {
@@ -439,10 +425,6 @@ LAB_00487c90:
 // Address: 00487dd0
 // [HELPER] s_C__msdev_work_age1_x1_rmm_tdbc_c: "C:\msdev\work\age1_x1\rmm_tdbc.cpp"
 // [HELPER] s_Random_Map_terrain_initilization: "Random Map terrain initilization, rand: %d"
-/* WARNING: Variable defined which should be unmapped: land_tile_num */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual void __thiscall TRIBE_RMM_Database_Controller::add_terrain_module(void) */
-
 void __thiscall
 TRIBE_RMM_Database_Controller::add_terrain_module(TRIBE_RMM_Database_Controller *this)
 {
@@ -536,9 +518,6 @@ TRIBE_RMM_Database_Controller::add_terrain_module(TRIBE_RMM_Database_Controller 
 // Address: 00487fa0
 // [HELPER] s_C__msdev_work_age1_x1_rmm_tdbc_c: "C:\msdev\work\age1_x1\rmm_tdbc.cpp"
 // [HELPER] s_Random_Map_object_initilization_: "Random Map object initilization, rand: %d"
-/* WARNING: Variable defined which should be unmapped: done */
-/* protected: virtual void __thiscall TRIBE_RMM_Database_Controller::add_object_module(void) */
-
 void __thiscall
 TRIBE_RMM_Database_Controller::add_object_module(TRIBE_RMM_Database_Controller *this)
 {
@@ -766,8 +745,6 @@ switchD_004885d5_caseD_3c:
 // Address: 00488700
 // [HELPER] s_C__msdev_work_age1_x1_rmm_tdbc_c: "C:\msdev\work\age1_x1\rmm_tdbc.cpp"
 // [HELPER] s_Random_Map_elevation_initilizati: "Random Map elevation initilization, rand: %d"
-/* protected: virtual void __thiscall TRIBE_RMM_Database_Controller::add_elevation_module(void) */
-
 void __thiscall
 TRIBE_RMM_Database_Controller::add_elevation_module(TRIBE_RMM_Database_Controller *this)
 {
@@ -799,8 +776,6 @@ TRIBE_RMM_Database_Controller::add_elevation_module(TRIBE_RMM_Database_Controlle
 // Address: 004887a0
 // [HELPER] s_C__msdev_work_age1_x1_rmm_tdbc_c: "C:\msdev\work\age1_x1\rmm_tdbc.cpp"
 // [HELPER] s_Random_Map_shallows_initilizatio: "Random Map shallows initilization, rand: %d"
-/* protected: void __thiscall TRIBE_RMM_Database_Controller::add_shallows_module(void) */
-
 void __thiscall
 TRIBE_RMM_Database_Controller::add_shallows_module(TRIBE_RMM_Database_Controller *this)
 {
@@ -852,9 +827,6 @@ TRIBE_RMM_Database_Controller::add_shallows_module(TRIBE_RMM_Database_Controller
 
 // Function: generate
 // Address: 00488870
-/* WARNING: Variable defined which should be unmapped: ret_num */
-/* public: virtual unsigned char __thiscall TRIBE_RMM_Database_Controller::generate(void) */
-
 uchar __thiscall TRIBE_RMM_Database_Controller::generate(TRIBE_RMM_Database_Controller *this)
 {
   int iVar1;

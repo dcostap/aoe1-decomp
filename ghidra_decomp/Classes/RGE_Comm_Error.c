@@ -8,8 +8,6 @@
 
 // Function: RGE_Comm_Error
 // Address: 00424e40
-/* public: __thiscall RGE_Comm_Error::RGE_Comm_Error(void *) */
-
 void __thiscall RGE_Comm_Error::RGE_Comm_Error(RGE_Comm_Error *this,void *param_1)
 {
   this->HostHWND = param_1;
@@ -22,8 +20,6 @@ void __thiscall RGE_Comm_Error::RGE_Comm_Error(RGE_Comm_Error *this,void *param_
 // Function: NotifyWindowParam
 // Address: 00424e60
 // [HELPER] s_COMM__Send_msg_to_window_WM_USER: "COMM: Send msg to window WM_USER  Msg=%d  Param=%d "
-/* public: void __thiscall RGE_Comm_Error::NotifyWindowParam(enum COMMMESSAGES,long) */
-
 void __thiscall
 RGE_Comm_Error::NotifyWindowParam(RGE_Comm_Error *this,COMMMESSAGES param_1,long param_2)
 {
@@ -36,8 +32,6 @@ RGE_Comm_Error::NotifyWindowParam(RGE_Comm_Error *this,COMMMESSAGES param_1,long
 
 // Function: ~RGE_Comm_Error
 // Address: 00424ea0
-/* public: __thiscall RGE_Comm_Error::~RGE_Comm_Error(void) */
-
 void __thiscall RGE_Comm_Error::~RGE_Comm_Error(RGE_Comm_Error *this)
 {
   return;
@@ -103,8 +97,6 @@ void __thiscall RGE_Comm_Error::~RGE_Comm_Error(RGE_Comm_Error *this)
 // [HELPER] s_____Unsupported_: "!!! Unsupported."
 // [HELPER] s_____User_Cancel: "!!! User Cancel"
 // [HELPER] s______s__Unhandled_DP_ERROR_excep: "!!! %s: Unhandled DP ERROR/exception in call.  Result=%ld  (%d)"
-/* public: void __thiscall RGE_Comm_Error::ShowReturn(long,char *) */
-
 void __thiscall RGE_Comm_Error::ShowReturn(RGE_Comm_Error *this,long param_1,char *param_2)
 {
   TDebuggingLog *this_00;

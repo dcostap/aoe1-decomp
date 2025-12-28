@@ -366,8 +366,6 @@
 // Function: TRIBE_Dialog_Sed_Menu
 // Address: 00440140
 // [HELPER] s_Scenario_Menu_Dialog: "Scenario Menu Dialog"
-/* public: __thiscall TRIBE_Dialog_Sed_Menu::TRIBE_Dialog_Sed_Menu(class TRIBE_Screen_Sed *) */
-
 TRIBE_Dialog_Sed_Menu * __thiscall
 TRIBE_Dialog_Sed_Menu::TRIBE_Dialog_Sed_Menu(TRIBE_Dialog_Sed_Menu *this,TRIBE_Screen_Sed *param_1)
 {
@@ -407,37 +405,30 @@ TRIBE_Dialog_Sed_Menu::TRIBE_Dialog_Sed_Menu(TRIBE_Dialog_Sed_Menu *this,TRIBE_S
   iVar5 = TDialogPanel::setup((TDialogPanel *)this,pTVar4,(TPanel *)param_1,lVar7,lVar8,pcVar3,lVar2
                               ,iVar5);
   if (iVar5 != 0) {
-                    /* language.dll match for 0x2443: "Quit to Main Menu" */
     iVar5 = TEasy_Panel::create_button
                       ((TEasy_Panel *)this,(TPanel *)this,this->buttons,0x2443,0,0x1e,0x14,400,0x28,
                        0,0,0);
     if (iVar5 != 0) {
-                    /* language.dll match for 0x2441: "Save" */
       iVar5 = TEasy_Panel::create_button
                         ((TEasy_Panel *)this,(TPanel *)this,this->buttons + 1,0x2441,0,0x1e,0x46,400
                          ,0x28,0,0,0);
       if (iVar5 != 0) {
-                    /* language.dll match for 0x2442: "Save As" */
         iVar5 = TEasy_Panel::create_button
                           ((TEasy_Panel *)this,(TPanel *)this,this->buttons + 2,0x2442,0,0x1e,0x78,
                            400,0x28,0,0,0);
         if (iVar5 != 0) {
-                    /* language.dll match for 0x2445: "Edit Scenario" */
           iVar5 = TEasy_Panel::create_button
                             ((TEasy_Panel *)this,(TPanel *)this,this->buttons + 3,0x2445,0,0x1e,0xaa
                              ,400,0x28,0,0,0);
           if (iVar5 != 0) {
-                    /* language.dll match for 0x242e: "Create Scenario" */
             iVar5 = TEasy_Panel::create_button
                               ((TEasy_Panel *)this,(TPanel *)this,this->buttons + 4,0x242e,0,0x1e,
                                0xdc,400,0x28,0,0,0);
             if (iVar5 != 0) {
-                    /* language.dll match for 0x2446: "Test" */
               iVar5 = TEasy_Panel::create_button
                                 ((TEasy_Panel *)this,(TPanel *)this,this->buttons + 5,0x2446,0,0x1e,
                                  0x10e,400,0x28,0,0,0);
               if (iVar5 != 0) {
-                    /* language.dll match for 0x2444: "Cancel" */
                 iVar5 = TEasy_Panel::create_button
                                   ((TEasy_Panel *)this,(TPanel *)this,this->buttons + 6,0x2444,0,
                                    0x1e,0x154,400,0x28,0,0,0);
@@ -461,9 +452,6 @@ TRIBE_Dialog_Sed_Menu::TRIBE_Dialog_Sed_Menu(TRIBE_Dialog_Sed_Menu *this,TRIBE_S
 
 // Function: `scalar_deleting_destructor'
 // Address: 00440340
-/* public: virtual void * __thiscall TRIBE_Dialog_Sed_Menu::`scalar deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TRIBE_Dialog_Sed_Menu::_scalar_deleting_destructor_(TRIBE_Dialog_Sed_Menu *this,uint param_1)
 {
@@ -480,8 +468,6 @@ TRIBE_Dialog_Sed_Menu::_scalar_deleting_destructor_(TRIBE_Dialog_Sed_Menu *this,
 // Address: 00440360
 // [HELPER] s_New_Dialog: "New Dialog"
 // [HELPER] s_Open_Dialog: "Open Dialog"
-/* public: virtual __thiscall TRIBE_Dialog_Sed_Menu::~TRIBE_Dialog_Sed_Menu(void) */
-
 void __thiscall TRIBE_Dialog_Sed_Menu::~TRIBE_Dialog_Sed_Menu(TRIBE_Dialog_Sed_Menu *this)
 {
   int iVar1;
@@ -521,9 +507,6 @@ void __thiscall TRIBE_Dialog_Sed_Menu::~TRIBE_Dialog_Sed_Menu(TRIBE_Dialog_Sed_M
 // [HELPER] s_Scenario_Editor_Open: "Scenario Editor Open"
 // [HELPER] s_Scenario_Editor_Screen: "Scenario Editor Screen"
 // [HELPER] s_Scenario_Menu_Dialog: "Scenario Menu Dialog"
-/* public: virtual long __thiscall TRIBE_Dialog_Sed_Menu::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TRIBE_Dialog_Sed_Menu::action
           (TRIBE_Dialog_Sed_Menu *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)

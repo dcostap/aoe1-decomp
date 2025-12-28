@@ -437,8 +437,6 @@
 
 // Function: TDialogPanel
 // Address: 00473c10
-/* public: __thiscall TDialogPanel::TDialogPanel(char *) */
-
 TDialogPanel * __thiscall TDialogPanel::TDialogPanel(TDialogPanel *this,char *param_1)
 {
   TEasy_Panel::TEasy_Panel((TEasy_Panel *)this,param_1);
@@ -456,8 +454,6 @@ TDialogPanel * __thiscall TDialogPanel::TDialogPanel(TDialogPanel *this,char *pa
 
 // Function: `vector_deleting_destructor'
 // Address: 00473c60
-/* public: virtual void * __thiscall TDialogPanel::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall TDialogPanel::_vector_deleting_destructor_(TDialogPanel *this,uint param_1)
 {
   ~TDialogPanel(this);
@@ -471,9 +467,6 @@ void * __thiscall TDialogPanel::_vector_deleting_destructor_(TDialogPanel *this,
 
 // Function: setup
 // Address: 00473c80
-/* public: virtual int __thiscall TDialogPanel::setup(class TDrawArea *,class TPanel
-   *,long,long,char *,long,int) */
-
 int __thiscall
 TDialogPanel::setup(TDialogPanel *this,TDrawArea *param_1,TPanel *param_2,long param_3,long param_4,
                    char *param_5,long param_6,int param_7)
@@ -514,9 +507,6 @@ TDialogPanel::setup(TDialogPanel *this,TDrawArea *param_1,TPanel *param_2,long p
 
 // Function: setup
 // Address: 00473d60
-/* public: virtual int __thiscall TDialogPanel::setup(class TDrawArea *,class TPanel
-   *,long,long,unsigned char,int) */
-
 int __thiscall
 TDialogPanel::setup(TDialogPanel *this,TDrawArea *param_1,TPanel *param_2,long param_3,long param_4,
                    uchar param_5,int param_6)
@@ -557,8 +547,6 @@ TDialogPanel::setup(TDialogPanel *this,TDrawArea *param_1,TPanel *param_2,long p
 
 // Function: ~TDialogPanel
 // Address: 00473e40
-/* public: virtual __thiscall TDialogPanel::~TDialogPanel(void) */
-
 void __thiscall TDialogPanel::~TDialogPanel(TDialogPanel *this)
 {
   int iVar1;
@@ -590,8 +578,6 @@ void __thiscall TDialogPanel::~TDialogPanel(TDialogPanel *this)
 
 // Function: set_focus
 // Address: 00473ec0
-/* public: virtual void __thiscall TDialogPanel::set_focus(int) */
-
 void __thiscall TDialogPanel::set_focus(TDialogPanel *this,int param_1)
 {
   TEasy_Panel::set_focus((TEasy_Panel *)this,param_1);

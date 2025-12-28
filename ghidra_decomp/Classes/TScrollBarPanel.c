@@ -351,8 +351,6 @@
 
 // Function: TScrollBarPanel
 // Address: 0047a700
-/* public: __thiscall TScrollBarPanel::TScrollBarPanel(void) */
-
 TScrollBarPanel * __thiscall TScrollBarPanel::TScrollBarPanel(TScrollBarPanel *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -418,8 +416,6 @@ TScrollBarPanel * __thiscall TScrollBarPanel::TScrollBarPanel(TScrollBarPanel *t
 
 // Function: `scalar_deleting_destructor'
 // Address: 0047a880
-/* public: virtual void * __thiscall TScrollBarPanel::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall TScrollBarPanel::_scalar_deleting_destructor_(TScrollBarPanel *this,uint param_1)
 {
   ~TScrollBarPanel(this);
@@ -433,8 +429,6 @@ void * __thiscall TScrollBarPanel::_scalar_deleting_destructor_(TScrollBarPanel 
 
 // Function: ~TScrollBarPanel
 // Address: 0047a8a0
-/* public: virtual __thiscall TScrollBarPanel::~TScrollBarPanel(void) */
-
 void __thiscall TScrollBarPanel::~TScrollBarPanel(TScrollBarPanel *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -446,10 +440,6 @@ void __thiscall TScrollBarPanel::~TScrollBarPanel(TScrollBarPanel *this)
 
 // Function: setup
 // Address: 0047a8b0
-/* public: long __thiscall TScrollBarPanel::setup(class TDrawArea *,class TPanel
-   *,long,long,long,long,char *,char *,char *,char *,long,long,class TPanel *,long,enum
-   TScrollBarPanel::Orientation) */
-
 long __thiscall
 TScrollBarPanel::setup
           (TScrollBarPanel *this,TDrawArea *param_1,TPanel *param_2,long param_3,long param_4,
@@ -469,8 +459,6 @@ TScrollBarPanel::setup
 
 // Function: set_rect
 // Address: 0047a910
-/* public: virtual void __thiscall TScrollBarPanel::set_rect(long,long,long,long) */
-
 void __thiscall
 TScrollBarPanel::set_rect(TScrollBarPanel *this,long param_1,long param_2,long param_3,long param_4)
 {
@@ -545,8 +533,6 @@ TScrollBarPanel::set_rect(TScrollBarPanel *this,long param_1,long param_2,long p
 
 // Function: calc_item_rects
 // Address: 0047aa80
-/* protected: void __thiscall TScrollBarPanel::calc_item_rects(void) */
-
 void __thiscall TScrollBarPanel::calc_item_rects(TScrollBarPanel *this)
 {
   int iVar1;
@@ -583,8 +569,6 @@ void __thiscall TScrollBarPanel::calc_item_rects(TScrollBarPanel *this)
 
 // Function: set_tab_pos
 // Address: 0047ab20
-/* public: void __thiscall TScrollBarPanel::set_tab_pos(long) */
-
 void __thiscall TScrollBarPanel::set_tab_pos(TScrollBarPanel *this,long param_1)
 {
   int iVar1;
@@ -627,8 +611,6 @@ void __thiscall TScrollBarPanel::set_tab_pos(TScrollBarPanel *this,long param_1)
 
 // Function: set_list_len
 // Address: 0047ac10
-/* public: void __thiscall TScrollBarPanel::set_list_len(long,long) */
-
 void __thiscall TScrollBarPanel::set_list_len(TScrollBarPanel *this,long param_1,long param_2)
 {
   this->list_len = param_1;
@@ -640,8 +622,6 @@ void __thiscall TScrollBarPanel::set_list_len(TScrollBarPanel *this,long param_1
 
 // Function: set_buttons
 // Address: 0047ac30
-/* public: void __thiscall TScrollBarPanel::set_buttons(class TShape *,int,int,int,int) */
-
 void __thiscall
 TScrollBarPanel::set_buttons
           (TScrollBarPanel *this,TShape *param_1,int param_2,int param_3,int param_4,int param_5)
@@ -658,8 +638,6 @@ TScrollBarPanel::set_buttons
 
 // Function: set_bevel_info
 // Address: 0047ac70
-/* public: void __thiscall TScrollBarPanel::set_bevel_info(int,int,int,int,int,int,int) */
-
 void __thiscall
 TScrollBarPanel::set_bevel_info
           (TScrollBarPanel *this,int param_1,int param_2,int param_3,int param_4,int param_5,
@@ -680,8 +658,6 @@ TScrollBarPanel::set_bevel_info
 // Function: handle_idle
 // Address: 0047acc0
 // [HELPER] s_C__msdev_work_age1_x1_Pnl_scbr_c: "C:\msdev\work\age1_x1\Pnl_scbr.cpp"
-/* public: virtual long __thiscall TScrollBarPanel::handle_idle(void) */
-
 long __thiscall TScrollBarPanel::handle_idle(TScrollBarPanel *this)
 {
   ulong uVar1;
@@ -735,8 +711,6 @@ long __thiscall TScrollBarPanel::handle_idle(TScrollBarPanel *this)
 // Function: mouse_left_down_action
 // Address: 0047ae40
 // [HELPER] s_C__msdev_work_age1_x1_Pnl_scbr_c: "C:\msdev\work\age1_x1\Pnl_scbr.cpp"
-/* public: virtual long __thiscall TScrollBarPanel::mouse_left_down_action(long,long,int,int) */
-
 long __thiscall
 TScrollBarPanel::mouse_left_down_action
           (TScrollBarPanel *this,long param_1,long param_2,int param_3,int param_4)
@@ -812,8 +786,6 @@ TScrollBarPanel::mouse_left_down_action
 // Function: mouse_left_move_action
 // Address: 0047afd0
 // [HELPER] s_C__msdev_work_age1_x1_Pnl_scbr_c: "C:\msdev\work\age1_x1\Pnl_scbr.cpp"
-/* public: virtual long __thiscall TScrollBarPanel::mouse_left_move_action(long,long,int,int) */
-
 long __thiscall
 TScrollBarPanel::mouse_left_move_action
           (TScrollBarPanel *this,long param_1,long param_2,int param_3,int param_4)
@@ -982,8 +954,6 @@ switchD_0047afee_default:
 
 // Function: mouse_left_up_action
 // Address: 0047b3d0
-/* public: virtual long __thiscall TScrollBarPanel::mouse_left_up_action(long,long,int,int) */
-
 long __thiscall
 TScrollBarPanel::mouse_left_up_action
           (TScrollBarPanel *this,long param_1,long param_2,int param_3,int param_4)
@@ -1003,8 +973,6 @@ TScrollBarPanel::mouse_left_up_action
 
 // Function: scroll
 // Address: 0047b420
-/* public: void __thiscall TScrollBarPanel::scroll(enum TScrollBarPanel::ActionType,long) */
-
 void __thiscall TScrollBarPanel::scroll(TScrollBarPanel *this,ActionType param_1,long param_2)
 {
   int iVar1;
@@ -1057,8 +1025,6 @@ switchD_0047b459_default:
 // Function: draw
 // Address: 0047b4e0
 // [HELPER] s_pnl_scbr__draw: "pnl_scbr::draw"
-/* public: virtual void __thiscall TScrollBarPanel::draw(void) */
-
 void __thiscall TScrollBarPanel::draw(TScrollBarPanel *this)
 {
   int iVar1;
@@ -1120,8 +1086,6 @@ void __thiscall TScrollBarPanel::draw(TScrollBarPanel *this)
 
 // Function: draw_border
 // Address: 0047b660
-/* protected: void __thiscall TScrollBarPanel::draw_border(int,int,struct tagRECT *) */
-
 void __thiscall
 TScrollBarPanel::draw_border(TScrollBarPanel *this,int param_1,int param_2,tagRECT *param_3)
 {
@@ -1133,8 +1097,6 @@ TScrollBarPanel::draw_border(TScrollBarPanel *this,int param_1,int param_2,tagRE
 
 // Function: draw_border
 // Address: 0047b690
-/* protected: void __thiscall TScrollBarPanel::draw_border(int,int,long,long,long,long) */
-
 void __thiscall
 TScrollBarPanel::draw_border
           (TScrollBarPanel *this,int param_1,int param_2,long param_3,long param_4,long param_5,
@@ -1213,9 +1175,6 @@ LAB_0047b7e8:
 
 // Function: draw_back_pic
 // Address: 0047b8b0
-/* WARNING: Variable defined which should be unmapped: x_max */
-/* protected: void __thiscall TScrollBarPanel::draw_back_pic(void) */
-
 void __thiscall TScrollBarPanel::draw_back_pic(TScrollBarPanel *this)
 {
   int iVar1;
@@ -1256,9 +1215,6 @@ void __thiscall TScrollBarPanel::draw_back_pic(TScrollBarPanel *this)
 
 // Function: draw_button_pic
 // Address: 0047b970
-/* WARNING: Variable defined which should be unmapped: x_min */
-/* protected: void __thiscall TScrollBarPanel::draw_button_pic(int,int,struct tagRECT *) */
-
 void __thiscall
 TScrollBarPanel::draw_button_pic(TScrollBarPanel *this,int param_1,int param_2,tagRECT *param_3)
 {

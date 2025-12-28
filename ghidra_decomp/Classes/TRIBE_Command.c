@@ -14,9 +14,6 @@
 
 // Function: TRIBE_Command
 // Address: 00509720
-/* public: __thiscall TRIBE_Command::TRIBE_Command(class TRIBE_World *,class TCommunications_Handler
-   *) */
-
 TRIBE_Command * __thiscall
 TRIBE_Command::TRIBE_Command
           (TRIBE_Command *this,TRIBE_World *param_1,TCommunications_Handler *param_2)
@@ -30,8 +27,6 @@ TRIBE_Command::TRIBE_Command
 
 // Function: `vector_deleting_destructor'
 // Address: 00509740
-/* public: virtual void * __thiscall TRIBE_Command::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall TRIBE_Command::_vector_deleting_destructor_(TRIBE_Command *this,uint param_1)
 {
   ~TRIBE_Command(this);
@@ -45,8 +40,6 @@ void * __thiscall TRIBE_Command::_vector_deleting_destructor_(TRIBE_Command *thi
 
 // Function: ~TRIBE_Command
 // Address: 00509760
-/* public: virtual __thiscall TRIBE_Command::~TRIBE_Command(void) */
-
 void __thiscall TRIBE_Command::~TRIBE_Command(TRIBE_Command *this)
 {
   *(undefined ***)this = &RGE_Command::_vftable_;
@@ -63,12 +56,9 @@ void __thiscall TRIBE_Command::~TRIBE_Command(TRIBE_Command *this)
 // Function: do_command
 // Address: 00509770
 // [HELPER] s_C__msdev_work_age1_x1_tcommand_c: "C:\msdev\work\age1_x1\tcommand.cpp"
-/* private: virtual void __thiscall TRIBE_Command::do_command(void *) */
-
 void __thiscall TRIBE_Command::do_command(TRIBE_Command *this,void *param_1)
 {
   debug_rand(s_C__msdev_work_age1_x1_tcommand_c,0x3f);
-                    /* WARNING: Load size is inaccurate */
   switch(*param_1) {
   case 4:
     do_command_tribe_create(this,(RGE_Command_Create *)param_1);
@@ -122,8 +112,6 @@ void __thiscall TRIBE_Command::do_command(TRIBE_Command *this,void *param_1)
 
 // Function: do_command_tribe_create
 // Address: 00509910
-/* private: void __thiscall TRIBE_Command::do_command_tribe_create(struct RGE_Command_Create *) */
-
 void __thiscall
 TRIBE_Command::do_command_tribe_create(TRIBE_Command *this,RGE_Command_Create *param_1)
 {
@@ -151,9 +139,6 @@ TRIBE_Command::do_command_tribe_create(TRIBE_Command *this,RGE_Command_Create *p
 
 // Function: do_command_make
 // Address: 00509980
-/* WARNING: Variable defined which should be unmapped: progress */
-/* private: void __thiscall TRIBE_Command::do_command_make(struct TRIBE_Command_Make *) */
-
 void __thiscall TRIBE_Command::do_command_make(TRIBE_Command *this,TRIBE_Command_Make *param_1)
 {
   int *piVar1;
@@ -236,9 +221,6 @@ LAB_00509ada:
 
 // Function: do_command_research
 // Address: 00509af0
-/* WARNING: Variable defined which should be unmapped: progress */
-/* private: void __thiscall TRIBE_Command::do_command_research(struct TRIBE_Command_Research *) */
-
 void __thiscall
 TRIBE_Command::do_command_research(TRIBE_Command *this,TRIBE_Command_Research *param_1)
 {
@@ -323,8 +305,6 @@ LAB_00509c48:
 
 // Function: do_command_build
 // Address: 00509c60
-/* private: void __thiscall TRIBE_Command::do_command_build(struct TRIBE_Command_Build *) */
-
 void __thiscall TRIBE_Command::do_command_build(TRIBE_Command *this,TRIBE_Command_Build *param_1)
 {
   TRIBE_Player *this_00;
@@ -417,9 +397,6 @@ void __thiscall TRIBE_Command::do_command_build(TRIBE_Command *this,TRIBE_Comman
 
 // Function: do_command_build_wall
 // Address: 00509e10
-/* private: void __thiscall TRIBE_Command::do_command_build_wall(struct TRIBE_Command_Build_Wall *)
-    */
-
 void __thiscall
 TRIBE_Command::do_command_build_wall(TRIBE_Command *this,TRIBE_Command_Build_Wall *param_1)
 {
@@ -535,11 +512,6 @@ LAB_00509fae:
 
 // Function: place_line_of_walls
 // Address: 0050a010
-/* WARNING: Variable defined which should be unmapped: x_skip */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* private: void __thiscall TRIBE_Command::place_line_of_walls(class TRIBE_Player *,class
-   TRIBE_Master_Building_Object *,int,int,int,int,int,class RGE_Static_Object * *) */
-
 void __thiscall
 TRIBE_Command::place_line_of_walls
           (TRIBE_Command *this,TRIBE_Player *param_1,TRIBE_Master_Building_Object *param_2,
@@ -598,8 +570,6 @@ TRIBE_Command::place_line_of_walls
 
 // Function: do_command_explore
 // Address: 0050a140
-/* private: void __thiscall TRIBE_Command::do_command_explore(struct TRIBE_Command_Explore *) */
-
 void __thiscall
 TRIBE_Command::do_command_explore(TRIBE_Command *this,TRIBE_Command_Explore *param_1)
 {
@@ -642,8 +612,6 @@ TRIBE_Command::do_command_explore(TRIBE_Command *this,TRIBE_Command_Explore *par
 // [HELPER] s_: ""
 // [HELPER] s_Temp_Screen: "Temp Screen"
 // [HELPER] s_syncerr_d_gam: "syncerr%d.gam"
-/* private: void __thiscall TRIBE_Command::do_command_game(struct TRIBE_Command_Game *) */
-
 void __thiscall TRIBE_Command::do_command_game(TRIBE_Command *this,TRIBE_Command_Game *param_1)
 {
   TDrawSystem *this_00;
@@ -690,7 +658,6 @@ void __thiscall TRIBE_Command::do_command_game(TRIBE_Command *this,TRIBE_Command
     TRIBE_World::cheat(*(TRIBE_World **)&this->field_0x4,param_1->var1,(ushort)(byte)param_1->var2);
     break;
   case '\a':
-                    /* language.dll match for 0x71: "Copperplate Gothic Light" */
     (**(code **)(**(int **)(*(int *)&this->field_0x4 + 0x4c) + 8))
               (0x71,*(undefined4 *)(*(int *)(*(int *)&this->field_0x4 + 0x40) + param_1->var1 * 4));
     break;
@@ -736,8 +703,6 @@ void __thiscall TRIBE_Command::do_command_game(TRIBE_Command *this,TRIBE_Command
       TDrawSystem::SetPalette(this_00,pvVar3);
       RGE_Base_Game::set_render_all(rge_base_game);
       RGE_Base_Game::draw_window(rge_base_game);
-                    /* language.dll match for 0x966: "You were dropped from the game because of a
-                       sync error. Your network connection may have been lost." */
       TEasy_Panel::popupOKDialog(this_01,0x966,(char *)0x0,0x1c2,100);
     }
     TPanelSystem::destroyPanel(&panel_system,s_Temp_Screen);
@@ -750,9 +715,6 @@ void __thiscall TRIBE_Command::do_command_game(TRIBE_Command *this,TRIBE_Command
 
 // Function: do_command_cancel_build
 // Address: 0050a490
-/* private: void __thiscall TRIBE_Command::do_command_cancel_build(struct TRIBE_Command_Cancel_Build
-   *) */
-
 void __thiscall
 TRIBE_Command::do_command_cancel_build(TRIBE_Command *this,TRIBE_Command_Cancel_Build *param_1)
 {
@@ -769,9 +731,6 @@ TRIBE_Command::do_command_cancel_build(TRIBE_Command *this,TRIBE_Command_Cancel_
 
 // Function: do_command_attack_ground
 // Address: 0050a4c0
-/* private: void __thiscall TRIBE_Command::do_command_attack_ground(struct
-   TRIBE_Command_Attack_Ground *) */
-
 void __thiscall
 TRIBE_Command::do_command_attack_ground(TRIBE_Command *this,TRIBE_Command_Attack_Ground *param_1)
 {
@@ -798,11 +757,6 @@ TRIBE_Command::do_command_attack_ground(TRIBE_Command *this,TRIBE_Command_Attack
 
 // Function: do_command_give_attribute
 // Address: 0050a510
-/* WARNING: Variable defined which should be unmapped: cost */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* private: virtual void __thiscall TRIBE_Command::do_command_give_attribute(struct
-   TRIBE_Command_Give_Attribute *) */
-
 void __thiscall
 TRIBE_Command::do_command_give_attribute(TRIBE_Command *this,TRIBE_Command_Give_Attribute *param_1)
 {
@@ -861,9 +815,6 @@ TRIBE_Command::do_command_give_attribute(TRIBE_Command *this,TRIBE_Command_Give_
 
 // Function: do_command_trade_attribute
 // Address: 0050a6a0
-/* private: void __thiscall TRIBE_Command::do_command_trade_attribute(struct
-   TRIBE_Command_Trade_Attribute *) */
-
 void __thiscall
 TRIBE_Command::do_command_trade_attribute
           (TRIBE_Command *this,TRIBE_Command_Trade_Attribute *param_1)
@@ -891,8 +842,6 @@ TRIBE_Command::do_command_trade_attribute
 
 // Function: do_command_repair
 // Address: 0050a6e0
-/* private: void __thiscall TRIBE_Command::do_command_repair(struct TRIBE_Command_Repair *) */
-
 void __thiscall TRIBE_Command::do_command_repair(TRIBE_Command *this,TRIBE_Command_Repair *param_1)
 {
   byte bVar1;
@@ -922,8 +871,6 @@ void __thiscall TRIBE_Command::do_command_repair(TRIBE_Command *this,TRIBE_Comma
 
 // Function: do_command_unload
 // Address: 0050a730
-/* private: void __thiscall TRIBE_Command::do_command_unload(struct TRIBE_Command_Unload *) */
-
 void __thiscall TRIBE_Command::do_command_unload(TRIBE_Command *this,TRIBE_Command_Unload *param_1)
 {
   RGE_Obj_Info RVar1;
@@ -954,8 +901,6 @@ void __thiscall TRIBE_Command::do_command_unload(TRIBE_Command *this,TRIBE_Comma
 
 // Function: do_command_queue
 // Address: 0050a7b0
-/* private: void __thiscall TRIBE_Command::do_command_queue(struct TRIBE_Command_Queue *) */
-
 void __thiscall TRIBE_Command::do_command_queue(TRIBE_Command *this,TRIBE_Command_Queue *param_1)
 {
   short sVar1;
@@ -979,8 +924,6 @@ void __thiscall TRIBE_Command::do_command_queue(TRIBE_Command *this,TRIBE_Comman
 // Function: command_make
 // Address: 0050a7f0
 // [HELPER] s_______: "      "
-/* public: void __thiscall TRIBE_Command::command_make(class RGE_Static_Object *,short) */
-
 void __thiscall
 TRIBE_Command::command_make(TRIBE_Command *this,RGE_Static_Object *param_1,short param_2)
 {
@@ -1010,8 +953,6 @@ TRIBE_Command::command_make(TRIBE_Command *this,RGE_Static_Object *param_1,short
 // Function: command_make
 // Address: 0050a860
 // [HELPER] s_______: "      "
-/* public: void __thiscall TRIBE_Command::command_make(int,int,int,int) */
-
 void __thiscall
 TRIBE_Command::command_make(TRIBE_Command *this,int param_1,int param_2,int param_3,int param_4)
 {
@@ -1038,8 +979,6 @@ TRIBE_Command::command_make(TRIBE_Command *this,int param_1,int param_2,int para
 // Function: command_research
 // Address: 0050a8d0
 // [HELPER] s_______: "      "
-/* public: void __thiscall TRIBE_Command::command_research(class RGE_Static_Object *,short) */
-
 void __thiscall
 TRIBE_Command::command_research(TRIBE_Command *this,RGE_Static_Object *param_1,short param_2)
 {
@@ -1051,7 +990,6 @@ TRIBE_Command::command_research(TRIBE_Command *this,RGE_Static_Object *param_1,s
     if (puVar2 != (undefined1 *)0x0) {
       *(long *)(puVar2 + 4) = param_1->id;
       sVar1 = param_1->owner->id;
-                    /* language.dll match for 0x65: "1" */
       *puVar2 = 0x65;
       puVar2[8] = (char)sVar1;
       *(short *)(puVar2 + 10) = param_2;
@@ -1070,8 +1008,6 @@ TRIBE_Command::command_research(TRIBE_Command *this,RGE_Static_Object *param_1,s
 // Function: command_research
 // Address: 0050a940
 // [HELPER] s_______: "      "
-/* public: void __thiscall TRIBE_Command::command_research(int,int,int,int) */
-
 void __thiscall
 TRIBE_Command::command_research(TRIBE_Command *this,int param_1,int param_2,int param_3,int param_4)
 {
@@ -1082,7 +1018,6 @@ TRIBE_Command::command_research(TRIBE_Command *this,int param_1,int param_2,int 
     if (puVar1 != (undefined1 *)0x0) {
       *(int *)(puVar1 + 4) = param_2;
       puVar1[8] = (char)param_1;
-                    /* language.dll match for 0x65: "1" */
       *puVar1 = 0x65;
       *(short *)(puVar1 + 10) = (short)param_3;
       *(int *)(puVar1 + 0xc) = param_4;
@@ -1099,9 +1034,6 @@ TRIBE_Command::command_research(TRIBE_Command *this,int param_1,int param_2,int 
 // Function: command_build
 // Address: 0050a9b0
 // [HELPER] s_______: "      "
-/* public: void __thiscall TRIBE_Command::command_build(class RGE_Static_Object *
-   *,short,short,float,float) */
-
 void __thiscall
 TRIBE_Command::command_build
           (TRIBE_Command *this,RGE_Static_Object **param_1,short param_2,short param_3,float param_4
@@ -1162,8 +1094,6 @@ TRIBE_Command::command_build
 // Function: command_build
 // Address: 0050aa90
 // [HELPER] s_______: "      "
-/* public: void __thiscall TRIBE_Command::command_build(int,int *,int,int,float,float,int) */
-
 void __thiscall
 TRIBE_Command::command_build
           (TRIBE_Command *this,int param_1,int *param_2,int param_3,int param_4,float param_5,
@@ -1191,7 +1121,6 @@ TRIBE_Command::command_build
       }
       *(float *)(puVar2 + 4) = param_5;
       *(float *)(puVar2 + 8) = param_6;
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
       *puVar2 = 0x66;
       puVar2[1] = (char)param_3;
       *(short *)(puVar2 + 0xc) = (short)param_4;
@@ -1210,9 +1139,6 @@ TRIBE_Command::command_build
 // Function: command_build_wall
 // Address: 0050ab30
 // [HELPER] s_______: "      "
-/* public: void __thiscall TRIBE_Command::command_build_wall(class RGE_Static_Object *
-   *,short,short,long,long,long,long) */
-
 void __thiscall
 TRIBE_Command::command_build_wall
           (TRIBE_Command *this,RGE_Static_Object **param_1,short param_2,short param_3,long param_4,
@@ -1299,8 +1225,6 @@ TRIBE_Command::command_build_wall
 // Function: command_explore
 // Address: 0050ac70
 // [HELPER] s_______: "      "
-/* public: void __thiscall TRIBE_Command::command_explore(int,int *,int,float,float) */
-
 void __thiscall
 TRIBE_Command::command_explore
           (TRIBE_Command *this,int param_1,int *param_2,int param_3,float param_4,float param_5)
@@ -1325,7 +1249,6 @@ TRIBE_Command::command_explore
           iVar5 = iVar5 + -1;
         } while (iVar5 != 0);
       }
-                    /* language.dll match for 0x68: "Arial" */
       *puVar2 = 0x68;
       puVar2[1] = (char)param_3;
       puVar2[2] = (undefined1)param_1;
@@ -1344,8 +1267,6 @@ TRIBE_Command::command_explore
 // Function: command_allied_victory
 // Address: 0050ad00
 // [HELPER] s_______: "      "
-/* public: void __thiscall TRIBE_Command::command_allied_victory(short,unsigned char) */
-
 void __thiscall
 TRIBE_Command::command_allied_victory(TRIBE_Command *this,short param_1,uchar param_2)
 {
@@ -1356,7 +1277,6 @@ TRIBE_Command::command_allied_victory(TRIBE_Command *this,short param_1,uchar pa
     *(short *)(puVar1 + 2) = param_1;
     *(ushort *)(puVar1 + 4) = (ushort)param_2;
     *(undefined4 *)(puVar1 + 8) = 0;
-                    /* language.dll match for 0x67: "Comic Sans MS" */
     *puVar1 = 0x67;
     puVar1[1] = 5;
     TDebuggingLog::Log(L,(char *)L,s_______>SEND_CMD_ALLIED_VIC__PLR_,(int)param_1,param_2);
@@ -1370,8 +1290,6 @@ TRIBE_Command::command_allied_victory(TRIBE_Command *this,short param_1,uchar pa
 // Function: command_relation
 // Address: 0050ad70
 // [HELPER] s_______: "      "
-/* public: void __thiscall TRIBE_Command::command_relation(short,short,short) */
-
 void __thiscall
 TRIBE_Command::command_relation(TRIBE_Command *this,short param_1,short param_2,short param_3)
 {
@@ -1383,7 +1301,6 @@ TRIBE_Command::command_relation(TRIBE_Command *this,short param_1,short param_2,
     *(short *)(puVar1 + 0xc) = param_3;
     *(float *)(puVar1 + 8) = (float)(int)param_3;
     *(short *)(puVar1 + 2) = param_1;
-                    /* language.dll match for 0x67: "Comic Sans MS" */
     *puVar1 = 0x67;
     puVar1[1] = 0;
     TDebuggingLog::Log((TDebuggingLog *)(int)param_2,(char *)L,s_______>SEND_CMD_RELATION__PLR__d,
@@ -1398,15 +1315,12 @@ TRIBE_Command::command_relation(TRIBE_Command *this,short param_1,short param_2,
 // Function: command_game_speed
 // Address: 0050adf0
 // [HELPER] s_______: "      "
-/* public: void __thiscall TRIBE_Command::command_game_speed(float) */
-
 void __thiscall TRIBE_Command::command_game_speed(TRIBE_Command *this,float param_1)
 {
   undefined1 *puVar1;
   
   puVar1 = (undefined1 *)calloc(1,0x10);
   if (puVar1 != (undefined1 *)0x0) {
-                    /* language.dll match for 0x67: "Comic Sans MS" */
     *puVar1 = 0x67;
     *(float *)(puVar1 + 8) = param_1;
     puVar1[1] = 1;
@@ -1421,8 +1335,6 @@ void __thiscall TRIBE_Command::command_game_speed(TRIBE_Command *this,float para
 // Function: command_save_game
 // Address: 0050ae40
 // [HELPER] s_______: "      "
-/* public: void __thiscall TRIBE_Command::command_save_game(void) */
-
 void __thiscall TRIBE_Command::command_save_game(TRIBE_Command *this)
 {
   undefined1 *puVar1;
@@ -1430,7 +1342,6 @@ void __thiscall TRIBE_Command::command_save_game(TRIBE_Command *this)
   
   puVar1 = (undefined1 *)calloc(1,0x10);
   if (puVar1 != (undefined1 *)0x0) {
-                    /* language.dll match for 0x67: "Comic Sans MS" */
     *puVar1 = 0x67;
     puVar1[1] = 8;
     TDebuggingLog::Log(this_00,(char *)L,s_______>SEND_CMD_SAVEGAME);
@@ -1444,8 +1355,6 @@ void __thiscall TRIBE_Command::command_save_game(TRIBE_Command *this)
 // Function: command_inventory
 // Address: 0050ae80
 // [HELPER] s_______: "      "
-/* public: void __thiscall TRIBE_Command::command_inventory(short,short,float) */
-
 void __thiscall
 TRIBE_Command::command_inventory(TRIBE_Command *this,short param_1,short param_2,float param_3)
 {
@@ -1456,7 +1365,6 @@ TRIBE_Command::command_inventory(TRIBE_Command *this,short param_1,short param_2
     *(short *)(puVar1 + 4) = param_2;
     *(float *)(puVar1 + 8) = param_3;
     *(short *)(puVar1 + 2) = param_1;
-                    /* language.dll match for 0x67: "Comic Sans MS" */
     *puVar1 = 0x67;
     puVar1[1] = 2;
     TDebuggingLog::Log((TDebuggingLog *)(int)param_2,(char *)L,s_______>SEND_CMD_INV__PLR__d_INV_,
@@ -1471,15 +1379,12 @@ TRIBE_Command::command_inventory(TRIBE_Command *this,short param_1,short param_2
 // Function: command_upgrade_town
 // Address: 0050aee0
 // [HELPER] s_______: "      "
-/* public: void __thiscall TRIBE_Command::command_upgrade_town(short) */
-
 void __thiscall TRIBE_Command::command_upgrade_town(TRIBE_Command *this,short param_1)
 {
   undefined1 *puVar1;
   
   puVar1 = (undefined1 *)calloc(1,0x10);
   if (puVar1 != (undefined1 *)0x0) {
-                    /* language.dll match for 0x67: "Comic Sans MS" */
     *puVar1 = 0x67;
     *(short *)(puVar1 + 2) = param_1;
     puVar1[1] = 3;
@@ -1494,15 +1399,12 @@ void __thiscall TRIBE_Command::command_upgrade_town(TRIBE_Command *this,short pa
 // Function: command_quick_build
 // Address: 0050af30
 // [HELPER] s_______: "      "
-/* public: void __thiscall TRIBE_Command::command_quick_build(short) */
-
 void __thiscall TRIBE_Command::command_quick_build(TRIBE_Command *this,short param_1)
 {
   undefined1 *puVar1;
   
   puVar1 = (undefined1 *)calloc(1,0x10);
   if (puVar1 != (undefined1 *)0x0) {
-                    /* language.dll match for 0x67: "Comic Sans MS" */
     *puVar1 = 0x67;
     *(short *)(puVar1 + 2) = param_1;
     puVar1[1] = 4;
@@ -1517,15 +1419,12 @@ void __thiscall TRIBE_Command::command_quick_build(TRIBE_Command *this,short par
 // Function: command_shared_los
 // Address: 0050af80
 // [HELPER] s_______: "      "
-/* public: void __thiscall TRIBE_Command::command_shared_los(short) */
-
 void __thiscall TRIBE_Command::command_shared_los(TRIBE_Command *this,short param_1)
 {
   undefined1 *puVar1;
   
   puVar1 = (undefined1 *)calloc(1,0x10);
   if (puVar1 != (undefined1 *)0x0) {
-                    /* language.dll match for 0x67: "Comic Sans MS" */
     *puVar1 = 0x67;
     *(short *)(puVar1 + 2) = param_1;
     puVar1[1] = 7;
@@ -1540,8 +1439,6 @@ void __thiscall TRIBE_Command::command_shared_los(TRIBE_Command *this,short para
 // Function: command_cancel_build
 // Address: 0050afd0
 // [HELPER] s_______: "      "
-/* public: void __thiscall TRIBE_Command::command_cancel_build(class RGE_Static_Object *) */
-
 void __thiscall TRIBE_Command::command_cancel_build(TRIBE_Command *this,RGE_Static_Object *param_1)
 {
   TDebuggingLog *this_00;
@@ -1563,9 +1460,6 @@ void __thiscall TRIBE_Command::command_cancel_build(TRIBE_Command *this,RGE_Stat
 // Function: command_attack_ground
 // Address: 0050b020
 // [HELPER] s_______: "      "
-/* public: void __thiscall TRIBE_Command::command_attack_ground(class RGE_Static_Object *
-   *,short,float,float) */
-
 void __thiscall
 TRIBE_Command::command_attack_ground
           (TRIBE_Command *this,RGE_Static_Object **param_1,short param_2,float param_3,float param_4
@@ -1617,15 +1511,12 @@ TRIBE_Command::command_attack_ground
 // Function: command_cheat
 // Address: 0050b0d0
 // [HELPER] s_______: "      "
-/* public: void __thiscall TRIBE_Command::command_cheat(short,short) */
-
 void __thiscall TRIBE_Command::command_cheat(TRIBE_Command *this,short param_1,short param_2)
 {
   undefined1 *puVar1;
   
   puVar1 = (undefined1 *)calloc(1,0x10);
   if (puVar1 != (undefined1 *)0x0) {
-                    /* language.dll match for 0x67: "Comic Sans MS" */
     *puVar1 = 0x67;
     *(short *)(puVar1 + 2) = param_1;
     *(short *)(puVar1 + 4) = param_2;
@@ -1642,8 +1533,6 @@ void __thiscall TRIBE_Command::command_cheat(TRIBE_Command *this,short param_1,s
 // Function: command_give_attribute
 // Address: 0050b130
 // [HELPER] s_______: "      "
-/* public: virtual void __thiscall TRIBE_Command::command_give_attribute(int,int,int,float,float) */
-
 void __thiscall
 TRIBE_Command::command_give_attribute
           (TRIBE_Command *this,int param_1,int param_2,int param_3,float param_4,float param_5)
@@ -1668,9 +1557,6 @@ TRIBE_Command::command_give_attribute
 // Function: command_trade_attribute
 // Address: 0050b190
 // [HELPER] s_______: "      "
-/* public: void __thiscall TRIBE_Command::command_trade_attribute(class RGE_Static_Object *
-   *,short,long) */
-
 void __thiscall
 TRIBE_Command::command_trade_attribute
           (TRIBE_Command *this,RGE_Static_Object **param_1,short param_2,long param_3)
@@ -1719,8 +1605,6 @@ TRIBE_Command::command_trade_attribute
 // Function: command_trade_attribute
 // Address: 0050b230
 // [HELPER] s_______: "      "
-/* public: void __thiscall TRIBE_Command::command_trade_attribute(int,int,long) */
-
 void __thiscall
 TRIBE_Command::command_trade_attribute(TRIBE_Command *this,int param_1,int param_2,long param_3)
 {
@@ -1743,9 +1627,6 @@ TRIBE_Command::command_trade_attribute(TRIBE_Command *this,int param_1,int param
 // Function: command_repair
 // Address: 0050b290
 // [HELPER] s_______: "      "
-/* public: void __thiscall TRIBE_Command::command_repair(class RGE_Static_Object * *,short,class
-   RGE_Static_Object *) */
-
 void __thiscall
 TRIBE_Command::command_repair
           (TRIBE_Command *this,RGE_Static_Object **param_1,short param_2,RGE_Static_Object *param_3)
@@ -1786,7 +1667,6 @@ TRIBE_Command::command_repair
         } while (iVar9 != 0);
       }
       lVar3 = param_3->id;
-                    /* language.dll match for 0x6e: "Copperplate Gothic Light" */
       *puVar4 = 0x6e;
       *(long *)(puVar4 + 4) = lVar3;
       puVar4[1] = (undefined1)param_2;
@@ -1803,9 +1683,6 @@ TRIBE_Command::command_repair
 // Function: command_unload
 // Address: 0050b330
 // [HELPER] s_______: "      "
-/* public: void __thiscall TRIBE_Command::command_unload(class RGE_Static_Object *
-   *,short,float,float) */
-
 void __thiscall
 TRIBE_Command::command_unload
           (TRIBE_Command *this,RGE_Static_Object **param_1,short param_2,float param_3,float param_4
@@ -1840,7 +1717,6 @@ TRIBE_Command::command_unload
           iVar6 = iVar6 + -1;
         } while (iVar6 != 0);
       }
-                    /* language.dll match for 0x6f: "12" */
       *puVar3 = 0x6f;
       puVar3[1] = (undefined1)param_2;
       *(float *)(puVar3 + 4) = param_3;
@@ -1858,8 +1734,6 @@ TRIBE_Command::command_unload
 // Function: command_queue
 // Address: 0050b3e0
 // [HELPER] s_______: "      "
-/* public: void __thiscall TRIBE_Command::command_queue(class RGE_Static_Object *,short,short) */
-
 void __thiscall
 TRIBE_Command::command_queue
           (TRIBE_Command *this,RGE_Static_Object *param_1,short param_2,short param_3)
@@ -1869,7 +1743,6 @@ TRIBE_Command::command_queue
   
   puVar2 = (undefined1 *)calloc(1,0xc);
   if (puVar2 != (undefined1 *)0x0) {
-                    /* language.dll match for 0x77: "Arial" */
     *puVar2 = 0x77;
     lVar1 = param_1->id;
     *(short *)(puVar2 + 10) = param_3;

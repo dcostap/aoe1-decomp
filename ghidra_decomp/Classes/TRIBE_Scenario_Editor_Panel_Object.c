@@ -67,10 +67,6 @@
 
 // Function: TRIBE_Scenario_Editor_Panel_Object
 // Address: 004bedc0
-/* public: __thiscall TRIBE_Scenario_Editor_Panel_Object::TRIBE_Scenario_Editor_Panel_Object(class
-   TDrawArea *,class TPanel *,void *,long,long,class TShape *,class TShape * *,class TRIBE_Player *)
-    */
-
 TRIBE_Scenario_Editor_Panel_Object * __thiscall
 TRIBE_Scenario_Editor_Panel_Object::TRIBE_Scenario_Editor_Panel_Object
           (TRIBE_Scenario_Editor_Panel_Object *this,TDrawArea *param_1,TPanel *param_2,void *param_3
@@ -89,9 +85,6 @@ TRIBE_Scenario_Editor_Panel_Object::TRIBE_Scenario_Editor_Panel_Object
 
 // Function: `scalar_deleting_destructor'
 // Address: 004bee10
-/* public: virtual void * __thiscall TRIBE_Scenario_Editor_Panel_Object::`scalar deleting
-   destructor'(unsigned int) */
-
 void * __thiscall
 TRIBE_Scenario_Editor_Panel_Object::_scalar_deleting_destructor_
           (TRIBE_Scenario_Editor_Panel_Object *this,uint param_1)
@@ -107,9 +100,6 @@ TRIBE_Scenario_Editor_Panel_Object::_scalar_deleting_destructor_
 
 // Function: ~TRIBE_Scenario_Editor_Panel_Object
 // Address: 004bee30
-/* public: virtual __thiscall
-   TRIBE_Scenario_Editor_Panel_Object::~TRIBE_Scenario_Editor_Panel_Object(void) */
-
 void __thiscall
 TRIBE_Scenario_Editor_Panel_Object::~TRIBE_Scenario_Editor_Panel_Object
           (TRIBE_Scenario_Editor_Panel_Object *this)
@@ -123,9 +113,6 @@ TRIBE_Scenario_Editor_Panel_Object::~TRIBE_Scenario_Editor_Panel_Object
 
 // Function: set_master_info
 // Address: 004bee40
-/* public: void __thiscall TRIBE_Scenario_Editor_Panel_Object::set_master_info(class
-   RGE_Master_Static_Object *,class TRIBE_Player *) */
-
 void __thiscall
 TRIBE_Scenario_Editor_Panel_Object::set_master_info
           (TRIBE_Scenario_Editor_Panel_Object *this,RGE_Master_Static_Object *param_1,
@@ -149,9 +136,6 @@ TRIBE_Scenario_Editor_Panel_Object::set_master_info
 // [HELPER] s_Unknown: "Unknown"
 // [HELPER] s__d__d: "%d+%d"
 // [HELPER] s__s: "%s"
-/* WARNING: Variable defined which should be unmapped: text_flag */
-/* public: virtual void __thiscall TRIBE_Scenario_Editor_Panel_Object::draw(void) */
-
 void __thiscall TRIBE_Scenario_Editor_Panel_Object::draw(TRIBE_Scenario_Editor_Panel_Object *this)
 {
   char cVar1;
@@ -468,10 +452,6 @@ switchD_004bf313_caseD_4:
 // [HELPER] s__d: "%d"
 // [HELPER] s__d__: "%d%%"
 // [HELPER] s__d__d: "%d+%d"
-/* WARNING: Variable defined which should be unmapped: val_str */
-/* public: virtual void __thiscall TRIBE_Scenario_Editor_Panel_Object::draw_item(int,int,enum
-   TRIBE_Panel_Object::ValueType,int,int) */
-
 void __thiscall
 TRIBE_Scenario_Editor_Panel_Object::draw_item
           (TRIBE_Scenario_Editor_Panel_Object *this,int param_1,int param_2,ValueType param_3,
@@ -540,9 +520,6 @@ TRIBE_Scenario_Editor_Panel_Object::draw_item
 
 // Function: mouse_left_up_action
 // Address: 004bf6c0
-/* public: virtual long __thiscall
-   TRIBE_Scenario_Editor_Panel_Object::mouse_left_up_action(long,long,int,int) */
-
 long __thiscall
 TRIBE_Scenario_Editor_Panel_Object::mouse_left_up_action
           (TRIBE_Scenario_Editor_Panel_Object *this,long param_1,long param_2,int param_3,
@@ -556,8 +533,6 @@ TRIBE_Scenario_Editor_Panel_Object::mouse_left_up_action
 
 // Function: get_pierce_armor
 // Address: 004bf6e0
-/* public: long __thiscall TRIBE_Scenario_Editor_Panel_Object::get_pierce_armor(void) */
-
 long __thiscall
 TRIBE_Scenario_Editor_Panel_Object::get_pierce_armor(TRIBE_Scenario_Editor_Panel_Object *this)
 {

@@ -604,8 +604,6 @@
 // [HELPER] s__d: "%d"
 // [HELPER] s_scr2: "scr2"
 // [HELPER] s_scr3: "scr3"
-/* public: __thiscall TribeMPSetupScreen::TribeMPSetupScreen(void) */
-
 TribeMPSetupScreen * __thiscall TribeMPSetupScreen::TribeMPSetupScreen(TribeMPSetupScreen *this)
 {
   TDropDownPanel **ppTVar1;
@@ -683,9 +681,6 @@ TribeMPSetupScreen * __thiscall TribeMPSetupScreen::TribeMPSetupScreen(TribeMPSe
   iVar7 = TEasy_Panel::create_text
                     ((TEasy_Panel *)this,(TPanel *)this,&this->title,0x25cf - (uint)(iVar7 != 0),
                      lVar10,lVar11,lVar13,lVar15,lVar12,iVar9,iVar16,iVar17);
-                    /* language.dll match for 0x25d0: "Name" */
-                    /* language.dll match for 0x25d1: "Civ" */
-                    /* language.dll match for 0x25d2: "Settings" */
   if ((((iVar7 == 0) ||
        (iVar7 = TEasy_Panel::create_text
                           ((TEasy_Panel *)this,(TPanel *)this,&this->playerTitle,0x25d0,0x1a,0x32,
@@ -698,13 +693,11 @@ TribeMPSetupScreen * __thiscall TribeMPSetupScreen::TribeMPSetupScreen(TribeMPSe
       (iVar7 = TEasy_Panel::create_text
                          ((TEasy_Panel *)this,(TPanel *)this,&this->settingsTitle,0x25d2,0x1a4,0x32,
                           0xd2,0x1e,0,0,1,0), iVar7 == 0)))) goto LAB_004a0d3d;
-                    /* language.dll match for 0x25ae: "Player" */
   iVar7 = TEasy_Panel::create_text
                     ((TEasy_Panel *)this,(TPanel *)this,&this->colorTitle,0x25ae,0xf0,0x32,100,0x1e,
                      0,0,1,0);
   if (iVar7 == 0) goto LAB_004a0d3d;
   TTextPanel::set_alignment(this->colorTitle,AlignCenter,AlignRight);
-                    /* language.dll match for 0x25af: "Team" */
   iVar7 = TEasy_Panel::create_text
                     ((TEasy_Panel *)this,(TPanel *)this,&this->teamTitle,0x25af,0x136,0x32,100,0x1e,
                      0,0,1,0);
@@ -720,78 +713,43 @@ TribeMPSetupScreen * __thiscall TribeMPSetupScreen::TribeMPSetupScreen(TribeMPSe
     if (iVar9 == 0) goto LAB_004a0d3d;
     TDropDownPanel::set_draw_style(*ppTVar1,DrawStyleLeftButton);
     TDropDownPanel::set_draw_val_rect(*ppTVar1,0);
-                    /* language.dll match for 0x75f9: "To limit a game to less than 8 players, close
-                       some of the positions. Closing a position occupied by a player ejects the
-                       player from the game." */
     TPanel::set_help_info((TPanel *)*ppTVar1,0x75f9,-1);
     TDropDownPanel::empty_list(*ppTVar1);
     iVar9 = RGE_Base_Game::multiplayerGame(rge_base_game);
-                    /* language.dll match for 0x25d3: "Computer" */
     if (iVar9 == 0) {
       TDropDownPanel::append_line(*ppTVar1,0x25d3,4);
-                    /* language.dll match for 0x25d6: "None" */
       lVar10 = 0x25d6;
     }
     else {
       TDropDownPanel::append_line(*ppTVar1,0x25d3,4);
-                    /* language.dll match for 0x25d4: "Closed" */
       TDropDownPanel::append_line(*ppTVar1,0x25d4,1);
-                    /* language.dll match for 0x25d5: "Open" */
       lVar10 = 0x25d5;
     }
     TDropDownPanel::append_line(*ppTVar1,lVar10,0);
-                    /* language.dll match for 0x80: "Arial" */
     iVar9 = TEasy_Panel::create_drop_down
                       ((TEasy_Panel *)this,(TPanel *)this,ppTVar8,0x80,100,0xaa,iVar7,0x80,0x18,0xb)
     ;
     if (iVar9 == 0) goto LAB_004a0d3d;
     TDropDownPanel::set_draw_style(*ppTVar8,DrawStyleLeftButton);
     TDropDownPanel::set_draw_val_rect(*ppTVar8,0);
-                    /* language.dll match for 0x75fa: "Click to select a civilization. If you choose
-                       Random, you don't know which civilization you're playing until the game
-                       starts. Each civilization has special skills and can research different
-                       technology. For more information, see the Civilization Attributes table and
-                       technology trees in the manual appendix. More than one player can select the
-                       same civilization."
-                       language.dll match for 0x75fa: "Click to select a civilization. Each
-                       civilization has special skills and can research different technology. For
-                       more information, click More Help. More than one player can select the same
-                       civilization." */
     TPanel::set_help_info((TPanel *)*ppTVar8,0x75fa,0x25f09);
     TDropDownPanel::empty_list(*ppTVar8);
-                    /* language.dll match for 0x27f7: "Egyptian" */
     TDropDownPanel::append_line(*ppTVar8,0x27f7,1);
-                    /* language.dll match for 0x27f8: "Greek" */
     TDropDownPanel::append_line(*ppTVar8,0x27f8,2);
-                    /* language.dll match for 0x27f9: "Babylonian" */
     TDropDownPanel::append_line(*ppTVar8,0x27f9,3);
-                    /* language.dll match for 0x27fa: "Assyrian" */
     TDropDownPanel::append_line(*ppTVar8,0x27fa,4);
-                    /* language.dll match for 0x27fb: "Minoan" */
     TDropDownPanel::append_line(*ppTVar8,0x27fb,5);
-                    /* language.dll match for 0x27fc: "Hittite" */
     TDropDownPanel::append_line(*ppTVar8,0x27fc,6);
-                    /* language.dll match for 0x27fd: "Phoenician" */
     TDropDownPanel::append_line(*ppTVar8,0x27fd,7);
-                    /* language.dll match for 0x27fe: "Sumerian" */
     TDropDownPanel::append_line(*ppTVar8,0x27fe,8);
-                    /* language.dll match for 0x27ff: "Persian" */
     TDropDownPanel::append_line(*ppTVar8,0x27ff,9);
-                    /* language.dll match for 0x2800: "Shang" */
     TDropDownPanel::append_line(*ppTVar8,0x2800,10);
-                    /* language.dll match for 0x2801: "Yamato" */
     TDropDownPanel::append_line(*ppTVar8,0x2801,0xb);
-                    /* language.dll match for 0x2802: "Choson" */
     TDropDownPanel::append_line(*ppTVar8,0x2802,0xc);
-                    /* language.dll match for 0x2806: "Roman" */
     TDropDownPanel::append_line(*ppTVar8,0x2806,0xd);
-                    /* language.dll match for 0x2807: "Carthaginian" */
     TDropDownPanel::append_line(*ppTVar8,0x2807,0xe);
-                    /* language.dll match for 0x2809: "Palmyran" */
     TDropDownPanel::append_line(*ppTVar8,0x2809,0xf);
-                    /* language.dll match for 0x2808: "Macedonian" */
     TDropDownPanel::append_line(*ppTVar8,0x2808,0x10);
-                    /* language.dll match for 0x280a: "Random" */
     TDropDownPanel::append_line(*ppTVar8,0x280a,0x11);
     ppTVar1 = ppTVar8 + 8;
     iVar7 = TEasy_Panel::create_drop_down
@@ -805,25 +763,16 @@ TribeMPSetupScreen * __thiscall TribeMPSetupScreen::TribeMPSetupScreen(TribeMPSe
                       ((TEasy_Panel *)this,(TPanel *)this,(TButtonPanel **)(ppTVar8 + -0x18),s_,
                        (char *)0x0,0x136,local_118,0x1e,0x14,0xb,0,1);
     if (iVar7 == 0) goto LAB_004a0d3d;
-                    /* language.dll match for 0x7604: "Click to select your starting position on the
-                       map and civilization color. In a multiplayer game, two or more players can
-                       select the same player number and play a cooperative game, in which they
-                       share control of the same civilization." */
     TPanel::set_help_info((TPanel *)ppTVar8[-0x18],0x7604,-1);
     iVar7 = TEasy_Panel::create_text
                       ((TEasy_Panel *)this,(TPanel *)this,(TTextPanel **)(ppTVar8 + -0x28),s_,0x131,
                        local_118,0x28,0x16,0xb,1,1,0);
     if (iVar7 == 0) goto LAB_004a0d3d;
     ppTVar2 = (TButtonPanel **)(ppTVar8 + -0x10);
-                    /* language.dll match for 0x25b0: "-" */
     iVar7 = TEasy_Panel::create_button
                       ((TEasy_Panel *)this,(TPanel *)this,ppTVar2,0x25b0,0,0x17c,local_118,0x1e,0x14
                        ,0xb,0,1);
     if (iVar7 == 0) goto LAB_004a0d3d;
-                    /* language.dll match for 0x7603: "Click to select a team if you want to start
-                       the game with other players as allies. A dash (-) indicates no team. Players
-                       on the same team automatically have their diplomatic stance set to Ally and
-                       Allied Victory set." */
     TPanel::set_help_info((TPanel *)*ppTVar2,0x7603,-1);
     TButtonPanel::set_state_info(*ppTVar2,5);
     iVar7 = 1;
@@ -849,7 +798,6 @@ TribeMPSetupScreen * __thiscall TribeMPSetupScreen::TribeMPSetupScreen(TribeMPSe
        (iVar7 = TEasy_Panel::create_text
                           ((TEasy_Panel *)this,(TPanel *)this,(TTextPanel **)(ppTVar8 + -0x40),s_,
                            0x159,iVar7,0x28,0x16,0xb,0,0,0), iVar7 == 0)) goto LAB_004a0d3d;
-                    /* language.dll match for 0x25df: "CD" */
     iVar7 = TEasy_Panel::create_text
                       ((TEasy_Panel *)this,(TPanel *)this,(TTextPanel **)(ppTVar8 + -0x38),0x25df,
                        0x151,local_118 + 3,0x14,0x16,6,0,0,0);
@@ -863,12 +811,10 @@ TribeMPSetupScreen * __thiscall TribeMPSetupScreen::TribeMPSetupScreen(TribeMPSe
   } while (local_118 < 0x115);
   iVar7 = RGE_Base_Game::singlePlayerGame(rge_base_game);
   if ((iVar7 != 0) || (iVar7 = TCommunications_Handler::IsHost(comm), iVar7 != 0)) {
-                    /* language.dll match for 0x25d2: "Settings" */
     iVar7 = TEasy_Panel::create_button
                       ((TEasy_Panel *)this,(TPanel *)this,&this->gameSettingsButton,0x25d2,0,0x1a4,
                        0x32,0xd2,0x1e,0,0,0);
     if (iVar7 == 0) goto LAB_004a0d3d;
-                    /* language.dll match for 0x75fc: "Click to change the scenario settings." */
     TPanel::set_help_info((TPanel *)this->gameSettingsButton,0x75fc,-1);
   }
   iVar7 = TEasy_Panel::create_text
@@ -887,7 +833,6 @@ TribeMPSetupScreen * __thiscall TribeMPSetupScreen::TribeMPSetupScreen(TribeMPSe
   } while (iVar7 < 0x233);
   iVar7 = RGE_Base_Game::multiplayerGame(rge_base_game);
   if (iVar7 != 0) {
-                    /* language.dll match for 0x25d7: "Chat" */
     iVar7 = TEasy_Panel::create_text
                       ((TEasy_Panel *)this,(TPanel *)this,&this->chatTitle,0x25d7,10,0x118,100,0x14,
                        4,0,1,0);
@@ -903,19 +848,16 @@ TribeMPSetupScreen * __thiscall TribeMPSetupScreen::TribeMPSetupScreen(TribeMPSe
                       ((TEasy_Panel *)this,(TPanel *)this,&this->chatInput,s_,0xf7,FormatText,10,
                        0x192,400,0x17,10,1,0);
     if (iVar7 == 0) goto LAB_004a0d3d;
-                    /* language.dll match for 0x75fe: "Type a message." */
     TPanel::set_help_info((TPanel *)this->chatInput,0x75fe,-1);
     (**(code **)((*ppTVar6)->_padding_ + 0xec))
               (3,(char)this->_padding_,*(undefined1 *)((int)&this->_padding_ + 1),
                *(undefined1 *)((int)&this->_padding_ + 2),*(undefined1 *)((int)&this->_padding_ + 3)
                ,(char)this->_padding_,*(undefined1 *)((int)&this->_padding_ + 1));
-                    /* language.dll match for 0x75fd: "Displays chat messages." */
     TPanel::set_help_info((TPanel *)*ppTVar6,0x75fd,-1);
     TTextPanel::empty_list(*ppTVar6);
   }
   iVar7 = RGE_Base_Game::singlePlayerGame(rge_base_game);
   if (iVar7 != 0) {
-                    /* language.dll match for 0x25d8: "Number of Players" */
     iVar7 = TEasy_Panel::create_text
                       ((TEasy_Panel *)this,(TPanel *)this,&this->numberPlayersTitle,0x25d8,0x1a,
                        0x127,0x14f,0x14,0,0,1,0);
@@ -924,7 +866,6 @@ TribeMPSetupScreen * __thiscall TribeMPSetupScreen::TribeMPSetupScreen(TribeMPSe
                       ((TEasy_Panel *)this,(TPanel *)this,&this->numberPlayersDrop,0x46,100,0x1f,
                        0x142,0x46,0x18,0xb);
     if (iVar7 == 0) goto LAB_004a0d3d;
-                    /* language.dll match for 0x7600: "Select the number of players." */
     TPanel::set_help_info((TPanel *)this->numberPlayersDrop,0x7600,-1);
   }
   this->i_am_ready = 0;
@@ -935,16 +876,11 @@ TribeMPSetupScreen * __thiscall TribeMPSetupScreen::TribeMPSetupScreen(TribeMPSe
     if (iVar7 == 0) {
       iVar7 = TEasy_Panel::create_check_box
                         ((TEasy_Panel *)this,(TPanel *)this,ppTVar2,100,0x1b8,0x1e,0x1e,0,0);
-                    /* language.dll match for 0x25bf: "I'm Ready!" */
       if ((iVar7 == 0) ||
          (iVar7 = TEasy_Panel::create_text
                             ((TEasy_Panel *)this,(TPanel *)this,&this->ready_button_label,0x25bf,
                              0x87,0x1b8,0x96,0x1e,0,0,1,0), iVar7 == 0)) goto LAB_004a0d3d;
-                    /* language.dll match for 0x7602: "Click to indicate that you are ready to start
-                       the game. The game creator cannot start the game until all players are ready.
-                       The names of players who are ready are shown in green." */
       TPanel::set_help_info((TPanel *)*ppTVar2,0x7602,-1);
-                    /* language.dll match for 0xfa2: "Cancel" */
       iVar7 = TEasy_Panel::create_button
                         ((TEasy_Panel *)this,(TPanel *)this,&this->cancelButton,0xfa2,0,0x14a,0x1b8,
                          0xf0,0x1e,0,0,0);
@@ -952,37 +888,28 @@ TribeMPSetupScreen * __thiscall TribeMPSetupScreen::TribeMPSetupScreen(TribeMPSe
     }
     iVar7 = TEasy_Panel::create_check_box
                       ((TEasy_Panel *)this,(TPanel *)this,ppTVar2,10,0x1b8,0x1e,0x1e,0,0);
-                    /* language.dll match for 0x25bf: "I'm Ready!" */
     if ((iVar7 == 0) ||
        (iVar7 = TEasy_Panel::create_text
                           ((TEasy_Panel *)this,(TPanel *)this,&this->ready_button_label,0x25bf,0x2d,
                            0x1b8,0x96,0x1e,0,0,1,0), iVar7 == 0)) goto LAB_004a0d3d;
-                    /* language.dll match for 0x7602: "Click to indicate that you are ready to start
-                       the game. The game creator cannot start the game until all players are ready.
-                       The names of players who are ready are shown in green." */
     TPanel::set_help_info((TPanel *)*ppTVar2,0x7602,-1);
     ppTVar2 = &this->startButton;
     iVar7 = TEasy_Panel::create_button
                       ((TEasy_Panel *)this,(TPanel *)this,ppTVar2,s_,(char *)0x0,0xc3,0x1b8,200,0x1e
                        ,0,0,0);
     if (iVar7 == 0) goto LAB_004a0d3d;
-                    /* language.dll match for 0x25ee: "Start Game" */
     TButtonPanel::set_text(*ppTVar2,0,0x25ee);
     TPanel::set_help_info((TPanel *)*ppTVar2,0x75ff,-1);
     TButtonPanel::set_disabled(*ppTVar2,1);
-                    /* language.dll match for 0xfa2: "Cancel" */
     iVar7 = TEasy_Panel::create_button
                       ((TEasy_Panel *)this,(TPanel *)this,&this->cancelButton,0xfa2,0,0x195,0x1b8,
                        0xb4,0x1e,0,0,0);
     if (iVar7 == 0) goto LAB_004a0d3d;
     TPanel::set_help_info((TPanel *)this->cancelButton,0x7532,-1);
-                    /* language.dll match for 0x25ef: "IP" */
     iVar7 = TEasy_Panel::create_button
                       ((TEasy_Panel *)this,(TPanel *)this,&this->netInfoButton,0x25ef,0,600,400,0x1e
                        ,0x1e,0,0,0);
     if (iVar7 == 0) goto LAB_004a0d3d;
-                    /* language.dll match for 0x7601: "Click to display your network address. You
-                       can give your IP address to other players so they can join your game." */
     TPanel::set_help_info((TPanel *)this->netInfoButton,0x7601,-1);
     TCommunications_Handler::SetMyReadiness(comm,0,0,0,0,0,0,0,0);
   }
@@ -992,11 +919,9 @@ TribeMPSetupScreen * __thiscall TribeMPSetupScreen::TribeMPSetupScreen(TribeMPSe
                       ((TEasy_Panel *)this,(TPanel *)this,ppTVar2,s_,(char *)0x0,0x46,0x1b8,0xf0,
                        0x1e,0,0,0);
     if (iVar7 == 0) goto LAB_004a0d3d;
-                    /* language.dll match for 0x25ee: "Start Game" */
     TButtonPanel::set_text(*ppTVar2,0,0x25ee);
     TPanel::set_help_info((TPanel *)*ppTVar2,0x75ff,-1);
     TPanel::set_curr_child((TPanel *)this,(TPanel *)*ppTVar2);
-                    /* language.dll match for 0xfa2: "Cancel" */
     iVar7 = TEasy_Panel::create_button
                       ((TEasy_Panel *)this,(TPanel *)this,&this->cancelButton,0xfa2,0,0x14a,0x1b8,
                        0xf0,0x1e,0,0,0);
@@ -1004,13 +929,11 @@ joined_r0x004a0c4b:
     if (iVar7 == 0) goto LAB_004a0d3d;
     TPanel::set_help_info((TPanel *)this->cancelButton,0x7532,-1);
   }
-                    /* language.dll match for 0xfa9: "?" */
   iVar7 = TEasy_Panel::create_button
                     ((TEasy_Panel *)this,(TPanel *)this,&this->help_button,0xfa9,0,600,0x1b8,0x1e,
                      0x1e,0,0,0);
   if (iVar7 != 0) {
     ppTVar2 = &this->close_button;
-                    /* language.dll match for 0x3ea: "X" */
     iVar7 = TEasy_Panel::create_button
                       ((TEasy_Panel *)this,(TPanel *)this,ppTVar2,0x3ea,0,0,0,0,0,-1,-1,0);
     if (iVar7 != 0) {
@@ -1039,9 +962,6 @@ LAB_004a0d3d:
 
 // Function: `vector_deleting_destructor'
 // Address: 004a0d60
-/* public: virtual void * __thiscall TribeMPSetupScreen::`vector deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 TribeMPSetupScreen::_vector_deleting_destructor_(TribeMPSetupScreen *this,uint param_1)
 {
@@ -1058,8 +978,6 @@ TribeMPSetupScreen::_vector_deleting_destructor_(TribeMPSetupScreen *this,uint p
 // Address: 004a0d80
 // [HELPER] s_: ""
 // [HELPER] s_C__msdev_work_age1_x1_scr_mps_cp: "C:\msdev\work\age1_x1\scr_mps.cpp"
-/* protected: void __thiscall TribeMPSetupScreen::init_vars(void) */
-
 void __thiscall TribeMPSetupScreen::init_vars(TribeMPSetupScreen *this)
 {
   TDropDownPanel **ppTVar1;
@@ -1263,8 +1181,6 @@ void __thiscall TribeMPSetupScreen::init_vars(TribeMPSetupScreen *this)
 // [HELPER] s_OKDialog: "OKDialog"
 // [HELPER] s_Select_Tribe_Screen: "Select Tribe Screen"
 // [HELPER] s_YesNoDialog: "YesNoDialog"
-/* public: virtual __thiscall TribeMPSetupScreen::~TribeMPSetupScreen(void) */
-
 void __thiscall TribeMPSetupScreen::~TribeMPSetupScreen(TribeMPSetupScreen *this)
 {
   int iVar1;
@@ -1358,8 +1274,6 @@ void __thiscall TribeMPSetupScreen::~TribeMPSetupScreen(TribeMPSetupScreen *this
 // Function: handle_idle
 // Address: 004a1640
 // [HELPER] s_C__msdev_work_age1_x1_scr_mps_cp: "C:\msdev\work\age1_x1\scr_mps.cpp"
-/* public: virtual long __thiscall TribeMPSetupScreen::handle_idle(void) */
-
 long __thiscall TribeMPSetupScreen::handle_idle(TribeMPSetupScreen *this)
 {
   int iVar1;
@@ -1392,8 +1306,6 @@ LAB_004a16b9:
 
 // Function: key_down_action
 // Address: 004a16d0
-/* public: virtual long __thiscall TribeMPSetupScreen::key_down_action(long,short,int,int,int) */
-
 long __thiscall
 TribeMPSetupScreen::key_down_action
           (TribeMPSetupScreen *this,long param_1,short param_2,int param_3,int param_4,int param_5)
@@ -1415,9 +1327,6 @@ TribeMPSetupScreen::key_down_action
 // [HELPER] s__s_s_scn: "%s%s.scn"
 // [HELPER] s__s_scn: "%s.scn"
 // [HELPER] s__s_scx: "%s.scx"
-/* public: virtual long __thiscall TribeMPSetupScreen::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TribeMPSetupScreen::action
           (TribeMPSetupScreen *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -1497,9 +1406,6 @@ TribeMPSetupScreen::action
           uVar4 = RGE_Base_Game::playerVersion(rge_base_game,0);
           if (uVar4 != '\x01') {
             (**(code **)(this->ready_button->_padding_ + 0xe0))(0);
-                    /* language.dll match for 0x25e3: "The host is not running version 1.0b of the
-                       game... Everyone must run the same version of Age of Empires to play a
-                       multiplayer game." */
             TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x25e3,(char *)0x0,0x1c2,100);
             param_2 = 1;
             goto LAB_004a1f92;
@@ -1823,9 +1729,6 @@ LAB_004a1f92:
 // [HELPER] s_Status_Screen: "Status Screen"
 // [HELPER] s_____HOST_RESET2_CIV_50: "$$$ HOST RESET2 CIV+50"
 // [HELPER] s_____HOST_RESET2_TEAM_50: "$$$ HOST RESET2 TEAM+50"
-/* WARNING: Variable defined which should be unmapped: send_options */
-/* protected: int __thiscall TribeMPSetupScreen::startGame(void) */
-
 int __thiscall TribeMPSetupScreen::startGame(TribeMPSetupScreen *this)
 {
   bool bVar1;
@@ -1859,8 +1762,6 @@ int __thiscall TribeMPSetupScreen::startGame(TribeMPSetupScreen *this)
     }
     iVar3 = TCommunications_Handler::AllPlayersReady(comm);
     if (iVar3 == 0) {
-                    /* language.dll match for 0x25c1: "All players must be ready for a game to
-                       start." */
       TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x25c1,(char *)0x0,0x1c2,100);
       return 0;
     }
@@ -1875,8 +1776,6 @@ int __thiscall TribeMPSetupScreen::startGame(TribeMPSetupScreen *this)
             (iVar5 = TCommunications_Handler::GetPlayerHumanity(comm,uVar12), iVar5 == 2)) &&
            (*plVar13 != this->myScenarioChecksum)) {
           pcVar9 = TCommunications_Handler::GetPlayerName(comm,iVar3 + 1);
-                    /* language.dll match for 0x25e1: "%s does not have this scenario or has a
-                       different version of it." */
           pcVar7 = TPanel::get_string((TPanel *)this,0x25e1);
           sprintf(msg + 4,pcVar7,pcVar9);
           TEasy_Panel::popupOKDialog((TEasy_Panel *)this,msg + 4,(char *)0x0,0x1c2,100);
@@ -1895,9 +1794,6 @@ int __thiscall TribeMPSetupScreen::startGame(TribeMPSetupScreen *this)
           (iVar3 = TCommunications_Handler::GetPlayerHumanity(comm,uVar4), iVar3 == 2)) &&
          (uVar2 = RGE_Base_Game::playerVersion(rge_base_game,uVar12), uVar2 != '\x01')) {
         pcVar9 = TCommunications_Handler::GetPlayerName(comm,uVar12 + 1);
-                    /* language.dll match for 0x25e2: "%s is not running version 1.0b of the game...
-                       Everyone must run the same version of Age of Empires before you can start the
-                       game." */
         pcVar7 = TPanel::get_string((TPanel *)this,0x25e2);
         sprintf(msg + 4,pcVar7,pcVar9);
         TEasy_Panel::popupOKDialog((TEasy_Panel *)this,msg + 4,(char *)0x0,0x1c2,100);
@@ -1908,7 +1804,6 @@ int __thiscall TribeMPSetupScreen::startGame(TribeMPSetupScreen *this)
   }
   iVar3 = RGE_Base_Game::scenarioGame(rge_base_game);
   if ((iVar3 != 0) && (this->scenarioInfo == (T_Scenario *)0x0)) {
-                    /* language.dll match for 0x25c2: "The selected scenario is invalid." */
     TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x25c2,(char *)0x0,0x1c2,100);
     return 0;
   }
@@ -1960,15 +1855,11 @@ int __thiscall TribeMPSetupScreen::startGame(TribeMPSetupScreen *this)
       } while ((int)uVar4 < iVar3);
     }
     if (iVar5 < 2) {
-                    /* language.dll match for 0x25c6: "You cannot start a game with only one
-                       player." */
       TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x25c6,(char *)0x0,0x1c2,100);
       return 0;
     }
     iVar3 = RGE_Base_Game::scenarioGame(rge_base_game);
     if ((iVar3 != 0) && (iVar3 = this->scenarioPlayerCount, iVar3 < iVar5)) {
-                    /* language.dll match for 0x25c3: "This scenario only supports up to %d
-                       players." */
       pcVar9 = TPanel::get_string((TPanel *)this,0x25c3);
       sprintf(msg_fffffafc + 4,pcVar9,iVar3);
       TEasy_Panel::popupOKDialog((TEasy_Panel *)this,msg_fffffafc + 4,(char *)0x0,0x1c2,100);
@@ -1977,8 +1868,6 @@ int __thiscall TribeMPSetupScreen::startGame(TribeMPSetupScreen *this)
     iVar3 = RGE_Base_Game::scenarioGame(rge_base_game);
     if (((iVar3 != 0) && (this->settingsFixed != 0)) &&
        (iVar3 = this->scenarioPlayerCount, iVar5 != iVar3)) {
-                    /* language.dll match for 0x25c5: "This scenario requires exactly %d players."
-                        */
       pcVar9 = TPanel::get_string((TPanel *)this,0x25c5);
       sprintf(msg_fffffafc + 4,pcVar9,iVar3);
       TEasy_Panel::popupOKDialog((TEasy_Panel *)this,msg_fffffafc + 4,(char *)0x0,0x1c2,100);
@@ -2002,8 +1891,6 @@ int __thiscall TribeMPSetupScreen::startGame(TribeMPSetupScreen *this)
     RGE_Base_Game::setPlayerHasCD(rge_base_game,iVar10 + -1,iVar3);
     iVar3 = RGE_Base_Game::check_for_cd(rge_base_game,iVar5);
     if (iVar3 == 0) {
-                    /* language.dll match for 0x7d9: "One game CD is required for every three
-                       players." */
       TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x7d9,(char *)0x0,0x1c2,100);
       return 0;
     }
@@ -2109,8 +1996,6 @@ int __thiscall TribeMPSetupScreen::startGame(TribeMPSetupScreen *this)
   }
   iVar3 = TRIBE_Game::start_game((TRIBE_Game *)rge_base_game,0);
   if (iVar3 == 0) {
-                    /* language.dll match for 0x961: "An error occurred while trying to start the
-                       game." */
     TEasy_Panel::popupOKDialog((TEasy_Panel *)temp_team[0],0x961,(char *)0x0,0x1c2,100);
     return 0;
   }
@@ -2122,8 +2007,6 @@ int __thiscall TribeMPSetupScreen::startGame(TribeMPSetupScreen *this)
 // Function: calcRandomPositions
 // Address: 004a27a0
 // [HELPER] s_C__msdev_work_age1_x1_scr_mps_cp: "C:\msdev\work\age1_x1\scr_mps.cpp"
-/* protected: void __thiscall TribeMPSetupScreen::calcRandomPositions(void) */
-
 void __thiscall TribeMPSetupScreen::calcRandomPositions(TribeMPSetupScreen *this)
 {
   uint uVar1;
@@ -2222,9 +2105,6 @@ void __thiscall TribeMPSetupScreen::calcRandomPositions(TribeMPSetupScreen *this
 // [HELPER] s_OKDialog: "OKDialog"
 // [HELPER] s__: "}"
 // [HELPER] s___: "]\n"
-/* WARNING: Variable defined which should be unmapped: num_addr */
-/* protected: void __thiscall TribeMPSetupScreen::showNetInfo(void) */
-
 void __thiscall TribeMPSetupScreen::showNetInfo(TribeMPSetupScreen *this)
 {
   char cVar1;
@@ -2264,8 +2144,6 @@ void __thiscall TribeMPSetupScreen::showNetInfo(TribeMPSetupScreen *this)
     uVar2 = pRVar3->AddressesAvailable;
     message[4] = '\0';
     if (uVar2 == 0) {
-                    /* language.dll match for 0x238d: "No IP addressing information is available."
-                        */
       TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x238d,(char *)0x0,0x1c2,100);
     }
     else {
@@ -2303,7 +2181,6 @@ void __thiscall TribeMPSetupScreen::showNetInfo(TribeMPSetupScreen *this)
         pcVar5 = pcVar5 + 1;
       }
       pcVar4 = RGE_Communications_Addresses::GetHostName(pRVar3);
-                    /* language.dll match for 0x238c: "Host name: %s" */
       pcVar5 = TPanel::get_string((TPanel *)this,0x238c);
       sprintf(temp_str + 4,pcVar5,pcVar4);
       uVar6 = 0xffffffff;
@@ -2535,8 +2412,6 @@ void __thiscall TribeMPSetupScreen::showNetInfo(TribeMPSetupScreen *this)
 // [HELPER] s_Main_Error_Screen: "Main Error Screen"
 // [HELPER] s_Select_Scenario_Screen: "Select Scenario Screen"
 // [HELPER] s_Single_Player_Menu: "Single Player Menu"
-/* protected: void __thiscall TribeMPSetupScreen::cancelScreen(int) */
-
 void __thiscall TribeMPSetupScreen::cancelScreen(TribeMPSetupScreen *this,int param_1)
 {
   RGE_Base_Game *this_00;
@@ -2572,8 +2447,6 @@ void __thiscall TribeMPSetupScreen::cancelScreen(TribeMPSetupScreen *this,int pa
         }
         local_4 = 0xffffffff;
         if ((pTVar2 != (TRIBE_Screen_Main_Error *)0x0) && (pTVar2->_padding_ == 0)) {
-                    /* language.dll match for 0x96a: "Timed out while trying to connect to the
-                       game." */
           TRIBE_Screen_Main_Error::set_text(pTVar2,0x96a);
           pcVar3 = s_Main_Error_Screen;
           goto LAB_004a2d23;
@@ -2585,7 +2458,6 @@ void __thiscall TribeMPSetupScreen::cancelScreen(TribeMPSetupScreen *this,int pa
     }
     RGE_Base_Game::disable_input(rge_base_game);
     TCommunications_Handler::UnlinkToLevel(comm,SERVICE_AVAILABLE);
-                    /* language.dll match for 0x4b0: "Ready" */
     this_03 = (TribeJoinScreen *)operator_new(0x4b0);
     local_4 = 3;
     if (this_03 != (TribeJoinScreen *)0x0) {
@@ -2647,8 +2519,6 @@ LAB_004a2d23:
 // [HELPER] s_____USER_COMMAND__COMM_UPDATE_PA: "$$$ USER_COMMAND: COMM_UPDATE_PARAMS (%d,%d)"
 // [HELPER] s_____USER_COMMAND__COMM_UPDATE_PL: "$$$ USER_COMMAND: COMM_UPDATE_PLAYERS (%d,%d)"
 // [HELPER] s_____USER_COMMAND__UNKNOWN___d___: "$$$ USER_COMMAND: UNKNOWN (%d, %d)"
-/* public: virtual long __thiscall TribeMPSetupScreen::handle_user_command(unsigned int,long) */
-
 long __thiscall
 TribeMPSetupScreen::handle_user_command(TribeMPSetupScreen *this,uint param_1,long param_2)
 {
@@ -2939,8 +2809,6 @@ LAB_004a34da:
   case 0x17b6:
     TDebuggingLog::Log(this_00,(char *)L,s_____USER_COMMAND__COMM_BAD_VERSI,param_1,param_2);
     pcVar9 = TCommunications_Handler::GetPlayerName(comm,param_2);
-                    /* language.dll match for 0x25dd: "%s is running the wrong version of the game."
-                        */
     pcVar10 = TPanel::get_string((TPanel *)this,0x25dd);
     sprintf(message + 4,pcVar10,pcVar9);
     TEasy_Panel::popupOKDialog((TEasy_Panel *)this,message + 4,(char *)0x0,0x1c2,100);
@@ -2948,7 +2816,6 @@ LAB_004a34da:
   case 0x17b7:
     TDebuggingLog::Log(this_00,(char *)L,s_____USER_COMMAND__COMM_PLAYER_SE,param_1,param_2);
     pcVar9 = TCommunications_Handler::GetPlayerName(comm,param_2);
-                    /* language.dll match for 0x25de: "%s is using the wrong connection type." */
     pcVar10 = TPanel::get_string((TPanel *)this,0x25de);
     sprintf(message + 4,pcVar10,pcVar9);
     TEasy_Panel::popupOKDialog((TEasy_Panel *)this,message + 4,(char *)0x0,0x1c2,100);
@@ -3005,8 +2872,6 @@ LAB_004a34da:
 
 // Function: handle_timer_command
 // Address: 004a37c0
-/* public: virtual long __thiscall TribeMPSetupScreen::handle_timer_command(unsigned int,long) */
-
 long __thiscall
 TribeMPSetupScreen::handle_timer_command(TribeMPSetupScreen *this,uint param_1,long param_2)
 {
@@ -3018,9 +2883,6 @@ TribeMPSetupScreen::handle_timer_command(TribeMPSetupScreen *this,uint param_1,l
 // Function: fillPlayers
 // Address: 004a37d0
 // [HELPER] s_____SETTING_CIV_TEAM_50___d__d_: "$$$ SETTING CIV/TEAM+50 (%d,%d)"
-/* WARNING: Variable defined which should be unmapped: humanity */
-/* public: void __thiscall TribeMPSetupScreen::fillPlayers(void) */
-
 void __thiscall TribeMPSetupScreen::fillPlayers(TribeMPSetupScreen *this)
 {
   uint uVar1;
@@ -3239,7 +3101,6 @@ LAB_004a3d5e:
           iVar3 = this->playerNameText[iVar4]->_padding_;
           goto LAB_004a3e1b;
         }
-                    /* language.dll match for 0x25b3: "You" */
         (**(code **)(this->playerNameText[iVar4]->_padding_ + 0xe4))(0x25b3);
       }
       else {
@@ -3347,8 +3208,6 @@ LAB_004a3e1b:
 
 // Function: fillChat
 // Address: 004a4100
-/* protected: void __thiscall TribeMPSetupScreen::fillChat(int) */
-
 void __thiscall TribeMPSetupScreen::fillChat(TribeMPSetupScreen *this,int param_1)
 {
   bool bVar1;
@@ -3380,8 +3239,6 @@ void __thiscall TribeMPSetupScreen::fillChat(TribeMPSetupScreen *this,int param_
 
 // Function: updateSummary
 // Address: 004a4190
-/* public: void __thiscall TribeMPSetupScreen::updateSummary(void) */
-
 void __thiscall TribeMPSetupScreen::updateSummary(TribeMPSetupScreen *this)
 {
   char cVar1;
@@ -3625,14 +3482,12 @@ LAB_004a41ff:
   if (iVar7 == 0) {
     uVar3 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
     if (uVar3 == '\0') {
-                    /* language.dll match for 0x25b5: "Random Map" */
       iVar7 = 0x25b5;
     }
     else {
       iVar7 = 0x2617;
     }
     TPanel::get_string((TPanel *)this,iVar7,str1 + 4,0x100);
-                    /* language.dll match for 0x25ed: "Scenario: %s" */
     TPanel::get_string((TPanel *)this,0x25ed);
     sprintf();
     (**(code **)(this->scenarioName->_padding_ + 0xe8))();
@@ -3640,7 +3495,6 @@ LAB_004a41ff:
   }
   else {
     RGE_Base_Game::scenarioName(rge_base_game);
-                    /* language.dll match for 0x25ed: "Scenario: %s" */
     TPanel::get_string((TPanel *)this,0x25ed);
     sprintf();
     (**(code **)(this->scenarioName->_padding_ + 0xe8))();
@@ -3663,11 +3517,9 @@ LAB_004a41ff:
       iVar5 = 0x2976;
       break;
     case Huge:
-                    /* language.dll match for 0x2977: "Huge" */
       iVar5 = 0x2977;
       break;
     case Humongous:
-                    /* language.dll match for 0x2978: "Gigantic" */
       iVar5 = 0x2978;
       break;
     default:
@@ -3697,7 +3549,6 @@ LAB_004a41ff:
       pcVar21 = pcVar21 + 1;
     }
 switchD_004a470b_default:
-                    /* language.dll match for 0x25da: "Map Size: %s" */
     TPanel::get_string((TPanel *)this,0x25da);
     sprintf();
     (**(code **)(this->settingText[iVar7]->_padding_ + 0xe8))();
@@ -3729,8 +3580,6 @@ switchD_004a470b_default:
       iVar5 = 0x2971;
       break;
     case Isthmas:
-                    /* language.dll match for 0x2972: "Narrows"
-                       language.dll match for 0x2972: "******* SIZE *******" */
       iVar5 = 0x2972;
       break;
     default:
@@ -3760,7 +3609,6 @@ switchD_004a470b_default:
       pcVar21 = pcVar21 + 1;
     }
 switchD_004a47bc_default:
-                    /* language.dll match for 0x25b6: "Map Type: %s" */
     TPanel::get_string((TPanel *)this,0x25b6);
     sprintf();
     (**(code **)(this->settingText[iVar7 + 1]->_padding_ + 0xe8))();
@@ -3769,17 +3617,14 @@ switchD_004a47bc_default:
   }
   iVar5 = RGE_Base_Game::scenarioGame(rge_base_game);
   if (iVar5 == 0) {
-                    /* language.dll match for 0x25b7: "Players:" */
     TPanel::get_string((TPanel *)this,0x25b7);
     sprintf();
   }
   else if ((this->settingsFixed == 0) && (this->scenarioPlayerCount != 2)) {
-                    /* language.dll match for 0x25b7: "Players:" */
     TPanel::get_string((TPanel *)this,0x25b7);
     sprintf();
   }
   else {
-                    /* language.dll match for 0x25b7: "Players:" */
     TPanel::get_string((TPanel *)this,0x25b7);
     sprintf();
   }
@@ -3793,14 +3638,12 @@ switchD_004a47bc_default:
   default:
     iVar5 = RGE_Base_Game::randomGame(rge_base_game);
     if (iVar5 != 0) goto switchD_004a4941_caseD_9;
-                    /* language.dll match for 0x10e7: "Default" */
     iVar5 = 0x10e7;
     break;
   case VictoryTime:
     iVar5 = 0x10e9;
     goto LAB_004a495e;
   case VictoryScore:
-                    /* language.dll match for 0x10ea: "Score" */
     iVar5 = 0x10ea;
 LAB_004a495e:
     pcVar17 = TPanel::get_string((TPanel *)this,iVar5);
@@ -3827,7 +3670,6 @@ LAB_004a495e:
       pcVar21 = pcVar21 + 1;
     }
     TRIBE_Game::victoryAmount((TRIBE_Game *)rge_base_game);
-                    /* language.dll match for 0x25be: "Victory: %s (%d)" */
     TPanel::get_string((TPanel *)this,0x25be);
     sprintf();
     goto LAB_004a4a1f;
@@ -3858,7 +3700,6 @@ switchD_004a4941_caseD_9:
     pcVar17 = pcVar17 + 1;
     pcVar21 = pcVar21 + 1;
   }
-                    /* language.dll match for 0x25bc: "Victory: %s" */
   TPanel::get_string((TPanel *)this,0x25bc);
   sprintf();
 LAB_004a4a1f:
@@ -3869,28 +3710,24 @@ LAB_004a4a1f:
     iVar5 = 0x10e7;
   }
   else if (AVar13 == NomadAge) {
-                    /* language.dll match for 0x106e: "Nomad" */
     iVar5 = 0x106e;
   }
   else {
     iVar5 = AVar13 + 0x1067;
   }
   TPanel::get_string((TPanel *)this,iVar5,&stack0xfffffabc,0x100);
-                    /* language.dll match for 0x25e4: "Age: %s" */
   TPanel::get_string((TPanel *)this,0x25e4);
   sprintf();
   (**(code **)(this->settingText[iVar7 + 2]->_padding_ + 0xe8))();
   (**(code **)(this->settingText[iVar7 + 2]->_padding_ + 0x14))();
   RVar14 = TRIBE_Game::resourceLevel((TRIBE_Game *)rge_base_game);
   if (RVar14 == DefaultResources) {
-                    /* language.dll match for 0x10e7: "Default" */
     iVar5 = 0x10e7;
   }
   else {
     iVar5 = RVar14 + 0x25e5;
   }
   TPanel::get_string((TPanel *)this,iVar5,&stack0xfffffab4,0x100);
-                    /* language.dll match for 0x25e5: "Resources: %s" */
   TPanel::get_string((TPanel *)this,0x25e5);
   sprintf();
   (**(code **)(this->settingText[iVar7 + 3]->_padding_ + 0xe8))();
@@ -3900,28 +3737,24 @@ LAB_004a4a1f:
   iVar25 = 0x100;
   iVar5 = RGE_Base_Game::difficulty(rge_base_game);
   TPanel::get_string((TPanel *)this,iVar5 + 0x2bd0,pcVar17,iVar25);
-                    /* language.dll match for 0x25e0: "Difficulty Level: %s" */
   TPanel::get_string((TPanel *)this,0x25e0,str1 + 0xe0,0x100);
   sprintf();
   (**(code **)(this->settingText[iVar7 + 4]->_padding_ + 0xe8))();
   (**(code **)(this->settingText[iVar7 + 4]->_padding_ + 0x14))();
   iVar5 = TRIBE_Game::randomizePositions((TRIBE_Game *)rge_base_game);
   if (iVar5 == 0) {
-                    /* language.dll match for 0xfa3: "Yes" */
     iVar5 = 0xfa3;
   }
   else {
     iVar5 = 0xfa4;
   }
   TPanel::get_string((TPanel *)this,iVar5,&stack0xfffffaa4,0x100);
-                    /* language.dll match for 0x25e9: "Fixed Positions: %s" */
   pcVar17 = TPanel::get_string((TPanel *)this,0x25e9);
   sprintf(str1 + 0xd8,pcVar17);
   (**(code **)(this->settingText[iVar7 + 5]->_padding_ + 0xe8))();
   (**(code **)(this->settingText[iVar7 + 5]->_padding_ + 0x14))(1);
   iVar5 = RGE_Base_Game::fullVisibility(rge_base_game);
   if (iVar5 == 0) {
-                    /* language.dll match for 0xfa4: "No" */
     iVar5 = 0xfa4;
   }
   else {
@@ -3951,14 +3784,12 @@ LAB_004a4a1f:
     pcVar21 = pcVar21 + 1;
   }
   puVar24 = &stack0xfffffa9c;
-                    /* language.dll match for 0x25b8: "Reveal Map: %s" */
   pcVar17 = TPanel::get_string((TPanel *)this,0x25b8);
   sprintf(str1 + 0xd0,pcVar17,puVar24);
   (**(code **)(this->settingText[iVar7 + 6]->_padding_ + 0xe8))(str1 + 0xd0);
   (**(code **)(this->settingText[iVar7 + 6]->_padding_ + 0x14))(1);
   iVar5 = TRIBE_Game::fullTechTree((TRIBE_Game *)rge_base_game);
   if (iVar5 == 0) {
-                    /* language.dll match for 0xfa4: "No" */
     iVar5 = 0xfa4;
   }
   else {
@@ -3966,7 +3797,6 @@ LAB_004a4a1f:
   }
   TPanel::get_string((TPanel *)this,iVar5,&stack0xfffffa94,0x100);
   puVar24 = &stack0xfffffa94;
-                    /* language.dll match for 0x25ec: "Full Tech Tree: %s" */
   pcVar17 = TPanel::get_string((TPanel *)this,0x25ec);
   sprintf(str1 + 200,pcVar17,puVar24);
   (**(code **)(this->settingText[iVar7 + 7]->_padding_ + 0xe8))(str1 + 200);
@@ -3976,7 +3806,6 @@ LAB_004a4a1f:
   if (iVar5 != 0) {
     iVar5 = RGE_Base_Game::allowCheatCodes(rge_base_game);
     if (iVar5 == 0) {
-                    /* language.dll match for 0xfa4: "No" */
       iVar5 = 0xfa4;
     }
     else {
@@ -4006,7 +3835,6 @@ LAB_004a4a1f:
       pcVar21 = pcVar21 + 1;
     }
     puVar24 = &stack0xfffffa8c;
-                    /* language.dll match for 0x25bb: "Enable Cheating: %s" */
     pcVar17 = TPanel::get_string((TPanel *)this,0x25bb);
     sprintf(str1 + 0xc0,pcVar17,puVar24);
     (**(code **)(this->settingText[iVar7 + 8]->_padding_ + 0xe8))(str1 + 0xc0);
@@ -4025,14 +3853,12 @@ LAB_004a4a1f:
   }
   TPanel::get_string((TPanel *)this,bVar4 + 0x260e,pcVar17,iVar5);
   puVar24 = &stack0xfffffa8c;
-                    /* language.dll match for 0x25f1: "Path Finding: %s" */
   pcVar17 = TPanel::get_string((TPanel *)this,0x25f1);
   sprintf(str1 + 0xc0,pcVar17,puVar24);
   (**(code **)(this->settingText[iVar25]->_padding_ + 0xe8))(str1 + 0xc0);
   (**(code **)(this->settingText[iVar25]->_padding_ + 0x14))(1);
   bVar4 = TRIBE_Game::popLimit((TRIBE_Game *)rge_base_game);
   uVar15 = (uint)bVar4;
-                    /* language.dll match for 0x25f0: "Population Limit: %d" */
   pcVar17 = TPanel::get_string((TPanel *)this,0x25f0);
   sprintf(str1 + 0xb8,pcVar17,uVar15);
   (**(code **)(this->settingText[iVar25 + 1]->_padding_ + 0xe8))(str1 + 0xb8);
@@ -4061,9 +3887,6 @@ LAB_004a4a1f:
 // Function: kickPlayer
 // Address: 004a4fc0
 // [HELPER] s_Kick_Dialog: "Kick Dialog"
-/* WARNING: Variable defined which should be unmapped: text */
-/* protected: void __thiscall TribeMPSetupScreen::kickPlayer(int) */
-
 void __thiscall TribeMPSetupScreen::kickPlayer(TribeMPSetupScreen *this,int param_1)
 {
   char *pcVar1;
@@ -4072,7 +3895,6 @@ void __thiscall TribeMPSetupScreen::kickPlayer(TribeMPSetupScreen *this,int para
   
   this->playerToKick = param_1;
   pcVar1 = TCommunications_Handler::GetPlayerName(comm,param_1);
-                    /* language.dll match for 0x25c8: "Do you want to eject %s?" */
   pcVar2 = TPanel::get_string((TPanel *)this,0x25c8);
   sprintf(text + 4,pcVar2,pcVar1);
   TEasy_Panel::popupYesNoDialog((TEasy_Panel *)this,text + 4,&s_Kick_Dialog,0x1c2,100);
@@ -4083,8 +3905,6 @@ void __thiscall TribeMPSetupScreen::kickPlayer(TribeMPSetupScreen *this,int para
 
 // Function: handleKickedPlayer
 // Address: 004a5020
-/* protected: void __thiscall TribeMPSetupScreen::handleKickedPlayer(int) */
-
 void __thiscall TribeMPSetupScreen::handleKickedPlayer(TribeMPSetupScreen *this,int param_1)
 {
   TEasy_Panel *this_00;
@@ -4101,8 +3921,6 @@ void __thiscall TribeMPSetupScreen::handleKickedPlayer(TribeMPSetupScreen *this,
 
 // Function: activateVictoryPanels
 // Address: 004a5060
-/* protected: void __thiscall TribeMPSetupScreen::activateVictoryPanels(void) */
-
 void __thiscall TribeMPSetupScreen::activateVictoryPanels(TribeMPSetupScreen *this)
 {
   long lVar1;
@@ -4118,17 +3936,14 @@ void __thiscall TribeMPSetupScreen::activateVictoryPanels(TribeMPSetupScreen *th
     lVar1 = TDropDownPanel::get_id(this->victoryTypeDrop);
     switch(lVar1) {
     case 2:
-                    /* language.dll match for 0x25cb: "Percent" */
       (**(code **)(this->victoryAmountLabel->_padding_ + 0xe4))(0x25cb);
       return;
     case 3:
     case 4:
     case 5:
-                    /* language.dll match for 0x25cc: "Count" */
       (**(code **)(this->victoryAmountLabel->_padding_ + 0xe4))(0x25cc);
       return;
     case 6:
-                    /* language.dll match for 0x25cd: "Quantity" */
       (**(code **)(this->victoryAmountLabel->_padding_ + 0xe4))(0x25cd);
       return;
     }
@@ -4140,9 +3955,6 @@ void __thiscall TribeMPSetupScreen::activateVictoryPanels(TribeMPSetupScreen *th
 
 // Function: setupTabOrder
 // Address: 004a5130
-/* WARNING: Variable defined which should be unmapped: tabList */
-/* protected: void __thiscall TribeMPSetupScreen::setupTabOrder(void) */
-
 void __thiscall TribeMPSetupScreen::setupTabOrder(TribeMPSetupScreen *this)
 {
   int iVar1;
@@ -4177,9 +3989,6 @@ void __thiscall TribeMPSetupScreen::setupTabOrder(TribeMPSetupScreen *this)
 // Function: setupSinglePlayerPlayers
 // Address: 004a5210
 // [HELPER] s_C__msdev_work_age1_x1_scr_mps_cp: "C:\msdev\work\age1_x1\scr_mps.cpp"
-/* WARNING: Variable defined which should be unmapped: first_any_player */
-/* protected: void __thiscall TribeMPSetupScreen::setupSinglePlayerPlayers(void) */
-
 void __thiscall TribeMPSetupScreen::setupSinglePlayerPlayers(TribeMPSetupScreen *this)
 {
   int iVar1;
@@ -4279,9 +4088,6 @@ void __thiscall TribeMPSetupScreen::setupSinglePlayerPlayers(TribeMPSetupScreen 
 // Function: fillNumberPlayers
 // Address: 004a5440
 // [HELPER] s__d: "%d"
-/* WARNING: Variable defined which should be unmapped: str */
-/* protected: void __thiscall TribeMPSetupScreen::fillNumberPlayers(void) */
-
 void __thiscall TribeMPSetupScreen::fillNumberPlayers(TribeMPSetupScreen *this)
 {
   long lVar1;
@@ -4308,8 +4114,6 @@ void __thiscall TribeMPSetupScreen::fillNumberPlayers(TribeMPSetupScreen *this)
 // Function: fillPlayerColors
 // Address: 004a54c0
 // [HELPER] s__d: "%d"
-/* protected: void __thiscall TribeMPSetupScreen::fillPlayerColors(void) */
-
 void __thiscall TribeMPSetupScreen::fillPlayerColors(TribeMPSetupScreen *this)
 {
   int iVar1;

@@ -11,8 +11,6 @@
 
 // Function: Visible_Resource_Manager
 // Address: 0053bb30
-/* public: __thiscall Visible_Resource_Manager::Visible_Resource_Manager(class RGE_Player *,int) */
-
 Visible_Resource_Manager * __thiscall
 Visible_Resource_Manager::Visible_Resource_Manager
           (Visible_Resource_Manager *this,RGE_Player *param_1,int param_2)
@@ -56,9 +54,6 @@ Visible_Resource_Manager::Visible_Resource_Manager
 
 // Function: Visible_Resource_Manager
 // Address: 0053bbe0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: __thiscall Visible_Resource_Manager::Visible_Resource_Manager(int,class RGE_Player *) */
-
 Visible_Resource_Manager * __thiscall
 Visible_Resource_Manager::Visible_Resource_Manager
           (Visible_Resource_Manager *this,int param_1,RGE_Player *param_2)
@@ -120,8 +115,6 @@ Visible_Resource_Manager::Visible_Resource_Manager
 
 // Function: ~Visible_Resource_Manager
 // Address: 0053bd10
-/* public: __thiscall Visible_Resource_Manager::~Visible_Resource_Manager(void) */
-
 void __thiscall Visible_Resource_Manager::~Visible_Resource_Manager(Visible_Resource_Manager *this)
 {
   int iVar1;
@@ -151,8 +144,6 @@ void __thiscall Visible_Resource_Manager::~Visible_Resource_Manager(Visible_Reso
 
 // Function: save
 // Address: 0053bd70
-/* public: void __thiscall Visible_Resource_Manager::save(int) */
-
 void __thiscall Visible_Resource_Manager::save(Visible_Resource_Manager *this,int param_1)
 {
   int iVar1;
@@ -182,9 +173,6 @@ void __thiscall Visible_Resource_Manager::save(Visible_Resource_Manager *this,in
 
 // Function: Process_New_Tiles
 // Address: 0053be00
-/* WARNING: Variable defined which should be unmapped: size */
-/* public: void __thiscall Visible_Resource_Manager::Process_New_Tiles(class RGE_Tile_List *) */
-
 void __thiscall
 Visible_Resource_Manager::Process_New_Tiles(Visible_Resource_Manager *this,RGE_Tile_List *param_1)
 {
@@ -226,9 +214,6 @@ Visible_Resource_Manager::Process_New_Tiles(Visible_Resource_Manager *this,RGE_T
 
 // Function: AddResource
 // Address: 0053bed0
-/* WARNING: Variable defined which should be unmapped: n */
-/* public: void __thiscall Visible_Resource_Manager::AddResource(int,int) */
-
 void __thiscall
 Visible_Resource_Manager::AddResource(Visible_Resource_Manager *this,int param_1,int param_2)
 {
@@ -281,8 +266,6 @@ Visible_Resource_Manager::AddResource(Visible_Resource_Manager *this,int param_1
 
 // Function: Remove_Resource
 // Address: 0053bfd0
-/* public: int __thiscall Visible_Resource_Manager::Remove_Resource(int,int) */
-
 int __thiscall
 Visible_Resource_Manager::Remove_Resource(Visible_Resource_Manager *this,int param_1,int param_2)
 {
@@ -332,10 +315,6 @@ Visible_Resource_Manager::Remove_Resource(Visible_Resource_Manager *this,int par
 
 // Function: Get_Closest_Resource
 // Address: 0053c050
-/* WARNING: Variable defined which should be unmapped: xd */
-/* public: struct VISIBLE_RESOURCE_REC * __thiscall
-   Visible_Resource_Manager::Get_Closest_Resource(int,int,int,int,int *,int) */
-
 VISIBLE_RESOURCE_REC * __thiscall
 Visible_Resource_Manager::Get_Closest_Resource
           (Visible_Resource_Manager *this,int param_1,int param_2,int param_3,int param_4,

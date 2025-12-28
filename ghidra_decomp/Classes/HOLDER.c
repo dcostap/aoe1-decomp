@@ -12,8 +12,6 @@
 
 // Function: `vector_deleting_destructor'
 // Address: 00426170
-/* public: void * __thiscall HOLDER::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall HOLDER::_vector_deleting_destructor_(HOLDER *this,uint param_1)
 {
   if ((param_1 & 2) != 0) {
@@ -39,8 +37,6 @@ void * __thiscall HOLDER::_vector_deleting_destructor_(HOLDER *this,uint param_1
 
 // Function: HOLDER
 // Address: 004265e0
-/* public: __thiscall HOLDER::HOLDER(void) */
-
 void __thiscall HOLDER::HOLDER(HOLDER *this)
 {
   this->HoldMsg = (char *)0x0;
@@ -55,8 +51,6 @@ void __thiscall HOLDER::HOLDER(HOLDER *this)
 
 // Function: ~HOLDER
 // Address: 00426600
-/* public: __thiscall HOLDER::~HOLDER(void) */
-
 void __thiscall HOLDER::~HOLDER(HOLDER *this)
 {
   if (this->HoldMsg != (char *)0x0) {

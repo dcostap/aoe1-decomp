@@ -44,8 +44,6 @@
 // Address: 0040aa90
 // [HELPER] s_: ""
 // [HELPER] s_ConAI: "ConAI"
-/* public: __thiscall ConstructionAIModule::ConstructionAIModule(void *,int) */
-
 ConstructionAIModule * __thiscall
 ConstructionAIModule::ConstructionAIModule(ConstructionAIModule *this,void *param_1,int param_2)
 {
@@ -65,7 +63,6 @@ ConstructionAIModule::ConstructionAIModule(ConstructionAIModule *this,void *para
   pcStack_8 = FUN_0055c536;
   local_c = *unaff_FS_OFFSET;
   *unaff_FS_OFFSET = &local_c;
-                    /* language.dll match for 0x3ea: "X" */
   AIModule::AIModule((AIModule *)this,s_ConAI,0x3ea,param_2,param_1);
   this_00 = &this->constructionLots;
   local_4 = 0;
@@ -117,9 +114,6 @@ ConstructionAIModule::ConstructionAIModule(ConstructionAIModule *this,void *para
 
 // Function: `scalar_deleting_destructor'
 // Address: 0040ab90
-/* public: virtual void * __thiscall ConstructionAIModule::`scalar deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 ConstructionAIModule::_scalar_deleting_destructor_(ConstructionAIModule *this,uint param_1)
 {
@@ -135,9 +129,6 @@ ConstructionAIModule::_scalar_deleting_destructor_(ConstructionAIModule *this,ui
 // Function: ConstructionAIModule
 // Address: 0040abb0
 // [HELPER] s_ConAI: "ConAI"
-/* WARNING: Variable defined which should be unmapped: tempInt */
-/* public: __thiscall ConstructionAIModule::ConstructionAIModule(int,int) */
-
 ConstructionAIModule * __thiscall
 ConstructionAIModule::ConstructionAIModule(ConstructionAIModule *this,int param_1,int param_2)
 {
@@ -174,7 +165,6 @@ ConstructionAIModule::ConstructionAIModule(ConstructionAIModule *this,int param_
   local_c = *unaff_FS_OFFSET;
   *unaff_FS_OFFSET = &local_c;
   name._0_4_ = this;
-                    /* language.dll match for 0x3ea: "X" */
   AIModule::AIModule((AIModule *)this,s_ConAI,0x3ea,param_1,(void *)0x0);
   piVar1 = &this->numberConstructionLotsValue;
   pCVar4 = &this->constructionLots;
@@ -225,7 +215,6 @@ ConstructionAIModule::ConstructionAIModule(ConstructionAIModule *this,int param_
       rge_read(param_2,&z_fffffeb4,4);
       rge_read(param_2,&uniqueID_fffffeb8,4);
       rge_read(param_2,&buildAttemptsValue_fffffec0,4);
-                    /* language.dll match for 0x80: "Arial" */
       local_118 = (ConstructionItem *)operator_new(0x80);
       local_4._0_1_ = 3;
       if (local_118 == (ConstructionItem *)0x0) {
@@ -273,7 +262,6 @@ ConstructionAIModule::ConstructionAIModule(ConstructionAIModule *this,int param_
       rge_read(param_2,&zSize,4);
       rge_read(param_2,&gameID,4);
       rge_read(param_2,&ySize_fffffec4,4);
-                    /* language.dll match for 0x80: "Arial" */
       local_118 = (ConstructionItem *)operator_new(0x80);
       local_4._0_1_ = 4;
       if (local_118 == (ConstructionItem *)0x0) {
@@ -310,8 +298,6 @@ ConstructionAIModule::ConstructionAIModule(ConstructionAIModule *this,int param_
 
 // Function: ~ConstructionAIModule
 // Address: 0040b120
-/* public: virtual __thiscall ConstructionAIModule::~ConstructionAIModule(void) */
-
 void __thiscall ConstructionAIModule::~ConstructionAIModule(ConstructionAIModule *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -341,9 +327,6 @@ void __thiscall ConstructionAIModule::~ConstructionAIModule(ConstructionAIModule
 
 // Function: save
 // Address: 0040b1a0
-/* WARNING: Variable defined which should be unmapped: tempInt */
-/* public: virtual int __thiscall ConstructionAIModule::save(int) */
-
 int __thiscall ConstructionAIModule::save(ConstructionAIModule *this,int param_1)
 {
   char cVar1;
@@ -563,10 +546,6 @@ int __thiscall ConstructionAIModule::save(ConstructionAIModule *this,int param_1
 // [HELPER] s__s: "%s"
 // [HELPER] s__tmp: ".tmp"
 // [HELPER] s_r: "r"
-/* WARNING: Variable defined which should be unmapped: commentTemp1 */
-/* public: virtual int __thiscall ConstructionAIModule::loadConstructionPlan(char
-   *,int,int,float,float,float) */
-
 int __thiscall
 ConstructionAIModule::loadConstructionPlan
           (ConstructionAIModule *this,char *param_1,int param_2,int param_3,float param_4,
@@ -688,7 +667,6 @@ LAB_0040b91b:
         zSize = this->zReferencePointValue + zSize;
         pCVar7 = lot(this,z,x);
         if (pCVar7 == (ConstructionItem *)0x0) {
-                    /* language.dll match for 0x80: "Arial" */
           name._0_4_ = operator_new(0x80);
           local_4 = 0;
           if ((ConstructionItem *)name._0_4_ == (ConstructionItem *)0x0) {
@@ -728,8 +706,6 @@ LAB_0040b950:
 
 // Function: constructionPlanName
 // Address: 0040b970
-/* public: char * __thiscall ConstructionAIModule::constructionPlanName(void) */
-
 char * __thiscall ConstructionAIModule::constructionPlanName(ConstructionAIModule *this)
 {
   return this->constructionPlanNameValue;
@@ -739,9 +715,6 @@ char * __thiscall ConstructionAIModule::constructionPlanName(ConstructionAIModul
 
 // Function: setReferencePoint
 // Address: 0040b980
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall ConstructionAIModule::setReferencePoint(int,int,float,float,float) */
-
 void __thiscall
 ConstructionAIModule::setReferencePoint
           (ConstructionAIModule *this,int param_1,int param_2,float param_3,float param_4,
@@ -808,8 +781,6 @@ LAB_0040bb29:
 
 // Function: xReferencePoint
 // Address: 0040bb70
-/* public: float __thiscall ConstructionAIModule::xReferencePoint(void) */
-
 float __thiscall ConstructionAIModule::xReferencePoint(ConstructionAIModule *this)
 {
   return this->xReferencePointValue;
@@ -819,8 +790,6 @@ float __thiscall ConstructionAIModule::xReferencePoint(ConstructionAIModule *thi
 
 // Function: yReferencePoint
 // Address: 0040bb80
-/* public: float __thiscall ConstructionAIModule::yReferencePoint(void) */
-
 float __thiscall ConstructionAIModule::yReferencePoint(ConstructionAIModule *this)
 {
   return this->yReferencePointValue;
@@ -830,9 +799,6 @@ float __thiscall ConstructionAIModule::yReferencePoint(ConstructionAIModule *thi
 
 // Function: placeStructure
 // Address: 0040bb90
-/* public: virtual class ConstructionItem * __thiscall ConstructionAIModule::placeStructure(class
-   BuildItem *) */
-
 ConstructionItem * __thiscall
 ConstructionAIModule::placeStructure(ConstructionAIModule *this,BuildItem *param_1)
 {
@@ -843,9 +809,6 @@ ConstructionAIModule::placeStructure(ConstructionAIModule *this,BuildItem *param
 
 // Function: lastPlacementReturnCode
 // Address: 0040bba0
-/* public: enum ConstructionAIModule::PlacementResult __thiscall
-   ConstructionAIModule::lastPlacementReturnCode(void) */
-
 PlacementResult __thiscall ConstructionAIModule::lastPlacementReturnCode(ConstructionAIModule *this)
 {
   return this->lastPlacementReturnCodeValue;
@@ -855,8 +818,6 @@ PlacementResult __thiscall ConstructionAIModule::lastPlacementReturnCode(Constru
 
 // Function: setBuilt
 // Address: 0040bbb0
-/* public: virtual void __thiscall ConstructionAIModule::setBuilt(class ConstructionItem *,int) */
-
 void __thiscall
 ConstructionAIModule::setBuilt(ConstructionAIModule *this,ConstructionItem *param_1,int param_2)
 {
@@ -884,9 +845,6 @@ ConstructionAIModule::setBuilt(ConstructionAIModule *this,ConstructionItem *para
 
 // Function: unplaceStructure
 // Address: 0040bc00
-/* public: virtual int __thiscall ConstructionAIModule::unplaceStructure(class ConstructionItem
-   *,int) */
-
 int __thiscall
 ConstructionAIModule::unplaceStructure
           (ConstructionAIModule *this,ConstructionItem *param_1,int param_2)
@@ -921,8 +879,6 @@ ConstructionAIModule::unplaceStructure
 
 // Function: unplaceStructure
 // Address: 0040bc80
-/* public: virtual int __thiscall ConstructionAIModule::unplaceStructure(float,float,int) */
-
 int __thiscall
 ConstructionAIModule::unplaceStructure
           (ConstructionAIModule *this,float param_1,float param_2,int param_3)
@@ -961,8 +917,6 @@ ConstructionAIModule::unplaceStructure
 
 // Function: decrementBuildAttempts
 // Address: 0040bd10
-/* public: virtual void __thiscall ConstructionAIModule::decrementBuildAttempts(float,float,int) */
-
 void __thiscall
 ConstructionAIModule::decrementBuildAttempts
           (ConstructionAIModule *this,float param_1,float param_2,int param_3)
@@ -983,8 +937,6 @@ ConstructionAIModule::decrementBuildAttempts
 
 // Function: incrementBuildAttempts
 // Address: 0040bd40
-/* public: virtual void __thiscall ConstructionAIModule::incrementBuildAttempts(float,float,int) */
-
 void __thiscall
 ConstructionAIModule::incrementBuildAttempts
           (ConstructionAIModule *this,float param_1,float param_2,int param_3)
@@ -1005,8 +957,6 @@ ConstructionAIModule::incrementBuildAttempts
 
 // Function: lot
 // Address: 0040bd70
-/* public: class ConstructionItem * __thiscall ConstructionAIModule::lot(float,float) */
-
 ConstructionItem * __thiscall
 ConstructionAIModule::lot(ConstructionAIModule *this,float param_1,float param_2)
 {
@@ -1042,8 +992,6 @@ ConstructionAIModule::lot(ConstructionAIModule *this,float param_1,float param_2
 
 // Function: randomLot
 // Address: 0040be10
-/* public: class ConstructionItem * __thiscall ConstructionAIModule::randomLot(float,float) */
-
 ConstructionItem * __thiscall
 ConstructionAIModule::randomLot(ConstructionAIModule *this,float param_1,float param_2)
 {
@@ -1073,8 +1021,6 @@ ConstructionAIModule::randomLot(ConstructionAIModule *this,float param_1,float p
 
 // Function: removeOldLots
 // Address: 0040be70
-/* protected: void __thiscall ConstructionAIModule::removeOldLots(void) */
-
 void __thiscall ConstructionAIModule::removeOldLots(ConstructionAIModule *this)
 {
   ConstructionItem *pCVar1;

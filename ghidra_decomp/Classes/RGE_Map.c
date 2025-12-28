@@ -53,8 +53,6 @@
 
 // Function: RGE_Map
 // Address: 00455000
-/* public: __thiscall RGE_Map::RGE_Map(int,class RGE_Sound * *,unsigned char) */
-
 RGE_Map * __thiscall RGE_Map::RGE_Map(RGE_Map *this,int param_1,RGE_Sound **param_2,uchar param_3)
 {
   RGE_Game_World *pRVar1;
@@ -81,8 +79,6 @@ RGE_Map * __thiscall RGE_Map::RGE_Map(RGE_Map *this,int param_1,RGE_Sound **para
 
 // Function: `vector_deleting_destructor'
 // Address: 00455080
-/* public: virtual void * __thiscall RGE_Map::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall RGE_Map::_vector_deleting_destructor_(RGE_Map *this,uint param_1)
 {
   ~RGE_Map(this);
@@ -96,9 +92,6 @@ void * __thiscall RGE_Map::_vector_deleting_destructor_(RGE_Map *this,uint param
 
 // Function: RGE_Map
 // Address: 004550a0
-/* public: __thiscall RGE_Map::RGE_Map(char *,char *,char *,short,short,short,class RGE_Sound * *)
-    */
-
 RGE_Map * __thiscall
 RGE_Map::RGE_Map(RGE_Map *this,char *param_1,char *param_2,char *param_3,short param_4,short param_5
                 ,short param_6,RGE_Sound **param_7)
@@ -199,8 +192,6 @@ RGE_Map::RGE_Map(RGE_Map *this,char *param_1,char *param_2,char *param_3,short p
 
 // Function: ~RGE_Map
 // Address: 00455430
-/* public: virtual __thiscall RGE_Map::~RGE_Map(void) */
-
 void __thiscall RGE_Map::~RGE_Map(RGE_Map *this)
 {
   RGE_Zone_Map_List *this_00;
@@ -277,8 +268,6 @@ void __thiscall RGE_Map::~RGE_Map(RGE_Map *this)
 
 // Function: init_tile_sizes
 // Address: 00455570
-/* public: void __thiscall RGE_Map::init_tile_sizes(void) */
-
 void __thiscall RGE_Map::init_tile_sizes(RGE_Map *this)
 {
   this->tile_width = 0x40;
@@ -312,8 +301,6 @@ void __thiscall RGE_Map::init_tile_sizes(RGE_Map *this)
 
 // Function: data_load_random_map
 // Address: 004557c0
-/* public: virtual void __thiscall RGE_Map::data_load_random_map(int) */
-
 void __thiscall RGE_Map::data_load_random_map(RGE_Map *this,int param_1)
 {
   RGE_RMM_Database_Controller *pRVar1;
@@ -344,8 +331,6 @@ void __thiscall RGE_Map::data_load_random_map(RGE_Map *this,int param_1)
 
 // Function: load_random_map
 // Address: 00455820
-/* public: virtual void __thiscall RGE_Map::load_random_map(char *,char *,char *,char *) */
-
 void __thiscall
 RGE_Map::load_random_map(RGE_Map *this,char *param_1,char *param_2,char *param_3,char *param_4)
 {
@@ -378,8 +363,6 @@ RGE_Map::load_random_map(RGE_Map *this,char *param_1,char *param_2,char *param_3
 
 // Function: set_map_visible
 // Address: 00455890
-/* public: void __thiscall RGE_Map::set_map_visible(unsigned char) */
-
 void __thiscall RGE_Map::set_map_visible(RGE_Map *this,uchar param_1)
 {
   this->map_visible_flag = param_1;
@@ -390,8 +373,6 @@ void __thiscall RGE_Map::set_map_visible(RGE_Map *this,uchar param_1)
 
 // Function: set_map_fog
 // Address: 004558a0
-/* public: void __thiscall RGE_Map::set_map_fog(unsigned char) */
-
 void __thiscall RGE_Map::set_map_fog(RGE_Map *this,uchar param_1)
 {
   this->fog_flag = param_1;
@@ -402,9 +383,6 @@ void __thiscall RGE_Map::set_map_fog(RGE_Map *this,uchar param_1)
 
 // Function: clear_map
 // Address: 004558b0
-/* public: void __thiscall RGE_Map::clear_map(class RGE_Player *,class RGE_Game_World *,unsigned
-   char,long,long) */
-
 void __thiscall
 RGE_Map::clear_map(RGE_Map *this,RGE_Player *param_1,RGE_Game_World *param_2,uchar param_3,
                   long param_4,long param_5)
@@ -424,8 +402,6 @@ RGE_Map::clear_map(RGE_Map *this,RGE_Player *param_1,RGE_Game_World *param_2,uch
 
 // Function: new_map
 // Address: 00455910
-/* public: void __thiscall RGE_Map::new_map(long,long) */
-
 void __thiscall RGE_Map::new_map(RGE_Map *this,long param_1,long param_2)
 {
   RGE_Player **ppRVar1;
@@ -575,8 +551,6 @@ void __thiscall RGE_Map::new_map(RGE_Map *this,long param_1,long param_2)
 
 // Function: clear_map
 // Address: 00455c20
-/* public: void __thiscall RGE_Map::clear_map(unsigned char,unsigned char) */
-
 void __thiscall RGE_Map::clear_map(RGE_Map *this,uchar param_1,uchar param_2)
 {
   RGE_Tile *pRVar1;
@@ -615,8 +589,6 @@ void __thiscall RGE_Map::clear_map(RGE_Map *this,uchar param_1,uchar param_2)
 
 // Function: request_redraw
 // Address: 00455cb0
-/* public: void __thiscall RGE_Map::request_redraw(int,int,int,int,unsigned char) */
-
 void __thiscall
 RGE_Map::request_redraw(RGE_Map *this,int param_1,int param_2,int param_3,int param_4,uchar param_5)
 {
@@ -669,8 +641,6 @@ RGE_Map::request_redraw(RGE_Map *this,int param_1,int param_2,int param_3,int pa
 
 // Function: clear_map_view_info
 // Address: 00455d60
-/* public: void __thiscall RGE_Map::clear_map_view_info(void) */
-
 void __thiscall RGE_Map::clear_map_view_info(RGE_Map *this)
 {
   uchar *puVar1;
@@ -703,8 +673,6 @@ void __thiscall RGE_Map::clear_map_view_info(RGE_Map *this)
 
 // Function: coordinate_map
 // Address: 00455db0
-/* public: void __thiscall RGE_Map::coordinate_map(void) */
-
 void __thiscall RGE_Map::coordinate_map(RGE_Map *this)
 {
   set_map_screen_pos(this,0,0,this->map_width + -1,this->map_height + -1);
@@ -715,8 +683,6 @@ void __thiscall RGE_Map::coordinate_map(RGE_Map *this)
 
 // Function: set_map_screen_pos
 // Address: 00455dd0
-/* public: void __thiscall RGE_Map::set_map_screen_pos(int,int,int,int) */
-
 void __thiscall
 RGE_Map::set_map_screen_pos(RGE_Map *this,int param_1,int param_2,int param_3,int param_4)
 {
@@ -787,9 +753,6 @@ LAB_00455df4:
 
 // Function: scenario_save
 // Address: 00455f10
-/* WARNING: Variable defined which should be unmapped: height_info */
-/* public: void __thiscall RGE_Map::scenario_save(int) */
-
 void __thiscall RGE_Map::scenario_save(RGE_Map *this,int param_1)
 {
   int iVar1;
@@ -840,9 +803,6 @@ void __thiscall RGE_Map::scenario_save(RGE_Map *this,int param_1)
 
 // Function: scenario_load
 // Address: 00455ff0
-/* WARNING: Variable defined which should be unmapped: height_info */
-/* public: void __thiscall RGE_Map::scenario_load(int,unsigned char *) */
-
 void __thiscall RGE_Map::scenario_load(RGE_Map *this,int param_1,uchar *param_2)
 {
   undefined1 *puVar1;
@@ -899,8 +859,6 @@ void __thiscall RGE_Map::scenario_load(RGE_Map *this,int param_1,uchar *param_2)
 
 // Function: give_up_map_offsets
 // Address: 00456140
-/* public: struct RGE_Tile * * __thiscall RGE_Map::give_up_map_offsets(void) */
-
 RGE_Tile ** __thiscall RGE_Map::give_up_map_offsets(RGE_Map *this)
 {
   return this->map_row_offset;
@@ -910,8 +868,6 @@ RGE_Tile ** __thiscall RGE_Map::give_up_map_offsets(RGE_Map *this)
 
 // Function: get_map_width
 // Address: 00456150
-/* public: long __thiscall RGE_Map::get_map_width(void) */
-
 long __thiscall RGE_Map::get_map_width(RGE_Map *this)
 {
   return this->map_width;
@@ -921,8 +877,6 @@ long __thiscall RGE_Map::get_map_width(RGE_Map *this)
 
 // Function: get_map_height
 // Address: 00456160
-/* public: long __thiscall RGE_Map::get_map_height(void) */
-
 long __thiscall RGE_Map::get_map_height(RGE_Map *this)
 {
   return this->map_height;
@@ -932,10 +886,6 @@ long __thiscall RGE_Map::get_map_height(RGE_Map *this)
 
 // Function: postclean_elevation
 // Address: 00456170
-/* WARNING: Variable defined which should be unmapped: was_bad */
-/* public: unsigned char __thiscall RGE_Map::postclean_elevation(long,long,long,long,unsigned char)
-    */
-
 uchar __thiscall
 RGE_Map::postclean_elevation
           (RGE_Map *this,long param_1,long param_2,long param_3,long param_4,uchar param_5)
@@ -1069,9 +1019,6 @@ LAB_0045647c:
 
 // Function: preclean_elevation
 // Address: 004564e0
-/* WARNING: Variable defined which should be unmapped: change_flag */
-/* public: void __thiscall RGE_Map::preclean_elevation(long,long,long,long,unsigned char) */
-
 void __thiscall
 RGE_Map::preclean_elevation
           (RGE_Map *this,long param_1,long param_2,long param_3,long param_4,uchar param_5)
@@ -1243,9 +1190,6 @@ RGE_Map::preclean_elevation
 
 // Function: clean_elevation
 // Address: 004568c0
-/* WARNING: Variable defined which should be unmapped: change_flag */
-/* public: void __thiscall RGE_Map::clean_elevation(long,long,long,long,unsigned char) */
-
 void __thiscall
 RGE_Map::clean_elevation
           (RGE_Map *this,long param_1,long param_2,long param_3,long param_4,uchar param_5)
@@ -1449,9 +1393,6 @@ LAB_00456cd0:
 
 // Function: clean_terrain
 // Address: 00456e90
-/* WARNING: Variable defined which should be unmapped: index2 */
-/* public: void __thiscall RGE_Map::clean_terrain(long,long,long,long,unsigned char) */
-
 void __thiscall
 RGE_Map::clean_terrain
           (RGE_Map *this,long param_1,long param_2,long param_3,long param_4,uchar param_5)
@@ -1643,8 +1584,6 @@ LAB_00457292:
 
 // Function: clean_borders
 // Address: 00457300
-/* public: void __thiscall RGE_Map::clean_borders(long,long,long,long) */
-
 void __thiscall
 RGE_Map::clean_borders(RGE_Map *this,long param_1,long param_2,long param_3,long param_4)
 {
@@ -1655,8 +1594,6 @@ RGE_Map::clean_borders(RGE_Map *this,long param_1,long param_2,long param_3,long
 
 // Function: clean_border_tile
 // Address: 00457310
-/* public: long __thiscall RGE_Map::clean_border_tile(long,long,long (* const)[32]) */
-
 long __thiscall RGE_Map::clean_border_tile(RGE_Map *this,long param_1,long param_2,long *param_3)
 {
   return -1;
@@ -1666,9 +1603,6 @@ long __thiscall RGE_Map::clean_border_tile(RGE_Map *this,long param_1,long param
 
 // Function: do_terrain_brush
 // Address: 00457320
-/* public: virtual unsigned char __thiscall RGE_Map::do_terrain_brush(long,long,long,unsigned char)
-    */
-
 uchar __thiscall
 RGE_Map::do_terrain_brush(RGE_Map *this,long param_1,long param_2,long param_3,uchar param_4)
 {
@@ -1705,9 +1639,6 @@ RGE_Map::do_terrain_brush(RGE_Map *this,long param_1,long param_2,long param_3,u
 
 // Function: do_terrain_brush_stroke
 // Address: 004573c0
-/* public: virtual unsigned char __thiscall
-   RGE_Map::do_terrain_brush_stroke(long,long,long,long,long,unsigned char) */
-
 uchar __thiscall
 RGE_Map::do_terrain_brush_stroke
           (RGE_Map *this,long param_1,long param_2,long param_3,long param_4,long param_5,
@@ -1769,10 +1700,6 @@ RGE_Map::do_terrain_brush_stroke
 
 // Function: do_elevation_brush
 // Address: 00457510
-/* WARNING: Variable defined which should be unmapped: x2 */
-/* public: virtual unsigned char __thiscall RGE_Map::do_elevation_brush(long,long,long,unsigned
-   char) */
-
 uchar __thiscall
 RGE_Map::do_elevation_brush(RGE_Map *this,long param_1,long param_2,long param_3,uchar param_4)
 {
@@ -1819,9 +1746,6 @@ RGE_Map::do_elevation_brush(RGE_Map *this,long param_1,long param_2,long param_3
 
 // Function: do_elevation_brush_stroke
 // Address: 004575c0
-/* public: virtual unsigned char __thiscall
-   RGE_Map::do_elevation_brush_stroke(long,long,long,long,long,unsigned char) */
-
 uchar __thiscall
 RGE_Map::do_elevation_brush_stroke
           (RGE_Map *this,long param_1,long param_2,long param_3,long param_4,long param_5,
@@ -1900,9 +1824,6 @@ RGE_Map::do_elevation_brush_stroke
 
 // Function: do_cliff_brush
 // Address: 00457750
-/* public: virtual unsigned char __thiscall RGE_Map::do_cliff_brush(long,long,unsigned char,unsigned
-   char) */
-
 uchar __thiscall
 RGE_Map::do_cliff_brush(RGE_Map *this,long param_1,long param_2,uchar param_3,uchar param_4)
 {
@@ -1913,9 +1834,6 @@ RGE_Map::do_cliff_brush(RGE_Map *this,long param_1,long param_2,uchar param_3,uc
 
 // Function: do_cliff_brush_stroke
 // Address: 00457760
-/* public: virtual unsigned char __thiscall
-   RGE_Map::do_cliff_brush_stroke(long,long,long,long,unsigned char,unsigned char) */
-
 uchar __thiscall
 RGE_Map::do_cliff_brush_stroke
           (RGE_Map *this,long param_1,long param_2,long param_3,long param_4,uchar param_5,
@@ -1976,9 +1894,6 @@ RGE_Map::do_cliff_brush_stroke
 
 // Function: map_generate
 // Address: 004578a0
-/* public: virtual void __thiscall RGE_Map::map_generate(class RGE_Player *,class RGE_Game_World
-   *,struct RGE_Player_Info *,unsigned char *) */
-
 void __thiscall
 RGE_Map::map_generate
           (RGE_Map *this,RGE_Player *param_1,RGE_Game_World *param_2,RGE_Player_Info *param_3,
@@ -1994,9 +1909,6 @@ RGE_Map::map_generate
 // [HELPER] s_After_Random_Map_Generation_rand: "After Random Map Generation random number is %d"
 // [HELPER] s_C__msdev_work_age1_x1_map_cpp: "C:\msdev\work\age1_x1\map.cpp"
 // [HELPER] s_Random_Map_Seed____d: "Random Map Seed = %d"
-/* public: virtual void __thiscall RGE_Map::map_generate2(class RGE_Game_World *,long,long,unsigned
-   char,long) */
-
 void __thiscall
 RGE_Map::map_generate2
           (RGE_Map *this,RGE_Game_World *param_1,long param_2,long param_3,uchar param_4,
@@ -2034,10 +1946,6 @@ RGE_Map::map_generate2
 
 // Function: load_map
 // Address: 004579c0
-/* WARNING: Variable defined which should be unmapped: x */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall RGE_Map::load_map(int) */
-
 void __thiscall RGE_Map::load_map(RGE_Map *this,int param_1)
 {
   int iVar1;
@@ -2141,9 +2049,6 @@ void __thiscall RGE_Map::load_map(RGE_Map *this,int param_1)
 
 // Function: save_map
 // Address: 00457c50
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall RGE_Map::save_map(int) */
-
 void __thiscall RGE_Map::save_map(RGE_Map *this,int param_1)
 {
   long *plVar1;
@@ -2200,8 +2105,6 @@ void __thiscall RGE_Map::save_map(RGE_Map *this,int param_1)
 
 // Function: save
 // Address: 00457df0
-/* public: virtual void __thiscall RGE_Map::save(int) */
-
 void __thiscall RGE_Map::save(RGE_Map *this,int param_1)
 {
   int *piVar1;
@@ -2257,9 +2160,6 @@ void __thiscall RGE_Map::save(RGE_Map *this,int param_1)
 // Function: load_terrain_types
 // Address: 00457eb0
 // [HELPER] s__shp: ".shp"
-/* WARNING: Variable defined which should be unmapped: filename2 */
-/* public: void __thiscall RGE_Map::load_terrain_types(class RGE_Sound * *) */
-
 void __thiscall RGE_Map::load_terrain_types(RGE_Map *this,RGE_Sound **param_1)
 {
   TShape *pTVar1;
@@ -2322,10 +2222,6 @@ void __thiscall RGE_Map::load_terrain_types(RGE_Map *this,RGE_Sound **param_1)
 // [HELPER] s__hd__hd: "%hd %hd"
 // [HELPER] s__hd__s__s__d__hd__hd__hd__hd__hd: "%hd %s %s %d %hd %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd"
 // [HELPER] s_r: "r"
-/* WARNING: Variable defined which should be unmapped: border_num */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall RGE_Map::load_terrain_types(char *,class RGE_Sound * *) */
-
 void __thiscall RGE_Map::load_terrain_types(RGE_Map *this,char *param_1,RGE_Sound **param_2)
 {
   char cVar1;
@@ -2504,9 +2400,6 @@ void __thiscall RGE_Map::load_terrain_types(RGE_Map *this,char *param_1,RGE_Soun
 // Function: load_border_types
 // Address: 00458280
 // [HELPER] s__shp: ".shp"
-/* WARNING: Variable defined which should be unmapped: filename2 */
-/* public: void __thiscall RGE_Map::load_border_types(class RGE_Sound * *) */
-
 void __thiscall RGE_Map::load_border_types(RGE_Map *this,RGE_Sound **param_1)
 {
   TShape *pTVar1;
@@ -2569,10 +2462,6 @@ void __thiscall RGE_Map::load_border_types(RGE_Map *this,RGE_Sound **param_1)
 // [HELPER] s__hd__hd: "%hd %hd"
 // [HELPER] s__hd__s__s__d__hd__hd__hd__hd__hd: "%hd %s %s %d %hd %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd"
 // [HELPER] s_r: "r"
-/* WARNING: Variable defined which should be unmapped: sound_id */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall RGE_Map::load_border_types(char *,class RGE_Sound * *) */
-
 void __thiscall RGE_Map::load_border_types(RGE_Map *this,char *param_1,RGE_Sound **param_2)
 {
   char cVar1;
@@ -2749,9 +2638,6 @@ void __thiscall RGE_Map::load_border_types(RGE_Map *this,char *param_1,RGE_Sound
 // [HELPER] s__hd: "%hd"
 // [HELPER] s__hd__hd__hd__hd: "%hd %hd %hd %hd"
 // [HELPER] s_r: "r"
-/* WARNING: Variable defined which should be unmapped: flag */
-/* public: void __thiscall RGE_Map::load_terrain_obj_types(char *) */
-
 void __thiscall RGE_Map::load_terrain_obj_types(RGE_Map *this,char *param_1)
 {
   short *psVar1;
@@ -2794,9 +2680,6 @@ void __thiscall RGE_Map::load_terrain_obj_types(RGE_Map *this,char *param_1)
 
 // Function: delete_objects_on_tile
 // Address: 00458760
-/* public: void __thiscall RGE_Map::delete_objects_on_tile(class RGE_Player *,class RGE_Game_World
-   *,int,int,int,int) */
-
 void __thiscall
 RGE_Map::delete_objects_on_tile
           (RGE_Map *this,RGE_Player *param_1,RGE_Game_World *param_2,int param_3,int param_4,
@@ -2826,8 +2709,6 @@ RGE_Map::delete_objects_on_tile
 
 // Function: delete_all_objects_on_tile
 // Address: 004587d0
-/* public: void __thiscall RGE_Map::delete_all_objects_on_tile(int,int) */
-
 void __thiscall RGE_Map::delete_all_objects_on_tile(RGE_Map *this,int param_1,int param_2)
 {
   RGE_Object_Node *pRVar1;
@@ -2854,11 +2735,6 @@ void __thiscall RGE_Map::delete_all_objects_on_tile(RGE_Map *this,int param_1,in
 // Function: create_terrain_object
 // Address: 00458820
 // [HELPER] s_C__msdev_work_age1_x1_map_cpp: "C:\msdev\work\age1_x1\map.cpp"
-/* WARNING: Variable defined which should be unmapped: y */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall RGE_Map::create_terrain_object(class RGE_Player *,class RGE_Game_World
-   *,short,short,short,int,int,int) */
-
 void __thiscall
 RGE_Map::create_terrain_object
           (RGE_Map *this,RGE_Player *param_1,RGE_Game_World *param_2,short param_3,short param_4,
@@ -2976,9 +2852,6 @@ RGE_Map::create_terrain_object
 
 // Function: clear_terrain_object
 // Address: 00458b40
-/* public: int __thiscall RGE_Map::clear_terrain_object(class RGE_Game_World
-   *,short,short,short,int,int,int) */
-
 int __thiscall
 RGE_Map::clear_terrain_object
           (RGE_Map *this,RGE_Game_World *param_1,short param_2,short param_3,short param_4,
@@ -3048,11 +2921,6 @@ LAB_00458c62:
 // Function: place_terrain_object
 // Address: 00458c90
 // [HELPER] s_C__msdev_work_age1_x1_map_cpp: "C:\msdev\work\age1_x1\map.cpp"
-/* WARNING: Variable defined which should be unmapped: obj_flag */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall RGE_Map::place_terrain_object(class RGE_Player *,class RGE_Game_World
-   *,short,short,int,int) */
-
 void __thiscall
 RGE_Map::place_terrain_object
           (RGE_Map *this,RGE_Player *param_1,RGE_Game_World *param_2,short param_3,short param_4,
@@ -3153,9 +3021,6 @@ RGE_Map::place_terrain_object
 
 // Function: create_terrain_objects
 // Address: 00458fd0
-/* public: void __thiscall RGE_Map::create_terrain_objects(class RGE_Player *,class RGE_Game_World
-   *) */
-
 void __thiscall
 RGE_Map::create_terrain_objects(RGE_Map *this,RGE_Player *param_1,RGE_Game_World *param_2)
 {
@@ -3182,8 +3047,6 @@ RGE_Map::create_terrain_objects(RGE_Map *this,RGE_Player *param_1,RGE_Game_World
 
 // Function: set_tile_size
 // Address: 00459020
-/* public: void __thiscall RGE_Map::set_tile_size(unsigned char,short,short,short) */
-
 void __thiscall
 RGE_Map::set_tile_size(RGE_Map *this,uchar param_1,short param_2,short param_3,short param_4)
 {
@@ -3200,10 +3063,6 @@ RGE_Map::set_tile_size(RGE_Map *this,uchar param_1,short param_2,short param_3,s
 
 // Function: tile_map_coords
 // Address: 00459060
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall RGE_Map::tile_map_coords(short,short,struct RGE_Tile *,float *,float *)
-    */
-
 void __thiscall
 RGE_Map::tile_map_coords
           (RGE_Map *this,short param_1,short param_2,RGE_Tile *param_3,float *param_4,float *param_5
@@ -3327,8 +3186,6 @@ switchD_004590c7_caseD_5:
 
 // Function: check_map_coords
 // Address: 004593a0
-/* public: unsigned char __thiscall RGE_Map::check_map_coords(short,short) */
-
 uchar __thiscall RGE_Map::check_map_coords(RGE_Map *this,short param_1,short param_2)
 {
   if ((((-1 < param_1) && ((int)param_1 < this->map_width)) && (-1 < param_2)) &&
@@ -3342,8 +3199,6 @@ uchar __thiscall RGE_Map::check_map_coords(RGE_Map *this,short param_1,short par
 
 // Function: get_elev
 // Address: 004593d0
-/* public: unsigned char __thiscall RGE_Map::get_elev(short,short) */
-
 uchar __thiscall RGE_Map::get_elev(RGE_Map *this,short param_1,short param_2)
 {
   byte bVar1;
@@ -3359,8 +3214,6 @@ uchar __thiscall RGE_Map::get_elev(RGE_Map *this,short param_1,short param_2)
 
 // Function: get_terrain
 // Address: 00459400
-/* public: unsigned char __thiscall RGE_Map::get_terrain(short,short) */
-
 uchar __thiscall RGE_Map::get_terrain(RGE_Map *this,short param_1,short param_2)
 {
   byte bVar1;
@@ -3378,8 +3231,6 @@ uchar __thiscall RGE_Map::get_terrain(RGE_Map *this,short param_1,short param_2)
 
 // Function: get_border
 // Address: 00459460
-/* public: unsigned char __thiscall RGE_Map::get_border(short,short) */
-
 uchar __thiscall RGE_Map::get_border(RGE_Map *this,short param_1,short param_2)
 {
   byte bVar1;
@@ -3396,8 +3247,6 @@ uchar __thiscall RGE_Map::get_border(RGE_Map *this,short param_1,short param_2)
 
 // Function: set_terrain_passablity
 // Address: 004594b0
-/* public: void __thiscall RGE_Map::set_terrain_passablity(short,short,short,short,unsigned char) */
-
 void __thiscall
 RGE_Map::set_terrain_passablity
           (RGE_Map *this,short param_1,short param_2,short param_3,short param_4,uchar param_5)
@@ -3466,9 +3315,6 @@ RGE_Map::set_terrain_passablity
 
 // Function: set_elev
 // Address: 004595e0
-/* public: void __thiscall RGE_Map::set_elev(short,short,short,short,unsigned char,short,unsigned
-   char) */
-
 void __thiscall
 RGE_Map::set_elev(RGE_Map *this,short param_1,short param_2,short param_3,short param_4,
                  uchar param_5,short param_6,uchar param_7)
@@ -3616,10 +3462,6 @@ RGE_Map::set_elev(RGE_Map *this,short param_1,short param_2,short param_3,short 
 
 // Function: set_terrain
 // Address: 00459900
-/* WARNING: Variable defined which should be unmapped: old_terrain */
-/* public: void __thiscall RGE_Map::set_terrain(class RGE_Game_World *,short,short,unsigned
-   char,int,int) */
-
 void __thiscall
 RGE_Map::set_terrain
           (RGE_Map *this,RGE_Game_World *param_1,short param_2,short param_3,uchar param_4,
@@ -3660,10 +3502,6 @@ RGE_Map::set_terrain
 
 // Function: set_terrain_absolute
 // Address: 00459a00
-/* WARNING: Variable defined which should be unmapped: obj_owner */
-/* public: void __thiscall RGE_Map::set_terrain_absolute(class RGE_Game_World *,short,short,unsigned
-   char,int,int) */
-
 void __thiscall
 RGE_Map::set_terrain_absolute
           (RGE_Map *this,RGE_Game_World *param_1,short param_2,short param_3,uchar param_4,
@@ -3689,9 +3527,6 @@ RGE_Map::set_terrain_absolute
 
 // Function: set_terrain
 // Address: 00459a90
-/* public: void __thiscall RGE_Map::set_terrain(class RGE_Player *,class RGE_Game_World
-   *,short,short,short,short,unsigned char,unsigned char,int) */
-
 void __thiscall
 RGE_Map::set_terrain
           (RGE_Map *this,RGE_Player *param_1,RGE_Game_World *param_2,short param_3,short param_4,
@@ -3788,9 +3623,6 @@ RGE_Map::set_terrain
 
 // Function: get_tile_type
 // Address: 00459d20
-/* WARNING: Variable defined which should be unmapped: ecl */
-/* public: unsigned char __thiscall RGE_Map::get_tile_type(short,short) */
-
 uchar __thiscall RGE_Map::get_tile_type(RGE_Map *this,short param_1,short param_2)
 {
   ushort uVar1;
@@ -3917,9 +3749,6 @@ uchar __thiscall RGE_Map::get_tile_type(RGE_Map *this,short param_1,short param_
 
 // Function: get_border_type
 // Address: 0045a030
-/* WARNING: Variable defined which should be unmapped: ter_top */
-/* public: void __thiscall RGE_Map::get_border_type(short,short) */
-
 void __thiscall RGE_Map::get_border_type(RGE_Map *this,short param_1,short param_2)
 {
   byte bVar1;
@@ -4106,8 +3935,6 @@ LAB_0045a436:
 
 // Function: check_for_border
 // Address: 0045a490
-/* public: void __thiscall RGE_Map::check_for_border(unsigned char,unsigned char &) */
-
 void __thiscall RGE_Map::check_for_border(RGE_Map *this,uchar param_1,uchar *param_2)
 {
   short sVar1;
@@ -4124,10 +3951,6 @@ void __thiscall RGE_Map::check_for_border(RGE_Map *this,uchar param_1,uchar *par
 
 // Function: update
 // Address: 0045a500
-/* WARNING: Variable defined which should be unmapped: i */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall RGE_Map::update(unsigned long) */
-
 void __thiscall RGE_Map::update(RGE_Map *this,ulong param_1)
 {
   short sVar1;
@@ -4213,8 +4036,6 @@ void __thiscall RGE_Map::update(RGE_Map *this,ulong param_1)
 
 // Function: get_point
 // Address: 0045a6d0
-/* public: void __thiscall RGE_Map::get_point(short &,short &,float,float,float,short,short) */
-
 void __thiscall
 RGE_Map::get_point(RGE_Map *this,short *param_1,short *param_2,float param_3,float param_4,
                   float param_5,short param_6,short param_7)

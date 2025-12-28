@@ -27,8 +27,6 @@
 
 // Function: RGE_Active_Sprite
 // Address: 0041ad20
-/* public: __thiscall RGE_Active_Sprite::RGE_Active_Sprite(class RGE_Sprite *) */
-
 void __thiscall RGE_Active_Sprite::RGE_Active_Sprite(RGE_Active_Sprite *this,RGE_Sprite *param_1)
 {
   this->sprite = param_1;
@@ -43,9 +41,6 @@ void __thiscall RGE_Active_Sprite::RGE_Active_Sprite(RGE_Active_Sprite *this,RGE
 
 // Function: `scalar_deleting_destructor'
 // Address: 0041ad40
-/* public: virtual void * __thiscall RGE_Active_Sprite::`scalar deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 RGE_Active_Sprite::_scalar_deleting_destructor_(RGE_Active_Sprite *this,uint param_1)
 {
@@ -60,8 +55,6 @@ RGE_Active_Sprite::_scalar_deleting_destructor_(RGE_Active_Sprite *this,uint par
 
 // Function: RGE_Active_Sprite
 // Address: 0041ad60
-/* public: __thiscall RGE_Active_Sprite::RGE_Active_Sprite(int,class RGE_Sprite * *) */
-
 RGE_Active_Sprite * __thiscall
 RGE_Active_Sprite::RGE_Active_Sprite(RGE_Active_Sprite *this,int param_1,RGE_Sprite **param_2)
 {
@@ -86,8 +79,6 @@ RGE_Active_Sprite::RGE_Active_Sprite(RGE_Active_Sprite *this,int param_1,RGE_Spr
 
 // Function: ~RGE_Active_Sprite
 // Address: 0041add0
-/* public: virtual __thiscall RGE_Active_Sprite::~RGE_Active_Sprite(void) */
-
 void __thiscall RGE_Active_Sprite::~RGE_Active_Sprite(RGE_Active_Sprite *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -98,8 +89,6 @@ void __thiscall RGE_Active_Sprite::~RGE_Active_Sprite(RGE_Active_Sprite *this)
 
 // Function: set_offset
 // Address: 0041ade0
-/* public: virtual void __thiscall RGE_Active_Sprite::set_offset(long,long) */
-
 void __thiscall RGE_Active_Sprite::set_offset(RGE_Active_Sprite *this,long param_1,long param_2)
 {
   this->offset_x = param_1;
@@ -111,8 +100,6 @@ void __thiscall RGE_Active_Sprite::set_offset(RGE_Active_Sprite *this,long param
 
 // Function: save
 // Address: 0041ae00
-/* public: virtual void __thiscall RGE_Active_Sprite::save(int) */
-
 void __thiscall RGE_Active_Sprite::save(RGE_Active_Sprite *this,int param_1)
 {
   rge_write(param_1,&this->type,1);
@@ -126,8 +113,6 @@ void __thiscall RGE_Active_Sprite::save(RGE_Active_Sprite *this,int param_1)
 
 // Function: update
 // Address: 0041ae50
-/* public: virtual void __thiscall RGE_Active_Sprite::update(float,float) */
-
 void __thiscall RGE_Active_Sprite::update(RGE_Active_Sprite *this,float param_1,float param_2)
 {
   return;
@@ -137,9 +122,6 @@ void __thiscall RGE_Active_Sprite::update(RGE_Active_Sprite *this,float param_1,
 
 // Function: draw
 // Address: 0041ae60
-/* public: virtual void __thiscall RGE_Active_Sprite::draw(short,long,long,long,long,class
-   RGE_Color_Table *,class TDrawArea *) */
-
 void __thiscall
 RGE_Active_Sprite::draw
           (RGE_Active_Sprite *this,short param_1,long param_2,long param_3,long param_4,long param_5
@@ -154,9 +136,6 @@ RGE_Active_Sprite::draw
 
 // Function: normal_draw
 // Address: 0041aeb0
-/* public: virtual void __thiscall RGE_Active_Sprite::normal_draw(short,long,long,class
-   RGE_Color_Table *,class TDrawArea *) */
-
 void __thiscall
 RGE_Active_Sprite::normal_draw
           (RGE_Active_Sprite *this,short param_1,long param_2,long param_3,RGE_Color_Table *param_4,
@@ -172,9 +151,6 @@ RGE_Active_Sprite::normal_draw
 
 // Function: shadow_draw
 // Address: 0041aef0
-/* public: virtual void __thiscall RGE_Active_Sprite::shadow_draw(short,long,long,class
-   RGE_Color_Table *,class TDrawArea *,unsigned char) */
-
 void __thiscall
 RGE_Active_Sprite::shadow_draw
           (RGE_Active_Sprite *this,short param_1,long param_2,long param_3,RGE_Color_Table *param_4,
@@ -190,8 +166,6 @@ RGE_Active_Sprite::shadow_draw
 
 // Function: what_frame
 // Address: 0041af30
-/* public: virtual short __thiscall RGE_Active_Sprite::what_frame(void) */
-
 short __thiscall RGE_Active_Sprite::what_frame(RGE_Active_Sprite *this)
 {
   return 0;
@@ -201,8 +175,6 @@ short __thiscall RGE_Active_Sprite::what_frame(RGE_Active_Sprite *this)
 
 // Function: set_frame
 // Address: 0041af40
-/* public: virtual void __thiscall RGE_Active_Sprite::set_frame(short) */
-
 void __thiscall RGE_Active_Sprite::set_frame(RGE_Active_Sprite *this,short param_1)
 {
   return;
@@ -212,8 +184,6 @@ void __thiscall RGE_Active_Sprite::set_frame(RGE_Active_Sprite *this,short param
 
 // Function: is_animating
 // Address: 0041af50
-/* public: virtual unsigned char __thiscall RGE_Active_Sprite::is_animating(void) */
-
 uchar __thiscall RGE_Active_Sprite::is_animating(RGE_Active_Sprite *this)
 {
   return '\0';
@@ -223,8 +193,6 @@ uchar __thiscall RGE_Active_Sprite::is_animating(RGE_Active_Sprite *this)
 
 // Function: frame_passed
 // Address: 0041af60
-/* public: virtual unsigned char __thiscall RGE_Active_Sprite::frame_passed(short) */
-
 uchar __thiscall RGE_Active_Sprite::frame_passed(RGE_Active_Sprite *this,short param_1)
 {
   return '\0';
@@ -234,8 +202,6 @@ uchar __thiscall RGE_Active_Sprite::frame_passed(RGE_Active_Sprite *this,short p
 
 // Function: looped
 // Address: 0041af70
-/* public: virtual unsigned char __thiscall RGE_Active_Sprite::looped(void) */
-
 uchar __thiscall RGE_Active_Sprite::looped(RGE_Active_Sprite *this)
 {
   return '\0';
@@ -245,9 +211,6 @@ uchar __thiscall RGE_Active_Sprite::looped(RGE_Active_Sprite *this)
 
 // Function: get_facetindex
 // Address: 0041af80
-/* WARNING: Variable defined which should be unmapped: facet_index */
-/* public: virtual short __thiscall RGE_Active_Sprite::get_facetindex(short) */
-
 short __thiscall RGE_Active_Sprite::get_facetindex(RGE_Active_Sprite *this,short param_1)
 {
   long facet_index;
@@ -262,9 +225,6 @@ short __thiscall RGE_Active_Sprite::get_facetindex(RGE_Active_Sprite *this,short
 
 // Function: get_frame
 // Address: 0041afb0
-/* public: virtual unsigned char __thiscall RGE_Active_Sprite::get_frame(short &,short &,short
-   &,short &,long) */
-
 uchar __thiscall
 RGE_Active_Sprite::get_frame
           (RGE_Active_Sprite *this,short *param_1,short *param_2,short *param_3,short *param_4,
@@ -280,8 +240,6 @@ RGE_Active_Sprite::get_frame
 
 // Function: get_lowest_draw_level
 // Address: 0041afe0
-/* public: unsigned char __thiscall RGE_Active_Sprite::get_lowest_draw_level(void) */
-
 uchar __thiscall RGE_Active_Sprite::get_lowest_draw_level(RGE_Active_Sprite *this)
 {
   uchar uVar1;
@@ -297,8 +255,6 @@ uchar __thiscall RGE_Active_Sprite::get_lowest_draw_level(RGE_Active_Sprite *thi
 
 // Function: setToFirstFrame
 // Address: 0041aff0
-/* public: virtual void __thiscall RGE_Active_Sprite::setToFirstFrame(void) */
-
 void __thiscall RGE_Active_Sprite::setToFirstFrame(RGE_Active_Sprite *this)
 {
   return;
@@ -308,8 +264,6 @@ void __thiscall RGE_Active_Sprite::setToFirstFrame(RGE_Active_Sprite *this)
 
 // Function: check_for_shadows
 // Address: 0041b000
-/* public: int __thiscall RGE_Active_Sprite::check_for_shadows(void) */
-
 int __thiscall RGE_Active_Sprite::check_for_shadows(RGE_Active_Sprite *this)
 {
   int iVar1;

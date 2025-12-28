@@ -518,9 +518,6 @@
 
 // Function: TribeCivilianUnitAIModule
 // Address: 00504b60
-/* public: __thiscall TribeCivilianUnitAIModule::TribeCivilianUnitAIModule(class RGE_Static_Object
-   *,int) */
-
 TribeCivilianUnitAIModule * __thiscall
 TribeCivilianUnitAIModule::TribeCivilianUnitAIModule
           (TribeCivilianUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
@@ -562,9 +559,6 @@ TribeCivilianUnitAIModule::TribeCivilianUnitAIModule
 
 // Function: `scalar_deleting_destructor'
 // Address: 00504c60
-/* public: virtual void * __thiscall TribeCivilianUnitAIModule::`scalar deleting
-   destructor'(unsigned int) */
-
 void * __thiscall
 TribeCivilianUnitAIModule::_scalar_deleting_destructor_
           (TribeCivilianUnitAIModule *this,uint param_1)
@@ -580,8 +574,6 @@ TribeCivilianUnitAIModule::_scalar_deleting_destructor_
 
 // Function: ~TribeCivilianUnitAIModule
 // Address: 00504c80
-/* public: virtual __thiscall TribeCivilianUnitAIModule::~TribeCivilianUnitAIModule(void) */
-
 void __thiscall
 TribeCivilianUnitAIModule::~TribeCivilianUnitAIModule(TribeCivilianUnitAIModule *this)
 {
@@ -627,8 +619,6 @@ TribeCivilianUnitAIModule::~TribeCivilianUnitAIModule(TribeCivilianUnitAIModule 
 
 // Function: importantWhenDead
 // Address: 00504c90
-/* public: virtual int __thiscall TribeCivilianUnitAIModule::importantWhenDead(int) */
-
 int __thiscall
 TribeCivilianUnitAIModule::importantWhenDead(TribeCivilianUnitAIModule *this,int param_1)
 {
@@ -643,8 +633,6 @@ TribeCivilianUnitAIModule::importantWhenDead(TribeCivilianUnitAIModule *this,int
 
 // Function: attackObject
 // Address: 00504cc0
-/* public: virtual int __thiscall TribeCivilianUnitAIModule::attackObject(int,int) */
-
 int __thiscall
 TribeCivilianUnitAIModule::attackObject(TribeCivilianUnitAIModule *this,int param_1,int param_2)
 {
@@ -671,9 +659,6 @@ TribeCivilianUnitAIModule::attackObject(TribeCivilianUnitAIModule *this,int para
 
 // Function: canAttackUnit
 // Address: 00504d20
-/* public: virtual int __thiscall TribeCivilianUnitAIModule::canAttackUnit(class RGE_Static_Object
-   *) */
-
 int __thiscall
 TribeCivilianUnitAIModule::canAttackUnit(TribeCivilianUnitAIModule *this,RGE_Static_Object *param_1)
 {
@@ -687,8 +672,6 @@ TribeCivilianUnitAIModule::canAttackUnit(TribeCivilianUnitAIModule *this,RGE_Sta
 
 // Function: canAttackUnitAtNeutrality
 // Address: 00504d40
-/* public: virtual int __thiscall TribeCivilianUnitAIModule::canAttackUnitAtNeutrality(int) */
-
 int __thiscall
 TribeCivilianUnitAIModule::canAttackUnitAtNeutrality(TribeCivilianUnitAIModule *this,int param_1)
 {
@@ -699,8 +682,6 @@ TribeCivilianUnitAIModule::canAttackUnitAtNeutrality(TribeCivilianUnitAIModule *
 
 // Function: retryableOrder
 // Address: 00504d50
-/* public: virtual int __thiscall TribeCivilianUnitAIModule::retryableOrder(int) */
-
 int __thiscall
 TribeCivilianUnitAIModule::retryableOrder(TribeCivilianUnitAIModule *this,int param_1)
 {
@@ -714,8 +695,6 @@ TribeCivilianUnitAIModule::retryableOrder(TribeCivilianUnitAIModule *this,int pa
 
 // Function: convertToLOSResourceType
 // Address: 00504d80
-/* public: virtual int __thiscall TribeCivilianUnitAIModule::convertToLOSResourceType(int) */
-
 int __thiscall
 TribeCivilianUnitAIModule::convertToLOSResourceType(TribeCivilianUnitAIModule *this,int param_1)
 {
@@ -743,12 +722,6 @@ TribeCivilianUnitAIModule::convertToLOSResourceType(TribeCivilianUnitAIModule *t
 // Address: 00504e10
 // [HELPER] s_C__msdev_work_age1_x1_taiuaimd_c: "C:\msdev\work\age1_x1\taiuaimd.cpp"
 // [HELPER] s___d_call_stopObject__s__d_: "#%d call stopObject %s %d\n"
-/* WARNING: Variable defined which should be unmapped: tileX */
-/* WARNING: Removing unreachable block (ram,0x00504ef5) */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall TribeCivilianUnitAIModule::processNotify(struct NotifyEvent
-   *,unsigned long) */
-
 int __thiscall
 TribeCivilianUnitAIModule::processNotify
           (TribeCivilianUnitAIModule *this,NotifyEvent *param_1,ulong param_2)
@@ -956,7 +929,6 @@ LAB_005056e2:
           else {
             uVar6 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
           }
-                    /* language.dll match for 0x453: "Saving game..." */
           fprintf(actionFile,s___d_call_stopObject__s__d_,uVar6,s_C__msdev_work_age1_x1_taiuaimd_c,
                   0x453);
           (**(code **)(iVar8 + 0x58))(1);
@@ -1031,7 +1003,6 @@ LAB_005055d9:
           else {
             uVar6 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
           }
-                    /* language.dll match for 0x4b4: "Waiting" */
           fprintf(actionFile,s___d_call_stopObject__s__d_,uVar6,s_C__msdev_work_age1_x1_taiuaimd_c,
                   0x4b4);
         }
@@ -1045,9 +1016,6 @@ LAB_005055d9:
         else {
           uVar6 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
         }
-                    /* language.dll match for 0x4c3: "Creating multiplayer game...\\n\\n\\n\\nPlease
-                       press ESC if the game is not\\ncreated within 15 seconds.\\n\\nAlso, make
-                       sure you are connected to the Internet\\nbefore starting Age of Empires." */
         uVar11 = 0x4c3;
         goto LAB_00505722;
       }
@@ -1211,8 +1179,6 @@ LAB_00504fe4:
 
 // Function: processIdle
 // Address: 00505800
-/* protected: virtual int __thiscall TribeCivilianUnitAIModule::processIdle(int) */
-
 int __thiscall TribeCivilianUnitAIModule::processIdle(TribeCivilianUnitAIModule *this,int param_1)
 {
   return 5;
@@ -1222,8 +1188,6 @@ int __thiscall TribeCivilianUnitAIModule::processIdle(TribeCivilianUnitAIModule 
 
 // Function: processMisc
 // Address: 00505810
-/* protected: virtual int __thiscall TribeCivilianUnitAIModule::processMisc(void) */
-
 int __thiscall TribeCivilianUnitAIModule::processMisc(TribeCivilianUnitAIModule *this)
 {
   return 9;

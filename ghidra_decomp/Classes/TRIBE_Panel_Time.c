@@ -161,8 +161,6 @@
 
 // Function: TRIBE_Panel_Time
 // Address: 0051d790
-/* public: __thiscall TRIBE_Panel_Time::TRIBE_Panel_Time(class TDrawArea *,class TPanel *) */
-
 TRIBE_Panel_Time * __thiscall
 TRIBE_Panel_Time::TRIBE_Panel_Time(TRIBE_Panel_Time *this,TDrawArea *param_1,TPanel *param_2)
 {
@@ -213,8 +211,6 @@ TRIBE_Panel_Time::TRIBE_Panel_Time(TRIBE_Panel_Time *this,TDrawArea *param_1,TPa
 
 // Function: `scalar_deleting_destructor'
 // Address: 0051d890
-/* public: virtual void * __thiscall TRIBE_Panel_Time::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall
 TRIBE_Panel_Time::_scalar_deleting_destructor_(TRIBE_Panel_Time *this,uint param_1)
 {
@@ -229,8 +225,6 @@ TRIBE_Panel_Time::_scalar_deleting_destructor_(TRIBE_Panel_Time *this,uint param
 
 // Function: ~TRIBE_Panel_Time
 // Address: 0051d8b0
-/* public: virtual __thiscall TRIBE_Panel_Time::~TRIBE_Panel_Time(void) */
-
 void __thiscall TRIBE_Panel_Time::~TRIBE_Panel_Time(TRIBE_Panel_Time *this)
 {
   TDrawArea *this_00;
@@ -265,8 +259,6 @@ void __thiscall TRIBE_Panel_Time::~TRIBE_Panel_Time(TRIBE_Panel_Time *this)
 // Function: set_rect
 // Address: 0051d940
 // [HELPER] s_time_message_panel: "time message panel"
-/* public: virtual void __thiscall TRIBE_Panel_Time::set_rect(long,long,long,long) */
-
 void __thiscall
 TRIBE_Panel_Time::set_rect
           (TRIBE_Panel_Time *this,long param_1,long param_2,long param_3,long param_4)
@@ -341,8 +333,6 @@ TRIBE_Panel_Time::set_rect
 
 // Function: startup
 // Address: 0051dad0
-/* public: void __thiscall TRIBE_Panel_Time::startup(void) */
-
 void __thiscall TRIBE_Panel_Time::startup(TRIBE_Panel_Time *this)
 {
   ulong uVar1;
@@ -357,8 +347,6 @@ void __thiscall TRIBE_Panel_Time::startup(TRIBE_Panel_Time *this)
 
 // Function: set_clock_type
 // Address: 0051db00
-/* public: void __thiscall TRIBE_Panel_Time::set_clock_type(int,int) */
-
 void __thiscall TRIBE_Panel_Time::set_clock_type(TRIBE_Panel_Time *this,int param_1,int param_2)
 {
   int iVar1;
@@ -433,8 +421,6 @@ LAB_0051dbf4:
 
 // Function: get_clock_type
 // Address: 0051dc60
-/* public: int __thiscall TRIBE_Panel_Time::get_clock_type(void) */
-
 int __thiscall TRIBE_Panel_Time::get_clock_type(TRIBE_Panel_Time *this)
 {
   return this->clock_type;
@@ -444,8 +430,6 @@ int __thiscall TRIBE_Panel_Time::get_clock_type(TRIBE_Panel_Time *this)
 
 // Function: get_player_id
 // Address: 0051dc70
-/* public: int __thiscall TRIBE_Panel_Time::get_player_id(void) */
-
 int __thiscall TRIBE_Panel_Time::get_player_id(TRIBE_Panel_Time *this)
 {
   if (this->player != (TRIBE_Player *)0x0) {
@@ -460,8 +444,6 @@ int __thiscall TRIBE_Panel_Time::get_player_id(TRIBE_Panel_Time *this)
 // Address: 0051dc90
 // [HELPER] s__02ld__02ld__02ld___3_1f_: "%02ld:%02ld:%02ld (%3.1f)"
 // [HELPER] s_tpnl_tim__draw: "tpnl_tim::draw"
-/* public: virtual void __thiscall TRIBE_Panel_Time::draw(void) */
-
 void __thiscall TRIBE_Panel_Time::draw(TRIBE_Panel_Time *this)
 {
   ulong uVar1;
@@ -541,14 +523,12 @@ void __thiscall TRIBE_Panel_Time::draw(TRIBE_Panel_Time *this)
     iVar6 = this->clock_type;
     iVar8 = ((this->game_time + 4) / 5) * 5;
     if (iVar6 == 4) {
-                    /* language.dll match for 0x2c25: "Wonder: %d Years" */
       iVar6 = 0x2c25;
 LAB_0051df07:
       pcVar4 = TPanel::get_string((TPanel *)this,iVar6);
       uVar10 = CONCAT44(iVar8,pcVar4);
     }
     else if (iVar6 == 5) {
-                    /* language.dll match for 0x2c26: "Artifacts: %d Years" */
       pcVar4 = TPanel::get_string((TPanel *)this,0x2c26);
       uVar10 = CONCAT44(iVar8,pcVar4);
     }
@@ -557,7 +537,6 @@ LAB_0051df07:
         iVar6 = 0x2c24;
         goto LAB_0051df07;
       }
-                    /* language.dll match for 0x2c27: "Ruins: %d Years" */
       pcVar4 = TPanel::get_string((TPanel *)this,0x2c27);
       uVar10 = CONCAT44(iVar8,pcVar4);
     }
@@ -585,7 +564,6 @@ LAB_0051df07:
   TDrawArea::ReleaseDc((TDrawArea *)this->_padding_,s_tpnl_tim__draw);
   iVar6 = iStack_114;
 LAB_0051e0ce:
-                    /* Symbol Ref: {@symbol finish_up} */
   (**(code **)(iVar6 + 0x2c))();
   return;
 }
@@ -594,8 +572,6 @@ LAB_0051e0ce:
 
 // Function: get_true_render_rect
 // Address: 0051e0e0
-/* public: virtual void __thiscall TRIBE_Panel_Time::get_true_render_rect(struct tagRECT &) */
-
 void __thiscall TRIBE_Panel_Time::get_true_render_rect(TRIBE_Panel_Time *this,tagRECT *param_1)
 {
   if ((((this->ImageBuffer != (TDrawArea *)0x0) && (this->_padding_ != 0)) && (this->_padding_ != 0)
@@ -617,9 +593,6 @@ void __thiscall TRIBE_Panel_Time::get_true_render_rect(TRIBE_Panel_Time *this,ta
 
 // Function: handle_idle
 // Address: 0051e150
-/* WARNING: Variable defined which should be unmapped: countdown_timer */
-/* public: virtual long __thiscall TRIBE_Panel_Time::handle_idle(void) */
-
 long __thiscall TRIBE_Panel_Time::handle_idle(TRIBE_Panel_Time *this)
 {
   ulong uVar1;
@@ -680,9 +653,6 @@ switchD_0051e168_caseD_0:
 // Address: 0051e2b0
 // [HELPER] s__02ld__02ld__02ld___3_1f_: "%02ld:%02ld:%02ld (%3.1f)"
 // [HELPER] s_tpnl_tim__render_to_image_buffer: "tpnl_tim::render_to_image_buffer"
-/* WARNING: Variable defined which should be unmapped: rect */
-/* protected: int __thiscall TRIBE_Panel_Time::render_to_image_buffer(void) */
-
 int __thiscall TRIBE_Panel_Time::render_to_image_buffer(TRIBE_Panel_Time *this)
 {
   int iVar1;
@@ -730,14 +700,12 @@ int __thiscall TRIBE_Panel_Time::render_to_image_buffer(TRIBE_Panel_Time *this)
   iVar4 = this->clock_type;
   iVar6 = ((this->game_time + 4) / 5) * 5;
   if (iVar4 == 4) {
-                    /* language.dll match for 0x2c25: "Wonder: %d Years" */
     iVar4 = 0x2c25;
 LAB_0051e43f:
     pcVar3 = TPanel::get_string((TPanel *)this,iVar4);
     uVar9 = CONCAT44(iVar6,pcVar3);
   }
   else if (iVar4 == 5) {
-                    /* language.dll match for 0x2c26: "Artifacts: %d Years" */
     pcVar3 = TPanel::get_string((TPanel *)this,0x2c26);
     uVar9 = CONCAT44(iVar6,pcVar3);
   }
@@ -746,7 +714,6 @@ LAB_0051e43f:
       iVar4 = 0x2c24;
       goto LAB_0051e43f;
     }
-                    /* language.dll match for 0x2c27: "Ruins: %d Years" */
     pcVar3 = TPanel::get_string((TPanel *)this,0x2c27);
     uVar9 = CONCAT44(iVar6,pcVar3);
   }

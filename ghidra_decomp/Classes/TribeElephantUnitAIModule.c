@@ -742,9 +742,6 @@
 
 // Function: TribeElephantUnitAIModule
 // Address: 00504170
-/* public: __thiscall TribeElephantUnitAIModule::TribeElephantUnitAIModule(class RGE_Static_Object
-   *,int) */
-
 TribeElephantUnitAIModule * __thiscall
 TribeElephantUnitAIModule::TribeElephantUnitAIModule
           (TribeElephantUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
@@ -758,9 +755,6 @@ TribeElephantUnitAIModule::TribeElephantUnitAIModule
 
 // Function: `vector_deleting_destructor'
 // Address: 00504190
-/* public: virtual void * __thiscall TribeElephantUnitAIModule::`vector deleting
-   destructor'(unsigned int) */
-
 void * __thiscall
 TribeElephantUnitAIModule::_vector_deleting_destructor_
           (TribeElephantUnitAIModule *this,uint param_1)
@@ -776,8 +770,6 @@ TribeElephantUnitAIModule::_vector_deleting_destructor_
 
 // Function: ~TribeElephantUnitAIModule
 // Address: 005041b0
-/* public: virtual __thiscall TribeElephantUnitAIModule::~TribeElephantUnitAIModule(void) */
-
 void __thiscall
 TribeElephantUnitAIModule::~TribeElephantUnitAIModule(TribeElephantUnitAIModule *this)
 {
@@ -823,9 +815,6 @@ TribeElephantUnitAIModule::~TribeElephantUnitAIModule(TribeElephantUnitAIModule 
 
 // Function: processNotify
 // Address: 005041c0
-/* protected: virtual int __thiscall TribeElephantUnitAIModule::processNotify(struct NotifyEvent
-   *,unsigned long) */
-
 int __thiscall
 TribeElephantUnitAIModule::processNotify
           (TribeElephantUnitAIModule *this,NotifyEvent *param_1,ulong param_2)
@@ -889,8 +878,6 @@ LAB_0050429b:
 
 // Function: processIdle
 // Address: 005042d0
-/* protected: virtual int __thiscall TribeElephantUnitAIModule::processIdle(int) */
-
 int __thiscall TribeElephantUnitAIModule::processIdle(TribeElephantUnitAIModule *this,int param_1)
 {
   return 5;

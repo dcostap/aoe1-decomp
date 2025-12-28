@@ -619,9 +619,6 @@
 // [HELPER] s_Zone: "Zone"
 // [HELPER] s_http_shell_open_command: "http\shell\open\command"
 // [HELPER] s_scr3: "scr3"
-/* WARNING: Variable defined which should be unmapped: ghUserKey */
-/* public: __thiscall TribeMPStartupScreen::TribeMPStartupScreen(void) */
-
 TribeMPStartupScreen * __thiscall
 TribeMPStartupScreen::TribeMPStartupScreen(TribeMPStartupScreen *this)
 {
@@ -677,11 +674,9 @@ TribeMPStartupScreen::TribeMPStartupScreen(TribeMPStartupScreen *this)
   else {
     TEasy_Panel::setup_shadow_area((TEasy_Panel *)this,0);
     TEasy_Panel::set_ideal_size((TEasy_Panel *)this,0x280,0x1e0);
-                    /* language.dll match for 0x258b: "Multiplayer Connection" */
     iVar6 = TEasy_Panel::create_text
                       ((TEasy_Panel *)this,(TPanel *)this,&this->title,0x258b,0x14,0x14,600,0x1e,1,1
                        ,0,0);
-                    /* language.dll match for 0x258c: "Name" */
     if ((iVar6 != 0) &&
        (iVar6 = TEasy_Panel::create_text
                           ((TEasy_Panel *)this,(TPanel *)this,&this->inputTitle,0x258c,0x14,0x4b,500
@@ -719,9 +714,7 @@ TribeMPStartupScreen::TribeMPStartupScreen(TribeMPStartupScreen *this)
                         ((TEasy_Panel *)this,(TPanel *)this,&this->input,str + 4,0xf,FormatText,0x14
                          ,100,600,0x17,0xb,1,0);
       if (iVar6 != 0) {
-                    /* language.dll match for 0x7595: "Type your player name." */
         TPanel::set_help_info((TPanel *)this->input,0x7595,-1);
-                    /* language.dll match for 0x258d: "Connection Type" */
         iVar6 = TEasy_Panel::create_text
                           ((TEasy_Panel *)this,(TPanel *)this,&this->connectionTitle,0x258d,0x14,
                            0xa5,600,0x14,4,0,0,0);
@@ -733,16 +726,12 @@ TribeMPStartupScreen::TribeMPStartupScreen(TribeMPStartupScreen *this)
              (iVar6 = TEasy_Panel::create_auto_scrollbar
                                 ((TEasy_Panel *)this,&this->scrollbar,(TTextPanel *)*ppTVar2,0x14),
              iVar6 != 0)) {
-                    /* language.dll match for 0x7596: "Select the type of connection to make. For
-                       more information, click More Help." */
             TPanel::set_help_info((TPanel *)*ppTVar2,0x7596,0x25f08);
-                    /* language.dll match for 0xfa1: "OK" */
             iVar6 = TEasy_Panel::create_button
                               ((TEasy_Panel *)this,(TPanel *)this,&this->okButton,0xfa1,0,0x46,0x1b8
                                ,0xf0,0x1e,0,0,0);
             if (iVar6 != 0) {
               TPanel::set_help_info((TPanel *)this->okButton,0x7531,-1);
-                    /* language.dll match for 0xfa2: "Cancel" */
               iVar6 = TEasy_Panel::create_button
                                 ((TEasy_Panel *)this,(TPanel *)this,ppTVar1,0xfa2,0,0x14a,0x1b8,0xf0
                                  ,0x1e,0,0,0);
@@ -751,13 +740,11 @@ TribeMPStartupScreen::TribeMPStartupScreen(TribeMPStartupScreen *this)
                 pTVar4 = *ppTVar1;
                 pTVar4->hotkey = 0x1b;
                 pTVar4->hotkey_shift = 0;
-                    /* language.dll match for 0xfa9: "?" */
                 iVar6 = TEasy_Panel::create_button
                                   ((TEasy_Panel *)this,(TPanel *)this,&this->help_button,0xfa9,0,
                                    0x244,0x1b8,0x1e,0x1e,0,0,0);
                 if (iVar6 != 0) {
                   ppTVar1 = &this->close_button;
-                    /* language.dll match for 0x3ea: "X" */
                   iVar6 = TEasy_Panel::create_button
                                     ((TEasy_Panel *)this,(TPanel *)this,ppTVar1,0x3ea,0,0,0,0,0,-1,
                                      -1,0);
@@ -879,9 +866,6 @@ TribeMPStartupScreen::TribeMPStartupScreen(TribeMPStartupScreen *this)
 
 // Function: `vector_deleting_destructor'
 // Address: 0049f870
-/* public: virtual void * __thiscall TribeMPStartupScreen::`vector deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TribeMPStartupScreen::_vector_deleting_destructor_(TribeMPStartupScreen *this,uint param_1)
 {
@@ -899,8 +883,6 @@ TribeMPStartupScreen::_vector_deleting_destructor_(TribeMPStartupScreen *this,ui
 // [HELPER] s_Create_Dialog: "Create Dialog"
 // [HELPER] s_OKDialog: "OKDialog"
 // [HELPER] s_YesNoDialog: "YesNoDialog"
-/* public: virtual __thiscall TribeMPStartupScreen::~TribeMPStartupScreen(void) */
-
 void __thiscall TribeMPStartupScreen::~TribeMPStartupScreen(TribeMPStartupScreen *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -936,8 +918,6 @@ void __thiscall TribeMPStartupScreen::~TribeMPStartupScreen(TribeMPStartupScreen
 
 // Function: handle_idle
 // Address: 0049f9a0
-/* public: virtual long __thiscall TribeMPStartupScreen::handle_idle(void) */
-
 long __thiscall TribeMPStartupScreen::handle_idle(TribeMPStartupScreen *this)
 {
   long lVar1;
@@ -961,10 +941,6 @@ long __thiscall TribeMPStartupScreen::handle_idle(TribeMPStartupScreen *this)
 // [HELPER] s_Main_Menu: "Main Menu"
 // [HELPER] s_Name_Error: "Name Error"
 // [HELPER] s_Start_Zone: "Start Zone"
-/* WARNING: Function: __alloca_probe replaced with injection: alloca_probe */
-/* public: virtual long __thiscall TribeMPStartupScreen::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TribeMPStartupScreen::action
           (TribeMPStartupScreen *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -1010,13 +986,11 @@ LAB_0049fe80:
       RGE_Base_Game::setMultiplayerGame(rge_base_game,1);
       pcVar3 = TEditPanel::get_text(this->input);
       if (*pcVar3 == '\0') {
-                    /* language.dll match for 0x258f: "You must enter a valid player name." */
         TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x258f,&s_Name_Error,0x1c2,100);
       }
       else {
         iVar4 = TTextPanel::numberLines((TTextPanel *)this->list);
         if (iVar4 == 0) {
-                    /* language.dll match for 0x2592: "No multiplayer connections are available." */
           TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x2592,&s_List_Error,0x1c2,100);
           param_2 = 1;
         }
@@ -1056,7 +1030,6 @@ LAB_0049fe80:
                               (_GUID *)local_25a0,lVar5);
           TCommunications_Handler::SetServiceGUID(comm,*p_Var7);
           TCommunications_Handler::InitJoinGame(comm);
-                    /* language.dll match for 0x4b0: "Ready" */
           this_00 = (TribeJoinScreen *)operator_new(0x4b0);
           local_4._0_1_ = 1;
           if (this_00 != (TribeJoinScreen *)0x0) {
@@ -1071,8 +1044,6 @@ LAB_0049fe80:
           param_2 = 1;
         }
         else {
-                    /* language.dll match for 0x2593: "Start your Web browser and go to The Internet
-                       Gaming Zone?" */
           TEasy_Panel::popupYesNoDialog((TEasy_Panel *)this,0x2593,&s_Start_Zone,0x1c2,100);
           param_2 = 1;
         }
@@ -1083,7 +1054,6 @@ LAB_0049fe80:
        (((TEditPanel *)param_1 == this->input && (param_2 == 1)))) {
       RGE_Base_Game::disable_input(rge_base_game);
       TCommunications_Handler::UnlinkToLevel(comm,SINGLE_PLAYER);
-                    /* language.dll match for 0x4b0: "Ready" */
       this_01 = (TRIBE_Screen_Main_Menu *)operator_new(0x4b0);
       local_4 = 2;
       if (this_01 != (TRIBE_Screen_Main_Menu *)0x0) {
@@ -1201,10 +1171,6 @@ LAB_0049fea7:
 // Address: 0049fed0
 // [HELPER] s_: ""
 // [HELPER] s_Default_Age_Of_Empires_Multiplay: "Default Age Of Empires Multiplayer Service"
-/* WARNING: Function: __alloca_probe replaced with injection: alloca_probe */
-/* WARNING: Variable defined which should be unmapped: lastServiceNumber */
-/* protected: void __thiscall TribeMPStartupScreen::fillList(void) */
-
 void __thiscall TribeMPStartupScreen::fillList(TribeMPStartupScreen *this)
 {
   char cVar1;
@@ -1316,7 +1282,6 @@ LAB_004a0003:
   }
   iVar3 = __findfirst(this->browser_exec,&file_info.time_create);
   if ((iVar3 != -1) && (this->zone_exec[0] != '\0')) {
-                    /* language.dll match for 0x258e: "Microsoft Internet Gaming Zone" */
     TTextPanel::append_line((TTextPanel *)this->list,0x258e,-1);
   }
   if (lastServiceName._0_4_ != -1) {
@@ -1334,8 +1299,6 @@ LAB_004a0003:
 
 // Function: handle_user_command
 // Address: 004a00a0
-/* public: virtual long __thiscall TribeMPStartupScreen::handle_user_command(unsigned int,long) */
-
 long __thiscall
 TribeMPStartupScreen::handle_user_command(TribeMPStartupScreen *this,uint param_1,long param_2)
 {

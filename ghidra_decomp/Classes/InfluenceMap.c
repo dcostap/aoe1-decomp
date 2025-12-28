@@ -33,8 +33,6 @@
 
 // Function: InfluenceMap
 // Address: 0044df80
-/* public: __thiscall InfluenceMap::InfluenceMap(int,int,unsigned char) */
-
 InfluenceMap * __thiscall
 InfluenceMap::InfluenceMap(InfluenceMap *this,int param_1,int param_2,uchar param_3)
 {
@@ -81,8 +79,6 @@ InfluenceMap::InfluenceMap(InfluenceMap *this,int param_1,int param_2,uchar para
 
 // Function: `scalar_deleting_destructor'
 // Address: 0044e030
-/* public: virtual void * __thiscall InfluenceMap::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall InfluenceMap::_scalar_deleting_destructor_(InfluenceMap *this,uint param_1)
 {
   ~InfluenceMap(this);
@@ -96,8 +92,6 @@ void * __thiscall InfluenceMap::_scalar_deleting_destructor_(InfluenceMap *this,
 
 // Function: InfluenceMap
 // Address: 0044e050
-/* public: __thiscall InfluenceMap::InfluenceMap(int) */
-
 InfluenceMap * __thiscall InfluenceMap::InfluenceMap(InfluenceMap *this,int param_1)
 {
   this->xSizeValue = -1;
@@ -113,8 +107,6 @@ InfluenceMap * __thiscall InfluenceMap::InfluenceMap(InfluenceMap *this,int para
 
 // Function: ~InfluenceMap
 // Address: 0044e080
-/* public: virtual __thiscall InfluenceMap::~InfluenceMap(void) */
-
 void __thiscall InfluenceMap::~InfluenceMap(InfluenceMap *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -131,8 +123,6 @@ void __thiscall InfluenceMap::~InfluenceMap(InfluenceMap *this)
 
 // Function: initialize
 // Address: 0044e0b0
-/* public: int __thiscall InfluenceMap::initialize(unsigned char) */
-
 int __thiscall InfluenceMap::initialize(InfluenceMap *this,uchar param_1)
 {
   uint uVar1;
@@ -156,8 +146,6 @@ int __thiscall InfluenceMap::initialize(InfluenceMap *this,uchar param_1)
 
 // Function: save
 // Address: 0044e0f0
-/* public: void __thiscall InfluenceMap::save(int) */
-
 void __thiscall InfluenceMap::save(InfluenceMap *this,int param_1)
 {
   int *piVar1;
@@ -191,9 +179,6 @@ void __thiscall InfluenceMap::save(InfluenceMap *this,int param_1)
 
 // Function: load
 // Address: 0044e1a0
-/* WARNING: Variable defined which should be unmapped: j */
-/* public: void __thiscall InfluenceMap::load(int) */
-
 void __thiscall InfluenceMap::load(InfluenceMap *this,int param_1)
 {
   int *piVar1;
@@ -245,8 +230,6 @@ void __thiscall InfluenceMap::load(InfluenceMap *this,int param_1)
 // [HELPER] s______: "---- "
 // [HELPER] s_______: "      "
 // [HELPER] s_wa: "wa"
-/* public: void __thiscall InfluenceMap::printToFile(char *) */
-
 void __thiscall InfluenceMap::printToFile(InfluenceMap *this,char *param_1)
 {
   int iVar1;
@@ -360,8 +343,6 @@ void __thiscall InfluenceMap::printToFile(InfluenceMap *this,char *param_1)
 
 // Function: setReferencePoint
 // Address: 0044e4c0
-/* public: void __thiscall InfluenceMap::setReferencePoint(int,int) */
-
 void __thiscall InfluenceMap::setReferencePoint(InfluenceMap *this,int param_1,int param_2)
 {
   this->xReferencePointValue = param_1;
@@ -373,8 +354,6 @@ void __thiscall InfluenceMap::setReferencePoint(InfluenceMap *this,int param_1,i
 
 // Function: lookupValue
 // Address: 0044e4e0
-/* public: int __thiscall InfluenceMap::lookupValue(int,int) */
-
 int __thiscall InfluenceMap::lookupValue(InfluenceMap *this,int param_1,int param_2)
 {
   return (uint)this->rowValue[param_2 - this->yReferencePointValue]
@@ -385,8 +364,6 @@ int __thiscall InfluenceMap::lookupValue(InfluenceMap *this,int param_1,int para
 
 // Function: setValue
 // Address: 0044e510
-/* public: int __thiscall InfluenceMap::setValue(int,int,unsigned char) */
-
 int __thiscall InfluenceMap::setValue(InfluenceMap *this,int param_1,int param_2,uchar param_3)
 {
   int iVar1;
@@ -406,8 +383,6 @@ int __thiscall InfluenceMap::setValue(InfluenceMap *this,int param_1,int param_2
 
 // Function: setValue
 // Address: 0044e560
-/* public: int __thiscall InfluenceMap::setValue(int,int,int,int,unsigned char) */
-
 int __thiscall
 InfluenceMap::setValue
           (InfluenceMap *this,int param_1,int param_2,int param_3,int param_4,uchar param_5)
@@ -439,8 +414,6 @@ InfluenceMap::setValue
 
 // Function: incrementValue
 // Address: 0044e600
-/* public: int __thiscall InfluenceMap::incrementValue(int,int,unsigned char) */
-
 int __thiscall
 InfluenceMap::incrementValue(InfluenceMap *this,int param_1,int param_2,uchar param_3)
 {
@@ -476,8 +449,6 @@ InfluenceMap::incrementValue(InfluenceMap *this,int param_1,int param_2,uchar pa
 
 // Function: incrementValue
 // Address: 0044e680
-/* public: int __thiscall InfluenceMap::incrementValue(int,int,int,int,unsigned char) */
-
 int __thiscall
 InfluenceMap::incrementValue
           (InfluenceMap *this,int param_1,int param_2,int param_3,int param_4,uchar param_5)
@@ -547,8 +518,6 @@ InfluenceMap::incrementValue
 
 // Function: decrementValue
 // Address: 0044e790
-/* public: int __thiscall InfluenceMap::decrementValue(int,int,unsigned char) */
-
 int __thiscall
 InfluenceMap::decrementValue(InfluenceMap *this,int param_1,int param_2,uchar param_3)
 {
@@ -576,8 +545,6 @@ InfluenceMap::decrementValue(InfluenceMap *this,int param_1,int param_2,uchar pa
 
 // Function: decrementValue
 // Address: 0044e800
-/* public: int __thiscall InfluenceMap::decrementValue(int,int,int,int,unsigned char) */
-
 int __thiscall
 InfluenceMap::decrementValue
           (InfluenceMap *this,int param_1,int param_2,int param_3,int param_4,uchar param_5)
@@ -640,9 +607,6 @@ InfluenceMap::decrementValue
 
 // Function: setCoverageCount
 // Address: 0044e900
-/* public: int __thiscall InfluenceMap::setCoverageCount(struct XYPoint const &,struct XYPoint const
-   &,int) */
-
 int __thiscall
 InfluenceMap::setCoverageCount(InfluenceMap *this,XYPoint *param_1,XYPoint *param_2,int param_3)
 {
@@ -687,9 +651,6 @@ InfluenceMap::setCoverageCount(InfluenceMap *this,XYPoint *param_1,XYPoint *para
 
 // Function: setConnectionCount
 // Address: 0044e9e0
-/* public: int __thiscall InfluenceMap::setConnectionCount(struct XYPoint const &,struct XYPoint
-   const &,int,int,int,int) */
-
 int __thiscall
 InfluenceMap::setConnectionCount
           (InfluenceMap *this,XYPoint *param_1,XYPoint *param_2,int param_3,int param_4,int param_5,
@@ -782,10 +743,6 @@ LAB_0044eb54:
 
 // Function: coverageIncluding
 // Address: 0044ec00
-/* WARNING: Variable defined which should be unmapped: rVal */
-/* public: int __thiscall InfluenceMap::coverageIncluding(struct XYPoint const &,struct XYPoint
-   const &,unsigned char,unsigned char) */
-
 int __thiscall
 InfluenceMap::coverageIncluding
           (InfluenceMap *this,XYPoint *param_1,XYPoint *param_2,uchar param_3,uchar param_4)
@@ -833,10 +790,6 @@ InfluenceMap::coverageIncluding
 
 // Function: connectionsIncluding
 // Address: 0044ed20
-/* WARNING: Variable defined which should be unmapped: rVal */
-/* public: int __thiscall InfluenceMap::connectionsIncluding(struct XYPoint const &,struct XYPoint
-   const &,unsigned char,unsigned char,int,int,int) */
-
 int __thiscall
 InfluenceMap::connectionsIncluding
           (InfluenceMap *this,XYPoint *param_1,XYPoint *param_2,uchar param_3,uchar param_4,
@@ -976,8 +929,6 @@ InfluenceMap::connectionsIncluding
 
 // Function: setUnchangeableLimit
 // Address: 0044f030
-/* public: void __thiscall InfluenceMap::setUnchangeableLimit(unsigned char) */
-
 void __thiscall InfluenceMap::setUnchangeableLimit(InfluenceMap *this,uchar param_1)
 {
   if (param_1 != '\0') {
@@ -990,8 +941,6 @@ void __thiscall InfluenceMap::setUnchangeableLimit(InfluenceMap *this,uchar para
 
 // Function: maxValue
 // Address: 0044f040
-/* public: int __thiscall InfluenceMap::maxValue(void) */
-
 int __thiscall InfluenceMap::maxValue(InfluenceMap *this)
 {
   uint uVar1;

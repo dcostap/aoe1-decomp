@@ -82,10 +82,6 @@
 
 // Function: RGE_Victory_Conditions
 // Address: 00531750
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: __thiscall RGE_Victory_Conditions::RGE_Victory_Conditions(class RGE_Player *,int,long
-   *,unsigned char) */
-
 RGE_Victory_Conditions * __thiscall
 RGE_Victory_Conditions::RGE_Victory_Conditions
           (RGE_Victory_Conditions *this,RGE_Player *param_1,int param_2,long *param_3,uchar param_4)
@@ -235,8 +231,6 @@ RGE_Victory_Conditions::RGE_Victory_Conditions
 
 // Function: RGE_Victory_Conditions
 // Address: 00531af0
-/* public: __thiscall RGE_Victory_Conditions::RGE_Victory_Conditions(class RGE_Player *) */
-
 void __thiscall
 RGE_Victory_Conditions::RGE_Victory_Conditions(RGE_Victory_Conditions *this,RGE_Player *param_1)
 {
@@ -255,8 +249,6 @@ RGE_Victory_Conditions::RGE_Victory_Conditions(RGE_Victory_Conditions *this,RGE_
 
 // Function: ~RGE_Victory_Conditions
 // Address: 00531b20
-/* public: __thiscall RGE_Victory_Conditions::~RGE_Victory_Conditions(void) */
-
 void __thiscall RGE_Victory_Conditions::~RGE_Victory_Conditions(RGE_Victory_Conditions *this)
 {
   RGE_Victory_Entry *pRVar1;
@@ -284,9 +276,6 @@ void __thiscall RGE_Victory_Conditions::~RGE_Victory_Conditions(RGE_Victory_Cond
 
 // Function: save
 // Address: 00531b70
-/* WARNING: Variable defined which should be unmapped: this_obj */
-/* public: virtual void __thiscall RGE_Victory_Conditions::save(int) */
-
 void __thiscall RGE_Victory_Conditions::save(RGE_Victory_Conditions *this,int param_1)
 {
   RGE_Victory_Entry *pRVar1;
@@ -358,9 +347,6 @@ void __thiscall RGE_Victory_Conditions::save(RGE_Victory_Conditions *this,int pa
 
 // Function: check_for_victory
 // Address: 00531db0
-/* WARNING: Variable defined which should be unmapped: victory_void_num */
-/* protected: void __thiscall RGE_Victory_Conditions::check_for_victory(void) */
-
 void __thiscall RGE_Victory_Conditions::check_for_victory(RGE_Victory_Conditions *this)
 {
   uchar uVar1;
@@ -434,8 +420,6 @@ LAB_00531e70:
 
 // Function: update
 // Address: 00531e90
-/* public: unsigned char __thiscall RGE_Victory_Conditions::update(void) */
-
 uchar __thiscall RGE_Victory_Conditions::update(RGE_Victory_Conditions *this)
 {
   RGE_Victory_Point_Entry *pRVar1;
@@ -460,8 +444,6 @@ uchar __thiscall RGE_Victory_Conditions::update(RGE_Victory_Conditions *this)
 
 // Function: update_for_object
 // Address: 00531ef0
-/* public: void __thiscall RGE_Victory_Conditions::update_for_object(class RGE_Static_Object *) */
-
 void __thiscall
 RGE_Victory_Conditions::update_for_object(RGE_Victory_Conditions *this,RGE_Static_Object *param_1)
 {
@@ -482,9 +464,6 @@ RGE_Victory_Conditions::update_for_object(RGE_Victory_Conditions *this,RGE_Stati
 
 // Function: handle_point_condition
 // Address: 00531f30
-/* protected: virtual void __thiscall RGE_Victory_Conditions::handle_point_condition(struct
-   RGE_Victory_Point_Entry *) */
-
 void __thiscall
 RGE_Victory_Conditions::handle_point_condition
           (RGE_Victory_Conditions *this,RGE_Victory_Point_Entry *param_1)
@@ -512,9 +491,6 @@ RGE_Victory_Conditions::handle_point_condition
 
 // Function: handle_condition
 // Address: 00531f90
-/* protected: virtual void __thiscall RGE_Victory_Conditions::handle_condition(struct
-   RGE_Victory_Entry *) */
-
 void __thiscall
 RGE_Victory_Conditions::handle_condition(RGE_Victory_Conditions *this,RGE_Victory_Entry *param_1)
 {
@@ -562,8 +538,6 @@ RGE_Victory_Conditions::handle_condition(RGE_Victory_Conditions *this,RGE_Victor
 
 // Function: handle_capture
 // Address: 00532050
-/* protected: void __thiscall RGE_Victory_Conditions::handle_capture(struct RGE_Victory_Entry *) */
-
 void __thiscall
 RGE_Victory_Conditions::handle_capture(RGE_Victory_Conditions *this,RGE_Victory_Entry *param_1)
 {
@@ -607,9 +581,6 @@ RGE_Victory_Conditions::handle_capture(RGE_Victory_Conditions *this,RGE_Victory_
 
 // Function: handle_create
 // Address: 00532110
-/* WARNING: Variable defined which should be unmapped: num */
-/* protected: void __thiscall RGE_Victory_Conditions::handle_create(struct RGE_Victory_Entry *) */
-
 void __thiscall
 RGE_Victory_Conditions::handle_create(RGE_Victory_Conditions *this,RGE_Victory_Entry *param_1)
 {
@@ -673,10 +644,6 @@ RGE_Victory_Conditions::handle_create(RGE_Victory_Conditions *this,RGE_Victory_E
 
 // Function: handle_create_in_area
 // Address: 00532220
-/* WARNING: Variable defined which should be unmapped: num */
-/* protected: void __thiscall RGE_Victory_Conditions::handle_create_in_area(struct RGE_Victory_Entry
-   *) */
-
 void __thiscall
 RGE_Victory_Conditions::handle_create_in_area
           (RGE_Victory_Conditions *this,RGE_Victory_Entry *param_1)
@@ -749,8 +716,6 @@ RGE_Victory_Conditions::handle_create_in_area
 
 // Function: handle_destroy
 // Address: 005323b0
-/* protected: void __thiscall RGE_Victory_Conditions::handle_destroy(struct RGE_Victory_Entry *) */
-
 void __thiscall
 RGE_Victory_Conditions::handle_destroy(RGE_Victory_Conditions *this,RGE_Victory_Entry *param_1)
 {
@@ -766,9 +731,6 @@ RGE_Victory_Conditions::handle_destroy(RGE_Victory_Conditions *this,RGE_Victory_
 
 // Function: handle_destroy_multiple
 // Address: 005323d0
-/* protected: void __thiscall RGE_Victory_Conditions::handle_destroy_multiple(struct
-   RGE_Victory_Entry *) */
-
 void __thiscall
 RGE_Victory_Conditions::handle_destroy_multiple
           (RGE_Victory_Conditions *this,RGE_Victory_Entry *param_1)
@@ -824,9 +786,6 @@ RGE_Victory_Conditions::handle_destroy_multiple
 
 // Function: handle_destroy_all
 // Address: 005324a0
-/* protected: void __thiscall RGE_Victory_Conditions::handle_destroy_all(struct RGE_Victory_Entry *)
-    */
-
 void __thiscall
 RGE_Victory_Conditions::handle_destroy_all(RGE_Victory_Conditions *this,RGE_Victory_Entry *param_1)
 {
@@ -882,9 +841,6 @@ RGE_Victory_Conditions::handle_destroy_all(RGE_Victory_Conditions *this,RGE_Vict
 
 // Function: handle_destroy_player
 // Address: 00532570
-/* protected: void __thiscall RGE_Victory_Conditions::handle_destroy_player(struct RGE_Victory_Entry
-   *) */
-
 void __thiscall
 RGE_Victory_Conditions::handle_destroy_player
           (RGE_Victory_Conditions *this,RGE_Victory_Entry *param_1)
@@ -903,9 +859,6 @@ RGE_Victory_Conditions::handle_destroy_player
 
 // Function: handle_bring_area
 // Address: 005325a0
-/* protected: void __thiscall RGE_Victory_Conditions::handle_bring_area(struct RGE_Victory_Entry *)
-    */
-
 void __thiscall
 RGE_Victory_Conditions::handle_bring_area(RGE_Victory_Conditions *this,RGE_Victory_Entry *param_1)
 {
@@ -936,10 +889,6 @@ RGE_Victory_Conditions::handle_bring_area(RGE_Victory_Conditions *this,RGE_Victo
 
 // Function: handle_bring_object
 // Address: 00532610
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: void __thiscall RGE_Victory_Conditions::handle_bring_object(struct RGE_Victory_Entry
-   *) */
-
 void __thiscall
 RGE_Victory_Conditions::handle_bring_object(RGE_Victory_Conditions *this,RGE_Victory_Entry *param_1)
 {
@@ -986,9 +935,6 @@ RGE_Victory_Conditions::handle_bring_object(RGE_Victory_Conditions *this,RGE_Vic
 
 // Function: handle_attribute
 // Address: 005326f0
-/* protected: void __thiscall RGE_Victory_Conditions::handle_attribute(struct RGE_Victory_Entry *)
-    */
-
 void __thiscall
 RGE_Victory_Conditions::handle_attribute(RGE_Victory_Conditions *this,RGE_Victory_Entry *param_1)
 {
@@ -1031,9 +977,6 @@ RGE_Victory_Conditions::handle_attribute(RGE_Victory_Conditions *this,RGE_Victor
 
 // Function: handle_explore
 // Address: 005327a0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: void __thiscall RGE_Victory_Conditions::handle_explore(struct RGE_Victory_Entry *) */
-
 void __thiscall
 RGE_Victory_Conditions::handle_explore(RGE_Victory_Conditions *this,RGE_Victory_Entry *param_1)
 {
@@ -1077,10 +1020,6 @@ RGE_Victory_Conditions::handle_explore(RGE_Victory_Conditions *this,RGE_Victory_
 
 // Function: handle_victory_points
 // Address: 00532880
-/* WARNING: Variable defined which should be unmapped: player_count */
-/* protected: void __thiscall RGE_Victory_Conditions::handle_victory_points(struct RGE_Victory_Entry
-   *) */
-
 void __thiscall
 RGE_Victory_Conditions::handle_victory_points
           (RGE_Victory_Conditions *this,RGE_Victory_Entry *param_1)
@@ -1129,9 +1068,6 @@ RGE_Victory_Conditions::handle_victory_points
 
 // Function: add
 // Address: 00532930
-/* protected: struct RGE_Victory_Entry * __thiscall RGE_Victory_Conditions::add(unsigned
-   char,unsigned char) */
-
 RGE_Victory_Entry * __thiscall
 RGE_Victory_Conditions::add(RGE_Victory_Conditions *this,uchar param_1,uchar param_2)
 {
@@ -1154,9 +1090,6 @@ RGE_Victory_Conditions::add(RGE_Victory_Conditions *this,uchar param_1,uchar par
 
 // Function: add_capture
 // Address: 00532970
-/* public: unsigned char __thiscall RGE_Victory_Conditions::add_capture(unsigned char,class
-   RGE_Static_Object *,unsigned char) */
-
 uchar __thiscall
 RGE_Victory_Conditions::add_capture
           (RGE_Victory_Conditions *this,uchar param_1,RGE_Static_Object *param_2,uchar param_3)
@@ -1177,9 +1110,6 @@ RGE_Victory_Conditions::add_capture
 
 // Function: add_create
 // Address: 005329a0
-/* public: unsigned char __thiscall RGE_Victory_Conditions::add_create(unsigned
-   char,long,long,unsigned char) */
-
 uchar __thiscall
 RGE_Victory_Conditions::add_create
           (RGE_Victory_Conditions *this,uchar param_1,long param_2,long param_3,uchar param_4)
@@ -1200,9 +1130,6 @@ RGE_Victory_Conditions::add_create
 
 // Function: add_create
 // Address: 005329d0
-/* public: unsigned char __thiscall RGE_Victory_Conditions::add_create(unsigned
-   char,long,long,float,float,float,float,unsigned char) */
-
 uchar __thiscall
 RGE_Victory_Conditions::add_create
           (RGE_Victory_Conditions *this,uchar param_1,long param_2,long param_3,float param_4,
@@ -1228,9 +1155,6 @@ RGE_Victory_Conditions::add_create
 
 // Function: add_destroy
 // Address: 00532a20
-/* public: unsigned char __thiscall RGE_Victory_Conditions::add_destroy(unsigned char,class
-   RGE_Static_Object *) */
-
 uchar __thiscall
 RGE_Victory_Conditions::add_destroy
           (RGE_Victory_Conditions *this,uchar param_1,RGE_Static_Object *param_2)
@@ -1251,9 +1175,6 @@ RGE_Victory_Conditions::add_destroy
 
 // Function: add_destroy
 // Address: 00532a50
-/* public: unsigned char __thiscall RGE_Victory_Conditions::add_destroy(unsigned
-   char,long,long,class RGE_Player *) */
-
 uchar __thiscall
 RGE_Victory_Conditions::add_destroy
           (RGE_Victory_Conditions *this,uchar param_1,long param_2,long param_3,RGE_Player *param_4)
@@ -1275,9 +1196,6 @@ RGE_Victory_Conditions::add_destroy
 
 // Function: add_destroy
 // Address: 00532a90
-/* public: unsigned char __thiscall RGE_Victory_Conditions::add_destroy(unsigned char,long,class
-   RGE_Player *) */
-
 uchar __thiscall
 RGE_Victory_Conditions::add_destroy
           (RGE_Victory_Conditions *this,uchar param_1,long param_2,RGE_Player *param_3)
@@ -1298,9 +1216,6 @@ RGE_Victory_Conditions::add_destroy
 
 // Function: add_destroy
 // Address: 00532ac0
-/* public: unsigned char __thiscall RGE_Victory_Conditions::add_destroy(unsigned char,class
-   RGE_Player *) */
-
 uchar __thiscall
 RGE_Victory_Conditions::add_destroy(RGE_Victory_Conditions *this,uchar param_1,RGE_Player *param_2)
 {
@@ -1319,9 +1234,6 @@ RGE_Victory_Conditions::add_destroy(RGE_Victory_Conditions *this,uchar param_1,R
 
 // Function: add_bring
 // Address: 00532af0
-/* public: unsigned char __thiscall RGE_Victory_Conditions::add_bring(unsigned char,class
-   RGE_Static_Object *,class RGE_Static_Object *) */
-
 uchar __thiscall
 RGE_Victory_Conditions::add_bring
           (RGE_Victory_Conditions *this,uchar param_1,RGE_Static_Object *param_2,
@@ -1344,9 +1256,6 @@ RGE_Victory_Conditions::add_bring
 
 // Function: add_bring
 // Address: 00532b30
-/* public: unsigned char __thiscall RGE_Victory_Conditions::add_bring(unsigned char,class
-   RGE_Static_Object *,float,float,float,float) */
-
 uchar __thiscall
 RGE_Victory_Conditions::add_bring
           (RGE_Victory_Conditions *this,uchar param_1,RGE_Static_Object *param_2,float param_3,
@@ -1371,9 +1280,6 @@ RGE_Victory_Conditions::add_bring
 
 // Function: add_attributes
 // Address: 00532b70
-/* public: unsigned char __thiscall RGE_Victory_Conditions::add_attributes(unsigned
-   char,long,long,unsigned char) */
-
 uchar __thiscall
 RGE_Victory_Conditions::add_attributes
           (RGE_Victory_Conditions *this,uchar param_1,long param_2,long param_3,uchar param_4)
@@ -1394,9 +1300,6 @@ RGE_Victory_Conditions::add_attributes
 
 // Function: add_explore
 // Address: 00532ba0
-/* public: unsigned char __thiscall RGE_Victory_Conditions::add_explore(unsigned char,long,unsigned
-   char) */
-
 uchar __thiscall
 RGE_Victory_Conditions::add_explore
           (RGE_Victory_Conditions *this,uchar param_1,long param_2,uchar param_3)
@@ -1422,9 +1325,6 @@ RGE_Victory_Conditions::add_explore
 
 // Function: add_victory_points
 // Address: 00532be0
-/* public: unsigned char __thiscall RGE_Victory_Conditions::add_victory_points(unsigned
-   char,long,unsigned char) */
-
 uchar __thiscall
 RGE_Victory_Conditions::add_victory_points
           (RGE_Victory_Conditions *this,uchar param_1,long param_2,uchar param_3)
@@ -1444,8 +1344,6 @@ RGE_Victory_Conditions::add_victory_points
 
 // Function: sub
 // Address: 00532c10
-/* protected: void __thiscall RGE_Victory_Conditions::sub(struct RGE_Victory_Entry *) */
-
 void __thiscall RGE_Victory_Conditions::sub(RGE_Victory_Conditions *this,RGE_Victory_Entry *param_1)
 {
   RGE_Victory_Entry *pRVar1;
@@ -1472,8 +1370,6 @@ void __thiscall RGE_Victory_Conditions::sub(RGE_Victory_Conditions *this,RGE_Vic
 
 // Function: destroy_all
 // Address: 00532c50
-/* public: void __thiscall RGE_Victory_Conditions::destroy_all(void) */
-
 void __thiscall RGE_Victory_Conditions::destroy_all(RGE_Victory_Conditions *this)
 {
   RGE_Victory_Entry *pRVar1;
@@ -1490,9 +1386,6 @@ void __thiscall RGE_Victory_Conditions::destroy_all(RGE_Victory_Conditions *this
 
 // Function: condition_info
 // Address: 00532c70
-/* public: unsigned char __thiscall RGE_Victory_Conditions::condition_info(long,char * *,unsigned
-   char &) */
-
 uchar __thiscall
 RGE_Victory_Conditions::condition_info
           (RGE_Victory_Conditions *this,long param_1,char **param_2,uchar *param_3)
@@ -1529,10 +1422,6 @@ RGE_Victory_Conditions::condition_info
 // [HELPER] s_Bring__s_to_area___f___f______f_: "Bring %s to area (%f, %f) - (%f, %f)"
 // [HELPER] s_Create__d__s_in_area___f___f____: "Create %d %s in area (%f, %f) - (%f, %f)"
 // [HELPER] s_aqquire__d_of_attribute__d: "aqquire %d of attribute %d"
-/* WARNING: Variable defined which should be unmapped: description */
-/* protected: virtual char * __thiscall RGE_Victory_Conditions::condition_description(struct
-   RGE_Victory_Entry *) */
-
 char * __thiscall
 RGE_Victory_Conditions::condition_description
           (RGE_Victory_Conditions *this,RGE_Victory_Entry *param_1)
@@ -1585,8 +1474,6 @@ LAB_00532dd2:
 
 // Function: condition_raw_info
 // Address: 00532ed0
-/* public: struct RGE_Victory_Entry * __thiscall RGE_Victory_Conditions::condition_raw_info(long) */
-
 RGE_Victory_Entry * __thiscall
 RGE_Victory_Conditions::condition_raw_info(RGE_Victory_Conditions *this,long param_1)
 {
@@ -1610,8 +1497,6 @@ RGE_Victory_Conditions::condition_raw_info(RGE_Victory_Conditions *this,long par
 
 // Function: condition_number
 // Address: 00532ef0
-/* public: long __thiscall RGE_Victory_Conditions::condition_number(long) */
-
 long __thiscall RGE_Victory_Conditions::condition_number(RGE_Victory_Conditions *this,long param_1)
 {
   return this->list_num;
@@ -1621,8 +1506,6 @@ long __thiscall RGE_Victory_Conditions::condition_number(RGE_Victory_Conditions 
 
 // Function: victory_achieved
 // Address: 00532f00
-/* public: unsigned char __thiscall RGE_Victory_Conditions::victory_achieved(void) */
-
 uchar __thiscall RGE_Victory_Conditions::victory_achieved(RGE_Victory_Conditions *this)
 {
   return this->victory == '\x02';
@@ -1632,8 +1515,6 @@ uchar __thiscall RGE_Victory_Conditions::victory_achieved(RGE_Victory_Conditions
 
 // Function: remove_condition
 // Address: 00532f10
-/* public: unsigned char __thiscall RGE_Victory_Conditions::remove_condition(long) */
-
 uchar __thiscall RGE_Victory_Conditions::remove_condition(RGE_Victory_Conditions *this,long param_1)
 {
   RGE_Victory_Entry *pRVar1;
@@ -1659,9 +1540,6 @@ uchar __thiscall RGE_Victory_Conditions::remove_condition(RGE_Victory_Conditions
 
 // Function: add_point
 // Address: 00532f50
-/* protected: struct RGE_Victory_Point_Entry * __thiscall RGE_Victory_Conditions::add_point(unsigned
-   char,unsigned char) */
-
 RGE_Victory_Point_Entry * __thiscall
 RGE_Victory_Conditions::add_point(RGE_Victory_Conditions *this,uchar param_1,uchar param_2)
 {
@@ -1688,8 +1566,6 @@ RGE_Victory_Conditions::add_point(RGE_Victory_Conditions *this,uchar param_1,uch
 
 // Function: sub_point
 // Address: 00532fa0
-/* protected: void __thiscall RGE_Victory_Conditions::sub_point(struct RGE_Victory_Point_Entry *) */
-
 void __thiscall
 RGE_Victory_Conditions::sub_point(RGE_Victory_Conditions *this,RGE_Victory_Point_Entry *param_1)
 {
@@ -1717,9 +1593,6 @@ RGE_Victory_Conditions::sub_point(RGE_Victory_Conditions *this,RGE_Victory_Point
 
 // Function: add_points_attribute_amount
 // Address: 00532fe0
-/* public: unsigned char __thiscall RGE_Victory_Conditions::add_points_attribute_amount(unsigned
-   char,unsigned char,long,long,long) */
-
 uchar __thiscall
 RGE_Victory_Conditions::add_points_attribute_amount
           (RGE_Victory_Conditions *this,uchar param_1,uchar param_2,long param_3,long param_4,
@@ -1742,9 +1615,6 @@ RGE_Victory_Conditions::add_points_attribute_amount
 
 // Function: add_points_attribute_first
 // Address: 00533020
-/* public: unsigned char __thiscall RGE_Victory_Conditions::add_points_attribute_first(unsigned
-   char,unsigned char,long,long,long) */
-
 uchar __thiscall
 RGE_Victory_Conditions::add_points_attribute_first
           (RGE_Victory_Conditions *this,uchar param_1,uchar param_2,long param_3,long param_4,
@@ -1767,9 +1637,6 @@ RGE_Victory_Conditions::add_points_attribute_first
 
 // Function: add_points_highest_attribute
 // Address: 00533060
-/* public: unsigned char __thiscall RGE_Victory_Conditions::add_points_highest_attribute(unsigned
-   char,unsigned char,long,long,long) */
-
 uchar __thiscall
 RGE_Victory_Conditions::add_points_highest_attribute
           (RGE_Victory_Conditions *this,uchar param_1,uchar param_2,long param_3,long param_4,
@@ -1792,9 +1659,6 @@ RGE_Victory_Conditions::add_points_highest_attribute
 
 // Function: add_points_high_attribute_once
 // Address: 005330a0
-/* public: unsigned char __thiscall RGE_Victory_Conditions::add_points_high_attribute_once(unsigned
-   char,unsigned char,long,long,long) */
-
 uchar __thiscall
 RGE_Victory_Conditions::add_points_high_attribute_once
           (RGE_Victory_Conditions *this,uchar param_1,uchar param_2,long param_3,long param_4,
@@ -1817,10 +1681,6 @@ RGE_Victory_Conditions::add_points_high_attribute_once
 
 // Function: add_points_high_attribute_amount
 // Address: 005330e0
-/* public: unsigned char __thiscall
-   RGE_Victory_Conditions::add_points_high_attribute_amount(unsigned char,unsigned
-   char,long,long,long) */
-
 uchar __thiscall
 RGE_Victory_Conditions::add_points_high_attribute_amount
           (RGE_Victory_Conditions *this,uchar param_1,uchar param_2,long param_3,long param_4,
@@ -1843,9 +1703,6 @@ RGE_Victory_Conditions::add_points_high_attribute_amount
 
 // Function: handle_points_attribute_amount
 // Address: 00533120
-/* protected: void __thiscall RGE_Victory_Conditions::handle_points_attribute_amount(struct
-   RGE_Victory_Point_Entry *) */
-
 void __thiscall
 RGE_Victory_Conditions::handle_points_attribute_amount
           (RGE_Victory_Conditions *this,RGE_Victory_Point_Entry *param_1)
@@ -1873,9 +1730,6 @@ RGE_Victory_Conditions::handle_points_attribute_amount
 
 // Function: handle_points_attribute_first
 // Address: 00533180
-/* protected: void __thiscall RGE_Victory_Conditions::handle_points_attribute_first(struct
-   RGE_Victory_Point_Entry *) */
-
 void __thiscall
 RGE_Victory_Conditions::handle_points_attribute_first
           (RGE_Victory_Conditions *this,RGE_Victory_Point_Entry *param_1)
@@ -1921,9 +1775,6 @@ RGE_Victory_Conditions::handle_points_attribute_first
 
 // Function: handle_points_highest_attribute
 // Address: 00533240
-/* protected: void __thiscall RGE_Victory_Conditions::handle_points_highest_attribute(struct
-   RGE_Victory_Point_Entry *) */
-
 void __thiscall
 RGE_Victory_Conditions::handle_points_highest_attribute
           (RGE_Victory_Conditions *this,RGE_Victory_Point_Entry *param_1)
@@ -1982,9 +1833,6 @@ RGE_Victory_Conditions::handle_points_highest_attribute
 
 // Function: handle_points_high_attribute_once
 // Address: 00533330
-/* protected: void __thiscall RGE_Victory_Conditions::handle_points_high_attribute_once(struct
-   RGE_Victory_Point_Entry *) */
-
 void __thiscall
 RGE_Victory_Conditions::handle_points_high_attribute_once
           (RGE_Victory_Conditions *this,RGE_Victory_Point_Entry *param_1)
@@ -2039,9 +1887,6 @@ RGE_Victory_Conditions::handle_points_high_attribute_once
 
 // Function: handle_points_high_attribute_amount
 // Address: 00533410
-/* protected: void __thiscall RGE_Victory_Conditions::handle_points_high_attribute_amount(struct
-   RGE_Victory_Point_Entry *) */
-
 void __thiscall
 RGE_Victory_Conditions::handle_points_high_attribute_amount
           (RGE_Victory_Conditions *this,RGE_Victory_Point_Entry *param_1)
@@ -2067,8 +1912,6 @@ RGE_Victory_Conditions::handle_points_high_attribute_amount
 
 // Function: get_victory_points
 // Address: 00533480
-/* public: long __thiscall RGE_Victory_Conditions::get_victory_points(void) */
-
 long __thiscall RGE_Victory_Conditions::get_victory_points(RGE_Victory_Conditions *this)
 {
   return this->tot_victory_points;
@@ -2078,8 +1921,6 @@ long __thiscall RGE_Victory_Conditions::get_victory_points(RGE_Victory_Condition
 
 // Function: get_victory_points_group
 // Address: 00533490
-/* public: long __thiscall RGE_Victory_Conditions::get_victory_points_group(unsigned char) */
-
 long __thiscall
 RGE_Victory_Conditions::get_victory_points_group(RGE_Victory_Conditions *this,uchar param_1)
 {
@@ -2100,8 +1941,6 @@ RGE_Victory_Conditions::get_victory_points_group(RGE_Victory_Conditions *this,uc
 
 // Function: get_victory_points_id
 // Address: 005334c0
-/* public: long __thiscall RGE_Victory_Conditions::get_victory_points_id(unsigned char) */
-
 long __thiscall
 RGE_Victory_Conditions::get_victory_points_id(RGE_Victory_Conditions *this,uchar param_1)
 {
@@ -2122,8 +1961,6 @@ RGE_Victory_Conditions::get_victory_points_id(RGE_Victory_Conditions *this,uchar
 
 // Function: get_attribute_id
 // Address: 005334e0
-/* public: long __thiscall RGE_Victory_Conditions::get_attribute_id(unsigned char) */
-
 long __thiscall RGE_Victory_Conditions::get_attribute_id(RGE_Victory_Conditions *this,uchar param_1)
 {
   RGE_Victory_Point_Entry *pRVar1;

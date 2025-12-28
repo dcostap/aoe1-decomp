@@ -182,8 +182,6 @@
 
 // Function: TVerticalSliderPanel
 // Address: 0047bce0
-/* public: __thiscall TVerticalSliderPanel::TVerticalSliderPanel(void) */
-
 TVerticalSliderPanel * __thiscall
 TVerticalSliderPanel::TVerticalSliderPanel(TVerticalSliderPanel *this)
 {
@@ -198,9 +196,6 @@ TVerticalSliderPanel::TVerticalSliderPanel(TVerticalSliderPanel *this)
 
 // Function: `scalar_deleting_destructor'
 // Address: 0047bd10
-/* public: virtual void * __thiscall TVerticalSliderPanel::`scalar deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TVerticalSliderPanel::_scalar_deleting_destructor_(TVerticalSliderPanel *this,uint param_1)
 {
@@ -215,8 +210,6 @@ TVerticalSliderPanel::_scalar_deleting_destructor_(TVerticalSliderPanel *this,ui
 
 // Function: ~TVerticalSliderPanel
 // Address: 0047bd30
-/* public: virtual __thiscall TVerticalSliderPanel::~TVerticalSliderPanel(void) */
-
 void __thiscall TVerticalSliderPanel::~TVerticalSliderPanel(TVerticalSliderPanel *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -228,9 +221,6 @@ void __thiscall TVerticalSliderPanel::~TVerticalSliderPanel(TVerticalSliderPanel
 
 // Function: setup
 // Address: 0047bd40
-/* public: long __thiscall TVerticalSliderPanel::setup(class TDrawArea *,class TPanel
-   *,long,long,long,long,char *,char *,long,long,long,long,int,int) */
-
 long __thiscall
 TVerticalSliderPanel::setup
           (TVerticalSliderPanel *this,TDrawArea *param_1,TPanel *param_2,long param_3,long param_4,
@@ -256,8 +246,6 @@ TVerticalSliderPanel::setup
 
 // Function: set_rect
 // Address: 0047bdc0
-/* public: virtual void __thiscall TVerticalSliderPanel::set_rect(long,long,long,long) */
-
 void __thiscall
 TVerticalSliderPanel::set_rect
           (TVerticalSliderPanel *this,long param_1,long param_2,long param_3,long param_4)
@@ -271,8 +259,6 @@ TVerticalSliderPanel::set_rect
 // Function: draw
 // Address: 0047bde0
 // [HELPER] s_pnl_scbr__draw: "pnl_scbr::draw"
-/* public: virtual void __thiscall TVerticalSliderPanel::draw(void) */
-
 void __thiscall TVerticalSliderPanel::draw(TVerticalSliderPanel *this)
 {
   int iVar1;

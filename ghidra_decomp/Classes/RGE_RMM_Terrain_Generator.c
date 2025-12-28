@@ -11,9 +11,6 @@
 
 // Function: RGE_RMM_Terrain_Generator
 // Address: 004888e0
-/* public: __thiscall RGE_RMM_Terrain_Generator::RGE_RMM_Terrain_Generator(class RGE_Map *,class
-   RGE_Random_Map_Module *,struct RGE_Terrain_Info *) */
-
 RGE_RMM_Terrain_Generator * __thiscall
 RGE_RMM_Terrain_Generator::RGE_RMM_Terrain_Generator
           (RGE_RMM_Terrain_Generator *this,RGE_Map *param_1,RGE_Random_Map_Module *param_2,
@@ -39,9 +36,6 @@ RGE_RMM_Terrain_Generator::RGE_RMM_Terrain_Generator
 
 // Function: generate
 // Address: 00488920
-/* WARNING: Variable defined which should be unmapped: index */
-/* public: virtual unsigned char __thiscall RGE_RMM_Terrain_Generator::generate(void) */
-
 uchar __thiscall RGE_RMM_Terrain_Generator::generate(RGE_RMM_Terrain_Generator *this)
 {
   float fVar1;
@@ -106,8 +100,6 @@ uchar __thiscall RGE_RMM_Terrain_Generator::generate(RGE_RMM_Terrain_Generator *
 
 // Function: water
 // Address: 004889d0
-/* protected: unsigned char __thiscall RGE_RMM_Terrain_Generator::water(unsigned char) */
-
 uchar __thiscall RGE_RMM_Terrain_Generator::water(RGE_RMM_Terrain_Generator *this,uchar param_1)
 {
   if (param_1 == '\x01') {
@@ -123,9 +115,6 @@ uchar __thiscall RGE_RMM_Terrain_Generator::water(RGE_RMM_Terrain_Generator *thi
 
 // Function: check_borders
 // Address: 004889f0
-/* WARNING: Variable defined which should be unmapped: max_y */
-/* protected: void __thiscall RGE_RMM_Terrain_Generator::check_borders(void) */
-
 void __thiscall RGE_RMM_Terrain_Generator::check_borders(RGE_RMM_Terrain_Generator *this)
 {
   int iVar1;
@@ -202,9 +191,6 @@ void __thiscall RGE_RMM_Terrain_Generator::check_borders(RGE_RMM_Terrain_Generat
 
 // Function: check_terrain
 // Address: 00488b90
-/* protected: unsigned char __thiscall RGE_RMM_Terrain_Generator::check_terrain(unsigned
-   char,long,long,long,unsigned char) */
-
 uchar __thiscall
 RGE_RMM_Terrain_Generator::check_terrain
           (RGE_RMM_Terrain_Generator *this,uchar param_1,long param_2,long param_3,long param_4,
@@ -307,9 +293,6 @@ RGE_RMM_Terrain_Generator::check_terrain
 
 // Function: generate_modifiers
 // Address: 00488d50
-/* WARNING: Variable defined which should be unmapped: modifier */
-/* protected: void __thiscall RGE_RMM_Terrain_Generator::generate_modifiers(void) */
-
 void __thiscall RGE_RMM_Terrain_Generator::generate_modifiers(RGE_RMM_Terrain_Generator *this)
 {
   int iVar1;
@@ -373,8 +356,6 @@ void __thiscall RGE_RMM_Terrain_Generator::generate_modifiers(RGE_RMM_Terrain_Ge
 
 // Function: fig_chance
 // Address: 00488e40
-/* protected: float __thiscall RGE_RMM_Terrain_Generator::fig_chance(long,long,long,long) */
-
 float __thiscall
 RGE_RMM_Terrain_Generator::fig_chance
           (RGE_RMM_Terrain_Generator *this,long param_1,long param_2,long param_3,long param_4)
@@ -386,8 +367,6 @@ RGE_RMM_Terrain_Generator::fig_chance
 
 // Function: count_map_tiles
 // Address: 00488e60
-/* protected: long __thiscall RGE_RMM_Terrain_Generator::count_map_tiles(unsigned char) */
-
 long __thiscall
 RGE_RMM_Terrain_Generator::count_map_tiles(RGE_RMM_Terrain_Generator *this,uchar param_1)
 {
@@ -411,10 +390,6 @@ RGE_RMM_Terrain_Generator::count_map_tiles(RGE_RMM_Terrain_Generator *this,uchar
 // Function: link_stack_randomly
 // Address: 00488ea0
 // [HELPER] s_C__msdev_work_age1_x1_rmm_terr_c: "C:\msdev\work\age1_x1\rmm_terr.cpp"
-/* WARNING: Variable defined which should be unmapped: max_y */
-/* protected: void __thiscall RGE_RMM_Terrain_Generator::link_stack_randomly(struct Map_Stack
-   *,unsigned char) */
-
 void __thiscall
 RGE_RMM_Terrain_Generator::link_stack_randomly
           (RGE_RMM_Terrain_Generator *this,Map_Stack *param_1,uchar param_2)
@@ -465,8 +440,6 @@ RGE_RMM_Terrain_Generator::link_stack_randomly
 
 // Function: remove_area_from_lists
 // Address: 00488f90
-/* protected: void __thiscall RGE_RMM_Terrain_Generator::remove_area_from_lists(long,long,long) */
-
 void __thiscall
 RGE_RMM_Terrain_Generator::remove_area_from_lists
           (RGE_RMM_Terrain_Generator *this,long param_1,long param_2,long param_3)
@@ -515,10 +488,6 @@ RGE_RMM_Terrain_Generator::remove_area_from_lists
 // Function: base_terrain_generate
 // Address: 00489030
 // [HELPER] s_C__msdev_work_age1_x1_rmm_terr_c: "C:\msdev\work\age1_x1\rmm_terr.cpp"
-/* WARNING: Variable defined which should be unmapped: y */
-/* protected: unsigned char __thiscall RGE_RMM_Terrain_Generator::base_terrain_generate(struct
-   RGE_Terrain_Info_Line) */
-
 uchar __thiscall
 RGE_RMM_Terrain_Generator::base_terrain_generate
           (RGE_RMM_Terrain_Generator *this,RGE_Terrain_Info_Line param_1)

@@ -106,8 +106,6 @@
 
 // Function: GameOver
 // Address: 00425750
-/* public: void __thiscall TCommunications_Handler::GameOver(void) */
-
 void __thiscall TCommunications_Handler::GameOver(TCommunications_Handler *this)
 {
   this->current_turn = 0;
@@ -127,8 +125,6 @@ void __thiscall TCommunications_Handler::GameOver(TCommunications_Handler *this)
 // [HELPER] s_C__msdev_work_age1_x1_Com_hand_c: "C:\msdev\work\age1_x1\Com_hand.cpp"
 // [HELPER] s___d___s____s: "[%d] %s - %s"
 // [HELPER] s___d___s____s__QUIET__d_msec__T__: "[%d] %s - %s (QUIET=%d msec  T#=%d )"
-/* public: char * __thiscall TCommunications_Handler::WaitingOnNamedInfo(unsigned int) */
-
 char * __thiscall
 TCommunications_Handler::WaitingOnNamedInfo(TCommunications_Handler *this,uint param_1)
 {
@@ -155,35 +151,28 @@ TCommunications_Handler::WaitingOnNamedInfo(TCommunications_Handler *this,uint p
 
 // Function: WaitingOnInfo
 // Address: 00425800
-/* public: char * __thiscall TCommunications_Handler::WaitingOnInfo(unsigned int) */
-
 char * __thiscall TCommunications_Handler::WaitingOnInfo(TCommunications_Handler *this,uint param_1)
 {
   int iVar1;
   
   iVar1 = IsPlayerComputer(this,param_1);
   if (iVar1 != 0) {
-                    /* language.dll match for 0x4b1: "Computer" */
     (**(code **)(rge_base_game->_padding_ + 0x20))(0x4b1,0x62c588,0x20);
     return &UNK_0062c585.field_0x3;
   }
   iVar1 = IsPlayerHuman(this,param_1);
   if (iVar1 == 0) {
-                    /* language.dll match for 0x4b2: "Empty" */
     (**(code **)(rge_base_game->_padding_ + 0x20))(0x4b2,0x62c588,0x20);
     return &UNK_0062c585.field_0x3;
   }
   if (this->LastTurnAck[param_1] < 4) {
-                    /* language.dll match for 0x4b3: "Loading" */
     (**(code **)(rge_base_game->_padding_ + 0x20))(0x4b3,0x62c588,0x20);
     return &UNK_0062c585.field_0x3;
   }
   if (this->LastTurnAck[param_1] < this->current_turn) {
-                    /* language.dll match for 0x4b4: "Waiting" */
     (**(code **)(rge_base_game->_padding_ + 0x20))(0x4b4,0x62c588,0x20);
     return &UNK_0062c585.field_0x3;
   }
-                    /* language.dll match for 0x4b0: "Ready" */
   (**(code **)(rge_base_game->_padding_ + 0x20))(0x4b0,0x62c588,0x20);
   return &UNK_0062c585.field_0x3;
 }
@@ -192,8 +181,6 @@ char * __thiscall TCommunications_Handler::WaitingOnInfo(TCommunications_Handler
 
 // Function: StopIfSyncFail
 // Address: 004258e0
-/* public: void __thiscall TCommunications_Handler::StopIfSyncFail(int) */
-
 void __thiscall TCommunications_Handler::StopIfSyncFail(TCommunications_Handler *this,int param_1)
 {
   RGE_Communications_Synchronize::SetDialogOnFail(this->Sync,param_1);
@@ -205,8 +192,6 @@ void __thiscall TCommunications_Handler::StopIfSyncFail(TCommunications_Handler 
 
 // Function: ShowSyncChatMsgs
 // Address: 00425910
-/* public: void __thiscall TCommunications_Handler::ShowSyncChatMsgs(int) */
-
 void __thiscall TCommunications_Handler::ShowSyncChatMsgs(TCommunications_Handler *this,int param_1)
 {
   RGE_Communications_Synchronize::SendChatMsgsAtChecksum(this->Sync,param_1);
@@ -218,8 +203,6 @@ void __thiscall TCommunications_Handler::ShowSyncChatMsgs(TCommunications_Handle
 // Function: DropPacketsIntentionally
 // Address: 00425930
 // [HELPER] s_DROPPING_PACKETS_INTENTIONALLY__: "DROPPING PACKETS INTENTIONALLY!!!"
-/* public: void __thiscall TCommunications_Handler::DropPacketsIntentionally(int) */
-
 void __thiscall
 TCommunications_Handler::DropPacketsIntentionally(TCommunications_Handler *this,int param_1)
 {
@@ -234,8 +217,6 @@ TCommunications_Handler::DropPacketsIntentionally(TCommunications_Handler *this,
 
 // Function: SetStepMode
 // Address: 00425960
-/* public: void __thiscall TCommunications_Handler::SetStepMode(int) */
-
 void __thiscall TCommunications_Handler::SetStepMode(TCommunications_Handler *this,int param_1)
 {
   this->StepMode = param_1;
@@ -246,8 +227,6 @@ void __thiscall TCommunications_Handler::SetStepMode(TCommunications_Handler *th
 
 // Function: SetSpeedControl
 // Address: 00425970
-/* public: void __thiscall TCommunications_Handler::SetSpeedControl(int) */
-
 void __thiscall TCommunications_Handler::SetSpeedControl(TCommunications_Handler *this,int param_1)
 {
   RGE_Communications_Speed::EnableSpeedControl(this->Speed,param_1);
@@ -258,8 +237,6 @@ void __thiscall TCommunications_Handler::SetSpeedControl(TCommunications_Handler
 
 // Function: CalculatePlayerRange
 // Address: 00425990
-/* protected: int __thiscall TCommunications_Handler::CalculatePlayerRange(void) */
-
 int __thiscall TCommunications_Handler::CalculatePlayerRange(TCommunications_Handler *this)
 {
   ushort uVar1;
@@ -301,8 +278,6 @@ LAB_004259d0:
 
 // Function: Step
 // Address: 00425a20
-/* public: void __thiscall TCommunications_Handler::Step(int) */
-
 void __thiscall TCommunications_Handler::Step(TCommunications_Handler *this,int param_1)
 {
   TEST(this);
@@ -322,10 +297,6 @@ void __thiscall TCommunications_Handler::Step(TCommunications_Handler *this,int 
 // [HELPER] s_Fri_Jul_17_09_39_38_1998: "Fri Jul 17 09:39:38 1998"
 // [HELPER] s_Initialize_Player_List: "Initialize Player List"
 // [HELPER] s__: "}"
-/* WARNING: Variable defined which should be unmapped: Codestr */
-/* public: __thiscall TCommunications_Handler::TCommunications_Handler(void *,unsigned char,class
-   TChat *,struct _GUID) */
-
 TCommunications_Handler * __thiscall
 TCommunications_Handler::TCommunications_Handler
           (TCommunications_Handler *this,void *param_1,uchar param_2,TChat *param_3,_GUID param_4)
@@ -763,8 +734,6 @@ TCommunications_Handler::TCommunications_Handler
 // Function: ~TCommunications_Handler
 // Address: 004261e0
 // [HELPER] s_NO_MSG_Slot__d__Ser__d__Len__d__: "NO MSG Slot#%d  Ser#%d  Len=%d  DEST=%d,%d,%d,%d,%d,%d,%d,%d "
-/* public: __thiscall TCommunications_Handler::~TCommunications_Handler(void) */
-
 void __thiscall TCommunications_Handler::~TCommunications_Handler(TCommunications_Handler *this)
 {
   RESENDER *pRVar1;
@@ -847,9 +816,6 @@ void __thiscall TCommunications_Handler::~TCommunications_Handler(TCommunication
 // Function: KillAnyMissingPlayers
 // Address: 00426350
 // [HELPER] s___: "]\n"
-/* WARNING: Variable defined which should be unmapped: dwSize */
-/* protected: void __thiscall TCommunications_Handler::KillAnyMissingPlayers(void) */
-
 void __thiscall TCommunications_Handler::KillAnyMissingPlayers(TCommunications_Handler *this)
 {
   int iVar1;
@@ -895,9 +861,6 @@ void __thiscall TCommunications_Handler::KillAnyMissingPlayers(TCommunications_H
 
 // Function: AddCommand
 // Address: 00426470
-/* protected: int __thiscall TCommunications_Handler::AddCommand(unsigned long,void *,unsigned
-   long,int,unsigned char,int) */
-
 int __thiscall
 TCommunications_Handler::AddCommand
           (TCommunications_Handler *this,ulong param_1,void *param_2,ulong param_3,int param_4,
@@ -914,8 +877,6 @@ TCommunications_Handler::AddCommand
 
 // Function: get_command
 // Address: 004264d0
-/* public: void * __thiscall TCommunications_Handler::get_command(void) */
-
 void * __thiscall TCommunications_Handler::get_command(TCommunications_Handler *this)
 {
   void *pvVar1;
@@ -936,8 +897,6 @@ void * __thiscall TCommunications_Handler::get_command(TCommunications_Handler *
 
 // Function: new_command
 // Address: 00426510
-/* public: unsigned char __thiscall TCommunications_Handler::new_command(void *,int) */
-
 uchar __thiscall
 TCommunications_Handler::new_command(TCommunications_Handler *this,void *param_1,int param_2)
 {
@@ -953,8 +912,6 @@ TCommunications_Handler::new_command(TCommunications_Handler *this,void *param_1
 // Address: 00426530
 // [HELPER] s_NewCmnd: "NewCmnd"
 // [HELPER] s___: "]\n"
-/* public: int __thiscall TCommunications_Handler::NewCommand(void *,int,int) */
-
 int __thiscall
 TCommunications_Handler::NewCommand
           (TCommunications_Handler *this,void *param_1,int param_2,int param_3)
@@ -965,7 +922,6 @@ TCommunications_Handler::NewCommand
   long lVar4;
   
   if (this->Multiplayer != 0) {
-                    /* WARNING: Load size is inaccurate */
     TDebuggingLog::Log(L,(char *)L,s___>TX_CMD___d__Cmd__d_,param_2,(uint)*param_1);
     lVar4 = CommOut(this,0,'>',param_1,param_2,'\0');
     RGE_Comm_Error::ShowReturn(this->Err,lVar4,s_NewCmnd);
@@ -982,8 +938,6 @@ TCommunications_Handler::NewCommand
 
 // Function: LastWorldRandom
 // Address: 00426630
-/* public: void __thiscall TCommunications_Handler::LastWorldRandom(int) */
-
 void __thiscall TCommunications_Handler::LastWorldRandom(TCommunications_Handler *this,int param_1)
 {
   RGE_Communications_Synchronize::SetLastWorldRandom(this->Sync,param_1);
@@ -1006,9 +960,6 @@ void __thiscall TCommunications_Handler::LastWorldRandom(TCommunications_Handler
 // [HELPER] s____Timeout_player__turn__d_Playe: "+++Timeout player, turn=%d PlayerTimeout=%d"
 // [HELPER] s____Timeout_pregrame__turn__d_Pla: "+++Timeout pregrame, turn=%d PlayerTimeout=%d"
 // [HELPER] s_____Starting_Turn__d__WT__d__Fr_: "....Starting Turn#%d, WT=%d, Fr=%d, Gr=%d"
-/* WARNING: Variable defined which should be unmapped: Now */
-/* public: int __thiscall TCommunications_Handler::DoCycle(unsigned long) */
-
 int __thiscall TCommunications_Handler::DoCycle(TCommunications_Handler *this,ulong param_1)
 {
   byte bVar1;
@@ -1178,7 +1129,6 @@ int __thiscall TCommunications_Handler::DoCycle(TCommunications_Handler *this,ul
             TDebuggingLog::Log((TDebuggingLog *)this->current_turn,(char *)L,
                                s_Player__d_Turn__d__timeout____d_,uVar12,
                                (TDebuggingLog *)this->current_turn,uVar6);
-                    /* language.dll match for 0x4ba: "Player '%s' (%d) is not responding..." */
             (**(code **)(rge_base_game->_padding_ + 0x20))(0x4ba,msg_str + 4,100);
             pcVar5 = this->TBuff;
             uVar6 = uVar12;
@@ -1248,8 +1198,6 @@ LAB_00426c46:
 
 // Function: HasKicked
 // Address: 00426d40
-/* public: int __thiscall TCommunications_Handler::HasKicked(unsigned int) */
-
 int __thiscall TCommunications_Handler::HasKicked(TCommunications_Handler *this,uint param_1)
 {
   return this->Kicked[param_1];
@@ -1260,9 +1208,6 @@ int __thiscall TCommunications_Handler::HasKicked(TCommunications_Handler *this,
 // Function: SendPlayerName
 // Address: 00426d50
 // [HELPER] s_Send_Player_Name: "Send Player Name"
-/* WARNING: Variable defined which should be unmapped: dpnSetName */
-/* protected: long __thiscall TCommunications_Handler::SendPlayerName(void) */
-
 long __thiscall TCommunications_Handler::SendPlayerName(TCommunications_Handler *this)
 {
   long lVar1;
@@ -1281,9 +1226,6 @@ long __thiscall TCommunications_Handler::SendPlayerName(TCommunications_Handler 
 // Function: LogRXMsg
 // Address: 00426dc0
 // [HELPER] s_GTD__RX_Ser__d_From_P__d_T__ld_T: "GTD: RX Ser#%d From P#%d T#%ld ToExecT#%d Cmd=%d '%c' Seq=%d"
-/* protected: void __thiscall TCommunications_Handler::LogRXMsg(unsigned int,unsigned int,unsigned
-   long,unsigned char,unsigned char) */
-
 void __thiscall
 TCommunications_Handler::LogRXMsg
           (TCommunications_Handler *this,uint param_1,uint param_2,ulong param_3,uchar param_4,
@@ -1303,9 +1245,6 @@ TCommunications_Handler::LogRXMsg
 // [HELPER] s_C__msdev_work_age1_x1_Com_hand_c: "C:\msdev\work\age1_x1\Com_hand.cpp"
 // [HELPER] s_MsgWait: "MsgWait"
 // [HELPER] s_TX___ld__RX___ld__elapsed___ld__: "TX: %ld  RX: %ld  elapsed: %ld  totTX: %ld  totRX: %ld"
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall TCommunications_Handler::ReceiveGameMessages(void) */
-
 void __thiscall TCommunications_Handler::ReceiveGameMessages(TCommunications_Handler *this)
 {
   ulong uVar1;
@@ -1368,8 +1307,6 @@ LAB_00426f99:
 
 // Function: ShutdownGameMessages
 // Address: 00426fb0
-/* public: void __thiscall TCommunications_Handler::ShutdownGameMessages(void) */
-
 void __thiscall TCommunications_Handler::ShutdownGameMessages(TCommunications_Handler *this)
 {
   this->ShuttingDown = 1;
@@ -1387,9 +1324,6 @@ void __thiscall TCommunications_Handler::ShutdownGameMessages(TCommunications_Ha
 // [HELPER] s_True_overflow__d_requested___Max: "True overflow %d requested.  Max = %d"
 // [HELPER] s___: "]\n"
 // [HELPER] s_____Receive_Peek_slow____u_msec: "!!! Receive Peek slow - %u msec"
-/* WARNING: Variable defined which should be unmapped: dwSize */
-/* public: void __thiscall TCommunications_Handler::GetDPLAYMessages(void) */
-
 void __thiscall TCommunications_Handler::GetDPLAYMessages(TCommunications_Handler *this)
 {
   char *pcVar1;
@@ -1519,8 +1453,6 @@ LAB_00427216:
 // Function: CheckPingTime
 // Address: 00427300
 // [HELPER] s_C__msdev_work_age1_x1_Com_hand_c: "C:\msdev\work\age1_x1\Com_hand.cpp"
-/* public: void __thiscall TCommunications_Handler::CheckPingTime(int) */
-
 void __thiscall TCommunications_Handler::CheckPingTime(TCommunications_Handler *this,int param_1)
 {
   ulong uVar1;
@@ -1552,8 +1484,6 @@ void __thiscall TCommunications_Handler::CheckPingTime(TCommunications_Handler *
 // Address: 00427390
 // [HELPER] s_C__msdev_work_age1_x1_Com_hand_c: "C:\msdev\work\age1_x1\Com_hand.cpp"
 // [HELPER] s___: "]\n"
-/* protected: int __thiscall TCommunications_Handler::TXPing(unsigned int) */
-
 int __thiscall TCommunications_Handler::TXPing(TCommunications_Handler *this,uint param_1)
 {
   ulong uVar1;
@@ -1593,8 +1523,6 @@ int __thiscall TCommunications_Handler::TXPing(TCommunications_Handler *this,uin
 // Address: 00427440
 // [HELPER] s_C__msdev_work_age1_x1_Com_hand_c: "C:\msdev\work\age1_x1\Com_hand.cpp"
 // [HELPER] s___: "]\n"
-/* public: int __thiscall TCommunications_Handler::TXDebugPing(void) */
-
 int __thiscall TCommunications_Handler::TXDebugPing(TCommunications_Handler *this)
 {
   long lVar1;
@@ -1617,9 +1545,6 @@ int __thiscall TCommunications_Handler::TXDebugPing(TCommunications_Handler *thi
 // [HELPER] s_No_send_to_self_FastTX: "No send-to-self FastTX"
 // [HELPER] s____BAD_DCOID_0_NO_TX: "+++BAD DCOID=0 NO TX"
 // [HELPER] s____FastSend_slow____ld_msec: "!!!FastSend slow - %ld msec"
-/* public: long __thiscall TCommunications_Handler::FastSend(unsigned long,void *,unsigned
-   long,int,int) */
-
 long __thiscall
 TCommunications_Handler::FastSend
           (TCommunications_Handler *this,ulong param_1,void *param_2,ulong param_3,int param_4,
@@ -1706,10 +1631,6 @@ TCommunications_Handler::FastSend
 // [HELPER] s____BAD_DCOID_0_NO_TX: "+++BAD DCOID=0 NO TX"
 // [HELPER] s____First_contact_with_P__d_Next_: "+++First contact with P#%d Next Serial Init to %d"
 // [HELPER] s__s___d_Debug_ping___elapsed__d: "%s #%d Debug ping - elapsed=%d"
-/* WARNING: Variable defined which should be unmapped: NextSerialNumber */
-/* protected: int __thiscall TCommunications_Handler::PreprocessMessages(unsigned long,char
-   *,unsigned long,unsigned long,int) */
-
 int __thiscall
 TCommunications_Handler::PreprocessMessages
           (TCommunications_Handler *this,ulong param_1,char *param_2,ulong param_3,ulong param_4,
@@ -2023,7 +1944,6 @@ LAB_00427cca:
           else {
             if (((this->IntentionallyDropPackets != 0) && (6 < this->current_turn)) &&
                (DAT_0062cf24 = DAT_0062cf24 + 1, 8 < DAT_0062cf24)) {
-                    /* language.dll match for 0x4bc: "Intentional drop of Ser#%d  Cmd=%d '%c' " */
               (**(code **)(rge_base_game->_padding_ + 0x20))(0x4bc,msg_str + 4,100);
               sprintf(this->TBuff,msg + 0xf8,*puVar1,(int)*param_2,(int)*param_2);
               TDebuggingLog::Log(this_05,(char *)L,this->TBuff);
@@ -2088,8 +2008,6 @@ LAB_00427cca:
 
 // Function: NotifyWindow
 // Address: 00428270
-/* public: void __thiscall TCommunications_Handler::NotifyWindow(enum COMMMESSAGES) */
-
 void __thiscall
 TCommunications_Handler::NotifyWindow(TCommunications_Handler *this,COMMMESSAGES param_1)
 {
@@ -2102,8 +2020,6 @@ TCommunications_Handler::NotifyWindow(TCommunications_Handler *this,COMMMESSAGES
 // Function: NotifyWindowParam
 // Address: 00428280
 // [HELPER] s_COMM__Send_msg_to_window_WM_USER: "COMM: Send msg to window WM_USER  Msg=%d  Param=%d "
-/* public: void __thiscall TCommunications_Handler::NotifyWindowParam(enum COMMMESSAGES,long) */
-
 void __thiscall
 TCommunications_Handler::NotifyWindowParam
           (TCommunications_Handler *this,COMMMESSAGES param_1,long param_2)
@@ -2125,9 +2041,6 @@ TCommunications_Handler::NotifyWindowParam
 // [HELPER] s_Resume_msg_rcvd: "Resume msg rcvd"
 // [HELPER] s_Unknown_message____d___c_: "Unknown message : %d '%c'"
 // [HELPER] s____REGRESSION_WARNING__Current__: "+++REGRESSION WARNING, Current=%d  ExecuteOnTurn=%d"
-/* protected: int __thiscall TCommunications_Handler::EvaluatePlayerMessage(unsigned long,unsigned
-   int,unsigned long,unsigned char,unsigned char,char *,unsigned int,unsigned long,unsigned long) */
-
 int __thiscall
 TCommunications_Handler::EvaluatePlayerMessage
           (TCommunications_Handler *this,ulong param_1,uint param_2,ulong param_3,uchar param_4,
@@ -2259,9 +2172,6 @@ LAB_004285e0:
 
 // Function: SetPlayerStopTurn
 // Address: 004286f0
-/* protected: void __thiscall TCommunications_Handler::SetPlayerStopTurn(unsigned int,unsigned long)
-    */
-
 void __thiscall
 TCommunications_Handler::SetPlayerStopTurn(TCommunications_Handler *this,uint param_1,ulong param_2)
 {
@@ -2276,9 +2186,6 @@ TCommunications_Handler::SetPlayerStopTurn(TCommunications_Handler *this,uint pa
 // [HELPER] s_CheckPlayerStopTurn__Drop_player: "CheckPlayerStopTurn: Drop player %d on turn %d"
 // [HELPER] s_Resigned: "Resigned"
 // [HELPER] s__: "}"
-/* WARNING: Variable defined which should be unmapped: StopPending */
-/* protected: void __thiscall TCommunications_Handler::CheckPlayerStopTurn(unsigned long) */
-
 void __thiscall
 TCommunications_Handler::CheckPlayerStopTurn(TCommunications_Handler *this,ulong param_1)
 {
@@ -2338,8 +2245,6 @@ LAB_004287d9:
 
 // Function: ReleaseSettings
 // Address: 00428810
-/* public: void __thiscall TCommunications_Handler::ReleaseSettings(void) */
-
 void __thiscall TCommunications_Handler::ReleaseSettings(TCommunications_Handler *this)
 {
   (this->PlayerOptions).NeedsToBeSent = '\0';
@@ -2354,8 +2259,6 @@ void __thiscall TCommunications_Handler::ReleaseSettings(TCommunications_Handler
 // [HELPER] s_NO_DCOID_FAIL_SEND_PLRDAT: "NO DCOID-FAIL SEND PLRDAT"
 // [HELPER] s_Sending_options_data: "Sending options data"
 // [HELPER] s_Set_Player_Data: "Set Player Data"
-/* public: long __thiscall TCommunications_Handler::SendSharedData(int) */
-
 long __thiscall TCommunications_Handler::SendSharedData(TCommunications_Handler *this,int param_1)
 {
   ulong uVar1;
@@ -2439,8 +2342,6 @@ long __thiscall TCommunications_Handler::SendSharedData(TCommunications_Handler 
 // Address: 004289a0
 // [HELPER] s_C__msdev_work_age1_x1_Com_hand_c: "C:\msdev\work\age1_x1\Com_hand.cpp"
 // [HELPER] s_Playing_Taunt___d: "Playing Taunt #%d"
-/* protected: int __thiscall TCommunications_Handler::TEST(void) */
-
 int __thiscall TCommunications_Handler::TEST(TCommunications_Handler *this)
 {
   TTaunt *pTVar1;
@@ -2481,8 +2382,6 @@ int __thiscall TCommunications_Handler::TEST(TCommunications_Handler *this)
 // [HELPER] s_Check_dcoID__d_to_Me__d__: "Check dcoID %d to Me %d ?"
 // [HELPER] s_Match____ID_set_: "Match! - ID set."
 // [HELPER] s_SET_SELF_failed___We_are_DCOID__: "SET SELF failed.  We are DCOID=%d"
-/* protected: void __thiscall TCommunications_Handler::SetSelfPlayer(void) */
-
 void __thiscall TCommunications_Handler::SetSelfPlayer(TCommunications_Handler *this)
 {
   ulong *puVar1;
@@ -2522,9 +2421,6 @@ void __thiscall TCommunications_Handler::SetSelfPlayer(TCommunications_Handler *
 // [HELPER] s_Player_quit_the_game_: "Player quit the game."
 // [HELPER] s_Player_was_defeated__was_compute: "Player was defeated, was computer, or is invalid."
 // [HELPER] s__: "}"
-/* WARNING: Variable defined which should be unmapped: msg_str */
-/* public: void __thiscall TCommunications_Handler::DropDeadPlayer(unsigned int,unsigned long) */
-
 void __thiscall
 TCommunications_Handler::DropDeadPlayer(TCommunications_Handler *this,uint param_1,ulong param_2)
 {
@@ -2563,7 +2459,6 @@ TCommunications_Handler::DropDeadPlayer(TCommunications_Handler *this,uint param
     }
     else {
       TDebuggingLog::Log(L,(char *)L,s_Player_quit_the_game_);
-                    /* language.dll match for 0x4bd: "Player %d - '%s' dropped/disconnected." */
       (**(code **)(rge_base_game->_padding_ + 0x20))(0x4bd,msg_str + 4,0x32);
       sprintf(this->TBuff,msg_str + 4,param_1,this->FriendlyName + param_1);
       TDebuggingLog::Log(L,(char *)L,this->TBuff);
@@ -2640,11 +2535,6 @@ TCommunications_Handler::DropDeadPlayer(TCommunications_Handler *this,uint param
 // [HELPER] s___: "]\n"
 // [HELPER] s______NOTICE____: " *** NOTICE ***"
 // [HELPER] s_delete_player_of_group_: "delete player of group."
-/* WARNING: Variable defined which should be unmapped: kp */
-/* WARNING: Type propagation algorithm not settling */
-/* protected: void __thiscall TCommunications_Handler::EvaluateSystemMessage(unsigned long,char
-   *,unsigned long,unsigned long) */
-
 void __thiscall
 TCommunications_Handler::EvaluateSystemMessage
           (TCommunications_Handler *this,ulong param_1,char *param_2,ulong param_3,ulong param_4)
@@ -2830,7 +2720,6 @@ switchD_00429160_caseD_105:
       uVar4 = 1;
       pTVar10 = extraout_ECX;
       if (this->MaxGamePlayers != 0) {
-                    /* language.dll match for 0x7d0: "place holder" */
         uVar8 = 2000;
         puVar11 = this->PlayerHighSerialNumber;
         do {
@@ -2854,7 +2743,6 @@ switchD_00429160_caseD_105:
         if (0x1cf < *(uint *)(param_2 + 0x10)) {
           puVar9 = *(undefined4 **)(param_2 + 0xc);
           pCVar12 = &this->PlayerOptions;
-                    /* language.dll match for 0x74: "Copperplate Gothic Light" */
           for (iVar5 = 0x74; iVar5 != 0; iVar5 = iVar5 + -1) {
             *(undefined4 *)pCVar12 = *puVar9;
             puVar9 = puVar9 + 1;
@@ -2889,7 +2777,6 @@ switchD_00429160_caseD_105:
           }
           this_06 = (TDebuggingLog *)0x0;
           if (this->MaxGamePlayers != 0) {
-                    /* language.dll match for 0x7d0: "place holder" */
             uVar4 = 2000;
             puVar11 = this->PlayerHighSerialNumber;
             this_06 = (TDebuggingLog *)0x0;
@@ -2954,9 +2841,6 @@ switchD_00429160_caseD_105:
 
 // Function: SendGroupChatMsg
 // Address: 00429760
-/* WARNING: Variable defined which should be unmapped: DestMap */
-/* public: void __thiscall TCommunications_Handler::SendGroupChatMsg(char *) */
-
 void __thiscall
 TCommunications_Handler::SendGroupChatMsg(TCommunications_Handler *this,char *param_1)
 {
@@ -2987,9 +2871,6 @@ TCommunications_Handler::SendGroupChatMsg(TCommunications_Handler *this,char *pa
 
 // Function: SendChatMsgAll
 // Address: 004297d0
-/* WARNING: Variable defined which should be unmapped: DestMap */
-/* public: void __thiscall TCommunications_Handler::SendChatMsgAll(char *) */
-
 void __thiscall TCommunications_Handler::SendChatMsgAll(TCommunications_Handler *this,char *param_1)
 {
   uchar DestMap [10];
@@ -3009,9 +2890,6 @@ void __thiscall TCommunications_Handler::SendChatMsgAll(TCommunications_Handler 
 // Function: SendChatMsg
 // Address: 00429810
 // [HELPER] s_SendChatMsg_FROM__d__TO__d_Text_: "SendChatMsg FROM=%d  TO=%d Text='%s'"
-/* WARNING: Variable defined which should be unmapped: DestMap */
-/* public: void __thiscall TCommunications_Handler::SendChatMsg(unsigned int,unsigned int,char *) */
-
 void __thiscall
 TCommunications_Handler::SendChatMsg
           (TCommunications_Handler *this,uint param_1,uint param_2,char *param_3)
@@ -3038,9 +2916,6 @@ TCommunications_Handler::SendChatMsg
 // [HELPER] s_Local_chat_single_player_add___s: "Local chat single player add: %s"
 // [HELPER] s_TXChat__: "TXChat()"
 // [HELPER] s___: "]\n"
-/* WARNING: Variable defined which should be unmapped: cht */
-/* public: long __thiscall TCommunications_Handler::TXChat(unsigned int,unsigned char *,char *) */
-
 long __thiscall
 TCommunications_Handler::TXChat
           (TCommunications_Handler *this,uint param_1,uchar *param_2,char *param_3)
@@ -3116,8 +2991,6 @@ TCommunications_Handler::TXChat
 // Function: SendSpeedChange
 // Address: 00429a30
 // [HELPER] s___: "]\n"
-/* public: void __thiscall TCommunications_Handler::SendSpeedChange(unsigned int,unsigned int) */
-
 void __thiscall
 TCommunications_Handler::SendSpeedChange(TCommunications_Handler *this,uint param_1,uint param_2)
 {
@@ -3135,9 +3008,6 @@ TCommunications_Handler::SendSpeedChange(TCommunications_Handler *this,uint para
 // Function: SendIResignMsg
 // Address: 00429a90
 // [HELPER] s___: "]\n"
-/* WARNING: Variable defined which should be unmapped: resign */
-/* public: void __thiscall TCommunications_Handler::SendIResignMsg(void) */
-
 void __thiscall TCommunications_Handler::SendIResignMsg(TCommunications_Handler *this)
 {
   MSGFORMAT_ONTURN resign;
@@ -3169,8 +3039,6 @@ void __thiscall TCommunications_Handler::SendIResignMsg(TCommunications_Handler 
 
 // Function: HiTurnAcknowledged
 // Address: 00429bd0
-/* public: unsigned long __thiscall TCommunications_Handler::HiTurnAcknowledged(void) */
-
 ulong __thiscall TCommunications_Handler::HiTurnAcknowledged(TCommunications_Handler *this)
 {
   int iVar1;
@@ -3197,8 +3065,6 @@ ulong __thiscall TCommunications_Handler::HiTurnAcknowledged(TCommunications_Han
 
 // Function: AllPlayersAcknowledged
 // Address: 00429c40
-/* public: int __thiscall TCommunications_Handler::AllPlayersAcknowledged(void) */
-
 int __thiscall TCommunications_Handler::AllPlayersAcknowledged(TCommunications_Handler *this)
 {
   int iVar1;
@@ -3238,10 +3104,6 @@ int __thiscall TCommunications_Handler::AllPlayersAcknowledged(TCommunications_H
 // [HELPER] s_C__msdev_work_age1_x1_Com_hand_c: "C:\msdev\work\age1_x1\Com_hand.cpp"
 // [HELPER] s_SendChecksum: "SendChecksum"
 // [HELPER] s___: "]\n"
-/* WARNING: Variable defined which should be unmapped: cs */
-/* public: long __thiscall TCommunications_Handler::SendChecksumMessage(unsigned long,unsigned
-   int,long,long,long,long,long) */
-
 long __thiscall
 TCommunications_Handler::SendChecksumMessage
           (TCommunications_Handler *this,ulong param_1,uint param_2,long param_3,long param_4,
@@ -3256,7 +3118,6 @@ TCommunications_Handler::SendChecksumMessage
   cs.cs2 = param_3;
   cs.cs3 = param_4;
   cs.cs4 = param_5;
-                    /* language.dll match for 0xbc0: "Not enough room to unload all." */
   cs.cs5 = param_6;
   cs.PingInitiated = param_7;
   cs.cs1 = param_2;
@@ -3274,9 +3135,6 @@ TCommunications_Handler::SendChecksumMessage
 // [HELPER] s_Cached_Execute___d__Slot__d_: "Cached Execute #%d  Slot#%d "
 // [HELPER] s_Clearing_OnHold_Slot__d__Len__d_: "Clearing OnHold Slot=%d  Len=%d  From=%d  To=%d"
 // [HELPER] s____Clearing_PAST_OnHold_Slot__d_: "+++Clearing PAST OnHold Slot=%d  Serial#%d Len=%d  From=%d  To=%d  Expecting#%d"
-/* WARNING: Variable defined which should be unmapped: i */
-/* public: unsigned int __thiscall TCommunications_Handler::ExecuteIncoming(void) */
-
 uint __thiscall TCommunications_Handler::ExecuteIncoming(TCommunications_Handler *this)
 {
   HOLDER *pHVar1;
@@ -3359,8 +3217,6 @@ uint __thiscall TCommunications_Handler::ExecuteIncoming(TCommunications_Handler
 // Function: ClearAllSerialNumbers
 // Address: 00429f80
 // [HELPER] s_Cleared_all_serial_numbers_: "Cleared all serial numbers."
-/* public: void __thiscall TCommunications_Handler::ClearAllSerialNumbers(void) */
-
 void __thiscall TCommunications_Handler::ClearAllSerialNumbers(TCommunications_Handler *this)
 {
   uint *puVar1;
@@ -3385,8 +3241,6 @@ void __thiscall TCommunications_Handler::ClearAllSerialNumbers(TCommunications_H
 
 // Function: ClearRXandTX
 // Address: 00429fd0
-/* public: void __thiscall TCommunications_Handler::ClearRXandTX(void) */
-
 void __thiscall TCommunications_Handler::ClearRXandTX(TCommunications_Handler *this)
 {
   RESENDER *pRVar1;
@@ -3435,8 +3289,6 @@ void __thiscall TCommunications_Handler::ClearRXandTX(TCommunications_Handler *t
 
 // Function: ClearRXForPlayer
 // Address: 0042a060
-/* protected: void __thiscall TCommunications_Handler::ClearRXForPlayer(unsigned int) */
-
 void __thiscall
 TCommunications_Handler::ClearRXForPlayer(TCommunications_Handler *this,uint param_1)
 {
@@ -3466,8 +3318,6 @@ TCommunications_Handler::ClearRXForPlayer(TCommunications_Handler *this,uint par
 // Function: CountWaitingMessages
 // Address: 0042a0c0
 // [HELPER] s_GTD__Ser___d_Slot__d_Cmd___c__Le: "GTD: Ser #%d Slot=%d Cmd='%c' Len=%d not ackd yet by %d,%d,%d,%d,%d,%d,%d,%d"
-/* public: int __thiscall TCommunications_Handler::CountWaitingMessages(void) */
-
 int __thiscall TCommunications_Handler::CountWaitingMessages(TCommunications_Handler *this)
 {
   RESENDER *pRVar1;
@@ -3506,8 +3356,6 @@ int __thiscall TCommunications_Handler::CountWaitingMessages(TCommunications_Han
 
 // Function: ClearTXForPlayer
 // Address: 0042a130
-/* protected: void __thiscall TCommunications_Handler::ClearTXForPlayer(unsigned int) */
-
 void __thiscall
 TCommunications_Handler::ClearTXForPlayer(TCommunications_Handler *this,uint param_1)
 {
@@ -3528,8 +3376,6 @@ TCommunications_Handler::ClearTXForPlayer(TCommunications_Handler *this,uint par
 
 // Function: ClearRXTXForPlayer
 // Address: 0042a160
-/* protected: void __thiscall TCommunications_Handler::ClearRXTXForPlayer(unsigned int) */
-
 void __thiscall
 TCommunications_Handler::ClearRXTXForPlayer(TCommunications_Handler *this,uint param_1)
 {
@@ -3547,9 +3393,6 @@ TCommunications_Handler::ClearRXTXForPlayer(TCommunications_Handler *this,uint p
 // [HELPER] s_S__d__Ser__d_FromID__d_Len__d__C: "S#%d  Ser#%d FromID=%d Len=%d  CMD='%c' B0=%d B1=%d"
 // [HELPER] s____StoreIncoming_called_for_zero: "+++StoreIncoming called for zero-length message"
 // [HELPER] s_____DID_NOT_STORE___: "+++ DID NOT STORE:  "
-/* public: int __thiscall TCommunications_Handler::StoreIncoming(unsigned int,char *,unsigned
-   int,unsigned long,unsigned long) */
-
 int __thiscall
 TCommunications_Handler::StoreIncoming
           (TCommunications_Handler *this,uint param_1,char *param_2,uint param_3,ulong param_4,
@@ -3639,9 +3482,6 @@ TCommunications_Handler::StoreIncoming
 // [HELPER] s_RESEND_buffer_filled_up__slots__: "RESEND buffer filled up, slots (i=%d)."
 // [HELPER] s_Stored__db_for_resend__Slot___d_: "Stored %db for resend (Slot= %d ) SERIAL=%d  (MaxPlayers=%d)"
 // [HELPER] s_____RGEGTD_Store: "+++!RGEGTD Store"
-/* public: int __thiscall TCommunications_Handler::StoreForResend(unsigned int,char *,unsigned
-   int,unsigned int *) */
-
 int __thiscall
 TCommunications_Handler::StoreForResend
           (TCommunications_Handler *this,uint param_1,char *param_2,uint param_3,uint *param_4)
@@ -3750,9 +3590,6 @@ TCommunications_Handler::StoreForResend
 // [HELPER] s__RGEGTD_Ack: "!RGEGTD Ack"
 // [HELPER] s____BAD_DCOID_0_NO_TX: "+++BAD DCOID=0 NO TX"
 // [HELPER] s____TXAcknowledgeMessage_slow____: "!!!TXAcknowledgeMessage slow - %ld msec"
-/* public: int __thiscall TCommunications_Handler::TXAcknowledgeMessage(unsigned int,unsigned int)
-    */
-
 int __thiscall
 TCommunications_Handler::TXAcknowledgeMessage
           (TCommunications_Handler *this,uint param_1,uint param_2)
@@ -3796,9 +3633,6 @@ TCommunications_Handler::TXAcknowledgeMessage
 // Address: 0042a650
 // [HELPER] s_COMM__RX_ACK_from_P__d_for_Ser__: "COMM: RX ACK from P#%d for Ser#%d"
 // [HELPER] s__RGEGTD_RxAck: "!RGEGTD RxAck"
-/* public: int __thiscall TCommunications_Handler::RXAcknowledgeStoredMessage(unsigned int,unsigned
-   int) */
-
 int __thiscall
 TCommunications_Handler::RXAcknowledgeStoredMessage
           (TCommunications_Handler *this,uint param_1,uint param_2)
@@ -3831,9 +3665,6 @@ TCommunications_Handler::RXAcknowledgeStoredMessage
 // Function: PurgeAcknowledgedStoredMessages
 // Address: 0042a6e0
 // [HELPER] s_GTD__Ser___d_Slot__d__Ackd_by_al: "GTD: Ser #%d Slot=%d  Ackd by all. (Released)"
-/* WARNING: Variable defined which should be unmapped: NonAckCount */
-/* public: int __thiscall TCommunications_Handler::PurgeAcknowledgedStoredMessages(void) */
-
 int __thiscall
 TCommunications_Handler::PurgeAcknowledgedStoredMessages(TCommunications_Handler *this)
 {
@@ -3912,10 +3743,6 @@ TCommunications_Handler::PurgeAcknowledgedStoredMessages(TCommunications_Handler
 // [HELPER] s___: "]\n"
 // [HELPER] s____BAD_DCOID_0_NO_TX: "+++BAD DCOID=0 NO TX"
 // [HELPER] s____SendStoredMessages_slow____ld: "!!!SendStoredMessages slow - %ld msec"
-/* WARNING: Variable defined which should be unmapped: items */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: int __thiscall TCommunications_Handler::SendStoredMessages(void) */
-
 int __thiscall TCommunications_Handler::SendStoredMessages(TCommunications_Handler *this)
 {
   TDebuggingLog *this_00;
@@ -4036,7 +3863,6 @@ LAB_0042acdf:
         this = extraout_ECX;
         goto LAB_0042acdf;
       }
-                    /* language.dll match for 0xe76: "Click to attack this building." */
       uVar3 = debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0xe76);
       TDebuggingLog::Log(L,(char *)L,s___>TX_STOR___d__d___d_,uVar12,local_18,
                          this->Resend[local_18].Length);
@@ -4104,9 +3930,6 @@ LAB_0042acdf:
 // [HELPER] s____TXResendReply_slow____ld_msec: "!!!TXResendReply slow - %ld msec"
 // [HELPER] s_____Did_not_have_requested_Ser__: "+++ Did not have requested Ser#%d for P#%d "
 // [HELPER] s_____TX__No_such_message_as___d__: "+++ TX: No such message as #%d..resynchronizing ser#s"
-/* WARNING: Variable defined which should be unmapped: BadTransmitCount */
-/* public: int __thiscall TCommunications_Handler::TXResendReply(unsigned int,unsigned int) */
-
 int __thiscall
 TCommunications_Handler::TXResendReply(TCommunications_Handler *this,uint param_1,uint param_2)
 {
@@ -4189,7 +4012,6 @@ LAB_0042b07b:
         i = i + 1;
       }
       pRVar1 = this->Resend;
-                    /* language.dll match for 0xf42: "Right-click to board this transport." */
       nosuch._0_4_ = SEXT14(**(char **)((int)pRVar1->DestMap + (uVar6 - 8)));
       uVar3 = debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0xf42);
       TDebuggingLog::Log(L,(char *)L,s_COMM__>>>>>_RETRANSMIT_P__d_Ser_,uVar2,
@@ -4232,8 +4054,6 @@ LAB_0042b07b:
 // [HELPER] s___: "]\n"
 // [HELPER] s____BAD_DCOID_0_NO_TX: "+++BAD DCOID=0 NO TX"
 // [HELPER] s____GetNextSequence_slow____ld_ms: "!!!GetNextSequence slow - %ld msec"
-/* public: int __thiscall TCommunications_Handler::TXResendRequest(unsigned int,unsigned int) */
-
 int __thiscall
 TCommunications_Handler::TXResendRequest(TCommunications_Handler *this,uint param_1,uint param_2)
 {
@@ -4259,7 +4079,6 @@ TCommunications_Handler::TXResendRequest(TCommunications_Handler *this,uint para
         TDebuggingLog::Log(this_01,(char *)L,s____BAD_DCOID_0_NO_TX);
         return 0;
       }
-                    /* language.dll match for 0xfa9: "?" */
       debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0xfa9);
       TDebuggingLog::Log(L,(char *)L,s___>TX_RES_REQ___d__d___d_,param_2,param_1,8);
       iVar3 = (**(code **)(*DAT_0062c5ec + 0x68))
@@ -4283,8 +4102,6 @@ TCommunications_Handler::TXResendRequest(TCommunications_Handler *this,uint para
 // Function: GetNextSequence
 // Address: 0042b200
 // [HELPER] s____Too_many_commands_in_one_comm: "+++Too many commands in one comm turn.  Seq#=%d"
-/* public: unsigned char __thiscall TCommunications_Handler::GetNextSequence(unsigned long) */
-
 uchar __thiscall
 TCommunications_Handler::GetNextSequence(TCommunications_Handler *this,ulong param_1)
 {
@@ -4325,10 +4142,6 @@ TCommunications_Handler::GetNextSequence(TCommunications_Handler *this,ulong par
 // [HELPER] s____CommOut2_slow____ld_msec: "!!!CommOut2 slow - %ld msec"
 // [HELPER] s____CommOut_slow____ld_msec: "!!!CommOut slow - %ld msec"
 // [HELPER] s____Damaged_Msg_0b: "+++Damaged Msg 0b"
-/* WARNING: Variable defined which should be unmapped: FullLength */
-/* protected: long __thiscall TCommunications_Handler::CommOut(unsigned long,unsigned char,void
-   *,int,unsigned char) */
-
 long __thiscall
 TCommunications_Handler::CommOut
           (TCommunications_Handler *this,ulong param_1,uchar param_2,void *param_3,int param_4,
@@ -4606,8 +4419,6 @@ LAB_0042b72a:
 // [HELPER] s_C__msdev_work_age1_x1_com_hand_h: "C:\msdev\work\age1_x1\com_hand.h"
 // [HELPER] s_Initialize_Player_List: "Initialize Player List"
 // [HELPER] s__: "}"
-/* public: void __thiscall TCommunications_Handler::DestroyMultiplayerGame(void) */
-
 void __thiscall TCommunications_Handler::DestroyMultiplayerGame(TCommunications_Handler *this)
 {
   char cVar1;
@@ -4777,8 +4588,6 @@ void __thiscall TCommunications_Handler::DestroyMultiplayerGame(TCommunications_
 
 // Function: GetCommunicationsStatus
 // Address: 0042bad0
-/* public: enum COMMSTATUS __thiscall TCommunications_Handler::GetCommunicationsStatus(void) */
-
 COMMSTATUS __thiscall
 TCommunications_Handler::GetCommunicationsStatus(TCommunications_Handler *this)
 {
@@ -4810,8 +4619,6 @@ TCommunications_Handler::GetCommunicationsStatus(TCommunications_Handler *this)
 // [HELPER] s_UNLINK_Unknown: "UNLINK Unknown"
 // [HELPER] s_Unlinking_current_level___d_: "Unlinking current level (%d)"
 // [HELPER] s__: "}"
-/* public: enum COMMSTATUS __thiscall TCommunications_Handler::UnlinkCurrentLevel(void) */
-
 COMMSTATUS __thiscall TCommunications_Handler::UnlinkCurrentLevel(TCommunications_Handler *this)
 {
   char cVar1;
@@ -5406,8 +5213,6 @@ LAB_0042c553:
 // [HELPER] s_AFTER_UNLINKING___Status__d___Re: "AFTER UNLINKING...Status=%d   Reported=%d"
 // [HELPER] s_Unlink_from_level____d___Failed_: "Unlink from level [ %d ] Failed.\n Stopping "
 // [HELPER] s_Unlink_to_level__d_desired__curr: "Unlink to level %d desired, currently at level=%d"
-/* public: enum COMMSTATUS __thiscall TCommunications_Handler::UnlinkToLevel(enum COMMSTATUS) */
-
 COMMSTATUS __thiscall
 TCommunications_Handler::UnlinkToLevel(TCommunications_Handler *this,COMMSTATUS param_1)
 {
@@ -5445,8 +5250,6 @@ TCommunications_Handler::UnlinkToLevel(TCommunications_Handler *this,COMMSTATUS 
 
 // Function: AnalyzeCommunicationsStatus
 // Address: 0042c690
-/* public: enum COMMSTATUS __thiscall TCommunications_Handler::AnalyzeCommunicationsStatus(void) */
-
 COMMSTATUS __thiscall
 TCommunications_Handler::AnalyzeCommunicationsStatus(TCommunications_Handler *this)
 {
@@ -5518,8 +5321,6 @@ TCommunications_Handler::AnalyzeCommunicationsStatus(TCommunications_Handler *th
 // Function: ResetLastCommunicationTimes
 // Address: 0042c7a0
 // [HELPER] s_C__msdev_work_age1_x1_Com_hand_c: "C:\msdev\work\age1_x1\Com_hand.cpp"
-/* public: void __thiscall TCommunications_Handler::ResetLastCommunicationTimes(void) */
-
 void __thiscall TCommunications_Handler::ResetLastCommunicationTimes(TCommunications_Handler *this)
 {
   ulong uVar1;
@@ -5544,8 +5345,6 @@ void __thiscall TCommunications_Handler::ResetLastCommunicationTimes(TCommunicat
 
 // Function: IsPaused
 // Address: 0042c7f0
-/* public: int __thiscall TCommunications_Handler::IsPaused(void) */
-
 int __thiscall TCommunications_Handler::IsPaused(TCommunications_Handler *this)
 {
   return (uint)((this->PlayerOptions).ProgramState == COMM_STATE_PAUSE);
@@ -5555,8 +5354,6 @@ int __thiscall TCommunications_Handler::IsPaused(TCommunications_Handler *this)
 
 // Function: DropAllHostedPlayers
 // Address: 0042c800
-/* public: void __thiscall TCommunications_Handler::DropAllHostedPlayers(void) */
-
 void __thiscall TCommunications_Handler::DropAllHostedPlayers(TCommunications_Handler *this)
 {
   uint uVar1;
@@ -5574,8 +5371,6 @@ void __thiscall TCommunications_Handler::DropAllHostedPlayers(TCommunications_Ha
 
 // Function: LocalResumeGame
 // Address: 0042c840
-/* protected: void __thiscall TCommunications_Handler::LocalResumeGame(unsigned int) */
-
 void __thiscall TCommunications_Handler::LocalResumeGame(TCommunications_Handler *this,uint param_1)
 {
   (this->PlayerOptions).ProgramState = COMM_STATE_RUNNING;
@@ -5587,8 +5382,6 @@ void __thiscall TCommunications_Handler::LocalResumeGame(TCommunications_Handler
 
 // Function: LocalPauseGame
 // Address: 0042c860
-/* protected: void __thiscall TCommunications_Handler::LocalPauseGame(unsigned int) */
-
 void __thiscall TCommunications_Handler::LocalPauseGame(TCommunications_Handler *this,uint param_1)
 {
   (this->PlayerOptions).ProgramState = COMM_STATE_PAUSE;
@@ -5601,8 +5394,6 @@ void __thiscall TCommunications_Handler::LocalPauseGame(TCommunications_Handler 
 // Function: SendPauseGame
 // Address: 0042c880
 // [HELPER] s___: "]\n"
-/* protected: void __thiscall TCommunications_Handler::SendPauseGame(int) */
-
 void __thiscall TCommunications_Handler::SendPauseGame(TCommunications_Handler *this,int param_1)
 {
   if ((this->Multiplayer != 0) && (this->MeHost != 0)) {
@@ -5621,8 +5412,6 @@ void __thiscall TCommunications_Handler::SendPauseGame(TCommunications_Handler *
 
 // Function: TogglePauseGame
 // Address: 0042c8f0
-/* public: int __thiscall TCommunications_Handler::TogglePauseGame(void) */
-
 int __thiscall TCommunications_Handler::TogglePauseGame(TCommunications_Handler *this)
 {
   int iVar1;
@@ -5644,8 +5433,6 @@ int __thiscall TCommunications_Handler::TogglePauseGame(TCommunications_Handler 
 // Function: RequestPauseGame
 // Address: 0042c930
 // [HELPER] s___: "]\n"
-/* public: void __thiscall TCommunications_Handler::RequestPauseGame(int) */
-
 void __thiscall TCommunications_Handler::RequestPauseGame(TCommunications_Handler *this,int param_1)
 {
   if (this->Multiplayer == 0) {
@@ -5668,8 +5455,6 @@ void __thiscall TCommunications_Handler::RequestPauseGame(TCommunications_Handle
 // Address: 0042c9a0
 // [HELPER] s_Resume_requested: "Resume requested"
 // [HELPER] s___: "]\n"
-/* public: void __thiscall TCommunications_Handler::RequestResumeGame(int) */
-
 void __thiscall
 TCommunications_Handler::RequestResumeGame(TCommunications_Handler *this,int param_1)
 {
@@ -5693,8 +5478,6 @@ TCommunications_Handler::RequestResumeGame(TCommunications_Handler *this,int par
 // Function: SetRandomSeed
 // Address: 0042ca20
 // [HELPER] s_C__msdev_work_age1_x1_Com_hand_c: "C:\msdev\work\age1_x1\Com_hand.cpp"
-/* public: void __thiscall TCommunications_Handler::SetRandomSeed(int) */
-
 void __thiscall TCommunications_Handler::SetRandomSeed(TCommunications_Handler *this,int param_1)
 {
   ulong uVar1;
@@ -5717,8 +5500,6 @@ void __thiscall TCommunications_Handler::SetRandomSeed(TCommunications_Handler *
 // Function: GetRandomSeed
 // Address: 0042ca90
 // [HELPER] s_C__msdev_work_age1_x1_Com_hand_c: "C:\msdev\work\age1_x1\Com_hand.cpp"
-/* public: unsigned int __thiscall TCommunications_Handler::GetRandomSeed(void) */
-
 uint __thiscall TCommunications_Handler::GetRandomSeed(TCommunications_Handler *this)
 {
   ulong uVar1;
@@ -5736,8 +5517,6 @@ uint __thiscall TCommunications_Handler::GetRandomSeed(TCommunications_Handler *
 
 // Function: WhoAmI
 // Address: 0042caf0
-/* public: int __thiscall TCommunications_Handler::WhoAmI(void) */
-
 int __thiscall TCommunications_Handler::WhoAmI(TCommunications_Handler *this)
 {
   return this->Me;
@@ -5747,8 +5526,6 @@ int __thiscall TCommunications_Handler::WhoAmI(TCommunications_Handler *this)
 
 // Function: IsHost
 // Address: 0042cb00
-/* public: int __thiscall TCommunications_Handler::IsHost(void) */
-
 int __thiscall TCommunications_Handler::IsHost(TCommunications_Handler *this)
 {
   if (this->Multiplayer != 0) {
@@ -5761,8 +5538,6 @@ int __thiscall TCommunications_Handler::IsHost(TCommunications_Handler *this)
 
 // Function: GetCommStateStr
 // Address: 0042cb20
-/* public: char * __thiscall TCommunications_Handler::GetCommStateStr(void) */
-
 char * __thiscall TCommunications_Handler::GetCommStateStr(TCommunications_Handler *this)
 {
   return (char *)0x0;
@@ -5773,8 +5548,6 @@ char * __thiscall TCommunications_Handler::GetCommStateStr(TCommunications_Handl
 // Function: GetReadyPlayerStr
 // Address: 0042cb30
 // [HELPER] s_Ready_________________________: "Ready=                        "
-/* public: char * __thiscall TCommunications_Handler::GetReadyPlayerStr(void) */
-
 char * __thiscall TCommunications_Handler::GetReadyPlayerStr(TCommunications_Handler *this)
 {
   char cVar1;
@@ -5846,8 +5619,6 @@ char * __thiscall TCommunications_Handler::GetReadyPlayerStr(TCommunications_Han
 
 // Function: GetPlayerHumanity
 // Address: 0042cc00
-/* public: int __thiscall TCommunications_Handler::GetPlayerHumanity(unsigned int) */
-
 int __thiscall
 TCommunications_Handler::GetPlayerHumanity(TCommunications_Handler *this,uint param_1)
 {
@@ -5861,9 +5632,6 @@ TCommunications_Handler::GetPlayerHumanity(TCommunications_Handler *this,uint pa
 
 // Function: SetPlayerHumanity
 // Address: 0042cc30
-/* public: void __thiscall TCommunications_Handler::SetPlayerHumanity(unsigned int,enum
-   PLAYERHUMANITY) */
-
 void __thiscall
 TCommunications_Handler::SetPlayerHumanity
           (TCommunications_Handler *this,uint param_1,PLAYERHUMANITY param_2)
@@ -5884,8 +5652,6 @@ TCommunications_Handler::SetPlayerHumanity
 
 // Function: GetActivePlayerCount
 // Address: 0042cc90
-/* public: int __thiscall TCommunications_Handler::GetActivePlayerCount(void) */
-
 int __thiscall TCommunications_Handler::GetActivePlayerCount(TCommunications_Handler *this)
 {
   int iVar1;
@@ -5908,8 +5674,6 @@ int __thiscall TCommunications_Handler::GetActivePlayerCount(TCommunications_Han
 
 // Function: IsPlayerHuman
 // Address: 0042ccd0
-/* public: int __thiscall TCommunications_Handler::IsPlayerHuman(unsigned int) */
-
 int __thiscall TCommunications_Handler::IsPlayerHuman(TCommunications_Handler *this,uint param_1)
 {
   PLAYERHUMANITY PVar1;
@@ -5926,8 +5690,6 @@ int __thiscall TCommunications_Handler::IsPlayerHuman(TCommunications_Handler *t
 
 // Function: IsPlayerComputer
 // Address: 0042cd10
-/* public: int __thiscall TCommunications_Handler::IsPlayerComputer(unsigned int) */
-
 int __thiscall TCommunications_Handler::IsPlayerComputer(TCommunications_Handler *this,uint param_1)
 {
   if ((param_1 != 0) && (param_1 <= this->MaxGamePlayers)) {
@@ -5949,8 +5711,6 @@ int __thiscall TCommunications_Handler::IsPlayerComputer(TCommunications_Handler
 // [HELPER] s__: "}"
 // [HELPER] s__s__DPMsgs_d_: "%s  DPMsgs%d "
 // [HELPER] s__s__Speed_Adjusts__d_: "%s  Speed Adjusts=%d "
-/* public: char * __thiscall TCommunications_Handler::GetCommInfo(unsigned char) */
-
 char * __thiscall TCommunications_Handler::GetCommInfo(TCommunications_Handler *this,uchar param_1)
 {
   float fVar1;
@@ -6095,7 +5855,6 @@ char * __thiscall TCommunications_Handler::GetCommInfo(TCommunications_Handler *
     sprintf(0x62c9f0,s__s__DPMsgs_d_,pcVar12);
     RGE_Communications_Speed::GetPlayerSpeedStatusStr(this->Speed,0);
     sprintf();
-                    /* language.dll match for 0x1468: "Stone path 5" */
     uVar3 = debug_timeGetTime(s_C__msdev_work_age1_x1_Com_hand_c,0x1468);
     iVar4 = IsPlayerHuman(this,8);
     if ((iVar4 == 0) || (this->Me == 8)) {
@@ -6163,8 +5922,6 @@ char * __thiscall TCommunications_Handler::GetCommInfo(TCommunications_Handler *
 
 // Function: GetPlayerName
 // Address: 0042d0e0
-/* public: char * __thiscall TCommunications_Handler::GetPlayerName(unsigned int) */
-
 char * __thiscall TCommunications_Handler::GetPlayerName(TCommunications_Handler *this,uint param_1)
 {
   if (this->MaxGamePlayers < param_1) {
@@ -6180,9 +5937,6 @@ char * __thiscall TCommunications_Handler::GetPlayerName(TCommunications_Handler
 
 // Function: UpdatePlayerInformation
 // Address: 0042d120
-/* public: void __thiscall TCommunications_Handler::UpdatePlayerInformation(unsigned long,char
-   *,char *) */
-
 void __thiscall
 TCommunications_Handler::UpdatePlayerInformation
           (TCommunications_Handler *this,ulong param_1,char *param_2,char *param_3)
@@ -6215,8 +5969,6 @@ LAB_0042d155:
 
 // Function: IsLobbyLaunched
 // Address: 0042d170
-/* public: int __thiscall TCommunications_Handler::IsLobbyLaunched(void) */
-
 int __thiscall TCommunications_Handler::IsLobbyLaunched(TCommunications_Handler *this)
 {
   int iVar1;
@@ -6230,9 +5982,6 @@ int __thiscall TCommunications_Handler::IsLobbyLaunched(TCommunications_Handler 
 // Function: LaunchLobbyGame
 // Address: 0042d180
 // [HELPER] s_Release_count____d: "Release count = %d"
-/* WARNING: Variable defined which should be unmapped: NewDPConv */
-/* public: int __thiscall TCommunications_Handler::LaunchLobbyGame(void) */
-
 int __thiscall TCommunications_Handler::LaunchLobbyGame(TCommunications_Handler *this)
 {
   byte bVar1;
@@ -6276,7 +6025,6 @@ int __thiscall TCommunications_Handler::LaunchLobbyGame(TCommunications_Handler 
       this->HaveHostInit = 1;
       (this->PlayerOptions).ProgramState = COMM_STATE_JOINNOW;
       SetRandomSeed(this,rge_base_game->random_game_seed);
-                    /* language.dll match for 0x7d1: "Error" */
       this->GTDSerialNo = 0x7d1;
     }
     UpdatePlayers(this);
@@ -6290,9 +6038,6 @@ int __thiscall TCommunications_Handler::LaunchLobbyGame(TCommunications_Handler 
 // Function: InitPlayerInformation
 // Address: 0042d2d0
 // [HELPER] s_Player__d___ld__is_INITIALIZED_a: "Player %d (%ld) is INITIALIZED as '%s' [%s]."
-/* protected: void __thiscall TCommunications_Handler::InitPlayerInformation(unsigned int,unsigned
-   long,char *,char *) */
-
 void __thiscall
 TCommunications_Handler::InitPlayerInformation
           (TCommunications_Handler *this,uint param_1,ulong param_2,char *param_3,char *param_4)
@@ -6331,8 +6076,6 @@ TCommunications_Handler::InitPlayerInformation
 // Function: SetGameTitle
 // Address: 0042d3b0
 // [HELPER] s__s___s_: "%s [%s]"
-/* public: int __thiscall TCommunications_Handler::SetGameTitle(char *) */
-
 int __thiscall TCommunications_Handler::SetGameTitle(TCommunications_Handler *this,char *param_1)
 {
   sprintf(this->MyGameTitle,s__s___s_,param_1,this->MyFriendlyName);
@@ -6344,8 +6087,6 @@ int __thiscall TCommunications_Handler::SetGameTitle(TCommunications_Handler *th
 // Function: SetMyPlayerName
 // Address: 0042d3e0
 // [HELPER] s_Optional_Information: "Optional Information"
-/* public: void __thiscall TCommunications_Handler::SetMyPlayerName(char *) */
-
 void __thiscall
 TCommunications_Handler::SetMyPlayerName(TCommunications_Handler *this,char *param_1)
 {
@@ -6407,8 +6148,6 @@ TCommunications_Handler::SetMyPlayerName(TCommunications_Handler *this,char *par
 
 // Function: SetPlayerName
 // Address: 0042d440
-/* public: void __thiscall TCommunications_Handler::SetPlayerName(unsigned int,char *) */
-
 void __thiscall
 TCommunications_Handler::SetPlayerName(TCommunications_Handler *this,uint param_1,char *param_2)
 {
@@ -6452,8 +6191,6 @@ TCommunications_Handler::SetPlayerName(TCommunications_Handler *this,uint param_
 
 // Function: SetWindowHandle
 // Address: 0042d490
-/* public: void * __thiscall TCommunications_Handler::SetWindowHandle(void *) */
-
 void * __thiscall
 TCommunications_Handler::SetWindowHandle(TCommunications_Handler *this,void *param_1)
 {
@@ -6469,9 +6206,6 @@ TCommunications_Handler::SetWindowHandle(TCommunications_Handler *this,void *par
 // [HELPER] s_DPCreate: "DPCreate"
 // [HELPER] s_Get_glpIDC_returns____ld: "Get glpIDC returns...%ld"
 // [HELPER] s_Release__Links__d: "Release: Links=%d"
-/* WARNING: Variable defined which should be unmapped: lpIDC */
-/* protected: long __thiscall TCommunications_Handler::CreateDirectPlayConversation(void) */
-
 long __thiscall TCommunications_Handler::CreateDirectPlayConversation(TCommunications_Handler *this)
 {
   ushort uVar1;
@@ -6515,8 +6249,6 @@ long __thiscall TCommunications_Handler::CreateDirectPlayConversation(TCommunica
 
 // Function: OpenMultiplayerConnection
 // Address: 0042d580
-/* public: int __thiscall TCommunications_Handler::OpenMultiplayerConnection(void) */
-
 int __thiscall TCommunications_Handler::OpenMultiplayerConnection(TCommunications_Handler *this)
 {
   return -1;
@@ -6528,9 +6260,6 @@ int __thiscall TCommunications_Handler::OpenMultiplayerConnection(TCommunication
 // Address: 0042d590
 // [HELPER] s_DPCreateConv: "DPCreateConv"
 // [HELPER] s_DP_Open_Create: "DP Open Create"
-/* WARNING: Variable defined which should be unmapped: dSess2 */
-/* public: int __thiscall TCommunications_Handler::CreateMultiplayerGame(void) */
-
 int __thiscall TCommunications_Handler::CreateMultiplayerGame(TCommunications_Handler *this)
 {
   TChat *this_00;
@@ -6583,7 +6312,6 @@ int __thiscall TCommunications_Handler::CreateMultiplayerGame(TCommunications_Ha
   (this->PlayerOptions).Humanity[this->Me] = ME_HUMAN;
   this->HaveHostInit = 1;
   (this->PlayerOptions).ProgramState = COMM_STATE_JOINNOW;
-                    /* language.dll match for 0x7d1: "Error" */
   this->GTDSerialNo = 0x7d1;
   UpdatePlayers(this);
   return 1;
@@ -6595,8 +6323,6 @@ int __thiscall TCommunications_Handler::CreateMultiplayerGame(TCommunications_Ha
 // Address: 0042d720
 // [HELPER] s_Position__d__LOCKED_____Plr__s: "Position %d *LOCKED*.   Plr=%s"
 // [HELPER] s__: "}"
-/* protected: void __thiscall TCommunications_Handler::PackPlayersDown(void) */
-
 void __thiscall TCommunications_Handler::PackPlayersDown(TCommunications_Handler *this)
 {
   char cVar1;
@@ -6619,7 +6345,6 @@ LAB_0042d946:
     return;
   }
   local_8 = (this->PlayerOptions).dcoID;
-                    /* language.dll match for 0x80: "Arial" */
   i = 0x80;
 LAB_0042d751:
   local_8 = local_8 + 1;
@@ -6721,9 +6446,6 @@ LAB_0042d915:
 // [HELPER] s_Adding_player___s_: "Adding player [%s]"
 // [HELPER] s_Create_the_player: "Create the player"
 // [HELPER] s_Rcvd_DPID_of__d: "Rcvd DPID of %d"
-/* WARNING: Variable defined which should be unmapped: names */
-/* protected: int __thiscall TCommunications_Handler::AddSelfPlayer(void) */
-
 int __thiscall TCommunications_Handler::AddSelfPlayer(TCommunications_Handler *this)
 {
   int iVar1;
@@ -6755,8 +6477,6 @@ int __thiscall TCommunications_Handler::AddSelfPlayer(TCommunications_Handler *t
 
 // Function: InitJoinGame
 // Address: 0042da50
-/* public: long __thiscall TCommunications_Handler::InitJoinGame(void) */
-
 long __thiscall TCommunications_Handler::InitJoinGame(TCommunications_Handler *this)
 {
   long lVar1;
@@ -6777,9 +6497,6 @@ long __thiscall TCommunications_Handler::InitJoinGame(TCommunications_Handler *t
 // [HELPER] s_JMPG__Create_w_no_valid_glpIDC: "JMPG: Create w/no valid glpIDC"
 // [HELPER] s_Join_MP_Game: "Join MP Game"
 // [HELPER] s_Open_session_for_JOIN___Session_: "Open session for JOIN  (Session Data1=%ld) "
-/* WARNING: Variable defined which should be unmapped: dSess2 */
-/* public: int __thiscall TCommunications_Handler::JoinMultiplayerGame(struct _GUID *) */
-
 int __thiscall
 TCommunications_Handler::JoinMultiplayerGame(TCommunications_Handler *this,_GUID *param_1)
 {
@@ -6849,8 +6566,6 @@ TCommunications_Handler::JoinMultiplayerGame(TCommunications_Handler *this,_GUID
 // [HELPER] s_Clear_player_acknowledgements: "Clear player acknowledgements"
 // [HELPER] s_HOST_Set_own_serial_to___d: "HOST Set own serial to =%d"
 // [HELPER] s_Set_expected_ser__for_player__d_: "Set expected ser# for player %d to %d"
-/* public: void __thiscall TCommunications_Handler::LaunchMultiplayerGame(void) */
-
 void __thiscall TCommunications_Handler::LaunchMultiplayerGame(TCommunications_Handler *this)
 {
   undefined1 *puVar1;
@@ -6868,7 +6583,6 @@ void __thiscall TCommunications_Handler::LaunchMultiplayerGame(TCommunications_H
   ClearRXandTX(this);
   PackPlayersDown(this);
   if (this->MaxGamePlayers != 0) {
-                    /* language.dll match for 0x7d0: "place holder" */
     uVar3 = 2000;
     puVar4 = this->PlayerHighSerialNumber;
     do {
@@ -6916,9 +6630,6 @@ void __thiscall TCommunications_Handler::LaunchMultiplayerGame(TCommunications_H
 // [HELPER] s_Latency____d: "Latency = %d"
 // [HELPER] s_MaxQueueSize__d: "MaxQueueSize=%d"
 // [HELPER] s_RGE_Gtd_Delivery__d: "RGE_Gtd Delivery=%d"
-/* WARNING: Variable defined which should be unmapped: dpCaps */
-/* protected: long __thiscall TCommunications_Handler::GetMyMultiPlayerCaps(void) */
-
 long __thiscall TCommunications_Handler::GetMyMultiPlayerCaps(TCommunications_Handler *this)
 {
   int iVar1;
@@ -6965,8 +6676,6 @@ long __thiscall TCommunications_Handler::GetMyMultiPlayerCaps(TCommunications_Ha
 
 // Function: SetApplicationGUID
 // Address: 0042dea0
-/* public: void __thiscall TCommunications_Handler::SetApplicationGUID(struct _GUID) */
-
 void __thiscall
 TCommunications_Handler::SetApplicationGUID(TCommunications_Handler *this,_GUID param_1)
 {
@@ -6982,8 +6691,6 @@ TCommunications_Handler::SetApplicationGUID(TCommunications_Handler *this,_GUID 
 
 // Function: GetDPInterface
 // Address: 0042ded0
-/* public: struct IDirectPlay3 * __thiscall TCommunications_Handler::GetDPInterface(void) */
-
 IDirectPlay3 * __thiscall TCommunications_Handler::GetDPInterface(TCommunications_Handler *this)
 {
   return DAT_0062c5ec;
@@ -6993,8 +6700,6 @@ IDirectPlay3 * __thiscall TCommunications_Handler::GetDPInterface(TCommunication
 
 // Function: SetServiceGUID
 // Address: 0042dee0
-/* public: void __thiscall TCommunications_Handler::SetServiceGUID(struct _GUID) */
-
 void __thiscall TCommunications_Handler::SetServiceGUID(TCommunications_Handler *this,_GUID param_1)
 {
   (this->ServiceGUID).Data1 = param_1.Data1;
@@ -7009,8 +6714,6 @@ void __thiscall TCommunications_Handler::SetServiceGUID(TCommunications_Handler 
 
 // Function: SetSessionGUID
 // Address: 0042df10
-/* public: void __thiscall TCommunications_Handler::SetSessionGUID(struct _GUID) */
-
 void __thiscall TCommunications_Handler::SetSessionGUID(TCommunications_Handler *this,_GUID param_1)
 {
   (this->SessionGUID).Data1 = param_1.Data1;
@@ -7025,8 +6728,6 @@ void __thiscall TCommunications_Handler::SetSessionGUID(TCommunications_Handler 
 
 // Function: UpdatePlayers
 // Address: 0042df40
-/* public: void __thiscall TCommunications_Handler::UpdatePlayers(void) */
-
 void __thiscall TCommunications_Handler::UpdatePlayers(TCommunications_Handler *this)
 {
   uint uVar1;
@@ -7064,9 +6765,6 @@ void __thiscall TCommunications_Handler::UpdatePlayers(TCommunications_Handler *
 // [HELPER] s_TX_Missing_Player_report_for_pla: "TX Missing Player report for player=%d "
 // [HELPER] s_Unknown_fail_on_updateplayers: "Unknown fail on updateplayers"
 // [HELPER] s___: "]\n"
-/* WARNING: Variable defined which should be unmapped: lpData */
-/* public: void __thiscall TCommunications_Handler::UpdatePlayer(unsigned int,int) */
-
 void __thiscall
 TCommunications_Handler::UpdatePlayer(TCommunications_Handler *this,uint param_1,int param_2)
 {
@@ -7287,10 +6985,6 @@ LAB_0042e2ea:
 // Address: 0042e380
 // [HELPER] s_SET_MY_READINESS__P__d_RDY__d_O1: "SET-MY-READINESS: P#%d RDY=%d O1=%d O2=%d O3=%d O4=%d O5=%d O6=%d O7=%d "
 // [HELPER] s___: "]\n"
-/* WARNING: Variable defined which should be unmapped: rdy */
-/* public: int __thiscall TCommunications_Handler::SetMyReadiness(int,unsigned long,unsigned
-   long,unsigned long,unsigned long,unsigned long,unsigned long,unsigned long) */
-
 int __thiscall
 TCommunications_Handler::SetMyReadiness
           (TCommunications_Handler *this,int param_1,ulong param_2,ulong param_3,ulong param_4,
@@ -7338,10 +7032,6 @@ TCommunications_Handler::SetMyReadiness
 
 // Function: GetClientReadiness
 // Address: 0042e500
-/* public: int __thiscall TCommunications_Handler::GetClientReadiness(unsigned int,int *,unsigned
-   long *,unsigned long *,unsigned long *,unsigned long *,unsigned long *,unsigned long *,unsigned
-   long *) */
-
 int __thiscall
 TCommunications_Handler::GetClientReadiness
           (TCommunications_Handler *this,uint param_1,int *param_2,ulong *param_3,ulong *param_4,
@@ -7362,8 +7052,6 @@ TCommunications_Handler::GetClientReadiness
 
 // Function: IsPlayerReady
 // Address: 0042e580
-/* public: int __thiscall TCommunications_Handler::IsPlayerReady(unsigned int) */
-
 int __thiscall TCommunications_Handler::IsPlayerReady(TCommunications_Handler *this,uint param_1)
 {
   if ((param_1 != 0) && (param_1 <= this->MaxGamePlayers)) {
@@ -7376,8 +7064,6 @@ int __thiscall TCommunications_Handler::IsPlayerReady(TCommunications_Handler *t
 
 // Function: ComputerPlayerGameStart
 // Address: 0042e5b0
-/* public: int __thiscall TCommunications_Handler::ComputerPlayerGameStart(void) */
-
 int __thiscall TCommunications_Handler::ComputerPlayerGameStart(TCommunications_Handler *this)
 {
   if (this->Multiplayer == 0) {
@@ -7390,8 +7076,6 @@ int __thiscall TCommunications_Handler::ComputerPlayerGameStart(TCommunications_
 
 // Function: MultiplayerGameStart
 // Address: 0042e5e0
-/* public: int __thiscall TCommunications_Handler::MultiplayerGameStart(void) */
-
 int __thiscall TCommunications_Handler::MultiplayerGameStart(TCommunications_Handler *this)
 {
   if (this->Multiplayer == 0) {
@@ -7408,8 +7092,6 @@ int __thiscall TCommunications_Handler::MultiplayerGameStart(TCommunications_Han
 
 // Function: AllPlayersReady
 // Address: 0042e610
-/* public: int __thiscall TCommunications_Handler::AllPlayersReady(void) */
-
 int __thiscall TCommunications_Handler::AllPlayersReady(TCommunications_Handler *this)
 {
   int iVar1;
@@ -7439,9 +7121,6 @@ int __thiscall TCommunications_Handler::AllPlayersReady(TCommunications_Handler 
 // Address: 0042e670
 // [HELPER] s_Get_Session_Desc: "Get Session Desc"
 // [HELPER] s_RX_Current_Players__d: "RX Current Players=%d"
-/* WARNING: Variable defined which should be unmapped: dwSize */
-/* protected: long __thiscall TCommunications_Handler::DPlayGetSessionDesc(void) */
-
 long __thiscall TCommunications_Handler::DPlayGetSessionDesc(TCommunications_Handler *this)
 {
   undefined4 uVar1;
@@ -7500,9 +7179,6 @@ long __thiscall TCommunications_Handler::DPlayGetSessionDesc(TCommunications_Han
 // [HELPER] s_This_player_is_the_Session_Host_: "This player is the Session Host."
 // [HELPER] s_Timeout____________d: "Timeout         = %d"
 // [HELPER] s____________Direct_Play_III_Capab: "-----------Direct Play III Capabilities ---------"
-/* WARNING: Variable defined which should be unmapped: DPCaps */
-/* protected: long __thiscall TCommunications_Handler::CommGetCaps(void) */
-
 long __thiscall TCommunications_Handler::CommGetCaps(TCommunications_Handler *this)
 {
   int *piVar1;
@@ -7588,8 +7264,6 @@ long __thiscall TCommunications_Handler::CommGetCaps(TCommunications_Handler *th
 // Address: 0042e920
 // [HELPER] s_Close_Session: "Close Session"
 // [HELPER] s_Close_Session_Call: "Close Session Call"
-/* protected: long __thiscall TCommunications_Handler::CloseSession(void) */
-
 long __thiscall TCommunications_Handler::CloseSession(TCommunications_Handler *this)
 {
   RGE_Comm_Error *this_00;
@@ -7628,8 +7302,6 @@ long __thiscall TCommunications_Handler::CloseSession(TCommunications_Handler *t
 // Function: ReleaseComm
 // Address: 0042e9b0
 // [HELPER] s_1_Release_COMM_links__d: "1.Release COMM links=%d"
-/* protected: long __thiscall TCommunications_Handler::ReleaseComm(void) */
-
 long __thiscall TCommunications_Handler::ReleaseComm(TCommunications_Handler *this)
 {
   ushort uVar1;
@@ -7656,9 +7328,6 @@ long __thiscall TCommunications_Handler::ReleaseComm(TCommunications_Handler *th
 // Address: 0042ea10
 // [HELPER] s_Sent_to_all___drop_player__d_ID_: "Sent to all - drop player %d ID=%d "
 // [HELPER] s___: "]\n"
-/* WARNING: Variable defined which should be unmapped: kp */
-/* public: int __thiscall TCommunications_Handler::Kick(unsigned int) */
-
 int __thiscall TCommunications_Handler::Kick(TCommunications_Handler *this,uint param_1)
 {
   ulong uVar1;
@@ -7696,8 +7365,6 @@ int __thiscall TCommunications_Handler::Kick(TCommunications_Handler *this,uint 
 // Function: DestroyMyPlayer
 // Address: 0042eb10
 // [HELPER] s_Release_Player: "Release Player"
-/* protected: long __thiscall TCommunications_Handler::DestroyMyPlayer(void) */
-
 long __thiscall TCommunications_Handler::DestroyMyPlayer(TCommunications_Handler *this)
 {
   int iVar1;
@@ -7722,8 +7389,6 @@ long __thiscall TCommunications_Handler::DestroyMyPlayer(TCommunications_Handler
 // Function: SetMyGameOptions
 // Address: 0042eb60
 // [HELPER] s_Host_Set_Options_to_size__d: "Host Set Options to size %d"
-/* public: int __thiscall TCommunications_Handler::SetMyGameOptions(char *,unsigned long) */
-
 int __thiscall
 TCommunications_Handler::SetMyGameOptions(TCommunications_Handler *this,char *param_1,ulong param_2)
 {
@@ -7767,8 +7432,6 @@ TCommunications_Handler::SetMyGameOptions(TCommunications_Handler *this,char *pa
 
 // Function: GetMyGameOptions
 // Address: 0042ebf0
-/* public: void * __thiscall TCommunications_Handler::GetMyGameOptions(unsigned long *) */
-
 void * __thiscall
 TCommunications_Handler::GetMyGameOptions(TCommunications_Handler *this,ulong *param_1)
 {
@@ -7780,8 +7443,6 @@ TCommunications_Handler::GetMyGameOptions(TCommunications_Handler *this,ulong *p
 
 // Function: FreeOptions
 // Address: 0042ec10
-/* protected: void __thiscall TCommunications_Handler::FreeOptions(void) */
-
 void __thiscall TCommunications_Handler::FreeOptions(TCommunications_Handler *this)
 {
   char *pcVar1;
@@ -7799,8 +7460,6 @@ void __thiscall TCommunications_Handler::FreeOptions(TCommunications_Handler *th
 
 // Function: SetHostPlayerNumber
 // Address: 0042ecc0
-/* protected: void __thiscall TCommunications_Handler::SetHostPlayerNumber(unsigned int) */
-
 void __thiscall
 TCommunications_Handler::SetHostPlayerNumber(TCommunications_Handler *this,uint param_1)
 {
@@ -7812,8 +7471,6 @@ TCommunications_Handler::SetHostPlayerNumber(TCommunications_Handler *this,uint 
 
 // Function: GetHostPlayerNumber
 // Address: 0042ecd0
-/* public: unsigned int __thiscall TCommunications_Handler::GetHostPlayerNumber(void) */
-
 uint __thiscall TCommunications_Handler::GetHostPlayerNumber(TCommunications_Handler *this)
 {
   return (this->PlayerOptions).HostPlayerNumber;
@@ -7841,10 +7498,6 @@ uint __thiscall TCommunications_Handler::GetHostPlayerNumber(TCommunications_Han
 // [HELPER] s________________DATA3__d: "               DATA3=%d"
 // [HELPER] s________________DATA4__u: "               DATA4=%u"
 // [HELPER] s______end____: "--   end  --"
-/* WARNING: Variable defined which should be unmapped: wszSPGuid */
-/* public: void __thiscall TCommunications_Handler::DebugSessionInformation(struct DPSESSIONDESC2 *)
-    */
-
 void __thiscall
 TCommunications_Handler::DebugSessionInformation
           (TCommunications_Handler *this,DPSESSIONDESC2 *param_1)
@@ -7897,10 +7550,6 @@ TCommunications_Handler::DebugSessionInformation
 // Function: EnableNewPlayers
 // Address: 0042ef00
 // [HELPER] s_Released_to_links__d: "Released to links=%d"
-/* WARNING: Restarted to delay deadcode elimination for space: stack */
-/* protected: long __thiscall TCommunications_Handler::EnableNewPlayers(struct IDirectPlay2 *,int)
-    */
-
 long __thiscall
 TCommunications_Handler::EnableNewPlayers
           (TCommunications_Handler *this,IDirectPlay2 *param_1,int param_2)
@@ -7928,8 +7577,6 @@ TCommunications_Handler::EnableNewPlayers
 
 // Function: OutOfSync
 // Address: 0042ef60
-/* public: void __thiscall TCommunications_Handler::OutOfSync(int,unsigned long) */
-
 void __thiscall
 TCommunications_Handler::OutOfSync(TCommunications_Handler *this,int param_1,ulong param_2)
 {
@@ -7946,8 +7593,6 @@ TCommunications_Handler::OutOfSync(TCommunications_Handler *this,int param_1,ulo
 // [HELPER] s_SendGameOptions: "SendGameOptions"
 // [HELPER] s_Sending_zone_message_: "Sending zone message."
 // [HELPER] s___: "]\n"
-/* public: int __thiscall TCommunications_Handler::SendZoneMessage(char *,unsigned long) */
-
 int __thiscall
 TCommunications_Handler::SendZoneMessage(TCommunications_Handler *this,char *param_1,ulong param_2)
 {
@@ -7977,8 +7622,6 @@ TCommunications_Handler::SendZoneMessage(TCommunications_Handler *this,char *par
 // Function: ForcePlayerEnumeration
 // Address: 0042f110
 // [HELPER] s_Force_Calling_enumeration_of_pla: "Force Calling enumeration of players."
-/* public: void __thiscall TCommunications_Handler::ForcePlayerEnumeration(void) */
-
 void __thiscall TCommunications_Handler::ForcePlayerEnumeration(TCommunications_Handler *this)
 {
   TDebuggingLog::Log((TDebuggingLog *)this,(char *)L,s_Force_Calling_enumeration_of_pla);
@@ -7992,8 +7635,6 @@ void __thiscall TCommunications_Handler::ForcePlayerEnumeration(TCommunications_
 // Address: 0042f140
 // [HELPER] s_Create_called_: "Create called."
 // [HELPER] s_Force_Self_player_destroy_and_cr: "Force Self player destroy and create!"
-/* public: void __thiscall TCommunications_Handler::ForcePlayerDestroyAndCreate(void) */
-
 void __thiscall TCommunications_Handler::ForcePlayerDestroyAndCreate(TCommunications_Handler *this)
 {
   TDebuggingLog *this_00;
@@ -8012,9 +7653,6 @@ void __thiscall TCommunications_Handler::ForcePlayerDestroyAndCreate(TCommunicat
 // Address: 0042f190
 // [HELPER] s_Force_Name_Change: "Force Name Change"
 // [HELPER] s_TEMPORARY_NAME: "TEMPORARY NAME"
-/* WARNING: Variable defined which should be unmapped: dpn */
-/* public: void __thiscall TCommunications_Handler::ForceNameChange(void) */
-
 void __thiscall TCommunications_Handler::ForceNameChange(TCommunications_Handler *this)
 {
   DPNAME dpn;
@@ -8062,8 +7700,6 @@ void __thiscall TCommunications_Handler::ForceNameChange(TCommunications_Handler
 
 // Function: SetSpeedV1
 // Address: 0042f230
-/* public: void __thiscall TCommunications_Handler::SetSpeedV1(unsigned long) */
-
 void __thiscall TCommunications_Handler::SetSpeedV1(TCommunications_Handler *this,ulong param_1)
 {
   RGE_Communications_Speed::SetV1(this->Speed,param_1);
@@ -8074,8 +7710,6 @@ void __thiscall TCommunications_Handler::SetSpeedV1(TCommunications_Handler *thi
 
 // Function: SetSpeedV2
 // Address: 0042f250
-/* public: void __thiscall TCommunications_Handler::SetSpeedV2(unsigned long) */
-
 void __thiscall TCommunications_Handler::SetSpeedV2(TCommunications_Handler *this,ulong param_1)
 {
   RGE_Communications_Speed::SetV2(this->Speed,param_1);
@@ -8086,8 +7720,6 @@ void __thiscall TCommunications_Handler::SetSpeedV2(TCommunications_Handler *thi
 
 // Function: IsPlayerOutOfSync
 // Address: 0042f270
-/* public: int __thiscall TCommunications_Handler::IsPlayerOutOfSync(unsigned int,unsigned long) */
-
 int __thiscall
 TCommunications_Handler::IsPlayerOutOfSync(TCommunications_Handler *this,uint param_1,ulong param_2)
 {

@@ -60,15 +60,11 @@
 // Function: DiplomacyAIModule
 // Address: 0040bec0
 // [HELPER] s_Diplomacy_AI: "Diplomacy AI"
-/* public: __thiscall DiplomacyAIModule::DiplomacyAIModule(void *,int) */
-
 DiplomacyAIModule * __thiscall
 DiplomacyAIModule::DiplomacyAIModule(DiplomacyAIModule *this,void *param_1,int param_2)
 {
   int iVar1;
   int *piVar2;
-  
-                    /* language.dll match for 0x3eb: "Age of Empires Help" */
   AIModule::AIModule((AIModule *)this,s_Diplomacy_AI,0x3eb,param_2,param_1);
   iVar1 = 0;
   this->_padding_ = (int)&_vftable_;
@@ -88,9 +84,6 @@ DiplomacyAIModule::DiplomacyAIModule(DiplomacyAIModule *this,void *param_1,int p
 
 // Function: `scalar_deleting_destructor'
 // Address: 0040bf20
-/* public: virtual void * __thiscall DiplomacyAIModule::`scalar deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 DiplomacyAIModule::_scalar_deleting_destructor_(DiplomacyAIModule *this,uint param_1)
 {
@@ -106,8 +99,6 @@ DiplomacyAIModule::_scalar_deleting_destructor_(DiplomacyAIModule *this,uint par
 // Function: DiplomacyAIModule
 // Address: 0040bf40
 // [HELPER] s_Diplomacy_AI: "Diplomacy AI"
-/* public: __thiscall DiplomacyAIModule::DiplomacyAIModule(int,int) */
-
 DiplomacyAIModule * __thiscall
 DiplomacyAIModule::DiplomacyAIModule(DiplomacyAIModule *this,int param_1,int param_2)
 {
@@ -123,7 +114,6 @@ DiplomacyAIModule::DiplomacyAIModule(DiplomacyAIModule *this,int param_1,int par
   pcStack_8 = FUN_0055c5f8;
   local_c = *unaff_FS_OFFSET;
   *unaff_FS_OFFSET = &local_c;
-                    /* language.dll match for 0x3eb: "Age of Empires Help" */
   AIModule::AIModule((AIModule *)this,s_Diplomacy_AI,0x3eb,param_1,(void *)0x0);
   local_4 = 0;
   this->md = (MainDecisionAIModule *)0x0;
@@ -147,8 +137,6 @@ DiplomacyAIModule::DiplomacyAIModule(DiplomacyAIModule *this,int param_1,int par
 
 // Function: ~DiplomacyAIModule
 // Address: 0040bff0
-/* public: virtual __thiscall DiplomacyAIModule::~DiplomacyAIModule(void) */
-
 void __thiscall DiplomacyAIModule::~DiplomacyAIModule(DiplomacyAIModule *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -160,8 +148,6 @@ void __thiscall DiplomacyAIModule::~DiplomacyAIModule(DiplomacyAIModule *this)
 
 // Function: setMainDecisionAI
 // Address: 0040c000
-/* public: void __thiscall DiplomacyAIModule::setMainDecisionAI(class MainDecisionAIModule *) */
-
 void __thiscall
 DiplomacyAIModule::setMainDecisionAI(DiplomacyAIModule *this,MainDecisionAIModule *param_1)
 {
@@ -173,8 +159,6 @@ DiplomacyAIModule::setMainDecisionAI(DiplomacyAIModule *this,MainDecisionAIModul
 
 // Function: update
 // Address: 0040c010
-/* public: virtual int __thiscall DiplomacyAIModule::update(int) */
-
 int __thiscall DiplomacyAIModule::update(DiplomacyAIModule *this,int param_1)
 {
   RGE_Player *pRVar1;
@@ -212,8 +196,6 @@ int __thiscall DiplomacyAIModule::update(DiplomacyAIModule *this,int param_1)
 
 // Function: save
 // Address: 0040c0a0
-/* public: virtual int __thiscall DiplomacyAIModule::save(int) */
-
 int __thiscall DiplomacyAIModule::save(DiplomacyAIModule *this,int param_1)
 {
   uchar *puVar1;
@@ -238,8 +220,6 @@ int __thiscall DiplomacyAIModule::save(DiplomacyAIModule *this,int param_1)
 
 // Function: stance
 // Address: 0040c100
-/* public: int __thiscall DiplomacyAIModule::stance(int,int)const  */
-
 int __thiscall DiplomacyAIModule::stance(DiplomacyAIModule *this,int param_1,int param_2)
 {
   int iVar1;
@@ -275,8 +255,6 @@ int __thiscall DiplomacyAIModule::stance(DiplomacyAIModule *this,int param_1,int
 
 // Function: changeStance
 // Address: 0040c190
-/* public: void __thiscall DiplomacyAIModule::changeStance(int,int,int) */
-
 void __thiscall
 DiplomacyAIModule::changeStance(DiplomacyAIModule *this,int param_1,int param_2,int param_3)
 {
@@ -338,8 +316,6 @@ DiplomacyAIModule::changeStance(DiplomacyAIModule *this,int param_1,int param_2,
 
 // Function: setStance
 // Address: 0040c2b0
-/* public: void __thiscall DiplomacyAIModule::setStance(int,int,int) */
-
 void __thiscall
 DiplomacyAIModule::setStance(DiplomacyAIModule *this,int param_1,int param_2,int param_3)
 {
@@ -397,8 +373,6 @@ DiplomacyAIModule::setStance(DiplomacyAIModule *this,int param_1,int param_2,int
 
 // Function: isDisliked
 // Address: 0040c3b0
-/* public: int __thiscall DiplomacyAIModule::isDisliked(int)const  */
-
 int __thiscall DiplomacyAIModule::isDisliked(DiplomacyAIModule *this,int param_1)
 {
   if (((0 < param_1) && (param_1 < this->md->player->world->player_num)) &&
@@ -412,8 +386,6 @@ int __thiscall DiplomacyAIModule::isDisliked(DiplomacyAIModule *this,int param_1
 
 // Function: isAmbivalent
 // Address: 0040c3f0
-/* public: int __thiscall DiplomacyAIModule::isAmbivalent(int)const  */
-
 int __thiscall DiplomacyAIModule::isAmbivalent(DiplomacyAIModule *this,int param_1)
 {
   int iVar1;
@@ -432,8 +404,6 @@ int __thiscall DiplomacyAIModule::isAmbivalent(DiplomacyAIModule *this,int param
 
 // Function: isLiked
 // Address: 0040c420
-/* public: int __thiscall DiplomacyAIModule::isLiked(int)const  */
-
 int __thiscall DiplomacyAIModule::isLiked(DiplomacyAIModule *this,int param_1)
 {
   if (((0 < param_1) && (param_1 < this->md->player->world->player_num)) &&
@@ -447,8 +417,6 @@ int __thiscall DiplomacyAIModule::isLiked(DiplomacyAIModule *this,int param_1)
 
 // Function: isChangeable
 // Address: 0040c460
-/* public: int __thiscall DiplomacyAIModule::isChangeable(int)const  */
-
 int __thiscall DiplomacyAIModule::isChangeable(DiplomacyAIModule *this,int param_1)
 {
   if (((0 < param_1) && (param_1 < this->md->player->world->player_num)) &&
@@ -462,8 +430,6 @@ int __thiscall DiplomacyAIModule::isChangeable(DiplomacyAIModule *this,int param
 
 // Function: setChangeable
 // Address: 0040c4a0
-/* public: void __thiscall DiplomacyAIModule::setChangeable(int,unsigned char) */
-
 void __thiscall DiplomacyAIModule::setChangeable(DiplomacyAIModule *this,int param_1,uchar param_2)
 {
   if ((0 < param_1) && (param_1 < this->md->player->world->player_num)) {
@@ -476,9 +442,6 @@ void __thiscall DiplomacyAIModule::setChangeable(DiplomacyAIModule *this,int par
 
 // Function: mostHated
 // Address: 0040c4d0
-/* WARNING: Variable defined which should be unmapped: highestValue */
-/* public: int __thiscall DiplomacyAIModule::mostHated(int,int,int,int)const  */
-
 int __thiscall
 DiplomacyAIModule::mostHated
           (DiplomacyAIModule *this,int param_1,int param_2,int param_3,int param_4)
@@ -532,9 +495,6 @@ DiplomacyAIModule::mostHated
 
 // Function: mostLiked
 // Address: 0040c5b0
-/* WARNING: Variable defined which should be unmapped: highest */
-/* public: int __thiscall DiplomacyAIModule::mostLiked(int,int)const  */
-
 int __thiscall DiplomacyAIModule::mostLiked(DiplomacyAIModule *this,int param_1,int param_2)
 {
   RGE_Game_World *pRVar1;
@@ -575,8 +535,6 @@ int __thiscall DiplomacyAIModule::mostLiked(DiplomacyAIModule *this,int param_1,
 
 // Function: isEnemy
 // Address: 0040c660
-/* public: int __thiscall DiplomacyAIModule::isEnemy(int)const  */
-
 int __thiscall DiplomacyAIModule::isEnemy(DiplomacyAIModule *this,int param_1)
 {
   RGE_Player *pRVar1;
@@ -592,8 +550,6 @@ int __thiscall DiplomacyAIModule::isEnemy(DiplomacyAIModule *this,int param_1)
 
 // Function: isNeutral
 // Address: 0040c6a0
-/* public: int __thiscall DiplomacyAIModule::isNeutral(int)const  */
-
 int __thiscall DiplomacyAIModule::isNeutral(DiplomacyAIModule *this,int param_1)
 {
   RGE_Player *pRVar1;
@@ -609,8 +565,6 @@ int __thiscall DiplomacyAIModule::isNeutral(DiplomacyAIModule *this,int param_1)
 
 // Function: isAlly
 // Address: 0040c6e0
-/* public: int __thiscall DiplomacyAIModule::isAlly(int)const  */
-
 int __thiscall DiplomacyAIModule::isAlly(DiplomacyAIModule *this,int param_1)
 {
   RGE_Player *pRVar1;
@@ -630,8 +584,6 @@ int __thiscall DiplomacyAIModule::isAlly(DiplomacyAIModule *this,int param_1)
 
 // Function: isAlliedWithMe
 // Address: 0040c730
-/* public: int __thiscall DiplomacyAIModule::isAlliedWithMe(int)const  */
-
 int __thiscall DiplomacyAIModule::isAlliedWithMe(DiplomacyAIModule *this,int param_1)
 {
   RGE_Player *pRVar1;
@@ -657,8 +609,6 @@ int __thiscall DiplomacyAIModule::isAlliedWithMe(DiplomacyAIModule *this,int par
 
 // Function: setRelation
 // Address: 0040c780
-/* public: void __thiscall DiplomacyAIModule::setRelation(int,int) */
-
 void __thiscall DiplomacyAIModule::setRelation(DiplomacyAIModule *this,int param_1,int param_2)
 {
   RGE_Player *pRVar1;

@@ -43,9 +43,6 @@
 
 // Function: TMusic_System
 // Address: 00461910
-/* public: __thiscall TMusic_System::TMusic_System(unsigned char,void *,void *,class TSound_Driver
-   *,char *) */
-
 TMusic_System * __thiscall
 TMusic_System::TMusic_System
           (TMusic_System *this,uchar param_1,void *param_2,void *param_3,TSound_Driver *param_4,
@@ -120,8 +117,6 @@ TMusic_System::TMusic_System
 
 // Function: ~TMusic_System
 // Address: 00461a20
-/* public: __thiscall TMusic_System::~TMusic_System(void) */
-
 void __thiscall TMusic_System::~TMusic_System(TMusic_System *this)
 {
   uchar uVar1;
@@ -168,9 +163,6 @@ void __thiscall TMusic_System::~TMusic_System(TMusic_System *this)
 // [HELPER] s__smusic_d_mid: "%smusic%d.mid"
 // [HELPER] s__smusic_d_wav: "%smusic%d.wav"
 // [HELPER] s_r: "r"
-/* WARNING: Variable defined which should be unmapped: status_info */
-/* public: int __thiscall TMusic_System::open_device(void) */
-
 int __thiscall TMusic_System::open_device(TMusic_System *this)
 {
   uchar uVar1;
@@ -247,8 +239,6 @@ int __thiscall TMusic_System::open_device(TMusic_System *this)
 
 // Function: close_device
 // Address: 00461c60
-/* public: void __thiscall TMusic_System::close_device(void) */
-
 void __thiscall TMusic_System::close_device(TMusic_System *this)
 {
   uchar uVar1;
@@ -292,9 +282,6 @@ void __thiscall TMusic_System::close_device(TMusic_System *this)
 
 // Function: open_mixer
 // Address: 00461d20
-/* WARNING: Variable defined which should be unmapped: mixer_id */
-/* protected: int __thiscall TMusic_System::open_mixer(void) */
-
 int __thiscall TMusic_System::open_mixer(TMusic_System *this)
 {
   void **ppvVar1;
@@ -332,7 +319,6 @@ int __thiscall TMusic_System::open_mixer(TMusic_System *this)
       uVar5 = this->music_type;
       ptVar2->cbStruct = 0xa8;
       if (uVar5 == '\x01') {
-                    /* language.dll match for 0x1005: "Work (W)" */
         (this->mixer_line_info).dwComponentType = 0x1005;
       }
       else {
@@ -397,8 +383,6 @@ int __thiscall TMusic_System::open_mixer(TMusic_System *this)
 
 // Function: close_mixer
 // Address: 00461ec0
-/* protected: void __thiscall TMusic_System::close_mixer(void) */
-
 void __thiscall TMusic_System::close_mixer(TMusic_System *this)
 {
   if (this->mixer_open != 0) {
@@ -415,8 +399,6 @@ void __thiscall TMusic_System::close_mixer(TMusic_System *this)
 
 // Function: set_music_type
 // Address: 00461f00
-/* public: int __thiscall TMusic_System::set_music_type(unsigned char) */
-
 int __thiscall TMusic_System::set_music_type(TMusic_System *this,uchar param_1)
 {
   int iVar1;
@@ -434,8 +416,6 @@ int __thiscall TMusic_System::set_music_type(TMusic_System *this,uchar param_1)
 
 // Function: set_fade_out
 // Address: 00461f40
-/* public: void __thiscall TMusic_System::set_fade_out(int,unsigned long) */
-
 void __thiscall TMusic_System::set_fade_out(TMusic_System *this,int param_1,ulong param_2)
 {
   this->fade_out = param_1;
@@ -447,8 +427,6 @@ void __thiscall TMusic_System::set_fade_out(TMusic_System *this,int param_1,ulon
 
 // Function: set_volume
 // Address: 00461f60
-/* public: void __thiscall TMusic_System::set_volume(long,int) */
-
 void __thiscall TMusic_System::set_volume(TMusic_System *this,long param_1,int param_2)
 {
   uchar uVar1;
@@ -495,8 +473,6 @@ void __thiscall TMusic_System::set_volume(TMusic_System *this,long param_1,int p
 
 // Function: play_track
 // Address: 00462010
-/* public: int __thiscall TMusic_System::play_track(int,int,unsigned long) */
-
 int __thiscall TMusic_System::play_track(TMusic_System *this,int param_1,int param_2,ulong param_3)
 {
   int iVar1;
@@ -519,8 +495,6 @@ int __thiscall TMusic_System::play_track(TMusic_System *this,int param_1,int par
 
 // Function: play_file
 // Address: 00462090
-/* public: int __thiscall TMusic_System::play_file(char *,int,unsigned long) */
-
 int __thiscall TMusic_System::play_file(TMusic_System *this,char *param_1,int param_2,ulong param_3)
 {
   char cVar1;
@@ -572,8 +546,6 @@ int __thiscall TMusic_System::play_file(TMusic_System *this,char *param_1,int pa
 
 // Function: play_tracks
 // Address: 00462140
-/* public: int __thiscall TMusic_System::play_tracks(int,int,int,int,unsigned long) */
-
 int __thiscall
 TMusic_System::play_tracks
           (TMusic_System *this,int param_1,int param_2,int param_3,int param_4,ulong param_5)
@@ -618,9 +590,6 @@ TMusic_System::play_tracks
 // [HELPER] s__s_s: "%s%s"
 // [HELPER] s__smusic_d_mid: "%smusic%d.mid"
 // [HELPER] s__smusic_d_wav: "%smusic%d.wav"
-/* WARNING: Variable defined which should be unmapped: seek_info */
-/* protected: int __thiscall TMusic_System::play(int,int,char *,int,unsigned long) */
-
 int __thiscall
 TMusic_System::play(TMusic_System *this,int param_1,int param_2,char *param_3,int param_4,
                    ulong param_5)
@@ -834,8 +803,6 @@ LAB_00462579:
 
 // Function: pause_play
 // Address: 004625c0
-/* public: int __thiscall TMusic_System::pause_play(void) */
-
 int __thiscall TMusic_System::pause_play(TMusic_System *this)
 {
   uchar uVar1;
@@ -873,8 +840,6 @@ int __thiscall TMusic_System::pause_play(TMusic_System *this)
 
 // Function: resume_play
 // Address: 00462670
-/* public: int __thiscall TMusic_System::resume_play(void) */
-
 int __thiscall TMusic_System::resume_play(TMusic_System *this)
 {
   uchar uVar1;
@@ -916,8 +881,6 @@ int __thiscall TMusic_System::resume_play(TMusic_System *this)
 
 // Function: stop_track
 // Address: 00462740
-/* public: int __thiscall TMusic_System::stop_track(void) */
-
 int __thiscall TMusic_System::stop_track(TMusic_System *this)
 {
   int iVar1;
@@ -935,8 +898,6 @@ int __thiscall TMusic_System::stop_track(TMusic_System *this)
 
 // Function: stop_playing
 // Address: 00462770
-/* protected: int __thiscall TMusic_System::stop_playing(void) */
-
 int __thiscall TMusic_System::stop_playing(TMusic_System *this)
 {
   uchar uVar1;
@@ -968,8 +929,6 @@ int __thiscall TMusic_System::stop_playing(TMusic_System *this)
 
 // Function: fade_track
 // Address: 00462820
-/* public: int __thiscall TMusic_System::fade_track(void) */
-
 int __thiscall TMusic_System::fade_track(TMusic_System *this)
 {
   this->loop = 0;
@@ -988,8 +947,6 @@ int __thiscall TMusic_System::fade_track(TMusic_System *this)
 // Function: start_fade
 // Address: 00462860
 // [HELPER] s_C__msdev_work_age1_x1_music_cpp: "C:\msdev\work\age1_x1\music.cpp"
-/* protected: void __thiscall TMusic_System::start_fade(void) */
-
 void __thiscall TMusic_System::start_fade(TMusic_System *this)
 {
   ulong uVar1;
@@ -1008,9 +965,6 @@ void __thiscall TMusic_System::start_fade(TMusic_System *this)
 // Function: do_fade
 // Address: 004628a0
 // [HELPER] s_C__msdev_work_age1_x1_music_cpp: "C:\msdev\work\age1_x1\music.cpp"
-/* WARNING: Variable defined which should be unmapped: time */
-/* protected: void __thiscall TMusic_System::do_fade(void) */
-
 void __thiscall TMusic_System::do_fade(TMusic_System *this)
 {
   int iVar1;
@@ -1049,8 +1003,6 @@ void __thiscall TMusic_System::do_fade(TMusic_System *this)
 
 // Function: end_fade
 // Address: 004629b0
-/* protected: void __thiscall TMusic_System::end_fade(void) */
-
 void __thiscall TMusic_System::end_fade(TMusic_System *this)
 {
   this->fading_track = 0;
@@ -1065,9 +1017,6 @@ void __thiscall TMusic_System::end_fade(TMusic_System *this)
 
 // Function: handle_messages
 // Address: 00462a10
-/* public: unsigned int __thiscall TMusic_System::handle_messages(void *,unsigned int,unsigned
-   int,long) */
-
 uint __thiscall
 TMusic_System::handle_messages
           (TMusic_System *this,void *param_1,uint param_2,uint param_3,long param_4)
@@ -1124,8 +1073,6 @@ TMusic_System::handle_messages
 
 // Function: after_end_track
 // Address: 00462b40
-/* protected: void __thiscall TMusic_System::after_end_track(void) */
-
 void __thiscall TMusic_System::after_end_track(TMusic_System *this)
 {
   uchar uVar1;
@@ -1183,10 +1130,6 @@ void __thiscall TMusic_System::after_end_track(TMusic_System *this)
 
 // Function: get_play_info
 // Address: 00462c30
-/* WARNING: Variable defined which should be unmapped: status_info */
-/* public: int __thiscall TMusic_System::get_play_info(unsigned char *,int *,int *,int *,char *,int
-   *,unsigned long *) */
-
 int __thiscall
 TMusic_System::get_play_info
           (TMusic_System *this,uchar *param_1,int *param_2,int *param_3,int *param_4,char *param_5,

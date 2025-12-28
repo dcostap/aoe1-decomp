@@ -97,8 +97,6 @@
 // Function: TacticalAIModule
 // Address: 00412b50
 // [HELPER] s_TacAI: "TacAI"
-/* public: __thiscall TacticalAIModule::TacticalAIModule(void *,int) */
-
 TacticalAIModule * __thiscall
 TacticalAIModule::TacticalAIModule(TacticalAIModule *this,void *param_1,int param_2)
 {
@@ -111,8 +109,6 @@ TacticalAIModule::TacticalAIModule(TacticalAIModule *this,void *param_1,int para
 
 // Function: `vector_deleting_destructor'
 // Address: 00412b80
-/* public: virtual void * __thiscall TacticalAIModule::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall
 TacticalAIModule::_vector_deleting_destructor_(TacticalAIModule *this,uint param_1)
 {
@@ -127,8 +123,6 @@ TacticalAIModule::_vector_deleting_destructor_(TacticalAIModule *this,uint param
 
 // Function: ~TacticalAIModule
 // Address: 00412ba0
-/* public: virtual __thiscall TacticalAIModule::~TacticalAIModule(void) */
-
 void __thiscall TacticalAIModule::~TacticalAIModule(TacticalAIModule *this)
 {
   *(undefined ***)this = &_vftable_;

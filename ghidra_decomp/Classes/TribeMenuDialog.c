@@ -516,8 +516,6 @@
 // Function: TribeMenuDialog
 // Address: 0043f340
 // [HELPER] s_Menu_Dialog: "Menu Dialog"
-/* public: __thiscall TribeMenuDialog::TribeMenuDialog(class TScreenPanel *) */
-
 TribeMenuDialog * __thiscall
 TribeMenuDialog::TribeMenuDialog(TribeMenuDialog *this,TScreenPanel *param_1)
 {
@@ -570,7 +568,6 @@ TribeMenuDialog::TribeMenuDialog(TribeMenuDialog *this,TScreenPanel *param_1)
   iVar6 = TDialogPanel::setup((TDialogPanel *)this,pTVar5,(TPanel *)param_1,lVar12,iVar7,pcVar4,
                               lVar3,iVar6);
   if (iVar6 != 0) {
-                    /* language.dll match for 0x2439: "Quit Game" */
     iVar7 = 1;
     iVar6 = TEasy_Panel::create_button
                       ((TEasy_Panel *)this,(TPanel *)this,this->button,0x2439,0,0x14,0xf,0x168,0x1e,
@@ -581,7 +578,6 @@ TribeMenuDialog::TribeMenuDialog(TribeMenuDialog *this,TScreenPanel *param_1)
       if (iVar6 != 0) {
         pRVar2 = RGE_Base_Game::get_player(rge_base_game);
         if (pRVar2->game_status == '\0') {
-                    /* language.dll match for 0x2440: "Resign" */
           iVar7 = 2;
           iVar6 = TEasy_Panel::create_button
                             ((TEasy_Panel *)this,(TPanel *)this,this->button + 1,0x2440,0,0x14,0x41,
@@ -590,12 +586,10 @@ TribeMenuDialog::TribeMenuDialog(TribeMenuDialog *this,TScreenPanel *param_1)
           iVar8 = 100;
         }
       }
-                    /* language.dll match for 0x2437: "Achievements" */
       iVar6 = TEasy_Panel::create_button
                         ((TEasy_Panel *)this,(TPanel *)this,this->button + iVar7,0x2437,0,0x14,iVar8
                          ,0x168,0x1e,0,0,7);
       if (iVar6 != 0) {
-                    /* language.dll match for 0x243e: "Scenario Instructions" */
         iVar11 = iVar7 + 2;
         iVar6 = TEasy_Panel::create_button
                           ((TEasy_Panel *)this,(TPanel *)this,this->button + iVar7 + 1,0x243e,0,0x14
@@ -604,17 +598,14 @@ TribeMenuDialog::TribeMenuDialog(TribeMenuDialog *this,TScreenPanel *param_1)
           iVar9 = iVar8 + 0x46;
           iVar6 = RGE_Base_Game::singlePlayerGame(rge_base_game);
           if (iVar6 != 0) {
-                    /* language.dll match for 0x2438: "Save" */
             iVar6 = TEasy_Panel::create_button
                               ((TEasy_Panel *)this,(TPanel *)this,this->button + iVar7 + 2,0x2438,0,
                                0x14,iVar9,0x168,0x1e,0,0,1);
             if (iVar6 == 0) goto LAB_0043f66f;
-                    /* language.dll match for 0x243c: "Load" */
             iVar6 = TEasy_Panel::create_button
                               ((TEasy_Panel *)this,(TPanel *)this,this->button + iVar7 + 3,0x243c,0,
                                0x14,iVar8 + 0x69,0x168,0x1e,0,0,3);
             if (iVar6 == 0) goto LAB_0043f66f;
-                    /* language.dll match for 0x243f: "Restart" */
             iVar11 = iVar7 + 5;
             iVar6 = TEasy_Panel::create_button
                               ((TEasy_Panel *)this,(TPanel *)this,this->button + iVar7 + 4,0x243f,0,
@@ -622,22 +613,18 @@ TribeMenuDialog::TribeMenuDialog(TribeMenuDialog *this,TScreenPanel *param_1)
             if (iVar6 == 0) goto LAB_0043f66f;
             iVar9 = iVar8 + 0xaf;
           }
-                    /* language.dll match for 0x243a: "Game Settings" */
           iVar6 = TEasy_Panel::create_button
                             ((TEasy_Panel *)this,(TPanel *)this,this->button + iVar11,0x243a,0,0x14,
                              iVar9,0x168,0x1e,0,0,5);
           if (iVar6 != 0) {
-                    /* language.dll match for 0x23f5: "Help" */
             iVar6 = TEasy_Panel::create_button
                               ((TEasy_Panel *)this,(TPanel *)this,this->button + iVar11 + 1,0x23f5,0
                                ,0x14,iVar9 + 0x23,0x168,0x1e,0,0,8);
             if (iVar6 != 0) {
-                    /* language.dll match for 0x23f9: "About" */
               iVar6 = TEasy_Panel::create_button
                                 ((TEasy_Panel *)this,(TPanel *)this,this->button + iVar11 + 2,0x23f9
                                  ,0,0x14,iVar9 + 0x46,0x168,0x1e,0,0,10);
               if (iVar6 != 0) {
-                    /* language.dll match for 0x243b: "Cancel" */
                 iVar6 = TEasy_Panel::create_button
                                   ((TEasy_Panel *)this,(TPanel *)this,this->button + iVar11 + 3,
                                    0x243b,0,0x14,iVar9 + 0x78,0x168,0x1e,0,0,6);
@@ -664,8 +651,6 @@ LAB_0043f66f:
 
 // Function: `scalar_deleting_destructor'
 // Address: 0043f690
-/* public: virtual void * __thiscall TribeMenuDialog::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall TribeMenuDialog::_scalar_deleting_destructor_(TribeMenuDialog *this,uint param_1)
 {
   ~TribeMenuDialog(this);
@@ -679,8 +664,6 @@ void * __thiscall TribeMenuDialog::_scalar_deleting_destructor_(TribeMenuDialog 
 
 // Function: ~TribeMenuDialog
 // Address: 0043f6b0
-/* public: virtual __thiscall TribeMenuDialog::~TribeMenuDialog(void) */
-
 void __thiscall TribeMenuDialog::~TribeMenuDialog(TribeMenuDialog *this)
 {
   int iVar1;
@@ -722,9 +705,6 @@ void __thiscall TribeMenuDialog::~TribeMenuDialog(TribeMenuDialog *this)
 // [HELPER] s_RestartDialog: "RestartDialog"
 // [HELPER] s_Save_Game_Screen: "Save Game Screen"
 // [HELPER] s_empires_hlp: "empires.hlp"
-/* protected: virtual long __thiscall TribeMenuDialog::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TribeMenuDialog::action
           (TribeMenuDialog *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -776,8 +756,6 @@ TribeMenuDialog::action
       pTVar1 = (TEasy_Panel *)this->_padding_;
       TPanelSystem::destroyPanel(&panel_system,s_Menu_Dialog);
       TPanelSystem::setCurrentPanel(&panel_system,s_Game_Screen,0);
-                    /* language.dll match for 0xc1c: "Are you sure you want to quit and load a new
-                       game?" */
       TEasy_Panel::popupYesNoDialog(pTVar1,0xc1c,&s_QuitAndLoadDialog,0x1c2,100);
       *unaff_FS_OFFSET = local_c;
       return 1;
@@ -798,7 +776,6 @@ TribeMenuDialog::action
       pTVar1 = (TEasy_Panel *)this->_padding_;
       TPanelSystem::destroyPanel(&panel_system,s_Menu_Dialog);
       TPanelSystem::setCurrentPanel(&panel_system,s_Game_Screen,0);
-                    /* language.dll match for 0xc1d: "Are you sure you want to quit this game?" */
       TEasy_Panel::popupYesNoDialog(pTVar1,0xc1d,&s_QuitGameDialog,0x1c2,100);
       *unaff_FS_OFFSET = local_c;
       return 1;
@@ -821,7 +798,6 @@ TribeMenuDialog::action
         local_4 = 3;
         if (this_01 != (TribeAchievementsScreen *)0x0) {
           iVar4 = 0;
-                    /* language.dll match for 0x269e: "Achievements" */
           pcVar5 = TPanel::get_string((TPanel *)this,0x269e);
           TribeAchievementsScreen::TribeAchievementsScreen(this_01,pcVar5,iVar4);
         }
@@ -848,8 +824,6 @@ TribeMenuDialog::action
           pTVar1 = (TEasy_Panel *)this->_padding_;
           TPanelSystem::destroyPanel(&panel_system,s_Menu_Dialog);
           TPanelSystem::setCurrentPanel(&panel_system,s_Game_Screen,0);
-                    /* language.dll match for 0xc1e: "Are you sure you want to restart this game?"
-                        */
           TEasy_Panel::popupYesNoDialog(pTVar1,0xc1e,&s_RestartDialog,0x1c2,100);
           *unaff_FS_OFFSET = local_c;
           return 1;
@@ -881,7 +855,6 @@ TribeMenuDialog::action
         pTVar1 = (TEasy_Panel *)this->_padding_;
         TPanelSystem::destroyPanel(&panel_system,s_Menu_Dialog);
         TPanelSystem::setCurrentPanel(&panel_system,s_Game_Screen,0);
-                    /* language.dll match for 0xc1f: "Are you sure you want to resign?" */
         TEasy_Panel::popupYesNoDialog(pTVar1,0xc1f,&s_ResignDialog,0x1c2,100);
       }
     }

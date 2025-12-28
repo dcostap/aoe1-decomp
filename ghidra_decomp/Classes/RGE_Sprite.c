@@ -35,8 +35,6 @@
 
 // Function: RGE_Sprite
 // Address: 004bf720
-/* public: __thiscall RGE_Sprite::RGE_Sprite(short) */
-
 void __thiscall RGE_Sprite::RGE_Sprite(RGE_Sprite *this,short param_1)
 {
   this->color_tables = (RGE_Color_Table **)0x0;
@@ -75,8 +73,6 @@ void __thiscall RGE_Sprite::RGE_Sprite(RGE_Sprite *this,short param_1)
 
 // Function: RGE_Sprite
 // Address: 004bf790
-/* public: __thiscall RGE_Sprite::RGE_Sprite(int,class RGE_Sound * *,class RGE_Color_Table * *) */
-
 RGE_Sprite * __thiscall
 RGE_Sprite::RGE_Sprite(RGE_Sprite *this,int param_1,RGE_Sound **param_2,RGE_Color_Table **param_3)
 {
@@ -179,9 +175,6 @@ RGE_Sprite::RGE_Sprite(RGE_Sprite *this,int param_1,RGE_Sound **param_2,RGE_Colo
 // [HELPER] s___hd__hd__hd__hd: " %hd %hd %hd %hd"
 // [HELPER] s___s__s__d__hd__hd__hd__hd__hd__h: " %s %s %d %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %f %f %..."
 // [HELPER] s__hd__hd__hd: "%hd %hd %hd"
-/* WARNING: Variable defined which should be unmapped: temp_main_sound */
-/* public: __thiscall RGE_Sprite::RGE_Sprite(struct _iobuf *,short,class RGE_Sound * *) */
-
 RGE_Sprite * __thiscall
 RGE_Sprite::RGE_Sprite(RGE_Sprite *this,_iobuf *param_1,short param_2,RGE_Sound **param_3)
 {
@@ -324,8 +317,6 @@ RGE_Sprite::RGE_Sprite(RGE_Sprite *this,_iobuf *param_1,short param_2,RGE_Sound 
 
 // Function: ~RGE_Sprite
 // Address: 004bfce0
-/* public: __thiscall RGE_Sprite::~RGE_Sprite(void) */
-
 void __thiscall RGE_Sprite::~RGE_Sprite(RGE_Sprite *this)
 {
   TShape *this_00;
@@ -355,8 +346,6 @@ void __thiscall RGE_Sprite::~RGE_Sprite(RGE_Sprite *this)
 
 // Function: rehook
 // Address: 004bfd40
-/* public: void __thiscall RGE_Sprite::rehook(class RGE_Sprite * *) */
-
 void __thiscall RGE_Sprite::rehook(RGE_Sprite *this,RGE_Sprite **param_1)
 {
   RGE_Picture_List *pRVar1;
@@ -385,9 +374,6 @@ void __thiscall RGE_Sprite::rehook(RGE_Sprite *this,RGE_Sprite **param_1)
 
 // Function: save
 // Address: 004bfda0
-/* WARNING: Variable defined which should be unmapped: lock1 */
-/* public: void __thiscall RGE_Sprite::save(int) */
-
 void __thiscall RGE_Sprite::save(RGE_Sprite *this,int param_1)
 {
   int iVar1;
@@ -462,8 +448,6 @@ void __thiscall RGE_Sprite::save(RGE_Sprite *this,int param_1)
 
 // Function: load_facets
 // Address: 004bffe0
-/* public: void __thiscall RGE_Sprite::load_facets(class RGE_Sprite * *) */
-
 void __thiscall RGE_Sprite::load_facets(RGE_Sprite *this,RGE_Sprite **param_1)
 {
   this->shape = (TShape *)0x0;
@@ -475,8 +459,6 @@ void __thiscall RGE_Sprite::load_facets(RGE_Sprite *this,RGE_Sprite **param_1)
 
 // Function: play_sound
 // Address: 004bfff0
-/* public: void __thiscall RGE_Sprite::play_sound(short,short,short) */
-
 void __thiscall RGE_Sprite::play_sound(RGE_Sprite *this,short param_1,short param_2,short param_3)
 {
   short sVar1;
@@ -532,8 +514,6 @@ void __thiscall RGE_Sprite::play_sound(RGE_Sprite *this,short param_1,short para
 
 // Function: get_facetindex
 // Address: 004c00e0
-/* public: unsigned char __thiscall RGE_Sprite::get_facetindex(long,long,long &) */
-
 uchar __thiscall
 RGE_Sprite::get_facetindex(RGE_Sprite *this,long param_1,long param_2,long *param_3)
 {
@@ -572,10 +552,6 @@ RGE_Sprite::get_facetindex(RGE_Sprite *this,long param_1,long param_2,long *para
 // [HELPER] s_: ""
 // [HELPER] s_C__msdev_work_age1_x1_sprite_cpp: "C:\msdev\work\age1_x1\sprite.cpp"
 // [HELPER] s__shp: ".shp"
-/* WARNING: Variable defined which should be unmapped: facetindex */
-/* public: void __thiscall RGE_Sprite::do_draw(long,long,long,long,class RGE_Color_Table *,class
-   TDrawArea *,unsigned char) */
-
 void __thiscall
 RGE_Sprite::do_draw(RGE_Sprite *this,long param_1,long param_2,long param_3,long param_4,
                    RGE_Color_Table *param_5,TDrawArea *param_6,uchar param_7)
@@ -713,9 +689,6 @@ LAB_004c04ca:
 
 // Function: draw
 // Address: 004c04f0
-/* public: unsigned char __thiscall RGE_Sprite::draw(long,long,long,long,long,long,class
-   RGE_Color_Table *,class TDrawArea *,unsigned char) */
-
 uchar __thiscall
 RGE_Sprite::draw(RGE_Sprite *this,long param_1,long param_2,long param_3,long param_4,long param_5,
                 long param_6,RGE_Color_Table *param_7,TDrawArea *param_8,uchar param_9)
@@ -778,10 +751,6 @@ RGE_Sprite::draw(RGE_Sprite *this,long param_1,long param_2,long param_3,long pa
 
 // Function: normal_draw
 // Address: 004c0620
-/* WARNING: Variable defined which should be unmapped: index */
-/* public: unsigned char __thiscall RGE_Sprite::normal_draw(long,long,long,long,class
-   RGE_Color_Table *,class TDrawArea *) */
-
 uchar __thiscall
 RGE_Sprite::normal_draw
           (RGE_Sprite *this,long param_1,long param_2,long param_3,long param_4,
@@ -832,9 +801,6 @@ RGE_Sprite::normal_draw
 
 // Function: shadow_draw
 // Address: 004c0720
-/* public: unsigned char __thiscall RGE_Sprite::shadow_draw(long,long,long,long,class
-   RGE_Color_Table *,class TDrawArea *,unsigned char) */
-
 uchar __thiscall
 RGE_Sprite::shadow_draw
           (RGE_Sprite *this,long param_1,long param_2,long param_3,long param_4,
@@ -884,9 +850,6 @@ RGE_Sprite::shadow_draw
 // Address: 004c0840
 // [HELPER] s_C__msdev_work_age1_x1_sprite_cpp: "C:\msdev\work\age1_x1\sprite.cpp"
 // [HELPER] s__shp: ".shp"
-/* WARNING: Variable defined which should be unmapped: fname */
-/* public: int __thiscall RGE_Sprite::get_size(long &,long &,long &,long &,long) */
-
 int __thiscall
 RGE_Sprite::get_size
           (RGE_Sprite *this,long *param_1,long *param_2,long *param_3,long *param_4,long param_5)
@@ -940,9 +903,6 @@ RGE_Sprite::get_size
 // Address: 004c0960
 // [HELPER] s_C__msdev_work_age1_x1_sprite_cpp: "C:\msdev\work\age1_x1\sprite.cpp"
 // [HELPER] s__shp: ".shp"
-/* WARNING: Variable defined which should be unmapped: fname */
-/* public: int __thiscall RGE_Sprite::get_frame(short &,short &,short &,short &,long,long) */
-
 int __thiscall
 RGE_Sprite::get_frame
           (RGE_Sprite *this,short *param_1,short *param_2,short *param_3,short *param_4,long param_5
@@ -1039,10 +999,6 @@ LAB_004c0a23:
 
 // Function: get_frame_min_max
 // Address: 004c0b70
-/* WARNING: Variable defined which should be unmapped: facetindex */
-/* public: int __thiscall RGE_Sprite::get_frame_min_max(short &,short &,short &,short
-   &,long,long,short,short) */
-
 int __thiscall
 RGE_Sprite::get_frame_min_max
           (RGE_Sprite *this,short *param_1,short *param_2,short *param_3,short *param_4,long param_5
@@ -1095,8 +1051,6 @@ RGE_Sprite::get_frame_min_max
 
 // Function: get_lowest_draw_level
 // Address: 004c0c50
-/* public: unsigned char __thiscall RGE_Sprite::get_lowest_draw_level(void) */
-
 uchar __thiscall RGE_Sprite::get_lowest_draw_level(RGE_Sprite *this)
 {
   short sVar1;
@@ -1127,9 +1081,6 @@ uchar __thiscall RGE_Sprite::get_lowest_draw_level(RGE_Sprite *this)
 
 // Function: hit_test
 // Address: 004c0c90
-/* WARNING: Variable defined which should be unmapped: index */
-/* public: unsigned char __thiscall RGE_Sprite::hit_test(short,short,long,long) */
-
 uchar __thiscall
 RGE_Sprite::hit_test(RGE_Sprite *this,short param_1,short param_2,long param_3,long param_4)
 {
@@ -1174,9 +1125,6 @@ RGE_Sprite::hit_test(RGE_Sprite *this,short param_1,short param_2,long param_3,l
 // Address: 004c0d80
 // [HELPER] s_C__msdev_work_age1_x1_sprite_cpp: "C:\msdev\work\age1_x1\sprite.cpp"
 // [HELPER] s__shp: ".shp"
-/* WARNING: Variable defined which should be unmapped: fname */
-/* public: unsigned char __thiscall RGE_Sprite::shape_hit_test(short,short,long,long) */
-
 uchar __thiscall
 RGE_Sprite::shape_hit_test(RGE_Sprite *this,short param_1,short param_2,long param_3,long param_4)
 {
@@ -1266,8 +1214,6 @@ LAB_004c0f6e:
 
 // Function: make_active_sprite
 // Address: 004c0f90
-/* public: class RGE_Active_Sprite * __thiscall RGE_Sprite::make_active_sprite(void) */
-
 RGE_Active_Sprite * __thiscall RGE_Sprite::make_active_sprite(RGE_Sprite *this)
 {
   RGE_Active_Animated_Sprite *this_00;
@@ -1308,8 +1254,6 @@ RGE_Active_Sprite * __thiscall RGE_Sprite::make_active_sprite(RGE_Sprite *this)
 
 // Function: check_for_shadows
 // Address: 004c1030
-/* public: int __thiscall RGE_Sprite::check_for_shadows(void) */
-
 int __thiscall RGE_Sprite::check_for_shadows(RGE_Sprite *this)
 {
   short sVar1;
@@ -1343,8 +1287,6 @@ int __thiscall RGE_Sprite::check_for_shadows(RGE_Sprite *this)
 
 // Function: update
 // Address: 004c1080
-/* public: void __thiscall RGE_Sprite::update(unsigned long) */
-
 void __thiscall RGE_Sprite::update(RGE_Sprite *this,ulong param_1)
 {
   TShape *this_00;

@@ -168,10 +168,6 @@
 // Function: TribeSaveGameScreen
 // Address: 004a71f0
 // [HELPER] s_Save_Game_Screen: "Save Game Screen"
-/* WARNING: Variable defined which should be unmapped: from_panel */
-/* public: __thiscall TribeSaveGameScreen::TribeSaveGameScreen(enum TribeSaveGameScreen::Mode,char
-   *,int) */
-
 TribeSaveGameScreen * __thiscall
 TribeSaveGameScreen::TribeSaveGameScreen
           (TribeSaveGameScreen *this,Mode param_1,char *param_2,int param_3)
@@ -281,31 +277,25 @@ TribeSaveGameScreen::TribeSaveGameScreen
                          ((TEasy_Panel *)this,(TPanel *)this,&this->input,param_2,sVar7,
                           FormatFileNoExt,0x14,0x46,600,0x17,0xb,1,1);
       if (iVar14 != 0) {
-                    /* language.dll match for 0x7670: "Type a name for the game." */
         TPanel::set_help_info((TPanel *)this->input,0x7670,-1);
-                    /* language.dll match for 0x6e: "Copperplate Gothic Light" */
         iVar14 = TEasy_Panel::create_list
                            ((TEasy_Panel *)this,(TPanel *)this,&this->list,0x14,0x6e,600,300,0xb);
         if (iVar14 != 0) {
           iVar14 = TEasy_Panel::create_auto_scrollbar
                              ((TEasy_Panel *)this,&this->scrollbar,(TTextPanel *)this->list,0x14);
           if (iVar14 != 0) {
-                    /* language.dll match for 0x7671: "Select a saved game." */
             TPanel::set_help_info((TPanel *)this->scrollbar,0x7671,-1);
             ppTVar1 = &this->okButton;
-                    /* language.dll match for 0xfa1: "OK" */
             iVar14 = TEasy_Panel::create_button
                                ((TEasy_Panel *)this,(TPanel *)this,ppTVar1,0xfa1,0,0x1e,0x1b8,0xb4,
                                 0x1e,0,0,0);
             if (iVar14 != 0) {
               ppTVar2 = &this->deleteButton;
-                    /* language.dll match for 0x24c9: "Delete" */
               iVar14 = TEasy_Panel::create_button
                                  ((TEasy_Panel *)this,(TPanel *)this,ppTVar2,0x24c9,0,0xe6,0x1b8,
                                   0xb4,0x1e,0,0,0);
               if (iVar14 != 0) {
                 ppTVar3 = &this->cancelButton;
-                    /* language.dll match for 0xfa2: "Cancel" */
                 iVar14 = TEasy_Panel::create_button
                                    ((TEasy_Panel *)this,(TPanel *)this,ppTVar3,0xfa2,0,0x1ae,0x1b8,
                                     0xb4,0x1e,0,0,0);
@@ -345,9 +335,6 @@ TribeSaveGameScreen::TribeSaveGameScreen
 
 // Function: `vector_deleting_destructor'
 // Address: 004a75a0
-/* public: virtual void * __thiscall TribeSaveGameScreen::`vector deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 TribeSaveGameScreen::_vector_deleting_destructor_(TribeSaveGameScreen *this,uint param_1)
 {
@@ -362,8 +349,6 @@ TribeSaveGameScreen::_vector_deleting_destructor_(TribeSaveGameScreen *this,uint
 
 // Function: ~TribeSaveGameScreen
 // Address: 004a75c0
-/* public: virtual __thiscall TribeSaveGameScreen::~TribeSaveGameScreen(void) */
-
 void __thiscall TribeSaveGameScreen::~TribeSaveGameScreen(TribeSaveGameScreen *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -397,9 +382,6 @@ void __thiscall TribeSaveGameScreen::~TribeSaveGameScreen(TribeSaveGameScreen *t
 // [HELPER] s__s__gmx: "%s*.gmx"
 // [HELPER] s__s__scn: "%s*.scn"
 // [HELPER] s__s__scx: "%s*.scx"
-/* WARNING: Variable defined which should be unmapped: file_name */
-/* protected: void __thiscall TribeSaveGameScreen::fillList(void) */
-
 void __thiscall TribeSaveGameScreen::fillList(TribeSaveGameScreen *this)
 {
   char cVar1;
@@ -483,10 +465,6 @@ void __thiscall TribeSaveGameScreen::fillList(TribeSaveGameScreen *this)
 // [HELPER] s__s_scn: "%s.scn"
 // [HELPER] s__s_scx: "%s.scx"
 // [HELPER] s_rb: "rb"
-/* WARNING: Variable defined which should be unmapped: exist_flag */
-/* protected: virtual long __thiscall TribeSaveGameScreen::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TribeSaveGameScreen::action
           (TribeSaveGameScreen *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -572,8 +550,6 @@ LAB_004a78b6:
     }
     if ((((TButtonPanel *)param_1 == this->deleteButton) && (param_2 == 1)) &&
        (pcVar4 = TTextPanel::currentLine((TTextPanel *)this->list), *pcVar4 != '\0')) {
-                    /* language.dll match for 0x24ca: "Are you sure you want to delete the file
-                       \\n'%s'?" */
       TPanel::get_string((TPanel *)this,0x24ca,tempFileName + 4,0x100);
       pcVar4 = TTextPanel::currentLine((TTextPanel *)this->list);
       sprintf(text + 4,tempFileName + 4,pcVar4);
@@ -600,12 +576,9 @@ LAB_004a78b6:
       } while (cVar1 != '\0');
       if (iVar6 == -2) {
         if (this->modeValue != SaveGame) {
-                    /* language.dll match for 0x24c7: "You must enter a name to save the scenario."
-                        */
           TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x24c7,(char *)0x0,0x1c2,100);
           return 1;
         }
-                    /* language.dll match for 0x24c6: "You must enter a name to save the game." */
         TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x24c6,(char *)0x0,0x1c2,100);
         return 1;
       }
@@ -645,8 +618,6 @@ LAB_004a78b6:
           if (MVar3 == SaveGame) {
             iVar6 = TRIBE_Game::save_game((TRIBE_Game *)rge_base_game,pcVar9);
             if (iVar6 == 0) {
-                    /* language.dll match for 0x962: "The game could not be saved. Free some disk
-                       space, and then try again." */
               TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x962,(char *)0x0,0x1c2,100);
               return 1;
             }
@@ -654,8 +625,6 @@ LAB_004a78b6:
           else if (MVar3 == SaveScenario) {
             iVar6 = TRIBE_Game::save_scenario((TRIBE_Game *)rge_base_game,pcVar9);
             if (iVar6 == 0) {
-                    /* language.dll match for 0x963: "The scenario could not be saved. Free some
-                       disk space, and then try again." */
               TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x963,(char *)0x0,0x1c2,100);
               return 1;
             }
@@ -667,7 +636,6 @@ LAB_004a78b6:
           return 1;
         }
       }
-                    /* language.dll match for 0x24c8: "That file exists. Overwrite it?" */
       TEasy_Panel::popupYesNoDialog((TEasy_Panel *)this,0x24c8,(char *)0x0,0x1c2,100);
       return 1;
     }
@@ -752,8 +720,6 @@ LAB_004a7e6d:
           if (iVar6 != 0) {
             return 1;
           }
-                    /* language.dll match for 0x962: "The game could not be saved. Free some disk
-                       space, and then try again." */
           TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x962,(char *)0x0,0x1c2,100);
           return 1;
         }
@@ -776,8 +742,6 @@ LAB_004a7e6d:
         if (iVar6 != 0) {
           return 1;
         }
-                    /* language.dll match for 0x963: "The scenario could not be saved. Free some
-                       disk space, and then try again." */
         TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x963,(char *)0x0,0x1c2,100);
         return 1;
       }
@@ -795,8 +759,6 @@ LAB_004a7e6d:
 // [HELPER] s_Scenario_Editor_Open: "Scenario Editor Open"
 // [HELPER] s_Scenario_Editor_Screen: "Scenario Editor Screen"
 // [HELPER] s_Status_Screen: "Status Screen"
-/* protected: void __thiscall TribeSaveGameScreen::save_for_scenario_editor(void) */
-
 void __thiscall TribeSaveGameScreen::save_for_scenario_editor(TribeSaveGameScreen *this)
 {
   char cVar1;
@@ -813,13 +775,10 @@ void __thiscall TribeSaveGameScreen::save_for_scenario_editor(TribeSaveGameScree
   pcStack_8 = FUN_0055f3fb;
   uStack_c = *unaff_FS_OFFSET;
   *unaff_FS_OFFSET = &uStack_c;
-                    /* language.dll match for 0x450: "Saving scenario..." */
   TRIBE_Game::show_status_message((TRIBE_Game *)rge_base_game,0x450,(char *)0x0,-1);
   RGE_Scenario::Set_scenario_name(rge_base_game->world->scenario,this->fileName);
   cVar1 = (**(code **)(rge_base_game->world->_padding_ + 0xe4))(this->fileName);
   if (cVar1 == '\0') {
-                    /* language.dll match for 0x963: "The scenario could not be saved. Free some
-                       disk space, and then try again." */
     TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x963,(char *)0x0,0x1c2,100);
     *unaff_FS_OFFSET = this;
     return;

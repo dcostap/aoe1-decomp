@@ -33,8 +33,6 @@
 
 // Function: RGE_Action_Move_To
 // Address: 00405510
-/* public: __thiscall RGE_Action_Move_To::RGE_Action_Move_To(int,class RGE_Action_Object *) */
-
 RGE_Action_Move_To * __thiscall
 RGE_Action_Move_To::RGE_Action_Move_To
           (RGE_Action_Move_To *this,int param_1,RGE_Action_Object *param_2)
@@ -61,9 +59,6 @@ RGE_Action_Move_To::RGE_Action_Move_To
 
 // Function: `scalar_deleting_destructor'
 // Address: 00405580
-/* public: virtual void * __thiscall RGE_Action_Move_To::`scalar deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 RGE_Action_Move_To::_scalar_deleting_destructor_(RGE_Action_Move_To *this,uint param_1)
 {
@@ -78,9 +73,6 @@ RGE_Action_Move_To::_scalar_deleting_destructor_(RGE_Action_Move_To *this,uint p
 
 // Function: RGE_Action_Move_To
 // Address: 004055a0
-/* public: __thiscall RGE_Action_Move_To::RGE_Action_Move_To(class RGE_Action_Object
-   *,float,float,float,float,class RGE_Sprite *) */
-
 RGE_Action_Move_To * __thiscall
 RGE_Action_Move_To::RGE_Action_Move_To
           (RGE_Action_Move_To *this,RGE_Action_Object *param_1,float param_2,float param_3,
@@ -118,9 +110,6 @@ RGE_Action_Move_To::RGE_Action_Move_To
 
 // Function: RGE_Action_Move_To
 // Address: 00405620
-/* public: __thiscall RGE_Action_Move_To::RGE_Action_Move_To(class RGE_Action_Object *,class
-   RGE_Static_Object *,float,class RGE_Sprite *) */
-
 RGE_Action_Move_To * __thiscall
 RGE_Action_Move_To::RGE_Action_Move_To
           (RGE_Action_Move_To *this,RGE_Action_Object *param_1,RGE_Static_Object *param_2,
@@ -172,8 +161,6 @@ RGE_Action_Move_To::RGE_Action_Move_To
 
 // Function: ~RGE_Action_Move_To
 // Address: 004056e0
-/* public: virtual __thiscall RGE_Action_Move_To::~RGE_Action_Move_To(void) */
-
 void __thiscall RGE_Action_Move_To::~RGE_Action_Move_To(RGE_Action_Move_To *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -198,8 +185,6 @@ void __thiscall RGE_Action_Move_To::~RGE_Action_Move_To(RGE_Action_Move_To *this
 
 // Function: save
 // Address: 00405750
-/* public: virtual void __thiscall RGE_Action_Move_To::save(int) */
-
 void __thiscall RGE_Action_Move_To::save(RGE_Action_Move_To *this,int param_1)
 {
   RGE_Action::save((RGE_Action *)this,param_1);
@@ -211,8 +196,6 @@ void __thiscall RGE_Action_Move_To::save(RGE_Action_Move_To *this,int param_1)
 
 // Function: first_in_stack
 // Address: 00405780
-/* public: virtual void __thiscall RGE_Action_Move_To::first_in_stack(unsigned char) */
-
 void __thiscall RGE_Action_Move_To::first_in_stack(RGE_Action_Move_To *this,uchar param_1)
 {
   int iVar1;
@@ -240,8 +223,6 @@ void __thiscall RGE_Action_Move_To::first_in_stack(RGE_Action_Move_To *this,ucha
 
 // Function: set_state
 // Address: 004057e0
-/* protected: virtual void __thiscall RGE_Action_Move_To::set_state(unsigned char) */
-
 void __thiscall RGE_Action_Move_To::set_state(RGE_Action_Move_To *this,uchar param_1)
 {
   *(uchar *)&this->_padding_ = param_1;
@@ -265,9 +246,6 @@ void __thiscall RGE_Action_Move_To::set_state(RGE_Action_Move_To *this,uchar par
 
 // Function: update
 // Address: 00405850
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall RGE_Action_Move_To::update(void) */
-
 uchar __thiscall RGE_Action_Move_To::update(RGE_Action_Move_To *this)
 {
   code *pcVar1;
@@ -413,8 +391,6 @@ switchD_00405902_caseD_d:
 
 // Function: is_in_range
 // Address: 00405bf0
-/* protected: unsigned char __thiscall RGE_Action_Move_To::is_in_range(void) */
-
 uchar __thiscall RGE_Action_Move_To::is_in_range(RGE_Action_Move_To *this)
 {
   RGE_Static_Object *pRVar1;

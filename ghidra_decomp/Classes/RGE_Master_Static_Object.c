@@ -87,8 +87,6 @@
 
 // Function: play_command_sound
 // Address: 0044fe20
-/* public: virtual void __thiscall RGE_Master_Static_Object::play_command_sound(void) */
-
 void __thiscall RGE_Master_Static_Object::play_command_sound(RGE_Master_Static_Object *this)
 {
   return;
@@ -98,8 +96,6 @@ void __thiscall RGE_Master_Static_Object::play_command_sound(RGE_Master_Static_O
 
 // Function: play_move_sound
 // Address: 0044fe30
-/* public: virtual void __thiscall RGE_Master_Static_Object::play_move_sound(void) */
-
 void __thiscall RGE_Master_Static_Object::play_move_sound(RGE_Master_Static_Object *this)
 {
   return;
@@ -109,9 +105,6 @@ void __thiscall RGE_Master_Static_Object::play_move_sound(RGE_Master_Static_Obje
 
 // Function: RGE_Master_Static_Object
 // Address: 00452120
-/* public: __thiscall RGE_Master_Static_Object::RGE_Master_Static_Object(class
-   RGE_Master_Static_Object *,int) */
-
 RGE_Master_Static_Object * __thiscall
 RGE_Master_Static_Object::RGE_Master_Static_Object
           (RGE_Master_Static_Object *this,RGE_Master_Static_Object *param_1,int param_2)
@@ -127,9 +120,6 @@ RGE_Master_Static_Object::RGE_Master_Static_Object
 
 // Function: `scalar_deleting_destructor'
 // Address: 00452150
-/* public: virtual void * __thiscall RGE_Master_Static_Object::`scalar deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 RGE_Master_Static_Object::_scalar_deleting_destructor_(RGE_Master_Static_Object *this,uint param_1)
 {
@@ -144,9 +134,6 @@ RGE_Master_Static_Object::_scalar_deleting_destructor_(RGE_Master_Static_Object 
 
 // Function: RGE_Master_Static_Object
 // Address: 00452170
-/* public: __thiscall RGE_Master_Static_Object::RGE_Master_Static_Object(int,class RGE_Sprite *
-   *,class RGE_Sound * *,int) */
-
 RGE_Master_Static_Object * __thiscall
 RGE_Master_Static_Object::RGE_Master_Static_Object
           (RGE_Master_Static_Object *this,int param_1,RGE_Sprite **param_2,RGE_Sound **param_3,
@@ -163,9 +150,6 @@ RGE_Master_Static_Object::RGE_Master_Static_Object
 
 // Function: RGE_Master_Static_Object
 // Address: 004521a0
-/* public: __thiscall RGE_Master_Static_Object::RGE_Master_Static_Object(struct _iobuf *,class
-   RGE_Sprite * *,class RGE_Sound * *,short,int) */
-
 RGE_Master_Static_Object * __thiscall
 RGE_Master_Static_Object::RGE_Master_Static_Object
           (RGE_Master_Static_Object *this,_iobuf *param_1,RGE_Sprite **param_2,RGE_Sound **param_3,
@@ -182,8 +166,6 @@ RGE_Master_Static_Object::RGE_Master_Static_Object
 
 // Function: setup
 // Address: 004521e0
-/* protected: int __thiscall RGE_Master_Static_Object::setup(class RGE_Master_Static_Object *) */
-
 int __thiscall
 RGE_Master_Static_Object::setup(RGE_Master_Static_Object *this,RGE_Master_Static_Object *param_1)
 {
@@ -300,11 +282,6 @@ RGE_Master_Static_Object::setup(RGE_Master_Static_Object *this,RGE_Master_Static
 
 // Function: setup
 // Address: 004524e0
-/* WARNING: Variable defined which should be unmapped: temp_damage_sprite */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: int __thiscall RGE_Master_Static_Object::setup(int,class RGE_Sprite * *,class
-   RGE_Sound * *) */
-
 int __thiscall
 RGE_Master_Static_Object::setup
           (RGE_Master_Static_Object *this,int param_1,RGE_Sprite **param_2,RGE_Sound **param_3)
@@ -502,11 +479,6 @@ RGE_Master_Static_Object::setup
 // [HELPER] s__hd__hd__hd: "%hd %hd %hd"
 // [HELPER] s__hd__hd__hd__hd: "%hd %hd %hd %hd"
 // [HELPER] s__s__hd__hd__hd__hd__hd__hd__hd__: "%s %hd %hd %hd %hd %hd %hd %hd %hd %f %hd %f %f %f %hd %hd %hd %hd %hd %hd %h..."
-/* WARNING: Variable defined which should be unmapped: temp_area_effect_object_level */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: int __thiscall RGE_Master_Static_Object::setup(struct _iobuf *,class RGE_Sprite *
-   *,class RGE_Sound * *,short) */
-
 int __thiscall
 RGE_Master_Static_Object::setup
           (RGE_Master_Static_Object *this,_iobuf *param_1,RGE_Sprite **param_2,RGE_Sound **param_3,
@@ -717,8 +689,6 @@ RGE_Master_Static_Object::setup
 
 // Function: ~RGE_Master_Static_Object
 // Address: 00452fa0
-/* public: virtual __thiscall RGE_Master_Static_Object::~RGE_Master_Static_Object(void) */
-
 void __thiscall RGE_Master_Static_Object::~RGE_Master_Static_Object(RGE_Master_Static_Object *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -737,9 +707,6 @@ void __thiscall RGE_Master_Static_Object::~RGE_Master_Static_Object(RGE_Master_S
 
 // Function: make_new_obj
 // Address: 00452fe0
-/* public: virtual class RGE_Static_Object * __thiscall RGE_Master_Static_Object::make_new_obj(class
-   RGE_Player *,float,float,float) */
-
 RGE_Static_Object * __thiscall
 RGE_Master_Static_Object::make_new_obj
           (RGE_Master_Static_Object *this,RGE_Player *param_1,float param_2,float param_3,
@@ -779,9 +746,6 @@ RGE_Master_Static_Object::make_new_obj
 
 // Function: make_new_master
 // Address: 004530b0
-/* public: virtual class RGE_Master_Static_Object * __thiscall
-   RGE_Master_Static_Object::make_new_master(void) */
-
 RGE_Master_Static_Object * __thiscall
 RGE_Master_Static_Object::make_new_master(RGE_Master_Static_Object *this)
 {
@@ -810,10 +774,6 @@ RGE_Master_Static_Object::make_new_master(RGE_Master_Static_Object *this)
 
 // Function: copy_obj
 // Address: 00453120
-/* WARNING: Variable defined which should be unmapped: available2 */
-/* public: virtual void __thiscall RGE_Master_Static_Object::copy_obj(class RGE_Master_Static_Object
-   *) */
-
 void __thiscall
 RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object *this,RGE_Master_Static_Object *param_1)
 {
@@ -956,8 +916,6 @@ RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object *this,RGE_Master_Sta
 
 // Function: modify
 // Address: 004534a0
-/* public: virtual void __thiscall RGE_Master_Static_Object::modify(float,unsigned char) */
-
 void __thiscall
 RGE_Master_Static_Object::modify(RGE_Master_Static_Object *this,float param_1,uchar param_2)
 {
@@ -993,8 +951,6 @@ RGE_Master_Static_Object::modify(RGE_Master_Static_Object *this,float param_1,uc
 
 // Function: modify_delta
 // Address: 00453540
-/* public: virtual void __thiscall RGE_Master_Static_Object::modify_delta(float,unsigned char) */
-
 void __thiscall
 RGE_Master_Static_Object::modify_delta(RGE_Master_Static_Object *this,float param_1,uchar param_2)
 {
@@ -1030,8 +986,6 @@ RGE_Master_Static_Object::modify_delta(RGE_Master_Static_Object *this,float para
 
 // Function: modify_percent
 // Address: 004535f0
-/* public: virtual void __thiscall RGE_Master_Static_Object::modify_percent(float,unsigned char) */
-
 void __thiscall
 RGE_Master_Static_Object::modify_percent(RGE_Master_Static_Object *this,float param_1,uchar param_2)
 {
@@ -1067,9 +1021,6 @@ RGE_Master_Static_Object::modify_percent(RGE_Master_Static_Object *this,float pa
 
 // Function: save
 // Address: 004536d0
-/* WARNING: Variable defined which should be unmapped: name_size */
-/* public: virtual void __thiscall RGE_Master_Static_Object::save(int) */
-
 void __thiscall RGE_Master_Static_Object::save(RGE_Master_Static_Object *this,int param_1)
 {
   char cVar1;
@@ -1231,12 +1182,6 @@ void __thiscall RGE_Master_Static_Object::save(RGE_Master_Static_Object *this,in
 
 // Function: check_placement
 // Address: 00453c40
-/* WARNING: Variable defined which should be unmapped: req_terr2 */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall RGE_Master_Static_Object::check_placement(class
-   RGE_Player *,float,float,int *,unsigned char,unsigned char,unsigned char,unsigned char,unsigned
-   char,unsigned char) */
-
 uchar __thiscall
 RGE_Master_Static_Object::check_placement
           (RGE_Master_Static_Object *this,RGE_Player *param_1,float param_2,float param_3,
@@ -1487,8 +1432,6 @@ RGE_Master_Static_Object::check_placement
 
 // Function: make_available
 // Address: 004543c0
-/* public: void __thiscall RGE_Master_Static_Object::make_available(unsigned char) */
-
 void __thiscall
 RGE_Master_Static_Object::make_available(RGE_Master_Static_Object *this,uchar param_1)
 {
@@ -1500,11 +1443,6 @@ RGE_Master_Static_Object::make_available(RGE_Master_Static_Object *this,uchar pa
 
 // Function: alignment
 // Address: 004543d0
-/* WARNING: Variable defined which should be unmapped: map_w */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall RGE_Master_Static_Object::alignment(float &,float
-   &,class RGE_Game_World *,unsigned char) */
-
 uchar __thiscall
 RGE_Master_Static_Object::alignment
           (RGE_Master_Static_Object *this,float *param_1,float *param_2,RGE_Game_World *param_3,
@@ -1590,11 +1528,6 @@ RGE_Master_Static_Object::alignment
 
 // Function: alignment_box
 // Address: 00454690
-/* WARNING: Variable defined which should be unmapped: tx */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: unsigned char __thiscall RGE_Master_Static_Object::alignment_box(class RGE_Game_World
-   *,float,float,short &,short &,short &,short &,short &,short &,short &,short &) */
-
 uchar __thiscall
 RGE_Master_Static_Object::alignment_box
           (RGE_Master_Static_Object *this,RGE_Game_World *param_1,float param_2,float param_3,
@@ -1629,10 +1562,6 @@ RGE_Master_Static_Object::alignment_box
 
 // Function: draw
 // Address: 004547f0
-/* WARNING: Variable defined which should be unmapped: x1 */
-/* public: virtual void __thiscall RGE_Master_Static_Object::draw(class TDrawArea
-   *,short,short,class RGE_Color_Table *,long,long,int,unsigned char) */
-
 void __thiscall
 RGE_Master_Static_Object::draw
           (RGE_Master_Static_Object *this,TDrawArea *param_1,short param_2,short param_3,
@@ -1682,8 +1611,6 @@ RGE_Master_Static_Object::draw
 
 // Function: get_help_message
 // Address: 00454950
-/* public: long __thiscall RGE_Master_Static_Object::get_help_message(void) */
-
 long __thiscall RGE_Master_Static_Object::get_help_message(RGE_Master_Static_Object *this)
 {
   return this->help_string_id;
@@ -1693,8 +1620,6 @@ long __thiscall RGE_Master_Static_Object::get_help_message(RGE_Master_Static_Obj
 
 // Function: get_help_page
 // Address: 00454960
-/* public: long __thiscall RGE_Master_Static_Object::get_help_page(void) */
-
 long __thiscall RGE_Master_Static_Object::get_help_page(RGE_Master_Static_Object *this)
 {
   return this->help_page_id;
@@ -1704,8 +1629,6 @@ long __thiscall RGE_Master_Static_Object::get_help_page(RGE_Master_Static_Object
 
 // Function: get_hotkey
 // Address: 00454970
-/* public: long __thiscall RGE_Master_Static_Object::get_hotkey(void) */
-
 long __thiscall RGE_Master_Static_Object::get_hotkey(RGE_Master_Static_Object *this)
 {
   return this->hotkey_id;
@@ -1715,10 +1638,6 @@ long __thiscall RGE_Master_Static_Object::get_hotkey(RGE_Master_Static_Object *t
 
 // Function: calc_base_damage_ability
 // Address: 00454980
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual long __thiscall RGE_Master_Static_Object::calc_base_damage_ability(class
-   RGE_Master_Combat_Object *) */
-
 long __thiscall
 RGE_Master_Static_Object::calc_base_damage_ability
           (RGE_Master_Static_Object *this,RGE_Master_Combat_Object *param_1)

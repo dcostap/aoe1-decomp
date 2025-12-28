@@ -39,8 +39,6 @@
 
 // Function: TDrawSystem
 // Address: 00442680
-/* public: __thiscall TDrawSystem::TDrawSystem(void) */
-
 TDrawSystem * __thiscall TDrawSystem::TDrawSystem(TDrawSystem *this)
 {
   this->Inst = (void *)0x0;
@@ -84,9 +82,6 @@ TDrawSystem * __thiscall TDrawSystem::TDrawSystem(TDrawSystem *this)
 
 // Function: ~TDrawSystem
 // Address: 00442710
-/* WARNING: Variable defined which should be unmapped: ddbltfx */
-/* public: __thiscall TDrawSystem::~TDrawSystem(void) */
-
 void __thiscall TDrawSystem::~TDrawSystem(TDrawSystem *this)
 {
   IDirectDrawSurface *pIVar1;
@@ -127,8 +122,6 @@ void __thiscall TDrawSystem::~TDrawSystem(TDrawSystem *this)
 // Function: CheckAvailModes
 // Address: 004427a0
 // [HELPER] s_DISPLAY: "DISPLAY"
-/* public: void __thiscall TDrawSystem::CheckAvailModes(int) */
-
 void __thiscall TDrawSystem::CheckAvailModes(TDrawSystem *this,int param_1)
 {
   IDirectDraw **ppIVar1;
@@ -180,9 +173,6 @@ void __thiscall TDrawSystem::CheckAvailModes(TDrawSystem *this,int param_1)
 
 // Function: CheckAvailModesCallback
 // Address: 00442860
-/* public: static long __stdcall TDrawSystem::CheckAvailModesCallback(struct _DDSURFACEDESC *,void
-   *) */
-
 long TDrawSystem::CheckAvailModesCallback(_DDSURFACEDESC *param_1,void *param_2)
 {
   ulong uVar1;
@@ -250,8 +240,6 @@ long TDrawSystem::CheckAvailModesCallback(_DDSURFACEDESC *param_1,void *param_2)
 
 // Function: IsModeAvail
 // Address: 004429c0
-/* public: int __thiscall TDrawSystem::IsModeAvail(long,long,int) */
-
 int __thiscall TDrawSystem::IsModeAvail(TDrawSystem *this,long param_1,long param_2,int param_3)
 {
   if (param_3 == 8) {
@@ -310,10 +298,6 @@ int __thiscall TDrawSystem::IsModeAvail(TDrawSystem *this,long param_1,long para
 
 // Function: Init
 // Address: 00442a90
-/* WARNING: Variable defined which should be unmapped: ddsd */
-/* public: int __thiscall TDrawSystem::Init(void *,void *,void *,unsigned char,unsigned
-   char,long,long,unsigned long) */
-
 int __thiscall
 TDrawSystem::Init(TDrawSystem *this,void *param_1,void *param_2,void *param_3,uchar param_4,
                  uchar param_5,long param_6,long param_7,ulong param_8)
@@ -456,9 +440,6 @@ TDrawSystem::Init(TDrawSystem *this,void *param_1,void *param_2,void *param_3,uc
 
 // Function: SetDisplaySize
 // Address: 00442dc0
-/* WARNING: Variable defined which should be unmapped: save_wid */
-/* public: int __thiscall TDrawSystem::SetDisplaySize(long,long,int) */
-
 int __thiscall TDrawSystem::SetDisplaySize(TDrawSystem *this,long param_1,long param_2,int param_3)
 {
   IDirectDraw IVar1;
@@ -513,9 +494,6 @@ int __thiscall TDrawSystem::SetDisplaySize(TDrawSystem *this,long param_1,long p
 
 // Function: ClearPrimarySurface
 // Address: 00442ef0
-/* WARNING: Variable defined which should be unmapped: ddbltfx */
-/* public: void __thiscall TDrawSystem::ClearPrimarySurface(void) */
-
 void __thiscall TDrawSystem::ClearPrimarySurface(TDrawSystem *this)
 {
   IDirectDrawSurface *pIVar1;
@@ -535,9 +513,6 @@ void __thiscall TDrawSystem::ClearPrimarySurface(TDrawSystem *this)
 
 // Function: CheckSurfaces
 // Address: 00442f30
-/* WARNING: Variable defined which should be unmapped: ddsd */
-/* public: unsigned char __thiscall TDrawSystem::CheckSurfaces(void) */
-
 uchar __thiscall TDrawSystem::CheckSurfaces(TDrawSystem *this)
 {
   IDirectDrawSurface *pIVar1;
@@ -598,8 +573,6 @@ uchar __thiscall TDrawSystem::CheckSurfaces(TDrawSystem *this)
 
 // Function: ClearRestored
 // Address: 00443070
-/* public: void __thiscall TDrawSystem::ClearRestored(void) */
-
 void __thiscall TDrawSystem::ClearRestored(TDrawSystem *this)
 {
   DrawAreaNode *pDVar1;
@@ -616,8 +589,6 @@ void __thiscall TDrawSystem::ClearRestored(TDrawSystem *this)
 
 // Function: DeleteSurfaces
 // Address: 00443090
-/* public: void __thiscall TDrawSystem::DeleteSurfaces(void) */
-
 void __thiscall TDrawSystem::DeleteSurfaces(TDrawSystem *this)
 {
   TDrawArea *pTVar1;
@@ -647,8 +618,6 @@ void __thiscall TDrawSystem::DeleteSurfaces(TDrawSystem *this)
 // Address: 004430f0
 // [HELPER] s_Back_Buffer: "Back Buffer"
 // [HELPER] s_Primary_Surface: "Primary Surface"
-/* public: int __thiscall TDrawSystem::CreateSurfaces(void) */
-
 int __thiscall TDrawSystem::CreateSurfaces(TDrawSystem *this)
 {
   IDirectDrawSurface **ppIVar1;
@@ -766,9 +735,6 @@ int __thiscall TDrawSystem::CreateSurfaces(TDrawSystem *this)
 
 // Function: HandleSize
 // Address: 004433f0
-/* WARNING: Variable defined which should be unmapped: wnd_rect */
-/* public: void __thiscall TDrawSystem::HandleSize(void *,unsigned int,unsigned int,long) */
-
 void __thiscall
 TDrawSystem::HandleSize(TDrawSystem *this,void *param_1,uint param_2,uint param_3,long param_4)
 {
@@ -793,9 +759,6 @@ TDrawSystem::HandleSize(TDrawSystem *this,void *param_1,uint param_2,uint param_
 
 // Function: HandlePaletteChanged
 // Address: 00443460
-/* public: void __thiscall TDrawSystem::HandlePaletteChanged(void *,unsigned int,unsigned int,long)
-    */
-
 void __thiscall
 TDrawSystem::HandlePaletteChanged
           (TDrawSystem *this,void *param_1,uint param_2,uint param_3,long param_4)
@@ -810,9 +773,6 @@ TDrawSystem::HandlePaletteChanged
 
 // Function: HandleQueryNewPalette
 // Address: 00443490
-/* public: int __thiscall TDrawSystem::HandleQueryNewPalette(void *,unsigned int,unsigned int,long)
-    */
-
 int __thiscall
 TDrawSystem::HandleQueryNewPalette
           (TDrawSystem *this,void *param_1,uint param_2,uint param_3,long param_4)
@@ -840,9 +800,6 @@ TDrawSystem::HandleQueryNewPalette
 
 // Function: Paint
 // Address: 00443520
-/* WARNING: Variable defined which should be unmapped: dest */
-/* public: void __thiscall TDrawSystem::Paint(struct tagRECT *) */
-
 void __thiscall TDrawSystem::Paint(TDrawSystem *this,tagRECT *param_1)
 {
   int iVar1;
@@ -905,8 +862,6 @@ void __thiscall TDrawSystem::Paint(TDrawSystem *this,tagRECT *param_1)
 
 // Function: GetIsLostErrorNum
 // Address: 00443680
-/* public: int __thiscall TDrawSystem::GetIsLostErrorNum(long) */
-
 int __thiscall TDrawSystem::GetIsLostErrorNum(TDrawSystem *this,long param_1)
 {
   if (param_1 < -0x7789ff7d) {
@@ -932,8 +887,6 @@ int __thiscall TDrawSystem::GetIsLostErrorNum(TDrawSystem *this,long param_1)
 
 // Function: GetRestoreErrorNum
 // Address: 004436d0
-/* public: int __thiscall TDrawSystem::GetRestoreErrorNum(long) */
-
 int __thiscall TDrawSystem::GetRestoreErrorNum(TDrawSystem *this,long param_1)
 {
   if (param_1 < -0x7fffbffa) {
@@ -983,8 +936,6 @@ int __thiscall TDrawSystem::GetRestoreErrorNum(TDrawSystem *this,long param_1)
 
 // Function: GetSetDispModeErrorNum
 // Address: 00443780
-/* public: int __thiscall TDrawSystem::GetSetDispModeErrorNum(long) */
-
 int __thiscall TDrawSystem::GetSetDispModeErrorNum(TDrawSystem *this,long param_1)
 {
   if (param_1 < -0x7fffbffa) {
@@ -1037,8 +988,6 @@ int __thiscall TDrawSystem::GetSetDispModeErrorNum(TDrawSystem *this,long param_
 
 // Function: GetLockErrorNum
 // Address: 00443840
-/* public: int __thiscall TDrawSystem::GetLockErrorNum(long) */
-
 int __thiscall TDrawSystem::GetLockErrorNum(TDrawSystem *this,long param_1)
 {
   if (param_1 < -0x7ff8fff1) {
@@ -1088,8 +1037,6 @@ int __thiscall TDrawSystem::GetLockErrorNum(TDrawSystem *this,long param_1)
 
 // Function: GetDCErrorNum
 // Address: 004438f0
-/* public: int __thiscall TDrawSystem::GetDCErrorNum(long) */
-
 int __thiscall TDrawSystem::GetDCErrorNum(TDrawSystem *this,long param_1)
 {
   if (param_1 < -0x7fffbffa) {
@@ -1134,8 +1081,6 @@ int __thiscall TDrawSystem::GetDCErrorNum(TDrawSystem *this,long param_1)
 
 // Function: GetBlitErrorNum
 // Address: 00443990
-/* public: int __thiscall TDrawSystem::GetBlitErrorNum(long) */
-
 int __thiscall TDrawSystem::GetBlitErrorNum(TDrawSystem *this,long param_1)
 {
   if (param_1 < -0x7fffbffa) {
@@ -1217,8 +1162,6 @@ int __thiscall TDrawSystem::GetBlitErrorNum(TDrawSystem *this,long param_1)
 
 // Function: GetCreateErrorNum
 // Address: 00443ad0
-/* public: int __thiscall TDrawSystem::GetCreateErrorNum(long) */
-
 int __thiscall TDrawSystem::GetCreateErrorNum(TDrawSystem *this,long param_1)
 {
   if (param_1 < -0x7ff8fff1) {
@@ -1295,8 +1238,6 @@ int __thiscall TDrawSystem::GetCreateErrorNum(TDrawSystem *this,long param_1)
 
 // Function: GetColorKeyErrorNum
 // Address: 00443c00
-/* public: int __thiscall TDrawSystem::GetColorKeyErrorNum(long) */
-
 int __thiscall TDrawSystem::GetColorKeyErrorNum(TDrawSystem *this,long param_1)
 {
   if (param_1 < -0x7fffbffa) {
@@ -1346,9 +1287,6 @@ int __thiscall TDrawSystem::GetColorKeyErrorNum(TDrawSystem *this,long param_1)
 
 // Function: SetPalette
 // Address: 00443cb0
-/* WARNING: Variable defined which should be unmapped: color_table */
-/* public: void __thiscall TDrawSystem::SetPalette(void *) */
-
 void __thiscall TDrawSystem::SetPalette(TDrawSystem *this,void *param_1)
 {
   uchar *puVar1;
@@ -1383,8 +1321,6 @@ void __thiscall TDrawSystem::SetPalette(TDrawSystem *this,void *param_1)
 
 // Function: ModifyPalette
 // Address: 00443d40
-/* public: void __thiscall TDrawSystem::ModifyPalette(int,int,struct tagPALETTEENTRY *) */
-
 void __thiscall
 TDrawSystem::ModifyPalette(TDrawSystem *this,int param_1,int param_2,tagPALETTEENTRY *param_3)
 {

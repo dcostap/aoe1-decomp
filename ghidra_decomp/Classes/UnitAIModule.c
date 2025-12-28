@@ -103,8 +103,6 @@
 
 // Function: UnitAIModule
 // Address: 00412f00
-/* public: __thiscall UnitAIModule::UnitAIModule(class RGE_Static_Object *,int) */
-
 UnitAIModule * __thiscall
 UnitAIModule::UnitAIModule(UnitAIModule *this,RGE_Static_Object *param_1,int param_2)
 {
@@ -181,8 +179,6 @@ UnitAIModule::UnitAIModule(UnitAIModule *this,RGE_Static_Object *param_1,int par
 
 // Function: `scalar_deleting_destructor'
 // Address: 00413070
-/* public: virtual void * __thiscall UnitAIModule::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall UnitAIModule::_scalar_deleting_destructor_(UnitAIModule *this,uint param_1)
 {
   ~UnitAIModule(this);
@@ -196,8 +192,6 @@ void * __thiscall UnitAIModule::_scalar_deleting_destructor_(UnitAIModule *this,
 
 // Function: ~UnitAIModule
 // Address: 00413090
-/* public: virtual __thiscall UnitAIModule::~UnitAIModule(void) */
-
 void __thiscall UnitAIModule::~UnitAIModule(UnitAIModule *this)
 {
   int *piVar1;
@@ -244,8 +238,6 @@ void __thiscall UnitAIModule::~UnitAIModule(UnitAIModule *this)
 
 // Function: save
 // Address: 00413150
-/* public: virtual void __thiscall UnitAIModule::save(int) */
-
 void __thiscall UnitAIModule::save(UnitAIModule *this,int param_1)
 {
   int iVar1;
@@ -343,10 +335,6 @@ void __thiscall UnitAIModule::save(UnitAIModule *this,int param_1)
 
 // Function: load
 // Address: 00413450
-/* WARNING: Variable defined which should be unmapped: numberNotifies */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual void __thiscall UnitAIModule::load(int) */
-
 void __thiscall UnitAIModule::load(UnitAIModule *this,int param_1)
 {
   int iVar1;
@@ -484,8 +472,6 @@ LAB_0041375f:
 
 // Function: owner
 // Address: 00413810
-/* public: virtual class RGE_Player * __thiscall UnitAIModule::owner(void)const  */
-
 RGE_Player * __thiscall UnitAIModule::owner(UnitAIModule *this)
 {
   return this->objectValue->owner;
@@ -495,8 +481,6 @@ RGE_Player * __thiscall UnitAIModule::owner(UnitAIModule *this)
 
 // Function: object
 // Address: 00413820
-/* public: class RGE_Static_Object * __thiscall UnitAIModule::object(void)const  */
-
 RGE_Static_Object * __thiscall UnitAIModule::object(UnitAIModule *this)
 {
   return this->objectValue;
@@ -506,8 +490,6 @@ RGE_Static_Object * __thiscall UnitAIModule::object(UnitAIModule *this)
 
 // Function: objectID
 // Address: 00413830
-/* public: int __thiscall UnitAIModule::objectID(void)const  */
-
 int __thiscall UnitAIModule::objectID(UnitAIModule *this)
 {
   return this->objectValue->id;
@@ -517,8 +499,6 @@ int __thiscall UnitAIModule::objectID(UnitAIModule *this)
 
 // Function: objectCategory
 // Address: 00413840
-/* public: int __thiscall UnitAIModule::objectCategory(void)const  */
-
 int __thiscall UnitAIModule::objectCategory(UnitAIModule *this)
 {
   return this->objectCategoryValue;
@@ -528,8 +508,6 @@ int __thiscall UnitAIModule::objectCategory(UnitAIModule *this)
 
 // Function: mood
 // Address: 00413850
-/* public: int __thiscall UnitAIModule::mood(void)const  */
-
 int __thiscall UnitAIModule::mood(UnitAIModule *this)
 {
   return this->moodValue;
@@ -539,8 +517,6 @@ int __thiscall UnitAIModule::mood(UnitAIModule *this)
 
 // Function: lastUpdateTime
 // Address: 00413860
-/* public: unsigned long __thiscall UnitAIModule::lastUpdateTime(void)const  */
-
 ulong __thiscall UnitAIModule::lastUpdateTime(UnitAIModule *this)
 {
   return this->lastUpdateTimeValue;
@@ -550,8 +526,6 @@ ulong __thiscall UnitAIModule::lastUpdateTime(UnitAIModule *this)
 
 // Function: idleTimer
 // Address: 00413870
-/* public: unsigned long __thiscall UnitAIModule::idleTimer(void)const  */
-
 ulong __thiscall UnitAIModule::idleTimer(UnitAIModule *this)
 {
   return this->idleTimerValue;
@@ -561,8 +535,6 @@ ulong __thiscall UnitAIModule::idleTimer(UnitAIModule *this)
 
 // Function: idleTimeout
 // Address: 00413880
-/* public: unsigned long __thiscall UnitAIModule::idleTimeout(void)const  */
-
 ulong __thiscall UnitAIModule::idleTimeout(UnitAIModule *this)
 {
   return this->idleTimeoutValue;
@@ -572,8 +544,6 @@ ulong __thiscall UnitAIModule::idleTimeout(UnitAIModule *this)
 
 // Function: secondaryTimer
 // Address: 00413890
-/* public: unsigned long __thiscall UnitAIModule::secondaryTimer(void)const  */
-
 ulong __thiscall UnitAIModule::secondaryTimer(UnitAIModule *this)
 {
   return this->secondaryTimerValue;
@@ -583,8 +553,6 @@ ulong __thiscall UnitAIModule::secondaryTimer(UnitAIModule *this)
 
 // Function: defenseBuffer
 // Address: 004138a0
-/* public: float __thiscall UnitAIModule::defenseBuffer(void)const  */
-
 float __thiscall UnitAIModule::defenseBuffer(UnitAIModule *this)
 {
   return this->defenseBufferValue;
@@ -594,8 +562,6 @@ float __thiscall UnitAIModule::defenseBuffer(UnitAIModule *this)
 
 // Function: canConvert
 // Address: 004138b0
-/* public: virtual int __thiscall UnitAIModule::canConvert(int) */
-
 int __thiscall UnitAIModule::canConvert(UnitAIModule *this,int param_1)
 {
   return 0;
@@ -605,8 +571,6 @@ int __thiscall UnitAIModule::canConvert(UnitAIModule *this,int param_1)
 
 // Function: setDefenseBuffer
 // Address: 004138c0
-/* public: void __thiscall UnitAIModule::setDefenseBuffer(float) */
-
 void __thiscall UnitAIModule::setDefenseBuffer(UnitAIModule *this,float param_1)
 {
   this->defenseBufferValue = param_1;
@@ -617,8 +581,6 @@ void __thiscall UnitAIModule::setDefenseBuffer(UnitAIModule *this,float param_1)
 
 // Function: orderQueueSize
 // Address: 004138d0
-/* public: int __thiscall UnitAIModule::orderQueueSize(void)const  */
-
 int __thiscall UnitAIModule::orderQueueSize(UnitAIModule *this)
 {
   return this->orderQueueSizeValue;
@@ -628,8 +590,6 @@ int __thiscall UnitAIModule::orderQueueSize(UnitAIModule *this)
 
 // Function: orderQueueElement
 // Address: 004138e0
-/* public: struct OrderEvent * __thiscall UnitAIModule::orderQueueElement(int)const  */
-
 OrderEvent * __thiscall UnitAIModule::orderQueueElement(UnitAIModule *this,int param_1)
 {
   if (((-1 < param_1) && (param_1 < this->orderQueueSizeValue)) &&
@@ -643,8 +603,6 @@ OrderEvent * __thiscall UnitAIModule::orderQueueElement(UnitAIModule *this,int p
 
 // Function: purgeOrderQueue
 // Address: 00413910
-/* public: void __thiscall UnitAIModule::purgeOrderQueue(void) */
-
 void __thiscall UnitAIModule::purgeOrderQueue(UnitAIModule *this)
 {
   this->orderQueueSizeValue = 0;
@@ -655,8 +613,6 @@ void __thiscall UnitAIModule::purgeOrderQueue(UnitAIModule *this)
 
 // Function: currentOrder
 // Address: 00413920
-/* public: int __thiscall UnitAIModule::currentOrder(void)const  */
-
 int __thiscall UnitAIModule::currentOrder(UnitAIModule *this)
 {
   return this->currentOrderValue;
@@ -666,8 +622,6 @@ int __thiscall UnitAIModule::currentOrder(UnitAIModule *this)
 
 // Function: setCurrentOrder
 // Address: 00413930
-/* public: void __thiscall UnitAIModule::setCurrentOrder(int) */
-
 void __thiscall UnitAIModule::setCurrentOrder(UnitAIModule *this,int param_1)
 {
   this->lastOrderValue = this->currentOrderValue;
@@ -679,8 +633,6 @@ void __thiscall UnitAIModule::setCurrentOrder(UnitAIModule *this,int param_1)
 
 // Function: currentOrderPriority
 // Address: 00413940
-/* public: int __thiscall UnitAIModule::currentOrderPriority(void)const  */
-
 int __thiscall UnitAIModule::currentOrderPriority(UnitAIModule *this)
 {
   return this->currentOrderPriorityValue;
@@ -690,8 +642,6 @@ int __thiscall UnitAIModule::currentOrderPriority(UnitAIModule *this)
 
 // Function: setCurrentOrderPriority
 // Address: 00413950
-/* public: void __thiscall UnitAIModule::setCurrentOrderPriority(int) */
-
 void __thiscall UnitAIModule::setCurrentOrderPriority(UnitAIModule *this,int param_1)
 {
   this->currentOrderPriorityValue = param_1;
@@ -702,8 +652,6 @@ void __thiscall UnitAIModule::setCurrentOrderPriority(UnitAIModule *this,int par
 
 // Function: currentAction
 // Address: 00413960
-/* public: int __thiscall UnitAIModule::currentAction(void)const  */
-
 int __thiscall UnitAIModule::currentAction(UnitAIModule *this)
 {
   return this->currentActionValue;
@@ -713,8 +661,6 @@ int __thiscall UnitAIModule::currentAction(UnitAIModule *this)
 
 // Function: setCurrentAction
 // Address: 00413970
-/* public: void __thiscall UnitAIModule::setCurrentAction(int) */
-
 void __thiscall UnitAIModule::setCurrentAction(UnitAIModule *this,int param_1)
 {
   this->lastActionValue = this->currentActionValue;
@@ -726,8 +672,6 @@ void __thiscall UnitAIModule::setCurrentAction(UnitAIModule *this,int param_1)
 
 // Function: currentTarget
 // Address: 00413980
-/* public: int __thiscall UnitAIModule::currentTarget(void)const  */
-
 int __thiscall UnitAIModule::currentTarget(UnitAIModule *this)
 {
   return this->currentTargetValue;
@@ -737,8 +681,6 @@ int __thiscall UnitAIModule::currentTarget(UnitAIModule *this)
 
 // Function: currentTargetType
 // Address: 00413990
-/* public: int __thiscall UnitAIModule::currentTargetType(void)const  */
-
 int __thiscall UnitAIModule::currentTargetType(UnitAIModule *this)
 {
   return this->currentTargetTypeValue;
@@ -748,8 +690,6 @@ int __thiscall UnitAIModule::currentTargetType(UnitAIModule *this)
 
 // Function: currentTargetX
 // Address: 004139a0
-/* public: float __thiscall UnitAIModule::currentTargetX(void)const  */
-
 float __thiscall UnitAIModule::currentTargetX(UnitAIModule *this)
 {
   return this->currentTargetXValue;
@@ -759,8 +699,6 @@ float __thiscall UnitAIModule::currentTargetX(UnitAIModule *this)
 
 // Function: currentTargetY
 // Address: 004139b0
-/* public: float __thiscall UnitAIModule::currentTargetY(void)const  */
-
 float __thiscall UnitAIModule::currentTargetY(UnitAIModule *this)
 {
   return this->currentTargetYValue;
@@ -770,8 +708,6 @@ float __thiscall UnitAIModule::currentTargetY(UnitAIModule *this)
 
 // Function: currentTargetZ
 // Address: 004139c0
-/* public: float __thiscall UnitAIModule::currentTargetZ(void)const  */
-
 float __thiscall UnitAIModule::currentTargetZ(UnitAIModule *this)
 {
   return this->currentTargetZValue;
@@ -781,8 +717,6 @@ float __thiscall UnitAIModule::currentTargetZ(UnitAIModule *this)
 
 // Function: lastAction
 // Address: 004139d0
-/* public: int __thiscall UnitAIModule::lastAction(void)const  */
-
 int __thiscall UnitAIModule::lastAction(UnitAIModule *this)
 {
   return this->lastActionValue;
@@ -792,8 +726,6 @@ int __thiscall UnitAIModule::lastAction(UnitAIModule *this)
 
 // Function: lastOrder
 // Address: 004139e0
-/* public: int __thiscall UnitAIModule::lastOrder(void)const  */
-
 int __thiscall UnitAIModule::lastOrder(UnitAIModule *this)
 {
   return this->lastOrderValue;
@@ -803,8 +735,6 @@ int __thiscall UnitAIModule::lastOrder(UnitAIModule *this)
 
 // Function: lastTarget
 // Address: 004139f0
-/* public: int __thiscall UnitAIModule::lastTarget(void)const  */
-
 int __thiscall UnitAIModule::lastTarget(UnitAIModule *this)
 {
   return this->lastTargetValue;
@@ -814,8 +744,6 @@ int __thiscall UnitAIModule::lastTarget(UnitAIModule *this)
 
 // Function: lastTargetType
 // Address: 00413a00
-/* public: int __thiscall UnitAIModule::lastTargetType(void)const  */
-
 int __thiscall UnitAIModule::lastTargetType(UnitAIModule *this)
 {
   return this->lastTargetTypeValue;
@@ -825,8 +753,6 @@ int __thiscall UnitAIModule::lastTargetType(UnitAIModule *this)
 
 // Function: desiredTargetDistance
 // Address: 00413a10
-/* public: float __thiscall UnitAIModule::desiredTargetDistance(void)const  */
-
 float __thiscall UnitAIModule::desiredTargetDistance(UnitAIModule *this)
 {
   return this->desiredTargetDistanceValue;
@@ -836,8 +762,6 @@ float __thiscall UnitAIModule::desiredTargetDistance(UnitAIModule *this)
 
 // Function: attackingUnitID
 // Address: 00413a20
-/* public: int __thiscall UnitAIModule::attackingUnitID(int) */
-
 int __thiscall UnitAIModule::attackingUnitID(UnitAIModule *this,int param_1)
 {
   int iVar1;
@@ -873,8 +797,6 @@ int __thiscall UnitAIModule::attackingUnitID(UnitAIModule *this,int param_1)
 
 // Function: numberAttackingUnits
 // Address: 00413aa0
-/* public: int __thiscall UnitAIModule::numberAttackingUnits(void)const  */
-
 int __thiscall UnitAIModule::numberAttackingUnits(UnitAIModule *this)
 {
   return (this->attackingUnitsValue).numberValue;
@@ -886,9 +808,6 @@ int __thiscall UnitAIModule::numberAttackingUnits(UnitAIModule *this)
 // Address: 00413ab0
 // [HELPER] s_C__msdev_work_age1_x1_aiuaimod_c: "C:\msdev\work\age1_x1\aiuaimod.cpp"
 // [HELPER] s___d_call_stopObject__s__d_: "#%d call stopObject %s %d\n"
-/* WARNING: Variable defined which should be unmapped: haveGameAction */
-/* public: int __thiscall UnitAIModule::update(unsigned long) */
-
 int __thiscall UnitAIModule::update(UnitAIModule *this,ulong param_1)
 {
   ulong uVar1;
@@ -1187,9 +1106,6 @@ LAB_00413fc6:
 
 // Function: updateGroup
 // Address: 00414040
-/* WARNING: Variable defined which should be unmapped: triggerSatisfied */
-/* public: void __thiscall UnitAIModule::updateGroup(unsigned long) */
-
 void __thiscall UnitAIModule::updateGroup(UnitAIModule *this,ulong param_1)
 {
   code *pcVar1;
@@ -1479,9 +1395,6 @@ switchD_00414407_caseD_a:
 
 // Function: selectNewPlayPhase
 // Address: 00414800
-/* WARNING: Variable defined which should be unmapped: a */
-/* public: int __thiscall UnitAIModule::selectNewPlayPhase(int,int) */
-
 int __thiscall UnitAIModule::selectNewPlayPhase(UnitAIModule *this,int param_1,int param_2)
 {
   uchar uVar1;
@@ -1687,9 +1600,6 @@ switchD_00414a03_caseD_6:
 // Address: 00414d40
 // [HELPER] s_C__msdev_work_age1_x1_aiuaimod_c: "C:\msdev\work\age1_x1\aiuaimod.cpp"
 // [HELPER] s___d_call_stopObject__s__d_: "#%d call stopObject %s %d\n"
-/* public: virtual int __thiscall
-   UnitAIModule::order(int,int,int,int,float,float,float,float,int,int,int) */
-
 int __thiscall
 UnitAIModule::order(UnitAIModule *this,int param_1,int param_2,int param_3,int param_4,float param_5
                    ,float param_6,float param_7,float param_8,int param_9,int param_10,int param_11)
@@ -1733,8 +1643,6 @@ UnitAIModule::order(UnitAIModule *this,int param_1,int param_2,int param_3,int p
 
 // Function: notify
 // Address: 00414e80
-/* public: virtual int __thiscall UnitAIModule::notify(int,int,int,long,long,long) */
-
 int __thiscall
 UnitAIModule::notify
           (UnitAIModule *this,int param_1,int param_2,int param_3,long param_4,long param_5,
@@ -1778,8 +1686,6 @@ LAB_00414ecf:
 
 // Function: notifyCommander
 // Address: 00414f40
-/* public: virtual int __thiscall UnitAIModule::notifyCommander(struct NotifyEvent *) */
-
 int __thiscall UnitAIModule::notifyCommander(UnitAIModule *this,NotifyEvent *param_1)
 {
   int iVar1;
@@ -1794,9 +1700,6 @@ int __thiscall UnitAIModule::notifyCommander(UnitAIModule *this,NotifyEvent *par
 
 // Function: notifyCommander
 // Address: 00414f70
-/* WARNING: Variable defined which should be unmapped: nEvent */
-/* public: virtual int __thiscall UnitAIModule::notifyCommander(int,int,int,long,long,long) */
-
 int __thiscall
 UnitAIModule::notifyCommander
           (UnitAIModule *this,int param_1,int param_2,int param_3,long param_4,long param_5,
@@ -1838,8 +1741,6 @@ UnitAIModule::notifyCommander
 
 // Function: search
 // Address: 00415040
-/* public: virtual void __thiscall UnitAIModule::search(void) */
-
 void __thiscall UnitAIModule::search(UnitAIModule *this)
 {
   RGE_Master_Static_Object *pRVar1;
@@ -1896,8 +1797,6 @@ void __thiscall UnitAIModule::search(UnitAIModule *this)
 
 // Function: importantWhenDead
 // Address: 00415120
-/* public: virtual int __thiscall UnitAIModule::importantWhenDead(int) */
-
 int __thiscall UnitAIModule::importantWhenDead(UnitAIModule *this,int param_1)
 {
   if ((((param_1 != 7) && (param_1 != 9)) && (param_1 != 10)) &&
@@ -1911,8 +1810,6 @@ int __thiscall UnitAIModule::importantWhenDead(UnitAIModule *this,int param_1)
 
 // Function: retryableOrder
 // Address: 00415150
-/* public: virtual int __thiscall UnitAIModule::retryableOrder(int) */
-
 int __thiscall UnitAIModule::retryableOrder(UnitAIModule *this,int param_1)
 {
   return 0;
@@ -1922,8 +1819,6 @@ int __thiscall UnitAIModule::retryableOrder(UnitAIModule *this,int param_1)
 
 // Function: actionRequiresLiveTarget
 // Address: 00415160
-/* public: virtual int __thiscall UnitAIModule::actionRequiresLiveTarget(int) */
-
 int __thiscall UnitAIModule::actionRequiresLiveTarget(UnitAIModule *this,int param_1)
 {
   if ((((this->stopAfterTargetKilledValue != '\x01') && (param_1 != 600)) && (param_1 != 0x259)) &&
@@ -1937,10 +1832,6 @@ int __thiscall UnitAIModule::actionRequiresLiveTarget(UnitAIModule *this,int par
 
 // Function: bestUnitToAttack
 // Address: 004151b0
-/* WARNING: Variable defined which should be unmapped: largestThreat */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual int __thiscall UnitAIModule::bestUnitToAttack(int,int,float *) */
-
 int __thiscall
 UnitAIModule::bestUnitToAttack(UnitAIModule *this,int param_1,int param_2,float *param_3)
 {
@@ -2199,9 +2090,6 @@ LAB_004159dc:
 
 // Function: mostDangerousEnemy
 // Address: 00415a10
-/* WARNING: Variable defined which should be unmapped: i */
-/* public: virtual int __thiscall UnitAIModule::mostDangerousEnemy(float *) */
-
 int __thiscall UnitAIModule::mostDangerousEnemy(UnitAIModule *this,float *param_1)
 {
   RGE_Master_Static_Object *pRVar1;
@@ -2247,9 +2135,6 @@ int __thiscall UnitAIModule::mostDangerousEnemy(UnitAIModule *this,float *param_
 
 // Function: weakestEnemy
 // Address: 00415ad0
-/* WARNING: Variable defined which should be unmapped: smallestHP */
-/* public: virtual int __thiscall UnitAIModule::weakestEnemy(float *) */
-
 int __thiscall UnitAIModule::weakestEnemy(UnitAIModule *this,float *param_1)
 {
   RGE_Static_Object *pRVar1;
@@ -2282,9 +2167,6 @@ int __thiscall UnitAIModule::weakestEnemy(UnitAIModule *this,float *param_1)
 
 // Function: closestAttacker
 // Address: 00415b50
-/* WARNING: Variable defined which should be unmapped: largestThreat */
-/* public: virtual int __thiscall UnitAIModule::closestAttacker(float *) */
-
 int __thiscall UnitAIModule::closestAttacker(UnitAIModule *this,float *param_1)
 {
   int *piVar1;
@@ -2358,9 +2240,6 @@ int __thiscall UnitAIModule::closestAttacker(UnitAIModule *this,float *param_1)
 
 // Function: closestObject
 // Address: 00415ca0
-/* WARNING: Variable defined which should be unmapped: closestDistance */
-/* public: virtual int __thiscall UnitAIModule::closestObject(int,int,int,int,int *) */
-
 int __thiscall
 UnitAIModule::closestObject
           (UnitAIModule *this,int param_1,int param_2,int param_3,int param_4,int *param_5)
@@ -2441,9 +2320,6 @@ LAB_00415de5:
 
 // Function: closestResourceObject
 // Address: 00415e50
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual int __thiscall UnitAIModule::closestResourceObject(int,int *) */
-
 int __thiscall UnitAIModule::closestResourceObject(UnitAIModule *this,int param_1,int *param_2)
 {
   RGE_Static_Object *this_00;
@@ -2501,10 +2377,6 @@ int __thiscall UnitAIModule::closestResourceObject(UnitAIModule *this,int param_
 // Function: closestUndiscoveredTile
 // Address: 00415f40
 // [HELPER] s_C__msdev_work_age1_x1_aiuaimod_c: "C:\msdev\work\age1_x1\aiuaimod.cpp"
-/* WARNING: Variable defined which should be unmapped: currentZone */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual int __thiscall UnitAIModule::closestUndiscoveredTile(int *,int *,int) */
-
 int __thiscall
 UnitAIModule::closestUndiscoveredTile(UnitAIModule *this,int *param_1,int *param_2,int param_3)
 {
@@ -2607,8 +2479,6 @@ UnitAIModule::closestUndiscoveredTile(UnitAIModule *this,int *param_1,int *param
 
 // Function: waypoint
 // Address: 004161d0
-/* public: struct Waypoint * __thiscall UnitAIModule::waypoint(int)const  */
-
 Waypoint * __thiscall UnitAIModule::waypoint(UnitAIModule *this,int param_1)
 {
   return (Waypoint *)0x0;
@@ -2618,8 +2488,6 @@ Waypoint * __thiscall UnitAIModule::waypoint(UnitAIModule *this,int param_1)
 
 // Function: waypointQueueSize
 // Address: 004161e0
-/* public: int __thiscall UnitAIModule::waypointQueueSize(void)const  */
-
 int __thiscall UnitAIModule::waypointQueueSize(UnitAIModule *this)
 {
   return this->waypointQueueSizeValue;
@@ -2629,8 +2497,6 @@ int __thiscall UnitAIModule::waypointQueueSize(UnitAIModule *this)
 
 // Function: addToWaypointQueue
 // Address: 004161f0
-/* public: int __thiscall UnitAIModule::addToWaypointQueue(int,int) */
-
 int __thiscall UnitAIModule::addToWaypointQueue(UnitAIModule *this,int param_1,int param_2)
 {
   if (7 < this->waypointQueueSizeValue) {
@@ -2646,8 +2512,6 @@ int __thiscall UnitAIModule::addToWaypointQueue(UnitAIModule *this,int param_1,i
 
 // Function: inWaypointQueue
 // Address: 00416240
-/* public: int __thiscall UnitAIModule::inWaypointQueue(int,int)const  */
-
 int __thiscall UnitAIModule::inWaypointQueue(UnitAIModule *this,int param_1,int param_2)
 {
   float *pfVar1;
@@ -2674,8 +2538,6 @@ int __thiscall UnitAIModule::inWaypointQueue(UnitAIModule *this,int param_1,int 
 
 // Function: clearWaypointQueue
 // Address: 00416290
-/* public: void __thiscall UnitAIModule::clearWaypointQueue(void) */
-
 void __thiscall UnitAIModule::clearWaypointQueue(UnitAIModule *this)
 {
   this->waypointQueueSizeValue = 0;
@@ -2686,8 +2548,6 @@ void __thiscall UnitAIModule::clearWaypointQueue(UnitAIModule *this)
 
 // Function: canAttackUnit
 // Address: 004162a0
-/* public: virtual int __thiscall UnitAIModule::canAttackUnit(class RGE_Static_Object *) */
-
 int __thiscall UnitAIModule::canAttackUnit(UnitAIModule *this,RGE_Static_Object *param_1)
 {
   return 1;
@@ -2697,8 +2557,6 @@ int __thiscall UnitAIModule::canAttackUnit(UnitAIModule *this,RGE_Static_Object 
 
 // Function: canAttackUnitAtNeutrality
 // Address: 004162b0
-/* public: virtual int __thiscall UnitAIModule::canAttackUnitAtNeutrality(int) */
-
 int __thiscall UnitAIModule::canAttackUnitAtNeutrality(UnitAIModule *this,int param_1)
 {
   return 1;
@@ -2709,8 +2567,6 @@ int __thiscall UnitAIModule::canAttackUnitAtNeutrality(UnitAIModule *this,int pa
 // Function: stopObject
 // Address: 004162c0
 // [HELPER] s_t_ld__U__d_sO__cOAA__d__: "t%ld, U#%d sO, cOAA=%d.\n"
-/* public: virtual int __thiscall UnitAIModule::stopObject(int) */
-
 int __thiscall UnitAIModule::stopObject(UnitAIModule *this,int param_1)
 {
   int iVar1;
@@ -2735,8 +2591,6 @@ int __thiscall UnitAIModule::stopObject(UnitAIModule *this,int param_1)
 
 // Function: attackObject
 // Address: 00416340
-/* public: virtual int __thiscall UnitAIModule::attackObject(int,int) */
-
 int __thiscall UnitAIModule::attackObject(UnitAIModule *this,int param_1,int param_2)
 {
   RGE_Static_Object *pRVar1;
@@ -2763,8 +2617,6 @@ int __thiscall UnitAIModule::attackObject(UnitAIModule *this,int param_1,int par
 
 // Function: attackRoundupObject
 // Address: 004163c0
-/* public: virtual int __thiscall UnitAIModule::attackRoundupObject(int) */
-
 int __thiscall UnitAIModule::attackRoundupObject(UnitAIModule *this,int param_1)
 {
   RGE_Static_Object *pRVar1;
@@ -2799,8 +2651,6 @@ int __thiscall UnitAIModule::attackRoundupObject(UnitAIModule *this,int param_1)
 // Address: 00416470
 // [HELPER] s_C__msdev_work_age1_x1_aiuaimod_c: "C:\msdev\work\age1_x1\aiuaimod.cpp"
 // [HELPER] s___d_call_stopObject__s__d_: "#%d call stopObject %s %d\n"
-/* public: virtual int __thiscall UnitAIModule::huntObject(int,int) */
-
 int __thiscall UnitAIModule::huntObject(UnitAIModule *this,int param_1,int param_2)
 {
   long lVar1;
@@ -2840,8 +2690,6 @@ int __thiscall UnitAIModule::huntObject(UnitAIModule *this,int param_1,int param
 
 // Function: convertObject
 // Address: 00416550
-/* public: virtual int __thiscall UnitAIModule::convertObject(int,int) */
-
 int __thiscall UnitAIModule::convertObject(UnitAIModule *this,int param_1,int param_2)
 {
   int iVar1;
@@ -2868,8 +2716,6 @@ int __thiscall UnitAIModule::convertObject(UnitAIModule *this,int param_1,int pa
 
 // Function: healObject
 // Address: 004165f0
-/* public: virtual int __thiscall UnitAIModule::healObject(int,int) */
-
 int __thiscall UnitAIModule::healObject(UnitAIModule *this,int param_1,int param_2)
 {
   int iVar1;
@@ -2896,8 +2742,6 @@ int __thiscall UnitAIModule::healObject(UnitAIModule *this,int param_1,int param
 
 // Function: gatherObject
 // Address: 00416690
-/* public: virtual int __thiscall UnitAIModule::gatherObject(int,int) */
-
 int __thiscall UnitAIModule::gatherObject(UnitAIModule *this,int param_1,int param_2)
 {
   int iVar1;
@@ -2924,8 +2768,6 @@ int __thiscall UnitAIModule::gatherObject(UnitAIModule *this,int param_1,int par
 
 // Function: repairObject
 // Address: 00416730
-/* public: virtual int __thiscall UnitAIModule::repairObject(int,int) */
-
 int __thiscall UnitAIModule::repairObject(UnitAIModule *this,int param_1,int param_2)
 {
   int iVar1;
@@ -2952,8 +2794,6 @@ int __thiscall UnitAIModule::repairObject(UnitAIModule *this,int param_1,int par
 
 // Function: buildObject
 // Address: 004167d0
-/* public: virtual int __thiscall UnitAIModule::buildObject(int,int) */
-
 int __thiscall UnitAIModule::buildObject(UnitAIModule *this,int param_1,int param_2)
 {
   int iVar1;
@@ -2980,8 +2820,6 @@ int __thiscall UnitAIModule::buildObject(UnitAIModule *this,int param_1,int para
 
 // Function: tradeWithObject
 // Address: 00416870
-/* public: virtual int __thiscall UnitAIModule::tradeWithObject(int,int) */
-
 int __thiscall UnitAIModule::tradeWithObject(UnitAIModule *this,int param_1,int param_2)
 {
   int iVar1;
@@ -3008,8 +2846,6 @@ int __thiscall UnitAIModule::tradeWithObject(UnitAIModule *this,int param_1,int 
 
 // Function: explore
 // Address: 00416910
-/* public: virtual int __thiscall UnitAIModule::explore(int,int,int) */
-
 int __thiscall UnitAIModule::explore(UnitAIModule *this,int param_1,int param_2,int param_3)
 {
   int iVar1;
@@ -3030,8 +2866,6 @@ int __thiscall UnitAIModule::explore(UnitAIModule *this,int param_1,int param_2,
 
 // Function: enterObject
 // Address: 00416980
-/* public: virtual int __thiscall UnitAIModule::enterObject(int,int) */
-
 int __thiscall UnitAIModule::enterObject(UnitAIModule *this,int param_1,int param_2)
 {
   int iVar1;
@@ -3051,8 +2885,6 @@ int __thiscall UnitAIModule::enterObject(UnitAIModule *this,int param_1,int para
 
 // Function: transportObject
 // Address: 004169e0
-/* public: virtual int __thiscall UnitAIModule::transportObject(float,float,float,int) */
-
 int __thiscall
 UnitAIModule::transportObject
           (UnitAIModule *this,float param_1,float param_2,float param_3,int param_4)
@@ -3074,8 +2906,6 @@ UnitAIModule::transportObject
 
 // Function: unload
 // Address: 00416a50
-/* public: virtual int __thiscall UnitAIModule::unload(int,float,float) */
-
 int __thiscall UnitAIModule::unload(UnitAIModule *this,int param_1,float param_2,float param_3)
 {
   RGE_Static_Object *pRVar1;
@@ -3103,8 +2933,6 @@ int __thiscall UnitAIModule::unload(UnitAIModule *this,int param_1,float param_2
 
 // Function: moveTo
 // Address: 00416af0
-/* public: virtual int __thiscall UnitAIModule::moveTo(int,int) */
-
 int __thiscall UnitAIModule::moveTo(UnitAIModule *this,int param_1,int param_2)
 {
   int iVar1;
@@ -3130,8 +2958,6 @@ int __thiscall UnitAIModule::moveTo(UnitAIModule *this,int param_1,int param_2)
 
 // Function: moveTo
 // Address: 00416b80
-/* public: virtual int __thiscall UnitAIModule::moveTo(int,float,int) */
-
 int __thiscall UnitAIModule::moveTo(UnitAIModule *this,int param_1,float param_2,int param_3)
 {
   int iVar1;
@@ -3157,8 +2983,6 @@ int __thiscall UnitAIModule::moveTo(UnitAIModule *this,int param_1,float param_2
 
 // Function: moveTo
 // Address: 00416c10
-/* public: virtual int __thiscall UnitAIModule::moveTo(float,float,float,float,int) */
-
 int __thiscall
 UnitAIModule::moveTo
           (UnitAIModule *this,float param_1,float param_2,float param_3,float param_4,int param_5)
@@ -3182,9 +3006,6 @@ UnitAIModule::moveTo
 // Function: evasiveMoveTo
 // Address: 00416c80
 // [HELPER] s_C__msdev_work_age1_x1_aiuaimod_c: "C:\msdev\work\age1_x1\aiuaimod.cpp"
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual int __thiscall UnitAIModule::evasiveMoveTo(float,float,float,int) */
-
 int __thiscall
 UnitAIModule::evasiveMoveTo
           (UnitAIModule *this,float param_1,float param_2,float param_3,int param_4)
@@ -3276,11 +3097,6 @@ UnitAIModule::evasiveMoveTo
 
 // Function: intelligentEvasiveMoveTo
 // Address: 00416f30
-/* WARNING: Variable defined which should be unmapped: baseDistance */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual int __thiscall UnitAIModule::intelligentEvasiveMoveTo(float,float,float,int,int)
-    */
-
 int __thiscall
 UnitAIModule::intelligentEvasiveMoveTo
           (UnitAIModule *this,float param_1,float param_2,float param_3,int param_4,int param_5)
@@ -3397,10 +3213,6 @@ switchD_0041705b_default:
 
 // Function: runAwayFromAttackers
 // Address: 004171f0
-/* WARNING: Variable defined which should be unmapped: xDiff */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual int __thiscall UnitAIModule::runAwayFromAttackers(int) */
-
 int __thiscall UnitAIModule::runAwayFromAttackers(UnitAIModule *this,int param_1)
 {
   float fVar1;
@@ -3462,8 +3274,6 @@ int __thiscall UnitAIModule::runAwayFromAttackers(UnitAIModule *this,int param_1
 
 // Function: followObject
 // Address: 00417360
-/* public: virtual int __thiscall UnitAIModule::followObject(int,float,int) */
-
 int __thiscall UnitAIModule::followObject(UnitAIModule *this,int param_1,float param_2,int param_3)
 {
   RGE_Static_Object *pRVar1;
@@ -3485,8 +3295,6 @@ int __thiscall UnitAIModule::followObject(UnitAIModule *this,int param_1,float p
 
 // Function: defendObject
 // Address: 004173d0
-/* public: virtual int __thiscall UnitAIModule::defendObject(int,float,int) */
-
 int __thiscall UnitAIModule::defendObject(UnitAIModule *this,int param_1,float param_2,int param_3)
 {
   RGE_Static_Object *pRVar1;
@@ -3509,8 +3317,6 @@ int __thiscall UnitAIModule::defendObject(UnitAIModule *this,int param_1,float p
 
 // Function: defendPosition
 // Address: 00417440
-/* public: virtual int __thiscall UnitAIModule::defendPosition(float,float,float,int) */
-
 int __thiscall
 UnitAIModule::defendPosition
           (UnitAIModule *this,float param_1,float param_2,float param_3,int param_4)
@@ -3529,8 +3335,6 @@ UnitAIModule::defendPosition
 
 // Function: seekAndDestroy
 // Address: 004174a0
-/* public: virtual int __thiscall UnitAIModule::seekAndDestroy(int,int,int,int) */
-
 int __thiscall
 UnitAIModule::seekAndDestroy(UnitAIModule *this,int param_1,int param_2,int param_3,int param_4)
 {
@@ -3552,8 +3356,6 @@ UnitAIModule::seekAndDestroy(UnitAIModule *this,int param_1,int param_2,int para
 
 // Function: exploreAndDestroy
 // Address: 00417510
-/* public: virtual int __thiscall UnitAIModule::exploreAndDestroy(int,int,int) */
-
 int __thiscall
 UnitAIModule::exploreAndDestroy(UnitAIModule *this,int param_1,int param_2,int param_3)
 {
@@ -3575,8 +3377,6 @@ UnitAIModule::exploreAndDestroy(UnitAIModule *this,int param_1,int param_2,int p
 
 // Function: removeCurrentTarget
 // Address: 00417580
-/* public: void __thiscall UnitAIModule::removeCurrentTarget(void) */
-
 void __thiscall UnitAIModule::removeCurrentTarget(UnitAIModule *this)
 {
   int iVar1;
@@ -3596,8 +3396,6 @@ void __thiscall UnitAIModule::removeCurrentTarget(UnitAIModule *this)
 
 // Function: setCurrentTarget
 // Address: 004175b0
-/* public: void __thiscall UnitAIModule::setCurrentTarget(int,float,float,float) */
-
 void __thiscall
 UnitAIModule::setCurrentTarget
           (UnitAIModule *this,int param_1,float param_2,float param_3,float param_4)
@@ -3621,8 +3419,6 @@ UnitAIModule::setCurrentTarget
 
 // Function: setCurrentTarget
 // Address: 00417600
-/* public: void __thiscall UnitAIModule::setCurrentTarget(int,int,float,float,float) */
-
 void __thiscall
 UnitAIModule::setCurrentTarget
           (UnitAIModule *this,int param_1,int param_2,float param_3,float param_4,float param_5)
@@ -3641,8 +3437,6 @@ UnitAIModule::setCurrentTarget
 
 // Function: importantObject
 // Address: 00417640
-/* public: virtual int __thiscall UnitAIModule::importantObject(int) */
-
 int __thiscall UnitAIModule::importantObject(UnitAIModule *this,int param_1)
 {
   int iVar1;
@@ -3667,8 +3461,6 @@ int __thiscall UnitAIModule::importantObject(UnitAIModule *this,int param_1)
 
 // Function: isEnemyOwner
 // Address: 00417680
-/* public: int __thiscall UnitAIModule::isEnemyOwner(int) */
-
 int __thiscall UnitAIModule::isEnemyOwner(UnitAIModule *this,int param_1)
 {
   RGE_Player *pRVar1;
@@ -3684,8 +3476,6 @@ int __thiscall UnitAIModule::isEnemyOwner(UnitAIModule *this,int param_1)
 
 // Function: isAllyOwner
 // Address: 004176b0
-/* public: int __thiscall UnitAIModule::isAllyOwner(int) */
-
 int __thiscall UnitAIModule::isAllyOwner(UnitAIModule *this,int param_1)
 {
   RGE_Player *pRVar1;
@@ -3705,8 +3495,6 @@ int __thiscall UnitAIModule::isAllyOwner(UnitAIModule *this,int param_1)
 
 // Function: isNeutralOwner
 // Address: 00417700
-/* public: int __thiscall UnitAIModule::isNeutralOwner(int) */
-
 int __thiscall UnitAIModule::isNeutralOwner(UnitAIModule *this,int param_1)
 {
   RGE_Player *pRVar1;
@@ -3722,8 +3510,6 @@ int __thiscall UnitAIModule::isNeutralOwner(UnitAIModule *this,int param_1)
 
 // Function: visibleStatus
 // Address: 00417730
-/* public: unsigned char __thiscall UnitAIModule::visibleStatus(class RGE_Visible_Map *,int,int) */
-
 uchar __thiscall
 UnitAIModule::visibleStatus(UnitAIModule *this,RGE_Visible_Map *param_1,int param_2,int param_3)
 {
@@ -3742,8 +3528,6 @@ UnitAIModule::visibleStatus(UnitAIModule *this,RGE_Visible_Map *param_1,int para
 // Function: setAdjustedIdleTimeout
 // Address: 00417770
 // [HELPER] s_C__msdev_work_age1_x1_aiuaimod_c: "C:\msdev\work\age1_x1\aiuaimod.cpp"
-/* public: void __thiscall UnitAIModule::setAdjustedIdleTimeout(void) */
-
 void __thiscall UnitAIModule::setAdjustedIdleTimeout(UnitAIModule *this)
 {
   uint uVar1;
@@ -3759,8 +3543,6 @@ void __thiscall UnitAIModule::setAdjustedIdleTimeout(UnitAIModule *this)
 
 // Function: setTaskedByPlayer
 // Address: 004177b0
-/* public: void __thiscall UnitAIModule::setTaskedByPlayer(void) */
-
 void __thiscall UnitAIModule::setTaskedByPlayer(UnitAIModule *this)
 {
   purgeNotifyQueue(this,0);
@@ -3771,8 +3553,6 @@ void __thiscall UnitAIModule::setTaskedByPlayer(UnitAIModule *this)
 
 // Function: convertToLOSResourceType
 // Address: 004177c0
-/* public: virtual int __thiscall UnitAIModule::convertToLOSResourceType(int) */
-
 int __thiscall UnitAIModule::convertToLOSResourceType(UnitAIModule *this,int param_1)
 {
   return -1;
@@ -3782,8 +3562,6 @@ int __thiscall UnitAIModule::convertToLOSResourceType(UnitAIModule *this,int par
 
 // Function: setPlayStatus
 // Address: 004177d0
-/* public: void __thiscall UnitAIModule::setPlayStatus(class AIPlayStatus *) */
-
 void __thiscall UnitAIModule::setPlayStatus(UnitAIModule *this,AIPlayStatus *param_1)
 {
   AIPlayStatus *pAVar1;
@@ -3820,9 +3598,6 @@ void __thiscall UnitAIModule::setPlayStatus(UnitAIModule *this,AIPlayStatus *par
 // Function: lookAround
 // Address: 00417860
 // [HELPER] s_C__msdev_work_age1_x1_aiuaimod_c: "C:\msdev\work\age1_x1\aiuaimod.cpp"
-/* WARNING: Variable defined which should be unmapped: world */
-/* public: void __thiscall UnitAIModule::lookAround(void) */
-
 void __thiscall UnitAIModule::lookAround(UnitAIModule *this)
 {
   short sVar1;
@@ -3866,8 +3641,6 @@ void __thiscall UnitAIModule::lookAround(UnitAIModule *this)
 
 // Function: hasOrderOnQueue
 // Address: 00417920
-/* public: int __thiscall UnitAIModule::hasOrderOnQueue(int) */
-
 int __thiscall UnitAIModule::hasOrderOnQueue(UnitAIModule *this,int param_1)
 {
   int iVar1;
@@ -3892,10 +3665,6 @@ int __thiscall UnitAIModule::hasOrderOnQueue(UnitAIModule *this,int param_1)
 
 // Function: askForHelp
 // Address: 00417960
-/* WARNING: Variable defined which should be unmapped: i */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall UnitAIModule::askForHelp(int) */
-
 void __thiscall UnitAIModule::askForHelp(UnitAIModule *this,int param_1)
 {
   short sVar1;
@@ -3968,8 +3737,6 @@ void __thiscall UnitAIModule::askForHelp(UnitAIModule *this,int param_1)
 // Address: 00417b50
 // [HELPER] s_C__msdev_work_age1_x1_aiuaimod_c: "C:\msdev\work\age1_x1\aiuaimod.cpp"
 // [HELPER] s___d_call_stopObject__s__d_: "#%d call stopObject %s %d\n"
-/* protected: virtual int __thiscall UnitAIModule::processOrder(struct OrderEvent *,int) */
-
 int __thiscall UnitAIModule::processOrder(UnitAIModule *this,OrderEvent *param_1,int param_2)
 {
   AIPlay *pAVar1;
@@ -4085,7 +3852,6 @@ int __thiscall UnitAIModule::processOrder(UnitAIModule *this,OrderEvent *param_1
       else {
         lVar6 = this->objectValue->id;
       }
-                    /* language.dll match for 0x10e9: "Time Limit" */
       fprintf(actionFile,s___d_call_stopObject__s__d_,lVar6,s_C__msdev_work_age1_x1_aiuaimod_c,
               0x10e9);
     }
@@ -4214,10 +3980,6 @@ LAB_00417ef4:
 // Address: 004180c0
 // [HELPER] s_C__msdev_work_age1_x1_aiuaimod_c: "C:\msdev\work\age1_x1\aiuaimod.cpp"
 // [HELPER] s___d_call_stopObject__s__d_: "#%d call stopObject %s %d\n"
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall UnitAIModule::processNotify(struct NotifyEvent *,unsigned long)
-    */
-
 int __thiscall UnitAIModule::processNotify(UnitAIModule *this,NotifyEvent *param_1,ulong param_2)
 {
   short sVar1;
@@ -4437,7 +4199,6 @@ LAB_00418371:
       else {
         lVar10 = this->objectValue->id;
       }
-                    /* language.dll match for 0x1439: "Heavy Cavalry" */
       uVar15 = 0x1439;
 LAB_004193c2:
       fprintf(actionFile,s___d_call_stopObject__s__d_,lVar10,s_C__msdev_work_age1_x1_aiuaimod_c,
@@ -4906,7 +4667,6 @@ LAB_004193d6:
       else {
         lVar10 = this->objectValue->id;
       }
-                    /* language.dll match for 0x13f9: "Grass Clump 7" */
       fprintf(actionFile,s___d_call_stopObject__s__d_,lVar10,s_C__msdev_work_age1_x1_aiuaimod_c,
               0x13f9);
     }
@@ -4929,7 +4689,6 @@ LAB_004193d6:
             else {
               lVar10 = this->objectValue->id;
             }
-                    /* language.dll match for 0x1396: "Heavy Transport" */
             fprintf(actionFile,s___d_call_stopObject__s__d_,lVar10,
                     s_C__msdev_work_age1_x1_aiuaimod_c,0x1396);
           }
@@ -4976,7 +4735,6 @@ LAB_004193d6:
           else {
             lVar10 = this->objectValue->id;
           }
-                    /* language.dll match for 0x13da: "Desert Patch 3" */
           fprintf(actionFile,s___d_call_stopObject__s__d_,lVar10,s_C__msdev_work_age1_x1_aiuaimod_c,
                   0x13da);
         }
@@ -4996,7 +4754,6 @@ LAB_004193d6:
         else {
           lVar10 = this->objectValue->id;
         }
-                    /* language.dll match for 0x13ce: "Dead Lumber" */
         fprintf(actionFile,s___d_call_stopObject__s__d_,lVar10,s_C__msdev_work_age1_x1_aiuaimod_c,
                 0x13ce);
         (**(code **)(iVar8 + 0x58))(1);
@@ -5017,7 +4774,6 @@ LAB_004193d6:
       else {
         lVar10 = this->objectValue->id;
       }
-                    /* language.dll match for 0x13e7: "Fish - Shore" */
       fprintf(actionFile,s___d_call_stopObject__s__d_,lVar10,s_C__msdev_work_age1_x1_aiuaimod_c,
               0x13e7);
     }
@@ -5120,9 +4876,6 @@ LAB_00419362:
 
 // Function: processGroupNotify
 // Address: 00419510
-/* WARNING: Variable defined which should be unmapped: phase */
-/* protected: virtual void __thiscall UnitAIModule::processGroupNotify(struct NotifyEvent *) */
-
 void __thiscall UnitAIModule::processGroupNotify(UnitAIModule *this,NotifyEvent *param_1)
 {
   uchar uVar1;
@@ -5160,8 +4913,6 @@ void __thiscall UnitAIModule::processGroupNotify(UnitAIModule *this,NotifyEvent 
 
 // Function: processIdle
 // Address: 004195f0
-/* protected: virtual int __thiscall UnitAIModule::processIdle(int) */
-
 int __thiscall UnitAIModule::processIdle(UnitAIModule *this,int param_1)
 {
   int iVar1;
@@ -5184,10 +4935,6 @@ int __thiscall UnitAIModule::processIdle(UnitAIModule *this,int param_1)
 // Address: 00419650
 // [HELPER] s_C__msdev_work_age1_x1_aiuaimod_c: "C:\msdev\work\age1_x1\aiuaimod.cpp"
 // [HELPER] s___d_call_stopObject__s__d_: "#%d call stopObject %s %d\n"
-/* WARNING: Variable defined which should be unmapped: yDiff */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall UnitAIModule::processMisc(void) */
-
 int __thiscall UnitAIModule::processMisc(UnitAIModule *this)
 {
   short sVar1;
@@ -5411,8 +5158,6 @@ LAB_004198c8:
 
 // Function: processRetryableOrder
 // Address: 00419bc0
-/* protected: virtual int __thiscall UnitAIModule::processRetryableOrder(void) */
-
 int __thiscall UnitAIModule::processRetryableOrder(UnitAIModule *this)
 {
   int iVar1;
@@ -5441,8 +5186,6 @@ int __thiscall UnitAIModule::processRetryableOrder(UnitAIModule *this)
 
 // Function: addToOrderQueue
 // Address: 00419c30
-/* protected: int __thiscall UnitAIModule::addToOrderQueue(struct OrderEvent *,int) */
-
 int __thiscall UnitAIModule::addToOrderQueue(UnitAIModule *this,OrderEvent *param_1,int param_2)
 {
   int iVar1;
@@ -5457,9 +5200,6 @@ int __thiscall UnitAIModule::addToOrderQueue(UnitAIModule *this,OrderEvent *para
 
 // Function: addToOrderQueue
 // Address: 00419c70
-/* protected: int __thiscall
-   UnitAIModule::addToOrderQueue(int,int,int,int,float,float,float,float,int,int) */
-
 int __thiscall
 UnitAIModule::addToOrderQueue
           (UnitAIModule *this,int param_1,int param_2,int param_3,int param_4,float param_5,
@@ -5557,8 +5297,6 @@ UnitAIModule::addToOrderQueue
 
 // Function: addToNotifyQueue
 // Address: 00419ed0
-/* protected: int __thiscall UnitAIModule::addToNotifyQueue(struct NotifyEvent *) */
-
 int __thiscall UnitAIModule::addToNotifyQueue(UnitAIModule *this,NotifyEvent *param_1)
 {
   int iVar1;
@@ -5572,8 +5310,6 @@ int __thiscall UnitAIModule::addToNotifyQueue(UnitAIModule *this,NotifyEvent *pa
 
 // Function: addToNotifyQueue
 // Address: 00419f00
-/* protected: int __thiscall UnitAIModule::addToNotifyQueue(int,int,int,long,long,long) */
-
 int __thiscall
 UnitAIModule::addToNotifyQueue
           (UnitAIModule *this,int param_1,int param_2,int param_3,long param_4,long param_5,
@@ -5628,8 +5364,6 @@ UnitAIModule::addToNotifyQueue
 // Address: 0041a020
 // [HELPER] s_C__msdev_work_age1_x1_aiuaimod_c: "C:\msdev\work\age1_x1\aiuaimod.cpp"
 // [HELPER] s___d_call_stopObject__s__d_: "#%d call stopObject %s %d\n"
-/* public: void __thiscall UnitAIModule::purgeNotifyQueue(unsigned long) */
-
 void __thiscall UnitAIModule::purgeNotifyQueue(UnitAIModule *this,ulong param_1)
 {
   long lVar1;
@@ -5671,8 +5405,6 @@ void __thiscall UnitAIModule::purgeNotifyQueue(UnitAIModule *this,ulong param_1)
 
 // Function: lookupObject
 // Address: 0041a0d0
-/* protected: class RGE_Static_Object * __thiscall UnitAIModule::lookupObject(int) */
-
 RGE_Static_Object * __thiscall UnitAIModule::lookupObject(UnitAIModule *this,int param_1)
 {
   RGE_Player *pRVar1;
@@ -5692,9 +5424,6 @@ RGE_Static_Object * __thiscall UnitAIModule::lookupObject(UnitAIModule *this,int
 
 // Function: logDebug
 // Address: 0041a100
-/* WARNING: Variable defined which should be unmapped: textOut */
-/* public: virtual void __cdecl UnitAIModule::logDebug(char *,...) */
-
 void __thiscall UnitAIModule::logDebug(UnitAIModule *this,char *param_1,...)
 {
   undefined4 in_stack_00000008;

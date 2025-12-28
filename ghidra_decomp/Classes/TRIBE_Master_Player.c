@@ -14,8 +14,6 @@
 
 // Function: TRIBE_Master_Player
 // Address: 005117c0
-/* public: __thiscall TRIBE_Master_Player::TRIBE_Master_Player(struct _iobuf *) */
-
 TRIBE_Master_Player * __thiscall
 TRIBE_Master_Player::TRIBE_Master_Player(TRIBE_Master_Player *this,_iobuf *param_1)
 {
@@ -29,9 +27,6 @@ TRIBE_Master_Player::TRIBE_Master_Player(TRIBE_Master_Player *this,_iobuf *param
 
 // Function: `scalar_deleting_destructor'
 // Address: 005117e0
-/* public: virtual void * __thiscall TRIBE_Master_Player::`scalar deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 TRIBE_Master_Player::_scalar_deleting_destructor_(TRIBE_Master_Player *this,uint param_1)
 {
@@ -46,8 +41,6 @@ TRIBE_Master_Player::_scalar_deleting_destructor_(TRIBE_Master_Player *this,uint
 
 // Function: TRIBE_Master_Player
 // Address: 00511800
-/* public: __thiscall TRIBE_Master_Player::TRIBE_Master_Player(int) */
-
 TRIBE_Master_Player * __thiscall
 TRIBE_Master_Player::TRIBE_Master_Player(TRIBE_Master_Player *this,int param_1)
 {
@@ -61,8 +54,6 @@ TRIBE_Master_Player::TRIBE_Master_Player(TRIBE_Master_Player *this,int param_1)
 
 // Function: ~TRIBE_Master_Player
 // Address: 00511820
-/* public: virtual __thiscall TRIBE_Master_Player::~TRIBE_Master_Player(void) */
-
 void __thiscall TRIBE_Master_Player::~TRIBE_Master_Player(TRIBE_Master_Player *this)
 {
   *(undefined ***)this = &_vftable_;
@@ -74,9 +65,6 @@ void __thiscall TRIBE_Master_Player::~TRIBE_Master_Player(TRIBE_Master_Player *t
 
 // Function: load_master_object
 // Address: 00511830
-/* public: virtual void __thiscall TRIBE_Master_Player::load_master_object(int,unsigned char,class
-   RGE_Sprite * *,class RGE_Sound * *,short) */
-
 void __thiscall
 TRIBE_Master_Player::load_master_object
           (TRIBE_Master_Player *this,int param_1,uchar param_2,RGE_Sprite **param_3,
@@ -143,9 +131,6 @@ LAB_00511972:
 
 // Function: load_object
 // Address: 00511990
-/* public: virtual void __thiscall TRIBE_Master_Player::load_object(struct _iobuf *,unsigned
-   char,class RGE_Sprite * *,class RGE_Sound * *,short) */
-
 void __thiscall
 TRIBE_Master_Player::load_object
           (TRIBE_Master_Player *this,_iobuf *param_1,uchar param_2,RGE_Sprite **param_3,

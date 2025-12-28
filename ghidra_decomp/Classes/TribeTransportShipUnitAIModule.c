@@ -348,9 +348,6 @@
 
 // Function: TribeTransportShipUnitAIModule
 // Address: 005067d0
-/* public: __thiscall TribeTransportShipUnitAIModule::TribeTransportShipUnitAIModule(class
-   RGE_Static_Object *,int) */
-
 TribeTransportShipUnitAIModule * __thiscall
 TribeTransportShipUnitAIModule::TribeTransportShipUnitAIModule
           (TribeTransportShipUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
@@ -386,9 +383,6 @@ TribeTransportShipUnitAIModule::TribeTransportShipUnitAIModule
 
 // Function: `scalar_deleting_destructor'
 // Address: 00506880
-/* public: virtual void * __thiscall TribeTransportShipUnitAIModule::`scalar deleting
-   destructor'(unsigned int) */
-
 void * __thiscall
 TribeTransportShipUnitAIModule::_scalar_deleting_destructor_
           (TribeTransportShipUnitAIModule *this,uint param_1)
@@ -404,9 +398,6 @@ TribeTransportShipUnitAIModule::_scalar_deleting_destructor_
 
 // Function: ~TribeTransportShipUnitAIModule
 // Address: 005068a0
-/* public: virtual __thiscall TribeTransportShipUnitAIModule::~TribeTransportShipUnitAIModule(void)
-    */
-
 void __thiscall
 TribeTransportShipUnitAIModule::~TribeTransportShipUnitAIModule
           (TribeTransportShipUnitAIModule *this)
@@ -453,9 +444,6 @@ TribeTransportShipUnitAIModule::~TribeTransportShipUnitAIModule
 
 // Function: processNotify
 // Address: 005068b0
-/* protected: virtual int __thiscall TribeTransportShipUnitAIModule::processNotify(struct
-   NotifyEvent *,unsigned long) */
-
 int __thiscall
 TribeTransportShipUnitAIModule::processNotify
           (TribeTransportShipUnitAIModule *this,NotifyEvent *param_1,ulong param_2)
@@ -550,10 +538,6 @@ LAB_00506a12:
 
 // Function: processIdle
 // Address: 00506a70
-/* WARNING: Variable defined which should be unmapped: yDiff */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall TribeTransportShipUnitAIModule::processIdle(int) */
-
 int __thiscall
 TribeTransportShipUnitAIModule::processIdle(TribeTransportShipUnitAIModule *this,int param_1)
 {

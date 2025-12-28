@@ -51,8 +51,6 @@
 
 // Function: TRIBE_Action
 // Address: 004d38e0
-/* public: __thiscall TRIBE_Action::TRIBE_Action(int,class RGE_Action_Object *,int) */
-
 TRIBE_Action * __thiscall
 TRIBE_Action::TRIBE_Action(TRIBE_Action *this,int param_1,RGE_Action_Object *param_2,int param_3)
 {
@@ -79,8 +77,6 @@ TRIBE_Action::TRIBE_Action(TRIBE_Action *this,int param_1,RGE_Action_Object *par
 
 // Function: `vector_deleting_destructor'
 // Address: 004d3950
-/* public: virtual void * __thiscall TRIBE_Action::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall TRIBE_Action::_vector_deleting_destructor_(TRIBE_Action *this,uint param_1)
 {
   ~TRIBE_Action(this);
@@ -94,8 +90,6 @@ void * __thiscall TRIBE_Action::_vector_deleting_destructor_(TRIBE_Action *this,
 
 // Function: ~TRIBE_Action
 // Address: 004d3970
-/* public: virtual __thiscall TRIBE_Action::~TRIBE_Action(void) */
-
 void __thiscall TRIBE_Action::~TRIBE_Action(TRIBE_Action *this)
 {
   RGE_Action_List *this_00;
@@ -116,8 +110,6 @@ void __thiscall TRIBE_Action::~TRIBE_Action(TRIBE_Action *this)
 
 // Function: TRIBE_Action
 // Address: 004d3980
-/* public: __thiscall TRIBE_Action::TRIBE_Action(class RGE_Action_Object *,int) */
-
 TRIBE_Action * __thiscall
 TRIBE_Action::TRIBE_Action(TRIBE_Action *this,RGE_Action_Object *param_1,int param_2)
 {
@@ -144,8 +136,6 @@ TRIBE_Action::TRIBE_Action(TRIBE_Action *this,RGE_Action_Object *param_1,int par
 
 // Function: setup
 // Address: 004d39e0
-/* public: virtual int __thiscall TRIBE_Action::setup(int,class RGE_Action_Object *) */
-
 int __thiscall TRIBE_Action::setup(TRIBE_Action *this,int param_1,RGE_Action_Object *param_2)
 {
   int iVar1;
@@ -158,8 +148,6 @@ int __thiscall TRIBE_Action::setup(TRIBE_Action *this,int param_1,RGE_Action_Obj
 
 // Function: setup
 // Address: 004d3a00
-/* public: virtual int __thiscall TRIBE_Action::setup(class RGE_Action_Object *) */
-
 int __thiscall TRIBE_Action::setup(TRIBE_Action *this,RGE_Action_Object *param_1)
 {
   int iVar1;
@@ -172,9 +160,6 @@ int __thiscall TRIBE_Action::setup(TRIBE_Action *this,RGE_Action_Object *param_1
 
 // Function: create_action_list
 // Address: 004d3a10
-/* public: virtual class RGE_Action_List * __thiscall TRIBE_Action::create_action_list(class
-   RGE_Action_Object *) */
-
 RGE_Action_List * __thiscall
 TRIBE_Action::create_action_list(TRIBE_Action *this,RGE_Action_Object *param_1)
 {

@@ -111,10 +111,6 @@
 // Function: TribeConfigDialog
 // Address: 0043b560
 // [HELPER] s_Config_Dialog: "Config Dialog"
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: __thiscall TribeConfigDialog::TribeConfigDialog(enum TribeConfigDialog::Mode,class
-   TScreenPanel *) */
-
 TribeConfigDialog * __thiscall
 TribeConfigDialog::TribeConfigDialog(TribeConfigDialog *this,Mode param_1,TScreenPanel *param_2)
 {
@@ -203,8 +199,6 @@ TribeConfigDialog::TribeConfigDialog(TribeConfigDialog *this,Mode param_1,TScree
   pTVar7 = TPanel::renderArea((TPanel *)param_2);
   iVar16 = TDialogPanel::setup((TDialogPanel *)this,pTVar7,(TPanel *)param_2,lVar14,lVar15,pcVar6,
                                lVar5,iVar16);
-                    /* language.dll match for 0x24d7: "Game Settings" */
-                    /* language.dll match for 0x24df: "Speed" */
   if (((iVar16 == 0) ||
       (iVar16 = TEasy_Panel::create_text
                           ((TEasy_Panel *)this,(TPanel *)this,&this->title,0x24d7,0x67,10,0x18b,0x1e
@@ -226,7 +220,6 @@ LAB_0043b74d:
       iVar10 = 0x24da;
     }
     iVar9 = iVar16 * 0x23 + 0x55;
-                    /* language.dll match for 0x6e: "Copperplate Gothic Light" */
     iVar8 = TEasy_Panel::create_text
                       ((TEasy_Panel *)this,(TPanel *)this,this->speedTitle + iVar16 + 1,iVar10,0x37,
                        iVar9,0x6e,0x1e,0xb,0,1,0);
@@ -270,12 +263,9 @@ LAB_0043b849:
       goto LAB_0043b849;
     }
   }
-                    /* language.dll match for 0x24db: "Music\\nVolume" */
   iVar16 = TEasy_Panel::create_text
                      ((TEasy_Panel *)this,(TPanel *)this,this->musicTitle,0x24db,0xa5,0x2d,0x6e,0x28
                       ,0xb,0,1,1);
-                    /* language.dll match for 0x24dc: "High" */
-                    /* language.dll match for 0x24dd: "Off" */
   if (((iVar16 == 0) ||
       (iVar16 = TEasy_Panel::create_text
                           ((TEasy_Panel *)this,(TPanel *)this,this->musicTitle + 1,0x24dc,0xbe,0x55,
@@ -296,13 +286,10 @@ LAB_0043b849:
     this->musicVolume = (iVar16 >> 5) - (iVar16 >> 0x1f);
   }
   TScrollBarPanel::set_tab_pos((TScrollBarPanel *)this->musicSlider,this->musicVolume);
-                    /* language.dll match for 0x24de: "Sound\\nVolume" */
   this->newMusicVolume = this->musicVolume;
   iVar16 = TEasy_Panel::create_text
                      ((TEasy_Panel *)this,(TPanel *)this,this->soundTitle,0x24de,0x131,0x2d,0x6e,
                       0x28,0xb,0,1,1);
-                    /* language.dll match for 0x24dc: "High" */
-                    /* language.dll match for 0x24dd: "Off" */
   if (((iVar16 == 0) ||
       (iVar16 = TEasy_Panel::create_text
                           ((TEasy_Panel *)this,(TPanel *)this,this->soundTitle + 1,0x24dc,0x14a,0x55
@@ -323,13 +310,10 @@ LAB_0043b849:
     this->soundVolume = (iVar16 >> 5) - (iVar16 >> 0x1f);
   }
   TScrollBarPanel::set_tab_pos((TScrollBarPanel *)this->soundSlider,this->soundVolume);
-                    /* language.dll match for 0x24f0: "Scroll\\nSpeed" */
   this->newSoundVolume = this->soundVolume;
   iVar16 = TEasy_Panel::create_text
                      ((TEasy_Panel *)this,(TPanel *)this,this->scrollSpeedTitle,0x24f0,0x1bd,0x2d,
                       0x6e,0x28,0xb,0,1,1);
-                    /* language.dll match for 0x24f1: "Fast" */
-                    /* language.dll match for 0x24f2: "Slow" */
   if (((iVar16 == 0) ||
       (iVar16 = TEasy_Panel::create_text
                           ((TEasy_Panel *)this,(TPanel *)this,this->scrollSpeedTitle + 1,0x24f1,
@@ -344,7 +328,6 @@ LAB_0043b849:
   uVar2 = rge_base_game->prog_info->mouse_scroll_interval;
   this->scrollSpeed = uVar2;
   TScrollBarPanel::set_tab_pos((TScrollBarPanel *)this->scrollSpeedSlider,uVar2 - 10);
-                    /* language.dll match for 0x24e0: "Screen Size" */
   iVar16 = TEasy_Panel::create_text
                      ((TEasy_Panel *)this,(TPanel *)this,this->sizeTitle,0x24e0,0x14,0xbe,200,0x1e,
                       0xb,0,1,0);
@@ -406,7 +389,6 @@ LAB_0043bc37:
   if (iVar16 == 0) {
     TButtonPanel::set_disabled(this->sizeButton[2],1);
   }
-                    /* language.dll match for 0x24ea: "Mouse Interface" */
   iVar16 = TEasy_Panel::create_text
                      ((TEasy_Panel *)this,(TPanel *)this,this->mouseTitle,0x24ea,0xaa,0xbe,0xd2,0x1e
                       ,0xb,0,1,0);
@@ -414,13 +396,11 @@ LAB_0043bc37:
     iVar16 = 0;
     do {
       if (iVar16 == 0) {
-                    /* language.dll match for 0x24eb: "Two Buttons" */
         iVar10 = TEasy_Panel::create_text
                            ((TEasy_Panel *)this,(TPanel *)this,this->mouseTitle + 1,0x24eb,0xcd,0xe1
                             ,0x78,0x1e,0xb,0,1,0);
       }
       else {
-                    /* language.dll match for 0x24ec: "One Button" */
         iVar10 = TEasy_Panel::create_text
                            ((TEasy_Panel *)this,(TPanel *)this,this->mouseTitle + iVar16 + 1,0x24ec,
                             0xcd,iVar16 * 0x23 + 0xe1,0x78,0x1e,0xb,0,1,0);
@@ -446,7 +426,6 @@ LAB_0043bc37:
       pTVar11 = this->mouseButton[1];
     }
     TButtonPanel::set_radio_button(pTVar11);
-                    /* language.dll match for 0x24ed: "Roll-over Help" */
     iVar16 = TEasy_Panel::create_text
                        ((TEasy_Panel *)this,(TPanel *)this,this->rolloverTitle,0x24ed,0x14a,0xbe,
                         0xd2,0x1e,0xb,0,1,0);
@@ -454,13 +433,11 @@ LAB_0043bc37:
       iVar16 = 0;
       do {
         if (iVar16 == 0) {
-                    /* language.dll match for 0x24ee: "On" */
           iVar10 = TEasy_Panel::create_text
                              ((TEasy_Panel *)this,(TPanel *)this,this->rolloverTitle + 1,0x24ee,
                               0x16d,0xe1,0x78,0x1e,0xb,0,1,0);
         }
         else {
-                    /* language.dll match for 0x24ef: "Off" */
           iVar10 = TEasy_Panel::create_text
                              ((TEasy_Panel *)this,(TPanel *)this,this->rolloverTitle + iVar16 + 1,
                               0x24ef,0x16d,iVar16 * 0x23 + 0xe1,0x78,0x1e,0xb,0,1,0);
@@ -487,7 +464,6 @@ LAB_0043bc37:
         pTVar11 = *ppTVar12;
       }
       TButtonPanel::set_radio_button(pTVar11);
-                    /* language.dll match for 0x260d: "Path Finding" */
       iVar16 = TEasy_Panel::create_text
                          ((TEasy_Panel *)this,(TPanel *)this,this->pathFindingTitle,0x260d,0x1cc,
                           0xbe,0xd2,0x1e,0xb,0,1,0);
@@ -496,7 +472,6 @@ LAB_0043bc37:
         iVar10 = 0xe1;
         ppTVar12 = this->pathFindingButton;
         do {
-                    /* language.dll match for 0x78: "10" */
           iVar9 = TEasy_Panel::create_text
                             ((TEasy_Panel *)this,(TPanel *)this,(TTextPanel **)(ppTVar12 + -3),
                              iVar16 + 0x260e,0x1ef,iVar10,0x78,0x1e,0xb,0,1,0);
@@ -530,13 +505,11 @@ LAB_0043bc37:
           TButtonPanel::set_radio_button(this->pathFindingButton[bVar4]);
         }
         ppTVar12 = &this->okButton;
-                    /* language.dll match for 0xfa1: "OK" */
         iVar16 = TEasy_Panel::create_button
                            ((TEasy_Panel *)this,(TPanel *)this,ppTVar12,0xfa1,0,0x78,0x159,0xaa,0x1e
                             ,0,0,0);
         if (iVar16 != 0) {
           ppTVar13 = &this->cancelButton;
-                    /* language.dll match for 0xfa2: "Cancel" */
           iVar16 = TEasy_Panel::create_button
                              ((TEasy_Panel *)this,(TPanel *)this,ppTVar13,0xfa2,0,0x136,0x159,0xaa,
                               0x1e,0,0,0);
@@ -562,9 +535,6 @@ LAB_0043c089:
 
 // Function: `scalar_deleting_destructor'
 // Address: 0043c0a0
-/* public: virtual void * __thiscall TribeConfigDialog::`scalar deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 TribeConfigDialog::_scalar_deleting_destructor_(TribeConfigDialog *this,uint param_1)
 {
@@ -579,8 +549,6 @@ TribeConfigDialog::_scalar_deleting_destructor_(TribeConfigDialog *this,uint par
 
 // Function: ~TribeConfigDialog
 // Address: 0043c0c0
-/* public: virtual __thiscall TribeConfigDialog::~TribeConfigDialog(void) */
-
 void __thiscall TribeConfigDialog::~TribeConfigDialog(TribeConfigDialog *this)
 {
   int iVar1;
@@ -708,11 +676,6 @@ void __thiscall TribeConfigDialog::~TribeConfigDialog(TribeConfigDialog *this)
 // [HELPER] s_Game_Screen: "Game Screen"
 // [HELPER] s_Main_Menu: "Main Menu"
 // [HELPER] s_Music_Volume: "Music Volume"
-/* WARNING: Variable defined which should be unmapped: new_speed */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual long __thiscall TribeConfigDialog::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TribeConfigDialog::action
           (TribeConfigDialog *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -772,7 +735,6 @@ TribeConfigDialog::action
         }
         else {
           RGE_Base_Game::setPathFinding(rge_base_game,'\0');
-                    /* language.dll match for 0x9c4: "This is not enabled in the trial version." */
           numberPathingIterations = 0x9c4;
         }
       }
@@ -812,7 +774,6 @@ TribeConfigDialog::action
           if (iVar3 != 0) {
             uVar4 = TCommunications_Handler::WhoAmI(comm);
             pcVar5 = TCommunications_Handler::GetPlayerName(comm,uVar4);
-                    /* language.dll match for 0xbf3: "Game speed changed." */
             pcVar6 = TPanel::get_string((TPanel *)this,0xbf3);
             sprintf(msg + 4,pcVar6,pcVar5);
             TCommunications_Handler::SendChatMsgAll(comm,msg + 4);

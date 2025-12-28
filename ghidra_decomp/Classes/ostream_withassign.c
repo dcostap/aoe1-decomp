@@ -9,8 +9,6 @@
 
 // Function: ostream_withassign
 // Address: 0055aae0
-/* public: __thiscall ostream_withassign::ostream_withassign(void) */
-
 ostream_withassign * __thiscall ostream_withassign::ostream_withassign(ostream_withassign *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -38,9 +36,6 @@ ostream_withassign * __thiscall ostream_withassign::ostream_withassign(ostream_w
 
 // Function: `vector_deleting_destructor'
 // Address: 0055ab60
-/* public: virtual void * __thiscall ostream_withassign::`vector deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 ostream_withassign::_vector_deleting_destructor_(ostream_withassign *this,uint param_1)
 {
@@ -56,8 +51,6 @@ ostream_withassign::_vector_deleting_destructor_(ostream_withassign *this,uint p
 
 // Function: ostream_withassign
 // Address: 0055ab90
-/* public: __thiscall ostream_withassign::ostream_withassign(class streambuf *) */
-
 ostream_withassign * __thiscall
 ostream_withassign::ostream_withassign(ostream_withassign *this,streambuf *param_1)
 {
@@ -86,8 +79,6 @@ ostream_withassign::ostream_withassign(ostream_withassign *this,streambuf *param
 
 // Function: ~ostream_withassign
 // Address: 0055ac10
-/* public: virtual __thiscall ostream_withassign::~ostream_withassign(void) */
-
 void __thiscall ostream_withassign::~ostream_withassign(ostream_withassign *this)
 {
   *(undefined ***)(this + *(int *)(*(int *)(this + -8) + 4) + -8) = &_vftable_;

@@ -10,8 +10,6 @@
 
 // Function: opfx
 // Address: 0055a760
-/* public: int __thiscall ostream::opfx(void) */
-
 int __thiscall ostream::opfx(ostream *this)
 {
   int iVar1;
@@ -31,8 +29,6 @@ int __thiscall ostream::opfx(ostream *this)
 
 // Function: osfx
 // Address: 0055a790
-/* public: void __thiscall ostream::osfx(void) */
-
 void __thiscall ostream::osfx(ostream *this)
 {
   int iVar1;
@@ -64,8 +60,6 @@ void __thiscall ostream::osfx(ostream *this)
 // Function: operator<<
 // Address: 0055a830
 // [HELPER] s_: ""
-/* public: class ostream & __thiscall ostream::operator<<(char const *) */
-
 ostream * __thiscall ostream::operator<<(ostream *this,char *param_1)
 {
   int iVar1;
@@ -82,8 +76,6 @@ ostream * __thiscall ostream::operator<<(ostream *this,char *param_1)
 
 // Function: flush
 // Address: 0055a860
-/* public: class ostream & __thiscall ostream::flush(void) */
-
 ostream * __thiscall ostream::flush(ostream *this)
 {
   int iVar1;
@@ -100,8 +92,6 @@ ostream * __thiscall ostream::flush(ostream *this)
 
 // Function: ostream
 // Address: 0055a890
-/* protected: __thiscall ostream::ostream(void) */
-
 ostream * __thiscall ostream::ostream(ostream *this)
 {
   int in_stack_00000004;
@@ -119,8 +109,6 @@ ostream * __thiscall ostream::ostream(ostream *this)
 
 // Function: `scalar_deleting_destructor'
 // Address: 0055a8d0
-/* public: virtual void * __thiscall ostream::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall ostream::_scalar_deleting_destructor_(ostream *this,uint param_1)
 {
   ~ostream(this);
@@ -135,8 +123,6 @@ void * __thiscall ostream::_scalar_deleting_destructor_(ostream *this,uint param
 
 // Function: ostream
 // Address: 0055a900
-/* public: __thiscall ostream::ostream(class streambuf *) */
-
 ostream * __thiscall ostream::ostream(ostream *this,streambuf *param_1)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -165,8 +151,6 @@ ostream * __thiscall ostream::ostream(ostream *this,streambuf *param_1)
 
 // Function: ostream
 // Address: 0055a990
-/* protected: __thiscall ostream::ostream(class ostream const &) */
-
 ostream * __thiscall ostream::ostream(ostream *this,ostream *param_1)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -196,8 +180,6 @@ ostream * __thiscall ostream::ostream(ostream *this,ostream *param_1)
 
 // Function: ~ostream
 // Address: 0055aa20
-/* public: virtual __thiscall ostream::~ostream(void) */
-
 void __thiscall ostream::~ostream(ostream *this)
 {
   *(undefined ***)(*(int *)(*(int *)&this[-1].field_0x34 + 4) + -8 + (int)this) = &_vftable_;
@@ -208,8 +190,6 @@ void __thiscall ostream::~ostream(ostream *this)
 
 // Function: operator=
 // Address: 0055aa30
-/* protected: class ostream & __thiscall ostream::operator=(class streambuf *) */
-
 ostream * __thiscall ostream::operator=(ostream *this,streambuf *param_1)
 {
   undefined4 *puVar1;
@@ -245,8 +225,6 @@ ostream * __thiscall ostream::operator=(ostream *this,streambuf *param_1)
 
 // Function: writepad
 // Address: 0055ac30
-/* private: class ostream & __thiscall ostream::writepad(char const *,char const *) */
-
 ostream * __thiscall ostream::writepad(ostream *this,char *param_1,char *param_2)
 {
   char cVar1;
@@ -366,9 +344,6 @@ ostream * __thiscall ostream::writepad(ostream *this,char *param_1,char *param_2
 // Function: operator<<
 // Address: 0055af00
 // [HELPER] s__d: "%d"
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: class ostream & __thiscall ostream::operator<<(int) */
-
 ostream * __thiscall ostream::operator<<(ostream *this,int param_1)
 {
   uint uVar1;
@@ -422,9 +397,6 @@ ostream * __thiscall ostream::operator<<(ostream *this,int param_1)
 
 // Function: operator<<
 // Address: 0055afd0
-/* WARNING: Function: __alloca_probe replaced with injection: alloca_probe */
-/* public: class ostream & __thiscall ostream::operator<<(double) */
-
 ostream * __thiscall ostream::operator<<(ostream *this,double param_1)
 {
   char cVar1;
@@ -467,7 +439,6 @@ ostream * __thiscall ostream::operator<<(ostream *this,double param_1)
     }
     else {
       if (uVar6 == 0x800) {
-                    /* language.dll match for 0x65: "1" */
         local_24[iVar3 + 3] = 'e';
       }
       if ((*(uint *)(&this->field_0x24 + *(int *)(iVar2 + 4)) & 0x200) != 0) {

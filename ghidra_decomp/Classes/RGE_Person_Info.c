@@ -12,8 +12,6 @@
 
 // Function: RGE_Person_Info
 // Address: 0044cc40
-/* public: __thiscall RGE_Person_Info::RGE_Person_Info(int,class RGE_Campaign * *,long) */
-
 RGE_Person_Info * __thiscall
 RGE_Person_Info::RGE_Person_Info
           (RGE_Person_Info *this,int param_1,RGE_Campaign **param_2,long param_3)
@@ -72,8 +70,6 @@ RGE_Person_Info::RGE_Person_Info
 
 // Function: RGE_Person_Info
 // Address: 0044cd40
-/* public: __thiscall RGE_Person_Info::RGE_Person_Info(char *,class RGE_Campaign * *,long) */
-
 RGE_Person_Info * __thiscall
 RGE_Person_Info::RGE_Person_Info
           (RGE_Person_Info *this,char *param_1,RGE_Campaign **param_2,long param_3)
@@ -118,8 +114,6 @@ RGE_Person_Info::RGE_Person_Info
 
 // Function: ~RGE_Person_Info
 // Address: 0044cda0
-/* public: __thiscall RGE_Person_Info::~RGE_Person_Info(void) */
-
 void __thiscall RGE_Person_Info::~RGE_Person_Info(RGE_Person_Info *this)
 {
   RGE_Campaign_Info *this_00;
@@ -149,8 +143,6 @@ void __thiscall RGE_Person_Info::~RGE_Person_Info(RGE_Person_Info *this)
 // Function: save
 // Address: 0044ce10
 // [HELPER] s__PIF_Saving_player____s: "(PIF)Saving player - %s"
-/* public: void __thiscall RGE_Person_Info::save(int) */
-
 void __thiscall RGE_Person_Info::save(RGE_Person_Info *this,int param_1)
 {
   long *plVar1;
@@ -175,8 +167,6 @@ void __thiscall RGE_Person_Info::save(RGE_Person_Info *this,int param_1)
 
 // Function: rehook_campaigns
 // Address: 0044ce90
-/* public: void __thiscall RGE_Person_Info::rehook_campaigns(class RGE_Campaign * *,long) */
-
 void __thiscall
 RGE_Person_Info::rehook_campaigns(RGE_Person_Info *this,RGE_Campaign **param_1,long param_2)
 {
@@ -199,8 +189,6 @@ RGE_Person_Info::rehook_campaigns(RGE_Person_Info *this,RGE_Campaign **param_1,l
 
 // Function: get_name
 // Address: 0044cee0
-/* public: char * __thiscall RGE_Person_Info::get_name(void) */
-
 char * __thiscall RGE_Person_Info::get_name(RGE_Person_Info *this)
 {
   return this->name;
@@ -210,8 +198,6 @@ char * __thiscall RGE_Person_Info::get_name(RGE_Person_Info *this)
 
 // Function: set_current_campaign
 // Address: 0044cef0
-/* public: unsigned char __thiscall RGE_Person_Info::set_current_campaign(long) */
-
 uchar __thiscall RGE_Person_Info::set_current_campaign(RGE_Person_Info *this,long param_1)
 {
   uchar uVar1;
@@ -289,8 +275,6 @@ LAB_0044d022:
 
 // Function: get_current_campaign
 // Address: 0044d050
-/* public: long __thiscall RGE_Person_Info::get_current_campaign(void) */
-
 long __thiscall RGE_Person_Info::get_current_campaign(RGE_Person_Info *this)
 {
   uchar uVar1;
@@ -317,8 +301,6 @@ long __thiscall RGE_Person_Info::get_current_campaign(RGE_Person_Info *this)
 
 // Function: get_current_scenario
 // Address: 0044d0c0
-/* public: long __thiscall RGE_Person_Info::get_current_scenario(void) */
-
 long __thiscall RGE_Person_Info::get_current_scenario(RGE_Person_Info *this)
 {
   int iVar1;
@@ -336,8 +318,6 @@ long __thiscall RGE_Person_Info::get_current_scenario(RGE_Person_Info *this)
 
 // Function: set_current_scenario
 // Address: 0044d0f0
-/* public: unsigned char __thiscall RGE_Person_Info::set_current_scenario(long) */
-
 uchar __thiscall RGE_Person_Info::set_current_scenario(RGE_Person_Info *this,long param_1)
 {
   int iVar1;
@@ -355,8 +335,6 @@ uchar __thiscall RGE_Person_Info::set_current_scenario(RGE_Person_Info *this,lon
 
 // Function: get_scenario_list
 // Address: 0044d130
-/* public: long __thiscall RGE_Person_Info::get_scenario_list(char * * *,long &) */
-
 long __thiscall
 RGE_Person_Info::get_scenario_list(RGE_Person_Info *this,char ***param_1,long *param_2)
 {
@@ -374,8 +352,6 @@ RGE_Person_Info::get_scenario_list(RGE_Person_Info *this,char ***param_1,long *p
 
 // Function: notify_of_scenario_complete
 // Address: 0044d160
-/* public: void __thiscall RGE_Person_Info::notify_of_scenario_complete(void) */
-
 void __thiscall RGE_Person_Info::notify_of_scenario_complete(RGE_Person_Info *this)
 {
   if (-1 < this->current_campaign) {
@@ -389,8 +365,6 @@ void __thiscall RGE_Person_Info::notify_of_scenario_complete(RGE_Person_Info *th
 
 // Function: open_scenario
 // Address: 0044d180
-/* public: int __thiscall RGE_Person_Info::open_scenario(void) */
-
 int __thiscall RGE_Person_Info::open_scenario(RGE_Person_Info *this)
 {
   int iVar1;

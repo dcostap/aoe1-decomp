@@ -198,9 +198,6 @@ switchD_0040185b_caseD_3:
 // Function: FUN_00401a8e
 // Address: 00401a8e
 // XREFS: None
-/* WARNING: Instruction at (ram,0x00401ade) overlaps instruction at (ram,0x00401adc)
-    */
-
 undefined4 __fastcall FUN_00401a8e(int *param_1,byte *param_2)
 {
   byte bVar1;
@@ -286,9 +283,6 @@ LAB_00401afd:
 // Function: FUN_0040239b
 // Address: 0040239b
 // XREFS: None
-/* WARNING: Instruction at (ram,0x004023c1) overlaps instruction at (ram,0x004023c0)
-    */
-
 RGE_Action * __thiscall FUN_0040239b(RGE_Action *param_1,int param_2,RGE_Action_Object *param_3)
 {
   char *pcVar1;
@@ -316,8 +310,6 @@ RGE_Action * __thiscall FUN_0040239b(RGE_Action *param_1,int param_2,RGE_Action_
 // Function: FUN_0040270e
 // Address: 0040270e
 // XREFS: None
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-
 undefined4 __fastcall FUN_0040270e(undefined4 param_1,int param_2)
 {
   int *piVar1;
@@ -568,8 +560,6 @@ Low-level Error: Cannot properly adjust input varnodes
 // Function: FUN_0040354f
 // Address: 0040354f
 // XREFS: None
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-
 undefined4 __fastcall FUN_0040354f(int *param_1,undefined4 param_2)
 {
   char *pcVar1;
@@ -1119,8 +1109,6 @@ FUN_0040496e(int param_1,undefined4 param_2,int param_3,RGE_Action_Object *param
 // Function: FUN_004050d5
 // Address: 004050d5
 // XREFS: None
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-
 uint __fastcall FUN_004050d5(undefined4 param_1,undefined4 param_2)
 {
   byte bVar1;
@@ -1322,8 +1310,6 @@ LAB_0040542b:
 // Function: FUN_0040582e
 // Address: 0040582e
 // XREFS: None
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-
 undefined4 __fastcall
 FUN_0040582e(int *param_1,char param_2,int param_3,float param_4,float param_5)
 {
@@ -1537,9 +1523,6 @@ void __fastcall FUN_00406785(byte *param_1,undefined4 param_2)
 // Function: FUN_0040712e
 // Address: 0040712e
 // XREFS: None
-/* WARNING: Instruction at (ram,0x0040718d) overlaps instruction at (ram,0x0040718c)
-    */
-
 undefined4 __fastcall FUN_0040712e(byte *param_1,int param_2)
 {
   byte *pbVar1;
@@ -1606,8 +1589,6 @@ undefined4 __fastcall FUN_0040712e(byte *param_1,int param_2)
 // Function: operator==
 // Address: 00407f80
 // XREFS: operator!=
-/* int __cdecl operator==(class BaseItem const &,class BaseItem const &) */
-
 int __cdecl operator==(BaseItem *param_1,BaseItem *param_2)
 {
   if (((param_1->gameIDValue == param_2->gameIDValue) && (param_1->xValue == param_2->xValue)) &&
@@ -1622,8 +1603,6 @@ int __cdecl operator==(BaseItem *param_1,BaseItem *param_2)
 // Function: operator!=
 // Address: 00407fc0
 // XREFS: None
-/* int __cdecl operator!=(class BaseItem const &,class BaseItem const &) */
-
 int __cdecl operator!=(BaseItem *param_1,BaseItem *param_2)
 {
   int iVar1;
@@ -1637,8 +1616,6 @@ int __cdecl operator!=(BaseItem *param_1,BaseItem *param_2)
 // Function: operator<
 // Address: 00407fe0
 // XREFS: None
-/* int __cdecl operator<(class BaseItem const &,class BaseItem const &) */
-
 int __cdecl operator<(BaseItem *param_1,BaseItem *param_2)
 {
   return (uint)(param_1->gameIDValue < param_2->gameIDValue);
@@ -1649,8 +1626,6 @@ int __cdecl operator<(BaseItem *param_1,BaseItem *param_2)
 // Function: operator>
 // Address: 00408000
 // XREFS: None
-/* int __cdecl operator>(class BaseItem const &,class BaseItem const &) */
-
 int __cdecl operator>(BaseItem *param_1,BaseItem *param_2)
 {
   return (uint)(param_2->gameIDValue < param_1->gameIDValue);
@@ -1661,8 +1636,6 @@ int __cdecl operator>(BaseItem *param_1,BaseItem *param_2)
 // Function: operator==
 // Address: 00408480
 // XREFS: None
-/* int __cdecl operator==(class BuildItem const &,class BuildItem const &) */
-
 int __cdecl operator==(BuildItem *param_1,BuildItem *param_2)
 {
   return (uint)(param_1->_padding_ == param_2->_padding_);
@@ -1673,8 +1646,6 @@ int __cdecl operator==(BuildItem *param_1,BuildItem *param_2)
 // Function: operator!=
 // Address: 004084a0
 // XREFS: None
-/* int __cdecl operator!=(class BuildItem const &,class BuildItem const &) */
-
 int __cdecl operator!=(BuildItem *param_1,BuildItem *param_2)
 {
   return (uint)(param_1->_padding_ != param_2->_padding_);
@@ -1685,8 +1656,6 @@ int __cdecl operator!=(BuildItem *param_1,BuildItem *param_2)
 // Function: operator<
 // Address: 004084c0
 // XREFS: None
-/* int __cdecl operator<(class BuildItem const &,class BuildItem const &) */
-
 int __cdecl operator<(BuildItem *param_1,BuildItem *param_2)
 {
   return (uint)(param_1->_padding_ < param_2->_padding_);
@@ -1697,8 +1666,6 @@ int __cdecl operator<(BuildItem *param_1,BuildItem *param_2)
 // Function: operator>
 // Address: 004084e0
 // XREFS: None
-/* int __cdecl operator>(class BuildItem const &,class BuildItem const &) */
-
 int __cdecl operator>(BuildItem *param_1,BuildItem *param_2)
 {
   return (uint)(param_2->_padding_ < param_1->_padding_);
@@ -1818,8 +1785,6 @@ int __fastcall FUN_00409827(char *param_1,undefined4 param_2)
 // Function: operator==
 // Address: 0040a370
 // XREFS: None
-/* int __cdecl operator==(class BaseObject const &,class BaseObject const &) */
-
 int __cdecl operator==(BaseObject *param_1,BaseObject *param_2)
 {
   return (uint)(param_1->gameIDValue == param_2->gameIDValue);
@@ -1830,8 +1795,6 @@ int __cdecl operator==(BaseObject *param_1,BaseObject *param_2)
 // Function: operator!=
 // Address: 0040a390
 // XREFS: None
-/* int __cdecl operator!=(class BaseObject const &,class BaseObject const &) */
-
 int __cdecl operator!=(BaseObject *param_1,BaseObject *param_2)
 {
   return (uint)(param_1->gameIDValue != param_2->gameIDValue);
@@ -1842,8 +1805,6 @@ int __cdecl operator!=(BaseObject *param_1,BaseObject *param_2)
 // Function: operator<
 // Address: 0040a3b0
 // XREFS: None
-/* int __cdecl operator<(class BaseObject const &,class BaseObject const &) */
-
 int __cdecl operator<(BaseObject *param_1,BaseObject *param_2)
 {
   return (uint)(param_1->gameIDValue < param_2->gameIDValue);
@@ -1854,8 +1815,6 @@ int __cdecl operator<(BaseObject *param_1,BaseObject *param_2)
 // Function: operator>
 // Address: 0040a3d0
 // XREFS: None
-/* int __cdecl operator>(class BaseObject const &,class BaseObject const &) */
-
 int __cdecl operator>(BaseObject *param_1,BaseObject *param_2)
 {
   return (uint)(param_2->gameIDValue < param_1->gameIDValue);
@@ -1866,8 +1825,6 @@ int __cdecl operator>(BaseObject *param_1,BaseObject *param_2)
 // Function: operator==
 // Address: 0040a960
 // XREFS: setBuilt, unplaceStructure
-/* int __cdecl operator==(class ConstructionItem const &,class ConstructionItem const &) */
-
 int __cdecl operator==(ConstructionItem *param_1,ConstructionItem *param_2)
 {
   if (((float)param_1->_padding_ == (float)param_2->_padding_) &&
@@ -1882,8 +1839,6 @@ int __cdecl operator==(ConstructionItem *param_1,ConstructionItem *param_2)
 // Function: operator!=
 // Address: 0040a990
 // XREFS: None
-/* int __cdecl operator!=(class ConstructionItem const &,class ConstructionItem const &) */
-
 int __cdecl operator!=(ConstructionItem *param_1,ConstructionItem *param_2)
 {
   if (((float)param_1->_padding_ == (float)param_2->_padding_) &&
@@ -1898,8 +1853,6 @@ int __cdecl operator!=(ConstructionItem *param_1,ConstructionItem *param_2)
 // Function: operator<
 // Address: 0040a9c0
 // XREFS: None
-/* int __cdecl operator<(class ConstructionItem const &,class ConstructionItem const &) */
-
 int __cdecl operator<(ConstructionItem *param_1,ConstructionItem *param_2)
 {
   return (uint)(param_1->_padding_ < param_2->_padding_);
@@ -1910,8 +1863,6 @@ int __cdecl operator<(ConstructionItem *param_1,ConstructionItem *param_2)
 // Function: operator>
 // Address: 0040a9e0
 // XREFS: None
-/* int __cdecl operator>(class ConstructionItem const &,class ConstructionItem const &) */
-
 int __cdecl operator>(ConstructionItem *param_1,ConstructionItem *param_2)
 {
   return (uint)(param_2->_padding_ < param_1->_padding_);
@@ -1925,7 +1876,6 @@ int __cdecl operator>(ConstructionItem *param_1,ConstructionItem *param_2)
 void FUN_0040cd5e(void)
 {
   do {
-                    /* WARNING: Do nothing block with infinite loop */
   } while( true );
 }
 
@@ -1981,11 +1931,8 @@ void __fastcall FUN_0040ec4e(undefined4 param_1,undefined2 param_2)
 // Function: FUN_0040f066
 // Address: 0040f066
 // XREFS: None
-/* WARNING: Control flow encountered bad instruction data */
-
 void FUN_0040f066(void)
 {
-                    /* WARNING: Bad instruction - Truncating control flow here */
   halt_baddata();
 }
 
@@ -1994,9 +1941,6 @@ void FUN_0040f066(void)
 // Function: `vector_constructor_iterator'
 // Address: 0040f0e0
 // XREFS: None
-/* void __stdcall `vector constructor iterator'(void *,unsigned int,int,void (__thiscall*)(void *))
-    */
-
 void _vector_constructor_iterator_
                (void *param_1,uint param_2,int param_3,_func_void_void_ptr *param_4)
 {
@@ -2068,8 +2012,6 @@ FUN_0040fb9e(int param_1,char param_2,undefined4 param_3,undefined4 param_4,int 
 // Function: operator==
 // Address: 00412100
 // XREFS: None
-/* int __cdecl operator==(class ResourceItem const &,class ResourceItem const &) */
-
 int __cdecl operator==(ResourceItem *param_1,ResourceItem *param_2)
 {
   int iVar1;
@@ -2099,8 +2041,6 @@ int __cdecl operator==(ResourceItem *param_1,ResourceItem *param_2)
 // Function: operator!=
 // Address: 00412140
 // XREFS: None
-/* int __cdecl operator!=(class ResourceItem const &,class ResourceItem const &) */
-
 int __cdecl operator!=(ResourceItem *param_1,ResourceItem *param_2)
 {
   int iVar1;
@@ -2130,8 +2070,6 @@ int __cdecl operator!=(ResourceItem *param_1,ResourceItem *param_2)
 // Function: operator==
 // Address: 00412d90
 // XREFS: None
-/* int __cdecl operator==(class TechnologyItem const &,class TechnologyItem const &) */
-
 int __cdecl operator==(TechnologyItem *param_1,TechnologyItem *param_2)
 {
   return (uint)(param_1->idValue == param_2->idValue);
@@ -2142,8 +2080,6 @@ int __cdecl operator==(TechnologyItem *param_1,TechnologyItem *param_2)
 // Function: operator!=
 // Address: 00412db0
 // XREFS: None
-/* int __cdecl operator!=(class TechnologyItem const &,class TechnologyItem const &) */
-
 int __cdecl operator!=(TechnologyItem *param_1,TechnologyItem *param_2)
 {
   return (uint)(param_1->idValue != param_2->idValue);
@@ -2154,8 +2090,6 @@ int __cdecl operator!=(TechnologyItem *param_1,TechnologyItem *param_2)
 // Function: operator<
 // Address: 00412dd0
 // XREFS: None
-/* int __cdecl operator<(class TechnologyItem const &,class TechnologyItem const &) */
-
 int __cdecl operator<(TechnologyItem *param_1,TechnologyItem *param_2)
 {
   return (uint)(param_1->idValue < param_2->idValue);
@@ -2166,8 +2100,6 @@ int __cdecl operator<(TechnologyItem *param_1,TechnologyItem *param_2)
 // Function: operator>
 // Address: 00412df0
 // XREFS: None
-/* int __cdecl operator>(class TechnologyItem const &,class TechnologyItem const &) */
-
 int __cdecl operator>(TechnologyItem *param_1,TechnologyItem *param_2)
 {
   return (uint)(param_2->idValue < param_1->idValue);
@@ -2235,10 +2167,6 @@ Low-level Error: Cannot properly adjust input varnodes
 // Function: FUN_004171ca
 // Address: 004171ca
 // XREFS: None
-/* WARNING: Instruction at (ram,0x00417228) overlaps instruction at (ram,0x00417226)
-    */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-
 undefined4 __fastcall
 FUN_004171ca(int param_1,int param_2,undefined4 param_3,int param_4,undefined4 param_5,float param_6
             ,undefined4 param_7,float param_8)
@@ -2355,11 +2283,6 @@ code_r0x00417234:
 // XREFS: None
 // [HELPER] s_C__msdev_work_age1_x1_aiuaimod_c: "C:\msdev\work\age1_x1\aiuaimod.cpp"
 // [HELPER] s___d_call_stopObject__s__d_: "#%d call stopObject %s %d\n"
-/* WARNING: Instruction at (ram,0x004180fe) overlaps instruction at (ram,0x004180fd)
-    */
-/* WARNING: Control flow encountered bad instruction data */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-
 undefined4 __fastcall
 FUN_00418045(char *param_1,char *param_2,UnitAIModule *param_3,code *param_4,ulong param_5,
             undefined4 param_6,undefined4 param_7,undefined4 *param_8,float param_9,int *param_10)
@@ -2438,7 +2361,6 @@ code_r0x0041809b:
 code_r0x004180a1:
       if (bVar28 == cVar24 < '\0') {
         do {
-                    /* WARNING: Do nothing block with infinite loop */
         } while( true );
       }
 code_r0x004180a3:
@@ -2519,7 +2441,6 @@ code_r0x004180bb:
       cVar20 = (char)param_2;
       *pcVar17 = *pcVar17 + cVar20;
       if (*pcVar17 == '\0' || SCARRY1(cVar18,cVar20) != *pcVar17 < '\0') {
-                    /* WARNING: Bad instruction - Truncating control flow here */
         halt_baddata();
       }
       param_2 = (char *)CONCAT31((int3)((uint)param_2 >> 8),cVar20 * '\x02');
@@ -2536,7 +2457,6 @@ code_r0x004180bb:
       *(char *)&unaff_ESI->_padding_ = (char)unaff_ESI->_padding_ + cVar18;
       if ((char)unaff_ESI->_padding_ != '\0' &&
           SCARRY1((char)iVar23,cVar18) == (char)unaff_ESI->_padding_ < '\0') {
-                    /* WARNING: Bad instruction - Truncating control flow here */
         halt_baddata();
       }
       cVar18 = *param_2;
@@ -2750,8 +2670,6 @@ LAB_00418371:
 code_r0x004180e0:
   pcVar17 = (char *)(uint)(&switchD_004180e8::switchdataD_0041943c)[in_EAX];
 switchD_004180e8_switchD:
-                    /* WARNING: Could not recover jumptable at 0x004180e8. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   uVar9 = (*(code *)(&switchD_004180e8::switchdataD_004193f4)[(int)pcVar17])();
   return uVar9;
 }
@@ -2762,8 +2680,6 @@ switchD_004180e8_switchD:
 // Address: 0041b620
 // XREFS: do_draw, play
 // [HELPER] s__s: "%s"
-/* void __cdecl write_draw_log(char *) */
-
 void __cdecl write_draw_log(char *param_1)
 {
   if (draw_log != (_iobuf *)0x0) {
@@ -2781,8 +2697,6 @@ void __cdecl write_draw_log(char *param_1)
 // [HELPER] draw_log_name: "00000000"
 // [HELPER] s__s: "%s"
 // [HELPER] s_a_: "a+"
-/* void __cdecl write_draw_log2(char *) */
-
 void __cdecl write_draw_log2(char *param_1)
 {
   if (draw_log != (_iobuf *)0x0) {
@@ -2872,9 +2786,6 @@ undefined4 __fastcall FUN_0041f6fa(int param_1,undefined4 param_2)
 // Function: enum_wnd_proc
 // Address: 00420580
 // XREFS: None
-/* WARNING: Variable defined which should be unmapped: wnd_title */
-/* int __stdcall enum_wnd_proc(void *,long) */
-
 int enum_wnd_proc(void *param_1,long param_2)
 {
   char wnd_title [256];
@@ -2892,9 +2803,6 @@ int enum_wnd_proc(void *param_1,long param_2)
 // Function: enum_child_proc
 // Address: 004205b0
 // XREFS: None
-/* WARNING: Variable defined which should be unmapped: wnd_title */
-/* int __stdcall enum_child_proc(void *,long) */
-
 int enum_child_proc(void *param_1,long param_2)
 {
   char wnd_title [256];
@@ -2912,9 +2820,6 @@ int enum_child_proc(void *param_1,long param_2)
 // Function: enum_thread_proc
 // Address: 004205e0
 // XREFS: None
-/* WARNING: Variable defined which should be unmapped: wnd_title */
-/* int __stdcall enum_thread_proc(void *,long) */
-
 int enum_thread_proc(void *param_1,long param_2)
 {
   char wnd_title [256];
@@ -2932,8 +2837,6 @@ int enum_thread_proc(void *param_1,long param_2)
 // Function: close_thread_windows
 // Address: 00420610
 // XREFS: None
-/* int __stdcall close_thread_windows(void *,long) */
-
 int close_thread_windows(void *param_1,long param_2)
 {
   void *pvVar1;
@@ -2953,9 +2856,6 @@ int close_thread_windows(void *param_1,long param_2)
 // Address: 00420650
 // XREFS: None
 // [HELPER] s_Locate_Session: "Locate Session"
-/* WARNING: Variable defined which should be unmapped: str */
-/* int __stdcall close_child_windows(void *,long) */
-
 int close_child_windows(void *param_1,long param_2)
 {
   byte bVar1;
@@ -3027,8 +2927,6 @@ undefined1 __fastcall FUN_004225c7(int param_1,int param_2,undefined4 param_3,in
 // Address: 00423010
 // XREFS: new_game
 // [HELPER] debug_random_log: "00000000"
-/* void __cdecl debug_random_reset(void) */
-
 void __cdecl debug_random_reset(void)
 {
   char **ppcVar1;
@@ -3053,8 +2951,6 @@ void __cdecl debug_random_reset(void)
 // [HELPER] s__s_d____s_: "%s%d - %s\n"
 // [HELPER] s_c__aoerand_txt: "c:\aoerand.txt"
 // [HELPER] s_w: "w"
-/* void __cdecl debug_random_write(void) */
-
 void __cdecl debug_random_write(void)
 {
   int iVar1;
@@ -3088,9 +2984,6 @@ void __cdecl debug_random_write(void)
 // XREFS: AddingCircle, Branch, CreateShape, GetRandomSeed, MakeFirstLink, MakeNewLink, MakeSatelliteLink, RGE_Active_Animated_Sprite, SetRandomSeed, TEST, TRIBE_Player, action (... +70 more)
 // [HELPER] debug_random_log: "00000000"
 // [HELPER] s_t_d__s_l_d_r_d: "t%d,%s,l%d,r%d"
-/* WARNING: Variable defined which should be unmapped: temp_name */
-/* int __cdecl debug_rand(char *,int) */
-
 int __cdecl debug_rand(char *param_1,int param_2)
 {
   char cVar1;
@@ -3129,9 +3022,6 @@ int __cdecl debug_rand(char *param_1,int param_2)
 // XREFS: GetRandomSeed, SetRandomSeed, create_game, init_vars, loadAIInformation, map_generate2, new_game, new_scenario, notify, recycle_in_to_game, set_object_state, setup (... +1 more)
 // [HELPER] debug_random_log: "00000000"
 // [HELPER] s_t_d__s_l_d_s_u: "t%d,%s,l%d,s%u"
-/* WARNING: Variable defined which should be unmapped: temp_name */
-/* void __cdecl debug_srand(char *,int,unsigned int) */
-
 void __cdecl debug_srand(char *param_1,int param_2,uint param_3)
 {
   char cVar1;
@@ -3167,8 +3057,6 @@ void __cdecl debug_srand(char *param_1,int param_2,uint param_3)
 // Function: debug_timeGetTime
 // Address: 004231e0
 // XREFS: CheckPingTime, CommOut, DestroyMultiplayerGame, DoCycle, FastSend, Get, GetCommInfo, GetDPLAYMessages, GetElapsedFirstCall, GetRandomSeed, Load, OpenLog (... +83 more)
-/* unsigned long __cdecl debug_timeGetTime(char *,int) */
-
 ulong __cdecl debug_timeGetTime(char *param_1,int param_2)
 {
   ulong uVar1;
@@ -3181,8 +3069,6 @@ ulong __cdecl debug_timeGetTime(char *param_1,int param_2)
     }
     return debug_timeGetTime_time;
   }
-                    /* WARNING: Could not recover jumptable at 0x00423222. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   uVar1 = timeGetTime();
   return uVar1;
 }
@@ -3192,10 +3078,6 @@ ulong __cdecl debug_timeGetTime(char *param_1,int param_2)
 // Function: RGE_translate_palette
 // Address: 00423ee0
 // XREFS: RGE_Color_Table, RGE_fade_palette, RGE_fade_palette_step
-/* WARNING: Variable defined which should be unmapped: index1 */
-/* void __cdecl RGE_translate_palette(struct tagPALETTEENTRY *,struct tagPALETTEENTRY *,struct
-   tagPALETTEENTRY,long,int,int) */
-
 void __cdecl
 RGE_translate_palette
           (tagPALETTEENTRY *param_1,tagPALETTEENTRY *param_2,tagPALETTEENTRY param_3,long param_4,
@@ -3272,11 +3154,6 @@ RGE_translate_palette
 // Address: 004240b0
 // XREFS: set_focus
 // [HELPER] s_C__msdev_work_age1_x1_color_cpp: "C:\msdev\work\age1_x1\color.cpp"
-/* WARNING: Variable defined which should be unmapped: delta_time */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* void __cdecl RGE_fade_palette(class TDrawArea *,struct tagPALETTEENTRY,float,unsigned char,struct
-   tagPALETTEENTRY *,int,int) */
-
 void __cdecl
 RGE_fade_palette(TDrawArea *param_1,tagPALETTEENTRY param_2,float param_3,uchar param_4,
                 tagPALETTEENTRY *param_5,int param_6,int param_7)
@@ -3350,7 +3227,6 @@ RGE_fade_palette(TDrawArea *param_1,tagPALETTEENTRY param_2,float param_3,uchar 
     return;
   }
   do {
-                    /* language.dll match for 0x70: "B" */
     uVar7 = debug_timeGetTime(s_C__msdev_work_age1_x1_color_cpp,0x70);
     fVar1 = (float)(int)(uVar7 - uVar6) * _DAT_0056f020;
     if (((param_3 <= (float)_DAT_0056f028) || (param_3 < fVar1)) || (fVar1 < _DAT_0056f030)) {
@@ -3375,9 +3251,6 @@ RGE_fade_palette(TDrawArea *param_1,tagPALETTEENTRY param_2,float param_3,uchar 
 // Address: 00424810
 // XREFS: TShape, command_make_do, draw, handle_game_update, handle_idle, handle_paint, handle_terrain_sound, load, mouse_left_down_action, mouse_left_up_action, mouse_right_down_action, mouse_right_up_action (... +3 more)
 // [HELPER] do_color_log: " "
-/* WARNING: Variable defined which should be unmapped: scr_dest */
-/* void __cdecl color_log(unsigned char,unsigned char,int) */
-
 void __cdecl color_log(uchar param_1,uchar param_2,int param_3)
 {
   TDrawSystem *pTVar1;
@@ -3625,8 +3498,6 @@ void FUN_0042cbe3(void)
 // Function: StringFromGUID
 // Address: 0042ec40
 // XREFS: DebugSessionInformation
-/* int __cdecl StringFromGUID(struct _GUID *,unsigned short *) */
-
 int __cdecl StringFromGUID(_GUID *param_1,ushort *param_2)
 {
   wchar_t *pwVar1;
@@ -3663,9 +3534,6 @@ int __cdecl StringFromGUID(_GUID *param_1,ushort *param_2)
 // [HELPER] s_ENUM__d_name__s_id__d: "ENUM %d name=%s id=%d"
 // [HELPER] s_FILL_PLAYER_INFORMATION_: "FILL PLAYER INFORMATION."
 // [HELPER] s_FORCEENUM__d_name__s_id__d: "FORCEENUM %d name=%s id=%d"
-/* int __stdcall EnumPlayersCallback2(unsigned long,unsigned long,struct DPNAME *,unsigned long,void
-   *) */
-
 int EnumPlayersCallback2(ulong param_1,ulong param_2,DPNAME *param_3,ulong param_4,void *param_5)
 {
   uint uVar1;
@@ -3706,9 +3574,6 @@ LAB_0042f07f:
 // [HELPER] s_Local_Player: "Local Player"
 // [HELPER] s_Remote_Player: "Remote Player"
 // [HELPER] s_____Enumeration_not_done: "+++ Enumeration not done"
-/* int __stdcall EnumPlayersCallbackLobby(unsigned long,unsigned long,struct DPNAME *,unsigned
-   long,void *) */
-
 int EnumPlayersCallbackLobby
               (ulong param_1,ulong param_2,DPNAME *param_3,ulong param_4,void *param_5)
 {
@@ -3732,14 +3597,6 @@ int EnumPlayersCallbackLobby
 // Function: FUN_0042f81e
 // Address: 0042f81e
 // XREFS: None
-/* WARNING: Removing unreachable block (ram,0x0042f842) */
-/* WARNING: Removing unreachable block (ram,0x0042f8d4) */
-/* WARNING: Removing unreachable block (ram,0x0042f8d6) */
-/* WARNING: Removing unreachable block (ram,0x0042f8db) */
-/* WARNING: Removing unreachable block (ram,0x0042f8dd) */
-/* WARNING: Removing unreachable block (ram,0x0042f8f9) */
-/* WARNING: Removing unreachable block (ram,0x0042f90d) */
-
 undefined4 __fastcall FUN_0042f81e(int param_1,char param_2)
 {
   undefined1 in_AL;
@@ -3754,8 +3611,6 @@ undefined4 __fastcall FUN_0042f81e(int param_1,char param_2)
 // Function: DPEnumCallback
 // Address: 00432180
 // XREFS: TCommunications_Services
-/* int __stdcall DPEnumCallback(struct _GUID *,char *,unsigned long,unsigned long,void *) */
-
 int DPEnumCallback(_GUID *param_1,char *param_2,ulong param_3,ulong param_4,void *param_5)
 {
   void *this;
@@ -3769,7 +3624,6 @@ int DPEnumCallback(_GUID *param_1,char *param_2,ulong param_3,ulong param_4,void
   iVar2 = _DirectPlayCreate_12(param_1,&param_5,0);
   if (iVar2 == 0) {
     TCommunications_Services::SetServiceActive((TCommunications_Services *)this,iVar1,1);
-                    /* WARNING: Load size is inaccurate */
     (**(code **)(*param_5 + 8))(param_5);
     TCommunications_Services::IncServiceCount((TCommunications_Services *)this);
     return 1;
@@ -3784,9 +3638,6 @@ int DPEnumCallback(_GUID *param_1,char *param_2,ulong param_3,ulong param_4,void
 // Function: EnumSessionCallback
 // Address: 00432560
 // XREFS: Refresh
-/* int __stdcall EnumSessionCallback(struct DPSESSIONDESC2 *,unsigned long *,unsigned long,void *)
-    */
-
 int EnumSessionCallback(DPSESSIONDESC2 *param_1,ulong *param_2,ulong param_3,void *param_4)
 {
   if ((param_3 & 1) != 0) {
@@ -3893,8 +3744,6 @@ void FUN_00437bd9(void)
 // Function: FUN_0043804d
 // Address: 0043804d
 // XREFS: None
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-
 void __thiscall
 FUN_0043804d(int param_1,undefined4 param_2,short param_3,short param_4,uchar param_5,short param_6)
 {
@@ -3947,10 +3796,6 @@ FUN_0043804d(int param_1,undefined4 param_2,short param_3,short param_4,uchar pa
 // Function: DibBlt
 // Address: 00438820
 // XREFS: Copy, DibWriteClipped, Draw, TileDibBlt, TransDibBlt
-/* WARNING: Variable defined which should be unmapped: DestOrien */
-/* void __cdecl DibBlt(struct BITMAPINFO256 *,unsigned char *,struct tagRECT
-   *,long,long,long,long,struct BITMAPINFO256 *,unsigned char *,long,long,long,long,int,int,int) */
-
 void __cdecl
 DibBlt(BITMAPINFO256 *param_1,uchar *param_2,tagRECT *param_3,long param_4,long param_5,long param_6
       ,long param_7,BITMAPINFO256 *param_8,uchar *param_9,long param_10,long param_11,long param_12,
@@ -4073,11 +3918,6 @@ LAB_00438a00:
 // Function: TransDibBlt
 // Address: 00438aa0
 // XREFS: Copy, Draw, TileDibBlt
-/* WARNING: Variable defined which should be unmapped: SrcTotHgt */
-/* void __cdecl TransDibBlt(struct BITMAPINFO256 *,unsigned char *,struct tagRECT
-   *,long,long,long,long,struct BITMAPINFO256 *,unsigned char *,struct TRANSINFO
-   *,long,long,long,long,int,int,int,int) */
-
 void __cdecl
 TransDibBlt(BITMAPINFO256 *param_1,uchar *param_2,tagRECT *param_3,long param_4,long param_5,
            long param_6,long param_7,BITMAPINFO256 *param_8,uchar *param_9,TRANSINFO *param_10,
@@ -4240,10 +4080,6 @@ TransDibBlt(BITMAPINFO256 *param_1,uchar *param_2,tagRECT *param_3,long param_4,
 // Function: ClipDibBlt
 // Address: 00438e80
 // XREFS: DibBlt, TransDibBlt
-/* WARNING: Variable defined which should be unmapped: ey */
-/* int __cdecl ClipDibBlt(struct BITMAPINFO256 *,struct tagRECT *,long &,long &,long &,long &,long
-   &,long &,long &,long &,int,int) */
-
 int __cdecl
 ClipDibBlt(BITMAPINFO256 *param_1,tagRECT *param_2,long *param_3,long *param_4,long *param_5,
           long *param_6,long *param_7,long *param_8,long *param_9,long *param_10,int param_11,
@@ -4332,8 +4168,6 @@ ClipDibBlt(BITMAPINFO256 *param_1,tagRECT *param_2,long *param_3,long *param_4,l
 // Function: GetDibDim
 // Address: 00439060
 // XREFS: DibBlt, DibCheckTrans, TransDibBlt
-/* void __cdecl GetDibDim(struct BITMAPINFO256 *,long &,long &,long &) */
-
 void __cdecl GetDibDim(BITMAPINFO256 *param_1,long *param_2,long *param_3,long *param_4)
 {
   int iVar1;
@@ -4355,11 +4189,6 @@ void __cdecl GetDibDim(BITMAPINFO256 *param_1,long *param_2,long *param_3,long *
 // Function: TileDibBlt
 // Address: 004390a0
 // XREFS: Tile
-/* WARNING: Variable defined which should be unmapped: SrcBotHgt */
-/* long __cdecl TileDibBlt(struct BITMAPINFO256 *,unsigned char *,struct tagRECT
-   *,long,long,long,long,long,long,struct BITMAPINFO256 *,unsigned char *,struct TRANSINFO
-   *,long,long,long,long,int,int,int) */
-
 long __cdecl
 TileDibBlt(BITMAPINFO256 *param_1,uchar *param_2,tagRECT *param_3,long param_4,long param_5,
           long param_6,long param_7,long param_8,long param_9,BITMAPINFO256 *param_10,
@@ -4510,9 +4339,6 @@ TileDibBlt(BITMAPINFO256 *param_1,uchar *param_2,tagRECT *param_3,long param_4,l
 // Function: DibCheckTrans
 // Address: 004395a0
 // XREFS: Load, TPicture
-/* WARNING: Variable defined which should be unmapped: h */
-/* int __cdecl DibCheckTrans(struct BITMAPINFO256 *,struct TRANSINFO *,unsigned char *) */
-
 int __cdecl DibCheckTrans(BITMAPINFO256 *param_1,TRANSINFO *param_2,uchar *param_3)
 {
   BITMAPINFO256 *pBVar1;
@@ -4609,8 +4435,6 @@ int __cdecl DibCheckTrans(BITMAPINFO256 *param_1,TRANSINFO *param_2,uchar *param
 // Function: GetPaletteFromDib
 // Address: 00439700
 // XREFS: None
-/* void * __cdecl GetPaletteFromDib(char *,int) */
-
 void * __cdecl GetPaletteFromDib(char *param_1,int param_2)
 {
   tagBITMAPINFOHEADER *ptVar1;
@@ -4635,9 +4459,6 @@ void * __cdecl GetPaletteFromDib(char *param_1,int param_2)
 // XREFS: get_palette
 // [HELPER] s___: "]\n"
 // [HELPER] shape_file_first: " "
-/* WARNING: Variable defined which should be unmapped: data */
-/* void * __cdecl ReadPalette(char *,long,int) */
-
 void * __cdecl ReadPalette(char *param_1,long param_2,int param_3)
 {
   undefined1 uVar1;
@@ -4746,9 +4567,6 @@ void * __cdecl ReadPalette(char *param_1,long param_2,int param_3)
 // Function: DibOpenFile
 // Address: 00439a10
 // XREFS: GetPaletteFromDib, Load
-/* WARNING: Variable defined which should be unmapped: fh */
-/* struct tagBITMAPINFOHEADER * __cdecl DibOpenFile(char *) */
-
 tagBITMAPINFOHEADER * __cdecl DibOpenFile(char *param_1)
 {
   ulong uVar1;
@@ -4816,9 +4634,6 @@ tagBITMAPINFOHEADER * __cdecl DibOpenFile(char *param_1)
 // Function: ReadDibBits
 // Address: 00439b50
 // XREFS: None
-/* WARNING: Variable defined which should be unmapped: of */
-/* unsigned char * __cdecl ReadDibBits(char *) */
-
 uchar * __cdecl ReadDibBits(char *param_1)
 {
   ulong uVar1;
@@ -4854,8 +4669,6 @@ uchar * __cdecl ReadDibBits(char *param_1)
 // Function: DibWriteClipped
 // Address: 00439be0
 // XREFS: None
-/* int __cdecl DibWriteClipped(struct tagBITMAPINFOHEADER *,char *,long,long,long,long) */
-
 int __cdecl
 DibWriteClipped(tagBITMAPINFOHEADER *param_1,char *param_2,long param_3,long param_4,long param_5,
                long param_6)
@@ -4900,9 +4713,6 @@ DibWriteClipped(tagBITMAPINFOHEADER *param_1,char *param_2,long param_3,long par
 // Function: DibWriteFile
 // Address: 00439cc0
 // XREFS: DibWriteClipped
-/* WARNING: Variable defined which should be unmapped: hdr */
-/* int __cdecl DibWriteFile(struct tagBITMAPINFOHEADER *,char *) */
-
 int __cdecl DibWriteFile(tagBITMAPINFOHEADER *param_1,char *param_2)
 {
   int iVar1;
@@ -4933,9 +4743,6 @@ int __cdecl DibWriteFile(tagBITMAPINFOHEADER *param_1,char *param_2)
 // Function: DibCreatePalette
 // Address: 00439d80
 // XREFS: GetPaletteFromDib
-/* WARNING: Variable defined which should be unmapped: hpal */
-/* void * __cdecl DibCreatePalette(struct tagBITMAPINFOHEADER *) */
-
 void * __cdecl DibCreatePalette(tagBITMAPINFOHEADER *param_1)
 {
   ulong uVar1;
@@ -4987,7 +4794,6 @@ void * __cdecl DibCreatePalette(tagBITMAPINFOHEADER *param_1)
       return unaff_EDI;
     }
   }
-                    /* Symbol Ref: {@symbol exit} */
   return unaff_ESI;
 }
 
@@ -4996,9 +4802,6 @@ void * __cdecl DibCreatePalette(tagBITMAPINFOHEADER *param_1)
 // Function: DibReadBitmapInfo
 // Address: 00439e50
 // XREFS: DibOpenFile, ReadDibBits
-/* WARNING: Variable defined which should be unmapped: pdib */
-/* struct tagBITMAPINFOHEADER * __cdecl DibReadBitmapInfo(int) */
-
 tagBITMAPINFOHEADER * __cdecl DibReadBitmapInfo(int param_1)
 {
   int iVar1;
@@ -5109,10 +4912,6 @@ tagBITMAPINFOHEADER * __cdecl DibReadBitmapInfo(int param_1)
 // Function: DibFromBitmap
 // Address: 0043a070
 // XREFS: None
-/* WARNING: Variable defined which should be unmapped: nColors */
-/* struct tagBITMAPINFOHEADER * __cdecl DibFromBitmap(void *,unsigned long,unsigned int,void
-   *,unsigned int) */
-
 tagBITMAPINFOHEADER * __cdecl
 DibFromBitmap(void *param_1,ulong param_2,uint param_3,void *param_4,uint param_5)
 {
@@ -5168,8 +4967,6 @@ DibFromBitmap(void *param_1,ulong param_2,uint param_3,void *param_4,uint param_
   if (CONCAT22(uStack_2,uStack_4) == 3) {
     if (param_3 == 0x10) {
       piVar2[10] = 0xf800;
-                    /* language.dll match for 0x7e0: "Age of Empires Expansion requires Age of
-                       Empires 1.0, 1.0A, or 1.0B to be installed." */
       piVar2[0xb] = 0x7e0;
       piVar2[0xc] = 0x1f;
     }
@@ -5237,7 +5034,6 @@ DibFromBitmap(void *param_1,ulong param_2,uint param_3,void *param_4,uint param_
   }
   ptVar5 = (tagBITMAPINFOHEADER *)0x0;
 LAB_0043a307:
-                    /* Symbol Ref: {@symbol exit} */
   SelectPalette(uVar1,bm.bmWidth,0);
   DeleteDC(uVar1);
   return ptVar5;
@@ -5248,9 +5044,6 @@ LAB_0043a307:
 // Function: DibSetUsage
 // Address: 0043a330
 // XREFS: None
-/* WARNING: Variable defined which should be unmapped: ape */
-/* int __cdecl DibSetUsage(struct tagBITMAPINFOHEADER *,void *,unsigned int) */
-
 int __cdecl DibSetUsage(tagBITMAPINFOHEADER *param_1,void *param_2,uint param_3)
 {
   undefined1 *puVar1;
@@ -5314,9 +5107,6 @@ int __cdecl DibSetUsage(tagBITMAPINFOHEADER *param_1,void *param_2,uint param_3)
 // Function: DibDraw
 // Address: 0043a420
 // XREFS: None
-/* int __cdecl DibDraw(void *,int,int,int,int,struct tagBITMAPINFOHEADER
-   *,int,int,int,int,long,unsigned int) */
-
 int __cdecl
 DibDraw(void *param_1,int param_2,int param_3,int param_4,int param_5,tagBITMAPINFOHEADER *param_6,
        int param_7,int param_8,int param_9,int param_10,long param_11,uint param_12)
@@ -5350,8 +5140,6 @@ DibDraw(void *param_1,int param_2,int param_3,int param_4,int param_5,tagBITMAPI
 // Function: DibCopy
 // Address: 0043a4b0
 // XREFS: None
-/* struct tagBITMAPINFOHEADER * __cdecl DibCopy(struct tagBITMAPINFOHEADER *) */
-
 tagBITMAPINFOHEADER * __cdecl DibCopy(tagBITMAPINFOHEADER *param_1)
 {
   undefined4 uVar1;
@@ -5373,8 +5161,6 @@ tagBITMAPINFOHEADER * __cdecl DibCopy(tagBITMAPINFOHEADER *param_1)
 // Function: DibCreate
 // Address: 0043a500
 // XREFS: DibWriteClipped
-/* struct tagBITMAPINFOHEADER * __cdecl DibCreate(int,int,int) */
-
 tagBITMAPINFOHEADER * __cdecl DibCreate(int param_1,int param_2,int param_3)
 {
   undefined4 uVar1;
@@ -5442,9 +5228,6 @@ tagBITMAPINFOHEADER * __cdecl DibCreate(int param_1,int param_2,int param_3)
 // Function: DibMapToPalette
 // Address: 0043a660
 // XREFS: Load
-/* WARNING: Variable defined which should be unmapped: ZeroIndex */
-/* void __cdecl DibMapToPalette(struct tagBITMAPINFOHEADER *,void *,int,int) */
-
 void __cdecl DibMapToPalette(tagBITMAPINFOHEADER *param_1,void *param_2,int param_3,int param_4)
 {
   tagRGBQUAD *ptVar1;
@@ -5754,9 +5537,6 @@ void memmove(int param_1,int param_2,int param_3)
 // Function: CreateIdentityPalette
 // Address: 0043ab80
 // XREFS: GetPaletteFromDib, ReadPalette
-/* WARNING: Variable defined which should be unmapped: hdc */
-/* void __cdecl CreateIdentityPalette(void *) */
-
 void __cdecl CreateIdentityPalette(void *param_1)
 {
   undefined4 uVar1;
@@ -5818,9 +5598,6 @@ void __cdecl CreateIdentityPalette(void *param_1)
 // Function: CopyPalette
 // Address: 0043acb0
 // XREFS: None
-/* WARNING: Variable defined which should be unmapped: nNumEntries */
-/* void * __cdecl CopyPalette(void *) */
-
 void * __cdecl CopyPalette(void *param_1)
 {
   undefined2 *puVar1;
@@ -5854,8 +5631,6 @@ void * __cdecl CopyPalette(void *param_1)
 // Function: DibFree
 // Address: 0043ad40
 // XREFS: DibFromBitmap, DibWriteClipped, GetPaletteFromDib, Load, TPicture, ~TPicture
-/* void __cdecl DibFree(struct tagBITMAPINFOHEADER *) */
-
 void __cdecl DibFree(tagBITMAPINFOHEADER *param_1)
 {
   undefined4 uVar1;
@@ -5912,8 +5687,6 @@ FUN_0043ffc7(undefined4 param_1,TPanel *param_2,TPanel *param_3,long param_4,uch
 // Function: operator<<
 // Address: 00446710
 // XREFS: None
-/* class ostream & __cdecl operator<<(class ostream &,class DString const &) */
-
 ostream * __cdecl operator<<(ostream *param_1,DString *param_2)
 {
   if (param_2->stringValue != (char *)0x0) {
@@ -5927,9 +5700,6 @@ ostream * __cdecl operator<<(ostream *param_1,DString *param_2)
 // Function: operator>>
 // Address: 00446730
 // XREFS: None
-/* WARNING: Variable defined which should be unmapped: buffer */
-/* class istream & __cdecl operator>>(class istream &,class DString &) */
-
 istream * __cdecl operator>>(istream *param_1,DString *param_2)
 {
   char buffer [256];
@@ -5945,8 +5715,6 @@ istream * __cdecl operator>>(istream *param_1,DString *param_2)
 // Function: operator==
 // Address: 00446880
 // XREFS: None
-/* int __cdecl operator==(class DString const &,class DString const &) */
-
 int __cdecl operator==(DString *param_1,DString *param_2)
 {
   byte bVar1;
@@ -5980,8 +5748,6 @@ int __cdecl operator==(DString *param_1,DString *param_2)
 // Function: operator==
 // Address: 004468e0
 // XREFS: None
-/* int __cdecl operator==(class DString const &,char const *) */
-
 int __cdecl operator==(DString *param_1,char *param_2)
 {
   byte bVar1;
@@ -6013,8 +5779,6 @@ int __cdecl operator==(DString *param_1,char *param_2)
 // Function: operator==
 // Address: 00446930
 // XREFS: None
-/* int __cdecl operator==(char const *,class DString const &) */
-
 int __cdecl operator==(char *param_1,DString *param_2)
 {
   byte bVar1;
@@ -6046,8 +5810,6 @@ int __cdecl operator==(char *param_1,DString *param_2)
 // Function: operator!=
 // Address: 00446980
 // XREFS: None
-/* int __cdecl operator!=(class DString const &,class DString const &) */
-
 int __cdecl operator!=(DString *param_1,DString *param_2)
 {
   byte bVar1;
@@ -6081,8 +5843,6 @@ int __cdecl operator!=(DString *param_1,DString *param_2)
 // Function: operator!=
 // Address: 004469e0
 // XREFS: None
-/* int __cdecl operator!=(class DString const &,char const *) */
-
 int __cdecl operator!=(DString *param_1,char *param_2)
 {
   byte bVar1;
@@ -6114,8 +5874,6 @@ int __cdecl operator!=(DString *param_1,char *param_2)
 // Function: operator!=
 // Address: 00446a30
 // XREFS: None
-/* int __cdecl operator!=(char const *,class DString const &) */
-
 int __cdecl operator!=(char *param_1,DString *param_2)
 {
   byte bVar1;
@@ -6147,8 +5905,6 @@ int __cdecl operator!=(char *param_1,DString *param_2)
 // Function: operator<
 // Address: 00446a80
 // XREFS: None
-/* int __cdecl operator<(class DString const &,class DString const &) */
-
 int __cdecl operator<(DString *param_1,DString *param_2)
 {
   byte bVar1;
@@ -6182,8 +5938,6 @@ int __cdecl operator<(DString *param_1,DString *param_2)
 // Function: operator<
 // Address: 00446ae0
 // XREFS: None
-/* int __cdecl operator<(class DString const &,char const *) */
-
 int __cdecl operator<(DString *param_1,char *param_2)
 {
   byte bVar1;
@@ -6215,8 +5969,6 @@ int __cdecl operator<(DString *param_1,char *param_2)
 // Function: operator<
 // Address: 00446b30
 // XREFS: None
-/* int __cdecl operator<(char const *,class DString const &) */
-
 int __cdecl operator<(char *param_1,DString *param_2)
 {
   byte bVar1;
@@ -6248,8 +6000,6 @@ int __cdecl operator<(char *param_1,DString *param_2)
 // Function: operator>
 // Address: 00446b80
 // XREFS: None
-/* int __cdecl operator>(class DString const &,class DString const &) */
-
 int __cdecl operator>(DString *param_1,DString *param_2)
 {
   byte bVar1;
@@ -6287,8 +6037,6 @@ int __cdecl operator>(DString *param_1,DString *param_2)
 // Function: operator>
 // Address: 00446be0
 // XREFS: None
-/* int __cdecl operator>(class DString const &,char const *) */
-
 int __cdecl operator>(DString *param_1,char *param_2)
 {
   byte bVar1;
@@ -6324,8 +6072,6 @@ int __cdecl operator>(DString *param_1,char *param_2)
 // Function: operator>
 // Address: 00446c30
 // XREFS: None
-/* int __cdecl operator>(char const *,class DString const &) */
-
 int __cdecl operator>(char *param_1,DString *param_2)
 {
   byte bVar1;
@@ -6371,8 +6117,6 @@ void _ShowErrMsg(void)
 // Function: _DSLoadSoundBuffer
 // Address: 004477e0
 // XREFS: _SndObjCreate
-/* WARNING: Variable defined which should be unmapped: pDSB */
-
 ulong _DSLoadSoundBuffer(int *param_1,undefined4 param_2)
 {
   int iVar1;
@@ -6408,8 +6152,6 @@ ulong _DSLoadSoundBuffer(int *param_1,undefined4 param_2)
 // Function: _DSReloadSoundBuffer
 // Address: 00447890
 // XREFS: None
-/* WARNING: Variable defined which should be unmapped: pbWaveData */
-
 undefined4 _DSReloadSoundBuffer(int *param_1,undefined4 param_2)
 {
   int iVar1;
@@ -6463,8 +6205,6 @@ undefined4 _DSGetWaveResource(undefined4 param_1,undefined4 param_2)
 // Function: _SndObjCreate
 // Address: 00447950
 // XREFS: None
-/* WARNING: Variable defined which should be unmapped: pbData */
-
 undefined4 * _SndObjCreate(undefined4 param_1,undefined4 param_2,int param_3)
 {
   int iVar1;
@@ -6653,8 +6393,6 @@ undefined4 _SndObjStop(int param_1)
 // Function: _DSFillSoundBuffer
 // Address: 00447bc0
 // XREFS: _DSLoadSoundBuffer, _DSReloadSoundBuffer, _SndObjGetFreeBuffer
-/* WARNING: Variable defined which should be unmapped: pMem1 */
-
 undefined4 _DSFillSoundBuffer(int *param_1,int param_2,int param_3)
 {
   int *piVar1;
@@ -6712,7 +6450,6 @@ undefined4 _DSParseWaveResource(int *param_1,uint *param_2,int *param_3,uint *pa
   piVar5 = param_1 + 3;
   if (((*param_1 != 0x46464952) || (param_1[2] != 0x45564157)) ||
      (piVar1 = (int *)(param_1[1] + -4 + (int)piVar5), piVar1 <= piVar5)) {
-                    /* Symbol Ref: {@symbol exit} */
     return 0;
   }
   do {
@@ -6763,8 +6500,6 @@ joined_r0x00447d2c:
 // Function: _WaveOpenFile
 // Address: 00447d50
 // XREFS: _WaveLoadFile, ds_stream_file
-/* WARNING: Variable defined which should be unmapped: pcmWaveFormat */
-
 int _WaveOpenFile(int *param_1,undefined4 param_2,undefined4 *param_3)
 {
   int iVar1;
@@ -6828,7 +6563,6 @@ int _WaveOpenFile(int *param_1,undefined4 param_2,undefined4 *param_3)
     }
   }
 LAB_00447eb8:
-                    /* Symbol Ref: {@symbol ERROR_READING_WAVE} */
   if (*unaff_retaddr != 0) {
     GlobalFree(*unaff_retaddr);
     *unaff_retaddr = 0;
@@ -6837,7 +6571,6 @@ LAB_00447eb8:
     mmioClose(iVar1,0);
     iVar1 = 0;
   }
-                    /* Symbol Ref: {@symbol TEMPCLEANUP} */
   *piStack_4 = iVar1;
   return iVar3;
 }
@@ -6867,8 +6600,6 @@ undefined4 _WaveStartDataRead(undefined4 *param_1,undefined4 param_2,int param_3
 // Function: _WaveReadFile
 // Address: 00447f40
 // XREFS: _WaveLoadFile, ds_stream_file, ds_stream_time_func
-/* WARNING: Variable defined which should be unmapped: mmioinfoIn */
-
 uint _WaveReadFile(int param_1,uint *param_2)
 {
   int iVar1;
@@ -6913,7 +6644,6 @@ uint _WaveReadFile(int param_1,uint *param_2)
     }
   }
 LAB_00447ffb:
-                    /* Symbol Ref: {@symbol ERROR_CANNOT_READ} */
   *param_2 = 0;
   return uVar2;
 }
@@ -6960,7 +6690,6 @@ void _WaveStartDataWrite(undefined4 *param_1,undefined4 *param_2)
   if (iVar1 == 0) {
     mmioGetInfo(*param_1,unaff_retaddr,0);
   }
-                    /* Symbol Ref: {@symbol ERROR_CANNOT_WRITE} */
   return;
 }
 
@@ -6992,7 +6721,6 @@ void _WaveWriteFile(undefined4 param_1,uint param_2,int param_3,undefined4 param
       *param_5 = *param_5 + 1;
     } while (uVar2 < param_2);
   }
-                    /* Symbol Ref: {@symbol ERROR_CANNOT_WRITE} */
   return;
 }
 
@@ -7032,7 +6760,6 @@ int _WaveCloseWriteFile(int *param_1,undefined4 param_2,undefined4 param_3,uint 
       }
     }
   }
-                    /* Symbol Ref: {@symbol ERROR_CANNOT_WRITE} */
   if (*param_1 != 0) {
     mmioClose(*param_1,0);
     *param_1 = 0;
@@ -7069,7 +6796,6 @@ undefined4 _WaveCopyUselessChunks(undefined4 *param_1,undefined4 param_2,int par
       iVar1 = mmioDescend(*param_1,unaff_EBX,param_3,0);
     }
   }
-                    /* Symbol Ref: {@symbol ERROR_IN_PROC} */
   mmioSeek(*param_1,*(int *)(param_3 + 0xc) + 4,0);
   return uVar2;
 }
@@ -7079,9 +6805,6 @@ undefined4 _WaveCopyUselessChunks(undefined4 *param_1,undefined4 param_2,int par
 // Function: riffCopyChunk
 // Address: 00448400
 // XREFS: _WaveCopyUselessChunks
-/* WARNING: Variable defined which should be unmapped: ck */
-/* riffCopyChunk */
-
 undefined4 __cdecl riffCopyChunk(undefined4 param_1,undefined4 param_2,int param_3)
 {
   undefined4 uVar1;
@@ -7118,7 +6841,6 @@ undefined4 __cdecl riffCopyChunk(undefined4 param_1,undefined4 param_2,int param
       }
     }
   }
-                    /* Symbol Ref: {@symbol rscc_Error} */
   uVar1 = GlobalHandle(iVar2);
   GlobalUnlock(uVar1);
   uVar1 = GlobalHandle(iVar2);
@@ -7131,8 +6853,6 @@ undefined4 __cdecl riffCopyChunk(undefined4 param_1,undefined4 param_2,int param
 // Function: _WaveLoadFile
 // Address: 004484d0
 // XREFS: None
-/* WARNING: Variable defined which should be unmapped: ckIn */
-
 int _WaveLoadFile(undefined4 param_1,undefined4 *param_2,undefined4 param_3,int *param_4,
                  int *param_5)
 {
@@ -7166,7 +6886,6 @@ int _WaveLoadFile(undefined4 param_1,undefined4 *param_2,undefined4 param_3,int 
       }
     }
   }
-                    /* Symbol Ref: {@symbol ERROR_LOADING} */
   if (*piVar3 != 0) {
     GlobalFree(*piVar3);
     *piVar3 = 0;
@@ -7177,7 +6896,6 @@ int _WaveLoadFile(undefined4 param_1,undefined4 *param_2,undefined4 param_3,int 
     *piVar2 = 0;
   }
 LAB_0044859a:
-                    /* Symbol Ref: {@symbol DONE_LOADING} */
   if (param_5 != (int *)0x0) {
     mmioClose(param_5,0);
   }
@@ -7189,8 +6907,6 @@ LAB_0044859a:
 // Function: _WaveSaveFile
 // Address: 004485c0
 // XREFS: None
-/* WARNING: Variable defined which should be unmapped: hmmioOut */
-
 void _WaveSaveFile(undefined4 param_1,undefined4 param_2,undefined4 param_3,undefined4 param_4,
                   undefined4 param_5)
 {
@@ -7213,7 +6929,6 @@ void _WaveSaveFile(undefined4 param_1,undefined4 param_2,undefined4 param_3,unde
       }
     }
   }
-                    /* Symbol Ref: {@symbol ERROR_SAVING} */
   return;
 }
 
@@ -7222,8 +6937,6 @@ void _WaveSaveFile(undefined4 param_1,undefined4 param_2,undefined4 param_3,unde
 // Function: ds_stream_init
 // Address: 00448660
 // XREFS: init
-/* ds_stream_init */
-
 void __cdecl ds_stream_init(undefined4 param_1,undefined4 param_2,undefined4 param_3)
 {
   _uLastPercent = 100;
@@ -7244,8 +6957,6 @@ void __cdecl ds_stream_init(undefined4 param_1,undefined4 param_2,undefined4 par
 // Function: ds_stream_exit
 // Address: 004486b0
 // XREFS: exit
-/* ds_stream_exit */
-
 void __cdecl ds_stream_exit(void)
 {
   if (_ds_ready != 0) {
@@ -7262,9 +6973,6 @@ void __cdecl ds_stream_exit(void)
 // Function: ds_stream_file
 // Address: 004486f0
 // XREFS: stream_file
-/* WARNING: Variable defined which should be unmapped: dwLen1 */
-/* ds_stream_file */
-
 undefined4 __cdecl ds_stream_file(undefined4 param_1)
 {
   int iVar1;
@@ -7399,8 +7107,6 @@ undefined4 __cdecl ds_stream_file(undefined4 param_1)
 // Function: ds_stream_volume
 // Address: 00448a40
 // XREFS: set_stream_volume
-/* ds_stream_volume */
-
 bool __cdecl ds_stream_volume(undefined4 param_1)
 {
   int iVar1;
@@ -7417,8 +7123,6 @@ bool __cdecl ds_stream_volume(undefined4 param_1)
 // Function: ds_stream_pause
 // Address: 00448a60
 // XREFS: pause_stream
-/* ds_stream_pause */
-
 void __cdecl ds_stream_pause(void)
 {
   _stream_paused = 1;
@@ -7430,8 +7134,6 @@ void __cdecl ds_stream_pause(void)
 // Function: ds_stream_resume
 // Address: 00448a70
 // XREFS: resume_stream
-/* ds_stream_resume */
-
 undefined4 __cdecl ds_stream_resume(void)
 {
   _stream_paused = 0;
@@ -7443,8 +7145,6 @@ undefined4 __cdecl ds_stream_resume(void)
 // Function: ds_stream_stop
 // Address: 00448a80
 // XREFS: ds_stream_exit, ds_stream_file, ds_stream_messages, stop_stream
-/* ds_stream_stop */
-
 undefined4 __cdecl ds_stream_stop(void)
 {
   DAT_008884a8 = 1;
@@ -7476,8 +7176,6 @@ undefined4 __cdecl ds_stream_stop(void)
 // Function: ds_stream_messages
 // Address: 00448b30
 // XREFS: handle_messages
-/* ds_stream_messages */
-
 undefined4 __cdecl ds_stream_messages(undefined4 param_1,int param_2)
 {
   int iVar1;
@@ -7503,10 +7201,6 @@ undefined4 __cdecl ds_stream_messages(undefined4 param_1,int param_2)
 // Function: ds_stream_time_func
 // Address: 00448ba0
 // XREFS: ds_stream_file
-/* WARNING: Variable defined which should be unmapped: dwLen1 */
-/* WARNING: Type propagation algorithm not settling */
-/* __stdcall ds_stream_time_func,20 */
-
 void ds_stream_time_func(void)
 {
   ulong *puVar1;
@@ -7607,7 +7301,6 @@ void ds_stream_time_func(void)
         if (DAT_008884ac == 0) {
           if ((_wiWave != 0) && (ppuVar5 != (uchar **)0x0)) {
             if (*(short *)(_wiWave + 0xe) == 8) {
-                    /* language.dll match for 0x80: "Arial" */
               uVar7 = 0x80;
             }
             else {
@@ -7645,7 +7338,6 @@ LAB_00448e44:
           if (DAT_008884ac == 0) {
             if ((_wiWave != 0) && (puStack_38 != (undefined1 *)0x0)) {
               if (*(short *)(_wiWave + 0xe) == 8) {
-                    /* language.dll match for 0x80: "Arial" */
                 uVar7 = 0x80;
               }
               else {
@@ -7714,7 +7406,6 @@ LAB_00448faa:
   }
   if ((_wiWave != 0) && (ppuVar5 != (uchar **)0x0)) {
     if (*(short *)(_wiWave + 0xe) == 8) {
-                    /* language.dll match for 0x80: "Arial" */
       uVar7 = 0x80;
     }
     else {
@@ -7741,8 +7432,6 @@ LAB_004490be:
 // Function: FUN_004496ed
 // Address: 004496ed
 // XREFS: None
-/* WARNING: Unable to track spacebase fully for stack */
-
 int __fastcall FUN_004496ed(undefined4 param_1,char *param_2)
 {
   byte bVar1;
@@ -7790,17 +7479,13 @@ int __fastcall FUN_004496ed(undefined4 param_1,char *param_2)
 // Function: compareFilenameStrings
 // Address: 00449710
 // XREFS: None
-/* int __cdecl compareFilenameStrings(void const *,void const *) */
-
 int __cdecl compareFilenameStrings(void *param_1,void *param_2)
 {
   byte bVar1;
   bool bVar2;
   
   while( true ) {
-                    /* WARNING: Load size is inaccurate */
     bVar1 = *param_1;
-                    /* WARNING: Load size is inaccurate */
     bVar2 = bVar1 < *param_2;
     if (bVar1 != *param_2) break;
     if (bVar1 == 0) {
@@ -7823,8 +7508,6 @@ int __cdecl compareFilenameStrings(void *param_1,void *param_2)
 // Function: driveAsLetter
 // Address: 00449750
 // XREFS: None
-/* char __cdecl driveAsLetter(int) */
-
 char __cdecl driveAsLetter(int param_1)
 {
   return (char)param_1 + '@';
@@ -7835,8 +7518,6 @@ char __cdecl driveAsLetter(int param_1)
 // Function: driveAsInt
 // Address: 00449760
 // XREFS: None
-/* int __cdecl driveAsInt(char) */
-
 int __cdecl driveAsInt(char param_1)
 {
   return param_1 + -0x40;
@@ -8461,9 +8142,6 @@ void __fastcall _x_StandardMemCopy(int param_1)
 // [HELPER] s_DINPUT_DLL: "DINPUT.DLL"
 // [HELPER] s_DirectDrawCreate: "DirectDrawCreate"
 // [HELPER] s_DirectInputCreateA: "DirectInputCreateA"
-/* WARNING: Variable defined which should be unmapped: pDDraw */
-/* void __cdecl GetDXVersion(unsigned long *,unsigned long *) */
-
 void __cdecl GetDXVersion(ulong *param_1,ulong *param_2)
 {
   int iVar1;
@@ -8697,9 +8375,6 @@ void __cdecl GetDXVersion(ulong *param_1,ulong *param_2)
 // XREFS: GetDXVersion
 // [HELPER] s__: "}"
 // [HELPER] s_dplayx_dll: "dplayx.dll"
-/* WARNING: Variable defined which should be unmapped: verInfo */
-/* int __cdecl IsDPlay501a(void) */
-
 int __cdecl IsDPlay501a(void)
 {
   uint uVar1;
@@ -9307,9 +8982,6 @@ void __fastcall FUN_00453695(char *param_1,int *param_2)
 // [HELPER] s_scenario_: "scenario\"
 // [HELPER] s_sound_: "sound\"
 // [HELPER] s_tr_wrld_txt: "tr_wrld.txt"
-/* WARNING: Function: __alloca_probe replaced with injection: alloca_probe */
-/* WARNING: Variable defined which should be unmapped: retval */
-
 int _WinMain_16(void *param_1,undefined4 param_2,char *param_3,undefined4 param_4)
 {
   char cVar1;
@@ -9334,7 +9006,6 @@ int _WinMain_16(void *param_1,undefined4 param_2,char *param_3,undefined4 param_
   local_4 = 0xffffffff;
   local_c = *unaff_FS_OFFSET;
   pcStack_8 = FUN_0055da7e;
-                    /* language.dll match for 0x1440: "Axeman" */
   *unaff_FS_OFFSET = &local_c;
   uVar4 = 0xffffffff;
   pcVar7 = info.prog_name;
@@ -9859,7 +9530,6 @@ int _WinMain_16(void *param_1,undefined4 param_2,char *param_3,undefined4 param_
       (*(code *)*puVar2)(1);
     }
     else if (info.prog_name._0_4_ != 4) {
-                    /* language.dll match for 0x7d1: "Error" */
       (*(code *)puVar2[8])(0x7d1,title + 4,0x100);
       (*(code *)puVar2[10])(1,unaff_EBP,0,title + 0xf8,0x100);
       (*(code *)*puVar2)(1);
@@ -9980,13 +9650,8 @@ uint __fastcall FUN_00459352(char *param_1,uint param_2,short param_3,short para
 // Function: `vcall'{456,{flat}}'_}'
 // Address: 00460fc0
 // XREFS: findPath
-/* [thunk]: __thiscall `vcall'{456,{flat}}' }' */
-
 void __thiscall _vcall__456__flat______(void *this)
 {
-                    /* WARNING: Load size is inaccurate */
-                    /* WARNING: Could not recover jumptable at 0x00460fc2. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (**(code **)(*this + 0x1c8))();
   return;
 }
@@ -9996,11 +9661,8 @@ void __thiscall _vcall__456__flat______(void *this)
 // Function: FUN_004614d9
 // Address: 004614d9
 // XREFS: None
-/* WARNING: Control flow encountered bad instruction data */
-
 void FUN_004614d9(void)
 {
-                    /* WARNING: Bad instruction - Truncating control flow here */
   halt_baddata();
 }
 
@@ -10009,8 +9671,6 @@ void FUN_004614d9(void)
 // Function: convert_us
 // Address: 00462d70
 // XREFS: RGE_Effects, RGE_Sprite, load_border_types, load_terrain_types
-/* void __cdecl convert_us(char *) */
-
 void __cdecl convert_us(char *param_1)
 {
   char *pcVar1;
@@ -10033,8 +9693,6 @@ void __cdecl convert_us(char *param_1)
 // Function: unconvert_us
 // Address: 00462d90
 // XREFS: None
-/* void __cdecl unconvert_us(char *) */
-
 void __cdecl unconvert_us(char *param_1)
 {
   char *pcVar1;
@@ -10057,8 +9715,6 @@ void __cdecl unconvert_us(char *param_1)
 // Function: addstring
 // Address: 00462db0
 // XREFS: Check_shape, RGE_Color_Table, add_description, do_draw, get_frame, get_size, load_border_types, load_campaign, load_terrain_types, make_campaign, shape_hit_test
-/* void __cdecl addstring(char * *,char *,char *) */
-
 void __cdecl addstring(char **param_1,char *param_2,char *param_3)
 {
   char cVar1;
@@ -10121,8 +9777,6 @@ void __cdecl addstring(char **param_1,char *param_2,char *param_3)
 // Function: getstring
 // Address: 00462e30
 // XREFS: RGE_Player, TRIBE_Tech, add_description, condition_description, copy_obj, get_campaign_list, get_people_list, get_scenario_list, make_campaign, scenario_info, setup
-/* void __cdecl getstring(char * *,char *) */
-
 void __cdecl getstring(char **param_1,char *param_2)
 {
   char cVar1;
@@ -10162,9 +9816,6 @@ void __cdecl getstring(char **param_1,char *param_2)
 // Function: FUN_004630dd
 // Address: 004630dd
 // XREFS: None
-/* WARNING: Instruction at (ram,0x0046311e) overlaps instruction at (ram,0x0046311b)
-    */
-
 int __thiscall
 FUN_004630dd(int param_1,int param_2,undefined4 param_3,undefined4 param_4,undefined4 param_5,
             char param_6,undefined4 param_7,undefined4 param_8)
@@ -10270,10 +9921,6 @@ void _E2(void)
 // Address: 00465746
 // XREFS: None
 // [HELPER] s_C__msdev_work_age1_x1_Panel_cpp: "C:\msdev\work\age1_x1\Panel.cpp"
-/* WARNING: Instruction at (ram,0x0046579e) overlaps instruction at (ram,0x0046579d)
-    */
-/* WARNING: Control flow encountered bad instruction data */
-
 int __fastcall FUN_00465746(undefined4 param_1,int param_2)
 {
   char *pcVar1;
@@ -10296,7 +9943,6 @@ int __fastcall FUN_00465746(undefined4 param_1,int param_2)
   int *piVar6;
   
   if (in_ZF || in_OF != in_SF) {
-                    /* WARNING: Bad instruction - Truncating control flow here */
     halt_baddata();
   }
   cVar5 = (char)param_1;
@@ -10343,8 +9989,6 @@ int __fastcall FUN_00465746(undefined4 param_1,int param_2)
 // XREFS: None
 // [HELPER] s__: "}"
 // [HELPER] s___: "]\n"
-/* class ostream & __cdecl operator<<(class ostream &,class Path const &) */
-
 ostream * __cdecl operator<<(ostream *param_1,Path *param_2)
 {
   float fVar1;

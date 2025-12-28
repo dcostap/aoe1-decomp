@@ -10,8 +10,6 @@
 
 // Function: CCDAudio
 // Address: 004237c0
-/* public: __thiscall CCDAudio::CCDAudio(void) */
-
 void __thiscall CCDAudio::CCDAudio(CCDAudio *this)
 {
   this->m_Wnd = (void *)0x0;
@@ -23,9 +21,6 @@ void __thiscall CCDAudio::CCDAudio(CCDAudio *this)
 
 // Function: ~CCDAudio
 // Address: 004237d0
-/* WARNING: Variable defined which should be unmapped: playing */
-/* public: __thiscall CCDAudio::~CCDAudio(void) */
-
 void __thiscall CCDAudio::~CCDAudio(CCDAudio *this)
 {
   int playing;
@@ -44,9 +39,6 @@ void __thiscall CCDAudio::~CCDAudio(CCDAudio *this)
 
 // Function: Open
 // Address: 00423800
-/* WARNING: Variable defined which should be unmapped: mciSetInfo */
-/* public: unsigned long __thiscall CCDAudio::Open(void *) */
-
 ulong __thiscall CCDAudio::Open(CCDAudio *this,void *param_1)
 {
   ulong uVar1;
@@ -73,8 +65,6 @@ ulong __thiscall CCDAudio::Open(CCDAudio *this,void *param_1)
 
 // Function: Close
 // Address: 00423880
-/* public: unsigned long __thiscall CCDAudio::Close(void) */
-
 ulong __thiscall CCDAudio::Close(CCDAudio *this)
 {
   ulong uVar1;
@@ -94,8 +84,6 @@ ulong __thiscall CCDAudio::Close(CCDAudio *this)
 
 // Function: Stop
 // Address: 004238c0
-/* public: unsigned long __thiscall CCDAudio::Stop(void) */
-
 ulong __thiscall CCDAudio::Stop(CCDAudio *this)
 {
   ulong uVar1;
@@ -109,8 +97,6 @@ ulong __thiscall CCDAudio::Stop(CCDAudio *this)
 
 // Function: Play
 // Address: 004238e0
-/* public: unsigned long __thiscall CCDAudio::Play(unsigned char) */
-
 ulong __thiscall CCDAudio::Play(CCDAudio *this,uchar param_1)
 {
   ulong uVar1;
@@ -127,8 +113,6 @@ ulong __thiscall CCDAudio::Play(CCDAudio *this,uchar param_1)
 
 // Function: Pause
 // Address: 00423930
-/* public: unsigned long __thiscall CCDAudio::Pause(void) */
-
 ulong __thiscall CCDAudio::Pause(CCDAudio *this)
 {
   ulong uVar1;
@@ -142,8 +126,6 @@ ulong __thiscall CCDAudio::Pause(CCDAudio *this)
 
 // Function: ResumePlay
 // Address: 00423950
-/* public: unsigned long __thiscall CCDAudio::ResumePlay(void) */
-
 ulong __thiscall CCDAudio::ResumePlay(CCDAudio *this)
 {
   ulong uVar1;
@@ -157,8 +139,6 @@ ulong __thiscall CCDAudio::ResumePlay(CCDAudio *this)
 
 // Function: Eject
 // Address: 00423980
-/* public: unsigned long __thiscall CCDAudio::Eject(void) */
-
 ulong __thiscall CCDAudio::Eject(CCDAudio *this)
 {
   ulong uVar1;
@@ -172,9 +152,6 @@ ulong __thiscall CCDAudio::Eject(CCDAudio *this)
 
 // Function: GetNumberOfTracks
 // Address: 004239b0
-/* WARNING: Variable defined which should be unmapped: mciStatusInfo */
-/* public: unsigned long __thiscall CCDAudio::GetNumberOfTracks(unsigned char &) */
-
 ulong __thiscall CCDAudio::GetNumberOfTracks(CCDAudio *this,uchar *param_1)
 {
   ulong uVar1;
@@ -191,9 +168,6 @@ ulong __thiscall CCDAudio::GetNumberOfTracks(CCDAudio *this,uchar *param_1)
 
 // Function: IsMediaPresent
 // Address: 004239f0
-/* WARNING: Variable defined which should be unmapped: mciStatusParms */
-/* public: unsigned long __thiscall CCDAudio::IsMediaPresent(int &) */
-
 ulong __thiscall CCDAudio::IsMediaPresent(CCDAudio *this,int *param_1)
 {
   ulong uVar1;
@@ -210,9 +184,6 @@ ulong __thiscall CCDAudio::IsMediaPresent(CCDAudio *this,int *param_1)
 
 // Function: IsPlaying
 // Address: 00423a40
-/* WARNING: Variable defined which should be unmapped: mciStatusParms */
-/* public: unsigned long __thiscall CCDAudio::IsPlaying(int &) */
-
 ulong __thiscall CCDAudio::IsPlaying(CCDAudio *this,int *param_1)
 {
   ulong uVar1;
@@ -234,9 +205,6 @@ ulong __thiscall CCDAudio::IsPlaying(CCDAudio *this,int *param_1)
 
 // Function: GetLength
 // Address: 00423ac0
-/* WARNING: Variable defined which should be unmapped: mciStatusParms */
-/* public: unsigned long __thiscall CCDAudio::GetLength(unsigned char &,unsigned char &) */
-
 ulong __thiscall CCDAudio::GetLength(CCDAudio *this,uchar *param_1,uchar *param_2)
 {
   ulong uVar1;
@@ -254,10 +222,6 @@ ulong __thiscall CCDAudio::GetLength(CCDAudio *this,uchar *param_1,uchar *param_
 
 // Function: GetTrackLength
 // Address: 00423b10
-/* WARNING: Variable defined which should be unmapped: mciStatusParms */
-/* public: unsigned long __thiscall CCDAudio::GetTrackLength(unsigned char,unsigned char &,unsigned
-   char &) */
-
 ulong __thiscall
 CCDAudio::GetTrackLength(CCDAudio *this,uchar param_1,uchar *param_2,uchar *param_3)
 {
@@ -276,10 +240,6 @@ CCDAudio::GetTrackLength(CCDAudio *this,uchar param_1,uchar *param_2,uchar *para
 
 // Function: GetPosition
 // Address: 00423b70
-/* WARNING: Variable defined which should be unmapped: mciStatusParms */
-/* public: unsigned long __thiscall CCDAudio::GetPosition(unsigned char &,unsigned char &,unsigned
-   char &) */
-
 ulong __thiscall CCDAudio::GetPosition(CCDAudio *this,uchar *param_1,uchar *param_2,uchar *param_3)
 {
   ulong uVar1;
@@ -299,9 +259,6 @@ ulong __thiscall CCDAudio::GetPosition(CCDAudio *this,uchar *param_1,uchar *para
 // Function: DisplayErrorMsg
 // Address: 00423bd0
 // [HELPER] s_Unknow_Error: "Unknow Error"
-/* WARNING: Variable defined which should be unmapped: szErrorMsg */
-/* private: unsigned long __thiscall CCDAudio::DisplayErrorMsg(unsigned long) */
-
 ulong __thiscall CCDAudio::DisplayErrorMsg(CCDAudio *this,ulong param_1)
 {
   char cVar1;

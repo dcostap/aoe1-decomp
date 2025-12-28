@@ -9,8 +9,6 @@
 
 // Function: ~type_info
 // Address: 0055bf20
-/* public: virtual __thiscall type_info::~type_info(void) */
-
 void __thiscall type_info::~type_info(type_info *this)
 {
   *(undefined ***)this = &_vftable_;
@@ -24,8 +22,6 @@ void __thiscall type_info::~type_info(type_info *this)
 
 // Function: `vector_deleting_destructor'
 // Address: 0055bf40
-/* public: virtual void * __thiscall type_info::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall type_info::_vector_deleting_destructor_(type_info *this,uint param_1)
 {
   ~type_info(this);
@@ -39,8 +35,6 @@ void * __thiscall type_info::_vector_deleting_destructor_(type_info *this,uint p
 
 // Function: operator==
 // Address: 0055bf60
-/* public: int __thiscall type_info::operator==(class type_info const &)const  */
-
 int __thiscall type_info::operator==(type_info *this,type_info *param_1)
 {
   type_info tVar1;
@@ -73,8 +67,6 @@ int __thiscall type_info::operator==(type_info *this,type_info *param_1)
 
 // Function: operator!=
 // Address: 0055bfc0
-/* public: int __thiscall type_info::operator!=(class type_info const &)const  */
-
 int __thiscall type_info::operator!=(type_info *this,type_info *param_1)
 {
   type_info tVar1;
@@ -107,8 +99,6 @@ int __thiscall type_info::operator!=(type_info *this,type_info *param_1)
 
 // Function: before
 // Address: 0055c020
-/* public: int __thiscall type_info::before(class type_info const &)const  */
-
 int __thiscall type_info::before(type_info *this,type_info *param_1)
 {
   type_info tVar1;
@@ -145,8 +135,6 @@ int __thiscall type_info::before(type_info *this,type_info *param_1)
 
 // Function: raw_name
 // Address: 0055c080
-/* public: char const * __thiscall type_info::raw_name(void)const  */
-
 char * __thiscall type_info::raw_name(type_info *this)
 {
   return (char *)(this + 8);
@@ -156,8 +144,6 @@ char * __thiscall type_info::raw_name(type_info *this)
 
 // Function: type_info
 // Address: 0055c090
-/* private: __thiscall type_info::type_info(class type_info const &) */
-
 void __thiscall type_info::type_info(type_info *this,type_info *param_1)
 {
   *(undefined ***)this = &_vftable_;
@@ -168,8 +154,6 @@ void __thiscall type_info::type_info(type_info *this,type_info *param_1)
 
 // Function: operator=
 // Address: 0055c0a0
-/* private: class type_info & __thiscall type_info::operator=(class type_info const &) */
-
 type_info * __thiscall type_info::operator=(type_info *this,type_info *param_1)
 {
   return this;

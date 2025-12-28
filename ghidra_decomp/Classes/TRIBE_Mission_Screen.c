@@ -147,10 +147,6 @@
 // Function: TRIBE_Mission_Screen
 // Address: 004b8100
 // [HELPER] s_Mission_Dialog: "Mission Dialog"
-/* WARNING: Variable defined which should be unmapped: starting_description */
-/* public: __thiscall TRIBE_Mission_Screen::TRIBE_Mission_Screen(char *,unsigned char,class TPicture
-   *) */
-
 TRIBE_Mission_Screen * __thiscall
 TRIBE_Mission_Screen::TRIBE_Mission_Screen
           (TRIBE_Mission_Screen *this,char *param_1,uchar param_2,TPicture *param_3)
@@ -231,7 +227,6 @@ TRIBE_Mission_Screen::TRIBE_Mission_Screen
     TEasy_Panel::set_ideal_size((TEasy_Panel *)this,0x280,0x1e0);
     pcVar6 = RGE_Scenario::Get_scenario_name(rge_base_game->world->scenario);
     if ((pcVar6 == (char *)0x0) || (*pcVar6 == '\0')) {
-                    /* language.dll match for 0x2655: "Instructions" */
       pcVar8 = TPanel::get_string((TPanel *)this,0x2655);
       uVar9 = 0xffffffff;
       pcVar6 = adjusted_name;
@@ -303,18 +298,14 @@ TRIBE_Mission_Screen::TRIBE_Mission_Screen
                  *(undefined1 *)((int)&this->_padding_ + 3),(char)this->_padding_,
                  *(undefined1 *)((int)&this->_padding_ + 1));
     }
-                    /* language.dll match for 0xfa1: "OK" */
     TEasy_Panel::create_button
               ((TEasy_Panel *)this,(TPanel *)this,&this->ok_button,0xfa1,0,200,0x1b8,0xf0,0x1e,0,0,0
               );
-                    /* language.dll match for 0x2a31: "History" */
     TEasy_Panel::create_button
               ((TEasy_Panel *)this,(TPanel *)this,ppTVar1,0x2a31,0,0x145,0x13c,0xb4,0x1e,0,-1,0);
     ppTVar3 = this->text_buttons + 1;
-                    /* language.dll match for 0x2a32: "Instructions" */
     TEasy_Panel::create_button
               ((TEasy_Panel *)this,(TPanel *)this,ppTVar3,0x2a32,0,0x145,0x15c,0xb4,0x1e,0,-1,0);
-                    /* language.dll match for 0x2a37: "Hints" */
     TEasy_Panel::create_button
               ((TEasy_Panel *)this,(TPanel *)this,this->text_buttons + 2,0x2a37,0,0x145,0x17c,0xb4,
                0x1e,0,-1,0);
@@ -327,7 +318,6 @@ TRIBE_Mission_Screen::TRIBE_Mission_Screen
     } while (local_21c != (char *)0x0);
     if (this->_padding_ < 0x281) {
       (**(code **)(this->title->_padding_ + 0x1c))(3,0xf,0x27a,0x14);
-                    /* language.dll match for 0x73: "B" */
       (**(code **)(this->list->_padding_ + 0x1c))(0x14,0x32,600,0x73);
       (**(code **)((*ppTVar1)->_padding_ + 0x1c))(5,0x1bd,0x96,0x1e);
       (**(code **)((*ppTVar3)->_padding_ + 0x1c))(0xa5,0x1bd,0x96,0x1e);
@@ -421,9 +411,6 @@ TRIBE_Mission_Screen::TRIBE_Mission_Screen
 
 // Function: `vector_deleting_destructor'
 // Address: 004b87b0
-/* public: virtual void * __thiscall TRIBE_Mission_Screen::`vector deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TRIBE_Mission_Screen::_vector_deleting_destructor_(TRIBE_Mission_Screen *this,uint param_1)
 {
@@ -438,8 +425,6 @@ TRIBE_Mission_Screen::_vector_deleting_destructor_(TRIBE_Mission_Screen *this,ui
 
 // Function: ~TRIBE_Mission_Screen
 // Address: 004b87d0
-/* public: virtual __thiscall TRIBE_Mission_Screen::~TRIBE_Mission_Screen(void) */
-
 void __thiscall TRIBE_Mission_Screen::~TRIBE_Mission_Screen(TRIBE_Mission_Screen *this)
 {
   TButtonPanel **ppTVar1;
@@ -489,8 +474,6 @@ void __thiscall TRIBE_Mission_Screen::~TRIBE_Mission_Screen(TRIBE_Mission_Screen
 
 // Function: handle_idle
 // Address: 004b88b0
-/* public: virtual long __thiscall TRIBE_Mission_Screen::handle_idle(void) */
-
 long __thiscall TRIBE_Mission_Screen::handle_idle(TRIBE_Mission_Screen *this)
 {
   long lVar1;
@@ -507,8 +490,6 @@ long __thiscall TRIBE_Mission_Screen::handle_idle(TRIBE_Mission_Screen *this)
 // Function: draw
 // Address: 004b88e0
 // [HELPER] s_scr_vc__draw: "scr_vc::draw"
-/* public: virtual void __thiscall TRIBE_Mission_Screen::draw(void) */
-
 void __thiscall TRIBE_Mission_Screen::draw(TRIBE_Mission_Screen *this)
 {
   int iVar1;
@@ -552,9 +533,6 @@ void __thiscall TRIBE_Mission_Screen::draw(TRIBE_Mission_Screen *this)
 // Address: 004b89a0
 // [HELPER] s_Game_Screen: "Game Screen"
 // [HELPER] s_Mission_Dialog: "Mission Dialog"
-/* public: virtual long __thiscall TRIBE_Mission_Screen::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TRIBE_Mission_Screen::action
           (TRIBE_Mission_Screen *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -603,8 +581,6 @@ TRIBE_Mission_Screen::action
 // Function: key_down_action
 // Address: 004b8ae0
 // [HELPER] s_voice_wav: "voice.wav"
-/* public: virtual long __thiscall TRIBE_Mission_Screen::key_down_action(long,short,int,int,int) */
-
 long __thiscall
 TRIBE_Mission_Screen::key_down_action
           (TRIBE_Mission_Screen *this,long param_1,short param_2,int param_3,int param_4,int param_5

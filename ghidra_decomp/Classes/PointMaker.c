@@ -52,8 +52,6 @@
 
 // Function: SetDefaultValues
 // Address: 0044ab90
-/* public: void __thiscall PointMaker::SetDefaultValues(void) */
-
 void __thiscall PointMaker::SetDefaultValues(PointMaker *this)
 {
   int iVar1;
@@ -90,8 +88,6 @@ void __thiscall PointMaker::SetDefaultValues(PointMaker *this)
 
 // Function: PointMaker
 // Address: 0044ac50
-/* public: __thiscall PointMaker::PointMaker(void) */
-
 PointMaker * __thiscall PointMaker::PointMaker(PointMaker *this)
 {
   this->ProbArray = (char *)0x0;
@@ -106,8 +102,6 @@ PointMaker * __thiscall PointMaker::PointMaker(PointMaker *this)
 
 // Function: ~PointMaker
 // Address: 0044ac80
-/* public: __thiscall PointMaker::~PointMaker(void) */
-
 void __thiscall PointMaker::~PointMaker(PointMaker *this)
 {
   DeleteArrays(this);
@@ -122,9 +116,6 @@ void __thiscall PointMaker::~PointMaker(PointMaker *this)
 
 // Function: CreateMasks
 // Address: 0044acb0
-/* WARNING: Variable defined which should be unmapped: ptr2 */
-/* protected: void __thiscall PointMaker::CreateMasks(void) */
-
 void __thiscall PointMaker::CreateMasks(PointMaker *this)
 {
   char *pcVar1;
@@ -290,8 +281,6 @@ void __thiscall PointMaker::CreateMasks(PointMaker *this)
 
 // Function: DeleteMasks
 // Address: 0044af90
-/* protected: void __thiscall PointMaker::DeleteMasks(void) */
-
 void __thiscall PointMaker::DeleteMasks(PointMaker *this)
 {
   operator_delete(this->Mask_2x2);
@@ -305,9 +294,6 @@ void __thiscall PointMaker::DeleteMasks(PointMaker *this)
 
 // Function: DrawMask
 // Address: 0044afe0
-/* WARNING: Variable defined which should be unmapped: mapptr */
-/* protected: void __thiscall PointMaker::DrawMask(int,int,int) */
-
 void __thiscall PointMaker::DrawMask(PointMaker *this,int param_1,int param_2,int param_3)
 {
   int iVar1;
@@ -432,8 +418,6 @@ void __thiscall PointMaker::DrawMask(PointMaker *this,int param_1,int param_2,in
 
 // Function: ClearArrays
 // Address: 0044b210
-/* public: void __thiscall PointMaker::ClearArrays(void) */
-
 void __thiscall PointMaker::ClearArrays(PointMaker *this)
 {
   uint uVar1;
@@ -477,8 +461,6 @@ void __thiscall PointMaker::ClearArrays(PointMaker *this)
 
 // Function: DeleteArrays
 // Address: 0044b270
-/* public: void __thiscall PointMaker::DeleteArrays(void) */
-
 void __thiscall PointMaker::DeleteArrays(PointMaker *this)
 {
   if (this->ProbArray != (char *)0x0) {
@@ -496,8 +478,6 @@ void __thiscall PointMaker::DeleteArrays(PointMaker *this)
 
 // Function: MakeArrays
 // Address: 0044b2b0
-/* public: void __thiscall PointMaker::MakeArrays(void) */
-
 void __thiscall PointMaker::MakeArrays(PointMaker *this)
 {
   char *pcVar1;
@@ -531,8 +511,6 @@ void __thiscall PointMaker::MakeArrays(PointMaker *this)
 // Function: CreateShape
 // Address: 0044b320
 // [HELPER] s_C__msdev_work_age1_x1_fractal_cp: "C:\msdev\work\age1_x1\fractal.cpp"
-/* public: int __thiscall PointMaker::CreateShape(void) */
-
 int __thiscall PointMaker::CreateShape(PointMaker *this)
 {
   int iVar1;
@@ -580,8 +558,6 @@ int __thiscall PointMaker::CreateShape(PointMaker *this)
 
 // Function: CreateShape
 // Address: 0044b470
-/* public: int __thiscall PointMaker::CreateShape(int,int) */
-
 int __thiscall PointMaker::CreateShape(PointMaker *this,int param_1,int param_2)
 {
   int iVar1;
@@ -624,8 +600,6 @@ int __thiscall PointMaker::CreateShape(PointMaker *this,int param_1,int param_2)
 // Function: Branch
 // Address: 0044b540
 // [HELPER] s_C__msdev_work_age1_x1_fractal_cp: "C:\msdev\work\age1_x1\fractal.cpp"
-/* protected: void __thiscall PointMaker::Branch(int) */
-
 void __thiscall PointMaker::Branch(PointMaker *this,int param_1)
 {
   int iVar1;
@@ -665,8 +639,6 @@ void __thiscall PointMaker::Branch(PointMaker *this,int param_1)
 // Function: MakeFirstLink
 // Address: 0044b610
 // [HELPER] s_C__msdev_work_age1_x1_fractal_cp: "C:\msdev\work\age1_x1\fractal.cpp"
-/* protected: int __thiscall PointMaker::MakeFirstLink(void) */
-
 int __thiscall PointMaker::MakeFirstLink(PointMaker *this)
 {
   int iVar1;
@@ -729,8 +701,6 @@ int __thiscall PointMaker::MakeFirstLink(PointMaker *this)
 // Function: MakeNewLink
 // Address: 0044b760
 // [HELPER] s_C__msdev_work_age1_x1_fractal_cp: "C:\msdev\work\age1_x1\fractal.cpp"
-/* protected: int __thiscall PointMaker::MakeNewLink(void) */
-
 int __thiscall PointMaker::MakeNewLink(PointMaker *this)
 {
   int iVar1;
@@ -817,8 +787,6 @@ int __thiscall PointMaker::MakeNewLink(PointMaker *this)
 // Function: MakeSatelliteLink
 // Address: 0044b950
 // [HELPER] s_C__msdev_work_age1_x1_fractal_cp: "C:\msdev\work\age1_x1\fractal.cpp"
-/* protected: int __thiscall PointMaker::MakeSatelliteLink(void) */
-
 int __thiscall PointMaker::MakeSatelliteLink(PointMaker *this)
 {
   int iVar1;
@@ -874,9 +842,6 @@ int __thiscall PointMaker::MakeSatelliteLink(PointMaker *this)
 
 // Function: DrawPrimaryIntoProbabilityArray
 // Address: 0044baa0
-/* WARNING: Variable defined which should be unmapped: desty */
-/* protected: void __thiscall PointMaker::DrawPrimaryIntoProbabilityArray(void) */
-
 void __thiscall PointMaker::DrawPrimaryIntoProbabilityArray(PointMaker *this)
 {
   int iVar1;
@@ -930,9 +895,6 @@ void __thiscall PointMaker::DrawPrimaryIntoProbabilityArray(PointMaker *this)
 
 // Function: DrawCurrentBranchIntoProbArray
 // Address: 0044bb60
-/* WARNING: Variable defined which should be unmapped: desty */
-/* protected: void __thiscall PointMaker::DrawCurrentBranchIntoProbArray(int) */
-
 void __thiscall PointMaker::DrawCurrentBranchIntoProbArray(PointMaker *this,int param_1)
 {
   char cVar1;
@@ -1003,8 +965,6 @@ void __thiscall PointMaker::DrawCurrentBranchIntoProbArray(PointMaker *this,int 
 
 // Function: DrawCurrentSatelliteIntoProbArray
 // Address: 0044bcd0
-/* protected: void __thiscall PointMaker::DrawCurrentSatelliteIntoProbArray(int) */
-
 void __thiscall PointMaker::DrawCurrentSatelliteIntoProbArray(PointMaker *this,int param_1)
 {
   char cVar1;
@@ -1041,9 +1001,6 @@ void __thiscall PointMaker::DrawCurrentSatelliteIntoProbArray(PointMaker *this,i
 
 // Function: AddingRect
 // Address: 0044bd80
-/* WARNING: Variable defined which should be unmapped: w */
-/* protected: void __thiscall PointMaker::AddingRect(int,int,int,int) */
-
 void __thiscall
 PointMaker::AddingRect(PointMaker *this,int param_1,int param_2,int param_3,int param_4)
 {
@@ -1147,10 +1104,6 @@ PointMaker::AddingRect(PointMaker *this,int param_1,int param_2,int param_3,int 
 // Function: AddingCircle
 // Address: 0044bf90
 // [HELPER] s_C__msdev_work_age1_x1_fractal_cp: "C:\msdev\work\age1_x1\fractal.cpp"
-/* WARNING: Variable defined which should be unmapped: curx */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: void __thiscall PointMaker::AddingCircle(int,int,int) */
-
 void __thiscall PointMaker::AddingCircle(PointMaker *this,int param_1,int param_2,int param_3)
 {
   char cVar1;
@@ -1235,8 +1188,6 @@ void __thiscall PointMaker::AddingCircle(PointMaker *this,int param_1,int param_
 
 // Function: CreateMapBasedOnProbabilityArray
 // Address: 0044c1b0
-/* protected: void __thiscall PointMaker::CreateMapBasedOnProbabilityArray(void) */
-
 void __thiscall PointMaker::CreateMapBasedOnProbabilityArray(PointMaker *this)
 {
   int iVar1;
@@ -1261,8 +1212,6 @@ void __thiscall PointMaker::CreateMapBasedOnProbabilityArray(PointMaker *this)
 
 // Function: SetPoint
 // Address: 0044c200
-/* public: void __thiscall PointMaker::SetPoint(int,int) */
-
 void __thiscall PointMaker::SetPoint(PointMaker *this,int param_1,int param_2)
 {
   this->x = param_1;
@@ -1274,8 +1223,6 @@ void __thiscall PointMaker::SetPoint(PointMaker *this,int param_1,int param_2)
 
 // Function: SetMaxNumberOfBranches
 // Address: 0044c220
-/* public: void __thiscall PointMaker::SetMaxNumberOfBranches(int) */
-
 void __thiscall PointMaker::SetMaxNumberOfBranches(PointMaker *this,int param_1)
 {
   this->MaxNumberOfBranches = param_1;
@@ -1286,8 +1233,6 @@ void __thiscall PointMaker::SetMaxNumberOfBranches(PointMaker *this,int param_1)
 
 // Function: SetChanceOfNextNode
 // Address: 0044c230
-/* public: void __thiscall PointMaker::SetChanceOfNextNode(int) */
-
 void __thiscall PointMaker::SetChanceOfNextNode(PointMaker *this,int param_1)
 {
   this->ChanceOfNextNode = param_1;
@@ -1298,8 +1243,6 @@ void __thiscall PointMaker::SetChanceOfNextNode(PointMaker *this,int param_1)
 
 // Function: SetNumberOfSatellites
 // Address: 0044c240
-/* public: void __thiscall PointMaker::SetNumberOfSatellites(int) */
-
 void __thiscall PointMaker::SetNumberOfSatellites(PointMaker *this,int param_1)
 {
   this->NumberOfSatellites = param_1;
@@ -1310,8 +1253,6 @@ void __thiscall PointMaker::SetNumberOfSatellites(PointMaker *this,int param_1)
 
 // Function: SetSplitsPerBranch
 // Address: 0044c250
-/* public: void __thiscall PointMaker::SetSplitsPerBranch(int) */
-
 void __thiscall PointMaker::SetSplitsPerBranch(PointMaker *this,int param_1)
 {
   this->NumSplitsPerBranch = param_1;
@@ -1322,8 +1263,6 @@ void __thiscall PointMaker::SetSplitsPerBranch(PointMaker *this,int param_1)
 
 // Function: SetWidthAndHeight
 // Address: 0044c260
-/* public: void __thiscall PointMaker::SetWidthAndHeight(int,int) */
-
 void __thiscall PointMaker::SetWidthAndHeight(PointMaker *this,int param_1,int param_2)
 {
   this->Width = param_1;
@@ -1335,8 +1274,6 @@ void __thiscall PointMaker::SetWidthAndHeight(PointMaker *this,int param_1,int p
 
 // Function: SetStartPositionRadius
 // Address: 0044c280
-/* public: void __thiscall PointMaker::SetStartPositionRadius(int) */
-
 void __thiscall PointMaker::SetStartPositionRadius(PointMaker *this,int param_1)
 {
   this->PrimaryRadius = param_1;
@@ -1347,8 +1284,6 @@ void __thiscall PointMaker::SetStartPositionRadius(PointMaker *this,int param_1)
 
 // Function: SetBranchsRadius
 // Address: 0044c290
-/* public: void __thiscall PointMaker::SetBranchsRadius(int) */
-
 void __thiscall PointMaker::SetBranchsRadius(PointMaker *this,int param_1)
 {
   this->BranchRadius = param_1;
@@ -1359,8 +1294,6 @@ void __thiscall PointMaker::SetBranchsRadius(PointMaker *this,int param_1)
 
 // Function: SetSatelliteRadius
 // Address: 0044c2a0
-/* public: void __thiscall PointMaker::SetSatelliteRadius(int) */
-
 void __thiscall PointMaker::SetSatelliteRadius(PointMaker *this,int param_1)
 {
   this->SatelliteRadius = param_1;
@@ -1371,8 +1304,6 @@ void __thiscall PointMaker::SetSatelliteRadius(PointMaker *this,int param_1)
 
 // Function: SetMaxNumberOfBranchLevels
 // Address: 0044c2b0
-/* public: void __thiscall PointMaker::SetMaxNumberOfBranchLevels(int) */
-
 void __thiscall PointMaker::SetMaxNumberOfBranchLevels(PointMaker *this,int param_1)
 {
   this->MaxBranchFlag = 1;
@@ -1384,8 +1315,6 @@ void __thiscall PointMaker::SetMaxNumberOfBranchLevels(PointMaker *this,int para
 
 // Function: SetSatelliteDistance
 // Address: 0044c2d0
-/* public: void __thiscall PointMaker::SetSatelliteDistance(int) */
-
 void __thiscall PointMaker::SetSatelliteDistance(PointMaker *this,int param_1)
 {
   this->SatelliteDistance = param_1;
@@ -1396,8 +1325,6 @@ void __thiscall PointMaker::SetSatelliteDistance(PointMaker *this,int param_1)
 
 // Function: SetBranchDistance
 // Address: 0044c2e0
-/* public: void __thiscall PointMaker::SetBranchDistance(int) */
-
 void __thiscall PointMaker::SetBranchDistance(PointMaker *this,int param_1)
 {
   this->BranchDistance = param_1;
@@ -1408,8 +1335,6 @@ void __thiscall PointMaker::SetBranchDistance(PointMaker *this,int param_1)
 
 // Function: SetMinimumNumberOfTiles
 // Address: 0044c2f0
-/* public: void __thiscall PointMaker::SetMinimumNumberOfTiles(int) */
-
 void __thiscall PointMaker::SetMinimumNumberOfTiles(PointMaker *this,int param_1)
 {
   this->MinimumNumTiles = param_1;
@@ -1420,8 +1345,6 @@ void __thiscall PointMaker::SetMinimumNumberOfTiles(PointMaker *this,int param_1
 
 // Function: SetDrawToOneArray
 // Address: 0044c300
-/* public: void __thiscall PointMaker::SetDrawToOneArray(void) */
-
 void __thiscall PointMaker::SetDrawToOneArray(PointMaker *this)
 {
   this->DrawToOneArrayFlag = 1;
@@ -1432,8 +1355,6 @@ void __thiscall PointMaker::SetDrawToOneArray(PointMaker *this)
 
 // Function: SetBorderDepthPercentage
 // Address: 0044c310
-/* public: void __thiscall PointMaker::SetBorderDepthPercentage(int) */
-
 void __thiscall PointMaker::SetBorderDepthPercentage(PointMaker *this,int param_1)
 {
   this->BorderDepthPercentage = param_1;
@@ -1451,8 +1372,6 @@ void __thiscall PointMaker::SetBorderDepthPercentage(PointMaker *this,int param_
 
 // Function: RetrieveMap
 // Address: 0044c350
-/* public: char * __thiscall PointMaker::RetrieveMap(void) */
-
 char * __thiscall PointMaker::RetrieveMap(PointMaker *this)
 {
   return this->PlacementArray;
@@ -1462,8 +1381,6 @@ char * __thiscall PointMaker::RetrieveMap(PointMaker *this)
 
 // Function: RetrieveProbMap
 // Address: 0044c360
-/* public: char * __thiscall PointMaker::RetrieveProbMap(void) */
-
 char * __thiscall PointMaker::RetrieveProbMap(PointMaker *this)
 {
   return this->ProbArray;
@@ -1473,8 +1390,6 @@ char * __thiscall PointMaker::RetrieveProbMap(PointMaker *this)
 
 // Function: ErrorCheckingAndCorrection
 // Address: 0044c370
-/* protected: void __thiscall PointMaker::ErrorCheckingAndCorrection(void) */
-
 void __thiscall PointMaker::ErrorCheckingAndCorrection(PointMaker *this)
 {
   int iVar1;
@@ -1525,8 +1440,6 @@ void __thiscall PointMaker::ErrorCheckingAndCorrection(PointMaker *this)
 
 // Function: PrepareLimits
 // Address: 0044c4b0
-/* protected: void __thiscall PointMaker::PrepareLimits(void) */
-
 void __thiscall PointMaker::PrepareLimits(PointMaker *this)
 {
   int iVar1;
@@ -1544,9 +1457,6 @@ void __thiscall PointMaker::PrepareLimits(PointMaker *this)
 
 // Function: MapCleanUpEliminatingSinglesOnly
 // Address: 0044c510
-/* WARNING: Variable defined which should be unmapped: w */
-/* protected: void __thiscall PointMaker::MapCleanUpEliminatingSinglesOnly(void) */
-
 void __thiscall PointMaker::MapCleanUpEliminatingSinglesOnly(PointMaker *this)
 {
   int iVar1;

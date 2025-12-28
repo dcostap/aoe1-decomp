@@ -94,8 +94,6 @@
 
 // Function: RGE_Dialog_List
 // Address: 0047e670
-/* public: __thiscall RGE_Dialog_List::RGE_Dialog_List(char *) */
-
 RGE_Dialog_List * __thiscall RGE_Dialog_List::RGE_Dialog_List(RGE_Dialog_List *this,char *param_1)
 {
   TListDialog::TListDialog((TListDialog *)this,param_1);
@@ -107,8 +105,6 @@ RGE_Dialog_List * __thiscall RGE_Dialog_List::RGE_Dialog_List(RGE_Dialog_List *t
 
 // Function: `scalar_deleting_destructor'
 // Address: 0047e690
-/* public: virtual void * __thiscall RGE_Dialog_List::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall RGE_Dialog_List::_scalar_deleting_destructor_(RGE_Dialog_List *this,uint param_1)
 {
   ~RGE_Dialog_List(this);
@@ -122,8 +118,6 @@ void * __thiscall RGE_Dialog_List::_scalar_deleting_destructor_(RGE_Dialog_List 
 
 // Function: setup
 // Address: 0047e6b0
-/* public: int __thiscall RGE_Dialog_List::setup(class TScreenPanel *,char *,long,int,char *) */
-
 int __thiscall
 RGE_Dialog_List::setup
           (RGE_Dialog_List *this,TScreenPanel *param_1,char *param_2,long param_3,int param_4,
@@ -209,8 +203,6 @@ RGE_Dialog_List::setup
 
 // Function: ~RGE_Dialog_List
 // Address: 0047e830
-/* public: virtual __thiscall RGE_Dialog_List::~RGE_Dialog_List(void) */
-
 void __thiscall RGE_Dialog_List::~RGE_Dialog_List(RGE_Dialog_List *this)
 {
   int iVar1;
@@ -241,8 +233,6 @@ void __thiscall RGE_Dialog_List::~RGE_Dialog_List(RGE_Dialog_List *this)
 
 // Function: get_list_id
 // Address: 0047e8c0
-/* public: virtual short __thiscall RGE_Dialog_List::get_list_id(void) */
-
 short __thiscall RGE_Dialog_List::get_list_id(RGE_Dialog_List *this)
 {
   short sVar1;
@@ -258,8 +248,6 @@ short __thiscall RGE_Dialog_List::get_list_id(RGE_Dialog_List *this)
 
 // Function: create_list
 // Address: 0047e8f0
-/* protected: virtual int __thiscall RGE_Dialog_List::create_list(void) */
-
 int __thiscall RGE_Dialog_List::create_list(RGE_Dialog_List *this)
 {
   int iVar1;
@@ -276,9 +264,6 @@ int __thiscall RGE_Dialog_List::create_list(RGE_Dialog_List *this)
 // Function: create_object_list
 // Address: 0047e910
 // [HELPER] s__: "}"
-/* WARNING: Variable defined which should be unmapped: j */
-/* protected: int __thiscall RGE_Dialog_List::create_object_list(void) */
-
 int __thiscall RGE_Dialog_List::create_object_list(RGE_Dialog_List *this)
 {
   char cVar1;
@@ -320,7 +305,6 @@ int __thiscall RGE_Dialog_List::create_object_list(RGE_Dialog_List *this)
   if (this->list_size == 0) {
     return 0;
   }
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
   prVar7 = (rdlg_list_info *)calloc((int)this->list_size,0x66);
   this->list_info = prVar7;
   if (prVar7 == (rdlg_list_info *)0x0) {
@@ -401,11 +385,8 @@ int __thiscall RGE_Dialog_List::create_object_list(RGE_Dialog_List *this)
 
 // Function: sort_list
 // Address: 0047ead0
-/* protected: void __thiscall RGE_Dialog_List::sort_list(void) */
-
 void __thiscall RGE_Dialog_List::sort_list(RGE_Dialog_List *this)
 {
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
   qsort(this->list_info,(int)this->list_size,0x66,rdlg_list_compare);
   return;
 }
@@ -414,8 +395,6 @@ void __thiscall RGE_Dialog_List::sort_list(RGE_Dialog_List *this)
 
 // Function: calc_list_line
 // Address: 0047eaf0
-/* protected: void __thiscall RGE_Dialog_List::calc_list_line(void) */
-
 void __thiscall RGE_Dialog_List::calc_list_line(RGE_Dialog_List *this)
 {
   short sVar1;
@@ -445,8 +424,6 @@ void __thiscall RGE_Dialog_List::calc_list_line(RGE_Dialog_List *this)
 
 // Function: get_cur_id
 // Address: 0047eb60
-/* protected: virtual short __thiscall RGE_Dialog_List::get_cur_id(void) */
-
 short __thiscall RGE_Dialog_List::get_cur_id(RGE_Dialog_List *this)
 {
   if (this->list_type != 1) {

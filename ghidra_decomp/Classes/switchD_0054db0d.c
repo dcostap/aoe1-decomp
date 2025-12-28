@@ -36,8 +36,6 @@ void __fastcall switchD_0054db0d::caseD_1(uint param_1,uint param_2)
   case 1:
     *(undefined4 *)(unaff_EDI + uVar1 * 4 + -1) = *(undefined4 *)(unaff_ESI + uVar1 * 4 + -1);
   case 0:
-                    /* WARNING: Could not recover jumptable at 0x0054dbff. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
     (*(code *)(&switchD_0054daf5::switchdataD_0054dc08)[param_2 & param_1])();
     return;
   default:
@@ -46,8 +44,6 @@ void __fastcall switchD_0054db0d::caseD_1(uint param_1,uint param_2)
       puVar2 = puVar2 + 1;
       puVar3 = puVar3 + 1;
     }
-                    /* WARNING: Could not recover jumptable at 0x0054db52. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
     (*(code *)(&switchD_0054daf5::switchdataD_0054dc08)[param_2 & param_1])();
     return;
   }

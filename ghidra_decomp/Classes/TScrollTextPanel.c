@@ -72,9 +72,6 @@
 
 // Function: TScrollTextPanel
 // Address: 00492e70
-/* public: __thiscall TScrollTextPanel::TScrollTextPanel(class TPanel *,class TDrawArea
-   *,long,long,long,long,int,void *,long,long,char *) */
-
 TScrollTextPanel * __thiscall
 TScrollTextPanel::TScrollTextPanel
           (TScrollTextPanel *this,TPanel *param_1,TDrawArea *param_2,long param_3,long param_4,
@@ -114,8 +111,6 @@ TScrollTextPanel::TScrollTextPanel
 
 // Function: `vector_deleting_destructor'
 // Address: 00492f50
-/* public: virtual void * __thiscall TScrollTextPanel::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall
 TScrollTextPanel::_vector_deleting_destructor_(TScrollTextPanel *this,uint param_1)
 {
@@ -130,8 +125,6 @@ TScrollTextPanel::_vector_deleting_destructor_(TScrollTextPanel *this,uint param
 
 // Function: ~TScrollTextPanel
 // Address: 00492f70
-/* public: virtual __thiscall TScrollTextPanel::~TScrollTextPanel(void) */
-
 void __thiscall TScrollTextPanel::~TScrollTextPanel(TScrollTextPanel *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -143,8 +136,6 @@ void __thiscall TScrollTextPanel::~TScrollTextPanel(TScrollTextPanel *this)
 
 // Function: set_text
 // Address: 00492f80
-/* public: virtual void __thiscall TScrollTextPanel::set_text(char *) */
-
 void __thiscall TScrollTextPanel::set_text(TScrollTextPanel *this,char *param_1)
 {
   TTextPanel::set_text((TTextPanel *)this,param_1);
@@ -159,8 +150,6 @@ void __thiscall TScrollTextPanel::set_text(TScrollTextPanel *this,char *param_1)
 // Function: handle_idle
 // Address: 00492fb0
 // [HELPER] s_C__msdev_work_age1_x1_scr_cred_c: "C:\msdev\work\age1_x1\scr_cred.cpp"
-/* public: virtual long __thiscall TScrollTextPanel::handle_idle(void) */
-
 long __thiscall TScrollTextPanel::handle_idle(TScrollTextPanel *this)
 {
   ulong uVar1;
@@ -192,9 +181,6 @@ long __thiscall TScrollTextPanel::handle_idle(TScrollTextPanel *this)
 // Function: draw
 // Address: 00493070
 // [HELPER] s_scr_cred__draw: "scr_cred::draw"
-/* WARNING: Variable defined which should be unmapped: old_font */
-/* public: virtual void __thiscall TScrollTextPanel::draw(void) */
-
 void __thiscall TScrollTextPanel::draw(TScrollTextPanel *this)
 {
   void *pvVar1;
@@ -236,10 +222,6 @@ void __thiscall TScrollTextPanel::draw(TScrollTextPanel *this)
 
 // Function: draw_scrolled_line
 // Address: 00493160
-/* WARNING: Variable defined which should be unmapped: text_len */
-/* public: void __thiscall TScrollTextPanel::draw_scrolled_line(void *,short,short,unsigned
-   long,unsigned long) */
-
 void __thiscall
 TScrollTextPanel::draw_scrolled_line
           (TScrollTextPanel *this,void *param_1,short param_2,short param_3,ulong param_4,

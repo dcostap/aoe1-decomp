@@ -4,8 +4,6 @@
 // XREFS: None
 void __fastcall FUN_0055740b(int param_1)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055740c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)(&switchD_0055740c::switchdataD_0055748c)[param_1])();
   return;
 }
@@ -15,8 +13,6 @@ void __fastcall FUN_0055740b(int param_1)
 // Function: FUN_00557413
 // Address: 00557413
 // XREFS: None
-/* WARNING: Control flow encountered bad instruction data */
-
 void __fastcall FUN_00557413(uint param_1,uint param_2)
 {
   uint *puVar1;
@@ -40,7 +36,6 @@ void __fastcall FUN_00557413(uint param_1,uint param_2)
     puVar1 = (uint *)(param_2 + 0x8a078806);
     *puVar1 = *puVar1 >> 1 | (uint)((*puVar1 & 1) != 0) << 0x1f;
     *(int *)(in_EAX + 0x468a0147) = *(int *)(in_EAX + 0x468a0147) + param_1;
-                    /* WARNING: Bad instruction - Truncating control flow here */
     halt_baddata();
   }
   *unaff_EDI = *unaff_ESI;
@@ -63,8 +58,6 @@ void __fastcall FUN_00557413(uint param_1,uint param_2)
   case 1:
     *(undefined4 *)(unaff_EDI + uVar3 * 4 + -3) = *(undefined4 *)(unaff_ESI + uVar3 * 4 + -3);
   case 0:
-                    /* WARNING: Could not recover jumptable at 0x005574ef. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
     (*(code *)(&switchD_005573e5::switchdataD_005574f8)[param_2 & param_1])();
     return;
   default:
@@ -73,8 +66,6 @@ void __fastcall FUN_00557413(uint param_1,uint param_2)
       puVar5 = puVar5 + 1;
       puVar6 = puVar6 + 1;
     }
-                    /* WARNING: Could not recover jumptable at 0x00557482. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
     (*(code *)(&switchD_005573e5::switchdataD_005574f8)[param_2 & param_1])();
     return;
   }
@@ -114,8 +105,6 @@ void __fastcall FUN_00557449(uint param_1,uint param_2)
   case 1:
     *(undefined4 *)(unaff_EDI + uVar1 * 4 + -2) = *(undefined4 *)(unaff_ESI + uVar1 * 4 + -2);
   case 0:
-                    /* WARNING: Could not recover jumptable at 0x005574ef. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
     (*(code *)(&switchD_005573e5::switchdataD_005574f8)[param_2 & param_1])();
     return;
   default:
@@ -124,8 +113,6 @@ void __fastcall FUN_00557449(uint param_1,uint param_2)
       puVar2 = puVar2 + 1;
       puVar3 = puVar3 + 1;
     }
-                    /* WARNING: Could not recover jumptable at 0x00557468. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
     (*(code *)(&switchD_005573e5::switchdataD_005574f8)[param_2 & param_1])();
     return;
   }
@@ -164,8 +151,6 @@ void __fastcall FUN_0055746f(uint param_1,uint param_2)
   case 1:
     *(undefined4 *)(unaff_EDI + uVar1 * 4 + -3) = *(undefined4 *)(unaff_ESI + uVar1 * 4 + -3);
   case 0:
-                    /* WARNING: Could not recover jumptable at 0x005574ef. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
     (*(code *)(&switchD_005573e5::switchdataD_005574f8)[param_2 & param_1])();
     return;
   default:
@@ -174,8 +159,6 @@ void __fastcall FUN_0055746f(uint param_1,uint param_2)
       puVar2 = puVar2 + 1;
       puVar3 = puVar3 + 1;
     }
-                    /* WARNING: Could not recover jumptable at 0x00557482. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
     (*(code *)(&switchD_005573e5::switchdataD_005574f8)[param_2 & param_1])();
     return;
   }
@@ -186,11 +169,6 @@ void __fastcall FUN_0055746f(uint param_1,uint param_2)
 // Function: FUN_00557489
 // Address: 00557489
 // XREFS: None
-/* WARNING: Instruction at (ram,0x005574f4) overlaps instruction at (ram,0x005574ef)
-    */
-/* WARNING: Control flow encountered bad instruction data */
-/* WARNING (jumptable): Unable to track spacebase fully for stack */
-
 char * __fastcall FUN_00557489(uint param_1,uint param_2)
 {
   char *pcVar1;
@@ -210,8 +188,6 @@ char * __fastcall FUN_00557489(uint param_1,uint param_2)
   out((short)param_2,in_EAX);
   if (in_ZF) {
 code_r0x005574e4:
-                    /* WARNING: Could not recover jumptable at 0x005574ef. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
     pcVar3 = (char *)(*(code *)(&switchD_005573e5::switchdataD_005574f8)[param_2])();
     return pcVar3;
   }
@@ -222,7 +198,6 @@ code_r0x005574e4:
   if (cVar4 == '\0') {
     *pcVar3 = *pcVar3 + cVar2;
     *unaff_EBX = *unaff_EBX + cVar2;
-                    /* WARNING: Bad instruction - Truncating control flow here */
     halt_baddata();
   }
   cVar4 = cVar4 + (char)param_2;
@@ -300,7 +275,6 @@ code_r0x005574f5:
       param_1 = param_1 - ((uint)unaff_EDI & 3);
       switch((uint)unaff_EDI & 3) {
       case 0:
-                    /* WARNING: Bad instruction - Truncating control flow here */
         halt_baddata();
       case 1:
         param_2 = param_1 & 3;
@@ -420,9 +394,6 @@ switchD_00557567_caseD_0:
 // Function: FUN_005574f6
 // Address: 005574f6
 // XREFS: None
-/* WARNING (jumptable): Unable to track spacebase fully for stack */
-/* WARNING: Control flow encountered bad instruction data */
-
 char * __fastcall FUN_005574f6(uint param_1,uint param_2)
 {
   char *pcVar1;
@@ -475,7 +446,6 @@ char * __fastcall FUN_005574f6(uint param_1,uint param_2)
       param_1 = param_1 - ((uint)unaff_EDI & 3);
       switch((uint)unaff_EDI & 3) {
       case 0:
-                    /* WARNING: Bad instruction - Truncating control flow here */
         halt_baddata();
       case 1:
         param_2 = param_1 & 3;
@@ -643,9 +613,6 @@ undefined4 FUN_0055752d(void)
 // Function: FUN_00557547
 // Address: 00557547
 // XREFS: None
-/* WARNING (jumptable): Stack frame is not setup normally: Input value of stackpointer is not used
-    */
-
 undefined4 __fastcall FUN_00557547(uint param_1,uint param_2)
 {
   int unaff_EBP;
@@ -809,8 +776,6 @@ switchD_00557567_caseD_0:
 // XREFS: None
 void __fastcall FUN_0055756e(int param_1)
 {
-                    /* WARNING: Could not recover jumptable at 0x00557572. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)(&PTR_caseD_0_00557640)[-param_1])();
   return;
 }
@@ -820,10 +785,6 @@ void __fastcall FUN_0055756e(int param_1)
 // Function: FUN_00557579
 // Address: 00557579
 // XREFS: None
-/* WARNING: Control flow encountered bad instruction data */
-/* WARNING (jumptable): Stack frame is not setup normally: Input value of stackpointer is not used
-    */
-
 undefined4 __fastcall FUN_00557579(int param_1)
 {
   undefined4 uVar1;
@@ -855,7 +816,6 @@ switchD_00557567_caseD_3:
     uVar2 = param_1 - ((uint)unaff_EDI & 3);
     switch((uint)unaff_EDI & 3) {
     case 0:
-                    /* WARNING: Bad instruction - Truncating control flow here */
       halt_baddata();
     case 1:
       *(undefined1 *)((int)unaff_EDI + 3) = *(undefined1 *)((int)unaff_ESI + 3);
@@ -864,8 +824,6 @@ switchD_00557567_caseD_3:
       unaff_EDI = (undefined4 *)((int)unaff_EDI + -1);
       if (uVar3 < 8) {
 LAB_00557570:
-                    /* WARNING: Could not recover jumptable at 0x00557572. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
         uVar1 = (*(code *)(&PTR_caseD_0_00557640)[-(uVar2 >> 2)])();
         return uVar1;
       }
@@ -936,10 +894,6 @@ switchD_00557567_caseD_0:
 // Function: FUN_0055759b
 // Address: 0055759b
 // XREFS: None
-/* WARNING: Control flow encountered bad instruction data */
-/* WARNING: Instruction at (ram,0x005575fe) overlaps instruction at (ram,0x005575fd)
-    */
-
 void __fastcall FUN_0055759b(uint param_1,int param_2)
 {
   undefined4 in_EAX;
@@ -960,7 +914,6 @@ void __fastcall FUN_0055759b(uint param_1,int param_2)
            cVar1 + *(char *)(param_2 + -0x163efeba) +
            *(char *)(CONCAT31((int3)((uint)in_EAX >> 8),cVar3) + -0x117cfeb9);
       *(char *)(param_2 + -1) = *(char *)(param_2 + -1) + '\x01';
-                    /* WARNING: Bad instruction - Truncating control flow here */
       halt_baddata();
     }
     *(char *)(param_2 + -0x2edcfcba) = *(char *)(param_2 + -0x2edcfcba) + cVar1;
@@ -974,8 +927,6 @@ void __fastcall FUN_0055759b(uint param_1,int param_2)
         puVar4 = puVar4 + -1;
         puVar5 = puVar5 + -1;
       }
-                    /* WARNING: Could not recover jumptable at 0x005575be. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
       (*(code *)(&switchD_00557567::switchdataD_00557690)[param_2])();
       return;
     }
@@ -992,14 +943,10 @@ void __fastcall FUN_0055759b(uint param_1,int param_2)
         puVar4 = puVar4 + -1;
         puVar5 = puVar5 + -1;
       }
-                    /* WARNING: Could not recover jumptable at 0x0055761a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
       (*(code *)(&switchD_00557567::switchdataD_00557690)[param_2])();
       return;
     }
   }
-                    /* WARNING: Could not recover jumptable at 0x00557572. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)(&PTR_caseD_0_00557640)[-(param_1 >> 2)])();
   return;
 }
@@ -1038,8 +985,6 @@ void __fastcall FUN_005575c5(uint param_1,uint param_2)
   case 1:
     *(undefined4 *)(unaff_EDI + 2 + uVar1 * -4) = *(undefined4 *)(unaff_ESI + 2 + uVar1 * -4);
   case 0:
-                    /* WARNING: Could not recover jumptable at 0x00557687. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
     (*(code *)(&switchD_00557567::switchdataD_00557690)[param_2 & param_1])();
     return;
   default:
@@ -1048,8 +993,6 @@ void __fastcall FUN_005575c5(uint param_1,uint param_2)
       puVar2 = puVar2 + -1;
       puVar3 = puVar3 + -1;
     }
-                    /* WARNING: Could not recover jumptable at 0x005575e8. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
     (*(code *)(&switchD_00557567::switchdataD_00557690)[param_2 & param_1])();
     return;
   }
@@ -1090,8 +1033,6 @@ void __fastcall FUN_005575ef(uint param_1,uint param_2)
   case 1:
     *(undefined4 *)(unaff_EDI + 1 + uVar1 * -4) = *(undefined4 *)(unaff_ESI + 1 + uVar1 * -4);
   case 0:
-                    /* WARNING: Could not recover jumptable at 0x00557687. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
     (*(code *)(&switchD_00557567::switchdataD_00557690)[param_2 & param_1])();
     return;
   default:
@@ -1100,8 +1041,6 @@ void __fastcall FUN_005575ef(uint param_1,uint param_2)
       puVar2 = puVar2 + -1;
       puVar3 = puVar3 + -1;
     }
-                    /* WARNING: Could not recover jumptable at 0x0055761a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
     (*(code *)(&switchD_00557567::switchdataD_00557690)[param_2 & param_1])();
     return;
   }
@@ -1112,8 +1051,6 @@ void __fastcall FUN_005575ef(uint param_1,uint param_2)
 // Function: FUN_00557621
 // Address: 00557621
 // XREFS: None
-/* WARNING: Control flow encountered bad instruction data */
-
 void __fastcall FUN_00557621(undefined4 param_1,int param_2)
 {
   char *pcVar1;
@@ -1137,11 +1074,8 @@ void __fastcall FUN_00557621(undefined4 param_1,int param_2)
     pcVar1 = (char *)(unaff_ESI * 3 + 0x55);
     *pcVar1 = *pcVar1 + (char)((uint)param_2 >> 8);
     *(char *)(unaff_EDI + -0x74ffaa8a) = *(char *)(unaff_EDI + -0x74ffaa8a) + (char)in_EAX;
-                    /* WARNING: Bad instruction - Truncating control flow here */
     halt_baddata();
   }
-                    /* WARNING: Could not recover jumptable at 0x00557687. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)(&switchD_00557567::switchdataD_00557690)[param_2])();
   return;
 }
@@ -1151,8 +1085,6 @@ void __fastcall FUN_00557621(undefined4 param_1,int param_2)
 // Function: FUN_0055768e
 // Address: 0055768e
 // XREFS: None
-/* WARNING: Control flow encountered bad instruction data */
-
 void __fastcall FUN_0055768e(char param_1)
 {
   byte *pbVar1;
@@ -1177,7 +1109,6 @@ void __fastcall FUN_0055768e(char param_1)
     *(char *)(unaff_EBX + 0x5f5e0845) = *(char *)(unaff_EBX + 0x5f5e0845) + param_1;
     return;
   }
-                    /* WARNING: Bad instruction - Truncating control flow here */
   halt_baddata();
 }
 
@@ -1234,8 +1165,6 @@ undefined4 FUN_005576cb(void)
 // Function: abort
 // Address: 005576f0
 // XREFS: FUN_005504fe
-/* abort */
-
 void __cdecl abort(void)
 {
   __NMSG_WRITE(10);
@@ -1943,8 +1872,6 @@ byte __isatty(uint param_1)
 // Function: wctomb
 // Address: 00558150
 // XREFS: __output
-/* wctomb */
-
 undefined1 * __cdecl wctomb(undefined1 *param_1,ushort param_2)
 {
   undefined1 *puVar1;
@@ -2082,8 +2009,6 @@ undefined8 __aullrem(uint param_1,uint param_2,uint param_3,uint param_4)
 // Function: mbtowc
 // Address: 005582c0
 // XREFS: __input
-/* mbtowc */
-
 uint __cdecl mbtowc(ushort *param_1,byte *param_2,uint param_3)
 {
   byte bVar1;
@@ -2154,8 +2079,6 @@ longlong __fastcall __allshl(byte param_1,int param_2)
 // Function: ungetc
 // Address: 005583e0
 // XREFS: FUN_00553070
-/* ungetc */
-
 uint __cdecl ungetc(uint param_1,int *param_2)
 {
   uint uVar1;
@@ -2226,8 +2149,6 @@ void __getbuf(int *param_1)
 // Function: wcstombs
 // Address: 005584d0
 // XREFS: __tzset
-/* wcstombs */
-
 ushort * __cdecl wcstombs(int param_1,ushort *param_2,ushort *param_3)
 {
   char cVar1;
@@ -2378,8 +2299,6 @@ int FUN_005586c0(short *param_1,int param_2)
 // Function: getenv
 // Address: 00558700
 // XREFS: __tzset
-/* getenv */
-
 int __cdecl getenv(char *param_1)
 {
   char cVar1;
@@ -2867,7 +2786,6 @@ LAB_00558dc2:
         pbVar12 = pbVar12 + 1;
         param_3 = (byte *)CONCAT31(param_3._1_3_,bVar10);
       }
-                    /* language.dll match for 0x1451: "Dead tree" */
       local_48 = 0x1451;
 LAB_00558d2a:
       while( true ) {
@@ -2995,8 +2913,6 @@ undefined4 __matherr(void)
 // Function: wcslen
 // Address: 005590e0
 // XREFS: FUN_00556d0f, wcstombs
-/* wcslen */
-
 int __cdecl wcslen(short *param_1)
 {
   short sVar1;
@@ -3172,8 +3088,6 @@ undefined4 __fastcall FUN_005592d3(char param_1)
 // Function: raise
 // Address: 00559350
 // XREFS: abort
-/* raise */
-
 undefined4 __cdecl raise(int param_1)
 {
   int iVar1;
@@ -4440,8 +4354,6 @@ char * __strdup(char *param_1)
 // XREFS: RGE_Communications_Addresses
 void _WSAStartup_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bae0. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   WSAStartup();
   return;
 }
@@ -4453,8 +4365,6 @@ void _WSAStartup_8(void)
 // XREFS: ~RGE_Communications_Addresses
 void _WSACleanup_0(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bae6. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   WSACleanup();
   return;
 }
@@ -4464,12 +4374,8 @@ void _WSACleanup_0(void)
 // Function: gethostname
 // Address: 0055baec
 // XREFS: GetHostName
-/* __stdcall gethostname,8 */
-
 void gethostname(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055baec. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   gethostname();
   return;
 }
@@ -4479,12 +4385,8 @@ void gethostname(void)
 // Function: gethostbyname
 // Address: 0055baf2
 // XREFS: SetIPAddresses, SetIPAliases
-/* __stdcall gethostbyname,4 */
-
 void gethostbyname(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055baf2. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   gethostbyname();
   return;
 }
@@ -4496,8 +4398,6 @@ void gethostbyname(void)
 // XREFS: _UnwindNestedFrames, __global_unwind2
 void _RtlUnwind_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055baf8. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   RtlUnwind();
   return;
 }
@@ -4509,8 +4409,6 @@ void _RtlUnwind_16(void)
 // XREFS: None
 void _HeapAlloc_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bafe. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   HeapAlloc();
   return;
 }
@@ -4522,8 +4420,6 @@ void _HeapAlloc_12(void)
 // XREFS: None
 void _HeapFree_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb04. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   HeapFree();
   return;
 }
@@ -4535,8 +4431,6 @@ void _HeapFree_12(void)
 // XREFS: None
 void _DeleteFileA_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb0a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   DeleteFileA();
   return;
 }
@@ -4548,8 +4442,6 @@ void _DeleteFileA_4(void)
 // XREFS: None
 void _GetTimeZoneInformation_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb10. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetTimeZoneInformation();
   return;
 }
@@ -4561,8 +4453,6 @@ void _GetTimeZoneInformation_4(void)
 // XREFS: None
 void _GetSystemTime_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb16. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetSystemTime();
   return;
 }
@@ -4574,8 +4464,6 @@ void _GetSystemTime_4(void)
 // XREFS: None
 void _GetLocalTime_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb1c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetLocalTime();
   return;
 }
@@ -4587,8 +4475,6 @@ void _GetLocalTime_4(void)
 // XREFS: None
 void _FindNextFileA_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb22. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   FindNextFileA();
   return;
 }
@@ -4600,8 +4486,6 @@ void _FindNextFileA_8(void)
 // XREFS: None
 void _FileTimeToLocalFileTime_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb28. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   FileTimeToLocalFileTime();
   return;
 }
@@ -4613,8 +4497,6 @@ void _FileTimeToLocalFileTime_8(void)
 // XREFS: None
 void _ReadFile_20(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb2e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   ReadFile();
   return;
 }
@@ -4626,8 +4508,6 @@ void _ReadFile_20(void)
 // XREFS: None
 void _GetFileType_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb34. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetFileType();
   return;
 }
@@ -4639,8 +4519,6 @@ void _GetFileType_4(void)
 // XREFS: None
 void _SetFilePointer_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb3a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetFilePointer();
   return;
 }
@@ -4652,8 +4530,6 @@ void _SetFilePointer_16(void)
 // XREFS: None
 void _WriteFile_20(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb40. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   WriteFile();
   return;
 }
@@ -4665,8 +4541,6 @@ void _WriteFile_20(void)
 // XREFS: None
 void _SetCurrentDirectoryA_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb46. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetCurrentDirectoryA();
   return;
 }
@@ -4678,8 +4552,6 @@ void _SetCurrentDirectoryA_4(void)
 // XREFS: None
 void _SetEnvironmentVariableA_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb4c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetEnvironmentVariableA();
   return;
 }
@@ -4691,8 +4563,6 @@ void _SetEnvironmentVariableA_8(void)
 // XREFS: None
 void _GetFullPathNameA_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb52. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetFullPathNameA();
   return;
 }
@@ -4704,8 +4574,6 @@ void _GetFullPathNameA_16(void)
 // XREFS: None
 void _ExitProcess_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb58. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   ExitProcess();
   return;
 }
@@ -4717,8 +4585,6 @@ void _ExitProcess_4(void)
 // XREFS: None
 void _TerminateProcess_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb5e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   TerminateProcess();
   return;
 }
@@ -4730,8 +4596,6 @@ void _TerminateProcess_8(void)
 // XREFS: None
 void _GetCurrentProcess_0(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb64. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetCurrentProcess();
   return;
 }
@@ -4743,8 +4607,6 @@ void _GetCurrentProcess_0(void)
 // XREFS: None
 void _GetStartupInfoA_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb6a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetStartupInfoA();
   return;
 }
@@ -4756,8 +4618,6 @@ void _GetStartupInfoA_4(void)
 // XREFS: None
 void _GetCommandLineA_0(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb70. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetCommandLineA();
   return;
 }
@@ -4769,8 +4629,6 @@ void _GetCommandLineA_0(void)
 // XREFS: None
 void _GetVersion_0(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb76. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetVersion();
   return;
 }
@@ -4782,8 +4640,6 @@ void _GetVersion_0(void)
 // XREFS: None
 void _HeapDestroy_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb7c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   HeapDestroy();
   return;
 }
@@ -4795,8 +4651,6 @@ void _HeapDestroy_4(void)
 // XREFS: None
 void _HeapCreate_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb82. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   HeapCreate();
   return;
 }
@@ -4808,8 +4662,6 @@ void _HeapCreate_12(void)
 // XREFS: None
 void _VirtualAlloc_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb88. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   VirtualAlloc();
   return;
 }
@@ -4821,8 +4673,6 @@ void _VirtualAlloc_16(void)
 // XREFS: None
 void _FlushFileBuffers_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb8e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   FlushFileBuffers();
   return;
 }
@@ -4834,8 +4684,6 @@ void _FlushFileBuffers_4(void)
 // XREFS: None
 void _SetHandleCount_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb94. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetHandleCount();
   return;
 }
@@ -4847,8 +4695,6 @@ void _SetHandleCount_4(void)
 // XREFS: None
 void _GetStdHandle_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bb9a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetStdHandle();
   return;
 }
@@ -4860,8 +4706,6 @@ void _GetStdHandle_4(void)
 // XREFS: None
 void _GetCPInfo_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bba0. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetCPInfo();
   return;
 }
@@ -4873,8 +4717,6 @@ void _GetCPInfo_8(void)
 // XREFS: None
 void _GetACP_0(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bba6. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetACP();
   return;
 }
@@ -4886,8 +4728,6 @@ void _GetACP_0(void)
 // XREFS: None
 void _GetOEMCP_0(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bbac. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetOEMCP();
   return;
 }
@@ -4899,8 +4739,6 @@ void _GetOEMCP_0(void)
 // XREFS: None
 void _WideCharToMultiByte_32(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bbb2. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   WideCharToMultiByte();
   return;
 }
@@ -4912,8 +4750,6 @@ void _WideCharToMultiByte_32(void)
 // XREFS: None
 void _GetStringTypeA_20(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bbb8. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetStringTypeA();
   return;
 }
@@ -4925,8 +4761,6 @@ void _GetStringTypeA_20(void)
 // XREFS: None
 void _GetStringTypeW_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bbbe. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetStringTypeW();
   return;
 }
@@ -4938,8 +4772,6 @@ void _GetStringTypeW_16(void)
 // XREFS: None
 void _MultiByteToWideChar_24(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bbc4. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   MultiByteToWideChar();
   return;
 }
@@ -4951,8 +4783,6 @@ void _MultiByteToWideChar_24(void)
 // XREFS: None
 void _SetStdHandle_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bbca. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetStdHandle();
   return;
 }
@@ -4964,8 +4794,6 @@ void _SetStdHandle_8(void)
 // XREFS: None
 void _SetEndOfFile_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bbd0. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetEndOfFile();
   return;
 }
@@ -4977,8 +4805,6 @@ void _SetEndOfFile_4(void)
 // XREFS: None
 void _LCMapStringA_24(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bbd6. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   LCMapStringA();
   return;
 }
@@ -4990,8 +4816,6 @@ void _LCMapStringA_24(void)
 // XREFS: None
 void _LCMapStringW_24(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bbdc. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   LCMapStringW();
   return;
 }
@@ -5003,8 +4827,6 @@ void _LCMapStringW_24(void)
 // XREFS: None
 void _RaiseException_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bbe2. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   RaiseException();
   return;
 }
@@ -5016,8 +4838,6 @@ void _RaiseException_16(void)
 // XREFS: None
 void _HeapReAlloc_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bbe8. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   HeapReAlloc();
   return;
 }
@@ -5029,8 +4849,6 @@ void _HeapReAlloc_16(void)
 // XREFS: None
 void _HeapSize_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bbee. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   HeapSize();
   return;
 }
@@ -5042,8 +4860,6 @@ void _HeapSize_12(void)
 // XREFS: None
 void _UnhandledExceptionFilter_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bbf4. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   UnhandledExceptionFilter();
   return;
 }
@@ -5055,8 +4871,6 @@ void _UnhandledExceptionFilter_4(void)
 // XREFS: None
 void _GetModuleFileNameA_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bbfa. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetModuleFileNameA();
   return;
 }
@@ -5068,8 +4882,6 @@ void _GetModuleFileNameA_12(void)
 // XREFS: None
 void _FreeEnvironmentStringsA_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bc00. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   FreeEnvironmentStringsA();
   return;
 }
@@ -5081,8 +4893,6 @@ void _FreeEnvironmentStringsA_4(void)
 // XREFS: None
 void _FreeEnvironmentStringsW_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bc06. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   FreeEnvironmentStringsW();
   return;
 }
@@ -5094,8 +4904,6 @@ void _FreeEnvironmentStringsW_4(void)
 // XREFS: None
 void _GetEnvironmentStrings_0(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bc0c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetEnvironmentStrings();
   return;
 }
@@ -5107,8 +4915,6 @@ void _GetEnvironmentStrings_0(void)
 // XREFS: None
 void _GetEnvironmentStringsW_0(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bc12. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetEnvironmentStringsW();
   return;
 }
@@ -5120,8 +4926,6 @@ void _GetEnvironmentStringsW_0(void)
 // XREFS: None
 void _SetUnhandledExceptionFilter_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bc18. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetUnhandledExceptionFilter();
   return;
 }
@@ -5133,8 +4937,6 @@ void _SetUnhandledExceptionFilter_4(void)
 // XREFS: None
 void _IsBadReadPtr_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bc1e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   IsBadReadPtr();
   return;
 }
@@ -5146,8 +4948,6 @@ void _IsBadReadPtr_8(void)
 // XREFS: None
 void _IsBadWritePtr_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bc24. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   IsBadWritePtr();
   return;
 }
@@ -5159,8 +4959,6 @@ void _IsBadWritePtr_8(void)
 // XREFS: None
 void _IsBadCodePtr_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bc2a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   IsBadCodePtr();
   return;
 }
@@ -5172,8 +4970,6 @@ void _IsBadCodePtr_4(void)
 // XREFS: None
 void _SetConsoleCtrlHandler_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bc30. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetConsoleCtrlHandler();
   return;
 }
@@ -5185,8 +4981,6 @@ void _SetConsoleCtrlHandler_8(void)
 // XREFS: None
 void _CompareStringW_24(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0055bc36. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   CompareStringW();
   return;
 }
@@ -5196,8 +4990,6 @@ void _CompareStringW_24(void)
 // Function: strupr
 // Address: 0055bc40
 // XREFS: get_palette
-/* strupr */
-
 char * __cdecl strupr(char *param_1)
 {
   char cVar1;
@@ -5262,8 +5054,6 @@ char * __cdecl strupr(char *param_1)
 // Function: itoa
 // Address: 0055bd00
 // XREFS: action, load_multi_victory_cond_from_scenario, load_victory_cond_from_scenario, set_mode
-/* itoa */
-
 undefined4 __cdecl itoa(int param_1,undefined4 param_2,int param_3)
 {
   if ((param_3 == 10) && (param_1 < 0)) {
@@ -5427,8 +5217,6 @@ undefined4 FUN_0055bef1(undefined4 param_1,undefined4 param_2,undefined4 param_3
 void FUN_0055c0a5(void)
 {
   int unaff_EBP;
-  
-                    /* Symbol Ref: {@symbol $L35541} */
   RGE_Action::~RGE_Action(*(RGE_Action **)(unaff_EBP + -0x10));
   return;
 }
@@ -5440,7 +5228,6 @@ void FUN_0055c0a5(void)
 // XREFS: RGE_Action_Attack
 void FUN_0055c0b8(void)
 {
-                    /* Symbol Ref: {@symbol $L35546} */
   ___CxxFrameHandler();
   return;
 }
@@ -5452,7 +5239,6 @@ void FUN_0055c0b8(void)
 // XREFS: RGE_Action_Attack
 void FUN_0055c0d8(void)
 {
-                    /* Symbol Ref: {@symbol $L35565} */
   ___CxxFrameHandler();
   return;
 }
@@ -5464,7 +5250,6 @@ void FUN_0055c0d8(void)
 // XREFS: set_state
 void FUN_0055c106(void)
 {
-                    /* Symbol Ref: {@symbol $L35602} */
   ___CxxFrameHandler();
   return;
 }
@@ -5477,8 +5262,6 @@ void FUN_0055c106(void)
 void FUN_0055c110(void)
 {
   int unaff_EBP;
-  
-                    /* Symbol Ref: {@symbol $L34845} */
   operator_delete(*(void **)(unaff_EBP + -0x10));
   return;
 }
@@ -5490,7 +5273,6 @@ void FUN_0055c110(void)
 // XREFS: update
 void FUN_0055c11b(void)
 {
-                    /* Symbol Ref: {@symbol $L34851} */
   ___CxxFrameHandler();
   return;
 }
@@ -5502,7 +5284,6 @@ void FUN_0055c11b(void)
 // XREFS: RGE_Action_Enter
 void FUN_0055c138(void)
 {
-                    /* Symbol Ref: {@symbol $L34529} */
   ___CxxFrameHandler();
   return;
 }
@@ -5514,7 +5295,6 @@ void FUN_0055c138(void)
 // XREFS: set_state
 void FUN_0055c15b(void)
 {
-                    /* Symbol Ref: {@symbol $L34551} */
   ___CxxFrameHandler();
   return;
 }
@@ -5526,7 +5306,6 @@ void FUN_0055c15b(void)
 // XREFS: set_state
 void FUN_0055c17b(void)
 {
-                    /* Symbol Ref: {@symbol $L33615} */
   ___CxxFrameHandler();
   return;
 }
@@ -5538,7 +5317,6 @@ void FUN_0055c17b(void)
 // XREFS: RGE_Action_Gather
 void FUN_0055c198(void)
 {
-                    /* Symbol Ref: {@symbol $L35503} */
   ___CxxFrameHandler();
   return;
 }
@@ -5550,7 +5328,6 @@ void FUN_0055c198(void)
 // XREFS: RGE_Action_Gather
 void FUN_0055c1b8(void)
 {
-                    /* Symbol Ref: {@symbol $L35525} */
   ___CxxFrameHandler();
   return;
 }
@@ -5562,7 +5339,6 @@ void FUN_0055c1b8(void)
 // XREFS: set_state
 void FUN_0055c1f1(void)
 {
-                    /* Symbol Ref: {@symbol $L35560} */
   ___CxxFrameHandler();
   return;
 }
@@ -5574,7 +5350,6 @@ void FUN_0055c1f1(void)
 // XREFS: create_action
 void FUN_0055c24d(void)
 {
-                    /* Symbol Ref: {@symbol $L34153} */
   ___CxxFrameHandler();
   return;
 }
@@ -5586,7 +5361,6 @@ void FUN_0055c24d(void)
 // XREFS: create_task_action
 void FUN_0055c2ad(void)
 {
-                    /* Symbol Ref: {@symbol $L34207} */
   ___CxxFrameHandler();
   return;
 }
@@ -5598,7 +5372,6 @@ void FUN_0055c2ad(void)
 // XREFS: RGE_Action_Missile
 void FUN_0055c2c8(void)
 {
-                    /* Symbol Ref: {@symbol $L34841} */
   ___CxxFrameHandler();
   return;
 }
@@ -5610,7 +5383,6 @@ void FUN_0055c2c8(void)
 // XREFS: RGE_Action_Missile
 void FUN_0055c2e8(void)
 {
-                    /* Symbol Ref: {@symbol $L34863} */
   ___CxxFrameHandler();
   return;
 }
@@ -5622,7 +5394,6 @@ void FUN_0055c2e8(void)
 // XREFS: RGE_Action_Move_To
 void FUN_0055c308(void)
 {
-                    /* Symbol Ref: {@symbol $L34509} */
   ___CxxFrameHandler();
   return;
 }
@@ -5634,7 +5405,6 @@ void FUN_0055c308(void)
 // XREFS: RGE_Action_Move_To
 void FUN_0055c328(void)
 {
-                    /* Symbol Ref: {@symbol $L34533} */
   ___CxxFrameHandler();
   return;
 }
@@ -5646,7 +5416,6 @@ void FUN_0055c328(void)
 // XREFS: ~RGE_Action_Move_To
 void FUN_0055c348(void)
 {
-                    /* Symbol Ref: {@symbol $L34543} */
   ___CxxFrameHandler();
   return;
 }
@@ -5658,7 +5427,6 @@ void FUN_0055c348(void)
 // XREFS: RGE_Action_Object
 void FUN_0055c368(void)
 {
-                    /* Symbol Ref: {@symbol $L35401} */
   ___CxxFrameHandler();
   return;
 }
@@ -5670,7 +5438,6 @@ void FUN_0055c368(void)
 // XREFS: RGE_Action_Object
 void FUN_0055c388(void)
 {
-                    /* Symbol Ref: {@symbol $L35497} */
   ___CxxFrameHandler();
   return;
 }
@@ -5682,7 +5449,6 @@ void FUN_0055c388(void)
 // XREFS: ~RGE_Action_Object
 void FUN_0055c3a8(void)
 {
-                    /* Symbol Ref: {@symbol $L35513} */
   ___CxxFrameHandler();
   return;
 }
@@ -5694,7 +5460,6 @@ void FUN_0055c3a8(void)
 // XREFS: create_action_list
 void FUN_0055c3cb(void)
 {
-                    /* Symbol Ref: {@symbol $L35536} */
   ___CxxFrameHandler();
   return;
 }
@@ -5706,7 +5471,6 @@ void FUN_0055c3cb(void)
 // XREFS: move_to
 void FUN_0055c3f6(void)
 {
-                    /* Symbol Ref: {@symbol $L35566} */
   ___CxxFrameHandler();
   return;
 }
@@ -5719,8 +5483,6 @@ void FUN_0055c3f6(void)
 void FUN_0055c400(void)
 {
   int unaff_EBP;
-  
-                    /* Symbol Ref: {@symbol $L35738} */
   operator_delete(*(void **)(unaff_EBP + 4));
   return;
 }
@@ -5733,8 +5495,6 @@ void FUN_0055c400(void)
 void FUN_0055c40b(void)
 {
   int unaff_EBP;
-  
-                    /* Symbol Ref: {@symbol $L35739} */
   operator_delete(*(void **)(unaff_EBP + 4));
   return;
 }
@@ -5746,7 +5506,6 @@ void FUN_0055c40b(void)
 // XREFS: set_state
 void FUN_0055c416(void)
 {
-                    /* Symbol Ref: {@symbol $L35744} */
   ___CxxFrameHandler();
   return;
 }
@@ -5759,8 +5518,6 @@ void FUN_0055c416(void)
 void FUN_0055c420(void)
 {
   int unaff_EBP;
-  
-                    /* Symbol Ref: {@symbol $L34795} */
   operator_delete(*(void **)(unaff_EBP + -0x10));
   return;
 }
@@ -5772,7 +5529,6 @@ void FUN_0055c420(void)
 // XREFS: create_action_list
 void FUN_0055c42b(void)
 {
-                    /* Symbol Ref: {@symbol $L34800} */
   ___CxxFrameHandler();
   return;
 }
@@ -5784,7 +5540,6 @@ void FUN_0055c42b(void)
 // XREFS: BuildAIModule
 void FUN_0055c456(void)
 {
-                    /* Symbol Ref: {@symbol $L31906} */
   ___CxxFrameHandler();
   return;
 }
@@ -5797,8 +5552,6 @@ void FUN_0055c456(void)
 void FUN_0055c460(void)
 {
   int unaff_EBP;
-  
-                    /* Symbol Ref: {@symbol $L31928} */
   AIModule::~AIModule(*(AIModule **)(unaff_EBP + -0x118));
   return;
 }
@@ -5811,8 +5564,6 @@ void FUN_0055c460(void)
 void FUN_0055c46b(void)
 {
   int unaff_EBP;
-  
-                    /* Symbol Ref: {@symbol $L31929} */
   BuildItem::~BuildItem((BuildItem *)(*(int *)(unaff_EBP + -0x118) + 0xf0));
   return;
 }
@@ -5825,8 +5576,6 @@ void FUN_0055c46b(void)
 void FUN_0055c47c(void)
 {
   int unaff_EBP;
-  
-                    /* Symbol Ref: {@symbol $L31930} */
   ManagedArray<int>::~ManagedArray<int>((ManagedArray<int> *)(*(int *)(unaff_EBP + -0x118) + 0x5ac))
   ;
   return;
@@ -5840,8 +5589,6 @@ void FUN_0055c47c(void)
 void FUN_0055c48d(void)
 {
   int unaff_EBP;
-  
-                    /* Symbol Ref: {@symbol $L31931} */
   operator_delete(*(void **)(unaff_EBP + -0x114));
   return;
 }
@@ -5853,7 +5600,6 @@ void FUN_0055c48d(void)
 // XREFS: BuildAIModule
 void FUN_0055c49b(void)
 {
-                    /* Symbol Ref: {@symbol $L31943} */
   ___CxxFrameHandler();
   return;
 }
@@ -5865,7 +5611,6 @@ void FUN_0055c49b(void)
 // XREFS: ~BuildAIModule
 void FUN_0055c4d4(void)
 {
-                    /* Symbol Ref: {@symbol $L31964} */
   ___CxxFrameHandler();
   return;
 }
@@ -5877,7 +5622,6 @@ void FUN_0055c4d4(void)
 // XREFS: loadBuildList
 void FUN_0055c4ee(void)
 {
-                    /* Symbol Ref: {@symbol $L32016} */
   ___CxxFrameHandler();
   return;
 }
@@ -5889,7 +5633,6 @@ void FUN_0055c4ee(void)
 // XREFS: insertItem
 void FUN_0055c50b(void)
 {
-                    /* Symbol Ref: {@symbol $L32052} */
   ___CxxFrameHandler();
   return;
 }
@@ -5901,7 +5644,6 @@ void FUN_0055c50b(void)
 // XREFS: ConstructionAIModule
 void FUN_0055c536(void)
 {
-                    /* Symbol Ref: {@symbol $L30902} */
   ___CxxFrameHandler();
   return;
 }
@@ -5914,8 +5656,6 @@ void FUN_0055c536(void)
 void FUN_0055c540(void)
 {
   int unaff_EBP;
-  
-                    /* Symbol Ref: {@symbol $L30929} */
   AIModule::~AIModule(*(AIModule **)(unaff_EBP + -0x114));
   return;
 }
@@ -5928,8 +5668,6 @@ void FUN_0055c540(void)
 void FUN_0055c54b(void)
 {
   int unaff_EBP;
-  
-                    /* Symbol Ref: {@symbol $L30930} */
   ConstructionItem::~ConstructionItem((ConstructionItem *)(*(int *)(unaff_EBP + -0x114) + 0xf4));
   return;
 }
@@ -5942,8 +5680,6 @@ void FUN_0055c54b(void)
 void FUN_0055c55c(void)
 {
   int unaff_EBP;
-  
-                    /* Symbol Ref: {@symbol $L30931} */
   ConstructionItem::~ConstructionItem((ConstructionItem *)(*(int *)(unaff_EBP + -0x114) + 0x178));
   return;
 }
@@ -5956,8 +5692,6 @@ void FUN_0055c55c(void)
 void FUN_0055c56d(void)
 {
   int unaff_EBP;
-  
-                    /* Symbol Ref: {@symbol $L30932} */
   operator_delete(*(void **)(unaff_EBP + -0x118));
   return;
 }
@@ -5970,8 +5704,6 @@ void FUN_0055c56d(void)
 void FUN_0055c57b(void)
 {
   int unaff_EBP;
-  
-                    /* Symbol Ref: {@symbol $L30933} */
   operator_delete(*(void **)(unaff_EBP + -0x118));
   return;
 }
@@ -5983,7 +5715,6 @@ void FUN_0055c57b(void)
 // XREFS: ConstructionAIModule
 void FUN_0055c589(void)
 {
-                    /* Symbol Ref: {@symbol $L30942} */
   ___CxxFrameHandler();
   return;
 }

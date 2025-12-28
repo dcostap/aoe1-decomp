@@ -68,8 +68,6 @@
 
 // Function: get_target_obj
 // Address: 00401130
-/* public: virtual class RGE_Static_Object * __thiscall RGE_Action::get_target_obj(void) */
-
 RGE_Static_Object * __thiscall RGE_Action::get_target_obj(RGE_Action *this)
 {
   return this->target_obj;
@@ -79,8 +77,6 @@ RGE_Static_Object * __thiscall RGE_Action::get_target_obj(RGE_Action *this)
 
 // Function: get_target_obj2
 // Address: 00401140
-/* public: virtual class RGE_Static_Object * __thiscall RGE_Action::get_target_obj2(void) */
-
 RGE_Static_Object * __thiscall RGE_Action::get_target_obj2(RGE_Action *this)
 {
   return this->target_obj2;
@@ -90,8 +86,6 @@ RGE_Static_Object * __thiscall RGE_Action::get_target_obj2(RGE_Action *this)
 
 // Function: RGE_Action
 // Address: 00407460
-/* public: __thiscall RGE_Action::RGE_Action(int,class RGE_Action_Object *,int) */
-
 RGE_Action * __thiscall
 RGE_Action::RGE_Action(RGE_Action *this,int param_1,RGE_Action_Object *param_2,int param_3)
 {
@@ -108,8 +102,6 @@ RGE_Action::RGE_Action(RGE_Action *this,int param_1,RGE_Action_Object *param_2,i
 
 // Function: `vector_deleting_destructor'
 // Address: 004074a0
-/* public: virtual void * __thiscall RGE_Action::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall RGE_Action::_vector_deleting_destructor_(RGE_Action *this,uint param_1)
 {
   ~RGE_Action(this);
@@ -123,8 +115,6 @@ void * __thiscall RGE_Action::_vector_deleting_destructor_(RGE_Action *this,uint
 
 // Function: RGE_Action
 // Address: 004074c0
-/* public: __thiscall RGE_Action::RGE_Action(class RGE_Action_Object *,int) */
-
 RGE_Action * __thiscall
 RGE_Action::RGE_Action(RGE_Action *this,RGE_Action_Object *param_1,int param_2)
 {
@@ -141,8 +131,6 @@ RGE_Action::RGE_Action(RGE_Action *this,RGE_Action_Object *param_1,int param_2)
 
 // Function: ~RGE_Action
 // Address: 004074f0
-/* public: virtual __thiscall RGE_Action::~RGE_Action(void) */
-
 void __thiscall RGE_Action::~RGE_Action(RGE_Action *this)
 {
   RGE_Action_List *this_00;
@@ -163,9 +151,6 @@ void __thiscall RGE_Action::~RGE_Action(RGE_Action *this)
 
 // Function: setup
 // Address: 00407530
-/* WARNING: Variable defined which should be unmapped: short_val */
-/* public: virtual int __thiscall RGE_Action::setup(int,class RGE_Action_Object *) */
-
 int __thiscall RGE_Action::setup(RGE_Action *this,int param_1,RGE_Action_Object *param_2)
 {
   RGE_Action_List *pRVar1;
@@ -222,8 +207,6 @@ int __thiscall RGE_Action::setup(RGE_Action *this,int param_1,RGE_Action_Object 
 
 // Function: setup
 // Address: 00407680
-/* public: virtual int __thiscall RGE_Action::setup(class RGE_Action_Object *) */
-
 int __thiscall RGE_Action::setup(RGE_Action *this,RGE_Action_Object *param_1)
 {
   RGE_Action_List *pRVar1;
@@ -249,9 +232,6 @@ int __thiscall RGE_Action::setup(RGE_Action *this,RGE_Action_Object *param_1)
 
 // Function: create_action_list
 // Address: 004076d0
-/* public: virtual class RGE_Action_List * __thiscall RGE_Action::create_action_list(class
-   RGE_Action_Object *) */
-
 RGE_Action_List * __thiscall
 RGE_Action::create_action_list(RGE_Action *this,RGE_Action_Object *param_1)
 {
@@ -280,8 +260,6 @@ RGE_Action::create_action_list(RGE_Action *this,RGE_Action_Object *param_1)
 
 // Function: rehook
 // Address: 00407740
-/* public: virtual void __thiscall RGE_Action::rehook(void) */
-
 void __thiscall RGE_Action::rehook(RGE_Action *this)
 {
   RGE_Static_Object *pRVar1;
@@ -312,9 +290,6 @@ void __thiscall RGE_Action::rehook(RGE_Action *this)
 
 // Function: save
 // Address: 00407790
-/* WARNING: Variable defined which should be unmapped: short_val */
-/* public: virtual void __thiscall RGE_Action::save(int) */
-
 void __thiscall RGE_Action::save(RGE_Action *this,int param_1)
 {
   RGE_Task *pRVar1;
@@ -371,8 +346,6 @@ void __thiscall RGE_Action::save(RGE_Action *this,int param_1)
 
 // Function: type
 // Address: 004078d0
-/* public: virtual short __thiscall RGE_Action::type(void) */
-
 short __thiscall RGE_Action::type(RGE_Action *this)
 {
   return this->action_type;
@@ -382,8 +355,6 @@ short __thiscall RGE_Action::type(RGE_Action *this)
 
 // Function: first_in_stack
 // Address: 004078e0
-/* public: virtual void __thiscall RGE_Action::first_in_stack(unsigned char) */
-
 void __thiscall RGE_Action::first_in_stack(RGE_Action *this,uchar param_1)
 {
   return;
@@ -393,8 +364,6 @@ void __thiscall RGE_Action::first_in_stack(RGE_Action *this,uchar param_1)
 
 // Function: stop
 // Address: 004078f0
-/* public: virtual int __thiscall RGE_Action::stop(void) */
-
 int __thiscall RGE_Action::stop(RGE_Action *this)
 {
   return 0;
@@ -404,9 +373,6 @@ int __thiscall RGE_Action::stop(RGE_Action *this)
 
 // Function: move_to
 // Address: 00407900
-/* public: virtual int __thiscall RGE_Action::move_to(class RGE_Static_Object *,float,float,float)
-    */
-
 int __thiscall
 RGE_Action::move_to(RGE_Action *this,RGE_Static_Object *param_1,float param_2,float param_3,
                    float param_4)
@@ -418,8 +384,6 @@ RGE_Action::move_to(RGE_Action *this,RGE_Static_Object *param_1,float param_2,fl
 
 // Function: work
 // Address: 00407910
-/* public: virtual int __thiscall RGE_Action::work(class RGE_Static_Object *,float,float,float) */
-
 int __thiscall
 RGE_Action::work(RGE_Action *this,RGE_Static_Object *param_1,float param_2,float param_3,
                 float param_4)
@@ -431,9 +395,6 @@ RGE_Action::work(RGE_Action *this,RGE_Static_Object *param_1,float param_2,float
 
 // Function: attack_response
 // Address: 00407920
-/* public: virtual unsigned char __thiscall RGE_Action::attack_response(class RGE_Static_Object *)
-    */
-
 uchar __thiscall RGE_Action::attack_response(RGE_Action *this,RGE_Static_Object *param_1)
 {
   return '\0';
@@ -443,8 +404,6 @@ uchar __thiscall RGE_Action::attack_response(RGE_Action *this,RGE_Static_Object 
 
 // Function: relation_response
 // Address: 00407930
-/* public: virtual unsigned char __thiscall RGE_Action::relation_response(long,unsigned char) */
-
 uchar __thiscall RGE_Action::relation_response(RGE_Action *this,long param_1,uchar param_2)
 {
   return '\0';
@@ -454,8 +413,6 @@ uchar __thiscall RGE_Action::relation_response(RGE_Action *this,long param_1,uch
 
 // Function: set_state
 // Address: 00407940
-/* protected: virtual void __thiscall RGE_Action::set_state(unsigned char) */
-
 void __thiscall RGE_Action::set_state(RGE_Action *this,uchar param_1)
 {
   this->state = param_1;
@@ -466,8 +423,6 @@ void __thiscall RGE_Action::set_state(RGE_Action *this,uchar param_1)
 
 // Function: inside_obj_update
 // Address: 00407950
-/* public: virtual unsigned char __thiscall RGE_Action::inside_obj_update(void) */
-
 uchar __thiscall RGE_Action::inside_obj_update(RGE_Action *this)
 {
   if ((this->target_obj != (RGE_Static_Object *)0x0) && (6 < this->target_obj->object_state)) {
@@ -483,8 +438,6 @@ uchar __thiscall RGE_Action::inside_obj_update(RGE_Action *this)
 
 // Function: idle_update
 // Address: 00407990
-/* public: virtual unsigned char __thiscall RGE_Action::idle_update(void) */
-
 uchar __thiscall RGE_Action::idle_update(RGE_Action *this)
 {
   if ((this->target_obj != (RGE_Static_Object *)0x0) && (6 < this->target_obj->object_state)) {
@@ -500,8 +453,6 @@ uchar __thiscall RGE_Action::idle_update(RGE_Action *this)
 
 // Function: update
 // Address: 004079d0
-/* public: virtual unsigned char __thiscall RGE_Action::update(void) */
-
 uchar __thiscall RGE_Action::update(RGE_Action *this)
 {
   uchar uVar1;
@@ -523,8 +474,6 @@ uchar __thiscall RGE_Action::update(RGE_Action *this)
 
 // Function: set_target_obj
 // Address: 00407a20
-/* public: virtual void __thiscall RGE_Action::set_target_obj(class RGE_Static_Object *) */
-
 void __thiscall RGE_Action::set_target_obj(RGE_Action *this,RGE_Static_Object *param_1)
 {
   int iVar1;
@@ -554,8 +503,6 @@ void __thiscall RGE_Action::set_target_obj(RGE_Action *this,RGE_Static_Object *p
 
 // Function: set_target_obj2
 // Address: 00407a90
-/* public: virtual void __thiscall RGE_Action::set_target_obj2(class RGE_Static_Object *) */
-
 void __thiscall RGE_Action::set_target_obj2(RGE_Action *this,RGE_Static_Object *param_1)
 {
   int iVar1;
@@ -585,9 +532,6 @@ void __thiscall RGE_Action::set_target_obj2(RGE_Action *this,RGE_Static_Object *
 
 // Function: copy_obj
 // Address: 00407b00
-/* WARNING: Variable defined which should be unmapped: new_sprite */
-/* public: virtual void __thiscall RGE_Action::copy_obj(class RGE_Master_Action_Object *) */
-
 void __thiscall RGE_Action::copy_obj(RGE_Action *this,RGE_Master_Action_Object *param_1)
 {
   RGE_Task_List *pRVar1;
@@ -644,9 +588,6 @@ void __thiscall RGE_Action::copy_obj(RGE_Action *this,RGE_Master_Action_Object *
 
 // Function: copy_obj_sprites
 // Address: 00407c00
-/* public: virtual void __thiscall RGE_Action::copy_obj_sprites(class RGE_Master_Action_Object
-   *,class RGE_Task *,class RGE_Task *) */
-
 void __thiscall
 RGE_Action::copy_obj_sprites
           (RGE_Action *this,RGE_Master_Action_Object *param_1,RGE_Task *param_2,RGE_Task *param_3)
@@ -675,8 +616,6 @@ RGE_Action::copy_obj_sprites
 // [HELPER] s_Wait: "Wait"
 // [HELPER] s_Work2: "Work2"
 // [HELPER] s_Work: "Work"
-/* public: virtual void __thiscall RGE_Action::get_state_name(char *) */
-
 void __thiscall RGE_Action::get_state_name(RGE_Action *this,char *param_1)
 {
   char cVar1;
@@ -787,8 +726,6 @@ LAB_00407c9b:
 
 // Function: targetX
 // Address: 00407d30
-/* public: float __thiscall RGE_Action::targetX(void)const  */
-
 float __thiscall RGE_Action::targetX(RGE_Action *this)
 {
   return this->target_x;
@@ -798,8 +735,6 @@ float __thiscall RGE_Action::targetX(RGE_Action *this)
 
 // Function: targetY
 // Address: 00407d40
-/* public: float __thiscall RGE_Action::targetY(void)const  */
-
 float __thiscall RGE_Action::targetY(RGE_Action *this)
 {
   return this->target_y;
@@ -809,8 +744,6 @@ float __thiscall RGE_Action::targetY(RGE_Action *this)
 
 // Function: targetZ
 // Address: 00407d50
-/* public: float __thiscall RGE_Action::targetZ(void)const  */
-
 float __thiscall RGE_Action::targetZ(RGE_Action *this)
 {
   return this->target_z;
@@ -820,8 +753,6 @@ float __thiscall RGE_Action::targetZ(RGE_Action *this)
 
 // Function: subAction
 // Address: 00407d60
-/* public: unsigned char __thiscall RGE_Action::subAction(void)const  */
-
 uchar __thiscall RGE_Action::subAction(RGE_Action *this)
 {
   return this->subActionValue;
@@ -831,8 +762,6 @@ uchar __thiscall RGE_Action::subAction(RGE_Action *this)
 
 // Function: setSubAction
 // Address: 00407d70
-/* public: void __thiscall RGE_Action::setSubAction(unsigned char) */
-
 void __thiscall RGE_Action::setSubAction(RGE_Action *this,uchar param_1)
 {
   this->subActionValue = param_1;

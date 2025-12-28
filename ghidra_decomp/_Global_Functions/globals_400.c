@@ -4,8 +4,6 @@
 // XREFS: IsDPlay501a
 void _GetFileVersionInfoSizeA_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054753c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetFileVersionInfoSizeA();
   return;
 }
@@ -17,8 +15,6 @@ void _GetFileVersionInfoSizeA_8(void)
 // XREFS: None
 void _GetCurrentDirectoryA_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547542. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetCurrentDirectoryA();
   return;
 }
@@ -30,8 +26,6 @@ void _GetCurrentDirectoryA_8(void)
 // XREFS: None
 void _OpenFile_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547548. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   OpenFile();
   return;
 }
@@ -43,8 +37,6 @@ void _OpenFile_12(void)
 // XREFS: None
 void _GlobalMemoryStatus_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054754e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GlobalMemoryStatus();
   return;
 }
@@ -56,8 +48,6 @@ void _GlobalMemoryStatus_4(void)
 // XREFS: None
 void _LoadLibraryA_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547554. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   LoadLibraryA();
   return;
 }
@@ -69,8 +59,6 @@ void _LoadLibraryA_4(void)
 // XREFS: None
 void _FreeLibrary_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054755a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   FreeLibrary();
   return;
 }
@@ -82,8 +70,6 @@ void _FreeLibrary_4(void)
 // XREFS: None
 void _CloseHandle_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547560. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   CloseHandle();
   return;
 }
@@ -95,8 +81,6 @@ void _CloseHandle_4(void)
 // XREFS: None
 void _MulDiv_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547566. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   MulDiv();
   return;
 }
@@ -108,8 +92,6 @@ void _MulDiv_12(void)
 // XREFS: None
 void _GetVolumeInformationA_32(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054756c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetVolumeInformationA();
   return;
 }
@@ -121,8 +103,6 @@ void _GetVolumeInformationA_32(void)
 // XREFS: None
 void _GetDriveTypeA_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547572. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetDriveTypeA();
   return;
 }
@@ -134,8 +114,6 @@ void _GetDriveTypeA_4(void)
 // XREFS: None
 void _ReleaseMutex_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547578. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   ReleaseMutex();
   return;
 }
@@ -147,8 +125,6 @@ void _ReleaseMutex_4(void)
 // XREFS: None
 void _GetLastError_0(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054757e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetLastError();
   return;
 }
@@ -160,8 +136,6 @@ void _GetLastError_0(void)
 // XREFS: None
 void _CreateMutexA_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547584. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   CreateMutexA();
   return;
 }
@@ -173,8 +147,6 @@ void _CreateMutexA_12(void)
 // XREFS: None
 void _OutputDebugStringA_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054758a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   OutputDebugStringA();
   return;
 }
@@ -186,8 +158,6 @@ void _OutputDebugStringA_4(void)
 // XREFS: None
 void _GetTickCount_0(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547590. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetTickCount();
   return;
 }
@@ -199,8 +169,6 @@ void _GetTickCount_0(void)
 // XREFS: None
 void __lclose_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547596. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   _lclose();
   return;
 }
@@ -212,8 +180,6 @@ void __lclose_4(void)
 // XREFS: None
 void __hread_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054759c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   _hread();
   return;
 }
@@ -225,8 +191,6 @@ void __hread_12(void)
 // XREFS: None
 void _GlobalFree_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005475a2. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GlobalFree();
   return;
 }
@@ -238,8 +202,6 @@ void _GlobalFree_4(void)
 // XREFS: None
 void _GlobalLock_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005475a8. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GlobalLock();
   return;
 }
@@ -251,8 +213,6 @@ void _GlobalLock_4(void)
 // XREFS: None
 void _GlobalReAlloc_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005475ae. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GlobalReAlloc();
   return;
 }
@@ -264,8 +224,6 @@ void _GlobalReAlloc_12(void)
 // XREFS: None
 void _GlobalUnlock_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005475b4. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GlobalUnlock();
   return;
 }
@@ -277,8 +235,6 @@ void _GlobalUnlock_4(void)
 // XREFS: None
 void _GlobalHandle_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005475ba. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GlobalHandle();
   return;
 }
@@ -290,8 +246,6 @@ void _GlobalHandle_4(void)
 // XREFS: None
 void _LockResource_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005475c0. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   LockResource();
   return;
 }
@@ -303,8 +257,6 @@ void _LockResource_4(void)
 // XREFS: None
 void _LoadResource_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005475c6. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   LoadResource();
   return;
 }
@@ -316,8 +268,6 @@ void _LoadResource_8(void)
 // XREFS: None
 void _FindResourceA_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005475cc. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   FindResourceA();
   return;
 }
@@ -329,8 +279,6 @@ void _FindResourceA_12(void)
 // XREFS: None
 void _GetModuleHandleA_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005475d2. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetModuleHandleA();
   return;
 }
@@ -342,8 +290,6 @@ void _GetModuleHandleA_4(void)
 // XREFS: None
 void __hwrite_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005475d8. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   _hwrite();
   return;
 }
@@ -355,8 +301,6 @@ void __hwrite_12(void)
 // XREFS: None
 void __lwrite_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005475de. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   _lwrite();
   return;
 }
@@ -368,8 +312,6 @@ void __lwrite_12(void)
 // XREFS: None
 void _LocalFree_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005475e4. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   LocalFree();
   return;
 }
@@ -381,8 +323,6 @@ void _LocalFree_4(void)
 // XREFS: None
 void _LocalAlloc_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005475ea. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   LocalAlloc();
   return;
 }
@@ -394,8 +334,6 @@ void _LocalAlloc_8(void)
 // XREFS: None
 void _GlobalAlloc_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005475f0. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GlobalAlloc();
   return;
 }
@@ -407,8 +345,6 @@ void _GlobalAlloc_8(void)
 // XREFS: None
 void __lread_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005475f6. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   _lread();
   return;
 }
@@ -420,8 +356,6 @@ void __lread_12(void)
 // XREFS: None
 void __llseek_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005475fc. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   _llseek();
   return;
 }
@@ -433,8 +367,6 @@ void __llseek_12(void)
 // XREFS: None
 void _GetProcAddress_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547602. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetProcAddress();
   return;
 }
@@ -446,8 +378,6 @@ void _GetProcAddress_8(void)
 // XREFS: None
 void _GetVersionExA_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547608. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetVersionExA();
   return;
 }
@@ -459,8 +389,6 @@ void _GetVersionExA_4(void)
 // XREFS: None
 void _IsDBCSLeadByte_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054760e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   IsDBCSLeadByte();
   return;
 }
@@ -472,8 +400,6 @@ void _IsDBCSLeadByte_4(void)
 // XREFS: None
 void _CompareStringA_24(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547614. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   CompareStringA();
   return;
 }
@@ -485,8 +411,6 @@ void _CompareStringA_24(void)
 // XREFS: None
 void _MapViewOfFile_20(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054761a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   MapViewOfFile();
   return;
 }
@@ -498,8 +422,6 @@ void _MapViewOfFile_20(void)
 // XREFS: None
 void _CreateFileMappingA_24(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547620. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   CreateFileMappingA();
   return;
 }
@@ -511,8 +433,6 @@ void _CreateFileMappingA_24(void)
 // XREFS: None
 void _CreateFileA_28(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547626. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   CreateFileA();
   return;
 }
@@ -524,8 +444,6 @@ void _CreateFileA_28(void)
 // XREFS: None
 void _UnmapViewOfFile_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054762c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   UnmapViewOfFile();
   return;
 }
@@ -537,8 +455,6 @@ void _UnmapViewOfFile_4(void)
 // XREFS: None
 void _GetTempFileNameA_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547632. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetTempFileNameA();
   return;
 }
@@ -550,8 +466,6 @@ void _GetTempFileNameA_16(void)
 // XREFS: None
 void _GetTempPathA_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547638. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetTempPathA();
   return;
 }
@@ -563,8 +477,6 @@ void _GetTempPathA_8(void)
 // XREFS: None
 void _VirtualFree_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054763e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   VirtualFree();
   return;
 }
@@ -576,8 +488,6 @@ void _VirtualFree_12(void)
 // XREFS: None
 void _WinExec_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547644. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   WinExec();
   return;
 }
@@ -589,8 +499,6 @@ void _WinExec_8(void)
 // XREFS: None
 void _FindClose_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054764a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   FindClose();
   return;
 }
@@ -602,8 +510,6 @@ void _FindClose_4(void)
 // XREFS: None
 void _FileTimeToSystemTime_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547650. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   FileTimeToSystemTime();
   return;
 }
@@ -615,8 +521,6 @@ void _FileTimeToSystemTime_8(void)
 // XREFS: None
 void _FindFirstFileA_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547656. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   FindFirstFileA();
   return;
 }
@@ -628,8 +532,6 @@ void _FindFirstFileA_8(void)
 // XREFS: None
 void _LoadCursorA_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054765c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   LoadCursorA();
   return;
 }
@@ -641,8 +543,6 @@ void _LoadCursorA_8(void)
 // XREFS: None
 void _SetTimer_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547662. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetTimer();
   return;
 }
@@ -654,8 +554,6 @@ void _SetTimer_16(void)
 // XREFS: None
 void _SetFocus_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547668. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetFocus();
   return;
 }
@@ -667,8 +565,6 @@ void _SetFocus_4(void)
 // XREFS: None
 void _ShowWindow_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054766e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   ShowWindow();
   return;
 }
@@ -680,8 +576,6 @@ void _ShowWindow_8(void)
 // XREFS: None
 void _SystemParametersInfoA_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547674. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SystemParametersInfoA();
   return;
 }
@@ -693,8 +587,6 @@ void _SystemParametersInfoA_16(void)
 // XREFS: None
 void _SendMessageA_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054767a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SendMessageA();
   return;
 }
@@ -706,8 +598,6 @@ void _SendMessageA_16(void)
 // XREFS: None
 void _FindWindowA_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547680. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   FindWindowA();
   return;
 }
@@ -719,8 +609,6 @@ void _FindWindowA_8(void)
 // XREFS: None
 void _DestroyWindow_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547686. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   DestroyWindow();
   return;
 }
@@ -732,8 +620,6 @@ void _DestroyWindow_4(void)
 // XREFS: None
 void _LoadStringA_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054768c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   LoadStringA();
   return;
 }
@@ -745,8 +631,6 @@ void _LoadStringA_16(void)
 // XREFS: None
 void _GetMessageA_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547692. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetMessageA();
   return;
 }
@@ -758,8 +642,6 @@ void _GetMessageA_16(void)
 // XREFS: None
 void _TranslateMessage_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547698. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   TranslateMessage();
   return;
 }
@@ -771,8 +653,6 @@ void _TranslateMessage_4(void)
 // XREFS: None
 void _PeekMessageA_20(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054769e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   PeekMessageA();
   return;
 }
@@ -784,8 +664,6 @@ void _PeekMessageA_20(void)
 // XREFS: None
 void _DispatchMessageA_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005476a4. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   DispatchMessageA();
   return;
 }
@@ -797,8 +675,6 @@ void _DispatchMessageA_4(void)
 // XREFS: None
 void _CharUpperA_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005476aa. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   CharUpperA();
   return;
 }
@@ -810,8 +686,6 @@ void _CharUpperA_4(void)
 // XREFS: None
 void _RegisterClassA_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005476b0. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   RegisterClassA();
   return;
 }
@@ -823,8 +697,6 @@ void _RegisterClassA_4(void)
 // XREFS: None
 void _LoadIconA_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005476b6. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   LoadIconA();
   return;
 }
@@ -836,8 +708,6 @@ void _LoadIconA_8(void)
 // XREFS: None
 void _UpdateWindow_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005476bc. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   UpdateWindow();
   return;
 }
@@ -849,8 +719,6 @@ void _UpdateWindow_4(void)
 // XREFS: None
 void _SetWindowPos_28(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005476c2. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetWindowPos();
   return;
 }
@@ -862,8 +730,6 @@ void _SetWindowPos_28(void)
 // XREFS: None
 void _GetClientRect_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005476c8. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetClientRect();
   return;
 }
@@ -875,8 +741,6 @@ void _GetClientRect_8(void)
 // XREFS: None
 void _GetWindowRect_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005476ce. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetWindowRect();
   return;
 }
@@ -888,8 +752,6 @@ void _GetWindowRect_8(void)
 // XREFS: None
 void _CreateWindowExA_48(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005476d4. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   CreateWindowExA();
   return;
 }
@@ -901,8 +763,6 @@ void _CreateWindowExA_48(void)
 // XREFS: None
 void _GetSystemMetrics_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005476da. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetSystemMetrics();
   return;
 }
@@ -914,8 +774,6 @@ void _GetSystemMetrics_4(void)
 // XREFS: None
 void _ReleaseDC_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005476e0. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   ReleaseDC();
   return;
 }
@@ -927,8 +785,6 @@ void _ReleaseDC_8(void)
 // XREFS: None
 void _GetDC_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005476e6. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetDC();
   return;
 }
@@ -940,8 +796,6 @@ void _GetDC_4(void)
 // XREFS: None
 void _BringWindowToTop_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005476ec. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   BringWindowToTop();
   return;
 }
@@ -953,8 +807,6 @@ void _BringWindowToTop_4(void)
 // XREFS: None
 void _GetLastActivePopup_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005476f2. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetLastActivePopup();
   return;
 }
@@ -966,8 +818,6 @@ void _GetLastActivePopup_4(void)
 // XREFS: None
 void _SetForegroundWindow_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005476f8. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetForegroundWindow();
   return;
 }
@@ -979,8 +829,6 @@ void _SetForegroundWindow_4(void)
 // XREFS: None
 void _IsIconic_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005476fe. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   IsIconic();
   return;
 }
@@ -992,8 +840,6 @@ void _IsIconic_4(void)
 // XREFS: None
 void _GetUpdateRect_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547704. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetUpdateRect();
   return;
 }
@@ -1005,8 +851,6 @@ void _GetUpdateRect_12(void)
 // XREFS: None
 void _ValidateRect_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054770a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   ValidateRect();
   return;
 }
@@ -1018,8 +862,6 @@ void _ValidateRect_8(void)
 // XREFS: None
 void _FillRect_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547710. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   FillRect();
   return;
 }
@@ -1031,8 +873,6 @@ void _FillRect_12(void)
 // XREFS: None
 void _ScreenToClient_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547716. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   ScreenToClient();
   return;
 }
@@ -1044,8 +884,6 @@ void _ScreenToClient_8(void)
 // XREFS: None
 void _GetCursorPos_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054771c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetCursorPos();
   return;
 }
@@ -1057,8 +895,6 @@ void _GetCursorPos_4(void)
 // XREFS: None
 void _SetClassLongA_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547722. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetClassLongA();
   return;
 }
@@ -1070,8 +906,6 @@ void _SetClassLongA_12(void)
 // XREFS: None
 void _SetCursor_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547728. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetCursor();
   return;
 }
@@ -1083,8 +917,6 @@ void _SetCursor_4(void)
 // XREFS: None
 void _GetWindowTextA_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054772e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetWindowTextA();
   return;
 }
@@ -1096,8 +928,6 @@ void _GetWindowTextA_12(void)
 // XREFS: None
 void _GetParent_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547734. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetParent();
   return;
 }
@@ -1109,8 +939,6 @@ void _GetParent_4(void)
 // XREFS: None
 void _DefWindowProcA_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054773a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   DefWindowProcA();
   return;
 }
@@ -1122,8 +950,6 @@ void _DefWindowProcA_16(void)
 // XREFS: None
 void _InvalidateRect_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547740. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   InvalidateRect();
   return;
 }
@@ -1135,8 +961,6 @@ void _InvalidateRect_12(void)
 // XREFS: None
 void _GetWindowThreadProcessId_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547746. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetWindowThreadProcessId();
   return;
 }
@@ -1148,8 +972,6 @@ void _GetWindowThreadProcessId_8(void)
 // XREFS: None
 void _GetKeyState_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054774c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetKeyState();
   return;
 }
@@ -1161,8 +983,6 @@ void _GetKeyState_4(void)
 // XREFS: None
 void _PostQuitMessage_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547752. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   PostQuitMessage();
   return;
 }
@@ -1174,8 +994,6 @@ void _PostQuitMessage_4(void)
 // XREFS: None
 void _KillTimer_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547758. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   KillTimer();
   return;
 }
@@ -1187,8 +1005,6 @@ void _KillTimer_8(void)
 // XREFS: None
 void _SetWindowTextA_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054775e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetWindowTextA();
   return;
 }
@@ -1200,8 +1016,6 @@ void _SetWindowTextA_8(void)
 // XREFS: None
 void _SetCapture_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547764. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetCapture();
   return;
 }
@@ -1213,8 +1027,6 @@ void _SetCapture_4(void)
 // XREFS: None
 void _ReleaseCapture_0(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054776a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   ReleaseCapture();
   return;
 }
@@ -1226,8 +1038,6 @@ void _ReleaseCapture_0(void)
 // XREFS: None
 void _GetCapture_0(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547770. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetCapture();
   return;
 }
@@ -1239,8 +1049,6 @@ void _GetCapture_0(void)
 // XREFS: None
 void _SetWindowLongA_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547776. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetWindowLongA();
   return;
 }
@@ -1252,8 +1060,6 @@ void _SetWindowLongA_12(void)
 // XREFS: None
 void _PostMessageA_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054777c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   PostMessageA();
   return;
 }
@@ -1265,8 +1071,6 @@ void _PostMessageA_16(void)
 // XREFS: None
 void _ClientToScreen_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547782. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   ClientToScreen();
   return;
 }
@@ -1278,8 +1082,6 @@ void _ClientToScreen_8(void)
 // XREFS: None
 void _GetActiveWindow_0(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547788. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetActiveWindow();
   return;
 }
@@ -1291,8 +1093,6 @@ void _GetActiveWindow_0(void)
 // XREFS: None
 void _WinHelpA_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054778e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   WinHelpA();
   return;
 }
@@ -1304,8 +1104,6 @@ void _WinHelpA_16(void)
 // XREFS: None
 void _SetRect_20(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547794. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetRect();
   return;
 }
@@ -1317,8 +1115,6 @@ void _SetRect_20(void)
 // XREFS: None
 void _MessageBoxA_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054779a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   MessageBoxA();
   return;
 }
@@ -1330,8 +1126,6 @@ void _MessageBoxA_16(void)
 // XREFS: None
 void _SetCursorPos_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005477a0. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetCursorPos();
   return;
 }
@@ -1343,8 +1137,6 @@ void _SetCursorPos_8(void)
 // XREFS: None
 void _GetSysColor_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005477a6. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetSysColor();
   return;
 }
@@ -1356,8 +1148,6 @@ void _GetSysColor_4(void)
 // XREFS: None
 void _SetSysColors_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005477ac. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetSysColors();
   return;
 }
@@ -1369,8 +1159,6 @@ void _SetSysColors_12(void)
 // XREFS: None
 void _GetWindowLongA_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005477b2. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetWindowLongA();
   return;
 }
@@ -1382,8 +1170,6 @@ void _GetWindowLongA_8(void)
 // XREFS: None
 void _MessageBeep_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005477b8. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   MessageBeep();
   return;
 }
@@ -1395,8 +1181,6 @@ void _MessageBeep_4(void)
 // XREFS: None
 void _GetFocus_0(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005477be. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetFocus();
   return;
 }
@@ -1408,8 +1192,6 @@ void _GetFocus_0(void)
 // XREFS: None
 void _MoveWindow_24(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005477c4. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   MoveWindow();
   return;
 }
@@ -1421,8 +1203,6 @@ void _MoveWindow_24(void)
 // XREFS: None
 void _CallWindowProcA_20(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005477ca. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   CallWindowProcA();
   return;
 }
@@ -1434,8 +1214,6 @@ void _CallWindowProcA_20(void)
 // XREFS: None
 void _DrawTextExA_24(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005477d0. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   DrawTextExA();
   return;
 }
@@ -1447,8 +1225,6 @@ void _DrawTextExA_24(void)
 // XREFS: None
 void _GetCaretBlinkTime_0(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005477d6. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetCaretBlinkTime();
   return;
 }
@@ -1460,8 +1236,6 @@ void _GetCaretBlinkTime_0(void)
 // XREFS: None
 void _CloseClipboard_0(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005477dc. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   CloseClipboard();
   return;
 }
@@ -1473,8 +1247,6 @@ void _CloseClipboard_0(void)
 // XREFS: None
 void _GetClipboardData_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005477e2. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetClipboardData();
   return;
 }
@@ -1486,8 +1258,6 @@ void _GetClipboardData_4(void)
 // XREFS: None
 void _OpenClipboard_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005477e8. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   OpenClipboard();
   return;
 }
@@ -1499,8 +1269,6 @@ void _OpenClipboard_4(void)
 // XREFS: None
 void _IsClipboardFormatAvailable_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005477ee. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   IsClipboardFormatAvailable();
   return;
 }
@@ -1512,8 +1280,6 @@ void _IsClipboardFormatAvailable_4(void)
 // XREFS: None
 void _DrawTextA_20(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005477f4. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   DrawTextA();
   return;
 }
@@ -1525,8 +1291,6 @@ void _DrawTextA_20(void)
 // XREFS: None
 void _GetForegroundWindow_0(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005477fa. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetForegroundWindow();
   return;
 }
@@ -1538,8 +1302,6 @@ void _GetForegroundWindow_0(void)
 // XREFS: None
 void _GetAsyncKeyState_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547800. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetAsyncKeyState();
   return;
 }
@@ -1551,8 +1313,6 @@ void _GetAsyncKeyState_4(void)
 // XREFS: None
 void _GetKeyboardState_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547806. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetKeyboardState();
   return;
 }
@@ -1564,8 +1324,6 @@ void _GetKeyboardState_4(void)
 // XREFS: None
 void _DeleteObject_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054780c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   DeleteObject();
   return;
 }
@@ -1577,8 +1335,6 @@ void _DeleteObject_4(void)
 // XREFS: None
 void _GetDeviceCaps_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547812. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetDeviceCaps();
   return;
 }
@@ -1590,8 +1346,6 @@ void _GetDeviceCaps_8(void)
 // XREFS: None
 void _GetTextMetricsA_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547818. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetTextMetricsA();
   return;
 }
@@ -1603,8 +1357,6 @@ void _GetTextMetricsA_8(void)
 // XREFS: None
 void _SelectObject_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054781e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SelectObject();
   return;
 }
@@ -1616,8 +1368,6 @@ void _SelectObject_8(void)
 // XREFS: None
 void _CreateFontIndirectA_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547824. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   CreateFontIndirectA();
   return;
 }
@@ -1629,8 +1379,6 @@ void _CreateFontIndirectA_4(void)
 // XREFS: None
 void _GetStockObject_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054782a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetStockObject();
   return;
 }
@@ -1642,8 +1390,6 @@ void _GetStockObject_4(void)
 // XREFS: None
 void _RealizePalette_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547830. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   RealizePalette();
   return;
 }
@@ -1655,8 +1401,6 @@ void _RealizePalette_4(void)
 // XREFS: None
 void _SelectPalette_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547836. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SelectPalette();
   return;
 }
@@ -1668,8 +1412,6 @@ void _SelectPalette_12(void)
 // XREFS: None
 void _DeleteDC_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054783c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   DeleteDC();
   return;
 }
@@ -1681,8 +1423,6 @@ void _DeleteDC_4(void)
 // XREFS: None
 void _CreateICA_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547842. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   CreateICA();
   return;
 }
@@ -1694,8 +1434,6 @@ void _CreateICA_16(void)
 // XREFS: None
 void _CreatePalette_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547848. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   CreatePalette();
   return;
 }
@@ -1707,8 +1445,6 @@ void _CreatePalette_4(void)
 // XREFS: None
 void _CreateHalftonePalette_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054784e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   CreateHalftonePalette();
   return;
 }
@@ -1720,8 +1456,6 @@ void _CreateHalftonePalette_4(void)
 // XREFS: None
 void _GetDIBits_28(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547854. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetDIBits();
   return;
 }
@@ -1733,8 +1467,6 @@ void _GetDIBits_28(void)
 // XREFS: None
 void _SetStretchBltMode_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054785a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetStretchBltMode();
   return;
 }
@@ -1746,8 +1478,6 @@ void _SetStretchBltMode_8(void)
 // XREFS: None
 void _CreateCompatibleDC_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547860. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   CreateCompatibleDC();
   return;
 }
@@ -1759,8 +1489,6 @@ void _CreateCompatibleDC_4(void)
 // XREFS: None
 void _GetObjectA_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547866. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetObjectA();
   return;
 }
@@ -1772,8 +1500,6 @@ void _GetObjectA_12(void)
 // XREFS: None
 void _GetPaletteEntries_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054786c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetPaletteEntries();
   return;
 }
@@ -1785,8 +1511,6 @@ void _GetPaletteEntries_16(void)
 // XREFS: None
 void _StretchDIBits_52(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547872. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   StretchDIBits();
   return;
 }
@@ -1798,8 +1522,6 @@ void _StretchDIBits_52(void)
 // XREFS: None
 void _GetNearestPaletteIndex_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547878. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetNearestPaletteIndex();
   return;
 }
@@ -1811,8 +1533,6 @@ void _GetNearestPaletteIndex_8(void)
 // XREFS: None
 void _SetPaletteEntries_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054787e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetPaletteEntries();
   return;
 }
@@ -1824,8 +1544,6 @@ void _SetPaletteEntries_16(void)
 // XREFS: None
 void _ResizePalette_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547884. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   ResizePalette();
   return;
 }
@@ -1837,8 +1555,6 @@ void _ResizePalette_8(void)
 // XREFS: None
 void _GetSystemPaletteEntries_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054788a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetSystemPaletteEntries();
   return;
 }
@@ -1850,8 +1566,6 @@ void _GetSystemPaletteEntries_16(void)
 // XREFS: None
 void _CreateRectRgn_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547890. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   CreateRectRgn();
   return;
 }
@@ -1863,8 +1577,6 @@ void _CreateRectRgn_16(void)
 // XREFS: None
 void _SelectClipRgn_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547896. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SelectClipRgn();
   return;
 }
@@ -1876,8 +1588,6 @@ void _SelectClipRgn_8(void)
 // XREFS: None
 void _TextOutA_20(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054789c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   TextOutA();
   return;
 }
@@ -1889,8 +1599,6 @@ void _TextOutA_20(void)
 // XREFS: None
 void _SetTextColor_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005478a2. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetTextColor();
   return;
 }
@@ -1902,8 +1610,6 @@ void _SetTextColor_8(void)
 // XREFS: None
 void _GetTextExtentPoint32A_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005478a8. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   GetTextExtentPoint32A();
   return;
 }
@@ -1915,8 +1621,6 @@ void _GetTextExtentPoint32A_16(void)
 // XREFS: None
 void _SetBkMode_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005478ae. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetBkMode();
   return;
 }
@@ -1928,8 +1632,6 @@ void _SetBkMode_8(void)
 // XREFS: None
 void _SetBkColor_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005478b4. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   SetBkColor();
   return;
 }
@@ -1941,8 +1643,6 @@ void _SetBkColor_8(void)
 // XREFS: None
 void _LineTo_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005478ba. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   LineTo();
   return;
 }
@@ -1954,8 +1654,6 @@ void _LineTo_12(void)
 // XREFS: None
 void _MoveToEx_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005478c0. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   MoveToEx();
   return;
 }
@@ -1967,8 +1665,6 @@ void _MoveToEx_16(void)
 // XREFS: None
 void _CreatePen_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005478c6. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   CreatePen();
   return;
 }
@@ -1980,8 +1676,6 @@ void _CreatePen_12(void)
 // XREFS: None
 void _RegCreateKeyExA_36(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005478cc. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   RegCreateKeyExA();
   return;
 }
@@ -1993,8 +1687,6 @@ void _RegCreateKeyExA_36(void)
 // XREFS: None
 void _RegCloseKey_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005478d2. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   RegCloseKey();
   return;
 }
@@ -2006,8 +1698,6 @@ void _RegCloseKey_4(void)
 // XREFS: None
 void _RegSetValueExA_24(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005478d8. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   RegSetValueExA();
   return;
 }
@@ -2019,8 +1709,6 @@ void _RegSetValueExA_24(void)
 // XREFS: None
 void _RegQueryValueExA_24(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005478de. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   RegQueryValueExA();
   return;
 }
@@ -2032,8 +1720,6 @@ void _RegQueryValueExA_24(void)
 // XREFS: CreateDirectPlayConversation, DPEnumCallback
 void _DirectPlayCreate_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005478e4. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   DirectPlayCreate();
   return;
 }
@@ -2045,8 +1731,6 @@ void _DirectPlayCreate_12(void)
 // XREFS: CheckForLobbyLaunch
 void _DirectPlayLobbyCreateA_20(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005478ea. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   DirectPlayLobbyCreateA();
   return;
 }
@@ -2058,8 +1742,6 @@ void _DirectPlayLobbyCreateA_20(void)
 // XREFS: TCommunications_Services
 void _DirectPlayEnumerateA_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005478f0. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   DirectPlayEnumerateA();
   return;
 }
@@ -2071,8 +1753,6 @@ void _DirectPlayEnumerateA_8(void)
 // XREFS: init
 void _DirectSoundCreate_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005478f6. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   DirectSoundCreate();
   return;
 }
@@ -2084,8 +1764,6 @@ void _DirectSoundCreate_12(void)
 // XREFS: CheckAvailModes, Init
 void _DirectDrawCreate_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x005478fc. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   DirectDrawCreate();
   return;
 }
@@ -2097,8 +1775,6 @@ void _DirectDrawCreate_12(void)
 // XREFS: None
 void _timeGetTime_0(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547902. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   timeGetTime();
   return;
 }
@@ -2110,8 +1786,6 @@ void _timeGetTime_0(void)
 // XREFS: None
 void _mciSendCommandA_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547908. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   mciSendCommandA();
   return;
 }
@@ -2123,8 +1797,6 @@ void _mciSendCommandA_16(void)
 // XREFS: None
 void _mciGetErrorStringA_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054790e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   mciGetErrorStringA();
   return;
 }
@@ -2136,8 +1808,6 @@ void _mciGetErrorStringA_12(void)
 // XREFS: None
 void _mmioClose_8(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547914. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   mmioClose();
   return;
 }
@@ -2149,8 +1819,6 @@ void _mmioClose_8(void)
 // XREFS: None
 void _mmioAscend_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054791a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   mmioAscend();
   return;
 }
@@ -2162,8 +1830,6 @@ void _mmioAscend_12(void)
 // XREFS: None
 void _mmioRead_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547920. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   mmioRead();
   return;
 }
@@ -2175,8 +1841,6 @@ void _mmioRead_12(void)
 // XREFS: None
 void _mmioDescend_16(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547926. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   mmioDescend();
   return;
 }
@@ -2188,8 +1852,6 @@ void _mmioDescend_16(void)
 // XREFS: None
 void _mmioOpenA_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054792c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   mmioOpenA();
   return;
 }
@@ -2201,8 +1863,6 @@ void _mmioOpenA_12(void)
 // XREFS: None
 void _mmioSeek_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547932. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   mmioSeek();
   return;
 }
@@ -2214,8 +1874,6 @@ void _mmioSeek_12(void)
 // XREFS: None
 void _mmioSetInfo_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547938. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   mmioSetInfo();
   return;
 }
@@ -2227,8 +1885,6 @@ void _mmioSetInfo_12(void)
 // XREFS: None
 void _mmioAdvance_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054793e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   mmioAdvance();
   return;
 }
@@ -2240,8 +1896,6 @@ void _mmioAdvance_12(void)
 // XREFS: None
 void _mmioGetInfo_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547944. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   mmioGetInfo();
   return;
 }
@@ -2253,8 +1907,6 @@ void _mmioGetInfo_12(void)
 // XREFS: None
 void _mmioWrite_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054794a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   mmioWrite();
   return;
 }
@@ -2266,8 +1918,6 @@ void _mmioWrite_12(void)
 // XREFS: None
 void _mmioCreateChunk_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547950. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   mmioCreateChunk();
   return;
 }
@@ -2279,8 +1929,6 @@ void _mmioCreateChunk_12(void)
 // XREFS: None
 void _timeSetEvent_20(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547956. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   timeSetEvent();
   return;
 }
@@ -2292,8 +1940,6 @@ void _timeSetEvent_20(void)
 // XREFS: None
 void _timeBeginPeriod_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054795c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   timeBeginPeriod();
   return;
 }
@@ -2305,8 +1951,6 @@ void _timeBeginPeriod_4(void)
 // XREFS: None
 void _timeEndPeriod_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547962. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   timeEndPeriod();
   return;
 }
@@ -2318,8 +1962,6 @@ void _timeEndPeriod_4(void)
 // XREFS: None
 void _timeKillEvent_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547968. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   timeKillEvent();
   return;
 }
@@ -2331,8 +1973,6 @@ void _timeKillEvent_4(void)
 // XREFS: None
 void _mixerClose_4(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054796e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   mixerClose();
   return;
 }
@@ -2344,8 +1984,6 @@ void _mixerClose_4(void)
 // XREFS: None
 void _mixerGetControlDetailsA_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547974. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   mixerGetControlDetailsA();
   return;
 }
@@ -2357,8 +1995,6 @@ void _mixerGetControlDetailsA_12(void)
 // XREFS: None
 void _mixerGetLineControlsA_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054797a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   mixerGetLineControlsA();
   return;
 }
@@ -2370,8 +2006,6 @@ void _mixerGetLineControlsA_12(void)
 // XREFS: None
 void _mixerGetLineInfoA_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547980. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   mixerGetLineInfoA();
   return;
 }
@@ -2383,8 +2017,6 @@ void _mixerGetLineInfoA_12(void)
 // XREFS: None
 void _mixerOpen_20(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547986. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   mixerOpen();
   return;
 }
@@ -2396,8 +2028,6 @@ void _mixerOpen_20(void)
 // XREFS: None
 void _mixerGetNumDevs_0(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x0054798c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   mixerGetNumDevs();
   return;
 }
@@ -2409,8 +2039,6 @@ void _mixerGetNumDevs_0(void)
 // XREFS: None
 void _mixerSetControlDetails_12(void)
 {
-                    /* WARNING: Could not recover jumptable at 0x00547992. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   mixerSetControlDetails();
   return;
 }
@@ -2420,8 +2048,6 @@ void _mixerSetControlDetails_12(void)
 // Function: deflate_data
 // Address: 005479a0
 // XREFS: rge_close, rge_write
-/* deflate_data */
-
 undefined4 __cdecl
 deflate_data(int param_1,undefined4 param_2,undefined4 param_3,undefined4 param_4)
 {
@@ -3046,7 +2672,6 @@ bool FUN_00548410(void)
 void FUN_00548660(void)
 {
   FUN_00548750(DAT_00887a80 + 0x36c6c,8,0x90);
-                    /* language.dll match for 0x70: "B" */
   FUN_00548750(DAT_00887a80 + 0x36eac,9,0x70);
   FUN_00548750(DAT_00887a80 + 0x3706c,7,0x18);
   FUN_00548750(DAT_00887a80 + 0x370cc,8,8);

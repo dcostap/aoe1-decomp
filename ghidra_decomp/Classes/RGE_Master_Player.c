@@ -25,9 +25,6 @@
 // [HELPER] s__hd: "%hd"
 // [HELPER] s__hd__f: "%hd %f"
 // [HELPER] s__s__hd__hd: "%s %hd %hd"
-/* WARNING: Variable defined which should be unmapped: temp_index */
-/* public: __thiscall RGE_Master_Player::RGE_Master_Player(struct _iobuf *) */
-
 RGE_Master_Player * __thiscall
 RGE_Master_Player::RGE_Master_Player(RGE_Master_Player *this,_iobuf *param_1)
 {
@@ -71,9 +68,6 @@ RGE_Master_Player::RGE_Master_Player(RGE_Master_Player *this,_iobuf *param_1)
 
 // Function: `vector_deleting_destructor'
 // Address: 004610a0
-/* public: virtual void * __thiscall RGE_Master_Player::`vector deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 RGE_Master_Player::_vector_deleting_destructor_(RGE_Master_Player *this,uint param_1)
 {
@@ -88,8 +82,6 @@ RGE_Master_Player::_vector_deleting_destructor_(RGE_Master_Player *this,uint par
 
 // Function: RGE_Master_Player
 // Address: 004610c0
-/* public: __thiscall RGE_Master_Player::RGE_Master_Player(int) */
-
 RGE_Master_Player * __thiscall
 RGE_Master_Player::RGE_Master_Player(RGE_Master_Player *this,int param_1)
 {
@@ -117,8 +109,6 @@ RGE_Master_Player::RGE_Master_Player(RGE_Master_Player *this,int param_1)
 
 // Function: ~RGE_Master_Player
 // Address: 00461150
-/* public: virtual __thiscall RGE_Master_Player::~RGE_Master_Player(void) */
-
 void __thiscall RGE_Master_Player::~RGE_Master_Player(RGE_Master_Player *this)
 {
   short sVar1;
@@ -151,9 +141,6 @@ void __thiscall RGE_Master_Player::~RGE_Master_Player(RGE_Master_Player *this)
 
 // Function: finish_init
 // Address: 004611d0
-/* public: virtual void __thiscall RGE_Master_Player::finish_init(int,class RGE_Sprite * *,class
-   RGE_Sound * *) */
-
 void __thiscall
 RGE_Master_Player::finish_init
           (RGE_Master_Player *this,int param_1,RGE_Sprite **param_2,RGE_Sound **param_3)
@@ -192,9 +179,6 @@ RGE_Master_Player::finish_init
 
 // Function: load_master_object
 // Address: 00461270
-/* public: virtual void __thiscall RGE_Master_Player::load_master_object(int,unsigned char,class
-   RGE_Sprite * *,class RGE_Sound * *,short) */
-
 void __thiscall
 RGE_Master_Player::load_master_object
           (RGE_Master_Player *this,int param_1,uchar param_2,RGE_Sprite **param_3,
@@ -303,8 +287,6 @@ switchD_004612a5_caseD_b:
 
 // Function: create_master_object_space
 // Address: 00461530
-/* public: virtual void __thiscall RGE_Master_Player::create_master_object_space(short) */
-
 void __thiscall RGE_Master_Player::create_master_object_space(RGE_Master_Player *this,short param_1)
 {
   RGE_Master_Static_Object **ppRVar1;
@@ -321,9 +303,6 @@ void __thiscall RGE_Master_Player::create_master_object_space(RGE_Master_Player 
 
 // Function: load_object
 // Address: 00461560
-/* public: virtual void __thiscall RGE_Master_Player::load_object(struct _iobuf *,unsigned
-   char,class RGE_Sprite * *,class RGE_Sound * *,short) */
-
 void __thiscall
 RGE_Master_Player::load_object
           (RGE_Master_Player *this,_iobuf *param_1,uchar param_2,RGE_Sprite **param_3,
@@ -435,8 +414,6 @@ switchD_00461596_caseD_b:
 
 // Function: save
 // Address: 00461840
-/* public: virtual void __thiscall RGE_Master_Player::save(int) */
-
 void __thiscall RGE_Master_Player::save(RGE_Master_Player *this,int param_1)
 {
   short *psVar1;

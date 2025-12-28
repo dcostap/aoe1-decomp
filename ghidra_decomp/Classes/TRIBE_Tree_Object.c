@@ -130,9 +130,6 @@
 
 // Function: TRIBE_Tree_Object
 // Address: 004cca60
-/* public: __thiscall TRIBE_Tree_Object::TRIBE_Tree_Object(class TRIBE_Master_Tree_Object *,class
-   RGE_Player *,float,float,float,int) */
-
 TRIBE_Tree_Object * __thiscall
 TRIBE_Tree_Object::TRIBE_Tree_Object
           (TRIBE_Tree_Object *this,TRIBE_Master_Tree_Object *param_1,RGE_Player *param_2,
@@ -165,9 +162,6 @@ TRIBE_Tree_Object::TRIBE_Tree_Object
 
 // Function: `scalar_deleting_destructor'
 // Address: 004ccaf0
-/* public: virtual void * __thiscall TRIBE_Tree_Object::`scalar deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 TRIBE_Tree_Object::_scalar_deleting_destructor_(TRIBE_Tree_Object *this,uint param_1)
 {
@@ -182,8 +176,6 @@ TRIBE_Tree_Object::_scalar_deleting_destructor_(TRIBE_Tree_Object *this,uint par
 
 // Function: ~TRIBE_Tree_Object
 // Address: 004ccb10
-/* public: virtual __thiscall TRIBE_Tree_Object::~TRIBE_Tree_Object(void) */
-
 void __thiscall TRIBE_Tree_Object::~TRIBE_Tree_Object(TRIBE_Tree_Object *this)
 {
   undefined4 *puVar1;
@@ -279,8 +271,6 @@ void __thiscall TRIBE_Tree_Object::~TRIBE_Tree_Object(TRIBE_Tree_Object *this)
 
 // Function: TRIBE_Tree_Object
 // Address: 004ccb20
-/* public: __thiscall TRIBE_Tree_Object::TRIBE_Tree_Object(int,class RGE_Game_World *,int) */
-
 TRIBE_Tree_Object * __thiscall
 TRIBE_Tree_Object::TRIBE_Tree_Object
           (TRIBE_Tree_Object *this,int param_1,RGE_Game_World *param_2,int param_3)
@@ -308,8 +298,6 @@ TRIBE_Tree_Object::TRIBE_Tree_Object
 
 // Function: set_object_state
 // Address: 004ccb90
-/* public: virtual void __thiscall TRIBE_Tree_Object::set_object_state(unsigned char) */
-
 void __thiscall TRIBE_Tree_Object::set_object_state(TRIBE_Tree_Object *this,uchar param_1)
 {
   RGE_Static_Object::set_object_state((RGE_Static_Object *)this,param_1);

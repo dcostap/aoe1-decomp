@@ -128,8 +128,6 @@
 
 // Function: TRIBE_Game
 // Address: 00521120
-/* public: __thiscall TRIBE_Game::TRIBE_Game(struct RGE_Prog_Info *,int) */
-
 TRIBE_Game * __thiscall TRIBE_Game::TRIBE_Game(TRIBE_Game *this,RGE_Prog_Info *param_1,int param_2)
 {
   long *plVar1;
@@ -244,8 +242,6 @@ TRIBE_Game * __thiscall TRIBE_Game::TRIBE_Game(TRIBE_Game *this,RGE_Prog_Info *p
 
 // Function: `vector_deleting_destructor'
 // Address: 00521380
-/* public: virtual void * __thiscall TRIBE_Game::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall TRIBE_Game::_vector_deleting_destructor_(TRIBE_Game *this,uint param_1)
 {
   ~TRIBE_Game(this);
@@ -292,8 +288,6 @@ void * __thiscall TRIBE_Game::_vector_deleting_destructor_(TRIBE_Game *this,uint
 // [HELPER] s_Video_Screen: "Video Screen"
 // [HELPER] s_graphics_drs: "graphics.drs"
 // [HELPER] s_sounds_drs: "sounds.drs"
-/* public: virtual __thiscall TRIBE_Game::~TRIBE_Game(void) */
-
 void __thiscall TRIBE_Game::~TRIBE_Game(TRIBE_Game *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -382,8 +376,6 @@ void __thiscall TRIBE_Game::~TRIBE_Game(TRIBE_Game *this)
 // [HELPER] s_Send_Message_Dialog: "Send Message Dialog"
 // [HELPER] s_Send_Quick_Message_Dialog: "Send Quick Message Dialog"
 // [HELPER] s_YesNoDialog: "YesNoDialog"
-/* public: void __thiscall TRIBE_Game::close_game_screens(int) */
-
 void __thiscall TRIBE_Game::close_game_screens(TRIBE_Game *this,int param_1)
 {
   TPanelSystem::destroyPanel(&panel_system,&s_Object_List_Dialog);
@@ -448,8 +440,6 @@ void __thiscall TRIBE_Game::close_game_screens(TRIBE_Game *this,int param_1)
 // [HELPER] s_sounds_drs: "sounds.drs"
 // [HELPER] s_sounds_rm: "sounds.rm"
 // [HELPER] s_tribe: "tribe"
-/* protected: virtual int __thiscall TRIBE_Game::setup(void) */
-
 int __thiscall TRIBE_Game::setup(TRIBE_Game *this)
 {
   char cVar1;
@@ -624,8 +614,6 @@ LAB_00521ec8:
         if (iVar3 == 0) goto LAB_00521e5b;
         this_01 = (TEasy_Panel *)TPanelSystem::panel(&panel_system,s_Main_Menu);
         if (this_01 != (TEasy_Panel *)0x0) {
-                    /* language.dll match for 0x961: "An error occurred while trying to start the
-                       game." */
           TEasy_Panel::popupOKDialog(this_01,0x961,(char *)0x0,0x1c2,100);
         }
       }
@@ -679,7 +667,6 @@ LAB_00521c8a:
     uStack_4 = 0;
     if ((TRIBE_Screen_Status_Message *)new_string_dll_name._0_4_ !=
         (TRIBE_Screen_Status_Message *)0x0) {
-                    /* language.dll match for 0x4bf: "Setting up multiplayer game ..." */
       TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message
                 ((TRIBE_Screen_Status_Message *)new_string_dll_name._0_4_,s_Status_Screen,0x4bf,
                  s_scr1,0xc383);
@@ -718,8 +705,6 @@ LAB_00521c8a:
       }
       uStack_4 = 0xffffffff;
       if ((this_00 != (TRIBE_Screen_Main_Error *)0x0) && (this_00->_padding_ == 0)) {
-                    /* language.dll match for 0x96a: "Timed out while trying to connect to the
-                       game." */
         TRIBE_Screen_Main_Error::set_text(this_00,0x96a);
         TPanelSystem::setCurrentPanel(&panel_system,s_Main_Error_Screen,0);
         TPanelSystem::destroyPanel(&panel_system,s_Status_Screen);
@@ -745,9 +730,6 @@ LAB_00521e5b:
 // [HELPER] s_SCN_: "SCN="
 // [HELPER] s____L_c_L___: "+!#L%c#L ^="
 // [HELPER] s__gmx: ".gmx"
-/* WARNING: Variable defined which should be unmapped: cmd_line */
-/* public: virtual int __thiscall TRIBE_Game::setup_cmd_options(void) */
-
 int __thiscall TRIBE_Game::setup_cmd_options(TRIBE_Game *this)
 {
   char cVar1;
@@ -900,9 +882,6 @@ int __thiscall TRIBE_Game::setup_cmd_options(TRIBE_Game *this)
 
 // Function: setup_palette
 // Address: 00522200
-/* WARNING: Variable defined which should be unmapped: pal_entries */
-/* protected: virtual int __thiscall TRIBE_Game::setup_palette(void) */
-
 int __thiscall TRIBE_Game::setup_palette(TRIBE_Game *this)
 {
   int iVar1;
@@ -936,7 +915,6 @@ int __thiscall TRIBE_Game::setup_palette(TRIBE_Game *this)
   pal_entries[5].peBlue = 0xa0;
   pal_entries[6].peRed = '\'';
   pal_entries[6].peBlue = 0x91;
-                    /* language.dll match for 0x7b: "9" */
   SetPaletteEntries(this->_padding_,0xf8,7,pal_entries + 1);
   return 1;
 }
@@ -962,8 +940,6 @@ int __thiscall TRIBE_Game::setup_palette(TRIBE_Game *this)
 // [HELPER] s_res_wav: "res.wav"
 // [HELPER] s_resdone_wav: "resdone.wav"
 // [HELPER] s_tribute_wav: "tribute.wav"
-/* protected: virtual int __thiscall TRIBE_Game::setup_sounds(void) */
-
 int __thiscall TRIBE_Game::setup_sounds(TRIBE_Game *this)
 {
   int iVar1;
@@ -1178,8 +1154,6 @@ int __thiscall TRIBE_Game::setup_sounds(TRIBE_Game *this)
 
 // Function: create_world
 // Address: 00522770
-/* protected: virtual class RGE_Game_World * __thiscall TRIBE_Game::create_world(void) */
-
 RGE_Game_World * __thiscall TRIBE_Game::create_world(TRIBE_Game *this)
 {
   TRIBE_World *this_00;
@@ -1208,8 +1182,6 @@ RGE_Game_World * __thiscall TRIBE_Game::create_world(TRIBE_Game *this)
 
 // Function: set_game_mode
 // Address: 005227d0
-/* public: virtual void __thiscall TRIBE_Game::set_game_mode(int,int) */
-
 void __thiscall TRIBE_Game::set_game_mode(TRIBE_Game *this,int param_1,int param_2)
 {
   int iVar1;
@@ -1226,8 +1198,6 @@ void __thiscall TRIBE_Game::set_game_mode(TRIBE_Game *this,int param_1,int param
 
 // Function: set_player
 // Address: 00522810
-/* public: virtual void __thiscall TRIBE_Game::set_player(short) */
-
 void __thiscall TRIBE_Game::set_player(TRIBE_Game *this,short param_1)
 {
   short sVar1;
@@ -1250,8 +1220,6 @@ void __thiscall TRIBE_Game::set_player(TRIBE_Game *this,short param_1)
 
 // Function: set_save_game_name
 // Address: 00522860
-/* public: void __thiscall TRIBE_Game::set_save_game_name(char *) */
-
 void __thiscall TRIBE_Game::set_save_game_name(TRIBE_Game *this,char *param_1)
 {
   char cVar1;
@@ -1293,8 +1261,6 @@ void __thiscall TRIBE_Game::set_save_game_name(TRIBE_Game *this,char *param_1)
 
 // Function: set_load_game_name
 // Address: 005228a0
-/* public: void __thiscall TRIBE_Game::set_load_game_name(char *) */
-
 void __thiscall TRIBE_Game::set_load_game_name(TRIBE_Game *this,char *param_1)
 {
   char cVar1;
@@ -1336,8 +1302,6 @@ void __thiscall TRIBE_Game::set_load_game_name(TRIBE_Game *this,char *param_1)
 
 // Function: get_string
 // Address: 005228e0
-/* public: virtual char * __thiscall TRIBE_Game::get_string(long,char *,int) */
-
 char * __thiscall TRIBE_Game::get_string(TRIBE_Game *this,long param_1,char *param_2,int param_3)
 {
   int iVar1;
@@ -1356,8 +1320,6 @@ char * __thiscall TRIBE_Game::get_string(TRIBE_Game *this,long param_1,char *par
 
 // Function: get_string2
 // Address: 00522930
-/* public: virtual char * __thiscall TRIBE_Game::get_string2(int,long,long,char *,int) */
-
 char * __thiscall
 TRIBE_Game::get_string2
           (TRIBE_Game *this,int param_1,long param_2,long param_3,char *param_4,int param_5)
@@ -1371,26 +1333,18 @@ TRIBE_Game::get_string2
     case 100:
     case 0x65:
     case 0x66:
-                    /* language.dll match for 0x961: "An error occurred while trying to start the
-                       game." */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x961,param_4,param_5);
       return pcVar1;
     case 0x67:
-                    /* language.dll match for 0x962: "The game could not be saved. Free some disk
-                       space, and then try again." */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x962,param_4,param_5);
       return pcVar1;
     case 0x68:
-                    /* language.dll match for 0x963: "The scenario could not be saved. Free some
-                       disk space, and then try again." */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x963,param_4,param_5);
       return pcVar1;
     case 0x69:
-                    /* language.dll match for 0x964: "The game could not be loaded." */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x964,param_4,param_5);
       return pcVar1;
     case 0x6a:
-                    /* language.dll match for 0x965: "The scenario could not be loaded." */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x965,param_4,param_5);
       return pcVar1;
     default:
@@ -1408,23 +1362,18 @@ TRIBE_Game::get_string2
     case 0xf:
     case 0x10:
     case 0x11:
-                    /* language.dll match for 0x10cd: "Food" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x10cd,param_4,param_5);
       return pcVar1;
     case 1:
-                    /* language.dll match for 0x10ce: "Wood" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x10ce,param_4,param_5);
       return pcVar1;
     case 2:
-                    /* language.dll match for 0x10cf: "Stone" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x10cf,param_4,param_5);
       return pcVar1;
     case 3:
-                    /* language.dll match for 0x10d0: "Gold" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x10d0,param_4,param_5);
       return pcVar1;
     case 9:
-                    /* language.dll match for 0x10db: "Goods" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x10db,param_4,param_5);
       return pcVar1;
     }
@@ -1432,19 +1381,15 @@ TRIBE_Game::get_string2
   case 0x65:
     switch(param_2) {
     case 1:
-                    /* language.dll match for 0x1069: "Stone Age" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x1069,param_4,param_5);
       return pcVar1;
     case 2:
-                    /* language.dll match for 0x106a: "Tool Age" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x106a,param_4,param_5);
       return pcVar1;
     case 3:
-                    /* language.dll match for 0x106b: "Bronze Age" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x106b,param_4,param_5);
       return pcVar1;
     case 4:
-                    /* language.dll match for 0x106c: "Iron Age" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x106c,param_4,param_5);
       return pcVar1;
     }
@@ -1452,131 +1397,99 @@ TRIBE_Game::get_string2
   case 0x66:
     switch(param_2) {
     case 1:
-                    /* language.dll match for 0x1005: "Work (W)" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x1005,param_4,param_5);
       return pcVar1;
     case 2:
-                    /* language.dll match for 0x1006: "Move (M)" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x1006,param_4,param_5);
       return pcVar1;
     case 3:
-                    /* language.dll match for 0x1007: "Build (B)" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x1007,param_4,param_5);
       return pcVar1;
     case 4:
-                    /* language.dll match for 0x1008: "Trade" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x1008,param_4,param_5);
       return pcVar1;
     case 5:
-                    /* language.dll match for 0x1009: "Stop (S)" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x1009,param_4,param_5);
       return pcVar1;
     case 6:
-                    /* language.dll match for 0x100a: "Unselect (ESC)" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x100a,param_4,param_5);
       return pcVar1;
     case 7:
-                    /* language.dll match for 0x100b: "Unload (L)" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x100b,param_4,param_5);
       return pcVar1;
     case 8:
-                    /* language.dll match for 0x100c: "Group (G)" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x100c,param_4,param_5);
       return pcVar1;
     case 9:
-                    /* language.dll match for 0x100d: "Ungroup (U)" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x100d,param_4,param_5);
       return pcVar1;
     case 10:
-                    /* language.dll match for 0x100e: "Formation" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x100e,param_4,param_5);
       return pcVar1;
     case 0xb:
-                    /* language.dll match for 0x100f: "Cancel (ESC)" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x100f,param_4,param_5);
       return pcVar1;
     case 0xc:
-                    /* language.dll match for 0x1010: "Next (X)" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x1010,param_4,param_5);
       return pcVar1;
     case 0xd:
-                    /* language.dll match for 0x1011: "Chat" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x1011,param_4,param_5);
       return pcVar1;
     case 0xe:
-                    /* language.dll match for 0x1012: "Diplomacy" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x1012,param_4,param_5);
       return pcVar1;
     case 0xf:
-                    /* language.dll match for 0x1013: "Menu" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x1013,param_4,param_5);
       return pcVar1;
     case 0x10:
-                    /* language.dll match for 0x1014: "Trade with" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x1014,param_4,param_5);
       return pcVar1;
     case 0x11:
-                    /* language.dll match for 0x1015: "Research" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x1015,param_4,param_5);
       return pcVar1;
     case 0x12:
-                    /* language.dll match for 0x1016: "Create" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x1016,param_4,param_5);
       return pcVar1;
     case 0x13:
-                    /* language.dll match for 0x1017: "Build" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x1017,param_4,param_5);
       return pcVar1;
     case 0x14:
-                    /* language.dll match for 0x1018: "Cancel construction" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x1018,param_4,param_5);
       return pcVar1;
     case 0x15:
-                    /* language.dll match for 0x1019: "? Help (SHIFT+F1)" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x1019,param_4,param_5);
       return pcVar1;
     case 0x16:
-                    /* language.dll match for 0x101a: "Stand Ground (D)" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x101a,param_4,param_5);
       return pcVar1;
     case 0x17:
-                    /* language.dll match for 0x101b: "Attack Ground (T)" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x101b,param_4,param_5);
       return pcVar1;
     case 0x19:
-                    /* language.dll match for 0x1020: "Trade food for gold." */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x1020,param_4,param_5);
       return pcVar1;
     case 0x1a:
-                    /* language.dll match for 0x1021: "Trade wood for gold." */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x1021,param_4,param_5);
       return pcVar1;
     case 0x1b:
-                    /* language.dll match for 0x1022: "Trade stone for gold." */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x1022,param_4,param_5);
       return pcVar1;
     case 0x1c:
-                    /* language.dll match for 0x101c: "Heal (E)" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x101c,param_4,param_5);
       return pcVar1;
     case 0x1d:
-                    /* language.dll match for 0x101d: "Convert (C)" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x101d,param_4,param_5);
       return pcVar1;
     case 0x1e:
-                    /* language.dll match for 0x101e: "Attack (A)" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x101e,param_4,param_5);
       return pcVar1;
     case 0x1f:
-                    /* language.dll match for 0x101f: "Repair (R)" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x101f,param_4,param_5);
       return pcVar1;
     case 0x20:
-                    /* language.dll match for 0x1025: "Increment queue (,)" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x1025,param_4,param_5);
       return pcVar1;
     case 0x21:
-                    /* language.dll match for 0x1026: "Decrement queue (.)" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x1026,param_4,param_5);
       return pcVar1;
     }
@@ -1584,34 +1497,27 @@ TRIBE_Game::get_string2
   case 0x67:
     if (param_2 < 0x66) {
       if (param_2 == 0x65) {
-                    /* language.dll match for 0xbbe: "No docks to trade with." */
         pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0xbbe,param_4,param_5);
         return pcVar1;
       }
       if (param_2 == 1) {
         switch(param_3) {
         case 0:
-                    /* language.dll match for 0xbb9: "Not enough food." */
           pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0xbb9,param_4,param_5);
           return pcVar1;
         case 1:
-                    /* language.dll match for 0xbba: "Not enough wood." */
           pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0xbba,param_4,param_5);
           return pcVar1;
         case 2:
-                    /* language.dll match for 0xbbb: "Not enough stone." */
           pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0xbbb,param_4,param_5);
           return pcVar1;
         case 3:
-                    /* language.dll match for 0xbbc: "Not enough gold." */
           pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0xbbc,param_4,param_5);
           return pcVar1;
         case 4:
-                    /* language.dll match for 0xbbd: "You need to build more houses." */
           pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0xbbd,param_4,param_5);
           return pcVar1;
         case 0x20:
-                    /* language.dll match for 0xbe6: "You have reached your population limit." */
           pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0xbe6,param_4,param_5);
           return pcVar1;
         }
@@ -1619,29 +1525,23 @@ TRIBE_Game::get_string2
     }
     else if (param_2 < 0x3e9) {
       if (param_2 == 1000) {
-                    /* language.dll match for 0xbc2: "Not enough room to place unit." */
         pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0xbc2,param_4,param_5);
         return pcVar1;
       }
       switch(param_2) {
       case 0x66:
-                    /* language.dll match for 0xbbf: "Not close enough to land to unload." */
         pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0xbbf,param_4,param_5);
         return pcVar1;
       case 0x67:
-                    /* language.dll match for 0xbc0: "Not enough room to unload all." */
         pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0xbc0,param_4,param_5);
         return pcVar1;
       case 0x68:
-                    /* language.dll match for 0xbc1: "%s paid %d gold in tribute to you." */
         pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0xbc1,param_4,param_5);
         return pcVar1;
       case 0x69:
-                    /* language.dll match for 0xbc3: "You cannot trade with an enemy." */
         pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0xbc3,param_4,param_5);
         return pcVar1;
       case 0x6a:
-                    /* language.dll match for 0xbca: "Can't repair ... out of resources." */
         pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0xbca,param_4,param_5);
         return pcVar1;
       }
@@ -1650,47 +1550,36 @@ TRIBE_Game::get_string2
   case 0x68:
     switch(param_2) {
     case 1:
-                    /* language.dll match for 0x10d4: "Passengers" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x10d4,param_4,param_5);
       return pcVar1;
     case 2:
-                    /* language.dll match for 0x10d1: "Health" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x10d1,param_4,param_5);
       return pcVar1;
     case 3:
-                    /* language.dll match for 0x10d2: "Armor" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x10d2,param_4,param_5);
       return pcVar1;
     case 4:
-                    /* language.dll match for 0x10d3: "Attack" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x10d3,param_4,param_5);
       return pcVar1;
     case 5:
-                    /* language.dll match for 0x10d5: "Researching" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x10d5,param_4,param_5);
       return pcVar1;
     case 6:
-                    /* language.dll match for 0x10d6: "Training" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x10d6,param_4,param_5);
       return pcVar1;
     case 7:
-                    /* language.dll match for 0x10d7: "Building" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x10d7,param_4,param_5);
       return pcVar1;
     case 8:
-                    /* language.dll match for 0x10d8: "Sight" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x10d8,param_4,param_5);
       return pcVar1;
     case 9:
-                    /* language.dll match for 0x10d9: "Population" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x10d9,param_4,param_5);
       return pcVar1;
     case 10:
-                    /* language.dll match for 0x10da: "Range" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x10da,param_4,param_5);
       return pcVar1;
     case 0xb:
-                    /* language.dll match for 0x10dc: "Speed" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x10dc,param_4,param_5);
       return pcVar1;
     }
@@ -1698,86 +1587,69 @@ TRIBE_Game::get_string2
   case 0x69:
     switch(param_2) {
     case 1:
-                    /* language.dll match for 0x27f7: "Egyptian" */
       (**(code **)(this->_padding_ + 0x20))(0x27f7,param_4,param_5);
       break;
     case 2:
-                    /* language.dll match for 0x27f8: "Greek" */
       (**(code **)(this->_padding_ + 0x20))(0x27f8,param_4,param_5);
       param_4[param_5 + -1] = '\0';
       return param_4;
     case 3:
-                    /* language.dll match for 0x27f9: "Babylonian" */
       (**(code **)(this->_padding_ + 0x20))(0x27f9,param_4,param_5);
       param_4[param_5 + -1] = '\0';
       return param_4;
     case 4:
-                    /* language.dll match for 0x27fa: "Assyrian" */
       (**(code **)(this->_padding_ + 0x20))(0x27fa,param_4,param_5);
       param_4[param_5 + -1] = '\0';
       return param_4;
     case 5:
-                    /* language.dll match for 0x27fb: "Minoan" */
       (**(code **)(this->_padding_ + 0x20))(0x27fb,param_4,param_5);
       param_4[param_5 + -1] = '\0';
       return param_4;
     case 6:
-                    /* language.dll match for 0x27fc: "Hittite" */
       (**(code **)(this->_padding_ + 0x20))(0x27fc,param_4,param_5);
       param_4[param_5 + -1] = '\0';
       return param_4;
     case 7:
-                    /* language.dll match for 0x27fd: "Phoenician" */
       (**(code **)(this->_padding_ + 0x20))(0x27fd,param_4,param_5);
       param_4[param_5 + -1] = '\0';
       return param_4;
     case 8:
-                    /* language.dll match for 0x27fe: "Sumerian" */
       (**(code **)(this->_padding_ + 0x20))(0x27fe,param_4,param_5);
       param_4[param_5 + -1] = '\0';
       return param_4;
     case 9:
-                    /* language.dll match for 0x27ff: "Persian" */
       (**(code **)(this->_padding_ + 0x20))(0x27ff,param_4,param_5);
       param_4[param_5 + -1] = '\0';
       return param_4;
     case 10:
-                    /* language.dll match for 0x2800: "Shang" */
       (**(code **)(this->_padding_ + 0x20))(0x2800,param_4,param_5);
       param_4[param_5 + -1] = '\0';
       return param_4;
     case 0xb:
-                    /* language.dll match for 0x2801: "Yamato" */
       (**(code **)(this->_padding_ + 0x20))(0x2801,param_4,param_5);
       param_4[param_5 + -1] = '\0';
       return param_4;
     case 0xc:
-                    /* language.dll match for 0x2802: "Choson" */
       (**(code **)(this->_padding_ + 0x20))(0x2802,param_4,param_5);
       param_4[param_5 + -1] = '\0';
       return param_4;
     case 0xd:
-                    /* language.dll match for 0x2806: "Roman" */
       (**(code **)(this->_padding_ + 0x20))(0x2806,param_4,param_5);
       param_4[param_5 + -1] = '\0';
       return param_4;
     case 0xe:
-                    /* language.dll match for 0x2807: "Carthaginian" */
       (**(code **)(this->_padding_ + 0x20))(0x2807,param_4,param_5);
       param_4[param_5 + -1] = '\0';
       return param_4;
     case 0xf:
-                    /* language.dll match for 0x2809: "Palmyran" */
       (**(code **)(this->_padding_ + 0x20))(0x2809,param_4,param_5);
       param_4[param_5 + -1] = '\0';
       return param_4;
     case 0x10:
-                    /* language.dll match for 0x2808: "Macedonian" */
       (**(code **)(this->_padding_ + 0x20))(0x2808,param_4,param_5);
       param_4[param_5 + -1] = '\0';
       return param_4;
     default:
-                    /* language.dll match for 0x2804: "Unknown" */
       (**(code **)(this->_padding_ + 0x20))(0x2804,param_4,param_5);
       param_4[param_5 + -1] = '\0';
       return param_4;
@@ -1792,8 +1664,6 @@ TRIBE_Game::get_string2
 // Function: get_view_panel
 // Address: 00523450
 // [HELPER] s_Scenario_Editor_Screen: "Scenario Editor Screen"
-/* public: virtual class TPanel * __thiscall TRIBE_Game::get_view_panel(void) */
-
 TPanel * __thiscall TRIBE_Game::get_view_panel(TRIBE_Game *this)
 {
   int iVar1;
@@ -1818,8 +1688,6 @@ TPanel * __thiscall TRIBE_Game::get_view_panel(TRIBE_Game *this)
 // Function: get_map_panel
 // Address: 005234a0
 // [HELPER] s_Scenario_Editor_Screen: "Scenario Editor Screen"
-/* public: virtual class TPanel * __thiscall TRIBE_Game::get_map_panel(void) */
-
 TPanel * __thiscall TRIBE_Game::get_map_panel(TRIBE_Game *this)
 {
   int iVar1;
@@ -1843,8 +1711,6 @@ TPanel * __thiscall TRIBE_Game::get_map_panel(TRIBE_Game *this)
 
 // Function: get_save_game_name
 // Address: 005234f0
-/* public: char * __thiscall TRIBE_Game::get_save_game_name(void) */
-
 char * __thiscall TRIBE_Game::get_save_game_name(TRIBE_Game *this)
 {
   return this->save_game_name;
@@ -1854,8 +1720,6 @@ char * __thiscall TRIBE_Game::get_save_game_name(TRIBE_Game *this)
 
 // Function: get_load_game_name
 // Address: 00523500
-/* public: char * __thiscall TRIBE_Game::get_load_game_name(void) */
-
 char * __thiscall TRIBE_Game::get_load_game_name(TRIBE_Game *this)
 {
   return this->load_game_name;
@@ -1865,8 +1729,6 @@ char * __thiscall TRIBE_Game::get_load_game_name(TRIBE_Game *this)
 
 // Function: new_scenario_header
 // Address: 00523510
-/* public: virtual class RGE_Scenario_Header * __thiscall TRIBE_Game::new_scenario_header(int) */
-
 RGE_Scenario_Header * __thiscall TRIBE_Game::new_scenario_header(TRIBE_Game *this,int param_1)
 {
   TRIBE_Scenario_Header *this_00;
@@ -1895,9 +1757,6 @@ RGE_Scenario_Header * __thiscall TRIBE_Game::new_scenario_header(TRIBE_Game *thi
 
 // Function: new_scenario_header
 // Address: 00523570
-/* public: virtual class RGE_Scenario_Header * __thiscall TRIBE_Game::new_scenario_header(class
-   RGE_Scenario *) */
-
 RGE_Scenario_Header * __thiscall
 TRIBE_Game::new_scenario_header(TRIBE_Game *this,RGE_Scenario *param_1)
 {
@@ -1928,8 +1787,6 @@ TRIBE_Game::new_scenario_header(TRIBE_Game *this,RGE_Scenario *param_1)
 
 // Function: new_scenario_info
 // Address: 005235d0
-/* public: virtual class RGE_Scenario * __thiscall TRIBE_Game::new_scenario_info(int) */
-
 RGE_Scenario * __thiscall TRIBE_Game::new_scenario_info(TRIBE_Game *this,int param_1)
 {
   T_Scenario *this_00;
@@ -1958,9 +1815,6 @@ RGE_Scenario * __thiscall TRIBE_Game::new_scenario_info(TRIBE_Game *this,int par
 
 // Function: show_error_message
 // Address: 00523640
-/* WARNING: Variable defined which should be unmapped: title */
-/* public: void __thiscall TRIBE_Game::show_error_message(int) */
-
 void __thiscall TRIBE_Game::show_error_message(TRIBE_Game *this,int param_1)
 {
   int iVar1;
@@ -1976,7 +1830,6 @@ void __thiscall TRIBE_Game::show_error_message(TRIBE_Game *this,int param_1)
   puStack_210 = title + 4;
   uStack_20c = 0x100;
   iVar1 = this->_padding_;
-                    /* language.dll match for 0xfa8: "Error" */
   uStack_214 = 0xfa8;
   uStack_218 = 0x52365e;
   (**(code **)(iVar1 + 0x20))();
@@ -1993,8 +1846,6 @@ void __thiscall TRIBE_Game::show_error_message(TRIBE_Game *this,int param_1)
 // Function: show_status_message
 // Address: 005236a0
 // [HELPER] s_Status_Screen: "Status Screen"
-/* public: void __thiscall TRIBE_Game::show_status_message(char *,char *,long) */
-
 void __thiscall
 TRIBE_Game::show_status_message(TRIBE_Game *this,char *param_1,char *param_2,long param_3)
 {
@@ -2031,9 +1882,6 @@ TRIBE_Game::show_status_message(TRIBE_Game *this,char *param_1,char *param_2,lon
 
 // Function: show_status_message
 // Address: 00523750
-/* WARNING: Variable defined which should be unmapped: str */
-/* public: void __thiscall TRIBE_Game::show_status_message(int,char *,long) */
-
 void __thiscall
 TRIBE_Game::show_status_message(TRIBE_Game *this,int param_1,char *param_2,long param_3)
 {
@@ -2054,8 +1902,6 @@ TRIBE_Game::show_status_message(TRIBE_Game *this,int param_1,char *param_2,long 
 
 // Function: close_status_message
 // Address: 005237a0
-/* public: void __thiscall TRIBE_Game::close_status_message(void) */
-
 void __thiscall TRIBE_Game::close_status_message(TRIBE_Game *this)
 {
   TPanelSystem::restorePreviousPanel(&panel_system,1);
@@ -2071,9 +1917,6 @@ void __thiscall TRIBE_Game::close_status_message(TRIBE_Game *this)
 // [HELPER] s__s_s_avi: "%s%s.avi"
 // [HELPER] s__sgame_avi__s_avi: "%sgame\avi\%s.avi"
 // [HELPER] s_stopped: "stopped"
-/* WARNING: Variable defined which should be unmapped: video_rect */
-/* public: int __thiscall TRIBE_Game::start_video(int,char *) */
-
 int __thiscall TRIBE_Game::start_video(TRIBE_Game *this,int param_1,char *param_2)
 {
   byte bVar1;
@@ -2142,7 +1985,6 @@ LAB_00523816:
         this->old_video_wnd_proc = pvVar6;
         SetWindowLongA(this->video_window,0xfffffffc,video_sub_wnd_proc);
         if (this->video_hi_color == 0) {
-                    /* language.dll match for 0x47e: "Victory!" */
           pvVar6 = (void *)SendMessageA(this->video_window,0x47e,0,0);
           TDrawSystem::SetPalette((TDrawSystem *)this->_padding_,pvVar6);
         }
@@ -2185,9 +2027,6 @@ LAB_00523abd:
 // [HELPER] s_lost_mid: "lost.mid"
 // [HELPER] s_stopped: "stopped"
 // [HELPER] s_won_mid: "won.mid"
-/* WARNING: Variable defined which should be unmapped: save_vid_num */
-/* public: void __thiscall TRIBE_Game::stop_video(unsigned char) */
-
 void __thiscall TRIBE_Game::stop_video(TRIBE_Game *this,uchar param_1)
 {
   byte bVar1;
@@ -2365,8 +2204,6 @@ switchD_00523c17_default:
 // [HELPER] s_Campaign_Selection_Screen: "Campaign Selection Screen"
 // [HELPER] s_open_mid: "open.mid"
 // [HELPER] s_open_wav: "open.wav"
-/* public: int __thiscall TRIBE_Game::start_campaign_menu(void) */
-
 int __thiscall TRIBE_Game::start_campaign_menu(TRIBE_Game *this)
 {
   uchar uVar1;
@@ -2437,8 +2274,6 @@ LAB_0052400d:
 // [HELPER] s_Main_Menu: "Main Menu"
 // [HELPER] s_open_mid: "open.mid"
 // [HELPER] s_open_wav: "open.wav"
-/* public: int __thiscall TRIBE_Game::start_menu(void) */
-
 int __thiscall TRIBE_Game::start_menu(TRIBE_Game *this)
 {
   uchar uVar1;
@@ -2458,7 +2293,6 @@ int __thiscall TRIBE_Game::start_menu(TRIBE_Game *this)
   if (this->video_setup != 0) {
     shutdown_video_system(this);
   }
-                    /* language.dll match for 0x4b0: "Ready" */
   this_01 = (TRIBE_Screen_Main_Menu *)operator_new(0x4b0);
   local_4 = 0;
   if (this_01 == (TRIBE_Screen_Main_Menu *)0x0) {
@@ -2511,9 +2345,6 @@ LAB_0052412d:
 // [HELPER] s__s_s_scn: "%s%s.scn"
 // [HELPER] s__s_scn: "%s.scn"
 // [HELPER] s__s_scx: "%s.scx"
-/* WARNING: Variable defined which should be unmapped: campaign */
-/* public: void __thiscall TRIBE_Game::quit_game(void) */
-
 void __thiscall TRIBE_Game::quit_game(TRIBE_Game *this)
 {
   char *pcVar1;
@@ -2601,7 +2432,6 @@ void __thiscall TRIBE_Game::quit_game(TRIBE_Game *this)
       RGE_Base_Game::close((RGE_Base_Game *)this);
       goto LAB_0052437e;
     }
-                    /* language.dll match for 0x4b0: "Ready" */
     temp_test_scenario._0_4_ = operator_new(0x4b0);
     uStack_4 = 0;
     if ((TribeJoinScreen *)temp_test_scenario._0_4_ != (TribeJoinScreen *)0x0) {
@@ -2629,9 +2459,6 @@ LAB_0052437e:
 // [HELPER] s__s_gam: "%s.gam"
 // [HELPER] s__s_gmx: "%s.gmx"
 // [HELPER] s__s_s_gmx: "%s%s.gmx"
-/* WARNING: Variable defined which should be unmapped: temp_name */
-/* public: void __thiscall TRIBE_Game::restart_game(void) */
-
 void __thiscall TRIBE_Game::restart_game(TRIBE_Game *this)
 {
   int iVar1;
@@ -2643,8 +2470,6 @@ void __thiscall TRIBE_Game::restart_game(TRIBE_Game *this)
   char *pcVar6;
   char temp_name [260];
   _finddata_t fileInfo;
-  
-                    /* language.dll match for 0x451: "Starting a new game..." */
   show_status_message(this,0x451,(char *)0x0,-1);
   close_game_screens(this,0);
   this->game_screen = (TRIBE_Screen_Game *)0x0;
@@ -2699,8 +2524,6 @@ void __thiscall TRIBE_Game::restart_game(TRIBE_Game *this)
     }
     this_00 = (TEasy_Panel *)TPanelSystem::panel(&panel_system,s_Main_Menu);
     if (this_00 != (TEasy_Panel *)0x0) {
-                    /* language.dll match for 0x961: "An error occurred while trying to start the
-                       game." */
       TEasy_Panel::popupOKDialog(this_00,0x961,(char *)0x0,0x1c2,100);
     }
   }
@@ -2711,8 +2534,6 @@ void __thiscall TRIBE_Game::restart_game(TRIBE_Game *this)
 
 // Function: load_db_files
 // Address: 00524530
-/* public: int __thiscall TRIBE_Game::load_db_files(void) */
-
 int __thiscall TRIBE_Game::load_db_files(TRIBE_Game *this)
 {
   char cVar1;
@@ -2720,7 +2541,6 @@ int __thiscall TRIBE_Game::load_db_files(TRIBE_Game *this)
   uint uVar3;
   
   RGE_Base_Game::disable_input((RGE_Base_Game *)this);
-                    /* language.dll match for 0x44d: "Loading game data..." */
   show_status_message(this,0x44d,(char *)0x0,-1);
   uVar3 = 0;
   if ((int *)this->_padding_ != (int *)0x0) {
@@ -2746,8 +2566,6 @@ int __thiscall TRIBE_Game::load_db_files(TRIBE_Game *this)
 
 // Function: load_game_data
 // Address: 005245d0
-/* public: int __thiscall TRIBE_Game::load_game_data(void) */
-
 int __thiscall TRIBE_Game::load_game_data(TRIBE_Game *this)
 {
   char cVar1;
@@ -2779,9 +2597,6 @@ int __thiscall TRIBE_Game::load_game_data(TRIBE_Game *this)
 // [HELPER] s_Game_Screen: "Game Screen"
 // [HELPER] s_Save_Game_Screen: "Save Game Screen"
 // [HELPER] s_Status_Screen: "Status Screen"
-/* WARNING: Variable defined which should be unmapped: retval */
-/* public: int __thiscall TRIBE_Game::save_game(char *) */
-
 int __thiscall TRIBE_Game::save_game(TRIBE_Game *this,char *param_1)
 {
   uchar uVar1;
@@ -2800,7 +2615,6 @@ int __thiscall TRIBE_Game::save_game(TRIBE_Game *this,char *param_1)
     return 0;
   }
   RGE_Base_Game::disable_input((RGE_Base_Game *)this);
-                    /* language.dll match for 0x453: "Saving game..." */
   show_status_message(this,0x453,(char *)0x0,-1);
   uVar1 = RGE_Base_Game::check_prog_argument((RGE_Base_Game *)this,s_DEBUGSAVEGAME);
   if (uVar1 != '\0') {
@@ -2858,8 +2672,6 @@ int __thiscall TRIBE_Game::save_game(TRIBE_Game *this,char *param_1)
 // [HELPER] s_Game_Screen: "Game Screen"
 // [HELPER] s_Save_Game_Screen: "Save Game Screen"
 // [HELPER] s_Status_Screen: "Status Screen"
-/* public: int __thiscall TRIBE_Game::save_scenario(char *) */
-
 int __thiscall TRIBE_Game::save_scenario(TRIBE_Game *this,char *param_1)
 {
   char cVar1;
@@ -2871,7 +2683,6 @@ int __thiscall TRIBE_Game::save_scenario(TRIBE_Game *this,char *param_1)
     return 0;
   }
   RGE_Base_Game::disable_input((RGE_Base_Game *)this);
-                    /* language.dll match for 0x450: "Saving scenario..." */
   show_status_message(this,0x450,(char *)0x0,-1);
   iVar2 = this->_padding_;
   iVar3 = 1;
@@ -2908,8 +2719,6 @@ int __thiscall TRIBE_Game::save_scenario(TRIBE_Game *this,char *param_1)
 // [HELPER] s_f_: "f?"
 // [HELPER] s_t_lu_f_lu_avg_r_v_lu_m_lu_o_lu__: "t%lu,f%lu,avg(r(v%lu,m%lu,o%lu),s%lu,u%lu,c%lu,l%lu,p%lu,o%lu)"
 // [HELPER] s_t_lu_f_lu_max_r_v_lu_m_lu_o_lu__: "t%lu,f%lu,max(r(v%lu,m%lu,o%lu),s%lu,u%lu,c%lu,ls%lu,lg%lu,p%lu,o%lu)"
-/* public: virtual void __thiscall TRIBE_Game::calc_timing_text(void) */
-
 void __thiscall TRIBE_Game::calc_timing_text(TRIBE_Game *this)
 {
   char cVar1;
@@ -2922,10 +2731,8 @@ void __thiscall TRIBE_Game::calc_timing_text(TRIBE_Game *this)
   
   if ((DAT_0086bcd0 & 1) == 0) {
     DAT_0086bcd0 = DAT_0086bcd0 | 1;
-                    /* language.dll match for 0x7d4: "Could not initialize sound system." */
     DAT_0086bcd8._0_4_ = debug_timeGetTime(s_C__msdev_work_age1_x1_tribegam_c,0x7d4);
   }
-                    /* language.dll match for 0x7d6: "Could not create game." */
   DAT_0086bcd8._0_4_ = debug_timeGetTime(s_C__msdev_work_age1_x1_tribegam_c,0x7d6);
   uVar2 = this->_padding_;
   if (uVar2 == 0) {
@@ -3001,8 +2808,6 @@ void __thiscall TRIBE_Game::calc_timing_text(TRIBE_Game *this)
 
 // Function: show_timings
 // Address: 00524a60
-/* public: virtual void __thiscall TRIBE_Game::show_timings(void) */
-
 void __thiscall TRIBE_Game::show_timings(TRIBE_Game *this)
 {
   if (this->game_screen != (TRIBE_Screen_Game *)0x0) {
@@ -3015,8 +2820,6 @@ void __thiscall TRIBE_Game::show_timings(TRIBE_Game *this)
 
 // Function: show_comm
 // Address: 00524a80
-/* public: virtual void __thiscall TRIBE_Game::show_comm(void) */
-
 void __thiscall TRIBE_Game::show_comm(TRIBE_Game *this)
 {
   char *pcVar1;
@@ -3052,8 +2855,6 @@ void __thiscall TRIBE_Game::show_comm(TRIBE_Game *this)
 // [HELPER] s_Player___d__AI_is_not_functional: "Player #%d: AI is not functional."
 // [HELPER] s_Player___d___s: "Player #%d: %s"
 // [HELPER] s_Player___d_is_not_a_computer_pla: "Player #%d is not a computer player."
-/* public: virtual void __thiscall TRIBE_Game::show_ai(void) */
-
 void __thiscall TRIBE_Game::show_ai(TRIBE_Game *this)
 {
   char cVar1;
@@ -3278,9 +3079,6 @@ void __thiscall TRIBE_Game::show_ai(TRIBE_Game *this)
 
 // Function: notification
 // Address: 00524d70
-/* WARNING: Variable defined which should be unmapped: msg */
-/* public: virtual void __thiscall TRIBE_Game::notification(int,long,long,long,long) */
-
 void __thiscall
 TRIBE_Game::notification
           (TRIBE_Game *this,int param_1,long param_2,long param_3,long param_4,long param_5)
@@ -3303,10 +3101,8 @@ TRIBE_Game::notification
        (this->game_screen != (TRIBE_Screen_Game *)0x0)) {
       RGE_Base_Game::play_sound((RGE_Base_Game *)this,3);
       iVar4 = this->_padding_;
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
       uVar6 = 0x66;
 LAB_005250a4:
-                    /* language.dll match for 0x67: "Comic Sans MS" */
       (**(code **)(iVar4 + 0x28))(0x67,uVar6,0);
       TRIBE_Screen_Game::show_message(this->game_screen,BadMessage,&stack0xfffffdec,'U','\0');
       return;
@@ -3339,7 +3135,6 @@ LAB_005250a4:
       RGE_Base_Game::play_sound((RGE_Base_Game *)this,7);
       iVar4 = RGE_Base_Game::playerID((RGE_Base_Game *)this,param_2);
       if (0 < iVar4) {
-                    /* language.dll match for 0xbc4: "%s disconnected." */
         (**(code **)(this->_padding_ + 0x20))(0xbc4);
         iVar4 = RGE_Base_Game::playerID((RGE_Base_Game *)this,param_2);
         sprintf(&stack0xfffffdf4,msg + 0xf8,
@@ -3355,7 +3150,6 @@ LAB_005250a4:
       RGE_Base_Game::play_sound((RGE_Base_Game *)this,6);
       iVar4 = this->_padding_;
       if (param_3 == 0) {
-                    /* language.dll match for 0xbc5: "%s resigned." */
         (**(code **)(iVar4 + 0x20))(0xbc5);
         sprintf(&stack0xfffffdf4,msg + 0xf8,
                 *(undefined4 *)(*(int *)(*(int *)(this->_padding_ + 0x40) + param_2 * 4) + 0x44));
@@ -3376,7 +3170,6 @@ LAB_00525284:
         (this->game_screen != (TRIBE_Screen_Game *)0x0)) &&
        (RGE_Base_Game::play_sound((RGE_Base_Game *)this,6), 0 < param_2)) {
       iVar4 = this->_padding_;
-                    /* language.dll match for 0xbc6: "%s defeated." */
       uVar6 = 0xbc6;
       goto LAB_00525284;
     }
@@ -3387,7 +3180,6 @@ LAB_00525284:
       RGE_Base_Game::play_sound((RGE_Base_Game *)this,4);
       if (param_4 == 0) {
         iVar4 = this->_padding_;
-                    /* language.dll match for 0xbc8: "%s paid %d food in tribute to you." */
         uVar6 = 0xbc8;
       }
       else if (param_4 == 1) {
@@ -3423,15 +3215,11 @@ LAB_00525284:
     }
     if (param_4 == 0) {
       iVar4 = this->_padding_;
-                    /* language.dll match for 0xbd2: "%s changed diplomatic stance with you to
-                       Ally." */
       uVar6 = 0xbd2;
     }
     else {
       if (param_4 != 1) {
         if (param_4 == 3) {
-                    /* language.dll match for 0xbd3: "%s changed diplomatic stance with you to
-                       Enemy." */
           (**(code **)(this->_padding_ + 0x20))(0xbd3);
         }
         goto LAB_0052543e;
@@ -3475,7 +3263,6 @@ LAB_0052543e:
       iVar4 = this->_padding_;
       uVar6 = 1000;
 LAB_00524f71:
-                    /* language.dll match for 0x67: "Comic Sans MS" */
       (**(code **)(iVar4 + 0x28))(0x67,uVar6,param_3);
       TRIBE_Screen_Game::show_message(this->game_screen,BadMessage,&stack0xfffffdec,'U','\0');
       return;
@@ -3494,12 +3281,10 @@ LAB_00524f71:
     if (this->game_screen != (TRIBE_Screen_Game *)0x0) {
       RGE_Base_Game::play_sound((RGE_Base_Game *)this,8);
       if (param_2 == *(short *)(this->_padding_ + 0x7c)) {
-                    /* language.dll match for 0xbf2: "You have started building a Wonder!" */
         (**(code **)(this->_padding_ + 0x20))(0xbf2);
       }
       else {
         iVar4 = *(int *)(*(int *)(this->_padding_ + 0x40) + param_2 * 4);
-                    /* language.dll match for 0xbcb: "%s started building a Wonder!" */
         (**(code **)(this->_padding_ + 0x20))(0xbcb);
         sprintf(&stack0xfffffdf4,msg + 0xf8,*(undefined4 *)(iVar4 + 0x44));
       }
@@ -3518,12 +3303,9 @@ LAB_00524f71:
     pRVar2 = *(RGE_Player **)(*(int *)(iVar4 + 0x40) + *(short *)(iVar4 + 0x7c) * 4);
     if (pRVar1 == pRVar2) {
       if (*(int *)(iVar4 + 0x108) == 0) {
-                    /* language.dll match for 0xbcc: "You completed a Wonder. You will win if it
-                       stands for 2000 years!" */
         (**(code **)(this->_padding_ + 0x20))(0xbcc);
       }
       else {
-                    /* language.dll match for 0xbee: "You completed a Wonder." */
         (**(code **)(this->_padding_ + 0x20))(0xbee);
       }
     }
@@ -3534,22 +3316,17 @@ LAB_00524f71:
          (uVar3 = RGE_Player::relation(pRVar2,(int)pRVar1->id), uVar3 != '\0')) {
         iVar4 = this->_padding_;
         if (*(int *)(this->_padding_ + 0x108) != 0) goto LAB_00525645;
-                    /* language.dll match for 0xbce: "%s completed a Wonder. You will lose if it
-                       stands for 2000 years!" */
         (**(code **)(iVar4 + 0x20))(0xbce);
         pcVar7 = pRVar1->name;
       }
       else {
         iVar4 = this->_padding_;
         if (*(int *)(this->_padding_ + 0x108) == 0) {
-                    /* language.dll match for 0xbcd: "%s completed a Wonder. You will win if it
-                       stands for 2000 years!" */
           (**(code **)(iVar4 + 0x20))(0xbcd);
           pcVar7 = pRVar1->name;
         }
         else {
 LAB_00525645:
-                    /* language.dll match for 0xbef: "%s completed a Wonder." */
           (**(code **)(iVar4 + 0x20))(0xbef);
           pcVar7 = pRVar1->name;
         }
@@ -3574,18 +3351,15 @@ LAB_00525745:
           (uVar3 = RGE_Player::relation(pRVar1,(int)pRVar2->id), uVar3 != '\0')) ||
          ((pRVar2->allied_victory == '\0' ||
           (uVar3 = RGE_Player::relation(pRVar2,(int)pRVar1->id), uVar3 != '\0')))) {
-                    /* language.dll match for 0xbd0: "%s's Wonder was destroyed!" */
         (**(code **)(this->_padding_ + 0x20))(0xbd0);
         pcVar7 = pRVar1->name;
       }
       else {
-                    /* language.dll match for 0xbd0: "%s's Wonder was destroyed!" */
         (**(code **)(this->_padding_ + 0x20))(0xbd0);
         pcVar7 = pRVar1->name;
       }
       goto LAB_00525745;
     }
-                    /* language.dll match for 0xbcf: "Your Wonder was destroyed!" */
     (**(code **)(this->_padding_ + 0x20))(0xbcf);
 LAB_0052574d:
     add_notification_loc(this,unaff_retaddr,param_1);
@@ -3616,13 +3390,10 @@ LAB_00525a51:
         }
         goto LAB_00525830;
       }
-                    /* language.dll match for 0xbd4: "All Artifacts have been captured. Hold them
-                       for 2000 years to win!" */
       (**(code **)(this->_padding_ + 0x20))(0xbd4);
     }
     else {
       iVar4 = this->_padding_;
-                    /* language.dll match for 0xbf0: "All Artifacts have been captured." */
       uVar6 = 0xbf0;
 LAB_00525830:
       (**(code **)(iVar4 + 0x20))(uVar6);
@@ -3633,7 +3404,6 @@ LAB_00525830:
     iVar5 = 1;
     if (1 < *(short *)(iVar4 + 0x3c)) {
       do {
-                    /* language.dll match for 0x72: "21" */
         (**(code **)(**(int **)(*(int *)(iVar4 + 0x40) + iVar5 * 4) + 0xe8))
                   ((int)pRVar1->id,iVar5,0x72,0,0,0);
         iVar4 = this->_padding_;
@@ -3651,7 +3421,6 @@ LAB_00525830:
     }
     RGE_Base_Game::play_sound((RGE_Base_Game *)this,0xc);
     iVar4 = this->_padding_;
-                    /* language.dll match for 0xbd6: "Control of the Artifacts was lost!" */
     uVar6 = 0xbd6;
     goto LAB_00525a47;
   case 0x74:
@@ -3677,13 +3446,10 @@ LAB_00525830:
         }
         goto LAB_0052599f;
       }
-                    /* language.dll match for 0xbd9: "All Ruins have been captured. Hold them for
-                       2000 years to win!" */
       (**(code **)(this->_padding_ + 0x20))(0xbd9);
     }
     else {
       iVar4 = this->_padding_;
-                    /* language.dll match for 0xbf1: "All Ruins have been captured." */
       uVar6 = 0xbf1;
 LAB_0052599f:
       (**(code **)(iVar4 + 0x20))(uVar6);
@@ -3694,7 +3460,6 @@ LAB_0052599f:
     iVar5 = 1;
     if (1 < *(short *)(iVar4 + 0x3c)) {
       do {
-                    /* language.dll match for 0x74: "Copperplate Gothic Light" */
         (**(code **)(**(int **)(*(int *)(iVar4 + 0x40) + iVar5 * 4) + 0xe8))
                   ((int)pRVar1->id,iVar5,0x74,0,0,0);
         iVar4 = this->_padding_;
@@ -3712,7 +3477,6 @@ LAB_0052599f:
     }
     RGE_Base_Game::play_sound((RGE_Base_Game *)this,0xc);
     iVar4 = this->_padding_;
-                    /* language.dll match for 0xbdb: "Control of the Ruins was lost!" */
     uVar6 = 0xbdb;
 LAB_00525a47:
     (**(code **)(iVar4 + 0x20))(uVar6);
@@ -3722,7 +3486,6 @@ LAB_00525a47:
        (this->game_screen != (TRIBE_Screen_Game *)0x0)) {
       RGE_Base_Game::play_sound((RGE_Base_Game *)this,3);
       iVar4 = this->_padding_;
-                    /* language.dll match for 0xbe7: "Not enough faith to perform a conversion." */
       uVar6 = 0xbe7;
 LAB_00525bbc:
       (**(code **)(iVar4 + 0x20))(uVar6);
@@ -3735,8 +3498,6 @@ LAB_00525bbc:
        (this->game_screen != (TRIBE_Screen_Game *)0x0)) {
       RGE_Base_Game::play_sound((RGE_Base_Game *)this,3);
       iVar4 = this->_padding_;
-                    /* language.dll match for 0xbe8: "You must research Monotheism before you can
-                       convert enemy Priests." */
       uVar6 = 0xbe8;
       goto LAB_00525bbc;
     }
@@ -3746,8 +3507,6 @@ LAB_00525bbc:
        (this->game_screen != (TRIBE_Screen_Game *)0x0)) {
       RGE_Base_Game::play_sound((RGE_Base_Game *)this,3);
       iVar4 = this->_padding_;
-                    /* language.dll match for 0xbe9: "You must research Monotheism before you can
-                       convert enemy buildings." */
       uVar6 = 0xbe9;
       goto LAB_00525bbc;
     }
@@ -3757,7 +3516,6 @@ LAB_00525bbc:
        (this->game_screen != (TRIBE_Screen_Game *)0x0)) {
       RGE_Base_Game::play_sound((RGE_Base_Game *)this,3);
       iVar4 = this->_padding_;
-                    /* language.dll match for 0xbea: "Town Centers cannot be converted." */
       uVar6 = 0xbea;
       goto LAB_00525bbc;
     }
@@ -3767,7 +3525,6 @@ LAB_00525bbc:
        (this->game_screen != (TRIBE_Screen_Game *)0x0)) {
       RGE_Base_Game::play_sound((RGE_Base_Game *)this,3);
       iVar4 = this->_padding_;
-                    /* language.dll match for 0xbeb: "Wonders cannot be converted." */
       uVar6 = 0xbeb;
       goto LAB_00525bbc;
     }
@@ -3811,9 +3568,6 @@ LAB_00525bbc:
 // Address: 00525d20
 // [HELPER] s_scr2: "scr2"
 // [HELPER] s_scr3: "scr3"
-/* WARNING: Variable defined which should be unmapped: info_file */
-/* public: int __thiscall TRIBE_Game::start_game(int) */
-
 int __thiscall TRIBE_Game::start_game(TRIBE_Game *this,int param_1)
 {
   char cVar1;
@@ -3880,12 +3634,10 @@ int __thiscall TRIBE_Game::start_game(TRIBE_Game *this,int param_1)
   }
   RGE_Base_Game::disable_input((RGE_Base_Game *)this);
   if (this->_padding_ == 0) {
-                    /* language.dll match for 0x44d: "Loading game data..." */
     show_status_message(this,0x44d,info_file + 4,lVar5);
     iVar2 = load_game_data(this);
     if (iVar2 == 0) goto LAB_00525dd5;
   }
-                    /* language.dll match for 0x451: "Starting a new game..." */
   show_status_message(this,0x451,info_file + 4,lVar5);
   iVar2 = create_game(this,0);
   if (iVar2 != 0) {
@@ -3909,8 +3661,6 @@ LAB_00525dd5:
 // Function: test_scenario
 // Address: 00525e50
 // [HELPER] s_Scenario_Editor_Screen: "Scenario Editor Screen"
-/* public: int __thiscall TRIBE_Game::test_scenario(char *) */
-
 int __thiscall TRIBE_Game::test_scenario(TRIBE_Game *this,char *param_1)
 {
   char *pcVar1;
@@ -3967,9 +3717,6 @@ int __thiscall TRIBE_Game::test_scenario(TRIBE_Game *this,char *param_1)
 // [HELPER] s__s_s_scn: "%s%s.scn"
 // [HELPER] s__s_scn: "%s.scn"
 // [HELPER] s__s_scx: "%s.scx"
-/* WARNING: Variable defined which should be unmapped: first_any_player */
-/* public: int __thiscall TRIBE_Game::start_scenario(char *) */
-
 int __thiscall TRIBE_Game::start_scenario(TRIBE_Game *this,char *param_1)
 {
   int iVar1;
@@ -4105,8 +3852,6 @@ int __thiscall TRIBE_Game::start_scenario(TRIBE_Game *this,char *param_1)
 // [HELPER] s_total_checksum__d__act__d_: "total checksum=%d, act=%d\n"
 // [HELPER] s_w: "w"
 // [HELPER] s_world_time__u_: "world_time=%u\n"
-/* public: int __thiscall TRIBE_Game::load_game(char *) */
-
 int __thiscall TRIBE_Game::load_game(TRIBE_Game *this,char *param_1)
 {
   Path *pPVar1;
@@ -4164,7 +3909,6 @@ int __thiscall TRIBE_Game::load_game(TRIBE_Game *this,char *param_1)
     this->game_screen = (TRIBE_Screen_Game *)0x0;
     TPanelSystem::destroyPanel(&panel_system,s_Game_Screen);
   }
-                    /* language.dll match for 0x44d: "Loading game data..." */
   show_status_message(this,0x44d,(char *)0x0,-1);
   iVar9 = load_game_data(this);
   if (iVar9 == 0) {
@@ -4174,7 +3918,6 @@ int __thiscall TRIBE_Game::load_game(TRIBE_Game *this,char *param_1)
     cVar8 = *pcVar10;
   }
   else {
-                    /* language.dll match for 0x452: "Loading saved game..." */
     show_status_message(this,0x452,(char *)0x0,-1);
     if (this->_padding_ != 0) {
       *(undefined1 *)(this->_padding_ + 1) = 1;
@@ -4212,7 +3955,6 @@ int __thiscall TRIBE_Game::load_game(TRIBE_Game *this,char *param_1)
         numberPathingIterations = 0x1d4c;
       }
       else {
-                    /* language.dll match for 0x9c4: "This is not enabled in the trial version." */
         numberPathingIterations = 0x9c4;
       }
       uVar20 = 0;
@@ -4578,8 +4320,6 @@ LAB_00526303:
 
 // Function: do_game_over
 // Address: 00526dc0
-/* public: void __thiscall TRIBE_Game::do_game_over(void) */
-
 void __thiscall TRIBE_Game::do_game_over(TRIBE_Game *this)
 {
   int iVar1;
@@ -4613,10 +4353,6 @@ void __thiscall TRIBE_Game::do_game_over(TRIBE_Game *this)
 // [HELPER] s__s_s_scn: "%s%s.scn"
 // [HELPER] s__s_scn: "%s.scn"
 // [HELPER] s__s_scx: "%s.scx"
-/* WARNING: Variable defined which should be unmapped: i */
-/* WARNING: Type propagation algorithm not settling */
-/* protected: int __thiscall TRIBE_Game::create_game(int) */
-
 int __thiscall TRIBE_Game::create_game(TRIBE_Game *this,int param_1)
 {
   bool bVar1;
@@ -4970,7 +4706,6 @@ LAB_005272dd:
         if (((iVar11 == 0) &&
             (iVar11 = RGE_Base_Game::randomGame((RGE_Base_Game *)this), iVar11 != 0)) &&
            (*pcVar9 == '\0')) {
-                    /* language.dll match for 0x286d: "You" */
           (**(code **)(this->_padding_ + 0x20))(0x286d,pcVar14,0x41);
         }
         else {
@@ -5010,7 +4745,6 @@ LAB_0052759b:
       }
       if (*pcVar14 == '\0') {
         if (*pcVar9 == '\0') {
-                    /* language.dll match for 0x286d: "You" */
           (**(code **)(this->_padding_ + 0x20))(0x286d,pcVar14,0x41);
         }
         else {
@@ -5115,7 +4849,6 @@ LAB_0052759b:
       numberPathingIterations = 0x1d4c;
     }
     else {
-                    /* language.dll match for 0x9c4: "This is not enabled in the trial version." */
       numberPathingIterations = 0x9c4;
     }
     uVar13 = 1;
@@ -5149,8 +4882,6 @@ LAB_0052759b:
 // [HELPER] s_Select_Scenario_Screen: "Select Scenario Screen"
 // [HELPER] s_Single_Player_Menu: "Single Player Menu"
 // [HELPER] s_Status_Screen: "Status Screen"
-/* public: int __thiscall TRIBE_Game::create_game_screen(void) */
-
 int __thiscall TRIBE_Game::create_game_screen(TRIBE_Game *this)
 {
   int iVar1;
@@ -5220,7 +4951,6 @@ LAB_0052796f:
       }
       uStack_c = 0xffffffff;
       if (this_02 != (TRIBE_Screen_Wait *)0x0) {
-                    /* language.dll match for 0x454: "Waiting for other players..." */
         TRIBE_Screen_Wait::set_text(this_02,0x454);
         TPanelSystem::setCurrentPanel(&panel_system,s_Multiplayer_Wait_Screen,0);
         TPanelSystem::destroyPanel(&panel_system,s_Status_Screen);
@@ -5262,9 +4992,6 @@ LAB_00527a4f:
 // [HELPER] s___s__d__s__d_: "%*s %d %s %d "
 // [HELPER] s__s_: "%s\n"
 // [HELPER] s_w: "w"
-/* WARNING: Variable defined which should be unmapped: target */
-/* public: virtual int __thiscall TRIBE_Game::processCheatCode(int,char *) */
-
 int __thiscall TRIBE_Game::processCheatCode(TRIBE_Game *this,int param_1,char *param_2)
 {
   char cVar1;
@@ -5341,7 +5068,6 @@ LAB_00527b38:
 LAB_00527b3d:
   if ((iVar3 == 0) && (iVar3 = RGE_Base_Game::singlePlayerGame((RGE_Base_Game *)this), iVar3 != 0))
 {
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
     sVar14 = 0x66;
   }
   else {
@@ -6262,9 +5988,6 @@ LAB_0052848c:
 // [HELPER] s__d: "%d"
 // [HELPER] s__d_: "%d "
 // [HELPER] s_game_started: "game started"
-/* WARNING: Variable defined which should be unmapped: int_str */
-/* protected: void __thiscall TRIBE_Game::let_game_begin(void) */
-
 void __thiscall TRIBE_Game::let_game_begin(TRIBE_Game *this)
 {
   char cVar1;
@@ -6332,12 +6055,10 @@ void __thiscall TRIBE_Game::let_game_begin(TRIBE_Game *this)
     break;
   case Lake:
     pcVar12 = *(code **)(this->_padding_ + 0x20);
-                    /* language.dll match for 0x2970: "Mediterranean" */
     uStack_850 = 0x2970;
     break;
   default:
     pcVar12 = *(code **)(this->_padding_ + 0x20);
-                    /* language.dll match for 0x2804: "Unknown" */
     uStack_850 = 0x2804;
   }
   uStack_854 = 0x528776;
@@ -6361,11 +6082,9 @@ void __thiscall TRIBE_Game::let_game_begin(TRIBE_Game *this)
     uVar18 = 0x2977;
     break;
   case Humongous:
-                    /* language.dll match for 0x2978: "Gigantic" */
     uVar18 = 0x2978;
     break;
   default:
-                    /* language.dll match for 0x2804: "Unknown" */
     uVar18 = 0x2804;
   }
   pcStack_858 = map_type_str + 0xc;
@@ -6806,8 +6525,6 @@ LAB_005288c4:
 // [HELPER] s_Scenario_Editor_Open: "Scenario Editor Open"
 // [HELPER] s_Scenario_Editor_Screen: "Scenario Editor Screen"
 // [HELPER] s_Status_Screen: "Status Screen"
-/* public: int __thiscall TRIBE_Game::start_scenario_editor(char *,int) */
-
 int __thiscall TRIBE_Game::start_scenario_editor(TRIBE_Game *this,char *param_1,int param_2)
 {
   TRIBE_Screen_Sed *this_00;
@@ -6873,9 +6590,6 @@ int __thiscall TRIBE_Game::start_scenario_editor(TRIBE_Game *this,char *param_1,
 
 // Function: send_game_options
 // Address: 00528f60
-/* WARNING: Variable defined which should be unmapped: combined_options */
-/* public: virtual void __thiscall TRIBE_Game::send_game_options(void) */
-
 void __thiscall TRIBE_Game::send_game_options(TRIBE_Game *this)
 {
   combined_options combined_options;
@@ -6896,9 +6610,6 @@ void __thiscall TRIBE_Game::send_game_options(TRIBE_Game *this)
 
 // Function: receive_game_options
 // Address: 00528fb0
-/* WARNING: Variable defined which should be unmapped: size */
-/* public: virtual void __thiscall TRIBE_Game::receive_game_options(void) */
-
 void __thiscall TRIBE_Game::receive_game_options(TRIBE_Game *this)
 {
   RGE_Game_Options *pRVar1;
@@ -6922,8 +6633,6 @@ void __thiscall TRIBE_Game::receive_game_options(TRIBE_Game *this)
 
 // Function: set_tribe_options
 // Address: 00529000
-/* public: void __thiscall TRIBE_Game::set_tribe_options(struct TRIBE_Game::TRIBE_Game_Options *) */
-
 void __thiscall TRIBE_Game::set_tribe_options(TRIBE_Game *this,TRIBE_Game_Options *param_1)
 {
   int *piVar1;
@@ -6960,8 +6669,6 @@ void __thiscall TRIBE_Game::set_tribe_options(TRIBE_Game *this,TRIBE_Game_Option
 
 // Function: get_tribe_options
 // Address: 00529100
-/* public: void __thiscall TRIBE_Game::get_tribe_options(struct TRIBE_Game::TRIBE_Game_Options *) */
-
 void __thiscall TRIBE_Game::get_tribe_options(TRIBE_Game *this,TRIBE_Game_Options *param_1)
 {
   uchar uVar1;
@@ -7025,8 +6732,6 @@ void __thiscall TRIBE_Game::get_tribe_options(TRIBE_Game *this,TRIBE_Game_Option
 
 // Function: mapSize
 // Address: 005291f0
-/* public: enum TRIBE_Game::MapSize __thiscall TRIBE_Game::mapSize(void)const  */
-
 MapSize __thiscall TRIBE_Game::mapSize(TRIBE_Game *this)
 {
   return (this->tribe_game_options).mapSizeValue;
@@ -7036,8 +6741,6 @@ MapSize __thiscall TRIBE_Game::mapSize(TRIBE_Game *this)
 
 // Function: setMapSize
 // Address: 00529200
-/* public: void __thiscall TRIBE_Game::setMapSize(enum TRIBE_Game::MapSize) */
-
 void __thiscall TRIBE_Game::setMapSize(TRIBE_Game *this,MapSize param_1)
 {
   (this->tribe_game_options).mapSizeValue = param_1;
@@ -7049,7 +6752,6 @@ void __thiscall TRIBE_Game::setMapSize(TRIBE_Game *this,MapSize param_1)
     RGE_Base_Game::setMapSize((RGE_Base_Game *)this,0x60,0x60,8);
     return;
   case Medium:
-                    /* language.dll match for 0x78: "10" */
     RGE_Base_Game::setMapSize((RGE_Base_Game *)this,0x78,0x78,8);
     return;
   case Large:
@@ -7068,8 +6770,6 @@ void __thiscall TRIBE_Game::setMapSize(TRIBE_Game *this,MapSize param_1)
 
 // Function: mapType
 // Address: 005292a0
-/* public: enum TRIBE_Game::MapType __thiscall TRIBE_Game::mapType(void)const  */
-
 MapType __thiscall TRIBE_Game::mapType(TRIBE_Game *this)
 {
   return (this->tribe_game_options).mapTypeValue;
@@ -7079,8 +6779,6 @@ MapType __thiscall TRIBE_Game::mapType(TRIBE_Game *this)
 
 // Function: setMapType
 // Address: 005292b0
-/* public: void __thiscall TRIBE_Game::setMapType(enum TRIBE_Game::MapType) */
-
 void __thiscall TRIBE_Game::setMapType(TRIBE_Game *this,MapType param_1)
 {
   (this->tribe_game_options).mapTypeValue = param_1;
@@ -7091,8 +6789,6 @@ void __thiscall TRIBE_Game::setMapType(TRIBE_Game *this,MapType param_1)
 
 // Function: animals
 // Address: 005292c0
-/* public: int __thiscall TRIBE_Game::animals(void)const  */
-
 int __thiscall TRIBE_Game::animals(TRIBE_Game *this)
 {
   return (this->tribe_game_options).animalsValue;
@@ -7102,8 +6798,6 @@ int __thiscall TRIBE_Game::animals(TRIBE_Game *this)
 
 // Function: setAnimals
 // Address: 005292d0
-/* public: void __thiscall TRIBE_Game::setAnimals(int) */
-
 void __thiscall TRIBE_Game::setAnimals(TRIBE_Game *this,int param_1)
 {
   (this->tribe_game_options).animalsValue = param_1;
@@ -7114,8 +6808,6 @@ void __thiscall TRIBE_Game::setAnimals(TRIBE_Game *this,int param_1)
 
 // Function: predators
 // Address: 005292e0
-/* public: int __thiscall TRIBE_Game::predators(void)const  */
-
 int __thiscall TRIBE_Game::predators(TRIBE_Game *this)
 {
   return (this->tribe_game_options).predatorsValue;
@@ -7125,8 +6817,6 @@ int __thiscall TRIBE_Game::predators(TRIBE_Game *this)
 
 // Function: setPredators
 // Address: 005292f0
-/* public: void __thiscall TRIBE_Game::setPredators(int) */
-
 void __thiscall TRIBE_Game::setPredators(TRIBE_Game *this,int param_1)
 {
   (this->tribe_game_options).predatorsValue = param_1;
@@ -7137,8 +6827,6 @@ void __thiscall TRIBE_Game::setPredators(TRIBE_Game *this,int param_1)
 
 // Function: victoryType
 // Address: 00529300
-/* public: enum TRIBE_Game::VictoryType __thiscall TRIBE_Game::victoryType(void)const  */
-
 VictoryType __thiscall TRIBE_Game::victoryType(TRIBE_Game *this)
 {
   return (this->tribe_game_options).victoryTypeValue;
@@ -7148,8 +6836,6 @@ VictoryType __thiscall TRIBE_Game::victoryType(TRIBE_Game *this)
 
 // Function: victoryAmount
 // Address: 00529310
-/* public: int __thiscall TRIBE_Game::victoryAmount(void)const  */
-
 int __thiscall TRIBE_Game::victoryAmount(TRIBE_Game *this)
 {
   return (this->tribe_game_options).victoryAmountValue;
@@ -7159,8 +6845,6 @@ int __thiscall TRIBE_Game::victoryAmount(TRIBE_Game *this)
 
 // Function: setVictoryType
 // Address: 00529320
-/* public: void __thiscall TRIBE_Game::setVictoryType(enum TRIBE_Game::VictoryType,int) */
-
 void __thiscall TRIBE_Game::setVictoryType(TRIBE_Game *this,VictoryType param_1,int param_2)
 {
   (this->tribe_game_options).victoryTypeValue = param_1;
@@ -7172,8 +6856,6 @@ void __thiscall TRIBE_Game::setVictoryType(TRIBE_Game *this,VictoryType param_1,
 
 // Function: civilization
 // Address: 00529340
-/* public: int __thiscall TRIBE_Game::civilization(int) */
-
 int __thiscall TRIBE_Game::civilization(TRIBE_Game *this,int param_1)
 {
   return (uint)(this->tribe_game_options).civilizationValue[param_1];
@@ -7183,8 +6865,6 @@ int __thiscall TRIBE_Game::civilization(TRIBE_Game *this,int param_1)
 
 // Function: setCivilization
 // Address: 00529350
-/* public: void __thiscall TRIBE_Game::setCivilization(int,int) */
-
 void __thiscall TRIBE_Game::setCivilization(TRIBE_Game *this,int param_1,int param_2)
 {
   (this->tribe_game_options).civilizationValue[param_1] = (uchar)param_2;
@@ -7195,8 +6875,6 @@ void __thiscall TRIBE_Game::setCivilization(TRIBE_Game *this,int param_1,int par
 
 // Function: scenarioPlayer
 // Address: 00529370
-/* public: int __thiscall TRIBE_Game::scenarioPlayer(int) */
-
 int __thiscall TRIBE_Game::scenarioPlayer(TRIBE_Game *this,int param_1)
 {
   return (this->tribe_game_options).scenarioPlayerValue[param_1];
@@ -7206,8 +6884,6 @@ int __thiscall TRIBE_Game::scenarioPlayer(TRIBE_Game *this,int param_1)
 
 // Function: setScenarioPlayer
 // Address: 00529380
-/* public: void __thiscall TRIBE_Game::setScenarioPlayer(int,int) */
-
 void __thiscall TRIBE_Game::setScenarioPlayer(TRIBE_Game *this,int param_1,int param_2)
 {
   (this->tribe_game_options).scenarioPlayerValue[param_1] = param_2;
@@ -7218,8 +6894,6 @@ void __thiscall TRIBE_Game::setScenarioPlayer(TRIBE_Game *this,int param_1,int p
 
 // Function: playerColor
 // Address: 005293a0
-/* public: int __thiscall TRIBE_Game::playerColor(int) */
-
 int __thiscall TRIBE_Game::playerColor(TRIBE_Game *this,int param_1)
 {
   return (uint)(this->tribe_game_options).playerColorValue[param_1];
@@ -7229,8 +6903,6 @@ int __thiscall TRIBE_Game::playerColor(TRIBE_Game *this,int param_1)
 
 // Function: setPlayerColor
 // Address: 005293b0
-/* public: void __thiscall TRIBE_Game::setPlayerColor(int,int) */
-
 void __thiscall TRIBE_Game::setPlayerColor(TRIBE_Game *this,int param_1,int param_2)
 {
   (this->tribe_game_options).playerColorValue[param_1] = (uchar)param_2;
@@ -7241,8 +6913,6 @@ void __thiscall TRIBE_Game::setPlayerColor(TRIBE_Game *this,int param_1,int para
 
 // Function: computerName
 // Address: 005293d0
-/* public: int __thiscall TRIBE_Game::computerName(int) */
-
 int __thiscall TRIBE_Game::computerName(TRIBE_Game *this,int param_1)
 {
   return (uint)(this->tribe_game_options).computerNameValue[param_1];
@@ -7252,8 +6922,6 @@ int __thiscall TRIBE_Game::computerName(TRIBE_Game *this,int param_1)
 
 // Function: setComputerName
 // Address: 005293e0
-/* public: void __thiscall TRIBE_Game::setComputerName(int,int) */
-
 void __thiscall TRIBE_Game::setComputerName(TRIBE_Game *this,int param_1,int param_2)
 {
   (this->tribe_game_options).computerNameValue[param_1] = (uchar)param_2;
@@ -7264,8 +6932,6 @@ void __thiscall TRIBE_Game::setComputerName(TRIBE_Game *this,int param_1,int par
 
 // Function: allowTrading
 // Address: 00529400
-/* public: int __thiscall TRIBE_Game::allowTrading(void) */
-
 int __thiscall TRIBE_Game::allowTrading(TRIBE_Game *this)
 {
   return (uint)(this->tribe_game_options).allowTradingValue;
@@ -7275,8 +6941,6 @@ int __thiscall TRIBE_Game::allowTrading(TRIBE_Game *this)
 
 // Function: longCombat
 // Address: 00529410
-/* public: int __thiscall TRIBE_Game::longCombat(void) */
-
 int __thiscall TRIBE_Game::longCombat(TRIBE_Game *this)
 {
   return (uint)(this->tribe_game_options).longCombatValue;
@@ -7286,8 +6950,6 @@ int __thiscall TRIBE_Game::longCombat(TRIBE_Game *this)
 
 // Function: randomizePositions
 // Address: 00529420
-/* public: int __thiscall TRIBE_Game::randomizePositions(void) */
-
 int __thiscall TRIBE_Game::randomizePositions(TRIBE_Game *this)
 {
   return (uint)(this->tribe_game_options).randomizePositionsValue;
@@ -7297,8 +6959,6 @@ int __thiscall TRIBE_Game::randomizePositions(TRIBE_Game *this)
 
 // Function: fullTechTree
 // Address: 00529430
-/* public: int __thiscall TRIBE_Game::fullTechTree(void) */
-
 int __thiscall TRIBE_Game::fullTechTree(TRIBE_Game *this)
 {
   return (uint)(this->tribe_game_options).fullTechTreeValue;
@@ -7308,8 +6968,6 @@ int __thiscall TRIBE_Game::fullTechTree(TRIBE_Game *this)
 
 // Function: resourceLevel
 // Address: 00529440
-/* public: enum TRIBE_Game::ResourceLevel __thiscall TRIBE_Game::resourceLevel(void) */
-
 ResourceLevel __thiscall TRIBE_Game::resourceLevel(TRIBE_Game *this)
 {
   return (this->tribe_game_options).resourceLevelValue;
@@ -7319,8 +6977,6 @@ ResourceLevel __thiscall TRIBE_Game::resourceLevel(TRIBE_Game *this)
 
 // Function: startingAge
 // Address: 00529450
-/* public: enum TRIBE_Game::Age __thiscall TRIBE_Game::startingAge(void) */
-
 Age __thiscall TRIBE_Game::startingAge(TRIBE_Game *this)
 {
   return (this->tribe_game_options).startingAgeValue;
@@ -7330,8 +6986,6 @@ Age __thiscall TRIBE_Game::startingAge(TRIBE_Game *this)
 
 // Function: startingUnits
 // Address: 00529460
-/* public: int __thiscall TRIBE_Game::startingUnits(void) */
-
 int __thiscall TRIBE_Game::startingUnits(TRIBE_Game *this)
 {
   return (uint)(this->tribe_game_options).startingUnitsValue;
@@ -7341,8 +6995,6 @@ int __thiscall TRIBE_Game::startingUnits(TRIBE_Game *this)
 
 // Function: deathMatch
 // Address: 00529470
-/* public: unsigned char __thiscall TRIBE_Game::deathMatch(void) */
-
 uchar __thiscall TRIBE_Game::deathMatch(TRIBE_Game *this)
 {
   return (this->tribe_game_options).deathMatchValue;
@@ -7352,8 +7004,6 @@ uchar __thiscall TRIBE_Game::deathMatch(TRIBE_Game *this)
 
 // Function: popLimit
 // Address: 00529480
-/* public: unsigned char __thiscall TRIBE_Game::popLimit(void) */
-
 uchar __thiscall TRIBE_Game::popLimit(TRIBE_Game *this)
 {
   int iVar1;
@@ -7369,8 +7019,6 @@ uchar __thiscall TRIBE_Game::popLimit(TRIBE_Game *this)
 
 // Function: quickStartGame
 // Address: 005294a0
-/* public: unsigned char __thiscall TRIBE_Game::quickStartGame(void) */
-
 uchar __thiscall TRIBE_Game::quickStartGame(TRIBE_Game *this)
 {
   return this->quick_start_game;
@@ -7380,8 +7028,6 @@ uchar __thiscall TRIBE_Game::quickStartGame(TRIBE_Game *this)
 
 // Function: randomStartValue
 // Address: 005294b0
-/* public: int __thiscall TRIBE_Game::randomStartValue(void) */
-
 int __thiscall TRIBE_Game::randomStartValue(TRIBE_Game *this)
 {
   return this->random_start_value;
@@ -7391,8 +7037,6 @@ int __thiscall TRIBE_Game::randomStartValue(TRIBE_Game *this)
 
 // Function: setAllowTrading
 // Address: 005294c0
-/* public: void __thiscall TRIBE_Game::setAllowTrading(int) */
-
 void __thiscall TRIBE_Game::setAllowTrading(TRIBE_Game *this,int param_1)
 {
   (this->tribe_game_options).allowTradingValue = (uchar)param_1;
@@ -7403,8 +7047,6 @@ void __thiscall TRIBE_Game::setAllowTrading(TRIBE_Game *this,int param_1)
 
 // Function: setLongCombat
 // Address: 005294d0
-/* public: void __thiscall TRIBE_Game::setLongCombat(int) */
-
 void __thiscall TRIBE_Game::setLongCombat(TRIBE_Game *this,int param_1)
 {
   (this->tribe_game_options).longCombatValue = (uchar)param_1;
@@ -7415,8 +7057,6 @@ void __thiscall TRIBE_Game::setLongCombat(TRIBE_Game *this,int param_1)
 
 // Function: setRandomizePositions
 // Address: 005294e0
-/* public: void __thiscall TRIBE_Game::setRandomizePositions(int) */
-
 void __thiscall TRIBE_Game::setRandomizePositions(TRIBE_Game *this,int param_1)
 {
   (this->tribe_game_options).randomizePositionsValue = (uchar)param_1;
@@ -7427,8 +7067,6 @@ void __thiscall TRIBE_Game::setRandomizePositions(TRIBE_Game *this,int param_1)
 
 // Function: setFullTechTree
 // Address: 005294f0
-/* public: void __thiscall TRIBE_Game::setFullTechTree(int) */
-
 void __thiscall TRIBE_Game::setFullTechTree(TRIBE_Game *this,int param_1)
 {
   (this->tribe_game_options).fullTechTreeValue = (uchar)param_1;
@@ -7439,8 +7077,6 @@ void __thiscall TRIBE_Game::setFullTechTree(TRIBE_Game *this,int param_1)
 
 // Function: setResourceLevel
 // Address: 00529500
-/* public: void __thiscall TRIBE_Game::setResourceLevel(enum TRIBE_Game::ResourceLevel) */
-
 void __thiscall TRIBE_Game::setResourceLevel(TRIBE_Game *this,ResourceLevel param_1)
 {
   (this->tribe_game_options).resourceLevelValue = param_1;
@@ -7451,8 +7087,6 @@ void __thiscall TRIBE_Game::setResourceLevel(TRIBE_Game *this,ResourceLevel para
 
 // Function: setStartingAge
 // Address: 00529510
-/* public: void __thiscall TRIBE_Game::setStartingAge(enum TRIBE_Game::Age) */
-
 void __thiscall TRIBE_Game::setStartingAge(TRIBE_Game *this,Age param_1)
 {
   (this->tribe_game_options).startingAgeValue = param_1;
@@ -7463,8 +7097,6 @@ void __thiscall TRIBE_Game::setStartingAge(TRIBE_Game *this,Age param_1)
 
 // Function: setStartingUnits
 // Address: 00529520
-/* public: void __thiscall TRIBE_Game::setStartingUnits(int) */
-
 void __thiscall TRIBE_Game::setStartingUnits(TRIBE_Game *this,int param_1)
 {
   (this->tribe_game_options).startingUnitsValue = (uchar)param_1;
@@ -7475,8 +7107,6 @@ void __thiscall TRIBE_Game::setStartingUnits(TRIBE_Game *this,int param_1)
 
 // Function: setDeathMatch
 // Address: 00529530
-/* public: void __thiscall TRIBE_Game::setDeathMatch(unsigned char) */
-
 void __thiscall TRIBE_Game::setDeathMatch(TRIBE_Game *this,uchar param_1)
 {
   (this->tribe_game_options).deathMatchValue = param_1;
@@ -7487,8 +7117,6 @@ void __thiscall TRIBE_Game::setDeathMatch(TRIBE_Game *this,uchar param_1)
 
 // Function: setPopLimit
 // Address: 00529540
-/* public: void __thiscall TRIBE_Game::setPopLimit(unsigned char) */
-
 void __thiscall TRIBE_Game::setPopLimit(TRIBE_Game *this,uchar param_1)
 {
   (this->tribe_game_options).popLimitValue = param_1;
@@ -7499,8 +7127,6 @@ void __thiscall TRIBE_Game::setPopLimit(TRIBE_Game *this,uchar param_1)
 
 // Function: setQuickStartGame
 // Address: 00529550
-/* public: void __thiscall TRIBE_Game::setQuickStartGame(unsigned char) */
-
 void __thiscall TRIBE_Game::setQuickStartGame(TRIBE_Game *this,uchar param_1)
 {
   this->quick_start_game = param_1;
@@ -7511,8 +7137,6 @@ void __thiscall TRIBE_Game::setQuickStartGame(TRIBE_Game *this,uchar param_1)
 
 // Function: setRandomStartValue
 // Address: 00529560
-/* public: void __thiscall TRIBE_Game::setRandomStartValue(int) */
-
 void __thiscall TRIBE_Game::setRandomStartValue(TRIBE_Game *this,int param_1)
 {
   this->random_start_value = param_1;
@@ -7523,8 +7147,6 @@ void __thiscall TRIBE_Game::setRandomStartValue(TRIBE_Game *this,int param_1)
 
 // Function: gameSummary
 // Address: 00529570
-/* public: virtual char * __thiscall TRIBE_Game::gameSummary(void) */
-
 char * __thiscall TRIBE_Game::gameSummary(TRIBE_Game *this)
 {
   DAT_0086bca0._0_1_ = 0;
@@ -7535,8 +7157,6 @@ char * __thiscall TRIBE_Game::gameSummary(TRIBE_Game *this)
 
 // Function: wnd_proc
 // Address: 00529580
-/* public: virtual long __stdcall TRIBE_Game::wnd_proc(void *,unsigned int,unsigned int,long) */
-
 long TRIBE_Game::wnd_proc(void *param_1,uint param_2,uint param_3,long param_4)
 {
   long lVar1;
@@ -7574,9 +7194,6 @@ long TRIBE_Game::wnd_proc(void *param_1,uint param_2,uint param_3,long param_4)
 // [HELPER] s__: "}"
 // [HELPER] s_paused: "paused"
 // [HELPER] s_stopped: "stopped"
-/* WARNING: Variable defined which should be unmapped: retval */
-/* public: virtual int __thiscall TRIBE_Game::handle_idle(void) */
-
 int __thiscall TRIBE_Game::handle_idle(TRIBE_Game *this)
 {
   char cVar1;
@@ -7618,10 +7235,8 @@ int __thiscall TRIBE_Game::handle_idle(TRIBE_Game *this)
                         ((TCommunications_Handler *)this->_padding_);
       if (iVar5 == 0) {
         color_log('L','T',5);
-                    /* language.dll match for 0x139c: "Bones 2" */
         uVar3 = debug_timeGetTime(s_C__msdev_work_age1_x1_tribegam_c,0x139c);
         if (499 < uVar3 - DAT_0086be04) {
-                    /* language.dll match for 0x454: "Waiting for other players..." */
           (**(code **)(this->_padding_ + 0x20))(0x454,msg + 4,0x900);
           uVar7 = 0xffffffff;
           pcVar6 = &s__;
@@ -7823,9 +7438,6 @@ LAB_0052994c:
 
 // Function: handle_query_new_palette
 // Address: 00529980
-/* public: virtual int __thiscall TRIBE_Game::handle_query_new_palette(void *,unsigned int,unsigned
-   int,long) */
-
 int __thiscall
 TRIBE_Game::handle_query_new_palette
           (TRIBE_Game *this,void *param_1,uint param_2,uint param_3,long param_4)
@@ -7850,9 +7462,6 @@ TRIBE_Game::handle_query_new_palette
 
 // Function: handle_activate
 // Address: 005299e0
-/* public: virtual int __thiscall TRIBE_Game::handle_activate(void *,unsigned int,unsigned int,long)
-    */
-
 int __thiscall
 TRIBE_Game::handle_activate(TRIBE_Game *this,void *param_1,uint param_2,uint param_3,long param_4)
 {
@@ -7887,8 +7496,6 @@ TRIBE_Game::handle_activate(TRIBE_Game *this,void *param_1,uint param_2,uint par
 // [HELPER] s_Temp_Screen: "Temp Screen"
 // [HELPER] s_____PROBLEM_COMMUNICATING_WITH__: "$$$ PROBLEM COMMUNICATING WITH %s"
 // [HELPER] s_syncerr_d_gam: "syncerr%d.gam"
-/* public: virtual int __thiscall TRIBE_Game::action_user_command(unsigned long,unsigned long) */
-
 int __thiscall TRIBE_Game::action_user_command(TRIBE_Game *this,ulong param_1,ulong param_2)
 {
   uchar uVar1;
@@ -7921,7 +7528,6 @@ int __thiscall TRIBE_Game::action_user_command(TRIBE_Game *this,ulong param_1,ul
       pTVar2 = (TEasy_Panel *)TPanelSystem::currentPanel(&panel_system);
 joined_r0x00529bcc:
       if (pTVar2 != (TEasy_Panel *)0x0) {
-                    /* language.dll match for 0x25c9: "You were dropped from the game." */
         TEasy_Panel::popupOKDialog(pTVar2,0x25c9,(char *)0x0,0x1c2,100);
       }
       break;
@@ -7934,7 +7540,6 @@ joined_r0x00529bcc:
       TPanelSystem::destroyPanel(&panel_system,s_Status_Screen);
       pTVar2 = (TEasy_Panel *)TPanelSystem::currentPanel(&panel_system);
       if (pTVar2 != (TEasy_Panel *)0x0) {
-                    /* language.dll match for 0x25c9: "You were dropped from the game." */
         TEasy_Panel::popupOKDialog(pTVar2,0x25c9,(char *)0x0,0x1c2,100);
       }
     }
@@ -7997,8 +7602,6 @@ joined_r0x00529bcc:
           do_game_over(this);
           pTVar2 = (TEasy_Panel *)TPanelSystem::currentPanel(&panel_system);
           if (pTVar2 != (TEasy_Panel *)0x0) {
-                    /* language.dll match for 0x966: "You were dropped from the game because of a
-                       sync error. Your network connection may have been lost." */
             TEasy_Panel::popupOKDialog(pTVar2,0x966,(char *)0x0,0x1c2,100);
           }
           TPanelSystem::destroyPanel(&panel_system,s_Temp_Screen);
@@ -8020,7 +7623,6 @@ joined_r0x00529bcc:
          ((iVar4 = RGE_Base_Game::playerID((RGE_Base_Game *)this,param_2), 0 < iVar4 &&
           ((&player_dropped)[param_2] == (int *)0x0)))) {
         RGE_Base_Game::play_sound((RGE_Base_Game *)this,2);
-                    /* language.dll match for 0x4c1: "Problem communicating with %s..." */
         (**(code **)(this->_padding_ + 0x20))(0x4c1,temp_str + 4,0x100);
         iVar4 = RGE_Base_Game::playerID((RGE_Base_Game *)this,param_2);
         sprintf(msg + 4,temp_str + 4,
@@ -8049,8 +7651,6 @@ switchD_00529abb_caseD_17ad:
 // Function: action_key_down
 // Address: 00529f60
 // [HELPER] s_empires_hlp: "empires.hlp"
-/* public: virtual int __thiscall TRIBE_Game::action_key_down(unsigned long,int,int,int,int) */
-
 int __thiscall
 TRIBE_Game::action_key_down
           (TRIBE_Game *this,ulong param_1,int param_2,int param_3,int param_4,int param_5)
@@ -8086,8 +7686,6 @@ TRIBE_Game::action_key_down
 
 // Function: action_close
 // Address: 0052a000
-/* public: virtual int __thiscall TRIBE_Game::action_close(void) */
-
 int __thiscall TRIBE_Game::action_close(TRIBE_Game *this)
 {
   if (this->_padding_ != 0) {
@@ -8101,17 +7699,13 @@ int __thiscall TRIBE_Game::action_close(TRIBE_Game *this)
 
 // Function: game_over_msg
 // Address: 0052a030
-/* public: char * __thiscall TRIBE_Game::game_over_msg(void) */
-
 char * __thiscall TRIBE_Game::game_over_msg(TRIBE_Game *this)
 {
   if (*(char *)(*(int *)(*(int *)(this->_padding_ + 0x40) + *(short *)(this->_padding_ + 0x7c) * 4)
                + 0x80) == '\x01') {
-                    /* language.dll match for 0x47e: "Victory!" */
     (**(code **)(this->_padding_ + 0x20))(0x47e,0x86bce0,0x100);
     return &DAT_0086bcd8.field_0x8;
   }
-                    /* language.dll match for 0x47f: "Defeat!" */
   (**(code **)(this->_padding_ + 0x20))(0x47f,0x86bce0,0x100);
   return &DAT_0086bcd8.field_0x8;
 }
@@ -8120,8 +7714,6 @@ char * __thiscall TRIBE_Game::game_over_msg(TRIBE_Game *this)
 
 // Function: get_achievement_info
 // Address: 0052a080
-/* public: long __thiscall TRIBE_Game::get_achievement_info(unsigned char,char * *) */
-
 long __thiscall TRIBE_Game::get_achievement_info(TRIBE_Game *this,uchar param_1,char **param_2)
 {
   long lVar1;
@@ -8138,9 +7730,6 @@ long __thiscall TRIBE_Game::get_achievement_info(TRIBE_Game *this,uchar param_1,
 // Function: randomComputerName
 // Address: 0052a0b0
 // [HELPER] s_C__msdev_work_age1_x1_tribegam_c: "C:\msdev\work\age1_x1\tribegam.cpp"
-/* WARNING: Variable defined which should be unmapped: scount */
-/* public: int __thiscall TRIBE_Game::randomComputerName(int) */
-
 int __thiscall TRIBE_Game::randomComputerName(TRIBE_Game *this,int param_1)
 {
   int iVar1;
@@ -8177,8 +7766,6 @@ int __thiscall TRIBE_Game::randomComputerName(TRIBE_Game *this,int param_1)
 
 // Function: resetRandomComputerName
 // Address: 0052a170
-/* public: void __thiscall TRIBE_Game::resetRandomComputerName(void) */
-
 void __thiscall TRIBE_Game::resetRandomComputerName(TRIBE_Game *this)
 {
   int iVar1;
@@ -8199,8 +7786,6 @@ void __thiscall TRIBE_Game::resetRandomComputerName(TRIBE_Game *this)
 
 // Function: video_wnd_proc
 // Address: 0052a190
-/* public: long __thiscall TRIBE_Game::video_wnd_proc(void *,unsigned int,unsigned int,long) */
-
 long __thiscall
 TRIBE_Game::video_wnd_proc(TRIBE_Game *this,void *param_1,uint param_2,uint param_3,long param_4)
 {
@@ -8222,9 +7807,6 @@ TRIBE_Game::video_wnd_proc(TRIBE_Game *this,void *param_1,uint param_2,uint para
 
 // Function: SetClickTables
 // Address: 0052a1e0
-/* public: void __thiscall TRIBE_Game::SetClickTables(struct MouseClickInfo *,int,struct
-   MouseClickInfo *,int) */
-
 void __thiscall
 TRIBE_Game::SetClickTables
           (TRIBE_Game *this,MouseClickInfo *param_1,int param_2,MouseClickInfo *param_3,int param_4)
@@ -8240,8 +7822,6 @@ TRIBE_Game::SetClickTables
 
 // Function: set_interface_messages
 // Address: 0052a210
-/* public: virtual void __thiscall TRIBE_Game::set_interface_messages(void) */
-
 void __thiscall TRIBE_Game::set_interface_messages(TRIBE_Game *this)
 {
   if (*(short *)(this->_padding_ + 0x8dc) == 1) {
@@ -8267,8 +7847,6 @@ void __thiscall TRIBE_Game::set_interface_messages(TRIBE_Game *this)
 // [HELPER] s_8BITVIDEO: "8BITVIDEO"
 // [HELPER] s_Blank_Screen: "Blank Screen"
 // [HELPER] s_video_changed_res__d__double_siz: "video_changed_res=%d, double_size=%d"
-/* public: int __thiscall TRIBE_Game::setup_video_system(void) */
-
 int __thiscall TRIBE_Game::setup_video_system(TRIBE_Game *this)
 {
   uchar uVar1;
@@ -8334,8 +7912,6 @@ int __thiscall TRIBE_Game::setup_video_system(TRIBE_Game *this)
 
 // Function: shutdown_video_system
 // Address: 0052a430
-/* public: void __thiscall TRIBE_Game::shutdown_video_system(void) */
-
 void __thiscall TRIBE_Game::shutdown_video_system(TRIBE_Game *this)
 {
   int iVar1;
@@ -8374,8 +7950,6 @@ void __thiscall TRIBE_Game::shutdown_video_system(TRIBE_Game *this)
 // Function: disconnect_multiplayer_game
 // Address: 0052a510
 // [HELPER] s_C__msdev_work_age1_x1_tribegam_c: "C:\msdev\work\age1_x1\tribegam.cpp"
-/* public: void __thiscall TRIBE_Game::disconnect_multiplayer_game(void) */
-
 void __thiscall TRIBE_Game::disconnect_multiplayer_game(TRIBE_Game *this)
 {
   int iVar1;
@@ -8396,9 +7970,6 @@ void __thiscall TRIBE_Game::disconnect_multiplayer_game(TRIBE_Game *this)
                         ((TCommunications_Handler *)this->_padding_);
       if (0 < iVar1) {
         RGE_Base_Game::disable_input((RGE_Base_Game *)this);
-                    /* language.dll match for 0x4c0: "Disconnecting from multiplayer
-                       game...\\n\\n\\n\\nPlease press ESC if the game does not\\ndisconnect within
-                       15 seconds." */
         show_status_message(this,0x4c0,(char *)0x0,-1);
         uVar2 = debug_timeGetTime(s_C__msdev_work_age1_x1_tribegam_c,0x15f8);
         uVar4 = uVar2;
@@ -8430,8 +8001,6 @@ LAB_0052a5fa:
 
 // Function: add_notification_loc
 // Address: 0052a630
-/* public: void __thiscall TRIBE_Game::add_notification_loc(long,long) */
-
 void __thiscall TRIBE_Game::add_notification_loc(TRIBE_Game *this,long param_1,long param_2)
 {
   int iVar1;
@@ -8454,9 +8023,6 @@ void __thiscall TRIBE_Game::add_notification_loc(TRIBE_Game *this,long param_1,l
 
 // Function: goto_notification_loc
 // Address: 0052a6a0
-/* WARNING: Variable defined which should be unmapped: y */
-/* public: void __thiscall TRIBE_Game::goto_notification_loc(void) */
-
 void __thiscall TRIBE_Game::goto_notification_loc(TRIBE_Game *this)
 {
   int iVar1;

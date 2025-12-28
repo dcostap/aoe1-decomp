@@ -12,8 +12,6 @@
 
 // Function: AIPlayPhaseTrigger
 // Address: 0040ec70
-/* public: __thiscall AIPlayPhaseTrigger::AIPlayPhaseTrigger(void) */
-
 void __thiscall AIPlayPhaseTrigger::AIPlayPhaseTrigger(AIPlayPhaseTrigger *this)
 {
   this->typeValue = '\0';
@@ -28,9 +26,6 @@ void __thiscall AIPlayPhaseTrigger::AIPlayPhaseTrigger(AIPlayPhaseTrigger *this)
 
 // Function: AIPlayPhaseTrigger
 // Address: 0040ec90
-/* public: __thiscall AIPlayPhaseTrigger::AIPlayPhaseTrigger(unsigned char,int,int,unsigned
-   char,unsigned char,int) */
-
 void __thiscall
 AIPlayPhaseTrigger::AIPlayPhaseTrigger
           (AIPlayPhaseTrigger *this,uchar param_1,int param_2,int param_3,uchar param_4,
@@ -49,9 +44,6 @@ AIPlayPhaseTrigger::AIPlayPhaseTrigger
 
 // Function: AIPlayPhaseTrigger
 // Address: 0040ecc0
-/* public: __thiscall AIPlayPhaseTrigger::AIPlayPhaseTrigger(char *,int,int,unsigned char,unsigned
-   char,int) */
-
 AIPlayPhaseTrigger * __thiscall
 AIPlayPhaseTrigger::AIPlayPhaseTrigger
           (AIPlayPhaseTrigger *this,char *param_1,int param_2,int param_3,uchar param_4,
@@ -73,8 +65,6 @@ AIPlayPhaseTrigger::AIPlayPhaseTrigger
 
 // Function: nameType
 // Address: 0040ed00
-/* public: char * __thiscall AIPlayPhaseTrigger::nameType(void)const  */
-
 char * __thiscall AIPlayPhaseTrigger::nameType(AIPlayPhaseTrigger *this)
 {
   char *pcVar1;
@@ -98,8 +88,6 @@ char * __thiscall AIPlayPhaseTrigger::nameType(AIPlayPhaseTrigger *this)
 // [HELPER] s_Level1EnemySighted: "Level1EnemySighted"
 // [HELPER] s_Level2EnemySighted: "Level2EnemySighted"
 // [HELPER] s_Time: "Time"
-/* protected: unsigned char __thiscall AIPlayPhaseTrigger::convertToIntType(char *)const  */
-
 uchar __thiscall AIPlayPhaseTrigger::convertToIntType(AIPlayPhaseTrigger *this,char *param_1)
 {
   byte bVar1;
@@ -364,8 +352,6 @@ LAB_0040ef8b:
 // [HELPER] s_Level1EnemySighted: "Level1EnemySighted"
 // [HELPER] s_Level2EnemySighted: "Level2EnemySighted"
 // [HELPER] s_Time: "Time"
-/* protected: char * __thiscall AIPlayPhaseTrigger::convertToNameType(unsigned char)const  */
-
 char * __thiscall AIPlayPhaseTrigger::convertToNameType(AIPlayPhaseTrigger *this,uchar param_1)
 {
   switch(param_1) {

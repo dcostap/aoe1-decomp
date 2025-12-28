@@ -20,9 +20,6 @@
 // Function: RGE_Communications_Synchronize
 // Address: 00432ff0
 // [HELPER] s_Check_turn____d: "Check turn = %d"
-/* public: __thiscall RGE_Communications_Synchronize::RGE_Communications_Synchronize(class
-   TCommunications_Handler *) */
-
 RGE_Communications_Synchronize * __thiscall
 RGE_Communications_Synchronize::RGE_Communications_Synchronize
           (RGE_Communications_Synchronize *this,TCommunications_Handler *param_1)
@@ -65,8 +62,6 @@ RGE_Communications_Synchronize::RGE_Communications_Synchronize
 
 // Function: ~RGE_Communications_Synchronize
 // Address: 00433070
-/* public: __thiscall RGE_Communications_Synchronize::~RGE_Communications_Synchronize(void) */
-
 void __thiscall
 RGE_Communications_Synchronize::~RGE_Communications_Synchronize
           (RGE_Communications_Synchronize *this)
@@ -96,9 +91,6 @@ RGE_Communications_Synchronize::~RGE_Communications_Synchronize
 
 // Function: Add
 // Address: 004330a0
-/* public: int __thiscall RGE_Communications_Synchronize::Add(unsigned int,unsigned long,unsigned
-   long,unsigned long,long,long,long,long,long) */
-
 int __thiscall
 RGE_Communications_Synchronize::Add
           (RGE_Communications_Synchronize *this,uint param_1,ulong param_2,ulong param_3,
@@ -135,9 +127,6 @@ RGE_Communications_Synchronize::Add
 // Function: ValidateChecksums
 // Address: 00433180
 // [HELPER] s_P__d_In_Sync___Wtime__d_WTurn__d: "P#%d In Sync @ Wtime=%d WTurn=%d Wrand=%d Wchksum=%d"
-/* protected: int __thiscall RGE_Communications_Synchronize::ValidateChecksums(unsigned int,unsigned
-   long,unsigned long,unsigned long,long,long,long,long,long) */
-
 int __thiscall
 RGE_Communications_Synchronize::ValidateChecksums
           (RGE_Communications_Synchronize *this,uint param_1,ulong param_2,ulong param_3,
@@ -195,9 +184,6 @@ LAB_004331bb:
 // [HELPER] s_Checksum__T__d_wt__d___rand__d__: "Checksum: T#%d wt=%d   rand=%d  csum=%d"
 // [HELPER] s_Sync_check_at_turn___d: "Sync check at turn #%d"
 // [HELPER] s_Worldtime__ld_Random__d_Checksum: "Worldtime=%ld Random=%d Checksum=%d"
-/* WARNING: Variable defined which should be unmapped: cs3 */
-/* public: unsigned long __thiscall RGE_Communications_Synchronize::DoChecksum(unsigned long) */
-
 ulong __thiscall
 RGE_Communications_Synchronize::DoChecksum(RGE_Communications_Synchronize *this,ulong param_1)
 {
@@ -282,8 +268,6 @@ RGE_Communications_Synchronize::DoChecksum(RGE_Communications_Synchronize *this,
 
 // Function: SetLastWorldRandom
 // Address: 00433450
-/* public: void __thiscall RGE_Communications_Synchronize::SetLastWorldRandom(unsigned long) */
-
 void __thiscall
 RGE_Communications_Synchronize::SetLastWorldRandom
           (RGE_Communications_Synchronize *this,ulong param_1)
@@ -309,9 +293,6 @@ RGE_Communications_Synchronize::SetLastWorldRandom
 // [HELPER] s______: "---- "
 // [HELPER] s____end_of_log: "...end of log"
 // [HELPER] s_wt: "wt"
-/* public: void __thiscall RGE_Communications_Synchronize::LogChecksums(unsigned int,unsigned
-   long,unsigned long,long,long,long,long,long,unsigned long) */
-
 void __thiscall
 RGE_Communications_Synchronize::LogChecksums
           (RGE_Communications_Synchronize *this,uint param_1,ulong param_2,ulong param_3,
@@ -547,8 +528,6 @@ LAB_004338b6:
 
 // Function: EnableSyncChecking
 // Address: 00433a90
-/* public: void __thiscall RGE_Communications_Synchronize::EnableSyncChecking(int) */
-
 void __thiscall
 RGE_Communications_Synchronize::EnableSyncChecking(RGE_Communications_Synchronize *this,int param_1)
 {
@@ -560,8 +539,6 @@ RGE_Communications_Synchronize::EnableSyncChecking(RGE_Communications_Synchroniz
 
 // Function: SetStopOnFail
 // Address: 00433aa0
-/* public: void __thiscall RGE_Communications_Synchronize::SetStopOnFail(int) */
-
 void __thiscall
 RGE_Communications_Synchronize::SetStopOnFail(RGE_Communications_Synchronize *this,int param_1)
 {
@@ -573,8 +550,6 @@ RGE_Communications_Synchronize::SetStopOnFail(RGE_Communications_Synchronize *th
 
 // Function: SetDialogOnFail
 // Address: 00433ab0
-/* public: void __thiscall RGE_Communications_Synchronize::SetDialogOnFail(int) */
-
 void __thiscall
 RGE_Communications_Synchronize::SetDialogOnFail(RGE_Communications_Synchronize *this,int param_1)
 {
@@ -586,8 +561,6 @@ RGE_Communications_Synchronize::SetDialogOnFail(RGE_Communications_Synchronize *
 
 // Function: SendChatMsgsAtChecksum
 // Address: 00433ac0
-/* public: void __thiscall RGE_Communications_Synchronize::SendChatMsgsAtChecksum(int) */
-
 void __thiscall
 RGE_Communications_Synchronize::SendChatMsgsAtChecksum
           (RGE_Communications_Synchronize *this,int param_1)
@@ -608,10 +581,6 @@ RGE_Communications_Synchronize::SendChatMsgsAtChecksum
 // [HELPER] s_OUTOFSYNC__return_not_out: "OUTOFSYNC: return not out"
 // [HELPER] s_OUTOFSYNC__return_not_out_2: "OUTOFSYNC: return not out 2"
 // [HELPER] s_OUTOFSYNC__return_out: "OUTOFSYNC: return out"
-/* WARNING: Variable defined which should be unmapped: mycs4 */
-/* public: int __thiscall RGE_Communications_Synchronize::IsPlayerOutOfSync(unsigned int,unsigned
-   long) */
-
 int __thiscall
 RGE_Communications_Synchronize::IsPlayerOutOfSync
           (RGE_Communications_Synchronize *this,uint param_1,ulong param_2)

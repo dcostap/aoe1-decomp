@@ -38,8 +38,6 @@
 // [HELPER] s_: ""
 // [HELPER] s_Build_AI: "Build AI"
 // [HELPER] s_None: "None"
-/* public: __thiscall BuildAIModule::BuildAIModule(void *,int) */
-
 BuildAIModule * __thiscall
 BuildAIModule::BuildAIModule(BuildAIModule *this,void *param_1,int param_2)
 {
@@ -58,7 +56,6 @@ BuildAIModule::BuildAIModule(BuildAIModule *this,void *param_1,int param_2)
   pcStack_8 = FUN_0055c456;
   local_c = *unaff_FS_OFFSET;
   *unaff_FS_OFFSET = &local_c;
-                    /* language.dll match for 0x3e9: "Age of Empires" */
   AIModule::AIModule((AIModule *)this,s_Build_AI,0x3e9,param_2,param_1);
   this_00 = &this->buildList;
   local_4 = 0;
@@ -172,8 +169,6 @@ BuildAIModule::BuildAIModule(BuildAIModule *this,void *param_1,int param_2)
 
 // Function: `scalar_deleting_destructor'
 // Address: 00408820
-/* public: virtual void * __thiscall BuildAIModule::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall BuildAIModule::_scalar_deleting_destructor_(BuildAIModule *this,uint param_1)
 {
   ~BuildAIModule(this);
@@ -189,10 +184,6 @@ void * __thiscall BuildAIModule::_scalar_deleting_destructor_(BuildAIModule *thi
 // Address: 00408840
 // [HELPER] s_Build_AI: "Build AI"
 // [HELPER] s_None: "None"
-/* WARNING: Variable defined which should be unmapped: tempInt */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: __thiscall BuildAIModule::BuildAIModule(int,int) */
-
 BuildAIModule * __thiscall BuildAIModule::BuildAIModule(BuildAIModule *this,int param_1,int param_2)
 {
   char cVar1;
@@ -241,7 +232,6 @@ BuildAIModule * __thiscall BuildAIModule::BuildAIModule(BuildAIModule *this,int 
   local_c = *unaff_FS_OFFSET;
   *unaff_FS_OFFSET = &local_c;
   local_118 = this;
-                    /* language.dll match for 0x3e9: "Age of Empires" */
   AIModule::AIModule((AIModule *)this,s_Build_AI,0x3e9,param_1,(void *)0x0);
   pBVar4 = &this->buildList;
   local_4 = 0;
@@ -371,8 +361,6 @@ BuildAIModule * __thiscall BuildAIModule::BuildAIModule(BuildAIModule *this,int 
 
 // Function: ~BuildAIModule
 // Address: 00408d50
-/* public: virtual __thiscall BuildAIModule::~BuildAIModule(void) */
-
 void __thiscall BuildAIModule::~BuildAIModule(BuildAIModule *this)
 {
   int *piVar1;
@@ -410,9 +398,6 @@ void __thiscall BuildAIModule::~BuildAIModule(BuildAIModule *this)
 
 // Function: save
 // Address: 00408df0
-/* WARNING: Variable defined which should be unmapped: tempInt */
-/* public: virtual int __thiscall BuildAIModule::save(int) */
-
 int __thiscall BuildAIModule::save(BuildAIModule *this,int param_1)
 {
   char cVar1;
@@ -704,8 +689,6 @@ int __thiscall BuildAIModule::save(BuildAIModule *this,int param_1)
 // [HELPER] s_BLT_Type___4d___20s_gID___4d_Cat: "BLT Type=%-4d %-20s gID=%-4d Cat=%d uID=%-3d inProg=%d bldAtt=%-2d skip=%d #b..."
 // [HELPER] s_Build_list___s__: "Build list '%s':"
 // [HELPER] s_____Type___4d___20s_gID___4d_Cat: "    Type=%-4d %-20s gID=%-4d Cat=%d uID=%-3d inProg=%d bldAtt=%-2d skip=%d #b..."
-/* public: virtual void __thiscall BuildAIModule::displayBuildList(void) */
-
 void __thiscall BuildAIModule::displayBuildList(BuildAIModule *this)
 {
   BuildItem *this_00;
@@ -778,9 +761,6 @@ void __thiscall BuildAIModule::displayBuildList(BuildAIModule *this)
 // [HELPER] s__s: "%s"
 // [HELPER] s__tmp: ".tmp"
 // [HELPER] s_r: "r"
-/* WARNING: Variable defined which should be unmapped: commentTemp2 */
-/* public: virtual int __thiscall BuildAIModule::loadBuildList(char *,class RGE_Player *) */
-
 int __thiscall BuildAIModule::loadBuildList(BuildAIModule *this,char *param_1,RGE_Player *param_2)
 {
   char cVar1;
@@ -1012,8 +992,6 @@ LAB_0040980c:
 
 // Function: buildListLength
 // Address: 004098a0
-/* public: int __thiscall BuildAIModule::buildListLength(void)const  */
-
 int __thiscall BuildAIModule::buildListLength(BuildAIModule *this)
 {
   return this->buildListLengthValue;
@@ -1023,8 +1001,6 @@ int __thiscall BuildAIModule::buildListLength(BuildAIModule *this)
 
 // Function: buildListName
 // Address: 004098b0
-/* public: char * __thiscall BuildAIModule::buildListName(void) */
-
 char * __thiscall BuildAIModule::buildListName(BuildAIModule *this)
 {
   return this->buildListNameValue;
@@ -1036,8 +1012,6 @@ char * __thiscall BuildAIModule::buildListName(BuildAIModule *this)
 // Address: 004098c0
 // [HELPER] s_NONE: "NONE"
 // [HELPER] s_NULL: "NULL"
-/* public: int __thiscall BuildAIModule::haveBuildList(void)const  */
-
 int __thiscall BuildAIModule::haveBuildList(BuildAIModule *this)
 {
   byte bVar1;
@@ -1101,8 +1075,6 @@ LAB_00409939:
 // Address: 00409950
 // [HELPER] s_AddedBuildListItem: "AddedBuildListItem"
 // [HELPER] s_SetGatherPercentage: "SetGatherPercentage"
-/* public: int __thiscall BuildAIModule::insertItem(class RGE_Player *,int,int,int,int,int,int) */
-
 int __thiscall
 BuildAIModule::insertItem
           (BuildAIModule *this,RGE_Player *param_1,int param_2,int param_3,int param_4,int param_5,
@@ -1203,8 +1175,6 @@ LAB_00409b55:
 
 // Function: numberItemsBuilt
 // Address: 00409b70
-/* public: int __thiscall BuildAIModule::numberItemsBuilt(void)const  */
-
 int __thiscall BuildAIModule::numberItemsBuilt(BuildAIModule *this)
 {
   BuildItem *this_00;
@@ -1226,8 +1196,6 @@ int __thiscall BuildAIModule::numberItemsBuilt(BuildAIModule *this)
 
 // Function: numberItemsInProgress
 // Address: 00409bb0
-/* public: int __thiscall BuildAIModule::numberItemsInProgress(void)const  */
-
 int __thiscall BuildAIModule::numberItemsInProgress(BuildAIModule *this)
 {
   BuildItem *this_00;
@@ -1249,8 +1217,6 @@ int __thiscall BuildAIModule::numberItemsInProgress(BuildAIModule *this)
 
 // Function: numberItemsBuiltOrInProgress
 // Address: 00409bf0
-/* public: int __thiscall BuildAIModule::numberItemsBuiltOrInProgress(void)const  */
-
 int __thiscall BuildAIModule::numberItemsBuiltOrInProgress(BuildAIModule *this)
 {
   BuildItem *this_00;
@@ -1272,8 +1238,6 @@ int __thiscall BuildAIModule::numberItemsBuiltOrInProgress(BuildAIModule *this)
 
 // Function: numberItemsIntoBuildList
 // Address: 00409c30
-/* public: int __thiscall BuildAIModule::numberItemsIntoBuildList(void)const  */
-
 int __thiscall BuildAIModule::numberItemsIntoBuildList(BuildAIModule *this)
 {
   return this->numberItemsIntoBuildListValue;
@@ -1283,8 +1247,6 @@ int __thiscall BuildAIModule::numberItemsIntoBuildList(BuildAIModule *this)
 
 // Function: lastBuildItemRequested
 // Address: 00409c40
-/* public: char * __thiscall BuildAIModule::lastBuildItemRequested(void)const  */
-
 char * __thiscall BuildAIModule::lastBuildItemRequested(BuildAIModule *this)
 {
   return this->lastBuildItemRequestedValue;
@@ -1294,8 +1256,6 @@ char * __thiscall BuildAIModule::lastBuildItemRequested(BuildAIModule *this)
 
 // Function: currentBuildItemRequested
 // Address: 00409c50
-/* public: char * __thiscall BuildAIModule::currentBuildItemRequested(void)const  */
-
 char * __thiscall BuildAIModule::currentBuildItemRequested(BuildAIModule *this)
 {
   return this->currentBuildItemRequestedValue;
@@ -1305,8 +1265,6 @@ char * __thiscall BuildAIModule::currentBuildItemRequested(BuildAIModule *this)
 
 // Function: nextBuildItemRequested
 // Address: 00409c60
-/* public: char * __thiscall BuildAIModule::nextBuildItemRequested(void)const  */
-
 char * __thiscall BuildAIModule::nextBuildItemRequested(BuildAIModule *this)
 {
   return this->nextBuildItemRequestedValue;
@@ -1316,9 +1274,6 @@ char * __thiscall BuildAIModule::nextBuildItemRequested(BuildAIModule *this)
 
 // Function: numberItemsOfType
 // Address: 00409c70
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: int __thiscall BuildAIModule::numberItemsOfType(int,int) */
-
 int __thiscall BuildAIModule::numberItemsOfType(BuildAIModule *this,int param_1,int param_2)
 {
   BuildItem *this_00;
@@ -1341,9 +1296,6 @@ int __thiscall BuildAIModule::numberItemsOfType(BuildAIModule *this,int param_1,
 
 // Function: numberBuiltItemsOfType
 // Address: 00409cd0
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: int __thiscall BuildAIModule::numberBuiltItemsOfType(int,int) */
-
 int __thiscall BuildAIModule::numberBuiltItemsOfType(BuildAIModule *this,int param_1,int param_2)
 {
   BuildItem *this_00;
@@ -1368,9 +1320,6 @@ int __thiscall BuildAIModule::numberBuiltItemsOfType(BuildAIModule *this,int par
 
 // Function: numberUnbuiltItemsOfType
 // Address: 00409d40
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: int __thiscall BuildAIModule::numberUnbuiltItemsOfType(int,int) */
-
 int __thiscall BuildAIModule::numberUnbuiltItemsOfType(BuildAIModule *this,int param_1,int param_2)
 {
   BuildItem *this_00;
@@ -1395,9 +1344,6 @@ int __thiscall BuildAIModule::numberUnbuiltItemsOfType(BuildAIModule *this,int p
 
 // Function: numberBuiltOrInProgressItemsOfType
 // Address: 00409db0
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: virtual int __thiscall BuildAIModule::numberBuiltOrInProgressItemsOfType(int,int) */
-
 int __thiscall
 BuildAIModule::numberBuiltOrInProgressItemsOfType(BuildAIModule *this,int param_1,int param_2)
 {
@@ -1423,9 +1369,6 @@ BuildAIModule::numberBuiltOrInProgressItemsOfType(BuildAIModule *this,int param_
 
 // Function: numberInProgressItemsOfType
 // Address: 00409e20
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: int __thiscall BuildAIModule::numberInProgressItemsOfType(int,int) */
-
 int __thiscall
 BuildAIModule::numberInProgressItemsOfType(BuildAIModule *this,int param_1,int param_2)
 {
@@ -1451,8 +1394,6 @@ BuildAIModule::numberInProgressItemsOfType(BuildAIModule *this,int param_1,int p
 
 // Function: removeOldList
 // Address: 00409e90
-/* protected: void __thiscall BuildAIModule::removeOldList(void) */
-
 void __thiscall BuildAIModule::removeOldList(BuildAIModule *this)
 {
   BuildItem *pBVar1;
@@ -1476,8 +1417,6 @@ void __thiscall BuildAIModule::removeOldList(BuildAIModule *this)
 
 // Function: anyBuildListItem
 // Address: 00409ee0
-/* protected: class BuildItem * __thiscall BuildAIModule::anyBuildListItem(int,int,int) */
-
 BuildItem * __thiscall
 BuildAIModule::anyBuildListItem(BuildAIModule *this,int param_1,int param_2,int param_3)
 {
@@ -1506,8 +1445,6 @@ BuildAIModule::anyBuildListItem(BuildAIModule *this,int param_1,int param_2,int 
 
 // Function: specificBuildListItem
 // Address: 00409f50
-/* protected: class BuildItem * __thiscall BuildAIModule::specificBuildListItem(int) */
-
 BuildItem * __thiscall BuildAIModule::specificBuildListItem(BuildAIModule *this,int param_1)
 {
   int iVar1;

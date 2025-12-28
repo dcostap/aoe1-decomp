@@ -11,8 +11,6 @@
 
 // Function: get
 // Address: 0055ae30
-/* protected: class istream & __thiscall istream::get(char *,int,int) */
-
 istream * __thiscall istream::get(istream *this,char *param_1,int param_2,int param_3)
 {
   int iVar1;
@@ -60,8 +58,6 @@ istream * __thiscall istream::get(istream *this,char *param_1,int param_2,int pa
 
 // Function: istream
 // Address: 0055b450
-/* protected: __thiscall istream::istream(void) */
-
 istream * __thiscall istream::istream(istream *this)
 {
   int in_stack_00000004;
@@ -82,8 +78,6 @@ istream * __thiscall istream::istream(istream *this)
 
 // Function: `scalar_deleting_destructor'
 // Address: 0055b4b0
-/* public: virtual void * __thiscall istream::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall istream::_scalar_deleting_destructor_(istream *this,uint param_1)
 {
   ~istream(this);
@@ -98,8 +92,6 @@ void * __thiscall istream::_scalar_deleting_destructor_(istream *this,uint param
 
 // Function: istream
 // Address: 0055b4e0
-/* public: __thiscall istream::istream(class streambuf *) */
-
 istream * __thiscall istream::istream(istream *this,streambuf *param_1)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -131,8 +123,6 @@ istream * __thiscall istream::istream(istream *this,streambuf *param_1)
 
 // Function: istream
 // Address: 0055b580
-/* protected: __thiscall istream::istream(class istream const &) */
-
 istream * __thiscall istream::istream(istream *this,istream *param_1)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -165,8 +155,6 @@ istream * __thiscall istream::istream(istream *this,istream *param_1)
 
 // Function: ~istream
 // Address: 0055b620
-/* public: virtual __thiscall istream::~istream(void) */
-
 void __thiscall istream::~istream(istream *this)
 {
   *(undefined ***)(*(int *)(*(int *)&this[-1].field_0x34 + 4) + -0xc + (int)this) = &_vftable_;
@@ -177,8 +165,6 @@ void __thiscall istream::~istream(istream *this)
 
 // Function: operator=
 // Address: 0055b630
-/* protected: class istream & __thiscall istream::operator=(class streambuf *) */
-
 istream * __thiscall istream::operator=(istream *this,streambuf *param_1)
 {
   undefined4 *puVar1;
@@ -217,8 +203,6 @@ istream * __thiscall istream::operator=(istream *this,streambuf *param_1)
 
 // Function: ipfx
 // Address: 0055b6f0
-/* public: int __thiscall istream::ipfx(int) */
-
 int __thiscall istream::ipfx(istream *this,int param_1)
 {
   int iVar1;
@@ -266,8 +250,6 @@ LAB_0055b747:
 
 // Function: operator>>
 // Address: 0055b790
-/* public: class istream & __thiscall istream::operator>>(char *) */
-
 istream * __thiscall istream::operator>>(istream *this,char *param_1)
 {
   int iVar1;
@@ -318,8 +300,6 @@ LAB_0055b867:
 
 // Function: peek
 // Address: 0055b880
-/* public: int __thiscall istream::peek(void) */
-
 int __thiscall istream::peek(istream *this)
 {
   int iVar1;
@@ -336,8 +316,6 @@ int __thiscall istream::peek(istream *this)
 
 // Function: putback
 // Address: 0055b8b0
-/* public: class istream & __thiscall istream::putback(char) */
-
 istream * __thiscall istream::putback(istream *this,char param_1)
 {
   int *piVar1;
@@ -367,8 +345,6 @@ istream * __thiscall istream::putback(istream *this,char param_1)
 
 // Function: sync
 // Address: 0055b910
-/* public: int __thiscall istream::sync(void) */
-
 int __thiscall istream::sync(istream *this)
 {
   int iVar1;
@@ -385,8 +361,6 @@ int __thiscall istream::sync(istream *this)
 
 // Function: eatwhite
 // Address: 0055b940
-/* public: void __thiscall istream::eatwhite(void) */
-
 void __thiscall istream::eatwhite(istream *this)
 {
   int iVar1;

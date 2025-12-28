@@ -8,8 +8,6 @@
 
 // Function: AIPlayPhase
 // Address: 0040f0a0
-/* public: __thiscall AIPlayPhase::AIPlayPhase(void) */
-
 AIPlayPhase * __thiscall AIPlayPhase::AIPlayPhase(AIPlayPhase *this)
 {
   AIPlayPhase *this_00;
@@ -38,8 +36,6 @@ AIPlayPhase * __thiscall AIPlayPhase::AIPlayPhase(AIPlayPhase *this)
 
 // Function: command
 // Address: 0040f110
-/* public: class AIPlayPhaseCommand * __thiscall AIPlayPhase::command(int) */
-
 AIPlayPhaseCommand * __thiscall AIPlayPhase::command(AIPlayPhase *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 5)) {
@@ -52,8 +48,6 @@ AIPlayPhaseCommand * __thiscall AIPlayPhase::command(AIPlayPhase *this,int param
 
 // Function: trigger
 // Address: 0040f130
-/* public: class AIPlayPhaseTrigger * __thiscall AIPlayPhase::trigger(int) */
-
 AIPlayPhaseTrigger * __thiscall AIPlayPhase::trigger(AIPlayPhase *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 3)) {
@@ -66,8 +60,6 @@ AIPlayPhaseTrigger * __thiscall AIPlayPhase::trigger(AIPlayPhase *this,int param
 
 // Function: addCommand
 // Address: 0040f150
-/* public: int __thiscall AIPlayPhase::addCommand(class AIPlayPhaseCommand &) */
-
 int __thiscall AIPlayPhase::addCommand(AIPlayPhase *this,AIPlayPhaseCommand *param_1)
 {
   int iVar1;
@@ -96,8 +88,6 @@ int __thiscall AIPlayPhase::addCommand(AIPlayPhase *this,AIPlayPhaseCommand *par
 
 // Function: addTrigger
 // Address: 0040f1a0
-/* public: int __thiscall AIPlayPhase::addTrigger(class AIPlayPhaseTrigger &) */
-
 int __thiscall AIPlayPhase::addTrigger(AIPlayPhase *this,AIPlayPhaseTrigger *param_1)
 {
   int iVar1;
@@ -125,8 +115,6 @@ int __thiscall AIPlayPhase::addTrigger(AIPlayPhase *this,AIPlayPhaseTrigger *par
 
 // Function: initialize
 // Address: 0040f200
-/* protected: void __thiscall AIPlayPhase::initialize(void) */
-
 void __thiscall AIPlayPhase::initialize(AIPlayPhase *this)
 {
   uchar *puVar1;

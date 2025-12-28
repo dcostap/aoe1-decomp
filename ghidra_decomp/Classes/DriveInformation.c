@@ -11,8 +11,6 @@
 
 // Function: DriveInformation
 // Address: 00449770
-/* public: __thiscall DriveInformation::DriveInformation(void) */
-
 DriveInformation * __thiscall DriveInformation::DriveInformation(DriveInformation *this)
 {
   char cVar1;
@@ -56,8 +54,6 @@ DriveInformation * __thiscall DriveInformation::DriveInformation(DriveInformatio
 
 // Function: initialDrive
 // Address: 004497c0
-/* public: int __thiscall DriveInformation::initialDrive(void)const  */
-
 int __thiscall DriveInformation::initialDrive(DriveInformation *this)
 {
   return this->initialDriveValue;
@@ -67,8 +63,6 @@ int __thiscall DriveInformation::initialDrive(DriveInformation *this)
 
 // Function: initialDriveAsLetter
 // Address: 004497d0
-/* public: char __thiscall DriveInformation::initialDriveAsLetter(void)const  */
-
 char __thiscall DriveInformation::initialDriveAsLetter(DriveInformation *this)
 {
   return (char)this->initialDriveValue + '@';
@@ -78,8 +72,6 @@ char __thiscall DriveInformation::initialDriveAsLetter(DriveInformation *this)
 
 // Function: initialDirectory
 // Address: 004497e0
-/* public: char * __thiscall DriveInformation::initialDirectory(void) */
-
 char * __thiscall DriveInformation::initialDirectory(DriveInformation *this)
 {
   return this->initialDirectoryValue;
@@ -89,8 +81,6 @@ char * __thiscall DriveInformation::initialDirectory(DriveInformation *this)
 
 // Function: currentDrive
 // Address: 004497f0
-/* public: int __thiscall DriveInformation::currentDrive(void)const  */
-
 int __thiscall DriveInformation::currentDrive(DriveInformation *this)
 {
   return this->currentDriveValue;
@@ -100,8 +90,6 @@ int __thiscall DriveInformation::currentDrive(DriveInformation *this)
 
 // Function: currentDriveAsLetter
 // Address: 00449800
-/* public: char __thiscall DriveInformation::currentDriveAsLetter(void)const  */
-
 char __thiscall DriveInformation::currentDriveAsLetter(DriveInformation *this)
 {
   return (char)this->currentDriveValue + '@';
@@ -111,8 +99,6 @@ char __thiscall DriveInformation::currentDriveAsLetter(DriveInformation *this)
 
 // Function: currentDirectory
 // Address: 00449810
-/* public: char * __thiscall DriveInformation::currentDirectory(void) */
-
 char * __thiscall DriveInformation::currentDirectory(DriveInformation *this)
 {
   return this->currentDirectoryValue;
@@ -122,8 +108,6 @@ char * __thiscall DriveInformation::currentDirectory(DriveInformation *this)
 
 // Function: numberDrives
 // Address: 00449820
-/* public: int __thiscall DriveInformation::numberDrives(void)const  */
-
 int __thiscall DriveInformation::numberDrives(DriveInformation *this)
 {
   return this->driveValues[0];
@@ -133,8 +117,6 @@ int __thiscall DriveInformation::numberDrives(DriveInformation *this)
 
 // Function: validDrive
 // Address: 00449830
-/* public: int __thiscall DriveInformation::validDrive(int)const  */
-
 int __thiscall DriveInformation::validDrive(DriveInformation *this,int param_1)
 {
   return this->driveValues[param_1];
@@ -144,8 +126,6 @@ int __thiscall DriveInformation::validDrive(DriveInformation *this,int param_1)
 
 // Function: checkDrives
 // Address: 00449840
-/* public: void __thiscall DriveInformation::checkDrives(void) */
-
 void __thiscall DriveInformation::checkDrives(DriveInformation *this)
 {
   int iVar1;
@@ -175,9 +155,6 @@ void __thiscall DriveInformation::checkDrives(DriveInformation *this)
 
 // Function: numberOfFilesWithFilename
 // Address: 004498a0
-/* WARNING: Variable defined which should be unmapped: fileInfo */
-/* public: int __thiscall DriveInformation::numberOfFilesWithFilename(char *) */
-
 int __thiscall DriveInformation::numberOfFilesWithFilename(DriveInformation *this,char *param_1)
 {
   int iVar1;
@@ -203,9 +180,6 @@ int __thiscall DriveInformation::numberOfFilesWithFilename(DriveInformation *thi
 // Function: numberOfFilesWithAttribute
 // Address: 00449910
 // [HELPER] s____: "*.*"
-/* WARNING: Variable defined which should be unmapped: fileInfo */
-/* public: int __thiscall DriveInformation::numberOfFilesWithAttribute(int) */
-
 int __thiscall DriveInformation::numberOfFilesWithAttribute(DriveInformation *this,int param_1)
 {
   int iVar1;
@@ -233,9 +207,6 @@ int __thiscall DriveInformation::numberOfFilesWithAttribute(DriveInformation *th
 // Function: numberOfFilesWithFilenameOrAttribute
 // Address: 00449990
 // [HELPER] s____: "*.*"
-/* WARNING: Variable defined which should be unmapped: fileInfo */
-/* public: int __thiscall DriveInformation::numberOfFilesWithFilenameOrAttribute(char *,int) */
-
 int __thiscall
 DriveInformation::numberOfFilesWithFilenameOrAttribute
           (DriveInformation *this,char *param_1,int param_2)
@@ -265,8 +236,6 @@ DriveInformation::numberOfFilesWithFilenameOrAttribute
 
 // Function: resetCurrentDriveAndDirectory
 // Address: 00449a20
-/* public: int __thiscall DriveInformation::resetCurrentDriveAndDirectory(void) */
-
 int __thiscall DriveInformation::resetCurrentDriveAndDirectory(DriveInformation *this)
 {
   int iVar1;
@@ -283,8 +252,6 @@ int __thiscall DriveInformation::resetCurrentDriveAndDirectory(DriveInformation 
 
 // Function: resetCurrentDrive
 // Address: 00449a40
-/* public: int __thiscall DriveInformation::resetCurrentDrive(void) */
-
 int __thiscall DriveInformation::resetCurrentDrive(DriveInformation *this)
 {
   int iVar1;
@@ -297,8 +264,6 @@ int __thiscall DriveInformation::resetCurrentDrive(DriveInformation *this)
 
 // Function: resetCurrentDirectory
 // Address: 00449a50
-/* public: int __thiscall DriveInformation::resetCurrentDirectory(void) */
-
 int __thiscall DriveInformation::resetCurrentDirectory(DriveInformation *this)
 {
   int iVar1;
@@ -311,8 +276,6 @@ int __thiscall DriveInformation::resetCurrentDirectory(DriveInformation *this)
 
 // Function: changeDrive
 // Address: 00449a60
-/* public: int __thiscall DriveInformation::changeDrive(int) */
-
 int __thiscall DriveInformation::changeDrive(DriveInformation *this,int param_1)
 {
   int iVar1;
@@ -329,8 +292,6 @@ int __thiscall DriveInformation::changeDrive(DriveInformation *this,int param_1)
 
 // Function: changeDirectory
 // Address: 00449a90
-/* public: int __thiscall DriveInformation::changeDirectory(char *) */
-
 int __thiscall DriveInformation::changeDirectory(DriveInformation *this,char *param_1)
 {
   int iVar1;
@@ -348,9 +309,6 @@ int __thiscall DriveInformation::changeDirectory(DriveInformation *this,char *pa
 // Function: updateDirectory
 // Address: 00449ac0
 // [HELPER] s__s_s_s: "%s%s%s"
-/* WARNING: Variable defined which should be unmapped: cDrive */
-/* protected: void __thiscall DriveInformation::updateDirectory(void) */
-
 void __thiscall DriveInformation::updateDirectory(DriveInformation *this)
 {
   char *pcVar1;

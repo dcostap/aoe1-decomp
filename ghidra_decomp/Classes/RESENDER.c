@@ -11,8 +11,6 @@
 
 // Function: `vector_deleting_destructor'
 // Address: 004260f0
-/* public: void * __thiscall RESENDER::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall RESENDER::_vector_deleting_destructor_(RESENDER *this,uint param_1)
 {
   int iVar1;
@@ -45,8 +43,6 @@ void * __thiscall RESENDER::_vector_deleting_destructor_(RESENDER *this,uint par
 
 // Function: RESENDER
 // Address: 00426450
-/* public: __thiscall RESENDER::RESENDER(void) */
-
 RESENDER * __thiscall RESENDER::RESENDER(RESENDER *this)
 {
   int iVar1;
@@ -68,8 +64,6 @@ RESENDER * __thiscall RESENDER::RESENDER(RESENDER *this)
 
 // Function: ~RESENDER
 // Address: 004264a0
-/* public: __thiscall RESENDER::~RESENDER(void) */
-
 void __thiscall RESENDER::~RESENDER(RESENDER *this)
 {
   int iVar1;

@@ -15,8 +15,6 @@
 
 // Function: AIPlayStatus
 // Address: 0040fc30
-/* public: __thiscall AIPlayStatus::AIPlayStatus(void) */
-
 AIPlayStatus * __thiscall AIPlayStatus::AIPlayStatus(AIPlayStatus *this)
 {
   uchar *puVar1;
@@ -50,8 +48,6 @@ AIPlayStatus * __thiscall AIPlayStatus::AIPlayStatus(AIPlayStatus *this)
 
 // Function: originalHitPoints
 // Address: 0040fcb0
-/* public: int __thiscall AIPlayStatus::originalHitPoints(int)const  */
-
 int __thiscall AIPlayStatus::originalHitPoints(AIPlayStatus *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 5)) {
@@ -64,8 +60,6 @@ int __thiscall AIPlayStatus::originalHitPoints(AIPlayStatus *this,int param_1)
 
 // Function: setOriginalHitPoints
 // Address: 0040fcd0
-/* public: void __thiscall AIPlayStatus::setOriginalHitPoints(int,int) */
-
 void __thiscall AIPlayStatus::setOriginalHitPoints(AIPlayStatus *this,int param_1,int param_2)
 {
   if ((-1 < param_1) && (param_1 < 5)) {
@@ -78,8 +72,6 @@ void __thiscall AIPlayStatus::setOriginalHitPoints(AIPlayStatus *this,int param_
 
 // Function: numberInPlay
 // Address: 0040fcf0
-/* public: unsigned char __thiscall AIPlayStatus::numberInPlay(void)const  */
-
 uchar __thiscall AIPlayStatus::numberInPlay(AIPlayStatus *this)
 {
   uchar uVar1;
@@ -101,8 +93,6 @@ uchar __thiscall AIPlayStatus::numberInPlay(AIPlayStatus *this)
 
 // Function: numberInGroup
 // Address: 0040fd10
-/* public: unsigned char __thiscall AIPlayStatus::numberInGroup(int) */
-
 uchar __thiscall AIPlayStatus::numberInGroup(AIPlayStatus *this,int param_1)
 {
   uchar uVar1;
@@ -124,8 +114,6 @@ uchar __thiscall AIPlayStatus::numberInGroup(AIPlayStatus *this,int param_1)
 
 // Function: numberOfTypeInGroup
 // Address: 0040fd40
-/* public: unsigned char __thiscall AIPlayStatus::numberOfTypeInGroup(int,int) */
-
 uchar __thiscall AIPlayStatus::numberOfTypeInGroup(AIPlayStatus *this,int param_1,int param_2)
 {
   uchar uVar1;
@@ -150,8 +138,6 @@ uchar __thiscall AIPlayStatus::numberOfTypeInGroup(AIPlayStatus *this,int param_
 
 // Function: group
 // Address: 0040fd80
-/* public: unsigned char __thiscall AIPlayStatus::group(int) */
-
 uchar __thiscall AIPlayStatus::group(AIPlayStatus *this,int param_1)
 {
   int iVar1;
@@ -176,8 +162,6 @@ uchar __thiscall AIPlayStatus::group(AIPlayStatus *this,int param_1)
 
 // Function: addGrouping
 // Address: 0040fdb0
-/* public: int __thiscall AIPlayStatus::addGrouping(int,unsigned char,unsigned char) */
-
 int __thiscall AIPlayStatus::addGrouping(AIPlayStatus *this,int param_1,uchar param_2,uchar param_3)
 {
   int iVar1;
@@ -202,8 +186,6 @@ int __thiscall AIPlayStatus::addGrouping(AIPlayStatus *this,int param_1,uchar pa
 
 // Function: removeGrouping
 // Address: 0040fdf0
-/* public: int __thiscall AIPlayStatus::removeGrouping(int) */
-
 int __thiscall AIPlayStatus::removeGrouping(AIPlayStatus *this,int param_1)
 {
   int iVar1;
@@ -228,8 +210,6 @@ int __thiscall AIPlayStatus::removeGrouping(AIPlayStatus *this,int param_1)
 
 // Function: zeroAllGroupings
 // Address: 0040fe30
-/* public: void __thiscall AIPlayStatus::zeroAllGroupings(void) */
-
 void __thiscall AIPlayStatus::zeroAllGroupings(AIPlayStatus *this)
 {
   uchar *puVar1;
@@ -251,8 +231,6 @@ void __thiscall AIPlayStatus::zeroAllGroupings(AIPlayStatus *this)
 
 // Function: copyUnits
 // Address: 0040fe50
-/* public: void __thiscall AIPlayStatus::copyUnits(int *,int &) */
-
 void __thiscall AIPlayStatus::copyUnits(AIPlayStatus *this,int *param_1,int *param_2)
 {
   int iVar1;
@@ -276,8 +254,6 @@ void __thiscall AIPlayStatus::copyUnits(AIPlayStatus *this,int *param_1,int *par
 
 // Function: load
 // Address: 0040fe90
-/* public: void __thiscall AIPlayStatus::load(int) */
-
 void __thiscall AIPlayStatus::load(AIPlayStatus *this,int param_1)
 {
   int iVar1;
@@ -303,8 +279,6 @@ void __thiscall AIPlayStatus::load(AIPlayStatus *this,int param_1)
 
 // Function: save
 // Address: 0040ff70
-/* public: void __thiscall AIPlayStatus::save(int) */
-
 void __thiscall AIPlayStatus::save(AIPlayStatus *this,int param_1)
 {
   int iVar1;
@@ -330,8 +304,6 @@ void __thiscall AIPlayStatus::save(AIPlayStatus *this,int param_1)
 
 // Function: copy
 // Address: 00410050
-/* public: void __thiscall AIPlayStatus::copy(class AIPlayStatus *) */
-
 void __thiscall AIPlayStatus::copy(AIPlayStatus *this,AIPlayStatus *param_1)
 {
   int iVar1;
@@ -376,8 +348,6 @@ void __thiscall AIPlayStatus::copy(AIPlayStatus *this,AIPlayStatus *param_1)
 
 // Function: removeDeadUnits
 // Address: 00410100
-/* public: void __thiscall AIPlayStatus::removeDeadUnits(int,class RGE_Game_World *) */
-
 void __thiscall
 AIPlayStatus::removeDeadUnits(AIPlayStatus *this,int param_1,RGE_Game_World *param_2)
 {
@@ -406,8 +376,6 @@ AIPlayStatus::removeDeadUnits(AIPlayStatus *this,int param_1,RGE_Game_World *par
 
 // Function: resetHitPoints
 // Address: 00410150
-/* public: void __thiscall AIPlayStatus::resetHitPoints(int,class RGE_Game_World *) */
-
 void __thiscall AIPlayStatus::resetHitPoints(AIPlayStatus *this,int param_1,RGE_Game_World *param_2)
 {
   RGE_Static_Object *pRVar1;

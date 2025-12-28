@@ -9,8 +9,6 @@
 
 // Function: TRIBE_Tech
 // Address: 0050b840
-/* public: __thiscall TRIBE_Tech::TRIBE_Tech(int,class TRIBE_World *) */
-
 TRIBE_Tech * __thiscall TRIBE_Tech::TRIBE_Tech(TRIBE_Tech *this,int param_1,TRIBE_World *param_2)
 {
   Tech_Tree *pTVar1;
@@ -70,8 +68,6 @@ TRIBE_Tech * __thiscall TRIBE_Tech::TRIBE_Tech(TRIBE_Tech *this,int param_1,TRIB
 // [HELPER] s__hd__hd__d__d__d_00588fb4: "%hd %hd %d %d %d"
 // [HELPER] s__hd__hd__hd_00588fa8: "%hd %hd %hd"
 // [HELPER] s__s__hd__hd__hd__hd__hd__hd__hd_00588f84: "%s %hd %hd %hd %hd %hd %hd %hd"
-/* public: __thiscall TRIBE_Tech::TRIBE_Tech(char *) */
-
 TRIBE_Tech * __thiscall TRIBE_Tech::TRIBE_Tech(TRIBE_Tech *this,char *param_1)
 {
   int iVar1;
@@ -133,8 +129,6 @@ TRIBE_Tech * __thiscall TRIBE_Tech::TRIBE_Tech(TRIBE_Tech *this,char *param_1)
 
 // Function: ~TRIBE_Tech
 // Address: 0050bf28
-/* public: __thiscall TRIBE_Tech::~TRIBE_Tech(void) */
-
 void __thiscall TRIBE_Tech::~TRIBE_Tech(TRIBE_Tech *this)
 {
   int local_8;
@@ -155,8 +149,6 @@ void __thiscall TRIBE_Tech::~TRIBE_Tech(TRIBE_Tech *this)
 
 // Function: do_tech
 // Address: 0050bf9c
-/* public: unsigned char __thiscall TRIBE_Tech::do_tech(short,class RGE_Player *) */
-
 uchar __thiscall TRIBE_Tech::do_tech(TRIBE_Tech *this,short param_1,RGE_Player *param_2)
 {
   if (-1 < this->tech_tree[param_1].effect) {
@@ -171,8 +163,6 @@ uchar __thiscall TRIBE_Tech::do_tech(TRIBE_Tech *this,short param_1,RGE_Player *
 
 // Function: save
 // Address: 0050bfed
-/* public: void __thiscall TRIBE_Tech::save(int) */
-
 void __thiscall TRIBE_Tech::save(TRIBE_Tech *this,int param_1)
 {
   short local_10;
@@ -220,8 +210,6 @@ void __thiscall TRIBE_Tech::save(TRIBE_Tech *this,int param_1)
 
 // Function: get_help_message
 // Address: 0050c2fa
-/* public: long __thiscall TRIBE_Tech::get_help_message(short) */
-
 long __thiscall TRIBE_Tech::get_help_message(TRIBE_Tech *this,short param_1)
 {
   long lVar1;
@@ -239,8 +227,6 @@ long __thiscall TRIBE_Tech::get_help_message(TRIBE_Tech *this,short param_1)
 
 // Function: get_help_page
 // Address: 0050c333
-/* public: long __thiscall TRIBE_Tech::get_help_page(short) */
-
 long __thiscall TRIBE_Tech::get_help_page(TRIBE_Tech *this,short param_1)
 {
   long lVar1;
@@ -258,8 +244,6 @@ long __thiscall TRIBE_Tech::get_help_page(TRIBE_Tech *this,short param_1)
 
 // Function: get_hotkey
 // Address: 0050c36c
-/* public: long __thiscall TRIBE_Tech::get_hotkey(short) */
-
 long __thiscall TRIBE_Tech::get_hotkey(TRIBE_Tech *this,short param_1)
 {
   long lVar1;

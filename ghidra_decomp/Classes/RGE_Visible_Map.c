@@ -20,8 +20,6 @@
 
 // Function: RGE_Visible_Map
 // Address: 0053c1b0
-/* public: __thiscall RGE_Visible_Map::RGE_Visible_Map(class RGE_Map *,class RGE_Player *) */
-
 RGE_Visible_Map * __thiscall
 RGE_Visible_Map::RGE_Visible_Map(RGE_Visible_Map *this,RGE_Map *param_1,RGE_Player *param_2)
 {
@@ -85,10 +83,6 @@ RGE_Visible_Map::RGE_Visible_Map(RGE_Visible_Map *this,RGE_Map *param_1,RGE_Play
 
 // Function: RGE_Visible_Map
 // Address: 0053c290
-/* WARNING: Variable defined which should be unmapped: player_id */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: __thiscall RGE_Visible_Map::RGE_Visible_Map(int,class RGE_Game_World *) */
-
 RGE_Visible_Map * __thiscall
 RGE_Visible_Map::RGE_Visible_Map(RGE_Visible_Map *this,int param_1,RGE_Game_World *param_2)
 {
@@ -147,8 +141,6 @@ RGE_Visible_Map::RGE_Visible_Map(RGE_Visible_Map *this,int param_1,RGE_Game_Worl
 
 // Function: ~RGE_Visible_Map
 // Address: 0053c3c0
-/* public: __thiscall RGE_Visible_Map::~RGE_Visible_Map(void) */
-
 void __thiscall RGE_Visible_Map::~RGE_Visible_Map(RGE_Visible_Map *this)
 {
   if (this->visible_map != (uchar *)0x0) {
@@ -168,9 +160,6 @@ void __thiscall RGE_Visible_Map::~RGE_Visible_Map(RGE_Visible_Map *this)
 
 // Function: save
 // Address: 0053c400
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall RGE_Visible_Map::save(int) */
-
 void __thiscall RGE_Visible_Map::save(RGE_Visible_Map *this,int param_1)
 {
   int iVar1;
@@ -193,8 +182,6 @@ void __thiscall RGE_Visible_Map::save(RGE_Visible_Map *this,int param_1)
 
 // Function: get_visible
 // Address: 0053c490
-/* public: unsigned char __thiscall RGE_Visible_Map::get_visible(int,int)const  */
-
 uchar __thiscall RGE_Visible_Map::get_visible(RGE_Visible_Map *this,int param_1,int param_2)
 {
   if (((uint)(&unified_map_offsets)[param_2][param_1] & this->player->mutualVisibleMask) != 0) {
@@ -208,8 +195,6 @@ uchar __thiscall RGE_Visible_Map::get_visible(RGE_Visible_Map *this,int param_1,
 
 // Function: set_all
 // Address: 0053c4d0
-/* public: void __thiscall RGE_Visible_Map::set_all(unsigned char) */
-
 void __thiscall RGE_Visible_Map::set_all(RGE_Visible_Map *this,uchar param_1)
 {
   uint uVar1;
@@ -286,8 +271,6 @@ void __thiscall RGE_Visible_Map::set_all(RGE_Visible_Map *this,uchar param_1)
 
 // Function: explore_all
 // Address: 0053c5d0
-/* public: void __thiscall RGE_Visible_Map::explore_all(void) */
-
 void __thiscall RGE_Visible_Map::explore_all(RGE_Visible_Map *this)
 {
   int iVar1;
@@ -327,8 +310,6 @@ void __thiscall RGE_Visible_Map::explore_all(RGE_Visible_Map *this)
 
 // Function: percentExplored
 // Address: 0053c670
-/* public: float __thiscall RGE_Visible_Map::percentExplored(void)const  */
-
 float __thiscall RGE_Visible_Map::percentExplored(RGE_Visible_Map *this)
 {
   return (float)this->numberTilesExploredValue / (float)this->numberTotalTilesValue;
@@ -338,8 +319,6 @@ float __thiscall RGE_Visible_Map::percentExplored(RGE_Visible_Map *this)
 
 // Function: recomputeExplored
 // Address: 0053c680
-/* public: void __thiscall RGE_Visible_Map::recomputeExplored(void) */
-
 void __thiscall RGE_Visible_Map::recomputeExplored(RGE_Visible_Map *this)
 {
   int iVar1;
@@ -368,8 +347,6 @@ void __thiscall RGE_Visible_Map::recomputeExplored(RGE_Visible_Map *this)
 
 // Function: get_los_table
 // Address: 0053c6c0
-/* public: struct LOSTBL * __thiscall RGE_Visible_Map::get_los_table(int,int) */
-
 LOSTBL * __thiscall RGE_Visible_Map::get_los_table(RGE_Visible_Map *this,int param_1,int param_2)
 {
   if (0x10 < param_1) {
@@ -388,8 +365,6 @@ LOSTBL * __thiscall RGE_Visible_Map::get_los_table(RGE_Visible_Map *this,int par
 
 // Function: explore_terrain
 // Address: 0053c6f0
-/* public: int __thiscall RGE_Visible_Map::explore_terrain(int,int,int,int,int,int) */
-
 int __thiscall
 RGE_Visible_Map::explore_terrain
           (RGE_Visible_Map *this,int param_1,int param_2,int param_3,int param_4,int param_5,
@@ -500,8 +475,6 @@ RGE_Visible_Map::explore_terrain
 
 // Function: unexplore_terrain
 // Address: 0053c920
-/* public: void __thiscall RGE_Visible_Map::unexplore_terrain(int,int,int,int,int,int) */
-
 void __thiscall
 RGE_Visible_Map::unexplore_terrain
           (RGE_Visible_Map *this,int param_1,int param_2,int param_3,int param_4,int param_5,
@@ -588,8 +561,6 @@ RGE_Visible_Map::unexplore_terrain
 
 // Function: explore_terrain_sq
 // Address: 0053cac0
-/* public: int __thiscall RGE_Visible_Map::explore_terrain_sq(int,int,int,int,int,int) */
-
 int __thiscall
 RGE_Visible_Map::explore_terrain_sq
           (RGE_Visible_Map *this,int param_1,int param_2,int param_3,int param_4,int param_5,
@@ -681,8 +652,6 @@ RGE_Visible_Map::explore_terrain_sq
 
 // Function: unexplore_terrain_sq
 // Address: 0053ccf0
-/* public: void __thiscall RGE_Visible_Map::unexplore_terrain_sq(int,int,int,int,int,int) */
-
 void __thiscall
 RGE_Visible_Map::unexplore_terrain_sq
           (RGE_Visible_Map *this,int param_1,int param_2,int param_3,int param_4,int param_5,
@@ -756,8 +725,6 @@ RGE_Visible_Map::unexplore_terrain_sq
 
 // Function: checksum_visible_inputs
 // Address: 0053ce70
-/* public: unsigned long __thiscall RGE_Visible_Map::checksum_visible_inputs(void) */
-
 ulong __thiscall RGE_Visible_Map::checksum_visible_inputs(RGE_Visible_Map *this)
 {
   ulong uVar1;
@@ -771,8 +738,6 @@ ulong __thiscall RGE_Visible_Map::checksum_visible_inputs(RGE_Visible_Map *this)
 
 // Function: checksumVisible
 // Address: 0053d0d0
-/* public: long __thiscall RGE_Visible_Map::checksumVisible(void) */
-
 long __thiscall RGE_Visible_Map::checksumVisible(RGE_Visible_Map *this)
 {
   uint uVar1;
@@ -800,8 +765,6 @@ long __thiscall RGE_Visible_Map::checksumVisible(RGE_Visible_Map *this)
 
 // Function: checksumUnifiedVisible
 // Address: 0053d110
-/* public: unsigned long __thiscall RGE_Visible_Map::checksumUnifiedVisible(void) */
-
 ulong __thiscall RGE_Visible_Map::checksumUnifiedVisible(RGE_Visible_Map *this)
 {
   ulong *puVar1;

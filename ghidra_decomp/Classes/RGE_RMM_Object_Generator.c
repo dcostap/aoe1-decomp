@@ -13,9 +13,6 @@
 
 // Function: RGE_RMM_Object_Generator
 // Address: 00485c50
-/* public: __thiscall RGE_RMM_Object_Generator::RGE_RMM_Object_Generator(class RGE_Map *,class
-   RGE_Random_Map_Module *,class RGE_Game_World *,struct RGE_Object_Info *,unsigned char) */
-
 RGE_RMM_Object_Generator * __thiscall
 RGE_RMM_Object_Generator::RGE_RMM_Object_Generator
           (RGE_RMM_Object_Generator *this,RGE_Map *param_1,RGE_Random_Map_Module *param_2,
@@ -49,8 +46,6 @@ RGE_RMM_Object_Generator::RGE_RMM_Object_Generator
 
 // Function: add_quick_obj
 // Address: 00485cb0
-/* public: void __thiscall RGE_RMM_Object_Generator::add_quick_obj(long,long,long) */
-
 void __thiscall
 RGE_RMM_Object_Generator::add_quick_obj
           (RGE_RMM_Object_Generator *this,long param_1,long param_2,long param_3)
@@ -76,8 +71,6 @@ RGE_RMM_Object_Generator::add_quick_obj
 
 // Function: generate
 // Address: 00485dc0
-/* public: virtual unsigned char __thiscall RGE_RMM_Object_Generator::generate(void) */
-
 uchar __thiscall RGE_RMM_Object_Generator::generate(RGE_RMM_Object_Generator *this)
 {
   int iVar1;
@@ -115,9 +108,6 @@ uchar __thiscall RGE_RMM_Object_Generator::generate(RGE_RMM_Object_Generator *th
 
 // Function: generate_objects
 // Address: 00485e50
-/* protected: void __thiscall RGE_RMM_Object_Generator::generate_objects(struct RGE_Object_Info_Line
-   &) */
-
 void __thiscall
 RGE_RMM_Object_Generator::generate_objects
           (RGE_RMM_Object_Generator *this,RGE_Object_Info_Line *param_1)
@@ -165,10 +155,6 @@ RGE_RMM_Object_Generator::generate_objects
 // Function: make_placement_stack
 // Address: 00485f10
 // [HELPER] s_C__msdev_work_age1_x1_rmm_obj_cp: "C:\msdev\work\age1_x1\rmm_obj.cpp"
-/* WARNING: Variable defined which should be unmapped: y1 */
-/* protected: void __thiscall RGE_RMM_Object_Generator::make_placement_stack(struct Map_Stack
-   &,long,long,long,long) */
-
 void __thiscall
 RGE_RMM_Object_Generator::make_placement_stack
           (RGE_RMM_Object_Generator *this,Map_Stack *param_1,long param_2,long param_3,long param_4,
@@ -260,9 +246,6 @@ RGE_RMM_Object_Generator::make_placement_stack
 
 // Function: to_close
 // Address: 00486110
-/* protected: unsigned char __thiscall RGE_RMM_Object_Generator::to_close(struct
-   RGE_Object_Info_Line &,long,long) */
-
 uchar __thiscall
 RGE_RMM_Object_Generator::to_close
           (RGE_RMM_Object_Generator *this,RGE_Object_Info_Line *param_1,long param_2,long param_3)
@@ -302,9 +285,6 @@ RGE_RMM_Object_Generator::to_close
 
 // Function: set_search_area
 // Address: 00486180
-/* protected: void __thiscall RGE_RMM_Object_Generator::set_search_area(long,long,long,unsigned
-   char) */
-
 void __thiscall
 RGE_RMM_Object_Generator::set_search_area
           (RGE_RMM_Object_Generator *this,long param_1,long param_2,long param_3,uchar param_4)
@@ -347,8 +327,6 @@ RGE_RMM_Object_Generator::set_search_area
 
 // Function: remove_area_from_lists
 // Address: 00486210
-/* protected: void __thiscall RGE_RMM_Object_Generator::remove_area_from_lists(long,long,long) */
-
 void __thiscall
 RGE_RMM_Object_Generator::remove_area_from_lists
           (RGE_RMM_Object_Generator *this,long param_1,long param_2,long param_3)
@@ -396,11 +374,6 @@ RGE_RMM_Object_Generator::remove_area_from_lists
 
 // Function: place_avoid_objects
 // Address: 004862b0
-/* WARNING: Variable defined which should be unmapped: y */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: void __thiscall RGE_RMM_Object_Generator::place_avoid_objects(struct
-   RGE_Object_Info_Line &,long) */
-
 void __thiscall
 RGE_RMM_Object_Generator::place_avoid_objects
           (RGE_RMM_Object_Generator *this,RGE_Object_Info_Line *param_1,long param_2)
@@ -497,11 +470,6 @@ RGE_RMM_Object_Generator::place_avoid_objects
 
 // Function: place_objects
 // Address: 004864f0
-/* WARNING: Variable defined which should be unmapped: y */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: void __thiscall RGE_RMM_Object_Generator::place_objects(struct RGE_Object_Info_Line &)
-    */
-
 void __thiscall
 RGE_RMM_Object_Generator::place_objects
           (RGE_RMM_Object_Generator *this,RGE_Object_Info_Line *param_1)
@@ -587,11 +555,6 @@ RGE_RMM_Object_Generator::place_objects
 
 // Function: place_land_objects
 // Address: 00486700
-/* WARNING: Variable defined which should be unmapped: y */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: void __thiscall RGE_RMM_Object_Generator::place_land_objects(struct
-   RGE_Object_Info_Line &,long,long,long,long,long) */
-
 void __thiscall
 RGE_RMM_Object_Generator::place_land_objects
           (RGE_RMM_Object_Generator *this,RGE_Object_Info_Line *param_1,long param_2,long param_3,
@@ -737,11 +700,6 @@ LAB_004869ee:
 // Function: place_group
 // Address: 00486a60
 // [HELPER] s_C__msdev_work_age1_x1_rmm_obj_cp: "C:\msdev\work\age1_x1\rmm_obj.cpp"
-/* WARNING: Variable defined which should be unmapped: y */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: void __thiscall RGE_RMM_Object_Generator::place_group(struct RGE_Object_Info_Line
-   &,long,long,class RGE_Player *) */
-
 void __thiscall
 RGE_RMM_Object_Generator::place_group
           (RGE_RMM_Object_Generator *this,RGE_Object_Info_Line *param_1,long param_2,long param_3,
@@ -813,11 +771,6 @@ RGE_RMM_Object_Generator::place_group
 // Function: place_cluster
 // Address: 00486c40
 // [HELPER] s_C__msdev_work_age1_x1_rmm_obj_cp: "C:\msdev\work\age1_x1\rmm_obj.cpp"
-/* WARNING: Variable defined which should be unmapped: y */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: void __thiscall RGE_RMM_Object_Generator::place_cluster(struct RGE_Object_Info_Line
-   &,long,long,class RGE_Player *) */
-
 void __thiscall
 RGE_RMM_Object_Generator::place_cluster
           (RGE_RMM_Object_Generator *this,RGE_Object_Info_Line *param_1,long param_2,long param_3,

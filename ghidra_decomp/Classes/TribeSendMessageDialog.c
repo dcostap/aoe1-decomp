@@ -302,8 +302,6 @@
 // [HELPER] s_: ""
 // [HELPER] s_Send_Message_Dialog: "Send Message Dialog"
 // [HELPER] s_dlg_plbn_shp: "dlg_plbn.shp"
-/* public: __thiscall TribeSendMessageDialog::TribeSendMessageDialog(class TScreenPanel *) */
-
 TribeSendMessageDialog * __thiscall
 TribeSendMessageDialog::TribeSendMessageDialog(TribeSendMessageDialog *this,TScreenPanel *param_1)
 {
@@ -389,7 +387,6 @@ TribeSendMessageDialog::TribeSendMessageDialog(TribeSendMessageDialog *this,TScr
     pTVar9 = TPanel::renderArea((TPanel *)param_1);
     iVar13 = TDialogPanel::setup((TDialogPanel *)this,pTVar9,(TPanel *)param_1,lVar17,lVar18,pcVar8,
                                  lVar7,iVar13);
-                    /* language.dll match for 0x2667: "Send Messages to" */
     if ((iVar13 != 0) &&
        (iVar13 = TEasy_Panel::create_text
                            ((TEasy_Panel *)this,(TPanel *)this,&this->title,0x2667,5,10,
@@ -444,7 +441,6 @@ LAB_004409b4:
           if (iVar11 == 0) goto LAB_00440dda;
           (**(code **)(rge_base_game->_padding_ + 0x28))
                     (0x69,pRVar1->players[iVar10]->master_player_id,0,temp_str + 4,100);
-                    /* language.dll match for 0x78: "10" */
           iVar10 = TEasy_Panel::create_text
                              ((TEasy_Panel *)this,(TPanel *)this,(TTextPanel **)(i + -0x20),
                               temp_str + 4,0x104,iVar13,0x78,0x1e,0xb,0,1,0);
@@ -457,7 +453,6 @@ LAB_004409b4:
                                ((TEasy_Panel *)this,(TPanel *)this,(TButtonPanel **)i,10,iVar13,0x1e
                                 ,0x1e,0,0);
             if (iVar10 == 0) goto LAB_00440dda;
-                    /* language.dll match for 0x767f: "Click to send a message to this player." */
             TPanel::set_help_info(*(TPanel **)i,0x767f,-1);
             iVar10 = TChat::inChatGroup(chat,humanity);
             if (iVar10 == 0) {
@@ -473,17 +468,14 @@ LAB_004409b4:
         }
         humanity = humanity + 1;
       } while (humanity < 9);
-                    /* language.dll match for 0x2668: "Chat" */
       iVar13 = TEasy_Panel::create_text
                          ((TEasy_Panel *)this,(TPanel *)this,&this->chatTitle,0x2668,10,0x13b,0x78,
                           0x1e,4,1,1,0);
       if (iVar13 != 0) {
-                    /* language.dll match for 0x82: "B" */
         iVar13 = TEasy_Panel::create_edit
                            ((TEasy_Panel *)this,(TPanel *)this,&this->chatInput,s_,0x41,FormatText,
                             0x82,0x13b,0x17c,0x17,0xb,1,0);
         if (iVar13 != 0) {
-                    /* language.dll match for 0x767a: "Type a message. Press ENTER to send." */
           TPanel::set_help_info((TPanel *)this->chatInput,0x767a,-1);
           ppTVar5 = this->radioButton;
           iVar13 = TEasy_Panel::create_radio_button
@@ -498,25 +490,21 @@ LAB_004409b4:
              (iVar13 = TEasy_Panel::create_radio_button
                                  ((TEasy_Panel *)this,(TPanel *)this,this->radioButton + 3,0x113,
                                   0x181,0x1e,0x1e,0,0), iVar13 != 0)) {
-                    /* language.dll match for 0x2669: "Allies" */
             iVar13 = TEasy_Panel::create_text
                                ((TEasy_Panel *)this,(TPanel *)this,this->radioTitle,0x2669,0x4b,
                                 0x15e,200,0x1e,0xb,0,1,0);
             if (iVar13 != 0) {
               TPanel::set_help_info((TPanel *)this->radioTitle[0],-1,-1);
-                    /* language.dll match for 0x266a: "Enemies" */
               iVar13 = TEasy_Panel::create_text
                                  ((TEasy_Panel *)this,(TPanel *)this,this->radioTitle + 1,0x266a,
                                   0x131,0x15e,200,0x1e,0xb,0,1,0);
               if (iVar13 != 0) {
                 TPanel::set_help_info((TPanel *)this->radioTitle[1],-1,-1);
-                    /* language.dll match for 0x266b: "Everyone" */
                 iVar13 = TEasy_Panel::create_text
                                    ((TEasy_Panel *)this,(TPanel *)this,this->radioTitle + 2,0x266b,
                                     0x4b,0x181,200,0x1e,0xb,0,1,0);
                 if (iVar13 != 0) {
                   TPanel::set_help_info((TPanel *)this->radioTitle[2],-1,-1);
-                    /* language.dll match for 0x266e: "Select Player" */
                   iVar13 = TEasy_Panel::create_text
                                      ((TEasy_Panel *)this,(TPanel *)this,this->radioTitle + 3,0x266e
                                       ,0x131,0x181,200,0x1e,0xb,0,1,0);
@@ -530,17 +518,11 @@ LAB_004409b4:
                       iVar13 = iVar13 + -1;
                     } while (iVar13 != 0);
                     (**(code **)(this->radioButton[3]->_padding_ + 0xe0))(1);
-                    /* language.dll match for 0x767b: "Click to send a message to all allies." */
                     TPanel::set_help_info((TPanel *)*ppTVar5,0x767b,-1);
-                    /* language.dll match for 0x767c: "Click to send a message to all enemies." */
                     TPanel::set_help_info((TPanel *)this->radioButton[1],0x767c,-1);
-                    /* language.dll match for 0x767d: "Click to send a message to all players." */
                     TPanel::set_help_info((TPanel *)this->radioButton[2],0x767d,-1);
-                    /* language.dll match for 0x767e: "Select which players receive your messages."
-                        */
                     TPanel::set_help_info((TPanel *)this->radioButton[3],0x767e,-1);
                     ppTVar5 = &this->okButton;
-                    /* language.dll match for 0x266c: "Return to Game" */
                     iVar13 = TEasy_Panel::create_button
                                        ((TEasy_Panel *)this,(TPanel *)this,ppTVar5,0x266c,0,100,
                                         0x1a9,300,0x1e,0,0,0);
@@ -569,9 +551,6 @@ LAB_00440dda:
 
 // Function: `scalar_deleting_destructor'
 // Address: 00440e00
-/* public: virtual void * __thiscall TribeSendMessageDialog::`scalar deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TribeSendMessageDialog::_scalar_deleting_destructor_(TribeSendMessageDialog *this,uint param_1)
 {
@@ -586,8 +565,6 @@ TribeSendMessageDialog::_scalar_deleting_destructor_(TribeSendMessageDialog *thi
 
 // Function: ~TribeSendMessageDialog
 // Address: 00440e20
-/* public: virtual __thiscall TribeSendMessageDialog::~TribeSendMessageDialog(void) */
-
 void __thiscall TribeSendMessageDialog::~TribeSendMessageDialog(TribeSendMessageDialog *this)
 {
   TShape *this_00;
@@ -645,10 +622,6 @@ void __thiscall TribeSendMessageDialog::~TribeSendMessageDialog(TribeSendMessage
 // [HELPER] s_Game_Screen: "Game Screen"
 // [HELPER] s_Send_Message_Dialog: "Send Message Dialog"
 // [HELPER] s_____SEND_CHAT___u___s: "$$$ SEND CHAT @%u: %s"
-/* WARNING: Variable defined which should be unmapped: save_msg */
-/* protected: virtual long __thiscall TribeSendMessageDialog::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TribeSendMessageDialog::action
           (TribeSendMessageDialog *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -869,8 +842,6 @@ TribeSendMessageDialog::action
 
 // Function: checkButtons
 // Address: 00441410
-/* protected: void __thiscall TribeSendMessageDialog::checkButtons(void) */
-
 void __thiscall TribeSendMessageDialog::checkButtons(TribeSendMessageDialog *this)
 {
   int iVar1;
@@ -901,9 +872,6 @@ void __thiscall TribeSendMessageDialog::checkButtons(TribeSendMessageDialog *thi
 
 // Function: draw
 // Address: 00441460
-/* WARNING: Variable defined which should be unmapped: i */
-/* protected: virtual void __thiscall TribeSendMessageDialog::draw(void) */
-
 void __thiscall TribeSendMessageDialog::draw(TribeSendMessageDialog *this)
 {
   RGE_Game_World *pRVar1;

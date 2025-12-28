@@ -308,8 +308,6 @@
 // Address: 00491650
 // [HELPER] s_Join_Screen: "Join Screen"
 // [HELPER] s_scr3: "scr3"
-/* public: __thiscall TribeJoinScreen::TribeJoinScreen(void) */
-
 TribeJoinScreen * __thiscall TribeJoinScreen::TribeJoinScreen(TribeJoinScreen *this)
 {
   TListPanel **ppTVar1;
@@ -353,12 +351,10 @@ TribeJoinScreen * __thiscall TribeJoinScreen::TribeJoinScreen(TribeJoinScreen *t
   }
   TEasy_Panel::setup_shadow_area((TEasy_Panel *)this,0);
   TEasy_Panel::set_ideal_size((TEasy_Panel *)this,0x280,0x1e0);
-                    /* language.dll match for 0x259f: "Multiplayer Games" */
   iVar5 = TEasy_Panel::create_text
                     ((TEasy_Panel *)this,(TPanel *)this,&this->title,0x259f,0x14,0x14,600,0x1e,1,1,0
                      ,0);
   if (iVar5 != 0) {
-                    /* language.dll match for 0x25a8: "Select Game to Join" */
     TEasy_Panel::create_text
               ((TEasy_Panel *)this,(TPanel *)this,&this->listTitle,0x25a8,0x14,0x41,600,0x14,4,0,0,0
               );
@@ -369,27 +365,21 @@ TribeJoinScreen * __thiscall TribeJoinScreen::TribeJoinScreen(TribeJoinScreen *t
       iVar5 = TEasy_Panel::create_auto_scrollbar
                         ((TEasy_Panel *)this,&this->scrollbar,(TTextPanel *)*ppTVar1,0x14);
       if (iVar5 != 0) {
-                    /* language.dll match for 0x25ab: "Click Show Games to see a list of games.
-                       Click Create to start a new game." */
         this->listFilled = 1;
         (**(code **)((*ppTVar1)->_padding_ + 0xe4))(0x25ab);
         ppTVar2 = &this->refreshButton;
-                    /* language.dll match for 0x25a1: "Show Games" */
         iVar5 = TEasy_Panel::create_button
                           ((TEasy_Panel *)this,(TPanel *)this,ppTVar2,0x25a1,0,0xd2,0x172,0xdc,0x1e,
                            0,0,0);
         if (iVar5 != 0) {
-                    /* language.dll match for 0x25a0: "Join" */
           iVar5 = TEasy_Panel::create_button
                             ((TEasy_Panel *)this,(TPanel *)this,&this->joinButton,0x25a0,0,10,0x1b8,
                              200,0x1e,0,0,0);
           if (iVar5 != 0) {
-                    /* language.dll match for 0x25a2: "Create" */
             iVar5 = TEasy_Panel::create_button
                               ((TEasy_Panel *)this,(TPanel *)this,&this->createButton,0x25a2,0,0xdc,
                                0x1b8,200,0x1e,0,0,0);
             if (iVar5 != 0) {
-                    /* language.dll match for 0xfa2: "Cancel" */
               iVar5 = TEasy_Panel::create_button
                                 ((TEasy_Panel *)this,(TPanel *)this,&this->cancelButton,0xfa2,0,
                                  0x1ae,0x1b8,200,0x1e,0,0,0);
@@ -397,7 +387,6 @@ TribeJoinScreen * __thiscall TribeJoinScreen::TribeJoinScreen(TribeJoinScreen *t
                 pTVar3 = this->cancelButton;
                 pTVar3->hotkey = 0x1b;
                 pTVar3->hotkey_shift = 0;
-                    /* language.dll match for 0x3ea: "X" */
                 iVar5 = TEasy_Panel::create_button
                                   ((TEasy_Panel *)this,(TPanel *)this,&this->close_button,0x3ea,0,0,
                                    0,0,0,-1,-1,0);
@@ -427,8 +416,6 @@ TribeJoinScreen * __thiscall TribeJoinScreen::TribeJoinScreen(TribeJoinScreen *t
 
 // Function: `scalar_deleting_destructor'
 // Address: 00491970
-/* public: virtual void * __thiscall TribeJoinScreen::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall TribeJoinScreen::_scalar_deleting_destructor_(TribeJoinScreen *this,uint param_1)
 {
   ~TribeJoinScreen(this);
@@ -442,8 +429,6 @@ void * __thiscall TribeJoinScreen::_scalar_deleting_destructor_(TribeJoinScreen 
 
 // Function: ~TribeJoinScreen
 // Address: 00491990
-/* public: virtual __thiscall TribeJoinScreen::~TribeJoinScreen(void) */
-
 void __thiscall TribeJoinScreen::~TribeJoinScreen(TribeJoinScreen *this)
 {
   TCommunications_Sessions *pTVar1;
@@ -482,8 +467,6 @@ void __thiscall TribeJoinScreen::~TribeJoinScreen(TribeJoinScreen *this)
 // Function: handle_idle
 // Address: 00491a80
 // [HELPER] s_C__msdev_work_age1_x1_scr_cj_cpp: "C:\msdev\work\age1_x1\scr_cj.cpp"
-/* public: virtual long __thiscall TribeJoinScreen::handle_idle(void) */
-
 long __thiscall TribeJoinScreen::handle_idle(TribeJoinScreen *this)
 {
   ulong uVar1;
@@ -500,7 +483,6 @@ long __thiscall TribeJoinScreen::handle_idle(TribeJoinScreen *this)
     TCommunications_Handler::UnlinkToLevel(comm,SERVICE_AVAILABLE);
     this->waitingToStart = 0;
     RGE_Base_Game::enable_input(rge_base_game);
-                    /* language.dll match for 0x25a3: "Unable to join game." */
     TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x25a3,(char *)0x0,0x1c2,100);
     return 1;
   }
@@ -515,8 +497,6 @@ LAB_00491b15:
 // Address: 00491b20
 // [HELPER] s_Join_Screen: "Join Screen"
 // [HELPER] s_MP_Setup_Screen: "MP Setup Screen"
-/* public: virtual long __thiscall TribeJoinScreen::handle_user_command(unsigned int,long) */
-
 long __thiscall
 TribeJoinScreen::handle_user_command(TribeJoinScreen *this,uint param_1,long param_2)
 {
@@ -540,7 +520,6 @@ TribeJoinScreen::handle_user_command(TribeJoinScreen *this,uint param_1,long par
       TCommunications_Handler::UnlinkToLevel(comm,SERVICE_AVAILABLE);
       this->waitingToStart = 0;
       RGE_Base_Game::enable_input(rge_base_game);
-                    /* language.dll match for 0x25a3: "Unable to join game." */
       TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x25a3,(char *)0x0,0x1c2,100);
       *unaff_FS_OFFSET = local_c;
       return 1;
@@ -570,8 +549,6 @@ TribeJoinScreen::handle_user_command(TribeJoinScreen *this,uint param_1,long par
 // Function: fillList
 // Address: 00491c70
 // [HELPER] s__s_____1d_____1d__: "%s ( %.1d / %.1d )"
-/* protected: void __thiscall TribeJoinScreen::fillList(void) */
-
 void __thiscall TribeJoinScreen::fillList(TribeJoinScreen *this)
 {
   TCommunications_Sessions *this_00;
@@ -591,7 +568,6 @@ void __thiscall TribeJoinScreen::fillList(TribeJoinScreen *this)
   pcStack_8 = FUN_0055ea0e;
   *unaff_FS_OFFSET = &uStack_c;
   RGE_Base_Game::disable_input(rge_base_game);
-                    /* language.dll match for 0x25a9: "Looking for games..." */
   this->listFilled = 0;
   this->game_count = 0;
   (**(code **)(this->list->_padding_ + 0xe4))(0x25a9);
@@ -608,8 +584,6 @@ void __thiscall TribeJoinScreen::fillList(TribeJoinScreen *this)
     }
     pcStack_8 = (code *)0xffffffff;
     if (Sess == (TCommunications_Sessions *)0x0) {
-                    /* language.dll match for 0x25ab: "Click Show Games to see a list of games.
-                       Click Create to start a new game." */
       (**(code **)(this->list->_padding_ + 0xe4))(0x25ab);
       *unaff_FS_OFFSET = stack0xffffffec;
       return;
@@ -622,8 +596,6 @@ void __thiscall TribeJoinScreen::fillList(TribeJoinScreen *this)
   iVar1 = TCommunications_Sessions::GetSessionCount(Sess);
   this->game_count = iVar1;
   if (iVar1 < 1) {
-                    /* language.dll match for 0x25ab: "Click Show Games to see a list of games.
-                       Click Create to start a new game." */
     (**(code **)(this->list->_padding_ + 0xe4))(0x25ab);
   }
   else {
@@ -653,9 +625,6 @@ void __thiscall TribeJoinScreen::fillList(TribeJoinScreen *this)
 // [HELPER] s_C__msdev_work_age1_x1_scr_cj_cpp: "C:\msdev\work\age1_x1\scr_cj.cpp"
 // [HELPER] s_Join_Screen: "Join Screen"
 // [HELPER] s_MP_Startup_Screen: "MP Startup Screen"
-/* public: virtual long __thiscall TribeJoinScreen::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TribeJoinScreen::action
           (TribeJoinScreen *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -691,7 +660,6 @@ LAB_0049208e:
     else if ((TButtonPanel *)param_1 == this->joinButton) {
       if (param_2 == 1) {
         if (this->game_count < 1) {
-                    /* language.dll match for 0x25a4: "There are no games to join." */
           TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x25a4,(char *)0x0,0x1c2,100);
           lVar1 = 1;
         }
@@ -700,7 +668,6 @@ LAB_0049208e:
           p_Var3 = TCommunications_Sessions::GetSessionGUID(Sess,iVar2);
           iVar2 = TCommunications_Handler::JoinMultiplayerGame(comm,p_Var3);
           if (iVar2 == 0) {
-                    /* language.dll match for 0x25a3: "Unable to join game." */
             TPanel::get_string((TPanel *)this,0x25a3,temp + 4,0x100);
             pcVar4 = TTextPanel::currentLine((TTextPanel *)this->list);
             sprintf(string + 4,temp + 4,pcVar4);

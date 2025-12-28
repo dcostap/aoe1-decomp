@@ -46,9 +46,6 @@
 
 // Function: RGE_Master_Combat_Object
 // Address: 0044fe40
-/* public: __thiscall RGE_Master_Combat_Object::RGE_Master_Combat_Object(class
-   RGE_Master_Combat_Object *,int) */
-
 RGE_Master_Combat_Object * __thiscall
 RGE_Master_Combat_Object::RGE_Master_Combat_Object
           (RGE_Master_Combat_Object *this,RGE_Master_Combat_Object *param_1,int param_2)
@@ -77,9 +74,6 @@ RGE_Master_Combat_Object::RGE_Master_Combat_Object
 
 // Function: `vector_deleting_destructor'
 // Address: 0044fea0
-/* public: virtual void * __thiscall RGE_Master_Combat_Object::`vector deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 RGE_Master_Combat_Object::_vector_deleting_destructor_(RGE_Master_Combat_Object *this,uint param_1)
 {
@@ -94,9 +88,6 @@ RGE_Master_Combat_Object::_vector_deleting_destructor_(RGE_Master_Combat_Object 
 
 // Function: RGE_Master_Combat_Object
 // Address: 0044fec0
-/* public: __thiscall RGE_Master_Combat_Object::RGE_Master_Combat_Object(int,class RGE_Sprite *
-   *,class RGE_Sound * *,int) */
-
 RGE_Master_Combat_Object * __thiscall
 RGE_Master_Combat_Object::RGE_Master_Combat_Object
           (RGE_Master_Combat_Object *this,int param_1,RGE_Sprite **param_2,RGE_Sound **param_3,
@@ -126,9 +117,6 @@ RGE_Master_Combat_Object::RGE_Master_Combat_Object
 
 // Function: RGE_Master_Combat_Object
 // Address: 0044ff30
-/* public: __thiscall RGE_Master_Combat_Object::RGE_Master_Combat_Object(struct _iobuf *,class
-   RGE_Sprite * *,class RGE_Sound * *,short,int) */
-
 RGE_Master_Combat_Object * __thiscall
 RGE_Master_Combat_Object::RGE_Master_Combat_Object
           (RGE_Master_Combat_Object *this,_iobuf *param_1,RGE_Sprite **param_2,RGE_Sound **param_3,
@@ -158,8 +146,6 @@ RGE_Master_Combat_Object::RGE_Master_Combat_Object
 
 // Function: setup
 // Address: 0044ffb0
-/* protected: int __thiscall RGE_Master_Combat_Object::setup(class RGE_Master_Combat_Object *) */
-
 int __thiscall
 RGE_Master_Combat_Object::setup(RGE_Master_Combat_Object *this,RGE_Master_Combat_Object *param_1)
 {
@@ -238,10 +224,6 @@ RGE_Master_Combat_Object::setup(RGE_Master_Combat_Object *this,RGE_Master_Combat
 
 // Function: setup
 // Address: 00450170
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: int __thiscall RGE_Master_Combat_Object::setup(int,class RGE_Sprite * *,class
-   RGE_Sound * *) */
-
 int __thiscall
 RGE_Master_Combat_Object::setup
           (RGE_Master_Combat_Object *this,int param_1,RGE_Sprite **param_2,RGE_Sound **param_3)
@@ -337,10 +319,6 @@ RGE_Master_Combat_Object::setup
 // Address: 00450450
 // [HELPER] s__hd__hd: "%hd %hd"
 // [HELPER] s__hd__hd__hd__hd__hd__f__f__f__hd: "%hd %hd %hd %hd %hd %f %f %f %hd %hd %hd %hd %f %f %f %hd %f"
-/* WARNING: Variable defined which should be unmapped: temp_break_off_combat */
-/* protected: int __thiscall RGE_Master_Combat_Object::setup(struct _iobuf *,class RGE_Sprite *
-   *,class RGE_Sound * *,short) */
-
 int __thiscall
 RGE_Master_Combat_Object::setup
           (RGE_Master_Combat_Object *this,_iobuf *param_1,RGE_Sprite **param_2,RGE_Sound **param_3,
@@ -439,8 +417,6 @@ RGE_Master_Combat_Object::setup
 
 // Function: ~RGE_Master_Combat_Object
 // Address: 00450680
-/* public: virtual __thiscall RGE_Master_Combat_Object::~RGE_Master_Combat_Object(void) */
-
 void __thiscall RGE_Master_Combat_Object::~RGE_Master_Combat_Object(RGE_Master_Combat_Object *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -460,9 +436,6 @@ void __thiscall RGE_Master_Combat_Object::~RGE_Master_Combat_Object(RGE_Master_C
 
 // Function: make_new_obj
 // Address: 004506d0
-/* public: virtual class RGE_Static_Object * __thiscall RGE_Master_Combat_Object::make_new_obj(class
-   RGE_Player *,float,float,float) */
-
 RGE_Static_Object * __thiscall
 RGE_Master_Combat_Object::make_new_obj
           (RGE_Master_Combat_Object *this,RGE_Player *param_1,float param_2,float param_3,
@@ -503,9 +476,6 @@ RGE_Master_Combat_Object::make_new_obj
 
 // Function: make_new_master
 // Address: 004507a0
-/* public: virtual class RGE_Master_Static_Object * __thiscall
-   RGE_Master_Combat_Object::make_new_master(void) */
-
 RGE_Master_Static_Object * __thiscall
 RGE_Master_Combat_Object::make_new_master(RGE_Master_Combat_Object *this)
 {
@@ -535,9 +505,6 @@ RGE_Master_Combat_Object::make_new_master(RGE_Master_Combat_Object *this)
 
 // Function: copy_obj
 // Address: 00450810
-/* public: virtual void __thiscall RGE_Master_Combat_Object::copy_obj(class RGE_Master_Static_Object
-   *) */
-
 void __thiscall
 RGE_Master_Combat_Object::copy_obj(RGE_Master_Combat_Object *this,RGE_Master_Static_Object *param_1)
 {
@@ -617,8 +584,6 @@ RGE_Master_Combat_Object::copy_obj(RGE_Master_Combat_Object *this,RGE_Master_Sta
 
 // Function: modify
 // Address: 00450a00
-/* public: virtual void __thiscall RGE_Master_Combat_Object::modify(float,unsigned char) */
-
 void __thiscall
 RGE_Master_Combat_Object::modify(RGE_Master_Combat_Object *this,float param_1,uchar param_2)
 {
@@ -686,8 +651,6 @@ RGE_Master_Combat_Object::modify(RGE_Master_Combat_Object *this,float param_1,uc
 
 // Function: modify_delta
 // Address: 00450b40
-/* public: virtual void __thiscall RGE_Master_Combat_Object::modify_delta(float,unsigned char) */
-
 void __thiscall
 RGE_Master_Combat_Object::modify_delta(RGE_Master_Combat_Object *this,float param_1,uchar param_2)
 {
@@ -776,8 +739,6 @@ LAB_00450c01:
 
 // Function: modify_percent
 // Address: 00450d00
-/* public: virtual void __thiscall RGE_Master_Combat_Object::modify_percent(float,unsigned char) */
-
 void __thiscall
 RGE_Master_Combat_Object::modify_percent(RGE_Master_Combat_Object *this,float param_1,uchar param_2)
 {
@@ -824,8 +785,6 @@ switchD_00450d1a_caseD_8:
 
 // Function: save
 // Address: 00450e20
-/* public: virtual void __thiscall RGE_Master_Combat_Object::save(int) */
-
 void __thiscall RGE_Master_Combat_Object::save(RGE_Master_Combat_Object *this,int param_1)
 {
   RGE_Sprite *pRVar1;
@@ -874,10 +833,6 @@ void __thiscall RGE_Master_Combat_Object::save(RGE_Master_Combat_Object *this,in
 
 // Function: calc_base_damage_ability
 // Address: 00451000
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual long __thiscall RGE_Master_Combat_Object::calc_base_damage_ability(class
-   RGE_Master_Combat_Object *) */
-
 long __thiscall
 RGE_Master_Combat_Object::calc_base_damage_ability
           (RGE_Master_Combat_Object *this,RGE_Master_Combat_Object *param_1)

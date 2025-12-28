@@ -686,8 +686,6 @@
 
 // Function: TribeLionUnitAIModule
 // Address: 005042e0
-/* public: __thiscall TribeLionUnitAIModule::TribeLionUnitAIModule(class RGE_Static_Object *,int) */
-
 TribeLionUnitAIModule * __thiscall
 TribeLionUnitAIModule::TribeLionUnitAIModule
           (TribeLionUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
@@ -737,9 +735,6 @@ TribeLionUnitAIModule::TribeLionUnitAIModule
 
 // Function: `vector_deleting_destructor'
 // Address: 00504440
-/* public: virtual void * __thiscall TribeLionUnitAIModule::`vector deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TribeLionUnitAIModule::_vector_deleting_destructor_(TribeLionUnitAIModule *this,uint param_1)
 {
@@ -754,8 +749,6 @@ TribeLionUnitAIModule::_vector_deleting_destructor_(TribeLionUnitAIModule *this,
 
 // Function: ~TribeLionUnitAIModule
 // Address: 00504460
-/* public: virtual __thiscall TribeLionUnitAIModule::~TribeLionUnitAIModule(void) */
-
 void __thiscall TribeLionUnitAIModule::~TribeLionUnitAIModule(TribeLionUnitAIModule *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -800,8 +793,6 @@ void __thiscall TribeLionUnitAIModule::~TribeLionUnitAIModule(TribeLionUnitAIMod
 
 // Function: canAttackUnitAtNeutrality
 // Address: 00504470
-/* public: virtual int __thiscall TribeLionUnitAIModule::canAttackUnitAtNeutrality(int) */
-
 int __thiscall
 TribeLionUnitAIModule::canAttackUnitAtNeutrality(TribeLionUnitAIModule *this,int param_1)
 {
@@ -814,9 +805,6 @@ TribeLionUnitAIModule::canAttackUnitAtNeutrality(TribeLionUnitAIModule *this,int
 // Address: 00504480
 // [HELPER] s_C__msdev_work_age1_x1_taiuaimd_c: "C:\msdev\work\age1_x1\taiuaimd.cpp"
 // [HELPER] s___d_call_stopObject__s__d_: "#%d call stopObject %s %d\n"
-/* protected: virtual int __thiscall TribeLionUnitAIModule::processNotify(struct NotifyEvent
-   *,unsigned long) */
-
 int __thiscall
 TribeLionUnitAIModule::processNotify(TribeLionUnitAIModule *this,NotifyEvent *param_1,ulong param_2)
 {
@@ -892,10 +880,6 @@ LAB_005045ea:
 
 // Function: processIdle
 // Address: 00504600
-/* WARNING: Variable defined which should be unmapped: maxReactDistance */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall TribeLionUnitAIModule::processIdle(int) */
-
 int __thiscall TribeLionUnitAIModule::processIdle(TribeLionUnitAIModule *this,int param_1)
 {
   int iVar1;

@@ -101,8 +101,6 @@
 
 // Function: RGE_Diamond_Map
 // Address: 00436830
-/* public: __thiscall RGE_Diamond_Map::RGE_Diamond_Map(void) */
-
 RGE_Diamond_Map * __thiscall RGE_Diamond_Map::RGE_Diamond_Map(RGE_Diamond_Map *this)
 {
   TPanel::TPanel((TPanel *)this);
@@ -144,8 +142,6 @@ RGE_Diamond_Map * __thiscall RGE_Diamond_Map::RGE_Diamond_Map(RGE_Diamond_Map *t
 
 // Function: `vector_deleting_destructor'
 // Address: 00436910
-/* public: virtual void * __thiscall RGE_Diamond_Map::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall RGE_Diamond_Map::_vector_deleting_destructor_(RGE_Diamond_Map *this,uint param_1)
 {
   ~RGE_Diamond_Map(this);
@@ -159,8 +155,6 @@ void * __thiscall RGE_Diamond_Map::_vector_deleting_destructor_(RGE_Diamond_Map 
 
 // Function: ~RGE_Diamond_Map
 // Address: 00436930
-/* public: virtual __thiscall RGE_Diamond_Map::~RGE_Diamond_Map(void) */
-
 void __thiscall RGE_Diamond_Map::~RGE_Diamond_Map(RGE_Diamond_Map *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -192,9 +186,6 @@ void __thiscall RGE_Diamond_Map::~RGE_Diamond_Map(RGE_Diamond_Map *this)
 
 // Function: setup
 // Address: 004369c0
-/* public: long __thiscall RGE_Diamond_Map::setup(class TDrawArea *,class TPanel
-   *,long,long,long,long,unsigned char,int,class TDrawArea *) */
-
 long __thiscall
 RGE_Diamond_Map::setup
           (RGE_Diamond_Map *this,TDrawArea *param_1,TPanel *param_2,long param_3,long param_4,
@@ -210,9 +201,6 @@ RGE_Diamond_Map::setup
 
 // Function: set_bitmap
 // Address: 00436a10
-/* WARNING: Variable defined which should be unmapped: pic_pitch */
-/* public: int __thiscall RGE_Diamond_Map::set_bitmap(char *,long) */
-
 int __thiscall RGE_Diamond_Map::set_bitmap(RGE_Diamond_Map *this,char *param_1,long param_2)
 {
   short sVar1;
@@ -332,10 +320,6 @@ int __thiscall RGE_Diamond_Map::set_bitmap(RGE_Diamond_Map *this,char *param_1,l
 
 // Function: set_world
 // Address: 00436c30
-/* WARNING: Variable defined which should be unmapped: tot_draw_wid */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall RGE_Diamond_Map::set_world(class RGE_Game_World *) */
-
 void __thiscall RGE_Diamond_Map::set_world(RGE_Diamond_Map *this,RGE_Game_World *param_1)
 {
   RGE_Map *pRVar1;
@@ -473,8 +457,6 @@ void __thiscall RGE_Diamond_Map::set_world(RGE_Diamond_Map *this,RGE_Game_World 
 
 // Function: set_player
 // Address: 00437070
-/* public: void __thiscall RGE_Diamond_Map::set_player(class RGE_Player *) */
-
 void __thiscall RGE_Diamond_Map::set_player(RGE_Diamond_Map *this,RGE_Player *param_1)
 {
   this->player = param_1;
@@ -486,8 +468,6 @@ void __thiscall RGE_Diamond_Map::set_player(RGE_Diamond_Map *this,RGE_Player *pa
 
 // Function: set_redraw
 // Address: 00437090
-/* public: virtual void __thiscall RGE_Diamond_Map::set_redraw(enum TPanel::RedrawMode) */
-
 void __thiscall RGE_Diamond_Map::set_redraw(RGE_Diamond_Map *this,RedrawMode param_1)
 {
   TPanel::set_redraw((TPanel *)this,param_1);
@@ -501,8 +481,6 @@ void __thiscall RGE_Diamond_Map::set_redraw(RGE_Diamond_Map *this,RedrawMode par
 
 // Function: delete_surfaces
 // Address: 004370c0
-/* public: void __thiscall RGE_Diamond_Map::delete_surfaces(void) */
-
 void __thiscall RGE_Diamond_Map::delete_surfaces(RGE_Diamond_Map *this)
 {
   TDrawArea *this_00;
@@ -524,8 +502,6 @@ void __thiscall RGE_Diamond_Map::delete_surfaces(RGE_Diamond_Map *this)
 // Function: create_surfaces
 // Address: 00437120
 // [HELPER] s_Diamond_map__restored_: "Diamond map (restored)"
-/* public: int __thiscall RGE_Diamond_Map::create_surfaces(void) */
-
 int __thiscall RGE_Diamond_Map::create_surfaces(RGE_Diamond_Map *this)
 {
   TDrawArea *pTVar1;
@@ -580,8 +556,6 @@ int __thiscall RGE_Diamond_Map::create_surfaces(RGE_Diamond_Map *this)
 // Function: draw
 // Address: 004372c0
 // [HELPER] s_diam_map__draw: "diam_map::draw"
-/* public: virtual void __thiscall RGE_Diamond_Map::draw(void) */
-
 void __thiscall RGE_Diamond_Map::draw(RGE_Diamond_Map *this)
 {
   int iVar1;
@@ -652,8 +626,6 @@ void __thiscall RGE_Diamond_Map::draw(RGE_Diamond_Map *this)
 // Function: clear_image
 // Address: 004374c0
 // [HELPER] s_diam_map__clear_image: "diam_map::clear_image"
-/* protected: void __thiscall RGE_Diamond_Map::clear_image(void) */
-
 void __thiscall RGE_Diamond_Map::clear_image(RGE_Diamond_Map *this)
 {
   TDrawArea *pTVar1;
@@ -718,9 +690,6 @@ void __thiscall RGE_Diamond_Map::clear_image(RGE_Diamond_Map *this)
 
 // Function: copy_image
 // Address: 00437620
-/* WARNING: Variable defined which should be unmapped: r */
-/* protected: void __thiscall RGE_Diamond_Map::copy_image(void) */
-
 void __thiscall RGE_Diamond_Map::copy_image(RGE_Diamond_Map *this)
 {
   tagRECT r;
@@ -739,8 +708,6 @@ void __thiscall RGE_Diamond_Map::copy_image(RGE_Diamond_Map *this)
 // Function: draw_all_tiles
 // Address: 00437660
 // [HELPER] s_diam_map__draw_all_tiles: "diam_map::draw_all_tiles"
-/* protected: void __thiscall RGE_Diamond_Map::draw_all_tiles(void) */
-
 void __thiscall RGE_Diamond_Map::draw_all_tiles(RGE_Diamond_Map *this)
 {
   uchar *puVar1;
@@ -772,9 +739,6 @@ void __thiscall RGE_Diamond_Map::draw_all_tiles(RGE_Diamond_Map *this)
 // Function: draw_explored_tiles
 // Address: 004376d0
 // [HELPER] s_diam_map__draw_explored_tiles: "diam_map::draw_explored_tiles"
-/* WARNING: Variable defined which should be unmapped: list */
-/* protected: void __thiscall RGE_Diamond_Map::draw_explored_tiles(void) */
-
 void __thiscall RGE_Diamond_Map::draw_explored_tiles(RGE_Diamond_Map *this)
 {
   uchar *puVar1;
@@ -805,10 +769,6 @@ void __thiscall RGE_Diamond_Map::draw_explored_tiles(RGE_Diamond_Map *this)
 
 // Function: draw_tile
 // Address: 00437760
-/* WARNING: Variable defined which should be unmapped: color */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: void __thiscall RGE_Diamond_Map::draw_tile(short,short,int,unsigned char) */
-
 void __thiscall
 RGE_Diamond_Map::draw_tile
           (RGE_Diamond_Map *this,short param_1,short param_2,int param_3,uchar param_4)
@@ -1012,9 +972,6 @@ LAB_004379bb:
 // Function: draw_selected_area
 // Address: 00437c20
 // [HELPER] s_diam_map__draw_selected_area: "diam_map::draw_selected_area"
-/* WARNING: Variable defined which should be unmapped: sel_col2 */
-/* protected: virtual void __thiscall RGE_Diamond_Map::draw_selected_area(void) */
-
 void __thiscall RGE_Diamond_Map::draw_selected_area(RGE_Diamond_Map *this)
 {
   int iVar1;
@@ -1061,9 +1018,6 @@ void __thiscall RGE_Diamond_Map::draw_selected_area(RGE_Diamond_Map *this)
 // Function: draw_objects
 // Address: 00437cc0
 // [HELPER] s_diam_map__draw_objects: "diam_map::draw_objects"
-/* WARNING: Variable defined which should be unmapped: color2 */
-/* protected: virtual void __thiscall RGE_Diamond_Map::draw_objects(void) */
-
 void __thiscall RGE_Diamond_Map::draw_objects(RGE_Diamond_Map *this)
 {
   uchar uVar1;
@@ -1147,10 +1101,6 @@ void __thiscall RGE_Diamond_Map::draw_objects(RGE_Diamond_Map *this)
 
 // Function: draw_visible_object
 // Address: 00437ec0
-/* WARNING: Variable defined which should be unmapped: row */
-/* protected: virtual void __thiscall RGE_Diamond_Map::draw_visible_object(class RGE_Static_Object
-   *,unsigned char,unsigned char) */
-
 void __thiscall
 RGE_Diamond_Map::draw_visible_object
           (RGE_Diamond_Map *this,RGE_Static_Object *param_1,uchar param_2,uchar param_3)
@@ -1243,10 +1193,6 @@ switchD_00437ffe_caseD_0:
 
 // Function: draw_object
 // Address: 00438060
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual void __thiscall RGE_Diamond_Map::draw_object(short,short,unsigned
-   char,short,class RGE_Static_Object *) */
-
 void __thiscall
 RGE_Diamond_Map::draw_object
           (RGE_Diamond_Map *this,short param_1,short param_2,uchar param_3,short param_4,
@@ -1296,9 +1242,6 @@ RGE_Diamond_Map::draw_object
 
 // Function: draw_clipped_horz_line
 // Address: 004381d0
-/* protected: void __thiscall RGE_Diamond_Map::draw_clipped_horz_line(short,short,short,unsigned
-   char,struct RGE_Map_Image_Line *) */
-
 void __thiscall
 RGE_Diamond_Map::draw_clipped_horz_line
           (RGE_Diamond_Map *this,short param_1,short param_2,short param_3,uchar param_4,
@@ -1324,10 +1267,6 @@ RGE_Diamond_Map::draw_clipped_horz_line
 
 // Function: draw_view_rect
 // Address: 00438250
-/* WARNING: Variable defined which should be unmapped: vwid */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual void __thiscall RGE_Diamond_Map::draw_view_rect(void) */
-
 void __thiscall RGE_Diamond_Map::draw_view_rect(RGE_Diamond_Map *this)
 {
   RGE_Map_Tile_Row *pRVar1;
@@ -1443,9 +1382,6 @@ void __thiscall RGE_Diamond_Map::draw_view_rect(RGE_Diamond_Map *this)
 
 // Function: pick_tile
 // Address: 00438530
-/* public: int __thiscall RGE_Diamond_Map::pick_tile(long,long,short *,short *,struct RGE_Tile * *)
-    */
-
 int __thiscall
 RGE_Diamond_Map::pick_tile
           (RGE_Diamond_Map *this,long param_1,long param_2,short *param_3,short *param_4,
@@ -1493,8 +1429,6 @@ RGE_Diamond_Map::pick_tile
 
 // Function: handle_size
 // Address: 00438630
-/* public: virtual long __thiscall RGE_Diamond_Map::handle_size(long,long) */
-
 long __thiscall RGE_Diamond_Map::handle_size(RGE_Diamond_Map *this,long param_1,long param_2)
 {
   TPanel::handle_size((TPanel *)this,param_1,param_2);
@@ -1508,9 +1442,6 @@ long __thiscall RGE_Diamond_Map::handle_size(RGE_Diamond_Map *this,long param_1,
 
 // Function: start_scroll_view
 // Address: 00438670
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall RGE_Diamond_Map::start_scroll_view(long,long) */
-
 void __thiscall RGE_Diamond_Map::start_scroll_view(RGE_Diamond_Map *this,long param_1,long param_2)
 {
   float fVar1;
@@ -1542,9 +1473,6 @@ void __thiscall RGE_Diamond_Map::start_scroll_view(RGE_Diamond_Map *this,long pa
 
 // Function: handle_scroll_view
 // Address: 00438720
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall RGE_Diamond_Map::handle_scroll_view(long,long) */
-
 void __thiscall RGE_Diamond_Map::handle_scroll_view(RGE_Diamond_Map *this,long param_1,long param_2)
 {
   long lVar1;
@@ -1574,8 +1502,6 @@ void __thiscall RGE_Diamond_Map::handle_scroll_view(RGE_Diamond_Map *this,long p
 
 // Function: end_scroll_view
 // Address: 004387c0
-/* public: void __thiscall RGE_Diamond_Map::end_scroll_view(void) */
-
 void __thiscall RGE_Diamond_Map::end_scroll_view(RGE_Diamond_Map *this)
 {
   this->scrolling = 0;
@@ -1587,9 +1513,6 @@ void __thiscall RGE_Diamond_Map::end_scroll_view(RGE_Diamond_Map *this)
 
 // Function: is_inside
 // Address: 004387d0
-/* WARNING: Variable defined which should be unmapped: tile */
-/* public: virtual int __thiscall RGE_Diamond_Map::is_inside(long,long) */
-
 int __thiscall RGE_Diamond_Map::is_inside(RGE_Diamond_Map *this,long param_1,long param_2)
 {
   long lVar1;

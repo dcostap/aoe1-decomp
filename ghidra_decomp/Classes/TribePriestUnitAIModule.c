@@ -462,9 +462,6 @@
 
 // Function: TribePriestUnitAIModule
 // Address: 00505820
-/* public: __thiscall TribePriestUnitAIModule::TribePriestUnitAIModule(class RGE_Static_Object
-   *,int) */
-
 TribePriestUnitAIModule * __thiscall
 TribePriestUnitAIModule::TribePriestUnitAIModule
           (TribePriestUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
@@ -512,9 +509,6 @@ TribePriestUnitAIModule::TribePriestUnitAIModule
 
 // Function: `vector_deleting_destructor'
 // Address: 00505970
-/* public: virtual void * __thiscall TribePriestUnitAIModule::`vector deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TribePriestUnitAIModule::_vector_deleting_destructor_(TribePriestUnitAIModule *this,uint param_1)
 {
@@ -529,8 +523,6 @@ TribePriestUnitAIModule::_vector_deleting_destructor_(TribePriestUnitAIModule *t
 
 // Function: ~TribePriestUnitAIModule
 // Address: 00505990
-/* public: virtual __thiscall TribePriestUnitAIModule::~TribePriestUnitAIModule(void) */
-
 void __thiscall TribePriestUnitAIModule::~TribePriestUnitAIModule(TribePriestUnitAIModule *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -575,8 +567,6 @@ void __thiscall TribePriestUnitAIModule::~TribePriestUnitAIModule(TribePriestUni
 
 // Function: attackObject
 // Address: 005059a0
-/* public: virtual int __thiscall TribePriestUnitAIModule::attackObject(int,int) */
-
 int __thiscall
 TribePriestUnitAIModule::attackObject(TribePriestUnitAIModule *this,int param_1,int param_2)
 {
@@ -605,8 +595,6 @@ TribePriestUnitAIModule::attackObject(TribePriestUnitAIModule *this,int param_1,
 
 // Function: retryableOrder
 // Address: 00505a10
-/* public: virtual int __thiscall TribePriestUnitAIModule::retryableOrder(int) */
-
 int __thiscall TribePriestUnitAIModule::retryableOrder(TribePriestUnitAIModule *this,int param_1)
 {
   if ((param_1 != 0x2c0) && (param_1 != 0x2bf)) {
@@ -619,9 +607,6 @@ int __thiscall TribePriestUnitAIModule::retryableOrder(TribePriestUnitAIModule *
 
 // Function: canConvert
 // Address: 00505a30
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual int __thiscall TribePriestUnitAIModule::canConvert(int) */
-
 int __thiscall TribePriestUnitAIModule::canConvert(TribePriestUnitAIModule *this,int param_1)
 {
   short sVar1;
@@ -654,9 +639,6 @@ int __thiscall TribePriestUnitAIModule::canConvert(TribePriestUnitAIModule *this
 
 // Function: canAttackUnit
 // Address: 00505ae0
-/* public: virtual int __thiscall TribePriestUnitAIModule::canAttackUnit(class RGE_Static_Object *)
-    */
-
 int __thiscall
 TribePriestUnitAIModule::canAttackUnit(TribePriestUnitAIModule *this,RGE_Static_Object *param_1)
 {
@@ -673,9 +655,6 @@ TribePriestUnitAIModule::canAttackUnit(TribePriestUnitAIModule *this,RGE_Static_
 
 // Function: bestUnitToHeal
 // Address: 00505b00
-/* WARNING: Variable defined which should be unmapped: allyToHealID */
-/* protected: virtual int __thiscall TribePriestUnitAIModule::bestUnitToHeal(int,float *) */
-
 int __thiscall
 TribePriestUnitAIModule::bestUnitToHeal(TribePriestUnitAIModule *this,int param_1,float *param_2)
 {
@@ -746,10 +725,6 @@ TribePriestUnitAIModule::bestUnitToHeal(TribePriestUnitAIModule *this,int param_
 
 // Function: bestUnitToConvert
 // Address: 00505cc0
-/* WARNING: Variable defined which should be unmapped: targetValue */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall TribePriestUnitAIModule::bestUnitToConvert(float *) */
-
 int __thiscall
 TribePriestUnitAIModule::bestUnitToConvert(TribePriestUnitAIModule *this,float *param_1)
 {
@@ -798,9 +773,6 @@ TribePriestUnitAIModule::bestUnitToConvert(TribePriestUnitAIModule *this,float *
 // Address: 00505dd0
 // [HELPER] s_C__msdev_work_age1_x1_taiuaimd_c: "C:\msdev\work\age1_x1\taiuaimd.cpp"
 // [HELPER] s___d_call_stopObject__s__d_: "#%d call stopObject %s %d\n"
-/* protected: virtual int __thiscall TribePriestUnitAIModule::processNotify(struct NotifyEvent
-   *,unsigned long) */
-
 int __thiscall
 TribePriestUnitAIModule::processNotify
           (TribePriestUnitAIModule *this,NotifyEvent *param_1,ulong param_2)
@@ -902,10 +874,6 @@ TribePriestUnitAIModule::processNotify
 // Function: processIdle
 // Address: 00505fd0
 // [HELPER] s_C__msdev_work_age1_x1_taiuaimd_c: "C:\msdev\work\age1_x1\taiuaimd.cpp"
-/* WARNING: Variable defined which should be unmapped: yDiff */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall TribePriestUnitAIModule::processIdle(int) */
-
 int __thiscall TribePriestUnitAIModule::processIdle(TribePriestUnitAIModule *this,int param_1)
 {
   int *piVar1;
@@ -972,9 +940,6 @@ int __thiscall TribePriestUnitAIModule::processIdle(TribePriestUnitAIModule *thi
 // Address: 00506140
 // [HELPER] s_C__msdev_work_age1_x1_taiuaimd_c: "C:\msdev\work\age1_x1\taiuaimd.cpp"
 // [HELPER] s___d_call_stopObject__s__d_: "#%d call stopObject %s %d\n"
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall TribePriestUnitAIModule::processMisc(void) */
-
 int __thiscall TribePriestUnitAIModule::processMisc(TribePriestUnitAIModule *this)
 {
   uchar uVar1;

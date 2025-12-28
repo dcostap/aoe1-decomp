@@ -462,8 +462,6 @@
 // [HELPER] s_: ""
 // [HELPER] s_Multiplayer_Wait_Screen: "Multiplayer Wait Screen"
 // [HELPER] s_scr3: "scr3"
-/* public: __thiscall TRIBE_Screen_Wait::TRIBE_Screen_Wait(void) */
-
 TRIBE_Screen_Wait * __thiscall TRIBE_Screen_Wait::TRIBE_Screen_Wait(TRIBE_Screen_Wait *this)
 {
   TButtonPanel **ppTVar1;
@@ -519,7 +517,6 @@ TRIBE_Screen_Wait * __thiscall TRIBE_Screen_Wait::TRIBE_Screen_Wait(TRIBE_Screen
   TEasy_Panel::set_ideal_size((TEasy_Panel *)this,0x280,0x1e0);
   TEasy_Panel::create_text
             ((TEasy_Panel *)this,(TPanel *)this,&this->message,s_,0x14,0x28,0x17c,400,4,1,1,1);
-                    /* language.dll match for 0x3ea: "X" */
   iVar13 = TEasy_Panel::create_button
                      ((TEasy_Panel *)this,(TPanel *)this,ppTVar1,0x3ea,0,0,0,0,0,-1,-1,0);
   if (iVar13 == 0) goto LAB_004a5fb2;
@@ -550,14 +547,12 @@ TRIBE_Screen_Wait * __thiscall TRIBE_Screen_Wait::TRIBE_Screen_Wait(TRIBE_Screen
   if (iVar13 == 0) {
     uVar3 = TRIBE_Game::deathMatch((TRIBE_Game *)rge_base_game);
     if (uVar3 == '\0') {
-                    /* language.dll match for 0x25b5: "Random Map" */
       iVar13 = 0x25b5;
     }
     else {
       iVar13 = 0x2617;
     }
     TPanel::get_string((TPanel *)this,iVar13,str1 + 4,0x100);
-                    /* language.dll match for 0x25ed: "Scenario: %s" */
     TPanel::get_string((TPanel *)this,0x25ed);
     sprintf();
     (**(code **)(this->scenarioName->_padding_ + 0xe8))();
@@ -565,7 +560,6 @@ TRIBE_Screen_Wait * __thiscall TRIBE_Screen_Wait::TRIBE_Screen_Wait(TRIBE_Screen
   }
   else {
     RGE_Base_Game::scenarioName(rge_base_game);
-                    /* language.dll match for 0x25ed: "Scenario: %s" */
     TPanel::get_string((TPanel *)this,0x25ed);
     sprintf();
     (**(code **)(this->scenarioName->_padding_ + 0xe8))();
@@ -588,11 +582,9 @@ TRIBE_Screen_Wait * __thiscall TRIBE_Screen_Wait::TRIBE_Screen_Wait(TRIBE_Screen
       iVar6 = 0x2976;
       break;
     case Huge:
-                    /* language.dll match for 0x2977: "Huge" */
       iVar6 = 0x2977;
       break;
     case Humongous:
-                    /* language.dll match for 0x2978: "Gigantic" */
       iVar6 = 0x2978;
       break;
     default:
@@ -622,7 +614,6 @@ TRIBE_Screen_Wait * __thiscall TRIBE_Screen_Wait::TRIBE_Screen_Wait(TRIBE_Screen
       pcVar17 = pcVar17 + 1;
     }
 switchD_004a589d_default:
-                    /* language.dll match for 0x25da: "Map Size: %s" */
     TPanel::get_string((TPanel *)this,0x25da);
     sprintf();
     (**(code **)(this->settingText[iVar13]->_padding_ + 0xe8))();
@@ -654,8 +645,6 @@ switchD_004a589d_default:
       iVar6 = 0x2971;
       break;
     case Isthmas:
-                    /* language.dll match for 0x2972: "Narrows"
-                       language.dll match for 0x2972: "******* SIZE *******" */
       iVar6 = 0x2972;
       break;
     default:
@@ -685,7 +674,6 @@ switchD_004a589d_default:
       pcVar17 = pcVar17 + 1;
     }
 switchD_004a594e_default:
-                    /* language.dll match for 0x25b6: "Map Type: %s" */
     TPanel::get_string((TPanel *)this,0x25b6);
     sprintf();
     (**(code **)(this->settingText[iVar13 + 1]->_padding_ + 0xe8))();
@@ -700,14 +688,12 @@ switchD_004a594e_default:
   default:
     iVar6 = RGE_Base_Game::randomGame(rge_base_game);
     if (iVar6 != 0) goto switchD_004a5a16_caseD_9;
-                    /* language.dll match for 0x10e7: "Default" */
     iVar6 = 0x10e7;
     break;
   case VictoryTime:
     iVar6 = 0x10e9;
     goto LAB_004a5a33;
   case VictoryScore:
-                    /* language.dll match for 0x10ea: "Score" */
     iVar6 = 0x10ea;
 LAB_004a5a33:
     pcVar10 = TPanel::get_string((TPanel *)this,iVar6);
@@ -734,7 +720,6 @@ LAB_004a5a33:
       pcVar17 = pcVar17 + 1;
     }
     TRIBE_Game::victoryAmount((TRIBE_Game *)rge_base_game);
-                    /* language.dll match for 0x25be: "Victory: %s (%d)" */
     TPanel::get_string((TPanel *)this,0x25be);
     sprintf();
     goto LAB_004a5af4;
@@ -765,7 +750,6 @@ switchD_004a5a16_caseD_9:
     pcVar10 = pcVar10 + 1;
     pcVar17 = pcVar17 + 1;
   }
-                    /* language.dll match for 0x25bc: "Victory: %s" */
   TPanel::get_string((TPanel *)this,0x25bc);
   sprintf();
 LAB_004a5af4:
@@ -776,28 +760,24 @@ LAB_004a5af4:
     iVar6 = 0x10e7;
   }
   else if (AVar11 == NomadAge) {
-                    /* language.dll match for 0x106e: "Nomad" */
     iVar6 = 0x106e;
   }
   else {
     iVar6 = AVar11 + 0x1067;
   }
   TPanel::get_string((TPanel *)this,iVar6,&stack0xfffffce8,0x100);
-                    /* language.dll match for 0x25e4: "Age: %s" */
   TPanel::get_string((TPanel *)this,0x25e4);
   sprintf();
   (**(code **)(this->settingText[iVar13 + 2]->_padding_ + 0xe8))();
   (**(code **)(this->settingText[iVar13 + 2]->_padding_ + 0x14))();
   RVar12 = TRIBE_Game::resourceLevel((TRIBE_Game *)rge_base_game);
   if (RVar12 == DefaultResources) {
-                    /* language.dll match for 0x10e7: "Default" */
     iVar6 = 0x10e7;
   }
   else {
     iVar6 = RVar12 + 0x25e5;
   }
   TPanel::get_string((TPanel *)this,iVar6,&stack0xfffffce0,0x100);
-                    /* language.dll match for 0x25e5: "Resources: %s" */
   TPanel::get_string((TPanel *)this,0x25e5);
   sprintf();
   (**(code **)(this->settingText[iVar13 + 3]->_padding_ + 0xe8))();
@@ -807,28 +787,24 @@ LAB_004a5af4:
   iVar19 = 0x100;
   iVar6 = RGE_Base_Game::difficulty(rge_base_game);
   TPanel::get_string((TPanel *)this,iVar6 + 0x2bd0,pcVar10,iVar19);
-                    /* language.dll match for 0x25e0: "Difficulty Level: %s" */
   TPanel::get_string((TPanel *)this,0x25e0,str1 + 0xe8,0x100);
   sprintf();
   (**(code **)(this->settingText[iVar13 + 4]->_padding_ + 0xe8))();
   (**(code **)(this->settingText[iVar13 + 4]->_padding_ + 0x14))();
   iVar6 = TRIBE_Game::randomizePositions((TRIBE_Game *)rge_base_game);
   if (iVar6 == 0) {
-                    /* language.dll match for 0xfa3: "Yes" */
     iVar6 = 0xfa3;
   }
   else {
     iVar6 = 0xfa4;
   }
   TPanel::get_string((TPanel *)this,iVar6,&stack0xfffffcd0,0x100);
-                    /* language.dll match for 0x25e9: "Fixed Positions: %s" */
   pcVar10 = TPanel::get_string((TPanel *)this,0x25e9);
   sprintf(str1 + 0xe0,pcVar10);
   (**(code **)(this->settingText[iVar13 + 5]->_padding_ + 0xe8))();
   (**(code **)(this->settingText[iVar13 + 5]->_padding_ + 0x14))(1);
   iVar6 = RGE_Base_Game::fullVisibility(rge_base_game);
   if (iVar6 == 0) {
-                    /* language.dll match for 0xfa4: "No" */
     iVar6 = 0xfa4;
   }
   else {
@@ -858,14 +834,12 @@ LAB_004a5af4:
     pcVar17 = pcVar17 + 1;
   }
   puVar18 = &stack0xfffffcc8;
-                    /* language.dll match for 0x25b8: "Reveal Map: %s" */
   pcVar10 = TPanel::get_string((TPanel *)this,0x25b8);
   sprintf(str1 + 0xd8,pcVar10,puVar18);
   (**(code **)(this->settingText[iVar13 + 6]->_padding_ + 0xe8))(str1 + 0xd8);
   (**(code **)(this->settingText[iVar13 + 6]->_padding_ + 0x14))(1);
   iVar6 = TRIBE_Game::fullTechTree((TRIBE_Game *)rge_base_game);
   if (iVar6 == 0) {
-                    /* language.dll match for 0xfa4: "No" */
     iVar6 = 0xfa4;
   }
   else {
@@ -873,7 +847,6 @@ LAB_004a5af4:
   }
   TPanel::get_string((TPanel *)this,iVar6,&stack0xfffffcc0,0x100);
   puVar18 = &stack0xfffffcc0;
-                    /* language.dll match for 0x25ec: "Full Tech Tree: %s" */
   pcVar10 = TPanel::get_string((TPanel *)this,0x25ec);
   sprintf(str1 + 0xd0,pcVar10,puVar18);
   (**(code **)(this->settingText[iVar13 + 7]->_padding_ + 0xe8))(str1 + 0xd0);
@@ -883,7 +856,6 @@ LAB_004a5af4:
   if (iVar6 != 0) {
     iVar6 = RGE_Base_Game::allowCheatCodes(rge_base_game);
     if (iVar6 == 0) {
-                    /* language.dll match for 0xfa4: "No" */
       iVar6 = 0xfa4;
     }
     else {
@@ -913,7 +885,6 @@ LAB_004a5af4:
       pcVar17 = pcVar17 + 1;
     }
     puVar18 = &stack0xfffffcb8;
-                    /* language.dll match for 0x25bb: "Enable Cheating: %s" */
     pcVar10 = TPanel::get_string((TPanel *)this,0x25bb);
     sprintf(str1 + 200,pcVar10,puVar18);
     (**(code **)(this->settingText[iVar13 + 8]->_padding_ + 0xe8))(str1 + 200);
@@ -932,14 +903,12 @@ LAB_004a5af4:
   }
   TPanel::get_string((TPanel *)this,bVar4 + 0x260e,pcVar10,iVar6);
   puVar18 = &stack0xfffffcb8;
-                    /* language.dll match for 0x25f1: "Path Finding: %s" */
   pcVar10 = TPanel::get_string((TPanel *)this,0x25f1);
   sprintf(str1 + 200,pcVar10,puVar18);
   (**(code **)(this->settingText[iVar19]->_padding_ + 0xe8))(str1 + 200);
   (**(code **)(this->settingText[iVar19]->_padding_ + 0x14))(1);
   bVar4 = TRIBE_Game::popLimit((TRIBE_Game *)rge_base_game);
   uVar14 = (uint)bVar4;
-                    /* language.dll match for 0x25f0: "Population Limit: %d" */
   pcVar10 = TPanel::get_string((TPanel *)this,0x25f0);
   sprintf(str1 + 0xc0,pcVar10,uVar14);
   (**(code **)(this->settingText[iVar19 + 1]->_padding_ + 0xe8))(str1 + 0xc0);
@@ -953,9 +922,6 @@ LAB_004a5fb2:
 
 // Function: `scalar_deleting_destructor'
 // Address: 004a6030
-/* public: virtual void * __thiscall TRIBE_Screen_Wait::`scalar deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 TRIBE_Screen_Wait::_scalar_deleting_destructor_(TRIBE_Screen_Wait *this,uint param_1)
 {
@@ -970,8 +936,6 @@ TRIBE_Screen_Wait::_scalar_deleting_destructor_(TRIBE_Screen_Wait *this,uint par
 
 // Function: ~TRIBE_Screen_Wait
 // Address: 004a6050
-/* public: virtual __thiscall TRIBE_Screen_Wait::~TRIBE_Screen_Wait(void) */
-
 void __thiscall TRIBE_Screen_Wait::~TRIBE_Screen_Wait(TRIBE_Screen_Wait *this)
 {
   int iVar1;
@@ -1006,8 +970,6 @@ void __thiscall TRIBE_Screen_Wait::~TRIBE_Screen_Wait(TRIBE_Screen_Wait *this)
 
 // Function: set_text
 // Address: 004a60e0
-/* public: void __thiscall TRIBE_Screen_Wait::set_text(char *) */
-
 void __thiscall TRIBE_Screen_Wait::set_text(TRIBE_Screen_Wait *this,char *param_1)
 {
   (**(code **)(this->message->_padding_ + 0xe8))(param_1);
@@ -1018,8 +980,6 @@ void __thiscall TRIBE_Screen_Wait::set_text(TRIBE_Screen_Wait *this,char *param_
 
 // Function: set_text
 // Address: 004a6100
-/* public: void __thiscall TRIBE_Screen_Wait::set_text(long) */
-
 void __thiscall TRIBE_Screen_Wait::set_text(TRIBE_Screen_Wait *this,long param_1)
 {
   (**(code **)(this->message->_padding_ + 0xe4))(param_1);
@@ -1030,9 +990,6 @@ void __thiscall TRIBE_Screen_Wait::set_text(TRIBE_Screen_Wait *this,long param_1
 
 // Function: action
 // Address: 004a6120
-/* public: virtual long __thiscall TRIBE_Screen_Wait::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TRIBE_Screen_Wait::action
           (TRIBE_Screen_Wait *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -1052,8 +1009,6 @@ TRIBE_Screen_Wait::action
 
 // Function: handle_idle
 // Address: 004a6170
-/* public: virtual long __thiscall TRIBE_Screen_Wait::handle_idle(void) */
-
 long __thiscall TRIBE_Screen_Wait::handle_idle(TRIBE_Screen_Wait *this)
 {
   long lVar1;

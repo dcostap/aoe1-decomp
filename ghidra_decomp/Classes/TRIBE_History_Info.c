@@ -11,8 +11,6 @@
 
 // Function: TRIBE_History_Info
 // Address: 004cc730
-/* public: __thiscall TRIBE_History_Info::TRIBE_History_Info(int) */
-
 TRIBE_History_Info * __thiscall
 TRIBE_History_Info::TRIBE_History_Info(TRIBE_History_Info *this,int param_1)
 {
@@ -31,8 +29,6 @@ TRIBE_History_Info::TRIBE_History_Info(TRIBE_History_Info *this,int param_1)
 
 // Function: ~TRIBE_History_Info
 // Address: 004cc760
-/* public: __thiscall TRIBE_History_Info::~TRIBE_History_Info(void) */
-
 void __thiscall TRIBE_History_Info::~TRIBE_History_Info(TRIBE_History_Info *this)
 {
   TRIBE_History_Events *pTVar1;
@@ -53,8 +49,6 @@ void __thiscall TRIBE_History_Info::~TRIBE_History_Info(TRIBE_History_Info *this
 
 // Function: save
 // Address: 004cc7a0
-/* public: void __thiscall TRIBE_History_Info::save(int) */
-
 void __thiscall TRIBE_History_Info::save(TRIBE_History_Info *this,int param_1)
 {
   TRIBE_History_Events *pTVar1;
@@ -81,8 +75,6 @@ void __thiscall TRIBE_History_Info::save(TRIBE_History_Info *this,int param_1)
 
 // Function: load
 // Address: 004cc840
-/* public: void __thiscall TRIBE_History_Info::load(int) */
-
 void __thiscall TRIBE_History_Info::load(TRIBE_History_Info *this,int param_1)
 {
   long *plVar1;
@@ -114,8 +106,6 @@ void __thiscall TRIBE_History_Info::load(TRIBE_History_Info *this,int param_1)
 
 // Function: add_history_entry
 // Address: 004cc8e0
-/* public: void __thiscall TRIBE_History_Info::add_history_entry(unsigned char,unsigned char) */
-
 void __thiscall
 TRIBE_History_Info::add_history_entry(TRIBE_History_Info *this,uchar param_1,uchar param_2)
 {
@@ -157,8 +147,6 @@ TRIBE_History_Info::add_history_entry(TRIBE_History_Info *this,uchar param_1,uch
 
 // Function: get_history_entry_num
 // Address: 004cc950
-/* public: long __thiscall TRIBE_History_Info::get_history_entry_num(void) */
-
 long __thiscall TRIBE_History_Info::get_history_entry_num(TRIBE_History_Info *this)
 {
   return this->number_of_entries;
@@ -168,8 +156,6 @@ long __thiscall TRIBE_History_Info::get_history_entry_num(TRIBE_History_Info *th
 
 // Function: get_history_entry
 // Address: 004cc960
-/* public: unsigned char __thiscall TRIBE_History_Info::get_history_entry(unsigned char,long) */
-
 uchar __thiscall
 TRIBE_History_Info::get_history_entry(TRIBE_History_Info *this,uchar param_1,long param_2)
 {
@@ -183,8 +169,6 @@ TRIBE_History_Info::get_history_entry(TRIBE_History_Info *this,uchar param_1,lon
 
 // Function: add_history_event
 // Address: 004cc990
-/* public: void __thiscall TRIBE_History_Info::add_history_event(unsigned char) */
-
 void __thiscall TRIBE_History_Info::add_history_event(TRIBE_History_Info *this,uchar param_1)
 {
   TRIBE_History_Events *pTVar1;
@@ -204,8 +188,6 @@ void __thiscall TRIBE_History_Info::add_history_event(TRIBE_History_Info *this,u
 
 // Function: get_history_event_num
 // Address: 004cc9e0
-/* public: long __thiscall TRIBE_History_Info::get_history_event_num(void) */
-
 long __thiscall TRIBE_History_Info::get_history_event_num(TRIBE_History_Info *this)
 {
   return this->number_of_events;
@@ -215,9 +197,6 @@ long __thiscall TRIBE_History_Info::get_history_event_num(TRIBE_History_Info *th
 
 // Function: get_history_event
 // Address: 004cc9f0
-/* public: unsigned char __thiscall TRIBE_History_Info::get_history_event(long,unsigned char &,long
-   &) */
-
 uchar __thiscall
 TRIBE_History_Info::get_history_event
           (TRIBE_History_Info *this,long param_1,uchar *param_2,long *param_3)
@@ -243,8 +222,6 @@ TRIBE_History_Info::get_history_event
 
 // Function: get_history_event
 // Address: 004cca30
-/* public: unsigned char __thiscall TRIBE_History_Info::get_history_event(long,unsigned char &) */
-
 uchar __thiscall
 TRIBE_History_Info::get_history_event(TRIBE_History_Info *this,long param_1,uchar *param_2)
 {

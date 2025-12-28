@@ -239,8 +239,6 @@
 // [HELPER] s_default_d_scx: "default%d.scx"
 // [HELPER] s_map640_bmp: "map640.bmp"
 // [HELPER] s_scr5: "scr5"
-/* public: __thiscall TRIBE_Screen_Sed::TRIBE_Screen_Sed(char *,int) */
-
 TRIBE_Screen_Sed * __thiscall
 TRIBE_Screen_Sed::TRIBE_Screen_Sed(TRIBE_Screen_Sed *this,char *param_1,int param_2)
 {
@@ -472,8 +470,6 @@ LAB_004a8728:
 
 // Function: `vector_deleting_destructor'
 // Address: 004a8750
-/* public: virtual void * __thiscall TRIBE_Screen_Sed::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall
 TRIBE_Screen_Sed::_vector_deleting_destructor_(TRIBE_Screen_Sed *this,uint param_1)
 {
@@ -488,8 +484,6 @@ TRIBE_Screen_Sed::_vector_deleting_destructor_(TRIBE_Screen_Sed *this,uint param
 
 // Function: set_panel_info
 // Address: 004a8770
-/* protected: void __thiscall TRIBE_Screen_Sed::set_panel_info(void) */
-
 void __thiscall TRIBE_Screen_Sed::set_panel_info(TRIBE_Screen_Sed *this)
 {
   RGE_Player *pRVar1;
@@ -507,8 +501,6 @@ void __thiscall TRIBE_Screen_Sed::set_panel_info(TRIBE_Screen_Sed *this)
 
 // Function: set_string
 // Address: 004a87d0
-/* protected: void __thiscall TRIBE_Screen_Sed::set_string(char *,long,int) */
-
 void __thiscall
 TRIBE_Screen_Sed::set_string(TRIBE_Screen_Sed *this,char *param_1,long param_2,int param_3)
 {
@@ -520,18 +512,12 @@ TRIBE_Screen_Sed::set_string(TRIBE_Screen_Sed *this,char *param_1,long param_2,i
 
 // Function: create_button
 // Address: 004a87f0
-/* WARNING: Variable defined which should be unmapped: str1 */
-/* protected: int __thiscall TRIBE_Screen_Sed::create_button(class TPanel *,class TButtonPanel *
-   *,long,int) */
-
 int __thiscall
 TRIBE_Screen_Sed::create_button
           (TRIBE_Screen_Sed *this,TPanel *param_1,TButtonPanel **param_2,long param_3,int param_4)
 {
   int iVar1;
   char str1 [120];
-  
-                    /* language.dll match for 0x78: "10" */
   TPanel::get_string((TPanel *)this,param_3,str1 + 4,0x78);
   iVar1 = create_button(this,param_1,param_2,str1 + 4,(char *)0x0,(char *)0x0,(char *)0x0);
   return iVar1;
@@ -541,9 +527,6 @@ TRIBE_Screen_Sed::create_button
 
 // Function: create_button
 // Address: 004a8840
-/* protected: int __thiscall TRIBE_Screen_Sed::create_button(class TPanel *,class TButtonPanel *
-   *,char *,char *,char *,char *) */
-
 int __thiscall
 TRIBE_Screen_Sed::create_button
           (TRIBE_Screen_Sed *this,TPanel *param_1,TButtonPanel **param_2,char *param_3,char *param_4
@@ -577,9 +560,6 @@ TRIBE_Screen_Sed::create_button
 
 // Function: create_text
 // Address: 004a8910
-/* protected: int __thiscall TRIBE_Screen_Sed::create_text(class TPanel *,class TTextPanel * *,long)
-    */
-
 int __thiscall
 TRIBE_Screen_Sed::create_text
           (TRIBE_Screen_Sed *this,TPanel *param_1,TTextPanel **param_2,long param_3)
@@ -599,9 +579,6 @@ TRIBE_Screen_Sed::create_text
 
 // Function: create_text
 // Address: 004a8960
-/* protected: int __thiscall TRIBE_Screen_Sed::create_text(class TPanel *,class TTextPanel * *,char
-   *) */
-
 int __thiscall
 TRIBE_Screen_Sed::create_text
           (TRIBE_Screen_Sed *this,TPanel *param_1,TTextPanel **param_2,char *param_3)
@@ -621,9 +598,6 @@ TRIBE_Screen_Sed::create_text
 
 // Function: create_input
 // Address: 004a89b0
-/* protected: int __thiscall TRIBE_Screen_Sed::create_input(class TPanel *,class TInputPanel *
-   *,char *,short,enum TInputPanel::FormatType) */
-
 int __thiscall
 TRIBE_Screen_Sed::create_input
           (TRIBE_Screen_Sed *this,TPanel *param_1,TInputPanel **param_2,char *param_3,short param_4,
@@ -645,9 +619,6 @@ TRIBE_Screen_Sed::create_input
 
 // Function: create_edit
 // Address: 004a8a00
-/* protected: int __thiscall TRIBE_Screen_Sed::create_edit(class TPanel *,class TEditPanel * *,char
-   *,short,enum TEditPanel::FormatType,int,int) */
-
 int __thiscall
 TRIBE_Screen_Sed::create_edit
           (TRIBE_Screen_Sed *this,TPanel *param_1,TEditPanel **param_2,char *param_3,short param_4,
@@ -676,10 +647,6 @@ TRIBE_Screen_Sed::create_edit
 // [HELPER] s__bmp: ".bmp"
 // [HELPER] s__cty: ".cty"
 // [HELPER] s__per: ".per"
-/* WARNING: Variable defined which should be unmapped: end_i */
-/* protected: int __thiscall TRIBE_Screen_Sed::create_drop_down(class TPanel *,class TDropDownPanel
-   * *) */
-
 int __thiscall
 TRIBE_Screen_Sed::create_drop_down(TRIBE_Screen_Sed *this,TPanel *param_1,TDropDownPanel **param_2)
 {
@@ -739,17 +706,11 @@ TRIBE_Screen_Sed::create_drop_down(TRIBE_Screen_Sed *this,TPanel *param_1,TDropD
   TDropDownPanel::empty_list(*param_2);
   ppTVar7 = &this->map_size_drop;
   if (param_2 == ppTVar7) {
-                    /* language.dll match for 0x2973: "Tiny" */
     TDropDownPanel::append_line(*ppTVar7,0x2973,0);
-                    /* language.dll match for 0x2974: "Small" */
     TDropDownPanel::append_line(*ppTVar7,0x2974,0);
-                    /* language.dll match for 0x2975: "Medium" */
     TDropDownPanel::append_line(*ppTVar7,0x2975,0);
-                    /* language.dll match for 0x2976: "Large" */
     TDropDownPanel::append_line(*ppTVar7,0x2976,0);
-                    /* language.dll match for 0x2977: "Huge" */
     TDropDownPanel::append_line(*ppTVar7,0x2977,0);
-                    /* language.dll match for 0x2978: "Gigantic" */
     TDropDownPanel::append_line(*ppTVar7,0x2978,0);
     pTVar10 = *ppTVar7;
     lVar3 = 3;
@@ -757,24 +718,14 @@ TRIBE_Screen_Sed::create_drop_down(TRIBE_Screen_Sed *this,TPanel *param_1,TDropD
   else {
     ppTVar7 = &this->map_style_drop;
     if (param_2 == ppTVar7) {
-                    /* language.dll match for 0x296a: "Small Islands" */
       TDropDownPanel::append_line(*ppTVar7,0x296a,0);
-                    /* language.dll match for 0x296b: "Large Islands" */
       TDropDownPanel::append_line(*ppTVar7,0x296b,0);
-                    /* language.dll match for 0x296c: "Coastal" */
       TDropDownPanel::append_line(*ppTVar7,0x296c,0);
-                    /* language.dll match for 0x296d: "Inland" */
       TDropDownPanel::append_line(*ppTVar7,0x296d,0);
-                    /* language.dll match for 0x296e: "Highland" */
       TDropDownPanel::append_line(*ppTVar7,0x296e,0);
-                    /* language.dll match for 0x296f: "Continental" */
       TDropDownPanel::append_line(*ppTVar7,0x296f,0);
-                    /* language.dll match for 0x2970: "Mediterranean" */
       TDropDownPanel::append_line(*ppTVar7,0x2970,0);
-                    /* language.dll match for 0x2971: "Hill Country" */
       TDropDownPanel::append_line(*ppTVar7,0x2971,0);
-                    /* language.dll match for 0x2972: "Narrows"
-                       language.dll match for 0x2972: "******* SIZE *******" */
       TDropDownPanel::append_line(*ppTVar7,0x2972,0);
       pTVar10 = *ppTVar7;
       lVar3 = 3;
@@ -804,19 +755,12 @@ TRIBE_Screen_Sed::create_drop_down(TRIBE_Screen_Sed *this,TPanel *param_1,TDropD
         else {
           ppTVar7 = &this->victory_attribute_list;
           if (param_2 == ppTVar7) {
-                    /* language.dll match for 0x2882: "Razings" */
             TDropDownPanel::append_line(*ppTVar7,0x2882,0x2b);
-                    /* language.dll match for 0x2883: "Conversions" */
             TDropDownPanel::append_line(*ppTVar7,0x2883,0x29);
-                    /* language.dll match for 0x2884: "Kill Ratio" */
             TDropDownPanel::append_line(*ppTVar7,0x2884,0x2c);
-                    /* language.dll match for 0x2886: "Military Population" */
             TDropDownPanel::append_line(*ppTVar7,0x2886,0x28);
-                    /* language.dll match for 0x2887: "Technologies" */
             TDropDownPanel::append_line(*ppTVar7,0x2887,0x15);
-                    /* language.dll match for 0x2888: "Kills" */
             TDropDownPanel::append_line(*ppTVar7,0x2888,0x14);
-                    /* language.dll match for 0x2889: "Villager Population" */
             TDropDownPanel::append_line(*ppTVar7,0x2889,0x25);
             pTVar10 = *ppTVar7;
             lVar3 = 0;
@@ -824,23 +768,14 @@ TRIBE_Screen_Sed::create_drop_down(TRIBE_Screen_Sed *this,TPanel *param_1,TDropD
           else {
             ppTVar7 = &this->default_terrain_drop;
             if (param_2 == ppTVar7) {
-                    /* language.dll match for 0x297d: "Grass" */
               TDropDownPanel::append_line(*ppTVar7,0x297d,0);
-                    /* language.dll match for 0x297e: "Desert" */
               TDropDownPanel::append_line(*ppTVar7,0x297e,0);
-                    /* language.dll match for 0x297f: "Forest" */
               TDropDownPanel::append_line(*ppTVar7,0x297f,0);
-                    /* language.dll match for 0x2980: "Water" */
               TDropDownPanel::append_line(*ppTVar7,0x2980,0);
-                    /* language.dll match for 0x2981: "Palm Desert" */
               TDropDownPanel::append_line(*ppTVar7,0x2981,0);
-                    /* language.dll match for 0x2982: "Jungle" */
               TDropDownPanel::append_line(*ppTVar7,0x2982,0);
-                    /* language.dll match for 0x2983: "Shallows" */
               TDropDownPanel::append_line(*ppTVar7,0x2983,0);
-                    /* language.dll match for 0x2984: "Pine Forest" */
               TDropDownPanel::append_line(*ppTVar7,0x2984,0);
-                    /* language.dll match for 0x2985: "Deep Water" */
               TDropDownPanel::append_line(*ppTVar7,0x2985,0);
               pTVar10 = *ppTVar7;
               lVar3 = 0;
@@ -848,9 +783,7 @@ TRIBE_Screen_Sed::create_drop_down(TRIBE_Screen_Sed *this,TPanel *param_1,TDropD
             else {
               ppTVar7 = this->player_setting_drop;
               if (param_2 == ppTVar7) {
-                    /* language.dll match for 0x27e3: "Computer" */
                 TDropDownPanel::append_line(*ppTVar7,0x27e3,0);
-                    /* language.dll match for 0x27e4: "Either" */
                 TDropDownPanel::append_line(*ppTVar7,0x27e4,0);
                 pTVar10 = *ppTVar7;
                 lVar3 = 0;
@@ -858,43 +791,24 @@ TRIBE_Screen_Sed::create_drop_down(TRIBE_Screen_Sed *this,TPanel *param_1,TDropD
               else {
                 ppTVar7 = &this->victory_drop_down;
                 if (param_2 == ppTVar7) {
-                    /* language.dll match for 0x2851: "         < None >" */
                   TDropDownPanel::append_line(*ppTVar7,0x2851,0);
-                    /* language.dll match for 0x2852: " Bring Object to Object" */
                   TDropDownPanel::append_line(*ppTVar7,0x2852,0);
-                    /* language.dll match for 0x2853: " Bring Object to Area" */
                   TDropDownPanel::append_line(*ppTVar7,0x2853,0);
-                    /* language.dll match for 0x2854: " Create # of Objects" */
                   TDropDownPanel::append_line(*ppTVar7,0x2854,0);
-                    /* language.dll match for 0x2855: " Create Objects in Area" */
                   TDropDownPanel::append_line(*ppTVar7,0x2855,0);
-                    /* language.dll match for 0x2856: " Destroy # of Objects" */
                   TDropDownPanel::append_line(*ppTVar7,0x2856,0);
-                    /* language.dll match for 0x2857: " Destroy Specific Object" */
                   TDropDownPanel::append_line(*ppTVar7,0x2857,0);
-                    /* language.dll match for 0x2858: " Destroy All Objects" */
                   TDropDownPanel::append_line(*ppTVar7,0x2858,0);
-                    /* language.dll match for 0x2859: " Destroy Player" */
                   TDropDownPanel::append_line(*ppTVar7,0x2859,0);
-                    /* language.dll match for 0x285a: " Capture Object" */
                   TDropDownPanel::append_line(*ppTVar7,0x285a,0);
-                    /* language.dll match for 0x285b: " Gold Stockpile" */
                   TDropDownPanel::append_line(*ppTVar7,0x285b,0);
-                    /* language.dll match for 0x285c: " Food Stockpile" */
                   TDropDownPanel::append_line(*ppTVar7,0x285c,0);
-                    /* language.dll match for 0x285d: " Wood Stockpile" */
                   TDropDownPanel::append_line(*ppTVar7,0x285d,0);
-                    /* language.dll match for 0x285e: " Stone Stockpile" */
                   TDropDownPanel::append_line(*ppTVar7,0x285e,0);
-                    /* language.dll match for 0x285f: " Population" */
                   TDropDownPanel::append_line(*ppTVar7,0x285f,0);
-                    /* language.dll match for 0x2860: " Age" */
                   TDropDownPanel::append_line(*ppTVar7,0x2860,0);
-                    /* language.dll match for 0x2861: " Exploration" */
                   TDropDownPanel::append_line(*ppTVar7,0x2861,0);
-                    /* language.dll match for 0x2862: " Other Attributes" */
                   TDropDownPanel::append_line(*ppTVar7,0x2862,0);
-                    /* language.dll match for 0x284f: "Technologies" */
                   TDropDownPanel::append_line(*ppTVar7,0x284f,0);
                   pTVar10 = *ppTVar7;
                   lVar3 = 0;
@@ -902,37 +816,21 @@ TRIBE_Screen_Sed::create_drop_down(TRIBE_Screen_Sed *this,TPanel *param_1,TDropD
                 else {
                   ppTVar7 = this->player_setting_drop + 1;
                   if (param_2 == ppTVar7) {
-                    /* language.dll match for 0x27f7: "Egyptian" */
                     TDropDownPanel::append_line(*ppTVar7,0x27f7,0);
-                    /* language.dll match for 0x27f8: "Greek" */
                     TDropDownPanel::append_line(*ppTVar7,0x27f8,0);
-                    /* language.dll match for 0x27f9: "Babylonian" */
                     TDropDownPanel::append_line(*ppTVar7,0x27f9,0);
-                    /* language.dll match for 0x27fa: "Assyrian" */
                     TDropDownPanel::append_line(*ppTVar7,0x27fa,0);
-                    /* language.dll match for 0x27fb: "Minoan" */
                     TDropDownPanel::append_line(*ppTVar7,0x27fb,0);
-                    /* language.dll match for 0x27fc: "Hittite" */
                     TDropDownPanel::append_line(*ppTVar7,0x27fc,0);
-                    /* language.dll match for 0x27fd: "Phoenician" */
                     TDropDownPanel::append_line(*ppTVar7,0x27fd,0);
-                    /* language.dll match for 0x27fe: "Sumerian" */
                     TDropDownPanel::append_line(*ppTVar7,0x27fe,0);
-                    /* language.dll match for 0x27ff: "Persian" */
                     TDropDownPanel::append_line(*ppTVar7,0x27ff,0);
-                    /* language.dll match for 0x2800: "Shang" */
                     TDropDownPanel::append_line(*ppTVar7,0x2800,0);
-                    /* language.dll match for 0x2801: "Yamato" */
                     TDropDownPanel::append_line(*ppTVar7,0x2801,0);
-                    /* language.dll match for 0x2802: "Choson" */
                     TDropDownPanel::append_line(*ppTVar7,0x2802,0);
-                    /* language.dll match for 0x2806: "Roman" */
                     TDropDownPanel::append_line(*ppTVar7,0x2806,0);
-                    /* language.dll match for 0x2807: "Carthaginian" */
                     TDropDownPanel::append_line(*ppTVar7,0x2807,0);
-                    /* language.dll match for 0x2809: "Palmyran" */
                     TDropDownPanel::append_line(*ppTVar7,0x2809,0);
-                    /* language.dll match for 0x2808: "Macedonian" */
                     TDropDownPanel::append_line(*ppTVar7,0x2808,0);
                     pTVar10 = *ppTVar7;
                     lVar3 = 0;
@@ -940,13 +838,9 @@ TRIBE_Screen_Sed::create_drop_down(TRIBE_Screen_Sed *this,TPanel *param_1,TDropD
                   else {
                     ppTVar7 = &this->victory_ages_list;
                     if (param_2 == ppTVar7) {
-                    /* language.dll match for 0x1069: "Stone Age" */
                       TDropDownPanel::append_line(*ppTVar7,0x1069,0);
-                    /* language.dll match for 0x106a: "Tool Age" */
                       TDropDownPanel::append_line(*ppTVar7,0x106a,0);
-                    /* language.dll match for 0x106b: "Bronze Age" */
                       TDropDownPanel::append_line(*ppTVar7,0x106b,0);
-                    /* language.dll match for 0x106c: "Iron Age" */
                       TDropDownPanel::append_line(*ppTVar7,0x106c,0);
                       pTVar10 = *ppTVar7;
                       lVar3 = 0;
@@ -1091,28 +985,17 @@ LAB_004a9300:
 
 // Function: SetupListOfTerrain
 // Address: 004a9320
-/* protected: int __thiscall TRIBE_Screen_Sed::SetupListOfTerrain(class TListPanel *) */
-
 int __thiscall TRIBE_Screen_Sed::SetupListOfTerrain(TRIBE_Screen_Sed *this,TListPanel *param_1)
 {
   TTextPanel::empty_list((TTextPanel *)param_1);
-                    /* language.dll match for 0x297d: "Grass" */
   TTextPanel::append_line((TTextPanel *)param_1,0x297d,0);
-                    /* language.dll match for 0x297e: "Desert" */
   TTextPanel::append_line((TTextPanel *)param_1,0x297e,0);
-                    /* language.dll match for 0x297f: "Forest" */
   TTextPanel::append_line((TTextPanel *)param_1,0x297f,0);
-                    /* language.dll match for 0x2980: "Water" */
   TTextPanel::append_line((TTextPanel *)param_1,0x2980,0);
-                    /* language.dll match for 0x2981: "Palm Desert" */
   TTextPanel::append_line((TTextPanel *)param_1,0x2981,0);
-                    /* language.dll match for 0x2982: "Jungle" */
   TTextPanel::append_line((TTextPanel *)param_1,0x2982,0);
-                    /* language.dll match for 0x2983: "Shallows" */
   TTextPanel::append_line((TTextPanel *)param_1,0x2983,0);
-                    /* language.dll match for 0x2984: "Pine Forest" */
   TTextPanel::append_line((TTextPanel *)param_1,0x2984,0);
-                    /* language.dll match for 0x2985: "Deep Water" */
   TTextPanel::append_line((TTextPanel *)param_1,0x2985,0);
   return 8;
 }
@@ -1122,10 +1005,6 @@ int __thiscall TRIBE_Screen_Sed::SetupListOfTerrain(TRIBE_Screen_Sed *this,TList
 // Function: create_list
 // Address: 004a93c0
 // [HELPER] s__s__d: "%s %d"
-/* WARNING: Variable defined which should be unmapped: str1 */
-/* protected: int __thiscall TRIBE_Screen_Sed::create_list(class TPanel *,class TListPanel * *,class
-   TScrollBarPanel * *) */
-
 int __thiscall
 TRIBE_Screen_Sed::create_list
           (TRIBE_Screen_Sed *this,TPanel *param_1,TListPanel **param_2,TScrollBarPanel **param_3)
@@ -1146,7 +1025,6 @@ TRIBE_Screen_Sed::create_list
     return 0;
   }
   if (param_2 == &this->paint_elevation_list) {
-                    /* language.dll match for 0x2987: "Elevation" */
     set_string(this,str1,0x2987,0x32);
     iVar1 = 0;
     do {
@@ -1168,8 +1046,6 @@ TRIBE_Screen_Sed::create_list
 // Address: 004a94a0
 // [HELPER] s_Save_Game_Screen: "Save Game Screen"
 // [HELPER] s_Scenario_Menu_Dialog: "Scenario Menu Dialog"
-/* public: virtual __thiscall TRIBE_Screen_Sed::~TRIBE_Screen_Sed(void) */
-
 void __thiscall TRIBE_Screen_Sed::~TRIBE_Screen_Sed(TRIBE_Screen_Sed *this)
 {
   TShape *pTVar1;
@@ -1453,10 +1329,6 @@ void __thiscall TRIBE_Screen_Sed::~TRIBE_Screen_Sed(TRIBE_Screen_Sed *this)
 
 // Function: set_scenario_mode
 // Address: 004a9cc0
-/* WARNING: Variable defined which should be unmapped: i */
-/* public: void __thiscall TRIBE_Screen_Sed::set_scenario_mode(enum TRIBE_Screen_Sed::ScenarioMode)
-    */
-
 void __thiscall TRIBE_Screen_Sed::set_scenario_mode(TRIBE_Screen_Sed *this,ScenarioMode param_1)
 {
   short sVar1;
@@ -1788,7 +1660,6 @@ void __thiscall TRIBE_Screen_Sed::set_scenario_mode(TRIBE_Screen_Sed *this,Scena
         lVar5 = 0x7773;
         break;
       case 4:
-                    /* language.dll match for 0x7774: "Type the history text (optional)." */
         lVar5 = 0x7774;
         break;
       default:
@@ -1864,8 +1735,6 @@ switchD_004aa268_default:
 
 // Function: set_paint_object_mode
 // Address: 004aa730
-/* protected: void __thiscall TRIBE_Screen_Sed::set_paint_object_mode(void) */
-
 void __thiscall TRIBE_Screen_Sed::set_paint_object_mode(TRIBE_Screen_Sed *this)
 {
   int iVar1;
@@ -1890,8 +1759,6 @@ void __thiscall TRIBE_Screen_Sed::set_paint_object_mode(TRIBE_Screen_Sed *this)
 
 // Function: set_map_type
 // Address: 004aa7a0
-/* protected: void __thiscall TRIBE_Screen_Sed::set_map_type(enum TRIBE_Screen_Sed::MapType,int) */
-
 void __thiscall TRIBE_Screen_Sed::set_map_type(TRIBE_Screen_Sed *this,MapType param_1,int param_2)
 {
   MapType MVar1;
@@ -1955,10 +1822,6 @@ LAB_004aa8b8:
 
 // Function: set_mp_victory_type
 // Address: 004aa8f0
-/* WARNING: Variable defined which should be unmapped: activate_counter */
-/* protected: void __thiscall TRIBE_Screen_Sed::set_mp_victory_type(enum
-   TRIBE_Screen_Sed::VictoryType,int) */
-
 void __thiscall
 TRIBE_Screen_Sed::set_mp_victory_type(TRIBE_Screen_Sed *this,VictoryType param_1,int param_2)
 {
@@ -2036,8 +1899,6 @@ TRIBE_Screen_Sed::set_mp_victory_type(TRIBE_Screen_Sed *this,VictoryType param_1
 
 // Function: set_brush_size
 // Address: 004aaa90
-/* protected: void __thiscall TRIBE_Screen_Sed::set_brush_size(enum TRIBE_Screen_Sed::BrushSize) */
-
 void __thiscall TRIBE_Screen_Sed::set_brush_size(TRIBE_Screen_Sed *this,BrushSize param_1)
 {
   if (param_1 != BrushSizeNone) {
@@ -2070,10 +1931,6 @@ void __thiscall TRIBE_Screen_Sed::set_brush_size(TRIBE_Screen_Sed *this,BrushSiz
 
 // Function: set_paint_type
 // Address: 004aab60
-/* WARNING: Variable defined which should be unmapped: activate_counter */
-/* protected: void __thiscall TRIBE_Screen_Sed::set_paint_type(enum TRIBE_Screen_Sed::PaintType,int)
-    */
-
 void __thiscall
 TRIBE_Screen_Sed::set_paint_type(TRIBE_Screen_Sed *this,PaintType param_1,int param_2)
 {
@@ -2158,8 +2015,6 @@ LAB_004aacf6:
 
 // Function: set_terrain
 // Address: 004aad50
-/* protected: void __thiscall TRIBE_Screen_Sed::set_terrain(short) */
-
 void __thiscall TRIBE_Screen_Sed::set_terrain(TRIBE_Screen_Sed *this,short param_1)
 {
   short sVar1;
@@ -2201,8 +2056,6 @@ void __thiscall TRIBE_Screen_Sed::set_terrain(TRIBE_Screen_Sed *this,short param
 
 // Function: set_elevation
 // Address: 004aadf0
-/* protected: void __thiscall TRIBE_Screen_Sed::set_elevation(short) */
-
 void __thiscall TRIBE_Screen_Sed::set_elevation(TRIBE_Screen_Sed *this,short param_1)
 {
   rge_base_game->elevation_height = param_1;
@@ -2215,9 +2068,6 @@ void __thiscall TRIBE_Screen_Sed::set_elevation(TRIBE_Screen_Sed *this,short par
 // Function: set_player
 // Address: 004aae20
 // [HELPER] s__d: "%d"
-/* WARNING: Variable defined which should be unmapped: str */
-/* protected: void __thiscall TRIBE_Screen_Sed::set_player(short,unsigned char,unsigned char) */
-
 void __thiscall
 TRIBE_Screen_Sed::set_player(TRIBE_Screen_Sed *this,short param_1,uchar param_2,uchar param_3)
 {
@@ -2337,8 +2187,6 @@ TRIBE_Screen_Sed::set_player(TRIBE_Screen_Sed *this,short param_1,uchar param_2,
 
 // Function: set_player_active
 // Address: 004ab2b0
-/* protected: void __thiscall TRIBE_Screen_Sed::set_player_active(short,int) */
-
 void __thiscall
 TRIBE_Screen_Sed::set_player_active(TRIBE_Screen_Sed *this,short param_1,int param_2)
 {
@@ -2350,9 +2198,6 @@ TRIBE_Screen_Sed::set_player_active(TRIBE_Screen_Sed *this,short param_1,int par
 
 // Function: set_unit_player
 // Address: 004ab300
-/* WARNING: Variable defined which should be unmapped: is_error */
-/* protected: void __thiscall TRIBE_Screen_Sed::set_unit_player(short) */
-
 void __thiscall TRIBE_Screen_Sed::set_unit_player(TRIBE_Screen_Sed *this,short param_1)
 {
   char cVar1;
@@ -2412,12 +2257,10 @@ void __thiscall TRIBE_Screen_Sed::set_unit_player(TRIBE_Screen_Sed *this,short p
       } while (iVar12 != 0);
     }
     if (this->unit_list_size != 0) {
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
       pLVar7 = (List_Info *)calloc((int)this->unit_list_size,0x66);
       this->unit_list_info = pLVar7;
       if (pLVar7 != (List_Info *)0x0) {
         pLVar7->id = -1;
-                    /* language.dll match for 0x2775: " <None> " */
         set_string(this,this->unit_list_info->text,0x2775,0x14);
         is_error = 1;
         sVar13 = 0;
@@ -2465,7 +2308,6 @@ void __thiscall TRIBE_Screen_Sed::set_unit_player(TRIBE_Screen_Sed *this,short p
             save_view_x = (float)((int)save_view_x + 4);
           } while (sVar13 < sVar16);
         }
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
         qsort(this->unit_list_info,(int)this->unit_list_size,0x66,TRIBE_Screen_Sed_unit_list_compare
              );
         iVar9 = calloc((int)this->unit_list_size,4);
@@ -2536,8 +2378,6 @@ void __thiscall TRIBE_Screen_Sed::set_unit_player(TRIBE_Screen_Sed *this,short p
 
 // Function: set_unit
 // Address: 004ab670
-/* protected: void __thiscall TRIBE_Screen_Sed::set_unit(short) */
-
 void __thiscall TRIBE_Screen_Sed::set_unit(TRIBE_Screen_Sed *this,short param_1)
 {
   if (param_1 == -1) {
@@ -2554,9 +2394,6 @@ void __thiscall TRIBE_Screen_Sed::set_unit(TRIBE_Screen_Sed *this,short param_1)
 
 // Function: set_message_type
 // Address: 004ab6e0
-/* protected: void __thiscall TRIBE_Screen_Sed::set_message_type(enum
-   TRIBE_Screen_Sed::MessageType,int) */
-
 void __thiscall
 TRIBE_Screen_Sed::set_message_type(TRIBE_Screen_Sed *this,MessageType param_1,int param_2)
 {
@@ -2569,8 +2406,6 @@ TRIBE_Screen_Sed::set_message_type(TRIBE_Screen_Sed *this,MessageType param_1,in
 
 // Function: handle_size
 // Address: 004ab710
-/* public: virtual long __thiscall TRIBE_Screen_Sed::handle_size(long,long) */
-
 long __thiscall TRIBE_Screen_Sed::handle_size(TRIBE_Screen_Sed *this,long param_1,long param_2)
 {
   TPanel::handle_size((TPanel *)this,param_1,param_2);
@@ -2584,8 +2419,6 @@ long __thiscall TRIBE_Screen_Sed::handle_size(TRIBE_Screen_Sed *this,long param_
 // Function: handle_idle
 // Address: 004ab740
 // [HELPER] s_C__msdev_work_age1_x1_scr_sed_cp: "C:\msdev\work\age1_x1\scr_sed.cpp"
-/* public: virtual long __thiscall TRIBE_Screen_Sed::handle_idle(void) */
-
 long __thiscall TRIBE_Screen_Sed::handle_idle(TRIBE_Screen_Sed *this)
 {
   ulong uVar1;
@@ -2613,8 +2446,6 @@ long __thiscall TRIBE_Screen_Sed::handle_idle(TRIBE_Screen_Sed *this)
 
 // Function: key_down_action
 // Address: 004ab7d0
-/* public: virtual long __thiscall TRIBE_Screen_Sed::key_down_action(long,short,int,int,int) */
-
 long __thiscall
 TRIBE_Screen_Sed::key_down_action
           (TRIBE_Screen_Sed *this,long param_1,short param_2,int param_3,int param_4,int param_5)
@@ -2805,11 +2636,6 @@ LAB_004ab9ba:
 // [HELPER] s_OKDialog: "OKDialog"
 // [HELPER] s_Scenario_Editor_Open: "Scenario Editor Open"
 // [HELPER] s_Scenario_Editor_Screen: "Scenario Editor Screen"
-/* WARNING: Variable defined which should be unmapped: x2 */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual long __thiscall TRIBE_Screen_Sed::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TRIBE_Screen_Sed::action
           (TRIBE_Screen_Sed *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -3007,7 +2833,6 @@ LAB_004abf41:
                 fVar14 = 1.34525e-43;
                 break;
               case 2:
-                    /* language.dll match for 0x78: "10" */
                 fVar14 = 1.68156e-43;
                 break;
               case 3:
@@ -3525,23 +3350,18 @@ LAB_004ac2a8:
             TEditPanel::set_text(this->message_input,pcVar7);
             switch(this->current_message) {
             case 0:
-                    /* language.dll match for 0x7770: "Type the scenario instructions." */
               TPanel::set_help_info((TPanel *)this->message_input,0x7770,-1);
               break;
             case 1:
-                    /* language.dll match for 0x7771: "Type the hints (optional)." */
               TPanel::set_help_info((TPanel *)this->message_input,0x7771,-1);
               break;
             case 2:
-                    /* language.dll match for 0x7772: "Type the victory message (optional)." */
               TPanel::set_help_info((TPanel *)this->message_input,0x7772,-1);
               break;
             case 3:
-                    /* language.dll match for 0x7773: "Type the loss message (optional)." */
               TPanel::set_help_info((TPanel *)this->message_input,0x7773,-1);
               break;
             case 4:
-                    /* language.dll match for 0x7774: "Type the history text (optional)." */
               TPanel::set_help_info((TPanel *)this->message_input,0x7774,-1);
             }
           }
@@ -3675,9 +3495,6 @@ LAB_004abe5f:
 // Function: draw
 // Address: 004ad0f0
 // [HELPER] s_scr_sed__draw: "scr_sed::draw"
-/* WARNING: Variable defined which should be unmapped: rect */
-/* public: virtual void __thiscall TRIBE_Screen_Sed::draw(void) */
-
 void __thiscall TRIBE_Screen_Sed::draw(TRIBE_Screen_Sed *this)
 {
   int iVar1;
@@ -3717,8 +3534,6 @@ void __thiscall TRIBE_Screen_Sed::draw(TRIBE_Screen_Sed *this)
 
 // Function: command_cancel
 // Address: 004ad240
-/* public: void __thiscall TRIBE_Screen_Sed::command_cancel(void) */
-
 void __thiscall TRIBE_Screen_Sed::command_cancel(TRIBE_Screen_Sed *this)
 {
   RGE_Player *pRVar1;
@@ -3734,8 +3549,6 @@ void __thiscall TRIBE_Screen_Sed::command_cancel(TRIBE_Screen_Sed *this)
 
 // Function: command_menu
 // Address: 004ad270
-/* public: int __thiscall TRIBE_Screen_Sed::command_menu(void) */
-
 int __thiscall TRIBE_Screen_Sed::command_menu(TRIBE_Screen_Sed *this)
 {
   TRIBE_Dialog_Sed_Menu *this_00;
@@ -3749,7 +3562,6 @@ int __thiscall TRIBE_Screen_Sed::command_menu(TRIBE_Screen_Sed *this)
   pcStack_8 = FUN_0055f4ab;
   local_c = *unaff_FS_OFFSET;
   *unaff_FS_OFFSET = &local_c;
-                    /* language.dll match for 0x4b4: "Waiting" */
   this_00 = (TRIBE_Dialog_Sed_Menu *)operator_new(0x4b4);
   local_4 = 0;
   if (this_00 == (TRIBE_Dialog_Sed_Menu *)0x0) {
@@ -3772,16 +3584,12 @@ int __thiscall TRIBE_Screen_Sed::command_menu(TRIBE_Screen_Sed *this)
 
 // Function: command_new
 // Address: 004ad300
-/* public: void __thiscall TRIBE_Screen_Sed::command_new(void) */
-
 void __thiscall TRIBE_Screen_Sed::command_new(TRIBE_Screen_Sed *this)
 {
   uchar uVar1;
   
   uVar1 = need_to_save(this);
   if (uVar1 != '\0') {
-                    /* language.dll match for 0x2447: "Do you want to save your changes to this
-                       scenario?" */
     TEasy_Panel::popupYesNoCancelDialog((TEasy_Panel *)this,0x2447,&s_NewSaveDialog,0x1c2,100);
     return;
   }
@@ -3793,8 +3601,6 @@ void __thiscall TRIBE_Screen_Sed::command_new(TRIBE_Screen_Sed *this)
 
 // Function: command_new_map
 // Address: 004ad340
-/* public: int __thiscall TRIBE_Screen_Sed::command_new_map(char *,int,int,int,int,int) */
-
 int __thiscall
 TRIBE_Screen_Sed::command_new_map
           (TRIBE_Screen_Sed *this,char *param_1,int param_2,int param_3,int param_4,int param_5,
@@ -3814,7 +3620,6 @@ TRIBE_Screen_Sed::command_new_map
   this->need_to_save_flag = '\0';
   if (rge_base_game->world == (RGE_Game_World *)0x0) {
     if (param_6 != 0) {
-                    /* language.dll match for 0x44d: "Loading game data..." */
       TRIBE_Game::show_status_message((TRIBE_Game *)rge_base_game,0x44d,(char *)0x0,-1);
     }
     iVar1 = TRIBE_Game::load_game_data((TRIBE_Game *)rge_base_game);
@@ -3831,7 +3636,6 @@ TRIBE_Screen_Sed::command_new_map
       iVar1 = 0x44e;
     }
     else {
-                    /* language.dll match for 0x44f: "Loading scenario..." */
       iVar1 = 0x44f;
     }
     TRIBE_Game::show_status_message((TRIBE_Game *)rge_base_game,iVar1,(char *)0x0,-1);
@@ -3899,8 +3703,6 @@ TRIBE_Screen_Sed::command_new_map
 // Function: command_open
 // Address: 004ad590
 // [HELPER] s_Scenario_Editor_Open: "Scenario Editor Open"
-/* public: void __thiscall TRIBE_Screen_Sed::command_open(void) */
-
 void __thiscall TRIBE_Screen_Sed::command_open(TRIBE_Screen_Sed *this)
 {
   uchar uVar1;
@@ -3916,8 +3718,6 @@ void __thiscall TRIBE_Screen_Sed::command_open(TRIBE_Screen_Sed *this)
   *unaff_FS_OFFSET = &local_c;
   uVar1 = need_to_save(this);
   if (uVar1 != '\0') {
-                    /* language.dll match for 0x2447: "Do you want to save your changes to this
-                       scenario?" */
     TEasy_Panel::popupYesNoCancelDialog((TEasy_Panel *)this,0x2447,&s_OpenSaveDialog,0x1c2,100);
     *unaff_FS_OFFSET = local_c;
     return;
@@ -3937,8 +3737,6 @@ void __thiscall TRIBE_Screen_Sed::command_open(TRIBE_Screen_Sed *this)
 
 // Function: command_outline
 // Address: 004ad630
-/* public: void __thiscall TRIBE_Screen_Sed::command_outline(void) */
-
 void __thiscall TRIBE_Screen_Sed::command_outline(TRIBE_Screen_Sed *this)
 {
   uchar uVar1;
@@ -3965,8 +3763,6 @@ void __thiscall TRIBE_Screen_Sed::command_outline(TRIBE_Screen_Sed *this)
 
 // Function: command_player
 // Address: 004ad680
-/* public: void __thiscall TRIBE_Screen_Sed::command_player(int) */
-
 void __thiscall TRIBE_Screen_Sed::command_player(TRIBE_Screen_Sed *this,int param_1)
 {
   (**(code **)(rge_base_game->_padding_ + 0x14))(param_1);
@@ -3978,8 +3774,6 @@ void __thiscall TRIBE_Screen_Sed::command_player(TRIBE_Screen_Sed *this,int para
 // Function: command_quit
 // Address: 004ad6a0
 // [HELPER] s_Scenario_Editor_Screen: "Scenario Editor Screen"
-/* public: void __thiscall TRIBE_Screen_Sed::command_quit(void) */
-
 void __thiscall TRIBE_Screen_Sed::command_quit(TRIBE_Screen_Sed *this)
 {
   uchar uVar1;
@@ -3987,8 +3781,6 @@ void __thiscall TRIBE_Screen_Sed::command_quit(TRIBE_Screen_Sed *this)
   
   uVar1 = need_to_save(this);
   if (uVar1 != '\0') {
-                    /* language.dll match for 0x2447: "Do you want to save your changes to this
-                       scenario?" */
     TEasy_Panel::popupYesNoCancelDialog((TEasy_Panel *)this,0x2447,&s_QuitSaveDialog,0x1c2,100);
     return;
   }
@@ -4010,8 +3802,6 @@ void __thiscall TRIBE_Screen_Sed::command_quit(TRIBE_Screen_Sed *this)
 // [HELPER] s_Scenario_Editor_Screen: "Scenario Editor Screen"
 // [HELPER] s_Scenario_Menu_Dialog: "Scenario Menu Dialog"
 // [HELPER] s_default_d: "default%d"
-/* public: void __thiscall TRIBE_Screen_Sed::command_save(unsigned char,unsigned char) */
-
 void __thiscall TRIBE_Screen_Sed::command_save(TRIBE_Screen_Sed *this,uchar param_1,uchar param_2)
 {
   byte bVar1;
@@ -4035,16 +3825,12 @@ void __thiscall TRIBE_Screen_Sed::command_save(TRIBE_Screen_Sed *this,uchar para
   iVar3 = RGE_Scenario::active_player_count((RGE_Scenario *)this->world->_padding_);
   if (iVar3 < 1) {
     TPanelSystem::destroyPanel(&panel_system,s_Scenario_Menu_Dialog);
-                    /* language.dll match for 0x2742: "You need to make at least one player active"
-                        */
     TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x2742,(char *)0x0,0x1c2,100);
   }
   else {
     iVar3 = RGE_Scenario::any_player_count((RGE_Scenario *)this->world->_padding_);
     if (iVar3 < 1) {
       TPanelSystem::destroyPanel(&panel_system,s_Scenario_Menu_Dialog);
-                    /* language.dll match for 0x2743: "One or more civilizations must be set to
-                       Player Type: Either" */
       TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x2743,(char *)0x0,0x1c2,100);
     }
     else {
@@ -4053,7 +3839,6 @@ void __thiscall TRIBE_Screen_Sed::command_save(TRIBE_Screen_Sed *this,uchar para
         command_save_as(this,param_2);
       }
       else {
-                    /* language.dll match for 0x450: "Saving scenario..." */
         TRIBE_Game::show_status_message((TRIBE_Game *)rge_base_game,0x450,(char *)0x0,-1);
         if (param_1 != '\0') {
           TPanelSystem::destroyPanel(&panel_system,s_Scenario_Menu_Dialog);
@@ -4061,8 +3846,6 @@ void __thiscall TRIBE_Screen_Sed::command_save(TRIBE_Screen_Sed *this,uchar para
         cVar2 = (**(code **)(this->world->_padding_ + 0xe4))(pbVar4);
         if (cVar2 == '\0') {
           TRIBE_Game::close_status_message((TRIBE_Game *)rge_base_game);
-                    /* language.dll match for 0x963: "The scenario could not be saved. Free some
-                       disk space, and then try again." */
           TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x963,(char *)0x0,0x1c2,100);
         }
         else {
@@ -4126,8 +3909,6 @@ LAB_004ad89c:
 // Address: 004ad960
 // [HELPER] s_Save_Game_Screen: "Save Game Screen"
 // [HELPER] s_Scenario_Menu_Dialog: "Scenario Menu Dialog"
-/* public: void __thiscall TRIBE_Screen_Sed::command_save_as(unsigned char) */
-
 void __thiscall TRIBE_Screen_Sed::command_save_as(TRIBE_Screen_Sed *this,uchar param_1)
 {
   int iVar1;
@@ -4145,15 +3926,11 @@ void __thiscall TRIBE_Screen_Sed::command_save_as(TRIBE_Screen_Sed *this,uchar p
   T_Scenario::Save_victory_conditions_into_players((T_Scenario *)this->world->_padding_,1);
   iVar1 = RGE_Scenario::active_player_count((RGE_Scenario *)this->world->_padding_);
   if (iVar1 < 1) {
-                    /* language.dll match for 0x2742: "You need to make at least one player active"
-                        */
     TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x2742,(char *)0x0,0x1c2,100);
   }
   else {
     iVar1 = RGE_Scenario::any_player_count((RGE_Scenario *)this->world->_padding_);
     if (iVar1 < 1) {
-                    /* language.dll match for 0x2743: "One or more civilizations must be set to
-                       Player Type: Either" */
       TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x2743,(char *)0x0,0x1c2,100);
     }
     else {
@@ -4180,9 +3957,6 @@ void __thiscall TRIBE_Screen_Sed::command_save_as(TRIBE_Screen_Sed *this,uchar p
 // Address: 004ada70
 // [HELPER] s_Game_File_Number: "Game File Number"
 // [HELPER] s_default_d_scx: "default%d.scx"
-/* WARNING: Variable defined which should be unmapped: temp_name */
-/* public: char * __thiscall TRIBE_Screen_Sed::scenario_get_default_name(void) */
-
 char * __thiscall TRIBE_Screen_Sed::scenario_get_default_name(TRIBE_Screen_Sed *this)
 {
   char *pcVar1;
@@ -4203,8 +3977,6 @@ char * __thiscall TRIBE_Screen_Sed::scenario_get_default_name(TRIBE_Screen_Sed *
 
 // Function: command_quick_save
 // Address: 004adaf0
-/* public: void __thiscall TRIBE_Screen_Sed::command_quick_save(void) */
-
 void __thiscall TRIBE_Screen_Sed::command_quick_save(TRIBE_Screen_Sed *this)
 {
   scenario_get_default_name(this);
@@ -4219,8 +3991,6 @@ void __thiscall TRIBE_Screen_Sed::command_quick_save(TRIBE_Screen_Sed *this)
 // [HELPER] s_Game_File_Number: "Game File Number"
 // [HELPER] s_default_d: "default%d"
 // [HELPER] s_default_d_scx: "default%d.scx"
-/* public: char * __thiscall TRIBE_Screen_Sed::scenario_save_defaulted(void) */
-
 char * __thiscall TRIBE_Screen_Sed::scenario_save_defaulted(TRIBE_Screen_Sed *this)
 {
   char cVar1;
@@ -4230,27 +4000,20 @@ char * __thiscall TRIBE_Screen_Sed::scenario_save_defaulted(TRIBE_Screen_Sed *th
   T_Scenario::Save_victory_conditions_into_players((T_Scenario *)this->world->_padding_,1);
   iVar2 = RGE_Scenario::active_player_count((RGE_Scenario *)this->world->_padding_);
   if (iVar2 < 1) {
-                    /* language.dll match for 0x2742: "You need to make at least one player active"
-                        */
     TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x2742,(char *)0x0,0x1c2,100);
     return (char *)0x0;
   }
   iVar2 = RGE_Scenario::any_player_count((RGE_Scenario *)this->world->_padding_);
   if (iVar2 < 1) {
-                    /* language.dll match for 0x2743: "One or more civilizations must be set to
-                       Player Type: Either" */
     TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x2743,(char *)0x0,0x1c2,100);
     return (char *)0x0;
   }
-                    /* language.dll match for 0x450: "Saving scenario..." */
   TRIBE_Game::show_status_message((TRIBE_Game *)rge_base_game,0x450,(char *)0x0,-1);
   iVar2 = TRegistry::RegGetInt(rge_base_game->registry,0,s_Game_File_Number);
   sprintf(0x86bad8,s_default_d_scx,iVar2);
   cVar1 = (**(code **)(this->world->_padding_ + 0xe4))(0x86bad8);
   if (cVar1 == '\0') {
     TRIBE_Game::close_status_message((TRIBE_Game *)rge_base_game);
-                    /* language.dll match for 0x963: "The scenario could not be saved. Free some
-                       disk space, and then try again." */
     TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x963,(char *)0x0,0x1c2,100);
     return (char *)0x0;
   }
@@ -4263,8 +4026,6 @@ char * __thiscall TRIBE_Screen_Sed::scenario_save_defaulted(TRIBE_Screen_Sed *th
 
 // Function: need_to_save
 // Address: 004adc30
-/* public: unsigned char __thiscall TRIBE_Screen_Sed::need_to_save(void) */
-
 uchar __thiscall TRIBE_Screen_Sed::need_to_save(TRIBE_Screen_Sed *this)
 {
   return this->need_to_save_flag;
@@ -4274,8 +4035,6 @@ uchar __thiscall TRIBE_Screen_Sed::need_to_save(TRIBE_Screen_Sed *this)
 
 // Function: set_focus
 // Address: 004adc40
-/* protected: virtual void __thiscall TRIBE_Screen_Sed::set_focus(int) */
-
 void __thiscall TRIBE_Screen_Sed::set_focus(TRIBE_Screen_Sed *this,int param_1)
 {
   TScreenPanel::set_focus((TScreenPanel *)this,param_1);
@@ -4291,8 +4050,6 @@ void __thiscall TRIBE_Screen_Sed::set_focus(TRIBE_Screen_Sed *this,int param_1)
 
 // Function: SaveDisabledItemsInScenario
 // Address: 004adc80
-/* protected: void __thiscall TRIBE_Screen_Sed::SaveDisabledItemsInScenario(void) */
-
 void __thiscall TRIBE_Screen_Sed::SaveDisabledItemsInScenario(TRIBE_Screen_Sed *this)
 {
   short sVar1;
@@ -4330,8 +4087,6 @@ void __thiscall TRIBE_Screen_Sed::SaveDisabledItemsInScenario(TRIBE_Screen_Sed *
 
 // Function: LoadDisabledItemsFromScenario
 // Address: 004add00
-/* protected: void __thiscall TRIBE_Screen_Sed::LoadDisabledItemsFromScenario(void) */
-
 void __thiscall TRIBE_Screen_Sed::LoadDisabledItemsFromScenario(TRIBE_Screen_Sed *this)
 {
   int iVar1;
@@ -4359,8 +4114,6 @@ void __thiscall TRIBE_Screen_Sed::LoadDisabledItemsFromScenario(TRIBE_Screen_Sed
 
 // Function: save_info_in_scenario
 // Address: 004add50
-/* protected: void __thiscall TRIBE_Screen_Sed::save_info_in_scenario(void) */
-
 void __thiscall TRIBE_Screen_Sed::save_info_in_scenario(TRIBE_Screen_Sed *this)
 {
   return;
@@ -4370,8 +4123,6 @@ void __thiscall TRIBE_Screen_Sed::save_info_in_scenario(TRIBE_Screen_Sed *this)
 
 // Function: save_multi_victory_cond_in_scenario
 // Address: 004add60
-/* protected: void __thiscall TRIBE_Screen_Sed::save_multi_victory_cond_in_scenario(void) */
-
 void __thiscall TRIBE_Screen_Sed::save_multi_victory_cond_in_scenario(TRIBE_Screen_Sed *this)
 {
   long lVar1;
@@ -4521,9 +4272,6 @@ LAB_004ade58:
 
 // Function: save_victory_cond_in_scenario
 // Address: 004ae070
-/* WARNING: Variable defined which should be unmapped: x1 */
-/* protected: void __thiscall TRIBE_Screen_Sed::save_victory_cond_in_scenario(int) */
-
 void __thiscall TRIBE_Screen_Sed::save_victory_cond_in_scenario(TRIBE_Screen_Sed *this,int param_1)
 {
   int iVar1;
@@ -4693,10 +4441,6 @@ LAB_004ae57f:
 
 // Function: load_victory_cond_from_scenario
 // Address: 004ae620
-/* WARNING: Variable defined which should be unmapped: obj */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: void __thiscall TRIBE_Screen_Sed::load_victory_cond_from_scenario(int) */
-
 void __thiscall
 TRIBE_Screen_Sed::load_victory_cond_from_scenario(TRIBE_Screen_Sed *this,int param_1)
 {
@@ -4862,9 +4606,6 @@ switchD_004ae82a_default:
 // Function: load_multi_victory_cond_from_scenario
 // Address: 004ae9d0
 // [HELPER] s_0: "0"
-/* WARNING: Variable defined which should be unmapped: str */
-/* protected: void __thiscall TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario(void) */
-
 void __thiscall TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario(TRIBE_Screen_Sed *this)
 {
   int iVar1;
@@ -5023,8 +4764,6 @@ void __thiscall TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario(TRIBE_Sc
 
 // Function: save_diplomacy_in_scenario
 // Address: 004aecb0
-/* protected: void __thiscall TRIBE_Screen_Sed::save_diplomacy_in_scenario(int) */
-
 void __thiscall TRIBE_Screen_Sed::save_diplomacy_in_scenario(TRIBE_Screen_Sed *this,int param_1)
 {
   int iVar1;
@@ -5070,8 +4809,6 @@ LAB_004aed1a:
 
 // Function: load_diplomacy_from_scenario
 // Address: 004aed50
-/* protected: void __thiscall TRIBE_Screen_Sed::load_diplomacy_from_scenario(int) */
-
 void __thiscall TRIBE_Screen_Sed::load_diplomacy_from_scenario(TRIBE_Screen_Sed *this,int param_1)
 {
   int iVar1;
@@ -5110,9 +4847,6 @@ void __thiscall TRIBE_Screen_Sed::load_diplomacy_from_scenario(TRIBE_Screen_Sed 
 
 // Function: activate_victory_proper_fields
 // Address: 004aee10
-/* WARNING: Variable defined which should be unmapped: ptr */
-/* protected: void __thiscall TRIBE_Screen_Sed::activate_victory_proper_fields(int,int) */
-
 void __thiscall
 TRIBE_Screen_Sed::activate_victory_proper_fields(TRIBE_Screen_Sed *this,int param_1,int param_2)
 {
@@ -5150,14 +4884,12 @@ TRIBE_Screen_Sed::activate_victory_proper_fields(TRIBE_Screen_Sed *this,int para
     (**(code **)(this->victory_object_list->_padding_ + 0x14))();
     (**(code **)(this->victory_amount_text->_padding_ + 0x14))();
     (**(code **)(this->victory_amount_input->_padding_ + 0x14))();
-                    /* language.dll match for 0x7766: "Type the number of objects." */
     TPanel::set_help_info((TPanel *)this->victory_amount_input,0x7766,-1);
     break;
   case 4:
     (**(code **)(this->victory_object_list->_padding_ + 0x14))();
     (**(code **)(this->victory_amount_text->_padding_ + 0x14))();
     (**(code **)(this->victory_amount_input->_padding_ + 0x14))();
-                    /* language.dll match for 0x7767: "Type the number of objects." */
     TPanel::set_help_info((TPanel *)this->victory_amount_input,0x7767,-1);
     TPanel::set_curr_child(this->bottom_panel,(TPanel *)this->victory_amount_input);
     (**(code **)(this->victory_button_set_destination->_padding_ + 0x14))(param_2);
@@ -5168,7 +4900,6 @@ TRIBE_Screen_Sed::activate_victory_proper_fields(TRIBE_Screen_Sed *this,int para
     (**(code **)(this->victory_amount_text->_padding_ + 0x14))();
     (**(code **)(this->victory_amount_input->_padding_ + 0x14))();
     (**(code **)(this->victory_which_enemy_text->_padding_ + 0x14))(param_2);
-                    /* language.dll match for 0x7768: "Type the number of objects." */
     TPanel::set_help_info((TPanel *)this->victory_amount_input,0x7768,-1);
     (**(code **)(this->victory_enemy_player_list->_padding_ + 0x14))(param_2);
     (**(code **)(this->_padding_ + 200))(&stack0xffffffe4,2);
@@ -5190,35 +4921,30 @@ LAB_004af094:
     TPanel::set_curr_child(this->bottom_panel,(TPanel *)this->victory_enemy_player_list);
     return;
   case 10:
-                    /* language.dll match for 0x7769: "Type the quantity of gold." */
     TPanel::set_help_info((TPanel *)this->victory_amount_input,0x7769,-1);
     (**(code **)(this->victory_amount_text->_padding_ + 0x14))();
     (**(code **)(this->victory_amount_input->_padding_ + 0x14))();
     TPanel::set_curr_child(this->bottom_panel,(TPanel *)this->victory_amount_input);
     return;
   case 0xb:
-                    /* language.dll match for 0x776a: "Type the quantity of food." */
     TPanel::set_help_info((TPanel *)this->victory_amount_input,0x776a,-1);
     (**(code **)(this->victory_amount_text->_padding_ + 0x14))();
     (**(code **)(this->victory_amount_input->_padding_ + 0x14))();
     TPanel::set_curr_child(this->bottom_panel,(TPanel *)this->victory_amount_input);
     return;
   case 0xc:
-                    /* language.dll match for 0x776b: "Type the quantity of wood." */
     TPanel::set_help_info((TPanel *)this->victory_amount_input,0x776b,-1);
     (**(code **)(this->victory_amount_text->_padding_ + 0x14))();
     (**(code **)(this->victory_amount_input->_padding_ + 0x14))();
     TPanel::set_curr_child(this->bottom_panel,(TPanel *)this->victory_amount_input);
     return;
   case 0xd:
-                    /* language.dll match for 0x776c: "Type the quantity of stone." */
     TPanel::set_help_info((TPanel *)this->victory_amount_input,0x776c,-1);
     (**(code **)(this->victory_amount_text->_padding_ + 0x14))();
     (**(code **)(this->victory_amount_input->_padding_ + 0x14))();
     TPanel::set_curr_child(this->bottom_panel,(TPanel *)this->victory_amount_input);
     return;
   case 0xe:
-                    /* language.dll match for 0x776d: "Type the number of population." */
     TPanel::set_help_info((TPanel *)this->victory_amount_input,0x776d,-1);
     (**(code **)(this->victory_amount_text->_padding_ + 0x14))();
     (**(code **)(this->victory_amount_input->_padding_ + 0x14))();
@@ -5228,7 +4954,6 @@ LAB_004af094:
     (**(code **)(this->victory_ages_list->_padding_ + 0x14))();
     return;
   case 0x10:
-                    /* language.dll match for 0x776e: "Type the percentage of exploration." */
     TPanel::set_help_info((TPanel *)this->victory_amount_input,0x776e,-1);
     (**(code **)(this->victory_amount_text->_padding_ + 0x14))();
     (**(code **)(this->victory_amount_input->_padding_ + 0x14))();
@@ -5236,7 +4961,6 @@ LAB_004af094:
   case 0x11:
     (**(code **)(this->victory_amount_text->_padding_ + 0x14))();
     (**(code **)(this->victory_amount_input->_padding_ + 0x14))();
-                    /* language.dll match for 0x776f: "Type the quantity." */
     TPanel::set_help_info((TPanel *)this->victory_amount_input,0x776f,-1);
     TPanel::set_curr_child(this->bottom_panel,(TPanel *)this->victory_amount_input);
     (**(code **)(this->victory_attribute_list->_padding_ + 0x14))();
@@ -5253,8 +4977,6 @@ LAB_004af094:
 
 // Function: init_module_variables
 // Address: 004af320
-/* protected: void __thiscall TRIBE_Screen_Sed::init_module_variables(void) */
-
 void __thiscall TRIBE_Screen_Sed::init_module_variables(TRIBE_Screen_Sed *this)
 {
   TEditPanel **ppTVar1;
@@ -5510,9 +5232,6 @@ void __thiscall TRIBE_Screen_Sed::init_module_variables(TRIBE_Screen_Sed *this)
 // [HELPER] s__d_: "%d "
 // [HELPER] s_btnbldg_d_shp: "btnbldg%d.shp"
 // [HELPER] s_btnunit_shp: "btnunit.shp"
-/* WARNING: Variable defined which should be unmapped: i */
-/* protected: void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(void) */
-
 void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
 {
   TListPanel **ppTVar1;
@@ -5553,71 +5272,37 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
   pcStack_8 = FUN_0055f54a;
   *unaff_FS_OFFSET = &local_c;
   ppTVar13 = this->scenario_mode_button;
-                    /* language.dll match for 0x271a: "Map" */
   iVar6 = create_button(this,(TPanel *)this,ppTVar13,0x271a,1);
   if (iVar6 != 0) {
-                    /* language.dll match for 0x76c0: "Click to create randomly generated or custom
-                       maps." */
     TPanel::set_help_info((TPanel *)*ppTVar13,0x76c0,-1);
-                    /* language.dll match for 0x271b: "Terrain" */
     iVar6 = create_button(this,(TPanel *)this,this->scenario_mode_button + 1,0x271b,1);
     if (iVar6 != 0) {
-                    /* language.dll match for 0x76c1: "Click to place resources, elevation, cliffs,
-                       forests, and water." */
       TPanel::set_help_info((TPanel *)this->scenario_mode_button[1],0x76c1,-1);
-                    /* language.dll match for 0x271c: "Players" */
       iVar6 = create_button(this,(TPanel *)this,this->scenario_mode_button + 2,0x271c,1);
       if (iVar6 != 0) {
-                    /* language.dll match for 0x76c2: "Click to choose the starting age, starting
-                       stockpiles, civilization, starting technology, and computer personality for
-                       each player." */
         TPanel::set_help_info((TPanel *)this->scenario_mode_button[2],0x76c2,-1);
-                    /* language.dll match for 0x271d: "Units" */
         iVar6 = create_button(this,(TPanel *)this,this->scenario_mode_button + 3,0x271d,1);
         if (iVar6 != 0) {
-                    /* language.dll match for 0x76c3: "Click to place buildings, villagers, military
-                       units, and boats for each player, as well as world (Gaia) objects, such as
-                       trees, Artifacts, Ruins, Discoveries, and grass clumps and other terrain
-                       accents." */
           TPanel::set_help_info((TPanel *)this->scenario_mode_button[3],0x76c3,-1);
-                    /* language.dll match for 0x2722: "Diplomacy" */
           iVar6 = create_button(this,(TPanel *)this,this->scenario_mode_button + 4,0x2722,1);
           if (iVar6 != 0) {
-                    /* language.dll match for 0x76c8: "Click to choose the diplomatic stance of
-                       players (ally, neutral, or enemy) and whether any players pursue allied
-                       victory." */
             TPanel::set_help_info((TPanel *)this->scenario_mode_button[4],0x76c8,-1);
-                    /* language.dll match for 0x271e: "Individual Victory" */
             iVar6 = create_button(this,(TPanel *)this,this->scenario_mode_button + 5,0x271e,1);
             if (iVar6 != 0) {
-                    /* language.dll match for 0x76c4: "Click to choose unique victory conditions for
-                       each player." */
               TPanel::set_help_info((TPanel *)this->scenario_mode_button[5],0x76c4,-1);
-                    /* language.dll match for 0x2723: "Global Victory" */
               iVar6 = create_button(this,(TPanel *)this,this->scenario_mode_button + 6,0x2723,1);
               if (iVar6 != 0) {
-                    /* language.dll match for 0x76c9: "Click to select one or more victory
-                       conditions that all players must achieve." */
                 TPanel::set_help_info((TPanel *)this->scenario_mode_button[6],0x76c9,-1);
-                    /* language.dll match for 0x2721: "Options" */
                 iVar6 = create_button(this,(TPanel *)this,this->scenario_mode_button + 7,0x2721,1);
                 if (iVar6 != 0) {
-                    /* language.dll match for 0x76c7: "Click to enable the full tech tree or disable
-                       technology for each player." */
                   TPanel::set_help_info((TPanel *)this->scenario_mode_button[7],0x76c7,-1);
-                    /* language.dll match for 0x271f: "Messages" */
                   iVar6 = create_button(this,(TPanel *)this,this->scenario_mode_button + 8,0x271f,1)
                   ;
                   if (iVar6 != 0) {
-                    /* language.dll match for 0x76c5: "Click to write scenario instructions, hints,
-                       a victory message, a loss message, and historical information." */
                     TPanel::set_help_info((TPanel *)this->scenario_mode_button[8],0x76c5,-1);
-                    /* language.dll match for 0x2720: "Cinematics" */
                     iVar6 = create_button(this,(TPanel *)this,this->scenario_mode_button + 9,0x2720,
                                           1);
                     if (iVar6 != 0) {
-                    /* language.dll match for 0x76c6: "Click to choose the cinematics that play at
-                       the beginning and end of the scenario." */
                       TPanel::set_help_info((TPanel *)this->scenario_mode_button[9],0x76c6,-1);
                       iVar6 = 10;
                       ppTVar11 = ppTVar13;
@@ -5628,58 +5313,43 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                         iVar6 = iVar6 + -1;
                       } while (iVar6 != 0);
                       ppTVar13 = &this->menu_button;
-                    /* language.dll match for 0x2724: "Menu" */
                       iVar6 = create_button(this,(TPanel *)this,ppTVar13,0x2724,0);
                       if (iVar6 != 0) {
-                    /* language.dll match for 0x774c: "Click to display the menu." */
                         TPanel::set_help_info((TPanel *)*ppTVar13,0x774c,-1);
                         (**(code **)((*ppTVar13)->_padding_ + 0x14))(1);
-                    /* language.dll match for 0xfa9: "?" */
                         iVar6 = create_button(this,(TPanel *)this,&this->help_button,0xfa9,0);
                         if (iVar6 != 0) {
                           (**(code **)(this->help_button->_padding_ + 0x14))(1);
-                    /* language.dll match for 0x29a6: "Map" */
                           iVar6 = create_text(this,this->bottom_panel,&this->map_type_label,0x29a6);
                           if (iVar6 != 0) {
                             ppTVar13 = this->map_type_button;
                             iVar6 = create_radio_button(this,this->bottom_panel,ppTVar13);
                             if (iVar6 != 0) {
-                    /* language.dll match for 0x76cf: "Click to display the default terrain with no
-                       resources (food, wood, stone, or gold)." */
                               TPanel::set_help_info((TPanel *)*ppTVar13,0x76cf,-1);
                               iVar6 = create_radio_button(this,this->bottom_panel,
                                                           this->map_type_button + 1);
                               if (iVar6 != 0) {
-                    /* language.dll match for 0x76d0: "Click to display a random distribution of
-                       land, water, and resources." */
                                 TPanel::set_help_info((TPanel *)this->map_type_button[1],0x76d0,-1);
                                 iVar6 = create_radio_button(this,this->bottom_panel,
                                                             this->map_type_button + 2);
                                 if (iVar6 != 0) {
-                    /* language.dll match for 0x76d1: "Click to display a random distribution of
-                       land, water, and resources based on the seed (number) you type." */
                                   TPanel::set_help_info
                                             ((TPanel *)this->map_type_button[2],0x76d1,-1);
-                    /* language.dll match for 0x299c: "Blank Map" */
                                   iVar6 = create_text(this,this->bottom_panel,this->map_type_text,
                                                       0x299c);
                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x299d: "Random Map" */
                                     iVar6 = create_text(this,this->bottom_panel,
                                                         this->map_type_text + 1,0x299d);
                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x299e: "Seed Map" */
                                       iVar6 = create_text(this,this->bottom_panel,
                                                           this->map_type_text + 2,0x299e);
                                       if (iVar6 != 0) {
-                    /* language.dll match for 0x299f: "Default Terrain" */
                                         iVar6 = create_text(this,this->bottom_panel,
                                                             &this->default_terrain_label,0x299f);
                                         if (iVar6 != 0) {
                                           iVar6 = create_drop_down(this,this->bottom_panel,
                                                                    &this->default_terrain_drop);
                                           if (iVar6 != 0) {
-                    /* language.dll match for 0x76d6: "Click to set the default terrain." */
                                             TPanel::set_help_info
                                                       ((TPanel *)this->default_terrain_drop,0x76d6,
                                                        -1);
@@ -5690,7 +5360,6 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                             lVar7 = TPanel::height((TPanel *)this);
                                             iVar6 = lVar7 + -200;
                                             lVar7 = TPanel::width((TPanel *)this);
-                    /* language.dll match for 0x29a5: "GENERATING MAP" */
                                             iVar6 = TEasy_Panel::create_text
                                                               ((TEasy_Panel *)this,
                                                                (TPanel *)this->main_view,
@@ -5700,19 +5369,15 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                             if (iVar6 != 0) {
                                               (**(code **)(this->map_generating_text->_padding_ +
                                                           0x14))(0);
-                    /* language.dll match for 0x29a0: "Map Size" */
                                               iVar6 = create_text(this,this->bottom_panel,
                                                                   &this->map_size_label,0x29a0);
                                               if (iVar6 != 0) {
                                                 iVar6 = create_drop_down(this,this->bottom_panel,
                                                                          &this->map_size_drop);
                                                 if (iVar6 != 0) {
-                    /* language.dll match for 0x76d2: "Select the map size. The larger the map, the
-                       longer the game." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)this->map_size_drop,0x76d2,-1
                                                             );
-                    /* language.dll match for 0x29a1: "Map Type" */
                                                   iVar6 = create_text(this,this->bottom_panel,
                                                                       &this->map_style_label,0x29a1)
                                                   ;
@@ -5721,12 +5386,9 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                                              ,&this->map_style_drop)
                                                     ;
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x76d3: "Select the distribution of land and water on
-                       the map." */
                                                       TPanel::set_help_info
                                                                 ((TPanel *)this->map_style_drop,
                                                                  0x76d3,-1);
-                    /* language.dll match for 0x29a2: "Seed" */
                                                       iVar6 = create_text(this,this->bottom_panel,
                                                                           &this->random_seed_label,
                                                                           0x29a2);
@@ -5736,15 +5398,10 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                                             ,s_0,5,FormatUnsignedInt
                                                                             ,0,0);
                                                         if (iVar6 != 0) {
-                    /* language.dll match for 0x76d4: "Type the number of the seed map to use. For
-                       example, if you type 532, and select the same number of players, map size,
-                       and map type, the same map always appears. You can type any number up to
-                       99999." */
                                                           TPanel::set_help_info
                                                                     ((TPanel *)
                                                                      this->random_seed_input,0x76d4,
                                                                      -1);
-                    /* language.dll match for 0x29a3: "Seed" */
                                                           iVar6 = create_text(this,this->
                                                   bottom_panel,&this->random_seed_used_label,0x29a3)
                                                   ;
@@ -5753,12 +5410,10 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                                         &this->random_seed_used_text
                                                                         ,s_0);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x29a4: "Generate Map" */
                                                       iVar6 = create_button(this,this->bottom_panel,
                                                                             &this->
                                                   generate_map_button,0x29a4,0);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x76d5: "Click to create the map." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->generate_map_button,
                                                                0x76d5,-1);
@@ -5770,12 +5425,10 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                       ppTVar11 = ppTVar11 + 1;
                                                       iVar6 = iVar6 + -1;
                                                     } while (iVar6 != 0);
-                    /* language.dll match for 0x29af: "Brush Size" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         &this->brush_size_label,
                                                                         0x29af);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x29bc: "Terrain" */
                                                       iVar6 = create_text(this,this->bottom_panel,
                                                                           &this->paint_terrain_label
                                                                           ,0x29bc);
@@ -5784,63 +5437,52 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                         iVar6 = create_radio_button(this,this->
                                                   bottom_panel,ppTVar13);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x76d9: "Click to select the brush size." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)*ppTVar13,0x76d9,-1);
                                                     iVar6 = create_radio_button(this,this->
                                                   bottom_panel,this->brush_size_button + 1);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x76da: "Click to select the brush size." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->brush_size_button[1],
                                                                0x76da,-1);
                                                     iVar6 = create_radio_button(this,this->
                                                   bottom_panel,this->brush_size_button + 2);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x76db: "Click to select the brush size." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->brush_size_button[2],
                                                                0x76db,-1);
                                                     iVar6 = create_radio_button(this,this->
                                                   bottom_panel,this->brush_size_button + 3);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x76dc: "Click to select the brush size." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->brush_size_button[3],
                                                                0x76dc,-1);
                                                     iVar6 = create_radio_button(this,this->
                                                   bottom_panel,this->brush_size_button + 4);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x76dd: "Click to select the brush size." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->brush_size_button[4],
                                                                0x76dd,-1);
-                    /* language.dll match for 0x29b0: "Tiny" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->
                                                   brush_size_button_label,0x29b0);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x29b1: "Small" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->
                                                   brush_size_button_label + 1,0x29b1);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x29b2: "Medium" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->
                                                   brush_size_button_label + 2,0x29b2);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x29b3: "Large" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->
                                                   brush_size_button_label + 3,0x29b3);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x29b4: "Huge" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->
                                                   brush_size_button_label + 4,0x29b4);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x29b9: "Brush Type" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         &this->paint_type_label,
                                                                         0x29b9);
@@ -5848,39 +5490,29 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                       iVar6 = create_radio_button(this,this->
                                                   bottom_panel,this->paint_type_button);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x76de: "Click to paint background terrain (grass,
-                       forest, water, etc.)." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->paint_type_button[0],
                                                                0x76de,-1);
                                                     iVar6 = create_radio_button(this,this->
                                                   bottom_panel,this->paint_type_button + 1);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x76df: "Click to paint hills." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->paint_type_button[1],
                                                                0x76df,-1);
                                                     iVar6 = create_radio_button(this,this->
                                                   bottom_panel,this->paint_type_button + 2);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x76e0: "Click to paint cliffs. To paint cliffs, drag
-                       the mouse. To delete cliffs, right-click and drag over the existing cliffs.
-                       Placing cliffs on different elevations creates gaps between the cliffs that
-                       villagers and military units may have difficulty moving through." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->paint_type_button[2],
                                                                0x76e0,-1);
-                    /* language.dll match for 0x271a: "Map" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->
                                                   paint_type_button_label,0x271a);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x2987: "Elevation" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->
                                                   paint_type_button_label + 1,0x2987);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x29ba: "Cliffs" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->
                                                   paint_type_button_label + 2,0x29ba);
@@ -5890,7 +5522,6 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                                         &this->
                                                   paint_terrain_scrollbar);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x76e1: "Select the terrain to paint." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->paint_terrain_list,
                                                                0x76e1,-1);
@@ -5899,8 +5530,6 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                                         &this->
                                                   paint_elevation_scrollbar);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x76e2: "Select the elevation to paint. The larger the
-                       elevation number, the higher the terrain. Elevation 2 is flat terrain." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->paint_elevation_list,
                                                                0x76e2,-1);
@@ -5925,50 +5554,38 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                     iVar6 = create_radio_button(this,this->
                                                   bottom_panel,ppTVar13);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x76f8: "Click here, select a unit from the list box,
-                       and then click a location on the map." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)*ppTVar13,0x76f8,-1);
                                                     iVar6 = create_radio_button(this,this->
                                                   bottom_panel,this->unit_mode_select + 1);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x76f7: "Click here, and then click the unit to
-                       delete." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->unit_mode_select[1],
                                                                0x76f7,-1);
                                                     iVar6 = create_radio_button(this,this->
                                                   bottom_panel,this->unit_mode_select + 2);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x76f9: "Click here, and then click the unit to move
-                       on the map." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->unit_mode_select[2],
                                                                0x76f9,-1);
                                                     iVar6 = create_radio_button(this,this->
                                                   bottom_panel,this->unit_mode_select + 3);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x76fa: "Click here, and then click the unit to rotate
-                       on the map." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->unit_mode_select[3],
                                                                0x76fa,-1);
-                    /* language.dll match for 0x2777: "Place" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->unit_mode_select_label
                                                                         ,0x2777);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x2778: "Delete" */
                                                       iVar6 = create_text(this,this->bottom_panel,
                                                                           this->
                                                   unit_mode_select_label + 1,0x2778);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x2779: "Move" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->unit_mode_select_label
                                                                         + 2,0x2779);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x277a: "Rotate" */
                                                       iVar6 = create_text(this,this->bottom_panel,
                                                                           this->
                                                   unit_mode_select_label + 3,0x277a);
@@ -5986,7 +5603,6 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                     iVar6 = create_list(this,(TPanel *)this,ppTVar1,
                                                                         &this->unit_scrollbar);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x76fb: "Select the unit to place on the map." */
                                                       TPanel::set_help_info
                                                                 ((TPanel *)*ppTVar1,0x76fb,-1);
                                                       TPanel::set_z_order((TPanel *)*ppTVar1,'\x02',
@@ -6035,7 +5651,6 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                   iVar6 = create_drop_down(this,this->bottom_panel,
                                                                            ppTVar12);
                                                   if (iVar6 == 0) goto LAB_004b1a29;
-                    /* language.dll match for 0x76fc: "Select the player to place units for." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)*ppTVar12,0x76fc,-1);
                                                   pRVar9 = RGE_Base_Game::get_font(rge_base_game,10)
@@ -6069,11 +5684,9 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                     (**(code **)(pTVar10->_padding_ + 0x14))(0);
                                                     TPanel::set_z_order((TPanel *)*ppTVar12,'\x01',0
                                                                        );
-                    /* language.dll match for 0x2864: "Number of Players" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         &this->player_label,0x2864);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x2815: "Starting Age" */
                                                       iVar6 = create_text(this,this->bottom_panel,
                                                                           &this->
                                                   player_starting_age_label,0x2815);
@@ -6082,7 +5695,6 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                                              ,&this->
                                                   player_advance_civilization_drop);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x7765: "Select the starting age." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)
                                                                this->
@@ -6091,7 +5703,6 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                   iVar6 = create_drop_down(this,this->bottom_panel,
                                                                            &this->player_list);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x76e6: "Select the player to customize." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->player_list,0x76e6,-1
                                                               );
@@ -6099,30 +5710,24 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                                              ,&this->
                                                   player_number_list);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x76e7: "Select the number of players." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->player_number_list,
                                                                0x76e7,-1);
-                    /* language.dll match for 0x280b: "Food" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->player_inven_label,
                                                                         0x280b);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x280c: "Wood" */
                                                       iVar6 = create_text(this,this->bottom_panel,
                                                                           this->player_inven_label +
                                                                           1,0x280c);
                                                       if (iVar6 != 0) {
-                    /* language.dll match for 0x280d: "Stone" */
                                                         iVar6 = create_text(this,this->bottom_panel,
                                                                             this->player_inven_label
                                                                             + 2,0x280d);
                                                         if (iVar6 != 0) {
-                    /* language.dll match for 0x280e: "Gold" */
                                                           iVar6 = create_text(this,this->
                                                   bottom_panel,this->player_inven_label + 3,0x280e);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x2805: "Tribe Name" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->player_inven_label + 4
                                                                         ,0x2805);
@@ -6137,26 +5742,18 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                         iVar6 = iVar6 + 1;
                                                         ppTVar15 = ppTVar15 + 1;
                                                       } while (iVar6 < 4);
-                    /* language.dll match for 0x76e8: "Type the amount of food the player has at the
-                       beginning of the game." */
                                                       TPanel::set_help_info
                                                                 ((TPanel *)
                                                                  this->player_inven_input[0],0x76e8,
                                                                  1);
-                    /* language.dll match for 0x76e9: "Type the amount of wood the player has at the
-                       beginning of the game." */
                                                       TPanel::set_help_info
                                                                 ((TPanel *)
                                                                  this->player_inven_input[1],0x76e9,
                                                                  1);
-                    /* language.dll match for 0x76eb: "Type the amount of stone the player has at
-                       the beginning of the game." */
                                                       TPanel::set_help_info
                                                                 ((TPanel *)
                                                                  this->player_inven_input[2],0x76eb,
                                                                  1);
-                    /* language.dll match for 0x76ea: "Type the amount of gold the player has at the
-                       beginning of the game." */
                                                       TPanel::set_help_info
                                                                 ((TPanel *)
                                                                  this->player_inven_input[3],0x76ea,
@@ -6165,19 +5762,14 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                                           this->player_inven_input +
                                                                           4,s_,0x1c,FormatText,1,1);
                                                       if (iVar6 != 0) {
-                    /* language.dll match for 0x76ec: "Type a tribe name if you want to replace the
-                       civilization name with a unique name when the scenario is played as a
-                       campaign." */
                                                         TPanel::set_help_info
                                                                   ((TPanel *)
                                                                    this->player_inven_input[4],
                                                                    0x76ec,1);
-                    /* language.dll match for 0x2810: "Player Type" */
                                                         iVar6 = create_text(this,this->bottom_panel,
                                                                             this->
                                                   player_setting_label,0x2810);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x2811: "Civilization" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->player_setting_label +
                                                                         1,0x2811);
@@ -6191,52 +5783,36 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                   iVar6 = iVar6 + 1;
                                                   ppTVar12 = ppTVar12 + 1;
                                                   } while (iVar6 < 2);
-                    /* language.dll match for 0x76ed: "Select whether the position is played by the
-                       computer, a human, or either. If you select Either, the position can be
-                       played by a human or by the computer (if it is not filled by a human)." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)this->player_setting_drop[0],
                                                              0x76ed,-1);
-                    /* language.dll match for 0x76ee: "Select the player's civilization. Each
-                       civilization has special skills and can research different technologies. More
-                       than one player can select the same civilization." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)this->player_setting_drop[1],
                                                              0x76ee,-1);
                                                   iVar6 = create_drop_down(this,this->bottom_panel,
                                                                            &this->BuildList);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x76ef: "Select the strategy the computer player uses
-                       to determine which buildings, military units, boats, and technologies to
-                       research." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->BuildList,0x76ef,-1);
                                                     iVar6 = create_drop_down(this,this->bottom_panel
                                                                              ,&this->CityLayout);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x76f0: "Select the city plan the computer player uses
-                       to determine where to construct buildings." */
                                                       TPanel::set_help_info
                                                                 ((TPanel *)this->CityLayout,0x76f0,
                                                                  -1);
                                                       iVar6 = create_drop_down(this,this->
                                                   bottom_panel,&this->AiRules);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x76f1: "Select the personality of the computer
-                       player. For most situations, you can select Aggressive or Passive." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->AiRules,0x76f1,-1);
-                    /* language.dll match for 0x2813: "Strategy" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         &this->player_build_text,
                                                                         0x2813);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x2814: "City Plan" */
                                                       iVar6 = create_text(this,this->bottom_panel,
                                                                           &this->player_city_text,
                                                                           0x2814);
                                                       if (iVar6 != 0) {
-                    /* language.dll match for 0x2812: "Personality" */
                                                         iVar6 = create_text(this,this->bottom_panel,
                                                                             &this->AiRules_text,
                                                                             0x2812);
@@ -6247,10 +5823,6 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                           iVar6 = create_check_box(this,this->
                                                   bottom_panel,this->victory_cond_on);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x7704: "The first civilization (or team) to destroy
-                       all opponents' villagers, military units, boats, and buildings wins the game.
-                       You do not need to destroy trade vessels, transport vessels, fishing vessels,
-                       Artifacts, Ruins, or walls." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->victory_cond_on[0],
                                                                0x7704,-1);
@@ -6258,18 +5830,12 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                                              ,this->victory_cond_on
                                                                               + 1);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x7706: "Type the percentage of the map that must be
-                       explored." */
                                                       TPanel::set_help_info
                                                                 ((TPanel *)this->victory_cond_on[1],
                                                                  0x7706,-1);
                                                       iVar6 = create_check_box(this,this->
                                                   bottom_panel,this->victory_cond_on + 2);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x7707: "The first civilization (or team) to control
-                       the designated number of Ruins wins the game. The game ends immediately.
-                       There is no countdown clock. For allied victory, the Ruins must be controlled
-                       by any of the allies." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->victory_cond_on[2],
                                                                0x7707,-1);
@@ -6277,22 +5843,12 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                                              ,this->victory_cond_on
                                                                               + 3);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x7708: "The first civilization (or team) to control
-                       the designated number of Artifacts wins the game. The game ends immediately.
-                       There is no countdown clock. For allied victory, the Artifacts must be
-                       controlled by any of the allies." */
                                                       TPanel::set_help_info
                                                                 ((TPanel *)this->victory_cond_on[3],
                                                                  0x7708,-1);
                                                       iVar6 = create_check_box(this,this->
                                                   bottom_panel,this->victory_cond_on + 4);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x7709: "The first civilization (or team) to locate
-                       the specified # of Discoveries wins. Discoveries are natural sites of
-                       significance represented by a white horse etched into the ground. To locate a
-                       Discovery, move a unit near it. A colored flag shows which civilizations have
-                       located the Discovery. For allied victory, all allies must locate all
-                       Discoveries." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->victory_cond_on[4],
                                                                0x7709,-1);
@@ -6307,15 +5863,11 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                       iVar6 = create_radio_button(this,this->
                                                   bottom_panel,ppTVar13);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x7701: "Click to allow players to achieve any one of
-                       the custom victory conditions to win the game." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)*ppTVar13,0x7701,-1);
                                                     iVar6 = create_radio_button(this,this->
                                                   bottom_panel,this->victory_and_or + 1);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x7703: "Click to require players to achieve all of
-                       the custom victory conditions to win the game." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->victory_and_or[1],
                                                                0x7703,-1);
@@ -6328,62 +5880,50 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                       iVar6 = iVar6 + -1;
                                                     } while (iVar6 != 0);
                                                     TButtonPanel::set_radio_button(*ppTVar13);
-                    /* language.dll match for 0x28a2: "Any one" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->victory_text_and_or,
                                                                         0x28a2);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x28a3: "All" */
                                                       iVar6 = create_text(this,this->bottom_panel,
                                                                           this->victory_text_and_or
                                                                           + 1,0x28a3);
                                                       if (iVar6 != 0) {
-                    /* language.dll match for 0x28a4: "Quantity" */
                                                         iVar6 = create_text(this,this->bottom_panel,
                                                                             &this->
                                                   victory_amount_label,0x28a4);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x28a5: "Which Conditions" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         &this->victory_long_label,
                                                                         0x28a5);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x10e0: "Victory Condition" */
                                                       iVar6 = create_text(this,this->bottom_panel,
                                                                           &this->
                                                   victory_condition_label,0x10e0);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x10e1: "Conquest" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         &this->
                                                   victory_label_conquest,0x10e1);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x10e2: "Exploration" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         &this->victory_label_explore
                                                                         ,0x10e2);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x10e7: "Default" */
                                                       iVar6 = create_text(this,this->bottom_panel,
                                                                           &this->
                                                   victory_label_explore_percent,0x10e7);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x10e3: "Ruins" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         &this->victory_label_ruins,
                                                                         0x10e3);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x10e4: "Artifacts" */
                                                       iVar6 = create_text(this,this->bottom_panel,
                                                                           &this->
                                                   victory_label_artifacts,0x10e4);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x10e5: "Discoveries" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         &this->
                                                   victory_label_discoveries,0x10e5);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x10e6: "Gold" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         &this->victory_label_gold,
                                                                         0x10e6);
@@ -6393,8 +5933,6 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                   victory_condition_explore,&s__,3,FormatUnsignedInt
                                                   ,0,0);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x770b: "Type the percentage of the map that must be
-                       explored for an exploration victory." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)
                                                                this->victory_condition_explore,
@@ -6404,8 +5942,6 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                   victory_condition_ruins,&s__,2,FormatUnsignedInt,0
                                                   ,0);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x770c: "Type the number of Ruins that must be
-                       controlled for a Ruins victory." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)
                                                                this->victory_condition_ruins,0x770c,
@@ -6415,8 +5951,6 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                                         ppTVar15,&s__,2,
                                                                         FormatUnsignedInt,0,0);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x770d: "Type the number of Artifacts that must be
-                       controlled for an Artifacts victory." */
                                                       TPanel::set_help_info
                                                                 ((TPanel *)*ppTVar15,0x770d,-1);
                                                       ppTVar2 = &this->victory_condition_discoveries
@@ -6425,8 +5959,6 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                                           ppTVar2,&s__,2,
                                                                           FormatUnsignedInt,0,0);
                                                       if (iVar6 != 0) {
-                    /* language.dll match for 0x770e: "Type the number of Discoveries that must be
-                       located for a Discoveries victory." */
                                                         TPanel::set_help_info
                                                                   ((TPanel *)*ppTVar2,0x770e,-1);
                                                         iVar6 = create_edit(this,this->bottom_panel,
@@ -6445,27 +5977,22 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                     ptr[3] = (TPanel *)*ppTVar15;
                                                     str4._0_4_ = *ppTVar2;
                                                     (*pcVar3)(ptr + 1,4);
-                    /* language.dll match for 0x10ec: "Standard" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->
                                                   victory_cond_type_label,0x10ec);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x10e1: "Conquest" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->
                                                   victory_cond_type_label + 1,0x10e1);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x10ea: "Score" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->
                                                   victory_cond_type_label + 2,0x10ea);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x10e9: "Time Limit" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->
                                                   victory_cond_type_label + 3,0x10e9);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x10eb: "Custom" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->
                                                   victory_cond_type_label + 4,0x10eb);
@@ -6474,43 +6001,29 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                     iVar6 = create_radio_button(this,this->
                                                   bottom_panel,ppTVar13);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x7756: "Click to require players to achieve one of
-                       the standard victory conditions (Artifacts, Ruins, Wonders, or Conquest) to
-                       win the game." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)*ppTVar13,0x7756,-1);
                                                     iVar6 = create_radio_button(this,this->
                                                   bottom_panel,this->victory_cond_type + 1);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x7757: "The first civilization (or team) to destroy
-                       all opponents' villagers, military units, boats, and buildings wins the game.
-                       You do not need to destroy trade vessels, transport vessels, fishing vessels,
-                       Artifacts, Ruins, or walls." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->victory_cond_type[1],
                                                                0x7757,-1);
                                                     iVar6 = create_radio_button(this,this->
                                                   bottom_panel,this->victory_cond_type + 2);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x7758: "Click to set the victory condition to Score.
-                       The first player to achieve the specified score wins the game." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->victory_cond_type[2],
                                                                0x7758,-1);
                                                     iVar6 = create_radio_button(this,this->
                                                   bottom_panel,this->victory_cond_type + 3);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x7759: "Click to set the victory condition to Time
-                       Limit. The player with the highest score at the end of the time limit wins
-                       the game." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->victory_cond_type[3],
                                                                0x7759,-1);
                                                     iVar6 = create_radio_button(this,this->
                                                   bottom_panel,this->victory_cond_type + 4);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x775a: "Click to set one or more custom victory
-                       conditions." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->victory_cond_type[4],
                                                                0x775a,-1);
@@ -6524,7 +6037,6 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                     } while (iVar6 != 0);
                                                     TButtonPanel::set_radio_button
                                                               (this->victory_cond_type[1]);
-                    /* language.dll match for 0x10ea: "Score" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         &this->victory_score_label,
                                                                         0x10ea);
@@ -6533,7 +6045,6 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                       iVar6 = create_drop_down(this,this->
                                                   bottom_panel,ppTVar12);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x775b: "Select the score for the game." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)*ppTVar12,0x775b,-1);
                                                     TDropDownPanel::empty_list(*ppTVar12);
@@ -6541,7 +6052,6 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                               (*ppTVar12,s_3000,3000);
                                                     TDropDownPanel::append_line
                                                               (*ppTVar12,s_2700,0xa8c);
-                    /* language.dll match for 0x960: "********** TRIBE ERRORS **********" */
                                                     TDropDownPanel::append_line
                                                               (*ppTVar12,s_2400,0x960);
                                                     TDropDownPanel::append_line
@@ -6550,7 +6060,6 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                               (*ppTVar12,s_1800,0x708);
                                                     TDropDownPanel::append_line
                                                               (*ppTVar12,s_1500,0x5dc);
-                    /* language.dll match for 0x4b0: "Ready" */
                                                     TDropDownPanel::append_line
                                                               (*ppTVar12,s_1200,0x4b0);
                                                     TDropDownPanel::append_line(*ppTVar12,s_900,900)
@@ -6567,7 +6076,6 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                     ;
                                                     TDropDownPanel::append_line(*ppTVar12,s_300,300)
                                                     ;
-                    /* language.dll match for 0x10e9: "Time Limit" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         &this->victory_time_label,
                                                                         0x10e9);
@@ -6576,29 +6084,21 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                       iVar6 = create_drop_down(this,this->
                                                   bottom_panel,ppTVar12);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x775c: "Select the time limit for the game." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)*ppTVar12,0x775c,-1);
                                                     TDropDownPanel::empty_list(*ppTVar12);
-                    /* language.dll match for 0x2634: "15,000 years (2:00 hr)" */
                                                     TDropDownPanel::append_line
                                                               (*ppTVar12,0x2634,15000);
-                    /* language.dll match for 0x2635: "13,000 years (1:45 hr)" */
                                                     TDropDownPanel::append_line
                                                               (*ppTVar12,0x2635,13000);
-                    /* language.dll match for 0x2636: "11,000 years (1:30 hr)" */
                                                     TDropDownPanel::append_line
                                                               (*ppTVar12,0x2636,11000);
-                    /* language.dll match for 0x2637: "9,000 years (1:15 hr)" */
                                                     TDropDownPanel::append_line
                                                               (*ppTVar12,0x2637,9000);
-                    /* language.dll match for 0x2638: "7,000 years (60 min)" */
                                                     TDropDownPanel::append_line
                                                               (*ppTVar12,0x2638,7000);
-                    /* language.dll match for 0x2639: "5,000 years (40 min)" */
                                                     TDropDownPanel::append_line
                                                               (*ppTVar12,0x2639,5000);
-                    /* language.dll match for 0x263a: "3,000 years (25 min)" */
                                                     TDropDownPanel::append_line
                                                               (*ppTVar12,0x263a,3000);
                                                     ppTVar13 = this->victory_button;
@@ -6613,8 +6113,6 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                                              str2 + 4,str3 + 4,
                                                                              str4 + 4);
                                                       if (iVar18 == 0) goto LAB_004b1a29;
-                    /* language.dll match for 0x7712: "Click the number of the victory condition to
-                       set or edit." */
                                                       TPanel::set_help_info
                                                                 ((TPanel *)*ppTVar13,0x7712,-1);
                                                       ppTVar13 = ppTVar13 + 1;
@@ -6649,90 +6147,65 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                                              ,&this->
                                                   victory_tech_list);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x7716: "Select the victory condition." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->victory_drop_down,
                                                                0x7716,-1);
-                    /* language.dll match for 0x7714: "Select a unit." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->victory_object_list,
                                                                0x7714,-1);
-                    /* language.dll match for 0x7713: "Select the player to customize." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->victory_player_list,
                                                                0x7713,-1);
-                    /* language.dll match for 0x7715: "Select the age." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->victory_ages_list,
                                                                0x7715,-1);
-                    /* language.dll match for 0x7760: "Select which enemy player." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)
                                                                this->victory_enemy_player_list,
                                                                0x7760,-1);
-                    /* language.dll match for 0x7761: "Select the attribute to achieve:  Razings
-                       (enemy buildings to destroy), Conversions, Kill Ratio (# of units killed
-                       compared to those lost), Wonders that must be built and held, Military
-                       Population that must be created, Technologies that must be researched,
-                       Villager Population that must be created, Kills (# of military units,
-                       villagers, or boats that must be killed)." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)
                                                                this->victory_attribute_list,0x7761,
                                                                -1);
-                    /* language.dll match for 0x7762: "Select the technology to achieve." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->victory_tech_list,
                                                                0x7762,-1);
-                    /* language.dll match for 0x2870: "Victory Condition" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         &this->
                                                   victory_condition_text,0x2870);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x2871: "Victory Type" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         &this->
                                                   victory_condition_type,0x2871);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x2872: "Set Object" */
                                                     iVar6 = create_button(this,this->bottom_panel,
                                                                           &this->
                                                   victory_button_set_object,0x2872,0);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x2873: "Set Destination" */
                                                     iVar6 = create_button(this,this->bottom_panel,
                                                                           &this->
                                                   victory_button_set_destination,0x2873,0);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x2874: "Go to Destination" */
                                                     iVar6 = create_button(this,this->bottom_panel,
                                                                           &this->
                                                   victory_button_go_to_dest,0x2874,0);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x7717: "Click here, and then click a unit on the
-                       map." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)
                                                                this->victory_button_set_object,
                                                                0x7717,-1);
-                    /* language.dll match for 0x7718: "Click here, and then click a location on the
-                       map or drag the mouse to create an area box." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)
                                                                this->victory_button_set_destination,
                                                                0x7718,-1);
-                    /* language.dll match for 0x7719: "Click to display the destination location or
-                       area." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)
                                                                this->victory_button_go_to_dest,
                                                                0x7719,-1);
-                    /* language.dll match for 0x2875: "Quantity" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         &this->victory_amount_text,
                                                                         0x2875);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x2876: "Which Player" */
                                                       iVar6 = create_text(this,this->bottom_panel,
                                                                           &this->
                                                   victory_which_enemy_text,0x2876);
@@ -6752,52 +6225,37 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                   iVar6 = iVar6 + 1;
                                                   ppTVar11 = ppTVar11 + 1;
                                                   } while (iVar6 < 5);
-                    /* language.dll match for 0x771c: "Type the scenario instructions. Be sure to
-                       explain what players must do to win the game." */
                                                   this->current_message = 0;
                                                   TPanel::set_help_info
                                                             ((TPanel *)*ppTVar13,0x771c,-1);
-                    /* language.dll match for 0x771d: "Type the hints text for the scenario
-                       (optional)." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)this->message_button[1],
                                                              0x771d,-1);
-                    /* language.dll match for 0x771e: "Type the victory message that appears for the
-                       winner(s) of the scenario (optional)." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)this->message_button[2],
                                                              0x771e,-1);
-                    /* language.dll match for 0x771f: "Type the loss message that appears for the
-                       loser(s) of the scenario (optional)." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)this->message_button[3],
                                                              0x771f,-1);
-                    /* language.dll match for 0x7720: "Type historical background information for
-                       the scenario (optional)." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)this->message_button[4],
                                                              0x7720,-1);
-                    /* language.dll match for 0x2a36: "Scenario Instructions" */
                                                   iVar6 = create_text(this,this->bottom_panel,
                                                                       this->message_button_label,
                                                                       0x2a36);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x2a37: "Hints" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->message_button_label +
                                                                         1,0x2a37);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x2a38: "Victory" */
                                                       iVar6 = create_text(this,this->bottom_panel,
                                                                           this->message_button_label
                                                                           + 2,0x2a38);
                                                       if (iVar6 != 0) {
-                    /* language.dll match for 0x2a39: "Loss" */
                                                         iVar6 = create_text(this,this->bottom_panel,
                                                                             this->
                                                   message_button_label + 3,0x2a39);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x2a31: "History" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->message_button_label +
                                                                         4,0x2a31);
@@ -6818,21 +6276,17 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                         TPanel::set_help_info
                                                                   ((TPanel *)this->message_input,-1,
                                                                    -1);
-                    /* language.dll match for 0x2af9: "Pre-Game Cinematic" */
                                                         iVar6 = create_text(this,this->bottom_panel,
                                                                             this->cinematic_label,
                                                                             0x2af9);
                                                         if (iVar6 != 0) {
-                    /* language.dll match for 0x2afa: "Victory Cinematic" */
                                                           iVar6 = create_text(this,this->
                                                   bottom_panel,this->cinematic_label + 1,0x2afa);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x2afb: "Loss Cinematic" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->cinematic_label + 2,
                                                                         0x2afb);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x2afc: "Scenario Instruction Map" */
                                                       iVar6 = create_text(this,this->bottom_panel,
                                                                           this->cinematic_label + 3,
                                                                           0x2afc);
@@ -6846,31 +6300,21 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                   iVar6 = iVar6 + 1;
                                                   ppTVar12 = ppTVar12 + 1;
                                                   } while (iVar6 < 4);
-                    /* language.dll match for 0x7724: "Select the cinematic that plays before a
-                       scenario begins (optional)." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)this->cinematic_input[0],
                                                              0x7724,-1);
-                    /* language.dll match for 0x7725: "Select the victory cinematic that plays for
-                       the winner(s) of the scenario (optional)." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)this->cinematic_input[1],
                                                              0x7725,-1);
-                    /* language.dll match for 0x7726: "Select the loss cinematic that plays for the
-                       loser(s) of the scenario (optional)." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)this->cinematic_input[2],
                                                              0x7726,-1);
-                    /* language.dll match for 0x7727: "Select the mission briefing map that appears
-                       before a campaign (optional)." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)this->cinematic_input[3],
                                                              0x7727,-1);
-                    /* language.dll match for 0x2604: "Full Tech Tree" */
                                                   iVar6 = create_text(this,this->bottom_panel,
                                                                       this->options_label,0x2604);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x32d7: "Disable Technology" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         &this->
                                                   options_disable_tech_text,0x32d7);
@@ -6884,11 +6328,6 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                   iVar6 = iVar6 + 1;
                                                   ppTVar13 = ppTVar13 + 1;
                                                   } while (iVar6 < 1);
-                    /* language.dll match for 0x7729: "If there is a check in the box, all
-                       civilizations can research all technologies in the game and the special
-                       attributes usually associated with each civilization are removed. Otherwise,
-                       each civilization can research limited technology and has special
-                       attributes." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)this->options_button[0],
                                                              0x7729,-1);
@@ -6896,7 +6335,6 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                                            &this->
                                                   options_player_list);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x772b: "Select the player to customize." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->options_player_list,
                                                                0x772b,-1);
@@ -6909,178 +6347,130 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                   iVar6 = iVar6 + 1;
                                                   ppTVar13 = ppTVar13 + 1;
                                                   } while (iVar6 < 0x10);
-                    /* language.dll match for 0x772c: "Click to prevent the player from building a
-                       Granary and accessing any units/technology available from it." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)
                                                              this->options_disable_button[0],0x772c,
                                                              -1);
-                    /* language.dll match for 0x772d: "Click to prevent the player from building a
-                       Storage Pit and accessing any units/technology available from it." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)
                                                              this->options_disable_button[1],0x772d,
                                                              -1);
-                    /* language.dll match for 0x772e: "Click to prevent the player from building a
-                       Dock and accessing any units/technology available from it." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)
                                                              this->options_disable_button[2],0x772e,
                                                              -1);
-                    /* language.dll match for 0x772f: "Click to prevent the player from building a
-                       Barracks and accessing any units/technology available from it." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)
                                                              this->options_disable_button[3],0x772f,
                                                              -1);
-                    /* language.dll match for 0x7730: "Click to prevent the player from building a
-                       Market and accessing any units/technology available from it." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)
                                                              this->options_disable_button[4],0x7730,
                                                              -1);
-                    /* language.dll match for 0x7731: "Click to prevent the player from building an
-                       Archery Range and accessing any units/technology available from it." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)
                                                              this->options_disable_button[5],0x7731,
                                                              -1);
-                    /* language.dll match for 0x7732: "Click to prevent the player from building a
-                       Stable and accessing any units/technology available from it." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)
                                                              this->options_disable_button[6],0x7732,
                                                              -1);
-                    /* language.dll match for 0x7733: "Click to prevent the player from building a
-                       Temple and accessing any units/technology available from it." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)
                                                              this->options_disable_button[7],0x7733,
                                                              -1);
-                    /* language.dll match for 0x7734: "Click to prevent the player from building a
-                       Government Center and accessing any units/technology available from it." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)
                                                              this->options_disable_button[8],0x7734,
                                                              -1);
-                    /* language.dll match for 0x7735: "Click to prevent the player from building a
-                       Siege Workshop and accessing any units/technology available from it." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)
                                                              this->options_disable_button[9],0x7735,
                                                              -1);
-                    /* language.dll match for 0x7736: "Click to prevent the player from building an
-                       Academy and accessing any units/technology available from it." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)
                                                              this->options_disable_button[10],0x7736
                                                              ,-1);
-                    /* language.dll match for 0x7737: "Click to prevent the player from advancing to
-                       the Tool Age." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)
                                                              this->options_disable_button[0xb],
                                                              0x7737,-1);
-                    /* language.dll match for 0x7738: "Click to prevent the player from advancing to
-                       the Bronze Age." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)
                                                              this->options_disable_button[0xc],
                                                              0x7738,-1);
-                    /* language.dll match for 0x7739: "Click to prevent the player from advancing to
-                       the Iron Age." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)
                                                              this->options_disable_button[0xd],
                                                              0x7739,-1);
-                    /* language.dll match for 0x773a: "Click to prevent the player from building a
-                       Town Center and accessing any units/technology available from it." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)
                                                              this->options_disable_button[0xe],
                                                              0x773a,-1);
-                    /* language.dll match for 0x773b: "Click to prevent the player from building a
-                       Wonder." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)
                                                              this->options_disable_button[0xf],
                                                              0x773b,-1);
-                    /* language.dll match for 0x32c9: "Granary" */
                                                   iVar6 = create_text(this,this->bottom_panel,
                                                                       this->options_disable_text,
                                                                       0x32c9);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x32ca: "Storage Pit" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->options_disable_text +
                                                                         1,0x32ca);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x32cb: "Dock" */
                                                       iVar6 = create_text(this,this->bottom_panel,
                                                                           this->options_disable_text
                                                                           + 2,0x32cb);
                                                       if (iVar6 != 0) {
-                    /* language.dll match for 0x32cc: "Barracks" */
                                                         iVar6 = create_text(this,this->bottom_panel,
                                                                             this->
                                                   options_disable_text + 3,0x32cc);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x32cd: "Market" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->options_disable_text +
                                                                         4,0x32cd);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x32ce: "Archery" */
                                                       iVar6 = create_text(this,this->bottom_panel,
                                                                           this->options_disable_text
                                                                           + 5,0x32ce);
                                                       if (iVar6 != 0) {
-                    /* language.dll match for 0x32cf: "Stable" */
                                                         iVar6 = create_text(this,this->bottom_panel,
                                                                             this->
                                                   options_disable_text + 6,0x32cf);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x32d0: "Temple" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->options_disable_text +
                                                                         7,0x32d0);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x32d1: "Govt Ctr" */
                                                       iVar6 = create_text(this,this->bottom_panel,
                                                                           this->options_disable_text
                                                                           + 8,0x32d1);
                                                       if (iVar6 != 0) {
-                    /* language.dll match for 0x32d2: "Siege Wkshop" */
                                                         iVar6 = create_text(this,this->bottom_panel,
                                                                             this->
                                                   options_disable_text + 9,0x32d2);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x32d3: "Academy" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->options_disable_text +
                                                                         10,0x32d3);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x32d4: "Tool Age" */
                                                       iVar6 = create_text(this,this->bottom_panel,
                                                                           this->options_disable_text
                                                                           + 0xb,0x32d4);
                                                       if (iVar6 != 0) {
-                    /* language.dll match for 0x32d5: "Bronze Age" */
                                                         iVar6 = create_text(this,this->bottom_panel,
                                                                             this->
                                                   options_disable_text + 0xc,0x32d5);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x32d6: "Iron Age" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->options_disable_text +
                                                                         0xd,0x32d6);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x32d8: "Town Center" */
                                                       iVar6 = create_text(this,this->bottom_panel,
                                                                           this->options_disable_text
                                                                           + 0xe,0x32d8);
                                                       if (iVar6 != 0) {
-                    /* language.dll match for 0x32d9: "Wonder" */
                                                         iVar6 = create_text(this,this->bottom_panel,
                                                                             this->
                                                   options_disable_text + 0xf,0x32d9);
@@ -7099,7 +6489,6 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                                              ,&this->
                                                   Diplomacy_player_list);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x773d: "Select the player to customize." */
                                                     TPanel::set_help_info
                                                               ((TPanel *)this->Diplomacy_player_list
                                                                ,0x773d,-1);
@@ -7111,32 +6500,18 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                       iVar6 = create_radio_button(this,this->
                                                   bottom_panel,*papTVar16);
                                                   if (iVar6 == 0) goto LAB_004b1a29;
-                    /* language.dll match for 0x773f: "Click to set the player's diplomatic stance
-                       toward this player as Ally. The player's military units do not attack this
-                       civilization." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)(*papTVar16)[0],0x773f,-1);
                                                   ppTVar13 = *papTVar16 + 1;
                                                   iVar6 = create_radio_button(this,this->
                                                   bottom_panel,ppTVar13);
                                                   if (iVar6 == 0) goto LAB_004b1a29;
-                    /* language.dll match for 0x7740: "Click to set the player's diplomatic stance
-                       toward this player as Neutral. The player's military units attack buildings
-                       and villagers when commanded, and automatically attack all military units in
-                       their sight."
-                       language.dll match for 0x7740: "Click to set the player's diplomatic stance
-                       toward this player as Neutral. The player's military units attack all
-                       buildings and military units (but not villagers) who enter their sight." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)*ppTVar13,0x7740,-1);
                                                   ppTVar11 = *papTVar16 + 2;
                                                   iVar6 = create_radio_button(this,this->
                                                   bottom_panel,ppTVar11);
                                                   if (iVar6 == 0) goto LAB_004b1a29;
-                    /* language.dll match for 0x7741: "Click to set the player's diplomatic stance
-                       toward this player as Enemy. The player's military units (except Scout)
-                       attack all buildings, military units, and villagers who enter their sight."
-                        */
                                                   TPanel::set_help_info
                                                             ((TPanel *)*ppTVar11,0x7741,-1);
                                                   TButtonPanel::set_radio_info
@@ -7150,31 +6525,24 @@ void __thiscall TRIBE_Screen_Sed::create_all_buttons_etc(TRIBE_Screen_Sed *this)
                                                                            (TButtonPanel **)ptr[0]);
                                                   pTVar5 = ptr[0];
                                                   if (iVar6 == 0) goto LAB_004b1a29;
-                    /* language.dll match for 0x773e: "Click to select whether allied players win
-                       and lose as team. Any allied player who achieves the victory condition wins
-                       the game for all allies. You must select Allied Victory for all allies." */
                                                   TPanel::set_help_info
                                                             ((TPanel *)ptr[0]->_padding_,0x773e,-1);
                                                   ptr[0] = (TPanel *)&pTVar5->previousPanelValue;
                                                   iStack_1c8 = iStack_1c8 + 1;
                                                   papTVar16 = papTVar16 + 1;
                                                   } while (iStack_1c8 < 8);
-                    /* language.dll match for 0x29cd: "Ally" */
                                                   iVar6 = create_text(this,this->bottom_panel,
                                                                       this->Diplomacy_status_label,
                                                                       0x29cd);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x29ce: "Neutral" */
                                                     iVar6 = create_text(this,this->bottom_panel,
                                                                         this->Diplomacy_status_label
                                                                         + 1,0x29ce);
                                                     if (iVar6 != 0) {
-                    /* language.dll match for 0x29cf: "Enemy" */
                                                       iVar6 = create_text(this,this->bottom_panel,
                                                                           this->
                                                   Diplomacy_status_label + 2,0x29cf);
                                                   if (iVar6 != 0) {
-                    /* language.dll match for 0x29d0: "Allied Victory" */
                                                     create_text(this,this->bottom_panel,
                                                                 this->Diplomacy_status_label + 3,
                                                                 0x29d0);
@@ -7360,8 +6728,6 @@ LAB_004b1a29:
 
 // Function: position_panels
 // Address: 004b1a50
-/* public: void __thiscall TRIBE_Screen_Sed::position_panels(void) */
-
 void __thiscall TRIBE_Screen_Sed::position_panels(TRIBE_Screen_Sed *this)
 {
   TButtonPanel *pTVar1;
@@ -7406,7 +6772,6 @@ void __thiscall TRIBE_Screen_Sed::position_panels(TRIBE_Screen_Sed *this)
     (**(code **)(*(int *)this->map_view + 0x18))(10,0,0,0,0,0xe6,0xe6,0x87,0x87,0,0,0,0);
     (**(code **)(this->bottom_panel->_padding_ + 0x18))
               (8,2,2,2,2,0,0,0x89,0x89,0,0,this->map_view,0);
-                    /* language.dll match for 0x7c: "B" */
     (**(code **)(this->unit_list->_padding_ + 0x18))
               (7,0,6,0,4,0x7c,200,0,0,0,this->menu_button,0,this->bottom_panel);
     (**(code **)(this->object_panel->_padding_ + 0x18))(8,4,4,4,4,0x96,0x96,0x6c,0x6c,0,0,0,0);
@@ -7414,7 +6779,6 @@ void __thiscall TRIBE_Screen_Sed::position_panels(TRIBE_Screen_Sed *this)
     iVar9 = TTextPanel::numberLines((TTextPanel *)this_00);
     iVar2 = TTextPanel::numberDrawLines((TTextPanel *)this_00);
     if (iVar2 < iVar9) {
-                    /* language.dll match for 0x68: "Arial" */
       (**(code **)(this->unit_list->_padding_ + 0x18))
                 (7,0,6,0,4,0x68,0xdc,0,0,0,this->menu_button,0,this->bottom_panel);
       (**(code **)(this->unit_scrollbar->_padding_ + 0x18))
@@ -7424,43 +6788,27 @@ void __thiscall TRIBE_Screen_Sed::position_panels(TRIBE_Screen_Sed *this)
     (**(code **)(*(int *)this->main_view + 0x18))
               (7,0,6,0,4,0,0,0,0,this_00,this->menu_button,0,this->bottom_panel);
     (**(code **)(this->message_panel->_padding_ + 0x18))(8,4,4,4,4,0,0,0x18,0x18,0,0,0,0);
-                    /* language.dll match for 0x78: "10" */
     (**(code **)(this->map_type_label->_padding_ + 0x1c))(4,4,0x78,0x16);
     (**(code **)(this->map_type_button[0]->_padding_ + 0x1c))(4,0x16,0x16,0x16);
     (**(code **)(this->map_type_button[1]->_padding_ + 0x1c))(4,0x2c,0x16,0x16);
     (**(code **)(this->map_type_button[2]->_padding_ + 0x1c))(4,0x42,0x16,0x16);
-                    /* language.dll match for 0x73: "B" */
     (**(code **)(this->map_type_text[0]->_padding_ + 0x1c))(0x24,0x16,0x73,0x16);
-                    /* language.dll match for 0x73: "B" */
     (**(code **)(this->map_type_text[1]->_padding_ + 0x1c))(0x24,0x2c,0x73,0x16);
-                    /* language.dll match for 0x73: "B" */
     (**(code **)(this->map_type_text[2]->_padding_ + 0x1c))(0x24,0x42,0x73,0x16);
-                    /* language.dll match for 0x82: "B" */
     (**(code **)(this->map_size_label->_padding_ + 0x1c))(0xaa,4,0x82,0x16);
     (**(code **)(this->map_size_drop->_padding_ + 0x1c))(0xaa,0x16,0xaa,0x16);
-                    /* language.dll match for 0x82: "B" */
     (**(code **)(this->map_style_label->_padding_ + 0x1c))(0xaa,0x30,0x82,0x16);
     (**(code **)(this->map_style_drop->_padding_ + 0x1c))(0xaa,0x42,0xaa,0x16);
-                    /* language.dll match for 0x82: "B" */
     (**(code **)(this->default_terrain_label->_padding_ + 0x1c))(0xaa,0x30,0x82,0x16);
     (**(code **)(this->default_terrain_drop->_padding_ + 0x1c))(0xaa,0x42,0xaa,0x16);
-                    /* language.dll match for 0x78: "10" */
     (**(code **)(this->random_seed_label->_padding_ + 0x1c))(0x24,0x5a,0x78,0x16);
-                    /* language.dll match for 0x70: "B" */
     (**(code **)(this->random_seed_input->_padding_ + 0x1c))(0x24,0x70,0x37,0x16);
-                    /* language.dll match for 0x78: "10" */
     (**(code **)(this->random_seed_used_label->_padding_ + 0x1c))(0x24,0x5a,0x78,0x16);
-                    /* language.dll match for 0x70: "B" */
     (**(code **)(this->random_seed_used_text->_padding_ + 0x1c))(0x24,0x70,0x37,0x16);
-                    /* language.dll match for 0x82: "B" */
     (**(code **)(this->generate_map_button->_padding_ + 0x1c))(0xb4,0x60,0x82,0x26);
-                    /* language.dll match for 0x73: "B" */
     (**(code **)(this->paint_terrain_list->_padding_ + 0x1c))(0x73,0x17,0xa5,0x6e);
-                    /* language.dll match for 0x73: "B" */
     (**(code **)(this->paint_terrain_label->_padding_ + 0x1c))(0x73,1,0x3c,0x16);
-                    /* language.dll match for 0x73: "B" */
     (**(code **)(this->paint_elevation_list->_padding_ + 0x1c))(0x73,0x17,0xa5,0x6e);
-                    /* language.dll match for 0x6e: "Copperplate Gothic Light" */
     (**(code **)(this->paint_type_label->_padding_ + 0x1c))(2,1,0x6e,0x14);
     (**(code **)(this->paint_type_button[0]->_padding_ + 0x1c))(2,0x17,0x1e,0x16);
     (**(code **)(this->paint_type_button[1]->_padding_ + 0x1c))(2,0x2d,0x1e,0x16);
@@ -7468,23 +6816,19 @@ void __thiscall TRIBE_Screen_Sed::position_panels(TRIBE_Screen_Sed *this)
     (**(code **)(this->paint_type_button_label[0]->_padding_ + 0x1c))(0x21,0x17,0x51,0x16);
     (**(code **)(this->paint_type_button_label[1]->_padding_ + 0x1c))(0x21,0x2d,0x51,0x16);
     (**(code **)(this->paint_type_button_label[2]->_padding_ + 0x1c))(0x21,0x43,0x51,0x16);
-                    /* language.dll match for 0x6e: "Copperplate Gothic Light" */
     (**(code **)(this->brush_size_label->_padding_ + 0x1c))(0x118,4,0x6e,0x14);
     (**(code **)(this->brush_size_button[0]->_padding_ + 0x1c))(0x11a,0x17,0x1e,0x16);
     (**(code **)(this->brush_size_button[1]->_padding_ + 0x1c))(0x11a,0x2d,0x1e,0x16);
     (**(code **)(this->brush_size_button[2]->_padding_ + 0x1c))(0x11a,0x43,0x1e,0x16);
     (**(code **)(this->brush_size_button[3]->_padding_ + 0x1c))(0x11a,0x59,0x1e,0x16);
-                    /* language.dll match for 0x6f: "12" */
     (**(code **)(this->brush_size_button[4]->_padding_ + 0x1c))(0x11a,0x6f,0x1e,0x16);
     (**(code **)(this->brush_size_button_label[0]->_padding_ + 0x1c))(0x139,0x17,0x5a,0x16);
     (**(code **)(this->brush_size_button_label[1]->_padding_ + 0x1c))(0x139,0x2d,0x5a,0x16);
     (**(code **)(this->brush_size_button_label[2]->_padding_ + 0x1c))(0x139,0x43,0x5a,0x16);
     (**(code **)(this->brush_size_button_label[3]->_padding_ + 0x1c))(0x139,0x59,0x5a,0x16);
-                    /* language.dll match for 0x6f: "12" */
     (**(code **)(this->brush_size_button_label[4]->_padding_ + 0x1c))(0x139,0x6f,0x5a,0x16);
     (**(code **)(this->player_label->_padding_ + 0x1c))(4,4,0x50,0x12);
     (**(code **)(this->player_starting_age_label->_padding_ + 0x1c))(4,0x5c,0x5f,0x12);
-                    /* language.dll match for 0x6e: "Copperplate Gothic Light" */
     (**(code **)(this->player_advance_civilization_drop->_padding_ + 0x1c))(4,0x6e,0x96,0x16);
     (**(code **)(this->player_label->_padding_ + 0x1c))(4,0x2a,0x96,0x12);
     (**(code **)(this->player_list->_padding_ + 0x1c))(4,7,0x96,0x16);
@@ -7502,57 +6846,40 @@ void __thiscall TRIBE_Screen_Sed::position_panels(TRIBE_Screen_Sed *this)
       iVar9 = iVar9 + 0x44;
     } while (iVar9 < 0x12e);
     (**(code **)(this->player_inven_label[4]->_padding_ + 0x1c))(0xa6,0x5c,100,0x12);
-                    /* language.dll match for 0x6e: "Copperplate Gothic Light" */
     (**(code **)(this->player_inven_input[4]->_padding_ + 0x1c))(0xa6,0x6e,0x7d,0x16);
     iVar9 = 0x19;
     ppTVar6 = this->player_setting_drop;
     do {
-                    /* language.dll match for 0x82: "B" */
       (**(code **)(((TTextPanel *)ppTVar6[-3])->_padding_ + 0x1c))(500,iVar9 + -0x12,0x82,0x12);
-                    /* language.dll match for 0x82: "B" */
       (**(code **)((*ppTVar6)->_padding_ + 0x1c))(500,iVar9,0x82,0x16);
       iVar9 = iVar9 + 0x2c;
       ppTVar6 = ppTVar6 + 1;
     } while (iVar9 < 0x71);
     (**(code **)(this->BuildList->_padding_ + 0x1c))(300,0x45,0xbe,0x16);
     (**(code **)(this->CityLayout->_padding_ + 0x1c))(300,0x19,0xbe,0x16);
-                    /* language.dll match for 0x82: "B" */
     (**(code **)(this->player_build_text->_padding_ + 0x1c))(300,0x33,0x82,0x12);
-                    /* language.dll match for 0x82: "B" */
     (**(code **)(this->player_city_text->_padding_ + 0x1c))(300,7,0x82,0x12);
-                    /* language.dll match for 0x82: "B" */
     (**(code **)(this->AiRules_text->_padding_ + 0x1c))(300,0x5c,0x82,0x12);
-                    /* language.dll match for 0x6e: "Copperplate Gothic Light" */
     (**(code **)(this->AiRules->_padding_ + 0x1c))(300,0x6e,0xbe,0x16);
     (**(code **)(this->unit_player_list->_padding_ + 0x1c))(4,4,0x96,0x16);
     (**(code **)(this->unit_mode_select[0]->_padding_ + 0x1c))(0xa0,0x16,0x1e,0x16);
     (**(code **)(this->unit_mode_select[1]->_padding_ + 0x1c))(0xa0,0x30,0x1e,0x16);
     (**(code **)(this->unit_mode_select[2]->_padding_ + 0x1c))(0xa0,0x4a,0x1e,0x16);
     (**(code **)(this->unit_mode_select[3]->_padding_ + 0x1c))(0xa0,0x62,0x1e,0x16);
-                    /* language.dll match for 0x6e: "Copperplate Gothic Light" */
     (**(code **)(this->unit_mode_select_label[0]->_padding_ + 0x1c))(0xc0,0x16,0x6e,0x16);
-                    /* language.dll match for 0x6e: "Copperplate Gothic Light" */
     (**(code **)(this->unit_mode_select_label[1]->_padding_ + 0x1c))(0xc0,0x30,0x6e,0x16);
-                    /* language.dll match for 0x6e: "Copperplate Gothic Light" */
     (**(code **)(this->unit_mode_select_label[2]->_padding_ + 0x1c))(0xc0,0x4a,0x6e,0x16);
-                    /* language.dll match for 0x6e: "Copperplate Gothic Light" */
     (**(code **)(this->unit_mode_select_label[3]->_padding_ + 0x1c))(0xc0,0x62,0x6e,0x16);
-                    /* language.dll match for 0x78: "10" */
     (**(code **)(this->victory_condition_label->_padding_ + 0x1c))(0x22,0,0x78,0x12);
     (**(code **)(this->victory_cond_type[0]->_padding_ + 0x1c))(0xe,0x12,0x14,0x12);
     (**(code **)(this->victory_cond_type[1]->_padding_ + 0x1c))(0xe,0x26,0x14,0x12);
     (**(code **)(this->victory_cond_type[2]->_padding_ + 0x1c))(0xe,0x3a,0x14,0x12);
     (**(code **)(this->victory_cond_type[3]->_padding_ + 0x1c))(0xe,0x4e,0x14,0x12);
     (**(code **)(this->victory_cond_type[4]->_padding_ + 0x1c))(0xe,0x62,0x14,0x12);
-                    /* language.dll match for 0x78: "10" */
     (**(code **)(this->victory_cond_type_label[0]->_padding_ + 0x1c))(0x22,0x12,0x78,0x12);
-                    /* language.dll match for 0x78: "10" */
     (**(code **)(this->victory_cond_type_label[1]->_padding_ + 0x1c))(0x22,0x26,0x78,0x12);
-                    /* language.dll match for 0x78: "10" */
     (**(code **)(this->victory_cond_type_label[2]->_padding_ + 0x1c))(0x22,0x3a,0x78,0x12);
-                    /* language.dll match for 0x78: "10" */
     (**(code **)(this->victory_cond_type_label[3]->_padding_ + 0x1c))(0x22,0x4e,0x78,0x12);
-                    /* language.dll match for 0x78: "10" */
     (**(code **)(this->victory_cond_type_label[4]->_padding_ + 0x1c))(0x22,0x62,0x78,0x12);
     (**(code **)(this->victory_score_label->_padding_ + 0x1c))(0xa4,0x12,100,0x12);
     (**(code **)(this->victory_score->_padding_ + 0x1c))(0xa4,0x28,100,0x16);
@@ -7563,17 +6890,11 @@ void __thiscall TRIBE_Screen_Sed::position_panels(TRIBE_Screen_Sed *this)
     (**(code **)(this->victory_cond_on[2]->_padding_ + 0x1c))(0xa4,0x3a,0x14,0x12);
     (**(code **)(this->victory_cond_on[3]->_padding_ + 0x1c))(0xa4,0x4e,0x14,0x12);
     (**(code **)(this->victory_cond_on[4]->_padding_ + 0x1c))(0xa4,0x62,0x14,0x12);
-                    /* language.dll match for 0x76: "B" */
     (**(code **)(this->victory_cond_on[5]->_padding_ + 0x1c))(0xa4,0x76,0x14,0x12);
-                    /* language.dll match for 0x82: "B" */
     (**(code **)(this->victory_label_conquest->_padding_ + 0x1c))(0xb8,0x12,0x82,0x12);
-                    /* language.dll match for 0x82: "B" */
     (**(code **)(this->victory_label_explore->_padding_ + 0x1c))(0xb8,0x26,0x82,0x12);
-                    /* language.dll match for 0x82: "B" */
     (**(code **)(this->victory_label_ruins->_padding_ + 0x1c))(0xb8,0x3a,0x82,0x12);
-                    /* language.dll match for 0x82: "B" */
     (**(code **)(this->victory_label_artifacts->_padding_ + 0x1c))(0xb8,0x4e,0x82,0x12);
-                    /* language.dll match for 0x82: "B" */
     (**(code **)(this->victory_label_discoveries->_padding_ + 0x1c))(0xb8,0x62,0x82,0x12);
     (**(code **)(this->victory_amount_label->_padding_ + 0x1c))(0x126,0,0x5a,0x12);
     (**(code **)(this->victory_condition_explore->_padding_ + 0x1c))(0x126,0x26,0x3c,0x12);
@@ -7601,9 +6922,7 @@ void __thiscall TRIBE_Screen_Sed::position_panels(TRIBE_Screen_Sed *this)
     (**(code **)(this->victory_button_set_destination->_padding_ + 0x1c))(4,0x52,0x96,0x16);
     (**(code **)(this->victory_button_go_to_dest->_padding_ + 0x1c))(4,0x6c,0x96,0x16);
     (**(code **)(this->victory_amount_text->_padding_ + 0x1c))(0xa0,0x50,0x3c,0x16);
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
     (**(code **)(this->victory_amount_input->_padding_ + 0x1c))(0xa0,0x66,0x32,0x16);
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
     (**(code **)(this->victory_enemy_player_list->_padding_ + 0x1c))(4,0x66,0x96,0x16);
     (**(code **)(this->victory_attribute_list->_padding_ + 0x1c))(4,0x38,0xb4,0x16);
     (**(code **)(this->victory_which_enemy_text->_padding_ + 0x1c))(4,0x50,0x96,0x16);
@@ -7614,7 +6933,6 @@ void __thiscall TRIBE_Screen_Sed::position_panels(TRIBE_Screen_Sed *this)
     ppTVar7 = this->message_button_label;
     do {
       (**(code **)(((TButtonPanel *)ppTVar7[-5])->_padding_ + 0x1c))(4,iVar9,0x1e,0x12);
-                    /* language.dll match for 0x82: "B" */
       (**(code **)((*ppTVar7)->_padding_ + 0x1c))(0x24,iVar9,0x82,0x12);
       iVar9 = iVar9 + 0x19;
       ppTVar7 = ppTVar7 + 1;
@@ -7674,7 +6992,6 @@ void __thiscall TRIBE_Screen_Sed::position_panels(TRIBE_Screen_Sed *this)
                 (iVar9,0x34,0x1a,0x12);
       (**(code **)((*ppTVar8)->_padding_ + 0x1c))(iVar9,0x48,0x1a,0x12);
       (**(code **)(ppTVar8[1]->_padding_ + 0x1c))(iVar9,0x5c,0x1a,0x12);
-                    /* language.dll match for 0x70: "B" */
       (**(code **)((*ppTVar5)->_padding_ + 0x1c))(iVar9,0x70,0x1a,0x12);
       iVar9 = iVar9 + 0x1f;
       ppTVar5 = ppTVar5 + 1;
@@ -7683,7 +7000,6 @@ void __thiscall TRIBE_Screen_Sed::position_panels(TRIBE_Screen_Sed *this)
     (**(code **)(this->Diplomacy_status_label[0]->_padding_ + 0x1c))(2,0x34,0x91,0x16);
     (**(code **)(this->Diplomacy_status_label[1]->_padding_ + 0x1c))(2,0x48,0x91,0x16);
     (**(code **)(this->Diplomacy_status_label[2]->_padding_ + 0x1c))(2,0x5c,0x91,0x16);
-                    /* language.dll match for 0x70: "B" */
     (**(code **)(this->Diplomacy_status_label[3]->_padding_ + 0x1c))(2,0x70,0x91,0x16);
   }
   return;
@@ -7693,8 +7009,6 @@ void __thiscall TRIBE_Screen_Sed::position_panels(TRIBE_Screen_Sed *this)
 
 // Function: activate_victory_panel
 // Address: 004b29e0
-/* protected: void __thiscall TRIBE_Screen_Sed::activate_victory_panel(int) */
-
 void __thiscall TRIBE_Screen_Sed::activate_victory_panel(TRIBE_Screen_Sed *this,int param_1)
 {
   int iVar1;
@@ -7731,10 +7045,6 @@ void __thiscall TRIBE_Screen_Sed::activate_victory_panel(TRIBE_Screen_Sed *this,
 // Function: MakeFileList
 // Address: 004b2aa0
 // [HELPER] s__s__s: "%s\n%s"
-/* WARNING: Variable defined which should be unmapped: count */
-/* protected: int __thiscall TRIBE_Screen_Sed::MakeFileList(class TDropDownPanel *,char *,char
-   *,unsigned char,unsigned char) */
-
 int __thiscall
 TRIBE_Screen_Sed::MakeFileList
           (TRIBE_Screen_Sed *this,TDropDownPanel *param_1,char *param_2,char *param_3,uchar param_4,
@@ -7754,11 +7064,9 @@ TRIBE_Screen_Sed::MakeFileList
   extension_strlen = 0;
   TDropDownPanel::empty_list(param_1);
   if (param_4 != '\0') {
-                    /* language.dll match for 0x2775: " <None> " */
     TDropDownPanel::append_line(param_1,0x2775,0);
   }
   if (param_5 != '\0') {
-                    /* language.dll match for 0x277b: "Random" */
     TDropDownPanel::append_line(param_1,0x277b,0);
   }
   sprintf(path + 4,s__s__s,param_2,param_3);
@@ -7797,21 +7105,14 @@ TRIBE_Screen_Sed::MakeFileList
 
 // Function: Set_player_advance_civilization_text
 // Address: 004b2bc0
-/* protected: int __thiscall TRIBE_Screen_Sed::Set_player_advance_civilization_text(int) */
-
 int __thiscall
 TRIBE_Screen_Sed::Set_player_advance_civilization_text(TRIBE_Screen_Sed *this,int param_1)
 {
   TDropDownPanel::empty_list(this->player_advance_civilization_drop);
-                    /* language.dll match for 0x1069: "Stone Age" */
   TDropDownPanel::append_line(this->player_advance_civilization_drop,0x1069,0);
-                    /* language.dll match for 0x106a: "Tool Age" */
   TDropDownPanel::append_line(this->player_advance_civilization_drop,0x106a,1);
-                    /* language.dll match for 0x106b: "Bronze Age" */
   TDropDownPanel::append_line(this->player_advance_civilization_drop,0x106b,2);
-                    /* language.dll match for 0x106c: "Iron Age" */
   TDropDownPanel::append_line(this->player_advance_civilization_drop,0x106c,3);
-                    /* language.dll match for 0x106d: "Post-Iron Age" */
   TDropDownPanel::append_line(this->player_advance_civilization_drop,0x106d,4);
   TDropDownPanel::setCurrentLineNumber(this->player_advance_civilization_drop,0);
   (**(code **)(this->player_advance_civilization_drop->_padding_ + 0x14))(0);
@@ -7822,8 +7123,6 @@ TRIBE_Screen_Sed::Set_player_advance_civilization_text(TRIBE_Screen_Sed *this,in
 
 // Function: SavePlayerActiveStatus
 // Address: 004b2c50
-/* protected: void __thiscall TRIBE_Screen_Sed::SavePlayerActiveStatus(void) */
-
 void __thiscall TRIBE_Screen_Sed::SavePlayerActiveStatus(TRIBE_Screen_Sed *this)
 {
   long lVar1;
@@ -7851,10 +7150,8 @@ void __thiscall TRIBE_Screen_Sed::SavePlayerActiveStatus(TRIBE_Screen_Sed *this)
   TDropDownPanel::empty_list(this->Diplomacy_player_list);
   TDropDownPanel::empty_list(this->player_list);
   TDropDownPanel::empty_list(this->unit_player_list);
-                    /* language.dll match for 0x2776: "Gaia" */
   TDropDownPanel::append_line(this->unit_player_list,0x2776,0);
   if (0 < iVar4) {
-                    /* language.dll match for 0x2865: "Player 1" */
     iVar3 = 0x2865;
     do {
       TDropDownPanel::append_line(this->unit_player_list,iVar3,0);
@@ -7882,9 +7179,6 @@ void __thiscall TRIBE_Screen_Sed::SavePlayerActiveStatus(TRIBE_Screen_Sed *this)
 
 // Function: create_check_box
 // Address: 004b2dd0
-/* protected: int __thiscall TRIBE_Screen_Sed::create_check_box(class TPanel *,class TButtonPanel *
-   *) */
-
 int __thiscall
 TRIBE_Screen_Sed::create_check_box(TRIBE_Screen_Sed *this,TPanel *param_1,TButtonPanel **param_2)
 {
@@ -7909,9 +7203,6 @@ TRIBE_Screen_Sed::create_check_box(TRIBE_Screen_Sed *this,TPanel *param_1,TButto
 
 // Function: create_radio_button
 // Address: 004b2e60
-/* protected: int __thiscall TRIBE_Screen_Sed::create_radio_button(class TPanel *,class TButtonPanel
-   * *) */
-
 int __thiscall
 TRIBE_Screen_Sed::create_radio_button(TRIBE_Screen_Sed *this,TPanel *param_1,TButtonPanel **param_2)
 {

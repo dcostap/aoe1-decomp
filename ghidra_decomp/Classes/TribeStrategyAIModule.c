@@ -43,8 +43,6 @@
 // Function: TribeStrategyAIModule
 // Address: 004e9100
 // [HELPER] s_: ""
-/* public: __thiscall TribeStrategyAIModule::TribeStrategyAIModule(void *,int) */
-
 TribeStrategyAIModule * __thiscall
 TribeStrategyAIModule::TribeStrategyAIModule(TribeStrategyAIModule *this,void *param_1,int param_2)
 {
@@ -125,9 +123,6 @@ TribeStrategyAIModule::TribeStrategyAIModule(TribeStrategyAIModule *this,void *p
 
 // Function: `vector_deleting_destructor'
 // Address: 004e9240
-/* public: virtual void * __thiscall TribeStrategyAIModule::`vector deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TribeStrategyAIModule::_vector_deleting_destructor_(TribeStrategyAIModule *this,uint param_1)
 {
@@ -142,10 +137,6 @@ TribeStrategyAIModule::_vector_deleting_destructor_(TribeStrategyAIModule *this,
 
 // Function: TribeStrategyAIModule
 // Address: 004e9260
-/* WARNING: Variable defined which should be unmapped: i */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: __thiscall TribeStrategyAIModule::TribeStrategyAIModule(int,int) */
-
 TribeStrategyAIModule * __thiscall
 TribeStrategyAIModule::TribeStrategyAIModule(TribeStrategyAIModule *this,int param_1,int param_2)
 {
@@ -334,8 +325,6 @@ LAB_004e9703:
 
 // Function: ~TribeStrategyAIModule
 // Address: 004e9730
-/* public: virtual __thiscall TribeStrategyAIModule::~TribeStrategyAIModule(void) */
-
 void __thiscall TribeStrategyAIModule::~TribeStrategyAIModule(TribeStrategyAIModule *this)
 {
   int *piVar1;
@@ -387,9 +376,6 @@ void __thiscall TribeStrategyAIModule::~TribeStrategyAIModule(TribeStrategyAIMod
 
 // Function: update
 // Address: 004e9820
-/* WARNING: Variable defined which should be unmapped: worstRuleResult */
-/* public: virtual int __thiscall TribeStrategyAIModule::update(int) */
-
 int __thiscall TribeStrategyAIModule::update(TribeStrategyAIModule *this,int param_1)
 {
   ManagedArray<int> *pMVar1;
@@ -517,7 +503,6 @@ LAB_004e9a47:
   }
   iVar7 = 0;
   local_4 = -1;
-                    /* language.dll match for 0x65: "1" */
   result = 0x65;
   iVar2 = -1;
   if (0 < (this->executingRules).numberValue) {
@@ -650,9 +635,6 @@ LAB_004e9c3d:
 
 // Function: setMainDecisionAI
 // Address: 004e9d90
-/* public: void __thiscall TribeStrategyAIModule::setMainDecisionAI(class TribeMainDecisionAIModule
-   *) */
-
 void __thiscall
 TribeStrategyAIModule::setMainDecisionAI
           (TribeStrategyAIModule *this,TribeMainDecisionAIModule *param_1)
@@ -665,9 +647,6 @@ TribeStrategyAIModule::setMainDecisionAI
 
 // Function: save
 // Address: 004e9da0
-/* WARNING: Variable defined which should be unmapped: tempInt */
-/* public: virtual int __thiscall TribeStrategyAIModule::save(int) */
-
 int __thiscall TribeStrategyAIModule::save(TribeStrategyAIModule *this,int param_1)
 {
   char cVar1;
@@ -817,8 +796,6 @@ int __thiscall TribeStrategyAIModule::save(TribeStrategyAIModule *this,int param
 
 // Function: ruleSetName
 // Address: 004ea130
-/* public: char * __thiscall TribeStrategyAIModule::ruleSetName(void) */
-
 char * __thiscall TribeStrategyAIModule::ruleSetName(TribeStrategyAIModule *this)
 {
   return this->ruleSetNameValue;
@@ -828,8 +805,6 @@ char * __thiscall TribeStrategyAIModule::ruleSetName(TribeStrategyAIModule *this
 
 // Function: loadRules
 // Address: 004ea140
-/* public: int __thiscall TribeStrategyAIModule::loadRules(char *) */
-
 int __thiscall TribeStrategyAIModule::loadRules(TribeStrategyAIModule *this,char *param_1)
 {
   int iVar1;
@@ -847,8 +822,6 @@ int __thiscall TribeStrategyAIModule::loadRules(TribeStrategyAIModule *this,char
 // Function: setRule
 // Address: 004ea180
 // [HELPER] s_Setting_SN__d__to__d_: "Setting SN[%d] to %d."
-/* public: void __thiscall TribeStrategyAIModule::setRule(int,int) */
-
 void __thiscall TribeStrategyAIModule::setRule(TribeStrategyAIModule *this,int param_1,int param_2)
 {
   AIModule::logCommonHistory((AIModule *)this,(char *)this,s_Setting_SN__d__to__d_,param_1,param_2);
@@ -860,8 +833,6 @@ void __thiscall TribeStrategyAIModule::setRule(TribeStrategyAIModule *this,int p
 
 // Function: rule
 // Address: 004ea1b0
-/* public: int __thiscall TribeStrategyAIModule::rule(int) */
-
 int __thiscall TribeStrategyAIModule::rule(TribeStrategyAIModule *this,int param_1)
 {
   int iVar1;
@@ -874,8 +845,6 @@ int __thiscall TribeStrategyAIModule::rule(TribeStrategyAIModule *this,int param
 
 // Function: setDifficultyLevel
 // Address: 004ea1d0
-/* public: void __thiscall TribeStrategyAIModule::setDifficultyLevel(int) */
-
 void __thiscall TribeStrategyAIModule::setDifficultyLevel(TribeStrategyAIModule *this,int param_1)
 {
   VictoryConditionRuleSystem::modifyForDifficultyLevel(&this->vcRules,param_1);
@@ -886,8 +855,6 @@ void __thiscall TribeStrategyAIModule::setDifficultyLevel(TribeStrategyAIModule 
 
 // Function: currentVictoryCondition
 // Address: 004ea1f0
-/* public: int __thiscall TribeStrategyAIModule::currentVictoryCondition(void)const  */
-
 int __thiscall TribeStrategyAIModule::currentVictoryCondition(TribeStrategyAIModule *this)
 {
   return this->currentVictoryConditionValue;
@@ -897,8 +864,6 @@ int __thiscall TribeStrategyAIModule::currentVictoryCondition(TribeStrategyAIMod
 
 // Function: targetID
 // Address: 004ea200
-/* public: int __thiscall TribeStrategyAIModule::targetID(void)const  */
-
 int __thiscall TribeStrategyAIModule::targetID(TribeStrategyAIModule *this)
 {
   return this->targetIDValue;
@@ -908,8 +873,6 @@ int __thiscall TribeStrategyAIModule::targetID(TribeStrategyAIModule *this)
 
 // Function: targetType
 // Address: 004ea210
-/* public: int __thiscall TribeStrategyAIModule::targetType(void)const  */
-
 int __thiscall TribeStrategyAIModule::targetType(TribeStrategyAIModule *this)
 {
   return this->targetTypeValue;
@@ -919,8 +882,6 @@ int __thiscall TribeStrategyAIModule::targetType(TribeStrategyAIModule *this)
 
 // Function: secondTargetID
 // Address: 004ea220
-/* public: int __thiscall TribeStrategyAIModule::secondTargetID(void)const  */
-
 int __thiscall TribeStrategyAIModule::secondTargetID(TribeStrategyAIModule *this)
 {
   return this->secondTargetIDValue;
@@ -930,8 +891,6 @@ int __thiscall TribeStrategyAIModule::secondTargetID(TribeStrategyAIModule *this
 
 // Function: secondTargetType
 // Address: 004ea230
-/* public: int __thiscall TribeStrategyAIModule::secondTargetType(void)const  */
-
 int __thiscall TribeStrategyAIModule::secondTargetType(TribeStrategyAIModule *this)
 {
   return this->secondTargetTypeValue;
@@ -941,8 +900,6 @@ int __thiscall TribeStrategyAIModule::secondTargetType(TribeStrategyAIModule *th
 
 // Function: targetPoint1
 // Address: 004ea240
-/* public: struct Waypoint const & __thiscall TribeStrategyAIModule::targetPoint1(void)const  */
-
 Waypoint * __thiscall TribeStrategyAIModule::targetPoint1(TribeStrategyAIModule *this)
 {
   return &this->targetPoint1Value;
@@ -952,8 +909,6 @@ Waypoint * __thiscall TribeStrategyAIModule::targetPoint1(TribeStrategyAIModule 
 
 // Function: targetPoint2
 // Address: 004ea250
-/* public: struct Waypoint const & __thiscall TribeStrategyAIModule::targetPoint2(void)const  */
-
 Waypoint * __thiscall TribeStrategyAIModule::targetPoint2(TribeStrategyAIModule *this)
 {
   return &this->targetPoint2Value;
@@ -963,8 +918,6 @@ Waypoint * __thiscall TribeStrategyAIModule::targetPoint2(TribeStrategyAIModule 
 
 // Function: targetAttribute
 // Address: 004ea260
-/* public: int __thiscall TribeStrategyAIModule::targetAttribute(void)const  */
-
 int __thiscall TribeStrategyAIModule::targetAttribute(TribeStrategyAIModule *this)
 {
   return this->targetAttributeValue;
@@ -974,8 +927,6 @@ int __thiscall TribeStrategyAIModule::targetAttribute(TribeStrategyAIModule *thi
 
 // Function: targetNumber
 // Address: 004ea270
-/* public: int __thiscall TribeStrategyAIModule::targetNumber(void)const  */
-
 int __thiscall TribeStrategyAIModule::targetNumber(TribeStrategyAIModule *this)
 {
   return this->targetNumberValue;
@@ -985,8 +936,6 @@ int __thiscall TribeStrategyAIModule::targetNumber(TribeStrategyAIModule *this)
 
 // Function: setVictoryCondition
 // Address: 004ea280
-/* public: void __thiscall TribeStrategyAIModule::setVictoryCondition(int) */
-
 void __thiscall TribeStrategyAIModule::setVictoryCondition(TribeStrategyAIModule *this,int param_1)
 {
   ManagedArray<int> *this_00;
@@ -1185,8 +1134,6 @@ void __thiscall TribeStrategyAIModule::setVictoryCondition(TribeStrategyAIModule
 
 // Function: isRuleExecuting
 // Address: 004ea7c0
-/* public: int __thiscall TribeStrategyAIModule::isRuleExecuting(int) */
-
 int __thiscall TribeStrategyAIModule::isRuleExecuting(TribeStrategyAIModule *this,int param_1)
 {
   int iVar1;
@@ -1212,8 +1159,6 @@ int __thiscall TribeStrategyAIModule::isRuleExecuting(TribeStrategyAIModule *thi
 
 // Function: isRuleIdle
 // Address: 004ea810
-/* public: int __thiscall TribeStrategyAIModule::isRuleIdle(int) */
-
 int __thiscall TribeStrategyAIModule::isRuleIdle(TribeStrategyAIModule *this,int param_1)
 {
   int iVar1;

@@ -42,9 +42,6 @@
 
 // Function: RGE_Communications_Speed
 // Address: 00432620
-/* public: __thiscall RGE_Communications_Speed::RGE_Communications_Speed(class
-   TCommunications_Handler *) */
-
 RGE_Communications_Speed * __thiscall
 RGE_Communications_Speed::RGE_Communications_Speed
           (RGE_Communications_Speed *this,TCommunications_Handler *param_1)
@@ -123,8 +120,6 @@ RGE_Communications_Speed::RGE_Communications_Speed
 
 // Function: ~RGE_Communications_Speed
 // Address: 00432780
-/* public: __thiscall RGE_Communications_Speed::~RGE_Communications_Speed(void) */
-
 void __thiscall RGE_Communications_Speed::~RGE_Communications_Speed(RGE_Communications_Speed *this)
 {
   RGE_TimeSinceLastCall *pRVar1;
@@ -146,9 +141,6 @@ void __thiscall RGE_Communications_Speed::~RGE_Communications_Speed(RGE_Communic
 
 // Function: SetPlayerTurnSpeed
 // Address: 004327c0
-/* public: void __thiscall RGE_Communications_Speed::SetPlayerTurnSpeed(unsigned int,unsigned
-   char,unsigned char) */
-
 void __thiscall
 RGE_Communications_Speed::SetPlayerTurnSpeed
           (RGE_Communications_Speed *this,uint param_1,uchar param_2,uchar param_3)
@@ -164,8 +156,6 @@ RGE_Communications_Speed::SetPlayerTurnSpeed
 
 // Function: SetActualLatency
 // Address: 00432800
-/* public: void __thiscall RGE_Communications_Speed::SetActualLatency(unsigned int,unsigned long) */
-
 void __thiscall
 RGE_Communications_Speed::SetActualLatency
           (RGE_Communications_Speed *this,uint param_1,ulong param_2)
@@ -186,9 +176,6 @@ RGE_Communications_Speed::SetActualLatency
 
 // Function: SetFutureSpeedChange
 // Address: 00432840
-/* public: void __thiscall RGE_Communications_Speed::SetFutureSpeedChange(unsigned int,unsigned
-   int,unsigned long) */
-
 void __thiscall
 RGE_Communications_Speed::SetFutureSpeedChange
           (RGE_Communications_Speed *this,uint param_1,uint param_2,ulong param_3)
@@ -205,8 +192,6 @@ RGE_Communications_Speed::SetFutureSpeedChange
 
 // Function: EnableSpeedControl
 // Address: 00432870
-/* public: void __thiscall RGE_Communications_Speed::EnableSpeedControl(int) */
-
 void __thiscall
 RGE_Communications_Speed::EnableSpeedControl(RGE_Communications_Speed *this,int param_1)
 {
@@ -218,8 +203,6 @@ RGE_Communications_Speed::EnableSpeedControl(RGE_Communications_Speed *this,int 
 
 // Function: GetBufferGranularity
 // Address: 00432880
-/* public: unsigned int __thiscall RGE_Communications_Speed::GetBufferGranularity(void) */
-
 uint __thiscall RGE_Communications_Speed::GetBufferGranularity(RGE_Communications_Speed *this)
 {
   return this->CurrentBufferGranularity;
@@ -229,8 +212,6 @@ uint __thiscall RGE_Communications_Speed::GetBufferGranularity(RGE_Communication
 
 // Function: GetAdjustmentCount
 // Address: 00432890
-/* public: unsigned long __thiscall RGE_Communications_Speed::GetAdjustmentCount(void) */
-
 ulong __thiscall RGE_Communications_Speed::GetAdjustmentCount(RGE_Communications_Speed *this)
 {
   return this->AdjustmentCount;
@@ -240,8 +221,6 @@ ulong __thiscall RGE_Communications_Speed::GetAdjustmentCount(RGE_Communications
 
 // Function: GetBufferGranularityAdjusted
 // Address: 004328a0
-/* public: unsigned int __thiscall RGE_Communications_Speed::GetBufferGranularityAdjusted(void) */
-
 uint __thiscall
 RGE_Communications_Speed::GetBufferGranularityAdjusted(RGE_Communications_Speed *this)
 {
@@ -253,8 +232,6 @@ RGE_Communications_Speed::GetBufferGranularityAdjusted(RGE_Communications_Speed 
 
 // Function: BufferFramesRemaining
 // Address: 004328c0
-/* public: unsigned int __thiscall RGE_Communications_Speed::BufferFramesRemaining(void) */
-
 uint __thiscall RGE_Communications_Speed::BufferFramesRemaining(RGE_Communications_Speed *this)
 {
   return this->TotalBufferFramesRemaining;
@@ -264,8 +241,6 @@ uint __thiscall RGE_Communications_Speed::BufferFramesRemaining(RGE_Communicatio
 
 // Function: WaitingOnAcknowledgement
 // Address: 004328d0
-/* public: unsigned int __thiscall RGE_Communications_Speed::WaitingOnAcknowledgement(void) */
-
 uint __thiscall RGE_Communications_Speed::WaitingOnAcknowledgement(RGE_Communications_Speed *this)
 {
   uint uVar1;
@@ -279,8 +254,6 @@ uint __thiscall RGE_Communications_Speed::WaitingOnAcknowledgement(RGE_Communica
 
 // Function: AdjustLocalSpeed
 // Address: 004328e0
-/* protected: void __thiscall RGE_Communications_Speed::AdjustLocalSpeed(void) */
-
 void __thiscall RGE_Communications_Speed::AdjustLocalSpeed(RGE_Communications_Speed *this)
 {
   if ((this->NextLatencyChangeTurn != 0) &&
@@ -299,8 +272,6 @@ void __thiscall RGE_Communications_Speed::AdjustLocalSpeed(RGE_Communications_Sp
 
 // Function: ReloadBufferFrames
 // Address: 00432940
-/* public: void __thiscall RGE_Communications_Speed::ReloadBufferFrames(void) */
-
 void __thiscall RGE_Communications_Speed::ReloadBufferFrames(RGE_Communications_Speed *this)
 {
   RGE_TimeSinceLastCall::Set(this->TurnTSLC);
@@ -314,8 +285,6 @@ void __thiscall RGE_Communications_Speed::ReloadBufferFrames(RGE_Communications_
 
 // Function: BufferTimeToUse
 // Address: 00432970
-/* public: unsigned int __thiscall RGE_Communications_Speed::BufferTimeToUse(unsigned long) */
-
 uint __thiscall
 RGE_Communications_Speed::BufferTimeToUse(RGE_Communications_Speed *this,ulong param_1)
 {
@@ -361,8 +330,6 @@ RGE_Communications_Speed::BufferTimeToUse(RGE_Communications_Speed *this,ulong p
 
 // Function: Skip
 // Address: 00432a70
-/* public: void __thiscall RGE_Communications_Speed::Skip(void) */
-
 void __thiscall RGE_Communications_Speed::Skip(RGE_Communications_Speed *this)
 {
   RGE_TimeSinceLastCall::Skip(this->FrameTSLC);
@@ -374,8 +341,6 @@ void __thiscall RGE_Communications_Speed::Skip(RGE_Communications_Speed *this)
 
 // Function: GetHighLatencyCenti
 // Address: 00432a90
-/* public: unsigned char __thiscall RGE_Communications_Speed::GetHighLatencyCenti(void) */
-
 uchar __thiscall RGE_Communications_Speed::GetHighLatencyCenti(RGE_Communications_Speed *this)
 {
   int iVar1;
@@ -409,8 +374,6 @@ uchar __thiscall RGE_Communications_Speed::GetHighLatencyCenti(RGE_Communication
 
 // Function: GetPlayerLatency
 // Address: 00432b00
-/* public: unsigned long __thiscall RGE_Communications_Speed::GetPlayerLatency(unsigned int) */
-
 ulong __thiscall
 RGE_Communications_Speed::GetPlayerLatency(RGE_Communications_Speed *this,uint param_1)
 {
@@ -425,8 +388,6 @@ RGE_Communications_Speed::GetPlayerLatency(RGE_Communications_Speed *this,uint p
 // Function: GetLatencyInfo
 // Address: 00432b20
 // [HELPER] s_P_d__d_: "P%d=%d "
-/* public: char * __thiscall RGE_Communications_Speed::GetLatencyInfo(void) */
-
 char * __thiscall RGE_Communications_Speed::GetLatencyInfo(RGE_Communications_Speed *this)
 {
   char cVar1;
@@ -518,8 +479,6 @@ char * __thiscall RGE_Communications_Speed::GetLatencyInfo(RGE_Communications_Sp
 // Function: GetSelfPlayerOptimalSpeedStr
 // Address: 00432bd0
 // [HELPER] s_MeOptimal__Buf__3d_Gran__3d__Tar: "MeOptimal: Buf=%3d Gran=%3d  Target FPS=%3d  My expect turn=%4dms"
-/* public: char * __thiscall RGE_Communications_Speed::GetSelfPlayerOptimalSpeedStr(void) */
-
 char * __thiscall
 RGE_Communications_Speed::GetSelfPlayerOptimalSpeedStr(RGE_Communications_Speed *this)
 {
@@ -538,8 +497,6 @@ RGE_Communications_Speed::GetSelfPlayerOptimalSpeedStr(RGE_Communications_Speed 
 // Function: GetPlayerSpeedStatusStr
 // Address: 00432c10
 // [HELPER] s_Buf__3d____3d___Gran__3dms___tur: "Buf=%3d / %3d * Gran=%3dms = turn %4dms   %s"
-/* public: char * __thiscall RGE_Communications_Speed::GetPlayerSpeedStatusStr(int) */
-
 char * __thiscall
 RGE_Communications_Speed::GetPlayerSpeedStatusStr(RGE_Communications_Speed *this,int param_1)
 {
@@ -563,8 +520,6 @@ RGE_Communications_Speed::GetPlayerSpeedStatusStr(RGE_Communications_Speed *this
 // Function: GetMachineSpeedInfo
 // Address: 00432c70
 // [HELPER] s_P__1d_fr_d_lat_d__: "P#%1d(fr%d lat%d) "
-/* public: char * __thiscall RGE_Communications_Speed::GetMachineSpeedInfo(void) */
-
 char * __thiscall RGE_Communications_Speed::GetMachineSpeedInfo(RGE_Communications_Speed *this)
 {
   char cVar1;
@@ -654,8 +609,6 @@ char * __thiscall RGE_Communications_Speed::GetMachineSpeedInfo(RGE_Communicatio
 
 // Function: GetRecommendedBufferFrames
 // Address: 00432d20
-/* public: unsigned int __thiscall RGE_Communications_Speed::GetRecommendedBufferFrames(void) */
-
 uint __thiscall RGE_Communications_Speed::GetRecommendedBufferFrames(RGE_Communications_Speed *this)
 {
   int iVar1;
@@ -691,8 +644,6 @@ uint __thiscall RGE_Communications_Speed::GetRecommendedBufferFrames(RGE_Communi
 
 // Function: GetAvgFrameRate
 // Address: 00432d90
-/* public: unsigned int __thiscall RGE_Communications_Speed::GetAvgFrameRate(void) */
-
 uint __thiscall RGE_Communications_Speed::GetAvgFrameRate(RGE_Communications_Speed *this)
 {
   ulong uVar1;
@@ -705,9 +656,6 @@ uint __thiscall RGE_Communications_Speed::GetAvgFrameRate(RGE_Communications_Spe
 
 // Function: GetRecommendedBufferGranularity
 // Address: 00432da0
-/* public: unsigned int __thiscall RGE_Communications_Speed::GetRecommendedBufferGranularity(void)
-    */
-
 uint __thiscall
 RGE_Communications_Speed::GetRecommendedBufferGranularity(RGE_Communications_Speed *this)
 {
@@ -730,9 +678,6 @@ RGE_Communications_Speed::GetRecommendedBufferGranularity(RGE_Communications_Spe
 
 // Function: AnalyzeGameSpeed
 // Address: 00432de0
-/* public: int __thiscall RGE_Communications_Speed::AnalyzeGameSpeed(unsigned int *,unsigned int
-   *,int) */
-
 int __thiscall
 RGE_Communications_Speed::AnalyzeGameSpeed
           (RGE_Communications_Speed *this,uint *param_1,uint *param_2,int param_3)
@@ -824,8 +769,6 @@ RGE_Communications_Speed::AnalyzeGameSpeed
 // Function: SetV1
 // Address: 00432fb0
 // [HELPER] s_Speed_set_V1__d: "Speed set V1=%d"
-/* public: void __thiscall RGE_Communications_Speed::SetV1(unsigned long) */
-
 void __thiscall RGE_Communications_Speed::SetV1(RGE_Communications_Speed *this,ulong param_1)
 {
   TDebuggingLog::Log(L,(char *)L,s_Speed_set_V1__d,param_1);
@@ -837,8 +780,6 @@ void __thiscall RGE_Communications_Speed::SetV1(RGE_Communications_Speed *this,u
 // Function: SetV2
 // Address: 00432fd0
 // [HELPER] s_Speed_set_V2__d: "Speed set V2=%d"
-/* public: void __thiscall RGE_Communications_Speed::SetV2(unsigned long) */
-
 void __thiscall RGE_Communications_Speed::SetV2(RGE_Communications_Speed *this,ulong param_1)
 {
   TDebuggingLog::Log(L,(char *)L,s_Speed_set_V2__d,param_1);

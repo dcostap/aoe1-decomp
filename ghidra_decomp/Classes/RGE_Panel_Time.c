@@ -75,8 +75,6 @@
 
 // Function: RGE_Panel_Time
 // Address: 0048a680
-/* public: __thiscall RGE_Panel_Time::RGE_Panel_Time(class TDrawArea *,class TPanel *,void *) */
-
 RGE_Panel_Time * __thiscall
 RGE_Panel_Time::RGE_Panel_Time
           (RGE_Panel_Time *this,TDrawArea *param_1,TPanel *param_2,void *param_3)
@@ -111,8 +109,6 @@ RGE_Panel_Time::RGE_Panel_Time
 
 // Function: `scalar_deleting_destructor'
 // Address: 0048a710
-/* public: virtual void * __thiscall RGE_Panel_Time::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall RGE_Panel_Time::_scalar_deleting_destructor_(RGE_Panel_Time *this,uint param_1)
 {
   ~RGE_Panel_Time(this);
@@ -126,8 +122,6 @@ void * __thiscall RGE_Panel_Time::_scalar_deleting_destructor_(RGE_Panel_Time *t
 
 // Function: ~RGE_Panel_Time
 // Address: 0048a730
-/* public: virtual __thiscall RGE_Panel_Time::~RGE_Panel_Time(void) */
-
 void __thiscall RGE_Panel_Time::~RGE_Panel_Time(RGE_Panel_Time *this)
 {
   int iVar1;
@@ -169,9 +163,6 @@ void __thiscall RGE_Panel_Time::~RGE_Panel_Time(RGE_Panel_Time *this)
 // Address: 0048a740
 // [HELPER] s__02ld__02ld__02ld___3_1f_: "%02ld:%02ld:%02ld (%3.1f)"
 // [HELPER] s_rpnl_tim__draw: "rpnl_tim::draw"
-/* WARNING: Variable defined which should be unmapped: countdown_timer */
-/* public: virtual void __thiscall RGE_Panel_Time::draw(void) */
-
 void __thiscall RGE_Panel_Time::draw(RGE_Panel_Time *this)
 {
   char cVar1;
@@ -242,7 +233,6 @@ void __thiscall RGE_Panel_Time::draw(RGE_Panel_Time *this)
                            (((ushort)paletteColor._2_2_ & 0xff) << 8 |
                            CONCAT21(paletteColor._2_2_,paletteColor.peGreen) & 0xff) << 8 |
                            CONCAT11(paletteColor.peGreen,paletteColor.peRed) & 0xff);
-                    /* language.dll match for 0x2c24: "%d Years" */
               pcVar4 = TPanel::get_string((TPanel *)this,0x2c24);
               sprintf(str,pcVar4);
               uVar5 = 0xffffffff;
@@ -292,8 +282,6 @@ void __thiscall RGE_Panel_Time::draw(RGE_Panel_Time *this)
 
 // Function: handle_idle
 // Address: 0048aa70
-/* public: virtual long __thiscall RGE_Panel_Time::handle_idle(void) */
-
 long __thiscall RGE_Panel_Time::handle_idle(RGE_Panel_Time *this)
 {
   uint uVar1;

@@ -93,8 +93,6 @@
 
 // Function: TMessagePanel
 // Address: 00478f40
-/* public: __thiscall TMessagePanel::TMessagePanel(void *,long,long) */
-
 TMessagePanel * __thiscall
 TMessagePanel::TMessagePanel(TMessagePanel *this,void *param_1,long param_2,long param_3)
 {
@@ -142,8 +140,6 @@ TMessagePanel::TMessagePanel(TMessagePanel *this,void *param_1,long param_2,long
 
 // Function: `scalar_deleting_destructor'
 // Address: 00479030
-/* public: virtual void * __thiscall TMessagePanel::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall TMessagePanel::_scalar_deleting_destructor_(TMessagePanel *this,uint param_1)
 {
   ~TMessagePanel(this);
@@ -157,8 +153,6 @@ void * __thiscall TMessagePanel::_scalar_deleting_destructor_(TMessagePanel *thi
 
 // Function: ~TMessagePanel
 // Address: 00479050
-/* public: virtual __thiscall TMessagePanel::~TMessagePanel(void) */
-
 void __thiscall TMessagePanel::~TMessagePanel(TMessagePanel *this)
 {
   TDrawArea *this_00;
@@ -193,8 +187,6 @@ void __thiscall TMessagePanel::~TMessagePanel(TMessagePanel *this)
 // Function: set_rect
 // Address: 004790e0
 // [HELPER] s_message_panel: "message panel"
-/* public: virtual void __thiscall TMessagePanel::set_rect(long,long,long,long) */
-
 void __thiscall
 TMessagePanel::set_rect(TMessagePanel *this,long param_1,long param_2,long param_3,long param_4)
 {
@@ -268,9 +260,6 @@ TMessagePanel::set_rect(TMessagePanel *this,long param_1,long param_2,long param
 
 // Function: set_justification
 // Address: 00479270
-/* public: void __thiscall TMessagePanel::set_justification(enum TMessagePanel::JustType,enum
-   TMessagePanel::JustType,int) */
-
 void __thiscall
 TMessagePanel::set_justification(TMessagePanel *this,JustType param_1,JustType param_2,int param_3)
 {
@@ -285,9 +274,6 @@ TMessagePanel::set_justification(TMessagePanel *this,JustType param_1,JustType p
 // Function: show_message
 // Address: 004792a0
 // [HELPER] s_C__msdev_work_age1_x1_Pnl_msg_cp: "C:\msdev\work\age1_x1\Pnl_msg.cpp"
-/* public: void __thiscall TMessagePanel::show_message(enum TMessagePanel::MessageType,char
-   *,unsigned char,unsigned char,void *,long,long) */
-
 void __thiscall
 TMessagePanel::show_message
           (TMessagePanel *this,MessageType param_1,char *param_2,uchar param_3,uchar param_4,
@@ -313,7 +299,6 @@ TMessagePanel::show_message
   }
   this->message_type = param_1;
   pcVar3 = this->text;
-                    /* language.dll match for 0x80: "Arial" */
   for (iVar1 = 0x80; iVar1 != 0; iVar1 = iVar1 + -1) {
     pcVar3[0] = '\0';
     pcVar3[1] = '\0';
@@ -346,9 +331,6 @@ TMessagePanel::show_message
 // Function: show_message2
 // Address: 004793c0
 // [HELPER] s_C__msdev_work_age1_x1_Pnl_msg_cp: "C:\msdev\work\age1_x1\Pnl_msg.cpp"
-/* public: void __thiscall TMessagePanel::show_message2(enum TMessagePanel::MessageType,char
-   *,unsigned long,unsigned long,void *,long,long,class TShape *,int,class TShape *,int) */
-
 void __thiscall
 TMessagePanel::show_message2
           (TMessagePanel *this,MessageType param_1,char *param_2,ulong param_3,ulong param_4,
@@ -377,7 +359,6 @@ TMessagePanel::show_message2
   this->IconFrame2 = param_11;
   this->Icon2 = param_10;
   pcVar3 = this->text;
-                    /* language.dll match for 0x80: "Arial" */
   for (iVar1 = 0x80; iVar1 != 0; iVar1 = iVar1 + -1) {
     pcVar3[0] = '\0';
     pcVar3[1] = '\0';
@@ -409,8 +390,6 @@ TMessagePanel::show_message2
 
 // Function: remove_message
 // Address: 00479540
-/* public: void __thiscall TMessagePanel::remove_message(void) */
-
 void __thiscall TMessagePanel::remove_message(TMessagePanel *this)
 {
   int iVar1;
@@ -433,9 +412,6 @@ void __thiscall TMessagePanel::remove_message(TMessagePanel *this)
 // Function: draw
 // Address: 00479590
 // [HELPER] s_pnl_msg__draw: "pnl_msg::draw"
-/* WARNING: Variable defined which should be unmapped: y */
-/* public: virtual void __thiscall TMessagePanel::draw(void) */
-
 void __thiscall TMessagePanel::draw(TMessagePanel *this)
 {
   char *pcVar1;
@@ -581,7 +557,6 @@ void __thiscall TMessagePanel::draw(TMessagePanel *this)
       iVar11 = iStack_28;
     }
   }
-                    /* Symbol Ref: {@symbol finish_up} */
   (**(code **)(iVar11 + 0x2c))();
   return;
 }
@@ -590,8 +565,6 @@ void __thiscall TMessagePanel::draw(TMessagePanel *this)
 
 // Function: get_true_render_rect
 // Address: 00479a10
-/* public: virtual void __thiscall TMessagePanel::get_true_render_rect(struct tagRECT &) */
-
 void __thiscall TMessagePanel::get_true_render_rect(TMessagePanel *this,tagRECT *param_1)
 {
   if ((((this->ImageBuffer != (TDrawArea *)0x0) && (this->_padding_ != 0)) && (this->_padding_ != 0)
@@ -614,8 +587,6 @@ void __thiscall TMessagePanel::get_true_render_rect(TMessagePanel *this,tagRECT 
 // Function: handle_idle
 // Address: 00479a80
 // [HELPER] s_C__msdev_work_age1_x1_Pnl_msg_cp: "C:\msdev\work\age1_x1\Pnl_msg.cpp"
-/* public: virtual long __thiscall TMessagePanel::handle_idle(void) */
-
 long __thiscall TMessagePanel::handle_idle(TMessagePanel *this)
 {
   MessageType MVar1;
@@ -637,9 +608,6 @@ long __thiscall TMessagePanel::handle_idle(TMessagePanel *this)
 // Function: render_to_image_buffer
 // Address: 00479ae0
 // [HELPER] s_pnl_msg__render_to_image_buffer: "pnl_msg::render_to_image_buffer"
-/* WARNING: Variable defined which should be unmapped: x */
-/* protected: int __thiscall TMessagePanel::render_to_image_buffer(void) */
-
 int __thiscall TMessagePanel::render_to_image_buffer(TMessagePanel *this)
 {
   tagRECT *ptVar1;
@@ -856,7 +824,6 @@ int __thiscall TMessagePanel::render_to_image_buffer(TMessagePanel *this)
     }
     this->ImageTextActive = 1;
   }
-                    /* Symbol Ref: {@symbol rib_exit} */
   SelectObject(this->ImageBuffer->DrawDc,uVar12);
   SelectClipRgn(this->ImageBuffer->DrawDc,0);
   TDrawArea::ReleaseDc(this->ImageBuffer,s_pnl_msg__render_to_image_buffer);
@@ -875,9 +842,6 @@ int __thiscall TMessagePanel::render_to_image_buffer(TMessagePanel *this)
 
 // Function: handle_mouse_down
 // Address: 0047a160
-/* public: virtual long __thiscall TMessagePanel::handle_mouse_down(unsigned char,long,long,int,int)
-    */
-
 long __thiscall
 TMessagePanel::handle_mouse_down
           (TMessagePanel *this,uchar param_1,long param_2,long param_3,int param_4,int param_5)
@@ -889,8 +853,6 @@ TMessagePanel::handle_mouse_down
 
 // Function: handle_mouse_move
 // Address: 0047a170
-/* public: virtual long __thiscall TMessagePanel::handle_mouse_move(long,long,int,int) */
-
 long __thiscall
 TMessagePanel::handle_mouse_move
           (TMessagePanel *this,long param_1,long param_2,int param_3,int param_4)
@@ -902,9 +864,6 @@ TMessagePanel::handle_mouse_move
 
 // Function: handle_mouse_up
 // Address: 0047a180
-/* public: virtual long __thiscall TMessagePanel::handle_mouse_up(unsigned char,long,long,int,int)
-    */
-
 long __thiscall
 TMessagePanel::handle_mouse_up
           (TMessagePanel *this,uchar param_1,long param_2,long param_3,int param_4,int param_5)
@@ -916,8 +875,6 @@ TMessagePanel::handle_mouse_up
 
 // Function: set_font
 // Address: 0047a190
-/* public: virtual void __thiscall TMessagePanel::set_font(void *,long,long) */
-
 void __thiscall TMessagePanel::set_font(TMessagePanel *this,void *param_1,long param_2,long param_3)
 {
   int iVar1;

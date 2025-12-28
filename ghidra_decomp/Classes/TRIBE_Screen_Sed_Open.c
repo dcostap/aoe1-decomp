@@ -590,9 +590,6 @@
 // Function: TRIBE_Screen_Sed_Open
 // Address: 004b33d0
 // [HELPER] s_Scenario_Editor_Open: "Scenario Editor Open"
-/* WARNING: Variable defined which should be unmapped: from_panel */
-/* public: __thiscall TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open(void) */
-
 TRIBE_Screen_Sed_Open * __thiscall
 TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open(TRIBE_Screen_Sed_Open *this)
 {
@@ -664,7 +661,6 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open(TRIBE_Screen_Sed_Open *this)
   else {
     TEasy_Panel::setup_shadow_area((TEasy_Panel *)this,0);
     TEasy_Panel::set_ideal_size((TEasy_Panel *)this,0x280,0x1e0);
-                    /* language.dll match for 0x24cd: "Select Scenario" */
     iVar12 = TEasy_Panel::create_text
                        ((TEasy_Panel *)this,(TPanel *)this,&this->title,0x24cd,0x14,0x14,600,0x1e,1,
                         1,0,0);
@@ -675,18 +671,15 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open(TRIBE_Screen_Sed_Open *this)
         iVar12 = TEasy_Panel::create_auto_scrollbar
                            ((TEasy_Panel *)this,&this->scrollbar,(TTextPanel *)*ppTVar1,0x14);
         if (iVar12 != 0) {
-                    /* language.dll match for 0xfa1: "OK" */
           iVar12 = TEasy_Panel::create_button
                              ((TEasy_Panel *)this,(TPanel *)this,&this->okButton,0xfa1,0,0x1e,0x1b8,
                               0xb4,0x1e,0,0,0);
           if (iVar12 != 0) {
             ppTVar2 = &this->deleteButton;
-                    /* language.dll match for 0x24c9: "Delete" */
             iVar12 = TEasy_Panel::create_button
                                ((TEasy_Panel *)this,(TPanel *)this,ppTVar2,0x24c9,0,0xe6,0x1b8,0xb4,
                                 0x1e,0,0,0);
             if (iVar12 != 0) {
-                    /* language.dll match for 0xfa2: "Cancel" */
               iVar12 = TEasy_Panel::create_button
                                  ((TEasy_Panel *)this,(TPanel *)this,&this->cancelButton,0xfa2,0,
                                   0x1ae,0x1b8,0xb4,0x1e,0,0,0);
@@ -723,9 +716,6 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open(TRIBE_Screen_Sed_Open *this)
 
 // Function: `scalar_deleting_destructor'
 // Address: 004b3680
-/* public: virtual void * __thiscall TRIBE_Screen_Sed_Open::`scalar deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TRIBE_Screen_Sed_Open::_scalar_deleting_destructor_(TRIBE_Screen_Sed_Open *this,uint param_1)
 {
@@ -740,8 +730,6 @@ TRIBE_Screen_Sed_Open::_scalar_deleting_destructor_(TRIBE_Screen_Sed_Open *this,
 
 // Function: ~TRIBE_Screen_Sed_Open
 // Address: 004b36a0
-/* public: virtual __thiscall TRIBE_Screen_Sed_Open::~TRIBE_Screen_Sed_Open(void) */
-
 void __thiscall TRIBE_Screen_Sed_Open::~TRIBE_Screen_Sed_Open(TRIBE_Screen_Sed_Open *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -772,9 +760,6 @@ void __thiscall TRIBE_Screen_Sed_Open::~TRIBE_Screen_Sed_Open(TRIBE_Screen_Sed_O
 // Address: 004b3740
 // [HELPER] s__s__scn: "%s*.scn"
 // [HELPER] s__s__scx: "%s*.scx"
-/* WARNING: Variable defined which should be unmapped: file_name */
-/* protected: void __thiscall TRIBE_Screen_Sed_Open::fillList(void) */
-
 void __thiscall TRIBE_Screen_Sed_Open::fillList(TRIBE_Screen_Sed_Open *this)
 {
   char cVar1;
@@ -841,9 +826,6 @@ void __thiscall TRIBE_Screen_Sed_Open::fillList(TRIBE_Screen_Sed_Open *this)
 // [HELPER] s__s_s_scx: "%s%s.scx"
 // [HELPER] s__s_scn: "%s.scn"
 // [HELPER] s__s_scx: "%s.scx"
-/* protected: virtual long __thiscall TRIBE_Screen_Sed_Open::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TRIBE_Screen_Sed_Open::action
           (TRIBE_Screen_Sed_Open *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -919,8 +901,6 @@ LAB_004b3a04:
     if (((TButtonPanel *)param_1 == this->deleteButton) && (param_2 == 1)) {
       pcVar3 = TTextPanel::currentLine((TTextPanel *)this->list);
       if (*pcVar3 != '\0') {
-                    /* language.dll match for 0x24ca: "Are you sure you want to delete the file
-                       \\n'%s'?" */
         TPanel::get_string((TPanel *)this,0x24ca,(char *)&of.Reserved1,0x100);
         pcVar3 = TTextPanel::currentLine((TTextPanel *)this->list);
         sprintf(text + 4,&of.Reserved1,pcVar3);
@@ -942,7 +922,6 @@ LAB_004b3a04:
             sprintf(fileName + 4,s__s_s_scx,pRVar2->scenario_dir,pcVar3);
             iVar5 = OpenFile(fileName + 4,&of.Reserved1,0x4000);
             if (iVar5 == -1) {
-                    /* language.dll match for 0x24cf: "Cannot load that scenario." */
               TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x24cf,(char *)0x0,0x1c2,100);
               lVar6 = 1;
               goto LAB_004b3c70;

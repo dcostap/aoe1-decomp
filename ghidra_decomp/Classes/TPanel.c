@@ -198,8 +198,6 @@
 
 // Function: mouse_move_action
 // Address: 00437110
-/* public: virtual long __thiscall TPanel::mouse_move_action(long,long,int,int) */
-
 long __thiscall
 TPanel::mouse_move_action(TPanel *this,long param_1,long param_2,int param_3,int param_4)
 {
@@ -210,8 +208,6 @@ TPanel::mouse_move_action(TPanel *this,long param_1,long param_2,int param_3,int
 
 // Function: mouse_left_down_action
 // Address: 00437230
-/* public: virtual long __thiscall TPanel::mouse_left_down_action(long,long,int,int) */
-
 long __thiscall
 TPanel::mouse_left_down_action(TPanel *this,long param_1,long param_2,int param_3,int param_4)
 {
@@ -222,8 +218,6 @@ TPanel::mouse_left_down_action(TPanel *this,long param_1,long param_2,int param_
 
 // Function: mouse_left_hold_action
 // Address: 00437240
-/* public: virtual long __thiscall TPanel::mouse_left_hold_action(long,long,int,int) */
-
 long __thiscall
 TPanel::mouse_left_hold_action(TPanel *this,long param_1,long param_2,int param_3,int param_4)
 {
@@ -234,8 +228,6 @@ TPanel::mouse_left_hold_action(TPanel *this,long param_1,long param_2,int param_
 
 // Function: mouse_left_move_action
 // Address: 00437250
-/* public: virtual long __thiscall TPanel::mouse_left_move_action(long,long,int,int) */
-
 long __thiscall
 TPanel::mouse_left_move_action(TPanel *this,long param_1,long param_2,int param_3,int param_4)
 {
@@ -246,8 +238,6 @@ TPanel::mouse_left_move_action(TPanel *this,long param_1,long param_2,int param_
 
 // Function: mouse_left_up_action
 // Address: 00437260
-/* public: virtual long __thiscall TPanel::mouse_left_up_action(long,long,int,int) */
-
 long __thiscall
 TPanel::mouse_left_up_action(TPanel *this,long param_1,long param_2,int param_3,int param_4)
 {
@@ -258,8 +248,6 @@ TPanel::mouse_left_up_action(TPanel *this,long param_1,long param_2,int param_3,
 
 // Function: mouse_left_dbl_click_action
 // Address: 00437270
-/* public: virtual long __thiscall TPanel::mouse_left_dbl_click_action(long,long,int,int) */
-
 long __thiscall
 TPanel::mouse_left_dbl_click_action(TPanel *this,long param_1,long param_2,int param_3,int param_4)
 {
@@ -270,8 +258,6 @@ TPanel::mouse_left_dbl_click_action(TPanel *this,long param_1,long param_2,int p
 
 // Function: mouse_right_down_action
 // Address: 00437280
-/* public: virtual long __thiscall TPanel::mouse_right_down_action(long,long,int,int) */
-
 long __thiscall
 TPanel::mouse_right_down_action(TPanel *this,long param_1,long param_2,int param_3,int param_4)
 {
@@ -282,8 +268,6 @@ TPanel::mouse_right_down_action(TPanel *this,long param_1,long param_2,int param
 
 // Function: mouse_right_hold_action
 // Address: 00437290
-/* public: virtual long __thiscall TPanel::mouse_right_hold_action(long,long,int,int) */
-
 long __thiscall
 TPanel::mouse_right_hold_action(TPanel *this,long param_1,long param_2,int param_3,int param_4)
 {
@@ -294,8 +278,6 @@ TPanel::mouse_right_hold_action(TPanel *this,long param_1,long param_2,int param
 
 // Function: mouse_right_move_action
 // Address: 004372a0
-/* public: virtual long __thiscall TPanel::mouse_right_move_action(long,long,int,int) */
-
 long __thiscall
 TPanel::mouse_right_move_action(TPanel *this,long param_1,long param_2,int param_3,int param_4)
 {
@@ -306,8 +288,6 @@ TPanel::mouse_right_move_action(TPanel *this,long param_1,long param_2,int param
 
 // Function: mouse_right_up_action
 // Address: 004372b0
-/* public: virtual long __thiscall TPanel::mouse_right_up_action(long,long,int,int) */
-
 long __thiscall
 TPanel::mouse_right_up_action(TPanel *this,long param_1,long param_2,int param_3,int param_4)
 {
@@ -318,8 +298,6 @@ TPanel::mouse_right_up_action(TPanel *this,long param_1,long param_2,int param_3
 
 // Function: mouse_right_dbl_click_action
 // Address: 00437490
-/* public: virtual long __thiscall TPanel::mouse_right_dbl_click_action(long,long,int,int) */
-
 long __thiscall
 TPanel::mouse_right_dbl_click_action(TPanel *this,long param_1,long param_2,int param_3,int param_4)
 {
@@ -330,8 +308,6 @@ TPanel::mouse_right_dbl_click_action(TPanel *this,long param_1,long param_2,int 
 
 // Function: key_down_action
 // Address: 004374a0
-/* public: virtual long __thiscall TPanel::key_down_action(long,short,int,int,int) */
-
 long __thiscall
 TPanel::key_down_action(TPanel *this,long param_1,short param_2,int param_3,int param_4,int param_5)
 {
@@ -342,8 +318,6 @@ TPanel::key_down_action(TPanel *this,long param_1,short param_2,int param_3,int 
 
 // Function: char_action
 // Address: 004374b0
-/* public: virtual long __thiscall TPanel::char_action(long,short) */
-
 long __thiscall TPanel::char_action(TPanel *this,long param_1,short param_2)
 {
   return 0;
@@ -353,8 +327,6 @@ long __thiscall TPanel::char_action(TPanel *this,long param_1,short param_2)
 
 // Function: take_snapshot
 // Address: 00437610
-/* public: virtual void __thiscall TPanel::take_snapshot(void) */
-
 void __thiscall TPanel::take_snapshot(TPanel *this)
 {
   return;
@@ -364,8 +336,6 @@ void __thiscall TPanel::take_snapshot(TPanel *this)
 
 // Function: TPanel
 // Address: 00464720
-/* public: __thiscall TPanel::TPanel(char *) */
-
 TPanel * __thiscall TPanel::TPanel(TPanel *this,char *param_1)
 {
   this->previousPanelValue = (TPanel *)0x0;
@@ -441,8 +411,6 @@ TPanel * __thiscall TPanel::TPanel(TPanel *this,char *param_1)
 
 // Function: `scalar_deleting_destructor'
 // Address: 00464890
-/* public: virtual void * __thiscall TPanel::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall TPanel::_scalar_deleting_destructor_(TPanel *this,uint param_1)
 {
   ~TPanel(this);
@@ -456,8 +424,6 @@ void * __thiscall TPanel::_scalar_deleting_destructor_(TPanel *this,uint param_1
 
 // Function: TPanel
 // Address: 004648b0
-/* public: __thiscall TPanel::TPanel(void) */
-
 void __thiscall TPanel::TPanel(TPanel *this)
 {
   this->previousPanelValue = (TPanel *)0x0;
@@ -527,8 +493,6 @@ void __thiscall TPanel::TPanel(TPanel *this)
 
 // Function: ~TPanel
 // Address: 004649e0
-/* public: virtual __thiscall TPanel::~TPanel(void) */
-
 void __thiscall TPanel::~TPanel(TPanel *this)
 {
   int iVar1;
@@ -568,9 +532,6 @@ void __thiscall TPanel::~TPanel(TPanel *this)
 
 // Function: setup
 // Address: 00464a80
-/* public: virtual long __thiscall TPanel::setup(class TDrawArea *,class TPanel
-   *,long,long,long,long,unsigned char) */
-
 long __thiscall
 TPanel::setup(TPanel *this,TDrawArea *param_1,TPanel *param_2,long param_3,long param_4,long param_5
              ,long param_6,uchar param_7)
@@ -624,8 +585,6 @@ TPanel::setup(TPanel *this,TDrawArea *param_1,TPanel *param_2,long param_3,long 
 
 // Function: add_panel_node
 // Address: 00464b50
-/* public: void __thiscall TPanel::add_panel_node(struct PanelNode *,struct PanelNode *,int) */
-
 void __thiscall
 TPanel::add_panel_node(TPanel *this,PanelNode *param_1,PanelNode *param_2,int param_3)
 {
@@ -677,8 +636,6 @@ TPanel::add_panel_node(TPanel *this,PanelNode *param_1,PanelNode *param_2,int pa
 
 // Function: remove_panel_node
 // Address: 00464bf0
-/* public: void __thiscall TPanel::remove_panel_node(struct PanelNode *) */
-
 void __thiscall TPanel::remove_panel_node(TPanel *this,PanelNode *param_1)
 {
   if (param_1 == this->first_child_node) {
@@ -705,8 +662,6 @@ void __thiscall TPanel::remove_panel_node(TPanel *this,PanelNode *param_1)
 
 // Function: set_rect
 // Address: 00464c50
-/* public: virtual void __thiscall TPanel::set_rect(long,long,long,long) */
-
 void __thiscall TPanel::set_rect(TPanel *this,long param_1,long param_2,long param_3,long param_4)
 {
   int iVar1;
@@ -793,8 +748,6 @@ LAB_00464d57:
 
 // Function: set_rect
 // Address: 00464d70
-/* public: virtual void __thiscall TPanel::set_rect(struct tagRECT) */
-
 void __thiscall TPanel::set_rect(TPanel *this,tagRECT param_1)
 {
   (**(code **)(this->_padding_ + 0xc))
@@ -807,8 +760,6 @@ void __thiscall TPanel::set_rect(TPanel *this,tagRECT param_1)
 
 // Function: set_color
 // Address: 00464da0
-/* public: virtual void __thiscall TPanel::set_color(unsigned char) */
-
 void __thiscall TPanel::set_color(TPanel *this,uchar param_1)
 {
   this->color = param_1;
@@ -822,8 +773,6 @@ void __thiscall TPanel::set_color(TPanel *this,uchar param_1)
 
 // Function: set_active
 // Address: 00464dc0
-/* public: virtual void __thiscall TPanel::set_active(int) */
-
 void __thiscall TPanel::set_active(TPanel *this,int param_1)
 {
   if (this->active != param_1) {
@@ -844,10 +793,6 @@ void __thiscall TPanel::set_active(TPanel *this,int param_1)
 
 // Function: set_positioning
 // Address: 00464e00
-/* public: virtual void __thiscall TPanel::set_positioning(enum
-   TPanel::PositionMode,long,long,long,long,long,long,long,long,class TPanel *,class TPanel *,class
-   TPanel *,class TPanel *) */
-
 void __thiscall
 TPanel::set_positioning
           (TPanel *this,PositionMode param_1,long param_2,long param_3,long param_4,long param_5,
@@ -893,8 +838,6 @@ TPanel::set_positioning
 
 // Function: set_fixed_position
 // Address: 00464eb0
-/* public: virtual void __thiscall TPanel::set_fixed_position(long,long,long,long) */
-
 void __thiscall
 TPanel::set_fixed_position(TPanel *this,long param_1,long param_2,long param_3,long param_4)
 {
@@ -907,8 +850,6 @@ TPanel::set_fixed_position(TPanel *this,long param_1,long param_2,long param_3,l
 
 // Function: set_redraw
 // Address: 00464ee0
-/* public: virtual void __thiscall TPanel::set_redraw(enum TPanel::RedrawMode) */
-
 void __thiscall TPanel::set_redraw(TPanel *this,RedrawMode param_1)
 {
   if ((((param_1 != RedrawNormal) || (this->need_redraw != RedrawFull)) &&
@@ -923,10 +864,6 @@ void __thiscall TPanel::set_redraw(TPanel *this,RedrawMode param_1)
 
 // Function: set_overlapped_redraw
 // Address: 00464f20
-/* WARNING: Variable defined which should be unmapped: temp_node */
-/* public: virtual void __thiscall TPanel::set_overlapped_redraw(class TPanel *,class TPanel *,enum
-   TPanel::RedrawMode) */
-
 void __thiscall
 TPanel::set_overlapped_redraw(TPanel *this,TPanel *param_1,TPanel *param_2,RedrawMode param_3)
 {
@@ -977,10 +914,6 @@ TPanel::set_overlapped_redraw(TPanel *this,TPanel *param_1,TPanel *param_2,Redra
 
 // Function: set_any_overlapping_redraw
 // Address: 00465050
-/* WARNING: Variable defined which should be unmapped: temp_node */
-/* public: void __thiscall TPanel::set_any_overlapping_redraw(class TPanel *,enum
-   TPanel::RedrawMode) */
-
 void __thiscall TPanel::set_any_overlapping_redraw(TPanel *this,TPanel *param_1,RedrawMode param_2)
 {
   PanelNode *pPVar1;
@@ -1030,8 +963,6 @@ void __thiscall TPanel::set_any_overlapping_redraw(TPanel *this,TPanel *param_1,
 
 // Function: draw
 // Address: 00465160
-/* public: virtual void __thiscall TPanel::draw(void) */
-
 void __thiscall TPanel::draw(TPanel *this)
 {
   int iVar1;
@@ -1056,9 +987,6 @@ void __thiscall TPanel::draw(TPanel *this)
 
 // Function: draw_rect
 // Address: 004651c0
-/* WARNING: Variable defined which should be unmapped: save_rect */
-/* public: virtual void __thiscall TPanel::draw_rect(struct tagRECT *) */
-
 void __thiscall TPanel::draw_rect(TPanel *this,tagRECT *param_1)
 {
   tagRECT *ptVar1;
@@ -1089,9 +1017,6 @@ void __thiscall TPanel::draw_rect(TPanel *this,tagRECT *param_1)
 
 // Function: draw_offset
 // Address: 00465220
-/* WARNING: Variable defined which should be unmapped: save_rect */
-/* public: virtual void __thiscall TPanel::draw_offset(long,long,struct tagRECT *) */
-
 void __thiscall TPanel::draw_offset(TPanel *this,long param_1,long param_2,tagRECT *param_3)
 {
   tagRECT *ptVar1;
@@ -1129,8 +1054,6 @@ void __thiscall TPanel::draw_offset(TPanel *this,long param_1,long param_2,tagRE
 
 // Function: draw_rect2
 // Address: 004652c0
-/* public: virtual void __thiscall TPanel::draw_rect2(struct tagRECT *) */
-
 void __thiscall TPanel::draw_rect2(TPanel *this,tagRECT *param_1)
 {
   this->draw_rect2_flag = '\x01';
@@ -1143,8 +1066,6 @@ void __thiscall TPanel::draw_rect2(TPanel *this,tagRECT *param_1)
 
 // Function: draw_offset2
 // Address: 004652f0
-/* public: virtual void __thiscall TPanel::draw_offset2(long,long,struct tagRECT *) */
-
 void __thiscall TPanel::draw_offset2(TPanel *this,long param_1,long param_2,tagRECT *param_3)
 {
   this->draw_rect2_flag = '\x01';
@@ -1157,8 +1078,6 @@ void __thiscall TPanel::draw_offset2(TPanel *this,long param_1,long param_2,tagR
 
 // Function: draw_setup
 // Address: 00465320
-/* public: virtual void __thiscall TPanel::draw_setup(int) */
-
 void __thiscall TPanel::draw_setup(TPanel *this,int param_1)
 {
   void *pvVar1;
@@ -1178,8 +1097,6 @@ void __thiscall TPanel::draw_setup(TPanel *this,int param_1)
 
 // Function: draw_finish
 // Address: 00465370
-/* public: virtual void __thiscall TPanel::draw_finish(void) */
-
 void __thiscall TPanel::draw_finish(TPanel *this)
 {
   void *pvVar1;
@@ -1198,8 +1115,6 @@ void __thiscall TPanel::draw_finish(TPanel *this)
 
 // Function: paint
 // Address: 004653a0
-/* public: virtual void __thiscall TPanel::paint(void) */
-
 void __thiscall TPanel::paint(TPanel *this)
 {
   if (((this->render_area != (TDrawArea *)0x0) && (this->visible != 0)) && (this->active != 0)) {
@@ -1213,8 +1128,6 @@ void __thiscall TPanel::paint(TPanel *this)
 
 // Function: wnd_proc
 // Address: 004653e0
-/* public: virtual long __thiscall TPanel::wnd_proc(void *,unsigned int,unsigned int,long) */
-
 long __thiscall TPanel::wnd_proc(TPanel *this,void *param_1,uint param_2,uint param_3,long param_4)
 {
   PanelNode *pPVar1;
@@ -1351,8 +1264,6 @@ LAB_00465435:
 // Function: handle_idle
 // Address: 00465780
 // [HELPER] s_C__msdev_work_age1_x1_Panel_cpp: "C:\msdev\work\age1_x1\Panel.cpp"
-/* public: virtual long __thiscall TPanel::handle_idle(void) */
-
 long __thiscall TPanel::handle_idle(TPanel *this)
 {
   PanelNode *pPVar1;
@@ -1388,9 +1299,6 @@ long __thiscall TPanel::handle_idle(TPanel *this)
 
 // Function: handle_size
 // Address: 00465820
-/* WARNING: Variable defined which should be unmapped: calc_hgt */
-/* public: virtual long __thiscall TPanel::handle_size(long,long) */
-
 long __thiscall TPanel::handle_size(TPanel *this,long param_1,long param_2)
 {
   TPanel *pTVar1;
@@ -1526,8 +1434,6 @@ LAB_00465a0e:
 
 // Function: handle_paint
 // Address: 00465a70
-/* public: virtual long __thiscall TPanel::handle_paint(void) */
-
 long __thiscall TPanel::handle_paint(TPanel *this)
 {
   PanelNode *pPVar1;
@@ -1562,8 +1468,6 @@ long __thiscall TPanel::handle_paint(TPanel *this)
 
 // Function: handle_key_down
 // Address: 00465b30
-/* public: virtual long __thiscall TPanel::handle_key_down(long,short,int,int,int) */
-
 long __thiscall
 TPanel::handle_key_down(TPanel *this,long param_1,short param_2,int param_3,int param_4,int param_5)
 {
@@ -1607,8 +1511,6 @@ TPanel::handle_key_down(TPanel *this,long param_1,short param_2,int param_3,int 
 
 // Function: handle_char
 // Address: 00465be0
-/* public: virtual long __thiscall TPanel::handle_char(long,short) */
-
 long __thiscall TPanel::handle_char(TPanel *this,long param_1,short param_2)
 {
   PanelNode *pPVar1;
@@ -1636,8 +1538,6 @@ long __thiscall TPanel::handle_char(TPanel *this,long param_1,short param_2)
 
 // Function: handle_command
 // Address: 00465c30
-/* public: virtual long __thiscall TPanel::handle_command(unsigned int,long) */
-
 long __thiscall TPanel::handle_command(TPanel *this,uint param_1,long param_2)
 {
   return 0;
@@ -1647,8 +1547,6 @@ long __thiscall TPanel::handle_command(TPanel *this,uint param_1,long param_2)
 
 // Function: handle_user_command
 // Address: 00465c40
-/* public: virtual long __thiscall TPanel::handle_user_command(unsigned int,long) */
-
 long __thiscall TPanel::handle_user_command(TPanel *this,uint param_1,long param_2)
 {
   return 0;
@@ -1658,8 +1556,6 @@ long __thiscall TPanel::handle_user_command(TPanel *this,uint param_1,long param
 
 // Function: handle_timer_command
 // Address: 00465c50
-/* public: virtual long __thiscall TPanel::handle_timer_command(unsigned int,long) */
-
 long __thiscall TPanel::handle_timer_command(TPanel *this,uint param_1,long param_2)
 {
   return 0;
@@ -1669,8 +1565,6 @@ long __thiscall TPanel::handle_timer_command(TPanel *this,uint param_1,long para
 
 // Function: handle_scroll
 // Address: 00465c60
-/* public: virtual long __thiscall TPanel::handle_scroll(long,long) */
-
 long __thiscall TPanel::handle_scroll(TPanel *this,long param_1,long param_2)
 {
   return 0;
@@ -1681,8 +1575,6 @@ long __thiscall TPanel::handle_scroll(TPanel *this,long param_1,long param_2)
 // Function: handle_mouse_down
 // Address: 00465c70
 // [HELPER] s_C__msdev_work_age1_x1_Panel_cpp: "C:\msdev\work\age1_x1\Panel.cpp"
-/* public: virtual long __thiscall TPanel::handle_mouse_down(unsigned char,long,long,int,int) */
-
 long __thiscall
 TPanel::handle_mouse_down
           (TPanel *this,uchar param_1,long param_2,long param_3,int param_4,int param_5)
@@ -1738,8 +1630,6 @@ TPanel::handle_mouse_down
 
 // Function: handle_mouse_move
 // Address: 00465dc0
-/* public: virtual long __thiscall TPanel::handle_mouse_move(long,long,int,int) */
-
 long __thiscall
 TPanel::handle_mouse_move(TPanel *this,long param_1,long param_2,int param_3,int param_4)
 {
@@ -1813,8 +1703,6 @@ TPanel::handle_mouse_move(TPanel *this,long param_1,long param_2,int param_3,int
 
 // Function: handle_mouse_up
 // Address: 00465f70
-/* public: virtual long __thiscall TPanel::handle_mouse_up(unsigned char,long,long,int,int) */
-
 long __thiscall
 TPanel::handle_mouse_up
           (TPanel *this,uchar param_1,long param_2,long param_3,int param_4,int param_5)
@@ -1873,9 +1761,6 @@ TPanel::handle_mouse_up
 
 // Function: handle_mouse_dbl_click
 // Address: 00466060
-/* public: virtual long __thiscall TPanel::handle_mouse_dbl_click(unsigned char,long,long,int,int)
-    */
-
 long __thiscall
 TPanel::handle_mouse_dbl_click
           (TPanel *this,uchar param_1,long param_2,long param_3,int param_4,int param_5)
@@ -1923,9 +1808,6 @@ TPanel::handle_mouse_dbl_click
 
 // Function: action
 // Address: 00466140
-/* public: virtual long __thiscall TPanel::action(class TPanel *,long,unsigned long,unsigned long)
-    */
-
 long __thiscall
 TPanel::action(TPanel *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
 {
@@ -1942,9 +1824,6 @@ TPanel::action(TPanel *this,TPanel *param_1,long param_2,ulong param_3,ulong par
 
 // Function: get_mouse_info
 // Address: 00466170
-/* public: void __thiscall TPanel::get_mouse_info(unsigned int,long,struct tagPOINT &,int &,int &)
-    */
-
 void __thiscall
 TPanel::get_mouse_info
           (TPanel *this,uint param_1,long param_2,tagPOINT *param_3,int *param_4,int *param_5)
@@ -1971,8 +1850,6 @@ TPanel::get_mouse_info
 
 // Function: get_mouse_pos
 // Address: 004661d0
-/* public: void __thiscall TPanel::get_mouse_pos(struct tagPOINT &) */
-
 void __thiscall TPanel::get_mouse_pos(TPanel *this,tagPOINT *param_1)
 {
   GetCursorPos(param_1);
@@ -1992,8 +1869,6 @@ void __thiscall TPanel::get_mouse_pos(TPanel *this,tagPOINT *param_1)
 
 // Function: capture_mouse
 // Address: 00466220
-/* public: int __thiscall TPanel::capture_mouse(void) */
-
 int __thiscall TPanel::capture_mouse(TPanel *this)
 {
   TPanel *pTVar1;
@@ -2019,8 +1894,6 @@ int __thiscall TPanel::capture_mouse(TPanel *this)
 
 // Function: release_mouse
 // Address: 00466280
-/* public: void __thiscall TPanel::release_mouse(void) */
-
 void __thiscall TPanel::release_mouse(TPanel *this)
 {
   TPanel *pTVar1;
@@ -2040,8 +1913,6 @@ void __thiscall TPanel::release_mouse(TPanel *this)
 
 // Function: is_redraw_needed
 // Address: 004662c0
-/* public: unsigned char __thiscall TPanel::is_redraw_needed(void) */
-
 uchar __thiscall TPanel::is_redraw_needed(TPanel *this)
 {
   if (((this->render_area != (TDrawArea *)0x0) && (this->visible != 0)) && (this->active != 0)) {
@@ -2054,8 +1925,6 @@ uchar __thiscall TPanel::is_redraw_needed(TPanel *this)
 
 // Function: is_inside
 // Address: 004662e0
-/* public: virtual int __thiscall TPanel::is_inside(long,long) */
-
 int __thiscall TPanel::is_inside(TPanel *this,long param_1,long param_2)
 {
   if ((((this->active != 0) && ((this->clip_rect).left <= param_1)) &&
@@ -2070,8 +1939,6 @@ int __thiscall TPanel::is_inside(TPanel *this,long param_1,long param_2)
 
 // Function: is_inside_rect
 // Address: 00466320
-/* public: int __thiscall TPanel::is_inside_rect(long,long,struct tagRECT *) */
-
 int __thiscall TPanel::is_inside_rect(TPanel *this,long param_1,long param_2,tagRECT *param_3)
 {
   if ((((param_3->left <= param_1) && (param_1 <= param_3->right)) && (param_3->top <= param_2)) &&
@@ -2085,8 +1952,6 @@ int __thiscall TPanel::is_inside_rect(TPanel *this,long param_1,long param_2,tag
 
 // Function: bound_point
 // Address: 00466350
-/* public: int __thiscall TPanel::bound_point(long &,long &) */
-
 int __thiscall TPanel::bound_point(TPanel *this,long *param_1,long *param_2)
 {
   int iVar1;
@@ -2115,8 +1980,6 @@ int __thiscall TPanel::bound_point(TPanel *this,long *param_1,long *param_2)
 
 // Function: set_curr_child
 // Address: 004663a0
-/* public: void __thiscall TPanel::set_curr_child(class TPanel *) */
-
 void __thiscall TPanel::set_curr_child(TPanel *this,TPanel *param_1)
 {
   TPanel *pTVar1;
@@ -2138,8 +2001,6 @@ void __thiscall TPanel::set_curr_child(TPanel *this,TPanel *param_1)
 
 // Function: set_focus
 // Address: 004663f0
-/* public: virtual void __thiscall TPanel::set_focus(int) */
-
 void __thiscall TPanel::set_focus(TPanel *this,int param_1)
 {
   if (param_1 != this->have_focus) {
@@ -2156,8 +2017,6 @@ void __thiscall TPanel::set_focus(TPanel *this,int param_1)
 
 // Function: get_focus
 // Address: 00466420
-/* public: int __thiscall TPanel::get_focus(void) */
-
 int __thiscall TPanel::get_focus(TPanel *this)
 {
   return this->have_focus;
@@ -2167,8 +2026,6 @@ int __thiscall TPanel::get_focus(TPanel *this)
 
 // Function: set_z_order
 // Address: 00466430
-/* public: void __thiscall TPanel::set_z_order(unsigned char,short) */
-
 void __thiscall TPanel::set_z_order(TPanel *this,uchar param_1,short param_2)
 {
   if (this->parent_panel != (TPanel *)0x0) {
@@ -2195,8 +2052,6 @@ void __thiscall TPanel::set_z_order(TPanel *this,uchar param_1,short param_2)
 
 // Function: set_child_z_order
 // Address: 00466490
-/* public: void __thiscall TPanel::set_child_z_order(class TPanel *,unsigned char,short) */
-
 void __thiscall TPanel::set_child_z_order(TPanel *this,TPanel *param_1,uchar param_2,short param_3)
 {
   TPanel *pTVar1;
@@ -2285,8 +2140,6 @@ void __thiscall TPanel::set_child_z_order(TPanel *this,TPanel *param_1,uchar par
 
 // Function: set_tab_order
 // Address: 00466600
-/* public: virtual void __thiscall TPanel::set_tab_order(class TPanel * *,short) */
-
 void __thiscall TPanel::set_tab_order(TPanel *this,TPanel **param_1,short param_2)
 {
   TPanel *pTVar1;
@@ -2321,8 +2174,6 @@ void __thiscall TPanel::set_tab_order(TPanel *this,TPanel **param_1,short param_
 
 // Function: set_tab_order
 // Address: 00466650
-/* public: virtual void __thiscall TPanel::set_tab_order(class TPanel *,class TPanel *) */
-
 void __thiscall TPanel::set_tab_order(TPanel *this,TPanel *param_1,TPanel *param_2)
 {
   this->tab_prev_panel = param_1;
@@ -2335,8 +2186,6 @@ void __thiscall TPanel::set_tab_order(TPanel *this,TPanel *param_1,TPanel *param
 
 // Function: previousPanel
 // Address: 00466670
-/* public: class TPanel * __thiscall TPanel::previousPanel(void)const  */
-
 TPanel * __thiscall TPanel::previousPanel(TPanel *this)
 {
   return this->previousPanelValue;
@@ -2346,8 +2195,6 @@ TPanel * __thiscall TPanel::previousPanel(TPanel *this)
 
 // Function: setPreviousPanel
 // Address: 00466680
-/* public: void __thiscall TPanel::setPreviousPanel(class TPanel *) */
-
 void __thiscall TPanel::setPreviousPanel(TPanel *this,TPanel *param_1)
 {
   this->previousPanelValue = param_1;
@@ -2358,8 +2205,6 @@ void __thiscall TPanel::setPreviousPanel(TPanel *this,TPanel *param_1)
 
 // Function: previousModalPanel
 // Address: 00466690
-/* public: class TPanel * __thiscall TPanel::previousModalPanel(void)const  */
-
 TPanel * __thiscall TPanel::previousModalPanel(TPanel *this)
 {
   return this->previousModalPanelValue;
@@ -2369,8 +2214,6 @@ TPanel * __thiscall TPanel::previousModalPanel(TPanel *this)
 
 // Function: setPreviousModalPanel
 // Address: 004666a0
-/* public: void __thiscall TPanel::setPreviousModalPanel(class TPanel *) */
-
 void __thiscall TPanel::setPreviousModalPanel(TPanel *this,TPanel *param_1)
 {
   this->previousModalPanelValue = param_1;
@@ -2381,8 +2224,6 @@ void __thiscall TPanel::setPreviousModalPanel(TPanel *this,TPanel *param_1)
 
 // Function: panelName
 // Address: 004666b0
-/* public: char * __thiscall TPanel::panelName(void)const  */
-
 char * __thiscall TPanel::panelName(TPanel *this)
 {
   return this->panelNameValue;
@@ -2392,8 +2233,6 @@ char * __thiscall TPanel::panelName(TPanel *this)
 
 // Function: setPanelName
 // Address: 004666c0
-/* public: void __thiscall TPanel::setPanelName(char *) */
-
 void __thiscall TPanel::setPanelName(TPanel *this,char *param_1)
 {
   char cVar1;
@@ -2483,8 +2322,6 @@ LAB_00466721:
 
 // Function: xPosition
 // Address: 00466770
-/* public: long __thiscall TPanel::xPosition(void)const  */
-
 long __thiscall TPanel::xPosition(TPanel *this)
 {
   return this->pnl_x;
@@ -2494,8 +2331,6 @@ long __thiscall TPanel::xPosition(TPanel *this)
 
 // Function: yPosition
 // Address: 00466780
-/* public: long __thiscall TPanel::yPosition(void)const  */
-
 long __thiscall TPanel::yPosition(TPanel *this)
 {
   return this->pnl_y;
@@ -2505,8 +2340,6 @@ long __thiscall TPanel::yPosition(TPanel *this)
 
 // Function: width
 // Address: 00466790
-/* public: long __thiscall TPanel::width(void)const  */
-
 long __thiscall TPanel::width(TPanel *this)
 {
   return this->pnl_wid;
@@ -2516,8 +2349,6 @@ long __thiscall TPanel::width(TPanel *this)
 
 // Function: height
 // Address: 004667a0
-/* public: long __thiscall TPanel::height(void)const  */
-
 long __thiscall TPanel::height(TPanel *this)
 {
   return this->pnl_hgt;
@@ -2527,8 +2358,6 @@ long __thiscall TPanel::height(TPanel *this)
 
 // Function: renderArea
 // Address: 004667b0
-/* public: class TDrawArea * __thiscall TPanel::renderArea(void)const  */
-
 TDrawArea * __thiscall TPanel::renderArea(TPanel *this)
 {
   return this->render_area;
@@ -2538,8 +2367,6 @@ TDrawArea * __thiscall TPanel::renderArea(TPanel *this)
 
 // Function: clipRectangle
 // Address: 004667c0
-/* public: struct tagRECT __thiscall TPanel::clipRectangle(void)const  */
-
 tagRECT * __thiscall TPanel::clipRectangle(TPanel *this,tagRECT *__return_storage_ptr__)
 {
   tagRECT *___ReturnUdt;
@@ -2555,8 +2382,6 @@ tagRECT * __thiscall TPanel::clipRectangle(TPanel *this,tagRECT *__return_storag
 
 // Function: setClipRectangle
 // Address: 004667f0
-/* public: void __thiscall TPanel::setClipRectangle(struct tagRECT) */
-
 void __thiscall TPanel::setClipRectangle(TPanel *this,tagRECT param_1)
 {
   (this->clip_rect).left = param_1.left;
@@ -2570,8 +2395,6 @@ void __thiscall TPanel::setClipRectangle(TPanel *this,tagRECT param_1)
 
 // Function: delete_panel
 // Address: 00466820
-/* public: void __thiscall TPanel::delete_panel(class TPanel * *) */
-
 void __thiscall TPanel::delete_panel(TPanel *this,TPanel **param_1)
 {
   if (*param_1 != (TPanel *)0x0) {
@@ -2585,8 +2408,6 @@ void __thiscall TPanel::delete_panel(TPanel *this,TPanel **param_1)
 
 // Function: get_string
 // Address: 00466840
-/* public: int __thiscall TPanel::get_string(int,char *,int) */
-
 int __thiscall TPanel::get_string(TPanel *this,int param_1,char *param_2,int param_3)
 {
   (**(code **)(rge_base_game->_padding_ + 0x20))(param_1,param_2,param_3);
@@ -2597,8 +2418,6 @@ int __thiscall TPanel::get_string(TPanel *this,int param_1,char *param_2,int par
 
 // Function: get_string
 // Address: 00466870
-/* public: char * __thiscall TPanel::get_string(int) */
-
 char * __thiscall TPanel::get_string(TPanel *this,int param_1)
 {
   get_string(this,param_1,&UNK_0062e66c.field_0x4,0x200);
@@ -2609,8 +2428,6 @@ char * __thiscall TPanel::get_string(TPanel *this,int param_1)
 
 // Function: get_help_message
 // Address: 00466890
-/* public: long __thiscall TPanel::get_help_message(void) */
-
 long __thiscall TPanel::get_help_message(TPanel *this)
 {
   return this->help_string_id;
@@ -2620,8 +2437,6 @@ long __thiscall TPanel::get_help_message(TPanel *this)
 
 // Function: get_help_page
 // Address: 004668a0
-/* public: long __thiscall TPanel::get_help_page(void) */
-
 long __thiscall TPanel::get_help_page(TPanel *this)
 {
   return this->help_page_id;
@@ -2631,8 +2446,6 @@ long __thiscall TPanel::get_help_page(TPanel *this)
 
 // Function: set_help_info
 // Address: 004668b0
-/* public: void __thiscall TPanel::set_help_info(long,long) */
-
 void __thiscall TPanel::set_help_info(TPanel *this,long param_1,long param_2)
 {
   this->help_string_id = param_1;
@@ -2644,8 +2457,6 @@ void __thiscall TPanel::set_help_info(TPanel *this,long param_1,long param_2)
 
 // Function: get_help_info
 // Address: 004668d0
-/* public: virtual unsigned char __thiscall TPanel::get_help_info(char * &,long &,long,long) */
-
 uchar __thiscall
 TPanel::get_help_info(TPanel *this,char **param_1,long *param_2,long param_3,long param_4)
 {
@@ -2702,8 +2513,6 @@ TPanel::get_help_info(TPanel *this,char **param_1,long *param_2,long param_3,lon
 
 // Function: stop_sound_system
 // Address: 00466980
-/* public: virtual void __thiscall TPanel::stop_sound_system(void) */
-
 void __thiscall TPanel::stop_sound_system(TPanel *this)
 {
   PanelNode *pPVar1;
@@ -2718,8 +2527,6 @@ void __thiscall TPanel::stop_sound_system(TPanel *this)
 
 // Function: restart_sound_system
 // Address: 004669a0
-/* public: virtual int __thiscall TPanel::restart_sound_system(void) */
-
 int __thiscall TPanel::restart_sound_system(TPanel *this)
 {
   PanelNode *pPVar1;
@@ -2740,8 +2547,6 @@ int __thiscall TPanel::restart_sound_system(TPanel *this)
 
 // Function: handle_reactivate
 // Address: 004669d0
-/* public: virtual void __thiscall TPanel::handle_reactivate(void) */
-
 void __thiscall TPanel::handle_reactivate(TPanel *this)
 {
   PanelNode *pPVar1;
@@ -2756,8 +2561,6 @@ void __thiscall TPanel::handle_reactivate(TPanel *this)
 
 // Function: get_true_render_rect
 // Address: 004669f0
-/* public: virtual void __thiscall TPanel::get_true_render_rect(struct tagRECT &) */
-
 void __thiscall TPanel::get_true_render_rect(TPanel *this,tagRECT *param_1)
 {
   param_1->left = (this->render_rect).left;

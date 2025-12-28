@@ -675,8 +675,6 @@
 // Function: THelpDialog
 // Address: 0043e840
 // [HELPER] s_Help_Dialog: "Help Dialog"
-/* public: __thiscall THelpDialog::THelpDialog(class TEasy_Panel *,char *,long,long,long,long) */
-
 THelpDialog * __thiscall
 THelpDialog::THelpDialog
           (THelpDialog *this,TEasy_Panel *param_1,char *param_2,long param_3,long param_4,
@@ -705,8 +703,6 @@ THelpDialog::THelpDialog
 
 // Function: `scalar_deleting_destructor'
 // Address: 0043e8c0
-/* public: virtual void * __thiscall THelpDialog::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall THelpDialog::_scalar_deleting_destructor_(THelpDialog *this,uint param_1)
 {
   ~THelpDialog(this);
@@ -721,8 +717,6 @@ void * __thiscall THelpDialog::_scalar_deleting_destructor_(THelpDialog *this,ui
 // Function: THelpDialog
 // Address: 0043e8e0
 // [HELPER] s_Help_Dialog: "Help Dialog"
-/* public: __thiscall THelpDialog::THelpDialog(class TEasy_Panel *,char *,char *,long,long,long) */
-
 THelpDialog * __thiscall
 THelpDialog::THelpDialog
           (THelpDialog *this,TEasy_Panel *param_1,char *param_2,char *param_3,long param_4,
@@ -749,8 +743,6 @@ THelpDialog::THelpDialog
 
 // Function: ~THelpDialog
 // Address: 0043e950
-/* public: virtual __thiscall THelpDialog::~THelpDialog(void) */
-
 void __thiscall THelpDialog::~THelpDialog(THelpDialog *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -785,10 +777,6 @@ void __thiscall THelpDialog::~THelpDialog(THelpDialog *this)
 
 // Function: setup_help
 // Address: 0043e9e0
-/* WARNING: Variable defined which should be unmapped: rge_text_font */
-/* protected: void __thiscall THelpDialog::setup_help(class TEasy_Panel *,char *,char
-   *,long,long,long) */
-
 void __thiscall
 THelpDialog::setup_help
           (THelpDialog *this,TEasy_Panel *param_1,char *param_2,char *param_3,long param_4,
@@ -896,7 +884,6 @@ THelpDialog::setup_help
         uStack_9c = 0x19;
         pTStack_a4 = (TButtonPanel *)(iVar5 * iRam0000015c + 0x14);
         pTStack_a0 = (TButtonPanel *)0x78;
-                    /* language.dll match for 0x243d: "More Help" */
         (**(code **)(iVar6 + 0xe8))(this,&this->encyclopedia_button,0x243d,0,0x19);
       }
     }
@@ -912,7 +899,6 @@ THelpDialog::setup_help
     }
     pTStack_a4 = (TButtonPanel *)(iVar5 * iRam0000015c + 0x14);
     ppTVar2 = &this->ok_button;
-                    /* language.dll match for 0xfa1: "OK" */
     (**(code **)(iVar6 + 0xe8))(this,ppTVar2,0xfa1,0,uVar14);
     pTVar4 = *ppTVar2;
     pTVar4->hotkey = 0x1b;
@@ -935,9 +921,6 @@ THelpDialog::setup_help
 // Address: 0043ed40
 // [HELPER] s_Help_Dialog: "Help Dialog"
 // [HELPER] s_empires_hlp: "empires.hlp"
-/* public: virtual long __thiscall THelpDialog::action(class TPanel *,long,unsigned long,unsigned
-   long) */
-
 long __thiscall
 THelpDialog::action(THelpDialog *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
 {
@@ -970,9 +953,6 @@ THelpDialog::action(THelpDialog *this,TPanel *param_1,long param_2,ulong param_3
 
 // Function: handle_mouse_down
 // Address: 0043ee10
-/* public: virtual long __thiscall THelpDialog::handle_mouse_down(unsigned char,long,long,int,int)
-    */
-
 long __thiscall
 THelpDialog::handle_mouse_down
           (THelpDialog *this,uchar param_1,long param_2,long param_3,int param_4,int param_5)

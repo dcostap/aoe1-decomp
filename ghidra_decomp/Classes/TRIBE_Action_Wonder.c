@@ -32,15 +32,12 @@
 
 // Function: TRIBE_Action_Wonder
 // Address: 004d3470
-/* public: __thiscall TRIBE_Action_Wonder::TRIBE_Action_Wonder(int,class RGE_Action_Object *) */
-
 TRIBE_Action_Wonder * __thiscall
 TRIBE_Action_Wonder::TRIBE_Action_Wonder
           (TRIBE_Action_Wonder *this,int param_1,RGE_Action_Object *param_2)
 {
   RGE_Action::RGE_Action((RGE_Action *)this,param_1,param_2,1);
   *(undefined ***)this = &_vftable_;
-                    /* language.dll match for 0x78: "10" */
   *(undefined2 *)&this->field_0x4 = 0x78;
   return this;
 }
@@ -49,9 +46,6 @@ TRIBE_Action_Wonder::TRIBE_Action_Wonder
 
 // Function: `vector_deleting_destructor'
 // Address: 004d34a0
-/* public: virtual void * __thiscall TRIBE_Action_Wonder::`vector deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 TRIBE_Action_Wonder::_vector_deleting_destructor_(TRIBE_Action_Wonder *this,uint param_1)
 {
@@ -66,8 +60,6 @@ TRIBE_Action_Wonder::_vector_deleting_destructor_(TRIBE_Action_Wonder *this,uint
 
 // Function: TRIBE_Action_Wonder
 // Address: 004d34c0
-/* public: __thiscall TRIBE_Action_Wonder::TRIBE_Action_Wonder(class RGE_Action_Object *) */
-
 TRIBE_Action_Wonder * __thiscall
 TRIBE_Action_Wonder::TRIBE_Action_Wonder(TRIBE_Action_Wonder *this,RGE_Action_Object *param_1)
 {
@@ -82,9 +74,6 @@ TRIBE_Action_Wonder::TRIBE_Action_Wonder(TRIBE_Action_Wonder *this,RGE_Action_Ob
 
 // Function: ~TRIBE_Action_Wonder
 // Address: 004d34f0
-/* WARNING: Variable defined which should be unmapped: players */
-/* public: virtual __thiscall TRIBE_Action_Wonder::~TRIBE_Action_Wonder(void) */
-
 void __thiscall TRIBE_Action_Wonder::~TRIBE_Action_Wonder(TRIBE_Action_Wonder *this)
 {
   RGE_Game_World *pRVar1;
@@ -144,7 +133,6 @@ void __thiscall TRIBE_Action_Wonder::~TRIBE_Action_Wonder(TRIBE_Action_Wonder *t
         }
         RGE_Base_Game::reset_countdown_timer(rge_base_game,(int)*(short *)(iVar6 + 0x4a));
         if (bVar4) {
-                    /* language.dll match for 0x7d0: "place holder" */
           RGE_Base_Game::set_countdown_timer
                     (rge_base_game,(int)*(short *)(*(int *)(*(int *)&this->field_0x8 + 0xc) + 0x4a),
                      2000);
@@ -155,7 +143,6 @@ void __thiscall TRIBE_Action_Wonder::~TRIBE_Action_Wonder(TRIBE_Action_Wonder *t
     iVar7 = rge_base_game->_padding_;
     uVar5 = __ftol(0);
     uVar5 = __ftol(uVar5);
-                    /* language.dll match for 0x6e: "Copperplate Gothic Light" */
     (**(code **)(iVar7 + 0x40))(0x6e,(int)*(short *)(*(int *)(iVar6 + 0xc) + 0x4a),uVar5);
   }
   local_4 = 0xffffffff;
@@ -168,8 +155,6 @@ void __thiscall TRIBE_Action_Wonder::~TRIBE_Action_Wonder(TRIBE_Action_Wonder *t
 
 // Function: first_in_stack
 // Address: 004d3690
-/* public: virtual void __thiscall TRIBE_Action_Wonder::first_in_stack(unsigned char) */
-
 void __thiscall TRIBE_Action_Wonder::first_in_stack(TRIBE_Action_Wonder *this,uchar param_1)
 {
   if (param_1 != '\0') {
@@ -182,8 +167,6 @@ void __thiscall TRIBE_Action_Wonder::first_in_stack(TRIBE_Action_Wonder *this,uc
 
 // Function: set_state
 // Address: 004d36b0
-/* public: virtual void __thiscall TRIBE_Action_Wonder::set_state(unsigned char) */
-
 void __thiscall TRIBE_Action_Wonder::set_state(TRIBE_Action_Wonder *this,uchar param_1)
 {
   undefined4 uVar1;
@@ -226,7 +209,6 @@ void __thiscall TRIBE_Action_Wonder::set_state(TRIBE_Action_Wonder *this,uchar p
       } while (iVar4 < iVar2);
     }
     if (rge_base_game->world[1].world_time == 0) {
-                    /* language.dll match for 0x7d0: "place holder" */
       RGE_Base_Game::set_countdown_timer
                 (rge_base_game,(int)*(short *)(*(int *)(*(int *)&this->field_0x8 + 0xc) + 0x4a),2000
                 );
@@ -245,9 +227,6 @@ void __thiscall TRIBE_Action_Wonder::set_state(TRIBE_Action_Wonder *this,uchar p
 
 // Function: update
 // Address: 004d3810
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall TRIBE_Action_Wonder::update(void) */
-
 uchar __thiscall TRIBE_Action_Wonder::update(TRIBE_Action_Wonder *this)
 {
   float fVar1;

@@ -157,8 +157,6 @@
 
 // Function: RGE_View
 // Address: 00533510
-/* public: __thiscall RGE_View::RGE_View(void) */
-
 RGE_View * __thiscall RGE_View::RGE_View(RGE_View *this)
 {
   int *piVar1;
@@ -261,8 +259,6 @@ RGE_View * __thiscall RGE_View::RGE_View(RGE_View *this)
 
 // Function: `vector_deleting_destructor'
 // Address: 00533740
-/* public: virtual void * __thiscall RGE_View::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall RGE_View::_vector_deleting_destructor_(RGE_View *this,uint param_1)
 {
   ~RGE_View(this);
@@ -276,8 +272,6 @@ void * __thiscall RGE_View::_vector_deleting_destructor_(RGE_View *this,uint par
 
 // Function: ~RGE_View
 // Address: 00533760
-/* public: virtual __thiscall RGE_View::~RGE_View(void) */
-
 void __thiscall RGE_View::~RGE_View(RGE_View *this)
 {
   TShape *this_00;
@@ -375,9 +369,6 @@ void __thiscall RGE_View::~RGE_View(RGE_View *this)
 // Function: setup
 // Address: 00533940
 // [HELPER] s__s_shp: "%s.shp"
-/* public: long __thiscall RGE_View::setup(class TDrawArea *,class TPanel
-   *,long,long,long,long,unsigned char,int,char *) */
-
 long __thiscall
 RGE_View::setup(RGE_View *this,TDrawArea *param_1,TPanel *param_2,long param_3,long param_4,
                long param_5,long param_6,uchar param_7,int param_8,char *param_9)
@@ -442,8 +433,6 @@ RGE_View::setup(RGE_View *this,TDrawArea *param_1,TPanel *param_2,long param_3,l
 
 // Function: set_focus
 // Address: 00533ac0
-/* protected: virtual void __thiscall RGE_View::set_focus(int) */
-
 void __thiscall RGE_View::set_focus(RGE_View *this,int param_1)
 {
   TPanel::set_focus((TPanel *)this,param_1);
@@ -459,9 +448,6 @@ void __thiscall RGE_View::set_focus(RGE_View *this,int param_1)
 // Address: 00533af0
 // [HELPER] s_DATA2_BLKEDGE_DAT: "DATA2\BLKEDGE.DAT"
 // [HELPER] s_DATA2_TILEEDGE_DAT: "DATA2\TILEEDGE.DAT"
-/* WARNING: Variable defined which should be unmapped: B0 */
-/* protected: void __thiscall RGE_View::Init_Tile_Edge_Tables(void) */
-
 void __thiscall RGE_View::Init_Tile_Edge_Tables(RGE_View *this)
 {
   byte bVar1;
@@ -623,8 +609,6 @@ void __thiscall RGE_View::Init_Tile_Edge_Tables(RGE_View *this)
 // Function: update_display_selected_objects
 // Address: 00533e10
 // [HELPER] s_C__msdev_work_age1_x1_view_cpp: "C:\msdev\work\age1_x1\view.cpp"
-/* public: void __thiscall RGE_View::update_display_selected_objects(void) */
-
 void __thiscall RGE_View::update_display_selected_objects(RGE_View *this)
 {
   RGE_Static_Object *pRVar1;
@@ -670,8 +654,6 @@ LAB_00533e8f:
 // Function: display_object_selection
 // Address: 00533ec0
 // [HELPER] s_C__msdev_work_age1_x1_view_cpp: "C:\msdev\work\age1_x1\view.cpp"
-/* public: void __thiscall RGE_View::display_object_selection(int,int,int,int) */
-
 void __thiscall
 RGE_View::display_object_selection(RGE_View *this,int param_1,int param_2,int param_3,int param_4)
 {
@@ -716,8 +698,6 @@ RGE_View::display_object_selection(RGE_View *this,int param_1,int param_2,int pa
 
 // Function: set_rect
 // Address: 00533f70
-/* public: virtual void __thiscall RGE_View::set_rect(long,long,long,long) */
-
 void __thiscall
 RGE_View::set_rect(RGE_View *this,long param_1,long param_2,long param_3,long param_4)
 {
@@ -752,7 +732,6 @@ RGE_View::set_rect(RGE_View *this,long param_1,long param_2,long param_3,long pa
     TSpan_List_Manager::~TSpan_List_Manager(pTVar1);
     operator_delete(pTVar1);
   }
-                    /* language.dll match for 0x68: "Arial" */
   pTVar1 = (TSpan_List_Manager *)operator_new(0x68);
   local_4 = 0;
   if (pTVar1 == (TSpan_List_Manager *)0x0) {
@@ -761,7 +740,6 @@ RGE_View::set_rect(RGE_View *this,long param_1,long param_2,long param_3,long pa
   else {
     pTVar1 = (TSpan_List_Manager *)TSpan_List_Manager::TSpan_List_Manager(pTVar1,param_3,param_4);
   }
-                    /* language.dll match for 0x68: "Arial" */
   local_4 = 0xffffffff;
   this->Terrain_Clip_Mask = pTVar1;
   pTVar1 = (TSpan_List_Manager *)operator_new(0x68);
@@ -772,7 +750,6 @@ RGE_View::set_rect(RGE_View *this,long param_1,long param_2,long param_3,long pa
   else {
     pTVar1 = (TSpan_List_Manager *)TSpan_List_Manager::TSpan_List_Manager(pTVar1,param_3,param_4);
   }
-                    /* language.dll match for 0x68: "Arial" */
   local_4 = 0xffffffff;
   this->Terrain_Fog_Clip_Mask = pTVar1;
   pTVar1 = (TSpan_List_Manager *)operator_new(0x68);
@@ -798,8 +775,6 @@ RGE_View::set_rect(RGE_View *this,long param_1,long param_2,long param_3,long pa
 
 // Function: delete_surfaces
 // Address: 00534100
-/* public: void __thiscall RGE_View::delete_surfaces(void) */
-
 void __thiscall RGE_View::delete_surfaces(RGE_View *this)
 {
   TDrawArea *this_00;
@@ -818,8 +793,6 @@ void __thiscall RGE_View::delete_surfaces(RGE_View *this)
 // Function: create_surfaces
 // Address: 00534130
 // [HELPER] s_Terrain_Buffer: "Terrain Buffer"
-/* public: int __thiscall RGE_View::create_surfaces(void) */
-
 int __thiscall RGE_View::create_surfaces(RGE_View *this)
 {
   TDrawArea *pTVar1;
@@ -868,7 +841,6 @@ int __thiscall RGE_View::create_surfaces(RGE_View *this)
       DClipInfo_List::~DClipInfo_List(pDVar2);
       operator_delete(pDVar2);
     }
-                    /* language.dll match for 0x70: "B" */
     iVar3 = this->_padding_ + 0x1c2;
     pDVar2 = (DClipInfo_List *)operator_new(0x70);
     local_4 = 1;
@@ -880,7 +852,6 @@ int __thiscall RGE_View::create_surfaces(RGE_View *this)
                DClipInfo_List::DClipInfo_List
                          (pDVar2,iVar3 * 2,iVar3,0x40,-200,this->_padding_ + 0xf9,0x28);
     }
-                    /* language.dll match for 0x70: "B" */
     local_4 = 0xffffffff;
     this->prior_objs = pDVar2;
     pDVar2 = (DClipInfo_List *)operator_new(0x70);
@@ -907,8 +878,6 @@ int __thiscall RGE_View::create_surfaces(RGE_View *this)
 
 // Function: calc_draw_vars
 // Address: 00534340
-/* protected: void __thiscall RGE_View::calc_draw_vars(void) */
-
 void __thiscall RGE_View::calc_draw_vars(RGE_View *this)
 {
   if (((this->_padding_ != 0) && (this->tile_wid != 0)) && (this->tile_hgt != 0)) {
@@ -937,8 +906,6 @@ void __thiscall RGE_View::calc_draw_vars(RGE_View *this)
 
 // Function: set_redraw
 // Address: 00534420
-/* public: virtual void __thiscall RGE_View::set_redraw(enum TPanel::RedrawMode) */
-
 void __thiscall RGE_View::set_redraw(RGE_View *this,RedrawMode param_1)
 {
   TPanel::set_redraw((TPanel *)this,param_1);
@@ -952,8 +919,6 @@ void __thiscall RGE_View::set_redraw(RGE_View *this,RedrawMode param_1)
 
 // Function: set_world
 // Address: 00534440
-/* public: void __thiscall RGE_View::set_world(class RGE_Game_World *) */
-
 void __thiscall RGE_View::set_world(RGE_View *this,RGE_Game_World *param_1)
 {
   RGE_Map *pRVar1;
@@ -986,8 +951,6 @@ void __thiscall RGE_View::set_world(RGE_View *this,RGE_Game_World *param_1)
 
 // Function: set_player
 // Address: 00534500
-/* public: void __thiscall RGE_View::set_player(class RGE_Player *) */
-
 void __thiscall RGE_View::set_player(RGE_View *this,RGE_Player *param_1)
 {
   this->player = param_1;
@@ -1001,8 +964,6 @@ void __thiscall RGE_View::set_player(RGE_View *this,RGE_Player *param_1)
 
 // Function: set_selection_area
 // Address: 00534530
-/* public: void __thiscall RGE_View::set_selection_area(long,long,long,long) */
-
 void __thiscall
 RGE_View::set_selection_area(RGE_View *this,long param_1,long param_2,long param_3,long param_4)
 {
@@ -1025,8 +986,6 @@ RGE_View::set_selection_area(RGE_View *this,long param_1,long param_2,long param
 
 // Function: get_selection_area
 // Address: 005345d0
-/* public: int __thiscall RGE_View::get_selection_area(long &,long &,long &,long &,int) */
-
 int __thiscall
 RGE_View::get_selection_area
           (RGE_View *this,long *param_1,long *param_2,long *param_3,long *param_4,int param_5)
@@ -1113,10 +1072,6 @@ RGE_View::get_selection_area
 
 // Function: CreateBlitQueue
 // Address: 005346f0
-/* WARNING: Variable defined which should be unmapped: yd */
-/* protected: void __thiscall RGE_View::CreateBlitQueue(struct tagRECT &,struct tagRECT &,int,int)
-    */
-
 void __thiscall
 RGE_View::CreateBlitQueue(RGE_View *this,tagRECT *param_1,tagRECT *param_2,int param_3,int param_4)
 {
@@ -1191,7 +1146,6 @@ RGE_View::CreateBlitQueue(RGE_View *this,tagRECT *param_1,tagRECT *param_2,int p
         }
       }
     }
-                    /* Symbol Ref: {@symbol CBQ_One} */
     if (this->Blt_Queue_Allocated < vBlits) {
       if (this->Blit_Queue != (Blit_Queue_Entry *)0x0) {
         free(this->Blit_Queue);
@@ -1261,9 +1215,6 @@ RGE_View::CreateBlitQueue(RGE_View *this,tagRECT *param_1,tagRECT *param_2,int p
 
 // Function: ProcessQueuedBlit
 // Address: 00534a00
-/* WARNING: Variable defined which should be unmapped: src */
-/* protected: void __thiscall RGE_View::ProcessQueuedBlit(int) */
-
 void __thiscall RGE_View::ProcessQueuedBlit(RGE_View *this,int param_1)
 {
   int *piVar1;
@@ -1306,9 +1257,6 @@ void __thiscall RGE_View::ProcessQueuedBlit(RGE_View *this,int param_1)
 // [HELPER] s_view__draw2: "view::draw2"
 // [HELPER] s_view__draw3: "view::draw3"
 // [HELPER] s_view__draw: "view::draw"
-/* WARNING: Variable defined which should be unmapped: old_start_map_row */
-/* public: virtual void __thiscall RGE_View::draw(void) */
-
 void __thiscall RGE_View::draw(RGE_View *this)
 {
   short sVar1;
@@ -1635,8 +1583,6 @@ LAB_0053512b:
 
 // Function: update
 // Address: 00535210
-/* protected: void __thiscall RGE_View::update(void) */
-
 void __thiscall RGE_View::update(RGE_View *this)
 {
   RGE_Tile *pRVar1;
@@ -1700,9 +1646,6 @@ void __thiscall RGE_View::update(RGE_View *this)
 // Function: draw_view
 // Address: 00535480
 // [HELPER] s_view__draw_view: "view::draw_view"
-/* WARNING: Variable defined which should be unmapped: save_render_rect */
-/* protected: void __thiscall RGE_View::draw_view(unsigned char,class TDrawArea *) */
-
 void __thiscall RGE_View::draw_view(RGE_View *this,uchar param_1,TDrawArea *param_2)
 {
   tagRECT tVar1;
@@ -1761,9 +1704,6 @@ void __thiscall RGE_View::draw_view(RGE_View *this,uchar param_1,TDrawArea *para
 
 // Function: draw_object_outline
 // Address: 00535610
-/* WARNING: Variable defined which should be unmapped: x1 */
-/* protected: void __thiscall RGE_View::draw_object_outline(void) */
-
 void __thiscall RGE_View::draw_object_outline(RGE_View *this)
 {
   RGE_Master_Static_Object *this_00;
@@ -1895,9 +1835,6 @@ void __thiscall RGE_View::draw_object_outline(RGE_View *this)
 
 // Function: draw_paint_brush
 // Address: 005358b0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: void __thiscall RGE_View::draw_paint_brush(void) */
-
 void __thiscall RGE_View::draw_paint_brush(RGE_View *this)
 {
   uchar uVar1;
@@ -1940,10 +1877,6 @@ void __thiscall RGE_View::draw_paint_brush(RGE_View *this)
 
 // Function: pick
 // Address: 005359e0
-/* WARNING: Variable defined which should be unmapped: start_mouse_pos */
-/* public: unsigned char __thiscall RGE_View::pick(unsigned char,unsigned char,long,long,struct
-   RGE_Pick_Info *,class RGE_Static_Object *) */
-
 uchar __thiscall
 RGE_View::pick(RGE_View *this,uchar param_1,uchar param_2,long param_3,long param_4,
               RGE_Pick_Info *param_5,RGE_Static_Object *param_6)
@@ -1984,9 +1917,6 @@ RGE_View::pick(RGE_View *this,uchar param_1,uchar param_2,long param_3,long para
 
 // Function: pick_multi
 // Address: 00535a80
-/* WARNING: Variable defined which should be unmapped: picked_any */
-/* public: unsigned char __thiscall RGE_View::pick_multi(unsigned char,long,long,long,long) */
-
 uchar __thiscall
 RGE_View::pick_multi
           (RGE_View *this,uchar param_1,long param_2,long param_3,long param_4,long param_5)
@@ -2081,9 +2011,6 @@ LAB_00535c2f:
 
 // Function: pick
 // Address: 00535c70
-/* public: unsigned char __thiscall RGE_View::pick(unsigned char,unsigned char,struct tagPOINT
-   *,struct tagPOINT *,void * *,float *,float *,short *,short *) */
-
 uchar __thiscall
 RGE_View::pick(RGE_View *this,uchar param_1,uchar param_2,tagPOINT *param_3,tagPOINT *param_4,
               void **param_5,float *param_6,float *param_7,short *param_8,short *param_9)
@@ -2099,8 +2026,6 @@ RGE_View::pick(RGE_View *this,uchar param_1,uchar param_2,tagPOINT *param_3,tagP
 
 // Function: pick_through_fog
 // Address: 00535cb0
-/* public: virtual int __thiscall RGE_View::pick_through_fog(class RGE_Static_Object *) */
-
 int __thiscall RGE_View::pick_through_fog(RGE_View *this,RGE_Static_Object *param_1)
 {
   return 0;
@@ -2110,8 +2035,6 @@ int __thiscall RGE_View::pick_through_fog(RGE_View *this,RGE_Static_Object *para
 
 // Function: pick_weight
 // Address: 00535cc0
-/* public: virtual int __thiscall RGE_View::pick_weight(class RGE_Static_Object *,int) */
-
 int __thiscall RGE_View::pick_weight(RGE_View *this,RGE_Static_Object *param_1,int param_2)
 {
   bool bVar1;
@@ -2166,8 +2089,6 @@ int __thiscall RGE_View::pick_weight(RGE_View *this,RGE_Static_Object *param_1,i
 
 // Function: get_tile_screen_coords
 // Address: 00535da0
-/* public: int __thiscall RGE_View::get_tile_screen_coords(short,short,short *,short *,int) */
-
 int __thiscall
 RGE_View::get_tile_screen_coords
           (RGE_View *this,short param_1,short param_2,short *param_3,short *param_4,int param_5)
@@ -2220,8 +2141,6 @@ RGE_View::get_tile_screen_coords
 
 // Function: get_center_screen_pos
 // Address: 00535eb0
-/* public: void __thiscall RGE_View::get_center_screen_pos(short *,short *) */
-
 void __thiscall RGE_View::get_center_screen_pos(RGE_View *this,short *param_1,short *param_2)
 {
   *param_1 = this->center_scr_row;
@@ -2233,8 +2152,6 @@ void __thiscall RGE_View::get_center_screen_pos(RGE_View *this,short *param_1,sh
 
 // Function: get_start_coords
 // Address: 00535ed0
-/* public: void __thiscall RGE_View::get_start_coords(short *,short *,short *,short *) */
-
 void __thiscall
 RGE_View::get_start_coords
           (RGE_View *this,short *param_1,short *param_2,short *param_3,short *param_4)
@@ -2258,8 +2175,6 @@ RGE_View::get_start_coords
 
 // Function: get_center_coords
 // Address: 00535f20
-/* public: void __thiscall RGE_View::get_center_coords(short *,short *,short *,short *) */
-
 void __thiscall
 RGE_View::get_center_coords
           (RGE_View *this,short *param_1,short *param_2,short *param_3,short *param_4)
@@ -2283,8 +2198,6 @@ RGE_View::get_center_coords
 
 // Function: get_tile_sizes
 // Address: 00535f70
-/* public: void __thiscall RGE_View::get_tile_sizes(short *,short *,short *,short *) */
-
 void __thiscall
 RGE_View::get_tile_sizes(RGE_View *this,short *param_1,short *param_2,short *param_3,short *param_4)
 {
@@ -2307,8 +2220,6 @@ RGE_View::get_tile_sizes(RGE_View *this,short *param_1,short *param_2,short *par
 
 // Function: get_max_size
 // Address: 00535fc0
-/* public: void __thiscall RGE_View::get_max_size(short *,short *) */
-
 void __thiscall RGE_View::get_max_size(RGE_View *this,short *param_1,short *param_2)
 {
   *param_1 = this->max_col_num;
@@ -2320,10 +2231,6 @@ void __thiscall RGE_View::get_max_size(RGE_View *this,short *param_1,short *para
 
 // Function: view_function
 // Address: 00535fe0
-/* WARNING: Variable defined which should be unmapped: visible */
-/* protected: long __thiscall RGE_View::view_function(unsigned char,unsigned char,struct tagPOINT
-   *,struct tagPOINT *,void * *,float *,float *,short *,short *) */
-
 long __thiscall
 RGE_View::view_function
           (RGE_View *this,uchar param_1,uchar param_2,tagPOINT *param_3,tagPOINT *param_4,
@@ -2689,7 +2596,6 @@ LAB_005368a9:
       if ((cVar7 == '\x01') && (_picked_type == max_row_num2)) {
         cVar7 = '\x02';
       }
-                    /* WARNING: Could not find normalized switch variable to match jumptable */
       switch(cVar7) {
       case '\x03':
         _picked_type = _picked_type + -1;
@@ -2697,7 +2603,6 @@ LAB_005368a9:
         sVar10 = sVar10 + 1;
         break;
       case '\x05':
-                    /* WARNING: This code block may not be properly labeled as switch case */
         sVar16 = sVar16 + this->tile_half_wid;
         sVar10 = sVar10 + 1;
         cVar7 = '\x03';
@@ -2731,9 +2636,6 @@ LAB_005368a9:
 // Address: 00536b40
 // [HELPER] s_C__msdev_work_age1_x1_view_cpp: "C:\msdev\work\age1_x1\view.cpp"
 // [HELPER] s_view__view_function_terrain: "view::view_function_terrain"
-/* WARNING: Variable defined which should be unmapped: ResetALLCyclic */
-/* protected: long __thiscall RGE_View::view_function_terrain(unsigned char,struct tagRECT) */
-
 long __thiscall RGE_View::view_function_terrain(RGE_View *this,uchar param_1,tagRECT param_2)
 {
   RGE_Tile *pRVar1;
@@ -2930,7 +2832,6 @@ LAB_00536d7a:
                     }
                   }
 LAB_00536f71:
-                    /* Symbol Ref: {@symbol draw_this_tile} */
                   pTVar3 = this->Tile_Edge_Tables[pRVar1->tile_type];
                   rect2 = (int)this->Black_Edge_Tables[pRVar1->tile_type];
                   if (this->map->fog_flag == '\0') {
@@ -3072,7 +2973,6 @@ LAB_00536f71:
                 }
               }
 LAB_0053739b:
-                    /* Symbol Ref: {@symbol TileOffScreen} */
               if ((pRVar1 != (RGE_Tile *)0x0) && ((pRVar1->draw_attribute & 0x40) == 0x40)) {
                 LDI._0_1_ = pRVar1->field_0x5 & 0x1f;
                 sVar2 = this->map->terrain_types[(byte)pRVar1->field_0x5 & 0x1f].terrain_to_draw;
@@ -3104,7 +3004,6 @@ LAB_0053739b:
               normal_draw_data = (VSpanMiniList *)TileFoggedMask;
             }
           }
-                    /* Symbol Ref: {@symbol SkipCol} */
           iVar19 = iVar19 + 1;
           screen_row = screen_row + 1;
           normal_draw_data = (VSpanMiniList *)&normal_draw_data->X_start;
@@ -3272,7 +3171,6 @@ LAB_005376ed:
   }
   if (((rge_base_game->prog_mode == 4) && (this->_padding_ != 0)) &&
      (iVar21 = TMousePointer::get_game_enable(MouseSystem), iVar21 != 0)) {
-                    /* language.dll match for 0xf11: "Click to select this Ruin." */
     uVar15 = debug_timeGetTime(s_C__msdev_work_age1_x1_view_cpp,0xf11);
     iVar21 = Get_Cursor_Position(this,(tagPOINT *)&CPoint.y,-param_2.left,-param_2.top);
     if (iVar21 != 0) {
@@ -3290,9 +3188,7 @@ LAB_005376ed:
         if (iVar21 == 1) {
           TMousePointer::set_game_facet(MouseSystem,text_id);
           if ((this->message_panel != (TMessagePanel *)0x0) && (rge_base_game->rollover != 0)) {
-                    /* language.dll match for 0x7f: "N" */
             TPanel::get_string((TPanel *)this,black_tile_mask_num,pText + 4,0x7f);
-                    /* language.dll match for 0x70: "B" */
             TMessagePanel::show_message
                       (this->message_panel,InfoMessage,pText + 4,'p','\0',(void *)0x0,0,0);
           }
@@ -3318,7 +3214,6 @@ LAB_005376ed:
     }
   }
 LAB_00537b2a:
-                    /* Symbol Ref: {@symbol no_mouse_process} */
   for (piVar9 = (int *)this->_padding_; piVar9 != (int *)0x0; piVar9 = (int *)piVar9[2]) {
     piVar10 = (int *)*piVar9;
     if ((piVar10[0x1b] != 0) && (piVar10[0xe] != 0)) {
@@ -3475,7 +3370,6 @@ LAB_00537e5a:
       } while ((int)LDI < pDVar18->YLine_Size);
     }
   }
-                    /* Symbol Ref: {@symbol addNoMore} */
   this->_padding_ = this->_padding_ + param_2.left;
   this->_padding_ = this->_padding_ + param_2.top;
   this->_padding_ = this->_padding_ + param_2.left;
@@ -3566,8 +3460,6 @@ LAB_00537e5a:
 
 // Function: Update_Render_Pointers
 // Address: 005381c0
-/* protected: void __thiscall RGE_View::Update_Render_Pointers(void) */
-
 void __thiscall RGE_View::Update_Render_Pointers(RGE_View *this)
 {
   uchar *puVar1;
@@ -3604,10 +3496,6 @@ void __thiscall RGE_View::Update_Render_Pointers(RGE_View *this)
 
 // Function: Add_GDI_Clip_Mask
 // Address: 00538280
-/* WARNING: Variable defined which should be unmapped: xr2 */
-/* protected: void __thiscall RGE_View::Add_GDI_Clip_Mask(struct DClipInfo_Node *,class
-   TSpan_List_Manager *) */
-
 void __thiscall
 RGE_View::Add_GDI_Clip_Mask(RGE_View *this,DClipInfo_Node *param_1,TSpan_List_Manager *param_2)
 {
@@ -3683,8 +3571,6 @@ RGE_View::Add_GDI_Clip_Mask(RGE_View *this,DClipInfo_Node *param_1,TSpan_List_Ma
 
 // Function: draw_multi_object_outline
 // Address: 00538410
-/* public: virtual void __thiscall RGE_View::draw_multi_object_outline(void) */
-
 void __thiscall RGE_View::draw_multi_object_outline(RGE_View *this)
 {
   return;
@@ -3694,9 +3580,6 @@ void __thiscall RGE_View::draw_multi_object_outline(RGE_View *this)
 
 // Function: Draw_GDI_Object
 // Address: 00538420
-/* protected: void __thiscall RGE_View::Draw_GDI_Object(struct DClipInfo_Node *,class TDrawArea *)
-    */
-
 void __thiscall RGE_View::Draw_GDI_Object(RGE_View *this,DClipInfo_Node *param_1,TDrawArea *param_2)
 {
   int iVar1;
@@ -3740,8 +3623,6 @@ void __thiscall RGE_View::Draw_GDI_Object(RGE_View *this,DClipInfo_Node *param_1
 
 // Function: get_tile_mask_num
 // Address: 00538590
-/* protected: int __thiscall RGE_View::get_tile_mask_num(int,int,int,int,unsigned long) */
-
 int __thiscall
 RGE_View::get_tile_mask_num
           (RGE_View *this,int param_1,int param_2,int param_3,int param_4,ulong param_5)
@@ -3832,10 +3713,6 @@ RGE_View::get_tile_mask_num
 
 // Function: draw_tile
 // Address: 00538710
-/* WARNING: Variable defined which should be unmapped: draw_attribute */
-/* protected: int __thiscall RGE_View::draw_tile(struct RGE_Tile *,unsigned
-   char,short,short,short,short,unsigned char,int,int) */
-
 int __thiscall
 RGE_View::draw_tile(RGE_View *this,RGE_Tile *param_1,uchar param_2,short param_3,short param_4,
                    short param_5,short param_6,uchar param_7,int param_8,int param_9)
@@ -3972,9 +3849,6 @@ LAB_00538b0e:
 
 // Function: draw_terrain_shape
 // Address: 00538b80
-/* protected: void __thiscall RGE_View::draw_terrain_shape(int,int,class TShape *,int,unsigned
-   char,unsigned char,int,int) */
-
 void __thiscall
 RGE_View::draw_terrain_shape
           (RGE_View *this,int param_1,int param_2,TShape *param_3,int param_4,uchar param_5,
@@ -4027,10 +3901,6 @@ RGE_View::draw_terrain_shape
 
 // Function: draw_terrain_obstruction_map
 // Address: 00538d60
-/* WARNING: Variable defined which should be unmapped: TileX4 */
-/* protected: void __thiscall RGE_View::draw_terrain_obstruction_map(int,int,class TShape
-   *,int,int,int) */
-
 void __thiscall
 RGE_View::draw_terrain_obstruction_map
           (RGE_View *this,int param_1,int param_2,TShape *param_3,int param_4,int param_5,
@@ -4072,8 +3942,6 @@ RGE_View::draw_terrain_obstruction_map
 
 // Function: Get_Cursor_Position
 // Address: 00538e60
-/* public: int __thiscall RGE_View::Get_Cursor_Position(struct tagPOINT &,int,int) */
-
 int __thiscall
 RGE_View::Get_Cursor_Position(RGE_View *this,tagPOINT *param_1,int param_2,int param_3)
 {
@@ -4105,9 +3973,6 @@ RGE_View::Get_Cursor_Position(RGE_View *this,tagPOINT *param_1,int param_2,int p
 
 // Function: Pick_Tile
 // Address: 00538f00
-/* WARNING: Variable defined which should be unmapped: MapW */
-/* protected: int __thiscall RGE_View::Pick_Tile(long,long,int *,int *) */
-
 int __thiscall
 RGE_View::Pick_Tile(RGE_View *this,long param_1,long param_2,int *param_3,int *param_4)
 {
@@ -4167,8 +4032,6 @@ RGE_View::Pick_Tile(RGE_View *this,long param_1,long param_2,int *param_3,int *p
 
 // Function: get_tile_bounding_coords
 // Address: 00539030
-/* protected: void __thiscall RGE_View::get_tile_bounding_coords(int,int,int &,int &,int &,int &) */
-
 void __thiscall
 RGE_View::get_tile_bounding_coords
           (RGE_View *this,int param_1,int param_2,int *param_3,int *param_4,int *param_5,
@@ -4195,8 +4058,6 @@ RGE_View::get_tile_bounding_coords
 
 // Function: pick_objects
 // Address: 005390d0
-/* protected: int __thiscall RGE_View::pick_objects(int,int,int,int,int,int,int) */
-
 int __thiscall
 RGE_View::pick_objects
           (RGE_View *this,int param_1,int param_2,int param_3,int param_4,int param_5,int param_6,
@@ -4425,8 +4286,6 @@ LAB_00539462:
 
 // Function: sprite_check
 // Address: 00539510
-/* protected: int __thiscall RGE_View::sprite_check(unsigned char *,struct Shape_Info *,int,int) */
-
 int __thiscall
 RGE_View::sprite_check(RGE_View *this,uchar *param_1,Shape_Info *param_2,int param_3,int param_4)
 {
@@ -4541,10 +4400,6 @@ switchD_005395b3_caseD_e:
 
 // Function: pick_multi_objects
 // Address: 005396f0
-/* WARNING: Variable defined which should be unmapped: num_picked */
-/* protected: int __thiscall RGE_View::pick_multi_objects(int,int,int,int,int,int,int,unsigned
-   char,int) */
-
 int __thiscall
 RGE_View::pick_multi_objects
           (RGE_View *this,int param_1,int param_2,int param_3,int param_4,int param_5,int param_6,
@@ -4639,9 +4494,6 @@ RGE_View::pick_multi_objects
 
 // Function: pick_touched_object
 // Address: 00539930
-/* protected: int __thiscall RGE_View::pick_touched_object(class DClipInfo_List
-   *,int,int,int,int,int &) */
-
 int __thiscall
 RGE_View::pick_touched_object
           (RGE_View *this,DClipInfo_List *param_1,int param_2,int param_3,int param_4,int param_5,
@@ -4696,9 +4548,6 @@ RGE_View::pick_touched_object
 
 // Function: get_tile_picture
 // Address: 00539aa0
-/* protected: short __thiscall RGE_View::get_tile_picture(unsigned char,unsigned char,short,short)
-    */
-
 short __thiscall
 RGE_View::get_tile_picture(RGE_View *this,uchar param_1,uchar param_2,short param_3,short param_4)
 {
@@ -4754,9 +4603,6 @@ RGE_View::get_tile_picture(RGE_View *this,uchar param_1,uchar param_2,short para
 
 // Function: get_border_picture
 // Address: 00539b90
-/* protected: short __thiscall RGE_View::get_border_picture(unsigned char,unsigned char,unsigned
-   char,short,short) */
-
 short __thiscall
 RGE_View::get_border_picture
           (RGE_View *this,uchar param_1,uchar param_2,uchar param_3,short param_4,short param_5)
@@ -4805,9 +4651,6 @@ RGE_View::get_border_picture
 
 // Function: get_border_edge_pictures
 // Address: 00539c80
-/* protected: int __thiscall RGE_View::get_border_edge_pictures(unsigned char,unsigned char,unsigned
-   char,short,short,int &,int &,int &,int &) */
-
 int __thiscall
 RGE_View::get_border_edge_pictures
           (RGE_View *this,uchar param_1,uchar param_2,uchar param_3,short param_4,short param_5,
@@ -4847,9 +4690,6 @@ RGE_View::get_border_edge_pictures
 
 // Function: hit_tile
 // Address: 00539d90
-/* protected: int __thiscall RGE_View::hit_tile(struct RGE_Tile *,short,short,short,short,struct
-   tagPOINT *) */
-
 int __thiscall
 RGE_View::hit_tile(RGE_View *this,RGE_Tile *param_1,short param_2,short param_3,short param_4,
                   short param_5,tagPOINT *param_6)
@@ -4903,11 +4743,6 @@ RGE_View::hit_tile(RGE_View *this,RGE_Tile *param_1,short param_2,short param_3,
 
 // Function: hit_object
 // Address: 00539ec0
-/* WARNING: Variable defined which should be unmapped: max_x */
-/* protected: class RGE_Static_Object * __thiscall RGE_View::hit_object(struct RGE_Tile
-   *,short,short,short,short,struct tagPOINT *,struct tagPOINT *,short *,short *,class
-   RGE_Static_Object *,unsigned char) */
-
 RGE_Static_Object * __thiscall
 RGE_View::hit_object
           (RGE_View *this,RGE_Tile *param_1,short param_2,short param_3,short param_4,short param_5,
@@ -5011,10 +4846,6 @@ LAB_00539fb7:
 
 // Function: start_scroll_view
 // Address: 0053a0d0
-/* WARNING: Variable defined which should be unmapped: pick_info */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual int __thiscall RGE_View::start_scroll_view(unsigned char,long,long,int,int) */
-
 int __thiscall
 RGE_View::start_scroll_view
           (RGE_View *this,uchar param_1,long param_2,long param_3,int param_4,int param_5)
@@ -5083,10 +4914,6 @@ RGE_View::start_scroll_view
 
 // Function: handle_scroll_view
 // Address: 0053a290
-/* WARNING: Variable defined which should be unmapped: save_view_y */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual int __thiscall RGE_View::handle_scroll_view(long,long) */
-
 int __thiscall RGE_View::handle_scroll_view(RGE_View *this,long param_1,long param_2)
 {
   long *plVar1;
@@ -5317,9 +5144,6 @@ int __thiscall RGE_View::handle_scroll_view(RGE_View *this,long param_1,long par
 
 // Function: end_scroll_view
 // Address: 0053a9c0
-/* WARNING: Variable defined which should be unmapped: point */
-/* public: virtual void __thiscall RGE_View::end_scroll_view(void) */
-
 void __thiscall RGE_View::end_scroll_view(RGE_View *this)
 {
   uchar uVar1;
@@ -5377,9 +5201,6 @@ void __thiscall RGE_View::end_scroll_view(RGE_View *this)
 
 // Function: do_paint
 // Address: 0053aaf0
-/* WARNING: Variable defined which should be unmapped: pick_info */
-/* public: virtual int __thiscall RGE_View::do_paint(long,long,long,long,int) */
-
 int __thiscall
 RGE_View::do_paint(RGE_View *this,long param_1,long param_2,long param_3,long param_4,int param_5)
 {
@@ -5427,8 +5248,6 @@ RGE_View::do_paint(RGE_View *this,long param_1,long param_2,long param_3,long pa
 
 // Function: reset_overlay_sprites
 // Address: 0053ac40
-/* public: void __thiscall RGE_View::reset_overlay_sprites(void) */
-
 void __thiscall RGE_View::reset_overlay_sprites(RGE_View *this)
 {
   Ov_Sprite_Draw_Rec *pOVar1;
@@ -5448,8 +5267,6 @@ void __thiscall RGE_View::reset_overlay_sprites(RGE_View *this)
 
 // Function: reset_cyclic_overlay_sprites
 // Address: 0053ac70
-/* public: void __thiscall RGE_View::reset_cyclic_overlay_sprites(void) */
-
 void __thiscall RGE_View::reset_cyclic_overlay_sprites(RGE_View *this)
 {
   Ov_Sprite_Draw_Rec *pOVar1;
@@ -5482,9 +5299,6 @@ void __thiscall RGE_View::reset_cyclic_overlay_sprites(RGE_View *this)
 
 // Function: add_overlay_sprite
 // Address: 0053acd0
-/* public: void __thiscall RGE_View::add_overlay_sprite(class TShape *,int,int,int,int,int,unsigned
-   char *,int,unsigned long) */
-
 void __thiscall
 RGE_View::add_overlay_sprite
           (RGE_View *this,TShape *param_1,int param_2,int param_3,int param_4,int param_5,
@@ -5520,8 +5334,6 @@ RGE_View::add_overlay_sprite
 
 // Function: Object_Was_Displayed
 // Address: 0053ad50
-/* public: bool __thiscall RGE_View::Object_Was_Displayed(int,bool) */
-
 bool __thiscall RGE_View::Object_Was_Displayed(RGE_View *this,int param_1,bool param_2)
 {
   DClipInfo_Node *pDVar1;

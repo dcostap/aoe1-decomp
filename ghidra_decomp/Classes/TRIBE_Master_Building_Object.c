@@ -48,9 +48,6 @@
 
 // Function: TRIBE_Master_Building_Object
 // Address: 0050e040
-/* public: __thiscall TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(class
-   TRIBE_Master_Building_Object *,int) */
-
 TRIBE_Master_Building_Object * __thiscall
 TRIBE_Master_Building_Object::TRIBE_Master_Building_Object
           (TRIBE_Master_Building_Object *this,TRIBE_Master_Building_Object *param_1,int param_2)
@@ -79,9 +76,6 @@ TRIBE_Master_Building_Object::TRIBE_Master_Building_Object
 
 // Function: `vector_deleting_destructor'
 // Address: 0050e0a0
-/* public: virtual void * __thiscall TRIBE_Master_Building_Object::`vector deleting
-   destructor'(unsigned int) */
-
 void * __thiscall
 TRIBE_Master_Building_Object::_vector_deleting_destructor_
           (TRIBE_Master_Building_Object *this,uint param_1)
@@ -97,9 +91,6 @@ TRIBE_Master_Building_Object::_vector_deleting_destructor_
 
 // Function: TRIBE_Master_Building_Object
 // Address: 0050e0c0
-/* public: __thiscall TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(int,class
-   RGE_Sprite * *,class RGE_Sound * *,int) */
-
 TRIBE_Master_Building_Object * __thiscall
 TRIBE_Master_Building_Object::TRIBE_Master_Building_Object
           (TRIBE_Master_Building_Object *this,int param_1,RGE_Sprite **param_2,RGE_Sound **param_3,
@@ -129,9 +120,6 @@ TRIBE_Master_Building_Object::TRIBE_Master_Building_Object
 
 // Function: TRIBE_Master_Building_Object
 // Address: 0050e130
-/* public: __thiscall TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(struct _iobuf
-   *,class RGE_Sprite * *,class RGE_Sound * *,short,int) */
-
 TRIBE_Master_Building_Object * __thiscall
 TRIBE_Master_Building_Object::TRIBE_Master_Building_Object
           (TRIBE_Master_Building_Object *this,_iobuf *param_1,RGE_Sprite **param_2,
@@ -161,9 +149,6 @@ TRIBE_Master_Building_Object::TRIBE_Master_Building_Object
 
 // Function: setup
 // Address: 0050e1b0
-/* protected: int __thiscall TRIBE_Master_Building_Object::setup(class TRIBE_Master_Building_Object
-   *) */
-
 int __thiscall
 TRIBE_Master_Building_Object::setup
           (TRIBE_Master_Building_Object *this,TRIBE_Master_Building_Object *param_1)
@@ -187,9 +172,6 @@ TRIBE_Master_Building_Object::setup
 
 // Function: setup
 // Address: 0050e250
-/* protected: int __thiscall TRIBE_Master_Building_Object::setup(int,class RGE_Sprite * *,class
-   RGE_Sound * *) */
-
 int __thiscall
 TRIBE_Master_Building_Object::setup
           (TRIBE_Master_Building_Object *this,int param_1,RGE_Sprite **param_2,RGE_Sound **param_3)
@@ -231,9 +213,6 @@ TRIBE_Master_Building_Object::setup
 // Function: setup
 // Address: 0050e360
 // [HELPER] s__hd__hd__hd__hd__hd__hd__hd__hd_: "%hd %hd %hd %hd %hd %hd %hd %hd %hd"
-/* protected: int __thiscall TRIBE_Master_Building_Object::setup(struct _iobuf *,class RGE_Sprite *
-   *,class RGE_Sound * *,short) */
-
 int __thiscall
 TRIBE_Master_Building_Object::setup
           (TRIBE_Master_Building_Object *this,_iobuf *param_1,RGE_Sprite **param_2,
@@ -275,8 +254,6 @@ TRIBE_Master_Building_Object::setup
 
 // Function: ~TRIBE_Master_Building_Object
 // Address: 0050e430
-/* public: virtual __thiscall TRIBE_Master_Building_Object::~TRIBE_Master_Building_Object(void) */
-
 void __thiscall
 TRIBE_Master_Building_Object::~TRIBE_Master_Building_Object(TRIBE_Master_Building_Object *this)
 {
@@ -289,9 +266,6 @@ TRIBE_Master_Building_Object::~TRIBE_Master_Building_Object(TRIBE_Master_Buildin
 
 // Function: copy_obj
 // Address: 0050e440
-/* public: virtual void __thiscall TRIBE_Master_Building_Object::copy_obj(class
-   RGE_Master_Static_Object *) */
-
 void __thiscall
 TRIBE_Master_Building_Object::copy_obj
           (TRIBE_Master_Building_Object *this,RGE_Master_Static_Object *param_1)
@@ -313,8 +287,6 @@ TRIBE_Master_Building_Object::copy_obj
 
 // Function: modify
 // Address: 0050e4d0
-/* public: virtual void __thiscall TRIBE_Master_Building_Object::modify(float,unsigned char) */
-
 void __thiscall
 TRIBE_Master_Building_Object::modify(TRIBE_Master_Building_Object *this,float param_1,uchar param_2)
 {
@@ -333,9 +305,6 @@ TRIBE_Master_Building_Object::modify(TRIBE_Master_Building_Object *this,float pa
 
 // Function: modify_delta
 // Address: 0050e500
-/* public: virtual void __thiscall TRIBE_Master_Building_Object::modify_delta(float,unsigned char)
-    */
-
 void __thiscall
 TRIBE_Master_Building_Object::modify_delta
           (TRIBE_Master_Building_Object *this,float param_1,uchar param_2)
@@ -355,9 +324,6 @@ TRIBE_Master_Building_Object::modify_delta
 
 // Function: modify_percent
 // Address: 0050e530
-/* public: virtual void __thiscall TRIBE_Master_Building_Object::modify_percent(float,unsigned char)
-    */
-
 void __thiscall
 TRIBE_Master_Building_Object::modify_percent
           (TRIBE_Master_Building_Object *this,float param_1,uchar param_2)
@@ -370,9 +336,6 @@ TRIBE_Master_Building_Object::modify_percent
 
 // Function: save
 // Address: 0050e550
-/* WARNING: Variable defined which should be unmapped: sound_num */
-/* public: virtual void __thiscall TRIBE_Master_Building_Object::save(int) */
-
 void __thiscall TRIBE_Master_Building_Object::save(TRIBE_Master_Building_Object *this,int param_1)
 {
   RGE_Sprite *pRVar1;
@@ -410,9 +373,6 @@ void __thiscall TRIBE_Master_Building_Object::save(TRIBE_Master_Building_Object 
 
 // Function: make_new_obj
 // Address: 0050e630
-/* public: virtual class RGE_Static_Object * __thiscall
-   TRIBE_Master_Building_Object::make_new_obj(class RGE_Player *,float,float,float,int) */
-
 RGE_Static_Object * __thiscall
 TRIBE_Master_Building_Object::make_new_obj
           (TRIBE_Master_Building_Object *this,RGE_Player *param_1,float param_2,float param_3,
@@ -446,9 +406,6 @@ TRIBE_Master_Building_Object::make_new_obj
 
 // Function: make_new_obj
 // Address: 0050e6b0
-/* public: virtual class RGE_Static_Object * __thiscall
-   TRIBE_Master_Building_Object::make_new_obj(class RGE_Player *,float,float,float) */
-
 RGE_Static_Object * __thiscall
 TRIBE_Master_Building_Object::make_new_obj
           (TRIBE_Master_Building_Object *this,RGE_Player *param_1,float param_2,float param_3,
@@ -482,9 +439,6 @@ TRIBE_Master_Building_Object::make_new_obj
 
 // Function: make_new_master
 // Address: 0050e730
-/* public: virtual class RGE_Master_Static_Object * __thiscall
-   TRIBE_Master_Building_Object::make_new_master(void) */
-
 RGE_Master_Static_Object * __thiscall
 TRIBE_Master_Building_Object::make_new_master(TRIBE_Master_Building_Object *this)
 {
@@ -514,10 +468,6 @@ TRIBE_Master_Building_Object::make_new_master(TRIBE_Master_Building_Object *this
 
 // Function: draw
 // Address: 0050e7a0
-/* WARNING: Variable defined which should be unmapped: y1 */
-/* public: virtual void __thiscall TRIBE_Master_Building_Object::draw(class TDrawArea
-   *,short,short,class RGE_Color_Table *,long,long,int,unsigned char) */
-
 void __thiscall
 TRIBE_Master_Building_Object::draw
           (TRIBE_Master_Building_Object *this,TDrawArea *param_1,short param_2,short param_3,
@@ -578,9 +528,6 @@ TRIBE_Master_Building_Object::draw
 
 // Function: alignment
 // Address: 0050e950
-/* public: virtual unsigned char __thiscall TRIBE_Master_Building_Object::alignment(float &,float
-   &,class RGE_Game_World *,unsigned char) */
-
 uchar __thiscall
 TRIBE_Master_Building_Object::alignment
           (TRIBE_Master_Building_Object *this,float *param_1,float *param_2,RGE_Game_World *param_3,

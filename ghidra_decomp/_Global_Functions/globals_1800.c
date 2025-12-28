@@ -4,7 +4,6 @@
 // XREFS: ~RGE_View
 void FUN_00561b28(void)
 {
-                    /* Symbol Ref: {@symbol $L46737} */
   ___CxxFrameHandler();
   return;
 }
@@ -16,7 +15,6 @@ void FUN_00561b28(void)
 // XREFS: setup
 void FUN_00561b4e(void)
 {
-                    /* Symbol Ref: {@symbol $L46752} */
   ___CxxFrameHandler();
   return;
 }
@@ -28,7 +26,6 @@ void FUN_00561b4e(void)
 // XREFS: set_rect
 void FUN_00561b81(void)
 {
-                    /* Symbol Ref: {@symbol $L46833} */
   ___CxxFrameHandler();
   return;
 }
@@ -40,7 +37,6 @@ void FUN_00561b81(void)
 // XREFS: create_surfaces
 void FUN_00561bb1(void)
 {
-                    /* Symbol Ref: {@symbol $L46877} */
   ___CxxFrameHandler();
   return;
 }
@@ -52,7 +48,6 @@ void FUN_00561bb1(void)
 // XREFS: RGE_Game_World
 void FUN_00561c0d(void)
 {
-                    /* Symbol Ref: {@symbol $L43718} */
   ___CxxFrameHandler();
   return;
 }
@@ -64,7 +59,6 @@ void FUN_00561c0d(void)
 // XREFS: data_load_sounds
 void FUN_00561c2b(void)
 {
-                    /* Symbol Ref: {@symbol $L43851} */
   ___CxxFrameHandler();
   return;
 }
@@ -76,7 +70,6 @@ void FUN_00561c2b(void)
 // XREFS: data_load_color_tables
 void FUN_00561c4b(void)
 {
-                    /* Symbol Ref: {@symbol $L43873} */
   ___CxxFrameHandler();
   return;
 }
@@ -88,7 +81,6 @@ void FUN_00561c4b(void)
 // XREFS: data_load_sprites
 void FUN_00561c76(void)
 {
-                    /* Symbol Ref: {@symbol $L43896} */
   ___CxxFrameHandler();
   return;
 }
@@ -101,8 +93,6 @@ void FUN_00561c76(void)
 void FUN_00561c80(void)
 {
   int unaff_EBP;
-  
-                    /* Symbol Ref: {@symbol $L43906} */
   operator_delete(*(void **)(unaff_EBP + 8));
   return;
 }
@@ -114,7 +104,6 @@ void FUN_00561c80(void)
 // XREFS: data_load_players_type
 void FUN_00561c8b(void)
 {
-                    /* Symbol Ref: {@symbol $L43909} */
   ___CxxFrameHandler();
   return;
 }
@@ -126,7 +115,6 @@ void FUN_00561c8b(void)
 // XREFS: data_load_effects
 void FUN_00561cab(void)
 {
-                    /* Symbol Ref: {@symbol $L43934} */
   ___CxxFrameHandler();
   return;
 }
@@ -138,7 +126,6 @@ void FUN_00561cab(void)
 // XREFS: data_load_map
 void FUN_00561ccb(void)
 {
-                    /* Symbol Ref: {@symbol $L43947} */
   ___CxxFrameHandler();
   return;
 }
@@ -150,7 +137,6 @@ void FUN_00561ccb(void)
 // XREFS: init_player_type
 void FUN_00561ceb(void)
 {
-                    /* Symbol Ref: {@symbol $L43966} */
   ___CxxFrameHandler();
   return;
 }
@@ -162,7 +148,6 @@ void FUN_00561ceb(void)
 // XREFS: color_table_init
 void FUN_00561d0b(void)
 {
-                    /* Symbol Ref: {@symbol $L43990} */
   ___CxxFrameHandler();
   return;
 }
@@ -174,7 +159,6 @@ void FUN_00561d0b(void)
 // XREFS: init_sounds
 void FUN_00561d2b(void)
 {
-                    /* Symbol Ref: {@symbol $L44005} */
   ___CxxFrameHandler();
   return;
 }
@@ -186,7 +170,6 @@ void FUN_00561d2b(void)
 // XREFS: init_sprites
 void FUN_00561d4b(void)
 {
-                    /* Symbol Ref: {@symbol $L44024} */
   ___CxxFrameHandler();
   return;
 }
@@ -198,7 +181,6 @@ void FUN_00561d4b(void)
 // XREFS: scenario_init
 void FUN_00561d6b(void)
 {
-                    /* Symbol Ref: {@symbol $L44037} */
   ___CxxFrameHandler();
   return;
 }
@@ -210,7 +192,6 @@ void FUN_00561d6b(void)
 // XREFS: scenario_init
 void FUN_00561d8b(void)
 {
-                    /* Symbol Ref: {@symbol $L44050} */
   ___CxxFrameHandler();
   return;
 }
@@ -222,7 +203,6 @@ void FUN_00561d8b(void)
 // XREFS: map_init
 void FUN_00561dab(void)
 {
-                    /* Symbol Ref: {@symbol $L44063} */
   ___CxxFrameHandler();
   return;
 }
@@ -234,7 +214,6 @@ void FUN_00561dab(void)
 // XREFS: effects_init
 void FUN_00561dcb(void)
 {
-                    /* Symbol Ref: {@symbol $L44076} */
   ___CxxFrameHandler();
   return;
 }
@@ -246,7 +225,6 @@ void FUN_00561dcb(void)
 // XREFS: command_init
 void FUN_00561deb(void)
 {
-                    /* Symbol Ref: {@symbol $L44091} */
   ___CxxFrameHandler();
   return;
 }
@@ -258,7 +236,6 @@ void FUN_00561deb(void)
 // XREFS: load_player
 void FUN_00561e0b(void)
 {
-                    /* Symbol Ref: {@symbol $L44142} */
   ___CxxFrameHandler();
   return;
 }
@@ -270,7 +247,6 @@ void FUN_00561e0b(void)
 // XREFS: setup_gaia
 void FUN_00561e2b(void)
 {
-                    /* Symbol Ref: {@symbol $L44174} */
   ___CxxFrameHandler();
   return;
 }
@@ -282,7 +258,6 @@ void FUN_00561e2b(void)
 // XREFS: setup_players
 void FUN_00561e4b(void)
 {
-                    /* Symbol Ref: {@symbol $L44189} */
   ___CxxFrameHandler();
   return;
 }
@@ -294,7 +269,6 @@ void FUN_00561e4b(void)
 // XREFS: scenario_make_player
 void FUN_00561e6b(void)
 {
-                    /* Symbol Ref: {@symbol $L44353} */
   ___CxxFrameHandler();
   return;
 }
@@ -306,7 +280,6 @@ void FUN_00561e6b(void)
 // XREFS: RGE_Zone_Map_List
 void FUN_00561e8b(void)
 {
-                    /* Symbol Ref: {@symbol $L31855} */
   ___CxxFrameHandler();
   return;
 }
@@ -318,7 +291,6 @@ void FUN_00561e8b(void)
 // XREFS: create_zone_map
 void FUN_00561eab(void)
 {
-                    /* Symbol Ref: {@symbol $L31882} */
   ___CxxFrameHandler();
   return;
 }
@@ -330,7 +302,6 @@ void FUN_00561eab(void)
 // XREFS: get_zone_map
 void FUN_00561ecb(void)
 {
-                    /* Symbol Ref: {@symbol $L31899} */
   ___CxxFrameHandler();
   return;
 }
@@ -520,8 +491,6 @@ void FUN_00564157(void)
   int unaff_EDI;
   
   *(undefined1 *)(unaff_EDI + 2) = in_AL;
-                    /* WARNING: Could not recover jumptable at 0x0056415d. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -538,8 +507,6 @@ void FUN_00564163(void)
   
   *unaff_EDI = in_EAX;
   *(char *)(unaff_EDI + 1) = (char)in_EAX;
-                    /* WARNING: Could not recover jumptable at 0x0056416b. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -557,8 +524,6 @@ void FUN_00564171(void)
   *unaff_EDI = (char)((ushort)in_AX >> 8);
   *(undefined2 *)(unaff_EDI + 1) = in_AX;
   *(undefined2 *)(unaff_EDI + 3) = in_AX;
-                    /* WARNING: Could not recover jumptable at 0x00564180. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -576,8 +541,6 @@ void FUN_00564186(void)
   *unaff_EDI = in_AX;
   unaff_EDI[1] = in_AX;
   *(char *)(unaff_EDI + 2) = (char)in_AX;
-                    /* WARNING: Could not recover jumptable at 0x00564195. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -594,8 +557,6 @@ void FUN_0056419b(void)
   
   *unaff_EDI = (char)((uint)in_EAX >> 8);
   *(undefined4 *)(unaff_EDI + 1) = in_EAX;
-                    /* WARNING: Could not recover jumptable at 0x005641a3. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -612,8 +573,6 @@ void FUN_005641a9(void)
   
   *unaff_EDI = in_EAX;
   *(short *)(unaff_EDI + 1) = (short)in_EAX;
-                    /* WARNING: Could not recover jumptable at 0x005641b4. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -632,8 +591,6 @@ void FUN_005641ba(void)
   *(undefined2 *)(unaff_EDI + 1) = in_AX;
   *(undefined2 *)(unaff_EDI + 3) = in_AX;
   unaff_EDI[5] = (char)in_AX;
-                    /* WARNING: Could not recover jumptable at 0x005641cc. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -650,8 +607,6 @@ void FUN_005641d2(void)
   
   *unaff_EDI = (short)in_EAX;
   *(undefined4 *)(unaff_EDI + 1) = in_EAX;
-                    /* WARNING: Could not recover jumptable at 0x005641dd. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -669,8 +624,6 @@ void FUN_005641e3(void)
   *unaff_EDI = (char)((uint)in_EAX >> 8);
   *(undefined4 *)(unaff_EDI + 1) = in_EAX;
   unaff_EDI[5] = (char)in_EAX;
-                    /* WARNING: Could not recover jumptable at 0x005641ee. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -688,8 +641,6 @@ void FUN_005641f4(void)
   *unaff_EDI = in_EAX;
   *(short *)(unaff_EDI + 1) = (short)in_EAX;
   *(char *)((int)unaff_EDI + 6) = (char)in_EAX;
-                    /* WARNING: Could not recover jumptable at 0x00564202. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -707,8 +658,6 @@ void FUN_00564208(void)
   *unaff_EDI = (char)((uint)in_EAX >> 8);
   *(short *)(unaff_EDI + 1) = (short)in_EAX;
   *(undefined4 *)(unaff_EDI + 3) = in_EAX;
-                    /* WARNING: Could not recover jumptable at 0x00564216. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -726,8 +675,6 @@ void FUN_0056421c(void)
   *unaff_EDI = (short)in_EAX;
   *(undefined4 *)(unaff_EDI + 1) = in_EAX;
   *(char *)(unaff_EDI + 3) = (char)in_EAX;
-                    /* WARNING: Could not recover jumptable at 0x0056422a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -745,8 +692,6 @@ void FUN_00564230(void)
   *unaff_EDI = (char)((uint)in_EAX >> 8);
   *(undefined4 *)(unaff_EDI + 1) = in_EAX;
   *(short *)(unaff_EDI + 5) = (short)in_EAX;
-                    /* WARNING: Could not recover jumptable at 0x0056423e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -768,8 +713,6 @@ void __fastcall FUN_00564244(uint param_1)
     bVar1 = 3 < param_1;
     param_1 = param_1 - 4;
   } while (bVar1 && param_1 != 0);
-                    /* WARNING: Could not recover jumptable at 0x0056424e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -796,8 +739,6 @@ void __fastcall FUN_00564254(int param_1)
     bVar3 = 3 < uVar1;
     uVar1 = uVar1 - 4;
   } while (bVar3 && uVar1 != 0);
-                    /* WARNING: Could not recover jumptable at 0x00564262. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -824,8 +765,6 @@ void __fastcall FUN_00564268(int param_1)
     bVar3 = 3 < uVar1;
     uVar1 = uVar1 - 4;
   } while (bVar3 && uVar1 != 0);
-                    /* WARNING: Could not recover jumptable at 0x0056427b. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -853,8 +792,6 @@ void __fastcall FUN_00564281(int param_1)
     bVar3 = 3 < uVar1;
     uVar1 = uVar1 - 4;
   } while (bVar3 && uVar1 != 0);
-                    /* WARNING: Could not recover jumptable at 0x00564297. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -879,8 +816,6 @@ void __fastcall FUN_0056429d(int param_1)
     uVar1 = uVar1 - 4;
   } while (bVar2 && uVar1 != 0);
   *(char *)unaff_EDI = (char)in_EAX;
-                    /* WARNING: Could not recover jumptable at 0x005642ab. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -908,8 +843,6 @@ void __fastcall FUN_005642b1(int param_1)
     uVar1 = uVar1 - 4;
   } while (bVar3 && uVar1 != 0);
   *(char *)puVar2 = (char)in_EAX;
-                    /* WARNING: Could not recover jumptable at 0x005642c4. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -937,8 +870,6 @@ void __fastcall FUN_005642ca(int param_1)
     uVar1 = uVar1 - 4;
   } while (bVar3 && uVar1 != 0);
   *(char *)puVar2 = (char)in_EAX;
-                    /* WARNING: Could not recover jumptable at 0x005642e0. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -967,8 +898,6 @@ void __fastcall FUN_005642e6(int param_1)
     uVar1 = uVar1 - 4;
   } while (bVar3 && uVar1 != 0);
   *(char *)puVar2 = (char)in_EAX;
-                    /* WARNING: Could not recover jumptable at 0x005642ff. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -993,8 +922,6 @@ void __fastcall FUN_00564305(int param_1)
     uVar1 = uVar1 - 4;
   } while (bVar2 && uVar1 != 0);
   *(short *)unaff_EDI = (short)in_EAX;
-                    /* WARNING: Could not recover jumptable at 0x00564318. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1022,8 +949,6 @@ void __fastcall FUN_0056431e(int param_1)
     uVar1 = uVar1 - 4;
   } while (bVar3 && uVar1 != 0);
   *(short *)puVar2 = (short)in_EAX;
-                    /* WARNING: Could not recover jumptable at 0x00564334. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1051,8 +976,6 @@ void __fastcall FUN_0056433a(int param_1)
     uVar1 = uVar1 - 4;
   } while (bVar3 && uVar1 != 0);
   *(short *)puVar2 = (short)in_EAX;
-                    /* WARNING: Could not recover jumptable at 0x00564353. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1081,8 +1004,6 @@ void __fastcall FUN_00564359(int param_1)
     uVar1 = uVar1 - 4;
   } while (bVar3 && uVar1 != 0);
   *(short *)puVar2 = (short)in_EAX;
-                    /* WARNING: Could not recover jumptable at 0x00564375. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1110,8 +1031,6 @@ void __fastcall FUN_0056437b(int param_1)
   } while (bVar3 && uVar1 != 0);
   *(short *)(puVar2 + 1) = (short)in_EAX;
   *(char *)((int)puVar2 + 6) = (char)in_EAX;
-                    /* WARNING: Could not recover jumptable at 0x00564391. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1142,8 +1061,6 @@ void __fastcall FUN_00564397(int param_1)
   } while (bVar4 && uVar2 != 0);
   *(short *)(puVar3 + 1) = (short)in_EAX;
   *(char *)((int)puVar3 + 6) = (char)in_EAX;
-                    /* WARNING: Could not recover jumptable at 0x005643b0. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1174,8 +1091,6 @@ void __fastcall FUN_005643b6(int param_1)
   } while (bVar4 && uVar2 != 0);
   *(short *)(puVar3 + 1) = (short)in_EAX;
   *(char *)((int)puVar3 + 6) = (char)in_EAX;
-                    /* WARNING: Could not recover jumptable at 0x005643d2. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1207,8 +1122,6 @@ void __fastcall FUN_005643d8(int param_1)
   } while (bVar4 && uVar2 != 0);
   *(short *)(puVar3 + 1) = (short)in_EAX;
   *(char *)((int)puVar3 + 6) = (char)in_EAX;
-                    /* WARNING: Could not recover jumptable at 0x005643f7. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1225,8 +1138,6 @@ void FUN_005643fd(void)
   byte *unaff_EDI;
   
   *unaff_EDI = *unaff_ESI | unaff_BL;
-                    /* WARNING: Could not recover jumptable at 0x00564405. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1243,8 +1154,6 @@ void FUN_0056440b(void)
   ushort *unaff_EDI;
   
   *unaff_EDI = (ushort)*unaff_ESI | unaff_BX;
-                    /* WARNING: Could not recover jumptable at 0x00564418. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1264,8 +1173,6 @@ void FUN_0056441e(void)
   uVar1 = *unaff_ESI;
   *unaff_EDI = (char)(uVar1 | unaff_EBX);
   unaff_EDI[1] = (char)((uVar1 | unaff_EBX) >> 8);
-                    /* WARNING: Could not recover jumptable at 0x0056442d. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1285,8 +1192,6 @@ void FUN_00564433(void)
   uVar1 = *unaff_ESI;
   *unaff_EDI = (short)(uVar1 | unaff_EBX);
   *(char *)(unaff_EDI + 1) = (char)((uVar1 | unaff_EBX) >> 0x10);
-                    /* WARNING: Could not recover jumptable at 0x00564446. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1306,8 +1211,6 @@ void FUN_0056444c(void)
   uVar1 = *unaff_ESI;
   *unaff_EDI = (char)(uVar1 | unaff_EBX);
   *(short *)(unaff_EDI + 1) = (short)((uVar1 | unaff_EBX) >> 8);
-                    /* WARNING: Could not recover jumptable at 0x0056445f. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1324,8 +1227,6 @@ void FUN_00564465(void)
   uint *unaff_EDI;
   
   *unaff_EDI = *unaff_ESI | unaff_EBX;
-                    /* WARNING: Could not recover jumptable at 0x00564471. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1347,8 +1248,6 @@ void FUN_00564477(void)
   unaff_EDI[1] = (char)(uVar1 >> 8);
   unaff_EDI[2] = (char)(uVar1 >> 0x10);
   unaff_EDI[3] = (char)(uVar1 >> 0x18);
-                    /* WARNING: Could not recover jumptable at 0x0056448f. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1368,8 +1267,6 @@ void FUN_00564495(void)
   uVar1 = unaff_ESI[1];
   *unaff_EDI = *unaff_ESI | unaff_EBX;
   *(byte *)(unaff_EDI + 1) = (byte)uVar1 | (byte)unaff_EBX;
-                    /* WARNING: Could not recover jumptable at 0x005644a9. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1392,8 +1289,6 @@ void FUN_005644af(void)
   *unaff_EDI = (short)(uVar1 | unaff_EBX);
   *(char *)(unaff_EDI + 1) = (char)((uVar1 | unaff_EBX) >> 0x10);
   *(ushort *)((int)unaff_EDI + 3) = (ushort)uVar2 | (ushort)unaff_EBX;
-                    /* WARNING: Could not recover jumptable at 0x005644cb. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1413,8 +1308,6 @@ void FUN_005644d1(void)
   uVar1 = *(uint *)(unaff_ESI + 1);
   *unaff_EDI = *unaff_ESI | (byte)unaff_EBX;
   *(uint *)(unaff_EDI + 1) = uVar1 | unaff_EBX;
-                    /* WARNING: Could not recover jumptable at 0x005644e5. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1434,8 +1327,6 @@ void FUN_005644eb(void)
   uVar1 = unaff_ESI[1];
   *unaff_EDI = *unaff_ESI | unaff_EBX;
   *(ushort *)(unaff_EDI + 1) = (ushort)uVar1 | (ushort)unaff_EBX;
-                    /* WARNING: Could not recover jumptable at 0x00564500. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1459,8 +1350,6 @@ void FUN_00564506(void)
   *(char *)(unaff_EDI + 1) = (char)(uVar2 >> 0x10);
   *(char *)((int)unaff_EDI + 3) = (char)(uVar2 >> 0x18);
   unaff_EDI[2] = (ushort)uVar1 | (ushort)unaff_EBX;
-                    /* WARNING: Could not recover jumptable at 0x00564525. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1480,8 +1369,6 @@ void FUN_0056452b(void)
   uVar1 = *(uint *)((int)unaff_ESI + 2);
   *unaff_EDI = (ushort)*unaff_ESI | (ushort)unaff_EBX;
   *(uint *)(unaff_EDI + 1) = uVar1 | unaff_EBX;
-                    /* WARNING: Could not recover jumptable at 0x00564540. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1504,8 +1391,6 @@ void FUN_00564546(void)
   *unaff_EDI = (char)uVar2;
   *(uint *)(unaff_EDI + 1) = uVar1 | unaff_EBX;
   unaff_EDI[5] = (char)(uVar2 >> 8);
-                    /* WARNING: Could not recover jumptable at 0x00564560. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1526,8 +1411,6 @@ void FUN_00564566(void)
   *unaff_EDI = *unaff_ESI | unaff_EBX;
   *(short *)(unaff_EDI + 1) = (short)(uVar1 | unaff_EBX);
   *(char *)((int)unaff_EDI + 6) = (char)((uVar1 | unaff_EBX) >> 0x10);
-                    /* WARNING: Could not recover jumptable at 0x00564581. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1550,8 +1433,6 @@ void FUN_00564587(void)
   *unaff_EDI = (short)(uVar1 | unaff_EBX);
   *(char *)(unaff_EDI + 1) = (char)((uVar1 | unaff_EBX) >> 0x10);
   *(uint *)((int)unaff_EDI + 3) = uVar2 | unaff_EBX;
-                    /* WARNING: Could not recover jumptable at 0x005645a2. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1572,8 +1453,6 @@ void FUN_005645a8(void)
   bVar1 = *(byte *)((int)unaff_ESI + 6);
   *unaff_EDI = (ushort)*unaff_ESI | (ushort)unaff_EBX;
   *(byte *)(unaff_EDI + 3) = bVar1 | (byte)unaff_EBX;
-                    /* WARNING: Could not recover jumptable at 0x005645c5. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1594,8 +1473,6 @@ void FUN_005645cb(void)
   uVar1 = *(undefined4 *)(unaff_ESI + 5);
   *unaff_EDI = *unaff_ESI | (byte)unaff_EBX;
   *(ushort *)(unaff_EDI + 5) = (ushort)uVar1 | (ushort)unaff_EBX;
-                    /* WARNING: Could not recover jumptable at 0x005645e8. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1621,8 +1498,6 @@ void __fastcall FUN_005645ee(uint param_1)
     bVar2 = 3 < param_1;
     param_1 = param_1 - 4;
   } while (bVar2 && param_1 != 0);
-                    /* WARNING: Could not recover jumptable at 0x005645ff. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1655,8 +1530,6 @@ void __fastcall FUN_00564605(int param_1)
     bVar5 = 3 < uVar2;
     uVar2 = uVar2 - 4;
   } while (bVar5 && uVar2 != 0);
-                    /* WARNING: Could not recover jumptable at 0x0056461f. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1689,8 +1562,6 @@ void __fastcall FUN_00564625(int param_1)
     bVar5 = 3 < uVar2;
     uVar2 = uVar2 - 4;
   } while (bVar5 && uVar2 != 0);
-                    /* WARNING: Could not recover jumptable at 0x00564647. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1725,8 +1596,6 @@ void __fastcall FUN_0056464d(int param_1)
     bVar5 = 3 < uVar2;
     uVar2 = uVar2 - 4;
   } while (bVar5 && uVar2 != 0);
-                    /* WARNING: Could not recover jumptable at 0x00564674. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1755,8 +1624,6 @@ void __fastcall FUN_0056467a(int param_1)
     uVar2 = uVar2 - 4;
   } while (bVar3 && uVar2 != 0);
   *(byte *)unaff_EDI = (byte)*unaff_ESI | (byte)unaff_EBX;
-                    /* WARNING: Could not recover jumptable at 0x00564694. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1790,8 +1657,6 @@ void __fastcall FUN_0056469a(int param_1)
     uVar2 = uVar2 - 4;
   } while (bVar5 && uVar2 != 0);
   *(byte *)puVar4 = (byte)*puVar3 | (byte)unaff_EBX;
-                    /* WARNING: Could not recover jumptable at 0x005646be. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1825,8 +1690,6 @@ void __fastcall FUN_005646c4(int param_1)
     uVar2 = uVar2 - 4;
   } while (bVar5 && uVar2 != 0);
   *(byte *)puVar4 = (byte)*puVar3 | (byte)unaff_EBX;
-                    /* WARNING: Could not recover jumptable at 0x005646ee. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1862,8 +1725,6 @@ void __fastcall FUN_005646f4(int param_1)
     uVar2 = uVar2 - 4;
   } while (bVar5 && uVar2 != 0);
   *(byte *)puVar4 = (byte)*puVar3 | (byte)unaff_EBX;
-                    /* WARNING: Could not recover jumptable at 0x00564723. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1892,8 +1753,6 @@ void __fastcall FUN_00564729(int param_1)
     uVar2 = uVar2 - 4;
   } while (bVar3 && uVar2 != 0);
   *(ushort *)unaff_EDI = (ushort)*unaff_ESI | (ushort)unaff_EBX;
-                    /* WARNING: Could not recover jumptable at 0x0056474b. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1927,8 +1786,6 @@ void __fastcall FUN_00564751(int param_1)
     uVar2 = uVar2 - 4;
   } while (bVar5 && uVar2 != 0);
   *(ushort *)puVar4 = (ushort)*puVar3 | (ushort)unaff_EBX;
-                    /* WARNING: Could not recover jumptable at 0x0056477b. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1962,8 +1819,6 @@ void __fastcall FUN_00564781(int param_1)
     uVar2 = uVar2 - 4;
   } while (bVar5 && uVar2 != 0);
   *(ushort *)puVar4 = (ushort)*puVar3 | (ushort)unaff_EBX;
-                    /* WARNING: Could not recover jumptable at 0x005647b1. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -1999,8 +1854,6 @@ void __fastcall FUN_005647b7(int param_1)
     uVar2 = uVar2 - 4;
   } while (bVar5 && uVar2 != 0);
   *(ushort *)puVar4 = (ushort)*puVar3 | (ushort)unaff_EBX;
-                    /* WARNING: Could not recover jumptable at 0x005647ec. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2033,8 +1886,6 @@ void __fastcall FUN_005647f2(int param_1)
   uVar2 = *unaff_ESI;
   *(short *)(puVar3 + 1) = (short)(uVar2 | unaff_EBX);
   *(char *)((int)puVar3 + 6) = (char)((uVar2 | unaff_EBX) >> 0x10);
-                    /* WARNING: Could not recover jumptable at 0x00564819. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2072,8 +1923,6 @@ void __fastcall FUN_0056481f(int param_1)
   uVar3 = *puVar4;
   *(short *)(puVar5 + 1) = (short)(uVar3 | unaff_EBX);
   *(byte *)((int)puVar5 + 6) = (byte)((uVar3 | unaff_EBX) >> 0x10);
-                    /* WARNING: Could not recover jumptable at 0x0056484e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2111,8 +1960,6 @@ void __fastcall FUN_00564854(int param_1)
   uVar3 = *puVar4;
   *(ushort *)(puVar5 + 1) = (ushort)(uVar3 | unaff_EBX);
   *(char *)((int)puVar5 + 6) = (char)((uVar3 | unaff_EBX) >> 0x10);
-                    /* WARNING: Could not recover jumptable at 0x00564889. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2152,8 +1999,6 @@ void __fastcall FUN_0056488f(int param_1)
   uVar3 = *puVar4;
   *(short *)(puVar5 + 1) = (short)(uVar3 | unaff_EBX);
   *(char *)((int)puVar5 + 6) = (char)((uVar3 | unaff_EBX) >> 0x10);
-                    /* WARNING: Could not recover jumptable at 0x005648c9. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2169,8 +2014,6 @@ void FUN_005648cf(void)
   byte *unaff_EDI;
   
   *unaff_EDI = *unaff_ESI & (byte)(undefined4)DAT_0088c02c | (byte)DAT_0088c02c._8_4_;
-                    /* WARNING: Could not recover jumptable at 0x005648e1. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2187,8 +2030,6 @@ void FUN_005648e7(void)
   
   *unaff_EDI = *unaff_ESI & (byte)((uint)(undefined4)DAT_0088c02c >> 8) |
                (byte)((uint)DAT_0088c02c._8_4_ >> 8);
-                    /* WARNING: Could not recover jumptable at 0x005648f9. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2204,8 +2045,6 @@ void FUN_005648ff(void)
   ushort *unaff_EDI;
   
   *unaff_EDI = (ushort)*unaff_ESI & (ushort)(undefined4)DAT_0088c02c | (ushort)DAT_0088c02c._8_4_;
-                    /* WARNING: Could not recover jumptable at 0x00564916. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2223,8 +2062,6 @@ void FUN_0056491c(void)
   *unaff_EDI = (ushort)((uint)*(undefined4 *)(unaff_ESI + -1) >> 8) &
                (ushort)((uint)(undefined4)DAT_0088c02c >> 8) |
                (ushort)((uint)DAT_0088c02c._8_4_ >> 8);
-                    /* WARNING: Could not recover jumptable at 0x00564937. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2243,8 +2080,6 @@ void FUN_0056493d(void)
   uVar1 = *unaff_ESI & (uint)DAT_0088c02c | DAT_0088c02c._8_4_;
   *unaff_EDI = (short)uVar1;
   *(char *)(unaff_EDI + 1) = (char)(uVar1 >> 0x10);
-                    /* WARNING: Could not recover jumptable at 0x0056495a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2263,8 +2098,6 @@ void FUN_00564960(void)
   uVar1 = *(uint *)(unaff_ESI + -1) & (uint)DAT_0088c02c | DAT_0088c02c._8_4_;
   *unaff_EDI = (char)(uVar1 >> 8);
   *(short *)(unaff_EDI + 1) = (short)(uVar1 >> 0x10);
-                    /* WARNING: Could not recover jumptable at 0x0056497e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2282,8 +2115,6 @@ void FUN_00564984(void)
   *unaff_EDI = (ushort)*unaff_ESI & (ushort)(undefined4)DAT_0088c02c | (ushort)DAT_0088c02c._8_4_;
   *(byte *)(unaff_EDI + 1) =
        *(byte *)((int)unaff_ESI + 2) & (byte)(undefined4)DAT_0088c02c | (byte)DAT_0088c02c._8_4_;
-                    /* WARNING: Could not recover jumptable at 0x005649ad. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2303,8 +2134,6 @@ void FUN_005649b3(void)
   *(ushort *)(unaff_EDI + 1) =
        (ushort)*(undefined4 *)(unaff_ESI + 1) & (ushort)(undefined4)DAT_0088c02c |
        (ushort)DAT_0088c02c._8_4_;
-                    /* WARNING: Could not recover jumptable at 0x005649dc. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2320,8 +2149,6 @@ void FUN_005649e2(void)
   uint *unaff_EDI;
   
   *unaff_EDI = *unaff_ESI & (uint)DAT_0088c02c | DAT_0088c02c._8_4_;
-                    /* WARNING: Could not recover jumptable at 0x005649f8. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2341,8 +2168,6 @@ void FUN_005649fe(void)
   *unaff_EDI = (char)(uVar1 >> 8);
   *(short *)(unaff_EDI + 1) = (short)(uVar1 >> 0x10);
   unaff_EDI[3] = *(byte *)(unaff_ESI + 3) & (byte)(uint)DAT_0088c02c | (byte)DAT_0088c02c._8_4_;
-                    /* WARNING: Could not recover jumptable at 0x00564a2e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2360,8 +2185,6 @@ void FUN_00564a34(void)
   *unaff_EDI = (ushort)*unaff_ESI & (ushort)(undefined4)DAT_0088c02c | (ushort)DAT_0088c02c._8_4_;
   unaff_EDI[1] = (ushort)*(undefined4 *)((int)unaff_ESI + 2) & (ushort)(undefined4)DAT_0088c02c |
                  (ushort)DAT_0088c02c._8_4_;
-                    /* WARNING: Could not recover jumptable at 0x00564a62. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2381,8 +2204,6 @@ void FUN_00564a68(void)
   uVar1 = *(uint *)(unaff_ESI + 1) & (uint)DAT_0088c02c | DAT_0088c02c._8_4_;
   *(short *)(unaff_EDI + 1) = (short)uVar1;
   unaff_EDI[3] = (byte)(uVar1 >> 0x10);
-                    /* WARNING: Could not recover jumptable at 0x00564a97. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2400,8 +2221,6 @@ void FUN_00564a9d(void)
   *unaff_EDI = *unaff_ESI & (uint)DAT_0088c02c | DAT_0088c02c._8_4_;
   *(byte *)(unaff_EDI + 1) =
        (byte)unaff_ESI[1] & (byte)(uint)DAT_0088c02c | (byte)DAT_0088c02c._8_4_;
-                    /* WARNING: Could not recover jumptable at 0x00564ac5. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2423,8 +2242,6 @@ void FUN_00564acb(void)
   *(ushort *)(unaff_EDI + 3) =
        (ushort)*(undefined4 *)(unaff_ESI + 3) & (ushort)(uint)DAT_0088c02c |
        (ushort)DAT_0088c02c._8_4_;
-                    /* WARNING: Could not recover jumptable at 0x00564b00. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2444,8 +2261,6 @@ void FUN_00564b06(void)
   uVar1 = *(uint *)((int)unaff_ESI + 2) & (uint)DAT_0088c02c | DAT_0088c02c._8_4_;
   unaff_EDI[1] = (ushort)uVar1;
   *(char *)(unaff_EDI + 2) = (char)(uVar1 >> 0x10);
-                    /* WARNING: Could not recover jumptable at 0x00564b3a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2462,8 +2277,6 @@ void FUN_00564b40(void)
   
   *unaff_EDI = *unaff_ESI & (byte)((uint)DAT_0088c02c >> 8) | (byte)(DAT_0088c02c._8_4_ >> 8);
   *(uint *)(unaff_EDI + 1) = *(uint *)(unaff_ESI + 1) & (uint)DAT_0088c02c | DAT_0088c02c._8_4_;
-                    /* WARNING: Could not recover jumptable at 0x00564b68. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2481,8 +2294,6 @@ void FUN_00564b6e(void)
   *unaff_EDI = *unaff_ESI & (uint)DAT_0088c02c | DAT_0088c02c._8_4_;
   *(ushort *)(unaff_EDI + 1) =
        (ushort)unaff_ESI[1] & (ushort)(uint)DAT_0088c02c | (ushort)DAT_0088c02c._8_4_;
-                    /* WARNING: Could not recover jumptable at 0x00564b9b. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2504,8 +2315,6 @@ void FUN_00564ba1(void)
   uVar1 = *(uint *)(unaff_ESI + 3) & (uint)DAT_0088c02c | DAT_0088c02c._8_4_;
   *(short *)(unaff_EDI + 3) = (short)uVar1;
   unaff_EDI[5] = (char)(uVar1 >> 0x10);
-                    /* WARNING: Could not recover jumptable at 0x00564bdc. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2523,8 +2332,6 @@ void FUN_00564be2(void)
   *unaff_EDI = (ushort)*unaff_ESI & (ushort)(uint)DAT_0088c02c | (ushort)DAT_0088c02c._8_4_;
   *(uint *)(unaff_EDI + 1) = *(uint *)((int)unaff_ESI + 2) & (uint)DAT_0088c02c | DAT_0088c02c._8_4_
   ;
-                    /* WARNING: Could not recover jumptable at 0x00564c0f. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2542,8 +2349,6 @@ void FUN_00564c15(void)
   *unaff_EDI = *unaff_ESI & (byte)((uint)DAT_0088c02c >> 8) | (byte)(DAT_0088c02c._8_4_ >> 8);
   *(uint *)(unaff_EDI + 1) = *(uint *)(unaff_ESI + 1) & (uint)DAT_0088c02c | DAT_0088c02c._8_4_;
   unaff_EDI[5] = unaff_ESI[5] & (byte)(uint)DAT_0088c02c | (byte)DAT_0088c02c._8_4_;
-                    /* WARNING: Could not recover jumptable at 0x00564c4f. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2563,8 +2368,6 @@ void FUN_00564c55(void)
   uVar1 = unaff_ESI[1] & (uint)DAT_0088c02c | DAT_0088c02c._8_4_;
   *(short *)(unaff_EDI + 1) = (short)uVar1;
   *(char *)((int)unaff_EDI + 6) = (char)(uVar1 >> 0x10);
-                    /* WARNING: Could not recover jumptable at 0x00564c88. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2584,8 +2387,6 @@ void FUN_00564c8e(void)
   *unaff_EDI = (char)(uVar1 >> 8);
   *(short *)(unaff_EDI + 1) = (short)(uVar1 >> 0x10);
   *(uint *)(unaff_EDI + 3) = *(uint *)(unaff_ESI + 3) & (uint)DAT_0088c02c | DAT_0088c02c._8_4_;
-                    /* WARNING: Could not recover jumptable at 0x00564cc2. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2605,8 +2406,6 @@ void FUN_00564cc8(void)
   ;
   *(byte *)(unaff_EDI + 3) =
        *(byte *)((int)unaff_ESI + 6) & (byte)(uint)DAT_0088c02c | (byte)DAT_0088c02c._8_4_;
-                    /* WARNING: Could not recover jumptable at 0x00564d07. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2626,8 +2425,6 @@ void FUN_00564d0d(void)
   *(ushort *)(unaff_EDI + 5) =
        (ushort)*(undefined4 *)(unaff_ESI + 5) & (ushort)(uint)DAT_0088c02c |
        (ushort)DAT_0088c02c._8_4_;
-                    /* WARNING: Could not recover jumptable at 0x00564d4c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2652,8 +2449,6 @@ void __fastcall FUN_00564d52(uint param_1)
     bVar2 = 3 < param_1;
     param_1 = param_1 - 4;
   } while (bVar2 && param_1 != 0);
-                    /* WARNING: Could not recover jumptable at 0x00564d6d. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2685,8 +2480,6 @@ void __fastcall FUN_00564d73(int param_1)
     bVar5 = 3 < uVar2;
     uVar2 = uVar2 - 4;
   } while (bVar5 && uVar2 != 0);
-                    /* WARNING: Could not recover jumptable at 0x00564da1. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2718,8 +2511,6 @@ void __fastcall FUN_00564da7(int param_1)
     bVar5 = 3 < uVar2;
     uVar2 = uVar2 - 4;
   } while (bVar5 && uVar2 != 0);
-                    /* WARNING: Could not recover jumptable at 0x00564ddc. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2753,8 +2544,6 @@ void __fastcall FUN_00564de2(int param_1)
     bVar5 = 3 < uVar2;
     uVar2 = uVar2 - 4;
   } while (bVar5 && uVar2 != 0);
-                    /* WARNING: Could not recover jumptable at 0x00564e1e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2782,8 +2571,6 @@ void __fastcall FUN_00564e24(int param_1)
     uVar2 = uVar2 - 4;
   } while (bVar3 && uVar2 != 0);
   *(byte *)unaff_EDI = (byte)*unaff_ESI & (byte)(uint)DAT_0088c02c | (byte)DAT_0088c02c._8_4_;
-                    /* WARNING: Could not recover jumptable at 0x00564e52. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2816,8 +2603,6 @@ void __fastcall FUN_00564e58(int param_1)
     uVar2 = uVar2 - 4;
   } while (bVar5 && uVar2 != 0);
   *(byte *)puVar4 = (byte)*puVar3 & (byte)(uint)DAT_0088c02c | (byte)DAT_0088c02c._8_4_;
-                    /* WARNING: Could not recover jumptable at 0x00564e9a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2850,8 +2635,6 @@ void __fastcall FUN_00564ea0(int param_1)
     uVar2 = uVar2 - 4;
   } while (bVar5 && uVar2 != 0);
   *(byte *)puVar4 = (byte)*puVar3 & (byte)(uint)DAT_0088c02c | (byte)DAT_0088c02c._8_4_;
-                    /* WARNING: Could not recover jumptable at 0x00564ee7. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2886,8 +2669,6 @@ void __fastcall FUN_00564eed(int param_1)
     uVar2 = uVar2 - 4;
   } while (bVar5 && uVar2 != 0);
   *(byte *)puVar4 = (byte)*puVar3 & (byte)(uint)DAT_0088c02c | (byte)DAT_0088c02c._8_4_;
-                    /* WARNING: Could not recover jumptable at 0x00564f3b. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2916,8 +2697,6 @@ void __fastcall FUN_00564f41(int param_1)
   } while (bVar3 && uVar2 != 0);
   *(ushort *)unaff_EDI =
        (ushort)*unaff_ESI & (ushort)(uint)DAT_0088c02c | (ushort)DAT_0088c02c._8_4_;
-                    /* WARNING: Could not recover jumptable at 0x00564f76. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2950,8 +2729,6 @@ void __fastcall FUN_00564f7c(int param_1)
     uVar2 = uVar2 - 4;
   } while (bVar5 && uVar2 != 0);
   *(ushort *)puVar4 = (ushort)*puVar3 & (ushort)(uint)DAT_0088c02c | (ushort)DAT_0088c02c._8_4_;
-                    /* WARNING: Could not recover jumptable at 0x00564fc3. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -2984,8 +2761,6 @@ void __fastcall FUN_00564fc9(int param_1)
     uVar2 = uVar2 - 4;
   } while (bVar5 && uVar2 != 0);
   *(ushort *)puVar4 = (ushort)*puVar3 & (ushort)(uint)DAT_0088c02c | (ushort)DAT_0088c02c._8_4_;
-                    /* WARNING: Could not recover jumptable at 0x00565015. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3020,8 +2795,6 @@ void __fastcall FUN_0056501b(int param_1)
     uVar2 = uVar2 - 4;
   } while (bVar5 && uVar2 != 0);
   *(ushort *)puVar4 = (ushort)*puVar3 & (ushort)(uint)DAT_0088c02c | (ushort)DAT_0088c02c._8_4_;
-                    /* WARNING: Could not recover jumptable at 0x0056506e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3053,8 +2826,6 @@ void __fastcall FUN_00565074(int param_1)
   uVar2 = *unaff_ESI & (uint)DAT_0088c02c | DAT_0088c02c._8_4_;
   *(short *)(puVar3 + 1) = (short)uVar2;
   *(char *)((int)puVar3 + 6) = (char)(uVar2 >> 0x10);
-                    /* WARNING: Could not recover jumptable at 0x005650af. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3091,8 +2862,6 @@ void __fastcall FUN_005650b5(int param_1)
   uVar3 = *puVar4 & (uint)DAT_0088c02c | DAT_0088c02c._8_4_;
   *(short *)(puVar5 + 1) = (short)uVar3;
   *(char *)((int)puVar5 + 6) = (char)(uVar3 >> 0x10);
-                    /* WARNING: Could not recover jumptable at 0x00565102. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3129,8 +2898,6 @@ void __fastcall FUN_00565108(int param_1)
   uVar3 = *puVar4 & (uint)DAT_0088c02c | DAT_0088c02c._8_4_;
   *(ushort *)(puVar5 + 1) = (ushort)uVar3;
   *(char *)((int)puVar5 + 6) = (char)(uVar3 >> 0x10);
-                    /* WARNING: Could not recover jumptable at 0x0056515a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3169,8 +2936,6 @@ void __fastcall FUN_00565160(int param_1)
   uVar3 = *puVar4 & (uint)DAT_0088c02c | DAT_0088c02c._8_4_;
   *(short *)(puVar5 + 1) = (short)uVar3;
   *(char *)((int)puVar5 + 6) = (char)(uVar3 >> 0x10);
-                    /* WARNING: Could not recover jumptable at 0x005651b9. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3186,8 +2951,6 @@ void __fastcall FUN_005651bf(undefined4 param_1,undefined4 param_2)
   undefined1 *unaff_EDI;
   
   *unaff_EDI = *(undefined1 *)(CONCAT31((int3)((uint)param_2 >> 8),*unaff_EDI) + unaff_EBX);
-                    /* WARNING: Could not recover jumptable at 0x005651c7. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3206,8 +2969,6 @@ void __fastcall FUN_005651cd(undefined4 param_1,undefined4 param_2)
   uVar1 = (undefined3)((uint)param_2 >> 8);
   *unaff_EDI = CONCAT11(*(undefined1 *)(CONCAT31(uVar1,(char)((ushort)*unaff_EDI >> 8)) + unaff_EBX)
                         ,*(undefined1 *)(CONCAT31(uVar1,(char)*unaff_EDI) + unaff_EBX));
-                    /* WARNING: Could not recover jumptable at 0x005651e0. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3226,8 +2987,6 @@ void __fastcall FUN_005651e6(undefined4 param_1,undefined4 param_2)
   uVar1 = (undefined3)((uint)param_2 >> 8);
   *unaff_EDI = *(undefined1 *)(CONCAT31(uVar1,*unaff_EDI) + unaff_EBX);
   unaff_EDI[1] = *(undefined1 *)(CONCAT31(uVar1,unaff_EDI[1]) + unaff_EBX);
-                    /* WARNING: Could not recover jumptable at 0x005651f6. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3253,8 +3012,6 @@ void __fastcall FUN_005651fc(undefined4 param_1,undefined4 param_2)
                    (char)(uVar2 >> 0x18));
   *unaff_EDI = CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar4,(char)uVar2) + unaff_EBX)) & 0xff |
                ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18;
-                    /* WARNING: Could not recover jumptable at 0x00565216. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3286,8 +3043,6 @@ void __fastcall FUN_0056521c(undefined4 param_1,undefined4 param_2)
   *(uint *)(unaff_EDI + -1) =
        (uint)(uVar4 >> 0x10) | uVar4 & 0xff00 | (uVar4 & 0xff) << 0x10 |
        (uint)*(byte *)(CONCAT31(uVar5,uVar3) + unaff_EBX) << 0x18;
-                    /* WARNING: Could not recover jumptable at 0x00565238. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3308,8 +3063,6 @@ void __fastcall FUN_0056523e(undefined4 param_1,undefined4 param_2)
                         ,*(undefined1 *)(CONCAT31(uVar1,(char)*unaff_EDI) + unaff_EBX));
   *(undefined1 *)(unaff_EDI + 1) =
        *(undefined1 *)(CONCAT31(uVar1,*(undefined1 *)(unaff_EDI + 1)) + unaff_EBX);
-                    /* WARNING: Could not recover jumptable at 0x00565259. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3332,8 +3085,6 @@ void __fastcall FUN_0056525f(undefined4 param_1,undefined4 param_2)
   *(ushort *)(unaff_EDI + 1) =
        CONCAT11(*(undefined1 *)(CONCAT31(uVar2,(char)((ushort)uVar1 >> 8)) + unaff_EBX),
                 *(undefined1 *)(CONCAT31(uVar2,(char)uVar1) + unaff_EBX));
-                    /* WARNING: Could not recover jumptable at 0x0056527a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3359,8 +3110,6 @@ void __fastcall FUN_00565280(undefined4 param_1,undefined4 param_2)
                    *(undefined1 *)(CONCAT31(uVar4,(char)(uVar2 >> 0x18)) + unaff_EBX));
   *unaff_EDI = CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar4,(char)uVar2) + unaff_EBX)) & 0xff |
                ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18;
-                    /* WARNING: Could not recover jumptable at 0x0056529f. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3394,8 +3143,6 @@ void __fastcall FUN_005652a5(undefined4 param_1,undefined4 param_2)
        (uint)*(byte *)(CONCAT31(uVar5,uVar3) + unaff_EBX) << 0x18;
   *(undefined1 *)(unaff_EDI + 3) =
        *(undefined1 *)(CONCAT31(uVar5,*(undefined1 *)(unaff_EDI + 3)) + unaff_EBX);
-                    /* WARNING: Could not recover jumptable at 0x005652c9. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3418,8 +3165,6 @@ void __fastcall FUN_005652cf(undefined4 param_1,undefined4 param_2)
   uVar1 = unaff_EDI[1];
   unaff_EDI[1] = CONCAT11(*(undefined1 *)(CONCAT31(uVar2,(char)((ushort)uVar1 >> 8)) + unaff_EBX),
                           *(undefined1 *)(CONCAT31(uVar2,(char)uVar1) + unaff_EBX));
-                    /* WARNING: Could not recover jumptable at 0x005652f5. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3447,8 +3192,6 @@ void __fastcall FUN_005652fb(undefined4 param_1,undefined4 param_2)
   *(uint *)(unaff_EDI + 1) =
        CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar4,(char)uVar2) + unaff_EBX)) & 0xff |
        ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18;
-                    /* WARNING: Could not recover jumptable at 0x0056531d. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3475,8 +3218,6 @@ void __fastcall FUN_00565323(undefined4 param_1,undefined4 param_2)
   *unaff_EDI = CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar4,(char)uVar2) + unaff_EBX)) & 0xff |
                ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18;
   *(undefined1 *)(unaff_EDI + 1) = *(undefined1 *)(CONCAT31(uVar4,(char)unaff_EDI[1]) + unaff_EBX);
-                    /* WARNING: Could not recover jumptable at 0x0056534a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3513,8 +3254,6 @@ void __fastcall FUN_00565350(undefined4 param_1,undefined4 param_2)
   *(undefined2 *)(unaff_EDI + 3) =
        CONCAT11(*(undefined1 *)(CONCAT31(uVar6,(char)((ushort)uVar2 >> 8)) + unaff_EBX),
                 *(undefined1 *)(CONCAT31(uVar6,(char)uVar2) + unaff_EBX));
-                    /* WARNING: Could not recover jumptable at 0x0056537f. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3543,8 +3282,6 @@ void __fastcall FUN_00565385(undefined4 param_1,undefined4 param_2)
   *(uint *)(unaff_EDI + 1) =
        CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar4,(char)uVar2) + unaff_EBX)) & 0xff |
        ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18;
-                    /* WARNING: Could not recover jumptable at 0x005653b2. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3572,8 +3309,6 @@ void __fastcall FUN_005653b8(undefined4 param_1,undefined4 param_2)
   *(uint *)(unaff_EDI + 1) =
        CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar4,(char)uVar2) + unaff_EBX)) & 0xff |
        ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18;
-                    /* WARNING: Could not recover jumptable at 0x005653df. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3604,8 +3339,6 @@ void __fastcall FUN_005653e5(undefined4 param_1,undefined4 param_2)
   *(ushort *)(unaff_EDI + 1) =
        CONCAT11(*(undefined1 *)(CONCAT31(uVar5,(char)((ushort)uVar2 >> 8)) + unaff_EBX),
                 *(undefined1 *)(CONCAT31(uVar5,(char)uVar2) + unaff_EBX));
-                    /* WARNING: Could not recover jumptable at 0x00565417. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3646,8 +3379,6 @@ void __fastcall FUN_0056541d(undefined4 param_1,undefined4 param_2)
   *(uint *)(unaff_EDI + 3) =
        CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar7,(char)uVar3) + unaff_EBX)) & 0xff |
        ((uint)bVar1 << 0x10) >> 8 | (uVar5 & 0xff00) << 8 | (uint)uVar5 << 0x18;
-                    /* WARNING: Could not recover jumptable at 0x00565453. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3676,8 +3407,6 @@ void __fastcall FUN_00565459(undefined4 param_1,undefined4 param_2)
   *(uint *)(unaff_EDI + 1) =
        CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar4,(char)uVar2) + unaff_EBX)) & 0xff |
        ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18;
-                    /* WARNING: Could not recover jumptable at 0x0056548b. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3706,8 +3435,6 @@ void __fastcall FUN_00565491(undefined4 param_1,undefined4 param_2)
        CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar4,(char)uVar2) + unaff_EBX)) & 0xff |
        ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18;
   unaff_EDI[5] = *(undefined1 *)(CONCAT31(uVar4,unaff_EDI[5]) + unaff_EBX);
-                    /* WARNING: Could not recover jumptable at 0x005654c0. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3739,8 +3466,6 @@ void __fastcall FUN_005654c6(undefined4 param_1,undefined4 param_2)
                    (char)(uVar2 >> 0x18));
   unaff_EDI[1] = CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar4,(char)uVar2) + unaff_EBX)) & 0xff |
                  ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18;
-                    /* WARNING: Could not recover jumptable at 0x005654ff. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3781,8 +3506,6 @@ void __fastcall FUN_00565505(undefined4 param_1,undefined4 param_2)
   *(uint *)(unaff_EDI + 3) =
        CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar7,(char)uVar3) + unaff_EBX)) & 0xff |
        ((uint)bVar1 << 0x10) >> 8 | (uVar5 & 0xff00) << 8 | (uint)uVar5 << 0x18;
-                    /* WARNING: Could not recover jumptable at 0x00565540. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3813,8 +3536,6 @@ void __fastcall FUN_00565546(undefined4 param_1,undefined4 param_2)
        ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18;
   *(undefined1 *)(unaff_EDI + 3) =
        *(undefined1 *)(CONCAT31(uVar4,*(undefined1 *)(unaff_EDI + 3)) + unaff_EBX);
-                    /* WARNING: Could not recover jumptable at 0x00565580. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3847,8 +3568,6 @@ void __fastcall FUN_00565586(undefined4 param_1,undefined4 param_2)
   *(ushort *)(unaff_EDI + 5) =
        CONCAT11(*(undefined1 *)(CONCAT31(uVar5,(char)((ushort)uVar2 >> 8)) + unaff_EBX),
                 *(undefined1 *)(CONCAT31(uVar5,(char)uVar2) + unaff_EBX));
-                    /* WARNING: Could not recover jumptable at 0x005655c0. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3881,8 +3600,6 @@ void __fastcall FUN_005655c6(uint param_1,int param_2)
     bVar5 = 3 < param_1;
     param_1 = param_1 - 4;
   } while (bVar5 && param_1 != 0);
-                    /* WARNING: Could not recover jumptable at 0x005655ea. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3922,8 +3639,6 @@ void __fastcall FUN_005655f0(int param_1,undefined4 param_2)
     bVar8 = 3 < uVar4;
     uVar4 = uVar4 - 4;
   } while (bVar8 && uVar4 != 0);
-                    /* WARNING: Could not recover jumptable at 0x0056561d. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -3965,8 +3680,6 @@ void __fastcall FUN_00565623(int param_1,undefined4 param_2)
     bVar8 = 3 < uVar4;
     uVar4 = uVar4 - 4;
   } while (bVar8 && uVar4 != 0);
-                    /* WARNING: Could not recover jumptable at 0x0056565d. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4020,8 +3733,6 @@ void __fastcall FUN_00565663(int param_1,undefined4 param_2)
     bVar11 = 3 < uVar7;
     uVar7 = uVar7 - 4;
   } while (bVar11 && uVar7 != 0);
-                    /* WARNING: Could not recover jumptable at 0x005656a6. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4057,8 +3768,6 @@ void __fastcall FUN_005656ac(int param_1,int param_2)
     uVar4 = uVar4 - 4;
   } while (bVar6 && uVar4 != 0);
   *(undefined1 *)unaff_EDI = *(undefined1 *)(CONCAT31(uVar5,(char)*unaff_EDI) + unaff_EBX);
-                    /* WARNING: Could not recover jumptable at 0x005656d9. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4099,8 +3808,6 @@ void __fastcall FUN_005656df(int param_1,undefined4 param_2)
     uVar4 = uVar4 - 4;
   } while (bVar8 && uVar4 != 0);
   *(undefined1 *)puVar7 = *(undefined1 *)(CONCAT31(uVar6,(char)*puVar7) + unaff_EBX);
-                    /* WARNING: Could not recover jumptable at 0x00565716. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4143,8 +3850,6 @@ void __fastcall FUN_0056571c(int param_1,undefined4 param_2)
     uVar4 = uVar4 - 4;
   } while (bVar8 && uVar4 != 0);
   *(undefined1 *)puVar7 = *(undefined1 *)(CONCAT31(uVar6,(char)*puVar7) + unaff_EBX);
-                    /* WARNING: Could not recover jumptable at 0x0056575e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4199,8 +3904,6 @@ void __fastcall FUN_00565764(int param_1,undefined4 param_2)
     uVar7 = uVar7 - 4;
   } while (bVar11 && uVar7 != 0);
   *(undefined1 *)puVar10 = *(undefined1 *)(CONCAT31(uVar9,(char)*puVar10) + unaff_EBX);
-                    /* WARNING: Could not recover jumptable at 0x005657af. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4238,8 +3941,6 @@ void __fastcall FUN_005657b5(int param_1,int param_2)
   *(ushort *)unaff_EDI =
        CONCAT11(*(undefined1 *)(CONCAT31(uVar5,(char)((ushort)(short)*unaff_EDI >> 8)) + unaff_EBX),
                 *(undefined1 *)(CONCAT31(uVar5,(char)(short)*unaff_EDI) + unaff_EBX));
-                    /* WARNING: Could not recover jumptable at 0x005657ef. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4282,8 +3983,6 @@ void __fastcall FUN_005657f5(int param_1,undefined4 param_2)
   *(ushort *)puVar7 =
        CONCAT11(*(undefined1 *)(CONCAT31(uVar6,(char)((ushort)(short)*puVar7 >> 8)) + unaff_EBX),
                 *(undefined1 *)(CONCAT31(uVar6,(char)(short)*puVar7) + unaff_EBX));
-                    /* WARNING: Could not recover jumptable at 0x00565837. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4328,8 +4027,6 @@ void __fastcall FUN_0056583d(int param_1,undefined4 param_2)
   *(ushort *)puVar7 =
        CONCAT11(*(undefined1 *)(CONCAT31(uVar6,(char)((ushort)(short)*puVar7 >> 8)) + unaff_EBX),
                 *(undefined1 *)(CONCAT31(uVar6,(char)(short)*puVar7) + unaff_EBX));
-                    /* WARNING: Could not recover jumptable at 0x0056588a. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4386,8 +4083,6 @@ void __fastcall FUN_00565890(int param_1,undefined4 param_2)
   *(ushort *)puVar10 =
        CONCAT11(*(undefined1 *)(CONCAT31(uVar9,(char)((ushort)(short)*puVar10 >> 8)) + unaff_EBX),
                 *(undefined1 *)(CONCAT31(uVar9,(char)(short)*puVar10) + unaff_EBX));
-                    /* WARNING: Could not recover jumptable at 0x005658e6. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4428,8 +4123,6 @@ void __fastcall FUN_005658ec(int param_1,int param_2)
                    (char)(uVar4 >> 0x18));
   *unaff_EDI = CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar5,(char)uVar4) + unaff_EBX)) & 0xff |
                ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18;
-                    /* WARNING: Could not recover jumptable at 0x0056592d. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4475,8 +4168,6 @@ void __fastcall FUN_00565933(int param_1,undefined4 param_2)
                    (char)(uVar4 >> 0x18));
   *puVar7 = CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar6,(char)uVar4) + unaff_EBX)) & 0xff |
             ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18;
-                    /* WARNING: Could not recover jumptable at 0x0056597c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4524,8 +4215,6 @@ void __fastcall FUN_00565982(int param_1,undefined4 param_2)
                    (char)(uVar4 >> 0x18));
   *puVar7 = CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar6,(char)uVar4) + unaff_EBX)) & 0xff |
             ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18;
-                    /* WARNING: Could not recover jumptable at 0x005659d6. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4585,8 +4274,6 @@ void __fastcall FUN_005659dc(int param_1,undefined4 param_2)
                    (char)(uVar7 >> 0x18));
   *puVar10 = CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar9,(char)uVar7) + unaff_EBX)) & 0xff |
              ((uint)bVar1 << 0x10) >> 8 | (uVar5 & 0xff00) << 8 | (uint)uVar5 << 0x18;
-                    /* WARNING: Could not recover jumptable at 0x00565a39. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4603,8 +4290,6 @@ void __fastcall FUN_00565a3f(undefined4 param_1,undefined4 param_2)
   
   *unaff_EDI = (*(byte *)(CONCAT31((int3)((uint)param_2 >> 8),*unaff_EDI) + unaff_EBX) |
                (byte)DAT_0088c02c._4_4_) & (byte)(undefined4)DAT_0088c02c;
-                    /* WARNING: Could not recover jumptable at 0x00565a53. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4621,8 +4306,6 @@ void __fastcall FUN_00565a59(undefined4 param_1,undefined4 param_2)
   
   *unaff_EDI = (*(byte *)(CONCAT31((int3)((uint)param_2 >> 8),*unaff_EDI) + unaff_EBX) |
                (byte)((uint)DAT_0088c02c._4_4_ >> 8)) & (byte)((uint)(undefined4)DAT_0088c02c >> 8);
-                    /* WARNING: Could not recover jumptable at 0x00565a6d. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4642,8 +4325,6 @@ void __fastcall FUN_00565a73(undefined4 param_1,undefined4 param_2)
   *unaff_EDI = (CONCAT11(*(undefined1 *)(CONCAT31(uVar1,(char)(*unaff_EDI >> 8)) + unaff_EBX),
                          *(undefined1 *)(CONCAT31(uVar1,(char)*unaff_EDI) + unaff_EBX)) |
                (ushort)DAT_0088c02c._4_4_) & (ushort)(undefined4)DAT_0088c02c;
-                    /* WARNING: Could not recover jumptable at 0x00565a92. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4664,8 +4345,6 @@ void __fastcall FUN_00565a98(undefined4 param_1,undefined4 param_2)
                          *(undefined1 *)(CONCAT31(uVar1,(char)*unaff_EDI) + unaff_EBX)) |
                (ushort)((uint)DAT_0088c02c._4_4_ >> 8)) &
                (ushort)((uint)(undefined4)DAT_0088c02c >> 8);
-                    /* WARNING: Could not recover jumptable at 0x00565abd. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4694,8 +4373,6 @@ void __fastcall FUN_00565ac3(undefined4 param_1,undefined4 param_2)
           DAT_0088c02c._4_4_) & (uint)DAT_0088c02c;
   uVar3 = (uint3)((ushort)(uVar4 >> 0x10) & 0xff) | (uint3)uVar4 & 0xff00;
   *unaff_EDI = uVar4 & 0xff | uVar3 & 0xff00 | (uVar3 & 0xff) << 0x10 | uVar2 & 0xff000000;
-                    /* WARNING: Could not recover jumptable at 0x00565af1. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4727,8 +4404,6 @@ void __fastcall FUN_00565af7(undefined4 param_1,undefined4 param_2)
                  (uint3)(((uint)*(byte *)(CONCAT31(uVar4,uVar3) + unaff_EBX) << 0x18) >> 8) |
                 (uint3)((uint)DAT_0088c02c._4_4_ >> 8)) &
                 (uint3)((uint)(undefined4)DAT_0088c02c >> 8),(char)uVar2);
-                    /* WARNING: Could not recover jumptable at 0x00565b23. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4751,8 +4426,6 @@ void __fastcall FUN_00565b29(undefined4 param_1,undefined4 param_2)
   *(byte *)(unaff_EDI + 1) =
        (*(byte *)(CONCAT31(uVar1,(byte)unaff_EDI[1]) + unaff_EBX) | (byte)DAT_0088c02c._4_4_) &
        (byte)(undefined4)DAT_0088c02c;
-                    /* WARNING: Could not recover jumptable at 0x00565b5c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4777,8 +4450,6 @@ void __fastcall FUN_00565b62(undefined4 param_1,undefined4 param_2)
        (CONCAT11(*(undefined1 *)(CONCAT31(uVar2,(char)(uVar1 >> 8)) + unaff_EBX),
                  *(undefined1 *)(CONCAT31(uVar2,(char)uVar1) + unaff_EBX)) |
        (ushort)DAT_0088c02c._4_4_) & (ushort)(undefined4)DAT_0088c02c;
-                    /* WARNING: Could not recover jumptable at 0x00565b95. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4805,8 +4476,6 @@ void __fastcall FUN_00565b9b(undefined4 param_1,undefined4 param_2)
   *unaff_EDI = (CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar4,(char)uVar2) + unaff_EBX)) & 0xff |
                 ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18 |
                DAT_0088c02c._4_4_) & (uint)DAT_0088c02c;
-                    /* WARNING: Could not recover jumptable at 0x00565bc6. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4841,8 +4510,6 @@ void __fastcall FUN_00565bcc(undefined4 param_1,undefined4 param_2)
   *(byte *)(unaff_EDI + 3) =
        (*(byte *)(CONCAT31(uVar4,*(byte *)(unaff_EDI + 3)) + unaff_EBX) | (byte)DAT_0088c02c._4_4_)
        & (byte)(undefined4)DAT_0088c02c;
-                    /* WARNING: Could not recover jumptable at 0x00565c0c. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4867,8 +4534,6 @@ void __fastcall FUN_00565c12(undefined4 param_1,undefined4 param_2)
   unaff_EDI[1] = (CONCAT11(*(undefined1 *)(CONCAT31(uVar2,(char)(uVar1 >> 8)) + unaff_EBX),
                            *(undefined1 *)(CONCAT31(uVar2,(char)uVar1) + unaff_EBX)) |
                  (ushort)DAT_0088c02c._4_4_) & (ushort)(undefined4)DAT_0088c02c;
-                    /* WARNING: Could not recover jumptable at 0x00565c50. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4900,8 +4565,6 @@ void __fastcall FUN_00565c56(undefined4 param_1,undefined4 param_2)
   uVar3 = (uint3)((ushort)(uVar4 >> 0x10) & 0xff) | (uint3)uVar4 & 0xff00;
   *(uint *)(unaff_EDI + 1) =
        uVar4 & 0xff | uVar3 & 0xff00 | (uVar3 & 0xff) << 0x10 | uVar2 & 0xff000000;
-                    /* WARNING: Could not recover jumptable at 0x00565c98. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4931,8 +4594,6 @@ void __fastcall FUN_00565c9e(undefined4 param_1,undefined4 param_2)
   *(byte *)(unaff_EDI + 1) =
        (*(byte *)(CONCAT31(uVar4,(byte)unaff_EDI[1]) + unaff_EBX) | (byte)DAT_0088c02c._4_4_) &
        (byte)(uint)DAT_0088c02c;
-                    /* WARNING: Could not recover jumptable at 0x00565cdd. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -4970,8 +4631,6 @@ void __fastcall FUN_00565ce3(undefined4 param_1,undefined4 param_2)
        (CONCAT11(*(undefined1 *)(CONCAT31(uVar5,(char)(uVar2 >> 8)) + unaff_EBX),
                  *(undefined1 *)(CONCAT31(uVar5,(char)uVar2) + unaff_EBX)) |
        (ushort)DAT_0088c02c._4_4_) & (ushort)(undefined4)DAT_0088c02c;
-                    /* WARNING: Could not recover jumptable at 0x00565d2e. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -5004,8 +4663,6 @@ void __fastcall FUN_00565d34(undefined4 param_1,undefined4 param_2)
   uVar3 = (uint3)((ushort)(uVar4 >> 0x10) & 0xff) | (uint3)uVar4 & 0xff00;
   *(uint *)(unaff_EDI + 1) =
        uVar4 & 0xff | uVar3 & 0xff00 | (uVar3 & 0xff) << 0x10 | uVar2 & 0xff000000;
-                    /* WARNING: Could not recover jumptable at 0x00565d81. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }
@@ -5035,8 +4692,6 @@ void __fastcall FUN_00565d87(undefined4 param_1,undefined4 param_2)
        (CONCAT11(bVar1,*(undefined1 *)(CONCAT31(uVar4,(char)uVar2) + unaff_EBX)) & 0xff |
         ((uint)bVar1 << 0x10) >> 8 | (uVar3 & 0xff00) << 8 | (uint)uVar3 << 0x18 |
        DAT_0088c02c._4_4_) & (uint)DAT_0088c02c;
-                    /* WARNING: Could not recover jumptable at 0x00565dc6. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (*(code *)DAT_0088c044._0_4_)();
   return;
 }

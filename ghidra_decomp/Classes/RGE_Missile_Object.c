@@ -153,9 +153,6 @@
 
 // Function: RGE_Missile_Object
 // Address: 0045a740
-/* public: __thiscall RGE_Missile_Object::RGE_Missile_Object(class RGE_Master_Combat_Object *,class
-   RGE_Player *,float,float,float,int) */
-
 RGE_Missile_Object * __thiscall
 RGE_Missile_Object::RGE_Missile_Object
           (RGE_Missile_Object *this,RGE_Master_Combat_Object *param_1,RGE_Player *param_2,
@@ -186,9 +183,6 @@ RGE_Missile_Object::RGE_Missile_Object
 
 // Function: `scalar_deleting_destructor'
 // Address: 0045a7d0
-/* public: virtual void * __thiscall RGE_Missile_Object::`scalar deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 RGE_Missile_Object::_scalar_deleting_destructor_(RGE_Missile_Object *this,uint param_1)
 {
@@ -203,8 +197,6 @@ RGE_Missile_Object::_scalar_deleting_destructor_(RGE_Missile_Object *this,uint p
 
 // Function: ~RGE_Missile_Object
 // Address: 0045a7f0
-/* public: virtual __thiscall RGE_Missile_Object::~RGE_Missile_Object(void) */
-
 void __thiscall RGE_Missile_Object::~RGE_Missile_Object(RGE_Missile_Object *this)
 {
   int iVar1;
@@ -246,8 +238,6 @@ void __thiscall RGE_Missile_Object::~RGE_Missile_Object(RGE_Missile_Object *this
 
 // Function: RGE_Missile_Object
 // Address: 0045a800
-/* public: __thiscall RGE_Missile_Object::RGE_Missile_Object(int,class RGE_Game_World *,int) */
-
 RGE_Missile_Object * __thiscall
 RGE_Missile_Object::RGE_Missile_Object
           (RGE_Missile_Object *this,int param_1,RGE_Game_World *param_2,int param_3)
@@ -276,9 +266,6 @@ RGE_Missile_Object::RGE_Missile_Object
 
 // Function: setup
 // Address: 0045a870
-/* protected: virtual int __thiscall RGE_Missile_Object::setup(class RGE_Master_Combat_Object
-   *,class RGE_Player *,float,float,float) */
-
 int __thiscall
 RGE_Missile_Object::setup
           (RGE_Missile_Object *this,RGE_Master_Combat_Object *param_1,RGE_Player *param_2,
@@ -293,9 +280,6 @@ RGE_Missile_Object::setup
 
 // Function: setup
 // Address: 0045a8a0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall RGE_Missile_Object::setup(int,class RGE_Game_World *) */
-
 int __thiscall
 RGE_Missile_Object::setup(RGE_Missile_Object *this,int param_1,RGE_Game_World *param_2)
 {
@@ -313,8 +297,6 @@ RGE_Missile_Object::setup(RGE_Missile_Object *this,int param_1,RGE_Game_World *p
 
 // Function: rehook
 // Address: 0045a900
-/* public: virtual void __thiscall RGE_Missile_Object::rehook(void) */
-
 void __thiscall RGE_Missile_Object::rehook(RGE_Missile_Object *this)
 {
   RGE_Static_Object::rehook((RGE_Static_Object *)this);
@@ -326,8 +308,6 @@ void __thiscall RGE_Missile_Object::rehook(RGE_Missile_Object *this)
 
 // Function: save
 // Address: 0045a910
-/* public: virtual void __thiscall RGE_Missile_Object::save(int) */
-
 void __thiscall RGE_Missile_Object::save(RGE_Missile_Object *this,int param_1)
 {
   RGE_Combat_Object::save((RGE_Combat_Object *)this,param_1);
@@ -339,9 +319,6 @@ void __thiscall RGE_Missile_Object::save(RGE_Missile_Object *this,int param_1)
 
 // Function: update
 // Address: 0045a940
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall RGE_Missile_Object::update(void) */
-
 uchar __thiscall RGE_Missile_Object::update(RGE_Missile_Object *this)
 {
   ulong *puVar1;
@@ -417,9 +394,6 @@ LAB_00430784:
 
 // Function: init_missile
 // Address: 0045a950
-/* public: void __thiscall RGE_Missile_Object::init_missile(class RGE_Combat_Object *,class
-   RGE_Static_Object *,float) */
-
 void __thiscall
 RGE_Missile_Object::init_missile
           (RGE_Missile_Object *this,RGE_Combat_Object *param_1,RGE_Static_Object *param_2,
@@ -460,9 +434,6 @@ RGE_Missile_Object::init_missile
 
 // Function: init_missile
 // Address: 0045a9e0
-/* public: void __thiscall RGE_Missile_Object::init_missile(class RGE_Combat_Object
-   *,float,float,float,float) */
-
 void __thiscall
 RGE_Missile_Object::init_missile
           (RGE_Missile_Object *this,RGE_Combat_Object *param_1,float param_2,float param_3,
@@ -503,10 +474,6 @@ RGE_Missile_Object::init_missile
 
 // Function: missile_move
 // Address: 0045aa70
-/* WARNING: Variable defined which should be unmapped: new_y */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: unsigned char __thiscall RGE_Missile_Object::missile_move(void) */
-
 uchar __thiscall RGE_Missile_Object::missile_move(RGE_Missile_Object *this)
 {
   float fVar1;
@@ -540,10 +507,6 @@ uchar __thiscall RGE_Missile_Object::missile_move(RGE_Missile_Object *this)
 
 // Function: make_object_collision_list
 // Address: 0045ab20
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: class RGE_Check_List * __thiscall RGE_Missile_Object::make_object_collision_list(float)
-    */
-
 RGE_Check_List * __thiscall
 RGE_Missile_Object::make_object_collision_list(RGE_Missile_Object *this,float param_1)
 {

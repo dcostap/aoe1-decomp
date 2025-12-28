@@ -39,10 +39,6 @@
 
 // Function: get_target_task
 // Address: 0052c3f0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual class RGE_Task * __thiscall TRIBE_Task_List::get_target_task(class
-   RGE_Action_Object *,class RGE_Static_Object *,float,float,float) */
-
 RGE_Task * __thiscall
 TRIBE_Task_List::get_target_task
           (TRIBE_Task_List *this,RGE_Action_Object *param_1,RGE_Static_Object *param_2,float param_3
@@ -263,8 +259,6 @@ TRIBE_Task_List::get_target_task
 
 // Function: is_attack_task
 // Address: 0052c8d0
-/* public: virtual int __thiscall TRIBE_Task_List::is_attack_task(class RGE_Task *) */
-
 int __thiscall TRIBE_Task_List::is_attack_task(TRIBE_Task_List *this,RGE_Task *param_1)
 {
   int iVar1;

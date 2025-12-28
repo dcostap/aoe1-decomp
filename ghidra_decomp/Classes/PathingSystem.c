@@ -55,9 +55,6 @@
 
 // Function: PathingSystem
 // Address: 0046b0f0
-/* public: __thiscall PathingSystem::PathingSystem(int,int,int,class RGE_Map *,class RGE_Game_World
-   *) */
-
 PathingSystem * __thiscall
 PathingSystem::PathingSystem
           (PathingSystem *this,int param_1,int param_2,int param_3,RGE_Map *param_4,
@@ -122,8 +119,6 @@ PathingSystem::PathingSystem
 
 // Function: `vector_deleting_destructor'
 // Address: 0046b250
-/* public: virtual void * __thiscall PathingSystem::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall PathingSystem::_vector_deleting_destructor_(PathingSystem *this,uint param_1)
 {
   ~PathingSystem(this);
@@ -137,8 +132,6 @@ void * __thiscall PathingSystem::_vector_deleting_destructor_(PathingSystem *thi
 
 // Function: ~PathingSystem
 // Address: 0046b270
-/* public: virtual __thiscall PathingSystem::~PathingSystem(void) */
-
 void __thiscall PathingSystem::~PathingSystem(PathingSystem *this)
 {
   int *piVar1;
@@ -177,9 +170,6 @@ void __thiscall PathingSystem::~PathingSystem(PathingSystem *this)
 
 // Function: initialize
 // Address: 0046b310
-/* public: int __thiscall PathingSystem::initialize(int,int,class RGE_Map *,class RGE_Game_World *)
-    */
-
 int __thiscall
 PathingSystem::initialize
           (PathingSystem *this,int param_1,int param_2,RGE_Map *param_3,RGE_Game_World *param_4)
@@ -214,8 +204,6 @@ PathingSystem::initialize
 // [HELPER] s_______: "      "
 // [HELPER] s________: "       "
 // [HELPER] s_wa: "wa"
-/* public: void __thiscall PathingSystem::printToFile(char *) */
-
 void __thiscall PathingSystem::printToFile(PathingSystem *this,char *param_1)
 {
   uchar uVar1;
@@ -300,8 +288,6 @@ void __thiscall PathingSystem::printToFile(PathingSystem *this,char *param_1)
 
 // Function: lookupMisc
 // Address: 0046b550
-/* public: unsigned char __thiscall PathingSystem::lookupMisc(int,int) */
-
 uchar __thiscall PathingSystem::lookupMisc(PathingSystem *this,int param_1,int param_2)
 {
   return this->miscValue[param_1][param_2];
@@ -311,8 +297,6 @@ uchar __thiscall PathingSystem::lookupMisc(PathingSystem *this,int param_1,int p
 
 // Function: setMisc
 // Address: 0046b570
-/* public: void __thiscall PathingSystem::setMisc(int,int,unsigned char) */
-
 void __thiscall PathingSystem::setMisc(PathingSystem *this,int param_1,int param_2,uchar param_3)
 {
   this->miscValue[param_1][param_2] = param_3;
@@ -323,8 +307,6 @@ void __thiscall PathingSystem::setMisc(PathingSystem *this,int param_1,int param
 
 // Function: initMisc
 // Address: 0046b590
-/* public: void __thiscall PathingSystem::initMisc(unsigned char) */
-
 void __thiscall PathingSystem::initMisc(PathingSystem *this,uchar param_1)
 {
   int iVar1;
@@ -343,8 +325,6 @@ void __thiscall PathingSystem::initMisc(PathingSystem *this,uchar param_1)
 
 // Function: zeroObstructionMap
 // Address: 0046b5c0
-/* public: void __thiscall PathingSystem::zeroObstructionMap(void) */
-
 void __thiscall PathingSystem::zeroObstructionMap(PathingSystem *this)
 {
   int iVar1;
@@ -366,8 +346,6 @@ void __thiscall PathingSystem::zeroObstructionMap(PathingSystem *this)
 // Function: obstruction
 // Address: 0046b5e0
 // [HELPER] ObstructionValueShift: "06040200"
-/* public: unsigned char __thiscall PathingSystem::obstruction(int,int) */
-
 uchar __thiscall PathingSystem::obstruction(PathingSystem *this,int param_1,int param_2)
 {
   return this->obstructionValue[param_1][param_2 >> 2] >>
@@ -380,8 +358,6 @@ uchar __thiscall PathingSystem::obstruction(PathingSystem *this,int param_1,int 
 // Address: 0046b620
 // [HELPER] ObstructionValueMask: "3fcff3fc"
 // [HELPER] ObstructionValueShift: "06040200"
-/* public: void __thiscall PathingSystem::incrementObstruction(int,int) */
-
 void __thiscall PathingSystem::incrementObstruction(PathingSystem *this,int param_1,int param_2)
 {
   byte bVar1;
@@ -405,8 +381,6 @@ void __thiscall PathingSystem::incrementObstruction(PathingSystem *this,int para
 // Address: 0046b680
 // [HELPER] ObstructionValueMask: "3fcff3fc"
 // [HELPER] ObstructionValueShift: "06040200"
-/* public: void __thiscall PathingSystem::decrementObstruction(int,int) */
-
 void __thiscall PathingSystem::decrementObstruction(PathingSystem *this,int param_1,int param_2)
 {
   byte bVar1;
@@ -429,10 +403,6 @@ void __thiscall PathingSystem::decrementObstruction(PathingSystem *this,int para
 // Function: findTilePath
 // Address: 0046b6e0
 // [HELPER] ObstructionValueShift: "06040200"
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: int __thiscall PathingSystem::findTilePath(int,int,int,int,class RGE_Moving_Object
-   *,float,int,int,float *,int,int,int,int,int,int) */
-
 int __thiscall
 PathingSystem::findTilePath
           (PathingSystem *this,int param_1,int param_2,int param_3,int param_4,
@@ -1564,8 +1534,6 @@ LAB_0046d19f:
 
 // Function: incrementInitialPaths
 // Address: 0046d250
-/* public: void __thiscall PathingSystem::incrementInitialPaths(void) */
-
 void __thiscall PathingSystem::incrementInitialPaths(PathingSystem *this)
 {
   this->numInitialPathsValue = this->numInitialPathsValue + 1;
@@ -1576,8 +1544,6 @@ void __thiscall PathingSystem::incrementInitialPaths(PathingSystem *this)
 
 // Function: incrementContinuePaths
 // Address: 0046d260
-/* public: void __thiscall PathingSystem::incrementContinuePaths(void) */
-
 void __thiscall PathingSystem::incrementContinuePaths(PathingSystem *this)
 {
   this->numContinuePathsValue = this->numContinuePathsValue + 1;
@@ -1588,8 +1554,6 @@ void __thiscall PathingSystem::incrementContinuePaths(PathingSystem *this)
 
 // Function: incrementCanPaths
 // Address: 0046d270
-/* public: void __thiscall PathingSystem::incrementCanPaths(void) */
-
 void __thiscall PathingSystem::incrementCanPaths(PathingSystem *this)
 {
   this->numCanPathsValue = this->numCanPathsValue + 1;
@@ -1601,10 +1565,6 @@ void __thiscall PathingSystem::incrementCanPaths(PathingSystem *this)
 // Function: passable
 // Address: 0046d280
 // [HELPER] ObstructionValueShift: "06040200"
-/* WARNING: Variable defined which should be unmapped: minY */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: int __thiscall PathingSystem::passable(class RGE_Moving_Object *,float,float,int) */
-
 int __thiscall
 PathingSystem::passable
           (PathingSystem *this,RGE_Moving_Object *param_1,float param_2,float param_3,int param_4)
@@ -1776,8 +1736,6 @@ LAB_0046d6d7:
 
 // Function: checksum
 // Address: 0046d740
-/* public: long __thiscall PathingSystem::checksum(void) */
-
 long __thiscall PathingSystem::checksum(PathingSystem *this)
 {
   int iVar1;
@@ -1807,8 +1765,6 @@ long __thiscall PathingSystem::checksum(PathingSystem *this)
 // [HELPER] s_____The_open_paths_: "    The open paths:"
 // [HELPER] s_____There_are__d_open_paths_and_: "    There are %d open paths and %d traversed paths."
 // [HELPER] s________5d____d___d___total__d__f: "      %5d: (%d, %d), total=%d, facet=%d."
-/* protected: void __thiscall PathingSystem::printState(class RGE_Moving_Object *) */
-
 void __thiscall PathingSystem::printState(PathingSystem *this,RGE_Moving_Object *param_1)
 {
   byte bVar1;
@@ -1844,9 +1800,6 @@ void __thiscall PathingSystem::printState(PathingSystem *this,RGE_Moving_Object 
 
 // Function: copyPath
 // Address: 0046d830
-/* WARNING: Variable defined which should be unmapped: currentFacet */
-/* protected: int __thiscall PathingSystem::copyPath(int) */
-
 int __thiscall PathingSystem::copyPath(PathingSystem *this,int param_1)
 {
   MGP_FloatHeap *pMVar1;
@@ -2049,9 +2002,6 @@ LAB_0046dacf:
 
 // Function: copyUnobstructibles
 // Address: 0046dcb0
-/* WARNING: Variable defined which should be unmapped: i */
-/* public: void __thiscall PathingSystem::copyUnobstructibles(class ManagedArray<int> &) */
-
 void __thiscall PathingSystem::copyUnobstructibles(PathingSystem *this,ManagedArray<int> *param_1)
 {
   int *piVar1;

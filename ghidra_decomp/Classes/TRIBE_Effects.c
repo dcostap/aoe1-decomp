@@ -12,8 +12,6 @@
 
 // Function: TRIBE_Effects
 // Address: 0050d460
-/* public: __thiscall TRIBE_Effects::TRIBE_Effects(int) */
-
 TRIBE_Effects * __thiscall TRIBE_Effects::TRIBE_Effects(TRIBE_Effects *this,int param_1)
 {
   RGE_Effects::RGE_Effects((RGE_Effects *)this,param_1);
@@ -25,8 +23,6 @@ TRIBE_Effects * __thiscall TRIBE_Effects::TRIBE_Effects(TRIBE_Effects *this,int 
 
 // Function: `vector_deleting_destructor'
 // Address: 0050d480
-/* public: virtual void * __thiscall TRIBE_Effects::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall TRIBE_Effects::_vector_deleting_destructor_(TRIBE_Effects *this,uint param_1)
 {
   ~TRIBE_Effects(this);
@@ -40,8 +36,6 @@ void * __thiscall TRIBE_Effects::_vector_deleting_destructor_(TRIBE_Effects *thi
 
 // Function: ~TRIBE_Effects
 // Address: 0050d4a0
-/* public: virtual __thiscall TRIBE_Effects::~TRIBE_Effects(void) */
-
 void __thiscall TRIBE_Effects::~TRIBE_Effects(TRIBE_Effects *this)
 {
   int iVar1;
@@ -74,8 +68,6 @@ void __thiscall TRIBE_Effects::~TRIBE_Effects(TRIBE_Effects *this)
 
 // Function: TRIBE_Effects
 // Address: 0050d4b0
-/* public: __thiscall TRIBE_Effects::TRIBE_Effects(char *) */
-
 TRIBE_Effects * __thiscall TRIBE_Effects::TRIBE_Effects(TRIBE_Effects *this,char *param_1)
 {
   RGE_Effects::RGE_Effects((RGE_Effects *)this,param_1);
@@ -87,8 +79,6 @@ TRIBE_Effects * __thiscall TRIBE_Effects::TRIBE_Effects(TRIBE_Effects *this,char
 
 // Function: do_effect
 // Address: 0050d4d0
-/* public: virtual void __thiscall TRIBE_Effects::do_effect(short,class RGE_Player *) */
-
 void __thiscall TRIBE_Effects::do_effect(TRIBE_Effects *this,short param_1,RGE_Player *param_2)
 {
   int iVar1;
@@ -123,8 +113,6 @@ void __thiscall TRIBE_Effects::do_effect(TRIBE_Effects *this,short param_1,RGE_P
 
 // Function: do_tech_effect
 // Address: 0050d550
-/* public: void __thiscall TRIBE_Effects::do_tech_effect(short,class RGE_Player *) */
-
 void __thiscall TRIBE_Effects::do_tech_effect(TRIBE_Effects *this,short param_1,RGE_Player *param_2)
 {
   int iVar1;

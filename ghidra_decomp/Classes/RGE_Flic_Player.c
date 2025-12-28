@@ -21,8 +21,6 @@
 
 // Function: RGE_Flic_Player
 // Address: 00449b30
-/* public: __thiscall RGE_Flic_Player::RGE_Flic_Player(char *) */
-
 RGE_Flic_Player * __thiscall RGE_Flic_Player::RGE_Flic_Player(RGE_Flic_Player *this,char *param_1)
 {
   int iVar1;
@@ -61,12 +59,9 @@ RGE_Flic_Player * __thiscall RGE_Flic_Player::RGE_Flic_Player(RGE_Flic_Player *t
 
 // Function: RGE_Flic_Player
 // Address: 00449be0
-/* public: __thiscall RGE_Flic_Player::RGE_Flic_Player(int) */
-
 RGE_Flic_Player * __thiscall RGE_Flic_Player::RGE_Flic_Player(RGE_Flic_Player *this,int param_1)
 {
   if (-1 < param_1) {
-                    /* language.dll match for 0x84: "8" */
     read(param_1,&this->flichead,0x84);
     this->flic_width = (int)(this->flichead).width;
     this->flic_handle = param_1;
@@ -83,8 +78,6 @@ RGE_Flic_Player * __thiscall RGE_Flic_Player::RGE_Flic_Player(RGE_Flic_Player *t
 
 // Function: ~RGE_Flic_Player
 // Address: 00449c40
-/* public: __thiscall RGE_Flic_Player::~RGE_Flic_Player(void) */
-
 void __thiscall RGE_Flic_Player::~RGE_Flic_Player(RGE_Flic_Player *this)
 {
   if (this->flic_buffer != (uchar *)0x0) {
@@ -97,9 +90,6 @@ void __thiscall RGE_Flic_Player::~RGE_Flic_Player(RGE_Flic_Player *this)
 
 // Function: palette
 // Address: 00449c50
-/* WARNING: Variable defined which should be unmapped: framehead */
-/* public: void __thiscall RGE_Flic_Player::palette(struct tagRGBQUAD *) */
-
 void __thiscall RGE_Flic_Player::palette(RGE_Flic_Player *this,tagRGBQUAD *param_1)
 {
   tagRGBQUAD *ptVar1;
@@ -209,8 +199,6 @@ void __thiscall RGE_Flic_Player::palette(RGE_Flic_Player *this,tagRGBQUAD *param
 
 // Function: resolution
 // Address: 00449df0
-/* public: long __thiscall RGE_Flic_Player::resolution(void) */
-
 long __thiscall RGE_Flic_Player::resolution(RGE_Flic_Player *this)
 {
   return (int)(this->flichead).width << 0x10 | (int)(this->flichead).height;
@@ -220,8 +208,6 @@ long __thiscall RGE_Flic_Player::resolution(RGE_Flic_Player *this)
 
 // Function: time_delay
 // Address: 00449e00
-/* public: long __thiscall RGE_Flic_Player::time_delay(void) */
-
 long __thiscall RGE_Flic_Player::time_delay(RGE_Flic_Player *this)
 {
   return (this->flichead).speed;
@@ -231,8 +217,6 @@ long __thiscall RGE_Flic_Player::time_delay(RGE_Flic_Player *this)
 
 // Function: frames
 // Address: 00449e10
-/* public: short __thiscall RGE_Flic_Player::frames(void) */
-
 short __thiscall RGE_Flic_Player::frames(RGE_Flic_Player *this)
 {
   return (this->flichead).frames;
@@ -242,8 +226,6 @@ short __thiscall RGE_Flic_Player::frames(RGE_Flic_Player *this)
 
 // Function: start
 // Address: 00449e20
-/* public: void __thiscall RGE_Flic_Player::start(void) */
-
 void __thiscall RGE_Flic_Player::start(RGE_Flic_Player *this)
 {
   ushort uVar1;
@@ -268,8 +250,6 @@ void __thiscall RGE_Flic_Player::start(RGE_Flic_Player *this)
 
 // Function: reset
 // Address: 00449e80
-/* public: void __thiscall RGE_Flic_Player::reset(void) */
-
 void __thiscall RGE_Flic_Player::reset(RGE_Flic_Player *this)
 {
   (this->flichead).oframe2 = (this->flichead).oframe1;
@@ -280,9 +260,6 @@ void __thiscall RGE_Flic_Player::reset(RGE_Flic_Player *this)
 
 // Function: draw
 // Address: 00449e90
-/* WARNING: Variable defined which should be unmapped: temp_buffer */
-/* public: unsigned char __thiscall RGE_Flic_Player::draw(class TDrawArea *,long,long) */
-
 uchar __thiscall
 RGE_Flic_Player::draw(RGE_Flic_Player *this,TDrawArea *param_1,long param_2,long param_3)
 {
@@ -381,8 +358,6 @@ RGE_Flic_Player::draw(RGE_Flic_Player *this,TDrawArea *param_1,long param_2,long
 
 // Function: literal
 // Address: 0044a090
-/* private: void __thiscall RGE_Flic_Player::literal(void) */
-
 void __thiscall RGE_Flic_Player::literal(RGE_Flic_Player *this)
 {
   uint uVar1;
@@ -419,9 +394,6 @@ void __thiscall RGE_Flic_Player::literal(RGE_Flic_Player *this)
 
 // Function: delta_flc
 // Address: 0044a100
-/* WARNING: Variable defined which should be unmapped: cur_y */
-/* private: void __thiscall RGE_Flic_Player::delta_flc(void) */
-
 void __thiscall RGE_Flic_Player::delta_flc(RGE_Flic_Player *this)
 {
   char cVar1;
@@ -526,8 +498,6 @@ LAB_0044a1a1:
 
 // Function: delta_fli
 // Address: 0044a2a0
-/* private: void __thiscall RGE_Flic_Player::delta_fli(void) */
-
 void __thiscall RGE_Flic_Player::delta_fli(RGE_Flic_Player *this)
 {
   char cVar1;
@@ -599,8 +569,6 @@ void __thiscall RGE_Flic_Player::delta_fli(RGE_Flic_Player *this)
 
 // Function: black
 // Address: 0044a390
-/* private: void __thiscall RGE_Flic_Player::black(void) */
-
 void __thiscall RGE_Flic_Player::black(RGE_Flic_Player *this)
 {
   uint uVar1;
@@ -635,8 +603,6 @@ void __thiscall RGE_Flic_Player::black(RGE_Flic_Player *this)
 
 // Function: byte_run
 // Address: 0044a3e0
-/* private: void __thiscall RGE_Flic_Player::byte_run(void) */
-
 void __thiscall RGE_Flic_Player::byte_run(RGE_Flic_Player *this)
 {
   uchar uVar1;

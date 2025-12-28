@@ -39,8 +39,6 @@
 // [HELPER] s_: ""
 // [HELPER] s_Recipient: "Recipient"
 // [HELPER] s_Sender: "Sender"
-/* public: __thiscall AIModuleMessage::AIModuleMessage(void) */
-
 AIModuleMessage * __thiscall AIModuleMessage::AIModuleMessage(AIModuleMessage *this)
 {
   char cVar1;
@@ -101,8 +99,6 @@ AIModuleMessage * __thiscall AIModuleMessage::AIModuleMessage(AIModuleMessage *t
 
 // Function: `scalar_deleting_destructor'
 // Address: 0040df30
-/* public: virtual void * __thiscall AIModuleMessage::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall AIModuleMessage::_scalar_deleting_destructor_(AIModuleMessage *this,uint param_1)
 {
   ~AIModuleMessage(this);
@@ -117,9 +113,6 @@ void * __thiscall AIModuleMessage::_scalar_deleting_destructor_(AIModuleMessage 
 // Function: AIModuleMessage
 // Address: 0040df50
 // [HELPER] s_: ""
-/* public: __thiscall AIModuleMessage::AIModuleMessage(int,int,int,int,long,long,long,class
-   AIModuleMessage *,int) */
-
 AIModuleMessage * __thiscall
 AIModuleMessage::AIModuleMessage
           (AIModuleMessage *this,int param_1,int param_2,int param_3,int param_4,long param_5,
@@ -181,8 +174,6 @@ AIModuleMessage::AIModuleMessage
 
 // Function: AIModuleMessage
 // Address: 0040e030
-/* public: __thiscall AIModuleMessage::AIModuleMessage(class AIModuleMessage *) */
-
 AIModuleMessage * __thiscall
 AIModuleMessage::AIModuleMessage(AIModuleMessage *this,AIModuleMessage *param_1)
 {
@@ -218,8 +209,6 @@ AIModuleMessage::AIModuleMessage(AIModuleMessage *this,AIModuleMessage *param_1)
 
 // Function: ~AIModuleMessage
 // Address: 0040e120
-/* public: virtual __thiscall AIModuleMessage::~AIModuleMessage(void) */
-
 void __thiscall AIModuleMessage::~AIModuleMessage(AIModuleMessage *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -248,8 +237,6 @@ void __thiscall AIModuleMessage::~AIModuleMessage(AIModuleMessage *this)
 // Function: setText
 // Address: 0040e190
 // [HELPER] s_: ""
-/* public: void __thiscall AIModuleMessage::setText(char *) */
-
 void __thiscall AIModuleMessage::setText(AIModuleMessage *this,char *param_1)
 {
   char cVar1;
@@ -259,7 +246,6 @@ void __thiscall AIModuleMessage::setText(AIModuleMessage *this,char *param_1)
   char *pcVar5;
   
   if (param_1 != (char *)0x0) {
-                    /* language.dll match for 0x7f: "N" */
     strncpy(this->text,param_1,0x7f);
     return;
   }
@@ -293,8 +279,6 @@ void __thiscall AIModuleMessage::setText(AIModuleMessage *this,char *param_1)
 
 // Function: setSender
 // Address: 0040e1e0
-/* public: void __thiscall AIModuleMessage::setSender(int,char *) */
-
 void __thiscall AIModuleMessage::setSender(AIModuleMessage *this,int param_1,char *param_2)
 {
   AIModuleID::setID(&this->sender,param_1,param_2);
@@ -305,8 +289,6 @@ void __thiscall AIModuleMessage::setSender(AIModuleMessage *this,int param_1,cha
 
 // Function: setRecipient
 // Address: 0040e200
-/* public: void __thiscall AIModuleMessage::setRecipient(int,char *) */
-
 void __thiscall AIModuleMessage::setRecipient(AIModuleMessage *this,int param_1,char *param_2)
 {
   AIModuleID::setID(&this->recipient,param_1,param_2);

@@ -901,8 +901,6 @@
 
 // Function: TRIBE_Screen_Info
 // Address: 0049d550
-/* public: __thiscall TRIBE_Screen_Info::TRIBE_Screen_Info(char *,char *,long,unsigned long) */
-
 TRIBE_Screen_Info * __thiscall
 TRIBE_Screen_Info::TRIBE_Screen_Info
           (TRIBE_Screen_Info *this,char *param_1,char *param_2,long param_3,ulong param_4)
@@ -935,9 +933,6 @@ TRIBE_Screen_Info::TRIBE_Screen_Info
 
 // Function: `scalar_deleting_destructor'
 // Address: 0049d5e0
-/* public: virtual void * __thiscall TRIBE_Screen_Info::`scalar deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 TRIBE_Screen_Info::_scalar_deleting_destructor_(TRIBE_Screen_Info *this,uint param_1)
 {
@@ -952,8 +947,6 @@ TRIBE_Screen_Info::_scalar_deleting_destructor_(TRIBE_Screen_Info *this,uint par
 
 // Function: ~TRIBE_Screen_Info
 // Address: 0049d600
-/* public: virtual __thiscall TRIBE_Screen_Info::~TRIBE_Screen_Info(void) */
-
 void __thiscall TRIBE_Screen_Info::~TRIBE_Screen_Info(TRIBE_Screen_Info *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -966,8 +959,6 @@ void __thiscall TRIBE_Screen_Info::~TRIBE_Screen_Info(TRIBE_Screen_Info *this)
 // Function: handle_idle
 // Address: 0049d610
 // [HELPER] s_C__msdev_work_age1_x1_scr_info_c: "C:\msdev\work\age1_x1\scr_info.cpp"
-/* public: virtual long __thiscall TRIBE_Screen_Info::handle_idle(void) */
-
 long __thiscall TRIBE_Screen_Info::handle_idle(TRIBE_Screen_Info *this)
 {
   ulong uVar1;
@@ -997,8 +988,6 @@ long __thiscall TRIBE_Screen_Info::handle_idle(TRIBE_Screen_Info *this)
 
 // Function: key_down_action
 // Address: 0049d690
-/* public: virtual long __thiscall TRIBE_Screen_Info::key_down_action(long,short,int,int,int) */
-
 long __thiscall
 TRIBE_Screen_Info::key_down_action
           (TRIBE_Screen_Info *this,long param_1,short param_2,int param_3,int param_4,int param_5)
@@ -1013,8 +1002,6 @@ TRIBE_Screen_Info::key_down_action
 
 // Function: mouse_left_down_action
 // Address: 0049d6b0
-/* public: virtual long __thiscall TRIBE_Screen_Info::mouse_left_down_action(long,long,int,int) */
-
 long __thiscall
 TRIBE_Screen_Info::mouse_left_down_action
           (TRIBE_Screen_Info *this,long param_1,long param_2,int param_3,int param_4)
@@ -1027,9 +1014,6 @@ TRIBE_Screen_Info::mouse_left_down_action
 
 // Function: action
 // Address: 0049d6c0
-/* public: virtual long __thiscall TRIBE_Screen_Info::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TRIBE_Screen_Info::action
           (TRIBE_Screen_Info *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -1063,8 +1047,6 @@ TRIBE_Screen_Info::action
 // [HELPER] s_scrunit1: "scrunit1"
 // [HELPER] s_scrunit2: "scrunit2"
 // [HELPER] s_scrunit3: "scrunit3"
-/* public: void __thiscall TRIBE_Screen_Info::close_screen(void) */
-
 void __thiscall TRIBE_Screen_Info::close_screen(TRIBE_Screen_Info *this)
 {
   byte bVar1;
@@ -1173,7 +1155,6 @@ LAB_0049d86d:
     pTVar5 = (TRIBE_Screen_Info *)operator_new(0x484);
     local_4 = 2;
     if (pTVar5 != (TRIBE_Screen_Info *)0x0) {
-                    /* language.dll match for 0x7d0: "place holder" */
       TRIBE_Screen_Info(pTVar5,&s_Logo2Screen,s_scrlogo2,0xc392,2000);
     }
     local_4 = 0xffffffff;
@@ -1322,7 +1303,6 @@ LAB_0049db6e:
 LAB_0049db72:
     if (iVar3 == 0) {
       RGE_Base_Game::disable_input(rge_base_game);
-                    /* language.dll match for 0x4b0: "Ready" */
       this_00 = (TRIBE_Screen_Main_Menu *)operator_new(0x4b0);
       local_4 = 6;
       if (this_00 != (TRIBE_Screen_Main_Menu *)0x0) {

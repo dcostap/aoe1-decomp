@@ -13,9 +13,6 @@
 
 // Function: RGE_Communications_Addresses
 // Address: 004249d0
-/* public: __thiscall RGE_Communications_Addresses::RGE_Communications_Addresses(class
-   TCommunications_Handler *) */
-
 RGE_Communications_Addresses * __thiscall
 RGE_Communications_Addresses::RGE_Communications_Addresses
           (RGE_Communications_Addresses *this,TCommunications_Handler *param_1)
@@ -67,8 +64,6 @@ RGE_Communications_Addresses::RGE_Communications_Addresses
 
 // Function: ~RGE_Communications_Addresses
 // Address: 00424b10
-/* public: __thiscall RGE_Communications_Addresses::~RGE_Communications_Addresses(void) */
-
 void __thiscall
 RGE_Communications_Addresses::~RGE_Communications_Addresses(RGE_Communications_Addresses *this)
 {
@@ -90,11 +85,8 @@ RGE_Communications_Addresses::~RGE_Communications_Addresses(RGE_Communications_A
 
 // Function: GetHostName
 // Address: 00424b60
-/* public: char * __thiscall RGE_Communications_Addresses::GetHostName(void) */
-
 char * __thiscall RGE_Communications_Addresses::GetHostName(RGE_Communications_Addresses *this)
 {
-                    /* language.dll match for 0x80: "Arial" */
   gethostname(this->hostname,0x80);
   return this->hostname;
 }
@@ -103,8 +95,6 @@ char * __thiscall RGE_Communications_Addresses::GetHostName(RGE_Communications_A
 
 // Function: SetIPAliases
 // Address: 00424b80
-/* protected: int __thiscall RGE_Communications_Addresses::SetIPAliases(char *) */
-
 int __thiscall
 RGE_Communications_Addresses::SetIPAliases(RGE_Communications_Addresses *this,char *param_1)
 {
@@ -166,8 +156,6 @@ RGE_Communications_Addresses::SetIPAliases(RGE_Communications_Addresses *this,ch
 // Function: GetAddress
 // Address: 00424c20
 // [HELPER] s__: "}"
-/* public: char * __thiscall RGE_Communications_Addresses::GetAddress(unsigned int) */
-
 char * __thiscall
 RGE_Communications_Addresses::GetAddress(RGE_Communications_Addresses *this,uint param_1)
 {
@@ -185,8 +173,6 @@ RGE_Communications_Addresses::GetAddress(RGE_Communications_Addresses *this,uint
 // Function: GetAlias
 // Address: 00424c50
 // [HELPER] s__: "}"
-/* public: char * __thiscall RGE_Communications_Addresses::GetAlias(unsigned int) */
-
 char * __thiscall
 RGE_Communications_Addresses::GetAlias(RGE_Communications_Addresses *this,uint param_1)
 {
@@ -204,9 +190,6 @@ RGE_Communications_Addresses::GetAlias(RGE_Communications_Addresses *this,uint p
 // Function: SetIPAddresses
 // Address: 00424c80
 // [HELPER] s__d__d__d__d_: "%d.%d.%d.%d\n"
-/* WARNING: Variable defined which should be unmapped: temp */
-/* protected: int __thiscall RGE_Communications_Addresses::SetIPAddresses(char *) */
-
 int __thiscall
 RGE_Communications_Addresses::SetIPAddresses(RGE_Communications_Addresses *this,char *param_1)
 {
@@ -307,8 +290,6 @@ RGE_Communications_Addresses::SetIPAddresses(RGE_Communications_Addresses *this,
 // Function: EraseInformation
 // Address: 00424d90
 // [HELPER] s_: ""
-/* protected: void __thiscall RGE_Communications_Addresses::EraseInformation(void) */
-
 void __thiscall RGE_Communications_Addresses::EraseInformation(RGE_Communications_Addresses *this)
 {
   char cVar1;

@@ -104,10 +104,6 @@
 // [HELPER] s__: "}"
 // [HELPER] s__s: "%s"
 // [HELPER] s_circlep: "circlep"
-/* WARNING: Function: __alloca_probe replaced with injection: alloca_probe */
-/* WARNING: Variable defined which should be unmapped: tabList */
-/* public: __thiscall TribeAboutDialog::TribeAboutDialog(class TScreenPanel *) */
-
 TribeAboutDialog * __thiscall
 TribeAboutDialog::TribeAboutDialog(TribeAboutDialog *this,TScreenPanel *param_1)
 {
@@ -181,20 +177,14 @@ TribeAboutDialog::TribeAboutDialog(TribeAboutDialog *this,TScreenPanel *param_1)
               (3,(char)this->_padding_,*(undefined1 *)((int)&this->_padding_ + 1),
                *(undefined1 *)((int)&this->_padding_ + 2),*(undefined1 *)((int)&this->_padding_ + 3)
                ,(char)this->_padding_,*(undefined1 *)((int)&this->_padding_ + 1));
-                    /* language.dll match for 0x2419: "Microsoft\\xAE Age of Empires\\xAE
-                       Expansion:"
-                       language.dll match for 0x2419: "Microsoft\\xA9 Age of Empires\ufffd" */
     TEasy_Panel::create_text
               ((TEasy_Panel *)this,(TPanel *)this,&this->title_text,0x2419,0x14,0x14,0x1e0,0x14,4,0,
                0,0);
-                    /* language.dll match for 0x241a: "Version 1.0"
-                       language.dll match for 0x241a: "Version 1.0b" */
     TEasy_Panel::create_text
               ((TEasy_Panel *)this,(TPanel *)this,&this->version_text,0x241a,0x14,0x28,0x1e0,0x14,
                0xb,0,0,0);
     TPanel::get_string((TPanel *)this,0x2424,temp_str + 4,0x200);
     if (temp_str[4] == '\0') {
-                    /* language.dll match for 0x241b: "\\xA9 & " */
       TEasy_Panel::create_text
                 ((TEasy_Panel *)this,(TPanel *)this,ppTVar1,0x241b,0x14,0x41,0x1e0,0x14,10,0,0,0);
       if (*ppTVar1 != (TTextPanel *)0x0) {
@@ -224,10 +214,6 @@ TribeAboutDialog::TribeAboutDialog(TribeAboutDialog *this,TScreenPanel *param_1)
             lVar7 = TPanel::xPosition((TPanel *)this->circle_p_pic);
             iVar22 = this->_padding_;
             lVar16 = TPanel::width((TPanel *)this->circle_p_pic);
-                    /* language.dll match for 0x241c: "1997-1998 Microsoft Corporation. All rights
-                       reserved."
-                       language.dll match for 0x241c: "1997 Microsoft Corporation. All rights
-                       reserved." */
             TEasy_Panel::create_text
                       ((TEasy_Panel *)this,(TPanel *)this,&this->ms_copy_text2,0x241c,
                        (lVar7 - iVar22) + lVar16,lVar18,lVar15,lVar17,lVar19,iVar20,iVar21,iVar23);
@@ -236,7 +222,6 @@ TribeAboutDialog::TribeAboutDialog(TribeAboutDialog *this,TScreenPanel *param_1)
       }
     }
     else {
-                    /* language.dll match for 0x241b: "\\xA9 & " */
       pcVar11 = TPanel::get_string((TPanel *)this,0x241b);
       uVar12 = 0xffffffff;
       pcVar8 = temp_str;
@@ -362,17 +347,12 @@ TribeAboutDialog::TribeAboutDialog(TribeAboutDialog *this,TScreenPanel *param_1)
                 ((TEasy_Panel *)this,(TPanel *)this,ppTVar1,temp_str + 4,0x14,0x41,0x1e0,0x14,10,0,0
                  ,0);
     }
-                    /* language.dll match for 0x241d: "Developed by Ensemble Studios Corp. for
-                       Microsoft Corporation." */
     TEasy_Panel::create_text
               ((TEasy_Panel *)this,(TPanel *)this,&this->ens_copy_text,0x241d,0x14,0x55,0x1e0,0x14,
                10,0,0,0);
-                    /* language.dll match for 0x2423: "Genie engine technology \\xA9 Copyright 1995,
-                       1996, 1997 by Ensemble Studios Corp. All rights reserved." */
     TEasy_Panel::create_text
               ((TEasy_Panel *)this,(TPanel *)this,&this->genie_copy_text,0x2423,0x14,0x69,0x1e0,0x28
                ,10,0,0,1);
-                    /* language.dll match for 0x241e: "Product ID:" */
     TEasy_Panel::create_text
               ((TEasy_Panel *)this,(TPanel *)this,&this->pid_label_text,0x241e,0x14,0x96,0x5f,0x14,
                10,0,0,0);
@@ -390,30 +370,14 @@ TribeAboutDialog::TribeAboutDialog(TribeAboutDialog *this,TScreenPanel *param_1)
                    (rect.bottom - this->_padding_) + 4,0x96,200,0x14,0xb,0,0,0);
       }
     }
-                    /* language.dll match for 0x241f: "WARNING: This computer program is protected
-                       by copyright law and international treaties.  Unauthorized reproduction or
-                       distribution of this program, or any portion of it, may result in severe
-                       civil and criminal penalties, and will be prosecuted to the maximum extent
-                       possible under the law.\\n\\nThe names of companies, products, people,
-                       characters, events and/or data mentioned in Age of Empires Expansion and its
-                       documentation are fictitious unless otherwise noted."
-                       language.dll match for 0x241f: "WARNING: This computer program is protected
-                       by copyright law and international treaties.  Unauthorized reproduction or
-                       distribution of this program, or any portion of it, may result in severe
-                       civil and criminal penalties, and will be prosecuted to the maximum extent
-                       possible under the law.\\n\\nThe names of companies, products, people,
-                       characters, events and/or data mentioned in Age of Empires and its
-                       documentation are fictitious unless otherwise noted." */
     TPanel::get_string((TPanel *)this,0x241f,str + 4,0x1000);
     TEasy_Panel::create_text
               ((TEasy_Panel *)this,(TPanel *)this,&this->warning_text,str + 4,0x14,0xaf,0x1e0,0xdc,
                10,0,0,1);
     ppTVar3 = &this->credits_button;
-                    /* language.dll match for 0x2420: "Credits" */
     TEasy_Panel::create_button
               ((TEasy_Panel *)this,(TPanel *)this,ppTVar3,0x2420,0,0x46,0x172,0xaa,0x1e,0,0,0);
     ppTVar4 = &this->close_button;
-                    /* language.dll match for 0x2421: "Close" */
     TEasy_Panel::create_button
               ((TEasy_Panel *)this,(TPanel *)this,ppTVar4,0x2421,0,0x118,0x172,0xaa,0x1e,0,0,0);
     pTVar6 = *ppTVar4;
@@ -432,8 +396,6 @@ TribeAboutDialog::TribeAboutDialog(TribeAboutDialog *this,TScreenPanel *param_1)
 
 // Function: `scalar_deleting_destructor'
 // Address: 0043b2e0
-/* public: virtual void * __thiscall TribeAboutDialog::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall
 TribeAboutDialog::_scalar_deleting_destructor_(TribeAboutDialog *this,uint param_1)
 {
@@ -448,8 +410,6 @@ TribeAboutDialog::_scalar_deleting_destructor_(TribeAboutDialog *this,uint param
 
 // Function: ~TribeAboutDialog
 // Address: 0043b300
-/* public: virtual __thiscall TribeAboutDialog::~TribeAboutDialog(void) */
-
 void __thiscall TribeAboutDialog::~TribeAboutDialog(TribeAboutDialog *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -488,9 +448,6 @@ void __thiscall TribeAboutDialog::~TribeAboutDialog(TribeAboutDialog *this)
 // [HELPER] s_About_Dialog: "About Dialog"
 // [HELPER] s_Credits_Screen: "Credits Screen"
 // [HELPER] s_Game_Screen: "Game Screen"
-/* protected: virtual long __thiscall TribeAboutDialog::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TribeAboutDialog::action
           (TribeAboutDialog *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -548,8 +505,6 @@ LAB_0043b520:
 
 // Function: draw
 // Address: 0043b550
-/* public: virtual void __thiscall TribeAboutDialog::draw(void) */
-
 void __thiscall TribeAboutDialog::draw(TribeAboutDialog *this)
 {
   if (*(char *)((int)&this->_padding_ + 3) != '\0') {

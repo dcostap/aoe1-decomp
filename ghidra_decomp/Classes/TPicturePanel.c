@@ -374,8 +374,6 @@
 
 // Function: TPicturePanel
 // Address: 0047a1d0
-/* public: __thiscall TPicturePanel::TPicturePanel(void) */
-
 TPicturePanel * __thiscall TPicturePanel::TPicturePanel(TPicturePanel *this)
 {
   TPanel::TPanel((TPanel *)this);
@@ -397,8 +395,6 @@ TPicturePanel * __thiscall TPicturePanel::TPicturePanel(TPicturePanel *this)
 
 // Function: `scalar_deleting_destructor'
 // Address: 0047a230
-/* public: virtual void * __thiscall TPicturePanel::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall TPicturePanel::_scalar_deleting_destructor_(TPicturePanel *this,uint param_1)
 {
   ~TPicturePanel(this);
@@ -412,8 +408,6 @@ void * __thiscall TPicturePanel::_scalar_deleting_destructor_(TPicturePanel *thi
 
 // Function: ~TPicturePanel
 // Address: 0047a250
-/* public: virtual __thiscall TPicturePanel::~TPicturePanel(void) */
-
 void __thiscall TPicturePanel::~TPicturePanel(TPicturePanel *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -437,9 +431,6 @@ void __thiscall TPicturePanel::~TPicturePanel(TPicturePanel *this)
 
 // Function: setup
 // Address: 0047a2a0
-/* public: long __thiscall TPicturePanel::setup(class TDrawArea *,class TPanel
-   *,long,long,long,long,char *,long,int,int) */
-
 long __thiscall
 TPicturePanel::setup
           (TPicturePanel *this,TDrawArea *param_1,TPanel *param_2,long param_3,long param_4,
@@ -507,8 +498,6 @@ TPicturePanel::setup
 
 // Function: set_picture
 // Address: 0047a3a0
-/* public: void __thiscall TPicturePanel::set_picture(class TShape *,long) */
-
 void __thiscall TPicturePanel::set_picture(TPicturePanel *this,TShape *param_1,long param_2)
 {
   free_pic(this);
@@ -526,8 +515,6 @@ void __thiscall TPicturePanel::set_picture(TPicturePanel *this,TShape *param_1,l
 // [HELPER] s_: ""
 // [HELPER] s__s_bmp: "%s.bmp"
 // [HELPER] s__s_shp: "%s.shp"
-/* protected: int __thiscall TPicturePanel::load_pic(void) */
-
 int __thiscall TPicturePanel::load_pic(TPicturePanel *this)
 {
   TShape *pTVar1;
@@ -615,8 +602,6 @@ LAB_0047a59a:
 
 // Function: free_pic
 // Address: 0047a5b0
-/* protected: void __thiscall TPicturePanel::free_pic(void) */
-
 void __thiscall TPicturePanel::free_pic(TPicturePanel *this)
 {
   TPicture *this_00;
@@ -647,8 +632,6 @@ void __thiscall TPicturePanel::free_pic(TPicturePanel *this)
 // Function: draw
 // Address: 0047a630
 // [HELPER] s_pnl_pic__draw: "pnl_pic::draw"
-/* public: virtual void __thiscall TPicturePanel::draw(void) */
-
 void __thiscall TPicturePanel::draw(TPicturePanel *this)
 {
   int iVar1;

@@ -13,8 +13,6 @@
 
 // Function: RGE_Lobby
 // Address: 0042f290
-/* public: __thiscall RGE_Lobby::RGE_Lobby(void *) */
-
 RGE_Lobby * __thiscall RGE_Lobby::RGE_Lobby(RGE_Lobby *this,void *param_1)
 {
   RGE_Comm_Error *pRVar1;
@@ -50,8 +48,6 @@ RGE_Lobby * __thiscall RGE_Lobby::RGE_Lobby(RGE_Lobby *this,void *param_1)
 
 // Function: ~RGE_Lobby
 // Address: 0042f300
-/* public: __thiscall RGE_Lobby::~RGE_Lobby(void) */
-
 void __thiscall RGE_Lobby::~RGE_Lobby(RGE_Lobby *this)
 {
   RGE_Comm_Error *this_00;
@@ -70,8 +66,6 @@ void __thiscall RGE_Lobby::~RGE_Lobby(RGE_Lobby *this)
 // Function: ClearLobbyInfo
 // Address: 0042f330
 // [HELPER] s_Release: "Release"
-/* public: void __thiscall RGE_Lobby::ClearLobbyInfo(void) */
-
 void __thiscall RGE_Lobby::ClearLobbyInfo(RGE_Lobby *this)
 {
   IDirectPlayLobby2 *pIVar1;
@@ -97,8 +91,6 @@ void __thiscall RGE_Lobby::ClearLobbyInfo(RGE_Lobby *this)
 // Function: IsLobbyLaunched
 // Address: 0042f370
 // [HELPER] s_LOBBY_GAME_LAUNCH_STATUS____d: "LOBBY GAME LAUNCH STATUS = %d"
-/* public: int __thiscall RGE_Lobby::IsLobbyLaunched(void) */
-
 int __thiscall RGE_Lobby::IsLobbyLaunched(RGE_Lobby *this)
 {
   TDebuggingLog::Log(L,(char *)L,s_LOBBY_GAME_LAUNCH_STATUS____d,(uint)this->lobby_game);
@@ -120,9 +112,6 @@ int __thiscall RGE_Lobby::IsLobbyLaunched(RGE_Lobby *this)
 // [HELPER] s_Pre_QI: "Pre QI"
 // [HELPER] s_Pre_connect: "Pre-connect"
 // [HELPER] s_Queryinterface_failed_: "Queryinterface failed."
-/* WARNING: Variable defined which should be unmapped: dwSize */
-/* public: unsigned char __thiscall RGE_Lobby::CheckForLobbyLaunch(struct IDirectPlay3 * &) */
-
 uchar __thiscall RGE_Lobby::CheckForLobbyLaunch(RGE_Lobby *this,IDirectPlay3 **param_1)
 {
   IDirectPlayLobby2 **ppIVar1;
@@ -196,8 +185,6 @@ uchar __thiscall RGE_Lobby::CheckForLobbyLaunch(RGE_Lobby *this,IDirectPlay3 **p
 
 // Function: IsThisHost
 // Address: 0042f640
-/* public: unsigned char __thiscall RGE_Lobby::IsThisHost(void) */
-
 uchar __thiscall RGE_Lobby::IsThisHost(RGE_Lobby *this)
 {
   if (this->lobby_game == '\0') {
@@ -210,8 +197,6 @@ uchar __thiscall RGE_Lobby::IsThisHost(RGE_Lobby *this)
 
 // Function: GetPlayerInfo
 // Address: 0042f660
-/* public: unsigned char __thiscall RGE_Lobby::GetPlayerInfo(char * *) */
-
 uchar __thiscall RGE_Lobby::GetPlayerInfo(RGE_Lobby *this,char **param_1)
 {
   if (this->lobby_game == '\0') {
@@ -225,8 +210,6 @@ uchar __thiscall RGE_Lobby::GetPlayerInfo(RGE_Lobby *this,char **param_1)
 
 // Function: GetSessionInfo
 // Address: 0042f680
-/* public: unsigned char __thiscall RGE_Lobby::GetSessionInfo(struct DPSESSIONDESC2 &) */
-
 uchar __thiscall RGE_Lobby::GetSessionInfo(RGE_Lobby *this,DPSESSIONDESC2 *param_1)
 {
   int iVar1;
@@ -248,8 +231,6 @@ uchar __thiscall RGE_Lobby::GetSessionInfo(RGE_Lobby *this,DPSESSIONDESC2 *param
 
 // Function: SendZoneHandshakeResponse
 // Address: 0042f6b0
-/* public: long __thiscall RGE_Lobby::SendZoneHandshakeResponse(void) */
-
 long __thiscall RGE_Lobby::SendZoneHandshakeResponse(RGE_Lobby *this)
 {
   return (uint)(this->lobby_game != '\0');
@@ -259,8 +240,6 @@ long __thiscall RGE_Lobby::SendZoneHandshakeResponse(RGE_Lobby *this)
 
 // Function: GameIsOver
 // Address: 0042f6c0
-/* public: int __thiscall RGE_Lobby::GameIsOver(void) */
-
 int __thiscall RGE_Lobby::GameIsOver(RGE_Lobby *this)
 {
   return (uint)(this->lobby_game != '\0');
@@ -271,20 +250,6 @@ int __thiscall RGE_Lobby::GameIsOver(RGE_Lobby *this)
 // Function: ReceiveZoneMessages
 // Address: 0042f6d0
 // [HELPER] s_RX_Lobby_Messages: "RX Lobby Messages"
-/* WARNING: Variable defined which should be unmapped: dwDataSize */
-/* WARNING: Removing unreachable block (ram,0x0042f731) */
-/* WARNING: Removing unreachable block (ram,0x0042f735) */
-/* WARNING: Removing unreachable block (ram,0x0042f74e) */
-/* WARNING: Removing unreachable block (ram,0x0042f759) */
-/* WARNING: Removing unreachable block (ram,0x0042f77c) */
-/* WARNING: Removing unreachable block (ram,0x0042f783) */
-/* WARNING: Removing unreachable block (ram,0x0042f7df) */
-/* WARNING: Removing unreachable block (ram,0x0042f7c1) */
-/* WARNING: Removing unreachable block (ram,0x0042f7a2) */
-/* WARNING: Removing unreachable block (ram,0x0042f7fe) */
-/* WARNING: Recovered jumptable eliminated as dead code */
-/* public: long __thiscall RGE_Lobby::ReceiveZoneMessages(void) */
-
 long __thiscall RGE_Lobby::ReceiveZoneMessages(RGE_Lobby *this)
 {
   long lVar1;
@@ -306,8 +271,6 @@ long __thiscall RGE_Lobby::ReceiveZoneMessages(RGE_Lobby *this)
 // [HELPER] s_SendLobbyMessage_returns_OK: "SendLobbyMessage returns OK"
 // [HELPER] s_Send_Lobby_Msg: "Send Lobby Msg"
 // [HELPER] s_Sending__d_bytes_to_the_Zone__To: "Sending %d bytes to the Zone (Total message size %d)."
-/* public: long __thiscall RGE_Lobby::SendZoneMessage(char *,unsigned long,struct _GUID) */
-
 long __thiscall
 RGE_Lobby::SendZoneMessage(RGE_Lobby *this,char *param_1,ulong param_2,_GUID param_3)
 {

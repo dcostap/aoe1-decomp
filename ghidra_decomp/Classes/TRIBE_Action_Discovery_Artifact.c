@@ -33,9 +33,6 @@
 
 // Function: TRIBE_Action_Discovery_Artifact
 // Address: 004ce530
-/* public: __thiscall TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(int,class
-   RGE_Action_Object *) */
-
 TRIBE_Action_Discovery_Artifact * __thiscall
 TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact
           (TRIBE_Action_Discovery_Artifact *this,int param_1,RGE_Action_Object *param_2)
@@ -66,9 +63,6 @@ TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact
 
 // Function: `vector_deleting_destructor'
 // Address: 004ce5c0
-/* public: virtual void * __thiscall TRIBE_Action_Discovery_Artifact::`vector deleting
-   destructor'(unsigned int) */
-
 void * __thiscall
 TRIBE_Action_Discovery_Artifact::_vector_deleting_destructor_
           (TRIBE_Action_Discovery_Artifact *this,uint param_1)
@@ -84,9 +78,6 @@ TRIBE_Action_Discovery_Artifact::_vector_deleting_destructor_
 
 // Function: ~TRIBE_Action_Discovery_Artifact
 // Address: 004ce5e0
-/* public: virtual __thiscall
-   TRIBE_Action_Discovery_Artifact::~TRIBE_Action_Discovery_Artifact(void) */
-
 void __thiscall
 TRIBE_Action_Discovery_Artifact::~TRIBE_Action_Discovery_Artifact
           (TRIBE_Action_Discovery_Artifact *this)
@@ -109,9 +100,6 @@ TRIBE_Action_Discovery_Artifact::~TRIBE_Action_Discovery_Artifact
 
 // Function: TRIBE_Action_Discovery_Artifact
 // Address: 004ce5f0
-/* public: __thiscall TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(class
-   RGE_Action_Object *,class RGE_Task *,class RGE_Static_Object *) */
-
 TRIBE_Action_Discovery_Artifact * __thiscall
 TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact
           (TRIBE_Action_Discovery_Artifact *this,RGE_Action_Object *param_1,RGE_Task *param_2,
@@ -144,9 +132,6 @@ TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact
 
 // Function: TRIBE_Action_Discovery_Artifact
 // Address: 004ce670
-/* public: __thiscall TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(class
-   RGE_Action_Object *,class RGE_Task *,float,float,float) */
-
 TRIBE_Action_Discovery_Artifact * __thiscall
 TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact
           (TRIBE_Action_Discovery_Artifact *this,RGE_Action_Object *param_1,RGE_Task *param_2,
@@ -171,8 +156,6 @@ TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact
 
 // Function: save
 // Address: 004ce6d0
-/* public: virtual void __thiscall TRIBE_Action_Discovery_Artifact::save(int) */
-
 void __thiscall
 TRIBE_Action_Discovery_Artifact::save(TRIBE_Action_Discovery_Artifact *this,int param_1)
 {
@@ -186,8 +169,6 @@ TRIBE_Action_Discovery_Artifact::save(TRIBE_Action_Discovery_Artifact *this,int 
 
 // Function: first_in_stack
 // Address: 004ce700
-/* public: virtual void __thiscall TRIBE_Action_Discovery_Artifact::first_in_stack(unsigned char) */
-
 void __thiscall
 TRIBE_Action_Discovery_Artifact::first_in_stack(TRIBE_Action_Discovery_Artifact *this,uchar param_1)
 {
@@ -201,8 +182,6 @@ TRIBE_Action_Discovery_Artifact::first_in_stack(TRIBE_Action_Discovery_Artifact 
 
 // Function: set_state
 // Address: 004ce720
-/* protected: virtual void __thiscall TRIBE_Action_Discovery_Artifact::set_state(unsigned char) */
-
 void __thiscall
 TRIBE_Action_Discovery_Artifact::set_state(TRIBE_Action_Discovery_Artifact *this,uchar param_1)
 {
@@ -217,8 +196,6 @@ TRIBE_Action_Discovery_Artifact::set_state(TRIBE_Action_Discovery_Artifact *this
 
 // Function: update
 // Address: 004ce740
-/* public: virtual unsigned char __thiscall TRIBE_Action_Discovery_Artifact::update(void) */
-
 uchar __thiscall TRIBE_Action_Discovery_Artifact::update(TRIBE_Action_Discovery_Artifact *this)
 {
   char cVar1;
@@ -247,9 +224,6 @@ uchar __thiscall TRIBE_Action_Discovery_Artifact::update(TRIBE_Action_Discovery_
 
 // Function: check_objects
 // Address: 004ce7a0
-/* WARNING: Variable defined which should be unmapped: x0 */
-/* protected: void __thiscall TRIBE_Action_Discovery_Artifact::check_objects(void) */
-
 void __thiscall
 TRIBE_Action_Discovery_Artifact::check_objects(TRIBE_Action_Discovery_Artifact *this)
 {

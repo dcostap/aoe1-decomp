@@ -389,8 +389,6 @@
 // Address: 004909d0
 // [HELPER] s_Campaign_Selection_Screen: "Campaign Selection Screen"
 // [HELPER] s_scr2: "scr2"
-/* public: __thiscall TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection(void) */
-
 TRIBE_Screen_Campaign_Selection * __thiscall
 TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection
           (TRIBE_Screen_Campaign_Selection *this)
@@ -425,7 +423,6 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection
   }
   TEasy_Panel::setup_shadow_area((TEasy_Panel *)this,0);
   TEasy_Panel::set_ideal_size((TEasy_Panel *)this,0x280,0x1e0);
-                    /* language.dll match for 0x2bcd: "Campaign" */
   iVar7 = TEasy_Panel::create_text
                     ((TEasy_Panel *)this,(TPanel *)this,&this->title,0x2bcd,0x14,10,600,0x1e,1,1,0,0
                     );
@@ -434,7 +431,6 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection
     this->campaignListX = 0x14;
     this->campaignListY = 0x46;
     this->campaignListWidth = 600;
-                    /* language.dll match for 0x82: "B" */
     this->campaignListHeight = 0x82;
     iVar7 = TEasy_Panel::create_list
                       ((TEasy_Panel *)this,(TPanel *)this,ppTVar1,0x14,0x46,600,0x82,0xb);
@@ -442,19 +438,16 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection
       iVar7 = TEasy_Panel::create_auto_scrollbar
                         ((TEasy_Panel *)this,&this->campaignScrollbar,(TTextPanel *)*ppTVar1,0x14);
       if (iVar7 != 0) {
-                    /* language.dll match for 0x2bce: "Select Campaign" */
         iVar7 = TEasy_Panel::create_text
                           ((TEasy_Panel *)this,(TPanel *)this,&this->campaignTitle,0x2bce,
                            this->campaignListX + -5,this->campaignListY + -0x14,200,0x14,4,0,0,0);
         if (iVar7 != 0) {
-                    /* language.dll match for 0x2b5d: "Loading list of campaigns..." */
           (**(code **)((*ppTVar1)->_padding_ + 0xe4))(0x2b5d);
           iVar7 = this->campaignListHeight + 0x1e + this->campaignListY;
           ppTVar1 = &this->scenarioList;
           this->scenarioListX = 0x14;
           this->scenarioListY = iVar7;
           this->scenarioListWidth = 600;
-                    /* language.dll match for 0x82: "B" */
           this->scenarioListHeight = 0x82;
           iVar7 = TEasy_Panel::create_list
                             ((TEasy_Panel *)this,(TPanel *)this,ppTVar1,0x14,iVar7,600,0x82,0xb);
@@ -463,45 +456,35 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection
                               ((TEasy_Panel *)this,&this->scenarioScrollbar,(TTextPanel *)*ppTVar1,
                                0x14);
             if (iVar7 != 0) {
-                    /* language.dll match for 0x25fe: "Select Scenario" */
               iVar7 = TEasy_Panel::create_text
                                 ((TEasy_Panel *)this,(TPanel *)this,&this->scenarioTitle,0x25fe,
                                  this->scenarioListX + -5,this->scenarioListY + -0x14,200,0x14,4,0,0
                                  ,0);
               if (iVar7 != 0) {
-                    /* language.dll match for 0x2bcf: "Difficulty Level" */
                 (*ppTVar1)->_padding_ = 0;
                 iVar7 = TEasy_Panel::create_text
                                   ((TEasy_Panel *)this,(TPanel *)this,&this->difficultyTitle,0x2bcf,
                                    0xf,0x172,200,0x14,4,0,0,0);
                 if (iVar7 != 0) {
                   ppTVar2 = &this->difficultyDrop;
-                    /* language.dll match for 0x82: "B" */
                   iVar7 = TEasy_Panel::create_drop_down
                                     ((TEasy_Panel *)this,(TPanel *)this,ppTVar2,0x82,100,0x14,0x186,
                                      0x82,0x18,0xb);
                   if (iVar7 != 0) {
                     TDropDownPanel::empty_list(*ppTVar2);
-                    /* language.dll match for 0x2bd4: "Easiest" */
                     TDropDownPanel::append_line(*ppTVar2,0x2bd4,4);
-                    /* language.dll match for 0x2bd3: "Easy" */
                     TDropDownPanel::append_line(*ppTVar2,0x2bd3,3);
-                    /* language.dll match for 0x2bd2: "Moderate" */
                     TDropDownPanel::append_line(*ppTVar2,0x2bd2,2);
-                    /* language.dll match for 0x2bd1: "Hard" */
                     TDropDownPanel::append_line(*ppTVar2,0x2bd1,1);
-                    /* language.dll match for 0x2bd0: "Hardest" */
                     TDropDownPanel::append_line(*ppTVar2,0x2bd0,0);
                     iVar7 = RGE_Base_Game::difficulty(rge_base_game);
                     lVar6 = TDropDownPanel::get_line(*ppTVar2,iVar7);
                     TDropDownPanel::set_line(*ppTVar2,lVar6);
                     ppTVar3 = &this->okButton;
-                    /* language.dll match for 0xfa1: "OK" */
                     iVar7 = TEasy_Panel::create_button
                                       ((TEasy_Panel *)this,(TPanel *)this,ppTVar3,0xfa1,0,0x46,0x1b8
                                        ,0xf0,0x1e,0,0,0);
                     if (iVar7 != 0) {
-                    /* language.dll match for 0xfa2: "Cancel" */
                       iVar7 = TEasy_Panel::create_button
                                         ((TEasy_Panel *)this,(TPanel *)this,&this->cancelButton,
                                          0xfa2,0,0x14a,0x1b8,0xf0,0x1e,0,0,0);
@@ -510,7 +493,6 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection
                         pTVar5->hotkey = 0x1b;
                         pTVar5->hotkey_shift = 0;
                         ppTVar4 = &this->close_button;
-                    /* language.dll match for 0x3ea: "X" */
                         iVar7 = TEasy_Panel::create_button
                                           ((TEasy_Panel *)this,(TPanel *)this,ppTVar4,0x3ea,0,0,0,0,
                                            0,-1,-1,0);
@@ -548,9 +530,6 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection
 
 // Function: `vector_deleting_destructor'
 // Address: 00490e10
-/* public: virtual void * __thiscall TRIBE_Screen_Campaign_Selection::`vector deleting
-   destructor'(unsigned int) */
-
 void * __thiscall
 TRIBE_Screen_Campaign_Selection::_vector_deleting_destructor_
           (TRIBE_Screen_Campaign_Selection *this,uint param_1)
@@ -566,8 +545,6 @@ TRIBE_Screen_Campaign_Selection::_vector_deleting_destructor_
 
 // Function: init_vars
 // Address: 00490e30
-/* protected: void __thiscall TRIBE_Screen_Campaign_Selection::init_vars(void) */
-
 void __thiscall TRIBE_Screen_Campaign_Selection::init_vars(TRIBE_Screen_Campaign_Selection *this)
 {
   int iVar1;
@@ -594,9 +571,6 @@ void __thiscall TRIBE_Screen_Campaign_Selection::init_vars(TRIBE_Screen_Campaign
 
 // Function: ~TRIBE_Screen_Campaign_Selection
 // Address: 00490ea0
-/* public: virtual __thiscall
-   TRIBE_Screen_Campaign_Selection::~TRIBE_Screen_Campaign_Selection(void) */
-
 void __thiscall
 TRIBE_Screen_Campaign_Selection::~TRIBE_Screen_Campaign_Selection
           (TRIBE_Screen_Campaign_Selection *this)
@@ -633,8 +607,6 @@ TRIBE_Screen_Campaign_Selection::~TRIBE_Screen_Campaign_Selection
 
 // Function: handle_idle
 // Address: 00490f90
-/* public: virtual long __thiscall TRIBE_Screen_Campaign_Selection::handle_idle(void) */
-
 long __thiscall TRIBE_Screen_Campaign_Selection::handle_idle(TRIBE_Screen_Campaign_Selection *this)
 {
   long lVar1;
@@ -660,9 +632,6 @@ LAB_00490fe0:
 // Address: 00490ff0
 // [HELPER] s_Campaign_Selection_Screen: "Campaign Selection Screen"
 // [HELPER] s_Name_Selection_Screen: "Name Selection Screen"
-/* protected: virtual long __thiscall TRIBE_Screen_Campaign_Selection::action(class TPanel
-   *,long,unsigned long,unsigned long) */
-
 long __thiscall
 TRIBE_Screen_Campaign_Selection::action
           (TRIBE_Screen_Campaign_Selection *this,TPanel *param_1,long param_2,ulong param_3,
@@ -729,9 +698,6 @@ TRIBE_Screen_Campaign_Selection::action
 
 // Function: fillCampaigns
 // Address: 004911a0
-/* WARNING: Variable defined which should be unmapped: campaigns */
-/* protected: void __thiscall TRIBE_Screen_Campaign_Selection::fillCampaigns(void) */
-
 void __thiscall
 TRIBE_Screen_Campaign_Selection::fillCampaigns(TRIBE_Screen_Campaign_Selection *this)
 {
@@ -781,9 +747,6 @@ TRIBE_Screen_Campaign_Selection::fillCampaigns(TRIBE_Screen_Campaign_Selection *
 
 // Function: fillScenarios
 // Address: 00491290
-/* WARNING: Variable defined which should be unmapped: scenarios */
-/* protected: void __thiscall TRIBE_Screen_Campaign_Selection::fillScenarios(void) */
-
 void __thiscall
 TRIBE_Screen_Campaign_Selection::fillScenarios(TRIBE_Screen_Campaign_Selection *this)
 {
@@ -826,9 +789,6 @@ TRIBE_Screen_Campaign_Selection::fillScenarios(TRIBE_Screen_Campaign_Selection *
 
 // Function: startGame
 // Address: 00491350
-/* WARNING: Variable defined which should be unmapped: scenario_info */
-/* protected: void __thiscall TRIBE_Screen_Campaign_Selection::startGame(void) */
-
 void __thiscall TRIBE_Screen_Campaign_Selection::startGame(TRIBE_Screen_Campaign_Selection *this)
 {
   RGE_Game_Info *this_00;
@@ -875,8 +835,6 @@ void __thiscall TRIBE_Screen_Campaign_Selection::startGame(TRIBE_Screen_Campaign
     local_8 = (TEasy_Panel *)0x0;
     this_01 = RGE_Base_Game::get_scenario_info(rge_base_game,(char *)0x0,1);
     if (this_01 == (RGE_Scenario *)0x0) {
-                    /* language.dll match for 0x9ca: "This scenario does not work with the trial
-                       version." */
       TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x9ca,(char *)0x0,0x1c2,100);
       return;
     }
@@ -930,8 +888,6 @@ void __thiscall TRIBE_Screen_Campaign_Selection::startGame(TRIBE_Screen_Campaign
       }
       iVar4 = TRIBE_Game::start_game((TRIBE_Game *)rge_base_game,0);
       if (iVar4 == 0) {
-                    /* language.dll match for 0x961: "An error occurred while trying to start the
-                       game." */
         TEasy_Panel::popupOKDialog(local_8,0x961,(char *)0x0,0x1c2,100);
       }
     }

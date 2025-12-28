@@ -779,8 +779,6 @@
 // [HELPER] s__ld: "%ld"
 // [HELPER] s_dlg_plbn_shp: "dlg_plbn.shp"
 // [HELPER] s_tradicon_shp: "tradicon.shp"
-/* public: __thiscall TribeDiplomacyDialog::TribeDiplomacyDialog(class TScreenPanel *) */
-
 TribeDiplomacyDialog * __thiscall
 TribeDiplomacyDialog::TribeDiplomacyDialog(TribeDiplomacyDialog *this,TScreenPanel *param_1)
 {
@@ -908,16 +906,9 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TribeDiplomacyDialog *this,TScreenPan
       this->backgroundPics = pTVar13;
       if (pTVar13 != (TShape *)0x0) {
         RGE_Base_Game::get_font(rge_base_game,1);
-                    /* language.dll match for 0x267b: "Diplomacy" */
         iVar18 = TEasy_Panel::create_text
                            ((TEasy_Panel *)this,(TPanel *)this,this->title,0x267b,0x48,5,500,0x1e,1,
                             1,1,0);
-                    /* language.dll match for 0x2687: "You need a Market to pay tribute." */
-                    /* language.dll match for 0x2686: "Name" */
-                    /* language.dll match for 0x267c: "Civilization" */
-                    /* language.dll match for 0x267d: "Ally" */
-                    /* language.dll match for 0x267e: "Neutral" */
-                    /* language.dll match for 0x267f: "Enemy" */
         if (((((iVar18 != 0) &&
               (iVar18 = TEasy_Panel::create_text
                                   ((TEasy_Panel *)this,(TPanel *)this,&this->needMarket,0x2687,0x1b8
@@ -939,13 +930,11 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TribeDiplomacyDialog *this,TScreenPan
                                  0x32,0x46,0x1e,0xb,0,1,0), iVar18 != 0)))) {
           RGE_Base_Game::get_player(rge_base_game);
           uVar14 = __ftol();
-                    /* language.dll match for 0x2680: "Pay Tribute (cost %d%%)" */
           pcVar11 = TPanel::get_string((TPanel *)this,0x2680);
           sprintf(temp_str + 4,pcVar11,uVar14);
           iVar18 = TEasy_Panel::create_text
                              ((TEasy_Panel *)this,(TPanel *)this,this->title + 6,temp_str + 4,0x1b8,
                               0x32,0xb4,0x1e,0xb,0,1,0);
-                    /* language.dll match for 0x2681: "Allied Victory" */
           if ((iVar18 != 0) &&
              (iVar18 = TEasy_Panel::create_text
                                  ((TEasy_Panel *)this,(TPanel *)this,this->title + 7,0x2681,0x13e,
@@ -1001,7 +990,6 @@ LAB_0043ce5d:
                     if ((iStack_120 != 2) && (iStack_120 != 4)) goto LAB_0043ce5d;
                   }
                 }
-                    /* language.dll match for 0x82: "B" */
                 iVar15 = TEasy_Panel::create_text
                                    ((TEasy_Panel *)this,(TPanel *)this,
                                     (TTextPanel **)(local_130 + -0x21),
@@ -1022,27 +1010,16 @@ LAB_0043ce5d:
                                      ((TEasy_Panel *)this,(TPanel *)this,(TButtonPanel **)tabCount,
                                       0xf0,a,0x1e,0x1e,0,0);
                   if (iVar15 == 0) goto LAB_0043d694;
-                    /* language.dll match for 0x7684: "Click to set your diplomatic stance toward
-                       this player as Ally. Your military units do not attack this civilization." */
                   TPanel::set_help_info(*(TPanel **)tabCount,0x7684,-1);
                   iVar15 = TEasy_Panel::create_radio_button
                                      ((TEasy_Panel *)this,(TPanel *)this,
                                       (TButtonPanel **)(tabCount + 4),0x136,a,0x1e,0x1e,0,0);
                   if (iVar15 == 0) goto LAB_0043d694;
-                    /* language.dll match for 0x7685: "Click to set your diplomatic stance toward
-                       this  player as Neutral. Your military units attack buildings and villagers
-                       when commanded and automatically attack all military units in their sight."
-                       language.dll match for 0x7685: "Click to set your diplomatic stance toward
-                       this player as Neutral. Your military units attack all buildings and military
-                       units (but not villagers) who enter their sight." */
                   TPanel::set_help_info((TPanel *)*(TButtonPanel **)(tabCount + 4),0x7685,-1);
                   iVar15 = TEasy_Panel::create_radio_button
                                      ((TEasy_Panel *)this,(TPanel *)this,
                                       (TButtonPanel **)(tabCount + 8),0x17c,a,0x1e,0x1e,0,0);
                   if (iVar15 == 0) goto LAB_0043d694;
-                    /* language.dll match for 0x7686: "Click to set your diplomatic stance toward
-                       this player as Enemy. Your military units (except Scouts) attack all
-                       buildings, military units, and villagers who enter their sight." */
                   TPanel::set_help_info((TPanel *)*(TButtonPanel **)(tabCount + 8),0x7686,-1);
                   if (disable_buttons < disable_buttons + 3) {
                     iVar15 = (disable_buttons + 3) - disable_buttons;
@@ -1098,21 +1075,9 @@ LAB_0043ce5d:
                   TButtonPanel::setDrawType(*ppTVar21,DrawPictureAndText);
                   TButtonPanel::setDrawType(*ppTVar20,DrawPictureAndText);
                   TButtonPanel::setDrawType(*ppTVar1,DrawPictureAndText);
-                    /* language.dll match for 0x7687: "Click to tribute this player 100 wood. Each
-                       time you click the button, 125 wood is deducted from your stockpile (100 goes
-                       to the player and 25 is paid as a fee)." */
                   TPanel::set_help_info((TPanel *)*local_130,0x7687,-1);
-                    /* language.dll match for 0x7688: "Click to tribute this player 100 food. Each
-                       time you click the button, 125 food is deducted from your stockpile (100 goes
-                       to the player and 25 is paid as a fee)." */
                   TPanel::set_help_info((TPanel *)*ppTVar21,0x7688,-1);
-                    /* language.dll match for 0x7689: "Click to tribute this player 100 gold. Each
-                       time you click the button, 125 gold is deducted from your stockpile (100 goes
-                       to the player and 25 is paid as a fee)." */
                   TPanel::set_help_info((TPanel *)*ppTVar20,0x7689,-1);
-                    /* language.dll match for 0x768a: "Click to tribute this player 100 stone. Each
-                       time you click the button, 125 stone is deducted from your stockpile (100
-                       goes to the player and 25 is paid as a fee)." */
                   TPanel::set_help_info((TPanel *)*ppTVar1,0x768a,-1);
                 }
                 disable_buttons = disable_buttons + 3;
@@ -1133,39 +1098,29 @@ LAB_0043ce5d:
               uVar7 = RGE_Player::get_allied_victory(pRVar17);
               (**(code **)(iVar18 + 0xe0))
                         (CONCAT31((int3)((uint)extraout_ECX >> 8),uVar7) & 0xffff00ff);
-                    /* language.dll match for 0x768c: "If there is a check in the box, allied
-                       players win or lose as a team. Any allied player who achieves the victory
-                       condition wins the game for all allies. All players who want to pursue an
-                       allied victory must select Allied Victory." */
               TPanel::set_help_info((TPanel *)*ppTVar21,0x768c,-1);
               if (rge_base_game->prog_mode == 5) {
                 TButtonPanel::set_disabled(*ppTVar21,1);
               }
               if (rge_base_game->prog_mode != 5) {
-                    /* language.dll match for 0xfa1: "OK" */
                 iVar18 = TEasy_Panel::create_button
                                    ((TEasy_Panel *)this,(TPanel *)this,&this->okButton,0xfa1,0,10,
                                     0x16f,0xbe,0x1e,0,0,0);
                 if (iVar18 == 0) goto LAB_0043d694;
                 TPanel::set_help_info((TPanel *)this->okButton,0x7531,-1);
-                    /* language.dll match for 0x2683: "Clear Tributes" */
                 iVar18 = TEasy_Panel::create_button
                                    ((TEasy_Panel *)this,(TPanel *)this,&this->clearButton,0x2683,0,
                                     0xd7,0x16f,0xbe,0x1e,0,0,0);
                 if (iVar18 == 0) goto LAB_0043d694;
-                    /* language.dll match for 0x768b: "Click to clear all tributes before they are
-                       paid." */
                 TPanel::set_help_info((TPanel *)this->clearButton,0x768b,-1);
               }
               ppTVar21 = &this->cancelButton;
-                    /* language.dll match for 0xfa2: "Cancel" */
               iVar18 = TEasy_Panel::create_button
                                  ((TEasy_Panel *)this,(TPanel *)this,ppTVar21,0xfa2,0,0x1a4,0x16f,
                                   0xbe,0x1e,0,0,0);
               if (iVar18 != 0) {
                 TPanel::set_help_info((TPanel *)*ppTVar21,0x7532,-1);
                 pTVar4 = *ppTVar21;
-                    /* language.dll match for 0xfa9: "?" */
                 pTVar4->hotkey = 0x1b;
                 pTVar4->hotkey_shift = 0;
                 iVar18 = TEasy_Panel::create_button
@@ -1282,9 +1237,6 @@ LAB_0043d694:
 
 // Function: `scalar_deleting_destructor'
 // Address: 0043d6c0
-/* public: virtual void * __thiscall TribeDiplomacyDialog::`scalar deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TribeDiplomacyDialog::_scalar_deleting_destructor_(TribeDiplomacyDialog *this,uint param_1)
 {
@@ -1299,8 +1251,6 @@ TribeDiplomacyDialog::_scalar_deleting_destructor_(TribeDiplomacyDialog *this,ui
 
 // Function: ~TribeDiplomacyDialog
 // Address: 0043d6e0
-/* public: virtual __thiscall TribeDiplomacyDialog::~TribeDiplomacyDialog(void) */
-
 void __thiscall TribeDiplomacyDialog::~TribeDiplomacyDialog(TribeDiplomacyDialog *this)
 {
   TShape *pTVar1;
@@ -1410,11 +1360,6 @@ void __thiscall TribeDiplomacyDialog::~TribeDiplomacyDialog(TribeDiplomacyDialog
 // [HELPER] s_Diplomacy_Dialog: "Diplomacy Dialog"
 // [HELPER] s_Game_Screen: "Game Screen"
 // [HELPER] s__ld: "%ld"
-/* WARNING: Variable defined which should be unmapped: cost */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual long __thiscall TribeDiplomacyDialog::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TribeDiplomacyDialog::action
           (TribeDiplomacyDialog *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -1757,9 +1702,6 @@ LAB_0043dbaa:
 
 // Function: check_gold
 // Address: 0043e530
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: int __thiscall TribeDiplomacyDialog::check_gold(void) */
-
 int __thiscall TribeDiplomacyDialog::check_gold(TribeDiplomacyDialog *this)
 {
   RGE_Player *pRVar1;
@@ -1802,9 +1744,6 @@ int __thiscall TribeDiplomacyDialog::check_gold(TribeDiplomacyDialog *this)
 
 // Function: check_wood
 // Address: 0043e5c0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: int __thiscall TribeDiplomacyDialog::check_wood(void) */
-
 int __thiscall TribeDiplomacyDialog::check_wood(TribeDiplomacyDialog *this)
 {
   RGE_Player *pRVar1;
@@ -1847,9 +1786,6 @@ int __thiscall TribeDiplomacyDialog::check_wood(TribeDiplomacyDialog *this)
 
 // Function: check_food
 // Address: 0043e650
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: int __thiscall TribeDiplomacyDialog::check_food(void) */
-
 int __thiscall TribeDiplomacyDialog::check_food(TribeDiplomacyDialog *this)
 {
   RGE_Player *pRVar1;
@@ -1892,9 +1828,6 @@ int __thiscall TribeDiplomacyDialog::check_food(TribeDiplomacyDialog *this)
 
 // Function: check_stone
 // Address: 0043e6e0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: int __thiscall TribeDiplomacyDialog::check_stone(void) */
-
 int __thiscall TribeDiplomacyDialog::check_stone(TribeDiplomacyDialog *this)
 {
   RGE_Player *pRVar1;
@@ -1937,8 +1870,6 @@ int __thiscall TribeDiplomacyDialog::check_stone(TribeDiplomacyDialog *this)
 
 // Function: draw
 // Address: 0043e770
-/* protected: virtual void __thiscall TribeDiplomacyDialog::draw(void) */
-
 void __thiscall TribeDiplomacyDialog::draw(TribeDiplomacyDialog *this)
 {
   RGE_Game_World *pRVar1;

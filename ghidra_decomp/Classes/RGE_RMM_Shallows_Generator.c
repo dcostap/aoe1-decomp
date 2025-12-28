@@ -10,9 +10,6 @@
 
 // Function: RGE_RMM_Shallows_Generator
 // Address: 00487010
-/* public: __thiscall RGE_RMM_Shallows_Generator::RGE_RMM_Shallows_Generator(class RGE_Map *,class
-   RGE_Random_Map_Module *,struct RGE_Shallows_Info *) */
-
 RGE_RMM_Shallows_Generator * __thiscall
 RGE_RMM_Shallows_Generator::RGE_RMM_Shallows_Generator
           (RGE_RMM_Shallows_Generator *this,RGE_Map *param_1,RGE_Random_Map_Module *param_2,
@@ -39,9 +36,6 @@ RGE_RMM_Shallows_Generator::RGE_RMM_Shallows_Generator
 // Function: generate
 // Address: 00487050
 // [HELPER] s_C__msdev_work_age1_x1_rmm_shal_c: "C:\msdev\work\age1_x1\rmm_shal.cpp"
-/* WARNING: Variable defined which should be unmapped: index2 */
-/* public: virtual unsigned char __thiscall RGE_RMM_Shallows_Generator::generate(void) */
-
 uchar __thiscall RGE_RMM_Shallows_Generator::generate(RGE_RMM_Shallows_Generator *this)
 {
   bool bVar1;
@@ -111,9 +105,6 @@ uchar __thiscall RGE_RMM_Shallows_Generator::generate(RGE_RMM_Shallows_Generator
 // Function: make_tribe_connections
 // Address: 00487200
 // [HELPER] s_C__msdev_work_age1_x1_rmm_shal_c: "C:\msdev\work\age1_x1\rmm_shal.cpp"
-/* WARNING: Variable defined which should be unmapped: x */
-/* public: void __thiscall RGE_RMM_Shallows_Generator::make_tribe_connections(long,long) */
-
 void __thiscall
 RGE_RMM_Shallows_Generator::make_tribe_connections
           (RGE_RMM_Shallows_Generator *this,long param_1,long param_2)

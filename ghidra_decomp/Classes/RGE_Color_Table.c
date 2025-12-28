@@ -18,9 +18,6 @@
 // [HELPER] s__hd: "%hd"
 // [HELPER] s_data__s: "data\%s"
 // [HELPER] s_r: "r"
-/* WARNING: Variable defined which should be unmapped: temp_color */
-/* public: __thiscall RGE_Color_Table::RGE_Color_Table(int) */
-
 RGE_Color_Table * __thiscall RGE_Color_Table::RGE_Color_Table(RGE_Color_Table *this,int param_1)
 {
   int iVar1;
@@ -52,8 +49,6 @@ RGE_Color_Table * __thiscall RGE_Color_Table::RGE_Color_Table(RGE_Color_Table *t
 
 // Function: `scalar_deleting_destructor'
 // Address: 00424420
-/* public: virtual void * __thiscall RGE_Color_Table::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall RGE_Color_Table::_scalar_deleting_destructor_(RGE_Color_Table *this,uint param_1)
 {
   ~RGE_Color_Table(this);
@@ -69,9 +64,6 @@ void * __thiscall RGE_Color_Table::_scalar_deleting_destructor_(RGE_Color_Table 
 // Address: 00424440
 // [HELPER] s__col: ".col"
 // [HELPER] s__hd__s__hd__hd: "%hd %s %hd %hd"
-/* WARNING: Variable defined which should be unmapped: file_name */
-/* public: __thiscall RGE_Color_Table::RGE_Color_Table(struct _iobuf *,short) */
-
 RGE_Color_Table * __thiscall
 RGE_Color_Table::RGE_Color_Table(RGE_Color_Table *this,_iobuf *param_1,short param_2)
 {
@@ -138,9 +130,6 @@ RGE_Color_Table::RGE_Color_Table(RGE_Color_Table *this,_iobuf *param_1,short par
 // [HELPER] s__hd: "%hd"
 // [HELPER] s_data__s: "data\%s"
 // [HELPER] s_r: "r"
-/* WARNING: Variable defined which should be unmapped: temp_color */
-/* public: __thiscall RGE_Color_Table::RGE_Color_Table(char *) */
-
 RGE_Color_Table * __thiscall RGE_Color_Table::RGE_Color_Table(RGE_Color_Table *this,char *param_1)
 {
   char cVar1;
@@ -240,10 +229,6 @@ RGE_Color_Table * __thiscall RGE_Color_Table::RGE_Color_Table(RGE_Color_Table *t
 
 // Function: RGE_Color_Table
 // Address: 004245f0
-/* WARNING: Variable defined which should be unmapped: temp_color */
-/* public: __thiscall RGE_Color_Table::RGE_Color_Table(class TDrawArea *,long,struct tagPALETTEENTRY
-   *,struct tagPALETTEENTRY *) */
-
 void __thiscall
 RGE_Color_Table::RGE_Color_Table
           (RGE_Color_Table *this,TDrawArea *param_1,long param_2,tagPALETTEENTRY *param_3,
@@ -335,8 +320,6 @@ RGE_Color_Table::RGE_Color_Table
 
 // Function: ~RGE_Color_Table
 // Address: 004247a0
-/* public: virtual __thiscall RGE_Color_Table::~RGE_Color_Table(void) */
-
 void __thiscall RGE_Color_Table::~RGE_Color_Table(RGE_Color_Table *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -347,8 +330,6 @@ void __thiscall RGE_Color_Table::~RGE_Color_Table(RGE_Color_Table *this)
 
 // Function: save
 // Address: 004247b0
-/* public: void __thiscall RGE_Color_Table::save(int) */
-
 void __thiscall RGE_Color_Table::save(RGE_Color_Table *this,int param_1)
 {
   rge_write(param_1,this->color_table_name,0x1e);

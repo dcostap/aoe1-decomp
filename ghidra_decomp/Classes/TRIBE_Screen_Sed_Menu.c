@@ -663,8 +663,6 @@
 // [HELPER] s_: ""
 // [HELPER] s_Scenario_Editor_Menu: "Scenario Editor Menu"
 // [HELPER] s_scr4: "scr4"
-/* public: __thiscall TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu(void) */
-
 TRIBE_Screen_Sed_Menu * __thiscall
 TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu(TRIBE_Screen_Sed_Menu *this)
 {
@@ -700,7 +698,6 @@ TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu(TRIBE_Screen_Sed_Menu *this)
     return this;
   }
   TEasy_Panel::set_ideal_size((TEasy_Panel *)this,0x280,0x1e0);
-                    /* language.dll match for 0x242d: "Scenario Builder" */
   iVar4 = TEasy_Panel::create_text
                     ((TEasy_Panel *)this,(TPanel *)this,&this->title,0x242d,0x14,0x14,600,0x1e,1,1,0
                      ,0);
@@ -716,19 +713,14 @@ TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu(TRIBE_Screen_Sed_Menu *this)
       ppTVar6 = ppTVar6 + 1;
     } while (iVar4 < 0x172);
     ppTVar6 = &this->close_button;
-                    /* language.dll match for 0x3ea: "X" */
     iVar4 = TEasy_Panel::create_button
                       ((TEasy_Panel *)this,(TPanel *)this,ppTVar6,0x3ea,0,0,0,0,0,-1,-1,0);
     if (iVar4 != 0) {
       (**(code **)((*ppTVar6)->_padding_ + 0x14))(1);
       (**(code **)((*ppTVar6)->_padding_ + 0x18))(9,4,4,4,4,0x11,0x11,0x11,0x11,0,0,0,0);
-                    /* language.dll match for 0x242e: "Create Scenario" */
       TButtonPanel::set_text(*ppTVar1,0,0x242e);
-                    /* language.dll match for 0x242f: "Edit Scenario" */
       TButtonPanel::set_text(this->button[1],0,0x242f);
-                    /* language.dll match for 0x2431: "Campaign Editor" */
       TButtonPanel::set_text(this->button[2],0,0x2431);
-                    /* language.dll match for 0x2430: "Cancel" */
       TButtonPanel::set_text(this->button[3],0,0x2430);
       pTVar2 = this->button[3];
       pTVar2->hotkey = 0x1b;
@@ -746,9 +738,6 @@ LAB_004b30d3:
 
 // Function: `scalar_deleting_destructor'
 // Address: 004b30f0
-/* public: virtual void * __thiscall TRIBE_Screen_Sed_Menu::`scalar deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TRIBE_Screen_Sed_Menu::_scalar_deleting_destructor_(TRIBE_Screen_Sed_Menu *this,uint param_1)
 {
@@ -763,8 +752,6 @@ TRIBE_Screen_Sed_Menu::_scalar_deleting_destructor_(TRIBE_Screen_Sed_Menu *this,
 
 // Function: ~TRIBE_Screen_Sed_Menu
 // Address: 004b3110
-/* public: virtual __thiscall TRIBE_Screen_Sed_Menu::~TRIBE_Screen_Sed_Menu(void) */
-
 void __thiscall TRIBE_Screen_Sed_Menu::~TRIBE_Screen_Sed_Menu(TRIBE_Screen_Sed_Menu *this)
 {
   int iVar1;
@@ -798,8 +785,6 @@ void __thiscall TRIBE_Screen_Sed_Menu::~TRIBE_Screen_Sed_Menu(TRIBE_Screen_Sed_M
 
 // Function: handle_idle
 // Address: 004b31a0
-/* protected: virtual long __thiscall TRIBE_Screen_Sed_Menu::handle_idle(void) */
-
 long __thiscall TRIBE_Screen_Sed_Menu::handle_idle(TRIBE_Screen_Sed_Menu *this)
 {
   long lVar1;
@@ -819,9 +804,6 @@ long __thiscall TRIBE_Screen_Sed_Menu::handle_idle(TRIBE_Screen_Sed_Menu *this)
 // [HELPER] s_Main_Menu: "Main Menu"
 // [HELPER] s_Scenario_Editor_Menu: "Scenario Editor Menu"
 // [HELPER] s_Scenario_Editor_Open: "Scenario Editor Open"
-/* protected: virtual long __thiscall TRIBE_Screen_Sed_Menu::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TRIBE_Screen_Sed_Menu::action
           (TRIBE_Screen_Sed_Menu *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -871,7 +853,6 @@ TRIBE_Screen_Sed_Menu::action
     }
     if ((TButtonPanel *)param_1 == this->button[3]) {
       RGE_Base_Game::disable_input(rge_base_game);
-                    /* language.dll match for 0x4b0: "Ready" */
       this_02 = (TRIBE_Screen_Main_Menu *)operator_new(0x4b0);
       local_4 = 2;
       if (this_02 != (TRIBE_Screen_Main_Menu *)0x0) {

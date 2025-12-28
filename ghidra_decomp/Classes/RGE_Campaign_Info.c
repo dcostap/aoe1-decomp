@@ -12,8 +12,6 @@
 
 // Function: RGE_Campaign_Info
 // Address: 0044c5a0
-/* public: __thiscall RGE_Campaign_Info::RGE_Campaign_Info(int,class RGE_Campaign * *,long) */
-
 RGE_Campaign_Info * __thiscall
 RGE_Campaign_Info::RGE_Campaign_Info
           (RGE_Campaign_Info *this,int param_1,RGE_Campaign **param_2,long param_3)
@@ -129,8 +127,6 @@ LAB_0044c671:
 // Function: RGE_Campaign_Info
 // Address: 0044c780
 // [HELPER] s_: ""
-/* public: __thiscall RGE_Campaign_Info::RGE_Campaign_Info(class RGE_Campaign *) */
-
 RGE_Campaign_Info * __thiscall
 RGE_Campaign_Info::RGE_Campaign_Info(RGE_Campaign_Info *this,RGE_Campaign *param_1)
 {
@@ -218,8 +214,6 @@ RGE_Campaign_Info::RGE_Campaign_Info(RGE_Campaign_Info *this,RGE_Campaign *param
 
 // Function: ~RGE_Campaign_Info
 // Address: 0044c870
-/* public: __thiscall RGE_Campaign_Info::~RGE_Campaign_Info(void) */
-
 void __thiscall RGE_Campaign_Info::~RGE_Campaign_Info(RGE_Campaign_Info *this)
 {
   if (this->scenario_info != (RGE_Scenario_Info *)0x0) {
@@ -234,8 +228,6 @@ void __thiscall RGE_Campaign_Info::~RGE_Campaign_Info(RGE_Campaign_Info *this)
 // Function: save
 // Address: 0044c8a0
 // [HELPER] s____PIF_Saving_campaign_____d___s: "  (PIF)Saving campaign - (%d) %s"
-/* public: void __thiscall RGE_Campaign_Info::save(int) */
-
 void __thiscall RGE_Campaign_Info::save(RGE_Campaign_Info *this,int param_1)
 {
   int iVar1;
@@ -256,8 +248,6 @@ void __thiscall RGE_Campaign_Info::save(RGE_Campaign_Info *this,int param_1)
 
 // Function: rehook_campaigns
 // Address: 0044c930
-/* public: void __thiscall RGE_Campaign_Info::rehook_campaigns(class RGE_Campaign * *,long) */
-
 void __thiscall
 RGE_Campaign_Info::rehook_campaigns(RGE_Campaign_Info *this,RGE_Campaign **param_1,long param_2)
 {
@@ -356,8 +346,6 @@ LAB_0044c991:
 
 // Function: set_current_scenario
 // Address: 0044ca90
-/* public: unsigned char __thiscall RGE_Campaign_Info::set_current_scenario(long) */
-
 uchar __thiscall RGE_Campaign_Info::set_current_scenario(RGE_Campaign_Info *this,long param_1)
 {
   if ((param_1 < this->scenario_num) && (this->scenario_info[param_1].scenario_status != '\0')) {
@@ -375,8 +363,6 @@ uchar __thiscall RGE_Campaign_Info::set_current_scenario(RGE_Campaign_Info *this
 
 // Function: verify_campaign_name
 // Address: 0044cad0
-/* public: unsigned char __thiscall RGE_Campaign_Info::verify_campaign_name(char *) */
-
 uchar __thiscall RGE_Campaign_Info::verify_campaign_name(RGE_Campaign_Info *this,char *param_1)
 {
   byte bVar1;
@@ -405,8 +391,6 @@ uchar __thiscall RGE_Campaign_Info::verify_campaign_name(RGE_Campaign_Info *this
 
 // Function: get_scenario_list
 // Address: 0044cb20
-/* public: long __thiscall RGE_Campaign_Info::get_scenario_list(char * * *,long &) */
-
 long __thiscall
 RGE_Campaign_Info::get_scenario_list(RGE_Campaign_Info *this,char ***param_1,long *param_2)
 {
@@ -436,8 +420,6 @@ RGE_Campaign_Info::get_scenario_list(RGE_Campaign_Info *this,char ***param_1,lon
 
 // Function: get_current_scenario
 // Address: 0044cbb0
-/* public: long __thiscall RGE_Campaign_Info::get_current_scenario(void) */
-
 long __thiscall RGE_Campaign_Info::get_current_scenario(RGE_Campaign_Info *this)
 {
   return this->current_scenario;
@@ -447,8 +429,6 @@ long __thiscall RGE_Campaign_Info::get_current_scenario(RGE_Campaign_Info *this)
 
 // Function: notify_of_scenario_complete
 // Address: 0044cbc0
-/* public: void __thiscall RGE_Campaign_Info::notify_of_scenario_complete(void) */
-
 void __thiscall RGE_Campaign_Info::notify_of_scenario_complete(RGE_Campaign_Info *this)
 {
   int iVar1;
@@ -472,8 +452,6 @@ void __thiscall RGE_Campaign_Info::notify_of_scenario_complete(RGE_Campaign_Info
 
 // Function: open_scenario
 // Address: 0044cc20
-/* public: int __thiscall RGE_Campaign_Info::open_scenario(void) */
-
 int __thiscall RGE_Campaign_Info::open_scenario(RGE_Campaign_Info *this)
 {
   int iVar1;

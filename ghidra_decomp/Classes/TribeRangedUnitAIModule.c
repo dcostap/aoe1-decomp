@@ -630,9 +630,6 @@
 
 // Function: TribeRangedUnitAIModule
 // Address: 00504700
-/* public: __thiscall TribeRangedUnitAIModule::TribeRangedUnitAIModule(class RGE_Static_Object
-   *,int) */
-
 TribeRangedUnitAIModule * __thiscall
 TribeRangedUnitAIModule::TribeRangedUnitAIModule
           (TribeRangedUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
@@ -646,9 +643,6 @@ TribeRangedUnitAIModule::TribeRangedUnitAIModule
 
 // Function: `vector_deleting_destructor'
 // Address: 00504720
-/* public: virtual void * __thiscall TribeRangedUnitAIModule::`vector deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TribeRangedUnitAIModule::_vector_deleting_destructor_(TribeRangedUnitAIModule *this,uint param_1)
 {
@@ -663,8 +657,6 @@ TribeRangedUnitAIModule::_vector_deleting_destructor_(TribeRangedUnitAIModule *t
 
 // Function: ~TribeRangedUnitAIModule
 // Address: 00504740
-/* public: virtual __thiscall TribeRangedUnitAIModule::~TribeRangedUnitAIModule(void) */
-
 void __thiscall TribeRangedUnitAIModule::~TribeRangedUnitAIModule(TribeRangedUnitAIModule *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -709,10 +701,6 @@ void __thiscall TribeRangedUnitAIModule::~TribeRangedUnitAIModule(TribeRangedUni
 
 // Function: processNotify
 // Address: 00504750
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall TribeRangedUnitAIModule::processNotify(struct NotifyEvent
-   *,unsigned long) */
-
 int __thiscall
 TribeRangedUnitAIModule::processNotify
           (TribeRangedUnitAIModule *this,NotifyEvent *param_1,ulong param_2)

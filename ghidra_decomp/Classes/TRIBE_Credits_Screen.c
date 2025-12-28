@@ -157,9 +157,6 @@
 // [HELPER] s_credit_d: "credit%d"
 // [HELPER] s_data2_list_cr: "data2\list.cr"
 // [HELPER] s_scr_cred: "scr_cred"
-/* WARNING: Variable defined which should be unmapped: size */
-/* public: __thiscall TRIBE_Credits_Screen::TRIBE_Credits_Screen(void) */
-
 TRIBE_Credits_Screen * __thiscall
 TRIBE_Credits_Screen::TRIBE_Credits_Screen(TRIBE_Credits_Screen *this)
 {
@@ -269,9 +266,6 @@ TRIBE_Credits_Screen::TRIBE_Credits_Screen(TRIBE_Credits_Screen *this)
 
 // Function: `scalar_deleting_destructor'
 // Address: 00492950
-/* public: virtual void * __thiscall TRIBE_Credits_Screen::`scalar deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TRIBE_Credits_Screen::_scalar_deleting_destructor_(TRIBE_Credits_Screen *this,uint param_1)
 {
@@ -286,8 +280,6 @@ TRIBE_Credits_Screen::_scalar_deleting_destructor_(TRIBE_Credits_Screen *this,ui
 
 // Function: ~TRIBE_Credits_Screen
 // Address: 00492970
-/* public: virtual __thiscall TRIBE_Credits_Screen::~TRIBE_Credits_Screen(void) */
-
 void __thiscall TRIBE_Credits_Screen::~TRIBE_Credits_Screen(TRIBE_Credits_Screen *this)
 {
   TShape *this_00;
@@ -336,9 +328,6 @@ void __thiscall TRIBE_Credits_Screen::~TRIBE_Credits_Screen(TRIBE_Credits_Screen
 
 // Function: handle_mouse_down
 // Address: 00492a40
-/* public: virtual long __thiscall TRIBE_Credits_Screen::handle_mouse_down(unsigned
-   char,long,long,int,int) */
-
 long __thiscall
 TRIBE_Credits_Screen::handle_mouse_down
           (TRIBE_Credits_Screen *this,uchar param_1,long param_2,long param_3,int param_4,
@@ -353,8 +342,6 @@ TRIBE_Credits_Screen::handle_mouse_down
 // Function: handle_idle
 // Address: 00492a50
 // [HELPER] s_C__msdev_work_age1_x1_scr_cred_c: "C:\msdev\work\age1_x1\scr_cred.cpp"
-/* public: virtual long __thiscall TRIBE_Credits_Screen::handle_idle(void) */
-
 long __thiscall TRIBE_Credits_Screen::handle_idle(TRIBE_Credits_Screen *this)
 {
   ScreenMode SVar1;
@@ -458,8 +445,6 @@ LAB_00492c91:
 
 // Function: draw
 // Address: 00492cc0
-/* public: virtual void __thiscall TRIBE_Credits_Screen::draw(void) */
-
 void __thiscall TRIBE_Credits_Screen::draw(TRIBE_Credits_Screen *this)
 {
   TDrawSystem *pTVar1;
@@ -493,8 +478,6 @@ void __thiscall TRIBE_Credits_Screen::draw(TRIBE_Credits_Screen *this)
 
 // Function: key_down_action
 // Address: 00492d50
-/* public: virtual long __thiscall TRIBE_Credits_Screen::key_down_action(long,short,int,int,int) */
-
 long __thiscall
 TRIBE_Credits_Screen::key_down_action
           (TRIBE_Credits_Screen *this,long param_1,short param_2,int param_3,int param_4,int param_5
@@ -511,9 +494,6 @@ TRIBE_Credits_Screen::key_down_action
 
 // Function: action
 // Address: 00492d70
-/* public: virtual long __thiscall TRIBE_Credits_Screen::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TRIBE_Credits_Screen::action
           (TRIBE_Credits_Screen *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -536,8 +516,6 @@ TRIBE_Credits_Screen::action
 // [HELPER] s_Credits_Screen: "Credits Screen"
 // [HELPER] s_Game_Screen: "Game Screen"
 // [HELPER] s_Main_Menu: "Main Menu"
-/* public: void __thiscall TRIBE_Credits_Screen::close_screen(void) */
-
 void __thiscall TRIBE_Credits_Screen::close_screen(TRIBE_Credits_Screen *this)
 {
   TPanel *pTVar1;
@@ -555,7 +533,6 @@ void __thiscall TRIBE_Credits_Screen::close_screen(TRIBE_Credits_Screen *this)
   *unaff_FS_OFFSET = &local_c;
   pTVar1 = TPanelSystem::panel(&panel_system,s_Game_Screen);
   if (pTVar1 == (TPanel *)0x0) {
-                    /* language.dll match for 0x4b0: "Ready" */
     this_00 = (TRIBE_Screen_Main_Menu *)operator_new(0x4b0);
     local_4 = 0;
     if (this_00 != (TRIBE_Screen_Main_Menu *)0x0) {

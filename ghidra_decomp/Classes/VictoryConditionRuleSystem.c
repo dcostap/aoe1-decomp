@@ -10,8 +10,6 @@
 
 // Function: VictoryConditionRuleSystem
 // Address: 004e6e10
-/* public: __thiscall VictoryConditionRuleSystem::VictoryConditionRuleSystem(void) */
-
 void __thiscall
 VictoryConditionRuleSystem::VictoryConditionRuleSystem(VictoryConditionRuleSystem *this)
 {
@@ -249,9 +247,6 @@ VictoryConditionRuleSystem::VictoryConditionRuleSystem(VictoryConditionRuleSyste
 
 // Function: `scalar_deleting_destructor'
 // Address: 004e7410
-/* public: virtual void * __thiscall VictoryConditionRuleSystem::`scalar deleting
-   destructor'(unsigned int) */
-
 void * __thiscall
 VictoryConditionRuleSystem::_scalar_deleting_destructor_
           (VictoryConditionRuleSystem *this,uint param_1)
@@ -267,8 +262,6 @@ VictoryConditionRuleSystem::_scalar_deleting_destructor_
 
 // Function: ~VictoryConditionRuleSystem
 // Address: 004e7430
-/* public: virtual __thiscall VictoryConditionRuleSystem::~VictoryConditionRuleSystem(void) */
-
 void __thiscall
 VictoryConditionRuleSystem::~VictoryConditionRuleSystem(VictoryConditionRuleSystem *this)
 {
@@ -286,9 +279,6 @@ VictoryConditionRuleSystem::~VictoryConditionRuleSystem(VictoryConditionRuleSyst
 // [HELPER] s__s: "%s"
 // [HELPER] s__tmp: ".tmp"
 // [HELPER] s_r: "r"
-/* WARNING: Variable defined which should be unmapped: commentTemp1 */
-/* public: int __thiscall VictoryConditionRuleSystem::loadRules(char *) */
-
 int __thiscall VictoryConditionRuleSystem::loadRules(VictoryConditionRuleSystem *this,char *param_1)
 {
   char cVar1;
@@ -367,8 +357,6 @@ LAB_004e7483:
 
 // Function: setRule
 // Address: 004e75d0
-/* public: void __thiscall VictoryConditionRuleSystem::setRule(int,int) */
-
 void __thiscall
 VictoryConditionRuleSystem::setRule(VictoryConditionRuleSystem *this,int param_1,int param_2)
 {
@@ -382,8 +370,6 @@ VictoryConditionRuleSystem::setRule(VictoryConditionRuleSystem *this,int param_1
 
 // Function: rule
 // Address: 004e75f0
-/* public: int __thiscall VictoryConditionRuleSystem::rule(int) */
-
 int __thiscall VictoryConditionRuleSystem::rule(VictoryConditionRuleSystem *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 0xe2)) {
@@ -396,9 +382,6 @@ int __thiscall VictoryConditionRuleSystem::rule(VictoryConditionRuleSystem *this
 
 // Function: evaluateAsInProgress
 // Address: 004e7610
-/* public: int __thiscall VictoryConditionRuleSystem::evaluateAsInProgress(class TRIBE_Player *,int)
-    */
-
 int __thiscall
 VictoryConditionRuleSystem::evaluateAsInProgress
           (VictoryConditionRuleSystem *this,TRIBE_Player *param_1,int param_2)
@@ -410,9 +393,6 @@ VictoryConditionRuleSystem::evaluateAsInProgress
 
 // Function: evaluateAsNonInProgress
 // Address: 004e7620
-/* public: int __thiscall VictoryConditionRuleSystem::evaluateAsNonInProgress(class TRIBE_Player
-   *,int) */
-
 int __thiscall
 VictoryConditionRuleSystem::evaluateAsNonInProgress
           (VictoryConditionRuleSystem *this,TRIBE_Player *param_1,int param_2)
@@ -465,8 +445,6 @@ VictoryConditionRuleSystem::evaluateAsNonInProgress
 
 // Function: execute
 // Address: 004e7690
-/* public: int __thiscall VictoryConditionRuleSystem::execute(class TRIBE_Player *,int,int) */
-
 int __thiscall
 VictoryConditionRuleSystem::execute
           (VictoryConditionRuleSystem *this,TRIBE_Player *param_1,int param_2,int param_3)
@@ -490,13 +468,9 @@ switchD_004e76b7_caseD_3:
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x23,this->sn[0x23]);
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,100,this->sn[100]);
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xe1,this->sn[0xe1]);
-                    /* language.dll match for 0x75: "12" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x75,this->sn[0x75]);
-                    /* language.dll match for 0x76: "B" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x76,this->sn[0x76]);
-                    /* language.dll match for 0x77: "Arial" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x77,this->sn[0x77]);
-                    /* language.dll match for 0x78: "10" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x78,this->sn[0x78]);
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x9c,this->sn[0x9c]);
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x9f,this->sn[0x9f]);
@@ -549,9 +523,7 @@ switchD_004e76b7_caseD_3:
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x5d,this->sn[0x5d]);
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x5e,this->sn[0x5e]);
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x62,this->sn[0x62]);
-                    /* language.dll match for 0x79: "N" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x79,this->sn[0x79]);
-                    /* language.dll match for 0x83: "Arial" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x83,this->sn[0x83]);
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x8f,this->sn[0x8f]);
     iVar3 = this->sn[0xa2];
@@ -641,12 +613,9 @@ switchD_004e76b7_caseD_3:
     break;
   case 0x1d:
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x2e,this->sn[0x2e]);
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x66,this->sn[0x66]);
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x2f,this->sn[0x2f]);
-                    /* language.dll match for 0x67: "Comic Sans MS" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x67,this->sn[0x67]);
-                    /* language.dll match for 0x68: "Arial" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x68,this->sn[0x68]);
     iVar3 = this->sn[0x86];
     iVar2 = 0x86;
@@ -728,13 +697,9 @@ switchD_004e76b7_caseD_3:
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x6b,this->sn[0x6b]);
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x6c,this->sn[0x6c]);
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x6d,this->sn[0x6d]);
-                    /* language.dll match for 0x6e: "Copperplate Gothic Light" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x6e,this->sn[0x6e]);
-                    /* language.dll match for 0x6f: "12" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x6f,this->sn[0x6f]);
-                    /* language.dll match for 0x7a: "Arial" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x7a,this->sn[0x7a]);
-                    /* language.dll match for 0x7b: "9" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x7b,this->sn[0x7b]);
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x90,this->sn[0x90]);
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xb8,this->sn[0xb8]);
@@ -760,7 +725,6 @@ switchD_004e76b7_caseD_3:
     break;
   case 0x2b:
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x58,this->sn[0x58]);
-                    /* language.dll match for 0x65: "1" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x65,this->sn[0x65]);
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x9b,this->sn[0x9b]);
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xaf,this->sn[0xaf]);
@@ -802,36 +766,23 @@ switchD_004e76b7_caseD_3:
     pTVar1 = param_1->playerAI;
     goto LAB_004e8c26;
   case 0x2f:
-                    /* language.dll match for 0x71: "Copperplate Gothic Light" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x71,this->sn[0x71]);
-                    /* language.dll match for 0x72: "21" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x72,this->sn[0x72]);
-                    /* language.dll match for 0x73: "B" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x73,this->sn[0x73]);
-                    /* language.dll match for 0x74: "Copperplate Gothic Light" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x74,this->sn[0x74]);
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x92,this->sn[0x92]);
     iVar3 = this->sn[0x93];
     iVar2 = 0x93;
     break;
   case 0x30:
-                    /* language.dll match for 0x7c: "B" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x7c,this->sn[0x7c]);
-                    /* language.dll match for 0x7d: "Arial" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x7d,this->sn[0x7d]);
-                    /* language.dll match for 0x7e: "10" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x7e,this->sn[0x7e]);
-                    /* language.dll match for 0x7f: "N" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x7f,this->sn[0x7f]);
-                    /* language.dll match for 0x80: "Arial" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x80,this->sn[0x80]);
-                    /* language.dll match for 0x81: "10" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x81,this->sn[0x81]);
-                    /* language.dll match for 0x82: "B" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x82,this->sn[0x82]);
-                    /* language.dll match for 0x84: "8" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x84,this->sn[0x84]);
-                    /* language.dll match for 0x85: "N" */
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x85,this->sn[0x85]);
     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xb2,this->sn[0xb2]);
     iVar3 = this->sn[0xc9];
@@ -854,8 +805,6 @@ LAB_004e8c26:
 
 // Function: stopExecution
 // Address: 004e8d10
-/* public: int __thiscall VictoryConditionRuleSystem::stopExecution(class TRIBE_Player *,int) */
-
 int __thiscall
 VictoryConditionRuleSystem::stopExecution
           (VictoryConditionRuleSystem *this,TRIBE_Player *param_1,int param_2)
@@ -867,9 +816,6 @@ VictoryConditionRuleSystem::stopExecution
 
 // Function: modifyForDifficultyLevel
 // Address: 004e8d20
-/* WARNING: Variable defined which should be unmapped: scale1 */
-/* public: void __thiscall VictoryConditionRuleSystem::modifyForDifficultyLevel(int) */
-
 void __thiscall
 VictoryConditionRuleSystem::modifyForDifficultyLevel(VictoryConditionRuleSystem *this,int param_1)
 {
@@ -889,7 +835,6 @@ VictoryConditionRuleSystem::modifyForDifficultyLevel(VictoryConditionRuleSystem 
       iVar1 = RGE_Base_Game::scenarioGame(rge_base_game);
       if (iVar1 == 1) {
         iVar2 = 0x1e;
-                    /* language.dll match for 0x78: "10" */
         iVar4 = 0x78;
         iVar3 = 1;
       }
@@ -906,7 +851,6 @@ VictoryConditionRuleSystem::modifyForDifficultyLevel(VictoryConditionRuleSystem 
       iVar4 = (-(uint)(iVar4 != 1) & 0x21c) + 0x168;
       break;
     case 4:
-                    /* language.dll match for 0x78: "10" */
       iVar2 = 0x78;
       iVar4 = RGE_Base_Game::scenarioGame(rge_base_game);
       iVar3 = 4;

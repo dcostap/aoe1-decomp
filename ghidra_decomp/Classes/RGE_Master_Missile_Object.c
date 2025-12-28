@@ -29,9 +29,6 @@
 
 // Function: RGE_Master_Missile_Object
 // Address: 00451440
-/* public: __thiscall RGE_Master_Missile_Object::RGE_Master_Missile_Object(class
-   RGE_Master_Missile_Object *,int) */
-
 RGE_Master_Missile_Object * __thiscall
 RGE_Master_Missile_Object::RGE_Master_Missile_Object
           (RGE_Master_Missile_Object *this,RGE_Master_Missile_Object *param_1,int param_2)
@@ -60,9 +57,6 @@ RGE_Master_Missile_Object::RGE_Master_Missile_Object
 
 // Function: `vector_deleting_destructor'
 // Address: 004514a0
-/* public: virtual void * __thiscall RGE_Master_Missile_Object::`vector deleting
-   destructor'(unsigned int) */
-
 void * __thiscall
 RGE_Master_Missile_Object::_vector_deleting_destructor_
           (RGE_Master_Missile_Object *this,uint param_1)
@@ -78,9 +72,6 @@ RGE_Master_Missile_Object::_vector_deleting_destructor_
 
 // Function: RGE_Master_Missile_Object
 // Address: 004514c0
-/* public: __thiscall RGE_Master_Missile_Object::RGE_Master_Missile_Object(int,class RGE_Sprite *
-   *,class RGE_Sound * *,int) */
-
 RGE_Master_Missile_Object * __thiscall
 RGE_Master_Missile_Object::RGE_Master_Missile_Object
           (RGE_Master_Missile_Object *this,int param_1,RGE_Sprite **param_2,RGE_Sound **param_3,
@@ -110,9 +101,6 @@ RGE_Master_Missile_Object::RGE_Master_Missile_Object
 
 // Function: RGE_Master_Missile_Object
 // Address: 00451530
-/* public: __thiscall RGE_Master_Missile_Object::RGE_Master_Missile_Object(struct _iobuf *,class
-   RGE_Sprite * *,class RGE_Sound * *,short,int) */
-
 RGE_Master_Missile_Object * __thiscall
 RGE_Master_Missile_Object::RGE_Master_Missile_Object
           (RGE_Master_Missile_Object *this,_iobuf *param_1,RGE_Sprite **param_2,RGE_Sound **param_3,
@@ -142,8 +130,6 @@ RGE_Master_Missile_Object::RGE_Master_Missile_Object
 
 // Function: setup
 // Address: 004515b0
-/* protected: int __thiscall RGE_Master_Missile_Object::setup(class RGE_Master_Missile_Object *) */
-
 int __thiscall
 RGE_Master_Missile_Object::setup(RGE_Master_Missile_Object *this,RGE_Master_Missile_Object *param_1)
 {
@@ -163,9 +149,6 @@ RGE_Master_Missile_Object::setup(RGE_Master_Missile_Object *this,RGE_Master_Miss
 
 // Function: setup
 // Address: 00451620
-/* protected: int __thiscall RGE_Master_Missile_Object::setup(int,class RGE_Sprite * *,class
-   RGE_Sound * *) */
-
 int __thiscall
 RGE_Master_Missile_Object::setup
           (RGE_Master_Missile_Object *this,int param_1,RGE_Sprite **param_2,RGE_Sound **param_3)
@@ -186,10 +169,6 @@ RGE_Master_Missile_Object::setup
 // Function: setup
 // Address: 004516c0
 // [HELPER] s__hd__hd__hd__hd__hd__f: "%hd %hd %hd %hd %hd %f"
-/* WARNING: Variable defined which should be unmapped: temp_missile_type */
-/* protected: int __thiscall RGE_Master_Missile_Object::setup(struct _iobuf *,class RGE_Sprite *
-   *,class RGE_Sound * *,short) */
-
 int __thiscall
 RGE_Master_Missile_Object::setup
           (RGE_Master_Missile_Object *this,_iobuf *param_1,RGE_Sprite **param_2,RGE_Sound **param_3,
@@ -219,8 +198,6 @@ RGE_Master_Missile_Object::setup
 
 // Function: ~RGE_Master_Missile_Object
 // Address: 00451760
-/* public: virtual __thiscall RGE_Master_Missile_Object::~RGE_Master_Missile_Object(void) */
-
 void __thiscall
 RGE_Master_Missile_Object::~RGE_Master_Missile_Object(RGE_Master_Missile_Object *this)
 {
@@ -233,9 +210,6 @@ RGE_Master_Missile_Object::~RGE_Master_Missile_Object(RGE_Master_Missile_Object 
 
 // Function: make_new_obj
 // Address: 00451770
-/* public: virtual class RGE_Static_Object * __thiscall
-   RGE_Master_Missile_Object::make_new_obj(class RGE_Player *,float,float,float) */
-
 RGE_Static_Object * __thiscall
 RGE_Master_Missile_Object::make_new_obj
           (RGE_Master_Missile_Object *this,RGE_Player *param_1,float param_2,float param_3,
@@ -277,9 +251,6 @@ RGE_Master_Missile_Object::make_new_obj
 
 // Function: make_new_master
 // Address: 00451840
-/* public: virtual class RGE_Master_Static_Object * __thiscall
-   RGE_Master_Missile_Object::make_new_master(void) */
-
 RGE_Master_Static_Object * __thiscall
 RGE_Master_Missile_Object::make_new_master(RGE_Master_Missile_Object *this)
 {
@@ -309,9 +280,6 @@ RGE_Master_Missile_Object::make_new_master(RGE_Master_Missile_Object *this)
 
 // Function: copy_obj
 // Address: 004518b0
-/* public: virtual void __thiscall RGE_Master_Missile_Object::copy_obj(class
-   RGE_Master_Static_Object *) */
-
 void __thiscall
 RGE_Master_Missile_Object::copy_obj
           (RGE_Master_Missile_Object *this,RGE_Master_Static_Object *param_1)
@@ -330,8 +298,6 @@ RGE_Master_Missile_Object::copy_obj
 
 // Function: modify
 // Address: 00451910
-/* public: virtual void __thiscall RGE_Master_Missile_Object::modify(float,unsigned char) */
-
 void __thiscall
 RGE_Master_Missile_Object::modify(RGE_Master_Missile_Object *this,float param_1,uchar param_2)
 {
@@ -349,8 +315,6 @@ RGE_Master_Missile_Object::modify(RGE_Master_Missile_Object *this,float param_1,
 
 // Function: modify_delta
 // Address: 00451940
-/* public: virtual void __thiscall RGE_Master_Missile_Object::modify_delta(float,unsigned char) */
-
 void __thiscall
 RGE_Master_Missile_Object::modify_delta(RGE_Master_Missile_Object *this,float param_1,uchar param_2)
 {
@@ -368,8 +332,6 @@ RGE_Master_Missile_Object::modify_delta(RGE_Master_Missile_Object *this,float pa
 
 // Function: modify_percent
 // Address: 00451970
-/* public: virtual void __thiscall RGE_Master_Missile_Object::modify_percent(float,unsigned char) */
-
 void __thiscall
 RGE_Master_Missile_Object::modify_percent
           (RGE_Master_Missile_Object *this,float param_1,uchar param_2)
@@ -388,8 +350,6 @@ RGE_Master_Missile_Object::modify_percent
 
 // Function: save
 // Address: 004519a0
-/* public: virtual void __thiscall RGE_Master_Missile_Object::save(int) */
-
 void __thiscall RGE_Master_Missile_Object::save(RGE_Master_Missile_Object *this,int param_1)
 {
   RGE_Master_Combat_Object::save((RGE_Master_Combat_Object *)this,param_1);

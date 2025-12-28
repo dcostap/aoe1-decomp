@@ -42,8 +42,6 @@
 
 // Function: RGE_Action_Attack
 // Address: 00401000
-/* public: __thiscall RGE_Action_Attack::RGE_Action_Attack(int,class RGE_Action_Object *) */
-
 RGE_Action_Attack * __thiscall
 RGE_Action_Attack::RGE_Action_Attack(RGE_Action_Attack *this,int param_1,RGE_Action_Object *param_2)
 {
@@ -88,9 +86,6 @@ RGE_Action_Attack::RGE_Action_Attack(RGE_Action_Attack *this,int param_1,RGE_Act
 
 // Function: `vector_deleting_destructor'
 // Address: 00401150
-/* public: virtual void * __thiscall RGE_Action_Attack::`vector deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 RGE_Action_Attack::_vector_deleting_destructor_(RGE_Action_Attack *this,uint param_1)
 {
@@ -105,10 +100,6 @@ RGE_Action_Attack::_vector_deleting_destructor_(RGE_Action_Attack *this,uint par
 
 // Function: RGE_Action_Attack
 // Address: 00401170
-/* public: __thiscall RGE_Action_Attack::RGE_Action_Attack(class RGE_Action_Object *,class
-   RGE_Static_Object *,class RGE_Sprite *,class RGE_Sprite *,class RGE_Sprite
-   *,float,float,short,short) */
-
 RGE_Action_Attack * __thiscall
 RGE_Action_Attack::RGE_Action_Attack
           (RGE_Action_Attack *this,RGE_Action_Object *param_1,RGE_Static_Object *param_2,
@@ -179,10 +170,6 @@ RGE_Action_Attack::RGE_Action_Attack
 
 // Function: RGE_Action_Attack
 // Address: 004012b0
-/* public: __thiscall RGE_Action_Attack::RGE_Action_Attack(class RGE_Action_Object
-   *,float,float,float,class RGE_Sprite *,class RGE_Sprite *,class RGE_Sprite
-   *,float,float,short,short) */
-
 RGE_Action_Attack * __thiscall
 RGE_Action_Attack::RGE_Action_Attack
           (RGE_Action_Attack *this,RGE_Action_Object *param_1,float param_2,float param_3,
@@ -236,8 +223,6 @@ RGE_Action_Attack::RGE_Action_Attack
 
 // Function: ~RGE_Action_Attack
 // Address: 004013a0
-/* public: virtual __thiscall RGE_Action_Attack::~RGE_Action_Attack(void) */
-
 void __thiscall RGE_Action_Attack::~RGE_Action_Attack(RGE_Action_Attack *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -249,8 +234,6 @@ void __thiscall RGE_Action_Attack::~RGE_Action_Attack(RGE_Action_Attack *this)
 
 // Function: save
 // Address: 004013b0
-/* public: virtual void __thiscall RGE_Action_Attack::save(int) */
-
 void __thiscall RGE_Action_Attack::save(RGE_Action_Attack *this,int param_1)
 {
   RGE_Sprite *pRVar1;
@@ -296,9 +279,6 @@ void __thiscall RGE_Action_Attack::save(RGE_Action_Attack *this,int param_1)
 
 // Function: first_in_stack
 // Address: 004014b0
-/* WARNING: Variable defined which should be unmapped: rangeStatus */
-/* public: virtual void __thiscall RGE_Action_Attack::first_in_stack(unsigned char) */
-
 void __thiscall RGE_Action_Attack::first_in_stack(RGE_Action_Attack *this,uchar param_1)
 {
   UnitAIModule *pUVar1;
@@ -334,8 +314,6 @@ LAB_004014fc:
 
 // Function: stop
 // Address: 00401540
-/* public: virtual int __thiscall RGE_Action_Attack::stop(void) */
-
 int __thiscall RGE_Action_Attack::stop(RGE_Action_Attack *this)
 {
   (**(code **)(this->_padding_ + 0x5c))(1);
@@ -346,8 +324,6 @@ int __thiscall RGE_Action_Attack::stop(RGE_Action_Attack *this)
 
 // Function: set_state
 // Address: 00401550
-/* protected: virtual void __thiscall RGE_Action_Attack::set_state(unsigned char) */
-
 void __thiscall RGE_Action_Attack::set_state(RGE_Action_Attack *this,uchar param_1)
 {
   RGE_Action *this_00;
@@ -456,9 +432,6 @@ switchD_0040158f_caseD_3:
 
 // Function: update
 // Address: 00401780
-/* WARNING: Variable defined which should be unmapped: rangeStatus */
-/* public: virtual unsigned char __thiscall RGE_Action_Attack::update(void) */
-
 uchar __thiscall RGE_Action_Attack::update(RGE_Action_Attack *this)
 {
   byte bVar1;
@@ -629,9 +602,6 @@ switchD_0040185b_caseD_3:
 
 // Function: work
 // Address: 00401ad0
-/* public: virtual int __thiscall RGE_Action_Attack::work(class RGE_Static_Object
-   *,float,float,float) */
-
 int __thiscall
 RGE_Action_Attack::work
           (RGE_Action_Attack *this,RGE_Static_Object *param_1,float param_2,float param_3,
@@ -666,10 +636,6 @@ RGE_Action_Attack::work
 
 // Function: ready_to_attack
 // Address: 00401b30
-/* WARNING: Variable defined which should be unmapped: y_change */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: int __thiscall RGE_Action_Attack::ready_to_attack(int &) */
-
 int __thiscall RGE_Action_Attack::ready_to_attack(RGE_Action_Attack *this,int *param_1)
 {
   float fVar1;
@@ -796,8 +762,6 @@ LAB_00401e78:
 
 // Function: do_attack
 // Address: 00401ec0
-/* protected: void __thiscall RGE_Action_Attack::do_attack(void) */
-
 void __thiscall RGE_Action_Attack::do_attack(RGE_Action_Attack *this)
 {
   int *piVar1;
@@ -817,9 +781,6 @@ void __thiscall RGE_Action_Attack::do_attack(RGE_Action_Attack *this)
 
 // Function: copy_obj_sprites
 // Address: 00401f00
-/* protected: virtual void __thiscall RGE_Action_Attack::copy_obj_sprites(class
-   RGE_Master_Action_Object *,class RGE_Task *,class RGE_Task *) */
-
 void __thiscall
 RGE_Action_Attack::copy_obj_sprites
           (RGE_Action_Attack *this,RGE_Master_Action_Object *param_1,RGE_Task *param_2,

@@ -31,10 +31,6 @@
 // Function: RGE_Active_Animated_Sprite
 // Address: 0041b010
 // [HELPER] s_C__msdev_work_age1_x1_asprite_cp: "C:\msdev\work\age1_x1\asprite.cpp"
-/* WARNING: Variable defined which should be unmapped: tot_time */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: __thiscall RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite(class RGE_Sprite *) */
-
 RGE_Active_Animated_Sprite * __thiscall
 RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite
           (RGE_Active_Animated_Sprite *this,RGE_Sprite *param_1)
@@ -93,9 +89,6 @@ RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite
 
 // Function: `vector_deleting_destructor'
 // Address: 0041b120
-/* public: virtual void * __thiscall RGE_Active_Animated_Sprite::`vector deleting
-   destructor'(unsigned int) */
-
 void * __thiscall
 RGE_Active_Animated_Sprite::_vector_deleting_destructor_
           (RGE_Active_Animated_Sprite *this,uint param_1)
@@ -111,9 +104,6 @@ RGE_Active_Animated_Sprite::_vector_deleting_destructor_
 
 // Function: RGE_Active_Animated_Sprite
 // Address: 0041b140
-/* public: __thiscall RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite(int,class RGE_Sprite *
-   *) */
-
 RGE_Active_Animated_Sprite * __thiscall
 RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite
           (RGE_Active_Animated_Sprite *this,int param_1,RGE_Sprite **param_2)
@@ -146,8 +136,6 @@ RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite
 
 // Function: ~RGE_Active_Animated_Sprite
 // Address: 0041b200
-/* public: virtual __thiscall RGE_Active_Animated_Sprite::~RGE_Active_Animated_Sprite(void) */
-
 void __thiscall
 RGE_Active_Animated_Sprite::~RGE_Active_Animated_Sprite(RGE_Active_Animated_Sprite *this)
 {
@@ -160,8 +148,6 @@ RGE_Active_Animated_Sprite::~RGE_Active_Animated_Sprite(RGE_Active_Animated_Spri
 
 // Function: save
 // Address: 0041b210
-/* public: virtual void __thiscall RGE_Active_Animated_Sprite::save(int) */
-
 void __thiscall RGE_Active_Animated_Sprite::save(RGE_Active_Animated_Sprite *this,int param_1)
 {
   RGE_Active_Sprite::save((RGE_Active_Sprite *)this,param_1);
@@ -179,9 +165,6 @@ void __thiscall RGE_Active_Animated_Sprite::save(RGE_Active_Animated_Sprite *thi
 
 // Function: update
 // Address: 0041b290
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual void __thiscall RGE_Active_Animated_Sprite::update(float,float) */
-
 void __thiscall
 RGE_Active_Animated_Sprite::update(RGE_Active_Animated_Sprite *this,float param_1,float param_2)
 {
@@ -254,9 +237,6 @@ RGE_Active_Animated_Sprite::update(RGE_Active_Animated_Sprite *this,float param_
 
 // Function: draw
 // Address: 0041b430
-/* public: virtual void __thiscall RGE_Active_Animated_Sprite::draw(short,long,long,long,long,class
-   RGE_Color_Table *,class TDrawArea *) */
-
 void __thiscall
 RGE_Active_Animated_Sprite::draw
           (RGE_Active_Animated_Sprite *this,short param_1,long param_2,long param_3,long param_4,
@@ -277,9 +257,6 @@ RGE_Active_Animated_Sprite::draw
 
 // Function: normal_draw
 // Address: 0041b4a0
-/* public: virtual void __thiscall RGE_Active_Animated_Sprite::normal_draw(short,long,long,class
-   RGE_Color_Table *,class TDrawArea *) */
-
 void __thiscall
 RGE_Active_Animated_Sprite::normal_draw
           (RGE_Active_Animated_Sprite *this,short param_1,long param_2,long param_3,
@@ -299,9 +276,6 @@ RGE_Active_Animated_Sprite::normal_draw
 
 // Function: shadow_draw
 // Address: 0041b4f0
-/* public: virtual void __thiscall RGE_Active_Animated_Sprite::shadow_draw(short,long,long,class
-   RGE_Color_Table *,class TDrawArea *,unsigned char) */
-
 void __thiscall
 RGE_Active_Animated_Sprite::shadow_draw
           (RGE_Active_Animated_Sprite *this,short param_1,long param_2,long param_3,
@@ -317,8 +291,6 @@ RGE_Active_Animated_Sprite::shadow_draw
 
 // Function: what_frame
 // Address: 0041b520
-/* public: virtual short __thiscall RGE_Active_Animated_Sprite::what_frame(void) */
-
 short __thiscall RGE_Active_Animated_Sprite::what_frame(RGE_Active_Animated_Sprite *this)
 {
   return this->frame;
@@ -328,8 +300,6 @@ short __thiscall RGE_Active_Animated_Sprite::what_frame(RGE_Active_Animated_Spri
 
 // Function: is_animating
 // Address: 0041b530
-/* public: virtual unsigned char __thiscall RGE_Active_Animated_Sprite::is_animating(void) */
-
 uchar __thiscall RGE_Active_Animated_Sprite::is_animating(RGE_Active_Animated_Sprite *this)
 {
   uchar uVar1;
@@ -345,8 +315,6 @@ uchar __thiscall RGE_Active_Animated_Sprite::is_animating(RGE_Active_Animated_Sp
 
 // Function: set_frame
 // Address: 0041b550
-/* public: virtual void __thiscall RGE_Active_Animated_Sprite::set_frame(short) */
-
 void __thiscall
 RGE_Active_Animated_Sprite::set_frame(RGE_Active_Animated_Sprite *this,short param_1)
 {
@@ -358,8 +326,6 @@ RGE_Active_Animated_Sprite::set_frame(RGE_Active_Animated_Sprite *this,short par
 
 // Function: frame_passed
 // Address: 0041b560
-/* public: virtual unsigned char __thiscall RGE_Active_Animated_Sprite::frame_passed(short) */
-
 uchar __thiscall
 RGE_Active_Animated_Sprite::frame_passed(RGE_Active_Animated_Sprite *this,short param_1)
 {
@@ -374,8 +340,6 @@ RGE_Active_Animated_Sprite::frame_passed(RGE_Active_Animated_Sprite *this,short 
 
 // Function: looped
 // Address: 0041b590
-/* public: virtual unsigned char __thiscall RGE_Active_Animated_Sprite::looped(void) */
-
 uchar __thiscall RGE_Active_Animated_Sprite::looped(RGE_Active_Animated_Sprite *this)
 {
   return this->frame_looped;
@@ -385,9 +349,6 @@ uchar __thiscall RGE_Active_Animated_Sprite::looped(RGE_Active_Animated_Sprite *
 
 // Function: get_facetindex
 // Address: 0041b5a0
-/* WARNING: Variable defined which should be unmapped: facet_index */
-/* public: virtual short __thiscall RGE_Active_Animated_Sprite::get_facetindex(short) */
-
 short __thiscall
 RGE_Active_Animated_Sprite::get_facetindex(RGE_Active_Animated_Sprite *this,short param_1)
 {
@@ -403,9 +364,6 @@ RGE_Active_Animated_Sprite::get_facetindex(RGE_Active_Animated_Sprite *this,shor
 
 // Function: get_frame
 // Address: 0041b5d0
-/* public: virtual unsigned char __thiscall RGE_Active_Animated_Sprite::get_frame(short &,short
-   &,short &,short &,long) */
-
 uchar __thiscall
 RGE_Active_Animated_Sprite::get_frame
           (RGE_Active_Animated_Sprite *this,short *param_1,short *param_2,short *param_3,
@@ -423,8 +381,6 @@ RGE_Active_Animated_Sprite::get_frame
 
 // Function: setToFirstFrame
 // Address: 0041b600
-/* public: virtual void __thiscall RGE_Active_Animated_Sprite::setToFirstFrame(void) */
-
 void __thiscall RGE_Active_Animated_Sprite::setToFirstFrame(RGE_Active_Animated_Sprite *this)
 {
   this->frame_changed = '\x01';

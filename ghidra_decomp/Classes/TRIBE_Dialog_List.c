@@ -88,8 +88,6 @@
 
 // Function: TRIBE_Dialog_List
 // Address: 0050b450
-/* public: __thiscall TRIBE_Dialog_List::TRIBE_Dialog_List(char *) */
-
 TRIBE_Dialog_List * __thiscall
 TRIBE_Dialog_List::TRIBE_Dialog_List(TRIBE_Dialog_List *this,char *param_1)
 {
@@ -102,9 +100,6 @@ TRIBE_Dialog_List::TRIBE_Dialog_List(TRIBE_Dialog_List *this,char *param_1)
 
 // Function: `scalar_deleting_destructor'
 // Address: 0050b470
-/* public: virtual void * __thiscall TRIBE_Dialog_List::`scalar deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 TRIBE_Dialog_List::_scalar_deleting_destructor_(TRIBE_Dialog_List *this,uint param_1)
 {
@@ -119,8 +114,6 @@ TRIBE_Dialog_List::_scalar_deleting_destructor_(TRIBE_Dialog_List *this,uint par
 
 // Function: ~TRIBE_Dialog_List
 // Address: 0050b490
-/* public: virtual __thiscall TRIBE_Dialog_List::~TRIBE_Dialog_List(void) */
-
 void __thiscall TRIBE_Dialog_List::~TRIBE_Dialog_List(TRIBE_Dialog_List *this)
 {
   int iVar1;
@@ -153,8 +146,6 @@ void __thiscall TRIBE_Dialog_List::~TRIBE_Dialog_List(TRIBE_Dialog_List *this)
 
 // Function: create_list
 // Address: 0050b4a0
-/* protected: virtual int __thiscall TRIBE_Dialog_List::create_list(void) */
-
 int __thiscall TRIBE_Dialog_List::create_list(TRIBE_Dialog_List *this)
 {
   int iVar1;
@@ -180,9 +171,6 @@ int __thiscall TRIBE_Dialog_List::create_list(TRIBE_Dialog_List *this)
 
 // Function: create_build_list
 // Address: 0050b4d0
-/* WARNING: Variable defined which should be unmapped: item_list */
-/* protected: int __thiscall TRIBE_Dialog_List::create_build_list(void) */
-
 int __thiscall TRIBE_Dialog_List::create_build_list(TRIBE_Dialog_List *this)
 {
   char cVar1;
@@ -207,7 +195,6 @@ int __thiscall TRIBE_Dialog_List::create_build_list(TRIBE_Dialog_List *this)
   if (iVar3 == 0) {
     return 0;
   }
-                    /* language.dll match for 0x76: "B" */
   _item_num = (Item_Avail *)0x0;
   local_8[0] = 0;
   local_8[1] = 0;
@@ -216,7 +203,6 @@ int __thiscall TRIBE_Dialog_List::create_build_list(TRIBE_Dialog_List *this)
   if (sVar2 == 0) {
     return 0;
   }
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
   *(short *)&this->field_0x4b0 = sVar2;
   iVar3 = calloc((int)sVar2,0x66);
   *(int *)&this->field_0x4b4 = iVar3;
@@ -260,9 +246,6 @@ int __thiscall TRIBE_Dialog_List::create_build_list(TRIBE_Dialog_List *this)
 
 // Function: create_train_list
 // Address: 0050b5e0
-/* WARNING: Variable defined which should be unmapped: item_list */
-/* protected: int __thiscall TRIBE_Dialog_List::create_train_list(void) */
-
 int __thiscall TRIBE_Dialog_List::create_train_list(TRIBE_Dialog_List *this)
 {
   char cVar1;
@@ -291,7 +274,6 @@ int __thiscall TRIBE_Dialog_List::create_train_list(TRIBE_Dialog_List *this)
                  *(short *)(*(int *)(this_00->_padding_ + 8) + 0x10));
       sVar2 = (short)local_8._0_4_;
       if (sVar2 != 0) {
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
         *(short *)&this->field_0x4b0 = sVar2;
         iVar3 = calloc((int)sVar2,0x66);
         *(int *)&this->field_0x4b4 = iVar3;
@@ -338,9 +320,6 @@ int __thiscall TRIBE_Dialog_List::create_train_list(TRIBE_Dialog_List *this)
 
 // Function: create_research_list
 // Address: 0050b700
-/* WARNING: Variable defined which should be unmapped: item_list */
-/* protected: int __thiscall TRIBE_Dialog_List::create_research_list(void) */
-
 int __thiscall TRIBE_Dialog_List::create_research_list(TRIBE_Dialog_List *this)
 {
   char cVar1;
@@ -369,7 +348,6 @@ int __thiscall TRIBE_Dialog_List::create_research_list(TRIBE_Dialog_List *this)
                  *(short *)(*(int *)(this_00->_padding_ + 8) + 0x10));
       sVar2 = (short)local_8._0_4_;
       if (sVar2 != 0) {
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
         *(short *)&this->field_0x4b0 = sVar2;
         iVar3 = calloc((int)sVar2,0x66);
         *(int *)&this->field_0x4b4 = iVar3;
@@ -416,8 +394,6 @@ int __thiscall TRIBE_Dialog_List::create_research_list(TRIBE_Dialog_List *this)
 
 // Function: get_cur_id
 // Address: 0050b820
-/* protected: virtual short __thiscall TRIBE_Dialog_List::get_cur_id(void) */
-
 short __thiscall TRIBE_Dialog_List::get_cur_id(TRIBE_Dialog_List *this)
 {
   int iVar1;

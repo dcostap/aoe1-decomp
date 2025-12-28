@@ -215,9 +215,6 @@
 // Address: 00441530
 // [HELPER] s_: ""
 // [HELPER] s_Send_Quick_Message_Dialog: "Send Quick Message Dialog"
-/* public: __thiscall TribeSendQuickMessageDialog::TribeSendQuickMessageDialog(class TScreenPanel
-   *,enum TribeSendQuickMessageDialog::Mode) */
-
 TribeSendQuickMessageDialog * __thiscall
 TribeSendQuickMessageDialog::TribeSendQuickMessageDialog
           (TribeSendQuickMessageDialog *this,TScreenPanel *param_1,Mode param_2)
@@ -250,12 +247,10 @@ TribeSendQuickMessageDialog::TribeSendQuickMessageDialog
   iVar6 = TDialogPanel::setup((TDialogPanel *)this,pTVar3,(TPanel *)param_1,lVar4,lVar5,pcVar2,lVar1
                               ,iVar6);
   if (iVar6 != 0) {
-                    /* language.dll match for 0x78: "10" */
     iVar6 = TEasy_Panel::create_text
                       ((TEasy_Panel *)this,(TPanel *)this,&this->chatTitle,
                        (-(uint)(this->modeValue != AsChat) & 5) + 0x2668,5,5,0x78,0x19,4,1,1,0);
     if (iVar6 != 0) {
-                    /* language.dll match for 0x82: "B" */
       iVar6 = TEasy_Panel::create_edit
                         ((TEasy_Panel *)this,(TPanel *)this,&this->chatInput,s_,0x41,FormatText,0x82
                          ,5,0x195,0x19,0xb,1,0);
@@ -272,9 +267,6 @@ TribeSendQuickMessageDialog::TribeSendQuickMessageDialog
 
 // Function: `vector_deleting_destructor'
 // Address: 00441630
-/* public: virtual void * __thiscall TribeSendQuickMessageDialog::`vector deleting
-   destructor'(unsigned int) */
-
 void * __thiscall
 TribeSendQuickMessageDialog::_vector_deleting_destructor_
           (TribeSendQuickMessageDialog *this,uint param_1)
@@ -290,8 +282,6 @@ TribeSendQuickMessageDialog::_vector_deleting_destructor_
 
 // Function: ~TribeSendQuickMessageDialog
 // Address: 00441650
-/* public: virtual __thiscall TribeSendQuickMessageDialog::~TribeSendQuickMessageDialog(void) */
-
 void __thiscall
 TribeSendQuickMessageDialog::~TribeSendQuickMessageDialog(TribeSendQuickMessageDialog *this)
 {
@@ -323,10 +313,6 @@ TribeSendQuickMessageDialog::~TribeSendQuickMessageDialog(TribeSendQuickMessageD
 // Address: 004416c0
 // [HELPER] s_Game_Screen: "Game Screen"
 // [HELPER] s_Send_Quick_Message_Dialog: "Send Quick Message Dialog"
-/* WARNING: Variable defined which should be unmapped: save_msg */
-/* public: virtual long __thiscall TribeSendQuickMessageDialog::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TribeSendQuickMessageDialog::action
           (TribeSendQuickMessageDialog *this,TPanel *param_1,long param_2,ulong param_3,
@@ -405,9 +391,6 @@ LAB_00441819:
 
 // Function: handle_mouse_down
 // Address: 00441840
-/* public: virtual long __thiscall TribeSendQuickMessageDialog::handle_mouse_down(unsigned
-   char,long,long,int,int) */
-
 long __thiscall
 TribeSendQuickMessageDialog::handle_mouse_down
           (TribeSendQuickMessageDialog *this,uchar param_1,long param_2,long param_3,int param_4,

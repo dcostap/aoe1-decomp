@@ -17,8 +17,6 @@
 
 // Function: snextc
 // Address: 0055b320
-/* public: int __thiscall streambuf::snextc(void) */
-
 int __thiscall streambuf::snextc(streambuf *this)
 {
   int iVar1;
@@ -48,8 +46,6 @@ int __thiscall streambuf::snextc(streambuf *this)
 
 // Function: sbumpc
 // Address: 0055b380
-/* public: int __thiscall streambuf::sbumpc(void) */
-
 int __thiscall streambuf::sbumpc(streambuf *this)
 {
   byte bVar1;
@@ -78,8 +74,6 @@ int __thiscall streambuf::sbumpc(streambuf *this)
 
 // Function: stossc
 // Address: 0055b3d0
-/* public: void __thiscall streambuf::stossc(void) */
-
 void __thiscall streambuf::stossc(streambuf *this)
 {
   if (this->_fUnbuf == 0) {
@@ -103,8 +97,6 @@ void __thiscall streambuf::stossc(streambuf *this)
 
 // Function: sgetc
 // Address: 0055b420
-/* public: int __thiscall streambuf::sgetc(void) */
-
 int __thiscall streambuf::sgetc(streambuf *this)
 {
   int iVar1;

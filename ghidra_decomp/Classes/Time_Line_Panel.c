@@ -131,8 +131,6 @@
 
 // Function: Time_Line_Panel
 // Address: 0051e650
-/* public: __thiscall Time_Line_Panel::Time_Line_Panel(void) */
-
 Time_Line_Panel * __thiscall Time_Line_Panel::Time_Line_Panel(Time_Line_Panel *this)
 {
   TEasy_Panel::TEasy_Panel((TEasy_Panel *)this);
@@ -183,8 +181,6 @@ Time_Line_Panel * __thiscall Time_Line_Panel::Time_Line_Panel(Time_Line_Panel *t
 
 // Function: `scalar_deleting_destructor'
 // Address: 0051e770
-/* public: virtual void * __thiscall Time_Line_Panel::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall Time_Line_Panel::_scalar_deleting_destructor_(Time_Line_Panel *this,uint param_1)
 {
   ~Time_Line_Panel(this);
@@ -198,8 +194,6 @@ void * __thiscall Time_Line_Panel::_scalar_deleting_destructor_(Time_Line_Panel 
 
 // Function: ~Time_Line_Panel
 // Address: 0051e790
-/* public: virtual __thiscall Time_Line_Panel::~Time_Line_Panel(void) */
-
 void __thiscall Time_Line_Panel::~Time_Line_Panel(Time_Line_Panel *this)
 {
   Special_Events *pSVar1;
@@ -251,9 +245,6 @@ void __thiscall Time_Line_Panel::~Time_Line_Panel(Time_Line_Panel *this)
 
 // Function: create_timeline
 // Address: 0051e860
-/* public: long __thiscall Time_Line_Panel::create_timeline(class TPanel *,class Time_Line_Panel *
-   *,long,long,long,long,long,long,long,long) */
-
 long __thiscall
 Time_Line_Panel::create_timeline
           (Time_Line_Panel *this,TPanel *param_1,Time_Line_Panel **param_2,long param_3,long param_4
@@ -351,10 +342,6 @@ LAB_0051e9c4:
 
 // Function: setup
 // Address: 0051e9e0
-/* public: long __thiscall Time_Line_Panel::setup(class TDrawArea *,class TPanel
-   *,long,long,long,long,void *,long,long,void *,long,long,char *,char *,int,unsigned
-   char,int,unsigned char) */
-
 long __thiscall
 Time_Line_Panel::setup
           (Time_Line_Panel *this,TDrawArea *param_1,TPanel *param_2,long param_3,long param_4,
@@ -385,8 +372,6 @@ Time_Line_Panel::setup
 
 // Function: set_bevel_info
 // Address: 0051eab0
-/* public: void __thiscall Time_Line_Panel::set_bevel_info(int,int,int,int,int,int,int) */
-
 void __thiscall
 Time_Line_Panel::set_bevel_info
           (Time_Line_Panel *this,int param_1,int param_2,int param_3,int param_4,int param_5,
@@ -406,9 +391,6 @@ Time_Line_Panel::set_bevel_info
 
 // Function: set_background
 // Address: 0051eb00
-/* WARNING: Variable defined which should be unmapped: x_max */
-/* public: int __thiscall Time_Line_Panel::set_background(char *) */
-
 int __thiscall Time_Line_Panel::set_background(Time_Line_Panel *this,char *param_1)
 {
   TShape *pTVar1;
@@ -463,9 +445,6 @@ int __thiscall Time_Line_Panel::set_background(Time_Line_Panel *this,char *param
 // [HELPER] s__s: "%s"
 // [HELPER] s__s_shp: "%s.shp"
 // [HELPER] s_none: "none"
-/* WARNING: Variable defined which should be unmapped: y_max */
-/* public: int __thiscall Time_Line_Panel::set_background(char *,long) */
-
 int __thiscall Time_Line_Panel::set_background(Time_Line_Panel *this,char *param_1,long param_2)
 {
   int iVar1;
@@ -547,9 +526,6 @@ LAB_0051ed29:
 
 // Function: set_special_events
 // Address: 0051edd0
-/* WARNING: Variable defined which should be unmapped: x_max */
-/* public: int __thiscall Time_Line_Panel::set_special_events(char *) */
-
 int __thiscall Time_Line_Panel::set_special_events(Time_Line_Panel *this,char *param_1)
 {
   TShape *pTVar1;
@@ -604,9 +580,6 @@ int __thiscall Time_Line_Panel::set_special_events(Time_Line_Panel *this,char *p
 // [HELPER] s__s: "%s"
 // [HELPER] s__s_shp: "%s.shp"
 // [HELPER] s_none: "none"
-/* WARNING: Variable defined which should be unmapped: y_max */
-/* public: int __thiscall Time_Line_Panel::set_special_events(char *,long) */
-
 int __thiscall Time_Line_Panel::set_special_events(Time_Line_Panel *this,char *param_1,long param_2)
 {
   int iVar1;
@@ -688,8 +661,6 @@ LAB_0051eff9:
 
 // Function: set_axis_font
 // Address: 0051f0a0
-/* public: void __thiscall Time_Line_Panel::set_axis_font(void *,long,long) */
-
 void __thiscall
 Time_Line_Panel::set_axis_font(Time_Line_Panel *this,void *param_1,long param_2,long param_3)
 {
@@ -704,8 +675,6 @@ Time_Line_Panel::set_axis_font(Time_Line_Panel *this,void *param_1,long param_2,
 
 // Function: set_body_font
 // Address: 0051f0d0
-/* public: void __thiscall Time_Line_Panel::set_body_font(void *,long,long) */
-
 void __thiscall
 Time_Line_Panel::set_body_font(Time_Line_Panel *this,void *param_1,long param_2,long param_3)
 {
@@ -720,8 +689,6 @@ Time_Line_Panel::set_body_font(Time_Line_Panel *this,void *param_1,long param_2,
 
 // Function: set_back_color
 // Address: 0051f100
-/* public: void __thiscall Time_Line_Panel::set_back_color(int,unsigned char) */
-
 void __thiscall Time_Line_Panel::set_back_color(Time_Line_Panel *this,int param_1,uchar param_2)
 {
   this->fill_back = param_1;
@@ -734,8 +701,6 @@ void __thiscall Time_Line_Panel::set_back_color(Time_Line_Panel *this,int param_
 // Function: draw_border
 // Address: 0051f120
 // [HELPER] s_tpnl_tml__draw_border: "tpnl_tml::draw_border"
-/* public: void __thiscall Time_Line_Panel::draw_border(void) */
-
 void __thiscall Time_Line_Panel::draw_border(Time_Line_Panel *this)
 {
   uchar uVar1;
@@ -833,10 +798,6 @@ switchD_0051f158_default:
 
 // Function: init_timeline
 // Address: 0051f310
-/* WARNING: Variable defined which should be unmapped: usable_X */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall Time_Line_Panel::init_timeline(void) */
-
 void __thiscall Time_Line_Panel::init_timeline(Time_Line_Panel *this)
 {
   bool bVar1;
@@ -910,8 +871,6 @@ void __thiscall Time_Line_Panel::init_timeline(Time_Line_Panel *this)
 
 // Function: add_pop_total_special_event
 // Address: 0051f4e0
-/* public: void __thiscall Time_Line_Panel::add_pop_total_special_event(long,long,long,int) */
-
 void __thiscall
 Time_Line_Panel::add_pop_total_special_event
           (Time_Line_Panel *this,long param_1,long param_2,long param_3,int param_4)
@@ -949,9 +908,6 @@ Time_Line_Panel::add_pop_total_special_event
 
 // Function: record_special_event
 // Address: 0051f560
-/* public: void __thiscall Time_Line_Panel::record_special_event(unsigned char,class
-   TRIBE_History_Info *,unsigned char,long,long,long,long) */
-
 void __thiscall
 Time_Line_Panel::record_special_event
           (Time_Line_Panel *this,uchar param_1,TRIBE_History_Info *param_2,uchar param_3,
@@ -996,10 +952,6 @@ Time_Line_Panel::record_special_event
 
 // Function: calculate_icon_location
 // Address: 0051f600
-/* WARNING: Variable defined which should be unmapped: height */
-/* public: int __thiscall Time_Line_Panel::calculate_icon_location(struct Special_Events
-   *,short,unsigned char) */
-
 int __thiscall
 Time_Line_Panel::calculate_icon_location
           (Time_Line_Panel *this,Special_Events *param_1,short param_2,uchar param_3)
@@ -1232,8 +1184,6 @@ switchD_0051f73e_caseD_3:
 
 // Function: draw
 // Address: 0051fa30
-/* public: virtual void __thiscall Time_Line_Panel::draw(void) */
-
 void __thiscall Time_Line_Panel::draw(Time_Line_Panel *this)
 {
   int iVar1;
@@ -1259,9 +1209,6 @@ void __thiscall Time_Line_Panel::draw(Time_Line_Panel *this)
 // Function: draw_axis
 // Address: 0051fa90
 // [HELPER] s_tpnl_tml__draw_axis: "tpnl_tml::draw_axis"
-/* WARNING: Variable defined which should be unmapped: white_color */
-/* public: void __thiscall Time_Line_Panel::draw_axis(void) */
-
 void __thiscall Time_Line_Panel::draw_axis(Time_Line_Panel *this)
 {
   int iVar1;
@@ -1333,7 +1280,6 @@ void __thiscall Time_Line_Panel::draw_axis(Time_Line_Panel *this)
   if (pvVar5 != (void *)0x0) {
     SetBkMode(*(undefined4 *)(this->_padding_ + 0x38),1);
     temp_str._0_4_ = SelectObject(*(undefined4 *)(this->_padding_ + 0x38),this->axis_font);
-                    /* language.dll match for 0x2c57: "World Population" */
     iVar6 = TPanel::get_string((TPanel *)this,0x2c57,temp_str + 4,100);
     if (iVar6 != 0) {
       lVar4 = TPanel::xPosition((TPanel *)this);
@@ -1349,7 +1295,6 @@ void __thiscall Time_Line_Panel::draw_axis(Time_Line_Panel *this)
       } while (cVar2 != '\0');
       TextOutA(*(undefined4 *)(this->_padding_ + 0x38),lVar4 + 8,lVar7 + 5,temp_str + 4,~uVar8 - 1);
     }
-                    /* language.dll match for 0x2c56: "Time (Hr:Min)" */
     iVar6 = TPanel::get_string((TPanel *)this,0x2c56,temp_str + 4,100);
     if (iVar6 != 0) {
       uVar8 = 0xffffffff;
@@ -1390,9 +1335,6 @@ void __thiscall Time_Line_Panel::draw_axis(Time_Line_Panel *this)
 // Function: draw_special_events
 // Address: 0051fd90
 // [HELPER] s_tpnl_tml__draw_special_events: "tpnl_tml::draw_special_events"
-/* WARNING: Variable defined which should be unmapped: old_font */
-/* public: void __thiscall Time_Line_Panel::draw_special_events(void) */
-
 void __thiscall Time_Line_Panel::draw_special_events(Time_Line_Panel *this)
 {
   char cVar1;
@@ -1569,9 +1511,6 @@ switchD_0051fe9b_caseD_4:
 // Address: 00520080
 // [HELPER] s_tpnl_tml__draw_background2: "tpnl_tml::draw_background2"
 // [HELPER] s_tpnl_tml__draw_background: "tpnl_tml::draw_background"
-/* WARNING: Variable defined which should be unmapped: pic_cols */
-/* public: void __thiscall Time_Line_Panel::draw_background(void) */
-
 void __thiscall Time_Line_Panel::draw_background(Time_Line_Panel *this)
 {
   int *piVar1;
@@ -1660,10 +1599,6 @@ void __thiscall Time_Line_Panel::draw_background(Time_Line_Panel *this)
 // Address: 00520220
 // [HELPER] s__s____s: "%s - %s"
 // [HELPER] s_tpnl_tml__draw_civilization_name: "tpnl_tml::draw_civilization_names"
-/* WARNING: Variable defined which should be unmapped: pop_total */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall Time_Line_Panel::draw_civilization_names(void) */
-
 void __thiscall Time_Line_Panel::draw_civilization_names(Time_Line_Panel *this)
 {
   char cVar1;
@@ -1777,10 +1712,6 @@ void __thiscall Time_Line_Panel::draw_civilization_names(Time_Line_Panel *this)
 // Function: draw_timeline
 // Address: 005204a0
 // [HELPER] s_tpnl_tml__draw_timeline: "tpnl_tml::draw_timeline"
-/* WARNING: Variable defined which should be unmapped: event */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall Time_Line_Panel::draw_timeline(void) */
-
 void __thiscall Time_Line_Panel::draw_timeline(Time_Line_Panel *this)
 {
   byte bVar1;
@@ -2059,10 +1990,6 @@ void __thiscall Time_Line_Panel::draw_timeline(Time_Line_Panel *this)
 // [HELPER] s__ld: "%ld"
 // [HELPER] s__ld__1d: "%ld/%1d"
 // [HELPER] s__s: "%s"
-/* WARNING: Variable defined which should be unmapped: black_color */
-/* public: void __thiscall Time_Line_Panel::draw_icon(struct Special_Events *,short,unsigned char)
-    */
-
 void __thiscall
 Time_Line_Panel::draw_icon
           (Time_Line_Panel *this,Special_Events *param_1,short param_2,uchar param_3)
@@ -2083,16 +2010,13 @@ Time_Line_Panel::draw_icon
   temp_str[0] = cVar3;
   switch(param_1->event) {
   case '\0':
-                    /* language.dll match for 0x106a: "Tool Age" */
     iVar4 = TPanel::get_string((TPanel *)this,0x106a,temp_str + 4,0x32);
     if (iVar4 == 0) goto switchD_00520b22_caseD_4;
     goto LAB_00520b72;
   case '\x01':
-                    /* language.dll match for 0x106b: "Bronze Age" */
     iVar4 = TPanel::get_string((TPanel *)this,0x106b,temp_str + 4,0x32);
     break;
   case '\x02':
-                    /* language.dll match for 0x106c: "Iron Age" */
     iVar4 = TPanel::get_string((TPanel *)this,0x106c,temp_str + 4,0x32);
     break;
   case '\x03':
@@ -2181,8 +2105,6 @@ switchD_00520b22_caseD_3:
 
 // Function: draw_legend
 // Address: 00520d50
-/* public: void __thiscall Time_Line_Panel::draw_legend(void) */
-
 void __thiscall Time_Line_Panel::draw_legend(Time_Line_Panel *this)
 {
   long lVar1;

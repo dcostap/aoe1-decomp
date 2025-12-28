@@ -13,8 +13,6 @@
 
 // Function: TribeAIPlayBook
 // Address: 004e68b0
-/* public: __thiscall TribeAIPlayBook::TribeAIPlayBook(void) */
-
 TribeAIPlayBook * __thiscall TribeAIPlayBook::TribeAIPlayBook(TribeAIPlayBook *this)
 {
   AIPlayBook::AIPlayBook((AIPlayBook *)this);
@@ -26,8 +24,6 @@ TribeAIPlayBook * __thiscall TribeAIPlayBook::TribeAIPlayBook(TribeAIPlayBook *t
 
 // Function: `vector_deleting_destructor'
 // Address: 004e68d0
-/* public: virtual void * __thiscall TribeAIPlayBook::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall TribeAIPlayBook::_vector_deleting_destructor_(TribeAIPlayBook *this,uint param_1)
 {
   ~TribeAIPlayBook(this);
@@ -41,8 +37,6 @@ void * __thiscall TribeAIPlayBook::_vector_deleting_destructor_(TribeAIPlayBook 
 
 // Function: ~TribeAIPlayBook
 // Address: 004e68f0
-/* public: virtual __thiscall TribeAIPlayBook::~TribeAIPlayBook(void) */
-
 void __thiscall TribeAIPlayBook::~TribeAIPlayBook(TribeAIPlayBook *this)
 {
   *(undefined ***)this = &AIPlayBook::_vftable_;
@@ -58,8 +52,6 @@ void __thiscall TribeAIPlayBook::~TribeAIPlayBook(TribeAIPlayBook *this)
 
 // Function: convertTargetNameToIntType
 // Address: 004e6900
-/* public: virtual int __thiscall TribeAIPlayBook::convertTargetNameToIntType(char *)const  */
-
 int __thiscall TribeAIPlayBook::convertTargetNameToIntType(TribeAIPlayBook *this,char *param_1)
 {
   int iVar1;
@@ -72,9 +64,6 @@ int __thiscall TribeAIPlayBook::convertTargetNameToIntType(TribeAIPlayBook *this
 
 // Function: convertTargetCharacteristicNameToIntType
 // Address: 004e6910
-/* public: virtual int __thiscall TribeAIPlayBook::convertTargetCharacteristicNameToIntType(char
-   *)const  */
-
 int __thiscall
 TribeAIPlayBook::convertTargetCharacteristicNameToIntType(TribeAIPlayBook *this,char *param_1)
 {
@@ -94,8 +83,6 @@ TribeAIPlayBook::convertTargetCharacteristicNameToIntType(TribeAIPlayBook *this,
 // [HELPER] s_Priest: "Priest"
 // [HELPER] s_Ranged: "Ranged"
 // [HELPER] s_Siege: "Siege"
-/* public: virtual int __thiscall TribeAIPlayBook::convertUnitNameToIntType(char *)const  */
-
 int __thiscall TribeAIPlayBook::convertUnitNameToIntType(TribeAIPlayBook *this,char *param_1)
 {
   byte bVar1;
@@ -244,10 +231,6 @@ LAB_004e6aad:
 
 // Function: convertUnitToIntType
 // Address: 004e6ad0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual int __thiscall TribeAIPlayBook::convertUnitToIntType(class RGE_Static_Object
-   *)const  */
-
 int __thiscall
 TribeAIPlayBook::convertUnitToIntType(TribeAIPlayBook *this,RGE_Static_Object *param_1)
 {

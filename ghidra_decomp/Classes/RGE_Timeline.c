@@ -14,9 +14,6 @@
 
 // Function: RGE_Timeline
 // Address: 0050d5b0
-/* WARNING: Variable defined which should be unmapped: target_player_id */
-/* public: __thiscall RGE_Timeline::RGE_Timeline(int,class RGE_Game_World *) */
-
 RGE_Timeline * __thiscall
 RGE_Timeline::RGE_Timeline(RGE_Timeline *this,int param_1,RGE_Game_World *param_2)
 {
@@ -91,8 +88,6 @@ RGE_Timeline::RGE_Timeline(RGE_Timeline *this,int param_1,RGE_Game_World *param_
 
 // Function: `vector_deleting_destructor'
 // Address: 0050d790
-/* public: virtual void * __thiscall RGE_Timeline::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall RGE_Timeline::_vector_deleting_destructor_(RGE_Timeline *this,uint param_1)
 {
   ~RGE_Timeline(this);
@@ -106,8 +101,6 @@ void * __thiscall RGE_Timeline::_vector_deleting_destructor_(RGE_Timeline *this,
 
 // Function: RGE_Timeline
 // Address: 0050d7b0
-/* public: __thiscall RGE_Timeline::RGE_Timeline(class RGE_Game_World *) */
-
 void __thiscall RGE_Timeline::RGE_Timeline(RGE_Timeline *this,RGE_Game_World *param_1)
 {
   this->world = param_1;
@@ -123,8 +116,6 @@ void __thiscall RGE_Timeline::RGE_Timeline(RGE_Timeline *this,RGE_Game_World *pa
 
 // Function: ~RGE_Timeline
 // Address: 0050d7e0
-/* public: virtual __thiscall RGE_Timeline::~RGE_Timeline(void) */
-
 void __thiscall RGE_Timeline::~RGE_Timeline(RGE_Timeline *this)
 {
   RGE_Time_Entry *pRVar1;
@@ -147,9 +138,6 @@ void __thiscall RGE_Timeline::~RGE_Timeline(RGE_Timeline *this)
 
 // Function: save
 // Address: 0050d830
-/* WARNING: Variable defined which should be unmapped: target_player_id */
-/* public: void __thiscall RGE_Timeline::save(int) */
-
 void __thiscall RGE_Timeline::save(RGE_Timeline *this,int param_1)
 {
   short *psVar1;
@@ -218,10 +206,6 @@ void __thiscall RGE_Timeline::save(RGE_Timeline *this,int param_1)
 
 // Function: update
 // Address: 0050d9a0
-/* WARNING: Variable defined which should be unmapped: time */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall RGE_Timeline::update(void) */
-
 void __thiscall RGE_Timeline::update(RGE_Timeline *this)
 {
   RGE_Player *pRVar1;
@@ -293,8 +277,6 @@ void __thiscall RGE_Timeline::update(RGE_Timeline *this)
 
 // Function: mock_update
 // Address: 0050db10
-/* public: void __thiscall RGE_Timeline::mock_update(float) */
-
 void __thiscall RGE_Timeline::mock_update(RGE_Timeline *this,float param_1)
 {
   RGE_Time_Entry *pRVar1;
@@ -405,8 +387,6 @@ void __thiscall RGE_Timeline::mock_update(RGE_Timeline *this,float param_1)
 
 // Function: find_id
 // Address: 0050dd30
-/* private: short __thiscall RGE_Timeline::find_id(class RGE_Static_Object *) */
-
 short __thiscall RGE_Timeline::find_id(RGE_Timeline *this,RGE_Static_Object *param_1)
 {
   RGE_Time_Entry *pRVar1;
@@ -428,8 +408,6 @@ short __thiscall RGE_Timeline::find_id(RGE_Timeline *this,RGE_Static_Object *par
 
 // Function: add
 // Address: 0050dd70
-/* public: struct RGE_Time_Entry * __thiscall RGE_Timeline::add(float) */
-
 RGE_Time_Entry * __thiscall RGE_Timeline::add(RGE_Timeline *this,float param_1)
 {
   RGE_Time_Entry *pRVar1;
@@ -469,9 +447,6 @@ RGE_Time_Entry * __thiscall RGE_Timeline::add(RGE_Timeline *this,float param_1)
 
 // Function: add_attack
 // Address: 0050de00
-/* public: struct RGE_Time_Entry * __thiscall RGE_Timeline::add_attack(float,class RGE_Static_Object
-   *,class RGE_Static_Object *) */
-
 RGE_Time_Entry * __thiscall
 RGE_Timeline::add_attack
           (RGE_Timeline *this,float param_1,RGE_Static_Object *param_2,RGE_Static_Object *param_3)
@@ -497,9 +472,6 @@ RGE_Timeline::add_attack
 
 // Function: add_create
 // Address: 0050de50
-/* public: struct RGE_Time_Entry * __thiscall RGE_Timeline::add_create(float,short,unsigned
-   char,float,float,float) */
-
 RGE_Time_Entry * __thiscall
 RGE_Timeline::add_create
           (RGE_Timeline *this,float param_1,short param_2,uchar param_3,float param_4,float param_5,
@@ -535,9 +507,6 @@ RGE_Timeline::add_create
 
 // Function: add_move
 // Address: 0050def0
-/* public: struct RGE_Time_Entry * __thiscall RGE_Timeline::add_move(float,class RGE_Static_Object
-   *,float,float,float) */
-
 RGE_Time_Entry * __thiscall
 RGE_Timeline::add_move
           (RGE_Timeline *this,float param_1,RGE_Static_Object *param_2,float param_3,float param_4,
@@ -564,9 +533,6 @@ RGE_Timeline::add_move
 
 // Function: add_delete
 // Address: 0050df40
-/* public: struct RGE_Time_Entry * __thiscall RGE_Timeline::add_delete(float,class RGE_Static_Object
-   *) */
-
 RGE_Time_Entry * __thiscall
 RGE_Timeline::add_delete(RGE_Timeline *this,float param_1,RGE_Static_Object *param_2)
 {
@@ -605,8 +571,6 @@ RGE_Timeline::add_delete(RGE_Timeline *this,float param_1,RGE_Static_Object *par
 
 // Function: sub
 // Address: 0050dfd0
-/* public: void __thiscall RGE_Timeline::sub(struct RGE_Time_Entry *) */
-
 void __thiscall RGE_Timeline::sub(RGE_Timeline *this,RGE_Time_Entry *param_1)
 {
   RGE_Time_Entry **ppRVar1;

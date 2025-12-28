@@ -72,8 +72,6 @@
 
 // Function: RGE_Diamond_Map_View
 // Address: 0053d360
-/* public: __thiscall RGE_Diamond_Map_View::RGE_Diamond_Map_View(void) */
-
 RGE_Diamond_Map_View * __thiscall
 RGE_Diamond_Map_View::RGE_Diamond_Map_View(RGE_Diamond_Map_View *this)
 {
@@ -87,9 +85,6 @@ RGE_Diamond_Map_View::RGE_Diamond_Map_View(RGE_Diamond_Map_View *this)
 
 // Function: `scalar_deleting_destructor'
 // Address: 0053d380
-/* public: virtual void * __thiscall RGE_Diamond_Map_View::`scalar deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 RGE_Diamond_Map_View::_scalar_deleting_destructor_(RGE_Diamond_Map_View *this,uint param_1)
 {
@@ -104,8 +99,6 @@ RGE_Diamond_Map_View::_scalar_deleting_destructor_(RGE_Diamond_Map_View *this,ui
 
 // Function: ~RGE_Diamond_Map_View
 // Address: 0053d3a0
-/* public: virtual __thiscall RGE_Diamond_Map_View::~RGE_Diamond_Map_View(void) */
-
 void __thiscall RGE_Diamond_Map_View::~RGE_Diamond_Map_View(RGE_Diamond_Map_View *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -137,10 +130,6 @@ void __thiscall RGE_Diamond_Map_View::~RGE_Diamond_Map_View(RGE_Diamond_Map_View
 
 // Function: handle_mouse_down
 // Address: 0053d3b0
-/* WARNING: Variable defined which should be unmapped: tile */
-/* public: virtual long __thiscall RGE_Diamond_Map_View::handle_mouse_down(unsigned
-   char,long,long,int,int) */
-
 long __thiscall
 RGE_Diamond_Map_View::handle_mouse_down
           (RGE_Diamond_Map_View *this,uchar param_1,long param_2,long param_3,int param_4,
@@ -169,9 +158,6 @@ RGE_Diamond_Map_View::handle_mouse_down
 
 // Function: mouse_left_down_action
 // Address: 0053d400
-/* public: virtual long __thiscall RGE_Diamond_Map_View::mouse_left_down_action(long,long,int,int)
-    */
-
 long __thiscall
 RGE_Diamond_Map_View::mouse_left_down_action
           (RGE_Diamond_Map_View *this,long param_1,long param_2,int param_3,int param_4)
@@ -199,9 +185,6 @@ RGE_Diamond_Map_View::mouse_left_down_action
 
 // Function: mouse_left_move_action
 // Address: 0053d480
-/* public: virtual long __thiscall RGE_Diamond_Map_View::mouse_left_move_action(long,long,int,int)
-    */
-
 long __thiscall
 RGE_Diamond_Map_View::mouse_left_move_action
           (RGE_Diamond_Map_View *this,long param_1,long param_2,int param_3,int param_4)
@@ -231,9 +214,6 @@ RGE_Diamond_Map_View::mouse_left_move_action
 
 // Function: mouse_left_up_action
 // Address: 0053d500
-/* WARNING: Variable defined which should be unmapped: row */
-/* public: virtual long __thiscall RGE_Diamond_Map_View::mouse_left_up_action(long,long,int,int) */
-
 long __thiscall
 RGE_Diamond_Map_View::mouse_left_up_action
           (RGE_Diamond_Map_View *this,long param_1,long param_2,int param_3,int param_4)
@@ -286,9 +266,6 @@ RGE_Diamond_Map_View::mouse_left_up_action
 
 // Function: mouse_right_down_action
 // Address: 0053d620
-/* public: virtual long __thiscall RGE_Diamond_Map_View::mouse_right_down_action(long,long,int,int)
-    */
-
 long __thiscall
 RGE_Diamond_Map_View::mouse_right_down_action
           (RGE_Diamond_Map_View *this,long param_1,long param_2,int param_3,int param_4)
@@ -318,9 +295,6 @@ RGE_Diamond_Map_View::mouse_right_down_action
 
 // Function: mouse_right_move_action
 // Address: 0053d6a0
-/* public: virtual long __thiscall RGE_Diamond_Map_View::mouse_right_move_action(long,long,int,int)
-    */
-
 long __thiscall
 RGE_Diamond_Map_View::mouse_right_move_action
           (RGE_Diamond_Map_View *this,long param_1,long param_2,int param_3,int param_4)
@@ -350,10 +324,6 @@ RGE_Diamond_Map_View::mouse_right_move_action
 
 // Function: mouse_right_up_action
 // Address: 0053d720
-/* WARNING: Variable defined which should be unmapped: tile */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual long __thiscall RGE_Diamond_Map_View::mouse_right_up_action(long,long,int,int) */
-
 long __thiscall
 RGE_Diamond_Map_View::mouse_right_up_action
           (RGE_Diamond_Map_View *this,long param_1,long param_2,int param_3,int param_4)
@@ -409,8 +379,6 @@ RGE_Diamond_Map_View::mouse_right_up_action
 // Function: draw
 // Address: 0053d890
 // [HELPER] s_C__msdev_work_age1_x1_vw_dimap_c: "C:\msdev\work\age1_x1\vw_dimap.cpp"
-/* public: virtual void __thiscall RGE_Diamond_Map_View::draw(void) */
-
 void __thiscall RGE_Diamond_Map_View::draw(RGE_Diamond_Map_View *this)
 {
   ulong uVar1;
@@ -427,9 +395,6 @@ void __thiscall RGE_Diamond_Map_View::draw(RGE_Diamond_Map_View *this)
 
 // Function: command_make_do
 // Address: 0053d8e0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual int __thiscall RGE_Diamond_Map_View::command_make_do(long,long) */
-
 int __thiscall
 RGE_Diamond_Map_View::command_make_do(RGE_Diamond_Map_View *this,long param_1,long param_2)
 {
@@ -458,9 +423,6 @@ RGE_Diamond_Map_View::command_make_do(RGE_Diamond_Map_View *this,long param_1,lo
 
 // Function: command_make_move
 // Address: 0053d970
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual int __thiscall RGE_Diamond_Map_View::command_make_move(long,long) */
-
 int __thiscall
 RGE_Diamond_Map_View::command_make_move(RGE_Diamond_Map_View *this,long param_1,long param_2)
 {
@@ -490,9 +452,6 @@ RGE_Diamond_Map_View::command_make_move(RGE_Diamond_Map_View *this,long param_1,
 
 // Function: command_make_work
 // Address: 0053da10
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual int __thiscall RGE_Diamond_Map_View::command_make_work(long,long) */
-
 int __thiscall
 RGE_Diamond_Map_View::command_make_work(RGE_Diamond_Map_View *this,long param_1,long param_2)
 {

@@ -798,9 +798,6 @@
 
 // Function: TribePreditorUnitAIModule
 // Address: 00503f20
-/* public: __thiscall TribePreditorUnitAIModule::TribePreditorUnitAIModule(class RGE_Static_Object
-   *,int) */
-
 TribePreditorUnitAIModule * __thiscall
 TribePreditorUnitAIModule::TribePreditorUnitAIModule
           (TribePreditorUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
@@ -848,9 +845,6 @@ TribePreditorUnitAIModule::TribePreditorUnitAIModule
 
 // Function: `vector_deleting_destructor'
 // Address: 00504070
-/* public: virtual void * __thiscall TribePreditorUnitAIModule::`vector deleting
-   destructor'(unsigned int) */
-
 void * __thiscall
 TribePreditorUnitAIModule::_vector_deleting_destructor_
           (TribePreditorUnitAIModule *this,uint param_1)
@@ -866,8 +860,6 @@ TribePreditorUnitAIModule::_vector_deleting_destructor_
 
 // Function: ~TribePreditorUnitAIModule
 // Address: 00504090
-/* public: virtual __thiscall TribePreditorUnitAIModule::~TribePreditorUnitAIModule(void) */
-
 void __thiscall
 TribePreditorUnitAIModule::~TribePreditorUnitAIModule(TribePreditorUnitAIModule *this)
 {
@@ -913,8 +905,6 @@ TribePreditorUnitAIModule::~TribePreditorUnitAIModule(TribePreditorUnitAIModule 
 
 // Function: canAttackUnitAtNeutrality
 // Address: 005040a0
-/* public: virtual int __thiscall TribePreditorUnitAIModule::canAttackUnitAtNeutrality(int) */
-
 int __thiscall
 TribePreditorUnitAIModule::canAttackUnitAtNeutrality(TribePreditorUnitAIModule *this,int param_1)
 {
@@ -927,9 +917,6 @@ TribePreditorUnitAIModule::canAttackUnitAtNeutrality(TribePreditorUnitAIModule *
 // Address: 005040b0
 // [HELPER] s_C__msdev_work_age1_x1_taiuaimd_c: "C:\msdev\work\age1_x1\taiuaimd.cpp"
 // [HELPER] s___d_call_stopObject__s__d_: "#%d call stopObject %s %d\n"
-/* protected: virtual int __thiscall TribePreditorUnitAIModule::processNotify(struct NotifyEvent
-   *,unsigned long) */
-
 int __thiscall
 TribePreditorUnitAIModule::processNotify
           (TribePreditorUnitAIModule *this,NotifyEvent *param_1,ulong param_2)

@@ -607,10 +607,6 @@
 
 // Function: RGE_Player
 // Address: 0046e4b0
-/* WARNING: Variable defined which should be unmapped: index */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: __thiscall RGE_Player::RGE_Player(int,class RGE_Game_World *,unsigned char) */
-
 RGE_Player * __thiscall
 RGE_Player::RGE_Player(RGE_Player *this,int param_1,RGE_Game_World *param_2,uchar param_3)
 {
@@ -713,8 +709,6 @@ RGE_Player::RGE_Player(RGE_Player *this,int param_1,RGE_Game_World *param_2,ucha
 
 // Function: `scalar_deleting_destructor'
 // Address: 0046e750
-/* public: virtual void * __thiscall RGE_Player::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall RGE_Player::_scalar_deleting_destructor_(RGE_Player *this,uint param_1)
 {
   ~RGE_Player(this);
@@ -728,9 +722,6 @@ void * __thiscall RGE_Player::_scalar_deleting_destructor_(RGE_Player *this,uint
 
 // Function: RGE_Player
 // Address: 0046e770
-/* public: __thiscall RGE_Player::RGE_Player(class RGE_Game_World *,class RGE_Master_Player
-   *,unsigned char,char *,unsigned char,unsigned char) */
-
 RGE_Player * __thiscall
 RGE_Player::RGE_Player
           (RGE_Player *this,RGE_Game_World *param_1,RGE_Master_Player *param_2,uchar param_3,
@@ -927,8 +918,6 @@ RGE_Player::RGE_Player
 
 // Function: ~RGE_Player
 // Address: 0046eb00
-/* public: virtual __thiscall RGE_Player::~RGE_Player(void) */
-
 void __thiscall RGE_Player::~RGE_Player(RGE_Player *this)
 {
   RGE_Object_List *pRVar1;
@@ -1018,8 +1007,6 @@ void __thiscall RGE_Player::~RGE_Player(RGE_Player *this)
 
 // Function: changeToHumanPlayer
 // Address: 0046ec80
-/* public: virtual void __thiscall RGE_Player::changeToHumanPlayer(void) */
-
 void __thiscall RGE_Player::changeToHumanPlayer(RGE_Player *this)
 {
   return;
@@ -1029,8 +1016,6 @@ void __thiscall RGE_Player::changeToHumanPlayer(RGE_Player *this)
 
 // Function: changeToComputerPlayer
 // Address: 0046ec90
-/* public: virtual void __thiscall RGE_Player::changeToComputerPlayer(void) */
-
 void __thiscall RGE_Player::changeToComputerPlayer(RGE_Player *this)
 {
   return;
@@ -1040,8 +1025,6 @@ void __thiscall RGE_Player::changeToComputerPlayer(RGE_Player *this)
 
 // Function: kickAI
 // Address: 0046eca0
-/* public: virtual void __thiscall RGE_Player::kickAI(int) */
-
 void __thiscall RGE_Player::kickAI(RGE_Player *this,int param_1)
 {
   return;
@@ -1051,8 +1034,6 @@ void __thiscall RGE_Player::kickAI(RGE_Player *this,int param_1)
 
 // Function: strategicNumber
 // Address: 0046ecb0
-/* public: virtual int __thiscall RGE_Player::strategicNumber(int) */
-
 int __thiscall RGE_Player::strategicNumber(RGE_Player *this,int param_1)
 {
   return -1;
@@ -1062,8 +1043,6 @@ int __thiscall RGE_Player::strategicNumber(RGE_Player *this,int param_1)
 
 // Function: sendAICommand
 // Address: 0046ecc0
-/* public: virtual int __thiscall RGE_Player::sendAICommand(int,int,int,int,int) */
-
 int __thiscall
 RGE_Player::sendAICommand
           (RGE_Player *this,int param_1,int param_2,int param_3,int param_4,int param_5)
@@ -1075,8 +1054,6 @@ RGE_Player::sendAICommand
 
 // Function: objectCostByType
 // Address: 0046ecd0
-/* public: virtual int __thiscall RGE_Player::objectCostByType(int) */
-
 int __thiscall RGE_Player::objectCostByType(RGE_Player *this,int param_1)
 {
   return -1;
@@ -1086,8 +1063,6 @@ int __thiscall RGE_Player::objectCostByType(RGE_Player *this,int param_1)
 
 // Function: set_game_status
 // Address: 0046ece0
-/* public: virtual void __thiscall RGE_Player::set_game_status(unsigned char) */
-
 void __thiscall RGE_Player::set_game_status(RGE_Player *this,uchar param_1)
 {
   if (((param_1 != this->game_status) &&
@@ -1102,8 +1077,6 @@ void __thiscall RGE_Player::set_game_status(RGE_Player *this,uchar param_1)
 
 // Function: trackUnitGather
 // Address: 0046ed30
-/* public: virtual void __thiscall RGE_Player::trackUnitGather(int,int,int) */
-
 void __thiscall RGE_Player::trackUnitGather(RGE_Player *this,int param_1,int param_2,int param_3)
 {
   return;
@@ -1113,8 +1086,6 @@ void __thiscall RGE_Player::trackUnitGather(RGE_Player *this,int param_1,int par
 
 // Function: logStatus
 // Address: 0046ed40
-/* public: virtual void __thiscall RGE_Player::logStatus(struct _iobuf *,int) */
-
 void __thiscall RGE_Player::logStatus(RGE_Player *this,_iobuf *param_1,int param_2)
 {
   return;
@@ -1124,8 +1095,6 @@ void __thiscall RGE_Player::logStatus(RGE_Player *this,_iobuf *param_1,int param
 
 // Function: do_resign
 // Address: 0046ed50
-/* public: virtual void __thiscall RGE_Player::do_resign(int) */
-
 void __thiscall RGE_Player::do_resign(RGE_Player *this,int param_1)
 {
   uchar uVar1;
@@ -1144,8 +1113,6 @@ void __thiscall RGE_Player::do_resign(RGE_Player *this,int param_1)
 
 // Function: get_resigned
 // Address: 0046ed90
-/* public: unsigned char __thiscall RGE_Player::get_resigned(void) */
-
 uchar __thiscall RGE_Player::get_resigned(RGE_Player *this)
 {
   return this->resigned;
@@ -1155,8 +1122,6 @@ uchar __thiscall RGE_Player::get_resigned(RGE_Player *this)
 
 // Function: aiStatus
 // Address: 0046eda0
-/* public: virtual char * __thiscall RGE_Player::aiStatus(int) */
-
 char * __thiscall RGE_Player::aiStatus(RGE_Player *this,int param_1)
 {
   return (char *)0x0;
@@ -1166,8 +1131,6 @@ char * __thiscall RGE_Player::aiStatus(RGE_Player *this,int param_1)
 
 // Function: computerPlayer
 // Address: 0046edb0
-/* public: int __thiscall RGE_Player::computerPlayer(void)const  */
-
 int __thiscall RGE_Player::computerPlayer(RGE_Player *this)
 {
   return this->computerPlayerValue;
@@ -1177,8 +1140,6 @@ int __thiscall RGE_Player::computerPlayer(RGE_Player *this)
 
 // Function: isEnemy
 // Address: 0046edc0
-/* public: virtual int __thiscall RGE_Player::isEnemy(int) */
-
 int __thiscall RGE_Player::isEnemy(RGE_Player *this,int param_1)
 {
   if ((((param_1 != this->id) && (0 < param_1)) && (param_1 < this->world->player_num)) &&
@@ -1192,8 +1153,6 @@ int __thiscall RGE_Player::isEnemy(RGE_Player *this,int param_1)
 
 // Function: isAlly
 // Address: 0046ee00
-/* public: virtual int __thiscall RGE_Player::isAlly(int) */
-
 int __thiscall RGE_Player::isAlly(RGE_Player *this,int param_1)
 {
   if (param_1 == this->id) {
@@ -1210,8 +1169,6 @@ int __thiscall RGE_Player::isAlly(RGE_Player *this,int param_1)
 
 // Function: isNeutral
 // Address: 0046ee40
-/* public: virtual int __thiscall RGE_Player::isNeutral(int) */
-
 int __thiscall RGE_Player::isNeutral(RGE_Player *this,int param_1)
 {
   if ((((param_1 != this->id) && (0 < param_1)) && (param_1 < this->world->player_num)) &&
@@ -1225,8 +1182,6 @@ int __thiscall RGE_Player::isNeutral(RGE_Player *this,int param_1)
 
 // Function: isAllNeutral
 // Address: 0046ee80
-/* public: virtual int __thiscall RGE_Player::isAllNeutral(void) */
-
 int __thiscall RGE_Player::isAllNeutral(RGE_Player *this)
 {
   int iVar1;
@@ -1252,8 +1207,6 @@ int __thiscall RGE_Player::isAllNeutral(RGE_Player *this)
 
 // Function: setDiplomaticStance
 // Address: 0046eed0
-/* public: virtual void __thiscall RGE_Player::setDiplomaticStance(int,int) */
-
 void __thiscall RGE_Player::setDiplomaticStance(RGE_Player *this,int param_1,int param_2)
 {
   return;
@@ -1263,8 +1216,6 @@ void __thiscall RGE_Player::setDiplomaticStance(RGE_Player *this,int param_1,int
 
 // Function: loadAIInformation
 // Address: 0046eee0
-/* public: virtual void __thiscall RGE_Player::loadAIInformation(char *,char *,char *,int,int) */
-
 void __thiscall
 RGE_Player::loadAIInformation
           (RGE_Player *this,char *param_1,char *param_2,char *param_3,int param_4,int param_5)
@@ -1276,9 +1227,6 @@ RGE_Player::loadAIInformation
 
 // Function: sendUnitAIOrder
 // Address: 0046eef0
-/* public: virtual void __thiscall
-   RGE_Player::sendUnitAIOrder(int,int,int,int,int,float,float,float,float,int,int,int) */
-
 void __thiscall
 RGE_Player::sendUnitAIOrder
           (RGE_Player *this,int param_1,int param_2,int param_3,int param_4,int param_5,
@@ -1295,9 +1243,6 @@ RGE_Player::sendUnitAIOrder
 
 // Function: processAIOrder
 // Address: 0046ef40
-/* public: virtual void __thiscall
-   RGE_Player::processAIOrder(int,int,int,int,int,float,float,float,float,int,int,int) */
-
 void __thiscall
 RGE_Player::processAIOrder
           (RGE_Player *this,int param_1,int param_2,int param_3,int param_4,int param_5,
@@ -1324,9 +1269,6 @@ RGE_Player::processAIOrder
 
 // Function: sendGameOrder
 // Address: 0046efb0
-/* public: virtual void __thiscall RGE_Player::sendGameOrder(class RGE_Static_Object *,class
-   RGE_Static_Object *,float,float) */
-
 void __thiscall
 RGE_Player::sendGameOrder
           (RGE_Player *this,RGE_Static_Object *param_1,RGE_Static_Object *param_2,float param_3,
@@ -1340,9 +1282,6 @@ RGE_Player::sendGameOrder
 
 // Function: sendAddWaypointCommand
 // Address: 0046efe0
-/* public: virtual void __thiscall RGE_Player::sendAddWaypointCommand(int,struct XYZBYTEPoint *,int)
-    */
-
 void __thiscall
 RGE_Player::sendAddWaypointCommand(RGE_Player *this,int param_1,XYZBYTEPoint *param_2,int param_3)
 {
@@ -1354,9 +1293,6 @@ RGE_Player::sendAddWaypointCommand(RGE_Player *this,int param_1,XYZBYTEPoint *pa
 
 // Function: processAddWaypointCommand
 // Address: 0046f010
-/* public: virtual void __thiscall RGE_Player::processAddWaypointCommand(int,struct XYZBYTEPoint
-   *,int) */
-
 void __thiscall
 RGE_Player::processAddWaypointCommand
           (RGE_Player *this,int param_1,XYZBYTEPoint *param_2,int param_3)
@@ -1380,9 +1316,6 @@ RGE_Player::processAddWaypointCommand
 
 // Function: sendPlayCommand
 // Address: 0046f050
-/* WARNING: Variable defined which should be unmapped: selectedUnits */
-/* public: virtual void __thiscall RGE_Player::sendPlayCommand(int,int,int) */
-
 void __thiscall RGE_Player::sendPlayCommand(RGE_Player *this,int param_1,int param_2,int param_3)
 {
   int iVar1;
@@ -1429,8 +1362,6 @@ void __thiscall RGE_Player::sendPlayCommand(RGE_Player *this,int param_1,int par
 
 // Function: sendPlayCommand
 // Address: 0046f140
-/* public: virtual void __thiscall RGE_Player::sendPlayCommand(int,int *,int,int,int) */
-
 void __thiscall
 RGE_Player::sendPlayCommand
           (RGE_Player *this,int param_1,int *param_2,int param_3,int param_4,int param_5)
@@ -1461,8 +1392,6 @@ RGE_Player::sendPlayCommand
 
 // Function: pathingAttemptCap
 // Address: 0046f200
-/* public: int __thiscall RGE_Player::pathingAttemptCap(void) */
-
 int __thiscall RGE_Player::pathingAttemptCap(RGE_Player *this)
 {
   return this->pathingAttemptCapValue;
@@ -1472,8 +1401,6 @@ int __thiscall RGE_Player::pathingAttemptCap(RGE_Player *this)
 
 // Function: setPathingAttemptCap
 // Address: 0046f210
-/* public: void __thiscall RGE_Player::setPathingAttemptCap(int) */
-
 void __thiscall RGE_Player::setPathingAttemptCap(RGE_Player *this,int param_1)
 {
   this->pathingAttemptCapValue = param_1;
@@ -1484,8 +1411,6 @@ void __thiscall RGE_Player::setPathingAttemptCap(RGE_Player *this,int param_1)
 
 // Function: pathingDelayCap
 // Address: 0046f220
-/* public: int __thiscall RGE_Player::pathingDelayCap(void) */
-
 int __thiscall RGE_Player::pathingDelayCap(RGE_Player *this)
 {
   return this->pathingDelayCapValue;
@@ -1495,8 +1420,6 @@ int __thiscall RGE_Player::pathingDelayCap(RGE_Player *this)
 
 // Function: setPathingDelayCap
 // Address: 0046f230
-/* public: void __thiscall RGE_Player::setPathingDelayCap(int) */
-
 void __thiscall RGE_Player::setPathingDelayCap(RGE_Player *this,int param_1)
 {
   this->pathingDelayCapValue = param_1;
@@ -1507,8 +1430,6 @@ void __thiscall RGE_Player::setPathingDelayCap(RGE_Player *this,int param_1)
 
 // Function: currentUpdatePathingAttempts
 // Address: 0046f240
-/* public: int __thiscall RGE_Player::currentUpdatePathingAttempts(void) */
-
 int __thiscall RGE_Player::currentUpdatePathingAttempts(RGE_Player *this)
 {
   return this->currentUpdatePathingAttemptsValue;
@@ -1518,8 +1439,6 @@ int __thiscall RGE_Player::currentUpdatePathingAttempts(RGE_Player *this)
 
 // Function: availablePathingAttempts
 // Address: 0046f250
-/* public: int __thiscall RGE_Player::availablePathingAttempts(int) */
-
 int __thiscall RGE_Player::availablePathingAttempts(RGE_Player *this,int param_1)
 {
   if ((this->pathingDelayCapValue != -1) && (this->pathingDelayCapValue < param_1)) {
@@ -1535,8 +1454,6 @@ int __thiscall RGE_Player::availablePathingAttempts(RGE_Player *this,int param_1
 
 // Function: incrementPathingAttempts
 // Address: 0046f290
-/* public: void __thiscall RGE_Player::incrementPathingAttempts(void) */
-
 void __thiscall RGE_Player::incrementPathingAttempts(RGE_Player *this)
 {
   this->currentUpdatePathingAttemptsValue = this->currentUpdatePathingAttemptsValue + 1;
@@ -1547,9 +1464,6 @@ void __thiscall RGE_Player::incrementPathingAttempts(RGE_Player *this)
 
 // Function: sendChatMessage
 // Address: 0046f2a0
-/* WARNING: Variable defined which should be unmapped: textOut */
-/* public: void __cdecl RGE_Player::sendChatMessage(int,int,char *,...) */
-
 void __thiscall
 RGE_Player::sendChatMessage(RGE_Player *this,int param_1,int param_2,char *param_3,...)
 {
@@ -1610,9 +1524,6 @@ RGE_Player::sendChatMessage(RGE_Player *this,int param_1,int param_2,char *param
 
 // Function: make_scenario_obj
 // Address: 0046f3a0
-/* public: virtual class RGE_Static_Object * __thiscall
-   RGE_Player::make_scenario_obj(float,float,float,short,unsigned char,float) */
-
 RGE_Static_Object * __thiscall
 RGE_Player::make_scenario_obj
           (RGE_Player *this,float param_1,float param_2,float param_3,short param_4,uchar param_5,
@@ -1642,8 +1553,6 @@ RGE_Player::make_scenario_obj
 
 // Function: scenario_save
 // Address: 0046f410
-/* public: virtual void __thiscall RGE_Player::scenario_save(int) */
-
 void __thiscall RGE_Player::scenario_save(RGE_Player *this,int param_1)
 {
   return;
@@ -1653,10 +1562,6 @@ void __thiscall RGE_Player::scenario_save(RGE_Player *this,int param_1)
 
 // Function: scenario_load
 // Address: 0046f420
-/* WARNING: Variable defined which should be unmapped: temp_byte */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual void __thiscall RGE_Player::scenario_load(int,long *,float) */
-
 void __thiscall RGE_Player::scenario_load(RGE_Player *this,int param_1,long *param_2,float param_3)
 {
   RGE_Victory_Conditions *this_00;
@@ -1715,7 +1620,6 @@ void __thiscall RGE_Player::scenario_load(RGE_Player *this,int param_1,long *par
     sVar5 = 0;
     this->allied_LOS_Enable = 0;
     if (0 < this->attribute_num) {
-                    /* language.dll match for 0x74: "Copperplate Gothic Light" */
       rge_read(iVar1,this->attributes,0x74);
     }
     rge_read(iVar1,(void *)((int)&has_team + 2),2);
@@ -1765,9 +1669,6 @@ void __thiscall RGE_Player::scenario_load(RGE_Player *this,int param_1,long *par
 
 // Function: scenario_postsave
 // Address: 0046f6b0
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: virtual void __thiscall RGE_Player::scenario_postsave(int) */
-
 void __thiscall RGE_Player::scenario_postsave(RGE_Player *this,int param_1)
 {
   char cVar1;
@@ -1802,10 +1703,6 @@ void __thiscall RGE_Player::scenario_postsave(RGE_Player *this,int param_1)
 
 // Function: scenario_postload
 // Address: 0046f7a0
-/* WARNING: Variable defined which should be unmapped: temp_byte */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual void __thiscall RGE_Player::scenario_postload(int,long *,float) */
-
 void __thiscall
 RGE_Player::scenario_postload(RGE_Player *this,int param_1,long *param_2,float param_3)
 {
@@ -1864,7 +1761,6 @@ RGE_Player::scenario_postload(RGE_Player *this,int param_1,long *param_2,float p
   fVar1 = (float)_DAT_00570eb0;
   this->allied_LOS_Enable = 0;
   if ((param_3 <= fVar1) && (0 < this->attribute_num)) {
-                    /* language.dll match for 0x74: "Copperplate Gothic Light" */
     rge_read(iVar2,this->attributes,0x74);
   }
   rge_read(iVar2,(void *)((int)&has_team + 2),2);
@@ -1921,9 +1817,6 @@ RGE_Player::scenario_postload(RGE_Player *this,int param_1,long *param_2,float p
 
 // Function: load
 // Address: 0046fa60
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual void __thiscall RGE_Player::load(int) */
-
 void __thiscall RGE_Player::load(RGE_Player *this,int param_1)
 {
   short *psVar1;
@@ -2028,9 +1921,6 @@ void __thiscall RGE_Player::load(RGE_Player *this,int param_1)
 
 // Function: load_master_object
 // Address: 0046fc40
-/* public: void __thiscall RGE_Player::load_master_object(int,short,unsigned char,class RGE_Sprite *
-   *,class RGE_Sound * *) */
-
 void __thiscall
 RGE_Player::load_master_object
           (RGE_Player *this,int param_1,short param_2,uchar param_3,RGE_Sprite **param_4,
@@ -2139,8 +2029,6 @@ switchD_0046fc75_caseD_b:
 
 // Function: load_info
 // Address: 0046ff00
-/* public: void __thiscall RGE_Player::load_info(int) */
-
 void __thiscall RGE_Player::load_info(RGE_Player *this,int param_1)
 {
   (**(code **)(this->_padding_ + 0xf0))(param_1,0,1);
@@ -2154,8 +2042,6 @@ void __thiscall RGE_Player::load_info(RGE_Player *this,int param_1)
 
 // Function: get_checksum
 // Address: 0046ff40
-/* public: long __thiscall RGE_Player::get_checksum(void) */
-
 long __thiscall RGE_Player::get_checksum(RGE_Player *this)
 {
   if (this->checksum_created_this_update == '\0') {
@@ -2168,8 +2054,6 @@ long __thiscall RGE_Player::get_checksum(RGE_Player *this)
 
 // Function: get_checksums
 // Address: 0046ff60
-/* public: unsigned char __thiscall RGE_Player::get_checksums(long &,long &,long &) */
-
 uchar __thiscall
 RGE_Player::get_checksums(RGE_Player *this,long *param_1,long *param_2,long *param_3)
 {
@@ -2186,9 +2070,6 @@ RGE_Player::get_checksums(RGE_Player *this,long *param_1,long *param_2,long *par
 
 // Function: create_checksum
 // Address: 0046ff90
-/* WARNING: Variable defined which should be unmapped: num3 */
-/* public: long __thiscall RGE_Player::create_checksum(void) */
-
 long __thiscall RGE_Player::create_checksum(RGE_Player *this)
 {
   byte bVar1;
@@ -2247,8 +2128,6 @@ long __thiscall RGE_Player::create_checksum(RGE_Player *this)
 
 // Function: new_attribute_num
 // Address: 004700b0
-/* public: void __thiscall RGE_Player::new_attribute_num(short,float) */
-
 void __thiscall RGE_Player::new_attribute_num(RGE_Player *this,short param_1,float param_2)
 {
   if ((-1 < param_1) && (param_1 < this->attribute_num)) {
@@ -2261,8 +2140,6 @@ void __thiscall RGE_Player::new_attribute_num(RGE_Player *this,short param_1,flo
 
 // Function: add_attribute_num
 // Address: 004700d0
-/* public: virtual void __thiscall RGE_Player::add_attribute_num(short,float,unsigned char) */
-
 void __thiscall
 RGE_Player::add_attribute_num(RGE_Player *this,short param_1,float param_2,uchar param_3)
 {
@@ -2276,8 +2153,6 @@ RGE_Player::add_attribute_num(RGE_Player *this,short param_1,float param_2,uchar
 
 // Function: make_available
 // Address: 00470100
-/* public: void __thiscall RGE_Player::make_available(short,unsigned char) */
-
 void __thiscall RGE_Player::make_available(RGE_Player *this,short param_1,uchar param_2)
 {
   if (this->master_objects[param_1] != (RGE_Master_Static_Object *)0x0) {
@@ -2290,8 +2165,6 @@ void __thiscall RGE_Player::make_available(RGE_Player *this,short param_1,uchar 
 
 // Function: update
 // Address: 00470120
-/* public: virtual void __thiscall RGE_Player::update(void) */
-
 void __thiscall RGE_Player::update(RGE_Player *this)
 {
   uchar uVar1;
@@ -2317,8 +2190,6 @@ void __thiscall RGE_Player::update(RGE_Player *this)
 
 // Function: update_dopplegangers
 // Address: 00470180
-/* public: virtual void __thiscall RGE_Player::update_dopplegangers(void) */
-
 void __thiscall RGE_Player::update_dopplegangers(RGE_Player *this)
 {
   if (MouseSystem != (TMousePointer *)0x0) {
@@ -2333,9 +2204,6 @@ void __thiscall RGE_Player::update_dopplegangers(RGE_Player *this)
 
 // Function: save
 // Address: 004701b0
-/* WARNING: Variable defined which should be unmapped: table */
-/* public: virtual void __thiscall RGE_Player::save(int) */
-
 void __thiscall RGE_Player::save(RGE_Player *this,int param_1)
 {
   char cVar1;
@@ -2395,8 +2263,6 @@ void __thiscall RGE_Player::save(RGE_Player *this,int param_1)
 
 // Function: save2
 // Address: 00470380
-/* public: virtual void __thiscall RGE_Player::save2(int) */
-
 void __thiscall RGE_Player::save2(RGE_Player *this,int param_1)
 {
   short *psVar1;
@@ -2447,8 +2313,6 @@ void __thiscall RGE_Player::save2(RGE_Player *this,int param_1)
 
 // Function: save_info
 // Address: 00470490
-/* public: virtual void __thiscall RGE_Player::save_info(int) */
-
 void __thiscall RGE_Player::save_info(RGE_Player *this,int param_1)
 {
   (**(code **)(this->victory_conditions->_padding_ + 0xc))(param_1);
@@ -2459,8 +2323,6 @@ void __thiscall RGE_Player::save_info(RGE_Player *this,int param_1)
 
 // Function: set_map_loc
 // Address: 004704a0
-/* public: void __thiscall RGE_Player::set_map_loc(short,short) */
-
 void __thiscall RGE_Player::set_map_loc(RGE_Player *this,short param_1,short param_2)
 {
   this->map_x = param_1;
@@ -2472,9 +2334,6 @@ void __thiscall RGE_Player::set_map_loc(RGE_Player *this,short param_1,short par
 
 // Function: set_view_loc
 // Address: 004704c0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall RGE_Player::set_view_loc(float,float) */
-
 void __thiscall RGE_Player::set_view_loc(RGE_Player *this,float param_1,float param_2)
 {
   bool bVar1;
@@ -2508,8 +2367,6 @@ void __thiscall RGE_Player::set_view_loc(RGE_Player *this,float param_1,float pa
 
 // Function: random_start
 // Address: 00470570
-/* public: virtual void __thiscall RGE_Player::random_start(void) */
-
 void __thiscall RGE_Player::random_start(RGE_Player *this)
 {
   return;
@@ -2519,8 +2376,6 @@ void __thiscall RGE_Player::random_start(RGE_Player *this)
 
 // Function: destroy_objects
 // Address: 00470580
-/* public: void __thiscall RGE_Player::destroy_objects(void) */
-
 void __thiscall RGE_Player::destroy_objects(RGE_Player *this)
 {
   RGE_Object_Node *pRVar1;
@@ -2535,8 +2390,6 @@ void __thiscall RGE_Player::destroy_objects(RGE_Player *this)
 
 // Function: set_color_table
 // Address: 004705a0
-/* public: void __thiscall RGE_Player::set_color_table(unsigned char) */
-
 void __thiscall RGE_Player::set_color_table(RGE_Player *this,uchar param_1)
 {
   this->color_table = this->world->color_tables[param_1];
@@ -2547,8 +2400,6 @@ void __thiscall RGE_Player::set_color_table(RGE_Player *this,uchar param_1)
 
 // Function: victory_if_game_on
 // Address: 004705c0
-/* public: void __thiscall RGE_Player::victory_if_game_on(void) */
-
 void __thiscall RGE_Player::victory_if_game_on(RGE_Player *this)
 {
   if (this->game_status == '\0') {
@@ -2561,8 +2412,6 @@ void __thiscall RGE_Player::victory_if_game_on(RGE_Player *this)
 
 // Function: loss_if_game_on
 // Address: 004705e0
-/* public: void __thiscall RGE_Player::loss_if_game_on(void) */
-
 void __thiscall RGE_Player::loss_if_game_on(RGE_Player *this)
 {
   if (this->game_status == '\0') {
@@ -2575,8 +2424,6 @@ void __thiscall RGE_Player::loss_if_game_on(RGE_Player *this)
 
 // Function: win_game_now
 // Address: 00470600
-/* public: void __thiscall RGE_Player::win_game_now(void) */
-
 void __thiscall RGE_Player::win_game_now(RGE_Player *this)
 {
   RGE_Player *this_00;
@@ -2612,8 +2459,6 @@ LAB_00470674:
 
 // Function: check_victory_conditions
 // Address: 00470690
-/* public: unsigned char __thiscall RGE_Player::check_victory_conditions(void) */
-
 uchar __thiscall RGE_Player::check_victory_conditions(RGE_Player *this)
 {
   uchar uVar1;
@@ -2629,8 +2474,6 @@ uchar __thiscall RGE_Player::check_victory_conditions(RGE_Player *this)
 
 // Function: check_ally_group
 // Address: 004706b0
-/* public: unsigned char __thiscall RGE_Player::check_ally_group(long &) */
-
 uchar __thiscall RGE_Player::check_ally_group(RGE_Player *this,long *param_1)
 {
   int iVar1;
@@ -2669,9 +2512,6 @@ uchar __thiscall RGE_Player::check_ally_group(RGE_Player *this,long *param_1)
 
 // Function: check_victory
 // Address: 00470750
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: unsigned char __thiscall RGE_Player::check_victory(void) */
-
 uchar __thiscall RGE_Player::check_victory(RGE_Player *this)
 {
   bool bVar1;
@@ -2729,8 +2569,6 @@ LAB_0047082c:
 
 // Function: modify_tobj
 // Address: 00470840
-/* public: void __thiscall RGE_Player::modify_tobj(short,short,float,unsigned char) */
-
 void __thiscall
 RGE_Player::modify_tobj(RGE_Player *this,short param_1,short param_2,float param_3,uchar param_4)
 {
@@ -2780,8 +2618,6 @@ RGE_Player::modify_tobj(RGE_Player *this,short param_1,short param_2,float param
 
 // Function: modify_tobj_delta
 // Address: 00470940
-/* public: void __thiscall RGE_Player::modify_tobj_delta(short,short,float,unsigned char) */
-
 void __thiscall
 RGE_Player::modify_tobj_delta
           (RGE_Player *this,short param_1,short param_2,float param_3,uchar param_4)
@@ -2832,8 +2668,6 @@ RGE_Player::modify_tobj_delta
 
 // Function: modify_tobj_percent
 // Address: 00470a40
-/* public: void __thiscall RGE_Player::modify_tobj_percent(short,short,float,unsigned char) */
-
 void __thiscall
 RGE_Player::modify_tobj_percent
           (RGE_Player *this,short param_1,short param_2,float param_3,uchar param_4)
@@ -2884,8 +2718,6 @@ RGE_Player::modify_tobj_percent
 
 // Function: copy_obj
 // Address: 00470b40
-/* public: void __thiscall RGE_Player::copy_obj(short,short) */
-
 void __thiscall RGE_Player::copy_obj(RGE_Player *this,short param_1,short param_2)
 {
   RGE_Object_Node *pRVar1;
@@ -2911,8 +2743,6 @@ void __thiscall RGE_Player::copy_obj(RGE_Player *this,short param_1,short param_
 
 // Function: set_allied_victory
 // Address: 00470bb0
-/* public: void __thiscall RGE_Player::set_allied_victory(unsigned char) */
-
 void __thiscall RGE_Player::set_allied_victory(RGE_Player *this,uchar param_1)
 {
   this->allied_victory = param_1;
@@ -2923,8 +2753,6 @@ void __thiscall RGE_Player::set_allied_victory(RGE_Player *this,uchar param_1)
 
 // Function: get_allied_victory
 // Address: 00470bc0
-/* public: unsigned char __thiscall RGE_Player::get_allied_victory(void) */
-
 uchar __thiscall RGE_Player::get_allied_victory(RGE_Player *this)
 {
   return this->allied_victory;
@@ -2934,8 +2762,6 @@ uchar __thiscall RGE_Player::get_allied_victory(RGE_Player *this)
 
 // Function: relation
 // Address: 00470bd0
-/* public: unsigned char __thiscall RGE_Player::relation(long) */
-
 uchar __thiscall RGE_Player::relation(RGE_Player *this,long param_1)
 {
   return this->relations[param_1];
@@ -2945,8 +2771,6 @@ uchar __thiscall RGE_Player::relation(RGE_Player *this,long param_1)
 
 // Function: set_relation
 // Address: 00470be0
-/* public: void __thiscall RGE_Player::set_relation(long,unsigned char) */
-
 void __thiscall RGE_Player::set_relation(RGE_Player *this,long param_1,uchar param_2)
 {
   RGE_Object_Node *pRVar1;
@@ -2978,9 +2802,6 @@ void __thiscall RGE_Player::set_relation(RGE_Player *this,long param_1,uchar par
 
 // Function: make_new_object
 // Address: 00470c70
-/* public: virtual class RGE_Static_Object * __thiscall
-   RGE_Player::make_new_object(long,float,float,float,int) */
-
 RGE_Static_Object * __thiscall
 RGE_Player::make_new_object
           (RGE_Player *this,long param_1,float param_2,float param_3,float param_4,int param_5)
@@ -3001,8 +2822,6 @@ RGE_Player::make_new_object
 // Function: reset_selected
 // Address: 00470cb0
 // [HELPER] groups_used: "00000000"
-/* public: void __thiscall RGE_Player::reset_selected(void) */
-
 void __thiscall RGE_Player::reset_selected(RGE_Player *this)
 {
   int iVar1;
@@ -3041,8 +2860,6 @@ void __thiscall RGE_Player::reset_selected(RGE_Player *this)
 
 // Function: select_object
 // Address: 00470d20
-/* public: int __thiscall RGE_Player::select_object(class RGE_Static_Object *) */
-
 int __thiscall RGE_Player::select_object(RGE_Player *this,RGE_Static_Object *param_1)
 {
   byte bVar1;
@@ -3071,8 +2888,6 @@ int __thiscall RGE_Player::select_object(RGE_Player *this,RGE_Static_Object *par
 
 // Function: select_one_object
 // Address: 00470d80
-/* public: int __thiscall RGE_Player::select_one_object(class RGE_Static_Object *,int) */
-
 int __thiscall
 RGE_Player::select_one_object(RGE_Player *this,RGE_Static_Object *param_1,int param_2)
 {
@@ -3112,8 +2927,6 @@ RGE_Player::select_one_object(RGE_Player *this,RGE_Static_Object *param_1,int pa
 
 // Function: unselect_object
 // Address: 00470e30
-/* public: void __thiscall RGE_Player::unselect_object(void) */
-
 void __thiscall RGE_Player::unselect_object(RGE_Player *this)
 {
   short sVar1;
@@ -3141,8 +2954,6 @@ void __thiscall RGE_Player::unselect_object(RGE_Player *this)
 
 // Function: unselect_one_object
 // Address: 00470e80
-/* public: void __thiscall RGE_Player::unselect_one_object(class RGE_Static_Object *) */
-
 void __thiscall RGE_Player::unselect_one_object(RGE_Player *this,RGE_Static_Object *param_1)
 {
   short sVar1;
@@ -3172,8 +2983,6 @@ void __thiscall RGE_Player::unselect_one_object(RGE_Player *this,RGE_Static_Obje
 
 // Function: unselect_one_object
 // Address: 00470ed0
-/* public: void __thiscall RGE_Player::unselect_one_object(short) */
-
 void __thiscall RGE_Player::unselect_one_object(RGE_Player *this,short param_1)
 {
   RGE_Static_Object *pRVar1;
@@ -3212,8 +3021,6 @@ void __thiscall RGE_Player::unselect_one_object(RGE_Player *this,short param_1)
 // Function: group_objects
 // Address: 00470f80
 // [HELPER] groups_used: "00000000"
-/* public: int __thiscall RGE_Player::group_objects(int) */
-
 int __thiscall RGE_Player::group_objects(RGE_Player *this,int param_1)
 {
   byte bVar1;
@@ -3297,8 +3104,6 @@ int __thiscall RGE_Player::group_objects(RGE_Player *this,int param_1)
 
 // Function: select_group
 // Address: 004710c0
-/* public: int __thiscall RGE_Player::select_group(int) */
-
 int __thiscall RGE_Player::select_group(RGE_Player *this,int param_1)
 {
   RGE_Static_Object *pRVar1;
@@ -3332,8 +3137,6 @@ int __thiscall RGE_Player::select_group(RGE_Player *this,int param_1)
 
 // Function: own_selected
 // Address: 00471120
-/* public: int __thiscall RGE_Player::own_selected(void) */
-
 int __thiscall RGE_Player::own_selected(RGE_Player *this)
 {
   short sVar1;
@@ -3360,8 +3163,6 @@ int __thiscall RGE_Player::own_selected(RGE_Player *this)
 
 // Function: is_category_selected
 // Address: 00471170
-/* public: int __thiscall RGE_Player::is_category_selected(short) */
-
 int __thiscall RGE_Player::is_category_selected(RGE_Player *this,short param_1)
 {
   short sVar1;
@@ -3388,8 +3189,6 @@ int __thiscall RGE_Player::is_category_selected(RGE_Player *this,short param_1)
 
 // Function: is_group_selected
 // Address: 004711d0
-/* public: int __thiscall RGE_Player::is_group_selected(short) */
-
 int __thiscall RGE_Player::is_group_selected(RGE_Player *this,short param_1)
 {
   short sVar1;
@@ -3416,8 +3215,6 @@ int __thiscall RGE_Player::is_group_selected(RGE_Player *this,short param_1)
 
 // Function: unit_level_selected
 // Address: 00471230
-/* public: unsigned char __thiscall RGE_Player::unit_level_selected(void) */
-
 uchar __thiscall RGE_Player::unit_level_selected(RGE_Player *this)
 {
   RGE_Static_Object *pRVar1;
@@ -3451,9 +3248,6 @@ uchar __thiscall RGE_Player::unit_level_selected(RGE_Player *this)
 
 // Function: get_select_level
 // Address: 00471290
-/* WARNING: Variable defined which should be unmapped: select_level */
-/* public: unsigned char __thiscall RGE_Player::get_select_level(void) */
-
 uchar __thiscall RGE_Player::get_select_level(RGE_Player *this)
 {
   byte bVar1;
@@ -3483,10 +3277,6 @@ uchar __thiscall RGE_Player::get_select_level(RGE_Player *this)
 
 // Function: get_selected_objects_to_command
 // Address: 004712f0
-/* WARNING: Variable defined which should be unmapped: j */
-/* public: unsigned char __thiscall RGE_Player::get_selected_objects_to_command(class
-   RGE_Static_Object * * *,short *,short,short,short,short) */
-
 uchar __thiscall
 RGE_Player::get_selected_objects_to_command
           (RGE_Player *this,RGE_Static_Object ***param_1,short *param_2,short param_3,short param_4,
@@ -3548,8 +3338,6 @@ RGE_Player::get_selected_objects_to_command
 
 // Function: update_selected
 // Address: 00471430
-/* public: void __thiscall RGE_Player::update_selected(void) */
-
 void __thiscall RGE_Player::update_selected(RGE_Player *this)
 {
   RGE_Static_Object *pRVar1;
@@ -3580,8 +3368,6 @@ void __thiscall RGE_Player::update_selected(RGE_Player *this)
 
 // Function: select_area
 // Address: 00471480
-/* public: void __thiscall RGE_Player::select_area(short,short,short,short) */
-
 void __thiscall
 RGE_Player::select_area(RGE_Player *this,short param_1,short param_2,short param_3,short param_4)
 {
@@ -3596,8 +3382,6 @@ RGE_Player::select_area(RGE_Player *this,short param_1,short param_2,short param
 
 // Function: unselect_area
 // Address: 004714c0
-/* public: void __thiscall RGE_Player::unselect_area(void) */
-
 void __thiscall RGE_Player::unselect_area(RGE_Player *this)
 {
   this->selected_start_col = -1;
@@ -3611,8 +3395,6 @@ void __thiscall RGE_Player::unselect_area(RGE_Player *this)
 
 // Function: ungroup_objects
 // Address: 004714e0
-/* public: void __thiscall RGE_Player::ungroup_objects(void) */
-
 void __thiscall RGE_Player::ungroup_objects(RGE_Player *this)
 {
   RGE_Static_Object **ppRVar1;
@@ -3640,8 +3422,6 @@ void __thiscall RGE_Player::ungroup_objects(RGE_Player *this)
 
 // Function: analyize_selected_objects
 // Address: 00471520
-/* public: virtual void __thiscall RGE_Player::analyize_selected_objects(void) */
-
 void __thiscall RGE_Player::analyize_selected_objects(RGE_Player *this)
 {
   return;
@@ -3651,8 +3431,6 @@ void __thiscall RGE_Player::analyize_selected_objects(RGE_Player *this)
 
 // Function: get_mouse_pointer_action_vars
 // Address: 00471530
-/* public: virtual int __thiscall RGE_Player::get_mouse_pointer_action_vars(int,int &,int &) */
-
 int __thiscall
 RGE_Player::get_mouse_pointer_action_vars(RGE_Player *this,int param_1,int *param_2,int *param_3)
 {
@@ -3665,10 +3443,6 @@ RGE_Player::get_mouse_pointer_action_vars(RGE_Player *this,int param_1,int *para
 
 // Function: command_make_move
 // Address: 00471550
-/* WARNING: Variable defined which should be unmapped: list */
-/* public: virtual unsigned char __thiscall RGE_Player::command_make_move(class RGE_Static_Object
-   *,float,float) */
-
 uchar __thiscall
 RGE_Player::command_make_move
           (RGE_Player *this,RGE_Static_Object *param_1,float param_2,float param_3)
@@ -3693,11 +3467,6 @@ RGE_Player::command_make_move
 
 // Function: command_make_work
 // Address: 004715d0
-/* WARNING: Variable defined which should be unmapped: list */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall RGE_Player::command_make_work(class RGE_Static_Object
-   *,float,float) */
-
 uchar __thiscall
 RGE_Player::command_make_work
           (RGE_Player *this,RGE_Static_Object *param_1,float param_2,float param_3)
@@ -3740,10 +3509,6 @@ RGE_Player::command_make_work
 
 // Function: command_make_do
 // Address: 004716d0
-/* WARNING: Variable defined which should be unmapped: list */
-/* public: virtual unsigned char __thiscall RGE_Player::command_make_do(class RGE_Static_Object
-   *,float,float) */
-
 uchar __thiscall
 RGE_Player::command_make_do(RGE_Player *this,RGE_Static_Object *param_1,float param_2,float param_3)
 {
@@ -3773,9 +3538,6 @@ RGE_Player::command_make_do(RGE_Player *this,RGE_Static_Object *param_1,float pa
 
 // Function: command_stop
 // Address: 00471760
-/* WARNING: Variable defined which should be unmapped: list */
-/* public: virtual unsigned char __thiscall RGE_Player::command_stop(void) */
-
 uchar __thiscall RGE_Player::command_stop(RGE_Player *this)
 {
   uchar uVar1;
@@ -3797,9 +3559,6 @@ uchar __thiscall RGE_Player::command_stop(RGE_Player *this)
 
 // Function: command_place_object
 // Address: 004717d0
-/* public: virtual unsigned char __thiscall
-   RGE_Player::command_place_object(short,float,float,float) */
-
 uchar __thiscall
 RGE_Player::command_place_object
           (RGE_Player *this,short param_1,float param_2,float param_3,float param_4)
@@ -3815,9 +3574,6 @@ RGE_Player::command_place_object
 
 // Function: command_add_attribute
 // Address: 00471820
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall RGE_Player::command_add_attribute(int,float) */
-
 uchar __thiscall RGE_Player::command_add_attribute(RGE_Player *this,int param_1,float param_2)
 {
   if ((param_1 != -1) && (param_2 != _DAT_00570ec4)) {
@@ -3831,9 +3587,6 @@ uchar __thiscall RGE_Player::command_add_attribute(RGE_Player *this,int param_1,
 
 // Function: command_give_attribute
 // Address: 00471860
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall RGE_Player::command_give_attribute(int,int,float) */
-
 uchar __thiscall
 RGE_Player::command_give_attribute(RGE_Player *this,int param_1,int param_2,float param_3)
 {
@@ -3848,9 +3601,6 @@ RGE_Player::command_give_attribute(RGE_Player *this,int param_1,int param_2,floa
 
 // Function: command_formation
 // Address: 004718c0
-/* WARNING: Variable defined which should be unmapped: list */
-/* public: virtual unsigned char __thiscall RGE_Player::command_formation(int) */
-
 uchar __thiscall RGE_Player::command_formation(RGE_Player *this,int param_1)
 {
   int iVar1;
@@ -3878,9 +3628,6 @@ uchar __thiscall RGE_Player::command_formation(RGE_Player *this,int param_1)
 
 // Function: command_stand_ground
 // Address: 00471940
-/* WARNING: Variable defined which should be unmapped: list */
-/* public: virtual unsigned char __thiscall RGE_Player::command_stand_ground(void) */
-
 uchar __thiscall RGE_Player::command_stand_ground(RGE_Player *this)
 {
   uchar uVar1;
@@ -3904,8 +3651,6 @@ uchar __thiscall RGE_Player::command_stand_ground(RGE_Player *this)
 
 // Function: command_create_group
 // Address: 004719d0
-/* public: virtual unsigned char __thiscall RGE_Player::command_create_group(int,int *,int,float) */
-
 uchar __thiscall
 RGE_Player::command_create_group
           (RGE_Player *this,int param_1,int *param_2,int param_3,float param_4)
@@ -3919,8 +3664,6 @@ RGE_Player::command_create_group
 
 // Function: command_add_to_group
 // Address: 00471a00
-/* public: virtual unsigned char __thiscall RGE_Player::command_add_to_group(int,int,float) */
-
 uchar __thiscall
 RGE_Player::command_add_to_group(RGE_Player *this,int param_1,int param_2,float param_3)
 {
@@ -3932,8 +3675,6 @@ RGE_Player::command_add_to_group(RGE_Player *this,int param_1,int param_2,float 
 
 // Function: command_remove_from_group
 // Address: 00471a30
-/* public: virtual unsigned char __thiscall RGE_Player::command_remove_from_group(int,int) */
-
 uchar __thiscall RGE_Player::command_remove_from_group(RGE_Player *this,int param_1,int param_2)
 {
   RGE_Command::command_remove_from_group(this->world->commands,(int)this->id,param_1,param_2);
@@ -3944,8 +3685,6 @@ uchar __thiscall RGE_Player::command_remove_from_group(RGE_Player *this,int para
 
 // Function: command_destroy_group
 // Address: 00471a50
-/* public: virtual unsigned char __thiscall RGE_Player::command_destroy_group(int) */
-
 uchar __thiscall RGE_Player::command_destroy_group(RGE_Player *this,int param_1)
 {
   RGE_Command::command_destroy_group(this->world->commands,(int)this->id,param_1);
@@ -3956,8 +3695,6 @@ uchar __thiscall RGE_Player::command_destroy_group(RGE_Player *this,int param_1)
 
 // Function: command_resign
 // Address: 00471a70
-/* public: virtual unsigned char __thiscall RGE_Player::command_resign(int,int) */
-
 uchar __thiscall RGE_Player::command_resign(RGE_Player *this,int param_1,int param_2)
 {
   if (this->game_status == '\0') {
@@ -3971,9 +3708,6 @@ uchar __thiscall RGE_Player::command_resign(RGE_Player *this,int param_1,int par
 
 // Function: command_add_waypoint
 // Address: 00471aa0
-/* WARNING: Variable defined which should be unmapped: list */
-/* public: virtual unsigned char __thiscall RGE_Player::command_add_waypoint(float,float,float) */
-
 uchar __thiscall
 RGE_Player::command_add_waypoint(RGE_Player *this,float param_1,float param_2,float param_3)
 {
@@ -4000,9 +3734,6 @@ RGE_Player::command_add_waypoint(RGE_Player *this,float param_1,float param_2,fl
 
 // Function: addObject
 // Address: 00471b20
-/* public: virtual struct RGE_Object_Node * __thiscall RGE_Player::addObject(class RGE_Static_Object
-   *,int,int) */
-
 RGE_Object_Node * __thiscall
 RGE_Player::addObject(RGE_Player *this,RGE_Static_Object *param_1,int param_2,int param_3)
 {
@@ -4029,9 +3760,6 @@ RGE_Player::addObject(RGE_Player *this,RGE_Static_Object *param_1,int param_2,in
 
 // Function: removeObject
 // Address: 00471b70
-/* public: virtual void __thiscall RGE_Player::removeObject(class RGE_Static_Object *,int,int,struct
-   RGE_Object_Node *) */
-
 void __thiscall
 RGE_Player::removeObject
           (RGE_Player *this,RGE_Static_Object *param_1,int param_2,int param_3,
@@ -4059,8 +3787,6 @@ RGE_Player::removeObject
 
 // Function: logMessage
 // Address: 00471bd0
-/* public: virtual void __cdecl RGE_Player::logMessage(char *,...) */
-
 void __thiscall RGE_Player::logMessage(RGE_Player *this,char *param_1,...)
 {
   return;
@@ -4070,8 +3796,6 @@ void __thiscall RGE_Player::logMessage(RGE_Player *this,char *param_1,...)
 
 // Function: notify
 // Address: 00471be0
-/* public: virtual void __thiscall RGE_Player::notify(int,int,int,long,long,long) */
-
 void __thiscall
 RGE_Player::notify(RGE_Player *this,int param_1,int param_2,int param_3,long param_4,long param_5,
                   long param_6)
@@ -4083,8 +3807,6 @@ RGE_Player::notify(RGE_Player *this,int param_1,int param_2,int param_3,long par
 
 // Function: set_map_visible
 // Address: 00471bf0
-/* public: void __thiscall RGE_Player::set_map_visible(void) */
-
 void __thiscall RGE_Player::set_map_visible(RGE_Player *this)
 {
   RGE_Visible_Map::set_all(this->visible,'\x01');
@@ -4095,8 +3817,6 @@ void __thiscall RGE_Player::set_map_visible(RGE_Player *this)
 
 // Function: remake_visible_map
 // Address: 00471c00
-/* public: void __thiscall RGE_Player::remake_visible_map(void) */
-
 void __thiscall RGE_Player::remake_visible_map(RGE_Player *this)
 {
   RGE_Visible_Map *pRVar1;
@@ -4131,8 +3851,6 @@ void __thiscall RGE_Player::remake_visible_map(RGE_Player *this)
 
 // Function: load_victory
 // Address: 00471c90
-/* public: virtual void __thiscall RGE_Player::load_victory(int,long *,unsigned char) */
-
 void __thiscall RGE_Player::load_victory(RGE_Player *this,int param_1,long *param_2,uchar param_3)
 {
   RGE_Victory_Conditions *pRVar1;
@@ -4163,8 +3881,6 @@ void __thiscall RGE_Player::load_victory(RGE_Player *this,int param_1,long *para
 
 // Function: new_victory
 // Address: 00471d00
-/* public: virtual void __thiscall RGE_Player::new_victory(void) */
-
 void __thiscall RGE_Player::new_victory(RGE_Player *this)
 {
   RGE_Victory_Conditions *pRVar1;

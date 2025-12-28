@@ -682,8 +682,6 @@
 // [HELPER] s_: ""
 // [HELPER] s_Main_Error_Screen: "Main Error Screen"
 // [HELPER] s_scr1: "scr1"
-/* public: __thiscall TRIBE_Screen_Main_Error::TRIBE_Screen_Main_Error(void) */
-
 TRIBE_Screen_Main_Error * __thiscall
 TRIBE_Screen_Main_Error::TRIBE_Screen_Main_Error(TRIBE_Screen_Main_Error *this)
 {
@@ -713,12 +711,10 @@ TRIBE_Screen_Main_Error::TRIBE_Screen_Main_Error(TRIBE_Screen_Main_Error *this)
   TEasy_Panel::set_ideal_size((TEasy_Panel *)this,0x280,0x1e0);
   TEasy_Panel::create_text
             ((TEasy_Panel *)this,(TPanel *)this,&this->message,s_,0x28,0x28,0x230,400,4,1,1,1);
-                    /* language.dll match for 0xfa1: "OK" */
   TEasy_Panel::create_button
             ((TEasy_Panel *)this,(TPanel *)this,&this->cancel_button,0xfa1,0,200,0x1b8,0xf0,0x1e,0,0
              ,0);
   ppTVar1 = &this->close_button;
-                    /* language.dll match for 0x3ea: "X" */
   iVar3 = TEasy_Panel::create_button
                     ((TEasy_Panel *)this,(TPanel *)this,ppTVar1,0x3ea,0,0,0,0,0,-1,-1,0);
   if (iVar3 != 0) {
@@ -733,9 +729,6 @@ TRIBE_Screen_Main_Error::TRIBE_Screen_Main_Error(TRIBE_Screen_Main_Error *this)
 
 // Function: `vector_deleting_destructor'
 // Address: 0049f220
-/* public: virtual void * __thiscall TRIBE_Screen_Main_Error::`vector deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TRIBE_Screen_Main_Error::_vector_deleting_destructor_(TRIBE_Screen_Main_Error *this,uint param_1)
 {
@@ -750,8 +743,6 @@ TRIBE_Screen_Main_Error::_vector_deleting_destructor_(TRIBE_Screen_Main_Error *t
 
 // Function: ~TRIBE_Screen_Main_Error
 // Address: 0049f240
-/* public: virtual __thiscall TRIBE_Screen_Main_Error::~TRIBE_Screen_Main_Error(void) */
-
 void __thiscall TRIBE_Screen_Main_Error::~TRIBE_Screen_Main_Error(TRIBE_Screen_Main_Error *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -776,8 +767,6 @@ void __thiscall TRIBE_Screen_Main_Error::~TRIBE_Screen_Main_Error(TRIBE_Screen_M
 
 // Function: set_text
 // Address: 0049f2b0
-/* public: void __thiscall TRIBE_Screen_Main_Error::set_text(char *) */
-
 void __thiscall TRIBE_Screen_Main_Error::set_text(TRIBE_Screen_Main_Error *this,char *param_1)
 {
   (**(code **)(this->message->_padding_ + 0xe8))(param_1);
@@ -788,8 +777,6 @@ void __thiscall TRIBE_Screen_Main_Error::set_text(TRIBE_Screen_Main_Error *this,
 
 // Function: set_text
 // Address: 0049f2d0
-/* public: void __thiscall TRIBE_Screen_Main_Error::set_text(long) */
-
 void __thiscall TRIBE_Screen_Main_Error::set_text(TRIBE_Screen_Main_Error *this,long param_1)
 {
   (**(code **)(this->message->_padding_ + 0xe4))(param_1);
@@ -800,9 +787,6 @@ void __thiscall TRIBE_Screen_Main_Error::set_text(TRIBE_Screen_Main_Error *this,
 
 // Function: action
 // Address: 0049f2f0
-/* public: virtual long __thiscall TRIBE_Screen_Main_Error::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TRIBE_Screen_Main_Error::action
           (TRIBE_Screen_Main_Error *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -823,8 +807,6 @@ TRIBE_Screen_Main_Error::action
 
 // Function: handle_idle
 // Address: 0049f340
-/* public: virtual long __thiscall TRIBE_Screen_Main_Error::handle_idle(void) */
-
 long __thiscall TRIBE_Screen_Main_Error::handle_idle(TRIBE_Screen_Main_Error *this)
 {
   long lVar1;

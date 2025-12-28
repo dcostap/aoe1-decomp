@@ -15,8 +15,6 @@
 
 // Function: TRIBE_Action_List
 // Address: 004d0150
-/* public: __thiscall TRIBE_Action_List::TRIBE_Action_List(class RGE_Action_Object *) */
-
 TRIBE_Action_List * __thiscall
 TRIBE_Action_List::TRIBE_Action_List(TRIBE_Action_List *this,RGE_Action_Object *param_1)
 {
@@ -29,8 +27,6 @@ TRIBE_Action_List::TRIBE_Action_List(TRIBE_Action_List *this,RGE_Action_Object *
 
 // Function: create_action
 // Address: 004d0170
-/* public: virtual class RGE_Action * __thiscall TRIBE_Action_List::create_action(int,short) */
-
 RGE_Action * __thiscall
 TRIBE_Action_List::create_action(TRIBE_Action_List *this,int param_1,short param_2)
 {
@@ -213,9 +209,6 @@ TRIBE_Action_List::create_action(TRIBE_Action_List *this,int param_1,short param
 
 // Function: create_task_action
 // Address: 004d05d0
-/* public: virtual class RGE_Action * __thiscall TRIBE_Action_List::create_task_action(class
-   RGE_Task *,class RGE_Static_Object *,float,float,float) */
-
 RGE_Action * __thiscall
 TRIBE_Action_List::create_task_action
           (TRIBE_Action_List *this,RGE_Task *param_1,RGE_Static_Object *param_2,float param_3,
@@ -502,8 +495,6 @@ TRIBE_Action_List::create_task_action
 // [HELPER] s_None: "None"
 // [HELPER] s_Repair: "Repair"
 // [HELPER] s_Transport: "Transport"
-/* public: virtual void __thiscall TRIBE_Action_List::get_action_name(char *) */
-
 void __thiscall TRIBE_Action_List::get_action_name(TRIBE_Action_List *this,char *param_1)
 {
   char cVar1;

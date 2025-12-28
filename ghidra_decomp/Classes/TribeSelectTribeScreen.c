@@ -229,8 +229,6 @@
 // [HELPER] s_bgA1024: "bgA1024"
 // [HELPER] s_bgA640: "bgA640"
 // [HELPER] s_bgA800: "bgA800"
-/* public: __thiscall TribeSelectTribeScreen::TribeSelectTribeScreen(void) */
-
 TribeSelectTribeScreen * __thiscall
 TribeSelectTribeScreen::TribeSelectTribeScreen(TribeSelectTribeScreen *this)
 {
@@ -476,9 +474,6 @@ LAB_004b7c85:
 
 // Function: `scalar_deleting_destructor'
 // Address: 004b7dd0
-/* public: virtual void * __thiscall TribeSelectTribeScreen::`scalar deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TribeSelectTribeScreen::_scalar_deleting_destructor_(TribeSelectTribeScreen *this,uint param_1)
 {
@@ -493,8 +488,6 @@ TribeSelectTribeScreen::_scalar_deleting_destructor_(TribeSelectTribeScreen *thi
 
 // Function: ~TribeSelectTribeScreen
 // Address: 004b7df0
-/* public: virtual __thiscall TribeSelectTribeScreen::~TribeSelectTribeScreen(void) */
-
 void __thiscall TribeSelectTribeScreen::~TribeSelectTribeScreen(TribeSelectTribeScreen *this)
 {
   int iVar1;
@@ -550,9 +543,6 @@ void __thiscall TribeSelectTribeScreen::~TribeSelectTribeScreen(TribeSelectTribe
 // Address: 004b7ee0
 // [HELPER] s_MP_Setup_Screen: "MP Setup Screen"
 // [HELPER] s_Select_Tribe_Screen: "Select Tribe Screen"
-/* protected: virtual long __thiscall TribeSelectTribeScreen::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TribeSelectTribeScreen::action
           (TribeSelectTribeScreen *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -598,8 +588,6 @@ TribeSelectTribeScreen::action
 // [HELPER] s_Minoan_information_here_: "Minoan information here."
 // [HELPER] s_Phoenician_information_here_: "Phoenician information here."
 // [HELPER] s_Sumerian_information_here_: "Sumerian information here."
-/* protected: void __thiscall TribeSelectTribeScreen::fillTribeText(int) */
-
 void __thiscall TribeSelectTribeScreen::fillTribeText(TribeSelectTribeScreen *this,int param_1)
 {
   int iVar1;
@@ -661,8 +649,6 @@ switchD_004b7f80_default:
 // [HELPER] s_No_Culture: "No Culture"
 // [HELPER] s_Phoenician: "Phoenician"
 // [HELPER] s_Sumerian: "Sumerian"
-/* protected: char * __thiscall TribeSelectTribeScreen::tribeName(int) */
-
 char * __thiscall TribeSelectTribeScreen::tribeName(TribeSelectTribeScreen *this,int param_1)
 {
   switch(param_1) {

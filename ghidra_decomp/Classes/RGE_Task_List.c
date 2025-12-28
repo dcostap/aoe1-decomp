@@ -14,8 +14,6 @@
 
 // Function: RGE_Task_List
 // Address: 00508e00
-/* public: __thiscall RGE_Task_List::RGE_Task_List(void) */
-
 void __thiscall RGE_Task_List::RGE_Task_List(RGE_Task_List *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -28,8 +26,6 @@ void __thiscall RGE_Task_List::RGE_Task_List(RGE_Task_List *this)
 
 // Function: ~RGE_Task_List
 // Address: 00508e20
-/* public: __thiscall RGE_Task_List::~RGE_Task_List(void) */
-
 void __thiscall RGE_Task_List::~RGE_Task_List(RGE_Task_List *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -41,8 +37,6 @@ void __thiscall RGE_Task_List::~RGE_Task_List(RGE_Task_List *this)
 
 // Function: copy
 // Address: 00508e30
-/* public: void __thiscall RGE_Task_List::copy(class RGE_Task_List *) */
-
 void __thiscall RGE_Task_List::copy(RGE_Task_List *this,RGE_Task_List *param_1)
 {
   code *pcVar1;
@@ -78,9 +72,6 @@ void __thiscall RGE_Task_List::copy(RGE_Task_List *this,RGE_Task_List *param_1)
 
 // Function: load
 // Address: 00508ec0
-/* WARNING: Variable defined which should be unmapped: task_type */
-/* public: void __thiscall RGE_Task_List::load(int,class RGE_Sprite * *,class RGE_Sound * *) */
-
 void __thiscall
 RGE_Task_List::load(RGE_Task_List *this,int param_1,RGE_Sprite **param_2,RGE_Sound **param_3)
 {
@@ -121,10 +112,6 @@ RGE_Task_List::load(RGE_Task_List *this,int param_1,RGE_Sprite **param_2,RGE_Sou
 // Function: load
 // Address: 00508f60
 // [HELPER] s__hd: "%hd"
-/* WARNING: Variable defined which should be unmapped: task_type */
-/* public: void __thiscall RGE_Task_List::load(struct _iobuf *,class RGE_Sprite * *,class RGE_Sound
-   * *) */
-
 void __thiscall
 RGE_Task_List::load(RGE_Task_List *this,_iobuf *param_1,RGE_Sprite **param_2,RGE_Sound **param_3)
 {
@@ -164,8 +151,6 @@ RGE_Task_List::load(RGE_Task_List *this,_iobuf *param_1,RGE_Sprite **param_2,RGE
 
 // Function: save
 // Address: 00509010
-/* public: void __thiscall RGE_Task_List::save(int) */
-
 void __thiscall RGE_Task_List::save(RGE_Task_List *this,int param_1)
 {
   short *psVar1;
@@ -187,8 +172,6 @@ void __thiscall RGE_Task_List::save(RGE_Task_List *this,int param_1)
 
 // Function: delete_list
 // Address: 00509050
-/* public: void __thiscall RGE_Task_List::delete_list(void) */
-
 void __thiscall RGE_Task_List::delete_list(RGE_Task_List *this)
 {
   RGE_Task *this_00;
@@ -218,8 +201,6 @@ void __thiscall RGE_Task_List::delete_list(RGE_Task_List *this)
 
 // Function: create_task
 // Address: 005090b0
-/* public: virtual class RGE_Task * __thiscall RGE_Task_List::create_task(short,short) */
-
 RGE_Task * __thiscall RGE_Task_List::create_task(RGE_Task_List *this,short param_1,short param_2)
 {
   RGE_Task *pRVar1;
@@ -249,10 +230,6 @@ RGE_Task * __thiscall RGE_Task_List::create_task(RGE_Task_List *this,short param
 
 // Function: get_target_task
 // Address: 00509120
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual class RGE_Task * __thiscall RGE_Task_List::get_target_task(class
-   RGE_Action_Object *,class RGE_Static_Object *,float,float,float) */
-
 RGE_Task * __thiscall
 RGE_Task_List::get_target_task
           (RGE_Task_List *this,RGE_Action_Object *param_1,RGE_Static_Object *param_2,float param_3,
@@ -342,8 +319,6 @@ RGE_Task_List::get_target_task
 
 // Function: is_attack_task
 // Address: 005092d0
-/* public: virtual int __thiscall RGE_Task_List::is_attack_task(class RGE_Task *) */
-
 int __thiscall RGE_Task_List::is_attack_task(RGE_Task_List *this,RGE_Task *param_1)
 {
   return (uint)(param_1->action_type == 7);
@@ -353,10 +328,6 @@ int __thiscall RGE_Task_List::is_attack_task(RGE_Task_List *this,RGE_Task *param
 
 // Function: check_task
 // Address: 005092f0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall RGE_Task_List::check_task(class RGE_Task *,class
-   RGE_Action_Object *,class RGE_Static_Object *) */
-
 int __thiscall
 RGE_Task_List::check_task
           (RGE_Task_List *this,RGE_Task *param_1,RGE_Action_Object *param_2,

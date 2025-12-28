@@ -26,8 +26,6 @@
 
 // Function: T_Scenario
 // Address: 0052aac0
-/* public: __thiscall T_Scenario::T_Scenario(class RGE_Game_World *) */
-
 T_Scenario * __thiscall T_Scenario::T_Scenario(T_Scenario *this,RGE_Game_World *param_1)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -62,8 +60,6 @@ T_Scenario * __thiscall T_Scenario::T_Scenario(T_Scenario *this,RGE_Game_World *
 
 // Function: `vector_deleting_destructor'
 // Address: 0052ab60
-/* public: virtual void * __thiscall T_Scenario::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall T_Scenario::_vector_deleting_destructor_(T_Scenario *this,uint param_1)
 {
   ~T_Scenario(this);
@@ -77,8 +73,6 @@ void * __thiscall T_Scenario::_vector_deleting_destructor_(T_Scenario *this,uint
 
 // Function: ~T_Scenario
 // Address: 0052ab80
-/* public: virtual __thiscall T_Scenario::~T_Scenario(void) */
-
 void __thiscall T_Scenario::~T_Scenario(T_Scenario *this)
 {
   TPicture *this_00;
@@ -137,9 +131,6 @@ void __thiscall T_Scenario::~T_Scenario(T_Scenario *this)
 
 // Function: T_Scenario
 // Address: 0052ab90
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: __thiscall T_Scenario::T_Scenario(int,class RGE_Game_World *) */
-
 T_Scenario * __thiscall T_Scenario::T_Scenario(T_Scenario *this,int param_1,RGE_Game_World *param_2)
 {
   float fVar1;
@@ -269,9 +260,6 @@ T_Scenario * __thiscall T_Scenario::T_Scenario(T_Scenario *this,int param_1,RGE_
 
 // Function: save
 // Address: 0052af20
-/* WARNING: Variable defined which should be unmapped: checksum */
-/* public: virtual void __thiscall T_Scenario::save(int) */
-
 void __thiscall T_Scenario::save(T_Scenario *this,int param_1)
 {
   Player_Start_Info *pPVar1;
@@ -317,8 +305,6 @@ void __thiscall T_Scenario::save(T_Scenario *this,int param_1)
 
 // Function: InitializePlayerValues
 // Address: 0052b080
-/* public: void __thiscall T_Scenario::InitializePlayerValues(void) */
-
 void __thiscall T_Scenario::InitializePlayerValues(T_Scenario *this)
 {
   int *piVar1;
@@ -355,8 +341,6 @@ void __thiscall T_Scenario::InitializePlayerValues(T_Scenario *this)
 
 // Function: ClearDisabledTechnologies
 // Address: 0052b100
-/* private: void __thiscall T_Scenario::ClearDisabledTechnologies(void) */
-
 void __thiscall T_Scenario::ClearDisabledTechnologies(T_Scenario *this)
 {
   int iVar1;
@@ -374,8 +358,6 @@ void __thiscall T_Scenario::ClearDisabledTechnologies(T_Scenario *this)
 
 // Function: InitializeAIInformation
 // Address: 0052b120
-/* public: void __thiscall T_Scenario::InitializeAIInformation(void) */
-
 void __thiscall T_Scenario::InitializeAIInformation(T_Scenario *this)
 {
   int iVar1;
@@ -404,8 +386,6 @@ void __thiscall T_Scenario::InitializeAIInformation(T_Scenario *this)
 
 // Function: Set_victory_all_flag
 // Address: 0052b170
-/* public: void __thiscall T_Scenario::Set_victory_all_flag(int) */
-
 void __thiscall T_Scenario::Set_victory_all_flag(T_Scenario *this,int param_1)
 {
   if (param_1 < 0) {
@@ -422,8 +402,6 @@ void __thiscall T_Scenario::Set_victory_all_flag(T_Scenario *this,int param_1)
 
 // Function: Get_victory_all_flag
 // Address: 0052b190
-/* public: int __thiscall T_Scenario::Get_victory_all_flag(void) */
-
 int __thiscall T_Scenario::Get_victory_all_flag(T_Scenario *this)
 {
   return this->victory_all_flag;
@@ -433,8 +411,6 @@ int __thiscall T_Scenario::Get_victory_all_flag(T_Scenario *this)
 
 // Function: SetMPVictory
 // Address: 0052b1a0
-/* public: void __thiscall T_Scenario::SetMPVictory(int) */
-
 void __thiscall T_Scenario::SetMPVictory(T_Scenario *this,int param_1)
 {
   this->mp_victory_type = param_1;
@@ -448,8 +424,6 @@ void __thiscall T_Scenario::SetMPVictory(T_Scenario *this,int param_1)
 
 // Function: GetMPVictory
 // Address: 0052b1c0
-/* public: int __thiscall T_Scenario::GetMPVictory(void) */
-
 int __thiscall T_Scenario::GetMPVictory(T_Scenario *this)
 {
   return this->mp_victory_type;
@@ -459,8 +433,6 @@ int __thiscall T_Scenario::GetMPVictory(T_Scenario *this)
 
 // Function: SetVictoryScore
 // Address: 0052b1d0
-/* public: void __thiscall T_Scenario::SetVictoryScore(int) */
-
 void __thiscall T_Scenario::SetVictoryScore(T_Scenario *this,int param_1)
 {
   this->victory_score = param_1;
@@ -471,8 +443,6 @@ void __thiscall T_Scenario::SetVictoryScore(T_Scenario *this,int param_1)
 
 // Function: GetVictoryScore
 // Address: 0052b1e0
-/* public: int __thiscall T_Scenario::GetVictoryScore(void) */
-
 int __thiscall T_Scenario::GetVictoryScore(T_Scenario *this)
 {
   return this->victory_score;
@@ -482,8 +452,6 @@ int __thiscall T_Scenario::GetVictoryScore(T_Scenario *this)
 
 // Function: SetVictoryTime
 // Address: 0052b1f0
-/* public: void __thiscall T_Scenario::SetVictoryTime(int) */
-
 void __thiscall T_Scenario::SetVictoryTime(T_Scenario *this,int param_1)
 {
   this->victory_time = param_1;
@@ -494,8 +462,6 @@ void __thiscall T_Scenario::SetVictoryTime(T_Scenario *this,int param_1)
 
 // Function: GetVictoryTime
 // Address: 0052b200
-/* public: int __thiscall T_Scenario::GetVictoryTime(void) */
-
 int __thiscall T_Scenario::GetVictoryTime(T_Scenario *this)
 {
   return this->victory_time;
@@ -505,8 +471,6 @@ int __thiscall T_Scenario::GetVictoryTime(T_Scenario *this)
 
 // Function: SetSPWhich
 // Address: 0052b210
-/* public: void __thiscall T_Scenario::SetSPWhich(int) */
-
 void __thiscall T_Scenario::SetSPWhich(T_Scenario *this,int param_1)
 {
   if (param_1 < 0) {
@@ -523,8 +487,6 @@ void __thiscall T_Scenario::SetSPWhich(T_Scenario *this,int param_1)
 
 // Function: GetSPWhich
 // Address: 0052b230
-/* public: int __thiscall T_Scenario::GetSPWhich(void) */
-
 int __thiscall T_Scenario::GetSPWhich(T_Scenario *this)
 {
   return this->which_player;
@@ -534,8 +496,6 @@ int __thiscall T_Scenario::GetSPWhich(T_Scenario *this)
 
 // Function: InitializeVictoryValues
 // Address: 0052b240
-/* public: void __thiscall T_Scenario::InitializeVictoryValues(void) */
-
 void __thiscall T_Scenario::InitializeVictoryValues(T_Scenario *this)
 {
   int iVar1;
@@ -559,8 +519,6 @@ void __thiscall T_Scenario::InitializeVictoryValues(T_Scenario *this)
 
 // Function: ClearSPVictoryCondition
 // Address: 0052b280
-/* public: void __thiscall T_Scenario::ClearSPVictoryCondition(int) */
-
 void __thiscall T_Scenario::ClearSPVictoryCondition(T_Scenario *this,int param_1)
 {
   int iVar1;
@@ -578,8 +536,6 @@ void __thiscall T_Scenario::ClearSPVictoryCondition(T_Scenario *this,int param_1
 
 // Function: InitializeFriendlinessValues
 // Address: 0052b2b0
-/* public: void __thiscall T_Scenario::InitializeFriendlinessValues(void) */
-
 void __thiscall T_Scenario::InitializeFriendlinessValues(T_Scenario *this)
 {
   int iVar1;
@@ -597,8 +553,6 @@ void __thiscall T_Scenario::InitializeFriendlinessValues(T_Scenario *this)
 
 // Function: Set_player_attitude
 // Address: 0052b2d0
-/* public: void __thiscall T_Scenario::Set_player_attitude(int,int,int) */
-
 void __thiscall
 T_Scenario::Set_player_attitude(T_Scenario *this,int param_1,int param_2,int param_3)
 {
@@ -613,8 +567,6 @@ T_Scenario::Set_player_attitude(T_Scenario *this,int param_1,int param_2,int par
 
 // Function: Get_player_attitude
 // Address: 0052b310
-/* public: int __thiscall T_Scenario::Get_player_attitude(int,int) */
-
 int __thiscall T_Scenario::Get_player_attitude(T_Scenario *this,int param_1,int param_2)
 {
   if ((((-1 < param_1) && (param_1 < 0x10)) && (-1 < param_2)) && (param_2 < 0x10)) {
@@ -627,8 +579,6 @@ int __thiscall T_Scenario::Get_player_attitude(T_Scenario *this,int param_1,int 
 
 // Function: Set_player_Gold
 // Address: 0052b340
-/* public: void __thiscall T_Scenario::Set_player_Gold(int,int) */
-
 void __thiscall T_Scenario::Set_player_Gold(T_Scenario *this,int param_1,int param_2)
 {
   if ((-1 < param_1) && (param_1 < 0x10)) {
@@ -641,8 +591,6 @@ void __thiscall T_Scenario::Set_player_Gold(T_Scenario *this,int param_1,int par
 
 // Function: Set_player_Wood
 // Address: 0052b360
-/* public: void __thiscall T_Scenario::Set_player_Wood(int,int) */
-
 void __thiscall T_Scenario::Set_player_Wood(T_Scenario *this,int param_1,int param_2)
 {
   if ((-1 < param_1) && (param_1 < 0x10)) {
@@ -655,8 +603,6 @@ void __thiscall T_Scenario::Set_player_Wood(T_Scenario *this,int param_1,int par
 
 // Function: Set_player_Food
 // Address: 0052b380
-/* public: void __thiscall T_Scenario::Set_player_Food(int,int) */
-
 void __thiscall T_Scenario::Set_player_Food(T_Scenario *this,int param_1,int param_2)
 {
   if ((-1 < param_1) && (param_1 < 0x10)) {
@@ -669,8 +615,6 @@ void __thiscall T_Scenario::Set_player_Food(T_Scenario *this,int param_1,int par
 
 // Function: Set_player_Stone
 // Address: 0052b3a0
-/* public: void __thiscall T_Scenario::Set_player_Stone(int,int) */
-
 void __thiscall T_Scenario::Set_player_Stone(T_Scenario *this,int param_1,int param_2)
 {
   if ((-1 < param_1) && (param_1 < 0x10)) {
@@ -683,8 +627,6 @@ void __thiscall T_Scenario::Set_player_Stone(T_Scenario *this,int param_1,int pa
 
 // Function: Set_player_Info
 // Address: 0052b3c0
-/* public: void __thiscall T_Scenario::Set_player_Info(int,struct Player_Start_Info *) */
-
 void __thiscall T_Scenario::Set_player_Info(T_Scenario *this,int param_1,Player_Start_Info *param_2)
 {
   Player_Start_Info *pPVar1;
@@ -703,8 +645,6 @@ void __thiscall T_Scenario::Set_player_Info(T_Scenario *this,int param_1,Player_
 
 // Function: Set_Multi_Conquest
 // Address: 0052b400
-/* public: void __thiscall T_Scenario::Set_Multi_Conquest(int) */
-
 void __thiscall T_Scenario::Set_Multi_Conquest(T_Scenario *this,int param_1)
 {
   if (param_1 != 0) {
@@ -721,8 +661,6 @@ void __thiscall T_Scenario::Set_Multi_Conquest(T_Scenario *this,int param_1)
 
 // Function: Set_Multi_Ruins
 // Address: 0052b430
-/* public: void __thiscall T_Scenario::Set_Multi_Ruins(int) */
-
 void __thiscall T_Scenario::Set_Multi_Ruins(T_Scenario *this,int param_1)
 {
   (this->victory).MP_Ruins = param_1;
@@ -733,8 +671,6 @@ void __thiscall T_Scenario::Set_Multi_Ruins(T_Scenario *this,int param_1)
 
 // Function: Set_Multi_Artifacts
 // Address: 0052b440
-/* public: void __thiscall T_Scenario::Set_Multi_Artifacts(int) */
-
 void __thiscall T_Scenario::Set_Multi_Artifacts(T_Scenario *this,int param_1)
 {
   (this->victory).MP_Artifacts = param_1;
@@ -745,8 +681,6 @@ void __thiscall T_Scenario::Set_Multi_Artifacts(T_Scenario *this,int param_1)
 
 // Function: Set_Multi_Discoveries
 // Address: 0052b450
-/* public: void __thiscall T_Scenario::Set_Multi_Discoveries(int) */
-
 void __thiscall T_Scenario::Set_Multi_Discoveries(T_Scenario *this,int param_1)
 {
   (this->victory).MP_Discoveries = param_1;
@@ -757,8 +691,6 @@ void __thiscall T_Scenario::Set_Multi_Discoveries(T_Scenario *this,int param_1)
 
 // Function: Set_Multi_Exploration
 // Address: 0052b460
-/* public: void __thiscall T_Scenario::Set_Multi_Exploration(int) */
-
 void __thiscall T_Scenario::Set_Multi_Exploration(T_Scenario *this,int param_1)
 {
   (this->victory).MP_Exploration = param_1;
@@ -769,8 +701,6 @@ void __thiscall T_Scenario::Set_Multi_Exploration(T_Scenario *this,int param_1)
 
 // Function: Set_Multi_Gold
 // Address: 0052b470
-/* public: void __thiscall T_Scenario::Set_Multi_Gold(int) */
-
 void __thiscall T_Scenario::Set_Multi_Gold(T_Scenario *this,int param_1)
 {
   (this->victory).MP_Gold = param_1;
@@ -781,8 +711,6 @@ void __thiscall T_Scenario::Set_Multi_Gold(T_Scenario *this,int param_1)
 
 // Function: SetSPRectangle
 // Address: 0052b480
-/* public: void __thiscall T_Scenario::SetSPRectangle(int,float,float,float,float) */
-
 void __thiscall
 T_Scenario::SetSPRectangle
           (T_Scenario *this,int param_1,float param_2,float param_3,float param_4,float param_5)
@@ -798,8 +726,6 @@ T_Scenario::SetSPRectangle
 
 // Function: SetSPObjectType
 // Address: 0052b500
-/* public: void __thiscall T_Scenario::SetSPObjectType(int,int) */
-
 void __thiscall T_Scenario::SetSPObjectType(T_Scenario *this,int param_1,int param_2)
 {
   this->sp_victory[this->which_player][param_1].ObjType = param_2;
@@ -810,8 +736,6 @@ void __thiscall T_Scenario::SetSPObjectType(T_Scenario *this,int param_1,int par
 
 // Function: SetSPPlayerID
 // Address: 0052b530
-/* public: void __thiscall T_Scenario::SetSPPlayerID(int,int) */
-
 void __thiscall T_Scenario::SetSPPlayerID(T_Scenario *this,int param_1,int param_2)
 {
   this->sp_victory[this->which_player][param_1].PlayerID = param_2;
@@ -822,8 +746,6 @@ void __thiscall T_Scenario::SetSPPlayerID(T_Scenario *this,int param_1,int param
 
 // Function: SetSPAllFlag
 // Address: 0052b560
-/* public: void __thiscall T_Scenario::SetSPAllFlag(int,int) */
-
 void __thiscall T_Scenario::SetSPAllFlag(T_Scenario *this,int param_1,int param_2)
 {
   this->sp_victory[this->which_player][param_1].AllFlag = param_2;
@@ -834,8 +756,6 @@ void __thiscall T_Scenario::SetSPAllFlag(T_Scenario *this,int param_1,int param_
 
 // Function: SetSPAttribType
 // Address: 0052b590
-/* public: void __thiscall T_Scenario::SetSPAttribType(int,int) */
-
 void __thiscall T_Scenario::SetSPAttribType(T_Scenario *this,int param_1,int param_2)
 {
   this->sp_victory[this->which_player][param_1].AttribType = param_2;
@@ -846,8 +766,6 @@ void __thiscall T_Scenario::SetSPAttribType(T_Scenario *this,int param_1,int par
 
 // Function: SetSPVictoryType
 // Address: 0052b5c0
-/* public: void __thiscall T_Scenario::SetSPVictoryType(int,int) */
-
 void __thiscall T_Scenario::SetSPVictoryType(T_Scenario *this,int param_1,int param_2)
 {
   this->sp_victory[this->which_player][param_1].VictoryType = param_2;
@@ -858,8 +776,6 @@ void __thiscall T_Scenario::SetSPVictoryType(T_Scenario *this,int param_1,int pa
 
 // Function: SetSPObject
 // Address: 0052b5f0
-/* public: void __thiscall T_Scenario::SetSPObject(int,class RGE_Static_Object *) */
-
 void __thiscall T_Scenario::SetSPObject(T_Scenario *this,int param_1,RGE_Static_Object *param_2)
 {
   int iVar1;
@@ -875,8 +791,6 @@ void __thiscall T_Scenario::SetSPObject(T_Scenario *this,int param_1,RGE_Static_
 
 // Function: SetSPDestObjectID
 // Address: 0052b630
-/* public: void __thiscall T_Scenario::SetSPDestObjectID(int,class RGE_Static_Object *) */
-
 void __thiscall
 T_Scenario::SetSPDestObjectID(T_Scenario *this,int param_1,RGE_Static_Object *param_2)
 {
@@ -893,8 +807,6 @@ T_Scenario::SetSPDestObjectID(T_Scenario *this,int param_1,RGE_Static_Object *pa
 
 // Function: SetSPAmount
 // Address: 0052b670
-/* public: void __thiscall T_Scenario::SetSPAmount(int,int) */
-
 void __thiscall T_Scenario::SetSPAmount(T_Scenario *this,int param_1,int param_2)
 {
   this->sp_victory[this->which_player][param_1].Amount = param_2;
@@ -905,8 +817,6 @@ void __thiscall T_Scenario::SetSPAmount(T_Scenario *this,int param_1,int param_2
 
 // Function: SetPlayerAlliedVictory
 // Address: 0052b6a0
-/* public: void __thiscall T_Scenario::SetPlayerAlliedVictory(int,int) */
-
 void __thiscall T_Scenario::SetPlayerAlliedVictory(T_Scenario *this,int param_1,int param_2)
 {
   this->AlliedVictory[param_1] = param_2;
@@ -917,8 +827,6 @@ void __thiscall T_Scenario::SetPlayerAlliedVictory(T_Scenario *this,int param_1,
 
 // Function: SetDisabledTechnology
 // Address: 0052b6c0
-/* public: void __thiscall T_Scenario::SetDisabledTechnology(int,int,int) */
-
 void __thiscall
 T_Scenario::SetDisabledTechnology(T_Scenario *this,int param_1,int param_2,int param_3)
 {
@@ -930,8 +838,6 @@ T_Scenario::SetDisabledTechnology(T_Scenario *this,int param_1,int param_2,int p
 
 // Function: SetScenarioOption
 // Address: 0052b6e0
-/* public: void __thiscall T_Scenario::SetScenarioOption(int,int) */
-
 void __thiscall T_Scenario::SetScenarioOption(T_Scenario *this,int param_1,int param_2)
 {
   this->ScenarioOptions[param_1] = param_2;
@@ -942,8 +848,6 @@ void __thiscall T_Scenario::SetScenarioOption(T_Scenario *this,int param_1,int p
 
 // Function: SetPlayerAge
 // Address: 0052b700
-/* public: void __thiscall T_Scenario::SetPlayerAge(int,int) */
-
 void __thiscall T_Scenario::SetPlayerAge(T_Scenario *this,int param_1,int param_2)
 {
   this->PlayerAge[param_1] = param_2;
@@ -954,8 +858,6 @@ void __thiscall T_Scenario::SetPlayerAge(T_Scenario *this,int param_1,int param_
 
 // Function: Get_player_Gold
 // Address: 0052b720
-/* public: int __thiscall T_Scenario::Get_player_Gold(int) */
-
 int __thiscall T_Scenario::Get_player_Gold(T_Scenario *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 0x10)) {
@@ -968,8 +870,6 @@ int __thiscall T_Scenario::Get_player_Gold(T_Scenario *this,int param_1)
 
 // Function: Get_player_Wood
 // Address: 0052b740
-/* public: int __thiscall T_Scenario::Get_player_Wood(int) */
-
 int __thiscall T_Scenario::Get_player_Wood(T_Scenario *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 0x10)) {
@@ -982,8 +882,6 @@ int __thiscall T_Scenario::Get_player_Wood(T_Scenario *this,int param_1)
 
 // Function: Get_player_Food
 // Address: 0052b760
-/* public: int __thiscall T_Scenario::Get_player_Food(int) */
-
 int __thiscall T_Scenario::Get_player_Food(T_Scenario *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 0x10)) {
@@ -996,8 +894,6 @@ int __thiscall T_Scenario::Get_player_Food(T_Scenario *this,int param_1)
 
 // Function: Get_player_Stone
 // Address: 0052b780
-/* public: int __thiscall T_Scenario::Get_player_Stone(int) */
-
 int __thiscall T_Scenario::Get_player_Stone(T_Scenario *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 0x10)) {
@@ -1010,8 +906,6 @@ int __thiscall T_Scenario::Get_player_Stone(T_Scenario *this,int param_1)
 
 // Function: Get_player_Info
 // Address: 0052b7a0
-/* public: struct Player_Start_Info * __thiscall T_Scenario::Get_player_Info(int) */
-
 Player_Start_Info * __thiscall T_Scenario::Get_player_Info(T_Scenario *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 0x10)) {
@@ -1024,8 +918,6 @@ Player_Start_Info * __thiscall T_Scenario::Get_player_Info(T_Scenario *this,int 
 
 // Function: Get_Multi_Conquest
 // Address: 0052b7c0
-/* public: int __thiscall T_Scenario::Get_Multi_Conquest(void) */
-
 int __thiscall T_Scenario::Get_Multi_Conquest(T_Scenario *this)
 {
   return (this->victory).MP_Conquest;
@@ -1035,8 +927,6 @@ int __thiscall T_Scenario::Get_Multi_Conquest(T_Scenario *this)
 
 // Function: Get_Multi_Ruins
 // Address: 0052b7d0
-/* public: int __thiscall T_Scenario::Get_Multi_Ruins(void) */
-
 int __thiscall T_Scenario::Get_Multi_Ruins(T_Scenario *this)
 {
   return (this->victory).MP_Ruins;
@@ -1046,8 +936,6 @@ int __thiscall T_Scenario::Get_Multi_Ruins(T_Scenario *this)
 
 // Function: Get_Multi_Artifacts
 // Address: 0052b7e0
-/* public: int __thiscall T_Scenario::Get_Multi_Artifacts(void) */
-
 int __thiscall T_Scenario::Get_Multi_Artifacts(T_Scenario *this)
 {
   return (this->victory).MP_Artifacts;
@@ -1057,8 +945,6 @@ int __thiscall T_Scenario::Get_Multi_Artifacts(T_Scenario *this)
 
 // Function: Get_Multi_Discoveries
 // Address: 0052b7f0
-/* public: int __thiscall T_Scenario::Get_Multi_Discoveries(void) */
-
 int __thiscall T_Scenario::Get_Multi_Discoveries(T_Scenario *this)
 {
   return (this->victory).MP_Discoveries;
@@ -1068,8 +954,6 @@ int __thiscall T_Scenario::Get_Multi_Discoveries(T_Scenario *this)
 
 // Function: Get_Multi_Exploration
 // Address: 0052b800
-/* public: int __thiscall T_Scenario::Get_Multi_Exploration(void) */
-
 int __thiscall T_Scenario::Get_Multi_Exploration(T_Scenario *this)
 {
   return (this->victory).MP_Exploration;
@@ -1079,8 +963,6 @@ int __thiscall T_Scenario::Get_Multi_Exploration(T_Scenario *this)
 
 // Function: Get_Multi_Gold
 // Address: 0052b810
-/* public: int __thiscall T_Scenario::Get_Multi_Gold(void) */
-
 int __thiscall T_Scenario::Get_Multi_Gold(T_Scenario *this)
 {
   return (this->victory).MP_Gold;
@@ -1090,8 +972,6 @@ int __thiscall T_Scenario::Get_Multi_Gold(T_Scenario *this)
 
 // Function: GetSPRectangle
 // Address: 0052b820
-/* public: void __thiscall T_Scenario::GetSPRectangle(int,float *,float *,float *,float *) */
-
 void __thiscall
 T_Scenario::GetSPRectangle
           (T_Scenario *this,int param_1,float *param_2,float *param_3,float *param_4,float *param_5)
@@ -1107,8 +987,6 @@ T_Scenario::GetSPRectangle
 
 // Function: GetSPObjectType
 // Address: 0052b8b0
-/* public: int __thiscall T_Scenario::GetSPObjectType(int) */
-
 int __thiscall T_Scenario::GetSPObjectType(T_Scenario *this,int param_1)
 {
   return this->sp_victory[this->which_player][param_1].ObjType;
@@ -1118,8 +996,6 @@ int __thiscall T_Scenario::GetSPObjectType(T_Scenario *this,int param_1)
 
 // Function: GetSPPlayerID
 // Address: 0052b8e0
-/* public: int __thiscall T_Scenario::GetSPPlayerID(int) */
-
 int __thiscall T_Scenario::GetSPPlayerID(T_Scenario *this,int param_1)
 {
   return this->sp_victory[this->which_player][param_1].PlayerID;
@@ -1129,8 +1005,6 @@ int __thiscall T_Scenario::GetSPPlayerID(T_Scenario *this,int param_1)
 
 // Function: GetSPAllFlag
 // Address: 0052b910
-/* public: int __thiscall T_Scenario::GetSPAllFlag(int) */
-
 int __thiscall T_Scenario::GetSPAllFlag(T_Scenario *this,int param_1)
 {
   return this->sp_victory[this->which_player][param_1].AllFlag;
@@ -1140,8 +1014,6 @@ int __thiscall T_Scenario::GetSPAllFlag(T_Scenario *this,int param_1)
 
 // Function: GetSPAttribType
 // Address: 0052b940
-/* public: int __thiscall T_Scenario::GetSPAttribType(int) */
-
 int __thiscall T_Scenario::GetSPAttribType(T_Scenario *this,int param_1)
 {
   return this->sp_victory[this->which_player][param_1].AttribType;
@@ -1151,8 +1023,6 @@ int __thiscall T_Scenario::GetSPAttribType(T_Scenario *this,int param_1)
 
 // Function: GetSPAmount
 // Address: 0052b970
-/* public: int __thiscall T_Scenario::GetSPAmount(int) */
-
 int __thiscall T_Scenario::GetSPAmount(T_Scenario *this,int param_1)
 {
   return this->sp_victory[this->which_player][param_1].Amount;
@@ -1162,8 +1032,6 @@ int __thiscall T_Scenario::GetSPAmount(T_Scenario *this,int param_1)
 
 // Function: GetSPVictoryType
 // Address: 0052b9a0
-/* public: int __thiscall T_Scenario::GetSPVictoryType(int) */
-
 int __thiscall T_Scenario::GetSPVictoryType(T_Scenario *this,int param_1)
 {
   return this->sp_victory[this->which_player][param_1].VictoryType;
@@ -1173,8 +1041,6 @@ int __thiscall T_Scenario::GetSPVictoryType(T_Scenario *this,int param_1)
 
 // Function: GetSPDestObjectID
 // Address: 0052b9d0
-/* public: class RGE_Static_Object * __thiscall T_Scenario::GetSPDestObjectID(int) */
-
 RGE_Static_Object * __thiscall T_Scenario::GetSPDestObjectID(T_Scenario *this,int param_1)
 {
   RGE_Static_Object *pRVar1;
@@ -1188,8 +1054,6 @@ RGE_Static_Object * __thiscall T_Scenario::GetSPDestObjectID(T_Scenario *this,in
 
 // Function: GetSPObject
 // Address: 0052ba00
-/* public: class RGE_Static_Object * __thiscall T_Scenario::GetSPObject(int) */
-
 RGE_Static_Object * __thiscall T_Scenario::GetSPObject(T_Scenario *this,int param_1)
 {
   RGE_Static_Object *pRVar1;
@@ -1203,8 +1067,6 @@ RGE_Static_Object * __thiscall T_Scenario::GetSPObject(T_Scenario *this,int para
 
 // Function: GetPlayerAlliedVictory
 // Address: 0052ba30
-/* public: int __thiscall T_Scenario::GetPlayerAlliedVictory(int) */
-
 int __thiscall T_Scenario::GetPlayerAlliedVictory(T_Scenario *this,int param_1)
 {
   return this->AlliedVictory[param_1];
@@ -1214,8 +1076,6 @@ int __thiscall T_Scenario::GetPlayerAlliedVictory(T_Scenario *this,int param_1)
 
 // Function: GetDisabledTechnology
 // Address: 0052ba40
-/* public: int __thiscall T_Scenario::GetDisabledTechnology(int,int) */
-
 int __thiscall T_Scenario::GetDisabledTechnology(T_Scenario *this,int param_1,int param_2)
 {
   return this->DisabledTechnology[param_1][param_2];
@@ -1225,8 +1085,6 @@ int __thiscall T_Scenario::GetDisabledTechnology(T_Scenario *this,int param_1,in
 
 // Function: GetScenarioOption
 // Address: 0052ba60
-/* public: int __thiscall T_Scenario::GetScenarioOption(int) */
-
 int __thiscall T_Scenario::GetScenarioOption(T_Scenario *this,int param_1)
 {
   return this->ScenarioOptions[param_1];
@@ -1236,8 +1094,6 @@ int __thiscall T_Scenario::GetScenarioOption(T_Scenario *this,int param_1)
 
 // Function: GetPlayerAge
 // Address: 0052ba70
-/* public: int __thiscall T_Scenario::GetPlayerAge(int) */
-
 int __thiscall T_Scenario::GetPlayerAge(T_Scenario *this,int param_1)
 {
   return this->PlayerAge[param_1];
@@ -1247,8 +1103,6 @@ int __thiscall T_Scenario::GetPlayerAge(T_Scenario *this,int param_1)
 
 // Function: update
 // Address: 0052ba80
-/* public: void __thiscall T_Scenario::update(void) */
-
 void __thiscall T_Scenario::update(T_Scenario *this)
 {
   RGE_Timeline::update((RGE_Timeline *)this->_padding_);
@@ -1259,8 +1113,6 @@ void __thiscall T_Scenario::update(T_Scenario *this)
 
 // Function: SaveAttributesIntoPlayers
 // Address: 0052ba90
-/* private: void __thiscall T_Scenario::SaveAttributesIntoPlayers(void) */
-
 void __thiscall T_Scenario::SaveAttributesIntoPlayers(T_Scenario *this)
 {
   int iVar1;
@@ -1314,10 +1166,6 @@ void __thiscall T_Scenario::SaveAttributesIntoPlayers(T_Scenario *this)
 
 // Function: Save_victory_conditions_into_players
 // Address: 0052bbc0
-/* WARNING: Variable defined which should be unmapped: i */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall T_Scenario::Save_victory_conditions_into_players(int) */
-
 void __thiscall T_Scenario::Save_victory_conditions_into_players(T_Scenario *this,int param_1)
 {
   int iVar1;
@@ -1543,8 +1391,6 @@ LAB_0052bff1:
 
 // Function: rehook
 // Address: 0052c070
-/* public: virtual void __thiscall T_Scenario::rehook(void) */
-
 void __thiscall T_Scenario::rehook(T_Scenario *this)
 {
   return;
@@ -1554,8 +1400,6 @@ void __thiscall T_Scenario::rehook(T_Scenario *this)
 
 // Function: get_object_pointer
 // Address: 0052c080
-/* private: virtual class RGE_Static_Object * __thiscall T_Scenario::get_object_pointer(int) */
-
 RGE_Static_Object * __thiscall T_Scenario::get_object_pointer(T_Scenario *this,int param_1)
 {
   RGE_Static_Object *pRVar1;
@@ -1571,8 +1415,6 @@ RGE_Static_Object * __thiscall T_Scenario::get_object_pointer(T_Scenario *this,i
 
 // Function: get_object_ID
 // Address: 0052c0a0
-/* private: int __thiscall T_Scenario::get_object_ID(class RGE_Static_Object *) */
-
 int __thiscall T_Scenario::get_object_ID(T_Scenario *this,RGE_Static_Object *param_1)
 {
   return param_1->id;
@@ -1582,8 +1424,6 @@ int __thiscall T_Scenario::get_object_ID(T_Scenario *this,RGE_Static_Object *par
 
 // Function: WriteDisabledTechnologiesToMainSystem
 // Address: 0052c0b0
-/* private: void __thiscall T_Scenario::WriteDisabledTechnologiesToMainSystem(void) */
-
 void __thiscall T_Scenario::WriteDisabledTechnologiesToMainSystem(T_Scenario *this)
 {
   TRIBE_Player *this_00;
@@ -1610,15 +1450,10 @@ void __thiscall T_Scenario::WriteDisabledTechnologiesToMainSystem(T_Scenario *th
       TRIBE_Player::tech_abling(this_00,0x5d,(uchar)piVar3[7]);
       TRIBE_Player::tech_abling(this_00,0x60,(uchar)piVar3[8]);
       TRIBE_Player::tech_abling(this_00,0x5c,(uchar)piVar3[9]);
-                    /* language.dll match for 0x65: "1" */
       TRIBE_Player::tech_abling(this_00,0x65,(uchar)piVar3[10]);
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
       TRIBE_Player::tech_abling(this_00,0x66,(uchar)piVar3[0xb]);
-                    /* language.dll match for 0x67: "Comic Sans MS" */
       TRIBE_Player::tech_abling(this_00,0x67,(uchar)piVar3[0xc]);
-                    /* language.dll match for 0x73: "B" */
       TRIBE_Player::tech_abling(this_00,0x73,(uchar)piVar3[0xd]);
-                    /* language.dll match for 0x74: "Copperplate Gothic Light" */
       TRIBE_Player::tech_abling(this_00,0x74,(uchar)piVar3[0xe]);
       iVar2 = iVar2 + 1;
       iVar1 = this->_padding_;
@@ -1632,8 +1467,6 @@ void __thiscall T_Scenario::WriteDisabledTechnologiesToMainSystem(T_Scenario *th
 
 // Function: any_sp_victory
 // Address: 0052c1e0
-/* public: int __thiscall T_Scenario::any_sp_victory(void) */
-
 int __thiscall T_Scenario::any_sp_victory(T_Scenario *this)
 {
   int iVar1;
@@ -1663,9 +1496,6 @@ int __thiscall T_Scenario::any_sp_victory(T_Scenario *this)
 
 // Function: set_player_tech
 // Address: 0052c230
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall T_Scenario::set_player_tech(class TRIBE_Player *) */
-
 void __thiscall T_Scenario::set_player_tech(T_Scenario *this,TRIBE_Player *param_1)
 {
   int iVar1;
@@ -1686,15 +1516,10 @@ void __thiscall T_Scenario::set_player_tech(T_Scenario *this,TRIBE_Player *param
   TRIBE_Player::tech_abling(param_1,0x5d,(uchar)this->DisabledTechnology[iVar1 + -1][8]);
   TRIBE_Player::tech_abling(param_1,0x60,(uchar)this->DisabledTechnology[iVar1 + -1][9]);
   TRIBE_Player::tech_abling(param_1,0x5c,(uchar)this->DisabledTechnology[iVar1 + -1][10]);
-                    /* language.dll match for 0x65: "1" */
   TRIBE_Player::tech_abling(param_1,0x65,(uchar)this->DisabledTechnology[iVar1 + -1][0xb]);
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
   TRIBE_Player::tech_abling(param_1,0x66,(uchar)this->DisabledTechnology[iVar1 + -1][0xc]);
-                    /* language.dll match for 0x67: "Comic Sans MS" */
   TRIBE_Player::tech_abling(param_1,0x67,(uchar)this->DisabledTechnology[iVar1 + -1][0xd]);
-                    /* language.dll match for 0x73: "B" */
   TRIBE_Player::tech_abling(param_1,0x73,(uchar)this->DisabledTechnology[iVar1 + -1][0xe]);
-                    /* language.dll match for 0x74: "Copperplate Gothic Light" */
   TRIBE_Player::tech_abling(param_1,0x74,(uchar)this->DisabledTechnology[iVar1 + -1][0xf]);
   TRIBE_Player_Tech::check_for_new_tech(param_1->tech_tree);
   if (this->ScenarioOptions[0] != 0) {

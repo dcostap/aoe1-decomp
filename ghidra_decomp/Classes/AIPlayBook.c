@@ -16,8 +16,6 @@
 
 // Function: AIPlayBook
 // Address: 004101b0
-/* public: __thiscall AIPlayBook::AIPlayBook(void) */
-
 void __thiscall AIPlayBook::AIPlayBook(AIPlayBook *this)
 {
   this->numberPlaysValue = 0;
@@ -30,8 +28,6 @@ void __thiscall AIPlayBook::AIPlayBook(AIPlayBook *this)
 
 // Function: `vector_deleting_destructor'
 // Address: 004101d0
-/* public: virtual void * __thiscall AIPlayBook::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall AIPlayBook::_vector_deleting_destructor_(AIPlayBook *this,uint param_1)
 {
   ~AIPlayBook(this);
@@ -45,8 +41,6 @@ void * __thiscall AIPlayBook::_vector_deleting_destructor_(AIPlayBook *this,uint
 
 // Function: ~AIPlayBook
 // Address: 004101f0
-/* public: virtual __thiscall AIPlayBook::~AIPlayBook(void) */
-
 void __thiscall AIPlayBook::~AIPlayBook(AIPlayBook *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -93,9 +87,6 @@ void __thiscall AIPlayBook::~AIPlayBook(AIPlayBook *this)
 // [HELPER] s__sF_d: "%sF%d"
 // [HELPER] s__s_: "%s\n"
 // [HELPER] s_r: "r"
-/* WARNING: Variable defined which should be unmapped: temp3 */
-/* public: int __thiscall AIPlayBook::loadPlays(char *) */
-
 int __thiscall AIPlayBook::loadPlays(AIPlayBook *this,char *param_1)
 {
   char cVar1;
@@ -1110,8 +1101,6 @@ LAB_0041131a:
 
 // Function: play
 // Address: 00411340
-/* public: class AIPlay * __thiscall AIPlayBook::play(int) */
-
 AIPlay * __thiscall AIPlayBook::play(AIPlayBook *this,int param_1)
 {
   if (((this->plays != (AIPlay *)0x0) && (-1 < param_1)) && (param_1 < this->numberPlaysValue)) {
@@ -1124,8 +1113,6 @@ AIPlay * __thiscall AIPlayBook::play(AIPlayBook *this,int param_1)
 
 // Function: play
 // Address: 00411370
-/* public: class AIPlay * __thiscall AIPlayBook::play(char *) */
-
 AIPlay * __thiscall AIPlayBook::play(AIPlayBook *this,char *param_1)
 {
   byte bVar1;
@@ -1183,8 +1170,6 @@ LAB_004113b3:
 
 // Function: playNumber
 // Address: 00411400
-/* public: int __thiscall AIPlayBook::playNumber(char *) */
-
 int __thiscall AIPlayBook::playNumber(AIPlayBook *this,char *param_1)
 {
   byte bVar1;
@@ -1241,8 +1226,6 @@ LAB_00411440:
 // Function: convertTargetNameToIntType
 // Address: 00411480
 // [HELPER] s_Any: "Any"
-/* public: virtual int __thiscall AIPlayBook::convertTargetNameToIntType(char *)const  */
-
 int __thiscall AIPlayBook::convertTargetNameToIntType(AIPlayBook *this,char *param_1)
 {
   byte bVar1;
@@ -1278,9 +1261,6 @@ int __thiscall AIPlayBook::convertTargetNameToIntType(AIPlayBook *this,char *par
 // [HELPER] s_Moving: "Moving"
 // [HELPER] s_Slow: "Slow"
 // [HELPER] s_Stationary: "Stationary"
-/* public: virtual int __thiscall AIPlayBook::convertTargetCharacteristicNameToIntType(char *)const
-    */
-
 int __thiscall AIPlayBook::convertTargetCharacteristicNameToIntType(AIPlayBook *this,char *param_1)
 {
   byte bVar1;
@@ -1401,8 +1381,6 @@ LAB_004115e4:
 
 // Function: convertUnitNameToIntType
 // Address: 00411650
-/* public: virtual int __thiscall AIPlayBook::convertUnitNameToIntType(char *)const  */
-
 int __thiscall AIPlayBook::convertUnitNameToIntType(AIPlayBook *this,char *param_1)
 {
   return -1;
@@ -1412,9 +1390,6 @@ int __thiscall AIPlayBook::convertUnitNameToIntType(AIPlayBook *this,char *param
 
 // Function: convertUnitToIntType
 // Address: 00411660
-/* public: virtual int __thiscall AIPlayBook::convertUnitToIntType(class RGE_Static_Object *)const
-    */
-
 int __thiscall AIPlayBook::convertUnitToIntType(AIPlayBook *this,RGE_Static_Object *param_1)
 {
   return -1;

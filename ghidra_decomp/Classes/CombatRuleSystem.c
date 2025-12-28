@@ -25,8 +25,6 @@
 
 // Function: CombatRuleSystem
 // Address: 004d68d0
-/* public: __thiscall CombatRuleSystem::CombatRuleSystem(void) */
-
 void __thiscall CombatRuleSystem::CombatRuleSystem(CombatRuleSystem *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -37,8 +35,6 @@ void __thiscall CombatRuleSystem::CombatRuleSystem(CombatRuleSystem *this)
 
 // Function: `scalar_deleting_destructor'
 // Address: 004d68e0
-/* public: virtual void * __thiscall CombatRuleSystem::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall
 CombatRuleSystem::_scalar_deleting_destructor_(CombatRuleSystem *this,uint param_1)
 {
@@ -53,8 +49,6 @@ CombatRuleSystem::_scalar_deleting_destructor_(CombatRuleSystem *this,uint param
 
 // Function: ~CombatRuleSystem
 // Address: 004d6900
-/* public: virtual __thiscall CombatRuleSystem::~CombatRuleSystem(void) */
-
 void __thiscall CombatRuleSystem::~CombatRuleSystem(CombatRuleSystem *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -71,9 +65,6 @@ void __thiscall CombatRuleSystem::~CombatRuleSystem(CombatRuleSystem *this)
 // [HELPER] s__s: "%s"
 // [HELPER] s__tmp: ".tmp"
 // [HELPER] s_r: "r"
-/* WARNING: Variable defined which should be unmapped: commentTemp1 */
-/* public: int __thiscall CombatRuleSystem::loadRules(char *) */
-
 int __thiscall CombatRuleSystem::loadRules(CombatRuleSystem *this,char *param_1)
 {
   byte bVar1;
@@ -145,8 +136,6 @@ LAB_004d6953:
 
 // Function: bestUnitTypeToAttack
 // Address: 004d6aa0
-/* public: int __thiscall CombatRuleSystem::bestUnitTypeToAttack(int) */
-
 int __thiscall CombatRuleSystem::bestUnitTypeToAttack(CombatRuleSystem *this,int param_1)
 {
   return -1;
@@ -156,8 +145,6 @@ int __thiscall CombatRuleSystem::bestUnitTypeToAttack(CombatRuleSystem *this,int
 
 // Function: bestUnitTypeToDefendAgainst
 // Address: 004d6ab0
-/* public: int __thiscall CombatRuleSystem::bestUnitTypeToDefendAgainst(int) */
-
 int __thiscall CombatRuleSystem::bestUnitTypeToDefendAgainst(CombatRuleSystem *this,int param_1)
 {
   return -1;

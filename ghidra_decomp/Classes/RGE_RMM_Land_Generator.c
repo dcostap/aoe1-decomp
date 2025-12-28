@@ -10,9 +10,6 @@
 
 // Function: RGE_RMM_Land_Generator
 // Address: 00485200
-/* public: __thiscall RGE_RMM_Land_Generator::RGE_RMM_Land_Generator(class RGE_Map *,class
-   RGE_Random_Map_Module *,struct RGE_Land_Info *) */
-
 RGE_RMM_Land_Generator * __thiscall
 RGE_RMM_Land_Generator::RGE_RMM_Land_Generator
           (RGE_RMM_Land_Generator *this,RGE_Map *param_1,RGE_Random_Map_Module *param_2,
@@ -38,8 +35,6 @@ RGE_RMM_Land_Generator::RGE_RMM_Land_Generator
 
 // Function: generate
 // Address: 00485240
-/* public: virtual unsigned char __thiscall RGE_RMM_Land_Generator::generate(void) */
-
 uchar __thiscall RGE_RMM_Land_Generator::generate(RGE_RMM_Land_Generator *this)
 {
   undefined1 uVar1;
@@ -74,10 +69,6 @@ uchar __thiscall RGE_RMM_Land_Generator::generate(RGE_RMM_Land_Generator *this)
 
 // Function: check_terrain_and_zone
 // Address: 004852d0
-/* WARNING: Variable defined which should be unmapped: count */
-/* protected: unsigned char __thiscall RGE_RMM_Land_Generator::check_terrain_and_zone(unsigned
-   char,unsigned char,long,long) */
-
 uchar __thiscall
 RGE_RMM_Land_Generator::check_terrain_and_zone
           (RGE_RMM_Land_Generator *this,uchar param_1,uchar param_2,long param_3,long param_4)
@@ -150,8 +141,6 @@ RGE_RMM_Land_Generator::check_terrain_and_zone
 
 // Function: chance
 // Address: 00485480
-/* protected: unsigned char __thiscall RGE_RMM_Land_Generator::chance(long,long,long) */
-
 uchar __thiscall
 RGE_RMM_Land_Generator::chance(RGE_RMM_Land_Generator *this,long param_1,long param_2,long param_3)
 {
@@ -215,9 +204,6 @@ RGE_RMM_Land_Generator::chance(RGE_RMM_Land_Generator *this,long param_1,long pa
 // Function: base_land_generate
 // Address: 00485520
 // [HELPER] s_C__msdev_work_age1_x1_rmm_land_c: "C:\msdev\work\age1_x1\rmm_land.cpp"
-/* WARNING: Variable defined which should be unmapped: y */
-/* protected: unsigned char __thiscall RGE_RMM_Land_Generator::base_land_generate(void) */
-
 uchar __thiscall RGE_RMM_Land_Generator::base_land_generate(RGE_RMM_Land_Generator *this)
 {
   uchar uVar1;

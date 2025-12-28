@@ -21,8 +21,6 @@
 
 // Function: TSpan_Node_List
 // Address: 004bd5e0
-/* public: __thiscall TSpan_Node_List::TSpan_Node_List(int,int,int) */
-
 TSpan_Node_List * __thiscall
 TSpan_Node_List::TSpan_Node_List(TSpan_Node_List *this,int param_1,int param_2,int param_3)
 {
@@ -47,8 +45,6 @@ TSpan_Node_List::TSpan_Node_List(TSpan_Node_List *this,int param_1,int param_2,i
 
 // Function: ~TSpan_Node_List
 // Address: 004bd640
-/* public: __thiscall TSpan_Node_List::~TSpan_Node_List(void) */
-
 void __thiscall TSpan_Node_List::~TSpan_Node_List(TSpan_Node_List *this)
 {
   int iVar1;
@@ -75,8 +71,6 @@ void __thiscall TSpan_Node_List::~TSpan_Node_List(TSpan_Node_List *this)
 
 // Function: SetNumZones
 // Address: 004bd690
-/* private: void __thiscall TSpan_Node_List::SetNumZones(int) */
-
 void __thiscall TSpan_Node_List::SetNumZones(TSpan_Node_List *this,int param_1)
 {
   VSpan_Node **ppVVar1;
@@ -112,8 +106,6 @@ void __thiscall TSpan_Node_List::SetNumZones(TSpan_Node_List *this,int param_1)
 
 // Function: InitNewZone
 // Address: 004bd720
-/* private: void __thiscall TSpan_Node_List::InitNewZone(int) */
-
 void __thiscall TSpan_Node_List::InitNewZone(TSpan_Node_List *this,int param_1)
 {
   int iVar1;
@@ -143,8 +135,6 @@ void __thiscall TSpan_Node_List::InitNewZone(TSpan_Node_List *this,int param_1)
 
 // Function: GetNode
 // Address: 004bd790
-/* public: struct VSpan_Node * __thiscall TSpan_Node_List::GetNode(void) */
-
 VSpan_Node * __thiscall TSpan_Node_List::GetNode(TSpan_Node_List *this)
 {
   VSpan_Node *pVVar1;
@@ -181,8 +171,6 @@ VSpan_Node * __thiscall TSpan_Node_List::GetNode(TSpan_Node_List *this)
 
 // Function: FreeNode
 // Address: 004bd800
-/* public: void __thiscall TSpan_Node_List::FreeNode(struct VSpan_Node *) */
-
 void __thiscall TSpan_Node_List::FreeNode(TSpan_Node_List *this,VSpan_Node *param_1)
 {
   param_1->Next = this->Free_Head;
@@ -196,8 +184,6 @@ void __thiscall TSpan_Node_List::FreeNode(TSpan_Node_List *this,VSpan_Node *para
 
 // Function: FreeThread
 // Address: 004bd820
-/* public: int __thiscall TSpan_Node_List::FreeThread(struct VSpan_Node *,struct VSpan_Node *) */
-
 int __thiscall
 TSpan_Node_List::FreeThread(TSpan_Node_List *this,VSpan_Node *param_1,VSpan_Node *param_2)
 {
@@ -240,8 +226,6 @@ TSpan_Node_List::FreeThread(TSpan_Node_List *this,VSpan_Node *param_1,VSpan_Node
 
 // Function: ReclaimAllNodes
 // Address: 004bd880
-/* public: void __thiscall TSpan_Node_List::ReclaimAllNodes(void) */
-
 void __thiscall TSpan_Node_List::ReclaimAllNodes(TSpan_Node_List *this)
 {
   this->Free_Head = (VSpan_Node *)0x0;
@@ -256,8 +240,6 @@ void __thiscall TSpan_Node_List::ReclaimAllNodes(TSpan_Node_List *this)
 
 // Function: ResetStats
 // Address: 004bd8a0
-/* public: void __thiscall TSpan_Node_List::ResetStats(void) */
-
 void __thiscall TSpan_Node_List::ResetStats(TSpan_Node_List *this)
 {
   this->Alloc_Count = 0;

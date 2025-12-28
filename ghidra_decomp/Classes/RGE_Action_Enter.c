@@ -32,8 +32,6 @@
 
 // Function: RGE_Action_Enter
 // Address: 004023c0
-/* public: __thiscall RGE_Action_Enter::RGE_Action_Enter(int,class RGE_Action_Object *) */
-
 RGE_Action_Enter * __thiscall
 RGE_Action_Enter::RGE_Action_Enter(RGE_Action_Enter *this,int param_1,RGE_Action_Object *param_2)
 {
@@ -47,8 +45,6 @@ RGE_Action_Enter::RGE_Action_Enter(RGE_Action_Enter *this,int param_1,RGE_Action
 
 // Function: `scalar_deleting_destructor'
 // Address: 004023f0
-/* public: virtual void * __thiscall RGE_Action_Enter::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall
 RGE_Action_Enter::_scalar_deleting_destructor_(RGE_Action_Enter *this,uint param_1)
 {
@@ -63,10 +59,6 @@ RGE_Action_Enter::_scalar_deleting_destructor_(RGE_Action_Enter *this,uint param
 
 // Function: RGE_Action_Enter
 // Address: 00402410
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: __thiscall RGE_Action_Enter::RGE_Action_Enter(class RGE_Action_Object *,class RGE_Task
-   *,class RGE_Static_Object *) */
-
 RGE_Action_Enter * __thiscall
 RGE_Action_Enter::RGE_Action_Enter
           (RGE_Action_Enter *this,RGE_Action_Object *param_1,RGE_Task *param_2,
@@ -160,8 +152,6 @@ LAB_004025d6:
 
 // Function: ~RGE_Action_Enter
 // Address: 004025f0
-/* public: virtual __thiscall RGE_Action_Enter::~RGE_Action_Enter(void) */
-
 void __thiscall RGE_Action_Enter::~RGE_Action_Enter(RGE_Action_Enter *this)
 {
   *(undefined ***)this = &_vftable_;
@@ -173,8 +163,6 @@ void __thiscall RGE_Action_Enter::~RGE_Action_Enter(RGE_Action_Enter *this)
 
 // Function: first_in_stack
 // Address: 00402600
-/* public: virtual void __thiscall RGE_Action_Enter::first_in_stack(unsigned char) */
-
 void __thiscall RGE_Action_Enter::first_in_stack(RGE_Action_Enter *this,uchar param_1)
 {
   (**(code **)(*(int *)this + 0x5c))(4);
@@ -185,8 +173,6 @@ void __thiscall RGE_Action_Enter::first_in_stack(RGE_Action_Enter *this,uchar pa
 
 // Function: set_state
 // Address: 00402610
-/* protected: virtual void __thiscall RGE_Action_Enter::set_state(unsigned char) */
-
 void __thiscall RGE_Action_Enter::set_state(RGE_Action_Enter *this,uchar param_1)
 {
   RGE_Action_Move_To *this_00;
@@ -246,9 +232,6 @@ void __thiscall RGE_Action_Enter::set_state(RGE_Action_Enter *this,uchar param_1
 
 // Function: update
 // Address: 00402740
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall RGE_Action_Enter::update(void) */
-
 uchar __thiscall RGE_Action_Enter::update(RGE_Action_Enter *this)
 {
   int *piVar1;

@@ -300,8 +300,6 @@
 
 // Function: TDropDownButtonPanel
 // Address: 00475470
-/* public: __thiscall TDropDownButtonPanel::TDropDownButtonPanel(class TDropDownPanel *) */
-
 TDropDownButtonPanel * __thiscall
 TDropDownButtonPanel::TDropDownButtonPanel(TDropDownButtonPanel *this,TDropDownPanel *param_1)
 {
@@ -315,9 +313,6 @@ TDropDownButtonPanel::TDropDownButtonPanel(TDropDownButtonPanel *this,TDropDownP
 
 // Function: `vector_deleting_destructor'
 // Address: 00475490
-/* public: virtual void * __thiscall TDropDownButtonPanel::`vector deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TDropDownButtonPanel::_vector_deleting_destructor_(TDropDownButtonPanel *this,uint param_1)
 {
@@ -332,8 +327,6 @@ TDropDownButtonPanel::_vector_deleting_destructor_(TDropDownButtonPanel *this,ui
 
 // Function: ~TDropDownButtonPanel
 // Address: 004754b0
-/* public: virtual __thiscall TDropDownButtonPanel::~TDropDownButtonPanel(void) */
-
 void __thiscall TDropDownButtonPanel::~TDropDownButtonPanel(TDropDownButtonPanel *this)
 {
   int iVar1;
@@ -366,8 +359,6 @@ void __thiscall TDropDownButtonPanel::~TDropDownButtonPanel(TDropDownButtonPanel
 
 // Function: handle_mouse_move
 // Address: 004754c0
-/* public: virtual long __thiscall TDropDownButtonPanel::handle_mouse_move(long,long,int,int) */
-
 long __thiscall
 TDropDownButtonPanel::handle_mouse_move
           (TDropDownButtonPanel *this,long param_1,long param_2,int param_3,int param_4)

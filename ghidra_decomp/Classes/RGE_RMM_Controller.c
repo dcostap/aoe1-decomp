@@ -9,10 +9,6 @@
 
 // Function: RGE_RMM_Controller
 // Address: 004821a0
-/* WARNING: Function: __alloca_probe replaced with injection: alloca_probe */
-/* public: __thiscall RGE_RMM_Controller::RGE_RMM_Controller(class RGE_Map *,class RGE_Game_World
-   *,unsigned char,long) */
-
 RGE_RMM_Controller * __thiscall
 RGE_RMM_Controller::RGE_RMM_Controller
           (RGE_RMM_Controller *this,RGE_Map *param_1,RGE_Game_World *param_2,uchar param_3,
@@ -49,8 +45,6 @@ RGE_RMM_Controller::RGE_RMM_Controller
 // [HELPER] s_C__msdev_work_age1_x1_rmm_base_c: "C:\msdev\work\age1_x1\rmm_base.cpp"
 // [HELPER] s_RGE_RANDOM_MAP_MODULE__map_start: "RGE_RANDOM_MAP_MODULE::map startped with random: %d."
 // [HELPER] s_RGE_RANDOM_MAP_MODULE__module_co: "RGE_RANDOM_MAP_MODULE::module completed with random: %d."
-/* public: virtual unsigned char __thiscall RGE_RMM_Controller::generate(void) */
-
 uchar __thiscall RGE_RMM_Controller::generate(RGE_RMM_Controller *this)
 {
   undefined4 *puVar1;
@@ -120,11 +114,6 @@ LAB_0048093c:
 // Function: add_land_module
 // Address: 00482270
 // [HELPER] s_C__msdev_work_age1_x1_rmm_cntr_c: "C:\msdev\work\age1_x1\rmm_cntr.cpp"
-/* WARNING: Variable defined which should be unmapped: index */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: void __thiscall RGE_RMM_Controller::add_land_module(struct RGE_Land_Info &,long,long)
-    */
-
 void __thiscall
 RGE_RMM_Controller::add_land_module
           (RGE_RMM_Controller *this,RGE_Land_Info *param_1,long param_2,long param_3)
@@ -295,7 +284,6 @@ LAB_0048251c:
       plVar12 = plVar12 + 0xd;
     } while (mid_x1 < param_1->land_num);
   }
-                    /* language.dll match for 0x1468: "Stone path 5" */
   this_00 = (RGE_RMM_Land_Generator *)operator_new(0x1468);
   local_4 = 0;
   if (this_00 != (RGE_RMM_Land_Generator *)0x0) {
@@ -310,9 +298,6 @@ LAB_0048251c:
 
 // Function: add_terrain_module
 // Address: 004826e0
-/* protected: void __thiscall RGE_RMM_Controller::add_terrain_module(struct RGE_Terrain_Info
-   &,struct RGE_Land_Info &,long) */
-
 void __thiscall
 RGE_RMM_Controller::add_terrain_module
           (RGE_RMM_Controller *this,RGE_Terrain_Info *param_1,RGE_Land_Info *param_2,long param_3)
@@ -403,8 +388,6 @@ switchD_00482719_default:
 
 // Function: count_map_tiles
 // Address: 004828a0
-/* protected: long __thiscall RGE_RMM_Controller::count_map_tiles(unsigned char) */
-
 long __thiscall RGE_RMM_Controller::count_map_tiles(RGE_RMM_Controller *this,uchar param_1)
 {
   return *(int *)&this->field_0x14 * *(int *)&this->field_0x18;
@@ -414,10 +397,6 @@ long __thiscall RGE_RMM_Controller::count_map_tiles(RGE_RMM_Controller *this,uch
 
 // Function: add_object_module
 // Address: 004828b0
-/* WARNING: Function: __alloca_probe replaced with injection: alloca_probe */
-/* protected: void __thiscall RGE_RMM_Controller::add_object_module(class RGE_Game_World *,struct
-   RGE_Land_Info &) */
-
 void __thiscall
 RGE_RMM_Controller::add_object_module
           (RGE_RMM_Controller *this,RGE_Game_World *param_1,RGE_Land_Info *param_2)
@@ -435,7 +414,6 @@ RGE_RMM_Controller::add_object_module
   local_4 = 0xffffffff;
   local_c = *unaff_FS_OFFSET;
   pcStack_8 = FUN_0055e63e;
-                    /* language.dll match for 0x18d0: "Build Fire Galley (G)" */
   *unaff_FS_OFFSET = &local_c;
   object_info.lands[0].x = 6;
   object_info.objects[1].object_exclusion_zone = 4;

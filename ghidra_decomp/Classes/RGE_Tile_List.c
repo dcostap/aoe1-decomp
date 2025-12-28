@@ -11,8 +11,6 @@
 
 // Function: add_node
 // Address: 00471d70
-/* public: void __thiscall RGE_Tile_List::add_node(int,int) */
-
 void __thiscall RGE_Tile_List::add_node(RGE_Tile_List *this,int param_1,int param_2)
 {
   RGE_Tile_List_Node *pRVar1;
@@ -50,8 +48,6 @@ void __thiscall RGE_Tile_List::add_node(RGE_Tile_List *this,int param_1,int para
 
 // Function: del_list
 // Address: 00471df0
-/* public: void __thiscall RGE_Tile_List::del_list(void) */
-
 void __thiscall RGE_Tile_List::del_list(RGE_Tile_List *this)
 {
   RGE_Tile_List_Node *pRVar1;
@@ -72,8 +68,6 @@ void __thiscall RGE_Tile_List::del_list(RGE_Tile_List *this)
 
 // Function: RGE_Tile_List
 // Address: 00471e40
-/* public: __thiscall RGE_Tile_List::RGE_Tile_List(int) */
-
 RGE_Tile_List * __thiscall RGE_Tile_List::RGE_Tile_List(RGE_Tile_List *this,int param_1)
 {
   RGE_Tile_List_Node *pRVar1;
@@ -91,8 +85,6 @@ RGE_Tile_List * __thiscall RGE_Tile_List::RGE_Tile_List(RGE_Tile_List *this,int 
 
 // Function: ~RGE_Tile_List
 // Address: 00471e70
-/* public: __thiscall RGE_Tile_List::~RGE_Tile_List(void) */
-
 void __thiscall RGE_Tile_List::~RGE_Tile_List(RGE_Tile_List *this)
 {
   if (this->list != (RGE_Tile_List_Node *)0x0) {
@@ -105,8 +97,6 @@ void __thiscall RGE_Tile_List::~RGE_Tile_List(RGE_Tile_List *this)
 
 // Function: get_list_info
 // Address: 00471e90
-/* public: void __thiscall RGE_Tile_List::get_list_info(struct RGE_Tile_List_Node * &,int &) */
-
 void __thiscall
 RGE_Tile_List::get_list_info(RGE_Tile_List *this,RGE_Tile_List_Node **param_1,int *param_2)
 {
@@ -119,8 +109,6 @@ RGE_Tile_List::get_list_info(RGE_Tile_List *this,RGE_Tile_List_Node **param_1,in
 
 // Function: get_new_count
 // Address: 00471eb0
-/* public: int __thiscall RGE_Tile_List::get_new_count(void) */
-
 int __thiscall RGE_Tile_List::get_new_count(RGE_Tile_List *this)
 {
   int iVar1;

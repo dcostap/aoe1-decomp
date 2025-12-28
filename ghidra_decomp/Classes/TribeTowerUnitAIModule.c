@@ -124,9 +124,6 @@
 
 // Function: TribeTowerUnitAIModule
 // Address: 00507f60
-/* public: __thiscall TribeTowerUnitAIModule::TribeTowerUnitAIModule(class RGE_Static_Object *,int)
-    */
-
 TribeTowerUnitAIModule * __thiscall
 TribeTowerUnitAIModule::TribeTowerUnitAIModule
           (TribeTowerUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
@@ -178,9 +175,6 @@ TribeTowerUnitAIModule::TribeTowerUnitAIModule
 
 // Function: `scalar_deleting_destructor'
 // Address: 005080e0
-/* public: virtual void * __thiscall TribeTowerUnitAIModule::`scalar deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TribeTowerUnitAIModule::_scalar_deleting_destructor_(TribeTowerUnitAIModule *this,uint param_1)
 {
@@ -195,8 +189,6 @@ TribeTowerUnitAIModule::_scalar_deleting_destructor_(TribeTowerUnitAIModule *thi
 
 // Function: ~TribeTowerUnitAIModule
 // Address: 00508100
-/* public: virtual __thiscall TribeTowerUnitAIModule::~TribeTowerUnitAIModule(void) */
-
 void __thiscall TribeTowerUnitAIModule::~TribeTowerUnitAIModule(TribeTowerUnitAIModule *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -241,9 +233,6 @@ void __thiscall TribeTowerUnitAIModule::~TribeTowerUnitAIModule(TribeTowerUnitAI
 
 // Function: canAttackUnit
 // Address: 00508110
-/* public: virtual int __thiscall TribeTowerUnitAIModule::canAttackUnit(class RGE_Static_Object *)
-    */
-
 int __thiscall
 TribeTowerUnitAIModule::canAttackUnit(TribeTowerUnitAIModule *this,RGE_Static_Object *param_1)
 {
@@ -260,8 +249,6 @@ TribeTowerUnitAIModule::canAttackUnit(TribeTowerUnitAIModule *this,RGE_Static_Ob
 
 // Function: canAttackUnitAtNeutrality
 // Address: 00508140
-/* public: virtual int __thiscall TribeTowerUnitAIModule::canAttackUnitAtNeutrality(int) */
-
 int __thiscall
 TribeTowerUnitAIModule::canAttackUnitAtNeutrality(TribeTowerUnitAIModule *this,int param_1)
 {

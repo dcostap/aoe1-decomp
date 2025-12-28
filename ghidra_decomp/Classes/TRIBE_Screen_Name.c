@@ -318,8 +318,6 @@
 // Address: 004a63d0
 // [HELPER] s_Name_Selection_Screen: "Name Selection Screen"
 // [HELPER] s_scr2: "scr2"
-/* public: __thiscall TRIBE_Screen_Name::TRIBE_Screen_Name(void) */
-
 TRIBE_Screen_Name * __thiscall TRIBE_Screen_Name::TRIBE_Screen_Name(TRIBE_Screen_Name *this)
 {
   TButtonPanel **ppTVar1;
@@ -348,12 +346,10 @@ TRIBE_Screen_Name * __thiscall TRIBE_Screen_Name::TRIBE_Screen_Name(TRIBE_Screen
   }
   TEasy_Panel::setup_shadow_area((TEasy_Panel *)this,0);
   TEasy_Panel::set_ideal_size((TEasy_Panel *)this,0x280,0x1e0);
-                    /* language.dll match for 0x29fe: "Select Player" */
   iVar4 = TEasy_Panel::create_text
                     ((TEasy_Panel *)this,(TPanel *)this,&this->title,0x29fe,0x14,0x14,600,0x1e,1,1,0
                      ,0);
   if (iVar4 != 0) {
-                    /* language.dll match for 0x29ff: "Name" */
     iVar4 = TEasy_Panel::create_text
                       ((TEasy_Panel *)this,(TPanel *)this,&this->name_text,0x29ff,0x3c,0x50,0x8c,
                        0x14,4,0,0,0);
@@ -366,30 +362,23 @@ TRIBE_Screen_Name * __thiscall TRIBE_Screen_Name::TRIBE_Screen_Name(TRIBE_Screen
                           ((TEasy_Panel *)this,&this->name_scrollbar,(TTextPanel *)this->name_list,
                            0x14);
         if (iVar4 != 0) {
-                    /* language.dll match for 0x765c: "Select a player name." */
           TPanel::set_help_info((TPanel *)this->name_scrollbar,0x765c,-1);
-                    /* language.dll match for 0x2a00: "New" */
           iVar4 = TEasy_Panel::create_button
                             ((TEasy_Panel *)this,(TPanel *)this,&this->new_button,0x2a00,0,400,100,
                              0xb4,0x1e,0,0,0);
           if (iVar4 != 0) {
-                    /* language.dll match for 0x765d: "Click to add a new player name." */
             TPanel::set_help_info((TPanel *)this->new_button,0x765d,-1);
-                    /* language.dll match for 0x2a01: "Remove" */
             iVar4 = TEasy_Panel::create_button
                               ((TEasy_Panel *)this,(TPanel *)this,&this->remove_button,0x2a01,0,400,
                                0x8c,0xb4,0x1e,0,0,0);
             if (iVar4 != 0) {
-                    /* language.dll match for 0x765e: "Click to remove a player name." */
               TPanel::set_help_info((TPanel *)this->remove_button,0x765e,-1);
-                    /* language.dll match for 0xfa1: "OK" */
               iVar4 = TEasy_Panel::create_button
                                 ((TEasy_Panel *)this,(TPanel *)this,&this->ok_button,0xfa1,0,0x46,
                                  0x1b8,0xf0,0x1e,0,0,0);
               if (iVar4 != 0) {
                 TPanel::set_help_info((TPanel *)this->ok_button,0x7531,-1);
                 ppTVar1 = &this->cancel_button;
-                    /* language.dll match for 0xfa2: "Cancel" */
                 iVar4 = TEasy_Panel::create_button
                                   ((TEasy_Panel *)this,(TPanel *)this,ppTVar1,0xfa2,0,0x14a,0x1b8,
                                    0xf0,0x1e,0,0,0);
@@ -398,7 +387,6 @@ TRIBE_Screen_Name * __thiscall TRIBE_Screen_Name::TRIBE_Screen_Name(TRIBE_Screen
                   pTVar2 = *ppTVar1;
                   pTVar2->hotkey = 0x1b;
                   pTVar2->hotkey_shift = 0;
-                    /* language.dll match for 0x3ea: "X" */
                   iVar4 = TEasy_Panel::create_button
                                     ((TEasy_Panel *)this,(TPanel *)this,&this->close_button,0x3ea,0,
                                      0,0,0,0,-1,-1,0);
@@ -425,9 +413,6 @@ TRIBE_Screen_Name * __thiscall TRIBE_Screen_Name::TRIBE_Screen_Name(TRIBE_Screen
 
 // Function: `vector_deleting_destructor'
 // Address: 004a66c0
-/* public: virtual void * __thiscall TRIBE_Screen_Name::`vector deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 TRIBE_Screen_Name::_vector_deleting_destructor_(TRIBE_Screen_Name *this,uint param_1)
 {
@@ -443,8 +428,6 @@ TRIBE_Screen_Name::_vector_deleting_destructor_(TRIBE_Screen_Name *this,uint par
 // Function: ~TRIBE_Screen_Name
 // Address: 004a66e0
 // [HELPER] s_New_Name_Dialog: "New Name Dialog"
-/* public: virtual __thiscall TRIBE_Screen_Name::~TRIBE_Screen_Name(void) */
-
 void __thiscall TRIBE_Screen_Name::~TRIBE_Screen_Name(TRIBE_Screen_Name *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -477,8 +460,6 @@ void __thiscall TRIBE_Screen_Name::~TRIBE_Screen_Name(TRIBE_Screen_Name *this)
 
 // Function: init_vars
 // Address: 004a67c0
-/* public: void __thiscall TRIBE_Screen_Name::init_vars(void) */
-
 void __thiscall TRIBE_Screen_Name::init_vars(TRIBE_Screen_Name *this)
 {
   this->title = (TTextPanel *)0x0;
@@ -497,9 +478,6 @@ void __thiscall TRIBE_Screen_Name::init_vars(TRIBE_Screen_Name *this)
 
 // Function: get_player_names
 // Address: 004a6800
-/* WARNING: Variable defined which should be unmapped: players */
-/* protected: void __thiscall TRIBE_Screen_Name::get_player_names(void) */
-
 void __thiscall TRIBE_Screen_Name::get_player_names(TRIBE_Screen_Name *this)
 {
   long lVar1;
@@ -541,9 +519,6 @@ void __thiscall TRIBE_Screen_Name::get_player_names(TRIBE_Screen_Name *this)
 
 // Function: setup_tab_order
 // Address: 004a68c0
-/* WARNING: Variable defined which should be unmapped: tab_list */
-/* protected: void __thiscall TRIBE_Screen_Name::setup_tab_order(void) */
-
 void __thiscall TRIBE_Screen_Name::setup_tab_order(TRIBE_Screen_Name *this)
 {
   int iVar1;
@@ -579,8 +554,6 @@ void __thiscall TRIBE_Screen_Name::setup_tab_order(TRIBE_Screen_Name *this)
 
 // Function: handle_idle
 // Address: 004a6980
-/* public: virtual long __thiscall TRIBE_Screen_Name::handle_idle(void) */
-
 long __thiscall TRIBE_Screen_Name::handle_idle(TRIBE_Screen_Name *this)
 {
   long lVar1;
@@ -601,9 +574,6 @@ long __thiscall TRIBE_Screen_Name::handle_idle(TRIBE_Screen_Name *this)
 // [HELPER] s_New_Name_Dialog: "New Name Dialog"
 // [HELPER] s_Single_Player_Menu: "Single Player Menu"
 // [HELPER] s_YesNoDialog: "YesNoDialog"
-/* public: virtual long __thiscall TRIBE_Screen_Name::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TRIBE_Screen_Name::action
           (TRIBE_Screen_Name *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -686,8 +656,6 @@ TRIBE_Screen_Name::action
     lVar3 = TTextPanel::get_line((TTextPanel *)this->name_list);
     if (lVar3 != -1) {
       pcVar4 = TTextPanel::get_text((TTextPanel *)this->name_list);
-                    /* language.dll match for 0x2a02: "Are you sure you want to remove player %s?"
-                        */
       pcVar5 = TPanel::get_string((TPanel *)this,0x2a02);
       sprintf(str + 4,pcVar5,pcVar4);
       TEasy_Panel::popupYesNoDialog((TEasy_Panel *)this,str + 4,(char *)0x0,0x1c2,100);

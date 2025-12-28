@@ -7,8 +7,6 @@
 
 // Function: RGE_Check_List
 // Address: 004c66c0
-/* public: __thiscall RGE_Check_List::RGE_Check_List(void) */
-
 void __thiscall RGE_Check_List::RGE_Check_List(RGE_Check_List *this)
 {
   this->list = (RGE_Check_Node *)0x0;
@@ -19,8 +17,6 @@ void __thiscall RGE_Check_List::RGE_Check_List(RGE_Check_List *this)
 
 // Function: ~RGE_Check_List
 // Address: 004c66d0
-/* public: __thiscall RGE_Check_List::~RGE_Check_List(void) */
-
 void __thiscall RGE_Check_List::~RGE_Check_List(RGE_Check_List *this)
 {
   RGE_Check_Node *pRVar1;
@@ -38,9 +34,6 @@ void __thiscall RGE_Check_List::~RGE_Check_List(RGE_Check_List *this)
 
 // Function: add_node
 // Address: 004c6700
-/* public: void __thiscall RGE_Check_List::add_node(class RGE_Static_Object *,float,float,unsigned
-   char) */
-
 void __thiscall
 RGE_Check_List::add_node
           (RGE_Check_List *this,RGE_Static_Object *param_1,float param_2,float param_3,uchar param_4

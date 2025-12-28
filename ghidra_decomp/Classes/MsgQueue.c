@@ -13,8 +13,6 @@
 
 // Function: `vector_deleting_destructor'
 // Address: 00431790
-/* public: void * __thiscall MsgQueue::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall MsgQueue::_vector_deleting_destructor_(MsgQueue *this,uint param_1)
 {
   if ((param_1 & 2) != 0) {
@@ -42,8 +40,6 @@ void * __thiscall MsgQueue::_vector_deleting_destructor_(MsgQueue *this,uint par
 
 // Function: MsgQueue
 // Address: 00431f60
-/* public: __thiscall MsgQueue::MsgQueue(void) */
-
 void __thiscall MsgQueue::MsgQueue(MsgQueue *this)
 {
   this->Code = 0;
@@ -60,8 +56,6 @@ void __thiscall MsgQueue::MsgQueue(MsgQueue *this)
 
 // Function: ~MsgQueue
 // Address: 00431f80
-/* public: __thiscall MsgQueue::~MsgQueue(void) */
-
 void __thiscall MsgQueue::~MsgQueue(MsgQueue *this)
 {
   this->Code = 0;

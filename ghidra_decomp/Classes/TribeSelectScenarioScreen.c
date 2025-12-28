@@ -537,8 +537,6 @@
 // [HELPER] s_Select_Scenario_Screen: "Select Scenario Screen"
 // [HELPER] s_scr2: "scr2"
 // [HELPER] s_scr3: "scr3"
-/* public: __thiscall TribeSelectScenarioScreen::TribeSelectScenarioScreen(void) */
-
 TribeSelectScenarioScreen * __thiscall
 TribeSelectScenarioScreen::TribeSelectScenarioScreen(TribeSelectScenarioScreen *this)
 {
@@ -590,7 +588,6 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen(TribeSelectScenarioScreen *
   }
   TEasy_Panel::setup_shadow_area((TEasy_Panel *)this,0);
   TEasy_Panel::set_ideal_size((TEasy_Panel *)this,0x280,0x1e0);
-                    /* language.dll match for 0x25fa: "Scenarios" */
   iVar6 = TEasy_Panel::create_text
                     ((TEasy_Panel *)this,(TPanel *)this,&this->title,0x25fa,0x14,10,600,0x1e,1,1,0,0
                     );
@@ -606,18 +603,15 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen(TribeSelectScenarioScreen *
       TTextPanel::set_second_column_pos
                 ((TTextPanel *)*ppTVar1,
                  (this->_padding_ * (this->scenarioListWidth + -0x3c)) / this->_padding_);
-                    /* language.dll match for 0x25fd: "Loading list of scenarios..." */
       (**(code **)((*ppTVar1)->_padding_ + 0xe4))(0x25fd);
       iVar6 = TEasy_Panel::create_auto_scrollbar
                         ((TEasy_Panel *)this,&this->scenarioScrollbar,(TTextPanel *)*ppTVar1,0x14);
       if (iVar6 != 0) {
         TPanel::set_help_info((TPanel *)this->scenarioScrollbar,-1,-1);
-                    /* language.dll match for 0x25fe: "Select Scenario" */
         iVar6 = TEasy_Panel::create_text
                           ((TEasy_Panel *)this,(TPanel *)this,&this->scenarioTitle,0x25fe,
                            this->scenarioListX,this->scenarioListY + -0x14,300,0x14,4,0,0,0);
         if (iVar6 != 0) {
-                    /* language.dll match for 0x25ff: "Players" */
           iVar6 = TEasy_Panel::create_text
                             ((TEasy_Panel *)this,(TPanel *)this,&this->scenarioPlayersTitle,0x25ff,
                              this->scenarioListWidth + -0xdc + this->scenarioListX,
@@ -627,7 +621,6 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen(TribeSelectScenarioScreen *
             iVar6 = this->scenarioListHeight + 0x19 + this->scenarioListY;
             this->missionTextY = iVar6;
             this->missionTextX = this->scenarioListX;
-                    /* language.dll match for 0x2600: "Scenario Instructions" */
             this->missionTextWidth = this->scenarioListWidth;
             this->missionTextHeight = 0x3c;
             iVar6 = TEasy_Panel::create_text
@@ -649,14 +642,12 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen(TribeSelectScenarioScreen *
                                   ((TEasy_Panel *)this,&this->missionScrollbar,*ppTVar2,0x14);
                 if (iVar6 != 0) {
                   TPanel::set_help_info((TPanel *)this->missionScrollbar,0x7532,-1);
-                    /* language.dll match for 0xfa1: "OK" */
                   iVar6 = TEasy_Panel::create_button
                                     ((TEasy_Panel *)this,(TPanel *)this,&this->okButton,0xfa1,0,0x46
                                      ,0x1b8,0xf0,0x1e,0,0,0);
                   if (iVar6 != 0) {
                     TPanel::set_help_info((TPanel *)this->okButton,0x7531,-1);
                     ppTVar3 = &this->cancelButton;
-                    /* language.dll match for 0xfa2: "Cancel" */
                     iVar6 = TEasy_Panel::create_button
                                       ((TEasy_Panel *)this,(TPanel *)this,ppTVar3,0xfa2,0,0x14a,
                                        0x1b8,0xf0,0x1e,0,0,0);
@@ -666,7 +657,6 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen(TribeSelectScenarioScreen *
                       pTVar5->hotkey = 0x1b;
                       pTVar5->hotkey_shift = 0;
                       ppTVar3 = &this->close_button;
-                    /* language.dll match for 0x3ea: "X" */
                       iVar6 = TEasy_Panel::create_button
                                         ((TEasy_Panel *)this,(TPanel *)this,ppTVar3,0x3ea,0,0,0,0,0,
                                          -1,-1,0);
@@ -699,9 +689,6 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen(TribeSelectScenarioScreen *
 
 // Function: `scalar_deleting_destructor'
 // Address: 004b4100
-/* public: virtual void * __thiscall TribeSelectScenarioScreen::`scalar deleting
-   destructor'(unsigned int) */
-
 void * __thiscall
 TribeSelectScenarioScreen::_scalar_deleting_destructor_
           (TribeSelectScenarioScreen *this,uint param_1)
@@ -717,8 +704,6 @@ TribeSelectScenarioScreen::_scalar_deleting_destructor_
 
 // Function: init_vars
 // Address: 004b4120
-/* protected: void __thiscall TribeSelectScenarioScreen::init_vars(void) */
-
 void __thiscall TribeSelectScenarioScreen::init_vars(TribeSelectScenarioScreen *this)
 {
   this->last_scenario_line = -1;
@@ -744,8 +729,6 @@ void __thiscall TribeSelectScenarioScreen::init_vars(TribeSelectScenarioScreen *
 
 // Function: ~TribeSelectScenarioScreen
 // Address: 004b4190
-/* public: virtual __thiscall TribeSelectScenarioScreen::~TribeSelectScenarioScreen(void) */
-
 void __thiscall
 TribeSelectScenarioScreen::~TribeSelectScenarioScreen(TribeSelectScenarioScreen *this)
 {
@@ -780,8 +763,6 @@ TribeSelectScenarioScreen::~TribeSelectScenarioScreen(TribeSelectScenarioScreen 
 
 // Function: handle_idle
 // Address: 004b4280
-/* public: virtual long __thiscall TribeSelectScenarioScreen::handle_idle(void) */
-
 long __thiscall TribeSelectScenarioScreen::handle_idle(TribeSelectScenarioScreen *this)
 {
   long lVar1;
@@ -807,9 +788,6 @@ long __thiscall TribeSelectScenarioScreen::handle_idle(TribeSelectScenarioScreen
 // [HELPER] s_MP_Setup_Screen: "MP Setup Screen"
 // [HELPER] s_Select_Scenario_Screen: "Select Scenario Screen"
 // [HELPER] s_Single_Player_Menu: "Single Player Menu"
-/* protected: virtual long __thiscall TribeSelectScenarioScreen::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TribeSelectScenarioScreen::action
           (TribeSelectScenarioScreen *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -888,9 +866,6 @@ TribeSelectScenarioScreen::action
 // Address: 004b44f0
 // [HELPER] s__d: "%d"
 // [HELPER] s__d____d: "%d - %d"
-/* WARNING: Variable defined which should be unmapped: i */
-/* protected: void __thiscall TribeSelectScenarioScreen::fillScenarios(void) */
-
 void __thiscall TribeSelectScenarioScreen::fillScenarios(TribeSelectScenarioScreen *this)
 {
   char cVar1;
@@ -1022,8 +997,6 @@ void __thiscall TribeSelectScenarioScreen::fillScenarios(TribeSelectScenarioScre
 // Function: fillMissionText
 // Address: 004b4720
 // [HELPER] s_: ""
-/* protected: void __thiscall TribeSelectScenarioScreen::fillMissionText(void) */
-
 void __thiscall TribeSelectScenarioScreen::fillMissionText(TribeSelectScenarioScreen *this)
 {
   long lVar1;
@@ -1041,8 +1014,6 @@ void __thiscall TribeSelectScenarioScreen::fillMissionText(TribeSelectScenarioSc
 
 // Function: getSettings
 // Address: 004b4770
-/* protected: void __thiscall TribeSelectScenarioScreen::getSettings(void) */
-
 void __thiscall TribeSelectScenarioScreen::getSettings(TribeSelectScenarioScreen *this)
 {
   char *pcVar1;
@@ -1064,8 +1035,6 @@ void __thiscall TribeSelectScenarioScreen::getSettings(TribeSelectScenarioScreen
 
 // Function: sendSettings
 // Address: 004b47d0
-/* protected: void __thiscall TribeSelectScenarioScreen::sendSettings(void) */
-
 void __thiscall TribeSelectScenarioScreen::sendSettings(TribeSelectScenarioScreen *this)
 {
   char *pcVar1;
@@ -1081,9 +1050,6 @@ void __thiscall TribeSelectScenarioScreen::sendSettings(TribeSelectScenarioScree
 
 // Function: activatePanels
 // Address: 004b4810
-/* WARNING: Variable defined which should be unmapped: tabList */
-/* protected: void __thiscall TribeSelectScenarioScreen::activatePanels(void) */
-
 void __thiscall TribeSelectScenarioScreen::activatePanels(TribeSelectScenarioScreen *this)
 {
   TListPanel *pTStack_18;

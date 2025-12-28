@@ -32,8 +32,6 @@
 
 // Function: TRIBE_Map
 // Address: 0050f410
-/* public: __thiscall TRIBE_Map::TRIBE_Map(int,class RGE_Sound * *,unsigned char) */
-
 TRIBE_Map * __thiscall
 TRIBE_Map::TRIBE_Map(TRIBE_Map *this,int param_1,RGE_Sound **param_2,uchar param_3)
 {
@@ -102,8 +100,6 @@ TRIBE_Map::TRIBE_Map(TRIBE_Map *this,int param_1,RGE_Sound **param_2,uchar param
 
 // Function: `scalar_deleting_destructor'
 // Address: 0050f740
-/* public: virtual void * __thiscall TRIBE_Map::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall TRIBE_Map::_scalar_deleting_destructor_(TRIBE_Map *this,uint param_1)
 {
   ~TRIBE_Map(this);
@@ -117,9 +113,6 @@ void * __thiscall TRIBE_Map::_scalar_deleting_destructor_(TRIBE_Map *this,uint p
 
 // Function: TRIBE_Map
 // Address: 0050f760
-/* public: __thiscall TRIBE_Map::TRIBE_Map(char *,char *,char *,char *,short,short,short,class
-   RGE_Sound * *) */
-
 TRIBE_Map * __thiscall
 TRIBE_Map::TRIBE_Map
           (TRIBE_Map *this,char *param_1,char *param_2,char *param_3,char *param_4,short param_5,
@@ -134,8 +127,6 @@ TRIBE_Map::TRIBE_Map
 
 // Function: ~TRIBE_Map
 // Address: 0050f7a0
-/* public: virtual __thiscall TRIBE_Map::~TRIBE_Map(void) */
-
 void __thiscall TRIBE_Map::~TRIBE_Map(TRIBE_Map *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -147,8 +138,6 @@ void __thiscall TRIBE_Map::~TRIBE_Map(TRIBE_Map *this)
 
 // Function: save
 // Address: 0050f7b0
-/* public: virtual void __thiscall TRIBE_Map::save(int) */
-
 void __thiscall TRIBE_Map::save(TRIBE_Map *this,int param_1)
 {
   RGE_Map::save((RGE_Map *)this,param_1);
@@ -159,9 +148,6 @@ void __thiscall TRIBE_Map::save(TRIBE_Map *this,int param_1)
 
 // Function: map_generate
 // Address: 0050f7c0
-/* public: virtual void __thiscall TRIBE_Map::map_generate(class RGE_Player *,class RGE_Game_World
-   *,struct RGE_Player_Info *,unsigned char *) */
-
 void __thiscall
 TRIBE_Map::map_generate
           (TRIBE_Map *this,RGE_Player *param_1,RGE_Game_World *param_2,RGE_Player_Info *param_3,
@@ -178,8 +164,6 @@ TRIBE_Map::map_generate
 
 // Function: map_generate
 // Address: 0050f7f0
-/* public: void __thiscall TRIBE_Map::map_generate(struct RGE_Player_Info *) */
-
 void __thiscall TRIBE_Map::map_generate(TRIBE_Map *this,RGE_Player_Info *param_1)
 {
   return;
@@ -189,8 +173,6 @@ void __thiscall TRIBE_Map::map_generate(TRIBE_Map *this,RGE_Player_Info *param_1
 
 // Function: data_load_random_map
 // Address: 0050f800
-/* public: virtual void __thiscall TRIBE_Map::data_load_random_map(int) */
-
 void __thiscall TRIBE_Map::data_load_random_map(TRIBE_Map *this,int param_1)
 {
   TRIBE_RMM_Database_Controller *this_00;
@@ -221,8 +203,6 @@ void __thiscall TRIBE_Map::data_load_random_map(TRIBE_Map *this,int param_1)
 
 // Function: load_random_map
 // Address: 0050f860
-/* public: virtual void __thiscall TRIBE_Map::load_random_map(char *,char *,char *,char *) */
-
 void __thiscall
 TRIBE_Map::load_random_map(TRIBE_Map *this,char *param_1,char *param_2,char *param_3,char *param_4)
 {
@@ -255,10 +235,6 @@ TRIBE_Map::load_random_map(TRIBE_Map *this,char *param_1,char *param_2,char *par
 
 // Function: check_tile_for_forest_change
 // Address: 0050f8d0
-/* WARNING: Variable defined which should be unmapped: success */
-/* public: void __thiscall TRIBE_Map::check_tile_for_forest_change(short,short,class RGE_Game_World
-   *) */
-
 void __thiscall
 TRIBE_Map::check_tile_for_forest_change
           (TRIBE_Map *this,short param_1,short param_2,RGE_Game_World *param_3)
@@ -353,9 +329,6 @@ TRIBE_Map::check_tile_for_forest_change
 
 // Function: change_terrain
 // Address: 0050fa90
-/* public: void __thiscall TRIBE_Map::change_terrain(short,short,unsigned char,class RGE_Game_World
-   *) */
-
 void __thiscall
 TRIBE_Map::change_terrain
           (TRIBE_Map *this,short param_1,short param_2,uchar param_3,RGE_Game_World *param_4)
@@ -443,9 +416,6 @@ TRIBE_Map::change_terrain
 
 // Function: do_terrain_brush
 // Address: 0050fc40
-/* public: virtual unsigned char __thiscall TRIBE_Map::do_terrain_brush(long,long,long,unsigned
-   char) */
-
 uchar __thiscall
 TRIBE_Map::do_terrain_brush(TRIBE_Map *this,long param_1,long param_2,long param_3,uchar param_4)
 {
@@ -505,9 +475,6 @@ TRIBE_Map::do_terrain_brush(TRIBE_Map *this,long param_1,long param_2,long param
 
 // Function: do_terrain_brush_stroke
 // Address: 0050fd40
-/* public: virtual unsigned char __thiscall
-   TRIBE_Map::do_terrain_brush_stroke(long,long,long,long,long,unsigned char) */
-
 uchar __thiscall
 TRIBE_Map::do_terrain_brush_stroke
           (TRIBE_Map *this,long param_1,long param_2,long param_3,long param_4,long param_5,
@@ -541,9 +508,6 @@ TRIBE_Map::do_terrain_brush_stroke
 
 // Function: do_elevation_brush_stroke
 // Address: 0050fdd0
-/* public: virtual unsigned char __thiscall
-   TRIBE_Map::do_elevation_brush_stroke(long,long,long,long,long,unsigned char) */
-
 uchar __thiscall
 TRIBE_Map::do_elevation_brush_stroke
           (TRIBE_Map *this,long param_1,long param_2,long param_3,long param_4,long param_5,
@@ -583,9 +547,6 @@ TRIBE_Map::do_elevation_brush_stroke
 
 // Function: setup_cliff_type
 // Address: 0050fe90
-/* public: void __thiscall
-   TRIBE_Map::setup_cliff_type(long,long,long,long,long,long,long,long,float,float) */
-
 void __thiscall
 TRIBE_Map::setup_cliff_type
           (TRIBE_Map *this,long param_1,long param_2,long param_3,long param_4,long param_5,
@@ -611,8 +572,6 @@ TRIBE_Map::setup_cliff_type
 
 // Function: find_cliff
 // Address: 0050ff20
-/* public: class RGE_Static_Object * __thiscall TRIBE_Map::find_cliff(long,long) */
-
 RGE_Static_Object * __thiscall TRIBE_Map::find_cliff(TRIBE_Map *this,long param_1,long param_2)
 {
   short sVar1;
@@ -660,9 +619,6 @@ LAB_00510005:
 
 // Function: get_cliff_info
 // Address: 00510020
-/* public: struct TRIBE_Cliff_Info __thiscall TRIBE_Map::get_cliff_info(class RGE_Static_Object *)
-    */
-
 TRIBE_Cliff_Info * __thiscall
 TRIBE_Map::get_cliff_info
           (TRIBE_Map *this,TRIBE_Cliff_Info *__return_storage_ptr__,RGE_Static_Object *param_1)
@@ -707,8 +663,6 @@ TRIBE_Map::get_cliff_info
 
 // Function: check_cliff_valid
 // Address: 005100d0
-/* public: unsigned char __thiscall TRIBE_Map::check_cliff_valid(struct TRIBE_Cliff_Info) */
-
 uchar __thiscall TRIBE_Map::check_cliff_valid(TRIBE_Map *this,TRIBE_Cliff_Info param_1)
 {
   return -1 < this->cliff_master_table
@@ -721,10 +675,6 @@ uchar __thiscall TRIBE_Map::check_cliff_valid(TRIBE_Map *this,TRIBE_Cliff_Info p
 // Function: make_new_cliff
 // Address: 00510110
 // [HELPER] s_C__msdev_work_age1_x1_tmap_cpp: "C:\msdev\work\age1_x1\tmap.cpp"
-/* WARNING: Variable defined which should be unmapped: id */
-/* public: class RGE_Static_Object * __thiscall TRIBE_Map::make_new_cliff(long,long,struct
-   TRIBE_Cliff_Info) */
-
 RGE_Static_Object * __thiscall
 TRIBE_Map::make_new_cliff(TRIBE_Map *this,long param_1,long param_2,TRIBE_Cliff_Info param_3)
 {
@@ -792,8 +742,6 @@ LAB_005101bf:
 
 // Function: remove_cliff_edge
 // Address: 005102a0
-/* public: void __thiscall TRIBE_Map::remove_cliff_edge(long,long,long) */
-
 void __thiscall TRIBE_Map::remove_cliff_edge(TRIBE_Map *this,long param_1,long param_2,long param_3)
 {
   int iVar1;
@@ -874,8 +822,6 @@ void __thiscall TRIBE_Map::remove_cliff_edge(TRIBE_Map *this,long param_1,long p
 
 // Function: reverse_cliff_direction
 // Address: 00510410
-/* public: long __thiscall TRIBE_Map::reverse_cliff_direction(long) */
-
 long __thiscall TRIBE_Map::reverse_cliff_direction(TRIBE_Map *this,long param_1)
 {
   long lVar1;
@@ -891,10 +837,6 @@ long __thiscall TRIBE_Map::reverse_cliff_direction(TRIBE_Map *this,long param_1)
 
 // Function: add_cliff_edge
 // Address: 00510430
-/* WARNING: Variable defined which should be unmapped: possible_facing1 */
-/* WARNING: Type propagation algorithm not settling */
-/* public: long __thiscall TRIBE_Map::add_cliff_edge(long,long,long,long,long) */
-
 long __thiscall
 TRIBE_Map::add_cliff_edge
           (TRIBE_Map *this,long param_1,long param_2,long param_3,long param_4,long param_5)
@@ -1169,9 +1111,6 @@ TRIBE_Map::add_cliff_edge
 
 // Function: delete_cliff
 // Address: 00510960
-/* WARNING: Variable defined which should be unmapped: cliff_info */
-/* public: virtual void __thiscall TRIBE_Map::delete_cliff(long,long) */
-
 void __thiscall TRIBE_Map::delete_cliff(TRIBE_Map *this,long param_1,long param_2)
 {
   int iVar1;
@@ -1225,9 +1164,6 @@ void __thiscall TRIBE_Map::delete_cliff(TRIBE_Map *this,long param_1,long param_
 
 // Function: do_cliff_brush
 // Address: 00510a50
-/* public: virtual unsigned char __thiscall TRIBE_Map::do_cliff_brush(long,long,unsigned
-   char,unsigned char) */
-
 uchar __thiscall
 TRIBE_Map::do_cliff_brush(TRIBE_Map *this,long param_1,long param_2,uchar param_3,uchar param_4)
 {
@@ -1304,9 +1240,6 @@ TRIBE_Map::do_cliff_brush(TRIBE_Map *this,long param_1,long param_2,uchar param_
 
 // Function: do_cliff_brush_stroke
 // Address: 00510c10
-/* public: virtual unsigned char __thiscall
-   TRIBE_Map::do_cliff_brush_stroke(long,long,long,long,unsigned char,unsigned char) */
-
 uchar __thiscall
 TRIBE_Map::do_cliff_brush_stroke
           (TRIBE_Map *this,long param_1,long param_2,long param_3,long param_4,uchar param_5,
@@ -1327,8 +1260,6 @@ TRIBE_Map::do_cliff_brush_stroke
 
 // Function: water
 // Address: 00510c90
-/* public: unsigned char __thiscall TRIBE_Map::water(unsigned char) */
-
 uchar __thiscall TRIBE_Map::water(TRIBE_Map *this,uchar param_1)
 {
   if (param_1 == '\x01') {
@@ -1344,8 +1275,6 @@ uchar __thiscall TRIBE_Map::water(TRIBE_Map *this,uchar param_1)
 
 // Function: clean_borders
 // Address: 00510cb0
-/* public: void __thiscall TRIBE_Map::clean_borders(long,long,long,long,unsigned char) */
-
 void __thiscall
 TRIBE_Map::clean_borders
           (TRIBE_Map *this,long param_1,long param_2,long param_3,long param_4,uchar param_5)
@@ -1469,8 +1398,6 @@ TRIBE_Map::clean_borders
 
 // Function: do_terrain_brush_check
 // Address: 00511000
-/* public: unsigned char __thiscall TRIBE_Map::do_terrain_brush_check(long,long) */
-
 uchar __thiscall TRIBE_Map::do_terrain_brush_check(TRIBE_Map *this,long param_1,long param_2)
 {
   int iVar1;
@@ -1518,8 +1445,6 @@ uchar __thiscall TRIBE_Map::do_terrain_brush_check(TRIBE_Map *this,long param_1,
 
 // Function: tribe_clean_elevation
 // Address: 005110e0
-/* public: void __thiscall TRIBE_Map::tribe_clean_elevation(long,long,long,long) */
-
 void __thiscall
 TRIBE_Map::tribe_clean_elevation
           (TRIBE_Map *this,long param_1,long param_2,long param_3,long param_4)
@@ -1564,10 +1489,6 @@ TRIBE_Map::tribe_clean_elevation
 
 // Function: tribe_clean_terrain
 // Address: 005111a0
-/* WARNING: Variable defined which should be unmapped: change_flag */
-/* public: void __thiscall TRIBE_Map::tribe_clean_terrain(long,long,long,long,unsigned char,unsigned
-   char) */
-
 void __thiscall
 TRIBE_Map::tribe_clean_terrain
           (TRIBE_Map *this,long param_1,long param_2,long param_3,long param_4,uchar param_5,

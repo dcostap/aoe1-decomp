@@ -574,9 +574,6 @@
 
 // Function: TribeRangedUnitAIModule2
 // Address: 00504880
-/* public: __thiscall TribeRangedUnitAIModule2::TribeRangedUnitAIModule2(class RGE_Static_Object
-   *,int) */
-
 TribeRangedUnitAIModule2 * __thiscall
 TribeRangedUnitAIModule2::TribeRangedUnitAIModule2
           (TribeRangedUnitAIModule2 *this,RGE_Static_Object *param_1,int param_2)
@@ -590,9 +587,6 @@ TribeRangedUnitAIModule2::TribeRangedUnitAIModule2
 
 // Function: `vector_deleting_destructor'
 // Address: 005048a0
-/* public: virtual void * __thiscall TribeRangedUnitAIModule2::`vector deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TribeRangedUnitAIModule2::_vector_deleting_destructor_(TribeRangedUnitAIModule2 *this,uint param_1)
 {
@@ -607,8 +601,6 @@ TribeRangedUnitAIModule2::_vector_deleting_destructor_(TribeRangedUnitAIModule2 
 
 // Function: ~TribeRangedUnitAIModule2
 // Address: 005048c0
-/* public: virtual __thiscall TribeRangedUnitAIModule2::~TribeRangedUnitAIModule2(void) */
-
 void __thiscall TribeRangedUnitAIModule2::~TribeRangedUnitAIModule2(TribeRangedUnitAIModule2 *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -653,11 +645,6 @@ void __thiscall TribeRangedUnitAIModule2::~TribeRangedUnitAIModule2(TribeRangedU
 
 // Function: processNotify
 // Address: 005048d0
-/* WARNING: Variable defined which should be unmapped: evasiveMoveDistance */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall TribeRangedUnitAIModule2::processNotify(struct NotifyEvent
-   *,unsigned long) */
-
 int __thiscall
 TribeRangedUnitAIModule2::processNotify
           (TribeRangedUnitAIModule2 *this,NotifyEvent *param_1,ulong param_2)

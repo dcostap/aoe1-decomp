@@ -8,8 +8,6 @@
 
 // Function: `vector_deleting_destructor'
 // Address: 00424ac0
-/* public: void * __thiscall IPAD::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall IPAD::_vector_deleting_destructor_(IPAD *this,uint param_1)
 {
   if ((param_1 & 2) != 0) {
@@ -28,8 +26,6 @@ void * __thiscall IPAD::_vector_deleting_destructor_(IPAD *this,uint param_1)
 // Function: IPAD
 // Address: 00424dd0
 // [HELPER] s_: ""
-/* public: __thiscall IPAD::IPAD(void) */
-
 IPAD * __thiscall IPAD::IPAD(IPAD *this)
 {
   char cVar1;
@@ -92,8 +88,6 @@ IPAD * __thiscall IPAD::IPAD(IPAD *this)
 
 // Function: ~IPAD
 // Address: 00424e30
-/* public: __thiscall IPAD::~IPAD(void) */
-
 void __thiscall IPAD::~IPAD(IPAD *this)
 {
   return;

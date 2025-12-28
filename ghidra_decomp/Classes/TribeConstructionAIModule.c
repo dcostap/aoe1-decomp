@@ -32,8 +32,6 @@
 
 // Function: TribeConstructionAIModule
 // Address: 004d5e60
-/* public: __thiscall TribeConstructionAIModule::TribeConstructionAIModule(void *,int) */
-
 TribeConstructionAIModule * __thiscall
 TribeConstructionAIModule::TribeConstructionAIModule
           (TribeConstructionAIModule *this,void *param_1,int param_2)
@@ -48,9 +46,6 @@ TribeConstructionAIModule::TribeConstructionAIModule
 
 // Function: `scalar_deleting_destructor'
 // Address: 004d5e90
-/* public: virtual void * __thiscall TribeConstructionAIModule::`scalar deleting
-   destructor'(unsigned int) */
-
 void * __thiscall
 TribeConstructionAIModule::_scalar_deleting_destructor_
           (TribeConstructionAIModule *this,uint param_1)
@@ -66,8 +61,6 @@ TribeConstructionAIModule::_scalar_deleting_destructor_
 
 // Function: TribeConstructionAIModule
 // Address: 004d5eb0
-/* public: __thiscall TribeConstructionAIModule::TribeConstructionAIModule(int,int) */
-
 TribeConstructionAIModule * __thiscall
 TribeConstructionAIModule::TribeConstructionAIModule
           (TribeConstructionAIModule *this,int param_1,int param_2)
@@ -82,8 +75,6 @@ TribeConstructionAIModule::TribeConstructionAIModule
 
 // Function: ~TribeConstructionAIModule
 // Address: 004d5ee0
-/* public: virtual __thiscall TribeConstructionAIModule::~TribeConstructionAIModule(void) */
-
 void __thiscall
 TribeConstructionAIModule::~TribeConstructionAIModule(TribeConstructionAIModule *this)
 {
@@ -96,9 +87,6 @@ TribeConstructionAIModule::~TribeConstructionAIModule(TribeConstructionAIModule 
 
 // Function: setMainDecisionAI
 // Address: 004d5ef0
-/* public: void __thiscall TribeConstructionAIModule::setMainDecisionAI(class
-   TribeMainDecisionAIModule *) */
-
 void __thiscall
 TribeConstructionAIModule::setMainDecisionAI
           (TribeConstructionAIModule *this,TribeMainDecisionAIModule *param_1)
@@ -111,8 +99,6 @@ TribeConstructionAIModule::setMainDecisionAI
 
 // Function: canPlace
 // Address: 004d5f00
-/* public: int __thiscall TribeConstructionAIModule::canPlace(class BuildItem *) */
-
 int __thiscall
 TribeConstructionAIModule::canPlace(TribeConstructionAIModule *this,BuildItem *param_1)
 {
@@ -186,11 +172,6 @@ LAB_004d60b9:
 
 // Function: placeStructure
 // Address: 004d60e0
-/* WARNING: Variable defined which should be unmapped: builderZone */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: class ConstructionItem * __thiscall TribeConstructionAIModule::placeStructure(class
-   BuildItem *,int,struct PlacementState &,unsigned long) */
-
 ConstructionItem * __thiscall
 TribeConstructionAIModule::placeStructure
           (TribeConstructionAIModule *this,BuildItem *param_1,int param_2,PlacementState *param_3,
@@ -244,7 +225,6 @@ LAB_004d674d:
     if (iVar4 == 0x2d) {
       pCVar5 = placeDock(this,param_1);
       if (pCVar5 != (ConstructionItem *)0x0) {
-                    /* language.dll match for 0x80: "Arial" */
         pCVar6 = (ConstructionItem *)operator_new(0x80);
         local_4 = 0;
         if (pCVar6 != (ConstructionItem *)0x0) {
@@ -316,7 +296,6 @@ LAB_004d674d:
                     goto LAB_004d6520;
                   }
                 }
-                    /* language.dll match for 0x80: "Arial" */
                 pCVar6 = (ConstructionItem *)operator_new(0x80);
                 local_4._0_1_ = 2;
                 if (pCVar6 == (ConstructionItem *)0x0) {
@@ -340,7 +319,6 @@ LAB_004d674d:
           }
         }
 LAB_004d6520:
-                    /* Symbol Ref: {@symbol LoopDone} */
       }
       if (((1 < local_ac) || (local_ac == -1)) &&
          (this_00 = (RGE_Static_Object *)
@@ -383,7 +361,6 @@ LAB_004d6520:
         iVar4 = BaseItem::uniqueID((BaseItem *)param_1);
         BaseItem::setUniqueID((BaseItem *)pCVar5,iVar4);
         this_00 = (RGE_Static_Object *)0x0;
-                    /* language.dll match for 0x80: "Arial" */
         this->_padding_ = 0;
         pCVar6 = (ConstructionItem *)operator_new(0x80);
         local_4._0_1_ = 3;
@@ -421,9 +398,6 @@ LAB_004d675e:
 
 // Function: placeDock
 // Address: 004d6780
-/* public: class ConstructionItem * __thiscall TribeConstructionAIModule::placeDock(class BuildItem
-   *) */
-
 ConstructionItem * __thiscall
 TribeConstructionAIModule::placeDock(TribeConstructionAIModule *this,BuildItem *param_1)
 {
@@ -451,8 +425,6 @@ TribeConstructionAIModule::placeDock(TribeConstructionAIModule *this,BuildItem *
 
 // Function: setBuilt
 // Address: 004d6800
-/* public: void __thiscall TribeConstructionAIModule::setBuilt(class RGE_Static_Object *,int) */
-
 void __thiscall
 TribeConstructionAIModule::setBuilt
           (TribeConstructionAIModule *this,RGE_Static_Object *param_1,int param_2)
@@ -488,9 +460,6 @@ TribeConstructionAIModule::setBuilt
 
 // Function: compare
 // Address: 004d68a0
-/* protected: class ConstructionItem * __thiscall TribeConstructionAIModule::compare(class
-   ConstructionItem *,class ConstructionItem *) */
-
 ConstructionItem * __thiscall
 TribeConstructionAIModule::compare
           (TribeConstructionAIModule *this,ConstructionItem *param_1,ConstructionItem *param_2)

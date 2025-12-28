@@ -31,8 +31,6 @@
 // Function: ResourceAIModule
 // Address: 00412310
 // [HELPER] s_Resource_AI: "Resource AI"
-/* public: __thiscall ResourceAIModule::ResourceAIModule(void *,int,int,int,int,int) */
-
 ResourceAIModule * __thiscall
 ResourceAIModule::ResourceAIModule
           (ResourceAIModule *this,void *param_1,int param_2,int param_3,int param_4,int param_5,
@@ -86,8 +84,6 @@ ResourceAIModule::ResourceAIModule
 
 // Function: `vector_deleting_destructor'
 // Address: 00412460
-/* public: virtual void * __thiscall ResourceAIModule::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall
 ResourceAIModule::_vector_deleting_destructor_(ResourceAIModule *this,uint param_1)
 {
@@ -102,8 +98,6 @@ ResourceAIModule::_vector_deleting_destructor_(ResourceAIModule *this,uint param
 
 // Function: ~ResourceAIModule
 // Address: 00412480
-/* public: virtual __thiscall ResourceAIModule::~ResourceAIModule(void) */
-
 void __thiscall ResourceAIModule::~ResourceAIModule(ResourceAIModule *this)
 {
   int iVar1;
@@ -139,8 +133,6 @@ void __thiscall ResourceAIModule::~ResourceAIModule(ResourceAIModule *this)
 
 // Function: processMessage
 // Address: 00412540
-/* public: virtual int __thiscall ResourceAIModule::processMessage(class AIModuleMessage *) */
-
 int __thiscall ResourceAIModule::processMessage(ResourceAIModule *this,AIModuleMessage *param_1)
 {
   return 0;
@@ -150,8 +142,6 @@ int __thiscall ResourceAIModule::processMessage(ResourceAIModule *this,AIModuleM
 
 // Function: update
 // Address: 00412550
-/* public: virtual int __thiscall ResourceAIModule::update(int) */
-
 int __thiscall ResourceAIModule::update(ResourceAIModule *this,int param_1)
 {
   return 0;
@@ -161,8 +151,6 @@ int __thiscall ResourceAIModule::update(ResourceAIModule *this,int param_1)
 
 // Function: setCallbackMessage
 // Address: 00412560
-/* public: virtual void __thiscall ResourceAIModule::setCallbackMessage(class AIModuleMessage *) */
-
 void __thiscall
 ResourceAIModule::setCallbackMessage(ResourceAIModule *this,AIModuleMessage *param_1)
 {
@@ -173,8 +161,6 @@ ResourceAIModule::setCallbackMessage(ResourceAIModule *this,AIModuleMessage *par
 
 // Function: setMainDecisionAI
 // Address: 00412570
-/* public: void __thiscall ResourceAIModule::setMainDecisionAI(class MainDecisionAIModule *) */
-
 void __thiscall
 ResourceAIModule::setMainDecisionAI(ResourceAIModule *this,MainDecisionAIModule *param_1)
 {
@@ -186,8 +172,6 @@ ResourceAIModule::setMainDecisionAI(ResourceAIModule *this,MainDecisionAIModule 
 
 // Function: numberResources
 // Address: 00412580
-/* public: int __thiscall ResourceAIModule::numberResources(void)const  */
-
 int __thiscall ResourceAIModule::numberResources(ResourceAIModule *this)
 {
   return this->numberResourcesValue;
@@ -197,8 +181,6 @@ int __thiscall ResourceAIModule::numberResources(ResourceAIModule *this)
 
 // Function: resource
 // Address: 00412590
-/* public: int __thiscall ResourceAIModule::resource(int)const  */
-
 int __thiscall ResourceAIModule::resource(ResourceAIModule *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < this->numberResourcesValue)) {
@@ -211,8 +193,6 @@ int __thiscall ResourceAIModule::resource(ResourceAIModule *this,int param_1)
 
 // Function: resourcesAvailable
 // Address: 004125c0
-/* public: int __thiscall ResourceAIModule::resourcesAvailable(class ResourceItem *) */
-
 int __thiscall ResourceAIModule::resourcesAvailable(ResourceAIModule *this,ResourceItem *param_1)
 {
   int iVar1;
@@ -245,8 +225,6 @@ int __thiscall ResourceAIModule::resourcesAvailable(ResourceAIModule *this,Resou
 
 // Function: unavailableResource
 // Address: 00412640
-/* public: int __thiscall ResourceAIModule::unavailableResource(class ResourceItem *) */
-
 int __thiscall ResourceAIModule::unavailableResource(ResourceAIModule *this,ResourceItem *param_1)
 {
   int iVar1;
@@ -278,8 +256,6 @@ int __thiscall ResourceAIModule::unavailableResource(ResourceAIModule *this,Reso
 
 // Function: minValueOfResource
 // Address: 004126b0
-/* public: int __thiscall ResourceAIModule::minValueOfResource(int)const  */
-
 int __thiscall ResourceAIModule::minValueOfResource(ResourceAIModule *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < this->numberResourcesValue)) {
@@ -292,8 +268,6 @@ int __thiscall ResourceAIModule::minValueOfResource(ResourceAIModule *this,int p
 
 // Function: maxValueOfResource
 // Address: 004126e0
-/* public: int __thiscall ResourceAIModule::maxValueOfResource(int)const  */
-
 int __thiscall ResourceAIModule::maxValueOfResource(ResourceAIModule *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < this->numberResourcesValue)) {
@@ -308,8 +282,6 @@ int __thiscall ResourceAIModule::maxValueOfResource(ResourceAIModule *this,int p
 // Address: 00412710
 // [HELPER] s___setResource__r__d___d_: "  setResource: r[%d]=%d."
 // [HELPER] s_setResource__n__d__v__d_: "setResource: n=%d, v=%d."
-/* public: void __thiscall ResourceAIModule::setResource(int,int) */
-
 void __thiscall ResourceAIModule::setResource(ResourceAIModule *this,int param_1,int param_2)
 {
   AIModule::logCommonHistory
@@ -328,8 +300,6 @@ void __thiscall ResourceAIModule::setResource(ResourceAIModule *this,int param_1
 
 // Function: setResources
 // Address: 00412770
-/* public: void __thiscall ResourceAIModule::setResources(class ResourceItem *) */
-
 void __thiscall ResourceAIModule::setResources(ResourceAIModule *this,ResourceItem *param_1)
 {
   int iVar1;
@@ -359,8 +329,6 @@ void __thiscall ResourceAIModule::setResources(ResourceAIModule *this,ResourceIt
 // Address: 004127c0
 // [HELPER] s___incrementResource__r__d___d_: "  incrementResource: r[%d]=%d."
 // [HELPER] s_incrementResource__n__d__v__d_: "incrementResource: n=%d, v=%d."
-/* public: void __thiscall ResourceAIModule::incrementResource(int,int) */
-
 void __thiscall ResourceAIModule::incrementResource(ResourceAIModule *this,int param_1,int param_2)
 {
   AIModule::logCommonHistory
@@ -379,8 +347,6 @@ void __thiscall ResourceAIModule::incrementResource(ResourceAIModule *this,int p
 
 // Function: incrementResources
 // Address: 00412820
-/* public: void __thiscall ResourceAIModule::incrementResources(class ResourceItem *) */
-
 void __thiscall ResourceAIModule::incrementResources(ResourceAIModule *this,ResourceItem *param_1)
 {
   int iVar1;
@@ -410,8 +376,6 @@ void __thiscall ResourceAIModule::incrementResources(ResourceAIModule *this,Reso
 // Address: 00412870
 // [HELPER] s___decrementResource__r__d___d_: "  decrementResource: r[%d]=%d."
 // [HELPER] s_decrementResource__n__d__v__d_: "decrementResource: n=%d, v=%d."
-/* public: void __thiscall ResourceAIModule::decrementResource(int,int) */
-
 void __thiscall ResourceAIModule::decrementResource(ResourceAIModule *this,int param_1,int param_2)
 {
   AIModule::logCommonHistory
@@ -430,8 +394,6 @@ void __thiscall ResourceAIModule::decrementResource(ResourceAIModule *this,int p
 
 // Function: decrementResources
 // Address: 004128d0
-/* public: void __thiscall ResourceAIModule::decrementResources(class ResourceItem *) */
-
 void __thiscall ResourceAIModule::decrementResources(ResourceAIModule *this,ResourceItem *param_1)
 {
   int iVar1;
@@ -459,8 +421,6 @@ void __thiscall ResourceAIModule::decrementResources(ResourceAIModule *this,Reso
 
 // Function: setResourceMin
 // Address: 00412920
-/* public: void __thiscall ResourceAIModule::setResourceMin(int,int) */
-
 void __thiscall ResourceAIModule::setResourceMin(ResourceAIModule *this,int param_1,int param_2)
 {
   if ((-1 < param_1) && (param_1 < this->numberResourcesValue)) {
@@ -473,8 +433,6 @@ void __thiscall ResourceAIModule::setResourceMin(ResourceAIModule *this,int para
 
 // Function: setResourceMax
 // Address: 00412940
-/* public: void __thiscall ResourceAIModule::setResourceMax(int,int) */
-
 void __thiscall ResourceAIModule::setResourceMax(ResourceAIModule *this,int param_1,int param_2)
 {
   if ((-1 < param_1) && (param_1 < this->numberResourcesValue)) {
@@ -487,8 +445,6 @@ void __thiscall ResourceAIModule::setResourceMax(ResourceAIModule *this,int para
 
 // Function: filterOutMessage
 // Address: 00412960
-/* protected: virtual int __thiscall ResourceAIModule::filterOutMessage(class AIModuleMessage *) */
-
 int __thiscall ResourceAIModule::filterOutMessage(ResourceAIModule *this,AIModuleMessage *param_1)
 {
   int iVar1;
@@ -501,8 +457,6 @@ int __thiscall ResourceAIModule::filterOutMessage(ResourceAIModule *this,AIModul
 
 // Function: addResourceType
 // Address: 00412970
-/* public: void __thiscall ResourceAIModule::addResourceType(int,int) */
-
 void __thiscall ResourceAIModule::addResourceType(ResourceAIModule *this,int param_1,int param_2)
 {
   int *piVar1;
@@ -537,8 +491,6 @@ void __thiscall ResourceAIModule::addResourceType(ResourceAIModule *this,int par
 // [HELPER] s___There_are__d_resource_types_fo: "  There are %d resource types for resource %d."
 // [HELPER] s_____Checking_against_type__d_: "    Checking against type %d."
 // [HELPER] s_______Match___Returning_TRUE_: "      Match!  Returning TRUE."
-/* public: int __thiscall ResourceAIModule::isResourceType(int,int) */
-
 int __thiscall ResourceAIModule::isResourceType(ResourceAIModule *this,int param_1,int param_2)
 {
   int *piVar1;
@@ -578,8 +530,6 @@ int __thiscall ResourceAIModule::isResourceType(ResourceAIModule *this,int param
 
 // Function: numberResourceTypes
 // Address: 00412ad0
-/* public: int __thiscall ResourceAIModule::numberResourceTypes(int) */
-
 int __thiscall ResourceAIModule::numberResourceTypes(ResourceAIModule *this,int param_1)
 {
   return this->numberResourceTypesValue[param_1];
@@ -589,8 +539,6 @@ int __thiscall ResourceAIModule::numberResourceTypes(ResourceAIModule *this,int 
 
 // Function: lowestResourceType
 // Address: 00412ae0
-/* public: int __thiscall ResourceAIModule::lowestResourceType(void)const  */
-
 int __thiscall ResourceAIModule::lowestResourceType(ResourceAIModule *this)
 {
   return 1;

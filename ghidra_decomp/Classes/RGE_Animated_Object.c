@@ -132,8 +132,6 @@
 
 // Function: getSpeed
 // Address: 00405f40
-/* public: virtual float __thiscall RGE_Animated_Object::getSpeed(void)const  */
-
 float __thiscall RGE_Animated_Object::getSpeed(RGE_Animated_Object *this)
 {
   return this->speed;
@@ -143,9 +141,6 @@ float __thiscall RGE_Animated_Object::getSpeed(RGE_Animated_Object *this)
 
 // Function: RGE_Animated_Object
 // Address: 0041a150
-/* public: __thiscall RGE_Animated_Object::RGE_Animated_Object(class RGE_Master_Animated_Object
-   *,class RGE_Player *,float,float,float,int) */
-
 RGE_Animated_Object * __thiscall
 RGE_Animated_Object::RGE_Animated_Object
           (RGE_Animated_Object *this,RGE_Master_Animated_Object *param_1,RGE_Player *param_2,
@@ -176,9 +171,6 @@ RGE_Animated_Object::RGE_Animated_Object
 
 // Function: `scalar_deleting_destructor'
 // Address: 0041a1e0
-/* public: virtual void * __thiscall RGE_Animated_Object::`scalar deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 RGE_Animated_Object::_scalar_deleting_destructor_(RGE_Animated_Object *this,uint param_1)
 {
@@ -193,8 +185,6 @@ RGE_Animated_Object::_scalar_deleting_destructor_(RGE_Animated_Object *this,uint
 
 // Function: ~RGE_Animated_Object
 // Address: 0041a200
-/* public: virtual __thiscall RGE_Animated_Object::~RGE_Animated_Object(void) */
-
 void __thiscall RGE_Animated_Object::~RGE_Animated_Object(RGE_Animated_Object *this)
 {
   undefined4 *puVar1;
@@ -290,8 +280,6 @@ void __thiscall RGE_Animated_Object::~RGE_Animated_Object(RGE_Animated_Object *t
 
 // Function: RGE_Animated_Object
 // Address: 0041a210
-/* public: __thiscall RGE_Animated_Object::RGE_Animated_Object(int,class RGE_Game_World *,int) */
-
 RGE_Animated_Object * __thiscall
 RGE_Animated_Object::RGE_Animated_Object
           (RGE_Animated_Object *this,int param_1,RGE_Game_World *param_2,int param_3)
@@ -319,9 +307,6 @@ RGE_Animated_Object::RGE_Animated_Object
 
 // Function: recycle_in_to_game
 // Address: 0041a280
-/* public: virtual void __thiscall RGE_Animated_Object::recycle_in_to_game(class
-   RGE_Master_Static_Object *,class RGE_Player *,float,float,float) */
-
 void __thiscall
 RGE_Animated_Object::recycle_in_to_game
           (RGE_Animated_Object *this,RGE_Master_Static_Object *param_1,RGE_Player *param_2,
@@ -338,9 +323,6 @@ RGE_Animated_Object::recycle_in_to_game
 
 // Function: setup
 // Address: 0041a2c0
-/* protected: virtual int __thiscall RGE_Animated_Object::setup(class RGE_Master_Animated_Object
-   *,class RGE_Player *,float,float,float) */
-
 int __thiscall
 RGE_Animated_Object::setup
           (RGE_Animated_Object *this,RGE_Master_Animated_Object *param_1,RGE_Player *param_2,
@@ -359,8 +341,6 @@ RGE_Animated_Object::setup
 
 // Function: setup
 // Address: 0041a310
-/* protected: virtual int __thiscall RGE_Animated_Object::setup(int,class RGE_Game_World *) */
-
 int __thiscall
 RGE_Animated_Object::setup(RGE_Animated_Object *this,int param_1,RGE_Game_World *param_2)
 {
@@ -374,8 +354,6 @@ RGE_Animated_Object::setup(RGE_Animated_Object *this,int param_1,RGE_Game_World 
 
 // Function: update
 // Address: 0041a350
-/* public: virtual unsigned char __thiscall RGE_Animated_Object::update(void) */
-
 uchar __thiscall RGE_Animated_Object::update(RGE_Animated_Object *this)
 {
   uchar uVar1;
@@ -407,8 +385,6 @@ uchar __thiscall RGE_Animated_Object::update(RGE_Animated_Object *this)
 
 // Function: save
 // Address: 0041a3d0
-/* public: virtual void __thiscall RGE_Animated_Object::save(int) */
-
 void __thiscall RGE_Animated_Object::save(RGE_Animated_Object *this,int param_1)
 {
   RGE_Static_Object::save((RGE_Static_Object *)this,param_1);
@@ -420,9 +396,6 @@ void __thiscall RGE_Animated_Object::save(RGE_Animated_Object *this,int param_1)
 
 // Function: transform
 // Address: 0041a400
-/* public: virtual void __thiscall RGE_Animated_Object::transform(class RGE_Master_Static_Object *)
-    */
-
 void __thiscall
 RGE_Animated_Object::transform(RGE_Animated_Object *this,RGE_Master_Static_Object *param_1)
 {
@@ -434,9 +407,6 @@ RGE_Animated_Object::transform(RGE_Animated_Object *this,RGE_Master_Static_Objec
 
 // Function: set_being_worked_on
 // Address: 0041a410
-/* public: virtual void __thiscall RGE_Animated_Object::set_being_worked_on(class RGE_Action_Object
-   *,short,unsigned char) */
-
 void __thiscall
 RGE_Animated_Object::set_being_worked_on
           (RGE_Animated_Object *this,RGE_Action_Object *param_1,short param_2,uchar param_3)
@@ -449,9 +419,6 @@ RGE_Animated_Object::set_being_worked_on
 
 // Function: release_being_worked_on
 // Address: 0041a430
-/* public: virtual void __thiscall RGE_Animated_Object::release_being_worked_on(class
-   RGE_Static_Object *) */
-
 void __thiscall
 RGE_Animated_Object::release_being_worked_on(RGE_Animated_Object *this,RGE_Static_Object *param_1)
 {

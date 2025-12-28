@@ -28,9 +28,6 @@
 
 // Function: TRIBE_Master_Combat_Object
 // Address: 0050e970
-/* public: __thiscall TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(class
-   TRIBE_Master_Combat_Object *,int) */
-
 TRIBE_Master_Combat_Object * __thiscall
 TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object
           (TRIBE_Master_Combat_Object *this,TRIBE_Master_Combat_Object *param_1,int param_2)
@@ -59,9 +56,6 @@ TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object
 
 // Function: `vector_deleting_destructor'
 // Address: 0050e9d0
-/* public: virtual void * __thiscall TRIBE_Master_Combat_Object::`vector deleting
-   destructor'(unsigned int) */
-
 void * __thiscall
 TRIBE_Master_Combat_Object::_vector_deleting_destructor_
           (TRIBE_Master_Combat_Object *this,uint param_1)
@@ -77,9 +71,6 @@ TRIBE_Master_Combat_Object::_vector_deleting_destructor_
 
 // Function: TRIBE_Master_Combat_Object
 // Address: 0050e9f0
-/* public: __thiscall TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(int,class RGE_Sprite *
-   *,class RGE_Sound * *,int) */
-
 TRIBE_Master_Combat_Object * __thiscall
 TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object
           (TRIBE_Master_Combat_Object *this,int param_1,RGE_Sprite **param_2,RGE_Sound **param_3,
@@ -109,9 +100,6 @@ TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object
 
 // Function: TRIBE_Master_Combat_Object
 // Address: 0050ea60
-/* public: __thiscall TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(struct _iobuf *,class
-   RGE_Sprite * *,class RGE_Sound * *,short,int) */
-
 TRIBE_Master_Combat_Object * __thiscall
 TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object
           (TRIBE_Master_Combat_Object *this,_iobuf *param_1,RGE_Sprite **param_2,RGE_Sound **param_3
@@ -141,9 +129,6 @@ TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object
 
 // Function: setup
 // Address: 0050eae0
-/* protected: int __thiscall TRIBE_Master_Combat_Object::setup(class TRIBE_Master_Combat_Object *)
-    */
-
 int __thiscall
 TRIBE_Master_Combat_Object::setup
           (TRIBE_Master_Combat_Object *this,TRIBE_Master_Combat_Object *param_1)
@@ -178,10 +163,6 @@ TRIBE_Master_Combat_Object::setup
 
 // Function: setup
 // Address: 0050eb60
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: int __thiscall TRIBE_Master_Combat_Object::setup(int,class RGE_Sprite * *,class
-   RGE_Sound * *) */
-
 int __thiscall
 TRIBE_Master_Combat_Object::setup
           (TRIBE_Master_Combat_Object *this,int param_1,RGE_Sprite **param_2,RGE_Sound **param_3)
@@ -239,9 +220,6 @@ TRIBE_Master_Combat_Object::setup
 // Function: setup
 // Address: 0050ec90
 // [HELPER] s__hd__hd__hd: "%hd %hd %hd"
-/* protected: int __thiscall TRIBE_Master_Combat_Object::setup(struct _iobuf *,class RGE_Sprite *
-   *,class RGE_Sound * *,short) */
-
 int __thiscall
 TRIBE_Master_Combat_Object::setup
           (TRIBE_Master_Combat_Object *this,_iobuf *param_1,RGE_Sprite **param_2,RGE_Sound **param_3
@@ -296,8 +274,6 @@ TRIBE_Master_Combat_Object::setup
 
 // Function: ~TRIBE_Master_Combat_Object
 // Address: 0050eda0
-/* public: virtual __thiscall TRIBE_Master_Combat_Object::~TRIBE_Master_Combat_Object(void) */
-
 void __thiscall
 TRIBE_Master_Combat_Object::~TRIBE_Master_Combat_Object(TRIBE_Master_Combat_Object *this)
 {
@@ -310,9 +286,6 @@ TRIBE_Master_Combat_Object::~TRIBE_Master_Combat_Object(TRIBE_Master_Combat_Obje
 
 // Function: create_task_list
 // Address: 0050edb0
-/* public: virtual class RGE_Task_List * __thiscall
-   TRIBE_Master_Combat_Object::create_task_list(void) */
-
 RGE_Task_List * __thiscall
 TRIBE_Master_Combat_Object::create_task_list(TRIBE_Master_Combat_Object *this)
 {
@@ -343,9 +316,6 @@ TRIBE_Master_Combat_Object::create_task_list(TRIBE_Master_Combat_Object *this)
 
 // Function: copy_obj
 // Address: 0050ee00
-/* public: virtual void __thiscall TRIBE_Master_Combat_Object::copy_obj(class
-   RGE_Master_Static_Object *) */
-
 void __thiscall
 TRIBE_Master_Combat_Object::copy_obj
           (TRIBE_Master_Combat_Object *this,RGE_Master_Static_Object *param_1)
@@ -378,8 +348,6 @@ TRIBE_Master_Combat_Object::copy_obj
 
 // Function: modify
 // Address: 0050ee80
-/* public: virtual void __thiscall TRIBE_Master_Combat_Object::modify(float,unsigned char) */
-
 void __thiscall
 TRIBE_Master_Combat_Object::modify(TRIBE_Master_Combat_Object *this,float param_1,uchar param_2)
 {
@@ -457,8 +425,6 @@ TRIBE_Master_Combat_Object::modify(TRIBE_Master_Combat_Object *this,float param_
 
 // Function: modify_delta
 // Address: 0050ef70
-/* public: virtual void __thiscall TRIBE_Master_Combat_Object::modify_delta(float,unsigned char) */
-
 void __thiscall
 TRIBE_Master_Combat_Object::modify_delta
           (TRIBE_Master_Combat_Object *this,float param_1,uchar param_2)
@@ -488,9 +454,6 @@ TRIBE_Master_Combat_Object::modify_delta
 
 // Function: modify_percent
 // Address: 0050efc0
-/* public: virtual void __thiscall TRIBE_Master_Combat_Object::modify_percent(float,unsigned char)
-    */
-
 void __thiscall
 TRIBE_Master_Combat_Object::modify_percent
           (TRIBE_Master_Combat_Object *this,float param_1,uchar param_2)
@@ -520,8 +483,6 @@ TRIBE_Master_Combat_Object::modify_percent
 
 // Function: save
 // Address: 0050f010
-/* public: virtual void __thiscall TRIBE_Master_Combat_Object::save(int) */
-
 void __thiscall TRIBE_Master_Combat_Object::save(TRIBE_Master_Combat_Object *this,int param_1)
 {
   int iVar1;
@@ -546,9 +507,6 @@ void __thiscall TRIBE_Master_Combat_Object::save(TRIBE_Master_Combat_Object *thi
 
 // Function: make_new_obj
 // Address: 0050f090
-/* public: virtual class RGE_Static_Object * __thiscall
-   TRIBE_Master_Combat_Object::make_new_obj(class RGE_Player *,float,float,float) */
-
 RGE_Static_Object * __thiscall
 TRIBE_Master_Combat_Object::make_new_obj
           (TRIBE_Master_Combat_Object *this,RGE_Player *param_1,float param_2,float param_3,
@@ -582,9 +540,6 @@ TRIBE_Master_Combat_Object::make_new_obj
 
 // Function: make_new_master
 // Address: 0050f110
-/* public: virtual class RGE_Master_Static_Object * __thiscall
-   TRIBE_Master_Combat_Object::make_new_master(void) */
-
 RGE_Master_Static_Object * __thiscall
 TRIBE_Master_Combat_Object::make_new_master(TRIBE_Master_Combat_Object *this)
 {

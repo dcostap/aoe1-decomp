@@ -254,8 +254,6 @@
 
 // Function: TScreenPanel
 // Address: 0047ba70
-/* public: __thiscall TScreenPanel::TScreenPanel(void) */
-
 TScreenPanel * __thiscall TScreenPanel::TScreenPanel(TScreenPanel *this)
 {
   TEasy_Panel::TEasy_Panel((TEasy_Panel *)this);
@@ -267,8 +265,6 @@ TScreenPanel * __thiscall TScreenPanel::TScreenPanel(TScreenPanel *this)
 
 // Function: `vector_deleting_destructor'
 // Address: 0047ba90
-/* public: virtual void * __thiscall TScreenPanel::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall TScreenPanel::_vector_deleting_destructor_(TScreenPanel *this,uint param_1)
 {
   ~TScreenPanel(this);
@@ -282,8 +278,6 @@ void * __thiscall TScreenPanel::_vector_deleting_destructor_(TScreenPanel *this,
 
 // Function: TScreenPanel
 // Address: 0047bab0
-/* public: __thiscall TScreenPanel::TScreenPanel(char *) */
-
 TScreenPanel * __thiscall TScreenPanel::TScreenPanel(TScreenPanel *this,char *param_1)
 {
   TEasy_Panel::TEasy_Panel((TEasy_Panel *)this,param_1);
@@ -295,8 +289,6 @@ TScreenPanel * __thiscall TScreenPanel::TScreenPanel(TScreenPanel *this,char *pa
 
 // Function: ~TScreenPanel
 // Address: 0047bad0
-/* public: virtual __thiscall TScreenPanel::~TScreenPanel(void) */
-
 void __thiscall TScreenPanel::~TScreenPanel(TScreenPanel *this)
 {
   *(undefined ***)this = &_vftable_;
@@ -308,8 +300,6 @@ void __thiscall TScreenPanel::~TScreenPanel(TScreenPanel *this)
 
 // Function: setup
 // Address: 0047bae0
-/* public: long __thiscall TScreenPanel::setup(class TDrawArea *,char *,long,int) */
-
 long __thiscall
 TScreenPanel::setup(TScreenPanel *this,TDrawArea *param_1,char *param_2,long param_3,int param_4)
 {
@@ -324,8 +314,6 @@ TScreenPanel::setup(TScreenPanel *this,TDrawArea *param_1,char *param_2,long par
 
 // Function: setup
 // Address: 0047bb10
-/* public: long __thiscall TScreenPanel::setup(class TDrawArea *,char *,long,unsigned char,int) */
-
 long __thiscall
 TScreenPanel::setup(TScreenPanel *this,TDrawArea *param_1,char *param_2,long param_3,uchar param_4,
                    int param_5)
@@ -341,8 +329,6 @@ TScreenPanel::setup(TScreenPanel *this,TDrawArea *param_1,char *param_2,long par
 
 // Function: draw
 // Address: 0047bb40
-/* public: virtual void __thiscall TScreenPanel::draw(void) */
-
 void __thiscall TScreenPanel::draw(TScreenPanel *this)
 {
   if (this->field_0xf3 != '\0') {
@@ -363,8 +349,6 @@ void __thiscall TScreenPanel::draw(TScreenPanel *this)
 
 // Function: handle_paint
 // Address: 0047bb50
-/* public: virtual long __thiscall TScreenPanel::handle_paint(void) */
-
 long __thiscall TScreenPanel::handle_paint(TScreenPanel *this)
 {
   TPanel::handle_paint((TPanel *)this);
@@ -375,9 +359,6 @@ long __thiscall TScreenPanel::handle_paint(TScreenPanel *this)
 
 // Function: set_focus
 // Address: 0047bb60
-/* WARNING: Variable defined which should be unmapped: color */
-/* public: virtual void __thiscall TScreenPanel::set_focus(int) */
-
 void __thiscall TScreenPanel::set_focus(TScreenPanel *this,int param_1)
 {
   TDrawArea *pTVar1;

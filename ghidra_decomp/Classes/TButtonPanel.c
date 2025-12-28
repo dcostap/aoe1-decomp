@@ -531,8 +531,6 @@
 
 // Function: TButtonPanel
 // Address: 00471ec0
-/* public: __thiscall TButtonPanel::TButtonPanel(void) */
-
 TButtonPanel * __thiscall TButtonPanel::TButtonPanel(TButtonPanel *this)
 {
   long *plVar1;
@@ -599,8 +597,6 @@ TButtonPanel * __thiscall TButtonPanel::TButtonPanel(TButtonPanel *this)
 
 // Function: `scalar_deleting_destructor'
 // Address: 00472010
-/* public: virtual void * __thiscall TButtonPanel::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall TButtonPanel::_scalar_deleting_destructor_(TButtonPanel *this,uint param_1)
 {
   ~TButtonPanel(this);
@@ -614,8 +610,6 @@ void * __thiscall TButtonPanel::_scalar_deleting_destructor_(TButtonPanel *this,
 
 // Function: ~TButtonPanel
 // Address: 00472030
-/* public: virtual __thiscall TButtonPanel::~TButtonPanel(void) */
-
 void __thiscall TButtonPanel::~TButtonPanel(TButtonPanel *this)
 {
   int iVar1;
@@ -648,10 +642,6 @@ void __thiscall TButtonPanel::~TButtonPanel(TButtonPanel *this)
 
 // Function: setup
 // Address: 004720a0
-/* public: long __thiscall TButtonPanel::setup(class TDrawArea *,class TPanel
-   *,long,long,long,long,enum TButtonPanel::DrawType,class TDigital *,enum
-   TButtonPanel::NotifyType,long) */
-
 long __thiscall
 TButtonPanel::setup(TButtonPanel *this,TDrawArea *param_1,TPanel *param_2,long param_3,long param_4,
                    long param_5,long param_6,DrawType param_7,TDigital *param_8,NotifyType param_9,
@@ -669,8 +659,6 @@ TButtonPanel::setup(TButtonPanel *this,TDrawArea *param_1,TPanel *param_2,long p
 
 // Function: buttonType
 // Address: 00472110
-/* public: enum TButtonPanel::ButtonType __thiscall TButtonPanel::buttonType(void)const  */
-
 ButtonType __thiscall TButtonPanel::buttonType(TButtonPanel *this)
 {
   return this->buttonTypeValue;
@@ -680,8 +668,6 @@ ButtonType __thiscall TButtonPanel::buttonType(TButtonPanel *this)
 
 // Function: drawType
 // Address: 00472120
-/* public: enum TButtonPanel::DrawType __thiscall TButtonPanel::drawType(void)const  */
-
 DrawType __thiscall TButtonPanel::drawType(TButtonPanel *this)
 {
   return this->drawTypeValue;
@@ -691,8 +677,6 @@ DrawType __thiscall TButtonPanel::drawType(TButtonPanel *this)
 
 // Function: notifyType
 // Address: 00472130
-/* public: enum TButtonPanel::NotifyType __thiscall TButtonPanel::notifyType(void)const  */
-
 NotifyType __thiscall TButtonPanel::notifyType(TButtonPanel *this)
 {
   return this->notifyTypeValue;
@@ -702,8 +686,6 @@ NotifyType __thiscall TButtonPanel::notifyType(TButtonPanel *this)
 
 // Function: setDrawType
 // Address: 00472140
-/* public: void __thiscall TButtonPanel::setDrawType(enum TButtonPanel::DrawType) */
-
 void __thiscall TButtonPanel::setDrawType(TButtonPanel *this,DrawType param_1)
 {
   this->drawTypeValue = param_1;
@@ -714,8 +696,6 @@ void __thiscall TButtonPanel::setDrawType(TButtonPanel *this,DrawType param_1)
 
 // Function: setButtonType
 // Address: 00472150
-/* public: void __thiscall TButtonPanel::setButtonType(enum TButtonPanel::ButtonType) */
-
 void __thiscall TButtonPanel::setButtonType(TButtonPanel *this,ButtonType param_1)
 {
   this->buttonTypeValue = param_1;
@@ -726,8 +706,6 @@ void __thiscall TButtonPanel::setButtonType(TButtonPanel *this,ButtonType param_
 
 // Function: set_picture_info
 // Address: 00472160
-/* public: void __thiscall TButtonPanel::set_picture_info(class TShape *,short,long,long,int,int) */
-
 void __thiscall
 TButtonPanel::set_picture_info
           (TButtonPanel *this,TShape *param_1,short param_2,long param_3,long param_4,int param_5,
@@ -745,8 +723,6 @@ TButtonPanel::set_picture_info
 
 // Function: set_text_info
 // Address: 004721a0
-/* public: void __thiscall TButtonPanel::set_text_info(char *,void *,long,long,long,long) */
-
 void __thiscall
 TButtonPanel::set_text_info
           (TButtonPanel *this,char *param_1,void *param_2,long param_3,long param_4,long param_5,
@@ -762,8 +738,6 @@ TButtonPanel::set_text_info
 
 // Function: set_text_info
 // Address: 004721e0
-/* public: void __thiscall TButtonPanel::set_text_info(long,void *,long,long,long,long) */
-
 void __thiscall
 TButtonPanel::set_text_info
           (TButtonPanel *this,long param_1,void *param_2,long param_3,long param_4,long param_5,
@@ -779,8 +753,6 @@ TButtonPanel::set_text_info
 
 // Function: set_text_pos
 // Address: 00472220
-/* public: void __thiscall TButtonPanel::set_text_pos(long,long) */
-
 void __thiscall TButtonPanel::set_text_pos(TButtonPanel *this,long param_1,long param_2)
 {
   this->text_x = param_1;
@@ -793,8 +765,6 @@ void __thiscall TButtonPanel::set_text_pos(TButtonPanel *this,long param_1,long 
 
 // Function: set_radio_info
 // Address: 00472240
-/* public: void __thiscall TButtonPanel::set_radio_info(class TButtonPanel * *,short) */
-
 void __thiscall
 TButtonPanel::set_radio_info(TButtonPanel *this,TButtonPanel **param_1,short param_2)
 {
@@ -828,8 +798,6 @@ TButtonPanel::set_radio_info(TButtonPanel *this,TButtonPanel **param_1,short par
 
 // Function: set_state_info
 // Address: 004722c0
-/* public: void __thiscall TButtonPanel::set_state_info(short) */
-
 void __thiscall TButtonPanel::set_state_info(TButtonPanel *this,short param_1)
 {
   this->buttonTypeValue = State;
@@ -841,8 +809,6 @@ void __thiscall TButtonPanel::set_state_info(TButtonPanel *this,short param_1)
 
 // Function: set_id
 // Address: 004722e0
-/* public: void __thiscall TButtonPanel::set_id(short,long,long) */
-
 void __thiscall TButtonPanel::set_id(TButtonPanel *this,short param_1,long param_2,long param_3)
 {
   this->id[param_1] = param_2;
@@ -854,8 +820,6 @@ void __thiscall TButtonPanel::set_id(TButtonPanel *this,short param_1,long param
 
 // Function: set_picture
 // Address: 00472300
-/* public: void __thiscall TButtonPanel::set_picture(short,class TShape *,short) */
-
 void __thiscall
 TButtonPanel::set_picture(TButtonPanel *this,short param_1,TShape *param_2,short param_3)
 {
@@ -869,8 +833,6 @@ TButtonPanel::set_picture(TButtonPanel *this,short param_1,TShape *param_2,short
 
 // Function: set_text
 // Address: 00472330
-/* public: void __thiscall TButtonPanel::set_text(short,char *) */
-
 void __thiscall TButtonPanel::set_text(TButtonPanel *this,short param_1,char *param_2)
 {
   char cVar1;
@@ -961,8 +923,6 @@ void __thiscall TButtonPanel::set_text(TButtonPanel *this,short param_1,char *pa
 
 // Function: set_text
 // Address: 00472440
-/* public: void __thiscall TButtonPanel::set_text(short,char *,char *) */
-
 void __thiscall TButtonPanel::set_text(TButtonPanel *this,short param_1,char *param_2,char *param_3)
 {
   char cVar1;
@@ -1059,9 +1019,6 @@ void __thiscall TButtonPanel::set_text(TButtonPanel *this,short param_1,char *pa
 
 // Function: set_text
 // Address: 00472540
-/* WARNING: Variable defined which should be unmapped: str */
-/* public: void __thiscall TButtonPanel::set_text(short,long) */
-
 void __thiscall TButtonPanel::set_text(TButtonPanel *this,short param_1,long param_2)
 {
   char str [256];
@@ -1075,9 +1032,6 @@ void __thiscall TButtonPanel::set_text(TButtonPanel *this,short param_1,long par
 
 // Function: set_text
 // Address: 00472580
-/* WARNING: Variable defined which should be unmapped: str2 */
-/* public: void __thiscall TButtonPanel::set_text(short,long,long) */
-
 void __thiscall TButtonPanel::set_text(TButtonPanel *this,short param_1,long param_2,long param_3)
 {
   char str2 [256];
@@ -1093,8 +1047,6 @@ void __thiscall TButtonPanel::set_text(TButtonPanel *this,short param_1,long par
 
 // Function: set_font
 // Address: 004725f0
-/* public: void __thiscall TButtonPanel::set_font(void *,long,long) */
-
 void __thiscall TButtonPanel::set_font(TButtonPanel *this,void *param_1,long param_2,long param_3)
 {
   this->font = param_1;
@@ -1108,8 +1060,6 @@ void __thiscall TButtonPanel::set_font(TButtonPanel *this,void *param_1,long par
 
 // Function: set_text_color
 // Address: 00472620
-/* public: void __thiscall TButtonPanel::set_text_color(int,unsigned long,unsigned long) */
-
 void __thiscall
 TButtonPanel::set_text_color(TButtonPanel *this,int param_1,ulong param_2,ulong param_3)
 {
@@ -1125,9 +1075,6 @@ TButtonPanel::set_text_color(TButtonPanel *this,int param_1,ulong param_2,ulong 
 
 // Function: set_highlight_text_color
 // Address: 00472650
-/* public: void __thiscall TButtonPanel::set_highlight_text_color(int,unsigned long,unsigned long)
-    */
-
 void __thiscall
 TButtonPanel::set_highlight_text_color(TButtonPanel *this,int param_1,ulong param_2,ulong param_3)
 {
@@ -1143,8 +1090,6 @@ TButtonPanel::set_highlight_text_color(TButtonPanel *this,int param_1,ulong para
 
 // Function: set_sound
 // Address: 00472680
-/* public: void __thiscall TButtonPanel::set_sound(class TDigital *) */
-
 void __thiscall TButtonPanel::set_sound(TButtonPanel *this,TDigital *param_1)
 {
   this->sound = param_1;
@@ -1155,8 +1100,6 @@ void __thiscall TButtonPanel::set_sound(TButtonPanel *this,TDigital *param_1)
 
 // Function: set_radio_button
 // Address: 00472690
-/* public: void __thiscall TButtonPanel::set_radio_button(void) */
-
 void __thiscall TButtonPanel::set_radio_button(TButtonPanel *this)
 {
   int iVar1;
@@ -1180,8 +1123,6 @@ void __thiscall TButtonPanel::set_radio_button(TButtonPanel *this)
 
 // Function: set_state
 // Address: 00472700
-/* public: virtual void __thiscall TButtonPanel::set_state(short) */
-
 void __thiscall TButtonPanel::set_state(TButtonPanel *this,short param_1)
 {
   this->cur_state = param_1;
@@ -1193,8 +1134,6 @@ void __thiscall TButtonPanel::set_state(TButtonPanel *this,short param_1)
 
 // Function: set_state_by_id
 // Address: 00472720
-/* public: void __thiscall TButtonPanel::set_state_by_id(long) */
-
 void __thiscall TButtonPanel::set_state_by_id(TButtonPanel *this,long param_1)
 {
   int iVar1;
@@ -1220,8 +1159,6 @@ void __thiscall TButtonPanel::set_state_by_id(TButtonPanel *this,long param_1)
 
 // Function: set_bevel_info
 // Address: 00472760
-/* public: void __thiscall TButtonPanel::set_bevel_info(int,int,int,int,int,int,int) */
-
 void __thiscall
 TButtonPanel::set_bevel_info
           (TButtonPanel *this,int param_1,int param_2,int param_3,int param_4,int param_5,
@@ -1241,8 +1178,6 @@ TButtonPanel::set_bevel_info
 
 // Function: set_disabled
 // Address: 004727b0
-/* public: void __thiscall TButtonPanel::set_disabled(int) */
-
 void __thiscall TButtonPanel::set_disabled(TButtonPanel *this,int param_1)
 {
   this->disabled = param_1;
@@ -1259,8 +1194,6 @@ void __thiscall TButtonPanel::set_disabled(TButtonPanel *this,int param_1)
 
 // Function: set_rect
 // Address: 004727f0
-/* public: virtual void __thiscall TButtonPanel::set_rect(long,long,long,long) */
-
 void __thiscall
 TButtonPanel::set_rect(TButtonPanel *this,long param_1,long param_2,long param_3,long param_4)
 {
@@ -1272,8 +1205,6 @@ TButtonPanel::set_rect(TButtonPanel *this,long param_1,long param_2,long param_3
 
 // Function: get_state
 // Address: 00472810
-/* public: int __thiscall TButtonPanel::get_state(void) */
-
 int __thiscall TButtonPanel::get_state(TButtonPanel *this)
 {
   return (int)this->cur_state;
@@ -1283,8 +1214,6 @@ int __thiscall TButtonPanel::get_state(TButtonPanel *this)
 
 // Function: get_id
 // Address: 00472820
-/* public: long __thiscall TButtonPanel::get_id(void) */
-
 long __thiscall TButtonPanel::get_id(TButtonPanel *this)
 {
   return this->id[this->cur_state];
@@ -1294,8 +1223,6 @@ long __thiscall TButtonPanel::get_id(TButtonPanel *this)
 
 // Function: get_id2
 // Address: 00472830
-/* public: long __thiscall TButtonPanel::get_id2(void) */
-
 long __thiscall TButtonPanel::get_id2(TButtonPanel *this)
 {
   return this->id2[this->cur_state];
@@ -1305,8 +1232,6 @@ long __thiscall TButtonPanel::get_id2(TButtonPanel *this)
 
 // Function: get_text
 // Address: 00472840
-/* public: int __thiscall TButtonPanel::get_text(short,char * *,char * *) */
-
 int __thiscall
 TButtonPanel::get_text(TButtonPanel *this,short param_1,char **param_2,char **param_3)
 {
@@ -1322,8 +1247,6 @@ TButtonPanel::get_text(TButtonPanel *this,short param_1,char **param_2,char **pa
 
 // Function: get_text_color
 // Address: 00472880
-/* public: void __thiscall TButtonPanel::get_text_color(short,unsigned long *,unsigned long *) */
-
 void __thiscall
 TButtonPanel::get_text_color(TButtonPanel *this,short param_1,ulong *param_2,ulong *param_3)
 {
@@ -1341,9 +1264,6 @@ TButtonPanel::get_text_color(TButtonPanel *this,short param_1,ulong *param_2,ulo
 // Address: 004728c0
 // [HELPER] s_pnl_btn__draw2: "pnl_btn::draw2"
 // [HELPER] s_pnl_btn__draw: "pnl_btn::draw"
-/* WARNING: Variable defined which should be unmapped: text */
-/* public: virtual void __thiscall TButtonPanel::draw(void) */
-
 void __thiscall TButtonPanel::draw(TButtonPanel *this)
 {
   char cVar1;
@@ -1633,9 +1553,6 @@ LAB_004730d9:
 
 // Function: handle_mouse_down
 // Address: 00473120
-/* public: virtual long __thiscall TButtonPanel::handle_mouse_down(unsigned char,long,long,int,int)
-    */
-
 long __thiscall
 TButtonPanel::handle_mouse_down
           (TButtonPanel *this,uchar param_1,long param_2,long param_3,int param_4,int param_5)
@@ -1662,8 +1579,6 @@ TButtonPanel::handle_mouse_down
 
 // Function: mouse_left_dbl_click_action
 // Address: 00473180
-/* public: virtual long __thiscall TButtonPanel::mouse_left_dbl_click_action(long,long,int,int) */
-
 long __thiscall
 TButtonPanel::mouse_left_dbl_click_action
           (TButtonPanel *this,long param_1,long param_2,int param_3,int param_4)
@@ -1676,8 +1591,6 @@ TButtonPanel::mouse_left_dbl_click_action
 // Function: mouse_left_down_action
 // Address: 00473190
 // [HELPER] s_C__msdev_work_age1_x1_Pnl_btn_cp: "C:\msdev\work\age1_x1\Pnl_btn.cpp"
-/* public: virtual long __thiscall TButtonPanel::mouse_left_down_action(long,long,int,int) */
-
 long __thiscall
 TButtonPanel::mouse_left_down_action
           (TButtonPanel *this,long param_1,long param_2,int param_3,int param_4)
@@ -1712,8 +1625,6 @@ TButtonPanel::mouse_left_down_action
 // Function: mouse_left_move_action
 // Address: 00473240
 // [HELPER] s_C__msdev_work_age1_x1_Pnl_btn_cp: "C:\msdev\work\age1_x1\Pnl_btn.cpp"
-/* public: virtual long __thiscall TButtonPanel::mouse_left_move_action(long,long,int,int) */
-
 long __thiscall
 TButtonPanel::mouse_left_move_action
           (TButtonPanel *this,long param_1,long param_2,int param_3,int param_4)
@@ -1752,8 +1663,6 @@ TButtonPanel::mouse_left_move_action
 
 // Function: mouse_left_up_action
 // Address: 00473310
-/* public: virtual long __thiscall TButtonPanel::mouse_left_up_action(long,long,int,int) */
-
 long __thiscall
 TButtonPanel::mouse_left_up_action
           (TButtonPanel *this,long param_1,long param_2,int param_3,int param_4)
@@ -1779,8 +1688,6 @@ TButtonPanel::mouse_left_up_action
 
 // Function: mouse_right_dbl_click_action
 // Address: 00473390
-/* public: virtual long __thiscall TButtonPanel::mouse_right_dbl_click_action(long,long,int,int) */
-
 long __thiscall
 TButtonPanel::mouse_right_dbl_click_action
           (TButtonPanel *this,long param_1,long param_2,int param_3,int param_4)
@@ -1793,8 +1700,6 @@ TButtonPanel::mouse_right_dbl_click_action
 // Function: mouse_right_down_action
 // Address: 004733a0
 // [HELPER] s_C__msdev_work_age1_x1_Pnl_btn_cp: "C:\msdev\work\age1_x1\Pnl_btn.cpp"
-/* public: virtual long __thiscall TButtonPanel::mouse_right_down_action(long,long,int,int) */
-
 long __thiscall
 TButtonPanel::mouse_right_down_action
           (TButtonPanel *this,long param_1,long param_2,int param_3,int param_4)
@@ -1829,8 +1734,6 @@ TButtonPanel::mouse_right_down_action
 // Function: mouse_right_move_action
 // Address: 00473450
 // [HELPER] s_C__msdev_work_age1_x1_Pnl_btn_cp: "C:\msdev\work\age1_x1\Pnl_btn.cpp"
-/* public: virtual long __thiscall TButtonPanel::mouse_right_move_action(long,long,int,int) */
-
 long __thiscall
 TButtonPanel::mouse_right_move_action
           (TButtonPanel *this,long param_1,long param_2,int param_3,int param_4)
@@ -1869,8 +1772,6 @@ TButtonPanel::mouse_right_move_action
 
 // Function: mouse_right_up_action
 // Address: 00473520
-/* public: virtual long __thiscall TButtonPanel::mouse_right_up_action(long,long,int,int) */
-
 long __thiscall
 TButtonPanel::mouse_right_up_action
           (TButtonPanel *this,long param_1,long param_2,int param_3,int param_4)
@@ -1897,8 +1798,6 @@ TButtonPanel::mouse_right_up_action
 // Function: handle_key_down
 // Address: 004735b0
 // [HELPER] s_C__msdev_work_age1_x1_Pnl_btn_cp: "C:\msdev\work\age1_x1\Pnl_btn.cpp"
-/* public: virtual long __thiscall TButtonPanel::handle_key_down(long,short,int,int,int) */
-
 long __thiscall
 TButtonPanel::handle_key_down
           (TButtonPanel *this,long param_1,short param_2,int param_3,int param_4,int param_5)
@@ -1942,8 +1841,6 @@ TButtonPanel::handle_key_down
 // Function: key_down_action
 // Address: 004736f0
 // [HELPER] s_C__msdev_work_age1_x1_Pnl_btn_cp: "C:\msdev\work\age1_x1\Pnl_btn.cpp"
-/* public: virtual long __thiscall TButtonPanel::key_down_action(long,short,int,int,int) */
-
 long __thiscall
 TButtonPanel::key_down_action
           (TButtonPanel *this,long param_1,short param_2,int param_3,int param_4,int param_5)
@@ -2032,8 +1929,6 @@ switchD_0047371a_caseD_e:
 
 // Function: wnd_proc
 // Address: 00473890
-/* public: virtual long __thiscall TButtonPanel::wnd_proc(void *,unsigned int,unsigned int,long) */
-
 long __thiscall
 TButtonPanel::wnd_proc(TButtonPanel *this,void *param_1,uint param_2,uint param_3,long param_4)
 {
@@ -2057,8 +1952,6 @@ TButtonPanel::wnd_proc(TButtonPanel *this,void *param_1,uint param_2,uint param_
 
 // Function: char_action
 // Address: 00473920
-/* public: virtual long __thiscall TButtonPanel::char_action(long,short) */
-
 long __thiscall TButtonPanel::char_action(TButtonPanel *this,long param_1,short param_2)
 {
   return 0;
@@ -2068,8 +1961,6 @@ long __thiscall TButtonPanel::char_action(TButtonPanel *this,long param_1,short 
 
 // Function: hit_button
 // Address: 00473930
-/* public: virtual int __thiscall TButtonPanel::hit_button(long,long) */
-
 int __thiscall TButtonPanel::hit_button(TButtonPanel *this,long param_1,long param_2)
 {
   uchar uVar1;
@@ -2095,8 +1986,6 @@ int __thiscall TButtonPanel::hit_button(TButtonPanel *this,long param_1,long par
 
 // Function: do_action
 // Address: 004739b0
-/* public: void __thiscall TButtonPanel::do_action(void) */
-
 void __thiscall TButtonPanel::do_action(TButtonPanel *this)
 {
   short sVar1;
@@ -2136,8 +2025,6 @@ void __thiscall TButtonPanel::do_action(TButtonPanel *this)
 
 // Function: do_right_action
 // Address: 00473aa0
-/* public: void __thiscall TButtonPanel::do_right_action(int) */
-
 void __thiscall TButtonPanel::do_right_action(TButtonPanel *this,int param_1)
 {
   long lVar1;
@@ -2175,8 +2062,6 @@ void __thiscall TButtonPanel::do_right_action(TButtonPanel *this,int param_1)
 
 // Function: reset
 // Address: 00473b80
-/* public: void __thiscall TButtonPanel::reset(void) */
-
 void __thiscall TButtonPanel::reset(TButtonPanel *this)
 {
   TPanel::release_mouse((TPanel *)this);
@@ -2193,8 +2078,6 @@ void __thiscall TButtonPanel::reset(TButtonPanel *this)
 
 // Function: set_sound_number
 // Address: 00473bb0
-/* public: void __thiscall TButtonPanel::set_sound_number(int) */
-
 void __thiscall TButtonPanel::set_sound_number(TButtonPanel *this,int param_1)
 {
   this->sound_number = param_1;
@@ -2205,8 +2088,6 @@ void __thiscall TButtonPanel::set_sound_number(TButtonPanel *this,int param_1)
 
 // Function: stop_sound_system
 // Address: 00473bc0
-/* public: virtual void __thiscall TButtonPanel::stop_sound_system(void) */
-
 void __thiscall TButtonPanel::stop_sound_system(TButtonPanel *this)
 {
   if (this->sound != (TDigital *)0x0) {
@@ -2219,8 +2100,6 @@ void __thiscall TButtonPanel::stop_sound_system(TButtonPanel *this)
 
 // Function: restart_sound_system
 // Address: 00473be0
-/* public: virtual int __thiscall TButtonPanel::restart_sound_system(void) */
-
 int __thiscall TButtonPanel::restart_sound_system(TButtonPanel *this)
 {
   TDigital *pTVar1;

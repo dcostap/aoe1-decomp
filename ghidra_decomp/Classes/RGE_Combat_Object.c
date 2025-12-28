@@ -156,9 +156,6 @@
 
 // Function: RGE_Combat_Object
 // Address: 0042f930
-/* public: __thiscall RGE_Combat_Object::RGE_Combat_Object(class RGE_Master_Combat_Object *,class
-   RGE_Player *,float,float,float,int) */
-
 RGE_Combat_Object * __thiscall
 RGE_Combat_Object::RGE_Combat_Object
           (RGE_Combat_Object *this,RGE_Master_Combat_Object *param_1,RGE_Player *param_2,
@@ -189,9 +186,6 @@ RGE_Combat_Object::RGE_Combat_Object
 
 // Function: `vector_deleting_destructor'
 // Address: 0042f9c0
-/* public: virtual void * __thiscall RGE_Combat_Object::`vector deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 RGE_Combat_Object::_vector_deleting_destructor_(RGE_Combat_Object *this,uint param_1)
 {
@@ -206,8 +200,6 @@ RGE_Combat_Object::_vector_deleting_destructor_(RGE_Combat_Object *this,uint par
 
 // Function: RGE_Combat_Object
 // Address: 0042f9e0
-/* public: __thiscall RGE_Combat_Object::RGE_Combat_Object(int,class RGE_Game_World *,int) */
-
 RGE_Combat_Object * __thiscall
 RGE_Combat_Object::RGE_Combat_Object
           (RGE_Combat_Object *this,int param_1,RGE_Game_World *param_2,int param_3)
@@ -235,8 +227,6 @@ RGE_Combat_Object::RGE_Combat_Object
 
 // Function: ~RGE_Combat_Object
 // Address: 0042fa50
-/* public: virtual __thiscall RGE_Combat_Object::~RGE_Combat_Object(void) */
-
 void __thiscall RGE_Combat_Object::~RGE_Combat_Object(RGE_Combat_Object *this)
 {
   int iVar1;
@@ -278,9 +268,6 @@ void __thiscall RGE_Combat_Object::~RGE_Combat_Object(RGE_Combat_Object *this)
 
 // Function: recycle_in_to_game
 // Address: 0042faf0
-/* public: virtual void __thiscall RGE_Combat_Object::recycle_in_to_game(class
-   RGE_Master_Static_Object *,class RGE_Player *,float,float,float) */
-
 void __thiscall
 RGE_Combat_Object::recycle_in_to_game
           (RGE_Combat_Object *this,RGE_Master_Static_Object *param_1,RGE_Player *param_2,
@@ -305,9 +292,6 @@ RGE_Combat_Object::recycle_in_to_game
 
 // Function: setup
 // Address: 0042fb40
-/* protected: virtual int __thiscall RGE_Combat_Object::setup(class RGE_Master_Combat_Object *,class
-   RGE_Player *,float,float,float) */
-
 int __thiscall
 RGE_Combat_Object::setup
           (RGE_Combat_Object *this,RGE_Master_Combat_Object *param_1,RGE_Player *param_2,
@@ -336,9 +320,6 @@ RGE_Combat_Object::setup
 
 // Function: setup
 // Address: 0042fba0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall RGE_Combat_Object::setup(int,class RGE_Game_World *) */
-
 int __thiscall RGE_Combat_Object::setup(RGE_Combat_Object *this,int param_1,RGE_Game_World *param_2)
 {
   int iVar1;
@@ -363,8 +344,6 @@ int __thiscall RGE_Combat_Object::setup(RGE_Combat_Object *this,int param_1,RGE_
 
 // Function: save
 // Address: 0042fc10
-/* public: virtual void __thiscall RGE_Combat_Object::save(int) */
-
 void __thiscall RGE_Combat_Object::save(RGE_Combat_Object *this,int param_1)
 {
   RGE_Action_Object::save((RGE_Action_Object *)this,param_1);
@@ -379,8 +358,6 @@ void __thiscall RGE_Combat_Object::save(RGE_Combat_Object *this,int param_1)
 // Address: 0042fc50
 // [HELPER] s_C__msdev_work_age1_x1_com_obj_cp: "C:\msdev\work\age1_x1\com_obj.cpp"
 // [HELPER] s___d_call_stopObject__s__d_: "#%d call stopObject %s %d\n"
-/* public: virtual void __thiscall RGE_Combat_Object::stop(void) */
-
 void __thiscall RGE_Combat_Object::stop(RGE_Combat_Object *this)
 {
   RGE_Action_Object::stop((RGE_Action_Object *)this);
@@ -398,10 +375,6 @@ void __thiscall RGE_Combat_Object::stop(RGE_Combat_Object *this)
 
 // Function: calc_attack_modifier
 // Address: 0042fc90
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual float __thiscall RGE_Combat_Object::calc_attack_modifier(class RGE_Static_Object
-   *) */
-
 float __thiscall
 RGE_Combat_Object::calc_attack_modifier(RGE_Combat_Object *this,RGE_Static_Object *param_1)
 {
@@ -413,11 +386,6 @@ RGE_Combat_Object::calc_attack_modifier(RGE_Combat_Object *this,RGE_Static_Objec
 // Function: area_attack
 // Address: 0042fca0
 // [HELPER] s_C__msdev_work_age1_x1_com_obj_cp: "C:\msdev\work\age1_x1\com_obj.cpp"
-/* WARNING: Variable defined which should be unmapped: attack_modifier */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall RGE_Combat_Object::area_attack(float,float,float,class
-   RGE_Combat_Object *,class RGE_Static_Object *) */
-
 uchar __thiscall
 RGE_Combat_Object::area_attack
           (RGE_Combat_Object *this,float param_1,float param_2,float param_3,
@@ -534,11 +502,6 @@ RGE_Combat_Object::area_attack
 
 // Function: attack
 // Address: 0042ff50
-/* WARNING: Variable defined which should be unmapped: c */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall RGE_Combat_Object::attack(class RGE_Static_Object
-   *,class RGE_Combat_Object *) */
-
 uchar __thiscall
 RGE_Combat_Object::attack
           (RGE_Combat_Object *this,RGE_Static_Object *param_1,RGE_Combat_Object *param_2)
@@ -594,11 +557,6 @@ RGE_Combat_Object::attack
 
 // Function: attack
 // Address: 004300f0
-/* WARNING: Variable defined which should be unmapped: s */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall RGE_Combat_Object::attack(float,float,float,class
-   RGE_Combat_Object *) */
-
 uchar __thiscall
 RGE_Combat_Object::attack
           (RGE_Combat_Object *this,float param_1,float param_2,float param_3,
@@ -644,10 +602,6 @@ RGE_Combat_Object::attack
 // Function: do_attack
 // Address: 00430230
 // [HELPER] s_C__msdev_work_age1_x1_com_obj_cp: "C:\msdev\work\age1_x1\com_obj.cpp"
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall RGE_Combat_Object::do_attack(class RGE_Static_Object
-   *,class RGE_Combat_Object *,float,float,float) */
-
 uchar __thiscall
 RGE_Combat_Object::do_attack
           (RGE_Combat_Object *this,RGE_Static_Object *param_1,RGE_Combat_Object *param_2,
@@ -682,10 +636,6 @@ RGE_Combat_Object::do_attack
 
 // Function: damage
 // Address: 00430320
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual void __thiscall RGE_Combat_Object::damage(int,struct RGE_Armor_Weapon_Info
-   *,float,class RGE_Player *,class RGE_Static_Object *) */
-
 void __thiscall
 RGE_Combat_Object::damage
           (RGE_Combat_Object *this,int param_1,RGE_Armor_Weapon_Info *param_2,float param_3,
@@ -714,10 +664,6 @@ RGE_Combat_Object::damage
 
 // Function: calculateDamage
 // Address: 004303a0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual float __thiscall RGE_Combat_Object::calculateDamage(int,struct
-   RGE_Armor_Weapon_Info *,float,class RGE_Player *,class RGE_Static_Object *) */
-
 float __thiscall
 RGE_Combat_Object::calculateDamage
           (RGE_Combat_Object *this,int param_1,RGE_Armor_Weapon_Info *param_2,float param_3,
@@ -770,9 +716,6 @@ RGE_Combat_Object::calculateDamage
 
 // Function: can_attack
 // Address: 00430480
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall RGE_Combat_Object::can_attack(void) */
-
 uchar __thiscall RGE_Combat_Object::can_attack(RGE_Combat_Object *this)
 {
   if (_DAT_0056f4a8 < this->attack_timer) {
@@ -785,8 +728,6 @@ uchar __thiscall RGE_Combat_Object::can_attack(RGE_Combat_Object *this)
 
 // Function: reset_attack_timer
 // Address: 004304a0
-/* public: void __thiscall RGE_Combat_Object::reset_attack_timer(void) */
-
 void __thiscall RGE_Combat_Object::reset_attack_timer(RGE_Combat_Object *this)
 {
   this->attack_timer = *(float *)(this->_padding_ + 0x120);
@@ -797,8 +738,6 @@ void __thiscall RGE_Combat_Object::reset_attack_timer(RGE_Combat_Object *this)
 
 // Function: get_armor
 // Address: 004304b0
-/* public: virtual void __thiscall RGE_Combat_Object::get_armor(short &,short &) */
-
 void __thiscall RGE_Combat_Object::get_armor(RGE_Combat_Object *this,short *param_1,short *param_2)
 {
   short sVar1;
@@ -826,8 +765,6 @@ void __thiscall RGE_Combat_Object::get_armor(RGE_Combat_Object *this,short *para
 
 // Function: get_weapon
 // Address: 00430510
-/* public: virtual void __thiscall RGE_Combat_Object::get_weapon(short &,short &) */
-
 void __thiscall RGE_Combat_Object::get_weapon(RGE_Combat_Object *this,short *param_1,short *param_2)
 {
   short sVar1;
@@ -855,8 +792,6 @@ void __thiscall RGE_Combat_Object::get_weapon(RGE_Combat_Object *this,short *par
 
 // Function: get_weapon_range
 // Address: 00430570
-/* public: virtual void __thiscall RGE_Combat_Object::get_weapon_range(float &,float &) */
-
 void __thiscall
 RGE_Combat_Object::get_weapon_range(RGE_Combat_Object *this,float *param_1,float *param_2)
 {
@@ -869,8 +804,6 @@ RGE_Combat_Object::get_weapon_range(RGE_Combat_Object *this,float *param_1,float
 
 // Function: get_speed_of_attack
 // Address: 004305a0
-/* public: virtual void __thiscall RGE_Combat_Object::get_speed_of_attack(float &,float &) */
-
 void __thiscall
 RGE_Combat_Object::get_speed_of_attack(RGE_Combat_Object *this,float *param_1,float *param_2)
 {
@@ -883,9 +816,6 @@ RGE_Combat_Object::get_speed_of_attack(RGE_Combat_Object *this,float *param_1,fl
 
 // Function: release_being_worked_on
 // Address: 004305d0
-/* public: virtual void __thiscall RGE_Combat_Object::release_being_worked_on(class
-   RGE_Static_Object *) */
-
 void __thiscall
 RGE_Combat_Object::release_being_worked_on(RGE_Combat_Object *this,RGE_Static_Object *param_1)
 {
@@ -901,8 +831,6 @@ RGE_Combat_Object::release_being_worked_on(RGE_Combat_Object *this,RGE_Static_Ob
 
 // Function: enter_obj
 // Address: 00430610
-/* public: virtual void __thiscall RGE_Combat_Object::enter_obj(class RGE_Static_Object *) */
-
 void __thiscall RGE_Combat_Object::enter_obj(RGE_Combat_Object *this,RGE_Static_Object *param_1)
 {
   int iVar1;
@@ -933,10 +861,6 @@ void __thiscall RGE_Combat_Object::enter_obj(RGE_Combat_Object *this,RGE_Static_
 
 // Function: update
 // Address: 00430680
-/* WARNING: Variable defined which should be unmapped: returnResult */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall RGE_Combat_Object::update(void) */
-
 uchar __thiscall RGE_Combat_Object::update(RGE_Combat_Object *this)
 {
   ulong *puVar1;
@@ -1014,8 +938,6 @@ LAB_00430784:
 
 // Function: copy_obj
 // Address: 00430810
-/* public: virtual void __thiscall RGE_Combat_Object::copy_obj(class RGE_Master_Static_Object *) */
-
 void __thiscall
 RGE_Combat_Object::copy_obj(RGE_Combat_Object *this,RGE_Master_Static_Object *param_1)
 {
@@ -1036,8 +958,6 @@ RGE_Combat_Object::copy_obj(RGE_Combat_Object *this,RGE_Master_Static_Object *pa
 
 // Function: notify
 // Address: 00430850
-/* public: virtual void __thiscall RGE_Combat_Object::notify(int,int,int,long,long,long) */
-
 void __thiscall
 RGE_Combat_Object::notify
           (RGE_Combat_Object *this,int param_1,int param_2,int param_3,long param_4,long param_5,
@@ -1059,8 +979,6 @@ RGE_Combat_Object::notify
 
 // Function: attack
 // Address: 004308c0
-/* public: virtual int __thiscall RGE_Combat_Object::attack(int,int) */
-
 int __thiscall RGE_Combat_Object::attack(RGE_Combat_Object *this,int param_1,int param_2)
 {
   uchar uVar1;
@@ -1146,8 +1064,6 @@ LAB_00430a71:
 
 // Function: attack
 // Address: 00430a90
-/* public: virtual int __thiscall RGE_Combat_Object::attack(float,float,float,int) */
-
 int __thiscall
 RGE_Combat_Object::attack
           (RGE_Combat_Object *this,float param_1,float param_2,float param_3,int param_4)
@@ -1219,8 +1135,6 @@ LAB_00430bec:
 
 // Function: moveTo
 // Address: 00430c10
-/* public: virtual int __thiscall RGE_Combat_Object::moveTo(int,int) */
-
 int __thiscall RGE_Combat_Object::moveTo(RGE_Combat_Object *this,int param_1,int param_2)
 {
   int iVar1;
@@ -1233,8 +1147,6 @@ int __thiscall RGE_Combat_Object::moveTo(RGE_Combat_Object *this,int param_1,int
 
 // Function: moveTo
 // Address: 00430c30
-/* public: virtual int __thiscall RGE_Combat_Object::moveTo(int,float,int) */
-
 int __thiscall
 RGE_Combat_Object::moveTo(RGE_Combat_Object *this,int param_1,float param_2,int param_3)
 {
@@ -1301,8 +1213,6 @@ LAB_00430d35:
 
 // Function: moveTo
 // Address: 00430d50
-/* public: virtual int __thiscall RGE_Combat_Object::moveTo(float,float,float,float,int) */
-
 int __thiscall
 RGE_Combat_Object::moveTo
           (RGE_Combat_Object *this,float param_1,float param_2,float param_3,float param_4,
@@ -1380,8 +1290,6 @@ LAB_00430ea2:
 
 // Function: moveAwayFrom
 // Address: 00430ec0
-/* public: virtual int __thiscall RGE_Combat_Object::moveAwayFrom(int,int) */
-
 int __thiscall RGE_Combat_Object::moveAwayFrom(RGE_Combat_Object *this,int param_1,int param_2)
 {
   return 0;
@@ -1391,8 +1299,6 @@ int __thiscall RGE_Combat_Object::moveAwayFrom(RGE_Combat_Object *this,int param
 
 // Function: gather
 // Address: 00430ed0
-/* public: virtual int __thiscall RGE_Combat_Object::gather(int,int) */
-
 int __thiscall RGE_Combat_Object::gather(RGE_Combat_Object *this,int param_1,int param_2)
 {
   int iVar1;
@@ -1470,8 +1376,6 @@ LAB_00431006:
 
 // Function: explore
 // Address: 00431020
-/* public: virtual int __thiscall RGE_Combat_Object::explore(int,int,int) */
-
 int __thiscall
 RGE_Combat_Object::explore(RGE_Combat_Object *this,int param_1,int param_2,int param_3)
 {
@@ -1533,8 +1437,6 @@ LAB_00431132:
 
 // Function: enter
 // Address: 00431150
-/* public: virtual int __thiscall RGE_Combat_Object::enter(int,int) */
-
 int __thiscall RGE_Combat_Object::enter(RGE_Combat_Object *this,int param_1,int param_2)
 {
   int iVar1;
@@ -1600,8 +1502,6 @@ LAB_0043123a:
 
 // Function: transport
 // Address: 00431250
-/* public: virtual int __thiscall RGE_Combat_Object::transport(float,float,float,int) */
-
 int __thiscall
 RGE_Combat_Object::transport
           (RGE_Combat_Object *this,float param_1,float param_2,float param_3,int param_4)
@@ -1660,8 +1560,6 @@ LAB_00431321:
 
 // Function: unload
 // Address: 00431340
-/* public: virtual int __thiscall RGE_Combat_Object::unload(int,float,float,float) */
-
 int __thiscall
 RGE_Combat_Object::unload
           (RGE_Combat_Object *this,int param_1,float param_2,float param_3,float param_4)
@@ -1723,8 +1621,6 @@ LAB_00431423:
 
 // Function: stopAction
 // Address: 00431440
-/* public: virtual int __thiscall RGE_Combat_Object::stopAction(void) */
-
 int __thiscall RGE_Combat_Object::stopAction(RGE_Combat_Object *this)
 {
   RGE_Action_List::delete_list((RGE_Action_List *)this->_padding_);
@@ -1736,8 +1632,6 @@ int __thiscall RGE_Combat_Object::stopAction(RGE_Combat_Object *this)
 
 // Function: pause
 // Address: 00431470
-/* public: virtual int __thiscall RGE_Combat_Object::pause(void) */
-
 int __thiscall RGE_Combat_Object::pause(RGE_Combat_Object *this)
 {
   (**(code **)(this->_padding_ + 0x38))(*(undefined4 *)(this->_padding_ + 0x18));
@@ -1748,8 +1642,6 @@ int __thiscall RGE_Combat_Object::pause(RGE_Combat_Object *this)
 
 // Function: rateOfFire
 // Address: 00431490
-/* public: virtual float __thiscall RGE_Combat_Object::rateOfFire(void) */
-
 float __thiscall RGE_Combat_Object::rateOfFire(RGE_Combat_Object *this)
 {
   return *(float *)(this->_padding_ + 0x120);
@@ -1759,9 +1651,6 @@ float __thiscall RGE_Combat_Object::rateOfFire(RGE_Combat_Object *this)
 
 // Function: damageCapability
 // Address: 004314a0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual float __thiscall RGE_Combat_Object::damageCapability(void) */
-
 float __thiscall RGE_Combat_Object::damageCapability(RGE_Combat_Object *this)
 {
   float fVar1;
@@ -1787,9 +1676,6 @@ float __thiscall RGE_Combat_Object::damageCapability(RGE_Combat_Object *this)
 
 // Function: damageCapability
 // Address: 004314f0
-/* public: virtual float __thiscall RGE_Combat_Object::damageCapability(class RGE_Static_Object *)
-    */
-
 float __thiscall
 RGE_Combat_Object::damageCapability(RGE_Combat_Object *this,RGE_Static_Object *param_1)
 {
@@ -1811,10 +1697,6 @@ RGE_Combat_Object::damageCapability(RGE_Combat_Object *this,RGE_Static_Object *p
 
 // Function: inAttackRange
 // Address: 00431530
-/* WARNING: Variable defined which should be unmapped: radiusDistance */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual int __thiscall RGE_Combat_Object::inAttackRange(class RGE_Static_Object *) */
-
 int __thiscall RGE_Combat_Object::inAttackRange(RGE_Combat_Object *this,RGE_Static_Object *param_1)
 {
   float fVar1;
@@ -1839,8 +1721,6 @@ int __thiscall RGE_Combat_Object::inAttackRange(RGE_Combat_Object *this,RGE_Stat
 
 // Function: weaponRange
 // Address: 004315a0
-/* public: virtual float __thiscall RGE_Combat_Object::weaponRange(void) */
-
 float __thiscall RGE_Combat_Object::weaponRange(RGE_Combat_Object *this)
 {
   return *(float *)(this->_padding_ + 0x114);
@@ -1850,8 +1730,6 @@ float __thiscall RGE_Combat_Object::weaponRange(RGE_Combat_Object *this)
 
 // Function: minimumWeaponRange
 // Address: 004315b0
-/* public: virtual float __thiscall RGE_Combat_Object::minimumWeaponRange(void) */
-
 float __thiscall RGE_Combat_Object::minimumWeaponRange(RGE_Combat_Object *this)
 {
   return *(float *)(this->_padding_ + 0x138);
@@ -1861,8 +1739,6 @@ float __thiscall RGE_Combat_Object::minimumWeaponRange(RGE_Combat_Object *this)
 
 // Function: currentTargetID
 // Address: 004315c0
-/* public: virtual int __thiscall RGE_Combat_Object::currentTargetID(void)const  */
-
 int __thiscall RGE_Combat_Object::currentTargetID(RGE_Combat_Object *this)
 {
   uchar uVar1;
@@ -1886,9 +1762,6 @@ int __thiscall RGE_Combat_Object::currentTargetID(RGE_Combat_Object *this)
 
 // Function: currentTargetX
 // Address: 00431610
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual float __thiscall RGE_Combat_Object::currentTargetX(void)const  */
-
 float __thiscall RGE_Combat_Object::currentTargetX(RGE_Combat_Object *this)
 {
   uchar uVar1;
@@ -1908,9 +1781,6 @@ float __thiscall RGE_Combat_Object::currentTargetX(RGE_Combat_Object *this)
 
 // Function: currentTargetY
 // Address: 00431640
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual float __thiscall RGE_Combat_Object::currentTargetY(void)const  */
-
 float __thiscall RGE_Combat_Object::currentTargetY(RGE_Combat_Object *this)
 {
   uchar uVar1;
@@ -1930,9 +1800,6 @@ float __thiscall RGE_Combat_Object::currentTargetY(RGE_Combat_Object *this)
 
 // Function: currentTargetZ
 // Address: 00431670
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual float __thiscall RGE_Combat_Object::currentTargetZ(void)const  */
-
 float __thiscall RGE_Combat_Object::currentTargetZ(RGE_Combat_Object *this)
 {
   uchar uVar1;
@@ -1952,8 +1819,6 @@ float __thiscall RGE_Combat_Object::currentTargetZ(RGE_Combat_Object *this)
 
 // Function: teleport
 // Address: 004316a0
-/* public: virtual float __thiscall RGE_Combat_Object::teleport(float,float,float) */
-
 float __thiscall
 RGE_Combat_Object::teleport(RGE_Combat_Object *this,float param_1,float param_2,float param_3)
 {

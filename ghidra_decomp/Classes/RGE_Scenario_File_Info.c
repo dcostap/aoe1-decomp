@@ -9,8 +9,6 @@
 
 // Function: RGE_Scenario_File_Info
 // Address: 0048cea0
-/* public: __thiscall RGE_Scenario_File_Info::RGE_Scenario_File_Info(char *) */
-
 RGE_Scenario_File_Info * __thiscall
 RGE_Scenario_File_Info::RGE_Scenario_File_Info(RGE_Scenario_File_Info *this,char *param_1)
 {
@@ -88,8 +86,6 @@ RGE_Scenario_File_Info::RGE_Scenario_File_Info(RGE_Scenario_File_Info *this,char
 
 // Function: ~RGE_Scenario_File_Info
 // Address: 0048cfd0
-/* public: __thiscall RGE_Scenario_File_Info::~RGE_Scenario_File_Info(void) */
-
 void __thiscall RGE_Scenario_File_Info::~RGE_Scenario_File_Info(RGE_Scenario_File_Info *this)
 {
   RGE_Scenario_Header *this_00;
@@ -122,8 +118,6 @@ void __thiscall RGE_Scenario_File_Info::~RGE_Scenario_File_Info(RGE_Scenario_Fil
 
 // Function: save
 // Address: 0048d040
-/* public: void __thiscall RGE_Scenario_File_Info::save(void) */
-
 void __thiscall RGE_Scenario_File_Info::save(RGE_Scenario_File_Info *this)
 {
   int iVar1;
@@ -156,9 +150,6 @@ void __thiscall RGE_Scenario_File_Info::save(RGE_Scenario_File_Info *this)
 // [HELPER] s__s__scn: "%s*.scn"
 // [HELPER] s__s__scx: "%s*.scx"
 // [HELPER] s__s_s: "%s%s"
-/* WARNING: Variable defined which should be unmapped: looped */
-/* public: void __thiscall RGE_Scenario_File_Info::reload_scenarios(void) */
-
 void __thiscall RGE_Scenario_File_Info::reload_scenarios(RGE_Scenario_File_Info *this)
 {
   char cVar1;
@@ -351,8 +342,6 @@ LAB_0048d44e:
 
 // Function: get_scenario_name
 // Address: 0048d4d0
-/* public: char * __thiscall RGE_Scenario_File_Info::get_scenario_name(long) */
-
 char * __thiscall
 RGE_Scenario_File_Info::get_scenario_name(RGE_Scenario_File_Info *this,long param_1)
 {
@@ -366,8 +355,6 @@ RGE_Scenario_File_Info::get_scenario_name(RGE_Scenario_File_Info *this,long para
 
 // Function: get_scenario_info
 // Address: 0048d500
-/* public: class RGE_Scenario_Header * __thiscall RGE_Scenario_File_Info::get_scenario_info(long) */
-
 RGE_Scenario_Header * __thiscall
 RGE_Scenario_File_Info::get_scenario_info(RGE_Scenario_File_Info *this,long param_1)
 {

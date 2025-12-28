@@ -33,8 +33,6 @@
 
 // Function: TRIBE_Action_Repair
 // Address: 004d1680
-/* public: __thiscall TRIBE_Action_Repair::TRIBE_Action_Repair(int,class RGE_Action_Object *,int) */
-
 TRIBE_Action_Repair * __thiscall
 TRIBE_Action_Repair::TRIBE_Action_Repair
           (TRIBE_Action_Repair *this,int param_1,RGE_Action_Object *param_2,int param_3)
@@ -63,9 +61,6 @@ TRIBE_Action_Repair::TRIBE_Action_Repair
 
 // Function: `vector_deleting_destructor'
 // Address: 004d16f0
-/* public: virtual void * __thiscall TRIBE_Action_Repair::`vector deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 TRIBE_Action_Repair::_vector_deleting_destructor_(TRIBE_Action_Repair *this,uint param_1)
 {
@@ -80,8 +75,6 @@ TRIBE_Action_Repair::_vector_deleting_destructor_(TRIBE_Action_Repair *this,uint
 
 // Function: ~TRIBE_Action_Repair
 // Address: 004d1710
-/* public: virtual __thiscall TRIBE_Action_Repair::~TRIBE_Action_Repair(void) */
-
 void __thiscall TRIBE_Action_Repair::~TRIBE_Action_Repair(TRIBE_Action_Repair *this)
 {
   RGE_Action_List *this_00;
@@ -102,9 +95,6 @@ void __thiscall TRIBE_Action_Repair::~TRIBE_Action_Repair(TRIBE_Action_Repair *t
 
 // Function: TRIBE_Action_Repair
 // Address: 004d1720
-/* public: __thiscall TRIBE_Action_Repair::TRIBE_Action_Repair(class RGE_Action_Object *,class
-   RGE_Task *,class RGE_Static_Object *) */
-
 TRIBE_Action_Repair * __thiscall
 TRIBE_Action_Repair::TRIBE_Action_Repair
           (TRIBE_Action_Repair *this,RGE_Action_Object *param_1,RGE_Task *param_2,
@@ -140,9 +130,6 @@ TRIBE_Action_Repair::TRIBE_Action_Repair
 
 // Function: TRIBE_Action_Repair
 // Address: 004d17b0
-/* public: __thiscall TRIBE_Action_Repair::TRIBE_Action_Repair(class RGE_Action_Object *,class
-   RGE_Task *,float,float,float) */
-
 TRIBE_Action_Repair * __thiscall
 TRIBE_Action_Repair::TRIBE_Action_Repair
           (TRIBE_Action_Repair *this,RGE_Action_Object *param_1,RGE_Task *param_2,float param_3,
@@ -163,9 +150,6 @@ TRIBE_Action_Repair::TRIBE_Action_Repair
 
 // Function: setup
 // Address: 004d1800
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual int __thiscall TRIBE_Action_Repair::setup(int,class RGE_Action_Object *) */
-
 int __thiscall
 TRIBE_Action_Repair::setup(TRIBE_Action_Repair *this,int param_1,RGE_Action_Object *param_2)
 {
@@ -184,8 +168,6 @@ TRIBE_Action_Repair::setup(TRIBE_Action_Repair *this,int param_1,RGE_Action_Obje
 
 // Function: save
 // Address: 004d1850
-/* public: virtual void __thiscall TRIBE_Action_Repair::save(int) */
-
 void __thiscall TRIBE_Action_Repair::save(TRIBE_Action_Repair *this,int param_1)
 {
   RGE_Action::save((RGE_Action *)this,param_1);
@@ -197,8 +179,6 @@ void __thiscall TRIBE_Action_Repair::save(TRIBE_Action_Repair *this,int param_1)
 
 // Function: first_in_stack
 // Address: 004d1880
-/* public: virtual void __thiscall TRIBE_Action_Repair::first_in_stack(unsigned char) */
-
 void __thiscall TRIBE_Action_Repair::first_in_stack(TRIBE_Action_Repair *this,uchar param_1)
 {
   if ((param_1 != '\0') && (this->_padding_ != 0)) {
@@ -213,8 +193,6 @@ void __thiscall TRIBE_Action_Repair::first_in_stack(TRIBE_Action_Repair *this,uc
 
 // Function: set_state
 // Address: 004d18b0
-/* protected: virtual void __thiscall TRIBE_Action_Repair::set_state(unsigned char) */
-
 void __thiscall TRIBE_Action_Repair::set_state(TRIBE_Action_Repair *this,uchar param_1)
 {
   short sVar1;
@@ -357,9 +335,6 @@ switchD_004d18e7_caseD_5:
 
 // Function: update
 // Address: 004d1bb0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall TRIBE_Action_Repair::update(void) */
-
 uchar __thiscall TRIBE_Action_Repair::update(TRIBE_Action_Repair *this)
 {
   float fVar1;
@@ -515,8 +490,6 @@ switchD_004d1c93_caseD_3:
 
 // Function: stop
 // Address: 004d1f50
-/* public: virtual int __thiscall TRIBE_Action_Repair::stop(void) */
-
 int __thiscall TRIBE_Action_Repair::stop(TRIBE_Action_Repair *this)
 {
   (**(code **)(this->_padding_ + 0x5c))(2);
@@ -527,9 +500,6 @@ int __thiscall TRIBE_Action_Repair::stop(TRIBE_Action_Repair *this)
 
 // Function: move_to
 // Address: 004d1f60
-/* public: virtual int __thiscall TRIBE_Action_Repair::move_to(class RGE_Static_Object
-   *,float,float,float) */
-
 int __thiscall
 TRIBE_Action_Repair::move_to
           (TRIBE_Action_Repair *this,RGE_Static_Object *param_1,float param_2,float param_3,
@@ -550,9 +520,6 @@ TRIBE_Action_Repair::move_to
 
 // Function: work
 // Address: 004d1fa0
-/* public: virtual int __thiscall TRIBE_Action_Repair::work(class RGE_Static_Object
-   *,float,float,float) */
-
 int __thiscall
 TRIBE_Action_Repair::work
           (TRIBE_Action_Repair *this,RGE_Static_Object *param_1,float param_2,float param_3,
@@ -587,9 +554,6 @@ TRIBE_Action_Repair::work
 
 // Function: meet_target
 // Address: 004d2020
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: void __thiscall TRIBE_Action_Repair::meet_target(void) */
-
 void __thiscall TRIBE_Action_Repair::meet_target(TRIBE_Action_Repair *this)
 {
   short sVar1;

@@ -11,8 +11,6 @@
 
 // Function: TChat
 // Address: 00423c30
-/* public: __thiscall TChat::TChat(void *) */
-
 TChat * __thiscall TChat::TChat(TChat *this,void *param_1)
 {
   TTaunt *pTVar1;
@@ -57,8 +55,6 @@ TChat * __thiscall TChat::TChat(TChat *this,void *param_1)
 
 // Function: ~TChat
 // Address: 00423cd0
-/* public: __thiscall TChat::~TChat(void) */
-
 void __thiscall TChat::~TChat(TChat *this)
 {
   TTaunt *this_00;
@@ -77,8 +73,6 @@ void __thiscall TChat::~TChat(TChat *this)
 // Function: AddChatMsg
 // Address: 00423d00
 // [HELPER] s__s___s: "%s: %s"
-/* public: int __thiscall TChat::AddChatMsg(char *,char *,unsigned char) */
-
 int __thiscall TChat::AddChatMsg(TChat *this,char *param_1,char *param_2,uchar param_3)
 {
   char cVar1;
@@ -135,8 +129,6 @@ int __thiscall TChat::AddChatMsg(TChat *this,char *param_1,char *param_2,uchar p
 
 // Function: GetChatMsg
 // Address: 00423df0
-/* public: char * __thiscall TChat::GetChatMsg(int) */
-
 char * __thiscall TChat::GetChatMsg(TChat *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 0x33)) {
@@ -149,8 +141,6 @@ char * __thiscall TChat::GetChatMsg(TChat *this,int param_1)
 
 // Function: ClearChat
 // Address: 00423e10
-/* public: void __thiscall TChat::ClearChat(void) */
-
 void __thiscall TChat::ClearChat(TChat *this)
 {
   char **ppcVar1;
@@ -174,8 +164,6 @@ void __thiscall TChat::ClearChat(TChat *this)
 
 // Function: MaxArraySize
 // Address: 00423e50
-/* public: int __thiscall TChat::MaxArraySize(void) */
-
 int __thiscall TChat::MaxArraySize(TChat *this)
 {
   return 0x32;
@@ -185,8 +173,6 @@ int __thiscall TChat::MaxArraySize(TChat *this)
 
 // Function: setWindowHandle
 // Address: 00423e60
-/* public: void __thiscall TChat::setWindowHandle(void *) */
-
 void __thiscall TChat::setWindowHandle(TChat *this,void *param_1)
 {
   this->HostWnd = param_1;
@@ -197,8 +183,6 @@ void __thiscall TChat::setWindowHandle(TChat *this,void *param_1)
 
 // Function: setInChatGroup
 // Address: 00423e70
-/* public: void __thiscall TChat::setInChatGroup(int,int) */
-
 void __thiscall TChat::setInChatGroup(TChat *this,int param_1,int param_2)
 {
   if ((0 < param_1) && (param_1 < 10)) {
@@ -211,8 +195,6 @@ void __thiscall TChat::setInChatGroup(TChat *this,int param_1,int param_2)
 
 // Function: inChatGroup
 // Address: 00423e90
-/* public: int __thiscall TChat::inChatGroup(int) */
-
 int __thiscall TChat::inChatGroup(TChat *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 10)) {
@@ -225,8 +207,6 @@ int __thiscall TChat::inChatGroup(TChat *this,int param_1)
 
 // Function: StopSoundSystem
 // Address: 00423eb0
-/* public: void __thiscall TChat::StopSoundSystem(void) */
-
 void __thiscall TChat::StopSoundSystem(TChat *this)
 {
   if (this->taunt != (TTaunt *)0x0) {
@@ -240,8 +220,6 @@ void __thiscall TChat::StopSoundSystem(TChat *this)
 
 // Function: RestartSoundSystem
 // Address: 00423ec0
-/* public: int __thiscall TChat::RestartSoundSystem(class TSound_Driver *) */
-
 int __thiscall TChat::RestartSoundSystem(TChat *this,TSound_Driver *param_1)
 {
   int iVar1;

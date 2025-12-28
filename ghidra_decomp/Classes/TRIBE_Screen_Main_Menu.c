@@ -763,9 +763,6 @@
 // [HELPER] s__: "}"
 // [HELPER] s_circlep2: "circlep2"
 // [HELPER] s_scr1: "scr1"
-/* WARNING: Variable defined which should be unmapped: diff */
-/* public: __thiscall TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu(void) */
-
 TRIBE_Screen_Main_Menu * __thiscall
 TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu(TRIBE_Screen_Main_Menu *this)
 {
@@ -837,28 +834,19 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu(TRIBE_Screen_Main_Menu *this)
       iVar9 = iVar9 + 0x32;
       ppTVar12 = ppTVar12 + 1;
     } while (iVar9 < 0x1ac);
-                    /* language.dll match for 0x23f2: "Single Player" */
     TButtonPanel::set_text(this->button[0],0,0x23f2);
-                    /* language.dll match for 0x23f3: "Multiplayer" */
     TButtonPanel::set_text(this->button[1],0,0x23f3);
-                    /* language.dll match for 0x23f5: "Help" */
     TButtonPanel::set_text(this->button[2],0,0x23f5);
-                    /* language.dll match for 0x23f6: "Scenario Builder" */
     TButtonPanel::set_text(this->button[3],0,0x23f6);
-                    /* language.dll match for 0x23f7: "Exit" */
     TButtonPanel::set_text(this->button[4],0,0x23f7);
     TEasy_Panel::set_ideal_size((TEasy_Panel *)this,this->_padding_,this->_padding_);
     iVar9 = this->_padding_;
-                    /* language.dll match for 0x2419: "Microsoft\\xAE Age of Empires\\xAE
-                       Expansion:"
-                       language.dll match for 0x2419: "Microsoft\\xA9 Age of Empires\ufffd" */
     TEasy_Panel::create_text
               ((TEasy_Panel *)this,(TPanel *)this,&this->ms_title_text,0x2419,5,iVar9 + -0x3c,
                this->_padding_ + -10,0x12,10,1,0,0);
     TPanel::get_string((TPanel *)this,0x2424,temp_str + 4,0x200);
     if (temp_str[4] == '\0') {
       ppTVar1 = &this->ms_copy_text1;
-                    /* language.dll match for 0x241b: "\\xA9 & " */
       TEasy_Panel::create_text
                 ((TEasy_Panel *)this,(TPanel *)this,ppTVar1,0x241b,5,iVar9 + -0x2a,0x32,0x12,10,0,0,
                  0);
@@ -889,10 +877,6 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu(TRIBE_Screen_Main_Menu *this)
           iVar5 = this->_padding_;
           lVar6 = TPanel::width((TPanel *)this->circle_p_pic);
           ppTVar2 = &this->ms_copy_text2;
-                    /* language.dll match for 0x241c: "1997-1998 Microsoft Corporation. All rights
-                       reserved."
-                       language.dll match for 0x241c: "1997 Microsoft Corporation. All rights
-                       reserved." */
           TEasy_Panel::create_text
                     ((TEasy_Panel *)this,(TPanel *)this,ppTVar2,0x241c,(lVar4 - iVar5) + lVar6,
                      rect.right,lVar16,lVar17,lVar18,iVar19,iVar20,iVar21);
@@ -922,7 +906,6 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu(TRIBE_Screen_Main_Menu *this)
       }
     }
     else {
-                    /* language.dll match for 0x241b: "\\xA9 & " */
       pcVar7 = TPanel::get_string((TPanel *)this,0x241b);
       uVar10 = 0xffffffff;
       pcVar8 = temp_str;
@@ -1048,8 +1031,6 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu(TRIBE_Screen_Main_Menu *this)
                 ((TEasy_Panel *)this,(TPanel *)this,&this->ms_copy_text1,temp_str + 4,5,
                  iVar9 + -0x2a,this->_padding_ + -10,0x12,10,1,0,0);
     }
-                    /* language.dll match for 0x2425: "This program is protected by U.S. and
-                       international copyright laws as described in Menu/About." */
     TEasy_Panel::create_text
               ((TEasy_Panel *)this,(TPanel *)this,&this->warning_text,0x2425,5,iVar9 + -0x18,
                this->_padding_ + -10,0x12,10,1,0,0);
@@ -1072,9 +1053,6 @@ LAB_0049ebb6:
 
 // Function: `scalar_deleting_destructor'
 // Address: 0049ebe0
-/* public: virtual void * __thiscall TRIBE_Screen_Main_Menu::`scalar deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TRIBE_Screen_Main_Menu::_scalar_deleting_destructor_(TRIBE_Screen_Main_Menu *this,uint param_1)
 {
@@ -1089,8 +1067,6 @@ TRIBE_Screen_Main_Menu::_scalar_deleting_destructor_(TRIBE_Screen_Main_Menu *thi
 
 // Function: ~TRIBE_Screen_Main_Menu
 // Address: 0049ec00
-/* public: virtual __thiscall TRIBE_Screen_Main_Menu::~TRIBE_Screen_Main_Menu(void) */
-
 void __thiscall TRIBE_Screen_Main_Menu::~TRIBE_Screen_Main_Menu(TRIBE_Screen_Main_Menu *this)
 {
   int iVar1;
@@ -1133,8 +1109,6 @@ void __thiscall TRIBE_Screen_Main_Menu::~TRIBE_Screen_Main_Menu(TRIBE_Screen_Mai
 
 // Function: handle_idle
 // Address: 0049ecd0
-/* public: virtual long __thiscall TRIBE_Screen_Main_Menu::handle_idle(void) */
-
 long __thiscall TRIBE_Screen_Main_Menu::handle_idle(TRIBE_Screen_Main_Menu *this)
 {
   long lVar1;
@@ -1152,9 +1126,6 @@ long __thiscall TRIBE_Screen_Main_Menu::handle_idle(TRIBE_Screen_Main_Menu *this
 // Address: 0049ed00
 // [HELPER] s_Credits_Screen: "Credits Screen"
 // [HELPER] s_Main_Menu: "Main Menu"
-/* public: virtual long __thiscall TRIBE_Screen_Main_Menu::key_down_action(long,short,int,int,int)
-    */
-
 long __thiscall
 TRIBE_Screen_Main_Menu::key_down_action
           (TRIBE_Screen_Main_Menu *this,long param_1,short param_2,int param_3,int param_4,
@@ -1188,7 +1159,6 @@ TRIBE_Screen_Main_Menu::key_down_action
       if (iVar1 != 0) {
         iVar1 = TRIBE_Game::load_db_files((TRIBE_Game *)rge_base_game);
         if (iVar1 == 0) {
-                    /* language.dll match for 0x7d7: "Could not load game data." */
           TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x7d7,(char *)0x0,0x1c2,100);
           *unaff_FS_OFFSET = local_c;
           return 1;
@@ -1213,9 +1183,6 @@ LAB_0049ede6:
 // [HELPER] s_Scenario_Editor_Menu: "Scenario Editor Menu"
 // [HELPER] s_Single_Player_Menu: "Single Player Menu"
 // [HELPER] s_empires_hlp: "empires.hlp"
-/* public: virtual long __thiscall TRIBE_Screen_Main_Menu::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TRIBE_Screen_Main_Menu::action
           (TRIBE_Screen_Main_Menu *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -1273,8 +1240,6 @@ LAB_0049ee6b:
         if (rge_base_game->save_check_for_cd == 0) {
           iVar4 = RGE_Base_Game::check_for_cd(rge_base_game,0);
           if (iVar4 == 0) {
-                    /* language.dll match for 0x7d8: "You must insert a game CD to play a single
-                       player game, and then restart Age of Empires" */
             TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x7d8,(char *)0x0,0x1c2,100);
             lVar5 = 1;
             goto LAB_0049f0b6;
@@ -1315,8 +1280,6 @@ LAB_0049ee6b:
         if (rge_base_game->save_check_for_cd == 0) {
           iVar4 = RGE_Base_Game::check_for_cd(rge_base_game,0);
           if (iVar4 == 0) {
-                    /* language.dll match for 0x7da: "You must insert a game CD to use the scenario
-                       builder." */
             TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x7da,(char *)0x0,0x1c2,100);
             lVar5 = 1;
             goto LAB_0049f0b6;

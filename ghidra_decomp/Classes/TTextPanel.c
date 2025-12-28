@@ -113,8 +113,6 @@
 
 // Function: TTextPanel
 // Address: 0047bf40
-/* public: __thiscall TTextPanel::TTextPanel(void) */
-
 TTextPanel * __thiscall TTextPanel::TTextPanel(TTextPanel *this)
 {
   TPanel::TPanel((TPanel *)this);
@@ -173,8 +171,6 @@ TTextPanel * __thiscall TTextPanel::TTextPanel(TTextPanel *this)
 
 // Function: `scalar_deleting_destructor'
 // Address: 0047c090
-/* public: virtual void * __thiscall TTextPanel::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall TTextPanel::_scalar_deleting_destructor_(TTextPanel *this,uint param_1)
 {
   ~TTextPanel(this);
@@ -188,8 +184,6 @@ void * __thiscall TTextPanel::_scalar_deleting_destructor_(TTextPanel *this,uint
 
 // Function: ~TTextPanel
 // Address: 0047c0b0
-/* public: virtual __thiscall TTextPanel::~TTextPanel(void) */
-
 void __thiscall TTextPanel::~TTextPanel(TTextPanel *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -217,10 +211,6 @@ void __thiscall TTextPanel::~TTextPanel(TTextPanel *this)
 
 // Function: setup
 // Address: 0047c120
-/* public: long __thiscall TTextPanel::setup(class TDrawArea *,class TPanel
-   *,long,long,long,long,void *,long,long,char *,int,unsigned char,int,unsigned char,short,char *)
-    */
-
 long __thiscall
 TTextPanel::setup(TTextPanel *this,TDrawArea *param_1,TPanel *param_2,long param_3,long param_4,
                  long param_5,long param_6,void *param_7,long param_8,long param_9,char *param_10,
@@ -247,11 +237,6 @@ TTextPanel::setup(TTextPanel *this,TDrawArea *param_1,TPanel *param_2,long param
 
 // Function: setup
 // Address: 0047c1e0
-/* WARNING: Function: __alloca_probe replaced with injection: alloca_probe */
-/* WARNING: Variable defined which should be unmapped: str */
-/* public: long __thiscall TTextPanel::setup(class TDrawArea *,class TPanel
-   *,long,long,long,long,void *,long,long,char *,int,unsigned char,int,unsigned char,short,long) */
-
 long __thiscall
 TTextPanel::setup(TTextPanel *this,TDrawArea *param_1,TPanel *param_2,long param_3,long param_4,
                  long param_5,long param_6,void *param_7,long param_8,long param_9,char *param_10,
@@ -281,10 +266,6 @@ TTextPanel::setup(TTextPanel *this,TDrawArea *param_1,TPanel *param_2,long param
 
 // Function: setup
 // Address: 0047c2f0
-/* public: long __thiscall TTextPanel::setup(class TDrawArea *,class TPanel
-   *,long,long,long,long,void *,long,long,char *,int,unsigned char,int,unsigned char,short,char *
-   *,short) */
-
 long __thiscall
 TTextPanel::setup(TTextPanel *this,TDrawArea *param_1,TPanel *param_2,long param_3,long param_4,
                  long param_5,long param_6,void *param_7,long param_8,long param_9,char *param_10,
@@ -313,9 +294,6 @@ TTextPanel::setup(TTextPanel *this,TDrawArea *param_1,TPanel *param_2,long param
 
 // Function: set_rect
 // Address: 0047c3b0
-/* WARNING: Variable defined which should be unmapped: clip_rect2 */
-/* public: virtual void __thiscall TTextPanel::set_rect(long,long,long,long) */
-
 void __thiscall
 TTextPanel::set_rect(TTextPanel *this,long param_1,long param_2,long param_3,long param_4)
 {
@@ -366,8 +344,6 @@ TTextPanel::set_rect(TTextPanel *this,long param_1,long param_2,long param_3,lon
 
 // Function: set_scrollbar
 // Address: 0047c4d0
-/* public: void __thiscall TTextPanel::set_scrollbar(class TScrollBarPanel *,int) */
-
 void __thiscall TTextPanel::set_scrollbar(TTextPanel *this,TScrollBarPanel *param_1,int param_2)
 {
   long lVar1;
@@ -387,8 +363,6 @@ void __thiscall TTextPanel::set_scrollbar(TTextPanel *this,TScrollBarPanel *para
 
 // Function: char_type
 // Address: 0047c520
-/* public: enum TTextPanel::CharType __thiscall TTextPanel::char_type(unsigned char *) */
-
 CharType __thiscall TTextPanel::char_type(TTextPanel *this,uchar *param_1)
 {
   int iVar1;
@@ -410,9 +384,6 @@ CharType __thiscall TTextPanel::char_type(TTextPanel *this,uchar *param_1)
 // Function: set_text
 // Address: 0047c560
 // [HELPER] s_: ""
-/* WARNING: Variable defined which should be unmapped: temp_text */
-/* public: virtual void __thiscall TTextPanel::set_text(char *) */
-
 void __thiscall TTextPanel::set_text(TTextPanel *this,char *param_1)
 {
   int iVar1;
@@ -455,10 +426,6 @@ void __thiscall TTextPanel::set_text(TTextPanel *this,char *param_1)
 // Address: 0047c640
 // [HELPER] s__: "}"
 // [HELPER] s_pnl_txt__word_wrap_append: "pnl_txt::word_wrap_append"
-/* WARNING: Variable defined which should be unmapped: found_break */
-/* WARNING: Type propagation algorithm not settling */
-/* public: int __thiscall TTextPanel::word_wrap_append(char *) */
-
 int __thiscall TTextPanel::word_wrap_append(TTextPanel *this,char *param_1)
 {
   uchar uVar1;
@@ -667,10 +634,6 @@ LAB_0047c955:
 
 // Function: set_text
 // Address: 0047ca70
-/* WARNING: Function: __alloca_probe replaced with injection: alloca_probe */
-/* WARNING: Variable defined which should be unmapped: str */
-/* public: virtual void __thiscall TTextPanel::set_text(long) */
-
 void __thiscall TTextPanel::set_text(TTextPanel *this,long param_1)
 {
   char str [4096];
@@ -685,8 +648,6 @@ void __thiscall TTextPanel::set_text(TTextPanel *this,long param_1)
 // Function: set_text
 // Address: 0047cab0
 // [HELPER] s_: ""
-/* public: virtual void __thiscall TTextPanel::set_text(char * *,short) */
-
 void __thiscall TTextPanel::set_text(TTextPanel *this,char **param_1,short param_2)
 {
   int iVar1;
@@ -713,8 +674,6 @@ void __thiscall TTextPanel::set_text(TTextPanel *this,char **param_1,short param
 
 // Function: set_font
 // Address: 0047cb10
-/* public: void __thiscall TTextPanel::set_font(void *,long,long) */
-
 void __thiscall TTextPanel::set_font(TTextPanel *this,void *param_1,long param_2,long param_3)
 {
   this->font_wid = param_2;
@@ -729,9 +688,6 @@ void __thiscall TTextPanel::set_font(TTextPanel *this,void *param_1,long param_2
 
 // Function: set_alignment
 // Address: 0047cb50
-/* public: void __thiscall TTextPanel::set_alignment(enum TTextPanel::Alignment,enum
-   TTextPanel::Alignment) */
-
 void __thiscall TTextPanel::set_alignment(TTextPanel *this,Alignment param_1,Alignment param_2)
 {
   this->vert_align = param_1;
@@ -744,8 +700,6 @@ void __thiscall TTextPanel::set_alignment(TTextPanel *this,Alignment param_1,Ali
 
 // Function: set_word_wrap
 // Address: 0047cb70
-/* public: void __thiscall TTextPanel::set_word_wrap(int) */
-
 void __thiscall TTextPanel::set_word_wrap(TTextPanel *this,int param_1)
 {
   this->word_wrap = param_1;
@@ -757,8 +711,6 @@ void __thiscall TTextPanel::set_word_wrap(TTextPanel *this,int param_1)
 
 // Function: set_style
 // Address: 0047cb90
-/* public: void __thiscall TTextPanel::set_style(enum TTextPanel::Style) */
-
 void __thiscall TTextPanel::set_style(TTextPanel *this,Style param_1)
 {
   this->text_style = param_1;
@@ -770,8 +722,6 @@ void __thiscall TTextPanel::set_style(TTextPanel *this,Style param_1)
 
 // Function: set_text_color
 // Address: 0047cbb0
-/* public: void __thiscall TTextPanel::set_text_color(unsigned long,unsigned long) */
-
 void __thiscall TTextPanel::set_text_color(TTextPanel *this,ulong param_1,ulong param_2)
 {
   this->text_color1 = param_1;
@@ -784,8 +734,6 @@ void __thiscall TTextPanel::set_text_color(TTextPanel *this,ulong param_1,ulong 
 
 // Function: set_highlight_text_color
 // Address: 0047cbd0
-/* public: void __thiscall TTextPanel::set_highlight_text_color(unsigned long,unsigned long) */
-
 void __thiscall TTextPanel::set_highlight_text_color(TTextPanel *this,ulong param_1,ulong param_2)
 {
   this->highlightTextColor1 = param_1;
@@ -798,8 +746,6 @@ void __thiscall TTextPanel::set_highlight_text_color(TTextPanel *this,ulong para
 
 // Function: set_fill_back
 // Address: 0047cbf0
-/* public: void __thiscall TTextPanel::set_fill_back(int,unsigned char) */
-
 void __thiscall TTextPanel::set_fill_back(TTextPanel *this,int param_1,uchar param_2)
 {
   this->fill_back = param_1;
@@ -811,9 +757,6 @@ void __thiscall TTextPanel::set_fill_back(TTextPanel *this,int param_1,uchar par
 
 // Function: set_back_pic
 // Address: 0047cc10
-/* WARNING: Variable defined which should be unmapped: x_max */
-/* public: void __thiscall TTextPanel::set_back_pic(char *) */
-
 void __thiscall TTextPanel::set_back_pic(TTextPanel *this,char *param_1)
 {
   TShape *pTVar1;
@@ -862,8 +805,6 @@ void __thiscall TTextPanel::set_back_pic(TTextPanel *this,char *param_1)
 
 // Function: set_outline
 // Address: 0047ccf0
-/* public: void __thiscall TTextPanel::set_outline(int,unsigned char) */
-
 void __thiscall TTextPanel::set_outline(TTextPanel *this,int param_1,uchar param_2)
 {
   this->outline = param_1;
@@ -883,8 +824,6 @@ void __thiscall TTextPanel::set_outline(TTextPanel *this,int param_1,uchar param
 
 // Function: set_bevel_info
 // Address: 0047cd40
-/* public: virtual void __thiscall TTextPanel::set_bevel_info(int,int,int,int,int,int,int) */
-
 void __thiscall
 TTextPanel::set_bevel_info
           (TTextPanel *this,int param_1,int param_2,int param_3,int param_4,int param_5,int param_6,
@@ -925,8 +864,6 @@ TTextPanel::set_bevel_info
 
 // Function: set_spacer_size
 // Address: 0047ce00
-/* public: void __thiscall TTextPanel::set_spacer_size(int) */
-
 void __thiscall TTextPanel::set_spacer_size(TTextPanel *this,int param_1)
 {
   this->spacer_size = param_1;
@@ -938,8 +875,6 @@ void __thiscall TTextPanel::set_spacer_size(TTextPanel *this,int param_1)
 
 // Function: set_active
 // Address: 0047ce20
-/* public: virtual void __thiscall TTextPanel::set_active(int) */
-
 void __thiscall TTextPanel::set_active(TTextPanel *this,int param_1)
 {
   int iVar1;
@@ -960,8 +895,6 @@ void __thiscall TTextPanel::set_active(TTextPanel *this,int param_1)
 
 // Function: calc_draw_info
 // Address: 0047ce70
-/* public: void __thiscall TTextPanel::calc_draw_info(int) */
-
 void __thiscall TTextPanel::calc_draw_info(TTextPanel *this,int param_1)
 {
   short sVar1;
@@ -1051,8 +984,6 @@ void __thiscall TTextPanel::calc_draw_info(TTextPanel *this,int param_1)
 
 // Function: scroll
 // Address: 0047d060
-/* public: void __thiscall TTextPanel::scroll(unsigned char,short,int) */
-
 void __thiscall TTextPanel::scroll(TTextPanel *this,uchar param_1,short param_2,int param_3)
 {
   switch(param_1) {
@@ -1090,8 +1021,6 @@ LAB_0047d0d9:
 
 // Function: key_down_action
 // Address: 0047d120
-/* public: virtual long __thiscall TTextPanel::key_down_action(long,short,int,int,int) */
-
 long __thiscall
 TTextPanel::key_down_action
           (TTextPanel *this,long param_1,short param_2,int param_3,int param_4,int param_5)
@@ -1147,9 +1076,6 @@ joined_r0x0047d15c:
 
 // Function: action
 // Address: 0047d200
-/* public: virtual long __thiscall TTextPanel::action(class TPanel *,long,unsigned long,unsigned
-   long) */
-
 long __thiscall
 TTextPanel::action(TTextPanel *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
 {
@@ -1184,9 +1110,6 @@ TTextPanel::action(TTextPanel *this,TPanel *param_1,long param_2,ulong param_3,u
 // Function: draw
 // Address: 0047d2c0
 // [HELPER] s_pnl_txt__draw: "pnl_txt::draw"
-/* WARNING: Variable defined which should be unmapped: old_font */
-/* public: virtual void __thiscall TTextPanel::draw(void) */
-
 void __thiscall TTextPanel::draw(TTextPanel *this)
 {
   void *pvVar1;
@@ -1243,9 +1166,6 @@ void __thiscall TTextPanel::draw(TTextPanel *this)
 // Address: 0047d3d0
 // [HELPER] s_pnl_txt__draw_background2: "pnl_txt::draw_background2"
 // [HELPER] s_pnl_txt__draw_background: "pnl_txt::draw_background"
-/* WARNING: Variable defined which should be unmapped: pic_cols */
-/* public: void __thiscall TTextPanel::draw_background(void) */
-
 void __thiscall TTextPanel::draw_background(TTextPanel *this)
 {
   int *piVar1;
@@ -1333,8 +1253,6 @@ void __thiscall TTextPanel::draw_background(TTextPanel *this)
 // Function: draw_border
 // Address: 0047d570
 // [HELPER] s_pnl_txt__draw_border: "pnl_txt::draw_border"
-/* public: void __thiscall TTextPanel::draw_border(void) */
-
 void __thiscall TTextPanel::draw_border(TTextPanel *this)
 {
   uchar uVar1;
@@ -1432,9 +1350,6 @@ switchD_0047d5a8_default:
 
 // Function: draw_line
 // Address: 0047d760
-/* WARNING: Variable defined which should be unmapped: text_len */
-/* public: void __thiscall TTextPanel::draw_line(void *,short,short,unsigned long,unsigned long) */
-
 void __thiscall
 TTextPanel::draw_line
           (TTextPanel *this,void *param_1,short param_2,short param_3,ulong param_4,ulong param_5)
@@ -1551,9 +1466,6 @@ LAB_0047d8dd:
 
 // Function: calc_line_pos
 // Address: 0047d9e0
-/* WARNING: Variable defined which should be unmapped: col_offset */
-/* public: void __thiscall TTextPanel::calc_line_pos(void *,short,short,struct tagRECT *,long *) */
-
 void __thiscall
 TTextPanel::calc_line_pos
           (TTextPanel *this,void *param_1,short param_2,short param_3,tagRECT *param_4,long *param_5
@@ -1688,8 +1600,6 @@ LAB_0047dbcf:
 
 // Function: mouse_left_down_action
 // Address: 0047dc10
-/* public: virtual long __thiscall TTextPanel::mouse_left_down_action(long,long,int,int) */
-
 long __thiscall
 TTextPanel::mouse_left_down_action
           (TTextPanel *this,long param_1,long param_2,int param_3,int param_4)
@@ -1704,8 +1614,6 @@ TTextPanel::mouse_left_down_action
 
 // Function: numberLines
 // Address: 0047dc30
-/* public: int __thiscall TTextPanel::numberLines(void)const  */
-
 int __thiscall TTextPanel::numberLines(TTextPanel *this)
 {
   return (int)this->num_lines;
@@ -1715,8 +1623,6 @@ int __thiscall TTextPanel::numberLines(TTextPanel *this)
 
 // Function: numberDrawLines
 // Address: 0047dc40
-/* public: int __thiscall TTextPanel::numberDrawLines(void)const  */
-
 int __thiscall TTextPanel::numberDrawLines(TTextPanel *this)
 {
   return (int)this->draw_lines;
@@ -1726,8 +1632,6 @@ int __thiscall TTextPanel::numberDrawLines(TTextPanel *this)
 
 // Function: currentLineNumber
 // Address: 0047dc50
-/* public: int __thiscall TTextPanel::currentLineNumber(void)const  */
-
 int __thiscall TTextPanel::currentLineNumber(TTextPanel *this)
 {
   return (int)this->cur_line;
@@ -1737,8 +1641,6 @@ int __thiscall TTextPanel::currentLineNumber(TTextPanel *this)
 
 // Function: setCurrentLineNumber
 // Address: 0047dc60
-/* public: void __thiscall TTextPanel::setCurrentLineNumber(int) */
-
 void __thiscall TTextPanel::setCurrentLineNumber(TTextPanel *this,int param_1)
 {
   set_line(this,param_1);
@@ -1749,8 +1651,6 @@ void __thiscall TTextPanel::setCurrentLineNumber(TTextPanel *this,int param_1)
 
 // Function: currentLine
 // Address: 0047dc70
-/* public: char * __thiscall TTextPanel::currentLine(void) */
-
 char * __thiscall TTextPanel::currentLine(TTextPanel *this)
 {
   char *pcVar1;
@@ -1763,8 +1663,6 @@ char * __thiscall TTextPanel::currentLine(TTextPanel *this)
 
 // Function: set_line
 // Address: 0047dc80
-/* public: void __thiscall TTextPanel::set_line(long) */
-
 void __thiscall TTextPanel::set_line(TTextPanel *this,long param_1)
 {
   this->cur_line = (short)param_1;
@@ -1776,8 +1674,6 @@ void __thiscall TTextPanel::set_line(TTextPanel *this,long param_1)
 
 // Function: set_line_by_id
 // Address: 0047dca0
-/* public: void __thiscall TTextPanel::set_line_by_id(long) */
-
 void __thiscall TTextPanel::set_line_by_id(TTextPanel *this,long param_1)
 {
   TextNode *pTVar1;
@@ -1802,8 +1698,6 @@ void __thiscall TTextPanel::set_line_by_id(TTextPanel *this,long param_1)
 
 // Function: append_line
 // Address: 0047dcd0
-/* public: int __thiscall TTextPanel::append_line(char *,long) */
-
 int __thiscall TTextPanel::append_line(TTextPanel *this,char *param_1,long param_2)
 {
   int iVar1;
@@ -1816,8 +1710,6 @@ int __thiscall TTextPanel::append_line(TTextPanel *this,char *param_1,long param
 
 // Function: append_line
 // Address: 0047dcf0
-/* public: int __thiscall TTextPanel::append_line(char *,char *,long) */
-
 int __thiscall TTextPanel::append_line(TTextPanel *this,char *param_1,char *param_2,long param_3)
 {
   int iVar1;
@@ -1830,8 +1722,6 @@ int __thiscall TTextPanel::append_line(TTextPanel *this,char *param_1,char *para
 
 // Function: append_line
 // Address: 0047dd10
-/* public: int __thiscall TTextPanel::append_line(long,long) */
-
 int __thiscall TTextPanel::append_line(TTextPanel *this,long param_1,long param_2)
 {
   int iVar1;
@@ -1844,8 +1734,6 @@ int __thiscall TTextPanel::append_line(TTextPanel *this,long param_1,long param_
 
 // Function: append_line
 // Address: 0047dd30
-/* public: int __thiscall TTextPanel::append_line(long,long,long) */
-
 int __thiscall TTextPanel::append_line(TTextPanel *this,long param_1,long param_2,long param_3)
 {
   int iVar1;
@@ -1858,8 +1746,6 @@ int __thiscall TTextPanel::append_line(TTextPanel *this,long param_1,long param_
 
 // Function: insert_line
 // Address: 0047dd50
-/* public: int __thiscall TTextPanel::insert_line(long,char *,long) */
-
 int __thiscall TTextPanel::insert_line(TTextPanel *this,long param_1,char *param_2,long param_3)
 {
   int iVar1;
@@ -1872,8 +1758,6 @@ int __thiscall TTextPanel::insert_line(TTextPanel *this,long param_1,char *param
 
 // Function: insert_line
 // Address: 0047dd70
-/* public: int __thiscall TTextPanel::insert_line(long,char *,char *,long) */
-
 int __thiscall
 TTextPanel::insert_line(TTextPanel *this,long param_1,char *param_2,char *param_3,long param_4)
 {
@@ -2051,9 +1935,6 @@ LAB_0047df25:
 
 // Function: insert_line
 // Address: 0047df90
-/* WARNING: Variable defined which should be unmapped: str */
-/* public: int __thiscall TTextPanel::insert_line(long,long,long) */
-
 int __thiscall TTextPanel::insert_line(TTextPanel *this,long param_1,long param_2,long param_3)
 {
   int iVar1;
@@ -2068,9 +1949,6 @@ int __thiscall TTextPanel::insert_line(TTextPanel *this,long param_1,long param_
 
 // Function: insert_line
 // Address: 0047dfe0
-/* WARNING: Variable defined which should be unmapped: str2 */
-/* public: int __thiscall TTextPanel::insert_line(long,long,long,long) */
-
 int __thiscall
 TTextPanel::insert_line(TTextPanel *this,long param_1,long param_2,long param_3,long param_4)
 {
@@ -2088,8 +1966,6 @@ TTextPanel::insert_line(TTextPanel *this,long param_1,long param_2,long param_3,
 
 // Function: change_line
 // Address: 0047e050
-/* public: int __thiscall TTextPanel::change_line(long,char *,char *,long) */
-
 int __thiscall
 TTextPanel::change_line(TTextPanel *this,long param_1,char *param_2,char *param_3,long param_4)
 {
@@ -2112,8 +1988,6 @@ TTextPanel::change_line(TTextPanel *this,long param_1,char *param_2,char *param_
 
 // Function: change_line
 // Address: 0047e0b0
-/* public: int __thiscall TTextPanel::change_line(long,long,long,long) */
-
 int __thiscall
 TTextPanel::change_line(TTextPanel *this,long param_1,long param_2,long param_3,long param_4)
 {
@@ -2136,8 +2010,6 @@ TTextPanel::change_line(TTextPanel *this,long param_1,long param_2,long param_3,
 
 // Function: delete_line
 // Address: 0047e110
-/* public: int __thiscall TTextPanel::delete_line(long) */
-
 int __thiscall TTextPanel::delete_line(TTextPanel *this,long param_1)
 {
   short sVar1;
@@ -2186,8 +2058,6 @@ int __thiscall TTextPanel::delete_line(TTextPanel *this,long param_1)
 
 // Function: get_line
 // Address: 0047e1e0
-/* public: long __thiscall TTextPanel::get_line(void) */
-
 long __thiscall TTextPanel::get_line(TTextPanel *this)
 {
   if (this->num_lines == 0) {
@@ -2200,8 +2070,6 @@ long __thiscall TTextPanel::get_line(TTextPanel *this)
 
 // Function: get_line
 // Address: 0047e200
-/* public: long __thiscall TTextPanel::get_line(long) */
-
 long __thiscall TTextPanel::get_line(TTextPanel *this,long param_1)
 {
   TextNode *pTVar1;
@@ -2224,8 +2092,6 @@ long __thiscall TTextPanel::get_line(TTextPanel *this,long param_1)
 
 // Function: get_line
 // Address: 0047e230
-/* public: long __thiscall TTextPanel::get_line(char *) */
-
 long __thiscall TTextPanel::get_line(TTextPanel *this,char *param_1)
 {
   byte bVar1;
@@ -2273,8 +2139,6 @@ LAB_0047e271:
 
 // Function: get_text
 // Address: 0047e290
-/* public: char * __thiscall TTextPanel::get_text(void) */
-
 char * __thiscall TTextPanel::get_text(TTextPanel *this)
 {
   char *pcVar1;
@@ -2287,8 +2151,6 @@ char * __thiscall TTextPanel::get_text(TTextPanel *this)
 
 // Function: get_text
 // Address: 0047e2a0
-/* public: char * __thiscall TTextPanel::get_text(long) */
-
 char * __thiscall TTextPanel::get_text(TTextPanel *this,long param_1)
 {
   TextNode *pTVar1;
@@ -2315,8 +2177,6 @@ char * __thiscall TTextPanel::get_text(TTextPanel *this,long param_1)
 
 // Function: get_text2
 // Address: 0047e2e0
-/* public: char * __thiscall TTextPanel::get_text2(void) */
-
 char * __thiscall TTextPanel::get_text2(TTextPanel *this)
 {
   char *pcVar1;
@@ -2329,8 +2189,6 @@ char * __thiscall TTextPanel::get_text2(TTextPanel *this)
 
 // Function: get_text2
 // Address: 0047e2f0
-/* public: char * __thiscall TTextPanel::get_text2(long) */
-
 char * __thiscall TTextPanel::get_text2(TTextPanel *this,long param_1)
 {
   TextNode *pTVar1;
@@ -2357,8 +2215,6 @@ char * __thiscall TTextPanel::get_text2(TTextPanel *this,long param_1)
 
 // Function: get_id
 // Address: 0047e330
-/* public: long __thiscall TTextPanel::get_id(void) */
-
 long __thiscall TTextPanel::get_id(TTextPanel *this)
 {
   long lVar1;
@@ -2371,8 +2227,6 @@ long __thiscall TTextPanel::get_id(TTextPanel *this)
 
 // Function: get_id
 // Address: 0047e340
-/* public: long __thiscall TTextPanel::get_id(long) */
-
 long __thiscall TTextPanel::get_id(TTextPanel *this,long param_1)
 {
   TextNode *pTVar1;
@@ -2397,8 +2251,6 @@ long __thiscall TTextPanel::get_id(TTextPanel *this,long param_1)
 
 // Function: empty_list
 // Address: 0047e370
-/* public: void __thiscall TTextPanel::empty_list(void) */
-
 void __thiscall TTextPanel::empty_list(TTextPanel *this)
 {
   TextNode *pTVar1;
@@ -2429,8 +2281,6 @@ void __thiscall TTextPanel::empty_list(TTextPanel *this)
 
 // Function: free_text
 // Address: 0047e380
-/* public: void __thiscall TTextPanel::free_text(void) */
-
 void __thiscall TTextPanel::free_text(TTextPanel *this)
 {
   TextNode *pTVar1;
@@ -2461,8 +2311,6 @@ void __thiscall TTextPanel::free_text(TTextPanel *this)
 
 // Function: set_second_column_pos
 // Address: 0047e3f0
-/* public: void __thiscall TTextPanel::set_second_column_pos(long) */
-
 void __thiscall TTextPanel::set_second_column_pos(TTextPanel *this,long param_1)
 {
   this->second_column_pos = param_1;
@@ -2475,8 +2323,6 @@ void __thiscall TTextPanel::set_second_column_pos(TTextPanel *this,long param_1)
 // Function: get_text_rect
 // Address: 0047e410
 // [HELPER] s_pnl_txt__get_text_rect: "pnl_txt::get_text_rect"
-/* public: int __thiscall TTextPanel::get_text_rect(struct tagRECT *) */
-
 int __thiscall TTextPanel::get_text_rect(TTextPanel *this,tagRECT *param_1)
 {
   void *pvVar1;

@@ -169,8 +169,6 @@
 
 // Function: can_attack
 // Address: 00405d00
-/* public: virtual unsigned char __thiscall RGE_Static_Object::can_attack(void) */
-
 uchar __thiscall RGE_Static_Object::can_attack(RGE_Static_Object *this)
 {
   return '\0';
@@ -180,8 +178,6 @@ uchar __thiscall RGE_Static_Object::can_attack(RGE_Static_Object *this)
 
 // Function: canRepair
 // Address: 00405d10
-/* public: virtual int __thiscall RGE_Static_Object::canRepair(void) */
-
 int __thiscall RGE_Static_Object::canRepair(RGE_Static_Object *this)
 {
   return 0;
@@ -191,8 +187,6 @@ int __thiscall RGE_Static_Object::canRepair(RGE_Static_Object *this)
 
 // Function: inAttackRange
 // Address: 00405d20
-/* public: virtual int __thiscall RGE_Static_Object::inAttackRange(class RGE_Static_Object *) */
-
 int __thiscall RGE_Static_Object::inAttackRange(RGE_Static_Object *this,RGE_Static_Object *param_1)
 {
   return 0;
@@ -202,10 +196,6 @@ int __thiscall RGE_Static_Object::inAttackRange(RGE_Static_Object *this,RGE_Stat
 
 // Function: calc_attack_modifier
 // Address: 00405d30
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual float __thiscall RGE_Static_Object::calc_attack_modifier(class RGE_Static_Object
-   *) */
-
 float __thiscall
 RGE_Static_Object::calc_attack_modifier(RGE_Static_Object *this,RGE_Static_Object *param_1)
 {
@@ -216,9 +206,6 @@ RGE_Static_Object::calc_attack_modifier(RGE_Static_Object *this,RGE_Static_Objec
 
 // Function: rateOfFire
 // Address: 00405d40
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual float __thiscall RGE_Static_Object::rateOfFire(void) */
-
 float __thiscall RGE_Static_Object::rateOfFire(RGE_Static_Object *this)
 {
   return _DAT_0056e640;
@@ -228,9 +215,6 @@ float __thiscall RGE_Static_Object::rateOfFire(RGE_Static_Object *this)
 
 // Function: damageCapability
 // Address: 00405d50
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual float __thiscall RGE_Static_Object::damageCapability(void) */
-
 float __thiscall RGE_Static_Object::damageCapability(RGE_Static_Object *this)
 {
   return _DAT_0056e640;
@@ -240,10 +224,6 @@ float __thiscall RGE_Static_Object::damageCapability(RGE_Static_Object *this)
 
 // Function: damageCapability
 // Address: 00405d60
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual float __thiscall RGE_Static_Object::damageCapability(class RGE_Static_Object *)
-    */
-
 float __thiscall
 RGE_Static_Object::damageCapability(RGE_Static_Object *this,RGE_Static_Object *param_1)
 {
@@ -254,9 +234,6 @@ RGE_Static_Object::damageCapability(RGE_Static_Object *this,RGE_Static_Object *p
 
 // Function: weaponRange
 // Address: 00405d70
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual float __thiscall RGE_Static_Object::weaponRange(void) */
-
 float __thiscall RGE_Static_Object::weaponRange(RGE_Static_Object *this)
 {
   return _DAT_0056e640;
@@ -266,9 +243,6 @@ float __thiscall RGE_Static_Object::weaponRange(RGE_Static_Object *this)
 
 // Function: minimumWeaponRange
 // Address: 00405d80
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual float __thiscall RGE_Static_Object::minimumWeaponRange(void) */
-
 float __thiscall RGE_Static_Object::minimumWeaponRange(RGE_Static_Object *this)
 {
   return _DAT_0056e640;
@@ -278,8 +252,6 @@ float __thiscall RGE_Static_Object::minimumWeaponRange(RGE_Static_Object *this)
 
 // Function: currentTargetID
 // Address: 00405d90
-/* public: virtual int __thiscall RGE_Static_Object::currentTargetID(void)const  */
-
 int __thiscall RGE_Static_Object::currentTargetID(RGE_Static_Object *this)
 {
   return -1;
@@ -289,9 +261,6 @@ int __thiscall RGE_Static_Object::currentTargetID(RGE_Static_Object *this)
 
 // Function: currentTargetX
 // Address: 00405da0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual float __thiscall RGE_Static_Object::currentTargetX(void)const  */
-
 float __thiscall RGE_Static_Object::currentTargetX(RGE_Static_Object *this)
 {
   return _DAT_0056e644;
@@ -301,9 +270,6 @@ float __thiscall RGE_Static_Object::currentTargetX(RGE_Static_Object *this)
 
 // Function: currentTargetY
 // Address: 00405db0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual float __thiscall RGE_Static_Object::currentTargetY(void)const  */
-
 float __thiscall RGE_Static_Object::currentTargetY(RGE_Static_Object *this)
 {
   return _DAT_0056e644;
@@ -313,9 +279,6 @@ float __thiscall RGE_Static_Object::currentTargetY(RGE_Static_Object *this)
 
 // Function: currentTargetZ
 // Address: 00405dc0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual float __thiscall RGE_Static_Object::currentTargetZ(void)const  */
-
 float __thiscall RGE_Static_Object::currentTargetZ(RGE_Static_Object *this)
 {
   return _DAT_0056e644;
@@ -325,9 +288,6 @@ float __thiscall RGE_Static_Object::currentTargetZ(RGE_Static_Object *this)
 
 // Function: keepGatheringWhenObjectIsOut
 // Address: 00405dd0
-/* public: virtual unsigned char __thiscall
-   RGE_Static_Object::keepGatheringWhenObjectIsOut(int)const  */
-
 uchar __thiscall
 RGE_Static_Object::keepGatheringWhenObjectIsOut(RGE_Static_Object *this,int param_1)
 {
@@ -338,8 +298,6 @@ RGE_Static_Object::keepGatheringWhenObjectIsOut(RGE_Static_Object *this,int para
 
 // Function: produceWhenKilledBy
 // Address: 00405de0
-/* public: virtual unsigned char __thiscall RGE_Static_Object::produceWhenKilledBy(int)const  */
-
 uchar __thiscall RGE_Static_Object::produceWhenKilledBy(RGE_Static_Object *this,int param_1)
 {
   return '\x01';
@@ -349,8 +307,6 @@ uchar __thiscall RGE_Static_Object::produceWhenKilledBy(RGE_Static_Object *this,
 
 // Function: useSameZoneDropsite
 // Address: 00405df0
-/* public: virtual unsigned char __thiscall RGE_Static_Object::useSameZoneDropsite(void)const  */
-
 uchar __thiscall RGE_Static_Object::useSameZoneDropsite(RGE_Static_Object *this)
 {
   return '\x01';
@@ -360,8 +316,6 @@ uchar __thiscall RGE_Static_Object::useSameZoneDropsite(RGE_Static_Object *this)
 
 // Function: notify
 // Address: 00405e00
-/* public: virtual void __thiscall RGE_Static_Object::notify(int,int,int,long,long,long) */
-
 void __thiscall
 RGE_Static_Object::notify
           (RGE_Static_Object *this,int param_1,int param_2,int param_3,long param_4,long param_5,
@@ -374,8 +328,6 @@ RGE_Static_Object::notify
 
 // Function: attack
 // Address: 00405e10
-/* public: virtual int __thiscall RGE_Static_Object::attack(int,int) */
-
 int __thiscall RGE_Static_Object::attack(RGE_Static_Object *this,int param_1,int param_2)
 {
   return 0;
@@ -385,8 +337,6 @@ int __thiscall RGE_Static_Object::attack(RGE_Static_Object *this,int param_1,int
 
 // Function: attack
 // Address: 00405e20
-/* public: virtual int __thiscall RGE_Static_Object::attack(float,float,float,int) */
-
 int __thiscall
 RGE_Static_Object::attack
           (RGE_Static_Object *this,float param_1,float param_2,float param_3,int param_4)
@@ -398,8 +348,6 @@ RGE_Static_Object::attack
 
 // Function: moveTo
 // Address: 00405e30
-/* public: virtual int __thiscall RGE_Static_Object::moveTo(int,int) */
-
 int __thiscall RGE_Static_Object::moveTo(RGE_Static_Object *this,int param_1,int param_2)
 {
   return 0;
@@ -409,8 +357,6 @@ int __thiscall RGE_Static_Object::moveTo(RGE_Static_Object *this,int param_1,int
 
 // Function: moveTo
 // Address: 00405e40
-/* public: virtual int __thiscall RGE_Static_Object::moveTo(int,float,int) */
-
 int __thiscall
 RGE_Static_Object::moveTo(RGE_Static_Object *this,int param_1,float param_2,int param_3)
 {
@@ -421,8 +367,6 @@ RGE_Static_Object::moveTo(RGE_Static_Object *this,int param_1,float param_2,int 
 
 // Function: moveTo
 // Address: 00405e50
-/* public: virtual int __thiscall RGE_Static_Object::moveTo(float,float,float,float,int) */
-
 int __thiscall
 RGE_Static_Object::moveTo
           (RGE_Static_Object *this,float param_1,float param_2,float param_3,float param_4,
@@ -435,8 +379,6 @@ RGE_Static_Object::moveTo
 
 // Function: moveAwayFrom
 // Address: 00405e60
-/* public: virtual int __thiscall RGE_Static_Object::moveAwayFrom(int,int) */
-
 int __thiscall RGE_Static_Object::moveAwayFrom(RGE_Static_Object *this,int param_1,int param_2)
 {
   return 0;
@@ -446,8 +388,6 @@ int __thiscall RGE_Static_Object::moveAwayFrom(RGE_Static_Object *this,int param
 
 // Function: hunt
 // Address: 00405e70
-/* public: virtual int __thiscall RGE_Static_Object::hunt(int,int) */
-
 int __thiscall RGE_Static_Object::hunt(RGE_Static_Object *this,int param_1,int param_2)
 {
   return 0;
@@ -457,8 +397,6 @@ int __thiscall RGE_Static_Object::hunt(RGE_Static_Object *this,int param_1,int p
 
 // Function: gather
 // Address: 00405e80
-/* public: virtual int __thiscall RGE_Static_Object::gather(int,int) */
-
 int __thiscall RGE_Static_Object::gather(RGE_Static_Object *this,int param_1,int param_2)
 {
   return 0;
@@ -468,8 +406,6 @@ int __thiscall RGE_Static_Object::gather(RGE_Static_Object *this,int param_1,int
 
 // Function: convert
 // Address: 00405e90
-/* public: virtual int __thiscall RGE_Static_Object::convert(int,int) */
-
 int __thiscall RGE_Static_Object::convert(RGE_Static_Object *this,int param_1,int param_2)
 {
   return 0;
@@ -479,8 +415,6 @@ int __thiscall RGE_Static_Object::convert(RGE_Static_Object *this,int param_1,in
 
 // Function: heal
 // Address: 00405ea0
-/* public: virtual int __thiscall RGE_Static_Object::heal(int,int) */
-
 int __thiscall RGE_Static_Object::heal(RGE_Static_Object *this,int param_1,int param_2)
 {
   return 0;
@@ -490,8 +424,6 @@ int __thiscall RGE_Static_Object::heal(RGE_Static_Object *this,int param_1,int p
 
 // Function: repair
 // Address: 00405eb0
-/* public: virtual int __thiscall RGE_Static_Object::repair(int,int) */
-
 int __thiscall RGE_Static_Object::repair(RGE_Static_Object *this,int param_1,int param_2)
 {
   return 0;
@@ -501,8 +433,6 @@ int __thiscall RGE_Static_Object::repair(RGE_Static_Object *this,int param_1,int
 
 // Function: build
 // Address: 00405ec0
-/* public: virtual int __thiscall RGE_Static_Object::build(int,int) */
-
 int __thiscall RGE_Static_Object::build(RGE_Static_Object *this,int param_1,int param_2)
 {
   return 0;
@@ -512,8 +442,6 @@ int __thiscall RGE_Static_Object::build(RGE_Static_Object *this,int param_1,int 
 
 // Function: trade
 // Address: 00405ed0
-/* public: virtual int __thiscall RGE_Static_Object::trade(int,int) */
-
 int __thiscall RGE_Static_Object::trade(RGE_Static_Object *this,int param_1,int param_2)
 {
   return 0;
@@ -523,8 +451,6 @@ int __thiscall RGE_Static_Object::trade(RGE_Static_Object *this,int param_1,int 
 
 // Function: explore
 // Address: 00405ee0
-/* public: virtual int __thiscall RGE_Static_Object::explore(int,int,int) */
-
 int __thiscall
 RGE_Static_Object::explore(RGE_Static_Object *this,int param_1,int param_2,int param_3)
 {
@@ -535,8 +461,6 @@ RGE_Static_Object::explore(RGE_Static_Object *this,int param_1,int param_2,int p
 
 // Function: enter
 // Address: 00405ef0
-/* public: virtual int __thiscall RGE_Static_Object::enter(int,int) */
-
 int __thiscall RGE_Static_Object::enter(RGE_Static_Object *this,int param_1,int param_2)
 {
   return 0;
@@ -546,8 +470,6 @@ int __thiscall RGE_Static_Object::enter(RGE_Static_Object *this,int param_1,int 
 
 // Function: unload
 // Address: 00405f00
-/* public: virtual int __thiscall RGE_Static_Object::unload(int,float,float,float) */
-
 int __thiscall
 RGE_Static_Object::unload
           (RGE_Static_Object *this,int param_1,float param_2,float param_3,float param_4)
@@ -559,8 +481,6 @@ RGE_Static_Object::unload
 
 // Function: transport
 // Address: 00405f10
-/* public: virtual int __thiscall RGE_Static_Object::transport(float,float,float,int) */
-
 int __thiscall
 RGE_Static_Object::transport
           (RGE_Static_Object *this,float param_1,float param_2,float param_3,int param_4)
@@ -572,8 +492,6 @@ RGE_Static_Object::transport
 
 // Function: stopAction
 // Address: 00405f20
-/* public: virtual int __thiscall RGE_Static_Object::stopAction(void) */
-
 int __thiscall RGE_Static_Object::stopAction(RGE_Static_Object *this)
 {
   return 0;
@@ -583,8 +501,6 @@ int __thiscall RGE_Static_Object::stopAction(RGE_Static_Object *this)
 
 // Function: pause
 // Address: 00405f30
-/* public: virtual int __thiscall RGE_Static_Object::pause(void) */
-
 int __thiscall RGE_Static_Object::pause(RGE_Static_Object *this)
 {
   return 0;
@@ -594,9 +510,6 @@ int __thiscall RGE_Static_Object::pause(RGE_Static_Object *this)
 
 // Function: do_command
 // Address: 0041a450
-/* public: virtual void __thiscall RGE_Static_Object::do_command(class RGE_Static_Object
-   *,float,float,float) */
-
 void __thiscall
 RGE_Static_Object::do_command
           (RGE_Static_Object *this,RGE_Static_Object *param_1,float param_2,float param_3,
@@ -609,9 +522,6 @@ RGE_Static_Object::do_command
 
 // Function: move_to
 // Address: 0041a460
-/* public: virtual void __thiscall RGE_Static_Object::move_to(class RGE_Static_Object
-   *,float,float,float) */
-
 void __thiscall
 RGE_Static_Object::move_to
           (RGE_Static_Object *this,RGE_Static_Object *param_1,float param_2,float param_3,
@@ -624,9 +534,6 @@ RGE_Static_Object::move_to
 
 // Function: work
 // Address: 0041a470
-/* public: virtual void __thiscall RGE_Static_Object::work(class RGE_Static_Object
-   *,float,float,float) */
-
 void __thiscall
 RGE_Static_Object::work
           (RGE_Static_Object *this,RGE_Static_Object *param_1,float param_2,float param_3,
@@ -639,8 +546,6 @@ RGE_Static_Object::work
 
 // Function: stop
 // Address: 0041a480
-/* public: virtual void __thiscall RGE_Static_Object::stop(void) */
-
 void __thiscall RGE_Static_Object::stop(RGE_Static_Object *this)
 {
   return;
@@ -650,8 +555,6 @@ void __thiscall RGE_Static_Object::stop(RGE_Static_Object *this)
 
 // Function: set_attack
 // Address: 0041a490
-/* public: virtual void __thiscall RGE_Static_Object::set_attack(class RGE_Static_Object *) */
-
 void __thiscall RGE_Static_Object::set_attack(RGE_Static_Object *this,RGE_Static_Object *param_1)
 {
   return;
@@ -661,8 +564,6 @@ void __thiscall RGE_Static_Object::set_attack(RGE_Static_Object *this,RGE_Static
 
 // Function: play_command_sound
 // Address: 0041a4a0
-/* public: virtual void __thiscall RGE_Static_Object::play_command_sound(void) */
-
 void __thiscall RGE_Static_Object::play_command_sound(RGE_Static_Object *this)
 {
   return;
@@ -672,8 +573,6 @@ void __thiscall RGE_Static_Object::play_command_sound(RGE_Static_Object *this)
 
 // Function: play_move_sound
 // Address: 0041a4b0
-/* public: virtual void __thiscall RGE_Static_Object::play_move_sound(void) */
-
 void __thiscall RGE_Static_Object::play_move_sound(RGE_Static_Object *this)
 {
   return;
@@ -683,9 +582,6 @@ void __thiscall RGE_Static_Object::play_move_sound(RGE_Static_Object *this)
 
 // Function: get_command_master
 // Address: 0041a4c0
-/* public: virtual class RGE_Master_Static_Object * __thiscall
-   RGE_Static_Object::get_command_master(class RGE_Static_Object *,float,float,float) */
-
 RGE_Master_Static_Object * __thiscall
 RGE_Static_Object::get_command_master
           (RGE_Static_Object *this,RGE_Static_Object *param_1,float param_2,float param_3,
@@ -698,8 +594,6 @@ RGE_Static_Object::get_command_master
 
 // Function: get_target_obj
 // Address: 0041a4d0
-/* public: virtual class RGE_Static_Object * __thiscall RGE_Static_Object::get_target_obj(void) */
-
 RGE_Static_Object * __thiscall RGE_Static_Object::get_target_obj(RGE_Static_Object *this)
 {
   return (RGE_Static_Object *)0x0;
@@ -709,9 +603,6 @@ RGE_Static_Object * __thiscall RGE_Static_Object::get_target_obj(RGE_Static_Obje
 
 // Function: getAngle
 // Address: 0041a4e0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual float __thiscall RGE_Static_Object::getAngle(void)const  */
-
 float __thiscall RGE_Static_Object::getAngle(RGE_Static_Object *this)
 {
   return _DAT_0056ee00;
@@ -721,9 +612,6 @@ float __thiscall RGE_Static_Object::getAngle(RGE_Static_Object *this)
 
 // Function: maximumSpeed
 // Address: 0041a4f0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual float __thiscall RGE_Static_Object::maximumSpeed(void) */
-
 float __thiscall RGE_Static_Object::maximumSpeed(RGE_Static_Object *this)
 {
   return _DAT_0056ee00;
@@ -733,8 +621,6 @@ float __thiscall RGE_Static_Object::maximumSpeed(RGE_Static_Object *this)
 
 // Function: passableTile
 // Address: 0041a500
-/* public: virtual int __thiscall RGE_Static_Object::passableTile(float,float,int) */
-
 int __thiscall
 RGE_Static_Object::passableTile(RGE_Static_Object *this,float param_1,float param_2,int param_3)
 {
@@ -745,8 +631,6 @@ RGE_Static_Object::passableTile(RGE_Static_Object *this,float param_1,float para
 
 // Function: facetToNextWaypoint
 // Address: 0041a510
-/* public: virtual unsigned char __thiscall RGE_Static_Object::facetToNextWaypoint(void)const  */
-
 uchar __thiscall RGE_Static_Object::facetToNextWaypoint(RGE_Static_Object *this)
 {
   return 0xff;
@@ -756,8 +640,6 @@ uchar __thiscall RGE_Static_Object::facetToNextWaypoint(RGE_Static_Object *this)
 
 // Function: setWaitingToMove
 // Address: 0041a520
-/* public: virtual void __thiscall RGE_Static_Object::setWaitingToMove(unsigned char) */
-
 void __thiscall RGE_Static_Object::setWaitingToMove(RGE_Static_Object *this,uchar param_1)
 {
   return;
@@ -767,8 +649,6 @@ void __thiscall RGE_Static_Object::setWaitingToMove(RGE_Static_Object *this,ucha
 
 // Function: waitingToMove
 // Address: 0041a530
-/* public: virtual unsigned char __thiscall RGE_Static_Object::waitingToMove(void)const  */
-
 uchar __thiscall RGE_Static_Object::waitingToMove(RGE_Static_Object *this)
 {
   return '\0';
@@ -778,8 +658,6 @@ uchar __thiscall RGE_Static_Object::waitingToMove(RGE_Static_Object *this)
 
 // Function: actionState
 // Address: 0041a540
-/* public: virtual unsigned char __thiscall RGE_Static_Object::actionState(void)const  */
-
 uchar __thiscall RGE_Static_Object::actionState(RGE_Static_Object *this)
 {
   return '\0';
@@ -789,9 +667,6 @@ uchar __thiscall RGE_Static_Object::actionState(RGE_Static_Object *this)
 
 // Function: canPath
 // Address: 0041a550
-/* public: virtual int __thiscall RGE_Static_Object::canPath(struct XYZPoint,float,int,float
-   *,int,int,int) */
-
 int __thiscall
 RGE_Static_Object::canPath
           (RGE_Static_Object *this,XYZPoint param_1,float param_2,int param_3,float *param_4,
@@ -804,8 +679,6 @@ RGE_Static_Object::canPath
 
 // Function: canPath
 // Address: 0041a560
-/* public: virtual int __thiscall RGE_Static_Object::canPath(int,float,float *,int,int,int) */
-
 int __thiscall
 RGE_Static_Object::canPath
           (RGE_Static_Object *this,int param_1,float param_2,float *param_3,int param_4,int param_5,
@@ -818,9 +691,6 @@ RGE_Static_Object::canPath
 
 // Function: canBidirectionPath
 // Address: 0041a570
-/* public: virtual int __thiscall RGE_Static_Object::canBidirectionPath(int,int,float,float
-   *,int,int,int) */
-
 int __thiscall
 RGE_Static_Object::canBidirectionPath
           (RGE_Static_Object *this,int param_1,int param_2,float param_3,float *param_4,int param_5,
@@ -833,9 +703,6 @@ RGE_Static_Object::canBidirectionPath
 
 // Function: canPathWithObstructions
 // Address: 0041a580
-/* public: virtual int __thiscall RGE_Static_Object::canPathWithObstructions(int,float,float
-   *,int,int,int,class ManagedArray<int> &) */
-
 int __thiscall
 RGE_Static_Object::canPathWithObstructions
           (RGE_Static_Object *this,int param_1,float param_2,float *param_3,int param_4,int param_5,
@@ -848,9 +715,6 @@ RGE_Static_Object::canPathWithObstructions
 
 // Function: canPathWithAdditionalPassability
 // Address: 0041a590
-/* public: virtual int __thiscall RGE_Static_Object::canPathWithAdditionalPassability(struct
-   XYZPoint,float,int,float *,int,int,int,int,int) */
-
 int __thiscall
 RGE_Static_Object::canPathWithAdditionalPassability
           (RGE_Static_Object *this,XYZPoint param_1,float param_2,int param_3,float *param_4,
@@ -863,9 +727,6 @@ RGE_Static_Object::canPathWithAdditionalPassability
 
 // Function: findFirstTerrainAlongExceptionPath
 // Address: 0041a5a0
-/* public: virtual int __thiscall RGE_Static_Object::findFirstTerrainAlongExceptionPath(int,float
-   *,float *) */
-
 int __thiscall
 RGE_Static_Object::findFirstTerrainAlongExceptionPath
           (RGE_Static_Object *this,int param_1,float *param_2,float *param_3)
@@ -877,9 +738,6 @@ RGE_Static_Object::findFirstTerrainAlongExceptionPath
 
 // Function: canLinePath
 // Address: 0041a5b0
-/* public: virtual int __thiscall RGE_Static_Object::canLinePath(struct XYPoint const &,struct
-   XYPoint const &,float,struct XYPoint &,int) */
-
 int __thiscall
 RGE_Static_Object::canLinePath
           (RGE_Static_Object *this,XYPoint *param_1,XYPoint *param_2,float param_3,XYPoint *param_4,
@@ -892,8 +750,6 @@ RGE_Static_Object::canLinePath
 
 // Function: canLinePath
 // Address: 0041a5c0
-/* public: virtual int __thiscall RGE_Static_Object::canLinePath(int,int,int,int,float,int) */
-
 int __thiscall
 RGE_Static_Object::canLinePath
           (RGE_Static_Object *this,int param_1,int param_2,int param_3,int param_4,float param_5,
@@ -906,9 +762,6 @@ RGE_Static_Object::canLinePath
 
 // Function: firstTileAlongLine
 // Address: 0041a5d0
-/* public: virtual int __thiscall RGE_Static_Object::firstTileAlongLine(struct XYPoint const
-   &,struct XYPoint const &,struct XYPoint &,int,int,int) */
-
 int __thiscall
 RGE_Static_Object::firstTileAlongLine
           (RGE_Static_Object *this,XYPoint *param_1,XYPoint *param_2,XYPoint *param_3,int param_4,
@@ -921,8 +774,6 @@ RGE_Static_Object::firstTileAlongLine
 
 // Function: userDefinedWaypoint
 // Address: 0041a5e0
-/* public: virtual struct XYZBYTEPoint * __thiscall RGE_Static_Object::userDefinedWaypoint(int) */
-
 XYZBYTEPoint * __thiscall
 RGE_Static_Object::userDefinedWaypoint(RGE_Static_Object *this,int param_1)
 {
@@ -933,9 +784,6 @@ RGE_Static_Object::userDefinedWaypoint(RGE_Static_Object *this,int param_1)
 
 // Function: addUserDefinedWaypoint
 // Address: 0041a5f0
-/* public: virtual int __thiscall RGE_Static_Object::addUserDefinedWaypoint(struct XYZBYTEPoint
-   *,int) */
-
 int __thiscall
 RGE_Static_Object::addUserDefinedWaypoint(RGE_Static_Object *this,XYZBYTEPoint *param_1,int param_2)
 {
@@ -946,8 +794,6 @@ RGE_Static_Object::addUserDefinedWaypoint(RGE_Static_Object *this,XYZBYTEPoint *
 
 // Function: removeAllUserDefinedWaypoints
 // Address: 0041a600
-/* public: virtual void __thiscall RGE_Static_Object::removeAllUserDefinedWaypoints(int) */
-
 void __thiscall
 RGE_Static_Object::removeAllUserDefinedWaypoints(RGE_Static_Object *this,int param_1)
 {
@@ -958,8 +804,6 @@ RGE_Static_Object::removeAllUserDefinedWaypoints(RGE_Static_Object *this,int par
 
 // Function: removeUserDefinedWaypoint
 // Address: 0041a610
-/* public: virtual void __thiscall RGE_Static_Object::removeUserDefinedWaypoint(int) */
-
 void __thiscall RGE_Static_Object::removeUserDefinedWaypoint(RGE_Static_Object *this,int param_1)
 {
   return;
@@ -969,8 +813,6 @@ void __thiscall RGE_Static_Object::removeUserDefinedWaypoint(RGE_Static_Object *
 
 // Function: numberUserDefinedWaypoints
 // Address: 0041a620
-/* public: virtual int __thiscall RGE_Static_Object::numberUserDefinedWaypoints(void)const  */
-
 int __thiscall RGE_Static_Object::numberUserDefinedWaypoints(RGE_Static_Object *this)
 {
   return 0;
@@ -980,9 +822,6 @@ int __thiscall RGE_Static_Object::numberUserDefinedWaypoints(RGE_Static_Object *
 
 // Function: findAvoidancePath
 // Address: 0041a630
-/* public: virtual class Path * __thiscall RGE_Static_Object::findAvoidancePath(struct XYZPoint
-   &,float,int) */
-
 Path * __thiscall
 RGE_Static_Object::findAvoidancePath
           (RGE_Static_Object *this,XYZPoint *param_1,float param_2,int param_3)
@@ -994,9 +833,6 @@ RGE_Static_Object::findAvoidancePath
 
 // Function: RGE_Static_Object
 // Address: 004c1100
-/* public: __thiscall RGE_Static_Object::RGE_Static_Object(class RGE_Master_Static_Object *,class
-   RGE_Player *,float,float,float,int) */
-
 RGE_Static_Object * __thiscall
 RGE_Static_Object::RGE_Static_Object
           (RGE_Static_Object *this,RGE_Master_Static_Object *param_1,RGE_Player *param_2,
@@ -1041,9 +877,6 @@ RGE_Static_Object::RGE_Static_Object
 
 // Function: `scalar_deleting_destructor'
 // Address: 004c11c0
-/* public: virtual void * __thiscall RGE_Static_Object::`scalar deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 RGE_Static_Object::_scalar_deleting_destructor_(RGE_Static_Object *this,uint param_1)
 {
@@ -1058,8 +891,6 @@ RGE_Static_Object::_scalar_deleting_destructor_(RGE_Static_Object *this,uint par
 
 // Function: RGE_Static_Object
 // Address: 004c11e0
-/* public: __thiscall RGE_Static_Object::RGE_Static_Object(int,class RGE_Game_World *,int) */
-
 RGE_Static_Object * __thiscall
 RGE_Static_Object::RGE_Static_Object
           (RGE_Static_Object *this,int param_1,RGE_Game_World *param_2,int param_3)
@@ -1103,8 +934,6 @@ RGE_Static_Object::RGE_Static_Object
 
 // Function: ~RGE_Static_Object
 // Address: 004c1290
-/* public: virtual __thiscall RGE_Static_Object::~RGE_Static_Object(void) */
-
 void __thiscall RGE_Static_Object::~RGE_Static_Object(RGE_Static_Object *this)
 {
   RGE_Object_Node *pRVar1;
@@ -1198,9 +1027,6 @@ void __thiscall RGE_Static_Object::~RGE_Static_Object(RGE_Static_Object *this)
 // Function: recycle_in_to_game
 // Address: 004c1420
 // [HELPER] s_C__msdev_work_age1_x1_stat_obj_c: "C:\msdev\work\age1_x1\stat_obj.cpp"
-/* public: virtual void __thiscall RGE_Static_Object::recycle_in_to_game(class
-   RGE_Master_Static_Object *,class RGE_Player *,float,float,float) */
-
 void __thiscall
 RGE_Static_Object::recycle_in_to_game
           (RGE_Static_Object *this,RGE_Master_Static_Object *param_1,RGE_Player *param_2,
@@ -1269,8 +1095,6 @@ RGE_Static_Object::recycle_in_to_game
 
 // Function: recycle_out_of_game
 // Address: 004c1590
-/* public: virtual void __thiscall RGE_Static_Object::recycle_out_of_game(void) */
-
 void __thiscall RGE_Static_Object::recycle_out_of_game(RGE_Static_Object *this)
 {
   RGE_Object_Node *pRVar1;
@@ -1335,9 +1159,6 @@ void __thiscall RGE_Static_Object::recycle_out_of_game(RGE_Static_Object *this)
 // Function: setup
 // Address: 004c16b0
 // [HELPER] s_C__msdev_work_age1_x1_stat_obj_c: "C:\msdev\work\age1_x1\stat_obj.cpp"
-/* protected: virtual int __thiscall RGE_Static_Object::setup(class RGE_Master_Static_Object *,class
-   RGE_Player *,float,float,float) */
-
 int __thiscall
 RGE_Static_Object::setup
           (RGE_Static_Object *this,RGE_Master_Static_Object *param_1,RGE_Player *param_2,
@@ -1414,10 +1235,6 @@ RGE_Static_Object::setup
 
 // Function: setup
 // Address: 004c1840
-/* WARNING: Variable defined which should be unmapped: temp_float */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall RGE_Static_Object::setup(int,class RGE_Game_World *) */
-
 int __thiscall RGE_Static_Object::setup(RGE_Static_Object *this,int param_1,RGE_Game_World *param_2)
 {
   int iVar1;
@@ -1596,8 +1413,6 @@ LAB_004c1c56:
 
 // Function: getSpeed
 // Address: 004c1ce0
-/* public: virtual float __thiscall RGE_Static_Object::getSpeed(void)const  */
-
 float __thiscall RGE_Static_Object::getSpeed(RGE_Static_Object *this)
 {
   return DAT_00574718._8_4_;
@@ -1607,8 +1422,6 @@ float __thiscall RGE_Static_Object::getSpeed(RGE_Static_Object *this)
 
 // Function: change_unique_id
 // Address: 004c1cf0
-/* public: void __thiscall RGE_Static_Object::change_unique_id(void) */
-
 void __thiscall RGE_Static_Object::change_unique_id(RGE_Static_Object *this)
 {
   long lVar1;
@@ -1633,9 +1446,6 @@ void __thiscall RGE_Static_Object::change_unique_id(RGE_Static_Object *this)
 
 // Function: create_object_list
 // Address: 004c1d60
-/* protected: virtual class RGE_Object_List * __thiscall RGE_Static_Object::create_object_list(void)
-    */
-
 RGE_Object_List * __thiscall RGE_Static_Object::create_object_list(RGE_Static_Object *this)
 {
   RGE_Object_List *pRVar1;
@@ -1663,9 +1473,6 @@ RGE_Object_List * __thiscall RGE_Static_Object::create_object_list(RGE_Static_Ob
 
 // Function: create_sprite_list
 // Address: 004c1dc0
-/* protected: virtual class RGE_Active_Sprite_List * __thiscall
-   RGE_Static_Object::create_sprite_list(void) */
-
 RGE_Active_Sprite_List * __thiscall RGE_Static_Object::create_sprite_list(RGE_Static_Object *this)
 {
   RGE_Active_Sprite_List *pRVar1;
@@ -1693,8 +1500,6 @@ RGE_Active_Sprite_List * __thiscall RGE_Static_Object::create_sprite_list(RGE_St
 
 // Function: get_starting_attribute
 // Address: 004c1e20
-/* public: void __thiscall RGE_Static_Object::get_starting_attribute(void) */
-
 void __thiscall RGE_Static_Object::get_starting_attribute(RGE_Static_Object *this)
 {
   RGE_Master_Static_Object *pRVar1;
@@ -1727,8 +1532,6 @@ void __thiscall RGE_Static_Object::get_starting_attribute(RGE_Static_Object *thi
 
 // Function: give_attribute_to_owner
 // Address: 004c1e70
-/* public: void __thiscall RGE_Static_Object::give_attribute_to_owner(void) */
-
 void __thiscall RGE_Static_Object::give_attribute_to_owner(RGE_Static_Object *this)
 {
   short sVar1;
@@ -1758,8 +1561,6 @@ void __thiscall RGE_Static_Object::give_attribute_to_owner(RGE_Static_Object *th
 
 // Function: take_attribute_from_owner
 // Address: 004c1ed0
-/* public: void __thiscall RGE_Static_Object::take_attribute_from_owner(void) */
-
 void __thiscall RGE_Static_Object::take_attribute_from_owner(RGE_Static_Object *this)
 {
   short sVar1;
@@ -1770,7 +1571,6 @@ void __thiscall RGE_Static_Object::take_attribute_from_owner(RGE_Static_Object *
   
   iVar5 = 0;
   iVar3 = 0x6a;
-                    /* language.dll match for 0x70: "B" */
   iVar4 = 0x70;
   do {
     pRVar2 = this->master_obj;
@@ -1790,9 +1590,6 @@ void __thiscall RGE_Static_Object::take_attribute_from_owner(RGE_Static_Object *
 
 // Function: draw
 // Address: 004c1f30
-/* public: virtual void __thiscall RGE_Static_Object::draw(class TDrawArea *,short,short,class
-   RGE_Color_Table *) */
-
 void __thiscall
 RGE_Static_Object::draw
           (RGE_Static_Object *this,TDrawArea *param_1,short param_2,short param_3,
@@ -1821,7 +1618,6 @@ RGE_Static_Object::draw
               (this->facet,this->screen_x_offset + param_2,this->screen_y_offset + param_3,
                this->shadow_x_offset + param_2,param_3 + this->shadow_y_offset,param_4,param_1);
   }
-                    /* Symbol Ref: {@symbol sod_exit} */
   SDI_Object_ID = -1;
   return;
 }
@@ -1830,9 +1626,6 @@ RGE_Static_Object::draw
 
 // Function: shadow_draw
 // Address: 004c2030
-/* public: virtual void __thiscall RGE_Static_Object::shadow_draw(class TDrawArea
-   *,short,short,unsigned char) */
-
 void __thiscall
 RGE_Static_Object::shadow_draw
           (RGE_Static_Object *this,TDrawArea *param_1,short param_2,short param_3,uchar param_4)
@@ -1855,8 +1648,6 @@ RGE_Static_Object::shadow_draw
 
 // Function: normal_draw
 // Address: 004c2080
-/* public: virtual void __thiscall RGE_Static_Object::normal_draw(class TDrawArea *,short,short) */
-
 void __thiscall
 RGE_Static_Object::normal_draw
           (RGE_Static_Object *this,TDrawArea *param_1,short param_2,short param_3)
@@ -1894,9 +1685,6 @@ RGE_Static_Object::normal_draw
 
 // Function: draw_front_frame
 // Address: 004c2110
-/* public: virtual void __thiscall RGE_Static_Object::draw_front_frame(class TDrawArea
-   *,short,short) */
-
 void __thiscall
 RGE_Static_Object::draw_front_frame
           (RGE_Static_Object *this,TDrawArea *param_1,short param_2,short param_3)
@@ -1926,9 +1714,6 @@ RGE_Static_Object::draw_front_frame
 
 // Function: draw_back_frame
 // Address: 004c21a0
-/* public: virtual void __thiscall RGE_Static_Object::draw_back_frame(class TDrawArea *,short,short)
-    */
-
 void __thiscall
 RGE_Static_Object::draw_back_frame
           (RGE_Static_Object *this,TDrawArea *param_1,short param_2,short param_3)
@@ -1952,8 +1737,6 @@ RGE_Static_Object::draw_back_frame
 
 // Function: capture_frame
 // Address: 004c2220
-/* public: void __thiscall RGE_Static_Object::capture_frame(class TDrawArea *,short,short) */
-
 void __thiscall
 RGE_Static_Object::capture_frame
           (RGE_Static_Object *this,TDrawArea *param_1,short param_2,short param_3)
@@ -1982,9 +1765,6 @@ RGE_Static_Object::capture_frame
 
 // Function: capture_square_frame
 // Address: 004c22c0
-/* WARNING: Variable defined which should be unmapped: min_x */
-/* public: void __thiscall RGE_Static_Object::capture_square_frame(class TDrawArea *,short,short) */
-
 void __thiscall
 RGE_Static_Object::capture_square_frame
           (RGE_Static_Object *this,TDrawArea *param_1,short param_2,short param_3)
@@ -2040,9 +1820,6 @@ RGE_Static_Object::capture_square_frame
 
 // Function: capture_frame_3d_cube
 // Address: 004c23f0
-/* public: void __thiscall RGE_Static_Object::capture_frame_3d_cube(class TDrawArea *,short,short)
-    */
-
 void __thiscall
 RGE_Static_Object::capture_frame_3d_cube
           (RGE_Static_Object *this,TDrawArea *param_1,short param_2,short param_3)
@@ -2054,10 +1831,6 @@ RGE_Static_Object::capture_frame_3d_cube
 
 // Function: capture_frame_3d_square
 // Address: 004c2400
-/* WARNING: Variable defined which should be unmapped: draw_color */
-/* public: void __thiscall RGE_Static_Object::capture_frame_3d_square(class TDrawArea *,short,short)
-    */
-
 void __thiscall
 RGE_Static_Object::capture_frame_3d_square
           (RGE_Static_Object *this,TDrawArea *param_1,short param_2,short param_3)
@@ -2247,10 +2020,6 @@ LAB_004c24b2:
 // Function: draw_frame_3d_square_back
 // Address: 004c2970
 // [HELPER] s_stat_obj__draw_frame_3d_square_b: "stat_obj::draw_frame_3d_square_back"
-/* WARNING: Variable defined which should be unmapped: y1 */
-/* public: void __thiscall RGE_Static_Object::draw_frame_3d_square_back(class TDrawArea
-   *,short,short) */
-
 void __thiscall
 RGE_Static_Object::draw_frame_3d_square_back
           (RGE_Static_Object *this,TDrawArea *param_1,short param_2,short param_3)
@@ -2313,10 +2082,6 @@ RGE_Static_Object::draw_frame_3d_square_back
 // Function: draw_frame_3d_square_front
 // Address: 004c2b50
 // [HELPER] s_stat_obj__draw_frame_3d_square_f: "stat_obj::draw_frame_3d_square_front"
-/* WARNING: Variable defined which should be unmapped: y1 */
-/* public: void __thiscall RGE_Static_Object::draw_frame_3d_square_front(class TDrawArea
-   *,short,short) */
-
 void __thiscall
 RGE_Static_Object::draw_frame_3d_square_front
           (RGE_Static_Object *this,TDrawArea *param_1,short param_2,short param_3)
@@ -2400,11 +2165,6 @@ RGE_Static_Object::draw_frame_3d_square_front
 
 // Function: draw_frame_3d_cube_back
 // Address: 004c2df0
-/* WARNING: Variable defined which should be unmapped: y1 */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall RGE_Static_Object::draw_frame_3d_cube_back(class TDrawArea *,short,short)
-    */
-
 void __thiscall
 RGE_Static_Object::draw_frame_3d_cube_back
           (RGE_Static_Object *this,TDrawArea *param_1,short param_2,short param_3)
@@ -2494,11 +2254,6 @@ RGE_Static_Object::draw_frame_3d_cube_back
 
 // Function: draw_frame_3d_cube_front
 // Address: 004c31e0
-/* WARNING: Variable defined which should be unmapped: y1 */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall RGE_Static_Object::draw_frame_3d_cube_front(class TDrawArea
-   *,short,short) */
-
 void __thiscall
 RGE_Static_Object::draw_frame_3d_cube_front
           (RGE_Static_Object *this,TDrawArea *param_1,short param_2,short param_3)
@@ -2648,9 +2403,6 @@ RGE_Static_Object::draw_frame_3d_cube_front
 
 // Function: draw_frame
 // Address: 004c3b30
-/* WARNING: Variable defined which should be unmapped: min_x */
-/* public: virtual void __thiscall RGE_Static_Object::draw_frame(class TDrawArea *,short,short) */
-
 void __thiscall
 RGE_Static_Object::draw_frame
           (RGE_Static_Object *this,TDrawArea *param_1,short param_2,short param_3)
@@ -2705,10 +2457,6 @@ RGE_Static_Object::draw_frame
 // Function: update
 // Address: 004c3c70
 // [HELPER] s_C__msdev_work_age1_x1_stat_obj_c: "C:\msdev\work\age1_x1\stat_obj.cpp"
-/* WARNING: Variable defined which should be unmapped: r_num */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall RGE_Static_Object::update(void) */
-
 uchar __thiscall RGE_Static_Object::update(RGE_Static_Object *this)
 {
   RGE_Sound *this_00;
@@ -2861,9 +2609,6 @@ uchar __thiscall RGE_Static_Object::update(RGE_Static_Object *this)
 // Function: check_damage_sprites
 // Address: 004c3f90
 // [HELPER] s_C__msdev_work_age1_x1_stat_obj_c: "C:\msdev\work\age1_x1\stat_obj.cpp"
-/* WARNING: Variable defined which should be unmapped: new_damage_percent */
-/* public: virtual void __thiscall RGE_Static_Object::check_damage_sprites(void) */
-
 void __thiscall RGE_Static_Object::check_damage_sprites(RGE_Static_Object *this)
 {
   byte bVar1;
@@ -2981,8 +2726,6 @@ LAB_004c41b6:
 
 // Function: spawn_death_obj
 // Address: 004c41d0
-/* public: virtual class RGE_Static_Object * __thiscall RGE_Static_Object::spawn_death_obj(void) */
-
 RGE_Static_Object * __thiscall RGE_Static_Object::spawn_death_obj(RGE_Static_Object *this)
 {
   short sVar1;
@@ -3006,8 +2749,6 @@ RGE_Static_Object * __thiscall RGE_Static_Object::spawn_death_obj(RGE_Static_Obj
 
 // Function: rehook
 // Address: 004c4210
-/* public: virtual void __thiscall RGE_Static_Object::rehook(void) */
-
 void __thiscall RGE_Static_Object::rehook(RGE_Static_Object *this)
 {
   int iVar1;
@@ -3030,8 +2771,6 @@ void __thiscall RGE_Static_Object::rehook(RGE_Static_Object *this)
 
 // Function: get_object_pointer
 // Address: 004c4250
-/* public: class RGE_Static_Object * __thiscall RGE_Static_Object::get_object_pointer(long) */
-
 RGE_Static_Object * __thiscall
 RGE_Static_Object::get_object_pointer(RGE_Static_Object *this,long param_1)
 {
@@ -3089,8 +2828,6 @@ RGE_Static_Object::get_object_pointer(RGE_Static_Object *this,long param_1)
 
 // Function: get_sprite_pointer
 // Address: 004c4330
-/* public: class RGE_Sprite * __thiscall RGE_Static_Object::get_sprite_pointer(short) */
-
 RGE_Sprite * __thiscall RGE_Static_Object::get_sprite_pointer(RGE_Static_Object *this,short param_1)
 {
   RGE_Game_World *pRVar1;
@@ -3105,9 +2842,6 @@ RGE_Sprite * __thiscall RGE_Static_Object::get_sprite_pointer(RGE_Static_Object 
 
 // Function: save
 // Address: 004c4360
-/* WARNING: Variable defined which should be unmapped: short_val */
-/* public: virtual void __thiscall RGE_Static_Object::save(int) */
-
 void __thiscall RGE_Static_Object::save(RGE_Static_Object *this,int param_1)
 {
   RGE_Sprite *pRVar1;
@@ -3223,10 +2957,6 @@ void __thiscall RGE_Static_Object::save(RGE_Static_Object *this,int param_1)
 
 // Function: teleport
 // Address: 004c4680
-/* WARNING: Variable defined which should be unmapped: ty */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual float __thiscall RGE_Static_Object::teleport(float,float,float) */
-
 float __thiscall
 RGE_Static_Object::teleport(RGE_Static_Object *this,float param_1,float param_2,float param_3)
 {
@@ -3454,8 +3184,6 @@ LAB_004c49f3:
 
 // Function: new_sprite
 // Address: 004c4bd0
-/* public: virtual void __thiscall RGE_Static_Object::new_sprite(class RGE_Sprite *) */
-
 void __thiscall RGE_Static_Object::new_sprite(RGE_Static_Object *this,RGE_Sprite *param_1)
 {
   RGE_Sprite *pRVar1;
@@ -3481,9 +3209,6 @@ void __thiscall RGE_Static_Object::new_sprite(RGE_Static_Object *this,RGE_Sprite
 
 // Function: add_overlay_sprite
 // Address: 004c4c20
-/* public: virtual void __thiscall RGE_Static_Object::add_overlay_sprite(class RGE_Sprite *,unsigned
-   char) */
-
 void __thiscall
 RGE_Static_Object::add_overlay_sprite(RGE_Static_Object *this,RGE_Sprite *param_1,uchar param_2)
 {
@@ -3495,8 +3220,6 @@ RGE_Static_Object::add_overlay_sprite(RGE_Static_Object *this,RGE_Sprite *param_
 
 // Function: remove_overlay_sprite
 // Address: 004c4c40
-/* public: virtual void __thiscall RGE_Static_Object::remove_overlay_sprite(class RGE_Sprite *) */
-
 void __thiscall
 RGE_Static_Object::remove_overlay_sprite(RGE_Static_Object *this,RGE_Sprite *param_1)
 {
@@ -3508,9 +3231,6 @@ RGE_Static_Object::remove_overlay_sprite(RGE_Static_Object *this,RGE_Sprite *par
 
 // Function: change_ownership
 // Address: 004c4c50
-/* WARNING: Variable defined which should be unmapped: hp_num */
-/* public: virtual void __thiscall RGE_Static_Object::change_ownership(class RGE_Player *) */
-
 void __thiscall RGE_Static_Object::change_ownership(RGE_Static_Object *this,RGE_Player *param_1)
 {
   RGE_Master_Static_Object *pRVar1;
@@ -3569,8 +3289,6 @@ LAB_004c4d17:
 
 // Function: modify
 // Address: 004c4d80
-/* public: virtual void __thiscall RGE_Static_Object::modify(float,unsigned char) */
-
 void __thiscall RGE_Static_Object::modify(RGE_Static_Object *this,float param_1,uchar param_2)
 {
   int iVar1;
@@ -3596,8 +3314,6 @@ void __thiscall RGE_Static_Object::modify(RGE_Static_Object *this,float param_1,
 
 // Function: modify_delta
 // Address: 004c4e00
-/* public: virtual void __thiscall RGE_Static_Object::modify_delta(float,unsigned char) */
-
 void __thiscall RGE_Static_Object::modify_delta(RGE_Static_Object *this,float param_1,uchar param_2)
 {
   int iVar1;
@@ -3623,8 +3339,6 @@ void __thiscall RGE_Static_Object::modify_delta(RGE_Static_Object *this,float pa
 
 // Function: modify_percent
 // Address: 004c4e90
-/* public: virtual void __thiscall RGE_Static_Object::modify_percent(float,unsigned char) */
-
 void __thiscall
 RGE_Static_Object::modify_percent(RGE_Static_Object *this,float param_1,uchar param_2)
 {
@@ -3651,9 +3365,6 @@ RGE_Static_Object::modify_percent(RGE_Static_Object *this,float param_1,uchar pa
 
 // Function: transform
 // Address: 004c4f10
-/* WARNING: Variable defined which should be unmapped: hp_num */
-/* public: virtual void __thiscall RGE_Static_Object::transform(class RGE_Master_Static_Object *) */
-
 void __thiscall
 RGE_Static_Object::transform(RGE_Static_Object *this,RGE_Master_Static_Object *param_1)
 {
@@ -3684,9 +3395,6 @@ RGE_Static_Object::transform(RGE_Static_Object *this,RGE_Master_Static_Object *p
 
 // Function: copy_obj
 // Address: 004c4fb0
-/* WARNING: Variable defined which should be unmapped: hp_num */
-/* public: virtual void __thiscall RGE_Static_Object::copy_obj(class RGE_Master_Static_Object *) */
-
 void __thiscall
 RGE_Static_Object::copy_obj(RGE_Static_Object *this,RGE_Master_Static_Object *param_1)
 {
@@ -3741,8 +3449,6 @@ RGE_Static_Object::copy_obj(RGE_Static_Object *this,RGE_Master_Static_Object *pa
 
 // Function: destroy_obj
 // Address: 004c5080
-/* public: virtual void __thiscall RGE_Static_Object::destroy_obj(void) */
-
 void __thiscall RGE_Static_Object::destroy_obj(RGE_Static_Object *this)
 {
   if (this->object_state < 7) {
@@ -3763,8 +3469,6 @@ void __thiscall RGE_Static_Object::destroy_obj(RGE_Static_Object *this)
 // Function: die_die_die
 // Address: 004c50c0
 // [HELPER] die_die_die: " "
-/* public: virtual void __thiscall RGE_Static_Object::die_die_die(void) */
-
 void __thiscall RGE_Static_Object::die_die_die(RGE_Static_Object *this)
 {
   if ((this->selected & 1) != 0) {
@@ -3779,9 +3483,6 @@ void __thiscall RGE_Static_Object::die_die_die(RGE_Static_Object *this)
 
 // Function: remove_visible_resource
 // Address: 004c50f0
-/* WARNING: Variable defined which should be unmapped: ExploredVal */
-/* public: virtual void __thiscall RGE_Static_Object::remove_visible_resource(void) */
-
 void __thiscall RGE_Static_Object::remove_visible_resource(RGE_Static_Object *this)
 {
   RGE_Master_Static_Object *pRVar1;
@@ -3831,9 +3532,6 @@ void __thiscall RGE_Static_Object::remove_visible_resource(RGE_Static_Object *th
 
 // Function: create_doppleganger_when_dying
 // Address: 004c5210
-/* WARNING: Variable defined which should be unmapped: ExploredVal */
-/* public: virtual void __thiscall RGE_Static_Object::create_doppleganger_when_dying(void) */
-
 void __thiscall RGE_Static_Object::create_doppleganger_when_dying(RGE_Static_Object *this)
 {
   int iVar1;
@@ -3875,9 +3573,6 @@ void __thiscall RGE_Static_Object::create_doppleganger_when_dying(RGE_Static_Obj
 
 // Function: set_object_state
 // Address: 004c52f0
-/* WARNING: Variable defined which should be unmapped: newCommander */
-/* public: virtual void __thiscall RGE_Static_Object::set_object_state(unsigned char) */
-
 void __thiscall RGE_Static_Object::set_object_state(RGE_Static_Object *this,uchar param_1)
 {
   int *piVar1;
@@ -4017,9 +3712,6 @@ void __thiscall RGE_Static_Object::set_object_state(RGE_Static_Object *this,ucha
 
 // Function: check_object_bounds
 // Address: 004c5610
-/* WARNING: Variable defined which should be unmapped: dx */
-/* public: class RGE_Static_Object * __thiscall RGE_Static_Object::check_object_bounds(void) */
-
 RGE_Static_Object * __thiscall RGE_Static_Object::check_object_bounds(RGE_Static_Object *this)
 {
   float fVar1;
@@ -4107,8 +3799,6 @@ RGE_Static_Object * __thiscall RGE_Static_Object::check_object_bounds(RGE_Static
 
 // Function: get_terrain_speed
 // Address: 004c5820
-/* public: float __thiscall RGE_Static_Object::get_terrain_speed(unsigned char) */
-
 float __thiscall RGE_Static_Object::get_terrain_speed(RGE_Static_Object *this,uchar param_1)
 {
   return this->owner->world->terrains[this->master_obj->terrain][param_1];
@@ -4118,8 +3808,6 @@ float __thiscall RGE_Static_Object::get_terrain_speed(RGE_Static_Object *this,uc
 
 // Function: is_moving
 // Address: 004c5850
-/* public: virtual unsigned char __thiscall RGE_Static_Object::is_moving(void) */
-
 uchar __thiscall RGE_Static_Object::is_moving(RGE_Static_Object *this)
 {
   return '\0';
@@ -4129,8 +3817,6 @@ uchar __thiscall RGE_Static_Object::is_moving(RGE_Static_Object *this)
 
 // Function: is_dying
 // Address: 004c5860
-/* public: unsigned char __thiscall RGE_Static_Object::is_dying(void) */
-
 uchar __thiscall RGE_Static_Object::is_dying(RGE_Static_Object *this)
 {
   if ((2 < this->object_state) && (this->object_state != 6)) {
@@ -4143,8 +3829,6 @@ uchar __thiscall RGE_Static_Object::is_dying(RGE_Static_Object *this)
 
 // Function: get_frame
 // Address: 004c5880
-/* public: int __thiscall RGE_Static_Object::get_frame(short &,short &,short &,short &) */
-
 int __thiscall
 RGE_Static_Object::get_frame
           (RGE_Static_Object *this,short *param_1,short *param_2,short *param_3,short *param_4)
@@ -4164,8 +3848,6 @@ RGE_Static_Object::get_frame
 
 // Function: more_room
 // Address: 004c58c0
-/* public: unsigned char __thiscall RGE_Static_Object::more_room(void) */
-
 uchar __thiscall RGE_Static_Object::more_room(RGE_Static_Object *this)
 {
   return this->objects->number_of_objects < (short)(ushort)this->master_obj->obj_max;
@@ -4175,8 +3857,6 @@ uchar __thiscall RGE_Static_Object::more_room(RGE_Static_Object *this)
 
 // Function: enter_obj
 // Address: 004c58e0
-/* public: virtual void __thiscall RGE_Static_Object::enter_obj(class RGE_Static_Object *) */
-
 void __thiscall RGE_Static_Object::enter_obj(RGE_Static_Object *this,RGE_Static_Object *param_1)
 {
   uchar uVar1;
@@ -4204,8 +3884,6 @@ void __thiscall RGE_Static_Object::enter_obj(RGE_Static_Object *this,RGE_Static_
 
 // Function: exit_obj
 // Address: 004c5960
-/* public: virtual void __thiscall RGE_Static_Object::exit_obj(void) */
-
 void __thiscall RGE_Static_Object::exit_obj(RGE_Static_Object *this)
 {
   if (this->inside_obj != (RGE_Static_Object *)0x0) {
@@ -4219,8 +3897,6 @@ void __thiscall RGE_Static_Object::exit_obj(RGE_Static_Object *this)
 
 // Function: get_los_table
 // Address: 004c5980
-/* public: virtual struct LOSTBL * __thiscall RGE_Static_Object::get_los_table(void) */
-
 LOSTBL * __thiscall RGE_Static_Object::get_los_table(RGE_Static_Object *this)
 {
   RGE_Player *pRVar1;
@@ -4242,9 +3918,6 @@ LOSTBL * __thiscall RGE_Static_Object::get_los_table(RGE_Static_Object *this)
 
 // Function: explore_terrain
 // Address: 004c59b0
-/* public: virtual int __thiscall RGE_Static_Object::explore_terrain(class RGE_Player *,unsigned
-   char,int) */
-
 int __thiscall
 RGE_Static_Object::explore_terrain
           (RGE_Static_Object *this,RGE_Player *param_1,uchar param_2,int param_3)
@@ -4291,9 +3964,6 @@ RGE_Static_Object::explore_terrain
 
 // Function: unexplore_terrain
 // Address: 004c5aa0
-/* public: virtual void __thiscall RGE_Static_Object::unexplore_terrain(class RGE_Player *,unsigned
-   char,int) */
-
 void __thiscall
 RGE_Static_Object::unexplore_terrain
           (RGE_Static_Object *this,RGE_Player *param_1,uchar param_2,int param_3)
@@ -4339,10 +4009,6 @@ RGE_Static_Object::unexplore_terrain
 
 // Function: damage
 // Address: 004c5b90
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual void __thiscall RGE_Static_Object::damage(int,struct RGE_Armor_Weapon_Info
-   *,float,class RGE_Player *,class RGE_Static_Object *) */
-
 void __thiscall
 RGE_Static_Object::damage
           (RGE_Static_Object *this,int param_1,RGE_Armor_Weapon_Info *param_2,float param_3,
@@ -4364,9 +4030,6 @@ RGE_Static_Object::damage
 
 // Function: calculateDamage
 // Address: 004c5be0
-/* public: virtual float __thiscall RGE_Static_Object::calculateDamage(int,struct
-   RGE_Armor_Weapon_Info *,float,class RGE_Player *,class RGE_Static_Object *) */
-
 float __thiscall
 RGE_Static_Object::calculateDamage
           (RGE_Static_Object *this,int param_1,RGE_Armor_Weapon_Info *param_2,float param_3,
@@ -4393,8 +4056,6 @@ RGE_Static_Object::calculateDamage
 
 // Function: rotate
 // Address: 004c5c10
-/* public: virtual void __thiscall RGE_Static_Object::rotate(long) */
-
 void __thiscall RGE_Static_Object::rotate(RGE_Static_Object *this,long param_1)
 {
   int iVar1;
@@ -4413,8 +4074,6 @@ void __thiscall RGE_Static_Object::rotate(RGE_Static_Object *this,long param_1)
 
 // Function: set_attribute
 // Address: 004c5c40
-/* public: virtual void __thiscall RGE_Static_Object::set_attribute(short,float) */
-
 void __thiscall
 RGE_Static_Object::set_attribute(RGE_Static_Object *this,short param_1,float param_2)
 {
@@ -4427,9 +4086,6 @@ RGE_Static_Object::set_attribute(RGE_Static_Object *this,short param_1,float par
 
 // Function: set_attribute_amount
 // Address: 004c5c60
-/* public: virtual void __thiscall RGE_Static_Object::set_attribute_amount(float,unsigned
-   char,unsigned char) */
-
 void __thiscall
 RGE_Static_Object::set_attribute_amount
           (RGE_Static_Object *this,float param_1,uchar param_2,uchar param_3)
@@ -4455,9 +4111,6 @@ RGE_Static_Object::set_attribute_amount
 
 // Function: heal
 // Address: 004c5cb0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall RGE_Static_Object::heal(float) */
-
 uchar __thiscall RGE_Static_Object::heal(RGE_Static_Object *this,float param_1)
 {
   bool bVar1;
@@ -4481,8 +4134,6 @@ uchar __thiscall RGE_Static_Object::heal(RGE_Static_Object *this,float param_1)
 
 // Function: notify_of_relation
 // Address: 004c5d10
-/* public: virtual void __thiscall RGE_Static_Object::notify_of_relation(long,unsigned char) */
-
 void __thiscall
 RGE_Static_Object::notify_of_relation(RGE_Static_Object *this,long param_1,uchar param_2)
 {
@@ -4493,9 +4144,6 @@ RGE_Static_Object::notify_of_relation(RGE_Static_Object *this,long param_1,uchar
 
 // Function: set_being_worked_on
 // Address: 004c5d20
-/* public: virtual void __thiscall RGE_Static_Object::set_being_worked_on(class RGE_Action_Object
-   *,short,unsigned char) */
-
 void __thiscall
 RGE_Static_Object::set_being_worked_on
           (RGE_Static_Object *this,RGE_Action_Object *param_1,short param_2,uchar param_3)
@@ -4511,9 +4159,6 @@ RGE_Static_Object::set_being_worked_on
 
 // Function: release_being_worked_on
 // Address: 004c5d40
-/* public: virtual void __thiscall RGE_Static_Object::release_being_worked_on(class
-   RGE_Static_Object *) */
-
 void __thiscall
 RGE_Static_Object::release_being_worked_on(RGE_Static_Object *this,RGE_Static_Object *param_1)
 {
@@ -4532,8 +4177,6 @@ RGE_Static_Object::release_being_worked_on(RGE_Static_Object *this,RGE_Static_Ob
 
 // Function: inRange
 // Address: 004c5d80
-/* public: int __thiscall RGE_Static_Object::inRange(class RGE_Static_Object *,float) */
-
 int __thiscall
 RGE_Static_Object::inRange(RGE_Static_Object *this,RGE_Static_Object *param_1,float param_2)
 {
@@ -4569,8 +4212,6 @@ RGE_Static_Object::inRange(RGE_Static_Object *this,RGE_Static_Object *param_1,fl
 
 // Function: distance_to_object
 // Address: 004c5e50
-/* public: float __thiscall RGE_Static_Object::distance_to_object(class RGE_Static_Object *) */
-
 float __thiscall
 RGE_Static_Object::distance_to_object(RGE_Static_Object *this,RGE_Static_Object *param_1)
 {
@@ -4603,8 +4244,6 @@ RGE_Static_Object::distance_to_object(RGE_Static_Object *this,RGE_Static_Object 
 
 // Function: distance_to_position
 // Address: 004c5f00
-/* public: float __thiscall RGE_Static_Object::distance_to_position(float,float,float) */
-
 float __thiscall
 RGE_Static_Object::distance_to_position
           (RGE_Static_Object *this,float param_1,float param_2,float param_3)
@@ -4634,8 +4273,6 @@ RGE_Static_Object::distance_to_position
 
 // Function: hit_test
 // Address: 004c5fa0
-/* public: unsigned char __thiscall RGE_Static_Object::hit_test(short,short,short,short,short) */
-
 uchar __thiscall
 RGE_Static_Object::hit_test
           (RGE_Static_Object *this,short param_1,short param_2,short param_3,short param_4,
@@ -4686,10 +4323,6 @@ RGE_Static_Object::hit_test
 
 // Function: box_hit_test
 // Address: 004c60a0
-/* WARNING: Variable defined which should be unmapped: min_x */
-/* public: unsigned char __thiscall
-   RGE_Static_Object::box_hit_test(short,short,short,short,short,short) */
-
 uchar __thiscall
 RGE_Static_Object::box_hit_test
           (RGE_Static_Object *this,short param_1,short param_2,short param_3,short param_4,
@@ -4752,8 +4385,6 @@ RGE_Static_Object::box_hit_test
 
 // Function: set_location
 // Address: 004c6240
-/* public: void __thiscall RGE_Static_Object::set_location(float,float,float) */
-
 void __thiscall
 RGE_Static_Object::set_location(RGE_Static_Object *this,float param_1,float param_2,float param_3)
 {
@@ -4767,8 +4398,6 @@ RGE_Static_Object::set_location(RGE_Static_Object *this,float param_1,float para
 
 // Function: new_angle
 // Address: 004c6260
-/* public: virtual void __thiscall RGE_Static_Object::new_angle(float) */
-
 void __thiscall RGE_Static_Object::new_angle(RGE_Static_Object *this,float param_1)
 {
   return;
@@ -4778,9 +4407,6 @@ void __thiscall RGE_Static_Object::new_angle(RGE_Static_Object *this,float param
 
 // Function: drop_held_objects
 // Address: 004c6270
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: unsigned char __thiscall RGE_Static_Object::drop_held_objects(int) */
-
 uchar __thiscall RGE_Static_Object::drop_held_objects(RGE_Static_Object *this,int param_1)
 {
   float fVar1;
@@ -4863,11 +4489,6 @@ uchar __thiscall RGE_Static_Object::drop_held_objects(RGE_Static_Object *this,in
 // Function: find_drop_location
 // Address: 004c6400
 // [HELPER] s_C__msdev_work_age1_x1_stat_obj_c: "C:\msdev\work\age1_x1\stat_obj.cpp"
-/* WARNING: Variable defined which should be unmapped: radius_2y */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: unsigned char __thiscall RGE_Static_Object::find_drop_location(int,float &,float &,class
-   RGE_Master_Static_Object *,class RGE_Static_Object *,float,float,float,float) */
-
 uchar __thiscall
 RGE_Static_Object::find_drop_location
           (RGE_Static_Object *this,int param_1,float *param_2,float *param_3,
@@ -4900,19 +4521,16 @@ RGE_Static_Object::find_drop_location
       iVar8 = debug_rand(s_C__msdev_work_age1_x1_stat_obj_c,0xf3a);
       switch((iVar8 * 4) / 0x7fff) {
       case 0:
-                    /* language.dll match for 0xf3e: "Right-click to attack this building." */
         *pfVar2 = param_8 + param_6;
         iVar8 = debug_rand(s_C__msdev_work_age1_x1_stat_obj_c,0xf3e);
         *pfVar3 = ((float)iVar8 * _index * _DAT_00574764 - param_9) + param_7;
         break;
       case 1:
-                    /* language.dll match for 0xf42: "Right-click to board this transport." */
         *pfVar2 = param_6 - param_8;
         iVar8 = debug_rand(s_C__msdev_work_age1_x1_stat_obj_c,0xf42);
         *pfVar3 = ((float)iVar8 * _index * _DAT_00574764 - param_9) + param_7;
         break;
       case 2:
-                    /* language.dll match for 0xf46: "Right-click to hunt this animal." */
         *pfVar3 = param_9 + param_7;
         param_2 = (float *)debug_rand(s_C__msdev_work_age1_x1_stat_obj_c,0xf46);
         goto LAB_004c654e;
@@ -4955,8 +4573,6 @@ LAB_004c6614:
 
 // Function: make_object_bounds_list
 // Address: 004c6740
-/* public: class RGE_Check_List * __thiscall RGE_Static_Object::make_object_bounds_list(float) */
-
 RGE_Check_List * __thiscall
 RGE_Static_Object::make_object_bounds_list(RGE_Static_Object *this,float param_1)
 {
@@ -5092,9 +4708,6 @@ RGE_Static_Object::make_object_bounds_list(RGE_Static_Object *this,float param_1
 
 // Function: boundToFacet
 // Address: 004c6aa0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: int __thiscall RGE_Static_Object::boundToFacet(float,float,int) */
-
 int __thiscall
 RGE_Static_Object::boundToFacet(RGE_Static_Object *this,float param_1,float param_2,int param_3)
 {
@@ -5137,8 +4750,6 @@ RGE_Static_Object::boundToFacet(RGE_Static_Object *this,float param_1,float para
 
 // Function: numberFacets
 // Address: 004c6b50
-/* public: int __thiscall RGE_Static_Object::numberFacets(void) */
-
 int __thiscall RGE_Static_Object::numberFacets(RGE_Static_Object *this)
 {
   if (this->sprite != (RGE_Sprite *)0x0) {
@@ -5151,8 +4762,6 @@ int __thiscall RGE_Static_Object::numberFacets(RGE_Static_Object *this)
 
 // Function: underAttack
 // Address: 004c6b60
-/* public: virtual unsigned char __thiscall RGE_Static_Object::underAttack(void)const  */
-
 uchar __thiscall RGE_Static_Object::underAttack(RGE_Static_Object *this)
 {
   return this->underAttackValue;
@@ -5162,8 +4771,6 @@ uchar __thiscall RGE_Static_Object::underAttack(RGE_Static_Object *this)
 
 // Function: setUnderAttack
 // Address: 004c6b70
-/* public: virtual void __thiscall RGE_Static_Object::setUnderAttack(unsigned char) */
-
 void __thiscall RGE_Static_Object::setUnderAttack(RGE_Static_Object *this,uchar param_1)
 {
   this->underAttackValue = param_1;
@@ -5174,9 +4781,6 @@ void __thiscall RGE_Static_Object::setUnderAttack(RGE_Static_Object *this,uchar 
 
 // Function: addToObstructionMap
 // Address: 004c6b80
-/* WARNING: Variable defined which should be unmapped: obMapMinY */
-/* public: int __thiscall RGE_Static_Object::addToObstructionMap(int) */
-
 int __thiscall RGE_Static_Object::addToObstructionMap(RGE_Static_Object *this,int param_1)
 {
   int iVar1;
@@ -5221,9 +4825,6 @@ int __thiscall RGE_Static_Object::addToObstructionMap(RGE_Static_Object *this,in
 
 // Function: removeFromObstructionMap
 // Address: 004c6c90
-/* WARNING: Variable defined which should be unmapped: obMapMinY */
-/* public: int __thiscall RGE_Static_Object::removeFromObstructionMap(int) */
-
 int __thiscall RGE_Static_Object::removeFromObstructionMap(RGE_Static_Object *this,int param_1)
 {
   int iVar1;
@@ -5268,10 +4869,6 @@ int __thiscall RGE_Static_Object::removeFromObstructionMap(RGE_Static_Object *th
 
 // Function: changeInfluenceMap
 // Address: 004c6da0
-/* WARNING: Variable defined which should be unmapped: objectMaxX */
-/* public: void __thiscall RGE_Static_Object::changeInfluenceMap(class InfluenceMap *,int,int,int)
-    */
-
 void __thiscall
 RGE_Static_Object::changeInfluenceMap
           (RGE_Static_Object *this,InfluenceMap *param_1,int param_2,int param_3,int param_4)
@@ -5342,9 +4939,6 @@ LAB_004c6ff6:
 
 // Function: objectCollisionList
 // Address: 004c7030
-/* WARNING: Variable defined which should be unmapped: dz */
-/* public: class RGE_Check_List * __thiscall RGE_Static_Object::objectCollisionList(float) */
-
 RGE_Check_List * __thiscall
 RGE_Static_Object::objectCollisionList(RGE_Static_Object *this,float param_1)
 {
@@ -5472,9 +5066,6 @@ LAB_004c7298:
 // [HELPER] s_WORLD_TIME___ld_: "WORLD TIME: %ld\n"
 // [HELPER] s_c__aoeunit_txt: "c:\aoeunit.txt"
 // [HELPER] s_w: "w"
-/* WARNING: Variable defined which should be unmapped: textOut */
-/* public: virtual void __cdecl RGE_Static_Object::logDebug(char *,...) */
-
 void __thiscall RGE_Static_Object::logDebug(RGE_Static_Object *this,char *param_1,...)
 {
   char cVar1;
@@ -5514,8 +5105,6 @@ void __thiscall RGE_Static_Object::logDebug(RGE_Static_Object *this,char *param_
 
 // Function: unitAI
 // Address: 004c7420
-/* public: class UnitAIModule * __thiscall RGE_Static_Object::unitAI(void) */
-
 UnitAIModule * __thiscall RGE_Static_Object::unitAI(RGE_Static_Object *this)
 {
   return this->unitAIValue;
@@ -5525,8 +5114,6 @@ UnitAIModule * __thiscall RGE_Static_Object::unitAI(RGE_Static_Object *this)
 
 // Function: lookupZone
 // Address: 004c7430
-/* public: unsigned char __thiscall RGE_Static_Object::lookupZone(struct XYPoint) */
-
 uchar __thiscall RGE_Static_Object::lookupZone(RGE_Static_Object *this,XYPoint param_1)
 {
   RGE_Game_World *pRVar1;
@@ -5556,8 +5143,6 @@ uchar __thiscall RGE_Static_Object::lookupZone(RGE_Static_Object *this,XYPoint p
 
 // Function: lookupZone
 // Address: 004c74b0
-/* public: unsigned char __thiscall RGE_Static_Object::lookupZone(int,int) */
-
 uchar __thiscall RGE_Static_Object::lookupZone(RGE_Static_Object *this,int param_1,int param_2)
 {
   RGE_Game_World *pRVar1;
@@ -5587,8 +5172,6 @@ uchar __thiscall RGE_Static_Object::lookupZone(RGE_Static_Object *this,int param
 
 // Function: currentZone
 // Address: 004c7530
-/* public: unsigned char __thiscall RGE_Static_Object::currentZone(void) */
-
 uchar __thiscall RGE_Static_Object::currentZone(RGE_Static_Object *this)
 {
   RGE_Game_World *pRVar1;
@@ -5620,9 +5203,6 @@ uchar __thiscall RGE_Static_Object::currentZone(RGE_Static_Object *this)
 
 // Function: withinRangeOfZoneAtPoint
 // Address: 004c75b0
-/* public: int __thiscall RGE_Static_Object::withinRangeOfZoneAtPoint(unsigned char,float,struct
-   XYPoint &) */
-
 int __thiscall
 RGE_Static_Object::withinRangeOfZoneAtPoint
           (RGE_Static_Object *this,uchar param_1,float param_2,XYPoint *param_3)
@@ -5652,8 +5232,6 @@ RGE_Static_Object::withinRangeOfZoneAtPoint
 
 // Function: withinRangeOfZone
 // Address: 004c7630
-/* public: int __thiscall RGE_Static_Object::withinRangeOfZone(unsigned char,float) */
-
 int __thiscall
 RGE_Static_Object::withinRangeOfZone(RGE_Static_Object *this,uchar param_1,float param_2)
 {
@@ -5689,9 +5267,6 @@ RGE_Static_Object::withinRangeOfZone(RGE_Static_Object *this,uchar param_1,float
 
 // Function: findClosestPointInTerrainType
 // Address: 004c76c0
-/* public: int __thiscall RGE_Static_Object::findClosestPointInTerrainType(struct XYPoint,struct
-   XYPoint &,int,int,int) */
-
 int __thiscall
 RGE_Static_Object::findClosestPointInTerrainType
           (RGE_Static_Object *this,XYPoint param_1,XYPoint *param_2,int param_3,int param_4,
@@ -5723,8 +5298,6 @@ RGE_Static_Object::findClosestPointInTerrainType
 
 // Function: isGroupCommander
 // Address: 004c7740
-/* public: int __thiscall RGE_Static_Object::isGroupCommander(void) */
-
 int __thiscall RGE_Static_Object::isGroupCommander(RGE_Static_Object *this)
 {
   return (uint)(this->id == this->groupCommanderValue);
@@ -5734,8 +5307,6 @@ int __thiscall RGE_Static_Object::isGroupCommander(RGE_Static_Object *this)
 
 // Function: inGroup
 // Address: 004c7760
-/* public: int __thiscall RGE_Static_Object::inGroup(void) */
-
 int __thiscall RGE_Static_Object::inGroup(RGE_Static_Object *this)
 {
   return (uint)(0 < (this->groupMembers).numberValue);
@@ -5745,8 +5316,6 @@ int __thiscall RGE_Static_Object::inGroup(RGE_Static_Object *this)
 
 // Function: unitIsInGroup
 // Address: 004c7770
-/* public: int __thiscall RGE_Static_Object::unitIsInGroup(int) */
-
 int __thiscall RGE_Static_Object::unitIsInGroup(RGE_Static_Object *this,int param_1)
 {
   int iVar1;
@@ -5772,8 +5341,6 @@ int __thiscall RGE_Static_Object::unitIsInGroup(RGE_Static_Object *this,int para
 
 // Function: createGroup
 // Address: 004c77b0
-/* public: int __thiscall RGE_Static_Object::createGroup(int *,int,int,float) */
-
 int __thiscall
 RGE_Static_Object::createGroup
           (RGE_Static_Object *this,int *param_1,int param_2,int param_3,float param_4)
@@ -5836,8 +5403,6 @@ LAB_004c786f:
 
 // Function: commanderCreateGroup
 // Address: 004c78b0
-/* public: int __thiscall RGE_Static_Object::commanderCreateGroup(int *,int,int,float) */
-
 int __thiscall
 RGE_Static_Object::commanderCreateGroup
           (RGE_Static_Object *this,int *param_1,int param_2,int param_3,float param_4)
@@ -5869,8 +5434,6 @@ RGE_Static_Object::commanderCreateGroup
 
 // Function: addToGroup
 // Address: 004c7920
-/* public: int __thiscall RGE_Static_Object::addToGroup(int,float) */
-
 int __thiscall RGE_Static_Object::addToGroup(RGE_Static_Object *this,int param_1,float param_2)
 {
   int iVar1;
@@ -5919,9 +5482,6 @@ int __thiscall RGE_Static_Object::addToGroup(RGE_Static_Object *this,int param_1
 
 // Function: commanderAddToGroup
 // Address: 004c79d0
-/* WARNING: Variable defined which should be unmapped: i */
-/* public: int __thiscall RGE_Static_Object::commanderAddToGroup(int,float) */
-
 int __thiscall
 RGE_Static_Object::commanderAddToGroup(RGE_Static_Object *this,int param_1,float param_2)
 {
@@ -6008,8 +5568,6 @@ RGE_Static_Object::commanderAddToGroup(RGE_Static_Object *this,int param_1,float
 
 // Function: removeFromGroup
 // Address: 004c7b60
-/* public: int __thiscall RGE_Static_Object::removeFromGroup(int) */
-
 int __thiscall RGE_Static_Object::removeFromGroup(RGE_Static_Object *this,int param_1)
 {
   int iVar1;
@@ -6055,8 +5613,6 @@ int __thiscall RGE_Static_Object::removeFromGroup(RGE_Static_Object *this,int pa
 
 // Function: commanderRemoveFromGroup
 // Address: 004c7bd0
-/* public: int __thiscall RGE_Static_Object::commanderRemoveFromGroup(int) */
-
 int __thiscall RGE_Static_Object::commanderRemoveFromGroup(RGE_Static_Object *this,int param_1)
 {
   int iVar1;
@@ -6128,8 +5684,6 @@ int __thiscall RGE_Static_Object::commanderRemoveFromGroup(RGE_Static_Object *th
 
 // Function: destroyGroup
 // Address: 004c7ce0
-/* public: int __thiscall RGE_Static_Object::destroyGroup(void) */
-
 int __thiscall RGE_Static_Object::destroyGroup(RGE_Static_Object *this)
 {
   (this->groupMembers).numberValue = 0;
@@ -6141,8 +5695,6 @@ int __thiscall RGE_Static_Object::destroyGroup(RGE_Static_Object *this)
 
 // Function: commanderDestroyGroup
 // Address: 004c7d00
-/* public: int __thiscall RGE_Static_Object::commanderDestroyGroup(void) */
-
 int __thiscall RGE_Static_Object::commanderDestroyGroup(RGE_Static_Object *this)
 {
   int *piVar1;
@@ -6186,8 +5738,6 @@ int __thiscall RGE_Static_Object::commanderDestroyGroup(RGE_Static_Object *this)
 
 // Function: addToPathingGroup
 // Address: 004c7db0
-/* public: void __thiscall RGE_Static_Object::addToPathingGroup(int) */
-
 void __thiscall RGE_Static_Object::addToPathingGroup(RGE_Static_Object *this,int param_1)
 {
   int iVar1;
@@ -6233,8 +5783,6 @@ void __thiscall RGE_Static_Object::addToPathingGroup(RGE_Static_Object *this,int
 
 // Function: removeAllFromPathingGroup
 // Address: 004c7e50
-/* public: void __thiscall RGE_Static_Object::removeAllFromPathingGroup(void) */
-
 void __thiscall RGE_Static_Object::removeAllFromPathingGroup(RGE_Static_Object *this)
 {
   int iVar1;
@@ -6250,8 +5798,6 @@ void __thiscall RGE_Static_Object::removeAllFromPathingGroup(RGE_Static_Object *
 
 // Function: remove_shadows
 // Address: 004c7e70
-/* public: void __thiscall RGE_Static_Object::remove_shadows(void) */
-
 void __thiscall RGE_Static_Object::remove_shadows(RGE_Static_Object *this)
 {
   int iVar1;
@@ -6267,8 +5813,6 @@ void __thiscall RGE_Static_Object::remove_shadows(RGE_Static_Object *this)
 
 // Function: set_sleep_flag
 // Address: 004c7eb0
-/* public: void __thiscall RGE_Static_Object::set_sleep_flag(unsigned char) */
-
 void __thiscall RGE_Static_Object::set_sleep_flag(RGE_Static_Object *this,uchar param_1)
 {
   RGE_Object_Node *pRVar1;
@@ -6298,8 +5842,6 @@ void __thiscall RGE_Static_Object::set_sleep_flag(RGE_Static_Object *this,uchar 
 
 // Function: get_action_checksum
 // Address: 004c7f30
-/* public: virtual long __thiscall RGE_Static_Object::get_action_checksum(void) */
-
 long __thiscall RGE_Static_Object::get_action_checksum(RGE_Static_Object *this)
 {
   return 0;
@@ -6309,8 +5851,6 @@ long __thiscall RGE_Static_Object::get_action_checksum(RGE_Static_Object *this)
 
 // Function: get_waypoint_checksum
 // Address: 004c7f40
-/* public: virtual long __thiscall RGE_Static_Object::get_waypoint_checksum(void) */
-
 long __thiscall RGE_Static_Object::get_waypoint_checksum(RGE_Static_Object *this)
 {
   return 0;

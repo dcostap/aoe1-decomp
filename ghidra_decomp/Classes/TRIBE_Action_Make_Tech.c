@@ -34,9 +34,6 @@
 
 // Function: TRIBE_Action_Make_Tech
 // Address: 004d21b0
-/* public: __thiscall TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech(int,class RGE_Action_Object *)
-    */
-
 TRIBE_Action_Make_Tech * __thiscall
 TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech
           (TRIBE_Action_Make_Tech *this,int param_1,RGE_Action_Object *param_2)
@@ -53,7 +50,6 @@ TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech
   RGE_Action::RGE_Action((RGE_Action *)this,param_1,param_2,1);
   local_4 = 0;
   this->_padding_ = (int)&_vftable_;
-                    /* language.dll match for 0x67: "Comic Sans MS" */
   *(undefined2 *)&this->_padding_ = 0x67;
   rge_read(param_1,&this->tech_id,2);
   rge_read(param_1,&this->unique_id,4);
@@ -65,9 +61,6 @@ TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech
 
 // Function: `vector_deleting_destructor'
 // Address: 004d2230
-/* public: virtual void * __thiscall TRIBE_Action_Make_Tech::`vector deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TRIBE_Action_Make_Tech::_vector_deleting_destructor_(TRIBE_Action_Make_Tech *this,uint param_1)
 {
@@ -82,9 +75,6 @@ TRIBE_Action_Make_Tech::_vector_deleting_destructor_(TRIBE_Action_Make_Tech *thi
 
 // Function: TRIBE_Action_Make_Tech
 // Address: 004d2250
-/* public: __thiscall TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech(class RGE_Action_Object
-   *,short,int) */
-
 TRIBE_Action_Make_Tech * __thiscall
 TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech
           (TRIBE_Action_Make_Tech *this,RGE_Action_Object *param_1,short param_2,int param_3)
@@ -101,8 +91,6 @@ TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech
 
 // Function: ~TRIBE_Action_Make_Tech
 // Address: 004d2290
-/* public: virtual __thiscall TRIBE_Action_Make_Tech::~TRIBE_Action_Make_Tech(void) */
-
 void __thiscall TRIBE_Action_Make_Tech::~TRIBE_Action_Make_Tech(TRIBE_Action_Make_Tech *this)
 {
   int iVar1;
@@ -120,7 +108,6 @@ void __thiscall TRIBE_Action_Make_Tech::~TRIBE_Action_Make_Tech(TRIBE_Action_Mak
     TRIBE_Player_Tech::cancel_research
               (*(TRIBE_Player_Tech **)(*(int *)(this->_padding_ + 0xc) + 0x220),this->tech_id,'\0');
     if (rge_base_game->world->game_state == '\0') {
-                    /* language.dll match for 0x65: "1" */
       (**(code **)(rge_base_game->_padding_ + 0x40))
                 (0x65,(int)*(short *)(*(int *)(this->_padding_ + 0xc) + 0x4a),(int)this->tech_id,0,0
                 );
@@ -141,8 +128,6 @@ void __thiscall TRIBE_Action_Make_Tech::~TRIBE_Action_Make_Tech(TRIBE_Action_Mak
 
 // Function: save
 // Address: 004d2370
-/* public: virtual void __thiscall TRIBE_Action_Make_Tech::save(int) */
-
 void __thiscall TRIBE_Action_Make_Tech::save(TRIBE_Action_Make_Tech *this,int param_1)
 {
   RGE_Action::save((RGE_Action *)this,param_1);
@@ -155,8 +140,6 @@ void __thiscall TRIBE_Action_Make_Tech::save(TRIBE_Action_Make_Tech *this,int pa
 
 // Function: first_in_stack
 // Address: 004d23b0
-/* public: virtual void __thiscall TRIBE_Action_Make_Tech::first_in_stack(unsigned char) */
-
 void __thiscall TRIBE_Action_Make_Tech::first_in_stack(TRIBE_Action_Make_Tech *this,uchar param_1)
 {
   int iVar1;
@@ -185,8 +168,6 @@ void __thiscall TRIBE_Action_Make_Tech::first_in_stack(TRIBE_Action_Make_Tech *t
 
 // Function: set_state
 // Address: 004d2440
-/* protected: virtual void __thiscall TRIBE_Action_Make_Tech::set_state(unsigned char) */
-
 void __thiscall TRIBE_Action_Make_Tech::set_state(TRIBE_Action_Make_Tech *this,uchar param_1)
 {
   *(uchar *)&this->_padding_ = param_1;
@@ -197,9 +178,6 @@ void __thiscall TRIBE_Action_Make_Tech::set_state(TRIBE_Action_Make_Tech *this,u
 
 // Function: update
 // Address: 004d2450
-/* WARNING: Variable defined which should be unmapped: work */
-/* public: virtual unsigned char __thiscall TRIBE_Action_Make_Tech::update(void) */
-
 uchar __thiscall TRIBE_Action_Make_Tech::update(TRIBE_Action_Make_Tech *this)
 {
   char cVar1;
@@ -247,8 +225,6 @@ uchar __thiscall TRIBE_Action_Make_Tech::update(TRIBE_Action_Make_Tech *this)
 
 // Function: stop
 // Address: 004d2550
-/* public: virtual int __thiscall TRIBE_Action_Make_Tech::stop(void) */
-
 int __thiscall TRIBE_Action_Make_Tech::stop(TRIBE_Action_Make_Tech *this)
 {
   int iVar1;
@@ -256,7 +232,6 @@ int __thiscall TRIBE_Action_Make_Tech::stop(TRIBE_Action_Make_Tech *this)
   (**(code **)(this->_padding_ + 0x5c))(1);
   TRIBE_Player_Tech::cancel_research
             (*(TRIBE_Player_Tech **)(*(int *)(this->_padding_ + 0xc) + 0x220),this->tech_id,'\x01');
-                    /* language.dll match for 0x65: "1" */
   (**(code **)(rge_base_game->_padding_ + 0x40))
             (0x65,(int)*(short *)(*(int *)(this->_padding_ + 0xc) + 0x4a),(int)this->tech_id,0,0);
   (**(code **)(**(int **)(this->_padding_ + 0xc) + 0x118))
@@ -270,8 +245,6 @@ int __thiscall TRIBE_Action_Make_Tech::stop(TRIBE_Action_Make_Tech *this)
 
 // Function: get_info
 // Address: 004d25e0
-/* public: void __thiscall TRIBE_Action_Make_Tech::get_info(short &,short &,char *,short) */
-
 void __thiscall
 TRIBE_Action_Make_Tech::get_info
           (TRIBE_Action_Make_Tech *this,short *param_1,short *param_2,char *param_3,short param_4)

@@ -17,8 +17,6 @@
 // Function: RGE_TimeSinceLastCall
 // Address: 00480390
 // [HELPER] s_C__msdev_work_age1_x1_RGE_TSLC_c: "C:\msdev\work\age1_x1\RGE_TSLC.cpp"
-/* public: __thiscall RGE_TimeSinceLastCall::RGE_TimeSinceLastCall(void) */
-
 RGE_TimeSinceLastCall * __thiscall
 RGE_TimeSinceLastCall::RGE_TimeSinceLastCall(RGE_TimeSinceLastCall *this)
 {
@@ -46,8 +44,6 @@ RGE_TimeSinceLastCall::RGE_TimeSinceLastCall(RGE_TimeSinceLastCall *this)
 
 // Function: ~RGE_TimeSinceLastCall
 // Address: 004803f0
-/* public: __thiscall RGE_TimeSinceLastCall::~RGE_TimeSinceLastCall(void) */
-
 void __thiscall RGE_TimeSinceLastCall::~RGE_TimeSinceLastCall(RGE_TimeSinceLastCall *this)
 {
   return;
@@ -57,8 +53,6 @@ void __thiscall RGE_TimeSinceLastCall::~RGE_TimeSinceLastCall(RGE_TimeSinceLastC
 
 // Function: GetAvg
 // Address: 00480400
-/* public: unsigned long __thiscall RGE_TimeSinceLastCall::GetAvg(int) */
-
 ulong __thiscall RGE_TimeSinceLastCall::GetAvg(RGE_TimeSinceLastCall *this,int param_1)
 {
   uint uVar1;
@@ -92,8 +86,6 @@ ulong __thiscall RGE_TimeSinceLastCall::GetAvg(RGE_TimeSinceLastCall *this,int p
 // Function: Get
 // Address: 00480460
 // [HELPER] s_C__msdev_work_age1_x1_RGE_TSLC_c: "C:\msdev\work\age1_x1\RGE_TSLC.cpp"
-/* public: unsigned long __thiscall RGE_TimeSinceLastCall::Get(void) */
-
 ulong __thiscall RGE_TimeSinceLastCall::Get(RGE_TimeSinceLastCall *this)
 {
   ulong uVar1;
@@ -107,8 +99,6 @@ ulong __thiscall RGE_TimeSinceLastCall::Get(RGE_TimeSinceLastCall *this)
 // Function: Set
 // Address: 00480480
 // [HELPER] s_C__msdev_work_age1_x1_RGE_TSLC_c: "C:\msdev\work\age1_x1\RGE_TSLC.cpp"
-/* public: unsigned long __thiscall RGE_TimeSinceLastCall::Set(void) */
-
 ulong __thiscall RGE_TimeSinceLastCall::Set(RGE_TimeSinceLastCall *this)
 {
   ulong uVar1;
@@ -149,15 +139,10 @@ ulong __thiscall RGE_TimeSinceLastCall::Set(RGE_TimeSinceLastCall *this)
 // Function: Skip
 // Address: 00480510
 // [HELPER] s_C__msdev_work_age1_x1_RGE_TSLC_c: "C:\msdev\work\age1_x1\RGE_TSLC.cpp"
-/* public: void __thiscall RGE_TimeSinceLastCall::Skip(void) */
-
 void __thiscall RGE_TimeSinceLastCall::Skip(RGE_TimeSinceLastCall *this)
 {
   ulong uVar1;
-  
-                    /* language.dll match for 0x78: "10" */
   debug_timeGetTime(s_C__msdev_work_age1_x1_RGE_TSLC_c,0x78);
-                    /* language.dll match for 0x79: "N" */
   uVar1 = debug_timeGetTime(s_C__msdev_work_age1_x1_RGE_TSLC_c,0x79);
   this->LastCall = uVar1;
   return;
@@ -168,8 +153,6 @@ void __thiscall RGE_TimeSinceLastCall::Skip(RGE_TimeSinceLastCall *this)
 // Function: GetAvgInfo
 // Address: 00480540
 // [HELPER] s_Avg__d____d: "Avg %d / %d"
-/* public: char * __thiscall RGE_TimeSinceLastCall::GetAvgInfo(int) */
-
 char * __thiscall RGE_TimeSinceLastCall::GetAvgInfo(RGE_TimeSinceLastCall *this,int param_1)
 {
   ulong uVar1;
@@ -183,8 +166,6 @@ char * __thiscall RGE_TimeSinceLastCall::GetAvgInfo(RGE_TimeSinceLastCall *this,
 
 // Function: GetHiLoMaxInfo
 // Address: 00480570
-/* public: char * __thiscall RGE_TimeSinceLastCall::GetHiLoMaxInfo(int) */
-
 char * __thiscall RGE_TimeSinceLastCall::GetHiLoMaxInfo(RGE_TimeSinceLastCall *this,int param_1)
 {
   int iVar1;
@@ -233,8 +214,6 @@ char * __thiscall RGE_TimeSinceLastCall::GetHiLoMaxInfo(RGE_TimeSinceLastCall *t
 
 // Function: GetHiLoInfo
 // Address: 00480610
-/* public: char * __thiscall RGE_TimeSinceLastCall::GetHiLoInfo(int) */
-
 char * __thiscall RGE_TimeSinceLastCall::GetHiLoInfo(RGE_TimeSinceLastCall *this,int param_1)
 {
   int iVar1;
@@ -282,8 +261,6 @@ char * __thiscall RGE_TimeSinceLastCall::GetHiLoInfo(RGE_TimeSinceLastCall *this
 
 // Function: CPS
 // Address: 004806a0
-/* public: unsigned long __thiscall RGE_TimeSinceLastCall::CPS(void) */
-
 ulong __thiscall RGE_TimeSinceLastCall::CPS(RGE_TimeSinceLastCall *this)
 {
   this->cps = 0;
@@ -295,8 +272,6 @@ ulong __thiscall RGE_TimeSinceLastCall::CPS(RGE_TimeSinceLastCall *this)
 
 // Function: GetFirstCall
 // Address: 004806c0
-/* public: unsigned long __thiscall RGE_TimeSinceLastCall::GetFirstCall(void) */
-
 ulong __thiscall RGE_TimeSinceLastCall::GetFirstCall(RGE_TimeSinceLastCall *this)
 {
   return this->FirstCall;
@@ -308,8 +283,6 @@ ulong __thiscall RGE_TimeSinceLastCall::GetFirstCall(RGE_TimeSinceLastCall *this
 // Address: 004806d0
 // [HELPER] s_C__msdev_work_age1_x1_RGE_TSLC_c: "C:\msdev\work\age1_x1\RGE_TSLC.cpp"
 // [HELPER] s__02ld__02ld__02ld: "%02ld:%02ld:%02ld"
-/* public: char * __thiscall RGE_TimeSinceLastCall::GetElapsedFirstCall(void) */
-
 char * __thiscall RGE_TimeSinceLastCall::GetElapsedFirstCall(RGE_TimeSinceLastCall *this)
 {
   ulong uVar1;
@@ -338,8 +311,6 @@ char * __thiscall RGE_TimeSinceLastCall::GetElapsedFirstCall(RGE_TimeSinceLastCa
 
 // Function: Test
 // Address: 00480770
-/* public: void __thiscall RGE_TimeSinceLastCall::Test(void) */
-
 void __thiscall RGE_TimeSinceLastCall::Test(RGE_TimeSinceLastCall *this)
 {
   int iVar1;

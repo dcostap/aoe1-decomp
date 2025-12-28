@@ -292,9 +292,6 @@
 
 // Function: TribeFishingShipUnitAIModule
 // Address: 00506b70
-/* public: __thiscall TribeFishingShipUnitAIModule::TribeFishingShipUnitAIModule(class
-   RGE_Static_Object *,int) */
-
 TribeFishingShipUnitAIModule * __thiscall
 TribeFishingShipUnitAIModule::TribeFishingShipUnitAIModule
           (TribeFishingShipUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
@@ -333,9 +330,6 @@ TribeFishingShipUnitAIModule::TribeFishingShipUnitAIModule
 
 // Function: `scalar_deleting_destructor'
 // Address: 00506c40
-/* public: virtual void * __thiscall TribeFishingShipUnitAIModule::`scalar deleting
-   destructor'(unsigned int) */
-
 void * __thiscall
 TribeFishingShipUnitAIModule::_scalar_deleting_destructor_
           (TribeFishingShipUnitAIModule *this,uint param_1)
@@ -351,8 +345,6 @@ TribeFishingShipUnitAIModule::_scalar_deleting_destructor_
 
 // Function: ~TribeFishingShipUnitAIModule
 // Address: 00506c60
-/* public: virtual __thiscall TribeFishingShipUnitAIModule::~TribeFishingShipUnitAIModule(void) */
-
 void __thiscall
 TribeFishingShipUnitAIModule::~TribeFishingShipUnitAIModule(TribeFishingShipUnitAIModule *this)
 {
@@ -398,8 +390,6 @@ TribeFishingShipUnitAIModule::~TribeFishingShipUnitAIModule(TribeFishingShipUnit
 
 // Function: importantWhenDead
 // Address: 00506c70
-/* public: virtual int __thiscall TribeFishingShipUnitAIModule::importantWhenDead(int) */
-
 int __thiscall
 TribeFishingShipUnitAIModule::importantWhenDead(TribeFishingShipUnitAIModule *this,int param_1)
 {
@@ -413,8 +403,6 @@ TribeFishingShipUnitAIModule::importantWhenDead(TribeFishingShipUnitAIModule *th
 
 // Function: convertToLOSResourceType
 // Address: 00506c90
-/* public: virtual int __thiscall TribeFishingShipUnitAIModule::convertToLOSResourceType(int) */
-
 int __thiscall
 TribeFishingShipUnitAIModule::convertToLOSResourceType
           (TribeFishingShipUnitAIModule *this,int param_1)
@@ -431,9 +419,6 @@ TribeFishingShipUnitAIModule::convertToLOSResourceType
 // Address: 00506cc0
 // [HELPER] s_C__msdev_work_age1_x1_taiuaimd_c: "C:\msdev\work\age1_x1\taiuaimd.cpp"
 // [HELPER] s___d_call_stopObject__s__d_: "#%d call stopObject %s %d\n"
-/* protected: virtual int __thiscall TribeFishingShipUnitAIModule::processNotify(struct NotifyEvent
-   *,unsigned long) */
-
 int __thiscall
 TribeFishingShipUnitAIModule::processNotify
           (TribeFishingShipUnitAIModule *this,NotifyEvent *param_1,ulong param_2)
@@ -540,10 +525,6 @@ LAB_00506e22:
 
 // Function: processIdle
 // Address: 00506ee0
-/* WARNING: Variable defined which should be unmapped: yDiff */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall TribeFishingShipUnitAIModule::processIdle(int) */
-
 int __thiscall
 TribeFishingShipUnitAIModule::processIdle(TribeFishingShipUnitAIModule *this,int param_1)
 {

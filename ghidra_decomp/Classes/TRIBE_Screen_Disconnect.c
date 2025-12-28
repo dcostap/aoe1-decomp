@@ -386,8 +386,6 @@
 // Address: 004a61a0
 // [HELPER] s_Multiplayer_Disconnect_Screen: "Multiplayer Disconnect Screen"
 // [HELPER] s_scr3: "scr3"
-/* public: __thiscall TRIBE_Screen_Disconnect::TRIBE_Screen_Disconnect(int) */
-
 TRIBE_Screen_Disconnect * __thiscall
 TRIBE_Screen_Disconnect::TRIBE_Screen_Disconnect(TRIBE_Screen_Disconnect *this,int param_1)
 {
@@ -414,9 +412,6 @@ TRIBE_Screen_Disconnect::TRIBE_Screen_Disconnect(TRIBE_Screen_Disconnect *this,i
   }
   else {
     TEasy_Panel::set_ideal_size((TEasy_Panel *)this,0x280,0x1e0);
-                    /* language.dll match for 0x4c0: "Disconnecting from multiplayer
-                       game...\\n\\n\\n\\nPlease press ESC if the game does not\\ndisconnect within
-                       15 seconds." */
     TEasy_Panel::create_text
               ((TEasy_Panel *)this,(TPanel *)this,&this->message,0x4c0,0x28,0x28,0x230,400,4,1,1,1);
   }
@@ -428,9 +423,6 @@ TRIBE_Screen_Disconnect::TRIBE_Screen_Disconnect(TRIBE_Screen_Disconnect *this,i
 
 // Function: `vector_deleting_destructor'
 // Address: 004a6270
-/* public: virtual void * __thiscall TRIBE_Screen_Disconnect::`vector deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TRIBE_Screen_Disconnect::_vector_deleting_destructor_(TRIBE_Screen_Disconnect *this,uint param_1)
 {
@@ -445,8 +437,6 @@ TRIBE_Screen_Disconnect::_vector_deleting_destructor_(TRIBE_Screen_Disconnect *t
 
 // Function: ~TRIBE_Screen_Disconnect
 // Address: 004a6290
-/* public: virtual __thiscall TRIBE_Screen_Disconnect::~TRIBE_Screen_Disconnect(void) */
-
 void __thiscall TRIBE_Screen_Disconnect::~TRIBE_Screen_Disconnect(TRIBE_Screen_Disconnect *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -470,8 +460,6 @@ void __thiscall TRIBE_Screen_Disconnect::~TRIBE_Screen_Disconnect(TRIBE_Screen_D
 
 // Function: set_text
 // Address: 004a62f0
-/* public: void __thiscall TRIBE_Screen_Disconnect::set_text(char *) */
-
 void __thiscall TRIBE_Screen_Disconnect::set_text(TRIBE_Screen_Disconnect *this,char *param_1)
 {
   (**(code **)(this->message->_padding_ + 0xe8))(param_1);
@@ -482,8 +470,6 @@ void __thiscall TRIBE_Screen_Disconnect::set_text(TRIBE_Screen_Disconnect *this,
 
 // Function: set_text
 // Address: 004a6310
-/* public: void __thiscall TRIBE_Screen_Disconnect::set_text(long) */
-
 void __thiscall TRIBE_Screen_Disconnect::set_text(TRIBE_Screen_Disconnect *this,long param_1)
 {
   (**(code **)(this->message->_padding_ + 0xe4))(param_1);
@@ -496,9 +482,6 @@ void __thiscall TRIBE_Screen_Disconnect::set_text(TRIBE_Screen_Disconnect *this,
 // Address: 004a6330
 // [HELPER] s_Multiplayer_Disconnect_Screen: "Multiplayer Disconnect Screen"
 // [HELPER] s_Status_Screen: "Status Screen"
-/* public: virtual long __thiscall TRIBE_Screen_Disconnect::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TRIBE_Screen_Disconnect::action
           (TRIBE_Screen_Disconnect *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -526,8 +509,6 @@ TRIBE_Screen_Disconnect::action
 // Function: handle_idle
 // Address: 004a63c0
 // [HELPER] s_C__msdev_work_age1_x1_Panel_cpp: "C:\msdev\work\age1_x1\Panel.cpp"
-/* public: virtual long __thiscall TRIBE_Screen_Disconnect::handle_idle(void) */
-
 long __thiscall TRIBE_Screen_Disconnect::handle_idle(TRIBE_Screen_Disconnect *this)
 {
   char cVar1;

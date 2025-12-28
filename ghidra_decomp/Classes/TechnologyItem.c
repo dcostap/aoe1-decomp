@@ -87,8 +87,6 @@
 // Function: TechnologyItem
 // Address: 00412bb0
 // [HELPER] s_: ""
-/* public: __thiscall TechnologyItem::TechnologyItem(void) */
-
 TechnologyItem * __thiscall TechnologyItem::TechnologyItem(TechnologyItem *this)
 {
   char cVar1;
@@ -132,8 +130,6 @@ TechnologyItem * __thiscall TechnologyItem::TechnologyItem(TechnologyItem *this)
 
 // Function: `scalar_deleting_destructor'
 // Address: 00412c00
-/* public: virtual void * __thiscall TechnologyItem::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall TechnologyItem::_scalar_deleting_destructor_(TechnologyItem *this,uint param_1)
 {
   ~TechnologyItem(this);
@@ -147,8 +143,6 @@ void * __thiscall TechnologyItem::_scalar_deleting_destructor_(TechnologyItem *t
 
 // Function: TechnologyItem
 // Address: 00412c20
-/* public: __thiscall TechnologyItem::TechnologyItem(int,char *,class ResourceItem) */
-
 TechnologyItem * __thiscall
 TechnologyItem::TechnologyItem(TechnologyItem *this,int param_1,char *param_2,ResourceItem param_3)
 {
@@ -166,7 +160,6 @@ TechnologyItem::TechnologyItem(TechnologyItem *this,int param_1,char *param_2,Re
   local_c = *unaff_FS_OFFSET;
   pcStack_8 = FUN_0055c853;
   *unaff_FS_OFFSET = &local_c;
-                    /* language.dll match for 0x70: "B" */
   local_4 = 0;
   this->next = (TechnologyItem *)0x0;
   this->prev = (TechnologyItem *)0x0;
@@ -213,8 +206,6 @@ TechnologyItem::TechnologyItem(TechnologyItem *this,int param_1,char *param_2,Re
 
 // Function: TechnologyItem
 // Address: 00412cd0
-/* public: __thiscall TechnologyItem::TechnologyItem(class TechnologyItem const &) */
-
 TechnologyItem * __thiscall
 TechnologyItem::TechnologyItem(TechnologyItem *this,TechnologyItem *param_1)
 {
@@ -234,7 +225,6 @@ TechnologyItem::TechnologyItem(TechnologyItem *this,TechnologyItem *param_1)
   local_4 = 0xffffffff;
   pcStack_8 = FUN_0055c86b;
   *unaff_FS_OFFSET = &local_c;
-                    /* language.dll match for 0x70: "B" */
   this->next = (TechnologyItem *)0x0;
   this->prev = (TechnologyItem *)0x0;
   iVar2 = param_1->idValue;
@@ -280,8 +270,6 @@ TechnologyItem::TechnologyItem(TechnologyItem *this,TechnologyItem *param_1)
 
 // Function: ~TechnologyItem
 // Address: 00412d70
-/* public: virtual __thiscall TechnologyItem::~TechnologyItem(void) */
-
 void __thiscall TechnologyItem::~TechnologyItem(TechnologyItem *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -295,8 +283,6 @@ void __thiscall TechnologyItem::~TechnologyItem(TechnologyItem *this)
 
 // Function: id
 // Address: 00412e10
-/* public: int __thiscall TechnologyItem::id(void)const  */
-
 int __thiscall TechnologyItem::id(TechnologyItem *this)
 {
   return this->idValue;
@@ -306,8 +292,6 @@ int __thiscall TechnologyItem::id(TechnologyItem *this)
 
 // Function: name
 // Address: 00412e20
-/* public: char * __thiscall TechnologyItem::name(void) */
-
 char * __thiscall TechnologyItem::name(TechnologyItem *this)
 {
   return this->nameValue;
@@ -317,8 +301,6 @@ char * __thiscall TechnologyItem::name(TechnologyItem *this)
 
 // Function: resourceCost
 // Address: 00412e30
-/* public: class ResourceItem * __thiscall TechnologyItem::resourceCost(void) */
-
 ResourceItem * __thiscall TechnologyItem::resourceCost(TechnologyItem *this)
 {
   return this->resourceCostValue;

@@ -85,8 +85,6 @@
 
 // Function: TribeTacticalAIModule
 // Address: 004ed1c0
-/* public: __thiscall TribeTacticalAIModule::TribeTacticalAIModule(void *,int) */
-
 TribeTacticalAIModule * __thiscall
 TribeTacticalAIModule::TribeTacticalAIModule(TribeTacticalAIModule *this,void *param_1,int param_2)
 {
@@ -244,9 +242,6 @@ TribeTacticalAIModule::TribeTacticalAIModule(TribeTacticalAIModule *this,void *p
 
 // Function: `scalar_deleting_destructor'
 // Address: 004ed4d0
-/* public: virtual void * __thiscall TribeTacticalAIModule::`scalar deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TribeTacticalAIModule::_scalar_deleting_destructor_(TribeTacticalAIModule *this,uint param_1)
 {
@@ -261,10 +256,6 @@ TribeTacticalAIModule::_scalar_deleting_destructor_(TribeTacticalAIModule *this,
 
 // Function: TribeTacticalAIModule
 // Address: 004ed4f0
-/* WARNING: Variable defined which should be unmapped: i */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: __thiscall TribeTacticalAIModule::TribeTacticalAIModule(int,int) */
-
 TribeTacticalAIModule * __thiscall
 TribeTacticalAIModule::TribeTacticalAIModule(TribeTacticalAIModule *this,int param_1,int param_2)
 {
@@ -497,7 +488,6 @@ LAB_004ed92c:
     }
   }
   else {
-                    /* language.dll match for 0x4b0: "Ready" */
     rge_read(iVar6,this->gatherers,0x4b0);
   }
   rge_read(param_2,&param_1,4);
@@ -1130,8 +1120,6 @@ LAB_004ee6c3:
 
 // Function: ~TribeTacticalAIModule
 // Address: 004eeb40
-/* public: virtual __thiscall TribeTacticalAIModule::~TribeTacticalAIModule(void) */
-
 void __thiscall TribeTacticalAIModule::~TribeTacticalAIModule(TribeTacticalAIModule *this)
 {
   int *piVar1;
@@ -1302,8 +1290,6 @@ void __thiscall TribeTacticalAIModule::~TribeTacticalAIModule(TribeTacticalAIMod
 // [HELPER] s_Task_IdleSol: "Task IdleSol"
 // [HELPER] s_Task_UngrpSol: "Task UngrpSol"
 // [HELPER] s_Train: "Train"
-/* public: char * __thiscall TribeTacticalAIModule::updateAreaName(void) */
-
 char * __thiscall TribeTacticalAIModule::updateAreaName(TribeTacticalAIModule *this)
 {
   switch(this->updateArea) {
@@ -1360,17 +1346,6 @@ char * __thiscall TribeTacticalAIModule::updateAreaName(TribeTacticalAIModule *t
 
 // Function: update
 // Address: 004eef40
-/* WARNING: Removing unreachable block (ram,0x004ef113) */
-/* WARNING: Removing unreachable block (ram,0x004ef119) */
-/* WARNING: Removing unreachable block (ram,0x004ef11d) */
-/* WARNING: Removing unreachable block (ram,0x004ef12c) */
-/* WARNING: Removing unreachable block (ram,0x004ef1d5) */
-/* WARNING: Removing unreachable block (ram,0x004ef1db) */
-/* WARNING: Removing unreachable block (ram,0x004ef1df) */
-/* WARNING: Removing unreachable block (ram,0x004ef1ee) */
-/* WARNING: Variable defined which should be unmapped: mostHatedPlayer */
-/* public: virtual int __thiscall TribeTacticalAIModule::update(int) */
-
 int __thiscall TribeTacticalAIModule::update(TribeTacticalAIModule *this,int param_1)
 {
   short sVar1;
@@ -1568,9 +1543,6 @@ LAB_004ef47f:
 
 // Function: setMainDecisionAI
 // Address: 004ef4d0
-/* public: void __thiscall TribeTacticalAIModule::setMainDecisionAI(class TribeMainDecisionAIModule
-   *) */
-
 void __thiscall
 TribeTacticalAIModule::setMainDecisionAI
           (TribeTacticalAIModule *this,TribeMainDecisionAIModule *param_1)
@@ -1583,9 +1555,6 @@ TribeTacticalAIModule::setMainDecisionAI
 
 // Function: save
 // Address: 004ef4e0
-/* WARNING: Variable defined which should be unmapped: tempInt */
-/* public: virtual int __thiscall TribeTacticalAIModule::save(int) */
-
 int __thiscall TribeTacticalAIModule::save(TribeTacticalAIModule *this,int param_1)
 {
   TacticalAIGroup *this_00;
@@ -1624,7 +1593,6 @@ int __thiscall TribeTacticalAIModule::save(TribeTacticalAIModule *this,int param
   }
   rge_write(param_1,&this->numberGatherersValue,4);
   rge_write(param_1,&this->desiredNumberGatherersValue,4);
-                    /* language.dll match for 0x4b0: "Ready" */
   rge_write(param_1,this->gatherers,0x4b0);
   local_4 = (this->soldiers).numberValue;
   rge_write(param_1,&local_4,4);
@@ -2002,8 +1970,6 @@ int __thiscall TribeTacticalAIModule::save(TribeTacticalAIModule *this,int param
 
 // Function: logGroupDebug
 // Address: 004f0180
-/* public: void __cdecl TribeTacticalAIModule::logGroupDebug(int,char *,...) */
-
 void __thiscall
 TribeTacticalAIModule::logGroupDebug(TribeTacticalAIModule *this,int param_1,char *param_2,...)
 {
@@ -2016,9 +1982,6 @@ TribeTacticalAIModule::logGroupDebug(TribeTacticalAIModule *this,int param_1,cha
 // Address: 004f0190
 // [HELPER] s_C__msdev_work_age1_x1_taitacmd_c: "C:\msdev\work\age1_x1\taitacmd.cpp"
 // [HELPER] s__s_bld: "%s.bld"
-/* WARNING: Variable defined which should be unmapped: incUpdateArea */
-/* public: int __thiscall TribeTacticalAIModule::doSomething(void) */
-
 int __thiscall TribeTacticalAIModule::doSomething(TribeTacticalAIModule *this)
 {
   uint uVar1;
@@ -2317,7 +2280,6 @@ int __thiscall TribeTacticalAIModule::doSomething(TribeTacticalAIModule *this)
       }
     } while (uVar10 - uVar3 < uVar1);
   }
-                    /* language.dll match for 0xbc9: "%s paid %d stone in tribute to you." */
   uVar4 = debug_timeGetTime(s_C__msdev_work_age1_x1_taitacmd_c,0xbc9);
   RGE_Game_World::useComputerPlayerUpdateTime
             (*(RGE_Game_World **)(this->md->_padding_ + 0x3c),uVar4 - uVar3);
@@ -2328,10 +2290,6 @@ int __thiscall TribeTacticalAIModule::doSomething(TribeTacticalAIModule *this)
 
 // Function: clearArea
 // Address: 004f0bc0
-/* WARNING: Variable defined which should be unmapped: tempX */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: int __thiscall TribeTacticalAIModule::clearArea(int,float,float,float,float) */
-
 int __thiscall
 TribeTacticalAIModule::clearArea
           (TribeTacticalAIModule *this,int param_1,float param_2,float param_3,float param_4,
@@ -2406,8 +2364,6 @@ TribeTacticalAIModule::clearArea
 
 // Function: addObject
 // Address: 004f0d70
-/* public: void __thiscall TribeTacticalAIModule::addObject(class RGE_Static_Object *) */
-
 void __thiscall
 TribeTacticalAIModule::addObject(TribeTacticalAIModule *this,RGE_Static_Object *param_1)
 {
@@ -2557,8 +2513,6 @@ LAB_004f1077:
 
 // Function: removeObject
 // Address: 004f1090
-/* public: void __thiscall TribeTacticalAIModule::removeObject(int) */
-
 void __thiscall TribeTacticalAIModule::removeObject(TribeTacticalAIModule *this,int param_1)
 {
   int iVar1;
@@ -2755,9 +2709,6 @@ LAB_004f1316:
 
 // Function: evaluateCivilianDistribution
 // Address: 004f13f0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall TribeTacticalAIModule::evaluateCivilianDistribution(void) */
-
 void __thiscall TribeTacticalAIModule::evaluateCivilianDistribution(TribeTacticalAIModule *this)
 {
   int iVar1;
@@ -2851,10 +2802,6 @@ LAB_004f15df:
 // Function: taskCivilians
 // Address: 004f1600
 // [HELPER] s_C__msdev_work_age1_x1_taitacmd_c: "C:\msdev\work\age1_x1\taitacmd.cpp"
-/* WARNING: Variable defined which should be unmapped: j */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: int __thiscall TribeTacticalAIModule::taskCivilians(unsigned long,unsigned long) */
-
 int __thiscall
 TribeTacticalAIModule::taskCivilians(TribeTacticalAIModule *this,ulong param_1,ulong param_2)
 {
@@ -3193,9 +3140,6 @@ LAB_004f1d49:
 // Function: taskIdleSoldiers
 // Address: 004f1e10
 // [HELPER] s_C__msdev_work_age1_x1_taitacmd_c: "C:\msdev\work\age1_x1\taitacmd.cpp"
-/* WARNING: Variable defined which should be unmapped: readyToTask */
-/* public: void __thiscall TribeTacticalAIModule::taskIdleSoldiers(unsigned long,unsigned long) */
-
 void __thiscall
 TribeTacticalAIModule::taskIdleSoldiers(TribeTacticalAIModule *this,ulong param_1,ulong param_2)
 {
@@ -3368,10 +3312,6 @@ LAB_004f2194:
 // [HELPER] s_C__msdev_work_age1_x1_taitacmd_c: "C:\msdev\work\age1_x1\taitacmd.cpp"
 // [HELPER] s_____Unit__d_has_invalid_unitAI_: "    Unit %d has invalid unitAI."
 // [HELPER] s_____Unit__d_is_invalid_: "    Unit %d is invalid."
-/* WARNING: Variable defined which should be unmapped: commanderObj */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall TribeTacticalAIModule::taskActiveSoldiers(unsigned long,unsigned long) */
-
 void __thiscall
 TribeTacticalAIModule::taskActiveSoldiers(TribeTacticalAIModule *this,ulong param_1,ulong param_2)
 {
@@ -4716,7 +4656,6 @@ LAB_004f4548:
           }
         }
 LAB_004f4552:
-                    /* Symbol Ref: {@symbol ContinueLoop} */
         if ((this->attackStateValue).active != 0) {
           return;
         }
@@ -4743,9 +4682,6 @@ LAB_004f4552:
 
 // Function: playTaskSoldiers
 // Address: 004f4760
-/* WARNING: Variable defined which should be unmapped: countUnplayedSoldiers */
-/* public: void __thiscall TribeTacticalAIModule::playTaskSoldiers(unsigned long,unsigned long) */
-
 void __thiscall
 TribeTacticalAIModule::playTaskSoldiers(TribeTacticalAIModule *this,ulong param_1,ulong param_2)
 {
@@ -4873,9 +4809,6 @@ TribeTacticalAIModule::playTaskSoldiers(TribeTacticalAIModule *this,ulong param_
 
 // Function: taskUngroupedSoldiers
 // Address: 004f4aa0
-/* WARNING: Variable defined which should be unmapped: i */
-/* public: void __thiscall TribeTacticalAIModule::taskUngroupedSoldiers(void) */
-
 void __thiscall TribeTacticalAIModule::taskUngroupedSoldiers(TribeTacticalAIModule *this)
 {
   ManagedArray<int> *this_00;
@@ -5018,9 +4951,6 @@ LAB_004f4d69:
 
 // Function: taskBoats
 // Address: 004f4d90
-/* WARNING: Variable defined which should be unmapped: numExclusions */
-/* public: void __thiscall TribeTacticalAIModule::taskBoats(void) */
-
 void __thiscall TribeTacticalAIModule::taskBoats(TribeTacticalAIModule *this)
 {
   uchar uVar1;
@@ -5414,10 +5344,6 @@ LAB_004f579c:
 
 // Function: evaluateOpenTasks
 // Address: 004f57c0
-/* WARNING: Variable defined which should be unmapped: i */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall TribeTacticalAIModule::evaluateOpenTasks(void) */
-
 void __thiscall TribeTacticalAIModule::evaluateOpenTasks(TribeTacticalAIModule *this)
 {
   ManagedArray<int> *this_00;
@@ -5742,8 +5668,6 @@ LAB_004f5a80:
 
 // Function: evaluateBuildListInsertions
 // Address: 004f5fb0
-/* public: void __thiscall TribeTacticalAIModule::evaluateBuildListInsertions(void) */
-
 void __thiscall TribeTacticalAIModule::evaluateBuildListInsertions(TribeTacticalAIModule *this)
 {
   int iVar1;
@@ -5752,7 +5676,6 @@ void __thiscall TribeTacticalAIModule::evaluateBuildListInsertions(TribeTactical
     iVar1 = BuildAIModule::haveBuildList((BuildAIModule *)&this->md->buildAI);
     if (((iVar1 != 0) && (this->builtFirstStoragePit == 0)) &&
        (this->sn[0xa9] <= (this->md->informationAI).numberFoundForestTilesValue)) {
-                    /* language.dll match for 0x67: "Comic Sans MS" */
       TribeBuildAIModule::insert(&this->md->buildAI,0x67,1,0);
       this->builtFirstStoragePit = 1;
     }
@@ -5790,8 +5713,6 @@ LAB_004f6093:
 
 // Function: numberCivilians
 // Address: 004f6100
-/* public: int __thiscall TribeTacticalAIModule::numberCivilians(void)const  */
-
 int __thiscall TribeTacticalAIModule::numberCivilians(TribeTacticalAIModule *this)
 {
   return (this->civilians).numberValue;
@@ -5801,8 +5722,6 @@ int __thiscall TribeTacticalAIModule::numberCivilians(TribeTacticalAIModule *thi
 
 // Function: numberCivilianExplorers
 // Address: 004f6110
-/* public: int __thiscall TribeTacticalAIModule::numberCivilianExplorers(void)const  */
-
 int __thiscall TribeTacticalAIModule::numberCivilianExplorers(TribeTacticalAIModule *this)
 {
   return (this->civilianExplorers).numberValue;
@@ -5812,8 +5731,6 @@ int __thiscall TribeTacticalAIModule::numberCivilianExplorers(TribeTacticalAIMod
 
 // Function: numberGatherers
 // Address: 004f6120
-/* public: int __thiscall TribeTacticalAIModule::numberGatherers(void)const  */
-
 int __thiscall TribeTacticalAIModule::numberGatherers(TribeTacticalAIModule *this)
 {
   return this->numberGatherersValue;
@@ -5823,8 +5740,6 @@ int __thiscall TribeTacticalAIModule::numberGatherers(TribeTacticalAIModule *thi
 
 // Function: desiredNumberCivilianExplorers
 // Address: 004f6130
-/* public: int __thiscall TribeTacticalAIModule::desiredNumberCivilianExplorers(void)const  */
-
 int __thiscall TribeTacticalAIModule::desiredNumberCivilianExplorers(TribeTacticalAIModule *this)
 {
   return (this->civilianExplorers).desiredNumberValue;
@@ -5834,8 +5749,6 @@ int __thiscall TribeTacticalAIModule::desiredNumberCivilianExplorers(TribeTactic
 
 // Function: desiredNumberGatherers
 // Address: 004f6140
-/* public: int __thiscall TribeTacticalAIModule::desiredNumberGatherers(void)const  */
-
 int __thiscall TribeTacticalAIModule::desiredNumberGatherers(TribeTacticalAIModule *this)
 {
   return this->desiredNumberGatherersValue;
@@ -5845,8 +5758,6 @@ int __thiscall TribeTacticalAIModule::desiredNumberGatherers(TribeTacticalAIModu
 
 // Function: numberSoldiers
 // Address: 004f6150
-/* public: int __thiscall TribeTacticalAIModule::numberSoldiers(void)const  */
-
 int __thiscall TribeTacticalAIModule::numberSoldiers(TribeTacticalAIModule *this)
 {
   return (this->soldiers).numberValue;
@@ -5856,13 +5767,9 @@ int __thiscall TribeTacticalAIModule::numberSoldiers(TribeTacticalAIModule *this
 
 // Function: numberSoldierExplorers
 // Address: 004f6160
-/* public: int __thiscall TribeTacticalAIModule::numberSoldierExplorers(void) */
-
 int __thiscall TribeTacticalAIModule::numberSoldierExplorers(TribeTacticalAIModule *this)
 {
   int iVar1;
-  
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
   iVar1 = numberUnitsInGroups(this,0x66);
   return iVar1;
 }
@@ -5871,8 +5778,6 @@ int __thiscall TribeTacticalAIModule::numberSoldierExplorers(TribeTacticalAIModu
 
 // Function: numberBoats
 // Address: 004f6170
-/* public: int __thiscall TribeTacticalAIModule::numberBoats(void)const  */
-
 int __thiscall TribeTacticalAIModule::numberBoats(TribeTacticalAIModule *this)
 {
   return (this->boats).numberValue;
@@ -5882,8 +5787,6 @@ int __thiscall TribeTacticalAIModule::numberBoats(TribeTacticalAIModule *this)
 
 // Function: neededResource
 // Address: 004f6180
-/* public: int __thiscall TribeTacticalAIModule::neededResource(int)const  */
-
 int __thiscall TribeTacticalAIModule::neededResource(TribeTacticalAIModule *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 4)) {
@@ -5896,8 +5799,6 @@ int __thiscall TribeTacticalAIModule::neededResource(TribeTacticalAIModule *this
 
 // Function: neededResourceAmount
 // Address: 004f61a0
-/* public: int __thiscall TribeTacticalAIModule::neededResourceAmount(int)const  */
-
 int __thiscall TribeTacticalAIModule::neededResourceAmount(TribeTacticalAIModule *this,int param_1)
 {
   int iVar1;
@@ -5914,8 +5815,6 @@ int __thiscall TribeTacticalAIModule::neededResourceAmount(TribeTacticalAIModule
 // Function: detask
 // Address: 004f61d0
 // [HELPER] s_ERROR_DETASKING_Unit___d_: "ERROR DETASKING Unit #%d!"
-/* public: void __thiscall TribeTacticalAIModule::detask(int) */
-
 void __thiscall TribeTacticalAIModule::detask(TribeTacticalAIModule *this,int param_1)
 {
   if (param_1 == -1) {
@@ -5932,8 +5831,6 @@ void __thiscall TribeTacticalAIModule::detask(TribeTacticalAIModule *this,int pa
 
 // Function: strategicNumber
 // Address: 004f6210
-/* public: int __thiscall TribeTacticalAIModule::strategicNumber(int) */
-
 int __thiscall TribeTacticalAIModule::strategicNumber(TribeTacticalAIModule *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 0xe2)) {
@@ -5946,8 +5843,6 @@ int __thiscall TribeTacticalAIModule::strategicNumber(TribeTacticalAIModule *thi
 
 // Function: setStrategicNumber
 // Address: 004f6230
-/* public: void __thiscall TribeTacticalAIModule::setStrategicNumber(int,int) */
-
 void __thiscall
 TribeTacticalAIModule::setStrategicNumber(TribeTacticalAIModule *this,int param_1,int param_2)
 {
@@ -5974,9 +5869,6 @@ TribeTacticalAIModule::setStrategicNumber(TribeTacticalAIModule *this,int param_
 // Function: notify
 // Address: 004f62c0
 // [HELPER] s_C__msdev_work_age1_x1_taitacmd_c: "C:\msdev\work\age1_x1\taitacmd.cpp"
-/* WARNING: Variable defined which should be unmapped: numberToRespond */
-/* public: virtual void __thiscall TribeTacticalAIModule::notify(int,int,int,long,long,long) */
-
 void __thiscall
 TribeTacticalAIModule::notify
           (TribeTacticalAIModule *this,int param_1,int param_2,int param_3,long param_4,long param_5
@@ -6260,7 +6152,6 @@ LAB_004f657c:
   if (iVar8 == 1) {
     iVar8 = this->sn[0x14];
 LAB_004f66f3:
-                    /* language.dll match for 0x67: "Comic Sans MS" */
     this_00 = readyAndIdleGroup(this,0x67,iVar8,&attackPoint);
     if (this_00 != (TacticalAIGroup *)0x0) goto LAB_004f6706;
   }
@@ -6571,9 +6462,6 @@ LAB_004f7055:
 
 // Function: numberIdleSoldiers
 // Address: 004f7350
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: int __thiscall TribeTacticalAIModule::numberIdleSoldiers(void) */
-
 int __thiscall TribeTacticalAIModule::numberIdleSoldiers(TribeTacticalAIModule *this)
 {
   int *piVar1;
@@ -6679,8 +6567,6 @@ LAB_004f755b:
 
 // Function: numberSoldiersWithPriority
 // Address: 004f7590
-/* public: int __thiscall TribeTacticalAIModule::numberSoldiersWithPriority(int,int,int) */
-
 int __thiscall
 TribeTacticalAIModule::numberSoldiersWithPriority
           (TribeTacticalAIModule *this,int param_1,int param_2,int param_3)
@@ -6830,9 +6716,6 @@ LAB_004f7778:
 
 // Function: numberWarshipsWithPriority
 // Address: 004f7870
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: int __thiscall TribeTacticalAIModule::numberWarshipsWithPriority(int,int) */
-
 int __thiscall
 TribeTacticalAIModule::numberWarshipsWithPriority
           (TribeTacticalAIModule *this,int param_1,int param_2)
@@ -7089,8 +6972,6 @@ LAB_004f7d5f:
 
 // Function: idleSoldier
 // Address: 004f7d90
-/* public: int __thiscall TribeTacticalAIModule::idleSoldier(void) */
-
 int __thiscall TribeTacticalAIModule::idleSoldier(TribeTacticalAIModule *this)
 {
   int *piVar1;
@@ -7146,9 +7027,6 @@ int __thiscall TribeTacticalAIModule::idleSoldier(TribeTacticalAIModule *this)
 
 // Function: idleCivilian
 // Address: 004f7e80
-/* WARNING: Variable defined which should be unmapped: unitObj */
-/* public: int __thiscall TribeTacticalAIModule::idleCivilian(int) */
-
 int __thiscall TribeTacticalAIModule::idleCivilian(TribeTacticalAIModule *this,int param_1)
 {
   undefined1 *puVar1;
@@ -7303,9 +7181,6 @@ LAB_004f8160:
 
 // Function: idleCivilian
 // Address: 004f81a0
-/* WARNING: Variable defined which should be unmapped: bestUnitDistance */
-/* public: int __thiscall TribeTacticalAIModule::idleCivilian(int,struct XYPoint &,int) */
-
 int __thiscall
 TribeTacticalAIModule::idleCivilian
           (TribeTacticalAIModule *this,int param_1,XYPoint *param_2,int param_3)
@@ -7485,9 +7360,6 @@ LAB_004f8542:
 
 // Function: civilian
 // Address: 004f8570
-/* WARNING: Variable defined which should be unmapped: bestUnitDistance */
-/* public: int __thiscall TribeTacticalAIModule::civilian(struct XYPoint &,int,int,int,int,int) */
-
 int __thiscall
 TribeTacticalAIModule::civilian
           (TribeTacticalAIModule *this,XYPoint *param_1,int param_2,int param_3,int param_4,
@@ -7594,8 +7466,6 @@ LAB_004f8790:
 
 // Function: unit
 // Address: 004f87b0
-/* public: int __thiscall TribeTacticalAIModule::unit(int,int,int) */
-
 int __thiscall
 TribeTacticalAIModule::unit(TribeTacticalAIModule *this,int param_1,int param_2,int param_3)
 {
@@ -7800,8 +7670,6 @@ LAB_004f8ba6:
 
 // Function: busyWithAction
 // Address: 004f8be0
-/* public: int __thiscall TribeTacticalAIModule::busyWithAction(int,int) */
-
 int __thiscall
 TribeTacticalAIModule::busyWithAction(TribeTacticalAIModule *this,int param_1,int param_2)
 {
@@ -7827,8 +7695,6 @@ TribeTacticalAIModule::busyWithAction(TribeTacticalAIModule *this,int param_1,in
 
 // Function: displayCivilianDistribution
 // Address: 004f8c30
-/* public: void __thiscall TribeTacticalAIModule::displayCivilianDistribution(void) */
-
 void __thiscall TribeTacticalAIModule::displayCivilianDistribution(TribeTacticalAIModule *this)
 {
   return;
@@ -7838,8 +7704,6 @@ void __thiscall TribeTacticalAIModule::displayCivilianDistribution(TribeTactical
 
 // Function: updateNeededResources
 // Address: 004f8c40
-/* public: void __thiscall TribeTacticalAIModule::updateNeededResources(void) */
-
 void __thiscall TribeTacticalAIModule::updateNeededResources(TribeTacticalAIModule *this)
 {
   int iVar1;
@@ -7946,9 +7810,6 @@ LAB_004f8d95:
 
 // Function: updateGathererDistribution
 // Address: 004f8e20
-/* WARNING: Variable defined which should be unmapped: gSTT */
-/* public: void __thiscall TribeTacticalAIModule::updateGathererDistribution(void) */
-
 void __thiscall TribeTacticalAIModule::updateGathererDistribution(TribeTacticalAIModule *this)
 {
   bool bVar1;
@@ -8197,8 +8058,6 @@ LAB_004f91ed:
 
 // Function: stopUnit
 // Address: 004f9380
-/* public: int __thiscall TribeTacticalAIModule::stopUnit(int,int) */
-
 int __thiscall TribeTacticalAIModule::stopUnit(TribeTacticalAIModule *this,int param_1,int param_2)
 {
   int *piVar1;
@@ -8214,8 +8073,6 @@ int __thiscall TribeTacticalAIModule::stopUnit(TribeTacticalAIModule *this,int p
 
 // Function: moveUnit
 // Address: 004f93d0
-/* public: int __thiscall TribeTacticalAIModule::moveUnit(int,float,float,int) */
-
 int __thiscall
 TribeTacticalAIModule::moveUnit
           (TribeTacticalAIModule *this,int param_1,float param_2,float param_3,int param_4)
@@ -8233,9 +8090,6 @@ TribeTacticalAIModule::moveUnit
 
 // Function: groupGatherUnit
 // Address: 004f9420
-/* public: int __thiscall
-   TribeTacticalAIModule::groupGatherUnit(int,int,float,float,float,float,int) */
-
 int __thiscall
 TribeTacticalAIModule::groupGatherUnit
           (TribeTacticalAIModule *this,int param_1,int param_2,float param_3,float param_4,
@@ -8254,9 +8108,6 @@ TribeTacticalAIModule::groupGatherUnit
 
 // Function: highLevelTaskExplorer
 // Address: 004f9470
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: int __thiscall TribeTacticalAIModule::highLevelTaskExplorer(int,int) */
-
 int __thiscall
 TribeTacticalAIModule::highLevelTaskExplorer(TribeTacticalAIModule *this,int param_1,int param_2)
 {
@@ -8320,9 +8171,6 @@ TribeTacticalAIModule::highLevelTaskExplorer(TribeTacticalAIModule *this,int par
 // Function: highLevelTaskGatherer
 // Address: 004f95b0
 // [HELPER] s_C__msdev_work_age1_x1_taitacmd_c: "C:\msdev\work\age1_x1\taitacmd.cpp"
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: int __thiscall TribeTacticalAIModule::highLevelTaskGatherer(int,unsigned long) */
-
 int __thiscall
 TribeTacticalAIModule::highLevelTaskGatherer(TribeTacticalAIModule *this,int param_1,ulong param_2)
 {
@@ -8354,8 +8202,6 @@ TribeTacticalAIModule::highLevelTaskGatherer(TribeTacticalAIModule *this,int par
   if (iVar4 <= iVar8) {
     return 0;
   }
-                    /* language.dll match for 0x1f5c: "Research Plow: +75 food production for Farms"
-                        */
   uVar2 = debug_timeGetTime(s_C__msdev_work_age1_x1_taitacmd_c,0x1f5c);
   if (uVar2 - this->gatherers[iVar8].lastTaskTime < 5000) {
     return 1;
@@ -8489,9 +8335,6 @@ LAB_004f9964:
 
 // Function: taskPlay
 // Address: 004f99b0
-/* public: int __thiscall TribeTacticalAIModule::taskPlay(int,int *,int,int,int,struct Waypoint
-   *,int) */
-
 int __thiscall
 TribeTacticalAIModule::taskPlay
           (TribeTacticalAIModule *this,int param_1,int *param_2,int param_3,int param_4,int param_5,
@@ -8550,10 +8393,6 @@ LAB_004f9a97:
 
 // Function: taskBuilder
 // Address: 004f9ad0
-/* WARNING: Variable defined which should be unmapped: position */
-/* public: int __thiscall TribeTacticalAIModule::taskBuilder(int,class BuildItem *,class
-   ConstructionItem *,unsigned long) */
-
 int __thiscall
 TribeTacticalAIModule::taskBuilder
           (TribeTacticalAIModule *this,int param_1,BuildItem *param_2,ConstructionItem *param_3,
@@ -8697,9 +8536,6 @@ LAB_004f9d52:
 
 // Function: taskBuilder
 // Address: 004f9e00
-/* WARNING: Variable defined which should be unmapped: builderObj */
-/* public: int __thiscall TribeTacticalAIModule::taskBuilder(int,class RGE_Static_Object *) */
-
 int __thiscall
 TribeTacticalAIModule::taskBuilder
           (TribeTacticalAIModule *this,int param_1,RGE_Static_Object *param_2)
@@ -8789,9 +8625,6 @@ LAB_004f9f95:
 
 // Function: taskRepairer
 // Address: 004fa000
-/* WARNING: Variable defined which should be unmapped: builderObj */
-/* public: int __thiscall TribeTacticalAIModule::taskRepairer(int,class RGE_Static_Object *) */
-
 int __thiscall
 TribeTacticalAIModule::taskRepairer
           (TribeTacticalAIModule *this,int param_1,RGE_Static_Object *param_2)
@@ -8862,9 +8695,6 @@ LAB_004fa112:
 
 // Function: taskGatherer
 // Address: 004fa170
-/* WARNING: Variable defined which should be unmapped: numStoragePits */
-/* public: int __thiscall TribeTacticalAIModule::taskGatherer(int,int,int,unsigned long,int *) */
-
 int __thiscall
 TribeTacticalAIModule::taskGatherer
           (TribeTacticalAIModule *this,int param_1,int param_2,int param_3,ulong param_4,
@@ -9017,7 +8847,6 @@ joined_r0x004fa53f:
       if (gathererObj != (RGE_Static_Object *)0x0) goto LAB_004fa558;
     }
 LAB_004fa541:
-                    /* language.dll match for 0x67: "Comic Sans MS" */
     iVar5 = 0x67;
   }
   TribeBuildAIModule::insert(&this->md->buildAI,iVar5,1,-1);
@@ -9163,9 +8992,6 @@ LAB_004fa69e:
 
 // Function: taskExplorer
 // Address: 004fa820
-/* WARNING: Variable defined which should be unmapped: targetPoint */
-/* public: int __thiscall TribeTacticalAIModule::taskExplorer(int,int) */
-
 int __thiscall
 TribeTacticalAIModule::taskExplorer(TribeTacticalAIModule *this,int param_1,int param_2)
 {
@@ -9225,9 +9051,6 @@ LAB_004fa8db:
 
 // Function: taskExplorer
 // Address: 004fa940
-/* WARNING: Variable defined which should be unmapped: targetPoint */
-/* public: int __thiscall TribeTacticalAIModule::taskExplorer(int,float,float) */
-
 int __thiscall
 TribeTacticalAIModule::taskExplorer
           (TribeTacticalAIModule *this,int param_1,float param_2,float param_3)
@@ -9294,8 +9117,6 @@ LAB_004fa9fb:
 
 // Function: taskExplorer
 // Address: 004faaa0
-/* public: int __thiscall TribeTacticalAIModule::taskExplorer(int,float,float,int) */
-
 int __thiscall
 TribeTacticalAIModule::taskExplorer
           (TribeTacticalAIModule *this,int param_1,float param_2,float param_3,int param_4)
@@ -9388,8 +9209,6 @@ LAB_004fac3b:
 
 // Function: taskFollower
 // Address: 004fac90
-/* public: int __thiscall TribeTacticalAIModule::taskFollower(int,int,float,int) */
-
 int __thiscall
 TribeTacticalAIModule::taskFollower
           (TribeTacticalAIModule *this,int param_1,int param_2,float param_3,int param_4)
@@ -9440,8 +9259,6 @@ LAB_004fad48:
 
 // Function: taskDefender
 // Address: 004fada0
-/* public: int __thiscall TribeTacticalAIModule::taskDefender(int,int,float,int) */
-
 int __thiscall
 TribeTacticalAIModule::taskDefender
           (TribeTacticalAIModule *this,int param_1,int param_2,float param_3,int param_4)
@@ -9492,8 +9309,6 @@ LAB_004fae58:
 
 // Function: taskWaterExplorer
 // Address: 004faeb0
-/* public: int __thiscall TribeTacticalAIModule::taskWaterExplorer(int) */
-
 int __thiscall TribeTacticalAIModule::taskWaterExplorer(TribeTacticalAIModule *this,int param_1)
 {
   int iVar1;
@@ -9545,9 +9360,6 @@ LAB_004faf74:
 
 // Function: taskWaterTrader
 // Address: 004fafc0
-/* WARNING: Variable defined which should be unmapped: targetObj */
-/* public: int __thiscall TribeTacticalAIModule::taskWaterTrader(int,int) */
-
 int __thiscall
 TribeTacticalAIModule::taskWaterTrader(TribeTacticalAIModule *this,int param_1,int param_2)
 {
@@ -9620,8 +9432,6 @@ LAB_004fb111:
 
 // Function: taskWaterFisher
 // Address: 004fb160
-/* public: int __thiscall TribeTacticalAIModule::taskWaterFisher(int,int,float,float) */
-
 int __thiscall
 TribeTacticalAIModule::taskWaterFisher
           (TribeTacticalAIModule *this,int param_1,int param_2,float param_3,float param_4)
@@ -9690,9 +9500,6 @@ LAB_004fb288:
 
 // Function: taskAttacker
 // Address: 004fb2d0
-/* public: int __thiscall TribeTacticalAIModule::taskAttacker(int,float,float,int,int,struct
-   Waypoint *,int,int,int) */
-
 int __thiscall
 TribeTacticalAIModule::taskAttacker
           (TribeTacticalAIModule *this,int param_1,float param_2,float param_3,int param_4,
@@ -9782,8 +9589,6 @@ TribeTacticalAIModule::taskAttacker
 // Function: taskDefender
 // Address: 004fb500
 // [HELPER] s_ERROR__Unused_taskDefender_call_: "ERROR: Unused taskDefender call 2: defender=%d, target=(%f, %f)."
-/* public: int __thiscall TribeTacticalAIModule::taskDefender(int,int) */
-
 int __thiscall
 TribeTacticalAIModule::taskDefender(TribeTacticalAIModule *this,int param_1,int param_2)
 {
@@ -9797,8 +9602,6 @@ TribeTacticalAIModule::taskDefender(TribeTacticalAIModule *this,int param_1,int 
 // Function: taskDefender
 // Address: 004fb520
 // [HELPER] s_ERROR__Unused_taskDefender_call_: "ERROR: Unused taskDefender call 2: defender=%d, target=(%f, %f)."
-/* public: int __thiscall TribeTacticalAIModule::taskDefender(int,float,float) */
-
 int __thiscall
 TribeTacticalAIModule::taskDefender
           (TribeTacticalAIModule *this,int param_1,float param_2,float param_3)
@@ -9816,8 +9619,6 @@ TribeTacticalAIModule::taskDefender
 // [HELPER] s_Could_not_find_a_building_to_tra: "Could not find a building to train type %d (UniqueID=%d) at, returning FALSE."
 // [HELPER] s_Invalid_taskTrain_item__returnin: "Invalid taskTrain item, returning FALSE."
 // [HELPER] s_Training_ID___d__UniqueID__d__fr: "Training ID #%d (UniqueID=%d) from building with gameID=%d."
-/* public: int __thiscall TribeTacticalAIModule::taskTrain(class BuildItem *) */
-
 int __thiscall TribeTacticalAIModule::taskTrain(TribeTacticalAIModule *this,BuildItem *param_1)
 {
   int iVar1;
@@ -9903,8 +9704,6 @@ LAB_004fb6a7:
 // [HELPER] s_Could_not_find_a_building_to_res: "Could not find a building to research type %d (UniqueID=%d) at, returning FALSE."
 // [HELPER] s_Invalid_taskResearch_item__retur: "Invalid taskResearch item, returning FALSE."
 // [HELPER] s_Researching_ID___d__UniqueID__d_: "Researching ID #%d (UniqueID=%d) from building with gameID=%d."
-/* public: int __thiscall TribeTacticalAIModule::taskResearch(class BuildItem *) */
-
 int __thiscall TribeTacticalAIModule::taskResearch(TribeTacticalAIModule *this,BuildItem *param_1)
 {
   int iVar1;
@@ -9987,8 +9786,6 @@ LAB_004fb867:
 
 // Function: taskToEnter
 // Address: 004fb8d0
-/* public: int __thiscall TribeTacticalAIModule::taskToEnter(int,int) */
-
 int __thiscall
 TribeTacticalAIModule::taskToEnter(TribeTacticalAIModule *this,int param_1,int param_2)
 {
@@ -10041,8 +9838,6 @@ LAB_004fb994:
 
 // Function: taskTransporter
 // Address: 004fb9e0
-/* public: int __thiscall TribeTacticalAIModule::taskTransporter(int,float,float) */
-
 int __thiscall
 TribeTacticalAIModule::taskTransporter
           (TribeTacticalAIModule *this,int param_1,float param_2,float param_3)
@@ -10102,8 +9897,6 @@ LAB_004fbadf:
 
 // Function: removeFromTaskLists
 // Address: 004fbb30
-/* public: void __thiscall TribeTacticalAIModule::removeFromTaskLists(int) */
-
 void __thiscall TribeTacticalAIModule::removeFromTaskLists(TribeTacticalAIModule *this,int param_1)
 {
   int iVar1;
@@ -10164,8 +9957,6 @@ void __thiscall TribeTacticalAIModule::removeFromTaskLists(TribeTacticalAIModule
 
 // Function: calculatePriority
 // Address: 004fbc10
-/* public: int __thiscall TribeTacticalAIModule::calculatePriority(float) */
-
 int __thiscall TribeTacticalAIModule::calculatePriority(TribeTacticalAIModule *this,float param_1)
 {
   int iVar1;
@@ -10182,9 +9973,6 @@ int __thiscall TribeTacticalAIModule::calculatePriority(TribeTacticalAIModule *t
 // Function: setupSoldierGroups
 // Address: 004fbc30
 // [HELPER] s_C__msdev_work_age1_x1_taitacmd_c: "C:\msdev\work\age1_x1\taitacmd.cpp"
-/* WARNING: Variable defined which should be unmapped: numPotentialAGroups */
-/* public: void __thiscall TribeTacticalAIModule::setupSoldierGroups(void) */
-
 void __thiscall TribeTacticalAIModule::setupSoldierGroups(TribeTacticalAIModule *this)
 {
   ulong uVar1;
@@ -10318,14 +10106,11 @@ LAB_004fbda8:
   iVar2 = TribeInformationAIModule::fullyExploredZone
                     (&this->md->informationAI,*(this->soldiers).value);
   if (iVar2 == 0) {
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
     removeAllGroups(this,0x66);
     setStrategicNumber(this,0x2a,0);
   }
   iVar3 = numberGroups(this,100,-1);
-                    /* language.dll match for 0x65: "1" */
   numEGroups = numberGroups(this,0x65,-1);
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
   local_24 = numberGroups(this,0x66,-1);
   numberGroups(this,0x6d,-1);
   numberUngroupedArtifacts(this);
@@ -10495,13 +10280,11 @@ LAB_004fc2d8:
       if (pTVar10 == (TacticalAIGroup *)0x0) goto LAB_004fc2dc;
     }
     else {
-                    /* language.dll match for 0x65: "1" */
       pTVar10 = group(this,-1,0x65,-1,-1);
       if (pTVar10 != (TacticalAIGroup *)0x0) {
         numEGroups = numEGroups + -1;
         goto LAB_004fc2d8;
       }
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
       pTVar10 = group(this,-1,0x66,-1,-1);
       if (pTVar10 != (TacticalAIGroup *)0x0) {
         local_24 = local_24 + -1;
@@ -10537,7 +10320,6 @@ LAB_004fc3db:
       if (pTVar10 == (TacticalAIGroup *)0x0) goto LAB_004fc3df;
     }
     else {
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
       pTVar10 = group(this,-1,0x66,-1,-1);
       if (pTVar10 != (TacticalAIGroup *)0x0) {
         local_24 = local_24 + -1;
@@ -10547,7 +10329,6 @@ LAB_004fc3df:
       pTVar10 = createGroup(this,1);
       if (pTVar10 == (TacticalAIGroup *)0x0) break;
     }
-                    /* language.dll match for 0x65: "1" */
     TacticalAIGroup::setType(pTVar10,0x65);
     TacticalAIGroup::setTarget(pTVar10,-1);
     TacticalAIGroup::setTargetType(pTVar10,-1);
@@ -10555,7 +10336,6 @@ LAB_004fc3df:
     TacticalAIGroup::setInUse(pTVar10,0);
     TacticalAIGroup::setDesiredNumberUnits(pTVar10,this->sn[0x19]);
   }
-                    /* language.dll match for 0x65: "1" */
   while ((i < numEGroups && (pTVar10 = group(this,-1,0x65,-1,-1), pTVar10 != (TacticalAIGroup *)0x0)
          )) {
     iVar2 = TacticalAIGroup::id(pTVar10);
@@ -10564,12 +10344,10 @@ LAB_004fc3df:
   }
   while ((local_24 < numAGroups &&
          (pTVar10 = createGroup(this,1), pTVar10 != (TacticalAIGroup *)0x0))) {
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
     TacticalAIGroup::setType(pTVar10,0x66);
     TacticalAIGroup::setDesiredNumberUnits(pTVar10,this->sn[0x2b]);
     local_24 = local_24 + 1;
   }
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
   while ((numAGroups < local_24 &&
          (pTVar10 = group(this,-1,0x66,-1,-1), pTVar10 != (TacticalAIGroup *)0x0))) {
     iVar2 = TacticalAIGroup::id(pTVar10);
@@ -10588,10 +10366,6 @@ LAB_004fc3df:
 
 // Function: fillSoldierGroups
 // Address: 004fc500
-/* WARNING: Variable defined which should be unmapped: unitZone */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall TribeTacticalAIModule::fillSoldierGroups(void) */
-
 void __thiscall TribeTacticalAIModule::fillSoldierGroups(TribeTacticalAIModule *this)
 {
   undefined1 *puVar1;
@@ -11188,9 +10962,6 @@ LAB_004fc613:
 
 // Function: numberUngroupedSoldiers
 // Address: 004fd2f0
-/* WARNING: Variable defined which should be unmapped: rNum */
-/* public: int __thiscall TribeTacticalAIModule::numberUngroupedSoldiers(void) */
-
 int __thiscall TribeTacticalAIModule::numberUngroupedSoldiers(TribeTacticalAIModule *this)
 {
   int *piVar1;
@@ -11288,9 +11059,6 @@ LAB_004fd4c2:
 
 // Function: numberExtraGroupedSoldiers
 // Address: 004fd4f0
-/* WARNING: Variable defined which should be unmapped: j */
-/* public: int __thiscall TribeTacticalAIModule::numberExtraGroupedSoldiers(void) */
-
 int __thiscall TribeTacticalAIModule::numberExtraGroupedSoldiers(TribeTacticalAIModule *this)
 {
   int iVar1;
@@ -11380,9 +11148,6 @@ LAB_004fd692:
 
 // Function: numberUngroupedArtifacts
 // Address: 004fd6d0
-/* WARNING: Variable defined which should be unmapped: rNum */
-/* public: int __thiscall TribeTacticalAIModule::numberUngroupedArtifacts(void) */
-
 int __thiscall TribeTacticalAIModule::numberUngroupedArtifacts(TribeTacticalAIModule *this)
 {
   int *piVar1;
@@ -11488,8 +11253,6 @@ LAB_004fd8a2:
 // [HELPER] s_____Target__d__CommanderID__d__H: "    Target=%d, CommanderID=%d, HP(%d/%d), AssistGroup=%d."
 // [HELPER] s_____Unit__d___s___state__d__acti: "    Unit %d (%s): state=%d, action=%d, target=%d, order=%d, pri=%d, loc=(%3f,..."
 // [HELPER] s_______ObjectToDestroy___d___Unit: "      ObjectToDestroy #%d:  Unit #%d, but it's gone."
-/* public: void __thiscall TribeTacticalAIModule::displaySoldierGroups(void) */
-
 void __thiscall TribeTacticalAIModule::displaySoldierGroups(TribeTacticalAIModule *this)
 {
   uchar uVar1;
@@ -11719,9 +11482,6 @@ LAB_004fd9b8:
 
 // Function: setupBoatGroups
 // Address: 004fde00
-/* WARNING: Variable defined which should be unmapped: i */
-/* public: void __thiscall TribeTacticalAIModule::setupBoatGroups(void) */
-
 void __thiscall TribeTacticalAIModule::setupBoatGroups(TribeTacticalAIModule *this)
 {
   int iVar1;
@@ -11811,9 +11571,7 @@ LAB_004fdedf:
       numEGroups = numEGroups + 1;
     } while (numEGroups < groupsToRemove.desiredNumberValue);
   }
-                    /* language.dll match for 0x67: "Comic Sans MS" */
   groupsToRemove.value = (int *)numberGroups(this,0x67,-1);
-                    /* language.dll match for 0x68: "Arial" */
   iVar3 = numberGroups(this,0x68,-1);
   numPotentialAGroups = numberGroups(this,0x69,-1);
   numberGroups(this,0x6b,-1);
@@ -12156,7 +11914,6 @@ LAB_004fe76d:
       if (pTVar8 == (TacticalAIGroup *)0x0) goto LAB_004fe771;
     }
     else {
-                    /* language.dll match for 0x68: "Arial" */
       pTVar8 = group(this,-1,0x68,-1,-1);
       if (pTVar8 != (TacticalAIGroup *)0x0) {
         iVar3 = iVar3 + -1;
@@ -12171,7 +11928,6 @@ LAB_004fe771:
       pTVar8 = createGroup(this,1);
       if (pTVar8 == (TacticalAIGroup *)0x0) break;
     }
-                    /* language.dll match for 0x67: "Comic Sans MS" */
     TacticalAIGroup::setType(pTVar8,0x67);
     TacticalAIGroup::setTarget(pTVar8,-1);
     TacticalAIGroup::setTargetType(pTVar8,-1);
@@ -12179,8 +11935,6 @@ LAB_004fe771:
     TacticalAIGroup::setInUse(pTVar8,0);
     TacticalAIGroup::setDesiredNumberUnits(pTVar8,this->sn[0x3b]);
   }
-                    /* language.dll match for 0x67: "Comic Sans MS" */
-                    /* language.dll match for 0x67: "Comic Sans MS" */
   while ((numPotentialEGroups < (int)piVar4 &&
          ((pTVar8 = group(this,-1,0x67,0,-1), pTVar8 != (TacticalAIGroup *)0x0 ||
           (pTVar8 = group(this,-1,0x67,1,-1), pTVar8 != (TacticalAIGroup *)0x0))))) {
@@ -12204,7 +11958,6 @@ LAB_004fe83b:
       pTVar8 = createGroup(this,1);
       if (pTVar8 == (TacticalAIGroup *)0x0) break;
     }
-                    /* language.dll match for 0x68: "Arial" */
     TacticalAIGroup::setType(pTVar8,0x68);
     TacticalAIGroup::setTarget(pTVar8,-1);
     TacticalAIGroup::setTargetType(pTVar8,-1);
@@ -12212,7 +11965,6 @@ LAB_004fe83b:
     TacticalAIGroup::setInUse(pTVar8,0);
     TacticalAIGroup::setDesiredNumberUnits(pTVar8,this->sn[0x44]);
   }
-                    /* language.dll match for 0x68: "Arial" */
   while ((numEGroups < iVar3 &&
          (pTVar8 = group(this,-1,0x68,-1,-1), pTVar8 != (TacticalAIGroup *)0x0))) {
     iVar1 = TacticalAIGroup::id(pTVar8);
@@ -12251,10 +12003,6 @@ LAB_004fe83b:
 
 // Function: fillBoatGroups
 // Address: 004fe950
-/* WARNING: Variable defined which should be unmapped: bestGroup */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall TribeTacticalAIModule::fillBoatGroups(void) */
-
 void __thiscall TribeTacticalAIModule::fillBoatGroups(TribeTacticalAIModule *this)
 {
   int iVar1;
@@ -12280,7 +12028,6 @@ void __thiscall TribeTacticalAIModule::fillBoatGroups(TribeTacticalAIModule *thi
   do {
     if ((pTVar7 == &this->groups) || (pTVar7 == (TacticalAIGroup *)0x0)) {
       if (this->sn[0x28] == 0) {
-                    /* language.dll match for 0x67: "Comic Sans MS" */
         bestUnit_fffffff4 = 0x67;
         do {
           bestDistance = (float)(this->groups).next;
@@ -12750,9 +12497,6 @@ LAB_004fea63:
 
 // Function: numberUngroupedWarBoats
 // Address: 004ff4e0
-/* WARNING: Variable defined which should be unmapped: rNum */
-/* public: int __thiscall TribeTacticalAIModule::numberUngroupedWarBoats(void) */
-
 int __thiscall TribeTacticalAIModule::numberUngroupedWarBoats(TribeTacticalAIModule *this)
 {
   int *piVar1;
@@ -12850,9 +12594,6 @@ LAB_004ff6b2:
 
 // Function: numberExtraGroupedWarBoats
 // Address: 004ff6e0
-/* WARNING: Variable defined which should be unmapped: j */
-/* public: int __thiscall TribeTacticalAIModule::numberExtraGroupedWarBoats(void) */
-
 int __thiscall TribeTacticalAIModule::numberExtraGroupedWarBoats(TribeTacticalAIModule *this)
 {
   int iVar1;
@@ -12945,9 +12686,6 @@ LAB_004ff8a6:
 
 // Function: numberUngroupedFishingBoats
 // Address: 004ff8e0
-/* WARNING: Variable defined which should be unmapped: rNum */
-/* public: int __thiscall TribeTacticalAIModule::numberUngroupedFishingBoats(void) */
-
 int __thiscall TribeTacticalAIModule::numberUngroupedFishingBoats(TribeTacticalAIModule *this)
 {
   int *piVar1;
@@ -13045,9 +12783,6 @@ LAB_004ffab2:
 
 // Function: numberUngroupedTradeBoats
 // Address: 004ffae0
-/* WARNING: Variable defined which should be unmapped: rNum */
-/* public: int __thiscall TribeTacticalAIModule::numberUngroupedTradeBoats(void) */
-
 int __thiscall TribeTacticalAIModule::numberUngroupedTradeBoats(TribeTacticalAIModule *this)
 {
   int *piVar1;
@@ -13145,9 +12880,6 @@ LAB_004ffcb2:
 
 // Function: numberUngroupedTransportBoats
 // Address: 004ffce0
-/* WARNING: Variable defined which should be unmapped: rNum */
-/* public: int __thiscall TribeTacticalAIModule::numberUngroupedTransportBoats(void) */
-
 int __thiscall TribeTacticalAIModule::numberUngroupedTransportBoats(TribeTacticalAIModule *this)
 {
   int *piVar1;
@@ -13253,8 +12985,6 @@ LAB_004ffeb2:
 // [HELPER] s_____Target__d__CommanderID__d__H: "    Target=%d, CommanderID=%d, HP(%d/%d), AssistGroup=%d."
 // [HELPER] s_____Unit___d_: "    Unit #%d."
 // [HELPER] s_____Unit__d__state__d__action__d: "    Unit %d: state=%d, action=%d, target=%d, order=%d, priority=%d, location=..."
-/* public: void __thiscall TribeTacticalAIModule::displayBoatGroups(void) */
-
 void __thiscall TribeTacticalAIModule::displayBoatGroups(TribeTacticalAIModule *this)
 {
   int iVar1;
@@ -13430,8 +13160,6 @@ LAB_00500028:
 
 // Function: createGroup
 // Address: 00500260
-/* public: class TacticalAIGroup * __thiscall TribeTacticalAIModule::createGroup(int) */
-
 TacticalAIGroup * __thiscall
 TribeTacticalAIModule::createGroup(TribeTacticalAIModule *this,int param_1)
 {
@@ -13479,8 +13207,6 @@ TribeTacticalAIModule::createGroup(TribeTacticalAIModule *this,int param_1)
 
 // Function: removeGroup
 // Address: 00500320
-/* public: int __thiscall TribeTacticalAIModule::removeGroup(int) */
-
 int __thiscall TribeTacticalAIModule::removeGroup(TribeTacticalAIModule *this,int param_1)
 {
   int iVar1;
@@ -13512,8 +13238,6 @@ int __thiscall TribeTacticalAIModule::removeGroup(TribeTacticalAIModule *this,in
 
 // Function: removeAllGroups
 // Address: 005003a0
-/* public: int __thiscall TribeTacticalAIModule::removeAllGroups(int) */
-
 int __thiscall TribeTacticalAIModule::removeAllGroups(TribeTacticalAIModule *this,int param_1)
 {
   int *piVar1;
@@ -13545,8 +13269,6 @@ int __thiscall TribeTacticalAIModule::removeAllGroups(TribeTacticalAIModule *thi
 
 // Function: group
 // Address: 00500420
-/* public: class TacticalAIGroup * __thiscall TribeTacticalAIModule::group(int,int,int,int) */
-
 TacticalAIGroup * __thiscall
 TribeTacticalAIModule::group
           (TribeTacticalAIModule *this,int param_1,int param_2,int param_3,int param_4)
@@ -13576,9 +13298,6 @@ TribeTacticalAIModule::group
 
 // Function: bestGroup
 // Address: 005004c0
-/* public: class TacticalAIGroup * __thiscall TribeTacticalAIModule::bestGroup(int,int,int,struct
-   XYPoint &,int) */
-
 TacticalAIGroup * __thiscall
 TribeTacticalAIModule::bestGroup
           (TribeTacticalAIModule *this,int param_1,int param_2,int param_3,XYPoint *param_4,
@@ -13657,10 +13376,6 @@ LAB_00500651:
 
 // Function: readyAndIdleGroup
 // Address: 00500670
-/* WARNING: Variable defined which should be unmapped: bGValue */
-/* public: class TacticalAIGroup * __thiscall
-   TribeTacticalAIModule::readyAndIdleGroup(int,int,struct XYPoint &) */
-
 TacticalAIGroup * __thiscall
 TribeTacticalAIModule::readyAndIdleGroup
           (TribeTacticalAIModule *this,int param_1,int param_2,XYPoint *param_3)
@@ -13712,8 +13427,6 @@ TribeTacticalAIModule::readyAndIdleGroup
 
 // Function: addToGroup
 // Address: 005007b0
-/* public: int __thiscall TribeTacticalAIModule::addToGroup(int,int) */
-
 int __thiscall
 TribeTacticalAIModule::addToGroup(TribeTacticalAIModule *this,int param_1,int param_2)
 {
@@ -13732,8 +13445,6 @@ TribeTacticalAIModule::addToGroup(TribeTacticalAIModule *this,int param_1,int pa
 
 // Function: removeFromGroup
 // Address: 005007f0
-/* public: int __thiscall TribeTacticalAIModule::removeFromGroup(int,int) */
-
 int __thiscall
 TribeTacticalAIModule::removeFromGroup(TribeTacticalAIModule *this,int param_1,int param_2)
 {
@@ -13757,8 +13468,6 @@ TribeTacticalAIModule::removeFromGroup(TribeTacticalAIModule *this,int param_1,i
 
 // Function: removeFromGroup
 // Address: 00500850
-/* public: int __thiscall TribeTacticalAIModule::removeFromGroup(int) */
-
 int __thiscall TribeTacticalAIModule::removeFromGroup(TribeTacticalAIModule *this,int param_1)
 {
   TacticalAIGroup *this_00;
@@ -13782,8 +13491,6 @@ int __thiscall TribeTacticalAIModule::removeFromGroup(TribeTacticalAIModule *thi
 
 // Function: groupUnitIsIn
 // Address: 005008a0
-/* public: class TacticalAIGroup * __thiscall TribeTacticalAIModule::groupUnitIsIn(int) */
-
 TacticalAIGroup * __thiscall
 TribeTacticalAIModule::groupUnitIsIn(TribeTacticalAIModule *this,int param_1)
 {
@@ -13810,9 +13517,6 @@ TribeTacticalAIModule::groupUnitIsIn(TribeTacticalAIModule *this,int param_1)
 
 // Function: numberGroups
 // Address: 005008f0
-/* WARNING: Variable defined which should be unmapped: rVal */
-/* public: int __thiscall TribeTacticalAIModule::numberGroups(int,int) */
-
 int __thiscall
 TribeTacticalAIModule::numberGroups(TribeTacticalAIModule *this,int param_1,int param_2)
 {
@@ -13837,8 +13541,6 @@ TribeTacticalAIModule::numberGroups(TribeTacticalAIModule *this,int param_1,int 
 
 // Function: numberUnitsInGroups
 // Address: 00500950
-/* public: int __thiscall TribeTacticalAIModule::numberUnitsInGroups(int) */
-
 int __thiscall TribeTacticalAIModule::numberUnitsInGroups(TribeTacticalAIModule *this,int param_1)
 {
   TacticalAIGroup *this_00;
@@ -13860,8 +13562,6 @@ int __thiscall TribeTacticalAIModule::numberUnitsInGroups(TribeTacticalAIModule 
 
 // Function: numberItemsToAttack
 // Address: 005009a0
-/* public: int __thiscall TribeTacticalAIModule::numberItemsToAttack(void) */
-
 int __thiscall TribeTacticalAIModule::numberItemsToAttack(TribeTacticalAIModule *this)
 {
   int *piVar1;
@@ -13894,8 +13594,6 @@ int __thiscall TribeTacticalAIModule::numberItemsToAttack(TribeTacticalAIModule 
 
 // Function: itemToCapture
 // Address: 00500a30
-/* public: int __thiscall TribeTacticalAIModule::itemToCapture(void) */
-
 int __thiscall TribeTacticalAIModule::itemToCapture(TribeTacticalAIModule *this)
 {
   int iVar1;
@@ -13916,8 +13614,6 @@ int __thiscall TribeTacticalAIModule::itemToCapture(TribeTacticalAIModule *this)
 
 // Function: itemToBringToArea
 // Address: 00500a80
-/* public: int __thiscall TribeTacticalAIModule::itemToBringToArea(void) */
-
 int __thiscall TribeTacticalAIModule::itemToBringToArea(TribeTacticalAIModule *this)
 {
   int iVar1;
@@ -13938,8 +13634,6 @@ int __thiscall TribeTacticalAIModule::itemToBringToArea(TribeTacticalAIModule *t
 
 // Function: numberItemsToDefend
 // Address: 00500ad0
-/* public: int __thiscall TribeTacticalAIModule::numberItemsToDefend(void) */
-
 int __thiscall TribeTacticalAIModule::numberItemsToDefend(TribeTacticalAIModule *this)
 {
   int iVar1;
@@ -13952,8 +13646,6 @@ int __thiscall TribeTacticalAIModule::numberItemsToDefend(TribeTacticalAIModule 
 
 // Function: attackLimiterTime
 // Address: 00500af0
-/* public: unsigned long __thiscall TribeTacticalAIModule::attackLimiterTime(int) */
-
 ulong __thiscall TribeTacticalAIModule::attackLimiterTime(TribeTacticalAIModule *this,int param_1)
 {
   ulong uVar1;
@@ -13978,8 +13670,6 @@ ulong __thiscall TribeTacticalAIModule::attackLimiterTime(TribeTacticalAIModule 
 // Function: resetAttackSeparationTime
 // Address: 00500b30
 // [HELPER] s_C__msdev_work_age1_x1_taitacmd_c: "C:\msdev\work\age1_x1\taitacmd.cpp"
-/* public: void __thiscall TribeTacticalAIModule::resetAttackSeparationTime(void) */
-
 void __thiscall TribeTacticalAIModule::resetAttackSeparationTime(TribeTacticalAIModule *this)
 {
   int iVar1;
@@ -14003,9 +13693,6 @@ void __thiscall TribeTacticalAIModule::resetAttackSeparationTime(TribeTacticalAI
 
 // Function: setGatherLocation
 // Address: 00500ba0
-/* WARNING: Variable defined which should be unmapped: centerPoint */
-/* public: int __thiscall TribeTacticalAIModule::setGatherLocation(class TacticalAIGroup *) */
-
 int __thiscall
 TribeTacticalAIModule::setGatherLocation(TribeTacticalAIModule *this,TacticalAIGroup *param_1)
 {
@@ -14073,9 +13760,6 @@ LAB_00500c04:
 
 // Function: setAllGroupLocations
 // Address: 00500cc0
-/* WARNING: Variable defined which should be unmapped: centerPoint */
-/* public: int __thiscall TribeTacticalAIModule::setAllGroupLocations(class TacticalAIGroup *) */
-
 int __thiscall
 TribeTacticalAIModule::setAllGroupLocations(TribeTacticalAIModule *this,TacticalAIGroup *param_1)
 {
@@ -14143,10 +13827,6 @@ LAB_00500dbf:
 
 // Function: setGroupInfluences
 // Address: 00500de0
-/* WARNING: Variable defined which should be unmapped: clearDistance */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall TribeTacticalAIModule::setGroupInfluences(class InfluenceMap &) */
-
 void __thiscall
 TribeTacticalAIModule::setGroupInfluences(TribeTacticalAIModule *this,InfluenceMap *param_1)
 {
@@ -14239,9 +13919,6 @@ TribeTacticalAIModule::setGroupInfluences(TribeTacticalAIModule *this,InfluenceM
 
 // Function: selectBestCommander
 // Address: 00501190
-/* WARNING: Variable defined which should be unmapped: bestUnit */
-/* public: int __thiscall TribeTacticalAIModule::selectBestCommander(class TacticalAIGroup *) */
-
 int __thiscall
 TribeTacticalAIModule::selectBestCommander(TribeTacticalAIModule *this,TacticalAIGroup *param_1)
 {
@@ -14285,9 +13962,6 @@ LAB_00501228:
 
 // Function: selectBestCommander
 // Address: 00501260
-/* WARNING: Variable defined which should be unmapped: i */
-/* public: int __thiscall TribeTacticalAIModule::selectBestCommander(class ManagedArray<int> &) */
-
 int __thiscall
 TribeTacticalAIModule::selectBestCommander(TribeTacticalAIModule *this,ManagedArray<int> *param_1)
 {
@@ -14384,9 +14058,6 @@ TribeTacticalAIModule::selectBestCommander(TribeTacticalAIModule *this,ManagedAr
 
 // Function: dealWithGAIAAttacker
 // Address: 00501430
-/* public: int __thiscall TribeTacticalAIModule::dealWithGAIAAttacker(class RGE_Static_Object
-   *,class RGE_Static_Object *) */
-
 int __thiscall
 TribeTacticalAIModule::dealWithGAIAAttacker
           (TribeTacticalAIModule *this,RGE_Static_Object *param_1,RGE_Static_Object *param_2)
@@ -14447,8 +14118,6 @@ TribeTacticalAIModule::dealWithGAIAAttacker
 
 // Function: addWaypoint
 // Address: 005015e0
-/* public: void __thiscall TribeTacticalAIModule::addWaypoint(int,unsigned char,unsigned char) */
-
 void __thiscall
 TribeTacticalAIModule::addWaypoint
           (TribeTacticalAIModule *this,int param_1,uchar param_2,uchar param_3)
@@ -14466,8 +14135,6 @@ TribeTacticalAIModule::addWaypoint
 
 // Function: importantGroupLeader
 // Address: 00501620
-/* public: int __thiscall TribeTacticalAIModule::importantGroupLeader(int) */
-
 int __thiscall TribeTacticalAIModule::importantGroupLeader(TribeTacticalAIModule *this,int param_1)
 {
   short sVar1;
@@ -14488,8 +14155,6 @@ int __thiscall TribeTacticalAIModule::importantGroupLeader(TribeTacticalAIModule
 
 // Function: enableAttack
 // Address: 00501660
-/* public: void __thiscall TribeTacticalAIModule::enableAttack(int) */
-
 void __thiscall TribeTacticalAIModule::enableAttack(TribeTacticalAIModule *this,int param_1)
 {
   if ((this->attackEnabledValue != 1) && ((this->sn[0x86] == 0 || (this->sn[0x86] == param_1)))) {
@@ -14502,10 +14167,6 @@ void __thiscall TribeTacticalAIModule::enableAttack(TribeTacticalAIModule *this,
 
 // Function: unexploredArea
 // Address: 00501690
-/* WARNING: Variable defined which should be unmapped: unitZone */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: int __thiscall TribeTacticalAIModule::unexploredArea(int,struct XYPoint &) */
-
 int __thiscall
 TribeTacticalAIModule::unexploredArea(TribeTacticalAIModule *this,int param_1,XYPoint *param_2)
 {
@@ -14609,8 +14270,6 @@ LAB_00501784:
 
 // Function: gatherer
 // Address: 005018f0
-/* public: struct UnitData * __thiscall TribeTacticalAIModule::gatherer(int) */
-
 UnitData * __thiscall TribeTacticalAIModule::gatherer(TribeTacticalAIModule *this,int param_1)
 {
   int iVar1;
@@ -14633,8 +14292,6 @@ UnitData * __thiscall TribeTacticalAIModule::gatherer(TribeTacticalAIModule *thi
 // Function: addGatherer
 // Address: 00501920
 // [HELPER] s_ERROR_adding_gatherer_id__1_: "ERROR adding gatherer id -1."
-/* public: struct UnitData * __thiscall TribeTacticalAIModule::addGatherer(int) */
-
 UnitData * __thiscall TribeTacticalAIModule::addGatherer(TribeTacticalAIModule *this,int param_1)
 {
   int iVar1;
@@ -14673,8 +14330,6 @@ UnitData * __thiscall TribeTacticalAIModule::addGatherer(TribeTacticalAIModule *
 // Function: removeGatherer
 // Address: 005019c0
 // [HELPER] s_ERROR_removing_gatherer_id__1_: "ERROR removing gatherer id -1."
-/* public: int __thiscall TribeTacticalAIModule::removeGatherer(int) */
-
 int __thiscall TribeTacticalAIModule::removeGatherer(TribeTacticalAIModule *this,int param_1)
 {
   UnitData *pUVar1;
@@ -14721,8 +14376,6 @@ int __thiscall TribeTacticalAIModule::removeGatherer(TribeTacticalAIModule *this
 
 // Function: isGatherer
 // Address: 00501a80
-/* public: int __thiscall TribeTacticalAIModule::isGatherer(int) */
-
 int __thiscall TribeTacticalAIModule::isGatherer(TribeTacticalAIModule *this,int param_1)
 {
   int iVar1;
@@ -14744,8 +14397,6 @@ int __thiscall TribeTacticalAIModule::isGatherer(TribeTacticalAIModule *this,int
 
 // Function: requiredGatherAmount
 // Address: 00501ab0
-/* public: int __thiscall TribeTacticalAIModule::requiredGatherAmount(int) */
-
 int __thiscall TribeTacticalAIModule::requiredGatherAmount(TribeTacticalAIModule *this,int param_1)
 {
   int iVar1;
@@ -14761,8 +14412,6 @@ int __thiscall TribeTacticalAIModule::requiredGatherAmount(TribeTacticalAIModule
 
 // Function: trackUnitGather
 // Address: 00501af0
-/* public: void __thiscall TribeTacticalAIModule::trackUnitGather(int,int,int) */
-
 void __thiscall
 TribeTacticalAIModule::trackUnitGather
           (TribeTacticalAIModule *this,int param_1,int param_2,int param_3)
@@ -14787,8 +14436,6 @@ TribeTacticalAIModule::trackUnitGather
 
 // Function: deleteUnit
 // Address: 00501b50
-/* public: int __thiscall TribeTacticalAIModule::deleteUnit(int) */
-
 int __thiscall TribeTacticalAIModule::deleteUnit(TribeTacticalAIModule *this,int param_1)
 {
   uchar uVar1;
@@ -14808,8 +14455,6 @@ int __thiscall TribeTacticalAIModule::deleteUnit(TribeTacticalAIModule *this,int
 
 // Function: numberAvailableStoragePits
 // Address: 00501b90
-/* public: int __thiscall TribeTacticalAIModule::numberAvailableStoragePits(int &,int &,int) */
-
 int __thiscall
 TribeTacticalAIModule::numberAvailableStoragePits
           (TribeTacticalAIModule *this,int *param_1,int *param_2,int param_3)
@@ -14819,8 +14464,6 @@ TribeTacticalAIModule::numberAvailableStoragePits
   int iVar3;
   int iVar4;
   uint uVar5;
-  
-                    /* language.dll match for 0x67: "Comic Sans MS" */
   iVar2 = BuildAIModule::numberUnbuiltItemsOfType((BuildAIModule *)&this->md->buildAI,0x67,0);
   *param_2 = iVar2;
   if (0 < iVar2) {
@@ -14837,13 +14480,11 @@ TribeTacticalAIModule::numberAvailableStoragePits
     if (iVar3 == 0) {
       iVar3 = 1;
     }
-                    /* language.dll match for 0x67: "Comic Sans MS" */
     iVar4 = BuildAIModule::numberItemsOfType((BuildAIModule *)&pTVar1->buildAI,0x67,0);
     uVar5 = iVar3 * iVar2 - iVar4;
     *param_1 = iVar4;
     return ((int)uVar5 < 0) - 1 & uVar5;
   }
-                    /* language.dll match for 0x67: "Comic Sans MS" */
   iVar2 = BuildAIModule::numberItemsOfType((BuildAIModule *)&this->md->buildAI,0x67,0);
   *param_1 = iVar2;
   iVar2 = TribeInformationAIModule::numberAvailableStoragePits(&this->md->informationAI,param_3);
@@ -14854,8 +14495,6 @@ TribeTacticalAIModule::numberAvailableStoragePits
 
 // Function: numberAvailableGranaries
 // Address: 00501c70
-/* public: int __thiscall TribeTacticalAIModule::numberAvailableGranaries(int &,int &) */
-
 int __thiscall
 TribeTacticalAIModule::numberAvailableGranaries
           (TribeTacticalAIModule *this,int *param_1,int *param_2)
@@ -14888,8 +14527,6 @@ TribeTacticalAIModule::numberAvailableGranaries
 
 // Function: initialExplorationSatisfied
 // Address: 00501d20
-/* public: int __thiscall TribeTacticalAIModule::initialExplorationSatisfied(void) */
-
 int __thiscall TribeTacticalAIModule::initialExplorationSatisfied(TribeTacticalAIModule *this)
 {
   int iVar1;
@@ -14906,9 +14543,6 @@ int __thiscall TribeTacticalAIModule::initialExplorationSatisfied(TribeTacticalA
 
 // Function: checkForBuildInsertion
 // Address: 00501d70
-/* WARNING: Variable defined which should be unmapped: numUnbuiltGranaries */
-/* public: void __thiscall TribeTacticalAIModule::checkForBuildInsertion(int,int,int) */
-
 void __thiscall
 TribeTacticalAIModule::checkForBuildInsertion
           (TribeTacticalAIModule *this,int param_1,int param_2,int param_3)
@@ -14996,8 +14630,6 @@ LAB_00502084:
 
 // Function: isFarmer
 // Address: 005020a0
-/* public: int __thiscall TribeTacticalAIModule::isFarmer(class RGE_Static_Object *) */
-
 int __thiscall
 TribeTacticalAIModule::isFarmer(TribeTacticalAIModule *this,RGE_Static_Object *param_1)
 {
@@ -15025,9 +14657,6 @@ TribeTacticalAIModule::isFarmer(TribeTacticalAIModule *this,RGE_Static_Object *p
 
 // Function: numberFarmers
 // Address: 00502100
-/* WARNING: Variable defined which should be unmapped: rVal */
-/* public: int __thiscall TribeTacticalAIModule::numberFarmers(void) */
-
 int __thiscall TribeTacticalAIModule::numberFarmers(TribeTacticalAIModule *this)
 {
   int *piVar1;
@@ -15085,8 +14714,6 @@ LAB_005021e0:
 
 // Function: inAge
 // Address: 00502200
-/* public: int __thiscall TribeTacticalAIModule::inAge(int) */
-
 int __thiscall TribeTacticalAIModule::inAge(TribeTacticalAIModule *this,int param_1)
 {
   int iVar1;
@@ -15099,11 +14726,6 @@ int __thiscall TribeTacticalAIModule::inAge(TribeTacticalAIModule *this,int para
 
 // Function: stuffAvoidancePath
 // Address: 00502230
-/* WARNING: Variable defined which should be unmapped: divisionLength */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall TribeTacticalAIModule::stuffAvoidancePath(class TacticalAIGroup *,class
-   Path *) */
-
 void __thiscall
 TribeTacticalAIModule::stuffAvoidancePath
           (TribeTacticalAIModule *this,TacticalAIGroup *param_1,Path *param_2)
@@ -15140,7 +14762,6 @@ TribeTacticalAIModule::stuffAvoidancePath
         pWVar3 = Path::currentWaypoint(this_00);
         TacticalAIGroup::addAttackWaypoint(param_1,pWVar3->x,fVar6);
       }
-                    /* Symbol Ref: {@symbol IncTemp} */
       fVar6 = Path::distanceToNextWaypoint(this_00);
       iVar4 = iVar4 + 1;
       Path::moveToNextWaypoint(this_00);
@@ -15155,9 +14776,6 @@ TribeTacticalAIModule::stuffAvoidancePath
 
 // Function: checkForAttackResponseBuildInsertions
 // Address: 00502310
-/* WARNING: Variable defined which should be unmapped: i */
-/* public: void __thiscall TribeTacticalAIModule::checkForAttackResponseBuildInsertions(int) */
-
 void __thiscall
 TribeTacticalAIModule::checkForAttackResponseBuildInsertions
           (TribeTacticalAIModule *this,int param_1)
@@ -15198,7 +14816,6 @@ TribeTacticalAIModule::checkForAttackResponseBuildInsertions
         insertedUnit = 0;
         itemCost._padding_ = 0;
         while (0 < iVar3) {
-                    /* WARNING: Could not find normalized switch variable to match jumptable */
           switch(insertedUnit) {
           case 0:
             iVar4 = TribeResourceAIModule::resource(&this->md->resourceAI,2);
@@ -15256,9 +14873,6 @@ LAB_005025af:
 // Function: checkForCoopTributeDemand
 // Address: 00502600
 // [HELPER] s_C__msdev_work_age1_x1_taitacmd_c: "C:\msdev\work\age1_x1\taitacmd.cpp"
-/* WARNING: Variable defined which should be unmapped: amountDemandable */
-/* public: void __thiscall TribeTacticalAIModule::checkForCoopTributeDemand(void) */
-
 void __thiscall TribeTacticalAIModule::checkForCoopTributeDemand(TribeTacticalAIModule *this)
 {
   ushort uVar1;
@@ -15378,9 +14992,6 @@ void __thiscall TribeTacticalAIModule::checkForCoopTributeDemand(TribeTacticalAI
 // Function: checkForCoopTributeGift
 // Address: 00502920
 // [HELPER] s_C__msdev_work_age1_x1_taitacmd_c: "C:\msdev\work\age1_x1\taitacmd.cpp"
-/* WARNING: Variable defined which should be unmapped: bestCP */
-/* public: void __thiscall TribeTacticalAIModule::checkForCoopTributeGift(void) */
-
 void __thiscall TribeTacticalAIModule::checkForCoopTributeGift(TribeTacticalAIModule *this)
 {
   float *pfVar1;
@@ -15490,8 +15101,6 @@ void __thiscall TribeTacticalAIModule::checkForCoopTributeGift(TribeTacticalAIMo
 
 // Function: checkForASAPAgeResearch
 // Address: 00502bf0
-/* public: void __thiscall TribeTacticalAIModule::checkForASAPAgeResearch(void) */
-
 void __thiscall TribeTacticalAIModule::checkForASAPAgeResearch(TribeTacticalAIModule *this)
 {
   int iVar1;
@@ -15506,11 +15115,9 @@ void __thiscall TribeTacticalAIModule::checkForASAPAgeResearch(TribeTacticalAIMo
        ((iVar1 = TribeBuildAIModule::readyToResearch(&this->md->buildAI,3,1), iVar1 == 0 ||
         (iVar1 = TribeResourceAIModule::resource(&this->md->resourceAI,0), iVar1 < 800))))
     goto LAB_00502cc3;
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
     pBVar2 = TribeBuildAIModule::buildItem(&this->md->buildAI,0x66,1,4);
   }
   else {
-                    /* language.dll match for 0x65: "1" */
     pBVar2 = TribeBuildAIModule::buildItem(&this->md->buildAI,0x65,1,4);
   }
   if (pBVar2 != (BuildItem *)0x0) {
@@ -15518,7 +15125,6 @@ void __thiscall TribeTacticalAIModule::checkForASAPAgeResearch(TribeTacticalAIMo
   }
 LAB_00502cc3:
   iVar1 = inAge(this,3);
-                    /* language.dll match for 0x67: "Comic Sans MS" */
   if (((iVar1 != 0) && (this->sn[0xb7] == 1)) &&
      ((iVar1 = TribeBuildAIModule::readyToResearch(&this->md->buildAI,4,1), iVar1 != 0 &&
       (((iVar1 = TribeResourceAIModule::resource(&this->md->resourceAI,0), 899 < iVar1 &&
@@ -15535,9 +15141,6 @@ LAB_00502cc3:
 // Function: checkForCoopAttack
 // Address: 00502d50
 // [HELPER] s_C__msdev_work_age1_x1_taitacmd_c: "C:\msdev\work\age1_x1\taitacmd.cpp"
-/* WARNING: Variable defined which should be unmapped: tempRand */
-/* public: void __thiscall TribeTacticalAIModule::checkForCoopAttack(int,int,int) */
-
 void __thiscall
 TribeTacticalAIModule::checkForCoopAttack
           (TribeTacticalAIModule *this,int param_1,int param_2,int param_3)
@@ -15618,8 +15221,6 @@ TribeTacticalAIModule::checkForCoopAttack
 
 // Function: processCoopAttack
 // Address: 00502f30
-/* public: int __thiscall TribeTacticalAIModule::processCoopAttack(int,int,int,int) */
-
 int __thiscall
 TribeTacticalAIModule::processCoopAttack
           (TribeTacticalAIModule *this,int param_1,int param_2,int param_3,int param_4)
@@ -15652,8 +15253,6 @@ TribeTacticalAIModule::processCoopAttack
 
 // Function: resourceDifference
 // Address: 00502fc0
-/* public: int __thiscall TribeTacticalAIModule::resourceDifference(int) */
-
 int __thiscall TribeTacticalAIModule::resourceDifference(TribeTacticalAIModule *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 4)) {
@@ -15666,8 +15265,6 @@ int __thiscall TribeTacticalAIModule::resourceDifference(TribeTacticalAIModule *
 
 // Function: actualGathererCount
 // Address: 00502ff0
-/* public: int __thiscall TribeTacticalAIModule::actualGathererCount(int) */
-
 int __thiscall TribeTacticalAIModule::actualGathererCount(TribeTacticalAIModule *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 4)) {
@@ -15680,8 +15277,6 @@ int __thiscall TribeTacticalAIModule::actualGathererCount(TribeTacticalAIModule 
 
 // Function: actualGathererCountByRealResourceID
 // Address: 00503020
-/* public: int __thiscall TribeTacticalAIModule::actualGathererCountByRealResourceID(int) */
-
 int __thiscall
 TribeTacticalAIModule::actualGathererCountByRealResourceID(TribeTacticalAIModule *this,int param_1)
 {
@@ -15695,8 +15290,6 @@ TribeTacticalAIModule::actualGathererCountByRealResourceID(TribeTacticalAIModule
 
 // Function: desiredGathererCount
 // Address: 00503040
-/* public: int __thiscall TribeTacticalAIModule::desiredGathererCount(int) */
-
 int __thiscall TribeTacticalAIModule::desiredGathererCount(TribeTacticalAIModule *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 4)) {
@@ -15709,9 +15302,6 @@ int __thiscall TribeTacticalAIModule::desiredGathererCount(TribeTacticalAIModule
 
 // Function: taskElephantGatherers
 // Address: 00503070
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall TribeTacticalAIModule::taskElephantGatherers(int,int,int) */
-
 void __thiscall
 TribeTacticalAIModule::taskElephantGatherers
           (TribeTacticalAIModule *this,int param_1,int param_2,int param_3)
@@ -15840,9 +15430,6 @@ LAB_00503285:
 
 // Function: checkTradeBoats
 // Address: 005032e0
-/* WARNING: Variable defined which should be unmapped: i */
-/* public: void __thiscall TribeTacticalAIModule::checkTradeBoats(void) */
-
 void __thiscall TribeTacticalAIModule::checkTradeBoats(TribeTacticalAIModule *this)
 {
   short sVar1;
@@ -15925,8 +15512,6 @@ LAB_0050345d:
 
 // Function: numberGatherersWithTarget
 // Address: 00503480
-/* public: int __thiscall TribeTacticalAIModule::numberGatherersWithTarget(int) */
-
 int __thiscall
 TribeTacticalAIModule::numberGatherersWithTarget(TribeTacticalAIModule *this,int param_1)
 {
@@ -15953,8 +15538,6 @@ TribeTacticalAIModule::numberGatherersWithTarget(TribeTacticalAIModule *this,int
 
 // Function: checkStaleAttackGroups
 // Address: 005034b0
-/* public: void __thiscall TribeTacticalAIModule::checkStaleAttackGroups(void) */
-
 void __thiscall TribeTacticalAIModule::checkStaleAttackGroups(TribeTacticalAIModule *this)
 {
   TacticalAIGroup *this_00;
@@ -15990,8 +15573,6 @@ void __thiscall TribeTacticalAIModule::checkStaleAttackGroups(TribeTacticalAIMod
 
 // Function: numberWaterExplorers
 // Address: 00503580
-/* public: int __thiscall TribeTacticalAIModule::numberWaterExplorers(void) */
-
 int __thiscall TribeTacticalAIModule::numberWaterExplorers(TribeTacticalAIModule *this)
 {
   TacticalAIGroup *this_00;
@@ -16020,10 +15601,6 @@ int __thiscall TribeTacticalAIModule::numberWaterExplorers(TribeTacticalAIModule
 // Function: saveTheTown
 // Address: 00503600
 // [HELPER] s_C__msdev_work_age1_x1_taitacmd_c: "C:\msdev\work\age1_x1\taitacmd.cpp"
-/* WARNING: Variable defined which should be unmapped: i */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall TribeTacticalAIModule::saveTheTown(int) */
-
 void __thiscall TribeTacticalAIModule::saveTheTown(TribeTacticalAIModule *this,int param_1)
 {
   ulong uVar1;
@@ -16053,7 +15630,6 @@ void __thiscall TribeTacticalAIModule::saveTheTown(TribeTacticalAIModule *this,i
     objPosition.y = __ftol();
     __ftol();
     this_00 = readyAndIdleGroup(this,100,this->sn[0x14],(XYPoint *)&objPosition.y);
-                    /* language.dll match for 0x67: "Comic Sans MS" */
     if ((this_00 != (TacticalAIGroup *)0x0) ||
        (this_00 = readyAndIdleGroup(this,0x67,this->sn[0x14],(XYPoint *)&objPosition.y),
        this_00 != (TacticalAIGroup *)0x0)) {

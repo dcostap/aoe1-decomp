@@ -33,9 +33,6 @@
 
 // Function: RGE_Master_Action_Object
 // Address: 0044f070
-/* public: __thiscall RGE_Master_Action_Object::RGE_Master_Action_Object(class
-   RGE_Master_Action_Object *,int) */
-
 RGE_Master_Action_Object * __thiscall
 RGE_Master_Action_Object::RGE_Master_Action_Object
           (RGE_Master_Action_Object *this,RGE_Master_Action_Object *param_1,int param_2)
@@ -64,9 +61,6 @@ RGE_Master_Action_Object::RGE_Master_Action_Object
 
 // Function: `vector_deleting_destructor'
 // Address: 0044f0d0
-/* public: virtual void * __thiscall RGE_Master_Action_Object::`vector deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 RGE_Master_Action_Object::_vector_deleting_destructor_(RGE_Master_Action_Object *this,uint param_1)
 {
@@ -81,9 +75,6 @@ RGE_Master_Action_Object::_vector_deleting_destructor_(RGE_Master_Action_Object 
 
 // Function: RGE_Master_Action_Object
 // Address: 0044f0f0
-/* public: __thiscall RGE_Master_Action_Object::RGE_Master_Action_Object(int,class RGE_Sprite *
-   *,class RGE_Sound * *,int) */
-
 RGE_Master_Action_Object * __thiscall
 RGE_Master_Action_Object::RGE_Master_Action_Object
           (RGE_Master_Action_Object *this,int param_1,RGE_Sprite **param_2,RGE_Sound **param_3,
@@ -113,9 +104,6 @@ RGE_Master_Action_Object::RGE_Master_Action_Object
 
 // Function: RGE_Master_Action_Object
 // Address: 0044f160
-/* public: __thiscall RGE_Master_Action_Object::RGE_Master_Action_Object(struct _iobuf *,class
-   RGE_Sprite * *,class RGE_Sound * *,short,int) */
-
 RGE_Master_Action_Object * __thiscall
 RGE_Master_Action_Object::RGE_Master_Action_Object
           (RGE_Master_Action_Object *this,_iobuf *param_1,RGE_Sprite **param_2,RGE_Sound **param_3,
@@ -145,8 +133,6 @@ RGE_Master_Action_Object::RGE_Master_Action_Object
 
 // Function: setup
 // Address: 0044f1e0
-/* protected: int __thiscall RGE_Master_Action_Object::setup(class RGE_Master_Action_Object *) */
-
 int __thiscall
 RGE_Master_Action_Object::setup(RGE_Master_Action_Object *this,RGE_Master_Action_Object *param_1)
 {
@@ -174,10 +160,6 @@ RGE_Master_Action_Object::setup(RGE_Master_Action_Object *this,RGE_Master_Action
 
 // Function: setup
 // Address: 0044f290
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: int __thiscall RGE_Master_Action_Object::setup(int,class RGE_Sprite * *,class
-   RGE_Sound * *) */
-
 int __thiscall
 RGE_Master_Action_Object::setup
           (RGE_Master_Action_Object *this,int param_1,RGE_Sprite **param_2,RGE_Sound **param_3)
@@ -230,9 +212,6 @@ RGE_Master_Action_Object::setup
 // Function: setup
 // Address: 0044f3c0
 // [HELPER] s__f__f__hd__hd__hd__hd__hd__hd: "%f %f %hd %hd %hd %hd %hd %hd"
-/* protected: int __thiscall RGE_Master_Action_Object::setup(struct _iobuf *,class RGE_Sprite *
-   *,class RGE_Sound * *,short) */
-
 int __thiscall
 RGE_Master_Action_Object::setup
           (RGE_Master_Action_Object *this,_iobuf *param_1,RGE_Sprite **param_2,RGE_Sound **param_3,
@@ -295,8 +274,6 @@ RGE_Master_Action_Object::setup
 
 // Function: ~RGE_Master_Action_Object
 // Address: 0044f4d0
-/* public: virtual __thiscall RGE_Master_Action_Object::~RGE_Master_Action_Object(void) */
-
 void __thiscall RGE_Master_Action_Object::~RGE_Master_Action_Object(RGE_Master_Action_Object *this)
 {
   RGE_Task_List *this_00;
@@ -326,9 +303,6 @@ void __thiscall RGE_Master_Action_Object::~RGE_Master_Action_Object(RGE_Master_A
 
 // Function: create_task_list
 // Address: 0044f540
-/* public: virtual class RGE_Task_List * __thiscall RGE_Master_Action_Object::create_task_list(void)
-    */
-
 RGE_Task_List * __thiscall
 RGE_Master_Action_Object::create_task_list(RGE_Master_Action_Object *this)
 {
@@ -357,9 +331,6 @@ RGE_Master_Action_Object::create_task_list(RGE_Master_Action_Object *this)
 
 // Function: make_new_obj
 // Address: 0044f5a0
-/* public: virtual class RGE_Static_Object * __thiscall RGE_Master_Action_Object::make_new_obj(class
-   RGE_Player *,float,float,float) */
-
 RGE_Static_Object * __thiscall
 RGE_Master_Action_Object::make_new_obj
           (RGE_Master_Action_Object *this,RGE_Player *param_1,float param_2,float param_3,
@@ -400,9 +371,6 @@ RGE_Master_Action_Object::make_new_obj
 
 // Function: make_new_master
 // Address: 0044f670
-/* public: virtual class RGE_Master_Static_Object * __thiscall
-   RGE_Master_Action_Object::make_new_master(void) */
-
 RGE_Master_Static_Object * __thiscall
 RGE_Master_Action_Object::make_new_master(RGE_Master_Action_Object *this)
 {
@@ -432,8 +400,6 @@ RGE_Master_Action_Object::make_new_master(RGE_Master_Action_Object *this)
 
 // Function: get_task
 // Address: 0044f6e0
-/* public: class RGE_Task * __thiscall RGE_Master_Action_Object::get_task(short) */
-
 RGE_Task * __thiscall
 RGE_Master_Action_Object::get_task(RGE_Master_Action_Object *this,short param_1)
 {
@@ -447,8 +413,6 @@ RGE_Master_Action_Object::get_task(RGE_Master_Action_Object *this,short param_1)
 
 // Function: getTaskByTaskID
 // Address: 0044f710
-/* public: class RGE_Task * __thiscall RGE_Master_Action_Object::getTaskByTaskID(int)const  */
-
 RGE_Task * __thiscall
 RGE_Master_Action_Object::getTaskByTaskID(RGE_Master_Action_Object *this,int param_1)
 {
@@ -480,9 +444,6 @@ RGE_Master_Action_Object::getTaskByTaskID(RGE_Master_Action_Object *this,int par
 
 // Function: copy_obj
 // Address: 0044f760
-/* public: virtual void __thiscall RGE_Master_Action_Object::copy_obj(class RGE_Master_Static_Object
-   *) */
-
 void __thiscall
 RGE_Master_Action_Object::copy_obj(RGE_Master_Action_Object *this,RGE_Master_Static_Object *param_1)
 {
@@ -503,8 +464,6 @@ RGE_Master_Action_Object::copy_obj(RGE_Master_Action_Object *this,RGE_Master_Sta
 
 // Function: modify
 // Address: 0044f7f0
-/* public: virtual void __thiscall RGE_Master_Action_Object::modify(float,unsigned char) */
-
 void __thiscall
 RGE_Master_Action_Object::modify(RGE_Master_Action_Object *this,float param_1,uchar param_2)
 {
@@ -520,8 +479,6 @@ RGE_Master_Action_Object::modify(RGE_Master_Action_Object *this,float param_1,uc
 
 // Function: modify_delta
 // Address: 0044f820
-/* public: virtual void __thiscall RGE_Master_Action_Object::modify_delta(float,unsigned char) */
-
 void __thiscall
 RGE_Master_Action_Object::modify_delta(RGE_Master_Action_Object *this,float param_1,uchar param_2)
 {
@@ -537,8 +494,6 @@ RGE_Master_Action_Object::modify_delta(RGE_Master_Action_Object *this,float para
 
 // Function: modify_percent
 // Address: 0044f850
-/* public: virtual void __thiscall RGE_Master_Action_Object::modify_percent(float,unsigned char) */
-
 void __thiscall
 RGE_Master_Action_Object::modify_percent(RGE_Master_Action_Object *this,float param_1,uchar param_2)
 {
@@ -554,9 +509,6 @@ RGE_Master_Action_Object::modify_percent(RGE_Master_Action_Object *this,float pa
 
 // Function: save
 // Address: 0044f880
-/* WARNING: Variable defined which should be unmapped: command_sound_num */
-/* public: virtual void __thiscall RGE_Master_Action_Object::save(int) */
-
 void __thiscall RGE_Master_Action_Object::save(RGE_Master_Action_Object *this,int param_1)
 {
   RGE_Sound *pRVar1;
@@ -592,8 +544,6 @@ void __thiscall RGE_Master_Action_Object::save(RGE_Master_Action_Object *this,in
 
 // Function: play_command_sound
 // Address: 0044f980
-/* public: virtual void __thiscall RGE_Master_Action_Object::play_command_sound(void) */
-
 void __thiscall RGE_Master_Action_Object::play_command_sound(RGE_Master_Action_Object *this)
 {
   if (this->command_sound != (RGE_Sound *)0x0) {
@@ -606,8 +556,6 @@ void __thiscall RGE_Master_Action_Object::play_command_sound(RGE_Master_Action_O
 
 // Function: play_move_sound
 // Address: 0044f9a0
-/* public: virtual void __thiscall RGE_Master_Action_Object::play_move_sound(void) */
-
 void __thiscall RGE_Master_Action_Object::play_move_sound(RGE_Master_Action_Object *this)
 {
   if (this->move_sound != (RGE_Sound *)0x0) {

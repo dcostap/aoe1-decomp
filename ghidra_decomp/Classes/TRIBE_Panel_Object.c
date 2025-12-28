@@ -111,9 +111,6 @@
 // Address: 0051adf0
 // [HELPER] s_health_shp: "health.shp"
 // [HELPER] s_itemicon_shp: "itemicon.shp"
-/* public: __thiscall TRIBE_Panel_Object::TRIBE_Panel_Object(class TDrawArea *,class TPanel *,void
-   *,long,long,class TShape *,class TShape * *,class TRIBE_Player *) */
-
 TRIBE_Panel_Object * __thiscall
 TRIBE_Panel_Object::TRIBE_Panel_Object
           (TRIBE_Panel_Object *this,TDrawArea *param_1,TPanel *param_2,void *param_3,long param_4,
@@ -234,9 +231,6 @@ TRIBE_Panel_Object::TRIBE_Panel_Object
 
 // Function: `scalar_deleting_destructor'
 // Address: 0051b050
-/* public: virtual void * __thiscall TRIBE_Panel_Object::`scalar deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 TRIBE_Panel_Object::_scalar_deleting_destructor_(TRIBE_Panel_Object *this,uint param_1)
 {
@@ -251,8 +245,6 @@ TRIBE_Panel_Object::_scalar_deleting_destructor_(TRIBE_Panel_Object *this,uint p
 
 // Function: ~TRIBE_Panel_Object
 // Address: 0051b070
-/* public: virtual __thiscall TRIBE_Panel_Object::~TRIBE_Panel_Object(void) */
-
 void __thiscall TRIBE_Panel_Object::~TRIBE_Panel_Object(TRIBE_Panel_Object *this)
 {
   TShape *pTVar1;
@@ -288,8 +280,6 @@ void __thiscall TRIBE_Panel_Object::~TRIBE_Panel_Object(TRIBE_Panel_Object *this
 
 // Function: set_player
 // Address: 0051b110
-/* public: void __thiscall TRIBE_Panel_Object::set_player(class TRIBE_Player *) */
-
 void __thiscall TRIBE_Panel_Object::set_player(TRIBE_Panel_Object *this,TRIBE_Player *param_1)
 {
   this->player = param_1;
@@ -305,8 +295,6 @@ void __thiscall TRIBE_Panel_Object::set_player(TRIBE_Panel_Object *this,TRIBE_Pl
 
 // Function: set_object
 // Address: 0051b140
-/* public: void __thiscall TRIBE_Panel_Object::set_object(class RGE_Static_Object *) */
-
 void __thiscall TRIBE_Panel_Object::set_object(TRIBE_Panel_Object *this,RGE_Static_Object *param_1)
 {
   this->game_obj = param_1;
@@ -319,8 +307,6 @@ void __thiscall TRIBE_Panel_Object::set_object(TRIBE_Panel_Object *this,RGE_Stat
 
 // Function: set_mode
 // Address: 0051b160
-/* public: void __thiscall TRIBE_Panel_Object::set_mode(unsigned char) */
-
 void __thiscall TRIBE_Panel_Object::set_mode(TRIBE_Panel_Object *this,uchar param_1)
 {
   this->mode = param_1;
@@ -333,8 +319,6 @@ void __thiscall TRIBE_Panel_Object::set_mode(TRIBE_Panel_Object *this,uchar para
 
 // Function: get_mode
 // Address: 0051b180
-/* public: unsigned char __thiscall TRIBE_Panel_Object::get_mode(void) */
-
 uchar __thiscall TRIBE_Panel_Object::get_mode(TRIBE_Panel_Object *this)
 {
   return this->mode;
@@ -348,10 +332,6 @@ uchar __thiscall TRIBE_Panel_Object::get_mode(TRIBE_Panel_Object *this)
 // [HELPER] s__d__s: "%d-%s"
 // [HELPER] s__s: "%s"
 // [HELPER] s_tpnl_obj__draw: "tpnl_obj::draw"
-/* WARNING: Variable defined which should be unmapped: cur_val */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual void __thiscall TRIBE_Panel_Object::draw(void) */
-
 void __thiscall TRIBE_Panel_Object::draw(TRIBE_Panel_Object *this)
 {
   char cVar1;
@@ -906,9 +886,6 @@ LAB_0051be67:
 // Address: 0051bf90
 // [HELPER] s__d: "%d"
 // [HELPER] s_tpnl_obj__draw_score: "tpnl_obj::draw_score"
-/* WARNING: Variable defined which should be unmapped: i */
-/* protected: void __thiscall TRIBE_Panel_Object::draw_score(void) */
-
 void __thiscall TRIBE_Panel_Object::draw_score(TRIBE_Panel_Object *this)
 {
   char cVar1;
@@ -1045,10 +1022,6 @@ void __thiscall TRIBE_Panel_Object::draw_score(TRIBE_Panel_Object *this)
 // [HELPER] s__d__: "%d%%"
 // [HELPER] s__d__d: "%d+%d"
 // [HELPER] s_tpnl_obj__draw_item: "tpnl_obj::draw_item"
-/* WARNING: Variable defined which should be unmapped: val_str */
-/* protected: virtual void __thiscall TRIBE_Panel_Object::draw_item(int,int,enum
-   TRIBE_Panel_Object::ValueType,int,int) */
-
 void __thiscall
 TRIBE_Panel_Object::draw_item
           (TRIBE_Panel_Object *this,int param_1,int param_2,ValueType param_3,int param_4,
@@ -1117,10 +1090,6 @@ TRIBE_Panel_Object::draw_item
 // Function: handle_idle
 // Address: 0051c3f0
 // [HELPER] s_C__msdev_work_age1_x1_tpnl_obj_c: "C:\msdev\work\age1_x1\tpnl_obj.cpp"
-/* WARNING: Variable defined which should be unmapped: changed */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual long __thiscall TRIBE_Panel_Object::handle_idle(void) */
-
 long __thiscall TRIBE_Panel_Object::handle_idle(TRIBE_Panel_Object *this)
 {
   byte bVar1;
@@ -1400,9 +1369,6 @@ LAB_0051c9cd:
 
 // Function: save_object_info
 // Address: 0051ca10
-/* WARNING: Variable defined which should be unmapped: orig_val */
-/* protected: void __thiscall TRIBE_Panel_Object::save_object_info(void) */
-
 void __thiscall TRIBE_Panel_Object::save_object_info(TRIBE_Panel_Object *this)
 {
   short *psVar1;
@@ -1469,7 +1435,6 @@ void __thiscall TRIBE_Panel_Object::save_object_info(TRIBE_Panel_Object *this)
         iVar9 = TRIBE_Building_Object::production_queue_status
                           (this_01,&this->save_work_target,(short *)((int)&orig_fval + 2));
         if (iVar9 != 0) {
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
           *psVar1 = 0x66;
           this->save_progress = orig_fval._2_2_;
         }
@@ -1496,8 +1461,6 @@ void __thiscall TRIBE_Panel_Object::save_object_info(TRIBE_Panel_Object *this)
 
 // Function: mouse_left_down_action
 // Address: 0051cc80
-/* public: virtual long __thiscall TRIBE_Panel_Object::mouse_left_down_action(long,long,int,int) */
-
 long __thiscall
 TRIBE_Panel_Object::mouse_left_down_action
           (TRIBE_Panel_Object *this,long param_1,long param_2,int param_3,int param_4)
@@ -1509,8 +1472,6 @@ TRIBE_Panel_Object::mouse_left_down_action
 
 // Function: mouse_left_up_action
 // Address: 0051cc90
-/* public: virtual long __thiscall TRIBE_Panel_Object::mouse_left_up_action(long,long,int,int) */
-
 long __thiscall
 TRIBE_Panel_Object::mouse_left_up_action
           (TRIBE_Panel_Object *this,long param_1,long param_2,int param_3,int param_4)

@@ -124,8 +124,6 @@
 
 // Function: THorizontalSliderPanel
 // Address: 0047bdf0
-/* public: __thiscall THorizontalSliderPanel::THorizontalSliderPanel(void) */
-
 THorizontalSliderPanel * __thiscall
 THorizontalSliderPanel::THorizontalSliderPanel(THorizontalSliderPanel *this)
 {
@@ -138,9 +136,6 @@ THorizontalSliderPanel::THorizontalSliderPanel(THorizontalSliderPanel *this)
 
 // Function: `scalar_deleting_destructor'
 // Address: 0047be10
-/* public: virtual void * __thiscall THorizontalSliderPanel::`scalar deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 THorizontalSliderPanel::_scalar_deleting_destructor_(THorizontalSliderPanel *this,uint param_1)
 {
@@ -155,8 +150,6 @@ THorizontalSliderPanel::_scalar_deleting_destructor_(THorizontalSliderPanel *thi
 
 // Function: ~THorizontalSliderPanel
 // Address: 0047be30
-/* public: virtual __thiscall THorizontalSliderPanel::~THorizontalSliderPanel(void) */
-
 void __thiscall THorizontalSliderPanel::~THorizontalSliderPanel(THorizontalSliderPanel *this)
 {
   *(undefined ***)this = &_vftable_;
@@ -168,9 +161,6 @@ void __thiscall THorizontalSliderPanel::~THorizontalSliderPanel(THorizontalSlide
 
 // Function: setup
 // Address: 0047be40
-/* public: long __thiscall THorizontalSliderPanel::setup(class TDrawArea *,class TPanel
-   *,long,long,long,long,char *,char *,long,long,long,long,int,int) */
-
 long __thiscall
 THorizontalSliderPanel::setup
           (THorizontalSliderPanel *this,TDrawArea *param_1,TPanel *param_2,long param_3,long param_4
@@ -196,8 +186,6 @@ THorizontalSliderPanel::setup
 
 // Function: set_rect
 // Address: 0047bec0
-/* public: virtual void __thiscall THorizontalSliderPanel::set_rect(long,long,long,long) */
-
 void __thiscall
 THorizontalSliderPanel::set_rect
           (THorizontalSliderPanel *this,long param_1,long param_2,long param_3,long param_4)
@@ -224,8 +212,6 @@ THorizontalSliderPanel::set_rect
 // Function: draw
 // Address: 0047bf30
 // [HELPER] s_pnl_scbr__draw: "pnl_scbr::draw"
-/* public: virtual void __thiscall THorizontalSliderPanel::draw(void) */
-
 void __thiscall THorizontalSliderPanel::draw(THorizontalSliderPanel *this)
 {
   int iVar1;

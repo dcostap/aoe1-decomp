@@ -33,8 +33,6 @@
 
 // Function: RGE_Action_Transport
 // Address: 00406d60
-/* public: __thiscall RGE_Action_Transport::RGE_Action_Transport(int,class RGE_Action_Object *) */
-
 RGE_Action_Transport * __thiscall
 RGE_Action_Transport::RGE_Action_Transport
           (RGE_Action_Transport *this,int param_1,RGE_Action_Object *param_2)
@@ -49,9 +47,6 @@ RGE_Action_Transport::RGE_Action_Transport
 
 // Function: `vector_deleting_destructor'
 // Address: 00406d90
-/* public: virtual void * __thiscall RGE_Action_Transport::`vector deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 RGE_Action_Transport::_vector_deleting_destructor_(RGE_Action_Transport *this,uint param_1)
 {
@@ -66,8 +61,6 @@ RGE_Action_Transport::_vector_deleting_destructor_(RGE_Action_Transport *this,ui
 
 // Function: ~RGE_Action_Transport
 // Address: 00406db0
-/* public: virtual __thiscall RGE_Action_Transport::~RGE_Action_Transport(void) */
-
 void __thiscall RGE_Action_Transport::~RGE_Action_Transport(RGE_Action_Transport *this)
 {
   RGE_Action_List *this_00;
@@ -88,9 +81,6 @@ void __thiscall RGE_Action_Transport::~RGE_Action_Transport(RGE_Action_Transport
 
 // Function: RGE_Action_Transport
 // Address: 00406dc0
-/* public: __thiscall RGE_Action_Transport::RGE_Action_Transport(class RGE_Action_Object *,class
-   RGE_Task *,float,float,float) */
-
 RGE_Action_Transport * __thiscall
 RGE_Action_Transport::RGE_Action_Transport
           (RGE_Action_Transport *this,RGE_Action_Object *param_1,RGE_Task *param_2,float param_3,
@@ -110,8 +100,6 @@ RGE_Action_Transport::RGE_Action_Transport
 
 // Function: first_in_stack
 // Address: 00406e00
-/* public: virtual void __thiscall RGE_Action_Transport::first_in_stack(unsigned char) */
-
 void __thiscall RGE_Action_Transport::first_in_stack(RGE_Action_Transport *this,uchar param_1)
 {
   if (param_1 == '\0') {
@@ -131,8 +119,6 @@ void __thiscall RGE_Action_Transport::first_in_stack(RGE_Action_Transport *this,
 
 // Function: set_state
 // Address: 00406e50
-/* protected: virtual void __thiscall RGE_Action_Transport::set_state(unsigned char) */
-
 void __thiscall RGE_Action_Transport::set_state(RGE_Action_Transport *this,uchar param_1)
 {
   RGE_Action_Move_To *pRVar1;
@@ -202,8 +188,6 @@ LAB_00406f19:
 
 // Function: update
 // Address: 00406f90
-/* public: virtual unsigned char __thiscall RGE_Action_Transport::update(void) */
-
 uchar __thiscall RGE_Action_Transport::update(RGE_Action_Transport *this)
 {
   RGE_Map *this_00;
@@ -287,8 +271,6 @@ LAB_004070ea:
 
 // Function: stop
 // Address: 00407160
-/* public: virtual int __thiscall RGE_Action_Transport::stop(void) */
-
 int __thiscall RGE_Action_Transport::stop(RGE_Action_Transport *this)
 {
   (**(code **)(*(int *)this + 0x5c))(2);
@@ -299,9 +281,6 @@ int __thiscall RGE_Action_Transport::stop(RGE_Action_Transport *this)
 
 // Function: move_to
 // Address: 00407170
-/* public: virtual int __thiscall RGE_Action_Transport::move_to(class RGE_Static_Object
-   *,float,float,float) */
-
 int __thiscall
 RGE_Action_Transport::move_to
           (RGE_Action_Transport *this,RGE_Static_Object *param_1,float param_2,float param_3,
@@ -319,11 +298,6 @@ RGE_Action_Transport::move_to
 
 // Function: work
 // Address: 004071a0
-/* WARNING: Variable defined which should be unmapped: distance */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual int __thiscall RGE_Action_Transport::work(class RGE_Static_Object
-   *,float,float,float) */
-
 int __thiscall
 RGE_Action_Transport::work
           (RGE_Action_Transport *this,RGE_Static_Object *param_1,float param_2,float param_3,
@@ -369,9 +343,6 @@ RGE_Action_Transport::work
 
 // Function: next_to_drop_off_terrain
 // Address: 004072b0
-/* WARNING: Variable defined which should be unmapped: x2 */
-/* public: virtual int __thiscall RGE_Action_Transport::next_to_drop_off_terrain(void) */
-
 int __thiscall RGE_Action_Transport::next_to_drop_off_terrain(RGE_Action_Transport *this)
 {
   RGE_Map *this_00;
@@ -444,8 +415,6 @@ int __thiscall RGE_Action_Transport::next_to_drop_off_terrain(RGE_Action_Transpo
 
 // Function: targetZone
 // Address: 00407420
-/* public: int __thiscall RGE_Action_Transport::targetZone(void) */
-
 int __thiscall RGE_Action_Transport::targetZone(RGE_Action_Transport *this)
 {
   byte bVar1;

@@ -13,8 +13,6 @@
 
 // Function: RGE_Zone_Map
 // Address: 005467b0
-/* public: __thiscall RGE_Zone_Map::RGE_Zone_Map(int,class RGE_Map *) */
-
 RGE_Zone_Map * __thiscall
 RGE_Zone_Map::RGE_Zone_Map(RGE_Zone_Map *this,int param_1,RGE_Map *param_2)
 {
@@ -58,8 +56,6 @@ RGE_Zone_Map::RGE_Zone_Map(RGE_Zone_Map *this,int param_1,RGE_Map *param_2)
 
 // Function: RGE_Zone_Map
 // Address: 005468c0
-/* public: __thiscall RGE_Zone_Map::RGE_Zone_Map(class RGE_Map *,float *,long) */
-
 RGE_Zone_Map * __thiscall
 RGE_Zone_Map::RGE_Zone_Map(RGE_Zone_Map *this,RGE_Map *param_1,float *param_2,long param_3)
 {
@@ -127,8 +123,6 @@ RGE_Zone_Map::RGE_Zone_Map(RGE_Zone_Map *this,RGE_Map *param_1,float *param_2,lo
 
 // Function: ~RGE_Zone_Map
 // Address: 005469c0
-/* public: __thiscall RGE_Zone_Map::~RGE_Zone_Map(void) */
-
 void __thiscall RGE_Zone_Map::~RGE_Zone_Map(RGE_Zone_Map *this)
 {
   free(this->zone_map);
@@ -141,8 +135,6 @@ void __thiscall RGE_Zone_Map::~RGE_Zone_Map(RGE_Zone_Map *this)
 
 // Function: save
 // Address: 00546a00
-/* public: void __thiscall RGE_Zone_Map::save(int) */
-
 void __thiscall RGE_Zone_Map::save(RGE_Zone_Map *this,int param_1)
 {
   int iVar1;
@@ -162,9 +154,6 @@ void __thiscall RGE_Zone_Map::save(RGE_Zone_Map *this,int param_1)
 
 // Function: do_zone_map
 // Address: 00546a90
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: unsigned char __thiscall RGE_Zone_Map::do_zone_map(void) */
-
 uchar __thiscall RGE_Zone_Map::do_zone_map(RGE_Zone_Map *this)
 {
   float fVar1;
@@ -243,10 +232,6 @@ uchar __thiscall RGE_Zone_Map::do_zone_map(RGE_Zone_Map *this)
 
 // Function: do_zone_map_area
 // Address: 00546bb0
-/* WARNING: Variable defined which should be unmapped: zone_end */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* private: void __thiscall RGE_Zone_Map::do_zone_map_area(long,long,unsigned char,unsigned char) */
-
 void __thiscall
 RGE_Zone_Map::do_zone_map_area
           (RGE_Zone_Map *this,long param_1,long param_2,uchar param_3,uchar param_4)
@@ -315,9 +300,6 @@ RGE_Zone_Map::do_zone_map_area
 
 // Function: check_info
 // Address: 00546e50
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: class RGE_Zone_Map * __thiscall RGE_Zone_Map::check_info(float *,long) */
-
 RGE_Zone_Map * __thiscall RGE_Zone_Map::check_info(RGE_Zone_Map *this,float *param_1,long param_2)
 {
   int iVar1;
@@ -348,8 +330,6 @@ RGE_Zone_Map * __thiscall RGE_Zone_Map::check_info(RGE_Zone_Map *this,float *par
 
 // Function: get_zone_info
 // Address: 00546eb0
-/* public: unsigned char __thiscall RGE_Zone_Map::get_zone_info(long,long) */
-
 uchar __thiscall RGE_Zone_Map::get_zone_info(RGE_Zone_Map *this,long param_1,long param_2)
 {
   return this->zone_map_rows[param_2][param_1];
@@ -359,8 +339,6 @@ uchar __thiscall RGE_Zone_Map::get_zone_info(RGE_Zone_Map *this,long param_1,lon
 
 // Function: withinRange
 // Address: 00546ed0
-/* public: int __thiscall RGE_Zone_Map::withinRange(struct XYPoint,struct XYPoint,float) */
-
 int __thiscall
 RGE_Zone_Map::withinRange(RGE_Zone_Map *this,XYPoint param_1,XYPoint param_2,float param_3)
 {
@@ -374,8 +352,6 @@ RGE_Zone_Map::withinRange(RGE_Zone_Map *this,XYPoint param_1,XYPoint param_2,flo
 
 // Function: withinRange
 // Address: 00546f00
-/* public: int __thiscall RGE_Zone_Map::withinRange(unsigned char,struct XYPoint,float) */
-
 int __thiscall
 RGE_Zone_Map::withinRange(RGE_Zone_Map *this,uchar param_1,XYPoint param_2,float param_3)
 {
@@ -435,9 +411,6 @@ RGE_Zone_Map::withinRange(RGE_Zone_Map *this,uchar param_1,XYPoint param_2,float
 
 // Function: numberTilesInZone
 // Address: 00547000
-/* WARNING: Variable defined which should be unmapped: mapWidth */
-/* public: int __thiscall RGE_Zone_Map::numberTilesInZone(unsigned char) */
-
 int __thiscall RGE_Zone_Map::numberTilesInZone(RGE_Zone_Map *this,uchar param_1)
 {
   int iVar1;
@@ -484,9 +457,6 @@ int __thiscall RGE_Zone_Map::numberTilesInZone(RGE_Zone_Map *this,uchar param_1)
 
 // Function: findClosestPointInTerrainType
 // Address: 00547080
-/* public: int __thiscall RGE_Zone_Map::findClosestPointInTerrainType(struct XYPoint,struct XYPoint
-   &,int,int,int) */
-
 int __thiscall
 RGE_Zone_Map::findClosestPointInTerrainType
           (RGE_Zone_Map *this,XYPoint param_1,XYPoint *param_2,int param_3,int param_4,int param_5)

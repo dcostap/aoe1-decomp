@@ -87,8 +87,6 @@
 
 // Function: TRIBE_Gaia
 // Address: 00519af0
-/* public: __thiscall TRIBE_Gaia::TRIBE_Gaia(int,class TRIBE_World *,unsigned char) */
-
 TRIBE_Gaia * __thiscall
 TRIBE_Gaia::TRIBE_Gaia(TRIBE_Gaia *this,int param_1,TRIBE_World *param_2,uchar param_3)
 {
@@ -117,8 +115,6 @@ TRIBE_Gaia::TRIBE_Gaia(TRIBE_Gaia *this,int param_1,TRIBE_World *param_2,uchar p
 
 // Function: `vector_deleting_destructor'
 // Address: 00519ba0
-/* public: virtual void * __thiscall TRIBE_Gaia::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall TRIBE_Gaia::_vector_deleting_destructor_(TRIBE_Gaia *this,uint param_1)
 {
   ~TRIBE_Gaia(this);
@@ -132,8 +128,6 @@ void * __thiscall TRIBE_Gaia::_vector_deleting_destructor_(TRIBE_Gaia *this,uint
 
 // Function: ~TRIBE_Gaia
 // Address: 00519bc0
-/* public: virtual __thiscall TRIBE_Gaia::~TRIBE_Gaia(void) */
-
 void __thiscall TRIBE_Gaia::~TRIBE_Gaia(TRIBE_Gaia *this)
 {
   TRIBE_Player_Tech *this_00;
@@ -174,9 +168,6 @@ void __thiscall TRIBE_Gaia::~TRIBE_Gaia(TRIBE_Gaia *this)
 
 // Function: TRIBE_Gaia
 // Address: 00519bd0
-/* public: __thiscall TRIBE_Gaia::TRIBE_Gaia(class TRIBE_World *,class RGE_Master_Player *,unsigned
-   char,char *,unsigned char) */
-
 TRIBE_Gaia * __thiscall
 TRIBE_Gaia::TRIBE_Gaia
           (TRIBE_Gaia *this,TRIBE_World *param_1,RGE_Master_Player *param_2,uchar param_3,
@@ -198,8 +189,6 @@ TRIBE_Gaia::TRIBE_Gaia
 
 // Function: save
 // Address: 00519c40
-/* public: virtual void __thiscall TRIBE_Gaia::save(int) */
-
 void __thiscall TRIBE_Gaia::save(TRIBE_Gaia *this,int param_1)
 {
   TRIBE_Player::save((TRIBE_Player *)this,param_1);
@@ -214,9 +203,6 @@ void __thiscall TRIBE_Gaia::save(TRIBE_Gaia *this,int param_1)
 
 // Function: update
 // Address: 00519ca0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual void __thiscall TRIBE_Gaia::update(void) */
-
 void __thiscall TRIBE_Gaia::update(TRIBE_Gaia *this)
 {
   float fVar1;
@@ -245,9 +231,6 @@ void __thiscall TRIBE_Gaia::update(TRIBE_Gaia *this)
 
 // Function: load_master_object
 // Address: 00519d10
-/* public: void __thiscall TRIBE_Gaia::load_master_object(int,short,unsigned char,class RGE_Sprite *
-   *,class RGE_Sound * *) */
-
 void __thiscall
 TRIBE_Gaia::load_master_object
           (TRIBE_Gaia *this,int param_1,short param_2,uchar param_3,RGE_Sprite **param_4,
@@ -261,8 +244,6 @@ TRIBE_Gaia::load_master_object
 
 // Function: random_start
 // Address: 00519d40
-/* public: virtual void __thiscall TRIBE_Gaia::random_start(void) */
-
 void __thiscall TRIBE_Gaia::random_start(TRIBE_Gaia *this)
 {
   return;

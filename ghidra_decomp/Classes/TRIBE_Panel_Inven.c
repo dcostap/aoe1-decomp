@@ -130,9 +130,6 @@
 
 // Function: TRIBE_Panel_Inven
 // Address: 0051a5c0
-/* public: __thiscall TRIBE_Panel_Inven::TRIBE_Panel_Inven(class TDrawArea *,class TPanel *,void
-   *,class TRIBE_Player *) */
-
 TRIBE_Panel_Inven * __thiscall
 TRIBE_Panel_Inven::TRIBE_Panel_Inven
           (TRIBE_Panel_Inven *this,TDrawArea *param_1,TPanel *param_2,void *param_3,
@@ -175,9 +172,6 @@ TRIBE_Panel_Inven::TRIBE_Panel_Inven
 
 // Function: `scalar_deleting_destructor'
 // Address: 0051a690
-/* public: virtual void * __thiscall TRIBE_Panel_Inven::`scalar deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 TRIBE_Panel_Inven::_scalar_deleting_destructor_(TRIBE_Panel_Inven *this,uint param_1)
 {
@@ -192,8 +186,6 @@ TRIBE_Panel_Inven::_scalar_deleting_destructor_(TRIBE_Panel_Inven *this,uint par
 
 // Function: set_text_color
 // Address: 0051a6b0
-/* public: void __thiscall TRIBE_Panel_Inven::set_text_color(unsigned long,unsigned long) */
-
 void __thiscall
 TRIBE_Panel_Inven::set_text_color(TRIBE_Panel_Inven *this,ulong param_1,ulong param_2)
 {
@@ -207,8 +199,6 @@ TRIBE_Panel_Inven::set_text_color(TRIBE_Panel_Inven *this,ulong param_1,ulong pa
 
 // Function: ~TRIBE_Panel_Inven
 // Address: 0051a6d0
-/* public: virtual __thiscall TRIBE_Panel_Inven::~TRIBE_Panel_Inven(void) */
-
 void __thiscall TRIBE_Panel_Inven::~TRIBE_Panel_Inven(TRIBE_Panel_Inven *this)
 {
   TShape *this_00;
@@ -245,9 +235,6 @@ void __thiscall TRIBE_Panel_Inven::~TRIBE_Panel_Inven(TRIBE_Panel_Inven *this)
 // Address: 0051a770
 // [HELPER] s__ld: "%ld"
 // [HELPER] s_tpnl_inv__draw: "tpnl_inv::draw"
-/* WARNING: Variable defined which should be unmapped: x */
-/* public: virtual void __thiscall TRIBE_Panel_Inven::draw(void) */
-
 void __thiscall TRIBE_Panel_Inven::draw(TRIBE_Panel_Inven *this)
 {
   char cVar1;
@@ -388,9 +375,6 @@ void __thiscall TRIBE_Panel_Inven::draw(TRIBE_Panel_Inven *this)
 // Function: handle_idle
 // Address: 0051aad0
 // [HELPER] s_C__msdev_work_age1_x1_tpnl_inv_c: "C:\msdev\work\age1_x1\tpnl_inv.cpp"
-/* WARNING: Variable defined which should be unmapped: changed */
-/* public: virtual long __thiscall TRIBE_Panel_Inven::handle_idle(void) */
-
 long __thiscall TRIBE_Panel_Inven::handle_idle(TRIBE_Panel_Inven *this)
 {
   int iVar1;
@@ -436,8 +420,6 @@ long __thiscall TRIBE_Panel_Inven::handle_idle(TRIBE_Panel_Inven *this)
 
 // Function: set_player
 // Address: 0051abf0
-/* public: void __thiscall TRIBE_Panel_Inven::set_player(class TRIBE_Player *) */
-
 void __thiscall TRIBE_Panel_Inven::set_player(TRIBE_Panel_Inven *this,TRIBE_Player *param_1)
 {
   this->player = param_1;
@@ -450,8 +432,6 @@ void __thiscall TRIBE_Panel_Inven::set_player(TRIBE_Panel_Inven *this,TRIBE_Play
 
 // Function: save_info
 // Address: 0051ac10
-/* protected: void __thiscall TRIBE_Panel_Inven::save_info(void) */
-
 void __thiscall TRIBE_Panel_Inven::save_info(TRIBE_Panel_Inven *this)
 {
   short sVar1;
@@ -488,9 +468,6 @@ LAB_0051ac6b:
 
 // Function: get_help_info
 // Address: 0051aca0
-/* public: virtual unsigned char __thiscall TRIBE_Panel_Inven::get_help_info(char * &,long
-   &,long,long) */
-
 uchar __thiscall
 TRIBE_Panel_Inven::get_help_info
           (TRIBE_Panel_Inven *this,char **param_1,long *param_2,long param_3,long param_4)

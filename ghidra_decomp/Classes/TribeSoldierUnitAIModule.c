@@ -236,9 +236,6 @@
 
 // Function: TribeSoldierUnitAIModule
 // Address: 00506fe0
-/* public: __thiscall TribeSoldierUnitAIModule::TribeSoldierUnitAIModule(class RGE_Static_Object
-   *,int) */
-
 TribeSoldierUnitAIModule * __thiscall
 TribeSoldierUnitAIModule::TribeSoldierUnitAIModule
           (TribeSoldierUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
@@ -292,9 +289,6 @@ TribeSoldierUnitAIModule::TribeSoldierUnitAIModule
 
 // Function: `scalar_deleting_destructor'
 // Address: 00507170
-/* public: virtual void * __thiscall TribeSoldierUnitAIModule::`scalar deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TribeSoldierUnitAIModule::_scalar_deleting_destructor_(TribeSoldierUnitAIModule *this,uint param_1)
 {
@@ -309,8 +303,6 @@ TribeSoldierUnitAIModule::_scalar_deleting_destructor_(TribeSoldierUnitAIModule 
 
 // Function: ~TribeSoldierUnitAIModule
 // Address: 00507190
-/* public: virtual __thiscall TribeSoldierUnitAIModule::~TribeSoldierUnitAIModule(void) */
-
 void __thiscall TribeSoldierUnitAIModule::~TribeSoldierUnitAIModule(TribeSoldierUnitAIModule *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -355,9 +347,6 @@ void __thiscall TribeSoldierUnitAIModule::~TribeSoldierUnitAIModule(TribeSoldier
 
 // Function: canAttackUnit
 // Address: 005071a0
-/* public: virtual int __thiscall TribeSoldierUnitAIModule::canAttackUnit(class RGE_Static_Object *)
-    */
-
 int __thiscall
 TribeSoldierUnitAIModule::canAttackUnit(TribeSoldierUnitAIModule *this,RGE_Static_Object *param_1)
 {
@@ -371,8 +360,6 @@ TribeSoldierUnitAIModule::canAttackUnit(TribeSoldierUnitAIModule *this,RGE_Stati
 
 // Function: canAttackUnitAtNeutrality
 // Address: 005071c0
-/* public: virtual int __thiscall TribeSoldierUnitAIModule::canAttackUnitAtNeutrality(int) */
-
 int __thiscall
 TribeSoldierUnitAIModule::canAttackUnitAtNeutrality(TribeSoldierUnitAIModule *this,int param_1)
 {
@@ -388,11 +375,6 @@ TribeSoldierUnitAIModule::canAttackUnitAtNeutrality(TribeSoldierUnitAIModule *th
 // Function: processNotify
 // Address: 005071f0
 // [HELPER] s_C__msdev_work_age1_x1_taiuaimd_c: "C:\msdev\work\age1_x1\taiuaimd.cpp"
-/* WARNING: Variable defined which should be unmapped: evasiveMoveDistance */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall TribeSoldierUnitAIModule::processNotify(struct NotifyEvent
-   *,unsigned long) */
-
 int __thiscall
 TribeSoldierUnitAIModule::processNotify
           (TribeSoldierUnitAIModule *this,NotifyEvent *param_1,ulong param_2)
@@ -561,10 +543,6 @@ TribeSoldierUnitAIModule::processNotify
 
 // Function: processIdle
 // Address: 00507640
-/* WARNING: Variable defined which should be unmapped: xDiff */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall TribeSoldierUnitAIModule::processIdle(int) */
-
 int __thiscall TribeSoldierUnitAIModule::processIdle(TribeSoldierUnitAIModule *this,int param_1)
 {
   short sVar1;

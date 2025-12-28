@@ -546,9 +546,6 @@
 // [HELPER] s_scr8: "scr8"
 // [HELPER] s_timeline_slp: "timeline.slp"
 // [HELPER] s_viccheck_slp: "viccheck.slp"
-/* WARNING: Variable defined which should be unmapped: color */
-/* public: __thiscall TribeAchievementsScreen::TribeAchievementsScreen(char *,int) */
-
 TribeAchievementsScreen * __thiscall
 TribeAchievementsScreen::TribeAchievementsScreen
           (TribeAchievementsScreen *this,char *param_1,int param_2)
@@ -728,16 +725,13 @@ TribeAchievementsScreen::TribeAchievementsScreen
   }
   TEasy_Panel::set_ideal_size((TEasy_Panel *)this,0x280,0x1e0);
   sprintf();
-                    /* language.dll match for 0x6e: "Copperplate Gothic Light" */
   TEasy_Panel::create_text
             ((TEasy_Panel *)this,(TPanel *)this,&this->time,str + 4,0x1e0,10,0x6e,0x14,0xb,0,0,0);
   TTextPanel::set_alignment(this->time,AlignTop,AlignRight);
-                    /* language.dll match for 0x269e: "Achievements" */
   TEasy_Panel::create_text
             ((TEasy_Panel *)this,(TPanel *)this,&this->title,0x269e,0,5,0x280,0x1e,1,1,0,0);
   TEasy_Panel::create_text
             ((TEasy_Panel *)this,(TPanel *)this,&this->summary_text,0,10,0x23,0x26c,0x1e,1,1,0,0);
-                    /* language.dll match for 0x26db: "Click a column for more details." */
   TEasy_Panel::create_text
             ((TEasy_Panel *)this,(TPanel *)this,&this->instruction,0x26db,10,0x19a,0x26c,0x14,0xb,1,
              0,0);
@@ -772,7 +766,6 @@ TribeAchievementsScreen::TribeAchievementsScreen
              (uint)*(byte *)((int)&this->_padding_ + 2),(uint)*(byte *)((int)&this->_padding_ + 3),
              (uint)(byte)this->_padding_,(uint)*(byte *)((int)&this->_padding_ + 1));
   Time_Line_Panel::set_special_events(*ppTVar2,s_timeline_slp);
-                    /* language.dll match for 0x3ea: "X" */
   iVar11 = TEasy_Panel::create_button
                      ((TEasy_Panel *)this,(TPanel *)this,ppTVar1,0x3ea,0,0,0,0,0,-1,-1,0);
   if (iVar11 == 0) goto LAB_0048e1a9;
@@ -780,21 +773,17 @@ TribeAchievementsScreen::TribeAchievementsScreen
   (**(code **)((*ppTVar1)->_padding_ + 0x18))(9,4,4,4,4,0x11,0x11,0x11);
   TEasy_Panel::create_text
             ((TEasy_Panel *)this,(TPanel *)this,this->title_bar,0,0x62,0x97,200,0x1e,0xb,0,0,0);
-                    /* language.dll match for 0x83: "Arial" */
   TEasy_Panel::create_text
             ((TEasy_Panel *)this,(TPanel *)this,this->title_bar + 1,0,0x98,0x83,200,0x1e,0xb,0,0,0);
-                    /* language.dll match for 0x6f: "12" */
   TEasy_Panel::create_text
             ((TEasy_Panel *)this,(TPanel *)this,this->title_bar + 2,0,0xd4,0x6f,0x91,0x1e,0xb,0,0,0)
   ;
   TEasy_Panel::create_text
             ((TEasy_Panel *)this,(TPanel *)this,this->title_bar + 3,0,0x104,0x5b,200,0x1e,0xb,1,0,0)
   ;
-                    /* language.dll match for 0x6f: "12" */
   TEasy_Panel::create_text
             ((TEasy_Panel *)this,(TPanel *)this,this->title_bar + 4,0,0x16c,0x6f,0x91,0x1e,0xb,0,0,0
             );
-                    /* language.dll match for 0x83: "Arial" */
   TEasy_Panel::create_text
             ((TEasy_Panel *)this,(TPanel *)this,this->title_bar + 5,0,0x172,0x83,200,0x1e,0xb,0,0,0)
   ;
@@ -804,22 +793,18 @@ TribeAchievementsScreen::TribeAchievementsScreen
   TTextPanel::set_alignment(this->title_bar[4],AlignTop,AlignRight);
   TTextPanel::set_alignment(this->title_bar[5],AlignTop,AlignRight);
   TTextPanel::set_alignment(this->title_bar[6],AlignTop,AlignRight);
-                    /* language.dll match for 0x82: "B" */
   TEasy_Panel::create_text
             ((TEasy_Panel *)this,(TPanel *)this,this->achievement_choice,0,100,0x97,0x82,0xfa,0xb,0,
              0,0);
-                    /* language.dll match for 0x83: "Arial" */
   TEasy_Panel::create_text
             ((TEasy_Panel *)this,(TPanel *)this,this->achievement_choice + 1,0,0x9a,0x83,0x80,0x112,
              0xb,0,0,0);
-                    /* language.dll match for 0x6f: "12" */
   TEasy_Panel::create_text
             ((TEasy_Panel *)this,(TPanel *)this,this->achievement_choice + 2,0,0xd6,0x6f,0x79,0x121,
              0xb,0,0,0);
   TEasy_Panel::create_text
             ((TEasy_Panel *)this,(TPanel *)this,this->achievement_choice + 3,0,0x11a,0x5b,0x9c,0x135
              ,0xb,0,0,0);
-                    /* language.dll match for 0x6f: "12" */
   TEasy_Panel::create_text
             ((TEasy_Panel *)this,(TPanel *)this,this->achievement_choice + 4,0,0x184,0x6f,0x79,0x121
              ,0xb,0,0,0);
@@ -900,7 +885,6 @@ TribeAchievementsScreen::TribeAchievementsScreen
   } while (bVar6);
   if ((this->end_game_flag == 0) ||
      (iVar11 = RGE_Base_Game::singlePlayerGame(rge_base_game), iVar11 == 0)) {
-                    /* language.dll match for 0x26d8: "Timeline" */
     TEasy_Panel::create_button
               ((TEasy_Panel *)this,(TPanel *)this,&this->timelineButton,0x26d8,0,100,0x1b9,200,0x1e,
                0,0,0);
@@ -908,11 +892,9 @@ TribeAchievementsScreen::TribeAchievementsScreen
     lVar8 = 0x154;
   }
   else if (this->win_loss_text == (TTextPanel *)0x0) {
-                    /* language.dll match for 0x26d8: "Timeline" */
     TEasy_Panel::create_button
               ((TEasy_Panel *)this,(TPanel *)this,&this->timelineButton,0x26d8,0,0x14,0x1b9,0xb4,
                0x1e,0,0,0);
-                    /* language.dll match for 0x269f: "Restart" */
     TEasy_Panel::create_button
               ((TEasy_Panel *)this,(TPanel *)this,&this->restartButton,0x269f,0,0xe6,0x1b9,0xb4,0x1e
                ,0,0,0);
@@ -920,33 +902,27 @@ TribeAchievementsScreen::TribeAchievementsScreen
     lVar8 = 0x1b8;
   }
   else {
-                    /* language.dll match for 0x26b2: "Aftermath" */
     TEasy_Panel::create_button
               ((TEasy_Panel *)this,(TPanel *)this,&this->aftermathButton,0x26b2,0,5,0x1b9,0x96,0x1e,
                0,0,0);
-                    /* language.dll match for 0x26d8: "Timeline" */
     TEasy_Panel::create_button
               ((TEasy_Panel *)this,(TPanel *)this,&this->timelineButton,0x26d8,0,0xa5,0x1b9,0x96,
                0x1e,0,0,0);
-                    /* language.dll match for 0x269f: "Restart" */
     TEasy_Panel::create_button
               ((TEasy_Panel *)this,(TPanel *)this,&this->restartButton,0x269f,0,0x145,0x1b9,0x96,
                0x1e,0,0,0);
     lVar22 = 0x96;
     lVar8 = 0x1e5;
   }
-                    /* language.dll match for 0x269c: "Close" */
   TEasy_Panel::create_button
             ((TEasy_Panel *)this,(TPanel *)this,&this->okButton,0x269c,0,lVar8,0x1b9,lVar22,0x1e,0,0
              ,0);
   ppTVar1 = &this->backButton;
-                    /* language.dll match for 0x26da: "Back" */
   TEasy_Panel::create_button
             ((TEasy_Panel *)this,(TPanel *)this,ppTVar1,0x26da,0,200,0x1b9,0xf0,0x1e,0,0,0);
   (**(code **)((*ppTVar1)->_padding_ + 0x14))(0);
   pTVar5 = *ppTVar1;
   ppTVar3 = &this->backButton2;
-                    /* language.dll match for 0x269c: "Close" */
   pTVar5->hotkey = 0x1b;
   pTVar5->hotkey_shift = 0;
   TEasy_Panel::create_button
@@ -1008,9 +984,6 @@ LAB_0048e1a9:
 
 // Function: `vector_deleting_destructor'
 // Address: 0048e1f0
-/* public: virtual void * __thiscall TribeAchievementsScreen::`vector deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TribeAchievementsScreen::_vector_deleting_destructor_(TribeAchievementsScreen *this,uint param_1)
 {
@@ -1026,8 +999,6 @@ TribeAchievementsScreen::_vector_deleting_destructor_(TribeAchievementsScreen *t
 // Function: ~TribeAchievementsScreen
 // Address: 0048e210
 // [HELPER] s_YesNoDialog: "YesNoDialog"
-/* public: virtual __thiscall TribeAchievementsScreen::~TribeAchievementsScreen(void) */
-
 void __thiscall TribeAchievementsScreen::~TribeAchievementsScreen(TribeAchievementsScreen *this)
 {
   TShape *this_00;
@@ -1145,9 +1116,6 @@ void __thiscall TribeAchievementsScreen::~TribeAchievementsScreen(TribeAchieveme
 // Address: 0048e400
 // [HELPER] s_: ""
 // [HELPER] s__d__: "%d%%"
-/* WARNING: Variable defined which should be unmapped: player_num */
-/* protected: void __thiscall TribeAchievementsScreen::set_mode(long) */
-
 void __thiscall TribeAchievementsScreen::set_mode(TribeAchievementsScreen *this,long param_1)
 {
   undefined3 uVar1;
@@ -1246,21 +1214,13 @@ void __thiscall TribeAchievementsScreen::set_mode(TribeAchievementsScreen *this,
       (**(code **)(this->backButton->_padding_ + 0x14))();
     }
     (**(code **)(this->instruction->_padding_ + 0x14))();
-                    /* language.dll match for 0x26d9: "Summary" */
     (**(code **)(this->summary_text->_padding_ + 0xe4))(0x26d9);
-                    /* language.dll match for 0x26ac: "Military" */
     (**(code **)(this->title_bar[0]->_padding_ + 0xe4))(0x26ac);
-                    /* language.dll match for 0x26ad: "Economy" */
     (**(code **)(this->title_bar[1]->_padding_ + 0xe4))(0x26ad);
-                    /* language.dll match for 0x26ae: "Religion" */
     (**(code **)(this->title_bar[2]->_padding_ + 0xe4))(0x26ae);
-                    /* language.dll match for 0x26af: "Technology" */
     (**(code **)(this->title_bar[3]->_padding_ + 0xe4))(0x26af);
-                    /* language.dll match for 0x26d6: "Survival" */
     (**(code **)(this->title_bar[4]->_padding_ + 0xe4))(0x26d6);
-                    /* language.dll match for 0x26d7: "Wonder" */
     (**(code **)(this->title_bar[5]->_padding_ + 0xe4))(0x26d7);
-                    /* language.dll match for 0x26b1: "Total Score" */
     (**(code **)(this->title_bar[6]->_padding_ + 0xe4))(0x26b1);
     if (0 < iVar6) {
       iVar5 = 4;
@@ -1298,7 +1258,6 @@ void __thiscall TribeAchievementsScreen::set_mode(TribeAchievementsScreen *this,
           (**(code **)(ppTVar7[3]->_padding_ + 0xe8))(s_);
         }
         else {
-                    /* language.dll match for 0xfa3: "Yes" */
           (**(code **)(ppTVar7[3]->_padding_ + 0xe4))(0xfa3);
         }
         lVar4 = RGE_Victory_Conditions::get_victory_points_id
@@ -1307,7 +1266,6 @@ void __thiscall TribeAchievementsScreen::set_mode(TribeAchievementsScreen *this,
           (**(code **)(ppTVar7[4]->_padding_ + 0xe8))(s_);
         }
         else {
-                    /* language.dll match for 0xfa3: "Yes" */
           (**(code **)(ppTVar7[4]->_padding_ + 0xe4))(0xfa3);
         }
         puVar8 = &uStack_58;
@@ -1325,20 +1283,13 @@ void __thiscall TribeAchievementsScreen::set_mode(TribeAchievementsScreen *this,
     }
     break;
   case 1:
-                    /* language.dll match for 0x26ac: "Military" */
     this->size = 6;
     (**(code **)(this->summary_text->_padding_ + 0xe4))();
-                    /* language.dll match for 0x26b6: "Kills" */
     (**(code **)(this->title_bar[0]->_padding_ + 0xe4))(0x26b6);
-                    /* language.dll match for 0x26b7: "Razings" */
     (**(code **)(this->title_bar[1]->_padding_ + 0xe4))(0x26b7);
-                    /* language.dll match for 0x26b9: "Losses" */
     (**(code **)(this->title_bar[2]->_padding_ + 0xe4))(0x26b9);
-                    /* language.dll match for 0x26b8: "Kills - Losses" */
     (**(code **)(this->title_bar[3]->_padding_ + 0xe4))(0x26b8);
-                    /* language.dll match for 0x26ba: "Largest Army" */
     (**(code **)(this->title_bar[4]->_padding_ + 0xe4))(0x26ba);
-                    /* language.dll match for 0x26b5: "Total Score" */
     (**(code **)(this->title_bar[5]->_padding_ + 0xe4))(0x26b5);
     if (0 < iVar6) {
       iVar6 = 4;
@@ -1372,7 +1323,6 @@ void __thiscall TribeAchievementsScreen::set_mode(TribeAchievementsScreen *this,
           (**(code **)(ppTVar7[3]->_padding_ + 0xe8))(s_);
         }
         else {
-                    /* language.dll match for 0xfa3: "Yes" */
           (**(code **)(ppTVar7[3]->_padding_ + 0xe4))(0xfa3);
         }
         puVar8 = &uStack_54;
@@ -1390,22 +1340,14 @@ void __thiscall TribeAchievementsScreen::set_mode(TribeAchievementsScreen *this,
     }
     break;
   case 2:
-                    /* language.dll match for 0x26ad: "Economy" */
     this->size = 7;
     (**(code **)(this->summary_text->_padding_ + 0xe4))();
-                    /* language.dll match for 0x26be: "Gold Collected" */
     (**(code **)(this->title_bar[0]->_padding_ + 0xe4))(0x26be);
-                    /* language.dll match for 0x26bf: "Villager High" */
     (**(code **)(this->title_bar[1]->_padding_ + 0xe4))(0x26bf);
-                    /* language.dll match for 0x26c0: "Villager Bonus" */
     (**(code **)(this->title_bar[2]->_padding_ + 0xe4))(0x26c0);
-                    /* language.dll match for 0x26c1: "Exploration" */
     (**(code **)(this->title_bar[3]->_padding_ + 0xe4))(0x26c1);
-                    /* language.dll match for 0x26c2: "Most Explored" */
     (**(code **)(this->title_bar[4]->_padding_ + 0xe4))(0x26c2);
-                    /* language.dll match for 0x26c3: "Tribute Given" */
     (**(code **)(this->title_bar[5]->_padding_ + 0xe4))(0x26c3);
-                    /* language.dll match for 0x26b5: "Total Score" */
     (**(code **)(this->title_bar[6]->_padding_ + 0xe4))(0x26b5);
     if (0 < iVar6) {
       iVar6 = 4;
@@ -1430,7 +1372,6 @@ void __thiscall TribeAchievementsScreen::set_mode(TribeAchievementsScreen *this,
           (**(code **)((*ppTVar7)->_padding_ + 0xe8))(s_);
         }
         else {
-                    /* language.dll match for 0xfa3: "Yes" */
           (**(code **)((*ppTVar7)->_padding_ + 0xe4))(0xfa3);
         }
         lVar4 = RGE_Victory_Conditions::get_attribute_id
@@ -1443,7 +1384,6 @@ void __thiscall TribeAchievementsScreen::set_mode(TribeAchievementsScreen *this,
           (**(code **)(ppTVar7[2]->_padding_ + 0xe8))(s_);
         }
         else {
-                    /* language.dll match for 0xfa3: "Yes" */
           (**(code **)(ppTVar7[2]->_padding_ + 0xe4))(0xfa3);
         }
         puVar8 = &uStack_54;
@@ -1467,22 +1407,14 @@ void __thiscall TribeAchievementsScreen::set_mode(TribeAchievementsScreen *this,
     }
     break;
   case 3:
-                    /* language.dll match for 0x26ae: "Religion" */
     this->size = 7;
     (**(code **)(this->summary_text->_padding_ + 0xe4))();
-                    /* language.dll match for 0x26c6: "Conversions" */
     (**(code **)(this->title_bar[0]->_padding_ + 0xe4))(0x26c6);
-                    /* language.dll match for 0x26c7: "Most Conversions" */
     (**(code **)(this->title_bar[1]->_padding_ + 0xe4))(0x26c7);
-                    /* language.dll match for 0x26c8: "Ruins" */
     (**(code **)(this->title_bar[2]->_padding_ + 0xe4))(0x26c8);
-                    /* language.dll match for 0x26c9: "Artifacts" */
     (**(code **)(this->title_bar[3]->_padding_ + 0xe4))(0x26c9);
-                    /* language.dll match for 0x26ca: "Temples" */
     (**(code **)(this->title_bar[4]->_padding_ + 0xe4))(0x26ca);
-                    /* language.dll match for 0x26dc: "All Artifacts/Ruins." */
     (**(code **)(this->title_bar[5]->_padding_ + 0xe4))(0x26dc);
-                    /* language.dll match for 0x26b5: "Total Score" */
     (**(code **)(this->title_bar[6]->_padding_ + 0xe4))(0x26b5);
     if (0 < iVar6) {
       stack0xfffffff8 = 4;
@@ -1504,7 +1436,6 @@ void __thiscall TribeAchievementsScreen::set_mode(TribeAchievementsScreen *this,
           (**(code **)((*ppTVar7)->_padding_ + 0xe8))(s_);
         }
         else {
-                    /* language.dll match for 0xfa3: "Yes" */
           (**(code **)((*ppTVar7)->_padding_ + 0xe4))(0xfa3);
         }
         puVar9 = &stack0xffffffb4;
@@ -1548,18 +1479,12 @@ void __thiscall TribeAchievementsScreen::set_mode(TribeAchievementsScreen *this,
     }
     break;
   case 4:
-                    /* language.dll match for 0x26af: "Technology" */
     this->size = 5;
     (**(code **)(this->summary_text->_padding_ + 0xe4))();
-                    /* language.dll match for 0x26ce: "Technologies" */
     (**(code **)(this->title_bar[0]->_padding_ + 0xe4))(0x26ce);
-                    /* language.dll match for 0x26d1: "Most Technologies" */
     (**(code **)(this->title_bar[1]->_padding_ + 0xe4))(0x26d1);
-                    /* language.dll match for 0x26cf: "Bronze Age First" */
     (**(code **)(this->title_bar[2]->_padding_ + 0xe4))(0x26cf);
-                    /* language.dll match for 0x26d0: "Iron Age First" */
     (**(code **)(this->title_bar[3]->_padding_ + 0xe4))(0x26d0);
-                    /* language.dll match for 0x26b5: "Total Score" */
     (**(code **)(this->title_bar[4]->_padding_ + 0xe4))(0x26b5);
     if (0 < iVar6) {
       iVar6 = 4;
@@ -1578,7 +1503,6 @@ void __thiscall TribeAchievementsScreen::set_mode(TribeAchievementsScreen *this,
           (**(code **)((*ppTVar7)->_padding_ + 0xe8))(s_);
         }
         else {
-                    /* language.dll match for 0xfa3: "Yes" */
           (**(code **)((*ppTVar7)->_padding_ + 0xe4))(0xfa3);
         }
         lVar4 = RGE_Victory_Conditions::get_victory_points_id
@@ -1587,7 +1511,6 @@ void __thiscall TribeAchievementsScreen::set_mode(TribeAchievementsScreen *this,
           (**(code **)(ppTVar7[1]->_padding_ + 0xe8))(s_);
         }
         else {
-                    /* language.dll match for 0xfa3: "Yes" */
           (**(code **)(ppTVar7[1]->_padding_ + 0xe4))(0xfa3);
         }
         lVar4 = RGE_Victory_Conditions::get_victory_points_id
@@ -1596,7 +1519,6 @@ void __thiscall TribeAchievementsScreen::set_mode(TribeAchievementsScreen *this,
           (**(code **)(ppTVar7[2]->_padding_ + 0xe8))(s_);
         }
         else {
-                    /* language.dll match for 0xfa3: "Yes" */
           (**(code **)(ppTVar7[2]->_padding_ + 0xe4))(0xfa3);
         }
         puVar8 = &uStack_50;
@@ -1614,7 +1536,6 @@ void __thiscall TribeAchievementsScreen::set_mode(TribeAchievementsScreen *this,
     }
     break;
   case 5:
-                    /* language.dll match for 0x26b2: "Aftermath" */
     this->size = 0;
     (**(code **)(this->summary_text->_padding_ + 0xe4))();
     if (this->win_loss_text != (TTextPanel *)0x0) {
@@ -1632,7 +1553,6 @@ void __thiscall TribeAchievementsScreen::set_mode(TribeAchievementsScreen *this,
   case 6:
     this->size = 0;
     (**(code **)(this->time_line->_padding_ + 0x14))();
-                    /* language.dll match for 0x26d8: "Timeline" */
     (**(code **)(this->summary_text->_padding_ + 0xe4))(0x26d8);
     (**(code **)(this->time->_padding_ + 0x14))(1);
   }
@@ -1681,8 +1601,6 @@ void __thiscall TribeAchievementsScreen::set_mode(TribeAchievementsScreen *this,
 // Function: draw
 // Address: 0048f0b0
 // [HELPER] s_scr_ach__draw: "scr_ach::draw"
-/* public: virtual void __thiscall TribeAchievementsScreen::draw(void) */
-
 void __thiscall TribeAchievementsScreen::draw(TribeAchievementsScreen *this)
 {
   RGE_Game_World *pRVar1;
@@ -1734,9 +1652,6 @@ void __thiscall TribeAchievementsScreen::draw(TribeAchievementsScreen *this)
 
 // Function: handle_mouse_down
 // Address: 0048f190
-/* public: virtual long __thiscall TribeAchievementsScreen::handle_mouse_down(unsigned
-   char,long,long,int,int) */
-
 long __thiscall
 TribeAchievementsScreen::handle_mouse_down
           (TribeAchievementsScreen *this,uchar param_1,long param_2,long param_3,int param_4,
@@ -1781,9 +1696,6 @@ TribeAchievementsScreen::handle_mouse_down
 // [HELPER] s_Achievements_Screen: "Achievements Screen"
 // [HELPER] s_Game_Screen: "Game Screen"
 // [HELPER] s_YesNoDialog: "YesNoDialog"
-/* public: virtual long __thiscall TribeAchievementsScreen::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TribeAchievementsScreen::action
           (TribeAchievementsScreen *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -1903,8 +1815,6 @@ LAB_0048f4a0:
 
 // Function: handle_idle
 // Address: 0048f500
-/* public: virtual long __thiscall TribeAchievementsScreen::handle_idle(void) */
-
 long __thiscall TribeAchievementsScreen::handle_idle(TribeAchievementsScreen *this)
 {
   long lVar1;
@@ -1920,9 +1830,6 @@ long __thiscall TribeAchievementsScreen::handle_idle(TribeAchievementsScreen *th
 
 // Function: wnd_proc
 // Address: 0048f530
-/* public: virtual long __thiscall TribeAchievementsScreen::wnd_proc(void *,unsigned int,unsigned
-   int,long) */
-
 long __thiscall
 TribeAchievementsScreen::wnd_proc
           (TribeAchievementsScreen *this,void *param_1,uint param_2,uint param_3,long param_4)
@@ -1941,7 +1848,6 @@ TribeAchievementsScreen::wnd_proc
       if (pcVar1 == (char *)0x0) {
         iVar5 = 100;
         iVar4 = 0x1c2;
-                    /* language.dll match for 0xc1d: "Are you sure you want to quit this game?" */
         pcVar2 = TPanel::get_string((TPanel *)this,0xc1d);
         TEasy_Panel::popupYesNoDialog((TEasy_Panel *)this,pcVar2,pcVar1,iVar4,iVar5);
         return 1;

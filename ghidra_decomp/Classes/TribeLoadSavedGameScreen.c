@@ -832,9 +832,6 @@
 // Function: TribeLoadSavedGameScreen
 // Address: 0049dd40
 // [HELPER] s_Load_Saved_Game_Screen: "Load Saved Game Screen"
-/* WARNING: Variable defined which should be unmapped: from_panel */
-/* public: __thiscall TribeLoadSavedGameScreen::TribeLoadSavedGameScreen(void) */
-
 TribeLoadSavedGameScreen * __thiscall
 TribeLoadSavedGameScreen::TribeLoadSavedGameScreen(TribeLoadSavedGameScreen *this)
 {
@@ -908,12 +905,10 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen(TribeLoadSavedGameScreen *thi
   else {
     TEasy_Panel::setup_shadow_area((TEasy_Panel *)this,0);
     TEasy_Panel::set_ideal_size((TEasy_Panel *)this,0x280,0x1e0);
-                    /* language.dll match for 0x24ff: "Saved Games" */
     iVar13 = TEasy_Panel::create_text
                        ((TEasy_Panel *)this,(TPanel *)this,&this->screenTitle,0x24ff,0x14,10,600,
                         0x1e,1,1,0,0);
     if (iVar13 != 0) {
-                    /* language.dll match for 0x2502: "Select Saved Game" */
       iVar13 = TEasy_Panel::create_text
                          ((TEasy_Panel *)this,(TPanel *)this,&this->listTitle,0x2502,0x14,0x2d,600,
                           0x14,4,0,0,0);
@@ -924,21 +919,17 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen(TribeLoadSavedGameScreen *thi
           iVar13 = TEasy_Panel::create_auto_scrollbar
                              ((TEasy_Panel *)this,&this->scrollbar,(TTextPanel *)*ppTVar1,0x14);
           if (iVar13 != 0) {
-                    /* language.dll match for 0x7670: "Type a name for the game." */
             TPanel::set_help_info((TPanel *)this->scrollbar,0x7670,-1);
             ppTVar2 = &this->okButton;
-                    /* language.dll match for 0xfa1: "OK" */
             iVar13 = TEasy_Panel::create_button
                                ((TEasy_Panel *)this,(TPanel *)this,ppTVar2,0xfa1,0,0x1e,0x1b8,0xb4,
                                 0x1e,0,0,0);
             if (iVar13 != 0) {
-                    /* language.dll match for 0x24c9: "Delete" */
               iVar13 = TEasy_Panel::create_button
                                  ((TEasy_Panel *)this,(TPanel *)this,&this->deleteButton,0x24c9,0,
                                   0xe6,0x1b8,0xb4,0x1e,0,0,0);
               if (iVar13 != 0) {
                 ppTVar3 = &this->cancelButton;
-                    /* language.dll match for 0xfa2: "Cancel" */
                 iVar13 = TEasy_Panel::create_button
                                    ((TEasy_Panel *)this,(TPanel *)this,ppTVar3,0xfa2,0,0x1ae,0x1b8,
                                     0xb4,0x1e,0,0,0);
@@ -983,9 +974,6 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen(TribeLoadSavedGameScreen *thi
 
 // Function: `vector_deleting_destructor'
 // Address: 0049e080
-/* public: virtual void * __thiscall TribeLoadSavedGameScreen::`vector deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TribeLoadSavedGameScreen::_vector_deleting_destructor_(TribeLoadSavedGameScreen *this,uint param_1)
 {
@@ -1000,8 +988,6 @@ TribeLoadSavedGameScreen::_vector_deleting_destructor_(TribeLoadSavedGameScreen 
 
 // Function: ~TribeLoadSavedGameScreen
 // Address: 0049e0a0
-/* public: virtual __thiscall TribeLoadSavedGameScreen::~TribeLoadSavedGameScreen(void) */
-
 void __thiscall TribeLoadSavedGameScreen::~TribeLoadSavedGameScreen(TribeLoadSavedGameScreen *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -1033,9 +1019,6 @@ void __thiscall TribeLoadSavedGameScreen::~TribeLoadSavedGameScreen(TribeLoadSav
 // Address: 0049e150
 // [HELPER] s__s__gam: "%s*.gam"
 // [HELPER] s__s__gmx: "%s*.gmx"
-/* WARNING: Variable defined which should be unmapped: file_name */
-/* protected: void __thiscall TribeLoadSavedGameScreen::fillList(void) */
-
 void __thiscall TribeLoadSavedGameScreen::fillList(TribeLoadSavedGameScreen *this)
 {
   char cVar1;
@@ -1094,8 +1077,6 @@ void __thiscall TribeLoadSavedGameScreen::fillList(TribeLoadSavedGameScreen *thi
 
 // Function: handle_idle
 // Address: 0049e2b0
-/* public: virtual long __thiscall TribeLoadSavedGameScreen::handle_idle(void) */
-
 long __thiscall TribeLoadSavedGameScreen::handle_idle(TribeLoadSavedGameScreen *this)
 {
   long lVar1;
@@ -1119,9 +1100,6 @@ long __thiscall TribeLoadSavedGameScreen::handle_idle(TribeLoadSavedGameScreen *
 // [HELPER] s__s_gmx: "%s.gmx"
 // [HELPER] s__s_s_gam: "%s%s.gam"
 // [HELPER] s__s_s_gmx: "%s%s.gmx"
-/* public: virtual long __thiscall TribeLoadSavedGameScreen::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TribeLoadSavedGameScreen::action
           (TribeLoadSavedGameScreen *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -1201,8 +1179,6 @@ LAB_0049e444:
     if (((TButtonPanel *)param_1 == this->deleteButton) && (param_2 == 1)) {
       pcVar4 = TTextPanel::currentLine((TTextPanel *)this->list);
       if (*pcVar4 != '\0') {
-                    /* language.dll match for 0x24ca: "Are you sure you want to delete the file
-                       \\n'%s'?" */
         TPanel::get_string((TPanel *)this,0x24ca,fileName + 4,0x100);
         pcVar4 = TTextPanel::currentLine((TTextPanel *)this->list);
         sprintf(&fileInfo.time_create,fileName + 4,pcVar4);
@@ -1248,7 +1224,6 @@ LAB_0049e444:
           sprintf(fileName + 4,pcVar4,fileNameNoExt + 4);
           iVar6 = TRIBE_Game::load_game((TRIBE_Game *)rge_base_game,fileName + 4);
           if (iVar6 == 0) {
-                    /* language.dll match for 0x2501: "Cannot load that saved game." */
             TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x2501,(char *)0x0,0x1c2,100);
             lVar7 = 1;
             goto LAB_0049e6b2;

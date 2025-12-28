@@ -24,8 +24,6 @@
 // Function: StrategyAIModule
 // Address: 00412af0
 // [HELPER] s_Strategy_AI: "Strategy AI"
-/* public: __thiscall StrategyAIModule::StrategyAIModule(void *,int) */
-
 StrategyAIModule * __thiscall
 StrategyAIModule::StrategyAIModule(StrategyAIModule *this,void *param_1,int param_2)
 {
@@ -38,8 +36,6 @@ StrategyAIModule::StrategyAIModule(StrategyAIModule *this,void *param_1,int para
 
 // Function: `vector_deleting_destructor'
 // Address: 00412b20
-/* public: virtual void * __thiscall StrategyAIModule::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall
 StrategyAIModule::_vector_deleting_destructor_(StrategyAIModule *this,uint param_1)
 {
@@ -54,8 +50,6 @@ StrategyAIModule::_vector_deleting_destructor_(StrategyAIModule *this,uint param
 
 // Function: ~StrategyAIModule
 // Address: 00412b40
-/* public: virtual __thiscall StrategyAIModule::~StrategyAIModule(void) */
-
 void __thiscall StrategyAIModule::~StrategyAIModule(StrategyAIModule *this)
 {
   *(undefined ***)this = &_vftable_;

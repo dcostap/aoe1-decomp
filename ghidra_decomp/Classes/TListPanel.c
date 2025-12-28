@@ -131,8 +131,6 @@
 
 // Function: TListPanel
 // Address: 004782a0
-/* public: __thiscall TListPanel::TListPanel(void) */
-
 TListPanel * __thiscall TListPanel::TListPanel(TListPanel *this)
 {
   TTextPanel::TTextPanel((TTextPanel *)this);
@@ -156,8 +154,6 @@ TListPanel * __thiscall TListPanel::TListPanel(TListPanel *this)
 
 // Function: `vector_deleting_destructor'
 // Address: 00478310
-/* public: virtual void * __thiscall TListPanel::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall TListPanel::_vector_deleting_destructor_(TListPanel *this,uint param_1)
 {
   ~TListPanel(this);
@@ -171,8 +167,6 @@ void * __thiscall TListPanel::_vector_deleting_destructor_(TListPanel *this,uint
 
 // Function: ~TListPanel
 // Address: 00478330
-/* public: virtual __thiscall TListPanel::~TListPanel(void) */
-
 void __thiscall TListPanel::~TListPanel(TListPanel *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -184,8 +178,6 @@ void __thiscall TListPanel::~TListPanel(TListPanel *this)
 
 // Function: set_auto_track
 // Address: 00478340
-/* public: void __thiscall TListPanel::set_auto_track(int) */
-
 void __thiscall TListPanel::set_auto_track(TListPanel *this,int param_1)
 {
   this->auto_track = param_1;
@@ -196,8 +188,6 @@ void __thiscall TListPanel::set_auto_track(TListPanel *this,int param_1)
 
 // Function: set_bevel_info
 // Address: 00478350
-/* public: virtual void __thiscall TListPanel::set_bevel_info(int,int,int,int,int,int,int) */
-
 void __thiscall
 TListPanel::set_bevel_info
           (TListPanel *this,int param_1,int param_2,int param_3,int param_4,int param_5,int param_6,
@@ -229,8 +219,6 @@ TListPanel::set_bevel_info
 // Function: handle_idle
 // Address: 004783f0
 // [HELPER] s_C__msdev_work_age1_x1_Pnl_lst_cp: "C:\msdev\work\age1_x1\Pnl_lst.cpp"
-/* public: virtual long __thiscall TListPanel::handle_idle(void) */
-
 long __thiscall TListPanel::handle_idle(TListPanel *this)
 {
   short sVar1;
@@ -263,8 +251,6 @@ long __thiscall TListPanel::handle_idle(TListPanel *this)
 
 // Function: mouse_move_action
 // Address: 004784a0
-/* public: virtual long __thiscall TListPanel::mouse_move_action(long,long,int,int) */
-
 long __thiscall
 TListPanel::mouse_move_action(TListPanel *this,long param_1,long param_2,int param_3,int param_4)
 {
@@ -289,8 +275,6 @@ TListPanel::mouse_move_action(TListPanel *this,long param_1,long param_2,int par
 
 // Function: mouse_left_down_action
 // Address: 00478510
-/* public: virtual long __thiscall TListPanel::mouse_left_down_action(long,long,int,int) */
-
 long __thiscall
 TListPanel::mouse_left_down_action
           (TListPanel *this,long param_1,long param_2,int param_3,int param_4)
@@ -305,8 +289,6 @@ TListPanel::mouse_left_down_action
 // Function: mouse_left_move_action
 // Address: 00478540
 // [HELPER] s_C__msdev_work_age1_x1_Pnl_lst_cp: "C:\msdev\work\age1_x1\Pnl_lst.cpp"
-/* public: virtual long __thiscall TListPanel::mouse_left_move_action(long,long,int,int) */
-
 long __thiscall
 TListPanel::mouse_left_move_action
           (TListPanel *this,long param_1,long param_2,int param_3,int param_4)
@@ -353,8 +335,6 @@ LAB_004785ce:
 
 // Function: mouse_left_up_action
 // Address: 00478610
-/* public: virtual long __thiscall TListPanel::mouse_left_up_action(long,long,int,int) */
-
 long __thiscall
 TListPanel::mouse_left_up_action(TListPanel *this,long param_1,long param_2,int param_3,int param_4)
 {
@@ -374,8 +354,6 @@ TListPanel::mouse_left_up_action(TListPanel *this,long param_1,long param_2,int 
 
 // Function: mouse_left_dbl_click_action
 // Address: 00478660
-/* public: virtual long __thiscall TListPanel::mouse_left_dbl_click_action(long,long,int,int) */
-
 long __thiscall
 TListPanel::mouse_left_dbl_click_action
           (TListPanel *this,long param_1,long param_2,int param_3,int param_4)
@@ -394,8 +372,6 @@ TListPanel::mouse_left_dbl_click_action
 
 // Function: item_at
 // Address: 004786b0
-/* public: short __thiscall TListPanel::item_at(long,long) */
-
 short __thiscall TListPanel::item_at(TListPanel *this,long param_1,long param_2)
 {
   int iVar1;
@@ -416,8 +392,6 @@ short __thiscall TListPanel::item_at(TListPanel *this,long param_1,long param_2)
 
 // Function: goto_item
 // Address: 00478700
-/* public: void __thiscall TListPanel::goto_item(long,long) */
-
 void __thiscall TListPanel::goto_item(TListPanel *this,long param_1,long param_2)
 {
   short sVar1;
@@ -433,8 +407,6 @@ void __thiscall TListPanel::goto_item(TListPanel *this,long param_1,long param_2
 
 // Function: key_down_action
 // Address: 00478730
-/* public: virtual long __thiscall TListPanel::key_down_action(long,short,int,int,int) */
-
 long __thiscall
 TListPanel::key_down_action
           (TListPanel *this,long param_1,short param_2,int param_3,int param_4,int param_5)
@@ -476,8 +448,6 @@ TListPanel::key_down_action
 
 // Function: char_action
 // Address: 00478850
-/* public: virtual long __thiscall TListPanel::char_action(long,short) */
-
 long __thiscall TListPanel::char_action(TListPanel *this,long param_1,short param_2)
 {
   int iVar1;
@@ -519,9 +489,6 @@ LAB_004788da:
 
 // Function: action
 // Address: 00478900
-/* public: virtual long __thiscall TListPanel::action(class TPanel *,long,unsigned long,unsigned
-   long) */
-
 long __thiscall
 TListPanel::action(TListPanel *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
 {
@@ -535,8 +502,6 @@ TListPanel::action(TListPanel *this,TPanel *param_1,long param_2,ulong param_3,u
 
 // Function: scroll_cur_line
 // Address: 00478920
-/* public: void __thiscall TListPanel::scroll_cur_line(unsigned char,short,int) */
-
 void __thiscall
 TListPanel::scroll_cur_line(TListPanel *this,uchar param_1,short param_2,int param_3)
 {
@@ -651,9 +616,6 @@ switchD_00478941_default:
 // Function: draw
 // Address: 00478ba0
 // [HELPER] s_pnl_lst__draw: "pnl_lst::draw"
-/* WARNING: Variable defined which should be unmapped: old_font */
-/* public: virtual void __thiscall TListPanel::draw(void) */
-
 void __thiscall TListPanel::draw(TListPanel *this)
 {
   void *pvVar1;
@@ -711,9 +673,6 @@ void __thiscall TListPanel::draw(TListPanel *this)
 // Function: draw_highlight_bar
 // Address: 00478cd0
 // [HELPER] s_pnl_lst__draw_highlight_bar: "pnl_lst::draw_highlight_bar"
-/* WARNING: Variable defined which should be unmapped: r */
-/* public: void __thiscall TListPanel::draw_highlight_bar(void) */
-
 void __thiscall TListPanel::draw_highlight_bar(TListPanel *this)
 {
   int iVar1;
@@ -811,8 +770,6 @@ switchD_00478d96_default:
 
 // Function: setDrawHighlightBar
 // Address: 00478ee0
-/* public: void __thiscall TListPanel::setDrawHighlightBar(int) */
-
 void __thiscall TListPanel::setDrawHighlightBar(TListPanel *this,int param_1)
 {
   this->drawHighlightBar = param_1;
@@ -823,8 +780,6 @@ void __thiscall TListPanel::setDrawHighlightBar(TListPanel *this,int param_1)
 
 // Function: set_focus
 // Address: 00478ef0
-/* public: virtual void __thiscall TListPanel::set_focus(int) */
-
 void __thiscall TListPanel::set_focus(TListPanel *this,int param_1)
 {
   short sVar1;

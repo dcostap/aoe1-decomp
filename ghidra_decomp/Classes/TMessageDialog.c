@@ -441,8 +441,6 @@
 
 // Function: TMessageDialog
 // Address: 0043fc70
-/* public: __thiscall TMessageDialog::TMessageDialog(char *) */
-
 TMessageDialog * __thiscall TMessageDialog::TMessageDialog(TMessageDialog *this,char *param_1)
 {
   TDialogPanel::TDialogPanel((TDialogPanel *)this,param_1);
@@ -459,8 +457,6 @@ TMessageDialog * __thiscall TMessageDialog::TMessageDialog(TMessageDialog *this,
 
 // Function: `scalar_deleting_destructor'
 // Address: 0043fcb0
-/* public: virtual void * __thiscall TMessageDialog::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall TMessageDialog::_scalar_deleting_destructor_(TMessageDialog *this,uint param_1)
 {
   ~TMessageDialog(this);
@@ -474,8 +470,6 @@ void * __thiscall TMessageDialog::_scalar_deleting_destructor_(TMessageDialog *t
 
 // Function: ~TMessageDialog
 // Address: 0043fcd0
-/* public: virtual __thiscall TMessageDialog::~TMessageDialog(void) */
-
 void __thiscall TMessageDialog::~TMessageDialog(TMessageDialog *this)
 {
   TButtonPanel **ppTVar1;
@@ -513,9 +507,6 @@ void __thiscall TMessageDialog::~TMessageDialog(TMessageDialog *this)
 // Function: setup
 // Address: 0043fd50
 // [HELPER] s_: ""
-/* public: long __thiscall TMessageDialog::setup(class TPanel *,char *,long,long,long,unsigned
-   char,char *,long,long) */
-
 long __thiscall
 TMessageDialog::setup
           (TMessageDialog *this,TPanel *param_1,char *param_2,long param_3,long param_4,long param_5
@@ -594,31 +585,23 @@ switchD_0043fdf0_default:
   }
   switch(this->dlg_type) {
   case '\0':
-                    /* language.dll match for 0xfa1: "OK" */
     TButtonPanel::set_text(this->button[0],0,0xfa1);
     goto switchD_0043fec6_default;
   case '\x01':
-                    /* language.dll match for 0xfa1: "OK" */
     TButtonPanel::set_text(this->button[0],0,0xfa1);
     lVar8 = 0xfa2;
     break;
   case '\x02':
-                    /* language.dll match for 0xfa3: "Yes" */
     TButtonPanel::set_text(this->button[0],0,0xfa3);
     lVar8 = 0xfa4;
     break;
   case '\x03':
-                    /* language.dll match for 0xfa5: "Retry" */
     TButtonPanel::set_text(this->button[0],0,0xfa5);
-                    /* language.dll match for 0xfa7: "Abort" */
     lVar8 = 0xfa7;
     break;
   case '\x04':
-                    /* language.dll match for 0xfa3: "Yes" */
     TButtonPanel::set_text(this->button[0],0,0xfa3);
-                    /* language.dll match for 0xfa4: "No" */
     TButtonPanel::set_text(this->button[1],0,0xfa4);
-                    /* language.dll match for 0xfa2: "Cancel" */
     TButtonPanel::set_text(this->button[2],0,0xfa2);
     pTVar6 = this->button[2];
     goto LAB_0043ff7e;
@@ -640,10 +623,6 @@ switchD_0043fec6_default:
 
 // Function: setup
 // Address: 0043fff0
-/* WARNING: Variable defined which should be unmapped: str */
-/* public: long __thiscall TMessageDialog::setup(class TPanel *,char *,long,long,long,unsigned
-   char,int,long,long) */
-
 long __thiscall
 TMessageDialog::setup
           (TMessageDialog *this,TPanel *param_1,char *param_2,long param_3,long param_4,long param_5
@@ -661,9 +640,6 @@ TMessageDialog::setup
 
 // Function: action
 // Address: 00440070
-/* public: virtual long __thiscall TMessageDialog::action(class TPanel *,long,unsigned long,unsigned
-   long) */
-
 long __thiscall
 TMessageDialog::action
           (TMessageDialog *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -694,8 +670,6 @@ TMessageDialog::action
 
 // Function: key_down_action
 // Address: 00440100
-/* public: virtual long __thiscall TMessageDialog::key_down_action(long,short,int,int,int) */
-
 long __thiscall
 TMessageDialog::key_down_action
           (TMessageDialog *this,long param_1,short param_2,int param_3,int param_4,int param_5)
@@ -707,8 +681,6 @@ TMessageDialog::key_down_action
 
 // Function: handle_idle
 // Address: 00440110
-/* public: virtual long __thiscall TMessageDialog::handle_idle(void) */
-
 long __thiscall TMessageDialog::handle_idle(TMessageDialog *this)
 {
   long lVar1;

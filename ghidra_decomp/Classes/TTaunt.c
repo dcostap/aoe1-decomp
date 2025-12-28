@@ -11,8 +11,6 @@
 
 // Function: TTaunt
 // Address: 00509450
-/* public: __thiscall TTaunt::TTaunt(class TSound_Driver *) */
-
 TTaunt * __thiscall TTaunt::TTaunt(TTaunt *this,TSound_Driver *param_1)
 {
   this->TauntDir[0] = '\0';
@@ -25,8 +23,6 @@ TTaunt * __thiscall TTaunt::TTaunt(TTaunt *this,TSound_Driver *param_1)
 
 // Function: ~TTaunt
 // Address: 00509480
-/* public: __thiscall TTaunt::~TTaunt(void) */
-
 void __thiscall TTaunt::~TTaunt(TTaunt *this)
 {
   TDigital *this_00;
@@ -50,8 +46,6 @@ void __thiscall TTaunt::~TTaunt(TTaunt *this)
 
 // Function: PlayTauntStr
 // Address: 00509490
-/* public: int __thiscall TTaunt::PlayTauntStr(char *,unsigned char) */
-
 int __thiscall TTaunt::PlayTauntStr(TTaunt *this,char *param_1,uchar param_2)
 {
   char cVar1;
@@ -98,9 +92,6 @@ int __thiscall TTaunt::PlayTauntStr(TTaunt *this,char *param_1,uchar param_2)
 // Function: PlayTauntNo
 // Address: 00509530
 // [HELPER] s__sTaunt__3d_wav: "%sTaunt%.3d.wav"
-/* WARNING: Variable defined which should be unmapped: FName */
-/* public: int __thiscall TTaunt::PlayTauntNo(int) */
-
 int __thiscall TTaunt::PlayTauntNo(TTaunt *this,int param_1)
 {
   int iVar1;
@@ -145,8 +136,6 @@ int __thiscall TTaunt::PlayTauntNo(TTaunt *this,int param_1)
 
 // Function: GetTauntNo
 // Address: 00509610
-/* public: int __thiscall TTaunt::GetTauntNo(char *) */
-
 int __thiscall TTaunt::GetTauntNo(TTaunt *this,char *param_1)
 {
   uint uVar1;
@@ -166,8 +155,6 @@ int __thiscall TTaunt::GetTauntNo(TTaunt *this,char *param_1)
 // Function: GetTauntText
 // Address: 00509640
 // [HELPER] s_Taunts_you_: "Taunts you!"
-/* public: char * __thiscall TTaunt::GetTauntText(int) */
-
 char * __thiscall TTaunt::GetTauntText(TTaunt *this,int param_1)
 {
   char cVar1;
@@ -206,8 +193,6 @@ char * __thiscall TTaunt::GetTauntText(TTaunt *this,int param_1)
 
 // Function: StopSoundSystem
 // Address: 00509670
-/* public: void __thiscall TTaunt::StopSoundSystem(void) */
-
 void __thiscall TTaunt::StopSoundSystem(TTaunt *this)
 {
   TDigital *this_00;
@@ -232,8 +217,6 @@ void __thiscall TTaunt::StopSoundSystem(TTaunt *this)
 // Function: RestartSoundSystem
 // Address: 005096a0
 // [HELPER] s_Silence: "Silence"
-/* public: int __thiscall TTaunt::RestartSoundSystem(class TSound_Driver *) */
-
 int __thiscall TTaunt::RestartSoundSystem(TTaunt *this,TSound_Driver *param_1)
 {
   TDigital *pTVar1;

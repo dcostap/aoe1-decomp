@@ -37,8 +37,6 @@
 
 // Function: RGE_Action_Missile
 // Address: 00404bb0
-/* public: __thiscall RGE_Action_Missile::RGE_Action_Missile(int,class RGE_Action_Object *) */
-
 RGE_Action_Missile * __thiscall
 RGE_Action_Missile::RGE_Action_Missile
           (RGE_Action_Missile *this,int param_1,RGE_Action_Object *param_2)
@@ -69,9 +67,6 @@ RGE_Action_Missile::RGE_Action_Missile
 
 // Function: `vector_deleting_destructor'
 // Address: 00404c60
-/* public: virtual void * __thiscall RGE_Action_Missile::`vector deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 RGE_Action_Missile::_vector_deleting_destructor_(RGE_Action_Missile *this,uint param_1)
 {
@@ -86,8 +81,6 @@ RGE_Action_Missile::_vector_deleting_destructor_(RGE_Action_Missile *this,uint p
 
 // Function: ~RGE_Action_Missile
 // Address: 00404c80
-/* public: virtual __thiscall RGE_Action_Missile::~RGE_Action_Missile(void) */
-
 void __thiscall RGE_Action_Missile::~RGE_Action_Missile(RGE_Action_Missile *this)
 {
   RGE_Action_List *this_00;
@@ -108,9 +101,6 @@ void __thiscall RGE_Action_Missile::~RGE_Action_Missile(RGE_Action_Missile *this
 
 // Function: RGE_Action_Missile
 // Address: 00404c90
-/* public: __thiscall RGE_Action_Missile::RGE_Action_Missile(class RGE_Action_Object *,class
-   RGE_Static_Object *,class RGE_Static_Object *,float,float,float) */
-
 RGE_Action_Missile * __thiscall
 RGE_Action_Missile::RGE_Action_Missile
           (RGE_Action_Missile *this,RGE_Action_Object *param_1,RGE_Static_Object *param_2,
@@ -142,8 +132,6 @@ RGE_Action_Missile::RGE_Action_Missile
 
 // Function: first_in_stack
 // Address: 00404d10
-/* public: virtual void __thiscall RGE_Action_Missile::first_in_stack(unsigned char) */
-
 void __thiscall RGE_Action_Missile::first_in_stack(RGE_Action_Missile *this,uchar param_1)
 {
   if (param_1 == '\0') {
@@ -163,9 +151,6 @@ void __thiscall RGE_Action_Missile::first_in_stack(RGE_Action_Missile *this,ucha
 
 // Function: intercept
 // Address: 00404d50
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: void __thiscall RGE_Action_Missile::intercept(float &,float &,float &) */
-
 void __thiscall
 RGE_Action_Missile::intercept(RGE_Action_Missile *this,float *param_1,float *param_2,float *param_3)
 {
@@ -186,10 +171,6 @@ RGE_Action_Missile::intercept(RGE_Action_Missile *this,float *param_1,float *par
 
 // Function: set_state
 // Address: 00404db0
-/* WARNING: Variable defined which should be unmapped: dx */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual void __thiscall RGE_Action_Missile::set_state(unsigned char) */
-
 void __thiscall RGE_Action_Missile::set_state(RGE_Action_Missile *this,uchar param_1)
 {
   short sVar1;
@@ -305,10 +286,6 @@ void __thiscall RGE_Action_Missile::set_state(RGE_Action_Missile *this,uchar par
 
 // Function: update
 // Address: 004050f0
-/* WARNING: Variable defined which should be unmapped: hit_ground */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall RGE_Action_Missile::update(void) */
-
 uchar __thiscall RGE_Action_Missile::update(RGE_Action_Missile *this)
 {
   char cVar1;
@@ -505,8 +482,6 @@ LAB_0040542b:
 
 // Function: save
 // Address: 004054b0
-/* public: virtual void __thiscall RGE_Action_Missile::save(int) */
-
 void __thiscall RGE_Action_Missile::save(RGE_Action_Missile *this,int param_1)
 {
   RGE_Action::save((RGE_Action *)this,param_1);

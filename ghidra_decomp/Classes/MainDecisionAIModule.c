@@ -48,8 +48,6 @@
 // Function: MainDecisionAIModule
 // Address: 0040cdf0
 // [HELPER] s_Main_Decision_AI: "Main Decision AI"
-/* public: __thiscall MainDecisionAIModule::MainDecisionAIModule(void *,int,class RGE_Player *) */
-
 MainDecisionAIModule * __thiscall
 MainDecisionAIModule::MainDecisionAIModule
           (MainDecisionAIModule *this,void *param_1,int param_2,RGE_Player *param_3)
@@ -78,9 +76,6 @@ MainDecisionAIModule::MainDecisionAIModule
 
 // Function: `vector_deleting_destructor'
 // Address: 0040ce70
-/* public: virtual void * __thiscall MainDecisionAIModule::`vector deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 MainDecisionAIModule::_vector_deleting_destructor_(MainDecisionAIModule *this,uint param_1)
 {
@@ -96,9 +91,6 @@ MainDecisionAIModule::_vector_deleting_destructor_(MainDecisionAIModule *this,ui
 // Function: MainDecisionAIModule
 // Address: 0040ce90
 // [HELPER] s_Main_Decision_AI: "Main Decision AI"
-/* WARNING: Variable defined which should be unmapped: numberUnits */
-/* public: __thiscall MainDecisionAIModule::MainDecisionAIModule(int,class RGE_Player *,int) */
-
 MainDecisionAIModule * __thiscall
 MainDecisionAIModule::MainDecisionAIModule
           (MainDecisionAIModule *this,int param_1,RGE_Player *param_2,int param_3)
@@ -176,8 +168,6 @@ LAB_0040cfea:
 
 // Function: ~MainDecisionAIModule
 // Address: 0040d020
-/* public: virtual __thiscall MainDecisionAIModule::~MainDecisionAIModule(void) */
-
 void __thiscall MainDecisionAIModule::~MainDecisionAIModule(MainDecisionAIModule *this)
 {
   int *piVar1;
@@ -209,8 +199,6 @@ void __thiscall MainDecisionAIModule::~MainDecisionAIModule(MainDecisionAIModule
 
 // Function: setLogHistory
 // Address: 0040d090
-/* public: virtual void __thiscall MainDecisionAIModule::setLogHistory(int) */
-
 void __thiscall MainDecisionAIModule::setLogHistory(MainDecisionAIModule *this,int param_1)
 {
   return;
@@ -220,9 +208,6 @@ void __thiscall MainDecisionAIModule::setLogHistory(MainDecisionAIModule *this,i
 
 // Function: save
 // Address: 0040d0a0
-/* WARNING: Variable defined which should be unmapped: tempInt */
-/* public: virtual int __thiscall MainDecisionAIModule::save(int) */
-
 int __thiscall MainDecisionAIModule::save(MainDecisionAIModule *this,int param_1)
 {
   int *piVar1;
@@ -266,8 +251,6 @@ int __thiscall MainDecisionAIModule::save(MainDecisionAIModule *this,int param_1
 
 // Function: addObject
 // Address: 0040d180
-/* public: virtual int __thiscall MainDecisionAIModule::addObject(class RGE_Static_Object *) */
-
 int __thiscall
 MainDecisionAIModule::addObject(MainDecisionAIModule *this,RGE_Static_Object *param_1)
 {
@@ -319,8 +302,6 @@ MainDecisionAIModule::addObject(MainDecisionAIModule *this,RGE_Static_Object *pa
 
 // Function: removeObject
 // Address: 0040d250
-/* public: virtual int __thiscall MainDecisionAIModule::removeObject(int) */
-
 int __thiscall MainDecisionAIModule::removeObject(MainDecisionAIModule *this,int param_1)
 {
   int iVar1;
@@ -360,8 +341,6 @@ int __thiscall MainDecisionAIModule::removeObject(MainDecisionAIModule *this,int
 
 // Function: numberObjects
 // Address: 0040d2c0
-/* public: int __thiscall MainDecisionAIModule::numberObjects(void) */
-
 int __thiscall MainDecisionAIModule::numberObjects(MainDecisionAIModule *this)
 {
   return (this->objects).numberValue;
@@ -371,9 +350,6 @@ int __thiscall MainDecisionAIModule::numberObjects(MainDecisionAIModule *this)
 
 // Function: numberObjectsWithAction
 // Address: 0040d2d0
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: int __thiscall MainDecisionAIModule::numberObjectsWithAction(int) */
-
 int __thiscall MainDecisionAIModule::numberObjectsWithAction(MainDecisionAIModule *this,int param_1)
 {
   int *piVar1;
@@ -425,9 +401,6 @@ int __thiscall MainDecisionAIModule::numberObjectsWithAction(MainDecisionAIModul
 
 // Function: numberObjectsWithGroup
 // Address: 0040d3b0
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: int __thiscall MainDecisionAIModule::numberObjectsWithGroup(int) */
-
 int __thiscall MainDecisionAIModule::numberObjectsWithGroup(MainDecisionAIModule *this,int param_1)
 {
   int *piVar1;
@@ -473,9 +446,6 @@ int __thiscall MainDecisionAIModule::numberObjectsWithGroup(MainDecisionAIModule
 
 // Function: numberObjectsWithActionAndTarget
 // Address: 0040d480
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: int __thiscall MainDecisionAIModule::numberObjectsWithActionAndTarget(int,int) */
-
 int __thiscall
 MainDecisionAIModule::numberObjectsWithActionAndTarget
           (MainDecisionAIModule *this,int param_1,int param_2)
@@ -533,9 +503,6 @@ MainDecisionAIModule::numberObjectsWithActionAndTarget
 
 // Function: numberObjectsWithTargetType
 // Address: 0040d580
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: int __thiscall MainDecisionAIModule::numberObjectsWithTargetType(int) */
-
 int __thiscall
 MainDecisionAIModule::numberObjectsWithTargetType(MainDecisionAIModule *this,int param_1)
 {
@@ -588,9 +555,6 @@ MainDecisionAIModule::numberObjectsWithTargetType(MainDecisionAIModule *this,int
 
 // Function: numberObjectsWithActionAndTargetType
 // Address: 0040d660
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: int __thiscall MainDecisionAIModule::numberObjectsWithActionAndTargetType(int,int) */
-
 int __thiscall
 MainDecisionAIModule::numberObjectsWithActionAndTargetType
           (MainDecisionAIModule *this,int param_1,int param_2)
@@ -648,8 +612,6 @@ MainDecisionAIModule::numberObjectsWithActionAndTargetType
 
 // Function: object
 // Address: 0040d760
-/* public: class RGE_Static_Object * __thiscall MainDecisionAIModule::object(int) */
-
 RGE_Static_Object * __thiscall MainDecisionAIModule::object(MainDecisionAIModule *this,int param_1)
 {
   RGE_Static_Object *pRVar1;
@@ -662,10 +624,6 @@ RGE_Static_Object * __thiscall MainDecisionAIModule::object(MainDecisionAIModule
 
 // Function: object
 // Address: 0040d780
-/* WARNING: Variable defined which should be unmapped: i */
-/* public: class RGE_Static_Object * __thiscall
-   MainDecisionAIModule::object(int,int,int,int,int,int,int,int,int,int) */
-
 RGE_Static_Object * __thiscall
 MainDecisionAIModule::object
           (MainDecisionAIModule *this,int param_1,int param_2,int param_3,int param_4,int param_5,
@@ -760,9 +718,6 @@ LAB_0040d98d:
 
 // Function: object
 // Address: 0040d9d0
-/* public: class RGE_Static_Object * __thiscall
-   MainDecisionAIModule::object(int,int,int,int,int,int) */
-
 RGE_Static_Object * __thiscall
 MainDecisionAIModule::object
           (MainDecisionAIModule *this,int param_1,int param_2,int param_3,int param_4,int param_5,
@@ -826,8 +781,6 @@ MainDecisionAIModule::object
 // Function: objectGroupThatCanPerformAction
 // Address: 0040db20
 // [HELPER] s_ERROR____d_is_an_unrecognized_ac: "ERROR!  %d is an unrecognized action id."
-/* public: virtual int __thiscall MainDecisionAIModule::objectGroupThatCanPerformAction(int) */
-
 int __thiscall
 MainDecisionAIModule::objectGroupThatCanPerformAction(MainDecisionAIModule *this,int param_1)
 {
@@ -840,8 +793,6 @@ MainDecisionAIModule::objectGroupThatCanPerformAction(MainDecisionAIModule *this
 
 // Function: canPerformAction
 // Address: 0040db40
-/* public: virtual int __thiscall MainDecisionAIModule::canPerformAction(int,int) */
-
 int __thiscall
 MainDecisionAIModule::canPerformAction(MainDecisionAIModule *this,int param_1,int param_2)
 {
@@ -852,9 +803,6 @@ MainDecisionAIModule::canPerformAction(MainDecisionAIModule *this,int param_1,in
 
 // Function: numberBusyObjects
 // Address: 0040db50
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: int __thiscall MainDecisionAIModule::numberBusyObjects(void) */
-
 int __thiscall MainDecisionAIModule::numberBusyObjects(MainDecisionAIModule *this)
 {
   int *piVar1;
@@ -906,9 +854,6 @@ int __thiscall MainDecisionAIModule::numberBusyObjects(MainDecisionAIModule *thi
 
 // Function: mostDamaged
 // Address: 0040dc30
-/* WARNING: Variable defined which should be unmapped: damagePercentage */
-/* public: class RGE_Static_Object * __thiscall MainDecisionAIModule::mostDamaged(int,int) */
-
 RGE_Static_Object * __thiscall
 MainDecisionAIModule::mostDamaged(MainDecisionAIModule *this,int param_1,int param_2)
 {

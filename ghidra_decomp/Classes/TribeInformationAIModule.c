@@ -63,8 +63,6 @@
 // Function: TribeInformationAIModule
 // Address: 004d6bb0
 // [HELPER] s_learn_Default_uh: "learn\Default.uh"
-/* public: __thiscall TribeInformationAIModule::TribeInformationAIModule(void *,int) */
-
 TribeInformationAIModule * __thiscall
 TribeInformationAIModule::TribeInformationAIModule
           (TribeInformationAIModule *this,void *param_1,int param_2)
@@ -307,9 +305,6 @@ TribeInformationAIModule::TribeInformationAIModule
 
 // Function: `scalar_deleting_destructor'
 // Address: 004d7050
-/* public: virtual void * __thiscall TribeInformationAIModule::`scalar deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TribeInformationAIModule::_scalar_deleting_destructor_(TribeInformationAIModule *this,uint param_1)
 {
@@ -326,10 +321,6 @@ TribeInformationAIModule::_scalar_deleting_destructor_(TribeInformationAIModule 
 // Address: 004d7070
 // [HELPER] s_: ""
 // [HELPER] s_learn_Default_uh: "learn\Default.uh"
-/* WARNING: Variable defined which should be unmapped: tempIntNum */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: __thiscall TribeInformationAIModule::TribeInformationAIModule(int,int) */
-
 TribeInformationAIModule * __thiscall
 TribeInformationAIModule::TribeInformationAIModule
           (TribeInformationAIModule *this,int param_1,int param_2)
@@ -864,9 +855,6 @@ LAB_004d79fb:
 
 // Function: ~TribeInformationAIModule
 // Address: 004d7cb0
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: virtual __thiscall TribeInformationAIModule::~TribeInformationAIModule(void) */
-
 void __thiscall TribeInformationAIModule::~TribeInformationAIModule(TribeInformationAIModule *this)
 {
   void *pvVar1;
@@ -1126,8 +1114,6 @@ void __thiscall TribeInformationAIModule::~TribeInformationAIModule(TribeInforma
 // Address: 004d8270
 // [HELPER] s_learn_Default_uh: "learn\Default.uh"
 // [HELPER] s_learn__s_uh: "learn\%s.uh"
-/* public: int __thiscall TribeInformationAIModule::initialize(void) */
-
 int __thiscall TribeInformationAIModule::initialize(TribeInformationAIModule *this)
 {
   char cVar1;
@@ -1178,9 +1164,6 @@ int __thiscall TribeInformationAIModule::initialize(TribeInformationAIModule *th
 
 // Function: update
 // Address: 004d8300
-/* WARNING: Variable defined which should be unmapped: visibleStatus */
-/* public: virtual int __thiscall TribeInformationAIModule::update(int) */
-
 int __thiscall TribeInformationAIModule::update(TribeInformationAIModule *this,int param_1)
 {
   QuadrantLog *pQVar1;
@@ -1251,9 +1234,6 @@ int __thiscall TribeInformationAIModule::update(TribeInformationAIModule *this,i
 
 // Function: setMainDecisionAI
 // Address: 004d84d0
-/* public: void __thiscall TribeInformationAIModule::setMainDecisionAI(class
-   TribeMainDecisionAIModule *) */
-
 void __thiscall
 TribeInformationAIModule::setMainDecisionAI
           (TribeInformationAIModule *this,TribeMainDecisionAIModule *param_1)
@@ -1266,9 +1246,6 @@ TribeInformationAIModule::setMainDecisionAI
 
 // Function: save
 // Address: 004d84e0
-/* WARNING: Variable defined which should be unmapped: tempInt */
-/* public: int __thiscall TribeInformationAIModule::save(int) */
-
 int __thiscall TribeInformationAIModule::save(TribeInformationAIModule *this,int param_1)
 {
   char *pcVar1;
@@ -1561,9 +1538,6 @@ int __thiscall TribeInformationAIModule::save(TribeInformationAIModule *this,int
 
 // Function: blotExploredMap
 // Address: 004d8c80
-/* WARNING: Variable defined which should be unmapped: max */
-/* public: void __thiscall TribeInformationAIModule::blotExploredMap(int,int,int,int) */
-
 void __thiscall
 TribeInformationAIModule::blotExploredMap
           (TribeInformationAIModule *this,int param_1,int param_2,int param_3,int param_4)
@@ -1605,11 +1579,6 @@ TribeInformationAIModule::blotExploredMap
 // Function: closestUnexploredTile
 // Address: 004d8d20
 // [HELPER] s_C__msdev_work_age1_x1_taiinfmd_c: "C:\msdev\work\age1_x1\taiinfmd.cpp"
-/* WARNING: Variable defined which should be unmapped: initialZone */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: int __thiscall TribeInformationAIModule::closestUnexploredTile(int,float,float,float
-   *,float *) */
-
 int __thiscall
 TribeInformationAIModule::closestUnexploredTile
           (TribeInformationAIModule *this,int param_1,float param_2,float param_3,float *param_4,
@@ -1787,8 +1756,6 @@ TribeInformationAIModule::closestUnexploredTile
 
 // Function: fullyExploredZone
 // Address: 004d9110
-/* public: int __thiscall TribeInformationAIModule::fullyExploredZone(int) */
-
 int __thiscall
 TribeInformationAIModule::fullyExploredZone(TribeInformationAIModule *this,int param_1)
 {
@@ -1810,8 +1777,6 @@ TribeInformationAIModule::fullyExploredZone(TribeInformationAIModule *this,int p
 
 // Function: setFullyExploredZone
 // Address: 004d9160
-/* public: void __thiscall TribeInformationAIModule::setFullyExploredZone(int,int) */
-
 void __thiscall
 TribeInformationAIModule::setFullyExploredZone
           (TribeInformationAIModule *this,int param_1,int param_2)
@@ -1832,8 +1797,6 @@ TribeInformationAIModule::setFullyExploredZone
 
 // Function: tileUncovered
 // Address: 004d91a0
-/* public: int __thiscall TribeInformationAIModule::tileUncovered(int,int) */
-
 int __thiscall
 TribeInformationAIModule::tileUncovered(TribeInformationAIModule *this,int param_1,int param_2)
 {
@@ -1853,8 +1816,6 @@ TribeInformationAIModule::tileUncovered(TribeInformationAIModule *this,int param
 
 // Function: setTileExplored
 // Address: 004d91f0
-/* public: void __thiscall TribeInformationAIModule::setTileExplored(int,int) */
-
 void __thiscall
 TribeInformationAIModule::setTileExplored(TribeInformationAIModule *this,int param_1,int param_2)
 {
@@ -1869,8 +1830,6 @@ TribeInformationAIModule::setTileExplored(TribeInformationAIModule *this,int par
 
 // Function: ownerOfGameID
 // Address: 004d9230
-/* public: int __thiscall TribeInformationAIModule::ownerOfGameID(int) */
-
 int __thiscall TribeInformationAIModule::ownerOfGameID(TribeInformationAIModule *this,int param_1)
 {
   return -1;
@@ -1880,10 +1839,6 @@ int __thiscall TribeInformationAIModule::ownerOfGameID(TribeInformationAIModule 
 
 // Function: gameIDOfResourceObject
 // Address: 004d9240
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: int __thiscall TribeInformationAIModule::gameIDOfResourceObject(int,int,float &,float
-   &,int &,int *,int) */
-
 int __thiscall
 TribeInformationAIModule::gameIDOfResourceObject
           (TribeInformationAIModule *this,int param_1,int param_2,float *param_3,float *param_4,
@@ -2063,9 +2018,6 @@ LAB_004d9646:
 
 // Function: gameIDsOfObjectType
 // Address: 004d96b0
-/* WARNING: Variable defined which should be unmapped: maxCount */
-/* public: int __thiscall TribeInformationAIModule::gameIDsOfObjectType(int,int * *,int * *,int) */
-
 int __thiscall
 TribeInformationAIModule::gameIDsOfObjectType
           (TribeInformationAIModule *this,int param_1,int **param_2,int **param_3,int param_4)
@@ -2169,9 +2121,6 @@ TribeInformationAIModule::gameIDsOfObjectType
 
 // Function: gameIDsOwnedBy
 // Address: 004d9970
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: int __thiscall TribeInformationAIModule::gameIDsOwnedBy(int,int * *,int) */
-
 int __thiscall
 TribeInformationAIModule::gameIDsOwnedBy
           (TribeInformationAIModule *this,int param_1,int **param_2,int param_3)
@@ -2229,9 +2178,6 @@ TribeInformationAIModule::gameIDsOwnedBy
 
 // Function: numberGameIDsOwnedBy
 // Address: 004d9a90
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: int __thiscall TribeInformationAIModule::numberGameIDsOwnedBy(int,int) */
-
 int __thiscall
 TribeInformationAIModule::numberGameIDsOwnedBy
           (TribeInformationAIModule *this,int param_1,int param_2)
@@ -2267,11 +2213,6 @@ TribeInformationAIModule::numberGameIDsOwnedBy
 // Function: placeDock
 // Address: 004d9b20
 // [HELPER] s_C__msdev_work_age1_x1_taiinfmd_c: "C:\msdev\work\age1_x1\taiinfmd.cpp"
-/* WARNING: Variable defined which should be unmapped: y */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: class ConstructionItem * __thiscall TribeInformationAIModule::placeDock(class BuildItem
-   *,float,float,int,int) */
-
 ConstructionItem * __thiscall
 TribeInformationAIModule::placeDock
           (TribeInformationAIModule *this,BuildItem *param_1,float param_2,float param_3,int param_4
@@ -2358,7 +2299,6 @@ TribeInformationAIModule::placeDock
                          (int)_currentZone * 0x18) & 0x1f) == param_4)))) {
             bVar6 = RGE_Zone_Map::get_zone_info(this_01,(long)_currentZone,(long)cD);
             iVar11 = RGE_Zone_Map::numberTilesInZone(this_01,bVar6);
-                    /* language.dll match for 0x70: "B" */
             iVar8 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0x70);
             if ((iVar8 <= iVar11) &&
                (iVar11 = hasAdjacentTileType(this,(int)_currentZone,(int)cD,param_5), iVar11 != 0))
@@ -2407,7 +2347,6 @@ TribeInformationAIModule::placeDock
     } while ((int)_currentZone < this_00->widthValue + -2);
   }
   if (vMap != (RGE_Visible_Map *)0xffffffff) {
-                    /* language.dll match for 0x80: "Arial" */
     pCVar9 = (ConstructionItem *)operator_new(0x80);
     local_4 = 0;
     if (pCVar9 != (ConstructionItem *)0x0) {
@@ -2433,9 +2372,6 @@ LAB_004d9e9f:
 
 // Function: numberDocksInZone
 // Address: 004d9ec0
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: int __thiscall TribeInformationAIModule::numberDocksInZone(int,class RGE_Zone_Map *) */
-
 int __thiscall
 TribeInformationAIModule::numberDocksInZone
           (TribeInformationAIModule *this,int param_1,RGE_Zone_Map *param_2)
@@ -2492,9 +2428,6 @@ TribeInformationAIModule::numberDocksInZone
 
 // Function: closestDockDistance
 // Address: 004d9fc0
-/* WARNING: Variable defined which should be unmapped: distance */
-/* public: int __thiscall TribeInformationAIModule::closestDockDistance(int,int) */
-
 int __thiscall
 TribeInformationAIModule::closestDockDistance
           (TribeInformationAIModule *this,int param_1,int param_2)
@@ -2548,8 +2481,6 @@ TribeInformationAIModule::closestDockDistance
 
 // Function: hasAdjacentTileType
 // Address: 004da0e0
-/* public: int __thiscall TribeInformationAIModule::hasAdjacentTileType(int,int,int) */
-
 int __thiscall
 TribeInformationAIModule::hasAdjacentTileType
           (TribeInformationAIModule *this,int param_1,int param_2,int param_3)
@@ -2600,8 +2531,6 @@ TribeInformationAIModule::hasAdjacentTileType
 
 // Function: mapXSize
 // Address: 004da190
-/* public: int __thiscall TribeInformationAIModule::mapXSize(void) */
-
 int __thiscall TribeInformationAIModule::mapXSize(TribeInformationAIModule *this)
 {
   if (this->mapXSizeValue == -1) {
@@ -2614,8 +2543,6 @@ int __thiscall TribeInformationAIModule::mapXSize(TribeInformationAIModule *this
 
 // Function: mapYSize
 // Address: 004da1c0
-/* public: int __thiscall TribeInformationAIModule::mapYSize(void) */
-
 int __thiscall TribeInformationAIModule::mapYSize(TribeInformationAIModule *this)
 {
   if (this->mapYSizeValue == -1) {
@@ -2628,9 +2555,6 @@ int __thiscall TribeInformationAIModule::mapYSize(TribeInformationAIModule *this
 
 // Function: addEnemyInfluences
 // Address: 004da1f0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall TribeInformationAIModule::addEnemyInfluences(int,int) */
-
 void __thiscall
 TribeInformationAIModule::addEnemyInfluences(TribeInformationAIModule *this,int param_1,int param_2)
 {
@@ -2725,9 +2649,6 @@ TribeInformationAIModule::addEnemyInfluences(TribeInformationAIModule *this,int 
 
 // Function: addPriorAttackInfluences
 // Address: 004da420
-/* WARNING: Variable defined which should be unmapped: i */
-/* public: void __thiscall TribeInformationAIModule::addPriorAttackInfluences(int,int) */
-
 void __thiscall
 TribeInformationAIModule::addPriorAttackInfluences
           (TribeInformationAIModule *this,int param_1,int param_2)
@@ -2803,8 +2724,6 @@ TribeInformationAIModule::addPriorAttackInfluences
 
 // Function: objectMemory
 // Address: 004da5a0
-/* public: struct ObjectMemory * __thiscall TribeInformationAIModule::objectMemory(int) */
-
 ObjectMemory * __thiscall
 TribeInformationAIModule::objectMemory(TribeInformationAIModule *this,int param_1)
 {
@@ -2832,9 +2751,6 @@ TribeInformationAIModule::objectMemory(TribeInformationAIModule *this,int param_
 
 // Function: addObjectMemory
 // Address: 004da5f0
-/* public: struct ObjectMemory * __thiscall TribeInformationAIModule::addObjectMemory(class
-   RGE_Static_Object *) */
-
 ObjectMemory * __thiscall
 TribeInformationAIModule::addObjectMemory(TribeInformationAIModule *this,RGE_Static_Object *param_1)
 {
@@ -2881,10 +2797,6 @@ TribeInformationAIModule::addObjectMemory(TribeInformationAIModule *this,RGE_Sta
 
 // Function: addObjectMemory
 // Address: 004da680
-/* public: struct ObjectMemory * __thiscall
-   TribeInformationAIModule::addObjectMemory(int,short,short,unsigned char,unsigned char,unsigned
-   char,unsigned char,short,int,unsigned char,float,float,float,class RGE_Static_Object *) */
-
 ObjectMemory * __thiscall
 TribeInformationAIModule::addObjectMemory
           (TribeInformationAIModule *this,int param_1,short param_2,short param_3,uchar param_4,
@@ -3033,10 +2945,6 @@ TribeInformationAIModule::addObjectMemory
 
 // Function: addImportantObject
 // Address: 004dabb0
-/* WARNING: Variable defined which should be unmapped: oType */
-/* public: int __thiscall TribeInformationAIModule::addImportantObject(class RGE_Static_Object
-   *,int) */
-
 int __thiscall
 TribeInformationAIModule::addImportantObject
           (TribeInformationAIModule *this,RGE_Static_Object *param_1,int param_2)
@@ -3201,8 +3109,6 @@ LAB_004daf3b:
 
 // Function: addImportantObject
 // Address: 004daf80
-/* public: int __thiscall TribeInformationAIModule::addImportantObject(int) */
-
 int __thiscall
 TribeInformationAIModule::addImportantObject(TribeInformationAIModule *this,int param_1)
 {
@@ -3218,8 +3124,6 @@ TribeInformationAIModule::addImportantObject(TribeInformationAIModule *this,int 
 
 // Function: importantObject
 // Address: 004dafb0
-/* public: int __thiscall TribeInformationAIModule::importantObject(int) */
-
 int __thiscall TribeInformationAIModule::importantObject(TribeInformationAIModule *this,int param_1)
 {
   int iVar1;
@@ -3241,8 +3145,6 @@ int __thiscall TribeInformationAIModule::importantObject(TribeInformationAIModul
 
 // Function: importantUnit
 // Address: 004daff0
-/* public: int __thiscall TribeInformationAIModule::importantUnit(int) */
-
 int __thiscall TribeInformationAIModule::importantUnit(TribeInformationAIModule *this,int param_1)
 {
   if (((((((param_1 != 0) && (param_1 != 3)) && (param_1 != 4)) &&
@@ -3261,8 +3163,6 @@ int __thiscall TribeInformationAIModule::importantUnit(TribeInformationAIModule 
 
 // Function: importantResource
 // Address: 004db070
-/* public: int __thiscall TribeInformationAIModule::importantResource(int) */
-
 int __thiscall
 TribeInformationAIModule::importantResource(TribeInformationAIModule *this,int param_1)
 {
@@ -3278,8 +3178,6 @@ TribeInformationAIModule::importantResource(TribeInformationAIModule *this,int p
 
 // Function: importantMisc
 // Address: 004db0b0
-/* public: int __thiscall TribeInformationAIModule::importantMisc(int) */
-
 int __thiscall TribeInformationAIModule::importantMisc(TribeInformationAIModule *this,int param_1)
 {
   if ((param_1 != 1) && (param_1 != 0x1e)) {
@@ -3292,8 +3190,6 @@ int __thiscall TribeInformationAIModule::importantMisc(TribeInformationAIModule 
 
 // Function: isBuilding
 // Address: 004db0d0
-/* public: int __thiscall TribeInformationAIModule::isBuilding(class RGE_Static_Object *) */
-
 int __thiscall
 TribeInformationAIModule::isBuilding(TribeInformationAIModule *this,RGE_Static_Object *param_1)
 {
@@ -3310,8 +3206,6 @@ TribeInformationAIModule::isBuilding(TribeInformationAIModule *this,RGE_Static_O
 
 // Function: isUnitBuilding
 // Address: 004db100
-/* public: int __thiscall TribeInformationAIModule::isUnitBuilding(class RGE_Static_Object *) */
-
 int __thiscall
 TribeInformationAIModule::isUnitBuilding(TribeInformationAIModule *this,RGE_Static_Object *param_1)
 {
@@ -3333,8 +3227,6 @@ TribeInformationAIModule::isUnitBuilding(TribeInformationAIModule *this,RGE_Stat
 
 // Function: isBoat
 // Address: 004db160
-/* public: int __thiscall TribeInformationAIModule::isBoat(class RGE_Static_Object *) */
-
 int __thiscall
 TribeInformationAIModule::isBoat(TribeInformationAIModule *this,RGE_Static_Object *param_1)
 {
@@ -3351,8 +3243,6 @@ TribeInformationAIModule::isBoat(TribeInformationAIModule *this,RGE_Static_Objec
 
 // Function: isWall
 // Address: 004db190
-/* public: int __thiscall TribeInformationAIModule::isWall(class RGE_Static_Object *) */
-
 int __thiscall
 TribeInformationAIModule::isWall(TribeInformationAIModule *this,RGE_Static_Object *param_1)
 {
@@ -3363,8 +3253,6 @@ TribeInformationAIModule::isWall(TribeInformationAIModule *this,RGE_Static_Objec
 
 // Function: isTower
 // Address: 004db1b0
-/* public: int __thiscall TribeInformationAIModule::isTower(class RGE_Static_Object *) */
-
 int __thiscall
 TribeInformationAIModule::isTower(TribeInformationAIModule *this,RGE_Static_Object *param_1)
 {
@@ -3382,9 +3270,6 @@ TribeInformationAIModule::isTower(TribeInformationAIModule *this,RGE_Static_Obje
 
 // Function: isBoatAccessible
 // Address: 004db1f0
-/* public: int __thiscall TribeInformationAIModule::isBoatAccessible(class RGE_Static_Object *,int)
-    */
-
 int __thiscall
 TribeInformationAIModule::isBoatAccessible
           (TribeInformationAIModule *this,RGE_Static_Object *param_1,int param_2)
@@ -3408,9 +3293,6 @@ TribeInformationAIModule::isBoatAccessible
 
 // Function: isLandAccessible
 // Address: 004db240
-/* public: int __thiscall TribeInformationAIModule::isLandAccessible(class RGE_Static_Object *,int)
-    */
-
 int __thiscall
 TribeInformationAIModule::isLandAccessible
           (TribeInformationAIModule *this,RGE_Static_Object *param_1,int param_2)
@@ -3431,8 +3313,6 @@ TribeInformationAIModule::isLandAccessible
 
 // Function: influenceCanPlaceStructure
 // Address: 004db280
-/* public: int __thiscall TribeInformationAIModule::influenceCanPlaceStructure(class BuildItem *) */
-
 int __thiscall
 TribeInformationAIModule::influenceCanPlaceStructure
           (TribeInformationAIModule *this,BuildItem *param_1)
@@ -3447,11 +3327,6 @@ TribeInformationAIModule::influenceCanPlaceStructure
 // [HELPER] s_C__msdev_work_age1_x1_taiinfmd_c: "C:\msdev\work\age1_x1\taiinfmd.cpp"
 // [HELPER] s_Invalid_influence_placement_type: "Invalid influence placement type id (%d), bombing."
 // [HELPER] s_____Unsupported_building_size___: "    Unsupported building size (%d x %d)."
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: class ConstructionItem * __thiscall
-   TribeInformationAIModule::influencePlaceStructure(class BuildItem *,int,int,float,char
-   *,int,int,int,int,struct PlacementState &,unsigned long) */
-
 ConstructionItem * __thiscall
 TribeInformationAIModule::influencePlaceStructure
           (TribeInformationAIModule *this,BuildItem *param_1,int param_2,int param_3,float param_4,
@@ -3648,7 +3523,6 @@ LAB_004db819:
                 (this->lastWallPosition).x = (uint)pBVar9->x;
                 (this->lastWallPosition).y = (uint)pBVar9->y;
               }
-                    /* language.dll match for 0x80: "Arial" */
               if ((float)buildingType == _DAT_00575574) {
                 max.x = (int)operator_new(0x80);
                 local_4 = 0;
@@ -3938,7 +3812,6 @@ LAB_004dbece:
               pCVar15 = (ConstructionItem *)0x1;
               goto LAB_004dc0d9;
             }
-                    /* language.dll match for 0x80: "Arial" */
             if ((float)buildingType == _DAT_00575574) {
               max.x = (int)operator_new(0x80);
               local_4 = 2;
@@ -3993,8 +3866,6 @@ LAB_004dc0d9:
 
 // Function: addObject
 // Address: 004dc1b0
-/* public: void __thiscall TribeInformationAIModule::addObject(class RGE_Static_Object *) */
-
 void __thiscall
 TribeInformationAIModule::addObject(TribeInformationAIModule *this,RGE_Static_Object *param_1)
 {
@@ -4091,8 +3962,6 @@ LAB_004dc357:
 
 // Function: removeObject
 // Address: 004dc3a0
-/* public: void __thiscall TribeInformationAIModule::removeObject(int) */
-
 void __thiscall TribeInformationAIModule::removeObject(TribeInformationAIModule *this,int param_1)
 {
   int iVar1;
@@ -4166,10 +4035,6 @@ void __thiscall TribeInformationAIModule::removeObject(TribeInformationAIModule 
 // Function: objectToAttackWithPlay
 // Address: 004dc490
 // [HELPER] s_C__msdev_work_age1_x1_taiinfmd_c: "C:\msdev\work\age1_x1\taiinfmd.cpp"
-/* WARNING: Variable defined which should be unmapped: i */
-/* public: struct ObjectMemory * __thiscall TribeInformationAIModule::objectToAttackWithPlay(int,int
-   *,int,int &,int *,int &,int &) */
-
 ObjectMemory * __thiscall
 TribeInformationAIModule::objectToAttackWithPlay
           (TribeInformationAIModule *this,int param_1,int *param_2,int param_3,int *param_4,
@@ -4290,11 +4155,6 @@ LAB_004dc6f8:
 // Function: objectToAttack
 // Address: 004dc750
 // [HELPER] s_C__msdev_work_age1_x1_taiinfmd_c: "C:\msdev\work\age1_x1\taiinfmd.cpp"
-/* WARNING: Variable defined which should be unmapped: specialRating1 */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: struct ObjectMemory * __thiscall
-   TribeInformationAIModule::objectToAttack(int,int,int,int,int &) */
-
 ObjectMemory * __thiscall
 TribeInformationAIModule::objectToAttack
           (TribeInformationAIModule *this,int param_1,int param_2,int param_3,int param_4,
@@ -4520,21 +4380,17 @@ TribeInformationAIModule::objectToAttack
             iVar27 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0x59);
             iVar13 = *(int *)((int)&this->importantObjectMemory->attackAttempts + iStack_84);
             iVar14 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0x90);
-                    /* language.dll match for 0x7b: "9" */
             iVar15 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0x7b);
-                    /* language.dll match for 0x7a: "Arial" */
             iVar16 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0x7a);
             iVar17 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0x50);
             iVar18 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0x53);
             iVar18 = iVar18 * numberNonBoatTargets;
             iVar19 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0x4d);
-                    /* language.dll match for 0x6f: "12" */
             iVar20 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0x6f);
             iVar21 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0x5a);
             iVar22 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0x4e);
             iVar23 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0x4f);
             iVar24 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0x52);
-                    /* language.dll match for 0x6e: "Copperplate Gothic Light" */
             iVar25 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0x6e);
             iVar26 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0x6d);
             iVar11 = iVar27 * iVar13 + iVar14 * iVar12 + iVar15 * iVar11 + iVar16 * specialRating2 +
@@ -4566,12 +4422,6 @@ LAB_004dcecb:
 // Function: objectToAttackByGroup
 // Address: 004dcf10
 // [HELPER] s_C__msdev_work_age1_x1_taiinfmd_c: "C:\msdev\work\age1_x1\taiinfmd.cpp"
-/* WARNING: Variable defined which should be unmapped: tempZone */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: struct ObjectMemory * __thiscall
-   TribeInformationAIModule::objectToAttackByGroup(int,class TacticalAIGroup *,struct AttackState
-   &,unsigned long) */
-
 ObjectMemory * __thiscall
 TribeInformationAIModule::objectToAttackByGroup
           (TribeInformationAIModule *this,int param_1,TacticalAIGroup *param_2,AttackState *param_3,
@@ -4881,7 +4731,6 @@ TribeInformationAIModule::objectToAttackByGroup
                             (float)*(int *)((int)&this->importantObjectMemory->attackAttempts +
                                            iVar15));
                 if (bVar7 == bVar8) {
-                    /* language.dll match for 0x7a: "Arial" */
                   iVar16 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0x7a);
                   targetRandomization = (float)iVar16;
                 }
@@ -5104,11 +4953,6 @@ LAB_004ddd27:
 // Function: objectToAttackByGroup2
 // Address: 004ddd40
 // [HELPER] s_C__msdev_work_age1_x1_taiinfmd_c: "C:\msdev\work\age1_x1\taiinfmd.cpp"
-/* WARNING: Variable defined which should be unmapped: commanderZone */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: struct ObjectMemory * __thiscall TribeInformationAIModule::objectToAttackByGroup2(int,int
-   *,int) */
-
 ObjectMemory * __thiscall
 TribeInformationAIModule::objectToAttackByGroup2
           (TribeInformationAIModule *this,int param_1,int *param_2,int param_3)
@@ -5218,7 +5062,6 @@ TribeInformationAIModule::objectToAttackByGroup2
                 iVar12 = __ftol();
                 uVar5 = RGE_Static_Object::lookupZone(this_00,iVar12,iVar10);
                 if (uVar4 == uVar5) {
-                    /* language.dll match for 0x7a: "Arial" */
                   iVar10 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0x7a);
                   targetRandomization = (float)iVar10;
                 }
@@ -5283,9 +5126,6 @@ LAB_004de1b4:
 
 // Function: objectToDefend
 // Address: 004de1f0
-/* WARNING: Variable defined which should be unmapped: bestDefendValue */
-/* public: struct ObjectMemory * __thiscall TribeInformationAIModule::objectToDefend(int) */
-
 ObjectMemory * __thiscall
 TribeInformationAIModule::objectToDefend(TribeInformationAIModule *this,int param_1)
 {
@@ -5352,10 +5192,6 @@ TribeInformationAIModule::objectToDefend(TribeInformationAIModule *this,int para
 
 // Function: higherPriorityObjectToDefend
 // Address: 004de330
-/* WARNING: Variable defined which should be unmapped: bestObject */
-/* public: struct ObjectMemory * __thiscall
-   TribeInformationAIModule::higherPriorityObjectToDefend(int,int,int) */
-
 ObjectMemory * __thiscall
 TribeInformationAIModule::higherPriorityObjectToDefend
           (TribeInformationAIModule *this,int param_1,int param_2,int param_3)
@@ -5431,8 +5267,6 @@ TribeInformationAIModule::higherPriorityObjectToDefend
 
 // Function: defendPriority
 // Address: 004de4a0
-/* public: int __thiscall TribeInformationAIModule::defendPriority(int,int) */
-
 int __thiscall
 TribeInformationAIModule::defendPriority(TribeInformationAIModule *this,int param_1,int param_2)
 {
@@ -5472,8 +5306,6 @@ TribeInformationAIModule::defendPriority(TribeInformationAIModule *this,int para
 
 // Function: checkDefend
 // Address: 004de600
-/* public: int __thiscall TribeInformationAIModule::checkDefend(class RGE_Static_Object *) */
-
 int __thiscall
 TribeInformationAIModule::checkDefend(TribeInformationAIModule *this,RGE_Static_Object *param_1)
 {
@@ -5619,8 +5451,6 @@ LAB_004de793:
 
 // Function: numberItemsToDefend
 // Address: 004dea70
-/* public: int __thiscall TribeInformationAIModule::numberItemsToDefend(void) */
-
 int __thiscall TribeInformationAIModule::numberItemsToDefend(TribeInformationAIModule *this)
 {
   return (this->itemsToDefend).numberValue;
@@ -5630,10 +5460,6 @@ int __thiscall TribeInformationAIModule::numberItemsToDefend(TribeInformationAIM
 
 // Function: objectToTradeWith
 // Address: 004dea80
-/* WARNING: Variable defined which should be unmapped: unit */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: struct ObjectMemory * __thiscall TribeInformationAIModule::objectToTradeWith(int) */
-
 ObjectMemory * __thiscall
 TribeInformationAIModule::objectToTradeWith(TribeInformationAIModule *this,int param_1)
 {
@@ -5688,10 +5514,6 @@ TribeInformationAIModule::objectToTradeWith(TribeInformationAIModule *this,int p
 
 // Function: findGatherPosition
 // Address: 004deba0
-/* WARNING: Variable defined which should be unmapped: bestPointValue */
-/* public: int __thiscall TribeInformationAIModule::findGatherPosition(struct XYPoint
-   &,int,int,int,int,class RGE_Static_Object *,struct XYPoint &) */
-
 int __thiscall
 TribeInformationAIModule::findGatherPosition
           (TribeInformationAIModule *this,XYPoint *param_1,int param_2,int param_3,int param_4,
@@ -5775,7 +5597,6 @@ TribeInformationAIModule::findGatherPosition
                   } while (iVar4 < maxClear.y);
                 }
                 if (!bVar1) {
-                    /* language.dll match for 0x80: "Arial" */
                   iVar4 = 0x80;
                   cPosition.y = iVar3;
                   lineCollisionPoint.x = iVar7;
@@ -5830,11 +5651,6 @@ TribeInformationAIModule::findGatherPosition
 // Function: setupInfluenceMap
 // Address: 004dee90
 // [HELPER] s_____Unsupported_building_size___: "    Unsupported building size (%d x %d)."
-/* WARNING: Variable defined which should be unmapped: bXRadius */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall TribeInformationAIModule::setupInfluenceMap(int,int,struct XYPoint
-   &,struct XYPoint &,struct XYPoint &) */
-
 void __thiscall
 TribeInformationAIModule::setupInfluenceMap
           (TribeInformationAIModule *this,int param_1,int param_2,XYPoint *param_3,XYPoint *param_4,
@@ -5877,7 +5693,6 @@ TribeInformationAIModule::setupInfluenceMap
   InfluenceMap::setUnchangeableLimit(&iMap,0xff);
   iVar11 = 0;
   BuildAIModule::numberBuiltItemsOfType((BuildAIModule *)&this->md->buildAI,0x44,0);
-                    /* language.dll match for 0x67: "Comic Sans MS" */
   BuildAIModule::numberBuiltItemsOfType((BuildAIModule *)&this->md->buildAI,0x67,0);
   iVar9 = this->mapXSizeValue;
   iVar10 = this->mapYSizeValue;
@@ -5942,7 +5757,6 @@ TribeInformationAIModule::setupInfluenceMap
               bMin.y = bMin.y + 5;
               bMax.x = bMax.x + 5;
               mapBound(this,(XYPoint *)&bMin.y);
-                    /* language.dll match for 0x80: "Arial" */
               InfluenceMap::decrementValue(&iMap,bMax.y,bMinLOS_ffffffb4.x,bMin.y,bMax.x,0x80);
             }
             else if ((((bMin.x == -1) || ((bMin.x == 3 && (sVar1 == 0x20)))) ||
@@ -5982,7 +5796,6 @@ LAB_004df2c3:
               bMin.y = bMin.y + 3;
               bMax.x = bMax.x + 3;
               mapBound(this,(XYPoint *)&bMin.y);
-                    /* language.dll match for 0x80: "Arial" */
               uVar14 = CONCAT44(0x80,bMax.x);
 LAB_004df330:
               InfluenceMap::incrementValue
@@ -6263,8 +6076,6 @@ LAB_004df9fb:
 
 // Function: mapBound
 // Address: 004dfce0
-/* public: int __thiscall TribeInformationAIModule::mapBound(struct XYPoint &) */
-
 int __thiscall TribeInformationAIModule::mapBound(TribeInformationAIModule *this,XYPoint *param_1)
 {
   int iVar1;
@@ -6294,8 +6105,6 @@ LAB_004dfd04:
 
 // Function: groupInfluenceDimension
 // Address: 004dfd40
-/* public: int __thiscall TribeInformationAIModule::groupInfluenceDimension(int) */
-
 int __thiscall
 TribeInformationAIModule::groupInfluenceDimension(TribeInformationAIModule *this,int param_1)
 {
@@ -6309,9 +6118,6 @@ TribeInformationAIModule::groupInfluenceDimension(TribeInformationAIModule *this
 
 // Function: findObjectMemoryLimits
 // Address: 004dfd60
-/* public: struct ObjectMemory __thiscall
-   TribeInformationAIModule::findObjectMemoryLimits(int,int,int &,int &) */
-
 ObjectMemory * __thiscall
 TribeInformationAIModule::findObjectMemoryLimits
           (TribeInformationAIModule *this,ObjectMemory *__return_storage_ptr__,int param_1,
@@ -6458,9 +6264,6 @@ LAB_004e0002:
 
 // Function: isNextTo
 // Address: 004e0040
-/* public: int __thiscall TribeInformationAIModule::isNextTo(struct XYPoint &,struct XYPoint &,int)
-    */
-
 int __thiscall
 TribeInformationAIModule::isNextTo
           (TribeInformationAIModule *this,XYPoint *param_1,XYPoint *param_2,int param_3)
@@ -6484,8 +6287,6 @@ TribeInformationAIModule::isNextTo
 
 // Function: facetTo
 // Address: 004e0090
-/* public: int __thiscall TribeInformationAIModule::facetTo(struct XYPoint &,struct XYPoint &) */
-
 int __thiscall
 TribeInformationAIModule::facetTo(TribeInformationAIModule *this,XYPoint *param_1,XYPoint *param_2)
 {
@@ -6510,8 +6311,6 @@ TribeInformationAIModule::facetTo(TribeInformationAIModule *this,XYPoint *param_
 
 // Function: placementCode
 // Address: 004e0100
-/* public: int __thiscall TribeInformationAIModule::placementCode(int) */
-
 int __thiscall TribeInformationAIModule::placementCode(TribeInformationAIModule *this,int param_1)
 {
   switch(param_1) {
@@ -6548,9 +6347,6 @@ int __thiscall TribeInformationAIModule::placementCode(TribeInformationAIModule 
 
 // Function: storeLot
 // Address: 004e02a0
-/* public: void __thiscall TribeInformationAIModule::storeLot(int,unsigned char,unsigned
-   char,unsigned char) */
-
 void __thiscall
 TribeInformationAIModule::storeLot
           (TribeInformationAIModule *this,int param_1,uchar param_2,uchar param_3,uchar param_4)
@@ -6629,9 +6425,6 @@ TribeInformationAIModule::storeLot
 
 // Function: removeLot
 // Address: 004e0470
-/* public: void __thiscall TribeInformationAIModule::removeLot(int,unsigned char,unsigned
-   char,unsigned char) */
-
 void __thiscall
 TribeInformationAIModule::removeLot
           (TribeInformationAIModule *this,int param_1,uchar param_2,uchar param_3,uchar param_4)
@@ -6667,8 +6460,6 @@ TribeInformationAIModule::removeLot
 
 // Function: availableLot
 // Address: 004e0510
-/* public: struct BuildingLot * __thiscall TribeInformationAIModule::availableLot(int) */
-
 BuildingLot * __thiscall
 TribeInformationAIModule::availableLot(TribeInformationAIModule *this,int param_1)
 {
@@ -6694,8 +6485,6 @@ TribeInformationAIModule::availableLot(TribeInformationAIModule *this,int param_
 
 // Function: invalidLot
 // Address: 004e0560
-/* public: int __thiscall TribeInformationAIModule::invalidLot(int,unsigned char,unsigned char) */
-
 int __thiscall
 TribeInformationAIModule::invalidLot
           (TribeInformationAIModule *this,int param_1,uchar param_2,uchar param_3)
@@ -6723,10 +6512,6 @@ TribeInformationAIModule::invalidLot
 
 // Function: undesirableLot
 // Address: 004e05c0
-/* WARNING: Variable defined which should be unmapped: i */
-/* public: int __thiscall TribeInformationAIModule::undesirableLot(int,unsigned char,unsigned
-   char,int) */
-
 int __thiscall
 TribeInformationAIModule::undesirableLot
           (TribeInformationAIModule *this,int param_1,uchar param_2,uchar param_3,int param_4)
@@ -6762,8 +6547,6 @@ TribeInformationAIModule::undesirableLot
 // Function: setupWalls
 // Address: 004e0670
 // [HELPER] s_C__msdev_work_age1_x1_taiinfmd_c: "C:\msdev\work\age1_x1\taiinfmd.cpp"
-/* public: void __thiscall TribeInformationAIModule::setupWalls(int,int,int,int,int,int,int,int) */
-
 void __thiscall
 TribeInformationAIModule::setupWalls
           (TribeInformationAIModule *this,int param_1,int param_2,int param_3,int param_4,
@@ -7170,8 +6953,6 @@ TribeInformationAIModule::setupWalls
 
 // Function: insideGate
 // Address: 004e0f40
-/* public: int __thiscall TribeInformationAIModule::insideGate(int,int,int) */
-
 int __thiscall
 TribeInformationAIModule::insideGate
           (TribeInformationAIModule *this,int param_1,int param_2,int param_3)
@@ -7199,9 +6980,6 @@ TribeInformationAIModule::insideGate
 
 // Function: storeAttackMemory
 // Address: 004e0f90
-/* public: int __thiscall TribeInformationAIModule::storeAttackMemory(unsigned char,unsigned
-   char,unsigned char,unsigned char,unsigned char,short,unsigned char,unsigned long,int) */
-
 int __thiscall
 TribeInformationAIModule::storeAttackMemory
           (TribeInformationAIModule *this,uchar param_1,uchar param_2,uchar param_3,uchar param_4,
@@ -7218,10 +6996,6 @@ TribeInformationAIModule::storeAttackMemory
 
 // Function: storeAttackMemory
 // Address: 004e0fd0
-/* public: int __thiscall TribeInformationAIModule::storeAttackMemory(unsigned char,unsigned
-   char,unsigned char,unsigned char,unsigned char,unsigned char,unsigned char,short,unsigned
-   char,unsigned long,int) */
-
 int __thiscall
 TribeInformationAIModule::storeAttackMemory
           (TribeInformationAIModule *this,uchar param_1,uchar param_2,uchar param_3,uchar param_4,
@@ -7301,8 +7075,6 @@ LAB_004e1077:
 
 // Function: removeAttackMemory
 // Address: 004e1190
-/* public: void __thiscall TribeInformationAIModule::removeAttackMemory(int) */
-
 void __thiscall
 TribeInformationAIModule::removeAttackMemory(TribeInformationAIModule *this,int param_1)
 {
@@ -7326,8 +7098,6 @@ TribeInformationAIModule::removeAttackMemory(TribeInformationAIModule *this,int 
 
 // Function: attackMemory
 // Address: 004e1230
-/* public: struct AttackMemory * __thiscall TribeInformationAIModule::attackMemory(int) */
-
 AttackMemory * __thiscall
 TribeInformationAIModule::attackMemory(TribeInformationAIModule *this,int param_1)
 {
@@ -7343,9 +7113,6 @@ TribeInformationAIModule::attackMemory(TribeInformationAIModule *this,int param_
 // Address: 004e1260
 // [HELPER] s_learn__s_s__d: "learn\%s%s.%d"
 // [HELPER] s_learn_default__d: "learn\default.%d"
-/* WARNING: Variable defined which should be unmapped: numMemoriesToLoad */
-/* public: void __thiscall TribeInformationAIModule::loadLearnInfo(char *) */
-
 void __thiscall
 TribeInformationAIModule::loadLearnInfo(TribeInformationAIModule *this,char *param_1)
 {
@@ -7532,8 +7299,6 @@ LAB_004e16f4:
 
 // Function: setSaveLearnInformation
 // Address: 004e1720
-/* public: void __thiscall TribeInformationAIModule::setSaveLearnInformation(int) */
-
 void __thiscall
 TribeInformationAIModule::setSaveLearnInformation(TribeInformationAIModule *this,int param_1)
 {
@@ -7545,11 +7310,6 @@ TribeInformationAIModule::setSaveLearnInformation(TribeInformationAIModule *this
 
 // Function: unexploredPlayerLocation
 // Address: 004e1730
-/* WARNING: Variable defined which should be unmapped: bestDistance */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: int __thiscall TribeInformationAIModule::unexploredPlayerLocation(int,struct XYPoint &)
-    */
-
 int __thiscall
 TribeInformationAIModule::unexploredPlayerLocation
           (TribeInformationAIModule *this,int param_1,XYPoint *param_2)
@@ -7630,9 +7390,6 @@ TribeInformationAIModule::unexploredPlayerLocation
 
 // Function: numberUnitsWithinXTiles
 // Address: 004e1930
-/* WARNING: Variable defined which should be unmapped: i */
-/* public: int __thiscall TribeInformationAIModule::numberUnitsWithinXTiles(int,int,int,int) */
-
 int __thiscall
 TribeInformationAIModule::numberUnitsWithinXTiles
           (TribeInformationAIModule *this,int param_1,int param_2,int param_3,int param_4)
@@ -7678,9 +7435,6 @@ LAB_004e199a:
 
 // Function: withinXTilesOfAttackOnPlayer
 // Address: 004e1a00
-/* public: int __thiscall TribeInformationAIModule::withinXTilesOfAttackOnPlayer(class
-   RGE_Static_Object *,int,int) */
-
 int __thiscall
 TribeInformationAIModule::withinXTilesOfAttackOnPlayer
           (TribeInformationAIModule *this,RGE_Static_Object *param_1,int param_2,int param_3)
@@ -7726,10 +7480,6 @@ TribeInformationAIModule::withinXTilesOfAttackOnPlayer
 
 // Function: withinXTilesOfEnemyTowncenter
 // Address: 004e1af0
-/* WARNING: Variable defined which should be unmapped: y */
-/* public: int __thiscall TribeInformationAIModule::withinXTilesOfEnemyTowncenter(class
-   RGE_Static_Object *,int) */
-
 int __thiscall
 TribeInformationAIModule::withinXTilesOfEnemyTowncenter
           (TribeInformationAIModule *this,RGE_Static_Object *param_1,int param_2)
@@ -7773,11 +7523,6 @@ TribeInformationAIModule::withinXTilesOfEnemyTowncenter
 
 // Function: withinXTilesOfObject
 // Address: 004e1bd0
-/* WARNING: Variable defined which should be unmapped: i */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: int __thiscall TribeInformationAIModule::withinXTilesOfObject(class RGE_Static_Object
-   *,int,int,int,int,int) */
-
 int __thiscall
 TribeInformationAIModule::withinXTilesOfObject
           (TribeInformationAIModule *this,RGE_Static_Object *param_1,int param_2,int param_3,
@@ -7836,9 +7581,6 @@ TribeInformationAIModule::withinXTilesOfObject
 // Function: findStagingPoint
 // Address: 004e1d10
 // [HELPER] s_C__msdev_work_age1_x1_taiinfmd_c: "C:\msdev\work\age1_x1\taiinfmd.cpp"
-/* public: int __thiscall TribeInformationAIModule::findStagingPoint(struct XYPoint,struct XYPoint
-   &,int,int,int,int,int) */
-
 int __thiscall
 TribeInformationAIModule::findStagingPoint
           (TribeInformationAIModule *this,XYPoint param_1,XYPoint *param_2,int param_3,int param_4,
@@ -8020,10 +7762,6 @@ LAB_004e218d:
 
 // Function: setupLOSMap
 // Address: 004e21e0
-/* WARNING: Variable defined which should be unmapped: maxX */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: int __thiscall TribeInformationAIModule::setupLOSMap(int,int,int) */
-
 int __thiscall
 TribeInformationAIModule::setupLOSMap
           (TribeInformationAIModule *this,int param_1,int param_2,int param_3)
@@ -8070,8 +7808,6 @@ TribeInformationAIModule::setupLOSMap
 
 // Function: setupAttackMap
 // Address: 004e22f0
-/* public: int __thiscall TribeInformationAIModule::setupAttackMap(int,int,int) */
-
 int __thiscall
 TribeInformationAIModule::setupAttackMap
           (TribeInformationAIModule *this,int param_1,int param_2,int param_3)
@@ -8105,8 +7841,6 @@ TribeInformationAIModule::setupAttackMap
 
 // Function: addResourceType
 // Address: 004e23a0
-/* public: void __thiscall TribeInformationAIModule::addResourceType(int,int) */
-
 void __thiscall
 TribeInformationAIModule::addResourceType(TribeInformationAIModule *this,int param_1,int param_2)
 {
@@ -8137,8 +7871,6 @@ TribeInformationAIModule::addResourceType(TribeInformationAIModule *this,int par
 
 // Function: resourceType
 // Address: 004e2440
-/* public: int __thiscall TribeInformationAIModule::resourceType(int,int) */
-
 int __thiscall
 TribeInformationAIModule::resourceType(TribeInformationAIModule *this,int param_1,int param_2)
 {
@@ -8164,9 +7896,6 @@ TribeInformationAIModule::resourceType(TribeInformationAIModule *this,int param_
 
 // Function: addResourceObject
 // Address: 004e2490
-/* WARNING: Variable defined which should be unmapped: newSize */
-/* public: int __thiscall TribeInformationAIModule::addResourceObject(class RGE_Static_Object *) */
-
 int __thiscall
 TribeInformationAIModule::addResourceObject
           (TribeInformationAIModule *this,RGE_Static_Object *param_1)
@@ -8366,11 +8095,6 @@ TribeInformationAIModule::addResourceObject
 
 // Function: findClosestDropsite
 // Address: 004e2a00
-/* WARNING: Variable defined which should be unmapped: resourceZone */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: float __thiscall TribeInformationAIModule::findClosestDropsite(class RGE_Static_Object
-   *,int,int &) */
-
 float __thiscall
 TribeInformationAIModule::findClosestDropsite
           (TribeInformationAIModule *this,RGE_Static_Object *param_1,int param_2,int *param_3)
@@ -8442,10 +8166,6 @@ TribeInformationAIModule::findClosestDropsite
 
 // Function: findClosestReturnDropsite
 // Address: 004e2ba0
-/* WARNING: Variable defined which should be unmapped: unitZone */
-/* public: class RGE_Static_Object * __thiscall
-   TribeInformationAIModule::findClosestReturnDropsite(class RGE_Static_Object *) */
-
 RGE_Static_Object * __thiscall
 TribeInformationAIModule::findClosestReturnDropsite
           (TribeInformationAIModule *this,RGE_Static_Object *param_1)
@@ -8521,9 +8241,6 @@ TribeInformationAIModule::findClosestReturnDropsite
 
 // Function: updateAllResourceDropsites
 // Address: 004e2d10
-/* WARNING: Variable defined which should be unmapped: dropsiteID */
-/* public: void __thiscall TribeInformationAIModule::updateAllResourceDropsites(void) */
-
 void __thiscall TribeInformationAIModule::updateAllResourceDropsites(TribeInformationAIModule *this)
 {
   short sVar1;
@@ -8602,9 +8319,6 @@ void __thiscall TribeInformationAIModule::updateAllResourceDropsites(TribeInform
 
 // Function: updateResourceDropsites
 // Address: 004e2e90
-/* WARNING: Variable defined which should be unmapped: a */
-/* public: void __thiscall TribeInformationAIModule::updateResourceDropsites(int) */
-
 void __thiscall
 TribeInformationAIModule::updateResourceDropsites(TribeInformationAIModule *this,int param_1)
 {
@@ -8678,8 +8392,6 @@ TribeInformationAIModule::updateResourceDropsites(TribeInformationAIModule *this
 
 // Function: setResourceObjectValid
 // Address: 004e3020
-/* public: int __thiscall TribeInformationAIModule::setResourceObjectValid(int,int,int) */
-
 int __thiscall
 TribeInformationAIModule::setResourceObjectValid
           (TribeInformationAIModule *this,int param_1,int param_2,int param_3)
@@ -8707,9 +8419,6 @@ TribeInformationAIModule::setResourceObjectValid
 
 // Function: numberStoragePits
 // Address: 004e3070
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: int __thiscall TribeInformationAIModule::numberStoragePits(void) */
-
 int __thiscall TribeInformationAIModule::numberStoragePits(TribeInformationAIModule *this)
 {
   int *piVar1;
@@ -8756,9 +8465,6 @@ int __thiscall TribeInformationAIModule::numberStoragePits(TribeInformationAIMod
 
 // Function: numberGranaries
 // Address: 004e3140
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: int __thiscall TribeInformationAIModule::numberGranaries(void) */
-
 int __thiscall TribeInformationAIModule::numberGranaries(TribeInformationAIModule *this)
 {
   int *piVar1;
@@ -8805,9 +8511,6 @@ int __thiscall TribeInformationAIModule::numberGranaries(TribeInformationAIModul
 
 // Function: amountForageBushesInXTiles
 // Address: 004e3210
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: int __thiscall TribeInformationAIModule::amountForageBushesInXTiles(int,int,int) */
-
 int __thiscall
 TribeInformationAIModule::amountForageBushesInXTiles
           (TribeInformationAIModule *this,int param_1,int param_2,int param_3)
@@ -8841,9 +8544,6 @@ TribeInformationAIModule::amountForageBushesInXTiles
 
 // Function: amountResourceTypesInXTiles
 // Address: 004e32c0
-/* WARNING: Variable defined which should be unmapped: count */
-/* public: int __thiscall TribeInformationAIModule::amountResourceTypesInXTiles(int,int,int,int) */
-
 int __thiscall
 TribeInformationAIModule::amountResourceTypesInXTiles
           (TribeInformationAIModule *this,int param_1,int param_2,int param_3,int param_4)
@@ -8878,10 +8578,6 @@ TribeInformationAIModule::amountResourceTypesInXTiles
 
 // Function: damagePerSecond
 // Address: 004e3390
-/* WARNING: Variable defined which should be unmapped: rVal */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: float __thiscall TribeInformationAIModule::damagePerSecond(int,int,int) */
-
 float __thiscall
 TribeInformationAIModule::damagePerSecond
           (TribeInformationAIModule *this,int param_1,int param_2,int param_3)
@@ -8933,8 +8629,6 @@ TribeInformationAIModule::damagePerSecond
 
 // Function: costToLoseUnit
 // Address: 004e34c0
-/* public: int __thiscall TribeInformationAIModule::costToLoseUnit(int) */
-
 int __thiscall TribeInformationAIModule::costToLoseUnit(TribeInformationAIModule *this,int param_1)
 {
   RGE_Static_Object *pRVar1;
@@ -8952,8 +8646,6 @@ int __thiscall TribeInformationAIModule::costToLoseUnit(TribeInformationAIModule
 
 // Function: benefitToKillUnit
 // Address: 004e3500
-/* public: int __thiscall TribeInformationAIModule::benefitToKillUnit(int) */
-
 int __thiscall
 TribeInformationAIModule::benefitToKillUnit(TribeInformationAIModule *this,int param_1)
 {
@@ -8972,9 +8664,6 @@ TribeInformationAIModule::benefitToKillUnit(TribeInformationAIModule *this,int p
 
 // Function: inRangeOfUnits
 // Address: 004e3530
-/* WARNING: Variable defined which should be unmapped: i */
-/* public: int __thiscall TribeInformationAIModule::inRangeOfUnits(int,int,int,int) */
-
 int __thiscall
 TribeInformationAIModule::inRangeOfUnits
           (TribeInformationAIModule *this,int param_1,int param_2,int param_3,int param_4)
@@ -9031,8 +8720,6 @@ LAB_004e358d:
 
 // Function: wonderToAttack
 // Address: 004e3640
-/* public: struct ObjectMemory * __thiscall TribeInformationAIModule::wonderToAttack(int) */
-
 ObjectMemory * __thiscall
 TribeInformationAIModule::wonderToAttack(TribeInformationAIModule *this,int param_1)
 {
@@ -9134,9 +8821,6 @@ LAB_004e36c3:
 
 // Function: ruinToCapture
 // Address: 004e3840
-/* WARNING: Variable defined which should be unmapped: bestMem */
-/* public: struct ObjectMemory * __thiscall TribeInformationAIModule::ruinToCapture(int) */
-
 ObjectMemory * __thiscall
 TribeInformationAIModule::ruinToCapture(TribeInformationAIModule *this,int param_1)
 {
@@ -9206,9 +8890,6 @@ LAB_004e38e6:
 
 // Function: artifactToCapture
 // Address: 004e39d0
-/* WARNING: Variable defined which should be unmapped: bestMem */
-/* public: struct ObjectMemory * __thiscall TribeInformationAIModule::artifactToCapture(int) */
-
 ObjectMemory * __thiscall
 TribeInformationAIModule::artifactToCapture(TribeInformationAIModule *this,int param_1)
 {
@@ -9287,8 +8968,6 @@ LAB_004e3a7d:
 
 // Function: resourceTypeToPlaceDropsiteBy
 // Address: 004e3b80
-/* public: int __thiscall TribeInformationAIModule::resourceTypeToPlaceDropsiteBy(int) */
-
 int __thiscall
 TribeInformationAIModule::resourceTypeToPlaceDropsiteBy(TribeInformationAIModule *this,int param_1)
 {
@@ -9297,7 +8976,6 @@ TribeInformationAIModule::resourceTypeToPlaceDropsiteBy(TribeInformationAIModule
   if (param_1 == 2) {
     return 0;
   }
-                    /* language.dll match for 0x67: "Comic Sans MS" */
   iVar1 = (**(code **)((this->md->buildAI)._padding_ + 0x48))(0x67,0);
   if ((iVar1 == 0) && (this->closestDropsiteValue[1] != -1)) {
     return 1;
@@ -9332,9 +9010,6 @@ TribeInformationAIModule::resourceTypeToPlaceDropsiteBy(TribeInformationAIModule
 
 // Function: dropsitesWithinRequiredDistance
 // Address: 004e3c90
-/* public: int __thiscall TribeInformationAIModule::dropsitesWithinRequiredDistance(int &,int,int)
-    */
-
 int __thiscall
 TribeInformationAIModule::dropsitesWithinRequiredDistance
           (TribeInformationAIModule *this,int *param_1,int param_2,int param_3)
@@ -9454,8 +9129,6 @@ LAB_004e3e1c:
 
 // Function: numberAvailableStoragePits
 // Address: 004e3e90
-/* public: int __thiscall TribeInformationAIModule::numberAvailableStoragePits(int) */
-
 int __thiscall
 TribeInformationAIModule::numberAvailableStoragePits(TribeInformationAIModule *this,int param_1)
 {
@@ -9502,8 +9175,6 @@ TribeInformationAIModule::numberAvailableStoragePits(TribeInformationAIModule *t
 
 // Function: numberAvailableGranaries
 // Address: 004e3f80
-/* public: int __thiscall TribeInformationAIModule::numberAvailableGranaries(void) */
-
 int __thiscall TribeInformationAIModule::numberAvailableGranaries(TribeInformationAIModule *this)
 {
   uchar uVar1;
@@ -9539,8 +9210,6 @@ int __thiscall TribeInformationAIModule::numberAvailableGranaries(TribeInformati
 
 // Function: lookAtMap
 // Address: 004e4040
-/* public: void __thiscall TribeInformationAIModule::lookAtMap(void) */
-
 void __thiscall TribeInformationAIModule::lookAtMap(TribeInformationAIModule *this)
 {
   int iVar1;
@@ -9611,10 +9280,6 @@ void __thiscall TribeInformationAIModule::lookAtMap(TribeInformationAIModule *th
 
 // Function: damageInflictedPerSecond
 // Address: 004e41c0
-/* WARNING: Variable defined which should be unmapped: rVal */
-/* public: float __thiscall TribeInformationAIModule::damageInflictedPerSecond(class TacticalAIGroup
-   *,class RGE_Static_Object *) */
-
 float __thiscall
 TribeInformationAIModule::damageInflictedPerSecond
           (TribeInformationAIModule *this,TacticalAIGroup *param_1,RGE_Static_Object *param_2)
@@ -9649,10 +9314,6 @@ TribeInformationAIModule::damageInflictedPerSecond
 
 // Function: damageInflictedPerSecond
 // Address: 004e4240
-/* WARNING: Variable defined which should be unmapped: rVal */
-/* public: float __thiscall TribeInformationAIModule::damageInflictedPerSecond(int *,int,class
-   RGE_Static_Object *) */
-
 float __thiscall
 TribeInformationAIModule::damageInflictedPerSecond
           (TribeInformationAIModule *this,int *param_1,int param_2,RGE_Static_Object *param_3)
@@ -9684,11 +9345,6 @@ TribeInformationAIModule::damageInflictedPerSecond
 
 // Function: timeToBeKilled
 // Address: 004e42b0
-/* WARNING: Variable defined which should be unmapped: rVal */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: float __thiscall TribeInformationAIModule::timeToBeKilled(class TacticalAIGroup *,class
-   RGE_Static_Object *) */
-
 float __thiscall
 TribeInformationAIModule::timeToBeKilled
           (TribeInformationAIModule *this,TacticalAIGroup *param_1,RGE_Static_Object *param_2)
@@ -9732,11 +9388,6 @@ TribeInformationAIModule::timeToBeKilled
 
 // Function: timeToBeKilled
 // Address: 004e4350
-/* WARNING: Variable defined which should be unmapped: rVal */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: float __thiscall TribeInformationAIModule::timeToBeKilled(int *,int,class
-   RGE_Static_Object *) */
-
 float __thiscall
 TribeInformationAIModule::timeToBeKilled
           (TribeInformationAIModule *this,int *param_1,int param_2,RGE_Static_Object *param_3)
@@ -9774,8 +9425,6 @@ TribeInformationAIModule::timeToBeKilled
 
 // Function: closestDropsiteResID
 // Address: 004e43e0
-/* public: int __thiscall TribeInformationAIModule::closestDropsiteResID(int)const  */
-
 int __thiscall
 TribeInformationAIModule::closestDropsiteResID(TribeInformationAIModule *this,int param_1)
 {
@@ -9789,9 +9438,6 @@ TribeInformationAIModule::closestDropsiteResID(TribeInformationAIModule *this,in
 
 // Function: calculatePlayVariation
 // Address: 004e4400
-/* WARNING: Variable defined which should be unmapped: totalPlays */
-/* public: int __thiscall TribeInformationAIModule::calculatePlayVariation(int) */
-
 int __thiscall
 TribeInformationAIModule::calculatePlayVariation(TribeInformationAIModule *this,int param_1)
 {
@@ -9810,9 +9456,6 @@ TribeInformationAIModule::calculatePlayVariation(TribeInformationAIModule *this,
 
 // Function: convertUnitToIntType
 // Address: 004e4450
-/* public: int __thiscall TribeInformationAIModule::convertUnitToIntType(class RGE_Static_Object
-   *)const  */
-
 int __thiscall
 TribeInformationAIModule::convertUnitToIntType
           (TribeInformationAIModule *this,RGE_Static_Object *param_1)
@@ -9861,9 +9504,6 @@ TribeInformationAIModule::convertUnitToIntType
 // Address: 004e4500
 // [HELPER] s_learn_Default_uh: "learn\Default.uh"
 // [HELPER] s_learn__s_uh: "learn\%s.uh"
-/* WARNING: Variable defined which should be unmapped: historyFileName */
-/* public: void __thiscall TribeInformationAIModule::loadUnitHistory(void) */
-
 void __thiscall TribeInformationAIModule::loadUnitHistory(TribeInformationAIModule *this)
 {
   char cVar1;
@@ -9915,8 +9555,6 @@ void __thiscall TribeInformationAIModule::loadUnitHistory(TribeInformationAIModu
 
 // Function: unitsThatAreMostBuilt
 // Address: 004e45a0
-/* public: void __thiscall TribeInformationAIModule::unitsThatAreMostBuilt(int &,int &) */
-
 void __thiscall
 TribeInformationAIModule::unitsThatAreMostBuilt
           (TribeInformationAIModule *this,int *param_1,int *param_2)
@@ -9957,8 +9595,6 @@ TribeInformationAIModule::unitsThatAreMostBuilt
 
 // Function: unitsThatAreLeastBuilt
 // Address: 004e4610
-/* public: void __thiscall TribeInformationAIModule::unitsThatAreLeastBuilt(int &,int &) */
-
 void __thiscall
 TribeInformationAIModule::unitsThatAreLeastBuilt
           (TribeInformationAIModule *this,int *param_1,int *param_2)
@@ -9999,9 +9635,6 @@ TribeInformationAIModule::unitsThatAreLeastBuilt
 
 // Function: acceptablePotentialDropsiteArea
 // Address: 004e4680
-/* WARNING: Variable defined which should be unmapped: i */
-/* public: int __thiscall TribeInformationAIModule::acceptablePotentialDropsiteArea(int,int) */
-
 int __thiscall
 TribeInformationAIModule::acceptablePotentialDropsiteArea
           (TribeInformationAIModule *this,int param_1,int param_2)
@@ -10048,9 +9681,6 @@ TribeInformationAIModule::acceptablePotentialDropsiteArea
 
 // Function: percentTilesExploredInPositionQuadrant
 // Address: 004e4790
-/* public: int __thiscall TribeInformationAIModule::percentTilesExploredInPositionQuadrant(int,int)
-    */
-
 int __thiscall
 TribeInformationAIModule::percentTilesExploredInPositionQuadrant
           (TribeInformationAIModule *this,int param_1,int param_2)

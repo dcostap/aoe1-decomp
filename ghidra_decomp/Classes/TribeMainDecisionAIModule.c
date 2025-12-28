@@ -52,9 +52,6 @@
 
 // Function: TribeMainDecisionAIModule
 // Address: 004e4800
-/* public: __thiscall TribeMainDecisionAIModule::TribeMainDecisionAIModule(void *,int,char *,class
-   TRIBE_Player *,char *,char *,char *) */
-
 TribeMainDecisionAIModule * __thiscall
 TribeMainDecisionAIModule::TribeMainDecisionAIModule
           (TribeMainDecisionAIModule *this,void *param_1,int param_2,char *param_3,
@@ -130,7 +127,6 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule
   AIModule::setPlayer((AIModule *)&this->tacticalAI,param_2,param_3);
   AIModule::setPlayer((AIModule *)&this->tradeAI,param_2,param_3);
   TribeInformationAIModule::addResourceType(this_00,0,0x30);
-                    /* language.dll match for 0x7e: "10" */
   TribeInformationAIModule::addResourceType(this_00,0,0x7e);
   TribeInformationAIModule::addResourceType(this_00,0,0x3b);
   TribeInformationAIModule::addResourceType(this_00,0,0x41);
@@ -139,7 +135,6 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule
   TribeInformationAIModule::addResourceType(this_00,0,0x104);
   TribeInformationAIModule::addResourceType(this_00,0,0x107);
   TribeInformationAIModule::addResourceType(this_00,0,0x32);
-                    /* language.dll match for 0x6f: "12" */
   iVar1 = 0x6f;
   do {
     TribeInformationAIModule::addResourceType(this_00,1,iVar1);
@@ -155,7 +150,6 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule
     TribeInformationAIModule::addResourceType(this_00,1,iVar1);
     iVar1 = iVar1 + 1;
   } while (iVar1 < 0xc6);
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
   TribeInformationAIModule::addResourceType(this_00,2,0x66);
   TribeInformationAIModule::addResourceType(this_00,3,0x42);
   iVar1 = 0x150;
@@ -177,9 +171,6 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule
 
 // Function: `scalar_deleting_destructor'
 // Address: 004e4b60
-/* public: virtual void * __thiscall TribeMainDecisionAIModule::`scalar deleting
-   destructor'(unsigned int) */
-
 void * __thiscall
 TribeMainDecisionAIModule::_scalar_deleting_destructor_
           (TribeMainDecisionAIModule *this,uint param_1)
@@ -195,10 +186,6 @@ TribeMainDecisionAIModule::_scalar_deleting_destructor_
 
 // Function: TribeMainDecisionAIModule
 // Address: 004e4b80
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: __thiscall TribeMainDecisionAIModule::TribeMainDecisionAIModule(int,char *,class
-   TRIBE_Player *,int) */
-
 TribeMainDecisionAIModule * __thiscall
 TribeMainDecisionAIModule::TribeMainDecisionAIModule
           (TribeMainDecisionAIModule *this,int param_1,char *param_2,TRIBE_Player *param_3,
@@ -296,8 +283,6 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule
 
 // Function: ~TribeMainDecisionAIModule
 // Address: 004e4ec0
-/* public: virtual __thiscall TribeMainDecisionAIModule::~TribeMainDecisionAIModule(void) */
-
 void __thiscall
 TribeMainDecisionAIModule::~TribeMainDecisionAIModule(TribeMainDecisionAIModule *this)
 {
@@ -338,8 +323,6 @@ TribeMainDecisionAIModule::~TribeMainDecisionAIModule(TribeMainDecisionAIModule 
 
 // Function: setLogHistory
 // Address: 004e4fa0
-/* public: virtual void __thiscall TribeMainDecisionAIModule::setLogHistory(int) */
-
 void __thiscall
 TribeMainDecisionAIModule::setLogHistory(TribeMainDecisionAIModule *this,int param_1)
 {
@@ -363,9 +346,6 @@ TribeMainDecisionAIModule::setLogHistory(TribeMainDecisionAIModule *this,int par
 // [HELPER] s_C__msdev_work_age1_x1_taimdmd_cp: "C:\msdev\work\age1_x1\taimdmd.cpp"
 // [HELPER] s_Initial_Diplomacy_Settings_: "Initial Diplomacy Settings:"
 // [HELPER] s___Player___d__Dislike__d__Like__: "  Player #%d: Dislike=%d, Like=%d, Ambivalence=%d."
-/* WARNING: Variable defined which should be unmapped: newEnemy */
-/* public: virtual int __thiscall TribeMainDecisionAIModule::update(int) */
-
 int __thiscall TribeMainDecisionAIModule::update(TribeMainDecisionAIModule *this,int param_1)
 {
   DiplomacyAIModule *this_00;
@@ -428,9 +408,7 @@ int __thiscall TribeMainDecisionAIModule::update(TribeMainDecisionAIModule *this
     TribeInformationAIModule::initialize(&this->informationAI);
     setTributeChat(this);
     pTVar1 = &this->tacticalAI;
-                    /* language.dll match for 0x81: "10" */
     iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0x81);
-                    /* language.dll match for 0x7d: "Arial" */
     if ((iVar11 == 1) && (iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0x7d), iVar11 == 0)
        ) {
       this->waitingOnTribute = 1;
@@ -469,39 +447,31 @@ int __thiscall TribeMainDecisionAIModule::update(TribeMainDecisionAIModule *this
   uVar2 = this->lastTributeChatTime;
   pTVar1 = &this->tacticalAI;
   iVar11 = *(int *)(*(int *)(iVar11 + 0x3c) + 4);
-                    /* language.dll match for 0x7c: "B" */
   iVar5 = TribeTacticalAIModule::strategicNumber(pTVar1,0x7c);
   if ((iVar5 < 1) || (this->tributeAddressed != 0)) goto LAB_004e56fa;
-                    /* language.dll match for 0x7d: "Arial" */
   if (((iVar11 - uVar2) / 1000 < this->tributeChatTimeout) ||
      (iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0x7d), iVar11 < 1)) {
     if (this->waitingOnTribute != 1) goto LAB_004e56fa;
     iVar11 = this->tributeExpirationTimeout - *(int *)(*(int *)(this->_padding_ + 0x3c) + 0xc);
     this->tributeExpirationTimeout = iVar11;
     if (iVar11 < 1) {
-                    /* language.dll match for 0x82: "B" */
       iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0x82);
       if (iVar11 == 1) {
         iVar6 = 100;
         iVar5 = 0;
-                    /* language.dll match for 0x80: "Arial" */
         iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0x80);
         DiplomacyAIModule::setStance(&this->diplomacyAI,iVar11,iVar5,iVar6);
         iVar6 = 0;
         iVar5 = 2;
-                    /* language.dll match for 0x80: "Arial" */
         iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0x80);
         DiplomacyAIModule::setStance(&this->diplomacyAI,iVar11,iVar5,iVar6);
         uVar14 = 3;
-                    /* language.dll match for 0x80: "Arial" */
         iVar11 = this->aiPlayer->_padding_;
         iVar5 = TribeTacticalAIModule::strategicNumber(pTVar1,0x80);
         (**(code **)(iVar11 + 0x28))(iVar5,uVar14);
-                    /* language.dll match for 0x901: "You dare defy me?! Prepare to die!" */
         (**(code **)(rge_base_game->_padding_ + 0x20))(0x901,neutralList + 7,0x100);
         pcVar13 = tempString;
         pcVar12 = (char *)0x0;
-                    /* language.dll match for 0x80: "Arial" */
         iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0x80);
         RGE_Player::sendChatMessage
                   ((RGE_Player *)this->_padding_,this->_padding_,iVar11,pcVar12,pcVar13);
@@ -511,88 +481,67 @@ int __thiscall TribeMainDecisionAIModule::update(TribeMainDecisionAIModule *this
         this->lastTributeChatTime = uVar2;
         goto LAB_004e56fa;
       }
-                    /* language.dll match for 0x81: "10" */
       iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0x81);
       if (iVar11 != 1) goto LAB_004e56fa;
-                    /* language.dll match for 0x900: "Alas! We could have made an unstoppable team."
-                        */
       (**(code **)(rge_base_game->_padding_ + 0x20))(0x900,tempString,0x100);
 LAB_004e5646:
       pcVar13 = tempString;
       pcVar12 = (char *)0x0;
-                    /* language.dll match for 0x80: "Arial" */
       iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0x80);
       RGE_Player::sendChatMessage(this_05,this->_padding_,iVar11,pcVar12,pcVar13);
       this->waitingOnTribute = 0;
       this->lastTributeChatTime = *(ulong *)(*(int *)(this->_padding_ + 0x3c) + 4);
     }
     else {
-                    /* language.dll match for 0x7c: "B" */
       iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0x7c);
       if (this->tributeAmount < iVar11) goto LAB_004e56fa;
-                    /* language.dll match for 0x81: "10" */
       iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0x81);
       if (iVar11 == 1) {
         iVar6 = 0;
         iVar5 = 0;
-                    /* language.dll match for 0x80: "Arial" */
         iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0x80);
         DiplomacyAIModule::setStance(&this->diplomacyAI,iVar11,iVar5,iVar6);
         iVar6 = 100;
         iVar5 = 2;
-                    /* language.dll match for 0x80: "Arial" */
         iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0x80);
         DiplomacyAIModule::setStance(&this->diplomacyAI,iVar11,iVar5,iVar6);
         uVar14 = 0;
-                    /* language.dll match for 0x80: "Arial" */
         iVar11 = this->aiPlayer->_padding_;
         iVar5 = TribeTacticalAIModule::strategicNumber(pTVar1,0x80);
         (**(code **)(iVar11 + 0x28))(iVar5,uVar14);
-                    /* language.dll match for 0x8ff: "You have made a wise choice -- together we
-                       shall rule the world." */
         (**(code **)(rge_base_game->_padding_ + 0x20))(0x8ff,neutralList + 7,0x100);
         goto LAB_004e5646;
       }
-                    /* language.dll match for 0x82: "B" */
       iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0x82);
       if (iVar11 != 1) goto LAB_004e56fa;
-                    /* language.dll match for 0x8fe: "It was wise to do as I requested." */
       (**(code **)(rge_base_game->_padding_ + 0x20))(0x8fe,tempString,0x100);
       pcVar13 = tempString;
       pcVar12 = (char *)0x0;
-                    /* language.dll match for 0x80: "Arial" */
       iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0x80);
       RGE_Player::sendChatMessage
                 ((RGE_Player *)this->_padding_,this->_padding_,iVar11,pcVar12,pcVar13);
       this->waitingOnTribute = 0;
       this->lastTributeChatTime = *(ulong *)(*(int *)(this->_padding_ + 0x3c) + 4);
     }
-                    /* language.dll match for 0x84: "8" */
     iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0x84);
     this->tributeAddressed = (uint)(iVar11 == 0);
     goto LAB_004e56fa;
   }
   if (this->waitingOnTribute == 0) {
-                    /* language.dll match for 0x7f: "N" */
     this->waitingOnTribute = 1;
     iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0x7f);
     this->tributeAmount = 0;
     this->tributeExpirationTimeout = iVar11 * 1000;
   }
-                    /* language.dll match for 0x82: "B" */
   this->lastTributeChatTime = *(ulong *)(*(int *)(this->_padding_ + 0x3c) + 4);
   iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0x82);
   if (iVar11 == 1) {
     if (this->tributeAmount < 1) {
-                    /* language.dll match for 0x903: "Tribute %d gold to me or you will be
-                       destroyed!" */
       (**(code **)(rge_base_game->_padding_ + 0x20))(0x903,tempString,0x100);
-                    /* language.dll match for 0x7c: "B" */
       iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0x7c);
 LAB_004e5443:
       pcVar13 = tempString;
       pcVar12 = (char *)0x0;
-                    /* language.dll match for 0x80: "Arial" */
       iVar5 = TribeTacticalAIModule::strategicNumber(pTVar1,0x80);
       RGE_Player::sendChatMessage
                 ((RGE_Player *)this->_padding_,this->_padding_,iVar5,pcVar12,pcVar13,iVar11);
@@ -600,35 +549,24 @@ LAB_004e5461:
       setTributeChat(this);
       goto LAB_004e56fa;
     }
-                    /* language.dll match for 0x902: "Tribute %d more gold to me or you will be
-                       destroyed!" */
     (**(code **)(rge_base_game->_padding_ + 0x20))(0x902,tempString,0x100);
-                    /* language.dll match for 0x7c: "B" */
     iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0x7c);
     iVar11 = iVar11 - this->tributeAmount;
   }
   else {
-                    /* language.dll match for 0x81: "10" */
     iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0x81);
     if (iVar11 != 1) goto LAB_004e5461;
     if (this->tributeAmount < 1) {
-                    /* language.dll match for 0x905: "If you tribute me %d more gold, I will ally
-                       with you." */
       (**(code **)(rge_base_game->_padding_ + 0x20))(0x905,tempString,0x100);
-                    /* language.dll match for 0x7c: "B" */
       iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0x7c);
       iVar11 = iVar11 - this->tributeAmount;
       goto LAB_004e5443;
     }
-                    /* language.dll match for 0x904: "If you tribute me %d gold, I will ally with
-                       you." */
     (**(code **)(rge_base_game->_padding_ + 0x20))(0x904,tempString,0x100);
-                    /* language.dll match for 0x7c: "B" */
     iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0x7c);
   }
   pcVar13 = tempString;
   pcVar12 = (char *)0x0;
-                    /* language.dll match for 0x80: "Arial" */
   iVar5 = TribeTacticalAIModule::strategicNumber(pTVar1,0x80);
   RGE_Player::sendChatMessage(this_04,this->_padding_,iVar5,pcVar12,pcVar13,iVar11);
   setTributeChat(this);
@@ -748,7 +686,6 @@ LAB_004e598c:
             iVar5 = iVar6;
           } while (numberNeutralCPs < *(short *)(iVar11 + 0x3c));
         }
-                    /* language.dll match for 0x7d0: "place holder" */
         newEnemy = 2000;
         iVar5 = RGE_Base_Game::difficulty(rge_base_game);
         switch(iVar5) {
@@ -841,7 +778,6 @@ LAB_004e5b6f:
   pTVar1 = &this->tacticalAI;
   iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0xd9);
   if (iVar11 == 1) {
-                    /* language.dll match for 0x68: "Arial" */
     iVar11 = TribeTacticalAIModule::strategicNumber(pTVar1,0x68);
     uVar10 = (iVar11 + -3) * 1000;
     if ((int)uVar10 < 0) {
@@ -919,8 +855,6 @@ LAB_004e5b6f:
 
 // Function: save
 // Address: 004e5db0
-/* public: virtual int __thiscall TribeMainDecisionAIModule::save(int) */
-
 int __thiscall TribeMainDecisionAIModule::save(TribeMainDecisionAIModule *this,int param_1)
 {
   MainDecisionAIModule::save((MainDecisionAIModule *)this,param_1);
@@ -954,8 +888,6 @@ int __thiscall TribeMainDecisionAIModule::save(TribeMainDecisionAIModule *this,i
 // Address: 004e5f30
 // [HELPER] s_Current_Build_list_is_: "Current Build list is:"
 // [HELPER] s_Got_a_kick__d_: "Got a kick=%d."
-/* public: void __thiscall TribeMainDecisionAIModule::kick(int) */
-
 void __thiscall TribeMainDecisionAIModule::kick(TribeMainDecisionAIModule *this,int param_1)
 {
   AIModule *extraout_ECX;
@@ -984,8 +916,6 @@ void __thiscall TribeMainDecisionAIModule::kick(TribeMainDecisionAIModule *this,
 
 // Function: addObject
 // Address: 004e5fa0
-/* public: virtual int __thiscall TribeMainDecisionAIModule::addObject(class RGE_Static_Object *) */
-
 int __thiscall
 TribeMainDecisionAIModule::addObject(TribeMainDecisionAIModule *this,RGE_Static_Object *param_1)
 {
@@ -1004,8 +934,6 @@ TribeMainDecisionAIModule::addObject(TribeMainDecisionAIModule *this,RGE_Static_
 
 // Function: removeObject
 // Address: 004e5fe0
-/* public: virtual int __thiscall TribeMainDecisionAIModule::removeObject(int) */
-
 int __thiscall TribeMainDecisionAIModule::removeObject(TribeMainDecisionAIModule *this,int param_1)
 {
   int iVar1;
@@ -1021,8 +949,6 @@ int __thiscall TribeMainDecisionAIModule::removeObject(TribeMainDecisionAIModule
 
 // Function: objectGroupThatCanPerformAction
 // Address: 004e6020
-/* public: virtual int __thiscall TribeMainDecisionAIModule::objectGroupThatCanPerformAction(int) */
-
 int __thiscall
 TribeMainDecisionAIModule::objectGroupThatCanPerformAction
           (TribeMainDecisionAIModule *this,int param_1)
@@ -1049,8 +975,6 @@ TribeMainDecisionAIModule::objectGroupThatCanPerformAction
 
 // Function: canPerformAction
 // Address: 004e6090
-/* public: virtual int __thiscall TribeMainDecisionAIModule::canPerformAction(int,int) */
-
 int __thiscall
 TribeMainDecisionAIModule::canPerformAction(TribeMainDecisionAIModule *this,int param_1,int param_2)
 {
@@ -1071,8 +995,6 @@ TribeMainDecisionAIModule::canPerformAction(TribeMainDecisionAIModule *this,int 
 
 // Function: detask
 // Address: 004e60d0
-/* public: void __thiscall TribeMainDecisionAIModule::detask(int) */
-
 void __thiscall TribeMainDecisionAIModule::detask(TribeMainDecisionAIModule *this,int param_1)
 {
   TribeTacticalAIModule::detask(&this->tacticalAI,param_1);
@@ -1083,8 +1005,6 @@ void __thiscall TribeMainDecisionAIModule::detask(TribeMainDecisionAIModule *thi
 
 // Function: isMoveable
 // Address: 004e60f0
-/* public: int __thiscall TribeMainDecisionAIModule::isMoveable(int) */
-
 int __thiscall TribeMainDecisionAIModule::isMoveable(TribeMainDecisionAIModule *this,int param_1)
 {
   short sVar1;
@@ -1105,8 +1025,6 @@ int __thiscall TribeMainDecisionAIModule::isMoveable(TribeMainDecisionAIModule *
 
 // Function: updateBuildAIWithObjects
 // Address: 004e6160
-/* public: void __thiscall TribeMainDecisionAIModule::updateBuildAIWithObjects(void) */
-
 void __thiscall TribeMainDecisionAIModule::updateBuildAIWithObjects(TribeMainDecisionAIModule *this)
 {
   void *pvVar1;
@@ -1153,8 +1071,6 @@ void __thiscall TribeMainDecisionAIModule::updateBuildAIWithObjects(TribeMainDec
 
 // Function: tributeNotify
 // Address: 004e6250
-/* public: void __thiscall TribeMainDecisionAIModule::tributeNotify(int,int,int) */
-
 void __thiscall
 TribeMainDecisionAIModule::tributeNotify
           (TribeMainDecisionAIModule *this,int param_1,int param_2,int param_3)
@@ -1169,8 +1085,6 @@ TribeMainDecisionAIModule::tributeNotify
   int *piVar6;
   RGE_Player *newAlly;
   char tempString [256];
-  
-                    /* language.dll match for 0x80: "Arial" */
   if (((this->waitingOnTribute == 1) &&
       (iVar1 = TribeTacticalAIModule::strategicNumber(&this->tacticalAI,0x80), param_1 == iVar1)) &&
      (param_2 == 3)) {
@@ -1178,7 +1092,6 @@ TribeMainDecisionAIModule::tributeNotify
     return;
   }
   newAlly = (RGE_Player *)&this->tacticalAI;
-                    /* language.dll match for 0x80: "Arial" */
   iVar1 = TribeTacticalAIModule::strategicNumber((TribeTacticalAIModule *)newAlly,0x80);
   if (param_1 != iVar1) {
     DiplomacyAIModule::changeStance(&this->diplomacyAI,param_1,2,param_3 / 100);
@@ -1192,7 +1105,6 @@ TribeMainDecisionAIModule::tributeNotify
       this_00 = (TribeTacticalAIModule *)0x6;
       (**(code **)(*(int *)this->_padding_ + 0x54))
                 ((int)*(short *)(this->_padding_ + 0x4a),6,param_1);
-                    /* language.dll match for 0x907: "Your empire is worthy of my allegiance." */
       (**(code **)(rge_base_game->_padding_ + 0x20))(0x907,&stack0xfffffee8,0x100);
       RGE_Player::sendChatMessage
                 ((RGE_Player *)&stack0xfffffedc,this->_padding_,param_1,(char *)0x0,
@@ -1228,8 +1140,6 @@ LAB_004e640b:
     }
     iVar1 = (**(code **)(*(int *)this->_padding_ + 0x18))();
     if (iVar1 == 1) {
-                    /* language.dll match for 0x906: "Your petty offerings will not sway my
-                       determination to crush your empire!" */
       (**(code **)(rge_base_game->_padding_ + 0x20))(0x906,&newAlly);
       RGE_Player::sendChatMessage
                 ((RGE_Player *)&stack0xfffffeec,this->_padding_,param_1,(char *)0x0,
@@ -1243,9 +1153,6 @@ LAB_004e640b:
 
 // Function: revokeTributeAlliance
 // Address: 004e6490
-/* WARNING: Variable defined which should be unmapped: tempString */
-/* public: void __thiscall TribeMainDecisionAIModule::revokeTributeAlliance(void) */
-
 void __thiscall TribeMainDecisionAIModule::revokeTributeAlliance(TribeMainDecisionAIModule *this)
 {
   TribeTacticalAIModule *this_00;
@@ -1256,32 +1163,24 @@ void __thiscall TribeMainDecisionAIModule::revokeTributeAlliance(TribeMainDecisi
   undefined1 *puVar4;
   int iVar5;
   char tempString [256];
-  
-                    /* language.dll match for 0x80: "Arial" */
   this_00 = &this->tacticalAI;
   iVar1 = *(int *)this->_padding_;
   TribeTacticalAIModule::strategicNumber(this_00,0x80);
   iVar1 = (**(code **)(iVar1 + 0x18))();
   if (iVar1 == 0) {
-                    /* language.dll match for 0x80: "Arial" */
     iVar5 = iVar1;
     iVar2 = TribeTacticalAIModule::strategicNumber(this_00,0x80);
     DiplomacyAIModule::setStance(&this->diplomacyAI,iVar2,iVar1,iVar5);
     iVar2 = 100;
     iVar5 = 2;
-                    /* language.dll match for 0x80: "Arial" */
     iVar1 = TribeTacticalAIModule::strategicNumber(this_00,0x80);
     DiplomacyAIModule::setStance(&this->diplomacyAI,iVar1,iVar5,iVar2);
-                    /* language.dll match for 0x80: "Arial" */
     iVar1 = this->aiPlayer->_padding_;
     TribeTacticalAIModule::strategicNumber(this_00,0x80);
     (**(code **)(iVar1 + 0x28))();
-                    /* language.dll match for 0x8fd: "You traitorous wretch! Vengeance will be
-                       mine!" */
     (**(code **)(rge_base_game->_padding_ + 0x20))(0x8fd,&stack0xfffffef4,0x100);
     puVar4 = &stack0xfffffee8;
     pcVar3 = (char *)0x0;
-                    /* language.dll match for 0x80: "Arial" */
     iVar1 = TribeTacticalAIModule::strategicNumber(this_00,0x80);
     RGE_Player::sendChatMessage(this_01,this->_padding_,iVar1,pcVar3,puVar4);
     this->waitingOnTribute = 0;
@@ -1295,8 +1194,6 @@ void __thiscall TribeMainDecisionAIModule::revokeTributeAlliance(TribeMainDecisi
 // Function: setTributeChat
 // Address: 004e6580
 // [HELPER] s_C__msdev_work_age1_x1_taimdmd_cp: "C:\msdev\work\age1_x1\taimdmd.cpp"
-/* protected: void __thiscall TribeMainDecisionAIModule::setTributeChat(void) */
-
 void __thiscall TribeMainDecisionAIModule::setTributeChat(TribeMainDecisionAIModule *this)
 {
   TribeTacticalAIModule *this_00;
@@ -1305,22 +1202,16 @@ void __thiscall TribeMainDecisionAIModule::setTributeChat(TribeMainDecisionAIMod
   int iVar3;
   int iVar4;
   ulong uVar5;
-  
-                    /* language.dll match for 0x7e: "10" */
   this_00 = &this->tacticalAI;
   iVar1 = TribeTacticalAIModule::strategicNumber(this_00,0x7e);
   if (0 < iVar1) {
     iVar1 = debug_rand(s_C__msdev_work_age1_x1_taimdmd_cp,0x41d);
-                    /* language.dll match for 0x7e: "10" */
     iVar2 = TribeTacticalAIModule::strategicNumber(this_00,0x7e);
-                    /* language.dll match for 0x7e: "10" */
     iVar3 = TribeTacticalAIModule::strategicNumber(this_00,0x7e);
-                    /* language.dll match for 0x7d: "Arial" */
     iVar4 = TribeTacticalAIModule::strategicNumber(this_00,0x7d);
     this->tributeChatTimeout = (iVar1 % iVar2 - iVar3 / 2) + iVar4;
     return;
   }
-                    /* language.dll match for 0x7d: "Arial" */
   uVar5 = TribeTacticalAIModule::strategicNumber(this_00,0x7d);
   this->tributeChatTimeout = uVar5;
   return;
@@ -1330,8 +1221,6 @@ void __thiscall TribeMainDecisionAIModule::setTributeChat(TribeMainDecisionAIMod
 
 // Function: processAICommand
 // Address: 004e6600
-/* public: int __thiscall TribeMainDecisionAIModule::processAICommand(int,int,int,int,int) */
-
 int __thiscall
 TribeMainDecisionAIModule::processAICommand
           (TribeMainDecisionAIModule *this,int param_1,int param_2,int param_3,int param_4,
@@ -1424,8 +1313,6 @@ LAB_004e681c:
 
 // Function: currentScore
 // Address: 004e6870
-/* public: int __thiscall TribeMainDecisionAIModule::currentScore(int) */
-
 int __thiscall TribeMainDecisionAIModule::currentScore(TribeMainDecisionAIModule *this,int param_1)
 {
   int iVar1;

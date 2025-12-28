@@ -233,8 +233,6 @@
 // [HELPER] s_bgA1024: "bgA1024"
 // [HELPER] s_bgA640: "bgA640"
 // [HELPER] s_bgA800: "bgA800"
-/* public: __thiscall TribeEndScreen::TribeEndScreen(char *,char * *,int) */
-
 TribeEndScreen * __thiscall
 TribeEndScreen::TribeEndScreen(TribeEndScreen *this,char *param_1,char **param_2,int param_3)
 {
@@ -409,8 +407,6 @@ TribeEndScreen::TribeEndScreen(TribeEndScreen *this,char *param_1,char **param_2
 
 // Function: `scalar_deleting_destructor'
 // Address: 00493be0
-/* public: virtual void * __thiscall TribeEndScreen::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall TribeEndScreen::_scalar_deleting_destructor_(TribeEndScreen *this,uint param_1)
 {
   ~TribeEndScreen(this);
@@ -424,8 +420,6 @@ void * __thiscall TribeEndScreen::_scalar_deleting_destructor_(TribeEndScreen *t
 
 // Function: ~TribeEndScreen
 // Address: 00493c00
-/* public: virtual __thiscall TribeEndScreen::~TribeEndScreen(void) */
-
 void __thiscall TribeEndScreen::~TribeEndScreen(TribeEndScreen *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -462,9 +456,6 @@ void __thiscall TribeEndScreen::~TribeEndScreen(TribeEndScreen *this)
 // Address: 00493c90
 // [HELPER] s_Achievements_Screen: "Achievements Screen"
 // [HELPER] s_End_Screen: "End Screen"
-/* protected: virtual long __thiscall TribeEndScreen::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TribeEndScreen::action
           (TribeEndScreen *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -487,7 +478,6 @@ TribeEndScreen::action
     local_4 = 0;
     if (this_00 != (TribeAchievementsScreen *)0x0) {
       iVar3 = 1;
-                    /* language.dll match for 0x269e: "Achievements" */
       pcVar1 = TPanel::get_string((TPanel *)this,0x269e);
       TribeAchievementsScreen::TribeAchievementsScreen(this_00,pcVar1,iVar3);
     }

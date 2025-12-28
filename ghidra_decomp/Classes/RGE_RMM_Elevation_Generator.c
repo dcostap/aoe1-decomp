@@ -11,9 +11,6 @@
 
 // Function: RGE_RMM_Elevation_Generator
 // Address: 004846c0
-/* public: __thiscall RGE_RMM_Elevation_Generator::RGE_RMM_Elevation_Generator(class RGE_Map *,class
-   RGE_Random_Map_Module *,struct RGE_Elevation_Info *) */
-
 RGE_RMM_Elevation_Generator * __thiscall
 RGE_RMM_Elevation_Generator::RGE_RMM_Elevation_Generator
           (RGE_RMM_Elevation_Generator *this,RGE_Map *param_1,RGE_Random_Map_Module *param_2,
@@ -39,8 +36,6 @@ RGE_RMM_Elevation_Generator::RGE_RMM_Elevation_Generator
 
 // Function: generate
 // Address: 00484700
-/* public: virtual unsigned char __thiscall RGE_RMM_Elevation_Generator::generate(void) */
-
 uchar __thiscall RGE_RMM_Elevation_Generator::generate(RGE_RMM_Elevation_Generator *this)
 {
   int iVar1;
@@ -115,10 +110,6 @@ uchar __thiscall RGE_RMM_Elevation_Generator::generate(RGE_RMM_Elevation_Generat
 
 // Function: check_start_elevation
 // Address: 004847c0
-/* protected: unsigned char __thiscall
-   RGE_RMM_Elevation_Generator::check_start_elevation(long,long,unsigned char,unsigned char,unsigned
-   char) */
-
 uchar __thiscall
 RGE_RMM_Elevation_Generator::check_start_elevation
           (RGE_RMM_Elevation_Generator *this,long param_1,long param_2,uchar param_3,uchar param_4,
@@ -179,10 +170,6 @@ RGE_RMM_Elevation_Generator::check_start_elevation
 
 // Function: check_elevation
 // Address: 004848a0
-/* WARNING: Variable defined which should be unmapped: index1 */
-/* protected: unsigned char __thiscall RGE_RMM_Elevation_Generator::check_elevation(unsigned
-   char,long,long,long,unsigned char,unsigned char) */
-
 uchar __thiscall
 RGE_RMM_Elevation_Generator::check_elevation
           (RGE_RMM_Elevation_Generator *this,uchar param_1,long param_2,long param_3,long param_4,
@@ -282,9 +269,6 @@ RGE_RMM_Elevation_Generator::check_elevation
 
 // Function: generate_modifiers
 // Address: 00484a40
-/* WARNING: Variable defined which should be unmapped: modifier */
-/* protected: void __thiscall RGE_RMM_Elevation_Generator::generate_modifiers(void) */
-
 void __thiscall RGE_RMM_Elevation_Generator::generate_modifiers(RGE_RMM_Elevation_Generator *this)
 {
   int iVar1;
@@ -348,8 +332,6 @@ void __thiscall RGE_RMM_Elevation_Generator::generate_modifiers(RGE_RMM_Elevatio
 
 // Function: fig_chance
 // Address: 00484b30
-/* protected: float __thiscall RGE_RMM_Elevation_Generator::fig_chance(long,long,long) */
-
 float __thiscall
 RGE_RMM_Elevation_Generator::fig_chance
           (RGE_RMM_Elevation_Generator *this,long param_1,long param_2,long param_3)
@@ -361,8 +343,6 @@ RGE_RMM_Elevation_Generator::fig_chance
 
 // Function: count_map_tiles
 // Address: 00484b50
-/* protected: long __thiscall RGE_RMM_Elevation_Generator::count_map_tiles(unsigned char) */
-
 long __thiscall
 RGE_RMM_Elevation_Generator::count_map_tiles(RGE_RMM_Elevation_Generator *this,uchar param_1)
 {
@@ -386,9 +366,6 @@ RGE_RMM_Elevation_Generator::count_map_tiles(RGE_RMM_Elevation_Generator *this,u
 // Function: link_stack_randomly
 // Address: 00484b90
 // [HELPER] s_C__msdev_work_age1_x1_rmm_elev_c: "C:\msdev\work\age1_x1\rmm_elev.cpp"
-/* protected: void __thiscall RGE_RMM_Elevation_Generator::link_stack_randomly(struct Map_Stack *)
-    */
-
 void __thiscall
 RGE_RMM_Elevation_Generator::link_stack_randomly
           (RGE_RMM_Elevation_Generator *this,Map_Stack *param_1)
@@ -436,8 +413,6 @@ RGE_RMM_Elevation_Generator::link_stack_randomly
 
 // Function: remove_area_from_lists
 // Address: 00484c80
-/* protected: void __thiscall RGE_RMM_Elevation_Generator::remove_area_from_lists(long,long,long) */
-
 void __thiscall
 RGE_RMM_Elevation_Generator::remove_area_from_lists
           (RGE_RMM_Elevation_Generator *this,long param_1,long param_2,long param_3)
@@ -481,10 +456,6 @@ RGE_RMM_Elevation_Generator::remove_area_from_lists
 // Function: base_elevation_generate
 // Address: 00484d00
 // [HELPER] s_C__msdev_work_age1_x1_rmm_elev_c: "C:\msdev\work\age1_x1\rmm_elev.cpp"
-/* WARNING: Variable defined which should be unmapped: x */
-/* protected: unsigned char __thiscall RGE_RMM_Elevation_Generator::base_elevation_generate(struct
-   RGE_Elevation_Info_Line) */
-
 uchar __thiscall
 RGE_RMM_Elevation_Generator::base_elevation_generate
           (RGE_RMM_Elevation_Generator *this,RGE_Elevation_Info_Line param_1)

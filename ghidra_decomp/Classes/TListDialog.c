@@ -599,8 +599,6 @@
 
 // Function: TListDialog
 // Address: 0043ee70
-/* public: __thiscall TListDialog::TListDialog(char *) */
-
 TListDialog * __thiscall TListDialog::TListDialog(TListDialog *this,char *param_1)
 {
   TDialogPanel::TDialogPanel((TDialogPanel *)this,param_1);
@@ -619,8 +617,6 @@ TListDialog * __thiscall TListDialog::TListDialog(TListDialog *this,char *param_
 
 // Function: `vector_deleting_destructor'
 // Address: 0043eec0
-/* public: virtual void * __thiscall TListDialog::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall TListDialog::_vector_deleting_destructor_(TListDialog *this,uint param_1)
 {
   ~TListDialog(this);
@@ -634,8 +630,6 @@ void * __thiscall TListDialog::_vector_deleting_destructor_(TListDialog *this,ui
 
 // Function: ~TListDialog
 // Address: 0043eee0
-/* public: virtual __thiscall TListDialog::~TListDialog(void) */
-
 void __thiscall TListDialog::~TListDialog(TListDialog *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -673,10 +667,6 @@ void __thiscall TListDialog::~TListDialog(TListDialog *this)
 
 // Function: setup
 // Address: 0043ef80
-/* public: long __thiscall TListDialog::setup(class TPanel *,char
-   *,long,long,long,long,long,long,long,char *,long,long,long,long,char *
-   *,short,short,long,long,long,long,long) */
-
 long __thiscall
 TListDialog::setup(TListDialog *this,TPanel *param_1,char *param_2,long param_3,long param_4,
                   long param_5,long param_6,long param_7,long param_8,long param_9,char *param_10,
@@ -728,12 +718,10 @@ TListDialog::setup(TListDialog *this,TPanel *param_1,char *param_2,long param_3,
   this->list_id = (short)param_7;
   TListPanel::scroll_cur_line(*ppTVar1,'\x01',(short)param_7,1);
   pcVar2 = *(code **)(iVar8 + 0xe8);
-                    /* language.dll match for 0xfa1: "OK" */
   iVar8 = (*pcVar2)(this,&this->ok_btn,0xfa1,0,param_8,param_10,param_11,param_12,0,0,0);
   if (iVar8 == 0) {
     return 0;
   }
-                    /* language.dll match for 0xfa2: "Cancel" */
   iVar8 = (*pcVar2)(this,&this->cancel_btn,0xfa2,0,unaff_EBP,unaff_EBX,unaff_retaddr,param_1,0,0,0);
   if (iVar8 == 0) {
     return 0;
@@ -749,11 +737,6 @@ TListDialog::setup(TListDialog *this,TPanel *param_1,char *param_2,long param_3,
 
 // Function: setup
 // Address: 0043f130
-/* WARNING: Variable defined which should be unmapped: str */
-/* public: long __thiscall TListDialog::setup(class TPanel *,char
-   *,long,long,long,long,long,long,long,int,long,long,long,long,char *
-   *,short,short,long,long,long,long,long) */
-
 long __thiscall
 TListDialog::setup(TListDialog *this,TPanel *param_1,char *param_2,long param_3,long param_4,
                   long param_5,long param_6,long param_7,long param_8,long param_9,int param_10,
@@ -775,8 +758,6 @@ TListDialog::setup(TListDialog *this,TPanel *param_1,char *param_2,long param_3,
 
 // Function: key_down_action
 // Address: 0043f210
-/* public: virtual long __thiscall TListDialog::key_down_action(long,short,int,int,int) */
-
 long __thiscall
 TListDialog::key_down_action
           (TListDialog *this,long param_1,short param_2,int param_3,int param_4,int param_5)
@@ -788,9 +769,6 @@ TListDialog::key_down_action
 
 // Function: action
 // Address: 0043f220
-/* public: virtual long __thiscall TListDialog::action(class TPanel *,long,unsigned long,unsigned
-   long) */
-
 long __thiscall
 TListDialog::action(TListDialog *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
 {
@@ -841,8 +819,6 @@ TListDialog::action(TListDialog *this,TPanel *param_1,long param_2,ulong param_3
 
 // Function: get_list_id
 // Address: 0043f320
-/* public: virtual short __thiscall TListDialog::get_list_id(void) */
-
 short __thiscall TListDialog::get_list_id(TListDialog *this)
 {
   return this->list_id;
@@ -852,8 +828,6 @@ short __thiscall TListDialog::get_list_id(TListDialog *this)
 
 // Function: get_list_name
 // Address: 0043f330
-/* public: virtual char * __thiscall TListDialog::get_list_name(void) */
-
 char * __thiscall TListDialog::get_list_name(TListDialog *this)
 {
   return this->list_name;

@@ -9,8 +9,6 @@
 // Function: TCommunications_Services
 // Address: 00431fb0
 // [HELPER] s_: ""
-/* public: __thiscall TCommunications_Services::TCommunications_Services(void) */
-
 TCommunications_Services * __thiscall
 TCommunications_Services::TCommunications_Services(TCommunications_Services *this)
 {
@@ -67,8 +65,6 @@ TCommunications_Services::TCommunications_Services(TCommunications_Services *thi
 
 // Function: ~TCommunications_Services
 // Address: 00432030
-/* public: __thiscall TCommunications_Services::~TCommunications_Services(void) */
-
 void __thiscall TCommunications_Services::~TCommunications_Services(TCommunications_Services *this)
 {
   return;
@@ -78,8 +74,6 @@ void __thiscall TCommunications_Services::~TCommunications_Services(TCommunicati
 
 // Function: GetServiceCount
 // Address: 00432040
-/* public: int __thiscall TCommunications_Services::GetServiceCount(void) */
-
 int __thiscall TCommunications_Services::GetServiceCount(TCommunications_Services *this)
 {
   return this->ServiceCount;
@@ -89,8 +83,6 @@ int __thiscall TCommunications_Services::GetServiceCount(TCommunications_Service
 
 // Function: IncServiceCount
 // Address: 00432050
-/* public: int __thiscall TCommunications_Services::IncServiceCount(void) */
-
 int __thiscall TCommunications_Services::IncServiceCount(TCommunications_Services *this)
 {
   int iVar1;
@@ -104,8 +96,6 @@ int __thiscall TCommunications_Services::IncServiceCount(TCommunications_Service
 
 // Function: GetServiceName
 // Address: 00432060
-/* public: char * __thiscall TCommunications_Services::GetServiceName(int) */
-
 char * __thiscall
 TCommunications_Services::GetServiceName(TCommunications_Services *this,int param_1)
 {
@@ -119,8 +109,6 @@ TCommunications_Services::GetServiceName(TCommunications_Services *this,int para
 
 // Function: SetServiceName
 // Address: 00432080
-/* public: int __thiscall TCommunications_Services::SetServiceName(int,char *) */
-
 int __thiscall
 TCommunications_Services::SetServiceName(TCommunications_Services *this,int param_1,char *param_2)
 {
@@ -159,8 +147,6 @@ TCommunications_Services::SetServiceName(TCommunications_Services *this,int para
 
 // Function: GetServiceGUID
 // Address: 004320c0
-/* public: struct _GUID __thiscall TCommunications_Services::GetServiceGUID(int) */
-
 _GUID * __thiscall
 TCommunications_Services::GetServiceGUID
           (TCommunications_Services *this,_GUID *__return_storage_ptr__,int param_1)
@@ -182,8 +168,6 @@ TCommunications_Services::GetServiceGUID
 
 // Function: EnumServiceGUID
 // Address: 004320f0
-/* public: void __thiscall TCommunications_Services::EnumServiceGUID(int,struct _GUID *) */
-
 void __thiscall
 TCommunications_Services::EnumServiceGUID(TCommunications_Services *this,int param_1,_GUID *param_2)
 {
@@ -197,8 +181,6 @@ TCommunications_Services::EnumServiceGUID(TCommunications_Services *this,int par
 
 // Function: GetServiceActive
 // Address: 00432120
-/* public: int __thiscall TCommunications_Services::GetServiceActive(int) */
-
 int __thiscall
 TCommunications_Services::GetServiceActive(TCommunications_Services *this,int param_1)
 {
@@ -212,8 +194,6 @@ TCommunications_Services::GetServiceActive(TCommunications_Services *this,int pa
 
 // Function: SetServiceActive
 // Address: 00432150
-/* public: void __thiscall TCommunications_Services::SetServiceActive(int,int) */
-
 void __thiscall
 TCommunications_Services::SetServiceActive(TCommunications_Services *this,int param_1,int param_2)
 {

@@ -28,8 +28,6 @@
 // Function: TribeResourceAIModule
 // Address: 004e6b40
 // [HELPER] s_Resource_AI: "Resource AI"
-/* public: __thiscall TribeResourceAIModule::TribeResourceAIModule(void *,int,int,int,int,int) */
-
 TribeResourceAIModule * __thiscall
 TribeResourceAIModule::TribeResourceAIModule
           (TribeResourceAIModule *this,void *param_1,int param_2,int param_3,int param_4,int param_5
@@ -46,9 +44,6 @@ TribeResourceAIModule::TribeResourceAIModule
 
 // Function: `scalar_deleting_destructor'
 // Address: 004e6b80
-/* public: virtual void * __thiscall TribeResourceAIModule::`scalar deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TribeResourceAIModule::_scalar_deleting_destructor_(TribeResourceAIModule *this,uint param_1)
 {
@@ -64,8 +59,6 @@ TribeResourceAIModule::_scalar_deleting_destructor_(TribeResourceAIModule *this,
 // Function: TribeResourceAIModule
 // Address: 004e6ba0
 // [HELPER] s_ResAI: "ResAI"
-/* public: __thiscall TribeResourceAIModule::TribeResourceAIModule(int,int) */
-
 TribeResourceAIModule * __thiscall
 TribeResourceAIModule::TribeResourceAIModule(TribeResourceAIModule *this,int param_1,int param_2)
 {
@@ -91,8 +84,6 @@ TribeResourceAIModule::TribeResourceAIModule(TribeResourceAIModule *this,int par
 
 // Function: ~TribeResourceAIModule
 // Address: 004e6c20
-/* public: virtual __thiscall TribeResourceAIModule::~TribeResourceAIModule(void) */
-
 void __thiscall TribeResourceAIModule::~TribeResourceAIModule(TribeResourceAIModule *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -104,9 +95,6 @@ void __thiscall TribeResourceAIModule::~TribeResourceAIModule(TribeResourceAIMod
 
 // Function: setMainDecisionAI
 // Address: 004e6c30
-/* public: void __thiscall TribeResourceAIModule::setMainDecisionAI(class TribeMainDecisionAIModule
-   *) */
-
 void __thiscall
 TribeResourceAIModule::setMainDecisionAI
           (TribeResourceAIModule *this,TribeMainDecisionAIModule *param_1)
@@ -119,8 +107,6 @@ TribeResourceAIModule::setMainDecisionAI
 
 // Function: save
 // Address: 004e6c40
-/* public: virtual int __thiscall TribeResourceAIModule::save(int) */
-
 int __thiscall TribeResourceAIModule::save(TribeResourceAIModule *this,int param_1)
 {
   rge_write(param_1,&this->numberResourcesValue,4);
@@ -131,8 +117,6 @@ int __thiscall TribeResourceAIModule::save(TribeResourceAIModule *this,int param
 
 // Function: numberResources
 // Address: 004e6c60
-/* public: int __thiscall TribeResourceAIModule::numberResources(void)const  */
-
 int __thiscall TribeResourceAIModule::numberResources(TribeResourceAIModule *this)
 {
   return this->numberResourcesValue;
@@ -142,8 +126,6 @@ int __thiscall TribeResourceAIModule::numberResources(TribeResourceAIModule *thi
 
 // Function: resource
 // Address: 004e6c70
-/* public: int __thiscall TribeResourceAIModule::resource(int)const  */
-
 int __thiscall TribeResourceAIModule::resource(TribeResourceAIModule *this,int param_1)
 {
   int iVar1;
@@ -159,8 +141,6 @@ int __thiscall TribeResourceAIModule::resource(TribeResourceAIModule *this,int p
 
 // Function: resourcesAvailable
 // Address: 004e6ca0
-/* public: int __thiscall TribeResourceAIModule::resourcesAvailable(class ResourceItem *) */
-
 int __thiscall
 TribeResourceAIModule::resourcesAvailable(TribeResourceAIModule *this,ResourceItem *param_1)
 {
@@ -196,8 +176,6 @@ TribeResourceAIModule::resourcesAvailable(TribeResourceAIModule *this,ResourceIt
 
 // Function: unavailableResource
 // Address: 004e6d40
-/* public: int __thiscall TribeResourceAIModule::unavailableResource(class ResourceItem *) */
-
 int __thiscall
 TribeResourceAIModule::unavailableResource(TribeResourceAIModule *this,ResourceItem *param_1)
 {
@@ -237,8 +215,6 @@ TribeResourceAIModule::unavailableResource(TribeResourceAIModule *this,ResourceI
 // [HELPER] s_Stone: "Stone"
 // [HELPER] s_Unknown: "Unknown"
 // [HELPER] s_Wood: "Wood"
-/* public: char * __thiscall TribeResourceAIModule::resourceName(int) */
-
 char * __thiscall TribeResourceAIModule::resourceName(TribeResourceAIModule *this,int param_1)
 {
   char *pcVar1;

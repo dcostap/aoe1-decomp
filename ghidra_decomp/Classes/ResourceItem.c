@@ -15,8 +15,6 @@
 
 // Function: ResourceItem
 // Address: 00411ec0
-/* public: __thiscall ResourceItem::ResourceItem(void) */
-
 void __thiscall ResourceItem::ResourceItem(ResourceItem *this)
 {
   int *piVar1;
@@ -42,8 +40,6 @@ void __thiscall ResourceItem::ResourceItem(ResourceItem *this)
 
 // Function: `scalar_deleting_destructor'
 // Address: 00411ef0
-/* public: virtual void * __thiscall ResourceItem::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall ResourceItem::_scalar_deleting_destructor_(ResourceItem *this,uint param_1)
 {
   ~ResourceItem(this);
@@ -57,8 +53,6 @@ void * __thiscall ResourceItem::_scalar_deleting_destructor_(ResourceItem *this,
 
 // Function: ResourceItem
 // Address: 00411f10
-/* public: __thiscall ResourceItem::ResourceItem(int) */
-
 void __thiscall ResourceItem::ResourceItem(ResourceItem *this,int param_1)
 {
   int *piVar1;
@@ -100,8 +94,6 @@ void __thiscall ResourceItem::ResourceItem(ResourceItem *this,int param_1)
 
 // Function: ResourceItem
 // Address: 00411f80
-/* public: __thiscall ResourceItem::ResourceItem(int,int *) */
-
 void __thiscall ResourceItem::ResourceItem(ResourceItem *this,int param_1,int *param_2)
 {
   int *piVar1;
@@ -144,8 +136,6 @@ void __thiscall ResourceItem::ResourceItem(ResourceItem *this,int param_1,int *p
 
 // Function: ResourceItem
 // Address: 00411ff0
-/* public: __thiscall ResourceItem::ResourceItem(class ResourceItem const &) */
-
 void __thiscall ResourceItem::ResourceItem(ResourceItem *this,ResourceItem *param_1)
 {
   int iVar1;
@@ -181,8 +171,6 @@ void __thiscall ResourceItem::ResourceItem(ResourceItem *this,ResourceItem *para
 
 // Function: ResourceItem
 // Address: 00412050
-/* public: __thiscall ResourceItem::ResourceItem(class ResourceItem *) */
-
 void __thiscall ResourceItem::ResourceItem(ResourceItem *this,ResourceItem *param_1)
 {
   int iVar1;
@@ -218,8 +206,6 @@ void __thiscall ResourceItem::ResourceItem(ResourceItem *this,ResourceItem *para
 
 // Function: ~ResourceItem
 // Address: 004120b0
-/* public: virtual __thiscall ResourceItem::~ResourceItem(void) */
-
 void __thiscall ResourceItem::~ResourceItem(ResourceItem *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -230,8 +216,6 @@ void __thiscall ResourceItem::~ResourceItem(ResourceItem *this)
 
 // Function: operator+=
 // Address: 004120c0
-/* public: class ResourceItem & __thiscall ResourceItem::operator+=(class ResourceItem const &) */
-
 ResourceItem * __thiscall ResourceItem::operator+=(ResourceItem *this,ResourceItem *param_1)
 {
   int *piVar1;
@@ -252,8 +236,6 @@ ResourceItem * __thiscall ResourceItem::operator+=(ResourceItem *this,ResourceIt
 
 // Function: value
 // Address: 00412180
-/* public: int __thiscall ResourceItem::value(int)const  */
-
 int __thiscall ResourceItem::value(ResourceItem *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < this->numberValue)) {
@@ -266,8 +248,6 @@ int __thiscall ResourceItem::value(ResourceItem *this,int param_1)
 
 // Function: setValue
 // Address: 004121a0
-/* public: void __thiscall ResourceItem::setValue(int,int) */
-
 void __thiscall ResourceItem::setValue(ResourceItem *this,int param_1,int param_2)
 {
   if ((-1 < param_1) && (param_1 < this->numberValue)) {
@@ -280,8 +260,6 @@ void __thiscall ResourceItem::setValue(ResourceItem *this,int param_1,int param_
 
 // Function: incrementValue
 // Address: 004121c0
-/* public: void __thiscall ResourceItem::incrementValue(int,int) */
-
 void __thiscall ResourceItem::incrementValue(ResourceItem *this,int param_1,int param_2)
 {
   if ((-1 < param_1) && (param_1 < this->numberValue)) {
@@ -294,8 +272,6 @@ void __thiscall ResourceItem::incrementValue(ResourceItem *this,int param_1,int 
 
 // Function: setAllValues
 // Address: 004121e0
-/* public: void __thiscall ResourceItem::setAllValues(int) */
-
 void __thiscall ResourceItem::setAllValues(ResourceItem *this,int param_1)
 {
   int iVar1;
@@ -313,8 +289,6 @@ void __thiscall ResourceItem::setAllValues(ResourceItem *this,int param_1)
 
 // Function: number
 // Address: 00412200
-/* public: int __thiscall ResourceItem::number(void)const  */
-
 int __thiscall ResourceItem::number(ResourceItem *this)
 {
   return this->numberValue;
@@ -324,8 +298,6 @@ int __thiscall ResourceItem::number(ResourceItem *this)
 
 // Function: largestValueIndex
 // Address: 00412210
-/* public: int __thiscall ResourceItem::largestValueIndex(int) */
-
 int __thiscall ResourceItem::largestValueIndex(ResourceItem *this,int param_1)
 {
   int iVar1;
@@ -343,8 +315,6 @@ int __thiscall ResourceItem::largestValueIndex(ResourceItem *this,int param_1)
 
 // Function: sortLarge
 // Address: 00412240
-/* protected: int __thiscall ResourceItem::sortLarge(void) */
-
 int __thiscall ResourceItem::sortLarge(ResourceItem *this)
 {
   int iVar1;

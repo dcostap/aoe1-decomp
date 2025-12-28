@@ -35,8 +35,6 @@
 
 // Function: RGE_Task
 // Address: 00508670
-/* public: __thiscall RGE_Task::RGE_Task(short) */
-
 void __thiscall RGE_Task::RGE_Task(RGE_Task *this,short param_1)
 {
   this->id = param_1;
@@ -75,8 +73,6 @@ void __thiscall RGE_Task::RGE_Task(RGE_Task *this,short param_1)
 
 // Function: ~RGE_Task
 // Address: 005086f0
-/* public: __thiscall RGE_Task::~RGE_Task(void) */
-
 void __thiscall RGE_Task::~RGE_Task(RGE_Task *this)
 {
   return;
@@ -86,8 +82,6 @@ void __thiscall RGE_Task::~RGE_Task(RGE_Task *this)
 
 // Function: copy
 // Address: 00508700
-/* public: void __thiscall RGE_Task::copy(class RGE_Task *) */
-
 void __thiscall RGE_Task::copy(RGE_Task *this,RGE_Task *param_1)
 {
   this->is_default = param_1->is_default;
@@ -124,8 +118,6 @@ void __thiscall RGE_Task::copy(RGE_Task *this,RGE_Task *param_1)
 
 // Function: load
 // Address: 005087c0
-/* public: void __thiscall RGE_Task::load(int,class RGE_Sprite * *,class RGE_Sound * *) */
-
 void __thiscall RGE_Task::load(RGE_Task *this,int param_1,RGE_Sprite **param_2,RGE_Sound **param_3)
 {
   int iVar1;
@@ -213,10 +205,6 @@ void __thiscall RGE_Task::load(RGE_Task *this,int param_1,RGE_Sprite **param_2,R
 // Function: load
 // Address: 00508a20
 // [HELPER] s__hd__hd__hd__hd__hd__hd__hd__hd_: "%hd %hd %hd %hd %hd %hd %hd %hd %hd"
-/* WARNING: Variable defined which should be unmapped: temp_combat_level */
-/* public: void __thiscall RGE_Task::load(struct _iobuf *,class RGE_Sprite * *,class RGE_Sound * *)
-    */
-
 void __thiscall
 RGE_Task::load(RGE_Task *this,_iobuf *param_1,RGE_Sprite **param_2,RGE_Sound **param_3)
 {
@@ -298,8 +286,6 @@ RGE_Task::load(RGE_Task *this,_iobuf *param_1,RGE_Sprite **param_2,RGE_Sound **p
 
 // Function: save
 // Address: 00508bb0
-/* public: void __thiscall RGE_Task::save(int) */
-
 void __thiscall RGE_Task::save(RGE_Task *this,int param_1)
 {
   RGE_Sprite *pRVar1;

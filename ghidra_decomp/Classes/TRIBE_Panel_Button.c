@@ -187,9 +187,6 @@
 
 // Function: TRIBE_Panel_Button
 // Address: 00519da0
-/* public: __thiscall TRIBE_Panel_Button::TRIBE_Panel_Button(class TDrawArea *,class TPanel *,class
-   TDigital *,void *,long,long,class TShape *) */
-
 TRIBE_Panel_Button * __thiscall
 TRIBE_Panel_Button::TRIBE_Panel_Button
           (TRIBE_Panel_Button *this,TDrawArea *param_1,TPanel *param_2,TDigital *param_3,
@@ -232,9 +229,6 @@ TRIBE_Panel_Button::TRIBE_Panel_Button
 
 // Function: `scalar_deleting_destructor'
 // Address: 00519e70
-/* public: virtual void * __thiscall TRIBE_Panel_Button::`scalar deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 TRIBE_Panel_Button::_scalar_deleting_destructor_(TRIBE_Panel_Button *this,uint param_1)
 {
@@ -249,8 +243,6 @@ TRIBE_Panel_Button::_scalar_deleting_destructor_(TRIBE_Panel_Button *this,uint p
 
 // Function: ~TRIBE_Panel_Button
 // Address: 00519e90
-/* public: virtual __thiscall TRIBE_Panel_Button::~TRIBE_Panel_Button(void) */
-
 void __thiscall TRIBE_Panel_Button::~TRIBE_Panel_Button(TRIBE_Panel_Button *this)
 {
   int iVar1;
@@ -283,8 +275,6 @@ void __thiscall TRIBE_Panel_Button::~TRIBE_Panel_Button(TRIBE_Panel_Button *this
 
 // Function: set_text_msg
 // Address: 00519ea0
-/* public: void __thiscall TRIBE_Panel_Button::set_text_msg(char *) */
-
 void __thiscall TRIBE_Panel_Button::set_text_msg(TRIBE_Panel_Button *this,char *param_1)
 {
   if (param_1 == (char *)0x0) {
@@ -300,8 +290,6 @@ void __thiscall TRIBE_Panel_Button::set_text_msg(TRIBE_Panel_Button *this,char *
 
 // Function: is_inside
 // Address: 00519ee0
-/* public: virtual int __thiscall TRIBE_Panel_Button::is_inside(long,long) */
-
 int __thiscall TRIBE_Panel_Button::is_inside(TRIBE_Panel_Button *this,long param_1,long param_2)
 {
   int *piVar1;
@@ -330,9 +318,6 @@ int __thiscall TRIBE_Panel_Button::is_inside(TRIBE_Panel_Button *this,long param
 // [HELPER] s_tpnl_btn__draw3: "tpnl_btn::draw3"
 // [HELPER] s_tpnl_btn__draw: "tpnl_btn::draw"
 // [HELPER] s_tpnl_inv__draw2: "tpnl_inv::draw2"
-/* WARNING: Variable defined which should be unmapped: y */
-/* public: virtual void __thiscall TRIBE_Panel_Button::draw(void) */
-
 void __thiscall TRIBE_Panel_Button::draw(TRIBE_Panel_Button *this)
 {
   int *piVar1;
@@ -564,8 +549,6 @@ LAB_0051a46c:
 
 // Function: set_display_garrison
 // Address: 0051a570
-/* public: void __thiscall TRIBE_Panel_Button::set_display_garrison(int) */
-
 void __thiscall TRIBE_Panel_Button::set_display_garrison(TRIBE_Panel_Button *this,int param_1)
 {
   this->display_garrison = param_1;
@@ -577,8 +560,6 @@ void __thiscall TRIBE_Panel_Button::set_display_garrison(TRIBE_Panel_Button *thi
 
 // Function: set_garrison_number
 // Address: 0051a590
-/* public: void __thiscall TRIBE_Panel_Button::set_garrison_number(int) */
-
 void __thiscall TRIBE_Panel_Button::set_garrison_number(TRIBE_Panel_Button *this,int param_1)
 {
   this->garrsion_number = param_1;
@@ -590,8 +571,6 @@ void __thiscall TRIBE_Panel_Button::set_garrison_number(TRIBE_Panel_Button *this
 
 // Function: get_garrison_number
 // Address: 0051a5b0
-/* public: int __thiscall TRIBE_Panel_Button::get_garrison_number(void) */
-
 int __thiscall TRIBE_Panel_Button::get_garrison_number(TRIBE_Panel_Button *this)
 {
   return this->garrsion_number;

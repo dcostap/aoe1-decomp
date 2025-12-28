@@ -404,9 +404,6 @@
 
 // Function: TribeTradeShipUnitAIModule
 // Address: 00506240
-/* public: __thiscall TribeTradeShipUnitAIModule::TribeTradeShipUnitAIModule(class RGE_Static_Object
-   *,int) */
-
 TribeTradeShipUnitAIModule * __thiscall
 TribeTradeShipUnitAIModule::TribeTradeShipUnitAIModule
           (TribeTradeShipUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
@@ -442,9 +439,6 @@ TribeTradeShipUnitAIModule::TribeTradeShipUnitAIModule
 
 // Function: `scalar_deleting_destructor'
 // Address: 005062f0
-/* public: virtual void * __thiscall TribeTradeShipUnitAIModule::`scalar deleting
-   destructor'(unsigned int) */
-
 void * __thiscall
 TribeTradeShipUnitAIModule::_scalar_deleting_destructor_
           (TribeTradeShipUnitAIModule *this,uint param_1)
@@ -460,8 +454,6 @@ TribeTradeShipUnitAIModule::_scalar_deleting_destructor_
 
 // Function: ~TribeTradeShipUnitAIModule
 // Address: 00506310
-/* public: virtual __thiscall TribeTradeShipUnitAIModule::~TribeTradeShipUnitAIModule(void) */
-
 void __thiscall
 TribeTradeShipUnitAIModule::~TribeTradeShipUnitAIModule(TribeTradeShipUnitAIModule *this)
 {
@@ -509,9 +501,6 @@ TribeTradeShipUnitAIModule::~TribeTradeShipUnitAIModule(TribeTradeShipUnitAIModu
 // Address: 00506320
 // [HELPER] s_C__msdev_work_age1_x1_taiuaimd_c: "C:\msdev\work\age1_x1\taiuaimd.cpp"
 // [HELPER] s___d_call_stopObject__s__d_: "#%d call stopObject %s %d\n"
-/* protected: virtual int __thiscall TribeTradeShipUnitAIModule::processNotify(struct NotifyEvent
-   *,unsigned long) */
-
 int __thiscall
 TribeTradeShipUnitAIModule::processNotify
           (TribeTradeShipUnitAIModule *this,NotifyEvent *param_1,ulong param_2)
@@ -699,10 +688,6 @@ LAB_00506615:
 
 // Function: processIdle
 // Address: 005066d0
-/* WARNING: Variable defined which should be unmapped: yDiff */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall TribeTradeShipUnitAIModule::processIdle(int) */
-
 int __thiscall TribeTradeShipUnitAIModule::processIdle(TribeTradeShipUnitAIModule *this,int param_1)
 {
   float fVar1;

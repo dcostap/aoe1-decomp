@@ -34,8 +34,6 @@
 
 // Function: DClipInfo_List
 // Address: 0053ad90
-/* public: __thiscall DClipInfo_List::DClipInfo_List(int,int,int,int,int,int) */
-
 DClipInfo_List * __thiscall
 DClipInfo_List::DClipInfo_List
           (DClipInfo_List *this,int param_1,int param_2,int param_3,int param_4,int param_5,
@@ -75,8 +73,6 @@ DClipInfo_List::DClipInfo_List
 
 // Function: ~DClipInfo_List
 // Address: 0053ae50
-/* public: __thiscall DClipInfo_List::~DClipInfo_List(void) */
-
 void __thiscall DClipInfo_List::~DClipInfo_List(DClipInfo_List *this)
 {
   int iVar1;
@@ -112,8 +108,6 @@ void __thiscall DClipInfo_List::~DClipInfo_List(DClipInfo_List *this)
 
 // Function: SetCaptureLevel
 // Address: 0053aed0
-/* public: void __thiscall DClipInfo_List::SetCaptureLevel(int,int) */
-
 void __thiscall DClipInfo_List::SetCaptureLevel(DClipInfo_List *this,int param_1,int param_2)
 {
   int iVar1;
@@ -138,8 +132,6 @@ void __thiscall DClipInfo_List::SetCaptureLevel(DClipInfo_List *this,int param_1
 
 // Function: SetNumZones
 // Address: 0053af00
-/* private: void __thiscall DClipInfo_List::SetNumZones(int) */
-
 void __thiscall DClipInfo_List::SetNumZones(DClipInfo_List *this,int param_1)
 {
   DClipInfo_Node **ppDVar1;
@@ -175,8 +167,6 @@ void __thiscall DClipInfo_List::SetNumZones(DClipInfo_List *this,int param_1)
 
 // Function: InitNewZone
 // Address: 0053af90
-/* private: void __thiscall DClipInfo_List::InitNewZone(int) */
-
 void __thiscall DClipInfo_List::InitNewZone(DClipInfo_List *this,int param_1)
 {
   int iVar1;
@@ -206,8 +196,6 @@ void __thiscall DClipInfo_List::InitNewZone(DClipInfo_List *this,int param_1)
 
 // Function: GetNode
 // Address: 0053b000
-/* public: struct DClipInfo_Node * __thiscall DClipInfo_List::GetNode(void) */
-
 DClipInfo_Node * __thiscall DClipInfo_List::GetNode(DClipInfo_List *this)
 {
   DClipInfo_Node *pDVar1;
@@ -244,8 +232,6 @@ DClipInfo_Node * __thiscall DClipInfo_List::GetNode(DClipInfo_List *this)
 
 // Function: SetDrawRegion
 // Address: 0053b070
-/* public: void __thiscall DClipInfo_List::SetDrawRegion(int,int,int,int) */
-
 void __thiscall
 DClipInfo_List::SetDrawRegion(DClipInfo_List *this,int param_1,int param_2,int param_3,int param_4)
 {
@@ -264,9 +250,6 @@ DClipInfo_List::SetDrawRegion(DClipInfo_List *this,int param_1,int param_2,int p
 
 // Function: AddDrawNode
 // Address: 0053b0a0
-/* public: void __thiscall DClipInfo_List::AddDrawNode(void *,struct Shape_Info
-   *,int,int,int,int,unsigned char *,int,int,int) */
-
 void __thiscall
 DClipInfo_List::AddDrawNode
           (DClipInfo_List *this,void *param_1,Shape_Info *param_2,int param_3,int param_4,
@@ -340,9 +323,6 @@ DClipInfo_List::AddDrawNode
 
 // Function: AddGDINode
 // Address: 0053b220
-/* public: struct DClipInfo_Node * __thiscall
-   DClipInfo_List::AddGDINode(int,int,int,int,int,int,int,int,int,int,int,int,int) */
-
 DClipInfo_Node * __thiscall
 DClipInfo_List::AddGDINode
           (DClipInfo_List *this,int param_1,int param_2,int param_3,int param_4,int param_5,
@@ -386,9 +366,6 @@ DClipInfo_List::AddGDINode
 
 // Function: LocateIDbyDrawLevel
 // Address: 0053b300
-/* public: struct DClipInfo_Node * __thiscall DClipInfo_List::LocateIDbyDrawLevel(int,int,int,int)
-    */
-
 DClipInfo_Node * __thiscall
 DClipInfo_List::LocateIDbyDrawLevel
           (DClipInfo_List *this,int param_1,int param_2,int param_3,int param_4)
@@ -429,8 +406,6 @@ DClipInfo_List::LocateIDbyDrawLevel
 
 // Function: Scroll
 // Address: 0053b370
-/* public: void __thiscall DClipInfo_List::Scroll(int,int) */
-
 void __thiscall DClipInfo_List::Scroll(DClipInfo_List *this,int param_1,int param_2)
 {
   undefined4 *puVar1;
@@ -521,8 +496,6 @@ void __thiscall DClipInfo_List::Scroll(DClipInfo_List *this,int param_1,int para
 
 // Function: FreeNode
 // Address: 0053b490
-/* public: void __thiscall DClipInfo_List::FreeNode(struct DClipInfo_Node *) */
-
 void __thiscall DClipInfo_List::FreeNode(DClipInfo_List *this,DClipInfo_Node *param_1)
 {
   param_1->Next = this->Free_Head;
@@ -535,9 +508,6 @@ void __thiscall DClipInfo_List::FreeNode(DClipInfo_List *this,DClipInfo_Node *pa
 
 // Function: FreeThread
 // Address: 0053b4b0
-/* public: int __thiscall DClipInfo_List::FreeThread(struct DClipInfo_Node *,struct DClipInfo_Node
-   *) */
-
 int __thiscall
 DClipInfo_List::FreeThread(DClipInfo_List *this,DClipInfo_Node *param_1,DClipInfo_Node *param_2)
 {
@@ -580,8 +550,6 @@ DClipInfo_List::FreeThread(DClipInfo_List *this,DClipInfo_Node *param_1,DClipInf
 
 // Function: ReclaimAllNodes
 // Address: 0053b510
-/* public: void __thiscall DClipInfo_List::ReclaimAllNodes(void) */
-
 void __thiscall DClipInfo_List::ReclaimAllNodes(DClipInfo_List *this)
 {
   uint uVar1;
@@ -627,8 +595,6 @@ void __thiscall DClipInfo_List::ReclaimAllNodes(DClipInfo_List *this)
 
 // Function: ResetStats
 // Address: 0053b590
-/* public: void __thiscall DClipInfo_List::ResetStats(void) */
-
 void __thiscall DClipInfo_List::ResetStats(DClipInfo_List *this)
 {
   this->Alloc_Count = 0;

@@ -84,9 +84,6 @@
 
 // Function: load
 // Address: 00511b00
-/* protected: virtual void __thiscall TRIBE_Object_List::load(unsigned char,int,class RGE_Game_World
-   *) */
-
 void __thiscall
 TRIBE_Object_List::load(TRIBE_Object_List *this,uchar param_1,int param_2,RGE_Game_World *param_3)
 {

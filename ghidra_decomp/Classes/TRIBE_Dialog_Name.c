@@ -239,8 +239,6 @@
 // Address: 004a6d50
 // [HELPER] s_: ""
 // [HELPER] s_New_Name_Dialog: "New Name Dialog"
-/* public: __thiscall TRIBE_Dialog_Name::TRIBE_Dialog_Name(class TScreenPanel *) */
-
 TRIBE_Dialog_Name * __thiscall
 TRIBE_Dialog_Name::TRIBE_Dialog_Name(TRIBE_Dialog_Name *this,TScreenPanel *param_1)
 {
@@ -281,27 +279,22 @@ TRIBE_Dialog_Name::TRIBE_Dialog_Name(TRIBE_Dialog_Name *this,TScreenPanel *param
   iVar8 = TDialogPanel::setup((TDialogPanel *)this,pTVar5,(TPanel *)param_1,lVar6,lVar7,pcVar4,lVar3
                               ,iVar8);
   if (iVar8 != 0) {
-                    /* language.dll match for 0x2a03: "Name" */
     iVar8 = TEasy_Panel::create_text
                       ((TEasy_Panel *)this,(TPanel *)this,&this->title,0x2a03,0x14,0x14,0x1cc,0x1e,1
                        ,1,1,0);
     if (iVar8 != 0) {
-                    /* language.dll match for 0x2a04: "New Player" */
       iVar8 = TEasy_Panel::create_text
                         ((TEasy_Panel *)this,(TPanel *)this,&this->name_text,0x2a04,0x28,0x55,0x1a4,
                          0x14,4,0,1,0);
       if (iVar8 != 0) {
-                    /* language.dll match for 0x6e: "Copperplate Gothic Light" */
         iVar8 = TEasy_Panel::create_edit
                           ((TEasy_Panel *)this,(TPanel *)this,ppTVar1,s_,0xf,FormatText,0x28,0x6e,
                            0x1a4,0x17,0xb,1,1);
         if (iVar8 != 0) {
-                    /* language.dll match for 0xfa1: "OK" */
           iVar8 = TEasy_Panel::create_button
                             ((TEasy_Panel *)this,(TPanel *)this,&this->ok_button,0xfa1,0,0x3c,0xb4,
                              0xb4,0x1e,0,0,0);
           if (iVar8 != 0) {
-                    /* language.dll match for 0xfa2: "Cancel" */
             iVar8 = TEasy_Panel::create_button
                               ((TEasy_Panel *)this,(TPanel *)this,&this->cancel_button,0xfa2,0,0x104
                                ,0xb4,0xb4,0x1e,0,0,0);
@@ -327,9 +320,6 @@ TRIBE_Dialog_Name::TRIBE_Dialog_Name(TRIBE_Dialog_Name *this,TScreenPanel *param
 
 // Function: `scalar_deleting_destructor'
 // Address: 004a6f40
-/* public: virtual void * __thiscall TRIBE_Dialog_Name::`scalar deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 TRIBE_Dialog_Name::_scalar_deleting_destructor_(TRIBE_Dialog_Name *this,uint param_1)
 {
@@ -344,8 +334,6 @@ TRIBE_Dialog_Name::_scalar_deleting_destructor_(TRIBE_Dialog_Name *this,uint par
 
 // Function: ~TRIBE_Dialog_Name
 // Address: 004a6f60
-/* public: virtual __thiscall TRIBE_Dialog_Name::~TRIBE_Dialog_Name(void) */
-
 void __thiscall TRIBE_Dialog_Name::~TRIBE_Dialog_Name(TRIBE_Dialog_Name *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -377,9 +365,6 @@ void __thiscall TRIBE_Dialog_Name::~TRIBE_Dialog_Name(TRIBE_Dialog_Name *this)
 // [HELPER] s_Name_Selection_Screen: "Name Selection Screen"
 // [HELPER] s_New_Name_Dialog: "New Name Dialog"
 // [HELPER] s_Single_Player_Menu: "Single Player Menu"
-/* public: virtual long __thiscall TRIBE_Dialog_Name::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TRIBE_Dialog_Name::action
           (TRIBE_Dialog_Name *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -453,9 +438,6 @@ TRIBE_Dialog_Name::action
 
 // Function: wnd_proc
 // Address: 004a71d0
-/* public: virtual long __thiscall TRIBE_Dialog_Name::wnd_proc(void *,unsigned int,unsigned
-   int,long) */
-
 long __thiscall
 TRIBE_Dialog_Name::wnd_proc
           (TRIBE_Dialog_Name *this,void *param_1,uint param_2,uint param_3,long param_4)

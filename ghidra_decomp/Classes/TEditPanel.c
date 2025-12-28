@@ -272,8 +272,6 @@
 
 // Function: TEditPanel
 // Address: 004755c0
-/* public: __thiscall TEditPanel::TEditPanel(void) */
-
 TEditPanel * __thiscall TEditPanel::TEditPanel(TEditPanel *this)
 {
   TPanel::TPanel((TPanel *)this);
@@ -309,8 +307,6 @@ TEditPanel * __thiscall TEditPanel::TEditPanel(TEditPanel *this)
 
 // Function: `vector_deleting_destructor'
 // Address: 00475670
-/* public: virtual void * __thiscall TEditPanel::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall TEditPanel::_vector_deleting_destructor_(TEditPanel *this,uint param_1)
 {
   ~TEditPanel(this);
@@ -324,8 +320,6 @@ void * __thiscall TEditPanel::_vector_deleting_destructor_(TEditPanel *this,uint
 
 // Function: ~TEditPanel
 // Address: 00475690
-/* public: virtual __thiscall TEditPanel::~TEditPanel(void) */
-
 void __thiscall TEditPanel::~TEditPanel(TEditPanel *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -368,9 +362,6 @@ void __thiscall TEditPanel::~TEditPanel(TEditPanel *this)
 // Function: setup
 // Address: 00475770
 // [HELPER] s_edit: "edit"
-/* public: long __thiscall TEditPanel::setup(class TDrawArea *,class TPanel
-   *,long,long,long,long,void *,short,char *,enum TEditPanel::FormatType,int) */
-
 long __thiscall
 TEditPanel::setup(TEditPanel *this,TDrawArea *param_1,TPanel *param_2,long param_3,long param_4,
                  long param_5,long param_6,void *param_7,short param_8,char *param_9,
@@ -432,8 +423,6 @@ TEditPanel::setup(TEditPanel *this,TDrawArea *param_1,TPanel *param_2,long param
 
 // Function: set_text
 // Address: 00475970
-/* public: void __thiscall TEditPanel::set_text(char *) */
-
 void __thiscall TEditPanel::set_text(TEditPanel *this,char *param_1)
 {
   char cVar1;
@@ -483,9 +472,6 @@ void __thiscall TEditPanel::set_text(TEditPanel *this,char *param_1)
 
 // Function: update_text
 // Address: 00475a30
-/* WARNING: Variable defined which should be unmapped: end */
-/* public: void __thiscall TEditPanel::update_text(void) */
-
 void __thiscall TEditPanel::update_text(TEditPanel *this)
 {
   char cVar1;
@@ -523,8 +509,6 @@ void __thiscall TEditPanel::update_text(TEditPanel *this)
 
 // Function: get_text
 // Address: 00475af0
-/* public: char * __thiscall TEditPanel::get_text(void) */
-
 char * __thiscall TEditPanel::get_text(TEditPanel *this)
 {
   update_text(this);
@@ -535,8 +519,6 @@ char * __thiscall TEditPanel::get_text(TEditPanel *this)
 
 // Function: get_input_buffer
 // Address: 00475b00
-/* public: char * __thiscall TEditPanel::get_input_buffer(void) */
-
 char * __thiscall TEditPanel::get_input_buffer(TEditPanel *this)
 {
   update_text(this);
@@ -547,8 +529,6 @@ char * __thiscall TEditPanel::get_input_buffer(TEditPanel *this)
 
 // Function: currentLine
 // Address: 00475b10
-/* public: char * __thiscall TEditPanel::currentLine(void) */
-
 char * __thiscall TEditPanel::currentLine(TEditPanel *this)
 {
   update_text(this);
@@ -559,8 +539,6 @@ char * __thiscall TEditPanel::currentLine(TEditPanel *this)
 
 // Function: set_active
 // Address: 00475b20
-/* public: virtual void __thiscall TEditPanel::set_active(int) */
-
 void __thiscall TEditPanel::set_active(TEditPanel *this,int param_1)
 {
   TPanel::set_active((TPanel *)this,param_1);
@@ -575,8 +553,6 @@ void __thiscall TEditPanel::set_active(TEditPanel *this,int param_1)
 
 // Function: set_focus
 // Address: 00475b60
-/* public: virtual void __thiscall TEditPanel::set_focus(int) */
-
 void __thiscall TEditPanel::set_focus(TEditPanel *this,int param_1)
 {
   int iVar1;
@@ -641,8 +617,6 @@ void __thiscall TEditPanel::set_focus(TEditPanel *this,int param_1)
 
 // Function: set_rect
 // Address: 00475cc0
-/* public: virtual void __thiscall TEditPanel::set_rect(long,long,long,long) */
-
 void __thiscall
 TEditPanel::set_rect(TEditPanel *this,long param_1,long param_2,long param_3,long param_4)
 {
@@ -688,8 +662,6 @@ TEditPanel::set_rect(TEditPanel *this,long param_1,long param_2,long param_3,lon
 
 // Function: set_redraw
 // Address: 00475dd0
-/* public: virtual void __thiscall TEditPanel::set_redraw(enum TPanel::RedrawMode) */
-
 void __thiscall TEditPanel::set_redraw(TEditPanel *this,RedrawMode param_1)
 {
   TPanel::set_redraw((TPanel *)this,RedrawNormal);
@@ -704,8 +676,6 @@ void __thiscall TEditPanel::set_redraw(TEditPanel *this,RedrawMode param_1)
 
 // Function: set_text_color
 // Address: 00475e10
-/* public: void __thiscall TEditPanel::set_text_color(unsigned long,unsigned long) */
-
 void __thiscall TEditPanel::set_text_color(TEditPanel *this,ulong param_1,ulong param_2)
 {
   this->text_color1 = param_1;
@@ -718,8 +688,6 @@ void __thiscall TEditPanel::set_text_color(TEditPanel *this,ulong param_1,ulong 
 
 // Function: set_highlight_text_color
 // Address: 00475e30
-/* public: void __thiscall TEditPanel::set_highlight_text_color(unsigned long,unsigned long) */
-
 void __thiscall TEditPanel::set_highlight_text_color(TEditPanel *this,ulong param_1,ulong param_2)
 {
   return;
@@ -729,8 +697,6 @@ void __thiscall TEditPanel::set_highlight_text_color(TEditPanel *this,ulong para
 
 // Function: set_back_color
 // Address: 00475e40
-/* public: void __thiscall TEditPanel::set_back_color(void *,unsigned long,unsigned char) */
-
 void __thiscall
 TEditPanel::set_back_color(TEditPanel *this,void *param_1,ulong param_2,uchar param_3)
 {
@@ -741,8 +707,6 @@ TEditPanel::set_back_color(TEditPanel *this,void *param_1,ulong param_2,uchar pa
 
 // Function: set_bevel_info
 // Address: 00475e50
-/* public: void __thiscall TEditPanel::set_bevel_info(int,int,int,int,int,int,int) */
-
 void __thiscall
 TEditPanel::set_bevel_info
           (TEditPanel *this,int param_1,int param_2,int param_3,int param_4,int param_5,int param_6,
@@ -784,8 +748,6 @@ TEditPanel::set_bevel_info
 
 // Function: set_ime_info
 // Address: 00475f20
-/* public: void __thiscall TEditPanel::set_ime_info(int,int) */
-
 void __thiscall TEditPanel::set_ime_info(TEditPanel *this,int param_1,int param_2)
 {
   this->enable_ime = param_1;
@@ -797,8 +759,6 @@ void __thiscall TEditPanel::set_ime_info(TEditPanel *this,int param_1,int param_
 
 // Function: wnd_proc
 // Address: 00475f40
-/* public: virtual long __thiscall TEditPanel::wnd_proc(void *,unsigned int,unsigned int,long) */
-
 long __thiscall
 TEditPanel::wnd_proc(TEditPanel *this,void *param_1,uint param_2,uint param_3,long param_4)
 {
@@ -833,9 +793,6 @@ TEditPanel::wnd_proc(TEditPanel *this,void *param_1,uint param_2,uint param_3,lo
 
 // Function: sub_wnd_proc
 // Address: 00476040
-/* WARNING: Variable defined which should be unmapped: old_start */
-/* public: long __thiscall TEditPanel::sub_wnd_proc(void *,unsigned int,unsigned int,long) */
-
 long __thiscall
 TEditPanel::sub_wnd_proc(TEditPanel *this,void *param_1,uint param_2,uint param_3,long param_4)
 {
@@ -977,8 +934,6 @@ LAB_004762dd:
 // Function: verify_char
 // Address: 00476440
 // [HELPER] s_10: "10"
-/* public: int __thiscall TEditPanel::verify_char(int) */
-
 int __thiscall TEditPanel::verify_char(TEditPanel *this,int param_1)
 {
   int iVar1;
@@ -1069,9 +1024,6 @@ switchD_00476509_caseD_0:
 // Function: draw
 // Address: 00476680
 // [HELPER] s_pnl_edit__draw: "pnl_edit::draw"
-/* WARNING: Variable defined which should be unmapped: old_font */
-/* public: virtual void __thiscall TEditPanel::draw(void) */
-
 void __thiscall TEditPanel::draw(TEditPanel *this)
 {
   uchar uVar1;
@@ -1233,8 +1185,6 @@ LAB_004768c7:
 
 // Function: paint
 // Address: 00476a50
-/* public: virtual void __thiscall TEditPanel::paint(void) */
-
 void __thiscall TEditPanel::paint(TEditPanel *this)
 {
   return;
@@ -1244,8 +1194,6 @@ void __thiscall TEditPanel::paint(TEditPanel *this)
 
 // Function: is_blank
 // Address: 00476a60
-/* public: int __thiscall TEditPanel::is_blank(void) */
-
 int __thiscall TEditPanel::is_blank(TEditPanel *this)
 {
   int iVar1;
@@ -1268,9 +1216,6 @@ int __thiscall TEditPanel::is_blank(TEditPanel *this)
 
 // Function: get_trimmed_str
 // Address: 00476ab0
-/* WARNING: Variable defined which should be unmapped: temp_str */
-/* public: char * __thiscall TEditPanel::get_trimmed_str(char *,int) */
-
 char * __thiscall TEditPanel::get_trimmed_str(TEditPanel *this,char *param_1,int param_2)
 {
   char cVar1;
@@ -1353,8 +1298,6 @@ char * __thiscall TEditPanel::get_trimmed_str(TEditPanel *this,char *param_1,int
 
 // Function: handle_reactivate
 // Address: 00476bb0
-/* public: virtual void __thiscall TEditPanel::handle_reactivate(void) */
-
 void __thiscall TEditPanel::handle_reactivate(TEditPanel *this)
 {
   void *pvVar1;
@@ -1372,8 +1315,6 @@ void __thiscall TEditPanel::handle_reactivate(TEditPanel *this)
 
 // Function: handle_mouse_down
 // Address: 00476be0
-/* public: virtual long __thiscall TEditPanel::handle_mouse_down(unsigned char,long,long,int,int) */
-
 long __thiscall
 TEditPanel::handle_mouse_down
           (TEditPanel *this,uchar param_1,long param_2,long param_3,int param_4,int param_5)

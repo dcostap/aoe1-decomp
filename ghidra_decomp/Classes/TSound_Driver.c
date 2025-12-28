@@ -24,8 +24,6 @@
 
 // Function: TSound_Driver
 // Address: 004bc590
-/* public: __thiscall TSound_Driver::TSound_Driver(void) */
-
 TSound_Driver * __thiscall TSound_Driver::TSound_Driver(TSound_Driver *this)
 {
   init_vars(this);
@@ -36,8 +34,6 @@ TSound_Driver * __thiscall TSound_Driver::TSound_Driver(TSound_Driver *this)
 
 // Function: TSound_Driver
 // Address: 004bc5a0
-/* public: __thiscall TSound_Driver::TSound_Driver(void *,char *) */
-
 TSound_Driver * __thiscall
 TSound_Driver::TSound_Driver(TSound_Driver *this,void *param_1,char *param_2)
 {
@@ -50,8 +46,6 @@ TSound_Driver::TSound_Driver(TSound_Driver *this,void *param_1,char *param_2)
 
 // Function: ~TSound_Driver
 // Address: 004bc5c0
-/* public: __thiscall TSound_Driver::~TSound_Driver(void) */
-
 void __thiscall TSound_Driver::~TSound_Driver(TSound_Driver *this)
 {
   IDirectSoundBuffer *pIVar1;
@@ -80,8 +74,6 @@ void __thiscall TSound_Driver::~TSound_Driver(TSound_Driver *this)
 
 // Function: init_vars
 // Address: 004bc5d0
-/* public: void __thiscall TSound_Driver::init_vars(void) */
-
 void __thiscall TSound_Driver::init_vars(TSound_Driver *this)
 {
   this->start_volume = 1;
@@ -103,9 +95,6 @@ void __thiscall TSound_Driver::init_vars(TSound_Driver *this)
 
 // Function: init
 // Address: 004bc610
-/* WARNING: Variable defined which should be unmapped: fmt */
-/* public: int __thiscall TSound_Driver::init(void *,char *) */
-
 int __thiscall TSound_Driver::init(TSound_Driver *this,void *param_1,char *param_2)
 {
   IDirectSound **ppIVar1;
@@ -182,8 +171,6 @@ LAB_004bc69f:
 
 // Function: exit
 // Address: 004bc7c0
-/* public: void __thiscall TSound_Driver::exit(void) */
-
 void __thiscall TSound_Driver::exit(TSound_Driver *this)
 {
   IDirectSoundBuffer *pIVar1;
@@ -212,8 +199,6 @@ void __thiscall TSound_Driver::exit(TSound_Driver *this)
 
 // Function: set_path
 // Address: 004bc810
-/* public: void __thiscall TSound_Driver::set_path(char *) */
-
 void __thiscall TSound_Driver::set_path(TSound_Driver *this,char *param_1)
 {
   char cVar1;
@@ -255,8 +240,6 @@ void __thiscall TSound_Driver::set_path(TSound_Driver *this,char *param_1)
 
 // Function: driver_active
 // Address: 004bc850
-/* public: int __thiscall TSound_Driver::driver_active(void) */
-
 int __thiscall TSound_Driver::driver_active(TSound_Driver *this)
 {
   return (uint)this->ready;
@@ -266,8 +249,6 @@ int __thiscall TSound_Driver::driver_active(TSound_Driver *this)
 
 // Function: get_volume
 // Address: 004bc860
-/* public: long __thiscall TSound_Driver::get_volume(void) */
-
 long __thiscall TSound_Driver::get_volume(TSound_Driver *this)
 {
   return this->volume;
@@ -277,8 +258,6 @@ long __thiscall TSound_Driver::get_volume(TSound_Driver *this)
 
 // Function: set_volume
 // Address: 004bc870
-/* public: void __thiscall TSound_Driver::set_volume(long,int) */
-
 void __thiscall TSound_Driver::set_volume(TSound_Driver *this,long param_1,int param_2)
 {
   void *pvVar1;
@@ -303,9 +282,6 @@ void __thiscall TSound_Driver::set_volume(TSound_Driver *this,long param_1,int p
 // Function: stream_file
 // Address: 004bc8d0
 // [HELPER] s__s_s: "%s%s"
-/* WARNING: Variable defined which should be unmapped: file_name2 */
-/* public: int __thiscall TSound_Driver::stream_file(char *,int,long) */
-
 int __thiscall
 TSound_Driver::stream_file(TSound_Driver *this,char *param_1,int param_2,long param_3)
 {
@@ -326,8 +302,6 @@ TSound_Driver::stream_file(TSound_Driver *this,char *param_1,int param_2,long pa
 
 // Function: set_stream_volume
 // Address: 004bc930
-/* public: int __thiscall TSound_Driver::set_stream_volume(long) */
-
 int __thiscall TSound_Driver::set_stream_volume(TSound_Driver *this,long param_1)
 {
   int iVar1;
@@ -343,8 +317,6 @@ int __thiscall TSound_Driver::set_stream_volume(TSound_Driver *this,long param_1
 
 // Function: pause_stream
 // Address: 004bc950
-/* public: int __thiscall TSound_Driver::pause_stream(void) */
-
 int __thiscall TSound_Driver::pause_stream(TSound_Driver *this)
 {
   int iVar1;
@@ -360,8 +332,6 @@ int __thiscall TSound_Driver::pause_stream(TSound_Driver *this)
 
 // Function: resume_stream
 // Address: 004bc960
-/* public: int __thiscall TSound_Driver::resume_stream(void) */
-
 int __thiscall TSound_Driver::resume_stream(TSound_Driver *this)
 {
   int iVar1;
@@ -377,8 +347,6 @@ int __thiscall TSound_Driver::resume_stream(TSound_Driver *this)
 
 // Function: stop_stream
 // Address: 004bc970
-/* public: int __thiscall TSound_Driver::stop_stream(void) */
-
 int __thiscall TSound_Driver::stop_stream(TSound_Driver *this)
 {
   int iVar1;
@@ -394,9 +362,6 @@ int __thiscall TSound_Driver::stop_stream(TSound_Driver *this)
 
 // Function: handle_messages
 // Address: 004bc980
-/* public: unsigned int __thiscall TSound_Driver::handle_messages(void *,unsigned int,unsigned
-   int,long) */
-
 uint __thiscall
 TSound_Driver::handle_messages
           (TSound_Driver *this,void *param_1,uint param_2,uint param_3,long param_4)
@@ -414,8 +379,6 @@ TSound_Driver::handle_messages
 
 // Function: add_to_play_list
 // Address: 004bc9b0
-/* public: int __thiscall TSound_Driver::add_to_play_list(class TDigital *) */
-
 int __thiscall TSound_Driver::add_to_play_list(TSound_Driver *this,TDigital *param_1)
 {
   if ((this->play_list_count != 0xff) && (this->mute == '\0')) {
@@ -430,8 +393,6 @@ int __thiscall TSound_Driver::add_to_play_list(TSound_Driver *this,TDigital *par
 
 // Function: play_list
 // Address: 004bc9f0
-/* public: void __thiscall TSound_Driver::play_list(void) */
-
 void __thiscall TSound_Driver::play_list(TSound_Driver *this)
 {
   int iVar1;
@@ -453,8 +414,6 @@ void __thiscall TSound_Driver::play_list(TSound_Driver *this)
 
 // Function: reset_play_list
 // Address: 004bca20
-/* public: void __thiscall TSound_Driver::reset_play_list(void) */
-
 void __thiscall TSound_Driver::reset_play_list(TSound_Driver *this)
 {
   this->play_list_count = 0;
@@ -465,9 +424,6 @@ void __thiscall TSound_Driver::reset_play_list(TSound_Driver *this)
 
 // Function: open_mixer
 // Address: 004bca30
-/* WARNING: Variable defined which should be unmapped: mixer_id */
-/* public: int __thiscall TSound_Driver::open_mixer(void) */
-
 int __thiscall TSound_Driver::open_mixer(TSound_Driver *this)
 {
   void **ppvVar1;
@@ -504,7 +460,6 @@ int __thiscall TSound_Driver::open_mixer(TSound_Driver *this)
       }
       pvVar5 = *ppvVar1;
       ptVar2->cbStruct = 0xa8;
-                    /* language.dll match for 0x1008: "Trade" */
       (this->mixer_line_info).dwComponentType = 0x1008;
       iVar9 = mixerGetLineInfoA(pvVar5,ptVar2,3);
       if (iVar9 == 0) {
@@ -571,8 +526,6 @@ int __thiscall TSound_Driver::open_mixer(TSound_Driver *this)
 
 // Function: close_mixer
 // Address: 004bcbf0
-/* public: void __thiscall TSound_Driver::close_mixer(void) */
-
 void __thiscall TSound_Driver::close_mixer(TSound_Driver *this)
 {
   if (this->mixer_open != 0) {

@@ -44,9 +44,6 @@
 
 // Function: RGE_Master_Moving_Object
 // Address: 00451a20
-/* public: __thiscall RGE_Master_Moving_Object::RGE_Master_Moving_Object(class
-   RGE_Master_Moving_Object *,int) */
-
 RGE_Master_Moving_Object * __thiscall
 RGE_Master_Moving_Object::RGE_Master_Moving_Object
           (RGE_Master_Moving_Object *this,RGE_Master_Moving_Object *param_1,int param_2)
@@ -75,9 +72,6 @@ RGE_Master_Moving_Object::RGE_Master_Moving_Object
 
 // Function: `vector_deleting_destructor'
 // Address: 00451a80
-/* public: virtual void * __thiscall RGE_Master_Moving_Object::`vector deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 RGE_Master_Moving_Object::_vector_deleting_destructor_(RGE_Master_Moving_Object *this,uint param_1)
 {
@@ -92,9 +86,6 @@ RGE_Master_Moving_Object::_vector_deleting_destructor_(RGE_Master_Moving_Object 
 
 // Function: RGE_Master_Moving_Object
 // Address: 00451aa0
-/* public: __thiscall RGE_Master_Moving_Object::RGE_Master_Moving_Object(int,class RGE_Sprite *
-   *,class RGE_Sound * *,int) */
-
 RGE_Master_Moving_Object * __thiscall
 RGE_Master_Moving_Object::RGE_Master_Moving_Object
           (RGE_Master_Moving_Object *this,int param_1,RGE_Sprite **param_2,RGE_Sound **param_3,
@@ -124,9 +115,6 @@ RGE_Master_Moving_Object::RGE_Master_Moving_Object
 
 // Function: RGE_Master_Moving_Object
 // Address: 00451b10
-/* public: __thiscall RGE_Master_Moving_Object::RGE_Master_Moving_Object(struct _iobuf *,class
-   RGE_Sprite * *,class RGE_Sound * *,short,int) */
-
 RGE_Master_Moving_Object * __thiscall
 RGE_Master_Moving_Object::RGE_Master_Moving_Object
           (RGE_Master_Moving_Object *this,_iobuf *param_1,RGE_Sprite **param_2,RGE_Sound **param_3,
@@ -156,8 +144,6 @@ RGE_Master_Moving_Object::RGE_Master_Moving_Object
 
 // Function: setup
 // Address: 00451b90
-/* protected: int __thiscall RGE_Master_Moving_Object::setup(class RGE_Master_Moving_Object *) */
-
 int __thiscall
 RGE_Master_Moving_Object::setup(RGE_Master_Moving_Object *this,RGE_Master_Moving_Object *param_1)
 {
@@ -179,9 +165,6 @@ RGE_Master_Moving_Object::setup(RGE_Master_Moving_Object *this,RGE_Master_Moving
 
 // Function: setup
 // Address: 00451c10
-/* protected: int __thiscall RGE_Master_Moving_Object::setup(int,class RGE_Sprite * *,class
-   RGE_Sound * *) */
-
 int __thiscall
 RGE_Master_Moving_Object::setup
           (RGE_Master_Moving_Object *this,int param_1,RGE_Sprite **param_2,RGE_Sound **param_3)
@@ -220,10 +203,6 @@ RGE_Master_Moving_Object::setup
 // Function: setup
 // Address: 00451d10
 // [HELPER] s__hd__hd__f__hd__hd__hd__f__hd: "%hd %hd %f %hd %hd %hd %f %hd"
-/* WARNING: Variable defined which should be unmapped: temp_run_sprite */
-/* protected: int __thiscall RGE_Master_Moving_Object::setup(struct _iobuf *,class RGE_Sprite *
-   *,class RGE_Sound * *,short) */
-
 int __thiscall
 RGE_Master_Moving_Object::setup
           (RGE_Master_Moving_Object *this,_iobuf *param_1,RGE_Sprite **param_2,RGE_Sound **param_3,
@@ -266,8 +245,6 @@ RGE_Master_Moving_Object::setup
 
 // Function: ~RGE_Master_Moving_Object
 // Address: 00451de0
-/* public: virtual __thiscall RGE_Master_Moving_Object::~RGE_Master_Moving_Object(void) */
-
 void __thiscall RGE_Master_Moving_Object::~RGE_Master_Moving_Object(RGE_Master_Moving_Object *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -279,9 +256,6 @@ void __thiscall RGE_Master_Moving_Object::~RGE_Master_Moving_Object(RGE_Master_M
 
 // Function: make_new_obj
 // Address: 00451df0
-/* public: virtual class RGE_Static_Object * __thiscall RGE_Master_Moving_Object::make_new_obj(class
-   RGE_Player *,float,float,float) */
-
 RGE_Static_Object * __thiscall
 RGE_Master_Moving_Object::make_new_obj
           (RGE_Master_Moving_Object *this,RGE_Player *param_1,float param_2,float param_3,
@@ -322,9 +296,6 @@ RGE_Master_Moving_Object::make_new_obj
 
 // Function: make_new_master
 // Address: 00451ec0
-/* public: virtual class RGE_Master_Static_Object * __thiscall
-   RGE_Master_Moving_Object::make_new_master(void) */
-
 RGE_Master_Static_Object * __thiscall
 RGE_Master_Moving_Object::make_new_master(RGE_Master_Moving_Object *this)
 {
@@ -354,9 +325,6 @@ RGE_Master_Moving_Object::make_new_master(RGE_Master_Moving_Object *this)
 
 // Function: copy_obj
 // Address: 00451f30
-/* public: virtual void __thiscall RGE_Master_Moving_Object::copy_obj(class RGE_Master_Static_Object
-   *) */
-
 void __thiscall
 RGE_Master_Moving_Object::copy_obj(RGE_Master_Moving_Object *this,RGE_Master_Static_Object *param_1)
 {
@@ -376,8 +344,6 @@ RGE_Master_Moving_Object::copy_obj(RGE_Master_Moving_Object *this,RGE_Master_Sta
 
 // Function: modify
 // Address: 00451fb0
-/* public: virtual void __thiscall RGE_Master_Moving_Object::modify(float,unsigned char) */
-
 void __thiscall
 RGE_Master_Moving_Object::modify(RGE_Master_Moving_Object *this,float param_1,uchar param_2)
 {
@@ -393,8 +359,6 @@ RGE_Master_Moving_Object::modify(RGE_Master_Moving_Object *this,float param_1,uc
 
 // Function: modify_delta
 // Address: 00451fe0
-/* public: virtual void __thiscall RGE_Master_Moving_Object::modify_delta(float,unsigned char) */
-
 void __thiscall
 RGE_Master_Moving_Object::modify_delta(RGE_Master_Moving_Object *this,float param_1,uchar param_2)
 {
@@ -410,8 +374,6 @@ RGE_Master_Moving_Object::modify_delta(RGE_Master_Moving_Object *this,float para
 
 // Function: modify_percent
 // Address: 00452010
-/* public: virtual void __thiscall RGE_Master_Moving_Object::modify_percent(float,unsigned char) */
-
 void __thiscall
 RGE_Master_Moving_Object::modify_percent(RGE_Master_Moving_Object *this,float param_1,uchar param_2)
 {
@@ -427,9 +389,6 @@ RGE_Master_Moving_Object::modify_percent(RGE_Master_Moving_Object *this,float pa
 
 // Function: save
 // Address: 00452040
-/* WARNING: Variable defined which should be unmapped: temp_move_sprite */
-/* public: virtual void __thiscall RGE_Master_Moving_Object::save(int) */
-
 void __thiscall RGE_Master_Moving_Object::save(RGE_Master_Moving_Object *this,int param_1)
 {
   RGE_Sprite *pRVar1;

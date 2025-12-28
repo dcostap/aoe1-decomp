@@ -13,8 +13,6 @@
 
 // Function: RGE_Effects
 // Address: 004490e0
-/* public: __thiscall RGE_Effects::RGE_Effects(int) */
-
 RGE_Effects * __thiscall RGE_Effects::RGE_Effects(RGE_Effects *this,int param_1)
 {
   long *plVar1;
@@ -84,8 +82,6 @@ RGE_Effects * __thiscall RGE_Effects::RGE_Effects(RGE_Effects *this,int param_1)
 
 // Function: `vector_deleting_destructor'
 // Address: 00449240
-/* public: virtual void * __thiscall RGE_Effects::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall RGE_Effects::_vector_deleting_destructor_(RGE_Effects *this,uint param_1)
 {
   ~RGE_Effects(this);
@@ -104,9 +100,6 @@ void * __thiscall RGE_Effects::_vector_deleting_destructor_(RGE_Effects *this,ui
 // [HELPER] s__hd__hd__hd__hd__f: "%hd %hd %hd %hd %f"
 // [HELPER] s__s__hd: "%s %hd"
 // [HELPER] s_r: "r"
-/* WARNING: Variable defined which should be unmapped: this_effect_num */
-/* public: __thiscall RGE_Effects::RGE_Effects(char *) */
-
 RGE_Effects * __thiscall RGE_Effects::RGE_Effects(RGE_Effects *this,char *param_1)
 {
   long *plVar1;
@@ -183,8 +176,6 @@ RGE_Effects * __thiscall RGE_Effects::RGE_Effects(RGE_Effects *this,char *param_
 
 // Function: ~RGE_Effects
 // Address: 00449440
-/* public: virtual __thiscall RGE_Effects::~RGE_Effects(void) */
-
 void __thiscall RGE_Effects::~RGE_Effects(RGE_Effects *this)
 {
   RGE_Effect_Command *pRVar1;
@@ -217,9 +208,6 @@ void __thiscall RGE_Effects::~RGE_Effects(RGE_Effects *this)
 
 // Function: save
 // Address: 004494b0
-/* WARNING: Variable defined which should be unmapped: index */
-/* public: virtual void __thiscall RGE_Effects::save(int) */
-
 void __thiscall RGE_Effects::save(RGE_Effects *this,int param_1)
 {
   long *plVar1;
@@ -268,8 +256,6 @@ void __thiscall RGE_Effects::save(RGE_Effects *this,int param_1)
 
 // Function: do_effect
 // Address: 004495c0
-/* public: virtual void __thiscall RGE_Effects::do_effect(short,class RGE_Player *) */
-
 void __thiscall RGE_Effects::do_effect(RGE_Effects *this,short param_1,RGE_Player *param_2)
 {
   RGE_Effect *pRVar1;

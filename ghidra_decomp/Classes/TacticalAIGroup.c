@@ -45,8 +45,6 @@
 
 // Function: TacticalAIGroup
 // Address: 004ea860
-/* public: __thiscall TacticalAIGroup::TacticalAIGroup(void) */
-
 TacticalAIGroup * __thiscall TacticalAIGroup::TacticalAIGroup(TacticalAIGroup *this)
 {
   int *piVar1;
@@ -103,8 +101,6 @@ TacticalAIGroup * __thiscall TacticalAIGroup::TacticalAIGroup(TacticalAIGroup *t
 
 // Function: `scalar_deleting_destructor'
 // Address: 004ea990
-/* public: virtual void * __thiscall TacticalAIGroup::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall TacticalAIGroup::_scalar_deleting_destructor_(TacticalAIGroup *this,uint param_1)
 {
   ~TacticalAIGroup(this);
@@ -118,8 +114,6 @@ void * __thiscall TacticalAIGroup::_scalar_deleting_destructor_(TacticalAIGroup 
 
 // Function: ~TacticalAIGroup
 // Address: 004ea9b0
-/* public: virtual __thiscall TacticalAIGroup::~TacticalAIGroup(void) */
-
 void __thiscall TacticalAIGroup::~TacticalAIGroup(TacticalAIGroup *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -130,9 +124,6 @@ void __thiscall TacticalAIGroup::~TacticalAIGroup(TacticalAIGroup *this)
 
 // Function: load
 // Address: 004ea9c0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: int __thiscall TacticalAIGroup::load(int) */
-
 int __thiscall TacticalAIGroup::load(TacticalAIGroup *this,int param_1)
 {
   int *piVar1;
@@ -196,8 +187,6 @@ int __thiscall TacticalAIGroup::load(TacticalAIGroup *this,int param_1)
 
 // Function: save
 // Address: 004eaca0
-/* public: int __thiscall TacticalAIGroup::save(int) */
-
 int __thiscall TacticalAIGroup::save(TacticalAIGroup *this,int param_1)
 {
   int *piVar1;
@@ -250,8 +239,6 @@ int __thiscall TacticalAIGroup::save(TacticalAIGroup *this,int param_1)
 
 // Function: id
 // Address: 004eaf20
-/* public: int __thiscall TacticalAIGroup::id(void)const  */
-
 int __thiscall TacticalAIGroup::id(TacticalAIGroup *this)
 {
   return this->idValue;
@@ -261,8 +248,6 @@ int __thiscall TacticalAIGroup::id(TacticalAIGroup *this)
 
 // Function: setID
 // Address: 004eaf30
-/* public: void __thiscall TacticalAIGroup::setID(int) */
-
 void __thiscall TacticalAIGroup::setID(TacticalAIGroup *this,int param_1)
 {
   this->idValue = param_1;
@@ -273,8 +258,6 @@ void __thiscall TacticalAIGroup::setID(TacticalAIGroup *this,int param_1)
 
 // Function: inUse
 // Address: 004eaf40
-/* public: int __thiscall TacticalAIGroup::inUse(void)const  */
-
 int __thiscall TacticalAIGroup::inUse(TacticalAIGroup *this)
 {
   return this->inUseValue;
@@ -284,8 +267,6 @@ int __thiscall TacticalAIGroup::inUse(TacticalAIGroup *this)
 
 // Function: setInUse
 // Address: 004eaf50
-/* public: void __thiscall TacticalAIGroup::setInUse(int) */
-
 void __thiscall TacticalAIGroup::setInUse(TacticalAIGroup *this,int param_1)
 {
   this->inUseValue = param_1;
@@ -296,8 +277,6 @@ void __thiscall TacticalAIGroup::setInUse(TacticalAIGroup *this,int param_1)
 
 // Function: type
 // Address: 004eaf60
-/* public: int __thiscall TacticalAIGroup::type(void)const  */
-
 int __thiscall TacticalAIGroup::type(TacticalAIGroup *this)
 {
   return this->typeValue;
@@ -307,8 +286,6 @@ int __thiscall TacticalAIGroup::type(TacticalAIGroup *this)
 
 // Function: setType
 // Address: 004eaf70
-/* public: void __thiscall TacticalAIGroup::setType(int) */
-
 void __thiscall TacticalAIGroup::setType(TacticalAIGroup *this,int param_1)
 {
   this->typeValue = param_1;
@@ -319,8 +296,6 @@ void __thiscall TacticalAIGroup::setType(TacticalAIGroup *this,int param_1)
 
 // Function: subType
 // Address: 004eaf80
-/* public: int __thiscall TacticalAIGroup::subType(void)const  */
-
 int __thiscall TacticalAIGroup::subType(TacticalAIGroup *this)
 {
   return this->subTypeValue;
@@ -330,8 +305,6 @@ int __thiscall TacticalAIGroup::subType(TacticalAIGroup *this)
 
 // Function: setSubType
 // Address: 004eaf90
-/* public: void __thiscall TacticalAIGroup::setSubType(int) */
-
 void __thiscall TacticalAIGroup::setSubType(TacticalAIGroup *this,int param_1)
 {
   this->subTypeValue = param_1;
@@ -342,8 +315,6 @@ void __thiscall TacticalAIGroup::setSubType(TacticalAIGroup *this,int param_1)
 
 // Function: addUnit
 // Address: 004eafa0
-/* public: int __thiscall TacticalAIGroup::addUnit(int,class TribeMainDecisionAIModule *) */
-
 int __thiscall
 TacticalAIGroup::addUnit(TacticalAIGroup *this,int param_1,TribeMainDecisionAIModule *param_2)
 {
@@ -373,8 +344,6 @@ TacticalAIGroup::addUnit(TacticalAIGroup *this,int param_1,TribeMainDecisionAIMo
 
 // Function: removeUnit
 // Address: 004eb030
-/* public: int __thiscall TacticalAIGroup::removeUnit(int,class TribeMainDecisionAIModule *) */
-
 int __thiscall
 TacticalAIGroup::removeUnit(TacticalAIGroup *this,int param_1,TribeMainDecisionAIModule *param_2)
 {
@@ -408,9 +377,6 @@ TacticalAIGroup::removeUnit(TacticalAIGroup *this,int param_1,TribeMainDecisionA
 
 // Function: removeUnitByIndex
 // Address: 004eb0c0
-/* public: int __thiscall TacticalAIGroup::removeUnitByIndex(int,class TribeMainDecisionAIModule *)
-    */
-
 int __thiscall
 TacticalAIGroup::removeUnitByIndex
           (TacticalAIGroup *this,int param_1,TribeMainDecisionAIModule *param_2)
@@ -437,8 +403,6 @@ TacticalAIGroup::removeUnitByIndex
 
 // Function: removeUnits
 // Address: 004eb140
-/* public: void __thiscall TacticalAIGroup::removeUnits(class TribeMainDecisionAIModule *) */
-
 void __thiscall
 TacticalAIGroup::removeUnits(TacticalAIGroup *this,TribeMainDecisionAIModule *param_1)
 {
@@ -462,8 +426,6 @@ TacticalAIGroup::removeUnits(TacticalAIGroup *this,TribeMainDecisionAIModule *pa
 
 // Function: removeExtraUnits
 // Address: 004eb180
-/* public: int __thiscall TacticalAIGroup::removeExtraUnits(class TribeMainDecisionAIModule *) */
-
 int __thiscall
 TacticalAIGroup::removeExtraUnits(TacticalAIGroup *this,TribeMainDecisionAIModule *param_1)
 {
@@ -496,9 +458,6 @@ TacticalAIGroup::removeExtraUnits(TacticalAIGroup *this,TribeMainDecisionAIModul
 
 // Function: removeUnboardedUnits
 // Address: 004eb1f0
-/* public: int __thiscall TacticalAIGroup::removeUnboardedUnits(class TribeTacticalAIModule *,class
-   TribeMainDecisionAIModule *) */
-
 int __thiscall
 TacticalAIGroup::removeUnboardedUnits
           (TacticalAIGroup *this,TribeTacticalAIModule *param_1,TribeMainDecisionAIModule *param_2)
@@ -538,8 +497,6 @@ TacticalAIGroup::removeUnboardedUnits
 
 // Function: containsUnit
 // Address: 004eb290
-/* public: int __thiscall TacticalAIGroup::containsUnit(int) */
-
 int __thiscall TacticalAIGroup::containsUnit(TacticalAIGroup *this,int param_1)
 {
   int iVar1;
@@ -561,8 +518,6 @@ int __thiscall TacticalAIGroup::containsUnit(TacticalAIGroup *this,int param_1)
 
 // Function: numberUnits
 // Address: 004eb2c0
-/* public: int __thiscall TacticalAIGroup::numberUnits(void) */
-
 int __thiscall TacticalAIGroup::numberUnits(TacticalAIGroup *this)
 {
   return this->numberUnitsValue;
@@ -572,8 +527,6 @@ int __thiscall TacticalAIGroup::numberUnits(TacticalAIGroup *this)
 
 // Function: unit
 // Address: 004eb2d0
-/* public: int __thiscall TacticalAIGroup::unit(int) */
-
 int __thiscall TacticalAIGroup::unit(TacticalAIGroup *this,int param_1)
 {
   int iVar1;
@@ -604,8 +557,6 @@ int __thiscall TacticalAIGroup::unit(TacticalAIGroup *this,int param_1)
 
 // Function: unitOriginalHitPoints
 // Address: 004eb320
-/* public: int __thiscall TacticalAIGroup::unitOriginalHitPoints(int) */
-
 int __thiscall TacticalAIGroup::unitOriginalHitPoints(TacticalAIGroup *this,int param_1)
 {
   int iVar1;
@@ -636,8 +587,6 @@ int __thiscall TacticalAIGroup::unitOriginalHitPoints(TacticalAIGroup *this,int 
 
 // Function: desiredNumberUnits
 // Address: 004eb370
-/* public: int __thiscall TacticalAIGroup::desiredNumberUnits(void)const  */
-
 int __thiscall TacticalAIGroup::desiredNumberUnits(TacticalAIGroup *this)
 {
   return this->desiredNumberUnitsValue;
@@ -647,8 +596,6 @@ int __thiscall TacticalAIGroup::desiredNumberUnits(TacticalAIGroup *this)
 
 // Function: setDesiredNumberUnits
 // Address: 004eb380
-/* public: void __thiscall TacticalAIGroup::setDesiredNumberUnits(int) */
-
 void __thiscall TacticalAIGroup::setDesiredNumberUnits(TacticalAIGroup *this,int param_1)
 {
   this->desiredNumberUnitsValue = param_1;
@@ -659,8 +606,6 @@ void __thiscall TacticalAIGroup::setDesiredNumberUnits(TacticalAIGroup *this,int
 
 // Function: commander
 // Address: 004eb390
-/* public: int __thiscall TacticalAIGroup::commander(void)const  */
-
 int __thiscall TacticalAIGroup::commander(TacticalAIGroup *this)
 {
   return this->commanderValue;
@@ -670,10 +615,6 @@ int __thiscall TacticalAIGroup::commander(TacticalAIGroup *this)
 
 // Function: setSpecificCommander
 // Address: 004eb3a0
-/* WARNING: Variable defined which should be unmapped: temp */
-/* public: void __thiscall TacticalAIGroup::setSpecificCommander(int,class TribeMainDecisionAIModule
-   *) */
-
 void __thiscall
 TacticalAIGroup::setSpecificCommander
           (TacticalAIGroup *this,int param_1,TribeMainDecisionAIModule *param_2)
@@ -713,9 +654,6 @@ TacticalAIGroup::setSpecificCommander
 
 // Function: currentHitPoints
 // Address: 004eb430
-/* public: int __thiscall TacticalAIGroup::currentHitPoints(class TribeMainDecisionAIModule *)const
-    */
-
 int __thiscall
 TacticalAIGroup::currentHitPoints(TacticalAIGroup *this,TribeMainDecisionAIModule *param_1)
 {
@@ -746,8 +684,6 @@ TacticalAIGroup::currentHitPoints(TacticalAIGroup *this,TribeMainDecisionAIModul
 
 // Function: originalHitPoints
 // Address: 004eb470
-/* public: int __thiscall TacticalAIGroup::originalHitPoints(void)const  */
-
 int __thiscall TacticalAIGroup::originalHitPoints(TacticalAIGroup *this)
 {
   return this->originalHitPointsValue;
@@ -757,8 +693,6 @@ int __thiscall TacticalAIGroup::originalHitPoints(TacticalAIGroup *this)
 
 // Function: setOriginalHitPoints
 // Address: 004eb480
-/* public: void __thiscall TacticalAIGroup::setOriginalHitPoints(int) */
-
 void __thiscall TacticalAIGroup::setOriginalHitPoints(TacticalAIGroup *this,int param_1)
 {
   this->originalHitPointsValue = param_1;
@@ -769,8 +703,6 @@ void __thiscall TacticalAIGroup::setOriginalHitPoints(TacticalAIGroup *this,int 
 
 // Function: originalUnitNumber
 // Address: 004eb490
-/* public: int __thiscall TacticalAIGroup::originalUnitNumber(void)const  */
-
 int __thiscall TacticalAIGroup::originalUnitNumber(TacticalAIGroup *this)
 {
   return this->originalUnitNumberValue;
@@ -780,8 +712,6 @@ int __thiscall TacticalAIGroup::originalUnitNumber(TacticalAIGroup *this)
 
 // Function: setOriginalUnitNumber
 // Address: 004eb4a0
-/* public: void __thiscall TacticalAIGroup::setOriginalUnitNumber(int) */
-
 void __thiscall TacticalAIGroup::setOriginalUnitNumber(TacticalAIGroup *this,int param_1)
 {
   this->originalUnitNumberValue = param_1;
@@ -792,8 +722,6 @@ void __thiscall TacticalAIGroup::setOriginalUnitNumber(TacticalAIGroup *this,int
 
 // Function: location
 // Address: 004eb4b0
-/* public: struct Waypoint const & __thiscall TacticalAIGroup::location(void)const  */
-
 Waypoint * __thiscall TacticalAIGroup::location(TacticalAIGroup *this)
 {
   return &this->locationValue;
@@ -803,8 +731,6 @@ Waypoint * __thiscall TacticalAIGroup::location(TacticalAIGroup *this)
 
 // Function: setLocation
 // Address: 004eb4c0
-/* public: void __thiscall TacticalAIGroup::setLocation(float,float,float) */
-
 void __thiscall
 TacticalAIGroup::setLocation(TacticalAIGroup *this,float param_1,float param_2,float param_3)
 {
@@ -818,8 +744,6 @@ TacticalAIGroup::setLocation(TacticalAIGroup *this,float param_1,float param_2,f
 
 // Function: action
 // Address: 004eb4f0
-/* public: int __thiscall TacticalAIGroup::action(void)const  */
-
 int __thiscall TacticalAIGroup::action(TacticalAIGroup *this)
 {
   return this->actionValue;
@@ -829,8 +753,6 @@ int __thiscall TacticalAIGroup::action(TacticalAIGroup *this)
 
 // Function: setAction
 // Address: 004eb500
-/* public: void __thiscall TacticalAIGroup::setAction(int) */
-
 void __thiscall TacticalAIGroup::setAction(TacticalAIGroup *this,int param_1)
 {
   this->actionValue = param_1;
@@ -841,8 +763,6 @@ void __thiscall TacticalAIGroup::setAction(TacticalAIGroup *this,int param_1)
 
 // Function: target
 // Address: 004eb510
-/* public: int __thiscall TacticalAIGroup::target(void)const  */
-
 int __thiscall TacticalAIGroup::target(TacticalAIGroup *this)
 {
   return this->targetValue;
@@ -852,8 +772,6 @@ int __thiscall TacticalAIGroup::target(TacticalAIGroup *this)
 
 // Function: setTarget
 // Address: 004eb520
-/* public: void __thiscall TacticalAIGroup::setTarget(int) */
-
 void __thiscall TacticalAIGroup::setTarget(TacticalAIGroup *this,int param_1)
 {
   this->targetValue = param_1;
@@ -864,8 +782,6 @@ void __thiscall TacticalAIGroup::setTarget(TacticalAIGroup *this,int param_1)
 
 // Function: targetType
 // Address: 004eb530
-/* public: int __thiscall TacticalAIGroup::targetType(void)const  */
-
 int __thiscall TacticalAIGroup::targetType(TacticalAIGroup *this)
 {
   return this->targetTypeValue;
@@ -875,8 +791,6 @@ int __thiscall TacticalAIGroup::targetType(TacticalAIGroup *this)
 
 // Function: setTargetType
 // Address: 004eb540
-/* public: void __thiscall TacticalAIGroup::setTargetType(int) */
-
 void __thiscall TacticalAIGroup::setTargetType(TacticalAIGroup *this,int param_1)
 {
   this->targetTypeValue = param_1;
@@ -887,8 +801,6 @@ void __thiscall TacticalAIGroup::setTargetType(TacticalAIGroup *this,int param_1
 
 // Function: targetLocation
 // Address: 004eb550
-/* public: struct Waypoint const & __thiscall TacticalAIGroup::targetLocation(void)const  */
-
 Waypoint * __thiscall TacticalAIGroup::targetLocation(TacticalAIGroup *this)
 {
   return &this->targetLocationValue;
@@ -898,8 +810,6 @@ Waypoint * __thiscall TacticalAIGroup::targetLocation(TacticalAIGroup *this)
 
 // Function: setAllLocations
 // Address: 004eb560
-/* public: void __thiscall TacticalAIGroup::setAllLocations(float,float,float) */
-
 void __thiscall
 TacticalAIGroup::setAllLocations(TacticalAIGroup *this,float param_1,float param_2,float param_3)
 {
@@ -919,8 +829,6 @@ TacticalAIGroup::setAllLocations(TacticalAIGroup *this,float param_1,float param
 
 // Function: setTargetLocation
 // Address: 004eb5c0
-/* public: void __thiscall TacticalAIGroup::setTargetLocation(float,float,float) */
-
 void __thiscall
 TacticalAIGroup::setTargetLocation(TacticalAIGroup *this,float param_1,float param_2,float param_3)
 {
@@ -934,8 +842,6 @@ TacticalAIGroup::setTargetLocation(TacticalAIGroup *this,float param_1,float par
 
 // Function: gatherLocation
 // Address: 004eb5f0
-/* public: struct Waypoint const & __thiscall TacticalAIGroup::gatherLocation(void)const  */
-
 Waypoint * __thiscall TacticalAIGroup::gatherLocation(TacticalAIGroup *this)
 {
   return &this->gatherLocationValue;
@@ -945,8 +851,6 @@ Waypoint * __thiscall TacticalAIGroup::gatherLocation(TacticalAIGroup *this)
 
 // Function: setGatherLocation
 // Address: 004eb600
-/* public: void __thiscall TacticalAIGroup::setGatherLocation(float,float,float) */
-
 void __thiscall
 TacticalAIGroup::setGatherLocation(TacticalAIGroup *this,float param_1,float param_2,float param_3)
 {
@@ -960,8 +864,6 @@ TacticalAIGroup::setGatherLocation(TacticalAIGroup *this,float param_1,float par
 
 // Function: retreatLocation
 // Address: 004eb630
-/* public: struct Waypoint const & __thiscall TacticalAIGroup::retreatLocation(void)const  */
-
 Waypoint * __thiscall TacticalAIGroup::retreatLocation(TacticalAIGroup *this)
 {
   return &this->retreatLocationValue;
@@ -971,8 +873,6 @@ Waypoint * __thiscall TacticalAIGroup::retreatLocation(TacticalAIGroup *this)
 
 // Function: setRetreatLocation
 // Address: 004eb640
-/* public: void __thiscall TacticalAIGroup::setRetreatLocation(float,float,float) */
-
 void __thiscall
 TacticalAIGroup::setRetreatLocation(TacticalAIGroup *this,float param_1,float param_2,float param_3)
 {
@@ -986,8 +886,6 @@ TacticalAIGroup::setRetreatLocation(TacticalAIGroup *this,float param_1,float pa
 
 // Function: priority
 // Address: 004eb670
-/* public: int __thiscall TacticalAIGroup::priority(void)const  */
-
 int __thiscall TacticalAIGroup::priority(TacticalAIGroup *this)
 {
   return this->priorityValue;
@@ -997,8 +895,6 @@ int __thiscall TacticalAIGroup::priority(TacticalAIGroup *this)
 
 // Function: setPriority
 // Address: 004eb680
-/* public: void __thiscall TacticalAIGroup::setPriority(int) */
-
 void __thiscall TacticalAIGroup::setPriority(TacticalAIGroup *this,int param_1)
 {
   this->priorityValue = param_1;
@@ -1009,8 +905,6 @@ void __thiscall TacticalAIGroup::setPriority(TacticalAIGroup *this,int param_1)
 
 // Function: waitCode
 // Address: 004eb690
-/* public: int __thiscall TacticalAIGroup::waitCode(void)const  */
-
 int __thiscall TacticalAIGroup::waitCode(TacticalAIGroup *this)
 {
   return this->waitCodeValue;
@@ -1020,8 +914,6 @@ int __thiscall TacticalAIGroup::waitCode(TacticalAIGroup *this)
 
 // Function: setWaitCode
 // Address: 004eb6a0
-/* public: void __thiscall TacticalAIGroup::setWaitCode(int) */
-
 void __thiscall TacticalAIGroup::setWaitCode(TacticalAIGroup *this,int param_1)
 {
   this->waitCodeValue = param_1;
@@ -1032,8 +924,6 @@ void __thiscall TacticalAIGroup::setWaitCode(TacticalAIGroup *this,int param_1)
 
 // Function: assistGroupID
 // Address: 004eb6b0
-/* public: int __thiscall TacticalAIGroup::assistGroupID(void)const  */
-
 int __thiscall TacticalAIGroup::assistGroupID(TacticalAIGroup *this)
 {
   return this->assistGroupIDValue;
@@ -1043,8 +933,6 @@ int __thiscall TacticalAIGroup::assistGroupID(TacticalAIGroup *this)
 
 // Function: setAssistGroupID
 // Address: 004eb6c0
-/* public: void __thiscall TacticalAIGroup::setAssistGroupID(int) */
-
 void __thiscall TacticalAIGroup::setAssistGroupID(TacticalAIGroup *this,int param_1)
 {
   this->assistGroupIDValue = param_1;
@@ -1055,8 +943,6 @@ void __thiscall TacticalAIGroup::setAssistGroupID(TacticalAIGroup *this,int para
 
 // Function: assistGroupType
 // Address: 004eb6d0
-/* public: int __thiscall TacticalAIGroup::assistGroupType(void)const  */
-
 int __thiscall TacticalAIGroup::assistGroupType(TacticalAIGroup *this)
 {
   return this->assistGroupTypeValue;
@@ -1066,8 +952,6 @@ int __thiscall TacticalAIGroup::assistGroupType(TacticalAIGroup *this)
 
 // Function: setAssistGroupType
 // Address: 004eb6e0
-/* public: void __thiscall TacticalAIGroup::setAssistGroupType(int) */
-
 void __thiscall TacticalAIGroup::setAssistGroupType(TacticalAIGroup *this,int param_1)
 {
   this->assistGroupTypeValue = param_1;
@@ -1097,12 +981,6 @@ void __thiscall TacticalAIGroup::setAssistGroupType(TacticalAIGroup *this,int pa
 // [HELPER] s_______Unit__d_is_not_the_command: "      Unit %d is not the commander, tasking him as a defender."
 // [HELPER] s_______Unit__d_is_the_commander__: "      Unit %d is the commander, tasking him as explorer."
 // [HELPER] s_______Unit__d_is_within_a_tile_o: "      Unit %d is within a tile of the retreat distance, skipping."
-/* WARNING: Variable defined which should be unmapped: oHP */
-/* WARNING: Type propagation algorithm not settling */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: int __thiscall TacticalAIGroup::task(class TribeTacticalAIModule *,class
-   TribeMainDecisionAIModule *,int,int,int) */
-
 int __thiscall
 TacticalAIGroup::task
           (TacticalAIGroup *this,TribeTacticalAIModule *param_1,TribeMainDecisionAIModule *param_2,
@@ -1351,7 +1229,6 @@ TacticalAIGroup::task
                 TribeTacticalAIModule::logGroupDebug
                           ((TribeTacticalAIModule *)this->targetValue,(int)pTVar16,
                            (char *)this->idValue);
-                    /* language.dll match for 0x79: "N" */
                 if (((*piVar10 == this->commanderValue) ||
                     (iVar9 = TribeTacticalAIModule::importantGroupLeader
                                        (pTVar16,this->commanderValue), iVar9 == 0)) ||
@@ -1378,7 +1255,6 @@ TacticalAIGroup::task
                   TribeTacticalAIModule::logGroupDebug
                             ((TribeTacticalAIModule *)this->idValue,(int)pTVar16,
                              (char *)this->idValue);
-                    /* language.dll match for 0x83: "Arial" */
                   iVar8 = 99;
                   min.x = TribeTacticalAIModule::strategicNumber(pTVar16,0x83);
                   TribeTacticalAIModule::taskDefender
@@ -2007,11 +1883,6 @@ joined_r0x004ec189:
 
 // Function: isGathered
 // Address: 004ecd80
-/* WARNING: Variable defined which should be unmapped: distance */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: int __thiscall TacticalAIGroup::isGathered(class TribeTacticalAIModule *,class
-   TribeMainDecisionAIModule *) */
-
 int __thiscall
 TacticalAIGroup::isGathered
           (TacticalAIGroup *this,TribeTacticalAIModule *param_1,TribeMainDecisionAIModule *param_2)
@@ -2064,10 +1935,6 @@ TacticalAIGroup::isGathered
 
 // Function: isTightGathered
 // Address: 004ece70
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: int __thiscall TacticalAIGroup::isTightGathered(class TribeTacticalAIModule *,class
-   TribeMainDecisionAIModule *) */
-
 int __thiscall
 TacticalAIGroup::isTightGathered
           (TacticalAIGroup *this,TribeTacticalAIModule *param_1,TribeMainDecisionAIModule *param_2)
@@ -2113,8 +1980,6 @@ TacticalAIGroup::isTightGathered
 
 // Function: allUnitsIdle
 // Address: 004ecf10
-/* public: int __thiscall TacticalAIGroup::allUnitsIdle(class TribeMainDecisionAIModule *,int) */
-
 int __thiscall
 TacticalAIGroup::allUnitsIdle(TacticalAIGroup *this,TribeMainDecisionAIModule *param_1,int param_2)
 {
@@ -2164,8 +2029,6 @@ LAB_004ecfb3:
 
 // Function: consecutiveIdleUnitCount
 // Address: 004ecfe0
-/* public: unsigned long __thiscall TacticalAIGroup::consecutiveIdleUnitCount(void)const  */
-
 ulong __thiscall TacticalAIGroup::consecutiveIdleUnitCount(TacticalAIGroup *this)
 {
   return this->consecutiveIdleUnitCountValue;
@@ -2175,8 +2038,6 @@ ulong __thiscall TacticalAIGroup::consecutiveIdleUnitCount(TacticalAIGroup *this
 
 // Function: setConsecutiveIdleUnitCount
 // Address: 004ecff0
-/* public: void __thiscall TacticalAIGroup::setConsecutiveIdleUnitCount(unsigned long) */
-
 void __thiscall TacticalAIGroup::setConsecutiveIdleUnitCount(TacticalAIGroup *this,ulong param_1)
 {
   this->consecutiveIdleUnitCountValue = param_1;
@@ -2187,8 +2048,6 @@ void __thiscall TacticalAIGroup::setConsecutiveIdleUnitCount(TacticalAIGroup *th
 
 // Function: incrementConsecutiveIdleUnitCount
 // Address: 004ed000
-/* public: void __thiscall TacticalAIGroup::incrementConsecutiveIdleUnitCount(unsigned long) */
-
 void __thiscall
 TacticalAIGroup::incrementConsecutiveIdleUnitCount(TacticalAIGroup *this,ulong param_1)
 {
@@ -2200,8 +2059,6 @@ TacticalAIGroup::incrementConsecutiveIdleUnitCount(TacticalAIGroup *this,ulong p
 
 // Function: numberAttackWaypoints
 // Address: 004ed020
-/* public: unsigned char __thiscall TacticalAIGroup::numberAttackWaypoints(void)const  */
-
 uchar __thiscall TacticalAIGroup::numberAttackWaypoints(TacticalAIGroup *this)
 {
   return this->numberAttackWaypointsValue;
@@ -2211,8 +2068,6 @@ uchar __thiscall TacticalAIGroup::numberAttackWaypoints(TacticalAIGroup *this)
 
 // Function: currentAttackWaypoint
 // Address: 004ed030
-/* public: unsigned char __thiscall TacticalAIGroup::currentAttackWaypoint(void)const  */
-
 uchar __thiscall TacticalAIGroup::currentAttackWaypoint(TacticalAIGroup *this)
 {
   return this->currentAttackWaypointValue;
@@ -2222,8 +2077,6 @@ uchar __thiscall TacticalAIGroup::currentAttackWaypoint(TacticalAIGroup *this)
 
 // Function: setCurrentAttackWaypoint
 // Address: 004ed040
-/* public: void __thiscall TacticalAIGroup::setCurrentAttackWaypoint(unsigned char) */
-
 void __thiscall TacticalAIGroup::setCurrentAttackWaypoint(TacticalAIGroup *this,uchar param_1)
 {
   if (param_1 < this->numberAttackWaypointsValue) {
@@ -2236,8 +2089,6 @@ void __thiscall TacticalAIGroup::setCurrentAttackWaypoint(TacticalAIGroup *this,
 
 // Function: addAttackWaypoint
 // Address: 004ed060
-/* public: void __thiscall TacticalAIGroup::addAttackWaypoint(float,float) */
-
 void __thiscall
 TacticalAIGroup::addAttackWaypoint(TacticalAIGroup *this,float param_1,float param_2)
 {
@@ -2254,8 +2105,6 @@ TacticalAIGroup::addAttackWaypoint(TacticalAIGroup *this,float param_1,float par
 
 // Function: attackWaypoint
 // Address: 004ed0c0
-/* public: struct Waypoint * __thiscall TacticalAIGroup::attackWaypoint(unsigned char) */
-
 Waypoint * __thiscall TacticalAIGroup::attackWaypoint(TacticalAIGroup *this,uchar param_1)
 {
   if (param_1 < this->numberAttackWaypointsValue) {
@@ -2268,8 +2117,6 @@ Waypoint * __thiscall TacticalAIGroup::attackWaypoint(TacticalAIGroup *this,ucha
 
 // Function: firstIdleUnit
 // Address: 004ed0f0
-/* public: int __thiscall TacticalAIGroup::firstIdleUnit(class TribeMainDecisionAIModule *) */
-
 int __thiscall
 TacticalAIGroup::firstIdleUnit(TacticalAIGroup *this,TribeMainDecisionAIModule *param_1)
 {
@@ -2306,8 +2153,6 @@ TacticalAIGroup::firstIdleUnit(TacticalAIGroup *this,TribeMainDecisionAIModule *
 
 // Function: objectToDestroy
 // Address: 004ed170
-/* public: int __thiscall TacticalAIGroup::objectToDestroy(int) */
-
 int __thiscall TacticalAIGroup::objectToDestroy(TacticalAIGroup *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 0x14)) {
@@ -2320,8 +2165,6 @@ int __thiscall TacticalAIGroup::objectToDestroy(TacticalAIGroup *this,int param_
 
 // Function: addObjectToDestroy
 // Address: 004ed190
-/* public: int __thiscall TacticalAIGroup::addObjectToDestroy(int) */
-
 int __thiscall TacticalAIGroup::addObjectToDestroy(TacticalAIGroup *this,int param_1)
 {
   if (this->numberObjectsToDestroyValue < 0x13) {

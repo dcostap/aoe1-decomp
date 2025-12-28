@@ -10,9 +10,6 @@
 
 // Function: TCommunications_Sessions
 // Address: 00432200
-/* public: __thiscall TCommunications_Sessions::TCommunications_Sessions(class
-   TCommunications_Handler *) */
-
 TCommunications_Sessions * __thiscall
 TCommunications_Sessions::TCommunications_Sessions
           (TCommunications_Sessions *this,TCommunications_Handler *param_1)
@@ -39,8 +36,6 @@ TCommunications_Sessions::TCommunications_Sessions
 
 // Function: ~TCommunications_Sessions
 // Address: 00432290
-/* public: __thiscall TCommunications_Sessions::~TCommunications_Sessions(void) */
-
 void __thiscall TCommunications_Sessions::~TCommunications_Sessions(TCommunications_Sessions *this)
 {
   return;
@@ -50,8 +45,6 @@ void __thiscall TCommunications_Sessions::~TCommunications_Sessions(TCommunicati
 
 // Function: EraseInformation
 // Address: 004322a0
-/* private: void __thiscall TCommunications_Sessions::EraseInformation(void) */
-
 void __thiscall TCommunications_Sessions::EraseInformation(TCommunications_Sessions *this)
 {
   int iVar1;
@@ -73,8 +66,6 @@ void __thiscall TCommunications_Sessions::EraseInformation(TCommunications_Sessi
 
 // Function: GetSessionCount
 // Address: 004322c0
-/* public: int __thiscall TCommunications_Sessions::GetSessionCount(void) */
-
 int __thiscall TCommunications_Sessions::GetSessionCount(TCommunications_Sessions *this)
 {
   return this->SessionCount;
@@ -84,8 +75,6 @@ int __thiscall TCommunications_Sessions::GetSessionCount(TCommunications_Session
 
 // Function: GetSessionName
 // Address: 004322d0
-/* public: char * __thiscall TCommunications_Sessions::GetSessionName(int) */
-
 char * __thiscall
 TCommunications_Sessions::GetSessionName(TCommunications_Sessions *this,int param_1)
 {
@@ -99,8 +88,6 @@ TCommunications_Sessions::GetSessionName(TCommunications_Sessions *this,int para
 
 // Function: GetSessionMaxPlayers
 // Address: 004322f0
-/* public: unsigned long __thiscall TCommunications_Sessions::GetSessionMaxPlayers(int) */
-
 ulong __thiscall
 TCommunications_Sessions::GetSessionMaxPlayers(TCommunications_Sessions *this,int param_1)
 {
@@ -114,8 +101,6 @@ TCommunications_Sessions::GetSessionMaxPlayers(TCommunications_Sessions *this,in
 
 // Function: GetSessionCurrentPlayers
 // Address: 00432320
-/* public: unsigned long __thiscall TCommunications_Sessions::GetSessionCurrentPlayers(int) */
-
 ulong __thiscall
 TCommunications_Sessions::GetSessionCurrentPlayers(TCommunications_Sessions *this,int param_1)
 {
@@ -129,8 +114,6 @@ TCommunications_Sessions::GetSessionCurrentPlayers(TCommunications_Sessions *thi
 
 // Function: GetSessionGUID
 // Address: 00432350
-/* public: struct _GUID * __thiscall TCommunications_Sessions::GetSessionGUID(int) */
-
 _GUID * __thiscall
 TCommunications_Sessions::GetSessionGUID(TCommunications_Sessions *this,int param_1)
 {
@@ -144,8 +127,6 @@ TCommunications_Sessions::GetSessionGUID(TCommunications_Sessions *this,int para
 
 // Function: IncSessionCount
 // Address: 00432380
-/* public: int __thiscall TCommunications_Sessions::IncSessionCount(void) */
-
 int __thiscall TCommunications_Sessions::IncSessionCount(TCommunications_Sessions *this)
 {
   int iVar1;
@@ -159,9 +140,6 @@ int __thiscall TCommunications_Sessions::IncSessionCount(TCommunications_Session
 
 // Function: AddSession
 // Address: 00432390
-/* public: int __thiscall TCommunications_Sessions::AddSession(struct _GUID,struct _GUID,unsigned
-   long,unsigned long,char *,char *,unsigned long,unsigned long,unsigned long,unsigned long) */
-
 int __thiscall
 TCommunications_Sessions::AddSession
           (TCommunications_Sessions *this,_GUID param_1,_GUID param_2,ulong param_3,ulong param_4,
@@ -249,9 +227,6 @@ TCommunications_Sessions::AddSession
 
 // Function: Refresh
 // Address: 004324f0
-/* WARNING: Variable defined which should be unmapped: dpDesc */
-/* public: int __thiscall TCommunications_Sessions::Refresh(void) */
-
 int __thiscall TCommunications_Sessions::Refresh(TCommunications_Sessions *this)
 {
   int iVar1;
@@ -283,8 +258,6 @@ int __thiscall TCommunications_Sessions::Refresh(TCommunications_Sessions *this)
 
 // Function: IsEqualGuid
 // Address: 004325e0
-/* public: int __thiscall TCommunications_Sessions::IsEqualGuid(struct _GUID *,struct _GUID *) */
-
 int __thiscall
 TCommunications_Sessions::IsEqualGuid(TCommunications_Sessions *this,_GUID *param_1,_GUID *param_2)
 {

@@ -166,8 +166,6 @@
 
 // Function: getAngle
 // Address: 00405f50
-/* public: virtual float __thiscall RGE_Moving_Object::getAngle(void)const  */
-
 float __thiscall RGE_Moving_Object::getAngle(RGE_Moving_Object *this)
 {
   return this->angle;
@@ -177,8 +175,6 @@ float __thiscall RGE_Moving_Object::getAngle(RGE_Moving_Object *this)
 
 // Function: numberUserDefinedWaypoints
 // Address: 00405f60
-/* public: virtual int __thiscall RGE_Moving_Object::numberUserDefinedWaypoints(void)const  */
-
 int __thiscall RGE_Moving_Object::numberUserDefinedWaypoints(RGE_Moving_Object *this)
 {
   return this->numberUserDefinedWaypointsValue;
@@ -188,9 +184,6 @@ int __thiscall RGE_Moving_Object::numberUserDefinedWaypoints(RGE_Moving_Object *
 
 // Function: RGE_Moving_Object
 // Address: 0045c450
-/* public: __thiscall RGE_Moving_Object::RGE_Moving_Object(class RGE_Master_Moving_Object *,class
-   RGE_Player *,float,float,float,int) */
-
 RGE_Moving_Object * __thiscall
 RGE_Moving_Object::RGE_Moving_Object
           (RGE_Moving_Object *this,RGE_Master_Moving_Object *param_1,RGE_Player *param_2,
@@ -249,9 +242,6 @@ RGE_Moving_Object::RGE_Moving_Object
 
 // Function: `scalar_deleting_destructor'
 // Address: 0045c5a0
-/* public: virtual void * __thiscall RGE_Moving_Object::`scalar deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 RGE_Moving_Object::_scalar_deleting_destructor_(RGE_Moving_Object *this,uint param_1)
 {
@@ -266,8 +256,6 @@ RGE_Moving_Object::_scalar_deleting_destructor_(RGE_Moving_Object *this,uint par
 
 // Function: RGE_Moving_Object
 // Address: 0045c5c0
-/* public: __thiscall RGE_Moving_Object::RGE_Moving_Object(int,class RGE_Game_World *,int) */
-
 RGE_Moving_Object * __thiscall
 RGE_Moving_Object::RGE_Moving_Object
           (RGE_Moving_Object *this,int param_1,RGE_Game_World *param_2,int param_3)
@@ -323,8 +311,6 @@ RGE_Moving_Object::RGE_Moving_Object
 
 // Function: ~RGE_Moving_Object
 // Address: 0045c700
-/* public: virtual __thiscall RGE_Moving_Object::~RGE_Moving_Object(void) */
-
 void __thiscall RGE_Moving_Object::~RGE_Moving_Object(RGE_Moving_Object *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -356,10 +342,6 @@ void __thiscall RGE_Moving_Object::~RGE_Moving_Object(RGE_Moving_Object *this)
 // Function: recycle_in_to_game
 // Address: 0045c790
 // [HELPER] s_C__msdev_work_age1_x1_move_obj_c: "C:\msdev\work\age1_x1\move_obj.cpp"
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual void __thiscall RGE_Moving_Object::recycle_in_to_game(class
-   RGE_Master_Static_Object *,class RGE_Player *,float,float,float) */
-
 void __thiscall
 RGE_Moving_Object::recycle_in_to_game
           (RGE_Moving_Object *this,RGE_Master_Static_Object *param_1,RGE_Player *param_2,
@@ -436,10 +418,6 @@ RGE_Moving_Object::recycle_in_to_game
 // Function: setup
 // Address: 0045c970
 // [HELPER] s_C__msdev_work_age1_x1_move_obj_c: "C:\msdev\work\age1_x1\move_obj.cpp"
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall RGE_Moving_Object::setup(class RGE_Master_Moving_Object *,class
-   RGE_Player *,float,float,float) */
-
 int __thiscall
 RGE_Moving_Object::setup
           (RGE_Moving_Object *this,RGE_Master_Moving_Object *param_1,RGE_Player *param_2,
@@ -484,10 +462,6 @@ RGE_Moving_Object::setup
 
 // Function: setup
 // Address: 0045caa0
-/* WARNING: Variable defined which should be unmapped: currentWaypoint */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall RGE_Moving_Object::setup(int,class RGE_Game_World *) */
-
 int __thiscall RGE_Moving_Object::setup(RGE_Moving_Object *this,int param_1,RGE_Game_World *param_2)
 {
   int *piVar1;
@@ -587,9 +561,6 @@ int __thiscall RGE_Moving_Object::setup(RGE_Moving_Object *this,int param_1,RGE_
 
 // Function: save
 // Address: 0045ce00
-/* WARNING: Variable defined which should be unmapped: currentWaypoint */
-/* public: virtual void __thiscall RGE_Moving_Object::save(int) */
-
 void __thiscall RGE_Moving_Object::save(RGE_Moving_Object *this,int param_1)
 {
   Path *this_00;
@@ -659,8 +630,6 @@ void __thiscall RGE_Moving_Object::save(RGE_Moving_Object *this,int param_1)
 
 // Function: new_sprite
 // Address: 0045d080
-/* public: virtual void __thiscall RGE_Moving_Object::new_sprite(class RGE_Sprite *) */
-
 void __thiscall RGE_Moving_Object::new_sprite(RGE_Moving_Object *this,RGE_Sprite *param_1)
 {
   if (param_1 == (RGE_Sprite *)0x0) {
@@ -678,8 +647,6 @@ void __thiscall RGE_Moving_Object::new_sprite(RGE_Moving_Object *this,RGE_Sprite
 
 // Function: spawn_death_obj
 // Address: 0045d0b0
-/* public: virtual class RGE_Static_Object * __thiscall RGE_Moving_Object::spawn_death_obj(void) */
-
 RGE_Static_Object * __thiscall RGE_Moving_Object::spawn_death_obj(RGE_Moving_Object *this)
 {
   RGE_Static_Object *pRVar1;
@@ -695,8 +662,6 @@ RGE_Static_Object * __thiscall RGE_Moving_Object::spawn_death_obj(RGE_Moving_Obj
 
 // Function: transform
 // Address: 0045d0e0
-/* public: virtual void __thiscall RGE_Moving_Object::transform(class RGE_Master_Static_Object *) */
-
 void __thiscall
 RGE_Moving_Object::transform(RGE_Moving_Object *this,RGE_Master_Static_Object *param_1)
 {
@@ -715,9 +680,6 @@ RGE_Moving_Object::transform(RGE_Moving_Object *this,RGE_Master_Static_Object *p
 
 // Function: is_moving
 // Address: 0045d120
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall RGE_Moving_Object::is_moving(void) */
-
 uchar __thiscall RGE_Moving_Object::is_moving(RGE_Moving_Object *this)
 {
   if (_DAT_00570b48 < (float)this->_padding_) {
@@ -730,8 +692,6 @@ uchar __thiscall RGE_Moving_Object::is_moving(RGE_Moving_Object *this)
 
 // Function: stop_moving
 // Address: 0045d140
-/* public: virtual void __thiscall RGE_Moving_Object::stop_moving(void) */
-
 void __thiscall RGE_Moving_Object::stop_moving(RGE_Moving_Object *this)
 {
   this->_padding_ = 0;
@@ -742,10 +702,6 @@ void __thiscall RGE_Moving_Object::stop_moving(RGE_Moving_Object *this)
 
 // Function: angle_to_object
 // Address: 0045d150
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: float __thiscall RGE_Moving_Object::angle_to_object(class RGE_Static_Object
-   *,float,float) */
-
 float __thiscall
 RGE_Moving_Object::angle_to_object
           (RGE_Moving_Object *this,RGE_Static_Object *param_1,float param_2,float param_3)
@@ -780,10 +736,6 @@ RGE_Moving_Object::angle_to_object
 
 // Function: turn_towards
 // Address: 0045d1f0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall RGE_Moving_Object::turn_towards(class RGE_Static_Object
-   *,float,float) */
-
 uchar __thiscall
 RGE_Moving_Object::turn_towards
           (RGE_Moving_Object *this,RGE_Static_Object *param_1,float param_2,float param_3)
@@ -828,9 +780,6 @@ LAB_0045d307:
 
 // Function: set_angle
 // Address: 0045d360
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall RGE_Moving_Object::set_angle(void) */
-
 void __thiscall RGE_Moving_Object::set_angle(RGE_Moving_Object *this)
 {
   int iVar1;
@@ -850,9 +799,6 @@ void __thiscall RGE_Moving_Object::set_angle(RGE_Moving_Object *this)
 
 // Function: teleport
 // Address: 0045d3d0
-/* WARNING: Variable defined which should be unmapped: dz */
-/* public: virtual float __thiscall RGE_Moving_Object::teleport(float,float,float) */
-
 float __thiscall
 RGE_Moving_Object::teleport(RGE_Moving_Object *this,float param_1,float param_2,float param_3)
 {
@@ -929,8 +875,6 @@ RGE_Moving_Object::teleport(RGE_Moving_Object *this,float param_1,float param_2,
 
 // Function: set_velocity
 // Address: 0045d5c0
-/* public: void __thiscall RGE_Moving_Object::set_velocity(float,float,float) */
-
 void __thiscall
 RGE_Moving_Object::set_velocity(RGE_Moving_Object *this,float param_1,float param_2,float param_3)
 {
@@ -944,8 +888,6 @@ RGE_Moving_Object::set_velocity(RGE_Moving_Object *this,float param_1,float para
 
 // Function: new_angle
 // Address: 0045d5f0
-/* public: virtual void __thiscall RGE_Moving_Object::new_angle(float) */
-
 void __thiscall RGE_Moving_Object::new_angle(RGE_Moving_Object *this,float param_1)
 {
   this->angle = param_1;
@@ -957,8 +899,6 @@ void __thiscall RGE_Moving_Object::new_angle(RGE_Moving_Object *this,float param
 
 // Function: getPath
 // Address: 0045d610
-/* public: class Path const & __thiscall RGE_Moving_Object::getPath(void)const  */
-
 Path * __thiscall RGE_Moving_Object::getPath(RGE_Moving_Object *this)
 {
   return &this->pathValue;
@@ -968,8 +908,6 @@ Path * __thiscall RGE_Moving_Object::getPath(RGE_Moving_Object *this)
 
 // Function: facetToNextWaypoint
 // Address: 0045d620
-/* public: virtual unsigned char __thiscall RGE_Moving_Object::facetToNextWaypoint(void)const  */
-
 uchar __thiscall RGE_Moving_Object::facetToNextWaypoint(RGE_Moving_Object *this)
 {
   Waypoint *pWVar1;
@@ -986,8 +924,6 @@ uchar __thiscall RGE_Moving_Object::facetToNextWaypoint(RGE_Moving_Object *this)
 
 // Function: setGoal
 // Address: 0045d650
-/* public: void __thiscall RGE_Moving_Object::setGoal(float,float,float) */
-
 void __thiscall
 RGE_Moving_Object::setGoal(RGE_Moving_Object *this,float param_1,float param_2,float param_3)
 {
@@ -1001,8 +937,6 @@ RGE_Moving_Object::setGoal(RGE_Moving_Object *this,float param_1,float param_2,f
 
 // Function: setActionRange
 // Address: 0045d680
-/* public: void __thiscall RGE_Moving_Object::setActionRange(float) */
-
 void __thiscall RGE_Moving_Object::setActionRange(RGE_Moving_Object *this,float param_1)
 {
   this->actionRange = param_1;
@@ -1013,8 +947,6 @@ void __thiscall RGE_Moving_Object::setActionRange(RGE_Moving_Object *this,float 
 
 // Function: setTargetID
 // Address: 0045d690
-/* public: void __thiscall RGE_Moving_Object::setTargetID(int) */
-
 void __thiscall RGE_Moving_Object::setTargetID(RGE_Moving_Object *this,int param_1)
 {
   this->targetIDValue = param_1;
@@ -1025,8 +957,6 @@ void __thiscall RGE_Moving_Object::setTargetID(RGE_Moving_Object *this,int param
 
 // Function: setTargetRadius
 // Address: 0045d6a0
-/* public: void __thiscall RGE_Moving_Object::setTargetRadius(float,float) */
-
 void __thiscall
 RGE_Moving_Object::setTargetRadius(RGE_Moving_Object *this,float param_1,float param_2)
 {
@@ -1041,10 +971,6 @@ RGE_Moving_Object::setTargetRadius(RGE_Moving_Object *this,float param_1,float p
 // Address: 0045d6c0
 // [HELPER] s___: "]\n"
 // [HELPER] s_t_ld_uID__d__fP1_s___6_2f__6_2f_: "t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)"
-/* WARNING: Removing unreachable block (ram,0x0045d774) */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: enum RGE_Moving_Object::PathResult __thiscall RGE_Moving_Object::findPath(void) */
-
 PathResult __thiscall RGE_Moving_Object::findPath(RGE_Moving_Object *this)
 {
   Path *pPVar1;
@@ -1217,9 +1143,6 @@ LAB_0045dab9:
 // Address: 0045db90
 // [HELPER] s___: "]\n"
 // [HELPER] s_t_ld_uID__d__fP1_s___6_2f__6_2f_: "t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)"
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: int __thiscall RGE_Moving_Object::doMove(void) */
-
 int __thiscall RGE_Moving_Object::doMove(RGE_Moving_Object *this)
 {
   Path *pPVar1;
@@ -1694,9 +1617,6 @@ LAB_0045e426:
 // [HELPER] s_C__msdev_work_age1_x1_move_obj_c: "C:\msdev\work\age1_x1\move_obj.cpp"
 // [HELPER] s___: "]\n"
 // [HELPER] s_t_ld_uID__d__fP1_s___6_2f__6_2f_: "t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)"
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: int __thiscall RGE_Moving_Object::doTrivialMove(float,float) */
-
 int __thiscall RGE_Moving_Object::doTrivialMove(RGE_Moving_Object *this,float param_1,float param_2)
 {
   float *pfVar1;
@@ -2064,15 +1984,10 @@ int __thiscall RGE_Moving_Object::doTrivialMove(RGE_Moving_Object *this,float pa
       iVar15 = RGE_Player::computerPlayer((RGE_Player *)this->_padding_);
       if (iVar15 != 1) {
         if ((float)this->_padding_ <= _DAT_00570b48) {
-                    /* language.dll match for 0x7d5: "Could not initialize communications system.
-                       Make sure that you have DirectX 5.0a or higher and that it is installed
-                       properly." */
           iVar15 = debug_rand(s_C__msdev_work_age1_x1_move_obj_c,0x7d5);
           fVar14 = (float)(iVar15 % 6) * _DAT_00570bc0 - _DAT_00570b80;
         }
         else {
-                    /* language.dll match for 0x7d3: "Could not initialize graphics system. Make
-                       sure that your video card and driver are compatible with DirectDraw." */
           iVar15 = debug_rand(s_C__msdev_work_age1_x1_move_obj_c,0x7d3);
           fVar14 = (float)(iVar15 % 6) * _DAT_00570bc0 - _DAT_00570b80 / (float)this->_padding_;
         }
@@ -2171,8 +2086,6 @@ LAB_0045f704:
 
 // Function: passableTile
 // Address: 0045f7f0
-/* public: virtual int __thiscall RGE_Moving_Object::passableTile(float,float,int) */
-
 int __thiscall
 RGE_Moving_Object::passableTile(RGE_Moving_Object *this,float param_1,float param_2,int param_3)
 {
@@ -2191,9 +2104,6 @@ RGE_Moving_Object::passableTile(RGE_Moving_Object *this,float param_1,float para
 
 // Function: canPath
 // Address: 0045f820
-/* public: virtual int __thiscall RGE_Moving_Object::canPath(struct XYZPoint,float,int,float
-   *,int,int,int) */
-
 int __thiscall
 RGE_Moving_Object::canPath
           (RGE_Moving_Object *this,XYZPoint param_1,float param_2,int param_3,float *param_4,
@@ -2278,9 +2188,6 @@ RGE_Moving_Object::canPath
 
 // Function: canPath
 // Address: 0045f9d0
-/* WARNING: Variable defined which should be unmapped: start */
-/* public: virtual int __thiscall RGE_Moving_Object::canPath(int,float,float *,int,int,int) */
-
 int __thiscall
 RGE_Moving_Object::canPath
           (RGE_Moving_Object *this,int param_1,float param_2,float *param_3,int param_4,int param_5,
@@ -2380,10 +2287,6 @@ RGE_Moving_Object::canPath
 
 // Function: canBidirectionPath
 // Address: 0045fbc0
-/* WARNING: Variable defined which should be unmapped: start */
-/* public: virtual int __thiscall RGE_Moving_Object::canBidirectionPath(int,int,float,float
-   *,int,int,int) */
-
 int __thiscall
 RGE_Moving_Object::canBidirectionPath
           (RGE_Moving_Object *this,int param_1,int param_2,float param_3,float *param_4,int param_5,
@@ -2541,10 +2444,6 @@ RGE_Moving_Object::canBidirectionPath
 
 // Function: canPathWithObstructions
 // Address: 0045fed0
-/* WARNING: Variable defined which should be unmapped: start */
-/* public: virtual int __thiscall RGE_Moving_Object::canPathWithObstructions(int,float,float
-   *,int,int,int,class ManagedArray<int> &) */
-
 int __thiscall
 RGE_Moving_Object::canPathWithObstructions
           (RGE_Moving_Object *this,int param_1,float param_2,float *param_3,int param_4,int param_5,
@@ -2660,9 +2559,6 @@ LAB_004600d3:
 
 // Function: canPathWithAdditionalPassability
 // Address: 004600f0
-/* public: virtual int __thiscall RGE_Moving_Object::canPathWithAdditionalPassability(struct
-   XYZPoint,float,int,float *,int,int,int,int,int) */
-
 int __thiscall
 RGE_Moving_Object::canPathWithAdditionalPassability
           (RGE_Moving_Object *this,XYZPoint param_1,float param_2,int param_3,float *param_4,
@@ -2722,11 +2618,6 @@ RGE_Moving_Object::canPathWithAdditionalPassability
 
 // Function: findFirstTerrainAlongExceptionPath
 // Address: 00460210
-/* WARNING: Variable defined which should be unmapped: i */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual int __thiscall RGE_Moving_Object::findFirstTerrainAlongExceptionPath(int,float
-   *,float *) */
-
 int __thiscall
 RGE_Moving_Object::findFirstTerrainAlongExceptionPath
           (RGE_Moving_Object *this,int param_1,float *param_2,float *param_3)
@@ -2799,11 +2690,6 @@ RGE_Moving_Object::findFirstTerrainAlongExceptionPath
 
 // Function: canLinePath
 // Address: 004603b0
-/* WARNING: Variable defined which should be unmapped: yTile */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual int __thiscall RGE_Moving_Object::canLinePath(struct XYPoint const &,struct
-   XYPoint const &,float,struct XYPoint &,int) */
-
 int __thiscall
 RGE_Moving_Object::canLinePath
           (RGE_Moving_Object *this,XYPoint *param_1,XYPoint *param_2,float param_3,XYPoint *param_4,
@@ -2889,10 +2775,6 @@ RGE_Moving_Object::canLinePath
 
 // Function: canLinePath
 // Address: 00460570
-/* WARNING: Variable defined which should be unmapped: numSteps */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual int __thiscall RGE_Moving_Object::canLinePath(int,int,int,int,float,int) */
-
 int __thiscall
 RGE_Moving_Object::canLinePath
           (RGE_Moving_Object *this,int param_1,int param_2,int param_3,int param_4,float param_5,
@@ -2968,11 +2850,6 @@ RGE_Moving_Object::canLinePath
 
 // Function: firstTileAlongLine
 // Address: 00460710
-/* WARNING: Variable defined which should be unmapped: numSteps */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual int __thiscall RGE_Moving_Object::firstTileAlongLine(struct XYPoint const
-   &,struct XYPoint const &,struct XYPoint &,int,int,int) */
-
 int __thiscall
 RGE_Moving_Object::firstTileAlongLine
           (RGE_Moving_Object *this,XYPoint *param_1,XYPoint *param_2,XYPoint *param_3,int param_4,
@@ -3058,9 +2935,6 @@ RGE_Moving_Object::firstTileAlongLine
 
 // Function: maximumSpeed
 // Address: 004608d0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual float __thiscall RGE_Moving_Object::maximumSpeed(void) */
-
 float __thiscall RGE_Moving_Object::maximumSpeed(RGE_Moving_Object *this)
 {
   int iVar1;
@@ -3076,8 +2950,6 @@ float __thiscall RGE_Moving_Object::maximumSpeed(RGE_Moving_Object *this)
 
 // Function: waitingToMove
 // Address: 00460900
-/* public: virtual unsigned char __thiscall RGE_Moving_Object::waitingToMove(void)const  */
-
 uchar __thiscall RGE_Moving_Object::waitingToMove(RGE_Moving_Object *this)
 {
   char cVar1;
@@ -3093,8 +2965,6 @@ uchar __thiscall RGE_Moving_Object::waitingToMove(RGE_Moving_Object *this)
 
 // Function: setWaitingToMove
 // Address: 00460930
-/* public: virtual void __thiscall RGE_Moving_Object::setWaitingToMove(unsigned char) */
-
 void __thiscall RGE_Moving_Object::setWaitingToMove(RGE_Moving_Object *this,uchar param_1)
 {
   this->waitingToMoveValue = param_1;
@@ -3105,8 +2975,6 @@ void __thiscall RGE_Moving_Object::setWaitingToMove(RGE_Moving_Object *this,ucha
 
 // Function: userDefinedWaypoint
 // Address: 00460940
-/* public: virtual struct XYZBYTEPoint * __thiscall RGE_Moving_Object::userDefinedWaypoint(int) */
-
 XYZBYTEPoint * __thiscall
 RGE_Moving_Object::userDefinedWaypoint(RGE_Moving_Object *this,int param_1)
 {
@@ -3120,9 +2988,6 @@ RGE_Moving_Object::userDefinedWaypoint(RGE_Moving_Object *this,int param_1)
 
 // Function: addUserDefinedWaypoint
 // Address: 00460970
-/* public: virtual int __thiscall RGE_Moving_Object::addUserDefinedWaypoint(struct XYZBYTEPoint
-   *,int) */
-
 int __thiscall
 RGE_Moving_Object::addUserDefinedWaypoint(RGE_Moving_Object *this,XYZBYTEPoint *param_1,int param_2)
 {
@@ -3195,8 +3060,6 @@ RGE_Moving_Object::addUserDefinedWaypoint(RGE_Moving_Object *this,XYZBYTEPoint *
 // Address: 00460b20
 // [HELPER] s_C__msdev_work_age1_x1_move_obj_c: "C:\msdev\work\age1_x1\move_obj.cpp"
 // [HELPER] s___d_call_stopObject__s__d_: "#%d call stopObject %s %d\n"
-/* public: virtual void __thiscall RGE_Moving_Object::removeAllUserDefinedWaypoints(int) */
-
 void __thiscall
 RGE_Moving_Object::removeAllUserDefinedWaypoints(RGE_Moving_Object *this,int param_1)
 {
@@ -3215,8 +3078,6 @@ RGE_Moving_Object::removeAllUserDefinedWaypoints(RGE_Moving_Object *this,int par
 
 // Function: removeUserDefinedWaypoint
 // Address: 00460b70
-/* public: virtual void __thiscall RGE_Moving_Object::removeUserDefinedWaypoint(int) */
-
 void __thiscall RGE_Moving_Object::removeUserDefinedWaypoint(RGE_Moving_Object *this,int param_1)
 {
   int iVar1;
@@ -3253,8 +3114,6 @@ void __thiscall RGE_Moving_Object::removeUserDefinedWaypoint(RGE_Moving_Object *
 
 // Function: setFinalUserDefinedWaypoint
 // Address: 00460bf0
-/* public: void __thiscall RGE_Moving_Object::setFinalUserDefinedWaypoint(void) */
-
 void __thiscall RGE_Moving_Object::setFinalUserDefinedWaypoint(RGE_Moving_Object *this)
 {
   this->finalUserDefinedWaypoint = '\x01';
@@ -3265,9 +3124,6 @@ void __thiscall RGE_Moving_Object::setFinalUserDefinedWaypoint(RGE_Moving_Object
 
 // Function: findAvoidancePath
 // Address: 00460c00
-/* public: virtual class Path * __thiscall RGE_Moving_Object::findAvoidancePath(struct XYZPoint
-   &,float,int) */
-
 Path * __thiscall
 RGE_Moving_Object::findAvoidancePath
           (RGE_Moving_Object *this,XYZPoint *param_1,float param_2,int param_3)
@@ -3346,8 +3202,6 @@ RGE_Moving_Object::findAvoidancePath
 
 // Function: setInitialPoints
 // Address: 00460d30
-/* public: void __thiscall RGE_Moving_Object::setInitialPoints(struct XYPoint &,struct XYPoint &) */
-
 void __thiscall
 RGE_Moving_Object::setInitialPoints(RGE_Moving_Object *this,XYPoint *param_1,XYPoint *param_2)
 {
@@ -3362,8 +3216,6 @@ RGE_Moving_Object::setInitialPoints(RGE_Moving_Object *this,XYPoint *param_1,XYP
 
 // Function: copy_obj
 // Address: 00460d60
-/* public: virtual void __thiscall RGE_Moving_Object::copy_obj(class RGE_Master_Static_Object *) */
-
 void __thiscall
 RGE_Moving_Object::copy_obj(RGE_Moving_Object *this,RGE_Master_Static_Object *param_1)
 {
@@ -3387,10 +3239,6 @@ RGE_Moving_Object::copy_obj(RGE_Moving_Object *this,RGE_Master_Static_Object *pa
 
 // Function: boundAngle
 // Address: 00460db0
-/* WARNING: Variable defined which should be unmapped: i */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall RGE_Moving_Object::boundAngle(float *,int) */
-
 void __thiscall RGE_Moving_Object::boundAngle(RGE_Moving_Object *this,float *param_1,int param_2)
 {
   float fVar1;
@@ -3452,9 +3300,6 @@ void __thiscall RGE_Moving_Object::boundAngle(RGE_Moving_Object *this,float *par
 
 // Function: rotate
 // Address: 00460eb0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual void __thiscall RGE_Moving_Object::rotate(long) */
-
 void __thiscall RGE_Moving_Object::rotate(RGE_Moving_Object *this,long param_1)
 {
   float fVar1;
@@ -3478,9 +3323,6 @@ void __thiscall RGE_Moving_Object::rotate(RGE_Moving_Object *this,long param_1)
 
 // Function: get_waypoint_checksum
 // Address: 00460f40
-/* WARNING: Variable defined which should be unmapped: temp */
-/* public: virtual long __thiscall RGE_Moving_Object::get_waypoint_checksum(void) */
-
 long __thiscall RGE_Moving_Object::get_waypoint_checksum(RGE_Moving_Object *this)
 {
   Path *this_00;

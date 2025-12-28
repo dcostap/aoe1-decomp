@@ -84,8 +84,6 @@
 
 // Function: RGE_Main_View
 // Address: 0053dab0
-/* public: __thiscall RGE_Main_View::RGE_Main_View(void) */
-
 RGE_Main_View * __thiscall RGE_Main_View::RGE_Main_View(RGE_Main_View *this)
 {
   RGE_View::RGE_View((RGE_View *)this);
@@ -106,8 +104,6 @@ RGE_Main_View * __thiscall RGE_Main_View::RGE_Main_View(RGE_Main_View *this)
 
 // Function: `vector_deleting_destructor'
 // Address: 0053db10
-/* public: virtual void * __thiscall RGE_Main_View::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall RGE_Main_View::_vector_deleting_destructor_(RGE_Main_View *this,uint param_1)
 {
   ~RGE_Main_View(this);
@@ -121,8 +117,6 @@ void * __thiscall RGE_Main_View::_vector_deleting_destructor_(RGE_Main_View *thi
 
 // Function: ~RGE_Main_View
 // Address: 0053db30
-/* public: virtual __thiscall RGE_Main_View::~RGE_Main_View(void) */
-
 void __thiscall RGE_Main_View::~RGE_Main_View(RGE_Main_View *this)
 {
   TShape *this_00;
@@ -219,8 +213,6 @@ void __thiscall RGE_Main_View::~RGE_Main_View(RGE_Main_View *this)
 
 // Function: handle_idle
 // Address: 0053db40
-/* public: virtual long __thiscall RGE_Main_View::handle_idle(void) */
-
 long __thiscall RGE_Main_View::handle_idle(RGE_Main_View *this)
 {
   long lVar1;
@@ -240,10 +232,6 @@ long __thiscall RGE_Main_View::handle_idle(RGE_Main_View *this)
 // Function: do_auto_scroll
 // Address: 0053dba0
 // [HELPER] s_C__msdev_work_age1_x1_vw_main_cp: "C:\msdev\work\age1_x1\vw_main.cpp"
-/* WARNING: Variable defined which should be unmapped: vert_scroll */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: int __thiscall RGE_Main_View::do_auto_scroll(void) */
-
 int __thiscall RGE_Main_View::do_auto_scroll(RGE_Main_View *this)
 {
   float fVar1;
@@ -367,10 +355,6 @@ LAB_0053de6d:
 // Function: handle_keys
 // Address: 0053deb0
 // [HELPER] s_C__msdev_work_age1_x1_vw_main_cp: "C:\msdev\work\age1_x1\vw_main.cpp"
-/* WARNING: Variable defined which should be unmapped: horz_scroll */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: int __thiscall RGE_Main_View::handle_keys(void) */
-
 int __thiscall RGE_Main_View::handle_keys(RGE_Main_View *this)
 {
   float fVar1;
@@ -514,9 +498,6 @@ LAB_0053e214:
 // Function: handle_mouse_up
 // Address: 0053e280
 // [HELPER] s_C__msdev_work_age1_x1_vw_main_cp: "C:\msdev\work\age1_x1\vw_main.cpp"
-/* public: virtual long __thiscall RGE_Main_View::handle_mouse_up(unsigned char,long,long,int,int)
-    */
-
 long __thiscall
 RGE_Main_View::handle_mouse_up
           (RGE_Main_View *this,uchar param_1,long param_2,long param_3,int param_4,int param_5)
@@ -536,8 +517,6 @@ RGE_Main_View::handle_mouse_up
 
 // Function: mouse_move_action
 // Address: 0053e2f0
-/* public: virtual long __thiscall RGE_Main_View::mouse_move_action(long,long,int,int) */
-
 long __thiscall
 RGE_Main_View::mouse_move_action
           (RGE_Main_View *this,long param_1,long param_2,int param_3,int param_4)
@@ -559,9 +538,6 @@ RGE_Main_View::mouse_move_action
 
 // Function: mouse_left_down_action
 // Address: 0053e340
-/* WARNING: Variable defined which should be unmapped: min_x */
-/* public: virtual long __thiscall RGE_Main_View::mouse_left_down_action(long,long,int,int) */
-
 long __thiscall
 RGE_Main_View::mouse_left_down_action
           (RGE_Main_View *this,long param_1,long param_2,int param_3,int param_4)
@@ -717,8 +693,6 @@ RGE_Main_View::mouse_left_down_action
 
 // Function: mouse_left_move_action
 // Address: 0053e7f0
-/* public: virtual long __thiscall RGE_Main_View::mouse_left_move_action(long,long,int,int) */
-
 long __thiscall
 RGE_Main_View::mouse_left_move_action
           (RGE_Main_View *this,long param_1,long param_2,int param_3,int param_4)
@@ -763,9 +737,6 @@ RGE_Main_View::mouse_left_move_action
 
 // Function: mouse_left_up_action
 // Address: 0053e910
-/* WARNING: Variable defined which should be unmapped: pick_info */
-/* public: virtual long __thiscall RGE_Main_View::mouse_left_up_action(long,long,int,int) */
-
 long __thiscall
 RGE_Main_View::mouse_left_up_action
           (RGE_Main_View *this,long param_1,long param_2,int param_3,int param_4)
@@ -1069,8 +1040,6 @@ switchD_0053eb69_caseD_1:
 
 // Function: mouse_right_down_action
 // Address: 0053f220
-/* public: virtual long __thiscall RGE_Main_View::mouse_right_down_action(long,long,int,int) */
-
 long __thiscall
 RGE_Main_View::mouse_right_down_action
           (RGE_Main_View *this,long param_1,long param_2,int param_3,int param_4)
@@ -1105,8 +1074,6 @@ RGE_Main_View::mouse_right_down_action
 
 // Function: mouse_right_move_action
 // Address: 0053f2f0
-/* public: virtual long __thiscall RGE_Main_View::mouse_right_move_action(long,long,int,int) */
-
 long __thiscall
 RGE_Main_View::mouse_right_move_action
           (RGE_Main_View *this,long param_1,long param_2,int param_3,int param_4)
@@ -1145,9 +1112,6 @@ RGE_Main_View::mouse_right_move_action
 
 // Function: mouse_right_up_action
 // Address: 0053f3d0
-/* WARNING: Variable defined which should be unmapped: list */
-/* public: virtual long __thiscall RGE_Main_View::mouse_right_up_action(long,long,int,int) */
-
 long __thiscall
 RGE_Main_View::mouse_right_up_action
           (RGE_Main_View *this,long param_1,long param_2,int param_3,int param_4)
@@ -1232,9 +1196,6 @@ LAB_0053f63b:
 
 // Function: start_scroll_view
 // Address: 0053f660
-/* public: virtual int __thiscall RGE_Main_View::start_scroll_view(unsigned char,long,long,int,int)
-    */
-
 int __thiscall
 RGE_Main_View::start_scroll_view
           (RGE_Main_View *this,uchar param_1,long param_2,long param_3,int param_4,int param_5)
@@ -1255,8 +1216,6 @@ RGE_Main_View::start_scroll_view
 
 // Function: handle_scroll_view
 // Address: 0053f6b0
-/* public: virtual int __thiscall RGE_Main_View::handle_scroll_view(long,long) */
-
 int __thiscall RGE_Main_View::handle_scroll_view(RGE_Main_View *this,long param_1,long param_2)
 {
   int iVar1;
@@ -1277,8 +1236,6 @@ int __thiscall RGE_Main_View::handle_scroll_view(RGE_Main_View *this,long param_
 // Address: 0053f6f0
 // [HELPER] s_: ""
 // [HELPER] s_C__msdev_work_age1_x1_vw_main_cp: "C:\msdev\work\age1_x1\vw_main.cpp"
-/* public: virtual void __thiscall RGE_Main_View::draw(void) */
-
 void __thiscall RGE_Main_View::draw(RGE_Main_View *this)
 {
   int iVar1;
@@ -1319,8 +1276,6 @@ void __thiscall RGE_Main_View::draw(RGE_Main_View *this)
 
 // Function: draw_multi_object_outline
 // Address: 0053f800
-/* public: virtual void __thiscall RGE_Main_View::draw_multi_object_outline(void) */
-
 void __thiscall RGE_Main_View::draw_multi_object_outline(RGE_Main_View *this)
 {
   return;
@@ -1330,9 +1285,6 @@ void __thiscall RGE_Main_View::draw_multi_object_outline(RGE_Main_View *this)
 
 // Function: command_place_object
 // Address: 0053f810
-/* WARNING: Variable defined which should be unmapped: pick_info */
-/* public: virtual int __thiscall RGE_Main_View::command_place_object(long,long,int) */
-
 int __thiscall
 RGE_Main_View::command_place_object(RGE_Main_View *this,long param_1,long param_2,int param_3)
 {
@@ -1429,9 +1381,6 @@ RGE_Main_View::command_place_object(RGE_Main_View *this,long param_1,long param_
 
 // Function: command_make_do
 // Address: 0053fa10
-/* WARNING: Variable defined which should be unmapped: list_num */
-/* public: virtual int __thiscall RGE_Main_View::command_make_do(long,long,int,short) */
-
 int __thiscall
 RGE_Main_View::command_make_do
           (RGE_Main_View *this,long param_1,long param_2,int param_3,short param_4)
@@ -1492,10 +1441,6 @@ RGE_Main_View::command_make_do
 
 // Function: pick1
 // Address: 0053fbd0
-/* WARNING: Variable defined which should be unmapped: target_count */
-/* public: unsigned char __thiscall RGE_Main_View::pick1(unsigned char,unsigned
-   char,long,long,struct RGE_Pick_Info *,class RGE_Static_Object *,int) */
-
 uchar __thiscall
 RGE_Main_View::pick1
           (RGE_Main_View *this,uchar param_1,uchar param_2,long param_3,long param_4,
@@ -1661,9 +1606,6 @@ LAB_0053fe82:
 
 // Function: pick_objects1
 // Address: 0053ffb0
-/* WARNING: Variable defined which should be unmapped: pick_info */
-/* public: int __thiscall RGE_Main_View::pick_objects1(long,long,class RGE_Static_Object * *,int) */
-
 int __thiscall
 RGE_Main_View::pick_objects1
           (RGE_Main_View *this,long param_1,long param_2,RGE_Static_Object **param_3,int param_4)
@@ -1699,9 +1641,6 @@ RGE_Main_View::pick_objects1
 
 // Function: pick_best_target
 // Address: 00540010
-/* public: class RGE_Static_Object * __thiscall RGE_Main_View::pick_best_target(long,long,int
-   *,short) */
-
 RGE_Static_Object * __thiscall
 RGE_Main_View::pick_best_target
           (RGE_Main_View *this,long param_1,long param_2,int *param_3,short param_4)
@@ -1854,9 +1793,6 @@ LAB_005402a9:
 
 // Function: command_make_move
 // Address: 00540350
-/* WARNING: Variable defined which should be unmapped: list_num */
-/* public: virtual int __thiscall RGE_Main_View::command_make_move(long,long) */
-
 int __thiscall RGE_Main_View::command_make_move(RGE_Main_View *this,long param_1,long param_2)
 {
   uchar uVar1;
@@ -1892,9 +1828,6 @@ int __thiscall RGE_Main_View::command_make_move(RGE_Main_View *this,long param_1
 
 // Function: command_make_work
 // Address: 00540420
-/* WARNING: Variable defined which should be unmapped: list_num */
-/* public: virtual int __thiscall RGE_Main_View::command_make_work(long,long) */
-
 int __thiscall RGE_Main_View::command_make_work(RGE_Main_View *this,long param_1,long param_2)
 {
   uchar uVar1;
@@ -1950,9 +1883,6 @@ int __thiscall RGE_Main_View::command_make_work(RGE_Main_View *this,long param_1
 
 // Function: command_place_multi_object
 // Address: 005405c0
-/* public: virtual int __thiscall RGE_Main_View::command_place_multi_object(long,long,long,long,int)
-    */
-
 int __thiscall
 RGE_Main_View::command_place_multi_object
           (RGE_Main_View *this,long param_1,long param_2,long param_3,long param_4,int param_5)
@@ -1966,10 +1896,6 @@ RGE_Main_View::command_place_multi_object
 
 // Function: get_help_info
 // Address: 005405e0
-/* WARNING: Variable defined which should be unmapped: pick_info */
-/* protected: virtual unsigned char __thiscall RGE_Main_View::get_help_info(char * &,long
-   &,long,long) */
-
 uchar __thiscall
 RGE_Main_View::get_help_info
           (RGE_Main_View *this,char **param_1,long *param_2,long param_3,long param_4)
@@ -2024,9 +1950,6 @@ RGE_Main_View::get_help_info
 
 // Function: fixup_pick_info
 // Address: 00540680
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: void __thiscall RGE_Main_View::fixup_pick_info(struct RGE_Pick_Info *) */
-
 void __thiscall RGE_Main_View::fixup_pick_info(RGE_Main_View *this,RGE_Pick_Info *param_1)
 {
   float fVar1;
@@ -2056,8 +1979,6 @@ void __thiscall RGE_Main_View::fixup_pick_info(RGE_Main_View *this,RGE_Pick_Info
 
 // Function: reset_display_object_selection
 // Address: 00540700
-/* public: void __thiscall RGE_Main_View::reset_display_object_selection(int) */
-
 void __thiscall RGE_Main_View::reset_display_object_selection(RGE_Main_View *this,int param_1)
 {
   int *piVar1;

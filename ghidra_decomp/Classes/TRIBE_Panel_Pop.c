@@ -83,8 +83,6 @@
 
 // Function: TRIBE_Panel_Pop
 // Address: 0051cca0
-/* public: __thiscall TRIBE_Panel_Pop::TRIBE_Panel_Pop(class TDrawArea *,class TPanel *) */
-
 TRIBE_Panel_Pop * __thiscall
 TRIBE_Panel_Pop::TRIBE_Panel_Pop(TRIBE_Panel_Pop *this,TDrawArea *param_1,TPanel *param_2)
 {
@@ -132,8 +130,6 @@ TRIBE_Panel_Pop::TRIBE_Panel_Pop(TRIBE_Panel_Pop *this,TDrawArea *param_1,TPanel
 
 // Function: `scalar_deleting_destructor'
 // Address: 0051cd90
-/* public: virtual void * __thiscall TRIBE_Panel_Pop::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall TRIBE_Panel_Pop::_scalar_deleting_destructor_(TRIBE_Panel_Pop *this,uint param_1)
 {
   ~TRIBE_Panel_Pop(this);
@@ -147,8 +143,6 @@ void * __thiscall TRIBE_Panel_Pop::_scalar_deleting_destructor_(TRIBE_Panel_Pop 
 
 // Function: ~TRIBE_Panel_Pop
 // Address: 0051cdb0
-/* public: virtual __thiscall TRIBE_Panel_Pop::~TRIBE_Panel_Pop(void) */
-
 void __thiscall TRIBE_Panel_Pop::~TRIBE_Panel_Pop(TRIBE_Panel_Pop *this)
 {
   TDrawArea *this_00;
@@ -183,8 +177,6 @@ void __thiscall TRIBE_Panel_Pop::~TRIBE_Panel_Pop(TRIBE_Panel_Pop *this)
 // Function: set_rect
 // Address: 0051ce40
 // [HELPER] s_time_message_panel: "time message panel"
-/* public: virtual void __thiscall TRIBE_Panel_Pop::set_rect(long,long,long,long) */
-
 void __thiscall
 TRIBE_Panel_Pop::set_rect(TRIBE_Panel_Pop *this,long param_1,long param_2,long param_3,long param_4)
 {
@@ -258,8 +250,6 @@ TRIBE_Panel_Pop::set_rect(TRIBE_Panel_Pop *this,long param_1,long param_2,long p
 
 // Function: startup
 // Address: 0051cfd0
-/* public: void __thiscall TRIBE_Panel_Pop::startup(void) */
-
 void __thiscall TRIBE_Panel_Pop::startup(TRIBE_Panel_Pop *this)
 {
   TRIBE_Player *pTVar1;
@@ -285,8 +275,6 @@ void __thiscall TRIBE_Panel_Pop::startup(TRIBE_Panel_Pop *this)
 
 // Function: get_player_id
 // Address: 0051d040
-/* public: int __thiscall TRIBE_Panel_Pop::get_player_id(void) */
-
 int __thiscall TRIBE_Panel_Pop::get_player_id(TRIBE_Panel_Pop *this)
 {
   if (this->player != (TRIBE_Player *)0x0) {
@@ -301,10 +289,6 @@ int __thiscall TRIBE_Panel_Pop::get_player_id(TRIBE_Panel_Pop *this)
 // Address: 0051d060
 // [HELPER] s__s_ld__ld: "%s%ld/%ld"
 // [HELPER] s_tpnl_tim__draw: "tpnl_tim::draw"
-/* WARNING: Variable defined which should be unmapped: changed_mode */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual void __thiscall TRIBE_Panel_Pop::draw(void) */
-
 void __thiscall TRIBE_Panel_Pop::draw(TRIBE_Panel_Pop *this)
 {
   float fVar1;
@@ -386,7 +370,6 @@ void __thiscall TRIBE_Panel_Pop::draw(TRIBE_Panel_Pop *this)
       SetBkMode(*(undefined4 *)(this->_padding_ + 0x38),1);
       iVar13 = this->max_pop;
       iVar6 = this->pop;
-                    /* language.dll match for 0x2b2a: "pop: " */
       pcVar11 = TPanel::get_string((TPanel *)this,0x2b2a);
       sprintf(str,s__s_ld__ld,pcVar11,iVar6,iVar13);
       SetTextColor(*(undefined4 *)(this->_padding_ + 0x38),this->color2);
@@ -417,7 +400,6 @@ void __thiscall TRIBE_Panel_Pop::draw(TRIBE_Panel_Pop *this)
       SelectClipRgn(*(undefined4 *)(this->_padding_ + 0x38),0);
       TDrawArea::ReleaseDc((TDrawArea *)this->_padding_,s_tpnl_tim__draw);
     }
-                    /* Symbol Ref: {@symbol finish_up} */
     (**(code **)(iStack_110 + 0x2c))();
   }
   return;
@@ -427,8 +409,6 @@ void __thiscall TRIBE_Panel_Pop::draw(TRIBE_Panel_Pop *this)
 
 // Function: get_true_render_rect
 // Address: 0051d470
-/* public: virtual void __thiscall TRIBE_Panel_Pop::get_true_render_rect(struct tagRECT &) */
-
 void __thiscall TRIBE_Panel_Pop::get_true_render_rect(TRIBE_Panel_Pop *this,tagRECT *param_1)
 {
   if ((((this->ImageBuffer != (TDrawArea *)0x0) && (this->_padding_ != 0)) && (this->_padding_ != 0)
@@ -450,8 +430,6 @@ void __thiscall TRIBE_Panel_Pop::get_true_render_rect(TRIBE_Panel_Pop *this,tagR
 
 // Function: handle_idle
 // Address: 0051d4e0
-/* public: virtual long __thiscall TRIBE_Panel_Pop::handle_idle(void) */
-
 long __thiscall TRIBE_Panel_Pop::handle_idle(TRIBE_Panel_Pop *this)
 {
   TPanel::handle_idle((TPanel *)this);
@@ -464,9 +442,6 @@ long __thiscall TRIBE_Panel_Pop::handle_idle(TRIBE_Panel_Pop *this)
 // Address: 0051d4f0
 // [HELPER] s__s_ld__ld: "%s%ld/%ld"
 // [HELPER] s_tpnl_tim__render_to_image_buffer: "tpnl_tim::render_to_image_buffer"
-/* WARNING: Variable defined which should be unmapped: rect */
-/* protected: int __thiscall TRIBE_Panel_Pop::render_to_image_buffer(void) */
-
 int __thiscall TRIBE_Panel_Pop::render_to_image_buffer(TRIBE_Panel_Pop *this)
 {
   int iVar1;
@@ -494,7 +469,6 @@ int __thiscall TRIBE_Panel_Pop::render_to_image_buffer(TRIBE_Panel_Pop *this)
   SetBkMode(this->ImageBuffer->DrawDc,1);
   iVar5 = this->max_pop;
   iVar7 = this->pop;
-                    /* language.dll match for 0x2b2a: "pop: " */
   pcVar4 = TPanel::get_string((TPanel *)this,0x2b2a);
   sprintf(str + 4,s__s_ld__ld,pcVar4,iVar7,iVar5);
   SetTextColor(this->ImageBuffer->DrawDc,this->color2);

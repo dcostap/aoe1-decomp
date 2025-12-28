@@ -13,8 +13,6 @@
 
 // Function: Path
 // Address: 0046a740
-/* public: __thiscall Path::Path(int) */
-
 Path * __thiscall Path::Path(Path *this,int param_1)
 {
   Waypoint *pWVar1;
@@ -62,8 +60,6 @@ Path * __thiscall Path::Path(Path *this,int param_1)
 
 // Function: ~Path
 // Address: 0046a7f0
-/* public: __thiscall Path::~Path(void) */
-
 void __thiscall Path::~Path(Path *this)
 {
   if (this->pathValue != (Waypoint *)0x0) {
@@ -76,8 +72,6 @@ void __thiscall Path::~Path(Path *this)
 
 // Function: operator+
 // Address: 0046a8e0
-/* public: class Path __thiscall Path::operator+(class Path const &)const  */
-
 Path * __thiscall Path::operator+(Path *this,Path *__return_storage_ptr__,Path *param_1)
 {
   int iVar1;
@@ -132,8 +126,6 @@ Path * __thiscall Path::operator+(Path *this,Path *__return_storage_ptr__,Path *
 
 // Function: operator=
 // Address: 0046a9e0
-/* public: class Path & __thiscall Path::operator=(class Path const &) */
-
 Path * __thiscall Path::operator=(Path *this,Path *param_1)
 {
   Waypoint *pWVar1;
@@ -198,8 +190,6 @@ LAB_0046aa70:
 
 // Function: operator==
 // Address: 0046aae0
-/* public: int __thiscall Path::operator==(class Path const &)const  */
-
 int __thiscall Path::operator==(Path *this,Path *param_1)
 {
   Waypoint *pWVar1;
@@ -236,8 +226,6 @@ int __thiscall Path::operator==(Path *this,Path *param_1)
 
 // Function: insertAtCurrent
 // Address: 0046ab60
-/* public: int __thiscall Path::insertAtCurrent(struct Waypoint const &) */
-
 int __thiscall Path::insertAtCurrent(Path *this,Waypoint *param_1)
 {
   Waypoint *pWVar1;
@@ -279,8 +267,6 @@ int __thiscall Path::insertAtCurrent(Path *this,Waypoint *param_1)
 
 // Function: insertAtEnd
 // Address: 0046ac10
-/* public: int __thiscall Path::insertAtEnd(struct Waypoint) */
-
 int __thiscall Path::insertAtEnd(Path *this,Waypoint param_1)
 {
   Waypoint *pWVar1;
@@ -323,8 +309,6 @@ int __thiscall Path::insertAtEnd(Path *this,Waypoint param_1)
 
 // Function: contains
 // Address: 0046ace0
-/* public: int __thiscall Path::contains(struct Waypoint const &)const  */
-
 int __thiscall Path::contains(Path *this,Waypoint *param_1)
 {
   int iVar1;
@@ -357,8 +341,6 @@ int __thiscall Path::contains(Path *this,Waypoint *param_1)
 
 // Function: killPath
 // Address: 0046ada0
-/* public: void __thiscall Path::killPath(void) */
-
 void __thiscall Path::killPath(Path *this)
 {
   this->currentSizeValue = 0;
@@ -370,8 +352,6 @@ void __thiscall Path::killPath(Path *this)
 
 // Function: maxNumberOfWaypoints
 // Address: 0046adb0
-/* public: int const __thiscall Path::maxNumberOfWaypoints(void)const  */
-
 int __thiscall Path::maxNumberOfWaypoints(Path *this)
 {
   return this->maxSizeValue;
@@ -381,8 +361,6 @@ int __thiscall Path::maxNumberOfWaypoints(Path *this)
 
 // Function: numberOfWaypoints
 // Address: 0046adc0
-/* public: int const __thiscall Path::numberOfWaypoints(void)const  */
-
 int __thiscall Path::numberOfWaypoints(Path *this)
 {
   return this->currentSizeValue;
@@ -392,8 +370,6 @@ int __thiscall Path::numberOfWaypoints(Path *this)
 
 // Function: timeStamp
 // Address: 0046add0
-/* public: unsigned long __thiscall Path::timeStamp(void)const  */
-
 ulong __thiscall Path::timeStamp(Path *this)
 {
   return this->timeStampValue;
@@ -403,8 +379,6 @@ ulong __thiscall Path::timeStamp(Path *this)
 
 // Function: setTimeStamp
 // Address: 0046ade0
-/* public: void __thiscall Path::setTimeStamp(unsigned long) */
-
 void __thiscall Path::setTimeStamp(Path *this,ulong param_1)
 {
   this->timeStampValue = param_1;
@@ -415,8 +389,6 @@ void __thiscall Path::setTimeStamp(Path *this,ulong param_1)
 
 // Function: length
 // Address: 0046adf0
-/* public: float __thiscall Path::length(void)const  */
-
 float __thiscall Path::length(Path *this)
 {
   Waypoint *pWVar1;
@@ -445,8 +417,6 @@ float __thiscall Path::length(Path *this)
 
 // Function: start
 // Address: 0046ae50
-/* public: struct Waypoint const & __thiscall Path::start(void)const  */
-
 Waypoint * __thiscall Path::start(Path *this)
 {
   return &this->startValue;
@@ -456,8 +426,6 @@ Waypoint * __thiscall Path::start(Path *this)
 
 // Function: goal
 // Address: 0046ae60
-/* public: struct Waypoint const & __thiscall Path::goal(void)const  */
-
 Waypoint * __thiscall Path::goal(Path *this)
 {
   return &this->goalValue;
@@ -467,8 +435,6 @@ Waypoint * __thiscall Path::goal(Path *this)
 
 // Function: waypoint
 // Address: 0046ae70
-/* public: struct Waypoint const * __thiscall Path::waypoint(int)const  */
-
 Waypoint * __thiscall Path::waypoint(Path *this,int param_1)
 {
   if (((this->pathValue != (Waypoint *)0x0) && (-1 < param_1)) && (param_1 < this->currentSizeValue)
@@ -482,8 +448,6 @@ Waypoint * __thiscall Path::waypoint(Path *this,int param_1)
 
 // Function: currentWaypoint
 // Address: 0046aea0
-/* public: struct Waypoint * __thiscall Path::currentWaypoint(void)const  */
-
 Waypoint * __thiscall Path::currentWaypoint(Path *this)
 {
   int iVar1;
@@ -499,8 +463,6 @@ Waypoint * __thiscall Path::currentWaypoint(Path *this)
 
 // Function: currentWaypointNumber
 // Address: 0046aec0
-/* public: int const __thiscall Path::currentWaypointNumber(void)const  */
-
 int __thiscall Path::currentWaypointNumber(Path *this)
 {
   return this->currentWaypointValue;
@@ -510,8 +472,6 @@ int __thiscall Path::currentWaypointNumber(Path *this)
 
 // Function: setCurrentWaypointNumber
 // Address: 0046aed0
-/* public: void __thiscall Path::setCurrentWaypointNumber(int) */
-
 void __thiscall Path::setCurrentWaypointNumber(Path *this,int param_1)
 {
   this->currentWaypointValue = param_1;
@@ -522,8 +482,6 @@ void __thiscall Path::setCurrentWaypointNumber(Path *this,int param_1)
 
 // Function: nextWaypoint
 // Address: 0046aee0
-/* public: struct Waypoint const * __thiscall Path::nextWaypoint(void)const  */
-
 Waypoint * __thiscall Path::nextWaypoint(Path *this)
 {
   int iVar1;
@@ -539,8 +497,6 @@ Waypoint * __thiscall Path::nextWaypoint(Path *this)
 
 // Function: previousWaypoint
 // Address: 0046af10
-/* public: struct Waypoint const * __thiscall Path::previousWaypoint(void)const  */
-
 Waypoint * __thiscall Path::previousWaypoint(Path *this)
 {
   int iVar1;
@@ -557,8 +513,6 @@ Waypoint * __thiscall Path::previousWaypoint(Path *this)
 
 // Function: firstWaypoint
 // Address: 0046af40
-/* public: struct Waypoint const * __thiscall Path::firstWaypoint(void)const  */
-
 Waypoint * __thiscall Path::firstWaypoint(Path *this)
 {
   Waypoint *pWVar1;
@@ -574,8 +528,6 @@ Waypoint * __thiscall Path::firstWaypoint(Path *this)
 
 // Function: lastWaypoint
 // Address: 0046af60
-/* public: struct Waypoint const * __thiscall Path::lastWaypoint(void)const  */
-
 Waypoint * __thiscall Path::lastWaypoint(Path *this)
 {
   if ((this->pathValue != (Waypoint *)0x0) && (0 < this->currentSizeValue)) {
@@ -588,8 +540,6 @@ Waypoint * __thiscall Path::lastWaypoint(Path *this)
 
 // Function: initToStart
 // Address: 0046af80
-/* public: void __thiscall Path::initToStart(void) */
-
 void __thiscall Path::initToStart(Path *this)
 {
   this->currentWaypointValue = 0;
@@ -600,8 +550,6 @@ void __thiscall Path::initToStart(Path *this)
 
 // Function: initToEnd
 // Address: 0046af90
-/* public: void __thiscall Path::initToEnd(void) */
-
 void __thiscall Path::initToEnd(Path *this)
 {
   this->currentWaypointValue = this->currentSizeValue + -1;
@@ -612,8 +560,6 @@ void __thiscall Path::initToEnd(Path *this)
 
 // Function: moveToNextWaypoint
 // Address: 0046afa0
-/* public: int __thiscall Path::moveToNextWaypoint(void) */
-
 int __thiscall Path::moveToNextWaypoint(Path *this)
 {
   int iVar1;
@@ -631,8 +577,6 @@ int __thiscall Path::moveToNextWaypoint(Path *this)
 
 // Function: moveToLastWaypoint
 // Address: 0046afc0
-/* public: int __thiscall Path::moveToLastWaypoint(void) */
-
 int __thiscall Path::moveToLastWaypoint(Path *this)
 {
   if (0 < this->currentWaypointValue) {
@@ -646,8 +590,6 @@ int __thiscall Path::moveToLastWaypoint(Path *this)
 
 // Function: distanceToNextWaypoint
 // Address: 0046afe0
-/* public: float __thiscall Path::distanceToNextWaypoint(void)const  */
-
 float __thiscall Path::distanceToNextWaypoint(Path *this)
 {
   Waypoint *pWVar1;

@@ -28,8 +28,6 @@
 
 // Function: TribeBuildAIModule
 // Address: 004d3a80
-/* public: __thiscall TribeBuildAIModule::TribeBuildAIModule(void *,int) */
-
 TribeBuildAIModule * __thiscall
 TribeBuildAIModule::TribeBuildAIModule(TribeBuildAIModule *this,void *param_1,int param_2)
 {
@@ -43,9 +41,6 @@ TribeBuildAIModule::TribeBuildAIModule(TribeBuildAIModule *this,void *param_1,in
 
 // Function: `vector_deleting_destructor'
 // Address: 004d3ab0
-/* public: virtual void * __thiscall TribeBuildAIModule::`vector deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 TribeBuildAIModule::_vector_deleting_destructor_(TribeBuildAIModule *this,uint param_1)
 {
@@ -60,8 +55,6 @@ TribeBuildAIModule::_vector_deleting_destructor_(TribeBuildAIModule *this,uint p
 
 // Function: TribeBuildAIModule
 // Address: 004d3ad0
-/* public: __thiscall TribeBuildAIModule::TribeBuildAIModule(int,int) */
-
 TribeBuildAIModule * __thiscall
 TribeBuildAIModule::TribeBuildAIModule(TribeBuildAIModule *this,int param_1,int param_2)
 {
@@ -75,8 +68,6 @@ TribeBuildAIModule::TribeBuildAIModule(TribeBuildAIModule *this,int param_1,int 
 
 // Function: ~TribeBuildAIModule
 // Address: 004d3b00
-/* public: virtual __thiscall TribeBuildAIModule::~TribeBuildAIModule(void) */
-
 void __thiscall TribeBuildAIModule::~TribeBuildAIModule(TribeBuildAIModule *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -88,9 +79,6 @@ void __thiscall TribeBuildAIModule::~TribeBuildAIModule(TribeBuildAIModule *this
 
 // Function: setMainDecisionAI
 // Address: 004d3b10
-/* public: void __thiscall TribeBuildAIModule::setMainDecisionAI(class TribeMainDecisionAIModule *)
-    */
-
 void __thiscall
 TribeBuildAIModule::setMainDecisionAI(TribeBuildAIModule *this,TribeMainDecisionAIModule *param_1)
 {
@@ -102,8 +90,6 @@ TribeBuildAIModule::setMainDecisionAI(TribeBuildAIModule *this,TribeMainDecision
 
 // Function: loadBuildList
 // Address: 004d3b20
-/* public: virtual int __thiscall TribeBuildAIModule::loadBuildList(char *,class RGE_Player *) */
-
 int __thiscall
 TribeBuildAIModule::loadBuildList(TribeBuildAIModule *this,char *param_1,RGE_Player *param_2)
 {
@@ -209,9 +195,6 @@ LAB_004d3d3e:
 
 // Function: initialize
 // Address: 004d3d60
-/* WARNING: Variable defined which should be unmapped: requiredPop */
-/* public: void __thiscall TribeBuildAIModule::initialize(void) */
-
 void __thiscall TribeBuildAIModule::initialize(TribeBuildAIModule *this)
 {
   bool bVar1;
@@ -549,8 +532,6 @@ void __thiscall TribeBuildAIModule::initialize(TribeBuildAIModule *this)
 
 // Function: skipNextBuildListItem
 // Address: 004d4460
-/* public: void __thiscall TribeBuildAIModule::skipNextBuildListItem(void) */
-
 void __thiscall TribeBuildAIModule::skipNextBuildListItem(TribeBuildAIModule *this)
 {
   int iVar1;
@@ -566,7 +547,6 @@ void __thiscall TribeBuildAIModule::skipNextBuildListItem(TribeBuildAIModule *th
         iVar1 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0xb1);
         iVar2 = BaseItem::typeID((BaseItem *)this_00);
         if ((iVar2 != iVar1) || (iVar1 = BuildItem::buildCategory(this_00), iVar1 != 0)) {
-                    /* language.dll match for 0x72: "21" */
           iVar1 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0x72);
           BuildItem::setBuildAttempts(this_00,iVar1);
           BaseItem::setSkip((BaseItem *)this_00,1);
@@ -593,11 +573,6 @@ void __thiscall TribeBuildAIModule::skipNextBuildListItem(TribeBuildAIModule *th
 
 // Function: nextBuildableItem
 // Address: 004d4540
-/* WARNING: Variable defined which should be unmapped: count */
-/* WARNING: Removing unreachable block (ram,0x004d46de) */
-/* WARNING: Removing unreachable block (ram,0x004d4758) */
-/* public: class BuildItem * __thiscall TribeBuildAIModule::nextBuildableItem(int) */
-
 BuildItem * __thiscall TribeBuildAIModule::nextBuildableItem(TribeBuildAIModule *this,int param_1)
 {
   code *pcVar1;
@@ -636,13 +611,11 @@ BuildItem * __thiscall TribeBuildAIModule::nextBuildableItem(TribeBuildAIModule 
   pcStack_8 = FUN_005602a3;
   iStack_c = *unaff_FS_OFFSET;
   *unaff_FS_OFFSET = (int)&iStack_c;
-                    /* language.dll match for 0x67: "Comic Sans MS" */
   pcVar1 = *(code **)(this->_padding_ + 0x48);
   numGranaries = (*pcVar1)(0x67);
   (*pcVar1)(0x44,0);
   iVar4 = (*pcVar1)(0x46,0);
   this_00 = (BuildItem *)this->_padding_;
-                    /* language.dll match for 0x73: "B" */
   iVar18 = 0;
   iVar5 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0x73);
   if (-1 < iVar5) {
@@ -771,7 +744,6 @@ LAB_004d488c:
           if ((iVar5 == 0) &&
              ((iVar5 = BaseItem::typeID((BaseItem *)this_00), iVar5 == 0x67 ||
               (iVar5 = BaseItem::typeID((BaseItem *)this_00), iVar5 == 0x44)))) {
-                    /* language.dll match for 0x72: "21" */
             iVar5 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0x72);
             BuildItem::setBuildAttempts(this_00,iVar5 + -1);
           }
@@ -798,7 +770,6 @@ LAB_004d48db:
         }
         BuildItem::incrementBuildAttempts(this_00);
         iVar5 = BuildItem::buildAttempts(this_00);
-                    /* language.dll match for 0x72: "21" */
         iVar6 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0x72);
         if (((iVar6 < iVar5) && (iVar5 = BaseItem::skip((BaseItem *)this_00), iVar5 == 0)) &&
            (uVar3 = BuildItem::permanentSkip(this_00), uVar3 == '\0')) {
@@ -812,12 +783,10 @@ LAB_004d48db:
             if ((iVar5 == 0) &&
                ((iVar5 = BaseItem::typeID((BaseItem *)this_00), iVar5 == 0x67 ||
                 (iVar5 = BaseItem::typeID((BaseItem *)this_00), iVar5 == 0x44)))) {
-                    /* language.dll match for 0x72: "21" */
               iVar5 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0x72);
               BuildItem::setBuildAttempts(this_00,iVar5 * 6);
             }
             else {
-                    /* language.dll match for 0x72: "21" */
               iVar5 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0x72);
               BuildItem::setBuildAttempts(this_00,iVar5);
             }
@@ -904,7 +873,6 @@ LAB_004d48db:
 LAB_004d489e:
         this_00 = this_00->next;
       }
-                    /* language.dll match for 0x73: "B" */
       iVar5 = TribeTacticalAIModule::strategicNumber(&this->md->tacticalAI,0x73);
     } while (iVar18 <= iVar5);
   }
@@ -918,8 +886,6 @@ LAB_004d499d:
 
 // Function: nextBuildListItemCategory
 // Address: 004d4db0
-/* public: int __thiscall TribeBuildAIModule::nextBuildListItemCategory(void) */
-
 int __thiscall TribeBuildAIModule::nextBuildListItemCategory(TribeBuildAIModule *this)
 {
   uchar uVar1;
@@ -956,9 +922,6 @@ int __thiscall TribeBuildAIModule::nextBuildListItemCategory(TribeBuildAIModule 
 
 // Function: blockingResource
 // Address: 004d4e10
-/* WARNING: Variable defined which should be unmapped: itemCost */
-/* public: int __thiscall TribeBuildAIModule::blockingResource(void) */
-
 int __thiscall TribeBuildAIModule::blockingResource(TribeBuildAIModule *this)
 {
   int *piVar1;
@@ -1038,8 +1001,6 @@ LAB_004d4f6b:
 
 // Function: mostNeededResource
 // Address: 004d4f80
-/* public: int __thiscall TribeBuildAIModule::mostNeededResource(class ResourceItem &,int) */
-
 int __thiscall
 TribeBuildAIModule::mostNeededResource(TribeBuildAIModule *this,ResourceItem *param_1,int param_2)
 {
@@ -1099,8 +1060,6 @@ LAB_004d506c:
 
 // Function: addItem
 // Address: 004d5090
-/* public: int __thiscall TribeBuildAIModule::addItem(class RGE_Static_Object *,int) */
-
 int __thiscall
 TribeBuildAIModule::addItem(TribeBuildAIModule *this,RGE_Static_Object *param_1,int param_2)
 {
@@ -1144,8 +1103,6 @@ TribeBuildAIModule::addItem(TribeBuildAIModule *this,RGE_Static_Object *param_1,
 
 // Function: addBuiltItem
 // Address: 004d5170
-/* public: int __thiscall TribeBuildAIModule::addBuiltItem(class RGE_Static_Object *,int) */
-
 int __thiscall
 TribeBuildAIModule::addBuiltItem(TribeBuildAIModule *this,RGE_Static_Object *param_1,int param_2)
 {
@@ -1192,8 +1149,6 @@ TribeBuildAIModule::addBuiltItem(TribeBuildAIModule *this,RGE_Static_Object *par
 
 // Function: removeBuiltItem
 // Address: 004d5270
-/* public: int __thiscall TribeBuildAIModule::removeBuiltItem(int) */
-
 int __thiscall TribeBuildAIModule::removeBuiltItem(TribeBuildAIModule *this,int param_1)
 {
   BuildItem *this_00;
@@ -1229,10 +1184,6 @@ int __thiscall TribeBuildAIModule::removeBuiltItem(TribeBuildAIModule *this,int 
 
 // Function: cancelBuildItem
 // Address: 004d5310
-/* WARNING: Variable defined which should be unmapped: newLotStatus */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: int __thiscall TribeBuildAIModule::cancelBuildItem(int,int,int,float,float,int,int) */
-
 int __thiscall
 TribeBuildAIModule::cancelBuildItem
           (TribeBuildAIModule *this,int param_1,int param_2,int param_3,float param_4,float param_5,
@@ -1330,8 +1281,6 @@ TribeBuildAIModule::cancelBuildItem
 
 // Function: addTrainedUnit
 // Address: 004d5590
-/* public: int __thiscall TribeBuildAIModule::addTrainedUnit(int,int,int,int) */
-
 int __thiscall
 TribeBuildAIModule::addTrainedUnit
           (TribeBuildAIModule *this,int param_1,int param_2,int param_3,int param_4)
@@ -1357,8 +1306,6 @@ TribeBuildAIModule::addTrainedUnit
 // [HELPER] s_Canceling_training__WT__ld__for_: "Canceling training (WT=%ld) for item of type %d at building w/ gameID=%d."
 // [HELPER] s___ERROR___Invalid_build_item_: "  ERROR!  Invalid build item."
 // [HELPER] s___Setting_build_item___d_in_prog: "  Setting build item #%d in progress to FALSE."
-/* public: int __thiscall TribeBuildAIModule::cancelTrainUnit(int,int,int,int) */
-
 int __thiscall
 TribeBuildAIModule::cancelTrainUnit
           (TribeBuildAIModule *this,int param_1,int param_2,int param_3,int param_4)
@@ -1390,8 +1337,6 @@ TribeBuildAIModule::cancelTrainUnit
 
 // Function: addResearch
 // Address: 004d5690
-/* public: int __thiscall TribeBuildAIModule::addResearch(int,int,int) */
-
 int __thiscall
 TribeBuildAIModule::addResearch(TribeBuildAIModule *this,int param_1,int param_2,int param_3)
 {
@@ -1415,8 +1360,6 @@ TribeBuildAIModule::addResearch(TribeBuildAIModule *this,int param_1,int param_2
 // [HELPER] s_Canceling_research__WT__ld__for_: "Canceling research (WT=%ld) for item of type %d at building w/ gameID=%d."
 // [HELPER] s___ERROR___Invalid_build_item_: "  ERROR!  Invalid build item."
 // [HELPER] s___Setting_build_item___d_in_prog: "  Setting build item #%d in progress to FALSE."
-/* public: int __thiscall TribeBuildAIModule::cancelResearch(int,int,int,int) */
-
 int __thiscall
 TribeBuildAIModule::cancelResearch
           (TribeBuildAIModule *this,int param_1,int param_2,int param_3,int param_4)
@@ -1448,8 +1391,6 @@ TribeBuildAIModule::cancelResearch
 
 // Function: isAgeResearch
 // Address: 004d5780
-/* public: int __thiscall TribeBuildAIModule::isAgeResearch(int) */
-
 int __thiscall TribeBuildAIModule::isAgeResearch(TribeBuildAIModule *this,int param_1)
 {
   if (((param_1 != 0x65) && (param_1 != 0x66)) && (param_1 != 0x67)) {
@@ -1462,9 +1403,6 @@ int __thiscall TribeBuildAIModule::isAgeResearch(TribeBuildAIModule *this,int pa
 
 // Function: insert
 // Address: 004d57a0
-/* WARNING: Variable defined which should be unmapped: buildCategory */
-/* public: int __thiscall TribeBuildAIModule::insert(int,int,int) */
-
 int __thiscall
 TribeBuildAIModule::insert(TribeBuildAIModule *this,int param_1,int param_2,int param_3)
 {
@@ -1598,8 +1536,6 @@ switchD_004d57e5_caseD_d:
 
 // Function: insertResearch
 // Address: 004d5ad0
-/* public: int __thiscall TribeBuildAIModule::insertResearch(int,int) */
-
 int __thiscall TribeBuildAIModule::insertResearch(TribeBuildAIModule *this,int param_1,int param_2)
 {
   BuildItem *this_00;
@@ -1632,8 +1568,6 @@ int __thiscall TribeBuildAIModule::insertResearch(TribeBuildAIModule *this,int p
 
 // Function: insertGathererPercentage
 // Address: 004d5b80
-/* public: int __thiscall TribeBuildAIModule::insertGathererPercentage(int,int,int) */
-
 int __thiscall
 TribeBuildAIModule::insertGathererPercentage
           (TribeBuildAIModule *this,int param_1,int param_2,int param_3)
@@ -1650,8 +1584,6 @@ TribeBuildAIModule::insertGathererPercentage
 
 // Function: numberBuiltOrInProgressItemsOfType
 // Address: 004d5bb0
-/* public: virtual int __thiscall TribeBuildAIModule::numberBuiltOrInProgressItemsOfType(int,int) */
-
 int __thiscall
 TribeBuildAIModule::numberBuiltOrInProgressItemsOfType
           (TribeBuildAIModule *this,int param_1,int param_2)
@@ -1676,8 +1608,6 @@ TribeBuildAIModule::numberBuiltOrInProgressItemsOfType
 
 // Function: allBuilt
 // Address: 004d5c20
-/* public: int __thiscall TribeBuildAIModule::allBuilt(int,int) */
-
 int __thiscall TribeBuildAIModule::allBuilt(TribeBuildAIModule *this,int param_1,int param_2)
 {
   int iVar1;
@@ -1705,26 +1635,21 @@ int __thiscall TribeBuildAIModule::allBuilt(TribeBuildAIModule *this,int param_1
 
 // Function: readyToResearch
 // Address: 004d5ca0
-/* public: int __thiscall TribeBuildAIModule::readyToResearch(int,int) */
-
 int __thiscall TribeBuildAIModule::readyToResearch(TribeBuildAIModule *this,int param_1,int param_2)
 {
   uchar uVar1;
   
   if (param_2 == 1) {
     if (param_1 == 2) {
-                    /* language.dll match for 0x65: "1" */
       uVar1 = TRIBE_Player::researchState(this->md->aiPlayer,0x65);
     }
     else {
       uVar1 = (uchar)param_1;
     }
     if (param_1 == 3) {
-                    /* language.dll match for 0x66: "Copperplate Gothic Light" */
       uVar1 = TRIBE_Player::researchState(this->md->aiPlayer,0x66);
     }
     if (param_1 == 4) {
-                    /* language.dll match for 0x67: "Comic Sans MS" */
       uVar1 = TRIBE_Player::researchState(this->md->aiPlayer,0x67);
       return (uint)(uVar1 == '\x01');
     }
@@ -1739,8 +1664,6 @@ int __thiscall TribeBuildAIModule::readyToResearch(TribeBuildAIModule *this,int 
 
 // Function: unskipBuildList
 // Address: 004d5d40
-/* public: void __thiscall TribeBuildAIModule::unskipBuildList(int,int) */
-
 void __thiscall
 TribeBuildAIModule::unskipBuildList(TribeBuildAIModule *this,int param_1,int param_2)
 {
@@ -1749,8 +1672,6 @@ TribeBuildAIModule::unskipBuildList(TribeBuildAIModule *this,int param_1,int par
   int iVar2;
   int iVar3;
   int iVar4;
-  
-                    /* language.dll match for 0x67: "Comic Sans MS" */
   pcVar1 = *(code **)(this->_padding_ + 0x48);
   iVar2 = (*pcVar1)(0x67,0);
   iVar3 = (*pcVar1)(0x44,0);
@@ -1774,8 +1695,6 @@ TribeBuildAIModule::unskipBuildList(TribeBuildAIModule *this,int param_1,int par
 
 // Function: buildItem
 // Address: 004d5de0
-/* public: class BuildItem * __thiscall TribeBuildAIModule::buildItem(int,int,int) */
-
 BuildItem * __thiscall
 TribeBuildAIModule::buildItem(TribeBuildAIModule *this,int param_1,int param_2,int param_3)
 {

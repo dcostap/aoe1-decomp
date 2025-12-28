@@ -461,8 +461,6 @@
 // Address: 0048f5d0
 // [HELPER] s_Campaign_Editor_Screen: "Campaign Editor Screen"
 // [HELPER] s_scr4: "scr4"
-/* public: __thiscall TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen(void) */
-
 TRIBE_Campaign_Editor_Screen * __thiscall
 TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen(TRIBE_Campaign_Editor_Screen *this)
 {
@@ -523,10 +521,8 @@ TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen(TRIBE_Campaign_Editor
   }
   TEasy_Panel::setup_shadow_area((TEasy_Panel *)this,0);
   TEasy_Panel::set_ideal_size((TEasy_Panel *)this,0x280,0x1e0);
-                    /* language.dll match for 0x2bc1: "Campaign Editor" */
   TEasy_Panel::create_text
             ((TEasy_Panel *)this,(TPanel *)this,&this->title,0x2bc1,10,10,0x26c,0x32,1,3,0,0);
-                    /* language.dll match for 0x2bc2: "Campaign Filename " */
   TEasy_Panel::create_text
             ((TEasy_Panel *)this,(TPanel *)this,&this->filename_title,0x2bc2,0x14,0x28,0x104,0x14,4,
              0,0,0);
@@ -542,55 +538,43 @@ TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen(TRIBE_Campaign_Editor
   lVar5 = 0;
   FVar8 = FormatFileNoExt;
   sVar7 = 100;
-                    /* language.dll match for 0x2bca: "default campaign" */
   pcVar6 = TPanel::get_string((TPanel *)this,0x2bca);
   TEasy_Panel::create_edit
             ((TEasy_Panel *)this,(TPanel *)*ppTVar3,&this->filename,pcVar6,sVar7,FVar8,lVar5,lVar9,
              lVar10,lVar11,lVar12,iVar13,iVar14);
-                    /* language.dll match for 0x2bc4: "Save" */
   TEasy_Panel::create_button
             ((TEasy_Panel *)this,(TPanel *)this,&this->save_button,0x2bc4,0,0x1a4,0x3c,200,0x1e,0,0,
              0);
-                    /* language.dll match for 0x2bc5: "Add" */
   TEasy_Panel::create_button
             ((TEasy_Panel *)this,(TPanel *)this,&this->add_button,0x2bc5,0,0x118,0x104,0xa0,0x1e,0,0
              ,0);
-                    /* language.dll match for 0x2bc6: "Remove" */
   TEasy_Panel::create_button
             ((TEasy_Panel *)this,(TPanel *)this,&this->remove_button,0x2bc6,0,0x1cc,0x104,0xa0,0x1e,
              0,0,0);
-                    /* language.dll match for 0x2bc7: "Scenarios" */
   TEasy_Panel::create_text
             ((TEasy_Panel *)this,(TPanel *)this,&this->scenarios_title,0x2bc7,0x14,100,200,0x14,4,0,
              0,0);
-                    /* language.dll match for 0x78: "10" */
   TEasy_Panel::create_list((TEasy_Panel *)this,(TPanel *)this,ppTVar1,0x14,0x78,600,0x82,0xb);
   TEasy_Panel::create_auto_scrollbar
             ((TEasy_Panel *)this,&this->scenarios_bar,(TTextPanel *)*ppTVar1,0x14);
-                    /* language.dll match for 0x2bc8: "Campaign Scenarios" */
   TEasy_Panel::create_text
             ((TEasy_Panel *)this,(TPanel *)this,&this->campaign_scenarios_title,0x2bc8,0x14,0x118,
              200,0x14,4,0,0,0);
-                    /* language.dll match for 0x82: "B" */
   TEasy_Panel::create_list((TEasy_Panel *)this,(TPanel *)this,ppTVar2,0x14,300,500,0x82,0xb);
   TEasy_Panel::create_auto_scrollbar
             ((TEasy_Panel *)this,&this->campaign_scenarios_bar,(TTextPanel *)*ppTVar2,0x14);
-                    /* language.dll match for 0xfa1: "OK" */
   TEasy_Panel::create_button
             ((TEasy_Panel *)this,(TPanel *)this,&this->ok_button,0xfa1,0,0x14,0x1bd,0x118,0x1e,0,0,0
             );
-                    /* language.dll match for 0xfa2: "Cancel" */
   TEasy_Panel::create_button
             ((TEasy_Panel *)this,(TPanel *)this,&this->cancel_button,0xfa2,0,0x154,0x1bd,0x118,0x1e,
              0,0,0);
   pTVar4 = this->cancel_button;
   pTVar4->hotkey = 0x1b;
   pTVar4->hotkey_shift = 0;
-                    /* language.dll match for 0x2bd5: "Up" */
   TEasy_Panel::create_button
             ((TEasy_Panel *)this,(TPanel *)this,&this->move_scenario_up_button,0x2bd5,0,0x212,300,
              0x5a,0x1e,0,0,0);
-                    /* language.dll match for 0x2bd6: "Down" */
   TEasy_Panel::create_button
             ((TEasy_Panel *)this,(TPanel *)this,&this->move_scenario_down_button,0x2bd6,0,0x212,
              0x154,0x5a,0x1e,0,0,0);
@@ -617,9 +601,6 @@ TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen(TRIBE_Campaign_Editor
 
 // Function: `vector_deleting_destructor'
 // Address: 0048fa20
-/* public: virtual void * __thiscall TRIBE_Campaign_Editor_Screen::`vector deleting
-   destructor'(unsigned int) */
-
 void * __thiscall
 TRIBE_Campaign_Editor_Screen::_vector_deleting_destructor_
           (TRIBE_Campaign_Editor_Screen *this,uint param_1)
@@ -637,8 +618,6 @@ TRIBE_Campaign_Editor_Screen::_vector_deleting_destructor_
 // Address: 0048fa40
 // [HELPER] s_Cancel_Dialog: "Cancel Dialog"
 // [HELPER] s_Load_Dialog: "Load Dialog"
-/* public: virtual __thiscall TRIBE_Campaign_Editor_Screen::~TRIBE_Campaign_Editor_Screen(void) */
-
 void __thiscall
 TRIBE_Campaign_Editor_Screen::~TRIBE_Campaign_Editor_Screen(TRIBE_Campaign_Editor_Screen *this)
 {
@@ -717,9 +696,6 @@ TRIBE_Campaign_Editor_Screen::~TRIBE_Campaign_Editor_Screen(TRIBE_Campaign_Edito
 // Address: 0048fbc0
 // [HELPER] s__s__cpn: "%s*.cpn"
 // [HELPER] s__s__cpx: "%s*.cpx"
-/* WARNING: Variable defined which should be unmapped: file_name */
-/* protected: void __thiscall TRIBE_Campaign_Editor_Screen::fill_campaign_drop(void) */
-
 void __thiscall TRIBE_Campaign_Editor_Screen::fill_campaign_drop(TRIBE_Campaign_Editor_Screen *this)
 {
   char cVar1;
@@ -777,9 +753,6 @@ void __thiscall TRIBE_Campaign_Editor_Screen::fill_campaign_drop(TRIBE_Campaign_
 // Address: 0048fd20
 // [HELPER] s__s__scn: "%s*.scn"
 // [HELPER] s__s__scx: "%s*.scx"
-/* WARNING: Variable defined which should be unmapped: file_name */
-/* protected: void __thiscall TRIBE_Campaign_Editor_Screen::fill_scenario_list(void) */
-
 void __thiscall TRIBE_Campaign_Editor_Screen::fill_scenario_list(TRIBE_Campaign_Editor_Screen *this)
 {
   char cVar1;
@@ -838,9 +811,6 @@ void __thiscall TRIBE_Campaign_Editor_Screen::fill_scenario_list(TRIBE_Campaign_
 
 // Function: fill_campaign_scenario_list
 // Address: 0048fe80
-/* WARNING: Variable defined which should be unmapped: scenario_names */
-/* protected: void __thiscall TRIBE_Campaign_Editor_Screen::fill_campaign_scenario_list(void) */
-
 void __thiscall
 TRIBE_Campaign_Editor_Screen::fill_campaign_scenario_list(TRIBE_Campaign_Editor_Screen *this)
 {
@@ -873,8 +843,6 @@ TRIBE_Campaign_Editor_Screen::fill_campaign_scenario_list(TRIBE_Campaign_Editor_
 
 // Function: check_lists
 // Address: 0048ff00
-/* protected: unsigned char __thiscall TRIBE_Campaign_Editor_Screen::check_lists(void) */
-
 uchar __thiscall TRIBE_Campaign_Editor_Screen::check_lists(TRIBE_Campaign_Editor_Screen *this)
 {
   int iVar1;
@@ -912,9 +880,6 @@ uchar __thiscall TRIBE_Campaign_Editor_Screen::check_lists(TRIBE_Campaign_Editor
 // Address: 0048ff80
 // [HELPER] s__cpn: ".cpn"
 // [HELPER] s__cpx: ".cpx"
-/* WARNING: Variable defined which should be unmapped: text */
-/* protected: void __thiscall TRIBE_Campaign_Editor_Screen::load_campaign(void) */
-
 void __thiscall TRIBE_Campaign_Editor_Screen::load_campaign(TRIBE_Campaign_Editor_Screen *this)
 {
   uchar uVar1;
@@ -991,9 +956,6 @@ LAB_004900cf:
 // [HELPER] s__s_s_scn: "%s%s.scn"
 // [HELPER] s__scn: ".scn"
 // [HELPER] s__scx: ".scx"
-/* WARNING: Variable defined which should be unmapped: scenarios_filenames */
-/* protected: void __thiscall TRIBE_Campaign_Editor_Screen::make_campaign(void) */
-
 void __thiscall TRIBE_Campaign_Editor_Screen::make_campaign(TRIBE_Campaign_Editor_Screen *this)
 {
   char cVar1;
@@ -1029,16 +991,12 @@ void __thiscall TRIBE_Campaign_Editor_Screen::make_campaign(TRIBE_Campaign_Edito
     cVar1 = (char)(pRVar2->campaign_header).version;
     local_230 = pRVar2;
     if ((cVar1 == '\0') || (cVar1 == ' ')) {
-                    /* language.dll match for 0x2bcc: "Cannot save. You must enter a campaign name."
-                        */
       TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x2bcc,(char *)0x0,0x1c2,100);
       goto LAB_00490351;
     }
     addstring(&text,(char *)pRVar2,s__cpx);
     iVar3 = TTextPanel::numberLines((TTextPanel *)this->campaign_scenarios);
     if (iVar3 < 1) {
-                    /* language.dll match for 0x2bcb: "At least one scenario is required in a
-                       campaign." */
       TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x2bcb,(char *)0x0,0x1c2,100);
     }
     else {
@@ -1110,8 +1068,6 @@ LAB_00490351:
 
 // Function: add_scenario
 // Address: 00490380
-/* protected: void __thiscall TRIBE_Campaign_Editor_Screen::add_scenario(void) */
-
 void __thiscall TRIBE_Campaign_Editor_Screen::add_scenario(TRIBE_Campaign_Editor_Screen *this)
 {
   char *pcVar1;
@@ -1137,8 +1093,6 @@ void __thiscall TRIBE_Campaign_Editor_Screen::add_scenario(TRIBE_Campaign_Editor
 
 // Function: remove_scenario
 // Address: 00490400
-/* protected: void __thiscall TRIBE_Campaign_Editor_Screen::remove_scenario(void) */
-
 void __thiscall TRIBE_Campaign_Editor_Screen::remove_scenario(TRIBE_Campaign_Editor_Screen *this)
 {
   char *pcVar1;
@@ -1164,8 +1118,6 @@ void __thiscall TRIBE_Campaign_Editor_Screen::remove_scenario(TRIBE_Campaign_Edi
 
 // Function: move_scenario_up
 // Address: 00490480
-/* protected: void __thiscall TRIBE_Campaign_Editor_Screen::move_scenario_up(void) */
-
 void __thiscall TRIBE_Campaign_Editor_Screen::move_scenario_up(TRIBE_Campaign_Editor_Screen *this)
 {
   long lVar1;
@@ -1197,8 +1149,6 @@ void __thiscall TRIBE_Campaign_Editor_Screen::move_scenario_up(TRIBE_Campaign_Ed
 
 // Function: move_scenario_down
 // Address: 00490520
-/* protected: void __thiscall TRIBE_Campaign_Editor_Screen::move_scenario_down(void) */
-
 void __thiscall TRIBE_Campaign_Editor_Screen::move_scenario_down(TRIBE_Campaign_Editor_Screen *this)
 {
   int iVar1;
@@ -1235,9 +1185,6 @@ void __thiscall TRIBE_Campaign_Editor_Screen::move_scenario_down(TRIBE_Campaign_
 // [HELPER] s_Cancel_Dialog: "Cancel Dialog"
 // [HELPER] s_Load_Dialog: "Load Dialog"
 // [HELPER] s_Scenario_Editor_Menu: "Scenario Editor Menu"
-/* protected: virtual long __thiscall TRIBE_Campaign_Editor_Screen::action(class TPanel
-   *,long,unsigned long,unsigned long) */
-
 long __thiscall
 TRIBE_Campaign_Editor_Screen::action
           (TRIBE_Campaign_Editor_Screen *this,TPanel *param_1,long param_2,ulong param_3,
@@ -1282,8 +1229,6 @@ TRIBE_Campaign_Editor_Screen::action
       load_campaign(this);
     }
     else {
-                    /* language.dll match for 0x2bc9: "Do you want to save your changes to
-                       campaign\\n %s" */
       TPanel::get_string((TPanel *)this,0x2bc9,str + 4,0x100);
       pcVar3 = TEditPanel::get_text(this->filename);
       sprintf(text + 4,str + 4,pcVar3);
@@ -1318,8 +1263,6 @@ TRIBE_Campaign_Editor_Screen::action
     }
     if ((this->need_to_save != '\0') &&
        (iVar2 = TTextPanel::numberLines((TTextPanel *)this->campaign_scenarios), 0 < iVar2)) {
-                    /* language.dll match for 0x2bc9: "Do you want to save your changes to
-                       campaign\\n %s" */
       TPanel::get_string((TPanel *)this,0x2bc9,str + 4,0x100);
       pcVar3 = TEditPanel::get_text(this->filename);
       sprintf(text + 4,str + 4,pcVar3);

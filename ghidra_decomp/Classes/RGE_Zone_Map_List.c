@@ -9,8 +9,6 @@
 
 // Function: RGE_Zone_Map_List
 // Address: 00547180
-/* public: __thiscall RGE_Zone_Map_List::RGE_Zone_Map_List(int,class RGE_Map *) */
-
 RGE_Zone_Map_List * __thiscall
 RGE_Zone_Map_List::RGE_Zone_Map_List(RGE_Zone_Map_List *this,int param_1,RGE_Map *param_2)
 {
@@ -64,8 +62,6 @@ RGE_Zone_Map_List::RGE_Zone_Map_List(RGE_Zone_Map_List *this,int param_1,RGE_Map
 
 // Function: RGE_Zone_Map_List
 // Address: 00547240
-/* public: __thiscall RGE_Zone_Map_List::RGE_Zone_Map_List(class RGE_Map *) */
-
 void __thiscall RGE_Zone_Map_List::RGE_Zone_Map_List(RGE_Zone_Map_List *this,RGE_Map *param_1)
 {
   this->map = param_1;
@@ -78,8 +74,6 @@ void __thiscall RGE_Zone_Map_List::RGE_Zone_Map_List(RGE_Zone_Map_List *this,RGE
 
 // Function: ~RGE_Zone_Map_List
 // Address: 00547260
-/* public: __thiscall RGE_Zone_Map_List::~RGE_Zone_Map_List(void) */
-
 void __thiscall RGE_Zone_Map_List::~RGE_Zone_Map_List(RGE_Zone_Map_List *this)
 {
   RGE_Zone_Map *this_00;
@@ -108,8 +102,6 @@ void __thiscall RGE_Zone_Map_List::~RGE_Zone_Map_List(RGE_Zone_Map_List *this)
 
 // Function: save
 // Address: 00547270
-/* public: void __thiscall RGE_Zone_Map_List::save(int) */
-
 void __thiscall RGE_Zone_Map_List::save(RGE_Zone_Map_List *this,int param_1)
 {
   long *plVar1;
@@ -130,8 +122,6 @@ void __thiscall RGE_Zone_Map_List::save(RGE_Zone_Map_List *this,int param_1)
 
 // Function: create_zone_map
 // Address: 005472b0
-/* public: long __thiscall RGE_Zone_Map_List::create_zone_map(float *,long) */
-
 long __thiscall
 RGE_Zone_Map_List::create_zone_map(RGE_Zone_Map_List *this,float *param_1,long param_2)
 {
@@ -202,8 +192,6 @@ LAB_0054737c:
 
 // Function: get_zone_map
 // Address: 005473b0
-/* public: class RGE_Zone_Map * __thiscall RGE_Zone_Map_List::get_zone_map(float *,long,int &) */
-
 RGE_Zone_Map * __thiscall
 RGE_Zone_Map_List::get_zone_map(RGE_Zone_Map_List *this,float *param_1,long param_2,int *param_3)
 {
@@ -273,8 +261,6 @@ LAB_00547485:
 
 // Function: get_zone_map
 // Address: 005474b0
-/* public: class RGE_Zone_Map * __thiscall RGE_Zone_Map_List::get_zone_map(long) */
-
 RGE_Zone_Map * __thiscall RGE_Zone_Map_List::get_zone_map(RGE_Zone_Map_List *this,long param_1)
 {
   if ((param_1 < this->zone_map_num) && (-1 < param_1)) {
@@ -287,8 +273,6 @@ RGE_Zone_Map * __thiscall RGE_Zone_Map_List::get_zone_map(RGE_Zone_Map_List *thi
 
 // Function: delete_zone_maps
 // Address: 005474d0
-/* public: void __thiscall RGE_Zone_Map_List::delete_zone_maps(void) */
-
 void __thiscall RGE_Zone_Map_List::delete_zone_maps(RGE_Zone_Map_List *this)
 {
   RGE_Zone_Map *this_00;

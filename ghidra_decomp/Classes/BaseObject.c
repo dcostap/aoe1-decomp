@@ -58,8 +58,6 @@
 // Function: BaseObject
 // Address: 00409fa0
 // [HELPER] s_: ""
-/* public: __thiscall BaseObject::BaseObject(void) */
-
 BaseObject * __thiscall BaseObject::BaseObject(BaseObject *this)
 {
   char cVar1;
@@ -122,8 +120,6 @@ BaseObject * __thiscall BaseObject::BaseObject(BaseObject *this)
 
 // Function: `vector_deleting_destructor'
 // Address: 0040a040
-/* public: virtual void * __thiscall BaseObject::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall BaseObject::_vector_deleting_destructor_(BaseObject *this,uint param_1)
 {
   ~BaseObject(this);
@@ -137,9 +133,6 @@ void * __thiscall BaseObject::_vector_deleting_destructor_(BaseObject *this,uint
 
 // Function: BaseObject
 // Address: 0040a060
-/* public: __thiscall BaseObject::BaseObject(int,int,int,int,char
-   *,float,float,float,float,float,float,int,int,int) */
-
 BaseObject * __thiscall
 BaseObject::BaseObject
           (BaseObject *this,int param_1,int param_2,int param_3,int param_4,char *param_5,
@@ -182,8 +175,6 @@ BaseObject::BaseObject
 
 // Function: BaseObject
 // Address: 0040a130
-/* public: __thiscall BaseObject::BaseObject(class BaseObject *) */
-
 BaseObject * __thiscall BaseObject::BaseObject(BaseObject *this,BaseObject *param_1)
 {
   float fVar1;
@@ -231,8 +222,6 @@ BaseObject * __thiscall BaseObject::BaseObject(BaseObject *this,BaseObject *para
 
 // Function: BaseObject
 // Address: 0040a240
-/* public: __thiscall BaseObject::BaseObject(class BaseObject const &) */
-
 BaseObject * __thiscall BaseObject::BaseObject(BaseObject *this,BaseObject *param_1)
 {
   float fVar1;
@@ -280,8 +269,6 @@ BaseObject * __thiscall BaseObject::BaseObject(BaseObject *this,BaseObject *para
 
 // Function: ~BaseObject
 // Address: 0040a350
-/* public: virtual __thiscall BaseObject::~BaseObject(void) */
-
 void __thiscall BaseObject::~BaseObject(BaseObject *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -293,8 +280,6 @@ void __thiscall BaseObject::~BaseObject(BaseObject *this)
 
 // Function: numberGroups
 // Address: 0040a3f0
-/* public: int __thiscall BaseObject::numberGroups(void)const  */
-
 int __thiscall BaseObject::numberGroups(BaseObject *this)
 {
   return this->numberGroupsValue;
@@ -304,8 +289,6 @@ int __thiscall BaseObject::numberGroups(BaseObject *this)
 
 // Function: groupID
 // Address: 0040a400
-/* public: int __thiscall BaseObject::groupID(int)const  */
-
 int __thiscall BaseObject::groupID(BaseObject *this,int param_1)
 {
   if (((this->groupIDValue != (int *)0x0) && (-1 < param_1)) && (param_1 < this->numberGroupsValue))
@@ -319,8 +302,6 @@ int __thiscall BaseObject::groupID(BaseObject *this,int param_1)
 
 // Function: inGroup
 // Address: 0040a420
-/* public: int __thiscall BaseObject::inGroup(int)const  */
-
 int __thiscall BaseObject::inGroup(BaseObject *this,int param_1)
 {
   int iVar1;
@@ -345,8 +326,6 @@ int __thiscall BaseObject::inGroup(BaseObject *this,int param_1)
 
 // Function: addGroup
 // Address: 0040a460
-/* public: int __thiscall BaseObject::addGroup(int) */
-
 int __thiscall BaseObject::addGroup(BaseObject *this,int param_1)
 {
   int iVar1;
@@ -380,8 +359,6 @@ int __thiscall BaseObject::addGroup(BaseObject *this,int param_1)
 
 // Function: removeGroup
 // Address: 0040a4e0
-/* public: int __thiscall BaseObject::removeGroup(int) */
-
 int __thiscall BaseObject::removeGroup(BaseObject *this,int param_1)
 {
   int iVar1;
@@ -417,8 +394,6 @@ int __thiscall BaseObject::removeGroup(BaseObject *this,int param_1)
 
 // Function: categoryID
 // Address: 0040a560
-/* public: int __thiscall BaseObject::categoryID(void)const  */
-
 int __thiscall BaseObject::categoryID(BaseObject *this)
 {
   return this->categoryIDValue;
@@ -428,8 +403,6 @@ int __thiscall BaseObject::categoryID(BaseObject *this)
 
 // Function: typeID
 // Address: 0040a570
-/* public: int __thiscall BaseObject::typeID(void)const  */
-
 int __thiscall BaseObject::typeID(BaseObject *this)
 {
   return this->typeIDValue;
@@ -439,8 +412,6 @@ int __thiscall BaseObject::typeID(BaseObject *this)
 
 // Function: gameID
 // Address: 0040a580
-/* public: int const & __thiscall BaseObject::gameID(void)const  */
-
 int * __thiscall BaseObject::gameID(BaseObject *this)
 {
   return &this->gameIDValue;
@@ -450,8 +421,6 @@ int * __thiscall BaseObject::gameID(BaseObject *this)
 
 // Function: name
 // Address: 0040a590
-/* public: char * __thiscall BaseObject::name(void) */
-
 char * __thiscall BaseObject::name(BaseObject *this)
 {
   return this->nameValue;
@@ -461,8 +430,6 @@ char * __thiscall BaseObject::name(BaseObject *this)
 
 // Function: xPosition
 // Address: 0040a5a0
-/* public: float __thiscall BaseObject::xPosition(void)const  */
-
 float __thiscall BaseObject::xPosition(BaseObject *this)
 {
   return this->xPositionValue;
@@ -472,8 +439,6 @@ float __thiscall BaseObject::xPosition(BaseObject *this)
 
 // Function: yPosition
 // Address: 0040a5b0
-/* public: float __thiscall BaseObject::yPosition(void)const  */
-
 float __thiscall BaseObject::yPosition(BaseObject *this)
 {
   return this->yPositionValue;
@@ -483,8 +448,6 @@ float __thiscall BaseObject::yPosition(BaseObject *this)
 
 // Function: zPosition
 // Address: 0040a5c0
-/* public: float __thiscall BaseObject::zPosition(void)const  */
-
 float __thiscall BaseObject::zPosition(BaseObject *this)
 {
   return this->zPositionValue;
@@ -494,8 +457,6 @@ float __thiscall BaseObject::zPosition(BaseObject *this)
 
 // Function: xSize
 // Address: 0040a5d0
-/* public: float __thiscall BaseObject::xSize(void)const  */
-
 float __thiscall BaseObject::xSize(BaseObject *this)
 {
   return this->xSizeValue;
@@ -505,8 +466,6 @@ float __thiscall BaseObject::xSize(BaseObject *this)
 
 // Function: ySize
 // Address: 0040a5e0
-/* public: float __thiscall BaseObject::ySize(void)const  */
-
 float __thiscall BaseObject::ySize(BaseObject *this)
 {
   return this->ySizeValue;
@@ -516,8 +475,6 @@ float __thiscall BaseObject::ySize(BaseObject *this)
 
 // Function: zSize
 // Address: 0040a5f0
-/* public: float __thiscall BaseObject::zSize(void)const  */
-
 float __thiscall BaseObject::zSize(BaseObject *this)
 {
   return this->zSizeValue;
@@ -527,8 +484,6 @@ float __thiscall BaseObject::zSize(BaseObject *this)
 
 // Function: hitPoints
 // Address: 0040a600
-/* public: int __thiscall BaseObject::hitPoints(void)const  */
-
 int __thiscall BaseObject::hitPoints(BaseObject *this)
 {
   return this->hitPointValue;
@@ -538,8 +493,6 @@ int __thiscall BaseObject::hitPoints(BaseObject *this)
 
 // Function: minHitPoints
 // Address: 0040a610
-/* public: int __thiscall BaseObject::minHitPoints(void)const  */
-
 int __thiscall BaseObject::minHitPoints(BaseObject *this)
 {
   return this->minHitPointValue;
@@ -549,8 +502,6 @@ int __thiscall BaseObject::minHitPoints(BaseObject *this)
 
 // Function: maxHitPoints
 // Address: 0040a620
-/* public: int __thiscall BaseObject::maxHitPoints(void)const  */
-
 int __thiscall BaseObject::maxHitPoints(BaseObject *this)
 {
   return this->maxHitPointValue;
@@ -560,8 +511,6 @@ int __thiscall BaseObject::maxHitPoints(BaseObject *this)
 
 // Function: busy
 // Address: 0040a630
-/* public: int __thiscall BaseObject::busy(void)const  */
-
 int __thiscall BaseObject::busy(BaseObject *this)
 {
   return this->busyValue;
@@ -571,8 +520,6 @@ int __thiscall BaseObject::busy(BaseObject *this)
 
 // Function: currentTask
 // Address: 0040a640
-/* public: int __thiscall BaseObject::currentTask(void)const  */
-
 int __thiscall BaseObject::currentTask(BaseObject *this)
 {
   return this->currentTaskValue;
@@ -582,8 +529,6 @@ int __thiscall BaseObject::currentTask(BaseObject *this)
 
 // Function: currentTarget
 // Address: 0040a650
-/* public: int __thiscall BaseObject::currentTarget(void)const  */
-
 int __thiscall BaseObject::currentTarget(BaseObject *this)
 {
   return this->currentTargetValue;
@@ -593,8 +538,6 @@ int __thiscall BaseObject::currentTarget(BaseObject *this)
 
 // Function: currentTargetType
 // Address: 0040a660
-/* public: int __thiscall BaseObject::currentTargetType(void)const  */
-
 int __thiscall BaseObject::currentTargetType(BaseObject *this)
 {
   return this->currentTargetTypeValue;
@@ -604,8 +547,6 @@ int __thiscall BaseObject::currentTargetType(BaseObject *this)
 
 // Function: currentTargetXPosition
 // Address: 0040a670
-/* public: float __thiscall BaseObject::currentTargetXPosition(void)const  */
-
 float __thiscall BaseObject::currentTargetXPosition(BaseObject *this)
 {
   return this->currentTargetXPositionValue;
@@ -615,8 +556,6 @@ float __thiscall BaseObject::currentTargetXPosition(BaseObject *this)
 
 // Function: currentTargetYPosition
 // Address: 0040a680
-/* public: float __thiscall BaseObject::currentTargetYPosition(void)const  */
-
 float __thiscall BaseObject::currentTargetYPosition(BaseObject *this)
 {
   return this->currentTargetYPositionValue;
@@ -626,8 +565,6 @@ float __thiscall BaseObject::currentTargetYPosition(BaseObject *this)
 
 // Function: currentTargetZPosition
 // Address: 0040a690
-/* public: float __thiscall BaseObject::currentTargetZPosition(void)const  */
-
 float __thiscall BaseObject::currentTargetZPosition(BaseObject *this)
 {
   return this->currentTargetZPositionValue;
@@ -637,8 +574,6 @@ float __thiscall BaseObject::currentTargetZPosition(BaseObject *this)
 
 // Function: setXPosition
 // Address: 0040a6a0
-/* public: void __thiscall BaseObject::setXPosition(float) */
-
 void __thiscall BaseObject::setXPosition(BaseObject *this,float param_1)
 {
   this->xPositionValue = param_1;
@@ -649,8 +584,6 @@ void __thiscall BaseObject::setXPosition(BaseObject *this,float param_1)
 
 // Function: setYPosition
 // Address: 0040a6b0
-/* public: void __thiscall BaseObject::setYPosition(float) */
-
 void __thiscall BaseObject::setYPosition(BaseObject *this,float param_1)
 {
   this->yPositionValue = param_1;
@@ -661,8 +594,6 @@ void __thiscall BaseObject::setYPosition(BaseObject *this,float param_1)
 
 // Function: setZPosition
 // Address: 0040a6c0
-/* public: void __thiscall BaseObject::setZPosition(float) */
-
 void __thiscall BaseObject::setZPosition(BaseObject *this,float param_1)
 {
   this->zPositionValue = param_1;
@@ -673,8 +604,6 @@ void __thiscall BaseObject::setZPosition(BaseObject *this,float param_1)
 
 // Function: setXSize
 // Address: 0040a6d0
-/* public: void __thiscall BaseObject::setXSize(float) */
-
 void __thiscall BaseObject::setXSize(BaseObject *this,float param_1)
 {
   this->xSizeValue = param_1;
@@ -685,8 +614,6 @@ void __thiscall BaseObject::setXSize(BaseObject *this,float param_1)
 
 // Function: setYSize
 // Address: 0040a6e0
-/* public: void __thiscall BaseObject::setYSize(float) */
-
 void __thiscall BaseObject::setYSize(BaseObject *this,float param_1)
 {
   this->ySizeValue = param_1;
@@ -697,8 +624,6 @@ void __thiscall BaseObject::setYSize(BaseObject *this,float param_1)
 
 // Function: setZSize
 // Address: 0040a6f0
-/* public: void __thiscall BaseObject::setZSize(float) */
-
 void __thiscall BaseObject::setZSize(BaseObject *this,float param_1)
 {
   this->zSizeValue = param_1;
@@ -709,8 +634,6 @@ void __thiscall BaseObject::setZSize(BaseObject *this,float param_1)
 
 // Function: setHitPoints
 // Address: 0040a700
-/* public: void __thiscall BaseObject::setHitPoints(int) */
-
 void __thiscall BaseObject::setHitPoints(BaseObject *this,int param_1)
 {
   this->hitPointValue = param_1;
@@ -721,8 +644,6 @@ void __thiscall BaseObject::setHitPoints(BaseObject *this,int param_1)
 
 // Function: incrementHitPoints
 // Address: 0040a710
-/* public: void __thiscall BaseObject::incrementHitPoints(int) */
-
 void __thiscall BaseObject::incrementHitPoints(BaseObject *this,int param_1)
 {
   this->hitPointValue = this->hitPointValue + param_1;
@@ -733,8 +654,6 @@ void __thiscall BaseObject::incrementHitPoints(BaseObject *this,int param_1)
 
 // Function: decrementHitPoints
 // Address: 0040a720
-/* public: void __thiscall BaseObject::decrementHitPoints(int) */
-
 void __thiscall BaseObject::decrementHitPoints(BaseObject *this,int param_1)
 {
   this->hitPointValue = this->hitPointValue - param_1;
@@ -745,8 +664,6 @@ void __thiscall BaseObject::decrementHitPoints(BaseObject *this,int param_1)
 
 // Function: setMinHitPoints
 // Address: 0040a730
-/* public: void __thiscall BaseObject::setMinHitPoints(int) */
-
 void __thiscall BaseObject::setMinHitPoints(BaseObject *this,int param_1)
 {
   this->minHitPointValue = param_1;
@@ -757,8 +674,6 @@ void __thiscall BaseObject::setMinHitPoints(BaseObject *this,int param_1)
 
 // Function: incrementMinHitPoints
 // Address: 0040a740
-/* public: void __thiscall BaseObject::incrementMinHitPoints(int) */
-
 void __thiscall BaseObject::incrementMinHitPoints(BaseObject *this,int param_1)
 {
   this->minHitPointValue = this->minHitPointValue + param_1;
@@ -769,8 +684,6 @@ void __thiscall BaseObject::incrementMinHitPoints(BaseObject *this,int param_1)
 
 // Function: decrementMinHitPoints
 // Address: 0040a750
-/* public: void __thiscall BaseObject::decrementMinHitPoints(int) */
-
 void __thiscall BaseObject::decrementMinHitPoints(BaseObject *this,int param_1)
 {
   this->minHitPointValue = this->minHitPointValue - param_1;
@@ -781,8 +694,6 @@ void __thiscall BaseObject::decrementMinHitPoints(BaseObject *this,int param_1)
 
 // Function: setMaxHitPoints
 // Address: 0040a760
-/* public: void __thiscall BaseObject::setMaxHitPoints(int) */
-
 void __thiscall BaseObject::setMaxHitPoints(BaseObject *this,int param_1)
 {
   this->maxHitPointValue = param_1;
@@ -793,8 +704,6 @@ void __thiscall BaseObject::setMaxHitPoints(BaseObject *this,int param_1)
 
 // Function: incrementMaxHitPoints
 // Address: 0040a770
-/* public: void __thiscall BaseObject::incrementMaxHitPoints(int) */
-
 void __thiscall BaseObject::incrementMaxHitPoints(BaseObject *this,int param_1)
 {
   this->maxHitPointValue = this->maxHitPointValue + param_1;
@@ -805,8 +714,6 @@ void __thiscall BaseObject::incrementMaxHitPoints(BaseObject *this,int param_1)
 
 // Function: decrementMaxHitPoints
 // Address: 0040a790
-/* public: void __thiscall BaseObject::decrementMaxHitPoints(int) */
-
 void __thiscall BaseObject::decrementMaxHitPoints(BaseObject *this,int param_1)
 {
   this->maxHitPointValue = this->maxHitPointValue - param_1;
@@ -817,8 +724,6 @@ void __thiscall BaseObject::decrementMaxHitPoints(BaseObject *this,int param_1)
 
 // Function: setBusy
 // Address: 0040a7b0
-/* public: void __thiscall BaseObject::setBusy(int) */
-
 void __thiscall BaseObject::setBusy(BaseObject *this,int param_1)
 {
   this->busyValue = param_1;
@@ -829,8 +734,6 @@ void __thiscall BaseObject::setBusy(BaseObject *this,int param_1)
 
 // Function: setCurrentTask
 // Address: 0040a7c0
-/* public: void __thiscall BaseObject::setCurrentTask(int) */
-
 void __thiscall BaseObject::setCurrentTask(BaseObject *this,int param_1)
 {
   this->currentTaskValue = param_1;
@@ -841,8 +744,6 @@ void __thiscall BaseObject::setCurrentTask(BaseObject *this,int param_1)
 
 // Function: setCurrentTarget
 // Address: 0040a7d0
-/* public: void __thiscall BaseObject::setCurrentTarget(int) */
-
 void __thiscall BaseObject::setCurrentTarget(BaseObject *this,int param_1)
 {
   this->currentTargetValue = param_1;
@@ -853,8 +754,6 @@ void __thiscall BaseObject::setCurrentTarget(BaseObject *this,int param_1)
 
 // Function: setCurrentTargetType
 // Address: 0040a7e0
-/* public: void __thiscall BaseObject::setCurrentTargetType(int) */
-
 void __thiscall BaseObject::setCurrentTargetType(BaseObject *this,int param_1)
 {
   this->currentTargetTypeValue = param_1;
@@ -865,8 +764,6 @@ void __thiscall BaseObject::setCurrentTargetType(BaseObject *this,int param_1)
 
 // Function: setCurrentTargetPosition
 // Address: 0040a7f0
-/* public: void __thiscall BaseObject::setCurrentTargetPosition(float,float,float) */
-
 void __thiscall
 BaseObject::setCurrentTargetPosition(BaseObject *this,float param_1,float param_2,float param_3)
 {

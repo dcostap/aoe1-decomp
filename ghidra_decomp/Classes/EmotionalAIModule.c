@@ -49,8 +49,6 @@
 // [HELPER] s_Friendly: "Friendly"
 // [HELPER] s_Passive: "Passive"
 // [HELPER] s_Vengeful: "Vengeful"
-/* public: __thiscall EmotionalAIModule::EmotionalAIModule(void *,int) */
-
 EmotionalAIModule * __thiscall
 EmotionalAIModule::EmotionalAIModule(EmotionalAIModule *this,void *param_1,int param_2)
 {
@@ -216,9 +214,6 @@ EmotionalAIModule::EmotionalAIModule(EmotionalAIModule *this,void *param_1,int p
 
 // Function: `vector_deleting_destructor'
 // Address: 0040c900
-/* public: virtual void * __thiscall EmotionalAIModule::`vector deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 EmotionalAIModule::_vector_deleting_destructor_(EmotionalAIModule *this,uint param_1)
 {
@@ -240,8 +235,6 @@ EmotionalAIModule::_vector_deleting_destructor_(EmotionalAIModule *this,uint par
 // [HELPER] s_Friendly: "Friendly"
 // [HELPER] s_Passive: "Passive"
 // [HELPER] s_Vengeful: "Vengeful"
-/* public: __thiscall EmotionalAIModule::EmotionalAIModule(int,int) */
-
 EmotionalAIModule * __thiscall
 EmotionalAIModule::EmotionalAIModule(EmotionalAIModule *this,int param_1,int param_2)
 {
@@ -419,8 +412,6 @@ EmotionalAIModule::EmotionalAIModule(EmotionalAIModule *this,int param_1,int par
 
 // Function: ~EmotionalAIModule
 // Address: 0040ca90
-/* public: virtual __thiscall EmotionalAIModule::~EmotionalAIModule(void) */
-
 void __thiscall EmotionalAIModule::~EmotionalAIModule(EmotionalAIModule *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -432,8 +423,6 @@ void __thiscall EmotionalAIModule::~EmotionalAIModule(EmotionalAIModule *this)
 
 // Function: setMainDecisionAI
 // Address: 0040caa0
-/* public: void __thiscall EmotionalAIModule::setMainDecisionAI(class MainDecisionAIModule *) */
-
 void __thiscall
 EmotionalAIModule::setMainDecisionAI(EmotionalAIModule *this,MainDecisionAIModule *param_1)
 {
@@ -445,8 +434,6 @@ EmotionalAIModule::setMainDecisionAI(EmotionalAIModule *this,MainDecisionAIModul
 
 // Function: save
 // Address: 0040cab0
-/* public: virtual int __thiscall EmotionalAIModule::save(int) */
-
 int __thiscall EmotionalAIModule::save(EmotionalAIModule *this,int param_1)
 {
   int *piVar1;
@@ -466,8 +453,6 @@ int __thiscall EmotionalAIModule::save(EmotionalAIModule *this,int param_1)
 
 // Function: stateName
 // Address: 0040cae0
-/* public: char * __thiscall EmotionalAIModule::stateName(int) */
-
 char * __thiscall EmotionalAIModule::stateName(EmotionalAIModule *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 6)) {
@@ -480,8 +465,6 @@ char * __thiscall EmotionalAIModule::stateName(EmotionalAIModule *this,int param
 
 // Function: state
 // Address: 0040cb10
-/* public: int __thiscall EmotionalAIModule::state(int)const  */
-
 int __thiscall EmotionalAIModule::state(EmotionalAIModule *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 6)) {
@@ -494,8 +477,6 @@ int __thiscall EmotionalAIModule::state(EmotionalAIModule *this,int param_1)
 
 // Function: setState
 // Address: 0040cb30
-/* public: void __thiscall EmotionalAIModule::setState(int,int) */
-
 void __thiscall EmotionalAIModule::setState(EmotionalAIModule *this,int param_1,int param_2)
 {
   if ((-1 < param_1) && (param_1 < 6)) {
@@ -508,8 +489,6 @@ void __thiscall EmotionalAIModule::setState(EmotionalAIModule *this,int param_1,
 
 // Function: incrementState
 // Address: 0040cb50
-/* public: void __thiscall EmotionalAIModule::incrementState(int,int) */
-
 void __thiscall EmotionalAIModule::incrementState(EmotionalAIModule *this,int param_1,int param_2)
 {
   if ((-1 < param_1) && (param_1 < 6)) {
@@ -522,8 +501,6 @@ void __thiscall EmotionalAIModule::incrementState(EmotionalAIModule *this,int pa
 
 // Function: decrementState
 // Address: 0040cb80
-/* public: void __thiscall EmotionalAIModule::decrementState(int,int) */
-
 void __thiscall EmotionalAIModule::decrementState(EmotionalAIModule *this,int param_1,int param_2)
 {
   if ((-1 < param_1) && (param_1 < 6)) {
@@ -536,8 +513,6 @@ void __thiscall EmotionalAIModule::decrementState(EmotionalAIModule *this,int pa
 
 // Function: overallState
 // Address: 0040cbb0
-/* public: int __thiscall EmotionalAIModule::overallState(void)const  */
-
 int __thiscall EmotionalAIModule::overallState(EmotionalAIModule *this)
 {
   int iVar1;
@@ -564,8 +539,6 @@ int __thiscall EmotionalAIModule::overallState(EmotionalAIModule *this)
 
 // Function: setOverallState
 // Address: 0040cbe0
-/* public: void __thiscall EmotionalAIModule::setOverallState(int) */
-
 void __thiscall EmotionalAIModule::setOverallState(EmotionalAIModule *this,int param_1)
 {
   switch(param_1) {
@@ -624,8 +597,6 @@ void __thiscall EmotionalAIModule::setOverallState(EmotionalAIModule *this,int p
 
 // Function: defaultState
 // Address: 0040cd80
-/* public: int __thiscall EmotionalAIModule::defaultState(void)const  */
-
 int __thiscall EmotionalAIModule::defaultState(EmotionalAIModule *this)
 {
   return 4;

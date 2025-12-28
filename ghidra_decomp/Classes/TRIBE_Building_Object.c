@@ -180,9 +180,6 @@
 
 // Function: TRIBE_Building_Object
 // Address: 004c7f50
-/* public: __thiscall TRIBE_Building_Object::TRIBE_Building_Object(class
-   TRIBE_Master_Building_Object *,class RGE_Player *,float,float,float,int,int) */
-
 TRIBE_Building_Object * __thiscall
 TRIBE_Building_Object::TRIBE_Building_Object
           (TRIBE_Building_Object *this,TRIBE_Master_Building_Object *param_1,RGE_Player *param_2,
@@ -240,9 +237,6 @@ TRIBE_Building_Object::TRIBE_Building_Object
 
 // Function: `scalar_deleting_destructor'
 // Address: 004c8090
-/* public: virtual void * __thiscall TRIBE_Building_Object::`scalar deleting destructor'(unsigned
-   int) */
-
 void * __thiscall
 TRIBE_Building_Object::_scalar_deleting_destructor_(TRIBE_Building_Object *this,uint param_1)
 {
@@ -257,9 +251,6 @@ TRIBE_Building_Object::_scalar_deleting_destructor_(TRIBE_Building_Object *this,
 
 // Function: TRIBE_Building_Object
 // Address: 004c80b0
-/* public: __thiscall TRIBE_Building_Object::TRIBE_Building_Object(class
-   TRIBE_Master_Building_Object *,class RGE_Player *,float,float,float,int) */
-
 TRIBE_Building_Object * __thiscall
 TRIBE_Building_Object::TRIBE_Building_Object
           (TRIBE_Building_Object *this,TRIBE_Master_Building_Object *param_1,RGE_Player *param_2,
@@ -314,9 +305,6 @@ TRIBE_Building_Object::TRIBE_Building_Object
 
 // Function: TRIBE_Building_Object
 // Address: 004c81d0
-/* public: __thiscall TRIBE_Building_Object::TRIBE_Building_Object(int,class RGE_Game_World *,int)
-    */
-
 TRIBE_Building_Object * __thiscall
 TRIBE_Building_Object::TRIBE_Building_Object
           (TRIBE_Building_Object *this,int param_1,RGE_Game_World *param_2,int param_3)
@@ -361,8 +349,6 @@ TRIBE_Building_Object::TRIBE_Building_Object
 
 // Function: ~TRIBE_Building_Object
 // Address: 004c82a0
-/* public: virtual __thiscall TRIBE_Building_Object::~TRIBE_Building_Object(void) */
-
 void __thiscall TRIBE_Building_Object::~TRIBE_Building_Object(TRIBE_Building_Object *this)
 {
   RGE_Action_List *this_00;
@@ -405,8 +391,6 @@ void __thiscall TRIBE_Building_Object::~TRIBE_Building_Object(TRIBE_Building_Obj
 
 // Function: recycle_out_of_game
 // Address: 004c8370
-/* public: virtual void __thiscall TRIBE_Building_Object::recycle_out_of_game(void) */
-
 void __thiscall TRIBE_Building_Object::recycle_out_of_game(TRIBE_Building_Object *this)
 {
   if (this->production_queue_actions != (RGE_Action_List *)0x0) {
@@ -430,9 +414,6 @@ void __thiscall TRIBE_Building_Object::recycle_out_of_game(TRIBE_Building_Object
 
 // Function: setup
 // Address: 004c83e0
-/* protected: virtual int __thiscall TRIBE_Building_Object::setup(class TRIBE_Master_Building_Object
-   *,class RGE_Player *,float,float,float) */
-
 int __thiscall
 TRIBE_Building_Object::setup
           (TRIBE_Building_Object *this,TRIBE_Master_Building_Object *param_1,RGE_Player *param_2,
@@ -469,9 +450,6 @@ TRIBE_Building_Object::setup
 
 // Function: setup
 // Address: 004c8490
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall TRIBE_Building_Object::setup(int,class RGE_Game_World *) */
-
 int __thiscall
 TRIBE_Building_Object::setup(TRIBE_Building_Object *this,int param_1,RGE_Game_World *param_2)
 {
@@ -514,9 +492,6 @@ TRIBE_Building_Object::setup(TRIBE_Building_Object *this,int param_1,RGE_Game_Wo
 
 // Function: take_building_attribute_from_owner
 // Address: 004c85d0
-/* public: virtual void __thiscall TRIBE_Building_Object::take_building_attribute_from_owner(void)
-    */
-
 void __thiscall
 TRIBE_Building_Object::take_building_attribute_from_owner(TRIBE_Building_Object *this)
 {
@@ -527,7 +502,6 @@ TRIBE_Building_Object::take_building_attribute_from_owner(TRIBE_Building_Object 
   
   iVar4 = 0;
   iVar2 = 0x6a;
-                    /* language.dll match for 0x70: "B" */
   iVar3 = 0x70;
   do {
     iVar1 = this->_padding_;
@@ -546,8 +520,6 @@ TRIBE_Building_Object::take_building_attribute_from_owner(TRIBE_Building_Object 
 
 // Function: give_building_attribute_to_owner
 // Address: 004c8630
-/* public: virtual void __thiscall TRIBE_Building_Object::give_building_attribute_to_owner(void) */
-
 void __thiscall TRIBE_Building_Object::give_building_attribute_to_owner(TRIBE_Building_Object *this)
 {
   int iVar1;
@@ -557,7 +529,6 @@ void __thiscall TRIBE_Building_Object::give_building_attribute_to_owner(TRIBE_Bu
   
   iVar4 = 0;
   iVar2 = 0x6a;
-                    /* language.dll match for 0x70: "B" */
   iVar3 = 0x70;
   do {
     iVar1 = this->_padding_;
@@ -576,8 +547,6 @@ void __thiscall TRIBE_Building_Object::give_building_attribute_to_owner(TRIBE_Bu
 
 // Function: destroy_obj
 // Address: 004c8690
-/* public: virtual void __thiscall TRIBE_Building_Object::destroy_obj(void) */
-
 void __thiscall TRIBE_Building_Object::destroy_obj(TRIBE_Building_Object *this)
 {
   (**(code **)(this->_padding_ + 600))();
@@ -592,8 +561,6 @@ void __thiscall TRIBE_Building_Object::destroy_obj(TRIBE_Building_Object *this)
 
 // Function: heal
 // Address: 004c86c0
-/* public: virtual unsigned char __thiscall TRIBE_Building_Object::heal(float) */
-
 uchar __thiscall TRIBE_Building_Object::heal(TRIBE_Building_Object *this,float param_1)
 {
   int iVar1;
@@ -621,8 +588,6 @@ uchar __thiscall TRIBE_Building_Object::heal(TRIBE_Building_Object *this,float p
 // Function: set_object_state
 // Address: 004c8740
 // [HELPER] s_C__msdev_work_age1_x1_t_b_obj_cp: "C:\msdev\work\age1_x1\t_b_obj.cpp"
-/* public: virtual void __thiscall TRIBE_Building_Object::set_object_state(unsigned char) */
-
 void __thiscall TRIBE_Building_Object::set_object_state(TRIBE_Building_Object *this,uchar param_1)
 {
   RGE_Sound *this_00;
@@ -743,8 +708,6 @@ void __thiscall TRIBE_Building_Object::set_object_state(TRIBE_Building_Object *t
 
 // Function: rehook
 // Address: 004c8a60
-/* public: virtual void __thiscall TRIBE_Building_Object::rehook(void) */
-
 void __thiscall TRIBE_Building_Object::rehook(TRIBE_Building_Object *this)
 {
   RGE_Action_Object::rehook((RGE_Action_Object *)this);
@@ -756,8 +719,6 @@ void __thiscall TRIBE_Building_Object::rehook(TRIBE_Building_Object *this)
 
 // Function: update
 // Address: 004c8a80
-/* public: virtual unsigned char __thiscall TRIBE_Building_Object::update(void) */
-
 uchar __thiscall TRIBE_Building_Object::update(TRIBE_Building_Object *this)
 {
   short sVar1;
@@ -796,9 +757,6 @@ uchar __thiscall TRIBE_Building_Object::update(TRIBE_Building_Object *this)
 
 // Function: explore_terrain
 // Address: 004c8b80
-/* public: virtual int __thiscall TRIBE_Building_Object::explore_terrain(class RGE_Player *,unsigned
-   char,int) */
-
 int __thiscall
 TRIBE_Building_Object::explore_terrain
           (TRIBE_Building_Object *this,RGE_Player *param_1,uchar param_2,int param_3)
@@ -817,8 +775,6 @@ TRIBE_Building_Object::explore_terrain
 
 // Function: save
 // Address: 004c8bc0
-/* public: virtual void __thiscall TRIBE_Building_Object::save(int) */
-
 void __thiscall TRIBE_Building_Object::save(TRIBE_Building_Object *this,int param_1)
 {
   short sVar1;
@@ -851,8 +807,6 @@ void __thiscall TRIBE_Building_Object::save(TRIBE_Building_Object *this,int para
 
 // Function: change_ownership
 // Address: 004c8cb0
-/* public: virtual void __thiscall TRIBE_Building_Object::change_ownership(class RGE_Player *) */
-
 void __thiscall
 TRIBE_Building_Object::change_ownership(TRIBE_Building_Object *this,RGE_Player *param_1)
 {
@@ -908,7 +862,6 @@ TRIBE_Building_Object::change_ownership(TRIBE_Building_Object *this,RGE_Player *
     if ((char)this->_padding_ == '\x02') {
       iVar3 = 0;
       param_1 = (RGE_Player *)0x6a;
-                    /* language.dll match for 0x70: "B" */
       iVar4 = 0x70;
       do {
         iVar2 = this->_padding_;
@@ -931,8 +884,6 @@ TRIBE_Building_Object::change_ownership(TRIBE_Building_Object *this,RGE_Player *
 
 // Function: modify
 // Address: 004c8e60
-/* public: virtual void __thiscall TRIBE_Building_Object::modify(float,unsigned char) */
-
 void __thiscall
 TRIBE_Building_Object::modify(TRIBE_Building_Object *this,float param_1,uchar param_2)
 {
@@ -951,8 +902,6 @@ TRIBE_Building_Object::modify(TRIBE_Building_Object *this,float param_1,uchar pa
 
 // Function: transform
 // Address: 004c8e90
-/* public: void __thiscall TRIBE_Building_Object::transform(class TRIBE_Master_Building_Object *) */
-
 void __thiscall
 TRIBE_Building_Object::transform(TRIBE_Building_Object *this,TRIBE_Master_Building_Object *param_1)
 {
@@ -969,9 +918,6 @@ TRIBE_Building_Object::transform(TRIBE_Building_Object *this,TRIBE_Master_Buildi
 
 // Function: check
 // Address: 004c8ed0
-/* WARNING: Variable defined which should be unmapped: counter */
-/* public: long __thiscall TRIBE_Building_Object::check(class TRIBE_Building_Object * *) */
-
 long __thiscall
 TRIBE_Building_Object::check(TRIBE_Building_Object *this,TRIBE_Building_Object **param_1)
 {
@@ -1065,9 +1011,6 @@ LAB_004c902d:
 
 // Function: connect
 // Address: 004c90b0
-/* WARNING: Variable defined which should be unmapped: checks */
-/* public: void __thiscall TRIBE_Building_Object::connect(void) */
-
 void __thiscall TRIBE_Building_Object::connect(TRIBE_Building_Object *this)
 {
   byte bVar1;
@@ -1127,9 +1070,6 @@ LAB_004c912d:
 
 // Function: connect2
 // Address: 004c9180
-/* WARNING: Variable defined which should be unmapped: checks */
-/* public: void __thiscall TRIBE_Building_Object::connect2(void) */
-
 void __thiscall TRIBE_Building_Object::connect2(TRIBE_Building_Object *this)
 {
   TRIBE_Building_Object *checks [4];
@@ -1171,9 +1111,6 @@ LAB_004c91fe:
 
 // Function: lay_down_impassable_terrain
 // Address: 004c9230
-/* WARNING: Variable defined which should be unmapped: tx2 */
-/* public: void __thiscall TRIBE_Building_Object::lay_down_impassable_terrain(void) */
-
 void __thiscall TRIBE_Building_Object::lay_down_impassable_terrain(TRIBE_Building_Object *this)
 {
   int iVar1;
@@ -1248,9 +1185,6 @@ LAB_004c933d:
 
 // Function: lay_down_passable_terrain
 // Address: 004c9360
-/* WARNING: Variable defined which should be unmapped: tx2 */
-/* public: void __thiscall TRIBE_Building_Object::lay_down_passable_terrain(void) */
-
 void __thiscall TRIBE_Building_Object::lay_down_passable_terrain(TRIBE_Building_Object *this)
 {
   int iVar1;
@@ -1327,8 +1261,6 @@ LAB_004c9469:
 
 // Function: cancel_object
 // Address: 004c9480
-/* public: virtual void __thiscall TRIBE_Building_Object::cancel_object(void) */
-
 void __thiscall TRIBE_Building_Object::cancel_object(TRIBE_Building_Object *this)
 {
   if ((byte)this->_padding_ < 2) {
@@ -1343,10 +1275,6 @@ void __thiscall TRIBE_Building_Object::cancel_object(TRIBE_Building_Object *this
 
 // Function: cancel_build
 // Address: 004c9490
-/* WARNING: Variable defined which should be unmapped: percent */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall TRIBE_Building_Object::cancel_build(void) */
-
 void __thiscall TRIBE_Building_Object::cancel_build(TRIBE_Building_Object *this)
 {
   short sVar1;
@@ -1387,8 +1315,6 @@ void __thiscall TRIBE_Building_Object::cancel_build(TRIBE_Building_Object *this)
 
 // Function: build
 // Address: 004c9560
-/* public: unsigned char __thiscall TRIBE_Building_Object::build(float) */
-
 uchar __thiscall TRIBE_Building_Object::build(TRIBE_Building_Object *this,float param_1)
 {
   int iVar1;
@@ -1420,9 +1346,6 @@ uchar __thiscall TRIBE_Building_Object::build(TRIBE_Building_Object *this,float 
 
 // Function: work_status
 // Address: 004c9620
-/* public: int __thiscall TRIBE_Building_Object::work_status(short &,short &,short &,char *,short)
-    */
-
 int __thiscall
 TRIBE_Building_Object::work_status
           (TRIBE_Building_Object *this,short *param_1,short *param_2,short *param_3,char *param_4,
@@ -1459,8 +1382,6 @@ TRIBE_Building_Object::work_status
 
 // Function: get_construction_progress
 // Address: 004c96c0
-/* public: short __thiscall TRIBE_Building_Object::get_construction_progress(void) */
-
 short __thiscall TRIBE_Building_Object::get_construction_progress(TRIBE_Building_Object *this)
 {
   short sVar1;
@@ -1480,9 +1401,6 @@ short __thiscall TRIBE_Building_Object::get_construction_progress(TRIBE_Building
 
 // Function: copy_obj
 // Address: 004c9710
-/* public: virtual void __thiscall TRIBE_Building_Object::copy_obj(class RGE_Master_Static_Object *)
-    */
-
 void __thiscall
 TRIBE_Building_Object::copy_obj(TRIBE_Building_Object *this,RGE_Master_Static_Object *param_1)
 {
@@ -1500,8 +1418,6 @@ TRIBE_Building_Object::copy_obj(TRIBE_Building_Object *this,RGE_Master_Static_Ob
 
 // Function: rotate
 // Address: 004c9760
-/* public: virtual void __thiscall TRIBE_Building_Object::rotate(long) */
-
 void __thiscall TRIBE_Building_Object::rotate(TRIBE_Building_Object *this,long param_1)
 {
   return;
@@ -1511,11 +1427,6 @@ void __thiscall TRIBE_Building_Object::rotate(TRIBE_Building_Object *this,long p
 
 // Function: damage
 // Address: 004c9770
-/* WARNING: Variable defined which should be unmapped: temp_hp */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual void __thiscall TRIBE_Building_Object::damage(int,struct RGE_Armor_Weapon_Info
-   *,float,class RGE_Player *,class RGE_Static_Object *) */
-
 void __thiscall
 TRIBE_Building_Object::damage
           (TRIBE_Building_Object *this,int param_1,RGE_Armor_Weapon_Info *param_2,float param_3,
@@ -1554,9 +1465,6 @@ LAB_004c9835:
 
 // Function: add_to_production_queue
 // Address: 004c9870
-/* WARNING: Variable defined which should be unmapped: queue_changed */
-/* public: void __thiscall TRIBE_Building_Object::add_to_production_queue(short,short) */
-
 void __thiscall
 TRIBE_Building_Object::add_to_production_queue
           (TRIBE_Building_Object *this,short param_1,short param_2)
@@ -1583,7 +1491,6 @@ TRIBE_Building_Object::add_to_production_queue
     }
     uVar4 = TRIBE_Player::check_obj_cost((TRIBE_Player *)this->_padding_,sVar3,&param_1,1.0,1);
     if (uVar4 == '\0') {
-                    /* language.dll match for 0x7d: "Arial" */
       (**(code **)(rge_base_game->_padding_ + 0x40))
                 (0x7d,(int)*(short *)(this->_padding_ + 0x4a),(int)param_1,0,0);
       return;
@@ -1615,7 +1522,6 @@ TRIBE_Building_Object::add_to_production_queue
       do {
         uVar4 = TRIBE_Player::check_obj_cost((TRIBE_Player *)this->_padding_,sVar3,&param_1,1.0,1);
         if (uVar4 == '\0') {
-                    /* language.dll match for 0x7d: "Arial" */
           (**(code **)(rge_base_game->_padding_ + 0x40))
                     (0x7d,(int)*(short *)(this->_padding_ + 0x4a),(int)param_1,0,0);
           break;
@@ -1629,7 +1535,6 @@ TRIBE_Building_Object::add_to_production_queue
     this->production_queue[this->production_queue_count].master_id = sVar3;
     this->production_queue_count = this->production_queue_count + 1;
     this->production_queue_change_flag = this->production_queue_change_flag + '\x01';
-                    /* language.dll match for 0x7c: "B" */
     (**(code **)(rge_base_game->_padding_ + 0x40))
               (0x7c,(int)*(short *)(this->_padding_ + 0x4a),0,0,0);
   }
@@ -1640,7 +1545,6 @@ TRIBE_Building_Object::add_to_production_queue
       do {
         uVar4 = TRIBE_Player::check_obj_cost((TRIBE_Player *)this->_padding_,sVar3,&param_1,1.0,1);
         if (uVar4 == '\0') {
-                    /* language.dll match for 0x7d: "Arial" */
           (**(code **)(rge_base_game->_padding_ + 0x40))
                     (0x7d,(int)*(short *)(this->_padding_ + 0x4a),(int)param_1,0,0);
           break;
@@ -1654,7 +1558,6 @@ TRIBE_Building_Object::add_to_production_queue
     }
     if (bVar2) {
       this->production_queue_change_flag = this->production_queue_change_flag + '\x01';
-                    /* language.dll match for 0x7c: "B" */
       (**(code **)(rge_base_game->_padding_ + 0x40))
                 (0x7c,(int)*(short *)(this->_padding_ + 0x4a),0,0,0);
       return;
@@ -1667,8 +1570,6 @@ TRIBE_Building_Object::add_to_production_queue
 
 // Function: remove_from_production_queue
 // Address: 004c9b10
-/* public: void __thiscall TRIBE_Building_Object::remove_from_production_queue(short,short) */
-
 void __thiscall
 TRIBE_Building_Object::remove_from_production_queue
           (TRIBE_Building_Object *this,short param_1,short param_2)
@@ -1725,7 +1626,6 @@ LAB_004c9b36:
       }
     }
 LAB_004c9c51:
-                    /* language.dll match for 0x7c: "B" */
     (**(code **)(rge_base_game->_padding_ + 0x40))
               (0x7c,(int)*(short *)(this->_padding_ + 0x4a),0,0,0);
   }
@@ -1740,8 +1640,6 @@ code_r0x004c9b44:
 
 // Function: advance_production_queue
 // Address: 004c9c80
-/* public: void __thiscall TRIBE_Building_Object::advance_production_queue(void) */
-
 void __thiscall TRIBE_Building_Object::advance_production_queue(TRIBE_Building_Object *this)
 {
   short *psVar1;
@@ -1764,7 +1662,6 @@ void __thiscall TRIBE_Building_Object::advance_production_queue(TRIBE_Building_O
         } while (iVar3 < this->production_queue_count);
       }
     }
-                    /* language.dll match for 0x7c: "B" */
     (**(code **)(rge_base_game->_padding_ + 0x40))
               (0x7c,(int)*(short *)(this->_padding_ + 0x4a),0,0,0);
   }
@@ -1775,8 +1672,6 @@ void __thiscall TRIBE_Building_Object::advance_production_queue(TRIBE_Building_O
 
 // Function: empty_production_queue
 // Address: 004c9d20
-/* public: void __thiscall TRIBE_Building_Object::empty_production_queue(void) */
-
 void __thiscall TRIBE_Building_Object::empty_production_queue(TRIBE_Building_Object *this)
 {
   int iVar1;
@@ -1799,8 +1694,6 @@ void __thiscall TRIBE_Building_Object::empty_production_queue(TRIBE_Building_Obj
 
 // Function: enable_production_queue
 // Address: 004c9d90
-/* public: void __thiscall TRIBE_Building_Object::enable_production_queue(int) */
-
 void __thiscall
 TRIBE_Building_Object::enable_production_queue(TRIBE_Building_Object *this,int param_1)
 {
@@ -1812,10 +1705,6 @@ TRIBE_Building_Object::enable_production_queue(TRIBE_Building_Object *this,int p
 
 // Function: update_production_queue
 // Address: 004c9da0
-/* WARNING: Variable defined which should be unmapped: work_type */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall TRIBE_Building_Object::update_production_queue(void) */
-
 void __thiscall TRIBE_Building_Object::update_production_queue(TRIBE_Building_Object *this)
 {
   int iVar1;
@@ -1855,7 +1744,6 @@ void __thiscall TRIBE_Building_Object::update_production_queue(TRIBE_Building_Ob
         if (*(float *)(iVar1 + 0x80) <= *(float *)(iVar1 + 0x2c)) {
           if (this->production_queue_need_attr != 0x20) {
             this->production_queue_need_attr = 0x20;
-                    /* language.dll match for 0x7d: "Arial" */
             (**(code **)(rge_base_game->_padding_ + 0x40))
                       (0x7d,(int)*(short *)(iVar3 + 0x4a),0x20,0,0);
             iVar3 = (int)*(short *)(this->_padding_ + 0x4a);
@@ -1869,7 +1757,6 @@ void __thiscall TRIBE_Building_Object::update_production_queue(TRIBE_Building_Ob
         if (*(float *)(iVar1 + 0x10) <= _DAT_005749f4) {
           if (this->production_queue_need_attr != 4) {
             this->production_queue_need_attr = 4;
-                    /* language.dll match for 0x7d: "Arial" */
             (**(code **)(rge_base_game->_padding_ + 0x40))(0x7d,(int)*(short *)(iVar3 + 0x4a),4,0,0)
             ;
             iVar3 = (int)*(short *)(this->_padding_ + 0x4a);
@@ -1927,8 +1814,6 @@ LAB_004c9fc1:
 
 // Function: production_queue_status
 // Address: 004ca030
-/* public: int __thiscall TRIBE_Building_Object::production_queue_status(short &,short &) */
-
 int __thiscall
 TRIBE_Building_Object::production_queue_status
           (TRIBE_Building_Object *this,short *param_1,short *param_2)
@@ -1954,8 +1839,6 @@ TRIBE_Building_Object::production_queue_status
 
 // Function: stop
 // Address: 004ca0b0
-/* public: virtual void __thiscall TRIBE_Building_Object::stop(void) */
-
 void __thiscall TRIBE_Building_Object::stop(TRIBE_Building_Object *this)
 {
   short sVar1;

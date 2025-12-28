@@ -10,10 +10,6 @@
 
 // Function: TRIBE_Player_Tech
 // Address: 0050c3a5
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: __thiscall TRIBE_Player_Tech::TRIBE_Player_Tech(int,class TRIBE_Tech *,class RGE_Player
-   *,unsigned char) */
-
 TRIBE_Player_Tech * __thiscall
 TRIBE_Player_Tech::TRIBE_Player_Tech
           (TRIBE_Player_Tech *this,int param_1,TRIBE_Tech *param_2,RGE_Player *param_3,uchar param_4
@@ -54,9 +50,6 @@ TRIBE_Player_Tech::TRIBE_Player_Tech
 
 // Function: TRIBE_Player_Tech
 // Address: 0050c4fc
-/* public: __thiscall TRIBE_Player_Tech::TRIBE_Player_Tech(class TRIBE_Tech *,class RGE_Player
-   *,unsigned char) */
-
 TRIBE_Player_Tech * __thiscall
 TRIBE_Player_Tech::TRIBE_Player_Tech
           (TRIBE_Player_Tech *this,TRIBE_Tech *param_1,RGE_Player *param_2,uchar param_3)
@@ -80,8 +73,6 @@ TRIBE_Player_Tech::TRIBE_Player_Tech
 
 // Function: ~TRIBE_Player_Tech
 // Address: 0050c562
-/* public: __thiscall TRIBE_Player_Tech::~TRIBE_Player_Tech(void) */
-
 void __thiscall TRIBE_Player_Tech::~TRIBE_Player_Tech(TRIBE_Player_Tech *this)
 {
   if (this->tech_player_tree != (Tech_Player_Tree *)0x0) {
@@ -95,8 +86,6 @@ void __thiscall TRIBE_Player_Tech::~TRIBE_Player_Tech(TRIBE_Player_Tech *this)
 
 // Function: get_tech_state
 // Address: 0050c58c
-/* public: short __thiscall TRIBE_Player_Tech::get_tech_state(short) */
-
 short __thiscall TRIBE_Player_Tech::get_tech_state(TRIBE_Player_Tech *this,short param_1)
 {
   return this->tech_player_tree[param_1].state;
@@ -106,8 +95,6 @@ short __thiscall TRIBE_Player_Tech::get_tech_state(TRIBE_Player_Tech *this,short
 
 // Function: undo_tech
 // Address: 0050c5a7
-/* public: unsigned char __thiscall TRIBE_Player_Tech::undo_tech(short) */
-
 uchar __thiscall TRIBE_Player_Tech::undo_tech(TRIBE_Player_Tech *this,short param_1)
 {
   bool bVar1;
@@ -125,8 +112,6 @@ uchar __thiscall TRIBE_Player_Tech::undo_tech(TRIBE_Player_Tech *this,short para
 // Function: do_tech
 // Address: 0050c5e5
 // [HELPER] groups_used: "00000000"
-/* public: unsigned char __thiscall TRIBE_Player_Tech::do_tech(short) */
-
 uchar __thiscall TRIBE_Player_Tech::do_tech(TRIBE_Player_Tech *this,short param_1)
 {
   uchar uVar1;
@@ -159,8 +144,6 @@ uchar __thiscall TRIBE_Player_Tech::do_tech(TRIBE_Player_Tech *this,short param_
 
 // Function: research
 // Address: 0050c6ad
-/* public: unsigned char __thiscall TRIBE_Player_Tech::research(short,float) */
-
 uchar __thiscall TRIBE_Player_Tech::research(TRIBE_Player_Tech *this,short param_1,float param_2)
 {
   uchar uVar1;
@@ -187,10 +170,6 @@ uchar __thiscall TRIBE_Player_Tech::research(TRIBE_Player_Tech *this,short param
 
 // Function: tech_cost
 // Address: 0050c730
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall TRIBE_Player_Tech::tech_cost(short,short &,short &,short &,short &,short
-   &,short &) */
-
 void __thiscall
 TRIBE_Player_Tech::tech_cost
           (TRIBE_Player_Tech *this,short param_1,short *param_2,short *param_3,short *param_4,
@@ -277,9 +256,6 @@ TRIBE_Player_Tech::tech_cost
 
 // Function: check_tech_cost
 // Address: 0050ca9e
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: unsigned char __thiscall TRIBE_Player_Tech::check_tech_cost(short,short *) */
-
 uchar __thiscall
 TRIBE_Player_Tech::check_tech_cost(TRIBE_Player_Tech *this,short param_1,short *param_2)
 {
@@ -336,9 +312,6 @@ TRIBE_Player_Tech::check_tech_cost(TRIBE_Player_Tech *this,short param_1,short *
 
 // Function: start_research
 // Address: 0050cc25
-/* public: unsigned char __thiscall TRIBE_Player_Tech::start_research(short,unsigned char,short *)
-    */
-
 uchar __thiscall
 TRIBE_Player_Tech::start_research
           (TRIBE_Player_Tech *this,short param_1,uchar param_2,short *param_3)
@@ -384,8 +357,6 @@ TRIBE_Player_Tech::start_research
 
 // Function: cancel_research
 // Address: 0050cd73
-/* public: unsigned char __thiscall TRIBE_Player_Tech::cancel_research(short,unsigned char) */
-
 uchar __thiscall
 TRIBE_Player_Tech::cancel_research(TRIBE_Player_Tech *this,short param_1,uchar param_2)
 {
@@ -419,9 +390,6 @@ TRIBE_Player_Tech::cancel_research(TRIBE_Player_Tech *this,short param_1,uchar p
 
 // Function: check_for_new_tech
 // Address: 0050ce68
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: unsigned char __thiscall TRIBE_Player_Tech::check_for_new_tech(void) */
-
 uchar __thiscall TRIBE_Player_Tech::check_for_new_tech(TRIBE_Player_Tech *this)
 {
   Tech_Tree *pTVar1;
@@ -475,8 +443,6 @@ uchar __thiscall TRIBE_Player_Tech::check_for_new_tech(TRIBE_Player_Tech *this)
 
 // Function: save
 // Address: 0050d07a
-/* public: void __thiscall TRIBE_Player_Tech::save(int) */
-
 void __thiscall TRIBE_Player_Tech::save(TRIBE_Player_Tech *this,int param_1)
 {
   short local_8;
@@ -493,8 +459,6 @@ void __thiscall TRIBE_Player_Tech::save(TRIBE_Player_Tech *this,int param_1)
 
 // Function: get_progress
 // Address: 0050d0fa
-/* public: short __thiscall TRIBE_Player_Tech::get_progress(short) */
-
 short __thiscall TRIBE_Player_Tech::get_progress(TRIBE_Player_Tech *this,short param_1)
 {
   short local_8;
@@ -515,8 +479,6 @@ short __thiscall TRIBE_Player_Tech::get_progress(TRIBE_Player_Tech *this,short p
 
 // Function: get_name
 // Address: 0050d178
-/* public: char * __thiscall TRIBE_Player_Tech::get_name(short) */
-
 char * __thiscall TRIBE_Player_Tech::get_name(TRIBE_Player_Tech *this,short param_1)
 {
   return this->base_tech->tech_tree[param_1].name;
@@ -526,8 +488,6 @@ char * __thiscall TRIBE_Player_Tech::get_name(TRIBE_Player_Tech *this,short para
 
 // Function: get_string_id
 // Address: 0050d197
-/* public: short __thiscall TRIBE_Player_Tech::get_string_id(short) */
-
 short __thiscall TRIBE_Player_Tech::get_string_id(TRIBE_Player_Tech *this,short param_1)
 {
   return this->base_tech->tech_tree[param_1].string_id;
@@ -537,8 +497,6 @@ short __thiscall TRIBE_Player_Tech::get_string_id(TRIBE_Player_Tech *this,short 
 
 // Function: get_string_id2
 // Address: 0050d1b8
-/* public: short __thiscall TRIBE_Player_Tech::get_string_id2(short) */
-
 short __thiscall TRIBE_Player_Tech::get_string_id2(TRIBE_Player_Tech *this,short param_1)
 {
   return this->base_tech->tech_tree[param_1].string_id2;
@@ -548,8 +506,6 @@ short __thiscall TRIBE_Player_Tech::get_string_id2(TRIBE_Player_Tech *this,short
 
 // Function: get_button_location
 // Address: 0050d1d9
-/* public: unsigned char __thiscall TRIBE_Player_Tech::get_button_location(short) */
-
 uchar __thiscall TRIBE_Player_Tech::get_button_location(TRIBE_Player_Tech *this,short param_1)
 {
   return this->base_tech->tech_tree[param_1].button_location;
@@ -559,8 +515,6 @@ uchar __thiscall TRIBE_Player_Tech::get_button_location(TRIBE_Player_Tech *this,
 
 // Function: do_rev_tech
 // Address: 0050d1f9
-/* public: void __thiscall TRIBE_Player_Tech::do_rev_tech(short) */
-
 void __thiscall TRIBE_Player_Tech::do_rev_tech(TRIBE_Player_Tech *this,short param_1)
 {
   short sVar1;
@@ -584,8 +538,6 @@ void __thiscall TRIBE_Player_Tech::do_rev_tech(TRIBE_Player_Tech *this,short par
 
 // Function: rev_tech
 // Address: 0050d281
-/* public: unsigned char __thiscall TRIBE_Player_Tech::rev_tech(short) */
-
 uchar __thiscall TRIBE_Player_Tech::rev_tech(TRIBE_Player_Tech *this,short param_1)
 {
   int local_c;
@@ -606,8 +558,6 @@ uchar __thiscall TRIBE_Player_Tech::rev_tech(TRIBE_Player_Tech *this,short param
 
 // Function: disable
 // Address: 0050d306
-/* public: void __thiscall TRIBE_Player_Tech::disable(short) */
-
 void __thiscall TRIBE_Player_Tech::disable(TRIBE_Player_Tech *this,short param_1)
 {
   int local_8;
@@ -629,8 +579,6 @@ void __thiscall TRIBE_Player_Tech::disable(TRIBE_Player_Tech *this,short param_1
 
 // Function: enable
 // Address: 0050d383
-/* public: void __thiscall TRIBE_Player_Tech::enable(short) */
-
 void __thiscall TRIBE_Player_Tech::enable(TRIBE_Player_Tech *this,short param_1)
 {
   int local_8;
@@ -652,8 +600,6 @@ void __thiscall TRIBE_Player_Tech::enable(TRIBE_Player_Tech *this,short param_1)
 
 // Function: get_help_message
 // Address: 0050d400
-/* public: long __thiscall TRIBE_Player_Tech::get_help_message(short) */
-
 long __thiscall TRIBE_Player_Tech::get_help_message(TRIBE_Player_Tech *this,short param_1)
 {
   long lVar1;
@@ -666,8 +612,6 @@ long __thiscall TRIBE_Player_Tech::get_help_message(TRIBE_Player_Tech *this,shor
 
 // Function: get_help_page
 // Address: 0050d41d
-/* public: long __thiscall TRIBE_Player_Tech::get_help_page(short) */
-
 long __thiscall TRIBE_Player_Tech::get_help_page(TRIBE_Player_Tech *this,short param_1)
 {
   long lVar1;
@@ -680,8 +624,6 @@ long __thiscall TRIBE_Player_Tech::get_help_page(TRIBE_Player_Tech *this,short p
 
 // Function: get_hotkey
 // Address: 0050d43a
-/* public: long __thiscall TRIBE_Player_Tech::get_hotkey(short) */
-
 long __thiscall TRIBE_Player_Tech::get_hotkey(TRIBE_Player_Tech *this,short param_1)
 {
   long lVar1;

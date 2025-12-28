@@ -32,8 +32,6 @@
 
 // Function: TRIBE_Action_Heal
 // Address: 004ce930
-/* public: __thiscall TRIBE_Action_Heal::TRIBE_Action_Heal(int,class RGE_Action_Object *) */
-
 TRIBE_Action_Heal * __thiscall
 TRIBE_Action_Heal::TRIBE_Action_Heal(TRIBE_Action_Heal *this,int param_1,RGE_Action_Object *param_2)
 {
@@ -47,9 +45,6 @@ TRIBE_Action_Heal::TRIBE_Action_Heal(TRIBE_Action_Heal *this,int param_1,RGE_Act
 
 // Function: `scalar_deleting_destructor'
 // Address: 004ce960
-/* public: virtual void * __thiscall TRIBE_Action_Heal::`scalar deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 TRIBE_Action_Heal::_scalar_deleting_destructor_(TRIBE_Action_Heal *this,uint param_1)
 {
@@ -64,8 +59,6 @@ TRIBE_Action_Heal::_scalar_deleting_destructor_(TRIBE_Action_Heal *this,uint par
 
 // Function: ~TRIBE_Action_Heal
 // Address: 004ce980
-/* public: virtual __thiscall TRIBE_Action_Heal::~TRIBE_Action_Heal(void) */
-
 void __thiscall TRIBE_Action_Heal::~TRIBE_Action_Heal(TRIBE_Action_Heal *this)
 {
   RGE_Action_List *this_00;
@@ -86,9 +79,6 @@ void __thiscall TRIBE_Action_Heal::~TRIBE_Action_Heal(TRIBE_Action_Heal *this)
 
 // Function: TRIBE_Action_Heal
 // Address: 004ce990
-/* public: __thiscall TRIBE_Action_Heal::TRIBE_Action_Heal(class RGE_Action_Object *,class RGE_Task
-   *,class RGE_Static_Object *) */
-
 TRIBE_Action_Heal * __thiscall
 TRIBE_Action_Heal::TRIBE_Action_Heal
           (TRIBE_Action_Heal *this,RGE_Action_Object *param_1,RGE_Task *param_2,
@@ -120,9 +110,6 @@ TRIBE_Action_Heal::TRIBE_Action_Heal
 
 // Function: TRIBE_Action_Heal
 // Address: 004cea10
-/* public: __thiscall TRIBE_Action_Heal::TRIBE_Action_Heal(class RGE_Action_Object *,class RGE_Task
-   *,float,float,float) */
-
 TRIBE_Action_Heal * __thiscall
 TRIBE_Action_Heal::TRIBE_Action_Heal
           (TRIBE_Action_Heal *this,RGE_Action_Object *param_1,RGE_Task *param_2,float param_3,
@@ -142,8 +129,6 @@ TRIBE_Action_Heal::TRIBE_Action_Heal
 
 // Function: first_in_stack
 // Address: 004cea50
-/* public: virtual void __thiscall TRIBE_Action_Heal::first_in_stack(unsigned char) */
-
 void __thiscall TRIBE_Action_Heal::first_in_stack(TRIBE_Action_Heal *this,uchar param_1)
 {
   short sVar1;
@@ -165,8 +150,6 @@ void __thiscall TRIBE_Action_Heal::first_in_stack(TRIBE_Action_Heal *this,uchar 
 
 // Function: set_state
 // Address: 004cea90
-/* protected: virtual void __thiscall TRIBE_Action_Heal::set_state(unsigned char) */
-
 void __thiscall TRIBE_Action_Heal::set_state(TRIBE_Action_Heal *this,uchar param_1)
 {
   int iVar1;
@@ -276,10 +259,6 @@ void __thiscall TRIBE_Action_Heal::set_state(TRIBE_Action_Heal *this,uchar param
 
 // Function: update
 // Address: 004cecf0
-/* WARNING: Variable defined which should be unmapped: work */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall TRIBE_Action_Heal::update(void) */
-
 uchar __thiscall TRIBE_Action_Heal::update(TRIBE_Action_Heal *this)
 {
   int iVar1;
@@ -420,9 +399,6 @@ switchD_004cedd3_caseD_3:
 
 // Function: work
 // Address: 004cf030
-/* public: virtual int __thiscall TRIBE_Action_Heal::work(class RGE_Static_Object
-   *,float,float,float) */
-
 int __thiscall
 TRIBE_Action_Heal::work
           (TRIBE_Action_Heal *this,RGE_Static_Object *param_1,float param_2,float param_3,

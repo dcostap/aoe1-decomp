@@ -41,8 +41,6 @@
 
 // Function: TDrawArea
 // Address: 00443de0
-/* public: __thiscall TDrawArea::TDrawArea(char *,int) */
-
 TDrawArea * __thiscall TDrawArea::TDrawArea(TDrawArea *this,char *param_1,int param_2)
 {
   char cVar1;
@@ -132,8 +130,6 @@ TDrawArea * __thiscall TDrawArea::TDrawArea(TDrawArea *this,char *param_1,int pa
 
 // Function: ~TDrawArea
 // Address: 00443f10
-/* public: __thiscall TDrawArea::~TDrawArea(void) */
-
 void __thiscall TDrawArea::~TDrawArea(TDrawArea *this)
 {
   DrawAreaNode *pDVar1;
@@ -198,8 +194,6 @@ void __thiscall TDrawArea::~TDrawArea(TDrawArea *this)
 
 // Function: Init
 // Address: 00444040
-/* public: int __thiscall TDrawArea::Init(class TDrawSystem *,long,long,int,int) */
-
 int __thiscall
 TDrawArea::Init(TDrawArea *this,TDrawSystem *param_1,long param_2,long param_3,int param_4,
                int param_5)
@@ -244,9 +238,6 @@ TDrawArea::Init(TDrawArea *this,TDrawSystem *param_1,long param_2,long param_3,i
 
 // Function: CheckSurface
 // Address: 00444110
-/* WARNING: Variable defined which should be unmapped: ddsd */
-/* public: unsigned char __thiscall TDrawArea::CheckSurface(void) */
-
 uchar __thiscall TDrawArea::CheckSurface(TDrawArea *this)
 {
   IDirectDrawSurface *pIVar1;
@@ -300,8 +291,6 @@ uchar __thiscall TDrawArea::CheckSurface(TDrawArea *this)
 
 // Function: Lock
 // Address: 00444270
-/* public: unsigned char * __thiscall TDrawArea::Lock(char *,int) */
-
 uchar * __thiscall TDrawArea::Lock(TDrawArea *this,char *param_1,int param_2)
 {
   IDirectDrawSurface *pIVar1;
@@ -335,8 +324,6 @@ uchar * __thiscall TDrawArea::Lock(TDrawArea *this,char *param_1,int param_2)
 
 // Function: Unlock
 // Address: 00444300
-/* public: void __thiscall TDrawArea::Unlock(char *) */
-
 void __thiscall TDrawArea::Unlock(TDrawArea *this,char *param_1)
 {
   IDirectDrawSurface *pIVar1;
@@ -354,8 +341,6 @@ void __thiscall TDrawArea::Unlock(TDrawArea *this,char *param_1)
 
 // Function: GetDc
 // Address: 00444340
-/* public: void * __thiscall TDrawArea::GetDc(char *) */
-
 void * __thiscall TDrawArea::GetDc(TDrawArea *this,char *param_1)
 {
   IDirectDrawSurface *pIVar1;
@@ -383,8 +368,6 @@ void * __thiscall TDrawArea::GetDc(TDrawArea *this,char *param_1)
 
 // Function: ReleaseDc
 // Address: 00444390
-/* public: void __thiscall TDrawArea::ReleaseDc(char *) */
-
 void __thiscall TDrawArea::ReleaseDc(TDrawArea *this,char *param_1)
 {
   IDirectDrawSurface *pIVar1;
@@ -402,8 +385,6 @@ void __thiscall TDrawArea::ReleaseDc(TDrawArea *this,char *param_1)
 
 // Function: SetSize
 // Address: 004443d0
-/* public: void __thiscall TDrawArea::SetSize(long,long,int) */
-
 void __thiscall TDrawArea::SetSize(TDrawArea *this,long param_1,long param_2,int param_3)
 {
   IDirectDrawSurface **ppIVar1;
@@ -500,7 +481,6 @@ void __thiscall TDrawArea::SetSize(TDrawArea *this,long param_1,long param_2,int
     TSpan_List_Manager::~TSpan_List_Manager(pTVar7);
     operator_delete(pTVar7);
   }
-                    /* language.dll match for 0x68: "Arial" */
   ddsd.dwSize = (ulong)operator_new(0x68);
   iVar6 = 0;
   uStack_4 = 0;
@@ -529,9 +509,6 @@ void __thiscall TDrawArea::SetSize(TDrawArea *this,long param_1,long param_2,int
 
 // Function: Clear
 // Address: 00444680
-/* WARNING: Variable defined which should be unmapped: wid */
-/* public: void __thiscall TDrawArea::Clear(struct tagRECT *,int) */
-
 void __thiscall TDrawArea::Clear(TDrawArea *this,tagRECT *param_1,int param_2)
 {
   IDirectDrawSurface *pIVar1;
@@ -631,8 +608,6 @@ void __thiscall TDrawArea::Clear(TDrawArea *this,tagRECT *param_1,int param_2)
 // Function: PtrClear
 // Address: 00444850
 // [HELPER] s_PtrClear: "PtrClear"
-/* public: void __thiscall TDrawArea::PtrClear(struct tagRECT *,int) */
-
 void __thiscall TDrawArea::PtrClear(TDrawArea *this,tagRECT *param_1,int param_2)
 {
   void **ppvVar1;
@@ -684,7 +659,6 @@ void __thiscall TDrawArea::PtrClear(TDrawArea *this,tagRECT *param_1,int param_2
     ppvVar1 = this->CurDisplayOffsets;
     uVar6 = (undefined1)param_2;
     do {
-                    /* Symbol Ref: {@symbol PtrClearLoop} */
       puVar9 = (undefined4 *)((int)ppvVar1[(int)param_1] + x1);
       uVar4 = -(int)puVar9 & 3;
       uVar7 = iVar3 - uVar4;
@@ -700,7 +674,6 @@ void __thiscall TDrawArea::PtrClear(TDrawArea *this,tagRECT *param_1,int param_2
           puVar9 = puVar9 + 1;
         }
       }
-                    /* Symbol Ref: {@symbol PtrClearLEndBytes} */
       for (iVar5 = uVar4 + uVar8; iVar5 != 0; iVar5 = iVar5 + -1) {
         *(undefined1 *)puVar9 = uVar6;
         puVar9 = (undefined4 *)((int)puVar9 + 1);
@@ -719,8 +692,6 @@ void __thiscall TDrawArea::PtrClear(TDrawArea *this,tagRECT *param_1,int param_2
 
 // Function: SetAccessOffsets
 // Address: 00444990
-/* public: void __thiscall TDrawArea::SetAccessOffsets(void) */
-
 void __thiscall TDrawArea::SetAccessOffsets(TDrawArea *this)
 {
   void **ppvVar1;
@@ -773,8 +744,6 @@ void __thiscall TDrawArea::SetAccessOffsets(TDrawArea *this)
 
 // Function: SetFloatOffsets
 // Address: 00444a60
-/* public: void __thiscall TDrawArea::SetFloatOffsets(int,int) */
-
 void __thiscall TDrawArea::SetFloatOffsets(TDrawArea *this,int param_1,int param_2)
 {
   void **ppvVar1;
@@ -815,8 +784,6 @@ void __thiscall TDrawArea::SetFloatOffsets(TDrawArea *this,int param_1,int param
 
 // Function: SetInfo
 // Address: 00444b10
-/* public: void __thiscall TDrawArea::SetInfo(void) */
-
 void __thiscall TDrawArea::SetInfo(TDrawArea *this)
 {
   _DDSURFACEDESC_u_16 _Var1;
@@ -836,8 +803,6 @@ void __thiscall TDrawArea::SetInfo(TDrawArea *this)
 
 // Function: AlignedWidth
 // Address: 00444b40
-/* public: long __thiscall TDrawArea::AlignedWidth(void) */
-
 long __thiscall TDrawArea::AlignedWidth(TDrawArea *this)
 {
   return this->Pitch;
@@ -847,8 +812,6 @@ long __thiscall TDrawArea::AlignedWidth(TDrawArea *this)
 
 // Function: SetClipRect
 // Address: 00444b50
-/* public: void __thiscall TDrawArea::SetClipRect(struct tagRECT *) */
-
 void __thiscall TDrawArea::SetClipRect(TDrawArea *this,tagRECT *param_1)
 {
   int iVar1;
@@ -929,8 +892,6 @@ void __thiscall TDrawArea::SetClipRect(TDrawArea *this,tagRECT *param_1)
 
 // Function: SetClipRect
 // Address: 00444c30
-/* public: void __thiscall TDrawArea::SetClipRect(long,long,long,long) */
-
 void __thiscall
 TDrawArea::SetClipRect(TDrawArea *this,long param_1,long param_2,long param_3,long param_4)
 {
@@ -958,7 +919,6 @@ TDrawArea::SetClipRect(TDrawArea *this,long param_1,long param_2,long param_3,lo
     this->SpanList = (TSpan_List_Manager *)0x0;
   }
   if (this->SpanList == (TSpan_List_Manager *)0x0) {
-                    /* language.dll match for 0x68: "Arial" */
     pTVar1 = (TSpan_List_Manager *)operator_new(0x68);
     local_4 = 0;
     if (pTVar1 == (TSpan_List_Manager *)0x0) {
@@ -992,9 +952,6 @@ TDrawArea::SetClipRect(TDrawArea *this,long param_1,long param_2,long param_3,lo
 
 // Function: Copy
 // Address: 00444d50
-/* WARNING: Variable defined which should be unmapped: src_rect2 */
-/* public: void __thiscall TDrawArea::Copy(class TDrawArea *,long,long,struct tagRECT *,int) */
-
 void __thiscall
 TDrawArea::Copy(TDrawArea *this,TDrawArea *param_1,long param_2,long param_3,tagRECT *param_4,
                int param_5)
@@ -1135,8 +1092,6 @@ TDrawArea::Copy(TDrawArea *this,TDrawArea *param_1,long param_2,long param_3,tag
 // Address: 004450c0
 // [HELPER] s_PtrCopy1: "PtrCopy1"
 // [HELPER] s_PtrCopy2: "PtrCopy2"
-/* public: void __thiscall TDrawArea::PtrCopy(class TDrawArea *,long,long,struct tagRECT *) */
-
 void __thiscall
 TDrawArea::PtrCopy(TDrawArea *this,TDrawArea *param_1,long param_2,long param_3,tagRECT *param_4)
 {
@@ -1180,7 +1135,6 @@ TDrawArea::PtrCopy(TDrawArea *this,TDrawArea *param_1,long param_2,long param_3,
         ppvVar4 = this->CurDisplayOffsets;
         ppvVar5 = param_1->CurDisplayOffsets;
         do {
-                    /* Symbol Ref: {@symbol PtrCpyLoop} */
           puVar11 = (undefined4 *)((int)ppvVar4[(int)param_4] + iVar1);
           puVar12 = (undefined4 *)((int)ppvVar5[param_3] + param_2);
           uVar9 = -(int)puVar12 & 3;
@@ -1199,7 +1153,6 @@ TDrawArea::PtrCopy(TDrawArea *this,TDrawArea *param_1,long param_2,long param_3,
               puVar12 = puVar12 + 1;
             }
           }
-                    /* Symbol Ref: {@symbol PtrCpyLEndBytes} */
           for (iVar10 = uVar9 + uVar8; iVar10 != 0; iVar10 = iVar10 + -1) {
             *(undefined1 *)puVar12 = *(undefined1 *)puVar11;
             puVar11 = (undefined4 *)((int)puVar11 + 1);
@@ -1224,9 +1177,6 @@ TDrawArea::PtrCopy(TDrawArea *this,TDrawArea *param_1,long param_2,long param_3,
 // Function: PtrSpanCopy
 // Address: 00445250
 // [HELPER] s_PtrSpanCopy: "PtrSpanCopy"
-/* public: void __thiscall TDrawArea::PtrSpanCopy(class TDrawArea *,long,long,struct tagRECT
-   *,unsigned char * *) */
-
 void __thiscall
 TDrawArea::PtrSpanCopy
           (TDrawArea *this,TDrawArea *param_1,long param_2,long param_3,tagRECT *param_4,
@@ -1269,11 +1219,9 @@ TDrawArea::PtrSpanCopy
       param_2 = param_3;
       param_1 = (TDrawArea *)ptVar7->top;
       do {
-                    /* Symbol Ref: {@symbol PtrSpanCpyLoop} */
         pvVar4 = ppvVar2[(int)param_1];
         pvVar5 = ppvVar3[param_2];
         for (puVar8 = param_5[(int)param_1]; puVar8 != (uchar *)0x0; puVar8 = *(uchar **)puVar8) {
-                    /* Symbol Ref: {@symbol PtrSpanProc} */
           iVar11 = *(int *)(puVar8 + 8);
           puVar13 = (undefined4 *)((int)pvVar4 + iVar11 + iVar1);
           puVar14 = (undefined4 *)((int)pvVar5 + iVar11 + lVar6);
@@ -1294,14 +1242,12 @@ TDrawArea::PtrSpanCopy
               puVar14 = puVar14 + 1;
             }
           }
-                    /* Symbol Ref: {@symbol PtrSpanCpyLEndBytes} */
           for (iVar11 = uVar12 + uVar10; iVar11 != 0; iVar11 = iVar11 + -1) {
             *(undefined1 *)puVar14 = *(undefined1 *)puVar13;
             puVar13 = (undefined4 *)((int)puVar13 + 1);
             puVar14 = (undefined4 *)((int)puVar14 + 1);
           }
         }
-                    /* Symbol Ref: {@symbol PtrSpanSkip1} */
         param_1 = (TDrawArea *)((int)&param_1->DrawSystem + 1);
         param_2 = param_2 + 1;
         param_4 = (tagRECT *)((int)&param_4[-1].bottom + 3);
@@ -1317,9 +1263,6 @@ TDrawArea::PtrSpanCopy
 // Address: 004453a0
 // [HELPER] s_PtrSurfaceCopy1: "PtrSurfaceCopy1"
 // [HELPER] s_PtrSurfaceCopy2: "PtrSurfaceCopy2"
-/* public: void __thiscall TDrawArea::PtrSurfaceCopy(class TDrawArea *,long,long,struct tagRECT
-   *,int,int) */
-
 void __thiscall
 TDrawArea::PtrSurfaceCopy
           (TDrawArea *this,TDrawArea *param_1,long param_2,long param_3,tagRECT *param_4,int param_5
@@ -1375,7 +1318,6 @@ TDrawArea::PtrSurfaceCopy
       param_4 = (tagRECT *)param_4->top;
       ppvVar5 = param_1->CurDisplayOffsets;
       do {
-                    /* Symbol Ref: {@symbol PtrSCpyLoop} */
         puVar11 = (undefined4 *)((int)ppvVar4[(int)param_4] + iVar1);
         puVar12 = (undefined4 *)((int)ppvVar5[param_3] + param_2);
         iVar10 = nWidth;
@@ -1396,7 +1338,6 @@ TDrawArea::PtrSurfaceCopy
               puVar12 = puVar12 + 1;
             }
           }
-                    /* Symbol Ref: {@symbol PtrSCpyLEndBytes} */
           for (iVar10 = uVar9 + uVar8; iVar10 != 0; iVar10 = iVar10 + -1) {
             *(undefined1 *)puVar12 = *(undefined1 *)puVar11;
             puVar11 = (undefined4 *)((int)puVar11 + 1);
@@ -1410,7 +1351,6 @@ TDrawArea::PtrSurfaceCopy
             puVar12 = (undefined4 *)((int)puVar12 + 1);
           }
         }
-                    /* Symbol Ref: {@symbol PtrSDone} */
         param_4 = (tagRECT *)((int)&param_4->left + 1);
         param_3 = param_3 + 1;
         nLines = nLines + -1;
@@ -1433,9 +1373,6 @@ TDrawArea::PtrSurfaceCopy
 // Function: OverlayMemCopy
 // Address: 00445580
 // [HELPER] s_OverlayMemCopy: "OverlayMemCopy"
-/* public: void __thiscall TDrawArea::OverlayMemCopy(struct tagRECT &,struct tagRECT
-   &,int,int,int,int) */
-
 void __thiscall
 TDrawArea::OverlayMemCopy
           (TDrawArea *this,tagRECT *param_1,tagRECT *param_2,int param_3,int param_4,int param_5,
@@ -1495,7 +1432,6 @@ TDrawArea::OverlayMemCopy
     ppvVar4 = this->CurDisplayOffsets;
     if (bVar5) {
       do {
-                    /* Symbol Ref: {@symbol OverlayCpyLoop2} */
         puVar10 = (undefined4 *)((int)ppvVar4[(int)param_2] + SrcXStart);
         puVar11 = (undefined4 *)((int)ppvVar4[param_5] + DstXStart);
         for (iVar8 = iVar9; iVar8 != 0; iVar8 = iVar8 + -1) {
@@ -1510,7 +1446,6 @@ TDrawArea::OverlayMemCopy
     }
     else {
       do {
-                    /* Symbol Ref: {@symbol OverlayCpyLoop1} */
         puVar10 = (undefined4 *)((int)ppvVar4[(int)param_2] + SrcXStart);
         puVar11 = (undefined4 *)((int)ppvVar4[param_5] + DstXStart);
         for (iVar8 = iVar9; iVar8 != 0; iVar8 = iVar8 + -1) {
@@ -1534,9 +1469,6 @@ TDrawArea::OverlayMemCopy
 
 // Function: SetTrans
 // Address: 00445710
-/* WARNING: Variable defined which should be unmapped: ddck */
-/* public: void __thiscall TDrawArea::SetTrans(int,unsigned char) */
-
 void __thiscall TDrawArea::SetTrans(TDrawArea *this,int param_1,uchar param_2)
 {
   IDirectDrawSurface *pIVar1;
@@ -1563,9 +1495,6 @@ void __thiscall TDrawArea::SetTrans(TDrawArea *this,int param_1,uchar param_2)
 
 // Function: SetOverlayTrans
 // Address: 00445780
-/* WARNING: Variable defined which should be unmapped: ddck */
-/* public: void __thiscall TDrawArea::SetOverlayTrans(int,unsigned char) */
-
 void __thiscall TDrawArea::SetOverlayTrans(TDrawArea *this,int param_1,uchar param_2)
 {
   IDirectDrawSurface *pIVar1;
@@ -1586,8 +1515,6 @@ void __thiscall TDrawArea::SetOverlayTrans(TDrawArea *this,int param_1,uchar par
 
 // Function: SetPixel
 // Address: 004457e0
-/* public: void __thiscall TDrawArea::SetPixel(long,long,unsigned char) */
-
 void __thiscall TDrawArea::SetPixel(TDrawArea *this,long param_1,long param_2,uchar param_3)
 {
   uchar *puVar1;
@@ -1609,8 +1536,6 @@ void __thiscall TDrawArea::SetPixel(TDrawArea *this,long param_1,long param_2,uc
 
 // Function: DrawLine
 // Address: 00445840
-/* public: void __thiscall TDrawArea::DrawLine(int,int,int,int,unsigned char) */
-
 void __thiscall
 TDrawArea::DrawLine(TDrawArea *this,int param_1,int param_2,int param_3,int param_4,uchar param_5)
 {
@@ -1687,8 +1612,6 @@ TDrawArea::DrawLine(TDrawArea *this,int param_1,int param_2,int param_3,int para
 
 // Function: DrawRect
 // Address: 004459a0
-/* public: void __thiscall TDrawArea::DrawRect(long,long,long,long,unsigned char) */
-
 void __thiscall
 TDrawArea::DrawRect(TDrawArea *this,long param_1,long param_2,long param_3,long param_4,
                    uchar param_5)
@@ -1722,8 +1645,6 @@ TDrawArea::DrawRect(TDrawArea *this,long param_1,long param_2,long param_3,long 
 
 // Function: DrawRect
 // Address: 00445a40
-/* public: void __thiscall TDrawArea::DrawRect(struct tagRECT *,unsigned char) */
-
 void __thiscall TDrawArea::DrawRect(TDrawArea *this,tagRECT *param_1,uchar param_2)
 {
   DrawRect(this,param_1->left,param_1->top,param_1->right,param_1->bottom,param_2);
@@ -1734,8 +1655,6 @@ void __thiscall TDrawArea::DrawRect(TDrawArea *this,tagRECT *param_1,uchar param
 
 // Function: DrawHorzLine
 // Address: 00445a60
-/* public: void __thiscall TDrawArea::DrawHorzLine(long,long,long,unsigned char) */
-
 void __thiscall
 TDrawArea::DrawHorzLine(TDrawArea *this,long param_1,long param_2,long param_3,uchar param_4)
 {
@@ -1769,8 +1688,6 @@ TDrawArea::DrawHorzLine(TDrawArea *this,long param_1,long param_2,long param_3,u
 
 // Function: DrawVertLine
 // Address: 00445af0
-/* public: void __thiscall TDrawArea::DrawVertLine(long,long,long,unsigned char) */
-
 void __thiscall
 TDrawArea::DrawVertLine(TDrawArea *this,long param_1,long param_2,long param_3,uchar param_4)
 {
@@ -1814,8 +1731,6 @@ TDrawArea::DrawVertLine(TDrawArea *this,long param_1,long param_2,long param_3,u
 
 // Function: FillRect
 // Address: 00445b80
-/* public: void __thiscall TDrawArea::FillRect(long,long,long,long,unsigned char) */
-
 void __thiscall
 TDrawArea::FillRect(TDrawArea *this,long param_1,long param_2,long param_3,long param_4,
                    uchar param_5)
@@ -1882,8 +1797,6 @@ TDrawArea::FillRect(TDrawArea *this,long param_1,long param_2,long param_3,long 
 
 // Function: DrawBevel
 // Address: 00445c70
-/* public: void __thiscall TDrawArea::DrawBevel(long,long,long,long,unsigned char,unsigned char) */
-
 void __thiscall
 TDrawArea::DrawBevel
           (TDrawArea *this,long param_1,long param_2,long param_3,long param_4,uchar param_5,
@@ -1918,9 +1831,6 @@ TDrawArea::DrawBevel
 
 // Function: DrawBevel2
 // Address: 00445d20
-/* public: void __thiscall TDrawArea::DrawBevel2(long,long,long,long,unsigned char,unsigned
-   char,unsigned char,unsigned char) */
-
 void __thiscall
 TDrawArea::DrawBevel2
           (TDrawArea *this,long param_1,long param_2,long param_3,long param_4,uchar param_5,
@@ -1963,9 +1873,6 @@ TDrawArea::DrawBevel2
 
 // Function: DrawBevel3
 // Address: 00445e40
-/* public: void __thiscall TDrawArea::DrawBevel3(long,long,long,long,unsigned char,unsigned
-   char,unsigned char,unsigned char,unsigned char,unsigned char) */
-
 void __thiscall
 TDrawArea::DrawBevel3
           (TDrawArea *this,long param_1,long param_2,long param_3,long param_4,uchar param_5,
@@ -2016,9 +1923,6 @@ TDrawArea::DrawBevel3
 
 // Function: DrawBevel21
 // Address: 00445fe0
-/* public: void __thiscall TDrawArea::DrawBevel21(long,long,long,long,unsigned char,unsigned
-   char,unsigned char,unsigned char) */
-
 void __thiscall
 TDrawArea::DrawBevel21
           (TDrawArea *this,long param_1,long param_2,long param_3,long param_4,uchar param_5,
@@ -2055,9 +1959,6 @@ TDrawArea::DrawBevel21
 
 // Function: DrawBevel32
 // Address: 004460c0
-/* public: void __thiscall TDrawArea::DrawBevel32(long,long,long,long,unsigned char,unsigned
-   char,unsigned char,unsigned char,unsigned char,unsigned char) */
-
 void __thiscall
 TDrawArea::DrawBevel32
           (TDrawArea *this,long param_1,long param_2,long param_3,long param_4,uchar param_5,
@@ -2102,8 +2003,6 @@ TDrawArea::DrawBevel32
 
 // Function: SetShadowTable
 // Address: 00446220
-/* public: void __thiscall TDrawArea::SetShadowTable(class RGE_Color_Table *) */
-
 void __thiscall TDrawArea::SetShadowTable(TDrawArea *this,RGE_Color_Table *param_1)
 {
   this->shadow_color_table = param_1;
@@ -2114,8 +2013,6 @@ void __thiscall TDrawArea::SetShadowTable(TDrawArea *this,RGE_Color_Table *param
 
 // Function: DrawShadowBox
 // Address: 00446230
-/* public: void __thiscall TDrawArea::DrawShadowBox(long,long,long,long) */
-
 void __thiscall
 TDrawArea::DrawShadowBox(TDrawArea *this,long param_1,long param_2,long param_3,long param_4)
 {
@@ -2190,8 +2087,6 @@ TDrawArea::DrawShadowBox(TDrawArea *this,long param_1,long param_2,long param_3,
 
 // Function: GetPalette
 // Address: 00446340
-/* public: void __thiscall TDrawArea::GetPalette(struct tagPALETTEENTRY *) */
-
 void __thiscall TDrawArea::GetPalette(TDrawArea *this,tagPALETTEENTRY *param_1)
 {
   tagPALETTEENTRY *ptVar1;
@@ -2212,8 +2107,6 @@ void __thiscall TDrawArea::GetPalette(TDrawArea *this,tagPALETTEENTRY *param_1)
 
 // Function: SetPalette
 // Address: 00446370
-/* public: void __thiscall TDrawArea::SetPalette(struct tagPALETTEENTRY *) */
-
 void __thiscall TDrawArea::SetPalette(TDrawArea *this,tagPALETTEENTRY *param_1)
 {
   param_1->peRed = '\0';
@@ -2234,9 +2127,6 @@ void __thiscall TDrawArea::SetPalette(TDrawArea *this,tagPALETTEENTRY *param_1)
 // Address: 004463b0
 // [HELPER] s_C__AOE__03d_BMP: "C:\AOE_%03d.BMP"
 // [HELPER] s_take_snapshot: "take_snapshot"
-/* WARNING: Variable defined which should be unmapped: bmWide */
-/* public: void __thiscall TDrawArea::take_snapshot(char *,int &) */
-
 void __thiscall TDrawArea::take_snapshot(TDrawArea *this,char *param_1,int *param_2)
 {
   uchar uVar1;

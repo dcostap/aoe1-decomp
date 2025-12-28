@@ -11,8 +11,6 @@
 
 // Function: RGE_Object_List
 // Address: 00462e80
-/* public: __thiscall RGE_Object_List::RGE_Object_List(void) */
-
 void __thiscall RGE_Object_List::RGE_Object_List(RGE_Object_List *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -25,8 +23,6 @@ void __thiscall RGE_Object_List::RGE_Object_List(RGE_Object_List *this)
 
 // Function: ~RGE_Object_List
 // Address: 00462ea0
-/* public: __thiscall RGE_Object_List::~RGE_Object_List(void) */
-
 void __thiscall RGE_Object_List::~RGE_Object_List(RGE_Object_List *this)
 {
   RGE_Object_Node *pRVar1;
@@ -57,8 +53,6 @@ void __thiscall RGE_Object_List::~RGE_Object_List(RGE_Object_List *this)
 
 // Function: removeAllObjects
 // Address: 00462ef0
-/* public: void __thiscall RGE_Object_List::removeAllObjects(void) */
-
 void __thiscall RGE_Object_List::removeAllObjects(RGE_Object_List *this)
 {
   RGE_Object_Node *pRVar1;
@@ -83,9 +77,6 @@ void __thiscall RGE_Object_List::removeAllObjects(RGE_Object_List *this)
 
 // Function: add_node
 // Address: 00462f30
-/* public: struct RGE_Object_Node * __thiscall RGE_Object_List::add_node(class RGE_Static_Object *)
-    */
-
 RGE_Object_Node * __thiscall
 RGE_Object_List::add_node(RGE_Object_List *this,RGE_Static_Object *param_1)
 {
@@ -109,9 +100,6 @@ RGE_Object_List::add_node(RGE_Object_List *this,RGE_Static_Object *param_1)
 
 // Function: remove_node
 // Address: 00462f70
-/* public: void __thiscall RGE_Object_List::remove_node(class RGE_Static_Object *,struct
-   RGE_Object_Node *) */
-
 void __thiscall
 RGE_Object_List::remove_node
           (RGE_Object_List *this,RGE_Static_Object *param_1,RGE_Object_Node *param_2)
@@ -151,8 +139,6 @@ RGE_Object_List::remove_node
 
 // Function: invert
 // Address: 00462fd0
-/* protected: void __thiscall RGE_Object_List::invert(void) */
-
 void __thiscall RGE_Object_List::invert(RGE_Object_List *this)
 {
   RGE_Object_Node *pRVar1;
@@ -179,8 +165,6 @@ void __thiscall RGE_Object_List::invert(RGE_Object_List *this)
 
 // Function: draw
 // Address: 00463000
-/* public: void __thiscall RGE_Object_List::draw(class TDrawArea *,short,short,unsigned char) */
-
 void __thiscall
 RGE_Object_List::draw
           (RGE_Object_List *this,TDrawArea *param_1,short param_2,short param_3,uchar param_4)
@@ -241,9 +225,6 @@ LAB_0046303d:
 
 // Function: shadow_draw
 // Address: 00463100
-/* public: void __thiscall RGE_Object_List::shadow_draw(class TDrawArea *,short,short,unsigned
-   char,unsigned char) */
-
 void __thiscall
 RGE_Object_List::shadow_draw
           (RGE_Object_List *this,TDrawArea *param_1,short param_2,short param_3,uchar param_4,
@@ -280,9 +261,6 @@ RGE_Object_List::shadow_draw
 
 // Function: normal_draw
 // Address: 00463180
-/* public: void __thiscall RGE_Object_List::normal_draw(class TDrawArea *,short,short,unsigned char)
-    */
-
 void __thiscall
 RGE_Object_List::normal_draw
           (RGE_Object_List *this,TDrawArea *param_1,short param_2,short param_3,uchar param_4)
@@ -334,8 +312,6 @@ RGE_Object_List::normal_draw
 
 // Function: update
 // Address: 00463210
-/* public: void __thiscall RGE_Object_List::update(void) */
-
 void __thiscall RGE_Object_List::update(RGE_Object_List *this)
 {
   RGE_Object_Node *pRVar1;
@@ -365,9 +341,6 @@ void __thiscall RGE_Object_List::update(RGE_Object_List *this)
 
 // Function: sort
 // Address: 00463260
-/* WARNING: Variable defined which should be unmapped: sorted */
-/* public: struct RGE_Object_Node * __thiscall RGE_Object_List::sort(void) */
-
 RGE_Object_Node * __thiscall RGE_Object_List::sort(RGE_Object_List *this)
 {
   byte bVar1;
@@ -409,8 +382,6 @@ RGE_Object_Node * __thiscall RGE_Object_List::sort(RGE_Object_List *this)
 
 // Function: find_by_group
 // Address: 004632e0
-/* public: class RGE_Static_Object * __thiscall RGE_Object_List::find_by_group(long) */
-
 RGE_Static_Object * __thiscall RGE_Object_List::find_by_group(RGE_Object_List *this,long param_1)
 {
   RGE_Static_Object *pRVar1;
@@ -433,12 +404,6 @@ RGE_Static_Object * __thiscall RGE_Object_List::find_by_group(RGE_Object_List *t
 
 // Function: find_by_group
 // Address: 00463310
-/* WARNING: Variable defined which should be unmapped: diff_x */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: class RGE_Static_Object * __thiscall
-   RGE_Object_List::find_by_group(long,float,float,unsigned char,unsigned char,class
-   RGE_Static_Object *) */
-
 RGE_Static_Object * __thiscall
 RGE_Object_List::find_by_group
           (RGE_Object_List *this,long param_1,float param_2,float param_3,uchar param_4,
@@ -509,8 +474,6 @@ LAB_0046345a:
 
 // Function: find_by_id
 // Address: 00463490
-/* public: class RGE_Static_Object * __thiscall RGE_Object_List::find_by_id(long) */
-
 RGE_Static_Object * __thiscall RGE_Object_List::find_by_id(RGE_Object_List *this,long param_1)
 {
   RGE_Static_Object *pRVar1;
@@ -532,12 +495,6 @@ RGE_Static_Object * __thiscall RGE_Object_List::find_by_id(RGE_Object_List *this
 
 // Function: find_by_master_id
 // Address: 004634c0
-/* WARNING: Variable defined which should be unmapped: diff_x */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: class RGE_Static_Object * __thiscall
-   RGE_Object_List::find_by_master_id(long,float,float,unsigned char,unsigned char,class
-   RGE_Static_Object *) */
-
 RGE_Static_Object * __thiscall
 RGE_Object_List::find_by_master_id
           (RGE_Object_List *this,long param_1,float param_2,float param_3,uchar param_4,
@@ -608,12 +565,6 @@ LAB_0046360a:
 
 // Function: find_by_master_ids
 // Address: 00463640
-/* WARNING: Variable defined which should be unmapped: diff_x */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: class RGE_Static_Object * __thiscall
-   RGE_Object_List::find_by_master_ids(long,long,float,float,unsigned char,unsigned char,class
-   RGE_Static_Object *) */
-
 RGE_Static_Object * __thiscall
 RGE_Object_List::find_by_master_ids
           (RGE_Object_List *this,long param_1,long param_2,float param_3,float param_4,uchar param_5
@@ -685,11 +636,6 @@ LAB_0046378c:
 
 // Function: find_by_type
 // Address: 004637c0
-/* WARNING: Variable defined which should be unmapped: dist */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: class RGE_Static_Object * __thiscall RGE_Object_List::find_by_type(unsigned
-   char,float,float,unsigned char,unsigned char) */
-
 RGE_Static_Object * __thiscall
 RGE_Object_List::find_by_type
           (RGE_Object_List *this,uchar param_1,float param_2,float param_3,uchar param_4,
@@ -741,9 +687,6 @@ RGE_Object_List::find_by_type
 
 // Function: save
 // Address: 00463890
-/* WARNING: Variable defined which should be unmapped: finished */
-/* public: void __thiscall RGE_Object_List::save(int) */
-
 void __thiscall RGE_Object_List::save(RGE_Object_List *this,int param_1)
 {
   RGE_Object_Node *pRVar1;
@@ -765,8 +708,6 @@ void __thiscall RGE_Object_List::save(RGE_Object_List *this,int param_1)
 
 // Function: load_list
 // Address: 004638d0
-/* public: void __thiscall RGE_Object_List::load_list(int,class RGE_Game_World *) */
-
 void __thiscall
 RGE_Object_List::load_list(RGE_Object_List *this,int param_1,RGE_Game_World *param_2)
 {
@@ -786,8 +727,6 @@ RGE_Object_List::load_list(RGE_Object_List *this,int param_1,RGE_Game_World *par
 
 // Function: rehook_list
 // Address: 00463910
-/* public: void __thiscall RGE_Object_List::rehook_list(void) */
-
 void __thiscall RGE_Object_List::rehook_list(RGE_Object_List *this)
 {
   RGE_Object_Node *pRVar1;
@@ -802,9 +741,6 @@ void __thiscall RGE_Object_List::rehook_list(RGE_Object_List *this)
 
 // Function: load
 // Address: 00463930
-/* protected: virtual void __thiscall RGE_Object_List::load(unsigned char,int,class RGE_Game_World
-   *) */
-
 void __thiscall
 RGE_Object_List::load(RGE_Object_List *this,uchar param_1,int param_2,RGE_Game_World *param_3)
 {

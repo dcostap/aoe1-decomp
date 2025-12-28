@@ -15,8 +15,6 @@
 // Address: 00442100
 // [HELPER] s_c__aoedoppl_txt: "c:\aoedoppl.txt"
 // [HELPER] s_w: "w"
-/* public: __thiscall RGE_Doppleganger_Creator::RGE_Doppleganger_Creator(class RGE_Player *,int) */
-
 RGE_Doppleganger_Creator * __thiscall
 RGE_Doppleganger_Creator::RGE_Doppleganger_Creator
           (RGE_Doppleganger_Creator *this,RGE_Player *param_1,int param_2)
@@ -47,8 +45,6 @@ RGE_Doppleganger_Creator::RGE_Doppleganger_Creator
 
 // Function: ~RGE_Doppleganger_Creator
 // Address: 00442180
-/* public: __thiscall RGE_Doppleganger_Creator::~RGE_Doppleganger_Creator(void) */
-
 void __thiscall RGE_Doppleganger_Creator::~RGE_Doppleganger_Creator(RGE_Doppleganger_Creator *this)
 {
   if (this->Objects != (RGE_Static_Object **)0x0) {
@@ -75,9 +71,6 @@ void __thiscall RGE_Doppleganger_Creator::~RGE_Doppleganger_Creator(RGE_Dopplega
 // Function: add_doppleganger_check
 // Address: 004421f0
 // [HELPER] s_ADC____d__p__d__id__d_: "ADC (@%d) p=%d  id=%d\n"
-/* public: int __thiscall RGE_Doppleganger_Creator::add_doppleganger_check(class RGE_Static_Object
-   *,unsigned long *) */
-
 int __thiscall
 RGE_Doppleganger_Creator::add_doppleganger_check
           (RGE_Doppleganger_Creator *this,RGE_Static_Object *param_1,ulong *param_2)
@@ -120,9 +113,6 @@ RGE_Doppleganger_Creator::add_doppleganger_check
 // Function: remove_doppleganger_check
 // Address: 004422b0
 // [HELPER] s_RDC____d___p__d__id__d_: "RDC (@%d)  p=%d  id=%d\n"
-/* public: int __thiscall RGE_Doppleganger_Creator::remove_doppleganger_check(class
-   RGE_Static_Object *) */
-
 int __thiscall
 RGE_Doppleganger_Creator::remove_doppleganger_check
           (RGE_Doppleganger_Creator *this,RGE_Static_Object *param_1)
@@ -170,9 +160,6 @@ RGE_Doppleganger_Creator::remove_doppleganger_check
 // Address: 00442390
 // [HELPER] s_NEW_DOP____d__by_p__d_for_p__d_o: "NEW DOP (@%d) by p=%d for p=%d of id=%d (x=%d, y=%d)\n"
 // [HELPER] s_____REMOVE_CHECK____d__by_p__d_i: "*** REMOVE CHECK (@%d) by p=%d id=%d\n"
-/* WARNING: Variable defined which should be unmapped: Unified_Map_Value */
-/* public: void __thiscall RGE_Doppleganger_Creator::perform_doppleganger_checks(void) */
-
 void __thiscall
 RGE_Doppleganger_Creator::perform_doppleganger_checks(RGE_Doppleganger_Creator *this)
 {
@@ -252,9 +239,6 @@ LAB_00442506:
 // Function: expand_allocations
 // Address: 00442540
 // [HELPER] s_RESIZE____d__p__d__grow__d_: "RESIZE (@%d) p=%d  grow=%d\n"
-/* WARNING: Variable defined which should be unmapped: TLast_Map_Value */
-/* protected: void __thiscall RGE_Doppleganger_Creator::expand_allocations(int) */
-
 void __thiscall
 RGE_Doppleganger_Creator::expand_allocations(RGE_Doppleganger_Creator *this,int param_1)
 {

@@ -175,9 +175,6 @@
 
 // Function: TRIBE_Player
 // Address: 00511bd0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: __thiscall TRIBE_Player::TRIBE_Player(int,class TRIBE_World *,unsigned char) */
-
 TRIBE_Player * __thiscall
 TRIBE_Player::TRIBE_Player(TRIBE_Player *this,int param_1,TRIBE_World *param_2,uchar param_3)
 {
@@ -281,8 +278,6 @@ LAB_00511d13:
 
 // Function: `vector_deleting_destructor'
 // Address: 00511e00
-/* public: virtual void * __thiscall TRIBE_Player::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall TRIBE_Player::_vector_deleting_destructor_(TRIBE_Player *this,uint param_1)
 {
   ~TRIBE_Player(this);
@@ -297,9 +292,6 @@ void * __thiscall TRIBE_Player::_vector_deleting_destructor_(TRIBE_Player *this,
 // Function: TRIBE_Player
 // Address: 00511e20
 // [HELPER] s_C__msdev_work_age1_x1_tplayer_cp: "C:\msdev\work\age1_x1\tplayer.cpp"
-/* public: __thiscall TRIBE_Player::TRIBE_Player(class TRIBE_World *,class RGE_Master_Player
-   *,unsigned char,char *,unsigned char,unsigned char,unsigned char,char *,char *,char *) */
-
 TRIBE_Player * __thiscall
 TRIBE_Player::TRIBE_Player
           (TRIBE_Player *this,TRIBE_World *param_1,RGE_Master_Player *param_2,uchar param_3,
@@ -456,8 +448,6 @@ TRIBE_Player::TRIBE_Player
 
 // Function: ~TRIBE_Player
 // Address: 005120f0
-/* public: virtual __thiscall TRIBE_Player::~TRIBE_Player(void) */
-
 void __thiscall TRIBE_Player::~TRIBE_Player(TRIBE_Player *this)
 {
   TRIBE_Player_Tech *this_00;
@@ -498,9 +488,6 @@ void __thiscall TRIBE_Player::~TRIBE_Player(TRIBE_Player *this)
 
 // Function: make_scenario_obj
 // Address: 005121a0
-/* public: virtual class RGE_Static_Object * __thiscall
-   TRIBE_Player::make_scenario_obj(float,float,float,short,unsigned char,float) */
-
 RGE_Static_Object * __thiscall
 TRIBE_Player::make_scenario_obj
           (TRIBE_Player *this,float param_1,float param_2,float param_3,short param_4,uchar param_5,
@@ -544,8 +531,6 @@ TRIBE_Player::make_scenario_obj
 
 // Function: save
 // Address: 00512250
-/* public: virtual void __thiscall TRIBE_Player::save(int) */
-
 void __thiscall TRIBE_Player::save(TRIBE_Player *this,int param_1)
 {
   int iVar1;
@@ -587,9 +572,6 @@ void __thiscall TRIBE_Player::save(TRIBE_Player *this,int param_1)
 // Function: update
 // Address: 005123b0
 // [HELPER] s_C__msdev_work_age1_x1_tplayer_cp: "C:\msdev\work\age1_x1\tplayer.cpp"
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual void __thiscall TRIBE_Player::update(void) */
-
 void __thiscall TRIBE_Player::update(TRIBE_Player *this)
 {
   short sVar1;
@@ -694,8 +676,6 @@ LAB_00512540:
 
 // Function: update_dopplegangers
 // Address: 00512620
-/* public: virtual void __thiscall TRIBE_Player::update_dopplegangers(void) */
-
 void __thiscall TRIBE_Player::update_dopplegangers(TRIBE_Player *this)
 {
   if (MouseSystem != (TMousePointer *)0x0) {
@@ -711,8 +691,6 @@ void __thiscall TRIBE_Player::update_dopplegangers(TRIBE_Player *this)
 
 // Function: scenario_save
 // Address: 00512630
-/* public: virtual void __thiscall TRIBE_Player::scenario_save(int) */
-
 void __thiscall TRIBE_Player::scenario_save(TRIBE_Player *this,int param_1)
 {
   RGE_Player::scenario_save((RGE_Player *)this,param_1);
@@ -727,9 +705,6 @@ void __thiscall TRIBE_Player::scenario_save(TRIBE_Player *this,int param_1)
 
 // Function: scenario_load
 // Address: 00512690
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual void __thiscall TRIBE_Player::scenario_load(int,long *,float) */
-
 void __thiscall
 TRIBE_Player::scenario_load(TRIBE_Player *this,int param_1,long *param_2,float param_3)
 {
@@ -828,9 +803,6 @@ LAB_00512861:
 
 // Function: load
 // Address: 005128a0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual void __thiscall TRIBE_Player::load(int) */
-
 void __thiscall TRIBE_Player::load(TRIBE_Player *this,int param_1)
 {
   short *psVar1;
@@ -940,9 +912,6 @@ void __thiscall TRIBE_Player::load(TRIBE_Player *this,int param_1)
 
 // Function: load_master_object
 // Address: 00512a90
-/* public: void __thiscall TRIBE_Player::load_master_object(int,short,unsigned char,class RGE_Sprite
-   * *,class RGE_Sound * *) */
-
 void __thiscall
 TRIBE_Player::load_master_object
           (TRIBE_Player *this,int param_1,short param_2,uchar param_3,RGE_Sprite **param_4,
@@ -1008,9 +977,6 @@ LAB_00512bd2:
 
 // Function: tech_cost
 // Address: 00512bf0
-/* public: void __thiscall TRIBE_Player::tech_cost(short,short &,short &,short &,short &,short
-   &,short &) */
-
 void __thiscall
 TRIBE_Player::tech_cost
           (TRIBE_Player *this,short param_1,short *param_2,short *param_3,short *param_4,
@@ -1025,9 +991,6 @@ TRIBE_Player::tech_cost
 
 // Function: obj_cost
 // Address: 00512c30
-/* public: void __thiscall TRIBE_Player::obj_cost(short,char * *,short &,short &,short &,short
-   &,short &,short &,float) */
-
 void __thiscall
 TRIBE_Player::obj_cost
           (TRIBE_Player *this,short param_1,char **param_2,short *param_3,short *param_4,
@@ -1124,9 +1087,6 @@ LAB_00512e79:
 
 // Function: find_obj
 // Address: 00512ec0
-/* public: class RGE_Static_Object * __thiscall TRIBE_Player::find_obj(short,class RGE_Static_Object
-   *) */
-
 RGE_Static_Object * __thiscall
 TRIBE_Player::find_obj(TRIBE_Player *this,short param_1,RGE_Static_Object *param_2)
 {
@@ -1169,9 +1129,6 @@ TRIBE_Player::find_obj(TRIBE_Player *this,short param_1,RGE_Static_Object *param
 
 // Function: make_new_object
 // Address: 00512f60
-/* public: virtual class RGE_Static_Object * __thiscall
-   TRIBE_Player::make_new_object(long,float,float,float,int) */
-
 RGE_Static_Object * __thiscall
 TRIBE_Player::make_new_object
           (TRIBE_Player *this,long param_1,float param_2,float param_3,float param_4,int param_5)
@@ -1202,10 +1159,6 @@ TRIBE_Player::make_new_object
 
 // Function: interface_tech_avail
 // Address: 00513000
-/* WARNING: Variable defined which should be unmapped: inv_amt_1 */
-/* public: void __thiscall TRIBE_Player::interface_tech_avail(struct Item_Avail * *,short *,short)
-    */
-
 void __thiscall
 TRIBE_Player::interface_tech_avail
           (TRIBE_Player *this,Item_Avail **param_1,short *param_2,short param_3)
@@ -1300,11 +1253,6 @@ TRIBE_Player::interface_tech_avail
 
 // Function: interface_item_avail
 // Address: 005131c0
-/* WARNING: Variable defined which should be unmapped: inv_amt_1 */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall TRIBE_Player::interface_item_avail(struct Item_Avail * *,short *,short)
-    */
-
 void __thiscall
 TRIBE_Player::interface_item_avail
           (TRIBE_Player *this,Item_Avail **param_1,short *param_2,short param_3)
@@ -1432,9 +1380,6 @@ TRIBE_Player::interface_item_avail
 
 // Function: interface_trade_avail
 // Address: 005134f0
-/* WARNING: Variable defined which should be unmapped: i */
-/* public: void __thiscall TRIBE_Player::interface_trade_avail(struct Trade_Avail * *,short *) */
-
 void __thiscall
 TRIBE_Player::interface_trade_avail(TRIBE_Player *this,Trade_Avail **param_1,short *param_2)
 {
@@ -1511,9 +1456,6 @@ TRIBE_Player::interface_trade_avail(TRIBE_Player *this,Trade_Avail **param_1,sho
 
 // Function: command_make_building
 // Address: 00513600
-/* WARNING: Variable defined which should be unmapped: list_num */
-/* public: unsigned char __thiscall TRIBE_Player::command_make_building(short,float,float) */
-
 uchar __thiscall
 TRIBE_Player::command_make_building(TRIBE_Player *this,short param_1,float param_2,float param_3)
 {
@@ -1547,9 +1489,6 @@ TRIBE_Player::command_make_building(TRIBE_Player *this,short param_1,float param
 
 // Function: command_make_wall
 // Address: 00513690
-/* WARNING: Variable defined which should be unmapped: list_num */
-/* public: unsigned char __thiscall TRIBE_Player::command_make_wall(short,long,long,long,long) */
-
 uchar __thiscall
 TRIBE_Player::command_make_wall
           (TRIBE_Player *this,short param_1,long param_2,long param_3,long param_4,long param_5)
@@ -1584,8 +1523,6 @@ TRIBE_Player::command_make_wall
 
 // Function: command_building_make_tech
 // Address: 00513720
-/* public: unsigned char __thiscall TRIBE_Player::command_building_make_tech(short) */
-
 uchar __thiscall TRIBE_Player::command_building_make_tech(TRIBE_Player *this,short param_1)
 {
   RGE_Static_Object *pRVar1;
@@ -1602,8 +1539,6 @@ uchar __thiscall TRIBE_Player::command_building_make_tech(TRIBE_Player *this,sho
 
 // Function: command_building_cancel
 // Address: 00513750
-/* public: unsigned char __thiscall TRIBE_Player::command_building_cancel(void) */
-
 uchar __thiscall TRIBE_Player::command_building_cancel(TRIBE_Player *this)
 {
   uchar uVar1;
@@ -1624,9 +1559,6 @@ uchar __thiscall TRIBE_Player::command_building_cancel(TRIBE_Player *this)
 
 // Function: command_delete_object
 // Address: 00513790
-/* public: unsigned char __thiscall TRIBE_Player::command_delete_object(class RGE_Static_Object *)
-    */
-
 uchar __thiscall TRIBE_Player::command_delete_object(TRIBE_Player *this,RGE_Static_Object *param_1)
 {
   uchar uVar1;
@@ -1643,9 +1575,6 @@ uchar __thiscall TRIBE_Player::command_delete_object(TRIBE_Player *this,RGE_Stat
 
 // Function: command_trade_attribute
 // Address: 005137d0
-/* WARNING: Variable defined which should be unmapped: list */
-/* public: unsigned char __thiscall TRIBE_Player::command_trade_attribute(long) */
-
 uchar __thiscall TRIBE_Player::command_trade_attribute(TRIBE_Player *this,long param_1)
 {
   uchar uVar1;
@@ -1669,8 +1598,6 @@ uchar __thiscall TRIBE_Player::command_trade_attribute(TRIBE_Player *this,long p
 
 // Function: command_trade_attribute
 // Address: 00513840
-/* public: unsigned char __thiscall TRIBE_Player::command_trade_attribute(int,long) */
-
 uchar __thiscall TRIBE_Player::command_trade_attribute(TRIBE_Player *this,int param_1,long param_2)
 {
   TRIBE_Command::command_trade_attribute
@@ -1683,9 +1610,6 @@ uchar __thiscall TRIBE_Player::command_trade_attribute(TRIBE_Player *this,int pa
 
 // Function: command_attack_ground
 // Address: 00513860
-/* WARNING: Variable defined which should be unmapped: list */
-/* public: unsigned char __thiscall TRIBE_Player::command_attack_ground(float,float) */
-
 uchar __thiscall TRIBE_Player::command_attack_ground(TRIBE_Player *this,float param_1,float param_2)
 {
   uchar uVar1;
@@ -1709,10 +1633,6 @@ uchar __thiscall TRIBE_Player::command_attack_ground(TRIBE_Player *this,float pa
 
 // Function: command_give_attribute
 // Address: 005138d0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall
-   TRIBE_Player::command_give_attribute(int,int,float,float) */
-
 uchar __thiscall
 TRIBE_Player::command_give_attribute
           (TRIBE_Player *this,int param_1,int param_2,float param_3,float param_4)
@@ -1729,8 +1649,6 @@ TRIBE_Player::command_give_attribute
 
 // Function: command_building_make_obj
 // Address: 00513920
-/* public: unsigned char __thiscall TRIBE_Player::command_building_make_obj(short) */
-
 uchar __thiscall TRIBE_Player::command_building_make_obj(TRIBE_Player *this,short param_1)
 {
   RGE_Static_Object *pRVar1;
@@ -1747,8 +1665,6 @@ uchar __thiscall TRIBE_Player::command_building_make_obj(TRIBE_Player *this,shor
 
 // Function: command_make_repair
 // Address: 00513950
-/* public: unsigned char __thiscall TRIBE_Player::command_make_repair(class RGE_Static_Object *) */
-
 uchar __thiscall TRIBE_Player::command_make_repair(TRIBE_Player *this,RGE_Static_Object *param_1)
 {
   RGE_Static_Object *pRVar1;
@@ -1808,9 +1724,6 @@ uchar __thiscall TRIBE_Player::command_make_repair(TRIBE_Player *this,RGE_Static
 
 // Function: command_make_unload
 // Address: 00513a80
-/* WARNING: Variable defined which should be unmapped: list */
-/* public: unsigned char __thiscall TRIBE_Player::command_make_unload(float,float) */
-
 uchar __thiscall TRIBE_Player::command_make_unload(TRIBE_Player *this,float param_1,float param_2)
 {
   uchar uVar1;
@@ -1834,9 +1747,6 @@ uchar __thiscall TRIBE_Player::command_make_unload(TRIBE_Player *this,float para
 
 // Function: check_obj_cost
 // Address: 00513af0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: unsigned char __thiscall TRIBE_Player::check_obj_cost(short,short *,float,int) */
-
 uchar __thiscall
 TRIBE_Player::check_obj_cost
           (TRIBE_Player *this,short param_1,short *param_2,float param_3,int param_4)
@@ -1909,8 +1819,6 @@ TRIBE_Player::check_obj_cost
 
 // Function: pay_obj_cost
 // Address: 00513c50
-/* public: unsigned char __thiscall TRIBE_Player::pay_obj_cost(short,float,int) */
-
 uchar __thiscall
 TRIBE_Player::pay_obj_cost(TRIBE_Player *this,short param_1,float param_2,int param_3)
 {
@@ -1951,8 +1859,6 @@ TRIBE_Player::pay_obj_cost(TRIBE_Player *this,short param_1,float param_2,int pa
 
 // Function: reimburse_obj_cost
 // Address: 00513d00
-/* public: void __thiscall TRIBE_Player::reimburse_obj_cost(short) */
-
 void __thiscall TRIBE_Player::reimburse_obj_cost(TRIBE_Player *this,short param_1)
 {
   float *pfVar1;
@@ -1979,8 +1885,6 @@ void __thiscall TRIBE_Player::reimburse_obj_cost(TRIBE_Player *this,short param_
 
 // Function: check_tech_cost
 // Address: 00513d60
-/* public: unsigned char __thiscall TRIBE_Player::check_tech_cost(short,short *) */
-
 uchar __thiscall TRIBE_Player::check_tech_cost(TRIBE_Player *this,short param_1,short *param_2)
 {
   uchar uVar1;
@@ -1993,8 +1897,6 @@ uchar __thiscall TRIBE_Player::check_tech_cost(TRIBE_Player *this,short param_1,
 
 // Function: pay_tech_cost
 // Address: 00513d80
-/* public: unsigned char __thiscall TRIBE_Player::pay_tech_cost(short) */
-
 uchar __thiscall TRIBE_Player::pay_tech_cost(TRIBE_Player *this,short param_1)
 {
   uchar uVar1;
@@ -2007,8 +1909,6 @@ uchar __thiscall TRIBE_Player::pay_tech_cost(TRIBE_Player *this,short param_1)
 
 // Function: tech_abling
 // Address: 00513da0
-/* public: void __thiscall TRIBE_Player::tech_abling(long,unsigned char) */
-
 void __thiscall TRIBE_Player::tech_abling(TRIBE_Player *this,long param_1,uchar param_2)
 {
   if (param_2 != '\0') {
@@ -2023,8 +1923,6 @@ void __thiscall TRIBE_Player::tech_abling(TRIBE_Player *this,long param_1,uchar 
 
 // Function: rev_tech
 // Address: 00513dd0
-/* public: void __thiscall TRIBE_Player::rev_tech(long) */
-
 void __thiscall TRIBE_Player::rev_tech(TRIBE_Player *this,long param_1)
 {
   short sVar1;
@@ -2080,9 +1978,6 @@ void __thiscall TRIBE_Player::rev_tech(TRIBE_Player *this,long param_1)
 
 // Function: add_population_entry
 // Address: 00513fd0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall TRIBE_Player::add_population_entry(void) */
-
 void __thiscall TRIBE_Player::add_population_entry(TRIBE_Player *this)
 {
   uchar uVar1;
@@ -2101,10 +1996,6 @@ void __thiscall TRIBE_Player::add_population_entry(TRIBE_Player *this)
 // Function: random_start
 // Address: 00514010
 // [HELPER] s_C__msdev_work_age1_x1_tplayer_cp: "C:\msdev\work\age1_x1\tplayer.cpp"
-/* WARNING: Variable defined which should be unmapped: found_ally */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual void __thiscall TRIBE_Player::random_start(void) */
-
 void __thiscall TRIBE_Player::random_start(TRIBE_Player *this)
 {
   code *pcVar1;
@@ -2211,7 +2102,6 @@ void __thiscall TRIBE_Player::random_start(TRIBE_Player *this)
           (**(code **)(iVar12 + 0xdc))
                     (*(undefined4 *)(*(int *)(this->_padding_ + 0x40) + iVar9 * 4),0,0xffffffff);
         }
-                    /* language.dll match for 0x70: "B" */
         (**(code **)(**(int **)(*(int *)(this->_padding_ + 0x40) + iVar9 * 4) + 0x94))
                   (0x70,this->_padding_,this->_padding_,0,0);
         bVar5 = true;
@@ -2243,9 +2133,6 @@ void __thiscall TRIBE_Player::random_start(TRIBE_Player *this)
 
 // Function: objectCost
 // Address: 00514510
-/* WARNING: Variable defined which should be unmapped: inv_1 */
-/* public: void __thiscall TRIBE_Player::objectCost(int,int,class ResourceItem *,int) */
-
 void __thiscall
 TRIBE_Player::objectCost
           (TRIBE_Player *this,int param_1,int param_2,ResourceItem *param_3,int param_4)
@@ -2272,9 +2159,6 @@ TRIBE_Player::objectCost
 
 // Function: objectCostByType
 // Address: 00514590
-/* WARNING: Variable defined which should be unmapped: inv_amt_3 */
-/* public: virtual int __thiscall TRIBE_Player::objectCostByType(int) */
-
 int __thiscall TRIBE_Player::objectCostByType(TRIBE_Player *this,int param_1)
 {
   short inv_amt_3;
@@ -2294,9 +2178,6 @@ int __thiscall TRIBE_Player::objectCostByType(TRIBE_Player *this,int param_1)
 
 // Function: researchCost
 // Address: 005145e0
-/* WARNING: Variable defined which should be unmapped: inv_1 */
-/* public: void __thiscall TRIBE_Player::researchCost(int,int,class ResourceItem *,int) */
-
 void __thiscall
 TRIBE_Player::researchCost
           (TRIBE_Player *this,int param_1,int param_2,ResourceItem *param_3,int param_4)
@@ -2324,8 +2205,6 @@ TRIBE_Player::researchCost
 
 // Function: objectAvailable
 // Address: 00514660
-/* public: int __thiscall TRIBE_Player::objectAvailable(int) */
-
 int __thiscall TRIBE_Player::objectAvailable(TRIBE_Player *this,int param_1)
 {
   int iVar1;
@@ -2341,8 +2220,6 @@ int __thiscall TRIBE_Player::objectAvailable(TRIBE_Player *this,int param_1)
 
 // Function: researchAvailable
 // Address: 00514690
-/* public: int __thiscall TRIBE_Player::researchAvailable(int) */
-
 int __thiscall TRIBE_Player::researchAvailable(TRIBE_Player *this,int param_1)
 {
   return (uint)(this->tech_tree->tech_player_tree[param_1].state == 1);
@@ -2352,8 +2229,6 @@ int __thiscall TRIBE_Player::researchAvailable(TRIBE_Player *this,int param_1)
 
 // Function: researchEverAvailable
 // Address: 005146b0
-/* public: int __thiscall TRIBE_Player::researchEverAvailable(int) */
-
 int __thiscall TRIBE_Player::researchEverAvailable(TRIBE_Player *this,int param_1)
 {
   short sVar1;
@@ -2369,8 +2244,6 @@ int __thiscall TRIBE_Player::researchEverAvailable(TRIBE_Player *this,int param_
 
 // Function: researchState
 // Address: 005146e0
-/* public: unsigned char __thiscall TRIBE_Player::researchState(int) */
-
 uchar __thiscall TRIBE_Player::researchState(TRIBE_Player *this,int param_1)
 {
   short sVar1;
@@ -2383,8 +2256,6 @@ uchar __thiscall TRIBE_Player::researchState(TRIBE_Player *this,int param_1)
 
 // Function: changeToHumanPlayer
 // Address: 00514700
-/* public: virtual void __thiscall TRIBE_Player::changeToHumanPlayer(void) */
-
 void __thiscall TRIBE_Player::changeToHumanPlayer(TRIBE_Player *this)
 {
   return;
@@ -2394,8 +2265,6 @@ void __thiscall TRIBE_Player::changeToHumanPlayer(TRIBE_Player *this)
 
 // Function: changeToComputerPlayer
 // Address: 00514710
-/* public: virtual void __thiscall TRIBE_Player::changeToComputerPlayer(void) */
-
 void __thiscall TRIBE_Player::changeToComputerPlayer(TRIBE_Player *this)
 {
   return;
@@ -2414,8 +2283,6 @@ void __thiscall TRIBE_Player::changeToComputerPlayer(TRIBE_Player *this)
 // [HELPER] s_NeedRes___s__d___s__d___s__d___s: "NeedRes: %s=%d, %s=%d, %s=%d, %s=%d, ResDiff: %s=%d, %s=%d, %s=%d, %s=%d."
 // [HELPER] s_Per___s__AttEnab__d__AttDly__d_M: "Per: %s, AttEnab=%d, AttDly=%d Min, ConCP=%d, CurCP=%d, AveUAms=%3d, LastUAms..."
 // [HELPER] s_Pers__Spec_BL___Food___d__d___Wo: "Pers (Spec/BL): Food=(%d/%d), Wood=(%d/%d), Gold=(%d/%d), Stone=(%d/%d)."
-/* public: virtual char * __thiscall TRIBE_Player::aiStatus(int) */
-
 char * __thiscall TRIBE_Player::aiStatus(TRIBE_Player *this,int param_1)
 {
   TribeMainDecisionAIModule *pTVar1;
@@ -2517,16 +2384,12 @@ char * __thiscall TRIBE_Player::aiStatus(TRIBE_Player *this,int param_1)
   }
   if (param_1 == 4) {
     TribeTacticalAIModule::strategicNumber(&pTVar1->tacticalAI,0x9e);
-                    /* language.dll match for 0x77: "Arial" */
     TribeTacticalAIModule::strategicNumber(&this->playerAI->tacticalAI,0x77);
     TribeTacticalAIModule::strategicNumber(&this->playerAI->tacticalAI,0x9f);
-                    /* language.dll match for 0x76: "B" */
     iVar7 = TribeTacticalAIModule::strategicNumber(&this->playerAI->tacticalAI,0x76);
     iVar8 = TribeTacticalAIModule::strategicNumber(&this->playerAI->tacticalAI,0x9d);
-                    /* language.dll match for 0x78: "10" */
     iVar9 = TribeTacticalAIModule::strategicNumber(&this->playerAI->tacticalAI,0x78);
     iVar10 = TribeTacticalAIModule::strategicNumber(&this->playerAI->tacticalAI,0x9c);
-                    /* language.dll match for 0x75: "12" */
     iVar11 = TribeTacticalAIModule::strategicNumber(&this->playerAI->tacticalAI,0x75);
     sprintf(this->aiStatusInformationValue4,s_Pers__Spec_BL___Food___d__d___Wo,iVar11,iVar10,iVar9,
             iVar8,iVar7);
@@ -2571,7 +2434,6 @@ char * __thiscall TRIBE_Player::aiStatus(TRIBE_Player *this,int param_1)
     pcVar2 = TribeTacticalAIModule::updateAreaName((TribeTacticalAIModule *)(iVar9 + 0x1146c));
     uVar13 = *(undefined4 *)(iVar8 + 0xfc);
     uVar12 = (uint)*(byte *)(iVar8 + 0x11d);
-                    /* language.dll match for 0x68: "Arial" */
     iVar8 = TribeTacticalAIModule::strategicNumber(&this->playerAI->tacticalAI,0x68);
     iVar8 = iVar8 / 0x3c;
     pcVar3 = TribeStrategyAIModule::ruleSetName(&this->playerAI->strategyAI);
@@ -2586,8 +2448,6 @@ char * __thiscall TRIBE_Player::aiStatus(TRIBE_Player *this,int param_1)
 
 // Function: kickAI
 // Address: 00514f90
-/* public: virtual void __thiscall TRIBE_Player::kickAI(int) */
-
 void __thiscall TRIBE_Player::kickAI(TRIBE_Player *this,int param_1)
 {
   if (this->playerAI != (TribeMainDecisionAIModule *)0x0) {
@@ -2600,8 +2460,6 @@ void __thiscall TRIBE_Player::kickAI(TRIBE_Player *this,int param_1)
 
 // Function: strategicNumber
 // Address: 00514fb0
-/* public: virtual int __thiscall TRIBE_Player::strategicNumber(int) */
-
 int __thiscall TRIBE_Player::strategicNumber(TRIBE_Player *this,int param_1)
 {
   int iVar1;
@@ -2617,9 +2475,6 @@ int __thiscall TRIBE_Player::strategicNumber(TRIBE_Player *this,int param_1)
 
 // Function: logMessage
 // Address: 00514fe0
-/* WARNING: Variable defined which should be unmapped: textOut */
-/* public: virtual void __cdecl TRIBE_Player::logMessage(char *,...) */
-
 void __thiscall TRIBE_Player::logMessage(TRIBE_Player *this,char *param_1,...)
 {
   undefined4 in_stack_00000008;
@@ -2637,8 +2492,6 @@ void __thiscall TRIBE_Player::logMessage(TRIBE_Player *this,char *param_1,...)
 
 // Function: sendAICommand
 // Address: 00515040
-/* public: virtual int __thiscall TRIBE_Player::sendAICommand(int,int,int,int,int) */
-
 int __thiscall
 TRIBE_Player::sendAICommand
           (TRIBE_Player *this,int param_1,int param_2,int param_3,int param_4,int param_5)
@@ -2657,9 +2510,6 @@ TRIBE_Player::sendAICommand
 
 // Function: addObject
 // Address: 00515070
-/* public: virtual struct RGE_Object_Node * __thiscall TRIBE_Player::addObject(class
-   RGE_Static_Object *,int,int) */
-
 RGE_Object_Node * __thiscall
 TRIBE_Player::addObject(TRIBE_Player *this,RGE_Static_Object *param_1,int param_2,int param_3)
 {
@@ -2680,9 +2530,6 @@ TRIBE_Player::addObject(TRIBE_Player *this,RGE_Static_Object *param_1,int param_
 
 // Function: removeObject
 // Address: 005150e0
-/* public: virtual void __thiscall TRIBE_Player::removeObject(class RGE_Static_Object
-   *,int,int,struct RGE_Object_Node *) */
-
 void __thiscall
 TRIBE_Player::removeObject
           (TRIBE_Player *this,RGE_Static_Object *param_1,int param_2,int param_3,
@@ -2700,8 +2547,6 @@ TRIBE_Player::removeObject
 
 // Function: buildObject
 // Address: 00515130
-/* public: virtual void __thiscall TRIBE_Player::buildObject(int,int,float,float,int) */
-
 void __thiscall
 TRIBE_Player::buildObject
           (TRIBE_Player *this,int param_1,int param_2,float param_3,float param_4,int param_5)
@@ -2721,8 +2566,6 @@ TRIBE_Player::buildObject
 
 // Function: cancelBuild
 // Address: 00515180
-/* public: virtual void __thiscall TRIBE_Player::cancelBuild(int,int,int,float,float,int,int) */
-
 void __thiscall
 TRIBE_Player::cancelBuild
           (TRIBE_Player *this,int param_1,int param_2,int param_3,float param_4,float param_5,
@@ -2739,8 +2582,6 @@ TRIBE_Player::cancelBuild
 
 // Function: registerBuild
 // Address: 005151c0
-/* public: virtual void __thiscall TRIBE_Player::registerBuild(class RGE_Static_Object *,int) */
-
 void __thiscall
 TRIBE_Player::registerBuild(TRIBE_Player *this,RGE_Static_Object *param_1,int param_2)
 {
@@ -2754,8 +2595,6 @@ TRIBE_Player::registerBuild(TRIBE_Player *this,RGE_Static_Object *param_1,int pa
 
 // Function: trainUnit
 // Address: 005151f0
-/* public: virtual void __thiscall TRIBE_Player::trainUnit(int,int,int) */
-
 void __thiscall TRIBE_Player::trainUnit(TRIBE_Player *this,int param_1,int param_2,int param_3)
 {
   TRIBE_Command::command_make
@@ -2768,8 +2607,6 @@ void __thiscall TRIBE_Player::trainUnit(TRIBE_Player *this,int param_1,int param
 
 // Function: cancelTrain
 // Address: 00515220
-/* public: virtual void __thiscall TRIBE_Player::cancelTrain(int,int,int,int) */
-
 void __thiscall
 TRIBE_Player::cancelTrain(TRIBE_Player *this,int param_1,int param_2,int param_3,int param_4)
 {
@@ -2783,8 +2620,6 @@ TRIBE_Player::cancelTrain(TRIBE_Player *this,int param_1,int param_2,int param_3
 
 // Function: registerTrain
 // Address: 00515250
-/* public: virtual void __thiscall TRIBE_Player::registerTrain(int,int,int,int) */
-
 void __thiscall
 TRIBE_Player::registerTrain(TRIBE_Player *this,int param_1,int param_2,int param_3,int param_4)
 {
@@ -2798,8 +2633,6 @@ TRIBE_Player::registerTrain(TRIBE_Player *this,int param_1,int param_2,int param
 
 // Function: research
 // Address: 00515280
-/* public: virtual void __thiscall TRIBE_Player::research(int,int,int) */
-
 void __thiscall TRIBE_Player::research(TRIBE_Player *this,int param_1,int param_2,int param_3)
 {
   TRIBE_Command::command_research
@@ -2812,8 +2645,6 @@ void __thiscall TRIBE_Player::research(TRIBE_Player *this,int param_1,int param_
 
 // Function: cancelResearch
 // Address: 005152b0
-/* public: virtual void __thiscall TRIBE_Player::cancelResearch(int,int,int,int) */
-
 void __thiscall
 TRIBE_Player::cancelResearch(TRIBE_Player *this,int param_1,int param_2,int param_3,int param_4)
 {
@@ -2827,8 +2658,6 @@ TRIBE_Player::cancelResearch(TRIBE_Player *this,int param_1,int param_2,int para
 
 // Function: registerResearch
 // Address: 005152e0
-/* public: virtual void __thiscall TRIBE_Player::registerResearch(int,int,int) */
-
 void __thiscall
 TRIBE_Player::registerResearch(TRIBE_Player *this,int param_1,int param_2,int param_3)
 {
@@ -2842,8 +2671,6 @@ TRIBE_Player::registerResearch(TRIBE_Player *this,int param_1,int param_2,int pa
 
 // Function: taskTrader
 // Address: 00515310
-/* public: virtual void __thiscall TRIBE_Player::taskTrader(int,int,int,float,float) */
-
 void __thiscall
 TRIBE_Player::taskTrader
           (TRIBE_Player *this,int param_1,int param_2,int param_3,float param_4,float param_5)
@@ -2863,8 +2690,6 @@ TRIBE_Player::taskTrader
 
 // Function: taskResourceGatherer
 // Address: 00515360
-/* public: virtual void __thiscall TRIBE_Player::taskResourceGatherer(int,int,int,float,float) */
-
 void __thiscall
 TRIBE_Player::taskResourceGatherer
           (TRIBE_Player *this,int param_1,int param_2,int param_3,float param_4,float param_5)
@@ -2884,8 +2709,6 @@ TRIBE_Player::taskResourceGatherer
 
 // Function: setDiplomaticStance
 // Address: 005153b0
-/* public: virtual void __thiscall TRIBE_Player::setDiplomaticStance(int,int) */
-
 void __thiscall TRIBE_Player::setDiplomaticStance(TRIBE_Player *this,int param_1,int param_2)
 {
   TRIBE_Command::command_relation
@@ -2917,9 +2740,6 @@ void __thiscall TRIBE_Player::setDiplomaticStance(TRIBE_Player *this,int param_1
 // [HELPER] s_We_have_a_mostly_water_map_: "We have a mostly water map."
 // [HELPER] s_We_have_an_all_land_map_: "We have an all land map."
 // [HELPER] s_We_have_an_all_water_map_: "We have an all water map."
-/* WARNING: Variable defined which should be unmapped: save_debug_random_on */
-/* public: virtual void __thiscall TRIBE_Player::loadAIInformation(char *,char *,char *,int,int) */
-
 void __thiscall
 TRIBE_Player::loadAIInformation
           (TRIBE_Player *this,char *param_1,char *param_2,char *param_3,int param_4,int param_5)
@@ -2998,9 +2818,7 @@ LAB_00515473:
     pTVar21 = this->playerAI;
   }
   AIModule::logCommonHistory((AIModule *)pTVar13,(char *)pTVar21,pcVar23);
-                    /* language.dll match for 0x2775: " <None> " */
   (**(code **)(rge_base_game->_padding_ + 0x20))(0x2775,noneString + 4,0x100);
-                    /* language.dll match for 0x277b: "Random" */
   (**(code **)(rge_base_game->_padding_ + 0x20))(0x277b,ruleSetName + 0xf8,0x100);
   uVar11 = 0xffffffff;
   pcVar23 = s_;
@@ -3282,8 +3100,6 @@ LAB_005158d6:
   }
 LAB_0051598d:
   debug_random_on = iVar5;
-                    /* language.dll match for 0x8fd: "You traitorous wretch! Vengeance will be
-                       mine!" */
   debug_srand(s_C__msdev_work_age1_x1_tplayer_cp,0x8fd,buildListName._0_4_);
   return;
 }
@@ -3293,9 +3109,6 @@ LAB_0051598d:
 // Function: notify
 // Address: 005159d0
 // [HELPER] s_C__msdev_work_age1_x1_tplayer_cp: "C:\msdev\work\age1_x1\tplayer.cpp"
-/* WARNING: Variable defined which should be unmapped: attackingObject */
-/* public: virtual void __thiscall TRIBE_Player::notify(int,int,int,long,long,long) */
-
 void __thiscall
 TRIBE_Player::notify
           (TRIBE_Player *this,int param_1,int param_2,int param_3,long param_4,long param_5,
@@ -3373,8 +3186,6 @@ switchD_005159f1_caseD_202:
 
 // Function: notifyAI
 // Address: 00515bb0
-/* public: virtual void __thiscall TRIBE_Player::notifyAI(int,int,int,long,long,long) */
-
 void __thiscall
 TRIBE_Player::notifyAI
           (TRIBE_Player *this,int param_1,int param_2,int param_3,long param_4,long param_5,
@@ -3451,8 +3262,6 @@ switchD_00515c88_caseD_201:
 
 // Function: intelligentCivSelection
 // Address: 00515df0
-/* public: int __thiscall TRIBE_Player::intelligentCivSelection(int,int,int) */
-
 int __thiscall
 TRIBE_Player::intelligentCivSelection(TRIBE_Player *this,int param_1,int param_2,int param_3)
 {
@@ -3468,10 +3277,6 @@ TRIBE_Player::intelligentCivSelection(TRIBE_Player *this,int param_1,int param_2
 // [HELPER] s_RandomGameSpecialized: "RandomGameSpecialized"
 // [HELPER] s_Selected_a_best_build_list_of___: "Selected a best build list of '%s'."
 // [HELPER] s_Setting_AI_Personality_: "Setting AI Personality:"
-/* WARNING: Variable defined which should be unmapped: mostBuiltUnit1 */
-/* public: void __thiscall TRIBE_Player::intelligentBuildListAndRulesSelection(char *,char
-   *,int,int,int) */
-
 void __thiscall
 TRIBE_Player::intelligentBuildListAndRulesSelection
           (TRIBE_Player *this,char *param_1,char *param_2,int param_3,int param_4,int param_5)
@@ -3881,7 +3686,6 @@ LAB_005162af:
   } while (iVar5 != 0);
   iVar10 = 0;
   piVar13 = buildLists;
-                    /* language.dll match for 0x7d: "Arial" */
   iVar5 = 0x7d;
   do {
     piVar13 = piVar13 + 1;
@@ -4187,13 +3991,11 @@ LAB_00516be6:
      ) {
     iVar3 = iVar3 + -300;
   }
-                    /* language.dll match for 0x68: "Arial" */
   TribeStrategyAIModule::setRule(&this->playerAI->strategyAI,0x68,iVar3);
   TribeStrategyAIModule::setRule(&this->playerAI->strategyAI,0x10,2);
   TribeStrategyAIModule::setRule(&this->playerAI->strategyAI,0x1a,10);
   TribeStrategyAIModule::setRule(&this->playerAI->strategyAI,0x5d,1);
   TribeStrategyAIModule::setRule(&this->playerAI->strategyAI,99,4);
-                    /* language.dll match for 0xe80: "Click to mine for gold." */
   iVar3 = debug_rand(s_C__msdev_work_age1_x1_tplayer_cp,0xe80);
   TribeStrategyAIModule::setRule(&this->playerAI->strategyAI,0xbc,(uint)(iVar3 % 3 != 0));
   iVar3 = debug_rand(s_C__msdev_work_age1_x1_tplayer_cp,0xe86);
@@ -4213,7 +4015,6 @@ LAB_00516be6:
   }
   switch(iStack_4) {
   case 0:
-                    /* language.dll match for 0xea7: "Click to convert this unit." */
     uVar6 = debug_rand(s_C__msdev_work_age1_x1_tplayer_cp,0xea7);
     uVar7 = (int)uVar6 >> 0x1f;
     TribeStrategyAIModule::setRule
@@ -4332,7 +4133,6 @@ LAB_00517478:
     iVar3 = 0;
     iVar4 = 0;
     if (iVar11 == 0) {
-                    /* language.dll match for 0x7d0: "place holder" */
       iVar5 = 2000;
       iVar3 = 2000;
       iVar4 = 2000;
@@ -4386,8 +4186,6 @@ LAB_00517639:
 // Function: setupEgyptian
 // Address: 00517b90
 // [HELPER] s_Setting_up_as_Egyptians_: "Setting up as Egyptians."
-/* public: void __thiscall TRIBE_Player::setupEgyptian(int *,int,int,int) */
-
 void __thiscall
 TRIBE_Player::setupEgyptian(TRIBE_Player *this,int *param_1,int param_2,int param_3,int param_4)
 {
@@ -4446,8 +4244,6 @@ TRIBE_Player::setupEgyptian(TRIBE_Player *this,int *param_1,int param_2,int para
 // Function: setupGreek
 // Address: 00517cd0
 // [HELPER] s_Setting_up_as_Greeks_: "Setting up as Greeks."
-/* public: void __thiscall TRIBE_Player::setupGreek(int *,int,int,int) */
-
 void __thiscall
 TRIBE_Player::setupGreek(TRIBE_Player *this,int *param_1,int param_2,int param_3,int param_4)
 {
@@ -4507,8 +4303,6 @@ TRIBE_Player::setupGreek(TRIBE_Player *this,int *param_1,int param_2,int param_3
 // Function: setupBabylonian
 // Address: 00517e10
 // [HELPER] s_Setting_up_as_Babylonians_: "Setting up as Babylonians."
-/* public: void __thiscall TRIBE_Player::setupBabylonian(int *,int,int,int) */
-
 void __thiscall
 TRIBE_Player::setupBabylonian(TRIBE_Player *this,int *param_1,int param_2,int param_3,int param_4)
 {
@@ -4561,8 +4355,6 @@ TRIBE_Player::setupBabylonian(TRIBE_Player *this,int *param_1,int param_2,int pa
 // Function: setupAssyrian
 // Address: 00517f30
 // [HELPER] s_Setting_up_as_Assyrians_: "Setting up as Assyrians."
-/* public: void __thiscall TRIBE_Player::setupAssyrian(int *,int,int,int) */
-
 void __thiscall
 TRIBE_Player::setupAssyrian(TRIBE_Player *this,int *param_1,int param_2,int param_3,int param_4)
 {
@@ -4625,8 +4417,6 @@ TRIBE_Player::setupAssyrian(TRIBE_Player *this,int *param_1,int param_2,int para
 // Function: setupMinoan
 // Address: 00518090
 // [HELPER] s_Setting_up_as_Minoans_: "Setting up as Minoans."
-/* public: void __thiscall TRIBE_Player::setupMinoan(int *,int,int,int) */
-
 void __thiscall
 TRIBE_Player::setupMinoan(TRIBE_Player *this,int *param_1,int param_2,int param_3,int param_4)
 {
@@ -4684,8 +4474,6 @@ TRIBE_Player::setupMinoan(TRIBE_Player *this,int *param_1,int param_2,int param_
 // Function: setupHittite
 // Address: 005181c0
 // [HELPER] s_Setting_up_as_Hittites_: "Setting up as Hittites."
-/* public: void __thiscall TRIBE_Player::setupHittite(int *,int,int,int) */
-
 void __thiscall
 TRIBE_Player::setupHittite(TRIBE_Player *this,int *param_1,int param_2,int param_3,int param_4)
 {
@@ -4739,8 +4527,6 @@ TRIBE_Player::setupHittite(TRIBE_Player *this,int *param_1,int param_2,int param
 // Function: setupPhoenician
 // Address: 005182e0
 // [HELPER] s_Setting_up_as_Phoenicians_: "Setting up as Phoenicians."
-/* public: void __thiscall TRIBE_Player::setupPhoenician(int *,int,int,int) */
-
 void __thiscall
 TRIBE_Player::setupPhoenician(TRIBE_Player *this,int *param_1,int param_2,int param_3,int param_4)
 {
@@ -4794,8 +4580,6 @@ TRIBE_Player::setupPhoenician(TRIBE_Player *this,int *param_1,int param_2,int pa
 // Function: setupSumerian
 // Address: 00518400
 // [HELPER] s_Setting_up_as_Sumerians_: "Setting up as Sumerians."
-/* public: void __thiscall TRIBE_Player::setupSumerian(int *,int,int,int) */
-
 void __thiscall
 TRIBE_Player::setupSumerian(TRIBE_Player *this,int *param_1,int param_2,int param_3,int param_4)
 {
@@ -4853,8 +4637,6 @@ TRIBE_Player::setupSumerian(TRIBE_Player *this,int *param_1,int param_2,int para
 // Function: setupPersian
 // Address: 00518540
 // [HELPER] s_Setting_up_as_Persians_: "Setting up as Persians."
-/* public: void __thiscall TRIBE_Player::setupPersian(int *,int,int,int) */
-
 void __thiscall
 TRIBE_Player::setupPersian(TRIBE_Player *this,int *param_1,int param_2,int param_3,int param_4)
 {
@@ -4910,8 +4692,6 @@ TRIBE_Player::setupPersian(TRIBE_Player *this,int *param_1,int param_2,int param
 // Function: setupShang
 // Address: 00518670
 // [HELPER] s_Setting_up_as_Shang_: "Setting up as Shang."
-/* public: void __thiscall TRIBE_Player::setupShang(int *,int,int,int) */
-
 void __thiscall
 TRIBE_Player::setupShang(TRIBE_Player *this,int *param_1,int param_2,int param_3,int param_4)
 {
@@ -4966,8 +4746,6 @@ TRIBE_Player::setupShang(TRIBE_Player *this,int *param_1,int param_2,int param_3
 // Function: setupYamato
 // Address: 005187a0
 // [HELPER] s_Setting_up_as_Yamato_: "Setting up as Yamato."
-/* public: void __thiscall TRIBE_Player::setupYamato(int *,int,int,int) */
-
 void __thiscall
 TRIBE_Player::setupYamato(TRIBE_Player *this,int *param_1,int param_2,int param_3,int param_4)
 {
@@ -5027,8 +4805,6 @@ TRIBE_Player::setupYamato(TRIBE_Player *this,int *param_1,int param_2,int param_
 // Function: setupChoson
 // Address: 005188f0
 // [HELPER] s_Setting_up_as_Choson_: "Setting up as Choson."
-/* public: void __thiscall TRIBE_Player::setupChoson(int *,int,int,int) */
-
 void __thiscall
 TRIBE_Player::setupChoson(TRIBE_Player *this,int *param_1,int param_2,int param_3,int param_4)
 {
@@ -5084,8 +4860,6 @@ TRIBE_Player::setupChoson(TRIBE_Player *this,int *param_1,int param_2,int param_
 // Function: setupRoman
 // Address: 00518a20
 // [HELPER] s_Setting_up_as_Roman_: "Setting up as Roman."
-/* public: void __thiscall TRIBE_Player::setupRoman(int *,int,int,int) */
-
 void __thiscall
 TRIBE_Player::setupRoman(TRIBE_Player *this,int *param_1,int param_2,int param_3,int param_4)
 {
@@ -5140,8 +4914,6 @@ TRIBE_Player::setupRoman(TRIBE_Player *this,int *param_1,int param_2,int param_3
 // Function: setupCarthaginian
 // Address: 00518b50
 // [HELPER] s_Setting_up_as_Carthaginian_: "Setting up as Carthaginian."
-/* public: void __thiscall TRIBE_Player::setupCarthaginian(int *,int,int,int) */
-
 void __thiscall
 TRIBE_Player::setupCarthaginian(TRIBE_Player *this,int *param_1,int param_2,int param_3,int param_4)
 {
@@ -5198,8 +4970,6 @@ TRIBE_Player::setupCarthaginian(TRIBE_Player *this,int *param_1,int param_2,int 
 // Function: setupPalmyran
 // Address: 00518c90
 // [HELPER] s_Setting_up_as_Palmyran_: "Setting up as Palmyran."
-/* public: void __thiscall TRIBE_Player::setupPalmyran(int *,int,int,int) */
-
 void __thiscall
 TRIBE_Player::setupPalmyran(TRIBE_Player *this,int *param_1,int param_2,int param_3,int param_4)
 {
@@ -5256,8 +5026,6 @@ TRIBE_Player::setupPalmyran(TRIBE_Player *this,int *param_1,int param_2,int para
 // Function: setupMacedonian
 // Address: 00518dd0
 // [HELPER] s_Setting_up_as_Macedonian_: "Setting up as Macedonian."
-/* public: void __thiscall TRIBE_Player::setupMacedonian(int *,int,int,int) */
-
 void __thiscall
 TRIBE_Player::setupMacedonian(TRIBE_Player *this,int *param_1,int param_2,int param_3,int param_4)
 {
@@ -5337,9 +5105,6 @@ TRIBE_Player::setupMacedonian(TRIBE_Player *this,int *param_1,int param_2,int pa
 // [HELPER] s_____Survival________d__: "    Survival       %d.\n"
 // [HELPER] s_____Wonder__________d__: "    Wonder         %d.\n"
 // [HELPER] s_______Total_________d__: "      Total:       %d.\n"
-/* WARNING: Variable defined which should be unmapped: tempString */
-/* public: virtual void __thiscall TRIBE_Player::logStatus(struct _iobuf *,int) */
-
 void __thiscall TRIBE_Player::logStatus(TRIBE_Player *this,_iobuf *param_1,int param_2)
 {
   long lVar1;
@@ -5447,8 +5212,6 @@ void __thiscall TRIBE_Player::logStatus(TRIBE_Player *this,_iobuf *param_1,int p
 
 // Function: trackUnitGather
 // Address: 005192f0
-/* public: virtual void __thiscall TRIBE_Player::trackUnitGather(int,int,int) */
-
 void __thiscall
 TRIBE_Player::trackUnitGather(TRIBE_Player *this,int param_1,int param_2,int param_3)
 {
@@ -5466,9 +5229,6 @@ TRIBE_Player::trackUnitGather(TRIBE_Player *this,int param_1,int param_2,int par
 // [HELPER] s__4_f: "%4.f"
 // [HELPER] s__4_f__4_f__4_f: "%4.f/%4.f/%4.f"
 // [HELPER] s__5_f: "%5.f"
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: void __thiscall TRIBE_Player::get_achievement(unsigned char,char *) */
-
 void __thiscall TRIBE_Player::get_achievement(TRIBE_Player *this,uchar param_1,char *param_2)
 {
   char cVar1;
@@ -5543,8 +5303,6 @@ switchD_00519334_default:
 
 // Function: load_victory
 // Address: 00519490
-/* public: virtual void __thiscall TRIBE_Player::load_victory(int,long *,unsigned char) */
-
 void __thiscall
 TRIBE_Player::load_victory(TRIBE_Player *this,int param_1,long *param_2,uchar param_3)
 {
@@ -5577,8 +5335,6 @@ TRIBE_Player::load_victory(TRIBE_Player *this,int param_1,long *param_2,uchar pa
 
 // Function: new_victory
 // Address: 00519500
-/* public: virtual void __thiscall TRIBE_Player::new_victory(void) */
-
 void __thiscall TRIBE_Player::new_victory(TRIBE_Player *this)
 {
   TRIBE_Victory_Conditions *this_00;
@@ -5609,8 +5365,6 @@ void __thiscall TRIBE_Player::new_victory(TRIBE_Player *this)
 
 // Function: add_attribute_num
 // Address: 00519570
-/* public: virtual void __thiscall TRIBE_Player::add_attribute_num(short,float,unsigned char) */
-
 void __thiscall
 TRIBE_Player::add_attribute_num(TRIBE_Player *this,short param_1,float param_2,uchar param_3)
 {
@@ -5629,9 +5383,6 @@ TRIBE_Player::add_attribute_num(TRIBE_Player *this,short param_1,float param_2,u
 
 // Function: analyize_selected_objects
 // Address: 005195d0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual void __thiscall TRIBE_Player::analyize_selected_objects(void) */
-
 void __thiscall TRIBE_Player::analyize_selected_objects(TRIBE_Player *this)
 {
   short sVar1;
@@ -5685,10 +5436,6 @@ void __thiscall TRIBE_Player::analyize_selected_objects(TRIBE_Player *this)
 
 // Function: get_mouse_pointer_action_vars
 // Address: 005196e0
-/* WARNING: Variable defined which should be unmapped: ObjectType */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual int __thiscall TRIBE_Player::get_mouse_pointer_action_vars(int,int &,int &) */
-
 int __thiscall
 TRIBE_Player::get_mouse_pointer_action_vars
           (TRIBE_Player *this,int param_1,int *param_2,int *param_3)
@@ -5744,7 +5491,6 @@ TRIBE_Player::get_mouse_pointer_action_vars
       }
 LAB_005197aa:
       pcVar13 = (char *)0x0;
-                    /* Symbol Ref: {@symbol retry_table} */
       if (((short)this->_padding_ == 0) || (this->_padding_ == 0)) {
         bVar6 = false;
         pRVar15 = rge_base_game[1].scenario_info;
@@ -5803,7 +5549,6 @@ LAB_005197aa:
       }
       if (iVar8 != -1) {
         do {
-                    /* Symbol Ref: {@symbol redo_mouseFunc} */
           switch(iVar8) {
           case 0:
             goto switchD_0051989c_caseD_0;
@@ -5899,9 +5644,6 @@ LAB_005198fc:
 
 // Function: scenario_postload
 // Address: 00519d50
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual void __thiscall TRIBE_Player::scenario_postload(int,long *,float) */
-
 void __thiscall
 TRIBE_Player::scenario_postload(TRIBE_Player *this,int param_1,long *param_2,float param_3)
 {

@@ -19,8 +19,6 @@
 
 // Function: AIPlay
 // Address: 0040f2e0
-/* public: __thiscall AIPlay::AIPlay(void) */
-
 AIPlay * __thiscall AIPlay::AIPlay(AIPlay *this)
 {
   uchar *puVar1;
@@ -62,8 +60,6 @@ AIPlay * __thiscall AIPlay::AIPlay(AIPlay *this)
 
 // Function: setName
 // Address: 0040f360
-/* public: void __thiscall AIPlay::setName(char *) */
-
 void __thiscall AIPlay::setName(AIPlay *this,char *param_1)
 {
   if (param_1 != (char *)0x0) {
@@ -76,8 +72,6 @@ void __thiscall AIPlay::setName(AIPlay *this,char *param_1)
 
 // Function: humanPlay
 // Address: 0040f380
-/* public: int __thiscall AIPlay::humanPlay(void)const  */
-
 int __thiscall AIPlay::humanPlay(AIPlay *this)
 {
   if ((this->nameValue[0] == 'H') && (this->nameValue[1] == 'P')) {
@@ -90,8 +84,6 @@ int __thiscall AIPlay::humanPlay(AIPlay *this)
 
 // Function: typeName
 // Address: 0040f3a0
-/* public: char * __thiscall AIPlay::typeName(void)const  */
-
 char * __thiscall AIPlay::typeName(AIPlay *this)
 {
   char *pcVar1;
@@ -104,8 +96,6 @@ char * __thiscall AIPlay::typeName(AIPlay *this)
 
 // Function: targetType
 // Address: 0040f3b0
-/* public: unsigned char __thiscall AIPlay::targetType(int)const  */
-
 uchar __thiscall AIPlay::targetType(AIPlay *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 5)) {
@@ -118,8 +108,6 @@ uchar __thiscall AIPlay::targetType(AIPlay *this,int param_1)
 
 // Function: isTargetType
 // Address: 0040f3d0
-/* public: int __thiscall AIPlay::isTargetType(unsigned char)const  */
-
 int __thiscall AIPlay::isTargetType(AIPlay *this,uchar param_1)
 {
   int iVar1;
@@ -138,8 +126,6 @@ int __thiscall AIPlay::isTargetType(AIPlay *this,uchar param_1)
 
 // Function: addTargetType
 // Address: 0040f3f0
-/* public: int __thiscall AIPlay::addTargetType(unsigned char) */
-
 int __thiscall AIPlay::addTargetType(AIPlay *this,uchar param_1)
 {
   int iVar1;
@@ -160,8 +146,6 @@ int __thiscall AIPlay::addTargetType(AIPlay *this,uchar param_1)
 
 // Function: targetCharacteristic
 // Address: 0040f420
-/* public: unsigned char __thiscall AIPlay::targetCharacteristic(int)const  */
-
 uchar __thiscall AIPlay::targetCharacteristic(AIPlay *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 5)) {
@@ -174,8 +158,6 @@ uchar __thiscall AIPlay::targetCharacteristic(AIPlay *this,int param_1)
 
 // Function: isTargetCharacteristic
 // Address: 0040f440
-/* public: int __thiscall AIPlay::isTargetCharacteristic(unsigned char)const  */
-
 int __thiscall AIPlay::isTargetCharacteristic(AIPlay *this,uchar param_1)
 {
   int iVar1;
@@ -194,8 +176,6 @@ int __thiscall AIPlay::isTargetCharacteristic(AIPlay *this,uchar param_1)
 
 // Function: addTargetCharacteristic
 // Address: 0040f460
-/* public: int __thiscall AIPlay::addTargetCharacteristic(unsigned char) */
-
 int __thiscall AIPlay::addTargetCharacteristic(AIPlay *this,uchar param_1)
 {
   int iVar1;
@@ -217,8 +197,6 @@ int __thiscall AIPlay::addTargetCharacteristic(AIPlay *this,uchar param_1)
 
 // Function: gatherTolerance
 // Address: 0040f490
-/* public: int __thiscall AIPlay::gatherTolerance(int,int) */
-
 int __thiscall AIPlay::gatherTolerance(AIPlay *this,int param_1,int param_2)
 {
   AIPlayPhase *this_00;
@@ -245,8 +223,6 @@ int __thiscall AIPlay::gatherTolerance(AIPlay *this,int param_1,int param_2)
 
 // Function: group
 // Address: 0040f4e0
-/* public: class AIPlayGroup * __thiscall AIPlay::group(int) */
-
 AIPlayGroup * __thiscall AIPlay::group(AIPlay *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 5)) {
@@ -259,8 +235,6 @@ AIPlayGroup * __thiscall AIPlay::group(AIPlay *this,int param_1)
 
 // Function: phase
 // Address: 0040f500
-/* public: class AIPlayPhase * __thiscall AIPlay::phase(int) */
-
 AIPlayPhase * __thiscall AIPlay::phase(AIPlay *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 10)) {
@@ -273,9 +247,6 @@ AIPlayPhase * __thiscall AIPlay::phase(AIPlay *this,int param_1)
 
 // Function: fillGroups
 // Address: 0040f530
-/* public: int __thiscall AIPlay::fillGroups(class AIPlayStatus *,int *,int,class RGE_Game_World *)
-    */
-
 int __thiscall
 AIPlay::fillGroups(AIPlay *this,AIPlayStatus *param_1,int *param_2,int param_3,
                   RGE_Game_World *param_4)
@@ -458,7 +429,6 @@ AIPlay::fillGroups(AIPlay *this,AIPlayStatus *param_1,int *param_2,int param_3,
     j = j + 200;
   } while (local_4e8 < 6);
 LAB_0040f918:
-                    /* Symbol Ref: {@symbol CountDeviation} */
   iVar8 = 0;
   j = 0;
   j._0_1_ = '\0';
@@ -487,8 +457,6 @@ LAB_0040f918:
 
 // Function: groupGivenCommandOnPhase
 // Address: 0040f9b0
-/* public: int __thiscall AIPlay::groupGivenCommandOnPhase(int,int,int) */
-
 int __thiscall AIPlay::groupGivenCommandOnPhase(AIPlay *this,int param_1,int param_2,int param_3)
 {
   AIPlayPhaseCommand *pAVar1;
@@ -519,8 +487,6 @@ int __thiscall AIPlay::groupGivenCommandOnPhase(AIPlay *this,int param_1,int par
 // [HELPER] s_Attack: "Attack"
 // [HELPER] s_Flank: "Flank"
 // [HELPER] s_Recon: "Recon"
-/* protected: unsigned char __thiscall AIPlay::convertToIntType(char *)const  */
-
 uchar __thiscall AIPlay::convertToIntType(AIPlay *this,char *param_1)
 {
   byte bVar1;
@@ -624,8 +590,6 @@ LAB_0040fafb:
 // [HELPER] s_Flank: "Flank"
 // [HELPER] s_Invalid: "Invalid"
 // [HELPER] s_Recon: "Recon"
-/* protected: char * __thiscall AIPlay::convertToNameType(unsigned char)const  */
-
 char * __thiscall AIPlay::convertToNameType(AIPlay *this,uchar param_1)
 {
   switch(param_1) {
@@ -646,9 +610,6 @@ char * __thiscall AIPlay::convertToNameType(AIPlay *this,uchar param_1)
 
 // Function: locationsOnMap
 // Address: 0040fbb0
-/* WARNING: Variable defined which should be unmapped: p */
-/* public: int __thiscall AIPlay::locationsOnMap(int,int,int,int) */
-
 int __thiscall AIPlay::locationsOnMap(AIPlay *this,int param_1,int param_2,int param_3,int param_4)
 {
   AIPlayPhaseCommand *pAVar1;

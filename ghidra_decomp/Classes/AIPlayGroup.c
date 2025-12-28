@@ -8,8 +8,6 @@
 
 // Function: AIPlayGroup
 // Address: 0040f230
-/* public: __thiscall AIPlayGroup::AIPlayGroup(void) */
-
 AIPlayGroup * __thiscall AIPlayGroup::AIPlayGroup(AIPlayGroup *this)
 {
   initialize(this);
@@ -20,8 +18,6 @@ AIPlayGroup * __thiscall AIPlayGroup::AIPlayGroup(AIPlayGroup *this)
 
 // Function: minimum
 // Address: 0040f240
-/* public: unsigned char __thiscall AIPlayGroup::minimum(int)const  */
-
 uchar __thiscall AIPlayGroup::minimum(AIPlayGroup *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 6)) {
@@ -34,8 +30,6 @@ uchar __thiscall AIPlayGroup::minimum(AIPlayGroup *this,int param_1)
 
 // Function: setMinimum
 // Address: 0040f260
-/* public: void __thiscall AIPlayGroup::setMinimum(int,int) */
-
 void __thiscall AIPlayGroup::setMinimum(AIPlayGroup *this,int param_1,int param_2)
 {
   if ((-1 < param_1) && (param_1 < 6)) {
@@ -48,8 +42,6 @@ void __thiscall AIPlayGroup::setMinimum(AIPlayGroup *this,int param_1,int param_
 
 // Function: maximum
 // Address: 0040f280
-/* public: unsigned char __thiscall AIPlayGroup::maximum(int)const  */
-
 uchar __thiscall AIPlayGroup::maximum(AIPlayGroup *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 < 6)) {
@@ -62,8 +54,6 @@ uchar __thiscall AIPlayGroup::maximum(AIPlayGroup *this,int param_1)
 
 // Function: setMaximum
 // Address: 0040f2a0
-/* public: void __thiscall AIPlayGroup::setMaximum(int,int) */
-
 void __thiscall AIPlayGroup::setMaximum(AIPlayGroup *this,int param_1,int param_2)
 {
   if ((-1 < param_1) && (param_1 < 6)) {
@@ -76,8 +66,6 @@ void __thiscall AIPlayGroup::setMaximum(AIPlayGroup *this,int param_1,int param_
 
 // Function: initialize
 // Address: 0040f2c0
-/* protected: void __thiscall AIPlayGroup::initialize(void) */
-
 void __thiscall AIPlayGroup::initialize(AIPlayGroup *this)
 {
   uchar *puVar1;

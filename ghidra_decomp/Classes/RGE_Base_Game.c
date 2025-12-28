@@ -189,8 +189,6 @@
 // [HELPER] draw_log_name: "00000000"
 // [HELPER] s_: ""
 // [HELPER] s_language_dll: "language.dll"
-/* public: __thiscall RGE_Base_Game::RGE_Base_Game(struct RGE_Prog_Info *,int) */
-
 RGE_Base_Game * __thiscall
 RGE_Base_Game::RGE_Base_Game(RGE_Base_Game *this,RGE_Prog_Info *param_1,int param_2)
 {
@@ -398,8 +396,6 @@ RGE_Base_Game::RGE_Base_Game(RGE_Base_Game *this,RGE_Prog_Info *param_1,int para
 
 // Function: `vector_deleting_destructor'
 // Address: 0041ba80
-/* public: virtual void * __thiscall RGE_Base_Game::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall RGE_Base_Game::_vector_deleting_destructor_(RGE_Base_Game *this,uint param_1)
 {
   ~RGE_Base_Game(this);
@@ -432,10 +428,6 @@ void * __thiscall RGE_Base_Game::_vector_deleting_destructor_(RGE_Base_Game *thi
 // [HELPER] s_empires_exe: "empires.exe"
 // [HELPER] s_game_d_nfo: "game%d.nfo"
 // [HELPER] s_w: "w"
-/* WARNING: Variable defined which should be unmapped: DXPlatform */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall RGE_Base_Game::setup(void) */
-
 int __thiscall RGE_Base_Game::setup(RGE_Base_Game *this)
 {
   char cVar1;
@@ -806,8 +798,6 @@ LAB_0041c223:
 
 // Function: set_prog_mode
 // Address: 0041c240
-/* public: virtual void __thiscall RGE_Base_Game::set_prog_mode(int) */
-
 void __thiscall RGE_Base_Game::set_prog_mode(RGE_Base_Game *this,int param_1)
 {
   this->prog_mode = param_1;
@@ -818,8 +808,6 @@ void __thiscall RGE_Base_Game::set_prog_mode(RGE_Base_Game *this,int param_1)
 
 // Function: get_view_panel
 // Address: 0041c250
-/* public: virtual class TPanel * __thiscall RGE_Base_Game::get_view_panel(void) */
-
 TPanel * __thiscall RGE_Base_Game::get_view_panel(RGE_Base_Game *this)
 {
   return (TPanel *)0x0;
@@ -829,8 +817,6 @@ TPanel * __thiscall RGE_Base_Game::get_view_panel(RGE_Base_Game *this)
 
 // Function: get_map_panel
 // Address: 0041c260
-/* public: virtual class TPanel * __thiscall RGE_Base_Game::get_map_panel(void) */
-
 TPanel * __thiscall RGE_Base_Game::get_map_panel(RGE_Base_Game *this)
 {
   return (TPanel *)0x0;
@@ -852,9 +838,6 @@ TPanel * __thiscall RGE_Base_Game::get_map_panel(RGE_Base_Game *this)
 // [HELPER] s_Screen_Size: "Screen Size"
 // [HELPER] s_Scroll_Speed: "Scroll Speed"
 // [HELPER] s_game_d_nfo: "game%d.nfo"
-/* WARNING: Variable defined which should be unmapped: filename */
-/* public: virtual __thiscall RGE_Base_Game::~RGE_Base_Game(void) */
-
 void __thiscall RGE_Base_Game::~RGE_Base_Game(RGE_Base_Game *this)
 {
   RGE_Scenario_File_Info *this_00;
@@ -1012,7 +995,6 @@ void __thiscall RGE_Base_Game::~RGE_Base_Game(RGE_Base_Game *this)
   if (this->prog_window != (void *)0x0) {
     DestroyWindow(this->prog_window);
   }
-                    /* language.dll match for 0x3eb: "Age of Empires Help" */
   get_string(this,0x3eb,str + 4,0x100);
   if ((str[4] != '\0') && (iVar5 = FindWindowA(s_MS_WINHELP,str + 4), iVar5 != 0)) {
     SendMessageA(iVar5,0x10,0,0);
@@ -1048,8 +1030,6 @@ void __thiscall RGE_Base_Game::~RGE_Base_Game(RGE_Base_Game *this)
 
 // Function: notification
 // Address: 0041c6e0
-/* public: virtual void __thiscall RGE_Base_Game::notification(int,long,long,long,long) */
-
 void __thiscall
 RGE_Base_Game::notification
           (RGE_Base_Game *this,int param_1,long param_2,long param_3,long param_4,long param_5)
@@ -1061,8 +1041,6 @@ RGE_Base_Game::notification
 
 // Function: processCheatCode
 // Address: 0041c6f0
-/* public: virtual int __thiscall RGE_Base_Game::processCheatCode(int,char *) */
-
 int __thiscall RGE_Base_Game::processCheatCode(RGE_Base_Game *this,int param_1,char *param_2)
 {
   return 0;
@@ -1072,8 +1050,6 @@ int __thiscall RGE_Base_Game::processCheatCode(RGE_Base_Game *this,int param_1,c
 
 // Function: handle_message
 // Address: 0041c700
-/* protected: virtual int __thiscall RGE_Base_Game::handle_message(struct tagMSG *) */
-
 int __thiscall RGE_Base_Game::handle_message(RGE_Base_Game *this,tagMSG *param_1)
 {
   return 1;
@@ -1083,8 +1059,6 @@ int __thiscall RGE_Base_Game::handle_message(RGE_Base_Game *this,tagMSG *param_1
 
 // Function: action_update
 // Address: 0041c710
-/* protected: virtual int __thiscall RGE_Base_Game::action_update(void) */
-
 int __thiscall RGE_Base_Game::action_update(RGE_Base_Game *this)
 {
   return 1;
@@ -1094,8 +1068,6 @@ int __thiscall RGE_Base_Game::action_update(RGE_Base_Game *this)
 
 // Function: action_mouse_move
 // Address: 0041c720
-/* protected: virtual int __thiscall RGE_Base_Game::action_mouse_move(long,long,int,int,int,int) */
-
 int __thiscall
 RGE_Base_Game::action_mouse_move
           (RGE_Base_Game *this,long param_1,long param_2,int param_3,int param_4,int param_5,
@@ -1108,9 +1080,6 @@ RGE_Base_Game::action_mouse_move
 
 // Function: action_key_down
 // Address: 0041c730
-/* protected: virtual int __thiscall RGE_Base_Game::action_key_down(unsigned long,int,int,int,int)
-    */
-
 int __thiscall
 RGE_Base_Game::action_key_down
           (RGE_Base_Game *this,ulong param_1,int param_2,int param_3,int param_4,int param_5)
@@ -1122,9 +1091,6 @@ RGE_Base_Game::action_key_down
 
 // Function: action_user_command
 // Address: 0041c740
-/* protected: virtual int __thiscall RGE_Base_Game::action_user_command(unsigned long,unsigned long)
-    */
-
 int __thiscall RGE_Base_Game::action_user_command(RGE_Base_Game *this,ulong param_1,ulong param_2)
 {
   return 1;
@@ -1134,8 +1100,6 @@ int __thiscall RGE_Base_Game::action_user_command(RGE_Base_Game *this,ulong para
 
 // Function: action_command
 // Address: 0041c750
-/* protected: virtual int __thiscall RGE_Base_Game::action_command(unsigned long,unsigned long) */
-
 int __thiscall RGE_Base_Game::action_command(RGE_Base_Game *this,ulong param_1,ulong param_2)
 {
   return 1;
@@ -1145,8 +1109,6 @@ int __thiscall RGE_Base_Game::action_command(RGE_Base_Game *this,ulong param_1,u
 
 // Function: action_music_done
 // Address: 0041c760
-/* protected: virtual int __thiscall RGE_Base_Game::action_music_done(void) */
-
 int __thiscall RGE_Base_Game::action_music_done(RGE_Base_Game *this)
 {
   return 1;
@@ -1156,8 +1118,6 @@ int __thiscall RGE_Base_Game::action_music_done(RGE_Base_Game *this)
 
 // Function: action_activate
 // Address: 0041c770
-/* protected: virtual int __thiscall RGE_Base_Game::action_activate(void) */
-
 int __thiscall RGE_Base_Game::action_activate(RGE_Base_Game *this)
 {
   return 1;
@@ -1167,8 +1127,6 @@ int __thiscall RGE_Base_Game::action_activate(RGE_Base_Game *this)
 
 // Function: action_deactivate
 // Address: 0041c780
-/* protected: virtual int __thiscall RGE_Base_Game::action_deactivate(void) */
-
 int __thiscall RGE_Base_Game::action_deactivate(RGE_Base_Game *this)
 {
   return 1;
@@ -1178,8 +1136,6 @@ int __thiscall RGE_Base_Game::action_deactivate(RGE_Base_Game *this)
 
 // Function: action_init_menu
 // Address: 0041c790
-/* protected: virtual int __thiscall RGE_Base_Game::action_init_menu(void) */
-
 int __thiscall RGE_Base_Game::action_init_menu(RGE_Base_Game *this)
 {
   return 1;
@@ -1189,8 +1145,6 @@ int __thiscall RGE_Base_Game::action_init_menu(RGE_Base_Game *this)
 
 // Function: action_exit_menu
 // Address: 0041c7a0
-/* protected: virtual int __thiscall RGE_Base_Game::action_exit_menu(void) */
-
 int __thiscall RGE_Base_Game::action_exit_menu(RGE_Base_Game *this)
 {
   return 1;
@@ -1200,8 +1154,6 @@ int __thiscall RGE_Base_Game::action_exit_menu(RGE_Base_Game *this)
 
 // Function: action_size
 // Address: 0041c7b0
-/* protected: virtual int __thiscall RGE_Base_Game::action_size(void) */
-
 int __thiscall RGE_Base_Game::action_size(RGE_Base_Game *this)
 {
   return 1;
@@ -1211,8 +1163,6 @@ int __thiscall RGE_Base_Game::action_size(RGE_Base_Game *this)
 
 // Function: action_close
 // Address: 0041c7c0
-/* protected: virtual int __thiscall RGE_Base_Game::action_close(void) */
-
 int __thiscall RGE_Base_Game::action_close(RGE_Base_Game *this)
 {
   return 1;
@@ -1222,8 +1172,6 @@ int __thiscall RGE_Base_Game::action_close(RGE_Base_Game *this)
 
 // Function: reset_timings
 // Address: 0041c7d0
-/* public: void __thiscall RGE_Base_Game::reset_timings(void) */
-
 void __thiscall RGE_Base_Game::reset_timings(RGE_Base_Game *this)
 {
   ulong *puVar1;
@@ -1257,8 +1205,6 @@ void __thiscall RGE_Base_Game::reset_timings(RGE_Base_Game *this)
 
 // Function: add_to_timing
 // Address: 0041c830
-/* public: void __thiscall RGE_Base_Game::add_to_timing(int,unsigned long) */
-
 void __thiscall RGE_Base_Game::add_to_timing(RGE_Base_Game *this,int param_1,ulong param_2)
 {
   this->timings[param_1].accum_time = this->timings[param_1].accum_time + param_2;
@@ -1273,8 +1219,6 @@ void __thiscall RGE_Base_Game::add_to_timing(RGE_Base_Game *this,int param_1,ulo
 
 // Function: increment_world_update_count
 // Address: 0041c870
-/* public: void __thiscall RGE_Base_Game::increment_world_update_count(void) */
-
 void __thiscall RGE_Base_Game::increment_world_update_count(RGE_Base_Game *this)
 {
   this->world_update_count = this->world_update_count + 1;
@@ -1285,8 +1229,6 @@ void __thiscall RGE_Base_Game::increment_world_update_count(RGE_Base_Game *this)
 
 // Function: increment_view_update_count
 // Address: 0041c880
-/* public: void __thiscall RGE_Base_Game::increment_view_update_count(void) */
-
 void __thiscall RGE_Base_Game::increment_view_update_count(RGE_Base_Game *this)
 {
   this->view_update_count = this->view_update_count + 1;
@@ -1297,8 +1239,6 @@ void __thiscall RGE_Base_Game::increment_view_update_count(RGE_Base_Game *this)
 
 // Function: set_last_single_time
 // Address: 0041c890
-/* public: void __thiscall RGE_Base_Game::set_last_single_time(int,unsigned long) */
-
 void __thiscall RGE_Base_Game::set_last_single_time(RGE_Base_Game *this,int param_1,ulong param_2)
 {
   this->timings[param_1].last_single_time = param_2;
@@ -1309,8 +1249,6 @@ void __thiscall RGE_Base_Game::set_last_single_time(RGE_Base_Game *this,int para
 
 // Function: get_last_time
 // Address: 0041c8b0
-/* public: unsigned long __thiscall RGE_Base_Game::get_last_time(int) */
-
 ulong __thiscall RGE_Base_Game::get_last_time(RGE_Base_Game *this,int param_1)
 {
   return this->timings[param_1].last_time;
@@ -1320,8 +1258,6 @@ ulong __thiscall RGE_Base_Game::get_last_time(RGE_Base_Game *this,int param_1)
 
 // Function: get_last_single_time
 // Address: 0041c8d0
-/* public: unsigned long __thiscall RGE_Base_Game::get_last_single_time(int) */
-
 ulong __thiscall RGE_Base_Game::get_last_single_time(RGE_Base_Game *this,int param_1)
 {
   return this->timings[param_1].last_single_time;
@@ -1331,8 +1267,6 @@ ulong __thiscall RGE_Base_Game::get_last_single_time(RGE_Base_Game *this,int par
 
 // Function: get_accum_time
 // Address: 0041c8f0
-/* public: unsigned long __thiscall RGE_Base_Game::get_accum_time(int) */
-
 ulong __thiscall RGE_Base_Game::get_accum_time(RGE_Base_Game *this,int param_1)
 {
   return this->timings[param_1].accum_time;
@@ -1342,8 +1276,6 @@ ulong __thiscall RGE_Base_Game::get_accum_time(RGE_Base_Game *this,int param_1)
 
 // Function: get_max_time
 // Address: 0041c910
-/* public: unsigned long __thiscall RGE_Base_Game::get_max_time(int) */
-
 ulong __thiscall RGE_Base_Game::get_max_time(RGE_Base_Game *this,int param_1)
 {
   return this->timings[param_1].max_time;
@@ -1353,8 +1285,6 @@ ulong __thiscall RGE_Base_Game::get_max_time(RGE_Base_Game *this,int param_1)
 
 // Function: get_last_max_time
 // Address: 0041c930
-/* public: unsigned long __thiscall RGE_Base_Game::get_last_max_time(int) */
-
 ulong __thiscall RGE_Base_Game::get_last_max_time(RGE_Base_Game *this,int param_1)
 {
   return this->timings[param_1].last_max_time;
@@ -1364,8 +1294,6 @@ ulong __thiscall RGE_Base_Game::get_last_max_time(RGE_Base_Game *this,int param_
 
 // Function: get_last_world_update_count
 // Address: 0041c950
-/* public: unsigned long __thiscall RGE_Base_Game::get_last_world_update_count(void) */
-
 ulong __thiscall RGE_Base_Game::get_last_world_update_count(RGE_Base_Game *this)
 {
   return this->last_world_update_count;
@@ -1375,8 +1303,6 @@ ulong __thiscall RGE_Base_Game::get_last_world_update_count(RGE_Base_Game *this)
 
 // Function: get_last_view_update_count
 // Address: 0041c960
-/* public: unsigned long __thiscall RGE_Base_Game::get_last_view_update_count(void) */
-
 ulong __thiscall RGE_Base_Game::get_last_view_update_count(RGE_Base_Game *this)
 {
   return this->last_view_update_count;
@@ -1386,8 +1312,6 @@ ulong __thiscall RGE_Base_Game::get_last_view_update_count(RGE_Base_Game *this)
 
 // Function: get_world_update_count
 // Address: 0041c970
-/* public: unsigned long __thiscall RGE_Base_Game::get_world_update_count(void) */
-
 ulong __thiscall RGE_Base_Game::get_world_update_count(RGE_Base_Game *this)
 {
   return this->world_update_count;
@@ -1397,8 +1321,6 @@ ulong __thiscall RGE_Base_Game::get_world_update_count(RGE_Base_Game *this)
 
 // Function: get_view_update_count
 // Address: 0041c980
-/* public: unsigned long __thiscall RGE_Base_Game::get_view_update_count(void) */
-
 ulong __thiscall RGE_Base_Game::get_view_update_count(RGE_Base_Game *this)
 {
   return this->view_update_count;
@@ -1408,8 +1330,6 @@ ulong __thiscall RGE_Base_Game::get_view_update_count(RGE_Base_Game *this)
 
 // Function: get_error_code
 // Address: 0041c990
-/* public: virtual int __thiscall RGE_Base_Game::get_error_code(void) */
-
 int __thiscall RGE_Base_Game::get_error_code(RGE_Base_Game *this)
 {
   return this->error_code;
@@ -1419,8 +1339,6 @@ int __thiscall RGE_Base_Game::get_error_code(RGE_Base_Game *this)
 
 // Function: get_string
 // Address: 0041c9a0
-/* public: virtual char * __thiscall RGE_Base_Game::get_string(long) */
-
 char * __thiscall RGE_Base_Game::get_string(RGE_Base_Game *this,long param_1)
 {
   (**(code **)(this->_padding_ + 0x20))(param_1,&DAT_005b2168,0x200);
@@ -1431,8 +1349,6 @@ char * __thiscall RGE_Base_Game::get_string(RGE_Base_Game *this,long param_1)
 
 // Function: get_string
 // Address: 0041c9c0
-/* public: virtual char * __thiscall RGE_Base_Game::get_string(long,char *,int) */
-
 char * __thiscall
 RGE_Base_Game::get_string(RGE_Base_Game *this,long param_1,char *param_2,int param_3)
 {
@@ -1450,8 +1366,6 @@ RGE_Base_Game::get_string(RGE_Base_Game *this,long param_1,char *param_2,int par
 
 // Function: get_string
 // Address: 0041c9f0
-/* public: virtual char * __thiscall RGE_Base_Game::get_string(int,long,char *,int) */
-
 char * __thiscall
 RGE_Base_Game::get_string(RGE_Base_Game *this,int param_1,long param_2,char *param_3,int param_4)
 {
@@ -1465,8 +1379,6 @@ RGE_Base_Game::get_string(RGE_Base_Game *this,int param_1,long param_2,char *par
 
 // Function: get_string2
 // Address: 0041ca10
-/* public: virtual char * __thiscall RGE_Base_Game::get_string2(int,long,long,char *,int) */
-
 char * __thiscall
 RGE_Base_Game::get_string2
           (RGE_Base_Game *this,int param_1,long param_2,long param_3,char *param_4,int param_5)
@@ -1484,8 +1396,6 @@ RGE_Base_Game::get_string2
     case 6:
     case 0xe:
     case 0xf:
-                    /* language.dll match for 0x7d2: "Could not initialize program. Uninstall Age of
-                       Empires, and then run Setup again." */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x7d2,param_4,param_5);
       return pcVar1;
     case 7:
@@ -1493,55 +1403,32 @@ RGE_Base_Game::get_string2
     case 0xb:
     case 0xd:
     case 0x11:
-                    /* language.dll match for 0x7d3: "Could not initialize graphics system. Make
-                       sure that your video card and driver are compatible with DirectDraw." */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x7d3,param_4,param_5);
       return pcVar1;
     case 9:
     case 0x10:
-                    /* language.dll match for 0x7d5: "Could not initialize communications system.
-                       Make sure that you have DirectX 5.0a or higher and that it is installed
-                       properly." */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x7d5,param_4,param_5);
       return pcVar1;
     case 10:
     case 0xc:
-                    /* language.dll match for 0x7d4: "Could not initialize sound system." */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x7d4,param_4,param_5);
       return pcVar1;
     case 0x12:
-                    /* language.dll match for 0x7dc: "Game stopped because it was out of sync!" */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x7dc,param_4,param_5);
       return pcVar1;
     case 0x13:
-                    /* language.dll match for 0x7db: "Age of Empires requires a color palette of 256
-                       Color or higher to run. To change you color palette, go to the Display
-                       Properties dialog box in Windows Control Panel." */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x7db,param_4,param_5);
       return pcVar1;
     case 0x14:
-                    /* language.dll match for 0x7dd: "Age of Empires could not initialize DirectX.
-                       Make sure that DirectX 5.0 or higher is installed and contact your hardware
-                       manufacturer for a video driver update. Please see the ReadmeX.doc file for
-                       more information."
-                       language.dll match for 0x7dd: "Age of Empires requires DirectX 5.0a or
-                       higher." */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x7dd,param_4,param_5);
       return pcVar1;
     case 0x15:
-                    /* language.dll match for 0x7de: "Age of Empires requires Microsoft Windows NT
-                       4.0 with Service Pack 3 and the DirectPlay 5.0a update." */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x7de,param_4,param_5);
       return pcVar1;
     case 0x16:
-                    /* language.dll match for 0x7df: "Not enough memory or swap file space. Close
-                       other applications and/or free some disk space, and then restart Age of
-                       Empires." */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x7df,param_4,param_5);
       return pcVar1;
     case 0x17:
-                    /* language.dll match for 0x7e0: "Age of Empires Expansion requires Age of
-                       Empires 1.0, 1.0A, or 1.0B to be installed." */
       pcVar1 = (char *)(**(code **)(this->_padding_ + 0x20))(0x7e0,param_4,param_5);
       return pcVar1;
     }
@@ -1559,9 +1446,6 @@ RGE_Base_Game::get_string2
 // Function: get_scenario_info
 // Address: 0041cb80
 // [HELPER] s__s_s: "%s%s"
-/* WARNING: Variable defined which should be unmapped: header_size */
-/* public: class RGE_Scenario * __thiscall RGE_Base_Game::get_scenario_info(char *,int) */
-
 RGE_Scenario * __thiscall
 RGE_Base_Game::get_scenario_info(RGE_Base_Game *this,char *param_1,int param_2)
 {
@@ -1617,9 +1501,6 @@ RGE_Base_Game::get_scenario_info(RGE_Base_Game *this,char *param_1,int param_2)
 // [HELPER] s_1_10: "1.10"
 // [HELPER] s_1_11: "1.11"
 // [HELPER] s__s_s: "%s%s"
-/* WARNING: Variable defined which should be unmapped: version */
-/* public: class RGE_Scenario_Header * __thiscall RGE_Base_Game::get_scenario_header(char *,int) */
-
 RGE_Scenario_Header * __thiscall
 RGE_Base_Game::get_scenario_header(RGE_Base_Game *this,char *param_1,int param_2)
 {
@@ -1659,9 +1540,6 @@ RGE_Base_Game::get_scenario_header(RGE_Base_Game *this,char *param_1,int param_2
 
 // Function: write_scenario_header
 // Address: 0041cda0
-/* WARNING: Variable defined which should be unmapped: header_size */
-/* public: void __thiscall RGE_Base_Game::write_scenario_header(int) */
-
 void __thiscall RGE_Base_Game::write_scenario_header(RGE_Base_Game *this,int param_1)
 {
   RGE_Scenario_Header *this_00;
@@ -1686,8 +1564,6 @@ void __thiscall RGE_Base_Game::write_scenario_header(RGE_Base_Game *this,int par
 
 // Function: new_scenario_header
 // Address: 0041ce00
-/* public: virtual class RGE_Scenario_Header * __thiscall RGE_Base_Game::new_scenario_header(int) */
-
 RGE_Scenario_Header * __thiscall RGE_Base_Game::new_scenario_header(RGE_Base_Game *this,int param_1)
 {
   RGE_Scenario_Header *pRVar1;
@@ -1715,9 +1591,6 @@ RGE_Scenario_Header * __thiscall RGE_Base_Game::new_scenario_header(RGE_Base_Gam
 
 // Function: new_scenario_header
 // Address: 0041ce60
-/* public: virtual class RGE_Scenario_Header * __thiscall RGE_Base_Game::new_scenario_header(class
-   RGE_Scenario *) */
-
 RGE_Scenario_Header * __thiscall
 RGE_Base_Game::new_scenario_header(RGE_Base_Game *this,RGE_Scenario *param_1)
 {
@@ -1746,8 +1619,6 @@ RGE_Base_Game::new_scenario_header(RGE_Base_Game *this,RGE_Scenario *param_1)
 
 // Function: new_scenario_info
 // Address: 0041cec0
-/* public: virtual class RGE_Scenario * __thiscall RGE_Base_Game::new_scenario_info(int) */
-
 RGE_Scenario * __thiscall RGE_Base_Game::new_scenario_info(RGE_Base_Game *this,int param_1)
 {
   RGE_Scenario *pRVar1;
@@ -1775,8 +1646,6 @@ RGE_Scenario * __thiscall RGE_Base_Game::new_scenario_info(RGE_Base_Game *this,i
 
 // Function: get_campaign_info
 // Address: 0041cf30
-/* public: void __thiscall RGE_Base_Game::get_campaign_info(long &,long &,long &) */
-
 void __thiscall
 RGE_Base_Game::get_campaign_info(RGE_Base_Game *this,long *param_1,long *param_2,long *param_3)
 {
@@ -1795,8 +1664,6 @@ RGE_Base_Game::get_campaign_info(RGE_Base_Game *this,long *param_1,long *param_2
 
 // Function: set_campaign_info
 // Address: 0041cf70
-/* public: unsigned char __thiscall RGE_Base_Game::set_campaign_info(long,long,long) */
-
 uchar __thiscall
 RGE_Base_Game::set_campaign_info(RGE_Base_Game *this,long param_1,long param_2,long param_3)
 {
@@ -1819,8 +1686,6 @@ RGE_Base_Game::set_campaign_info(RGE_Base_Game *this,long param_1,long param_2,l
 
 // Function: set_campaign_win
 // Address: 0041cfc0
-/* public: void __thiscall RGE_Base_Game::set_campaign_win(void) */
-
 void __thiscall RGE_Base_Game::set_campaign_win(RGE_Base_Game *this)
 {
   RGE_Game_Info::notify_of_scenario_complete(this->player_game_info);
@@ -1831,9 +1696,6 @@ void __thiscall RGE_Base_Game::set_campaign_win(RGE_Base_Game *this)
 
 // Function: run
 // Address: 0041cfd0
-/* WARNING: Variable defined which should be unmapped: msg */
-/* public: virtual int __thiscall RGE_Base_Game::run(void) */
-
 int __thiscall RGE_Base_Game::run(RGE_Base_Game *this)
 {
   int iVar1;
@@ -1982,9 +1844,6 @@ int __thiscall RGE_Base_Game::run(RGE_Base_Game *this)
 // [HELPER] s__: "}"
 // [HELPER] shape_file_first: " "
 // [HELPER] sound_file_first: " "
-/* WARNING: Variable defined which should be unmapped: cmd_line */
-/* protected: virtual int __thiscall RGE_Base_Game::setup_cmd_options(void) */
-
 int __thiscall RGE_Base_Game::setup_cmd_options(RGE_Base_Game *this)
 {
   char cVar1;
@@ -2581,9 +2440,6 @@ int __thiscall RGE_Base_Game::setup_cmd_options(RGE_Base_Game *this)
 // Function: setup_class
 // Address: 0041e700
 // [HELPER] s_: ""
-/* WARNING: Variable defined which should be unmapped: cls */
-/* protected: virtual int __thiscall RGE_Base_Game::setup_class(void) */
-
 int __thiscall RGE_Base_Game::setup_class(RGE_Base_Game *this)
 {
   RGE_Prog_Info *pRVar1;
@@ -2614,9 +2470,6 @@ int __thiscall RGE_Base_Game::setup_class(RGE_Base_Game *this)
 
 // Function: setup_main_window
 // Address: 0041e7d0
-/* WARNING: Variable defined which should be unmapped: win_rect */
-/* protected: virtual int __thiscall RGE_Base_Game::setup_main_window(void) */
-
 int __thiscall RGE_Base_Game::setup_main_window(RGE_Base_Game *this)
 {
   RGE_Prog_Info *pRVar1;
@@ -2668,9 +2521,6 @@ int __thiscall RGE_Base_Game::setup_main_window(RGE_Base_Game *this)
 
 // Function: setup_graphics_system
 // Address: 0041e920
-/* WARNING: Variable defined which should be unmapped: draw_mode */
-/* protected: virtual int __thiscall RGE_Base_Game::setup_graphics_system(void) */
-
 int __thiscall RGE_Base_Game::setup_graphics_system(RGE_Base_Game *this)
 {
   RGE_Prog_Info *pRVar1;
@@ -2779,8 +2629,6 @@ LAB_0041eb4d:
 
 // Function: setup_palette
 // Address: 0041ebc0
-/* protected: virtual int __thiscall RGE_Base_Game::setup_palette(void) */
-
 int __thiscall RGE_Base_Game::setup_palette(RGE_Base_Game *this)
 {
   void *pvVar1;
@@ -2795,9 +2643,6 @@ int __thiscall RGE_Base_Game::setup_palette(RGE_Base_Game *this)
 // Function: setup_mouse
 // Address: 0041ebf0
 // [HELPER] s_Custom_Mouse: "Custom Mouse"
-/* WARNING: Variable defined which should be unmapped: custom_type */
-/* protected: virtual int __thiscall RGE_Base_Game::setup_mouse(void) */
-
 int __thiscall RGE_Base_Game::setup_mouse(RGE_Base_Game *this)
 {
   int iVar1;
@@ -2860,8 +2705,6 @@ LAB_0041ec3b:
 
 // Function: setup_chat
 // Address: 0041ed00
-/* protected: virtual int __thiscall RGE_Base_Game::setup_chat(void) */
-
 int __thiscall RGE_Base_Game::setup_chat(RGE_Base_Game *this)
 {
   TChat *this_00;
@@ -2892,8 +2735,6 @@ int __thiscall RGE_Base_Game::setup_chat(RGE_Base_Game *this)
 
 // Function: setup_registry
 // Address: 0041ed70
-/* protected: virtual int __thiscall RGE_Base_Game::setup_registry(void) */
-
 int __thiscall RGE_Base_Game::setup_registry(RGE_Base_Game *this)
 {
   TRegistry *pTVar1;
@@ -2923,8 +2764,6 @@ int __thiscall RGE_Base_Game::setup_registry(RGE_Base_Game *this)
 
 // Function: setup_debugging_log
 // Address: 0041ede0
-/* protected: virtual int __thiscall RGE_Base_Game::setup_debugging_log(void) */
-
 int __thiscall RGE_Base_Game::setup_debugging_log(RGE_Base_Game *this)
 {
   TDebuggingLog *pTVar1;
@@ -2962,8 +2801,6 @@ int __thiscall RGE_Base_Game::setup_debugging_log(RGE_Base_Game *this)
 
 // Function: setup_comm
 // Address: 0041ee90
-/* protected: virtual int __thiscall RGE_Base_Game::setup_comm(void) */
-
 int __thiscall RGE_Base_Game::setup_comm(RGE_Base_Game *this)
 {
   TCommunications_Handler *pTVar1;
@@ -3016,8 +2853,6 @@ int __thiscall RGE_Base_Game::setup_comm(RGE_Base_Game *this)
 
 // Function: reset_comm
 // Address: 0041eff0
-/* public: virtual int __thiscall RGE_Base_Game::reset_comm(void) */
-
 int __thiscall RGE_Base_Game::reset_comm(RGE_Base_Game *this)
 {
   TCommunications_Handler *this_00;
@@ -3039,8 +2874,6 @@ int __thiscall RGE_Base_Game::reset_comm(RGE_Base_Game *this)
 // Function: setup_sound_system
 // Address: 0041f030
 // [HELPER] s_Sound_Volume: "Sound Volume"
-/* protected: virtual int __thiscall RGE_Base_Game::setup_sound_system(void) */
-
 int __thiscall RGE_Base_Game::setup_sound_system(RGE_Base_Game *this)
 {
   TSound_Driver *pTVar1;
@@ -3099,9 +2932,6 @@ LAB_0041f0f9:
 // Address: 0041f110
 // [HELPER] s_Music_Volume: "Music Volume"
 // [HELPER] s__s__s: "%s\n%s"
-/* WARNING: Variable defined which should be unmapped: music_type */
-/* public: virtual int __thiscall RGE_Base_Game::setup_music_system(void) */
-
 int __thiscall RGE_Base_Game::setup_music_system(RGE_Base_Game *this)
 {
   RGE_Prog_Info *pRVar1;
@@ -3191,8 +3021,6 @@ int __thiscall RGE_Base_Game::setup_music_system(RGE_Base_Game *this)
 // [HELPER] s_groupnum_shp: "groupnum.shp"
 // [HELPER] s_moveto_shp: "moveto.shp"
 // [HELPER] s_waypoint_shp: "waypoint.shp"
-/* protected: virtual int __thiscall RGE_Base_Game::setup_shapes(void) */
-
 int __thiscall RGE_Base_Game::setup_shapes(RGE_Base_Game *this)
 {
   TShape **ppTVar1;
@@ -3263,8 +3091,6 @@ int __thiscall RGE_Base_Game::setup_shapes(RGE_Base_Game *this)
 // [HELPER] s_button1_wav: "button1.wav"
 // [HELPER] s_button2_wav: "button2.wav"
 // [HELPER] s_chatrcvd_wav: "chatrcvd.wav"
-/* protected: virtual int __thiscall RGE_Base_Game::setup_sounds(void) */
-
 int __thiscall RGE_Base_Game::setup_sounds(RGE_Base_Game *this)
 {
   TDigital **ppTVar1;
@@ -3343,9 +3169,6 @@ int __thiscall RGE_Base_Game::setup_sounds(RGE_Base_Game *this)
 // Function: setup_fonts
 // Address: 0041f560
 // [HELPER] s_basegame__setup_fonts: "basegame::setup_fonts"
-/* WARNING: Variable defined which should be unmapped: i */
-/* protected: virtual int __thiscall RGE_Base_Game::setup_fonts(void) */
-
 int __thiscall RGE_Base_Game::setup_fonts(RGE_Base_Game *this)
 {
   RGE_Font *pRVar1;
@@ -3370,42 +3193,33 @@ int __thiscall RGE_Base_Game::setup_fonts(RGE_Base_Game *this)
         tm.tmHeight = (long)sVar4;
         switch(tm.tmHeight) {
         case 0:
-                    /* language.dll match for 0x6e: "Copperplate Gothic Light" */
           pvVar5 = make_font(this,pvVar2,0x6e,0);
           break;
         case 1:
-                    /* language.dll match for 0x71: "Copperplate Gothic Light" */
           pvVar5 = make_font(this,pvVar2,0x71,0);
           break;
         default:
           pvVar5 = (void *)0x0;
           break;
         case 4:
-                    /* language.dll match for 0x74: "Copperplate Gothic Light" */
           pvVar5 = make_font(this,pvVar2,0x74,0);
           break;
         case 6:
-                    /* language.dll match for 0x83: "Arial" */
           pvVar5 = make_font(this,pvVar2,0x83,0);
           break;
         case 7:
-                    /* language.dll match for 0x77: "Arial" */
           pvVar5 = make_font(this,pvVar2,0x77,0);
           break;
         case 8:
-                    /* language.dll match for 0x80: "Arial" */
           pvVar5 = make_font(this,pvVar2,0x80,1);
           break;
         case 9:
-                    /* language.dll match for 0x7a: "Arial" */
           pvVar5 = make_font(this,pvVar2,0x7a,0);
           break;
         case 10:
-                    /* language.dll match for 0x7d: "Arial" */
           pvVar5 = make_font(this,pvVar2,0x7d,0);
           break;
         case 0xb:
-                    /* language.dll match for 0x80: "Arial" */
           pvVar5 = make_font(this,pvVar2,0x80,0);
         }
         if (pvVar5 != (void *)0x0) {
@@ -3430,8 +3244,6 @@ int __thiscall RGE_Base_Game::setup_fonts(RGE_Base_Game *this)
 // Function: setup_blank_screen
 // Address: 0041f730
 // [HELPER] s_Blank_Screen: "Blank Screen"
-/* protected: virtual int __thiscall RGE_Base_Game::setup_blank_screen(void) */
-
 int __thiscall RGE_Base_Game::setup_blank_screen(RGE_Base_Game *this)
 {
   TScreenPanel *pTVar1;
@@ -3474,8 +3286,6 @@ int __thiscall RGE_Base_Game::setup_blank_screen(RGE_Base_Game *this)
 
 // Function: setup_timings
 // Address: 0041f800
-/* protected: virtual void __thiscall RGE_Base_Game::setup_timings(void) */
-
 void __thiscall RGE_Base_Game::setup_timings(RGE_Base_Game *this)
 {
   this->timings[1].include_in_total = 1;
@@ -3493,8 +3303,6 @@ void __thiscall RGE_Base_Game::setup_timings(RGE_Base_Game *this)
 // Function: stop_sound_system
 // Address: 0041f830
 // [HELPER] s_Sound_Volume: "Sound Volume"
-/* protected: virtual void __thiscall RGE_Base_Game::stop_sound_system(void) */
-
 void __thiscall RGE_Base_Game::stop_sound_system(RGE_Base_Game *this)
 {
   TDigital *this_00;
@@ -3549,8 +3357,6 @@ void __thiscall RGE_Base_Game::stop_sound_system(RGE_Base_Game *this)
 
 // Function: restart_sound_system
 // Address: 0041f920
-/* protected: virtual int __thiscall RGE_Base_Game::restart_sound_system(void) */
-
 int __thiscall RGE_Base_Game::restart_sound_system(RGE_Base_Game *this)
 {
   int iVar1;
@@ -3588,8 +3394,6 @@ int __thiscall RGE_Base_Game::restart_sound_system(RGE_Base_Game *this)
 
 // Function: stop_music_system
 // Address: 0041f9b0
-/* protected: virtual void __thiscall RGE_Base_Game::stop_music_system(void) */
-
 void __thiscall RGE_Base_Game::stop_music_system(RGE_Base_Game *this)
 {
   if (this->music_system != (TMusic_System *)0x0) {
@@ -3606,8 +3410,6 @@ void __thiscall RGE_Base_Game::stop_music_system(RGE_Base_Game *this)
 
 // Function: restart_music_system
 // Address: 0041f9f0
-/* protected: virtual int __thiscall RGE_Base_Game::restart_music_system(void) */
-
 int __thiscall RGE_Base_Game::restart_music_system(RGE_Base_Game *this)
 {
   TMusic_System *this_00;
@@ -3642,8 +3444,6 @@ int __thiscall RGE_Base_Game::restart_music_system(RGE_Base_Game *this)
 // Function: shutdown_music_system
 // Address: 0041fa90
 // [HELPER] s_Music_Volume: "Music Volume"
-/* public: virtual void __thiscall RGE_Base_Game::shutdown_music_system(void) */
-
 void __thiscall RGE_Base_Game::shutdown_music_system(RGE_Base_Game *this)
 {
   TMusic_System *this_00;
@@ -3667,9 +3467,6 @@ void __thiscall RGE_Base_Game::shutdown_music_system(RGE_Base_Game *this)
 // Address: 0041faf0
 // [HELPER] s_B: "B"
 // [HELPER] s_b: "b"
-/* WARNING: Variable defined which should be unmapped: style */
-/* protected: void * __thiscall RGE_Base_Game::make_font(void *,long,int) */
-
 void * __thiscall
 RGE_Base_Game::make_font(RGE_Base_Game *this,void *param_1,long param_2,int param_3)
 {
@@ -3716,9 +3513,6 @@ LAB_0041fb90:
 
 // Function: make_font
 // Address: 0041fbc0
-/* WARNING: Variable defined which should be unmapped: logfont */
-/* protected: void * __thiscall RGE_Base_Game::make_font(void *,char *,int,int,int) */
-
 void * __thiscall
 RGE_Base_Game::make_font
           (RGE_Base_Game *this,void *param_1,char *param_2,int param_3,int param_4,int param_5)
@@ -3736,8 +3530,6 @@ RGE_Base_Game::make_font
   tagLOGFONTA logfont;
   char str [256];
   char *pcStack_4;
-  
-                    /* language.dll match for 0x65: "1" */
   (**(code **)(this->_padding_ + 0x20))(0x65,str + 4,0x100);
   logfont.lfOrientation._3_1_ = atoi(logfont.lfFaceName + 0x18);
   puVar7 = (undefined4 *)&stack0xfffffeb8;
@@ -3787,9 +3579,6 @@ RGE_Base_Game::make_font
 // Function: check_for_cd
 // Address: 0041fc90
 // [HELPER] s_CDPath: "CDPath"
-/* WARNING: Variable defined which should be unmapped: vol_ser_num */
-/* public: int __thiscall RGE_Base_Game::check_for_cd(int) */
-
 int __thiscall RGE_Base_Game::check_for_cd(RGE_Base_Game *this,int param_1)
 {
   uint uVar1;
@@ -3847,9 +3636,6 @@ int __thiscall RGE_Base_Game::check_for_cd(RGE_Base_Game *this,int param_1)
 
 // Function: check_expiration
 // Address: 0041fde0
-/* WARNING: Variable defined which should be unmapped: cur_date */
-/* protected: int __thiscall RGE_Base_Game::check_expiration(void) */
-
 int __thiscall RGE_Base_Game::check_expiration(RGE_Base_Game *this)
 {
   RGE_Prog_Info *pRVar1;
@@ -3877,8 +3663,6 @@ int __thiscall RGE_Base_Game::check_expiration(RGE_Base_Game *this)
 // Function: check_multi_copies
 // Address: 0041fe50
 // [HELPER] s_LOBBY: "LOBBY"
-/* protected: int __thiscall RGE_Base_Game::check_multi_copies(void) */
-
 int __thiscall RGE_Base_Game::check_multi_copies(RGE_Base_Game *this)
 {
   uchar uVar1;
@@ -3927,9 +3711,6 @@ int __thiscall RGE_Base_Game::check_multi_copies(RGE_Base_Game *this)
 
 // Function: check_paint
 // Address: 0041ff20
-/* WARNING: Variable defined which should be unmapped: surface_status */
-/* protected: int __thiscall RGE_Base_Game::check_paint(void) */
-
 int __thiscall RGE_Base_Game::check_paint(RGE_Base_Game *this)
 {
   uchar uVar1;
@@ -3976,9 +3757,6 @@ int __thiscall RGE_Base_Game::check_paint(RGE_Base_Game *this)
 
 // Function: clear_window
 // Address: 00420000
-/* WARNING: Variable defined which should be unmapped: rect */
-/* protected: void __thiscall RGE_Base_Game::clear_window(void) */
-
 void __thiscall RGE_Base_Game::clear_window(RGE_Base_Game *this)
 {
   undefined4 uVar1;
@@ -3999,8 +3777,6 @@ void __thiscall RGE_Base_Game::clear_window(RGE_Base_Game *this)
 
 // Function: create_world
 // Address: 00420050
-/* protected: virtual class RGE_Game_World * __thiscall RGE_Base_Game::create_world(void) */
-
 RGE_Game_World * __thiscall RGE_Base_Game::create_world(RGE_Base_Game *this)
 {
   RGE_Game_World *pRVar1;
@@ -4028,8 +3804,6 @@ RGE_Game_World * __thiscall RGE_Base_Game::create_world(RGE_Base_Game *this)
 
 // Function: close
 // Address: 004200b0
-/* public: void __thiscall RGE_Base_Game::close(void) */
-
 void __thiscall RGE_Base_Game::close(RGE_Base_Game *this)
 {
   SendMessageA(this->prog_window,0x10,0,0);
@@ -4040,8 +3814,6 @@ void __thiscall RGE_Base_Game::close(RGE_Base_Game *this)
 
 // Function: create_dialog
 // Address: 004200d0
-/* public: int __thiscall RGE_Base_Game::create_dialog(class TPanel * *,class TPanel *) */
-
 int __thiscall RGE_Base_Game::create_dialog(RGE_Base_Game *this,TPanel **param_1,TPanel *param_2)
 {
   *param_1 = (TPanel *)0x0;
@@ -4060,8 +3832,6 @@ int __thiscall RGE_Base_Game::create_dialog(RGE_Base_Game *this,TPanel **param_1
 
 // Function: delete_dialog
 // Address: 00420110
-/* public: void __thiscall RGE_Base_Game::delete_dialog(class TPanel * *) */
-
 void __thiscall RGE_Base_Game::delete_dialog(RGE_Base_Game *this,TPanel **param_1)
 {
   if (*param_1 != (TPanel *)0x0) {
@@ -4075,8 +3845,6 @@ void __thiscall RGE_Base_Game::delete_dialog(RGE_Base_Game *this,TPanel **param_
 
 // Function: set_game_mode
 // Address: 00420130
-/* public: virtual void __thiscall RGE_Base_Game::set_game_mode(int,int) */
-
 void __thiscall RGE_Base_Game::set_game_mode(RGE_Base_Game *this,int param_1,int param_2)
 {
   this->game_mode = param_1;
@@ -4088,8 +3856,6 @@ void __thiscall RGE_Base_Game::set_game_mode(RGE_Base_Game *this,int param_1,int
 
 // Function: set_player
 // Address: 00420150
-/* public: virtual void __thiscall RGE_Base_Game::set_player(short) */
-
 void __thiscall RGE_Base_Game::set_player(RGE_Base_Game *this,short param_1)
 {
   RGE_Game_World *pRVar1;
@@ -4106,8 +3872,6 @@ void __thiscall RGE_Base_Game::set_player(RGE_Base_Game *this,short param_1)
 
 // Function: get_paused
 // Address: 00420180
-/* public: int __thiscall RGE_Base_Game::get_paused(void) */
-
 int __thiscall RGE_Base_Game::get_paused(RGE_Base_Game *this)
 {
   int iVar1;
@@ -4123,8 +3887,6 @@ int __thiscall RGE_Base_Game::get_paused(RGE_Base_Game *this)
 
 // Function: get_font
 // Address: 004201a0
-/* public: struct RGE_Font * __thiscall RGE_Base_Game::get_font(int) */
-
 RGE_Font * __thiscall RGE_Base_Game::get_font(RGE_Base_Game *this,int param_1)
 {
   if (this->fonts == (RGE_Font *)0x0) {
@@ -4137,8 +3899,6 @@ RGE_Font * __thiscall RGE_Base_Game::get_font(RGE_Base_Game *this,int param_1)
 
 // Function: get_shape
 // Address: 004201c0
-/* public: class TShape * __thiscall RGE_Base_Game::get_shape(int) */
-
 TShape * __thiscall RGE_Base_Game::get_shape(RGE_Base_Game *this,int param_1)
 {
   TShape *pTVar1;
@@ -4154,8 +3914,6 @@ TShape * __thiscall RGE_Base_Game::get_shape(RGE_Base_Game *this,int param_1)
 
 // Function: get_sound
 // Address: 004201e0
-/* public: class TDigital * __thiscall RGE_Base_Game::get_sound(int) */
-
 TDigital * __thiscall RGE_Base_Game::get_sound(RGE_Base_Game *this,int param_1)
 {
   TDigital *pTVar1;
@@ -4171,8 +3929,6 @@ TDigital * __thiscall RGE_Base_Game::get_sound(RGE_Base_Game *this,int param_1)
 
 // Function: request_pause
 // Address: 00420200
-/* public: void __thiscall RGE_Base_Game::request_pause(void) */
-
 void __thiscall RGE_Base_Game::request_pause(RGE_Base_Game *this)
 {
   TCommunications_Handler::TogglePauseGame(this->comm_handler);
@@ -4186,8 +3942,6 @@ void __thiscall RGE_Base_Game::request_pause(RGE_Base_Game *this)
 
 // Function: set_paused
 // Address: 00420220
-/* public: void __thiscall RGE_Base_Game::set_paused(int,int) */
-
 void __thiscall RGE_Base_Game::set_paused(RGE_Base_Game *this,int param_1,int param_2)
 {
   int iVar1;
@@ -4210,9 +3964,6 @@ void __thiscall RGE_Base_Game::set_paused(RGE_Base_Game *this,int param_1,int pa
 
 // Function: get_mouse_info
 // Address: 00420270
-/* public: void __thiscall RGE_Base_Game::get_mouse_info(unsigned int,long,struct tagPOINT &,int
-   &,int &,int &,int &) */
-
 void __thiscall
 RGE_Base_Game::get_mouse_info
           (RGE_Base_Game *this,uint param_1,long param_2,tagPOINT *param_3,int *param_4,int *param_5
@@ -4242,8 +3993,6 @@ RGE_Base_Game::get_mouse_info
 
 // Function: get_mouse_pos
 // Address: 004202e0
-/* public: void __thiscall RGE_Base_Game::get_mouse_pos(struct tagPOINT &) */
-
 void __thiscall RGE_Base_Game::get_mouse_pos(RGE_Base_Game *this,tagPOINT *param_1)
 {
   GetCursorPos(param_1);
@@ -4263,8 +4012,6 @@ void __thiscall RGE_Base_Game::get_mouse_pos(RGE_Base_Game *this,tagPOINT *param
 
 // Function: get_player
 // Address: 00420330
-/* public: class RGE_Player * __thiscall RGE_Base_Game::get_player(void) */
-
 RGE_Player * __thiscall RGE_Base_Game::get_player(RGE_Base_Game *this)
 {
   short sVar1;
@@ -4288,8 +4035,6 @@ RGE_Player * __thiscall RGE_Base_Game::get_player(RGE_Base_Game *this)
 
 // Function: draw_window
 // Address: 00420360
-/* public: void __thiscall RGE_Base_Game::draw_window(void) */
-
 void __thiscall RGE_Base_Game::draw_window(RGE_Base_Game *this)
 {
   UpdateWindow(this->prog_window);
@@ -4300,8 +4045,6 @@ void __thiscall RGE_Base_Game::draw_window(RGE_Base_Game *this)
 
 // Function: mouse_on
 // Address: 00420370
-/* public: void __thiscall RGE_Base_Game::mouse_on(void) */
-
 void __thiscall RGE_Base_Game::mouse_on(RGE_Base_Game *this)
 {
   if (this->is_mouse_on == 0) {
@@ -4321,8 +4064,6 @@ void __thiscall RGE_Base_Game::mouse_on(RGE_Base_Game *this)
 
 // Function: mouse_off
 // Address: 004203e0
-/* public: void __thiscall RGE_Base_Game::mouse_off(void) */
-
 void __thiscall RGE_Base_Game::mouse_off(RGE_Base_Game *this)
 {
   if (this->is_mouse_on != 0) {
@@ -4342,8 +4083,6 @@ void __thiscall RGE_Base_Game::mouse_off(RGE_Base_Game *this)
 
 // Function: set_windows_mouse
 // Address: 00420440
-/* public: void __thiscall RGE_Base_Game::set_windows_mouse(int) */
-
 void __thiscall RGE_Base_Game::set_windows_mouse(RGE_Base_Game *this,int param_1)
 {
   if (this->custom_mouse == 0) {
@@ -4377,8 +4116,6 @@ void __thiscall RGE_Base_Game::set_windows_mouse(RGE_Base_Game *this,int param_1
 
 // Function: set_mouse_cursor
 // Address: 00420500
-/* public: void __thiscall RGE_Base_Game::set_mouse_cursor(void *) */
-
 void __thiscall RGE_Base_Game::set_mouse_cursor(RGE_Base_Game *this,void *param_1)
 {
   this->mouse_cursor = param_1;
@@ -4396,8 +4133,6 @@ void __thiscall RGE_Base_Game::set_mouse_cursor(RGE_Base_Game *this,void *param_
 
 // Function: set_mouse_facet
 // Address: 00420560
-/* public: void __thiscall RGE_Base_Game::set_mouse_facet(long) */
-
 void __thiscall RGE_Base_Game::set_mouse_facet(RGE_Base_Game *this,long param_1)
 {
   TMousePointer::set_facet(this->mouse_pointer,param_1);
@@ -4409,9 +4144,6 @@ void __thiscall RGE_Base_Game::set_mouse_facet(RGE_Base_Game *this,long param_1)
 // Function: wnd_proc
 // Address: 004206d0
 // [HELPER] s_C__msdev_work_age1_x1_basegame_c: "C:\msdev\work\age1_x1\basegame.cpp"
-/* WARNING: Variable defined which should be unmapped: mouse_down */
-/* public: virtual long __stdcall RGE_Base_Game::wnd_proc(void *,unsigned int,unsigned int,long) */
-
 long RGE_Base_Game::wnd_proc(void *param_1,uint param_2,uint param_3,long param_4)
 {
   bool bVar1;
@@ -4453,7 +4185,6 @@ LAB_004207c2:
       if (param_3 == 5) {
         if (system_ignore_size_messages != 0) goto LAB_00420f09;
         color_log('2',0xba,3);
-                    /* WARNING: Load size is inaccurate */
         iVar3 = (**(code **)(*this + 0xe4))(param_2,5,param_4,in_stack_00000014);
         iVar4 = debug_timeGetTime_on;
         if (iVar3 != 0) goto LAB_00420f09;
@@ -4466,7 +4197,6 @@ LAB_004207c2:
       }
       if (param_3 != 2) goto LAB_00420f09;
       color_log('2',0xba,3);
-                    /* WARNING: Load size is inaccurate */
       iVar3 = (**(code **)(*this + 0xf4))(param_2,2,param_4,in_stack_00000014);
 joined_r0x00420d93:
       iVar4 = debug_timeGetTime_on;
@@ -4496,7 +4226,6 @@ LAB_00420e5e:
         goto LAB_00420f09;
       }
       color_log('2','E',3);
-                    /* WARNING: Load size is inaccurate */
       iVar3 = (**(code **)(*this + 0xd4))(param_2,0xf,param_4,in_stack_00000014);
     }
     else if (param_3 < 0x1d) {
@@ -4504,7 +4233,6 @@ LAB_00420e5e:
         if (param_3 != 0x10) goto LAB_00420f09;
 LAB_00420dc9:
         color_log('2',0xba,3);
-                    /* WARNING: Load size is inaccurate */
         iVar3 = (**(code **)(*this + 0xf0))(param_2,param_3,param_4,in_stack_00000014);
         iVar4 = debug_timeGetTime_on;
         if (iVar3 != 0) goto LAB_00420f09;
@@ -4521,7 +4249,6 @@ LAB_00420dc9:
             SetCursor(0);
             SetClassLongA(*(undefined4 *)((int)this + 0x10),0xfffffff4,0);
             if (*(int *)((int)this + 0x1b0) != 1) {
-                    /* WARNING: Load size is inaccurate */
               (**(code **)(*this + 0xa8))();
             }
             DAT_0062c558 = 0;
@@ -4548,7 +4275,6 @@ LAB_00420dc9:
         else if (DAT_0062c558 == 0) {
           SetClassLongA(*(undefined4 *)((int)this + 0x10),0xfffffff4,0);
           if (*(int *)((int)this + 0x1b0) != 1) {
-                    /* WARNING: Load size is inaccurate */
             (**(code **)(*this + 0xa4))();
           }
           DAT_0062c558 = 1;
@@ -4559,19 +4285,16 @@ LAB_00420dc9:
         }
       }
       color_log('2','T',3);
-                    /* WARNING: Load size is inaccurate */
       iVar3 = (**(code **)(*this + 0xd8))(param_2,0x1c,param_4,in_stack_00000014);
     }
     else if (param_3 < 0x105) {
       if (param_3 == 0x104) {
         color_log('$',0xba,3);
-                    /* WARNING: Load size is inaccurate */
         iVar3 = (**(code **)(*this + 0xc4))(param_2,0x104,param_4,in_stack_00000014);
       }
       else {
         if (param_3 != 0x100) goto LAB_00420f09;
         color_log('$',0xba,3);
-                    /* WARNING: Load size is inaccurate */
         iVar3 = (**(code **)(*this + 0xc4))(param_2,0x100,param_4,in_stack_00000014);
       }
     }
@@ -4587,13 +4310,11 @@ LAB_00420dc9:
         goto LAB_00420f09;
       }
       color_log('2','\x16',3);
-                    /* WARNING: Load size is inaccurate */
       iVar3 = (**(code **)(*this + 0xcc))(param_2,0x111,param_4,in_stack_00000014);
     }
     else if (param_3 < 0x201) {
       if (param_3 == 0x200) {
         color_log('$','T',3);
-                    /* WARNING: Load size is inaccurate */
         iVar4 = (**(code **)(*this + 0xc0))(param_2,0x200,param_4,in_stack_00000014);
         if (iVar4 != 0) {
           iVar4 = debug_timeGetTime_on;
@@ -4624,14 +4345,12 @@ LAB_00420dc9:
         goto LAB_00420f09;
       }
       if (param_3 == 0x113) {
-                    /* WARNING: Load size is inaccurate */
         (**(code **)(*this + 0xbc))();
         iVar4 = debug_timeGetTime_on;
         goto LAB_00420f09;
       }
       if (param_3 != 0x116) goto LAB_00420f09;
       color_log('2',0xba,3);
-                    /* WARNING: Load size is inaccurate */
       iVar3 = (**(code **)(*this + 0xdc))(param_2,0x116,param_4,in_stack_00000014);
     }
     else {
@@ -4640,7 +4359,6 @@ LAB_00420dc9:
           if (param_3 == 0x400) {
             color_log('2','$',3);
             iVar4 = debug_timeGetTime_on;
-                    /* WARNING: Load size is inaccurate */
             debug_timeGetTime_on = 0;
             iVar3 = (**(code **)(*this + 200))(param_2,0x400,param_4,in_stack_00000014);
             if (iVar3 == 0) {
@@ -4656,7 +4374,6 @@ LAB_00420dc9:
           if (param_3 != 0x500) goto LAB_00420f09;
 LAB_00420e36:
           color_log('2','L',3);
-                    /* WARNING: Load size is inaccurate */
           iVar3 = (**(code **)(*this + 0xd0))(param_2,param_3,param_4,in_stack_00000014);
           goto joined_r0x00420d93;
         }
@@ -4664,12 +4381,10 @@ LAB_00420e36:
         if (param_3 != 0x30f) {
           if (param_3 != 0x311) goto LAB_00420f09;
           color_log('2',0xba,3);
-                    /* WARNING: Load size is inaccurate */
           iVar3 = (**(code **)(*this + 0xe8))(param_2,0x311,param_4,in_stack_00000014);
           goto joined_r0x00420d93;
         }
         color_log('2',0xba,3);
-                    /* WARNING: Load size is inaccurate */
         iVar4 = (**(code **)(*this + 0xec))(param_2,0x30f,param_4,in_stack_00000014);
         if (iVar4 != 0) goto LAB_00420dc9;
         goto LAB_00420e5e;
@@ -4682,7 +4397,6 @@ LAB_00420e36:
       }
       if (param_3 != 0x212) goto LAB_00420f09;
       color_log('2',0xba,3);
-                    /* WARNING: Load size is inaccurate */
       iVar3 = (**(code **)(*this + 0xe0))(param_2,0x212,param_4,in_stack_00000014);
     }
     iVar4 = debug_timeGetTime_on;
@@ -4721,8 +4435,6 @@ LAB_00420e74:
 // Function: handle_idle
 // Address: 00420f60
 // [HELPER] s_C__msdev_work_age1_x1_basegame_c: "C:\msdev\work\age1_x1\basegame.cpp"
-/* protected: virtual int __thiscall RGE_Base_Game::handle_idle(void) */
-
 int __thiscall RGE_Base_Game::handle_idle(RGE_Base_Game *this)
 {
   TDrawSystem *this_00;
@@ -4744,7 +4456,6 @@ int __thiscall RGE_Base_Game::handle_idle(RGE_Base_Game *this)
         if (this_00 != (TDrawSystem *)0x0) {
           TDrawSystem::ModifyPalette(this_00,0,0x100,this_00->palette);
         }
-                    /* language.dll match for 0xfa4: "No" */
         do_restore_palette = do_restore_palette + -1;
         restore_palette_timer = debug_timeGetTime(s_C__msdev_work_age1_x1_basegame_c,0xfa4);
       }
@@ -4787,10 +4498,6 @@ int __thiscall RGE_Base_Game::handle_idle(RGE_Base_Game *this)
 
 // Function: handle_mouse_move
 // Address: 00421110
-/* WARNING: Variable defined which should be unmapped: shift_key */
-/* protected: virtual int __thiscall RGE_Base_Game::handle_mouse_move(void *,unsigned int,unsigned
-   int,long) */
-
 int __thiscall
 RGE_Base_Game::handle_mouse_move
           (RGE_Base_Game *this,void *param_1,uint param_2,uint param_3,long param_4)
@@ -4827,9 +4534,6 @@ RGE_Base_Game::handle_mouse_move
 // Function: handle_key_down
 // Address: 004211d0
 // [HELPER] s___AoE_04d_bmp: ".\AoE%04d.bmp"
-/* protected: virtual int __thiscall RGE_Base_Game::handle_key_down(void *,unsigned int,unsigned
-   int,long) */
-
 int __thiscall
 RGE_Base_Game::handle_key_down
           (RGE_Base_Game *this,void *param_1,uint param_2,uint param_3,long param_4)
@@ -4866,9 +4570,6 @@ RGE_Base_Game::handle_key_down
 
 // Function: handle_user_command
 // Address: 004212e0
-/* protected: virtual int __thiscall RGE_Base_Game::handle_user_command(void *,unsigned int,unsigned
-   int,long) */
-
 int __thiscall
 RGE_Base_Game::handle_user_command
           (RGE_Base_Game *this,void *param_1,uint param_2,uint param_3,long param_4)
@@ -4908,9 +4609,6 @@ LAB_00421350:
 
 // Function: handle_command
 // Address: 004213a0
-/* protected: virtual int __thiscall RGE_Base_Game::handle_command(void *,unsigned int,unsigned
-   int,long) */
-
 int __thiscall
 RGE_Base_Game::handle_command
           (RGE_Base_Game *this,void *param_1,uint param_2,uint param_3,long param_4)
@@ -4925,9 +4623,6 @@ RGE_Base_Game::handle_command
 
 // Function: handle_music_done
 // Address: 004213c0
-/* protected: virtual int __thiscall RGE_Base_Game::handle_music_done(void *,unsigned int,unsigned
-   int,long) */
-
 int __thiscall
 RGE_Base_Game::handle_music_done
           (RGE_Base_Game *this,void *param_1,uint param_2,uint param_3,long param_4)
@@ -4943,9 +4638,6 @@ RGE_Base_Game::handle_music_done
 // Function: handle_paint
 // Address: 004213e0
 // [HELPER] s_C__msdev_work_age1_x1_basegame_c: "C:\msdev\work\age1_x1\basegame.cpp"
-/* protected: virtual int __thiscall RGE_Base_Game::handle_paint(void *,unsigned int,unsigned
-   int,long) */
-
 int __thiscall
 RGE_Base_Game::handle_paint
           (RGE_Base_Game *this,void *param_1,uint param_2,uint param_3,long param_4)
@@ -4961,7 +4653,6 @@ RGE_Base_Game::handle_paint
   undefined4 unaff_ESI;
   
   color_log('2','2',4);
-                    /* language.dll match for 0x10ea: "Score" */
   uVar2 = debug_timeGetTime(s_C__msdev_work_age1_x1_basegame_c,0x10ea);
   iVar3 = check_paint(this);
   uVar4 = debug_timeGetTime(s_C__msdev_work_age1_x1_basegame_c,0x10ee);
@@ -5027,35 +4718,25 @@ LAB_004214dc:
       (**(code **)(this->_padding_ + 0x130))();
     }
   }
-                    /* language.dll match for 0x1147: "Nebuchad"
-                       language.dll match for 0x1147: "Hammurabi II" */
   uVar7 = debug_timeGetTime(s_C__msdev_work_age1_x1_basegame_c,0x1147);
   add_to_timing(this,2,uVar7 - uVar5);
-                    /* language.dll match for 0x114b: "Croesus"
-                       language.dll match for 0x114b: "Hammurabi IV" */
   uVar5 = debug_timeGetTime(s_C__msdev_work_age1_x1_basegame_c,0x114b);
   color_log('2','T',4);
   if ((this->custom_mouse != 0) && (this->windows_mouse == 0)) {
     TMousePointer::draw(this->mouse_pointer,1);
     this->erase_mouse = 1;
   }
-                    /* language.dll match for 0x115b: "Sarpedon"
-                       language.dll match for 0x115b: "Minos II" */
   uVar7 = debug_timeGetTime(s_C__msdev_work_age1_x1_basegame_c,0x115b);
   add_to_timing(this,8,(uVar4 - uVar2) + (uVar7 - uVar5));
-                    /* language.dll match for 0x1160: "Pasiphae" */
   uVar2 = debug_timeGetTime(s_C__msdev_work_age1_x1_basegame_c,0x1160);
   color_log('2','E',4);
   TDrawSystem::Paint(this->draw_system,(tagRECT *)0x0);
   ValidateRect(this->prog_window,0);
   ValidateRect(this->prog_window,0);
-                    /* language.dll match for 0x1176: "9"
-                       language.dll match for 0x1176: "7" */
   this->render_all = 0;
   uVar4 = debug_timeGetTime(s_C__msdev_work_age1_x1_basegame_c,0x1176);
   add_to_timing(this,3,uVar4 - uVar2);
   color_log('2','_',4);
-                    /* language.dll match for 0x1182: "Darius" */
   this->frame_count = this->frame_count + 1;
   uVar2 = debug_timeGetTime(s_C__msdev_work_age1_x1_basegame_c,0x1182);
   if (999 < uVar2 - DAT_0062c578) {
@@ -5087,9 +4768,6 @@ LAB_004214dc:
 
 // Function: handle_activate
 // Address: 00421830
-/* protected: virtual int __thiscall RGE_Base_Game::handle_activate(void *,unsigned int,unsigned
-   int,long) */
-
 int __thiscall
 RGE_Base_Game::handle_activate
           (RGE_Base_Game *this,void *param_1,uint param_2,uint param_3,long param_4)
@@ -5135,9 +4813,6 @@ RGE_Base_Game::handle_activate
 
 // Function: handle_init_menu
 // Address: 00421910
-/* protected: virtual int __thiscall RGE_Base_Game::handle_init_menu(void *,unsigned int,unsigned
-   int,long) */
-
 int __thiscall
 RGE_Base_Game::handle_init_menu
           (RGE_Base_Game *this,void *param_1,uint param_2,uint param_3,long param_4)
@@ -5152,9 +4827,6 @@ RGE_Base_Game::handle_init_menu
 
 // Function: handle_exit_menu
 // Address: 00421930
-/* protected: virtual int __thiscall RGE_Base_Game::handle_exit_menu(void *,unsigned int,unsigned
-   int,long) */
-
 int __thiscall
 RGE_Base_Game::handle_exit_menu
           (RGE_Base_Game *this,void *param_1,uint param_2,uint param_3,long param_4)
@@ -5169,9 +4841,6 @@ RGE_Base_Game::handle_exit_menu
 
 // Function: handle_size
 // Address: 00421950
-/* protected: virtual int __thiscall RGE_Base_Game::handle_size(void *,unsigned int,unsigned
-   int,long) */
-
 int __thiscall
 RGE_Base_Game::handle_size(RGE_Base_Game *this,void *param_1,uint param_2,uint param_3,long param_4)
 {
@@ -5202,9 +4871,6 @@ RGE_Base_Game::handle_size(RGE_Base_Game *this,void *param_1,uint param_2,uint p
 
 // Function: handle_palette_changed
 // Address: 004219f0
-/* protected: virtual int __thiscall RGE_Base_Game::handle_palette_changed(void *,unsigned
-   int,unsigned int,long) */
-
 int __thiscall
 RGE_Base_Game::handle_palette_changed
           (RGE_Base_Game *this,void *param_1,uint param_2,uint param_3,long param_4)
@@ -5232,9 +4898,6 @@ RGE_Base_Game::handle_palette_changed
 
 // Function: handle_query_new_palette
 // Address: 00421a80
-/* protected: virtual int __thiscall RGE_Base_Game::handle_query_new_palette(void *,unsigned
-   int,unsigned int,long) */
-
 int __thiscall
 RGE_Base_Game::handle_query_new_palette
           (RGE_Base_Game *this,void *param_1,uint param_2,uint param_3,long param_4)
@@ -5289,9 +4952,6 @@ LAB_00421b1b:
 
 // Function: handle_close
 // Address: 00421b70
-/* protected: virtual int __thiscall RGE_Base_Game::handle_close(void *,unsigned int,unsigned
-   int,long) */
-
 int __thiscall
 RGE_Base_Game::handle_close
           (RGE_Base_Game *this,void *param_1,uint param_2,uint param_3,long param_4)
@@ -5313,9 +4973,6 @@ RGE_Base_Game::handle_close
 
 // Function: handle_destroy
 // Address: 00421bb0
-/* protected: virtual int __thiscall RGE_Base_Game::handle_destroy(void *,unsigned int,unsigned
-   int,long) */
-
 int __thiscall
 RGE_Base_Game::handle_destroy
           (RGE_Base_Game *this,void *param_1,uint param_2,uint param_3,long param_4)
@@ -5335,8 +4992,6 @@ RGE_Base_Game::handle_destroy
 // Address: 00421bf0
 // [HELPER] s_C__msdev_work_age1_x1_basegame_c: "C:\msdev\work\age1_x1\basegame.cpp"
 // [HELPER] s__lu___ld___ld___ld___ld___d___d_: "%lu, %ld, %ld, %ld, %ld, %d, %d, %d, %d, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %..."
-/* protected: virtual void __thiscall RGE_Base_Game::calc_timings(void) */
-
 void __thiscall RGE_Base_Game::calc_timings(RGE_Base_Game *this)
 {
   ulong uVar1;
@@ -5481,8 +5136,6 @@ void __thiscall RGE_Base_Game::calc_timings(RGE_Base_Game *this)
 // Function: calc_timing_text
 // Address: 00421fa0
 // [HELPER] s_fps__lu__rend__lu__view__lu__map: "fps=%lu, rend=%lu, view=%lu, map=%lu, scr=%lu, upd=%lu, snd=%lu, misc=%lu, ot..."
-/* protected: virtual void __thiscall RGE_Base_Game::calc_timing_text(void) */
-
 void __thiscall RGE_Base_Game::calc_timing_text(RGE_Base_Game *this)
 {
   ulong uVar1;
@@ -5504,8 +5157,6 @@ void __thiscall RGE_Base_Game::calc_timing_text(RGE_Base_Game *this)
 
 // Function: show_timings
 // Address: 00422030
-/* protected: virtual void __thiscall RGE_Base_Game::show_timings(void) */
-
 void __thiscall RGE_Base_Game::show_timings(RGE_Base_Game *this)
 {
   SetWindowTextA(this->prog_window,this->timing_text);
@@ -5517,9 +5168,6 @@ void __thiscall RGE_Base_Game::show_timings(RGE_Base_Game *this)
 // Function: show_comm
 // Address: 00422050
 // [HELPER] s__s: "%s"
-/* WARNING: Variable defined which should be unmapped: str */
-/* protected: virtual void __thiscall RGE_Base_Game::show_comm(void) */
-
 void __thiscall RGE_Base_Game::show_comm(RGE_Base_Game *this)
 {
   char *pcVar1;
@@ -5536,9 +5184,6 @@ void __thiscall RGE_Base_Game::show_comm(RGE_Base_Game *this)
 // Function: show_ai
 // Address: 00422090
 // [HELPER] s_No_AI_Information_for_Player___d: "No AI Information for Player #%d."
-/* WARNING: Variable defined which should be unmapped: str */
-/* protected: virtual void __thiscall RGE_Base_Game::show_ai(void) */
-
 void __thiscall RGE_Base_Game::show_ai(RGE_Base_Game *this)
 {
   char str [256];
@@ -5552,8 +5197,6 @@ void __thiscall RGE_Base_Game::show_ai(RGE_Base_Game *this)
 
 // Function: send_game_options
 // Address: 004220d0
-/* public: virtual void __thiscall RGE_Base_Game::send_game_options(void) */
-
 void __thiscall RGE_Base_Game::send_game_options(RGE_Base_Game *this)
 {
   if (this->comm_handler != (TCommunications_Handler *)0x0) {
@@ -5567,9 +5210,6 @@ void __thiscall RGE_Base_Game::send_game_options(RGE_Base_Game *this)
 
 // Function: receive_game_options
 // Address: 004220f0
-/* WARNING: Variable defined which should be unmapped: size */
-/* public: virtual void __thiscall RGE_Base_Game::receive_game_options(void) */
-
 void __thiscall RGE_Base_Game::receive_game_options(RGE_Base_Game *this)
 {
   RGE_Game_Options *pRVar1;
@@ -5591,9 +5231,6 @@ void __thiscall RGE_Base_Game::receive_game_options(RGE_Base_Game *this)
 
 // Function: set_game_options
 // Address: 00422130
-/* public: void __thiscall RGE_Base_Game::set_game_options(struct RGE_Base_Game::RGE_Game_Options *)
-    */
-
 void __thiscall RGE_Base_Game::set_game_options(RGE_Base_Game *this,RGE_Game_Options *param_1)
 {
   int iVar1;
@@ -5627,9 +5264,6 @@ void __thiscall RGE_Base_Game::set_game_options(RGE_Base_Game *this,RGE_Game_Opt
 
 // Function: get_game_options
 // Address: 00422260
-/* public: void __thiscall RGE_Base_Game::get_game_options(struct RGE_Base_Game::RGE_Game_Options *)
-    */
-
 void __thiscall RGE_Base_Game::get_game_options(RGE_Base_Game *this,RGE_Game_Options *param_1)
 {
   char cVar1;
@@ -5712,8 +5346,6 @@ void __thiscall RGE_Base_Game::get_game_options(RGE_Base_Game *this,RGE_Game_Opt
 
 // Function: version
 // Address: 00422390
-/* public: float __thiscall RGE_Base_Game::version(void)const  */
-
 float __thiscall RGE_Base_Game::version(RGE_Base_Game *this)
 {
   return (this->rge_game_options).versionValue;
@@ -5723,8 +5355,6 @@ float __thiscall RGE_Base_Game::version(RGE_Base_Game *this)
 
 // Function: scenarioGame
 // Address: 004223a0
-/* public: int __thiscall RGE_Base_Game::scenarioGame(void)const  */
-
 int __thiscall RGE_Base_Game::scenarioGame(RGE_Base_Game *this)
 {
   return (uint)(this->rge_game_options).scenarioGameValue;
@@ -5734,8 +5364,6 @@ int __thiscall RGE_Base_Game::scenarioGame(RGE_Base_Game *this)
 
 // Function: randomGame
 // Address: 004223b0
-/* public: int __thiscall RGE_Base_Game::randomGame(void)const  */
-
 int __thiscall RGE_Base_Game::randomGame(RGE_Base_Game *this)
 {
   return (uint)((this->rge_game_options).scenarioGameValue == '\0');
@@ -5745,8 +5373,6 @@ int __thiscall RGE_Base_Game::randomGame(RGE_Base_Game *this)
 
 // Function: campaignGame
 // Address: 004223c0
-/* public: int __thiscall RGE_Base_Game::campaignGame(void)const  */
-
 int __thiscall RGE_Base_Game::campaignGame(RGE_Base_Game *this)
 {
   return this->campaignGameValue;
@@ -5756,8 +5382,6 @@ int __thiscall RGE_Base_Game::campaignGame(RGE_Base_Game *this)
 
 // Function: savedGame
 // Address: 004223d0
-/* public: int __thiscall RGE_Base_Game::savedGame(void)const  */
-
 int __thiscall RGE_Base_Game::savedGame(RGE_Base_Game *this)
 {
   return this->savedGameValue;
@@ -5767,8 +5391,6 @@ int __thiscall RGE_Base_Game::savedGame(RGE_Base_Game *this)
 
 // Function: scenarioName
 // Address: 004223e0
-/* public: char * __thiscall RGE_Base_Game::scenarioName(void) */
-
 char * __thiscall RGE_Base_Game::scenarioName(RGE_Base_Game *this)
 {
   return (this->rge_game_options).scenarioNameValue;
@@ -5778,8 +5400,6 @@ char * __thiscall RGE_Base_Game::scenarioName(RGE_Base_Game *this)
 
 // Function: singlePlayerGame
 // Address: 004223f0
-/* public: int __thiscall RGE_Base_Game::singlePlayerGame(void)const  */
-
 int __thiscall RGE_Base_Game::singlePlayerGame(RGE_Base_Game *this)
 {
   return (uint)(this->rge_game_options).singlePlayerGameValue;
@@ -5789,8 +5409,6 @@ int __thiscall RGE_Base_Game::singlePlayerGame(RGE_Base_Game *this)
 
 // Function: multiplayerGame
 // Address: 00422400
-/* public: int __thiscall RGE_Base_Game::multiplayerGame(void)const  */
-
 int __thiscall RGE_Base_Game::multiplayerGame(RGE_Base_Game *this)
 {
   return (uint)(this->rge_game_options).multiplayerGameValue;
@@ -5800,8 +5418,6 @@ int __thiscall RGE_Base_Game::multiplayerGame(RGE_Base_Game *this)
 
 // Function: mapXSize
 // Address: 00422410
-/* public: int __thiscall RGE_Base_Game::mapXSize(void)const  */
-
 int __thiscall RGE_Base_Game::mapXSize(RGE_Base_Game *this)
 {
   return (uint)(this->rge_game_options).mapXSizeValue;
@@ -5811,8 +5427,6 @@ int __thiscall RGE_Base_Game::mapXSize(RGE_Base_Game *this)
 
 // Function: mapYSize
 // Address: 00422420
-/* public: int __thiscall RGE_Base_Game::mapYSize(void)const  */
-
 int __thiscall RGE_Base_Game::mapYSize(RGE_Base_Game *this)
 {
   return (uint)(this->rge_game_options).mapYSizeValue;
@@ -5822,8 +5436,6 @@ int __thiscall RGE_Base_Game::mapYSize(RGE_Base_Game *this)
 
 // Function: mapZSize
 // Address: 00422430
-/* public: int __thiscall RGE_Base_Game::mapZSize(void)const  */
-
 int __thiscall RGE_Base_Game::mapZSize(RGE_Base_Game *this)
 {
   return (uint)(this->rge_game_options).mapZSizeValue;
@@ -5833,8 +5445,6 @@ int __thiscall RGE_Base_Game::mapZSize(RGE_Base_Game *this)
 
 // Function: allowCheatCodes
 // Address: 00422440
-/* public: int __thiscall RGE_Base_Game::allowCheatCodes(void)const  */
-
 int __thiscall RGE_Base_Game::allowCheatCodes(RGE_Base_Game *this)
 {
   return (uint)(this->rge_game_options).allowCheatCodesValue;
@@ -5844,8 +5454,6 @@ int __thiscall RGE_Base_Game::allowCheatCodes(RGE_Base_Game *this)
 
 // Function: cheatNotification
 // Address: 00422450
-/* public: int __thiscall RGE_Base_Game::cheatNotification(void)const  */
-
 int __thiscall RGE_Base_Game::cheatNotification(RGE_Base_Game *this)
 {
   return (uint)(this->rge_game_options).cheatNotificationValue;
@@ -5855,8 +5463,6 @@ int __thiscall RGE_Base_Game::cheatNotification(RGE_Base_Game *this)
 
 // Function: fullVisibility
 // Address: 00422460
-/* public: int __thiscall RGE_Base_Game::fullVisibility(void)const  */
-
 int __thiscall RGE_Base_Game::fullVisibility(RGE_Base_Game *this)
 {
   return (uint)(this->rge_game_options).fullVisibilityValue;
@@ -5866,8 +5472,6 @@ int __thiscall RGE_Base_Game::fullVisibility(RGE_Base_Game *this)
 
 // Function: fogOfWar
 // Address: 00422470
-/* public: int __thiscall RGE_Base_Game::fogOfWar(void)const  */
-
 int __thiscall RGE_Base_Game::fogOfWar(RGE_Base_Game *this)
 {
   return (uint)(this->rge_game_options).fogOfWarValue;
@@ -5877,8 +5481,6 @@ int __thiscall RGE_Base_Game::fogOfWar(RGE_Base_Game *this)
 
 // Function: coloredChat
 // Address: 00422480
-/* public: int __thiscall RGE_Base_Game::coloredChat(void)const  */
-
 int __thiscall RGE_Base_Game::coloredChat(RGE_Base_Game *this)
 {
   return (uint)(this->rge_game_options).coloredChatValue;
@@ -5888,8 +5490,6 @@ int __thiscall RGE_Base_Game::coloredChat(RGE_Base_Game *this)
 
 // Function: gameDeveloperMode
 // Address: 00422490
-/* public: int __thiscall RGE_Base_Game::gameDeveloperMode(void)const  */
-
 int __thiscall RGE_Base_Game::gameDeveloperMode(RGE_Base_Game *this)
 {
   return (uint)(this->rge_game_options).gameDeveloperModeValue;
@@ -5899,8 +5499,6 @@ int __thiscall RGE_Base_Game::gameDeveloperMode(RGE_Base_Game *this)
 
 // Function: playerHasCD
 // Address: 004224a0
-/* public: int __thiscall RGE_Base_Game::playerHasCD(int) */
-
 int __thiscall RGE_Base_Game::playerHasCD(RGE_Base_Game *this,int param_1)
 {
   return (this->rge_game_options).playerCDAndVersionValue[param_1] & 1;
@@ -5910,8 +5508,6 @@ int __thiscall RGE_Base_Game::playerHasCD(RGE_Base_Game *this,int param_1)
 
 // Function: playerVersion
 // Address: 004224c0
-/* public: unsigned char __thiscall RGE_Base_Game::playerVersion(int) */
-
 uchar __thiscall RGE_Base_Game::playerVersion(RGE_Base_Game *this,int param_1)
 {
   return (this->rge_game_options).playerCDAndVersionValue[param_1] >> 1;
@@ -5945,8 +5541,6 @@ uchar __thiscall RGE_Base_Game::playerVersion(RGE_Base_Game *this,int param_1)
 // [HELPER] s_1_4c: "1.4c"
 // [HELPER] s_1_X: "1.X"
 // [HELPER] s_: ""
-/* public: char * __thiscall RGE_Base_Game::playerVersionString(int) */
-
 char * __thiscall RGE_Base_Game::playerVersionString(RGE_Base_Game *this,int param_1)
 {
   uchar uVar1;
@@ -6008,8 +5602,6 @@ char * __thiscall RGE_Base_Game::playerVersionString(RGE_Base_Game *this,int par
 
 // Function: playerCDAndVersion
 // Address: 00422630
-/* public: unsigned char __thiscall RGE_Base_Game::playerCDAndVersion(int) */
-
 uchar __thiscall RGE_Base_Game::playerCDAndVersion(RGE_Base_Game *this,int param_1)
 {
   return (this->rge_game_options).playerCDAndVersionValue[param_1];
@@ -6019,8 +5611,6 @@ uchar __thiscall RGE_Base_Game::playerCDAndVersion(RGE_Base_Game *this,int param
 
 // Function: difficulty
 // Address: 00422640
-/* public: int __thiscall RGE_Base_Game::difficulty(void) */
-
 int __thiscall RGE_Base_Game::difficulty(RGE_Base_Game *this)
 {
   return (uint)(this->rge_game_options).difficultyValue;
@@ -6030,8 +5620,6 @@ int __thiscall RGE_Base_Game::difficulty(RGE_Base_Game *this)
 
 // Function: numberPlayers
 // Address: 00422650
-/* public: int __thiscall RGE_Base_Game::numberPlayers(void)const  */
-
 int __thiscall RGE_Base_Game::numberPlayers(RGE_Base_Game *this)
 {
   return (uint)(this->rge_game_options).numberPlayersValue;
@@ -6041,8 +5629,6 @@ int __thiscall RGE_Base_Game::numberPlayers(RGE_Base_Game *this)
 
 // Function: playerTeam
 // Address: 00422660
-/* public: int __thiscall RGE_Base_Game::playerTeam(int) */
-
 int __thiscall RGE_Base_Game::playerTeam(RGE_Base_Game *this,int param_1)
 {
   return (uint)(this->rge_game_options).playerTeamValue[param_1];
@@ -6052,8 +5638,6 @@ int __thiscall RGE_Base_Game::playerTeam(RGE_Base_Game *this,int param_1)
 
 // Function: pathFinding
 // Address: 00422670
-/* public: unsigned char __thiscall RGE_Base_Game::pathFinding(void) */
-
 uchar __thiscall RGE_Base_Game::pathFinding(RGE_Base_Game *this)
 {
   return this->pathFindingValue;
@@ -6063,8 +5647,6 @@ uchar __thiscall RGE_Base_Game::pathFinding(RGE_Base_Game *this)
 
 // Function: mpPathFinding
 // Address: 00422680
-/* public: unsigned char __thiscall RGE_Base_Game::mpPathFinding(void) */
-
 uchar __thiscall RGE_Base_Game::mpPathFinding(RGE_Base_Game *this)
 {
   return (this->rge_game_options).mpPathFindingValue;
@@ -6074,8 +5656,6 @@ uchar __thiscall RGE_Base_Game::mpPathFinding(RGE_Base_Game *this)
 
 // Function: gameSummary
 // Address: 00422690
-/* public: virtual char * __thiscall RGE_Base_Game::gameSummary(void) */
-
 char * __thiscall RGE_Base_Game::gameSummary(RGE_Base_Game *this)
 {
   DAT_0062c49c._0_1_ = 0;
@@ -6086,8 +5666,6 @@ char * __thiscall RGE_Base_Game::gameSummary(RGE_Base_Game *this)
 
 // Function: find_campaigns
 // Address: 004226a0
-/* public: void __thiscall RGE_Base_Game::find_campaigns(void) */
-
 void __thiscall RGE_Base_Game::find_campaigns(RGE_Base_Game *this)
 {
   RGE_Game_Info::find_campaigns(this->player_game_info);
@@ -6098,8 +5676,6 @@ void __thiscall RGE_Base_Game::find_campaigns(RGE_Base_Game *this)
 
 // Function: setScenarioGame
 // Address: 004226b0
-/* public: void __thiscall RGE_Base_Game::setScenarioGame(int) */
-
 void __thiscall RGE_Base_Game::setScenarioGame(RGE_Base_Game *this,int param_1)
 {
   (this->rge_game_options).scenarioGameValue = (uchar)param_1;
@@ -6110,8 +5686,6 @@ void __thiscall RGE_Base_Game::setScenarioGame(RGE_Base_Game *this,int param_1)
 
 // Function: setVersion
 // Address: 004226c0
-/* public: void __thiscall RGE_Base_Game::setVersion(float) */
-
 void __thiscall RGE_Base_Game::setVersion(RGE_Base_Game *this,float param_1)
 {
   (this->rge_game_options).versionValue = param_1;
@@ -6122,11 +5696,8 @@ void __thiscall RGE_Base_Game::setVersion(RGE_Base_Game *this,float param_1)
 
 // Function: setScenarioName
 // Address: 004226d0
-/* public: void __thiscall RGE_Base_Game::setScenarioName(char *) */
-
 void __thiscall RGE_Base_Game::setScenarioName(RGE_Base_Game *this,char *param_1)
 {
-                    /* language.dll match for 0x80: "Arial" */
   strncpy((this->rge_game_options).scenarioNameValue,param_1,0x80);
   (this->rge_game_options).scenarioNameValue[0x7f] = '\0';
   return;
@@ -6136,8 +5707,6 @@ void __thiscall RGE_Base_Game::setScenarioName(RGE_Base_Game *this,char *param_1
 
 // Function: setCampaignGame
 // Address: 00422700
-/* public: void __thiscall RGE_Base_Game::setCampaignGame(int) */
-
 void __thiscall RGE_Base_Game::setCampaignGame(RGE_Base_Game *this,int param_1)
 {
   this->campaignGameValue = param_1;
@@ -6148,8 +5717,6 @@ void __thiscall RGE_Base_Game::setCampaignGame(RGE_Base_Game *this,int param_1)
 
 // Function: setSavedGame
 // Address: 00422710
-/* public: void __thiscall RGE_Base_Game::setSavedGame(int) */
-
 void __thiscall RGE_Base_Game::setSavedGame(RGE_Base_Game *this,int param_1)
 {
   this->savedGameValue = param_1;
@@ -6160,8 +5727,6 @@ void __thiscall RGE_Base_Game::setSavedGame(RGE_Base_Game *this,int param_1)
 
 // Function: setSinglePlayerGame
 // Address: 00422720
-/* public: void __thiscall RGE_Base_Game::setSinglePlayerGame(int) */
-
 void __thiscall RGE_Base_Game::setSinglePlayerGame(RGE_Base_Game *this,int param_1)
 {
   (this->rge_game_options).singlePlayerGameValue = (uchar)param_1;
@@ -6173,8 +5738,6 @@ void __thiscall RGE_Base_Game::setSinglePlayerGame(RGE_Base_Game *this,int param
 
 // Function: setMultiplayerGame
 // Address: 00422740
-/* public: void __thiscall RGE_Base_Game::setMultiplayerGame(int) */
-
 void __thiscall RGE_Base_Game::setMultiplayerGame(RGE_Base_Game *this,int param_1)
 {
   (this->rge_game_options).multiplayerGameValue = (uchar)param_1;
@@ -6186,8 +5749,6 @@ void __thiscall RGE_Base_Game::setMultiplayerGame(RGE_Base_Game *this,int param_
 
 // Function: setMapSize
 // Address: 00422760
-/* public: void __thiscall RGE_Base_Game::setMapSize(int,int,int) */
-
 void __thiscall RGE_Base_Game::setMapSize(RGE_Base_Game *this,int param_1,int param_2,int param_3)
 {
   (this->rge_game_options).mapXSizeValue = (uchar)param_1;
@@ -6200,8 +5761,6 @@ void __thiscall RGE_Base_Game::setMapSize(RGE_Base_Game *this,int param_1,int pa
 
 // Function: setAllowCheatCodes
 // Address: 00422790
-/* public: void __thiscall RGE_Base_Game::setAllowCheatCodes(int) */
-
 void __thiscall RGE_Base_Game::setAllowCheatCodes(RGE_Base_Game *this,int param_1)
 {
   (this->rge_game_options).allowCheatCodesValue = (uchar)param_1;
@@ -6212,8 +5771,6 @@ void __thiscall RGE_Base_Game::setAllowCheatCodes(RGE_Base_Game *this,int param_
 
 // Function: setCheatNotification
 // Address: 004227a0
-/* public: void __thiscall RGE_Base_Game::setCheatNotification(int) */
-
 void __thiscall RGE_Base_Game::setCheatNotification(RGE_Base_Game *this,int param_1)
 {
   (this->rge_game_options).cheatNotificationValue = (uchar)param_1;
@@ -6224,8 +5781,6 @@ void __thiscall RGE_Base_Game::setCheatNotification(RGE_Base_Game *this,int para
 
 // Function: setFullVisibility
 // Address: 004227b0
-/* public: void __thiscall RGE_Base_Game::setFullVisibility(int) */
-
 void __thiscall RGE_Base_Game::setFullVisibility(RGE_Base_Game *this,int param_1)
 {
   (this->rge_game_options).fullVisibilityValue = (uchar)param_1;
@@ -6236,8 +5791,6 @@ void __thiscall RGE_Base_Game::setFullVisibility(RGE_Base_Game *this,int param_1
 
 // Function: setFogOfWar
 // Address: 004227c0
-/* public: void __thiscall RGE_Base_Game::setFogOfWar(int) */
-
 void __thiscall RGE_Base_Game::setFogOfWar(RGE_Base_Game *this,int param_1)
 {
   (this->rge_game_options).fogOfWarValue = (uchar)param_1;
@@ -6248,8 +5801,6 @@ void __thiscall RGE_Base_Game::setFogOfWar(RGE_Base_Game *this,int param_1)
 
 // Function: setColoredChat
 // Address: 004227d0
-/* public: void __thiscall RGE_Base_Game::setColoredChat(int) */
-
 void __thiscall RGE_Base_Game::setColoredChat(RGE_Base_Game *this,int param_1)
 {
   (this->rge_game_options).coloredChatValue = (uchar)param_1;
@@ -6260,8 +5811,6 @@ void __thiscall RGE_Base_Game::setColoredChat(RGE_Base_Game *this,int param_1)
 
 // Function: setNumberPlayers
 // Address: 004227e0
-/* public: void __thiscall RGE_Base_Game::setNumberPlayers(int) */
-
 void __thiscall RGE_Base_Game::setNumberPlayers(RGE_Base_Game *this,int param_1)
 {
   (this->rge_game_options).numberPlayersValue = (uchar)param_1;
@@ -6272,8 +5821,6 @@ void __thiscall RGE_Base_Game::setNumberPlayers(RGE_Base_Game *this,int param_1)
 
 // Function: setGameDeveloperMode
 // Address: 004227f0
-/* public: void __thiscall RGE_Base_Game::setGameDeveloperMode(int) */
-
 void __thiscall RGE_Base_Game::setGameDeveloperMode(RGE_Base_Game *this,int param_1)
 {
   (this->rge_game_options).gameDeveloperModeValue = (uchar)param_1;
@@ -6284,8 +5831,6 @@ void __thiscall RGE_Base_Game::setGameDeveloperMode(RGE_Base_Game *this,int para
 
 // Function: setPlayerHasCD
 // Address: 00422800
-/* public: void __thiscall RGE_Base_Game::setPlayerHasCD(int,int) */
-
 void __thiscall RGE_Base_Game::setPlayerHasCD(RGE_Base_Game *this,int param_1,int param_2)
 {
   (this->rge_game_options).playerCDAndVersionValue[param_1] =
@@ -6297,8 +5842,6 @@ void __thiscall RGE_Base_Game::setPlayerHasCD(RGE_Base_Game *this,int param_1,in
 
 // Function: setPlayerVersion
 // Address: 00422820
-/* public: void __thiscall RGE_Base_Game::setPlayerVersion(int,unsigned char) */
-
 void __thiscall RGE_Base_Game::setPlayerVersion(RGE_Base_Game *this,int param_1,uchar param_2)
 {
   (this->rge_game_options).playerCDAndVersionValue[param_1] =
@@ -6310,8 +5853,6 @@ void __thiscall RGE_Base_Game::setPlayerVersion(RGE_Base_Game *this,int param_1,
 
 // Function: setPlayerCDAndVersion
 // Address: 00422850
-/* public: void __thiscall RGE_Base_Game::setPlayerCDAndVersion(int,unsigned char) */
-
 void __thiscall RGE_Base_Game::setPlayerCDAndVersion(RGE_Base_Game *this,int param_1,uchar param_2)
 {
   (this->rge_game_options).playerCDAndVersionValue[param_1] = param_2;
@@ -6322,8 +5863,6 @@ void __thiscall RGE_Base_Game::setPlayerCDAndVersion(RGE_Base_Game *this,int par
 
 // Function: setDifficulty
 // Address: 00422870
-/* public: void __thiscall RGE_Base_Game::setDifficulty(int) */
-
 void __thiscall RGE_Base_Game::setDifficulty(RGE_Base_Game *this,int param_1)
 {
   (this->rge_game_options).difficultyValue = (uchar)param_1;
@@ -6334,8 +5873,6 @@ void __thiscall RGE_Base_Game::setDifficulty(RGE_Base_Game *this,int param_1)
 
 // Function: setPlayerTeam
 // Address: 00422880
-/* public: void __thiscall RGE_Base_Game::setPlayerTeam(int,int) */
-
 void __thiscall RGE_Base_Game::setPlayerTeam(RGE_Base_Game *this,int param_1,int param_2)
 {
   (this->rge_game_options).playerTeamValue[param_1] = (uchar)param_2;
@@ -6346,8 +5883,6 @@ void __thiscall RGE_Base_Game::setPlayerTeam(RGE_Base_Game *this,int param_1,int
 
 // Function: setPathFinding
 // Address: 004228a0
-/* public: void __thiscall RGE_Base_Game::setPathFinding(unsigned char) */
-
 void __thiscall RGE_Base_Game::setPathFinding(RGE_Base_Game *this,uchar param_1)
 {
   this->pathFindingValue = param_1;
@@ -6358,8 +5893,6 @@ void __thiscall RGE_Base_Game::setPathFinding(RGE_Base_Game *this,uchar param_1)
 
 // Function: setMpPathFinding
 // Address: 004228b0
-/* public: void __thiscall RGE_Base_Game::setMpPathFinding(unsigned char) */
-
 void __thiscall RGE_Base_Game::setMpPathFinding(RGE_Base_Game *this,uchar param_1)
 {
   (this->rge_game_options).mpPathFindingValue = param_1;
@@ -6370,8 +5903,6 @@ void __thiscall RGE_Base_Game::setMpPathFinding(RGE_Base_Game *this,uchar param_
 
 // Function: set_map_visible
 // Address: 004228c0
-/* public: void __thiscall RGE_Base_Game::set_map_visible(unsigned char) */
-
 void __thiscall RGE_Base_Game::set_map_visible(RGE_Base_Game *this,uchar param_1)
 {
   if (this->world != (RGE_Game_World *)0x0) {
@@ -6384,8 +5915,6 @@ void __thiscall RGE_Base_Game::set_map_visible(RGE_Base_Game *this,uchar param_1
 
 // Function: set_map_fog
 // Address: 004228e0
-/* public: void __thiscall RGE_Base_Game::set_map_fog(unsigned char) */
-
 void __thiscall RGE_Base_Game::set_map_fog(RGE_Base_Game *this,uchar param_1)
 {
   if (this->world != (RGE_Game_World *)0x0) {
@@ -6398,12 +5927,8 @@ void __thiscall RGE_Base_Game::set_map_fog(RGE_Base_Game *this,uchar param_1)
 
 // Function: turn_world_sound_off
 // Address: 00422900
-/* public: void __thiscall RGE_Base_Game::turn_world_sound_off(void) */
-
 void __thiscall RGE_Base_Game::turn_world_sound_off(RGE_Base_Game *this)
 {
-                    /* WARNING: Could not recover jumptable at 0x00422908. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (**(code **)(this->world->_padding_ + 0xb4))();
   return;
 }
@@ -6412,8 +5937,6 @@ void __thiscall RGE_Base_Game::turn_world_sound_off(RGE_Base_Game *this)
 
 // Function: campaign_open_scenario
 // Address: 00422910
-/* public: int __thiscall RGE_Base_Game::campaign_open_scenario(void) */
-
 int __thiscall RGE_Base_Game::campaign_open_scenario(RGE_Base_Game *this)
 {
   int iVar1;
@@ -6426,8 +5949,6 @@ int __thiscall RGE_Base_Game::campaign_open_scenario(RGE_Base_Game *this)
 
 // Function: GetChecksum
 // Address: 00422920
-/* public: long __thiscall RGE_Base_Game::GetChecksum(long) */
-
 long __thiscall RGE_Base_Game::GetChecksum(RGE_Base_Game *this,long param_1)
 {
   RGE_Game_World *pRVar1;
@@ -6451,9 +5972,6 @@ long __thiscall RGE_Base_Game::GetChecksum(RGE_Base_Game *this,long param_1)
 
 // Function: GetWorldChecksums
 // Address: 00422960
-/* WARNING: Variable defined which should be unmapped: checksum1 */
-/* public: unsigned char __thiscall RGE_Base_Game::GetWorldChecksums(long &,long &,long &) */
-
 uchar __thiscall
 RGE_Base_Game::GetWorldChecksums(RGE_Base_Game *this,long *param_1,long *param_2,long *param_3)
 {
@@ -6494,8 +6012,6 @@ RGE_Base_Game::GetWorldChecksums(RGE_Base_Game *this,long *param_1,long *param_2
 
 // Function: GetWorldChecksum
 // Address: 00422a10
-/* public: long __thiscall RGE_Base_Game::GetWorldChecksum(void) */
-
 long __thiscall RGE_Base_Game::GetWorldChecksum(RGE_Base_Game *this)
 {
   RGE_Game_World *pRVar1;
@@ -6524,8 +6040,6 @@ long __thiscall RGE_Base_Game::GetWorldChecksum(RGE_Base_Game *this)
 
 // Function: disable_input
 // Address: 00422a50
-/* public: void __thiscall RGE_Base_Game::disable_input(void) */
-
 void __thiscall RGE_Base_Game::disable_input(RGE_Base_Game *this)
 {
   void *pvVar1;
@@ -6551,8 +6065,6 @@ void __thiscall RGE_Base_Game::disable_input(RGE_Base_Game *this)
 
 // Function: enable_input
 // Address: 00422ab0
-/* public: void __thiscall RGE_Base_Game::enable_input(void) */
-
 void __thiscall RGE_Base_Game::enable_input(RGE_Base_Game *this)
 {
   int iVar1;
@@ -6578,9 +6090,6 @@ void __thiscall RGE_Base_Game::enable_input(RGE_Base_Game *this)
 // Function: set_screen_size
 // Address: 00422b10
 // [HELPER] s_DISPLAY: "DISPLAY"
-/* WARNING: Variable defined which should be unmapped: win_rect */
-/* public: void __thiscall RGE_Base_Game::set_screen_size(long,long) */
-
 void __thiscall RGE_Base_Game::set_screen_size(RGE_Base_Game *this,long param_1,long param_2)
 {
   int iVar1;
@@ -6670,8 +6179,6 @@ void __thiscall RGE_Base_Game::set_screen_size(RGE_Base_Game *this,long param_1,
 
 // Function: check_prog_argument
 // Address: 00422cc0
-/* public: unsigned char __thiscall RGE_Base_Game::check_prog_argument(char *) */
-
 uchar __thiscall RGE_Base_Game::check_prog_argument(RGE_Base_Game *this,char *param_1)
 {
   int iVar1;
@@ -6693,8 +6200,6 @@ uchar __thiscall RGE_Base_Game::check_prog_argument(RGE_Base_Game *this,char *pa
 
 // Function: get_scenario_checksum
 // Address: 00422d20
-/* public: long __thiscall RGE_Base_Game::get_scenario_checksum(char *) */
-
 long __thiscall RGE_Base_Game::get_scenario_checksum(RGE_Base_Game *this,char *param_1)
 {
   ulong uVar1;
@@ -6714,8 +6219,6 @@ long __thiscall RGE_Base_Game::get_scenario_checksum(RGE_Base_Game *this,char *p
 
 // Function: check_scenario_checksum
 // Address: 00422d60
-/* public: unsigned char __thiscall RGE_Base_Game::check_scenario_checksum(char *,long) */
-
 uchar __thiscall
 RGE_Base_Game::check_scenario_checksum(RGE_Base_Game *this,char *param_1,long param_2)
 {
@@ -6732,8 +6235,6 @@ RGE_Base_Game::check_scenario_checksum(RGE_Base_Game *this,char *param_1,long pa
 
 // Function: dump_memory_usage
 // Address: 00422d80
-/* public: void __thiscall RGE_Base_Game::dump_memory_usage(char *) */
-
 void __thiscall RGE_Base_Game::dump_memory_usage(RGE_Base_Game *this,char *param_1)
 {
   return;
@@ -6743,8 +6244,6 @@ void __thiscall RGE_Base_Game::dump_memory_usage(RGE_Base_Game *this,char *param
 
 // Function: playerID
 // Address: 00422d90
-/* public: int __thiscall RGE_Base_Game::playerID(int) */
-
 int __thiscall RGE_Base_Game::playerID(RGE_Base_Game *this,int param_1)
 {
   return this->playerIDValue[param_1];
@@ -6754,8 +6253,6 @@ int __thiscall RGE_Base_Game::playerID(RGE_Base_Game *this,int param_1)
 
 // Function: setPlayerID
 // Address: 00422da0
-/* public: void __thiscall RGE_Base_Game::setPlayerID(int,int) */
-
 void __thiscall RGE_Base_Game::setPlayerID(RGE_Base_Game *this,int param_1,int param_2)
 {
   this->playerIDValue[param_1] = param_2;
@@ -6766,8 +6263,6 @@ void __thiscall RGE_Base_Game::setPlayerID(RGE_Base_Game *this,int param_1,int p
 
 // Function: reset_countdown_timer
 // Address: 00422dc0
-/* public: void __thiscall RGE_Base_Game::reset_countdown_timer(long) */
-
 void __thiscall RGE_Base_Game::reset_countdown_timer(RGE_Base_Game *this,long param_1)
 {
   this->countdown_timer[param_1] = -1;
@@ -6778,8 +6273,6 @@ void __thiscall RGE_Base_Game::reset_countdown_timer(RGE_Base_Game *this,long pa
 
 // Function: set_countdown_timer
 // Address: 00422de0
-/* public: void __thiscall RGE_Base_Game::set_countdown_timer(long,long) */
-
 void __thiscall RGE_Base_Game::set_countdown_timer(RGE_Base_Game *this,long param_1,long param_2)
 {
   if ((param_2 < this->countdown_timer[param_1]) || (this->countdown_timer[param_1] < 0)) {
@@ -6792,8 +6285,6 @@ void __thiscall RGE_Base_Game::set_countdown_timer(RGE_Base_Game *this,long para
 
 // Function: get_countdown_timer
 // Address: 00422e10
-/* public: void __thiscall RGE_Base_Game::get_countdown_timer(long,long &) */
-
 void __thiscall RGE_Base_Game::get_countdown_timer(RGE_Base_Game *this,long param_1,long *param_2)
 {
   *param_2 = this->countdown_timer[param_1];
@@ -6804,8 +6295,6 @@ void __thiscall RGE_Base_Game::get_countdown_timer(RGE_Base_Game *this,long para
 
 // Function: play_video
 // Address: 00422e30
-/* public: int __thiscall RGE_Base_Game::play_video(char *) */
-
 int __thiscall RGE_Base_Game::play_video(RGE_Base_Game *this,char *param_1)
 {
   return 0;
@@ -6815,8 +6304,6 @@ int __thiscall RGE_Base_Game::play_video(RGE_Base_Game *this,char *param_1)
 
 // Function: close_video
 // Address: 00422e40
-/* public: void __thiscall RGE_Base_Game::close_video(void) */
-
 void __thiscall RGE_Base_Game::close_video(RGE_Base_Game *this)
 {
   return;
@@ -6826,8 +6313,6 @@ void __thiscall RGE_Base_Game::close_video(RGE_Base_Game *this)
 
 // Function: handle_video_notify
 // Address: 00422e50
-/* public: void __thiscall RGE_Base_Game::handle_video_notify(void) */
-
 void __thiscall RGE_Base_Game::handle_video_notify(RGE_Base_Game *this)
 {
   return;
@@ -6837,8 +6322,6 @@ void __thiscall RGE_Base_Game::handle_video_notify(RGE_Base_Game *this)
 
 // Function: play_sound
 // Address: 00422e60
-/* public: int __thiscall RGE_Base_Game::play_sound(int) */
-
 int __thiscall RGE_Base_Game::play_sound(RGE_Base_Game *this,int param_1)
 {
   TDigital **ppTVar1;
@@ -6863,8 +6346,6 @@ int __thiscall RGE_Base_Game::play_sound(RGE_Base_Game *this,int param_1)
 
 // Function: get_game_speed
 // Address: 00422eb0
-/* public: float __thiscall RGE_Base_Game::get_game_speed(void) */
-
 float __thiscall RGE_Base_Game::get_game_speed(RGE_Base_Game *this)
 {
   return this->game_speed;
@@ -6874,8 +6355,6 @@ float __thiscall RGE_Base_Game::get_game_speed(RGE_Base_Game *this)
 
 // Function: set_game_speed
 // Address: 00422ec0
-/* public: void __thiscall RGE_Base_Game::set_game_speed(float) */
-
 void __thiscall RGE_Base_Game::set_game_speed(RGE_Base_Game *this,float param_1)
 {
   this->game_speed = param_1;
@@ -6886,8 +6365,6 @@ void __thiscall RGE_Base_Game::set_game_speed(RGE_Base_Game *this,float param_1)
 
 // Function: get_single_player_difficulty
 // Address: 00422ed0
-/* public: int __thiscall RGE_Base_Game::get_single_player_difficulty(void) */
-
 int __thiscall RGE_Base_Game::get_single_player_difficulty(RGE_Base_Game *this)
 {
   return this->single_player_difficulty;
@@ -6897,8 +6374,6 @@ int __thiscall RGE_Base_Game::get_single_player_difficulty(RGE_Base_Game *this)
 
 // Function: set_single_player_difficulty
 // Address: 00422ee0
-/* public: void __thiscall RGE_Base_Game::set_single_player_difficulty(int) */
-
 void __thiscall RGE_Base_Game::set_single_player_difficulty(RGE_Base_Game *this,int param_1)
 {
   this->single_player_difficulty = param_1;
@@ -6910,8 +6385,6 @@ void __thiscall RGE_Base_Game::set_single_player_difficulty(RGE_Base_Game *this,
 // Function: setup_map_save_area
 // Address: 00422ef0
 // [HELPER] s_Diamond_Map_Save_Area: "Diamond Map Save Area"
-/* protected: virtual int __thiscall RGE_Base_Game::setup_map_save_area(void) */
-
 int __thiscall RGE_Base_Game::setup_map_save_area(RGE_Base_Game *this)
 {
   TDrawArea *pTVar1;
@@ -6958,8 +6431,6 @@ int __thiscall RGE_Base_Game::setup_map_save_area(RGE_Base_Game *this)
 
 // Function: reload_scenarios_info
 // Address: 00422fd0
-/* public: void __thiscall RGE_Base_Game::reload_scenarios_info(void) */
-
 void __thiscall RGE_Base_Game::reload_scenarios_info(RGE_Base_Game *this)
 {
   RGE_Scenario_File_Info::reload_scenarios(this->scenario_info);
@@ -6970,8 +6441,6 @@ void __thiscall RGE_Base_Game::reload_scenarios_info(RGE_Base_Game *this)
 
 // Function: set_interface_messages
 // Address: 00422fe0
-/* protected: virtual void __thiscall RGE_Base_Game::set_interface_messages(void) */
-
 void __thiscall RGE_Base_Game::set_interface_messages(RGE_Base_Game *this)
 {
   return;
@@ -6981,8 +6450,6 @@ void __thiscall RGE_Base_Game::set_interface_messages(RGE_Base_Game *this)
 
 // Function: set_render_all
 // Address: 00422ff0
-/* public: void __thiscall RGE_Base_Game::set_render_all(void) */
-
 void __thiscall RGE_Base_Game::set_render_all(RGE_Base_Game *this)
 {
   this->render_all = 1;

@@ -12,9 +12,6 @@
 
 // Function: RGE_RMM_Cliffs_Generator
 // Address: 00481980
-/* public: __thiscall RGE_RMM_Cliffs_Generator::RGE_RMM_Cliffs_Generator(class RGE_Map *,class
-   RGE_Random_Map_Module *,struct RGE_Cliffs_Info) */
-
 RGE_RMM_Cliffs_Generator * __thiscall
 RGE_RMM_Cliffs_Generator::RGE_RMM_Cliffs_Generator
           (RGE_RMM_Cliffs_Generator *this,RGE_Map *param_1,RGE_Random_Map_Module *param_2)
@@ -42,8 +39,6 @@ RGE_RMM_Cliffs_Generator::RGE_RMM_Cliffs_Generator
 // Function: generate
 // Address: 004819c0
 // [HELPER] s_C__msdev_work_age1_x1_rmm_clif_c: "C:\msdev\work\age1_x1\rmm_clif.cpp"
-/* public: virtual unsigned char __thiscall RGE_RMM_Cliffs_Generator::generate(void) */
-
 uchar __thiscall RGE_RMM_Cliffs_Generator::generate(RGE_RMM_Cliffs_Generator *this)
 {
   int iVar1;
@@ -64,9 +59,6 @@ uchar __thiscall RGE_RMM_Cliffs_Generator::generate(RGE_RMM_Cliffs_Generator *th
 
 // Function: setup_cliff_maps
 // Address: 00481a00
-/* WARNING: Variable defined which should be unmapped: water_area */
-/* protected: void __thiscall RGE_RMM_Cliffs_Generator::setup_cliff_maps(void) */
-
 void __thiscall RGE_RMM_Cliffs_Generator::setup_cliff_maps(RGE_RMM_Cliffs_Generator *this)
 {
   undefined1 *puVar1;
@@ -222,9 +214,6 @@ void __thiscall RGE_RMM_Cliffs_Generator::setup_cliff_maps(RGE_RMM_Cliffs_Genera
 // Function: generate_cliff
 // Address: 00481cd0
 // [HELPER] s_C__msdev_work_age1_x1_rmm_clif_c: "C:\msdev\work\age1_x1\rmm_clif.cpp"
-/* WARNING: Variable defined which should be unmapped: cliff_end_found */
-/* protected: void __thiscall RGE_RMM_Cliffs_Generator::generate_cliff(void) */
-
 void __thiscall RGE_RMM_Cliffs_Generator::generate_cliff(RGE_RMM_Cliffs_Generator *this)
 {
   bool bVar1;
@@ -337,9 +326,6 @@ void __thiscall RGE_RMM_Cliffs_Generator::generate_cliff(RGE_RMM_Cliffs_Generato
 
 // Function: check_for_valid_cliff_site
 // Address: 00481fc0
-/* protected: unsigned char __thiscall
-   RGE_RMM_Cliffs_Generator::check_for_valid_cliff_site(long,long &,long &,long) */
-
 uchar __thiscall
 RGE_RMM_Cliffs_Generator::check_for_valid_cliff_site
           (RGE_RMM_Cliffs_Generator *this,long param_1,long *param_2,long *param_3,long param_4)
@@ -397,9 +383,6 @@ RGE_RMM_Cliffs_Generator::check_for_valid_cliff_site
 
 // Function: invalidate_cliff_area
 // Address: 004820a0
-/* WARNING: Variable defined which should be unmapped: cliff_width2 */
-/* protected: void __thiscall RGE_RMM_Cliffs_Generator::invalidate_cliff_area(long,long,long) */
-
 void __thiscall
 RGE_RMM_Cliffs_Generator::invalidate_cliff_area
           (RGE_RMM_Cliffs_Generator *this,long param_1,long param_2,long param_3)

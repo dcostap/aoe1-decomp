@@ -20,9 +20,6 @@
 
 // Function: RGE_Random_Map_Module
 // Address: 00480790
-/* public: __thiscall RGE_Random_Map_Module::RGE_Random_Map_Module(class RGE_Map *,class
-   RGE_Random_Map_Module *,unsigned char) */
-
 RGE_Random_Map_Module * __thiscall
 RGE_Random_Map_Module::RGE_Random_Map_Module
           (RGE_Random_Map_Module *this,RGE_Map *param_1,RGE_Random_Map_Module *param_2,uchar param_3
@@ -70,8 +67,6 @@ RGE_Random_Map_Module::RGE_Random_Map_Module
 
 // Function: ~RGE_Random_Map_Module
 // Address: 00480840
-/* public: __thiscall RGE_Random_Map_Module::~RGE_Random_Map_Module(void) */
-
 void __thiscall RGE_Random_Map_Module::~RGE_Random_Map_Module(RGE_Random_Map_Module *this)
 {
   RGE_Random_Map_Module_List *pRVar1;
@@ -111,8 +106,6 @@ void __thiscall RGE_Random_Map_Module::~RGE_Random_Map_Module(RGE_Random_Map_Mod
 
 // Function: get_schedule
 // Address: 004808c0
-/* protected: float __thiscall RGE_Random_Map_Module::get_schedule(void) */
-
 float __thiscall RGE_Random_Map_Module::get_schedule(RGE_Random_Map_Module *this)
 {
   return this->schedule;
@@ -125,8 +118,6 @@ float __thiscall RGE_Random_Map_Module::get_schedule(RGE_Random_Map_Module *this
 // [HELPER] s_C__msdev_work_age1_x1_rmm_base_c: "C:\msdev\work\age1_x1\rmm_base.cpp"
 // [HELPER] s_RGE_RANDOM_MAP_MODULE__map_start: "RGE_RANDOM_MAP_MODULE::map startped with random: %d."
 // [HELPER] s_RGE_RANDOM_MAP_MODULE__module_co: "RGE_RANDOM_MAP_MODULE::module completed with random: %d."
-/* public: virtual unsigned char __thiscall RGE_Random_Map_Module::generate(void) */
-
 uchar __thiscall RGE_Random_Map_Module::generate(RGE_Random_Map_Module *this)
 {
   RGE_Random_Map_Module_List **ppRVar1;
@@ -195,9 +186,6 @@ LAB_0048093c:
 
 // Function: add_module
 // Address: 004809e0
-/* protected: unsigned char __thiscall RGE_Random_Map_Module::add_module(class RGE_Random_Map_Module
-   *) */
-
 uchar __thiscall
 RGE_Random_Map_Module::add_module(RGE_Random_Map_Module *this,RGE_Random_Map_Module *param_1)
 {
@@ -217,9 +205,6 @@ RGE_Random_Map_Module::add_module(RGE_Random_Map_Module *this,RGE_Random_Map_Mod
 
 // Function: remove_module
 // Address: 00480a20
-/* protected: unsigned char __thiscall RGE_Random_Map_Module::remove_module(class
-   RGE_Random_Map_Module *) */
-
 uchar __thiscall
 RGE_Random_Map_Module::remove_module(RGE_Random_Map_Module *this,RGE_Random_Map_Module *param_1)
 {
@@ -258,8 +243,6 @@ RGE_Random_Map_Module::remove_module(RGE_Random_Map_Module *this,RGE_Random_Map_
 
 // Function: create_shared_resources
 // Address: 00480a80
-/* protected: void __thiscall RGE_Random_Map_Module::create_shared_resources(void) */
-
 void __thiscall RGE_Random_Map_Module::create_shared_resources(RGE_Random_Map_Module *this)
 {
   uchar *puVar1;
@@ -316,8 +299,6 @@ void __thiscall RGE_Random_Map_Module::create_shared_resources(RGE_Random_Map_Mo
 
 // Function: destroy_shared_resources
 // Address: 00480b60
-/* protected: void __thiscall RGE_Random_Map_Module::destroy_shared_resources(void) */
-
 void __thiscall RGE_Random_Map_Module::destroy_shared_resources(RGE_Random_Map_Module *this)
 {
   if (this->search_map != (uchar *)0x0) {
@@ -343,8 +324,6 @@ void __thiscall RGE_Random_Map_Module::destroy_shared_resources(RGE_Random_Map_M
 
 // Function: update_child_resources
 // Address: 00480bc0
-/* protected: void __thiscall RGE_Random_Map_Module::update_child_resources(void) */
-
 void __thiscall RGE_Random_Map_Module::update_child_resources(RGE_Random_Map_Module *this)
 {
   RGE_Random_Map_Module_List *pRVar1;
@@ -359,8 +338,6 @@ void __thiscall RGE_Random_Map_Module::update_child_resources(RGE_Random_Map_Mod
 
 // Function: update_resources
 // Address: 00480be0
-/* protected: void __thiscall RGE_Random_Map_Module::update_resources(void) */
-
 void __thiscall RGE_Random_Map_Module::update_resources(RGE_Random_Map_Module *this)
 {
   share_resources(this->parent,&this->search_map,&this->search_map_rows,&this->stack_array,
@@ -373,8 +350,6 @@ void __thiscall RGE_Random_Map_Module::update_resources(RGE_Random_Map_Module *t
 
 // Function: update_child_map_info
 // Address: 00480c10
-/* protected: void __thiscall RGE_Random_Map_Module::update_child_map_info(void) */
-
 void __thiscall RGE_Random_Map_Module::update_child_map_info(RGE_Random_Map_Module *this)
 {
   RGE_Random_Map_Module_List *pRVar1;
@@ -389,8 +364,6 @@ void __thiscall RGE_Random_Map_Module::update_child_map_info(RGE_Random_Map_Modu
 
 // Function: update_map_info
 // Address: 00480c30
-/* protected: void __thiscall RGE_Random_Map_Module::update_map_info(class RGE_Map *) */
-
 void __thiscall RGE_Random_Map_Module::update_map_info(RGE_Random_Map_Module *this,RGE_Map *param_1)
 {
   RGE_Tile **ppRVar1;
@@ -418,9 +391,6 @@ void __thiscall RGE_Random_Map_Module::update_map_info(RGE_Random_Map_Module *th
 
 // Function: share_resources
 // Address: 00480c80
-/* protected: void __thiscall RGE_Random_Map_Module::share_resources(unsigned char * *,unsigned char
-   * * *,struct Map_Stack * *,struct Map_Stack * * *) */
-
 void __thiscall
 RGE_Random_Map_Module::share_resources
           (RGE_Random_Map_Module *this,uchar **param_1,uchar ***param_2,Map_Stack **param_3,
@@ -445,8 +415,6 @@ RGE_Random_Map_Module::share_resources
 
 // Function: init_stack
 // Address: 00480cc0
-/* protected: void __thiscall RGE_Random_Map_Module::init_stack(struct Map_Stack &) */
-
 void __thiscall RGE_Random_Map_Module::init_stack(RGE_Random_Map_Module *this,Map_Stack *param_1)
 {
   param_1->x = -1;
@@ -462,8 +430,6 @@ void __thiscall RGE_Random_Map_Module::init_stack(RGE_Random_Map_Module *this,Ma
 
 // Function: deinit_stack
 // Address: 00480cf0
-/* protected: void __thiscall RGE_Random_Map_Module::deinit_stack(struct Map_Stack &) */
-
 void __thiscall RGE_Random_Map_Module::deinit_stack(RGE_Random_Map_Module *this,Map_Stack *param_1)
 {
   if (param_1->next != (Map_Stack *)0x0) {
@@ -477,9 +443,6 @@ void __thiscall RGE_Random_Map_Module::deinit_stack(RGE_Random_Map_Module *this,
 
 // Function: push_stack
 // Address: 00480d10
-/* protected: void __thiscall RGE_Random_Map_Module::push_stack(struct Map_Stack
-   &,long,long,float,float) */
-
 void __thiscall
 RGE_Random_Map_Module::push_stack
           (RGE_Random_Map_Module *this,Map_Stack *param_1,long param_2,long param_3,float param_4,
@@ -513,9 +476,6 @@ RGE_Random_Map_Module::push_stack
 
 // Function: pop_stack
 // Address: 00480da0
-/* protected: struct Map_Stack * __thiscall RGE_Random_Map_Module::pop_stack(struct Map_Stack &,long
-   &,long &,float &) */
-
 Map_Stack * __thiscall
 RGE_Random_Map_Module::pop_stack
           (RGE_Random_Map_Module *this,Map_Stack *param_1,long *param_2,long *param_3,float *param_4
@@ -538,9 +498,6 @@ RGE_Random_Map_Module::pop_stack
 
 // Function: add_stack_node
 // Address: 00480de0
-/* protected: void __thiscall RGE_Random_Map_Module::add_stack_node(struct Map_Stack *,struct
-   Map_Stack *) */
-
 void __thiscall
 RGE_Random_Map_Module::add_stack_node
           (RGE_Random_Map_Module *this,Map_Stack *param_1,Map_Stack *param_2)
@@ -564,8 +521,6 @@ RGE_Random_Map_Module::add_stack_node
 
 // Function: remove_stack_node
 // Address: 00480e20
-/* protected: void __thiscall RGE_Random_Map_Module::remove_stack_node(struct Map_Stack *) */
-
 void __thiscall
 RGE_Random_Map_Module::remove_stack_node(RGE_Random_Map_Module *this,Map_Stack *param_1)
 {
@@ -584,8 +539,6 @@ RGE_Random_Map_Module::remove_stack_node(RGE_Random_Map_Module *this,Map_Stack *
 
 // Function: clear_stack
 // Address: 00480e50
-/* protected: void __thiscall RGE_Random_Map_Module::clear_stack(void) */
-
 void __thiscall RGE_Random_Map_Module::clear_stack(RGE_Random_Map_Module *this)
 {
   int iVar1;
@@ -615,8 +568,6 @@ void __thiscall RGE_Random_Map_Module::clear_stack(RGE_Random_Map_Module *this)
 
 // Function: check_stack
 // Address: 00480ea0
-/* protected: unsigned char __thiscall RGE_Random_Map_Module::check_stack(struct Map_Stack *) */
-
 uchar __thiscall RGE_Random_Map_Module::check_stack(RGE_Random_Map_Module *this,Map_Stack *param_1)
 {
   if ((param_1->next == (Map_Stack *)0x0) && (param_1->prev == (Map_Stack *)0x0)) {
@@ -630,8 +581,6 @@ uchar __thiscall RGE_Random_Map_Module::check_stack(RGE_Random_Map_Module *this,
 // Function: randomize_stack
 // Address: 00480ec0
 // [HELPER] s_C__msdev_work_age1_x1_rmm_base_c: "C:\msdev\work\age1_x1\rmm_base.cpp"
-/* protected: void __thiscall RGE_Random_Map_Module::randomize_stack(struct Map_Stack *) */
-
 void __thiscall
 RGE_Random_Map_Module::randomize_stack(RGE_Random_Map_Module *this,Map_Stack *param_1)
 {
@@ -690,10 +639,6 @@ code_r0x00480f91:
 
 // Function: find_path
 // Address: 00480fb0
-/* WARNING: Variable defined which should be unmapped: path_stack */
-/* protected: unsigned char __thiscall RGE_Random_Map_Module::find_path(long,long,long &,long
-   &,float *) */
-
 uchar __thiscall
 RGE_Random_Map_Module::find_path
           (RGE_Random_Map_Module *this,long param_1,long param_2,long *param_3,long *param_4,
@@ -712,11 +657,6 @@ RGE_Random_Map_Module::find_path
 
 // Function: find_path
 // Address: 00481000
-/* WARNING: Variable defined which should be unmapped: up */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: unsigned char __thiscall RGE_Random_Map_Module::find_path(struct Map_Stack
-   &,long,long,long &,long &,float *) */
-
 uchar __thiscall
 RGE_Random_Map_Module::find_path
           (RGE_Random_Map_Module *this,Map_Stack *param_1,long param_2,long param_3,long *param_4,

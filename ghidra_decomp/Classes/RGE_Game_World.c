@@ -133,8 +133,6 @@
 // Address: 00540750
 // [HELPER] s_c__aoeWVlog_txt: "c:\aoeWVlog.txt"
 // [HELPER] s_w: "w"
-/* public: __thiscall RGE_Game_World::RGE_Game_World(void) */
-
 RGE_Game_World * __thiscall RGE_Game_World::RGE_Game_World(RGE_Game_World *this)
 {
   RGE_Static_Object **ppRVar1;
@@ -288,8 +286,6 @@ RGE_Game_World * __thiscall RGE_Game_World::RGE_Game_World(RGE_Game_World *this)
 
 // Function: logStatus
 // Address: 00540a10
-/* protected: virtual void __thiscall RGE_Game_World::logStatus(struct _iobuf *,int) */
-
 void __thiscall RGE_Game_World::logStatus(RGE_Game_World *this,_iobuf *param_1,int param_2)
 {
   return;
@@ -299,8 +295,6 @@ void __thiscall RGE_Game_World::logStatus(RGE_Game_World *this,_iobuf *param_1,i
 
 // Function: `scalar_deleting_destructor'
 // Address: 00540a20
-/* public: virtual void * __thiscall RGE_Game_World::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall RGE_Game_World::_scalar_deleting_destructor_(RGE_Game_World *this,uint param_1)
 {
   ~RGE_Game_World(this);
@@ -314,8 +308,6 @@ void * __thiscall RGE_Game_World::_scalar_deleting_destructor_(RGE_Game_World *t
 
 // Function: ~RGE_Game_World
 // Address: 00540a40
-/* public: virtual __thiscall RGE_Game_World::~RGE_Game_World(void) */
-
 void __thiscall RGE_Game_World::~RGE_Game_World(RGE_Game_World *this)
 {
   RGE_Object_List *pRVar1;
@@ -469,8 +461,6 @@ void __thiscall RGE_Game_World::~RGE_Game_World(RGE_Game_World *this)
 
 // Function: reset_object_count
 // Address: 00540cf0
-/* public: void __thiscall RGE_Game_World::reset_object_count(void) */
-
 void __thiscall RGE_Game_World::reset_object_count(RGE_Game_World *this)
 {
   int iVar1;
@@ -497,8 +487,6 @@ void __thiscall RGE_Game_World::reset_object_count(RGE_Game_World *this)
 
 // Function: pause
 // Address: 00540d30
-/* public: virtual void __thiscall RGE_Game_World::pause(unsigned char) */
-
 void __thiscall RGE_Game_World::pause(RGE_Game_World *this,uchar param_1)
 {
   int iVar1;
@@ -516,8 +504,6 @@ void __thiscall RGE_Game_World::pause(RGE_Game_World *this,uchar param_1)
 
 // Function: set_map_visible
 // Address: 00540d60
-/* public: void __thiscall RGE_Game_World::set_map_visible(unsigned char) */
-
 void __thiscall RGE_Game_World::set_map_visible(RGE_Game_World *this,uchar param_1)
 {
   if (this->map != (RGE_Map *)0x0) {
@@ -530,8 +516,6 @@ void __thiscall RGE_Game_World::set_map_visible(RGE_Game_World *this,uchar param
 
 // Function: set_map_fog
 // Address: 00540d80
-/* public: void __thiscall RGE_Game_World::set_map_fog(unsigned char) */
-
 void __thiscall RGE_Game_World::set_map_fog(RGE_Game_World *this,uchar param_1)
 {
   if (this->map != (RGE_Map *)0x0) {
@@ -547,9 +531,6 @@ void __thiscall RGE_Game_World::set_map_fog(RGE_Game_World *this,uchar param_1)
 // [HELPER] s__hd: "%hd"
 // [HELPER] s__hd__hd: "%hd %hd"
 // [HELPER] s_r: "r"
-/* WARNING: Variable defined which should be unmapped: id */
-/* protected: virtual unsigned char __thiscall RGE_Game_World::data_load_sounds(char *) */
-
 uchar __thiscall RGE_Game_World::data_load_sounds(RGE_Game_World *this,char *param_1)
 {
   short *psVar1;
@@ -615,9 +596,6 @@ uchar __thiscall RGE_Game_World::data_load_sounds(RGE_Game_World *this,char *par
 // [HELPER] s__hd: "%hd"
 // [HELPER] s__hd__hd: "%hd %hd"
 // [HELPER] s_r: "r"
-/* WARNING: Variable defined which should be unmapped: count */
-/* protected: virtual unsigned char __thiscall RGE_Game_World::data_load_terrain_tables(char *) */
-
 uchar __thiscall RGE_Game_World::data_load_terrain_tables(RGE_Game_World *this,char *param_1)
 {
   short *psVar1;
@@ -675,9 +653,6 @@ uchar __thiscall RGE_Game_World::data_load_terrain_tables(RGE_Game_World *this,c
 // [HELPER] s__hd: "%hd"
 // [HELPER] s__hd__hd: "%hd %hd"
 // [HELPER] s_r: "r"
-/* WARNING: Variable defined which should be unmapped: id */
-/* protected: virtual unsigned char __thiscall RGE_Game_World::data_load_color_tables(char *) */
-
 uchar __thiscall RGE_Game_World::data_load_color_tables(RGE_Game_World *this,char *param_1)
 {
   short *psVar1;
@@ -743,9 +718,6 @@ uchar __thiscall RGE_Game_World::data_load_color_tables(RGE_Game_World *this,cha
 // [HELPER] s__hd: "%hd"
 // [HELPER] s__hd__hd: "%hd %hd"
 // [HELPER] s_r: "r"
-/* WARNING: Variable defined which should be unmapped: id */
-/* protected: virtual unsigned char __thiscall RGE_Game_World::data_load_sprites(char *) */
-
 uchar __thiscall RGE_Game_World::data_load_sprites(RGE_Game_World *this,char *param_1)
 {
   short *psVar1;
@@ -784,7 +756,6 @@ uchar __thiscall RGE_Game_World::data_load_sprites(RGE_Game_World *this,char *pa
         do {
           iVar4 = fscanf(p_Var3,s__hd,local_14);
           if (iVar4 != -1) {
-                    /* language.dll match for 0x78: "10" */
             local_10 = (RGE_Sprite *)operator_new(0x78);
             local_4 = 0;
             if (local_10 == (RGE_Sprite *)0x0) {
@@ -805,7 +776,6 @@ uchar __thiscall RGE_Game_World::data_load_sprites(RGE_Game_World *this,char *pa
       if (0 < sVar2) {
         do {
           if (this->sprites[sVar7] == (RGE_Sprite *)0x0) {
-                    /* language.dll match for 0x78: "10" */
             local_10 = (RGE_Sprite *)operator_new(0x78);
             local_4 = 1;
             if (local_10 == (RGE_Sprite *)0x0) {
@@ -832,9 +802,6 @@ uchar __thiscall RGE_Game_World::data_load_sprites(RGE_Game_World *this,char *pa
 
 // Function: data_load_players_type
 // Address: 00541240
-/* protected: virtual void __thiscall RGE_Game_World::data_load_players_type(short,short,struct
-   _iobuf *) */
-
 void __thiscall
 RGE_Game_World::data_load_players_type
           (RGE_Game_World *this,short param_1,short param_2,_iobuf *param_3)
@@ -870,9 +837,6 @@ RGE_Game_World::data_load_players_type
 // Address: 005412b0
 // [HELPER] s__hd__hd: "%hd %hd"
 // [HELPER] s_r: "r"
-/* WARNING: Variable defined which should be unmapped: type */
-/* protected: virtual unsigned char __thiscall RGE_Game_World::data_load_players(char *) */
-
 uchar __thiscall RGE_Game_World::data_load_players(RGE_Game_World *this,char *param_1)
 {
   short *psVar1;
@@ -920,9 +884,6 @@ uchar __thiscall RGE_Game_World::data_load_players(RGE_Game_World *this,char *pa
 // [HELPER] s__hd: "%hd"
 // [HELPER] s__hd__hd: "%hd %hd"
 // [HELPER] s_r: "r"
-/* WARNING: Variable defined which should be unmapped: player_count */
-/* protected: virtual unsigned char __thiscall RGE_Game_World::data_load_objects(char *) */
-
 uchar __thiscall RGE_Game_World::data_load_objects(RGE_Game_World *this,char *param_1)
 {
   int iVar1;
@@ -970,8 +931,6 @@ uchar __thiscall RGE_Game_World::data_load_objects(RGE_Game_World *this,char *pa
 
 // Function: data_load_effects
 // Address: 005414a0
-/* protected: virtual void __thiscall RGE_Game_World::data_load_effects(char *) */
-
 void __thiscall RGE_Game_World::data_load_effects(RGE_Game_World *this,char *param_1)
 {
   RGE_Effects *pRVar1;
@@ -1001,9 +960,6 @@ void __thiscall RGE_Game_World::data_load_effects(RGE_Game_World *this,char *par
 
 // Function: data_load_map
 // Address: 00541500
-/* protected: virtual void __thiscall RGE_Game_World::data_load_map(char *,char *,char *,char
-   *,short,short,short,class RGE_Sound * *,char *) */
-
 void __thiscall
 RGE_Game_World::data_load_map
           (RGE_Game_World *this,char *param_1,char *param_2,char *param_3,char *param_4,
@@ -1039,9 +995,6 @@ RGE_Game_World::data_load_map
 
 // Function: data_load_random_map
 // Address: 00541590
-/* protected: virtual void __thiscall RGE_Game_World::data_load_random_map(char *,char *,char *,char
-   *) */
-
 void __thiscall
 RGE_Game_World::data_load_random_map
           (RGE_Game_World *this,char *param_1,char *param_2,char *param_3,char *param_4)
@@ -1055,9 +1008,6 @@ RGE_Game_World::data_load_random_map
 // Function: data_load_world
 // Address: 005415b0
 // [HELPER] s__s__s__s__s__s__s__s__s__s__s__s: "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %hd %hd %hd"
-/* WARNING: Variable defined which should be unmapped: tile_height */
-/* protected: virtual unsigned char __thiscall RGE_Game_World::data_load_world(struct _iobuf *) */
-
 uchar __thiscall RGE_Game_World::data_load_world(RGE_Game_World *this,_iobuf *param_1)
 {
   int iVar1;
@@ -1116,8 +1066,6 @@ uchar __thiscall RGE_Game_World::data_load_world(RGE_Game_World *this,_iobuf *pa
 // Function: data_load
 // Address: 00541720
 // [HELPER] s_r: "r"
-/* public: virtual unsigned char __thiscall RGE_Game_World::data_load(char *,char *) */
-
 uchar __thiscall RGE_Game_World::data_load(RGE_Game_World *this,char *param_1,char *param_2)
 {
   undefined4 *puVar1;
@@ -1139,9 +1087,6 @@ uchar __thiscall RGE_Game_World::data_load(RGE_Game_World *this,char *param_1,ch
 
 // Function: init_player_type
 // Address: 00541770
-/* protected: virtual unsigned char __thiscall RGE_Game_World::init_player_type(int,short,unsigned
-   char) */
-
 uchar __thiscall
 RGE_Game_World::init_player_type(RGE_Game_World *this,int param_1,short param_2,uchar param_3)
 {
@@ -1176,8 +1121,6 @@ RGE_Game_World::init_player_type(RGE_Game_World *this,int param_1,short param_2,
 
 // Function: init_player
 // Address: 00541800
-/* protected: virtual unsigned char __thiscall RGE_Game_World::init_player(int) */
-
 uchar __thiscall RGE_Game_World::init_player(RGE_Game_World *this,int param_1)
 {
   short *psVar1;
@@ -1209,8 +1152,6 @@ uchar __thiscall RGE_Game_World::init_player(RGE_Game_World *this,int param_1)
 
 // Function: terrain_tables_init
 // Address: 00541880
-/* protected: virtual void __thiscall RGE_Game_World::terrain_tables_init(int) */
-
 void __thiscall RGE_Game_World::terrain_tables_init(RGE_Game_World *this,int param_1)
 {
   short *psVar1;
@@ -1246,8 +1187,6 @@ void __thiscall RGE_Game_World::terrain_tables_init(RGE_Game_World *this,int par
 
 // Function: color_table_init
 // Address: 00541930
-/* protected: virtual void __thiscall RGE_Game_World::color_table_init(int) */
-
 void __thiscall RGE_Game_World::color_table_init(RGE_Game_World *this,int param_1)
 {
   short *psVar1;
@@ -1295,8 +1234,6 @@ void __thiscall RGE_Game_World::color_table_init(RGE_Game_World *this,int param_
 
 // Function: init_sounds
 // Address: 005419e0
-/* protected: virtual void __thiscall RGE_Game_World::init_sounds(int,class TSound_Driver *) */
-
 void __thiscall RGE_Game_World::init_sounds(RGE_Game_World *this,int param_1,TSound_Driver *param_2)
 {
   short *psVar1;
@@ -1342,8 +1279,6 @@ void __thiscall RGE_Game_World::init_sounds(RGE_Game_World *this,int param_1,TSo
 
 // Function: init_sprites
 // Address: 00541a80
-/* protected: virtual void __thiscall RGE_Game_World::init_sprites(int) */
-
 void __thiscall RGE_Game_World::init_sprites(RGE_Game_World *this,int param_1)
 {
   short *psVar1;
@@ -1368,7 +1303,6 @@ void __thiscall RGE_Game_World::init_sprites(RGE_Game_World *this,int param_1)
   if (0 < *psVar1) {
     do {
       if (this->sprites[iVar4] != (RGE_Sprite *)0x0) {
-                    /* language.dll match for 0x78: "10" */
         pRVar3 = (RGE_Sprite *)operator_new(0x78);
         local_4 = 0;
         if (pRVar3 == (RGE_Sprite *)0x0) {
@@ -1402,8 +1336,6 @@ void __thiscall RGE_Game_World::init_sprites(RGE_Game_World *this,int param_1)
 
 // Function: scenario_init
 // Address: 00541b60
-/* public: virtual void __thiscall RGE_Game_World::scenario_init(int,class RGE_Game_World *) */
-
 void __thiscall
 RGE_Game_World::scenario_init(RGE_Game_World *this,int param_1,RGE_Game_World *param_2)
 {
@@ -1434,8 +1366,6 @@ RGE_Game_World::scenario_init(RGE_Game_World *this,int param_1,RGE_Game_World *p
 
 // Function: scenario_init
 // Address: 00541bc0
-/* public: virtual void __thiscall RGE_Game_World::scenario_init(class RGE_Game_World *) */
-
 void __thiscall RGE_Game_World::scenario_init(RGE_Game_World *this,RGE_Game_World *param_1)
 {
   RGE_Scenario *pRVar1;
@@ -1465,8 +1395,6 @@ void __thiscall RGE_Game_World::scenario_init(RGE_Game_World *this,RGE_Game_Worl
 
 // Function: map_init
 // Address: 00541c20
-/* protected: virtual void __thiscall RGE_Game_World::map_init(int,class TSound_Driver *) */
-
 void __thiscall RGE_Game_World::map_init(RGE_Game_World *this,int param_1,TSound_Driver *param_2)
 {
   RGE_Map *pRVar1;
@@ -1496,8 +1424,6 @@ void __thiscall RGE_Game_World::map_init(RGE_Game_World *this,int param_1,TSound
 
 // Function: effects_init
 // Address: 00541c90
-/* protected: virtual void __thiscall RGE_Game_World::effects_init(int) */
-
 void __thiscall RGE_Game_World::effects_init(RGE_Game_World *this,int param_1)
 {
   RGE_Effects *pRVar1;
@@ -1527,8 +1453,6 @@ void __thiscall RGE_Game_World::effects_init(RGE_Game_World *this,int param_1)
 
 // Function: master_player_init
 // Address: 00541cf0
-/* protected: virtual void __thiscall RGE_Game_World::master_player_init(int) */
-
 void __thiscall RGE_Game_World::master_player_init(RGE_Game_World *this,int param_1)
 {
   (**(code **)(this->_padding_ + 0x30))(param_1);
@@ -1539,9 +1463,6 @@ void __thiscall RGE_Game_World::master_player_init(RGE_Game_World *this,int para
 
 // Function: command_init
 // Address: 00541d00
-/* protected: virtual void __thiscall RGE_Game_World::command_init(int,class TCommunications_Handler
-   *) */
-
 void __thiscall
 RGE_Game_World::command_init(RGE_Game_World *this,int param_1,TCommunications_Handler *param_2)
 {
@@ -1572,9 +1493,6 @@ RGE_Game_World::command_init(RGE_Game_World *this,int param_1,TCommunications_Ha
 
 // Function: world_init
 // Address: 00541d60
-/* protected: virtual void __thiscall RGE_Game_World::world_init(int,class TSound_Driver *,class
-   TCommunications_Handler *) */
-
 void __thiscall
 RGE_Game_World::world_init
           (RGE_Game_World *this,int param_1,TSound_Driver *param_2,TCommunications_Handler *param_3)
@@ -1601,10 +1519,6 @@ RGE_Game_World::world_init
 // Function: init
 // Address: 00541db0
 // [HELPER] s_VER_3_7: "VER 3.7"
-/* WARNING: Variable defined which should be unmapped: version */
-/* public: virtual unsigned char __thiscall RGE_Game_World::init(char *,class TSound_Driver *,class
-   TCommunications_Handler *) */
-
 uchar __thiscall
 RGE_Game_World::init
           (RGE_Game_World *this,char *param_1,TSound_Driver *param_2,
@@ -1657,8 +1571,6 @@ LAB_00541e25:
 
 // Function: turn_sound_off
 // Address: 00541e70
-/* public: virtual void __thiscall RGE_Game_World::turn_sound_off(void) */
-
 void __thiscall RGE_Game_World::turn_sound_off(RGE_Game_World *this)
 {
   int iVar1;
@@ -1677,8 +1589,6 @@ void __thiscall RGE_Game_World::turn_sound_off(RGE_Game_World *this)
 
 // Function: reset_communications
 // Address: 00541ea0
-/* public: void __thiscall RGE_Game_World::reset_communications(class TCommunications_Handler *) */
-
 void __thiscall
 RGE_Game_World::reset_communications(RGE_Game_World *this,TCommunications_Handler *param_1)
 {
@@ -1690,8 +1600,6 @@ RGE_Game_World::reset_communications(RGE_Game_World *this,TCommunications_Handle
 
 // Function: reset_player_visible_maps
 // Address: 00541eb0
-/* public: void __thiscall RGE_Game_World::reset_player_visible_maps(void) */
-
 void __thiscall RGE_Game_World::reset_player_visible_maps(RGE_Game_World *this)
 {
   int iVar1;
@@ -1712,8 +1620,6 @@ void __thiscall RGE_Game_World::reset_player_visible_maps(RGE_Game_World *this)
 
 // Function: del_game_info
 // Address: 00541ee0
-/* public: virtual void __thiscall RGE_Game_World::del_game_info(void) */
-
 void __thiscall RGE_Game_World::del_game_info(RGE_Game_World *this)
 {
   int iVar1;
@@ -1797,8 +1703,6 @@ void __thiscall RGE_Game_World::del_game_info(RGE_Game_World *this)
 
 // Function: load_player
 // Address: 00542060
-/* protected: virtual void __thiscall RGE_Game_World::load_player(int,unsigned char,short) */
-
 void __thiscall
 RGE_Game_World::load_player(RGE_Game_World *this,int param_1,uchar param_2,short param_3)
 {
@@ -1833,9 +1737,6 @@ RGE_Game_World::load_player(RGE_Game_World *this,int param_1,uchar param_2,short
 
 // Function: load_world
 // Address: 005420f0
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall RGE_Game_World::load_world(int) */
-
 uchar __thiscall RGE_Game_World::load_world(RGE_Game_World *this,int param_1)
 {
   short *psVar1;
@@ -1925,9 +1826,6 @@ uchar __thiscall RGE_Game_World::load_world(RGE_Game_World *this,int param_1)
 // Address: 00542360
 // [HELPER] s_VER_8_6: "VER 8.6"
 // [HELPER] s__s_s: "%s%s"
-/* WARNING: Variable defined which should be unmapped: version */
-/* public: virtual unsigned char __thiscall RGE_Game_World::load_game(char *) */
-
 uchar __thiscall RGE_Game_World::load_game(RGE_Game_World *this,char *param_1)
 {
   byte bVar1;
@@ -1982,8 +1880,6 @@ LAB_00542418:
 
 // Function: set_game_speed
 // Address: 00542470
-/* public: void __thiscall RGE_Game_World::set_game_speed(float) */
-
 void __thiscall RGE_Game_World::set_game_speed(RGE_Game_World *this,float param_1)
 {
   this->game_speed = param_1;
@@ -1995,8 +1891,6 @@ void __thiscall RGE_Game_World::set_game_speed(RGE_Game_World *this,float param_
 // Function: setup_gaia
 // Address: 00542480
 // [HELPER] s_GAIA: "GAIA"
-/* protected: virtual void __thiscall RGE_Game_World::setup_gaia(void) */
-
 void __thiscall RGE_Game_World::setup_gaia(RGE_Game_World *this)
 {
   RGE_Player *pRVar1;
@@ -2027,9 +1921,6 @@ void __thiscall RGE_Game_World::setup_gaia(RGE_Game_World *this)
 
 // Function: setup_players
 // Address: 005424f0
-/* WARNING: Variable defined which should be unmapped: index */
-/* protected: virtual void __thiscall RGE_Game_World::setup_players(struct RGE_Player_Info &) */
-
 void __thiscall RGE_Game_World::setup_players(RGE_Game_World *this,RGE_Player_Info *param_1)
 {
   RGE_Player *pRVar1;
@@ -2073,9 +1964,6 @@ void __thiscall RGE_Game_World::setup_players(RGE_Game_World *this,RGE_Player_In
 
 // Function: setup_player_colors
 // Address: 005425b0
-/* WARNING: Variable defined which should be unmapped: colors_used */
-/* public: virtual void __thiscall RGE_Game_World::setup_player_colors(struct RGE_Player_Info &) */
-
 void __thiscall RGE_Game_World::setup_player_colors(RGE_Game_World *this,RGE_Player_Info *param_1)
 {
   char *pcVar1;
@@ -2136,8 +2024,6 @@ void __thiscall RGE_Game_World::setup_player_colors(RGE_Game_World *this,RGE_Pla
 
 // Function: setup_player_colors
 // Address: 005426e0
-/* public: virtual void __thiscall RGE_Game_World::setup_player_colors(void) */
-
 void __thiscall RGE_Game_World::setup_player_colors(RGE_Game_World *this)
 {
   char *pcVar1;
@@ -2176,10 +2062,6 @@ void __thiscall RGE_Game_World::setup_player_colors(RGE_Game_World *this)
 // [HELPER] s___World__after_new_map__rand__d_: "  World: after_new_map (rand=%d)"
 // [HELPER] s___World__after_players__rand__d_: "  World: after_players (rand=%d)"
 // [HELPER] s___World__end_of_new_game__rand__: "  World: end_of_new_game (rand=%d)"
-/* WARNING: Variable defined which should be unmapped: retval */
-/* public: virtual unsigned char __thiscall RGE_Game_World::new_game(struct RGE_Player_Info &,int)
-    */
-
 uchar __thiscall RGE_Game_World::new_game(RGE_Game_World *this,RGE_Player_Info *param_1,int param_2)
 {
   bool bVar1;
@@ -2344,7 +2226,6 @@ uchar __thiscall RGE_Game_World::new_game(RGE_Game_World *this,RGE_Player_Info *
   uVar5 = debug_rand(s_C__msdev_work_age1_x1_World_cpp,0x5b2);
   this->random_seed = uVar5;
   TDebuggingLog::Log(L,(char *)L,s___World__end_of_new_game__rand__,uVar5);
-                    /* language.dll match for 0x277b: "Random" */
   (**(code **)(rge_base_game->_padding_ + 0x20))(0x277b,auStack_10c,0x100);
   uVar11 = (uchar)((uint)param_1 >> 0x18);
   iVar7 = 1;
@@ -2367,9 +2248,6 @@ uchar __thiscall RGE_Game_World::new_game(RGE_Game_World *this,RGE_Player_Info *
 // Function: new_scenario
 // Address: 00542bf0
 // [HELPER] s_C__msdev_work_age1_x1_World_cpp: "C:\msdev\work\age1_x1\World.cpp"
-/* public: virtual unsigned char __thiscall RGE_Game_World::new_scenario(struct RGE_Player_Info
-   &,int) */
-
 uchar __thiscall
 RGE_Game_World::new_scenario(RGE_Game_World *this,RGE_Player_Info *param_1,int param_2)
 {
@@ -2428,9 +2306,6 @@ RGE_Game_World::new_scenario(RGE_Game_World *this,RGE_Player_Info *param_1,int p
 // [HELPER] s___World__after_player_random_sta: "  World: after_player_random_start (rand=%d)"
 // [HELPER] s___World__after_player_update__ra: "  World: after_player_update (rand=%d)"
 // [HELPER] s___World__before_map_gen__rand__d: "  World: before_map_gen (rand=%d)"
-/* protected: virtual unsigned char __thiscall RGE_Game_World::new_random_game(struct
-   RGE_Player_Info &) */
-
 uchar __thiscall RGE_Game_World::new_random_game(RGE_Game_World *this,RGE_Player_Info *param_1)
 {
   short sVar1;
@@ -2486,8 +2361,6 @@ uchar __thiscall RGE_Game_World::new_random_game(RGE_Game_World *this,RGE_Player
 
 // Function: update_sounds
 // Address: 00542e50
-/* public: void __thiscall RGE_Game_World::update_sounds(unsigned long) */
-
 void __thiscall RGE_Game_World::update_sounds(RGE_Game_World *this,ulong param_1)
 {
   if ((int)this->sound_num <= this->sound_update_index) {
@@ -2502,8 +2375,6 @@ void __thiscall RGE_Game_World::update_sounds(RGE_Game_World *this,ulong param_1
 
 // Function: update_sprites
 // Address: 00542e90
-/* public: void __thiscall RGE_Game_World::update_sprites(unsigned long) */
-
 void __thiscall RGE_Game_World::update_sprites(RGE_Game_World *this,ulong param_1)
 {
   if ((int)this->sprite_num <= this->sprite_update_index) {
@@ -2527,9 +2398,6 @@ void __thiscall RGE_Game_World::update_sprites(RGE_Game_World *this,ulong param_
 // [HELPER] s___Player___d_Lost__: "  Player #%d Lost.\n"
 // [HELPER] s___Player___d_Won__: "  Player #%d Won.\n"
 // [HELPER] s_a: "a"
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* public: virtual unsigned char __thiscall RGE_Game_World::update(void) */
-
 uchar __thiscall RGE_Game_World::update(RGE_Game_World *this)
 {
   ulong uVar1;
@@ -2722,8 +2590,6 @@ LAB_00543368:
 
 // Function: is_player_turn
 // Address: 00543380
-/* public: int __thiscall RGE_Game_World::is_player_turn(int) */
-
 int __thiscall RGE_Game_World::is_player_turn(RGE_Game_World *this,int param_1)
 {
   return (uint)(this->player_turn == param_1);
@@ -2733,8 +2599,6 @@ int __thiscall RGE_Game_World::is_player_turn(RGE_Game_World *this,int param_1)
 
 // Function: get_accum_time_delta
 // Address: 005433a0
-/* public: unsigned long __thiscall RGE_Game_World::get_accum_time_delta(int) */
-
 ulong __thiscall RGE_Game_World::get_accum_time_delta(RGE_Game_World *this,int param_1)
 {
   return this->player_time_delta[param_1];
@@ -2744,8 +2608,6 @@ ulong __thiscall RGE_Game_World::get_accum_time_delta(RGE_Game_World *this,int p
 
 // Function: get_game_state
 // Address: 005433b0
-/* public: virtual unsigned char __thiscall RGE_Game_World::get_game_state(void) */
-
 uchar __thiscall RGE_Game_World::get_game_state(RGE_Game_World *this)
 {
   return this->game_state;
@@ -2755,9 +2617,6 @@ uchar __thiscall RGE_Game_World::get_game_state(RGE_Game_World *this)
 
 // Function: check_game_state
 // Address: 005433c0
-/* WARNING: Variable defined which should be unmapped: games_won */
-/* public: virtual unsigned char __thiscall RGE_Game_World::check_game_state(void) */
-
 uchar __thiscall RGE_Game_World::check_game_state(RGE_Game_World *this)
 {
   uchar uVar1;
@@ -2841,8 +2700,6 @@ uchar __thiscall RGE_Game_World::check_game_state(RGE_Game_World *this)
 
 // Function: save
 // Address: 00543540
-/* protected: virtual void __thiscall RGE_Game_World::save(int) */
-
 void __thiscall RGE_Game_World::save(RGE_Game_World *this,int param_1)
 {
   short *psVar1;
@@ -2914,9 +2771,6 @@ void __thiscall RGE_Game_World::save(RGE_Game_World *this,int param_1)
 // Address: 00543770
 // [HELPER] s_VER_8_6: "VER 8.6"
 // [HELPER] s__s_s: "%s%s"
-/* WARNING: Variable defined which should be unmapped: tempname */
-/* public: virtual unsigned char __thiscall RGE_Game_World::save_game(char *) */
-
 uchar __thiscall RGE_Game_World::save_game(RGE_Game_World *this,char *param_1)
 {
   int iVar1;
@@ -2945,8 +2799,6 @@ uchar __thiscall RGE_Game_World::save_game(RGE_Game_World *this,char *param_1)
 // Function: base_save
 // Address: 00543850
 // [HELPER] s_VER_3_7: "VER 3.7"
-/* public: virtual void __thiscall RGE_Game_World::base_save(int) */
-
 void __thiscall RGE_Game_World::base_save(RGE_Game_World *this,int param_1)
 {
   short *psVar1;
@@ -3016,8 +2868,6 @@ void __thiscall RGE_Game_World::base_save(RGE_Game_World *this,int param_1)
 
 // Function: base_save
 // Address: 005439c0
-/* public: virtual void __thiscall RGE_Game_World::base_save(char *) */
-
 void __thiscall RGE_Game_World::base_save(RGE_Game_World *this,char *param_1)
 {
   int iVar1;
@@ -3039,9 +2889,6 @@ void __thiscall RGE_Game_World::base_save(RGE_Game_World *this,char *param_1)
 // [HELPER] s_TRIAL: "TRIAL"
 // [HELPER] s__s_s: "%s%s"
 // [HELPER] s__s_s_scn: "%s%s.scn"
-/* WARNING: Variable defined which should be unmapped: obj_angle */
-/* public: virtual unsigned char __thiscall RGE_Game_World::save_scenario(char *) */
-
 uchar __thiscall RGE_Game_World::save_scenario(RGE_Game_World *this,char *param_1)
 {
   byte bVar1;
@@ -3195,10 +3042,6 @@ uchar __thiscall RGE_Game_World::save_scenario(RGE_Game_World *this,char *param_
 // [HELPER] s_1_10: "1.10"
 // [HELPER] s_1_11: "1.11"
 // [HELPER] s__s_s: "%s%s"
-/* WARNING: Variable defined which should be unmapped: header_size */
-/* protected: virtual unsigned char __thiscall RGE_Game_World::load_scenario(char *,struct
-   RGE_Player_Info &) */
-
 uchar __thiscall
 RGE_Game_World::load_scenario(RGE_Game_World *this,char *param_1,RGE_Player_Info *param_2)
 {
@@ -3298,10 +3141,6 @@ LAB_00543efd:
 // [HELPER] s_1_09: "1.09"
 // [HELPER] s_1_10: "1.10"
 // [HELPER] s_1_11: "1.11"
-/* WARNING: Variable defined which should be unmapped: header_size */
-/* protected: virtual unsigned char __thiscall RGE_Game_World::load_scenario(struct RGE_Player_Info
-   &) */
-
 uchar __thiscall RGE_Game_World::load_scenario(RGE_Game_World *this,RGE_Player_Info *param_1)
 {
   int iVar1;
@@ -3378,9 +3217,6 @@ LAB_005441fe:
 
 // Function: scenario_make_player
 // Address: 00544250
-/* protected: virtual void __thiscall RGE_Game_World::scenario_make_player(short,unsigned
-   char,unsigned char,unsigned char,char *) */
-
 void __thiscall
 RGE_Game_World::scenario_make_player
           (RGE_Game_World *this,short param_1,uchar param_2,uchar param_3,uchar param_4,
@@ -3418,8 +3254,6 @@ RGE_Game_World::scenario_make_player
 
 // Function: scenario_make_map
 // Address: 005442e0
-/* protected: virtual void __thiscall RGE_Game_World::scenario_make_map(int) */
-
 void __thiscall RGE_Game_World::scenario_make_map(RGE_Game_World *this,int param_1)
 {
   RGE_Map::scenario_load(this->map,param_1,(uchar *)0x0);
@@ -3430,10 +3264,6 @@ void __thiscall RGE_Game_World::scenario_make_map(RGE_Game_World *this,int param
 
 // Function: load_scenario1
 // Address: 00544300
-/* WARNING: Variable defined which should be unmapped: master_player_id */
-/* protected: virtual void __thiscall RGE_Game_World::load_scenario1(int,struct RGE_Player_Info &)
-    */
-
 void __thiscall
 RGE_Game_World::load_scenario1(RGE_Game_World *this,int param_1,RGE_Player_Info *param_2)
 {
@@ -3578,10 +3408,6 @@ RGE_Game_World::load_scenario1(RGE_Game_World *this,int param_1,RGE_Player_Info 
 
 // Function: load_scenario2
 // Address: 005445c0
-/* WARNING: Variable defined which should be unmapped: master_player_id */
-/* protected: virtual void __thiscall RGE_Game_World::load_scenario2(int,struct RGE_Player_Info &)
-    */
-
 void __thiscall
 RGE_Game_World::load_scenario2(RGE_Game_World *this,int param_1,RGE_Player_Info *param_2)
 {
@@ -3730,10 +3556,6 @@ RGE_Game_World::load_scenario2(RGE_Game_World *this,int param_1,RGE_Player_Info 
 
 // Function: load_scenario3
 // Address: 00544880
-/* WARNING: Variable defined which should be unmapped: master_player_id */
-/* protected: virtual void __thiscall RGE_Game_World::load_scenario3(int,struct RGE_Player_Info &)
-    */
-
 void __thiscall
 RGE_Game_World::load_scenario3(RGE_Game_World *this,int param_1,RGE_Player_Info *param_2)
 {
@@ -3891,10 +3713,6 @@ RGE_Game_World::load_scenario3(RGE_Game_World *this,int param_1,RGE_Player_Info 
 
 // Function: load_scenario4
 // Address: 00544b90
-/* WARNING: Variable defined which should be unmapped: header_size */
-/* protected: virtual void __thiscall RGE_Game_World::load_scenario4(int,struct RGE_Player_Info &)
-    */
-
 void __thiscall
 RGE_Game_World::load_scenario4(RGE_Game_World *this,int param_1,RGE_Player_Info *param_2)
 {
@@ -4041,10 +3859,6 @@ RGE_Game_World::load_scenario4(RGE_Game_World *this,int param_1,RGE_Player_Info 
 
 // Function: load_scenario5
 // Address: 00544e70
-/* WARNING: Variable defined which should be unmapped: header_size */
-/* protected: virtual void __thiscall RGE_Game_World::load_scenario5(int,struct RGE_Player_Info &)
-    */
-
 void __thiscall
 RGE_Game_World::load_scenario5(RGE_Game_World *this,int param_1,RGE_Player_Info *param_2)
 {
@@ -4205,10 +4019,6 @@ RGE_Game_World::load_scenario5(RGE_Game_World *this,int param_1,RGE_Player_Info 
 
 // Function: load_scenario6
 // Address: 005451a0
-/* WARNING: Variable defined which should be unmapped: header_size */
-/* protected: virtual void __thiscall RGE_Game_World::load_scenario6(int,struct RGE_Player_Info &)
-    */
-
 void __thiscall
 RGE_Game_World::load_scenario6(RGE_Game_World *this,int param_1,RGE_Player_Info *param_2)
 {
@@ -4369,10 +4179,6 @@ RGE_Game_World::load_scenario6(RGE_Game_World *this,int param_1,RGE_Player_Info 
 
 // Function: load_scenario7
 // Address: 005454d0
-/* WARNING: Variable defined which should be unmapped: header_size */
-/* protected: virtual void __thiscall RGE_Game_World::load_scenario7(int,struct RGE_Player_Info &)
-    */
-
 void __thiscall
 RGE_Game_World::load_scenario7(RGE_Game_World *this,int param_1,RGE_Player_Info *param_2)
 {
@@ -4533,10 +4339,6 @@ RGE_Game_World::load_scenario7(RGE_Game_World *this,int param_1,RGE_Player_Info 
 
 // Function: load_scenario8
 // Address: 00545800
-/* WARNING: Variable defined which should be unmapped: header_size */
-/* protected: virtual void __thiscall RGE_Game_World::load_scenario8(int,struct RGE_Player_Info &)
-    */
-
 void __thiscall
 RGE_Game_World::load_scenario8(RGE_Game_World *this,int param_1,RGE_Player_Info *param_2)
 {
@@ -4697,8 +4499,6 @@ RGE_Game_World::load_scenario8(RGE_Game_World *this,int param_1,RGE_Player_Info 
 
 // Function: selectNextComputerPlayer
 // Address: 00545b30
-/* public: void __thiscall RGE_Game_World::selectNextComputerPlayer(int) */
-
 void __thiscall RGE_Game_World::selectNextComputerPlayer(RGE_Game_World *this,int param_1)
 {
   int iVar1;
@@ -4748,8 +4548,6 @@ void __thiscall RGE_Game_World::selectNextComputerPlayer(RGE_Game_World *this,in
 
 // Function: useComputerPlayerUpdateTime
 // Address: 00545bc0
-/* public: void __thiscall RGE_Game_World::useComputerPlayerUpdateTime(unsigned long) */
-
 void __thiscall RGE_Game_World::useComputerPlayerUpdateTime(RGE_Game_World *this,ulong param_1)
 {
   if (this->availableComputerPlayerUpdateTime < param_1) {
@@ -4764,8 +4562,6 @@ void __thiscall RGE_Game_World::useComputerPlayerUpdateTime(RGE_Game_World *this
 
 // Function: computerPlayerUpdateTimeAvailable
 // Address: 00545bf0
-/* public: int __thiscall RGE_Game_World::computerPlayerUpdateTimeAvailable(void) */
-
 int __thiscall RGE_Game_World::computerPlayerUpdateTimeAvailable(RGE_Game_World *this)
 {
   return (uint)(this->availableComputerPlayerUpdateTime != 0);
@@ -4775,8 +4571,6 @@ int __thiscall RGE_Game_World::computerPlayerUpdateTimeAvailable(RGE_Game_World 
 
 // Function: objectGroupOnTile
 // Address: 00545c00
-/* public: int __thiscall RGE_Game_World::objectGroupOnTile(int,int,int,int,int &) */
-
 int __thiscall
 RGE_Game_World::objectGroupOnTile
           (RGE_Game_World *this,int param_1,int param_2,int param_3,int param_4,int *param_5)
@@ -4812,8 +4606,6 @@ RGE_Game_World::objectGroupOnTile
 
 // Function: difficultyLevel
 // Address: 00545cb0
-/* public: int __thiscall RGE_Game_World::difficultyLevel(void) */
-
 int __thiscall RGE_Game_World::difficultyLevel(RGE_Game_World *this)
 {
   int iVar1;
@@ -4829,8 +4621,6 @@ int __thiscall RGE_Game_World::difficultyLevel(RGE_Game_World *this)
 
 // Function: get_scenario_info
 // Address: 00545ce0
-/* public: virtual class RGE_Scenario * __thiscall RGE_Game_World::get_scenario_info(char *) */
-
 RGE_Scenario * __thiscall RGE_Game_World::get_scenario_info(RGE_Game_World *this,char *param_1)
 {
   return (RGE_Scenario *)0x0;
@@ -4840,8 +4630,6 @@ RGE_Scenario * __thiscall RGE_Game_World::get_scenario_info(RGE_Game_World *this
 
 // Function: maxNumberObjects
 // Address: 00545cf0
-/* public: int __thiscall RGE_Game_World::maxNumberObjects(void) */
-
 int __thiscall RGE_Game_World::maxNumberObjects(RGE_Game_World *this)
 {
   return this->maxNumberObjectsValue;
@@ -4851,8 +4639,6 @@ int __thiscall RGE_Game_World::maxNumberObjects(RGE_Game_World *this)
 
 // Function: maxNumberNegativeObjects
 // Address: 00545d00
-/* public: int __thiscall RGE_Game_World::maxNumberNegativeObjects(void) */
-
 int __thiscall RGE_Game_World::maxNumberNegativeObjects(RGE_Game_World *this)
 {
   return this->maxNumberNegativeObjectsValue;
@@ -4862,8 +4648,6 @@ int __thiscall RGE_Game_World::maxNumberNegativeObjects(RGE_Game_World *this)
 
 // Function: numberObjects
 // Address: 00545d10
-/* public: int __thiscall RGE_Game_World::numberObjects(void) */
-
 int __thiscall RGE_Game_World::numberObjects(RGE_Game_World *this)
 {
   return this->numberObjectsValue;
@@ -4873,8 +4657,6 @@ int __thiscall RGE_Game_World::numberObjects(RGE_Game_World *this)
 
 // Function: numberNegativeObjects
 // Address: 00545d20
-/* public: int __thiscall RGE_Game_World::numberNegativeObjects(void) */
-
 int __thiscall RGE_Game_World::numberNegativeObjects(RGE_Game_World *this)
 {
   return this->numberNegativeObjectsValue;
@@ -4884,8 +4666,6 @@ int __thiscall RGE_Game_World::numberNegativeObjects(RGE_Game_World *this)
 
 // Function: object
 // Address: 00545d30
-/* public: class RGE_Static_Object * __thiscall RGE_Game_World::object(int) */
-
 RGE_Static_Object * __thiscall RGE_Game_World::object(RGE_Game_World *this,int param_1)
 {
   if ((param_1 < 0) && (-param_1 < this->maxNumberNegativeObjectsValue)) {
@@ -4901,8 +4681,6 @@ RGE_Static_Object * __thiscall RGE_Game_World::object(RGE_Game_World *this,int p
 
 // Function: object_ptr
 // Address: 00545d80
-/* public: class RGE_Static_Object * __thiscall RGE_Game_World::object_ptr(int) */
-
 RGE_Static_Object * __thiscall RGE_Game_World::object_ptr(RGE_Game_World *this,int param_1)
 {
   RGE_Static_Object *pRVar1;
@@ -4915,8 +4693,6 @@ RGE_Static_Object * __thiscall RGE_Game_World::object_ptr(RGE_Game_World *this,i
 
 // Function: get_next_object_id
 // Address: 00545d90
-/* public: long __thiscall RGE_Game_World::get_next_object_id(void) */
-
 long __thiscall RGE_Game_World::get_next_object_id(RGE_Game_World *this)
 {
   int iVar1;
@@ -4942,8 +4718,6 @@ long __thiscall RGE_Game_World::get_next_object_id(RGE_Game_World *this)
 
 // Function: get_next_reusable_object_id
 // Address: 00545dd0
-/* public: long __thiscall RGE_Game_World::get_next_reusable_object_id(void) */
-
 long __thiscall RGE_Game_World::get_next_reusable_object_id(RGE_Game_World *this)
 {
   int iVar1;
@@ -4966,9 +4740,6 @@ long __thiscall RGE_Game_World::get_next_reusable_object_id(RGE_Game_World *this
 
 // Function: addObject
 // Address: 00545e00
-/* WARNING: Variable defined which should be unmapped: lookupSlot */
-/* public: virtual int __thiscall RGE_Game_World::addObject(class RGE_Static_Object *) */
-
 int __thiscall RGE_Game_World::addObject(RGE_Game_World *this,RGE_Static_Object *param_1)
 {
   RGE_Static_Object *this_00;
@@ -5062,8 +4833,6 @@ int __thiscall RGE_Game_World::addObject(RGE_Game_World *this,RGE_Static_Object 
 
 // Function: removeObject
 // Address: 00545fd0
-/* public: virtual int __thiscall RGE_Game_World::removeObject(int) */
-
 int __thiscall RGE_Game_World::removeObject(RGE_Game_World *this,int param_1)
 {
   if ((param_1 < 0) && (-param_1 < this->maxNumberNegativeObjectsValue)) {
@@ -5081,8 +4850,6 @@ int __thiscall RGE_Game_World::removeObject(RGE_Game_World *this,int param_1)
 
 // Function: initializePathingSystem
 // Address: 00546030
-/* public: int __thiscall RGE_Game_World::initializePathingSystem(void) */
-
 int __thiscall RGE_Game_World::initializePathingSystem(RGE_Game_World *this)
 {
   RGE_Map *pRVar1;
@@ -5101,9 +4868,6 @@ int __thiscall RGE_Game_World::initializePathingSystem(RGE_Game_World *this)
 
 // Function: recycle_object_out_of_game
 // Address: 00546070
-/* public: unsigned char __thiscall RGE_Game_World::recycle_object_out_of_game(unsigned char,class
-   RGE_Static_Object *) */
-
 uchar __thiscall
 RGE_Game_World::recycle_object_out_of_game
           (RGE_Game_World *this,uchar param_1,RGE_Static_Object *param_2)
@@ -5139,9 +4903,6 @@ RGE_Game_World::recycle_object_out_of_game
 
 // Function: recycle_object_in_to_game
 // Address: 00546180
-/* public: class RGE_Static_Object * __thiscall RGE_Game_World::recycle_object_in_to_game(unsigned
-   char) */
-
 RGE_Static_Object * __thiscall
 RGE_Game_World::recycle_object_in_to_game(RGE_Game_World *this,uchar param_1)
 {
@@ -5223,9 +4984,6 @@ RGE_Game_World::recycle_object_in_to_game(RGE_Game_World *this,uchar param_1)
 // [HELPER] s__d: "%d"
 // [HELPER] s_player__d_: "player %d\n"
 // [HELPER] s_updating_player_visibilites___wt: "updating player visibilites @ wt=%d\n"
-/* WARNING: Variable defined which should be unmapped: index */
-/* public: void __thiscall RGE_Game_World::update_mutual_allies(void) */
-
 void __thiscall RGE_Game_World::update_mutual_allies(RGE_Game_World *this)
 {
   ulong *puVar1;

@@ -291,9 +291,6 @@
 // [HELPER] s_Achievements_Screen: "Achievements Screen"
 // [HELPER] s_scr2: "scr2"
 // [HELPER] s_scr3: "scr3"
-/* public: __thiscall TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(char *,char *,char
-   *,long) */
-
 TRIBE_Screen_Status_Message * __thiscall
 TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message
           (TRIBE_Screen_Status_Message *this,char *param_1,char *param_2,char *param_3,long param_4)
@@ -454,9 +451,6 @@ TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message
 
 // Function: `vector_deleting_destructor'
 // Address: 004b7310
-/* public: virtual void * __thiscall TRIBE_Screen_Status_Message::`vector deleting
-   destructor'(unsigned int) */
-
 void * __thiscall
 TRIBE_Screen_Status_Message::_vector_deleting_destructor_
           (TRIBE_Screen_Status_Message *this,uint param_1)
@@ -475,9 +469,6 @@ TRIBE_Screen_Status_Message::_vector_deleting_destructor_
 // [HELPER] s_Achievements_Screen: "Achievements Screen"
 // [HELPER] s_scr2: "scr2"
 // [HELPER] s_scr3: "scr3"
-/* public: __thiscall TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(char *,long,char
-   *,long) */
-
 TRIBE_Screen_Status_Message * __thiscall
 TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message
           (TRIBE_Screen_Status_Message *this,char *param_1,long param_2,char *param_3,long param_4)
@@ -638,8 +629,6 @@ TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message
 
 // Function: ~TRIBE_Screen_Status_Message
 // Address: 004b7500
-/* public: virtual __thiscall TRIBE_Screen_Status_Message::~TRIBE_Screen_Status_Message(void) */
-
 void __thiscall
 TRIBE_Screen_Status_Message::~TRIBE_Screen_Status_Message(TRIBE_Screen_Status_Message *this)
 {
@@ -664,8 +653,6 @@ TRIBE_Screen_Status_Message::~TRIBE_Screen_Status_Message(TRIBE_Screen_Status_Me
 
 // Function: set_text
 // Address: 004b7560
-/* public: void __thiscall TRIBE_Screen_Status_Message::set_text(char *) */
-
 void __thiscall
 TRIBE_Screen_Status_Message::set_text(TRIBE_Screen_Status_Message *this,char *param_1)
 {
@@ -677,8 +664,6 @@ TRIBE_Screen_Status_Message::set_text(TRIBE_Screen_Status_Message *this,char *pa
 
 // Function: set_text
 // Address: 004b7580
-/* public: void __thiscall TRIBE_Screen_Status_Message::set_text(long) */
-
 void __thiscall
 TRIBE_Screen_Status_Message::set_text(TRIBE_Screen_Status_Message *this,long param_1)
 {

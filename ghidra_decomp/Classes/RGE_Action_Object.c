@@ -148,9 +148,6 @@
 
 // Function: RGE_Action_Object
 // Address: 00405c60
-/* public: __thiscall RGE_Action_Object::RGE_Action_Object(class RGE_Master_Action_Object *,class
-   RGE_Player *,float,float,float,int) */
-
 RGE_Action_Object * __thiscall
 RGE_Action_Object::RGE_Action_Object
           (RGE_Action_Object *this,RGE_Master_Action_Object *param_1,RGE_Player *param_2,
@@ -183,9 +180,6 @@ RGE_Action_Object::RGE_Action_Object
 
 // Function: `vector_deleting_destructor'
 // Address: 00405f70
-/* public: virtual void * __thiscall RGE_Action_Object::`vector deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 RGE_Action_Object::_vector_deleting_destructor_(RGE_Action_Object *this,uint param_1)
 {
@@ -200,8 +194,6 @@ RGE_Action_Object::_vector_deleting_destructor_(RGE_Action_Object *this,uint par
 
 // Function: RGE_Action_Object
 // Address: 00405f90
-/* public: __thiscall RGE_Action_Object::RGE_Action_Object(int,class RGE_Game_World *,int) */
-
 RGE_Action_Object * __thiscall
 RGE_Action_Object::RGE_Action_Object
           (RGE_Action_Object *this,int param_1,RGE_Game_World *param_2,int param_3)
@@ -231,8 +223,6 @@ RGE_Action_Object::RGE_Action_Object
 
 // Function: ~RGE_Action_Object
 // Address: 00406010
-/* public: virtual __thiscall RGE_Action_Object::~RGE_Action_Object(void) */
-
 void __thiscall RGE_Action_Object::~RGE_Action_Object(RGE_Action_Object *this)
 {
   RGE_Action_List *this_00;
@@ -262,8 +252,6 @@ void __thiscall RGE_Action_Object::~RGE_Action_Object(RGE_Action_Object *this)
 
 // Function: recycle_out_of_game
 // Address: 00406080
-/* public: virtual void __thiscall RGE_Action_Object::recycle_out_of_game(void) */
-
 void __thiscall RGE_Action_Object::recycle_out_of_game(RGE_Action_Object *this)
 {
   if (this->actions != (RGE_Action_List *)0x0) {
@@ -277,9 +265,6 @@ void __thiscall RGE_Action_Object::recycle_out_of_game(RGE_Action_Object *this)
 
 // Function: recycle_in_to_game
 // Address: 004060a0
-/* public: virtual void __thiscall RGE_Action_Object::recycle_in_to_game(class
-   RGE_Master_Static_Object *,class RGE_Player *,float,float,float) */
-
 void __thiscall
 RGE_Action_Object::recycle_in_to_game
           (RGE_Action_Object *this,RGE_Master_Static_Object *param_1,RGE_Player *param_2,
@@ -295,9 +280,6 @@ RGE_Action_Object::recycle_in_to_game
 
 // Function: setup
 // Address: 004060d0
-/* protected: virtual int __thiscall RGE_Action_Object::setup(class RGE_Master_Action_Object *,class
-   RGE_Player *,float,float,float) */
-
 int __thiscall
 RGE_Action_Object::setup
           (RGE_Action_Object *this,RGE_Master_Action_Object *param_1,RGE_Player *param_2,
@@ -322,9 +304,6 @@ RGE_Action_Object::setup
 
 // Function: setup
 // Address: 00406120
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: virtual int __thiscall RGE_Action_Object::setup(int,class RGE_Game_World *) */
-
 int __thiscall RGE_Action_Object::setup(RGE_Action_Object *this,int param_1,RGE_Game_World *param_2)
 {
   RGE_Action_List *this_00;
@@ -348,9 +327,6 @@ int __thiscall RGE_Action_Object::setup(RGE_Action_Object *this,int param_1,RGE_
 
 // Function: create_action_list
 // Address: 004061a0
-/* protected: virtual class RGE_Action_List * __thiscall RGE_Action_Object::create_action_list(void)
-    */
-
 RGE_Action_List * __thiscall RGE_Action_Object::create_action_list(RGE_Action_Object *this)
 {
   RGE_Action_List *pRVar1;
@@ -378,8 +354,6 @@ RGE_Action_List * __thiscall RGE_Action_Object::create_action_list(RGE_Action_Ob
 
 // Function: rehook
 // Address: 00406200
-/* public: virtual void __thiscall RGE_Action_Object::rehook(void) */
-
 void __thiscall RGE_Action_Object::rehook(RGE_Action_Object *this)
 {
   RGE_Static_Object::rehook((RGE_Static_Object *)this);
@@ -391,8 +365,6 @@ void __thiscall RGE_Action_Object::rehook(RGE_Action_Object *this)
 
 // Function: save
 // Address: 00406220
-/* public: virtual void __thiscall RGE_Action_Object::save(int) */
-
 void __thiscall RGE_Action_Object::save(RGE_Action_Object *this,int param_1)
 {
   RGE_Moving_Object::save((RGE_Moving_Object *)this,param_1);
@@ -406,8 +378,6 @@ void __thiscall RGE_Action_Object::save(RGE_Action_Object *this,int param_1)
 
 // Function: transform
 // Address: 00406270
-/* public: virtual void __thiscall RGE_Action_Object::transform(class RGE_Master_Static_Object *) */
-
 void __thiscall
 RGE_Action_Object::transform(RGE_Action_Object *this,RGE_Master_Static_Object *param_1)
 {
@@ -420,8 +390,6 @@ RGE_Action_Object::transform(RGE_Action_Object *this,RGE_Master_Static_Object *p
 
 // Function: destroy_obj
 // Address: 00406290
-/* public: virtual void __thiscall RGE_Action_Object::destroy_obj(void) */
-
 void __thiscall RGE_Action_Object::destroy_obj(RGE_Action_Object *this)
 {
   RGE_Action_List::delete_list(this->actions);
@@ -433,8 +401,6 @@ void __thiscall RGE_Action_Object::destroy_obj(RGE_Action_Object *this)
 
 // Function: notify_of_relation
 // Address: 004062b0
-/* public: virtual void __thiscall RGE_Action_Object::notify_of_relation(long,unsigned char) */
-
 void __thiscall
 RGE_Action_Object::notify_of_relation(RGE_Action_Object *this,long param_1,uchar param_2)
 {
@@ -445,9 +411,6 @@ RGE_Action_Object::notify_of_relation(RGE_Action_Object *this,long param_1,uchar
 
 // Function: do_command
 // Address: 004062c0
-/* public: virtual void __thiscall RGE_Action_Object::do_command(class RGE_Static_Object
-   *,float,float,float) */
-
 void __thiscall
 RGE_Action_Object::do_command
           (RGE_Action_Object *this,RGE_Static_Object *param_1,float param_2,float param_3,
@@ -464,9 +427,6 @@ RGE_Action_Object::do_command
 
 // Function: move_to
 // Address: 00406300
-/* public: virtual void __thiscall RGE_Action_Object::move_to(class RGE_Static_Object
-   *,float,float,float) */
-
 void __thiscall
 RGE_Action_Object::move_to
           (RGE_Action_Object *this,RGE_Static_Object *param_1,float param_2,float param_3,
@@ -534,9 +494,6 @@ LAB_00406419:
 
 // Function: work
 // Address: 00406430
-/* public: virtual void __thiscall RGE_Action_Object::work(class RGE_Static_Object
-   *,float,float,float) */
-
 void __thiscall
 RGE_Action_Object::work
           (RGE_Action_Object *this,RGE_Static_Object *param_1,float param_2,float param_3,
@@ -553,10 +510,6 @@ RGE_Action_Object::work
 
 // Function: work2
 // Address: 00406470
-/* WARNING: Variable defined which should be unmapped: skip */
-/* public: virtual void __thiscall RGE_Action_Object::work2(class RGE_Static_Object
-   *,float,float,float,unsigned char) */
-
 void __thiscall
 RGE_Action_Object::work2
           (RGE_Action_Object *this,RGE_Static_Object *param_1,float param_2,float param_3,
@@ -724,8 +677,6 @@ RGE_Action_Object::work2
 
 // Function: set_attack
 // Address: 00406830
-/* public: virtual void __thiscall RGE_Action_Object::set_attack(class RGE_Static_Object *) */
-
 void __thiscall RGE_Action_Object::set_attack(RGE_Action_Object *this,RGE_Static_Object *param_1)
 {
   return;
@@ -735,12 +686,8 @@ void __thiscall RGE_Action_Object::set_attack(RGE_Action_Object *this,RGE_Static
 
 // Function: play_command_sound
 // Address: 00406840
-/* public: virtual void __thiscall RGE_Action_Object::play_command_sound(void) */
-
 void __thiscall RGE_Action_Object::play_command_sound(RGE_Action_Object *this)
 {
-                    /* WARNING: Could not recover jumptable at 0x00406845. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (**(code **)(*(int *)this->_padding_ + 0x2c))();
   return;
 }
@@ -749,12 +696,8 @@ void __thiscall RGE_Action_Object::play_command_sound(RGE_Action_Object *this)
 
 // Function: play_move_sound
 // Address: 00406850
-/* public: virtual void __thiscall RGE_Action_Object::play_move_sound(void) */
-
 void __thiscall RGE_Action_Object::play_move_sound(RGE_Action_Object *this)
 {
-                    /* WARNING: Could not recover jumptable at 0x00406855. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
   (**(code **)(*(int *)this->_padding_ + 0x30))();
   return;
 }
@@ -763,9 +706,6 @@ void __thiscall RGE_Action_Object::play_move_sound(RGE_Action_Object *this)
 
 // Function: get_command_master
 // Address: 00406860
-/* public: virtual class RGE_Master_Static_Object * __thiscall
-   RGE_Action_Object::get_command_master(class RGE_Static_Object *,float,float,float) */
-
 RGE_Master_Static_Object * __thiscall
 RGE_Action_Object::get_command_master
           (RGE_Action_Object *this,RGE_Static_Object *param_1,float param_2,float param_3,
@@ -811,8 +751,6 @@ RGE_Action_Object::get_command_master
 
 // Function: set_task
 // Address: 00406940
-/* public: virtual void __thiscall RGE_Action_Object::set_task(short) */
-
 void __thiscall RGE_Action_Object::set_task(RGE_Action_Object *this,short param_1)
 {
   RGE_Task *pRVar1;
@@ -832,8 +770,6 @@ void __thiscall RGE_Action_Object::set_task(RGE_Action_Object *this,short param_
 
 // Function: setTaskByTaskID
 // Address: 00406990
-/* public: virtual void __thiscall RGE_Action_Object::setTaskByTaskID(int) */
-
 void __thiscall RGE_Action_Object::setTaskByTaskID(RGE_Action_Object *this,int param_1)
 {
   RGE_Task *pRVar1;
@@ -854,8 +790,6 @@ void __thiscall RGE_Action_Object::setTaskByTaskID(RGE_Action_Object *this,int p
 
 // Function: set_action
 // Address: 004069e0
-/* public: virtual void __thiscall RGE_Action_Object::set_action(class RGE_Action *) */
-
 void __thiscall RGE_Action_Object::set_action(RGE_Action_Object *this,RGE_Action *param_1)
 {
   if (param_1 != (RGE_Action *)0x0) {
@@ -868,8 +802,6 @@ void __thiscall RGE_Action_Object::set_action(RGE_Action_Object *this,RGE_Action
 
 // Function: set_only_action
 // Address: 00406a00
-/* public: virtual void __thiscall RGE_Action_Object::set_only_action(class RGE_Action *) */
-
 void __thiscall RGE_Action_Object::set_only_action(RGE_Action_Object *this,RGE_Action *param_1)
 {
   RGE_Action_List::delete_list(this->actions);
@@ -883,8 +815,6 @@ void __thiscall RGE_Action_Object::set_only_action(RGE_Action_Object *this,RGE_A
 
 // Function: set_end_action
 // Address: 00406a30
-/* public: virtual void __thiscall RGE_Action_Object::set_end_action(class RGE_Action *) */
-
 void __thiscall RGE_Action_Object::set_end_action(RGE_Action_Object *this,RGE_Action *param_1)
 {
   if (param_1 != (RGE_Action *)0x0) {
@@ -897,8 +827,6 @@ void __thiscall RGE_Action_Object::set_end_action(RGE_Action_Object *this,RGE_Ac
 
 // Function: stop
 // Address: 00406a50
-/* public: virtual void __thiscall RGE_Action_Object::stop(void) */
-
 void __thiscall RGE_Action_Object::stop(RGE_Action_Object *this)
 {
   int iVar1;
@@ -915,8 +843,6 @@ void __thiscall RGE_Action_Object::stop(RGE_Action_Object *this)
 // Function: update
 // Address: 00406a70
 // [HELPER] s_t_d___d__d__d__d__d_: "t%d, %d,%d,%d,%d,%d\n"
-/* public: virtual unsigned char __thiscall RGE_Action_Object::update(void) */
-
 uchar __thiscall RGE_Action_Object::update(RGE_Action_Object *this)
 {
   byte bVar1;
@@ -982,8 +908,6 @@ uchar __thiscall RGE_Action_Object::update(RGE_Action_Object *this)
 
 // Function: change_ownership
 // Address: 00406b90
-/* public: virtual void __thiscall RGE_Action_Object::change_ownership(class RGE_Player *) */
-
 void __thiscall RGE_Action_Object::change_ownership(RGE_Action_Object *this,RGE_Player *param_1)
 {
   int iVar1;
@@ -999,8 +923,6 @@ void __thiscall RGE_Action_Object::change_ownership(RGE_Action_Object *this,RGE_
 
 // Function: copy_obj
 // Address: 00406bc0
-/* public: virtual void __thiscall RGE_Action_Object::copy_obj(class RGE_Master_Static_Object *) */
-
 void __thiscall
 RGE_Action_Object::copy_obj(RGE_Action_Object *this,RGE_Master_Static_Object *param_1)
 {
@@ -1013,8 +935,6 @@ RGE_Action_Object::copy_obj(RGE_Action_Object *this,RGE_Master_Static_Object *pa
 
 // Function: have_action
 // Address: 00406bf0
-/* public: unsigned char __thiscall RGE_Action_Object::have_action(void) */
-
 uchar __thiscall RGE_Action_Object::have_action(RGE_Action_Object *this)
 {
   uchar uVar1;
@@ -1027,8 +947,6 @@ uchar __thiscall RGE_Action_Object::have_action(RGE_Action_Object *this)
 
 // Function: get_target_obj
 // Address: 00406c10
-/* public: virtual class RGE_Static_Object * __thiscall RGE_Action_Object::get_target_obj(void) */
-
 RGE_Static_Object * __thiscall RGE_Action_Object::get_target_obj(RGE_Action_Object *this)
 {
   RGE_Action *pRVar1;
@@ -1036,8 +954,6 @@ RGE_Static_Object * __thiscall RGE_Action_Object::get_target_obj(RGE_Action_Obje
   
   pRVar1 = RGE_Action_List::get_action(this->actions);
   if (pRVar1 != (RGE_Action *)0x0) {
-                    /* WARNING: Could not recover jumptable at 0x00406c23. Too many branches */
-                    /* WARNING: Treating indirect jump as call */
     pRVar2 = (RGE_Static_Object *)(**(code **)(pRVar1->_padding_ + 0x4c))();
     return pRVar2;
   }
@@ -1048,9 +964,6 @@ RGE_Static_Object * __thiscall RGE_Action_Object::get_target_obj(RGE_Action_Obje
 
 // Function: getTask
 // Address: 00406c30
-/* public: virtual class RGE_Task * __thiscall RGE_Action_Object::getTask(class RGE_Static_Object
-   *,float,float,float) */
-
 RGE_Task * __thiscall
 RGE_Action_Object::getTask
           (RGE_Action_Object *this,RGE_Static_Object *param_1,float param_2,float param_3,
@@ -1095,8 +1008,6 @@ RGE_Action_Object::getTask
 
 // Function: actionState
 // Address: 00406d00
-/* public: virtual unsigned char __thiscall RGE_Action_Object::actionState(void)const  */
-
 uchar __thiscall RGE_Action_Object::actionState(RGE_Action_Object *this)
 {
   uchar uVar1;
@@ -1114,8 +1025,6 @@ uchar __thiscall RGE_Action_Object::actionState(RGE_Action_Object *this)
 
 // Function: get_action_checksum
 // Address: 00406d30
-/* public: virtual long __thiscall RGE_Action_Object::get_action_checksum(void) */
-
 long __thiscall RGE_Action_Object::get_action_checksum(RGE_Action_Object *this)
 {
   RGE_Action *pRVar1;

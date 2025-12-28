@@ -44,8 +44,6 @@
 
 // Function: BuildItem
 // Address: 00408190
-/* public: __thiscall BuildItem::BuildItem(void) */
-
 BuildItem * __thiscall BuildItem::BuildItem(BuildItem *this)
 {
   BaseItem::BaseItem((BaseItem *)this);
@@ -74,8 +72,6 @@ BuildItem * __thiscall BuildItem::BuildItem(BuildItem *this)
 
 // Function: `vector_deleting_destructor'
 // Address: 00408200
-/* public: virtual void * __thiscall BuildItem::`vector deleting destructor'(unsigned int) */
-
 void * __thiscall BuildItem::_vector_deleting_destructor_(BuildItem *this,uint param_1)
 {
   ~BuildItem(this);
@@ -89,9 +85,6 @@ void * __thiscall BuildItem::_vector_deleting_destructor_(BuildItem *this,uint p
 
 // Function: BuildItem
 // Address: 00408220
-/* public: __thiscall BuildItem::BuildItem(int,int,int,int,int,int,char
-   *,float,float,float,int,int,int,int) */
-
 BuildItem * __thiscall
 BuildItem::BuildItem
           (BuildItem *this,int param_1,int param_2,int param_3,int param_4,int param_5,int param_6,
@@ -125,8 +118,6 @@ BuildItem::BuildItem
 
 // Function: BuildItem
 // Address: 004082f0
-/* public: __thiscall BuildItem::BuildItem(class BuildItem *) */
-
 BuildItem * __thiscall BuildItem::BuildItem(BuildItem *this,BuildItem *param_1)
 {
   BaseItem::BaseItem((BaseItem *)this,(BaseItem *)param_1);
@@ -155,8 +146,6 @@ BuildItem * __thiscall BuildItem::BuildItem(BuildItem *this,BuildItem *param_1)
 
 // Function: BuildItem
 // Address: 004083b0
-/* public: __thiscall BuildItem::BuildItem(class BuildItem const &) */
-
 BuildItem * __thiscall BuildItem::BuildItem(BuildItem *this,BuildItem *param_1)
 {
   BaseItem::BaseItem((BaseItem *)this,(BaseItem *)param_1);
@@ -185,8 +174,6 @@ BuildItem * __thiscall BuildItem::BuildItem(BuildItem *this,BuildItem *param_1)
 
 // Function: ~BuildItem
 // Address: 00408470
-/* public: virtual __thiscall BuildItem::~BuildItem(void) */
-
 void __thiscall BuildItem::~BuildItem(BuildItem *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -198,8 +185,6 @@ void __thiscall BuildItem::~BuildItem(BuildItem *this)
 
 // Function: buildCategory
 // Address: 00408500
-/* public: int __thiscall BuildItem::buildCategory(void)const  */
-
 int __thiscall BuildItem::buildCategory(BuildItem *this)
 {
   return this->buildCategoryValue;
@@ -209,8 +194,6 @@ int __thiscall BuildItem::buildCategory(BuildItem *this)
 
 // Function: number
 // Address: 00408510
-/* public: int __thiscall BuildItem::number(void)const  */
-
 int __thiscall BuildItem::number(BuildItem *this)
 {
   return this->numberValue;
@@ -220,8 +203,6 @@ int __thiscall BuildItem::number(BuildItem *this)
 
 // Function: priority
 // Address: 00408520
-/* public: int __thiscall BuildItem::priority(void)const  */
-
 int __thiscall BuildItem::priority(BuildItem *this)
 {
   return this->priorityValue;
@@ -231,8 +212,6 @@ int __thiscall BuildItem::priority(BuildItem *this)
 
 // Function: inProgress
 // Address: 00408530
-/* public: int __thiscall BuildItem::inProgress(void)const  */
-
 int __thiscall BuildItem::inProgress(BuildItem *this)
 {
   return this->progressValue;
@@ -242,8 +221,6 @@ int __thiscall BuildItem::inProgress(BuildItem *this)
 
 // Function: built
 // Address: 00408540
-/* public: int __thiscall BuildItem::built(void)const  */
-
 int __thiscall BuildItem::built(BuildItem *this)
 {
   return this->builtValue;
@@ -253,8 +230,6 @@ int __thiscall BuildItem::built(BuildItem *this)
 
 // Function: buildAttempts
 // Address: 00408550
-/* public: int __thiscall BuildItem::buildAttempts(void)const  */
-
 int __thiscall BuildItem::buildAttempts(BuildItem *this)
 {
   return this->buildAttemptsValue;
@@ -264,8 +239,6 @@ int __thiscall BuildItem::buildAttempts(BuildItem *this)
 
 // Function: buildFrom
 // Address: 00408560
-/* public: int __thiscall BuildItem::buildFrom(void)const  */
-
 int __thiscall BuildItem::buildFrom(BuildItem *this)
 {
   return this->buildFromValue;
@@ -275,8 +248,6 @@ int __thiscall BuildItem::buildFrom(BuildItem *this)
 
 // Function: terrainSet
 // Address: 00408570
-/* public: int __thiscall BuildItem::terrainSet(void)const  */
-
 int __thiscall BuildItem::terrainSet(BuildItem *this)
 {
   return this->terrainSetValue;
@@ -286,8 +257,6 @@ int __thiscall BuildItem::terrainSet(BuildItem *this)
 
 // Function: terrainAdjacency
 // Address: 00408580
-/* public: int __thiscall BuildItem::terrainAdjacency(int)const  */
-
 int __thiscall BuildItem::terrainAdjacency(BuildItem *this,int param_1)
 {
   if ((0 < param_1) && (param_1 < 3)) {
@@ -300,8 +269,6 @@ int __thiscall BuildItem::terrainAdjacency(BuildItem *this,int param_1)
 
 // Function: placeOnElevation
 // Address: 004085a0
-/* public: int __thiscall BuildItem::placeOnElevation(void)const  */
-
 int __thiscall BuildItem::placeOnElevation(BuildItem *this)
 {
   return this->placeOnElevationValue;
@@ -311,8 +278,6 @@ int __thiscall BuildItem::placeOnElevation(BuildItem *this)
 
 // Function: setInProgress
 // Address: 004085b0
-/* public: void __thiscall BuildItem::setInProgress(int) */
-
 void __thiscall BuildItem::setInProgress(BuildItem *this,int param_1)
 {
   this->progressValue = param_1;
@@ -323,8 +288,6 @@ void __thiscall BuildItem::setInProgress(BuildItem *this,int param_1)
 
 // Function: setBuilt
 // Address: 004085c0
-/* public: void __thiscall BuildItem::setBuilt(int) */
-
 void __thiscall BuildItem::setBuilt(BuildItem *this,int param_1)
 {
   this->builtValue = param_1;
@@ -335,8 +298,6 @@ void __thiscall BuildItem::setBuilt(BuildItem *this,int param_1)
 
 // Function: setBuildAttempts
 // Address: 004085d0
-/* public: void __thiscall BuildItem::setBuildAttempts(int) */
-
 void __thiscall BuildItem::setBuildAttempts(BuildItem *this,int param_1)
 {
   this->buildAttemptsValue = param_1;
@@ -347,8 +308,6 @@ void __thiscall BuildItem::setBuildAttempts(BuildItem *this,int param_1)
 
 // Function: incrementBuildAttempts
 // Address: 004085e0
-/* public: void __thiscall BuildItem::incrementBuildAttempts(void) */
-
 void __thiscall BuildItem::incrementBuildAttempts(BuildItem *this)
 {
   this->buildAttemptsValue = this->buildAttemptsValue + 1;
@@ -359,8 +318,6 @@ void __thiscall BuildItem::incrementBuildAttempts(BuildItem *this)
 
 // Function: decrementBuildAttempts
 // Address: 004085f0
-/* public: void __thiscall BuildItem::decrementBuildAttempts(void) */
-
 void __thiscall BuildItem::decrementBuildAttempts(BuildItem *this)
 {
   int iVar1;
@@ -377,8 +334,6 @@ void __thiscall BuildItem::decrementBuildAttempts(BuildItem *this)
 
 // Function: numberBuilds
 // Address: 00408610
-/* public: int __thiscall BuildItem::numberBuilds(void) */
-
 int __thiscall BuildItem::numberBuilds(BuildItem *this)
 {
   return this->numberBuildsValue;
@@ -388,8 +343,6 @@ int __thiscall BuildItem::numberBuilds(BuildItem *this)
 
 // Function: incrementNumberBuilds
 // Address: 00408620
-/* public: void __thiscall BuildItem::incrementNumberBuilds(void) */
-
 void __thiscall BuildItem::incrementNumberBuilds(BuildItem *this)
 {
   this->numberBuildsValue = this->numberBuildsValue + 1;
@@ -400,8 +353,6 @@ void __thiscall BuildItem::incrementNumberBuilds(BuildItem *this)
 
 // Function: setNumberBuilds
 // Address: 00408630
-/* public: void __thiscall BuildItem::setNumberBuilds(int) */
-
 void __thiscall BuildItem::setNumberBuilds(BuildItem *this,int param_1)
 {
   this->numberBuildsValue = param_1;
@@ -412,8 +363,6 @@ void __thiscall BuildItem::setNumberBuilds(BuildItem *this,int param_1)
 
 // Function: buildCap
 // Address: 00408640
-/* public: int __thiscall BuildItem::buildCap(void) */
-
 int __thiscall BuildItem::buildCap(BuildItem *this)
 {
   return this->buildCapValue;
@@ -423,8 +372,6 @@ int __thiscall BuildItem::buildCap(BuildItem *this)
 
 // Function: setBuildCap
 // Address: 00408650
-/* public: void __thiscall BuildItem::setBuildCap(int) */
-
 void __thiscall BuildItem::setBuildCap(BuildItem *this,int param_1)
 {
   this->buildCapValue = param_1;
@@ -435,8 +382,6 @@ void __thiscall BuildItem::setBuildCap(BuildItem *this,int param_1)
 
 // Function: skipCycles
 // Address: 00408660
-/* public: int __thiscall BuildItem::skipCycles(void) */
-
 int __thiscall BuildItem::skipCycles(BuildItem *this)
 {
   return this->skipCyclesValue;
@@ -446,8 +391,6 @@ int __thiscall BuildItem::skipCycles(BuildItem *this)
 
 // Function: incrementSkipCycles
 // Address: 00408670
-/* public: void __thiscall BuildItem::incrementSkipCycles(void) */
-
 void __thiscall BuildItem::incrementSkipCycles(BuildItem *this)
 {
   this->skipCyclesValue = this->skipCyclesValue + 1;
@@ -458,8 +401,6 @@ void __thiscall BuildItem::incrementSkipCycles(BuildItem *this)
 
 // Function: setSkipCycles
 // Address: 00408680
-/* public: void __thiscall BuildItem::setSkipCycles(int) */
-
 void __thiscall BuildItem::setSkipCycles(BuildItem *this,int param_1)
 {
   this->skipCyclesValue = param_1;
@@ -470,8 +411,6 @@ void __thiscall BuildItem::setSkipCycles(BuildItem *this,int param_1)
 
 // Function: permanentSkip
 // Address: 00408690
-/* public: unsigned char __thiscall BuildItem::permanentSkip(void) */
-
 uchar __thiscall BuildItem::permanentSkip(BuildItem *this)
 {
   return this->permanentSkipValue;
@@ -481,8 +420,6 @@ uchar __thiscall BuildItem::permanentSkip(BuildItem *this)
 
 // Function: setPermanentSkip
 // Address: 004086a0
-/* public: void __thiscall BuildItem::setPermanentSkip(unsigned char) */
-
 void __thiscall BuildItem::setPermanentSkip(BuildItem *this,uchar param_1)
 {
   this->permanentSkipValue = param_1;

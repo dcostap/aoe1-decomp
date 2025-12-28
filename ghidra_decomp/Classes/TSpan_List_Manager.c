@@ -18,8 +18,6 @@
 
 // Function: TSpan_List_Manager
 // Address: 004bd8b0
-/* public: __thiscall TSpan_List_Manager::TSpan_List_Manager(int,int) */
-
 TSpan_List_Manager * __thiscall
 TSpan_List_Manager::TSpan_List_Manager(TSpan_List_Manager *this,int param_1,int param_2)
 {
@@ -65,8 +63,6 @@ TSpan_List_Manager::TSpan_List_Manager(TSpan_List_Manager *this,int param_1,int 
 
 // Function: ~TSpan_List_Manager
 // Address: 004bd9a0
-/* public: __thiscall TSpan_List_Manager::~TSpan_List_Manager(void) */
-
 void __thiscall TSpan_List_Manager::~TSpan_List_Manager(TSpan_List_Manager *this)
 {
   if (this->Line_Head_Ptrs != (VSpan_Node **)0x0) {
@@ -92,8 +88,6 @@ void __thiscall TSpan_List_Manager::~TSpan_List_Manager(TSpan_List_Manager *this
 
 // Function: SetSpanRegions
 // Address: 004bda00
-/* public: void __thiscall TSpan_List_Manager::SetSpanRegions(int,int,int,int) */
-
 void __thiscall
 TSpan_List_Manager::SetSpanRegions
           (TSpan_List_Manager *this,int param_1,int param_2,int param_3,int param_4)
@@ -139,8 +133,6 @@ TSpan_List_Manager::SetSpanRegions
 
 // Function: ResetAll
 // Address: 004bda70
-/* public: void __thiscall TSpan_List_Manager::ResetAll(void) */
-
 void __thiscall TSpan_List_Manager::ResetAll(TSpan_List_Manager *this)
 {
   uint uVar1;
@@ -201,8 +193,6 @@ void __thiscall TSpan_List_Manager::ResetAll(TSpan_List_Manager *this)
 
 // Function: AddSpan
 // Address: 004bdb00
-/* public: void __thiscall TSpan_List_Manager::AddSpan(int,int,int) */
-
 void __thiscall
 TSpan_List_Manager::AddSpan(TSpan_List_Manager *this,int param_1,int param_2,int param_3)
 {
@@ -396,8 +386,6 @@ TSpan_List_Manager::AddSpan(TSpan_List_Manager *this,int param_1,int param_2,int
 
 // Function: AddShape
 // Address: 004bdea0
-/* public: void __thiscall TSpan_List_Manager::AddShape(class TShape *,int,int,int,int) */
-
 void __thiscall
 TSpan_List_Manager::AddShape
           (TSpan_List_Manager *this,TShape *param_1,int param_2,int param_3,int param_4,int param_5)
@@ -453,9 +441,6 @@ TSpan_List_Manager::AddShape
 
 // Function: AddShape_Align
 // Address: 004bdfa0
-/* public: void __thiscall TSpan_List_Manager::AddShape_Align(unsigned char *,struct Shape_Info
-   *,int,int,int) */
-
 void __thiscall
 TSpan_List_Manager::AddShape_Align
           (TSpan_List_Manager *this,uchar *param_1,Shape_Info *param_2,int param_3,int param_4,
@@ -508,8 +493,6 @@ TSpan_List_Manager::AddShape_Align
 
 // Function: AddLine_Align
 // Address: 004be090
-/* public: void __thiscall TSpan_List_Manager::AddLine_Align(int,int,int,int) */
-
 void __thiscall
 TSpan_List_Manager::AddLine_Align
           (TSpan_List_Manager *this,int param_1,int param_2,int param_3,int param_4)
@@ -586,8 +569,6 @@ TSpan_List_Manager::AddLine_Align
 
 // Function: AddMiniList
 // Address: 004be1f0
-/* public: void __thiscall TSpan_List_Manager::AddMiniList(struct VSpanMiniList *,int,int) */
-
 void __thiscall
 TSpan_List_Manager::AddMiniList
           (TSpan_List_Manager *this,VSpanMiniList *param_1,int param_2,int param_3)
@@ -609,8 +590,6 @@ TSpan_List_Manager::AddMiniList
 
 // Function: SubtractMiniList
 // Address: 004be240
-/* public: void __thiscall TSpan_List_Manager::SubtractMiniList(struct VSpanMiniList *,int,int) */
-
 void __thiscall
 TSpan_List_Manager::SubtractMiniList
           (TSpan_List_Manager *this,VSpanMiniList *param_1,int param_2,int param_3)
@@ -632,9 +611,6 @@ TSpan_List_Manager::SubtractMiniList
 
 // Function: DeleteSpan
 // Address: 004be290
-/* WARNING: Variable defined which should be unmapped: L */
-/* public: void __thiscall TSpan_List_Manager::DeleteSpan(int,int,int) */
-
 void __thiscall
 TSpan_List_Manager::DeleteSpan(TSpan_List_Manager *this,int param_1,int param_2,int param_3)
 {
@@ -749,8 +725,6 @@ TSpan_List_Manager::DeleteSpan(TSpan_List_Manager *this,int param_1,int param_2,
 
 // Function: DeleteShape
 // Address: 004be4b0
-/* public: void __thiscall TSpan_List_Manager::DeleteShape(class TShape *,int,int,int,int) */
-
 void __thiscall
 TSpan_List_Manager::DeleteShape
           (TSpan_List_Manager *this,TShape *param_1,int param_2,int param_3,int param_4,int param_5)
@@ -804,8 +778,6 @@ TSpan_List_Manager::DeleteShape
 
 // Function: PointVisible
 // Address: 004be5b0
-/* public: int __thiscall TSpan_List_Manager::PointVisible(int,int) */
-
 int __thiscall TSpan_List_Manager::PointVisible(TSpan_List_Manager *this,int param_1,int param_2)
 {
   VSpan_Node *pVVar1;
@@ -827,9 +799,6 @@ int __thiscall TSpan_List_Manager::PointVisible(TSpan_List_Manager *this,int par
 
 // Function: Merge_n_Align
 // Address: 004be5f0
-/* public: void __thiscall TSpan_List_Manager::Merge_n_Align(class TSpan_List_Manager *,class
-   TSpan_List_Manager *) */
-
 void __thiscall
 TSpan_List_Manager::Merge_n_Align
           (TSpan_List_Manager *this,TSpan_List_Manager *param_1,TSpan_List_Manager *param_2)
@@ -874,8 +843,6 @@ LAB_004be67c:
 
 // Function: AlignamizeSpans
 // Address: 004be690
-/* public: void __thiscall TSpan_List_Manager::AlignamizeSpans(void) */
-
 void __thiscall TSpan_List_Manager::AlignamizeSpans(TSpan_List_Manager *this)
 {
   VSpan_Node *pVVar1;
@@ -925,8 +892,6 @@ void __thiscall TSpan_List_Manager::AlignamizeSpans(TSpan_List_Manager *this)
 
 // Function: ScrollSpansHorizontally
 // Address: 004be750
-/* public: void __thiscall TSpan_List_Manager::ScrollSpansHorizontally(int,int) */
-
 void __thiscall
 TSpan_List_Manager::ScrollSpansHorizontally(TSpan_List_Manager *this,int param_1,int param_2)
 {
@@ -993,8 +958,6 @@ TSpan_List_Manager::ScrollSpansHorizontally(TSpan_List_Manager *this,int param_1
 
 // Function: ScrollSpansVertically
 // Address: 004be850
-/* public: void __thiscall TSpan_List_Manager::ScrollSpansVertically(int,int) */
-
 void __thiscall
 TSpan_List_Manager::ScrollSpansVertically(TSpan_List_Manager *this,int param_1,int param_2)
 {
@@ -1079,8 +1042,6 @@ TSpan_List_Manager::ScrollSpansVertically(TSpan_List_Manager *this,int param_1,i
 
 // Function: ValidateSpan
 // Address: 004be9e0
-/* public: int __thiscall TSpan_List_Manager::ValidateSpan(int) */
-
 int __thiscall TSpan_List_Manager::ValidateSpan(TSpan_List_Manager *this,int param_1)
 {
   VSpan_Node *pVVar1;
@@ -1133,8 +1094,6 @@ int __thiscall TSpan_List_Manager::ValidateSpan(TSpan_List_Manager *this,int par
 
 // Function: DecodeLine
 // Address: 004bead0
-/* public: int __thiscall TSpan_List_Manager::DecodeLine(unsigned char *,int,unsigned char,int) */
-
 int __thiscall
 TSpan_List_Manager::DecodeLine
           (TSpan_List_Manager *this,uchar *param_1,int param_2,uchar param_3,int param_4)
@@ -1160,10 +1119,6 @@ TSpan_List_Manager::DecodeLine
 // Function: take_snapshot
 // Address: 004beb10
 // [HELPER] s_C__AOE__03d_BMP: "C:\AOE_%03d.BMP"
-/* WARNING: Variable defined which should be unmapped: Height */
-/* public: void __thiscall TSpan_List_Manager::take_snapshot(char *,int &,class TDrawArea
-   *,int,class TSpan_List_Manager * *,int *,int) */
-
 void __thiscall
 TSpan_List_Manager::take_snapshot
           (TSpan_List_Manager *this,char *param_1,int *param_2,TDrawArea *param_3,int param_4,

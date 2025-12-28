@@ -11,8 +11,6 @@
 
 // Function: TRegistry
 // Address: 0047eb80
-/* public: __thiscall TRegistry::TRegistry(char const *) */
-
 TRegistry * __thiscall TRegistry::TRegistry(TRegistry *this,char *param_1)
 {
   ulong *puVar1;
@@ -31,8 +29,6 @@ TRegistry * __thiscall TRegistry::TRegistry(TRegistry *this,char *param_1)
 
 // Function: ~TRegistry
 // Address: 0047ec00
-/* public: __thiscall TRegistry::~TRegistry(void) */
-
 void __thiscall TRegistry::~TRegistry(TRegistry *this)
 {
   if (this->ghUserKey != (void *)0x0) {
@@ -54,8 +50,6 @@ void __thiscall TRegistry::~TRegistry(TRegistry *this)
 
 // Function: RegSet
 // Address: 0047ec40
-/* public: int __thiscall TRegistry::RegSet(int,char const *,unsigned char *,unsigned long) */
-
 int __thiscall
 TRegistry::RegSet(TRegistry *this,int param_1,char *param_2,uchar *param_3,ulong param_4)
 {
@@ -73,8 +67,6 @@ TRegistry::RegSet(TRegistry *this,int param_1,char *param_2,uchar *param_3,ulong
 
 // Function: RegSetInt
 // Address: 0047eca0
-/* public: int __thiscall TRegistry::RegSetInt(int,char const *,int) */
-
 int __thiscall TRegistry::RegSetInt(TRegistry *this,int param_1,char *param_2,int param_3)
 {
   int iVar1;
@@ -91,8 +83,6 @@ int __thiscall TRegistry::RegSetInt(TRegistry *this,int param_1,char *param_2,in
 
 // Function: RegSetAscii
 // Address: 0047ed00
-/* public: int __thiscall TRegistry::RegSetAscii(int,char const *,unsigned char *,unsigned long) */
-
 int __thiscall
 TRegistry::RegSetAscii(TRegistry *this,int param_1,char *param_2,uchar *param_3,ulong param_4)
 {
@@ -110,9 +100,6 @@ TRegistry::RegSetAscii(TRegistry *this,int param_1,char *param_2,uchar *param_3,
 
 // Function: RegGetAscii
 // Address: 0047ed60
-/* WARNING: Variable defined which should be unmapped: dwSize */
-/* public: char * __thiscall TRegistry::RegGetAscii(int,char const *) */
-
 char * __thiscall TRegistry::RegGetAscii(TRegistry *this,int param_1,char *param_2)
 {
   int iVar1;
@@ -137,8 +124,6 @@ char * __thiscall TRegistry::RegGetAscii(TRegistry *this,int param_1,char *param
 
 // Function: RegGet
 // Address: 0047edd0
-/* public: long __thiscall TRegistry::RegGet(int,char const *,unsigned char *,unsigned long *) */
-
 long __thiscall
 TRegistry::RegGet(TRegistry *this,int param_1,char *param_2,uchar *param_3,ulong *param_4)
 {
@@ -156,9 +141,6 @@ TRegistry::RegGet(TRegistry *this,int param_1,char *param_2,uchar *param_3,ulong
 
 // Function: RegGetInt
 // Address: 0047ee20
-/* WARNING: Variable defined which should be unmapped: Size */
-/* public: int __thiscall TRegistry::RegGetInt(int,char const *) */
-
 int __thiscall TRegistry::RegGetInt(TRegistry *this,int param_1,char *param_2)
 {
   int iVar1;

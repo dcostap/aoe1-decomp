@@ -12,8 +12,6 @@
 // Function: DString
 // Address: 004465d0
 // [HELPER] s_: ""
-/* public: __thiscall DString::DString(void) */
-
 DString * __thiscall DString::DString(DString *this)
 {
   char cVar1;
@@ -59,8 +57,6 @@ DString * __thiscall DString::DString(DString *this)
 
 // Function: DString
 // Address: 00446620
-/* public: __thiscall DString::DString(class DString const &) */
-
 DString * __thiscall DString::DString(DString *this,DString *param_1)
 {
   char cVar1;
@@ -109,8 +105,6 @@ DString * __thiscall DString::DString(DString *this,DString *param_1)
 
 // Function: DString
 // Address: 00446690
-/* public: __thiscall DString::DString(char const *) */
-
 DString * __thiscall DString::DString(DString *this,char *param_1)
 {
   char cVar1;
@@ -167,8 +161,6 @@ DString * __thiscall DString::DString(DString *this,char *param_1)
 
 // Function: ~DString
 // Address: 00446700
-/* public: __thiscall DString::~DString(void) */
-
 void __thiscall DString::~DString(DString *this)
 {
   if (this->stringValue != (char *)0x0) {
@@ -181,8 +173,6 @@ void __thiscall DString::~DString(DString *this)
 
 // Function: operator=
 // Address: 00446780
-/* public: class DString & __thiscall DString::operator=(char const *) */
-
 DString * __thiscall DString::operator=(DString *this,char *param_1)
 {
   char cVar1;
@@ -242,8 +232,6 @@ DString * __thiscall DString::operator=(DString *this,char *param_1)
 
 // Function: operator=
 // Address: 00446800
-/* public: class DString & __thiscall DString::operator=(class DString const &) */
-
 DString * __thiscall DString::operator=(DString *this,DString *param_1)
 {
   char cVar1;
@@ -297,8 +285,6 @@ DString * __thiscall DString::operator=(DString *this,DString *param_1)
 
 // Function: operator+
 // Address: 00446c80
-/* public: class DString __thiscall DString::operator+(class DString const &)const  */
-
 DString * __thiscall
 DString::operator+(DString *this,DString *__return_storage_ptr__,DString *param_1)
 {
@@ -337,8 +323,6 @@ DString::operator+(DString *this,DString *__return_storage_ptr__,DString *param_
 
 // Function: operator[]
 // Address: 00446d10
-/* public: char & __thiscall DString::operator[](int) */
-
 char * __thiscall DString::operator[](DString *this,int param_1)
 {
   if ((-1 < param_1) && (param_1 + 1 <= this->lengthValue)) {
@@ -351,8 +335,6 @@ char * __thiscall DString::operator[](DString *this,int param_1)
 
 // Function: operator_char*
 // Address: 00446d30
-/* public: __thiscall DString::operator char *(void)const  */
-
 char * __thiscall DString::operator_char_(DString *this)
 {
   return this->stringValue;
@@ -362,8 +344,6 @@ char * __thiscall DString::operator_char_(DString *this)
 
 // Function: length
 // Address: 00446d40
-/* public: int __thiscall DString::length(void)const  */
-
 int __thiscall DString::length(DString *this)
 {
   return this->lengthValue;
@@ -373,8 +353,6 @@ int __thiscall DString::length(DString *this)
 
 // Function: index
 // Address: 00446d50
-/* public: int __thiscall DString::index(void)const  */
-
 int __thiscall DString::index(DString *this)
 {
   return this->indexValue;
@@ -384,8 +362,6 @@ int __thiscall DString::index(DString *this)
 
 // Function: contains
 // Address: 00446d60
-/* public: int __thiscall DString::contains(class DString)const  */
-
 int __thiscall DString::contains(DString *this,DString param_1)
 {
   char *pcVar1;
@@ -416,8 +392,6 @@ int __thiscall DString::contains(DString *this,DString param_1)
 
 // Function: contains
 // Address: 00446de0
-/* public: int __thiscall DString::contains(char const *)const  */
-
 int __thiscall DString::contains(DString *this,char *param_1)
 {
   int iVar1;
@@ -430,8 +404,6 @@ int __thiscall DString::contains(DString *this,char *param_1)
 
 // Function: numWords
 // Address: 00446e00
-/* public: int __thiscall DString::numWords(void) */
-
 int __thiscall DString::numWords(DString *this)
 {
   int iVar1;
@@ -480,8 +452,6 @@ LAB_00446e61:
 // Function: word
 // Address: 00446e90
 // [HELPER] s_: ""
-/* public: class DString __thiscall DString::word(int) */
-
 DString * __thiscall DString::word(DString *this,DString *__return_storage_ptr__,int param_1)
 {
   bool bVar1;
@@ -551,8 +521,6 @@ LAB_00446fb6:
 
 // Function: nextWord
 // Address: 00446fd0
-/* public: class DString __thiscall DString::nextWord(int) */
-
 DString * __thiscall DString::nextWord(DString *this,DString *__return_storage_ptr__,int param_1)
 {
   int iVar1;
@@ -598,8 +566,6 @@ DString * __thiscall DString::nextWord(DString *this,DString *__return_storage_p
 
 // Function: moveToFirstWord
 // Address: 004470b0
-/* public: void __thiscall DString::moveToFirstWord(void) */
-
 void __thiscall DString::moveToFirstWord(DString *this)
 {
   this->indexValue = 0;
@@ -611,8 +577,6 @@ void __thiscall DString::moveToFirstWord(DString *this)
 
 // Function: moveToNextWord
 // Address: 004470c0
-/* public: void __thiscall DString::moveToNextWord(void) */
-
 void __thiscall DString::moveToNextWord(DString *this)
 {
   int iVar1;
@@ -636,8 +600,6 @@ void __thiscall DString::moveToNextWord(DString *this)
 
 // Function: subString
 // Address: 00447140
-/* public: class DString __thiscall DString::subString(int,int) */
-
 DString * __thiscall
 DString::subString(DString *this,DString *__return_storage_ptr__,int param_1,int param_2)
 {
@@ -685,8 +647,6 @@ DString::subString(DString *this,DString *__return_storage_ptr__,int param_1,int
 
 // Function: append
 // Address: 004471f0
-/* public: void __thiscall DString::append(class DString) */
-
 void __thiscall DString::append(DString *this,DString param_1)
 {
   int iVar1;
@@ -743,8 +703,6 @@ void __thiscall DString::append(DString *this,DString param_1)
 
 // Function: stripTrailing
 // Address: 004472d0
-/* public: class DString __thiscall DString::stripTrailing(char) */
-
 DString * __thiscall
 DString::stripTrailing(DString *this,DString *__return_storage_ptr__,char param_1)
 {
@@ -783,8 +741,6 @@ DString::stripTrailing(DString *this,DString *__return_storage_ptr__,char param_
 
 // Function: stripLeading
 // Address: 00447370
-/* public: class DString __thiscall DString::stripLeading(char) */
-
 DString * __thiscall
 DString::stripLeading(DString *this,DString *__return_storage_ptr__,char param_1)
 {
@@ -821,8 +777,6 @@ DString::stripLeading(DString *this,DString *__return_storage_ptr__,char param_1
 
 // Function: asInt
 // Address: 00447400
-/* public: int __thiscall DString::asInt(void)const  */
-
 int __thiscall DString::asInt(DString *this)
 {
   int iVar1;
@@ -835,8 +789,6 @@ int __thiscall DString::asInt(DString *this)
 
 // Function: asDouble
 // Address: 00447410
-/* public: double __thiscall DString::asDouble(void)const  */
-
 double __thiscall DString::asDouble(DString *this)
 {
   float10 fVar1;
@@ -849,8 +801,6 @@ double __thiscall DString::asDouble(DString *this)
 
 // Function: uppercase
 // Address: 00447420
-/* public: void __thiscall DString::uppercase(void) */
-
 void __thiscall DString::uppercase(DString *this)
 {
   char cVar1;
@@ -874,8 +824,6 @@ void __thiscall DString::uppercase(DString *this)
 
 // Function: asUppercase
 // Address: 00447460
-/* public: class DString __thiscall DString::asUppercase(void) */
-
 DString * __thiscall DString::asUppercase(DString *this,DString *__return_storage_ptr__)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -905,8 +853,6 @@ DString * __thiscall DString::asUppercase(DString *this,DString *__return_storag
 
 // Function: lowercase
 // Address: 004474e0
-/* public: void __thiscall DString::lowercase(void) */
-
 void __thiscall DString::lowercase(DString *this)
 {
   char cVar1;
@@ -930,8 +876,6 @@ void __thiscall DString::lowercase(DString *this)
 
 // Function: asLowercase
 // Address: 00447520
-/* public: class DString __thiscall DString::asLowercase(void) */
-
 DString * __thiscall DString::asLowercase(DString *this,DString *__return_storage_ptr__)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -961,8 +905,6 @@ DString * __thiscall DString::asLowercase(DString *this,DString *__return_storag
 
 // Function: change
 // Address: 004475a0
-/* public: void __thiscall DString::change(char,char) */
-
 void __thiscall DString::change(DString *this,char param_1,char param_2)
 {
   int iVar1;

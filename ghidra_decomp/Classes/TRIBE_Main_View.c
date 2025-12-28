@@ -150,8 +150,6 @@
 
 // Function: `scalar_deleting_destructor'
 // Address: 00495470
-/* public: virtual void * __thiscall TRIBE_Main_View::`scalar deleting destructor'(unsigned int) */
-
 void * __thiscall TRIBE_Main_View::_scalar_deleting_destructor_(TRIBE_Main_View *this,uint param_1)
 {
   ~TRIBE_Main_View(this);
@@ -165,8 +163,6 @@ void * __thiscall TRIBE_Main_View::_scalar_deleting_destructor_(TRIBE_Main_View 
 
 // Function: ~TRIBE_Main_View
 // Address: 00495490
-/* public: virtual __thiscall TRIBE_Main_View::~TRIBE_Main_View(void) */
-
 void __thiscall TRIBE_Main_View::~TRIBE_Main_View(TRIBE_Main_View *this)
 {
   TShape *this_00;
@@ -263,9 +259,6 @@ void __thiscall TRIBE_Main_View::~TRIBE_Main_View(TRIBE_Main_View *this)
 
 // Function: draw_multi_object_outline
 // Address: 0052caf0
-/* WARNING: Variable defined which should be unmapped: calc_row2 */
-/* public: virtual void __thiscall TRIBE_Main_View::draw_multi_object_outline(void) */
-
 void __thiscall TRIBE_Main_View::draw_multi_object_outline(TRIBE_Main_View *this)
 {
   int iVar1;
@@ -548,11 +541,6 @@ LAB_0052d047:
 
 // Function: draw_wall_outline
 // Address: 0052d060
-/* WARNING: Variable defined which should be unmapped: x1 */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: int __thiscall TRIBE_Main_View::draw_wall_outline(long,long,class
-   TRIBE_Master_Building_Object *,long) */
-
 int __thiscall
 TRIBE_Main_View::draw_wall_outline
           (TRIBE_Main_View *this,long param_1,long param_2,TRIBE_Master_Building_Object *param_3,
@@ -638,9 +626,6 @@ TRIBE_Main_View::draw_wall_outline
 
 // Function: command_place_object
 // Address: 0052d1f0
-/* WARNING: Variable defined which should be unmapped: pick_info */
-/* public: virtual int __thiscall TRIBE_Main_View::command_place_object(long,long,int) */
-
 int __thiscall
 TRIBE_Main_View::command_place_object(TRIBE_Main_View *this,long param_1,long param_2,int param_3)
 {
@@ -700,9 +685,6 @@ TRIBE_Main_View::command_place_object(TRIBE_Main_View *this,long param_1,long pa
 
 // Function: command_place_multi_object
 // Address: 0052d320
-/* public: virtual int __thiscall
-   TRIBE_Main_View::command_place_multi_object(long,long,long,long,int) */
-
 int __thiscall
 TRIBE_Main_View::command_place_multi_object
           (TRIBE_Main_View *this,long param_1,long param_2,long param_3,long param_4,int param_5)
@@ -787,11 +769,6 @@ LAB_0052d4c7:
 
 // Function: place_line_of_walls
 // Address: 0052d4f0
-/* WARNING: Variable defined which should be unmapped: x_skip */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* protected: void __thiscall TRIBE_Main_View::place_line_of_walls(class TRIBE_Player *,class
-   TRIBE_Master_Building_Object *,int,int,int,int) */
-
 void __thiscall
 TRIBE_Main_View::place_line_of_walls
           (TRIBE_Main_View *this,TRIBE_Player *param_1,TRIBE_Master_Building_Object *param_2,
@@ -840,9 +817,6 @@ TRIBE_Main_View::place_line_of_walls
 
 // Function: mouse_left_up_action
 // Address: 0052d600
-/* WARNING: Variable defined which should be unmapped: pick_info */
-/* public: virtual long __thiscall TRIBE_Main_View::mouse_left_up_action(long,long,int,int) */
-
 long __thiscall
 TRIBE_Main_View::mouse_left_up_action
           (TRIBE_Main_View *this,long param_1,long param_2,int param_3,int param_4)
@@ -879,7 +853,6 @@ switchD_0052d657_default:
                         (*(TRIBE_Player **)&this->field_0x100,pick_info.y,(float)pick_info._8_4_);
       if (uVar1 != '\0') {
         RGE_Main_View::reset_display_object_selection((RGE_Main_View *)this,2);
-                    /* language.dll match for 0x7d: "Arial" */
         RGE_View::add_overlay_sprite
                   ((RGE_View *)this,rge_base_game->shapes[2],0,*(int *)&this->field_0x130 + param_1,
                    *(int *)&this->field_0x134 + param_2,0,0xf,(uchar *)0x0,2,0x7d);
@@ -893,7 +866,6 @@ switchD_0052d657_default:
     if ((this->field_0xec != '\x01') && (this->field_0xec != '\x02')) {
       return 1;
     }
-                    /* language.dll match for 0x68: "Arial" */
     iVar2 = (**(code **)(*(int *)this + 0x100))(param_1,param_2,0,0x68);
     if (iVar2 != 0) goto LAB_0052d7cc;
 LAB_0052d7bf:
@@ -946,7 +918,6 @@ joined_r0x0052d81c:
                         (*(TRIBE_Player **)&this->field_0x100,pick_info.y,(float)pick_info._8_4_);
       if (uVar1 != '\0') {
         RGE_Main_View::reset_display_object_selection((RGE_Main_View *)this,2);
-                    /* language.dll match for 0x7d: "Arial" */
         RGE_View::add_overlay_sprite
                   ((RGE_View *)this,rge_base_game->shapes[2],0,*(int *)&this->field_0x130 + param_1,
                    *(int *)&this->field_0x134 + param_2,0,0xf,(uchar *)0x0,2,0x7d);
@@ -968,9 +939,6 @@ LAB_0052d74d:
 
 // Function: mouse_right_up_action
 // Address: 0052d970
-/* WARNING: Variable defined which should be unmapped: pick_info */
-/* public: virtual long __thiscall TRIBE_Main_View::mouse_right_up_action(long,long,int,int) */
-
 long __thiscall
 TRIBE_Main_View::mouse_right_up_action
           (TRIBE_Main_View *this,long param_1,long param_2,int param_3,int param_4)
@@ -1007,7 +975,6 @@ switchD_0052d9c7_default:
                         (*(TRIBE_Player **)&this->field_0x100,pick_info.y,(float)pick_info._8_4_);
       if (uVar1 != '\0') {
         RGE_Main_View::reset_display_object_selection((RGE_Main_View *)this,2);
-                    /* language.dll match for 0x7d: "Arial" */
         RGE_View::add_overlay_sprite
                   ((RGE_View *)this,rge_base_game->shapes[2],0,*(int *)&this->field_0x130 + param_1,
                    *(int *)&this->field_0x134 + param_2,0,0xf,(uchar *)0x0,2,0x7d);
@@ -1021,7 +988,6 @@ switchD_0052d9c7_default:
     if ((this->field_0xec != '\x01') && (this->field_0xec != '\x02')) {
       return 1;
     }
-                    /* language.dll match for 0x68: "Arial" */
     iVar2 = (**(code **)(*(int *)this + 0x100))(param_1,param_2,0,0x68);
     if (iVar2 != 0) goto LAB_0052db3c;
 LAB_0052db2f:
@@ -1074,7 +1040,6 @@ joined_r0x0052db8c:
                         (*(TRIBE_Player **)&this->field_0x100,pick_info.y,(float)pick_info._8_4_);
       if (uVar1 != '\0') {
         RGE_Main_View::reset_display_object_selection((RGE_Main_View *)this,2);
-                    /* language.dll match for 0x7d: "Arial" */
         RGE_View::add_overlay_sprite
                   ((RGE_View *)this,rge_base_game->shapes[2],0,*(int *)&this->field_0x130 + param_1,
                    *(int *)&this->field_0x134 + param_2,0,0xf,(uchar *)0x0,2,0x7d);
@@ -1096,8 +1061,6 @@ LAB_0052dabd:
 
 // Function: pick_through_fog
 // Address: 0052dce0
-/* public: virtual int __thiscall TRIBE_Main_View::pick_through_fog(class RGE_Static_Object *) */
-
 int __thiscall TRIBE_Main_View::pick_through_fog(TRIBE_Main_View *this,RGE_Static_Object *param_1)
 {
   int iVar1;
@@ -1113,8 +1076,6 @@ int __thiscall TRIBE_Main_View::pick_through_fog(TRIBE_Main_View *this,RGE_Stati
 
 // Function: pick_weight
 // Address: 0052dd10
-/* public: virtual int __thiscall TRIBE_Main_View::pick_weight(class RGE_Static_Object *,int) */
-
 int __thiscall
 TRIBE_Main_View::pick_weight(TRIBE_Main_View *this,RGE_Static_Object *param_1,int param_2)
 {
@@ -1178,8 +1139,6 @@ TRIBE_Main_View::pick_weight(TRIBE_Main_View *this,RGE_Static_Object *param_1,in
 
 // Function: command_make_do
 // Address: 0052de20
-/* public: virtual int __thiscall TRIBE_Main_View::command_make_do(long,long,int,short) */
-
 int __thiscall
 TRIBE_Main_View::command_make_do
           (TRIBE_Main_View *this,long param_1,long param_2,int param_3,short param_4)
@@ -1194,10 +1153,6 @@ TRIBE_Main_View::command_make_do
 
 // Function: mouse_left_dbl_click_action
 // Address: 0052de40
-/* WARNING: Variable defined which should be unmapped: pick_info */
-/* public: virtual long __thiscall TRIBE_Main_View::mouse_left_dbl_click_action(long,long,int,int)
-    */
-
 long __thiscall
 TRIBE_Main_View::mouse_left_dbl_click_action
           (TRIBE_Main_View *this,long param_1,long param_2,int param_3,int param_4)

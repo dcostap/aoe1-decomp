@@ -18,8 +18,6 @@
 
 // Function: RGE_Scenario_Header
 // Address: 0048ab10
-/* public: __thiscall RGE_Scenario_Header::RGE_Scenario_Header(class RGE_Scenario *) */
-
 RGE_Scenario_Header * __thiscall
 RGE_Scenario_Header::RGE_Scenario_Header(RGE_Scenario_Header *this,RGE_Scenario *param_1)
 {
@@ -87,9 +85,6 @@ RGE_Scenario_Header::RGE_Scenario_Header(RGE_Scenario_Header *this,RGE_Scenario 
 
 // Function: RGE_Scenario_Header
 // Address: 0048abb0
-/* WARNING: Variable defined which should be unmapped: header_size */
-/* public: __thiscall RGE_Scenario_Header::RGE_Scenario_Header(int) */
-
 RGE_Scenario_Header * __thiscall
 RGE_Scenario_Header::RGE_Scenario_Header(RGE_Scenario_Header *this,int param_1)
 {
@@ -131,8 +126,6 @@ RGE_Scenario_Header::RGE_Scenario_Header(RGE_Scenario_Header *this,int param_1)
 
 // Function: ~RGE_Scenario_Header
 // Address: 0048ac70
-/* public: __thiscall RGE_Scenario_Header::~RGE_Scenario_Header(void) */
-
 void __thiscall RGE_Scenario_Header::~RGE_Scenario_Header(RGE_Scenario_Header *this)
 {
   this->_padding_ = (int)&_vftable_;
@@ -147,8 +140,6 @@ void __thiscall RGE_Scenario_Header::~RGE_Scenario_Header(RGE_Scenario_Header *t
 
 // Function: get_size
 // Address: 0048aca0
-/* public: virtual long __thiscall RGE_Scenario_Header::get_size(void) */
-
 long __thiscall RGE_Scenario_Header::get_size(RGE_Scenario_Header *this)
 {
   char cVar1;
@@ -173,9 +164,6 @@ long __thiscall RGE_Scenario_Header::get_size(RGE_Scenario_Header *this)
 
 // Function: save
 // Address: 0048acc0
-/* WARNING: Variable defined which should be unmapped: desc_size */
-/* public: virtual void __thiscall RGE_Scenario_Header::save(int) */
-
 void __thiscall RGE_Scenario_Header::save(RGE_Scenario_Header *this,int param_1)
 {
   char cVar1;

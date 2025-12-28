@@ -225,9 +225,6 @@
 // Address: 004920c0
 // [HELPER] s_Create_Dialog: "Create Dialog"
 // [HELPER] s_Default_Age_Of_Empires_MP_Gamena: "Default Age Of Empires MP Gamename"
-/* WARNING: Variable defined which should be unmapped: tab_list */
-/* public: __thiscall TribeMPCreateDialog::TribeMPCreateDialog(class TPanel *) */
-
 TribeMPCreateDialog * __thiscall
 TribeMPCreateDialog::TribeMPCreateDialog(TribeMPCreateDialog *this,TPanel *param_1)
 {
@@ -273,8 +270,6 @@ TribeMPCreateDialog::TribeMPCreateDialog(TribeMPCreateDialog *this,TPanel *param
   pTVar6 = TPanel::renderArea(param_1);
   iVar13 = TDialogPanel::setup((TDialogPanel *)this,pTVar6,param_1,lVar11,lVar12,pcVar5,lVar4,iVar13
                               );
-                    /* language.dll match for 0x25a6: "Create Game" */
-                    /* language.dll match for 0x25aa: "Game Name" */
   if (((iVar13 != 0) &&
       (iVar13 = TEasy_Panel::create_text
                           ((TEasy_Panel *)this,(TPanel *)this,&this->title,0x25a6,0x14,0x14,0x1cc,
@@ -310,17 +305,14 @@ TribeMPCreateDialog::TribeMPCreateDialog(TribeMPCreateDialog *this,TPanel *param
         pcVar5 = pcVar5 + 1;
       }
     }
-                    /* language.dll match for 0x6e: "Copperplate Gothic Light" */
     iVar13 = TEasy_Panel::create_edit
                        ((TEasy_Panel *)this,(TPanel *)this,ppTVar1,str + 4,0x28,FormatText,0x28,0x6e
                         ,0x1a4,0x17,0xb,1,0);
     if (iVar13 != 0) {
-                    /* language.dll match for 0xfa1: "OK" */
       iVar13 = TEasy_Panel::create_button
                          ((TEasy_Panel *)this,(TPanel *)this,&this->okButton,0xfa1,0,0x3c,0xb4,0xb4,
                           0x1e,0,0,0);
       if (iVar13 != 0) {
-                    /* language.dll match for 0xfa2: "Cancel" */
         iVar13 = TEasy_Panel::create_button
                            ((TEasy_Panel *)this,(TPanel *)this,&this->cancelButton,0xfa2,0,0x104,
                             0xb4,0xb4,0x1e,0,0,0);
@@ -344,9 +336,6 @@ TribeMPCreateDialog::TribeMPCreateDialog(TribeMPCreateDialog *this,TPanel *param
 
 // Function: `vector_deleting_destructor'
 // Address: 00492310
-/* public: virtual void * __thiscall TribeMPCreateDialog::`vector deleting destructor'(unsigned int)
-    */
-
 void * __thiscall
 TribeMPCreateDialog::_vector_deleting_destructor_(TribeMPCreateDialog *this,uint param_1)
 {
@@ -361,8 +350,6 @@ TribeMPCreateDialog::_vector_deleting_destructor_(TribeMPCreateDialog *this,uint
 
 // Function: ~TribeMPCreateDialog
 // Address: 00492330
-/* public: virtual __thiscall TribeMPCreateDialog::~TribeMPCreateDialog(void) */
-
 void __thiscall TribeMPCreateDialog::~TribeMPCreateDialog(TribeMPCreateDialog *this)
 {
   undefined4 *unaff_FS_OFFSET;
@@ -400,9 +387,6 @@ void __thiscall TribeMPCreateDialog::~TribeMPCreateDialog(TribeMPCreateDialog *t
 // [HELPER] s_closedpw: "closedpw"
 // [HELPER] s_data_closedpw_exe: "data\closedpw.exe"
 // [HELPER] s_scr3: "scr3"
-/* protected: virtual long __thiscall TribeMPCreateDialog::action(class TPanel *,long,unsigned
-   long,unsigned long) */
-
 long __thiscall
 TribeMPCreateDialog::action
           (TribeMPCreateDialog *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
@@ -475,8 +459,6 @@ TribeMPCreateDialog::action
           iVar3 = 0x4c3;
         }
         else {
-                    /* language.dll match for 0x4c2: "Creating multiplayer game...\\n\\n\\n\\nPlease
-                       press ESC if the game is not\\ncreated within 15 seconds." */
           iVar3 = 0x4c2;
         }
         TRIBE_Game::show_status_message((TRIBE_Game *)rge_base_game,iVar3,&s_scr3,0xc385);
@@ -501,8 +483,6 @@ TribeMPCreateDialog::action
           TPanelSystem::destroyPanel(&panel_system,s_Create_Dialog);
           TPanelSystem::setCurrentPanel(&panel_system,s_Join_Screen,0);
           TPanelSystem::destroyPanel(&panel_system,s_Status_Screen);
-                    /* language.dll match for 0x25ad: "Unable to create game. For TCP/IP games, you
-                       may need to connect to the Internet before starting Age of Empires." */
           TEasy_Panel::popupOKDialog(this_00,0x25ad,(char *)0x0,0x1c2,100);
           lVar4 = 1;
         }

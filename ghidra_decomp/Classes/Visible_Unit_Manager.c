@@ -11,8 +11,6 @@
 
 // Function: Visible_Unit_Manager
 // Address: 0053b5a0
-/* public: __thiscall Visible_Unit_Manager::Visible_Unit_Manager(int,int) */
-
 Visible_Unit_Manager * __thiscall
 Visible_Unit_Manager::Visible_Unit_Manager(Visible_Unit_Manager *this,int param_1,int param_2)
 {
@@ -68,9 +66,6 @@ Visible_Unit_Manager::Visible_Unit_Manager(Visible_Unit_Manager *this,int param_
 
 // Function: ~Visible_Unit_Manager
 // Address: 0053b670
-/* WARNING: Variable defined which should be unmapped: i */
-/* public: __thiscall Visible_Unit_Manager::~Visible_Unit_Manager(void) */
-
 void __thiscall Visible_Unit_Manager::~Visible_Unit_Manager(Visible_Unit_Manager *this)
 {
   VISIBLE_UNIT_PTR *pVVar1;
@@ -126,8 +121,6 @@ void __thiscall Visible_Unit_Manager::~Visible_Unit_Manager(Visible_Unit_Manager
 
 // Function: Build_Distance_Table
 // Address: 0053b730
-/* public: void __thiscall Visible_Unit_Manager::Build_Distance_Table(void) */
-
 void __thiscall Visible_Unit_Manager::Build_Distance_Table(Visible_Unit_Manager *this)
 {
   int *piVar1;
@@ -192,9 +185,6 @@ void __thiscall Visible_Unit_Manager::Build_Distance_Table(Visible_Unit_Manager 
 
 // Function: Update_Unit_Info
 // Address: 0053b7e0
-/* public: void __thiscall Visible_Unit_Manager::Update_Unit_Info(int,int,int,int,int,unsigned
-   long,unsigned long,struct VISIBLE_UNIT_REC * *) */
-
 void __thiscall
 Visible_Unit_Manager::Update_Unit_Info
           (Visible_Unit_Manager *this,int param_1,int param_2,int param_3,int param_4,int param_5,
@@ -300,8 +290,6 @@ Visible_Unit_Manager::Update_Unit_Info
 
 // Function: GetVisibleUnits
 // Address: 0053b9a0
-/* public: int __thiscall Visible_Unit_Manager::GetVisibleUnits(int,int,int,int,int *,int,int *) */
-
 int __thiscall
 Visible_Unit_Manager::GetVisibleUnits
           (Visible_Unit_Manager *this,int param_1,int param_2,int param_3,int param_4,int *param_5,
@@ -349,12 +337,10 @@ Visible_Unit_Manager::GetVisibleUnits
   DAT_0087d7d4 = 0;
   DAT_0087d7d8 = 0;
   do {
-                    /* Symbol Ref: {@symbol start} */
     iVar4 = *param_5;
     param_5 = param_5 + 1;
     pVVar16 = pVVar3[iVar4].unit_list;
     for (uVar13 = *(uint *)&pVVar3[iVar4].used & 0xffff; uVar13 != 0; uVar13 = uVar13 - 1) {
-                    /* Symbol Ref: {@symbol scan_list} */
       uVar15 = (uint)pVVar16->pos_x;
       if ((int)uVar15 <= param_1 + param_3) {
         if ((int)uVar15 < param_1) {
@@ -362,10 +348,8 @@ Visible_Unit_Manager::GetVisibleUnits
           uVar15 = param_1 - uVar15;
         }
         else {
-                    /* Symbol Ref: {@symbol do_ypos2} */
           uVar15 = uVar15 - param_1;
         }
-                    /* Symbol Ref: {@symbol do_ypos} */
         uVar14 = (uint)pVVar16->pos_y;
         if ((int)uVar14 <= param_3 + param_2) {
           if ((int)uVar14 < param_2) {
@@ -373,10 +357,8 @@ Visible_Unit_Manager::GetVisibleUnits
             uVar14 = param_2 - uVar14;
           }
           else {
-                    /* Symbol Ref: {@symbol do_dist2} */
             uVar14 = uVar14 - param_2;
           }
-                    /* Symbol Ref: {@symbol do_dist} */
           bVar1 = puVar2[(uVar15 & 0xf) + (uVar14 & 0xf) * 0x10];
           if ((int)(uint)bVar1 <= param_3) {
             iVar4 = param_7[pVVar16->player];
@@ -398,10 +380,8 @@ Visible_Unit_Manager::GetVisibleUnits
         }
       }
 LAB_0053baff:
-                    /* Symbol Ref: {@symbol next_entry} */
       pVVar16 = pVVar16 + 1;
     }
-                    /* Symbol Ref: {@symbol empty_list} */
     param_6 = param_6 + -1;
     if (param_6 == 0) {
       return found;
