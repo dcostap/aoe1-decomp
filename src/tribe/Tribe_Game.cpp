@@ -9,6 +9,19 @@ int out_of_sync = 0;
 int out_of_sync2 = 0;
 int player_dropped[9]; // Assuming 9 based on loops
 
+// Stubs for setup dependencies
+void RESFILE_build_res_file(const char* a, const char* b, const char* c) {}
+void RESFILE_open_new_resource_file(const char* name, const char* type, const char* path, int flag) {}
+int video_codec_available = 0;
+int _ICInfo_12(int a, int b, void* c) { return 1; }
+struct TCommunications_Handler { static int LaunchLobbyGame(void* ptr) { return 0; } };
+struct TPanelSystem { 
+    static void setCurrentPanel(void* sys, const char* name, int v) {} 
+    static void destroyPanel(void* sys, const char* name) {}
+    static void* panel(void* sys, const char* name) { return nullptr; }
+};
+TPanelSystem panel_system;
+
 // --- TRIBE_Game Implementation ---
 
 TRIBE_Game::TRIBE_Game(RGE_Prog_Info* info, int do_setup) 
@@ -127,11 +140,81 @@ int TRIBE_Game::get_error_code() {
 }
 
 int TRIBE_Game::setup() {
-#ifdef _DEBUG
-    printf("[TRIBE_Game] setup() called\n");
-#endif
-    return 0; // Success
+    // Check if prog_info is valid (implicit via _padding_ check in decomp)
+    if (!this->prog_info) return 0;
+
+    // Resource Building Stub (Makeres)
+    if (strstr(this->prog_info->cmd_line, "makeres") || 
+        strstr(this->prog_info->cmd_line, "Makeres")) {
+        // RESFILE_build_res_file...
+    }
+
+    // Load Resources
+    RESFILE_open_new_resource_file("sounds.drs", "tribe", this->prog_info->resource_dir, 1);
+    RESFILE_open_new_resource_file("graphics.drs", "tribe", this->prog_info->resource_dir, 0);
+    RESFILE_open_new_resource_file("Interfac.drs", "tribe", this->prog_info->resource_dir, 0);
+    
+    // Call Base Setup
+    int res = RGE_Base_Game::setup();
+    if (res == 0) return 0;
+
+    // Load Language DLL
+    // (Complex string parsing stubbed for now, just load "language.dll" or similar)
+    StringTableX = LoadLibraryA("language.dll");
+    if (!StringTableX) return 0;
+
+    // Setup Palette Entries (Decomp logic omitted for brevity)
+    
+    // Create InputDisabledWindow
+    // Note: Decomp uses `this->_padding_` as hWndParent. We use `this->prog_window`.
+    // It also uses `*(this->_padding_ + 0x410)` (instance) for hInstance.
+    HWND hInputWnd = CreateWindowExA(
+        0, 
+        "STATIC", 
+        "InputDisabledWindow", 
+        0x40000000 | WS_CHILD, // WS_CHILD assumed if parent is main window
+        0, 0, 1, 1, 
+        this->prog_window, 
+        NULL, 
+        (HINSTANCE)this->prog_info->instance, 
+        NULL
+    );
+    this->input_disabled_window = hInputWnd;
+
+    // TODO: Video Codec Check
+    // video_codec_available = ...
+
+    // Lobby / Startup Logic
+    if (check_prog_argument("LOBBY") == 0) {
+         if (TCommunications_Handler::LaunchLobbyGame(this->comm_handler) == 1) {
+             // Multiplayer Setup
+         } else {
+             // Single Player / Intro
+             if (this->startup_scenario[0] == '\0') {
+                 if (this->startup_game[0] == '\0') {
+                     if (this->prog_info->skip_startup == 0) { // Offset 0x890
+                        start_video(this, 0, "logo1");
+                     } else {
+                        if (start_menu() == 0) return 0;
+                     }
+                 } else {
+                     load_game(this->startup_game);
+                 }
+             } else {
+                 start_scenario(this->startup_scenario);
+             }
+         }
+    }
+
+    return 1;
 }
+
+// Helpers
+int TRIBE_Game::start_video(void* this_ptr, int u, const char* name) { return 1; }
+int TRIBE_Game::start_menu() { return 1; }
+int TRIBE_Game::load_game(const char* name) { return 1; }
+int TRIBE_Game::start_scenario(const char* name) { return 1; }
+
 
 void TRIBE_Game::get_string(int id, char* buffer, int max_len) {
     snprintf(buffer, max_len, "String %d", id);

@@ -94,6 +94,12 @@ public:
     void setPlayerColor(int player, int color);
     void setComputerName(int player, int val);
     void resetRandomComputerName();
+
+    // Setup Helpers
+    int start_video(void* this_ptr, int u, const char* name);
+    int start_menu();
+    int load_game(const char* name);
+    int start_scenario(const char* name);
 };
 
 // MANDATORY VERIFICATION

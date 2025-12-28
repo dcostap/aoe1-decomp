@@ -2,7 +2,7 @@
 #include <windows.h>
 #include "RGE_Prog_Info.h"
 
-// Forward Declarations for Pointers found in Layout
+// Forward Declarations
 struct RGE_Game_Info;
 struct RGE_Scenario_File_Info;
 struct TDrawSystem;
@@ -20,7 +20,6 @@ struct RGE_Game_World;
 struct TChat;
 struct DriveInformation;
 
-// Derived from decomp layout loops
 struct RGE_Timing_Info {
     unsigned long last_time;
     unsigned long accum_time;
@@ -28,7 +27,7 @@ struct RGE_Timing_Info {
 };
 
 struct RGE_Game_Options {
-    char _data[0xA8]; // Placeholder size from layout
+    char _data[0xA8]; 
 };
 
 class RGE_Base_Game {
@@ -121,12 +120,10 @@ public:
     // -------------------------------------------------------------------------
     // MEMBERS
     // -------------------------------------------------------------------------
-    // Implicit vtable at 0x0000
-
     /* 0x0004 */ RGE_Game_Info* player_game_info;
     /* 0x0008 */ RGE_Scenario_File_Info* scenario_info;
     /* 0x000C */ RGE_Prog_Info* prog_info;
-    /* 0x0010 */ void* prog_window;
+    /* 0x0010 */ HWND prog_window; // Changed void* to HWND for clarity
     /* 0x0014 */ int prog_ready;
     /* 0x0018 */ int prog_active;
     /* 0x001C */ void* prog_palette;
@@ -231,7 +228,7 @@ public:
     // Constructor
     RGE_Base_Game(RGE_Prog_Info* info, int param_2);
     
-    // Helper Methods from Constructor
+    // Helper Methods
     void setVersion(float v);
     void setScenarioGame(int v);
     void setCampaignGame(int v);
@@ -254,6 +251,14 @@ public:
     void setMpPathFinding(char v);
     void setNumberPlayers(int v);
     void setScenarioName(char* s);
+
+    // New Helpers needed for setup()
+    int check_expiration();
+    int check_multi_copies();
+    int check_for_cd(int v);
+    unsigned char check_prog_argument(char* arg);
+    void close(); // Referred to in TRIBE_Game::setup as RGE_Base_Game::close? Likely VTable [60] handle_close? Or separate. Decomp says RGE_Base_Game::close((RGE_Base_Game *)this);
+    void mouse_on();
 };
 
 static_assert(sizeof(RGE_Base_Game) == 0xA24, "RGE_Base_Game size mismatch");
