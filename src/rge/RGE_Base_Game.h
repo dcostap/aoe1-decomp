@@ -1,6 +1,9 @@
 #pragma once
 #include <windows.h>
 #include "RGE_Prog_Info.h"
+#include <cctype>
+#include <cstring>
+#include <string>
 
 // Forward Declarations
 struct RGE_Game_Info;
@@ -32,21 +35,22 @@ struct RGE_Game_Options {
 
 class RGE_Base_Game {
 public:
-    // -------------------------------------------------------------------------
-    // VTABLE
-    // -------------------------------------------------------------------------
-    virtual ~RGE_Base_Game(); // [00]
-    virtual int run(); // [01]
-    virtual void wnd_proc(); // [02]
-    virtual void set_prog_mode(); // [03]
-    virtual void set_game_mode(); // [04]
-    virtual void set_player(); // [05]
-    virtual int get_error_code(); // [06]
-    virtual void get_string(int id, char* buffer, int max_len); // [07]
-    virtual void get_string_v8(); // [08]
-    virtual void get_string_v9(); // [09]
-    virtual void get_string2(int a1, int a2, int a3, char* buffer, int size); // [10]
-    virtual void get_view_panel(); // [11]
+    virtual ~RGE_Base_Game();                 // [00]
+    virtual int  run();                       // [01]
+    virtual long wnd_proc(HWND, UINT, WPARAM, LPARAM); // [02]
+    virtual void set_prog_mode();             // [03]
+    virtual void set_game_mode();             // [04]
+    virtual void set_player();                // [05]
+    virtual int  get_error_code();            // [06]
+
+    // [07], [08], [09], [10] MUST match these signatures and order:
+    virtual char* get_string(long id);                                // [07]
+    virtual char* get_string(long id, char* out, int outLen);         // [08]
+    virtual char* get_string(int mode, long code, char* out, int outLen); // [09]
+    virtual char* get_string2(int mode, long code, long extra, char* out, int outLen); // [10]
+
+    virtual void* get_view_panel();           // [11]   
+
     virtual void get_map_panel(); // [12]
     virtual void new_scenario_header_13(); // [13]
     virtual void new_scenario_header_14(); // [14]
@@ -57,32 +61,32 @@ public:
     virtual void receive_game_options(); // [19]
     virtual void gameSummary(); // [20]
     virtual void processCheatCode(); // [21]
-    virtual void setup_music_system(); // [22]
+    virtual int setup_music_system(); // [22]
     virtual void shutdown_music_system(); // [23]
     virtual int setup(); // [24]
-    virtual void setup_cmd_options(); // [25]
-    virtual void setup_class(); // [26]
-    virtual void setup_main_window(); // [27]
-    virtual void setup_graphics_system(); // [28]
-    virtual void setup_palette(); // [29]
-    virtual void setup_mouse(); // [30]
+    virtual int setup_cmd_options(); // [25]
+    virtual int setup_class(); // [26]
+    virtual int setup_main_window(); // [27]
+    virtual int setup_graphics_system(); // [28]
+    virtual int setup_palette(); // [29]
+    virtual int setup_mouse(); // [30]
     virtual int setup_registry(); // [31]
     virtual int setup_debugging_log(); // [32]
-    virtual void setup_chat(); // [33]
-    virtual void setup_comm(); // [34]
-    virtual void setup_sound_system(); // [35]
-    virtual void setup_fonts(); // [36]
-    virtual void setup_sounds(); // [37]
-    virtual void setup_shapes(); // [38]
-    virtual void setup_blank_screen(); // [39]
-    virtual void setup_timings(); // [40]
+    virtual int setup_chat(); // [33]
+    virtual int setup_comm(); // [34]
+    virtual int setup_sound_system(); // [35]
+    virtual int setup_fonts(); // [36]
+    virtual int setup_sounds(); // [37]
+    virtual int setup_shapes(); // [38]
+    virtual int setup_blank_screen(); // [39]
+    virtual int setup_timings(); // [40]
     virtual void stop_sound_system(); // [41]
     virtual void restart_sound_system(); // [42]
     virtual void stop_music_system(); // [43]
     virtual void restart_music_system(); // [44]
     virtual void create_world(); // [45]
-    virtual void handle_message(); // [46]
-    virtual void handle_idle(); // [47]
+    virtual int handle_message(MSG* msg); // [46] 
+    virtual int handle_idle(); // [47]
     virtual void handle_mouse_move(); // [48]
     virtual void handle_key_down(); // [49]
     virtual void handle_user_command(); // [50]
@@ -114,7 +118,7 @@ public:
     virtual void show_timings(); // [76]
     virtual void show_comm(); // [77]
     virtual void show_ai(); // [78]
-    virtual void setup_map_save_area(); // [79]
+    virtual int setup_map_save_area(); // [79]
     virtual void set_interface_messages(); // [80]
 
     // -------------------------------------------------------------------------
@@ -259,6 +263,92 @@ public:
     unsigned char check_prog_argument(char* arg);
     void close(); // Referred to in TRIBE_Game::setup as RGE_Base_Game::close? Likely VTable [60] handle_close? Or separate. Decomp says RGE_Base_Game::close((RGE_Base_Game *)this);
     void mouse_on();
+
+protected:
+    static void force_terminate(char* out, int outLen) {
+        if (!out || outLen <= 0) return;
+        out[outLen - 1] = '\0';
+    }
+
+    static void clear(char* out) {
+        if (out) out[0] = '\0';
+    }
+
+
+    static inline void ForceTerminate(char* s, int n) {
+        if (s && n > 0) s[n - 1] = '\0';
+    }
+
+    static bool ContainsI(const char* haystack, const char* needle) {
+        if (!haystack || !needle) return false;
+        const size_t nlen = std::strlen(needle);
+        if (nlen == 0) return true;
+
+        for (const char* p = haystack; *p; ++p) {
+            size_t i = 0;
+            while (i < nlen) {
+                char a = p[i];
+                char b = needle[i];
+                if (!a) return false;
+                a = (char)std::toupper((unsigned char)a);
+                b = (char)std::toupper((unsigned char)b);
+                if (a != b) break;
+                ++i;
+            }
+            if (i == nlen) return true;
+        }
+        return false;
+    }
+
+    // Extracts the token after "KEY=" until whitespace.
+    // Example: cmd "... STRING=language_fre.dll ..." -> "language_fre.dll"
+    static std::string CmdValueToken(const char* cmdLine, const char* keyUpper /* e.g. "STRING=" */) {
+        if (!cmdLine || !keyUpper) return {};
+
+        // Make an uppercased copy to locate the key (matches CharUpperA+__mbsstr intent)
+        std::string up(cmdLine);
+        for (char& c : up) c = (char)std::toupper((unsigned char)c);
+
+        const char* found = std::strstr(up.c_str(), keyUpper);
+        if (!found) return {};
+
+        size_t pos = (size_t)(found - up.c_str());
+        pos += std::strlen(keyUpper); // after '='
+
+        // Now walk the ORIGINAL cmdLine at the same position to preserve original bytes
+        const char* p = cmdLine + pos;
+
+        // skip spaces
+        while (*p && std::isspace((unsigned char)*p)) ++p;
+
+        // read token until whitespace
+        std::string out;
+        while (*p && !std::isspace((unsigned char)*p)) {
+            out.push_back(*p++);
+        }
+        return out;
+    }
+
+    // Loads a resource-only string DLL so LoadStringA works.
+    // Tries "<workDir>\dllName" first (matches typical AoE behavior), then bare name.
+    static HMODULE LoadStringDll(const char* workDir, const char* dllName) {
+        if (!dllName || !dllName[0]) return nullptr;
+
+        char path[MAX_PATH]{};
+        if (workDir && workDir[0]) {
+            // workDir is usually the current directory (no trailing slash)
+            _snprintf(path, sizeof(path), "%s\\%s", workDir, dllName);
+            HMODULE h = LoadLibraryExA(path, nullptr, LOAD_LIBRARY_AS_DATAFILE);
+            if (h) return h;
+        }
+
+        HMODULE h = LoadLibraryExA(dllName, nullptr, LOAD_LIBRARY_AS_DATAFILE);
+        if (h) return h;
+
+        // last resort
+        return LoadLibraryA(dllName);
+    }
+
 };
 
 static_assert(sizeof(RGE_Base_Game) == 0xA24, "RGE_Base_Game size mismatch");

@@ -1,10 +1,12 @@
 #pragma once
 #include "../rge/RGE_Base_Game.h"
+#include "../common.h"
 
 // Forward Declares for Member Types
 struct MouseClickInfo { int x, y; }; // Stub
 struct TRIBE_Game_Options { char _data[0x6C]; }; // Stub size 0x6C
 struct TRIBE_Screen_Game { char _data[100]; }; // Stub
+
 
 class TRIBE_Game : public RGE_Base_Game {
 public:
@@ -12,10 +14,19 @@ public:
     TRIBE_Game(RGE_Prog_Info* info, int do_setup);
 
     // VTable Overrides
-    virtual int run() override;
-    virtual int get_error_code() override;
     virtual int setup() override;
-    virtual void get_string(int id, char* buffer, int max_len) override;
+
+    // ---------------------------------------------------------------------
+    // Override loader: try StringTableX first, fallback to base StringTable
+    // Address 005228e0
+    // ---------------------------------------------------------------------
+    char* get_string(long id, char* out, int outLen) override;
+
+    // ---------------------------------------------------------------------
+    // Override selector: extra modes/mappings, otherwise fallback to base
+    // Address 00522930
+    // ---------------------------------------------------------------------
+    char* get_string2(int mode, long code, long extra, char* out, int outLen) override;
 
     // -------------------------------------------------------------------------
     // MEMBERS (Starting at 0xA24)
@@ -73,11 +84,11 @@ public:
     // 0x1254 End.
     
     // Helper Methods (Not virtuals, but regular functions seen in Constructor)
-    void setMapSize(int val);
-    void setMapType(int val);
+    void setMapSize(MapSize val);
+    void setMapType(MapType val);
     void setAnimals(int val);
     void setPredators(int val);
-    void setVictoryType(int type, int val);
+    void setVictoryType(VictoryType type, int val);
     void setAllowTrading(int val);
     void setLongCombat(int val);
     void setRandomizePositions(int val);

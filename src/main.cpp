@@ -5,13 +5,6 @@
 #include "rge/RGE_Prog_Info.h"
 #include "tribe/Tribe_Game.h"
 
-// [HELPER] Global GUIDs defined in globals.json / Decomp
-// GUIDs: Data1, Data2, Data3, {Data4[0]..Data4[7]}
-const GUID _TRIBE_GUID = { 0x3B3F4596, 0x46A8, 0xF2E8, { 0xE2, 0xEB, 0xD1, 0x11, 0x83, 0x9B, 0x00, 0x60 } };
-const GUID _ZONE_GUID  = { 0x08F50797, 0x46AA, 0xF2E8, { 0xE2, 0xEB, 0xD1, 0x11, 0x83, 0x9B, 0x00, 0x60 } };
-
-#define _DEBUG 1
-
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
     
     // Rule 4: Debugging & Temporary Code
@@ -51,11 +44,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     if (lpCmdLine) strncpy(info.cmd_line, lpCmdLine, 255);
 
     strcpy(info.icon_name, "AppIcon");
-    strcpy(info.menu_name, "AppIcon");
-    strcpy(info.pal_file, "");
-    strcpy(info.cursor_file, "palette");
-    strcpy(info.vol_name, "mcursors"); // Note: Decomp maps 'mcursors' to vol_name
-    strcpy(info.sounds_dir, "AOE");    // Note: Decomp maps 'AOE' to sound_dir logic before resetting it below?
+    strcpy(info.menu_name, "");
+    strcpy(info.pal_file, "palette");
+    strcpy(info.cursor_file, "mcursors");
+    strcpy(info.vol_name, "AOE"); 
+    strcpy(info.sounds_dir, "");   
     
     // Directory overrides
     strcpy(info.data_dir, "data2\\");
@@ -86,71 +79,53 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     info.auto_scroll = 1;
     info.mouse_scroll_edge = 1;
     info.mouse_scroll_interval = 3;
-    info.key_scroll_interval = 4; 
-    info.key_scroll_object_move = 4.0f;
+    info.key_scroll_interval =  0x40800000; 
+    info.mouse_scroll_max_dist = 0x54;
+    info.key_scroll_max_dist   = 0x54;
+    info.key_scroll_object_move = 4.0;
     info.interface_style = -0x3333; // 13107 in dec? Likely specific flag.
     info.main_wid = 800;
     info.main_hgt = 600;
 
-    info.game_guid = _TRIBE_GUID;
-    info.zone_guid = _ZONE_GUID;
+    info.game_guid.Data1 = 600;
+    info.zone_guid.Data4[4] = 0x83;
+    info.zone_guid.Data4[5] = 0x9b;
+    info.zone_guid.Data4[6] = '\0';
+    info.zone_guid.Data4[7] = '`';
 
-    // 3. Game Lifecycle
-    // operator_new(0x1254)
-    TRIBE_Game* game = new TRIBE_Game(&info, 1);
-    
     int error_code = 0;
 
-#ifdef _DEBUG
-    printf("[MAIN] Game object created. Checking if valid...\n");
-#endif
-
+    TRIBE_Game* game = (TRIBE_Game*)operator new(sizeof(TRIBE_Game));
     if (game) {
-        // [VTABLE OFFSET 6]: setup()
-        int setup_res = game->setup();
+        game = new TRIBE_Game(&info, 1);
+
+        int status = game->get_error_code();
 
 #ifdef _DEBUG
-        printf("[MAIN] setup() returned: %d\n", setup_res);
-#endif
+        printf("[SYSTEM] TRIBE_Game creation Status: %d\n", error_code);
+#endif       
 
-        if (setup_res == 0) {
-            // [VTABLE OFFSET 1]: run()
-#ifdef _DEBUG
-            printf("[MAIN] Running game loop...\n");
-#endif
-            error_code = game->run();
-
-            // [VTABLE OFFSET 6]: setup() (Cleanup phase?)
-            // Decomp: (*(code *)puVar2[6])();
-            game->setup();
-            
-            // Destructor handles delete
-            delete game;
+        if (status == 0) {
+            error_code = game->run();     
+            game->get_error_code();      // called again; return ignored
+            game->~TRIBE_Game();         // deleting dtor in real code
+            operator delete(game);
         }
-        else if (setup_res != 4) {
-            // Error handling
-            char title_buf[256];
-            char msg_buf[256];
-            
-            // [VTABLE OFFSET 8]: get_string(id, buffer, size)
-            // 0x7d1 = 2001 ("Error")
-            game->get_string(2001, title_buf, 256);
-            
-            // [VTABLE OFFSET 10]: Display error
-            sprintf(msg_buf, "Setup failed: %d", setup_res);
-            
-#ifdef _DEBUG
-            printf("[MAIN] Error: %s - %s\n", title_buf, msg_buf);
-#endif
-            MessageBoxA(NULL, msg_buf, title_buf, MB_OK | MB_ICONSTOP);
-            
-            delete game;
+        else if (status != 4) {
+            char title[0x104] = {};
+            char msg[0x104] = {};
+
+            game->get_string(0x7D1, title, 0x100);
+            game->get_string2(1, status, 0, msg, 0x100);
+
+            delete game; // original deletes before MessageBox
+            MessageBoxA(nullptr, msg, title, MB_ICONSTOP);
+        }
+        else {
+            game->~TRIBE_Game();
+            operator delete(game);
         }
     }
-
-#ifdef _DEBUG
-    printf("[MAIN] Exiting WinMain with code: %d\n", error_code);
-#endif
 
     return error_code;
 }

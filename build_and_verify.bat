@@ -10,7 +10,7 @@ if not exist "build" mkdir build
 
 
 echo Compiling empiresx.exe...
-cl /EHsc /std:c++17 /D_DEBUG /Fo"build\\" src/main.cpp src/rge/*.cpp src/tribe/*.cpp user32.lib gdi32.lib kernel32.lib ole32.lib ddraw.lib dxguid.lib /Fe"build\\empiresx.exe"
+cl /EHsc /std:c++17 /MDd /D_DEBUG /Fo"build\\" src/main.cpp src/rge/*.cpp src/tribe/*.cpp user32.lib gdi32.lib kernel32.lib ole32.lib ddraw.lib dxguid.lib /Fe"build\\empiresx.exe"
 if %errorlevel% neq 0 (
     echo Compilation of empiresx.exe Failed!
     exit /b %errorlevel%

@@ -88,3 +88,56 @@ Get-ChildItem -Path .\ghidra_decomp -Recurse -File |
   Select-String -Pattern '<your search regex string goes here>' -SimpleMatch |
   ForEach-Object { "{0}:{1}: {2}" -f $_.Path, $_.LineNumber, $_.Line.Trim() }
 ```
+
+
+# AoE1 Decompilation Project - Master Protocol
+
+## 1. The Golden Rule: Source of Truth
+**WE DO NOT INVENT CODE.**
+
+*   **Absolute Prohibition:** Never generate class headers, VTables, or function implementations based on guesswork, standard engine patterns, or previous knowledge.
+*   **Mandatory Request:** If a specific function or class layout (Source of Truth) has not been provided in the chat history, I **MUST** stop and request it from the user.
+*   **No "Standard Logic":** Do not assume standard Win32 or C++ logic (e.g., `CreateWindow` parameters) unless explicitly shown in the decompilation. The game often does things in specific, non-standard ways.
+
+## 2. The "Execution Trace" Workflow
+We proceed algorithmically, following the execution path of the engine.
+
+1.  **Trace & Identify:**
+    *   Identify the exact point where execution stops, crashes, or requires logic (e.g., "The loop runs, but `handle_idle` is empty").
+    *   Identify the **next immediate function** or **class** required to move the trace forward.
+
+2.  **Define the Vessel (Headers):**
+    *   Request the **Class Layout** (Size, VTable, Offsets).
+    *   Create/Update the `.h` file.
+    *   **Mandatory:** Include `static_assert` for `sizeof(Class)` and `offsetof(Member)` at the end of every `.h` file to verify alignment against the Source of Truth.
+
+3.  **Request the Logic:**
+    *   Request the decompiled pseudo-code for the specific functions identified in Step 1.
+
+4.  **Transpile & Stub:**
+    *   Convert decompiled code to C++.
+    *   **Aggressive Stubbing:** If a function calls a complex dependency (e.g., `SoundSystem::Update`), **STUB IT** immediately. Do not attempt to implement the dependency in the same pass.
+
+5.  **Verify:**
+    *   Compile and run. If it works, repeat Step 1.
+
+## 3. Coding Standards
+
+### Stubs & TODOs
+*   **Mandatory Tag:** ANY code that is incomplete, skipped, simplified, or stubbed **MUST** be marked with a `// TODO:` comment explaining what is missing.
+    *   *Bad:* `return 0;`
+    *   *Good:* `return 0; // TODO: Implement TRegistry logic`
+*   **Stub Return Values:** Stubs should return values that allow the *caller* to proceed successfully (usually `1` for success, or a valid pointer).
+
+### Debugging
+*   **`_DEBUG` Macro:** All print statements, logging, or temporary verification code must be wrapped in `#ifdef _DEBUG`.
+*   **No Logic Changes:** Debug code must not alter the control flow of the original game logic.
+
+## 4. Output Format
+To facilitate easy implementation:
+
+*   **Context is King:** Always state *which* file is being modified.
+*   **Two Modes:**
+    1.  **Full File:** If a file has significant changes or is new, output the **entire** file content so it can be copied/pasted (Ctrl+A, Ctrl+V).
+    2.  **Diff Blocks:** If changes are localized, output *only* the modified function or block, including enough context (surrounding lines) to easily locate the insertion point.
+*   **Do not split code:** Do not output half a function in one block and the rest in another.
