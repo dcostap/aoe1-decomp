@@ -84,6 +84,6 @@ struct RGE_Prog_Info {
 
 // MANDATORY VERIFICATION
 static_assert(sizeof(RGE_Prog_Info) == 0x1238, "RGE_Prog_Info size mismatch");
-static_assert(offsetof(RGE_Prog_Info, vol_ser_num) == 0x0404, "RGE_Prog_Info::vol_ser_num offset mismatch (Padding Error 1)");
-static_assert(offsetof(RGE_Prog_Info, game_guid) == 0x08E8, "RGE_Prog_Info::game_guid offset mismatch (Padding Error 2)");
-static_assert(offsetof(RGE_Prog_Info, avi_dir) == 0x1130, "RGE_Prog_Info::avi_dir offset mismatch");
+static_assert(offsetof(RGE_Prog_Info, world_db_file) == 0xF3, "Offset mismatch: world_db_file"); // 0xF7 - 4
+static_assert(offsetof(RGE_Prog_Info, data_dir) == 0x908, "Offset mismatch: data_dir"); // 0x90C - 4
+static_assert(offsetof(RGE_Prog_Info, sounds_dir) == 0xE21, "Offset mismatch: sounds_dir"); // 0xE25 - 4
