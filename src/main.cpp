@@ -2,7 +2,6 @@
 #include <windows.h>
 #include <stdio.h>
 #include <string.h>
-#include "rge/RGE_Prog_Info.h"
 #include "tribe/Tribe_Game.h"
 
 static const GUID TRIBE_GUID = { 0xF2E846A8, 0x11D1, 0xEBE2, { 0x08, 0xF5, 0x07, 0x97, 0x60, 0x00, 0x9B, 0x83 } };
