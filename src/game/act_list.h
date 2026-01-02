@@ -1,0 +1,38 @@
+#pragma once
+#include "../common.h"
+
+class RGE_Action_List {
+public:
+    RGE_Action_Object* obj;                  // 0x4
+    RGE_Action_Node* list;                   // 0x8
+
+    RGE_Action_List(RGE_Action_Object* param_1);
+    virtual ~RGE_Action_List();
+    virtual void load(int param_1);
+    virtual void rehook();
+    virtual void save(int param_1);
+    virtual void delete_list();
+    virtual RGE_Action* create_action(int param_1, short param_2);
+    virtual RGE_Action* create_task_action(RGE_Task* param_1, RGE_Static_Object* param_2, float param_3, float param_4, float param_5);
+    virtual uchar inside_obj_update();
+    virtual uchar update();
+    virtual void add_action(RGE_Action* param_1);
+    virtual void add_action_at_end(RGE_Action* param_1);
+    virtual void add_action_at_end_of_action_queue(RGE_Action* param_1);
+    virtual void remove_action();
+    virtual uchar have_action();
+    virtual int action_stop();
+    virtual int action_move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4);
+    virtual int action_work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4);
+    virtual int attack_response(RGE_Static_Object* param_1);
+    virtual int relation_response(long param_1, uchar param_2);
+    virtual RGE_Action* get_action();
+    virtual RGE_Task* get_task();
+    virtual void copy_obj(RGE_Master_Action_Object* param_1);
+    virtual void copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3);
+    virtual void get_action_name(char* param_1);
+};
+
+static_assert(sizeof(RGE_Action_List) == 0xC, "RGE_Action_List Size Mismatch");
+static_assert(offsetof(RGE_Action_List, list) == 0x8, "RGE_Action_List Offset Mismatch");
+

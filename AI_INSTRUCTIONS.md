@@ -6,6 +6,8 @@ We are reconstructing *Age of Empires (1997)* (Rise of Rome Beta) from x86 Assem
 *   **Behavioral Fidelity > Lossless Decompilation:**
     *   We aim for **exact behavior matching**, not a byte-perfect reproduction of the original assembly.
     *   If the original code contains optimization artifacts (e.g., weird loop unrolling) or dead code, you may refactor it into clean, logical C++ *as long as the side effects and logic remain identical*.
+    *   We aim for simple, C-like, C++ code, avoiding complex C++ features
+    *   NO FORWARD DECLARATIONS. Every type must be fully defined before use. If you don't have the source of truth for a type yet, completely ignore it for now.
 *   **Architecture:** Windows x86 (32-bit). Pointers = 4 bytes.
 *   **Compiler:** MSVC (1997 era). Default alignment (4 bytes).
 *   **Source of Truth:** PDB-enabled Ghidra export.
@@ -37,7 +39,7 @@ Sometimes Ghidra cannot identify the function name and shows a raw offset call (
 
 ### B. Inline Helpers
 The original code often aggressively inlined logic (macros, linked list manipulation).
-*   **Action:** You are explicitly **allowed** to extract repetitive, complex inlined assembly into small `private` helper functions to keep the main logic readable.
+*   **Action:** You are **allowed** to extract repetitive, complex inlined assembly into small `private` helper functions to keep the main logic readable.
 
 ## 5. Header Verification (MANDATORY)
 Every class header (`.h`) must conclude with static assertions, given the information of the source of truth, to preserve memory layout stability during the decompilation.
@@ -62,3 +64,4 @@ Given the input data and the information you have available, your task is to:
 3.  Generate the needed new `.cpp` files.
 4.  **Do not guess** types or code. If the input says `undefined4`, use `int` or `void*` based on context, or ask. 
 5.  If impossible to implement something essential, or essential information is missing for the correct decompilation process, just don't output code and report back.
+6.  You may completely ignore thunk empty functions that have no XREFS.

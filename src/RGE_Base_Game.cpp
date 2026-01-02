@@ -1,0 +1,312 @@
+#include "RGE_Base_Game.h"
+#include <stdio.h>
+#include <string.h>
+
+// Global pointer to the singleton game instance
+extern RGE_Base_Game* rge_base_game = nullptr;
+
+// Global variables (External in original context, defined here or in common.cpp usually)
+// We define them here loosely as per instructions to not rely on missing files.
+void* StringTable = nullptr;
+int do_draw_log = 0;
+int safe_draw_log = 0;
+char draw_log_name = 0;
+int draw_log = 0;
+
+void* L = nullptr;
+void* AppWnd = nullptr;
+void* AppInst = nullptr;
+void* chat = nullptr;
+void* comm = nullptr;
+void* Regs = nullptr;
+void* sound_driver = nullptr;
+void* driveInfo = nullptr;
+
+RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* param_1, int param_2)
+{
+    // Initialize members
+    this->player_game_info = nullptr;
+    this->random_game_seed = -1;
+    this->random_map_seed = -1;
+    this->save_random_game_seed = -1;
+    this->save_random_map_seed = -1;
+    this->quick_build = 0;
+
+    // Initialize Global Logging variables
+    do_draw_log = 0;
+    safe_draw_log = 0;
+    draw_log_name = 0;
+    draw_log = 0;
+
+    // Set Game Options
+    this->setVersion(1.0f);
+    this->setScenarioGame(0);
+    this->setCampaignGame(0);
+    this->setSavedGame(0);
+    this->setSinglePlayerGame(1);
+    this->setMultiplayerGame(0);
+    this->setMapSize(96, 96, 8);
+    this->setAllowCheatCodes(0);
+    this->setCheatNotification(1);
+    this->setFullVisibility(0);
+    this->setFogOfWar(1);
+    this->setColoredChat(1);
+    this->setGameDeveloperMode(0);
+    this->setDifficulty(0);
+
+    for (int i = 0; i < 9; i++) {
+        this->setPlayerCDAndVersion(i, 0);
+        this->setPlayerHasCD(i, 0);
+        this->setPlayerVersion(i, 0);
+        this->setPlayerTeam(i, 1);
+    }
+
+    this->setPathFinding(0);
+    this->setMpPathFinding(0);
+    this->setNumberPlayers(4);
+    this->setScenarioName("");
+
+    // Initialize instance
+    this->prog_info = param_1;
+    rge_base_game = this;
+
+    this->prog_window = nullptr;
+    this->prog_ready = 0;
+    this->prog_active = 1;
+    this->prog_palette = nullptr;
+    this->window_style = 0;
+    StringTable = nullptr;
+
+    this->screen_saver_enabled = 0;
+    this->error_code = 0;
+    this->is_timer = 0;
+    this->draw_system = nullptr;
+    this->draw_area = nullptr;
+    this->outline_type = 2;
+    this->custom_mouse = 0;
+    this->shapes = nullptr;
+    this->sound_system = nullptr;
+    this->music_system = nullptr;
+    this->sound_num = 0;
+    this->sounds = nullptr;
+    this->save_music_type = 0;
+    this->save_music_track_from = 0;
+    this->save_music_track_to = 0;
+    this->save_music_cur_track = 0;
+    this->save_music_file[0] = 0;
+    this->save_music_loop = 0;
+    this->save_music_pos = 0;
+    this->comm_handler = nullptr;
+    this->debugLog = nullptr;
+    this->log_comm = 0;
+    this->comm_syncstop = 0;
+    this->comm_syncmsg = 0;
+    this->comm_stepmode = 0;
+    this->comm_speed = 1;
+    this->comm_droppackets = 0;
+    this->registry = nullptr;
+    this->prog_mode = 0;
+    this->game_mode = 0;
+    this->sub_game_mode = 0;
+    this->paused = 0;
+    this->mouse_pointer = nullptr;
+    this->erase_mouse = 0;
+    this->mouse_blit_sync = 0;
+    this->is_mouse_on = 1;
+
+    // Windows Mouse Setup
+    this->windows_mouse = 1;
+    this->mouse_cursor = LoadCursorA(NULL, (LPCSTR)IDC_ARROW); // 0x7f00
+
+    this->font_num = 0;
+    this->fonts = nullptr;
+
+    ::GetCurrentDirectoryA(static_cast<DWORD>(sizeof(work_dir)), work_dir);
+
+    // Copy "language.dll" to string_dll_name
+    strcpy(this->string_dll_name, "language.dll");
+
+    // Initialize World settings
+    this->world = nullptr;
+    this->render_all = 1;
+    this->master_obj_id = 1;
+    this->terrain_id = 1;
+    this->elevation_height = 1;
+    this->brush_size = 1;
+    this->timing_text[0] = 0;
+    this->frame_count = 0;
+    this->world_update_count = 0;
+    this->view_update_count = 0;
+    this->last_frame_count = 0;
+    this->last_world_update_count = 0;
+    this->last_view_update_count = 0;
+    this->fps = 0;
+    this->world_update_fps = 0;
+    this->view_update_fps = 0;
+    this->last_view_time = 0;
+
+    // Clear timings
+    for (int i = 0; i < 30; i++) {
+        memset(&this->timings[i], 0, sizeof(RGE_Timing_Info));
+    }
+
+    this->do_show_timings = 0;
+    this->do_show_comm = 0;
+    this->do_show_ai = 0;
+    this->save_check_for_cd = 1;
+
+    // Clear globals
+    L = nullptr;
+    
+    AppInst = *reinterpret_cast<void **>(
+        reinterpret_cast<char *>(this) + 0x410
+    );
+
+    AppWnd = nullptr;
+    chat = nullptr;
+    comm = nullptr;
+    Regs = nullptr;
+    sound_driver = nullptr;
+    driveInfo = nullptr;
+
+    this->scenario_info = nullptr;
+
+    for (int i = 0; i < 9; i++) {
+        this->playerIDValue[i] = 0;
+        this->resigned[i] = 0;
+    }
+
+    this->auto_paused = 0;
+    this->rollover = 1;
+    this->map_save_area = nullptr;
+    this->game_speed = 1.0f;
+    this->single_player_difficulty = 2;
+
+    if (this->setup_registry() == 0) {
+        this->error_code = 14;
+    } else {
+        Regs = this->registry;
+        if (this->setup_debugging_log() == 0) {
+            this->error_code = 15;
+        } else {
+            if (param_2 != 0) {
+                L = this->debugLog;
+            }
+            if (this->setup() == 0 && this->error_code == 0) {
+                this->error_code = 1;
+            }
+        }
+    }
+    
+    this->display_selected_ids = 0;
+}
+
+RGE_Base_Game::~RGE_Base_Game() {
+    // TODO: Stub
+}
+
+// Stubs for Setters
+void RGE_Base_Game::setVersion(float p) { /* TODO: Stub */ }
+void RGE_Base_Game::setScenarioGame(int p) { /* TODO: Stub */ }
+void RGE_Base_Game::setCampaignGame(int p) { /* TODO: Stub */ }
+void RGE_Base_Game::setSavedGame(int p) { /* TODO: Stub */ }
+void RGE_Base_Game::setSinglePlayerGame(int p) { /* TODO: Stub */ }
+void RGE_Base_Game::setMultiplayerGame(int p) { /* TODO: Stub */ }
+void RGE_Base_Game::setMapSize(int x, int y, int z) { /* TODO: Stub */ }
+void RGE_Base_Game::setAllowCheatCodes(int p) { /* TODO: Stub */ }
+void RGE_Base_Game::setCheatNotification(int p) { /* TODO: Stub */ }
+void RGE_Base_Game::setFullVisibility(int p) { /* TODO: Stub */ }
+void RGE_Base_Game::setFogOfWar(int p) { /* TODO: Stub */ }
+void RGE_Base_Game::setColoredChat(int p) { /* TODO: Stub */ }
+void RGE_Base_Game::setGameDeveloperMode(int p) { /* TODO: Stub */ }
+void RGE_Base_Game::setDifficulty(int p) { /* TODO: Stub */ }
+void RGE_Base_Game::setPlayerCDAndVersion(int p1, int p2) { /* TODO: Stub */ }
+void RGE_Base_Game::setPlayerHasCD(int p1, int p2) { /* TODO: Stub */ }
+void RGE_Base_Game::setPlayerVersion(int p1, int p2) { /* TODO: Stub */ }
+void RGE_Base_Game::setPlayerTeam(int p1, int p2) { /* TODO: Stub */ }
+void RGE_Base_Game::setPathFinding(unsigned char p) { /* TODO: Stub */ }
+void RGE_Base_Game::setMpPathFinding(unsigned char p) { /* TODO: Stub */ }
+void RGE_Base_Game::setNumberPlayers(int p) { /* TODO: Stub */ }
+void RGE_Base_Game::setScenarioName(const char* name) { /* TODO: Stub */ }
+
+// VTable Stubs
+int RGE_Base_Game::run() { return 0; /* TODO: Stub */ }
+long RGE_Base_Game::wnd_proc(void* param_1, unsigned int param_2, unsigned int param_3, long param_4) { return 0; /* TODO: Stub */ }
+void RGE_Base_Game::set_prog_mode(int param_1) { /* TODO: Stub */ }
+void RGE_Base_Game::set_game_mode(int param_1, int param_2) { /* TODO: Stub */ }
+void RGE_Base_Game::set_player(short param_1) { /* TODO: Stub */ }
+int RGE_Base_Game::get_error_code() { return 0; /* TODO: Stub */ }
+char* RGE_Base_Game::get_string(int param_1, long param_2, char* param_3, int param_4) { return nullptr; /* TODO: Stub */ }
+char* RGE_Base_Game::get_string(long param_1, char* param_2, int param_3) { return nullptr; /* TODO: Stub */ }
+char* RGE_Base_Game::get_string(long param_1) { return nullptr; /* TODO: Stub */ }
+char* RGE_Base_Game::get_string2(int param_1, long param_2, long param_3, char* param_4, int param_5) { return nullptr; /* TODO: Stub */ }
+TPanel* RGE_Base_Game::get_view_panel() { return nullptr; /* TODO: Stub */ }
+TPanel* RGE_Base_Game::get_map_panel() { return nullptr; /* TODO: Stub */ }
+RGE_Scenario_Header* RGE_Base_Game::new_scenario_header(RGE_Scenario* param_1) { return nullptr; /* TODO: Stub */ }
+RGE_Scenario_Header* RGE_Base_Game::new_scenario_header(int param_1) { return nullptr; /* TODO: Stub */ }
+RGE_Scenario* RGE_Base_Game::new_scenario_info(int param_1) { return nullptr; /* TODO: Stub */ }
+void RGE_Base_Game::notification(int param_1, long param_2, long param_3, long param_4, long param_5) { /* TODO: Stub */ }
+int RGE_Base_Game::reset_comm() { return 0; /* TODO: Stub */ }
+void RGE_Base_Game::send_game_options() { /* TODO: Stub */ }
+void RGE_Base_Game::receive_game_options() { /* TODO: Stub */ }
+char* RGE_Base_Game::gameSummary() { return nullptr; /* TODO: Stub */ }
+int RGE_Base_Game::processCheatCode(int param_1, char* param_2) { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::setup_music_system() { return 0; /* TODO: Stub */ }
+void RGE_Base_Game::shutdown_music_system() { /* TODO: Stub */ }
+int RGE_Base_Game::setup() { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::setup_cmd_options() { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::setup_class() { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::setup_main_window() { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::setup_graphics_system() { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::setup_palette() { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::setup_mouse() { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::setup_registry() { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::setup_debugging_log() { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::setup_chat() { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::setup_comm() { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::setup_sound_system() { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::setup_fonts() { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::setup_sounds() { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::setup_shapes() { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::setup_blank_screen() { return 0; /* TODO: Stub */ }
+void RGE_Base_Game::setup_timings() { /* TODO: Stub */ }
+void RGE_Base_Game::stop_sound_system() { /* TODO: Stub */ }
+int RGE_Base_Game::restart_sound_system() { return 0; /* TODO: Stub */ }
+void RGE_Base_Game::stop_music_system() { /* TODO: Stub */ }
+int RGE_Base_Game::restart_music_system() { return 0; /* TODO: Stub */ }
+RGE_Game_World* RGE_Base_Game::create_world() { return nullptr; /* TODO: Stub */ }
+int RGE_Base_Game::handle_message(tagMSG* param_1) { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::handle_idle() { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::handle_mouse_move(void* param_1, unsigned int param_2, unsigned int param_3, long param_4) { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::handle_key_down(void* param_1, unsigned int param_2, unsigned int param_3, long param_4) { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::handle_user_command(void* param_1, unsigned int param_2, unsigned int param_3, long param_4) { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::handle_command(void* param_1, unsigned int param_2, unsigned int param_3, long param_4) { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::handle_music_done(void* param_1, unsigned int param_2, unsigned int param_3, long param_4) { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::handle_paint(void* param_1, unsigned int param_2, unsigned int param_3, long param_4) { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::handle_activate(void* param_1, unsigned int param_2, unsigned int param_3, long param_4) { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::handle_init_menu(void* param_1, unsigned int param_2, unsigned int param_3, long param_4) { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::handle_exit_menu(void* param_1, unsigned int param_2, unsigned int param_3, long param_4) { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::handle_size(void* param_1, unsigned int param_2, unsigned int param_3, long param_4) { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::handle_palette_changed(void* param_1, unsigned int param_2, unsigned int param_3, long param_4) { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::handle_query_new_palette(void* param_1, unsigned int param_2, unsigned int param_3, long param_4) { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::handle_close(void* param_1, unsigned int param_2, unsigned int param_3, long param_4) { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::handle_destroy(void* param_1, unsigned int param_2, unsigned int param_3, long param_4) { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::action_update() { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::action_mouse_move(long param_1, long param_2, int param_3, int param_4, int param_5, int param_6) { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::action_key_down(unsigned long param_1, int param_2, int param_3, int param_4, int param_5) { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::action_user_command(unsigned long param_1, unsigned long param_2) { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::action_command(unsigned long param_1, unsigned long param_2) { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::action_music_done() { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::action_activate() { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::action_deactivate() { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::action_init_menu() { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::action_exit_menu() { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::action_size() { return 0; /* TODO: Stub */ }
+int RGE_Base_Game::action_close() { return 0; /* TODO: Stub */ }
+void RGE_Base_Game::calc_timings() { /* TODO: Stub */ }
+void RGE_Base_Game::calc_timing_text() { /* TODO: Stub */ }
+void RGE_Base_Game::show_timings() { /* TODO: Stub */ }
+void RGE_Base_Game::show_comm() { /* TODO: Stub */ }
+void RGE_Base_Game::show_ai() { /* TODO: Stub */ }
+int RGE_Base_Game::setup_map_save_area() { return 0; /* TODO: Stub */ }
+void RGE_Base_Game::set_interface_messages() { /* TODO: Stub */ }
