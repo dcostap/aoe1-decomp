@@ -3,54 +3,60 @@
 
 RGE_Action_Gather::RGE_Action_Gather(int param_1, RGE_Action_Object* param_2) {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Action_Gather(RGE_Action_Gather * this, RGE
+//                              undefined __thiscall RGE_Action_Gather(RGE_Action_Gather * this, int
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Action_Gat    ECX:4 (auto)   this
-//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     00402fd0(R)
-//              RGE_Task *        Stack[0x8]:4   param_2                   XREF[1]:     00402fdf(R)
-//              float             Stack[0xc]:4   param_3                   XREF[1]:     00402fe7(R)
-//              float             Stack[0x10]:4  param_4                   XREF[1]:     00402fe3(R)
-//              float             Stack[0x14]:4  param_5                   XREF[1]:     00402fee(R)
-//                               ??0RGE_Action_Gather@@QAE@PAVRGE_Action_Object@@PAVRGE_Task  XREF[1]:     create_task_action:0040442d(c)
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     00402ebc(R)
+//              RGE_Action_Obj    Stack[0x8]:4   param_2                   XREF[1]:     00402eb6(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     00402ed6(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00402eef(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     00402ec6(W)
+//                               ??0RGE_Action_Gather@@QAE@HPAVRGE_Action_Object@@@Z          XREF[1]:     create_action:004040df(c)
 //                               RGE_Action_Gather::RGE_Action_Gather
-//                              ACT_GATH.cpp:98 (15)
-//         00402fd0     MOV        EAX,dword ptr [ESP + param_1]
-//         00402fd4     PUSH       ESI
-//         00402fd5     PUSH       0x1
-//         00402fd7     MOV        ESI,this
-//         00402fd9     PUSH       EAX
-//         00402fda     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
-//                              ACT_GATH.cpp:101 (4)
-//         00402fdf     MOV        this,dword ptr [ESP + param_2]
-//                              ACT_GATH.cpp:103 (11)
-//         00402fe3     MOV        EAX,dword ptr [ESP + param_4]
-//         00402fe7     MOV        EDX,dword ptr [ESP + param_3]
-//         00402feb     MOV        dword ptr [ESI + 0x30],this
-//                              ACT_GATH.cpp:104 (25)
-//         00402fee     MOV        this,dword ptr [ESP + param_5]
-//         00402ff2     MOV        dword ptr [ESI + 0x24],EAX
-//         00402ff5     MOV        dword ptr [ESI],RGE_Action_Gather::`vftable'     = 00402f10
-//         00402ffb     MOV        word ptr [ESI + 0x4],0x5
-//         00403001     MOV        dword ptr [ESI + 0x20],EDX
-//         00403004     MOV        dword ptr [ESI + 0x28],this
-//                              ACT_GATH.cpp:105 (7)
-//         00403007     MOV        dword ptr [ESI + 0x40],0xffffffff
-//                              ACT_GATH.cpp:110 (6)
-//         0040300e     MOV        EAX,ESI
-//         00403010     POP        ESI
-//         00403011     RET        0x14
-//         00403014     ??         90h
-//         00403015     NOP
-//         00403016     NOP
-//         00403017     NOP
-//         00403018     NOP
-//         00403019     NOP
-//         0040301a     NOP
-//         0040301b     NOP
-//         0040301c     NOP
-//         0040301d     NOP
-//         0040301e     NOP
-//         0040301f     NOP
+//                              ACT_GATH.cpp:63 (47)
+//         00402ea0     PUSH       -0x1
+//         00402ea2     PUSH       FUN_0055c198
+//         00402ea7     MOV        EAX,FS:[0x0]
+//         00402ead     PUSH       EAX
+//         00402eae     MOV        dword ptr FS:[0x0],ESP
+//         00402eb5     PUSH       this
+//         00402eb6     MOV        EAX,dword ptr [ESP + param_2]
+//         00402eba     PUSH       ESI
+//         00402ebb     PUSH       EDI
+//         00402ebc     MOV        EDI,dword ptr [ESP + param_1]
+//         00402ec0     PUSH       0x1
+//         00402ec2     MOV        ESI,this
+//         00402ec4     PUSH       EAX
+//         00402ec5     PUSH       EDI
+//         00402ec6     MOV        dword ptr [ESP + local_10],ESI
+//         00402eca     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, int p
+//                              ACT_GATH.cpp:65 (32)
+//         00402ecf     LEA        this,[ESI + 0x40]
+//         00402ed2     PUSH       0x4
+//         00402ed4     PUSH       this
+//         00402ed5     PUSH       EDI
+//         00402ed6     MOV        dword ptr [ESP + local_4],0x0
+//         00402ede     MOV        dword ptr [ESI],RGE_Action_Gather::`vftable'     = 00402f10
+//         00402ee4     MOV        word ptr [ESI + 0x4],0x5
+//         00402eea     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              ACT_GATH.cpp:66 (24)
+//         00402eef     MOV        this,dword ptr [ESP + local_c]
+//         00402ef3     ADD        ESP,0xc
+//         00402ef6     MOV        EAX,ESI
+//         00402ef8     MOV        dword ptr FS:[0x0],this
+//         00402eff     POP        EDI
+//         00402f00     POP        ESI
+//         00402f01     ADD        ESP,0x10
+//         00402f04     RET        0x8
+//         00402f07     ??         90h
+//         00402f08     NOP
+//         00402f09     NOP
+//         00402f0a     NOP
+//         00402f0b     NOP
+//         00402f0c     NOP
+//         00402f0d     NOP
+//         00402f0e     NOP
+//         00402f0f     NOP
 }
 
 RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Object* param_1, RGE_Task* param_2, RGE_Static_Object* param_3) {
@@ -58,51 +64,75 @@ RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Object* param_1, RGE_Task* param
 //                              undefined __thiscall RGE_Action_Gather(RGE_Action_Gather * this, RGE
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Action_Gat    ECX:4 (auto)   this
-//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     00402fd0(R)
-//              RGE_Task *        Stack[0x8]:4   param_2                   XREF[1]:     00402fdf(R)
-//              float             Stack[0xc]:4   param_3                   XREF[1]:     00402fe7(R)
-//              float             Stack[0x10]:4  param_4                   XREF[1]:     00402fe3(R)
-//              float             Stack[0x14]:4  param_5                   XREF[1]:     00402fee(R)
-//                               ??0RGE_Action_Gather@@QAE@PAVRGE_Action_Object@@PAVRGE_Task  XREF[1]:     create_task_action:0040442d(c)
-//                               RGE_Action_Gather::RGE_Action_Gather
-//                              ACT_GATH.cpp:98 (15)
-//         00402fd0     MOV        EAX,dword ptr [ESP + param_1]
-//         00402fd4     PUSH       ESI
-//         00402fd5     PUSH       0x1
-//         00402fd7     MOV        ESI,this
-//         00402fd9     PUSH       EAX
-//         00402fda     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
-//                              ACT_GATH.cpp:101 (4)
-//         00402fdf     MOV        this,dword ptr [ESP + param_2]
-//                              ACT_GATH.cpp:103 (11)
-//         00402fe3     MOV        EAX,dword ptr [ESP + param_4]
-//         00402fe7     MOV        EDX,dword ptr [ESP + param_3]
-//         00402feb     MOV        dword ptr [ESI + 0x30],this
-//                              ACT_GATH.cpp:104 (25)
-//         00402fee     MOV        this,dword ptr [ESP + param_5]
-//         00402ff2     MOV        dword ptr [ESI + 0x24],EAX
-//         00402ff5     MOV        dword ptr [ESI],RGE_Action_Gather::`vftable'     = 00402f10
-//         00402ffb     MOV        word ptr [ESI + 0x4],0x5
-//         00403001     MOV        dword ptr [ESI + 0x20],EDX
-//         00403004     MOV        dword ptr [ESI + 0x28],this
-//                              ACT_GATH.cpp:105 (7)
-//         00403007     MOV        dword ptr [ESI + 0x40],0xffffffff
-//                              ACT_GATH.cpp:110 (6)
-//         0040300e     MOV        EAX,ESI
-//         00403010     POP        ESI
-//         00403011     RET        0x14
-//         00403014     ??         90h
-//         00403015     NOP
-//         00403016     NOP
-//         00403017     NOP
-//         00403018     NOP
-//         00403019     NOP
-//         0040301a     NOP
-//         0040301b     NOP
-//         0040301c     NOP
-//         0040301d     NOP
-//         0040301e     NOP
-//         0040301f     NOP
+//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     00402f56(R)
+//              RGE_Task *        Stack[0x8]:4   param_2                   XREF[1]:     00402f6a(R)
+//              RGE_Static_Obj    Stack[0xc]:4   param_3                   XREF[1]:     00402f6e(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     00402f78(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00402fb1(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     00402f61(W)
+//                               ??0RGE_Action_Gather@@QAE@PAVRGE_Action_Object@@PAVRGE_Task  XREF[2]:     create_task_action:004043f8(c),
+//                               RGE_Action_Gather::RGE_Action_Gather                                      gather:00430fd2(c)
+//                              ACT_GATH.cpp:74 (42)
+//         00402f40     PUSH       -0x1
+//         00402f42     PUSH       FUN_0055c1b8
+//         00402f47     MOV        EAX,FS:[0x0]
+//         00402f4d     PUSH       EAX
+//         00402f4e     MOV        dword ptr FS:[0x0],ESP
+//         00402f55     PUSH       this
+//         00402f56     MOV        EAX,dword ptr [ESP + param_1]
+//         00402f5a     PUSH       ESI
+//         00402f5b     PUSH       EDI
+//         00402f5c     MOV        ESI,this
+//         00402f5e     PUSH       0x1
+//         00402f60     PUSH       EAX
+//         00402f61     MOV        dword ptr [ESP + local_10],ESI
+//         00402f65     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
+//                              ACT_GATH.cpp:77 (4)
+//         00402f6a     MOV        this,dword ptr [ESP + param_2]
+//                              ACT_GATH.cpp:78 (35)
+//         00402f6e     MOV        EDI,dword ptr [ESP + param_3]
+//         00402f72     MOV        dword ptr [ESI + 0x30],this
+//         00402f75     PUSH       EDI
+//         00402f76     MOV        this,ESI
+//         00402f78     MOV        dword ptr [ESP + local_4],0x0
+//         00402f80     MOV        dword ptr [ESI],RGE_Action_Gather::`vftable'     = 00402f10
+//         00402f86     MOV        word ptr [ESI + 0x4],0x5
+//         00402f8c     CALL       RGE_Action::set_target_obj                       void set_target_obj(RGE_Action * this, RGE_St
+//                              ACT_GATH.cpp:79 (4)
+//         00402f91     TEST       EDI,EDI
+//         00402f93     JZ         LAB_00402fb1
+//                              ACT_GATH.cpp:81 (6)
+//         00402f95     MOV        EDX,dword ptr [EDI + 0x38]
+//         00402f98     MOV        dword ptr [ESI + 0x20],EDX
+//                              ACT_GATH.cpp:82 (6)
+//         00402f9b     MOV        EAX,dword ptr [EDI + 0x3c]
+//         00402f9e     MOV        dword ptr [ESI + 0x24],EAX
+//                              ACT_GATH.cpp:83 (6)
+//         00402fa1     MOV        this,dword ptr [EDI + 0x40]
+//         00402fa4     MOV        dword ptr [ESI + 0x28],this
+//                              ACT_GATH.cpp:84 (10)
+//         00402fa7     MOV        EDX,dword ptr [EDI + 0x8]
+//         00402faa     MOVSX      EAX,word ptr [EDX + 0x10]
+//         00402fae     MOV        dword ptr [ESI + 0x40],EAX
+//                               LAB_00402fb1                                                 XREF[1]:     00402f93(j)
+//                              ACT_GATH.cpp:90 (21)
+//         00402fb1     MOV        this,dword ptr [ESP + local_c]
+//         00402fb5     MOV        EAX,ESI
+//         00402fb7     POP        EDI
+//         00402fb8     MOV        dword ptr FS:[0x0],this
+//         00402fbf     POP        ESI
+//         00402fc0     ADD        ESP,0x10
+//         00402fc3     RET        0xc
+//         00402fc6     ??         90h
+//         00402fc7     NOP
+//         00402fc8     NOP
+//         00402fc9     NOP
+//         00402fca     NOP
+//         00402fcb     NOP
+//         00402fcc     NOP
+//         00402fcd     NOP
+//         00402fce     NOP
+//         00402fcf     NOP
 }
 
 RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Object* param_1, RGE_Task* param_2, float param_3, float param_4, float param_5) {

@@ -23,7 +23,7 @@ public:
     float currentYOffset;                    // 0x11DC58
     int currentTerrainException1;            // 0x11DC5C
     int currentTerrainException2;            // 0x11DC60
-    ManagedArray<int> initialCollidingObjects; // 0x11DC64
+    ManagedArray_int initialCollidingObjects; // 0x11DC64
     int startOfPath;                         // 0x11DC74
     int checkTerrainOnFirstPass;             // 0x11DC78
     XYPoint initialTile;                     // 0x11DC7C
@@ -47,7 +47,7 @@ public:
     uchar CurrentFacetMask;                  // 0x11DCD8
     int currentUnobstructibleGroupID;        // 0x11DCDC
     int currentUnobstructiblePlayerID;       // 0x11DCE0
-    ManagedArray<int> currentUnobstructibles; // 0x11DCE4
+    ManagedArray_int currentUnobstructibles; // 0x11DCE4
     int aiPS;                                // 0x11DCF4
 
     PathingSystem(int param_1, int param_2, int param_3, RGE_Map* param_4, RGE_Game_World* param_5);
@@ -69,7 +69,7 @@ public:
     virtual long checksum();
     virtual void printState(RGE_Moving_Object* param_1);
     virtual int copyPath(int param_1);
-    virtual void copyUnobstructibles(ManagedArray<int>* param_1);
+    virtual void copyUnobstructibles(ManagedArray_int* param_1);
 };
 
 static_assert(sizeof(PathingSystem) == 0x11DCF8, "PathingSystem Size Mismatch");

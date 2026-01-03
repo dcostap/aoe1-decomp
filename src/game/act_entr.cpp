@@ -3,198 +3,38 @@
 
 RGE_Action_Enter::RGE_Action_Enter(int param_1, RGE_Action_Object* param_2) {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Action_Enter(RGE_Action_Enter * this, RGE_A
+//                              undefined __thiscall RGE_Action_Enter(RGE_Action_Enter * this, int p
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Action_Ent    ECX:4 (auto)   this
-//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     00402429(R)
-//              RGE_Task *        Stack[0x8]:4   param_2                   XREF[1]:     00402442(R)
-//              RGE_Static_Obj    Stack[0xc]:4   param_3                   XREF[2]:     0040243e(R), 00402483(W)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     00402449(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004025d6(R)
-//              XYPoint           Stack[-0x18]:8 rVal
-//              XYPoint           Stack[-0x20]:8 start
-//              XYPoint           Stack[-0x28]:8 dest                      XREF[1]:     00402435(W)
-//                               ??0RGE_Action_Enter@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@  XREF[2]:     enter:00431206(c),
-//                               RGE_Action_Enter::RGE_Action_Enter                                        create_task_action:004d0b00(c)
-//                              act_entr.cpp:61 (46)
-//         00402410     PUSH       -0x1
-//         00402412     PUSH       FUN_0055c138
-//         00402417     MOV        EAX,FS:[0x0]
-//         0040241d     PUSH       EAX
-//         0040241e     MOV        dword ptr FS:[0x0],ESP
-//         00402425     SUB        ESP,0x1c
-//         00402428     PUSH       EBX
-//         00402429     MOV        EBX,dword ptr [ESP + param_1]
-//         0040242d     PUSH       EBP
-//         0040242e     PUSH       ESI
-//         0040242f     PUSH       EDI
-//         00402430     MOV        EDI,this
-//         00402432     PUSH       0x1
-//         00402434     PUSH       EBX
-//         00402435     MOV        dword ptr [ESP + dest.x],EDI
-//         00402439     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
-//                              act_entr.cpp:64 (39)
-//         0040243e     MOV        ESI,dword ptr [ESP + param_3]
-//         00402442     MOV        EAX,dword ptr [ESP + param_2]
-//         00402446     PUSH       ESI
-//         00402447     MOV        this,EDI
-//         00402449     MOV        dword ptr [ESP + local_4],0x0
-//         00402451     MOV        dword ptr [EDI],RGE_Action_Enter::`vftable'      = 004023f0
-//         00402457     MOV        word ptr [EDI + 0x4],0x3
-//         0040245d     MOV        dword ptr [EDI + 0x30],EAX
-//         00402460     CALL       RGE_Action::set_target_obj                       void set_target_obj(RGE_Action * this, RGE_St
-//                              act_entr.cpp:70 (8)
-//         00402465     TEST       ESI,ESI
-//         00402467     JZ         LAB_004025d6
-//                              act_entr.cpp:72 (6)
-//         0040246d     MOV        this,dword ptr [ESI + 0x38]
-//         00402470     MOV        dword ptr [EDI + 0x20],this
-//                              act_entr.cpp:73 (6)
-//         00402473     MOV        EDX,dword ptr [ESI + 0x3c]
-//         00402476     MOV        dword ptr [EDI + 0x24],EDX
-//                              act_entr.cpp:74 (6)
-//         00402479     MOV        EAX,dword ptr [ESI + 0x40]
-//         0040247c     MOV        dword ptr [EDI + 0x28],EAX
-//                              act_entr.cpp:84 (96)
-//         0040247f     MOV        EAX,dword ptr [ESI]
-//         00402481     MOV        this,ESI
-//         00402483     MOV        dword ptr [ESP + param_3],EAX
-//         00402487     MOV        EBP,dword ptr [EAX + 0x134]
-//         0040248d     CALL       EBP
-//         0040248f     CMP        AL,0x2
-//         00402491     JNZ        LAB_004024bd
-//         00402493     MOV        this,ESI
-//         00402495     CALL       RGE_Static_Object::more_room                     uchar more_room(RGE_Static_Object * this)
-//         0040249a     CMP        AL,0x1
-//         0040249c     JNZ        LAB_004024ad
-//         0040249e     MOV        this,dword ptr [EDI + 0x8]
-//         004024a1     MOV        this,dword ptr [ECX + this->field12_0xc]
-//         004024a4     CALL       RGE_Player::computerPlayer                       int computerPlayer(RGE_Player * this)
-//         004024a9     TEST       EAX,EAX
-//         004024ab     JZ         LAB_004024df
-//                               LAB_004024ad                                                 XREF[1]:     0040249c(j)
-//         004024ad     MOV        EDX,dword ptr [EDI + 0x8]
-//         004024b0     MOV        this,dword ptr [EDX + 0xc]
-//         004024b3     CALL       RGE_Player::computerPlayer                       int computerPlayer(RGE_Player * this)
-//         004024b8     CMP        EAX,0x1
-//         004024bb     JZ         LAB_004024df
-//                               LAB_004024bd                                                 XREF[1]:     00402491(j)
-//         004024bd     MOV        this,ESI
-//         004024bf     CALL       EBP
-//         004024c1     CMP        AL,0xb
-//         004024c3     JNZ        LAB_004025a4
-//         004024c9     MOV        this,dword ptr [ESI + 0x184]
-//         004024cf     CALL       RGE_Action_List::get_action                      RGE_Action * get_action(RGE_Action_List * this)
-//         004024d4     MOV        this,dword ptr [EAX + 0x1c]
-//         004024d7     TEST       this,this
-//         004024d9     JNZ        LAB_004025a4
-//                               LAB_004024df                                                 XREF[2]:     004024ab(j), 004024bb(j)
-//                              act_entr.cpp:91 (8)
-//         004024df     FLD        float ptr [EBX + 0x38]
-//         004024e2     CALL       __ftol                                           undefined __ftol()
-//                              act_entr.cpp:92 (12)
-//         004024e7     FLD        float ptr [EBX + 0x3c]
-//         004024ea     MOV        dword ptr [ESP + 0x1c],EAX
-//         004024ee     CALL       __ftol                                           undefined __ftol()
-//                              act_entr.cpp:94 (12)
-//         004024f3     FLD        float ptr [ESI + 0x38]
-//         004024f6     MOV        dword ptr [ESP + 0x20],EAX
-//         004024fa     CALL       __ftol                                           undefined __ftol()
-//                              act_entr.cpp:95 (12)
-//         004024ff     FLD        float ptr [ESI + 0x3c]
-//         00402502     MOV        dword ptr [ESP + 0x14],EAX
-//         00402506     CALL       __ftol                                           undefined __ftol()
-//                              act_entr.cpp:97 (40)
-//         0040250b     PUSH       0x1
-//         0040250d     PUSH       offset DAT_fffffff8
-//         0040250f     LEA        this,[ESP + 0x2c]
-//         00402513     PUSH       offset DAT_fffffff4
-//         00402515     PUSH       this=>DAT_fffffff0
-//         00402516     LEA        EDX,[ESP + 0x24]
-//         0040251a     LEA        this,[ESP + 0x2c]
-//         0040251e     MOV        dword ptr [ESP + 0x28],EAX
-//         00402522     MOV        EAX,dword ptr [EBX]
-//         00402524     PUSH       EDX
-//         00402525     PUSH       this
-//         00402526     MOV        this,EBX
-//         00402528     CALL       dword ptr [EAX + 0x1b4]
-//         0040252e     CMP        EAX,0x1
-//         00402531     JNZ        LAB_00402577
-//                              act_entr.cpp:102 (4)
-//         00402533     FILD       dword ptr [ESP + 0x24]
-//                              act_entr.cpp:105 (62)
-//         00402537     PUSH       EAX
-//         00402538     PUSH       offset DAT_fffffff8
-//         0040253d     FST        float ptr [ESP + 0x48]
-//         00402541     FSUB       float ptr [DAT_0056e1a0]                         = align(3)
-//         00402547     MOV        this,dword ptr [ESP + 0x48]
-//         0040254b     FSTP       float ptr [EDI + 0x20]
-//         0040254e     FILD       dword ptr [ESP + 0x30]
-//         00402552     FST        float ptr [ESP + 0x44]
-//         00402556     FSUB       float ptr [DAT_0056e1a0]                         = align(3)
-//         0040255c     MOV        EAX,dword ptr [ESP + 0x44]
-//         00402560     FSTP       float ptr [EDI + 0x24]
-//         00402563     MOV        EDX,dword ptr [ESI + 0x40]
-//         00402566     PUSH       EDX=>DAT_fffffff4
-//         00402567     MOV        EDX,dword ptr [ESP + 0x50]
-//         0040256b     PUSH       EAX=>DAT_fffffff0
-//         0040256c     PUSH       this
-//         0040256d     MOV        this,ESI
-//         0040256f     CALL       dword ptr [EDX + 0x154]
-//                              act_entr.cpp:107 (2)
-//         00402575     JMP        LAB_004025d6
-//                               LAB_00402577                                                 XREF[1]:     00402531(j)
-//                              act_entr.cpp:112 (3)
-//         00402577     MOV        EAX,dword ptr [ESI + 0x38]
-//                              act_entr.cpp:115 (40)
-//         0040257a     PUSH       0x1
-//         0040257c     MOV        dword ptr [EDI + 0x20],EAX
-//         0040257f     MOV        this,dword ptr [ESI + 0x3c]
-//         00402582     MOV        dword ptr [EDI + 0x24],this
-//         00402585     MOV        EDX,dword ptr [ESI + 0x40]
-//         00402588     MOV        EAX,dword ptr [EBX + 0x3c]
-//         0040258b     MOV        this,dword ptr [EBX + 0x38]
-//         0040258e     PUSH       offset DAT_fffffff8
-//         00402593     PUSH       EDX=>DAT_fffffff4
-//         00402594     MOV        EDX,dword ptr [ESP + 0x50]
-//         00402598     PUSH       EAX=>DAT_fffffff0
-//         00402599     PUSH       this
-//         0040259a     MOV        this,ESI
-//         0040259c     CALL       dword ptr [EDX + 0x154]
-//                              act_entr.cpp:119 (10)
-//         004025a2     JMP        LAB_004025d6
-//                               LAB_004025a4                                                 XREF[2]:     004024c3(j), 004024d9(j)
-//         004025a4     MOV        this,ESI
-//         004025a6     CALL       EBP
-//         004025a8     CMP        AL,0xb
-//         004025aa     JNZ        LAB_004025d6
-//                              act_entr.cpp:121 (21)
-//         004025ac     MOV        this,dword ptr [ESI + 0x184]
-//         004025b2     CALL       RGE_Action_List::get_action                      RGE_Action * get_action(RGE_Action_List * this)
-//         004025b7     MOV        this,EAX
-//         004025b9     CALL       RGE_Action::targetX                              float targetX(RGE_Action * this)
-//         004025be     FSTP       float ptr [EDI + 0x20]
-//                              act_entr.cpp:122 (21)
-//         004025c1     MOV        this,dword ptr [ESI + 0x184]
-//         004025c7     CALL       RGE_Action_List::get_action                      RGE_Action * get_action(RGE_Action_List * this)
-//         004025cc     MOV        this,EAX
-//         004025ce     CALL       RGE_Action::targetY                              float targetY(RGE_Action * this)
-//         004025d3     FSTP       float ptr [EDI + 0x24]
-//                               LAB_004025d6                                                 XREF[4]:     00402467(j), 00402575(j),
-//                                                                                                         004025a2(j), 004025aa(j)
-//                              act_entr.cpp:134 (23)
-//         004025d6     MOV        this,dword ptr [ESP + local_c]
-//         004025da     MOV        EAX,EDI
-//         004025dc     POP        EDI
-//         004025dd     POP        ESI
-//         004025de     POP        EBP
-//         004025df     MOV        dword ptr FS:[0x0],this
-//         004025e6     POP        EBX
-//         004025e7     ADD        ESP,0x28
-//         004025ea     RET        0xc
-//         004025ed     ??         90h
-//         004025ee     NOP
-//         004025ef     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004023c9(R)
+//              RGE_Action_Obj    Stack[0x8]:4   param_2                   XREF[1]:     004023c0(R)
+//                               ??0RGE_Action_Enter@@QAE@HPAVRGE_Action_Object@@@Z           XREF[1]:     create_action:004d04cd(c)
+//                               RGE_Action_Enter::RGE_Action_Enter
+//                              act_entr.cpp:51 (28)
+//         004023c0     MOV        EAX,dword ptr [ESP + param_2]
+//         004023c4     PUSH       ESI
+//         004023c5     MOV        ESI,this
+//         004023c7     PUSH       0x1
+//         004023c9     MOV        this,dword ptr [ESP + param_1]
+//         004023cd     PUSH       EAX
+//         004023ce     PUSH       this
+//         004023cf     MOV        this,ESI
+//         004023d1     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, int p
+//         004023d6     MOV        dword ptr [ESI],RGE_Action_Enter::`vftable'      = 004023f0
+//                              act_entr.cpp:52 (6)
+//         004023dc     MOV        word ptr [ESI + 0x4],0x3
+//                              act_entr.cpp:53 (6)
+//         004023e2     MOV        EAX,ESI
+//         004023e4     POP        ESI
+//         004023e5     RET        0x8
+//         004023e8     ??         90h
+//         004023e9     NOP
+//         004023ea     NOP
+//         004023eb     NOP
+//         004023ec     NOP
+//         004023ed     NOP
+//         004023ee     NOP
+//         004023ef     NOP
 }
 
 RGE_Action_Enter::RGE_Action_Enter(RGE_Action_Object* param_1, RGE_Task* param_2, RGE_Static_Object* param_3) {

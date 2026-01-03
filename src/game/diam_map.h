@@ -1,5 +1,15 @@
 #pragma once
 #include "../common.h"
+#include "World.h"
+#include "Pnl_scr.h"
+#include "Shape.h"
+#include "tvw_main.h"
+#include "tvw_dmap.h"
+#include "map.h"
+#include "Panel.h"
+#include "Drawarea.h"
+#include "view.h"
+#include "player.h"
 
 class RGE_Diamond_Map : public TPanel {
 public:

@@ -1,5 +1,7 @@
 #pragma once
 #include "../common.h"
+#include "taunt.h"
+#include "Sounddrv.h"
 
 class TChat {
 public:

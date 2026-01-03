@@ -1,5 +1,6 @@
 #pragma once
 #include "../common.h"
+#include "rmm_dbct.h"
 
 class RGE_Map {
 public:

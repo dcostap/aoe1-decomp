@@ -1,5 +1,8 @@
 #pragma once
 #include "../common.h"
+#include "player.h"
+#include "ani_obj.h"
+#include "m_dg_obj.h"
 
 class RGE_Doppleganger_Creator {
 public:

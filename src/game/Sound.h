@@ -1,6 +1,28 @@
 #pragma once
 #include "../common.h"
 
+
+// ----------------------------------------------------------------
+// RGE_Sound_Info
+// Size: 0x24
+struct RGE_Sound_Info {
+    char name[13]; // 0x0
+    long resource_id; // 0x10
+    short percent; // 0x14
+    TDigital * digital_sound; // 0x18
+    uchar loaded; // 0x1C
+    ulong time; // 0x20
+};
+
+// ----------------------------------------------------------------
+// RGE_Sound_List
+// Size: 0x14
+struct RGE_Sound_List {
+    RGE_Sound * sound[3]; // 0x0
+    short frame[3]; // 0xC
+};
+
+
 class RGE_Sound {
 public:
     RGE_Sound_Info* sounds;                  // 0x4

@@ -10033,7 +10033,7 @@ TribeTacticalAIModule::~TribeTacticalAIModule() {
 //         004eedff     MOV        dword ptr [ESI + 0x10c],EBX
 //         004eee05     MOV        dword ptr [ESI + 0x110],EBX
 //         004eee0b     MOV        byte ptr [ESP + local_4],BL
-//         004eee0f     CALL       ManagedArray<int>::~ManagedArray<int>            void ~ManagedArray<int>(ManagedArray<int> * t
+//         004eee0f     CALL       ManagedArray_int::~ManagedArray_int            void ~ManagedArray_int(ManagedArray_int * t
 //         004eee14     MOV        this,ESI
 //         004eee16     MOV        dword ptr [ESP + local_4],0xffffffff
 //         004eee1e     CALL       TacticalAIModule::~TacticalAIModule              void ~TacticalAIModule(TacticalAIModule * this)
@@ -10786,7 +10786,7 @@ int TribeTacticalAIModule::save(int param_1) {
 //         004ef51f     LEA        EAX,[EDI + 0x1]
 //         004ef522     MOV        this,EBX
 //         004ef524     PUSH       EAX
-//         004ef525     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004ef525     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004ef52a                                                 XREF[1]:     004ef51d(j)
 //         004ef52a     MOV        this,dword ptr [EBX]
 //                              taitacmd.cpp:2281 (34)
@@ -10828,7 +10828,7 @@ int TribeTacticalAIModule::save(int param_1) {
 //         004ef582     LEA        this,[EDI + 0x1]
 //         004ef585     PUSH       this
 //         004ef586     MOV        this,EBX
-//         004ef588     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004ef588     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004ef58d                                                 XREF[1]:     004ef580(j)
 //         004ef58d     MOV        EDX,dword ptr [EBX]
 //                              taitacmd.cpp:2287 (34)
@@ -10892,7 +10892,7 @@ int TribeTacticalAIModule::save(int param_1) {
 //         004ef61e     LEA        EDX,[EDI + 0x1]
 //         004ef621     MOV        this,EBX
 //         004ef623     PUSH       EDX
-//         004ef624     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004ef624     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004ef629                                                 XREF[1]:     004ef61c(j)
 //         004ef629     MOV        EAX,dword ptr [EBX]
 //                              taitacmd.cpp:2298 (34)
@@ -10934,7 +10934,7 @@ int TribeTacticalAIModule::save(int param_1) {
 //         004ef681     LEA        EAX,[EDI + 0x1]
 //         004ef684     MOV        this,EBX
 //         004ef686     PUSH       EAX
-//         004ef687     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004ef687     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004ef68c                                                 XREF[1]:     004ef67f(j)
 //         004ef68c     MOV        this,dword ptr [EBX]
 //                              taitacmd.cpp:2304 (34)
@@ -13192,7 +13192,7 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* param_1) {
 //         004f0e8b     MOV        EDX,dword ptr [EBX + 0x4]
 //         004f0e8e     LEA        this,[EBP + 0x184]
 //         004f0e94     PUSH       EDX
-//         004f0e95     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004f0e95     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taitacmd.cpp:3167 (8)
 //         004f0e9a     POP        EDI
 //         004f0e9b     POP        ESI
@@ -13226,7 +13226,7 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* param_1) {
 //         004f0ed0     INC        this
 //         004f0ed1     PUSH       this
 //         004f0ed2     MOV        this,ESI
-//         004f0ed4     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f0ed4     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f0ed9                                                 XREF[1]:     004f0ece(j)
 //         004f0ed9     MOV        this,dword ptr [ESI + 0x4]
 //         004f0edc     MOV        EDX,dword ptr [ESI]
@@ -13265,7 +13265,7 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* param_1) {
 //         004f0f27     INC        this
 //         004f0f28     PUSH       this
 //         004f0f29     MOV        this,ESI
-//         004f0f2b     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f0f2b     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f0f30                                                 XREF[1]:     004f0f25(j)
 //         004f0f30     MOV        EAX,dword ptr [ESI + 0x4]
 //         004f0f33     MOV        this,dword ptr [ESI]
@@ -13288,7 +13288,7 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* param_1) {
 //         004f0f5c     PUSH       this
 //         004f0f5d     MOV        this,ESI
 //         004f0f5f     MOV        dword ptr [ESP + param_1],EAX
-//         004f0f63     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004f0f63     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004f0f68     CMP        EAX,0x1
 //         004f0f6b     JZ         LAB_004f0f94
 //         004f0f6d     MOV        EDX,dword ptr [ESI + 0xc]
@@ -13299,7 +13299,7 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* param_1) {
 //         004f0f78     INC        EAX
 //         004f0f79     MOV        this,ESI
 //         004f0f7b     PUSH       EAX
-//         004f0f7c     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f0f7c     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f0f81                                                 XREF[1]:     004f0f76(j)
 //         004f0f81     MOV        EAX,dword ptr [ESI + 0x4]
 //         004f0f84     MOV        this,dword ptr [ESI]
@@ -13320,7 +13320,7 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* param_1) {
 //         004f0fab     MOV        dword ptr [ESP + param_1],this
 //         004f0faf     PUSH       EDX
 //         004f0fb0     MOV        this,ESI
-//         004f0fb2     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004f0fb2     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004f0fb7     CMP        EAX,0x1
 //         004f0fba     JZ         LAB_004f0fe3
 //         004f0fbc     MOV        this,dword ptr [ESI + 0xc]
@@ -13331,7 +13331,7 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* param_1) {
 //         004f0fc7     INC        EAX
 //         004f0fc8     MOV        this,ESI
 //         004f0fca     PUSH       EAX
-//         004f0fcb     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f0fcb     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f0fd0                                                 XREF[1]:     004f0fc5(j)
 //         004f0fd0     MOV        EDX,dword ptr [ESI + 0x4]
 //         004f0fd3     MOV        EAX,dword ptr [ESI]
@@ -13352,7 +13352,7 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* param_1) {
 //         004f0ffe     PUSH       this
 //         004f0fff     MOV        this,ESI
 //         004f1001     MOV        dword ptr [ESP + param_1],EAX
-//         004f1005     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004f1005     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004f100a     CMP        EAX,0x1
 //         004f100d     JZ         LAB_004f1086
 //         004f100f     MOV        EDX,dword ptr [ESI + 0xc]
@@ -13363,7 +13363,7 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* param_1) {
 //         004f101a     INC        EAX
 //         004f101b     MOV        this,ESI
 //         004f101d     PUSH       EAX
-//         004f101e     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f101e     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f1023                                                 XREF[1]:     004f1018(j)
 //         004f1023     MOV        EAX,dword ptr [ESI + 0x4]
 //         004f1026     MOV        this,dword ptr [ESI]
@@ -13412,7 +13412,7 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* param_1) {
 //         004f106e     INC        this
 //         004f106f     PUSH       this
 //         004f1070     MOV        this,ESI
-//         004f1072     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f1072     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f1077                                                 XREF[2]:     004f0dbe(j), 004f106c(j)
 //         004f1077     MOV        this,dword ptr [ESI + 0x4]
 //         004f107a     MOV        EDX,dword ptr [ESI]
@@ -13661,7 +13661,7 @@ void TribeTacticalAIModule::removeObject(int param_1) {
 //         004f12a6     LEA        EDX=>param_1,[ESP + 0x14]
 //         004f12aa     PUSH       EDX
 //         004f12ab     MOV        this,EDI
-//         004f12ad     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004f12ad     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004f12b2     TEST       EAX,EAX
 //                              taitacmd.cpp:3188 (24)
 //         004f12b4     JNZ        LAB_004f1306
@@ -13669,7 +13669,7 @@ void TribeTacticalAIModule::removeObject(int param_1) {
 //         004f12ba     LEA        EDI,[ESI + 0x164]
 //         004f12c0     PUSH       this
 //         004f12c1     MOV        this,EDI
-//         004f12c3     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004f12c3     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004f12c8     TEST       EAX,EAX
 //         004f12ca     JZ         LAB_004f12d3
 //                              taitacmd.cpp:3189 (5)
@@ -13682,7 +13682,7 @@ void TribeTacticalAIModule::removeObject(int param_1) {
 //         004f12d9     LEA        EAX=>param_1,[ESP + 0x14]
 //         004f12dd     PUSH       EAX
 //         004f12de     MOV        this,EDI
-//         004f12e0     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004f12e0     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004f12e5     TEST       EAX,EAX
 //         004f12e7     JZ         LAB_004f1312
 //                              taitacmd.cpp:3191 (5)
@@ -13696,7 +13696,7 @@ void TribeTacticalAIModule::removeObject(int param_1) {
 //         004f12f6     LEA        EDX=>param_1,[ESP + 0x14]
 //         004f12fa     PUSH       EDX
 //         004f12fb     MOV        this,EDI
-//         004f12fd     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004f12fd     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004f1302     TEST       EAX,EAX
 //         004f1304     JZ         LAB_004f1312
 //                               LAB_004f1306                                                 XREF[1]:     004f12b4(j)
@@ -13705,7 +13705,7 @@ void TribeTacticalAIModule::removeObject(int param_1) {
 //         004f130a     PUSH       EAX
 //                               LAB_004f130b                                                 XREF[2]:     004f12d1(j), 004f12ee(j)
 //         004f130b     MOV        this,EDI
-//         004f130d     CALL       ManagedArray<int>::remove                        int remove(ManagedArray<int> * this, int para
+//         004f130d     CALL       ManagedArray_int::remove                        int remove(ManagedArray_int * this, int para
 //                               LAB_004f1312                                                 XREF[2]:     004f12e7(j), 004f1304(j)
 //         004f1312     MOV        EDI,dword ptr [ESP + param_1]
 //                               LAB_004f1316                                                 XREF[6]:     004f1122(j), 004f1157(j),
@@ -13802,7 +13802,7 @@ void TribeTacticalAIModule::evaluateCivilianDistribution() {
 //         004f1424     JNS        LAB_004f142f
 //         004f1426     PUSH       0x1
 //         004f1428     MOV        this,EDI
-//         004f142a     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f142a     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f142f                                                 XREF[1]:     004f1424(j)
 //         004f142f     MOV        EAX,dword ptr [EDI]
 //         004f1431     MOV        this,dword ptr [EAX]
@@ -13823,7 +13823,7 @@ void TribeTacticalAIModule::evaluateCivilianDistribution() {
 //         004f1465     JNS        LAB_004f1470
 //         004f1467     PUSH       0x1
 //         004f1469     MOV        this,EDI
-//         004f146b     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f146b     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f1470                                                 XREF[1]:     004f1465(j)
 //         004f1470     MOV        EAX,dword ptr [EDI]
 //         004f1472     MOV        this,dword ptr [EAX]
@@ -14215,7 +14215,7 @@ int TribeTacticalAIModule::taskCivilians(ulong param_1, ulong param_2) {
 //         004f17c7     INC        this
 //         004f17c8     PUSH       this
 //         004f17c9     MOV        this,EDI
-//         004f17cb     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f17cb     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f17d0                                                 XREF[1]:     004f17c5(j)
 //         004f17d0     MOV        EAX,dword ptr [EDI + 0x4]
 //         004f17d3     MOV        this,dword ptr [EDI]
@@ -14393,7 +14393,7 @@ int TribeTacticalAIModule::taskCivilians(ulong param_1, ulong param_2) {
 //         004f198a     JNS        LAB_004f1994
 //         004f198c     PUSH       EBP
 //         004f198d     MOV        this,EDI
-//         004f198f     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f198f     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f1994                                                 XREF[1]:     004f198a(j)
 //         004f1994     MOV        EAX,dword ptr [EDI]
 //                              taitacmd.cpp:3466 (23)
@@ -19269,7 +19269,7 @@ void TribeTacticalAIModule::taskUngroupedSoldiers() {
 //         004f4b3b     LEA        this,[EBX + 0x1]
 //         004f4b3e     PUSH       this
 //         004f4b3f     MOV        this,ESI
-//         004f4b41     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f4b41     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f4b46                                                 XREF[1]:     004f4b39(j)
 //         004f4b46     MOV        EDX,dword ptr [ESI]
 //         004f4b48     MOV        this,EBP
@@ -19286,7 +19286,7 @@ void TribeTacticalAIModule::taskUngroupedSoldiers() {
 //         004f4b5f     LEA        EDX,[EBX + 0x1]
 //         004f4b62     MOV        this,ESI
 //         004f4b64     PUSH       EDX
-//         004f4b65     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f4b65     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f4b6a                                                 XREF[1]:     004f4b5d(j)
 //         004f4b6a     MOV        EAX,dword ptr [ESI]
 //         004f4b6c     MOV        this,dword ptr [EBP + 0x130]
@@ -19334,7 +19334,7 @@ void TribeTacticalAIModule::taskUngroupedSoldiers() {
 //         004f4bdd     LEA        EAX,[EBX + 0x1]
 //         004f4be0     MOV        this,ESI
 //         004f4be2     PUSH       EAX
-//         004f4be3     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f4be3     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f4be8                                                 XREF[1]:     004f4bdb(j)
 //         004f4be8     MOV        this,dword ptr [ESI]
 //         004f4bea     MOV        EDX,dword ptr [this->_padding_ + EBX*0x4]
@@ -19353,7 +19353,7 @@ void TribeTacticalAIModule::taskUngroupedSoldiers() {
 //         004f4c0d     LEA        this,[EBX + 0x1]
 //         004f4c10     PUSH       this
 //         004f4c11     MOV        this,ESI
-//         004f4c13     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f4c13     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f4c18                                                 XREF[1]:     004f4c0b(j)
 //         004f4c18     MOV        this,dword ptr [EBP + 0x128]
 //         004f4c1e     LEA        EDI,[EBP + 0x124]
@@ -19438,7 +19438,7 @@ void TribeTacticalAIModule::taskUngroupedSoldiers() {
 //         004f4cd8     INC        this
 //         004f4cd9     PUSH       this
 //         004f4cda     MOV        this,EDI
-//         004f4cdc     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f4cdc     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //         004f4ce1     MOV        EDX,dword ptr [ESP + soldierObj]
 //                               LAB_004f4ce5                                                 XREF[1]:     004f4cd6(j)
 //         004f4ce5     MOV        this,dword ptr [EDI + 0x4]
@@ -19477,7 +19477,7 @@ void TribeTacticalAIModule::taskUngroupedSoldiers() {
 //         004f4d39     LEA        this,[EBX + 0x1]
 //         004f4d3c     PUSH       this
 //         004f4d3d     MOV        this,ESI
-//         004f4d3f     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f4d3f     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f4d44                                                 XREF[1]:     004f4d37(j)
 //         004f4d44     FILD       dword ptr [ESP + local_4]
 //         004f4d48     MOV        EDX,dword ptr [ESI]
@@ -20594,7 +20594,7 @@ void TribeTacticalAIModule::evaluateOpenTasks() {
 //         004f57f1     LEA        this,[EBX + 0x1]
 //         004f57f4     PUSH       this
 //         004f57f5     MOV        this,EDI
-//         004f57f7     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f57f7     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f57fc                                                 XREF[1]:     004f57ef(j)
 //         004f57fc     MOV        EDX,dword ptr [EDI]
 //         004f57fe     MOV        this,dword ptr [ESI + 0xf0]
@@ -20623,7 +20623,7 @@ void TribeTacticalAIModule::evaluateOpenTasks() {
 //         004f5846     INC        EAX
 //         004f5847     MOV        this,EDI
 //         004f5849     PUSH       EAX
-//         004f584a     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f584a     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f584f                                                 XREF[1]:     004f5844(j)
 //         004f584f     MOV        this,dword ptr [ESI + 0xd5c]
 //         004f5855     XOR        EAX,EAX
@@ -20748,7 +20748,7 @@ void TribeTacticalAIModule::evaluateOpenTasks() {
 //         004f599f     INC        this
 //         004f59a0     PUSH       this
 //         004f59a1     MOV        this,EBP
-//         004f59a3     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f59a3     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f59a8                                                 XREF[1]:     004f599d(j)
 //         004f59a8     MOV        this,dword ptr [EBP + 0x4]
 //         004f59ab     MOV        EDX,dword ptr [EBP]
@@ -20835,7 +20835,7 @@ void TribeTacticalAIModule::evaluateOpenTasks() {
 //         004f5a64     INC        EAX
 //         004f5a65     MOV        this,EDI
 //         004f5a67     PUSH       EAX
-//         004f5a68     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f5a68     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f5a6d                                                 XREF[1]:     004f5a62(j)
 //         004f5a6d     MOV        EDX,dword ptr [EDI]
 //         004f5a6f     MOV        EAX,dword ptr [ESP + 0x14]
@@ -23688,7 +23688,7 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int param_1, int param_2, 
 //         004f75d8     LEA        this,[EDI + 0x1]
 //         004f75db     PUSH       this
 //         004f75dc     MOV        this,ESI
-//         004f75de     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f75de     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f75e3                                                 XREF[1]:     004f75d6(j)
 //         004f75e3     MOV        EDX,dword ptr [ESI]
 //         004f75e5     MOV        this,dword ptr [EBX + 0xf0]
@@ -23715,7 +23715,7 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int param_1, int param_2, 
 //         004f7629     INC        EAX
 //         004f762a     MOV        this,ESI
 //         004f762c     PUSH       EAX
-//         004f762d     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f762d     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f7632                                                 XREF[1]:     004f7627(j)
 //         004f7632     MOV        this,dword ptr [EBX + 0xd5c]
 //         004f7638     XOR        EAX,EAX
@@ -23761,7 +23761,7 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int param_1, int param_2, 
 //         004f76a2     INC        EAX
 //         004f76a3     MOV        this,ESI
 //         004f76a5     PUSH       EAX
-//         004f76a6     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f76a6     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f76ab                                                 XREF[1]:     004f76a0(j)
 //         004f76ab     MOV        EAX,dword ptr [ESP + count]
 //         004f76af     MOV        EDX,dword ptr [ESI]
@@ -23806,7 +23806,7 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int param_1, int param_2, 
 //         004f771b     INC        EAX
 //         004f771c     MOV        this,ESI
 //         004f771e     PUSH       EAX
-//         004f771f     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f771f     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f7724                                                 XREF[1]:     004f7719(j)
 //         004f7724     MOV        this,dword ptr [ESP + count]
 //         004f7728     MOV        EAX,dword ptr [ESI]
@@ -23836,7 +23836,7 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int param_1, int param_2, 
 //         004f7758     INC        this
 //         004f7759     PUSH       this
 //         004f775a     MOV        this,EDI
-//         004f775c     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f775c     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f7761                                                 XREF[1]:     004f7756(j)
 //         004f7761     MOV        EAX,dword ptr [EDI + 0x4]
 //         004f7764     MOV        this,dword ptr [EDI]
@@ -23929,7 +23929,7 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int param_1, int param_2, 
 //         004f7825     PUSH       EAX
 //         004f7826     MOV        this,EDI
 //         004f7828     MOV        dword ptr [ESP + local_4],EDX
-//         004f782c     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004f782c     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004f7831     CMP        EAX,0x1
 //         004f7834     JZ         LAB_004f785d
 //         004f7836     MOV        this,dword ptr [EDI + 0xc]
@@ -23940,7 +23940,7 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int param_1, int param_2, 
 //         004f7841     INC        EAX
 //         004f7842     MOV        this,EDI
 //         004f7844     PUSH       EAX
-//         004f7845     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f7845     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f784a                                                 XREF[1]:     004f783f(j)
 //         004f784a     MOV        EDX,dword ptr [EDI + 0x4]
 //         004f784d     MOV        EAX,dword ptr [EDI]
@@ -24016,7 +24016,7 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int param_1, int param_2) 
 //         004f78a9     LEA        this,[EBX + 0x1]
 //         004f78ac     PUSH       this
 //         004f78ad     MOV        this,ESI
-//         004f78af     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f78af     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f78b4                                                 XREF[1]:     004f78a7(j)
 //         004f78b4     MOV        EDX,dword ptr [ESI]
 //         004f78b6     MOV        this,dword ptr [EBP + 0xf0]
@@ -24043,7 +24043,7 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int param_1, int param_2) 
 //         004f78fa     LEA        this,[EBX + 0x1]
 //         004f78fd     PUSH       this
 //         004f78fe     MOV        this,ESI
-//         004f7900     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f7900     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f7905                                                 XREF[1]:     004f78f8(j)
 //         004f7905     MOV        this,dword ptr [EBP + 0xd5c]
 //         004f790b     XOR        EAX,EAX
@@ -24090,7 +24090,7 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int param_1, int param_2) 
 //         004f797f     LEA        this,[EBX + 0x1]
 //         004f7982     PUSH       this
 //         004f7983     MOV        this,ESI
-//         004f7985     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f7985     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f798a                                                 XREF[1]:     004f797d(j)
 //         004f798a     MOV        EDX,dword ptr [ESI]
 //         004f798c     MOV        EAX,dword ptr [ESP + local_8]
@@ -24100,7 +24100,7 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int param_1, int param_2) 
 //         004f799d     MOV        dword ptr [ESP + local_8],this
 //         004f79a1     PUSH       EDX
 //         004f79a2     MOV        this,EDI
-//         004f79a4     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004f79a4     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004f79a9     CMP        EAX,0x1
 //         004f79ac     JZ         LAB_004f7ae3
 //         004f79b2     MOV        this,dword ptr [EDI + 0xc]
@@ -24111,7 +24111,7 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int param_1, int param_2) 
 //         004f79bd     INC        EAX
 //         004f79be     MOV        this,EDI
 //         004f79c0     PUSH       EAX
-//         004f79c1     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f79c1     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f79c6                                                 XREF[1]:     004f79bb(j)
 //         004f79c6     MOV        EDX,dword ptr [EDI + 0x4]
 //         004f79c9     MOV        EAX,dword ptr [EDI]
@@ -24140,7 +24140,7 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int param_1, int param_2) 
 //         004f7a0f     LEA        EAX,[EBX + 0x1]
 //         004f7a12     MOV        this,ESI
 //         004f7a14     PUSH       EAX
-//         004f7a15     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f7a15     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f7a1a                                                 XREF[1]:     004f7a0d(j)
 //         004f7a1a     MOV        this,dword ptr [ESI]
 //         004f7a1c     MOV        EDX,dword ptr [ESP + local_8]
@@ -24150,7 +24150,7 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int param_1, int param_2) 
 //         004f7a2d     PUSH       this
 //         004f7a2e     MOV        this,EDI
 //         004f7a30     MOV        dword ptr [ESP + local_8],EAX
-//         004f7a34     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004f7a34     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004f7a39     CMP        EAX,0x1
 //         004f7a3c     JZ         LAB_004f7ae3
 //         004f7a42     MOV        EDX,dword ptr [EDI + 0xc]
@@ -24161,7 +24161,7 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int param_1, int param_2) 
 //         004f7a4d     INC        EAX
 //         004f7a4e     MOV        this,EDI
 //         004f7a50     PUSH       EAX
-//         004f7a51     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f7a51     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f7a56                                                 XREF[1]:     004f7a4b(j)
 //         004f7a56     MOV        EAX,dword ptr [EDI + 0x4]
 //         004f7a59     MOV        this,dword ptr [EDI]
@@ -24190,7 +24190,7 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int param_1, int param_2) 
 //         004f7a91     LEA        this,[EBX + 0x1]
 //         004f7a94     PUSH       this
 //         004f7a95     MOV        this,ESI
-//         004f7a97     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f7a97     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f7a9c                                                 XREF[1]:     004f7a8f(j)
 //         004f7a9c     MOV        EDX,dword ptr [ESI]
 //         004f7a9e     MOV        EAX,dword ptr [ESP + local_8]
@@ -24200,7 +24200,7 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int param_1, int param_2) 
 //         004f7aaf     MOV        dword ptr [ESP + local_8],this
 //         004f7ab3     PUSH       EDX
 //         004f7ab4     MOV        this,EDI
-//         004f7ab6     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004f7ab6     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004f7abb     CMP        EAX,0x1
 //         004f7abe     JZ         LAB_004f7ae3
 //         004f7ac0     MOV        this,dword ptr [EDI + 0xc]
@@ -24211,7 +24211,7 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int param_1, int param_2) 
 //         004f7acb     INC        EAX
 //         004f7acc     MOV        this,EDI
 //         004f7ace     PUSH       EAX
-//         004f7acf     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f7acf     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f7ad4                                                 XREF[1]:     004f7ac9(j)
 //         004f7ad4     MOV        EDX,dword ptr [EDI + 0x4]
 //         004f7ad7     MOV        EAX,dword ptr [EDI]
@@ -24257,7 +24257,7 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int param_1, int param_2) 
 //         004f7b28     LEA        EAX,[ESI + 0x1]
 //         004f7b2b     MOV        this,EDI
 //         004f7b2d     PUSH       EAX
-//         004f7b2e     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f7b2e     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f7b33                                                 XREF[1]:     004f7b26(j)
 //         004f7b33     MOV        this,dword ptr [EDI]
 //         004f7b35     MOV        EAX,dword ptr [EBP + 0xf0]
@@ -24284,7 +24284,7 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int param_1, int param_2) 
 //         004f7b79     INC        EAX
 //         004f7b7a     MOV        this,EDI
 //         004f7b7c     PUSH       EAX
-//         004f7b7d     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f7b7d     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f7b82                                                 XREF[1]:     004f7b77(j)
 //         004f7b82     MOV        this,dword ptr [EBP + 0xd5c]
 //         004f7b88     XOR        EAX,EAX
@@ -24338,7 +24338,7 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int param_1, int param_2) 
 //         004f7c0a     INC        EAX
 //         004f7c0b     MOV        this,EDI
 //         004f7c0d     PUSH       EAX
-//         004f7c0e     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f7c0e     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f7c13                                                 XREF[1]:     004f7c08(j)
 //         004f7c13     MOV        EDX,dword ptr [EDI]
 //         004f7c15     MOV        this,dword ptr [EBP + 0xd4c]
@@ -24381,7 +24381,7 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int param_1, int param_2) 
 //         004f7c88     INC        EAX
 //         004f7c89     MOV        this,EDI
 //         004f7c8b     PUSH       EAX
-//         004f7c8c     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f7c8c     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f7c91                                                 XREF[1]:     004f7c86(j)
 //         004f7c91     MOV        EDX,dword ptr [EDI]
 //         004f7c93     MOV        this,dword ptr [EBP + 0xd4c]
@@ -24409,7 +24409,7 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int param_1, int param_2) 
 //         004f7cc5     INC        this
 //         004f7cc6     PUSH       this
 //         004f7cc7     MOV        this,ESI
-//         004f7cc9     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f7cc9     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f7cce                                                 XREF[1]:     004f7cc3(j)
 //         004f7cce     MOV        this,dword ptr [ESI + 0x4]
 //         004f7cd1     MOV        EDX,dword ptr [ESI]
@@ -24438,7 +24438,7 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int param_1, int param_2) 
 //         004f7d09     INC        EAX
 //         004f7d0a     MOV        this,EDI
 //         004f7d0c     PUSH       EAX
-//         004f7d0d     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f7d0d     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f7d12                                                 XREF[1]:     004f7d07(j)
 //         004f7d12     MOV        EDX,dword ptr [EDI]
 //         004f7d14     LEA        this=>local_8,[ESP + 0x18]
@@ -24447,7 +24447,7 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int param_1, int param_2) 
 //         004f7d1f     MOV        EAX,dword ptr [EDX + EBX*0x1]
 //         004f7d22     MOV        this,ESI
 //         004f7d24     MOV        dword ptr [ESP + local_8],EAX
-//         004f7d28     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004f7d28     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004f7d2d     CMP        EAX,0x1
 //         004f7d30     JZ         LAB_004f7d55
 //         004f7d32     MOV        EDX,dword ptr [ESI + 0xc]
@@ -24458,7 +24458,7 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int param_1, int param_2) 
 //         004f7d3d     INC        EAX
 //         004f7d3e     MOV        this,ESI
 //         004f7d40     PUSH       EAX
-//         004f7d41     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f7d41     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f7d46                                                 XREF[1]:     004f7d3b(j)
 //         004f7d46     MOV        EAX,dword ptr [ESI + 0x4]
 //         004f7d49     MOV        this,dword ptr [ESI]
@@ -24672,7 +24672,7 @@ int TribeTacticalAIModule::idleCivilian(int param_1) {
 //         004f81d7     LEA        this,[EDI + 0x1]
 //         004f81da     PUSH       this
 //         004f81db     MOV        this,ESI
-//         004f81dd     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f81dd     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f81e2                                                 XREF[1]:     004f81d5(j)
 //         004f81e2     MOV        this,dword ptr [EBX + 0xd5c]
 //         004f81e8     XOR        EAX,EAX
@@ -24698,7 +24698,7 @@ int TribeTacticalAIModule::idleCivilian(int param_1) {
 //         004f8218     LEA        this,[EDI + 0x1]
 //         004f821b     PUSH       this
 //         004f821c     MOV        this,ESI
-//         004f821e     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f821e     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f8223                                                 XREF[1]:     004f8216(j)
 //         004f8223     MOV        EDX,dword ptr [ESI]
 //         004f8225     MOV        this,dword ptr [EBX + 0xf0]
@@ -24724,7 +24724,7 @@ int TribeTacticalAIModule::idleCivilian(int param_1) {
 //         004f8262     LEA        this,[EDI + 0x1]
 //         004f8265     PUSH       this
 //         004f8266     MOV        this,ESI
-//         004f8268     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f8268     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f826d                                                 XREF[1]:     004f8260(j)
 //         004f826d     MOV        EDX,dword ptr [ESI]
 //         004f826f     MOV        this,EBX
@@ -24741,7 +24741,7 @@ int TribeTacticalAIModule::idleCivilian(int param_1) {
 //         004f8286     LEA        EDX,[EDI + 0x1]
 //         004f8289     MOV        this,ESI
 //         004f828b     PUSH       EDX
-//         004f828c     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f828c     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f8291                                                 XREF[1]:     004f8284(j)
 //         004f8291     MOV        this,dword ptr [EBX + 0x108]
 //         004f8297     XOR        EAX,EAX
@@ -24800,7 +24800,7 @@ int TribeTacticalAIModule::idleCivilian(int param_1) {
 //         004f8321     LEA        this,[EBP + 0x1]
 //         004f8324     PUSH       this
 //         004f8325     MOV        this,ESI
-//         004f8327     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f8327     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f832c                                                 XREF[1]:     004f831f(j)
 //         004f832c     MOV        this,dword ptr [EBX + 0xd5c]
 //         004f8332     XOR        EAX,EAX
@@ -24935,7 +24935,7 @@ int TribeTacticalAIModule::idleCivilian(int param_1) {
 //         004f8478     LEA        this,[EBP + 0x1]
 //         004f847b     PUSH       this
 //         004f847c     MOV        this,ESI
-//         004f847e     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f847e     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f8483                                                 XREF[1]:     004f8476(j)
 //         004f8483     MOV        this,dword ptr [EBX + 0x108]
 //         004f8489     XOR        EAX,EAX
@@ -25097,7 +25097,7 @@ int TribeTacticalAIModule::idleCivilian(int param_1, XYPoint* param_2, int param
 //         004f81d7     LEA        this,[EDI + 0x1]
 //         004f81da     PUSH       this
 //         004f81db     MOV        this,ESI
-//         004f81dd     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f81dd     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f81e2                                                 XREF[1]:     004f81d5(j)
 //         004f81e2     MOV        this,dword ptr [EBX + 0xd5c]
 //         004f81e8     XOR        EAX,EAX
@@ -25123,7 +25123,7 @@ int TribeTacticalAIModule::idleCivilian(int param_1, XYPoint* param_2, int param
 //         004f8218     LEA        this,[EDI + 0x1]
 //         004f821b     PUSH       this
 //         004f821c     MOV        this,ESI
-//         004f821e     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f821e     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f8223                                                 XREF[1]:     004f8216(j)
 //         004f8223     MOV        EDX,dword ptr [ESI]
 //         004f8225     MOV        this,dword ptr [EBX + 0xf0]
@@ -25149,7 +25149,7 @@ int TribeTacticalAIModule::idleCivilian(int param_1, XYPoint* param_2, int param
 //         004f8262     LEA        this,[EDI + 0x1]
 //         004f8265     PUSH       this
 //         004f8266     MOV        this,ESI
-//         004f8268     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f8268     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f826d                                                 XREF[1]:     004f8260(j)
 //         004f826d     MOV        EDX,dword ptr [ESI]
 //         004f826f     MOV        this,EBX
@@ -25166,7 +25166,7 @@ int TribeTacticalAIModule::idleCivilian(int param_1, XYPoint* param_2, int param
 //         004f8286     LEA        EDX,[EDI + 0x1]
 //         004f8289     MOV        this,ESI
 //         004f828b     PUSH       EDX
-//         004f828c     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f828c     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f8291                                                 XREF[1]:     004f8284(j)
 //         004f8291     MOV        this,dword ptr [EBX + 0x108]
 //         004f8297     XOR        EAX,EAX
@@ -25225,7 +25225,7 @@ int TribeTacticalAIModule::idleCivilian(int param_1, XYPoint* param_2, int param
 //         004f8321     LEA        this,[EBP + 0x1]
 //         004f8324     PUSH       this
 //         004f8325     MOV        this,ESI
-//         004f8327     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f8327     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f832c                                                 XREF[1]:     004f831f(j)
 //         004f832c     MOV        this,dword ptr [EBX + 0xd5c]
 //         004f8332     XOR        EAX,EAX
@@ -25360,7 +25360,7 @@ int TribeTacticalAIModule::idleCivilian(int param_1, XYPoint* param_2, int param
 //         004f8478     LEA        this,[EBP + 0x1]
 //         004f847b     PUSH       this
 //         004f847c     MOV        this,ESI
-//         004f847e     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f847e     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f8483                                                 XREF[1]:     004f8476(j)
 //         004f8483     MOV        this,dword ptr [EBX + 0x108]
 //         004f8489     XOR        EAX,EAX
@@ -26141,7 +26141,7 @@ int TribeTacticalAIModule::unit(int param_1, int param_2, int param_3) {
 //         004f8bc8     LEA        EDX,[EBP + 0x1]
 //         004f8bcb     MOV        this,EDI
 //         004f8bcd     PUSH       EDX
-//         004f8bce     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004f8bce     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004f8bd3                                                 XREF[1]:     004f8bc6(j)
 //         004f8bd3     MOV        EAX,dword ptr [EDI]
 //                              taitacmd.cpp:7374 (10)
@@ -31612,7 +31612,7 @@ void TribeTacticalAIModule::setupSoldierGroups() {
 //         004fbcb5     INC        this
 //         004fbcb6     PUSH       this
 //         004fbcb7     LEA        this=>groupsToRemove.numberValue,[ESP + 0x30]
-//         004fbcbb     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004fbcbb     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //         004fbcc0     MOV        this,dword ptr [ESP + groupsToRemove.desiredNu
 //                               LAB_004fbcc4                                                 XREF[1]:     004fbcb3(j)
 //         004fbcc4     MOV        EDX,dword ptr [ESP + groupsToRemove.numberValue]
@@ -31692,7 +31692,7 @@ void TribeTacticalAIModule::setupSoldierGroups() {
 //         004fbd83     INC        this
 //         004fbd84     PUSH       this
 //         004fbd85     LEA        this=>groupsToRemove.numberValue,[ESP + 0x30]
-//         004fbd89     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004fbd89     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //         004fbd8e     MOV        this,dword ptr [ESP + groupsToRemove.desiredNu
 //                               LAB_004fbd92                                                 XREF[1]:     004fbd81(j)
 //         004fbd92     MOV        EDX,dword ptr [ESP + groupsToRemove.numberValue]
@@ -35115,7 +35115,7 @@ void TribeTacticalAIModule::setupBoatGroups() {
 //         004fdeba     INC        this
 //         004fdebb     PUSH       this
 //         004fdebc     LEA        this=>groupsToRemove.numberValue,[ESP + 0x30]
-//         004fdec0     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004fdec0     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //         004fdec5     MOV        this,dword ptr [ESP + groupsToRemove.desiredNu
 //                               LAB_004fdec9                                                 XREF[1]:     004fdeb8(j)
 //         004fdec9     MOV        EDX,dword ptr [ESP + groupsToRemove.numberValue]
@@ -41030,7 +41030,7 @@ int TribeTacticalAIModule::selectBestCommander(TacticalAIGroup* param_1) {
     return 0;
 }
 
-int TribeTacticalAIModule::selectBestCommander(ManagedArray<int>* param_1) {
+int TribeTacticalAIModule::selectBestCommander(ManagedArray_int* param_1) {
     /* TODO: Stub */
 //                              int __thiscall selectBestCommander(TribeTacticalAIModule * this, Man
 //              int               EAX:4          <RETURN>
@@ -44535,7 +44535,7 @@ void TribeTacticalAIModule::taskElephantGatherers(int param_1, int param_2, int 
 //         005030c0     PUSH       0x1
 //         005030c2     LEA        this=>alreadyTasked.numberValue,[ESP + 0x24]
 //         005030c6     MOV        dword ptr [ESP + local_4],ESI
-//         005030ca     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         005030ca     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //         005030cf     MOV        this,dword ptr [ESP + alreadyTasked.desiredNum
 //         005030d3     MOV        EAX,dword ptr [ESP + alreadyTasked.numberValue]
 //         005030d7     MOV        EDX,dword ptr [ESP + param_1]

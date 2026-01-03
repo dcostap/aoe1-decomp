@@ -3,58 +3,71 @@
 
 RGE_Action::RGE_Action(int param_1, RGE_Action_Object* param_2, int param_3) {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Action(RGE_Action * this, RGE_Action_Object
+//                              undefined __thiscall RGE_Action(RGE_Action * this, int param_1, RGE_
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Action *      ECX:4 (auto)   this
-//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     004074da(R)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     004074cc(R)
-//                               ??0RGE_Action@@QAE@PAVRGE_Action_Object@@H@Z                 XREF[32]:    RGE_Action_Attack:00401197(c),
-//                               RGE_Action::RGE_Action                                                    RGE_Action_Attack:004012bb(c),
-//                                                                                                         RGE_Action_Enter:00402439(c),
-//                                                                                                         RGE_Action_Gather:00402f65(c),
-//                                                                                                         RGE_Action_Make:00404a1a(c),
-//                                                                                                         RGE_Action_Missile:00404cb4(c),
-//                                                                                                         RGE_Action_Move_To:004055aa(c),
-//                                                                                                         RGE_Action_Move_To:00405645(c),
-//                                                                                                         RGE_Action_Transport:00406dca(c),
-//                                                                                                         TRIBE_Action_Artifact:004ccc0a(c),
-//                                                                                                         TRIBE_Action_Artifact:004ccc3a(c),
-//                                                                                                         TRIBE_Action_Build:004cd236(c),
-//                                                                                                         TRIBE_Action_Convert:004cdab5(c),
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     0040747e(R)
+//              RGE_Action_Obj    Stack[0x8]:4   param_2                   XREF[1]:     0040747a(R)
+//              int               Stack[0xc]:4   param_3                   XREF[1]:     0040746c(R)
+//                               ??0RGE_Action@@QAE@HPAVRGE_Action_Object@@H@Z                XREF[21]:    RGE_Action_Attack:0040102a(c),
+//                               RGE_Action::RGE_Action                                                    RGE_Action_Bird:00401ff1(c),
+//                                                                                                         RGE_Action_Enter:004023d1(c),
+//                                                                                                         RGE_Action_Explore:00402b51(c),
+//                                                                                                         RGE_Action_Gather:00402eca(c),
+//                                                                                                         RGE_Action_Make:004049c1(c),
+//                                                                                                         RGE_Action_Missile:00404bda(c),
+//                                                                                                         RGE_Action_Move_To:0040553a(c),
+//                                                                                                         RGE_Action_Transport:00406d71(c),
+//                                                                                                         TRIBE_Action_Artifact:004ccbb1(c),
+//                                                                                                         TRIBE_Action_Build:004cd1c1(c),
+//                                                                                                         TRIBE_Action_Convert:004cda0b(c),
 //                                                                                                         TRIBE_Action_Discovery_Artifact:00
-//                                                                                                         TRIBE_Action_Discovery_Artifact:00
-//                                                                                                         TRIBE_Action_Heal:004ce9b5(c),
-//                                                                                                         TRIBE_Action_Hunt:004cf155(c),
-//                                                                                                         TRIBE_Action_Make_Obj:004d0eba(c),
-//                                                                                                         TRIBE_Action_Repair:004d1745(c),
-//                                                                                                         TRIBE_Action_Repair:004d17ba(c),
+//                                                                                                         TRIBE_Action_Heal:004ce941(c),
+//                                                                                                         TRIBE_Action_Hunt:004cf0ba(c),
+//                                                                                                         TRIBE_Action_Make_Obj:004d0dfa(c),
+//                                                                                                         TRIBE_Action_Repair:004d16ab(c),
+//                                                                                                         TRIBE_Action_Make_Tech:004d21da(c)
+//                                                                                                         TRIBE_Action_Trade:004d268a(c),
+//                                                                                                         TRIBE_Action_Wonder:004d3481(c),
 //                                                                                                         [more]
-//                              action.cpp:49 (12)
-//         004074c0     PUSH       ESI
-//         004074c1     MOV        ESI,this
-//         004074c3     OR         EAX,0xffffffff
-//         004074c6     MOV        dword ptr [ESI + 0x18],EAX
-//         004074c9     MOV        dword ptr [ESI + 0x1c],EAX
-//                              action.cpp:53 (14)
-//         004074cc     MOV        EAX,dword ptr [ESP + param_2]
-//         004074d0     MOV        dword ptr [ESI],RGE_Action::`vftable'            = 004074a0
-//         004074d6     TEST       EAX,EAX
-//         004074d8     JZ         LAB_004074e4
-//                              action.cpp:54 (10)
-//         004074da     MOV        EAX,dword ptr [ESP + param_1]
-//         004074de     PUSH       EAX
-//         004074df     CALL       RGE_Action::setup                                int setup(RGE_Action * this, RGE_Action_Objec
-//                               LAB_004074e4                                                 XREF[1]:     004074d8(j)
-//                              action.cpp:55 (6)
-//         004074e4     MOV        EAX,ESI
-//         004074e6     POP        ESI
-//         004074e7     RET        0x8
-//         004074ea     ??         90h
-//         004074eb     NOP
-//         004074ec     NOP
-//         004074ed     NOP
-//         004074ee     NOP
-//         004074ef     NOP
+//                              action.cpp:36 (12)
+//         00407460     PUSH       ESI
+//         00407461     MOV        ESI,this
+//         00407463     OR         EAX,0xffffffff
+//         00407466     MOV        dword ptr [ESI + 0x18],EAX
+//         00407469     MOV        dword ptr [ESI + 0x1c],EAX
+//                              action.cpp:40 (14)
+//         0040746c     MOV        EAX,dword ptr [ESP + param_3]
+//         00407470     MOV        dword ptr [ESI],RGE_Action::`vftable'            = 004074a0
+//         00407476     TEST       EAX,EAX
+//         00407478     JZ         LAB_0040748b
+//                              action.cpp:41 (17)
+//         0040747a     MOV        EAX,dword ptr [ESP + param_2]
+//         0040747e     MOV        this,dword ptr [ESP + param_1]
+//         00407482     PUSH       EAX
+//         00407483     PUSH       this
+//         00407484     MOV        this,ESI
+//         00407486     CALL       RGE_Action::setup                                int setup(RGE_Action * this, int param_1, RGE
+//                               LAB_0040748b                                                 XREF[1]:     00407478(j)
+//                              action.cpp:42 (6)
+//         0040748b     MOV        EAX,ESI
+//         0040748d     POP        ESI
+//         0040748e     RET        0xc
+//         00407491     ??         90h
+//         00407492     NOP
+//         00407493     NOP
+//         00407494     NOP
+//         00407495     NOP
+//         00407496     NOP
+//         00407497     NOP
+//         00407498     NOP
+//         00407499     NOP
+//         0040749a     NOP
+//         0040749b     NOP
+//         0040749c     NOP
+//         0040749d     NOP
+//         0040749e     NOP
+//         0040749f     NOP
 }
 
 RGE_Action::RGE_Action(RGE_Action_Object* param_1, int param_2) {

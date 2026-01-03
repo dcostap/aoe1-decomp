@@ -3,43 +3,38 @@
 
 RGE_Action_Explore::RGE_Action_Explore(int param_1, RGE_Action_Object* param_2) {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Action_Explore(RGE_Action_Explore * this, R
+//                              undefined __thiscall RGE_Action_Explore(RGE_Action_Explore * this, i
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Action_Exp    ECX:4 (auto)   this
-//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     00402ba0(R)
-//              RGE_Task *        Stack[0x8]:4   param_2                   XREF[1]:     00402baf(R)
-//              float             Stack[0xc]:4   param_3                   XREF[1]:     00402bb7(R)
-//              float             Stack[0x10]:4  param_4                   XREF[1]:     00402bb3(R)
-//              float             Stack[0x14]:4  param_5                   XREF[1]:     00402bbe(R)
-//                               ??0RGE_Action_Explore@@QAE@PAVRGE_Action_Object@@PAVRGE_Tas  XREF[2]:     create_task_action:004043c4(c),
-//                               RGE_Action_Explore::RGE_Action_Explore                                    explore:004310f0(c)
-//                              act_expl.cpp:46 (15)
-//         00402ba0     MOV        EAX,dword ptr [ESP + param_1]
-//         00402ba4     PUSH       ESI
-//         00402ba5     PUSH       0x1
-//         00402ba7     MOV        ESI,this
-//         00402ba9     PUSH       EAX
-//         00402baa     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
-//                              act_expl.cpp:48 (4)
-//         00402baf     MOV        this,dword ptr [ESP + param_2]
-//                              act_expl.cpp:50 (11)
-//         00402bb3     MOV        EAX,dword ptr [ESP + param_4]
-//         00402bb7     MOV        EDX,dword ptr [ESP + param_3]
-//         00402bbb     MOV        dword ptr [ESI + 0x30],this
-//                              act_expl.cpp:51 (25)
-//         00402bbe     MOV        this,dword ptr [ESP + param_5]
-//         00402bc2     MOV        dword ptr [ESI + 0x24],EAX
-//         00402bc5     MOV        dword ptr [ESI],RGE_Action_Explore::`vftable'    = 00402b70
-//         00402bcb     MOV        word ptr [ESI + 0x4],0x4
-//         00402bd1     MOV        dword ptr [ESI + 0x20],EDX
-//         00402bd4     MOV        dword ptr [ESI + 0x28],this
-//                              act_expl.cpp:56 (6)
-//         00402bd7     MOV        EAX,ESI
-//         00402bd9     POP        ESI
-//         00402bda     RET        0x14
-//         00402bdd     ??         90h
-//         00402bde     NOP
-//         00402bdf     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     00402b49(R)
+//              RGE_Action_Obj    Stack[0x8]:4   param_2                   XREF[1]:     00402b40(R)
+//                               ??0RGE_Action_Explore@@QAE@HPAVRGE_Action_Object@@@Z         XREF[1]:     create_action:0040409f(c)
+//                               RGE_Action_Explore::RGE_Action_Explore
+//                              act_expl.cpp:36 (28)
+//         00402b40     MOV        EAX,dword ptr [ESP + param_2]
+//         00402b44     PUSH       ESI
+//         00402b45     MOV        ESI,this
+//         00402b47     PUSH       0x1
+//         00402b49     MOV        this,dword ptr [ESP + param_1]
+//         00402b4d     PUSH       EAX
+//         00402b4e     PUSH       this
+//         00402b4f     MOV        this,ESI
+//         00402b51     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, int p
+//         00402b56     MOV        dword ptr [ESI],RGE_Action_Explore::`vftable'    = 00402b70
+//                              act_expl.cpp:37 (6)
+//         00402b5c     MOV        word ptr [ESI + 0x4],0x4
+//                              act_expl.cpp:38 (6)
+//         00402b62     MOV        EAX,ESI
+//         00402b64     POP        ESI
+//         00402b65     RET        0x8
+//         00402b68     ??         90h
+//         00402b69     NOP
+//         00402b6a     NOP
+//         00402b6b     NOP
+//         00402b6c     NOP
+//         00402b6d     NOP
+//         00402b6e     NOP
+//         00402b6f     NOP
 }
 
 RGE_Action_Explore::RGE_Action_Explore(RGE_Action_Object* param_1, RGE_Task* param_2, float param_3, float param_4, float param_5) {

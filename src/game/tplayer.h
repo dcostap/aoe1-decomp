@@ -1,5 +1,15 @@
 #pragma once
 #include "../common.h"
+#include "TRIBE_Player_Tech.h"
+#include "player.h"
+#include "sprite.h"
+#include "taimdmd.h"
+#include "t_histry.h"
+#include "tworld.h"
+#include "mst_play.h"
+#include "stat_obj.h"
+#include "Sound.h"
+#include "airesitm.h"
 
 class TRIBE_Player : public RGE_Player {
 public:

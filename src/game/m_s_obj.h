@@ -1,5 +1,12 @@
 #pragma once
 #include "../common.h"
+#include "sprite.h"
+#include "Sound.h"
+#include "stat_obj.h"
+#include "player.h"
+#include "World.h"
+#include "Drawarea.h"
+#include "m_co_obj.h"
 
 class RGE_Master_Static_Object {
 public:

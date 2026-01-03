@@ -1,5 +1,16 @@
 #pragma once
 #include "../common.h"
+#include "color.h"
+#include "spanlist.h"
+
+// ----------------------------------------------------------------
+// DrawAreaNode
+// Size: 0xC
+struct DrawAreaNode {
+    TDrawArea * DrawArea; // 0x0
+    DrawAreaNode * PrevNode; // 0x4
+    DrawAreaNode * NextNode; // 0x8
+};
 
 
 class TDrawSystem {

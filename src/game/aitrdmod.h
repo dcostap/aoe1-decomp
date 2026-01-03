@@ -1,5 +1,7 @@
 #pragma once
 #include "../common.h"
+#include "aimodule.h"
+#include "aimdmod.h"
 
 class TradeAIModule : public AIModule {
 public:

@@ -3,37 +3,38 @@
 
 RGE_Action_Make::RGE_Action_Make(int param_1, RGE_Action_Object* param_2) {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Action_Make(RGE_Action_Make * this, RGE_Act
+//                              undefined __thiscall RGE_Action_Make(RGE_Action_Make * this, int par
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Action_Mak    ECX:4 (auto)   this
-//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     00404a10(R)
-//              RGE_Task *        Stack[0x8]:4   param_2                   XREF[1]:     00404a1f(R)
-//                               ??0RGE_Action_Make@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@@Z XREF[1]:     create_task_action:00404455(c)
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004049b9(R)
+//              RGE_Action_Obj    Stack[0x8]:4   param_2                   XREF[1]:     004049b0(R)
+//                               ??0RGE_Action_Make@@QAE@HPAVRGE_Action_Object@@@Z            XREF[1]:     create_action:00404197(c)
 //                               RGE_Action_Make::RGE_Action_Make
-//                              ACT_make.cpp:37 (15)
-//         00404a10     MOV        EAX,dword ptr [ESP + param_1]
-//         00404a14     PUSH       ESI
-//         00404a15     PUSH       0x1
-//         00404a17     MOV        ESI,this
-//         00404a19     PUSH       EAX
-//         00404a1a     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
-//                              ACT_make.cpp:40 (19)
-//         00404a1f     MOV        this,dword ptr [ESP + param_2]
-//         00404a23     MOV        dword ptr [ESI],RGE_Action_Make::`vftable'       = 004049e0
-//         00404a29     MOV        word ptr [ESI + 0x4],0x15
-//         00404a2f     MOV        dword ptr [ESI + 0x30],this
-//                              ACT_make.cpp:41 (6)
-//         00404a32     MOV        EAX,ESI
-//         00404a34     POP        ESI
-//         00404a35     RET        0x8
-//         00404a38     ??         90h
-//         00404a39     NOP
-//         00404a3a     NOP
-//         00404a3b     NOP
-//         00404a3c     NOP
-//         00404a3d     NOP
-//         00404a3e     NOP
-//         00404a3f     NOP
+//                              ACT_make.cpp:30 (28)
+//         004049b0     MOV        EAX,dword ptr [ESP + param_2]
+//         004049b4     PUSH       ESI
+//         004049b5     MOV        ESI,this
+//         004049b7     PUSH       0x1
+//         004049b9     MOV        this,dword ptr [ESP + param_1]
+//         004049bd     PUSH       EAX
+//         004049be     PUSH       this
+//         004049bf     MOV        this,ESI
+//         004049c1     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, int p
+//         004049c6     MOV        dword ptr [ESI],RGE_Action_Make::`vftable'       = 004049e0
+//                              ACT_make.cpp:31 (6)
+//         004049cc     MOV        word ptr [ESI + 0x4],0x15
+//                              ACT_make.cpp:32 (6)
+//         004049d2     MOV        EAX,ESI
+//         004049d4     POP        ESI
+//         004049d5     RET        0x8
+//         004049d8     ??         90h
+//         004049d9     NOP
+//         004049da     NOP
+//         004049db     NOP
+//         004049dc     NOP
+//         004049dd     NOP
+//         004049de     NOP
+//         004049df     NOP
 }
 
 RGE_Action_Make::RGE_Action_Make(RGE_Action_Object* param_1, RGE_Task* param_2) {

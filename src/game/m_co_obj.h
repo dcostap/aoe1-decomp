@@ -1,5 +1,8 @@
 #pragma once
 #include "../common.h"
+#include "Sound.h"
+#include "m_ac_obj.h"
+#include "sprite.h"
 
 class RGE_Master_Combat_Object : public RGE_Master_Action_Object {
 public:

@@ -1,5 +1,8 @@
 #pragma once
 #include "../common.h"
+#include "m_an_obj.h"
+#include "sprite.h"
+#include "stat_obj.h"
 
 class RGE_Master_Moving_Object : public RGE_Master_Animated_Object {
 public:

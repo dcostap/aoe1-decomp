@@ -6,41 +6,35 @@ RGE_Action_Transport::RGE_Action_Transport(int param_1, RGE_Action_Object* param
 //                              undefined __thiscall RGE_Action_Transport(RGE_Action_Transport * thi
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Action_Tra    ECX:4 (auto)   this
-//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     00406dc0(R)
-//              RGE_Task *        Stack[0x8]:4   param_2                   XREF[1]:     00406dcf(R)
-//              float             Stack[0xc]:4   param_3                   XREF[1]:     00406dd7(R)
-//              float             Stack[0x10]:4  param_4                   XREF[1]:     00406dd3(R)
-//              float             Stack[0x14]:4  param_5                   XREF[1]:     00406dde(R)
-//                               ??0RGE_Action_Transport@@QAE@PAVRGE_Action_Object@@PAVRGE_T  XREF[3]:     transport:004312e0(c),
-//                               RGE_Action_Transport::RGE_Action_Transport                                unload:004313cd(c),
-//                                                                                                         create_task_action:004d0b49(c)
-//                              act_tran.cpp:64 (15)
-//         00406dc0     MOV        EAX,dword ptr [ESP + param_1]
-//         00406dc4     PUSH       ESI
-//         00406dc5     PUSH       0x1
-//         00406dc7     MOV        ESI,this
-//         00406dc9     PUSH       EAX
-//         00406dca     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
-//                              act_tran.cpp:66 (4)
-//         00406dcf     MOV        this,dword ptr [ESP + param_2]
-//                              act_tran.cpp:68 (11)
-//         00406dd3     MOV        EAX,dword ptr [ESP + param_4]
-//         00406dd7     MOV        EDX,dword ptr [ESP + param_3]
-//         00406ddb     MOV        dword ptr [ESI + 0x30],this
-//                              act_tran.cpp:69 (25)
-//         00406dde     MOV        this,dword ptr [ESP + param_5]
-//         00406de2     MOV        dword ptr [ESI + 0x24],EAX
-//         00406de5     MOV        dword ptr [ESI],RGE_Action_Transport::`vftable'  = 00406d90
-//         00406deb     MOV        word ptr [ESI + 0x4],0xc
-//         00406df1     MOV        dword ptr [ESI + 0x20],EDX
-//         00406df4     MOV        dword ptr [ESI + 0x28],this
-//                              act_tran.cpp:74 (6)
-//         00406df7     MOV        EAX,ESI
-//         00406df9     POP        ESI
-//         00406dfa     RET        0x14
-//         00406dfd     ??         90h
-//         00406dfe     NOP
-//         00406dff     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     00406d69(R)
+//              RGE_Action_Obj    Stack[0x8]:4   param_2                   XREF[1]:     00406d60(R)
+//                               ??0RGE_Action_Transport@@QAE@HPAVRGE_Action_Object@@@Z       XREF[1]:     create_action:004d0491(c)
+//                               RGE_Action_Transport::RGE_Action_Transport
+//                              act_tran.cpp:54 (28)
+//         00406d60     MOV        EAX,dword ptr [ESP + param_2]
+//         00406d64     PUSH       ESI
+//         00406d65     MOV        ESI,this
+//         00406d67     PUSH       0x1
+//         00406d69     MOV        this,dword ptr [ESP + param_1]
+//         00406d6d     PUSH       EAX
+//         00406d6e     PUSH       this
+//         00406d6f     MOV        this,ESI
+//         00406d71     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, int p
+//         00406d76     MOV        dword ptr [ESI],RGE_Action_Transport::`vftable'  = 00406d90
+//                              act_tran.cpp:55 (6)
+//         00406d7c     MOV        word ptr [ESI + 0x4],0xc
+//                              act_tran.cpp:56 (6)
+//         00406d82     MOV        EAX,ESI
+//         00406d84     POP        ESI
+//         00406d85     RET        0x8
+//         00406d88     ??         90h
+//         00406d89     NOP
+//         00406d8a     NOP
+//         00406d8b     NOP
+//         00406d8c     NOP
+//         00406d8d     NOP
+//         00406d8e     NOP
+//         00406d8f     NOP
 }
 
 RGE_Action_Transport::RGE_Action_Transport(RGE_Action_Object* param_1, RGE_Task* param_2, float param_3, float param_4, float param_5) {

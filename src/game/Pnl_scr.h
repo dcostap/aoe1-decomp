@@ -1,5 +1,7 @@
 #pragma once
 #include "../common.h"
+#include "Panel_ez.h"
+#include "Drawarea.h"
 
 class TScreenPanel : public TEasy_Panel {
 public:

@@ -3,6 +3,7 @@
 
 class RGE_TimeSinceLastCall {
 public:
+    char TBuff[255];
     ulong lowTSLC;                           // 0x100
     ulong highTSLC;                          // 0x104
     ulong TSLC;                              // 0x108
@@ -14,18 +15,18 @@ public:
     ulong cps;                               // 0x2B0
 
     RGE_TimeSinceLastCall();
-    virtual ~RGE_TimeSinceLastCall();
-    virtual ulong GetAvg(int param_1);
-    virtual ulong Get();
-    virtual ulong Set();
-    virtual void Skip();
-    virtual char* GetAvgInfo(int param_1);
-    virtual char* GetHiLoMaxInfo(int param_1);
-    virtual char* GetHiLoInfo(int param_1);
-    virtual ulong CPS();
-    virtual ulong GetFirstCall();
-    virtual char* GetElapsedFirstCall();
-    virtual void Test();
+    ~RGE_TimeSinceLastCall();
+    ulong GetAvg(int param_1);
+    ulong Get();
+    ulong Set();
+    void Skip();
+    char* GetAvgInfo(int param_1);
+    char* GetHiLoMaxInfo(int param_1);
+    char* GetHiLoInfo(int param_1);
+    ulong CPS();
+    ulong GetFirstCall();
+    char* GetElapsedFirstCall();
+    void Test();
 };
 
 static_assert(sizeof(RGE_TimeSinceLastCall) == 0x2B4, "RGE_TimeSinceLastCall Size Mismatch");

@@ -1,5 +1,11 @@
 #pragma once
 #include "../common.h"
+#include "diam_map.h"
+#include "Pnl_scr.h"
+#include "Shape.h"
+#include "tvw_main.h"
+#include "tvw_dmap.h"
+#include "tplayer.h"
 
 class TRIBE_Panel_Inven : public TPanel {
 public:

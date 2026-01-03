@@ -1,5 +1,6 @@
 #pragma once
 #include "../common.h"
+#include "Com_hand.h"
 
 class RGE_Communications_Addresses {
 public:
@@ -25,10 +26,10 @@ static_assert(offsetof(RGE_Communications_Addresses, pIPAD) == 0x220, "RGE_Commu
 
 class IPAD {
 public:
+    char DottedIPAddress[32];
     char Alias[128];                         // 0x20
-
     IPAD();
-    virtual ~IPAD();
+    ~IPAD();
 };
 
 static_assert(sizeof(IPAD) == 0xA0, "IPAD Size Mismatch");

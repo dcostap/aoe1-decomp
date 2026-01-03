@@ -1,7 +1,11 @@
 #include "../common.h"
 #include "move_obj.h"
 
-RGE_Moving_Object::RGE_Moving_Object(RGE_Master_Moving_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5, int param_6) {
+RGE_Moving_Object::RGE_Moving_Object(RGE_Master_Moving_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5, int param_6)
+    : RGE_Animated_Object(param_1, param_2, param_3, param_4, param_5, 0), // Base class init
+      pathValue(10),          // Assembly pushes 0xA (10) for Path constructor
+      exceptionPathValue(10)  // Assembly pushes 0xA (10) for Path constructor
+{
     /* TODO: Stub */
 //                              undefined __thiscall RGE_Moving_Object(RGE_Moving_Object * this, int
 //              undefined         <UNASSIGNED>   <RETURN>
@@ -110,7 +114,11 @@ RGE_Moving_Object::RGE_Moving_Object(RGE_Master_Moving_Object* param_1, RGE_Play
 //         0045c6ff     NOP
 }
 
-RGE_Moving_Object::RGE_Moving_Object(int param_1, RGE_Game_World* param_2, int param_3) {
+RGE_Moving_Object::RGE_Moving_Object(int param_1, RGE_Game_World* param_2, int param_3) 
+    : RGE_Animated_Object(param_1, param_2, param_3), // Base class init
+      pathValue(10),
+      exceptionPathValue(10)
+{
     /* TODO: Stub */
 //                              undefined __thiscall RGE_Moving_Object(RGE_Moving_Object * this, int
 //              undefined         <UNASSIGNED>   <RETURN>
@@ -2879,7 +2887,7 @@ PathResult RGE_Moving_Object::findPath() {
 //         0045db8c     XOR        EAX,EAX
 //         0045db8e     POP        EBP
 //         0045db8f     RET
-    return 0;
+    return {};
 }
 
 int RGE_Moving_Object::doMove() {
@@ -6523,7 +6531,7 @@ int RGE_Moving_Object::canBidirectionPath(int param_1, int param_2, float param_
     return 0;
 }
 
-int RGE_Moving_Object::canPathWithObstructions(int param_1, float param_2, float* param_3, int param_4, int param_5, int param_6, ManagedArray<int>* param_7) {
+int RGE_Moving_Object::canPathWithObstructions(int param_1, float param_2, float* param_3, int param_4, int param_5, int param_6, ManagedArray_int* param_7) {
     /* TODO: Stub */
 //                              int __thiscall canPathWithObstructions(RGE_Moving_Object * this, int
 //              int               EAX:4          <RETURN>

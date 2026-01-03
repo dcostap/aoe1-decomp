@@ -1,5 +1,7 @@
 #pragma once
 #include "../common.h"
+#include "vw_dimap.h"
+#include "stat_obj.h"
 
 class TRIBE_Diamond_Map_View : public RGE_Diamond_Map_View {
 public:

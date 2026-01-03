@@ -1,5 +1,6 @@
 #include "../common.h"
 #include "stat_obj.h"
+#include "m_s_obj.h"
 
 RGE_Static_Object::RGE_Static_Object(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5, int param_6) {
     /* TODO: Stub */

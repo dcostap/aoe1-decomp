@@ -8612,7 +8612,7 @@ int TribeBuildingUnitAIModule::processNotify(NotifyEvent* param_1, ulong param_2
 //         0050842d     INC        this
 //         0050842e     PUSH       this
 //         0050842f     MOV        this,EDI
-//         00508431     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         00508431     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_00508436                                                 XREF[1]:     0050842b(j)
 //         00508436     MOV        EAX,dword ptr [EDI + 0x4]
 //         00508439     MOV        this,dword ptr [EDI]

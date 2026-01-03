@@ -1,5 +1,11 @@
 #pragma once
 #include "../common.h"
+#include "map.h"
+#include "effects.h"
+#include "Command.h"
+#include "scenario.h"
+#include "Sounddrv.h"
+#include "Com_hand.h"
 
 class RGE_Game_World {
 public:

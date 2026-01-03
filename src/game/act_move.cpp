@@ -3,110 +3,60 @@
 
 RGE_Action_Move_To::RGE_Action_Move_To(int param_1, RGE_Action_Object* param_2) {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Action_Move_To(RGE_Action_Move_To * this, R
+//                              undefined __thiscall RGE_Action_Move_To(RGE_Action_Move_To * this, i
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Action_Mov    ECX:4 (auto)   this
-//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     00405636(R)
-//              RGE_Static_Obj    Stack[0x8]:4   param_2                   XREF[1]:     0040564a(R)
-//              float             Stack[0xc]:4   param_3                   XREF[2]:     00405680(R), 0040568a(R)
-//              RGE_Sprite *      Stack[0x10]:4  param_4                   XREF[1]:     00405691(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     00405651(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004056c5(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     00405641(W)
-//                               ??0RGE_Action_Move_To@@QAE@PAVRGE_Action_Object@@PAVRGE_Sta  XREF[13]:    set_state:004015ec(c),
-//                               RGE_Action_Move_To::RGE_Action_Move_To                                    set_state:004032d6(c),
-//                                                                                                         set_state:00403440(c),
-//                                                                                                         move_to:00406373(c),
-//                                                                                                         moveTo:00430cf2(c),
-//                                                                                                         set_state:004cd4eb(c),
-//                                                                                                         set_state:004cdf5d(c),
-//                                                                                                         set_state:004cec04(c),
-//                                                                                                         set_state:004cf50e(c),
-//                                                                                                         set_state:004cf6f4(c),
-//                                                                                                         set_state:004d19e4(c),
-//                                                                                                         set_state:004d2a4c(c),
-//                                                                                                         set_state:004d2b98(c)
-//                              act_move.cpp:84 (42)
-//         00405620     PUSH       -0x1
-//         00405622     PUSH       FUN_0055c328
-//         00405627     MOV        EAX,FS:[0x0]
-//         0040562d     PUSH       EAX
-//         0040562e     MOV        dword ptr FS:[0x0],ESP
-//         00405635     PUSH       this
-//         00405636     MOV        EAX,dword ptr [ESP + param_1]
-//         0040563a     PUSH       ESI
-//         0040563b     PUSH       EDI
-//         0040563c     MOV        ESI,this
-//         0040563e     PUSH       0x1
-//         00405640     PUSH       EAX
-//         00405641     MOV        dword ptr [ESP + local_10],ESI
-//         00405645     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
-//                              act_move.cpp:87 (32)
-//         0040564a     MOV        EDI,dword ptr [ESP + param_2]
-//         0040564e     MOV        this,ESI
-//         00405650     PUSH       EDI
-//         00405651     MOV        dword ptr [ESP + local_4],0x0
-//         00405659     MOV        dword ptr [ESI],RGE_Action_Move_To::`vftable'    = 00405580
-//         0040565f     MOV        word ptr [ESI + 0x4],0x1
-//         00405665     CALL       RGE_Action::set_target_obj                       void set_target_obj(RGE_Action * this, RGE_St
-//                              act_move.cpp:88 (4)
-//         0040566a     TEST       EDI,EDI
-//         0040566c     JZ         LAB_00405680
-//                              act_move.cpp:90 (6)
-//         0040566e     MOV        this,dword ptr [EDI + 0x38]
-//         00405671     MOV        dword ptr [ESI + 0x20],this
-//                              act_move.cpp:91 (6)
-//         00405674     MOV        EDX,dword ptr [EDI + 0x3c]
-//         00405677     MOV        dword ptr [ESI + 0x24],EDX
-//                              act_move.cpp:92 (6)
-//         0040567a     MOV        EAX,dword ptr [EDI + 0x40]
-//         0040567d     MOV        dword ptr [ESI + 0x28],EAX
-//                               LAB_00405680                                                 XREF[1]:     0040566c(j)
-//                              act_move.cpp:98 (31)
-//         00405680     FLD        float ptr [ESP + param_3]
-//         00405684     FCOMP      float ptr [DAT_0056e400]                         = align(22)
-//         0040568a     MOV        this,dword ptr [ESP + param_3]
-//         0040568e     MOV        dword ptr [ESI + 0x40],this
-//         00405691     MOV        this,dword ptr [ESP + param_4]
-//         00405695     MOV        dword ptr [ESI + 0x38],this
-//         00405698     FNSTSW     AX
-//         0040569a     TEST       AH,0x41
-//         0040569d     JZ         LAB_004056a6
-//                              act_move.cpp:99 (7)
-//         0040569f     MOV        dword ptr [ESI + 0x40],0x3ecccccd
-//                               LAB_004056a6                                                 XREF[1]:     0040569d(j)
-//                              act_move.cpp:101 (4)
-//         004056a6     TEST       this,this
-//         004056a8     JNZ        LAB_004056c5
-//                              act_move.cpp:103 (16)
-//         004056aa     MOV        EDX,dword ptr [ESI + 0x8]
-//         004056ad     MOV        EAX,dword ptr [EDX + 0x8]
-//         004056b0     MOV        this,dword ptr [EAX + 0xbc]
-//         004056b6     TEST       this,this
-//         004056b8     JNZ        LAB_004056c2
-//                              act_move.cpp:104 (6)
-//         004056ba     MOV        EAX,dword ptr [EAX + 0x18]
-//         004056bd     MOV        dword ptr [ESI + 0x38],EAX
-//                              act_move.cpp:105 (2)
-//         004056c0     JMP        LAB_004056c5
-//                               LAB_004056c2                                                 XREF[1]:     004056b8(j)
-//                              act_move.cpp:106 (3)
-//         004056c2     MOV        dword ptr [ESI + 0x38],this
-//                               LAB_004056c5                                                 XREF[2]:     004056a8(j), 004056c0(j)
-//                              act_move.cpp:112 (21)
-//         004056c5     MOV        this,dword ptr [ESP + local_c]
-//         004056c9     MOV        EAX,ESI
-//         004056cb     POP        EDI
-//         004056cc     MOV        dword ptr FS:[0x0],this
-//         004056d3     POP        ESI
-//         004056d4     ADD        ESP,0x10
-//         004056d7     RET        0x10
-//         004056da     ??         90h
-//         004056db     NOP
-//         004056dc     NOP
-//         004056dd     NOP
-//         004056de     NOP
-//         004056df     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     0040552c(R)
+//              RGE_Action_Obj    Stack[0x8]:4   param_2                   XREF[1]:     00405526(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     00405546(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0040555f(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     00405536(W)
+//                               ??0RGE_Action_Move_To@@QAE@HPAVRGE_Action_Object@@@Z         XREF[1]:     create_action:0040415b(c)
+//                               RGE_Action_Move_To::RGE_Action_Move_To
+//                              act_move.cpp:40 (47)
+//         00405510     PUSH       -0x1
+//         00405512     PUSH       FUN_0055c308
+//         00405517     MOV        EAX,FS:[0x0]
+//         0040551d     PUSH       EAX
+//         0040551e     MOV        dword ptr FS:[0x0],ESP
+//         00405525     PUSH       this
+//         00405526     MOV        EAX,dword ptr [ESP + param_2]
+//         0040552a     PUSH       ESI
+//         0040552b     PUSH       EDI
+//         0040552c     MOV        EDI,dword ptr [ESP + param_1]
+//         00405530     PUSH       0x1
+//         00405532     MOV        ESI,this
+//         00405534     PUSH       EAX
+//         00405535     PUSH       EDI
+//         00405536     MOV        dword ptr [ESP + local_10],ESI
+//         0040553a     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, int p
+//                              act_move.cpp:42 (32)
+//         0040553f     LEA        this,[ESI + 0x40]
+//         00405542     PUSH       0x4
+//         00405544     PUSH       this
+//         00405545     PUSH       EDI
+//         00405546     MOV        dword ptr [ESP + local_4],0x0
+//         0040554e     MOV        dword ptr [ESI],RGE_Action_Move_To::`vftable'    = 00405580
+//         00405554     MOV        word ptr [ESI + 0x4],0x1
+//         0040555a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              act_move.cpp:43 (24)
+//         0040555f     MOV        this,dword ptr [ESP + local_c]
+//         00405563     ADD        ESP,0xc
+//         00405566     MOV        EAX,ESI
+//         00405568     MOV        dword ptr FS:[0x0],this
+//         0040556f     POP        EDI
+//         00405570     POP        ESI
+//         00405571     ADD        ESP,0x10
+//         00405574     RET        0x8
+//         00405577     ??         90h
+//         00405578     NOP
+//         00405579     NOP
+//         0040557a     NOP
+//         0040557b     NOP
+//         0040557c     NOP
+//         0040557d     NOP
+//         0040557e     NOP
+//         0040557f     NOP
 }
 
 RGE_Action_Move_To::RGE_Action_Move_To(RGE_Action_Object* param_1, float param_2, float param_3, float param_4, float param_5, RGE_Sprite* param_6) {
@@ -114,107 +64,82 @@ RGE_Action_Move_To::RGE_Action_Move_To(RGE_Action_Object* param_1, float param_2
 //                              undefined __thiscall RGE_Action_Move_To(RGE_Action_Move_To * this, R
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Action_Mov    ECX:4 (auto)   this
-//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     00405636(R)
-//              RGE_Static_Obj    Stack[0x8]:4   param_2                   XREF[1]:     0040564a(R)
-//              float             Stack[0xc]:4   param_3                   XREF[2]:     00405680(R), 0040568a(R)
-//              RGE_Sprite *      Stack[0x10]:4  param_4                   XREF[1]:     00405691(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     00405651(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004056c5(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     00405641(W)
-//                               ??0RGE_Action_Move_To@@QAE@PAVRGE_Action_Object@@PAVRGE_Sta  XREF[13]:    set_state:004015ec(c),
-//                               RGE_Action_Move_To::RGE_Action_Move_To                                    set_state:004032d6(c),
-//                                                                                                         set_state:00403440(c),
-//                                                                                                         move_to:00406373(c),
-//                                                                                                         moveTo:00430cf2(c),
-//                                                                                                         set_state:004cd4eb(c),
-//                                                                                                         set_state:004cdf5d(c),
-//                                                                                                         set_state:004cec04(c),
-//                                                                                                         set_state:004cf50e(c),
-//                                                                                                         set_state:004cf6f4(c),
-//                                                                                                         set_state:004d19e4(c),
-//                                                                                                         set_state:004d2a4c(c),
-//                                                                                                         set_state:004d2b98(c)
-//                              act_move.cpp:84 (42)
-//         00405620     PUSH       -0x1
-//         00405622     PUSH       FUN_0055c328
-//         00405627     MOV        EAX,FS:[0x0]
-//         0040562d     PUSH       EAX
-//         0040562e     MOV        dword ptr FS:[0x0],ESP
-//         00405635     PUSH       this
-//         00405636     MOV        EAX,dword ptr [ESP + param_1]
-//         0040563a     PUSH       ESI
-//         0040563b     PUSH       EDI
-//         0040563c     MOV        ESI,this
-//         0040563e     PUSH       0x1
-//         00405640     PUSH       EAX
-//         00405641     MOV        dword ptr [ESP + local_10],ESI
-//         00405645     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
-//                              act_move.cpp:87 (32)
-//         0040564a     MOV        EDI,dword ptr [ESP + param_2]
-//         0040564e     MOV        this,ESI
-//         00405650     PUSH       EDI
-//         00405651     MOV        dword ptr [ESP + local_4],0x0
-//         00405659     MOV        dword ptr [ESI],RGE_Action_Move_To::`vftable'    = 00405580
-//         0040565f     MOV        word ptr [ESI + 0x4],0x1
-//         00405665     CALL       RGE_Action::set_target_obj                       void set_target_obj(RGE_Action * this, RGE_St
-//                              act_move.cpp:88 (4)
-//         0040566a     TEST       EDI,EDI
-//         0040566c     JZ         LAB_00405680
-//                              act_move.cpp:90 (6)
-//         0040566e     MOV        this,dword ptr [EDI + 0x38]
-//         00405671     MOV        dword ptr [ESI + 0x20],this
-//                              act_move.cpp:91 (6)
-//         00405674     MOV        EDX,dword ptr [EDI + 0x3c]
-//         00405677     MOV        dword ptr [ESI + 0x24],EDX
-//                              act_move.cpp:92 (6)
-//         0040567a     MOV        EAX,dword ptr [EDI + 0x40]
-//         0040567d     MOV        dword ptr [ESI + 0x28],EAX
-//                               LAB_00405680                                                 XREF[1]:     0040566c(j)
-//                              act_move.cpp:98 (31)
-//         00405680     FLD        float ptr [ESP + param_3]
-//         00405684     FCOMP      float ptr [DAT_0056e400]                         = align(22)
-//         0040568a     MOV        this,dword ptr [ESP + param_3]
-//         0040568e     MOV        dword ptr [ESI + 0x40],this
-//         00405691     MOV        this,dword ptr [ESP + param_4]
-//         00405695     MOV        dword ptr [ESI + 0x38],this
-//         00405698     FNSTSW     AX
-//         0040569a     TEST       AH,0x41
-//         0040569d     JZ         LAB_004056a6
-//                              act_move.cpp:99 (7)
-//         0040569f     MOV        dword ptr [ESI + 0x40],0x3ecccccd
-//                               LAB_004056a6                                                 XREF[1]:     0040569d(j)
-//                              act_move.cpp:101 (4)
-//         004056a6     TEST       this,this
-//         004056a8     JNZ        LAB_004056c5
-//                              act_move.cpp:103 (16)
-//         004056aa     MOV        EDX,dword ptr [ESI + 0x8]
-//         004056ad     MOV        EAX,dword ptr [EDX + 0x8]
-//         004056b0     MOV        this,dword ptr [EAX + 0xbc]
-//         004056b6     TEST       this,this
-//         004056b8     JNZ        LAB_004056c2
-//                              act_move.cpp:104 (6)
-//         004056ba     MOV        EAX,dword ptr [EAX + 0x18]
-//         004056bd     MOV        dword ptr [ESI + 0x38],EAX
-//                              act_move.cpp:105 (2)
-//         004056c0     JMP        LAB_004056c5
-//                               LAB_004056c2                                                 XREF[1]:     004056b8(j)
-//                              act_move.cpp:106 (3)
-//         004056c2     MOV        dword ptr [ESI + 0x38],this
-//                               LAB_004056c5                                                 XREF[2]:     004056a8(j), 004056c0(j)
-//                              act_move.cpp:112 (21)
-//         004056c5     MOV        this,dword ptr [ESP + local_c]
-//         004056c9     MOV        EAX,ESI
-//         004056cb     POP        EDI
-//         004056cc     MOV        dword ptr FS:[0x0],this
-//         004056d3     POP        ESI
-//         004056d4     ADD        ESP,0x10
-//         004056d7     RET        0x10
-//         004056da     ??         90h
-//         004056db     NOP
-//         004056dc     NOP
-//         004056dd     NOP
-//         004056de     NOP
-//         004056df     NOP
+//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     004055a0(R)
+//              float             Stack[0x8]:4   param_2                   XREF[1]:     004055b9(R)
+//              float             Stack[0xc]:4   param_3                   XREF[1]:     004055c1(R)
+//              float             Stack[0x10]:4  param_4                   XREF[1]:     004055bd(R)
+//              float             Stack[0x14]:4  param_5                   XREF[2]:     004055af(R), 004055c8(R)
+//              RGE_Sprite *      Stack[0x18]:4  param_6                   XREF[1]:     004055d4(R)
+//                               ??0RGE_Action_Move_To@@QAE@PAVRGE_Action_Object@@MMMMPAVRGE  XREF[17]:    set_state:00401625(c),
+//                               RGE_Action_Move_To::RGE_Action_Move_To                                    update:0040231f(c),
+//                                                                                                         set_state:0040268d(c),
+//                                                                                                         set_state:00402d0f(c),
+//                                                                                                         set_state:00403209(c),
+//                                                                                                         move_to:004063a3(c),
+//                                                                                                         set_state:00406ed3(c),
+//                                                                                                         set_state:00406f10(c),
+//                                                                                                         moveTo:00430e6c(c),
+//                                                                                                         set_state:004ccd5b(c),
+//                                                                                                         set_state:004ccdaf(c),
+//                                                                                                         set_state:004cd44b(c),
+//                                                                                                         set_state:004cdec1(c),
+//                                                                                                         set_state:004ceb67(c),
+//                                                                                                         set_state:004cf41d(c),
+//                                                                                                         set_state:004d193e(c),
+//                                                                                                         set_state:004d2983(c)
+//                              act_move.cpp:51 (15)
+//         004055a0     MOV        EAX,dword ptr [ESP + param_1]
+//         004055a4     PUSH       ESI
+//         004055a5     PUSH       0x1
+//         004055a7     MOV        ESI,this
+//         004055a9     PUSH       EAX
+//         004055aa     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
+//                              act_move.cpp:61 (64)
+//         004055af     FLD        float ptr [ESP + param_5]
+//         004055b3     FCOMP      float ptr [DAT_0056e400]                         = align(22)
+//         004055b9     MOV        this,dword ptr [ESP + param_2]
+//         004055bd     MOV        EAX,dword ptr [ESP + param_4]
+//         004055c1     MOV        EDX,dword ptr [ESP + param_3]
+//         004055c5     MOV        dword ptr [ESI + 0x20],this
+//         004055c8     MOV        this,dword ptr [ESP + param_5]
+//         004055cc     MOV        dword ptr [ESI + 0x28],EAX
+//         004055cf     FNSTSW     AX
+//         004055d1     MOV        dword ptr [ESI + 0x40],this
+//         004055d4     MOV        this,dword ptr [ESP + param_6]
+//         004055d8     TEST       AH,0x41
+//         004055db     MOV        dword ptr [ESI],RGE_Action_Move_To::`vftable'    = 00405580
+//         004055e1     MOV        word ptr [ESI + 0x4],0x1
+//         004055e7     MOV        dword ptr [ESI + 0x24],EDX
+//         004055ea     MOV        dword ptr [ESI + 0x38],this
+//         004055ed     JZ         LAB_004055f6
+//                              act_move.cpp:62 (7)
+//         004055ef     MOV        dword ptr [ESI + 0x40],0x3ecccccd
+//                               LAB_004055f6                                                 XREF[1]:     004055ed(j)
+//                              act_move.cpp:64 (4)
+//         004055f6     TEST       this,this
+//         004055f8     JNZ        LAB_00405619
+//                              act_move.cpp:66 (16)
+//         004055fa     MOV        EDX,dword ptr [ESI + 0x8]
+//         004055fd     MOV        EAX,dword ptr [EDX + 0x8]
+//         00405600     MOV        this,dword ptr [EAX + 0xbc]
+//         00405606     TEST       this,this
+//         00405608     JNZ        LAB_00405616
+//                              act_move.cpp:67 (6)
+//         0040560a     MOV        EAX,dword ptr [EAX + 0x18]
+//         0040560d     MOV        dword ptr [ESI + 0x38],EAX
+//                              act_move.cpp:76 (6)
+//         00405610     MOV        EAX,ESI
+//         00405612     POP        ESI
+//         00405613     RET        0x18
+//                               LAB_00405616                                                 XREF[1]:     00405608(j)
+//                              act_move.cpp:69 (3)
+//         00405616     MOV        dword ptr [ESI + 0x38],this
+//                               LAB_00405619                                                 XREF[1]:     004055f8(j)
+//                              act_move.cpp:76 (6)
+//         00405619     MOV        EAX,ESI
+//         0040561b     POP        ESI
+//         0040561c     RET        0x18
+//         0040561f     ??         90h
 }
 
 RGE_Action_Move_To::RGE_Action_Move_To(RGE_Action_Object* param_1, RGE_Static_Object* param_2, float param_3, RGE_Sprite* param_4) {

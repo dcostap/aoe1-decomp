@@ -14,8 +14,11 @@ public:
 static_assert(sizeof(AIModuleID) == 0x48, "AIModuleID Size Mismatch");
 static_assert(offsetof(AIModuleID, name) == 0x8, "AIModuleID Offset Mismatch");
 
-class AIModuleMessage : public AIModuleID {
+class AIModuleMessage {
 public:
+    // 0x0 is vtable (implied by virtuals)
+    int id;                                  // 0x4
+    char text[128];                          // 0x8  <-- DIFFERENT than AIModuleID
     int priority;                            // 0x88
     AIModuleID sender;                       // 0x8C
     AIModuleID recipient;                    // 0xD4
@@ -39,8 +42,9 @@ public:
 static_assert(sizeof(AIModuleMessage) == 0x138, "AIModuleMessage Size Mismatch");
 static_assert(offsetof(AIModuleMessage, prev) == 0x134, "AIModuleMessage Offset Mismatch");
 
-class AIModule : public AIModuleID {
+class AIModule {
 public:
+    AIModuleID idValue;                      // 0x04
     int playerNumberValue;                   // 0x4C
     char playerNameValue[64];                // 0x50
     int runningValue;                        // 0x90

@@ -1,5 +1,24 @@
 #pragma once
 #include "../common.h"
+#include "aibitm.h"
+
+// ----------------------------------------------------------------
+// PlacementState
+// Sizeñ: 0x130
+struct PlacementState {
+    int buildingTypeID; // 0x0
+    float buildingSize; // 0x4
+    char buildingName[256]; // 0x8
+    int builderID; // 0x108
+    int minimumDistance; // 0x10C
+    int maximumDistance; // 0x110
+    int active; // 0x114
+    XYPoint bestPoint; // 0x118
+    int bestPointValue; // 0x120
+    int iterationX; // 0x124
+    int randomInfluence; // 0x128
+    BuildItem * buildItem; // 0x12C
+};
 
 class BuildItem : public BaseItem {
 public:

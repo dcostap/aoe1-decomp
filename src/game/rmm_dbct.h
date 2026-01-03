@@ -1,5 +1,7 @@
 #pragma once
 #include "../common.h"
+#include "rmm_base.h"
+#include "World.h"
 
 class RGE_RMM_Database_Controller : public RGE_Random_Map_Module {
 public:

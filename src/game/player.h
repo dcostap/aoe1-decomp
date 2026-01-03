@@ -1,5 +1,14 @@
 #pragma once
 #include "../common.h"
+#include "m_s_obj.h"
+#include "obj_list.h"
+#include "victory.h"
+#include "visible.h"
+#include "vis_unit.h"
+#include "dpl_obj.h"
+#include "mst_play.h"
+#include "sprite.h"
+#include "Sound.h"
 
 class RGE_Tile_List {
 public:

@@ -1,5 +1,6 @@
 #pragma once
 #include "../common.h"
+#include "Com_hand.h"
 
 class RGE_Communications_Synchronize {
 public:

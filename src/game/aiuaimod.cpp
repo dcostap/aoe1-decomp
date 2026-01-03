@@ -2820,7 +2820,7 @@ void UnitAIModule::updateGroup(ulong param_1) {
 //         0041413f     LEA        this,[EBP + 0x1]
 //         00414142     PUSH       this
 //         00414143     MOV        this,EDI
-//         00414145     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         00414145     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_0041414a                                                 XREF[1]:     0041413d(j)
 //         0041414a     MOV        EDX,dword ptr [EDI]
 //         0041414c     MOV        this,ESI
@@ -3715,7 +3715,7 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2) {
 //         00414983     INC        this
 //         00414984     PUSH       this
 //         00414985     MOV        this,EBP
-//         00414987     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         00414987     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //         0041498c     MOV        this,dword ptr [ESP + local_44]
 //                               LAB_00414990                                                 XREF[1]:     00414981(j)
 //         00414990     MOV        EAX,dword ptr [EBP]

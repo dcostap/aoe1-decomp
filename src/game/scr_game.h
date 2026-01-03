@@ -1,5 +1,51 @@
 #pragma once
 #include "../common.h"
+#include "Pnl_scr.h"
+#include "Shape.h"
+#include "tvw_main.h"
+#include "tvw_dmap.h"
+#include "World.h"
+#include "tworld.h"
+#include "Pnl_scr.h"
+#include "Shape.h"
+#include "tvw_main.h"
+#include "tvw_dmap.h"
+#include "map.h"
+#include "Panel.h"
+#include "Drawarea.h"
+#include "view.h"
+#include "player.h"
+#include "tpnl_inv.h"
+#include "tpnl_obj.h"
+#include "tpnl_btn.h"
+#include "Pnl_msg.h"
+#include "Pnl_txt.h"
+#include "tpnl_tim.h"
+#include "tpnl_pop.h"
+#include "rpnl_tbx.h"
+#include "Pnl_scbr.h"
+#include "Sound.h"
+
+// Guess based on offsets of _unnamed properties 
+#pragma pack(push, 1)
+
+// 16 bytes each
+struct PortInfo {          // portrait / selection slot
+    uint32_t a;
+    uint32_t b;
+    uint32_t c;
+    uint32_t d;
+};
+
+// 16 bytes each
+struct AnimPalEntry {      // palette animation entry
+    uint32_t a;
+    uint32_t b;
+    uint32_t c;
+    uint32_t d;
+};
+
+#pragma pack(pop)
 
 class TRIBE_Screen_Game : public TScreenPanel {
 public:
@@ -56,7 +102,7 @@ public:
     short start_item;                        // 0x5DF
     short last_item;                         // 0x5E1
     char _pad_0x5E3[0x2];
-    __unnamed port_info[9];                  // 0x5E5
+    PortInfo port_info[9];                  // 0x5E5
     ulong terrain_sound_interval;            // 0x675
     ulong last_terrain_sound_time;           // 0x679
     RGE_Sound* terrain_sound;                // 0x67D
@@ -68,7 +114,7 @@ public:
     short last_anim_pal_index;               // 0x695
     short last_anim_pal_index2;              // 0x697
     short last_anim_pal_index3;              // 0x699
-    __unnamed anim_pal_table[7];             // 0x69B
+    AnimPalEntry anim_pal_table[7];         // 0x69B
     char _pad_0x70B[0xB9];
 
     TRIBE_Screen_Game();

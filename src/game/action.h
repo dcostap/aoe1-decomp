@@ -1,5 +1,29 @@
 #pragma once
 #include "../common.h"
+#include "act_obj.h"
+#include "task.h"
+#include "stat_obj.h"
+#include "act_list.h"
+
+// =========================================================
+// FORWARD DECLARATIONS
+// Required to break circular include dependencies.
+// =========================================================
+class RGE_Action;
+class RGE_Action_Object;
+class RGE_Static_Object;
+class RGE_Task;
+class RGE_Action_List;
+class RGE_Sprite;
+class RGE_Master_Action_Object;
+
+// ----------------------------------------------------------------
+// RGE_Action_Node
+// Size: 0x8
+struct RGE_Action_Node {
+    RGE_Action * action; // 0x0
+    RGE_Action_Node * next; // 0x4
+};
 
 class RGE_Action {
 public:

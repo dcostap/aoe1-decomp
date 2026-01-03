@@ -1,5 +1,9 @@
 #pragma once
 #include "../common.h"
+#include "aimodule.h"
+#include "aiblditm.h"
+#include "utmarray.h"
+#include "player.h"
 
 class BuildAIModule : public AIModule {
 public:
@@ -10,7 +14,7 @@ public:
     char currentBuildItemRequestedValue[257]; // 0x3A6
     char nextBuildItemRequestedValue[257];   // 0x4A7
     int numberItemsIntoBuildListValue;       // 0x5A8
-    ManagedArray<int> typesToIgnore;         // 0x5AC
+    ManagedArray_int typesToIgnore;         // 0x5AC
 
     BuildAIModule(void* param_1, int param_2);
     BuildAIModule(int param_1, int param_2);

@@ -1,5 +1,7 @@
 #pragma once
 #include "../common.h"
+#include "scr_game.h"
+#include "basegame.h"
 
 class TRIBE_Game : public RGE_Base_Game {
 public:
@@ -38,8 +40,9 @@ public:
     char timing_text2[256];                  // 0x106C
     int save_humanity[9];                    // 0x116C
     uchar quick_start_game;                  // 0x1190
+    uchar _pad1191[3];  
     int random_start_value;                  // 0x1194
-    uchar* computerNameUsed[18];             // 0x1198
+    uchar computerNameUsed[18][10];             // 0x1198
     void* handleIdleLock;                    // 0x124C
     int inHandleIdle;                        // 0x1250
 

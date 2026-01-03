@@ -3,140 +3,123 @@
 
 BaseItem::BaseItem() {
     /* TODO: Stub */
-//                              undefined __thiscall BaseItem(BaseItem * this, BaseItem * param_1)
+//                              undefined __thiscall BaseItem(BaseItem * this)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              BaseItem *        ECX:4 (auto)   this
-//              BaseItem *        Stack[0x4]:4   param_1                   XREF[1]:     00407ef0(R)
-//                               ??0BaseItem@@QAE@ABV0@@Z                                     XREF[2]:     BuildItem:004083b9(c),
-//                               BaseItem::BaseItem                                                        ConstructionItem:0040a919(c)
-//                              aibitm.cpp:82 (69)
-//         00407ef0     MOV        EAX,dword ptr [ESP + param_1]
-//         00407ef4     MOV        EDX,this
-//         00407ef6     PUSH       EBX
-//         00407ef7     PUSH       ESI
-//         00407ef8     MOV        this,dword ptr [EAX + 0x4]
-//         00407efb     PUSH       EDI
-//         00407efc     MOV        dword ptr [EDX + 0x4],this
-//         00407eff     MOV        this,dword ptr [EAX + 0x8]
-//         00407f02     MOV        dword ptr [EDX + 0x8],this
-//         00407f05     MOV        this,dword ptr [EAX + 0xc]
-//         00407f08     MOV        dword ptr [EDX + 0xc],this
-//         00407f0b     MOV        this,dword ptr [EAX + 0x50]
-//         00407f0e     MOV        dword ptr [EDX + 0x50],this
-//         00407f11     MOV        this,dword ptr [EAX + 0x54]
-//         00407f14     MOV        dword ptr [EDX + 0x54],this
-//         00407f17     MOV        this,dword ptr [EAX + 0x58]
-//         00407f1a     MOV        dword ptr [EDX + 0x58],this
-//         00407f1d     MOV        this,dword ptr [EAX + 0x5c]
-//         00407f20     MOV        dword ptr [EDX + 0x5c],this
-//         00407f23     MOV        this,dword ptr [EAX + 0x60]
-//         00407f26     MOV        dword ptr [EDX + 0x60],this
-//         00407f29     MOV        this,dword ptr [EAX + 0x64]
-//         00407f2c     MOV        dword ptr [EDX + 0x64],this
-//         00407f2f     MOV        this,dword ptr [EAX + 0x68]
-//         00407f32     MOV        dword ptr [EDX + 0x68],this
-//                              aibitm.cpp:83 (36)
-//         00407f35     LEA        EDI,[EAX + 0x10]
-//         00407f38     OR         this,0xffffffff
-//         00407f3b     XOR        EAX,EAX
-//         00407f3d     MOV        dword ptr [EDX],BaseItem::`vftable'              = 00407de0
-//         00407f43     LEA        EBX,[EDX + 0x10]
-//         00407f46     SCASB.RE   ES:EDI
-//         00407f48     NOT        this
-//         00407f4a     SUB        EDI,this
-//         00407f4c     MOV        EAX,this
-//         00407f4e     MOV        ESI,EDI
-//         00407f50     MOV        EDI,EBX
-//         00407f52     SHR        this,0x2
-//         00407f55     MOVSD.REP  ES:EDI,ESI
-//         00407f57     MOV        this,EAX
-//                              aibitm.cpp:84 (13)
-//         00407f59     MOV        EAX,EDX
-//         00407f5b     AND        this,0x3
-//         00407f5e     MOVSB.REP  ES:EDI,ESI
-//         00407f60     POP        EDI
-//         00407f61     POP        ESI
-//         00407f62     POP        EBX
-//         00407f63     RET        0x4
-//         00407f66     ??         90h
-//         00407f67     NOP
-//         00407f68     NOP
-//         00407f69     NOP
-//         00407f6a     NOP
-//         00407f6b     NOP
-//         00407f6c     NOP
-//         00407f6d     NOP
-//         00407f6e     NOP
-//         00407f6f     NOP
+//                               ??0BaseItem@@QAE@XZ                                          XREF[2]:     BuildItem:00408193(c),
+//                               BaseItem::BaseItem                                                        ConstructionItem:0040a823(c)
+//                              aibitm.cpp:30 (10)
+//         00407d80     PUSH       EBX
+//         00407d81     MOV        EDX,this
+//         00407d83     PUSH       ESI
+//         00407d84     PUSH       EDI
+//         00407d85     OR         this,0xffffffff
+//         00407d88     XOR        EAX,EAX
+//                              aibitm.cpp:31 (63)
+//         00407d8a     MOV        EDI,s_                                           = ""
+//         00407d8f     MOV        dword ptr [EDX + 0x4],this
+//         00407d92     MOV        dword ptr [EDX + 0x8],this
+//         00407d95     MOV        dword ptr [EDX + 0xc],this
+//         00407d98     MOV        dword ptr [EDX + 0x50],EAX
+//         00407d9b     MOV        dword ptr [EDX + 0x54],EAX
+//         00407d9e     MOV        dword ptr [EDX + 0x58],EAX
+//         00407da1     MOV        dword ptr [EDX + 0x5c],EAX
+//         00407da4     MOV        dword ptr [EDX + 0x60],EAX
+//         00407da7     MOV        dword ptr [EDX + 0x64],EAX
+//         00407daa     MOV        dword ptr [EDX + 0x68],EAX
+//         00407dad     MOV        dword ptr [EDX],BaseItem::`vftable'              = 00407de0
+//         00407db3     SCASB.RE   ES:EDI=>s_                                       = ""
+//         00407db5     NOT        this
+//         00407db7     SUB        EDI,this
+//         00407db9     LEA        EBX,[EDX + 0x10]
+//         00407dbc     MOV        EAX,this
+//         00407dbe     MOV        ESI,EDI
+//         00407dc0     MOV        EDI,EBX
+//         00407dc2     SHR        this,0x2
+//         00407dc5     MOVSD.REP  ES:EDI,ESI
+//         00407dc7     MOV        this,EAX
+//                              aibitm.cpp:32 (11)
+//         00407dc9     MOV        EAX,EDX
+//         00407dcb     AND        this,0x3
+//         00407dce     MOVSB.REP  ES:EDI,ESI
+//         00407dd0     POP        EDI
+//         00407dd1     POP        ESI
+//         00407dd2     POP        EBX
+//         00407dd3     RET
+//         00407dd4     ??         90h
+//         00407dd5     NOP
+//         00407dd6     NOP
+//         00407dd7     NOP
+//         00407dd8     NOP
+//         00407dd9     NOP
+//         00407dda     NOP
+//         00407ddb     NOP
+//         00407ddc     NOP
+//         00407ddd     NOP
+//         00407dde     NOP
+//         00407ddf     NOP
 }
 
 BaseItem::BaseItem(int param_1, int param_2, int param_3, char* param_4, float param_5, float param_6, float param_7, float param_8, float param_9, float param_10) {
     /* TODO: Stub */
-//                              undefined __thiscall BaseItem(BaseItem * this, BaseItem * param_1)
+//                              undefined __thiscall BaseItem(BaseItem * this, int param_1, int para
 //              undefined         <UNASSIGNED>   <RETURN>
 //              BaseItem *        ECX:4 (auto)   this
-//              BaseItem *        Stack[0x4]:4   param_1                   XREF[1]:     00407ef0(R)
-//                               ??0BaseItem@@QAE@ABV0@@Z                                     XREF[2]:     BuildItem:004083b9(c),
-//                               BaseItem::BaseItem                                                        ConstructionItem:0040a919(c)
-//                              aibitm.cpp:82 (69)
-//         00407ef0     MOV        EAX,dword ptr [ESP + param_1]
-//         00407ef4     MOV        EDX,this
-//         00407ef6     PUSH       EBX
-//         00407ef7     PUSH       ESI
-//         00407ef8     MOV        this,dword ptr [EAX + 0x4]
-//         00407efb     PUSH       EDI
-//         00407efc     MOV        dword ptr [EDX + 0x4],this
-//         00407eff     MOV        this,dword ptr [EAX + 0x8]
-//         00407f02     MOV        dword ptr [EDX + 0x8],this
-//         00407f05     MOV        this,dword ptr [EAX + 0xc]
-//         00407f08     MOV        dword ptr [EDX + 0xc],this
-//         00407f0b     MOV        this,dword ptr [EAX + 0x50]
-//         00407f0e     MOV        dword ptr [EDX + 0x50],this
-//         00407f11     MOV        this,dword ptr [EAX + 0x54]
-//         00407f14     MOV        dword ptr [EDX + 0x54],this
-//         00407f17     MOV        this,dword ptr [EAX + 0x58]
-//         00407f1a     MOV        dword ptr [EDX + 0x58],this
-//         00407f1d     MOV        this,dword ptr [EAX + 0x5c]
-//         00407f20     MOV        dword ptr [EDX + 0x5c],this
-//         00407f23     MOV        this,dword ptr [EAX + 0x60]
-//         00407f26     MOV        dword ptr [EDX + 0x60],this
-//         00407f29     MOV        this,dword ptr [EAX + 0x64]
-//         00407f2c     MOV        dword ptr [EDX + 0x64],this
-//         00407f2f     MOV        this,dword ptr [EAX + 0x68]
-//         00407f32     MOV        dword ptr [EDX + 0x68],this
-//                              aibitm.cpp:83 (36)
-//         00407f35     LEA        EDI,[EAX + 0x10]
-//         00407f38     OR         this,0xffffffff
-//         00407f3b     XOR        EAX,EAX
-//         00407f3d     MOV        dword ptr [EDX],BaseItem::`vftable'              = 00407de0
-//         00407f43     LEA        EBX,[EDX + 0x10]
-//         00407f46     SCASB.RE   ES:EDI
-//         00407f48     NOT        this
-//         00407f4a     SUB        EDI,this
-//         00407f4c     MOV        EAX,this
-//         00407f4e     MOV        ESI,EDI
-//         00407f50     MOV        EDI,EBX
-//         00407f52     SHR        this,0x2
-//         00407f55     MOVSD.REP  ES:EDI,ESI
-//         00407f57     MOV        this,EAX
-//                              aibitm.cpp:84 (13)
-//         00407f59     MOV        EAX,EDX
-//         00407f5b     AND        this,0x3
-//         00407f5e     MOVSB.REP  ES:EDI,ESI
-//         00407f60     POP        EDI
-//         00407f61     POP        ESI
-//         00407f62     POP        EBX
-//         00407f63     RET        0x4
-//         00407f66     ??         90h
-//         00407f67     NOP
-//         00407f68     NOP
-//         00407f69     NOP
-//         00407f6a     NOP
-//         00407f6b     NOP
-//         00407f6c     NOP
-//         00407f6d     NOP
-//         00407f6e     NOP
-//         00407f6f     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     00407e00(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     00407e0b(R)
+//              int               Stack[0xc]:4   param_3                   XREF[1]:     00407e04(R)
+//              char *            Stack[0x10]:4  param_4                   XREF[1]:     00407e37(R)
+//              float             Stack[0x14]:4  param_5                   XREF[1]:     00407e14(R)
+//              float             Stack[0x18]:4  param_6                   XREF[1]:     00407e1b(R)
+//              float             Stack[0x1c]:4  param_7                   XREF[1]:     00407e30(R)
+//              float             Stack[0x20]:4  param_8                   XREF[1]:     00407e22(R)
+//              float             Stack[0x24]:4  param_9                   XREF[1]:     00407e29(R)
+//              float             Stack[0x28]:4  param_10                  XREF[1]:     00407e41(R)
+//                               ??0BaseItem@@QAE@HHHPADMMMMMM@Z                              XREF[2]:     BuildItem:00408254(c),
+//                               BaseItem::BaseItem                                                        ConstructionItem:0040a8a1(c)
+//                              aibitm.cpp:48 (15)
+//         00407e00     MOV        EAX,dword ptr [ESP + param_1]
+//         00407e04     MOV        EDX,dword ptr [ESP + param_3]
+//         00407e08     PUSH       ESI
+//         00407e09     MOV        ESI,this
+//         00407e0b     MOV        this,dword ptr [ESP + param_2]
+//                              aibitm.cpp:49 (83)
+//         00407e0f     PUSH       0x3f
+//         00407e11     MOV        dword ptr [ESI + 0x4],EAX
+//         00407e14     MOV        EAX,dword ptr [ESP + param_5]
+//         00407e18     MOV        dword ptr [ESI + 0x8],this
+//         00407e1b     MOV        this,dword ptr [ESP + param_6]
+//         00407e1f     MOV        dword ptr [ESI + 0x50],EAX
+//         00407e22     MOV        EAX,dword ptr [ESP + param_8]
+//         00407e26     MOV        dword ptr [ESI + 0x54],this
+//         00407e29     MOV        this,dword ptr [ESP + param_9]
+//         00407e2d     MOV        dword ptr [ESI + 0xc],EDX
+//         00407e30     MOV        EDX,dword ptr [ESP + param_7]
+//         00407e34     MOV        dword ptr [ESI + 0x5c],EAX
+//         00407e37     MOV        EAX,dword ptr [ESP + param_4]
+//         00407e3b     MOV        dword ptr [ESI + 0x60],this
+//         00407e3e     MOV        dword ptr [ESI + 0x58],EDX
+//         00407e41     MOV        EDX,dword ptr [ESP + param_10]
+//         00407e45     LEA        this,[ESI + 0x10]
+//         00407e48     PUSH       EAX
+//         00407e49     PUSH       this
+//         00407e4a     MOV        dword ptr [ESI + 0x64],EDX
+//         00407e4d     MOV        dword ptr [ESI + 0x68],0x0
+//         00407e54     MOV        dword ptr [ESI],BaseItem::`vftable'              = 00407de0
+//         00407e5a     CALL       strncpy                                          undefined strncpy()
+//         00407e5f     ADD        ESP,0xc
+//                              aibitm.cpp:50 (6)
+//         00407e62     MOV        EAX,ESI
+//         00407e64     POP        ESI
+//         00407e65     RET        0x28
+//         00407e68     ??         90h
+//         00407e69     NOP
+//         00407e6a     NOP
+//         00407e6b     NOP
+//         00407e6c     NOP
+//         00407e6d     NOP
+//         00407e6e     NOP
+//         00407e6f     NOP
 }
 
 BaseItem::BaseItem(BaseItem* param_1) {
@@ -144,68 +127,68 @@ BaseItem::BaseItem(BaseItem* param_1) {
 //                              undefined __thiscall BaseItem(BaseItem * this, BaseItem * param_1)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              BaseItem *        ECX:4 (auto)   this
-//              BaseItem *        Stack[0x4]:4   param_1                   XREF[1]:     00407ef0(R)
-//                               ??0BaseItem@@QAE@ABV0@@Z                                     XREF[2]:     BuildItem:004083b9(c),
-//                               BaseItem::BaseItem                                                        ConstructionItem:0040a919(c)
-//                              aibitm.cpp:82 (69)
-//         00407ef0     MOV        EAX,dword ptr [ESP + param_1]
-//         00407ef4     MOV        EDX,this
-//         00407ef6     PUSH       EBX
-//         00407ef7     PUSH       ESI
-//         00407ef8     MOV        this,dword ptr [EAX + 0x4]
-//         00407efb     PUSH       EDI
-//         00407efc     MOV        dword ptr [EDX + 0x4],this
-//         00407eff     MOV        this,dword ptr [EAX + 0x8]
-//         00407f02     MOV        dword ptr [EDX + 0x8],this
-//         00407f05     MOV        this,dword ptr [EAX + 0xc]
-//         00407f08     MOV        dword ptr [EDX + 0xc],this
-//         00407f0b     MOV        this,dword ptr [EAX + 0x50]
-//         00407f0e     MOV        dword ptr [EDX + 0x50],this
-//         00407f11     MOV        this,dword ptr [EAX + 0x54]
-//         00407f14     MOV        dword ptr [EDX + 0x54],this
-//         00407f17     MOV        this,dword ptr [EAX + 0x58]
-//         00407f1a     MOV        dword ptr [EDX + 0x58],this
-//         00407f1d     MOV        this,dword ptr [EAX + 0x5c]
-//         00407f20     MOV        dword ptr [EDX + 0x5c],this
-//         00407f23     MOV        this,dword ptr [EAX + 0x60]
-//         00407f26     MOV        dword ptr [EDX + 0x60],this
-//         00407f29     MOV        this,dword ptr [EAX + 0x64]
-//         00407f2c     MOV        dword ptr [EDX + 0x64],this
-//         00407f2f     MOV        this,dword ptr [EAX + 0x68]
-//         00407f32     MOV        dword ptr [EDX + 0x68],this
-//                              aibitm.cpp:83 (36)
-//         00407f35     LEA        EDI,[EAX + 0x10]
-//         00407f38     OR         this,0xffffffff
-//         00407f3b     XOR        EAX,EAX
-//         00407f3d     MOV        dword ptr [EDX],BaseItem::`vftable'              = 00407de0
-//         00407f43     LEA        EBX,[EDX + 0x10]
-//         00407f46     SCASB.RE   ES:EDI
-//         00407f48     NOT        this
-//         00407f4a     SUB        EDI,this
-//         00407f4c     MOV        EAX,this
-//         00407f4e     MOV        ESI,EDI
-//         00407f50     MOV        EDI,EBX
-//         00407f52     SHR        this,0x2
-//         00407f55     MOVSD.REP  ES:EDI,ESI
-//         00407f57     MOV        this,EAX
-//                              aibitm.cpp:84 (13)
-//         00407f59     MOV        EAX,EDX
-//         00407f5b     AND        this,0x3
-//         00407f5e     MOVSB.REP  ES:EDI,ESI
-//         00407f60     POP        EDI
-//         00407f61     POP        ESI
-//         00407f62     POP        EBX
-//         00407f63     RET        0x4
-//         00407f66     ??         90h
-//         00407f67     NOP
-//         00407f68     NOP
-//         00407f69     NOP
-//         00407f6a     NOP
-//         00407f6b     NOP
-//         00407f6c     NOP
-//         00407f6d     NOP
-//         00407f6e     NOP
-//         00407f6f     NOP
+//              BaseItem *        Stack[0x4]:4   param_1                   XREF[1]:     00407e70(R)
+//                               ??0BaseItem@@QAE@PAV0@@Z                                     XREF[2]:     BuildItem:004082f9(c),
+//                               BaseItem::BaseItem                                                        ConstructionItem:0040a8d9(c)
+//                              aibitm.cpp:65 (69)
+//         00407e70     MOV        EAX,dword ptr [ESP + param_1]
+//         00407e74     MOV        EDX,this
+//         00407e76     PUSH       EBX
+//         00407e77     PUSH       ESI
+//         00407e78     MOV        this,dword ptr [EAX + 0x4]
+//         00407e7b     PUSH       EDI
+//         00407e7c     MOV        dword ptr [EDX + 0x4],this
+//         00407e7f     MOV        this,dword ptr [EAX + 0x8]
+//         00407e82     MOV        dword ptr [EDX + 0x8],this
+//         00407e85     MOV        this,dword ptr [EAX + 0xc]
+//         00407e88     MOV        dword ptr [EDX + 0xc],this
+//         00407e8b     MOV        this,dword ptr [EAX + 0x50]
+//         00407e8e     MOV        dword ptr [EDX + 0x50],this
+//         00407e91     MOV        this,dword ptr [EAX + 0x54]
+//         00407e94     MOV        dword ptr [EDX + 0x54],this
+//         00407e97     MOV        this,dword ptr [EAX + 0x58]
+//         00407e9a     MOV        dword ptr [EDX + 0x58],this
+//         00407e9d     MOV        this,dword ptr [EAX + 0x5c]
+//         00407ea0     MOV        dword ptr [EDX + 0x5c],this
+//         00407ea3     MOV        this,dword ptr [EAX + 0x60]
+//         00407ea6     MOV        dword ptr [EDX + 0x60],this
+//         00407ea9     MOV        this,dword ptr [EAX + 0x64]
+//         00407eac     MOV        dword ptr [EDX + 0x64],this
+//         00407eaf     MOV        this,dword ptr [EAX + 0x68]
+//         00407eb2     MOV        dword ptr [EDX + 0x68],this
+//                              aibitm.cpp:66 (36)
+//         00407eb5     LEA        EDI,[EAX + 0x10]
+//         00407eb8     OR         this,0xffffffff
+//         00407ebb     XOR        EAX,EAX
+//         00407ebd     MOV        dword ptr [EDX],BaseItem::`vftable'              = 00407de0
+//         00407ec3     LEA        EBX,[EDX + 0x10]
+//         00407ec6     SCASB.RE   ES:EDI
+//         00407ec8     NOT        this
+//         00407eca     SUB        EDI,this
+//         00407ecc     MOV        EAX,this
+//         00407ece     MOV        ESI,EDI
+//         00407ed0     MOV        EDI,EBX
+//         00407ed2     SHR        this,0x2
+//         00407ed5     MOVSD.REP  ES:EDI,ESI
+//         00407ed7     MOV        this,EAX
+//                              aibitm.cpp:67 (13)
+//         00407ed9     MOV        EAX,EDX
+//         00407edb     AND        this,0x3
+//         00407ede     MOVSB.REP  ES:EDI,ESI
+//         00407ee0     POP        EDI
+//         00407ee1     POP        ESI
+//         00407ee2     POP        EBX
+//         00407ee3     RET        0x4
+//         00407ee6     ??         90h
+//         00407ee7     NOP
+//         00407ee8     NOP
+//         00407ee9     NOP
+//         00407eea     NOP
+//         00407eeb     NOP
+//         00407eec     NOP
+//         00407eed     NOP
+//         00407eee     NOP
+//         00407eef     NOP
 }
 
 BaseItem::BaseItem(BaseItem* param_1) {

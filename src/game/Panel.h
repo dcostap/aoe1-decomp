@@ -1,5 +1,15 @@
 #pragma once
 #include "../common.h"
+#include "Drawarea.h"
+
+// ----------------------------------------------------------------
+// PanelNode
+// Size: 0xC
+struct PanelNode {
+    TPanel * panel; // 0x0
+    PanelNode * prev_node; // 0x4
+    PanelNode * next_node; // 0x8
+};
 
 class TPanel {
 public:
@@ -169,7 +179,7 @@ public:
     int numberActivePanelsValue;             // 0x14
     TPanel* prevCurrentChildValue;           // 0x18
     void* palette[10];                       // 0x1C
-    char* palette_file[10];                  // 0x44
+    char palette_file[10][260];                  // 0x44
     int palette_use_count[10];               // 0xA6C
     long palette_id[10];                     // 0xA94
     ulong Imc;                               // 0xABC

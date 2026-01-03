@@ -3956,7 +3956,7 @@ int TribeStrategyAIModule::update(int param_1) {
 //         004e992b     LEA        this,[EBP + 0x1]
 //         004e992e     PUSH       this
 //         004e992f     MOV        this,EDI
-//         004e9931     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004e9931     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004e9936                                                 XREF[1]:     004e9929(j)
 //         004e9936     MOV        EDX,dword ptr [EDI]
 //         004e9938     MOV        this,dword ptr [ESI + 0xf0]
@@ -4058,7 +4058,7 @@ int TribeStrategyAIModule::update(int param_1) {
 //         004e9a2f     INC        this
 //         004e9a30     PUSH       this
 //         004e9a31     MOV        this,EBX
-//         004e9a33     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004e9a33     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004e9a38                                                 XREF[1]:     004e9a2d(j)
 //         004e9a38     MOV        EAX,dword ptr [EBX + 0x4]
 //         004e9a3b     MOV        this,dword ptr [EBX]
@@ -4171,7 +4171,7 @@ int TribeStrategyAIModule::update(int param_1) {
 //         004e9b48     LEA        EAX,[EBP + 0x1]
 //         004e9b4b     MOV        this,EDI
 //         004e9b4d     PUSH       EAX
-//         004e9b4e     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004e9b4e     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004e9b53                                                 XREF[1]:     004e9b46(j)
 //         004e9b53     MOV        this,dword ptr [EDI]
 //                              taistrmd.cpp:1330 (26)
@@ -4260,7 +4260,7 @@ int TribeStrategyAIModule::update(int param_1) {
 //         004e9c25     INC        this
 //         004e9c26     PUSH       this
 //         004e9c27     MOV        this,EDI
-//         004e9c29     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004e9c29     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004e9c2e                                                 XREF[1]:     004e9c23(j)
 //         004e9c2e     MOV        EAX,dword ptr [EDI + 0x4]
 //         004e9c31     MOV        this,dword ptr [EDI]
@@ -5196,7 +5196,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea29d     MOV        this,ESI
 //         004ea29f     MOV        dword ptr [EBX + 0x23c],EDI
 //         004ea2a5     MOV        dword ptr [ESP + param_1],0x1
-//         004ea2ad     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004ea2ad     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004ea2b2     CMP        EAX,0x1
 //         004ea2b5     JZ         LAB_004ea2de
 //         004ea2b7     MOV        EDX,dword ptr [ESI + 0xc]
@@ -5207,7 +5207,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea2c2     INC        EAX
 //         004ea2c3     MOV        this,ESI
 //         004ea2c5     PUSH       EAX
-//         004ea2c6     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004ea2c6     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004ea2cb                                                 XREF[1]:     004ea2c0(j)
 //         004ea2cb     MOV        EAX,dword ptr [ESI + 0x4]
 //         004ea2ce     MOV        this,dword ptr [ESI]
@@ -5222,7 +5222,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea2e2     MOV        this,ESI
 //         004ea2e4     PUSH       EAX
 //         004ea2e5     MOV        dword ptr [ESP + param_1],0x2
-//         004ea2ed     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004ea2ed     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004ea2f2     CMP        EAX,0x1
 //         004ea2f5     JZ         LAB_004ea31e
 //         004ea2f7     MOV        this,dword ptr [ESI + 0xc]
@@ -5233,7 +5233,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea302     INC        EAX
 //         004ea303     MOV        this,ESI
 //         004ea305     PUSH       EAX
-//         004ea306     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004ea306     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004ea30b                                                 XREF[1]:     004ea300(j)
 //         004ea30b     MOV        EDX,dword ptr [ESI + 0x4]
 //         004ea30e     MOV        EAX,dword ptr [ESI]
@@ -5248,7 +5248,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea322     MOV        this,ESI
 //         004ea324     PUSH       EDX
 //         004ea325     MOV        dword ptr [ESP + param_1],0xc
-//         004ea32d     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004ea32d     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004ea332     CMP        EAX,0x1
 //         004ea335     JZ         LAB_004ea35e
 //         004ea337     MOV        this,dword ptr [ESI + 0xc]
@@ -5259,7 +5259,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea342     INC        EAX
 //         004ea343     MOV        this,ESI
 //         004ea345     PUSH       EAX
-//         004ea346     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004ea346     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004ea34b                                                 XREF[1]:     004ea340(j)
 //         004ea34b     MOV        EDX,dword ptr [ESI + 0x4]
 //         004ea34e     MOV        EAX,dword ptr [ESI]
@@ -5274,7 +5274,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea362     MOV        this,ESI
 //         004ea364     PUSH       EDX
 //         004ea365     MOV        dword ptr [ESP + param_1],0xd
-//         004ea36d     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004ea36d     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004ea372     CMP        EAX,0x1
 //         004ea375     JZ         LAB_004ea39e
 //         004ea377     MOV        this,dword ptr [ESI + 0xc]
@@ -5285,7 +5285,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea382     INC        EAX
 //         004ea383     MOV        this,ESI
 //         004ea385     PUSH       EAX
-//         004ea386     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004ea386     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004ea38b                                                 XREF[1]:     004ea380(j)
 //         004ea38b     MOV        EDX,dword ptr [ESI + 0x4]
 //         004ea38e     MOV        EAX,dword ptr [ESI]
@@ -5300,7 +5300,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea3a2     MOV        this,ESI
 //         004ea3a4     PUSH       EDX
 //         004ea3a5     MOV        dword ptr [ESP + param_1],0xe
-//         004ea3ad     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004ea3ad     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004ea3b2     CMP        EAX,0x1
 //         004ea3b5     JZ         LAB_004ea3de
 //         004ea3b7     MOV        this,dword ptr [ESI + 0xc]
@@ -5311,7 +5311,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea3c2     INC        EAX
 //         004ea3c3     MOV        this,ESI
 //         004ea3c5     PUSH       EAX
-//         004ea3c6     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004ea3c6     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004ea3cb                                                 XREF[1]:     004ea3c0(j)
 //         004ea3cb     MOV        EDX,dword ptr [ESI + 0x4]
 //         004ea3ce     MOV        EAX,dword ptr [ESI]
@@ -5326,7 +5326,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea3e2     MOV        this,ESI
 //         004ea3e4     PUSH       EDX
 //         004ea3e5     MOV        dword ptr [ESP + param_1],0x10
-//         004ea3ed     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004ea3ed     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004ea3f2     CMP        EAX,0x1
 //         004ea3f5     JZ         LAB_004ea41e
 //         004ea3f7     MOV        this,dword ptr [ESI + 0xc]
@@ -5337,7 +5337,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea402     INC        EAX
 //         004ea403     MOV        this,ESI
 //         004ea405     PUSH       EAX
-//         004ea406     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004ea406     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004ea40b                                                 XREF[1]:     004ea400(j)
 //         004ea40b     MOV        EDX,dword ptr [ESI + 0x4]
 //         004ea40e     MOV        EAX,dword ptr [ESI]
@@ -5352,7 +5352,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea422     MOV        this,ESI
 //         004ea424     PUSH       EDX
 //         004ea425     MOV        dword ptr [ESP + param_1],0x11
-//         004ea42d     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004ea42d     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004ea432     CMP        EAX,0x1
 //         004ea435     JZ         LAB_004ea45e
 //         004ea437     MOV        this,dword ptr [ESI + 0xc]
@@ -5363,7 +5363,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea442     INC        EAX
 //         004ea443     MOV        this,ESI
 //         004ea445     PUSH       EAX
-//         004ea446     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004ea446     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004ea44b                                                 XREF[1]:     004ea440(j)
 //         004ea44b     MOV        EDX,dword ptr [ESI + 0x4]
 //         004ea44e     MOV        EAX,dword ptr [ESI]
@@ -5378,7 +5378,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea462     MOV        this,ESI
 //         004ea464     PUSH       EDX
 //         004ea465     MOV        dword ptr [ESP + param_1],0x12
-//         004ea46d     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004ea46d     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004ea472     CMP        EAX,0x1
 //         004ea475     JZ         LAB_004ea49e
 //         004ea477     MOV        this,dword ptr [ESI + 0xc]
@@ -5389,7 +5389,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea482     INC        EAX
 //         004ea483     MOV        this,ESI
 //         004ea485     PUSH       EAX
-//         004ea486     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004ea486     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004ea48b                                                 XREF[1]:     004ea480(j)
 //         004ea48b     MOV        EDX,dword ptr [ESI + 0x4]
 //         004ea48e     MOV        EAX,dword ptr [ESI]
@@ -5404,7 +5404,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea4a2     MOV        this,ESI
 //         004ea4a4     PUSH       EDX
 //         004ea4a5     MOV        dword ptr [ESP + param_1],0x15
-//         004ea4ad     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004ea4ad     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004ea4b2     CMP        EAX,0x1
 //         004ea4b5     JZ         LAB_004ea4de
 //         004ea4b7     MOV        this,dword ptr [ESI + 0xc]
@@ -5415,7 +5415,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea4c2     INC        EAX
 //         004ea4c3     MOV        this,ESI
 //         004ea4c5     PUSH       EAX
-//         004ea4c6     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004ea4c6     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004ea4cb                                                 XREF[1]:     004ea4c0(j)
 //         004ea4cb     MOV        EDX,dword ptr [ESI + 0x4]
 //         004ea4ce     MOV        EAX,dword ptr [ESI]
@@ -5430,7 +5430,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea4e2     MOV        this,ESI
 //         004ea4e4     PUSH       EDX
 //         004ea4e5     MOV        dword ptr [ESP + param_1],0x16
-//         004ea4ed     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004ea4ed     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004ea4f2     CMP        EAX,0x1
 //         004ea4f5     JZ         LAB_004ea51e
 //         004ea4f7     MOV        this,dword ptr [ESI + 0xc]
@@ -5441,7 +5441,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea502     INC        EAX
 //         004ea503     MOV        this,ESI
 //         004ea505     PUSH       EAX
-//         004ea506     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004ea506     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004ea50b                                                 XREF[1]:     004ea500(j)
 //         004ea50b     MOV        EDX,dword ptr [ESI + 0x4]
 //         004ea50e     MOV        EAX,dword ptr [ESI]
@@ -5456,7 +5456,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea522     MOV        this,ESI
 //         004ea524     PUSH       EDX
 //         004ea525     MOV        dword ptr [ESP + param_1],0x17
-//         004ea52d     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004ea52d     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004ea532     CMP        EAX,0x1
 //         004ea535     JZ         LAB_004ea55e
 //         004ea537     MOV        this,dword ptr [ESI + 0xc]
@@ -5467,7 +5467,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea542     INC        EAX
 //         004ea543     MOV        this,ESI
 //         004ea545     PUSH       EAX
-//         004ea546     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004ea546     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004ea54b                                                 XREF[1]:     004ea540(j)
 //         004ea54b     MOV        EDX,dword ptr [ESI + 0x4]
 //         004ea54e     MOV        EAX,dword ptr [ESI]
@@ -5482,7 +5482,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea562     MOV        this,ESI
 //         004ea564     PUSH       EDX
 //         004ea565     MOV        dword ptr [ESP + param_1],0x18
-//         004ea56d     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004ea56d     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004ea572     CMP        EAX,0x1
 //         004ea575     JZ         LAB_004ea59e
 //         004ea577     MOV        this,dword ptr [ESI + 0xc]
@@ -5493,7 +5493,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea582     INC        EAX
 //         004ea583     MOV        this,ESI
 //         004ea585     PUSH       EAX
-//         004ea586     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004ea586     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004ea58b                                                 XREF[1]:     004ea580(j)
 //         004ea58b     MOV        EDX,dword ptr [ESI + 0x4]
 //         004ea58e     MOV        EAX,dword ptr [ESI]
@@ -5508,7 +5508,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea5a2     MOV        this,ESI
 //         004ea5a4     PUSH       EDX
 //         004ea5a5     MOV        dword ptr [ESP + param_1],0x19
-//         004ea5ad     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004ea5ad     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004ea5b2     CMP        EAX,0x1
 //         004ea5b5     JZ         LAB_004ea5de
 //         004ea5b7     MOV        this,dword ptr [ESI + 0xc]
@@ -5519,7 +5519,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea5c2     INC        EAX
 //         004ea5c3     MOV        this,ESI
 //         004ea5c5     PUSH       EAX
-//         004ea5c6     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004ea5c6     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004ea5cb                                                 XREF[1]:     004ea5c0(j)
 //         004ea5cb     MOV        EDX,dword ptr [ESI + 0x4]
 //         004ea5ce     MOV        EAX,dword ptr [ESI]
@@ -5532,99 +5532,99 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //                              taistrmd.cpp:1564 (9)
 //         004ea5de     PUSH       0x1a
 //         004ea5e0     MOV        this,ESI
-//         004ea5e2     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea5e2     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taistrmd.cpp:1565 (9)
 //         004ea5e7     PUSH       0x1b
 //         004ea5e9     MOV        this,ESI
-//         004ea5eb     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea5eb     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taistrmd.cpp:1566 (9)
 //         004ea5f0     PUSH       0x1c
 //         004ea5f2     MOV        this,ESI
-//         004ea5f4     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea5f4     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taistrmd.cpp:1567 (9)
 //         004ea5f9     PUSH       0x1d
 //         004ea5fb     MOV        this,ESI
-//         004ea5fd     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea5fd     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taistrmd.cpp:1568 (9)
 //         004ea602     PUSH       0x1e
 //         004ea604     MOV        this,ESI
-//         004ea606     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea606     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taistrmd.cpp:1569 (9)
 //         004ea60b     PUSH       0x1f
 //         004ea60d     MOV        this,ESI
-//         004ea60f     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea60f     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taistrmd.cpp:1570 (9)
 //         004ea614     PUSH       0x20
 //         004ea616     MOV        this,ESI
-//         004ea618     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea618     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taistrmd.cpp:1571 (9)
 //         004ea61d     PUSH       0x21
 //         004ea61f     MOV        this,ESI
-//         004ea621     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea621     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taistrmd.cpp:1572 (9)
 //         004ea626     PUSH       0x22
 //         004ea628     MOV        this,ESI
-//         004ea62a     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea62a     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taistrmd.cpp:1573 (9)
 //         004ea62f     PUSH       0x23
 //         004ea631     MOV        this,ESI
-//         004ea633     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea633     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taistrmd.cpp:1574 (9)
 //         004ea638     PUSH       0x24
 //         004ea63a     MOV        this,ESI
-//         004ea63c     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea63c     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taistrmd.cpp:1575 (9)
 //         004ea641     PUSH       0x25
 //         004ea643     MOV        this,ESI
-//         004ea645     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea645     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taistrmd.cpp:1576 (9)
 //         004ea64a     PUSH       0x26
 //         004ea64c     MOV        this,ESI
-//         004ea64e     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea64e     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taistrmd.cpp:1577 (9)
 //         004ea653     PUSH       0x27
 //         004ea655     MOV        this,ESI
-//         004ea657     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea657     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taistrmd.cpp:1578 (9)
 //         004ea65c     PUSH       0x28
 //         004ea65e     MOV        this,ESI
-//         004ea660     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea660     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taistrmd.cpp:1579 (9)
 //         004ea665     PUSH       0x29
 //         004ea667     MOV        this,ESI
-//         004ea669     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea669     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taistrmd.cpp:1580 (9)
 //         004ea66e     PUSH       0x2a
 //         004ea670     MOV        this,ESI
-//         004ea672     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea672     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taistrmd.cpp:1581 (9)
 //         004ea677     PUSH       0x2b
 //         004ea679     MOV        this,ESI
-//         004ea67b     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea67b     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taistrmd.cpp:1582 (9)
 //         004ea680     PUSH       0x2c
 //         004ea682     MOV        this,ESI
-//         004ea684     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea684     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taistrmd.cpp:1583 (9)
 //         004ea689     PUSH       0x2d
 //         004ea68b     MOV        this,ESI
-//         004ea68d     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea68d     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taistrmd.cpp:1584 (9)
 //         004ea692     PUSH       0x2e
 //         004ea694     MOV        this,ESI
-//         004ea696     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea696     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taistrmd.cpp:1585 (9)
 //         004ea69b     PUSH       0x2f
 //         004ea69d     MOV        this,ESI
-//         004ea69f     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea69f     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taistrmd.cpp:1586 (9)
 //         004ea6a4     PUSH       0x30
 //         004ea6a6     MOV        this,ESI
-//         004ea6a8     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea6a8     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taistrmd.cpp:1587 (9)
 //         004ea6ad     PUSH       0x31
 //         004ea6af     MOV        this,ESI
-//         004ea6b1     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea6b1     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                              taistrmd.cpp:1598 (12)
 //         004ea6b6     CMP        dword ptr [EBX + 0x23c],EDI
 //         004ea6bc     JLE        LAB_004ea748
@@ -5633,7 +5633,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //                               LAB_004ea6c8                                                 XREF[1]:     004ea746(j)
 //         004ea6c8     PUSH       EDI
 //         004ea6c9     MOV        this,ESI
-//         004ea6cb     CALL       ManagedArray<int>::operator[]                    int * operator[](ManagedArray<int> * this, in
+//         004ea6cb     CALL       ManagedArray_int::operator[]                    int * operator[](ManagedArray_int * this, in
 //         004ea6d0     MOV        EDX,dword ptr [EAX]
 //         004ea6d2     MOV        EAX,dword ptr [EBX + 0xf0]
 //         004ea6d8     PUSH       EDX
@@ -5646,7 +5646,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //                              taistrmd.cpp:1602 (41)
 //         004ea6ec     PUSH       EDI
 //         004ea6ed     MOV        this,ESI
-//         004ea6ef     CALL       ManagedArray<int>::operator[]                    int * operator[](ManagedArray<int> * this, in
+//         004ea6ef     CALL       ManagedArray_int::operator[]                    int * operator[](ManagedArray_int * this, in
 //         004ea6f4     MOV        EDX,dword ptr [EAX]
 //         004ea6f6     MOV        this,dword ptr [EBX + 0xf0]
 //         004ea6fc     MOV        EAX,dword ptr [EBX + 0xf4]
@@ -5661,7 +5661,7 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea715     PUSH       EDI
 //         004ea716     MOV        this,ESI
 //         004ea718     JNZ        LAB_004ea72a
-//         004ea71a     CALL       ManagedArray<int>::operator[]                    int * operator[](ManagedArray<int> * this, in
+//         004ea71a     CALL       ManagedArray_int::operator[]                    int * operator[](ManagedArray_int * this, in
 //         004ea71f     MOV        EAX,dword ptr [EAX]
 //         004ea721     LEA        this,[EBX + 0x248]
 //         004ea727     PUSH       EAX
@@ -5669,12 +5669,12 @@ void TribeStrategyAIModule::setVictoryCondition(int param_1) {
 //         004ea728     JMP        LAB_004ea738
 //                               LAB_004ea72a                                                 XREF[1]:     004ea718(j)
 //                              taistrmd.cpp:1605 (19)
-//         004ea72a     CALL       ManagedArray<int>::operator[]                    int * operator[](ManagedArray<int> * this, in
+//         004ea72a     CALL       ManagedArray_int::operator[]                    int * operator[](ManagedArray_int * this, in
 //         004ea72f     MOV        this,dword ptr [EAX]
 //         004ea731     PUSH       this
 //         004ea732     LEA        this,[EBX + 0x258]
 //                               LAB_004ea738                                                 XREF[1]:     004ea728(j)
-//         004ea738     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004ea738     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                               LAB_004ea73d                                                 XREF[1]:     004ea6ea(j)
 //                              taistrmd.cpp:1598 (11)
 //         004ea73d     MOV        EAX,dword ptr [EBX + 0x23c]

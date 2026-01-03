@@ -1,11 +1,13 @@
 #pragma once
 #include "../common.h"
+#include "aimdmod.h"
+#include "aimodule.h"
 
 class EmotionalAIModule : public AIModule {
 public:
     MainDecisionAIModule* md;                // 0xF0
     int stateValue[6];                       // 0xF4
-    char* stateNameValue[6];                 // 0x10C
+    char stateNameValue[6][30];                 // 0x10C
 
     EmotionalAIModule(void* param_1, int param_2);
     EmotionalAIModule(int param_1, int param_2);

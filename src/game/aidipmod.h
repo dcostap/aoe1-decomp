@@ -1,5 +1,7 @@
 #pragma once
 #include "../common.h"
+#include "aimdmod.h"
+#include "aimodule.h"
 
 class DiplomacyAIModule : public AIModule {
 public:

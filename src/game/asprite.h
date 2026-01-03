@@ -63,3 +63,13 @@ public:
 static_assert(sizeof(RGE_Active_Sprite) == 0x14, "RGE_Active_Sprite Size Mismatch");
 static_assert(offsetof(RGE_Active_Sprite, offset_y) == 0x10, "RGE_Active_Sprite Offset Mismatch");
 
+
+// ----------------------------------------------------------------
+// RGE_Active_Sprite_Node
+// Size: 0xC
+struct RGE_Active_Sprite_Node {
+    RGE_Active_Sprite * node; // 0x0
+    uchar order; // 0x4
+    uchar count; // 0x5
+    RGE_Active_Sprite_Node * next; // 0x8
+};

@@ -1,5 +1,7 @@
 #pragma once
 #include "../common.h"
+#include "taimdmd.h"
+#include "tplayer.h"
 
 class VictoryConditionRuleSystem {
 public:
@@ -34,9 +36,9 @@ public:
     int targetAttributeValue;                // 0x22C
     int targetNumberValue;                   // 0x230
     int victoryConditionChangeTimeout;       // 0x234
-    ManagedArray<int> vcRuleSet;             // 0x238
-    ManagedArray<int> executingRules;        // 0x248
-    ManagedArray<int> idleRules;             // 0x258
+    ManagedArray_int vcRuleSet;             // 0x238
+    ManagedArray_int executingRules;        // 0x248
+    ManagedArray_int idleRules;             // 0x258
     VictoryConditionRuleSystem vcRules;      // 0x268
     int difficultyLevel;                     // 0x5F4
 

@@ -1,5 +1,14 @@
 #pragma once
 #include "../common.h"
+#include "gameinfo.h"
+#include "sceninfo.h"
+#include "Sounddrv.h"
+#include "music.h"
+#include "Com_hand.h"
+#include "Debuglog.h"
+#include "registry.h"
+#include "Mouseptr.h"
+#include "scenario.h"
 
 class RGE_Base_Game {
 public:

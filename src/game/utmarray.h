@@ -1,13 +1,13 @@
 #pragma once
 #include "../common.h"
 
-class ManagedArray<int> {
+class ManagedArray_int {
 public:
     int numberValue;                         // 0x4
     int desiredNumberValue;                  // 0x8
     int maximumSizeValue;                    // 0xC
 
-    virtual ~ManagedArray<int>();
+    virtual ~ManagedArray_int();
     virtual int resize(int param_1);
     virtual int contains(int* param_1);
     virtual int add(int param_1);
@@ -15,16 +15,16 @@ public:
     virtual int remove(int param_1);
 };
 
-static_assert(sizeof(ManagedArray<int>) == 0x10, "ManagedArray<int> Size Mismatch");
-static_assert(offsetof(ManagedArray<int>, maximumSizeValue) == 0xC, "ManagedArray<int> Offset Mismatch");
+static_assert(sizeof(ManagedArray_int) == 0x10, "ManagedArray_int Size Mismatch");
+static_assert(offsetof(ManagedArray_int, maximumSizeValue) == 0xC, "ManagedArray_int Offset Mismatch");
 
-ManagedArray<int>::~ManagedArray<int>() {
+ManagedArray_int::~ManagedArray_int() {
     /* TODO: Stub */
-//                              void __thiscall ~ManagedArray<int>(ManagedArray<int> * this)
+//                              void __thiscall ~ManagedArray_int(ManagedArray_int * this)
 //              void              <VOID>         <RETURN>
 //              ManagedArray<i    ECX:4 (auto)   this
 //                               ??1?$ManagedArray@H@@QAE@XZ                                  XREF[8]:     ~TribeTacticalAIModule:004eee0f(c)
-//                               ManagedArray<int>::~ManagedArray<int>                                     FUN_0055c47c:0055c488(c),
+//                               ManagedArray_int::~ManagedArray_int                                     FUN_0055c47c:0055c488(c),
 //                                                                                                         FUN_0055f990:0055f996(c),
 //                                                                                                         FUN_0055f99b:0055f9a1(c),
 //                                                                                                         FUN_0055f9b0:0055f9b6(c),
@@ -57,14 +57,14 @@ ManagedArray<int>::~ManagedArray<int>() {
 //         00408d4f     ??         90h
 }
 
-int* ManagedArray<int>::operator[](int param_1) {
+int* ManagedArray_int::operator[](int param_1) {
     /* TODO: Stub */
-//                              int * __thiscall operator[](ManagedArray<int> * this, int param_1)
+//                              int * __thiscall operator[](ManagedArray_int * this, int param_1)
 //              int *             EAX:4          <RETURN>
 //              ManagedArray<i    ECX:4 (auto)   this
 //              int               Stack[0x4]:4   param_1                   XREF[1]:     004ea752(R)
 //                               ??A?$ManagedArray@H@@QAEAAHH@Z                               XREF[4]:     setVictoryCondition:004ea6cb(c),
-//                               ManagedArray<int>::operator[]                                             setVictoryCondition:004ea6ef(c),
+//                               ManagedArray_int::operator[]                                             setVictoryCondition:004ea6ef(c),
 //                                                                                                         setVictoryCondition:004ea71a(c),
 //                                                                                                         setVictoryCondition:004ea72a(c)
 //                              utmarray.h:63 (2)
@@ -132,14 +132,14 @@ int* ManagedArray<int>::operator[](int param_1) {
     return 0;
 }
 
-int ManagedArray<int>::contains(int* param_1) {
+int ManagedArray_int::contains(int* param_1) {
     /* TODO: Stub */
-//                              int __thiscall contains(ManagedArray<int> * this, int * param_1)
+//                              int __thiscall contains(ManagedArray_int * this, int * param_1)
 //              int               EAX:4          <RETURN>
 //              ManagedArray<i    ECX:4 (auto)   this
 //              int *             Stack[0x4]:4   param_1                   XREF[1]:     004de990(R)
 //                               ?contains@?$ManagedArray@H@@QAEHABH@Z                        XREF[27]:    checkDefend:004de803(c),
-//                               ManagedArray<int>::contains                                               checkDefend:004de873(c),
+//                               ManagedArray_int::contains                                               checkDefend:004de873(c),
 //                                                                                                         setVictoryCondition:004ea2ad(c),
 //                                                                                                         setVictoryCondition:004ea2ed(c),
 //                                                                                                         setVictoryCondition:004ea32d(c),
@@ -218,14 +218,14 @@ int ManagedArray<int>::contains(int* param_1) {
     return 0;
 }
 
-int ManagedArray<int>::add(int param_1) {
+int ManagedArray_int::add(int param_1) {
     /* TODO: Stub */
-//                              int __thiscall add(ManagedArray<int> * this, int param_1)
+//                              int __thiscall add(ManagedArray_int * this, int param_1)
 //              int               EAX:4          <RETURN>
 //              ManagedArray<i    ECX:4 (auto)   this
 //              int               Stack[0x4]:4   param_1                   XREF[1]:     004de9d2(R)
 //                               ?add@?$ManagedArray@H@@QAEHH@Z                               XREF[27]:    checkDefend:004de8d1(c),
-//                               ManagedArray<int>::add                                                    setVictoryCondition:004ea5e2(c),
+//                               ManagedArray_int::add                                                    setVictoryCondition:004ea5e2(c),
 //                                                                                                         setVictoryCondition:004ea5eb(c),
 //                                                                                                         setVictoryCondition:004ea5f4(c),
 //                                                                                                         setVictoryCondition:004ea5fd(c),
@@ -336,14 +336,14 @@ int ManagedArray<int>::add(int param_1) {
     return 0;
 }
 
-int ManagedArray<int>::remove(int param_1) {
+int ManagedArray_int::remove(int param_1) {
     /* TODO: Stub */
-//                              int __thiscall remove(ManagedArray<int> * this, int param_1)
+//                              int __thiscall remove(ManagedArray_int * this, int param_1)
 //              int               EAX:4          <RETURN>
 //              ManagedArray<i    ECX:4 (auto)   this
 //              int               Stack[0x4]:4   param_1                   XREF[1]:     004f139d(R)
 //                               ?remove@?$ManagedArray@H@@QAEHH@Z                            XREF[1]:     removeObject:004f130d(c)
-//                               ManagedArray<int>::remove
+//                               ManagedArray_int::remove
 //                              utmarray.h:120 (1)
 //         004f1390     PUSH       ESI
 //                              utmarray.h:123 (28)
@@ -411,14 +411,14 @@ int ManagedArray<int>::remove(int param_1) {
     return 0;
 }
 
-int ManagedArray<int>::resize(int param_1) {
+int ManagedArray_int::resize(int param_1) {
     /* TODO: Stub */
-//                              int __thiscall resize(ManagedArray<int> * this, int param_1)
+//                              int __thiscall resize(ManagedArray_int * this, int param_1)
 //              int               EAX:4          <RETURN>
 //              ManagedArray<i    ECX:4 (auto)   this
 //              int               Stack[0x4]:4   param_1                   XREF[1]:     004147a1(R)
 //                               ?resize@?$ManagedArray@H@@IAEHH@Z                            XREF[86]:    updateGroup:00414145(c),
-//                               ManagedArray<int>::resize                                                 selectNewPlayPhase:00414987(c),
+//                               ManagedArray_int::resize                                                 selectNewPlayPhase:00414987(c),
 //                                                                                                         checkDefend:004de820(c),
 //                                                                                                         checkDefend:004de88c(c),
 //                                                                                                         numberSoldiersWithPriority:004f75d

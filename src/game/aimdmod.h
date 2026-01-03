@@ -1,10 +1,13 @@
 #pragma once
 #include "../common.h"
+#include "aimodule.h"
+#include "player.h"
+#include "utmarray.h"
 
 class MainDecisionAIModule : public AIModule {
 public:
     RGE_Player* player;                      // 0xF0
-    ManagedArray<int> objects;               // 0xF4
+    ManagedArray_int objects;               // 0xF4
 
     MainDecisionAIModule(void* param_1, int param_2, RGE_Player* param_3);
     MainDecisionAIModule(int param_1, RGE_Player* param_2, int param_3);

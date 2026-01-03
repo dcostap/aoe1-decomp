@@ -1,5 +1,17 @@
 #pragma once
 #include "../common.h"
+#include "Chat.h"
+#include "com_q.h"
+#include "com_loby.h"
+#include "RGE_TSLC.h"
+#include "com_spd.h"
+#include "com_sync.h"
+#include "com_addr.h"
+#include "com_err.h"
+
+struct NAME {
+    char Name[256]; // 0x0
+};
 
 class TCommunications_Handler {
 public:

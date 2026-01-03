@@ -1,5 +1,7 @@
 #pragma once
 #include "../common.h"
+#include "task_lst.h"
+#include "m_mo_obj.h"
 
 class RGE_Master_Action_Object : public RGE_Master_Moving_Object {
 public:

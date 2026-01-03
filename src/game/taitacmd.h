@@ -1,5 +1,27 @@
 #pragma once
 #include "../common.h"
+#include "taibldmd.h"
+#include "aimdmod.h"
+#include "aimodule.h"
+#include "player.h"
+#include "utmarray.h"
+#include "aibldmod.h"
+#include "aiconmod.h"
+#include "aidipmod.h"
+#include "aiemomod.h"
+#include "aiinfmod.h"
+#include "aimdmod.h"
+#include "airchmod.h"
+#include "airesmod.h"
+#include "aistrmod.h"
+#include "aitacmod.h"
+#include "aitrdmod.h"
+#include "aiuaimod.h"
+#include "taiconmd.h"
+#include "taiinfmd.h"
+#include "tairesmd.h"
+#include "taistrmd.h"
+#include "tplayer.h"
 
 class TacticalAIGroup {
 public:
@@ -117,16 +139,16 @@ static_assert(offsetof(TacticalAIGroup, lastAddedUnitTimeValue) == 0x32C, "Tacti
 class TribeTacticalAIModule : public TacticalAIModule {
 public:
     TribeMainDecisionAIModule* md;           // 0xF0
-    ManagedArray<int> civilians;             // 0xF4
-    ManagedArray<int> civilianExplorers;     // 0x104
-    ManagedArray<int> soldiers;              // 0x114
-    ManagedArray<int> ungroupedSoldiers;     // 0x124
-    ManagedArray<int> boats;                 // 0x134
-    ManagedArray<int> warBoats;              // 0x144
-    ManagedArray<int> fishingBoats;          // 0x154
-    ManagedArray<int> tradeBoats;            // 0x164
-    ManagedArray<int> transportBoats;        // 0x174
-    ManagedArray<int> artifacts;             // 0x184
+    ManagedArray_int civilians;             // 0xF4
+    ManagedArray_int civilianExplorers;     // 0x104
+    ManagedArray_int soldiers;              // 0x114
+    ManagedArray_int ungroupedSoldiers;     // 0x124
+    ManagedArray_int boats;                 // 0x134
+    ManagedArray_int warBoats;              // 0x144
+    ManagedArray_int fishingBoats;          // 0x154
+    ManagedArray_int tradeBoats;            // 0x164
+    ManagedArray_int transportBoats;        // 0x174
+    ManagedArray_int artifacts;             // 0x184
     int sn[226];                             // 0x194
     UnitData gatherers[50];                  // 0x51C
     int numberGatherersValue;                // 0x9CC
@@ -141,10 +163,10 @@ public:
     ulong lastScalingUpdateValue;            // 0xD1C
     int numberBuildUpdatesSkipped;           // 0xD20
     int randomizedAttackSeparationTime;      // 0xD24
-    ManagedArray<int> playersToAttack;       // 0xD28
-    ManagedArray<int> playersToDefend;       // 0xD38
-    ManagedArray<int> workingArea;           // 0xD48
-    ManagedArray<int> unitsTaskedThisUpdate; // 0xD58
+    ManagedArray_int playersToAttack;       // 0xD28
+    ManagedArray_int playersToDefend;       // 0xD38
+    ManagedArray_int workingArea;           // 0xD48
+    ManagedArray_int unitsTaskedThisUpdate; // 0xD58
     int actualGathererDistribution[4];       // 0xD68
     int desiredGathererDistribution[4];      // 0xD78
     int neededResourceValue[4];              // 0xD88
@@ -287,7 +309,7 @@ public:
     virtual int setAllGroupLocations(TacticalAIGroup* param_1);
     virtual void setGroupInfluences(InfluenceMap* param_1);
     virtual int selectBestCommander(TacticalAIGroup* param_1);
-    virtual int selectBestCommander(ManagedArray<int>* param_1);
+    virtual int selectBestCommander(ManagedArray_int* param_1);
     virtual int dealWithGAIAAttacker(RGE_Static_Object* param_1, RGE_Static_Object* param_2);
     virtual void addWaypoint(int param_1, uchar param_2, uchar param_3);
     virtual int importantGroupLeader(int param_1);

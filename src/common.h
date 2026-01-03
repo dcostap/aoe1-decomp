@@ -1137,15 +1137,6 @@ struct DisplaySelectedObjRec {
 };
 
 // ----------------------------------------------------------------
-// DrawAreaNode
-// Size: 0xC
-struct DrawAreaNode {
-    TDrawArea * DrawArea; // 0x0
-    DrawAreaNode * PrevNode; // 0x4
-    DrawAreaNode * NextNode; // 0x8
-};
-
-// ----------------------------------------------------------------
 // FlicHead
 // Size: 0x84
 struct FlicHead {
@@ -1603,24 +1594,6 @@ struct OrderEvent {
 };
 
 // ----------------------------------------------------------------
-// Ov_Sprite_Draw_Rec
-// Size: 0x30
-struct Ov_Sprite_Draw_Rec {
-    Ov_Sprite_Draw_Rec * next; // 0x0
-    Ov_Sprite_Draw_Rec * prev; // 0x4
-    TShape * theShape; // 0x8
-    int thefacet; // 0xC
-    int world_x; // 0x10
-    int world_y; // 0x14
-    int flags; // 0x18
-    int drawLevel; // 0x1C
-    int displayfunction; // 0x20
-    ulong LastDrawTime; // 0x24
-    ulong DrawTimeInterval; // 0x28
-    uchar * colortable; // 0x2C
-};
-
-// ----------------------------------------------------------------
 // PAL_TABLE
 // Size: 0x8
 struct PAL_TABLE {
@@ -1643,38 +1616,11 @@ struct PLAYER_SCORE {
 };
 
 // ----------------------------------------------------------------
-// PanelNode
-// Size: 0xC
-struct PanelNode {
-    TPanel * panel; // 0x0
-    PanelNode * prev_node; // 0x4
-    PanelNode * next_node; // 0x8
-};
-
-// ----------------------------------------------------------------
 // XYPoint
 // Size: 0x8
 struct XYPoint {
     int x; // 0x0
     int y; // 0x4
-};
-
-// ----------------------------------------------------------------
-// PlacementState
-// Size: 0x130
-struct PlacementState {
-    int buildingTypeID; // 0x0
-    float buildingSize; // 0x4
-    char buildingName[256]; // 0x8
-    int builderID; // 0x108
-    int minimumDistance; // 0x10C
-    int maximumDistance; // 0x110
-    int active; // 0x114
-    XYPoint bestPoint; // 0x118
-    int bestPointValue; // 0x120
-    int iterationX; // 0x124
-    int randomInfluence; // 0x128
-    BuildItem * buildItem; // 0x12C
 };
 
 // ----------------------------------------------------------------
@@ -1727,23 +1673,6 @@ struct QuadrantLog {
     int numberAttacksByUs; // 0x8
 };
 
-// ----------------------------------------------------------------
-// RGE_Action_Node
-// Size: 0x8
-struct RGE_Action_Node {
-    RGE_Action * action; // 0x0
-    RGE_Action_Node * next; // 0x4
-};
-
-// ----------------------------------------------------------------
-// RGE_Active_Sprite_Node
-// Size: 0xC
-struct RGE_Active_Sprite_Node {
-    RGE_Active_Sprite * node; // 0x0
-    uchar order; // 0x4
-    uchar count; // 0x5
-    RGE_Active_Sprite_Node * next; // 0x8
-};
 
 // ----------------------------------------------------------------
 // RGE_Armor_Weapon_Info
@@ -1760,36 +1689,6 @@ struct RGE_TOB_Picts {
     short count; // 0x0
     short animations; // 0x2
     short shape_index; // 0x4
-};
-
-// ----------------------------------------------------------------
-// RGE_Border_Set
-// Size: 0x5A0
-struct RGE_Border_Set {
-    uchar loaded; // 0x0
-    uchar random; // 0x1
-    char name[13]; // 0x2
-    char pict_name[13]; // 0xF
-    long resource_id; // 0x1C
-    TShape * shape; // 0x20
-    RGE_Sound * sound; // 0x24
-    uchar map_hi_color; // 0x28
-    uchar map_med_color; // 0x29
-    uchar map_low_color; // 0x2A
-    uchar is_animated; // 0x2B
-    short animation_frames; // 0x2C
-    short pause_frames; // 0x2E
-    float interval; // 0x30
-    float pause_between_loops; // 0x34
-    short frame; // 0x38
-    short draw_frame; // 0x3A
-    float animate_last; // 0x3C
-    uchar frame_changed; // 0x40
-    uchar drawn; // 0x41
-    RGE_TOB_Picts borders[19][12]; // 0x42
-    uchar draw_tile; // 0x59A
-    short underlay_terrain; // 0x59C
-    short border_style; // 0x59E
 };
 
 // ----------------------------------------------------------------
@@ -2556,26 +2455,6 @@ struct RGE_Shallows_Info_Line {
 struct RGE_Shallows_Info {
     RGE_Shallows_Info_Line shallows[99]; // 0x0
     long shallows_num; // 0x318
-};
-
-// ----------------------------------------------------------------
-// RGE_Sound_Info
-// Size: 0x24
-struct RGE_Sound_Info {
-    char name[13]; // 0x0
-    long resource_id; // 0x10
-    short percent; // 0x14
-    TDigital * digital_sound; // 0x18
-    uchar loaded; // 0x1C
-    ulong time; // 0x20
-};
-
-// ----------------------------------------------------------------
-// RGE_Sound_List
-// Size: 0x14
-struct RGE_Sound_List {
-    RGE_Sound * sound[3]; // 0x0
-    short frame[3]; // 0xC
 };
 
 // ----------------------------------------------------------------

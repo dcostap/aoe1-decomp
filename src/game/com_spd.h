@@ -1,8 +1,10 @@
 #pragma once
 #include "../common.h"
+#include "Com_hand.h"
 
 class RGE_Communications_Speed {
 public:
+    char TBuff[255];                         
     RGE_TimeSinceLastCall* TurnTSLC;         // 0x100
     RGE_TimeSinceLastCall* FrameTSLC;        // 0x104
     TCommunications_Handler* Comm;           // 0x108
@@ -40,32 +42,32 @@ public:
     int LastFrameHadTime;                    // 0x23C
 
     RGE_Communications_Speed(TCommunications_Handler* param_1);
-    virtual ~RGE_Communications_Speed();
-    virtual void SetPlayerTurnSpeed(uint param_1, uchar param_2, uchar param_3);
-    virtual void SetActualLatency(uint param_1, ulong param_2);
-    virtual void SetFutureSpeedChange(uint param_1, uint param_2, ulong param_3);
-    virtual void EnableSpeedControl(int param_1);
-    virtual uint GetBufferGranularity();
-    virtual ulong GetAdjustmentCount();
-    virtual uint GetBufferGranularityAdjusted();
-    virtual uint BufferFramesRemaining();
-    virtual uint WaitingOnAcknowledgement();
-    virtual void AdjustLocalSpeed();
-    virtual void ReloadBufferFrames();
-    virtual uint BufferTimeToUse(ulong param_1);
-    virtual void Skip();
-    virtual uchar GetHighLatencyCenti();
-    virtual ulong GetPlayerLatency(uint param_1);
-    virtual char* GetLatencyInfo();
-    virtual char* GetSelfPlayerOptimalSpeedStr();
-    virtual char* GetPlayerSpeedStatusStr(int param_1);
-    virtual char* GetMachineSpeedInfo();
-    virtual uint GetRecommendedBufferFrames();
-    virtual uint GetAvgFrameRate();
-    virtual uint GetRecommendedBufferGranularity();
-    virtual int AnalyzeGameSpeed(uint* param_1, uint* param_2, int param_3);
-    virtual void SetV1(ulong param_1);
-    virtual void SetV2(ulong param_1);
+    ~RGE_Communications_Speed();
+    void SetPlayerTurnSpeed(uint param_1, uchar param_2, uchar param_3);
+    void SetActualLatency(uint param_1, ulong param_2);
+    void SetFutureSpeedChange(uint param_1, uint param_2, ulong param_3);
+    void EnableSpeedControl(int param_1);
+    uint GetBufferGranularity();
+    ulong GetAdjustmentCount();
+    uint GetBufferGranularityAdjusted();
+    uint BufferFramesRemaining();
+    uint WaitingOnAcknowledgement();
+    void AdjustLocalSpeed();
+    void ReloadBufferFrames();
+    uint BufferTimeToUse(ulong param_1);
+    void Skip();
+    uchar GetHighLatencyCenti();
+    ulong GetPlayerLatency(uint param_1);
+    char* GetLatencyInfo();
+    char* GetSelfPlayerOptimalSpeedStr();
+    char* GetPlayerSpeedStatusStr(int param_1);
+    char* GetMachineSpeedInfo();
+    uint GetRecommendedBufferFrames();
+    uint GetAvgFrameRate();
+    uint GetRecommendedBufferGranularity();
+    int AnalyzeGameSpeed(uint* param_1, uint* param_2, int param_3);
+    void SetV1(ulong param_1);
+    void SetV2(ulong param_1);
 };
 
 static_assert(sizeof(RGE_Communications_Speed) == 0x240, "RGE_Communications_Speed Size Mismatch");

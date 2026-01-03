@@ -1,5 +1,10 @@
 #pragma once
 #include "../common.h"
+#include "action.h"
+#include "act_obj.h"
+#include "task.h"
+#include "stat_obj.h"
+#include "move_obj.h"
 
 class RGE_Action_Object : public RGE_Moving_Object {
 public:

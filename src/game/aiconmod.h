@@ -1,5 +1,8 @@
 #pragma once
 #include "../common.h"
+#include "aimodule.h"
+#include "aiconitm.h"
+#include "aiblditm.h"
 
 class ConstructionAIModule : public AIModule {
 public:

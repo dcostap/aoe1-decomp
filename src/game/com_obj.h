@@ -1,5 +1,6 @@
 #pragma once
 #include "../common.h"
+#include "act_obj.h"
 
 class RGE_Combat_Object : public RGE_Action_Object {
 public:

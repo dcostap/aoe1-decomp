@@ -3,43 +3,38 @@
 
 RGE_Action_Bird::RGE_Action_Bird(int param_1, RGE_Action_Object* param_2) {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Action_Bird(RGE_Action_Bird * this, RGE_Act
+//                              undefined __thiscall RGE_Action_Bird(RGE_Action_Bird * this, int par
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Action_Bir    ECX:4 (auto)   this
-//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     00402040(R)
-//              RGE_Task *        Stack[0x8]:4   param_2                   XREF[1]:     0040204f(R)
-//              float             Stack[0xc]:4   param_3                   XREF[1]:     00402057(R)
-//              float             Stack[0x10]:4  param_4                   XREF[1]:     00402053(R)
-//              float             Stack[0x14]:4  param_5                   XREF[1]:     0040205e(R)
-//                               ??0RGE_Action_Bird@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@  XREF[1]:     create_task_action:00404272(c)
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     00401fe9(R)
+//              RGE_Action_Obj    Stack[0x8]:4   param_2                   XREF[1]:     00401fe0(R)
+//                               ??0RGE_Action_Bird@@QAE@HPAVRGE_Action_Object@@@Z            XREF[1]:     create_action:0040405f(c)
 //                               RGE_Action_Bird::RGE_Action_Bird
-//                              act_bird.cpp:37 (15)
-//         00402040     MOV        EAX,dword ptr [ESP + param_1]
-//         00402044     PUSH       ESI
-//         00402045     PUSH       0x1
-//         00402047     MOV        ESI,this
-//         00402049     PUSH       EAX
-//         0040204a     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
-//                              act_bird.cpp:40 (4)
-//         0040204f     MOV        this,dword ptr [ESP + param_2]
-//                              act_bird.cpp:42 (11)
-//         00402053     MOV        EAX,dword ptr [ESP + param_4]
-//         00402057     MOV        EDX,dword ptr [ESP + param_3]
-//         0040205b     MOV        dword ptr [ESI + 0x30],this
-//                              act_bird.cpp:43 (25)
-//         0040205e     MOV        this,dword ptr [ESP + param_5]
-//         00402062     MOV        dword ptr [ESI + 0x24],EAX
-//         00402065     MOV        dword ptr [ESI],RGE_Action_Bird::`vftable'       = 00402010
-//         0040206b     MOV        word ptr [ESI + 0x4],0xa
-//         00402071     MOV        dword ptr [ESI + 0x20],EDX
-//         00402074     MOV        dword ptr [ESI + 0x28],this
-//                              act_bird.cpp:44 (6)
-//         00402077     MOV        EAX,ESI
-//         00402079     POP        ESI
-//         0040207a     RET        0x14
-//         0040207d     ??         90h
-//         0040207e     NOP
-//         0040207f     NOP
+//                              act_bird.cpp:30 (28)
+//         00401fe0     MOV        EAX,dword ptr [ESP + param_2]
+//         00401fe4     PUSH       ESI
+//         00401fe5     MOV        ESI,this
+//         00401fe7     PUSH       0x1
+//         00401fe9     MOV        this,dword ptr [ESP + param_1]
+//         00401fed     PUSH       EAX
+//         00401fee     PUSH       this
+//         00401fef     MOV        this,ESI
+//         00401ff1     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, int p
+//         00401ff6     MOV        dword ptr [ESI],RGE_Action_Bird::`vftable'       = 00402010
+//                              act_bird.cpp:31 (6)
+//         00401ffc     MOV        word ptr [ESI + 0x4],0xa
+//                              act_bird.cpp:32 (6)
+//         00402002     MOV        EAX,ESI
+//         00402004     POP        ESI
+//         00402005     RET        0x8
+//         00402008     ??         90h
+//         00402009     NOP
+//         0040200a     NOP
+//         0040200b     NOP
+//         0040200c     NOP
+//         0040200d     NOP
+//         0040200e     NOP
+//         0040200f     NOP
 }
 
 RGE_Action_Bird::RGE_Action_Bird(RGE_Action_Object* param_1, RGE_Task* param_2, float param_3, float param_4, float param_5) {

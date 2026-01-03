@@ -1,5 +1,6 @@
 #pragma once
 #include "../common.h"
+#include "ani_obj.h"
 
 class RGE_Moving_Object : public RGE_Animated_Object {
 public:
@@ -69,7 +70,7 @@ public:
     virtual int canPath(XYZPoint param_1, float param_2, int param_3, float* param_4, int param_5, int param_6, int param_7);
     virtual int canPath(int param_1, float param_2, float* param_3, int param_4, int param_5, int param_6);
     virtual int canBidirectionPath(int param_1, int param_2, float param_3, float* param_4, int param_5, int param_6, int param_7);
-    virtual int canPathWithObstructions(int param_1, float param_2, float* param_3, int param_4, int param_5, int param_6, ManagedArray<int>* param_7);
+    virtual int canPathWithObstructions(int param_1, float param_2, float* param_3, int param_4, int param_5, int param_6, ManagedArray_int* param_7);
     virtual int canPathWithAdditionalPassability(XYZPoint param_1, float param_2, int param_3, float* param_4, int param_5, int param_6, int param_7, int param_8, int param_9);
     virtual int findFirstTerrainAlongExceptionPath(int param_1, float* param_2, float* param_3);
     virtual int canLinePath(XYPoint* param_1, XYPoint* param_2, float param_3, XYPoint* param_4, int param_5);

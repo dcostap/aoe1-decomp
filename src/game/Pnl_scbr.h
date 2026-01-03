@@ -1,5 +1,10 @@
 #pragma once
 #include "../common.h"
+#include "diam_map.h"
+#include "Pnl_scr.h"
+#include "Shape.h"
+#include "tvw_main.h"
+#include "tvw_dmap.h"
 
 class TScrollBarPanel : public TPanel {
 public:

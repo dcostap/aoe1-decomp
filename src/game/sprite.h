@@ -1,8 +1,11 @@
 #pragma once
 #include "../common.h"
+#include "Shape.h"
+#include "asprite.h"
 
 class RGE_Sprite {
 public:
+    char pict_name[13];
     long resource_id;                        // 0x10
     uchar loaded;                            // 0x14
     RGE_Color_Table** color_tables;          // 0x18
@@ -35,25 +38,25 @@ public:
     RGE_Sprite(short param_1);
     RGE_Sprite(int param_1, RGE_Sound** param_2, RGE_Color_Table** param_3);
     RGE_Sprite(_iobuf* param_1, short param_2, RGE_Sound** param_3);
-    virtual ~RGE_Sprite();
-    virtual void rehook(RGE_Sprite** param_1);
-    virtual void save(int param_1);
-    virtual void load_facets(RGE_Sprite** param_1);
-    virtual void play_sound(short param_1, short param_2, short param_3);
-    virtual uchar get_facetindex(long param_1, long param_2, long* param_3);
-    virtual void do_draw(long param_1, long param_2, long param_3, long param_4, RGE_Color_Table* param_5, TDrawArea* param_6, uchar param_7);
-    virtual uchar draw(long param_1, long param_2, long param_3, long param_4, long param_5, long param_6, RGE_Color_Table* param_7, TDrawArea* param_8, uchar param_9);
-    virtual uchar normal_draw(long param_1, long param_2, long param_3, long param_4, RGE_Color_Table* param_5, TDrawArea* param_6);
-    virtual uchar shadow_draw(long param_1, long param_2, long param_3, long param_4, RGE_Color_Table* param_5, TDrawArea* param_6, uchar param_7);
-    virtual int get_size(long* param_1, long* param_2, long* param_3, long* param_4, long param_5);
-    virtual int get_frame(short* param_1, short* param_2, short* param_3, short* param_4, long param_5, long param_6);
-    virtual int get_frame_min_max(short* param_1, short* param_2, short* param_3, short* param_4, long param_5, long param_6, short param_7, short param_8);
-    virtual uchar get_lowest_draw_level();
-    virtual uchar hit_test(short param_1, short param_2, long param_3, long param_4);
-    virtual uchar shape_hit_test(short param_1, short param_2, long param_3, long param_4);
-    virtual RGE_Active_Sprite* make_active_sprite();
-    virtual int check_for_shadows();
-    virtual void update(ulong param_1);
+    ~RGE_Sprite();
+    void rehook(RGE_Sprite** param_1);
+    void save(int param_1);
+    void load_facets(RGE_Sprite** param_1);
+    void play_sound(short param_1, short param_2, short param_3);
+    uchar get_facetindex(long param_1, long param_2, long* param_3);
+    void do_draw(long param_1, long param_2, long param_3, long param_4, RGE_Color_Table* param_5, TDrawArea* param_6, uchar param_7);
+    uchar draw(long param_1, long param_2, long param_3, long param_4, long param_5, long param_6, RGE_Color_Table* param_7, TDrawArea* param_8, uchar param_9);
+    uchar normal_draw(long param_1, long param_2, long param_3, long param_4, RGE_Color_Table* param_5, TDrawArea* param_6);
+    uchar shadow_draw(long param_1, long param_2, long param_3, long param_4, RGE_Color_Table* param_5, TDrawArea* param_6, uchar param_7);
+    int get_size(long* param_1, long* param_2, long* param_3, long* param_4, long param_5);
+    int get_frame(short* param_1, short* param_2, short* param_3, short* param_4, long param_5, long param_6);
+    int get_frame_min_max(short* param_1, short* param_2, short* param_3, short* param_4, long param_5, long param_6, short param_7, short param_8);
+    uchar get_lowest_draw_level();
+    uchar hit_test(short param_1, short param_2, long param_3, long param_4);
+    uchar shape_hit_test(short param_1, short param_2, long param_3, long param_4);
+    RGE_Active_Sprite* make_active_sprite();
+    int check_for_shadows();
+    void update(ulong param_1);
 };
 
 static_assert(sizeof(RGE_Sprite) == 0x78, "RGE_Sprite Size Mismatch");

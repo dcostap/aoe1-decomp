@@ -1,48 +1,55 @@
 #pragma once
 #include "../common.h"
+#include "point.h"
+#include "World.h"
+#include "stat_obj.h"
 
-class AIPlayPhase : public AIPlayPhaseCommand {
+class AIPlayPhase {
 public:
+    AIPlayPhaseCommand commands[5];          // 0x0
     AIPlayPhaseTrigger triggers[3];          // 0x50
 
     AIPlayPhase();
-    virtual AIPlayPhaseCommand* command(int param_1);
-    virtual AIPlayPhaseTrigger* trigger(int param_1);
-    virtual int addCommand(AIPlayPhaseCommand* param_1);
-    virtual int addTrigger(AIPlayPhaseTrigger* param_1);
-    virtual void initialize();
+    AIPlayPhaseCommand* command(int param_1);
+    AIPlayPhaseTrigger* trigger(int param_1);
+    int addCommand(AIPlayPhaseCommand* param_1);
+    int addTrigger(AIPlayPhaseTrigger* param_1);
+    void initialize();
 };
 
 static_assert(sizeof(AIPlayPhase) == 0x8C, "AIPlayPhase Size Mismatch");
 static_assert(offsetof(AIPlayPhase, triggers) == 0x50, "AIPlayPhase Offset Mismatch");
 
-class AIPlayStatus : public XYZ {
+class AIPlayStatus {
 public:
+    GroupingStruct groupings[50];            // 0x00
     int playNumberValue;                     // 0x190
     int targetValue;                         // 0x194
     XYZ originalPointValue;                  // 0x198
     int originalHitPointsValue[5];           // 0x1A4
     uchar currentPhaseValue;                 // 0x1B8
+    // 3 bytes padding
     int savedAttackerValue;                  // 0x1BC
     ulong lastPhaseChangeTimeValue;          // 0x1C0
     uchar deviationValue;                    // 0x1C4
+    // 3 bytes padding to reach 0x1C8
 
     AIPlayStatus();
-    virtual int originalHitPoints(int param_1);
-    virtual void setOriginalHitPoints(int param_1, int param_2);
-    virtual uchar numberInPlay();
-    virtual uchar numberInGroup(int param_1);
-    virtual uchar numberOfTypeInGroup(int param_1, int param_2);
-    virtual uchar group(int param_1);
-    virtual int addGrouping(int param_1, uchar param_2, uchar param_3);
-    virtual int removeGrouping(int param_1);
-    virtual void zeroAllGroupings();
-    virtual void copyUnits(int* param_1, int* param_2);
-    virtual void load(int param_1);
-    virtual void save(int param_1);
-    virtual void copy(AIPlayStatus* param_1);
-    virtual void removeDeadUnits(int param_1, RGE_Game_World* param_2);
-    virtual void resetHitPoints(int param_1, RGE_Game_World* param_2);
+    int originalHitPoints(int param_1);
+    void setOriginalHitPoints(int param_1, int param_2);
+    uchar numberInPlay();
+    uchar numberInGroup(int param_1);
+    uchar numberOfTypeInGroup(int param_1, int param_2);
+    uchar group(int param_1);
+    int addGrouping(int param_1, uchar param_2, uchar param_3);
+    int removeGrouping(int param_1);
+    void zeroAllGroupings();
+    void copyUnits(int* param_1, int* param_2);
+    void load(int param_1);
+    void save(int param_1);
+    void copy(AIPlayStatus* param_1);
+    void removeDeadUnits(int param_1, RGE_Game_World* param_2);
+    void resetHitPoints(int param_1, RGE_Game_World* param_2);
 };
 
 static_assert(sizeof(AIPlayStatus) == 0x1C8, "AIPlayStatus Size Mismatch");
@@ -60,16 +67,17 @@ public:
     AIPlayPhaseTrigger();
     AIPlayPhaseTrigger(uchar param_1, int param_2, int param_3, uchar param_4, uchar param_5, int param_6);
     AIPlayPhaseTrigger(char* param_1, int param_2, int param_3, uchar param_4, uchar param_5, int param_6);
-    virtual char* nameType();
-    virtual uchar convertToIntType(char* param_1);
-    virtual char* convertToNameType(uchar param_1);
+    char* nameType();
+    uchar convertToIntType(char* param_1);
+    char* convertToNameType(uchar param_1);
 };
 
 static_assert(sizeof(AIPlayPhaseTrigger) == 0x14, "AIPlayPhaseTrigger Size Mismatch");
 static_assert(offsetof(AIPlayPhaseTrigger, randomnessValue) == 0x10, "AIPlayPhaseTrigger Offset Mismatch");
 
-class AIPlay : public AIPlayGroup {
+class AIPlay {
 public:
+    char name[65];                           // 0x0
     uchar minimumNumberUnitsValue;           // 0x41
     uchar maximumNumberUnitsValue;           // 0x42
     uchar typeValue;                         // 0x43
@@ -81,26 +89,28 @@ public:
     uchar deathPercentageValue;              // 0x51
     uchar numberGroupsValue;                 // 0x52
     AIPlayGroup groups[5];                   // 0x53
+    // 0x53 + (5*12 = 0x3C) = 0x8F. Padded to 0x90.
     AIPlayPhase phases[10];                  // 0x90
 
     AIPlay();
-    virtual void setName(char* param_1);
-    virtual int humanPlay();
-    virtual char* typeName();
-    virtual uchar targetType(int param_1);
-    virtual int isTargetType(uchar param_1);
-    virtual int addTargetType(uchar param_1);
-    virtual uchar targetCharacteristic(int param_1);
-    virtual int isTargetCharacteristic(uchar param_1);
-    virtual int addTargetCharacteristic(uchar param_1);
-    virtual int gatherTolerance(int param_1, int param_2);
-    virtual AIPlayGroup* group(int param_1);
-    virtual AIPlayPhase* phase(int param_1);
-    virtual int fillGroups(AIPlayStatus* param_1, int* param_2, int param_3, RGE_Game_World* param_4);
-    virtual int groupGivenCommandOnPhase(int param_1, int param_2, int param_3);
-    virtual uchar convertToIntType(char* param_1);
-    virtual char* convertToNameType(uchar param_1);
-    virtual int locationsOnMap(int param_1, int param_2, int param_3, int param_4);
+    // These functions might not be virtual in the binary if there is no vtable
+    void setName(char* param_1);
+    int humanPlay();
+    char* typeName();
+    uchar targetType(int param_1);
+    int isTargetType(uchar param_1);
+    int addTargetType(uchar param_1);
+    uchar targetCharacteristic(int param_1);
+    int isTargetCharacteristic(uchar param_1);
+    int addTargetCharacteristic(uchar param_1);
+    int gatherTolerance(int param_1, int param_2);
+    AIPlayGroup* group(int param_1);
+    AIPlayPhase* phase(int param_1);
+    int fillGroups(AIPlayStatus* param_1, int* param_2, int param_3, RGE_Game_World* param_4);
+    int groupGivenCommandOnPhase(int param_1, int param_2, int param_3);
+    uchar convertToIntType(char* param_1);
+    char* convertToNameType(uchar param_1);
+    int locationsOnMap(int param_1, int param_2, int param_3, int param_4);
 };
 
 static_assert(sizeof(AIPlay) == 0x608, "AIPlay Size Mismatch");
@@ -112,11 +122,11 @@ public:
     uchar maxValue[6];                       // 0x6
 
     AIPlayGroup();
-    virtual uchar minimum(int param_1);
-    virtual void setMinimum(int param_1, int param_2);
-    virtual uchar maximum(int param_1);
-    virtual void setMaximum(int param_1, int param_2);
-    virtual void initialize();
+    uchar minimum(int param_1);
+    void setMinimum(int param_1, int param_2);
+    uchar maximum(int param_1);
+    void setMaximum(int param_1, int param_2);
+    void initialize();
 };
 
 static_assert(sizeof(AIPlayGroup) == 0xC, "AIPlayGroup Size Mismatch");
@@ -154,9 +164,9 @@ public:
     AIPlayPhaseCommand();
     AIPlayPhaseCommand(uchar param_1, uchar param_2, int param_3, int param_4, int param_5);
     AIPlayPhaseCommand(uchar param_1, char* param_2, int param_3, int param_4, int param_5);
-    virtual char* nameType();
-    virtual uchar convertToIntType(char* param_1);
-    virtual char* convertToNameType(uchar param_1);
+    char* nameType();
+    uchar convertToIntType(char* param_1);
+    char* convertToNameType(uchar param_1);
 };
 
 static_assert(sizeof(AIPlayPhaseCommand) == 0x10, "AIPlayPhaseCommand Size Mismatch");

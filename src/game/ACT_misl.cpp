@@ -3,65 +3,92 @@
 
 RGE_Action_Missile::RGE_Action_Missile(int param_1, RGE_Action_Object* param_2) {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Action_Missile(RGE_Action_Missile * this, R
+//                              undefined __thiscall RGE_Action_Missile(RGE_Action_Missile * this, i
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Action_Mis    ECX:4 (auto)   this
-//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     00404ca6(R)
-//              RGE_Static_Obj    Stack[0x8]:4   param_2                   XREF[1]:     00404cee(R)
-//              RGE_Static_Obj    Stack[0xc]:4   param_3                   XREF[1]:     00404cc8(R)
-//              float             Stack[0x10]:4  param_4                   XREF[1]:     00404cb9(R)
-//              float             Stack[0x14]:4  param_5                   XREF[1]:     00404cbd(R)
-//              float             Stack[0x18]:4  param_6                   XREF[1]:     00404cc1(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     00404ccc(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00404cfa(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     00404cb0(W)
-//                               ??0RGE_Action_Missile@@QAE@PAVRGE_Action_Object@@PAVRGE_Sta  XREF[2]:     init_missile:0045a99c(c),
-//                               RGE_Action_Missile::RGE_Action_Missile                                    init_missile:0045aa2c(c)
-//                              ACT_misl.cpp:44 (41)
-//         00404c90     PUSH       -0x1
-//         00404c92     PUSH       FUN_0055c2e8
-//         00404c97     MOV        EAX,FS:[0x0]
-//         00404c9d     PUSH       EAX
-//         00404c9e     MOV        dword ptr FS:[0x0],ESP
-//         00404ca5     PUSH       this
-//         00404ca6     MOV        EAX,dword ptr [ESP + param_1]
-//         00404caa     PUSH       ESI
-//         00404cab     MOV        ESI,this
-//         00404cad     PUSH       0x1
-//         00404caf     PUSH       EAX
-//         00404cb0     MOV        dword ptr [ESP + local_10],ESI
-//         00404cb4     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
-//                              ACT_misl.cpp:47 (4)
-//         00404cb9     MOV        this,dword ptr [ESP + param_4]
-//                              ACT_misl.cpp:48 (4)
-//         00404cbd     MOV        EDX,dword ptr [ESP + param_5]
-//                              ACT_misl.cpp:49 (7)
-//         00404cc1     MOV        EAX,dword ptr [ESP + param_6]
-//         00404cc5     MOV        dword ptr [ESI + 0x20],this
-//                              ACT_misl.cpp:51 (38)
-//         00404cc8     MOV        this,dword ptr [ESP + param_3]
-//         00404ccc     MOV        dword ptr [ESP + local_4],0x0
-//         00404cd4     PUSH       this
-//         00404cd5     MOV        this,ESI
-//         00404cd7     MOV        dword ptr [ESI],RGE_Action_Missile::`vftable'    = 00404c60
-//         00404cdd     MOV        word ptr [ESI + 0x4],0x8
-//         00404ce3     MOV        dword ptr [ESI + 0x24],EDX
-//         00404ce6     MOV        dword ptr [ESI + 0x28],EAX
-//         00404ce9     CALL       RGE_Action::set_target_obj                       void set_target_obj(RGE_Action * this, RGE_St
-//                              ACT_misl.cpp:52 (12)
-//         00404cee     MOV        EDX,dword ptr [ESP + param_2]
-//         00404cf2     MOV        this,ESI
-//         00404cf4     PUSH       EDX
-//         00404cf5     CALL       RGE_Action::set_target_obj2                      void set_target_obj2(RGE_Action * this, RGE_S
-//                              ACT_misl.cpp:53 (20)
-//         00404cfa     MOV        this,dword ptr [ESP + local_c]
-//         00404cfe     MOV        EAX,ESI
-//         00404d00     MOV        dword ptr FS:[0x0],this
-//         00404d07     POP        ESI
-//         00404d08     ADD        ESP,0x10
-//         00404d0b     RET        0x18
-//         00404d0e     ??         90h
-//         00404d0f     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     00404bcc(R)
+//              RGE_Action_Obj    Stack[0x8]:4   param_2                   XREF[1]:     00404bc6(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     00404be6(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00404c3b(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     00404bd6(W)
+//                               ??0RGE_Action_Missile@@QAE@HPAVRGE_Action_Object@@@Z         XREF[1]:     create_action:0040411f(c)
+//                               RGE_Action_Missile::RGE_Action_Missile
+//                              ACT_misl.cpp:30 (47)
+//         00404bb0     PUSH       -0x1
+//         00404bb2     PUSH       FUN_0055c2c8
+//         00404bb7     MOV        EAX,FS:[0x0]
+//         00404bbd     PUSH       EAX
+//         00404bbe     MOV        dword ptr FS:[0x0],ESP
+//         00404bc5     PUSH       this
+//         00404bc6     MOV        EAX,dword ptr [ESP + param_2]
+//         00404bca     PUSH       ESI
+//         00404bcb     PUSH       EDI
+//         00404bcc     MOV        EDI,dword ptr [ESP + param_1]
+//         00404bd0     PUSH       0x1
+//         00404bd2     MOV        ESI,this
+//         00404bd4     PUSH       EAX
+//         00404bd5     PUSH       EDI
+//         00404bd6     MOV        dword ptr [ESP + local_10],ESI
+//         00404bda     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, int p
+//                              ACT_misl.cpp:33 (35)
+//         00404bdf     LEA        this,[ESI + 0x40]
+//         00404be2     PUSH       0x4
+//         00404be4     PUSH       this
+//         00404be5     PUSH       EDI
+//         00404be6     MOV        dword ptr [ESP + local_4],0x0
+//         00404bee     MOV        dword ptr [ESI],RGE_Action_Missile::`vftable'    = 00404c60
+//         00404bf4     MOV        word ptr [ESI + 0x4],0x8
+//         00404bfa     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00404bff     ADD        ESP,0xc
+//                              ACT_misl.cpp:34 (15)
+//         00404c02     LEA        EDX,[ESI + 0x44]
+//         00404c05     PUSH       0x4
+//         00404c07     PUSH       EDX
+//         00404c08     PUSH       EDI
+//         00404c09     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00404c0e     ADD        ESP,0xc
+//                              ACT_misl.cpp:35 (15)
+//         00404c11     LEA        EAX,[ESI + 0x48]
+//         00404c14     PUSH       0x4
+//         00404c16     PUSH       EAX
+//         00404c17     PUSH       EDI
+//         00404c18     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00404c1d     ADD        ESP,0xc
+//                              ACT_misl.cpp:36 (15)
+//         00404c20     LEA        this,[ESI + 0x4c]
+//         00404c23     PUSH       0x4
+//         00404c25     PUSH       this
+//         00404c26     PUSH       EDI
+//         00404c27     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00404c2c     ADD        ESP,0xc
+//                              ACT_misl.cpp:37 (12)
+//         00404c2f     LEA        EDX,[ESI + 0x50]
+//         00404c32     PUSH       0x4
+//         00404c34     PUSH       EDX
+//         00404c35     PUSH       EDI
+//         00404c36     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              ACT_misl.cpp:38 (24)
+//         00404c3b     MOV        this,dword ptr [ESP + local_c]
+//         00404c3f     ADD        ESP,0xc
+//         00404c42     MOV        EAX,ESI
+//         00404c44     MOV        dword ptr FS:[0x0],this
+//         00404c4b     POP        EDI
+//         00404c4c     POP        ESI
+//         00404c4d     ADD        ESP,0x10
+//         00404c50     RET        0x8
+//         00404c53     ??         90h
+//         00404c54     NOP
+//         00404c55     NOP
+//         00404c56     NOP
+//         00404c57     NOP
+//         00404c58     NOP
+//         00404c59     NOP
+//         00404c5a     NOP
+//         00404c5b     NOP
+//         00404c5c     NOP
+//         00404c5d     NOP
+//         00404c5e     NOP
+//         00404c5f     NOP
 }
 
 RGE_Action_Missile::RGE_Action_Missile(RGE_Action_Object* param_1, RGE_Static_Object* param_2, RGE_Static_Object* param_3, float param_4, float param_5, float param_6) {

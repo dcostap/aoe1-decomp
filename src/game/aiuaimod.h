@@ -1,5 +1,9 @@
 #pragma once
 #include "../common.h"
+#include "stat_obj.h"
+#include "player.h"
+#include "m_an_obj.h"
+#include "aipbook.h"
 
 class UnitAIModule {
 public:
@@ -26,7 +30,7 @@ public:
     int lastActionValue;                     // 0x54
     int lastTargetValue;                     // 0x58
     int lastTargetTypeValue;                 // 0x5C
-    ManagedArray<int> attackingUnitsValue;   // 0x60
+    ManagedArray_int attackingUnitsValue;   // 0x60
     Waypoint waypointQueue[8];               // 0x70
     int waypointQueueSizeValue;              // 0xF0
     ulong lastUpdateTimeValue;               // 0xF4

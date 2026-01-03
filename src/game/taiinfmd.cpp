@@ -14044,7 +14044,7 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* param_1) {
 //         004de79b     INC        this
 //         004de79c     PUSH       this
 //         004de79d     MOV        this,ESI
-//         004de79f     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004de79f     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004de7a4                                                 XREF[1]:     004de799(j)
 //         004de7a4     MOV        this,dword ptr [ESI + 0x4]
 //         004de7a7     MOV        EDX,dword ptr [ESI]
@@ -14194,7 +14194,7 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* param_1) {
 //         004de7fc     PUSH       this
 //         004de7fd     MOV        this,ESI
 //         004de7ff     MOV        dword ptr [ESP + param_1],EAX
-//         004de803     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004de803     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004de808     CMP        EAX,0x1
 //         004de80b     JZ         LAB_004de8d6
 //         004de811     MOV        EDX,dword ptr [ESI + 0xc]
@@ -14205,7 +14205,7 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* param_1) {
 //         004de81c     INC        EAX
 //         004de81d     MOV        this,ESI
 //         004de81f     PUSH       EAX
-//         004de820     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004de820     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004de825                                                 XREF[1]:     004de81a(j)
 //         004de825     MOV        EAX,dword ptr [ESI + 0x4]
 //         004de828     MOV        this,dword ptr [ESI]
@@ -14236,7 +14236,7 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* param_1) {
 //         004de86c     PUSH       this
 //         004de86d     MOV        this,ESI
 //         004de86f     MOV        dword ptr [ESP + param_1],EAX
-//         004de873     CALL       ManagedArray<int>::contains                      int contains(ManagedArray<int> * this, int *
+//         004de873     CALL       ManagedArray_int::contains                      int contains(ManagedArray_int * this, int *
 //         004de878     CMP        EAX,0x1
 //         004de87b     JZ         LAB_004de8d6
 //         004de87d     MOV        EDX,dword ptr [ESI + 0xc]
@@ -14247,7 +14247,7 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* param_1) {
 //         004de888     INC        EAX
 //         004de889     MOV        this,ESI
 //         004de88b     PUSH       EAX
-//         004de88c     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//         004de88c     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
 //                               LAB_004de891                                                 XREF[1]:     004de886(j)
 //         004de891     MOV        EAX,dword ptr [ESI + 0x4]
 //         004de894     MOV        this,dword ptr [ESI]
@@ -14276,7 +14276,7 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* param_1) {
 //         004de8c7     MOV        EAX,dword ptr [EDI + 0x4]
 //         004de8ca     LEA        this,[ESI + 0x148]
 //         004de8d0     PUSH       EAX
-//         004de8d1     CALL       ManagedArray<int>::add                           int add(ManagedArray<int> * this, int param_1)
+//         004de8d1     CALL       ManagedArray_int::add                           int add(ManagedArray_int * this, int param_1)
 //                               LAB_004de8d6                                                 XREF[6]:     004de68d(j), 004de6f3(j),
 //                                                                                                         004de73f(j), 004de788(j),
 //                                                                                                         004de80b(j), 004de87b(j)

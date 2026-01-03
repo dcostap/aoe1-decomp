@@ -1,5 +1,6 @@
 #pragma once
 #include "../common.h"
+#include "aibitm.h"
 
 class ConstructionItem : public BaseItem {
 public:

@@ -1,5 +1,27 @@
 #pragma once
 #include "../common.h"
+#include "taibldmd.h"
+#include "aimdmod.h"
+#include "aimodule.h"
+#include "player.h"
+#include "utmarray.h"
+#include "aibldmod.h"
+#include "aiconmod.h"
+#include "aidipmod.h"
+#include "aiemomod.h"
+#include "aiinfmod.h"
+#include "aimdmod.h"
+#include "airchmod.h"
+#include "airesmod.h"
+#include "aistrmod.h"
+#include "aitacmod.h"
+#include "aitrdmod.h"
+#include "aiuaimod.h"
+#include "taiconmd.h"
+#include "taiinfmd.h"
+#include "taistrmd.h"
+#include "taitacmd.h"
+#include "tplayer.h"
 
 class TribeResourceAIModule : public AIModule {
 public:

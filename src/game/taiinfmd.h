@@ -1,22 +1,43 @@
 #pragma once
 #include "../common.h"
+#include "taibldmd.h"
+#include "aimdmod.h"
+#include "aimodule.h"
+#include "player.h"
+#include "utmarray.h"
+#include "aibldmod.h"
+#include "aiconmod.h"
+#include "aidipmod.h"
+#include "aiemomod.h"
+#include "aiinfmod.h"
+#include "airchmod.h"
+#include "airesmod.h"
+#include "aistrmod.h"
+#include "aitacmod.h"
+#include "aitrdmod.h"
+#include "aiuaimod.h"
+#include "taiconmd.h"
+#include "taistrmd.h"
+#include "taitacmd.h"
+#include "tplayer.h"
+#include "zone_map.h"
 
 class TribeInformationAIModule : public InformationAIModule {
 public:
-    ManagedArray<int> farmsTaskedThisUpdate; // 0xF0
+    ManagedArray_int farmsTaskedThisUpdate; // 0xF0
     TribeMainDecisionAIModule* md;           // 0x100
     int mapXSizeValue;                       // 0x104
     int mapYSizeValue;                       // 0x108
     int lastUpdateRowValue;                  // 0x10C
     int maxImportantObjectMemory;            // 0x110
     ObjectMemory* importantObjectMemory;     // 0x114
-    ManagedArray<int> importantObjects;      // 0x118
-    ManagedArray<int> importantUnits;        // 0x128
-    ManagedArray<int> importantMiscs;        // 0x138
-    ManagedArray<int> itemsToDefend;         // 0x148
+    ManagedArray_int importantObjects;      // 0x118
+    ManagedArray_int importantUnits;        // 0x128
+    ManagedArray_int importantMiscs;        // 0x138
+    ManagedArray_int itemsToDefend;         // 0x148
     InfluenceMap pathMap;                    // 0x158
-    ManagedArray<int> playerObjects;         // 0x180
-    ManagedArray<int> playerBuildings;       // 0x190
+    ManagedArray_int playerObjects;         // 0x180
+    ManagedArray_int playerBuildings;       // 0x190
     XYPoint lastWallPosition;                // 0x1A0
     XYPoint lastWallPosition2;               // 0x1A8
     int numberGatesValue;                    // 0x1B0
@@ -29,13 +50,13 @@ public:
     int saveLearnInformationValue;           // 0x204
     char learnFileName[256];                 // 0x208
     uchar fullyExploredZoneValue[255];       // 0x308
-    QuadrantLog* quadrantLog[4];             // 0x408
+    QuadrantLog quadrantLog[4][4];             // 0x408
     int** resourceTypesValue;                // 0x4C8
     int* numberResourceTypesValue;           // 0x4CC
     ResourceMemory* resources[4];            // 0x4D0
     int numResources[4];                     // 0x4E0
     int maxResources[4];                     // 0x4F0
-    int* dropsitesByAge[4];                  // 0x500
+    int dropsitesByAge[4][4];                  // 0x500
     int closestDropsiteValue[4];             // 0x540
     int closestDropsiteResourceID[4];        // 0x550
     int numberFoundForestTilesValue;         // 0x560

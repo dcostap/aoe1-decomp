@@ -4688,7 +4688,7 @@ int PathingSystem::copyPath(int param_1) {
     return 0;
 }
 
-void PathingSystem::copyUnobstructibles(ManagedArray<int>* param_1) {
+void PathingSystem::copyUnobstructibles(ManagedArray_int* param_1) {
     /* TODO: Stub */
 //                              void __thiscall copyUnobstructibles(PathingSystem * this, ManagedArr
 //              void              <VOID>         <RETURN>
