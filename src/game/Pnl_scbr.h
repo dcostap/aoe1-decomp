@@ -6,7 +6,7 @@
 #include "tvw_main.h"
 #include "tvw_dmap.h"
 
-typedef enum ActionType : unsigned int {
+enum ActionType : unsigned int {
     ActionUp = 0,
     ActionDown = 1,
     ActionPrior = 2,
@@ -16,7 +16,7 @@ typedef enum ActionType : unsigned int {
     ActionChange = 6,
 };
 
-typedef enum BevelType : unsigned int {
+enum BevelType : unsigned int {
     BevelNone = 0,
     BevelFlat = 1,
     Bevel1 = 2,
@@ -24,7 +24,7 @@ typedef enum BevelType : unsigned int {
     Bevel3 = 4,
 };
 
-typedef enum ItemType : unsigned int {
+enum ItemType : unsigned int {
     ItemNone = 0,
     ItemUp = 1,
     ItemDown = 2,
@@ -33,13 +33,13 @@ typedef enum ItemType : unsigned int {
     ItemBottom = 5,
 };
 
-typedef enum Mode : unsigned int {
+enum Mode : unsigned int {
     ModeNone = 0,
     ModeDown = 1,
     ModeHold = 2,
 };
 
-typedef enum Orientation : unsigned int {
+enum Orientation : unsigned int {
     Vertical = 0,
     Horizontal = 1,
 };

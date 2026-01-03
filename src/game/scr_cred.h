@@ -35,7 +35,7 @@
 #include "tpnl_tml.h"
 #include "tpnl_txl.h"
 
-typedef enum ScreenMode : unsigned int {
+enum ScreenMode : unsigned int {
     ModeNone = 1,
     ModeFadeOut = 2,
     ModeFadeOutDone = 3,
@@ -43,7 +43,7 @@ typedef enum ScreenMode : unsigned int {
     ModeFadeIn = 5,
 };
 
-typedef enum ActionType : unsigned int {
+enum ActionType : unsigned int {
     ActionDone = 1,
 };
 

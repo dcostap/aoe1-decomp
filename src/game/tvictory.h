@@ -1,5 +1,6 @@
 #pragma once
 #include "../common.h"
+#include "player.h"
 
 class TRIBE_Victory_Conditions : public RGE_Victory_Conditions {
 public:

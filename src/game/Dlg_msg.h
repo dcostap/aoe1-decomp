@@ -1,13 +1,13 @@
 #pragma once
 #include "../common.h"
 
-typedef enum Action : unsigned int {
+enum Action : unsigned int {
     OK = 0,
     Cancel = 1,
     Other = 2,
 };
 
-typedef enum Type : unsigned int {
+enum Type : unsigned int {
     OKDialog = 0,
     OKCancelDialog = 1,
     YesNoDialog = 2,

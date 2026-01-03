@@ -2,7 +2,7 @@
 #include "../common.h"
 #include "Picture.h"
 
-typedef enum PictureType : unsigned int {
+enum PictureType : unsigned int {
     Picture = 0,
     Shape = 1,
 };

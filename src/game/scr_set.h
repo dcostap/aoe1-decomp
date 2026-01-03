@@ -1,7 +1,7 @@
 #pragma once
 #include "../common.h"
 
-typedef enum State : unsigned int {
+enum State : unsigned int {
     StateScenario = 0,
     StateRandom = 1,
 };

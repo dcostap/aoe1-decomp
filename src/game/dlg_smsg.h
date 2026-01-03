@@ -1,7 +1,7 @@
 #pragma once
 #include "../common.h"
 
-typedef enum Mode : unsigned int {
+enum Mode : unsigned int {
     AsChat = 0,
     AsComment = 1,
 };

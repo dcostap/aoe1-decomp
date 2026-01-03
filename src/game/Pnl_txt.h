@@ -1,11 +1,11 @@
 #pragma once
 #include "../common.h"
 
-typedef enum Action : unsigned int {
+enum Action : unsigned int {
     ActionSelect = 1,
 };
 
-typedef enum Alignment : unsigned int {
+enum Alignment : unsigned int {
     AlignCenter = 0,
     AlignLeft = 1,
     AlignRight = 2,
@@ -15,7 +15,7 @@ typedef enum Alignment : unsigned int {
     AlignWordwrap = 6,
 };
 
-typedef enum BevelType : unsigned int {
+enum BevelType : unsigned int {
     BevelNone = 0,
     BevelFlat = 1,
     BevelIn1 = 2,
@@ -26,13 +26,13 @@ typedef enum BevelType : unsigned int {
     BevelOut3 = 7,
 };
 
-typedef enum CharType : unsigned int {
+enum CharType : unsigned int {
     SingleByteChar = 0,
     SingleByteKanaChar = 1,
     DoubleByteChar = 2,
 };
 
-typedef enum ScrollAction : unsigned int {
+enum ScrollAction : unsigned int {
     ScrollCount = 0,
     ScrollLine = 1,
     ScrollDown = 2,
@@ -43,7 +43,7 @@ typedef enum ScrollAction : unsigned int {
     ScrollEnd = 7,
 };
 
-typedef enum Style : unsigned int {
+enum Style : unsigned int {
     NormalStyle = 0,
     BeveledStyle = 1,
     ChiseledStyle = 2,

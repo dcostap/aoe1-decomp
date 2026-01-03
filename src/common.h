@@ -6,8 +6,8 @@
 #include <cstddef>
 #include <ddraw.h>
 #include <dsound.h>
-#include <mmsystem.h>  // MMIOINFO and mmio* APIs
-#include <mmiscapi.h>  // MMCKINFO (some SDKs expose it here)
+#include <mmsystem.h> 
+#include <mmiscapi.h>
 
 typedef unsigned char uchar;
 typedef unsigned long ulong;
@@ -17,10 +17,18 @@ typedef unsigned char byte;
 
 static_assert(sizeof(void*) == 4, "Build must be 32-bit (x86) to match the binary layout.");
 
+class RGE_Static_Object;
+class RGE_Sprite;
+class RGE_Master_Static_Object;
+class RGE_Player;
+class RGE_Active_Sprite_List;
+class TShape;
+class RGE_Sound;
+
 #pragma once
 #include <stdint.h>
 
-typedef enum COMMMESSAGES : unsigned int {
+enum COMMMESSAGES : unsigned int {
     COMM_PAUSE = 6050,
     COMM_RESUME = 6051,
     COMM_UPDATE_PLAYERS = 6052,
@@ -52,13 +60,13 @@ typedef enum COMMMESSAGES : unsigned int {
     COMM_UNKNOWN = 6078,
 };
 
-typedef enum COMMSPEEDS : unsigned int {
+enum COMMSPEEDS : unsigned int {
     SPEED_OKAY = 0,
     SPEED_FASTER = 1,
     SPEED_SLOWER = 2,
 };
 
-typedef enum COMMSTATES : unsigned int {
+enum COMMSTATES : unsigned int {
     COMM_STATE_ERROR = 1,
     COMM_STATE_INITIALIZE = 2,
     COMM_STATE_JOINNOW = 3,
@@ -67,7 +75,7 @@ typedef enum COMMSTATES : unsigned int {
     COMM_STATE_FINISHED = 6,
 };
 
-typedef enum COMMSTATUS : unsigned int {
+enum COMMSTATUS : unsigned int {
     UNINITIALIZED = 0,
     INITIALIZED = 1,
     SINGLE_PLAYER = 2,
@@ -86,7 +94,7 @@ typedef enum COMMSTATUS : unsigned int {
     GAME_IS_PAUSED = 15,
 };
 
-typedef enum PLAYERHUMANITY : unsigned int {
+enum PLAYERHUMANITY : unsigned int {
     ME_ABSENT = 0,
     ME_CLOSED = 1,
     ME_HUMAN = 2,
@@ -96,24 +104,19 @@ typedef enum PLAYERHUMANITY : unsigned int {
     ME_VIEWONLY = 6,
 };
 
-typedef enum PROXY_PHASE : unsigned int {
-    PROXY_CALCSIZE = 0,
-    PROXY_GETBUFFER = 1,
-    PROXY_MARSHAL = 2,
-    PROXY_SENDRECEIVE = 3,
-    PROXY_UNMARSHAL = 4,
-};
 
-typedef enum STUB_PHASE : unsigned int {
-    STUB_UNMARSHAL = 0,
-    STUB_CALL_SERVER = 1,
-    STUB_MARSHAL = 2,
-    STUB_CALL_SERVER_NO_HRESULT = 3,
-};
-
-typedef enum XLAT_SIDE : unsigned int {
-    XLAT_SERVER = 1,
-    XLAT_CLIENT = 2,
+// ----------------------------------------------------------------
+// Shape_Info
+// Size: 0x20
+struct Shape_Info {
+    ulong Shape_Data_Offsets; // 0x0
+    ulong Shape_Outline_Offset; // 0x4
+    long Reserved1; // 0x8
+    long Reserved2; // 0xC
+    long Width; // 0x10
+    long Height; // 0x14
+    long Hotspot_X; // 0x18
+    long Hotspot_Y; // 0x1C
 };
 
 // AttackMemory
@@ -266,95 +269,6 @@ struct DClipInfo_Node {
 };
 
 // ----------------------------------------------------------------
-// DIDEVCAPS
-// Size: 0x2C
-struct DIDEVCAPS {
-    ulong dwSize; // 0x0
-    ulong dwFlags; // 0x4
-    ulong dwDevType; // 0x8
-    ulong dwAxes; // 0xC
-    ulong dwButtons; // 0x10
-    ulong dwPOVs; // 0x14
-    ulong dwFFSamplePeriod; // 0x18
-    ulong dwFFMinTimeResolution; // 0x1C
-    ulong dwFirmwareRevision; // 0x20
-    ulong dwHardwareRevision; // 0x24
-    ulong dwFFDriverVersion; // 0x28
-};
-
-// ----------------------------------------------------------------
-// DIDEVICEINSTANCEA
-// Size: 0x244
-struct DIDEVICEINSTANCEA {
-    ulong dwSize; // 0x0
-    _GUID guidInstance; // 0x4
-    _GUID guidProduct; // 0x14
-    ulong dwDevType; // 0x24
-    char tszInstanceName[260]; // 0x28
-    char tszProductName[260]; // 0x12C
-    _GUID guidFFDriver; // 0x230
-    ushort wUsagePage; // 0x240
-    ushort wUsage; // 0x242
-};
-
-// ----------------------------------------------------------------
-// DIDEVICEOBJECTDATA
-// Size: 0x10
-struct DIDEVICEOBJECTDATA {
-    ulong dwOfs; // 0x0
-    ulong dwData; // 0x4
-    ulong dwTimeStamp; // 0x8
-    ulong dwSequence; // 0xC
-};
-
-// ----------------------------------------------------------------
-// DIDEVICEOBJECTINSTANCEA
-// Size: 0x13C
-struct DIDEVICEOBJECTINSTANCEA {
-    ulong dwSize; // 0x0
-    _GUID guidType; // 0x4
-    ulong dwOfs; // 0x14
-    ulong dwType; // 0x18
-    ulong dwFlags; // 0x1C
-    char tszName[260]; // 0x20
-    ulong dwFFMaxForce; // 0x124
-    ulong dwFFForceResolution; // 0x128
-    ushort wCollectionNumber; // 0x12C
-    ushort wDesignatorIndex; // 0x12E
-    ushort wUsagePage; // 0x130
-    ushort wUsage; // 0x132
-    ulong dwDimension; // 0x134
-    ushort wExponent; // 0x138
-    ushort wReserved; // 0x13A
-};
-
-// ----------------------------------------------------------------
-// DIPROPHEADER
-// Size: 0x10
-struct DIPROPHEADER {
-    ulong dwSize; // 0x0
-    ulong dwHeaderSize; // 0x4
-    ulong dwObj; // 0x8
-    ulong dwHow; // 0xC
-};
-
-// ----------------------------------------------------------------
-// DPCAPS
-// Size: 0x28
-struct DPCAPS {
-    ulong dwSize; // 0x0
-    ulong dwFlags; // 0x4
-    ulong dwMaxBufferSize; // 0x8
-    ulong dwMaxQueueSize; // 0xC
-    ulong dwMaxPlayers; // 0x10
-    ulong dwHundredBaud; // 0x14
-    ulong dwLatency; // 0x18
-    ulong dwMaxLocalPlayers; // 0x1C
-    ulong dwHeaderLength; // 0x20
-    ulong dwTimeout; // 0x24
-};
-
-// ----------------------------------------------------------------
 // DisplaySelectedObjRec
 // Size: 0x14
 struct DisplaySelectedObjRec {
@@ -405,133 +319,6 @@ struct FrameHead {
 // Size: 0x40
 struct Friendliness {
     int Attitude[16]; // 0x0
-};
-
-// ----------------------------------------------------------------
-// ICINFO
-// Size: 0x238
-struct ICINFO {
-    ulong dwSize; // 0x0
-    ulong fccType; // 0x4
-    ulong fccHandler; // 0x8
-    ulong dwFlags; // 0xC
-    ulong dwVersion; // 0x10
-    ulong dwVersionICM; // 0x14
-    ushort szName[16]; // 0x18
-    ushort szDescription[128]; // 0x38
-    ushort szDriver[128]; // 0x138
-};
-
-// ----------------------------------------------------------------
-// IDirectDraw
-// Size: 0x4
-struct IDirectDraw {
-    char _pad_0x0[0x4];
-};
-
-// ----------------------------------------------------------------
-// IDirectDraw2
-// Size: 0x4
-struct IDirectDraw2 {
-    char _pad_0x0[0x4];
-};
-
-// ----------------------------------------------------------------
-// IDirectDrawClipper
-// Size: 0x4
-struct IDirectDrawClipper {
-    char _pad_0x0[0x4];
-};
-
-// ----------------------------------------------------------------
-// IDirectDrawPalette
-// Size: 0x4
-struct IDirectDrawPalette {
-    char _pad_0x0[0x4];
-};
-
-// ----------------------------------------------------------------
-// IDirectDrawSurface
-// Size: 0x4
-struct IDirectDrawSurface {
-    char _pad_0x0[0x4];
-};
-
-// ----------------------------------------------------------------
-// IDirectDrawSurface3
-// Size: 0x4
-struct IDirectDrawSurface3 {
-    char _pad_0x0[0x4];
-};
-
-// ----------------------------------------------------------------
-// IDirectInputA
-// Size: 0x4
-struct IDirectInputA {
-    char _pad_0x0[0x4];
-};
-
-// ----------------------------------------------------------------
-// IDirectInputDeviceA
-// Size: 0x4
-struct IDirectInputDeviceA {
-    char _pad_0x0[0x4];
-};
-
-// ----------------------------------------------------------------
-// IDirectPlay
-// Size: 0x4
-struct IDirectPlay {
-    char _pad_0x0[0x4];
-};
-
-// ----------------------------------------------------------------
-// IDirectPlay2
-// Size: 0x4
-struct IDirectPlay2 {
-    char _pad_0x0[0x4];
-};
-
-// ----------------------------------------------------------------
-// IDirectPlay3
-// Size: 0x4
-struct IDirectPlay3 {
-    char _pad_0x0[0x4];
-};
-
-// ----------------------------------------------------------------
-// IDirectPlayLobby
-// Size: 0x4
-struct IDirectPlayLobby {
-    char _pad_0x0[0x4];
-};
-
-// ----------------------------------------------------------------
-// IDirectPlayLobby2
-// Size: 0x4
-struct IDirectPlayLobby2 {
-    char _pad_0x0[0x4];
-};
-
-// ----------------------------------------------------------------
-// IDirectSound
-// Size: 0x4
-struct IDirectSound {
-    char _pad_0x0[0x4];
-};
-
-// ----------------------------------------------------------------
-// IDirectSoundBuffer
-// Size: 0x4
-struct IDirectSoundBuffer {
-    char _pad_0x0[0x4];
-};
-
-// ----------------------------------------------------------------
-// IUnknown
-// Size: 0x4
-struct IUnknown {
-    char _pad_0x0[0x4];
 };
 
 // ----------------------------------------------------------------
@@ -1134,16 +921,6 @@ struct RGE_Damage_Sprite_Info {
     uchar flag; // 0x5
 };
 
-// ----------------------------------------------------------------
-// RGE_Effect
-// Size: 0x2C
-struct RGE_Effect {
-    short id; // 0x0
-    char name[31]; // 0x2
-    short string_table_id; // 0x22
-    short effect_list_num; // 0x24
-    RGE_Effect_Command * effect_list; // 0x28
-};
 
 // ----------------------------------------------------------------
 // RGE_Effect_Command
@@ -1157,12 +934,16 @@ struct RGE_Effect_Command {
 };
 
 // ----------------------------------------------------------------
-// RGE_Elevation_Data
-// Size: 0x8
-struct RGE_Elevation_Data {
-    long elevation_num; // 0x0
-    RGE_Elevation_Data_Entry * elevation; // 0x4
+// RGE_Effect
+// Size: 0x2C
+struct RGE_Effect {
+    short id; // 0x0
+    char name[31]; // 0x2
+    short string_table_id; // 0x22
+    short effect_list_num; // 0x24
+    RGE_Effect_Command * effect_list; // 0x28
 };
+
 
 // ----------------------------------------------------------------
 // RGE_Elevation_Data_Entry
@@ -1174,6 +955,15 @@ struct RGE_Elevation_Data_Entry {
     long spacing; // 0xC
     long base_terrain_type; // 0x10
     long base_elevation_type; // 0x14
+};
+
+
+// ----------------------------------------------------------------
+// RGE_Elevation_Data
+// Size: 0x8
+struct RGE_Elevation_Data {
+    long elevation_num; // 0x0
+    RGE_Elevation_Data_Entry * elevation; // 0x4
 };
 
 // ----------------------------------------------------------------
@@ -1231,19 +1021,6 @@ struct RGE_Info_Line {
     char obj_id; // 0x10
 };
 
-// ----------------------------------------------------------------
-// RGE_Land_Data
-// Size: 0x2C
-struct RGE_Land_Data {
-    long map_edge_buffer[4]; // 0x0
-    long map_edge_fade; // 0x10
-    long land_placement_edge; // 0x14
-    long base_terrain; // 0x18
-    long grown_land_percent; // 0x1C
-    long id; // 0x20
-    long land_num; // 0x24
-    RGE_Land_Data_Entry * land; // 0x28
-};
 
 // ----------------------------------------------------------------
 // RGE_Land_Data_Entry
@@ -1262,6 +1039,20 @@ struct RGE_Land_Data_Entry {
     long radius; // 0x20
     long fade; // 0x24
     long clumpiness_factor; // 0x28
+};
+
+// ----------------------------------------------------------------
+// RGE_Land_Data
+// Size: 0x2C
+struct RGE_Land_Data {
+    long map_edge_buffer[4]; // 0x0
+    long map_edge_fade; // 0x10
+    long land_placement_edge; // 0x14
+    long base_terrain; // 0x18
+    long grown_land_percent; // 0x1C
+    long id; // 0x20
+    long land_num; // 0x24
+    RGE_Land_Data_Entry * land; // 0x28
 };
 
 // ----------------------------------------------------------------
@@ -1307,6 +1098,11 @@ struct RGE_Land_Point_Info_Line {
     long player_id; // 0xC
 };
 
+
+struct RGE_Map_Data_Entry;
+struct RGE_Terrain_Data_Entry;
+struct RGE_Object_Data_Entry;
+
 // ----------------------------------------------------------------
 // RGE_Map_Data
 // Size: 0x8
@@ -1330,6 +1126,7 @@ struct RGE_Terrain_Data {
     long terrain_num; // 0x0
     RGE_Terrain_Data_Entry * terrain; // 0x4
 };
+
 
 // ----------------------------------------------------------------
 // RGE_Map_Data_Entry
@@ -1444,6 +1241,8 @@ struct RGE_Object_Node {
     RGE_Object_Node * prev; // 0x8
     uchar centered; // 0xC
 };
+
+struct RGE_Tile;
 
 // ----------------------------------------------------------------
 // RGE_Pick_Info
@@ -1562,6 +1361,8 @@ struct RGE_Prog_Info {
     char avi_dir[261]; // 0x1130
 };
 
+class RGE_Random_Map_Module;
+
 // ----------------------------------------------------------------
 // RGE_Random_Map_Module_List
 // Size: 0x8
@@ -1582,6 +1383,8 @@ struct RGE_SPick_Info {
     RGE_SPick_Info * next; // 0xC
     RGE_SPick_Info * prev; // 0x10
 };
+
+class RGE_Scenario_Header;
 
 // ----------------------------------------------------------------
 // RGE_Scenario_File_Entry
@@ -1670,6 +1473,40 @@ struct RGE_Terrain_Info {
     RGE_Terrain_Hot_Spots hot_spots[99]; // 0xC64
     long hot_spot_num; // 0x1294
 };
+
+class TDrawArea;
+class RGE_Game_World;
+
+class RGE_Object_List {
+public:
+    RGE_Object_Node* list;                   // 0x4
+    short number_of_objects;                 // 0x8
+
+    RGE_Object_List();
+    virtual ~RGE_Object_List();
+    virtual void removeAllObjects();
+    virtual RGE_Object_Node* add_node(RGE_Static_Object* param_1);
+    virtual void remove_node(RGE_Static_Object* param_1, RGE_Object_Node* param_2);
+    virtual void invert();
+    virtual void draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4);
+    virtual void shadow_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4, uchar param_5);
+    virtual void normal_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4);
+    virtual void update();
+    virtual RGE_Object_Node* sort();
+    virtual RGE_Static_Object* find_by_group(long param_1);
+    virtual RGE_Static_Object* find_by_group(long param_1, float param_2, float param_3, uchar param_4, uchar param_5, RGE_Static_Object* param_6);
+    virtual RGE_Static_Object* find_by_id(long param_1);
+    virtual RGE_Static_Object* find_by_master_id(long param_1, float param_2, float param_3, uchar param_4, uchar param_5, RGE_Static_Object* param_6);
+    virtual RGE_Static_Object* find_by_master_ids(long param_1, long param_2, float param_3, float param_4, uchar param_5, uchar param_6, RGE_Static_Object* param_7);
+    virtual RGE_Static_Object* find_by_type(uchar param_1, float param_2, float param_3, uchar param_4, uchar param_5);
+    virtual void save(int param_1);
+    virtual void load_list(int param_1, RGE_Game_World* param_2);
+    virtual void rehook_list();
+    virtual void load(uchar param_1, int param_2, RGE_Game_World* param_3);
+};
+
+static_assert(sizeof(RGE_Object_List) == 0xC, "RGE_Object_List Size Mismatch");
+static_assert(offsetof(RGE_Object_List, number_of_objects) == 0x8, "RGE_Object_List Offset Mismatch");
 
 struct RGE_Tile {
     short screen_xpos;              // 0x0
@@ -1825,6 +1662,18 @@ struct RGE_Victory_Point_Entry {
     RGE_Victory_Point_Entry * next; // 0x18
 };
 
+
+// ----------------------------------------------------------------
+// resfile_header
+// Size: 0x40
+struct resfile_header {
+    char banner_msg[40]; // 0x0
+    char version[4]; // 0x28
+    char password[12]; // 0x2C
+    int num_res_types; // 0x38
+    int directory_size; // 0x3C
+};
+
 // ----------------------------------------------------------------
 // ResFileHdr
 // Size: 0x114
@@ -1938,20 +1787,6 @@ struct Shape_Header {
     long ymin; // 0xC
     long xmax; // 0x10
     long ymax; // 0x14
-};
-
-// ----------------------------------------------------------------
-// Shape_Info
-// Size: 0x20
-struct Shape_Info {
-    ulong Shape_Data_Offsets; // 0x0
-    ulong Shape_Outline_Offset; // 0x4
-    long Reserved1; // 0x8
-    long Reserved2; // 0xC
-    long Width; // 0x10
-    long Height; // 0x14
-    long Hotspot_X; // 0x18
-    long Hotspot_Y; // 0x1C
 };
 
 // ----------------------------------------------------------------
@@ -2277,6 +2112,15 @@ struct Tech_Tree {
 };
 
 // ----------------------------------------------------------------
+// VSpanMiniList
+// Size: 0x3
+struct VSpanMiniList {
+    uchar Y_delta; // 0x0
+    uchar X_start; // 0x1
+    uchar X_end; // 0x2
+};
+
+// ----------------------------------------------------------------
 // Tile_BlackEdge_Table
 // Size: 0x4
 struct Tile_BlackEdge_Table {
@@ -2338,14 +2182,6 @@ struct VISIBLE_RESOURCE_REC {
     uchar pos_y; // 0x7
 };
 
-// ----------------------------------------------------------------
-// VISIBLE_UNIT_PTR
-// Size: 0x8
-struct VISIBLE_UNIT_PTR {
-    VISIBLE_UNIT_REC * unit_list; // 0x0
-    short list_size; // 0x4
-    short used; // 0x6
-};
 
 // ----------------------------------------------------------------
 // VISIBLE_UNIT_REC
@@ -2359,13 +2195,14 @@ struct VISIBLE_UNIT_REC {
 };
 
 // ----------------------------------------------------------------
-// VSpanMiniList
-// Size: 0x3
-struct VSpanMiniList {
-    uchar Y_delta; // 0x0
-    uchar X_start; // 0x1
-    uchar X_end; // 0x2
+// VISIBLE_UNIT_PTR
+// Size: 0x8
+struct VISIBLE_UNIT_PTR {
+    VISIBLE_UNIT_REC * unit_list; // 0x0
+    short list_size; // 0x4
+    short used; // 0x6
 };
+
 
 // ----------------------------------------------------------------
 // VSpan_Node
@@ -2387,19 +2224,6 @@ struct Victory_StartInfo {
     int MP_Discoveries; // 0xC
     int MP_Exploration; // 0x10
     int MP_Gold; // 0x14
-};
-
-// ----------------------------------------------------------------
-// WSAData
-// Size: 0x190
-struct WSAData {
-    ushort wVersion; // 0x0
-    ushort wHighVersion; // 0x2
-    char szDescription[257]; // 0x4
-    char szSystemStatus[129]; // 0x105
-    ushort iMaxSockets; // 0x186
-    ushort iMaxUdpDg; // 0x188
-    char * lpVendorInfo; // 0x18C
 };
 
 // ----------------------------------------------------------------
@@ -2439,17 +2263,6 @@ struct res_file_type_info {
 };
 
 // ----------------------------------------------------------------
-// resfile_header
-// Size: 0x40
-struct resfile_header {
-    char banner_msg[40]; // 0x0
-    char version[4]; // 0x28
-    char password[12]; // 0x2C
-    int num_res_types; // 0x38
-    int directory_size; // 0x3C
-};
-
-// ----------------------------------------------------------------
 // resfile_id_dir_node
 // Size: 0xC
 struct resfile_id_dir_node {
@@ -2465,19 +2278,4 @@ struct resfile_type_dir_node {
     ulong type; // 0x0
     long dirOffset; // 0x4
     long numID; // 0x8
-};
-
-// ----------------------------------------------------------------
-// tm
-// Size: 0x24
-struct tm {
-    int tm_sec; // 0x0
-    int tm_min; // 0x4
-    int tm_hour; // 0x8
-    int tm_mday; // 0xC
-    int tm_mon; // 0x10
-    int tm_year; // 0x14
-    int tm_wday; // 0x18
-    int tm_yday; // 0x1C
-    int tm_isdst; // 0x20
 };

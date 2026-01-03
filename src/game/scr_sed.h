@@ -36,7 +36,7 @@
 #include "tpnl_txl.h"
 #include "spnl_obj.h"
 
-typedef enum BrushSize : unsigned int {
+enum BrushSize : unsigned int {
     BrushSizeNone = 0,
     BrushSizeVerySmall = 1,
     BrushSizeSmall = 2,
@@ -50,7 +50,7 @@ typedef struct List_Info {
     short id; // 0x64
 };
 
-typedef enum MapType : unsigned int {
+enum MapType : unsigned int {
     MapTypeNone = 0,
     MapTypeBlank = 1,
     MapTypeRandom = 2,
@@ -58,7 +58,7 @@ typedef enum MapType : unsigned int {
 };
 
 
-typedef enum MessageType : unsigned int {
+enum MessageType : unsigned int {
     MessageTypeNone = 0,
     MessageTypeDescription = 1,
     MessageTypeInstructions = 2,
@@ -66,14 +66,14 @@ typedef enum MessageType : unsigned int {
     MessageTypeFailure = 4,
 };
 
-typedef enum PaintType : unsigned int {
+enum PaintType : unsigned int {
     PaintTypeNone = 0,
     PaintTypeTerrain = 1,
     PaintTypeElevation = 2,
     PaintTypeCliffs = 3,
 };
 
-typedef enum ScenarioMode : unsigned int {
+enum ScenarioMode : unsigned int {
     ScenarioModeNone = 0,
     ScenarioModeMap = 1,
     ScenarioModeTerrain = 2,
@@ -88,7 +88,7 @@ typedef enum ScenarioMode : unsigned int {
     ScenarioModeSave = 11,
 };
 
-typedef enum VictoryType : unsigned int {
+enum VictoryType : unsigned int {
     VictoryTypeNone = 0,
     VictoryTypeStandard = 1,
     VictoryTypeConquest = 2,
@@ -97,7 +97,7 @@ typedef enum VictoryType : unsigned int {
     VictoryTypeCustom = 5,
 };
 
-typedef enum SELECT_REGION_e : unsigned int {
+enum SELECT_REGION_e : unsigned int {
     SELECT_OFF = 0,
     SELECT_OBJECT = 1,
     SELECT_DEST_OBJECT = 2,

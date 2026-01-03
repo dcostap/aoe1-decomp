@@ -2,7 +2,7 @@
 #include "../common.h"
 #include "ani_obj.h"
 
-typedef enum PathResult : unsigned int {
+enum PathResult : unsigned int {
     PathFound = 0,
     NoPathFound = 1,
     WaitingOnPathingCap = 2,

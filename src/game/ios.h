@@ -1,14 +1,14 @@
 #pragma once
 #include "../common.h"
 
-typedef enum io_state : unsigned int {
+enum io_state : unsigned int {
     goodbit = 0,
     eofbit = 1,
     failbit = 2,
     badbit = 4,
 };
 
-typedef enum open_mode : unsigned int {
+enum open_mode : unsigned int {
     in = 1,
     out = 2,
     ate = 4,
@@ -19,7 +19,7 @@ typedef enum open_mode : unsigned int {
     binary = 128,
 };
 
-typedef enum seek_dir : unsigned int {
+enum seek_dir : unsigned int {
     beg = 0,
     cur = 1,
     end = 2,

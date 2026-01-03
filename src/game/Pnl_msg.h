@@ -1,7 +1,7 @@
 #pragma once
 #include "../common.h"
 
-typedef enum JustType : unsigned int {
+enum JustType : unsigned int {
     TopJust = 0,
     BottomJust = 1,
     LeftJust = 2,
@@ -9,7 +9,7 @@ typedef enum JustType : unsigned int {
     CenterJust = 4,
 };
 
-typedef enum MessageType : unsigned int {
+enum MessageType : unsigned int {
     InfoMessage = 0,
     BadMessage = 1,
     DebugMessage = 2,

@@ -12,7 +12,7 @@ enum Age : unsigned int {
     IronAge = 5,
 };
 
-typedef enum MapSize : unsigned int {
+enum MapSize : unsigned int {
     Tiny = 0,
     Small = 1,
     Medium = 2,
@@ -21,7 +21,7 @@ typedef enum MapSize : unsigned int {
     Humongous = 5,
 };
 
-typedef enum MapType : unsigned int {
+enum MapType : unsigned int {
     AllWater = 0,
     MostlyWater = 1,
     WaterAndLand = 2,
@@ -33,7 +33,7 @@ typedef enum MapType : unsigned int {
     Isthmas = 8,
 };
 
-typedef enum ResourceLevel : unsigned int {
+enum ResourceLevel : unsigned int {
     DefaultResources = 0,
     LowResource = 1,
     MediumResources = 2,
@@ -67,7 +67,7 @@ typedef struct TRIBE_Game_Options {
     uchar popLimitValue; // 0x6A
 };
 
-typedef enum VictoryType : unsigned int {
+enum VictoryType : unsigned int {
     VictoryDefault = 0,
     VictoryConquest = 1,
     VictoryExplore = 2,

@@ -1,7 +1,7 @@
 #pragma once
 #include "../common.h"
 
-typedef enum SliderAction : unsigned int {
+enum SliderAction : unsigned int {
     ActionUp = 0,
     ActionDown = 1,
     ActionStartSlide = 2,

@@ -1,7 +1,7 @@
 #pragma once
 #include "../common.h"
 
-typedef enum ActionType : unsigned int {
+enum ActionType : unsigned int {
     ActionItem = 1,
     ActionLand = 2,
     ActionSelect = 3,

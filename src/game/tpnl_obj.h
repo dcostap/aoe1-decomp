@@ -1,11 +1,11 @@
 #pragma once
 #include "../common.h"
 
-typedef enum ActionType : unsigned int {
+enum ActionType : unsigned int {
     ActionObjectChanged = 1,
 };
 
-typedef enum ValueType : unsigned int {
+enum ValueType : unsigned int {
     ValueTypeNumber = 0,
     ValueTypeBonus = 1,
     ValueTypeCompare = 2,

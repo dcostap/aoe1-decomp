@@ -13,7 +13,7 @@ public:
 static_assert(sizeof(TDropDownButtonPanel) == 0x2BC, "TDropDownButtonPanel Size Mismatch");
 static_assert(offsetof(TDropDownButtonPanel, drop_down_panel) == 0x2B8, "TDropDownButtonPanel Offset Mismatch");
 
-typedef enum ActionType : unsigned int {
+enum ActionType : unsigned int {
     ActionItem = 0,
     ActionList = 1,
     ActionValue = 2,
@@ -27,12 +27,12 @@ typedef  enum BevelType : unsigned int {
     Bevel3 = 4,
 };
 
-typedef enum DrawStyle : unsigned int {
+enum DrawStyle : unsigned int {
     DrawStyleNormal = 0,
     DrawStyleLeftButton = 1,
 };
 
-typedef enum DropdownMode : unsigned int {
+enum DropdownMode : unsigned int {
     ModeNone = 0,
     ModeValue = 1,
     ModeList = 2,

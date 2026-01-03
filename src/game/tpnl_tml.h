@@ -1,7 +1,7 @@
 #pragma once
 #include "../common.h"
 
-typedef enum BevelType : unsigned int {
+enum BevelType : unsigned int {
     BevelNone = 0,
     BevelFlat = 1,
     BevelIn1 = 2,
@@ -13,7 +13,7 @@ typedef enum BevelType : unsigned int {
 };
 
 
-typedef enum Style : unsigned int {
+enum Style : unsigned int {
     NormalStyle = 0,
     BeveledStyle = 1,
     ChiseledStyle = 2,

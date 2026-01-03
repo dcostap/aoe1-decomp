@@ -4,7 +4,7 @@
 #include "aiconitm.h"
 #include "aiblditm.h"
 
-typedef enum PlacementResult : unsigned int {
+enum PlacementResult : unsigned int {
     PlacementOk = 0,
     PlacementOnImpassableTile = 1,
     PlacementObstructed = 2,

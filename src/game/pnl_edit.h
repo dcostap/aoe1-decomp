@@ -1,13 +1,13 @@
 #pragma once
 #include "../common.h"
 
-typedef enum ActionType : unsigned int {
+enum ActionType : unsigned int {
     ActionEnter = 0,
     ActionEscape = 1,
     ActionTab = 2,
 };
 
-typedef enum BevelType : unsigned int {
+enum BevelType : unsigned int {
     BevelNone = 0,
     BevelFlat = 1,
     BevelIn1 = 2,
@@ -18,7 +18,7 @@ typedef enum BevelType : unsigned int {
     BevelOut3 = 7,
 };
 
-typedef enum FormatType : unsigned int {
+enum FormatType : unsigned int {
     FormatText = 0,
     FormatNumber = 1,
     FormatInteger = 2,

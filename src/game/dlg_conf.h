@@ -1,7 +1,7 @@
 #pragma once
 #include "../common.h"
 
-typedef enum Mode : unsigned int {
+enum Mode : unsigned int {
     InGame = 0,
     InPregame = 1,
 };
