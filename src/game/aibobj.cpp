@@ -3,198 +3,162 @@
 
 BaseObject::BaseObject() {
     /* TODO: Stub */
-//                              undefined __thiscall BaseObject(BaseObject * this, BaseObject * para
+//                              undefined __thiscall BaseObject(BaseObject * this)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              BaseObject *      ECX:4 (auto)   this
-//              BaseObject *      Stack[0x4]:4   param_1                   XREF[1]:     0040a244(R)
-//                               ??0BaseObject@@QAE@ABV0@@Z
+//                               ??0BaseObject@@QAE@XZ
 //                               BaseObject::BaseObject
-//                              aibobj.cpp:141 (172)
-//         0040a240     PUSH       ESI
-//         0040a241     MOV        ESI,this
-//         0040a243     PUSH       EDI
-//         0040a244     MOV        EDI,dword ptr [ESP + param_1]
-//         0040a248     MOV        dword ptr [ESI + 0x4],0x0
-//         0040a24f     MOV        dword ptr [ESI + 0x8],0x0
-//         0040a256     MOV        EAX,dword ptr [EDI + 0xc]
-//         0040a259     MOV        dword ptr [ESI + 0xc],EAX
-//         0040a25c     MOV        this,dword ptr [EDI + 0x14]
-//         0040a25f     MOV        dword ptr [ESI + 0x14],this
-//         0040a262     MOV        EDX,dword ptr [EDI + 0x18]
-//         0040a265     MOV        dword ptr [ESI + 0x18],EDX
-//         0040a268     MOV        EAX,dword ptr [EDI + 0x1c]
-//         0040a26b     MOV        dword ptr [ESI + 0x1c],EAX
-//         0040a26e     MOV        this,dword ptr [EDI + 0x60]
-//         0040a271     MOV        dword ptr [ESI + 0x60],this
-//         0040a274     MOV        EDX,dword ptr [EDI + 0x64]
-//         0040a277     MOV        dword ptr [ESI + 0x64],EDX
-//         0040a27a     MOV        EAX,dword ptr [EDI + 0x68]
-//         0040a27d     MOV        dword ptr [ESI + 0x68],EAX
-//         0040a280     MOV        this,dword ptr [EDI + 0x6c]
-//         0040a283     MOV        dword ptr [ESI + 0x6c],this
-//         0040a286     MOV        EDX,dword ptr [EDI + 0x70]
-//         0040a289     MOV        dword ptr [ESI + 0x70],EDX
-//         0040a28c     MOV        EAX,dword ptr [EDI + 0x74]
-//         0040a28f     MOV        dword ptr [ESI + 0x74],EAX
-//         0040a292     MOV        this,dword ptr [EDI + 0x78]
-//         0040a295     MOV        dword ptr [ESI + 0x78],this
-//         0040a298     MOV        EDX,dword ptr [EDI + 0x7c]
-//         0040a29b     MOV        dword ptr [ESI + 0x7c],EDX
-//         0040a29e     MOV        EAX,dword ptr [EDI + 0x80]
-//         0040a2a4     MOV        dword ptr [ESI + 0x80],EAX
-//         0040a2aa     MOV        this,dword ptr [EDI + 0x84]
-//         0040a2b0     MOV        dword ptr [ESI + 0x84],this
-//         0040a2b6     MOV        EDX,dword ptr [EDI + 0x88]
-//         0040a2bc     MOV        dword ptr [ESI + 0x88],EDX
-//         0040a2c2     MOV        EAX,dword ptr [EDI + 0x8c]
-//         0040a2c8     MOV        dword ptr [ESI + 0x8c],EAX
-//         0040a2ce     MOV        this,dword ptr [EDI + 0x90]
-//         0040a2d4     MOV        dword ptr [ESI + 0x90],this
-//         0040a2da     MOV        EDX,dword ptr [EDI + 0x94]
-//         0040a2e0     MOV        dword ptr [ESI + 0x94],EDX
-//         0040a2e6     MOV        EAX,dword ptr [EDI + 0x98]
-//                              aibobj.cpp:143 (36)
-//         0040a2ec     MOV        EDX,dword ptr [ESI + 0xc]
-//         0040a2ef     MOV        dword ptr [ESI + 0x98],EAX
-//         0040a2f5     MOV        this,dword ptr [EDI + 0x9c]
-//         0040a2fb     MOV        dword ptr [ESI],BaseObject::`vftable'            = 0040a040
-//         0040a301     SHL        EDX,0x2
-//         0040a304     PUSH       EDX
-//         0040a305     MOV        dword ptr [ESI + 0x9c],this
-//         0040a30b     CALL       operator_new                                     void * operator_new(uint param_1)
-//                              aibobj.cpp:144 (15)
-//         0040a310     MOV        this,dword ptr [ESI + 0xc]
-//         0040a313     MOV        dword ptr [ESI + 0x10],EAX
-//         0040a316     ADD        ESP,0x4
-//         0040a319     XOR        EAX,EAX
-//         0040a31b     TEST       this,this
-//         0040a31d     JLE        LAB_0040a333
-//                               LAB_0040a31f                                                 XREF[1]:     0040a331(j)
-//                              aibobj.cpp:145 (20)
-//         0040a31f     MOV        this,dword ptr [EDI + 0x10]
-//         0040a322     MOV        EDX,dword ptr [ESI + 0x10]
-//         0040a325     MOV        this,dword ptr [this->_padding_ + EAX*0x4]
-//         0040a328     MOV        dword ptr [EDX + EAX*0x4],this
-//         0040a32b     MOV        this,dword ptr [ESI + 0xc]
-//         0040a32e     INC        EAX
-//         0040a32f     CMP        EAX,this
-//         0040a331     JL         LAB_0040a31f
-//                               LAB_0040a333                                                 XREF[1]:     0040a31d(j)
-//                              aibobj.cpp:147 (18)
-//         0040a333     ADD        EDI,0x20
-//         0040a336     PUSH       0x3f
-//         0040a338     LEA        EDX,[ESI + 0x20]
-//         0040a33b     PUSH       EDI
-//         0040a33c     PUSH       EDX
-//         0040a33d     CALL       strncpy                                          undefined strncpy()
-//         0040a342     ADD        ESP,0xc
-//                              aibobj.cpp:148 (7)
-//         0040a345     MOV        EAX,ESI
-//         0040a347     POP        EDI
-//         0040a348     POP        ESI
-//         0040a349     RET        0x4
-//         0040a34c     ??         90h
-//         0040a34d     NOP
-//         0040a34e     NOP
-//         0040a34f     NOP
+//                              aibobj.cpp:43 (15)
+//         00409fa0     MOV        EDX,this
+//         00409fa2     PUSH       EBX
+//         00409fa3     PUSH       ESI
+//         00409fa4     PUSH       EDI
+//         00409fa5     XOR        EAX,EAX
+//         00409fa7     OR         this,0xffffffff
+//         00409faa     MOV        ESI,0xbf800000
+//                              aibobj.cpp:44 (126)
+//         00409faf     MOV        EDI,s_                                           = ""
+//         00409fb4     MOV        dword ptr [EDX + 0x4],EAX
+//         00409fb7     MOV        dword ptr [EDX + 0x8],EAX
+//         00409fba     MOV        dword ptr [EDX + 0xc],EAX
+//         00409fbd     MOV        dword ptr [EDX + 0x10],EAX
+//         00409fc0     MOV        dword ptr [EDX + 0x14],this
+//         00409fc3     MOV        dword ptr [EDX + 0x18],this
+//         00409fc6     MOV        dword ptr [EDX + 0x1c],this
+//         00409fc9     MOV        dword ptr [EDX + 0x60],ESI
+//         00409fcc     MOV        dword ptr [EDX + 0x64],ESI
+//         00409fcf     MOV        dword ptr [EDX + 0x68],ESI
+//         00409fd2     MOV        dword ptr [EDX + 0x6c],ESI
+//         00409fd5     MOV        dword ptr [EDX + 0x70],ESI
+//         00409fd8     MOV        dword ptr [EDX + 0x74],ESI
+//         00409fdb     MOV        dword ptr [EDX + 0x78],EAX
+//         00409fde     MOV        dword ptr [EDX + 0x7c],EAX
+//         00409fe1     MOV        dword ptr [EDX + 0x80],EAX
+//         00409fe7     MOV        dword ptr [EDX + 0x84],EAX
+//         00409fed     MOV        dword ptr [EDX + 0x88],this
+//         00409ff3     MOV        dword ptr [EDX + 0x8c],this
+//         00409ff9     MOV        dword ptr [EDX + 0x90],this
+//         00409fff     MOV        dword ptr [EDX + 0x94],EAX
+//         0040a005     MOV        dword ptr [EDX + 0x98],EAX
+//         0040a00b     MOV        dword ptr [EDX + 0x9c],EAX
+//         0040a011     MOV        dword ptr [EDX],BaseObject::`vftable'            = 0040a040
+//         0040a017     SCASB.RE   ES:EDI=>s_                                       = ""
+//         0040a019     NOT        this
+//         0040a01b     SUB        EDI,this
+//         0040a01d     LEA        EBX,[EDX + 0x20]
+//         0040a020     MOV        EAX,this
+//         0040a022     MOV        ESI,EDI
+//         0040a024     MOV        EDI,EBX
+//         0040a026     SHR        this,0x2
+//         0040a029     MOVSD.REP  ES:EDI,ESI
+//         0040a02b     MOV        this,EAX
+//                              aibobj.cpp:45 (11)
+//         0040a02d     MOV        EAX,EDX
+//         0040a02f     AND        this,0x3
+//         0040a032     MOVSB.REP  ES:EDI,ESI
+//         0040a034     POP        EDI
+//         0040a035     POP        ESI
+//         0040a036     POP        EBX
+//         0040a037     RET
+//         0040a038     ??         90h
+//         0040a039     NOP
+//         0040a03a     NOP
+//         0040a03b     NOP
+//         0040a03c     NOP
+//         0040a03d     NOP
+//         0040a03e     NOP
+//         0040a03f     NOP
 }
 
 BaseObject::BaseObject(int param_1, int param_2, int param_3, int param_4, char* param_5, float param_6, float param_7, float param_8, float param_9, float param_10, float param_11, int param_12, int param_13, int param_14) {
     /* TODO: Stub */
-//                              undefined __thiscall BaseObject(BaseObject * this, BaseObject * para
+//                              undefined __thiscall BaseObject(BaseObject * this, int param_1, int
 //              undefined         <UNASSIGNED>   <RETURN>
 //              BaseObject *      ECX:4 (auto)   this
-//              BaseObject *      Stack[0x4]:4   param_1                   XREF[1]:     0040a244(R)
-//                               ??0BaseObject@@QAE@ABV0@@Z
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     0040a103(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     0040a069(R)
+//              int               Stack[0xc]:4   param_3                   XREF[1]:     0040a060(R)
+//              int               Stack[0x10]:4  param_4                   XREF[1]:     0040a072(R)
+//              char *            Stack[0x14]:4  param_5                   XREF[1]:     0040a107(R)
+//              float             Stack[0x18]:4  param_6                   XREF[1]:     0040a08e(R)
+//              float             Stack[0x1c]:4  param_7                   XREF[1]:     0040a095(R)
+//              float             Stack[0x20]:4  param_8                   XREF[1]:     0040a09c(R)
+//              float             Stack[0x24]:4  param_9                   XREF[1]:     0040a079(R)
+//              float             Stack[0x28]:4  param_10                  XREF[1]:     0040a080(R)
+//              float             Stack[0x2c]:4  param_11                  XREF[1]:     0040a087(R)
+//              int               Stack[0x30]:4  param_12                  XREF[1]:     0040a0a3(R)
+//              int               Stack[0x34]:4  param_13                  XREF[1]:     0040a0aa(R)
+//              int               Stack[0x38]:4  param_14                  XREF[1]:     0040a0b1(R)
+//                               ??0BaseObject@@QAE@HHHHPADMMMMMMHHH@Z
 //                               BaseObject::BaseObject
-//                              aibobj.cpp:141 (172)
-//         0040a240     PUSH       ESI
-//         0040a241     MOV        ESI,this
-//         0040a243     PUSH       EDI
-//         0040a244     MOV        EDI,dword ptr [ESP + param_1]
-//         0040a248     MOV        dword ptr [ESI + 0x4],0x0
-//         0040a24f     MOV        dword ptr [ESI + 0x8],0x0
-//         0040a256     MOV        EAX,dword ptr [EDI + 0xc]
-//         0040a259     MOV        dword ptr [ESI + 0xc],EAX
-//         0040a25c     MOV        this,dword ptr [EDI + 0x14]
-//         0040a25f     MOV        dword ptr [ESI + 0x14],this
-//         0040a262     MOV        EDX,dword ptr [EDI + 0x18]
-//         0040a265     MOV        dword ptr [ESI + 0x18],EDX
-//         0040a268     MOV        EAX,dword ptr [EDI + 0x1c]
-//         0040a26b     MOV        dword ptr [ESI + 0x1c],EAX
-//         0040a26e     MOV        this,dword ptr [EDI + 0x60]
-//         0040a271     MOV        dword ptr [ESI + 0x60],this
-//         0040a274     MOV        EDX,dword ptr [EDI + 0x64]
-//         0040a277     MOV        dword ptr [ESI + 0x64],EDX
-//         0040a27a     MOV        EAX,dword ptr [EDI + 0x68]
-//         0040a27d     MOV        dword ptr [ESI + 0x68],EAX
-//         0040a280     MOV        this,dword ptr [EDI + 0x6c]
-//         0040a283     MOV        dword ptr [ESI + 0x6c],this
-//         0040a286     MOV        EDX,dword ptr [EDI + 0x70]
-//         0040a289     MOV        dword ptr [ESI + 0x70],EDX
-//         0040a28c     MOV        EAX,dword ptr [EDI + 0x74]
-//         0040a28f     MOV        dword ptr [ESI + 0x74],EAX
-//         0040a292     MOV        this,dword ptr [EDI + 0x78]
-//         0040a295     MOV        dword ptr [ESI + 0x78],this
-//         0040a298     MOV        EDX,dword ptr [EDI + 0x7c]
-//         0040a29b     MOV        dword ptr [ESI + 0x7c],EDX
-//         0040a29e     MOV        EAX,dword ptr [EDI + 0x80]
-//         0040a2a4     MOV        dword ptr [ESI + 0x80],EAX
-//         0040a2aa     MOV        this,dword ptr [EDI + 0x84]
-//         0040a2b0     MOV        dword ptr [ESI + 0x84],this
-//         0040a2b6     MOV        EDX,dword ptr [EDI + 0x88]
-//         0040a2bc     MOV        dword ptr [ESI + 0x88],EDX
-//         0040a2c2     MOV        EAX,dword ptr [EDI + 0x8c]
-//         0040a2c8     MOV        dword ptr [ESI + 0x8c],EAX
-//         0040a2ce     MOV        this,dword ptr [EDI + 0x90]
-//         0040a2d4     MOV        dword ptr [ESI + 0x90],this
-//         0040a2da     MOV        EDX,dword ptr [EDI + 0x94]
-//         0040a2e0     MOV        dword ptr [ESI + 0x94],EDX
-//         0040a2e6     MOV        EAX,dword ptr [EDI + 0x98]
-//                              aibobj.cpp:143 (36)
-//         0040a2ec     MOV        EDX,dword ptr [ESI + 0xc]
-//         0040a2ef     MOV        dword ptr [ESI + 0x98],EAX
-//         0040a2f5     MOV        this,dword ptr [EDI + 0x9c]
-//         0040a2fb     MOV        dword ptr [ESI],BaseObject::`vftable'            = 0040a040
-//         0040a301     SHL        EDX,0x2
-//         0040a304     PUSH       EDX
-//         0040a305     MOV        dword ptr [ESI + 0x9c],this
-//         0040a30b     CALL       operator_new                                     void * operator_new(uint param_1)
-//                              aibobj.cpp:144 (15)
-//         0040a310     MOV        this,dword ptr [ESI + 0xc]
-//         0040a313     MOV        dword ptr [ESI + 0x10],EAX
-//         0040a316     ADD        ESP,0x4
-//         0040a319     XOR        EAX,EAX
-//         0040a31b     TEST       this,this
-//         0040a31d     JLE        LAB_0040a333
-//                               LAB_0040a31f                                                 XREF[1]:     0040a331(j)
-//                              aibobj.cpp:145 (20)
-//         0040a31f     MOV        this,dword ptr [EDI + 0x10]
-//         0040a322     MOV        EDX,dword ptr [ESI + 0x10]
-//         0040a325     MOV        this,dword ptr [this->_padding_ + EAX*0x4]
-//         0040a328     MOV        dword ptr [EDX + EAX*0x4],this
-//         0040a32b     MOV        this,dword ptr [ESI + 0xc]
-//         0040a32e     INC        EAX
-//         0040a32f     CMP        EAX,this
-//         0040a331     JL         LAB_0040a31f
-//                               LAB_0040a333                                                 XREF[1]:     0040a31d(j)
-//                              aibobj.cpp:147 (18)
-//         0040a333     ADD        EDI,0x20
-//         0040a336     PUSH       0x3f
-//         0040a338     LEA        EDX,[ESI + 0x20]
-//         0040a33b     PUSH       EDI
-//         0040a33c     PUSH       EDX
-//         0040a33d     CALL       strncpy                                          undefined strncpy()
-//         0040a342     ADD        ESP,0xc
-//                              aibobj.cpp:148 (7)
-//         0040a345     MOV        EAX,ESI
-//         0040a347     POP        EDI
-//         0040a348     POP        ESI
-//         0040a349     RET        0x4
-//         0040a34c     ??         90h
-//         0040a34d     NOP
-//         0040a34e     NOP
-//         0040a34f     NOP
+//                              aibobj.cpp:74 (13)
+//         0040a060     MOV        EDX,dword ptr [ESP + param_3]
+//         0040a064     PUSH       ESI
+//         0040a065     MOV        ESI,this
+//         0040a067     XOR        EAX,EAX
+//         0040a069     MOV        this,dword ptr [ESP + param_2]
+//                              aibobj.cpp:76 (150)
+//         0040a06d     PUSH       0x4
+//         0040a06f     MOV        dword ptr [ESI + 0x14],this
+//         0040a072     MOV        this,dword ptr [ESP + param_4]
+//         0040a076     MOV        dword ptr [ESI + 0x18],EDX
+//         0040a079     MOV        EDX,dword ptr [ESP + param_9]
+//         0040a07d     MOV        dword ptr [ESI + 0x1c],this
+//         0040a080     MOV        this,dword ptr [ESP + param_10]
+//         0040a084     MOV        dword ptr [ESI + 0x60],EDX
+//         0040a087     MOV        EDX,dword ptr [ESP + param_11]
+//         0040a08b     MOV        dword ptr [ESI + 0x64],this
+//         0040a08e     MOV        this,dword ptr [ESP + param_6]
+//         0040a092     MOV        dword ptr [ESI + 0x68],EDX
+//         0040a095     MOV        EDX,dword ptr [ESP + param_7]
+//         0040a099     MOV        dword ptr [ESI + 0x6c],this
+//         0040a09c     MOV        this,dword ptr [ESP + param_8]
+//         0040a0a0     MOV        dword ptr [ESI + 0x70],EDX
+//         0040a0a3     MOV        EDX,dword ptr [ESP + param_12]
+//         0040a0a7     MOV        dword ptr [ESI + 0x74],this
+//         0040a0aa     MOV        this,dword ptr [ESP + param_13]
+//         0040a0ae     MOV        dword ptr [ESI + 0x78],EDX
+//         0040a0b1     MOV        EDX,dword ptr [ESP + param_14]
+//         0040a0b5     MOV        dword ptr [ESI + 0x7c],this
+//         0040a0b8     OR         this,0xffffffff
+//         0040a0bb     MOV        dword ptr [ESI + 0x4],EAX
+//         0040a0be     MOV        dword ptr [ESI + 0x8],EAX
+//         0040a0c1     MOV        dword ptr [ESI + 0xc],0x1
+//         0040a0c8     MOV        dword ptr [ESI + 0x80],EDX
+//         0040a0ce     MOV        dword ptr [ESI + 0x84],EAX
+//         0040a0d4     MOV        dword ptr [ESI + 0x88],this
+//         0040a0da     MOV        dword ptr [ESI + 0x8c],this
+//         0040a0e0     MOV        dword ptr [ESI + 0x90],this
+//         0040a0e6     MOV        dword ptr [ESI + 0x94],EAX
+//         0040a0ec     MOV        dword ptr [ESI + 0x98],EAX
+//         0040a0f2     MOV        dword ptr [ESI + 0x9c],EAX
+//         0040a0f8     MOV        dword ptr [ESI],BaseObject::`vftable'            = 0040a040
+//         0040a0fe     CALL       operator_new                                     void * operator_new(uint param_1)
+//                              aibobj.cpp:77 (4)
+//         0040a103     MOV        this,dword ptr [ESP + param_1]
+//                              aibobj.cpp:79 (27)
+//         0040a107     MOV        EDX,dword ptr [ESP + param_5]
+//         0040a10b     ADD        ESP,0x4
+//         0040a10e     MOV        dword ptr [ESI + 0x10],EAX
+//         0040a111     MOV        dword ptr [EAX],this
+//         0040a113     LEA        EAX,[ESI + 0x20]
+//         0040a116     PUSH       0x3f
+//         0040a118     PUSH       EDX
+//         0040a119     PUSH       EAX
+//         0040a11a     CALL       strncpy                                          undefined strncpy()
+//         0040a11f     ADD        ESP,0xc
+//                              aibobj.cpp:80 (6)
+//         0040a122     MOV        EAX,ESI
+//         0040a124     POP        ESI
+//         0040a125     RET        0x38
+//         0040a128     ??         90h
+//         0040a129     NOP
+//         0040a12a     NOP
+//         0040a12b     NOP
+//         0040a12c     NOP
+//         0040a12d     NOP
+//         0040a12e     NOP
+//         0040a12f     NOP
 }
 
 BaseObject::BaseObject(BaseObject* param_1) {
@@ -202,97 +166,97 @@ BaseObject::BaseObject(BaseObject* param_1) {
 //                              undefined __thiscall BaseObject(BaseObject * this, BaseObject * para
 //              undefined         <UNASSIGNED>   <RETURN>
 //              BaseObject *      ECX:4 (auto)   this
-//              BaseObject *      Stack[0x4]:4   param_1                   XREF[1]:     0040a244(R)
-//                               ??0BaseObject@@QAE@ABV0@@Z
+//              BaseObject *      Stack[0x4]:4   param_1                   XREF[1]:     0040a134(R)
+//                               ??0BaseObject@@QAE@PAV0@@Z
 //                               BaseObject::BaseObject
-//                              aibobj.cpp:141 (172)
-//         0040a240     PUSH       ESI
-//         0040a241     MOV        ESI,this
-//         0040a243     PUSH       EDI
-//         0040a244     MOV        EDI,dword ptr [ESP + param_1]
-//         0040a248     MOV        dword ptr [ESI + 0x4],0x0
-//         0040a24f     MOV        dword ptr [ESI + 0x8],0x0
-//         0040a256     MOV        EAX,dword ptr [EDI + 0xc]
-//         0040a259     MOV        dword ptr [ESI + 0xc],EAX
-//         0040a25c     MOV        this,dword ptr [EDI + 0x14]
-//         0040a25f     MOV        dword ptr [ESI + 0x14],this
-//         0040a262     MOV        EDX,dword ptr [EDI + 0x18]
-//         0040a265     MOV        dword ptr [ESI + 0x18],EDX
-//         0040a268     MOV        EAX,dword ptr [EDI + 0x1c]
-//         0040a26b     MOV        dword ptr [ESI + 0x1c],EAX
-//         0040a26e     MOV        this,dword ptr [EDI + 0x60]
-//         0040a271     MOV        dword ptr [ESI + 0x60],this
-//         0040a274     MOV        EDX,dword ptr [EDI + 0x64]
-//         0040a277     MOV        dword ptr [ESI + 0x64],EDX
-//         0040a27a     MOV        EAX,dword ptr [EDI + 0x68]
-//         0040a27d     MOV        dword ptr [ESI + 0x68],EAX
-//         0040a280     MOV        this,dword ptr [EDI + 0x6c]
-//         0040a283     MOV        dword ptr [ESI + 0x6c],this
-//         0040a286     MOV        EDX,dword ptr [EDI + 0x70]
-//         0040a289     MOV        dword ptr [ESI + 0x70],EDX
-//         0040a28c     MOV        EAX,dword ptr [EDI + 0x74]
-//         0040a28f     MOV        dword ptr [ESI + 0x74],EAX
-//         0040a292     MOV        this,dword ptr [EDI + 0x78]
-//         0040a295     MOV        dword ptr [ESI + 0x78],this
-//         0040a298     MOV        EDX,dword ptr [EDI + 0x7c]
-//         0040a29b     MOV        dword ptr [ESI + 0x7c],EDX
-//         0040a29e     MOV        EAX,dword ptr [EDI + 0x80]
-//         0040a2a4     MOV        dword ptr [ESI + 0x80],EAX
-//         0040a2aa     MOV        this,dword ptr [EDI + 0x84]
-//         0040a2b0     MOV        dword ptr [ESI + 0x84],this
-//         0040a2b6     MOV        EDX,dword ptr [EDI + 0x88]
-//         0040a2bc     MOV        dword ptr [ESI + 0x88],EDX
-//         0040a2c2     MOV        EAX,dword ptr [EDI + 0x8c]
-//         0040a2c8     MOV        dword ptr [ESI + 0x8c],EAX
-//         0040a2ce     MOV        this,dword ptr [EDI + 0x90]
-//         0040a2d4     MOV        dword ptr [ESI + 0x90],this
-//         0040a2da     MOV        EDX,dword ptr [EDI + 0x94]
-//         0040a2e0     MOV        dword ptr [ESI + 0x94],EDX
-//         0040a2e6     MOV        EAX,dword ptr [EDI + 0x98]
-//                              aibobj.cpp:143 (36)
-//         0040a2ec     MOV        EDX,dword ptr [ESI + 0xc]
-//         0040a2ef     MOV        dword ptr [ESI + 0x98],EAX
-//         0040a2f5     MOV        this,dword ptr [EDI + 0x9c]
-//         0040a2fb     MOV        dword ptr [ESI],BaseObject::`vftable'            = 0040a040
-//         0040a301     SHL        EDX,0x2
-//         0040a304     PUSH       EDX
-//         0040a305     MOV        dword ptr [ESI + 0x9c],this
-//         0040a30b     CALL       operator_new                                     void * operator_new(uint param_1)
-//                              aibobj.cpp:144 (15)
-//         0040a310     MOV        this,dword ptr [ESI + 0xc]
-//         0040a313     MOV        dword ptr [ESI + 0x10],EAX
-//         0040a316     ADD        ESP,0x4
-//         0040a319     XOR        EAX,EAX
-//         0040a31b     TEST       this,this
-//         0040a31d     JLE        LAB_0040a333
-//                               LAB_0040a31f                                                 XREF[1]:     0040a331(j)
-//                              aibobj.cpp:145 (20)
-//         0040a31f     MOV        this,dword ptr [EDI + 0x10]
-//         0040a322     MOV        EDX,dword ptr [ESI + 0x10]
-//         0040a325     MOV        this,dword ptr [this->_padding_ + EAX*0x4]
-//         0040a328     MOV        dword ptr [EDX + EAX*0x4],this
-//         0040a32b     MOV        this,dword ptr [ESI + 0xc]
-//         0040a32e     INC        EAX
-//         0040a32f     CMP        EAX,this
-//         0040a331     JL         LAB_0040a31f
-//                               LAB_0040a333                                                 XREF[1]:     0040a31d(j)
-//                              aibobj.cpp:147 (18)
-//         0040a333     ADD        EDI,0x20
-//         0040a336     PUSH       0x3f
-//         0040a338     LEA        EDX,[ESI + 0x20]
-//         0040a33b     PUSH       EDI
-//         0040a33c     PUSH       EDX
-//         0040a33d     CALL       strncpy                                          undefined strncpy()
-//         0040a342     ADD        ESP,0xc
-//                              aibobj.cpp:148 (7)
-//         0040a345     MOV        EAX,ESI
-//         0040a347     POP        EDI
-//         0040a348     POP        ESI
-//         0040a349     RET        0x4
-//         0040a34c     ??         90h
-//         0040a34d     NOP
-//         0040a34e     NOP
-//         0040a34f     NOP
+//                              aibobj.cpp:107 (172)
+//         0040a130     PUSH       ESI
+//         0040a131     MOV        ESI,this
+//         0040a133     PUSH       EDI
+//         0040a134     MOV        EDI,dword ptr [ESP + param_1]
+//         0040a138     MOV        dword ptr [ESI + 0x4],0x0
+//         0040a13f     MOV        dword ptr [ESI + 0x8],0x0
+//         0040a146     MOV        EAX,dword ptr [EDI + 0xc]
+//         0040a149     MOV        dword ptr [ESI + 0xc],EAX
+//         0040a14c     MOV        this,dword ptr [EDI + 0x14]
+//         0040a14f     MOV        dword ptr [ESI + 0x14],this
+//         0040a152     MOV        EDX,dword ptr [EDI + 0x18]
+//         0040a155     MOV        dword ptr [ESI + 0x18],EDX
+//         0040a158     MOV        EAX,dword ptr [EDI + 0x1c]
+//         0040a15b     MOV        dword ptr [ESI + 0x1c],EAX
+//         0040a15e     MOV        this,dword ptr [EDI + 0x60]
+//         0040a161     MOV        dword ptr [ESI + 0x60],this
+//         0040a164     MOV        EDX,dword ptr [EDI + 0x64]
+//         0040a167     MOV        dword ptr [ESI + 0x64],EDX
+//         0040a16a     MOV        EAX,dword ptr [EDI + 0x68]
+//         0040a16d     MOV        dword ptr [ESI + 0x68],EAX
+//         0040a170     MOV        this,dword ptr [EDI + 0x6c]
+//         0040a173     MOV        dword ptr [ESI + 0x6c],this
+//         0040a176     MOV        EDX,dword ptr [EDI + 0x70]
+//         0040a179     MOV        dword ptr [ESI + 0x70],EDX
+//         0040a17c     MOV        EAX,dword ptr [EDI + 0x74]
+//         0040a17f     MOV        dword ptr [ESI + 0x74],EAX
+//         0040a182     MOV        this,dword ptr [EDI + 0x78]
+//         0040a185     MOV        dword ptr [ESI + 0x78],this
+//         0040a188     MOV        EDX,dword ptr [EDI + 0x7c]
+//         0040a18b     MOV        dword ptr [ESI + 0x7c],EDX
+//         0040a18e     MOV        EAX,dword ptr [EDI + 0x80]
+//         0040a194     MOV        dword ptr [ESI + 0x80],EAX
+//         0040a19a     MOV        this,dword ptr [EDI + 0x84]
+//         0040a1a0     MOV        dword ptr [ESI + 0x84],this
+//         0040a1a6     MOV        EDX,dword ptr [EDI + 0x88]
+//         0040a1ac     MOV        dword ptr [ESI + 0x88],EDX
+//         0040a1b2     MOV        EAX,dword ptr [EDI + 0x8c]
+//         0040a1b8     MOV        dword ptr [ESI + 0x8c],EAX
+//         0040a1be     MOV        this,dword ptr [EDI + 0x90]
+//         0040a1c4     MOV        dword ptr [ESI + 0x90],this
+//         0040a1ca     MOV        EDX,dword ptr [EDI + 0x94]
+//         0040a1d0     MOV        dword ptr [ESI + 0x94],EDX
+//         0040a1d6     MOV        EAX,dword ptr [EDI + 0x98]
+//                              aibobj.cpp:109 (36)
+//         0040a1dc     MOV        EDX,dword ptr [ESI + 0xc]
+//         0040a1df     MOV        dword ptr [ESI + 0x98],EAX
+//         0040a1e5     MOV        this,dword ptr [EDI + 0x9c]
+//         0040a1eb     MOV        dword ptr [ESI],BaseObject::`vftable'            = 0040a040
+//         0040a1f1     SHL        EDX,0x2
+//         0040a1f4     PUSH       EDX
+//         0040a1f5     MOV        dword ptr [ESI + 0x9c],this
+//         0040a1fb     CALL       operator_new                                     void * operator_new(uint param_1)
+//                              aibobj.cpp:110 (15)
+//         0040a200     MOV        this,dword ptr [ESI + 0xc]
+//         0040a203     MOV        dword ptr [ESI + 0x10],EAX
+//         0040a206     ADD        ESP,0x4
+//         0040a209     XOR        EAX,EAX
+//         0040a20b     TEST       this,this
+//         0040a20d     JLE        LAB_0040a223
+//                               LAB_0040a20f                                                 XREF[1]:     0040a221(j)
+//                              aibobj.cpp:111 (20)
+//         0040a20f     MOV        this,dword ptr [EDI + 0x10]
+//         0040a212     MOV        EDX,dword ptr [ESI + 0x10]
+//         0040a215     MOV        this,dword ptr [this->_padding_ + EAX*0x4]
+//         0040a218     MOV        dword ptr [EDX + EAX*0x4],this
+//         0040a21b     MOV        this,dword ptr [ESI + 0xc]
+//         0040a21e     INC        EAX
+//         0040a21f     CMP        EAX,this
+//         0040a221     JL         LAB_0040a20f
+//                               LAB_0040a223                                                 XREF[1]:     0040a20d(j)
+//                              aibobj.cpp:113 (18)
+//         0040a223     ADD        EDI,0x20
+//         0040a226     PUSH       0x3f
+//         0040a228     LEA        EDX,[ESI + 0x20]
+//         0040a22b     PUSH       EDI
+//         0040a22c     PUSH       EDX
+//         0040a22d     CALL       strncpy                                          undefined strncpy()
+//         0040a232     ADD        ESP,0xc
+//                              aibobj.cpp:114 (7)
+//         0040a235     MOV        EAX,ESI
+//         0040a237     POP        EDI
+//         0040a238     POP        ESI
+//         0040a239     RET        0x4
+//         0040a23c     ??         90h
+//         0040a23d     NOP
+//         0040a23e     NOP
+//         0040a23f     NOP
 }
 
 BaseObject::BaseObject(BaseObject* param_1) {

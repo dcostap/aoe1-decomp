@@ -891,101 +891,133 @@ void PointMaker::MakeArrays() {
 
 int PointMaker::CreateShape() {
     /* TODO: Stub */
-//                              int __thiscall CreateShape(PointMaker * this, int param_1, int param
+//                              int __thiscall CreateShape(PointMaker * this)
 //              int               EAX:4          <RETURN>
 //              PointMaker *      ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     0044b48e(R)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     0044b48a(R)
-//                               ?CreateShape@PointMaker@@QAEHHH@Z
+//                               ?CreateShape@PointMaker@@QAEHXZ
 //                               PointMaker::CreateShape
-//                              fractal.cpp:241 (5)
-//         0044b470     PUSH       EBX
-//         0044b471     PUSH       EBP
-//         0044b472     PUSH       ESI
-//         0044b473     MOV        ESI,this
-//                              fractal.cpp:243 (9)
-//         0044b475     XOR        EBX,EBX
-//         0044b477     PUSH       EDI
-//         0044b478     MOV        dword ptr [ESI + 0xfe0],EBX
-//                              fractal.cpp:244 (5)
-//         0044b47e     CALL       PointMaker::ClearArrays                          void ClearArrays(PointMaker * this)
-//                              fractal.cpp:245 (7)
-//         0044b483     MOV        this,ESI
-//         0044b485     CALL       PointMaker::PrepareLimits                        void PrepareLimits(PointMaker * this)
-//                              fractal.cpp:248 (14)
-//         0044b48a     MOV        this,dword ptr [ESP + param_2]
-//         0044b48e     MOV        EAX,dword ptr [ESP + param_1]
-//         0044b492     MOV        dword ptr [ESI + 0xfbc],this
-//                              fractal.cpp:249 (3)
-//         0044b498     MOV        dword ptr [ESI + 0x4],this
-//                              fractal.cpp:250 (27)
-//         0044b49b     MOV        this,ESI
-//         0044b49d     MOV        dword ptr [ESI + 0xfec],EBX
-//         0044b4a3     MOV        dword ptr [ESI + 0xfe0],EBX
-//         0044b4a9     MOV        dword ptr [ESI + 0xfb8],EAX
-//         0044b4af     MOV        dword ptr [ESI],EAX
-//         0044b4b1     CALL       PointMaker::DrawPrimaryIntoProbabilityArray      void DrawPrimaryIntoProbabilityArray(PointMak
-//                              fractal.cpp:252 (7)
-//         0044b4b6     MOV        this,ESI
-//         0044b4b8     CALL       PointMaker::ErrorCheckingAndCorrection           void ErrorCheckingAndCorrection(PointMaker *
-//                              fractal.cpp:253 (6)
-//         0044b4bd     MOV        EDI,dword ptr [ESI + 0xfdc]
-//                              fractal.cpp:256 (28)
-//         0044b4c3     MOV        EAX,dword ptr [ESI + 0xfec]
-//         0044b4c9     XOR        EBP,EBP
-//         0044b4cb     CMP        EAX,EDI
-//         0044b4cd     MOV        dword ptr [ESI + 0xfe4],EBX
-//         0044b4d3     JGE        LAB_0044b519
-//                               LAB_0044b4d5                                                 XREF[1]:     0044b517(j)
-//         0044b4d5     MOV        EAX,EBP
-//         0044b4d7     INC        EBP
-//         0044b4d8     CMP        EAX,0x5dc
-//         0044b4dd     JGE        LAB_0044b519
-//                              fractal.cpp:258 (5)
-//         0044b4df     MOV        this,dword ptr [ESI]
-//         0044b4e1     MOV        EDX,dword ptr [ESI + 0x4]
-//                              fractal.cpp:259 (12)
-//         0044b4e4     MOV        EAX,dword ptr [ESI + 0x1018]
-//         0044b4ea     MOV        dword ptr [ESI + 0xfb8],this
-//                              fractal.cpp:262 (25)
-//         0044b4f0     MOV        this,ESI
-//         0044b4f2     MOV        dword ptr [ESI + 0xfbc],EDX
-//         0044b4f8     MOV        dword ptr [ESI + 0x101c],EAX
-//         0044b4fe     MOV        dword ptr [ESI + 0xfe0],EBX
-//         0044b504     CALL       PointMaker::MakeFirstLink                        int MakeFirstLink(PointMaker * this)
-//                              fractal.cpp:263 (16)
-//         0044b509     PUSH       EAX
-//         0044b50a     MOV        this,ESI
-//         0044b50c     CALL       PointMaker::Branch                               void Branch(PointMaker * this, int param_1)
-//         0044b511     CMP        dword ptr [ESI + 0xfec],EDI
-//         0044b517     JL         LAB_0044b4d5
-//                               LAB_0044b519                                                 XREF[2]:     0044b4d3(j), 0044b4dd(j)
-//                              fractal.cpp:266 (7)
-//         0044b519     MOV        this,ESI
-//         0044b51b     CALL       PointMaker::CreateMapBasedOnProbabilityArray     void CreateMapBasedOnProbabilityArray(PointMa
-//                              fractal.cpp:267 (7)
-//         0044b520     MOV        this,ESI
-//         0044b522     CALL       PointMaker::MapCleanUpEliminatingSinglesOnly     void MapCleanUpEliminatingSinglesOnly(PointMa
-//                              fractal.cpp:268 (6)
-//         0044b527     MOV        EAX,dword ptr [ESI + 0xfec]
-//                              fractal.cpp:269 (7)
-//         0044b52d     POP        EDI
-//         0044b52e     POP        ESI
-//         0044b52f     POP        EBP
-//         0044b530     POP        EBX
-//         0044b531     RET        0x8
-//         0044b534     ??         90h
-//         0044b535     NOP
-//         0044b536     NOP
-//         0044b537     NOP
-//         0044b538     NOP
-//         0044b539     NOP
-//         0044b53a     NOP
-//         0044b53b     NOP
-//         0044b53c     NOP
-//         0044b53d     NOP
-//         0044b53e     NOP
-//         0044b53f     NOP
+//                              fractal.cpp:209 (5)
+//         0044b320     PUSH       EBX
+//         0044b321     PUSH       EBP
+//         0044b322     PUSH       ESI
+//         0044b323     MOV        ESI,this
+//                              fractal.cpp:210 (9)
+//         0044b325     XOR        EBX,EBX
+//         0044b327     PUSH       EDI
+//         0044b328     MOV        dword ptr [ESI + 0xfe0],EBX
+//                              fractal.cpp:211 (5)
+//         0044b32e     CALL       PointMaker::ClearArrays                          void ClearArrays(PointMaker * this)
+//                              fractal.cpp:212 (7)
+//         0044b333     MOV        this,ESI
+//         0044b335     CALL       PointMaker::PrepareLimits                        void PrepareLimits(PointMaker * this)
+//                              fractal.cpp:215 (49)
+//         0044b33a     MOV        EDI,dword ptr [ESI + 0x1044]
+//         0044b340     PUSH       0xd7
+//         0044b345     PUSH       s_C:\msdev\work\age1_x1\fractal.cp               = "C:\\msdev\\work\\age1_x1\\fractal.cpp"
+//         0044b34a     CALL       debug_rand                                       int debug_rand(char * param_1, int param_2)
+//         0044b34f     MOV        this,dword ptr [ESI + 0xfd4]
+//         0044b355     MOV        EBP,EAX
+//         0044b357     MOV        EAX,0x32
+//         0044b35c     ADD        ESP,0x8
+//         0044b35f     SUB        EAX,EDI
+//         0044b361     IMUL       this,EAX
+//         0044b364     SHL        this,0x1
+//         0044b366     MOV        EAX,0x51eb851f
+//                              fractal.cpp:216 (66)
+//         0044b36b     PUSH       0xd8
+//         0044b370     IMUL       this
+//         0044b372     MOV        this,EDX
+//         0044b374     MOV        EAX,EBP
+//         0044b376     SAR        this,0x5
+//         0044b379     MOV        EDX,this
+//         0044b37b     PUSH       s_C:\msdev\work\age1_x1\fractal.cp               = "C:\\msdev\\work\\age1_x1\\fractal.cpp"
+//         0044b380     SHR        EDX,0x1f
+//         0044b383     ADD        this,EDX
+//         0044b385     CDQ
+//         0044b386     IDIV       this
+//         0044b388     ADD        EDX,EDI
+//         0044b38a     MOV        EDI,dword ptr [ESI + 0x104c]
+//         0044b390     MOV        dword ptr [ESI + 0xfb8],EDX
+//         0044b396     CALL       debug_rand                                       int debug_rand(char * param_1, int param_2)
+//         0044b39b     MOV        this,dword ptr [ESI + 0xfd8]
+//         0044b3a1     MOV        EBP,EAX
+//         0044b3a3     MOV        EAX,0x32
+//         0044b3a8     ADD        ESP,0x8
+//         0044b3ab     SUB        EAX,EDI
+//                              fractal.cpp:219 (49)
+//         0044b3ad     MOV        dword ptr [ESI + 0xfec],EBX
+//         0044b3b3     IMUL       this,EAX
+//         0044b3b6     SHL        this,0x1
+//         0044b3b8     MOV        EAX,0x51eb851f
+//         0044b3bd     MOV        dword ptr [ESI + 0xfe0],EBX
+//         0044b3c3     IMUL       this
+//         0044b3c5     MOV        this,EDX
+//         0044b3c7     MOV        EAX,EBP
+//         0044b3c9     SAR        this,0x5
+//         0044b3cc     MOV        EDX,this
+//         0044b3ce     SHR        EDX,0x1f
+//         0044b3d1     ADD        this,EDX
+//         0044b3d3     CDQ
+//         0044b3d4     IDIV       this
+//         0044b3d6     MOV        this,dword ptr [ESI + 0xfb8]
+//         0044b3dc     MOV        dword ptr [ESI],this
+//                              fractal.cpp:220 (19)
+//         0044b3de     MOV        this,ESI
+//         0044b3e0     LEA        EAX,[EDX + EDI*0x1]
+//         0044b3e3     MOV        dword ptr [ESI + 0xfbc],EAX
+//         0044b3e9     MOV        dword ptr [ESI + 0x4],EAX
+//         0044b3ec     CALL       PointMaker::DrawPrimaryIntoProbabilityArray      void DrawPrimaryIntoProbabilityArray(PointMak
+//                              fractal.cpp:222 (7)
+//         0044b3f1     MOV        this,ESI
+//         0044b3f3     CALL       PointMaker::ErrorCheckingAndCorrection           void ErrorCheckingAndCorrection(PointMaker *
+//                              fractal.cpp:224 (6)
+//         0044b3f8     MOV        EDI,dword ptr [ESI + 0xfdc]
+//                              fractal.cpp:226 (29)
+//         0044b3fe     MOV        EAX,dword ptr [ESI + 0xfec]
+//         0044b404     XOR        EBP,EBP
+//         0044b406     CMP        EAX,EDI
+//         0044b408     MOV        dword ptr [ESI + 0xfe4],EBX
+//         0044b40e     JGE        LAB_0044b455
+//                               LAB_0044b410                                                 XREF[1]:     0044b453(j)
+//         0044b410     MOV        EDX,EBP
+//         0044b412     INC        EBP
+//         0044b413     CMP        EDX,0x5dc
+//         0044b419     JGE        LAB_0044b455
+//                              fractal.cpp:228 (5)
+//         0044b41b     MOV        this,dword ptr [ESI + 0x4]
+//         0044b41e     MOV        EAX,dword ptr [ESI]
+//                              fractal.cpp:229 (12)
+//         0044b420     MOV        EDX,dword ptr [ESI + 0x1018]
+//         0044b426     MOV        dword ptr [ESI + 0xfbc],this
+//                              fractal.cpp:232 (25)
+//         0044b42c     MOV        this,ESI
+//         0044b42e     MOV        dword ptr [ESI + 0xfb8],EAX
+//         0044b434     MOV        dword ptr [ESI + 0x101c],EDX
+//         0044b43a     MOV        dword ptr [ESI + 0xfe0],EBX
+//         0044b440     CALL       PointMaker::MakeFirstLink                        int MakeFirstLink(PointMaker * this)
+//                              fractal.cpp:233 (16)
+//         0044b445     PUSH       EAX
+//         0044b446     MOV        this,ESI
+//         0044b448     CALL       PointMaker::Branch                               void Branch(PointMaker * this, int param_1)
+//         0044b44d     CMP        dword ptr [ESI + 0xfec],EDI
+//         0044b453     JL         LAB_0044b410
+//                               LAB_0044b455                                                 XREF[2]:     0044b40e(j), 0044b419(j)
+//                              fractal.cpp:235 (7)
+//         0044b455     MOV        this,ESI
+//         0044b457     CALL       PointMaker::CreateMapBasedOnProbabilityArray     void CreateMapBasedOnProbabilityArray(PointMa
+//                              fractal.cpp:236 (7)
+//         0044b45c     MOV        this,ESI
+//         0044b45e     CALL       PointMaker::MapCleanUpEliminatingSinglesOnly     void MapCleanUpEliminatingSinglesOnly(PointMa
+//                              fractal.cpp:237 (6)
+//         0044b463     MOV        EAX,dword ptr [ESI + 0xfec]
+//                              fractal.cpp:238 (5)
+//         0044b469     POP        EDI
+//         0044b46a     POP        ESI
+//         0044b46b     POP        EBP
+//         0044b46c     POP        EBX
+//         0044b46d     RET
+//         0044b46e     ??         90h
+//         0044b46f     NOP
     return 0;
 }
 

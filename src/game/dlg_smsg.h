@@ -1,6 +1,11 @@
 #pragma once
 #include "../common.h"
 
+typedef enum Mode : unsigned int {
+    AsChat = 0,
+    AsComment = 1,
+};
+
 class TribeSendQuickMessageDialog : public TDialogPanel {
 public:
     TEditPanel* chatInput;                   // 0x490

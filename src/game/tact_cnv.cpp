@@ -6,48 +6,61 @@ TRIBE_Action_Convert::TRIBE_Action_Convert(int param_1, RGE_Action_Object* param
 //                              undefined __thiscall TRIBE_Action_Convert(TRIBE_Action_Convert * thi
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Action_C    ECX:4 (auto)   this
-//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     004cdb20(R)
-//              RGE_Task *        Stack[0x8]:4   param_2                   XREF[1]:     004cdb2f(R)
-//              float             Stack[0xc]:4   param_3                   XREF[1]:     004cdb37(R)
-//              float             Stack[0x10]:4  param_4                   XREF[1]:     004cdb33(R)
-//              float             Stack[0x14]:4  param_5                   XREF[1]:     004cdb3e(R)
-//                               ??0TRIBE_Action_Convert@@QAE@PAVRGE_Action_Object@@PAVRGE_T  XREF[1]:     create_task_action:004d0718(c)
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004cd9fd(R)
+//              RGE_Action_Obj    Stack[0x8]:4   param_2                   XREF[1]:     004cd9f6(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     004cda1a(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004cda45(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004cda07(W)
+//                               ??0TRIBE_Action_Convert@@QAE@HPAVRGE_Action_Object@@@Z       XREF[1]:     create_action:004d0293(c)
 //                               TRIBE_Action_Convert::TRIBE_Action_Convert
-//                              tact_cnv.cpp:90 (15)
-//         004cdb20     MOV        EAX,dword ptr [ESP + param_1]
-//         004cdb24     PUSH       ESI
-//         004cdb25     PUSH       0x1
-//         004cdb27     MOV        ESI,this
-//         004cdb29     PUSH       EAX
-//         004cdb2a     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
-//                              tact_cnv.cpp:92 (4)
-//         004cdb2f     MOV        this,dword ptr [ESP + param_2]
-//                              tact_cnv.cpp:94 (11)
-//         004cdb33     MOV        EAX,dword ptr [ESP + param_4]
-//         004cdb37     MOV        EDX,dword ptr [ESP + param_3]
-//         004cdb3b     MOV        dword ptr [ESI + 0x30],this
-//                              tact_cnv.cpp:95 (32)
-//         004cdb3e     MOV        this,dword ptr [ESP + param_5]
-//         004cdb42     MOV        dword ptr [ESI + 0x24],EAX
-//         004cdb45     MOV        dword ptr [ESI + 0x44],0x3f800000
-//         004cdb4c     MOV        dword ptr [ESI],TRIBE_Action_Convert::`vftable'  = 004cda60
-//         004cdb52     MOV        word ptr [ESI + 0x4],0x68
-//         004cdb58     MOV        dword ptr [ESI + 0x20],EDX
-//         004cdb5b     MOV        dword ptr [ESI + 0x28],this
-//                              tact_cnv.cpp:96 (4)
-//         004cdb5e     MOV        byte ptr [ESI + 0x40],0x0
-//                              tact_cnv.cpp:102 (6)
-//         004cdb62     MOV        EAX,ESI
-//         004cdb64     POP        ESI
-//         004cdb65     RET        0x14
-//         004cdb68     ??         90h
-//         004cdb69     NOP
-//         004cdb6a     NOP
-//         004cdb6b     NOP
-//         004cdb6c     NOP
-//         004cdb6d     NOP
-//         004cdb6e     NOP
-//         004cdb6f     NOP
+//                              tact_cnv.cpp:48 (48)
+//         004cd9e0     PUSH       -0x1
+//         004cd9e2     PUSH       FUN_0055fdc8
+//         004cd9e7     MOV        EAX,FS:[0x0]
+//         004cd9ed     PUSH       EAX
+//         004cd9ee     MOV        dword ptr FS:[0x0],ESP
+//         004cd9f5     PUSH       this
+//         004cd9f6     MOV        EAX,dword ptr [ESP + param_2]
+//         004cd9fa     PUSH       EBX
+//         004cd9fb     PUSH       ESI
+//         004cd9fc     PUSH       EDI
+//         004cd9fd     MOV        EDI,dword ptr [ESP + param_1]
+//         004cda01     PUSH       0x1
+//         004cda03     MOV        ESI,this
+//         004cda05     PUSH       EAX
+//         004cda06     PUSH       EDI
+//         004cda07     MOV        dword ptr [ESP + local_10],ESI
+//         004cda0b     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, int p
+//                              tact_cnv.cpp:50 (44)
+//         004cda10     LEA        this,[ESI + 0x40]
+//         004cda13     LEA        EBX,[ESI + 0x44]
+//         004cda16     PUSH       0x1
+//         004cda18     PUSH       this
+//         004cda19     PUSH       EDI
+//         004cda1a     MOV        dword ptr [ESP + local_4],0x0
+//         004cda22     MOV        dword ptr [EBX],0x3f800000
+//         004cda28     MOV        dword ptr [ESI],TRIBE_Action_Convert::`vftable'  = 004cda60
+//                              language.dll match for 0x68: "Arial"
+//         004cda2e     MOV        word ptr [ESI + 0x4],0x68
+//         004cda34     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004cda39     ADD        ESP,0xc
+//                              tact_cnv.cpp:51 (9)
+//         004cda3c     PUSH       0x4
+//         004cda3e     PUSH       EBX
+//         004cda3f     PUSH       EDI
+//         004cda40     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              tact_cnv.cpp:52 (25)
+//         004cda45     MOV        this,dword ptr [ESP + local_c]
+//         004cda49     ADD        ESP,0xc
+//         004cda4c     MOV        EAX,ESI
+//         004cda4e     MOV        dword ptr FS:[0x0],this
+//         004cda55     POP        EDI
+//         004cda56     POP        ESI
+//         004cda57     POP        EBX
+//         004cda58     ADD        ESP,0x10
+//         004cda5b     RET        0x8
+//         004cda5e     ??         90h
+//         004cda5f     NOP
 }
 
 TRIBE_Action_Convert::TRIBE_Action_Convert(RGE_Action_Object* param_1, RGE_Task* param_2, RGE_Static_Object* param_3) {
@@ -55,48 +68,73 @@ TRIBE_Action_Convert::TRIBE_Action_Convert(RGE_Action_Object* param_1, RGE_Task*
 //                              undefined __thiscall TRIBE_Action_Convert(TRIBE_Action_Convert * thi
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Action_C    ECX:4 (auto)   this
-//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     004cdb20(R)
-//              RGE_Task *        Stack[0x8]:4   param_2                   XREF[1]:     004cdb2f(R)
-//              float             Stack[0xc]:4   param_3                   XREF[1]:     004cdb37(R)
-//              float             Stack[0x10]:4  param_4                   XREF[1]:     004cdb33(R)
-//              float             Stack[0x14]:4  param_5                   XREF[1]:     004cdb3e(R)
-//                               ??0TRIBE_Action_Convert@@QAE@PAVRGE_Action_Object@@PAVRGE_T  XREF[1]:     create_task_action:004d0718(c)
-//                               TRIBE_Action_Convert::TRIBE_Action_Convert
-//                              tact_cnv.cpp:90 (15)
-//         004cdb20     MOV        EAX,dword ptr [ESP + param_1]
-//         004cdb24     PUSH       ESI
-//         004cdb25     PUSH       0x1
-//         004cdb27     MOV        ESI,this
-//         004cdb29     PUSH       EAX
-//         004cdb2a     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
-//                              tact_cnv.cpp:92 (4)
-//         004cdb2f     MOV        this,dword ptr [ESP + param_2]
-//                              tact_cnv.cpp:94 (11)
-//         004cdb33     MOV        EAX,dword ptr [ESP + param_4]
-//         004cdb37     MOV        EDX,dword ptr [ESP + param_3]
-//         004cdb3b     MOV        dword ptr [ESI + 0x30],this
-//                              tact_cnv.cpp:95 (32)
-//         004cdb3e     MOV        this,dword ptr [ESP + param_5]
-//         004cdb42     MOV        dword ptr [ESI + 0x24],EAX
-//         004cdb45     MOV        dword ptr [ESI + 0x44],0x3f800000
-//         004cdb4c     MOV        dword ptr [ESI],TRIBE_Action_Convert::`vftable'  = 004cda60
-//         004cdb52     MOV        word ptr [ESI + 0x4],0x68
-//         004cdb58     MOV        dword ptr [ESI + 0x20],EDX
-//         004cdb5b     MOV        dword ptr [ESI + 0x28],this
-//                              tact_cnv.cpp:96 (4)
-//         004cdb5e     MOV        byte ptr [ESI + 0x40],0x0
-//                              tact_cnv.cpp:102 (6)
-//         004cdb62     MOV        EAX,ESI
-//         004cdb64     POP        ESI
-//         004cdb65     RET        0x14
-//         004cdb68     ??         90h
-//         004cdb69     NOP
-//         004cdb6a     NOP
-//         004cdb6b     NOP
-//         004cdb6c     NOP
-//         004cdb6d     NOP
-//         004cdb6e     NOP
-//         004cdb6f     NOP
+//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     004cdaa6(R)
+//              RGE_Task *        Stack[0x8]:4   param_2                   XREF[1]:     004cdaba(R)
+//              RGE_Static_Obj    Stack[0xc]:4   param_3                   XREF[1]:     004cdabe(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     004cdac8(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004cdafe(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004cdab1(W)
+//                               ??0TRIBE_Action_Convert@@QAE@PAVRGE_Action_Object@@PAVRGE_T  XREF[2]:     convert:004cb2b2(c),
+//                               TRIBE_Action_Convert::TRIBE_Action_Convert                                create_task_action:004d06cd(c)
+//                              tact_cnv.cpp:61 (42)
+//         004cda90     PUSH       -0x1
+//         004cda92     PUSH       FUN_0055fde8
+//         004cda97     MOV        EAX,FS:[0x0]
+//         004cda9d     PUSH       EAX
+//         004cda9e     MOV        dword ptr FS:[0x0],ESP
+//         004cdaa5     PUSH       this
+//         004cdaa6     MOV        EAX,dword ptr [ESP + param_1]
+//         004cdaaa     PUSH       ESI
+//         004cdaab     PUSH       EDI
+//         004cdaac     MOV        ESI,this
+//         004cdaae     PUSH       0x1
+//         004cdab0     PUSH       EAX
+//         004cdab1     MOV        dword ptr [ESP + local_10],ESI
+//         004cdab5     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
+//                              tact_cnv.cpp:63 (4)
+//         004cdaba     MOV        this,dword ptr [ESP + param_2]
+//                              tact_cnv.cpp:64 (42)
+//         004cdabe     MOV        EDI,dword ptr [ESP + param_3]
+//         004cdac2     MOV        dword ptr [ESI + 0x30],this
+//         004cdac5     PUSH       EDI
+//         004cdac6     MOV        this,ESI
+//         004cdac8     MOV        dword ptr [ESP + local_4],0x0
+//         004cdad0     MOV        dword ptr [ESI + 0x44],0x3f800000
+//         004cdad7     MOV        dword ptr [ESI],TRIBE_Action_Convert::`vftable'  = 004cda60
+//                              language.dll match for 0x68: "Arial"
+//         004cdadd     MOV        word ptr [ESI + 0x4],0x68
+//         004cdae3     CALL       RGE_Action::set_target_obj                       void set_target_obj(RGE_Action * this, RGE_St
+//                              tact_cnv.cpp:65 (4)
+//         004cdae8     TEST       EDI,EDI
+//         004cdaea     JZ         LAB_004cdafe
+//                              tact_cnv.cpp:67 (6)
+//         004cdaec     MOV        EDX,dword ptr [EDI + 0x38]
+//         004cdaef     MOV        dword ptr [ESI + 0x20],EDX
+//                              tact_cnv.cpp:68 (6)
+//         004cdaf2     MOV        EAX,dword ptr [EDI + 0x3c]
+//         004cdaf5     MOV        dword ptr [ESI + 0x24],EAX
+//                              tact_cnv.cpp:69 (6)
+//         004cdaf8     MOV        this,dword ptr [EDI + 0x40]
+//         004cdafb     MOV        dword ptr [ESI + 0x28],this
+//                               LAB_004cdafe                                                 XREF[1]:     004cdaea(j)
+//                              tact_cnv.cpp:81 (25)
+//         004cdafe     MOV        this,dword ptr [ESP + local_c]
+//         004cdb02     MOV        byte ptr [ESI + 0x40],0x0
+//         004cdb06     MOV        EAX,ESI
+//         004cdb08     POP        EDI
+//         004cdb09     MOV        dword ptr FS:[0x0],this
+//         004cdb10     POP        ESI
+//         004cdb11     ADD        ESP,0x10
+//         004cdb14     RET        0xc
+//         004cdb17     ??         90h
+//         004cdb18     NOP
+//         004cdb19     NOP
+//         004cdb1a     NOP
+//         004cdb1b     NOP
+//         004cdb1c     NOP
+//         004cdb1d     NOP
+//         004cdb1e     NOP
+//         004cdb1f     NOP
 }
 
 TRIBE_Action_Convert::TRIBE_Action_Convert(RGE_Action_Object* param_1, RGE_Task* param_2, float param_3, float param_4, float param_5) {

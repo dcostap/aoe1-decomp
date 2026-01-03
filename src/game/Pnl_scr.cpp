@@ -3,49 +3,34 @@
 
 TScreenPanel::TScreenPanel() {
     /* TODO: Stub */
-//                              undefined __thiscall TScreenPanel(TScreenPanel * this, char * param_1)
+//                              undefined __thiscall TScreenPanel(TScreenPanel * this)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TScreenPanel *    ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0047bab0(R)
-//                               ??0TScreenPanel@@QAE@PAD@Z                                   XREF[28]:    TribeAchievementsScreen:0048d55a(c
-//                               TScreenPanel::TScreenPanel                                                TRIBE_Screen_Campaign_Selection:00
-//                                                                                                         TribeJoinScreen:00491677(c),
-//                                                                                                         TRIBE_Credits_Screen:00492707(c),
-//                                                                                                         TRIBE_Screen_Game:00493d8a(c),
-//                                                                                                         TRIBE_Screen_Info:0049d572(c),
-//                                                                                                         TribeLoadSavedGameScreen:0049dd6a(
-//                                                                                                         TRIBE_Screen_Main_Menu:0049e6fa(c)
-//                                                                                                         TRIBE_Screen_Main_Error:0049f0f4(c
-//                                                                                                         TribeMPSetupScreen:004a00da(c),
-//                                                                                                         TRIBE_Screen_Wait:004a563a(c),
-//                                                                                                         TribeSaveGameScreen:004a721a(c),
-//                                                                                                         TRIBE_Screen_Sed:004a820a(c),
-//                                                                                                         TRIBE_Screen_Sed_Menu:004b2f15(c),
-//                                                                                                         TRIBE_Screen_Sed_Open:004b33fa(c),
-//                                                                                                         TribeSelectScenarioScreen:004b3cb5
-//                                                                                                         TribeGameSettingsScreen:004b48a6(c
-//                                                                                                         TribeSPMenuScreen:004b69c7(c),
-//                                                                                                         TRIBE_Screen_Status_Message:004b71
-//                                                                                                         TRIBE_Screen_Status_Message:004b73
-//                                                                                                         [more]
-//                              Pnl_scr.cpp:52 (19)
-//         0047bab0     MOV        EAX,dword ptr [ESP + param_1]
-//         0047bab4     PUSH       ESI
-//         0047bab5     MOV        ESI,this
-//         0047bab7     PUSH       EAX
-//         0047bab8     CALL       TEasy_Panel::TEasy_Panel                         undefined TEasy_Panel(TEasy_Panel * this, cha
-//         0047babd     MOV        dword ptr [ESI],TScreenPanel::`vftable'          = 0047ba90
-//                              Pnl_scr.cpp:53 (6)
-//         0047bac3     MOV        EAX,ESI
-//         0047bac5     POP        ESI
-//         0047bac6     RET        0x4
-//         0047bac9     ??         90h
-//         0047baca     NOP
-//         0047bacb     NOP
-//         0047bacc     NOP
-//         0047bacd     NOP
-//         0047bace     NOP
-//         0047bacf     NOP
+//                               ??0TScreenPanel@@QAE@XZ
+//                               TScreenPanel::TScreenPanel
+//                              Pnl_scr.cpp:44 (14)
+//         0047ba70     PUSH       ESI
+//         0047ba71     MOV        ESI,this
+//         0047ba73     CALL       TEasy_Panel::TEasy_Panel                         undefined TEasy_Panel(TEasy_Panel * this)
+//         0047ba78     MOV        dword ptr [ESI],TScreenPanel::`vftable'          = 0047ba90
+//                              Pnl_scr.cpp:45 (4)
+//         0047ba7e     MOV        EAX,ESI
+//         0047ba80     POP        ESI
+//         0047ba81     RET
+//         0047ba82     ??         90h
+//         0047ba83     NOP
+//         0047ba84     NOP
+//         0047ba85     NOP
+//         0047ba86     NOP
+//         0047ba87     NOP
+//         0047ba88     NOP
+//         0047ba89     NOP
+//         0047ba8a     NOP
+//         0047ba8b     NOP
+//         0047ba8c     NOP
+//         0047ba8d     NOP
+//         0047ba8e     NOP
+//         0047ba8f     NOP
 }
 
 TScreenPanel::TScreenPanel(char* param_1) {
@@ -137,40 +122,54 @@ long TScreenPanel::setup(TDrawArea* param_1, char* param_2, long param_3, int pa
 //                              long __thiscall setup(TScreenPanel * this, TDrawArea * param_1, char
 //              long              EAX:4          <RETURN>
 //              TScreenPanel *    ECX:4 (auto)   this
-//              TDrawArea *       Stack[0x4]:4   param_1                   XREF[1]:     0047bb14(R)
-//              char *            Stack[0x8]:4   param_2
-//              long              Stack[0xc]:4   param_3
-//              uchar             Stack[0x10]:1  param_4
-//              int               Stack[0x14]:4  param_5                   XREF[1]:     0047bb10(R)
-//                               ?setup@TScreenPanel@@QAEJPAVTDrawArea@@PADJEH@Z
-//                               TScreenPanel::setup
-//                              Pnl_scr.cpp:77 (37)
-//         0047bb10     MOV        EAX,dword ptr [ESP + param_5]
-//         0047bb14     MOV        EDX,dword ptr [ESP + param_1]
-//         0047bb18     PUSH       EAX
-//         0047bb19     PUSH       0x0
-//         0047bb1b     PUSH       0x0
-//         0047bb1d     PUSH       0x0
-//         0047bb1f     PUSH       0x0
-//         0047bb21     PUSH       0x1
-//         0047bb23     PUSH       -0x1
-//         0047bb25     PUSH       0x0
-//         0047bb27     PUSH       0x0
-//         0047bb29     PUSH       EDX
-//         0047bb2a     CALL       TEasy_Panel::setup                               long setup(TEasy_Panel * this, TDrawArea * pa
-//         0047bb2f     NEG        EAX
-//         0047bb31     SBB        EAX,EAX
-//         0047bb33     NEG        EAX
-//                              Pnl_scr.cpp:82 (3)
-//         0047bb35     RET        0x14
-//         0047bb38     ??         90h
-//         0047bb39     NOP
-//         0047bb3a     NOP
-//         0047bb3b     NOP
-//         0047bb3c     NOP
-//         0047bb3d     NOP
-//         0047bb3e     NOP
-//         0047bb3f     NOP
+//              TDrawArea *       Stack[0x4]:4   param_1                   XREF[1]:     0047baf8(R)
+//              char *            Stack[0x8]:4   param_2                   XREF[1]:     0047bae9(R)
+//              long              Stack[0xc]:4   param_3                   XREF[1]:     0047bae4(R)
+//              int               Stack[0x10]:4  param_4                   XREF[1]:     0047bae0(R)
+//                               ?setup@TScreenPanel@@QAEJPAVTDrawArea@@PADJH@Z               XREF[24]:    setup_blank_screen:0041f79e(c),
+//                               TScreenPanel::setup                                                       TribeAchievementsScreen:0048d716(c
+//                                                                                                         TRIBE_Campaign_Editor_Screen:0048f
+//                                                                                                         TRIBE_Screen_Campaign_Selection:00
+//                                                                                                         TribeJoinScreen:004916f3(c),
+//                                                                                                         TRIBE_Credits_Screen:00492773(c),
+//                                                                                                         TRIBE_Screen_Game:004940d5(c),
+//                                                                                                         TRIBE_Screen_Info:0049d5b7(c),
+//                                                                                                         TribeLoadSavedGameScreen:0049de1e(
+//                                                                                                         TRIBE_Screen_Main_Menu:0049e75f(c)
+//                                                                                                         TRIBE_Screen_Main_Error:0049f136(c
+//                                                                                                         TribeMPStartupScreen:0049f3ec(c),
+//                                                                                                         TRIBE_Screen_Wait:004a5690(c),
+//                                                                                                         TribeSaveGameScreen:004a7309(c),
+//                                                                                                         TRIBE_Screen_Sed:004a839d(c),
+//                                                                                                         TRIBE_Screen_Sed_Menu:004b2f67(c),
+//                                                                                                         TRIBE_Screen_Sed_Open:004b34a4(c),
+//                                                                                                         TribeSPMenuScreen:004b6a0e(c),
+//                                                                                                         TRIBE_Screen_Status_Message:004b72
+//                                                                                                         TRIBE_Screen_Status_Message:004b74
+//                                                                                                         [more]
+//                              Pnl_scr.cpp:66 (43)
+//         0047bae0     MOV        EAX,dword ptr [ESP + param_4]
+//         0047bae4     MOV        EDX,dword ptr [ESP + param_3]
+//         0047bae8     PUSH       EAX
+//         0047bae9     MOV        EAX,dword ptr [ESP + param_2]
+//         0047baed     PUSH       0x0
+//         0047baef     PUSH       0x0
+//         0047baf1     PUSH       0x0
+//         0047baf3     PUSH       0x0
+//         0047baf5     PUSH       0x1
+//         0047baf7     PUSH       EDX
+//         0047baf8     MOV        EDX,dword ptr [ESP + param_1]
+//         0047bafc     PUSH       EAX
+//         0047bafd     PUSH       0x0
+//         0047baff     PUSH       EDX
+//         0047bb00     CALL       TEasy_Panel::setup                               long setup(TEasy_Panel * this, TDrawArea * pa
+//         0047bb05     NEG        EAX
+//         0047bb07     SBB        EAX,EAX
+//         0047bb09     NEG        EAX
+//                              Pnl_scr.cpp:71 (3)
+//         0047bb0b     RET        0x10
+//         0047bb0e     ??         90h
+//         0047bb0f     NOP
     return 0;
 }
 

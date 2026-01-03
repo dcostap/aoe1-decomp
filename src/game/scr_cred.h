@@ -1,5 +1,51 @@
 #pragma once
 #include "../common.h"
+#include "diam_map.h"
+#include "dlg_abt.h"
+#include "dlg_conf.h"
+#include "dlg_dip.h"
+#include "dlg_help.h"
+#include "dlg_list.h"
+#include "dlg_menu.h"
+#include "Dlg_msg.h"
+#include "dlg_sedm.h"
+#include "dlg_smsg.h"
+#include "Mouseptr.h"
+#include "Panel_ez.h"
+#include "Panel.h"
+#include "Pnl_btn.h"
+#include "pnl_dlg.h"
+#include "Pnl_drop.h"
+#include "pnl_edit.h"
+#include "Pnl_inp.h"
+#include "Pnl_lst.h"
+#include "Pnl_msg.h"
+#include "Pnl_pic.h"
+#include "Pnl_scbr.h"
+#include "Pnl_scr.h"
+#include "pnl_sld.h"
+#include "Pnl_txt.h"
+#include "rpnl_tbx.h"
+#include "rpnl_tim.h"
+#include "tpnl_btn.h"
+#include "tpnl_inv.h"
+#include "tpnl_obj.h"
+#include "tpnl_pop.h"
+#include "tpnl_tim.h"
+#include "tpnl_tml.h"
+#include "tpnl_txl.h"
+
+typedef enum ScreenMode : unsigned int {
+    ModeNone = 1,
+    ModeFadeOut = 2,
+    ModeFadeOutDone = 3,
+    ModePause = 4,
+    ModeFadeIn = 5,
+};
+
+typedef enum ActionType : unsigned int {
+    ActionDone = 1,
+};
 
 class TScrollTextPanel : public TTextPanel {
 public:

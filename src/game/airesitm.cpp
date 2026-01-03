@@ -3,200 +3,197 @@
 
 ResourceItem::ResourceItem() {
     /* TODO: Stub */
-//                              undefined __thiscall ResourceItem(ResourceItem * this, ResourceItem
+//                              undefined __thiscall ResourceItem(ResourceItem * this)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              ResourceItem *    ECX:4 (auto)   this
-//              ResourceItem *    Stack[0x4]:4   param_1                   XREF[1]:     00412055(R)
-//                               ??0ResourceItem@@QAE@PAV0@@Z                                 XREF[1]:     TechnologyItem:00412d1e(c)
+//                               ??0ResourceItem@@QAE@XZ
 //                               ResourceItem::ResourceItem
-//                              airesitm.cpp:92 (26)
-//         00412050     PUSH       EBX
-//         00412051     PUSH       ESI
-//         00412052     MOV        EAX,this
-//         00412054     PUSH       EDI
-//         00412055     MOV        this,dword ptr [ESP + param_1]
-//         00412059     XOR        EDI,EDI
-//         0041205b     MOV        dword ptr [EAX + 0x4],EDI
-//         0041205e     MOV        dword ptr [EAX + 0x8],EDI
-//         00412061     MOV        EDX,dword ptr [ECX + this->numberValue]
-//         00412064     MOV        dword ptr [EAX],ResourceItem::`vftable'          = 00411ef0
-//                              airesitm.cpp:93 (20)
-//         0041206a     CMP        EDX,EDI
-//         0041206c     MOV        dword ptr [EAX + 0x6c],EDX
-//         0041206f     JLE        LAB_0041209c
-//         00412071     LEA        ESI,[ECX + this->sortedIndexValue[0]]
-//         00412074     LEA        EDX,[EAX + 0xc]
-//         00412077     SUB        this,EAX
-//                               LAB_00412079                                                 XREF[1]:     0041209a(j)
-//         00412079     CMP        EDI,0x8
-//         0041207c     JGE        LAB_0041209c
-//                              airesitm.cpp:94 (6)
-//         0041207e     MOV        EBX,dword ptr [this->_padding_ + EDX*0x1]
-//         00412081     INC        EDI
-//         00412082     MOV        dword ptr [EDX],EBX
-//                              airesitm.cpp:95 (6)
-//         00412084     MOV        EBX,dword ptr [ESI + -0x20]
-//         00412087     MOV        dword ptr [EDX + 0x20],EBX
-//                              airesitm.cpp:96 (18)
-//         0041208a     MOV        EBX,dword ptr [ESI]
-//         0041208c     MOV        dword ptr [EDX + 0x40],EBX
-//         0041208f     MOV        EBX,dword ptr [EAX + 0x6c]
-//         00412092     ADD        EDX,0x4
-//         00412095     ADD        ESI,0x4
-//         00412098     CMP        EDI,EBX
-//         0041209a     JL         LAB_00412079
-//                               LAB_0041209c                                                 XREF[2]:     0041206f(j), 0041207c(j)
-//                              airesitm.cpp:98 (6)
-//         0041209c     POP        EDI
-//         0041209d     POP        ESI
-//         0041209e     POP        EBX
-//         0041209f     RET        0x4
-//         004120a2     ??         90h
-//         004120a3     NOP
-//         004120a4     NOP
-//         004120a5     NOP
-//         004120a6     NOP
-//         004120a7     NOP
-//         004120a8     NOP
-//         004120a9     NOP
-//         004120aa     NOP
-//         004120ab     NOP
-//         004120ac     NOP
-//         004120ad     NOP
-//         004120ae     NOP
-//         004120af     NOP
+//                              airesitm.cpp:26 (31)
+//         00411ec0     MOV        EAX,this
+//         00411ec2     PUSH       ESI
+//         00411ec3     XOR        this,this
+//         00411ec5     MOV        ESI,0x8
+//         00411eca     MOV        dword ptr [EAX + 0x4],this
+//         00411ecd     MOV        dword ptr [EAX + 0x8],this
+//         00411ed0     MOV        dword ptr [EAX + 0x6c],this
+//         00411ed3     MOV        dword ptr [EAX],ResourceItem::`vftable'          = 00411ef0
+//         00411ed9     LEA        EDX,[EAX + 0x2c]
+//         00411edc     OR         this,0xffffffff
+//                               LAB_00411edf                                                 XREF[1]:     00411eeb(j)
+//                              airesitm.cpp:28 (3)
+//         00411edf     MOV        dword ptr [EDX + -0x20],this
+//                              airesitm.cpp:29 (2)
+//         00411ee2     MOV        dword ptr [EDX],this
+//                              airesitm.cpp:30 (9)
+//         00411ee4     MOV        dword ptr [EDX + 0x20],this
+//         00411ee7     ADD        EDX,0x4
+//         00411eea     DEC        ESI
+//         00411eeb     JNZ        LAB_00411edf
+//                              airesitm.cpp:32 (2)
+//         00411eed     POP        ESI
+//         00411eee     RET
+//         00411eef     ??         90h
 }
 
 ResourceItem::ResourceItem(int param_1) {
     /* TODO: Stub */
-//                              undefined __thiscall ResourceItem(ResourceItem * this, ResourceItem
+//                              undefined __thiscall ResourceItem(ResourceItem * this, int param_1)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              ResourceItem *    ECX:4 (auto)   this
-//              ResourceItem *    Stack[0x4]:4   param_1                   XREF[1]:     00412055(R)
-//                               ??0ResourceItem@@QAE@PAV0@@Z                                 XREF[1]:     TechnologyItem:00412d1e(c)
-//                               ResourceItem::ResourceItem
-//                              airesitm.cpp:92 (26)
-//         00412050     PUSH       EBX
-//         00412051     PUSH       ESI
-//         00412052     MOV        EAX,this
-//         00412054     PUSH       EDI
-//         00412055     MOV        this,dword ptr [ESP + param_1]
-//         00412059     XOR        EDI,EDI
-//         0041205b     MOV        dword ptr [EAX + 0x4],EDI
-//         0041205e     MOV        dword ptr [EAX + 0x8],EDI
-//         00412061     MOV        EDX,dword ptr [ECX + this->numberValue]
-//         00412064     MOV        dword ptr [EAX],ResourceItem::`vftable'          = 00411ef0
-//                              airesitm.cpp:93 (20)
-//         0041206a     CMP        EDX,EDI
-//         0041206c     MOV        dword ptr [EAX + 0x6c],EDX
-//         0041206f     JLE        LAB_0041209c
-//         00412071     LEA        ESI,[ECX + this->sortedIndexValue[0]]
-//         00412074     LEA        EDX,[EAX + 0xc]
-//         00412077     SUB        this,EAX
-//                               LAB_00412079                                                 XREF[1]:     0041209a(j)
-//         00412079     CMP        EDI,0x8
-//         0041207c     JGE        LAB_0041209c
-//                              airesitm.cpp:94 (6)
-//         0041207e     MOV        EBX,dword ptr [this->_padding_ + EDX*0x1]
-//         00412081     INC        EDI
-//         00412082     MOV        dword ptr [EDX],EBX
-//                              airesitm.cpp:95 (6)
-//         00412084     MOV        EBX,dword ptr [ESI + -0x20]
-//         00412087     MOV        dword ptr [EDX + 0x20],EBX
-//                              airesitm.cpp:96 (18)
-//         0041208a     MOV        EBX,dword ptr [ESI]
-//         0041208c     MOV        dword ptr [EDX + 0x40],EBX
-//         0041208f     MOV        EBX,dword ptr [EAX + 0x6c]
-//         00412092     ADD        EDX,0x4
-//         00412095     ADD        ESI,0x4
-//         00412098     CMP        EDI,EBX
-//         0041209a     JL         LAB_00412079
-//                               LAB_0041209c                                                 XREF[2]:     0041206f(j), 0041207c(j)
-//                              airesitm.cpp:98 (6)
-//         0041209c     POP        EDI
-//         0041209d     POP        ESI
-//         0041209e     POP        EBX
-//         0041209f     RET        0x4
-//         004120a2     ??         90h
-//         004120a3     NOP
-//         004120a4     NOP
-//         004120a5     NOP
-//         004120a6     NOP
-//         004120a7     NOP
-//         004120a8     NOP
-//         004120a9     NOP
-//         004120aa     NOP
-//         004120ab     NOP
-//         004120ac     NOP
-//         004120ad     NOP
-//         004120ae     NOP
-//         004120af     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     00411f13(R)
+//                               ??0ResourceItem@@QAE@H@Z                                     XREF[9]:     initialize:004d42fd(c),
+//                               ResourceItem::ResourceItem                                                nextBuildableItem:004d49d0(c),
+//                                                                                                         nextBuildableItem:004d4cc6(c),
+//                                                                                                         blockingResource:004d4e8f(c),
+//                                                                                                         TribeTacticalAIModule:004ed3ae(c),
+//                                                                                                         TribeTacticalAIModule:004ed69e(c),
+//                                                                                                         checkForBuildInsertion:00501dbf(c)
+//                                                                                                         checkForBuildInsertion:00501f99(c)
+//                                                                                                         FUN_005024b3:0050250d(c)
+//                              airesitm.cpp:40 (11)
+//         00411f10     PUSH       EBX
+//         00411f11     MOV        EAX,this
+//         00411f13     MOV        this,dword ptr [ESP + param_1]
+//         00411f17     PUSH       ESI
+//         00411f18     PUSH       EDI
+//         00411f19     XOR        EBX,EBX
+//                              airesitm.cpp:41 (24)
+//         00411f1b     XOR        ESI,ESI
+//         00411f1d     OR         EDI,0xffffffff
+//         00411f20     CMP        this,EBX
+//         00411f22     MOV        dword ptr [EAX + 0x4],EBX
+//         00411f25     MOV        dword ptr [EAX + 0x8],EBX
+//         00411f28     MOV        dword ptr [EAX + 0x6c],this
+//         00411f2b     MOV        dword ptr [EAX],ResourceItem::`vftable'          = 00411ef0
+//         00411f31     JLE        LAB_00411f4e
+//                              airesitm.cpp:40 (3)
+//         00411f33     LEA        EDX,[EAX + 0x2c]
+//                               LAB_00411f36                                                 XREF[1]:     00411f4c(j)
+//                              airesitm.cpp:41 (5)
+//         00411f36     CMP        ESI,0x8
+//         00411f39     JGE        LAB_00411f6c
+//                              airesitm.cpp:42 (3)
+//         00411f3b     MOV        dword ptr [EDX + -0x20],EBX
+//                              airesitm.cpp:43 (2)
+//         00411f3e     MOV        dword ptr [EDX],EDI
+//                              airesitm.cpp:44 (14)
+//         00411f40     MOV        dword ptr [EDX + 0x20],EDI
+//         00411f43     MOV        this,dword ptr [EAX + 0x6c]
+//         00411f46     INC        ESI
+//         00411f47     ADD        EDX,0x4
+//         00411f4a     CMP        ESI,this
+//         00411f4c     JL         LAB_00411f36
+//                               LAB_00411f4e                                                 XREF[1]:     00411f31(j)
+//                              airesitm.cpp:46 (16)
+//         00411f4e     CMP        ESI,0x8
+//         00411f51     JGE        LAB_00411f6c
+//         00411f53     MOV        this,0x8
+//         00411f58     LEA        EDX,[EAX + ESI*0x4 + 0x2c]
+//         00411f5c     SUB        this,ESI
+//                               LAB_00411f5e                                                 XREF[1]:     00411f6a(j)
+//                              airesitm.cpp:47 (3)
+//         00411f5e     MOV        dword ptr [EDX + -0x20],EDI
+//                              airesitm.cpp:48 (2)
+//         00411f61     MOV        dword ptr [EDX],EDI
+//                              airesitm.cpp:49 (9)
+//         00411f63     MOV        dword ptr [EDX + 0x20],EDI
+//         00411f66     ADD        EDX,0x4
+//         00411f69     DEC        this
+//         00411f6a     JNZ        LAB_00411f5e
+//                               LAB_00411f6c                                                 XREF[2]:     00411f39(j), 00411f51(j)
+//                              airesitm.cpp:51 (6)
+//         00411f6c     POP        EDI
+//         00411f6d     POP        ESI
+//         00411f6e     POP        EBX
+//         00411f6f     RET        0x4
+//         00411f72     ??         90h
+//         00411f73     NOP
+//         00411f74     NOP
+//         00411f75     NOP
+//         00411f76     NOP
+//         00411f77     NOP
+//         00411f78     NOP
+//         00411f79     NOP
+//         00411f7a     NOP
+//         00411f7b     NOP
+//         00411f7c     NOP
+//         00411f7d     NOP
+//         00411f7e     NOP
+//         00411f7f     NOP
 }
 
 ResourceItem::ResourceItem(int param_1, int* param_2) {
     /* TODO: Stub */
-//                              undefined __thiscall ResourceItem(ResourceItem * this, ResourceItem
+//                              undefined __thiscall ResourceItem(ResourceItem * this, int param_1,
 //              undefined         <UNASSIGNED>   <RETURN>
 //              ResourceItem *    ECX:4 (auto)   this
-//              ResourceItem *    Stack[0x4]:4   param_1                   XREF[1]:     00412055(R)
-//                               ??0ResourceItem@@QAE@PAV0@@Z                                 XREF[1]:     TechnologyItem:00412d1e(c)
-//                               ResourceItem::ResourceItem
-//                              airesitm.cpp:92 (26)
-//         00412050     PUSH       EBX
-//         00412051     PUSH       ESI
-//         00412052     MOV        EAX,this
-//         00412054     PUSH       EDI
-//         00412055     MOV        this,dword ptr [ESP + param_1]
-//         00412059     XOR        EDI,EDI
-//         0041205b     MOV        dword ptr [EAX + 0x4],EDI
-//         0041205e     MOV        dword ptr [EAX + 0x8],EDI
-//         00412061     MOV        EDX,dword ptr [ECX + this->numberValue]
-//         00412064     MOV        dword ptr [EAX],ResourceItem::`vftable'          = 00411ef0
-//                              airesitm.cpp:93 (20)
-//         0041206a     CMP        EDX,EDI
-//         0041206c     MOV        dword ptr [EAX + 0x6c],EDX
-//         0041206f     JLE        LAB_0041209c
-//         00412071     LEA        ESI,[ECX + this->sortedIndexValue[0]]
-//         00412074     LEA        EDX,[EAX + 0xc]
-//         00412077     SUB        this,EAX
-//                               LAB_00412079                                                 XREF[1]:     0041209a(j)
-//         00412079     CMP        EDI,0x8
-//         0041207c     JGE        LAB_0041209c
-//                              airesitm.cpp:94 (6)
-//         0041207e     MOV        EBX,dword ptr [this->_padding_ + EDX*0x1]
-//         00412081     INC        EDI
-//         00412082     MOV        dword ptr [EDX],EBX
-//                              airesitm.cpp:95 (6)
-//         00412084     MOV        EBX,dword ptr [ESI + -0x20]
-//         00412087     MOV        dword ptr [EDX + 0x20],EBX
-//                              airesitm.cpp:96 (18)
-//         0041208a     MOV        EBX,dword ptr [ESI]
-//         0041208c     MOV        dword ptr [EDX + 0x40],EBX
-//         0041208f     MOV        EBX,dword ptr [EAX + 0x6c]
-//         00412092     ADD        EDX,0x4
-//         00412095     ADD        ESI,0x4
-//         00412098     CMP        EDI,EBX
-//         0041209a     JL         LAB_00412079
-//                               LAB_0041209c                                                 XREF[2]:     0041206f(j), 0041207c(j)
-//                              airesitm.cpp:98 (6)
-//         0041209c     POP        EDI
-//         0041209d     POP        ESI
-//         0041209e     POP        EBX
-//         0041209f     RET        0x4
-//         004120a2     ??         90h
-//         004120a3     NOP
-//         004120a4     NOP
-//         004120a5     NOP
-//         004120a6     NOP
-//         004120a7     NOP
-//         004120a8     NOP
-//         004120a9     NOP
-//         004120aa     NOP
-//         004120ab     NOP
-//         004120ac     NOP
-//         004120ad     NOP
-//         004120ae     NOP
-//         004120af     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     00411f83(R)
+//              int *             Stack[0x8]:4   param_2                   XREF[1]:     00411fa1(R)
+//                               ??0ResourceItem@@QAE@HPAH@Z                                  XREF[2]:     ResearchAIModule:00411883(c),
+//                               ResourceItem::ResourceItem                                                loadTechnologyTree:00411ccb(c)
+//                              airesitm.cpp:59 (11)
+//         00411f80     PUSH       EBX
+//         00411f81     MOV        EAX,this
+//         00411f83     MOV        this,dword ptr [ESP + param_1]
+//         00411f87     PUSH       ESI
+//         00411f88     PUSH       EDI
+//         00411f89     XOR        ESI,ESI
+//                              airesitm.cpp:60 (34)
+//         00411f8b     OR         EDI,0xffffffff
+//         00411f8e     CMP        this,ESI
+//         00411f90     MOV        dword ptr [EAX + 0x4],ESI
+//         00411f93     MOV        dword ptr [EAX + 0x8],ESI
+//         00411f96     MOV        dword ptr [EAX + 0x6c],this
+//         00411f99     MOV        dword ptr [EAX],ResourceItem::`vftable'          = 00411ef0
+//         00411f9f     JLE        LAB_00411fc5
+//         00411fa1     MOV        this,dword ptr [ESP + param_2]
+//         00411fa5     LEA        EDX,[EAX + 0x2c]
+//                               LAB_00411fa8                                                 XREF[1]:     00411fc3(j)
+//         00411fa8     CMP        ESI,0x8
+//         00411fab     JGE        LAB_00411fe3
+//                              airesitm.cpp:61 (6)
+//         00411fad     MOV        EBX,dword ptr [this->_padding_]
+//         00411faf     INC        ESI
+//         00411fb0     MOV        dword ptr [EDX + -0x20],EBX
+//                              airesitm.cpp:62 (2)
+//         00411fb3     MOV        dword ptr [EDX],EDI
+//                              airesitm.cpp:63 (16)
+//         00411fb5     MOV        dword ptr [EDX + 0x20],EDI
+//         00411fb8     MOV        EBX,dword ptr [EAX + 0x6c]
+//         00411fbb     ADD        this,0x4
+//         00411fbe     ADD        EDX,0x4
+//         00411fc1     CMP        ESI,EBX
+//         00411fc3     JL         LAB_00411fa8
+//                               LAB_00411fc5                                                 XREF[1]:     00411f9f(j)
+//                              airesitm.cpp:65 (16)
+//         00411fc5     CMP        ESI,0x8
+//         00411fc8     JGE        LAB_00411fe3
+//         00411fca     MOV        this,0x8
+//         00411fcf     LEA        EDX,[EAX + ESI*0x4 + 0x2c]
+//         00411fd3     SUB        this,ESI
+//                               LAB_00411fd5                                                 XREF[1]:     00411fe1(j)
+//                              airesitm.cpp:66 (3)
+//         00411fd5     MOV        dword ptr [EDX + -0x20],EDI
+//                              airesitm.cpp:67 (2)
+//         00411fd8     MOV        dword ptr [EDX],EDI
+//                              airesitm.cpp:68 (9)
+//         00411fda     MOV        dword ptr [EDX + 0x20],EDI
+//         00411fdd     ADD        EDX,0x4
+//         00411fe0     DEC        this
+//         00411fe1     JNZ        LAB_00411fd5
+//                               LAB_00411fe3                                                 XREF[2]:     00411fab(j), 00411fc8(j)
+//                              airesitm.cpp:70 (6)
+//         00411fe3     POP        EDI
+//         00411fe4     POP        ESI
+//         00411fe5     POP        EBX
+//         00411fe6     RET        0x8
+//         00411fe9     ??         90h
+//         00411fea     NOP
+//         00411feb     NOP
+//         00411fec     NOP
+//         00411fed     NOP
+//         00411fee     NOP
+//         00411fef     NOP
 }
 
 ResourceItem::ResourceItem(ResourceItem* param_1) {
@@ -204,65 +201,66 @@ ResourceItem::ResourceItem(ResourceItem* param_1) {
 //                              undefined __thiscall ResourceItem(ResourceItem * this, ResourceItem
 //              undefined         <UNASSIGNED>   <RETURN>
 //              ResourceItem *    ECX:4 (auto)   this
-//              ResourceItem *    Stack[0x4]:4   param_1                   XREF[1]:     00412055(R)
-//                               ??0ResourceItem@@QAE@PAV0@@Z                                 XREF[1]:     TechnologyItem:00412d1e(c)
-//                               ResourceItem::ResourceItem
-//                              airesitm.cpp:92 (26)
-//         00412050     PUSH       EBX
-//         00412051     PUSH       ESI
-//         00412052     MOV        EAX,this
-//         00412054     PUSH       EDI
-//         00412055     MOV        this,dword ptr [ESP + param_1]
-//         00412059     XOR        EDI,EDI
-//         0041205b     MOV        dword ptr [EAX + 0x4],EDI
-//         0041205e     MOV        dword ptr [EAX + 0x8],EDI
-//         00412061     MOV        EDX,dword ptr [ECX + this->numberValue]
-//         00412064     MOV        dword ptr [EAX],ResourceItem::`vftable'          = 00411ef0
-//                              airesitm.cpp:93 (20)
-//         0041206a     CMP        EDX,EDI
-//         0041206c     MOV        dword ptr [EAX + 0x6c],EDX
-//         0041206f     JLE        LAB_0041209c
-//         00412071     LEA        ESI,[ECX + this->sortedIndexValue[0]]
-//         00412074     LEA        EDX,[EAX + 0xc]
-//         00412077     SUB        this,EAX
-//                               LAB_00412079                                                 XREF[1]:     0041209a(j)
-//         00412079     CMP        EDI,0x8
-//         0041207c     JGE        LAB_0041209c
-//                              airesitm.cpp:94 (6)
-//         0041207e     MOV        EBX,dword ptr [this->_padding_ + EDX*0x1]
-//         00412081     INC        EDI
-//         00412082     MOV        dword ptr [EDX],EBX
-//                              airesitm.cpp:95 (6)
-//         00412084     MOV        EBX,dword ptr [ESI + -0x20]
-//         00412087     MOV        dword ptr [EDX + 0x20],EBX
-//                              airesitm.cpp:96 (18)
-//         0041208a     MOV        EBX,dword ptr [ESI]
-//         0041208c     MOV        dword ptr [EDX + 0x40],EBX
-//         0041208f     MOV        EBX,dword ptr [EAX + 0x6c]
-//         00412092     ADD        EDX,0x4
-//         00412095     ADD        ESI,0x4
-//         00412098     CMP        EDI,EBX
-//         0041209a     JL         LAB_00412079
-//                               LAB_0041209c                                                 XREF[2]:     0041206f(j), 0041207c(j)
-//                              airesitm.cpp:98 (6)
-//         0041209c     POP        EDI
-//         0041209d     POP        ESI
-//         0041209e     POP        EBX
-//         0041209f     RET        0x4
-//         004120a2     ??         90h
-//         004120a3     NOP
-//         004120a4     NOP
-//         004120a5     NOP
-//         004120a6     NOP
-//         004120a7     NOP
-//         004120a8     NOP
-//         004120a9     NOP
-//         004120aa     NOP
-//         004120ab     NOP
-//         004120ac     NOP
-//         004120ad     NOP
-//         004120ae     NOP
-//         004120af     NOP
+//              ResourceItem *    Stack[0x4]:4   param_1                   XREF[1]:     00411ff5(R)
+//                               ??0ResourceItem@@QAE@ABV0@@Z                                 XREF[3]:     ResearchAIModule:004118c0(c),
+//                               ResourceItem::ResourceItem                                                loadTechnologyTree:00411d0b(c),
+//                                                                                                         TechnologyItem:00412c71(c)
+//                              airesitm.cpp:78 (26)
+//         00411ff0     PUSH       EBX
+//         00411ff1     PUSH       ESI
+//         00411ff2     MOV        EAX,this
+//         00411ff4     PUSH       EDI
+//         00411ff5     MOV        this,dword ptr [ESP + param_1]
+//         00411ff9     XOR        EDI,EDI
+//         00411ffb     MOV        dword ptr [EAX + 0x4],EDI
+//         00411ffe     MOV        dword ptr [EAX + 0x8],EDI
+//         00412001     MOV        EDX,dword ptr [ECX + this->numberValue]
+//         00412004     MOV        dword ptr [EAX],ResourceItem::`vftable'          = 00411ef0
+//                              airesitm.cpp:79 (20)
+//         0041200a     CMP        EDX,EDI
+//         0041200c     MOV        dword ptr [EAX + 0x6c],EDX
+//         0041200f     JLE        LAB_0041203c
+//         00412011     LEA        ESI,[ECX + this->sortedIndexValue[0]]
+//         00412014     LEA        EDX,[EAX + 0xc]
+//         00412017     SUB        this,EAX
+//                               LAB_00412019                                                 XREF[1]:     0041203a(j)
+//         00412019     CMP        EDI,0x8
+//         0041201c     JGE        LAB_0041203c
+//                              airesitm.cpp:80 (6)
+//         0041201e     MOV        EBX,dword ptr [this->_padding_ + EDX*0x1]
+//         00412021     INC        EDI
+//         00412022     MOV        dword ptr [EDX],EBX
+//                              airesitm.cpp:81 (6)
+//         00412024     MOV        EBX,dword ptr [ESI + -0x20]
+//         00412027     MOV        dword ptr [EDX + 0x20],EBX
+//                              airesitm.cpp:82 (18)
+//         0041202a     MOV        EBX,dword ptr [ESI]
+//         0041202c     MOV        dword ptr [EDX + 0x40],EBX
+//         0041202f     MOV        EBX,dword ptr [EAX + 0x6c]
+//         00412032     ADD        EDX,0x4
+//         00412035     ADD        ESI,0x4
+//         00412038     CMP        EDI,EBX
+//         0041203a     JL         LAB_00412019
+//                               LAB_0041203c                                                 XREF[2]:     0041200f(j), 0041201c(j)
+//                              airesitm.cpp:84 (6)
+//         0041203c     POP        EDI
+//         0041203d     POP        ESI
+//         0041203e     POP        EBX
+//         0041203f     RET        0x4
+//         00412042     ??         90h
+//         00412043     NOP
+//         00412044     NOP
+//         00412045     NOP
+//         00412046     NOP
+//         00412047     NOP
+//         00412048     NOP
+//         00412049     NOP
+//         0041204a     NOP
+//         0041204b     NOP
+//         0041204c     NOP
+//         0041204d     NOP
+//         0041204e     NOP
+//         0041204f     NOP
 }
 
 ResourceItem::ResourceItem(ResourceItem* param_1) {

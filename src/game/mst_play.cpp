@@ -3,88 +3,115 @@
 
 RGE_Master_Player::RGE_Master_Player(_iobuf* param_1) {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Master_Player(RGE_Master_Player * this, int
+//                              undefined __thiscall RGE_Master_Player(RGE_Master_Player * this, _io
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Master_Pla    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     004610c5(R)
-//                               ??0RGE_Master_Player@@QAE@H@Z                                XREF[2]:     TRIBE_Master_Player:00511808(c),
-//                               RGE_Master_Player::RGE_Master_Player                                      init_player_type:005417b2(c)
-//                              mst_play.cpp:62 (5)
-//         004610c0     PUSH       EBX
-//         004610c1     PUSH       ESI
-//         004610c2     MOV        ESI,this
-//         004610c4     PUSH       EDI
-//                              mst_play.cpp:63 (25)
-//         004610c5     MOV        EDI,dword ptr [ESP + param_1]
-//         004610c9     PUSH       0x14
-//         004610cb     LEA        EAX,[ESI + 0x4]
-//         004610ce     MOV        dword ptr [ESI],RGE_Master_Player::`vftable'     = 004610a0
-//         004610d4     PUSH       EAX
-//         004610d5     PUSH       EDI
-//         004610d6     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004610db     ADD        ESP,0xc
-//                              mst_play.cpp:64 (15)
-//         004610de     LEA        EBX,[ESI + 0x20]
-//         004610e1     PUSH       0x2
-//         004610e3     PUSH       EBX
-//         004610e4     PUSH       EDI
-//         004610e5     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004610ea     ADD        ESP,0xc
-//                              mst_play.cpp:65 (12)
-//         004610ed     LEA        this,[ESI + 0x2a]
-//         004610f0     PUSH       0x2
-//         004610f2     PUSH       this
-//         004610f3     PUSH       EDI
-//         004610f4     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              mst_play.cpp:67 (11)
-//         004610f9     MOV        AX,word ptr [EBX]
-//         004610fc     ADD        ESP,0xc
-//         004610ff     TEST       AX,AX
-//         00461102     JLE        LAB_00461128
-//                              mst_play.cpp:69 (11)
-//         00461104     MOVSX      EDX,AX
-//         00461107     PUSH       0x4
-//         00461109     PUSH       EDX
-//         0046110a     CALL       calloc                                           undefined calloc()
-//                              mst_play.cpp:70 (23)
-//         0046110f     MOVSX      this,word ptr [EBX]
-//         00461112     ADD        ESP,0x8
-//         00461115     MOV        dword ptr [ESI + 0x24],EAX
-//         00461118     SHL        this,0x2
-//         0046111b     PUSH       this
-//         0046111c     PUSH       EAX
-//         0046111d     PUSH       EDI
-//         0046111e     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00461123     ADD        ESP,0xc
-//                              mst_play.cpp:72 (2)
-//         00461126     JMP        LAB_0046112f
-//                               LAB_00461128                                                 XREF[1]:     00461102(j)
-//                              mst_play.cpp:73 (7)
-//         00461128     MOV        dword ptr [ESI + 0x24],0x0
-//                               LAB_0046112f                                                 XREF[1]:     00461126(j)
-//                              mst_play.cpp:75 (15)
-//         0046112f     LEA        EDX,[ESI + 0x28]
-//         00461132     PUSH       0x1
-//         00461134     PUSH       EDX
-//         00461135     PUSH       EDI
-//         00461136     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0046113b     ADD        ESP,0xc
-//                              mst_play.cpp:76 (8)
-//         0046113e     MOV        EAX,ESI
-//         00461140     POP        EDI
-//         00461141     POP        ESI
-//         00461142     POP        EBX
-//         00461143     RET        0x4
-//         00461146     ??         90h
-//         00461147     NOP
-//         00461148     NOP
-//         00461149     NOP
-//         0046114a     NOP
-//         0046114b     NOP
-//         0046114c     NOP
-//         0046114d     NOP
-//         0046114e     NOP
-//         0046114f     NOP
+//              _iobuf *          Stack[0x4]:4   param_1                   XREF[4]:     00460fd6(R), 00461020(*), 00461035(R), 00461064(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     0046103c(*), 00461056(R)
+//              float             Stack[-0x8]:4  temp_amount               XREF[2,2]:   00461040(*), 00461051(R), 0046106b(*), 0046107b(R)
+//              short             Stack[-0xa]:2  temp_culture
+//              short             Stack[-0xc]:2  temp_index
+//                               ??0RGE_Master_Player@@QAE@PAU_iobuf@@@Z                      XREF[2]:     TRIBE_Master_Player:005117c8(c),
+//                               RGE_Master_Player::RGE_Master_Player                                      data_load_players_type:00541281(c)
+//                              mst_play.cpp:28 (6)
+//         00460fd0     SUB        ESP,0x8
+//         00460fd3     PUSH       EBX
+//         00460fd4     PUSH       EBP
+//         00460fd5     PUSH       ESI
+//                              mst_play.cpp:37 (41)
+//         00460fd6     MOV        EBP,dword ptr [ESP + param_1]
+//         00460fda     MOV        ESI,this
+//         00460fdc     PUSH       EDI
+//         00460fdd     XOR        EBX,EBX
+//         00460fdf     LEA        EDI,[ESI + 0x20]
+//         00460fe2     LEA        EAX,[ESI + 0x2a]
+//         00460fe5     PUSH       EDI
+//         00460fe6     LEA        this,[ESI + 0x4]
+//         00460fe9     PUSH       EAX
+//         00460fea     PUSH       this
+//         00460feb     PUSH       s_%s_%hd_%hd                                     = "%s %hd %hd"
+//         00460ff0     PUSH       EBP
+//         00460ff1     MOV        dword ptr [ESI],RGE_Master_Player::`vftable'     = 004610a0
+//         00460ff7     MOV        byte ptr [ESI + 0x29],BL
+//         00460ffa     CALL       fscanf                                           undefined fscanf()
+//                              mst_play.cpp:39 (11)
+//         00460fff     MOV        DI,word ptr [EDI]
+//         00461002     ADD        ESP,0x14
+//         00461005     CMP        DI,BX
+//         00461008     JLE        LAB_0046101d
+//                              mst_play.cpp:40 (17)
+//         0046100a     MOVSX      EDX,DI
+//         0046100d     PUSH       0x4
+//         0046100f     PUSH       EDX
+//         00461010     CALL       calloc                                           undefined calloc()
+//         00461015     ADD        ESP,0x8
+//         00461018     MOV        dword ptr [ESI + 0x24],EAX
+//                              mst_play.cpp:41 (2)
+//         0046101b     JMP        LAB_00461020
+//                               LAB_0046101d                                                 XREF[1]:     00461008(j)
+//                              mst_play.cpp:42 (3)
+//         0046101d     MOV        dword ptr [ESI + 0x24],EBX
+//                               LAB_00461020                                                 XREF[1]:     0046101b(j)
+//                              mst_play.cpp:44 (19)
+//         00461020     LEA        EAX=>param_1,[ESP + 0x1c]
+//         00461024     PUSH       EAX
+//         00461025     PUSH       s_%hd                                            = "%hd"
+//         0046102a     PUSH       EBP
+//         0046102b     CALL       fscanf                                           undefined fscanf()
+//         00461030     ADD        ESP,0xc
+//                              mst_play.cpp:45 (9)
+//         00461033     XOR        EDI,EDI
+//         00461035     CMP        word ptr [ESP + param_1],BX
+//         0046103a     JLE        LAB_0046106b
+//                               LAB_0046103c                                                 XREF[1]:     00461069(j)
+//                              mst_play.cpp:47 (21)
+//         0046103c     LEA        this=>local_4,[ESP + 0x14]
+//         00461040     LEA        EDX=>temp_amount,[ESP + 0x10]
+//         00461044     PUSH       this
+//         00461045     PUSH       EDX
+//         00461046     PUSH       s_%hd_%f                                         = "%hd %f"
+//         0046104b     PUSH       EBP
+//         0046104c     CALL       fscanf                                           undefined fscanf()
+//                              mst_play.cpp:48 (26)
+//         00461051     MOVSX      EAX,word ptr [ESP + temp_amount]
+//         00461056     FLD        float ptr [ESP + local_4]
+//         0046105a     MOV        this,dword ptr [ESI + 0x24]
+//         0046105d     ADD        ESP,0x10
+//         00461060     INC        EDI
+//         00461061     FSTP       float ptr [this->_padding_ + EAX*0x4]
+//         00461064     CMP        DI,word ptr [ESP + param_1]
+//         00461069     JL         LAB_0046103c
+//                               LAB_0046106b                                                 XREF[1]:     0046103a(j)
+//                              mst_play.cpp:51 (16)
+//         0046106b     LEA        EDX=>temp_amount+0x2,[ESP + 0x12]
+//         0046106f     PUSH       EDX
+//         00461070     PUSH       s_%hd                                            = "%hd"
+//         00461075     PUSH       EBP
+//         00461076     CALL       fscanf                                           undefined fscanf()
+//                              mst_play.cpp:53 (10)
+//         0046107b     MOV        AL,byte ptr [ESP + temp_amount+0x2]
+//         0046107f     ADD        ESP,0xc
+//         00461082     MOV        byte ptr [ESI + 0x28],AL
+//                              mst_play.cpp:55 (4)
+//         00461085     MOV        word ptr [ESI + 0x18],BX
+//                              mst_play.cpp:56 (3)
+//         00461089     MOV        dword ptr [ESI + 0x1c],EBX
+//                              mst_play.cpp:57 (12)
+//         0046108c     MOV        EAX,ESI
+//         0046108e     POP        EDI
+//         0046108f     POP        ESI
+//         00461090     POP        EBP
+//         00461091     POP        EBX
+//         00461092     ADD        ESP,0x8
+//         00461095     RET        0x4
+//         00461098     ??         90h
+//         00461099     NOP
+//         0046109a     NOP
+//         0046109b     NOP
+//         0046109c     NOP
+//         0046109d     NOP
+//         0046109e     NOP
+//         0046109f     NOP
 }
 
 RGE_Master_Player::RGE_Master_Player(int param_1) {

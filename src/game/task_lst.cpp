@@ -145,108 +145,98 @@ void RGE_Task_List::copy(RGE_Task_List* param_1) {
 
 void RGE_Task_List::load(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3) {
     /* TODO: Stub */
-//                              void __thiscall load(RGE_Task_List * this, _iobuf * param_1, RGE_Spr
+//                              void __thiscall load(RGE_Task_List * this, int param_1, RGE_Sprite *
 //              void              <VOID>         <RETURN>
 //              RGE_Task_List *   ECX:4 (auto)   this
-//              _iobuf *          Stack[0x4]:4   param_1                   XREF[3]:     00508f73(R), 00508fad(W), 00508fd2(R)
+//              int               Stack[0x4]:4   param_1                   XREF[3]:     00508ed3(R), 00508f0a(W), 00508f2c(R)
 //              RGE_Sprite * *    Stack[0x8]:4   param_2
 //              RGE_Sound * *     Stack[0xc]:4   param_3
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     00508fb1(*), 00508fc1(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     00508f0e(*), 00508f1b(R)
 //              short             Stack[-0x8]:2  task_type
-//                               ?load@RGE_Task_List@@QAEXPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVR  XREF[1]:     setup:0044f47b(c)
+//                               ?load@RGE_Task_List@@QAEXHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z XREF[1]:     setup:0044f3ad(c)
 //                               RGE_Task_List::load
-//                              task_lst.cpp:86 (6)
-//         00508f60     PUSH       this
-//         00508f61     PUSH       EBX
-//         00508f62     MOV        EBX,this
-//         00508f64     PUSH       EBP
-//         00508f65     PUSH       ESI
-//                              task_lst.cpp:90 (8)
-//         00508f66     MOV        EAX,dword ptr [EBX + 0x4]
-//         00508f69     PUSH       EDI
-//         00508f6a     TEST       EAX,EAX
-//         00508f6c     JZ         LAB_00508f73
-//                              task_lst.cpp:91 (5)
-//         00508f6e     CALL       RGE_Task_List::delete_list                       void delete_list(RGE_Task_List * this)
-//                               LAB_00508f73                                                 XREF[1]:     00508f6c(j)
-//                              task_lst.cpp:93 (19)
-//         00508f73     MOV        EBP,dword ptr [ESP + param_1]
-//         00508f77     LEA        ESI,[EBX + 0x8]
-//         00508f7a     PUSH       ESI
-//         00508f7b     PUSH       s_%hd                                            = "%hd"
-//         00508f80     PUSH       EBP
-//         00508f81     CALL       fscanf                                           undefined fscanf()
-//                              task_lst.cpp:96 (11)
-//         00508f86     MOV        AX,word ptr [ESI]
-//         00508f89     ADD        ESP,0xc
-//         00508f8c     TEST       AX,AX
-//         00508f8f     JLE        LAB_00508ff9
-//                              task_lst.cpp:98 (11)
-//         00508f91     MOVSX      EAX,AX
-//         00508f94     PUSH       0x4
-//         00508f96     PUSH       EAX
-//         00508f97     CALL       calloc                                           undefined calloc()
-//                              task_lst.cpp:99 (13)
-//         00508f9c     XOR        EDI,EDI
-//         00508f9e     ADD        ESP,0x8
-//         00508fa1     CMP        word ptr [ESI],DI
-//         00508fa4     MOV        dword ptr [EBX + 0x4],EAX
-//         00508fa7     JLE        LAB_00508ff9
-//                              task_lst.cpp:103 (48)
-//         00508fa9     MOV        this,dword ptr [EBX]
-//         00508fab     MOV        EDX,dword ptr [this->_padding_]
-//         00508fad     MOV        dword ptr [ESP + param_1],EDX
-//                               LAB_00508fb1                                                 XREF[1]:     00508ff7(j)
-//         00508fb1     LEA        EAX=>local_4,[ESP + 0x10]
-//         00508fb5     PUSH       EAX
-//         00508fb6     PUSH       s_%hd                                            = "%hd"
-//         00508fbb     PUSH       EBP=>DAT_fffffff4
-//         00508fbc     CALL       fscanf                                           undefined fscanf()
-//         00508fc1     MOV        this,dword ptr [ESP + local_4]
-//         00508fc5     ADD        ESP,0xc
-//         00508fc8     MOVSX      ESI,DI
-//         00508fcb     PUSH       EDI
-//         00508fcc     PUSH       this
-//         00508fcd     MOV        this,EBX
-//         00508fcf     SHL        ESI,0x2
-//         00508fd2     CALL       dword ptr [ESP + param_1]
-//         00508fd6     MOV        EDX,dword ptr [EBX + 0x4]
-//                              task_lst.cpp:104 (32)
-//         00508fd9     MOV        this,dword ptr [ESP + 0x1c]
-//         00508fdd     MOV        dword ptr [EDX + ESI*0x1],EAX
-//         00508fe0     MOV        EAX,dword ptr [ESP + 0x20]
-//         00508fe4     MOV        EDX,dword ptr [EBX + 0x4]
-//         00508fe7     PUSH       EAX
-//         00508fe8     PUSH       this=>DAT_fffffff8
-//         00508fe9     PUSH       EBP=>DAT_fffffff4
-//         00508fea     MOV        this,dword ptr [EDX + ESI*0x1]
-//         00508fed     CALL       RGE_Task::load                                   void load(RGE_Task * this, _iobuf * param_1,
-//         00508ff2     INC        EDI
-//         00508ff3     CMP        DI,word ptr [EBX + 0x8]
-//         00508ff7     JL         LAB_00508fb1
-//                               LAB_00508ff9                                                 XREF[2]:     00508f8f(j), 00508fa7(j)
-//                              task_lst.cpp:107 (8)
-//         00508ff9     POP        EDI
-//         00508ffa     POP        ESI
-//         00508ffb     POP        EBP
-//         00508ffc     POP        EBX
-//         00508ffd     POP        this
-//         00508ffe     RET        0xc
-//         00509001     ??         90h
-//         00509002     NOP
-//         00509003     NOP
-//         00509004     NOP
-//         00509005     NOP
-//         00509006     NOP
-//         00509007     NOP
-//         00509008     NOP
-//         00509009     NOP
-//         0050900a     NOP
-//         0050900b     NOP
-//         0050900c     NOP
-//         0050900d     NOP
-//         0050900e     NOP
-//         0050900f     NOP
+//                              task_lst.cpp:63 (6)
+//         00508ec0     PUSH       this
+//         00508ec1     PUSH       EBX
+//         00508ec2     MOV        EBX,this
+//         00508ec4     PUSH       EBP
+//         00508ec5     PUSH       ESI
+//                              task_lst.cpp:67 (8)
+//         00508ec6     MOV        EAX,dword ptr [EBX + 0x4]
+//         00508ec9     PUSH       EDI
+//         00508eca     TEST       EAX,EAX
+//         00508ecc     JZ         LAB_00508ed3
+//                              task_lst.cpp:68 (5)
+//         00508ece     CALL       RGE_Task_List::delete_list                       void delete_list(RGE_Task_List * this)
+//                               LAB_00508ed3                                                 XREF[1]:     00508ecc(j)
+//                              task_lst.cpp:70 (16)
+//         00508ed3     MOV        EBP,dword ptr [ESP + param_1]
+//         00508ed7     LEA        ESI,[EBX + 0x8]
+//         00508eda     PUSH       0x2
+//         00508edc     PUSH       ESI
+//         00508edd     PUSH       EBP
+//         00508ede     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              task_lst.cpp:71 (11)
+//         00508ee3     MOV        AX,word ptr [ESI]
+//         00508ee6     ADD        ESP,0xc
+//         00508ee9     TEST       AX,AX
+//         00508eec     JLE        LAB_00508f53
+//                              task_lst.cpp:73 (11)
+//         00508eee     MOVSX      EAX,AX
+//         00508ef1     PUSH       0x4
+//         00508ef3     PUSH       EAX
+//         00508ef4     CALL       calloc                                           undefined calloc()
+//                              task_lst.cpp:74 (13)
+//         00508ef9     XOR        EDI,EDI
+//         00508efb     ADD        ESP,0x8
+//         00508efe     CMP        word ptr [ESI],DI
+//         00508f01     MOV        dword ptr [EBX + 0x4],EAX
+//         00508f04     JLE        LAB_00508f53
+//                              task_lst.cpp:77 (45)
+//         00508f06     MOV        this,dword ptr [EBX]
+//         00508f08     MOV        EDX,dword ptr [this->_padding_]
+//         00508f0a     MOV        dword ptr [ESP + param_1],EDX
+//                               LAB_00508f0e                                                 XREF[1]:     00508f51(j)
+//         00508f0e     LEA        EAX=>local_4,[ESP + 0x10]
+//         00508f12     PUSH       0x2
+//         00508f14     PUSH       EAX=>DAT_fffffff8
+//         00508f15     PUSH       EBP=>DAT_fffffff4
+//         00508f16     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00508f1b     MOV        this,dword ptr [ESP + local_4]
+//         00508f1f     ADD        ESP,0xc
+//         00508f22     MOVSX      ESI,DI
+//         00508f25     PUSH       EDI
+//         00508f26     PUSH       this
+//         00508f27     MOV        this,EBX
+//         00508f29     SHL        ESI,0x2
+//         00508f2c     CALL       dword ptr [ESP + param_1]
+//         00508f30     MOV        EDX,dword ptr [EBX + 0x4]
+//                              task_lst.cpp:78 (32)
+//         00508f33     MOV        this,dword ptr [ESP + 0x1c]
+//         00508f37     MOV        dword ptr [EDX + ESI*0x1],EAX
+//         00508f3a     MOV        EAX,dword ptr [ESP + 0x20]
+//         00508f3e     MOV        EDX,dword ptr [EBX + 0x4]
+//         00508f41     PUSH       EAX
+//         00508f42     PUSH       this=>DAT_fffffff8
+//         00508f43     PUSH       EBP=>DAT_fffffff4
+//         00508f44     MOV        this,dword ptr [EDX + ESI*0x1]
+//         00508f47     CALL       RGE_Task::load                                   void load(RGE_Task * this, int param_1, RGE_S
+//         00508f4c     INC        EDI
+//         00508f4d     CMP        DI,word ptr [EBX + 0x8]
+//         00508f51     JL         LAB_00508f0e
+//                               LAB_00508f53                                                 XREF[2]:     00508eec(j), 00508f04(j)
+//                              task_lst.cpp:81 (8)
+//         00508f53     POP        EDI
+//         00508f54     POP        ESI
+//         00508f55     POP        EBP
+//         00508f56     POP        EBX
+//         00508f57     POP        this
+//         00508f58     RET        0xc
+//         00508f5b     ??         90h
+//         00508f5c     NOP
+//         00508f5d     NOP
+//         00508f5e     NOP
+//         00508f5f     NOP
     return;
 }
 

@@ -20,6 +20,15 @@ public:
 static_assert(sizeof(AIPlayPhase) == 0x8C, "AIPlayPhase Size Mismatch");
 static_assert(offsetof(AIPlayPhase, triggers) == 0x50, "AIPlayPhase Offset Mismatch");
 
+// ----------------------------------------------------------------
+// GroupingStruct
+// Size: 0x8
+struct GroupingStruct {
+    int id; // 0x0
+    uchar groupID; // 0x4
+    uchar type; // 0x5
+};
+
 class AIPlayStatus {
 public:
     GroupingStruct groupings[50];            // 0x00

@@ -3,34 +3,34 @@
 
 TribeBuildAIModule::TribeBuildAIModule(void* param_1, int param_2) {
     /* TODO: Stub */
-//                              undefined __thiscall TribeBuildAIModule(TribeBuildAIModule * this, i
+//                              undefined __thiscall TribeBuildAIModule(TribeBuildAIModule * this, v
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TribeBuildAIMo    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     004d3ad8(R)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     004d3ad0(R)
-//                               ??0TribeBuildAIModule@@QAE@HH@Z                              XREF[1]:     TribeMainDecisionAIModule:004e4bc4
+//              void *            Stack[0x4]:4   param_1                   XREF[1]:     004d3a88(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     004d3a80(R)
+//                               ??0TribeBuildAIModule@@QAE@PAXH@Z                            XREF[1]:     TribeMainDecisionAIModule:004e4844
 //                               TribeBuildAIModule::TribeBuildAIModule
-//                              taibldmd.cpp:70 (36)
-//         004d3ad0     MOV        EAX,dword ptr [ESP + param_2]
-//         004d3ad4     PUSH       ESI
-//         004d3ad5     MOV        ESI,this
-//         004d3ad7     PUSH       EAX
-//         004d3ad8     MOV        this,dword ptr [ESP + param_1]
-//         004d3adc     PUSH       this
-//         004d3add     MOV        this,ESI
-//         004d3adf     CALL       BuildAIModule::BuildAIModule                     undefined BuildAIModule(BuildAIModule * this,
-//         004d3ae4     MOV        dword ptr [ESI + 0x5bc],0x0
-//         004d3aee     MOV        dword ptr [ESI],TribeBuildAIModule::`vftable'    = 004d3ab0
-//                              taibldmd.cpp:71 (6)
-//         004d3af4     MOV        EAX,ESI
-//         004d3af6     POP        ESI
-//         004d3af7     RET        0x8
-//         004d3afa     ??         90h
-//         004d3afb     NOP
-//         004d3afc     NOP
-//         004d3afd     NOP
-//         004d3afe     NOP
-//         004d3aff     NOP
+//                              taibldmd.cpp:62 (36)
+//         004d3a80     MOV        EAX,dword ptr [ESP + param_2]
+//         004d3a84     PUSH       ESI
+//         004d3a85     MOV        ESI,this
+//         004d3a87     PUSH       EAX
+//         004d3a88     MOV        this,dword ptr [ESP + param_1]
+//         004d3a8c     PUSH       this
+//         004d3a8d     MOV        this,ESI
+//         004d3a8f     CALL       BuildAIModule::BuildAIModule                     undefined BuildAIModule(BuildAIModule * this,
+//         004d3a94     MOV        dword ptr [ESI + 0x5bc],0x0
+//         004d3a9e     MOV        dword ptr [ESI],TribeBuildAIModule::`vftable'    = 004d3ab0
+//                              taibldmd.cpp:63 (6)
+//         004d3aa4     MOV        EAX,ESI
+//         004d3aa6     POP        ESI
+//         004d3aa7     RET        0x8
+//         004d3aaa     ??         90h
+//         004d3aab     NOP
+//         004d3aac     NOP
+//         004d3aad     NOP
+//         004d3aae     NOP
+//         004d3aaf     NOP
 }
 
 TribeBuildAIModule::TribeBuildAIModule(int param_1, int param_2) {

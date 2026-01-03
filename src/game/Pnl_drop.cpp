@@ -2596,64 +2596,64 @@ void TDropDownPanel::set_line(long param_1) {
 
 int TDropDownPanel::append_line(char* param_1, long param_2) {
     /* TODO: Stub */
-//                              int __thiscall append_line(TDropDownPanel * this, long param_1, long
+//                              int __thiscall append_line(TDropDownPanel * this, char * param_1, lo
 //              int               EAX:4          <RETURN>
 //              TDropDownPanel    ECX:4 (auto)   this
-//              long              Stack[0x4]:4   param_1                   XREF[1]:     004752de(R)
-//              long              Stack[0x8]:4   param_2                   XREF[1]:     004752da(R)
-//                               ?append_line@TDropDownPanel@@QAEHJJ@Z                        XREF[165]:   TRIBE_Screen_Campaign_Selection:00
-//                               TDropDownPanel::append_line                                               TRIBE_Screen_Campaign_Selection:00
-//                                                                                                         TRIBE_Screen_Campaign_Selection:00
-//                                                                                                         TRIBE_Screen_Campaign_Selection:00
-//                                                                                                         TRIBE_Screen_Campaign_Selection:00
-//                                                                                                         create_drop_down:004a8c0f(c),
-//                                                                                                         create_drop_down:004a8c1d(c),
-//                                                                                                         create_drop_down:004a8c2b(c),
-//                                                                                                         create_drop_down:004a8c39(c),
-//                                                                                                         create_drop_down:004a8c47(c),
-//                                                                                                         create_drop_down:004a8c55(c),
-//                                                                                                         create_drop_down:004a8c7a(c),
-//                                                                                                         create_drop_down:004a8c88(c),
-//                                                                                                         create_drop_down:004a8c96(c),
-//                                                                                                         create_all_buttons_etc:004b0e1b(c)
-//                                                                                                         create_all_buttons_etc:004b0e2c(c)
-//                                                                                                         create_all_buttons_etc:004b0e3d(c)
-//                                                                                                         create_all_buttons_etc:004b0e4e(c)
-//                                                                                                         create_all_buttons_etc:004b0e5f(c)
-//                                                                                                         create_all_buttons_etc:004b0e70(c)
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     004752ae(R)
+//              long              Stack[0x8]:4   param_2                   XREF[1]:     004752aa(R)
+//                               ?append_line@TDropDownPanel@@QAEHPADJ@Z                      XREF[41]:    fill_campaign_drop:0048fc5f(c),
+//                               TDropDownPanel::append_line                                               create_drop_down:004a9136(c),
+//                                                                                                         create_drop_down:004a92bd(c),
+//                                                                                                         set_player:004ab19f(c),
+//                                                                                                         set_player:004ab209(c),
+//                                                                                                         set_player:004ab273(c),
+//                                                                                                         create_all_buttons_etc:004b0cd9(c)
+//                                                                                                         create_all_buttons_etc:004b0cea(c)
+//                                                                                                         create_all_buttons_etc:004b0cfb(c)
+//                                                                                                         create_all_buttons_etc:004b0d0c(c)
+//                                                                                                         create_all_buttons_etc:004b0d1d(c)
+//                                                                                                         create_all_buttons_etc:004b0d2e(c)
+//                                                                                                         create_all_buttons_etc:004b0d3f(c)
+//                                                                                                         create_all_buttons_etc:004b0d50(c)
+//                                                                                                         create_all_buttons_etc:004b0d61(c)
+//                                                                                                         create_all_buttons_etc:004b0d72(c)
+//                                                                                                         create_all_buttons_etc:004b0d83(c)
+//                                                                                                         create_all_buttons_etc:004b0d94(c)
+//                                                                                                         create_all_buttons_etc:004b0da5(c)
+//                                                                                                         create_all_buttons_etc:004b0db6(c)
 //                                                                                                         [more]
-//                              Pnl_drop.cpp:734 (10)
-//         004752d0     MOV        this,dword ptr [ECX + this->list_panel]
-//         004752d6     TEST       this,this
-//         004752d8     JZ         LAB_004752ec
-//                              Pnl_drop.cpp:736 (15)
-//         004752da     MOV        EAX,dword ptr [ESP + param_2]
-//         004752de     MOV        EDX,dword ptr [ESP + param_1]
-//         004752e2     PUSH       EAX
-//         004752e3     PUSH       EDX
-//         004752e4     CALL       TTextPanel::append_line                          int append_line(TTextPanel * this, long param
-//                              Pnl_drop.cpp:739 (3)
-//         004752e9     RET        0x8
-//                               LAB_004752ec                                                 XREF[1]:     004752d8(j)
-//                              Pnl_drop.cpp:738 (2)
-//         004752ec     XOR        EAX,EAX
-//                              Pnl_drop.cpp:739 (3)
-//         004752ee     RET        0x8
-//         004752f1     ??         90h
-//         004752f2     NOP
-//         004752f3     NOP
-//         004752f4     NOP
-//         004752f5     NOP
-//         004752f6     NOP
-//         004752f7     NOP
-//         004752f8     NOP
-//         004752f9     NOP
-//         004752fa     NOP
-//         004752fb     NOP
-//         004752fc     NOP
-//         004752fd     NOP
-//         004752fe     NOP
-//         004752ff     NOP
+//                              Pnl_drop.cpp:726 (10)
+//         004752a0     MOV        this,dword ptr [ECX + this->list_panel]
+//         004752a6     TEST       this,this
+//         004752a8     JZ         LAB_004752bc
+//                              Pnl_drop.cpp:728 (15)
+//         004752aa     MOV        EAX,dword ptr [ESP + param_2]
+//         004752ae     MOV        EDX,dword ptr [ESP + param_1]
+//         004752b2     PUSH       EAX
+//         004752b3     PUSH       EDX
+//         004752b4     CALL       TTextPanel::append_line                          int append_line(TTextPanel * this, char * par
+//                              Pnl_drop.cpp:731 (3)
+//         004752b9     RET        0x8
+//                               LAB_004752bc                                                 XREF[1]:     004752a8(j)
+//                              Pnl_drop.cpp:730 (2)
+//         004752bc     XOR        EAX,EAX
+//                              Pnl_drop.cpp:731 (3)
+//         004752be     RET        0x8
+//         004752c1     ??         90h
+//         004752c2     NOP
+//         004752c3     NOP
+//         004752c4     NOP
+//         004752c5     NOP
+//         004752c6     NOP
+//         004752c7     NOP
+//         004752c8     NOP
+//         004752c9     NOP
+//         004752ca     NOP
+//         004752cb     NOP
+//         004752cc     NOP
+//         004752cd     NOP
+//         004752ce     NOP
+//         004752cf     NOP
     return 0;
 }
 
@@ -2722,43 +2722,43 @@ int TDropDownPanel::append_line(long param_1, long param_2) {
 
 int TDropDownPanel::insert_line(long param_1, char* param_2, long param_3) {
     /* TODO: Stub */
-//                              int __thiscall insert_line(TDropDownPanel * this, long param_1, long
+//                              int __thiscall insert_line(TDropDownPanel * this, long param_1, char
 //              int               EAX:4          <RETURN>
 //              TDropDownPanel    ECX:4 (auto)   this
-//              long              Stack[0x4]:4   param_1                   XREF[1]:     00475343(R)
-//              long              Stack[0x8]:4   param_2                   XREF[1]:     0047533e(R)
-//              long              Stack[0xc]:4   param_3                   XREF[1]:     0047533a(R)
-//                               ?insert_line@TDropDownPanel@@QAEHJJJ@Z
+//              long              Stack[0x4]:4   param_1                   XREF[1]:     00475313(R)
+//              char *            Stack[0x8]:4   param_2                   XREF[1]:     0047530e(R)
+//              long              Stack[0xc]:4   param_3                   XREF[1]:     0047530a(R)
+//                               ?insert_line@TDropDownPanel@@QAEHJPADJ@Z                     XREF[1]:     fillPlayers:004a3dd4(c)
 //                               TDropDownPanel::insert_line
-//                              Pnl_drop.cpp:750 (10)
-//         00475330     MOV        this,dword ptr [ECX + this->list_panel]
-//         00475336     TEST       this,this
-//         00475338     JZ         LAB_00475351
-//                              Pnl_drop.cpp:752 (20)
-//         0047533a     MOV        EAX,dword ptr [ESP + param_3]
-//         0047533e     MOV        EDX,dword ptr [ESP + param_2]
-//         00475342     PUSH       EAX
-//         00475343     MOV        EAX,dword ptr [ESP + param_1]
-//         00475347     PUSH       EDX
-//         00475348     PUSH       EAX
-//         00475349     CALL       TTextPanel::insert_line                          int insert_line(TTextPanel * this, long param
-//                              Pnl_drop.cpp:755 (3)
-//         0047534e     RET        0xc
-//                               LAB_00475351                                                 XREF[1]:     00475338(j)
-//                              Pnl_drop.cpp:754 (2)
-//         00475351     XOR        EAX,EAX
-//                              Pnl_drop.cpp:755 (3)
-//         00475353     RET        0xc
-//         00475356     ??         90h
-//         00475357     NOP
-//         00475358     NOP
-//         00475359     NOP
-//         0047535a     NOP
-//         0047535b     NOP
-//         0047535c     NOP
-//         0047535d     NOP
-//         0047535e     NOP
-//         0047535f     NOP
+//                              Pnl_drop.cpp:742 (10)
+//         00475300     MOV        this,dword ptr [ECX + this->list_panel]
+//         00475306     TEST       this,this
+//         00475308     JZ         LAB_00475321
+//                              Pnl_drop.cpp:744 (20)
+//         0047530a     MOV        EAX,dword ptr [ESP + param_3]
+//         0047530e     MOV        EDX,dword ptr [ESP + param_2]
+//         00475312     PUSH       EAX
+//         00475313     MOV        EAX,dword ptr [ESP + param_1]
+//         00475317     PUSH       EDX
+//         00475318     PUSH       EAX
+//         00475319     CALL       TTextPanel::insert_line                          int insert_line(TTextPanel * this, long param
+//                              Pnl_drop.cpp:747 (3)
+//         0047531e     RET        0xc
+//                               LAB_00475321                                                 XREF[1]:     00475308(j)
+//                              Pnl_drop.cpp:746 (2)
+//         00475321     XOR        EAX,EAX
+//                              Pnl_drop.cpp:747 (3)
+//         00475323     RET        0xc
+//         00475326     ??         90h
+//         00475327     NOP
+//         00475328     NOP
+//         00475329     NOP
+//         0047532a     NOP
+//         0047532b     NOP
+//         0047532c     NOP
+//         0047532d     NOP
+//         0047532e     NOP
+//         0047532f     NOP
     return 0;
 }
 
@@ -2836,79 +2836,104 @@ int TDropDownPanel::delete_line(long param_1) {
 
 long TDropDownPanel::get_line() {
     /* TODO: Stub */
-//                              long __thiscall get_line(TDropDownPanel * this, char * param_1)
+//                              long __thiscall get_line(TDropDownPanel * this)
 //              long              EAX:4          <RETURN>
 //              TDropDownPanel    ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     004753ca(R)
-//                               ?get_line@TDropDownPanel@@QAEJPAD@Z                          XREF[11]:    set_scenario_mode:004aa36f(c),
-//                               TDropDownPanel::get_line                                                  set_scenario_mode:004aa392(c),
-//                                                                                                         set_scenario_mode:004aa3b8(c),
-//                                                                                                         set_scenario_mode:004aa3de(c),
-//                                                                                                         set_scenario_mode:004aa419(c),
-//                                                                                                         set_player:004ab17b(c),
-//                                                                                                         set_player:004ab1bc(c),
-//                                                                                                         set_player:004ab1e5(c),
-//                                                                                                         set_player:004ab226(c),
-//                                                                                                         set_player:004ab24f(c),
-//                                                                                                         set_player:004ab290(c)
-//                              Pnl_drop.cpp:782 (10)
-//         004753c0     MOV        this,dword ptr [ECX + this->list_panel]
-//         004753c6     TEST       this,this
-//         004753c8     JZ         LAB_004753d7
-//                              Pnl_drop.cpp:784 (10)
-//         004753ca     MOV        EAX,dword ptr [ESP + param_1]
-//         004753ce     PUSH       EAX
-//         004753cf     CALL       TTextPanel::get_line                             long get_line(TTextPanel * this, char * param
-//                              Pnl_drop.cpp:787 (3)
-//         004753d4     RET        0x4
-//                               LAB_004753d7                                                 XREF[1]:     004753c8(j)
-//                              Pnl_drop.cpp:786 (2)
-//         004753d7     XOR        EAX,EAX
-//                              Pnl_drop.cpp:787 (3)
-//         004753d9     RET        0x4
-//         004753dc     ??         90h
-//         004753dd     NOP
-//         004753de     NOP
-//         004753df     NOP
+//                               ?get_line@TDropDownPanel@@QAEJXZ                             XREF[26]:    action:004a1dfc(c),
+//                               TDropDownPanel::get_line                                                  set_scenario_mode:004aa12c(c),
+//                                                                                                         set_scenario_mode:004aa153(c),
+//                                                                                                         set_scenario_mode:004aa4c5(c),
+//                                                                                                         set_scenario_mode:004aa52f(c),
+//                                                                                                         set_scenario_mode:004aa653(c),
+//                                                                                                         action:004ac0d1(c),
+//                                                                                                         action:004ac115(c),
+//                                                                                                         action:004ac14b(c),
+//                                                                                                         action:004ac173(c),
+//                                                                                                         action:004ac3d5(c),
+//                                                                                                         action:004ac406(c),
+//                                                                                                         action:004ac45b(c),
+//                                                                                                         action:004ac59a(c),
+//                                                                                                         action:004ac98a(c),
+//                                                                                                         SaveDisabledItemsInScenario:004adc
+//                                                                                                         save_victory_cond_in_scenario:004a
+//                                                                                                         save_victory_cond_in_scenario:004a
+//                                                                                                         save_victory_cond_in_scenario:004a
+//                                                                                                         activate_victory_panel:004b2a82(c)
+//                                                                                                         [more]
+//                              Pnl_drop.cpp:766 (10)
+//         00475380     MOV        this,dword ptr [ECX + this->list_panel]
+//         00475386     TEST       this,this
+//         00475388     JZ         LAB_0047538f
+//                              Pnl_drop.cpp:768 (5)
+//         0047538a     JMP        TTextPanel::get_line                             long get_line(TTextPanel * this)
+//                              -- Flow Override: CALL_RETURN (CALL_TERMINATOR)
+//                               LAB_0047538f                                                 XREF[1]:     00475388(j)
+//                              Pnl_drop.cpp:770 (2)
+//         0047538f     XOR        EAX,EAX
+//                              Pnl_drop.cpp:771 (1)
+//         00475391     RET
+//         00475392     ??         90h
+//         00475393     NOP
+//         00475394     NOP
+//         00475395     NOP
+//         00475396     NOP
+//         00475397     NOP
+//         00475398     NOP
+//         00475399     NOP
+//         0047539a     NOP
+//         0047539b     NOP
+//         0047539c     NOP
+//         0047539d     NOP
+//         0047539e     NOP
+//         0047539f     NOP
     return 0;
 }
 
 long TDropDownPanel::get_line(long param_1) {
     /* TODO: Stub */
-//                              long __thiscall get_line(TDropDownPanel * this, char * param_1)
+//                              long __thiscall get_line(TDropDownPanel * this, long param_1)
 //              long              EAX:4          <RETURN>
 //              TDropDownPanel    ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     004753ca(R)
-//                               ?get_line@TDropDownPanel@@QAEJPAD@Z                          XREF[11]:    set_scenario_mode:004aa36f(c),
-//                               TDropDownPanel::get_line                                                  set_scenario_mode:004aa392(c),
-//                                                                                                         set_scenario_mode:004aa3b8(c),
-//                                                                                                         set_scenario_mode:004aa3de(c),
-//                                                                                                         set_scenario_mode:004aa419(c),
-//                                                                                                         set_player:004ab17b(c),
-//                                                                                                         set_player:004ab1bc(c),
-//                                                                                                         set_player:004ab1e5(c),
-//                                                                                                         set_player:004ab226(c),
-//                                                                                                         set_player:004ab24f(c),
-//                                                                                                         set_player:004ab290(c)
-//                              Pnl_drop.cpp:782 (10)
-//         004753c0     MOV        this,dword ptr [ECX + this->list_panel]
-//         004753c6     TEST       this,this
-//         004753c8     JZ         LAB_004753d7
-//                              Pnl_drop.cpp:784 (10)
-//         004753ca     MOV        EAX,dword ptr [ESP + param_1]
-//         004753ce     PUSH       EAX
-//         004753cf     CALL       TTextPanel::get_line                             long get_line(TTextPanel * this, char * param
-//                              Pnl_drop.cpp:787 (3)
-//         004753d4     RET        0x4
-//                               LAB_004753d7                                                 XREF[1]:     004753c8(j)
-//                              Pnl_drop.cpp:786 (2)
-//         004753d7     XOR        EAX,EAX
-//                              Pnl_drop.cpp:787 (3)
-//         004753d9     RET        0x4
-//         004753dc     ??         90h
-//         004753dd     NOP
-//         004753de     NOP
-//         004753df     NOP
+//              long              Stack[0x4]:4   param_1                   XREF[1]:     004753aa(R)
+//                               ?get_line@TDropDownPanel@@QAEJJ@Z                            XREF[20]:    TRIBE_Screen_Campaign_Selection:00
+//                               TDropDownPanel::get_line                                                  action:004a1d55(c),
+//                                                                                                         calcRandomPositions:004a27f8(c),
+//                                                                                                         fillPlayers:004a3de1(c),
+//                                                                                                         fillPlayers:004a3e73(c),
+//                                                                                                         fillPlayers:004a3edf(c),
+//                                                                                                         fillNumberPlayers:004a54a2(c),
+//                                                                                                         load_victory_cond_from_scenario:00
+//                                                                                                         load_multi_victory_cond_from_scena
+//                                                                                                         load_multi_victory_cond_from_scena
+//                                                                                                         getSettings:004b62d5(c),
+//                                                                                                         getSettings:004b62f8(c),
+//                                                                                                         getSettings:004b631b(c),
+//                                                                                                         getSettings:004b63c7(c),
+//                                                                                                         getSettings:004b63ea(c),
+//                                                                                                         getSettings:004b640d(c),
+//                                                                                                         getSettings:004b644b(c),
+//                                                                                                         getSettings:004b6482(c),
+//                                                                                                         getSettings:004b64b5(c),
+//                                                                                                         getSettings:004b64e5(c)
+//                              Pnl_drop.cpp:774 (10)
+//         004753a0     MOV        this,dword ptr [ECX + this->list_panel]
+//         004753a6     TEST       this,this
+//         004753a8     JZ         LAB_004753b7
+//                              Pnl_drop.cpp:776 (10)
+//         004753aa     MOV        EAX,dword ptr [ESP + param_1]
+//         004753ae     PUSH       EAX
+//         004753af     CALL       TTextPanel::get_line                             long get_line(TTextPanel * this, long param_1)
+//                              Pnl_drop.cpp:779 (3)
+//         004753b4     RET        0x4
+//                               LAB_004753b7                                                 XREF[1]:     004753a8(j)
+//                              Pnl_drop.cpp:778 (2)
+//         004753b7     XOR        EAX,EAX
+//                              Pnl_drop.cpp:779 (3)
+//         004753b9     RET        0x4
+//         004753bc     ??         90h
+//         004753bd     NOP
+//         004753be     NOP
+//         004753bf     NOP
     return 0;
 }
 
@@ -2953,31 +2978,40 @@ long TDropDownPanel::get_line(char* param_1) {
 
 char* TDropDownPanel::get_text() {
     /* TODO: Stub */
-//                              char * __thiscall get_text(TDropDownPanel * this, long param_1)
+//                              char * __thiscall get_text(TDropDownPanel * this)
 //              char *            EAX:4          <RETURN>
 //              TDropDownPanel    ECX:4 (auto)   this
-//              long              Stack[0x4]:4   param_1                   XREF[1]:     0047540a(R)
-//                               ?get_text@TDropDownPanel@@QAEPADJ@Z
-//                               TDropDownPanel::get_text
-//                              Pnl_drop.cpp:798 (10)
-//         00475400     MOV        this,dword ptr [ECX + this->list_panel]
-//         00475406     TEST       this,this
-//         00475408     JZ         LAB_00475417
-//                              Pnl_drop.cpp:800 (10)
-//         0047540a     MOV        EAX,dword ptr [ESP + param_1]
-//         0047540e     PUSH       EAX
-//         0047540f     CALL       TTextPanel::get_text                             char * get_text(TTextPanel * this, long param
-//                              Pnl_drop.cpp:803 (3)
-//         00475414     RET        0x4
-//                               LAB_00475417                                                 XREF[1]:     00475408(j)
-//                              Pnl_drop.cpp:802 (2)
-//         00475417     XOR        EAX,EAX
-//                              Pnl_drop.cpp:803 (3)
-//         00475419     RET        0x4
-//         0047541c     ??         90h
-//         0047541d     NOP
-//         0047541e     NOP
-//         0047541f     NOP
+//                               ?get_text@TDropDownPanel@@QAEPADXZ                           XREF[5]:     action:004906f6(c),
+//                               TDropDownPanel::get_text                                                  action:00490978(c),
+//                                                                                                         fillPlayers:004a3e22(c),
+//                                                                                                         fillPlayers:004a3e95(c),
+//                                                                                                         fillPlayers:004a3f01(c)
+//                              Pnl_drop.cpp:790 (10)
+//         004753e0     MOV        this,dword ptr [ECX + this->list_panel]
+//         004753e6     TEST       this,this
+//         004753e8     JZ         LAB_004753ef
+//                              Pnl_drop.cpp:792 (5)
+//         004753ea     JMP        TTextPanel::get_text                             char * get_text(TTextPanel * this)
+//                              -- Flow Override: CALL_RETURN (CALL_TERMINATOR)
+//                               LAB_004753ef                                                 XREF[1]:     004753e8(j)
+//                              Pnl_drop.cpp:794 (2)
+//         004753ef     XOR        EAX,EAX
+//                              Pnl_drop.cpp:795 (1)
+//         004753f1     RET
+//         004753f2     ??         90h
+//         004753f3     NOP
+//         004753f4     NOP
+//         004753f5     NOP
+//         004753f6     NOP
+//         004753f7     NOP
+//         004753f8     NOP
+//         004753f9     NOP
+//         004753fa     NOP
+//         004753fb     NOP
+//         004753fc     NOP
+//         004753fd     NOP
+//         004753fe     NOP
+//         004753ff     NOP
     return 0;
 }
 
@@ -3013,31 +3047,56 @@ char* TDropDownPanel::get_text(long param_1) {
 
 long TDropDownPanel::get_id() {
     /* TODO: Stub */
-//                              long __thiscall get_id(TDropDownPanel * this, long param_1)
+//                              long __thiscall get_id(TDropDownPanel * this)
 //              long              EAX:4          <RETURN>
 //              TDropDownPanel    ECX:4 (auto)   this
-//              long              Stack[0x4]:4   param_1                   XREF[1]:     0047544a(R)
-//                               ?get_id@TDropDownPanel@@QAEJJ@Z                              XREF[2]:     startGame:004a2236(c),
-//                               TDropDownPanel::get_id                                                    fillPlayers:004a3d9d(c)
-//                              Pnl_drop.cpp:814 (10)
-//         00475440     MOV        this,dword ptr [ECX + this->list_panel]
-//         00475446     TEST       this,this
-//         00475448     JZ         LAB_00475457
-//                              Pnl_drop.cpp:816 (10)
-//         0047544a     MOV        EAX,dword ptr [ESP + param_1]
-//         0047544e     PUSH       EAX
-//         0047544f     CALL       TTextPanel::get_id                               long get_id(TTextPanel * this, long param_1)
-//                              Pnl_drop.cpp:819 (3)
-//         00475454     RET        0x4
-//                               LAB_00475457                                                 XREF[1]:     00475448(j)
-//                              Pnl_drop.cpp:818 (2)
-//         00475457     XOR        EAX,EAX
-//                              Pnl_drop.cpp:819 (3)
-//         00475459     RET        0x4
-//         0047545c     ??         90h
-//         0047545d     NOP
-//         0047545e     NOP
-//         0047545f     NOP
+//                               ?get_id@TDropDownPanel@@QAEJXZ                               XREF[39]:    startGame:004913c7(c),
+//                               TDropDownPanel::get_id                                                    startGame:004913de(c),
+//                                                                                                         action:004a180f(c),
+//                                                                                                         action:004a1821(c),
+//                                                                                                         action:004a1bf5(c),
+//                                                                                                         action:004a1d1b(c),
+//                                                                                                         action:004a1e31(c),
+//                                                                                                         action:004a1e55(c),
+//                                                                                                         action:004a1e94(c),
+//                                                                                                         action:004a1ebf(c),
+//                                                                                                         action:004a1eeb(c),
+//                                                                                                         action:004a1f06(c),
+//                                                                                                         fillPlayers:004a39a9(c),
+//                                                                                                         activateVictoryPanels:004a5069(c),
+//                                                                                                         activateVictoryPanels:004a507d(c),
+//                                                                                                         activateVictoryPanels:004a50a6(c),
+//                                                                                                         save_victory_cond_in_scenario:004a
+//                                                                                                         sendSettings:004b656f(c),
+//                                                                                                         sendSettings:004b6584(c),
+//                                                                                                         activateVictoryPanels:004b6943(c),
+//                                                                                                         [more]
+//                              Pnl_drop.cpp:806 (10)
+//         00475420     MOV        this,dword ptr [ECX + this->list_panel]
+//         00475426     TEST       this,this
+//         00475428     JZ         LAB_0047542f
+//                              Pnl_drop.cpp:808 (5)
+//         0047542a     JMP        TTextPanel::get_id                               long get_id(TTextPanel * this)
+//                              -- Flow Override: CALL_RETURN (CALL_TERMINATOR)
+//                               LAB_0047542f                                                 XREF[1]:     00475428(j)
+//                              Pnl_drop.cpp:810 (2)
+//         0047542f     XOR        EAX,EAX
+//                              Pnl_drop.cpp:811 (1)
+//         00475431     RET
+//         00475432     ??         90h
+//         00475433     NOP
+//         00475434     NOP
+//         00475435     NOP
+//         00475436     NOP
+//         00475437     NOP
+//         00475438     NOP
+//         00475439     NOP
+//         0047543a     NOP
+//         0047543b     NOP
+//         0047543c     NOP
+//         0047543d     NOP
+//         0047543e     NOP
+//         0047543f     NOP
     return 0;
 }
 

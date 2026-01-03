@@ -2218,61 +2218,66 @@ int RGE_Base_Game::get_error_code() {
 
 char* RGE_Base_Game::get_string(long param_1) {
     /* TODO: Stub */
-//                              char * __thiscall get_string(RGE_Base_Game * this, int param_1, long
+//                              char * __thiscall get_string(RGE_Base_Game * this, long param_1)
 //              char *            EAX:4          <RETURN>
 //              RGE_Base_Game *   ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     0041ca03(R)
-//              long              Stack[0x8]:4   param_2                   XREF[1]:     0041c9fc(R)
-//              char *            Stack[0xc]:4   param_3                   XREF[1]:     0041c9f7(R)
-//              int               Stack[0x10]:4  param_4                   XREF[1]:     0041c9f0(R)
-//                               ?get_string@RGE_Base_Game@@UAEPADHJPADH@Z                    XREF[2]:     0056eeec(*), 005771c4(*)
+//              long              Stack[0x4]:4   param_1                   XREF[1]:     0041c9a0(R)
+//                               ?get_string@RGE_Base_Game@@UAEPADJ@Z                         XREF[2]:     0056eef4(*), 005771cc(*)
 //                               RGE_Base_Game::get_string
-//                              basegame.cpp:1257 (27)
-//         0041c9f0     MOV        EDX,dword ptr [ESP + param_4]
-//         0041c9f4     MOV        EAX,dword ptr [this->_padding_]
-//         0041c9f6     PUSH       EDX
-//         0041c9f7     MOV        EDX,dword ptr [ESP + param_3]
-//         0041c9fb     PUSH       EDX
-//         0041c9fc     MOV        EDX,dword ptr [ESP + param_2]
-//         0041ca00     PUSH       0x0
-//         0041ca02     PUSH       EDX
-//         0041ca03     MOV        EDX,dword ptr [ESP + param_1]
-//         0041ca07     PUSH       EDX
-//         0041ca08     CALL       dword ptr [EAX + 0x28]
-//                              basegame.cpp:1259 (3)
-//         0041ca0b     RET        0x10
-//         0041ca0e     ??         90h
-//         0041ca0f     NOP
+//                              basegame.cpp:1232 (20)
+//         0041c9a0     MOV        EDX,dword ptr [ESP + param_1]
+//         0041c9a4     MOV        EAX,dword ptr [this->_padding_]
+//         0041c9a6     PUSH       0x200
+//         0041c9ab     PUSH       DAT_005b2168                                     = align(512)
+//         0041c9b0     PUSH       EDX
+//         0041c9b1     CALL       dword ptr [EAX + 0x20]
+//                              basegame.cpp:1234 (5)
+//         0041c9b4     MOV        EAX,DAT_005b2168                                 = align(512)
+//                              basegame.cpp:1235 (3)
+//         0041c9b9     RET        0x4
+//         0041c9bc     ??         90h
+//         0041c9bd     NOP
+//         0041c9be     NOP
+//         0041c9bf     NOP
     return 0;
 }
 
 char* RGE_Base_Game::get_string(long param_1, char* param_2, int param_3) {
     /* TODO: Stub */
-//                              char * __thiscall get_string(RGE_Base_Game * this, int param_1, long
+//                              char * __thiscall get_string(RGE_Base_Game * this, long param_1, cha
 //              char *            EAX:4          <RETURN>
 //              RGE_Base_Game *   ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     0041ca03(R)
-//              long              Stack[0x8]:4   param_2                   XREF[1]:     0041c9fc(R)
-//              char *            Stack[0xc]:4   param_3                   XREF[1]:     0041c9f7(R)
-//              int               Stack[0x10]:4  param_4                   XREF[1]:     0041c9f0(R)
-//                               ?get_string@RGE_Base_Game@@UAEPADHJPADH@Z                    XREF[2]:     0056eeec(*), 005771c4(*)
-//                               RGE_Base_Game::get_string
-//                              basegame.cpp:1257 (27)
-//         0041c9f0     MOV        EDX,dword ptr [ESP + param_4]
-//         0041c9f4     MOV        EAX,dword ptr [this->_padding_]
-//         0041c9f6     PUSH       EDX
-//         0041c9f7     MOV        EDX,dword ptr [ESP + param_3]
-//         0041c9fb     PUSH       EDX
-//         0041c9fc     MOV        EDX,dword ptr [ESP + param_2]
-//         0041ca00     PUSH       0x0
-//         0041ca02     PUSH       EDX
-//         0041ca03     MOV        EDX,dword ptr [ESP + param_1]
-//         0041ca07     PUSH       EDX
-//         0041ca08     CALL       dword ptr [EAX + 0x28]
-//                              basegame.cpp:1259 (3)
-//         0041ca0b     RET        0x10
-//         0041ca0e     ??         90h
-//         0041ca0f     NOP
+//              long              Stack[0x4]:4   param_1                   XREF[1]:     0041c9c0(R)
+//              char *            Stack[0x8]:4   param_2                   XREF[1]:     0041c9cb(R)
+//              int               Stack[0xc]:4   param_3                   XREF[1]:     0041c9d0(R)
+//                               ?get_string@RGE_Base_Game@@UAEPADJPADH@Z                     XREF[3]:     ~RGE_Base_Game:0041c62c(c),
+//                               RGE_Base_Game::get_string                                                 get_string:0052290a(c),
+//                                                                                                         0056eef0(*)
+//                              basegame.cpp:1241 (34)
+//         0041c9c0     MOV        EAX,dword ptr [ESP + param_1]
+//         0041c9c4     MOV        this,dword ptr [StringTable]                     = 00000000
+//         0041c9ca     PUSH       ESI
+//         0041c9cb     MOV        ESI,dword ptr [ESP + param_2]
+//         0041c9cf     PUSH       EDI
+//         0041c9d0     MOV        EDI,dword ptr [ESP + param_3]
+//         0041c9d4     PUSH       EDI
+//         0041c9d5     PUSH       ESI
+//         0041c9d6     PUSH       EAX
+//         0041c9d7     PUSH       this
+//         0041c9d8     CALL       dword ptr [->USER32.DLL::LoadStringA]            = 0048ad36
+//         0041c9de     TEST       EAX,EAX
+//         0041c9e0     JNZ        LAB_0041c9e4
+//                              basegame.cpp:1247 (2)
+//         0041c9e2     MOV        byte ptr [ESI],AL
+//                               LAB_0041c9e4                                                 XREF[1]:     0041c9e0(j)
+//                              basegame.cpp:1248 (5)
+//         0041c9e4     MOV        byte ptr [EDI + ESI*0x1 + -0x1],0x0
+//                              basegame.cpp:1249 (2)
+//         0041c9e9     MOV        EAX,ESI
+//                              basegame.cpp:1250 (5)
+//         0041c9eb     POP        EDI
+//         0041c9ec     POP        ESI
+//         0041c9ed     RET        0xc
     return 0;
 }
 
@@ -2880,42 +2885,42 @@ RGE_Scenario_Header* RGE_Base_Game::new_scenario_header(int param_1) {
 //                              RGE_Scenario_Header * __thiscall new_scenario_header(RGE_Base_Game *
 //              RGE_Scenario_H    EAX:4          <RETURN>
 //              RGE_Base_Game *   ECX:4 (auto)   this
-//              RGE_Scenario *    Stack[0x4]:4   param_1                   XREF[1]:     0041ce90(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0041ce86(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[2]:     0041ce9c(R), 0041cead(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0041ce80(*)
-//                               ?new_scenario_header@RGE_Base_Game@@UAEPAVRGE_Scenario_Head  XREF[1]:     0056ef04(*)
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     0041ce30(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0041ce26(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[2]:     0041ce3c(R), 0041ce4d(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0041ce20(*)
+//                               ?new_scenario_header@RGE_Base_Game@@UAEPAVRGE_Scenario_Head  XREF[1]:     0056ef08(*)
 //                               RGE_Base_Game::new_scenario_header
-//                              basegame.cpp:1532 (22)
-//         0041ce60     PUSH       -0x1
-//         0041ce62     PUSH       FUN_0055ca3b
-//         0041ce67     MOV        EAX,FS:[0x0]
-//         0041ce6d     PUSH       EAX
-//         0041ce6e     MOV        dword ptr FS:[0x0],ESP
-//         0041ce75     PUSH       this
-//                              basegame.cpp:1533 (38)
-//         0041ce76     PUSH       0x14
-//         0041ce78     CALL       operator_new                                     void * operator_new(uint param_1)
-//         0041ce7d     ADD        ESP,0x4
-//         0041ce80     MOV        dword ptr [ESP]=>local_10,EAX
-//         0041ce84     TEST       EAX,EAX
-//         0041ce86     MOV        dword ptr [ESP + local_4],0x0
-//         0041ce8e     JZ         LAB_0041cead
-//         0041ce90     MOV        this,dword ptr [ESP + param_1]
-//         0041ce94     PUSH       this
-//         0041ce95     MOV        this,EAX
-//         0041ce97     CALL       RGE_Scenario_Header::RGE_Scenario_Header         undefined RGE_Scenario_Header(RGE_Scenario_He
-//                              basegame.cpp:1534 (36)
-//         0041ce9c     MOV        this,dword ptr [ESP + local_c]
-//         0041cea0     MOV        dword ptr FS:[0x0],this
-//         0041cea7     ADD        ESP,0x10
-//         0041ceaa     RET        0x4
-//                               LAB_0041cead                                                 XREF[1]:     0041ce8e(j)
-//         0041cead     MOV        this,dword ptr [ESP + local_c]
-//         0041ceb1     XOR        EAX,EAX
-//         0041ceb3     MOV        dword ptr FS:[0x0],this
-//         0041ceba     ADD        ESP,0x10
-//         0041cebd     RET        0x4
+//                              basegame.cpp:1524 (22)
+//         0041ce00     PUSH       -0x1
+//         0041ce02     PUSH       FUN_0055ca1b
+//         0041ce07     MOV        EAX,FS:[0x0]
+//         0041ce0d     PUSH       EAX
+//         0041ce0e     MOV        dword ptr FS:[0x0],ESP
+//         0041ce15     PUSH       this
+//                              basegame.cpp:1525 (38)
+//         0041ce16     PUSH       0x14
+//         0041ce18     CALL       operator_new                                     void * operator_new(uint param_1)
+//         0041ce1d     ADD        ESP,0x4
+//         0041ce20     MOV        dword ptr [ESP]=>local_10,EAX
+//         0041ce24     TEST       EAX,EAX
+//         0041ce26     MOV        dword ptr [ESP + local_4],0x0
+//         0041ce2e     JZ         LAB_0041ce4d
+//         0041ce30     MOV        this,dword ptr [ESP + param_1]
+//         0041ce34     PUSH       this
+//         0041ce35     MOV        this,EAX
+//         0041ce37     CALL       RGE_Scenario_Header::RGE_Scenario_Header         undefined RGE_Scenario_Header(RGE_Scenario_He
+//                              basegame.cpp:1526 (36)
+//         0041ce3c     MOV        this,dword ptr [ESP + local_c]
+//         0041ce40     MOV        dword ptr FS:[0x0],this
+//         0041ce47     ADD        ESP,0x10
+//         0041ce4a     RET        0x4
+//                               LAB_0041ce4d                                                 XREF[1]:     0041ce2e(j)
+//         0041ce4d     MOV        this,dword ptr [ESP + local_c]
+//         0041ce51     XOR        EAX,EAX
+//         0041ce53     MOV        dword ptr FS:[0x0],this
+//         0041ce5a     ADD        ESP,0x10
+//         0041ce5d     RET        0x4
     return 0;
 }
 
@@ -7962,94 +7967,121 @@ void RGE_Base_Game::shutdown_music_system() {
 
 void* RGE_Base_Game::make_font(void* param_1, long param_2, int param_3) {
     /* TODO: Stub */
-//                              void * __thiscall make_font(RGE_Base_Game * this, void * param_1, ch
+//                              void * __thiscall make_font(RGE_Base_Game * this, void * param_1, lo
 //              void *            EAX:4          <RETURN>
 //              RGE_Base_Game *   ECX:4 (auto)   this
 //              void *            Stack[0x4]:4   param_1
-//              char *            Stack[0x8]:4   param_2
+//              long              Stack[0x8]:4   param_2                   XREF[1]:     0041faf7(R)
 //              int               Stack[0xc]:4   param_3
-//              int               Stack[0x10]:4  param_4
-//              int               Stack[0x14]:4  param_5
-//              char[256]         Stack[-0x104   str                       XREF[0,1]:   0041fbcb(*)
-//              tagLOGFONTA       Stack[-0x140   logfont
-//                               ?make_font@RGE_Base_Game@@IAEPAXPAXPADHHH@Z                  XREF[1]:     make_font:0041fba9(c)
-//                               RGE_Base_Game::make_font
-//                              basegame.cpp:2936 (6)
-//         0041fbc0     SUB        ESP,0x13c
-//                              basegame.cpp:2941 (20)
-//         0041fbc6     MOV        EAX,dword ptr [this->_padding_]
-//         0041fbc8     PUSH       EBX
-//         0041fbc9     PUSH       ESI
-//         0041fbca     PUSH       EDI
-//         0041fbcb     LEA        EDX=>str[4],[ESP + 0x48]
-//         0041fbcf     PUSH       0x100
-//         0041fbd4     PUSH       EDX
-//                              language.dll match for 0x65: "1"
-//         0041fbd5     PUSH       0x65
-//         0041fbd7     CALL       dword ptr [EAX + 0x20]
-//                              basegame.cpp:2942 (12)
-//         0041fbda     LEA        EAX,[ESP + 0x48]
-//         0041fbde     PUSH       EAX
-//         0041fbdf     CALL       atoi                                             undefined atoi()
-//         0041fbe4     MOV        BL,AL
-//                              basegame.cpp:2944 (16)
-//         0041fbe6     MOV        this,0xf
-//         0041fbeb     XOR        EAX,EAX
-//         0041fbed     LEA        EDI,[ESP + 0x10]
-//         0041fbf1     ADD        ESP,0x4
-//         0041fbf4     STOSD.REP  ES:EDI
-//                              basegame.cpp:2947 (18)
-//         0041fbf6     MOV        this,dword ptr [ESP + 0x154]
-//         0041fbfd     PUSH       0x48
-//         0041fbff     PUSH       offset DAT_fffffff8
-//         0041fc01     PUSH       this=>DAT_fffffff4
-//         0041fc02     CALL       dword ptr [->KERNEL32.DLL::MulDiv]               = 0048aa34
-//                              basegame.cpp:2954 (7)
-//         0041fc08     MOV        this,byte ptr [ESP + 0x15c]
-//                              basegame.cpp:2961 (105)
-//         0041fc0f     MOV        EDI,dword ptr [ESP + 0x150]
-//         0041fc16     NEG        EAX
-//         0041fc18     MOV        dword ptr [ESP + 0xc],EAX
-//         0041fc1c     XOR        EAX,EAX
-//         0041fc1e     MOV        dword ptr [ESP + 0x10],EAX
-//         0041fc22     MOV        dword ptr [ESP + 0x14],EAX
-//         0041fc26     MOV        dword ptr [ESP + 0x18],EAX
-//         0041fc2a     MOV        byte ptr [ESP + 0x20],AL
-//         0041fc2e     MOV        byte ptr [ESP + 0x21],AL
-//         0041fc32     MOV        byte ptr [ESP + 0x24],AL
-//         0041fc36     MOV        byte ptr [ESP + 0x25],AL
-//         0041fc3a     MOV        AL,0x2
-//         0041fc3c     MOV        byte ptr [ESP + 0x22],this
-//         0041fc40     MOV        byte ptr [ESP + 0x26],AL
-//         0041fc44     MOV        byte ptr [ESP + 0x27],AL
-//         0041fc48     OR         this,0xffffffff
-//         0041fc4b     XOR        EAX,EAX
-//         0041fc4d     MOV        EDX,dword ptr [ESP + 0x158]
-//         0041fc54     SCASB.RE   ES:EDI
-//         0041fc56     NOT        this
-//         0041fc58     SUB        EDI,this
-//         0041fc5a     MOV        dword ptr [ESP + 0x1c],EDX
-//         0041fc5e     LEA        EDX,[ESP + 0x28]
-//         0041fc62     MOV        EAX,this
-//         0041fc64     MOV        ESI,EDI
-//         0041fc66     MOV        EDI,EDX
-//         0041fc68     SHR        this,0x2
-//         0041fc6b     MOV        byte ptr [ESP + 0x23],BL
-//         0041fc6f     MOVSD.REP  ES:EDI,ESI
-//         0041fc71     MOV        this,EAX
-//         0041fc73     AND        this,0x3
-//         0041fc76     MOVSB.REP  ES:EDI,ESI
-//                              basegame.cpp:2963 (11)
-//         0041fc78     LEA        this,[ESP + 0xc]
-//         0041fc7c     PUSH       this
-//         0041fc7d     CALL       dword ptr [->GDI32.DLL::CreateFontIndirectA]     = 0048b1a2
-//                              basegame.cpp:2964 (12)
-//         0041fc83     POP        EDI
-//         0041fc84     POP        ESI
-//         0041fc85     POP        EBX
-//         0041fc86     ADD        ESP,0x13c
-//         0041fc8c     RET        0x14
-//         0041fc8f     ??         90h
+//              char[256]         Stack[-0x104   face_name                 XREF[0,1]:   0041fb02(*)
+//              char[10]          Stack[-0x110   point_size_str
+//              char[10]          Stack[-0x11c   style
+//                               ?make_font@RGE_Base_Game@@IAEPAXPAXJH@Z                      XREF[9]:     setup_fonts:0041f5dc(c),
+//                               RGE_Base_Game::make_font                                                  setup_fonts:0041f5ef(c),
+//                                                                                                         setup_fonts:0041f5ff(c),
+//                                                                                                         setup_fonts:0041f612(c),
+//                                                                                                         setup_fonts:0041f622(c),
+//                                                                                                         setup_fonts:0041f635(c),
+//                                                                                                         setup_fonts:0041f645(c),
+//                                                                                                         setup_fonts:0041f655(c),
+//                                                                                                         setup_fonts:0041f668(c)
+//                              basegame.cpp:2909 (7)
+//         0041faf0     SUB        ESP,0x118
+//         0041faf6     PUSH       EBX
+//                              basegame.cpp:2916 (31)
+//         0041faf7     MOV        EBX,dword ptr [ESP + param_2]
+//         0041fafe     PUSH       ESI
+//         0041faff     MOV        ESI,this
+//         0041fb01     PUSH       EDI
+//         0041fb02     LEA        this=>face_name[4],[ESP + 0x24]
+//         0041fb06     MOV        EAX,dword ptr [ESI]
+//         0041fb08     PUSH       0x100
+//         0041fb0d     PUSH       this
+//         0041fb0e     PUSH       EBX
+//         0041fb0f     MOV        EDI,dword ptr [EAX + 0x20]
+//         0041fb12     MOV        this,ESI
+//         0041fb14     CALL       EDI
+//                              basegame.cpp:2917 (8)
+//         0041fb16     MOV        AL,byte ptr [ESP + 0x24]
+//         0041fb1a     TEST       AL,AL
+//         0041fb1c     JNZ        LAB_0041fb2c
+//                              basegame.cpp:2918 (2)
+//         0041fb1e     XOR        EAX,EAX
+//                              basegame.cpp:2930 (12)
+//         0041fb20     POP        EDI
+//         0041fb21     POP        ESI
+//         0041fb22     POP        EBX
+//         0041fb23     ADD        ESP,0x118
+//         0041fb29     RET        0xc
+//                               LAB_0041fb2c                                                 XREF[1]:     0041fb1c(j)
+//                              basegame.cpp:2909 (1)
+//         0041fb2c     PUSH       EBP
+//                              basegame.cpp:2920 (15)
+//         0041fb2d     LEA        EDX,[ESP + 0x1c]
+//         0041fb31     PUSH       offset DAT_fffffff8
+//         0041fb33     LEA        EAX,[EBX + 0x1]
+//         0041fb36     PUSH       EDX=>DAT_fffffff4
+//         0041fb37     PUSH       EAX=>DAT_fffffff0
+//         0041fb38     MOV        this,ESI
+//         0041fb3a     CALL       EDI
+//                              basegame.cpp:2921 (13)
+//         0041fb3c     LEA        this,[ESP + 0x1c]
+//         0041fb40     PUSH       this
+//         0041fb41     CALL       atoi                                             undefined atoi()
+//         0041fb46     ADD        ESP,0x4
+//                              basegame.cpp:2923 (17)
+//         0041fb49     LEA        EDX,[ESP + 0x10]
+//         0041fb4d     ADD        EBX,0x2
+//         0041fb50     MOV        this,ESI
+//         0041fb52     PUSH       0xa
+//         0041fb54     PUSH       EDX=>DAT_fffffff8
+//         0041fb55     PUSH       EBX=>DAT_fffffff4
+//         0041fb56     MOV        EBP,EAX
+//         0041fb58     CALL       EDI
+//                              basegame.cpp:2924 (42)
+//         0041fb5a     LEA        EAX,[ESP + 0x10]
+//         0041fb5e     PUSH       s_B                                              = "B"
+//         0041fb63     PUSH       EAX=>DAT_fffffff8
+//         0041fb64     CALL       strstr                                           undefined strstr()
+//         0041fb69     ADD        ESP,0x8
+//         0041fb6c     TEST       EAX,EAX
+//         0041fb6e     JNZ        LAB_0041fb8b
+//         0041fb70     LEA        this,[ESP + 0x10]
+//         0041fb74     PUSH       s_b                                              = "b"
+//         0041fb79     PUSH       this=>DAT_fffffff8
+//         0041fb7a     CALL       strstr                                           undefined strstr()
+//         0041fb7f     ADD        ESP,0x8
+//         0041fb82     TEST       EAX,EAX
+//                              basegame.cpp:2927 (7)
+//         0041fb84     MOV        EAX,0x190
+//         0041fb89     JZ         LAB_0041fb90
+//                               LAB_0041fb8b                                                 XREF[1]:     0041fb6e(j)
+//                              basegame.cpp:2925 (5)
+//         0041fb8b     MOV        EAX,0x2bc
+//                               LAB_0041fb90                                                 XREF[1]:     0041fb89(j)
+//                              basegame.cpp:2929 (31)
+//         0041fb90     MOV        EDX,dword ptr [ESP + 0x134]
+//         0041fb97     MOV        this,dword ptr [ESP + 0x12c]
+//         0041fb9e     PUSH       EDX
+//         0041fb9f     PUSH       EAX=>DAT_fffffff8
+//         0041fba0     LEA        EAX,[ESP + 0x30]
+//         0041fba4     PUSH       EBP=>DAT_fffffff4
+//         0041fba5     PUSH       EAX=>DAT_fffffff0
+//         0041fba6     PUSH       this
+//         0041fba7     MOV        this,ESI
+//         0041fba9     CALL       RGE_Base_Game::make_font                         void * make_font(RGE_Base_Game * this, void *
+//         0041fbae     POP        EBP
+//                              basegame.cpp:2930 (12)
+//         0041fbaf     POP        EDI
+//         0041fbb0     POP        ESI
+//         0041fbb1     POP        EBX
+//         0041fbb2     ADD        ESP,0x118
+//         0041fbb8     RET        0xc
+//         0041fbbb     ??         90h
+//         0041fbbc     NOP
+//         0041fbbd     NOP
+//         0041fbbe     NOP
+//         0041fbbf     NOP
     return 0;
 }
 

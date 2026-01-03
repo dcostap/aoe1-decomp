@@ -6,557 +6,100 @@ ConstructionAIModule::ConstructionAIModule(void* param_1, int param_2) {
 //                              undefined __thiscall ConstructionAIModule(ConstructionAIModule * thi
 //              undefined         <UNASSIGNED>   <RETURN>
 //              ConstructionAI    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     0040abcb(R)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     0040ac3d(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[7]:     0040abfc(W), 0040ac18(W), 0040ac48(W), 0040ae52(W),
-//                                                                                     0040ae98(W), 0040b03d(W), 0040b083(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0040b0f6(R)
-//              char[257]         Stack[-0x114   name                      XREF[1,4]:   0040abe5(W), 0040ad57(*), 0040ae60(*), 0040af42(*),
-//                                                                                     0040b04b(*)
-//              undefined4        Stack[-0x118   local_118                 XREF[2]:     0040ae4c(W), 0040b037(W)
-//              undefined4        Stack[-0x11c   local_11c                 XREF[3]:     0040ad35(W), 0040aef6(R), 0040af05(W)
-//              int               Stack[-0x120   i                         XREF[4]:     0040addf(*), 0040ae6a(R), 0040af6a(*), 0040b0a8(R)
-//              int               Stack[-0x124   gameID                    XREF[4]:     0040adbf(*), 0040ae74(R), 0040b00a(*), 0040b090(R)
-//              int               Stack[-0x128   builtValue                XREF[4]:     0040adff(*), 0040aed5(R), 0040af55(*), 0040b047(R)
-//              int               Stack[-0x12c   typeID@fffffed4           XREF[4]:     0040ad6a(*), 0040ae5c(R), 0040afea(*), 0040b0c0(R)
-//              int               Stack[-0x130   skipValue                 XREF[4]:     0040ad8f(*), 0040aec9(R), 0040afda(*), 0040b050(R)
-//              float             Stack[-0x134   zSize                     XREF[4]:     0040adaf(*), 0040ae79(R), 0040affa(*), 0040b07c(R)
-//              int               Stack[-0x138   inProgressValue@fffffec8  XREF[4]:     0040ad7f(*), 0040aebd(R), 0040afca(*), 0040b055(R)
-//              float             Stack[-0x13c   ySize@fffffec4            XREF[4]:     0040adcf(*), 0040ae6f(R), 0040b01a(*), 0040b09c(R)
-//              int               Stack[-0x140   buildAttemptsValue@fffff  XREF[4]:     0040ae2f(*), 0040aeb1(R), 0040afba(*), 0040b05a(R)
-//              float             Stack[-0x144   xSize                     XREF[4]:     0040adef(*), 0040ae65(R), 0040af7a(*), 0040b0b4(R)
-//              int               Stack[-0x148   uniqueID@fffffeb8         XREF[4]:     0040ae1f(*), 0040aea5(R), 0040afaa(*), 0040b05f(R)
-//              float             Stack[-0x14c   z@fffffeb4                XREF[4]:     0040ae0f(*), 0040ae91(R), 0040af9a(*), 0040b064(R)
-//              float             Stack[-0x150   y                         XREF[4]:     0040ad9f(*), 0040ae7e(R), 0040af8a(*), 0040b069(R)
-//              float             Stack[-0x154   x                         XREF[9]:     0040aca6(*), 0040acb3(R), 0040acc8(R), 0040ad43(*),
-//                                                                                     0040ad50(R), 0040ad63(R), 0040af2e(*), 0040af3b(R),
-//                                                                                     0040af4e(R)
-//              int               Stack[-0x158   tempInt
-//                               ??0ConstructionAIModule@@QAE@HH@Z                            XREF[1]:     TribeConstructionAIModule:004d5ebf
+//              void *            Stack[0x4]:4   param_1                   XREF[1]:     0040aaa6(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     0040aaae(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     0040aad5(W), 0040aaea(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0040ab6d(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0040aac2(W)
+//                               ??0ConstructionAIModule@@QAE@PAXH@Z                          XREF[1]:     TribeConstructionAIModule:004d5e6f
 //                               ConstructionAIModule::ConstructionAIModule
-//                              aiconmod.cpp:57 (129)
-//         0040abb0     PUSH       -0x1
-//         0040abb2     PUSH       FUN_0055c589
-//         0040abb7     MOV        EAX,FS:[0x0]
-//         0040abbd     PUSH       EAX
-//         0040abbe     MOV        dword ptr FS:[0x0],ESP
-//         0040abc5     SUB        ESP,0x148
-//         0040abcb     MOV        EAX,dword ptr [ESP + param_1]
-//         0040abd2     PUSH       EBX
-//         0040abd3     PUSH       EBP
-//         0040abd4     PUSH       ESI
-//         0040abd5     PUSH       EDI
-//         0040abd6     PUSH       0x0
-//         0040abd8     PUSH       EAX
-//         0040abd9     MOV        EDI,this
+//                              aiconmod.cpp:36 (134)
+//         0040aa90     PUSH       -0x1
+//         0040aa92     PUSH       FUN_0055c536
+//         0040aa97     MOV        EAX,FS:[0x0]
+//         0040aa9d     PUSH       EAX
+//         0040aa9e     MOV        dword ptr FS:[0x0],ESP
+//         0040aaa5     PUSH       this
+//         0040aaa6     MOV        EAX,dword ptr [ESP + param_1]
+//         0040aaaa     PUSH       EBX
+//         0040aaab     PUSH       EBP
+//         0040aaac     MOV        EBX,this
+//         0040aaae     MOV        this,dword ptr [ESP + param_2]
+//         0040aab2     PUSH       ESI
+//         0040aab3     PUSH       EDI
+//         0040aab4     PUSH       EAX
+//         0040aab5     PUSH       this
 //                              language.dll match for 0x3ea: "X"
-//         0040abdb     PUSH       0x3ea
-//         0040abe0     PUSH       s_ConAI                                          = "ConAI"
-//         0040abe5     MOV        dword ptr [ESP + name[0]],EDI
-//         0040abe9     CALL       AIModule::AIModule                               undefined AIModule(AIModule * this, char * pa
-//         0040abee     LEA        EBX,[EDI + 0xf0]
-//         0040abf4     LEA        ESI,[EDI + 0xf4]
-//         0040abfa     MOV        this,ESI
-//         0040abfc     MOV        dword ptr [ESP + local_4],0x0
-//         0040ac07     MOV        dword ptr [EBX],0x0
-//         0040ac0d     CALL       ConstructionItem::ConstructionItem               undefined ConstructionItem(ConstructionItem *
-//         0040ac12     LEA        EBP,[EDI + 0x178]
-//         0040ac18     MOV        byte ptr [ESP + local_4],0x1
-//         0040ac20     MOV        this,EBP
-//         0040ac22     MOV        dword ptr [EDI + 0x174],0x0
-//         0040ac2c     CALL       ConstructionItem::ConstructionItem               undefined ConstructionItem(ConstructionItem *
-//                              aiconmod.cpp:58 (6)
-//         0040ac31     MOV        dword ptr [EDI + 0x160],ESI
-//                              aiconmod.cpp:59 (6)
-//         0040ac37     MOV        dword ptr [EDI + 0x164],ESI
-//                              aiconmod.cpp:64 (105)
-//         0040ac3d     MOV        ESI,dword ptr [ESP + param_2]
-//         0040ac44     PUSH       0x4
-//         0040ac46     PUSH       EBX
-//         0040ac47     PUSH       ESI
-//         0040ac48     MOV        byte ptr [ESP + local_4],0x2
-//         0040ac50     MOV        dword ptr [EDI + 0x2fc],0xbf800000
-//         0040ac5a     MOV        dword ptr [EDI + 0x300],0xbf800000
-//         0040ac64     MOV        dword ptr [EDI + 0x304],0xbf800000
-//         0040ac6e     MOV        dword ptr [EDI + 0x308],0xffffffff
-//         0040ac78     MOV        dword ptr [EDI + 0x30c],0xffffffff
-//         0040ac82     MOV        dword ptr [EDI + 0x310],0x0
-//         0040ac8c     MOV        dword ptr [EDI],ConstructionAIModule::`vftable'  = 0040ab90
-//         0040ac92     MOV        dword ptr [EDI + 0x1e4],EBP
-//         0040ac98     MOV        dword ptr [EDI + 0x1e8],EBP
-//         0040ac9e     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040aca3     ADD        ESP,0xc
-//                              aiconmod.cpp:67 (13)
-//         0040aca6     LEA        this=>x,[ESP + 0x10]
-//         0040acaa     PUSH       0x4
-//         0040acac     PUSH       this
-//         0040acad     PUSH       ESI
-//         0040acae     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              aiconmod.cpp:68 (21)
-//         0040acb3     MOV        EDX,dword ptr [ESP + x]
-//         0040acb7     ADD        ESP,0xc
-//         0040acba     LEA        EAX,[EDI + 0x1f8]
-//         0040acc0     PUSH       EDX
-//         0040acc1     PUSH       EAX
-//         0040acc2     PUSH       ESI
-//         0040acc3     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              aiconmod.cpp:69 (7)
-//         0040acc8     MOV        this,dword ptr [ESP + x]
-//         0040accc     ADD        ESP,0xc
-//                              aiconmod.cpp:71 (26)
-//         0040accf     LEA        EAX,[EDI + 0x2fc]
-//         0040acd5     PUSH       0x4
-//         0040acd7     PUSH       EAX
-//         0040acd8     PUSH       ESI
-//         0040acd9     MOV        byte ptr [ECX + EDI*0x1 + this->constructionPl
-//         0040ace1     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040ace6     ADD        ESP,0xc
-//                              aiconmod.cpp:72 (18)
-//         0040ace9     LEA        EAX,[EDI + 0x300]
-//         0040acef     PUSH       0x4
-//         0040acf1     PUSH       EAX
-//         0040acf2     PUSH       ESI
-//         0040acf3     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040acf8     ADD        ESP,0xc
-//                              aiconmod.cpp:73 (18)
-//         0040acfb     LEA        EAX,[EDI + 0x304]
-//         0040ad01     PUSH       0x4
-//         0040ad03     PUSH       EAX
-//         0040ad04     PUSH       ESI
-//         0040ad05     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040ad0a     ADD        ESP,0xc
-//                              aiconmod.cpp:74 (18)
-//         0040ad0d     LEA        EAX,[EDI + 0x308]
-//         0040ad13     PUSH       0x4
-//         0040ad15     PUSH       EAX
-//         0040ad16     PUSH       ESI
-//         0040ad17     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040ad1c     ADD        ESP,0xc
-//                              aiconmod.cpp:75 (15)
-//         0040ad1f     LEA        EAX,[EDI + 0x30c]
-//         0040ad25     PUSH       0x4
-//         0040ad27     PUSH       EAX
-//         0040ad28     PUSH       ESI
-//         0040ad29     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              aiconmod.cpp:78 (21)
-//         0040ad2e     MOV        EAX,dword ptr [EBX]
-//         0040ad30     ADD        ESP,0xc
-//         0040ad33     TEST       EAX,EAX
-//         0040ad35     MOV        dword ptr [ESP + local_11c],0x0
-//         0040ad3d     JLE        LAB_0040af0f
-//                               LAB_0040ad43                                                 XREF[1]:     0040af09(j)
-//                              aiconmod.cpp:81 (13)
-//         0040ad43     LEA        EDX=>x,[ESP + 0x10]
-//         0040ad47     PUSH       0x4
-//         0040ad49     PUSH       EDX
-//         0040ad4a     PUSH       ESI
-//         0040ad4b     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              aiconmod.cpp:82 (19)
-//         0040ad50     MOV        EAX,dword ptr [ESP + x]
-//         0040ad54     ADD        ESP,0xc
-//         0040ad57     LEA        this=>name[4],[ESP + 0x54]
-//         0040ad5b     PUSH       EAX
-//         0040ad5c     PUSH       this
-//         0040ad5d     PUSH       ESI
-//         0040ad5e     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              aiconmod.cpp:83 (7)
-//         0040ad63     MOV        EDX,dword ptr [ESP + x]
-//         0040ad67     ADD        ESP,0xc
-//                              aiconmod.cpp:86 (21)
-//         0040ad6a     LEA        EAX=>typeID@fffffed4,[ESP + 0x38]
-//         0040ad6e     PUSH       0x4
-//         0040ad70     PUSH       EAX
-//         0040ad71     PUSH       ESI
-//         0040ad72     MOV        byte ptr [ESP + EDX*0x1 + 0x60],0x0
-//         0040ad77     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040ad7c     ADD        ESP,0xc
-//                              aiconmod.cpp:88 (16)
-//         0040ad7f     LEA        this=>inProgressValue@fffffec8,[ESP + 0x2c]
-//         0040ad83     PUSH       0x4
-//         0040ad85     PUSH       this
-//         0040ad86     PUSH       ESI
-//         0040ad87     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040ad8c     ADD        ESP,0xc
-//                              aiconmod.cpp:90 (16)
-//         0040ad8f     LEA        EDX=>skipValue,[ESP + 0x34]
-//         0040ad93     PUSH       0x4
-//         0040ad95     PUSH       EDX
-//         0040ad96     PUSH       ESI
-//         0040ad97     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040ad9c     ADD        ESP,0xc
-//                              aiconmod.cpp:92 (16)
-//         0040ad9f     LEA        EAX=>y,[ESP + 0x14]
-//         0040ada3     PUSH       0x4
-//         0040ada5     PUSH       EAX
-//         0040ada6     PUSH       ESI
-//         0040ada7     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040adac     ADD        ESP,0xc
-//                              aiconmod.cpp:94 (16)
-//         0040adaf     LEA        this=>zSize,[ESP + 0x30]
-//         0040adb3     PUSH       0x4
-//         0040adb5     PUSH       this
-//         0040adb6     PUSH       ESI
-//         0040adb7     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040adbc     ADD        ESP,0xc
-//                              aiconmod.cpp:96 (16)
-//         0040adbf     LEA        EDX=>gameID,[ESP + 0x40]
-//         0040adc3     PUSH       0x4
-//         0040adc5     PUSH       EDX
-//         0040adc6     PUSH       ESI
-//         0040adc7     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040adcc     ADD        ESP,0xc
-//                              aiconmod.cpp:98 (16)
-//         0040adcf     LEA        EAX=>ySize@fffffec4,[ESP + 0x28]
-//         0040add3     PUSH       0x4
-//         0040add5     PUSH       EAX
-//         0040add6     PUSH       ESI
-//         0040add7     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040addc     ADD        ESP,0xc
-//                              aiconmod.cpp:100 (16)
-//         0040addf     LEA        this=>i,[ESP + 0x44]
-//         0040ade3     PUSH       0x4
-//         0040ade5     PUSH       this
-//         0040ade6     PUSH       ESI
-//         0040ade7     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040adec     ADD        ESP,0xc
-//                              aiconmod.cpp:102 (16)
-//         0040adef     LEA        EDX=>xSize,[ESP + 0x20]
-//         0040adf3     PUSH       0x4
-//         0040adf5     PUSH       EDX
-//         0040adf6     PUSH       ESI
-//         0040adf7     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040adfc     ADD        ESP,0xc
-//                              aiconmod.cpp:104 (16)
-//         0040adff     LEA        EAX=>builtValue,[ESP + 0x3c]
-//         0040ae03     PUSH       0x4
-//         0040ae05     PUSH       EAX
-//         0040ae06     PUSH       ESI
-//         0040ae07     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040ae0c     ADD        ESP,0xc
-//                              aiconmod.cpp:107 (16)
-//         0040ae0f     LEA        this=>z@fffffeb4,[ESP + 0x18]
-//         0040ae13     PUSH       0x4
-//         0040ae15     PUSH       this
-//         0040ae16     PUSH       ESI
-//         0040ae17     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040ae1c     ADD        ESP,0xc
-//                              aiconmod.cpp:109 (16)
-//         0040ae1f     LEA        EDX=>uniqueID@fffffeb8,[ESP + 0x1c]
-//         0040ae23     PUSH       0x4
-//         0040ae25     PUSH       EDX
-//         0040ae26     PUSH       ESI
-//         0040ae27     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040ae2c     ADD        ESP,0xc
-//                              aiconmod.cpp:111 (16)
-//         0040ae2f     LEA        EAX=>buildAttemptsValue@fffffec0,[ESP + 0x24]
-//         0040ae33     PUSH       0x4
-//         0040ae35     PUSH       EAX
-//         0040ae36     PUSH       ESI
-//         0040ae37     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040ae3c     ADD        ESP,0xc
-//                              language.dll match for 0x80: "Arial"
-//                              aiconmod.cpp:114 (82)
-//         0040ae3f     PUSH       0x80
-//         0040ae44     CALL       operator_new                                     void * operator_new(uint param_1)
-//         0040ae49     ADD        ESP,0x4
-//         0040ae4c     MOV        dword ptr [ESP + local_118],EAX
-//         0040ae50     TEST       EAX,EAX
-//         0040ae52     MOV        byte ptr [ESP + local_4],0x3
-//         0040ae5a     JZ         LAB_0040ae8f
-//         0040ae5c     MOV        EDX,dword ptr [ESP + typeID@fffffed4]
-//         0040ae60     LEA        this=>name[4],[ESP + 0x54]
-//         0040ae64     PUSH       this
-//         0040ae65     MOV        this,dword ptr [ESP + xSize]
-//         0040ae69     PUSH       EDX
-//         0040ae6a     MOV        EDX,dword ptr [ESP + i]
-//         0040ae6e     PUSH       this
-//         0040ae6f     MOV        this,dword ptr [ESP + ySize@fffffec4]
-//         0040ae73     PUSH       EDX
-//         0040ae74     MOV        EDX,dword ptr [ESP + gameID]
-//         0040ae78     PUSH       this
-//         0040ae79     MOV        this,dword ptr [ESP + zSize]
-//         0040ae7d     PUSH       EDX
-//         0040ae7e     MOV        EDX,dword ptr [ESP + y]
-//         0040ae82     PUSH       this
-//         0040ae83     PUSH       EDX
-//         0040ae84     MOV        this,EAX
-//         0040ae86     CALL       ConstructionItem::ConstructionItem               undefined ConstructionItem(ConstructionItem *
-//         0040ae8b     MOV        EBP,EAX
-//         0040ae8d     JMP        LAB_0040ae91
-//                               LAB_0040ae8f                                                 XREF[1]:     0040ae5a(j)
-//         0040ae8f     XOR        EBP,EBP
-//                               LAB_0040ae91                                                 XREF[1]:     0040ae8d(j)
-//                              aiconmod.cpp:115 (20)
-//         0040ae91     MOV        EAX,dword ptr [ESP + z@fffffeb4]
-//         0040ae95     MOV        this,EBP
-//         0040ae97     PUSH       EAX
-//         0040ae98     MOV        byte ptr [ESP + local_4],0x2
-//         0040aea0     CALL       ConstructionItem::setInProgress                  void setInProgress(ConstructionItem * this, i
-//                              aiconmod.cpp:116 (12)
-//         0040aea5     MOV        this,dword ptr [ESP + uniqueID@fffffeb8]
-//         0040aea9     PUSH       this
-//         0040aeaa     MOV        this,EBP
-//         0040aeac     CALL       ConstructionItem::setBuilt                       void setBuilt(ConstructionItem * this, int pa
-//                              aiconmod.cpp:117 (12)
-//         0040aeb1     MOV        EDX,dword ptr [ESP + buildAttemptsValue@fffffe
-//         0040aeb5     MOV        this,EBP
-//         0040aeb7     PUSH       EDX
-//         0040aeb8     CALL       ConstructionItem::setBuildAttempts               void setBuildAttempts(ConstructionItem * this
-//                              aiconmod.cpp:118 (12)
-//         0040aebd     MOV        EAX,dword ptr [ESP + inProgressValue@fffffec8]
-//         0040aec1     MOV        this,EBP
-//         0040aec3     PUSH       EAX
-//         0040aec4     CALL       BaseItem::setGameID                              void setGameID(BaseItem * this, int param_1)
-//                              aiconmod.cpp:119 (12)
-//         0040aec9     MOV        this,dword ptr [ESP + skipValue]
-//         0040aecd     PUSH       this
-//         0040aece     MOV        this,EBP
-//         0040aed0     CALL       BaseItem::setUniqueID                            void setUniqueID(BaseItem * this, int param_1)
-//                              aiconmod.cpp:120 (12)
-//         0040aed5     MOV        EDX,dword ptr [ESP + builtValue]
-//         0040aed9     MOV        this,EBP
-//         0040aedb     PUSH       EDX
-//         0040aedc     CALL       BaseItem::setSkip                                void setSkip(BaseItem * this, int param_1)
-//                              aiconmod.cpp:123 (9)
-//         0040aee1     LEA        EAX,[EDI + 0xf4]
-//         0040aee7     MOV        dword ptr [EBP + 0x6c],EAX
-//                              aiconmod.cpp:124 (9)
-//         0040aeea     MOV        EAX,dword ptr [EDI + 0x164]
-//         0040aef0     MOV        dword ptr [EBP + 0x70],EAX
-//                              aiconmod.cpp:125 (12)
-//         0040aef3     MOV        dword ptr [EAX + 0x6c],EBP
-//         0040aef6     MOV        EAX,dword ptr [ESP + local_11c]
-//         0040aefa     MOV        this,dword ptr [EBX]
-//         0040aefc     INC        EAX
-//         0040aefd     CMP        EAX,this
-//                              aiconmod.cpp:126 (16)
-//         0040aeff     MOV        dword ptr [EDI + 0x164],EBP
-//         0040af05     MOV        dword ptr [ESP + local_11c],EAX
-//         0040af09     JL         LAB_0040ad43
-//                               LAB_0040af0f                                                 XREF[1]:     0040ad3d(j)
-//                              aiconmod.cpp:130 (15)
-//         0040af0f     LEA        EBP,[EDI + 0x174]
-//         0040af15     PUSH       0x4
-//         0040af17     PUSH       EBP
-//         0040af18     PUSH       ESI
-//         0040af19     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              aiconmod.cpp:132 (16)
-//         0040af1e     MOV        EAX,dword ptr [EBP]
-//         0040af21     ADD        ESP,0xc
-//         0040af24     XOR        EBX,EBX
-//         0040af26     TEST       EAX,EAX
-//         0040af28     JLE        LAB_0040b0f6
-//                               LAB_0040af2e                                                 XREF[1]:     0040b0f0(j)
-//                              aiconmod.cpp:135 (13)
-//         0040af2e     LEA        EAX=>x,[ESP + 0x10]
-//         0040af32     PUSH       0x4
-//         0040af34     PUSH       EAX
-//         0040af35     PUSH       ESI
-//         0040af36     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              aiconmod.cpp:136 (19)
-//         0040af3b     MOV        this,dword ptr [ESP + x]
-//         0040af3f     ADD        ESP,0xc
-//         0040af42     LEA        EDX=>name[4],[ESP + 0x54]
-//         0040af46     PUSH       this
-//         0040af47     PUSH       EDX
-//         0040af48     PUSH       ESI
-//         0040af49     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              aiconmod.cpp:137 (7)
-//         0040af4e     MOV        EAX,dword ptr [ESP + x]
-//         0040af52     ADD        ESP,0xc
-//                              aiconmod.cpp:140 (21)
-//         0040af55     LEA        this=>builtValue,[ESP + 0x3c]
-//         0040af59     PUSH       0x4
-//         0040af5b     PUSH       this
-//         0040af5c     PUSH       ESI
-//         0040af5d     MOV        byte ptr [ESP + EAX*0x1 + 0x60],0x0
-//         0040af62     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040af67     ADD        ESP,0xc
-//                              aiconmod.cpp:142 (16)
-//         0040af6a     LEA        EDX=>i,[ESP + 0x44]
-//         0040af6e     PUSH       0x4
-//         0040af70     PUSH       EDX
-//         0040af71     PUSH       ESI
-//         0040af72     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040af77     ADD        ESP,0xc
-//                              aiconmod.cpp:144 (16)
-//         0040af7a     LEA        EAX=>xSize,[ESP + 0x20]
-//         0040af7e     PUSH       0x4
-//         0040af80     PUSH       EAX
-//         0040af81     PUSH       ESI
-//         0040af82     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040af87     ADD        ESP,0xc
-//                              aiconmod.cpp:146 (16)
-//         0040af8a     LEA        this=>y,[ESP + 0x14]
-//         0040af8e     PUSH       0x4
-//         0040af90     PUSH       this
-//         0040af91     PUSH       ESI
-//         0040af92     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040af97     ADD        ESP,0xc
-//                              aiconmod.cpp:148 (16)
-//         0040af9a     LEA        EDX=>z@fffffeb4,[ESP + 0x18]
-//         0040af9e     PUSH       0x4
-//         0040afa0     PUSH       EDX
-//         0040afa1     PUSH       ESI
-//         0040afa2     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040afa7     ADD        ESP,0xc
-//                              aiconmod.cpp:150 (16)
-//         0040afaa     LEA        EAX=>uniqueID@fffffeb8,[ESP + 0x1c]
-//         0040afae     PUSH       0x4
-//         0040afb0     PUSH       EAX
-//         0040afb1     PUSH       ESI
-//         0040afb2     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040afb7     ADD        ESP,0xc
-//                              aiconmod.cpp:152 (16)
-//         0040afba     LEA        this=>buildAttemptsValue@fffffec0,[ESP + 0x24]
-//         0040afbe     PUSH       0x4
-//         0040afc0     PUSH       this
-//         0040afc1     PUSH       ESI
-//         0040afc2     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040afc7     ADD        ESP,0xc
-//                              aiconmod.cpp:154 (16)
-//         0040afca     LEA        EDX=>inProgressValue@fffffec8,[ESP + 0x2c]
-//         0040afce     PUSH       0x4
-//         0040afd0     PUSH       EDX
-//         0040afd1     PUSH       ESI
-//         0040afd2     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040afd7     ADD        ESP,0xc
-//                              aiconmod.cpp:156 (16)
-//         0040afda     LEA        EAX=>skipValue,[ESP + 0x34]
-//         0040afde     PUSH       0x4
-//         0040afe0     PUSH       EAX
-//         0040afe1     PUSH       ESI
-//         0040afe2     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040afe7     ADD        ESP,0xc
-//                              aiconmod.cpp:158 (16)
-//         0040afea     LEA        this=>typeID@fffffed4,[ESP + 0x38]
-//         0040afee     PUSH       0x4
-//         0040aff0     PUSH       this
-//         0040aff1     PUSH       ESI
-//         0040aff2     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040aff7     ADD        ESP,0xc
-//                              aiconmod.cpp:161 (16)
-//         0040affa     LEA        EDX=>zSize,[ESP + 0x30]
-//         0040affe     PUSH       0x4
-//         0040b000     PUSH       EDX
-//         0040b001     PUSH       ESI
-//         0040b002     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040b007     ADD        ESP,0xc
-//                              aiconmod.cpp:163 (16)
-//         0040b00a     LEA        EAX=>gameID,[ESP + 0x40]
-//         0040b00e     PUSH       0x4
-//         0040b010     PUSH       EAX
-//         0040b011     PUSH       ESI
-//         0040b012     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040b017     ADD        ESP,0xc
-//                              aiconmod.cpp:165 (16)
-//         0040b01a     LEA        this=>ySize@fffffec4,[ESP + 0x28]
-//         0040b01e     PUSH       0x4
-//         0040b020     PUSH       this
-//         0040b021     PUSH       ESI
-//         0040b022     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040b027     ADD        ESP,0xc
-//                              language.dll match for 0x80: "Arial"
-//                              aiconmod.cpp:168 (82)
-//         0040b02a     PUSH       0x80
-//         0040b02f     CALL       operator_new                                     void * operator_new(uint param_1)
-//         0040b034     ADD        ESP,0x4
-//         0040b037     MOV        dword ptr [ESP + local_118],EAX
-//         0040b03b     TEST       EAX,EAX
-//         0040b03d     MOV        byte ptr [ESP + local_4],0x4
-//         0040b045     JZ         LAB_0040b07a
-//         0040b047     MOV        this,dword ptr [ESP + builtValue]
-//         0040b04b     LEA        EDX=>name[4],[ESP + 0x54]
-//         0040b04f     PUSH       EDX
-//         0040b050     MOV        EDX,dword ptr [ESP + skipValue]
-//         0040b054     PUSH       this
-//         0040b055     MOV        this,dword ptr [ESP + inProgressValue@fffffec8]
-//         0040b059     PUSH       EDX
-//         0040b05a     MOV        EDX,dword ptr [ESP + buildAttemptsValue@fffffe
-//         0040b05e     PUSH       this
-//         0040b05f     MOV        this,dword ptr [ESP + uniqueID@fffffeb8]
-//         0040b063     PUSH       EDX
-//         0040b064     MOV        EDX,dword ptr [ESP + z@fffffeb4]
-//         0040b068     PUSH       this
-//         0040b069     MOV        this,dword ptr [ESP + y]
-//         0040b06d     PUSH       EDX
-//         0040b06e     PUSH       this
-//         0040b06f     MOV        this,EAX
-//         0040b071     CALL       ConstructionItem::ConstructionItem               undefined ConstructionItem(ConstructionItem *
-//         0040b076     MOV        EBP,EAX
-//         0040b078     JMP        LAB_0040b07c
-//                               LAB_0040b07a                                                 XREF[1]:     0040b045(j)
-//         0040b07a     XOR        EBP,EBP
-//                               LAB_0040b07c                                                 XREF[1]:     0040b078(j)
-//                              aiconmod.cpp:169 (20)
-//         0040b07c     MOV        EDX,dword ptr [ESP + zSize]
-//         0040b080     MOV        this,EBP
-//         0040b082     PUSH       EDX
-//         0040b083     MOV        byte ptr [ESP + local_4],0x2
-//         0040b08b     CALL       ConstructionItem::setInProgress                  void setInProgress(ConstructionItem * this, i
-//                              aiconmod.cpp:170 (12)
-//         0040b090     MOV        EAX,dword ptr [ESP + gameID]
-//         0040b094     MOV        this,EBP
-//         0040b096     PUSH       EAX
-//         0040b097     CALL       ConstructionItem::setBuilt                       void setBuilt(ConstructionItem * this, int pa
-//                              aiconmod.cpp:171 (12)
-//         0040b09c     MOV        this,dword ptr [ESP + ySize@fffffec4]
-//         0040b0a0     PUSH       this
-//         0040b0a1     MOV        this,EBP
-//         0040b0a3     CALL       ConstructionItem::setBuildAttempts               void setBuildAttempts(ConstructionItem * this
-//                              aiconmod.cpp:172 (12)
-//         0040b0a8     MOV        EDX,dword ptr [ESP + i]
-//         0040b0ac     MOV        this,EBP
-//         0040b0ae     PUSH       EDX
-//         0040b0af     CALL       BaseItem::setGameID                              void setGameID(BaseItem * this, int param_1)
-//                              aiconmod.cpp:173 (12)
-//         0040b0b4     MOV        EAX,dword ptr [ESP + xSize]
-//         0040b0b8     MOV        this,EBP
-//         0040b0ba     PUSH       EAX
-//         0040b0bb     CALL       BaseItem::setUniqueID                            void setUniqueID(BaseItem * this, int param_1)
-//                              aiconmod.cpp:174 (12)
-//         0040b0c0     MOV        this,dword ptr [ESP + typeID@fffffed4]
-//         0040b0c4     PUSH       this
-//         0040b0c5     MOV        this,EBP
-//         0040b0c7     CALL       BaseItem::setSkip                                void setSkip(BaseItem * this, int param_1)
-//                              aiconmod.cpp:177 (10)
-//         0040b0cc     LEA        EAX,[EDI + 0x178]
-//         0040b0d2     INC        EBX
-//         0040b0d3     MOV        dword ptr [EBP + 0x6c],EAX
-//                              aiconmod.cpp:178 (9)
-//         0040b0d6     MOV        EAX,dword ptr [EDI + 0x1e8]
-//         0040b0dc     MOV        dword ptr [EBP + 0x70],EAX
-//                              aiconmod.cpp:179 (11)
-//         0040b0df     MOV        dword ptr [EAX + 0x6c],EBP
-//         0040b0e2     MOV        EAX,dword ptr [EDI + 0x174]
-//         0040b0e8     CMP        EBX,EAX
-//                              aiconmod.cpp:180 (12)
-//         0040b0ea     MOV        dword ptr [EDI + 0x1e8],EBP
-//         0040b0f0     JL         LAB_0040af2e
-//                               LAB_0040b0f6                                                 XREF[1]:     0040af28(j)
-//                              aiconmod.cpp:182 (29)
-//         0040b0f6     MOV        this,dword ptr [ESP + local_c]
-//         0040b0fd     MOV        EAX,EDI
-//         0040b0ff     POP        EDI
-//         0040b100     POP        ESI
-//         0040b101     POP        EBP
-//         0040b102     MOV        dword ptr FS:[0x0],this
-//         0040b109     POP        EBX
-//         0040b10a     ADD        ESP,0x154
-//         0040b110     RET        0x8
-//         0040b113     ??         90h
-//         0040b114     NOP
-//         0040b115     NOP
-//         0040b116     NOP
-//         0040b117     NOP
-//         0040b118     NOP
-//         0040b119     NOP
-//         0040b11a     NOP
-//         0040b11b     NOP
-//         0040b11c     NOP
-//         0040b11d     NOP
-//         0040b11e     NOP
-//         0040b11f     NOP
+//         0040aab6     PUSH       0x3ea
+//         0040aabb     PUSH       s_ConAI                                          = "ConAI"
+//         0040aac0     MOV        this,EBX
+//         0040aac2     MOV        dword ptr [ESP + local_10],EBX
+//         0040aac6     CALL       AIModule::AIModule                               undefined AIModule(AIModule * this, char * pa
+//         0040aacb     LEA        ESI,[EBX + 0xf4]
+//         0040aad1     XOR        EBP,EBP
+//         0040aad3     MOV        this,ESI
+//         0040aad5     MOV        dword ptr [ESP + local_4],EBP
+//         0040aad9     MOV        dword ptr [EBX + 0xf0],EBP
+//         0040aadf     CALL       ConstructionItem::ConstructionItem               undefined ConstructionItem(ConstructionItem *
+//         0040aae4     LEA        EDI,[EBX + 0x178]
+//         0040aaea     MOV        byte ptr [ESP + local_4],0x1
+//         0040aaef     MOV        this,EDI
+//         0040aaf1     MOV        dword ptr [EBX + 0x174],EBP
+//         0040aaf7     CALL       ConstructionItem::ConstructionItem               undefined ConstructionItem(ConstructionItem *
+//         0040aafc     MOV        EAX,0xbf800000
+//         0040ab01     OR         this,0xffffffff
+//         0040ab04     MOV        dword ptr [EBX + 0x2fc],EAX
+//         0040ab0a     MOV        dword ptr [EBX + 0x300],EAX
+//         0040ab10     MOV        dword ptr [EBX + 0x304],EAX
+//                              aiconmod.cpp:39 (6)
+//         0040ab16     MOV        dword ptr [EBX + 0x1e4],EDI
+//                              aiconmod.cpp:40 (6)
+//         0040ab1c     MOV        dword ptr [EBX + 0x1e8],EDI
+//                              aiconmod.cpp:42 (68)
+//         0040ab22     MOV        EDI,s_                                           = ""
+//         0040ab27     XOR        EAX,EAX
+//         0040ab29     MOV        dword ptr [EBX + 0x308],this
+//         0040ab2f     MOV        dword ptr [EBX + 0x30c],this
+//         0040ab35     MOV        dword ptr [EBX + 0x310],EBP
+//         0040ab3b     MOV        dword ptr [EBX],ConstructionAIModule::`vftable'  = 0040ab90
+//         0040ab41     MOV        dword ptr [EBX + 0x160],ESI
+//         0040ab47     MOV        dword ptr [EBX + 0x164],ESI
+//         0040ab4d     LEA        EDX,[EBX + 0x1f8]
+//         0040ab53     SCASB.RE   ES:EDI=>s_                                       = ""
+//         0040ab55     NOT        this
+//         0040ab57     SUB        EDI,this
+//         0040ab59     MOV        EAX,this
+//         0040ab5b     MOV        ESI,EDI
+//         0040ab5d     MOV        EDI,EDX
+//         0040ab5f     SHR        this,0x2
+//         0040ab62     MOVSD.REP  ES:EDI,ESI
+//         0040ab64     MOV        this,EAX
+//                              aiconmod.cpp:43 (28)
+//         0040ab66     MOV        EAX,EBX
+//         0040ab68     AND        this,0x3
+//         0040ab6b     MOVSB.REP  ES:EDI,ESI
+//         0040ab6d     MOV        this,dword ptr [ESP + local_c]
+//         0040ab71     POP        EDI
+//         0040ab72     POP        ESI
+//         0040ab73     POP        EBP
+//         0040ab74     MOV        dword ptr FS:[0x0],this
+//         0040ab7b     POP        EBX
+//         0040ab7c     ADD        ESP,0x10
+//         0040ab7f     RET        0x8
+//         0040ab82     ??         90h
+//         0040ab83     NOP
+//         0040ab84     NOP
+//         0040ab85     NOP
+//         0040ab86     NOP
+//         0040ab87     NOP
+//         0040ab88     NOP
+//         0040ab89     NOP
+//         0040ab8a     NOP
+//         0040ab8b     NOP
+//         0040ab8c     NOP
+//         0040ab8d     NOP
+//         0040ab8e     NOP
+//         0040ab8f     NOP
 }
 
 ConstructionAIModule::ConstructionAIModule(int param_1, int param_2) {
@@ -2371,91 +1914,86 @@ void ConstructionAIModule::setBuilt(ConstructionItem* param_1, int param_2) {
 
 int ConstructionAIModule::unplaceStructure(ConstructionItem* param_1, int param_2) {
     /* TODO: Stub */
-//                              int __thiscall unplaceStructure(ConstructionAIModule * this, float p
+//                              int __thiscall unplaceStructure(ConstructionAIModule * this, Constru
 //              int               EAX:4          <RETURN>
 //              ConstructionAI    ECX:4 (auto)   this
-//              float             Stack[0x4]:4   param_1                   XREF[1]:     0040bc9d(R)
-//              float             Stack[0x8]:4   param_2                   XREF[1]:     0040bcaf(R)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     0040bced(R)
-//                               ?unplaceStructure@ConstructionAIModule@@UAEHMMH@Z            XREF[2]:     0056e7ec(*), 005754ec(*)
+//              ConstructionIt    Stack[0x4]:4   param_1                   XREF[1]:     0040bc13(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     0040bc5d(R)
+//                               ?unplaceStructure@ConstructionAIModule@@UAEHPAVConstruction  XREF[2]:     0056e7f0(*), 005754f0(*)
 //                               ConstructionAIModule::unplaceStructure
-//                              aiconmod.cpp:513 (1)
-//         0040bc80     PUSH       ESI
-//                              aiconmod.cpp:514 (7)
-//         0040bc81     MOV        ESI,dword ptr [ECX + this+0x160]
-//         0040bc87     PUSH       EDI
-//                              aiconmod.cpp:515 (14)
-//         0040bc88     LEA        EDI,[ECX + this->constructionLots._padding_]
-//         0040bc8e     CMP        ESI,EDI
-//         0040bc90     JZ         LAB_0040bd02
-//                               LAB_0040bc92                                                 XREF[1]:     0040bcbf(j)
-//         0040bc92     TEST       ESI,ESI
-//         0040bc94     JZ         LAB_0040bd02
-//                              aiconmod.cpp:516 (36)
-//         0040bc96     MOV        this,ESI
-//         0040bc98     CALL       BaseItem::x                                      float x(BaseItem * this)
-//         0040bc9d     FCOMP      float ptr [ESP + param_1]
-//         0040bca1     FNSTSW     AX
-//         0040bca3     TEST       AH,0x40
-//         0040bca6     JZ         LAB_0040bcba
-//         0040bca8     MOV        this,ESI
-//         0040bcaa     CALL       BaseItem::y                                      float y(BaseItem * this)
-//         0040bcaf     FCOMP      float ptr [ESP + param_2]
-//         0040bcb3     FNSTSW     AX
-//         0040bcb5     TEST       AH,0x40
-//         0040bcb8     JNZ        LAB_0040bcc9
-//                               LAB_0040bcba                                                 XREF[1]:     0040bca6(j)
-//                              aiconmod.cpp:526 (7)
-//         0040bcba     MOV        ESI,dword ptr [ESI + 0x6c]
-//         0040bcbd     CMP        ESI,EDI
-//         0040bcbf     JNZ        LAB_0040bc92
-//                              aiconmod.cpp:528 (3)
-//         0040bcc1     OR         EAX,0xffffffff
-//                              aiconmod.cpp:529 (5)
-//         0040bcc4     POP        EDI
-//         0040bcc5     POP        ESI
-//         0040bcc6     RET        0xc
-//                               LAB_0040bcc9                                                 XREF[1]:     0040bcb8(j)
-//                              aiconmod.cpp:517 (9)
-//         0040bcc9     PUSH       0x0
-//         0040bccb     MOV        this,ESI
-//         0040bccd     CALL       ConstructionItem::setInProgress                  void setInProgress(ConstructionItem * this, i
-//                              aiconmod.cpp:518 (9)
-//         0040bcd2     PUSH       0x0
-//         0040bcd4     MOV        this,ESI
-//         0040bcd6     CALL       ConstructionItem::setBuilt                       void setBuilt(ConstructionItem * this, int pa
-//                              aiconmod.cpp:519 (7)
-//         0040bcdb     MOV        this,ESI
-//         0040bcdd     CALL       BaseItem::uniqueID                               int uniqueID(BaseItem * this)
-//                              aiconmod.cpp:520 (11)
-//         0040bce2     PUSH       -0x1
-//         0040bce4     MOV        this,ESI
-//         0040bce6     MOV        EDI,EAX
-//         0040bce8     CALL       BaseItem::setUniqueID                            void setUniqueID(BaseItem * this, int param_1)
-//                              aiconmod.cpp:522 (7)
-//         0040bced     CMP        dword ptr [ESP + param_3],0x1
-//         0040bcf2     JNZ        LAB_0040bcfb
-//                              aiconmod.cpp:523 (7)
-//         0040bcf4     MOV        this,ESI
-//         0040bcf6     CALL       ConstructionItem::decrementBuildAttempts         void decrementBuildAttempts(ConstructionItem
-//                               LAB_0040bcfb                                                 XREF[1]:     0040bcf2(j)
-//                              aiconmod.cpp:524 (2)
-//         0040bcfb     MOV        EAX,EDI
-//                              aiconmod.cpp:529 (13)
-//         0040bcfd     POP        EDI
-//         0040bcfe     POP        ESI
-//         0040bcff     RET        0xc
-//                               LAB_0040bd02                                                 XREF[2]:     0040bc90(j), 0040bc94(j)
-//         0040bd02     POP        EDI
-//         0040bd03     OR         EAX,0xffffffff
-//         0040bd06     POP        ESI
-//         0040bd07     RET        0xc
-//         0040bd0a     ??         90h
-//         0040bd0b     NOP
-//         0040bd0c     NOP
-//         0040bd0d     NOP
-//         0040bd0e     NOP
-//         0040bd0f     NOP
+//                              aiconmod.cpp:492 (2)
+//         0040bc00     PUSH       EBX
+//         0040bc01     PUSH       ESI
+//                              aiconmod.cpp:493 (7)
+//         0040bc02     MOV        ESI,dword ptr [ECX + this+0x160]
+//         0040bc08     PUSH       EDI
+//                              aiconmod.cpp:494 (18)
+//         0040bc09     LEA        EDI,[ECX + this->constructionLots._padding_]
+//         0040bc0f     CMP        ESI,EDI
+//         0040bc11     JZ         LAB_0040bc73
+//         0040bc13     MOV        EBX,dword ptr [ESP + param_1]
+//                               LAB_0040bc17                                                 XREF[1]:     0040bc2e(j)
+//         0040bc17     TEST       ESI,ESI
+//         0040bc19     JZ         LAB_0040bc73
+//                              aiconmod.cpp:495 (14)
+//         0040bc1b     PUSH       EBX
+//         0040bc1c     PUSH       ESI
+//         0040bc1d     CALL       operator==                                       int operator==(ConstructionItem * param_1, Co
+//         0040bc22     ADD        ESP,0x8
+//         0040bc25     TEST       EAX,EAX
+//         0040bc27     JNZ        LAB_0040bc39
+//                              aiconmod.cpp:505 (7)
+//         0040bc29     MOV        ESI,dword ptr [ESI + 0x6c]
+//         0040bc2c     CMP        ESI,EDI
+//         0040bc2e     JNZ        LAB_0040bc17
+//                              aiconmod.cpp:507 (3)
+//         0040bc30     OR         EAX,0xffffffff
+//                              aiconmod.cpp:508 (6)
+//         0040bc33     POP        EDI
+//         0040bc34     POP        ESI
+//         0040bc35     POP        EBX
+//         0040bc36     RET        0x8
+//                               LAB_0040bc39                                                 XREF[1]:     0040bc27(j)
+//                              aiconmod.cpp:496 (9)
+//         0040bc39     PUSH       0x0
+//         0040bc3b     MOV        this,ESI
+//         0040bc3d     CALL       ConstructionItem::setInProgress                  void setInProgress(ConstructionItem * this, i
+//                              aiconmod.cpp:497 (9)
+//         0040bc42     PUSH       0x0
+//         0040bc44     MOV        this,ESI
+//         0040bc46     CALL       ConstructionItem::setBuilt                       void setBuilt(ConstructionItem * this, int pa
+//                              aiconmod.cpp:498 (7)
+//         0040bc4b     MOV        this,ESI
+//         0040bc4d     CALL       BaseItem::uniqueID                               int uniqueID(BaseItem * this)
+//                              aiconmod.cpp:499 (11)
+//         0040bc52     PUSH       -0x1
+//         0040bc54     MOV        this,ESI
+//         0040bc56     MOV        EDI,EAX
+//         0040bc58     CALL       BaseItem::setUniqueID                            void setUniqueID(BaseItem * this, int param_1)
+//                              aiconmod.cpp:501 (7)
+//         0040bc5d     CMP        dword ptr [ESP + param_2],0x1
+//         0040bc62     JNZ        LAB_0040bc6b
+//                              aiconmod.cpp:502 (7)
+//         0040bc64     MOV        this,ESI
+//         0040bc66     CALL       ConstructionItem::decrementBuildAttempts         void decrementBuildAttempts(ConstructionItem
+//                               LAB_0040bc6b                                                 XREF[1]:     0040bc62(j)
+//                              aiconmod.cpp:503 (2)
+//         0040bc6b     MOV        EAX,EDI
+//                              aiconmod.cpp:508 (15)
+//         0040bc6d     POP        EDI
+//         0040bc6e     POP        ESI
+//         0040bc6f     POP        EBX
+//         0040bc70     RET        0x8
+//                               LAB_0040bc73                                                 XREF[2]:     0040bc11(j), 0040bc19(j)
+//         0040bc73     POP        EDI
+//         0040bc74     POP        ESI
+//         0040bc75     OR         EAX,0xffffffff
+//         0040bc78     POP        EBX
+//         0040bc79     RET        0x8
+//         0040bc7c     ??         90h
+//         0040bc7d     NOP
+//         0040bc7e     NOP
+//         0040bc7f     NOP
     return 0;
 }
 

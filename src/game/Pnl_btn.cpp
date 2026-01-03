@@ -441,48 +441,60 @@ void TButtonPanel::set_picture_info(TShape* param_1, short param_2, long param_3
 
 void TButtonPanel::set_text_info(char* param_1, void* param_2, long param_3, long param_4, long param_5, long param_6) {
     /* TODO: Stub */
-//                              void __thiscall set_text_info(TButtonPanel * this, long param_1, voi
+//                              void __thiscall set_text_info(TButtonPanel * this, char * param_1, v
 //              void              <VOID>         <RETURN>
 //              TButtonPanel *    ECX:4 (auto)   this
-//              long              Stack[0x4]:4   param_1                   XREF[1]:     004721f4(R)
-//              void *            Stack[0x8]:4   param_2                   XREF[1]:     0047220a(R)
-//              long              Stack[0xc]:4   param_3                   XREF[1]:     00472206(R)
-//              long              Stack[0x10]:4  param_4                   XREF[1]:     00472202(R)
-//              long              Stack[0x14]:4  param_5                   XREF[1]:     004721e8(R)
-//              long              Stack[0x18]:4  param_6                   XREF[1]:     004721e0(R)
-//                               ?set_text_info@TButtonPanel@@QAEXJPAXJJJJ@Z
-//                               TButtonPanel::set_text_info
-//                              Pnl_btn.cpp:188 (20)
-//         004721e0     MOV        EAX,dword ptr [ESP + param_6]
-//         004721e4     PUSH       ESI
-//         004721e5     MOV        ESI,this
-//         004721e7     PUSH       EAX
-//         004721e8     MOV        this,dword ptr [ESP + param_5]
-//         004721ec     PUSH       this
-//         004721ed     MOV        this,ESI
-//         004721ef     CALL       TButtonPanel::set_text_pos                       void set_text_pos(TButtonPanel * this, long p
-//                              Pnl_btn.cpp:190 (14)
-//         004721f4     MOV        EDX,dword ptr [ESP + param_1]
-//         004721f8     MOV        this,ESI
-//         004721fa     PUSH       EDX
-//         004721fb     PUSH       0x0
-//         004721fd     CALL       TButtonPanel::set_text                           void set_text(TButtonPanel * this, short para
-//                              Pnl_btn.cpp:191 (22)
-//         00472202     MOV        EAX,dword ptr [ESP + param_4]
-//         00472206     MOV        this,dword ptr [ESP + param_3]
-//         0047220a     MOV        EDX,dword ptr [ESP + param_2]
-//         0047220e     PUSH       EAX
-//         0047220f     PUSH       this
-//         00472210     PUSH       EDX
-//         00472211     MOV        this,ESI
-//         00472213     CALL       TButtonPanel::set_font                           void set_font(TButtonPanel * this, void * par
-//                              Pnl_btn.cpp:192 (4)
-//         00472218     POP        ESI
-//         00472219     RET        0x18
-//         0047221c     ??         90h
-//         0047221d     NOP
-//         0047221e     NOP
-//         0047221f     NOP
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     004721b4(R)
+//              void *            Stack[0x8]:4   param_2                   XREF[1]:     004721ca(R)
+//              long              Stack[0xc]:4   param_3                   XREF[1]:     004721c6(R)
+//              long              Stack[0x10]:4  param_4                   XREF[1]:     004721c2(R)
+//              long              Stack[0x14]:4  param_5                   XREF[1]:     004721a8(R)
+//              long              Stack[0x18]:4  param_6                   XREF[1]:     004721a0(R)
+//                               ?set_text_info@TButtonPanel@@QAEXPADPAXJJJJ@Z                XREF[14]:    create_button:0046866a(c),
+//                               TButtonPanel::set_text_info                                               create_check_box:004688d3(c),
+//                                                                                                         create_radio_button:00468b33(c),
+//                                                                                                         RGE_Panel_Tool_Box:00489a11(c),
+//                                                                                                         RGE_Panel_Tool_Box:00489a9c(c),
+//                                                                                                         RGE_Panel_Tool_Box:00489b27(c),
+//                                                                                                         RGE_Panel_Tool_Box:00489bb5(c),
+//                                                                                                         RGE_Panel_Tool_Box:00489c43(c),
+//                                                                                                         RGE_Panel_Tool_Box:00489cde(c),
+//                                                                                                         RGE_Panel_Tool_Box:00489e18(c),
+//                                                                                                         TribeEndScreen:00493b9e(c),
+//                                                                                                         TribeSelectTribeScreen:004b79c9(c)
+//                                                                                                         TribeSelectTribeScreen:004b7c3e(c)
+//                                                                                                         TribeSelectTribeScreen:004b7d59(c)
+//                              Pnl_btn.cpp:177 (20)
+//         004721a0     MOV        EAX,dword ptr [ESP + param_6]
+//         004721a4     PUSH       ESI
+//         004721a5     MOV        ESI,this
+//         004721a7     PUSH       EAX
+//         004721a8     MOV        this,dword ptr [ESP + param_5]
+//         004721ac     PUSH       this
+//         004721ad     MOV        this,ESI
+//         004721af     CALL       TButtonPanel::set_text_pos                       void set_text_pos(TButtonPanel * this, long p
+//                              Pnl_btn.cpp:179 (14)
+//         004721b4     MOV        EDX,dword ptr [ESP + param_1]
+//         004721b8     MOV        this,ESI
+//         004721ba     PUSH       EDX
+//         004721bb     PUSH       0x0
+//         004721bd     CALL       TButtonPanel::set_text                           void set_text(TButtonPanel * this, short para
+//                              Pnl_btn.cpp:180 (22)
+//         004721c2     MOV        EAX,dword ptr [ESP + param_4]
+//         004721c6     MOV        this,dword ptr [ESP + param_3]
+//         004721ca     MOV        EDX,dword ptr [ESP + param_2]
+//         004721ce     PUSH       EAX
+//         004721cf     PUSH       this
+//         004721d0     PUSH       EDX
+//         004721d1     MOV        this,ESI
+//         004721d3     CALL       TButtonPanel::set_font                           void set_font(TButtonPanel * this, void * par
+//                              Pnl_btn.cpp:181 (4)
+//         004721d8     POP        ESI
+//         004721d9     RET        0x18
+//         004721dc     ??         90h
+//         004721dd     NOP
+//         004721de     NOP
+//         004721df     NOP
     return;
 }
 
@@ -753,121 +765,303 @@ void TButtonPanel::set_picture(short param_1, TShape* param_2, short param_3) {
 
 void TButtonPanel::set_text(short param_1, char* param_2) {
     /* TODO: Stub */
-//                              void __thiscall set_text(TButtonPanel * this, short param_1, long pa
+//                              void __thiscall set_text(TButtonPanel * this, short param_1, char *
 //              void              <VOID>         <RETURN>
 //              TButtonPanel *    ECX:4 (auto)   this
-//              short             Stack[0x4]:2   param_1                   XREF[1]:     004725be(R)
-//              long              Stack[0x8]:4   param_2                   XREF[1]:     00472590(R)
-//              long              Stack[0xc]:4   param_3                   XREF[1]:     004725a5(R)
-//              char[256]         Stack[-0x104   str1                      XREF[0,2]:   00472586(*), 004725c9(*)
-//              char[256]         Stack[-0x204   str2                      XREF[0,2]:   004725ac(*), 004725c5(*)
-//                               ?set_text@TButtonPanel@@QAEXFJJ@Z
-//                               TButtonPanel::set_text
-//                              Pnl_btn.cpp:391 (6)
-//         00472580     SUB        ESP,0x200
-//                              Pnl_btn.cpp:398 (31)
-//         00472586     LEA        EAX=>str1[4],[ESP + 0x100]
-//         0047258d     PUSH       ESI
-//         0047258e     MOV        ESI,this
-//         00472590     MOV        this,dword ptr [ESP + param_2]
-//         00472597     PUSH       0x100
-//         0047259c     PUSH       EAX
-//         0047259d     PUSH       this
-//         0047259e     MOV        this,ESI
-//         004725a0     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
-//                              Pnl_btn.cpp:399 (25)
-//         004725a5     MOV        EAX,dword ptr [ESP + param_3]
-//         004725ac     LEA        EDX=>str2[4],[ESP + 0x4]
-//         004725b0     PUSH       0x100
-//         004725b5     PUSH       EDX
-//         004725b6     PUSH       EAX
-//         004725b7     MOV        this,ESI
-//         004725b9     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
-//                              Pnl_btn.cpp:401 (28)
-//         004725be     MOV        EAX,dword ptr [ESP + param_1]
-//         004725c5     LEA        this=>str2[4],[ESP + 0x4]
-//         004725c9     LEA        EDX=>str1[4],[ESP + 0x104]
-//         004725d0     PUSH       this
-//         004725d1     PUSH       EDX
-//         004725d2     PUSH       EAX
-//         004725d3     MOV        this,ESI
-//         004725d5     CALL       TButtonPanel::set_text                           void set_text(TButtonPanel * this, short para
-//                              Pnl_btn.cpp:402 (10)
-//         004725da     POP        ESI
-//         004725db     ADD        ESP,0x200
-//         004725e1     RET        0xc
-//         004725e4     ??         90h
-//         004725e5     NOP
-//         004725e6     NOP
-//         004725e7     NOP
-//         004725e8     NOP
-//         004725e9     NOP
-//         004725ea     NOP
-//         004725eb     NOP
-//         004725ec     NOP
-//         004725ed     NOP
-//         004725ee     NOP
-//         004725ef     NOP
+//              short             Stack[0x4]:2   param_1                   XREF[1]:     00472335(R)
+//              char *            Stack[0x8]:4   param_2                   XREF[2]:     00472373(R), 004723c5(R)
+//                               ?set_text@TButtonPanel@@QAEXFPAD@Z                           XREF[25]:    action:0043dc3b(c),
+//                               TButtonPanel::set_text                                                    action:0043dc4c(c),
+//                                                                                                         action:0043dc5e(c),
+//                                                                                                         action:0043dc70(c),
+//                                                                                                         create_button:0046867c(c),
+//                                                                                                         create_check_box:004688e1(c),
+//                                                                                                         create_radio_button:00468b41(c),
+//                                                                                                         set_text_info:004721bd(c),
+//                                                                                                         set_text:00472571(c),
+//                                                                                                         RGE_Panel_Tool_Box:00489a23(c),
+//                                                                                                         RGE_Panel_Tool_Box:00489aae(c),
+//                                                                                                         RGE_Panel_Tool_Box:00489b39(c),
+//                                                                                                         RGE_Panel_Tool_Box:00489bc7(c),
+//                                                                                                         RGE_Panel_Tool_Box:00489c55(c),
+//                                                                                                         RGE_Panel_Tool_Box:00489cf0(c),
+//                                                                                                         RGE_Panel_Tool_Box:00489e2a(c),
+//                                                                                                         TRIBE_Screen_Game:004946b2(c),
+//                                                                                                         TribeMPSetupScreen:004a0604(c),
+//                                                                                                         fillPlayerColors:004a5548(c),
+//                                                                                                         create_button:004a8883(c), [more]
+//                              Pnl_btn.cpp:282 (5)
+//         00472330     PUSH       EBX
+//         00472331     PUSH       EBP
+//         00472332     PUSH       ESI
+//         00472333     MOV        EBP,this
+//                              Pnl_btn.cpp:290 (19)
+//         00472335     MOVSX      ESI,word ptr [ESP + param_1]
+//         0047233a     XOR        EBX,EBX
+//         0047233c     PUSH       EDI
+//         0047233d     MOV        EAX,dword ptr [EBP + ESI*0x4 + 0x198]
+//         00472344     CMP        EAX,EBX
+//         00472346     JZ         LAB_00472358
+//                              Pnl_btn.cpp:292 (9)
+//         00472348     PUSH       EAX
+//         00472349     CALL       free                                             undefined free()
+//         0047234e     ADD        ESP,0x4
+//                              Pnl_btn.cpp:293 (7)
+//         00472351     MOV        dword ptr [EBP + ESI*0x4 + 0x198],EBX
+//                               LAB_00472358                                                 XREF[1]:     00472346(j)
+//                              Pnl_btn.cpp:296 (11)
+//         00472358     MOV        EAX,dword ptr [EBP + ESI*0x4 + 0x1bc]
+//         0047235f     CMP        EAX,EBX
+//         00472361     JZ         LAB_00472373
+//                              Pnl_btn.cpp:298 (9)
+//         00472363     PUSH       EAX
+//         00472364     CALL       free                                             undefined free()
+//         00472369     ADD        ESP,0x4
+//                              Pnl_btn.cpp:299 (7)
+//         0047236c     MOV        dword ptr [EBP + ESI*0x4 + 0x1bc],EBX
+//                               LAB_00472373                                                 XREF[1]:     00472361(j)
+//                              Pnl_btn.cpp:302 (21)
+//         00472373     MOV        EDI,dword ptr [ESP + param_2]
+//         00472377     CMP        EDI,EBX
+//         00472379     JZ         LAB_00472426
+//         0047237f     CMP        byte ptr [EDI],0x0
+//         00472382     JZ         LAB_00472426
+//                              Pnl_btn.cpp:305 (13)
+//         00472388     PUSH       0xa
+//         0047238a     PUSH       EDI
+//         0047238b     CALL       strchr                                           undefined strchr()
+//         00472390     MOV        EBX,EAX
+//         00472392     ADD        ESP,0x8
+//                              Pnl_btn.cpp:308 (4)
+//         00472395     TEST       EBX,EBX
+//         00472397     JZ         LAB_0047239f
+//                              Pnl_btn.cpp:309 (4)
+//         00472399     MOV        this,EBX
+//         0047239b     SUB        this,EDI
+//                              Pnl_btn.cpp:310 (2)
+//         0047239d     JMP        LAB_004723a9
+//                               LAB_0047239f                                                 XREF[1]:     00472397(j)
+//                              Pnl_btn.cpp:311 (10)
+//         0047239f     OR         this,0xffffffff
+//         004723a2     XOR        EAX,EAX
+//         004723a4     SCASB.RE   ES:EDI
+//         004723a6     NOT        this
+//         004723a8     DEC        this
+//                               LAB_004723a9                                                 XREF[1]:     0047239d(j)
+//                              Pnl_btn.cpp:313 (24)
+//         004723a9     MOVSX      EDI,this
+//         004723ac     PUSH       0x1
+//         004723ae     LEA        EAX,[EDI + 0x1]
+//         004723b1     PUSH       EAX
+//         004723b2     CALL       calloc                                           undefined calloc()
+//         004723b7     ADD        ESP,0x8
+//         004723ba     MOV        dword ptr [EBP + ESI*0x4 + 0x198],EAX
+//                              Pnl_btn.cpp:314 (4)
+//         004723c1     TEST       EAX,EAX
+//         004723c3     JZ         LAB_00472426
+//                              Pnl_btn.cpp:316 (12)
+//         004723c5     MOV        this,dword ptr [ESP + param_2]
+//         004723c9     PUSH       EDI
+//         004723ca     PUSH       this
+//         004723cb     PUSH       EAX
+//         004723cc     CALL       strncpy                                          undefined strncpy()
+//                              Pnl_btn.cpp:317 (10)
+//         004723d1     MOV        EDX,dword ptr [EBP + ESI*0x4 + 0x198]
+//         004723d8     ADD        ESP,0xc
+//                              Pnl_btn.cpp:320 (8)
+//         004723db     TEST       EBX,EBX
+//         004723dd     MOV        byte ptr [EDI + EDX*0x1],0x0
+//         004723e1     JZ         LAB_00472426
+//                              Pnl_btn.cpp:322 (1)
+//         004723e3     INC        EBX
+//                              Pnl_btn.cpp:323 (24)
+//         004723e4     OR         this,0xffffffff
+//         004723e7     MOV        EDI,EBX
+//         004723e9     XOR        EAX,EAX
+//         004723eb     SCASB.RE   ES:EDI
+//         004723ed     NOT        this
+//         004723ef     PUSH       0x1
+//         004723f1     PUSH       this
+//         004723f2     CALL       calloc                                           undefined calloc()
+//         004723f7     MOV        EDX,EAX
+//         004723f9     ADD        ESP,0x8
+//                              Pnl_btn.cpp:324 (11)
+//         004723fc     TEST       EDX,EDX
+//         004723fe     MOV        dword ptr [EBP + ESI*0x4 + 0x1bc],EDX
+//         00472405     JZ         LAB_00472426
+//                              Pnl_btn.cpp:325 (31)
+//         00472407     MOV        EDI,EBX
+//         00472409     OR         this,0xffffffff
+//         0047240c     XOR        EAX,EAX
+//         0047240e     SCASB.RE   ES:EDI
+//         00472410     NOT        this
+//         00472412     SUB        EDI,this
+//         00472414     MOV        EAX,this
+//         00472416     MOV        ESI,EDI
+//         00472418     MOV        EDI,EDX
+//         0047241a     SHR        this,0x2
+//         0047241d     MOVSD.REP  ES:EDI,ESI
+//         0047241f     MOV        this,EAX
+//         00472421     AND        this,0x3
+//         00472424     MOVSB.REP  ES:EDI,ESI
+//                               LAB_00472426                                                 XREF[5]:     00472379(j), 00472382(j),
+//                                                                                                         004723c3(j), 004723e1(j),
+//                                                                                                         00472405(j)
+//                              Pnl_btn.cpp:330 (10)
+//         00472426     MOV        EDX,dword ptr [EBP]
+//         00472429     PUSH       0x1
+//         0047242b     MOV        this,EBP
+//         0047242d     CALL       dword ptr [EDX + 0x20]
+//                              Pnl_btn.cpp:331 (7)
+//         00472430     POP        EDI
+//         00472431     POP        ESI
+//         00472432     POP        EBP
+//         00472433     POP        EBX
+//         00472434     RET        0x8
+//         00472437     ??         90h
+//         00472438     NOP
+//         00472439     NOP
+//         0047243a     NOP
+//         0047243b     NOP
+//         0047243c     NOP
+//         0047243d     NOP
+//         0047243e     NOP
+//         0047243f     NOP
     return;
 }
 
 void TButtonPanel::set_text(short param_1, char* param_2, char* param_3) {
     /* TODO: Stub */
-//                              void __thiscall set_text(TButtonPanel * this, short param_1, long pa
+//                              void __thiscall set_text(TButtonPanel * this, short param_1, char *
 //              void              <VOID>         <RETURN>
 //              TButtonPanel *    ECX:4 (auto)   this
-//              short             Stack[0x4]:2   param_1                   XREF[1]:     004725be(R)
-//              long              Stack[0x8]:4   param_2                   XREF[1]:     00472590(R)
-//              long              Stack[0xc]:4   param_3                   XREF[1]:     004725a5(R)
-//              char[256]         Stack[-0x104   str1                      XREF[0,2]:   00472586(*), 004725c9(*)
-//              char[256]         Stack[-0x204   str2                      XREF[0,2]:   004725ac(*), 004725c5(*)
-//                               ?set_text@TButtonPanel@@QAEXFJJ@Z
-//                               TButtonPanel::set_text
-//                              Pnl_btn.cpp:391 (6)
-//         00472580     SUB        ESP,0x200
-//                              Pnl_btn.cpp:398 (31)
-//         00472586     LEA        EAX=>str1[4],[ESP + 0x100]
-//         0047258d     PUSH       ESI
-//         0047258e     MOV        ESI,this
-//         00472590     MOV        this,dword ptr [ESP + param_2]
-//         00472597     PUSH       0x100
-//         0047259c     PUSH       EAX
-//         0047259d     PUSH       this
-//         0047259e     MOV        this,ESI
-//         004725a0     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
-//                              Pnl_btn.cpp:399 (25)
-//         004725a5     MOV        EAX,dword ptr [ESP + param_3]
-//         004725ac     LEA        EDX=>str2[4],[ESP + 0x4]
-//         004725b0     PUSH       0x100
-//         004725b5     PUSH       EDX
-//         004725b6     PUSH       EAX
-//         004725b7     MOV        this,ESI
-//         004725b9     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
-//                              Pnl_btn.cpp:401 (28)
-//         004725be     MOV        EAX,dword ptr [ESP + param_1]
-//         004725c5     LEA        this=>str2[4],[ESP + 0x4]
-//         004725c9     LEA        EDX=>str1[4],[ESP + 0x104]
-//         004725d0     PUSH       this
-//         004725d1     PUSH       EDX
-//         004725d2     PUSH       EAX
-//         004725d3     MOV        this,ESI
-//         004725d5     CALL       TButtonPanel::set_text                           void set_text(TButtonPanel * this, short para
-//                              Pnl_btn.cpp:402 (10)
-//         004725da     POP        ESI
-//         004725db     ADD        ESP,0x200
-//         004725e1     RET        0xc
-//         004725e4     ??         90h
-//         004725e5     NOP
-//         004725e6     NOP
-//         004725e7     NOP
-//         004725e8     NOP
-//         004725e9     NOP
-//         004725ea     NOP
-//         004725eb     NOP
-//         004725ec     NOP
-//         004725ed     NOP
-//         004725ee     NOP
-//         004725ef     NOP
+//              short             Stack[0x4]:2   param_1                   XREF[1]:     00472442(R)
+//              char *            Stack[0x8]:4   param_2                   XREF[1]:     00472483(R)
+//              char *            Stack[0xc]:4   param_3                   XREF[1]:     004724da(R)
+//                               ?set_text@TButtonPanel@@QAEXFPAD0@Z                          XREF[2]:     set_text:004725d5(c),
+//                               TButtonPanel::set_text                                                    set_button:0049ac2e(c)
+//                              Pnl_btn.cpp:337 (2)
+//         00472440     PUSH       EBX
+//         00472441     PUSH       EBP
+//                              Pnl_btn.cpp:342 (22)
+//         00472442     MOVSX      EBX,word ptr [ESP + param_1]
+//         00472447     MOV        EBP,this
+//         00472449     PUSH       ESI
+//         0047244a     PUSH       EDI
+//         0047244b     XOR        EDI,EDI
+//         0047244d     MOV        EAX,dword ptr [EBP + EBX*0x4 + 0x198]
+//         00472454     CMP        EAX,EDI
+//         00472456     JZ         LAB_00472468
+//                              Pnl_btn.cpp:344 (9)
+//         00472458     PUSH       EAX
+//         00472459     CALL       free                                             undefined free()
+//         0047245e     ADD        ESP,0x4
+//                              Pnl_btn.cpp:345 (7)
+//         00472461     MOV        dword ptr [EBP + EBX*0x4 + 0x198],EDI
+//                               LAB_00472468                                                 XREF[1]:     00472456(j)
+//                              Pnl_btn.cpp:348 (11)
+//         00472468     MOV        EAX,dword ptr [EBP + EBX*0x4 + 0x1bc]
+//         0047246f     CMP        EAX,EDI
+//         00472471     JZ         LAB_00472483
+//                              Pnl_btn.cpp:350 (9)
+//         00472473     PUSH       EAX
+//         00472474     CALL       free                                             undefined free()
+//         00472479     ADD        ESP,0x4
+//                              Pnl_btn.cpp:351 (7)
+//         0047247c     MOV        dword ptr [EBP + EBX*0x4 + 0x1bc],EDI
+//                               LAB_00472483                                                 XREF[1]:     00472471(j)
+//                              Pnl_btn.cpp:354 (21)
+//         00472483     MOV        ESI,dword ptr [ESP + param_2]
+//         00472487     CMP        ESI,EDI
+//         00472489     JZ         LAB_00472529
+//         0047248f     CMP        byte ptr [ESI],0x0
+//         00472492     JZ         LAB_00472529
+//                              Pnl_btn.cpp:356 (24)
+//         00472498     MOV        EDI,ESI
+//         0047249a     OR         this,0xffffffff
+//         0047249d     XOR        EAX,EAX
+//         0047249f     PUSH       0x1
+//         004724a1     SCASB.RE   ES:EDI
+//         004724a3     NOT        this
+//         004724a5     PUSH       this
+//         004724a6     CALL       calloc                                           undefined calloc()
+//         004724ab     MOV        EDX,EAX
+//         004724ad     ADD        ESP,0x8
+//                              Pnl_btn.cpp:357 (11)
+//         004724b0     TEST       EDX,EDX
+//         004724b2     MOV        dword ptr [EBP + EBX*0x4 + 0x198],EDX
+//         004724b9     JZ         LAB_00472529
+//                              Pnl_btn.cpp:359 (31)
+//         004724bb     MOV        EDI,ESI
+//         004724bd     OR         this,0xffffffff
+//         004724c0     XOR        EAX,EAX
+//         004724c2     SCASB.RE   ES:EDI
+//         004724c4     NOT        this
+//         004724c6     SUB        EDI,this
+//         004724c8     MOV        EAX,this
+//         004724ca     MOV        ESI,EDI
+//         004724cc     MOV        EDI,EDX
+//         004724ce     SHR        this,0x2
+//         004724d1     MOVSD.REP  ES:EDI,ESI
+//         004724d3     MOV        this,EAX
+//         004724d5     AND        this,0x3
+//         004724d8     MOVSB.REP  ES:EDI,ESI
+//                              Pnl_btn.cpp:362 (13)
+//         004724da     MOV        ESI,dword ptr [ESP + param_3]
+//         004724de     TEST       ESI,ESI
+//         004724e0     JZ         LAB_00472529
+//         004724e2     CMP        byte ptr [ESI],0x0
+//         004724e5     JZ         LAB_00472529
+//                              Pnl_btn.cpp:364 (24)
+//         004724e7     MOV        EDI,ESI
+//         004724e9     OR         this,0xffffffff
+//         004724ec     XOR        EAX,EAX
+//         004724ee     PUSH       0x1
+//         004724f0     SCASB.RE   ES:EDI
+//         004724f2     NOT        this
+//         004724f4     PUSH       this
+//         004724f5     CALL       calloc                                           undefined calloc()
+//         004724fa     MOV        EDX,EAX
+//         004724fc     ADD        ESP,0x8
+//                              Pnl_btn.cpp:365 (11)
+//         004724ff     TEST       EDX,EDX
+//         00472501     MOV        dword ptr [EBP + EBX*0x4 + 0x1bc],EDX
+//         00472508     JZ         LAB_00472529
+//                              Pnl_btn.cpp:366 (31)
+//         0047250a     MOV        EDI,ESI
+//         0047250c     OR         this,0xffffffff
+//         0047250f     XOR        EAX,EAX
+//         00472511     SCASB.RE   ES:EDI
+//         00472513     NOT        this
+//         00472515     SUB        EDI,this
+//         00472517     MOV        EAX,this
+//         00472519     MOV        ESI,EDI
+//         0047251b     MOV        EDI,EDX
+//         0047251d     SHR        this,0x2
+//         00472520     MOVSD.REP  ES:EDI,ESI
+//         00472522     MOV        this,EAX
+//         00472524     AND        this,0x3
+//         00472527     MOVSB.REP  ES:EDI,ESI
+//                               LAB_00472529                                                 XREF[6]:     00472489(j), 00472492(j),
+//                                                                                                         004724b9(j), 004724e0(j),
+//                                                                                                         004724e5(j), 00472508(j)
+//                              Pnl_btn.cpp:371 (10)
+//         00472529     MOV        EDX,dword ptr [EBP]
+//         0047252c     PUSH       0x1
+//         0047252e     MOV        this,EBP
+//         00472530     CALL       dword ptr [EDX + 0x20]
+//                              Pnl_btn.cpp:372 (7)
+//         00472533     POP        EDI
+//         00472534     POP        ESI
+//         00472535     POP        EBP
+//         00472536     POP        EBX
+//         00472537     RET        0xc
+//         0047253a     ??         90h
+//         0047253b     NOP
+//         0047253c     NOP
+//         0047253d     NOP
+//         0047253e     NOP
+//         0047253f     NOP
     return;
 }
 
@@ -876,58 +1070,53 @@ void TButtonPanel::set_text(short param_1, long param_2) {
 //                              void __thiscall set_text(TButtonPanel * this, short param_1, long pa
 //              void              <VOID>         <RETURN>
 //              TButtonPanel *    ECX:4 (auto)   this
-//              short             Stack[0x4]:2   param_1                   XREF[1]:     004725be(R)
-//              long              Stack[0x8]:4   param_2                   XREF[1]:     00472590(R)
-//              long              Stack[0xc]:4   param_3                   XREF[1]:     004725a5(R)
-//              char[256]         Stack[-0x104   str1                      XREF[0,2]:   00472586(*), 004725c9(*)
-//              char[256]         Stack[-0x204   str2                      XREF[0,2]:   004725ac(*), 004725c5(*)
-//                               ?set_text@TButtonPanel@@QAEXFJJ@Z
-//                               TButtonPanel::set_text
-//                              Pnl_btn.cpp:391 (6)
-//         00472580     SUB        ESP,0x200
-//                              Pnl_btn.cpp:398 (31)
-//         00472586     LEA        EAX=>str1[4],[ESP + 0x100]
-//         0047258d     PUSH       ESI
-//         0047258e     MOV        ESI,this
-//         00472590     MOV        this,dword ptr [ESP + param_2]
-//         00472597     PUSH       0x100
-//         0047259c     PUSH       EAX
-//         0047259d     PUSH       this
-//         0047259e     MOV        this,ESI
-//         004725a0     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
-//                              Pnl_btn.cpp:399 (25)
-//         004725a5     MOV        EAX,dword ptr [ESP + param_3]
-//         004725ac     LEA        EDX=>str2[4],[ESP + 0x4]
-//         004725b0     PUSH       0x100
-//         004725b5     PUSH       EDX
-//         004725b6     PUSH       EAX
-//         004725b7     MOV        this,ESI
-//         004725b9     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
-//                              Pnl_btn.cpp:401 (28)
-//         004725be     MOV        EAX,dword ptr [ESP + param_1]
-//         004725c5     LEA        this=>str2[4],[ESP + 0x4]
-//         004725c9     LEA        EDX=>str1[4],[ESP + 0x104]
-//         004725d0     PUSH       this
-//         004725d1     PUSH       EDX
-//         004725d2     PUSH       EAX
-//         004725d3     MOV        this,ESI
-//         004725d5     CALL       TButtonPanel::set_text                           void set_text(TButtonPanel * this, short para
-//                              Pnl_btn.cpp:402 (10)
-//         004725da     POP        ESI
-//         004725db     ADD        ESP,0x200
-//         004725e1     RET        0xc
-//         004725e4     ??         90h
-//         004725e5     NOP
-//         004725e6     NOP
-//         004725e7     NOP
-//         004725e8     NOP
-//         004725e9     NOP
-//         004725ea     NOP
-//         004725eb     NOP
-//         004725ec     NOP
-//         004725ed     NOP
-//         004725ee     NOP
-//         004725ef     NOP
+//              short             Stack[0x4]:2   param_1                   XREF[1]:     00472562(R)
+//              long              Stack[0x8]:4   param_2                   XREF[1]:     0047254d(R)
+//              char[256]         Stack[-0x104   str                       XREF[0,2]:   00472546(*), 00472569(*)
+//                               ?set_text@TButtonPanel@@QAEXFJ@Z                             XREF[28]:    setup:0043feda(c),
+//                               TButtonPanel::set_text                                                    set_text_info:004721fd(c),
+//                                                                                                         TRIBE_Screen_Game:00494791(c),
+//                                                                                                         TRIBE_Screen_Game:004947ff(c),
+//                                                                                                         TRIBE_Screen_Main_Menu:0049e7d5(c)
+//                                                                                                         TRIBE_Screen_Main_Menu:0049e7e7(c)
+//                                                                                                         TRIBE_Screen_Main_Menu:0049e7f9(c)
+//                                                                                                         TRIBE_Screen_Main_Menu:0049e80b(c)
+//                                                                                                         TRIBE_Screen_Main_Menu:0049e81d(c)
+//                                                                                                         TribeMPSetupScreen:004a0a1e(c),
+//                                                                                                         TribeMPSetupScreen:004a0b1e(c),
+//                                                                                                         TRIBE_Screen_Sed_Menu:004b3069(c),
+//                                                                                                         TRIBE_Screen_Sed_Menu:004b307b(c),
+//                                                                                                         TRIBE_Screen_Sed_Menu:004b308d(c),
+//                                                                                                         TRIBE_Screen_Sed_Menu:004b309f(c),
+//                                                                                                         TribeSPMenuScreen:004b6b2c(c),
+//                                                                                                         TribeSPMenuScreen:004b6b3e(c),
+//                                                                                                         TribeSPMenuScreen:004b6b50(c),
+//                                                                                                         TribeSPMenuScreen:004b6b62(c),
+//                                                                                                         TribeSPMenuScreen:004b6b74(c),
+//                                                                                                         [more]
+//                              Pnl_btn.cpp:378 (6)
+//         00472540     SUB        ESP,0x100
+//                              Pnl_btn.cpp:383 (28)
+//         00472546     LEA        EAX=>str[4],[ESP]
+//         0047254a     PUSH       ESI
+//         0047254b     MOV        ESI,this
+//         0047254d     MOV        this,dword ptr [ESP + param_2]
+//         00472554     PUSH       0x100
+//         00472559     PUSH       EAX
+//         0047255a     PUSH       this
+//         0047255b     MOV        this,ESI
+//         0047255d     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
+//                              Pnl_btn.cpp:384 (20)
+//         00472562     MOV        EAX,dword ptr [ESP + param_1]
+//         00472569     LEA        EDX=>str[4],[ESP + 0x4]
+//         0047256d     PUSH       EDX
+//         0047256e     PUSH       EAX
+//         0047256f     MOV        this,ESI
+//         00472571     CALL       TButtonPanel::set_text                           void set_text(TButtonPanel * this, short para
+//                              Pnl_btn.cpp:385 (10)
+//         00472576     POP        ESI
+//         00472577     ADD        ESP,0x100
+//         0047257d     RET        0x8
     return;
 }
 

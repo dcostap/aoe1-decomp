@@ -3,165 +3,147 @@
 
 EmotionalAIModule::EmotionalAIModule(void* param_1, int param_2) {
     /* TODO: Stub */
-//                              undefined __thiscall EmotionalAIModule(EmotionalAIModule * this, int
+//                              undefined __thiscall EmotionalAIModule(EmotionalAIModule * this, voi
 //              undefined         <UNASSIGNED>   <RETURN>
 //              EmotionalAIMod    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     0040c936(R)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     0040c957(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0040c95b(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0040ca7a(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0040c94e(W)
-//                               ??0EmotionalAIModule@@QAE@HH@Z                               XREF[1]:     TribeMainDecisionAIModule:004e4bfa
+//              void *            Stack[0x4]:4   param_1                   XREF[1]:     0040c7c0(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     0040c7c8(R)
+//                               ??0EmotionalAIModule@@QAE@PAXH@Z                             XREF[1]:     TribeMainDecisionAIModule:004e487a
 //                               EmotionalAIModule::EmotionalAIModule
-//                              aiemomod.cpp:40 (86)
-//         0040c920     PUSH       -0x1
-//         0040c922     PUSH       FUN_0055c618
-//         0040c927     MOV        EAX,FS:[0x0]
-//         0040c92d     PUSH       EAX
-//         0040c92e     MOV        dword ptr FS:[0x0],ESP
-//         0040c935     PUSH       this
-//         0040c936     MOV        EAX,dword ptr [ESP + param_1]
-//         0040c93a     PUSH       EBX
-//         0040c93b     PUSH       EBP
-//         0040c93c     PUSH       ESI
-//         0040c93d     XOR        ESI,ESI
-//         0040c93f     PUSH       EDI
-//         0040c940     PUSH       ESI
-//         0040c941     PUSH       EAX
-//         0040c942     MOV        EBX,this
-//         0040c944     PUSH       0x3ec
-//         0040c949     PUSH       s_Emotional_AI                                   = "Emotional AI"
-//         0040c94e     MOV        dword ptr [ESP + local_10],EBX
-//         0040c952     CALL       AIModule::AIModule                               undefined AIModule(AIModule * this, char * pa
-//         0040c957     MOV        EBP,dword ptr [ESP + param_2]
-//         0040c95b     MOV        dword ptr [ESP + local_4],ESI
-//         0040c95f     MOV        dword ptr [EBX + 0xf0],ESI
-//         0040c965     MOV        dword ptr [EBX],EmotionalAIModule::`vftable'     = 0040c900
-//         0040c96b     LEA        ESI,[EBX + 0xf4]
-//         0040c971     MOV        EDI,0x6
-//                               LAB_0040c976                                                 XREF[1]:     0040c986(j)
-//                              aiemomod.cpp:42 (18)
-//         0040c976     PUSH       0x4
-//         0040c978     PUSH       ESI
-//         0040c979     PUSH       EBP
-//         0040c97a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040c97f     ADD        ESP,0xc
-//         0040c982     ADD        ESI,0x4
-//         0040c985     DEC        EDI
-//         0040c986     JNZ        LAB_0040c976
-//                              aiemomod.cpp:44 (31)
-//         0040c988     OR         this,0xffffffff
-//         0040c98b     MOV        EDI,s_Aggressive                                 = 41h
-//         0040c990     XOR        EAX,EAX
-//         0040c992     LEA        EDX,[EBX + 0x10c]
-//         0040c998     SCASB.RE   ES:EDI=>s_Aggressive                             = 41h
+//                              aiemomod.cpp:23 (38)
+//         0040c7c0     MOV        EAX,dword ptr [ESP + param_1]
+//         0040c7c4     PUSH       EBX
+//         0040c7c5     MOV        EBX,this
+//         0040c7c7     PUSH       ESI
+//         0040c7c8     MOV        this,dword ptr [ESP + param_2]
+//         0040c7cc     PUSH       EDI
+//         0040c7cd     PUSH       EAX
+//         0040c7ce     PUSH       this
+//         0040c7cf     PUSH       0x3ec
+//         0040c7d4     PUSH       s_Emotional_AI                                   = "Emotional AI"
+//         0040c7d9     MOV        this,EBX
+//         0040c7db     CALL       AIModule::AIModule                               undefined AIModule(AIModule * this, char * pa
+//         0040c7e0     LEA        EDI,[EBX + 0xf4]
+//                              aiemomod.cpp:25 (26)
+//         0040c7e6     MOV        this,0x6
+//         0040c7eb     MOV        EAX,0x31
+//         0040c7f0     MOV        dword ptr [EBX + 0xf0],0x0
+//         0040c7fa     MOV        dword ptr [EBX],EmotionalAIModule::`vftable'     = 0040c900
+//                              aiemomod.cpp:27 (33)
+//         0040c800     LEA        EDX,[EBX + 0x10c]
+//         0040c806     STOSD.REP  ES:EDI
+//         0040c808     OR         this,0xffffffff
+//         0040c80b     MOV        EDI,s_Aggressive                                 = 41h
+//         0040c810     XOR        EAX,EAX
+//         0040c812     SCASB.RE   ES:EDI=>s_Aggressive                             = 41h
 //                                                                                  = "ggressive"
-//         0040c99a     NOT        this
-//         0040c99c     SUB        EDI,this
-//         0040c99e     MOV        EAX,this
-//         0040c9a0     MOV        ESI,EDI
-//         0040c9a2     SHR        this,0x2
-//         0040c9a5     MOV        EDI,EDX
-//                              aiemomod.cpp:45 (40)
-//         0040c9a7     LEA        EDX,[EBX + 0x12a]
-//         0040c9ad     MOVSD.REP  ES:EDI,ESI
-//         0040c9af     MOV        this,EAX
-//         0040c9b1     XOR        EAX,EAX
-//         0040c9b3     AND        this,0x3
-//         0040c9b6     MOVSB.REP  ES:EDI,ESI
-//         0040c9b8     OR         this,0xffffffff
-//         0040c9bb     MOV        EDI,s_Compassionate                              = 43h
-//         0040c9c0     SCASB.RE   ES:EDI=>s_Compassionate                          = 43h
+//         0040c814     NOT        this
+//         0040c816     SUB        EDI,this
+//         0040c818     MOV        EAX,this
+//         0040c81a     MOV        ESI,EDI
+//         0040c81c     SHR        this,0x2
+//         0040c81f     MOV        EDI,EDX
+//                              aiemomod.cpp:28 (37)
+//         0040c821     LEA        EDX,[EBX + 0x12a]
+//         0040c827     MOVSD.REP  ES:EDI,ESI=>s_Aggressive                         = 41h
+//         0040c829     MOV        this,EAX
+//         0040c82b     XOR        EAX,EAX
+//         0040c82d     AND        this,0x3
+//         0040c830     MOVSB.REP  ES:EDI,ESI=>s_Aggressive                         = 41h
+//         0040c832     MOV        EDI,s_Compassionate                              = 43h
+//         0040c837     OR         this,0xffffffff
+//         0040c83a     SCASB.RE   ES:EDI=>s_Compassionate                          = 43h
 //                                                                                  = "ompassionate"
-//         0040c9c2     NOT        this
-//         0040c9c4     SUB        EDI,this
-//         0040c9c6     MOV        EAX,this
-//         0040c9c8     MOV        ESI,EDI
-//         0040c9ca     SHR        this,0x2
-//         0040c9cd     MOV        EDI,EDX
-//                              aiemomod.cpp:46 (37)
-//         0040c9cf     LEA        EDX,[EBX + 0x148]
-//         0040c9d5     MOVSD.REP  ES:EDI,ESI
-//         0040c9d7     MOV        this,EAX
-//         0040c9d9     XOR        EAX,EAX
-//         0040c9db     AND        this,0x3
-//         0040c9de     MOVSB.REP  ES:EDI,ESI
-//         0040c9e0     OR         this,0xffffffff
-//         0040c9e3     MOV        EDI,s_Defensive                                  = 44h
-//         0040c9e8     SCASB.RE   ES:EDI=>s_Defensive                              = 44h
+//         0040c83c     NOT        this
+//         0040c83e     SUB        EDI,this
+//         0040c840     MOV        EAX,this
+//         0040c842     MOV        ESI,EDI
+//         0040c844     MOV        EDI,EDX
+//                              aiemomod.cpp:29 (40)
+//         0040c846     LEA        EDX,[EBX + 0x148]
+//         0040c84c     SHR        this,0x2
+//         0040c84f     MOVSD.REP  ES:EDI,ESI=>s_Compassionate                      = 43h
+//         0040c851     MOV        this,EAX
+//         0040c853     XOR        EAX,EAX
+//         0040c855     AND        this,0x3
+//         0040c858     MOVSB.REP  ES:EDI,ESI=>s_Compassionate                      = 43h
+//         0040c85a     MOV        EDI,s_Defensive                                  = 44h
+//         0040c85f     OR         this,0xffffffff
+//         0040c862     SCASB.RE   ES:EDI=>s_Defensive                              = 44h
 //                                                                                  = "efensive"
-//         0040c9ea     NOT        this
-//         0040c9ec     SUB        EDI,this
-//         0040c9ee     MOV        EAX,this
-//         0040c9f0     MOV        ESI,EDI
-//         0040c9f2     MOV        EDI,EDX
-//                              aiemomod.cpp:47 (40)
-//         0040c9f4     LEA        EDX,[EBX + 0x166]
-//         0040c9fa     SHR        this,0x2
-//         0040c9fd     MOVSD.REP  ES:EDI,ESI
-//         0040c9ff     MOV        this,EAX
-//         0040ca01     XOR        EAX,EAX
-//         0040ca03     AND        this,0x3
-//         0040ca06     MOVSB.REP  ES:EDI,ESI
-//         0040ca08     MOV        EDI,s_Friendly                                   = 46h
-//         0040ca0d     OR         this,0xffffffff
-//         0040ca10     SCASB.RE   ES:EDI=>s_Friendly                               = 46h
+//         0040c864     NOT        this
+//         0040c866     SUB        EDI,this
+//         0040c868     MOV        EAX,this
+//         0040c86a     MOV        ESI,EDI
+//         0040c86c     MOV        EDI,EDX
+//                              aiemomod.cpp:30 (40)
+//         0040c86e     LEA        EDX,[EBX + 0x166]
+//         0040c874     SHR        this,0x2
+//         0040c877     MOVSD.REP  ES:EDI,ESI=>s_Defensive                          = 44h
+//         0040c879     MOV        this,EAX
+//         0040c87b     XOR        EAX,EAX
+//         0040c87d     AND        this,0x3
+//         0040c880     MOVSB.REP  ES:EDI,ESI=>s_Defensive                          = 44h
+//         0040c882     MOV        EDI,s_Friendly                                   = 46h
+//         0040c887     OR         this,0xffffffff
+//         0040c88a     SCASB.RE   ES:EDI=>s_Friendly                               = 46h
 //                                                                                  = "riendly"
-//         0040ca12     NOT        this
-//         0040ca14     SUB        EDI,this
-//         0040ca16     MOV        EAX,this
-//         0040ca18     MOV        ESI,EDI
-//         0040ca1a     MOV        EDI,EDX
-//                              aiemomod.cpp:48 (40)
-//         0040ca1c     LEA        EDX,[EBX + 0x184]
-//         0040ca22     SHR        this,0x2
-//         0040ca25     MOVSD.REP  ES:EDI,ESI
-//         0040ca27     MOV        this,EAX
-//         0040ca29     XOR        EAX,EAX
-//         0040ca2b     AND        this,0x3
-//         0040ca2e     MOVSB.REP  ES:EDI,ESI
-//         0040ca30     MOV        EDI,s_Passive                                    = 50h
-//         0040ca35     OR         this,0xffffffff
-//         0040ca38     SCASB.RE   ES:EDI=>s_Passive                                = 50h
+//         0040c88c     NOT        this
+//         0040c88e     SUB        EDI,this
+//         0040c890     MOV        EAX,this
+//         0040c892     MOV        ESI,EDI
+//         0040c894     MOV        EDI,EDX
+//                              aiemomod.cpp:31 (40)
+//         0040c896     LEA        EDX,[EBX + 0x184]
+//         0040c89c     SHR        this,0x2
+//         0040c89f     MOVSD.REP  ES:EDI,ESI=>s_Friendly                           = 46h
+//         0040c8a1     MOV        this,EAX
+//         0040c8a3     AND        this,0x3
+//         0040c8a6     MOVSB.REP  ES:EDI,ESI=>s_Friendly                           = 46h
+//         0040c8a8     MOV        EDI,s_Passive                                    = 50h
+//         0040c8ad     OR         this,0xffffffff
+//         0040c8b0     XOR        EAX,EAX
+//         0040c8b2     SCASB.RE   ES:EDI=>s_Passive                                = 50h
 //                                                                                  = "assive"
-//         0040ca3a     NOT        this
-//         0040ca3c     SUB        EDI,this
-//         0040ca3e     MOV        EAX,this
-//         0040ca40     MOV        ESI,EDI
-//         0040ca42     MOV        EDI,EDX
-//                              aiemomod.cpp:49 (47)
-//         0040ca44     LEA        EDX,[EBX + 0x1a2]
-//         0040ca4a     SHR        this,0x2
-//         0040ca4d     MOVSD.REP  ES:EDI,ESI
-//         0040ca4f     MOV        this,EAX
-//         0040ca51     XOR        EAX,EAX
-//         0040ca53     AND        this,0x3
-//         0040ca56     MOVSB.REP  ES:EDI,ESI
-//         0040ca58     MOV        EDI,s_Vengeful                                   = 56h
-//         0040ca5d     OR         this,0xffffffff
-//         0040ca60     SCASB.RE   ES:EDI=>s_Vengeful                               = 56h
+//         0040c8b4     NOT        this
+//         0040c8b6     SUB        EDI,this
+//         0040c8b8     MOV        EAX,this
+//         0040c8ba     MOV        ESI,EDI
+//         0040c8bc     MOV        EDI,EDX
+//                              aiemomod.cpp:32 (47)
+//         0040c8be     LEA        EDX,[EBX + 0x1a2]
+//         0040c8c4     SHR        this,0x2
+//         0040c8c7     MOVSD.REP  ES:EDI,ESI=>s_Passive                            = 50h
+//         0040c8c9     MOV        this,EAX
+//         0040c8cb     XOR        EAX,EAX
+//         0040c8cd     AND        this,0x3
+//         0040c8d0     MOVSB.REP  ES:EDI,ESI=>s_Passive                            = 50h
+//         0040c8d2     MOV        EDI,s_Vengeful                                   = 56h
+//         0040c8d7     OR         this,0xffffffff
+//         0040c8da     SCASB.RE   ES:EDI=>s_Vengeful                               = 56h
 //                                                                                  = "engeful"
-//         0040ca62     NOT        this
-//         0040ca64     SUB        EDI,this
-//         0040ca66     MOV        EAX,this
-//         0040ca68     MOV        ESI,EDI
-//         0040ca6a     MOV        EDI,EDX
-//         0040ca6c     SHR        this,0x2
-//         0040ca6f     MOVSD.REP  ES:EDI,ESI
-//         0040ca71     MOV        this,EAX
-//                              aiemomod.cpp:50 (28)
-//         0040ca73     MOV        EAX,EBX
-//         0040ca75     AND        this,0x3
-//         0040ca78     MOVSB.REP  ES:EDI,ESI
-//         0040ca7a     MOV        this,dword ptr [ESP + local_c]
-//         0040ca7e     POP        EDI
-//         0040ca7f     POP        ESI
-//         0040ca80     POP        EBP
-//         0040ca81     MOV        dword ptr FS:[0x0],this
-//         0040ca88     POP        EBX
-//         0040ca89     ADD        ESP,0x10
-//         0040ca8c     RET        0x8
-//         0040ca8f     ??         90h
+//         0040c8dc     NOT        this
+//         0040c8de     SUB        EDI,this
+//         0040c8e0     MOV        EAX,this
+//         0040c8e2     MOV        ESI,EDI
+//         0040c8e4     MOV        EDI,EDX
+//         0040c8e6     SHR        this,0x2
+//         0040c8e9     MOVSD.REP  ES:EDI,ESI=>s_Vengeful                           = 56h
+//         0040c8eb     MOV        this,EAX
+//                              aiemomod.cpp:33 (13)
+//         0040c8ed     MOV        EAX,EBX
+//         0040c8ef     AND        this,0x3
+//         0040c8f2     MOVSB.REP  ES:EDI,ESI=>s_Vengeful                           = 56h
+//         0040c8f4     POP        EDI
+//         0040c8f5     POP        ESI
+//         0040c8f6     POP        EBX
+//         0040c8f7     RET        0x8
+//         0040c8fa     ??         90h
+//         0040c8fb     NOP
+//         0040c8fc     NOP
+//         0040c8fd     NOP
+//         0040c8fe     NOP
+//         0040c8ff     NOP
 }
 
 EmotionalAIModule::EmotionalAIModule(int param_1, int param_2) {

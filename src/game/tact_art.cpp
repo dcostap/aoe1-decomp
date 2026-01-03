@@ -6,40 +6,35 @@ TRIBE_Action_Artifact::TRIBE_Action_Artifact(int param_1, RGE_Action_Object* par
 //                              undefined __thiscall TRIBE_Action_Artifact(TRIBE_Action_Artifact * t
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Action_A    ECX:4 (auto)   this
-//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     004ccc30(R)
-//              RGE_Task *        Stack[0x8]:4   param_2                   XREF[1]:     004ccc3f(R)
-//              float             Stack[0xc]:4   param_3                   XREF[1]:     004ccc47(R)
-//              float             Stack[0x10]:4  param_4                   XREF[1]:     004ccc43(R)
-//              float             Stack[0x14]:4  param_5                   XREF[1]:     004ccc4e(R)
-//                               ??0TRIBE_Action_Artifact@@QAE@PAVRGE_Action_Object@@PAVRGE_  XREF[1]:     create_task_action:004d083c(c)
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004ccba9(R)
+//              RGE_Action_Obj    Stack[0x8]:4   param_2                   XREF[1]:     004ccba0(R)
+//                               ??0TRIBE_Action_Artifact@@QAE@HPAVRGE_Action_Object@@@Z      XREF[1]:     create_action:004d0313(c)
 //                               TRIBE_Action_Artifact::TRIBE_Action_Artifact
-//                              tact_art.cpp:53 (15)
-//         004ccc30     MOV        EAX,dword ptr [ESP + param_1]
-//         004ccc34     PUSH       ESI
-//         004ccc35     PUSH       0x1
-//         004ccc37     MOV        ESI,this
-//         004ccc39     PUSH       EAX
-//         004ccc3a     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
-//                              tact_art.cpp:56 (4)
-//         004ccc3f     MOV        this,dword ptr [ESP + param_2]
-//                              tact_art.cpp:58 (11)
-//         004ccc43     MOV        EAX,dword ptr [ESP + param_4]
-//         004ccc47     MOV        EDX,dword ptr [ESP + param_3]
-//         004ccc4b     MOV        dword ptr [ESI + 0x30],this
-//                              tact_art.cpp:59 (25)
-//         004ccc4e     MOV        this,dword ptr [ESP + param_5]
-//         004ccc52     MOV        dword ptr [ESI + 0x24],EAX
-//         004ccc55     MOV        dword ptr [ESI],TRIBE_Action_Artifact::`vftable' = 004ccbd0
-//         004ccc5b     MOV        word ptr [ESI + 0x4],0x6b
-//         004ccc61     MOV        dword ptr [ESI + 0x20],EDX
-//         004ccc64     MOV        dword ptr [ESI + 0x28],this
-//                              tact_art.cpp:60 (6)
-//         004ccc67     MOV        EAX,ESI
-//         004ccc69     POP        ESI
-//         004ccc6a     RET        0x14
-//         004ccc6d     ??         90h
-//         004ccc6e     NOP
-//         004ccc6f     NOP
+//                              tact_art.cpp:36 (28)
+//         004ccba0     MOV        EAX,dword ptr [ESP + param_2]
+//         004ccba4     PUSH       ESI
+//         004ccba5     MOV        ESI,this
+//         004ccba7     PUSH       0x1
+//         004ccba9     MOV        this,dword ptr [ESP + param_1]
+//         004ccbad     PUSH       EAX
+//         004ccbae     PUSH       this
+//         004ccbaf     MOV        this,ESI
+//         004ccbb1     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, int p
+//         004ccbb6     MOV        dword ptr [ESI],TRIBE_Action_Artifact::`vftable' = 004ccbd0
+//                              tact_art.cpp:37 (6)
+//         004ccbbc     MOV        word ptr [ESI + 0x4],0x6b
+//                              tact_art.cpp:38 (6)
+//         004ccbc2     MOV        EAX,ESI
+//         004ccbc4     POP        ESI
+//         004ccbc5     RET        0x8
+//         004ccbc8     ??         90h
+//         004ccbc9     NOP
+//         004ccbca     NOP
+//         004ccbcb     NOP
+//         004ccbcc     NOP
+//         004ccbcd     NOP
+//         004ccbce     NOP
+//         004ccbcf     NOP
 }
 
 TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* param_1, RGE_Task* param_2, RGE_Static_Object* param_3) {
@@ -47,40 +42,31 @@ TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* param_1, RGE_Tas
 //                              undefined __thiscall TRIBE_Action_Artifact(TRIBE_Action_Artifact * t
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Action_A    ECX:4 (auto)   this
-//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     004ccc30(R)
-//              RGE_Task *        Stack[0x8]:4   param_2                   XREF[1]:     004ccc3f(R)
-//              float             Stack[0xc]:4   param_3                   XREF[1]:     004ccc47(R)
-//              float             Stack[0x10]:4  param_4                   XREF[1]:     004ccc43(R)
-//              float             Stack[0x14]:4  param_5                   XREF[1]:     004ccc4e(R)
-//                               ??0TRIBE_Action_Artifact@@QAE@PAVRGE_Action_Object@@PAVRGE_  XREF[1]:     create_task_action:004d083c(c)
+//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     004ccc00(R)
+//              RGE_Task *        Stack[0x8]:4   param_2                   XREF[1]:     004ccc0f(R)
+//              RGE_Static_Obj    Stack[0xc]:4   param_3                   XREF[1]:     004ccc13(R)
+//                               ??0TRIBE_Action_Artifact@@QAE@PAVRGE_Action_Object@@PAVRGE_  XREF[1]:     create_task_action:004d07f1(c)
 //                               TRIBE_Action_Artifact::TRIBE_Action_Artifact
-//                              tact_art.cpp:53 (15)
-//         004ccc30     MOV        EAX,dword ptr [ESP + param_1]
-//         004ccc34     PUSH       ESI
-//         004ccc35     PUSH       0x1
-//         004ccc37     MOV        ESI,this
-//         004ccc39     PUSH       EAX
-//         004ccc3a     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
-//                              tact_art.cpp:56 (4)
-//         004ccc3f     MOV        this,dword ptr [ESP + param_2]
-//                              tact_art.cpp:58 (11)
-//         004ccc43     MOV        EAX,dword ptr [ESP + param_4]
-//         004ccc47     MOV        EDX,dword ptr [ESP + param_3]
-//         004ccc4b     MOV        dword ptr [ESI + 0x30],this
-//                              tact_art.cpp:59 (25)
-//         004ccc4e     MOV        this,dword ptr [ESP + param_5]
-//         004ccc52     MOV        dword ptr [ESI + 0x24],EAX
-//         004ccc55     MOV        dword ptr [ESI],TRIBE_Action_Artifact::`vftable' = 004ccbd0
-//         004ccc5b     MOV        word ptr [ESI + 0x4],0x6b
-//         004ccc61     MOV        dword ptr [ESI + 0x20],EDX
-//         004ccc64     MOV        dword ptr [ESI + 0x28],this
-//                              tact_art.cpp:60 (6)
-//         004ccc67     MOV        EAX,ESI
-//         004ccc69     POP        ESI
-//         004ccc6a     RET        0x14
-//         004ccc6d     ??         90h
-//         004ccc6e     NOP
-//         004ccc6f     NOP
+//                              tact_art.cpp:43 (15)
+//         004ccc00     MOV        EAX,dword ptr [ESP + param_1]
+//         004ccc04     PUSH       ESI
+//         004ccc05     PUSH       0x1
+//         004ccc07     MOV        ESI,this
+//         004ccc09     PUSH       EAX
+//         004ccc0a     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
+//                              tact_art.cpp:46 (4)
+//         004ccc0f     MOV        this,dword ptr [ESP + param_2]
+//                              tact_art.cpp:47 (22)
+//         004ccc13     MOV        EDX,dword ptr [ESP + param_3]
+//         004ccc17     MOV        dword ptr [ESI],TRIBE_Action_Artifact::`vftable' = 004ccbd0
+//         004ccc1d     MOV        word ptr [ESI + 0x4],0x6b
+//         004ccc23     MOV        dword ptr [ESI + 0x30],this
+//         004ccc26     MOV        dword ptr [ESI + 0x10],EDX
+//                              tact_art.cpp:48 (6)
+//         004ccc29     MOV        EAX,ESI
+//         004ccc2b     POP        ESI
+//         004ccc2c     RET        0xc
+//         004ccc2f     ??         90h
 }
 
 TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* param_1, RGE_Task* param_2, float param_3, float param_4, float param_5) {

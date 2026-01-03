@@ -1,6 +1,11 @@
 #pragma once
 #include "../common.h"
 
+typedef enum Mode : unsigned int {
+    InGame = 0,
+    InPregame = 1,
+};
+
 class TribeConfigDialog : public TDialogPanel {
 public:
     Mode modeValue;                          // 0x490

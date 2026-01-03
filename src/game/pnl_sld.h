@@ -1,6 +1,15 @@
 #pragma once
 #include "../common.h"
 
+typedef enum SliderAction : unsigned int {
+    ActionUp = 0,
+    ActionDown = 1,
+    ActionStartSlide = 2,
+    ActionEndSlide = 3,
+    ActionSelect = 4,
+};
+
+
 class TVerticalSliderPanel : public TScrollBarPanel {
 public:
     int drawBox;                             // 0x1C4

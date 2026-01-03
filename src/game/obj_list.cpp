@@ -890,180 +890,40 @@ RGE_Static_Object* RGE_Object_List::find_by_group(long param_1) {
 //                              RGE_Static_Object * __thiscall find_by_group(RGE_Object_List * this,
 //              RGE_Static_Obj    EAX:4          <RETURN>
 //              RGE_Object_Lis    ECX:4 (auto)   this
-//              long              Stack[0x4]:4   param_1                   XREF[1]:     00463396(R)
-//              float             Stack[0x8]:4   param_2                   XREF[4]:     00463310(R), 0046334c(R), 004633b7(R), 0046340e(R)
-//              float             Stack[0xc]:4   param_3                   XREF[4]:     0046332e(R), 00463343(R), 004633cc(R), 00463408(R)
-//              uchar             Stack[0x10]:1  param_4                   XREF[1]:     004633a0(R)
-//              uchar             Stack[0x14]:1  param_5                   XREF[1]:     004633a8(R)
-//              RGE_Static_Obj    Stack[0x18]:4  param_6                   XREF[5]:     0046331e(R), 00463377(W), 0046341a(R), 00463441(R),
-//                                                                                     0046344e(W)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[4]:     0046336d(W), 00463452(W), 00463465(R), 0046347f(R)
-//              RGE_Static_Obj    Stack[-0x8]:4  found_obj                 XREF[2]:     00463426(W), 0046342e(R)
-//              float             Stack[-0xc]:4  diff_x
-//                               ?find_by_group@RGE_Object_List@@QAEPAVRGE_Static_Object@@JM
+//              long              Stack[0x4]:4   param_1                   XREF[1]:     004632e7(R)
+//                               ?find_by_group@RGE_Object_List@@QAEPAVRGE_Static_Object@@J@Z
 //                               RGE_Object_List::find_by_group
-//                              obj_list.cpp:474 (51)
-//         00463310     FLD        float ptr [ESP + param_2]
-//         00463314     FCOMP      float ptr [DAT_00570c30]                         = align(2)
-//         0046331a     SUB        ESP,0x8
-//         0046331d     PUSH       EBX
-//         0046331e     MOV        EBX,dword ptr [ESP + param_6]
-//         00463322     FNSTSW     AX
-//         00463324     PUSH       EBP
-//         00463325     PUSH       ESI
-//         00463326     TEST       AH,0x41
-//         00463329     PUSH       EDI
-//         0046332a     MOV        ESI,this
-//         0046332c     JNZ        LAB_00463367
-//         0046332e     FLD        float ptr [ESP + param_3]
-//         00463332     FCOMP      float ptr [DAT_00570c30]                         = align(2)
-//         00463338     FNSTSW     AX
-//         0046333a     TEST       AH,0x41
-//         0046333d     JNZ        LAB_00463367
-//         0046333f     TEST       EBX,EBX
-//         00463341     JZ         LAB_00463367
-//                              obj_list.cpp:484 (34)
-//         00463343     FLD        float ptr [ESP + param_3]
-//         00463347     CALL       __ftol                                           undefined __ftol()
-//         0046334c     FLD        float ptr [ESP + param_2]
-//         00463350     PUSH       EAX
-//         00463351     CALL       __ftol                                           undefined __ftol()
-//         00463356     PUSH       EAX
-//         00463357     MOV        this,EBX
-//         00463359     CALL       RGE_Static_Object::lookupZone                    uchar lookupZone(RGE_Static_Object * this, in
-//         0046335e     AND        EAX,0xff
-//         00463363     MOV        EBP,EAX
-//                              obj_list.cpp:485 (2)
-//         00463365     JMP        LAB_0046336a
-//                               LAB_00463367                                                 XREF[3]:     0046332c(j), 0046333d(j),
-//                                                                                                         00463341(j)
-//                              obj_list.cpp:486 (3)
-//         00463367     OR         EBP,0xffffffff
-//                               LAB_0046336a                                                 XREF[1]:     00463365(j)
-//                              obj_list.cpp:491 (27)
-//         0046336a     MOV        EDI,dword ptr [ESI + 0x4]
-//         0046336d     MOV        dword ptr [ESP + local_4],0x0
-//         00463375     TEST       EDI,EDI
-//         00463377     MOV        dword ptr [ESP + param_6],0xbf800000
-//         0046337f     JZ         LAB_0046347f
-//                               LAB_00463385                                                 XREF[1]:     0046345f(j)
-//                              obj_list.cpp:493 (50)
-//         00463385     MOV        ESI,dword ptr [EDI]
-//         00463387     TEST       ESI,ESI
-//         00463389     JZ         LAB_0046345a
-//         0046338f     MOV        EAX,dword ptr [ESI + 0x8]
-//         00463392     MOVSX      this,word ptr [EAX + 0x14]
-//         00463396     CMP        this,dword ptr [ESP + param_1]
-//         0046339a     JNZ        LAB_0046345a
-//         004633a0     MOV        AL,byte ptr [ESP + param_4]
-//         004633a4     TEST       AL,AL
-//         004633a6     JZ         LAB_004633b7
-//         004633a8     MOV        DL,byte ptr [ESP + param_5]
-//         004633ac     MOV        AL,byte ptr [ESI + 0x48]
-//         004633af     CMP        AL,DL
-//         004633b1     JNZ        LAB_0046345a
-//                               LAB_004633b7                                                 XREF[1]:     004633a6(j)
-//                              obj_list.cpp:495 (42)
-//         004633b7     FLD        float ptr [ESP + param_2]
-//         004633bb     FCOMP      float ptr [DAT_00570c30]                         = align(2)
-//         004633c1     FNSTSW     AX
-//         004633c3     TEST       AH,0x40
-//         004633c6     JNZ        LAB_00463473
-//         004633cc     FLD        float ptr [ESP + param_3]
-//         004633d0     FCOMP      float ptr [DAT_00570c30]                         = align(2)
-//         004633d6     FNSTSW     AX
-//         004633d8     TEST       AH,0x40
-//         004633db     JNZ        LAB_00463473
-//                              obj_list.cpp:498 (39)
-//         004633e1     CMP        EBP,-0x1
-//         004633e4     JLE        LAB_00463408
-//         004633e6     FLD        float ptr [ESI + 0x3c]
-//         004633e9     CALL       __ftol                                           undefined __ftol()
-//         004633ee     FLD        float ptr [ESI + 0x38]
-//         004633f1     PUSH       EAX
-//         004633f2     CALL       __ftol                                           undefined __ftol()
-//         004633f7     PUSH       EAX
-//         004633f8     MOV        this,EBX
-//         004633fa     CALL       RGE_Static_Object::lookupZone                    uchar lookupZone(RGE_Static_Object * this, in
-//         004633ff     AND        EAX,0xff
-//         00463404     CMP        EAX,EBP
-//         00463406     JNZ        LAB_0046345a
-//                               LAB_00463408                                                 XREF[1]:     004633e4(j)
-//                              obj_list.cpp:502 (18)
-//         00463408     FLD        float ptr [ESP + param_3]
-//         0046340c     MOV        this,dword ptr [EDI]
-//         0046340e     FLD        float ptr [ESP + param_2]
-//         00463412     FSUB       float ptr [this->_padding_ + 0x38]
-//         00463415     FXCH
-//         00463417     FSUB       float ptr [this->_padding_ + 0x3c]
-//                              obj_list.cpp:504 (52)
-//         0046341a     FLD        float ptr [ESP + param_6]
-//         0046341e     FCOMP      float ptr [DAT_00570c30]                         = align(2)
-//         00463424     FXCH
-//         00463426     FST        float ptr [ESP + found_obj]
-//         0046342a     FLD        ST1
-//         0046342c     FXCH
-//         0046342e     FMUL       float ptr [ESP + found_obj]
-//         00463432     FXCH
-//         00463434     FMUL       ST2
-//         00463436     FNSTSW     AX
-//         00463438     FADDP
-//         0046343a     TEST       AH,0x40
-//         0046343d     FSTP       ST1
-//         0046343f     JNZ        LAB_0046344e
-//         00463441     FLD        float ptr [ESP + param_6]
-//         00463445     FCOMP
-//         00463447     FNSTSW     AX
-//         00463449     TEST       AH,0x41
-//         0046344c     JNZ        LAB_00463458
-//                               LAB_0046344e                                                 XREF[1]:     0046343f(j)
-//                              obj_list.cpp:506 (4)
-//         0046344e     FSTP       float ptr [ESP + param_6]
-//                              obj_list.cpp:507 (6)
-//         00463452     MOV        dword ptr [ESP + local_4],this
-//         00463456     JMP        LAB_0046345a
-//                               LAB_00463458                                                 XREF[1]:     0046344c(j)
-//                              obj_list.cpp:504 (2)
-//         00463458     FSTP       ST0
-//                               LAB_0046345a                                                 XREF[5]:     00463389(j), 0046339a(j),
-//                                                                                                         004633b1(j), 00463406(j),
-//                                                                                                         00463456(j)
-//                              obj_list.cpp:491 (11)
-//         0046345a     MOV        EDI,dword ptr [EDI + 0x4]
-//         0046345d     TEST       EDI,EDI
-//         0046345f     JNZ        LAB_00463385
-//                              obj_list.cpp:511 (4)
-//         00463465     MOV        EAX,dword ptr [ESP + local_4]
-//                              obj_list.cpp:512 (10)
-//         00463469     POP        EDI
-//         0046346a     POP        ESI
-//         0046346b     POP        EBP
-//         0046346c     POP        EBX
-//         0046346d     ADD        ESP,0x8
-//         00463470     RET        0x18
-//                               LAB_00463473                                                 XREF[2]:     004633c6(j), 004633db(j)
-//                              obj_list.cpp:496 (2)
-//         00463473     MOV        EAX,dword ptr [EDI]
-//                              obj_list.cpp:512 (10)
-//         00463475     POP        EDI
-//         00463476     POP        ESI
-//         00463477     POP        EBP
-//         00463478     POP        EBX
-//         00463479     ADD        ESP,0x8
-//         0046347c     RET        0x18
-//                               LAB_0046347f                                                 XREF[1]:     0046337f(j)
-//                              obj_list.cpp:511 (4)
-//         0046347f     MOV        EAX,dword ptr [ESP + local_4]
-//                              obj_list.cpp:512 (10)
-//         00463483     POP        EDI
-//         00463484     POP        ESI
-//         00463485     POP        EBP
-//         00463486     POP        EBX
-//         00463487     ADD        ESP,0x8
-//         0046348a     RET        0x18
-//         0046348d     ??         90h
-//         0046348e     NOP
-//         0046348f     NOP
+//                              obj_list.cpp:462 (11)
+//         004632e0     MOV        EAX,dword ptr [ECX + this->list]
+//         004632e3     TEST       EAX,EAX
+//         004632e5     JZ         LAB_0046330b
+//         004632e7     MOV        EDX,dword ptr [ESP + param_1]
+//                               LAB_004632eb                                                 XREF[1]:     00463301(j)
+//                              obj_list.cpp:466 (17)
+//         004632eb     MOV        this,dword ptr [EAX]
+//         004632ed     TEST       this,this
+//         004632ef     JZ         LAB_004632fc
+//         004632f1     MOV        this,dword ptr [ECX + this->number_of_objects]
+//         004632f4     MOVSX      this,word ptr [this->_padding_ + 0x14]
+//         004632f8     CMP        this,EDX
+//         004632fa     JZ         LAB_00463306
+//                               LAB_004632fc                                                 XREF[1]:     004632ef(j)
+//                              obj_list.cpp:465 (7)
+//         004632fc     MOV        EAX,dword ptr [EAX + 0x4]
+//         004632ff     TEST       EAX,EAX
+//         00463301     JNZ        LAB_004632eb
+//                              obj_list.cpp:469 (3)
+//         00463303     RET        0x4
+//                               LAB_00463306                                                 XREF[1]:     004632fa(j)
+//                              obj_list.cpp:467 (2)
+//         00463306     MOV        EAX,dword ptr [EAX]
+//                              obj_list.cpp:469 (3)
+//         00463308     RET        0x4
+//                               LAB_0046330b                                                 XREF[1]:     004632e5(j)
+//                              obj_list.cpp:468 (2)
+//         0046330b     XOR        EAX,EAX
+//                              obj_list.cpp:469 (3)
+//         0046330d     RET        0x4
     return 0;
 }
 

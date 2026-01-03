@@ -4668,42 +4668,42 @@ RGE_Scenario_Header* TRIBE_Game::new_scenario_header(int param_1) {
 //                              RGE_Scenario_Header * __thiscall new_scenario_header(TRIBE_Game * th
 //              RGE_Scenario_H    EAX:4          <RETURN>
 //              TRIBE_Game *      ECX:4 (auto)   this
-//              RGE_Scenario *    Stack[0x4]:4   param_1                   XREF[1]:     005235a0(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     00523596(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[2]:     005235ac(R), 005235bd(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     00523590(*)
-//                               ?new_scenario_header@TRIBE_Game@@UAEPAVRGE_Scenario_Header@  XREF[1]:     005771dc(*)
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     00523540(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     00523536(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[2]:     0052354c(R), 0052355d(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     00523530(*)
+//                               ?new_scenario_header@TRIBE_Game@@UAEPAVRGE_Scenario_Header@  XREF[1]:     005771e0(*)
 //                               TRIBE_Game::new_scenario_header
-//                              tribegam.cpp:1190 (22)
-//         00523570     PUSH       -0x1
-//         00523572     PUSH       FUN_0056170b
-//         00523577     MOV        EAX,FS:[0x0]
-//         0052357d     PUSH       EAX
-//         0052357e     MOV        dword ptr FS:[0x0],ESP
-//         00523585     PUSH       this
-//                              tribegam.cpp:1191 (38)
-//         00523586     PUSH       0x1c
-//         00523588     CALL       operator_new                                     void * operator_new(uint param_1)
-//         0052358d     ADD        ESP,0x4
-//         00523590     MOV        dword ptr [ESP]=>local_10,EAX
-//         00523594     TEST       EAX,EAX
-//         00523596     MOV        dword ptr [ESP + local_4],0x0
-//         0052359e     JZ         LAB_005235bd
-//         005235a0     MOV        this,dword ptr [ESP + param_1]
-//         005235a4     PUSH       this
-//         005235a5     MOV        this,EAX
-//         005235a7     CALL       TRIBE_Scenario_Header::TRIBE_Scenario_Header     undefined TRIBE_Scenario_Header(TRIBE_Scenari
-//                              tribegam.cpp:1192 (36)
-//         005235ac     MOV        this,dword ptr [ESP + local_c]
-//         005235b0     MOV        dword ptr FS:[0x0],this
-//         005235b7     ADD        ESP,0x10
-//         005235ba     RET        0x4
-//                               LAB_005235bd                                                 XREF[1]:     0052359e(j)
-//         005235bd     MOV        this,dword ptr [ESP + local_c]
-//         005235c1     XOR        EAX,EAX
-//         005235c3     MOV        dword ptr FS:[0x0],this
-//         005235ca     ADD        ESP,0x10
-//         005235cd     RET        0x4
+//                              tribegam.cpp:1182 (22)
+//         00523510     PUSH       -0x1
+//         00523512     PUSH       FUN_005616eb
+//         00523517     MOV        EAX,FS:[0x0]
+//         0052351d     PUSH       EAX
+//         0052351e     MOV        dword ptr FS:[0x0],ESP
+//         00523525     PUSH       this
+//                              tribegam.cpp:1183 (38)
+//         00523526     PUSH       0x1c
+//         00523528     CALL       operator_new                                     void * operator_new(uint param_1)
+//         0052352d     ADD        ESP,0x4
+//         00523530     MOV        dword ptr [ESP]=>local_10,EAX
+//         00523534     TEST       EAX,EAX
+//         00523536     MOV        dword ptr [ESP + local_4],0x0
+//         0052353e     JZ         LAB_0052355d
+//         00523540     MOV        this,dword ptr [ESP + param_1]
+//         00523544     PUSH       this
+//         00523545     MOV        this,EAX
+//         00523547     CALL       TRIBE_Scenario_Header::TRIBE_Scenario_Header     undefined TRIBE_Scenario_Header(TRIBE_Scenari
+//                              tribegam.cpp:1184 (36)
+//         0052354c     MOV        this,dword ptr [ESP + local_c]
+//         00523550     MOV        dword ptr FS:[0x0],this
+//         00523557     ADD        ESP,0x10
+//         0052355a     RET        0x4
+//                               LAB_0052355d                                                 XREF[1]:     0052353e(j)
+//         0052355d     MOV        this,dword ptr [ESP + local_c]
+//         00523561     XOR        EAX,EAX
+//         00523563     MOV        dword ptr FS:[0x0],this
+//         0052356a     ADD        ESP,0x10
+//         0052356d     RET        0x4
     return 0;
 }
 
@@ -4859,64 +4859,87 @@ void TRIBE_Game::show_error_message(int param_1) {
 
 void TRIBE_Game::show_status_message(char* param_1, char* param_2, long param_3) {
     /* TODO: Stub */
-//                              void __thiscall show_status_message(TRIBE_Game * this, int param_1,
+//                              void __thiscall show_status_message(TRIBE_Game * this, char * param_
 //              void              <VOID>         <RETURN>
 //              TRIBE_Game *      ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     00523750(R)
-//              char *            Stack[0x8]:4   param_2
-//              long              Stack[0xc]:4   param_3
-//              char[256]         Stack[-0x104   str                       XREF[0,1]:   0052375d(*)
-//                               ?show_status_message@TRIBE_Game@@QAEXHPADJ@Z                 XREF[15]:    action:00492519(c),
-//                               TRIBE_Game::show_status_message                                           save_for_scenario_editor:004a8089(
-//                                                                                                         command_new_map:004ad37b(c),
-//                                                                                                         command_new_map:004ad3e8(c),
-//                                                                                                         command_save:004ad7e7(c),
-//                                                                                                         scenario_save_defaulted:004adb91(c
-//                                                                                                         restart_game:005243b4(c),
-//                                                                                                         load_db_files:00524545(c),
-//                                                                                                         save_game:00524685(c),
-//                                                                                                         save_scenario:005247c7(c),
-//                                                                                                         start_game:00525da6(c),
-//                                                                                                         start_game:00525dc3(c),
-//                                                                                                         load_game:005261ec(c),
-//                                                                                                         load_game:00526233(c),
-//                                                                                                         disconnect_multiplayer_game:0052a5
-//                              tribegam.cpp:1235 (31)
-//         00523750     MOV        EDX,dword ptr [ESP + param_1]
-//         00523754     SUB        ESP,0x100
-//         0052375a     PUSH       ESI
-//         0052375b     MOV        ESI,this
-//         0052375d     LEA        this=>str[4],[ESP + 0x4]
-//         00523761     PUSH       0x100
-//         00523766     MOV        EAX,dword ptr [ESI]
-//         00523768     PUSH       this
-//         00523769     PUSH       EDX
-//         0052376a     MOV        this,ESI
-//         0052376c     CALL       dword ptr [EAX + 0x20]
-//                              tribegam.cpp:1238 (28)
-//         0052376f     MOV        EAX,dword ptr [ESP + 0x110]
-//         00523776     MOV        this,dword ptr [ESP + 0x10c]
-//         0052377d     PUSH       EAX
-//         0052377e     LEA        EDX,[ESP + 0x8]
-//         00523782     PUSH       this=>DAT_fffffff8
-//         00523783     PUSH       EDX=>DAT_fffffff4
-//         00523784     MOV        this,ESI
-//         00523786     CALL       TRIBE_Game::show_status_message                  void show_status_message(TRIBE_Game * this, c
-//                              tribegam.cpp:1239 (10)
-//         0052378b     POP        ESI
-//         0052378c     ADD        ESP,0x100
-//         00523792     RET        0xc
-//         00523795     ??         90h
-//         00523796     NOP
-//         00523797     NOP
-//         00523798     NOP
-//         00523799     NOP
-//         0052379a     NOP
-//         0052379b     NOP
-//         0052379c     NOP
-//         0052379d     NOP
-//         0052379e     NOP
-//         0052379f     NOP
+//              char *            Stack[0x4]:4   param_1                   XREF[2]:     005236cc(R), 00523707(R)
+//              char *            Stack[0x8]:4   param_2                   XREF[1]:     00523702(R)
+//              long              Stack[0xc]:4   param_3                   XREF[1]:     005236fe(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     005236f4(W), 00523719(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00523732(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     005236ee(W)
+//                               ?show_status_message@TRIBE_Game@@QAEXPAD0J@Z                 XREF[2]:     key_down_action:00497bb8(c),
+//                               TRIBE_Game::show_status_message                                           show_status_message:00523786(c)
+//                              tribegam.cpp:1216 (25)
+//         005236a0     PUSH       -0x1
+//         005236a2     PUSH       FUN_0056174b
+//         005236a7     MOV        EAX,FS:[0x0]
+//         005236ad     PUSH       EAX
+//         005236ae     MOV        dword ptr FS:[0x0],ESP
+//         005236b5     PUSH       this
+//         005236b6     PUSH       ESI
+//         005236b7     MOV        ESI,this
+//                              tribegam.cpp:1218 (15)
+//         005236b9     PUSH       s_Status_Screen                                  = "Status Screen"
+//         005236be     MOV        this,panel_system
+//         005236c3     CALL       TPanelSystem::panel                              TPanel * panel(TPanelSystem * this, char * pa
+//                              tribegam.cpp:1219 (4)
+//         005236c8     TEST       EAX,EAX
+//         005236ca     JZ         LAB_005236e1
+//                              tribegam.cpp:1220 (12)
+//         005236cc     MOV        this,dword ptr [ESP + param_1]
+//         005236d0     PUSH       this
+//         005236d1     MOV        this,EAX
+//         005236d3     CALL       TRIBE_Screen_Status_Message::set_text            void set_text(TRIBE_Screen_Status_Message * t
+//                              tribegam.cpp:1221 (7)
+//         005236d8     MOV        this,ESI
+//         005236da     CALL       RGE_Base_Game::draw_window                       void draw_window(RGE_Base_Game * this)
+//                              tribegam.cpp:1223 (2)
+//         005236df     JMP        LAB_00523721
+//                               LAB_005236e1                                                 XREF[1]:     005236ca(j)
+//                              tribegam.cpp:1224 (64)
+//         005236e1     PUSH       0x47c
+//         005236e6     CALL       operator_new                                     void * operator_new(uint param_1)
+//         005236eb     ADD        ESP,0x4
+//         005236ee     MOV        dword ptr [ESP + local_10],EAX
+//         005236f2     TEST       EAX,EAX
+//         005236f4     MOV        dword ptr [ESP + local_4],0x0
+//         005236fc     JZ         LAB_00523719
+//         005236fe     MOV        EDX,dword ptr [ESP + param_3]
+//         00523702     MOV        this,dword ptr [ESP + param_2]
+//         00523706     PUSH       EDX
+//         00523707     MOV        EDX,dword ptr [ESP + param_1]
+//         0052370b     PUSH       this
+//         0052370c     PUSH       EDX
+//         0052370d     PUSH       s_Status_Screen                                  = "Status Screen"
+//         00523712     MOV        this,EAX
+//         00523714     CALL       TRIBE_Screen_Status_Message::TRIBE_Screen_Stat   undefined TRIBE_Screen_Status_Message(TRIBE_S
+//                               LAB_00523719                                                 XREF[1]:     005236fc(j)
+//         00523719     MOV        dword ptr [ESP + local_4],0xffffffff
+//                               LAB_00523721                                                 XREF[1]:     005236df(j)
+//                              tribegam.cpp:1228 (17)
+//         00523721     PUSH       0x0
+//         00523723     PUSH       s_Status_Screen                                  = "Status Screen"
+//         00523728     MOV        this,panel_system
+//         0052372d     CALL       TPanelSystem::setCurrentPanel                    int setCurrentPanel(TPanelSystem * this, char
+//                              tribegam.cpp:1230 (18)
+//         00523732     MOV        this,dword ptr [ESP + local_c]
+//         00523736     POP        ESI
+//         00523737     MOV        dword ptr FS:[0x0],this
+//         0052373e     ADD        ESP,0x10
+//         00523741     RET        0xc
+//         00523744     ??         90h
+//         00523745     NOP
+//         00523746     NOP
+//         00523747     NOP
+//         00523748     NOP
+//         00523749     NOP
+//         0052374a     NOP
+//         0052374b     NOP
+//         0052374c     NOP
+//         0052374d     NOP
+//         0052374e     NOP
+//         0052374f     NOP
     return;
 }
 

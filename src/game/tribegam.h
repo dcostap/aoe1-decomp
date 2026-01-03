@@ -3,6 +3,91 @@
 #include "scr_game.h"
 #include "basegame.h"
 
+enum Age : unsigned int {
+    DefaultAge = 0,
+    NomadAge = 1,
+    StoneAge = 2,
+    ToolAge = 3,
+    BronzeAge = 4,
+    IronAge = 5,
+};
+
+typedef enum MapSize : unsigned int {
+    Tiny = 0,
+    Small = 1,
+    Medium = 2,
+    Large = 3,
+    Huge = 4,
+    Humongous = 5,
+};
+
+typedef enum MapType : unsigned int {
+    AllWater = 0,
+    MostlyWater = 1,
+    WaterAndLand = 2,
+    MostlyLand = 3,
+    AllLand = 4,
+    Continental = 5,
+    Lake = 6,
+    Hilly = 7,
+    Isthmas = 8,
+};
+
+typedef enum ResourceLevel : unsigned int {
+    DefaultResources = 0,
+    LowResource = 1,
+    MediumResources = 2,
+    HighResources = 3,
+    VeryHighResources = 4,
+};
+
+
+// ----------------------------------------------------------------
+// TRIBE_Game_Options
+// Size: 0x6C
+typedef struct TRIBE_Game_Options {
+    MapSize mapSizeValue; // 0x0
+    MapType mapTypeValue; // 0x4
+    int animalsValue; // 0x8
+    int predatorsValue; // 0xC
+    VictoryType victoryTypeValue; // 0x10
+    int victoryAmountValue; // 0x14
+    uchar civilizationValue[9]; // 0x18
+    int scenarioPlayerValue[9]; // 0x24
+    uchar playerColorValue[9]; // 0x48
+    uchar computerNameValue[9]; // 0x51
+    uchar allowTradingValue; // 0x5A
+    uchar longCombatValue; // 0x5B
+    uchar randomizePositionsValue; // 0x5C
+    uchar fullTechTreeValue; // 0x5D
+    ResourceLevel resourceLevelValue; // 0x60
+    Age startingAgeValue; // 0x64
+    uchar startingUnitsValue; // 0x68
+    uchar deathMatchValue; // 0x69
+    uchar popLimitValue; // 0x6A
+};
+
+typedef enum VictoryType : unsigned int {
+    VictoryDefault = 0,
+    VictoryConquest = 1,
+    VictoryExplore = 2,
+    VictoryRuins = 3,
+    VictoryArtifacts = 4,
+    VictoryDiscoveries = 5,
+    VictoryGold = 6,
+    VictoryTime = 7,
+    VictoryScore = 8,
+    VictoryStandard = 9,
+};
+
+// ----------------------------------------------------------------
+// combined_options
+// Size: 0x114
+typedef struct combined_options {
+    RGE_Game_Options rge_options; // 0x0
+    TRIBE_Game_Options tribe_options; // 0xA8
+};
+
 class TRIBE_Game : public RGE_Base_Game {
 public:
     MouseClickInfo* MouseRightClickTable;    // 0xA24

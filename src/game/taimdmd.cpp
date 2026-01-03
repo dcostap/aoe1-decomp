@@ -6,310 +6,333 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(void* param_1, int param_2,
 //                              undefined __thiscall TribeMainDecisionAIModule(TribeMainDecisionAIMo
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TribeMainDecis    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     004e4ba2(R)
-//              char *            Stack[0x8]:4   param_2                   XREF[1]:     004e4c5f(R)
-//              TRIBE_Player *    Stack[0xc]:4   param_3                   XREF[1]:     004e4b9c(R)
-//              int               Stack[0x10]:4  param_4                   XREF[1]:     004e4b97(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[10]:    004e4bbc(W), 004e4bd1(W), 004e4be3(W), 004e4bf5(W),
-//                                                                                     004e4c07(W), 004e4c19(W), 004e4c2b(W), 004e4c3d(W),
-//                                                                                     004e4c4f(W), 004e4c65(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004e4ea9(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004e4bab(W)
-//                               ??0TribeMainDecisionAIModule@@QAE@HPADPAVTRIBE_Player@@H@Z   XREF[1]:     TRIBE_Player:00511dd5(c)
+//              void *            Stack[0x4]:4   param_1                   XREF[1]:     004e481b(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     004e4822(R)
+//              char *            Stack[0xc]:4   param_3                   XREF[1]:     004e4911(R)
+//              TRIBE_Player *    Stack[0x10]:4  param_4                   XREF[2]:     004e4816(R), 004e48e9(R)
+//              char *            Stack[0x14]:4  param_5
+//              char *            Stack[0x18]:4  param_6
+//              char *            Stack[0x1c]:4  param_7
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[10]:    004e483c(W), 004e4851(W), 004e4863(W), 004e4875(W),
+//                                                                                     004e4889(W), 004e48a9(W), 004e48bb(W), 004e48cd(W),
+//                                                                                     004e48df(W), 004e48fe(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004e4b47(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004e482b(W)
+//                               ??0TribeMainDecisionAIModule@@QAE@PAXHPADPAVTRIBE_Player@@1  XREF[1]:     TRIBE_Player:00511f01(c)
 //                               TribeMainDecisionAIModule::TribeMainDecisionAIModule
-//                              taimdmd.cpp:175 (223)
-//         004e4b80     PUSH       -0x1
-//         004e4b82     PUSH       FUN_005606a6
-//         004e4b87     MOV        EAX,FS:[0x0]
-//         004e4b8d     PUSH       EAX
-//         004e4b8e     MOV        dword ptr FS:[0x0],ESP
-//         004e4b95     PUSH       this
-//         004e4b96     PUSH       EBX
-//         004e4b97     MOV        EBX,dword ptr [ESP + param_4]
-//         004e4b9b     PUSH       EBP
-//         004e4b9c     MOV        EBP,dword ptr [ESP + param_3]
-//         004e4ba0     PUSH       ESI
-//         004e4ba1     PUSH       EDI
-//         004e4ba2     MOV        EDI,dword ptr [ESP + param_1]
-//         004e4ba6     PUSH       EBX
-//         004e4ba7     MOV        ESI,this
-//         004e4ba9     PUSH       EBP
-//         004e4baa     PUSH       EDI
-//         004e4bab     MOV        dword ptr [ESP + local_10],ESI
-//         004e4baf     CALL       MainDecisionAIModule::MainDecisionAIModule       undefined MainDecisionAIModule(MainDecisionAI
-//         004e4bb4     PUSH       EBX
-//         004e4bb5     LEA        this,[ESI + 0x104]
-//         004e4bbb     PUSH       EDI
-//         004e4bbc     MOV        dword ptr [ESP + local_4],0x0
-//         004e4bc4     CALL       TribeBuildAIModule::TribeBuildAIModule           undefined TribeBuildAIModule(TribeBuildAIModu
-//         004e4bc9     PUSH       EBX
-//         004e4bca     LEA        this,[ESI + 0x6c4]
-//         004e4bd0     PUSH       EDI
-//         004e4bd1     MOV        byte ptr [ESP + local_4],0x1
-//         004e4bd6     CALL       TribeConstructionAIModule::TribeConstructionAI   undefined TribeConstructionAIModule(TribeCons
-//         004e4bdb     PUSH       EBX
-//         004e4bdc     LEA        this,[ESI + 0x9dc]
-//         004e4be2     PUSH       EDI
-//         004e4be3     MOV        byte ptr [ESP + local_4],0x2
-//         004e4be8     CALL       DiplomacyAIModule::DiplomacyAIModule             undefined DiplomacyAIModule(DiplomacyAIModule
-//         004e4bed     PUSH       EBX
-//         004e4bee     LEA        this,[ESI + 0xb2c]
-//         004e4bf4     PUSH       EDI
-//         004e4bf5     MOV        byte ptr [ESP + local_4],0x3
-//         004e4bfa     CALL       EmotionalAIModule::EmotionalAIModule             undefined EmotionalAIModule(EmotionalAIModule
-//         004e4bff     PUSH       EBX
-//         004e4c00     LEA        this,[ESI + 0xcec]
-//         004e4c06     PUSH       EDI
-//         004e4c07     MOV        byte ptr [ESP + local_4],0x4
-//         004e4c0c     CALL       TribeInformationAIModule::TribeInformationAIMo   undefined TribeInformationAIModule(TribeInfor
-//         004e4c11     PUSH       EBX
-//         004e4c12     LEA        this,[ESI + 0x10d7c]
-//         004e4c18     PUSH       EDI
-//         004e4c19     MOV        byte ptr [ESP + local_4],0x5
-//         004e4c1e     CALL       TribeResourceAIModule::TribeResourceAIModule     undefined TribeResourceAIModule(TribeResource
-//         004e4c23     PUSH       EBX
-//         004e4c24     LEA        this,[ESI + 0x10e74]
-//         004e4c2a     PUSH       EDI
-//         004e4c2b     MOV        byte ptr [ESP + local_4],0x6
-//         004e4c30     CALL       TribeStrategyAIModule::TribeStrategyAIModule     undefined TribeStrategyAIModule(TribeStrategy
-//         004e4c35     PUSH       EBX
-//         004e4c36     LEA        this,[ESI + 0x1146c]
-//         004e4c3c     PUSH       EDI
-//         004e4c3d     MOV        byte ptr [ESP + local_4],0x7
-//         004e4c42     CALL       TribeTacticalAIModule::TribeTacticalAIModule     undefined TribeTacticalAIModule(TribeTactical
-//         004e4c47     PUSH       EBX
-//         004e4c48     LEA        this,[ESI + 0x12478]
-//         004e4c4e     PUSH       EDI
-//         004e4c4f     MOV        byte ptr [ESP + local_4],0x8
-//         004e4c54     CALL       TradeAIModule::TradeAIModule                     undefined TradeAIModule(TradeAIModule * this,
-//         004e4c59     MOV        dword ptr [ESI + 0x1256c],EBP
-//                              taimdmd.cpp:177 (68)
-//         004e4c5f     MOV        EBP,dword ptr [ESP + param_2]
-//         004e4c63     XOR        EAX,EAX
-//         004e4c65     MOV        byte ptr [ESP + local_4],0x9
-//         004e4c6a     MOV        dword ptr [ESI + 0x12570],EAX
-//         004e4c70     MOV        dword ptr [ESI + 0x12574],EAX
-//         004e4c76     MOV        dword ptr [ESI + 0x12578],EDI
-//         004e4c7c     MOV        dword ptr [ESI + 0x1257c],EAX
-//         004e4c82     MOV        dword ptr [ESI + 0x12580],EAX
-//         004e4c88     MOV        dword ptr [ESI + 0x1259c],EAX
-//         004e4c8e     MOV        dword ptr [ESI + 0x125a0],EAX
-//         004e4c94     MOV        dword ptr [ESI],TribeMainDecisionAIModule::`vf   = 004e4b60
-//         004e4c9a     PUSH       EBP
-//         004e4c9b     PUSH       EDI
-//         004e4c9c     MOV        this,ESI
-//         004e4c9e     CALL       AIModule::setPlayer                              void setPlayer(AIModule * this, int param_1,
-//                              taimdmd.cpp:180 (9)
-//         004e4ca3     MOV        EAX,[startLoggingAI]
-//         004e4ca8     TEST       EAX,EAX
-//         004e4caa     JZ         LAB_004e4cb0
-//                              taimdmd.cpp:181 (2)
-//         004e4cac     PUSH       0x1
-//                              taimdmd.cpp:184 (2)
-//         004e4cae     JMP        LAB_004e4cb2
-//                               LAB_004e4cb0                                                 XREF[1]:     004e4caa(j)
-//                              taimdmd.cpp:185 (9)
-//         004e4cb0     PUSH       0x0
-//                               LAB_004e4cb2                                                 XREF[1]:     004e4cae(j)
-//         004e4cb2     MOV        this,ESI
-//         004e4cb4     CALL       AIModule::setLogCommonHistory                    void setLogCommonHistory(AIModule * this, int
-//                              taimdmd.cpp:188 (12)
-//         004e4cb9     PUSH       ESI
-//         004e4cba     LEA        this,[ESI + 0x104]
-//         004e4cc0     CALL       TribeBuildAIModule::setMainDecisionAI            void setMainDecisionAI(TribeBuildAIModule * t
-//                              taimdmd.cpp:189 (12)
-//         004e4cc5     PUSH       ESI
-//         004e4cc6     LEA        this,[ESI + 0x6c4]
-//         004e4ccc     CALL       TribeConstructionAIModule::setMainDecisionAI     void setMainDecisionAI(TribeConstructionAIMod
-//                              taimdmd.cpp:190 (12)
-//         004e4cd1     PUSH       ESI
-//         004e4cd2     LEA        this,[ESI + 0x9dc]
-//         004e4cd8     CALL       DiplomacyAIModule::setMainDecisionAI             void setMainDecisionAI(DiplomacyAIModule * th
-//                              taimdmd.cpp:191 (12)
-//         004e4cdd     PUSH       ESI
-//         004e4cde     LEA        this,[ESI + 0xb2c]
-//         004e4ce4     CALL       EmotionalAIModule::setMainDecisionAI             void setMainDecisionAI(EmotionalAIModule * th
-//                              taimdmd.cpp:192 (12)
-//         004e4ce9     PUSH       ESI
-//         004e4cea     LEA        this,[ESI + 0xcec]
-//         004e4cf0     CALL       TribeInformationAIModule::setMainDecisionAI      void setMainDecisionAI(TribeInformationAIModu
-//                              taimdmd.cpp:193 (12)
-//         004e4cf5     PUSH       ESI
-//         004e4cf6     LEA        this,[ESI + 0x10d7c]
-//         004e4cfc     CALL       TribeResourceAIModule::setMainDecisionAI         void setMainDecisionAI(TribeResourceAIModule
-//                              taimdmd.cpp:194 (12)
-//         004e4d01     PUSH       ESI
-//         004e4d02     LEA        this,[ESI + 0x10e74]
-//         004e4d08     CALL       TribeStrategyAIModule::setMainDecisionAI         void setMainDecisionAI(TribeStrategyAIModule
-//                              taimdmd.cpp:195 (12)
-//         004e4d0d     PUSH       ESI
-//         004e4d0e     LEA        this,[ESI + 0x1146c]
-//         004e4d14     CALL       TribeTacticalAIModule::setMainDecisionAI         void setMainDecisionAI(TribeTacticalAIModule
-//                              taimdmd.cpp:196 (12)
-//         004e4d19     PUSH       ESI
-//         004e4d1a     LEA        this,[ESI + 0x12478]
-//         004e4d20     CALL       TradeAIModule::setMainDecisionAI                 void setMainDecisionAI(TradeAIModule * this,
-//                              taimdmd.cpp:199 (13)
-//         004e4d25     PUSH       EBP
-//         004e4d26     PUSH       EDI
-//         004e4d27     LEA        this,[ESI + 0x104]
-//         004e4d2d     CALL       AIModule::setPlayer                              void setPlayer(AIModule * this, int param_1,
-//                              taimdmd.cpp:200 (13)
-//         004e4d32     PUSH       EBP
-//         004e4d33     PUSH       EDI
-//         004e4d34     LEA        this,[ESI + 0x6c4]
-//         004e4d3a     CALL       AIModule::setPlayer                              void setPlayer(AIModule * this, int param_1,
-//                              taimdmd.cpp:201 (13)
-//         004e4d3f     PUSH       EBP
-//         004e4d40     PUSH       EDI
-//         004e4d41     LEA        this,[ESI + 0x9dc]
-//         004e4d47     CALL       AIModule::setPlayer                              void setPlayer(AIModule * this, int param_1,
-//                              taimdmd.cpp:202 (13)
-//         004e4d4c     PUSH       EBP
-//         004e4d4d     PUSH       EDI
-//         004e4d4e     LEA        this,[ESI + 0xb2c]
-//         004e4d54     CALL       AIModule::setPlayer                              void setPlayer(AIModule * this, int param_1,
-//                              taimdmd.cpp:203 (13)
-//         004e4d59     PUSH       EBP
-//         004e4d5a     PUSH       EDI
-//         004e4d5b     LEA        this,[ESI + 0xcec]
-//         004e4d61     CALL       AIModule::setPlayer                              void setPlayer(AIModule * this, int param_1,
-//                              taimdmd.cpp:204 (13)
-//         004e4d66     PUSH       EBP
-//         004e4d67     PUSH       EDI
-//         004e4d68     LEA        this,[ESI + 0x10d7c]
-//         004e4d6e     CALL       AIModule::setPlayer                              void setPlayer(AIModule * this, int param_1,
-//                              taimdmd.cpp:205 (13)
-//         004e4d73     PUSH       EBP
-//         004e4d74     PUSH       EDI
-//         004e4d75     LEA        this,[ESI + 0x10e74]
-//         004e4d7b     CALL       AIModule::setPlayer                              void setPlayer(AIModule * this, int param_1,
-//                              taimdmd.cpp:206 (13)
-//         004e4d80     PUSH       EBP
-//         004e4d81     PUSH       EDI
-//         004e4d82     LEA        this,[ESI + 0x1146c]
-//         004e4d88     CALL       AIModule::setPlayer                              void setPlayer(AIModule * this, int param_1,
-//                              taimdmd.cpp:207 (13)
-//         004e4d8d     PUSH       EBP
-//         004e4d8e     PUSH       EDI
-//         004e4d8f     LEA        this,[ESI + 0x12478]
-//         004e4d95     CALL       AIModule::setPlayer                              void setPlayer(AIModule * this, int param_1,
-//                              taimdmd.cpp:210 (18)
-//         004e4d9a     LEA        EAX,[ESI + 0x12578]
-//         004e4da0     PUSH       0x4
-//         004e4da2     PUSH       EAX
-//         004e4da3     PUSH       EBX
-//         004e4da4     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004e4da9     ADD        ESP,0xc
-//                              taimdmd.cpp:211 (18)
-//         004e4dac     LEA        EAX,[ESI + 0x1257c]
-//         004e4db2     PUSH       0x4
-//         004e4db4     PUSH       EAX
-//         004e4db5     PUSH       EBX
-//         004e4db6     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004e4dbb     ADD        ESP,0xc
-//                              taimdmd.cpp:212 (15)
-//         004e4dbe     LEA        EAX,[ESI + 0x12580]
-//         004e4dc4     PUSH       0x4
-//         004e4dc6     PUSH       EAX
-//         004e4dc7     PUSH       EBX
-//         004e4dc8     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taimdmd.cpp:214 (22)
-//         004e4dcd     FLD        float ptr [save_game_version]                    = 7.23
-//         004e4dd3     FCOMP      float ptr [DAT_00575618]                         = 9Ah
-//         004e4dd9     ADD        ESP,0xc
-//         004e4ddc     FNSTSW     AX
-//         004e4dde     TEST       AH,0x1
-//         004e4de1     JNZ        LAB_004e4e4f
-//                              taimdmd.cpp:215 (18)
-//         004e4de3     LEA        EAX,[ESI + 0x12584]
-//         004e4de9     PUSH       0x4
-//         004e4deb     PUSH       EAX
-//         004e4dec     PUSH       EBX
-//         004e4ded     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004e4df2     ADD        ESP,0xc
-//                              taimdmd.cpp:216 (18)
-//         004e4df5     LEA        this,[ESI + 0x12588]
-//         004e4dfb     PUSH       0x4
-//         004e4dfd     PUSH       this
-//         004e4dfe     PUSH       EBX
-//         004e4dff     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004e4e04     ADD        ESP,0xc
-//                              taimdmd.cpp:217 (18)
-//         004e4e07     LEA        EDX,[ESI + 0x1258c]
-//         004e4e0d     PUSH       0x4
-//         004e4e0f     PUSH       EDX
-//         004e4e10     PUSH       EBX
-//         004e4e11     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004e4e16     ADD        ESP,0xc
-//                              taimdmd.cpp:218 (18)
-//         004e4e19     LEA        EAX,[ESI + 0x12590]
-//         004e4e1f     PUSH       0x4
-//         004e4e21     PUSH       EAX
-//         004e4e22     PUSH       EBX
-//         004e4e23     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004e4e28     ADD        ESP,0xc
-//                              taimdmd.cpp:219 (18)
-//         004e4e2b     LEA        this,[ESI + 0x12594]
-//         004e4e31     PUSH       0x4
-//         004e4e33     PUSH       this
-//         004e4e34     PUSH       EBX
-//         004e4e35     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004e4e3a     ADD        ESP,0xc
-//                              taimdmd.cpp:220 (18)
-//         004e4e3d     LEA        EDX,[ESI + 0x12598]
-//         004e4e43     PUSH       0x4
-//         004e4e45     PUSH       EDX
-//         004e4e46     PUSH       EBX
-//         004e4e47     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004e4e4c     ADD        ESP,0xc
-//                               LAB_004e4e4f                                                 XREF[1]:     004e4de1(j)
-//                              taimdmd.cpp:223 (19)
-//         004e4e4f     FLD        float ptr [save_game_version]                    = 7.23
-//         004e4e55     FCOMP      float ptr [DAT_0057561c]                         = 5Ch    \
-//         004e4e5b     FNSTSW     AX
-//         004e4e5d     TEST       AH,0x1
-//         004e4e60     JNZ        LAB_004e4e9a
-//                              taimdmd.cpp:224 (18)
-//         004e4e62     LEA        EAX,[ESI + 0x1259c]
-//         004e4e68     PUSH       0x4
-//         004e4e6a     PUSH       EAX
-//         004e4e6b     PUSH       EBX
-//         004e4e6c     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004e4e71     ADD        ESP,0xc
-//                              taimdmd.cpp:225 (18)
-//         004e4e74     LEA        EAX,[ESI + 0x125a0]
-//         004e4e7a     PUSH       0x4
-//         004e4e7c     PUSH       EAX
-//         004e4e7d     PUSH       EBX
-//         004e4e7e     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004e4e83     ADD        ESP,0xc
-//                              taimdmd.cpp:226 (18)
-//         004e4e86     LEA        EAX,[ESI + 0x125a4]
-//         004e4e8c     PUSH       0x24
-//         004e4e8e     PUSH       EAX
-//         004e4e8f     PUSH       EBX
-//         004e4e90     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004e4e95     ADD        ESP,0xc
-//                              taimdmd.cpp:228 (2)
-//         004e4e98     JMP        LAB_004e4ea9
-//                               LAB_004e4e9a                                                 XREF[1]:     004e4e60(j)
-//                              taimdmd.cpp:229 (15)
-//         004e4e9a     MOV        this,0x9
-//         004e4e9f     XOR        EAX,EAX
-//         004e4ea1     LEA        EDI,[ESI + 0x125a4]
-//         004e4ea7     STOSD.REP  ES:EDI
-//                               LAB_004e4ea9                                                 XREF[1]:     004e4e98(j)
-//                              taimdmd.cpp:231 (23)
-//         004e4ea9     MOV        this,dword ptr [ESP + local_c]
-//         004e4ead     MOV        EAX,ESI
-//         004e4eaf     POP        EDI
-//         004e4eb0     POP        ESI
-//         004e4eb1     POP        EBP
-//         004e4eb2     MOV        dword ptr FS:[0x0],this
-//         004e4eb9     POP        EBX
-//         004e4eba     ADD        ESP,0x10
-//         004e4ebd     RET        0x10
+//                              taimdmd.cpp:89 (273)
+//         004e4800     PUSH       -0x1
+//         004e4802     PUSH       FUN_00560616
+//         004e4807     MOV        EAX,FS:[0x0]
+//         004e480d     PUSH       EAX
+//         004e480e     MOV        dword ptr FS:[0x0],ESP
+//         004e4815     PUSH       this
+//         004e4816     MOV        EAX,dword ptr [ESP + param_4]
+//         004e481a     PUSH       EBX
+//         004e481b     MOV        EBX,dword ptr [ESP + param_1]
+//         004e481f     PUSH       EBP
+//         004e4820     PUSH       ESI
+//         004e4821     PUSH       EDI
+//         004e4822     MOV        EDI,dword ptr [ESP + param_2]
+//         004e4826     PUSH       EAX
+//         004e4827     MOV        ESI,this
+//         004e4829     PUSH       EDI
+//         004e482a     PUSH       EBX
+//         004e482b     MOV        dword ptr [ESP + local_10],ESI
+//         004e482f     CALL       MainDecisionAIModule::MainDecisionAIModule       undefined MainDecisionAIModule(MainDecisionAI
+//         004e4834     PUSH       EDI
+//         004e4835     LEA        this,[ESI + 0x104]
+//         004e483b     PUSH       EBX
+//         004e483c     MOV        dword ptr [ESP + local_4],0x0
+//         004e4844     CALL       TribeBuildAIModule::TribeBuildAIModule           undefined TribeBuildAIModule(TribeBuildAIModu
+//         004e4849     PUSH       EDI
+//         004e484a     LEA        this,[ESI + 0x6c4]
+//         004e4850     PUSH       EBX
+//         004e4851     MOV        byte ptr [ESP + local_4],0x1
+//         004e4856     CALL       TribeConstructionAIModule::TribeConstructionAI   undefined TribeConstructionAIModule(TribeCons
+//         004e485b     PUSH       EDI
+//         004e485c     LEA        this,[ESI + 0x9dc]
+//         004e4862     PUSH       EBX
+//         004e4863     MOV        byte ptr [ESP + local_4],0x2
+//         004e4868     CALL       DiplomacyAIModule::DiplomacyAIModule             undefined DiplomacyAIModule(DiplomacyAIModule
+//         004e486d     PUSH       EDI
+//         004e486e     LEA        this,[ESI + 0xb2c]
+//         004e4874     PUSH       EBX
+//         004e4875     MOV        byte ptr [ESP + local_4],0x3
+//         004e487a     CALL       EmotionalAIModule::EmotionalAIModule             undefined EmotionalAIModule(EmotionalAIModule
+//         004e487f     LEA        EBP,[ESI + 0xcec]
+//         004e4885     PUSH       EDI
+//         004e4886     PUSH       EBX
+//         004e4887     MOV        this,EBP
+//         004e4889     MOV        byte ptr [ESP + local_4],0x4
+//         004e488e     CALL       TribeInformationAIModule::TribeInformationAIMo   undefined TribeInformationAIModule(TribeInfor
+//         004e4893     PUSH       0x3e8
+//         004e4898     PUSH       0x0
+//         004e489a     PUSH       0x1f4
+//         004e489f     PUSH       0x4
+//         004e48a1     PUSH       EDI
+//         004e48a2     LEA        this,[ESI + 0x10d7c]
+//         004e48a8     PUSH       EBX
+//         004e48a9     MOV        byte ptr [ESP + local_4],0x5
+//         004e48ae     CALL       TribeResourceAIModule::TribeResourceAIModule     undefined TribeResourceAIModule(TribeResource
+//         004e48b3     PUSH       EDI
+//         004e48b4     LEA        this,[ESI + 0x10e74]
+//         004e48ba     PUSH       EBX
+//         004e48bb     MOV        byte ptr [ESP + local_4],0x6
+//         004e48c0     CALL       TribeStrategyAIModule::TribeStrategyAIModule     undefined TribeStrategyAIModule(TribeStrategy
+//         004e48c5     PUSH       EDI
+//         004e48c6     LEA        this,[ESI + 0x1146c]
+//         004e48cc     PUSH       EBX
+//         004e48cd     MOV        byte ptr [ESP + local_4],0x7
+//         004e48d2     CALL       TribeTacticalAIModule::TribeTacticalAIModule     undefined TribeTacticalAIModule(TribeTactical
+//         004e48d7     PUSH       EDI
+//         004e48d8     LEA        this,[ESI + 0x12478]
+//         004e48de     PUSH       EBX
+//         004e48df     MOV        byte ptr [ESP + local_4],0x8
+//         004e48e4     CALL       TradeAIModule::TradeAIModule                     undefined TradeAIModule(TradeAIModule * this,
+//         004e48e9     MOV        this,dword ptr [ESP + param_4]
+//         004e48ed     MOV        EAX,0x1
+//         004e48f2     MOV        dword ptr [ESI + 0x12570],EAX
+//         004e48f8     MOV        dword ptr [ESI + 0x12574],EAX
+//         004e48fe     MOV        byte ptr [ESP + local_4],0x9
+//         004e4903     MOV        dword ptr [ESI + 0x1256c],this
+//         004e4909     MOV        dword ptr [ESI + 0x12578],EDI
+//         004e490f     XOR        EAX,EAX
+//                              taimdmd.cpp:91 (79)
+//         004e4911     MOV        EBX,dword ptr [ESP + param_3]
+//         004e4915     MOV        this,ESI
+//         004e4917     PUSH       EBX
+//         004e4918     PUSH       EDI
+//         004e4919     MOV        dword ptr [ESI + 0x1257c],EAX
+//         004e491f     MOV        dword ptr [ESI + 0x12580],EAX
+//         004e4925     MOV        dword ptr [ESI + 0x12584],EAX
+//         004e492b     MOV        dword ptr [ESI + 0x12588],EAX
+//         004e4931     MOV        dword ptr [ESI + 0x1258c],EAX
+//         004e4937     MOV        dword ptr [ESI + 0x12590],EAX
+//         004e493d     MOV        dword ptr [ESI + 0x12594],EAX
+//         004e4943     MOV        dword ptr [ESI + 0x12598],EAX
+//         004e4949     MOV        dword ptr [ESI + 0x1259c],EAX
+//         004e494f     MOV        dword ptr [ESI + 0x125a0],EAX
+//         004e4955     MOV        dword ptr [ESI],TribeMainDecisionAIModule::`vf   = 004e4b60
+//         004e495b     CALL       AIModule::setPlayer                              void setPlayer(AIModule * this, int param_1,
+//                              taimdmd.cpp:94 (9)
+//         004e4960     MOV        EAX,[startLoggingAI]
+//         004e4965     TEST       EAX,EAX
+//         004e4967     JZ         LAB_004e496d
+//                              taimdmd.cpp:95 (2)
+//         004e4969     PUSH       0x1
+//                              taimdmd.cpp:96 (2)
+//         004e496b     JMP        LAB_004e496f
+//                               LAB_004e496d                                                 XREF[1]:     004e4967(j)
+//                              taimdmd.cpp:97 (9)
+//         004e496d     PUSH       0x0
+//                               LAB_004e496f                                                 XREF[1]:     004e496b(j)
+//         004e496f     MOV        this,ESI
+//         004e4971     CALL       AIModule::setLogCommonHistory                    void setLogCommonHistory(AIModule * this, int
+//                              taimdmd.cpp:100 (12)
+//         004e4976     PUSH       ESI
+//         004e4977     LEA        this,[ESI + 0x104]
+//         004e497d     CALL       TribeBuildAIModule::setMainDecisionAI            void setMainDecisionAI(TribeBuildAIModule * t
+//                              taimdmd.cpp:101 (12)
+//         004e4982     PUSH       ESI
+//         004e4983     LEA        this,[ESI + 0x6c4]
+//         004e4989     CALL       TribeConstructionAIModule::setMainDecisionAI     void setMainDecisionAI(TribeConstructionAIMod
+//                              taimdmd.cpp:102 (12)
+//         004e498e     PUSH       ESI
+//         004e498f     LEA        this,[ESI + 0x9dc]
+//         004e4995     CALL       DiplomacyAIModule::setMainDecisionAI             void setMainDecisionAI(DiplomacyAIModule * th
+//                              taimdmd.cpp:103 (12)
+//         004e499a     PUSH       ESI
+//         004e499b     LEA        this,[ESI + 0xb2c]
+//         004e49a1     CALL       EmotionalAIModule::setMainDecisionAI             void setMainDecisionAI(EmotionalAIModule * th
+//                              taimdmd.cpp:104 (8)
+//         004e49a6     PUSH       ESI
+//         004e49a7     MOV        this,EBP
+//         004e49a9     CALL       TribeInformationAIModule::setMainDecisionAI      void setMainDecisionAI(TribeInformationAIModu
+//                              taimdmd.cpp:105 (12)
+//         004e49ae     PUSH       ESI
+//         004e49af     LEA        this,[ESI + 0x10d7c]
+//         004e49b5     CALL       TribeResourceAIModule::setMainDecisionAI         void setMainDecisionAI(TribeResourceAIModule
+//                              taimdmd.cpp:106 (12)
+//         004e49ba     PUSH       ESI
+//         004e49bb     LEA        this,[ESI + 0x10e74]
+//         004e49c1     CALL       TribeStrategyAIModule::setMainDecisionAI         void setMainDecisionAI(TribeStrategyAIModule
+//                              taimdmd.cpp:107 (12)
+//         004e49c6     PUSH       ESI
+//         004e49c7     LEA        this,[ESI + 0x1146c]
+//         004e49cd     CALL       TribeTacticalAIModule::setMainDecisionAI         void setMainDecisionAI(TribeTacticalAIModule
+//                              taimdmd.cpp:108 (12)
+//         004e49d2     PUSH       ESI
+//         004e49d3     LEA        this,[ESI + 0x12478]
+//         004e49d9     CALL       TradeAIModule::setMainDecisionAI                 void setMainDecisionAI(TradeAIModule * this,
+//                              taimdmd.cpp:111 (13)
+//         004e49de     PUSH       EBX
+//         004e49df     PUSH       EDI
+//         004e49e0     LEA        this,[ESI + 0x104]
+//         004e49e6     CALL       AIModule::setPlayer                              void setPlayer(AIModule * this, int param_1,
+//                              taimdmd.cpp:112 (13)
+//         004e49eb     PUSH       EBX
+//         004e49ec     PUSH       EDI
+//         004e49ed     LEA        this,[ESI + 0x6c4]
+//         004e49f3     CALL       AIModule::setPlayer                              void setPlayer(AIModule * this, int param_1,
+//                              taimdmd.cpp:113 (13)
+//         004e49f8     PUSH       EBX
+//         004e49f9     PUSH       EDI
+//         004e49fa     LEA        this,[ESI + 0x9dc]
+//         004e4a00     CALL       AIModule::setPlayer                              void setPlayer(AIModule * this, int param_1,
+//                              taimdmd.cpp:114 (13)
+//         004e4a05     PUSH       EBX
+//         004e4a06     PUSH       EDI
+//         004e4a07     LEA        this,[ESI + 0xb2c]
+//         004e4a0d     CALL       AIModule::setPlayer                              void setPlayer(AIModule * this, int param_1,
+//                              taimdmd.cpp:115 (9)
+//         004e4a12     PUSH       EBX
+//         004e4a13     PUSH       EDI
+//         004e4a14     MOV        this,EBP
+//         004e4a16     CALL       AIModule::setPlayer                              void setPlayer(AIModule * this, int param_1,
+//                              taimdmd.cpp:116 (13)
+//         004e4a1b     PUSH       EBX
+//         004e4a1c     PUSH       EDI
+//         004e4a1d     LEA        this,[ESI + 0x10d7c]
+//         004e4a23     CALL       AIModule::setPlayer                              void setPlayer(AIModule * this, int param_1,
+//                              taimdmd.cpp:117 (13)
+//         004e4a28     PUSH       EBX
+//         004e4a29     PUSH       EDI
+//         004e4a2a     LEA        this,[ESI + 0x10e74]
+//         004e4a30     CALL       AIModule::setPlayer                              void setPlayer(AIModule * this, int param_1,
+//                              taimdmd.cpp:118 (13)
+//         004e4a35     PUSH       EBX
+//         004e4a36     PUSH       EDI
+//         004e4a37     LEA        this,[ESI + 0x1146c]
+//         004e4a3d     CALL       AIModule::setPlayer                              void setPlayer(AIModule * this, int param_1,
+//                              taimdmd.cpp:119 (13)
+//         004e4a42     PUSH       EBX
+//         004e4a43     PUSH       EDI
+//         004e4a44     LEA        this,[ESI + 0x12478]
+//         004e4a4a     CALL       AIModule::setPlayer                              void setPlayer(AIModule * this, int param_1,
+//                              taimdmd.cpp:124 (11)
+//         004e4a4f     PUSH       0x30
+//         004e4a51     PUSH       0x0
+//         004e4a53     MOV        this,EBP
+//         004e4a55     CALL       TribeInformationAIModule::addResourceType        void addResourceType(TribeInformationAIModule
+//                              language.dll match for 0x7e: "10"
+//                              taimdmd.cpp:125 (11)
+//         004e4a5a     PUSH       0x7e
+//         004e4a5c     PUSH       0x0
+//         004e4a5e     MOV        this,EBP
+//         004e4a60     CALL       TribeInformationAIModule::addResourceType        void addResourceType(TribeInformationAIModule
+//                              taimdmd.cpp:126 (11)
+//         004e4a65     PUSH       0x3b
+//         004e4a67     PUSH       0x0
+//         004e4a69     MOV        this,EBP
+//         004e4a6b     CALL       TribeInformationAIModule::addResourceType        void addResourceType(TribeInformationAIModule
+//                              taimdmd.cpp:127 (11)
+//         004e4a70     PUSH       0x41
+//         004e4a72     PUSH       0x0
+//         004e4a74     MOV        this,EBP
+//         004e4a76     CALL       TribeInformationAIModule::addResourceType        void addResourceType(TribeInformationAIModule
+//                              taimdmd.cpp:128 (11)
+//         004e4a7b     PUSH       0x34
+//         004e4a7d     PUSH       0x0
+//         004e4a7f     MOV        this,EBP
+//         004e4a81     CALL       TribeInformationAIModule::addResourceType        void addResourceType(TribeInformationAIModule
+//                              taimdmd.cpp:129 (11)
+//         004e4a86     PUSH       0x35
+//         004e4a88     PUSH       0x0
+//         004e4a8a     MOV        this,EBP
+//         004e4a8c     CALL       TribeInformationAIModule::addResourceType        void addResourceType(TribeInformationAIModule
+//                              taimdmd.cpp:130 (14)
+//         004e4a91     PUSH       0x104
+//         004e4a96     PUSH       0x0
+//         004e4a98     MOV        this,EBP
+//         004e4a9a     CALL       TribeInformationAIModule::addResourceType        void addResourceType(TribeInformationAIModule
+//                              taimdmd.cpp:131 (14)
+//         004e4a9f     PUSH       0x107
+//         004e4aa4     PUSH       0x0
+//         004e4aa6     MOV        this,EBP
+//         004e4aa8     CALL       TribeInformationAIModule::addResourceType        void addResourceType(TribeInformationAIModule
+//                              taimdmd.cpp:132 (11)
+//         004e4aad     PUSH       0x32
+//         004e4aaf     PUSH       0x0
+//         004e4ab1     MOV        this,EBP
+//         004e4ab3     CALL       TribeInformationAIModule::addResourceType        void addResourceType(TribeInformationAIModule
+//                              language.dll match for 0x6f: "12"
+//                              taimdmd.cpp:134 (5)
+//         004e4ab8     MOV        EDI,0x6f
+//                               LAB_004e4abd                                                 XREF[1]:     004e4acb(j)
+//                              taimdmd.cpp:135 (16)
+//         004e4abd     PUSH       EDI
+//         004e4abe     PUSH       0x1
+//         004e4ac0     MOV        this,EBP
+//         004e4ac2     CALL       TribeInformationAIModule::addResourceType        void addResourceType(TribeInformationAIModule
+//         004e4ac7     INC        EDI
+//         004e4ac8     CMP        EDI,0x72
+//         004e4acb     JLE        LAB_004e4abd
+//                              taimdmd.cpp:136 (5)
+//         004e4acd     MOV        EDI,0x86
+//                               LAB_004e4ad2                                                 XREF[1]:     004e4ae3(j)
+//                              taimdmd.cpp:137 (19)
+//         004e4ad2     PUSH       EDI
+//         004e4ad3     PUSH       0x1
+//         004e4ad5     MOV        this,EBP
+//         004e4ad7     CALL       TribeInformationAIModule::addResourceType        void addResourceType(TribeInformationAIModule
+//         004e4adc     INC        EDI
+//         004e4add     CMP        EDI,0x99
+//         004e4ae3     JLE        LAB_004e4ad2
+//                              taimdmd.cpp:138 (5)
+//         004e4ae5     MOV        EDI,0xc0
+//                               LAB_004e4aea                                                 XREF[1]:     004e4afb(j)
+//                              taimdmd.cpp:139 (19)
+//         004e4aea     PUSH       EDI
+//         004e4aeb     PUSH       0x1
+//         004e4aed     MOV        this,EBP
+//         004e4aef     CALL       TribeInformationAIModule::addResourceType        void addResourceType(TribeInformationAIModule
+//         004e4af4     INC        EDI
+//         004e4af5     CMP        EDI,0xc5
+//         004e4afb     JLE        LAB_004e4aea
+//                              language.dll match for 0x66: "Copperplate Gothic Light"
+//                              taimdmd.cpp:141 (11)
+//         004e4afd     PUSH       0x66
+//         004e4aff     PUSH       0x2
+//         004e4b01     MOV        this,EBP
+//         004e4b03     CALL       TribeInformationAIModule::addResourceType        void addResourceType(TribeInformationAIModule
+//                              taimdmd.cpp:143 (11)
+//         004e4b08     PUSH       0x42
+//         004e4b0a     PUSH       0x3
+//         004e4b0c     MOV        this,EBP
+//         004e4b0e     CALL       TribeInformationAIModule::addResourceType        void addResourceType(TribeInformationAIModule
+//                              taimdmd.cpp:144 (5)
+//         004e4b13     MOV        EDI,0x150
+//                               LAB_004e4b18                                                 XREF[1]:     004e4b29(j)
+//                              taimdmd.cpp:145 (19)
+//         004e4b18     PUSH       EDI
+//         004e4b19     PUSH       0x3
+//         004e4b1b     MOV        this,EBP
+//         004e4b1d     CALL       TribeInformationAIModule::addResourceType        void addResourceType(TribeInformationAIModule
+//         004e4b22     INC        EDI
+//         004e4b23     CMP        EDI,0x153
+//         004e4b29     JLE        LAB_004e4b18
+//                              taimdmd.cpp:148 (13)
+//         004e4b2b     PUSH       0x0
+//         004e4b2d     LEA        this,[ESI + 0xb2c]
+//         004e4b33     CALL       EmotionalAIModule::setOverallState               void setOverallState(EmotionalAIModule * this
+//                              taimdmd.cpp:150 (15)
+//         004e4b38     MOV        this,0x9
+//         004e4b3d     XOR        EAX,EAX
+//         004e4b3f     LEA        EDI,[ESI + 0x125a4]
+//         004e4b45     STOSD.REP  ES:EDI
+//                              taimdmd.cpp:151 (23)
+//         004e4b47     MOV        this,dword ptr [ESP + local_c]
+//         004e4b4b     MOV        EAX,ESI
+//         004e4b4d     POP        EDI
+//         004e4b4e     POP        ESI
+//         004e4b4f     POP        EBP
+//         004e4b50     MOV        dword ptr FS:[0x0],this
+//         004e4b57     POP        EBX
+//         004e4b58     ADD        ESP,0x10
+//         004e4b5b     RET        0x1c
+//         004e4b5e     ??         90h
+//         004e4b5f     NOP
 }
 
 TribeMainDecisionAIModule::TribeMainDecisionAIModule(int param_1, char* param_2, TRIBE_Player* param_3, int param_4) {

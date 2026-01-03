@@ -6,27 +6,36 @@ TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller(char* param_1, char
 //                              undefined __thiscall TRIBE_RMM_Database_Controller(TRIBE_RMM_Databas
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_RMM_Data    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     004876f0(R)
-//                               ??0TRIBE_RMM_Database_Controller@@QAE@H@Z                    XREF[1]:     data_load_random_map:0050f83d(c)
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     004876d0(R)
+//              char *            Stack[0x8]:4   param_2                   XREF[1]:     004876c4(R)
+//              char *            Stack[0xc]:4   param_3                   XREF[1]:     004876cb(R)
+//              char *            Stack[0x10]:4  param_4                   XREF[1]:     004876c0(R)
+//                               ??0TRIBE_RMM_Database_Controller@@QAE@PAD000@Z               XREF[1]:     load_random_map:0050f8ac(c)
 //                               TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller
-//                              rmm_tdbc.cpp:52 (19)
-//         004876f0     MOV        EAX,dword ptr [ESP + param_1]
-//         004876f4     PUSH       ESI
-//         004876f5     MOV        ESI,this
-//         004876f7     PUSH       EAX
-//         004876f8     CALL       RGE_RMM_Database_Controller::RGE_RMM_Database_   undefined RGE_RMM_Database_Controller(RGE_RMM
-//         004876fd     MOV        dword ptr [ESI],TRIBE_RMM_Database_Controller:   = 00488870
-//                              rmm_tdbc.cpp:53 (6)
-//         00487703     MOV        EAX,ESI
-//         00487705     POP        ESI
-//         00487706     RET        0x4
-//         00487709     ??         90h
-//         0048770a     NOP
-//         0048770b     NOP
-//         0048770c     NOP
-//         0048770d     NOP
-//         0048770e     NOP
-//         0048770f     NOP
+//                              rmm_tdbc.cpp:44 (36)
+//         004876c0     MOV        EAX,dword ptr [ESP + param_4]
+//         004876c4     MOV        EDX,dword ptr [ESP + param_2]
+//         004876c8     PUSH       ESI
+//         004876c9     MOV        ESI,this
+//         004876cb     MOV        this,dword ptr [ESP + param_3]
+//         004876cf     PUSH       EAX
+//         004876d0     MOV        EAX,dword ptr [ESP + param_1]
+//         004876d4     PUSH       this
+//         004876d5     PUSH       EDX
+//         004876d6     PUSH       EAX
+//         004876d7     MOV        this,ESI
+//         004876d9     CALL       RGE_RMM_Database_Controller::RGE_RMM_Database_   undefined RGE_RMM_Database_Controller(RGE_RMM
+//         004876de     MOV        dword ptr [ESI],TRIBE_RMM_Database_Controller:   = 00488870
+//                              rmm_tdbc.cpp:45 (6)
+//         004876e4     MOV        EAX,ESI
+//         004876e6     POP        ESI
+//         004876e7     RET        0x10
+//         004876ea     ??         90h
+//         004876eb     NOP
+//         004876ec     NOP
+//         004876ed     NOP
+//         004876ee     NOP
+//         004876ef     NOP
 }
 
 TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller(int param_1) {

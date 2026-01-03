@@ -3,522 +3,134 @@
 
 BuildAIModule::BuildAIModule(void* param_1, int param_2) {
     /* TODO: Stub */
-//                              undefined __thiscall BuildAIModule(BuildAIModule * this, int param_1
+//                              undefined __thiscall BuildAIModule(BuildAIModule * this, void * para
 //              undefined         <UNASSIGNED>   <RETURN>
 //              BuildAIModule *   ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     0040885b(R)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     004088bc(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[4]:     00408888(W), 004088c7(W), 00408bd9(W), 00408c40(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00408cfb(R)
-//              char[257]         Stack[-0x114   name                      XREF[1,2]:   00408bd3(W), 00408a20(*), 00408c0d(*)
-//              undefined4        Stack[-0x118   local_118                 XREF[1]:     00408876(W)
-//              undefined4        Stack[-0x11c   local_11c                 XREF[2]:     00408b1b(*), 00408c06(R)
-//              int               Stack[-0x120   buildFrom                 XREF[2]:     00408b5b(*), 00408be3(R)
-//              int               Stack[-0x124   placeOnElevation          XREF[2]:     00408b2b(*), 00408bf1(R)
-//              int               Stack[-0x128   terrainSet                XREF[2]:     00408bb6(*), 00408cc5(R)
-//              uchar             Stack[-0x12c   permanentSkip             XREF[2]:     00408a33(*), 00408c1a(R)
-//              int               Stack[-0x130   typeID                    XREF[2]:     00408ba6(*), 00408cb9(R)
-//              int               Stack[-0x134   numberSkipCycles          XREF[2]:     00408aab(*), 00408bfb(R)
-//              float             Stack[-0x138   ySize                     XREF[2]:     00408b6b(*), 00408ca1(R)
-//              int               Stack[-0x13c   numberBuilds              XREF[2]:     00408b4b(*), 00408be7(R)
-//              int               Stack[-0x140   terrainAdjTwo             XREF[2]:     00408a8b(*), 00408c95(R)
-//              float             Stack[-0x144   z                         XREF[2]:     00408adb(*), 00408c26(R)
-//              int               Stack[-0x148   buildCategory             XREF[2]:     00408a7b(*), 00408c89(R)
-//              float             Stack[-0x14c   y                         XREF[2]:     00408a5b(*), 00408c15(R)
-//              int               Stack[-0x150   uniqueID                  XREF[2]:     00408a6b(*), 00408c7d(R)
-//              float             Stack[-0x154   x                         XREF[2]:     00408a9b(*), 00408c00(R)
-//              float             Stack[-0x158   xSize                     XREF[2]:     00408a4b(*), 00408c71(R)
-//              int               Stack[-0x15c   gameID                    XREF[2]:     00408abb(*), 00408bf6(R)
-//              float             Stack[-0x160   zSize                     XREF[2]:     00408acb(*), 00408c65(R)
-//              int               Stack[-0x164   skipValue                 XREF[2]:     00408b3b(*), 00408bec(R)
-//              int               Stack[-0x168   terrainAdjOne             XREF[2]:     00408b0b(*), 00408c59(R)
-//              int               Stack[-0x16c   buildAttemptsValue        XREF[2]:     00408aeb(*), 00408c4d(R)
-//              int               Stack[-0x170   inProgressValue           XREF[2]:     00408afb(*), 00408c39(R)
-//              int               Stack[-0x174   builtValue                XREF[3]:     00408b87(W), 00408b96(*), 00408cad(R)
-//              int               Stack[-0x178   buildCap                  XREF[15]:    004088e9(*), 004088f6(R), 0040890b(R), 00408912(*),
-//                                                                                     00408927(R), 0040893c(R), 00408943(*), 00408958(R),
-//                                                                                     0040896d(R), 0040898f(*), 0040899c(R), 004089b1(R),
-//                                                                                     00408a0c(*), 00408a19(R), 00408a2c(R)
-//              int               Stack[-0x17c   tempInt
-//                               ??0BuildAIModule@@QAE@HH@Z                                   XREF[1]:     TribeBuildAIModule:004d3adf(c)
+//              void *            Stack[0x4]:4   param_1                   XREF[1]:     004086c6(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     004086ce(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     004086f4(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004087d5(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004086e1(W)
+//                               ??0BuildAIModule@@QAE@PAXH@Z                                 XREF[1]:     TribeBuildAIModule:004d3a8f(c)
 //                               BuildAIModule::BuildAIModule
-//                              aibldmod.cpp:50 (124)
-//         00408840     PUSH       -0x1
-//         00408842     PUSH       FUN_0055c49b
-//         00408847     MOV        EAX,FS:[0x0]
-//         0040884d     PUSH       EAX
-//         0040884e     MOV        dword ptr FS:[0x0],ESP
-//         00408855     SUB        ESP,0x16c
-//         0040885b     MOV        EAX,dword ptr [ESP + param_1]
-//         00408862     PUSH       EBX
-//         00408863     PUSH       EBP
-//         00408864     PUSH       ESI
-//         00408865     PUSH       EDI
-//         00408866     XOR        EDI,EDI
-//         00408868     PUSH       EDI
-//         00408869     PUSH       EAX
-//         0040886a     MOV        EBX,this
+//                              aibldmod.cpp:34 (113)
+//         004086b0     PUSH       -0x1
+//         004086b2     PUSH       FUN_0055c456
+//         004086b7     MOV        EAX,FS:[0x0]
+//         004086bd     PUSH       EAX
+//         004086be     MOV        dword ptr FS:[0x0],ESP
+//         004086c5     PUSH       this
+//         004086c6     MOV        EAX,dword ptr [ESP + param_1]
+//         004086ca     PUSH       EBX
+//         004086cb     MOV        EBX,this
+//         004086cd     PUSH       ESI
+//         004086ce     MOV        this,dword ptr [ESP + param_2]
+//         004086d2     PUSH       EDI
+//         004086d3     PUSH       EAX
+//         004086d4     PUSH       this
 //                              language.dll match for 0x3e9: "Age of Empires"
-//         0040886c     PUSH       0x3e9
-//         00408871     PUSH       s_Build_AI                                       = "Build AI"
-//         00408876     MOV        dword ptr [ESP + local_118],EBX
-//         0040887d     CALL       AIModule::AIModule                               undefined AIModule(AIModule * this, char * pa
-//         00408882     LEA        ESI,[EBX + 0xf0]
-//         00408888     MOV        dword ptr [ESP + local_4],EDI
-//         0040888f     MOV        this,ESI
-//         00408891     CALL       BuildItem::BuildItem                             undefined BuildItem(BuildItem * this)
-//         00408896     LEA        EAX,[EBX + 0x1a0]
-//         0040889c     MOV        dword ptr [EBX + 0x5a8],EDI
-//         004088a2     MOV        dword ptr [EAX],EDI
-//         004088a4     MOV        dword ptr [EBX + 0x5ac],EDI
-//         004088aa     MOV        dword ptr [EBX + 0x5b0],EDI
-//         004088b0     MOV        dword ptr [EBX + 0x5b4],EDI
-//         004088b6     MOV        dword ptr [EBX + 0x5b8],EDI
-//                              aibldmod.cpp:56 (45)
-//         004088bc     MOV        EBP,dword ptr [ESP + param_2]
-//         004088c3     PUSH       0x4
-//         004088c5     PUSH       EAX
-//         004088c6     PUSH       EBP
-//         004088c7     MOV        byte ptr [ESP + local_4],0x2
-//         004088cf     MOV        dword ptr [EBX],BuildAIModule::`vftable'         = 00408820
-//         004088d5     MOV        dword ptr [EBX + 0x15c],ESI
-//         004088db     MOV        dword ptr [EBX + 0x160],ESI
-//         004088e1     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004088e6     ADD        ESP,0xc
-//                              aibldmod.cpp:59 (13)
-//         004088e9     LEA        this=>buildCap,[ESP + 0x10]
-//         004088ed     PUSH       0x4
-//         004088ef     PUSH       this
-//         004088f0     PUSH       EBP
-//         004088f1     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              aibldmod.cpp:60 (21)
-//         004088f6     MOV        EDX,dword ptr [ESP + buildCap]
-//         004088fa     ADD        ESP,0xc
-//         004088fd     LEA        EAX,[EBX + 0x1a4]
-//         00408903     PUSH       EDX
-//         00408904     PUSH       EAX
-//         00408905     PUSH       EBP
-//         00408906     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              aibldmod.cpp:61 (7)
-//         0040890b     MOV        this,dword ptr [ESP + buildCap]
-//         0040890f     ADD        ESP,0xc
-//                              aibldmod.cpp:63 (21)
-//         00408912     LEA        EDX=>buildCap,[ESP + 0x10]
-//         00408916     PUSH       0x4
-//         00408918     PUSH       EDX
-//         00408919     PUSH       EBP
-//         0040891a     MOV        byte ptr [ECX + EBX*0x1 + this->buildListNameV
-//         00408922     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              aibldmod.cpp:64 (21)
-//         00408927     MOV        EAX,dword ptr [ESP + buildCap]
-//         0040892b     ADD        ESP,0xc
-//         0040892e     LEA        this,[EBX + 0x2a5]
-//         00408934     PUSH       EAX
-//         00408935     PUSH       this
-//         00408936     PUSH       EBP
-//         00408937     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              aibldmod.cpp:65 (7)
-//         0040893c     MOV        EDX,dword ptr [ESP + buildCap]
-//         00408940     ADD        ESP,0xc
-//                              aibldmod.cpp:67 (21)
-//         00408943     LEA        EAX=>buildCap,[ESP + 0x10]
-//         00408947     PUSH       0x4
-//         00408949     PUSH       EAX
-//         0040894a     PUSH       EBP
-//         0040894b     MOV        byte ptr [EDX + EBX*0x1 + 0x2a5],0x0
-//         00408953     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              aibldmod.cpp:68 (21)
-//         00408958     MOV        this,dword ptr [ESP + buildCap]
-//         0040895c     ADD        ESP,0xc
-//         0040895f     LEA        EDX,[EBX + 0x3a6]
-//         00408965     PUSH       this
-//         00408966     PUSH       EDX
-//         00408967     PUSH       EBP
-//         00408968     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              aibldmod.cpp:69 (15)
-//         0040896d     MOV        EAX,dword ptr [ESP + buildCap]
-//         00408971     ADD        ESP,0xc
-//         00408974     MOV        byte ptr [EAX + EBX*0x1 + 0x3a6],0x0
-//                              aibldmod.cpp:71 (19)
-//         0040897c     FLD        float ptr [save_game_version]                    = 7.23
-//         00408982     FCOMP      float ptr [DAT_0056e784]                         = 66h    f
-//         00408988     FNSTSW     AX
-//         0040898a     TEST       AH,0x1
-//         0040898d     JNZ        LAB_004089c2
-//                              aibldmod.cpp:72 (13)
-//         0040898f     LEA        this=>buildCap,[ESP + 0x10]
-//         00408993     PUSH       0x4
-//         00408995     PUSH       this
-//         00408996     PUSH       EBP
-//         00408997     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              aibldmod.cpp:73 (21)
-//         0040899c     MOV        EDX,dword ptr [ESP + buildCap]
-//         004089a0     ADD        ESP,0xc
-//         004089a3     LEA        EAX,[EBX + 0x4a7]
-//         004089a9     PUSH       EDX
-//         004089aa     PUSH       EAX
-//         004089ab     PUSH       EBP
-//         004089ac     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              aibldmod.cpp:74 (15)
-//         004089b1     MOV        this,dword ptr [ESP + buildCap]
-//         004089b5     ADD        ESP,0xc
-//         004089b8     MOV        byte ptr [ECX + EBX*0x1 + this->nextBuildItemR
-//                              aibldmod.cpp:76 (2)
-//         004089c0     JMP        LAB_004089ec
-//                               LAB_004089c2                                                 XREF[1]:     0040898d(j)
-//                              aibldmod.cpp:77 (42)
-//         004089c2     MOV        EDI,s_None                                       = 4Eh
-//         004089c7     OR         this,0xffffffff
-//         004089ca     XOR        EAX,EAX
-//         004089cc     LEA        EDX,[EBX + 0x4a7]
-//         004089d2     SCASB.RE   ES:EDI=>s_None                                   = 4Eh
+//         004086d5     PUSH       0x3e9
+//         004086da     PUSH       s_Build_AI                                       = "Build AI"
+//         004086df     MOV        this,EBX
+//         004086e1     MOV        dword ptr [ESP + local_10],EBX
+//         004086e5     CALL       AIModule::AIModule                               undefined AIModule(AIModule * this, char * pa
+//         004086ea     LEA        ESI,[EBX + 0xf0]
+//         004086f0     XOR        EDI,EDI
+//         004086f2     MOV        this,ESI
+//         004086f4     MOV        dword ptr [ESP + local_4],EDI
+//         004086f8     CALL       BuildItem::BuildItem                             undefined BuildItem(BuildItem * this)
+//         004086fd     MOV        dword ptr [EBX + 0x1a0],EDI
+//         00408703     MOV        dword ptr [EBX + 0x5a8],EDI
+//         00408709     MOV        dword ptr [EBX + 0x5ac],EDI
+//         0040870f     MOV        dword ptr [EBX + 0x5b0],EDI
+//         00408715     MOV        dword ptr [EBX + 0x5b4],EDI
+//         0040871b     MOV        dword ptr [EBX + 0x5b8],EDI
+//                              aibldmod.cpp:38 (46)
+//         00408721     OR         this,0xffffffff
+//         00408724     MOV        EDI,s_                                           = ""
+//         00408729     XOR        EAX,EAX
+//         0040872b     MOV        dword ptr [EBX],BuildAIModule::`vftable'         = 00408820
+//         00408731     MOV        dword ptr [EBX + 0x15c],ESI
+//         00408737     MOV        dword ptr [EBX + 0x160],ESI
+//         0040873d     SCASB.RE   ES:EDI=>s_                                       = ""
+//         0040873f     NOT        this
+//         00408741     SUB        EDI,this
+//         00408743     LEA        EDX,[EBX + 0x1a4]
+//         00408749     MOV        EAX,this
+//         0040874b     MOV        ESI,EDI
+//         0040874d     MOV        EDI,EDX
+//                              aibldmod.cpp:39 (40)
+//         0040874f     LEA        EDX,[EBX + 0x2a5]
+//         00408755     SHR        this,0x2
+//         00408758     MOVSD.REP  ES:EDI,ESI
+//         0040875a     MOV        this,EAX
+//         0040875c     XOR        EAX,EAX
+//         0040875e     AND        this,0x3
+//         00408761     MOVSB.REP  ES:EDI,ESI
+//         00408763     MOV        EDI,s_None                                       = 4Eh
+//         00408768     OR         this,0xffffffff
+//         0040876b     SCASB.RE   ES:EDI=>s_None                                   = 4Eh
 //                                                                                  = 00656e6f
-//         004089d4     NOT        this
-//         004089d6     SUB        EDI,this
-//         004089d8     MOV        EAX,this
-//         004089da     MOV        ESI,EDI
-//         004089dc     MOV        EDI,EDX
-//         004089de     SHR        this,0x2
-//         004089e1     MOVSD.REP  ES:EDI,ESI
-//         004089e3     MOV        this,EAX
-//         004089e5     AND        this,0x3
-//         004089e8     MOVSB.REP  ES:EDI,ESI
-//         004089ea     XOR        EDI,EDI
-//                               LAB_004089ec                                                 XREF[1]:     004089c0(j)
-//                              aibldmod.cpp:80 (15)
-//         004089ec     LEA        EAX,[EBX + 0x5a8]
-//         004089f2     PUSH       0x4
-//         004089f4     PUSH       EAX
-//         004089f5     PUSH       EBP
-//         004089f6     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              aibldmod.cpp:82 (17)
-//         004089fb     MOV        EAX,dword ptr [EBX + 0x1a0]
-//         00408a01     ADD        ESP,0xc
-//         00408a04     TEST       EAX,EAX
-//         00408a06     JLE        LAB_00408cfb
-//                               LAB_00408a0c                                                 XREF[1]:     00408cf5(j)
-//                              aibldmod.cpp:85 (13)
-//         00408a0c     LEA        this=>buildCap,[ESP + 0x10]
-//         00408a10     PUSH       0x4
-//         00408a12     PUSH       this
-//         00408a13     PUSH       EBP
-//         00408a14     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              aibldmod.cpp:86 (19)
-//         00408a19     MOV        EDX,dword ptr [ESP + buildCap]
-//         00408a1d     ADD        ESP,0xc
-//         00408a20     LEA        EAX=>name[4],[ESP + 0x78]
-//         00408a24     PUSH       EDX
-//         00408a25     PUSH       EAX
-//         00408a26     PUSH       EBP
-//         00408a27     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              aibldmod.cpp:87 (7)
-//         00408a2c     MOV        this,dword ptr [ESP + buildCap]
-//         00408a30     ADD        ESP,0xc
-//                              aibldmod.cpp:89 (24)
-//         00408a33     LEA        EDX=>permanentSkip,[ESP + 0x5c]
-//         00408a37     PUSH       0x4
-//         00408a39     PUSH       EDX
-//         00408a3a     PUSH       EBP
-//         00408a3b     MOV        byte ptr [ESP + this->_padding_*0x1 + 0x84],0x0
-//         00408a43     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00408a48     ADD        ESP,0xc
-//                              aibldmod.cpp:91 (16)
-//         00408a4b     LEA        EAX=>xSize,[ESP + 0x30]
-//         00408a4f     PUSH       0x4
-//         00408a51     PUSH       EAX
-//         00408a52     PUSH       EBP
-//         00408a53     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00408a58     ADD        ESP,0xc
-//                              aibldmod.cpp:93 (16)
-//         00408a5b     LEA        this=>y,[ESP + 0x3c]
-//         00408a5f     PUSH       0x4
-//         00408a61     PUSH       this
-//         00408a62     PUSH       EBP
-//         00408a63     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00408a68     ADD        ESP,0xc
-//                              aibldmod.cpp:95 (16)
-//         00408a6b     LEA        EDX=>uniqueID,[ESP + 0x38]
-//         00408a6f     PUSH       0x4
-//         00408a71     PUSH       EDX
-//         00408a72     PUSH       EBP
-//         00408a73     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00408a78     ADD        ESP,0xc
-//                              aibldmod.cpp:97 (16)
-//         00408a7b     LEA        EAX=>buildCategory,[ESP + 0x40]
-//         00408a7f     PUSH       0x4
-//         00408a81     PUSH       EAX
-//         00408a82     PUSH       EBP
-//         00408a83     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00408a88     ADD        ESP,0xc
-//                              aibldmod.cpp:99 (16)
-//         00408a8b     LEA        this=>terrainAdjTwo,[ESP + 0x48]
-//         00408a8f     PUSH       0x4
-//         00408a91     PUSH       this
-//         00408a92     PUSH       EBP
-//         00408a93     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00408a98     ADD        ESP,0xc
-//                              aibldmod.cpp:101 (16)
-//         00408a9b     LEA        EDX=>x,[ESP + 0x34]
-//         00408a9f     PUSH       0x4
-//         00408aa1     PUSH       EDX
-//         00408aa2     PUSH       EBP
-//         00408aa3     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00408aa8     ADD        ESP,0xc
-//                              aibldmod.cpp:103 (16)
-//         00408aab     LEA        EAX=>numberSkipCycles,[ESP + 0x54]
-//         00408aaf     PUSH       0x4
-//         00408ab1     PUSH       EAX
-//         00408ab2     PUSH       EBP
-//         00408ab3     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00408ab8     ADD        ESP,0xc
-//                              aibldmod.cpp:105 (16)
-//         00408abb     LEA        this=>gameID,[ESP + 0x2c]
-//         00408abf     PUSH       0x4
-//         00408ac1     PUSH       this
-//         00408ac2     PUSH       EBP
-//         00408ac3     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00408ac8     ADD        ESP,0xc
-//                              aibldmod.cpp:107 (16)
-//         00408acb     LEA        EDX=>zSize,[ESP + 0x28]
-//         00408acf     PUSH       0x4
-//         00408ad1     PUSH       EDX
-//         00408ad2     PUSH       EBP
-//         00408ad3     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00408ad8     ADD        ESP,0xc
-//                              aibldmod.cpp:112 (16)
-//         00408adb     LEA        EAX=>z,[ESP + 0x44]
-//         00408adf     PUSH       0x4
-//         00408ae1     PUSH       EAX
-//         00408ae2     PUSH       EBP
-//         00408ae3     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00408ae8     ADD        ESP,0xc
-//                              aibldmod.cpp:114 (16)
-//         00408aeb     LEA        this=>buildAttemptsValue,[ESP + 0x1c]
-//         00408aef     PUSH       0x4
-//         00408af1     PUSH       this
-//         00408af2     PUSH       EBP
-//         00408af3     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00408af8     ADD        ESP,0xc
-//                              aibldmod.cpp:116 (16)
-//         00408afb     LEA        EDX=>inProgressValue,[ESP + 0x18]
-//         00408aff     PUSH       0x4
-//         00408b01     PUSH       EDX
-//         00408b02     PUSH       EBP
-//         00408b03     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00408b08     ADD        ESP,0xc
-//                              aibldmod.cpp:118 (16)
-//         00408b0b     LEA        EAX=>terrainAdjOne,[ESP + 0x20]
-//         00408b0f     PUSH       0x4
-//         00408b11     PUSH       EAX
-//         00408b12     PUSH       EBP
-//         00408b13     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00408b18     ADD        ESP,0xc
-//                              aibldmod.cpp:120 (16)
-//         00408b1b     LEA        this=>local_11c,[ESP + 0x6c]
-//         00408b1f     PUSH       0x4
-//         00408b21     PUSH       this
-//         00408b22     PUSH       EBP
-//         00408b23     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00408b28     ADD        ESP,0xc
-//                              aibldmod.cpp:122 (16)
-//         00408b2b     LEA        EDX=>placeOnElevation,[ESP + 0x64]
-//         00408b2f     PUSH       0x4
-//         00408b31     PUSH       EDX
-//         00408b32     PUSH       EBP
-//         00408b33     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00408b38     ADD        ESP,0xc
-//                              aibldmod.cpp:124 (16)
-//         00408b3b     LEA        EAX=>skipValue,[ESP + 0x24]
-//         00408b3f     PUSH       0x4
-//         00408b41     PUSH       EAX
-//         00408b42     PUSH       EBP
-//         00408b43     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00408b48     ADD        ESP,0xc
-//                              aibldmod.cpp:126 (16)
-//         00408b4b     LEA        this=>numberBuilds,[ESP + 0x4c]
-//         00408b4f     PUSH       0x4
-//         00408b51     PUSH       this
-//         00408b52     PUSH       EBP
-//         00408b53     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00408b58     ADD        ESP,0xc
-//                              aibldmod.cpp:128 (16)
-//         00408b5b     LEA        EDX=>buildFrom,[ESP + 0x68]
-//         00408b5f     PUSH       0x4
-//         00408b61     PUSH       EDX
-//         00408b62     PUSH       EBP
-//         00408b63     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00408b68     ADD        ESP,0xc
-//                              aibldmod.cpp:130 (13)
-//         00408b6b     LEA        EAX=>ySize,[ESP + 0x50]
-//         00408b6f     PUSH       0x4
-//         00408b71     PUSH       EAX
-//         00408b72     PUSH       EBP
-//         00408b73     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              aibldmod.cpp:132 (30)
-//         00408b78     FLD        float ptr [save_game_version]                    = 7.23
-//         00408b7e     FCOMP      float ptr [DAT_0056e788]                         = CDh
-//         00408b84     ADD        ESP,0xc
-//         00408b87     MOV        dword ptr [ESP + builtValue],0xffffffff
-//         00408b8f     FNSTSW     AX
-//         00408b91     TEST       AH,0x1
-//         00408b94     JNZ        LAB_00408ba6
-//                              aibldmod.cpp:133 (16)
-//         00408b96     LEA        this=>builtValue,[ESP + 0x14]
-//         00408b9a     PUSH       0x4
-//         00408b9c     PUSH       this
-//         00408b9d     PUSH       EBP
-//         00408b9e     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00408ba3     ADD        ESP,0xc
-//                               LAB_00408ba6                                                 XREF[1]:     00408b94(j)
-//                              aibldmod.cpp:135 (16)
-//         00408ba6     LEA        EDX=>typeID,[ESP + 0x58]
-//         00408baa     PUSH       0x4
-//         00408bac     PUSH       EDX
-//         00408bad     PUSH       EBP
-//         00408bae     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00408bb3     ADD        ESP,0xc
-//                              aibldmod.cpp:137 (16)
-//         00408bb6     LEA        EAX=>terrainSet,[ESP + 0x60]
-//         00408bba     PUSH       0x1
-//         00408bbc     PUSH       EAX
-//         00408bbd     PUSH       EBP
-//         00408bbe     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00408bc3     ADD        ESP,0xc
-//                              aibldmod.cpp:142 (115)
-//         00408bc6     PUSH       0xb0
-//         00408bcb     CALL       operator_new                                     void * operator_new(uint param_1)
-//         00408bd0     ADD        ESP,0x4
-//         00408bd3     MOV        dword ptr [ESP + name[0]],EAX
-//         00408bd7     TEST       EAX,EAX
-//         00408bd9     MOV        byte ptr [ESP + local_4],0x3
-//         00408be1     JZ         LAB_00408c37
-//         00408be3     MOV        this,dword ptr [ESP + buildFrom]
-//         00408be7     MOV        EDX,dword ptr [ESP + numberBuilds]
-//         00408beb     PUSH       this
-//         00408bec     MOV        this,dword ptr [ESP + skipValue]
-//         00408bf0     PUSH       EDX
-//         00408bf1     MOV        EDX,dword ptr [ESP + placeOnElevation]
-//         00408bf5     PUSH       this
-//         00408bf6     MOV        this,dword ptr [ESP + gameID]
-//         00408bfa     PUSH       EDX
-//         00408bfb     MOV        EDX,dword ptr [ESP + numberSkipCycles]
-//         00408bff     PUSH       this
-//         00408c00     MOV        this,dword ptr [ESP + x]
-//         00408c04     PUSH       EDX
-//         00408c05     PUSH       this
-//         00408c06     MOV        this,dword ptr [ESP + local_11c]
-//         00408c0d     LEA        EDX=>name[4],[ESP + 0x94]
-//         00408c14     PUSH       EDX
-//         00408c15     MOV        EDX,dword ptr [ESP + y]
-//         00408c19     PUSH       this
-//         00408c1a     MOV        this,dword ptr [ESP + permanentSkip]
-//         00408c21     PUSH       0x0
-//         00408c23     PUSH       0x1
-//         00408c25     PUSH       EDX
-//         00408c26     MOV        EDX,dword ptr [ESP + z]
-//         00408c2a     PUSH       this
-//         00408c2b     PUSH       EDX
-//         00408c2c     MOV        this,EAX
-//         00408c2e     CALL       BuildItem::BuildItem                             undefined BuildItem(BuildItem * this, int par
-//         00408c33     MOV        ESI,EAX
-//         00408c35     JMP        LAB_00408c39
-//                               LAB_00408c37                                                 XREF[1]:     00408be1(j)
-//         00408c37     XOR        ESI,ESI
-//                               LAB_00408c39                                                 XREF[1]:     00408c35(j)
-//                              aibldmod.cpp:143 (20)
-//         00408c39     MOV        EAX,dword ptr [ESP + inProgressValue]
-//         00408c3d     MOV        this,ESI
-//         00408c3f     PUSH       EAX
-//         00408c40     MOV        byte ptr [ESP + local_4],0x2
-//         00408c48     CALL       BuildItem::setBuilt                              void setBuilt(BuildItem * this, int param_1)
-//                              aibldmod.cpp:144 (12)
-//         00408c4d     MOV        this,dword ptr [ESP + buildAttemptsValue]
-//         00408c51     PUSH       this
-//         00408c52     MOV        this,ESI
-//         00408c54     CALL       BuildItem::setInProgress                         void setInProgress(BuildItem * this, int para
-//                              aibldmod.cpp:145 (12)
-//         00408c59     MOV        EDX,dword ptr [ESP + terrainAdjOne]
-//         00408c5d     MOV        this,ESI
-//         00408c5f     PUSH       EDX
-//         00408c60     CALL       BuildItem::setBuildAttempts                      void setBuildAttempts(BuildItem * this, int p
-//                              aibldmod.cpp:146 (12)
-//         00408c65     MOV        EAX,dword ptr [ESP + zSize]
-//         00408c69     MOV        this,ESI
-//         00408c6b     PUSH       EAX
-//         00408c6c     CALL       BaseItem::setSkip                                void setSkip(BaseItem * this, int param_1)
-//                              aibldmod.cpp:147 (12)
-//         00408c71     MOV        this,dword ptr [ESP + xSize]
-//         00408c75     PUSH       this
-//         00408c76     MOV        this,ESI
-//         00408c78     CALL       BaseItem::setGameID                              void setGameID(BaseItem * this, int param_1)
-//                              aibldmod.cpp:148 (12)
-//         00408c7d     MOV        EDX,dword ptr [ESP + uniqueID]
-//         00408c81     MOV        this,ESI
-//         00408c83     PUSH       EDX
-//         00408c84     CALL       BaseItem::setX                                   void setX(BaseItem * this, float param_1)
-//                              aibldmod.cpp:149 (12)
-//         00408c89     MOV        EAX,dword ptr [ESP + buildCategory]
-//         00408c8d     MOV        this,ESI
-//         00408c8f     PUSH       EAX
-//         00408c90     CALL       BaseItem::setY                                   void setY(BaseItem * this, float param_1)
-//                              aibldmod.cpp:150 (12)
-//         00408c95     MOV        this,dword ptr [ESP + terrainAdjTwo]
-//         00408c99     PUSH       this
-//         00408c9a     MOV        this,ESI
-//         00408c9c     CALL       BaseItem::setZ                                   void setZ(BaseItem * this, float param_1)
-//                              aibldmod.cpp:151 (12)
-//         00408ca1     MOV        EDX,dword ptr [ESP + ySize]
-//         00408ca5     MOV        this,ESI
-//         00408ca7     PUSH       EDX
-//         00408ca8     CALL       BuildItem::setNumberBuilds                       void setNumberBuilds(BuildItem * this, int pa
-//                              aibldmod.cpp:152 (12)
-//         00408cad     MOV        EAX,dword ptr [ESP + builtValue]
-//         00408cb1     MOV        this,ESI
-//         00408cb3     PUSH       EAX
-//         00408cb4     CALL       BuildItem::setBuildCap                           void setBuildCap(BuildItem * this, int param_1)
-//                              aibldmod.cpp:153 (12)
-//         00408cb9     MOV        this,dword ptr [ESP + typeID]
-//         00408cbd     PUSH       this
-//         00408cbe     MOV        this,ESI
-//         00408cc0     CALL       BuildItem::setSkipCycles                         void setSkipCycles(BuildItem * this, int para
-//                              aibldmod.cpp:154 (12)
-//         00408cc5     MOV        EDX,dword ptr [ESP + terrainSet]
-//         00408cc9     MOV        this,ESI
-//         00408ccb     PUSH       EDX
-//         00408ccc     CALL       BuildItem::setPermanentSkip                      void setPermanentSkip(BuildItem * this, uchar
-//                              aibldmod.cpp:157 (10)
-//         00408cd1     LEA        EAX,[EBX + 0xf0]
-//         00408cd7     INC        EDI
-//         00408cd8     MOV        dword ptr [ESI + 0x6c],EAX
-//                              aibldmod.cpp:158 (9)
-//         00408cdb     MOV        EAX,dword ptr [EBX + 0x160]
-//         00408ce1     MOV        dword ptr [ESI + 0x70],EAX
-//                              aibldmod.cpp:159 (11)
-//         00408ce4     MOV        dword ptr [EAX + 0x6c],ESI
-//         00408ce7     MOV        EAX,dword ptr [EBX + 0x1a0]
-//         00408ced     CMP        EDI,EAX
-//                              aibldmod.cpp:160 (12)
-//         00408cef     MOV        dword ptr [EBX + 0x160],ESI
-//         00408cf5     JL         LAB_00408a0c
-//                               LAB_00408cfb                                                 XREF[1]:     00408a06(j)
-//                              aibldmod.cpp:175 (29)
-//         00408cfb     MOV        this,dword ptr [ESP + local_c]
-//         00408d02     POP        EDI
-//         00408d03     POP        ESI
-//         00408d04     MOV        EAX,EBX
-//         00408d06     POP        EBP
-//         00408d07     MOV        dword ptr FS:[0x0],this
-//         00408d0e     POP        EBX
-//         00408d0f     ADD        ESP,0x178
-//         00408d15     RET        0x8
-//         00408d18     ??         90h
-//         00408d19     NOP
-//         00408d1a     NOP
-//         00408d1b     NOP
-//         00408d1c     NOP
-//         00408d1d     NOP
-//         00408d1e     NOP
-//         00408d1f     NOP
+//         0040876d     NOT        this
+//         0040876f     SUB        EDI,this
+//         00408771     MOV        EAX,this
+//         00408773     MOV        ESI,EDI
+//         00408775     MOV        EDI,EDX
+//                              aibldmod.cpp:40 (40)
+//         00408777     LEA        EDX,[EBX + 0x3a6]
+//         0040877d     SHR        this,0x2
+//         00408780     MOVSD.REP  ES:EDI,ESI
+//         00408782     MOV        this,EAX
+//         00408784     XOR        EAX,EAX
+//         00408786     AND        this,0x3
+//         00408789     MOVSB.REP  ES:EDI,ESI
+//         0040878b     MOV        EDI,s_None                                       = 4Eh
+//         00408790     OR         this,0xffffffff
+//         00408793     SCASB.RE   ES:EDI=>s_None                                   = 4Eh
+//                                                                                  = 00656e6f
+//         00408795     NOT        this
+//         00408797     SUB        EDI,this
+//         00408799     MOV        EAX,this
+//         0040879b     MOV        ESI,EDI
+//         0040879d     MOV        EDI,EDX
+//                              aibldmod.cpp:41 (47)
+//         0040879f     LEA        EDX,[EBX + 0x4a7]
+//         004087a5     SHR        this,0x2
+//         004087a8     MOVSD.REP  ES:EDI,ESI
+//         004087aa     MOV        this,EAX
+//         004087ac     XOR        EAX,EAX
+//         004087ae     AND        this,0x3
+//         004087b1     MOVSB.REP  ES:EDI,ESI
+//         004087b3     MOV        EDI,s_None                                       = 4Eh
+//         004087b8     OR         this,0xffffffff
+//         004087bb     SCASB.RE   ES:EDI=>s_None                                   = 4Eh
+//                                                                                  = 00656e6f
+//         004087bd     NOT        this
+//         004087bf     SUB        EDI,this
+//         004087c1     MOV        EAX,this
+//         004087c3     MOV        ESI,EDI
+//         004087c5     MOV        EDI,EDX
+//         004087c7     SHR        this,0x2
+//         004087ca     MOVSD.REP  ES:EDI,ESI
+//         004087cc     MOV        this,EAX
+//                              aibldmod.cpp:42 (27)
+//         004087ce     MOV        EAX,EBX
+//         004087d0     AND        this,0x3
+//         004087d3     MOVSB.REP  ES:EDI,ESI
+//         004087d5     MOV        this,dword ptr [ESP + local_c]
+//         004087d9     POP        EDI
+//         004087da     POP        ESI
+//         004087db     MOV        dword ptr FS:[0x0],this
+//         004087e2     POP        EBX
+//         004087e3     ADD        ESP,0x10
+//         004087e6     RET        0x8
+//         004087e9     ??         90h
+//         004087ea     NOP
+//         004087eb     NOP
+//         004087ec     NOP
+//         004087ed     NOP
+//         004087ee     NOP
+//         004087ef     NOP
 }
 
 BuildAIModule::BuildAIModule(int param_1, int param_2) {

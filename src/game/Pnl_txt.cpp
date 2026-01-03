@@ -146,105 +146,116 @@ long TTextPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long p
 //                              long __thiscall setup(TTextPanel * this, TDrawArea * param_1, TPanel
 //              long              EAX:4          <RETURN>
 //              TTextPanel *      ECX:4 (auto)   this
-//              TDrawArea *       Stack[0x4]:4   param_1                   XREF[1]:     0047c30c(R)
-//              TPanel *          Stack[0x8]:4   param_2                   XREF[1]:     0047c307(R)
-//              long              Stack[0xc]:4   param_3                   XREF[1]:     0047c302(R)
-//              long              Stack[0x10]:4  param_4                   XREF[1]:     0047c2f4(R)
-//              long              Stack[0x14]:4  param_5                   XREF[1]:     0047c2fb(R)
-//              long              Stack[0x18]:4  param_6                   XREF[1]:     0047c2f0(R)
+//              TDrawArea *       Stack[0x4]:4   param_1                   XREF[1]:     0047c13c(R)
+//              TPanel *          Stack[0x8]:4   param_2                   XREF[1]:     0047c137(R)
+//              long              Stack[0xc]:4   param_3                   XREF[1]:     0047c132(R)
+//              long              Stack[0x10]:4  param_4                   XREF[1]:     0047c124(R)
+//              long              Stack[0x14]:4  param_5                   XREF[1]:     0047c12b(R)
+//              long              Stack[0x18]:4  param_6                   XREF[1]:     0047c120(R)
 //              void *            Stack[0x1c]:4  param_7
 //              long              Stack[0x20]:4  param_8
 //              long              Stack[0x24]:4  param_9
 //              char *            Stack[0x28]:4  param_10
-//              int               Stack[0x2c]:4  param_11                  XREF[1]:     0047c31a(R)
-//              uchar             Stack[0x30]:1  param_12                  XREF[1]:     0047c31e(R)
-//              int               Stack[0x34]:4  param_13                  XREF[1]:     0047c32c(R)
-//              uchar             Stack[0x38]:1  param_14                  XREF[1]:     0047c322(R)
-//              short             Stack[0x3c]:2  param_15                  XREF[1]:     0047c336(R)
-//              char * *          Stack[0x40]:4  param_16                  XREF[1]:     0047c360(R)
-//              short             Stack[0x44]:2  param_17                  XREF[1]:     0047c35c(R)
-//                               ?setup@TTextPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAXJJPA  XREF[2]:     create_list:0046982d(c),
-//                               TTextPanel::setup                                                         setup:00474222(c)
-//                              Pnl_txt.cpp:161 (42)
-//         0047c2f0     MOV        EAX,dword ptr [ESP + param_6]
-//         0047c2f4     MOV        EDX,dword ptr [ESP + param_4]
-//         0047c2f8     PUSH       ESI
-//         0047c2f9     MOV        ESI,this
-//         0047c2fb     MOV        this,dword ptr [ESP + param_5]
-//         0047c2ff     PUSH       0x0
-//         0047c301     PUSH       EAX
-//         0047c302     MOV        EAX,dword ptr [ESP + param_3]
-//         0047c306     PUSH       this
-//         0047c307     MOV        this,dword ptr [ESP + param_2]
-//         0047c30b     PUSH       EDX
-//         0047c30c     MOV        EDX,dword ptr [ESP + param_1]
-//         0047c310     PUSH       EAX
-//         0047c311     PUSH       this
-//         0047c312     PUSH       EDX
-//         0047c313     MOV        this,ESI
-//         0047c315     CALL       TPanel::setup                                    long setup(TPanel * this, TDrawArea * param_1
-//                              Pnl_txt.cpp:164 (4)
-//         0047c31a     MOV        EAX,dword ptr [ESP + param_11]
-//                              Pnl_txt.cpp:165 (4)
-//         0047c31e     MOV        this,byte ptr [ESP + param_12]
-//                              Pnl_txt.cpp:167 (20)
-//         0047c322     MOV        DL,byte ptr [ESP + param_14]
-//         0047c326     MOV        dword ptr [ESI + 0x14c],EAX
-//         0047c32c     MOV        EAX,dword ptr [ESP + param_13]
-//         0047c330     MOV        byte ptr [ESI + 0x150],this
-//                              Pnl_txt.cpp:168 (11)
-//         0047c336     MOV        this,word ptr [ESP + param_15]
-//         0047c33b     MOV        dword ptr [ESI + 0x154],EAX
-//                              Pnl_txt.cpp:170 (17)
-//         0047c341     TEST       EAX,EAX
-//         0047c343     MOV        byte ptr [ESI + 0x158],DL
-//         0047c349     MOV        word ptr [ESI + 0x138],this
-//         0047c350     JZ         LAB_0047c35c
-//                              Pnl_txt.cpp:171 (10)
-//         0047c352     MOV        dword ptr [ESI + 0x170],0x1
-//                               LAB_0047c35c                                                 XREF[1]:     0047c350(j)
-//                              Pnl_txt.cpp:173 (20)
-//         0047c35c     MOV        EAX,dword ptr [ESP + param_17]
-//         0047c360     MOV        this,dword ptr [ESP + param_16]
-//         0047c364     MOV        EDX,dword ptr [ESI]
-//         0047c366     PUSH       EAX
-//         0047c367     PUSH       this
-//         0047c368     MOV        this,ESI
-//         0047c36a     CALL       dword ptr [EDX + 0xe0]
-//                              Pnl_txt.cpp:174 (22)
-//         0047c370     MOV        EDX,dword ptr [ESP + 0x28]
-//         0047c374     MOV        EAX,dword ptr [ESP + 0x24]
-//         0047c378     MOV        this,dword ptr [ESP + 0x20]
-//         0047c37c     PUSH       EDX
-//         0047c37d     PUSH       EAX=>DAT_fffffff8
-//         0047c37e     PUSH       this=>DAT_fffffff4
-//         0047c37f     MOV        this,ESI
-//         0047c381     CALL       TTextPanel::set_font                             void set_font(TTextPanel * this, void * param
-//                              Pnl_txt.cpp:175 (11)
-//         0047c386     PUSH       0x1
-//         0047c388     PUSH       offset DAT_fffffff8
-//         0047c38a     MOV        this,ESI
-//         0047c38c     CALL       TTextPanel::set_alignment                        void set_alignment(TTextPanel * this, Alignme
-//                              Pnl_txt.cpp:176 (12)
-//         0047c391     MOV        EDX,dword ptr [ESP + 0x2c]
-//         0047c395     MOV        this,ESI
-//         0047c397     PUSH       EDX
-//         0047c398     CALL       TTextPanel::set_back_pic                         void set_back_pic(TTextPanel * this, char * p
-//                              Pnl_txt.cpp:178 (5)
-//         0047c39d     MOV        EAX,0x1
-//                              Pnl_txt.cpp:179 (4)
-//         0047c3a2     POP        ESI
-//         0047c3a3     RET        0x44
-//         0047c3a6     ??         90h
-//         0047c3a7     NOP
-//         0047c3a8     NOP
-//         0047c3a9     NOP
-//         0047c3aa     NOP
-//         0047c3ab     NOP
-//         0047c3ac     NOP
-//         0047c3ad     NOP
-//         0047c3ae     NOP
-//         0047c3af     NOP
+//              int               Stack[0x2c]:4  param_11                  XREF[1]:     0047c14a(R)
+//              uchar             Stack[0x30]:1  param_12                  XREF[1]:     0047c14e(R)
+//              int               Stack[0x34]:4  param_13                  XREF[1]:     0047c15c(R)
+//              uchar             Stack[0x38]:1  param_14                  XREF[1]:     0047c152(R)
+//              short             Stack[0x3c]:2  param_15                  XREF[1]:     0047c166(R)
+//              char *            Stack[0x40]:4  param_16                  XREF[1]:     0047c18c(R)
+//                               ?setup@TTextPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAXJJPA  XREF[11]:    create_text:00468da6(c),
+//                               TTextPanel::setup                                                         create_text:00468f46(c),
+//                                                                                                         setup:0047411c(c),
+//                                                                                                         setup:00476de5(c),
+//                                                                                                         TScrollTextPanel:00492ef1(c),
+//                                                                                                         TribeEndScreen:00493942(c),
+//                                                                                                         TribeEndScreen:00493a40(c),
+//                                                                                                         TRIBE_Screen_Game:00494e78(c),
+//                                                                                                         TRIBE_Screen_Game:00494f39(c),
+//                                                                                                         TribeSelectTribeScreen:004b7851(c)
+//                                                                                                         TribeSelectTribeScreen:004b7b1a(c)
+//                              Pnl_txt.cpp:102 (42)
+//         0047c120     MOV        EAX,dword ptr [ESP + param_6]
+//         0047c124     MOV        EDX,dword ptr [ESP + param_4]
+//         0047c128     PUSH       ESI
+//         0047c129     MOV        ESI,this
+//         0047c12b     MOV        this,dword ptr [ESP + param_5]
+//         0047c12f     PUSH       0x0
+//         0047c131     PUSH       EAX
+//         0047c132     MOV        EAX,dword ptr [ESP + param_3]
+//         0047c136     PUSH       this
+//         0047c137     MOV        this,dword ptr [ESP + param_2]
+//         0047c13b     PUSH       EDX
+//         0047c13c     MOV        EDX,dword ptr [ESP + param_1]
+//         0047c140     PUSH       EAX
+//         0047c141     PUSH       this
+//         0047c142     PUSH       EDX
+//         0047c143     MOV        this,ESI
+//         0047c145     CALL       TPanel::setup                                    long setup(TPanel * this, TDrawArea * param_1
+//                              Pnl_txt.cpp:105 (4)
+//         0047c14a     MOV        EAX,dword ptr [ESP + param_11]
+//                              Pnl_txt.cpp:106 (4)
+//         0047c14e     MOV        this,byte ptr [ESP + param_12]
+//                              Pnl_txt.cpp:108 (20)
+//         0047c152     MOV        DL,byte ptr [ESP + param_14]
+//         0047c156     MOV        dword ptr [ESI + 0x14c],EAX
+//         0047c15c     MOV        EAX,dword ptr [ESP + param_13]
+//         0047c160     MOV        byte ptr [ESI + 0x150],this
+//                              Pnl_txt.cpp:109 (11)
+//         0047c166     MOV        this,word ptr [ESP + param_15]
+//         0047c16b     MOV        dword ptr [ESI + 0x154],EAX
+//                              Pnl_txt.cpp:111 (17)
+//         0047c171     TEST       EAX,EAX
+//         0047c173     MOV        byte ptr [ESI + 0x158],DL
+//         0047c179     MOV        word ptr [ESI + 0x138],this
+//         0047c180     JZ         LAB_0047c18c
+//                              Pnl_txt.cpp:112 (10)
+//         0047c182     MOV        dword ptr [ESI + 0x170],0x1
+//                               LAB_0047c18c                                                 XREF[1]:     0047c180(j)
+//                              Pnl_txt.cpp:114 (15)
+//         0047c18c     MOV        EAX,dword ptr [ESP + param_16]
+//         0047c190     MOV        EDX,dword ptr [ESI]
+//         0047c192     PUSH       EAX
+//         0047c193     MOV        this,ESI
+//         0047c195     CALL       dword ptr [EDX + 0xe8]
+//                              Pnl_txt.cpp:115 (22)
+//         0047c19b     MOV        this,dword ptr [ESP + 0x28]
+//         0047c19f     MOV        EDX,dword ptr [ESP + 0x24]
+//         0047c1a3     MOV        EAX,dword ptr [ESP + 0x20]
+//         0047c1a7     PUSH       this
+//         0047c1a8     PUSH       EDX=>DAT_fffffff8
+//         0047c1a9     PUSH       EAX=>DAT_fffffff4
+//         0047c1aa     MOV        this,ESI
+//         0047c1ac     CALL       TTextPanel::set_font                             void set_font(TTextPanel * this, void * param
+//                              Pnl_txt.cpp:116 (11)
+//         0047c1b1     PUSH       0x0
+//         0047c1b3     PUSH       0x0=>DAT_fffffff8
+//         0047c1b5     MOV        this,ESI
+//         0047c1b7     CALL       TTextPanel::set_alignment                        void set_alignment(TTextPanel * this, Alignme
+//                              Pnl_txt.cpp:117 (12)
+//         0047c1bc     MOV        this,dword ptr [ESP + 0x2c]
+//         0047c1c0     PUSH       this
+//         0047c1c1     MOV        this,ESI
+//         0047c1c3     CALL       TTextPanel::set_back_pic                         void set_back_pic(TTextPanel * this, char * p
+//                              Pnl_txt.cpp:119 (5)
+//         0047c1c8     MOV        EAX,0x1
+//                              Pnl_txt.cpp:120 (4)
+//         0047c1cd     POP        ESI
+//         0047c1ce     RET        0x40
+//         0047c1d1     ??         90h
+//         0047c1d2     NOP
+//         0047c1d3     NOP
+//         0047c1d4     NOP
+//         0047c1d5     NOP
+//         0047c1d6     NOP
+//         0047c1d7     NOP
+//         0047c1d8     NOP
+//         0047c1d9     NOP
+//         0047c1da     NOP
+//         0047c1db     NOP
+//         0047c1dc     NOP
+//         0047c1dd     NOP
+//         0047c1de     NOP
+//         0047c1df     NOP
     return 0;
 }
 
@@ -253,105 +264,114 @@ long TTextPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long p
 //                              long __thiscall setup(TTextPanel * this, TDrawArea * param_1, TPanel
 //              long              EAX:4          <RETURN>
 //              TTextPanel *      ECX:4 (auto)   this
-//              TDrawArea *       Stack[0x4]:4   param_1                   XREF[1]:     0047c30c(R)
-//              TPanel *          Stack[0x8]:4   param_2                   XREF[1]:     0047c307(R)
-//              long              Stack[0xc]:4   param_3                   XREF[1]:     0047c302(R)
-//              long              Stack[0x10]:4  param_4                   XREF[1]:     0047c2f4(R)
-//              long              Stack[0x14]:4  param_5                   XREF[1]:     0047c2fb(R)
-//              long              Stack[0x18]:4  param_6                   XREF[1]:     0047c2f0(R)
-//              void *            Stack[0x1c]:4  param_7
-//              long              Stack[0x20]:4  param_8
-//              long              Stack[0x24]:4  param_9
-//              char *            Stack[0x28]:4  param_10
-//              int               Stack[0x2c]:4  param_11                  XREF[1]:     0047c31a(R)
-//              uchar             Stack[0x30]:1  param_12                  XREF[1]:     0047c31e(R)
-//              int               Stack[0x34]:4  param_13                  XREF[1]:     0047c32c(R)
-//              uchar             Stack[0x38]:1  param_14                  XREF[1]:     0047c322(R)
-//              short             Stack[0x3c]:2  param_15                  XREF[1]:     0047c336(R)
-//              char * *          Stack[0x40]:4  param_16                  XREF[1]:     0047c360(R)
-//              short             Stack[0x44]:2  param_17                  XREF[1]:     0047c35c(R)
-//                               ?setup@TTextPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAXJJPA  XREF[2]:     create_list:0046982d(c),
-//                               TTextPanel::setup                                                         setup:00474222(c)
-//                              Pnl_txt.cpp:161 (42)
-//         0047c2f0     MOV        EAX,dword ptr [ESP + param_6]
-//         0047c2f4     MOV        EDX,dword ptr [ESP + param_4]
-//         0047c2f8     PUSH       ESI
-//         0047c2f9     MOV        ESI,this
-//         0047c2fb     MOV        this,dword ptr [ESP + param_5]
-//         0047c2ff     PUSH       0x0
-//         0047c301     PUSH       EAX
-//         0047c302     MOV        EAX,dword ptr [ESP + param_3]
-//         0047c306     PUSH       this
-//         0047c307     MOV        this,dword ptr [ESP + param_2]
-//         0047c30b     PUSH       EDX
-//         0047c30c     MOV        EDX,dword ptr [ESP + param_1]
-//         0047c310     PUSH       EAX
-//         0047c311     PUSH       this
-//         0047c312     PUSH       EDX
-//         0047c313     MOV        this,ESI
-//         0047c315     CALL       TPanel::setup                                    long setup(TPanel * this, TDrawArea * param_1
-//                              Pnl_txt.cpp:164 (4)
-//         0047c31a     MOV        EAX,dword ptr [ESP + param_11]
-//                              Pnl_txt.cpp:165 (4)
-//         0047c31e     MOV        this,byte ptr [ESP + param_12]
-//                              Pnl_txt.cpp:167 (20)
-//         0047c322     MOV        DL,byte ptr [ESP + param_14]
-//         0047c326     MOV        dword ptr [ESI + 0x14c],EAX
-//         0047c32c     MOV        EAX,dword ptr [ESP + param_13]
-//         0047c330     MOV        byte ptr [ESI + 0x150],this
-//                              Pnl_txt.cpp:168 (11)
-//         0047c336     MOV        this,word ptr [ESP + param_15]
-//         0047c33b     MOV        dword ptr [ESI + 0x154],EAX
-//                              Pnl_txt.cpp:170 (17)
-//         0047c341     TEST       EAX,EAX
-//         0047c343     MOV        byte ptr [ESI + 0x158],DL
-//         0047c349     MOV        word ptr [ESI + 0x138],this
-//         0047c350     JZ         LAB_0047c35c
-//                              Pnl_txt.cpp:171 (10)
-//         0047c352     MOV        dword ptr [ESI + 0x170],0x1
-//                               LAB_0047c35c                                                 XREF[1]:     0047c350(j)
-//                              Pnl_txt.cpp:173 (20)
-//         0047c35c     MOV        EAX,dword ptr [ESP + param_17]
-//         0047c360     MOV        this,dword ptr [ESP + param_16]
-//         0047c364     MOV        EDX,dword ptr [ESI]
-//         0047c366     PUSH       EAX
-//         0047c367     PUSH       this
-//         0047c368     MOV        this,ESI
-//         0047c36a     CALL       dword ptr [EDX + 0xe0]
-//                              Pnl_txt.cpp:174 (22)
-//         0047c370     MOV        EDX,dword ptr [ESP + 0x28]
-//         0047c374     MOV        EAX,dword ptr [ESP + 0x24]
-//         0047c378     MOV        this,dword ptr [ESP + 0x20]
-//         0047c37c     PUSH       EDX
-//         0047c37d     PUSH       EAX=>DAT_fffffff8
-//         0047c37e     PUSH       this=>DAT_fffffff4
-//         0047c37f     MOV        this,ESI
-//         0047c381     CALL       TTextPanel::set_font                             void set_font(TTextPanel * this, void * param
-//                              Pnl_txt.cpp:175 (11)
-//         0047c386     PUSH       0x1
-//         0047c388     PUSH       offset DAT_fffffff8
-//         0047c38a     MOV        this,ESI
-//         0047c38c     CALL       TTextPanel::set_alignment                        void set_alignment(TTextPanel * this, Alignme
-//                              Pnl_txt.cpp:176 (12)
-//         0047c391     MOV        EDX,dword ptr [ESP + 0x2c]
-//         0047c395     MOV        this,ESI
-//         0047c397     PUSH       EDX
-//         0047c398     CALL       TTextPanel::set_back_pic                         void set_back_pic(TTextPanel * this, char * p
-//                              Pnl_txt.cpp:178 (5)
-//         0047c39d     MOV        EAX,0x1
-//                              Pnl_txt.cpp:179 (4)
-//         0047c3a2     POP        ESI
-//         0047c3a3     RET        0x44
-//         0047c3a6     ??         90h
-//         0047c3a7     NOP
-//         0047c3a8     NOP
-//         0047c3a9     NOP
-//         0047c3aa     NOP
-//         0047c3ab     NOP
-//         0047c3ac     NOP
-//         0047c3ad     NOP
-//         0047c3ae     NOP
-//         0047c3af     NOP
+//              TDrawArea *       Stack[0x4]:4   param_1                   XREF[1]:     0047c215(R)
+//              TPanel *          Stack[0x8]:4   param_2                   XREF[1]:     0047c20d(R)
+//              long              Stack[0xc]:4   param_3                   XREF[1]:     0047c205(R)
+//              long              Stack[0x10]:4  param_4                   XREF[1]:     0047c1f1(R)
+//              long              Stack[0x14]:4  param_5                   XREF[1]:     0047c1fb(R)
+//              long              Stack[0x18]:4  param_6                   XREF[1]:     0047c1ea(R)
+//              void *            Stack[0x1c]:4  param_7                   XREF[1]:     0047c285(R)
+//              long              Stack[0x20]:4  param_8                   XREF[1]:     0047c27e(R)
+//              long              Stack[0x24]:4  param_9                   XREF[1]:     0047c277(R)
+//              char *            Stack[0x28]:4  param_10                  XREF[1]:     0047c2a1(R)
+//              int               Stack[0x2c]:4  param_11                  XREF[1]:     0047c226(R)
+//              uchar             Stack[0x30]:1  param_12                  XREF[1]:     0047c22d(R)
+//              int               Stack[0x34]:4  param_13                  XREF[1]:     0047c241(R)
+//              uchar             Stack[0x38]:1  param_14                  XREF[1]:     0047c234(R)
+//              short             Stack[0x3c]:2  param_15                  XREF[1]:     0047c24e(R)
+//              long              Stack[0x40]:4  param_16                  XREF[1]:     0047c2b0(R)
+//              char[4096]        Stack[-0x100   str                       XREF[0,2]:   0047c2b7(*), 0047c2cb(*)
+//                               ?setup@TTextPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAXJJPA
+//                               TTextPanel::setup
+//                              Pnl_txt.cpp:130 (10)
+//         0047c1e0     MOV        EAX,0x1000
+//         0047c1e5     CALL       __alloca_probe                                   undefined __alloca_probe()
+//                              Pnl_txt.cpp:131 (60)
+//         0047c1ea     MOV        EAX,dword ptr [ESP + param_6]
+//         0047c1f1     MOV        EDX,dword ptr [ESP + param_4]
+//         0047c1f8     PUSH       ESI
+//         0047c1f9     MOV        ESI,this
+//         0047c1fb     MOV        this,dword ptr [ESP + param_5]
+//         0047c202     PUSH       0x0
+//         0047c204     PUSH       EAX
+//         0047c205     MOV        EAX,dword ptr [ESP + param_3]
+//         0047c20c     PUSH       this
+//         0047c20d     MOV        this,dword ptr [ESP + param_2]
+//         0047c214     PUSH       EDX
+//         0047c215     MOV        EDX,dword ptr [ESP + param_1]
+//         0047c21c     PUSH       EAX
+//         0047c21d     PUSH       this
+//         0047c21e     PUSH       EDX
+//         0047c21f     MOV        this,ESI
+//         0047c221     CALL       TPanel::setup                                    long setup(TPanel * this, TDrawArea * param_1
+//                              Pnl_txt.cpp:133 (7)
+//         0047c226     MOV        EAX,dword ptr [ESP + param_11]
+//                              Pnl_txt.cpp:134 (7)
+//         0047c22d     MOV        this,byte ptr [ESP + param_12]
+//                              Pnl_txt.cpp:136 (26)
+//         0047c234     MOV        DL,byte ptr [ESP + param_14]
+//         0047c23b     MOV        dword ptr [ESI + 0x14c],EAX
+//         0047c241     MOV        EAX,dword ptr [ESP + param_13]
+//         0047c248     MOV        byte ptr [ESI + 0x150],this
+//                              Pnl_txt.cpp:137 (14)
+//         0047c24e     MOV        this,word ptr [ESP + param_15]
+//         0047c256     MOV        dword ptr [ESI + 0x154],EAX
+//                              Pnl_txt.cpp:139 (17)
+//         0047c25c     TEST       EAX,EAX
+//         0047c25e     MOV        byte ptr [ESI + 0x158],DL
+//         0047c264     MOV        word ptr [ESI + 0x138],this
+//         0047c26b     JZ         LAB_0047c277
+//                              Pnl_txt.cpp:140 (10)
+//         0047c26d     MOV        dword ptr [ESI + 0x170],0x1
+//                               LAB_0047c277                                                 XREF[1]:     0047c26b(j)
+//                              Pnl_txt.cpp:142 (31)
+//         0047c277     MOV        EDX,dword ptr [ESP + param_9]
+//         0047c27e     MOV        EAX,dword ptr [ESP + param_8]
+//         0047c285     MOV        this,dword ptr [ESP + param_7]
+//         0047c28c     PUSH       EDX
+//         0047c28d     PUSH       EAX
+//         0047c28e     PUSH       this
+//         0047c28f     MOV        this,ESI
+//         0047c291     CALL       TTextPanel::set_font                             void set_font(TTextPanel * this, void * param
+//                              Pnl_txt.cpp:143 (11)
+//         0047c296     PUSH       0x0
+//         0047c298     PUSH       0x0
+//         0047c29a     MOV        this,ESI
+//         0047c29c     CALL       TTextPanel::set_alignment                        void set_alignment(TTextPanel * this, Alignme
+//                              Pnl_txt.cpp:144 (15)
+//         0047c2a1     MOV        EDX,dword ptr [ESP + param_10]
+//         0047c2a8     MOV        this,ESI
+//         0047c2aa     PUSH       EDX
+//         0047c2ab     CALL       TTextPanel::set_back_pic                         void set_back_pic(TTextPanel * this, char * p
+//                              Pnl_txt.cpp:147 (25)
+//         0047c2b0     MOV        this,dword ptr [ESP + param_16]
+//         0047c2b7     LEA        EAX=>str[4],[ESP + 0x4]
+//         0047c2bb     PUSH       0x1000
+//         0047c2c0     PUSH       EAX
+//         0047c2c1     PUSH       this
+//         0047c2c2     MOV        this,ESI
+//         0047c2c4     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
+//                              Pnl_txt.cpp:148 (15)
+//         0047c2c9     MOV        EDX,dword ptr [ESI]
+//         0047c2cb     LEA        EAX=>str[4],[ESP + 0x4]
+//         0047c2cf     PUSH       EAX
+//         0047c2d0     MOV        this,ESI
+//         0047c2d2     CALL       dword ptr [EDX + 0xe8]
+//                              Pnl_txt.cpp:150 (5)
+//         0047c2d8     MOV        EAX,0x1
+//                              Pnl_txt.cpp:151 (10)
+//         0047c2dd     POP        ESI
+//         0047c2de     ADD        ESP,0x1000
+//         0047c2e4     RET        0x40
+//         0047c2e7     ??         90h
+//         0047c2e8     NOP
+//         0047c2e9     NOP
+//         0047c2ea     NOP
+//         0047c2eb     NOP
+//         0047c2ec     NOP
+//         0047c2ed     NOP
+//         0047c2ee     NOP
+//         0047c2ef     NOP
     return 0;
 }
 
@@ -1241,141 +1261,678 @@ int TTextPanel::word_wrap_append(char* param_1) {
 
 void TTextPanel::set_text(char* param_1) {
     /* TODO: Stub */
-//                              void __thiscall set_text(TTextPanel * this, char * * param_1, short
+//                              void __thiscall set_text(TTextPanel * this, char * param_1)
 //              void              <VOID>         <RETURN>
 //              TTextPanel *      ECX:4 (auto)   this
-//              char * *          Stack[0x4]:4   param_1                   XREF[1]:     0047cae3(R)
-//              short             Stack[0x8]:2   param_2                   XREF[1]:     0047caba(R)
-//                               ?set_text@TTextPanel@@UAEXPAPADF@Z                           XREF[3]:     00571658(*), 00571cd8(*),
-//                               TTextPanel::set_text                                                      00572958(*)
-//                              Pnl_txt.cpp:576 (5)
-//         0047cab0     PUSH       EBX
-//         0047cab1     PUSH       ESI
-//         0047cab2     PUSH       EDI
-//         0047cab3     MOV        EDI,this
-//                              Pnl_txt.cpp:580 (5)
-//         0047cab5     CALL       TTextPanel::free_text                            void free_text(TTextPanel * this)
-//                              Pnl_txt.cpp:582 (10)
-//         0047caba     MOV        AX,word ptr [ESP + param_2]
-//         0047cabf     TEST       AX,AX
-//         0047cac2     JNZ        LAB_0047cae1
-//                              Pnl_txt.cpp:584 (9)
-//         0047cac4     CMP        word ptr [EDI + 0x138],AX
-//         0047cacb     JZ         LAB_0047cafc
-//                              Pnl_txt.cpp:585 (14)
-//         0047cacd     PUSH       0x0
-//         0047cacf     PUSH       s_                                               = ""
-//         0047cad4     MOV        this,EDI
-//         0047cad6     CALL       TTextPanel::append_line                          int append_line(TTextPanel * this, char * par
-//                              Pnl_txt.cpp:592 (6)
-//         0047cadb     POP        EDI
-//         0047cadc     POP        ESI
-//         0047cadd     POP        EBX
-//         0047cade     RET        0x8
-//                               LAB_0047cae1                                                 XREF[1]:     0047cac2(j)
-//                              Pnl_txt.cpp:590 (2)
-//         0047cae1     JLE        LAB_0047cafc
-//                              Pnl_txt.cpp:592 (31)
-//         0047cae3     MOV        ESI,dword ptr [ESP + param_1]
-//         0047cae7     MOVSX      EBX,AX
-//                               LAB_0047caea                                                 XREF[1]:     0047cafa(j)
-//         0047caea     MOV        EAX,dword ptr [ESI]
-//         0047caec     PUSH       0x0
-//         0047caee     PUSH       EAX
-//         0047caef     MOV        this,EDI
-//         0047caf1     CALL       TTextPanel::append_line                          int append_line(TTextPanel * this, char * par
-//         0047caf6     ADD        ESI,0x4
-//         0047caf9     DEC        EBX
-//         0047cafa     JNZ        LAB_0047caea
-//                               LAB_0047cafc                                                 XREF[2]:     0047cacb(j), 0047cae1(j)
-//         0047cafc     POP        EDI
-//         0047cafd     POP        ESI
-//         0047cafe     POP        EBX
-//         0047caff     RET        0x8
-//         0047cb02     ??         90h
-//         0047cb03     NOP
-//         0047cb04     NOP
-//         0047cb05     NOP
-//         0047cb06     NOP
-//         0047cb07     NOP
-//         0047cb08     NOP
-//         0047cb09     NOP
-//         0047cb0a     NOP
-//         0047cb0b     NOP
-//         0047cb0c     NOP
-//         0047cb0d     NOP
-//         0047cb0e     NOP
-//         0047cb0f     NOP
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0047c571(R)
+//              uchar[256]        Stack[-0x104   temp_text                 XREF[0,2]:   0047c5ed(*), 0047c5fb(*)
+//                               ?set_text@TTextPanel@@UAEXPAD@Z                              XREF[4]:     reformat:00477eaa(c),
+//                               TTextPanel::set_text                                                      set_text:00492f88(c), 00571660(*),
+//                                                                                                         00571ce0(*)
+//                              Pnl_txt.cpp:268 (12)
+//         0047c560     SUB        ESP,0x100
+//         0047c566     PUSH       EBX
+//         0047c567     PUSH       EBP
+//         0047c568     PUSH       ESI
+//         0047c569     PUSH       EDI
+//         0047c56a     MOV        EBX,this
+//                              Pnl_txt.cpp:275 (5)
+//         0047c56c     CALL       TTextPanel::free_text                            void free_text(TTextPanel * this)
+//                              Pnl_txt.cpp:278 (11)
+//         0047c571     MOV        ESI,dword ptr [ESP + param_1]
+//         0047c578     TEST       ESI,ESI
+//         0047c57a     JNZ        LAB_0047c5a3
+//                              Pnl_txt.cpp:280 (13)
+//         0047c57c     CMP        word ptr [EBX + 0x138],SI
+//         0047c583     JZ         LAB_0047c632
+//                              Pnl_txt.cpp:281 (13)
+//         0047c589     PUSH       ESI
+//         0047c58a     PUSH       s_                                               = ""
+//         0047c58f     MOV        this,EBX
+//         0047c591     CALL       TTextPanel::append_line                          int append_line(TTextPanel * this, char * par
+//                              Pnl_txt.cpp:314 (13)
+//         0047c596     POP        EDI
+//         0047c597     POP        ESI
+//         0047c598     POP        EBP
+//         0047c599     POP        EBX
+//         0047c59a     ADD        ESP,0x100
+//         0047c5a0     RET        0x4
+//                               LAB_0047c5a3                                                 XREF[1]:     0047c57a(j)
+//                              Pnl_txt.cpp:285 (5)
+//         0047c5a3     CMP        byte ptr [ESI],0x0
+//         0047c5a6     JNZ        LAB_0047c5c3
+//                              Pnl_txt.cpp:287 (14)
+//         0047c5a8     PUSH       0x0
+//         0047c5aa     PUSH       s_                                               = ""
+//         0047c5af     MOV        this,EBX
+//         0047c5b1     CALL       TTextPanel::append_line                          int append_line(TTextPanel * this, char * par
+//                              Pnl_txt.cpp:314 (13)
+//         0047c5b6     POP        EDI
+//         0047c5b7     POP        ESI
+//         0047c5b8     POP        EBP
+//         0047c5b9     POP        EBX
+//         0047c5ba     ADD        ESP,0x100
+//         0047c5c0     RET        0x4
+//                               LAB_0047c5c3                                                 XREF[1]:     0047c5a6(j)
+//                              Pnl_txt.cpp:292 (19)
+//         0047c5c3     MOV        EAX,dword ptr [EBX + 0x118]
+//         0047c5c9     TEST       EAX,EAX
+//         0047c5cb     JNZ        LAB_0047c62a
+//         0047c5cd     CMP        dword ptr [EBX + 0x114],0x6
+//         0047c5d4     JZ         LAB_0047c62a
+//                               LAB_0047c5d6                                                 XREF[1]:     0047c611(j)
+//                              Pnl_txt.cpp:300 (13)
+//         0047c5d6     PUSH       0xa
+//         0047c5d8     PUSH       ESI
+//         0047c5d9     CALL       __mbschr                                         undefined __mbschr()
+//         0047c5de     MOV        EDI,EAX
+//         0047c5e0     ADD        ESP,0x8
+//                              Pnl_txt.cpp:301 (4)
+//         0047c5e3     TEST       EDI,EDI
+//         0047c5e5     JZ         LAB_0047c613
+//                              Pnl_txt.cpp:304 (2)
+//         0047c5e7     SUB        EAX,ESI
+//                              Pnl_txt.cpp:305 (18)
+//         0047c5e9     MOVSX      EBP,AX
+//         0047c5ec     PUSH       EBP
+//         0047c5ed     LEA        EAX=>temp_text[4],[ESP + 0x14]
+//         0047c5f1     PUSH       ESI
+//         0047c5f2     PUSH       EAX
+//         0047c5f3     CALL       strncpy                                          undefined strncpy()
+//         0047c5f8     ADD        ESP,0xc
+//                              Pnl_txt.cpp:307 (19)
+//         0047c5fb     LEA        this=>temp_text[4],[ESP + 0x10]
+//         0047c5ff     MOV        byte ptr [ESP + EBP*0x1 + 0x10],0x0
+//         0047c604     PUSH       0x0
+//         0047c606     PUSH       this
+//         0047c607     MOV        this,EBX
+//         0047c609     CALL       TTextPanel::append_line                          int append_line(TTextPanel * this, char * par
+//                              Pnl_txt.cpp:309 (5)
+//         0047c60e     LEA        ESI,[EDI + 0x1]
+//         0047c611     JMP        LAB_0047c5d6
+//                               LAB_0047c613                                                 XREF[1]:     0047c5e5(j)
+//                              Pnl_txt.cpp:312 (10)
+//         0047c613     PUSH       0x0
+//         0047c615     PUSH       ESI
+//         0047c616     MOV        this,EBX
+//         0047c618     CALL       TTextPanel::append_line                          int append_line(TTextPanel * this, char * par
+//                              Pnl_txt.cpp:314 (13)
+//         0047c61d     POP        EDI
+//         0047c61e     POP        ESI
+//         0047c61f     POP        EBP
+//         0047c620     POP        EBX
+//         0047c621     ADD        ESP,0x100
+//         0047c627     RET        0x4
+//                               LAB_0047c62a                                                 XREF[2]:     0047c5cb(j), 0047c5d4(j)
+//                              Pnl_txt.cpp:293 (8)
+//         0047c62a     PUSH       ESI
+//         0047c62b     MOV        this,EBX
+//         0047c62d     CALL       TTextPanel::word_wrap_append                     int word_wrap_append(TTextPanel * this, char
+//                               LAB_0047c632                                                 XREF[1]:     0047c583(j)
+//                              Pnl_txt.cpp:314 (13)
+//         0047c632     POP        EDI
+//         0047c633     POP        ESI
+//         0047c634     POP        EBP
+//         0047c635     POP        EBX
+//         0047c636     ADD        ESP,0x100
+//         0047c63c     RET        0x4
+//         0047c63f     ??         90h
     return;
+}
+
+int TTextPanel::word_wrap_append(char* param_1) {
+    /* TODO: Stub */
+//                              int __thiscall word_wrap_append(TTextPanel * this, char * param_1)
+//              int               EAX:4          <RETURN>
+//              TTextPanel *      ECX:4 (auto)   this
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0047c649(R)
+//              uchar[256]        Stack[-0x104   temp_text
+//              tagTEXTMETRICA    Stack[-0x13c   tm
+//              void *            Stack[-0x140   old_font
+//              int               Stack[-0x144   japanese
+//              int               Stack[-0x148   found_bad_return
+//              int               Stack[-0x14c   found_linefeed
+//              tagSIZE           Stack[-0x154   text_size
+//              uchar *           Stack[-0x158   next_char                 XREF[1]:     0047c690(W)
+//              long              Stack[-0x15c   max_wid                   XREF[1]:     0047c657(W)
+//              uchar *           Stack[-0x164   last_char
+//              int               Stack[-0x168   found_space               XREF[1]:     0047c69d(W)
+//              void *            Stack[-0x16c   dc
+//              int               Stack[-0x170   found_return
+//              int               Stack[-0x174   found_break
+//                               ?word_wrap_append@TTextPanel@@QAEHPAD@Z                      XREF[2]:     set_text:0047c62d(c),
+//                               TTextPanel::word_wrap_append                                              fillChat:004a4168(c)
+//                              Pnl_txt.cpp:320 (9)
+//         0047c640     SUB        ESP,0x170
+//         0047c646     PUSH       EBX
+//         0047c647     PUSH       EBP
+//         0047c648     PUSH       ESI
+//                              Pnl_txt.cpp:344 (18)
+//         0047c649     MOV        ESI,dword ptr [ESP + param_1]
+//         0047c650     PUSH       EDI
+//         0047c651     XOR        EBX,EBX
+//         0047c653     MOV        EDI,this
+//         0047c655     CMP        ESI,EBX
+//         0047c657     MOV        dword ptr [ESP + max_wid],EDI
+//                              Pnl_txt.cpp:345 (6)
+//         0047c65b     JZ         LAB_0047ca56
+//                              Pnl_txt.cpp:347 (3)
+//         0047c661     CMP        byte ptr [ESI],0x0
+//                              Pnl_txt.cpp:348 (6)
+//         0047c664     JZ         LAB_0047ca56
+//                              Pnl_txt.cpp:350 (8)
+//         0047c66a     CMP        dword ptr [EDI + 0x134],EBX
+//         0047c670     JZ         LAB_0047c682
+//                              Pnl_txt.cpp:351 (14)
+//         0047c672     MOV        EAX,dword ptr [EDI + 0x164]
+//         0047c678     MOV        EDX,dword ptr [EDI + 0x168]
+//         0047c67e     SUB        EAX,EDX
+//                              Pnl_txt.cpp:352 (2)
+//         0047c680     JMP        LAB_0047c685
+//                               LAB_0047c682                                                 XREF[1]:     0047c670(j)
+//                              Pnl_txt.cpp:353 (3)
+//         0047c682     MOV        EAX,dword ptr [EDI + 0x14]
+//                               LAB_0047c685                                                 XREF[1]:     0047c680(j)
+//                              Pnl_txt.cpp:356 (22)
+//         0047c685     MOV        this,dword ptr [EDI + 0x20]
+//         0047c688     SUB        EAX,0xa
+//         0047c68b     PUSH       s_pnl_txt::word_wrap_append                      = "pnl_txt::word_wrap_append"
+//         0047c690     MOV        dword ptr [ESP + next_char],EAX
+//         0047c694     CALL       TDrawArea::GetDc                                 void * GetDc(TDrawArea * this, char * param_1)
+//         0047c699     MOV        EBP,EAX
+//                              Pnl_txt.cpp:357 (8)
+//         0047c69b     CMP        EBP,EBX
+//         0047c69d     MOV        dword ptr [ESP + found_space],EBP
+//         0047c6a1     JNZ        LAB_0047c6b2
+//                              Pnl_txt.cpp:358 (2)
+//         0047c6a3     XOR        EAX,EAX
+//                              Pnl_txt.cpp:560 (13)
+//         0047c6a5     POP        EDI
+//         0047c6a6     POP        ESI
+//         0047c6a7     POP        EBP
+//         0047c6a8     POP        EBX
+//         0047c6a9     ADD        ESP,0x170
+//         0047c6af     RET        0x4
+//                               LAB_0047c6b2                                                 XREF[1]:     0047c6a1(j)
+//                              Pnl_txt.cpp:359 (14)
+//         0047c6b2     MOV        EAX,dword ptr [EDI + 0x104]
+//         0047c6b8     PUSH       EAX
+//         0047c6b9     PUSH       EBP
+//         0047c6ba     CALL       dword ptr [->GDI32.DLL::SelectObject]            = 0048b192
+//                              Pnl_txt.cpp:361 (16)
+//         0047c6c0     LEA        this,[ESP + 0x48]
+//         0047c6c4     MOV        dword ptr [ESP + 0x44],EAX
+//         0047c6c8     PUSH       this
+//         0047c6c9     PUSH       EBP
+//         0047c6ca     CALL       dword ptr [->GDI32.DLL::GetTextMetricsA]         = 0048b180
+//                              Pnl_txt.cpp:362 (15)
+//         0047c6d0     MOV        AL,byte ptr [ESP + 0x7c]
+//         0047c6d4     XOR        EDX,EDX
+//         0047c6d6     CMP        AL,0x80
+//         0047c6d8     SETZ       DL
+//         0047c6db     MOV        dword ptr [ESP + 0x40],EDX
+//                              Pnl_txt.cpp:365 (4)
+//         0047c6df     JMP        LAB_0047c6e3
+//                               LAB_0047c6e1                                                 XREF[2]:     0047ca15(j), 0047ca26(j)
+//         0047c6e1     XOR        EBX,EBX
+//                               LAB_0047c6e3                                                 XREF[1]:     0047c6df(j)
+//                              Pnl_txt.cpp:367 (6)
+//         0047c6e3     PUSH       ESI
+//         0047c6e4     CALL       __mbslen                                         undefined __mbslen()
+//                              Pnl_txt.cpp:368 (2)
+//         0047c6e9     MOV        EBP,EAX
+//                              Pnl_txt.cpp:379 (31)
+//         0047c6eb     MOV        AL,byte ptr [ESI]
+//         0047c6ed     ADD        ESP,0x4
+//         0047c6f0     CMP        AL,0xa
+//         0047c6f2     MOV        dword ptr [ESP + 0x14],EBX
+//         0047c6f6     MOV        dword ptr [ESP + 0x38],EBX
+//         0047c6fa     MOV        dword ptr [ESP + 0x1c],EBX
+//         0047c6fe     MOV        dword ptr [ESP + 0x10],EBX
+//         0047c702     MOV        dword ptr [ESP + 0x3c],EBX
+//         0047c706     MOV        EDI,ESI
+//         0047c708     JNZ        LAB_0047c717
+//                              Pnl_txt.cpp:382 (8)
+//         0047c70a     MOV        dword ptr [ESP + 0x14],0x1
+//                              Pnl_txt.cpp:384 (5)
+//         0047c712     JMP        LAB_0047c7b9
+//                               LAB_0047c717                                                 XREF[1]:     0047c708(j)
+//                              Pnl_txt.cpp:388 (16)
+//         0047c717     PUSH       ESI
+//         0047c718     MOV        EBX,0x1
+//         0047c71d     CALL       __mbsinc                                         undefined __mbsinc()
+//         0047c722     SUB        EAX,ESI
+//         0047c724     ADD        ESP,0x4
+//                              Pnl_txt.cpp:389 (21)
+//         0047c727     MOVSX      EDX,AX
+//         0047c72a     MOV        EAX,dword ptr [ESP + 0x18]
+//         0047c72e     LEA        this,[ESP + 0x30]
+//         0047c732     PUSH       this
+//         0047c733     PUSH       EDX
+//         0047c734     PUSH       ESI
+//         0047c735     PUSH       EAX
+//         0047c736     CALL       dword ptr [->GDI32.DLL::GetTextExtentPoint32A]   = 0048b328
+//                              Pnl_txt.cpp:391 (2)
+//         0047c73c     XOR        this,this
+//                              Pnl_txt.cpp:392 (23)
+//         0047c73e     CMP        BP,BX
+//         0047c741     JL         LAB_0047c7b9
+//         0047c743     JMP        LAB_0047c749
+//                               LAB_0047c745                                                 XREF[1]:     0047c79a(j)
+//         0047c745     MOV        this,dword ptr [ESP + 0x20]
+//                               LAB_0047c749                                                 XREF[1]:     0047c743(j)
+//         0047c749     MOV        EDX,dword ptr [ESP + 0x28]
+//         0047c74d     MOV        EAX,dword ptr [ESP + 0x30]
+//         0047c751     CMP        EAX,EDX
+//         0047c753     JGE        LAB_0047c7b9
+//                              Pnl_txt.cpp:394 (6)
+//         0047c755     MOV        AL,byte ptr [EDI]
+//         0047c757     CMP        AL,0xa
+//         0047c759     JZ         LAB_0047c79e
+//                              Pnl_txt.cpp:406 (4)
+//         0047c75b     CMP        AL,0xd
+//         0047c75d     JNZ        LAB_0047c767
+//                              Pnl_txt.cpp:407 (8)
+//         0047c75f     MOV        dword ptr [ESP + 0x3c],0x1
+//                               LAB_0047c767                                                 XREF[1]:     0047c75d(j)
+//                              Pnl_txt.cpp:410 (15)
+//         0047c767     PUSH       EDI
+//         0047c768     MOV        dword ptr [ESP + 0x24],EDI
+//         0047c76c     CALL       __mbsinc                                         undefined __mbsinc()
+//         0047c771     ADD        ESP,0x4
+//         0047c774     MOV        EDI,EAX
+//                              Pnl_txt.cpp:411 (1)
+//         0047c776     INC        EBX
+//                              Pnl_txt.cpp:413 (11)
+//         0047c777     PUSH       EDI
+//         0047c778     CALL       __mbsinc                                         undefined __mbsinc()
+//         0047c77d     SUB        EAX,ESI
+//         0047c77f     ADD        ESP,0x4
+//                              Pnl_txt.cpp:414 (28)
+//         0047c782     MOVSX      EDX,AX
+//         0047c785     MOV        EAX,dword ptr [ESP + 0x18]
+//         0047c789     LEA        this,[ESP + 0x30]
+//         0047c78d     PUSH       this
+//         0047c78e     PUSH       EDX
+//         0047c78f     PUSH       ESI
+//         0047c790     PUSH       EAX
+//         0047c791     CALL       dword ptr [->GDI32.DLL::GetTextExtentPoint32A]   = 0048b328
+//         0047c797     CMP        BX,BP
+//         0047c79a     JLE        LAB_0047c745
+//         0047c79c     JMP        LAB_0047c7b9
+//                               LAB_0047c79e                                                 XREF[1]:     0047c759(j)
+//                              Pnl_txt.cpp:397 (9)
+//         0047c79e     DEC        EBX
+//         0047c79f     MOV        dword ptr [ESP + 0x14],0x1
+//                              Pnl_txt.cpp:398 (9)
+//         0047c7a7     TEST       this,this
+//         0047c7a9     JZ         LAB_0047c7b9
+//         0047c7ab     CMP        byte ptr [this->_padding_],0xd
+//         0047c7ae     JNZ        LAB_0047c7b9
+//                              Pnl_txt.cpp:400 (8)
+//         0047c7b0     MOV        dword ptr [ESP + 0x38],0x1
+//                              Pnl_txt.cpp:401 (1)
+//         0047c7b8     DEC        EBX
+//                               LAB_0047c7b9                                                 XREF[6]:     0047c712(j), 0047c741(j),
+//                                                                                                         0047c753(j), 0047c79c(j),
+//                                                                                                         0047c7a9(j), 0047c7ae(j)
+//                              Pnl_txt.cpp:419 (12)
+//         0047c7b9     MOV        EAX,dword ptr [ESP + 0x14]
+//         0047c7bd     TEST       EAX,EAX
+//         0047c7bf     JNZ        LAB_0047c955
+//                              Pnl_txt.cpp:422 (7)
+//         0047c7c5     MOV        EDI,ESI
+//         0047c7c7     OR         this,0xffffffff
+//         0047c7ca     XOR        EAX,EAX
+//                              Pnl_txt.cpp:423 (28)
+//         0047c7cc     LEA        EDX,[ESP + 0x30]
+//         0047c7d0     SCASB.RE   ES:EDI
+//         0047c7d2     NOT        this
+//         0047c7d4     DEC        this
+//         0047c7d5     PUSH       EDX
+//         0047c7d6     MOVSX      EAX,this
+//         0047c7d9     MOV        this,dword ptr [ESP + 0x1c]
+//         0047c7dd     PUSH       EAX
+//         0047c7de     PUSH       ESI
+//         0047c7df     PUSH       this
+//         0047c7e0     MOV        EBX,EBP
+//         0047c7e2     CALL       dword ptr [->GDI32.DLL::GetTextExtentPoint32A]   = 0048b328
+//                              Pnl_txt.cpp:424 (16)
+//         0047c7e8     MOV        EDX,dword ptr [ESP + 0x28]
+//         0047c7ec     MOV        EAX,dword ptr [ESP + 0x30]
+//         0047c7f0     CMP        EAX,EDX
+//         0047c7f2     JLE        LAB_0047ca2b
+//                              Pnl_txt.cpp:429 (12)
+//         0047c7f8     MOV        EAX,dword ptr [ESP + 0x14]
+//         0047c7fc     TEST       EAX,EAX
+//         0047c7fe     JNZ        LAB_0047c955
+//                              Pnl_txt.cpp:433 (7)
+//         0047c804     MOV        EBX,0x1
+//         0047c809     MOV        EDI,ESI
+//                              Pnl_txt.cpp:435 (9)
+//         0047c80b     CMP        BP,BX
+//         0047c80e     MOV        dword ptr [ESP + 0x20],EBX
+//         0047c812     JLE        LAB_0047c858
+//                               LAB_0047c814                                                 XREF[1]:     0047c856(j)
+//                              Pnl_txt.cpp:437 (11)
+//         0047c814     PUSH       EDI
+//         0047c815     CALL       __mbsinc                                         undefined __mbsinc()
+//         0047c81a     SUB        EAX,ESI
+//         0047c81c     ADD        ESP,0x4
+//                              Pnl_txt.cpp:438 (21)
+//         0047c81f     MOVSX      EDX,AX
+//         0047c822     MOV        EAX,dword ptr [ESP + 0x18]
+//         0047c826     LEA        this,[ESP + 0x30]
+//         0047c82a     PUSH       this
+//         0047c82b     PUSH       EDX
+//         0047c82c     PUSH       ESI
+//         0047c82d     PUSH       EAX
+//         0047c82e     CALL       dword ptr [->GDI32.DLL::GetTextExtentPoint32A]   = 0048b328
+//                              Pnl_txt.cpp:439 (12)
+//         0047c834     MOV        this,dword ptr [ESP + 0x28]
+//         0047c838     MOV        EAX,dword ptr [ESP + 0x30]
+//         0047c83c     CMP        EAX,this
+//         0047c83e     JG         LAB_0047c858
+//                              Pnl_txt.cpp:441 (3)
+//         0047c840     LEA        EDX,[EBX + -0x1]
+//                              Pnl_txt.cpp:442 (13)
+//         0047c843     PUSH       EDI
+//         0047c844     MOV        dword ptr [ESP + 0x24],EDX
+//         0047c848     CALL       __mbsinc                                         undefined __mbsinc()
+//         0047c84d     ADD        ESP,0x4
+//                              Pnl_txt.cpp:443 (8)
+//         0047c850     INC        EBX
+//         0047c851     CMP        BX,BP
+//         0047c854     MOV        EDI,EAX
+//         0047c856     JL         LAB_0047c814
+//                               LAB_0047c858                                                 XREF[2]:     0047c812(j), 0047c83e(j)
+//                              Pnl_txt.cpp:447 (10)
+//         0047c858     CMP        BX,0x1
+//         0047c85c     JLE        LAB_0047c91d
+//                               LAB_0047c862                                                 XREF[1]:     0047c903(j)
+//                              Pnl_txt.cpp:450 (13)
+//         0047c862     PUSH       EDI
+//         0047c863     PUSH       ESI
+//         0047c864     MOV        dword ptr [ESP + 0x34],EDI
+//         0047c868     CALL       __mbsdec                                         undefined __mbsdec()
+//         0047c86d     MOV        EDI,EAX
+//                              Pnl_txt.cpp:454 (12)
+//         0047c86f     MOV        EAX,dword ptr [ESP + 0x48]
+//         0047c873     ADD        ESP,0x8
+//         0047c876     DEC        EBX
+//         0047c877     TEST       EAX,EAX
+//         0047c879     JZ         LAB_0047c8ee
+//                              Pnl_txt.cpp:456 (10)
+//         0047c87b     MOV        this,dword ptr [ESP + 0x24]
+//         0047c87f     PUSH       EDI
+//         0047c880     CALL       TTextPanel::char_type                            CharType char_type(TTextPanel * this, uchar *
+//                              Pnl_txt.cpp:457 (16)
+//         0047c885     MOV        this,dword ptr [ESP + 0x24]
+//         0047c889     MOV        EBP,EAX
+//         0047c88b     MOV        EAX,dword ptr [ESP + 0x2c]
+//         0047c88f     PUSH       EAX
+//         0047c890     CALL       TTextPanel::char_type                            CharType char_type(TTextPanel * this, uchar *
+//                              Pnl_txt.cpp:460 (12)
+//         0047c895     TEST       EBP,EBP
+//         0047c897     MOV        dword ptr [ESP + 0x2c],EAX
+//         0047c89b     JNZ        LAB_0047c8b6
+//         0047c89d     TEST       EAX,EAX
+//         0047c89f     JNZ        LAB_0047c8b6
+//                              Pnl_txt.cpp:462 (21)
+//         0047c8a1     XOR        this,this
+//         0047c8a3     MOV        this,byte ptr [EDI]
+//         0047c8a5     PUSH       this
+//         0047c8a6     CALL       __ismbcspace                                     undefined __ismbcspace()
+//         0047c8ab     ADD        ESP,0x4
+//         0047c8ae     TEST       EAX,EAX
+//         0047c8b0     JNZ        LAB_0047c915
+//         0047c8b2     MOV        EAX,dword ptr [ESP + 0x2c]
+//                               LAB_0047c8b6                                                 XREF[2]:     0047c89b(j), 0047c89f(j)
+//                              Pnl_txt.cpp:470 (9)
+//         0047c8b6     CMP        EBP,0x2
+//         0047c8b9     JNZ        LAB_0047c8bf
+//         0047c8bb     CMP        EAX,EBP
+//         0047c8bd     JZ         LAB_0047c90b
+//                               LAB_0047c8bf                                                 XREF[1]:     0047c8b9(j)
+//                              Pnl_txt.cpp:477 (9)
+//         0047c8bf     CMP        EBP,0x1
+//         0047c8c2     JNZ        LAB_0047c8c8
+//         0047c8c4     CMP        EAX,EBP
+//         0047c8c6     JZ         LAB_0047c90b
+//                               LAB_0047c8c8                                                 XREF[1]:     0047c8c2(j)
+//                              Pnl_txt.cpp:485 (18)
+//         0047c8c8     TEST       EBP,EBP
+//         0047c8ca     JNZ        LAB_0047c8d1
+//         0047c8cc     CMP        EAX,0x2
+//         0047c8cf     JZ         LAB_0047c90b
+//                               LAB_0047c8d1                                                 XREF[1]:     0047c8ca(j)
+//         0047c8d1     CMP        EBP,0x2
+//         0047c8d4     JNZ        LAB_0047c8da
+//         0047c8d6     TEST       EAX,EAX
+//         0047c8d8     JZ         LAB_0047c90b
+//                               LAB_0047c8da                                                 XREF[1]:     0047c8d4(j)
+//                              Pnl_txt.cpp:493 (18)
+//         0047c8da     TEST       EBP,EBP
+//         0047c8dc     JNZ        LAB_0047c8e3
+//         0047c8de     CMP        EAX,0x1
+//         0047c8e1     JZ         LAB_0047c90b
+//                               LAB_0047c8e3                                                 XREF[1]:     0047c8dc(j)
+//         0047c8e3     CMP        EBP,0x1
+//         0047c8e6     JNZ        LAB_0047c8ff
+//         0047c8e8     TEST       EAX,EAX
+//         0047c8ea     JZ         LAB_0047c90b
+//                              Pnl_txt.cpp:499 (2)
+//         0047c8ec     JMP        LAB_0047c8ff
+//                               LAB_0047c8ee                                                 XREF[1]:     0047c879(j)
+//                              Pnl_txt.cpp:502 (17)
+//         0047c8ee     XOR        EDX,EDX
+//         0047c8f0     MOV        DL,byte ptr [EDI]
+//         0047c8f2     PUSH       EDX
+//         0047c8f3     CALL       __ismbcspace                                     undefined __ismbcspace()
+//         0047c8f8     ADD        ESP,0x4
+//         0047c8fb     TEST       EAX,EAX
+//         0047c8fd     JNZ        LAB_0047c915
+//                               LAB_0047c8ff                                                 XREF[2]:     0047c8e6(j), 0047c8ec(j)
+//                              Pnl_txt.cpp:447 (10)
+//         0047c8ff     CMP        BX,0x1
+//         0047c903     JG         LAB_0047c862
+//                              Pnl_txt.cpp:465 (2)
+//         0047c909     JMP        LAB_0047c91d
+//                               LAB_0047c90b                                                 XREF[6]:     0047c8bd(j), 0047c8c6(j),
+//                                                                                                         0047c8cf(j), 0047c8d8(j),
+//                                                                                                         0047c8e1(j), 0047c8ea(j)
+//                              Pnl_txt.cpp:495 (8)
+//         0047c90b     MOV        dword ptr [ESP + 0x10],0x1
+//                              Pnl_txt.cpp:496 (2)
+//         0047c913     JMP        LAB_0047c91d
+//                               LAB_0047c915                                                 XREF[2]:     0047c8b0(j), 0047c8fd(j)
+//                              Pnl_txt.cpp:504 (8)
+//         0047c915     MOV        dword ptr [ESP + 0x1c],0x1
+//                               LAB_0047c91d                                                 XREF[3]:     0047c85c(j), 0047c909(j),
+//                                                                                                         0047c913(j)
+//                              Pnl_txt.cpp:512 (16)
+//         0047c91d     MOV        EAX,dword ptr [ESP + 0x1c]
+//         0047c921     TEST       EAX,EAX
+//         0047c923     JNZ        LAB_0047c939
+//         0047c925     MOV        EAX,dword ptr [ESP + 0x10]
+//         0047c929     TEST       EAX,EAX
+//         0047c92b     JNZ        LAB_0047c939
+//                              Pnl_txt.cpp:514 (4)
+//         0047c92d     MOV        EBX,dword ptr [ESP + 0x20]
+//                              Pnl_txt.cpp:515 (8)
+//         0047c931     MOV        dword ptr [ESP + 0x10],0x1
+//                               LAB_0047c939                                                 XREF[2]:     0047c923(j), 0047c92b(j)
+//                              Pnl_txt.cpp:520 (28)
+//         0047c939     MOV        EAX,dword ptr [ESP + 0x14]
+//         0047c93d     TEST       EAX,EAX
+//         0047c93f     JNZ        LAB_0047c955
+//         0047c941     MOV        EAX,dword ptr [ESP + 0x1c]
+//         0047c945     TEST       EAX,EAX
+//         0047c947     JNZ        LAB_0047c955
+//         0047c949     MOV        EAX,dword ptr [ESP + 0x10]
+//         0047c94d     TEST       EAX,EAX
+//         0047c94f     JZ         LAB_0047ca2b
+//                               LAB_0047c955                                                 XREF[4]:     0047c7bf(j), 0047c7fe(j),
+//                                                                                                         0047c93f(j), 0047c947(j)
+//                              Pnl_txt.cpp:524 (16)
+//         0047c955     MOV        this,0x40
+//         0047c95a     XOR        EAX,EAX
+//         0047c95c     LEA        EDI,[ESP + 0x80]
+//         0047c963     STOSD.REP  ES:EDI
+//                              Pnl_txt.cpp:525 (18)
+//         0047c965     MOVSX      EDI,BX
+//         0047c968     PUSH       EDI
+//         0047c969     LEA        EAX,[ESP + 0x84]
+//         0047c970     PUSH       ESI
+//         0047c971     PUSH       EAX
+//         0047c972     CALL       __mbsncpy                                        undefined __mbsncpy()
+//                              Pnl_txt.cpp:526 (11)
+//         0047c977     MOV        EBX,dword ptr [ESP + 0x44]
+//         0047c97b     ADD        ESP,0xc
+//         0047c97e     TEST       EBX,EBX
+//         0047c980     JZ         LAB_0047c997
+//                              Pnl_txt.cpp:527 (21)
+//         0047c982     LEA        this,[ESP + 0x80]
+//         0047c989     PUSH       s__                                              = 20h
+//         0047c98e     PUSH       this
+//         0047c98f     CALL       __mbscat                                         undefined __mbscat()
+//         0047c994     ADD        ESP,0x8
+//                               LAB_0047c997                                                 XREF[1]:     0047c980(j)
+//                              Pnl_txt.cpp:528 (8)
+//         0047c997     MOV        EBP,dword ptr [ESP + 0x14]
+//         0047c99b     TEST       EBP,EBP
+//         0047c99d     JZ         LAB_0047c9b4
+//                              Pnl_txt.cpp:529 (21)
+//         0047c99f     LEA        EDX,[ESP + 0x80]
+//         0047c9a6     PUSH       s__                                              = 20h
+//         0047c9ab     PUSH       EDX
+//         0047c9ac     CALL       __mbscat                                         undefined __mbscat()
+//         0047c9b1     ADD        ESP,0x8
+//                               LAB_0047c9b4                                                 XREF[1]:     0047c99d(j)
+//                              Pnl_txt.cpp:532 (8)
+//         0047c9b4     MOV        EAX,dword ptr [ESP + 0x3c]
+//         0047c9b8     TEST       EAX,EAX
+//         0047c9ba     JZ         LAB_0047c9e5
+//                              Pnl_txt.cpp:535 (18)
+//         0047c9bc     MOV        this,byte ptr [ESP + 0x80]
+//         0047c9c3     LEA        EAX,[ESP + 0x80]
+//         0047c9ca     TEST       this,this
+//         0047c9cc     JZ         LAB_0047c9e5
+//                               LAB_0047c9ce                                                 XREF[1]:     0047c9e3(j)
+//                              Pnl_txt.cpp:537 (5)
+//         0047c9ce     CMP        byte ptr [EAX],0xd
+//         0047c9d1     JNZ        LAB_0047c9d6
+//                              Pnl_txt.cpp:538 (3)
+//         0047c9d3     MOV        byte ptr [EAX],0x20
+//                               LAB_0047c9d6                                                 XREF[1]:     0047c9d1(j)
+//                              Pnl_txt.cpp:539 (15)
+//         0047c9d6     PUSH       EAX
+//         0047c9d7     CALL       __mbsinc                                         undefined __mbsinc()
+//         0047c9dc     MOV        this,byte ptr [EAX]
+//         0047c9de     ADD        ESP,0x4
+//         0047c9e1     TEST       this,this
+//         0047c9e3     JNZ        LAB_0047c9ce
+//                               LAB_0047c9e5                                                 XREF[2]:     0047c9ba(j), 0047c9cc(j)
+//                              Pnl_txt.cpp:543 (19)
+//         0047c9e5     MOV        this,dword ptr [ESP + 0x24]
+//         0047c9e9     LEA        EAX,[ESP + 0x80]
+//         0047c9f0     PUSH       0x0
+//         0047c9f2     PUSH       EAX
+//         0047c9f3     CALL       TTextPanel::append_line                          int append_line(TTextPanel * this, char * par
+//                              Pnl_txt.cpp:547 (12)
+//         0047c9f8     PUSH       EDI
+//         0047c9f9     PUSH       ESI
+//         0047c9fa     CALL       __mbsninc                                        undefined __mbsninc()
+//         0047c9ff     ADD        ESP,0x8
+//         0047ca02     MOV        ESI,EAX
+//                              Pnl_txt.cpp:548 (4)
+//         0047ca04     TEST       EBX,EBX
+//         0047ca06     JZ         LAB_0047ca13
+//                              Pnl_txt.cpp:549 (11)
+//         0047ca08     PUSH       ESI
+//         0047ca09     CALL       __mbsinc                                         undefined __mbsinc()
+//         0047ca0e     ADD        ESP,0x4
+//         0047ca11     MOV        ESI,EAX
+//                               LAB_0047ca13                                                 XREF[1]:     0047ca06(j)
+//                              Pnl_txt.cpp:550 (8)
+//         0047ca13     TEST       EBP,EBP
+//         0047ca15     JZ         LAB_0047c6e1
+//                              Pnl_txt.cpp:551 (16)
+//         0047ca1b     PUSH       ESI
+//         0047ca1c     CALL       __mbsinc                                         undefined __mbsinc()
+//         0047ca21     ADD        ESP,0x4
+//         0047ca24     MOV        ESI,EAX
+//         0047ca26     JMP        LAB_0047c6e1
+//                               LAB_0047ca2b                                                 XREF[2]:     0047c7f2(j), 0047c94f(j)
+//                              Pnl_txt.cpp:554 (14)
+//         0047ca2b     PUSH       0x0
+//         0047ca2d     PUSH       ESI
+//         0047ca2e     MOV        ESI,dword ptr [ESP + 0x2c]
+//         0047ca32     MOV        this,ESI
+//         0047ca34     CALL       TTextPanel::append_line                          int append_line(TTextPanel * this, char * par
+//                              Pnl_txt.cpp:556 (16)
+//         0047ca39     MOV        this,dword ptr [ESP + 0x44]
+//         0047ca3d     MOV        EDX,dword ptr [ESP + 0x18]
+//         0047ca41     PUSH       this
+//         0047ca42     PUSH       EDX
+//         0047ca43     CALL       dword ptr [->GDI32.DLL::SelectObject]            = 0048b192
+//                              Pnl_txt.cpp:557 (13)
+//         0047ca49     MOV        this,dword ptr [ESI + 0x20]
+//         0047ca4c     PUSH       s_pnl_txt::word_wrap_append                      = "pnl_txt::word_wrap_append"
+//         0047ca51     CALL       TDrawArea::ReleaseDc                             void ReleaseDc(TDrawArea * this, char * param
+//                               LAB_0047ca56                                                 XREF[2]:     0047c65b(j), 0047c664(j)
+//                              Pnl_txt.cpp:560 (18)
+//         0047ca56     POP        EDI
+//         0047ca57     POP        ESI
+//         0047ca58     POP        EBP
+//         0047ca59     MOV        EAX,0x1
+//         0047ca5e     POP        EBX
+//         0047ca5f     ADD        ESP,0x170
+//         0047ca65     RET        0x4
+//         0047ca68     ??         90h
+//         0047ca69     NOP
+//         0047ca6a     NOP
+//         0047ca6b     NOP
+//         0047ca6c     NOP
+//         0047ca6d     NOP
+//         0047ca6e     NOP
+//         0047ca6f     NOP
+    return 0;
 }
 
 void TTextPanel::set_text(long param_1) {
     /* TODO: Stub */
-//                              void __thiscall set_text(TTextPanel * this, char * * param_1, short
+//                              void __thiscall set_text(TTextPanel * this, long param_1)
 //              void              <VOID>         <RETURN>
 //              TTextPanel *      ECX:4 (auto)   this
-//              char * *          Stack[0x4]:4   param_1                   XREF[1]:     0047cae3(R)
-//              short             Stack[0x8]:2   param_2                   XREF[1]:     0047caba(R)
-//                               ?set_text@TTextPanel@@UAEXPAPADF@Z                           XREF[3]:     00571658(*), 00571cd8(*),
-//                               TTextPanel::set_text                                                      00572958(*)
-//                              Pnl_txt.cpp:576 (5)
-//         0047cab0     PUSH       EBX
-//         0047cab1     PUSH       ESI
-//         0047cab2     PUSH       EDI
-//         0047cab3     MOV        EDI,this
-//                              Pnl_txt.cpp:580 (5)
-//         0047cab5     CALL       TTextPanel::free_text                            void free_text(TTextPanel * this)
-//                              Pnl_txt.cpp:582 (10)
-//         0047caba     MOV        AX,word ptr [ESP + param_2]
-//         0047cabf     TEST       AX,AX
-//         0047cac2     JNZ        LAB_0047cae1
-//                              Pnl_txt.cpp:584 (9)
-//         0047cac4     CMP        word ptr [EDI + 0x138],AX
-//         0047cacb     JZ         LAB_0047cafc
-//                              Pnl_txt.cpp:585 (14)
-//         0047cacd     PUSH       0x0
-//         0047cacf     PUSH       s_                                               = ""
-//         0047cad4     MOV        this,EDI
-//         0047cad6     CALL       TTextPanel::append_line                          int append_line(TTextPanel * this, char * par
-//                              Pnl_txt.cpp:592 (6)
-//         0047cadb     POP        EDI
-//         0047cadc     POP        ESI
-//         0047cadd     POP        EBX
-//         0047cade     RET        0x8
-//                               LAB_0047cae1                                                 XREF[1]:     0047cac2(j)
-//                              Pnl_txt.cpp:590 (2)
-//         0047cae1     JLE        LAB_0047cafc
-//                              Pnl_txt.cpp:592 (31)
-//         0047cae3     MOV        ESI,dword ptr [ESP + param_1]
-//         0047cae7     MOVSX      EBX,AX
-//                               LAB_0047caea                                                 XREF[1]:     0047cafa(j)
-//         0047caea     MOV        EAX,dword ptr [ESI]
-//         0047caec     PUSH       0x0
-//         0047caee     PUSH       EAX
-//         0047caef     MOV        this,EDI
-//         0047caf1     CALL       TTextPanel::append_line                          int append_line(TTextPanel * this, char * par
-//         0047caf6     ADD        ESI,0x4
-//         0047caf9     DEC        EBX
-//         0047cafa     JNZ        LAB_0047caea
-//                               LAB_0047cafc                                                 XREF[2]:     0047cacb(j), 0047cae1(j)
-//         0047cafc     POP        EDI
-//         0047cafd     POP        ESI
-//         0047cafe     POP        EBX
-//         0047caff     RET        0x8
-//         0047cb02     ??         90h
-//         0047cb03     NOP
-//         0047cb04     NOP
-//         0047cb05     NOP
-//         0047cb06     NOP
-//         0047cb07     NOP
-//         0047cb08     NOP
-//         0047cb09     NOP
-//         0047cb0a     NOP
-//         0047cb0b     NOP
-//         0047cb0c     NOP
-//         0047cb0d     NOP
-//         0047cb0e     NOP
-//         0047cb0f     NOP
+//              long              Stack[0x4]:4   param_1                   XREF[1]:     0047ca7d(R)
+//              char[4096]        Stack[-0x100   str                       XREF[0,2]:   0047ca84(*), 0047ca98(*)
+//                               ?set_text@TTextPanel@@UAEXJ@Z                                XREF[4]:     0057156c(*), 0057165c(*),
+//                               TTextPanel::set_text                                                      00571cdc(*), 0057295c(*)
+//                              Pnl_txt.cpp:566 (13)
+//         0047ca70     MOV        EAX,0x1000
+//         0047ca75     CALL       __alloca_probe                                   undefined __alloca_probe()
+//         0047ca7a     PUSH       ESI
+//         0047ca7b     MOV        ESI,this
+//                              Pnl_txt.cpp:568 (25)
+//         0047ca7d     MOV        this,dword ptr [ESP + param_1]
+//         0047ca84     LEA        EAX=>str[4],[ESP + 0x4]
+//         0047ca88     PUSH       0x1000
+//         0047ca8d     PUSH       EAX
+//         0047ca8e     PUSH       this
+//         0047ca8f     MOV        this,ESI
+//         0047ca91     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
+//                              Pnl_txt.cpp:569 (15)
+//         0047ca96     MOV        EDX,dword ptr [ESI]
+//         0047ca98     LEA        EAX=>str[4],[ESP + 0x4]
+//         0047ca9c     PUSH       EAX
+//         0047ca9d     MOV        this,ESI
+//         0047ca9f     CALL       dword ptr [EDX + 0xe8]
+//                              Pnl_txt.cpp:570 (10)
+//         0047caa5     POP        ESI
+//         0047caa6     ADD        ESP,0x1000
+//         0047caac     RET        0x4
+//         0047caaf     ??         90h
     return;
 }
 
@@ -4050,53 +4607,73 @@ void TTextPanel::set_line_by_id(long param_1) {
 
 int TTextPanel::append_line(char* param_1, long param_2) {
     /* TODO: Stub */
-//                              int __thiscall append_line(TTextPanel * this, long param_1, long par
+//                              int __thiscall append_line(TTextPanel * this, char * param_1, long p
 //              int               EAX:4          <RETURN>
 //              TTextPanel *      ECX:4 (auto)   this
-//              long              Stack[0x4]:4   param_1                   XREF[1]:     0047dd39(R)
-//              long              Stack[0x8]:4   param_2                   XREF[1]:     0047dd34(R)
-//              long              Stack[0xc]:4   param_3                   XREF[1]:     0047dd30(R)
-//                               ?append_line@TTextPanel@@QAEHJJJ@Z
-//                               TTextPanel::append_line
-//                              Pnl_txt.cpp:1448 (28)
-//         0047dd30     MOV        EAX,dword ptr [ESP + param_3]
-//         0047dd34     MOV        EDX,dword ptr [ESP + param_2]
-//         0047dd38     PUSH       EAX
-//         0047dd39     MOV        EAX,dword ptr [ESP + param_1]
-//         0047dd3d     PUSH       EDX
-//         0047dd3e     PUSH       EAX
-//         0047dd3f     MOVSX      EDX,word ptr [ECX + this->num_lines]
-//         0047dd46     PUSH       EDX
-//         0047dd47     CALL       TTextPanel::insert_line                          int insert_line(TTextPanel * this, long param
-//                              Pnl_txt.cpp:1450 (3)
-//         0047dd4c     RET        0xc
-//         0047dd4f     ??         90h
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0047dcd4(R)
+//              long              Stack[0x8]:4   param_2                   XREF[1]:     0047dcd0(R)
+//                               ?append_line@TTextPanel@@QAEHPADJ@Z                          XREF[28]:    append_line:004752b4(c),
+//                               TTextPanel::append_line                                                   set_text:0047c591(c),
+//                                                                                                         set_text:0047c5b1(c),
+//                                                                                                         set_text:0047c609(c),
+//                                                                                                         set_text:0047c618(c),
+//                                                                                                         word_wrap_append:0047c9f3(c),
+//                                                                                                         word_wrap_append:0047ca34(c),
+//                                                                                                         fill_scenario_list:0048fdc3(c),
+//                                                                                                         fill_scenario_list:0048fe5a(c),
+//                                                                                                         fill_campaign_scenario_list:0048fe
+//                                                                                                         fillCampaigns:00491201(c),
+//                                                                                                         fillScenarios:004912dd(c),
+//                                                                                                         fillList:0049e1f3(c),
+//                                                                                                         fillList:0049e28a(c),
+//                                                                                                         fillList:004a774d(c),
+//                                                                                                         fillList:004a781d(c),
+//                                                                                                         create_list:004a9462(c),
+//                                                                                                         fillList:004b37e3(c),
+//                                                                                                         fillList:004b387a(c),
+//                                                                                                         fillScenarios:004b457f(c), [more]
+//                              Pnl_txt.cpp:1424 (23)
+//         0047dcd0     MOV        EAX,dword ptr [ESP + param_2]
+//         0047dcd4     MOV        EDX,dword ptr [ESP + param_1]
+//         0047dcd8     PUSH       EAX
+//         0047dcd9     PUSH       EDX
+//         0047dcda     MOVSX      EAX,word ptr [ECX + this->num_lines]
+//         0047dce1     PUSH       EAX
+//         0047dce2     CALL       TTextPanel::insert_line                          int insert_line(TTextPanel * this, long param
+//                              Pnl_txt.cpp:1426 (3)
+//         0047dce7     RET        0x8
+//         0047dcea     ??         90h
+//         0047dceb     NOP
+//         0047dcec     NOP
+//         0047dced     NOP
+//         0047dcee     NOP
+//         0047dcef     NOP
     return 0;
 }
 
 int TTextPanel::append_line(char* param_1, char* param_2, long param_3) {
     /* TODO: Stub */
-//                              int __thiscall append_line(TTextPanel * this, long param_1, long par
+//                              int __thiscall append_line(TTextPanel * this, char * param_1, char *
 //              int               EAX:4          <RETURN>
 //              TTextPanel *      ECX:4 (auto)   this
-//              long              Stack[0x4]:4   param_1                   XREF[1]:     0047dd39(R)
-//              long              Stack[0x8]:4   param_2                   XREF[1]:     0047dd34(R)
-//              long              Stack[0xc]:4   param_3                   XREF[1]:     0047dd30(R)
-//                               ?append_line@TTextPanel@@QAEHJJJ@Z
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0047dcf9(R)
+//              char *            Stack[0x8]:4   param_2                   XREF[1]:     0047dcf4(R)
+//              long              Stack[0xc]:4   param_3                   XREF[1]:     0047dcf0(R)
+//                               ?append_line@TTextPanel@@QAEHPAD0J@Z
 //                               TTextPanel::append_line
-//                              Pnl_txt.cpp:1448 (28)
-//         0047dd30     MOV        EAX,dword ptr [ESP + param_3]
-//         0047dd34     MOV        EDX,dword ptr [ESP + param_2]
-//         0047dd38     PUSH       EAX
-//         0047dd39     MOV        EAX,dword ptr [ESP + param_1]
-//         0047dd3d     PUSH       EDX
-//         0047dd3e     PUSH       EAX
-//         0047dd3f     MOVSX      EDX,word ptr [ECX + this->num_lines]
-//         0047dd46     PUSH       EDX
-//         0047dd47     CALL       TTextPanel::insert_line                          int insert_line(TTextPanel * this, long param
-//                              Pnl_txt.cpp:1450 (3)
-//         0047dd4c     RET        0xc
-//         0047dd4f     ??         90h
+//                              Pnl_txt.cpp:1432 (28)
+//         0047dcf0     MOV        EAX,dword ptr [ESP + param_3]
+//         0047dcf4     MOV        EDX,dword ptr [ESP + param_2]
+//         0047dcf8     PUSH       EAX
+//         0047dcf9     MOV        EAX,dword ptr [ESP + param_1]
+//         0047dcfd     PUSH       EDX
+//         0047dcfe     PUSH       EAX
+//         0047dcff     MOVSX      EDX,word ptr [ECX + this->num_lines]
+//         0047dd06     PUSH       EDX
+//         0047dd07     CALL       TTextPanel::insert_line                          int insert_line(TTextPanel * this, long param
+//                              Pnl_txt.cpp:1434 (3)
+//         0047dd0c     RET        0xc
+//         0047dd0f     ??         90h
     return 0;
 }
 
@@ -4105,24 +4682,35 @@ int TTextPanel::append_line(long param_1, long param_2) {
 //                              int __thiscall append_line(TTextPanel * this, long param_1, long par
 //              int               EAX:4          <RETURN>
 //              TTextPanel *      ECX:4 (auto)   this
-//              long              Stack[0x4]:4   param_1                   XREF[1]:     0047dd39(R)
-//              long              Stack[0x8]:4   param_2                   XREF[1]:     0047dd34(R)
-//              long              Stack[0xc]:4   param_3                   XREF[1]:     0047dd30(R)
-//                               ?append_line@TTextPanel@@QAEHJJJ@Z
-//                               TTextPanel::append_line
-//                              Pnl_txt.cpp:1448 (28)
-//         0047dd30     MOV        EAX,dword ptr [ESP + param_3]
-//         0047dd34     MOV        EDX,dword ptr [ESP + param_2]
-//         0047dd38     PUSH       EAX
-//         0047dd39     MOV        EAX,dword ptr [ESP + param_1]
-//         0047dd3d     PUSH       EDX
-//         0047dd3e     PUSH       EAX
-//         0047dd3f     MOVSX      EDX,word ptr [ECX + this->num_lines]
-//         0047dd46     PUSH       EDX
-//         0047dd47     CALL       TTextPanel::insert_line                          int insert_line(TTextPanel * this, long param
-//                              Pnl_txt.cpp:1450 (3)
-//         0047dd4c     RET        0xc
-//         0047dd4f     ??         90h
+//              long              Stack[0x4]:4   param_1                   XREF[1]:     0047dd14(R)
+//              long              Stack[0x8]:4   param_2                   XREF[1]:     0047dd10(R)
+//                               ?append_line@TTextPanel@@QAEHJJ@Z                            XREF[11]:    append_line:004752e4(c),
+//                               TTextPanel::append_line                                                   fillList:004a0047(c),
+//                                                                                                         SetupListOfTerrain:004a9335(c),
+//                                                                                                         SetupListOfTerrain:004a9343(c),
+//                                                                                                         SetupListOfTerrain:004a9351(c),
+//                                                                                                         SetupListOfTerrain:004a935f(c),
+//                                                                                                         SetupListOfTerrain:004a936d(c),
+//                                                                                                         SetupListOfTerrain:004a937b(c),
+//                                                                                                         SetupListOfTerrain:004a9389(c),
+//                                                                                                         SetupListOfTerrain:004a9397(c),
+//                                                                                                         SetupListOfTerrain:004a93a5(c)
+//                              Pnl_txt.cpp:1440 (23)
+//         0047dd10     MOV        EAX,dword ptr [ESP + param_2]
+//         0047dd14     MOV        EDX,dword ptr [ESP + param_1]
+//         0047dd18     PUSH       EAX
+//         0047dd19     PUSH       EDX
+//         0047dd1a     MOVSX      EAX,word ptr [ECX + this->num_lines]
+//         0047dd21     PUSH       EAX
+//         0047dd22     CALL       TTextPanel::insert_line                          int insert_line(TTextPanel * this, long param
+//                              Pnl_txt.cpp:1442 (3)
+//         0047dd27     RET        0x8
+//         0047dd2a     ??         90h
+//         0047dd2b     NOP
+//         0047dd2c     NOP
+//         0047dd2d     NOP
+//         0047dd2e     NOP
+//         0047dd2f     NOP
     return 0;
 }
 
@@ -4154,111 +4742,365 @@ int TTextPanel::append_line(long param_1, long param_2, long param_3) {
 
 int TTextPanel::insert_line(long param_1, char* param_2, long param_3) {
     /* TODO: Stub */
-//                              int __thiscall insert_line(TTextPanel * this, long param_1, long par
+//                              int __thiscall insert_line(TTextPanel * this, long param_1, char * p
 //              int               EAX:4          <RETURN>
 //              TTextPanel *      ECX:4 (auto)   this
-//              long              Stack[0x4]:4   param_1                   XREF[1]:     0047e02a(R)
-//              long              Stack[0x8]:4   param_2                   XREF[1]:     0047dff0(R)
-//              long              Stack[0xc]:4   param_3                   XREF[1]:     0047e005(R)
-//              long              Stack[0x10]:4  param_4                   XREF[1]:     0047e01e(R)
-//              char[256]         Stack[-0x104   str1                      XREF[0,2]:   0047dfe6(*), 0047e031(*)
-//              char[256]         Stack[-0x204   str2                      XREF[0,2]:   0047e00c(*), 0047e025(*)
-//                               ?insert_line@TTextPanel@@QAEHJJJJ@Z                          XREF[2]:     append_line:0047dd47(c),
-//                               TTextPanel::insert_line                                                   change_line:0047e0db(c)
-//                              Pnl_txt.cpp:1598 (6)
-//         0047dfe0     SUB        ESP,0x200
-//                              Pnl_txt.cpp:1602 (31)
-//         0047dfe6     LEA        EAX=>str1[4],[ESP + 0x100]
-//         0047dfed     PUSH       ESI
-//         0047dfee     MOV        ESI,this
-//         0047dff0     MOV        this,dword ptr [ESP + param_2]
-//         0047dff7     PUSH       0x100
-//         0047dffc     PUSH       EAX
-//         0047dffd     PUSH       this
-//         0047dffe     MOV        this,ESI
-//         0047e000     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
-//                              Pnl_txt.cpp:1603 (25)
-//         0047e005     MOV        EAX,dword ptr [ESP + param_3]
-//         0047e00c     LEA        EDX=>str2[4],[ESP + 0x4]
-//         0047e010     PUSH       0x100
-//         0047e015     PUSH       EDX
-//         0047e016     PUSH       EAX
-//         0047e017     MOV        this,ESI
-//         0047e019     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
-//                              Pnl_txt.cpp:1605 (36)
-//         0047e01e     MOV        this,dword ptr [ESP + param_4]
-//         0047e025     LEA        EDX=>str2[4],[ESP + 0x4]
-//         0047e029     PUSH       this
-//         0047e02a     MOV        this,dword ptr [ESP + param_1]
-//         0047e031     LEA        EAX=>str1[4],[ESP + 0x108]
-//         0047e038     PUSH       EDX
-//         0047e039     PUSH       EAX
-//         0047e03a     PUSH       this
-//         0047e03b     MOV        this,ESI
-//         0047e03d     CALL       TTextPanel::insert_line                          int insert_line(TTextPanel * this, long param
-//                              Pnl_txt.cpp:1606 (10)
-//         0047e042     POP        ESI
-//         0047e043     ADD        ESP,0x200
-//         0047e049     RET        0x10
-//         0047e04c     ??         90h
-//         0047e04d     NOP
-//         0047e04e     NOP
-//         0047e04f     NOP
+//              long              Stack[0x4]:4   param_1                   XREF[1]:     0047dd59(R)
+//              char *            Stack[0x8]:4   param_2                   XREF[1]:     0047dd54(R)
+//              long              Stack[0xc]:4   param_3                   XREF[1]:     0047dd50(R)
+//                               ?insert_line@TTextPanel@@QAEHJPADJ@Z                         XREF[5]:     insert_line:00475319(c),
+//                               TTextPanel::insert_line                                                   append_line:0047dce2(c),
+//                                                                                                         insert_line:0047dfc9(c),
+//                                                                                                         move_scenario_up:004904c0(c),
+//                                                                                                         move_scenario_down:00490571(c)
+//                              Pnl_txt.cpp:1456 (22)
+//         0047dd50     MOV        EAX,dword ptr [ESP + param_3]
+//         0047dd54     MOV        EDX,dword ptr [ESP + param_2]
+//         0047dd58     PUSH       EAX
+//         0047dd59     MOV        EAX,dword ptr [ESP + param_1]
+//         0047dd5d     PUSH       0x0
+//         0047dd5f     PUSH       EDX
+//         0047dd60     PUSH       EAX
+//         0047dd61     CALL       TTextPanel::insert_line                          int insert_line(TTextPanel * this, long param
+//                              Pnl_txt.cpp:1458 (3)
+//         0047dd66     RET        0xc
+//         0047dd69     ??         90h
+//         0047dd6a     NOP
+//         0047dd6b     NOP
+//         0047dd6c     NOP
+//         0047dd6d     NOP
+//         0047dd6e     NOP
+//         0047dd6f     NOP
     return 0;
 }
 
 int TTextPanel::insert_line(long param_1, char* param_2, char* param_3, long param_4) {
     /* TODO: Stub */
-//                              int __thiscall insert_line(TTextPanel * this, long param_1, long par
+//                              int __thiscall insert_line(TTextPanel * this, long param_1, char * p
 //              int               EAX:4          <RETURN>
 //              TTextPanel *      ECX:4 (auto)   this
-//              long              Stack[0x4]:4   param_1                   XREF[1]:     0047e02a(R)
-//              long              Stack[0x8]:4   param_2                   XREF[1]:     0047dff0(R)
-//              long              Stack[0xc]:4   param_3                   XREF[1]:     0047e005(R)
-//              long              Stack[0x10]:4  param_4                   XREF[1]:     0047e01e(R)
-//              char[256]         Stack[-0x104   str1                      XREF[0,2]:   0047dfe6(*), 0047e031(*)
-//              char[256]         Stack[-0x204   str2                      XREF[0,2]:   0047e00c(*), 0047e025(*)
-//                               ?insert_line@TTextPanel@@QAEHJJJJ@Z                          XREF[2]:     append_line:0047dd47(c),
-//                               TTextPanel::insert_line                                                   change_line:0047e0db(c)
-//                              Pnl_txt.cpp:1598 (6)
-//         0047dfe0     SUB        ESP,0x200
-//                              Pnl_txt.cpp:1602 (31)
-//         0047dfe6     LEA        EAX=>str1[4],[ESP + 0x100]
-//         0047dfed     PUSH       ESI
-//         0047dfee     MOV        ESI,this
-//         0047dff0     MOV        this,dword ptr [ESP + param_2]
-//         0047dff7     PUSH       0x100
-//         0047dffc     PUSH       EAX
-//         0047dffd     PUSH       this
-//         0047dffe     MOV        this,ESI
-//         0047e000     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
-//                              Pnl_txt.cpp:1603 (25)
-//         0047e005     MOV        EAX,dword ptr [ESP + param_3]
-//         0047e00c     LEA        EDX=>str2[4],[ESP + 0x4]
-//         0047e010     PUSH       0x100
-//         0047e015     PUSH       EDX
-//         0047e016     PUSH       EAX
-//         0047e017     MOV        this,ESI
-//         0047e019     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
-//                              Pnl_txt.cpp:1605 (36)
-//         0047e01e     MOV        this,dword ptr [ESP + param_4]
-//         0047e025     LEA        EDX=>str2[4],[ESP + 0x4]
-//         0047e029     PUSH       this
-//         0047e02a     MOV        this,dword ptr [ESP + param_1]
-//         0047e031     LEA        EAX=>str1[4],[ESP + 0x108]
-//         0047e038     PUSH       EDX
-//         0047e039     PUSH       EAX
-//         0047e03a     PUSH       this
-//         0047e03b     MOV        this,ESI
-//         0047e03d     CALL       TTextPanel::insert_line                          int insert_line(TTextPanel * this, long param
-//                              Pnl_txt.cpp:1606 (10)
-//         0047e042     POP        ESI
-//         0047e043     ADD        ESP,0x200
-//         0047e049     RET        0x10
-//         0047e04c     ??         90h
-//         0047e04d     NOP
-//         0047e04e     NOP
-//         0047e04f     NOP
+//              long              Stack[0x4]:4   param_1                   XREF[1]:     0047df4b(R)
+//              char *            Stack[0x8]:4   param_2                   XREF[1]:     0047dd9c(R)
+//              char *            Stack[0xc]:4   param_3                   XREF[1]:     0047dde5(R)
+//              long              Stack[0x10]:4  param_4                   XREF[1]:     0047dead(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[5]:     0047dd7b(W), 0047de33(R), 0047de81(R), 0047dea9(R),
+//                                                                                     0047df21(R)
+//                               ?insert_line@TTextPanel@@QAEHJPAD0J@Z                        XREF[6]:     append_line:0047dd07(c),
+//                               TTextPanel::insert_line                                                   insert_line:0047dd61(c),
+//                                                                                                         insert_line:0047e03d(c),
+//                                                                                                         change_line:0047e07b(c),
+//                                                                                                         fillScenarios:004b60f6(c),
+//                                                                                                         fillScenarios:004b614a(c)
+//                              Pnl_txt.cpp:1464 (7)
+//         0047dd70     PUSH       this
+//         0047dd71     PUSH       EBX
+//         0047dd72     PUSH       EBP
+//         0047dd73     PUSH       ESI
+//         0047dd74     PUSH       EDI
+//         0047dd75     MOV        ESI,this
+//                              Pnl_txt.cpp:1469 (18)
+//         0047dd77     PUSH       0x10
+//         0047dd79     PUSH       0x1
+//         0047dd7b     MOV        dword ptr [ESP + local_4],ESI
+//         0047dd7f     CALL       calloc                                           undefined calloc()
+//         0047dd84     MOV        EBX,EAX
+//         0047dd86     ADD        ESP,0x8
+//                              Pnl_txt.cpp:1470 (4)
+//         0047dd89     TEST       EBX,EBX
+//         0047dd8b     JNZ        LAB_0047dd95
+//                              Pnl_txt.cpp:1582 (8)
+//         0047dd8d     POP        EDI
+//         0047dd8e     POP        ESI
+//         0047dd8f     POP        EBP
+//         0047dd90     POP        EBX
+//         0047dd91     POP        this
+//         0047dd92     RET        0x10
+//                               LAB_0047dd95                                                 XREF[1]:     0047dd8b(j)
+//                              Pnl_txt.cpp:1474 (16)
+//         0047dd95     MOV        AX,word ptr [ESI + 0x138]
+//         0047dd9c     MOV        ESI,dword ptr [ESP + param_2]
+//         0047dda0     TEST       AX,AX
+//         0047dda3     JZ         LAB_0047ddae
+//                              Pnl_txt.cpp:1475 (7)
+//         0047dda5     MOVSX      EAX,AX
+//         0047dda8     INC        EAX
+//         0047dda9     PUSH       0x1
+//         0047ddab     PUSH       EAX
+//                              Pnl_txt.cpp:1476 (4)
+//         0047ddac     JMP        LAB_0047ddc4
+//                               LAB_0047ddae                                                 XREF[1]:     0047dda3(j)
+//         0047ddae     TEST       ESI,ESI
+//                              Pnl_txt.cpp:1477 (6)
+//         0047ddb0     PUSH       0x1
+//         0047ddb2     JNZ        LAB_0047ddb8
+//         0047ddb4     PUSH       0x1
+//                              Pnl_txt.cpp:1478 (2)
+//         0047ddb6     JMP        LAB_0047ddc4
+//                               LAB_0047ddb8                                                 XREF[1]:     0047ddb2(j)
+//                              Pnl_txt.cpp:1479 (22)
+//         0047ddb8     MOV        EDI,ESI
+//         0047ddba     OR         this,0xffffffff
+//         0047ddbd     XOR        EAX,EAX
+//         0047ddbf     SCASB.RE   ES:EDI
+//         0047ddc1     NOT        this
+//         0047ddc3     PUSH       this
+//                               LAB_0047ddc4                                                 XREF[2]:     0047ddac(j), 0047ddb6(j)
+//         0047ddc4     CALL       calloc                                           undefined calloc()
+//         0047ddc9     ADD        ESP,0x8
+//         0047ddcc     MOV        dword ptr [EBX],EAX
+//                              Pnl_txt.cpp:1481 (4)
+//         0047ddce     TEST       EAX,EAX
+//         0047ddd0     JNZ        LAB_0047dde5
+//                              Pnl_txt.cpp:1483 (9)
+//         0047ddd2     PUSH       EBX
+//         0047ddd3     CALL       free                                             undefined free()
+//         0047ddd8     ADD        ESP,0x4
+//                              Pnl_txt.cpp:1484 (2)
+//         0047dddb     XOR        EAX,EAX
+//                              Pnl_txt.cpp:1582 (8)
+//         0047dddd     POP        EDI
+//         0047ddde     POP        ESI
+//         0047dddf     POP        EBP
+//         0047dde0     POP        EBX
+//         0047dde1     POP        this
+//         0047dde2     RET        0x10
+//                               LAB_0047dde5                                                 XREF[1]:     0047ddd0(j)
+//                              Pnl_txt.cpp:1488 (8)
+//         0047dde5     MOV        EBP,dword ptr [ESP + param_3]
+//         0047dde9     TEST       EBP,EBP
+//         0047ddeb     JZ         LAB_0047de28
+//                              Pnl_txt.cpp:1490 (25)
+//         0047dded     MOV        EDI,EBP
+//         0047ddef     OR         this,0xffffffff
+//         0047ddf2     XOR        EAX,EAX
+//         0047ddf4     PUSH       0x1
+//         0047ddf6     SCASB.RE   ES:EDI
+//         0047ddf8     NOT        this
+//         0047ddfa     PUSH       this
+//         0047ddfb     CALL       calloc                                           undefined calloc()
+//         0047de00     ADD        ESP,0x8
+//         0047de03     MOV        dword ptr [EBX + 0x4],EAX
+//                              Pnl_txt.cpp:1491 (4)
+//         0047de06     TEST       EAX,EAX
+//         0047de08     JNZ        LAB_0047de28
+//                              Pnl_txt.cpp:1493 (11)
+//         0047de0a     MOV        this,dword ptr [EBX]
+//         0047de0c     PUSH       this
+//         0047de0d     CALL       free                                             undefined free()
+//         0047de12     ADD        ESP,0x4
+//                              Pnl_txt.cpp:1494 (9)
+//         0047de15     PUSH       EBX
+//         0047de16     CALL       free                                             undefined free()
+//         0047de1b     ADD        ESP,0x4
+//                              Pnl_txt.cpp:1495 (2)
+//         0047de1e     XOR        EAX,EAX
+//                              Pnl_txt.cpp:1582 (8)
+//         0047de20     POP        EDI
+//         0047de21     POP        ESI
+//         0047de22     POP        EBP
+//         0047de23     POP        EBX
+//         0047de24     POP        this
+//         0047de25     RET        0x10
+//                               LAB_0047de28                                                 XREF[2]:     0047ddeb(j), 0047de08(j)
+//                              Pnl_txt.cpp:1500 (4)
+//         0047de28     TEST       ESI,ESI
+//         0047de2a     JNZ        LAB_0047de33
+//                              Pnl_txt.cpp:1501 (5)
+//         0047de2c     MOV        EDX,dword ptr [EBX]
+//         0047de2e     MOV        byte ptr [EDX],0x0
+//                              Pnl_txt.cpp:1502 (18)
+//         0047de31     JMP        LAB_0047de81
+//                               LAB_0047de33                                                 XREF[1]:     0047de2a(j)
+//         0047de33     MOV        EDI,dword ptr [ESP + local_4]
+//         0047de37     MOV        AX,word ptr [EDI + 0x138]
+//         0047de3e     TEST       AX,AX
+//         0047de41     JZ         LAB_0047de62
+//                              Pnl_txt.cpp:1504 (13)
+//         0047de43     MOV        this,dword ptr [EBX]
+//         0047de45     MOVSX      EAX,AX
+//         0047de48     PUSH       EAX
+//         0047de49     PUSH       ESI
+//         0047de4a     PUSH       this
+//         0047de4b     CALL       strncpy                                          undefined strncpy()
+//                              Pnl_txt.cpp:1505 (16)
+//         0047de50     MOVSX      EDX,word ptr [EDI + 0x138]
+//         0047de57     MOV        EAX,dword ptr [EBX]
+//         0047de59     ADD        ESP,0xc
+//         0047de5c     MOV        byte ptr [EAX + EDX*0x1],0x0
+//                              Pnl_txt.cpp:1507 (2)
+//         0047de60     JMP        LAB_0047de85
+//                               LAB_0047de62                                                 XREF[1]:     0047de41(j)
+//                              Pnl_txt.cpp:1508 (35)
+//         0047de62     MOV        EDI,ESI
+//         0047de64     OR         this,0xffffffff
+//         0047de67     XOR        EAX,EAX
+//         0047de69     SCASB.RE   ES:EDI
+//         0047de6b     NOT        this
+//         0047de6d     SUB        EDI,this
+//         0047de6f     MOV        EDX,this
+//         0047de71     MOV        ESI,EDI
+//         0047de73     MOV        EDI,dword ptr [EBX]
+//         0047de75     SHR        this,0x2
+//         0047de78     MOVSD.REP  ES:EDI,ESI
+//         0047de7a     MOV        this,EDX
+//         0047de7c     AND        this,0x3
+//         0047de7f     MOVSB.REP  ES:EDI,ESI
+//                               LAB_0047de81                                                 XREF[1]:     0047de31(j)
+//         0047de81     MOV        EDI,dword ptr [ESP + local_4]
+//                               LAB_0047de85                                                 XREF[1]:     0047de60(j)
+//                              Pnl_txt.cpp:1510 (4)
+//         0047de85     TEST       EBP,EBP
+//         0047de87     JZ         LAB_0047dead
+//                              Pnl_txt.cpp:1511 (36)
+//         0047de89     MOV        EDI,EBP
+//         0047de8b     OR         this,0xffffffff
+//         0047de8e     XOR        EAX,EAX
+//         0047de90     SCASB.RE   ES:EDI
+//         0047de92     NOT        this
+//         0047de94     SUB        EDI,this
+//         0047de96     MOV        EAX,this
+//         0047de98     MOV        ESI,EDI
+//         0047de9a     MOV        EDI,dword ptr [EBX + 0x4]
+//         0047de9d     SHR        this,0x2
+//         0047dea0     MOVSD.REP  ES:EDI,ESI
+//         0047dea2     MOV        this,EAX
+//         0047dea4     AND        this,0x3
+//         0047dea7     MOVSB.REP  ES:EDI,ESI
+//         0047dea9     MOV        EDI,dword ptr [ESP + local_4]
+//                               LAB_0047dead                                                 XREF[1]:     0047de87(j)
+//                              Pnl_txt.cpp:1513 (7)
+//         0047dead     MOV        this,dword ptr [ESP + param_4]
+//         0047deb1     MOV        dword ptr [EBX + 0x8],this
+//                              Pnl_txt.cpp:1514 (5)
+//         0047deb4     XOR        this,this
+//         0047deb6     MOV        dword ptr [EBX + 0xc],this
+//                              Pnl_txt.cpp:1517 (10)
+//         0047deb9     MOV        EAX,dword ptr [EDI + 0xf4]
+//         0047debf     CMP        EAX,this
+//         0047dec1     JNZ        LAB_0047decb
+//                              Pnl_txt.cpp:1518 (6)
+//         0047dec3     MOV        dword ptr [EDI + 0xf4],EBX
+//                              Pnl_txt.cpp:1519 (10)
+//         0047dec9     JMP        LAB_0047df25
+//                               LAB_0047decb                                                 XREF[1]:     0047dec1(j)
+//         0047decb     CMP        dword ptr [EDI + 0x15c],this
+//         0047ded1     JZ         LAB_0047df4b
+//                              Pnl_txt.cpp:1522 (14)
+//         0047ded3     MOV        ESI,EAX
+//         0047ded5     XOR        EBP,EBP
+//         0047ded7     TEST       ESI,ESI
+//         0047ded9     JZ         LAB_0047df1e
+//         0047dedb     MOV        EDI,dword ptr [->KERNEL32.DLL::CompareStringA]   = 0048abe4
+//                               LAB_0047dee1                                                 XREF[1]:     0047df00(j)
+//                              Pnl_txt.cpp:1525 (24)
+//         0047dee1     MOV        EDX,dword ptr [ESI]
+//         0047dee3     MOV        EAX,dword ptr [EBX]
+//         0047dee5     PUSH       -0x1
+//         0047dee7     PUSH       EDX=>DAT_fffffff8
+//         0047dee8     PUSH       offset DAT_fffffff4
+//         0047deea     PUSH       EAX=>DAT_fffffff0
+//         0047deeb     PUSH       0x1
+//         0047deed     PUSH       0x400
+//         0047def2     CALL       EDI=>KERNEL32.DLL::CompareStringA
+//         0047def4     CMP        EAX,0x1
+//         0047def7     JZ         LAB_0047df04
+//                              Pnl_txt.cpp:1534 (11)
+//         0047def9     MOV        EBP,ESI
+//         0047defb     MOV        ESI,dword ptr [ESI + 0xc]
+//         0047defe     TEST       ESI,ESI
+//         0047df00     JNZ        LAB_0047dee1
+//         0047df02     JMP        LAB_0047df1a
+//                               LAB_0047df04                                                 XREF[1]:     0047def7(j)
+//                              Pnl_txt.cpp:1528 (7)
+//         0047df04     TEST       EBP,EBP
+//         0047df06     MOV        dword ptr [EBX + 0xc],ESI
+//         0047df09     JZ         LAB_0047df10
+//                              Pnl_txt.cpp:1529 (3)
+//         0047df0b     MOV        dword ptr [EBP + 0xc],EBX
+//                              Pnl_txt.cpp:1530 (2)
+//         0047df0e     JMP        LAB_0047df1a
+//                               LAB_0047df10                                                 XREF[1]:     0047df09(j)
+//                              Pnl_txt.cpp:1531 (10)
+//         0047df10     MOV        this,dword ptr [ESP + 0x10]
+//         0047df14     MOV        dword ptr [ECX + this->list],EBX
+//                               LAB_0047df1a                                                 XREF[2]:     0047df02(j), 0047df0e(j)
+//                              Pnl_txt.cpp:1536 (4)
+//         0047df1a     TEST       ESI,ESI
+//         0047df1c     JNZ        LAB_0047df21
+//                               LAB_0047df1e                                                 XREF[1]:     0047ded9(j)
+//                              Pnl_txt.cpp:1537 (3)
+//         0047df1e     MOV        dword ptr [EBP + 0xc],EBX
+//                               LAB_0047df21                                                 XREF[1]:     0047df1c(j)
+//                              Pnl_txt.cpp:1539 (4)
+//         0047df21     MOV        EDI,dword ptr [ESP + local_4]
+//                               LAB_0047df25                                                 XREF[4]:     0047dec9(j), 0047df5c(j),
+//                                                                                                         0047df75(j), 0047df8b(j)
+//                              Pnl_txt.cpp:1578 (7)
+//         0047df25     INC        word ptr [EDI + 0xf8]
+//                              Pnl_txt.cpp:1579 (9)
+//         0047df2c     PUSH       0x1
+//         0047df2e     MOV        this,EDI
+//         0047df30     CALL       TTextPanel::calc_draw_info                       void calc_draw_info(TTextPanel * this, int pa
+//                              Pnl_txt.cpp:1580 (9)
+//         0047df35     MOV        EAX,dword ptr [EDI]
+//         0047df37     PUSH       0x1
+//         0047df39     MOV        this,EDI
+//         0047df3b     CALL       dword ptr [EAX + 0x20]
+//                              Pnl_txt.cpp:1582 (13)
+//         0047df3e     POP        EDI
+//         0047df3f     POP        ESI
+//         0047df40     POP        EBP
+//         0047df41     MOV        EAX,0x1
+//         0047df46     POP        EBX
+//         0047df47     POP        this
+//         0047df48     RET        0x10
+//                               LAB_0047df4b                                                 XREF[1]:     0047ded1(j)
+//                              Pnl_txt.cpp:1539 (8)
+//         0047df4b     MOV        EDX,dword ptr [ESP + param_1]
+//         0047df4f     CMP        EDX,this
+//         0047df51     JNZ        LAB_0047df5e
+//                              Pnl_txt.cpp:1542 (3)
+//         0047df53     MOV        dword ptr [EBX + 0xc],EAX
+//                              Pnl_txt.cpp:1543 (6)
+//         0047df56     MOV        dword ptr [EDI + 0xf4],EBX
+//                              Pnl_txt.cpp:1545 (13)
+//         0047df5c     JMP        LAB_0047df25
+//                               LAB_0047df5e                                                 XREF[1]:     0047df51(j)
+//         0047df5e     MOVSX      ESI,word ptr [EDI + 0xf8]
+//         0047df65     CMP        EDX,ESI
+//         0047df67     JL         LAB_0047df77
+//                               LAB_0047df69                                                 XREF[1]:     0047df70(j)
+//                              Pnl_txt.cpp:1548 (2)
+//         0047df69     MOV        this,EAX
+//                              Pnl_txt.cpp:1551 (7)
+//         0047df6b     MOV        EAX,dword ptr [ECX + this->_padding_]
+//         0047df6e     TEST       EAX,EAX
+//         0047df70     JNZ        LAB_0047df69
+//                              Pnl_txt.cpp:1553 (3)
+//         0047df72     MOV        dword ptr [ECX + this->_padding_],EBX
+//                              Pnl_txt.cpp:1559 (2)
+//         0047df75     JMP        LAB_0047df25
+//                               LAB_0047df77                                                 XREF[1]:     0047df67(j)
+//                              Pnl_txt.cpp:1566 (5)
+//         0047df77     DEC        EDX
+//                               LAB_0047df78                                                 XREF[1]:     0047df80(j)
+//         0047df78     CMP        this,EDX
+//         0047df7a     JZ         LAB_0047df82
+//                              Pnl_txt.cpp:1572 (3)
+//         0047df7c     MOV        EAX,dword ptr [EAX + 0xc]
+//                              Pnl_txt.cpp:1573 (3)
+//         0047df7f     INC        this
+//         0047df80     JMP        LAB_0047df78
+//                               LAB_0047df82                                                 XREF[1]:     0047df7a(j)
+//                              Pnl_txt.cpp:1568 (6)
+//         0047df82     MOV        EDX,dword ptr [EAX + 0xc]
+//         0047df85     MOV        dword ptr [EBX + 0xc],EDX
+//                              Pnl_txt.cpp:1569 (5)
+//         0047df88     MOV        dword ptr [EAX + 0xc],EBX
+//         0047df8b     JMP        LAB_0047df25
+//         0047df8d     ??         90h
+//         0047df8e     NOP
+//         0047df8f     NOP
     return 0;
 }
 
@@ -4267,53 +5109,45 @@ int TTextPanel::insert_line(long param_1, long param_2, long param_3) {
 //                              int __thiscall insert_line(TTextPanel * this, long param_1, long par
 //              int               EAX:4          <RETURN>
 //              TTextPanel *      ECX:4 (auto)   this
-//              long              Stack[0x4]:4   param_1                   XREF[1]:     0047e02a(R)
-//              long              Stack[0x8]:4   param_2                   XREF[1]:     0047dff0(R)
-//              long              Stack[0xc]:4   param_3                   XREF[1]:     0047e005(R)
-//              long              Stack[0x10]:4  param_4                   XREF[1]:     0047e01e(R)
-//              char[256]         Stack[-0x104   str1                      XREF[0,2]:   0047dfe6(*), 0047e031(*)
-//              char[256]         Stack[-0x204   str2                      XREF[0,2]:   0047e00c(*), 0047e025(*)
-//                               ?insert_line@TTextPanel@@QAEHJJJJ@Z                          XREF[2]:     append_line:0047dd47(c),
-//                               TTextPanel::insert_line                                                   change_line:0047e0db(c)
-//                              Pnl_txt.cpp:1598 (6)
-//         0047dfe0     SUB        ESP,0x200
-//                              Pnl_txt.cpp:1602 (31)
-//         0047dfe6     LEA        EAX=>str1[4],[ESP + 0x100]
-//         0047dfed     PUSH       ESI
-//         0047dfee     MOV        ESI,this
-//         0047dff0     MOV        this,dword ptr [ESP + param_2]
-//         0047dff7     PUSH       0x100
-//         0047dffc     PUSH       EAX
-//         0047dffd     PUSH       this
-//         0047dffe     MOV        this,ESI
-//         0047e000     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
-//                              Pnl_txt.cpp:1603 (25)
-//         0047e005     MOV        EAX,dword ptr [ESP + param_3]
-//         0047e00c     LEA        EDX=>str2[4],[ESP + 0x4]
-//         0047e010     PUSH       0x100
-//         0047e015     PUSH       EDX
-//         0047e016     PUSH       EAX
-//         0047e017     MOV        this,ESI
-//         0047e019     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
-//                              Pnl_txt.cpp:1605 (36)
-//         0047e01e     MOV        this,dword ptr [ESP + param_4]
-//         0047e025     LEA        EDX=>str2[4],[ESP + 0x4]
-//         0047e029     PUSH       this
-//         0047e02a     MOV        this,dword ptr [ESP + param_1]
-//         0047e031     LEA        EAX=>str1[4],[ESP + 0x108]
-//         0047e038     PUSH       EDX
-//         0047e039     PUSH       EAX
-//         0047e03a     PUSH       this
-//         0047e03b     MOV        this,ESI
-//         0047e03d     CALL       TTextPanel::insert_line                          int insert_line(TTextPanel * this, long param
-//                              Pnl_txt.cpp:1606 (10)
-//         0047e042     POP        ESI
-//         0047e043     ADD        ESP,0x200
-//         0047e049     RET        0x10
-//         0047e04c     ??         90h
-//         0047e04d     NOP
-//         0047e04e     NOP
-//         0047e04f     NOP
+//              long              Stack[0x4]:4   param_1                   XREF[1]:     0047dfb9(R)
+//              long              Stack[0x8]:4   param_2                   XREF[1]:     0047df9d(R)
+//              long              Stack[0xc]:4   param_3                   XREF[1]:     0047dfb2(R)
+//              char[256]         Stack[-0x104   str                       XREF[0,2]:   0047df96(*), 0047dfc0(*)
+//                               ?insert_line@TTextPanel@@QAEHJJJ@Z                           XREF[2]:     insert_line:00475349(c),
+//                               TTextPanel::insert_line                                                   append_line:0047dd22(c)
+//                              Pnl_txt.cpp:1588 (6)
+//         0047df90     SUB        ESP,0x100
+//                              Pnl_txt.cpp:1590 (28)
+//         0047df96     LEA        EAX=>str[4],[ESP]
+//         0047df9a     PUSH       ESI
+//         0047df9b     MOV        ESI,this
+//         0047df9d     MOV        this,dword ptr [ESP + param_2]
+//         0047dfa4     PUSH       0x100
+//         0047dfa9     PUSH       EAX
+//         0047dfaa     PUSH       this
+//         0047dfab     MOV        this,ESI
+//         0047dfad     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
+//                              Pnl_txt.cpp:1591 (28)
+//         0047dfb2     MOV        EDX,dword ptr [ESP + param_3]
+//         0047dfb9     MOV        this,dword ptr [ESP + param_1]
+//         0047dfc0     LEA        EAX=>str[4],[ESP + 0x4]
+//         0047dfc4     PUSH       EDX
+//         0047dfc5     PUSH       EAX
+//         0047dfc6     PUSH       this
+//         0047dfc7     MOV        this,ESI
+//         0047dfc9     CALL       TTextPanel::insert_line                          int insert_line(TTextPanel * this, long param
+//                              Pnl_txt.cpp:1592 (10)
+//         0047dfce     POP        ESI
+//         0047dfcf     ADD        ESP,0x100
+//         0047dfd5     RET        0xc
+//         0047dfd8     ??         90h
+//         0047dfd9     NOP
+//         0047dfda     NOP
+//         0047dfdb     NOP
+//         0047dfdc     NOP
+//         0047dfdd     NOP
+//         0047dfde     NOP
+//         0047dfdf     NOP
     return 0;
 }
 
@@ -4374,61 +5208,61 @@ int TTextPanel::insert_line(long param_1, long param_2, long param_3, long param
 
 int TTextPanel::change_line(long param_1, char* param_2, char* param_3, long param_4) {
     /* TODO: Stub */
-//                              int __thiscall change_line(TTextPanel * this, long param_1, long par
+//                              int __thiscall change_line(TTextPanel * this, long param_1, char * p
 //              int               EAX:4          <RETURN>
 //              TTextPanel *      ECX:4 (auto)   this
-//              long              Stack[0x4]:4   param_1                   XREF[1]:     0047e0b9(R)
-//              long              Stack[0x8]:4   param_2                   XREF[1]:     0047e0b4(R)
-//              long              Stack[0xc]:4   param_3                   XREF[1]:     0047e0c0(R)
-//              long              Stack[0x10]:4  param_4                   XREF[1]:     0047e0b0(R)
-//                               ?change_line@TTextPanel@@QAEHJJJJ@Z
-//                               TTextPanel::change_line
-//                              Pnl_txt.cpp:1634 (52)
-//         0047e0b0     MOV        EAX,dword ptr [ESP + param_4]
-//         0047e0b4     MOV        EDX,dword ptr [ESP + param_2]
-//         0047e0b8     PUSH       EBX
-//         0047e0b9     MOV        EBX,dword ptr [ESP + param_1]
-//         0047e0bd     PUSH       ESI
-//         0047e0be     MOV        ESI,this
-//         0047e0c0     MOV        this,dword ptr [ESP + param_3]
-//         0047e0c4     PUSH       EDI
-//         0047e0c5     MOV        EDI,dword ptr [ESI + 0x15c]
-//         0047e0cb     PUSH       EAX
-//         0047e0cc     PUSH       this
-//         0047e0cd     PUSH       EDX
-//         0047e0ce     PUSH       EBX
-//         0047e0cf     MOV        this,ESI
-//         0047e0d1     MOV        dword ptr [ESI + 0x15c],0x0
-//         0047e0db     CALL       TTextPanel::insert_line                          int insert_line(TTextPanel * this, long param
-//         0047e0e0     TEST       EAX,EAX
-//         0047e0e2     JNZ        LAB_0047e0f0
-//                              Pnl_txt.cpp:1642 (6)
-//         0047e0e4     MOV        dword ptr [ESI + 0x15c],EDI
-//                              Pnl_txt.cpp:1650 (6)
-//         0047e0ea     POP        EDI
-//         0047e0eb     POP        ESI
-//         0047e0ec     POP        EBX
-//         0047e0ed     RET        0x10
-//                               LAB_0047e0f0                                                 XREF[1]:     0047e0e2(j)
-//                              Pnl_txt.cpp:1646 (9)
-//         0047e0f0     INC        EBX
-//         0047e0f1     MOV        this,ESI
-//         0047e0f3     PUSH       EBX
-//         0047e0f4     CALL       TTextPanel::delete_line                          int delete_line(TTextPanel * this, long param
-//                              Pnl_txt.cpp:1648 (6)
-//         0047e0f9     MOV        dword ptr [ESI + 0x15c],EDI
-//                              Pnl_txt.cpp:1650 (11)
-//         0047e0ff     POP        EDI
-//         0047e100     POP        ESI
-//         0047e101     MOV        EAX,0x1
-//         0047e106     POP        EBX
-//         0047e107     RET        0x10
-//         0047e10a     ??         90h
-//         0047e10b     NOP
-//         0047e10c     NOP
-//         0047e10d     NOP
-//         0047e10e     NOP
-//         0047e10f     NOP
+//              long              Stack[0x4]:4   param_1                   XREF[1]:     0047e059(R)
+//              char *            Stack[0x8]:4   param_2                   XREF[1]:     0047e054(R)
+//              char *            Stack[0xc]:4   param_3                   XREF[1]:     0047e060(R)
+//              long              Stack[0x10]:4  param_4                   XREF[1]:     0047e050(R)
+//                               ?change_line@TTextPanel@@QAEHJPAD0J@Z                        XREF[2]:     fillScenarios:004b46f3(c),
+//                               TTextPanel::change_line                                                   fillScenarios:004b6081(c)
+//                              Pnl_txt.cpp:1612 (52)
+//         0047e050     MOV        EAX,dword ptr [ESP + param_4]
+//         0047e054     MOV        EDX,dword ptr [ESP + param_2]
+//         0047e058     PUSH       EBX
+//         0047e059     MOV        EBX,dword ptr [ESP + param_1]
+//         0047e05d     PUSH       ESI
+//         0047e05e     MOV        ESI,this
+//         0047e060     MOV        this,dword ptr [ESP + param_3]
+//         0047e064     PUSH       EDI
+//         0047e065     MOV        EDI,dword ptr [ESI + 0x15c]
+//         0047e06b     PUSH       EAX
+//         0047e06c     PUSH       this
+//         0047e06d     PUSH       EDX
+//         0047e06e     PUSH       EBX
+//         0047e06f     MOV        this,ESI
+//         0047e071     MOV        dword ptr [ESI + 0x15c],0x0
+//         0047e07b     CALL       TTextPanel::insert_line                          int insert_line(TTextPanel * this, long param
+//         0047e080     TEST       EAX,EAX
+//         0047e082     JNZ        LAB_0047e090
+//                              Pnl_txt.cpp:1620 (6)
+//         0047e084     MOV        dword ptr [ESI + 0x15c],EDI
+//                              Pnl_txt.cpp:1628 (6)
+//         0047e08a     POP        EDI
+//         0047e08b     POP        ESI
+//         0047e08c     POP        EBX
+//         0047e08d     RET        0x10
+//                               LAB_0047e090                                                 XREF[1]:     0047e082(j)
+//                              Pnl_txt.cpp:1624 (9)
+//         0047e090     INC        EBX
+//         0047e091     MOV        this,ESI
+//         0047e093     PUSH       EBX
+//         0047e094     CALL       TTextPanel::delete_line                          int delete_line(TTextPanel * this, long param
+//                              Pnl_txt.cpp:1626 (6)
+//         0047e099     MOV        dword ptr [ESI + 0x15c],EDI
+//                              Pnl_txt.cpp:1628 (11)
+//         0047e09f     POP        EDI
+//         0047e0a0     POP        ESI
+//         0047e0a1     MOV        EAX,0x1
+//         0047e0a6     POP        EBX
+//         0047e0a7     RET        0x10
+//         0047e0aa     ??         90h
+//         0047e0ab     NOP
+//         0047e0ac     NOP
+//         0047e0ad     NOP
+//         0047e0ae     NOP
+//         0047e0af     NOP
     return 0;
 }
 
@@ -4624,161 +5458,100 @@ int TTextPanel::delete_line(long param_1) {
 
 long TTextPanel::get_line() {
     /* TODO: Stub */
-//                              long __thiscall get_line(TTextPanel * this, char * param_1)
+//                              long __thiscall get_line(TTextPanel * this)
 //              long              EAX:4          <RETURN>
 //              TTextPanel *      ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0047e240(R)
-//                               ?get_line@TTextPanel@@QAEJPAD@Z                              XREF[8]:     get_line:004753cf(c),
-//                               TTextPanel::get_line                                                      check_lists:0048ff2b(c),
-//                                                                                                         check_lists:0048ff53(c),
-//                                                                                                         add_scenario:004903af(c),
-//                                                                                                         remove_scenario:0049042f(c),
-//                                                                                                         TribeLoadSavedGameScreen:0049e011(
-//                                                                                                         getSettings:004b4790(c),
-//                                                                                                         getSettings:004b628f(c)
-//                              Pnl_txt.cpp:1746 (4)
-//         0047e230     PUSH       EBX
-//         0047e231     PUSH       EBP
-//         0047e232     PUSH       ESI
-//         0047e233     PUSH       EDI
-//                              Pnl_txt.cpp:1752 (16)
-//         0047e234     MOV        EDI,dword ptr [ECX + this->list]
-//         0047e23a     XOR        EAX,EAX
-//         0047e23c     TEST       EDI,EDI
-//         0047e23e     JZ         LAB_0047e27d
-//         0047e240     MOV        EBP,dword ptr [ESP + param_1]
-//                               LAB_0047e244                                                 XREF[1]:     0047e27b(j)
-//                              Pnl_txt.cpp:1754 (52)
-//         0047e244     MOV        this,dword ptr [EDI]
-//         0047e246     MOV        ESI,EBP
-//                               LAB_0047e248                                                 XREF[1]:     0047e266(j)
-//         0047e248     MOV        BL,byte ptr [this->_padding_]
-//         0047e24a     MOV        DL,BL
-//         0047e24c     CMP        BL,byte ptr [ESI]
-//         0047e24e     JNZ        LAB_0047e26c
-//         0047e250     TEST       DL,DL
-//         0047e252     JZ         LAB_0047e268
-//         0047e254     MOV        BL,byte ptr [ECX + this+0x1]
-//         0047e257     MOV        DL,BL
-//         0047e259     CMP        BL,byte ptr [ESI + 0x1]
-//         0047e25c     JNZ        LAB_0047e26c
-//         0047e25e     ADD        this,0x2
-//         0047e261     ADD        ESI,0x2
-//         0047e264     TEST       DL,DL
-//         0047e266     JNZ        LAB_0047e248
-//                               LAB_0047e268                                                 XREF[1]:     0047e252(j)
-//         0047e268     XOR        this,this
-//         0047e26a     JMP        LAB_0047e271
-//                               LAB_0047e26c                                                 XREF[2]:     0047e24e(j), 0047e25c(j)
-//         0047e26c     SBB        this,this
-//         0047e26e     SBB        this,-0x1
-//                               LAB_0047e271                                                 XREF[1]:     0047e26a(j)
-//         0047e271     TEST       this,this
-//         0047e273     JZ         LAB_0047e280
-//         0047e275     MOV        EDI,dword ptr [EDI + 0xc]
-//                              Pnl_txt.cpp:1756 (5)
-//         0047e278     INC        EAX
-//         0047e279     TEST       EDI,EDI
-//         0047e27b     JNZ        LAB_0047e244
-//                               LAB_0047e27d                                                 XREF[1]:     0047e23e(j)
-//                              Pnl_txt.cpp:1759 (3)
-//         0047e27d     OR         EAX,0xffffffff
-//                               LAB_0047e280                                                 XREF[1]:     0047e273(j)
-//                              Pnl_txt.cpp:1760 (7)
-//         0047e280     POP        EDI
-//         0047e281     POP        ESI
-//         0047e282     POP        EBP
-//         0047e283     POP        EBX
-//         0047e284     RET        0x4
-//         0047e287     ??         90h
-//         0047e288     NOP
-//         0047e289     NOP
-//         0047e28a     NOP
-//         0047e28b     NOP
-//         0047e28c     NOP
-//         0047e28d     NOP
-//         0047e28e     NOP
-//         0047e28f     NOP
+//                               ?get_line@TTextPanel@@QAEJXZ                                 XREF[29]:    setCurrentLineId:0047517d(c),
+//                               TTextPanel::get_line                                                      add_scenario:004903c6(c),
+//                                                                                                         add_scenario:004903df(c),
+//                                                                                                         remove_scenario:00490446(c),
+//                                                                                                         remove_scenario:0049045f(c),
+//                                                                                                         move_scenario_up:00490489(c),
+//                                                                                                         move_scenario_up:004904b3(c),
+//                                                                                                         move_scenario_up:004904cb(c),
+//                                                                                                         move_scenario_up:004904e3(c),
+//                                                                                                         move_scenario_up:004904fd(c),
+//                                                                                                         fillCampaigns:00491255(c),
+//                                                                                                         startGame:00491363(c),
+//                                                                                                         startGame:0049137f(c),
+//                                                                                                         action:0049e3fb(c),
+//                                                                                                         action:004a6a04(c),
+//                                                                                                         action:004a6bb6(c),
+//                                                                                                         action:004a6cc3(c),
+//                                                                                                         fillMissionText:004b473d(c),
+//                                                                                                         fillMissionText:004b617f(c),
+//                                                                                                         activateVictoryPanels:004b68b8(c),
+//                                                                                                         [more]
+//                              Pnl_txt.cpp:1716 (10)
+//         0047e1e0     CMP        word ptr [ECX + this->num_lines],0x0
+//         0047e1e8     JNZ        LAB_0047e1ee
+//                              Pnl_txt.cpp:1718 (3)
+//         0047e1ea     OR         EAX,0xffffffff
+//                              Pnl_txt.cpp:1721 (1)
+//         0047e1ed     RET
+//                               LAB_0047e1ee                                                 XREF[1]:     0047e1e8(j)
+//                              Pnl_txt.cpp:1720 (7)
+//         0047e1ee     MOVSX      EAX,word ptr [ECX + this->cur_line]
+//                              Pnl_txt.cpp:1721 (1)
+//         0047e1f5     RET
+//         0047e1f6     ??         90h
+//         0047e1f7     NOP
+//         0047e1f8     NOP
+//         0047e1f9     NOP
+//         0047e1fa     NOP
+//         0047e1fb     NOP
+//         0047e1fc     NOP
+//         0047e1fd     NOP
+//         0047e1fe     NOP
+//         0047e1ff     NOP
     return 0;
 }
 
 long TTextPanel::get_line(long param_1) {
     /* TODO: Stub */
-//                              long __thiscall get_line(TTextPanel * this, char * param_1)
+//                              long __thiscall get_line(TTextPanel * this, long param_1)
 //              long              EAX:4          <RETURN>
 //              TTextPanel *      ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0047e240(R)
-//                               ?get_line@TTextPanel@@QAEJPAD@Z                              XREF[8]:     get_line:004753cf(c),
-//                               TTextPanel::get_line                                                      check_lists:0048ff2b(c),
-//                                                                                                         check_lists:0048ff53(c),
-//                                                                                                         add_scenario:004903af(c),
-//                                                                                                         remove_scenario:0049042f(c),
-//                                                                                                         TribeLoadSavedGameScreen:0049e011(
-//                                                                                                         getSettings:004b4790(c),
-//                                                                                                         getSettings:004b628f(c)
-//                              Pnl_txt.cpp:1746 (4)
-//         0047e230     PUSH       EBX
-//         0047e231     PUSH       EBP
-//         0047e232     PUSH       ESI
-//         0047e233     PUSH       EDI
-//                              Pnl_txt.cpp:1752 (16)
-//         0047e234     MOV        EDI,dword ptr [ECX + this->list]
-//         0047e23a     XOR        EAX,EAX
-//         0047e23c     TEST       EDI,EDI
-//         0047e23e     JZ         LAB_0047e27d
-//         0047e240     MOV        EBP,dword ptr [ESP + param_1]
-//                               LAB_0047e244                                                 XREF[1]:     0047e27b(j)
-//                              Pnl_txt.cpp:1754 (52)
-//         0047e244     MOV        this,dword ptr [EDI]
-//         0047e246     MOV        ESI,EBP
-//                               LAB_0047e248                                                 XREF[1]:     0047e266(j)
-//         0047e248     MOV        BL,byte ptr [this->_padding_]
-//         0047e24a     MOV        DL,BL
-//         0047e24c     CMP        BL,byte ptr [ESI]
-//         0047e24e     JNZ        LAB_0047e26c
-//         0047e250     TEST       DL,DL
-//         0047e252     JZ         LAB_0047e268
-//         0047e254     MOV        BL,byte ptr [ECX + this+0x1]
-//         0047e257     MOV        DL,BL
-//         0047e259     CMP        BL,byte ptr [ESI + 0x1]
-//         0047e25c     JNZ        LAB_0047e26c
-//         0047e25e     ADD        this,0x2
-//         0047e261     ADD        ESI,0x2
-//         0047e264     TEST       DL,DL
-//         0047e266     JNZ        LAB_0047e248
-//                               LAB_0047e268                                                 XREF[1]:     0047e252(j)
-//         0047e268     XOR        this,this
-//         0047e26a     JMP        LAB_0047e271
-//                               LAB_0047e26c                                                 XREF[2]:     0047e24e(j), 0047e25c(j)
-//         0047e26c     SBB        this,this
-//         0047e26e     SBB        this,-0x1
-//                               LAB_0047e271                                                 XREF[1]:     0047e26a(j)
-//         0047e271     TEST       this,this
-//         0047e273     JZ         LAB_0047e280
-//         0047e275     MOV        EDI,dword ptr [EDI + 0xc]
-//                              Pnl_txt.cpp:1756 (5)
-//         0047e278     INC        EAX
-//         0047e279     TEST       EDI,EDI
-//         0047e27b     JNZ        LAB_0047e244
-//                               LAB_0047e27d                                                 XREF[1]:     0047e23e(j)
-//                              Pnl_txt.cpp:1759 (3)
-//         0047e27d     OR         EAX,0xffffffff
-//                               LAB_0047e280                                                 XREF[1]:     0047e273(j)
-//                              Pnl_txt.cpp:1760 (7)
-//         0047e280     POP        EDI
-//         0047e281     POP        ESI
-//         0047e282     POP        EBP
-//         0047e283     POP        EBX
-//         0047e284     RET        0x4
-//         0047e287     ??         90h
-//         0047e288     NOP
-//         0047e289     NOP
-//         0047e28a     NOP
-//         0047e28b     NOP
-//         0047e28c     NOP
-//         0047e28d     NOP
-//         0047e28e     NOP
-//         0047e28f     NOP
+//              long              Stack[0x4]:4   param_1                   XREF[1]:     0047e20c(R)
+//                               ?get_line@TTextPanel@@QAEJJ@Z                                XREF[5]:     get_line:004753af(c),
+//                               TTextPanel::get_line                                                      fillCampaigns:00491216(c),
+//                                                                                                         fillScenarios:004912f2(c),
+//                                                                                                         fillList:004a005c(c),
+//                                                                                                         get_player_names:004a6872(c)
+//                              Pnl_txt.cpp:1727 (16)
+//         0047e200     MOV        this,dword ptr [ECX + this->list]
+//         0047e206     XOR        EAX,EAX
+//         0047e208     TEST       this,this
+//         0047e20a     JZ         LAB_0047e21d
+//         0047e20c     MOV        EDX,dword ptr [ESP + param_1]
+//                               LAB_0047e210                                                 XREF[1]:     0047e21b(j)
+//                              Pnl_txt.cpp:1734 (8)
+//         0047e210     CMP        dword ptr [ECX + this->_padding_],EDX
+//         0047e213     JZ         LAB_0047e220
+//         0047e215     MOV        this,dword ptr [ECX + this->_padding_]
+//                              Pnl_txt.cpp:1736 (5)
+//         0047e218     INC        EAX
+//         0047e219     TEST       this,this
+//         0047e21b     JNZ        LAB_0047e210
+//                               LAB_0047e21d                                                 XREF[1]:     0047e20a(j)
+//                              Pnl_txt.cpp:1739 (3)
+//         0047e21d     OR         EAX,0xffffffff
+//                               LAB_0047e220                                                 XREF[1]:     0047e213(j)
+//                              Pnl_txt.cpp:1740 (3)
+//         0047e220     RET        0x4
+//         0047e223     ??         90h
+//         0047e224     NOP
+//         0047e225     NOP
+//         0047e226     NOP
+//         0047e227     NOP
+//         0047e228     NOP
+//         0047e229     NOP
+//         0047e22a     NOP
+//         0047e22b     NOP
+//         0047e22c     NOP
+//         0047e22d     NOP
+//         0047e22e     NOP
+//         0047e22f     NOP
     return 0;
 }
 
@@ -4864,66 +5637,33 @@ long TTextPanel::get_line(char* param_1) {
 
 char* TTextPanel::get_text() {
     /* TODO: Stub */
-//                              char * __thiscall get_text(TTextPanel * this, long param_1)
+//                              char * __thiscall get_text(TTextPanel * this)
 //              char *            EAX:4          <RETURN>
 //              TTextPanel *      ECX:4 (auto)   this
-//              long              Stack[0x4]:4   param_1                   XREF[1]:     0047e2ac(R)
-//                               ?get_text@TTextPanel@@QAEPADJ@Z                              XREF[23]:    action:004744f7(c),
-//                               TTextPanel::get_text                                                      setCurrentLineId:004751a0(c),
-//                                                                                                         set_line:00475283(c),
-//                                                                                                         get_text:0047540f(c),
-//                                                                                                         key_down_action:004772af(c),
-//                                                                                                         key_down_action:00477343(c),
-//                                                                                                         key_down_action:00477364(c),
-//                                                                                                         key_down_action:004773ce(c),
-//                                                                                                         key_down_action:0047749b(c),
-//                                                                                                         key_down_action:004774d5(c),
-//                                                                                                         key_down_action:00477627(c),
-//                                                                                                         draw_line:0047d77f(c),
-//                                                                                                         calc_line_pos:0047d9f2(c),
-//                                                                                                         get_text:0047e298(c),
-//                                                                                                         check_lists:0048ff1f(c),
-//                                                                                                         check_lists:0048ff47(c),
-//                                                                                                         make_campaign:004901d3(c),
-//                                                                                                         make_campaign:004901ef(c),
-//                                                                                                         draw_scrolled_line:00493183(c),
-//                                                                                                         fillScenarios:004b46ae(c), [more]
-//                              Pnl_txt.cpp:1774 (16)
-//         0047e2a0     MOV        EAX,dword ptr [ECX + this->list]
-//         0047e2a6     XOR        EDX,EDX
-//         0047e2a8     TEST       EAX,EAX
-//         0047e2aa     JZ         LAB_0047e2ce
-//         0047e2ac     MOV        this,dword ptr [ESP + param_1]
-//                               LAB_0047e2b0                                                 XREF[1]:     0047e2ba(j)
-//                              Pnl_txt.cpp:1783 (7)
-//         0047e2b0     CMP        EDX,this
-//         0047e2b2     JZ         LAB_0047e2c9
-//         0047e2b4     MOV        EAX,dword ptr [EAX + 0xc]
-//                              Pnl_txt.cpp:1785 (5)
-//         0047e2b7     INC        EDX
-//         0047e2b8     TEST       EAX,EAX
-//         0047e2ba     JNZ        LAB_0047e2b0
-//                              Pnl_txt.cpp:1788 (5)
-//         0047e2bc     MOV        [null_0086b250],AL                               = align(4)
-//                              Pnl_txt.cpp:1789 (5)
-//         0047e2c1     MOV        EAX,null_0086b250                                = align(4)
-//                              Pnl_txt.cpp:1790 (3)
-//         0047e2c6     RET        0x4
-//                               LAB_0047e2c9                                                 XREF[1]:     0047e2b2(j)
-//                              Pnl_txt.cpp:1784 (2)
-//         0047e2c9     MOV        EAX,dword ptr [EAX]
-//                              Pnl_txt.cpp:1790 (3)
-//         0047e2cb     RET        0x4
-//                               LAB_0047e2ce                                                 XREF[1]:     0047e2aa(j)
-//                              Pnl_txt.cpp:1788 (7)
-//         0047e2ce     MOV        byte ptr [null_0086b250],0x0                     = align(4)
-//                              Pnl_txt.cpp:1789 (5)
-//         0047e2d5     MOV        EAX,null_0086b250                                = align(4)
-//                              Pnl_txt.cpp:1790 (3)
-//         0047e2da     RET        0x4
-//         0047e2dd     ??         90h
-//         0047e2de     NOP
-//         0047e2df     NOP
+//                               ?get_text@TTextPanel@@QAEPADXZ                               XREF[15]:    get_text:004753ea(c),
+//                               TTextPanel::get_text                                                      char_action:0047700e(c),
+//                                                                                                         char_action:00477031(c),
+//                                                                                                         char_action:00477053(c),
+//                                                                                                         get_text:0047dc6d(T),
+//                                                                                                         currentLine:0047dc70(j),
+//                                                                                                         add_scenario:0049038a(c),
+//                                                                                                         remove_scenario:0049040a(c),
+//                                                                                                         move_scenario_up:0049049c(c),
+//                                                                                                         move_scenario_down:0049054b(c),
+//                                                                                                         show_timings:004994bc(c),
+//                                                                                                         action:0049fb4f(c),
+//                                                                                                         action:0049fb66(c),
+//                                                                                                         action:004a6bca(c),
+//                                                                                                         sendSettings:004b47e6(c),
+//                                                                                                         sendSettings:004b6525(c)
+//                              Pnl_txt.cpp:1766 (13)
+//         0047e290     MOVSX      EAX,word ptr [ECX + this->cur_line]
+//         0047e297     PUSH       EAX
+//         0047e298     CALL       TTextPanel::get_text                             char * get_text(TTextPanel * this, long param
+//                              Pnl_txt.cpp:1768 (1)
+//         0047e29d     RET
+//         0047e29e     ??         90h
+//         0047e29f     NOP
     return 0;
 }
 
@@ -4994,48 +5734,19 @@ char* TTextPanel::get_text(long param_1) {
 
 char* TTextPanel::get_text2() {
     /* TODO: Stub */
-//                              char * __thiscall get_text2(TTextPanel * this, long param_1)
+//                              char * __thiscall get_text2(TTextPanel * this)
 //              char *            EAX:4          <RETURN>
 //              TTextPanel *      ECX:4 (auto)   this
-//              long              Stack[0x4]:4   param_1                   XREF[1]:     0047e2fc(R)
-//                               ?get_text2@TTextPanel@@QAEPADJ@Z                             XREF[3]:     draw_line:0047d789(c),
-//                               TTextPanel::get_text2                                                     get_text2:0047e2e8(c),
-//                                                                                                         draw_scrolled_line:0049318d(c)
-//                              Pnl_txt.cpp:1804 (16)
-//         0047e2f0     MOV        EAX,dword ptr [ECX + this->list]
-//         0047e2f6     XOR        EDX,EDX
-//         0047e2f8     TEST       EAX,EAX
-//         0047e2fa     JZ         LAB_0047e31f
-//         0047e2fc     MOV        this,dword ptr [ESP + param_1]
-//                               LAB_0047e300                                                 XREF[1]:     0047e30a(j)
-//                              Pnl_txt.cpp:1813 (7)
-//         0047e300     CMP        EDX,this
-//         0047e302     JZ         LAB_0047e319
-//         0047e304     MOV        EAX,dword ptr [EAX + 0xc]
-//                              Pnl_txt.cpp:1815 (5)
-//         0047e307     INC        EDX
-//         0047e308     TEST       EAX,EAX
-//         0047e30a     JNZ        LAB_0047e300
-//                              Pnl_txt.cpp:1818 (5)
-//         0047e30c     MOV        [DAT_0086b24c],AL                                = align(8)
-//                              Pnl_txt.cpp:1819 (5)
-//         0047e311     MOV        EAX,DAT_0086b24c                                 = align(8)
-//                              Pnl_txt.cpp:1820 (3)
-//         0047e316     RET        0x4
-//                               LAB_0047e319                                                 XREF[1]:     0047e302(j)
-//                              Pnl_txt.cpp:1814 (3)
-//         0047e319     MOV        EAX,dword ptr [EAX + 0x4]
-//                              Pnl_txt.cpp:1820 (3)
-//         0047e31c     RET        0x4
-//                               LAB_0047e31f                                                 XREF[1]:     0047e2fa(j)
-//                              Pnl_txt.cpp:1818 (7)
-//         0047e31f     MOV        byte ptr [DAT_0086b24c],0x0                      = align(8)
-//                              Pnl_txt.cpp:1819 (5)
-//         0047e326     MOV        EAX,DAT_0086b24c                                 = align(8)
-//                              Pnl_txt.cpp:1820 (3)
-//         0047e32b     RET        0x4
-//         0047e32e     ??         90h
-//         0047e32f     NOP
+//                               ?get_text2@TTextPanel@@QAEPADXZ
+//                               TTextPanel::get_text2
+//                              Pnl_txt.cpp:1796 (13)
+//         0047e2e0     MOVSX      EAX,word ptr [ECX + this->cur_line]
+//         0047e2e7     PUSH       EAX
+//         0047e2e8     CALL       TTextPanel::get_text2                            char * get_text2(TTextPanel * this, long para
+//                              Pnl_txt.cpp:1798 (1)
+//         0047e2ed     RET
+//         0047e2ee     ??         90h
+//         0047e2ef     NOP
     return 0;
 }
 
@@ -5088,44 +5799,28 @@ char* TTextPanel::get_text2(long param_1) {
 
 long TTextPanel::get_id() {
     /* TODO: Stub */
-//                              long __thiscall get_id(TTextPanel * this, long param_1)
+//                              long __thiscall get_id(TTextPanel * this)
 //              long              EAX:4          <RETURN>
 //              TTextPanel *      ECX:4 (auto)   this
-//              long              Stack[0x4]:4   param_1                   XREF[1]:     0047e34c(R)
-//                               ?get_id@TTextPanel@@QAEJJ@Z                                  XREF[5]:     get_id:0047544f(c),
-//                               TTextPanel::get_id                                                        get_id:0047e338(c),
-//                                                                                                         action:004a6cdd(c),
-//                                                                                                         fillScenarios:004b45f1(c),
-//                                                                                                         fillScenarios:004b5f7f(c)
-//                              Pnl_txt.cpp:1834 (16)
-//         0047e340     MOV        EAX,dword ptr [ECX + this->list]
-//         0047e346     XOR        EDX,EDX
-//         0047e348     TEST       EAX,EAX
-//         0047e34a     JZ         LAB_0047e368
-//         0047e34c     MOV        this,dword ptr [ESP + param_1]
-//                               LAB_0047e350                                                 XREF[1]:     0047e35a(j)
-//                              Pnl_txt.cpp:1842 (7)
-//         0047e350     CMP        EDX,this
-//         0047e352     JZ         LAB_0047e362
-//         0047e354     MOV        EAX,dword ptr [EAX + 0xc]
-//                              Pnl_txt.cpp:1844 (5)
-//         0047e357     INC        EDX
-//         0047e358     TEST       EAX,EAX
-//         0047e35a     JNZ        LAB_0047e350
-//                              Pnl_txt.cpp:1847 (3)
-//         0047e35c     OR         EAX,0xffffffff
-//                              Pnl_txt.cpp:1848 (3)
-//         0047e35f     RET        0x4
-//                               LAB_0047e362                                                 XREF[1]:     0047e352(j)
-//                              Pnl_txt.cpp:1843 (3)
-//         0047e362     MOV        EAX,dword ptr [EAX + 0x8]
-//                              Pnl_txt.cpp:1848 (3)
-//         0047e365     RET        0x4
-//                               LAB_0047e368                                                 XREF[1]:     0047e34a(j)
-//                              Pnl_txt.cpp:1847 (3)
-//         0047e368     OR         EAX,0xffffffff
-//                              Pnl_txt.cpp:1848 (3)
-//         0047e36b     RET        0x4
+//                               ?get_id@TTextPanel@@QAEJXZ                                   XREF[11]:    get_id:0047542a(c),
+//                               TTextPanel::get_id                                                        action:00491118(c),
+//                                                                                                         fillCampaigns:0049126e(c),
+//                                                                                                         action:0049fadd(c),
+//                                                                                                         action:0049fbaf(c),
+//                                                                                                         action:004a6a2e(c),
+//                                                                                                         fillMissionText:004b618c(c),
+//                                                                                                         sendSettings:004b6509(c),
+//                                                                                                         sendSettings:004b6550(c),
+//                                                                                                         sendSettings:004b665d(c),
+//                                                                                                         activatePanels:004b67c4(c)
+//                              Pnl_txt.cpp:1826 (13)
+//         0047e330     MOVSX      EAX,word ptr [ECX + this->cur_line]
+//         0047e337     PUSH       EAX
+//         0047e338     CALL       TTextPanel::get_id                               long get_id(TTextPanel * this, long param_1)
+//                              Pnl_txt.cpp:1828 (1)
+//         0047e33d     RET
+//         0047e33e     ??         90h
+//         0047e33f     NOP
     return 0;
 }
 

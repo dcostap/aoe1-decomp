@@ -3224,105 +3224,121 @@ void RGE_Command::command_order(RGE_Static_Object** param_1, short param_2, RGE_
 
 void RGE_Command::command_stop(RGE_Static_Object** param_1, short param_2) {
     /* TODO: Stub */
-//                              void __thiscall command_stop(RGE_Command * this, int param_1, int *
+//                              void __thiscall command_stop(RGE_Command * this, RGE_Static_Object *
 //              void              <VOID>         <RETURN>
 //              RGE_Command *     ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     00435570(R)
-//              int *             Stack[0x8]:4   param_2                   XREF[3]:     004354f5(R), 0043551c(W), 00435546(R)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     00435505(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     004354f9(W), 00435552(R)
-//                               ?command_stop@RGE_Command@@QAEXHPAHH@Z
+//              RGE_Static_Obj    Stack[0x4]:4   param_1                   XREF[1]:     00435429(R)
+//              short             Stack[0x8]:2   param_2                   XREF[2]:     00435423(R), 00435490(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     0043543a(W), 004354d0(R)
+//              undefined4        Stack[-0x8]:4  local_8                   XREF[2]:     00435440(W), 0043548c(R)
+//              long              Stack[-0xc]:4  size
+//                               ?command_stop@RGE_Command@@QAEXPAPAVRGE_Static_Object@@F@Z   XREF[1]:     command_stop:004717a1(c)
 //                               RGE_Command::command_stop
-//                              Command.cpp:1323 (5)
-//         004354f0     PUSH       this
-//         004354f1     PUSH       EBX
-//         004354f2     PUSH       EBP
-//         004354f3     PUSH       ESI
-//         004354f4     PUSH       EDI
-//                              Command.cpp:1325 (29)
-//         004354f5     MOV        EDI,dword ptr [ESP + param_2]
-//         004354f9     MOV        dword ptr [ESP + local_4],this
-//         004354fd     TEST       EDI,EDI
-//         004354ff     JZ         LAB_00435593
-//         00435505     MOV        EBX,dword ptr [ESP + param_3]
-//         00435509     CMP        EBX,0x1
-//         0043550c     JL         LAB_00435593
-//                              Command.cpp:1333 (7)
-//         00435512     LEA        EBP,[EBX*0x4 + 0x2]
-//                              Command.cpp:1334 (17)
-//         00435519     PUSH       EBP
-//         0043551a     PUSH       0x1
-//         0043551c     MOV        dword ptr [ESP + param_2],EBP
-//         00435520     CALL       calloc                                           undefined calloc()
-//         00435525     MOV        ESI,EAX
-//         00435527     ADD        ESP,0x8
-//                              Command.cpp:1339 (7)
-//         0043552a     TEST       ESI,ESI
-//         0043552c     LEA        EAX,[ESI + 0x2]
-//         0043552f     JZ         LAB_00435593
-//                              Command.cpp:1343 (6)
-//         00435531     TEST       EBX,EBX
-//         00435533     JLE        LAB_0043554a
-//         00435535     MOV        this,EDI
-//                              Command.cpp:1359 (15)
-//         00435537     MOV        EDX,EBX
-//         00435539     SUB        this,EAX
-//                               LAB_0043553b                                                 XREF[1]:     00435544(j)
-//         0043553b     MOV        EBP,dword ptr [this->_padding_ + EAX*0x1]
-//         0043553e     MOV        dword ptr [EAX],EBP
-//         00435540     ADD        EAX,0x4
-//         00435543     DEC        EDX
-//         00435544     JNZ        LAB_0043553b
-//                              Command.cpp:1343 (4)
-//         00435546     MOV        EBP,dword ptr [ESP + param_2]
-//                               LAB_0043554a                                                 XREF[1]:     00435533(j)
-//                              Command.cpp:1349 (3)
-//         0043554a     MOV        byte ptr [ESI],0x1
-//                              Command.cpp:1350 (3)
-//         0043554d     MOV        byte ptr [ESI + 0x1],BL
-//                              Command.cpp:1354 (15)
-//         00435550     MOV        EAX,dword ptr [EDI]
-//         00435552     MOV        EDI,dword ptr [ESP + local_4]
-//         00435556     PUSH       EAX
-//         00435557     MOV        this,dword ptr [EDI + 0x4]
-//         0043555a     CALL       RGE_Game_World::object                           RGE_Static_Object * object(RGE_Game_World * t
-//                              Command.cpp:1355 (43)
-//         0043555f     TEST       EAX,EAX
-//         00435561     JZ         LAB_0043556b
-//         00435563     MOV        this,dword ptr [EAX + 0x8]
-//         00435566     MOV        EAX,dword ptr [ECX + this->last_order]
-//         00435569     JMP        LAB_00435570
-//                               LAB_0043556b                                                 XREF[1]:     00435561(j)
-//         0043556b     MOV        EAX,s_X                                          = "X"
-//                               LAB_00435570                                                 XREF[1]:     00435569(j)
-//         00435570     MOV        EDX,dword ptr [ESP + param_1]
-//         00435574     PUSH       EAX=>s_X                                         = "X"
-//         00435575     MOV        EAX,[L]                                          = 00000000
-//         0043557a     PUSH       EDX
-//         0043557b     PUSH       EBX
-//         0043557c     PUSH       s_______>SEND_CMD_STOP2_(CNT=%d,OW               = "      >SEND CMD STOP2 (CNT=%d,OWN=%d,UNIT=
-//         00435581     PUSH       EAX
-//         00435582     CALL       TDebuggingLog::Log                               void Log(TDebuggingLog * this, char * param_1
-//         00435587     ADD        ESP,0x14
-//                              Command.cpp:1358 (9)
-//         0043558a     MOV        this,EDI
-//         0043558c     PUSH       EBP
-//         0043558d     PUSH       ESI
-//         0043558e     CALL       RGE_Command::submit                              void submit(RGE_Command * this, void * param_
-//                               LAB_00435593                                                 XREF[3]:     004354ff(j), 0043550c(j),
-//                                                                                                         0043552f(j)
-//                              Command.cpp:1359 (8)
-//         00435593     POP        EDI
-//         00435594     POP        ESI
-//         00435595     POP        EBP
-//         00435596     POP        EBX
-//         00435597     POP        this
-//         00435598     RET        0xc
-//         0043559b     ??         90h
-//         0043559c     NOP
-//         0043559d     NOP
-//         0043559e     NOP
-//         0043559f     NOP
+//                              Command.cpp:1273 (3)
+//         00435420     SUB        ESP,0x8
+//                              Command.cpp:1276 (6)
+//         00435423     MOV        AX,word ptr [ESP + param_2]
+//         00435428     PUSH       EBX
+//                              Command.cpp:1285 (43)
+//         00435429     MOV        EBX,dword ptr [ESP + param_1]
+//         0043542d     PUSH       EBP
+//         0043542e     MOVSX      EBP,AX
+//         00435431     PUSH       ESI
+//         00435432     PUSH       EDI
+//         00435433     LEA        ESI,[EBP*0x4 + 0x2]
+//         0043543a     MOV        dword ptr [ESP + local_4],this
+//         0043543e     TEST       EBX,EBX
+//         00435440     MOV        dword ptr [ESP + local_8],ESI
+//         00435444     JZ         LAB_004354de
+//         0043544a     CMP        AX,0x1
+//         0043544e     JL         LAB_004354de
+//                              Command.cpp:1289 (13)
+//         00435454     PUSH       ESI
+//         00435455     PUSH       0x1
+//         00435457     CALL       calloc                                           undefined calloc()
+//         0043545c     MOV        EDI,EAX
+//         0043545e     ADD        ESP,0x8
+//                              Command.cpp:1293 (7)
+//         00435461     TEST       EDI,EDI
+//         00435463     LEA        EAX,[EDI + 0x2]
+//         00435466     JZ         LAB_004354de
+//                              Command.cpp:1296 (4)
+//         00435468     TEST       EBP,EBP
+//         0043546a     JLE        LAB_00435490
+//                              Command.cpp:1304 (2)
+//         0043546c     MOV        EDX,EBX
+//                              Command.cpp:1318 (18)
+//         0043546e     MOV        ESI,EBP
+//         00435470     SUB        EDX,EAX
+//                               LAB_00435472                                                 XREF[1]:     0043548a(j)
+//         00435472     MOV        this,dword ptr [EDX + EAX*0x1]
+//         00435475     TEST       this,this
+//         00435477     JZ         LAB_00435480
+//         00435479     MOV        this,dword ptr [ECX + this->world]
+//         0043547c     MOV        dword ptr [EAX],this
+//         0043547e     JMP        LAB_00435486
+//                               LAB_00435480                                                 XREF[1]:     00435477(j)
+//                              Command.cpp:1304 (6)
+//         00435480     MOV        dword ptr [EAX],0xffffffff
+//                               LAB_00435486                                                 XREF[1]:     0043547e(j)
+//                              Command.cpp:1296 (10)
+//         00435486     ADD        EAX,0x4
+//         00435489     DEC        ESI
+//         0043548a     JNZ        LAB_00435472
+//         0043548c     MOV        ESI,dword ptr [ESP + local_8]
+//                               LAB_00435490                                                 XREF[1]:     0043546a(j)
+//                              Command.cpp:1310 (10)
+//         00435490     MOV        DL,byte ptr [ESP + param_2]
+//         00435494     MOV        byte ptr [EDI],0x1
+//         00435497     MOV        byte ptr [EDI + 0x1],DL
+//                              Command.cpp:1313 (54)
+//         0043549a     MOV        EAX,dword ptr [EBX]
+//         0043549c     TEST       EAX,EAX
+//         0043549e     JZ         LAB_004354a8
+//         004354a0     MOV        this,dword ptr [EAX + 0x8]
+//         004354a3     MOV        this,dword ptr [ECX + this->last_order]
+//         004354a6     JMP        LAB_004354ad
+//                               LAB_004354a8                                                 XREF[1]:     0043549e(j)
+//         004354a8     MOV        this,s_X                                         = "X"
+//                               LAB_004354ad                                                 XREF[1]:     004354a6(j)
+//         004354ad     TEST       EAX,EAX
+//         004354af     JZ         LAB_004354ba
+//         004354b1     MOV        EDX,dword ptr [EAX + 0xc]
+//         004354b4     MOVSX      EAX,word ptr [EDX + 0x4a]
+//         004354b8     JMP        LAB_004354bd
+//                               LAB_004354ba                                                 XREF[1]:     004354af(j)
+//         004354ba     OR         EAX,0xffffffff
+//                               LAB_004354bd                                                 XREF[1]:     004354b8(j)
+//         004354bd     PUSH       this
+//         004354be     PUSH       EAX
+//         004354bf     MOV        EAX,[L]                                          = 00000000
+//         004354c4     PUSH       EBP
+//         004354c5     PUSH       s_______>SEND_CMD_STOP_(CNT=%d,OWN               = "      >SEND CMD STOP (CNT=%d,OWN=%d,UNIT=%
+//         004354ca     PUSH       EAX
+//         004354cb     CALL       TDebuggingLog::Log                               void Log(TDebuggingLog * this, char * param_1
+//                              Command.cpp:1316 (14)
+//         004354d0     MOV        this,dword ptr [ESP + local_4]
+//         004354d4     ADD        ESP,0x14
+//         004354d7     PUSH       ESI
+//         004354d8     PUSH       EDI
+//         004354d9     CALL       RGE_Command::submit                              void submit(RGE_Command * this, void * param_
+//                               LAB_004354de                                                 XREF[3]:     00435444(j), 0043544e(j),
+//                                                                                                         00435466(j)
+//                              Command.cpp:1318 (10)
+//         004354de     POP        EDI
+//         004354df     POP        ESI
+//         004354e0     POP        EBP
+//         004354e1     POP        EBX
+//         004354e2     ADD        ESP,0x8
+//         004354e5     RET        0x8
+//         004354e8     ??         90h
+//         004354e9     NOP
+//         004354ea     NOP
+//         004354eb     NOP
+//         004354ec     NOP
+//         004354ed     NOP
+//         004354ee     NOP
+//         004354ef     NOP
     return;
 }
 
@@ -3520,133 +3536,141 @@ void RGE_Command::command_pause(int param_1, int* param_2, int param_3) {
 
 void RGE_Command::command_work(RGE_Static_Object** param_1, short param_2, RGE_Static_Object* param_3, float param_4, float param_5) {
     /* TODO: Stub */
-//                              void __thiscall command_work(RGE_Command * this, int param_1, int *
+//                              void __thiscall command_work(RGE_Command * this, RGE_Static_Object *
 //              void              <VOID>         <RETURN>
 //              RGE_Command *     ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     004357de(R)
-//              int *             Stack[0x8]:4   param_2                   XREF[3]:     00435723(R), 0043574b(W), 004357ef(R)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     00435734(R)
-//              int               Stack[0x10]:4  param_4                   XREF[1]:     0043577e(R)
-//              int               Stack[0x14]:4  param_5
-//              float             Stack[0x18]:4  param_6                   XREF[1]:     0043577a(R)
-//              float             Stack[0x1c]:4  param_7                   XREF[1]:     00435782(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[3]:     0043572a(W), 00435789(R), 004357a6(R)
-//                               ?command_work@RGE_Command@@QAEXHPAHHHHMM@Z                   XREF[2]:     taskTrader:0051534a(c),
-//                               RGE_Command::command_work                                                 taskResourceGatherer:0051539a(c)
-//                              Command.cpp:1474 (3)
-//         00435720     PUSH       this
-//         00435721     PUSH       EBX
-//         00435722     PUSH       EBP
-//                              Command.cpp:1476 (30)
-//         00435723     MOV        EBP,dword ptr [ESP + param_2]
-//         00435727     PUSH       ESI
-//         00435728     TEST       EBP,EBP
-//         0043572a     MOV        dword ptr [ESP + local_4],this
-//         0043572e     JZ         LAB_00435800
-//         00435734     MOV        EBX,dword ptr [ESP + param_3]
-//         00435738     CMP        EBX,0x1
-//         0043573b     JL         LAB_00435800
-//                              Command.cpp:1485 (7)
-//         00435741     LEA        EAX,[EBX*0x4 + 0x14]
-//                              Command.cpp:1486 (17)
-//         00435748     PUSH       EAX
-//         00435749     PUSH       0x1
-//         0043574b     MOV        dword ptr [ESP + param_2],EAX
-//         0043574f     CALL       calloc                                           undefined calloc()
-//         00435754     MOV        ESI,EAX
-//         00435756     ADD        ESP,0x8
-//                              Command.cpp:1491 (11)
-//         00435759     TEST       ESI,ESI
-//         0043575b     LEA        EAX,[ESI + 0x14]
-//         0043575e     JZ         LAB_00435800
-//                              Command.cpp:1495 (7)
-//         00435764     TEST       EBX,EBX
-//         00435766     PUSH       EDI
-//         00435767     JLE        LAB_0043577a
-//         00435769     MOV        this,EBP
-//                              Command.cpp:1516 (15)
-//         0043576b     MOV        EDX,EBX
-//         0043576d     SUB        this,EAX
-//                               LAB_0043576f                                                 XREF[1]:     00435778(j)
-//         0043576f     MOV        EDI,dword ptr [this->_padding_ + EAX*0x1]
-//         00435772     MOV        dword ptr [EAX],EDI
-//         00435774     ADD        EAX,0x4
-//         00435777     DEC        EDX
-//         00435778     JNZ        LAB_0043576f
-//                               LAB_0043577a                                                 XREF[1]:     00435767(j)
-//                              Command.cpp:1505 (8)
-//         0043577a     MOV        EAX,dword ptr [ESP + param_6]
-//         0043577e     MOV        EDI,dword ptr [ESP + param_4]
-//                              Command.cpp:1506 (7)
-//         00435782     MOV        this,dword ptr [ESP + param_7]
-//         00435786     MOV        dword ptr [ESI + 0xc],EAX
-//                              Command.cpp:1510 (28)
-//         00435789     MOV        EAX,dword ptr [ESP + local_4]
-//         0043578d     MOV        byte ptr [ESI],0x2
-//         00435790     MOV        byte ptr [ESI + 0x8],BL
-//         00435793     MOV        dword ptr [ESI + 0x4],EDI
-//         00435796     MOV        dword ptr [ESI + 0x10],this
-//         00435799     MOV        EDX,dword ptr [EBP]
-//         0043579c     MOV        this,dword ptr [EAX + 0x4]
-//         0043579f     PUSH       EDX
-//         004357a0     CALL       RGE_Game_World::object                           RGE_Static_Object * object(RGE_Game_World * t
-//                              Command.cpp:1511 (15)
-//         004357a5     PUSH       EDI
-//         004357a6     MOV        EDI,dword ptr [ESP + local_4]
-//         004357aa     MOV        EBP,EAX
-//         004357ac     MOV        this,dword ptr [EDI + 0x4]
-//         004357af     CALL       RGE_Game_World::object                           RGE_Static_Object * object(RGE_Game_World * t
-//                              Command.cpp:1512 (59)
-//         004357b4     TEST       EAX,EAX
-//         004357b6     JZ         LAB_004357c0
-//         004357b8     MOV        this,dword ptr [EAX + 0x8]
-//         004357bb     MOV        this,dword ptr [ECX + this->last_order]
-//         004357be     JMP        LAB_004357c5
-//                               LAB_004357c0                                                 XREF[1]:     004357b6(j)
-//         004357c0     MOV        this,s_X                                         = "X"
-//                               LAB_004357c5                                                 XREF[1]:     004357be(j)
-//         004357c5     TEST       EBP,EBP
-//         004357c7     JZ         LAB_004357d1
-//         004357c9     MOV        EDX,dword ptr [EBP + 0x8]
-//         004357cc     MOV        EAX,dword ptr [EDX + 0x8]
-//         004357cf     JMP        LAB_004357d6
-//                               LAB_004357d1                                                 XREF[1]:     004357c7(j)
-//         004357d1     MOV        EAX,s_X                                          = "X"
-//                               LAB_004357d6                                                 XREF[1]:     004357cf(j)
-//         004357d6     PUSH       this
-//         004357d7     MOV        this,dword ptr [L]                               = 00000000
-//         004357dd     PUSH       EAX=>s_X                                         = "X"
-//         004357de     MOV        EAX,dword ptr [ESP + param_1]
-//         004357e2     PUSH       EAX
-//         004357e3     PUSH       EBX
-//         004357e4     PUSH       s_______>SEND_CMD_WORK2_(CNT=%d,OW               = "      >SEND CMD WORK2 (CNT=%d,OWN=%d,UNIT=
-//         004357e9     PUSH       this
-//         004357ea     CALL       TDebuggingLog::Log                               void Log(TDebuggingLog * this, char * param_1
-//                              Command.cpp:1515 (17)
-//         004357ef     MOV        EDX,dword ptr [ESP + param_2]
-//         004357f3     ADD        ESP,0x18
-//         004357f6     MOV        this,EDI
-//         004357f8     PUSH       EDX
-//         004357f9     PUSH       ESI
-//         004357fa     CALL       RGE_Command::submit                              void submit(RGE_Command * this, void * param_
-//         004357ff     POP        EDI
-//                               LAB_00435800                                                 XREF[3]:     0043572e(j), 0043573b(j),
-//                                                                                                         0043575e(j)
-//                              Command.cpp:1516 (7)
-//         00435800     POP        ESI
-//         00435801     POP        EBP
-//         00435802     POP        EBX
-//         00435803     POP        this
-//         00435804     RET        0x1c
-//         00435807     ??         90h
-//         00435808     NOP
-//         00435809     NOP
-//         0043580a     NOP
-//         0043580b     NOP
-//         0043580c     NOP
-//         0043580d     NOP
-//         0043580e     NOP
-//         0043580f     NOP
+//              RGE_Static_Obj    Stack[0x4]:4   param_1                   XREF[2]:     0043562d(R), 0043568e(R)
+//              short             Stack[0x8]:2   param_2                   XREF[3]:     00435622(R), 0043563e(W), 00435706(R)
+//              RGE_Static_Obj    Stack[0xc]:4   param_3                   XREF[1]:     00435692(R)
+//              float             Stack[0x10]:4  param_4                   XREF[1]:     004356a9(R)
+//              float             Stack[0x14]:4  param_5                   XREF[1]:     004356ad(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     00435638(W), 0043570a(R)
+//                               ?command_work@RGE_Command@@QAEXPAPAVRGE_Static_Object@@FPAV  XREF[1]:     command_make_work:00471637(c)
+//                               RGE_Command::command_work
+//                              Command.cpp:1405 (2)
+//         00435620     PUSH       this
+//         00435621     PUSH       EBX
+//                              Command.cpp:1408 (11)
+//         00435622     MOV        BX,word ptr [ESP + param_2]
+//         00435627     PUSH       EBP
+//         00435628     PUSH       ESI
+//         00435629     MOVSX      EBP,BX
+//         0043562c     PUSH       EDI
+//                              Command.cpp:1421 (37)
+//         0043562d     MOV        EDI,dword ptr [ESP + param_1]
+//         00435631     LEA        EAX,[EBP*0x4 + 0x14]
+//         00435638     MOV        dword ptr [ESP + local_4],this
+//         0043563c     TEST       EDI,EDI
+//         0043563e     MOV        dword ptr [ESP + param_2],EAX
+//         00435642     JZ         LAB_00435718
+//         00435648     CMP        BX,0x1
+//         0043564c     JL         LAB_00435718
+//                              Command.cpp:1425 (13)
+//         00435652     PUSH       EAX
+//         00435653     PUSH       0x1
+//         00435655     CALL       calloc                                           undefined calloc()
+//         0043565a     MOV        ESI,EAX
+//         0043565c     ADD        ESP,0x8
+//                              Command.cpp:1429 (11)
+//         0043565f     TEST       ESI,ESI
+//         00435661     LEA        EAX,[ESI + 0x14]
+//         00435664     JZ         LAB_00435718
+//                              Command.cpp:1432 (4)
+//         0043566a     TEST       EBP,EBP
+//         0043566c     JLE        LAB_00435692
+//                              Command.cpp:1440 (2)
+//         0043566e     MOV        EDX,EDI
+//                              Command.cpp:1468 (18)
+//         00435670     MOV        EDI,EBP
+//         00435672     SUB        EDX,EAX
+//                               LAB_00435674                                                 XREF[1]:     0043568c(j)
+//         00435674     MOV        this,dword ptr [EDX + EAX*0x1]
+//         00435677     TEST       this,this
+//         00435679     JZ         LAB_00435682
+//         0043567b     MOV        this,dword ptr [ECX + this->world]
+//         0043567e     MOV        dword ptr [EAX],this
+//         00435680     JMP        LAB_00435688
+//                               LAB_00435682                                                 XREF[1]:     00435679(j)
+//                              Command.cpp:1440 (6)
+//         00435682     MOV        dword ptr [EAX],0xffffffff
+//                               LAB_00435688                                                 XREF[1]:     00435680(j)
+//                              Command.cpp:1432 (10)
+//         00435688     ADD        EAX,0x4
+//         0043568b     DEC        EDI
+//         0043568c     JNZ        LAB_00435674
+//         0043568e     MOV        EDI,dword ptr [ESP + param_1]
+//                               LAB_00435692                                                 XREF[1]:     0043566c(j)
+//                              Command.cpp:1445 (8)
+//         00435692     MOV        EAX,dword ptr [ESP + param_3]
+//         00435696     TEST       EAX,EAX
+//         00435698     JZ         LAB_004356a2
+//                              Command.cpp:1447 (6)
+//         0043569a     MOV        EDX,dword ptr [EAX + 0x4]
+//         0043569d     MOV        dword ptr [ESI + 0x4],EDX
+//                              Command.cpp:1450 (2)
+//         004356a0     JMP        LAB_004356a9
+//                               LAB_004356a2                                                 XREF[1]:     00435698(j)
+//                              Command.cpp:1452 (7)
+//         004356a2     MOV        dword ptr [ESI + 0x4],0xffffffff
+//                               LAB_004356a9                                                 XREF[1]:     004356a0(j)
+//                              Command.cpp:1459 (4)
+//         004356a9     MOV        this,dword ptr [ESP + param_4]
+//                              Command.cpp:1460 (4)
+//         004356ad     MOV        EDX,dword ptr [ESP + param_5]
+//                              Command.cpp:1463 (85)
+//         004356b1     TEST       EAX,EAX
+//         004356b3     MOV        byte ptr [ESI],0x2
+//         004356b6     MOV        byte ptr [ESI + 0x8],BL
+//         004356b9     MOV        dword ptr [ESI + 0xc],this
+//         004356bc     MOV        dword ptr [ESI + 0x10],EDX
+//         004356bf     JZ         LAB_004356c9
+//         004356c1     MOV        EAX,dword ptr [EAX + 0x8]
+//         004356c4     MOV        EDX,dword ptr [EAX + 0x8]
+//         004356c7     JMP        LAB_004356ce
+//                               LAB_004356c9                                                 XREF[1]:     004356bf(j)
+//         004356c9     MOV        EDX,s_X                                          = "X"
+//                               LAB_004356ce                                                 XREF[1]:     004356c7(j)
+//         004356ce     MOV        EAX,dword ptr [EDI]
+//         004356d0     TEST       EAX,EAX
+//         004356d2     JZ         LAB_004356dc
+//         004356d4     MOV        this,dword ptr [EAX + 0x8]
+//         004356d7     MOV        this,dword ptr [ECX + this->last_order]
+//         004356da     JMP        LAB_004356e1
+//                               LAB_004356dc                                                 XREF[1]:     004356d2(j)
+//         004356dc     MOV        this,s_X                                         = "X"
+//                               LAB_004356e1                                                 XREF[1]:     004356da(j)
+//         004356e1     TEST       EAX,EAX
+//         004356e3     JZ         LAB_004356ee
+//         004356e5     MOV        EAX,dword ptr [EAX + 0xc]
+//         004356e8     MOVSX      EAX,word ptr [EAX + 0x4a]
+//         004356ec     JMP        LAB_004356f1
+//                               LAB_004356ee                                                 XREF[1]:     004356e3(j)
+//         004356ee     OR         EAX,0xffffffff
+//                               LAB_004356f1                                                 XREF[1]:     004356ec(j)
+//         004356f1     PUSH       EDX
+//         004356f2     PUSH       this
+//         004356f3     MOV        this,dword ptr [L]                               = 00000000
+//         004356f9     PUSH       EAX
+//         004356fa     PUSH       EBP
+//         004356fb     PUSH       s_______>SEND_CMD_WORK_(CNT=%d,OWN               = "      >SEND CMD WORK (CNT=%d,OWN=%d,UNIT=%
+//         00435700     PUSH       this
+//         00435701     CALL       TDebuggingLog::Log                               void Log(TDebuggingLog * this, char * param_1
+//                              Command.cpp:1466 (18)
+//         00435706     MOV        EDX,dword ptr [ESP + param_2]
+//         0043570a     MOV        this,dword ptr [ESP + local_4]
+//         0043570e     ADD        ESP,0x18
+//         00435711     PUSH       EDX
+//         00435712     PUSH       ESI
+//         00435713     CALL       RGE_Command::submit                              void submit(RGE_Command * this, void * param_
+//                               LAB_00435718                                                 XREF[3]:     00435642(j), 0043564c(j),
+//                                                                                                         00435664(j)
+//                              Command.cpp:1468 (8)
+//         00435718     POP        EDI
+//         00435719     POP        ESI
+//         0043571a     POP        EBP
+//         0043571b     POP        EBX
+//         0043571c     POP        this
+//         0043571d     RET        0x14
     return;
 }
 
@@ -3784,111 +3808,133 @@ void RGE_Command::command_work(int param_1, int* param_2, int param_3, int param
 
 void RGE_Command::command_move(RGE_Static_Object** param_1, short param_2, RGE_Static_Object* param_3, float param_4, float param_5) {
     /* TODO: Stub */
-//                              void __thiscall command_move(RGE_Command * this, int param_1, int *
+//                              void __thiscall command_move(RGE_Command * this, RGE_Static_Object *
 //              void              <VOID>         <RETURN>
 //              RGE_Command *     ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     00435995(R)
-//              int *             Stack[0x8]:4   param_2                   XREF[3]:     00435905(R), 0043592c(W), 00435956(R)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     00435915(R)
-//              int               Stack[0x10]:4  param_4                   XREF[1]:     0043595a(R)
-//              int               Stack[0x14]:4  param_5
-//              float             Stack[0x18]:4  param_6                   XREF[1]:     0043595e(R)
-//              float             Stack[0x1c]:4  param_7                   XREF[1]:     00435962(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     00435909(W), 00435977(R)
-//                               ?command_move@RGE_Command@@QAEXHPAHHHHMM@Z
+//              RGE_Static_Obj    Stack[0x4]:4   param_1                   XREF[3]:     00435811(R), 0043585e(R), 004358a3(R)
+//              short             Stack[0x8]:2   param_2                   XREF[3]:     00435825(R), 00435841(W), 00435880(R)
+//              RGE_Static_Obj    Stack[0xc]:4   param_3                   XREF[1]:     00435884(R)
+//              float             Stack[0x10]:4  param_4                   XREF[1]:     0043589b(R)
+//              float             Stack[0x14]:4  param_5                   XREF[1]:     0043589f(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     0043581b(W), 004358e9(R)
+//                               ?command_move@RGE_Command@@QAEXPAPAVRGE_Static_Object@@FPAV  XREF[1]:     command_make_move:004715a0(c)
 //                               RGE_Command::command_move
-//                              Command.cpp:1586 (5)
-//         00435900     PUSH       this
-//         00435901     PUSH       EBX
-//         00435902     PUSH       EBP
-//         00435903     PUSH       ESI
-//         00435904     PUSH       EDI
-//                              Command.cpp:1594 (29)
-//         00435905     MOV        EDI,dword ptr [ESP + param_2]
-//         00435909     MOV        dword ptr [ESP + local_4],this
-//         0043590d     TEST       EDI,EDI
-//         0043590f     JZ         LAB_004359b8
-//         00435915     MOV        EBX,dword ptr [ESP + param_3]
-//         00435919     CMP        EBX,0x1
-//         0043591c     JL         LAB_004359b8
-//                              Command.cpp:1598 (7)
-//         00435922     LEA        EBP,[EBX*0x4 + 0x14]
-//                              Command.cpp:1599 (17)
-//         00435929     PUSH       EBP
-//         0043592a     PUSH       0x1
-//         0043592c     MOV        dword ptr [ESP + param_2],EBP
-//         00435930     CALL       calloc                                           undefined calloc()
-//         00435935     MOV        ESI,EAX
-//         00435937     ADD        ESP,0x8
-//                              Command.cpp:1604 (7)
-//         0043593a     TEST       ESI,ESI
-//         0043593c     LEA        EAX,[ESI + 0x14]
-//         0043593f     JZ         LAB_004359b8
-//                              Command.cpp:1608 (6)
-//         00435941     TEST       EBX,EBX
-//         00435943     JLE        LAB_0043595a
-//         00435945     MOV        this,EDI
-//                              Command.cpp:1628 (15)
-//         00435947     MOV        EDX,EBX
-//         00435949     SUB        this,EAX
-//                               LAB_0043594b                                                 XREF[1]:     00435954(j)
-//         0043594b     MOV        EBP,dword ptr [this->_padding_ + EAX*0x1]
-//         0043594e     MOV        dword ptr [EAX],EBP
-//         00435950     ADD        EAX,0x4
-//         00435953     DEC        EDX
-//         00435954     JNZ        LAB_0043594b
-//                              Command.cpp:1608 (4)
-//         00435956     MOV        EBP,dword ptr [ESP + param_2]
-//                               LAB_0043595a                                                 XREF[1]:     00435943(j)
-//                              Command.cpp:1616 (4)
-//         0043595a     MOV        EAX,dword ptr [ESP + param_4]
-//                              Command.cpp:1618 (4)
-//         0043595e     MOV        this,dword ptr [ESP + param_6]
-//                              Command.cpp:1619 (19)
-//         00435962     MOV        EDX,dword ptr [ESP + param_7]
-//         00435966     MOV        byte ptr [ESI],0x3
-//         00435969     MOV        byte ptr [ESI + 0x8],BL
-//         0043596c     MOV        dword ptr [ESI + 0x4],EAX
-//         0043596f     MOV        dword ptr [ESI + 0xc],this
-//         00435972     MOV        dword ptr [ESI + 0x10],EDX
-//                              Command.cpp:1623 (15)
-//         00435975     MOV        EAX,dword ptr [EDI]
-//         00435977     MOV        EDI,dword ptr [ESP + local_4]
-//         0043597b     PUSH       EAX
-//         0043597c     MOV        this,dword ptr [EDI + 0x4]
-//         0043597f     CALL       RGE_Game_World::object                           RGE_Static_Object * object(RGE_Game_World * t
-//                              Command.cpp:1624 (43)
-//         00435984     TEST       EAX,EAX
-//         00435986     JZ         LAB_00435990
-//         00435988     MOV        this,dword ptr [EAX + 0x8]
-//         0043598b     MOV        EAX,dword ptr [ECX + this->last_order]
-//         0043598e     JMP        LAB_00435995
-//                               LAB_00435990                                                 XREF[1]:     00435986(j)
-//         00435990     MOV        EAX,s_X                                          = "X"
-//                               LAB_00435995                                                 XREF[1]:     0043598e(j)
-//         00435995     MOV        EDX,dword ptr [ESP + param_1]
-//         00435999     PUSH       EAX=>s_X                                         = "X"
-//         0043599a     MOV        EAX,[L]                                          = 00000000
-//         0043599f     PUSH       EDX
-//         004359a0     PUSH       EBX
-//         004359a1     PUSH       s_______>SEND_CMD_MOVE2_(CNT=%d,OW               = "      >SEND CMD MOVE2 (CNT=%d,OWN=%d,UNIT=
-//         004359a6     PUSH       EAX
-//         004359a7     CALL       TDebuggingLog::Log                               void Log(TDebuggingLog * this, char * param_1
-//         004359ac     ADD        ESP,0x14
-//                              Command.cpp:1627 (9)
-//         004359af     MOV        this,EDI
-//         004359b1     PUSH       EBP
-//         004359b2     PUSH       ESI
-//         004359b3     CALL       RGE_Command::submit                              void submit(RGE_Command * this, void * param_
-//                               LAB_004359b8                                                 XREF[3]:     0043590f(j), 0043591c(j),
-//                                                                                                         0043593f(j)
-//                              Command.cpp:1628 (8)
-//         004359b8     POP        EDI
-//         004359b9     POP        ESI
-//         004359ba     POP        EBP
-//         004359bb     POP        EBX
-//         004359bc     POP        this
-//         004359bd     RET        0x1c
+//                              Command.cpp:1522 (1)
+//         00435810     PUSH       this
+//                              Command.cpp:1534 (35)
+//         00435811     MOV        EAX,dword ptr [ESP + param_1]
+//         00435815     PUSH       EBX
+//         00435816     PUSH       EBP
+//         00435817     PUSH       ESI
+//         00435818     TEST       EAX,EAX
+//         0043581a     PUSH       EDI
+//         0043581b     MOV        dword ptr [ESP + local_4],this
+//         0043581f     JZ         LAB_004358f7
+//         00435825     MOV        BX,word ptr [ESP + param_2]
+//         0043582a     CMP        BX,0x1
+//         0043582e     JL         LAB_004358f7
+//                              Command.cpp:1538 (10)
+//         00435834     MOVSX      EBP,BX
+//         00435837     LEA        EDI,[EBP*0x4 + 0x14]
+//                              Command.cpp:1539 (17)
+//         0043583e     PUSH       EDI
+//         0043583f     PUSH       0x1
+//         00435841     MOV        dword ptr [ESP + param_2],EDI
+//         00435845     CALL       calloc                                           undefined calloc()
+//         0043584a     MOV        ESI,EAX
+//         0043584c     ADD        ESP,0x8
+//                              Command.cpp:1544 (11)
+//         0043584f     TEST       ESI,ESI
+//         00435851     LEA        EAX,[ESI + 0x14]
+//         00435854     JZ         LAB_004358f7
+//                              Command.cpp:1548 (4)
+//         0043585a     TEST       EBP,EBP
+//         0043585c     JLE        LAB_00435884
+//                              Command.cpp:1554 (4)
+//         0043585e     MOV        EDX,dword ptr [ESP + param_1]
+//                              Command.cpp:1580 (18)
+//         00435862     MOV        EDI,EBP
+//         00435864     SUB        EDX,EAX
+//                               LAB_00435866                                                 XREF[1]:     0043587e(j)
+//         00435866     MOV        this,dword ptr [EDX + EAX*0x1]
+//         00435869     TEST       this,this
+//         0043586b     JZ         LAB_00435874
+//         0043586d     MOV        this,dword ptr [ECX + this->world]
+//         00435870     MOV        dword ptr [EAX],this
+//         00435872     JMP        LAB_0043587a
+//                               LAB_00435874                                                 XREF[1]:     0043586b(j)
+//                              Command.cpp:1554 (6)
+//         00435874     MOV        dword ptr [EAX],0xffffffff
+//                               LAB_0043587a                                                 XREF[1]:     00435872(j)
+//                              Command.cpp:1548 (10)
+//         0043587a     ADD        EAX,0x4
+//         0043587d     DEC        EDI
+//         0043587e     JNZ        LAB_00435866
+//         00435880     MOV        EDI,dword ptr [ESP + param_2]
+//                               LAB_00435884                                                 XREF[1]:     0043585c(j)
+//                              Command.cpp:1560 (8)
+//         00435884     MOV        EAX,dword ptr [ESP + param_3]
+//         00435888     TEST       EAX,EAX
+//         0043588a     JZ         LAB_00435894
+//                              Command.cpp:1561 (6)
+//         0043588c     MOV        EDX,dword ptr [EAX + 0x4]
+//         0043588f     MOV        dword ptr [ESI + 0x4],EDX
+//                              Command.cpp:1564 (2)
+//         00435892     JMP        LAB_0043589b
+//                               LAB_00435894                                                 XREF[1]:     0043588a(j)
+//                              Command.cpp:1565 (7)
+//         00435894     MOV        dword ptr [ESI + 0x4],0xffffffff
+//                               LAB_0043589b                                                 XREF[1]:     00435892(j)
+//                              Command.cpp:1572 (4)
+//         0043589b     MOV        EAX,dword ptr [ESP + param_4]
+//                              Command.cpp:1573 (4)
+//         0043589f     MOV        this,dword ptr [ESP + param_5]
+//                              Command.cpp:1576 (70)
+//         004358a3     MOV        EDX,dword ptr [ESP + param_1]
+//         004358a7     MOV        byte ptr [ESI],0x3
+//         004358aa     MOV        byte ptr [ESI + 0x8],BL
+//         004358ad     MOV        dword ptr [ESI + 0xc],EAX
+//         004358b0     MOV        dword ptr [ESI + 0x10],this
+//         004358b3     MOV        EAX,dword ptr [EDX]
+//         004358b5     TEST       EAX,EAX
+//         004358b7     JZ         LAB_004358c1
+//         004358b9     MOV        this,dword ptr [EAX + 0x8]
+//         004358bc     MOV        this,dword ptr [ECX + this->last_order]
+//         004358bf     JMP        LAB_004358c6
+//                               LAB_004358c1                                                 XREF[1]:     004358b7(j)
+//         004358c1     MOV        this,s_X                                         = "X"
+//                               LAB_004358c6                                                 XREF[1]:     004358bf(j)
+//         004358c6     TEST       EAX,EAX
+//         004358c8     JZ         LAB_004358d3
+//         004358ca     MOV        EDX,dword ptr [EAX + 0xc]
+//         004358cd     MOVSX      EAX,word ptr [EDX + 0x4a]
+//         004358d1     JMP        LAB_004358d6
+//                               LAB_004358d3                                                 XREF[1]:     004358c8(j)
+//         004358d3     OR         EAX,0xffffffff
+//                               LAB_004358d6                                                 XREF[1]:     004358d1(j)
+//         004358d6     PUSH       this
+//         004358d7     PUSH       EAX
+//         004358d8     MOV        EAX,[L]                                          = 00000000
+//         004358dd     PUSH       EBP
+//         004358de     PUSH       s_______>SEND_CMD_MOVE_(CNT=%d,OWN               = "      >SEND CMD MOVE (CNT=%d,OWN=%d,UNIT=%
+//         004358e3     PUSH       EAX
+//         004358e4     CALL       TDebuggingLog::Log                               void Log(TDebuggingLog * this, char * param_1
+//                              Command.cpp:1579 (14)
+//         004358e9     MOV        this,dword ptr [ESP + local_4]
+//         004358ed     ADD        ESP,0x14
+//         004358f0     PUSH       EDI
+//         004358f1     PUSH       ESI
+//         004358f2     CALL       RGE_Command::submit                              void submit(RGE_Command * this, void * param_
+//                               LAB_004358f7                                                 XREF[3]:     0043581f(j), 0043582e(j),
+//                                                                                                         00435854(j)
+//                              Command.cpp:1580 (8)
+//         004358f7     POP        EDI
+//         004358f8     POP        ESI
+//         004358f9     POP        EBP
+//         004358fa     POP        EBX
+//         004358fb     POP        this
+//         004358fc     RET        0x14
+//         004358ff     ??         90h
     return;
 }
 
@@ -4961,73 +5007,91 @@ void RGE_Command::command_add_waypoint(int param_1, int param_2, XYZBYTEPoint* p
 //                              void __thiscall command_add_waypoint(RGE_Command * this, int param_1
 //              void              <VOID>         <RETURN>
 //              RGE_Command *     ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     004360e2(R)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     004360ec(R)
-//              uchar             Stack[0xc]:1   param_3                   XREF[1]:     004360de(R)
-//              uchar             Stack[0x10]:1  param_4                   XREF[1]:     004360e6(R)
-//              uchar             Stack[0x14]:1  param_5                   XREF[1]:     004360f6(R)
-//                               ?command_add_waypoint@RGE_Command@@QAEXHHEEE@Z
+//              int               Stack[0x4]:4   param_1                   XREF[2]:     00436049(R), 004360a0(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     00436043(R)
+//              XYZBYTEPoint *    Stack[0xc]:4   param_3                   XREF[1]:     00436060(R)
+//              int               Stack[0x10]:4  param_4                   XREF[1]:     0043603f(R)
+//                               ?command_add_waypoint@RGE_Command@@QAEXHHPAUXYZBYTEPoint@@H@Z XREF[1]:     sendAddWaypointCommand:0046effa(c)
 //                               RGE_Command::command_add_waypoint
-//                              Command.cpp:2077 (3)
-//         004360d0     PUSH       EBX
-//         004360d1     PUSH       ESI
-//         004360d2     PUSH       EDI
-//                              Command.cpp:2089 (11)
-//         004360d3     PUSH       0x18
-//         004360d5     MOV        EDI,this
-//         004360d7     PUSH       0x1
-//         004360d9     CALL       calloc                                           undefined calloc()
-//                              Command.cpp:2096 (8)
-//         004360de     MOV        this,byte ptr [ESP + param_3]
-//         004360e2     MOV        EBX,dword ptr [ESP + param_1]
-//                              Command.cpp:2097 (16)
-//         004360e6     MOV        DL,byte ptr [ESP + param_4]
-//         004360ea     MOV        ESI,EAX
-//         004360ec     MOV        EAX,dword ptr [ESP + param_2]
-//         004360f0     ADD        ESP,0x8
-//         004360f3     MOV        byte ptr [ESI + 0x9],this
-//                              Command.cpp:2098 (23)
-//         004360f6     MOV        this,byte ptr [ESP + param_5]
-//         004360fa     MOV        byte ptr [ESI],0xc
-//         004360fd     MOV        byte ptr [ESI + 0x1],BL
-//         00436100     MOV        dword ptr [ESI + 0x4],EAX
-//         00436103     MOV        byte ptr [ESI + 0x8],0x1
-//         00436107     MOV        byte ptr [ESI + 0xa],DL
-//         0043610a     MOV        byte ptr [ESI + 0xb],this
-//                              Command.cpp:2101 (9)
-//         0043610d     MOV        this,dword ptr [EDI + 0x4]
-//         00436110     PUSH       EAX
-//         00436111     CALL       RGE_Game_World::object                           RGE_Static_Object * object(RGE_Game_World * t
-//                              Command.cpp:2102 (38)
-//         00436116     TEST       EAX,EAX
-//         00436118     JZ         LAB_00436122
-//         0043611a     MOV        EDX,dword ptr [EAX + 0x8]
-//         0043611d     MOV        EAX,dword ptr [EDX + 0x8]
-//         00436120     JMP        LAB_00436127
-//                               LAB_00436122                                                 XREF[1]:     00436118(j)
-//         00436122     MOV        EAX,s_X                                          = "X"
-//                               LAB_00436127                                                 XREF[1]:     00436120(j)
-//         00436127     PUSH       EAX=>s_X                                         = "X"
-//         00436128     MOV        EAX,[L]                                          = 00000000
-//         0043612d     PUSH       EBX
-//         0043612e     PUSH       s_______>SEND_CMD_ADD_WAY2_(PLR=%d               = "      >SEND CMD ADD WAY2 (PLR=%d,REC=%s)"
-//         00436133     PUSH       EAX
-//         00436134     CALL       TDebuggingLog::Log                               void Log(TDebuggingLog * this, char * param_1
-//         00436139     ADD        ESP,0x10
-//                              Command.cpp:2105 (10)
-//         0043613c     MOV        this,EDI
-//         0043613e     PUSH       0x18
-//         00436140     PUSH       ESI
-//         00436141     CALL       RGE_Command::submit                              void submit(RGE_Command * this, void * param_
-//                              Command.cpp:2106 (6)
-//         00436146     POP        EDI
-//         00436147     POP        ESI
-//         00436148     POP        EBX
-//         00436149     RET        0x14
-//         0043614c     ??         90h
-//         0043614d     NOP
-//         0043614e     NOP
-//         0043614f     NOP
+//                              Command.cpp:2031 (4)
+//         00436030     PUSH       EBX
+//         00436031     PUSH       EBP
+//         00436032     PUSH       ESI
+//         00436033     PUSH       EDI
+//                              Command.cpp:2050 (11)
+//         00436034     PUSH       0x18
+//         00436036     MOV        EBP,this
+//         00436038     PUSH       0x1
+//         0043603a     CALL       calloc                                           undefined calloc()
+//                              Command.cpp:2056 (17)
+//         0043603f     MOV        EDX,dword ptr [ESP + param_4]
+//         00436043     MOV        EBX,dword ptr [ESP + param_2]
+//         00436047     MOV        ESI,EAX
+//         00436049     MOV        AL,byte ptr [ESP + param_1]
+//         0043604d     ADD        ESP,0x8
+//                              Command.cpp:2057 (28)
+//         00436050     TEST       EDX,EDX
+//         00436052     MOV        byte ptr [ESI],0xc
+//         00436055     MOV        byte ptr [ESI + 0x1],AL
+//         00436058     MOV        dword ptr [ESI + 0x4],EBX
+//         0043605b     MOV        byte ptr [ESI + 0x8],DL
+//         0043605e     JLE        LAB_00436086
+//         00436060     MOV        this,dword ptr [ESP + param_3]
+//         00436064     MOV        EDI,EDX
+//         00436066     LEA        EAX,[ECX + this+0x2]
+//         00436069     LEA        this,[ESI + 0xa]
+//                               LAB_0043606c                                                 XREF[1]:     00436084(j)
+//                              Command.cpp:2059 (9)
+//         0043606c     MOV        DL,byte ptr [EAX + -0x2]
+//         0043606f     ADD        EAX,0x3
+//         00436072     MOV        byte ptr [this->_padding_ + -0x1],DL
+//                              Command.cpp:2060 (5)
+//         00436075     MOV        DL,byte ptr [EAX + -0x4]
+//         00436078     MOV        byte ptr [this->_padding_],DL
+//                              Command.cpp:2061 (12)
+//         0043607a     MOV        DL,byte ptr [EAX + -0x3]
+//         0043607d     MOV        byte ptr [ECX + this+0x1],DL
+//         00436080     ADD        this,0x3
+//         00436083     DEC        EDI
+//         00436084     JNZ        LAB_0043606c
+//                               LAB_00436086                                                 XREF[1]:     0043605e(j)
+//                              Command.cpp:2065 (9)
+//         00436086     MOV        this,dword ptr [EBP + 0x4]
+//         00436089     PUSH       EBX
+//         0043608a     CALL       RGE_Game_World::object                           RGE_Static_Object * object(RGE_Game_World * t
+//                              Command.cpp:2066 (43)
+//         0043608f     TEST       EAX,EAX
+//         00436091     JZ         LAB_0043609b
+//         00436093     MOV        EAX,dword ptr [EAX + 0x8]
+//         00436096     MOV        EAX,dword ptr [EAX + 0x8]
+//         00436099     JMP        LAB_004360a0
+//                               LAB_0043609b                                                 XREF[1]:     00436091(j)
+//         0043609b     MOV        EAX,s_X                                          = "X"
+//                               LAB_004360a0                                                 XREF[1]:     00436099(j)
+//         004360a0     MOV        this,dword ptr [ESP + param_1]
+//         004360a4     MOV        EDX,dword ptr [L]                                = 00000000
+//         004360aa     PUSH       EAX=>s_X                                         = "X"
+//         004360ab     PUSH       this
+//         004360ac     PUSH       s_______>SEND_CMD_ADD_WAY_(PLR=%d,               = "      >SEND CMD ADD WAY (PLR=%d,REC=%s)"
+//         004360b1     PUSH       EDX
+//         004360b2     CALL       TDebuggingLog::Log                               void Log(TDebuggingLog * this, char * param_1
+//         004360b7     ADD        ESP,0x10
+//                              Command.cpp:2069 (10)
+//         004360ba     MOV        this,EBP
+//         004360bc     PUSH       0x18
+//         004360be     PUSH       ESI
+//         004360bf     CALL       RGE_Command::submit                              void submit(RGE_Command * this, void * param_
+//                              Command.cpp:2070 (7)
+//         004360c4     POP        EDI
+//         004360c5     POP        ESI
+//         004360c6     POP        EBP
+//         004360c7     POP        EBX
+//         004360c8     RET        0x10
+//         004360cb     ??         90h
+//         004360cc     NOP
+//         004360cd     NOP
+//         004360ce     NOP
+//         004360cf     NOP
     return;
 }
 

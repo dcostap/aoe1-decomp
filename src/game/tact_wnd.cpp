@@ -6,33 +6,36 @@ TRIBE_Action_Wonder::TRIBE_Action_Wonder(int param_1, RGE_Action_Object* param_2
 //                              undefined __thiscall TRIBE_Action_Wonder(TRIBE_Action_Wonder * this,
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Action_W    ECX:4 (auto)   this
-//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     004d34c0(R)
-//                               ??0TRIBE_Action_Wonder@@QAE@PAVRGE_Action_Object@@@Z         XREF[1]:     create_task_action:004d0879(c)
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004d3479(R)
+//              RGE_Action_Obj    Stack[0x8]:4   param_2                   XREF[1]:     004d3470(R)
+//                               ??0TRIBE_Action_Wonder@@QAE@HPAVRGE_Action_Object@@@Z        XREF[1]:     create_action:004d0353(c)
 //                               TRIBE_Action_Wonder::TRIBE_Action_Wonder
-//                              tact_wnd.cpp:42 (21)
-//         004d34c0     MOV        EAX,dword ptr [ESP + param_1]
-//         004d34c4     PUSH       ESI
-//         004d34c5     PUSH       0x1
-//         004d34c7     MOV        ESI,this
-//         004d34c9     PUSH       EAX
-//         004d34ca     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
-//         004d34cf     MOV        dword ptr [ESI],TRIBE_Action_Wonder::`vftable'   = 004d34a0
-//                              tact_wnd.cpp:43 (6)
-//         004d34d5     MOV        word ptr [ESI + 0x4],0x78
-//                              tact_wnd.cpp:44 (7)
-//         004d34db     MOV        dword ptr [ESI + 0x2c],0x0
-//                              tact_wnd.cpp:45 (6)
-//         004d34e2     MOV        EAX,ESI
-//         004d34e4     POP        ESI
-//         004d34e5     RET        0x4
-//         004d34e8     ??         90h
-//         004d34e9     NOP
-//         004d34ea     NOP
-//         004d34eb     NOP
-//         004d34ec     NOP
-//         004d34ed     NOP
-//         004d34ee     NOP
-//         004d34ef     NOP
+//                              tact_wnd.cpp:35 (28)
+//         004d3470     MOV        EAX,dword ptr [ESP + param_2]
+//         004d3474     PUSH       ESI
+//         004d3475     MOV        ESI,this
+//         004d3477     PUSH       0x1
+//         004d3479     MOV        this,dword ptr [ESP + param_1]
+//         004d347d     PUSH       EAX
+//         004d347e     PUSH       this
+//         004d347f     MOV        this,ESI
+//         004d3481     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, int p
+//         004d3486     MOV        dword ptr [ESI],TRIBE_Action_Wonder::`vftable'   = 004d34a0
+//                              language.dll match for 0x78: "10"
+//                              tact_wnd.cpp:36 (6)
+//         004d348c     MOV        word ptr [ESI + 0x4],0x78
+//                              tact_wnd.cpp:37 (6)
+//         004d3492     MOV        EAX,ESI
+//         004d3494     POP        ESI
+//         004d3495     RET        0x8
+//         004d3498     ??         90h
+//         004d3499     NOP
+//         004d349a     NOP
+//         004d349b     NOP
+//         004d349c     NOP
+//         004d349d     NOP
+//         004d349e     NOP
+//         004d349f     NOP
 }
 
 TRIBE_Action_Wonder::TRIBE_Action_Wonder(RGE_Action_Object* param_1) {

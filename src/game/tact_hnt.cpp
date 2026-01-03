@@ -3,54 +3,61 @@
 
 TRIBE_Action_Hunt::TRIBE_Action_Hunt(int param_1, RGE_Action_Object* param_2) {
     /* TODO: Stub */
-//                              undefined __thiscall TRIBE_Action_Hunt(TRIBE_Action_Hunt * this, RGE
+//                              undefined __thiscall TRIBE_Action_Hunt(TRIBE_Action_Hunt * this, int
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Action_H    ECX:4 (auto)   this
-//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     004cf1c0(R)
-//              RGE_Task *        Stack[0x8]:4   param_2                   XREF[1]:     004cf1cf(R)
-//              float             Stack[0xc]:4   param_3                   XREF[1]:     004cf1d7(R)
-//              float             Stack[0x10]:4  param_4                   XREF[1]:     004cf1d3(R)
-//              float             Stack[0x14]:4  param_5                   XREF[1]:     004cf1de(R)
-//                               ??0TRIBE_Action_Hunt@@QAE@PAVRGE_Action_Object@@PAVRGE_Task  XREF[1]:     create_task_action:004d099d(c)
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004cf0ac(R)
+//              RGE_Action_Obj    Stack[0x8]:4   param_2                   XREF[1]:     004cf0a6(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     004cf0c6(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004cf0df(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004cf0b6(W)
+//                               ??0TRIBE_Action_Hunt@@QAE@HPAVRGE_Action_Object@@@Z          XREF[1]:     create_action:004d03d3(c)
 //                               TRIBE_Action_Hunt::TRIBE_Action_Hunt
-//                              tact_hnt.cpp:113 (15)
-//         004cf1c0     MOV        EAX,dword ptr [ESP + param_1]
-//         004cf1c4     PUSH       ESI
-//         004cf1c5     PUSH       0x1
-//         004cf1c7     MOV        ESI,this
-//         004cf1c9     PUSH       EAX
-//         004cf1ca     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
-//                              tact_hnt.cpp:115 (4)
-//         004cf1cf     MOV        this,dword ptr [ESP + param_2]
-//                              tact_hnt.cpp:117 (11)
-//         004cf1d3     MOV        EAX,dword ptr [ESP + param_4]
-//         004cf1d7     MOV        EDX,dword ptr [ESP + param_3]
-//         004cf1db     MOV        dword ptr [ESI + 0x30],this
-//                              tact_hnt.cpp:118 (25)
-//         004cf1de     MOV        this,dword ptr [ESP + param_5]
-//         004cf1e2     MOV        dword ptr [ESI + 0x24],EAX
-//         004cf1e5     MOV        dword ptr [ESI],TRIBE_Action_Hunt::`vftable'     = 004cf100
-//         004cf1eb     MOV        word ptr [ESI + 0x4],0x6e
-//         004cf1f1     MOV        dword ptr [ESI + 0x20],EDX
-//         004cf1f4     MOV        dword ptr [ESI + 0x28],this
-//                              tact_hnt.cpp:119 (7)
-//         004cf1f7     MOV        dword ptr [ESI + 0x40],0xffffffff
-//                              tact_hnt.cpp:124 (6)
-//         004cf1fe     MOV        EAX,ESI
-//         004cf200     POP        ESI
-//         004cf201     RET        0x14
-//         004cf204     ??         90h
-//         004cf205     NOP
-//         004cf206     NOP
-//         004cf207     NOP
-//         004cf208     NOP
-//         004cf209     NOP
-//         004cf20a     NOP
-//         004cf20b     NOP
-//         004cf20c     NOP
-//         004cf20d     NOP
-//         004cf20e     NOP
-//         004cf20f     NOP
+//                              tact_hnt.cpp:70 (47)
+//         004cf090     PUSH       -0x1
+//         004cf092     PUSH       FUN_0055fea8
+//         004cf097     MOV        EAX,FS:[0x0]
+//         004cf09d     PUSH       EAX
+//         004cf09e     MOV        dword ptr FS:[0x0],ESP
+//         004cf0a5     PUSH       this
+//         004cf0a6     MOV        EAX,dword ptr [ESP + param_2]
+//         004cf0aa     PUSH       ESI
+//         004cf0ab     PUSH       EDI
+//         004cf0ac     MOV        EDI,dword ptr [ESP + param_1]
+//         004cf0b0     PUSH       0x1
+//         004cf0b2     MOV        ESI,this
+//         004cf0b4     PUSH       EAX
+//         004cf0b5     PUSH       EDI
+//         004cf0b6     MOV        dword ptr [ESP + local_10],ESI
+//         004cf0ba     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, int p
+//                              tact_hnt.cpp:72 (32)
+//         004cf0bf     LEA        this,[ESI + 0x40]
+//         004cf0c2     PUSH       0x4
+//         004cf0c4     PUSH       this
+//         004cf0c5     PUSH       EDI
+//         004cf0c6     MOV        dword ptr [ESP + local_4],0x0
+//         004cf0ce     MOV        dword ptr [ESI],TRIBE_Action_Hunt::`vftable'     = 004cf100
+//                              language.dll match for 0x6e: "Copperplate Gothic Light"
+//         004cf0d4     MOV        word ptr [ESI + 0x4],0x6e
+//         004cf0da     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              tact_hnt.cpp:73 (24)
+//         004cf0df     MOV        this,dword ptr [ESP + local_c]
+//         004cf0e3     ADD        ESP,0xc
+//         004cf0e6     MOV        EAX,ESI
+//         004cf0e8     MOV        dword ptr FS:[0x0],this
+//         004cf0ef     POP        EDI
+//         004cf0f0     POP        ESI
+//         004cf0f1     ADD        ESP,0x10
+//         004cf0f4     RET        0x8
+//         004cf0f7     ??         90h
+//         004cf0f8     NOP
+//         004cf0f9     NOP
+//         004cf0fa     NOP
+//         004cf0fb     NOP
+//         004cf0fc     NOP
+//         004cf0fd     NOP
+//         004cf0fe     NOP
+//         004cf0ff     NOP
 }
 
 TRIBE_Action_Hunt::TRIBE_Action_Hunt(RGE_Action_Object* param_1, RGE_Task* param_2, RGE_Static_Object* param_3) {
@@ -58,51 +65,72 @@ TRIBE_Action_Hunt::TRIBE_Action_Hunt(RGE_Action_Object* param_1, RGE_Task* param
 //                              undefined __thiscall TRIBE_Action_Hunt(TRIBE_Action_Hunt * this, RGE
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Action_H    ECX:4 (auto)   this
-//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     004cf1c0(R)
-//              RGE_Task *        Stack[0x8]:4   param_2                   XREF[1]:     004cf1cf(R)
-//              float             Stack[0xc]:4   param_3                   XREF[1]:     004cf1d7(R)
-//              float             Stack[0x10]:4  param_4                   XREF[1]:     004cf1d3(R)
-//              float             Stack[0x14]:4  param_5                   XREF[1]:     004cf1de(R)
-//                               ??0TRIBE_Action_Hunt@@QAE@PAVRGE_Action_Object@@PAVRGE_Task  XREF[1]:     create_task_action:004d099d(c)
-//                               TRIBE_Action_Hunt::TRIBE_Action_Hunt
-//                              tact_hnt.cpp:113 (15)
-//         004cf1c0     MOV        EAX,dword ptr [ESP + param_1]
-//         004cf1c4     PUSH       ESI
-//         004cf1c5     PUSH       0x1
-//         004cf1c7     MOV        ESI,this
-//         004cf1c9     PUSH       EAX
-//         004cf1ca     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
-//                              tact_hnt.cpp:115 (4)
-//         004cf1cf     MOV        this,dword ptr [ESP + param_2]
-//                              tact_hnt.cpp:117 (11)
-//         004cf1d3     MOV        EAX,dword ptr [ESP + param_4]
-//         004cf1d7     MOV        EDX,dword ptr [ESP + param_3]
-//         004cf1db     MOV        dword ptr [ESI + 0x30],this
-//                              tact_hnt.cpp:118 (25)
-//         004cf1de     MOV        this,dword ptr [ESP + param_5]
-//         004cf1e2     MOV        dword ptr [ESI + 0x24],EAX
-//         004cf1e5     MOV        dword ptr [ESI],TRIBE_Action_Hunt::`vftable'     = 004cf100
-//         004cf1eb     MOV        word ptr [ESI + 0x4],0x6e
-//         004cf1f1     MOV        dword ptr [ESI + 0x20],EDX
-//         004cf1f4     MOV        dword ptr [ESI + 0x28],this
-//                              tact_hnt.cpp:119 (7)
-//         004cf1f7     MOV        dword ptr [ESI + 0x40],0xffffffff
-//                              tact_hnt.cpp:124 (6)
-//         004cf1fe     MOV        EAX,ESI
-//         004cf200     POP        ESI
-//         004cf201     RET        0x14
-//         004cf204     ??         90h
-//         004cf205     NOP
-//         004cf206     NOP
-//         004cf207     NOP
-//         004cf208     NOP
-//         004cf209     NOP
-//         004cf20a     NOP
-//         004cf20b     NOP
-//         004cf20c     NOP
-//         004cf20d     NOP
-//         004cf20e     NOP
-//         004cf20f     NOP
+//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     004cf146(R)
+//              RGE_Task *        Stack[0x8]:4   param_2                   XREF[1]:     004cf15a(R)
+//              RGE_Static_Obj    Stack[0xc]:4   param_3                   XREF[1]:     004cf15e(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     004cf168(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004cf1a7(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004cf151(W)
+//                               ??0TRIBE_Action_Hunt@@QAE@PAVRGE_Action_Object@@PAVRGE_Task  XREF[2]:     hunt:004cb162(c),
+//                               TRIBE_Action_Hunt::TRIBE_Action_Hunt                                      create_task_action:004d0952(c)
+//                              tact_hnt.cpp:81 (42)
+//         004cf130     PUSH       -0x1
+//         004cf132     PUSH       FUN_0055fec8
+//         004cf137     MOV        EAX,FS:[0x0]
+//         004cf13d     PUSH       EAX
+//         004cf13e     MOV        dword ptr FS:[0x0],ESP
+//         004cf145     PUSH       this
+//         004cf146     MOV        EAX,dword ptr [ESP + param_1]
+//         004cf14a     PUSH       ESI
+//         004cf14b     PUSH       EDI
+//         004cf14c     MOV        ESI,this
+//         004cf14e     PUSH       0x1
+//         004cf150     PUSH       EAX
+//         004cf151     MOV        dword ptr [ESP + local_10],ESI
+//         004cf155     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
+//                              tact_hnt.cpp:83 (4)
+//         004cf15a     MOV        this,dword ptr [ESP + param_2]
+//                              tact_hnt.cpp:85 (35)
+//         004cf15e     MOV        EDI,dword ptr [ESP + param_3]
+//         004cf162     MOV        dword ptr [ESI + 0x30],this
+//         004cf165     PUSH       EDI
+//         004cf166     MOV        this,ESI
+//         004cf168     MOV        dword ptr [ESP + local_4],0x0
+//         004cf170     MOV        dword ptr [ESI],TRIBE_Action_Hunt::`vftable'     = 004cf100
+//                              language.dll match for 0x6e: "Copperplate Gothic Light"
+//         004cf176     MOV        word ptr [ESI + 0x4],0x6e
+//         004cf17c     CALL       RGE_Action::set_target_obj                       void set_target_obj(RGE_Action * this, RGE_St
+//                              tact_hnt.cpp:87 (10)
+//         004cf181     TEST       EDI,EDI
+//         004cf183     JZ         LAB_004cf1a7
+//         004cf185     CMP        byte ptr [EDI + 0x48],0x7
+//         004cf189     JNC        LAB_004cf1a7
+//                              tact_hnt.cpp:89 (6)
+//         004cf18b     MOV        EDX,dword ptr [EDI + 0x38]
+//         004cf18e     MOV        dword ptr [ESI + 0x20],EDX
+//                              tact_hnt.cpp:90 (6)
+//         004cf191     MOV        EAX,dword ptr [EDI + 0x3c]
+//         004cf194     MOV        dword ptr [ESI + 0x24],EAX
+//                              tact_hnt.cpp:91 (6)
+//         004cf197     MOV        this,dword ptr [EDI + 0x40]
+//         004cf19a     MOV        dword ptr [ESI + 0x28],this
+//                              tact_hnt.cpp:92 (10)
+//         004cf19d     MOV        EDX,dword ptr [EDI + 0x8]
+//         004cf1a0     MOVSX      EAX,word ptr [EDX + 0x10]
+//         004cf1a4     MOV        dword ptr [ESI + 0x40],EAX
+//                               LAB_004cf1a7                                                 XREF[2]:     004cf183(j), 004cf189(j)
+//                              tact_hnt.cpp:105 (21)
+//         004cf1a7     MOV        this,dword ptr [ESP + local_c]
+//         004cf1ab     MOV        EAX,ESI
+//         004cf1ad     POP        EDI
+//         004cf1ae     MOV        dword ptr FS:[0x0],this
+//         004cf1b5     POP        ESI
+//         004cf1b6     ADD        ESP,0x10
+//         004cf1b9     RET        0xc
+//         004cf1bc     ??         90h
+//         004cf1bd     NOP
+//         004cf1be     NOP
+//         004cf1bf     NOP
 }
 
 TRIBE_Action_Hunt::TRIBE_Action_Hunt(RGE_Action_Object* param_1, RGE_Task* param_2, float param_3, float param_4, float param_5) {

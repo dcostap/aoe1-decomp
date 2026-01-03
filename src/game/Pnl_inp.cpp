@@ -1486,28 +1486,64 @@ void TInputPanel::draw() {
 
 void TInputPanel::set_text(char* param_1) {
     /* TODO: Stub */
-//                              void __thiscall set_text(TInputPanel * this, char * * param_1, short
+//                              void __thiscall set_text(TInputPanel * this, char * param_1)
 //              void              <VOID>         <RETURN>
 //              TInputPanel *     ECX:4 (auto)   this
-//              char * *          Stack[0x4]:4   param_1
-//              short             Stack[0x8]:2   param_2
-//                               ?set_text@TInputPanel@@UAEXPAPADF@Z                          XREF[1]:     00571568(*)
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0047791d(R)
+//                               ?set_text@TInputPanel@@UAEXPAD@Z                             XREF[1]:     00571570(*)
 //                               TInputPanel::set_text
-//                              Pnl_inp.cpp:560 (3)
-//         00477990     RET        0x8
-//         00477993     ??         90h
-//         00477994     NOP
-//         00477995     NOP
-//         00477996     NOP
-//         00477997     NOP
-//         00477998     NOP
-//         00477999     NOP
-//         0047799a     NOP
-//         0047799b     NOP
-//         0047799c     NOP
-//         0047799d     NOP
-//         0047799e     NOP
-//         0047799f     NOP
+//                              Pnl_inp.cpp:532 (3)
+//         00477910     PUSH       ESI
+//         00477911     MOV        ESI,this
+//                              Pnl_inp.cpp:533 (10)
+//         00477913     MOV        EAX,dword ptr [ESI + 0x1a0]
+//         00477919     TEST       EAX,EAX
+//         0047791b     JZ         LAB_00477989
+//                              Pnl_inp.cpp:536 (8)
+//         0047791d     MOV        this,dword ptr [ESP + param_1]
+//         00477921     TEST       this,this
+//         00477923     JNZ        LAB_00477929
+//                              Pnl_inp.cpp:537 (2)
+//         00477925     MOV        byte ptr [EAX],this
+//                              Pnl_inp.cpp:538 (2)
+//         00477927     JMP        LAB_00477933
+//                               LAB_00477929                                                 XREF[1]:     00477923(j)
+//                              Pnl_inp.cpp:539 (10)
+//         00477929     PUSH       this
+//         0047792a     PUSH       EAX
+//         0047792b     CALL       __mbscpy                                         undefined __mbscpy()
+//         00477930     ADD        ESP,0x8
+//                               LAB_00477933                                                 XREF[1]:     00477927(j)
+//                              Pnl_inp.cpp:540 (12)
+//         00477933     MOV        EAX,dword ptr [ESI + 0x1a0]
+//         00477939     PUSH       EAX
+//         0047793a     CALL       __mbslen                                         undefined __mbslen()
+//                              Pnl_inp.cpp:546 (53)
+//         0047793f     MOV        this,dword ptr [ESI + 0x19c]
+//         00477945     ADD        ESP,0x4
+//         00477948     CMP        this,0x7
+//         0047794b     MOV        word ptr [ESI + 0x1ac],AX
+//         00477952     MOV        word ptr [ESI + 0x1b4],0x0
+//         0047795b     MOV        word ptr [ESI + 0x100],0x0
+//         00477964     MOV        word ptr [ESI + 0x102],0x0
+//         0047796d     JZ         LAB_00477982
+//         0047796f     TEST       AX,AX
+//         00477972     JLE        LAB_00477982
+//                              Pnl_inp.cpp:548 (7)
+//         00477974     MOV        word ptr [ESI + 0x1b4],AX
+//                              Pnl_inp.cpp:549 (7)
+//         0047797b     MOV        word ptr [ESI + 0x102],AX
+//                               LAB_00477982                                                 XREF[2]:     0047796d(j), 00477972(j)
+//                              Pnl_inp.cpp:552 (7)
+//         00477982     MOV        this,ESI
+//         00477984     CALL       TInputPanel::reformat                            void reformat(TInputPanel * this)
+//                               LAB_00477989                                                 XREF[1]:     0047791b(j)
+//                              Pnl_inp.cpp:554 (4)
+//         00477989     POP        ESI
+//         0047798a     RET        0x4
+//         0047798d     ??         90h
+//         0047798e     NOP
+//         0047798f     NOP
     return;
 }
 

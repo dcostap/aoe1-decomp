@@ -1,6 +1,64 @@
 #pragma once
 #include "../common.h"
 
+typedef enum Action : unsigned int {
+    ActionSelect = 1,
+};
+
+typedef enum Alignment : unsigned int {
+    AlignCenter = 0,
+    AlignLeft = 1,
+    AlignRight = 2,
+    AlignTop = 3,
+    AlignBottom = 4,
+    AlignHorizontalScroll = 5,
+    AlignWordwrap = 6,
+};
+
+typedef enum BevelType : unsigned int {
+    BevelNone = 0,
+    BevelFlat = 1,
+    BevelIn1 = 2,
+    BevelIn2 = 3,
+    BevelIn3 = 4,
+    BevelOut1 = 5,
+    BevelOut2 = 6,
+    BevelOut3 = 7,
+};
+
+typedef enum CharType : unsigned int {
+    SingleByteChar = 0,
+    SingleByteKanaChar = 1,
+    DoubleByteChar = 2,
+};
+
+typedef enum ScrollAction : unsigned int {
+    ScrollCount = 0,
+    ScrollLine = 1,
+    ScrollDown = 2,
+    ScrollUp = 3,
+    ScrollNext = 4,
+    ScrollPrior = 5,
+    ScrollHome = 6,
+    ScrollEnd = 7,
+};
+
+typedef enum Style : unsigned int {
+    NormalStyle = 0,
+    BeveledStyle = 1,
+    ChiseledStyle = 2,
+};
+
+// ----------------------------------------------------------------
+// TextNode
+// Size: 0x10
+struct TextNode {
+    char * text; // 0x0
+    char * text2; // 0x4
+    long id; // 0x8
+    TextNode * next_node; // 0xC
+};
+
 class TTextPanel : public TPanel {
 public:
     TextNode* list;                          // 0xF4

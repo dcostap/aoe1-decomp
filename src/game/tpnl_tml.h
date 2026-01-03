@@ -1,6 +1,24 @@
 #pragma once
 #include "../common.h"
 
+typedef enum BevelType : unsigned int {
+    BevelNone = 0,
+    BevelFlat = 1,
+    BevelIn1 = 2,
+    BevelIn2 = 3,
+    BevelIn3 = 4,
+    BevelOut1 = 5,
+    BevelOut2 = 6,
+    BevelOut3 = 7,
+};
+
+
+typedef enum Style : unsigned int {
+    NormalStyle = 0,
+    BeveledStyle = 1,
+    ChiseledStyle = 2,
+};
+
 class Time_Line_Panel : public TEasy_Panel {
 public:
     void* axis_font;                         // 0x478

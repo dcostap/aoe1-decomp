@@ -3,39 +3,230 @@
 
 RGE_Timeline::RGE_Timeline(int param_1, RGE_Game_World* param_2) {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Timeline(RGE_Timeline * this, RGE_Game_Worl
+//                              undefined __thiscall RGE_Timeline(RGE_Timeline * this, int param_1,
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Timeline *    ECX:4 (auto)   this
-//              RGE_Game_World    Stack[0x4]:4   param_1                   XREF[1]:     0050d7b2(R)
-//                               ??0RGE_Timeline@@QAE@PAVRGE_Game_World@@@Z                   XREF[1]:     RGE_Scenario:0048ada4(c)
+//              int               Stack[0x4]:4   param_1                   XREF[4]:     0050d5b8(R), 0050d6b0(*), 0050d6dc(R), 0050d72c(R)
+//              RGE_Game_World    Stack[0x8]:4   param_2                   XREF[4]:     0050d5f4(R), 0050d60b(W), 0050d74c(R), 0050d757(W)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     0050d5cd(W), 0050d750(R)
+//              undefined4        Stack[-0x8]:4  local_8                   XREF[3]:     0050d60f(W), 0050d761(R), 0050d76d(W)
+//              long              Stack[-0xc]:4  index                     XREF[4]:     0050d5c1(W), 0050d6e9(R), 0050d71d(R), 0050d777(R)
+//              undefined2        Stack[-0xe]:2  local_e                   XREF[2]:     0050d6cf(*), 0050d715(R)
+//              short             Stack[-0x12]:2 target_player_id
+//                               ??0RGE_Timeline@@QAE@HPAVRGE_Game_World@@@Z                  XREF[1]:     RGE_Scenario:0048af35(c)
 //                               RGE_Timeline::RGE_Timeline
-//                              Timeline.cpp:79 (2)
-//         0050d7b0     MOV        EAX,this
-//                              Timeline.cpp:80 (7)
-//         0050d7b2     MOV        this,dword ptr [ESP + param_1]
-//         0050d7b6     MOV        dword ptr [EAX + 0x4],this
-//                              Timeline.cpp:81 (11)
-//         0050d7b9     XOR        this,this
-//         0050d7bb     MOV        dword ptr [EAX],RGE_Timeline::`vftable'          = 0050d790
-//         0050d7c1     MOV        dword ptr [EAX + 0x8],this
-//                              Timeline.cpp:82 (4)
-//         0050d7c4     MOV        word ptr [EAX + 0xc],this
-//                              Timeline.cpp:83 (4)
-//         0050d7c8     MOV        word ptr [EAX + 0xe],this
-//                              Timeline.cpp:84 (7)
-//         0050d7cc     MOV        dword ptr [EAX + 0x10],0xbf800000
-//                              Timeline.cpp:85 (3)
-//         0050d7d3     RET        0x4
-//         0050d7d6     ??         90h
-//         0050d7d7     NOP
-//         0050d7d8     NOP
-//         0050d7d9     NOP
-//         0050d7da     NOP
-//         0050d7db     NOP
-//         0050d7dc     NOP
-//         0050d7dd     NOP
-//         0050d7de     NOP
-//         0050d7df     NOP
+//                              Timeline.cpp:25 (8)
+//         0050d5b0     SUB        ESP,0x10
+//         0050d5b3     PUSH       EBX
+//         0050d5b4     PUSH       ESI
+//         0050d5b5     MOV        ESI,this
+//         0050d5b7     PUSH       EDI
+//                              Timeline.cpp:33 (33)
+//         0050d5b8     MOV        EDI,dword ptr [ESP + param_1]
+//         0050d5bc     PUSH       0x2
+//         0050d5be     LEA        EBX,[ESI + 0xc]
+//         0050d5c1     MOV        dword ptr [ESP + index],ESI
+//         0050d5c5     PUSH       EBX
+//         0050d5c6     PUSH       EDI
+//         0050d5c7     MOV        dword ptr [ESI],RGE_Timeline::`vftable'          = 0050d790
+//         0050d5cd     MOV        dword ptr [ESP + local_4],EBX
+//         0050d5d1     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050d5d6     ADD        ESP,0xc
+//                              Timeline.cpp:34 (15)
+//         0050d5d9     LEA        EAX,[ESI + 0xe]
+//         0050d5dc     PUSH       0x2
+//         0050d5de     PUSH       EAX
+//         0050d5df     PUSH       EDI
+//         0050d5e0     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050d5e5     ADD        ESP,0xc
+//                              Timeline.cpp:35 (12)
+//         0050d5e8     LEA        this,[ESI + 0x10]
+//         0050d5eb     PUSH       0x4
+//         0050d5ed     PUSH       this
+//         0050d5ee     PUSH       EDI
+//         0050d5ef     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              Timeline.cpp:37 (4)
+//         0050d5f4     MOV        EDX,dword ptr [ESP + param_2]
+//                              Timeline.cpp:38 (6)
+//         0050d5f8     LEA        EAX,[ESI + 0x8]
+//         0050d5fb     ADD        ESP,0xc
+//                              Timeline.cpp:42 (31)
+//         0050d5fe     CMP        word ptr [EBX],0x0
+//         0050d602     MOV        dword ptr [ESI + 0x4],EDX
+//         0050d605     MOV        dword ptr [EAX],0x0
+//         0050d60b     MOV        dword ptr [ESP + param_2],EAX
+//         0050d60f     MOV        dword ptr [ESP + local_8],0x0
+//         0050d617     JLE        LAB_0050d77c
+//                              Timeline.cpp:25 (1)
+//         0050d61d     PUSH       EBP
+//                               LAB_0050d61e                                                 XREF[1]:     0050d771(j)
+//                              Timeline.cpp:44 (14)
+//         0050d61e     PUSH       0x30
+//         0050d620     PUSH       0x1
+//         0050d622     CALL       calloc                                           undefined calloc()
+//         0050d627     ADD        ESP,0x8
+//         0050d62a     MOV        ESI,EAX
+//                              Timeline.cpp:45 (12)
+//         0050d62c     PUSH       0x4
+//         0050d62e     PUSH       ESI
+//         0050d62f     PUSH       EDI
+//         0050d630     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050d635     ADD        ESP,0xc
+//                              Timeline.cpp:46 (15)
+//         0050d638     LEA        EAX,[ESI + 0x4]
+//         0050d63b     PUSH       0x1
+//         0050d63d     PUSH       EAX
+//         0050d63e     PUSH       EDI
+//         0050d63f     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050d644     ADD        ESP,0xc
+//                              Timeline.cpp:47 (15)
+//         0050d647     LEA        this,[ESI + 0x6]
+//         0050d64a     PUSH       0x2
+//         0050d64c     PUSH       this
+//         0050d64d     PUSH       EDI
+//         0050d64e     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050d653     ADD        ESP,0xc
+//                              Timeline.cpp:48 (15)
+//         0050d656     LEA        EDX,[ESI + 0x8]
+//         0050d659     PUSH       0x1
+//         0050d65b     PUSH       EDX
+//         0050d65c     PUSH       EDI
+//         0050d65d     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050d662     ADD        ESP,0xc
+//                              Timeline.cpp:49 (15)
+//         0050d665     LEA        EAX,[ESI + 0xc]
+//         0050d668     PUSH       0x4
+//         0050d66a     PUSH       EAX
+//         0050d66b     PUSH       EDI
+//         0050d66c     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050d671     ADD        ESP,0xc
+//                              Timeline.cpp:50 (15)
+//         0050d674     LEA        this,[ESI + 0x10]
+//         0050d677     PUSH       0x4
+//         0050d679     PUSH       this
+//         0050d67a     PUSH       EDI
+//         0050d67b     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050d680     ADD        ESP,0xc
+//                              Timeline.cpp:51 (15)
+//         0050d683     LEA        EDX,[ESI + 0x14]
+//         0050d686     PUSH       0x4
+//         0050d688     PUSH       EDX
+//         0050d689     PUSH       EDI
+//         0050d68a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050d68f     ADD        ESP,0xc
+//                              Timeline.cpp:52 (15)
+//         0050d692     LEA        EAX,[ESI + 0x18]
+//         0050d695     PUSH       0x2
+//         0050d697     PUSH       EAX
+//         0050d698     PUSH       EDI
+//         0050d699     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050d69e     ADD        ESP,0xc
+//                              Timeline.cpp:53 (15)
+//         0050d6a1     LEA        EBX,[ESI + 0x20]
+//         0050d6a4     PUSH       0x2
+//         0050d6a6     PUSH       EBX
+//         0050d6a7     PUSH       EDI
+//         0050d6a8     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050d6ad     ADD        ESP,0xc
+//                              Timeline.cpp:54 (16)
+//         0050d6b0     LEA        this=>param_1,[ESP + 0x24]
+//         0050d6b4     PUSH       0x2
+//         0050d6b6     PUSH       this
+//         0050d6b7     PUSH       EDI
+//         0050d6b8     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050d6bd     ADD        ESP,0xc
+//                              Timeline.cpp:55 (15)
+//         0050d6c0     LEA        EBP,[ESI + 0x28]
+//         0050d6c3     PUSH       0x2
+//         0050d6c5     PUSH       EBP
+//         0050d6c6     PUSH       EDI
+//         0050d6c7     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050d6cc     ADD        ESP,0xc
+//                              Timeline.cpp:56 (13)
+//         0050d6cf     LEA        EDX=>local_e,[ESP + 0x12]
+//         0050d6d3     PUSH       0x2
+//         0050d6d5     PUSH       EDX
+//         0050d6d6     PUSH       EDI
+//         0050d6d7     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              Timeline.cpp:59 (24)
+//         0050d6dc     MOV        AX,word ptr [ESP + param_1]
+//         0050d6e1     ADD        ESP,0xc
+//         0050d6e4     TEST       AX,AX
+//         0050d6e7     JL         LAB_0050d70e
+//         0050d6e9     MOV        this,dword ptr [ESP + index]
+//         0050d6ed     MOV        this,dword ptr [ECX + this->world]
+//         0050d6f0     TEST       this,this
+//         0050d6f2     JZ         LAB_0050d70e
+//                              Timeline.cpp:60 (24)
+//         0050d6f4     MOVSX      EDX,word ptr [EBX]
+//         0050d6f7     MOV        this,dword ptr [this->_padding_ + 0x40]
+//         0050d6fa     PUSH       EDX
+//         0050d6fb     MOVSX      EAX,AX
+//         0050d6fe     MOV        EDX,dword ptr [this->_padding_ + EAX*0x4]
+//         0050d701     MOV        this,dword ptr [EDX + 0x28]
+//         0050d704     CALL       RGE_Object_List::find_by_id                      RGE_Static_Object * find_by_id(RGE_Object_Lis
+//         0050d709     MOV        dword ptr [ESI + 0x1c],EAX
+//                              Timeline.cpp:61 (2)
+//         0050d70c     JMP        LAB_0050d715
+//                               LAB_0050d70e                                                 XREF[2]:     0050d6e7(j), 0050d6f2(j)
+//                              Timeline.cpp:62 (7)
+//         0050d70e     MOV        dword ptr [ESI + 0x1c],0x0
+//                               LAB_0050d715                                                 XREF[1]:     0050d70c(j)
+//                              Timeline.cpp:64 (19)
+//         0050d715     CMP        word ptr [ESP + local_e],0x0
+//         0050d71b     JL         LAB_0050d745
+//         0050d71d     MOV        EAX,dword ptr [ESP + index]
+//         0050d721     MOV        EAX,dword ptr [EAX + 0x4]
+//         0050d724     TEST       EAX,EAX
+//         0050d726     JZ         LAB_0050d745
+//                              Timeline.cpp:65 (27)
+//         0050d728     MOVSX      this,word ptr [EBP]
+//         0050d72c     MOVSX      EDX,word ptr [ESP + param_1]
+//         0050d731     MOV        EAX,dword ptr [EAX + 0x40]
+//         0050d734     PUSH       this
+//         0050d735     MOV        this,dword ptr [EAX + EDX*0x4]
+//         0050d738     MOV        this,dword ptr [this->_padding_ + 0x28]
+//         0050d73b     CALL       RGE_Object_List::find_by_id                      RGE_Static_Object * find_by_id(RGE_Object_Lis
+//         0050d740     MOV        dword ptr [ESI + 0x24],EAX
+//                              Timeline.cpp:66 (2)
+//         0050d743     JMP        LAB_0050d74c
+//                               LAB_0050d745                                                 XREF[2]:     0050d71b(j), 0050d726(j)
+//                              Timeline.cpp:67 (7)
+//         0050d745     MOV        dword ptr [ESI + 0x24],0x0
+//                               LAB_0050d74c                                                 XREF[1]:     0050d743(j)
+//                              Timeline.cpp:71 (11)
+//         0050d74c     MOV        EDX,dword ptr [ESP + param_2]
+//         0050d750     MOV        this,dword ptr [ESP + local_4]
+//         0050d754     LEA        EAX,[ESI + 0x2c]
+//                              Timeline.cpp:72 (37)
+//         0050d757     MOV        dword ptr [ESP + param_2],EAX
+//         0050d75b     MOV        dword ptr [EAX],0x0
+//         0050d761     MOV        EAX,dword ptr [ESP + local_8]
+//         0050d765     MOV        dword ptr [EDX],ESI
+//         0050d767     INC        EAX
+//         0050d768     MOVSX      EDX,word ptr [this->_padding_]
+//         0050d76b     CMP        EAX,EDX
+//         0050d76d     MOV        dword ptr [ESP + local_8],EAX
+//         0050d771     JL         LAB_0050d61e
+//         0050d777     MOV        ESI,dword ptr [ESP + index]
+//         0050d77b     POP        EBP
+//                               LAB_0050d77c                                                 XREF[1]:     0050d617(j)
+//                              Timeline.cpp:74 (11)
+//         0050d77c     MOV        EAX,ESI
+//         0050d77e     POP        EDI
+//         0050d77f     POP        ESI
+//         0050d780     POP        EBX
+//         0050d781     ADD        ESP,0x10
+//         0050d784     RET        0x8
+//         0050d787     ??         90h
+//         0050d788     NOP
+//         0050d789     NOP
+//         0050d78a     NOP
+//         0050d78b     NOP
+//         0050d78c     NOP
+//         0050d78d     NOP
+//         0050d78e     NOP
+//         0050d78f     NOP
 }
 
 RGE_Timeline::RGE_Timeline(RGE_Game_World* param_1) {

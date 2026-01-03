@@ -1,6 +1,43 @@
 #pragma once
 #include "../common.h"
 
+typedef enum ActionType : unsigned int {
+    ActionSelect = 1,
+    ActionDown = 2,
+    ActionUp = 3,
+    ActionRightSelect = 4,
+    ActionRightDown = 5,
+    ActionRightUp = 6,
+};
+
+typedef enum ButtonType : unsigned int {
+    Normal = 1,
+    Radio = 2,
+    State = 3,
+};
+
+typedef enum DrawType : unsigned int {
+    DrawClear = 1,
+    DrawPicture = 2,
+    DrawTextA = 3,
+    DrawPictureAndText = 4,
+    DrawFillAndText = 5,
+    DrawBevelPicture = 6,
+};
+
+typedef enum NotifyType : unsigned int {
+    NotifyAction = 1,
+    NotifyCommand = 2,
+};
+
+typedef enum BevelType : unsigned int {
+    BevelNone = 0,
+    BevelFlat = 1,
+    Bevel1 = 2,
+    Bevel2 = 3,
+    Bevel3 = 4,
+};
+
 class TButtonPanel : public TPanel {
 public:
     long id[9];                              // 0xF4

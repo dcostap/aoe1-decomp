@@ -603,117 +603,67 @@ int TRIBE_Screen_Sed::create_button(TPanel* param_1, TButtonPanel** param_2, lon
 //                              int __thiscall create_button(TRIBE_Screen_Sed * this, TPanel * param
 //              int               EAX:4          <RETURN>
 //              TRIBE_Screen_S    ECX:4 (auto)   this
-//              TPanel *          Stack[0x4]:4   param_1                   XREF[1]:     004a884c(R)
-//              TButtonPanel *    Stack[0x8]:4   param_2                   XREF[1]:     004a8846(R)
-//              char *            Stack[0xc]:4   param_3                   XREF[1]:     004a8858(R)
-//              char *            Stack[0x10]:4  param_4                   XREF[1]:     004a8840(R)
-//              char *            Stack[0x14]:4  param_5                   XREF[1]:     004a8876(R)
-//              char *            Stack[0x18]:4  param_6                   XREF[1]:     004a8888(R)
-//                               ?create_button@TRIBE_Screen_Sed@@IAEHPAVTPanel@@PAPAVTButto  XREF[2]:     create_button:004a8829(c),
-//                               TRIBE_Screen_Sed::create_button                                           create_all_buttons_etc:004b0f01(c)
-//                              scr_sed.cpp:518 (49)
-//         004a8840     MOV        EAX,dword ptr [ESP + param_4]
-//         004a8844     PUSH       ESI
-//         004a8845     PUSH       EDI
-//         004a8846     MOV        EDI,dword ptr [ESP + param_2]
-//         004a884a     PUSH       0x0
-//         004a884c     MOV        EDX,dword ptr [ESP + param_1]
-//         004a8850     PUSH       0x1
-//         004a8852     PUSH       0xa
-//         004a8854     PUSH       0x0
-//         004a8856     MOV        ESI,this
-//         004a8858     MOV        this,dword ptr [ESP + param_3]
-//         004a885c     PUSH       0x0
-//         004a885e     PUSH       0x0
-//         004a8860     PUSH       0x0
-//         004a8862     PUSH       EAX
-//         004a8863     PUSH       this
-//         004a8864     PUSH       EDI
-//         004a8865     PUSH       EDX
-//         004a8866     MOV        this,ESI
-//         004a8868     CALL       TEasy_Panel::create_button                       int create_button(TEasy_Panel * this, TPanel
-//         004a886d     TEST       EAX,EAX
-//         004a886f     JNZ        LAB_004a8876
-//                              scr_sed.cpp:532 (5)
-//         004a8871     POP        EDI
-//         004a8872     POP        ESI
-//         004a8873     RET        0x18
-//                               LAB_004a8876                                                 XREF[1]:     004a886f(j)
-//                              scr_sed.cpp:522 (18)
-//         004a8876     MOV        EAX,dword ptr [ESP + param_5]
-//         004a887a     TEST       EAX,EAX
-//         004a887c     JZ         LAB_004a8888
-//         004a887e     MOV        this,dword ptr [EDI]
-//         004a8880     PUSH       EAX
-//         004a8881     PUSH       0x2
-//         004a8883     CALL       TButtonPanel::set_text                           void set_text(TButtonPanel * this, short para
-//                               LAB_004a8888                                                 XREF[1]:     004a887c(j)
-//                              scr_sed.cpp:523 (18)
-//         004a8888     MOV        EAX,dword ptr [ESP + param_6]
-//         004a888c     TEST       EAX,EAX
-//         004a888e     JZ         LAB_004a889a
-//         004a8890     MOV        this,dword ptr [EDI]
-//         004a8892     PUSH       EAX
-//         004a8893     PUSH       0x3
-//         004a8895     CALL       TButtonPanel::set_text                           void set_text(TButtonPanel * this, short para
-//                               LAB_004a889a                                                 XREF[1]:     004a888e(j)
-//                              scr_sed.cpp:525 (11)
-//         004a889a     MOV        this,dword ptr [EDI]
-//         004a889c     PUSH       0x0
-//         004a889e     PUSH       0x1
-//         004a88a0     CALL       TPanel::set_z_order                              void set_z_order(TPanel * this, uchar param_1
-//                              scr_sed.cpp:526 (9)
-//         004a88a5     MOV        this,dword ptr [EDI]
-//         004a88a7     PUSH       0x0
-//         004a88a9     MOV        EAX,dword ptr [this->_padding_]
-//         004a88ab     CALL       dword ptr [EAX + 0x14]
-//                              scr_sed.cpp:528 (10)
-//         004a88ae     MOV        EAX,dword ptr [ESI + 0x31c]
-//         004a88b4     TEST       EAX,EAX
-//         004a88b6     JZ         LAB_004a88f7
-//                              scr_sed.cpp:529 (63)
-//         004a88b8     XOR        this,this
-//         004a88ba     XOR        EDX,EDX
-//         004a88bc     MOV        this,byte ptr [ESI + 0x325]
-//         004a88c2     MOV        DL,byte ptr [ESI + 0x324]
-//         004a88c8     XOR        EAX,EAX
-//         004a88ca     PUSH       this
-//         004a88cb     MOV        AL,byte ptr [ESI + 0x323]
-//         004a88d1     PUSH       EDX=>DAT_fffffff8
-//         004a88d2     XOR        this,this
-//         004a88d4     PUSH       EAX=>DAT_fffffff4
-//         004a88d5     MOV        this,byte ptr [ESI + 0x322]
-//         004a88db     XOR        EDX,EDX
-//         004a88dd     MOV        DL,byte ptr [ESI + 0x321]
-//         004a88e3     XOR        EAX,EAX
-//         004a88e5     MOV        AL,byte ptr [ESI + 0x320]
-//         004a88eb     PUSH       this=>DAT_fffffff0
-//         004a88ec     MOV        this,dword ptr [EDI]
-//         004a88ee     PUSH       EDX
-//         004a88ef     PUSH       EAX
-//         004a88f0     PUSH       0x3
-//         004a88f2     CALL       TButtonPanel::set_bevel_info                     void set_bevel_info(TButtonPanel * this, int
-//                               LAB_004a88f7                                                 XREF[1]:     004a88b6(j)
-//                              scr_sed.cpp:532 (10)
-//         004a88f7     POP        EDI
-//         004a88f8     MOV        EAX,0x1
-//         004a88fd     POP        ESI
-//         004a88fe     RET        0x18
-//         004a8901     ??         90h
-//         004a8902     NOP
-//         004a8903     NOP
-//         004a8904     NOP
-//         004a8905     NOP
-//         004a8906     NOP
-//         004a8907     NOP
-//         004a8908     NOP
-//         004a8909     NOP
-//         004a890a     NOP
-//         004a890b     NOP
-//         004a890c     NOP
-//         004a890d     NOP
-//         004a890e     NOP
-//         004a890f     NOP
+//              TPanel *          Stack[0x4]:4   param_1                   XREF[1]:     004a8813(R)
+//              TButtonPanel *    Stack[0x8]:4   param_2                   XREF[1]:     004a880c(R)
+//              long              Stack[0xc]:4   param_3                   XREF[1]:     004a87fa(R)
+//              int               Stack[0x10]:4  param_4
+//              char[120]         Stack[-0x7c]   str1                      XREF[0,2]:   004a87f3(*), 004a881e(*)
+//                               ?create_button@TRIBE_Screen_Sed@@IAEHPAVTPanel@@PAPAVTButto  XREF[16]:    create_all_buttons_etc:004af6f0(c)
+//                               TRIBE_Screen_Sed::create_button                                           create_all_buttons_etc:004af71d(c)
+//                                                                                                         create_all_buttons_etc:004af749(c)
+//                                                                                                         create_all_buttons_etc:004af775(c)
+//                                                                                                         create_all_buttons_etc:004af7a1(c)
+//                                                                                                         create_all_buttons_etc:004af7cd(c)
+//                                                                                                         create_all_buttons_etc:004af7f9(c)
+//                                                                                                         create_all_buttons_etc:004af825(c)
+//                                                                                                         create_all_buttons_etc:004af851(c)
+//                                                                                                         create_all_buttons_etc:004af87d(c)
+//                                                                                                         create_all_buttons_etc:004af8c9(c)
+//                                                                                                         create_all_buttons_etc:004af8fe(c)
+//                                                                                                         create_all_buttons_etc:004afc0a(c)
+//                                                                                                         create_all_buttons_etc:004b10c5(c)
+//                                                                                                         create_all_buttons_etc:004b10e9(c)
+//                                                                                                         create_all_buttons_etc:004b110d(c)
+//                              scr_sed.cpp:498 (3)
+//         004a87f0     SUB        ESP,0x78
+//                              scr_sed.cpp:501 (25)
+//         004a87f3     LEA        EAX=>str1[4],[ESP]
+//         004a87f7     PUSH       ESI
+//         004a87f8     MOV        ESI,this
+//         004a87fa     MOV        this,dword ptr [ESP + param_3]
+//                              language.dll match for 0x78: "10"
+//         004a8801     PUSH       0x78
+//         004a8803     PUSH       EAX
+//         004a8804     PUSH       this
+//         004a8805     MOV        this,ESI
+//         004a8807     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
+//                              scr_sed.cpp:511 (34)
+//         004a880c     MOV        EAX,dword ptr [ESP + param_2]
+//         004a8813     MOV        this,dword ptr [ESP + param_1]
+//         004a881a     PUSH       0x0
+//         004a881c     PUSH       0x0
+//         004a881e     LEA        EDX=>str1[4],[ESP + 0xc]
+//         004a8822     PUSH       0x0
+//         004a8824     PUSH       EDX
+//         004a8825     PUSH       EAX
+//         004a8826     PUSH       this
+//         004a8827     MOV        this,ESI
+//         004a8829     CALL       TRIBE_Screen_Sed::create_button                  int create_button(TRIBE_Screen_Sed * this, TP
+//                              scr_sed.cpp:512 (7)
+//         004a882e     POP        ESI
+//         004a882f     ADD        ESP,0x78
+//         004a8832     RET        0x10
+//         004a8835     ??         90h
+//         004a8836     NOP
+//         004a8837     NOP
+//         004a8838     NOP
+//         004a8839     NOP
+//         004a883a     NOP
+//         004a883b     NOP
+//         004a883c     NOP
+//         004a883d     NOP
+//         004a883e     NOP
+//         004a883f     NOP
     return 0;
 }
 
@@ -841,55 +791,74 @@ int TRIBE_Screen_Sed::create_text(TPanel* param_1, TTextPanel** param_2, long pa
 //                              int __thiscall create_text(TRIBE_Screen_Sed * this, TPanel * param_1
 //              int               EAX:4          <RETURN>
 //              TRIBE_Screen_S    ECX:4 (auto)   this
-//              TPanel *          Stack[0x4]:4   param_1                   XREF[1]:     004a896b(R)
-//              TTextPanel * *    Stack[0x8]:4   param_2                   XREF[1]:     004a8965(R)
-//              char *            Stack[0xc]:4   param_3                   XREF[1]:     004a8960(R)
-//                               ?create_text@TRIBE_Screen_Sed@@IAEHPAVTPanel@@PAPAVTTextPan  XREF[2]:     create_all_buttons_etc:004afbe6(c)
-//                               TRIBE_Screen_Sed::create_text                                             create_all_buttons_etc:004b186a(c)
-//                              scr_sed.cpp:552 (41)
-//         004a8960     MOV        EAX,dword ptr [ESP + param_3]
-//         004a8964     PUSH       ESI
-//         004a8965     MOV        ESI,dword ptr [ESP + param_2]
-//         004a8969     PUSH       0x0
-//         004a896b     MOV        EDX,dword ptr [ESP + param_1]
-//         004a896f     PUSH       0x0
-//         004a8971     PUSH       0x0
-//         004a8973     PUSH       0xa
-//         004a8975     PUSH       0x0
-//         004a8977     PUSH       0x0
-//         004a8979     PUSH       0x0
-//         004a897b     PUSH       0x0
-//         004a897d     PUSH       EAX
-//         004a897e     PUSH       ESI
-//         004a897f     PUSH       EDX
-//         004a8980     CALL       TEasy_Panel::create_text                         int create_text(TEasy_Panel * this, TPanel *
-//         004a8985     TEST       EAX,EAX
-//         004a8987     JNZ        LAB_004a898d
-//                              scr_sed.cpp:560 (4)
-//         004a8989     POP        ESI
-//         004a898a     RET        0xc
-//                               LAB_004a898d                                                 XREF[1]:     004a8987(j)
-//                              scr_sed.cpp:556 (11)
-//         004a898d     MOV        this,dword ptr [ESI]
-//         004a898f     PUSH       0x0
-//         004a8991     PUSH       0x1
-//         004a8993     CALL       TPanel::set_z_order                              void set_z_order(TPanel * this, uchar param_1
-//                              scr_sed.cpp:557 (9)
-//         004a8998     MOV        this,dword ptr [ESI]
-//         004a899a     PUSH       0x0
-//         004a899c     MOV        EAX,dword ptr [this->_padding_]
-//         004a899e     CALL       dword ptr [EAX + 0x14]
-//                              scr_sed.cpp:559 (5)
-//         004a89a1     MOV        EAX,0x1
-//                              scr_sed.cpp:560 (4)
-//         004a89a6     POP        ESI
-//         004a89a7     RET        0xc
-//         004a89aa     ??         90h
-//         004a89ab     NOP
-//         004a89ac     NOP
-//         004a89ad     NOP
-//         004a89ae     NOP
-//         004a89af     NOP
+//              TPanel *          Stack[0x4]:4   param_1                   XREF[1]:     004a891b(R)
+//              TTextPanel * *    Stack[0x8]:4   param_2                   XREF[1]:     004a8915(R)
+//              long              Stack[0xc]:4   param_3                   XREF[1]:     004a8910(R)
+//                               ?create_text@TRIBE_Screen_Sed@@IAEHPAVTPanel@@PAPAVTTextPan  XREF[90]:    create_all_buttons_etc:004af92b(c)
+//                               TRIBE_Screen_Sed::create_text                                             create_all_buttons_etc:004af9cf(c)
+//                                                                                                         create_all_buttons_etc:004af9f1(c)
+//                                                                                                         create_all_buttons_etc:004afa13(c)
+//                                                                                                         create_all_buttons_etc:004afa35(c)
+//                                                                                                         create_all_buttons_etc:004afad0(c)
+//                                                                                                         create_all_buttons_etc:004afb1d(c)
+//                                                                                                         create_all_buttons_etc:004afb6a(c)
+//                                                                                                         create_all_buttons_etc:004afbc4(c)
+//                                                                                                         create_all_buttons_etc:004afc51(c)
+//                                                                                                         create_all_buttons_etc:004afc73(c)
+//                                                                                                         create_all_buttons_etc:004afd6d(c)
+//                                                                                                         create_all_buttons_etc:004afd8f(c)
+//                                                                                                         create_all_buttons_etc:004afdb1(c)
+//                                                                                                         create_all_buttons_etc:004afdd3(c)
+//                                                                                                         create_all_buttons_etc:004afdf5(c)
+//                                                                                                         create_all_buttons_etc:004afe17(c)
+//                                                                                                         create_all_buttons_etc:004afeba(c)
+//                                                                                                         create_all_buttons_etc:004afedc(c)
+//                                                                                                         create_all_buttons_etc:004afefe(c)
+//                                                                                                         [more]
+//                              scr_sed.cpp:538 (41)
+//         004a8910     MOV        EAX,dword ptr [ESP + param_3]
+//         004a8914     PUSH       ESI
+//         004a8915     MOV        ESI,dword ptr [ESP + param_2]
+//         004a8919     PUSH       0x0
+//         004a891b     MOV        EDX,dword ptr [ESP + param_1]
+//         004a891f     PUSH       0x0
+//         004a8921     PUSH       0x0
+//         004a8923     PUSH       0xa
+//         004a8925     PUSH       0x0
+//         004a8927     PUSH       0x0
+//         004a8929     PUSH       0x0
+//         004a892b     PUSH       0x0
+//         004a892d     PUSH       EAX
+//         004a892e     PUSH       ESI
+//         004a892f     PUSH       EDX
+//         004a8930     CALL       TEasy_Panel::create_text                         int create_text(TEasy_Panel * this, TPanel *
+//         004a8935     TEST       EAX,EAX
+//         004a8937     JNZ        LAB_004a893d
+//                              scr_sed.cpp:546 (4)
+//         004a8939     POP        ESI
+//         004a893a     RET        0xc
+//                               LAB_004a893d                                                 XREF[1]:     004a8937(j)
+//                              scr_sed.cpp:542 (11)
+//         004a893d     MOV        this,dword ptr [ESI]
+//         004a893f     PUSH       0x0
+//         004a8941     PUSH       0x1
+//         004a8943     CALL       TPanel::set_z_order                              void set_z_order(TPanel * this, uchar param_1
+//                              scr_sed.cpp:543 (9)
+//         004a8948     MOV        this,dword ptr [ESI]
+//         004a894a     PUSH       0x0
+//         004a894c     MOV        EAX,dword ptr [this->_padding_]
+//         004a894e     CALL       dword ptr [EAX + 0x14]
+//                              scr_sed.cpp:545 (5)
+//         004a8951     MOV        EAX,0x1
+//                              scr_sed.cpp:546 (4)
+//         004a8956     POP        ESI
+//         004a8957     RET        0xc
+//         004a895a     ??         90h
+//         004a895b     NOP
+//         004a895c     NOP
+//         004a895d     NOP
+//         004a895e     NOP
+//         004a895f     NOP
     return 0;
 }
 

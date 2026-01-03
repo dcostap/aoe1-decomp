@@ -6,73 +6,50 @@ TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(TRIBE_Master_Building
 //                              undefined __thiscall TRIBE_Master_Building_Object(TRIBE_Master_Build
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Master_B    ECX:4 (auto)   this
-//              _iobuf *          Stack[0x4]:4   param_1                   XREF[2]:     0050e146(R), 0050e181(R)
-//              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[1]:     0050e150(R)
-//              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[1]:     0050e14b(R)
-//              short             Stack[0x10]:2  param_4                   XREF[1]:     0050e156(R)
-//              int               Stack[0x14]:4  param_5                   XREF[1]:     0050e16b(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0050e16f(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0050e190(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0050e162(W)
-//                               ??0TRIBE_Master_Building_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sp  XREF[1]:     load_object:00511a64(c)
+//              TRIBE_Master_B    Stack[0x4]:4   param_1                   XREF[1]:     0050e058(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     0050e06a(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0050e06e(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0050e088(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0050e061(W)
+//                               ??0TRIBE_Master_Building_Object@@QAE@PAV0@H@Z                XREF[1]:     make_new_master:0050e76b(c)
 //                               TRIBE_Master_Building_Object::TRIBE_Master_Building_Object
-//                              tm_b_obj.cpp:46 (59)
-//         0050e130     PUSH       -0x1
-//         0050e132     PUSH       FUN_00560e68
-//         0050e137     MOV        EAX,FS:[0x0]
-//         0050e13d     PUSH       EAX
-//         0050e13e     MOV        dword ptr FS:[0x0],ESP
-//         0050e145     PUSH       this
-//         0050e146     MOV        EAX,dword ptr [ESP + param_1]
-//         0050e14a     PUSH       EBX
-//         0050e14b     MOV        EBX,dword ptr [ESP + param_3]
-//         0050e14f     PUSH       EBP
-//         0050e150     MOV        EBP,dword ptr [ESP + param_2]
-//         0050e154     PUSH       ESI
-//         0050e155     PUSH       EDI
-//         0050e156     MOV        EDI,dword ptr [ESP + param_4]
-//         0050e15a     PUSH       0x0
-//         0050e15c     PUSH       EDI
-//         0050e15d     PUSH       EBX
-//         0050e15e     MOV        ESI,this
-//         0050e160     PUSH       EBP
-//         0050e161     PUSH       EAX
-//         0050e162     MOV        dword ptr [ESP + local_10],ESI
-//         0050e166     CALL       TRIBE_Master_Combat_Object::TRIBE_Master_Comba   undefined TRIBE_Master_Combat_Object(TRIBE_Ma
-//                              tm_b_obj.cpp:47 (22)
-//         0050e16b     MOV        EAX,dword ptr [ESP + param_5]
-//         0050e16f     MOV        dword ptr [ESP + local_4],0x0
-//         0050e177     TEST       EAX,EAX
-//         0050e179     MOV        dword ptr [ESI],TRIBE_Master_Building_Object::   = 0050e0a0
-//         0050e17f     JZ         LAB_0050e190
-//                              tm_b_obj.cpp:48 (15)
-//         0050e181     MOV        this,dword ptr [ESP + param_1]
-//         0050e185     PUSH       EDI
-//         0050e186     PUSH       EBX
-//         0050e187     PUSH       EBP
-//         0050e188     PUSH       this
-//         0050e189     MOV        this,ESI
-//         0050e18b     CALL       TRIBE_Master_Building_Object::setup              int setup(TRIBE_Master_Building_Object * this
-//                               LAB_0050e190                                                 XREF[1]:     0050e17f(j)
-//                              tm_b_obj.cpp:49 (23)
-//         0050e190     MOV        this,dword ptr [ESP + local_c]
-//         0050e194     MOV        EAX,ESI
-//         0050e196     POP        EDI
-//         0050e197     POP        ESI
-//         0050e198     POP        EBP
-//         0050e199     MOV        dword ptr FS:[0x0],this
-//         0050e1a0     POP        EBX
-//         0050e1a1     ADD        ESP,0x10
-//         0050e1a4     RET        0x14
-//         0050e1a7     ??         90h
-//         0050e1a8     NOP
-//         0050e1a9     NOP
-//         0050e1aa     NOP
-//         0050e1ab     NOP
-//         0050e1ac     NOP
-//         0050e1ad     NOP
-//         0050e1ae     NOP
-//         0050e1af     NOP
+//                              tm_b_obj.cpp:30 (42)
+//         0050e040     PUSH       -0x1
+//         0050e042     PUSH       FUN_00560e28
+//         0050e047     MOV        EAX,FS:[0x0]
+//         0050e04d     PUSH       EAX
+//         0050e04e     MOV        dword ptr FS:[0x0],ESP
+//         0050e055     PUSH       this
+//         0050e056     PUSH       ESI
+//         0050e057     PUSH       EDI
+//         0050e058     MOV        EDI,dword ptr [ESP + param_1]
+//         0050e05c     MOV        ESI,this
+//         0050e05e     PUSH       0x0
+//         0050e060     PUSH       EDI
+//         0050e061     MOV        dword ptr [ESP + local_10],ESI
+//         0050e065     CALL       TRIBE_Master_Combat_Object::TRIBE_Master_Comba   undefined TRIBE_Master_Combat_Object(TRIBE_Ma
+//                              tm_b_obj.cpp:31 (22)
+//         0050e06a     MOV        EAX,dword ptr [ESP + param_2]
+//         0050e06e     MOV        dword ptr [ESP + local_4],0x0
+//         0050e076     TEST       EAX,EAX
+//         0050e078     MOV        dword ptr [ESI],TRIBE_Master_Building_Object::   = 0050e0a0
+//         0050e07e     JZ         LAB_0050e088
+//                              tm_b_obj.cpp:32 (8)
+//         0050e080     PUSH       EDI
+//         0050e081     MOV        this,ESI
+//         0050e083     CALL       TRIBE_Master_Building_Object::setup              int setup(TRIBE_Master_Building_Object * this
+//                               LAB_0050e088                                                 XREF[1]:     0050e07e(j)
+//                              tm_b_obj.cpp:33 (21)
+//         0050e088     MOV        this,dword ptr [ESP + local_c]
+//         0050e08c     MOV        EAX,ESI
+//         0050e08e     POP        EDI
+//         0050e08f     MOV        dword ptr FS:[0x0],this
+//         0050e096     POP        ESI
+//         0050e097     ADD        ESP,0x10
+//         0050e09a     RET        0x8
+//         0050e09d     ??         90h
+//         0050e09e     NOP
+//         0050e09f     NOP
 }
 
 TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4) {
@@ -80,73 +57,63 @@ TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(int param_1, RGE_Spri
 //                              undefined __thiscall TRIBE_Master_Building_Object(TRIBE_Master_Build
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Master_B    ECX:4 (auto)   this
-//              _iobuf *          Stack[0x4]:4   param_1                   XREF[2]:     0050e146(R), 0050e181(R)
-//              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[1]:     0050e150(R)
-//              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[1]:     0050e14b(R)
-//              short             Stack[0x10]:2  param_4                   XREF[1]:     0050e156(R)
-//              int               Stack[0x14]:4  param_5                   XREF[1]:     0050e16b(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0050e16f(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0050e190(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0050e162(W)
-//                               ??0TRIBE_Master_Building_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sp  XREF[1]:     load_object:00511a64(c)
-//                               TRIBE_Master_Building_Object::TRIBE_Master_Building_Object
-//                              tm_b_obj.cpp:46 (59)
-//         0050e130     PUSH       -0x1
-//         0050e132     PUSH       FUN_00560e68
-//         0050e137     MOV        EAX,FS:[0x0]
-//         0050e13d     PUSH       EAX
-//         0050e13e     MOV        dword ptr FS:[0x0],ESP
-//         0050e145     PUSH       this
-//         0050e146     MOV        EAX,dword ptr [ESP + param_1]
-//         0050e14a     PUSH       EBX
-//         0050e14b     MOV        EBX,dword ptr [ESP + param_3]
-//         0050e14f     PUSH       EBP
-//         0050e150     MOV        EBP,dword ptr [ESP + param_2]
-//         0050e154     PUSH       ESI
-//         0050e155     PUSH       EDI
-//         0050e156     MOV        EDI,dword ptr [ESP + param_4]
-//         0050e15a     PUSH       0x0
-//         0050e15c     PUSH       EDI
-//         0050e15d     PUSH       EBX
-//         0050e15e     MOV        ESI,this
-//         0050e160     PUSH       EBP
-//         0050e161     PUSH       EAX
-//         0050e162     MOV        dword ptr [ESP + local_10],ESI
-//         0050e166     CALL       TRIBE_Master_Combat_Object::TRIBE_Master_Comba   undefined TRIBE_Master_Combat_Object(TRIBE_Ma
-//                              tm_b_obj.cpp:47 (22)
-//         0050e16b     MOV        EAX,dword ptr [ESP + param_5]
-//         0050e16f     MOV        dword ptr [ESP + local_4],0x0
-//         0050e177     TEST       EAX,EAX
-//         0050e179     MOV        dword ptr [ESI],TRIBE_Master_Building_Object::   = 0050e0a0
-//         0050e17f     JZ         LAB_0050e190
-//                              tm_b_obj.cpp:48 (15)
-//         0050e181     MOV        this,dword ptr [ESP + param_1]
-//         0050e185     PUSH       EDI
-//         0050e186     PUSH       EBX
-//         0050e187     PUSH       EBP
-//         0050e188     PUSH       this
-//         0050e189     MOV        this,ESI
-//         0050e18b     CALL       TRIBE_Master_Building_Object::setup              int setup(TRIBE_Master_Building_Object * this
-//                               LAB_0050e190                                                 XREF[1]:     0050e17f(j)
-//                              tm_b_obj.cpp:49 (23)
-//         0050e190     MOV        this,dword ptr [ESP + local_c]
-//         0050e194     MOV        EAX,ESI
-//         0050e196     POP        EDI
-//         0050e197     POP        ESI
-//         0050e198     POP        EBP
-//         0050e199     MOV        dword ptr FS:[0x0],this
-//         0050e1a0     POP        EBX
-//         0050e1a1     ADD        ESP,0x10
-//         0050e1a4     RET        0x14
-//         0050e1a7     ??         90h
-//         0050e1a8     NOP
-//         0050e1a9     NOP
-//         0050e1aa     NOP
-//         0050e1ab     NOP
-//         0050e1ac     NOP
-//         0050e1ad     NOP
-//         0050e1ae     NOP
-//         0050e1af     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     0050e0dc(R)
+//              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[1]:     0050e0d7(R)
+//              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[1]:     0050e0e2(R)
+//              int               Stack[0x10]:4  param_4                   XREF[1]:     0050e0f6(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0050e0fa(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0050e116(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0050e0ed(W)
+//                               ??0TRIBE_Master_Building_Object@@QAE@HPAPAVRGE_Sprite@@PAPA  XREF[3]:     setup:004ca4ad(c),
+//                               TRIBE_Master_Building_Object::TRIBE_Master_Building_Object                load_master_object:005118f8(c),
+//                                                                                                         load_master_object:00512b58(c)
+//                              tm_b_obj.cpp:38 (54)
+//         0050e0c0     PUSH       -0x1
+//         0050e0c2     PUSH       FUN_00560e48
+//         0050e0c7     MOV        EAX,FS:[0x0]
+//         0050e0cd     PUSH       EAX
+//         0050e0ce     MOV        dword ptr FS:[0x0],ESP
+//         0050e0d5     PUSH       this
+//         0050e0d6     PUSH       EBX
+//         0050e0d7     MOV        EBX,dword ptr [ESP + param_2]
+//         0050e0db     PUSH       EBP
+//         0050e0dc     MOV        EBP,dword ptr [ESP + param_1]
+//         0050e0e0     PUSH       ESI
+//         0050e0e1     PUSH       EDI
+//         0050e0e2     MOV        EDI,dword ptr [ESP + param_3]
+//         0050e0e6     PUSH       0x0
+//         0050e0e8     PUSH       EDI
+//         0050e0e9     MOV        ESI,this
+//         0050e0eb     PUSH       EBX
+//         0050e0ec     PUSH       EBP
+//         0050e0ed     MOV        dword ptr [ESP + local_10],ESI
+//         0050e0f1     CALL       TRIBE_Master_Combat_Object::TRIBE_Master_Comba   undefined TRIBE_Master_Combat_Object(TRIBE_Ma
+//                              tm_b_obj.cpp:39 (22)
+//         0050e0f6     MOV        EAX,dword ptr [ESP + param_4]
+//         0050e0fa     MOV        dword ptr [ESP + local_4],0x0
+//         0050e102     TEST       EAX,EAX
+//         0050e104     MOV        dword ptr [ESI],TRIBE_Master_Building_Object::   = 0050e0a0
+//         0050e10a     JZ         LAB_0050e116
+//                              tm_b_obj.cpp:40 (10)
+//         0050e10c     PUSH       EDI
+//         0050e10d     PUSH       EBX
+//         0050e10e     PUSH       EBP
+//         0050e10f     MOV        this,ESI
+//         0050e111     CALL       TRIBE_Master_Building_Object::setup              int setup(TRIBE_Master_Building_Object * this
+//                               LAB_0050e116                                                 XREF[1]:     0050e10a(j)
+//                              tm_b_obj.cpp:41 (23)
+//         0050e116     MOV        this,dword ptr [ESP + local_c]
+//         0050e11a     MOV        EAX,ESI
+//         0050e11c     POP        EDI
+//         0050e11d     POP        ESI
+//         0050e11e     POP        EBP
+//         0050e11f     MOV        dword ptr FS:[0x0],this
+//         0050e126     POP        EBX
+//         0050e127     ADD        ESP,0x10
+//         0050e12a     RET        0x10
+//         0050e12d     ??         90h
+//         0050e12e     NOP
+//         0050e12f     NOP
 }
 
 TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(_iobuf* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4, int param_5) {
@@ -225,191 +192,197 @@ TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(_iobuf* param_1, RGE_
 
 int TRIBE_Master_Building_Object::setup(TRIBE_Master_Building_Object* param_1) {
     /* TODO: Stub */
-//                              int __thiscall setup(TRIBE_Master_Building_Object * this, _iobuf * p
+//                              int __thiscall setup(TRIBE_Master_Building_Object * this, TRIBE_Mast
 //              int               EAX:4          <RETURN>
 //              TRIBE_Master_B    ECX:4 (auto)   this
-//              _iobuf *          Stack[0x4]:4   param_1                   XREF[3]:     0050e370(R), 0050e37f(*), 0050e3f1(R)
-//              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[3]:     0050e365(R), 0050e3b0(*), 0050e3c5(R)
-//              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[3]:     0050e36a(R), 0050e39f(*), 0050e3ce(R)
-//              short             Stack[0x10]:2  param_4                   XREF[3]:     0050e360(R), 0050e3ab(*), 0050e3ca(R)
-//                               ?setup@TRIBE_Master_Building_Object@@IAEHPAU_iobuf@@PAPAVRG  XREF[1]:     TRIBE_Master_Building_Object:0050e
+//              TRIBE_Master_B    Stack[0x4]:4   param_1                   XREF[1]:     0050e1b2(R)
+//                               ?setup@TRIBE_Master_Building_Object@@IAEHPAV1@@Z             XREF[1]:     TRIBE_Master_Building_Object:0050e
 //                               TRIBE_Master_Building_Object::setup
-//                              tm_b_obj.cpp:99 (31)
-//         0050e360     MOV        EAX,dword ptr [ESP + param_4]
-//         0050e364     PUSH       EBX
-//         0050e365     MOV        EBX,dword ptr [ESP + param_2]
-//         0050e369     PUSH       EBP
-//         0050e36a     MOV        EBP,dword ptr [ESP + param_3]
-//         0050e36e     PUSH       ESI
-//         0050e36f     PUSH       EDI
-//         0050e370     MOV        EDI,dword ptr [ESP + param_1]
-//         0050e374     PUSH       EAX
-//         0050e375     PUSH       EBP
-//         0050e376     PUSH       EBX
-//         0050e377     MOV        ESI,this
-//         0050e379     PUSH       EDI
-//         0050e37a     CALL       TRIBE_Master_Combat_Object::setup                int setup(TRIBE_Master_Combat_Object * this,
-//                              tm_b_obj.cpp:118 (70)
-//         0050e37f     LEA        this=>param_1,[ESP + 0x14]
-//         0050e383     LEA        EDX,[ESI + 0x178]
-//         0050e389     PUSH       this
-//         0050e38a     LEA        EAX,[ESI + 0x176]
-//         0050e390     PUSH       EDX
-//         0050e391     LEA        this,[ESI + 0x174]
-//         0050e397     PUSH       EAX
-//         0050e398     LEA        EDX,[ESI + 0x172]
-//         0050e39e     PUSH       this
-//         0050e39f     LEA        EAX=>param_3,[ESP + 0x2c]
-//         0050e3a3     PUSH       EDX
-//         0050e3a4     LEA        this,[ESI + 0x16e]
-//         0050e3aa     PUSH       EAX
-//         0050e3ab     LEA        EDX=>param_4,[ESP + 0x38]
-//         0050e3af     PUSH       this
-//         0050e3b0     LEA        EAX=>param_2,[ESP + 0x34]
-//         0050e3b4     PUSH       EDX
-//         0050e3b5     PUSH       EAX
-//         0050e3b6     PUSH       s_%hd_%hd_%hd_%hd_%hd_%hd_%hd_%hd_               = "%hd %hd %hd %hd %hd %hd %hd %hd %hd"
-//         0050e3bb     PUSH       EDI
-//         0050e3bc     MOV        byte ptr [ESI + 0x4],0x50
-//         0050e3c0     CALL       fscanf                                           undefined fscanf()
-//                              tm_b_obj.cpp:123 (44)
-//         0050e3c5     MOV        AX,word ptr [ESP + param_2]
-//         0050e3ca     MOV        this,byte ptr [ESP + param_4]
-//         0050e3ce     MOV        DL,byte ptr [ESP + param_3]
-//         0050e3d2     ADD        ESP,0x2c
-//         0050e3d5     CMP        AX,0xffff
-//         0050e3d9     MOV        byte ptr [ESI + 0x16c],this
-//         0050e3df     MOV        byte ptr [ESI + 0x170],DL
-//         0050e3e5     JLE        LAB_0050e3ef
-//         0050e3e7     MOVSX      EAX,AX
-//         0050e3ea     MOV        EBX,dword ptr [EBX + EAX*0x4]
-//         0050e3ed     JMP        LAB_0050e3f1
-//                               LAB_0050e3ef                                                 XREF[1]:     0050e3e5(j)
-//         0050e3ef     XOR        EBX,EBX
-//                               LAB_0050e3f1                                                 XREF[1]:     0050e3ed(j)
-//                              tm_b_obj.cpp:124 (30)
-//         0050e3f1     MOV        AX,word ptr [ESP + param_1]
-//         0050e3f6     MOV        dword ptr [ESI + 0x168],EBX
-//         0050e3fc     CMP        AX,0xffff
-//         0050e400     JLE        LAB_0050e41b
-//         0050e402     MOVSX      this,AX
-//         0050e405     MOV        EAX,dword ptr [EBP + this->_padding_*0x4]
-//         0050e409     MOV        dword ptr [ESI + 0x164],EAX
-//                              tm_b_obj.cpp:126 (5)
-//         0050e40f     MOV        EAX,0x1
-//                              tm_b_obj.cpp:127 (7)
-//         0050e414     POP        EDI
-//         0050e415     POP        ESI
-//         0050e416     POP        EBP
-//         0050e417     POP        EBX
-//         0050e418     RET        0x10
-//                               LAB_0050e41b                                                 XREF[1]:     0050e400(j)
-//                              tm_b_obj.cpp:124 (2)
-//         0050e41b     XOR        EAX,EAX
-//                              tm_b_obj.cpp:127 (18)
-//         0050e41d     POP        EDI
-//         0050e41e     MOV        dword ptr [ESI + 0x164],EAX
-//         0050e424     POP        ESI
-//         0050e425     POP        EBP
-//         0050e426     MOV        EAX,0x1
-//         0050e42b     POP        EBX
-//         0050e42c     RET        0x10
-//         0050e42f     ??         90h
+//                              tm_b_obj.cpp:53 (2)
+//         0050e1b0     PUSH       ESI
+//         0050e1b1     PUSH       EDI
+//                              tm_b_obj.cpp:54 (12)
+//         0050e1b2     MOV        EDI,dword ptr [ESP + param_1]
+//         0050e1b6     MOV        ESI,this
+//         0050e1b8     PUSH       EDI
+//         0050e1b9     CALL       TRIBE_Master_Combat_Object::setup                int setup(TRIBE_Master_Combat_Object * this,
+//                              tm_b_obj.cpp:56 (4)
+//         0050e1be     MOV        byte ptr [ESI + 0x4],0x50
+//                              tm_b_obj.cpp:58 (12)
+//         0050e1c2     MOV        EAX,dword ptr [EDI + 0x168]
+//         0050e1c8     MOV        dword ptr [ESI + 0x168],EAX
+//                              tm_b_obj.cpp:59 (12)
+//         0050e1ce     MOV        this,byte ptr [EDI + 0x16c]
+//         0050e1d4     MOV        byte ptr [ESI + 0x16c],this
+//                              tm_b_obj.cpp:60 (14)
+//         0050e1da     MOV        DX,word ptr [EDI + 0x16e]
+//         0050e1e1     MOV        word ptr [ESI + 0x16e],DX
+//                              tm_b_obj.cpp:61 (12)
+//         0050e1e8     MOV        AL,byte ptr [EDI + 0x170]
+//         0050e1ee     MOV        byte ptr [ESI + 0x170],AL
+//                              tm_b_obj.cpp:62 (14)
+//         0050e1f4     MOV        this,word ptr [EDI + 0x172]
+//         0050e1fb     MOV        word ptr [ESI + 0x172],this
+//                              tm_b_obj.cpp:63 (14)
+//         0050e202     MOV        DX,word ptr [EDI + 0x174]
+//         0050e209     MOV        word ptr [ESI + 0x174],DX
+//                              tm_b_obj.cpp:64 (14)
+//         0050e210     MOV        AX,word ptr [EDI + 0x176]
+//         0050e217     MOV        word ptr [ESI + 0x176],AX
+//                              tm_b_obj.cpp:65 (14)
+//         0050e21e     MOV        this,word ptr [EDI + 0x178]
+//         0050e225     MOV        word ptr [ESI + 0x178],this
+//                              tm_b_obj.cpp:66 (12)
+//         0050e22c     MOV        EDX,dword ptr [EDI + 0x164]
+//         0050e232     MOV        dword ptr [ESI + 0x164],EDX
+//                              tm_b_obj.cpp:69 (10)
+//         0050e238     POP        EDI
+//         0050e239     MOV        EAX,0x1
+//         0050e23e     POP        ESI
+//         0050e23f     RET        0x4
+//         0050e242     ??         90h
+//         0050e243     NOP
+//         0050e244     NOP
+//         0050e245     NOP
+//         0050e246     NOP
+//         0050e247     NOP
+//         0050e248     NOP
+//         0050e249     NOP
+//         0050e24a     NOP
+//         0050e24b     NOP
+//         0050e24c     NOP
+//         0050e24d     NOP
+//         0050e24e     NOP
+//         0050e24f     NOP
     return 0;
 }
 
 int TRIBE_Master_Building_Object::setup(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3) {
     /* TODO: Stub */
-//                              int __thiscall setup(TRIBE_Master_Building_Object * this, _iobuf * p
+//                              int __thiscall setup(TRIBE_Master_Building_Object * this, int param_
 //              int               EAX:4          <RETURN>
 //              TRIBE_Master_B    ECX:4 (auto)   this
-//              _iobuf *          Stack[0x4]:4   param_1                   XREF[3]:     0050e370(R), 0050e37f(*), 0050e3f1(R)
-//              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[3]:     0050e365(R), 0050e3b0(*), 0050e3c5(R)
-//              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[3]:     0050e36a(R), 0050e39f(*), 0050e3ce(R)
-//              short             Stack[0x10]:2  param_4                   XREF[3]:     0050e360(R), 0050e3ab(*), 0050e3ca(R)
-//                               ?setup@TRIBE_Master_Building_Object@@IAEHPAU_iobuf@@PAPAVRG  XREF[1]:     TRIBE_Master_Building_Object:0050e
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     0050e25c(R)
+//              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[3]:     0050e251(R), 0050e2fc(*), 0050e321(R)
+//              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[3]:     0050e256(R), 0050e26a(*), 0050e309(R)
+//                               ?setup@TRIBE_Master_Building_Object@@IAEHHPAPAVRGE_Sprite@@  XREF[1]:     TRIBE_Master_Building_Object:0050e
 //                               TRIBE_Master_Building_Object::setup
-//                              tm_b_obj.cpp:99 (31)
-//         0050e360     MOV        EAX,dword ptr [ESP + param_4]
-//         0050e364     PUSH       EBX
-//         0050e365     MOV        EBX,dword ptr [ESP + param_2]
-//         0050e369     PUSH       EBP
-//         0050e36a     MOV        EBP,dword ptr [ESP + param_3]
-//         0050e36e     PUSH       ESI
-//         0050e36f     PUSH       EDI
-//         0050e370     MOV        EDI,dword ptr [ESP + param_1]
-//         0050e374     PUSH       EAX
-//         0050e375     PUSH       EBP
-//         0050e376     PUSH       EBX
-//         0050e377     MOV        ESI,this
-//         0050e379     PUSH       EDI
-//         0050e37a     CALL       TRIBE_Master_Combat_Object::setup                int setup(TRIBE_Master_Combat_Object * this,
-//                              tm_b_obj.cpp:118 (70)
-//         0050e37f     LEA        this=>param_1,[ESP + 0x14]
-//         0050e383     LEA        EDX,[ESI + 0x178]
-//         0050e389     PUSH       this
-//         0050e38a     LEA        EAX,[ESI + 0x176]
-//         0050e390     PUSH       EDX
-//         0050e391     LEA        this,[ESI + 0x174]
-//         0050e397     PUSH       EAX
-//         0050e398     LEA        EDX,[ESI + 0x172]
-//         0050e39e     PUSH       this
-//         0050e39f     LEA        EAX=>param_3,[ESP + 0x2c]
-//         0050e3a3     PUSH       EDX
-//         0050e3a4     LEA        this,[ESI + 0x16e]
-//         0050e3aa     PUSH       EAX
-//         0050e3ab     LEA        EDX=>param_4,[ESP + 0x38]
-//         0050e3af     PUSH       this
-//         0050e3b0     LEA        EAX=>param_2,[ESP + 0x34]
-//         0050e3b4     PUSH       EDX
-//         0050e3b5     PUSH       EAX
-//         0050e3b6     PUSH       s_%hd_%hd_%hd_%hd_%hd_%hd_%hd_%hd_               = "%hd %hd %hd %hd %hd %hd %hd %hd %hd"
-//         0050e3bb     PUSH       EDI
-//         0050e3bc     MOV        byte ptr [ESI + 0x4],0x50
-//         0050e3c0     CALL       fscanf                                           undefined fscanf()
-//                              tm_b_obj.cpp:123 (44)
-//         0050e3c5     MOV        AX,word ptr [ESP + param_2]
-//         0050e3ca     MOV        this,byte ptr [ESP + param_4]
-//         0050e3ce     MOV        DL,byte ptr [ESP + param_3]
-//         0050e3d2     ADD        ESP,0x2c
-//         0050e3d5     CMP        AX,0xffff
-//         0050e3d9     MOV        byte ptr [ESI + 0x16c],this
-//         0050e3df     MOV        byte ptr [ESI + 0x170],DL
-//         0050e3e5     JLE        LAB_0050e3ef
-//         0050e3e7     MOVSX      EAX,AX
-//         0050e3ea     MOV        EBX,dword ptr [EBX + EAX*0x4]
-//         0050e3ed     JMP        LAB_0050e3f1
-//                               LAB_0050e3ef                                                 XREF[1]:     0050e3e5(j)
-//         0050e3ef     XOR        EBX,EBX
-//                               LAB_0050e3f1                                                 XREF[1]:     0050e3ed(j)
-//                              tm_b_obj.cpp:124 (30)
-//         0050e3f1     MOV        AX,word ptr [ESP + param_1]
-//         0050e3f6     MOV        dword ptr [ESI + 0x168],EBX
-//         0050e3fc     CMP        AX,0xffff
-//         0050e400     JLE        LAB_0050e41b
-//         0050e402     MOVSX      this,AX
-//         0050e405     MOV        EAX,dword ptr [EBP + this->_padding_*0x4]
-//         0050e409     MOV        dword ptr [ESI + 0x164],EAX
-//                              tm_b_obj.cpp:126 (5)
-//         0050e40f     MOV        EAX,0x1
-//                              tm_b_obj.cpp:127 (7)
-//         0050e414     POP        EDI
-//         0050e415     POP        ESI
-//         0050e416     POP        EBP
-//         0050e417     POP        EBX
-//         0050e418     RET        0x10
-//                               LAB_0050e41b                                                 XREF[1]:     0050e400(j)
-//                              tm_b_obj.cpp:124 (2)
-//         0050e41b     XOR        EAX,EAX
-//                              tm_b_obj.cpp:127 (18)
-//         0050e41d     POP        EDI
-//         0050e41e     MOV        dword ptr [ESI + 0x164],EAX
-//         0050e424     POP        ESI
-//         0050e425     POP        EBP
-//         0050e426     MOV        EAX,0x1
-//         0050e42b     POP        EBX
-//         0050e42c     RET        0x10
-//         0050e42f     ??         90h
+//                              tm_b_obj.cpp:73 (1)
+//         0050e250     PUSH       EBX
+//                              tm_b_obj.cpp:77 (25)
+//         0050e251     MOV        EBX,dword ptr [ESP + param_2]
+//         0050e255     PUSH       EBP
+//         0050e256     MOV        EBP,dword ptr [ESP + param_3]
+//         0050e25a     PUSH       ESI
+//         0050e25b     PUSH       EDI
+//         0050e25c     MOV        EDI,dword ptr [ESP + param_1]
+//         0050e260     PUSH       EBP
+//         0050e261     PUSH       EBX
+//         0050e262     MOV        ESI,this
+//         0050e264     PUSH       EDI
+//         0050e265     CALL       TRIBE_Master_Combat_Object::setup                int setup(TRIBE_Master_Combat_Object * this,
+//                              tm_b_obj.cpp:81 (20)
+//         0050e26a     LEA        EAX=>param_3,[ESP + 0x1c]
+//         0050e26e     PUSH       0x2
+//         0050e270     PUSH       EAX
+//         0050e271     PUSH       EDI
+//         0050e272     MOV        byte ptr [ESI + 0x4],0x50
+//         0050e276     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050e27b     ADD        ESP,0xc
+//                              tm_b_obj.cpp:82 (18)
+//         0050e27e     LEA        this,[ESI + 0x16c]
+//         0050e284     PUSH       0x1
+//         0050e286     PUSH       this
+//         0050e287     PUSH       EDI
+//         0050e288     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050e28d     ADD        ESP,0xc
+//                              tm_b_obj.cpp:83 (18)
+//         0050e290     LEA        EDX,[ESI + 0x16e]
+//         0050e296     PUSH       0x2
+//         0050e298     PUSH       EDX
+//         0050e299     PUSH       EDI
+//         0050e29a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050e29f     ADD        ESP,0xc
+//                              tm_b_obj.cpp:84 (18)
+//         0050e2a2     LEA        EAX,[ESI + 0x170]
+//         0050e2a8     PUSH       0x1
+//         0050e2aa     PUSH       EAX
+//         0050e2ab     PUSH       EDI
+//         0050e2ac     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050e2b1     ADD        ESP,0xc
+//                              tm_b_obj.cpp:85 (18)
+//         0050e2b4     LEA        this,[ESI + 0x172]
+//         0050e2ba     PUSH       0x2
+//         0050e2bc     PUSH       this
+//         0050e2bd     PUSH       EDI
+//         0050e2be     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050e2c3     ADD        ESP,0xc
+//                              tm_b_obj.cpp:86 (18)
+//         0050e2c6     LEA        EDX,[ESI + 0x174]
+//         0050e2cc     PUSH       0x2
+//         0050e2ce     PUSH       EDX
+//         0050e2cf     PUSH       EDI
+//         0050e2d0     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050e2d5     ADD        ESP,0xc
+//                              tm_b_obj.cpp:87 (18)
+//         0050e2d8     LEA        EAX,[ESI + 0x176]
+//         0050e2de     PUSH       0x2
+//         0050e2e0     PUSH       EAX
+//         0050e2e1     PUSH       EDI
+//         0050e2e2     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050e2e7     ADD        ESP,0xc
+//                              tm_b_obj.cpp:88 (18)
+//         0050e2ea     LEA        this,[ESI + 0x178]
+//         0050e2f0     PUSH       0x2
+//         0050e2f2     PUSH       this
+//         0050e2f3     PUSH       EDI
+//         0050e2f4     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050e2f9     ADD        ESP,0xc
+//                              tm_b_obj.cpp:89 (13)
+//         0050e2fc     LEA        EDX=>param_2,[ESP + 0x18]
+//         0050e300     PUSH       0x2
+//         0050e302     PUSH       EDX
+//         0050e303     PUSH       EDI
+//         0050e304     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              tm_b_obj.cpp:91 (24)
+//         0050e309     MOV        AX,word ptr [ESP + param_3]
+//         0050e30e     ADD        ESP,0xc
+//         0050e311     CMP        AX,0xffff
+//         0050e315     JLE        LAB_0050e31f
+//         0050e317     MOVSX      EAX,AX
+//         0050e31a     MOV        EBX,dword ptr [EBX + EAX*0x4]
+//         0050e31d     JMP        LAB_0050e321
+//                               LAB_0050e31f                                                 XREF[1]:     0050e315(j)
+//         0050e31f     XOR        EBX,EBX
+//                               LAB_0050e321                                                 XREF[1]:     0050e31d(j)
+//                              tm_b_obj.cpp:92 (30)
+//         0050e321     MOV        AX,word ptr [ESP + param_2]
+//         0050e326     MOV        dword ptr [ESI + 0x168],EBX
+//         0050e32c     CMP        AX,0xffff
+//         0050e330     JLE        LAB_0050e34b
+//         0050e332     MOVSX      this,AX
+//         0050e335     MOV        EAX,dword ptr [EBP + this->_padding_*0x4]
+//         0050e339     MOV        dword ptr [ESI + 0x164],EAX
+//                              tm_b_obj.cpp:94 (5)
+//         0050e33f     MOV        EAX,0x1
+//                              tm_b_obj.cpp:95 (7)
+//         0050e344     POP        EDI
+//         0050e345     POP        ESI
+//         0050e346     POP        EBP
+//         0050e347     POP        EBX
+//         0050e348     RET        0xc
+//                               LAB_0050e34b                                                 XREF[1]:     0050e330(j)
+//                              tm_b_obj.cpp:92 (2)
+//         0050e34b     XOR        EAX,EAX
+//                              tm_b_obj.cpp:95 (18)
+//         0050e34d     POP        EDI
+//         0050e34e     MOV        dword ptr [ESI + 0x164],EAX
+//         0050e354     POP        ESI
+//         0050e355     POP        EBP
+//         0050e356     MOV        EAX,0x1
+//         0050e35b     POP        EBX
+//         0050e35c     RET        0xc
+//         0050e35f     ??         90h
     return 0;
 }
 
@@ -802,63 +775,61 @@ RGE_Static_Object* TRIBE_Master_Building_Object::make_new_obj(RGE_Player* param_
 //                              RGE_Static_Object * __thiscall make_new_obj(TRIBE_Master_Building_Ob
 //              RGE_Static_Obj    EAX:4          <RETURN>
 //              TRIBE_Master_B    ECX:4 (auto)   this
-//              RGE_Player *      Stack[0x4]:4   param_1                   XREF[1]:     0050e6f6(R)
-//              float             Stack[0x8]:4   param_2                   XREF[1]:     0050e6f1(R)
-//              float             Stack[0xc]:4   param_3                   XREF[1]:     0050e6ea(R)
-//              float             Stack[0x10]:4  param_4                   XREF[1]:     0050e6e6(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0050e6dc(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[2]:     0050e704(R), 0050e716(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0050e6d6(W)
-//                               ?make_new_obj@TRIBE_Master_Building_Object@@UAEPAVRGE_Stati  XREF[1]:     00576718(*)
+//              RGE_Player *      Stack[0x4]:4   param_1                   XREF[1]:     0050e67b(R)
+//              float             Stack[0x8]:4   param_2                   XREF[1]:     0050e676(R)
+//              float             Stack[0xc]:4   param_3                   XREF[1]:     0050e671(R)
+//              float             Stack[0x10]:4  param_4                   XREF[1]:     0050e66a(R)
+//              int               Stack[0x14]:4  param_5                   XREF[1]:     0050e666(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0050e65c(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[2]:     0050e689(R), 0050e69b(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0050e656(W)
+//                               ?make_new_obj@TRIBE_Master_Building_Object@@UAEPAVRGE_Stati  XREF[1]:     0057673c(*)
 //                               TRIBE_Master_Building_Object::make_new_obj
-//                              tm_b_obj.cpp:217 (25)
-//         0050e6b0     PUSH       -0x1
-//         0050e6b2     PUSH       FUN_00560eab
-//         0050e6b7     MOV        EAX,FS:[0x0]
-//         0050e6bd     PUSH       EAX
-//         0050e6be     MOV        dword ptr FS:[0x0],ESP
-//         0050e6c5     PUSH       this
-//         0050e6c6     PUSH       ESI
-//         0050e6c7     MOV        ESI,this
-//                              tm_b_obj.cpp:218 (59)
-//         0050e6c9     PUSH       0x204
-//         0050e6ce     CALL       operator_new                                     void * operator_new(uint param_1)
-//         0050e6d3     ADD        ESP,0x4
-//         0050e6d6     MOV        dword ptr [ESP + local_10],EAX
-//         0050e6da     TEST       EAX,EAX
-//         0050e6dc     MOV        dword ptr [ESP + local_4],0x0
-//         0050e6e4     JZ         LAB_0050e716
-//         0050e6e6     MOV        this,dword ptr [ESP + param_4]
-//         0050e6ea     MOV        EDX,dword ptr [ESP + param_3]
-//         0050e6ee     PUSH       0x1
-//         0050e6f0     PUSH       this
-//         0050e6f1     MOV        this,dword ptr [ESP + param_2]
-//         0050e6f5     PUSH       EDX
-//         0050e6f6     MOV        EDX,dword ptr [ESP + param_1]
-//         0050e6fa     PUSH       this
-//         0050e6fb     PUSH       EDX
-//         0050e6fc     PUSH       ESI
-//         0050e6fd     MOV        this,EAX
-//         0050e6ff     CALL       TRIBE_Building_Object::TRIBE_Building_Object     undefined TRIBE_Building_Object(TRIBE_Buildin
-//                              tm_b_obj.cpp:219 (38)
-//         0050e704     MOV        this,dword ptr [ESP + local_c]
-//         0050e708     MOV        dword ptr FS:[0x0],this
-//         0050e70f     POP        ESI
-//         0050e710     ADD        ESP,0x10
-//         0050e713     RET        0x10
-//                               LAB_0050e716                                                 XREF[1]:     0050e6e4(j)
-//         0050e716     MOV        this,dword ptr [ESP + local_c]
-//         0050e71a     XOR        EAX,EAX
-//         0050e71c     MOV        dword ptr FS:[0x0],this
-//         0050e723     POP        ESI
-//         0050e724     ADD        ESP,0x10
-//         0050e727     RET        0x10
-//         0050e72a     ??         90h
-//         0050e72b     NOP
-//         0050e72c     NOP
-//         0050e72d     NOP
-//         0050e72e     NOP
-//         0050e72f     NOP
+//                              tm_b_obj.cpp:211 (25)
+//         0050e630     PUSH       -0x1
+//         0050e632     PUSH       FUN_00560e8b
+//         0050e637     MOV        EAX,FS:[0x0]
+//         0050e63d     PUSH       EAX
+//         0050e63e     MOV        dword ptr FS:[0x0],ESP
+//         0050e645     PUSH       this
+//         0050e646     PUSH       ESI
+//         0050e647     MOV        ESI,this
+//                              tm_b_obj.cpp:212 (64)
+//         0050e649     PUSH       0x204
+//         0050e64e     CALL       operator_new                                     void * operator_new(uint param_1)
+//         0050e653     ADD        ESP,0x4
+//         0050e656     MOV        dword ptr [ESP + local_10],EAX
+//         0050e65a     TEST       EAX,EAX
+//         0050e65c     MOV        dword ptr [ESP + local_4],0x0
+//         0050e664     JZ         LAB_0050e69b
+//         0050e666     MOV        this,dword ptr [ESP + param_5]
+//         0050e66a     MOV        EDX,dword ptr [ESP + param_4]
+//         0050e66e     PUSH       0x1
+//         0050e670     PUSH       this
+//         0050e671     MOV        this,dword ptr [ESP + param_3]
+//         0050e675     PUSH       EDX
+//         0050e676     MOV        EDX,dword ptr [ESP + param_2]
+//         0050e67a     PUSH       this
+//         0050e67b     MOV        this,dword ptr [ESP + param_1]
+//         0050e67f     PUSH       EDX
+//         0050e680     PUSH       this
+//         0050e681     PUSH       ESI
+//         0050e682     MOV        this,EAX
+//         0050e684     CALL       TRIBE_Building_Object::TRIBE_Building_Object     undefined TRIBE_Building_Object(TRIBE_Buildin
+//                              tm_b_obj.cpp:213 (38)
+//         0050e689     MOV        this,dword ptr [ESP + local_c]
+//         0050e68d     MOV        dword ptr FS:[0x0],this
+//         0050e694     POP        ESI
+//         0050e695     ADD        ESP,0x10
+//         0050e698     RET        0x14
+//                               LAB_0050e69b                                                 XREF[1]:     0050e664(j)
+//         0050e69b     MOV        this,dword ptr [ESP + local_c]
+//         0050e69f     XOR        EAX,EAX
+//         0050e6a1     MOV        dword ptr FS:[0x0],this
+//         0050e6a8     POP        ESI
+//         0050e6a9     ADD        ESP,0x10
+//         0050e6ac     RET        0x14
+//         0050e6af     ??         90h
     return 0;
 }
 

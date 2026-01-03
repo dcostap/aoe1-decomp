@@ -3,63 +3,104 @@
 
 RGE_Flic_Player::RGE_Flic_Player(char* param_1) {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Flic_Player(RGE_Flic_Player * this, int par
+//                              undefined __thiscall RGE_Flic_Player(RGE_Flic_Player * this, char *
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Flic_Playe    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     00449be2(R)
-//                               ??0RGE_Flic_Player@@QAE@H@Z
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     00449b30(R)
+//                               ??0RGE_Flic_Player@@QAE@PAD@Z
 //                               RGE_Flic_Player::RGE_Flic_Player
-//                              flics.cpp:54 (2)
-//         00449be0     PUSH       ESI
-//         00449be1     PUSH       EDI
-//                              flics.cpp:57 (11)
-//         00449be2     MOV        EDI,dword ptr [ESP + param_1]
-//         00449be6     MOV        ESI,this
-//         00449be8     CMP        EDI,-0x1
-//         00449beb     JLE        LAB_00449c20
-//                              flics.cpp:59 (15)
-//         00449bed     LEA        EAX,[ESI + 0x8]
-//                              language.dll match for 0x84: "8"
-//         00449bf0     PUSH       0x84
-//         00449bf5     PUSH       EAX
-//         00449bf6     PUSH       EDI
-//         00449bf7     CALL       read                                             undefined read()
-//                              flics.cpp:62 (13)
-//         00449bfc     MOVSX      this,word ptr [ESI + 0x10]
-//         00449c00     MOV        dword ptr [ESI + 0x94],this
-//         00449c06     ADD        ESP,0xc
-//                              flics.cpp:63 (16)
-//         00449c09     MOV        this,ESI
-//         00449c0b     MOV        dword ptr [ESI + 0x4],EDI
-//         00449c0e     MOV        dword ptr [ESI],0x0
-//         00449c14     CALL       RGE_Flic_Player::start                           void start(RGE_Flic_Player * this)
-//                              flics.cpp:70 (7)
-//         00449c19     MOV        EAX,ESI
-//         00449c1b     POP        EDI
-//         00449c1c     POP        ESI
-//         00449c1d     RET        0x4
-//                               LAB_00449c20                                                 XREF[1]:     00449beb(j)
-//                              flics.cpp:67 (6)
-//         00449c20     MOV        dword ptr [ESI],0x0
-//                              flics.cpp:68 (7)
-//         00449c26     MOV        dword ptr [ESI + 0x4],0xffffffff
-//                              flics.cpp:70 (7)
-//         00449c2d     MOV        EAX,ESI
-//         00449c2f     POP        EDI
-//         00449c30     POP        ESI
-//         00449c31     RET        0x4
-//         00449c34     ??         90h
-//         00449c35     NOP
-//         00449c36     NOP
-//         00449c37     NOP
-//         00449c38     NOP
-//         00449c39     NOP
-//         00449c3a     NOP
-//         00449c3b     NOP
-//         00449c3c     NOP
-//         00449c3d     NOP
-//         00449c3e     NOP
-//         00449c3f     NOP
+//                              flics.cpp:21 (24)
+//         00449b30     MOV        EAX,dword ptr [ESP + param_1]
+//         00449b34     PUSH       EBX
+//         00449b35     PUSH       EBP
+//         00449b36     PUSH       0x8000
+//         00449b3b     MOV        EBX,this
+//         00449b3d     PUSH       EAX
+//         00449b3e     CALL       __open                                           undefined __open()
+//         00449b43     MOV        EBP,EAX
+//         00449b45     ADD        ESP,0x8
+//                              flics.cpp:27 (7)
+//         00449b48     CMP        EBP,-0x1
+//         00449b4b     JLE        LAB_00449bbd
+//         00449b4d     PUSH       EDI
+//         00449b4e     PUSH       ESI
+//                              flics.cpp:30 (13)
+//         00449b4f     PUSH       0x2
+//         00449b51     PUSH       0x0
+//         00449b53     PUSH       EBP
+//         00449b54     CALL       lseek                                            undefined lseek()
+//         00449b59     ADD        ESP,0xc
+//                              flics.cpp:31 (11)
+//         00449b5c     PUSH       EBP
+//         00449b5d     CALL       __tell                                           undefined __tell()
+//         00449b62     ADD        ESP,0x4
+//         00449b65     MOV        ESI,EAX
+//                              flics.cpp:34 (13)
+//         00449b67     PUSH       0x1
+//         00449b69     PUSH       ESI
+//         00449b6a     CALL       calloc                                           undefined calloc()
+//         00449b6f     ADD        ESP,0x8
+//         00449b72     MOV        dword ptr [EBX],EAX
+//                              flics.cpp:37 (10)
+//         00449b74     PUSH       0x0
+//         00449b76     PUSH       0x0
+//         00449b78     PUSH       EBP
+//         00449b79     CALL       lseek                                            undefined lseek()
+//                              flics.cpp:38 (13)
+//         00449b7e     MOV        this,dword ptr [EBX]
+//         00449b80     ADD        ESP,0xc
+//         00449b83     PUSH       ESI
+//         00449b84     PUSH       this
+//         00449b85     PUSH       EBP
+//         00449b86     CALL       read                                             undefined read()
+//                              flics.cpp:40 (15)
+//         00449b8b     MOV        ESI,dword ptr [EBX]
+//         00449b8d     LEA        EDI,[EBX + 0x8]
+//         00449b90     MOV        this,0x21
+//         00449b95     ADD        ESP,0xc
+//         00449b98     MOVSD.REP  ES:EDI,ESI
+//                              flics.cpp:41 (4)
+//         00449b9a     MOVSX      EDX,word ptr [EBX + 0x10]
+//                              flics.cpp:42 (13)
+//         00449b9e     MOV        this,EBX
+//         00449ba0     MOV        dword ptr [EBX + 0x94],EDX
+//         00449ba6     CALL       RGE_Flic_Player::start                           void start(RGE_Flic_Player * this)
+//                              flics.cpp:43 (9)
+//         00449bab     PUSH       EBP
+//         00449bac     CALL       close                                            undefined close()
+//         00449bb1     ADD        ESP,0x4
+//                              flics.cpp:50 (9)
+//         00449bb4     MOV        EAX,EBX
+//         00449bb6     POP        ESI
+//         00449bb7     POP        EDI
+//         00449bb8     POP        EBP
+//         00449bb9     POP        EBX
+//         00449bba     RET        0x4
+//                               LAB_00449bbd                                                 XREF[1]:     00449b4b(j)
+//                              flics.cpp:47 (6)
+//         00449bbd     MOV        dword ptr [EBX],0x0
+//                              flics.cpp:48 (7)
+//         00449bc3     MOV        dword ptr [EBX + 0x4],0xffffffff
+//                              flics.cpp:50 (7)
+//         00449bca     MOV        EAX,EBX
+//         00449bcc     POP        EBP
+//         00449bcd     POP        EBX
+//         00449bce     RET        0x4
+//         00449bd1     ??         90h
+//         00449bd2     NOP
+//         00449bd3     NOP
+//         00449bd4     NOP
+//         00449bd5     NOP
+//         00449bd6     NOP
+//         00449bd7     NOP
+//         00449bd8     NOP
+//         00449bd9     NOP
+//         00449bda     NOP
+//         00449bdb     NOP
+//         00449bdc     NOP
+//         00449bdd     NOP
+//         00449bde     NOP
+//         00449bdf     NOP
 }
 
 RGE_Flic_Player::RGE_Flic_Player(int param_1) {

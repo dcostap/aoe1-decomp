@@ -6,34 +6,85 @@ TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(int param_1, RGE_Action_Object* par
 //                              undefined __thiscall TRIBE_Action_Make_Obj(TRIBE_Action_Make_Obj * t
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Action_M    ECX:4 (auto)   this
-//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     004d0eb0(R)
-//              short             Stack[0x8]:2   param_2                   XREF[1]:     004d0ec7(R)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     004d0ec3(R)
-//              uchar             Stack[0x10]:1  param_4                   XREF[1]:     004d0ebf(R)
-//                               ??0TRIBE_Action_Make_Obj@@QAE@PAVRGE_Action_Object@@FHE@Z    XREF[2]:     update_production_queue:004c9f35(c
-//                               TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj                              do_command_make:00509a21(c)
-//                              tact_mob.cpp:48 (15)
-//         004d0eb0     MOV        EAX,dword ptr [ESP + param_1]
-//         004d0eb4     PUSH       ESI
-//         004d0eb5     PUSH       0x1
-//         004d0eb7     MOV        ESI,this
-//         004d0eb9     PUSH       EAX
-//         004d0eba     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
-//                              tact_mob.cpp:53 (42)
-//         004d0ebf     MOV        AL,byte ptr [ESP + param_4]
-//         004d0ec3     MOV        this,dword ptr [ESP + param_3]
-//         004d0ec7     MOV        DX,word ptr [ESP + param_2]
-//         004d0ecc     MOV        byte ptr [ESI + 0x4c],AL
-//         004d0ecf     MOV        dword ptr [ESI + 0x48],this
-//         004d0ed2     MOV        dword ptr [ESI],TRIBE_Action_Make_Obj::`vftable' = 004d0e90
-//         004d0ed8     MOV        word ptr [ESI + 0x4],0x66
-//         004d0ede     MOV        word ptr [ESI + 0x40],DX
-//         004d0ee2     MOV        dword ptr [ESI + 0x44],0x0
-//                              tact_mob.cpp:54 (6)
-//         004d0ee9     MOV        EAX,ESI
-//         004d0eeb     POP        ESI
-//         004d0eec     RET        0x10
-//         004d0eef     ??         90h
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004d0dec(R)
+//              RGE_Action_Obj    Stack[0x8]:4   param_2                   XREF[1]:     004d0de6(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     004d0e06(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[2]:     004d0e64(R), 004d0e77(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004d0df6(W)
+//                               ??0TRIBE_Action_Make_Obj@@QAE@HPAVRGE_Action_Object@@@Z      XREF[1]:     create_action:004d0213(c)
+//                               TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj
+//                              tact_mob.cpp:31 (47)
+//         004d0dd0     PUSH       -0x1
+//         004d0dd2     PUSH       FUN_005600a8
+//         004d0dd7     MOV        EAX,FS:[0x0]
+//         004d0ddd     PUSH       EAX
+//         004d0dde     MOV        dword ptr FS:[0x0],ESP
+//         004d0de5     PUSH       this
+//         004d0de6     MOV        EAX,dword ptr [ESP + param_2]
+//         004d0dea     PUSH       ESI
+//         004d0deb     PUSH       EDI
+//         004d0dec     MOV        EDI,dword ptr [ESP + param_1]
+//         004d0df0     PUSH       0x1
+//         004d0df2     MOV        ESI,this
+//         004d0df4     PUSH       EAX
+//         004d0df5     PUSH       EDI
+//         004d0df6     MOV        dword ptr [ESP + local_10],ESI
+//         004d0dfa     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, int p
+//                              tact_mob.cpp:34 (35)
+//         004d0dff     LEA        this,[ESI + 0x40]
+//         004d0e02     PUSH       0x2
+//         004d0e04     PUSH       this
+//         004d0e05     PUSH       EDI
+//         004d0e06     MOV        dword ptr [ESP + local_4],0x0
+//         004d0e0e     MOV        dword ptr [ESI],TRIBE_Action_Make_Obj::`vftable' = 004d0e90
+//                              language.dll match for 0x66: "Copperplate Gothic Light"
+//         004d0e14     MOV        word ptr [ESI + 0x4],0x66
+//         004d0e1a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004d0e1f     ADD        ESP,0xc
+//                              tact_mob.cpp:35 (15)
+//         004d0e22     LEA        EDX,[ESI + 0x44]
+//         004d0e25     PUSH       0x4
+//         004d0e27     PUSH       EDX
+//         004d0e28     PUSH       EDI
+//         004d0e29     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004d0e2e     ADD        ESP,0xc
+//                              tact_mob.cpp:36 (12)
+//         004d0e31     LEA        EAX,[ESI + 0x48]
+//         004d0e34     PUSH       0x4
+//         004d0e36     PUSH       EAX
+//         004d0e37     PUSH       EDI
+//         004d0e38     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              tact_mob.cpp:37 (22)
+//         004d0e3d     FLD        float ptr [save_game_version]                    = 7.23
+//         004d0e43     FCOMP      float ptr [DAT_0057518c]                         = 29h    )
+//         004d0e49     ADD        ESP,0xc
+//         004d0e4c     FNSTSW     AX
+//         004d0e4e     TEST       AH,0x1
+//         004d0e51     JNZ        LAB_004d0e77
+//                              tact_mob.cpp:38 (15)
+//         004d0e53     LEA        this,[ESI + 0x4c]
+//         004d0e56     PUSH       0x1
+//         004d0e58     PUSH       this
+//         004d0e59     PUSH       EDI
+//         004d0e5a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004d0e5f     ADD        ESP,0xc
+//                              tact_mob.cpp:41 (46)
+//         004d0e62     MOV        EAX,ESI
+//         004d0e64     MOV        this,dword ptr [ESP + local_c]
+//         004d0e68     MOV        dword ptr FS:[0x0],this
+//         004d0e6f     POP        EDI
+//         004d0e70     POP        ESI
+//         004d0e71     ADD        ESP,0x10
+//         004d0e74     RET        0x8
+//                               LAB_004d0e77                                                 XREF[1]:     004d0e51(j)
+//         004d0e77     MOV        this,dword ptr [ESP + local_c]
+//         004d0e7b     MOV        byte ptr [ESI + 0x4c],0x0
+//         004d0e7f     MOV        EAX,ESI
+//         004d0e81     POP        EDI
+//         004d0e82     MOV        dword ptr FS:[0x0],this
+//         004d0e89     POP        ESI
+//         004d0e8a     ADD        ESP,0x10
+//         004d0e8d     RET        0x8
 }
 
 TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(RGE_Action_Object* param_1, short param_2, int param_3, uchar param_4) {

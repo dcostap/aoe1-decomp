@@ -3,160 +3,118 @@
 
 RGE_Campaign::RGE_Campaign(char* param_1) {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Campaign(RGE_Campaign * this, char * param_
+//                              undefined __thiscall RGE_Campaign(RGE_Campaign * this, char * param_1)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Campaign *    ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1                   XREF[4]:     00423331(R), 004233c6(W), 0042343b(R), 00423445(W)
-//              char *            Stack[0x8]:4   param_2                   XREF[3]:     00423362(R), 004233ca(W), 004233d0(R)
-//              long              Stack[0xc]:4   param_3                   XREF[5]:     0042338e(R), 004233ef(W), 004233f7(R), 00423422(W),
-//                                                                                     0042342a(R)
-//              char * *          Stack[0x10]:4  param_4                   XREF[1]:     004233bc(R)
-//              char * *          Stack[0x14]:4  param_5                   XREF[1]:     004233c0(R)
-//                               ??0RGE_Campaign@@QAE@PAD0JPAPAD1@Z                           XREF[1]:     make_campaign:00490298(c)
-//                               RGE_Campaign::RGE_Campaign
-//                              campaign.cpp:65 (1)
-//         00423330     PUSH       EBX
-//                              campaign.cpp:69 (43)
-//         00423331     MOV        EAX,dword ptr [ESP + param_1]
-//         00423335     PUSH       EBP
-//         00423336     MOV        EBP,this
-//         00423338     MOV        this,dword ptr [rge_base_game]                   = 00000000
-//         0042333e     PUSH       ESI
-//         0042333f     PUSH       EDI
-//         00423340     PUSH       EAX
-//         00423341     MOV        EDX,dword ptr [ECX + this+0xc]
-//         00423344     LEA        EAX,[EBP + 0x10c]
-//         0042334a     ADD        EDX,0xd1c
-//         00423350     PUSH       EDX
-//         00423351     PUSH       s_%s%s                                           = "%s%s"
-//         00423356     PUSH       EAX
-//         00423357     CALL       sprintf                                          undefined sprintf()
-//                              campaign.cpp:72 (6)
-//         0042335c     MOV        this,dword ptr [s_1.00]                          = "1.00"
-//                              campaign.cpp:73 (30)
-//         00423362     MOV        EDI,dword ptr [ESP + param_2]
-//         00423366     MOV        dword ptr [EBP],this
-//         00423369     OR         this,0xffffffff
-//         0042336c     XOR        EAX,EAX
-//         0042336e     ADD        ESP,0x10
-//         00423371     SCASB.RE   ES:EDI
-//         00423373     NOT        this
-//         00423375     SUB        EDI,this
-//         00423377     LEA        EDX,[EBP + 0x4]
-//         0042337a     MOV        EAX,this
-//         0042337c     MOV        ESI,EDI
-//         0042337e     MOV        EDI,EDX
-//                              campaign.cpp:77 (32)
-//         00423380     XOR        EBX,EBX
-//         00423382     SHR        this,0x2
-//         00423385     MOVSD.REP  ES:EDI,ESI
-//         00423387     MOV        this,EAX
-//         00423389     AND        this,0x3
-//         0042338c     MOVSB.REP  ES:EDI,ESI
-//         0042338e     MOV        ESI,dword ptr [ESP + param_3]
-//         00423392     CMP        ESI,EBX
-//         00423394     MOV        dword ptr [EBP + 0x104],ESI
-//         0042339a     JLE        LAB_0042345b
-//                              campaign.cpp:79 (14)
-//         004233a0     PUSH       0x208
-//         004233a5     PUSH       ESI
-//         004233a6     CALL       calloc                                           undefined calloc()
-//         004233ab     ADD        ESP,0x8
-//                              campaign.cpp:80 (14)
-//         004233ae     CMP        ESI,EBX
-//         004233b0     MOV        dword ptr [EBP + 0x108],EAX
-//         004233b6     JLE        LAB_00423461
-//                              campaign.cpp:90 (24)
-//         004233bc     MOV        EDX,dword ptr [ESP + param_4]
-//         004233c0     MOV        EAX,dword ptr [ESP + param_5]
-//         004233c4     SUB        EAX,EDX
-//         004233c6     MOV        dword ptr [ESP + param_1],ESI
-//         004233ca     MOV        dword ptr [ESP + param_2],EAX
-//         004233ce     JMP        LAB_004233d4
-//                               LAB_004233d0                                                 XREF[1]:     00423449(j)
-//         004233d0     MOV        EAX,dword ptr [ESP + param_2]
-//                               LAB_004233d4                                                 XREF[1]:     004233ce(j)
-//                              campaign.cpp:82 (46)
-//         004233d4     MOV        this,dword ptr [EBP + 0x108]
-//         004233da     MOV        EDI,dword ptr [EAX + EDX*0x1]
-//         004233dd     XOR        EAX,EAX
-//         004233df     ADD        EDX,0x4
-//         004233e2     LEA        ESI,[ECX + EBX*0x1 + this+0x8]
-//         004233e6     OR         this,0xffffffff
-//         004233e9     SCASB.RE   ES:EDI
-//         004233eb     NOT        this
-//         004233ed     SUB        EDI,this
-//         004233ef     MOV        dword ptr [ESP + param_3],ESI
-//         004233f3     MOV        EAX,this
-//         004233f5     MOV        ESI,EDI
-//         004233f7     MOV        EDI,dword ptr [ESP + param_3]
-//         004233fb     SHR        this,0x2
-//         004233fe     MOVSD.REP  ES:EDI,ESI
-//         00423400     MOV        this,EAX
-//                              campaign.cpp:83 (73)
-//         00423402     XOR        EAX,EAX
-//         00423404     AND        this,0x3
-//         00423407     MOVSB.REP  ES:EDI,ESI
-//         00423409     MOV        this,dword ptr [EBP + 0x108]
-//         0042340f     MOV        EDI,dword ptr [EDX + -0x4]
-//         00423412     LEA        ESI,[ECX + EBX*0x1 + this+0x107]
-//         00423419     OR         this,0xffffffff
-//         0042341c     SCASB.RE   ES:EDI
-//         0042341e     NOT        this
-//         00423420     SUB        EDI,this
-//         00423422     MOV        dword ptr [ESP + param_3],ESI
-//         00423426     MOV        EAX,this
-//         00423428     MOV        ESI,EDI
-//         0042342a     MOV        EDI,dword ptr [ESP + param_3]
-//         0042342e     ADD        EBX,0x208
-//         00423434     SHR        this,0x2
-//         00423437     MOVSD.REP  ES:EDI,ESI
-//         00423439     MOV        this,EAX
-//         0042343b     MOV        EAX,dword ptr [ESP + param_1]
-//         0042343f     AND        this,0x3
-//         00423442     DEC        EAX
-//         00423443     MOVSB.REP  ES:EDI,ESI
-//         00423445     MOV        dword ptr [ESP + param_1],EAX
-//         00423449     JNZ        LAB_004233d0
-//                              campaign.cpp:89 (7)
-//         0042344b     MOV        this,EBP
-//         0042344d     CALL       RGE_Campaign::create_file                        void create_file(RGE_Campaign * this)
-//                              campaign.cpp:90 (9)
-//         00423452     MOV        EAX,EBP
-//         00423454     POP        EDI
-//         00423455     POP        ESI
-//         00423456     POP        EBP
-//         00423457     POP        EBX
-//         00423458     RET        0x14
-//                               LAB_0042345b                                                 XREF[1]:     0042339a(j)
-//                              campaign.cpp:87 (6)
-//         0042345b     MOV        dword ptr [EBP + 0x108],EBX
-//                               LAB_00423461                                                 XREF[1]:     004233b6(j)
-//                              campaign.cpp:89 (7)
-//         00423461     MOV        this,EBP
-//         00423463     CALL       RGE_Campaign::create_file                        void create_file(RGE_Campaign * this)
-//                              campaign.cpp:90 (9)
-//         00423468     POP        EDI
-//         00423469     MOV        EAX,EBP
-//         0042346b     POP        ESI
-//         0042346c     POP        EBP
-//         0042346d     POP        EBX
-//         0042346e     RET        0x14
-//         00423471     ??         90h
-//         00423472     NOP
-//         00423473     NOP
-//         00423474     NOP
-//         00423475     NOP
-//         00423476     NOP
-//         00423477     NOP
-//         00423478     NOP
-//         00423479     NOP
-//         0042347a     NOP
-//         0042347b     NOP
-//         0042347c     NOP
-//         0042347d     NOP
-//         0042347e     NOP
-//         0042347f     NOP
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     00423230(R)
+//                               ??0RGE_Campaign@@QAE@PAD@Z                                   XREF[3]:     find_campaigns:0044d609(c),
+//                               RGE_Campaign::RGE_Campaign                                                find_campaigns:0044d69d(c),
+//                                                                                                         load_campaign:0049007a(c)
+//                              campaign.cpp:22 (45)
+//         00423230     MOV        EAX,dword ptr [ESP + param_1]
+//         00423234     PUSH       EBX
+//         00423235     MOV        EBX,this
+//         00423237     PUSH       ESI
+//         00423238     MOV        this,dword ptr [rge_base_game]                   = 00000000
+//         0042323e     PUSH       EAX
+//         0042323f     LEA        ESI,[EBX + 0x10c]
+//         00423245     MOV        EDX,dword ptr [ECX + this+0xc]
+//         00423248     ADD        EDX,0xd1c
+//         0042324e     PUSH       EDX
+//         0042324f     PUSH       s_%s%s                                           = "%s%s"
+//         00423254     PUSH       ESI
+//         00423255     CALL       sprintf                                          undefined sprintf()
+//         0042325a     ADD        ESP,0x10
+//                              campaign.cpp:29 (16)
+//         0042325d     PUSH       0x8000
+//         00423262     PUSH       ESI
+//         00423263     CALL       __open                                           undefined __open()
+//         00423268     MOV        ESI,EAX
+//         0042326a     ADD        ESP,0x8
+//                              campaign.cpp:30 (4)
+//         0042326d     TEST       ESI,ESI
+//         0042326f     JL         LAB_004232e3
+//                              campaign.cpp:33 (12)
+//         00423271     PUSH       0x108
+//         00423276     PUSH       EBX
+//         00423277     PUSH       ESI
+//         00423278     CALL       read                                             undefined read()
+//                              campaign.cpp:36 (13)
+//         0042327d     MOV        EAX,dword ptr [EBX + 0x104]
+//         00423283     ADD        ESP,0xc
+//         00423286     TEST       EAX,EAX
+//         00423288     JLE        LAB_004232c9
+//                              campaign.cpp:38 (11)
+//         0042328a     PUSH       0x208
+//         0042328f     PUSH       EAX
+//         00423290     CALL       calloc                                           undefined calloc()
+//                              campaign.cpp:39 (36)
+//         00423295     MOV        this,dword ptr [EBX + 0x104]
+//         0042329b     ADD        ESP,0x8
+//         0042329e     MOV        EDX,this
+//         004232a0     MOV        dword ptr [EBX + 0x108],EAX
+//         004232a6     SHL        EDX,0x6
+//         004232a9     ADD        EDX,this
+//         004232ab     SHL        EDX,0x3
+//         004232ae     PUSH       EDX
+//         004232af     PUSH       EAX
+//         004232b0     PUSH       ESI
+//         004232b1     CALL       read                                             undefined read()
+//         004232b6     ADD        ESP,0xc
+//                              campaign.cpp:45 (9)
+//         004232b9     PUSH       ESI
+//         004232ba     CALL       close                                            undefined close()
+//         004232bf     ADD        ESP,0x4
+//                              campaign.cpp:54 (7)
+//         004232c2     MOV        EAX,EBX
+//         004232c4     POP        ESI
+//         004232c5     POP        EBX
+//         004232c6     RET        0x4
+//                               LAB_004232c9                                                 XREF[1]:     00423288(j)
+//                              campaign.cpp:45 (19)
+//         004232c9     PUSH       ESI
+//         004232ca     MOV        dword ptr [EBX + 0x108],0x0
+//         004232d4     CALL       close                                            undefined close()
+//         004232d9     ADD        ESP,0x4
+//                              campaign.cpp:54 (7)
+//         004232dc     MOV        EAX,EBX
+//         004232de     POP        ESI
+//         004232df     POP        EBX
+//         004232e0     RET        0x4
+//                               LAB_004232e3                                                 XREF[1]:     0042326f(j)
+//                              campaign.cpp:22 (1)
+//         004232e3     PUSH       EDI
+//                              campaign.cpp:49 (32)
+//         004232e4     MOV        EDI,s_FILE_NOT_FOUND                             = 46h
+//         004232e9     OR         this,0xffffffff
+//         004232ec     XOR        EAX,EAX
+//         004232ee     SCASB.RE   ES:EDI=>s_FILE_NOT_FOUND                         = 46h
+//                                                                                  = "ILE NOT FOUND"
+//         004232f0     NOT        this
+//         004232f2     SUB        EDI,this
+//         004232f4     LEA        EDX,[EBX + 0x4]
+//         004232f7     MOV        EAX,this
+//         004232f9     MOV        ESI,EDI
+//         004232fb     MOV        EDI,EDX
+//         004232fd     SHR        this,0x2
+//         00423300     MOVSD.REP  ES:EDI,ESI
+//         00423302     MOV        this,EAX
+//                              campaign.cpp:54 (39)
+//         00423304     MOV        EAX,EBX
+//         00423306     AND        this,0x3
+//         00423309     MOVSB.REP  ES:EDI,ESI
+//         0042330b     POP        EDI
+//         0042330c     MOV        dword ptr [EBX + 0x104],0x0
+//         00423316     MOV        dword ptr [EBX],0x0
+//         0042331c     MOV        dword ptr [EBX + 0x108],0x0
+//         00423326     POP        ESI
+//         00423327     POP        EBX
+//         00423328     RET        0x4
+//         0042332b     ??         90h
+//         0042332c     NOP
+//         0042332d     NOP
+//         0042332e     NOP
+//         0042332f     NOP
 }
 
 RGE_Campaign::RGE_Campaign(char* param_1, char* param_2, long param_3, char** param_4, char** param_5) {

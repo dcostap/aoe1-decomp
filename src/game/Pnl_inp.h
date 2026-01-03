@@ -1,6 +1,24 @@
 #pragma once
 #include "../common.h"
 
+typedef enum ActionType : unsigned int {
+    ActionEnter = 0,
+    ActionEscape = 1,
+    ActionTab = 2,
+};
+
+typedef enum FormatType : unsigned int {
+    FormatText = 0,
+    FormatNumber = 1,
+    FormatInteger = 2,
+    FormatUnsignedInt = 3,
+    FormatFile = 4,
+    FormatFileNoExt = 5,
+    FormatPath = 6,
+    FormatMultiLine = 7,
+    FormatPercent = 8,
+};
+
 class TInputPanel : public TTextPanel {
 public:
     uchar caret_color;                       // 0x188

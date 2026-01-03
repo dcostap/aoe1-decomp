@@ -3,70 +3,28 @@
 
 RGE_Active_Sprite::RGE_Active_Sprite(RGE_Sprite* param_1) {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Active_Sprite(RGE_Active_Sprite * this, int
+//                              undefined __thiscall RGE_Active_Sprite(RGE_Active_Sprite * this, RGE
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Active_Spr    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[3]:     0041ad62(R), 0041ad66(*), 0041ad7f(R)
-//              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[1]:     0041ad8c(R)
-//                               ??0RGE_Active_Sprite@@QAE@HPAPAVRGE_Sprite@@@Z               XREF[2]:     load_node:0041a7b6(c),
-//                               RGE_Active_Sprite::RGE_Active_Sprite                                      RGE_Active_Animated_Sprite:0041b16
-//                              asprite.cpp:32 (2)
-//         0041ad60     PUSH       ESI
-//         0041ad61     PUSH       EDI
-//                              asprite.cpp:36 (29)
-//         0041ad62     MOV        EDI,dword ptr [ESP + param_1]
-//         0041ad66     LEA        EAX=>param_1,[ESP + 0xc]
-//         0041ad6a     MOV        ESI,this
-//         0041ad6c     PUSH       0x2
-//         0041ad6e     PUSH       EAX
-//         0041ad6f     PUSH       EDI
-//         0041ad70     MOV        dword ptr [ESI],RGE_Active_Sprite::`vftable'     = 0041ad40
-//         0041ad76     MOV        byte ptr [ESI + 0x8],0x1
-//         0041ad7a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              asprite.cpp:37 (13)
-//         0041ad7f     MOV        AX,word ptr [ESP + param_1]
-//         0041ad84     ADD        ESP,0xc
-//         0041ad87     TEST       AX,AX
-//         0041ad8a     JL         LAB_0041ad9b
-//                              asprite.cpp:38 (13)
-//         0041ad8c     MOV        EDX,dword ptr [ESP + param_2]
-//         0041ad90     MOVSX      this,AX
-//         0041ad93     MOV        EAX,dword ptr [EDX + this->_padding_*0x4]
-//         0041ad96     MOV        dword ptr [ESI + 0x4],EAX
-//                              asprite.cpp:39 (2)
-//         0041ad99     JMP        LAB_0041ada2
-//                               LAB_0041ad9b                                                 XREF[1]:     0041ad8a(j)
-//                              asprite.cpp:40 (7)
-//         0041ad9b     MOV        dword ptr [ESI + 0x4],0x0
-//                               LAB_0041ada2                                                 XREF[1]:     0041ad99(j)
-//                              asprite.cpp:41 (15)
-//         0041ada2     LEA        this,[ESI + 0xc]
-//         0041ada5     PUSH       0x4
-//         0041ada7     PUSH       this
-//         0041ada8     PUSH       EDI
-//         0041ada9     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0041adae     ADD        ESP,0xc
-//                              asprite.cpp:42 (15)
-//         0041adb1     LEA        EDX,[ESI + 0x10]
-//         0041adb4     PUSH       0x4
-//         0041adb6     PUSH       EDX
-//         0041adb7     PUSH       EDI
-//         0041adb8     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0041adbd     ADD        ESP,0xc
-//                              asprite.cpp:43 (7)
-//         0041adc0     MOV        EAX,ESI
-//         0041adc2     POP        EDI
-//         0041adc3     POP        ESI
-//         0041adc4     RET        0x8
-//         0041adc7     ??         90h
-//         0041adc8     NOP
-//         0041adc9     NOP
-//         0041adca     NOP
-//         0041adcb     NOP
-//         0041adcc     NOP
-//         0041adcd     NOP
-//         0041adce     NOP
-//         0041adcf     NOP
+//              RGE_Sprite *      Stack[0x4]:4   param_1                   XREF[1]:     0041ad22(R)
+//                               ??0RGE_Active_Sprite@@QAE@PAVRGE_Sprite@@@Z                  XREF[2]:     RGE_Active_Animated_Sprite:0041b03
+//                               RGE_Active_Sprite::RGE_Active_Sprite                                      make_active_sprite:004c0ffe(c)
+//                              asprite.cpp:23 (2)
+//         0041ad20     MOV        EAX,this
+//                              asprite.cpp:25 (7)
+//         0041ad22     MOV        this,dword ptr [ESP + param_1]
+//         0041ad26     MOV        dword ptr [EAX + 0x4],this
+//                              asprite.cpp:26 (15)
+//         0041ad29     XOR        this,this
+//         0041ad2b     MOV        dword ptr [EAX],RGE_Active_Sprite::`vftable'     = 0041ad40
+//         0041ad31     MOV        byte ptr [EAX + 0x8],0x1
+//         0041ad35     MOV        dword ptr [EAX + 0xc],this
+//                              asprite.cpp:27 (3)
+//         0041ad38     MOV        dword ptr [EAX + 0x10],this
+//                              asprite.cpp:28 (3)
+//         0041ad3b     RET        0x4
+//         0041ad3e     ??         90h
+//         0041ad3f     NOP
 }
 
 RGE_Active_Sprite::RGE_Active_Sprite(int param_1, RGE_Sprite** param_2) {
@@ -722,92 +680,123 @@ RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite(RGE_Sprite* param_1) {
 //                              undefined __thiscall RGE_Active_Animated_Sprite(RGE_Active_Animated_
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Active_Ani    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     0041b15c(R)
-//              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[1]:     0041b156(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0041b174(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0041b1e5(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0041b164(W)
-//                               ??0RGE_Active_Animated_Sprite@@QAE@HPAPAVRGE_Sprite@@@Z      XREF[1]:     load_node:0041a75d(c)
+//              RGE_Sprite *      Stack[0x4]:4   param_1                   XREF[7]:     0041b028(R), 0041b076(W), 0041b07f(R), 0041b097(W),
+//                                                                                     0041b09e(R), 0041b0d0(W), 0041b0d4(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0041b04e(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0041b0f0(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0041b032(W)
+//              undefined4        Stack[-0x14]:4 local_14                  XREF[2]:     0041b08e(W), 0041b0a5(R)
+//              float             Stack[-0x18]:4 tot_time
+//                               ??0RGE_Active_Animated_Sprite@@QAE@PAVRGE_Sprite@@@Z         XREF[1]:     make_active_sprite:004c0fcc(c)
 //                               RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite
-//                              asprite.cpp:204 (45)
-//         0041b140     PUSH       -0x1
-//         0041b142     PUSH       FUN_0055c9a8
-//         0041b147     MOV        EAX,FS:[0x0]
-//         0041b14d     PUSH       EAX
-//         0041b14e     MOV        dword ptr FS:[0x0],ESP
-//         0041b155     PUSH       this
-//         0041b156     MOV        EAX,dword ptr [ESP + param_2]
-//         0041b15a     PUSH       ESI
-//         0041b15b     PUSH       EDI
-//         0041b15c     MOV        EDI,dword ptr [ESP + param_1]
-//         0041b160     MOV        ESI,this
-//         0041b162     PUSH       EAX
-//         0041b163     PUSH       EDI
-//         0041b164     MOV        dword ptr [ESP + local_10],ESI
-//         0041b168     CALL       RGE_Active_Sprite::RGE_Active_Sprite             undefined RGE_Active_Sprite(RGE_Active_Sprite
-//                              asprite.cpp:207 (33)
-//         0041b16d     LEA        this,[ESI + 0x14]
-//         0041b170     PUSH       0x2
-//         0041b172     PUSH       this
-//         0041b173     PUSH       EDI
-//         0041b174     MOV        dword ptr [ESP + local_4],0x0
-//         0041b17c     MOV        dword ptr [ESI],RGE_Active_Animated_Sprite::`v   = 0041b120
-//         0041b182     MOV        byte ptr [ESI + 0x8],0x2
-//         0041b186     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0041b18b     ADD        ESP,0xc
-//                              asprite.cpp:208 (15)
-//         0041b18e     LEA        EDX,[ESI + 0x18]
-//         0041b191     PUSH       0x4
-//         0041b193     PUSH       EDX
-//         0041b194     PUSH       EDI
-//         0041b195     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0041b19a     ADD        ESP,0xc
-//                              asprite.cpp:209 (15)
-//         0041b19d     LEA        EAX,[ESI + 0x1c]
-//         0041b1a0     PUSH       0x4
-//         0041b1a2     PUSH       EAX
-//         0041b1a3     PUSH       EDI
-//         0041b1a4     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0041b1a9     ADD        ESP,0xc
-//                              asprite.cpp:210 (15)
-//         0041b1ac     LEA        this,[ESI + 0x20]
-//         0041b1af     PUSH       0x2
-//         0041b1b1     PUSH       this
-//         0041b1b2     PUSH       EDI
-//         0041b1b3     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0041b1b8     ADD        ESP,0xc
-//                              asprite.cpp:211 (15)
-//         0041b1bb     LEA        EDX,[ESI + 0x22]
-//         0041b1be     PUSH       0x1
-//         0041b1c0     PUSH       EDX
-//         0041b1c1     PUSH       EDI
-//         0041b1c2     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0041b1c7     ADD        ESP,0xc
-//                              asprite.cpp:212 (15)
-//         0041b1ca     LEA        EAX,[ESI + 0x23]
-//         0041b1cd     PUSH       0x1
-//         0041b1cf     PUSH       EAX
-//         0041b1d0     PUSH       EDI
-//         0041b1d1     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0041b1d6     ADD        ESP,0xc
-//                              asprite.cpp:213 (12)
-//         0041b1d9     LEA        this,[ESI + 0x24]
-//         0041b1dc     PUSH       0x1
-//         0041b1de     PUSH       this
-//         0041b1df     PUSH       EDI
-//         0041b1e0     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              asprite.cpp:214 (24)
-//         0041b1e5     MOV        this,dword ptr [ESP + local_c]
-//         0041b1e9     ADD        ESP,0xc
-//         0041b1ec     MOV        EAX,ESI
-//         0041b1ee     MOV        dword ptr FS:[0x0],this
-//         0041b1f5     POP        EDI
-//         0041b1f6     POP        ESI
-//         0041b1f7     ADD        ESP,0x10
-//         0041b1fa     RET        0x8
-//         0041b1fd     ??         90h
-//         0041b1fe     NOP
-//         0041b1ff     NOP
+//                              asprite.cpp:170 (43)
+//         0041b010     PUSH       -0x1
+//         0041b012     PUSH       FUN_0055c988
+//         0041b017     MOV        EAX,FS:[0x0]
+//         0041b01d     PUSH       EAX
+//         0041b01e     MOV        dword ptr FS:[0x0],ESP
+//         0041b025     SUB        ESP,0x8
+//         0041b028     MOV        EAX,dword ptr [ESP + param_1]
+//         0041b02c     PUSH       EBX
+//         0041b02d     PUSH       ESI
+//         0041b02e     PUSH       EDI
+//         0041b02f     MOV        ESI,this
+//         0041b031     PUSH       EAX
+//         0041b032     MOV        dword ptr [ESP + local_10],ESI
+//         0041b036     CALL       RGE_Active_Sprite::RGE_Active_Sprite             undefined RGE_Active_Sprite(RGE_Active_Sprite
+//                              asprite.cpp:176 (29)
+//         0041b03b     MOV        this,dword ptr [ESI + 0x4]
+//         0041b03e     XOR        EBX,EBX
+//         0041b040     MOV        dword ptr [ESI],RGE_Active_Animated_Sprite::`v   = 0041b120
+//         0041b046     MOV        byte ptr [ESI + 0x8],0x2
+//         0041b04a     MOV        word ptr [ESI + 0x20],BX
+//         0041b04e     MOV        dword ptr [ESP + local_4],EBX
+//         0041b052     FLD        float ptr [this->_padding_ + 0x68]
+//         0041b055     FST        float ptr [ESI + 0x18]
+//                              asprite.cpp:177 (13)
+//         0041b058     FCOMP      double ptr [DAT_0056ee78]                        = FCh
+//         0041b05e     FNSTSW     AX
+//         0041b060     TEST       AH,0x1
+//         0041b063     JZ         LAB_0041b06c
+//                              asprite.cpp:178 (7)
+//         0041b065     MOV        dword ptr [ESI + 0x18],0x3a83126f
+//                               LAB_0041b06c                                                 XREF[1]:     0041b063(j)
+//                              asprite.cpp:180 (6)
+//         0041b06c     TEST       byte ptr [this->_padding_ + 0x70],0x4
+//         0041b070     JZ         LAB_0041b0ec
+//                              asprite.cpp:182 (8)
+//         0041b072     MOVSX      EDX,word ptr [this->_padding_ + 0x5e]
+//         0041b076     MOV        dword ptr [ESP + param_1],EDX
+//                              asprite.cpp:183 (33)
+//         0041b07a     PUSH       0xb7
+//         0041b07f     FILD       dword ptr [ESP + param_1]
+//         0041b083     PUSH       s_C:\msdev\work\age1_x1\asprite.cp               = "C:\\msdev\\work\\age1_x1\\asprite.cpp"
+//         0041b088     FMUL       float ptr [this->_padding_ + 0x68]
+//         0041b08b     FADD       float ptr [this->_padding_ + 0x6c]
+//         0041b08e     FSTP       float ptr [ESP + local_14]
+//         0041b092     CALL       debug_rand                                       int debug_rand(char * param_1, int param_2)
+//         0041b097     MOV        dword ptr [ESP + param_1],EAX
+//                              asprite.cpp:184 (34)
+//         0041b09b     MOV        EDI,dword ptr [ESI + 0x4]
+//         0041b09e     FILD       dword ptr [ESP + param_1]
+//         0041b0a2     ADD        ESP,0x8
+//         0041b0a5     FMUL       float ptr [ESP + local_14]
+//         0041b0a9     FMUL       float ptr [DAT_0056ee80]
+//         0041b0af     FLD        ST0
+//         0041b0b1     FDIV       float ptr [EDI + 0x68]
+//         0041b0b4     CALL       __ftol                                           undefined __ftol()
+//         0041b0b9     MOV        word ptr [ESI + 0x14],AX
+//                              asprite.cpp:185 (9)
+//         0041b0bd     MOV        this,word ptr [EDI + 0x5e]
+//         0041b0c1     CMP        AX,this
+//         0041b0c4     JL         LAB_0041b0e0
+//                              asprite.cpp:187 (7)
+//         0041b0c6     LEA        EAX,[this->_padding_ + -0x1]
+//         0041b0c9     MOV        word ptr [ESI + 0x14],AX
+//                              asprite.cpp:188 (19)
+//         0041b0cd     MOVSX      EAX,AX
+//         0041b0d0     MOV        dword ptr [ESP + param_1],EAX
+//         0041b0d4     FILD       dword ptr [ESP + param_1]
+//         0041b0d8     FMUL       float ptr [EDI + 0x68]
+//         0041b0db     FSUBR      ST0,ST1
+//         0041b0dd     FSTP       float ptr [ESI + 0x18]
+//                               LAB_0041b0e0                                                 XREF[1]:     0041b0c4(j)
+//                              asprite.cpp:190 (10)
+//         0041b0e0     MOV        this,word ptr [ESI + 0x14]
+//         0041b0e4     FSTP       ST0
+//         0041b0e6     MOV        word ptr [ESI + 0x20],this
+//                              asprite.cpp:192 (2)
+//         0041b0ea     JMP        LAB_0041b0f0
+//                               LAB_0041b0ec                                                 XREF[1]:     0041b070(j)
+//                              asprite.cpp:193 (4)
+//         0041b0ec     MOV        word ptr [ESI + 0x14],BX
+//                               LAB_0041b0f0                                                 XREF[1]:     0041b0ea(j)
+//                              asprite.cpp:199 (35)
+//         0041b0f0     MOV        this,dword ptr [ESP + local_c]
+//         0041b0f4     MOV        dword ptr [ESI + 0x1c],EBX
+//         0041b0f7     MOV        byte ptr [ESI + 0x22],BL
+//         0041b0fa     MOV        byte ptr [ESI + 0x23],BL
+//         0041b0fd     MOV        byte ptr [ESI + 0x24],0x1
+//         0041b101     MOV        EAX,ESI
+//         0041b103     POP        EDI
+//         0041b104     POP        ESI
+//         0041b105     MOV        dword ptr FS:[0x0],this
+//         0041b10c     POP        EBX
+//         0041b10d     ADD        ESP,0x14
+//         0041b110     RET        0x4
+//         0041b113     ??         90h
+//         0041b114     NOP
+//         0041b115     NOP
+//         0041b116     NOP
+//         0041b117     NOP
+//         0041b118     NOP
+//         0041b119     NOP
+//         0041b11a     NOP
+//         0041b11b     NOP
+//         0041b11c     NOP
+//         0041b11d     NOP
+//         0041b11e     NOP
+//         0041b11f     NOP
 }
 
 RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite(int param_1, RGE_Sprite** param_2) {

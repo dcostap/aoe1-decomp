@@ -1,6 +1,35 @@
 #pragma once
 #include "../common.h"
 
+typedef enum ActionType : unsigned int {
+    ActionEnter = 0,
+    ActionEscape = 1,
+    ActionTab = 2,
+};
+
+typedef enum BevelType : unsigned int {
+    BevelNone = 0,
+    BevelFlat = 1,
+    BevelIn1 = 2,
+    BevelIn2 = 3,
+    BevelIn3 = 4,
+    BevelOut1 = 5,
+    BevelOut2 = 6,
+    BevelOut3 = 7,
+};
+
+typedef enum FormatType : unsigned int {
+    FormatText = 0,
+    FormatNumber = 1,
+    FormatInteger = 2,
+    FormatUnsignedInt = 3,
+    FormatFile = 4,
+    FormatFileNoExt = 5,
+    FormatPath = 6,
+    FormatMultiLine = 7,
+    FormatPercent = 8,
+};
+
 class TEditPanel : public TPanel {
 public:
     void* edit_wnd;                          // 0xF4

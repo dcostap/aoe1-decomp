@@ -6,58 +6,35 @@ TribeResourceAIModule::TribeResourceAIModule(void* param_1, int param_2, int par
 //                              undefined __thiscall TribeResourceAIModule(TribeResourceAIModule * t
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TribeResourceA    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     004e6bb6(R)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     004e6bd3(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     004e6be1(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004e6bfe(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004e6bca(W)
-//                               ??0TribeResourceAIModule@@QAE@HH@Z                           XREF[1]:     TribeMainDecisionAIModule:004e4c1e
+//              void *            Stack[0x4]:4   param_1                   XREF[1]:     004e6b40(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     004e6b48(R)
+//              int               Stack[0xc]:4   param_3                   XREF[1]:     004e6b5e(R)
+//              int               Stack[0x10]:4  param_4
+//              int               Stack[0x14]:4  param_5
+//              int               Stack[0x18]:4  param_6
+//                               ??0TribeResourceAIModule@@QAE@PAXHHHHH@Z                     XREF[1]:     TribeMainDecisionAIModule:004e48ae
 //                               TribeResourceAIModule::TribeResourceAIModule
-//                              tairesmd.cpp:38 (51)
-//         004e6ba0     PUSH       -0x1
-//         004e6ba2     PUSH       FUN_00560768
-//         004e6ba7     MOV        EAX,FS:[0x0]
-//         004e6bad     PUSH       EAX
-//         004e6bae     MOV        dword ptr FS:[0x0],ESP
-//         004e6bb5     PUSH       this
-//         004e6bb6     MOV        EAX,dword ptr [ESP + param_1]
-//         004e6bba     PUSH       ESI
-//         004e6bbb     PUSH       0x0
-//         004e6bbd     PUSH       EAX
-//         004e6bbe     MOV        ESI,this
-//         004e6bc0     PUSH       0x3ef
-//         004e6bc5     PUSH       s_ResAI                                          = "ResAI"
-//         004e6bca     MOV        dword ptr [ESP + local_10],ESI
-//         004e6bce     CALL       AIModule::AIModule                               undefined AIModule(AIModule * this, char * pa
-//                              tairesmd.cpp:39 (43)
-//         004e6bd3     MOV        EDX,dword ptr [ESP + param_2]
-//         004e6bd7     LEA        this,[ESI + 0xf4]
-//         004e6bdd     PUSH       0x4
-//         004e6bdf     PUSH       this
-//         004e6be0     PUSH       EDX
-//         004e6be1     MOV        dword ptr [ESP + local_4],0x0
-//         004e6be9     MOV        dword ptr [ESI + 0xf0],0x0
-//         004e6bf3     MOV        dword ptr [ESI],TribeResourceAIModule::`vftable' = 004e6b80
-//         004e6bf9     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              tairesmd.cpp:40 (23)
-//         004e6bfe     MOV        this,dword ptr [ESP + local_c]
-//         004e6c02     ADD        ESP,0xc
-//         004e6c05     MOV        EAX,ESI
-//         004e6c07     MOV        dword ptr FS:[0x0],this
-//         004e6c0e     POP        ESI
-//         004e6c0f     ADD        ESP,0x10
-//         004e6c12     RET        0x8
-//         004e6c15     ??         90h
-//         004e6c16     NOP
-//         004e6c17     NOP
-//         004e6c18     NOP
-//         004e6c19     NOP
-//         004e6c1a     NOP
-//         004e6c1b     NOP
-//         004e6c1c     NOP
-//         004e6c1d     NOP
-//         004e6c1e     NOP
-//         004e6c1f     NOP
+//                              tairesmd.cpp:30 (56)
+//         004e6b40     MOV        EAX,dword ptr [ESP + param_1]
+//         004e6b44     PUSH       ESI
+//         004e6b45     MOV        ESI,this
+//         004e6b47     PUSH       EAX
+//         004e6b48     MOV        this,dword ptr [ESP + param_2]
+//         004e6b4c     PUSH       this
+//         004e6b4d     PUSH       0x3ef
+//         004e6b52     PUSH       s_Resource_AI                                    = "Resource AI"
+//         004e6b57     MOV        this,ESI
+//         004e6b59     CALL       AIModule::AIModule                               undefined AIModule(AIModule * this, char * pa
+//         004e6b5e     MOV        EDX,dword ptr [ESP + param_3]
+//         004e6b62     MOV        dword ptr [ESI + 0xf0],0x0
+//         004e6b6c     MOV        dword ptr [ESI + 0xf4],EDX
+//         004e6b72     MOV        dword ptr [ESI],TribeResourceAIModule::`vftable' = 004e6b80
+//                              tairesmd.cpp:31 (6)
+//         004e6b78     MOV        EAX,ESI
+//         004e6b7a     POP        ESI
+//         004e6b7b     RET        0x18
+//         004e6b7e     ??         90h
+//         004e6b7f     NOP
 }
 
 TribeResourceAIModule::TribeResourceAIModule(int param_1, int param_2) {

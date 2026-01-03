@@ -3,662 +3,396 @@
 
 RGE_Sprite::RGE_Sprite(short param_1) {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Sprite(RGE_Sprite * this, _iobuf * param_1,
+//                              undefined __thiscall RGE_Sprite(RGE_Sprite * this, short param_1)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Sprite *      ECX:4 (auto)   this
-//              _iobuf *          Stack[0x4]:4   param_1                   XREF[3]:     004bfa96(R), 004bfba3(R), 004bfc32(R)
-//              short             Stack[0x8]:2   param_2                   XREF[6]:     004bfa28(R), 004bfa38(*), 004bfb27(R), 004bfc11(R),
-//                                                                                     004bfc25(R), 004bfcaf(R)
-//              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[2]:     004bfaf0(R), 004bfc79(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[3]:     004bfc17(W), 004bfcaa(R), 004bfcb4(W)
-//              short             Stack[-0x8]:2  index1                    XREF[3]:     004bfc36(*), 004bfc4f(R), 004bfc95(R)
-//              short             Stack[-0xc]:2  sound_facet               XREF[3]:     004bfab1(W), 004bfc53(R), 004bfc5f(W)
-//              undefined2        Stack[-0xe]:2  local_e                   XREF[2]:     004bfc2d(*), 004bfca0(R)
-//              short             Stack[-0x10]:2 last_facet                XREF[2]:     004bfc29(*), 004bfc74(R)
-//              short             Stack[-0x12]:2 sound_frame               XREF[2]:     004bfa66(*), 004bfb60(R)
-//              short             Stack[-0x14]:2 sound_id                  XREF[2]:     004bfa7a(*), 004bfb55(R)
-//              short             Stack[-0x16]:2 temp_loop_once            XREF[2]:     004bfa6b(*), 004bfb46(R)
-//              short             Stack[-0x18]:2 temp_randomize_on_start   XREF[2]:     004bfa70(*), 004bfb3b(R)
-//              short             Stack[-0x1a]:2 temp_directional          XREF[2]:     004bfa75(*), 004bfb2c(R)
-//              short             Stack[-0x1c]:2 temp_animated             XREF[2]:     004bfa83(*), 004bfb1e(R)
-//              short             Stack[-0x1e]:2 temp_transparent_picking  XREF[2]:     004bfa88(*), 004bfb1a(R)
-//              short             Stack[-0x20]:2 temp_draw_level           XREF[2]:     004bfa8d(*), 004bfafb(R)
-//              short             Stack[-0x22]:2 temp_color_flag           XREF[2]:     004bfa3d(*), 004bfade(R)
-//              short             Stack[-0x24]:2 temp_mirror_flag
-//              short             Stack[-0x26]:2 temp_main_sound
-//                               ??0RGE_Sprite@@QAE@PAU_iobuf@@FPAPAVRGE_Sound@@@Z            XREF[1]:     data_load_sprites:00541196(c)
+//              short             Stack[0x4]:2   param_1                   XREF[1]:     004bf720(R)
+//                               ??0RGE_Sprite@@QAE@F@Z                                       XREF[1]:     data_load_sprites:005411ec(c)
 //                               RGE_Sprite::RGE_Sprite
-//                              sprite.cpp:140 (8)
-//         004bfa20     SUB        ESP,0x24
-//         004bfa23     PUSH       EBX
-//         004bfa24     PUSH       EBP
-//         004bfa25     PUSH       ESI
-//         004bfa26     MOV        ESI,this
-//                              sprite.cpp:163 (10)
-//         004bfa28     MOV        this,word ptr [ESP + param_2]
-//         004bfa2d     XOR        EAX,EAX
-//         004bfa2f     MOV        dword ptr [ESI + 0x18],EAX
-//                              sprite.cpp:164 (3)
-//         004bfa32     MOV        dword ptr [ESI + 0x20],EAX
-//                              sprite.cpp:165 (3)
-//         004bfa35     MOV        dword ptr [ESI + 0x24],EAX
-//                              sprite.cpp:195 (149)
-//         004bfa38     LEA        EDX=>param_2,[ESP + 0x38]
-//         004bfa3c     PUSH       EDI
-//         004bfa3d     LEA        EAX=>temp_color_flag,[ESP + 0x12]
-//         004bfa41     PUSH       EDX
-//         004bfa42     MOV        word ptr [ESI + 0x72],this
-//         004bfa46     LEA        EBP,[ESI + 0x36]
-//         004bfa49     PUSH       EAX
-//         004bfa4a     LEA        this,[ESI + 0x6c]
-//         004bfa4d     PUSH       EBP
-//         004bfa4e     LEA        EDX,[ESI + 0x68]
-//         004bfa51     PUSH       this
-//         004bfa52     LEA        EAX,[ESI + 0x64]
-//         004bfa55     PUSH       EDX
-//         004bfa56     LEA        this,[ESI + 0x34]
-//         004bfa59     PUSH       EAX
-//         004bfa5a     LEA        EDX,[ESI + 0x32]
-//         004bfa5d     PUSH       this
-//         004bfa5e     LEA        EAX,[ESI + 0x30]
-//         004bfa61     PUSH       EDX
-//         004bfa62     LEA        this,[ESI + 0x2e]
-//         004bfa65     PUSH       EAX
-//         004bfa66     LEA        EDX=>sound_frame,[ESP + 0x46]
-//         004bfa6a     PUSH       this
-//         004bfa6b     LEA        EAX=>temp_loop_once,[ESP + 0x46]
-//         004bfa6f     PUSH       EDX
-//         004bfa70     LEA        this=>temp_randomize_on_start,[ESP + 0x48]
-//         004bfa74     PUSH       EAX
-//         004bfa75     LEA        EDX=>temp_directional,[ESP + 0x4a]
-//         004bfa79     PUSH       this
-//         004bfa7a     LEA        EAX=>sound_id,[ESP + 0x54]
-//         004bfa7e     PUSH       EDX
-//         004bfa7f     LEA        this,[ESI + 0x2a]
-//         004bfa82     PUSH       EAX
-//         004bfa83     LEA        EDX=>temp_animated,[ESP + 0x54]
-//         004bfa87     PUSH       this
-//         004bfa88     LEA        EAX=>temp_transparent_picking_flag,[ESP + 0x56]
-//         004bfa8c     PUSH       EDX
-//         004bfa8d     LEA        this=>temp_draw_level,[ESP + 0x58]
-//         004bfa91     LEA        EBX,[ESI + 0x60]
-//         004bfa94     PUSH       EAX
-//         004bfa95     PUSH       this
-//         004bfa96     MOV        this,dword ptr [ESP + param_1]
-//         004bfa9d     LEA        EDX,[ESI + 0x5e]
-//         004bfaa0     PUSH       EBX
-//         004bfaa1     LEA        EAX,[ESI + 0x10]
-//         004bfaa4     PUSH       EDX
-//         004bfaa5     LEA        EDI,[ESI + 0x48]
-//         004bfaa8     PUSH       EAX
-//         004bfaa9     PUSH       ESI
-//         004bfaaa     PUSH       EDI
-//         004bfaab     PUSH       s__%s_%s_%d_%hd_%hd_%hd_%hd_%hd_%h               = " %s %s %d %hd %hd %hd %hd %hd %hd %hd %hd
-//         004bfab0     PUSH       this
-//         004bfab1     MOV        dword ptr [ESP + sound_facet],0xffffffff
-//         004bfabc     CALL       fscanf                                           undefined fscanf()
-//         004bfac1     ADD        ESP,0x68
-//         004bfac4     CMP        EAX,-0x1
-//         004bfac7     JZ         LAB_004bfcd1
-//                              sprite.cpp:200 (17)
-//         004bfacd     PUSH       EDI
-//         004bface     MOV        byte ptr [ESI + 0x14],0x0
-//         004bfad2     MOV        dword ptr [ESI + 0x1c],0x0
-//         004bfad9     CALL       convert_us                                       void convert_us(char * param_1)
-//                              sprite.cpp:201 (29)
-//         004bfade     MOV        AX,word ptr [ESP + temp_color_flag]
-//         004bfae3     XOR        EDI,EDI
-//         004bfae5     ADD        ESP,0x4
-//         004bfae8     CMP        AX,DI
-//         004bfaeb     JL         LAB_004bfaf9
-//         004bfaed     MOVSX      EDX,AX
-//         004bfaf0     MOV        EAX,dword ptr [ESP + param_3]
-//         004bfaf4     MOV        EAX,dword ptr [EAX + EDX*0x4]
-//         004bfaf7     JMP        LAB_004bfafb
-//                               LAB_004bfaf9                                                 XREF[1]:     004bfaeb(j)
-//         004bfaf9     XOR        EAX,EAX
-//                               LAB_004bfafb                                                 XREF[1]:     004bfaf7(j)
-//                              sprite.cpp:203 (10)
-//         004bfafb     CMP        word ptr [ESP + temp_draw_level],DI
-//         004bfb00     MOV        dword ptr [ESI + 0x3c],EAX
-//         004bfb03     JLE        LAB_004bfb16
-//                              sprite.cpp:204 (15)
-//         004bfb05     MOV        BX,word ptr [EBX]
-//         004bfb08     MOV        this,EBX
-//         004bfb0a     SAR        this,0x1
-//         004bfb0c     SAR        EBX,0x2
-//         004bfb0f     ADD        this,BL
-//         004bfb11     MOV        byte ptr [ESI + 0x74],this
-//                              sprite.cpp:205 (2)
-//         004bfb14     JMP        LAB_004bfb1a
-//                               LAB_004bfb16                                                 XREF[1]:     004bfb03(j)
-//                              sprite.cpp:206 (4)
-//         004bfb16     MOV        byte ptr [ESI + 0x74],0x0
-//                               LAB_004bfb1a                                                 XREF[1]:     004bfb14(j)
-//                              sprite.cpp:208 (4)
-//         004bfb1a     MOV        DL,byte ptr [ESP + temp_transparent_picking_fl
-//                              sprite.cpp:212 (27)
-//         004bfb1e     MOV        AL,byte ptr [ESP + temp_animated]
-//         004bfb22     MOV        byte ptr [ESI + 0x28],DL
-//         004bfb25     XOR        EDX,EDX
-//         004bfb27     CMP        word ptr [ESP + param_2],DI
-//         004bfb2c     MOV        this,byte ptr [ESP + temp_directional]
-//         004bfb30     MOV        byte ptr [ESI + 0x29],AL
-//         004bfb33     MOV        byte ptr [ESI + 0x2c],this
-//         004bfb36     SETG       DL
-//                              sprite.cpp:214 (13)
-//         004bfb39     XOR        EAX,EAX
-//         004bfb3b     CMP        word ptr [ESP + temp_randomize_on_start],DI
-//         004bfb40     MOV        byte ptr [ESI + 0x40],DL
-//         004bfb43     SETG       AL
-//                              sprite.cpp:215 (15)
-//         004bfb46     CMP        word ptr [ESP + temp_loop_once],DI
-//         004bfb4b     MOV        byte ptr [ESI + 0x70],AL
-//         004bfb4e     JZ         LAB_004bfb55
-//         004bfb50     ADD        AL,0x2
-//         004bfb52     MOV        byte ptr [ESI + 0x70],AL
-//                               LAB_004bfb55                                                 XREF[1]:     004bfb4e(j)
-//                              sprite.cpp:216 (11)
-//         004bfb55     CMP        word ptr [ESP + sound_id],DI
-//         004bfb5a     JZ         LAB_004bfb60
-//         004bfb5c     ADD        byte ptr [ESI + 0x70],0x4
-//                               LAB_004bfb60                                                 XREF[1]:     004bfb5a(j)
-//                              sprite.cpp:217 (11)
-//         004bfb60     CMP        word ptr [ESP + sound_frame],DI
-//         004bfb65     JZ         LAB_004bfb6b
-//         004bfb67     ADD        byte ptr [ESI + 0x70],0x8
-//                               LAB_004bfb6b                                                 XREF[1]:     004bfb65(j)
-//                              sprite.cpp:219 (9)
-//         004bfb6b     MOV        AX,word ptr [EBP]
-//         004bfb6f     CMP        AX,DI
-//         004bfb72     JLE        LAB_004bfbc0
-//                              sprite.cpp:221 (14)
-//         004bfb74     MOVSX      EAX,AX
-//         004bfb77     PUSH       0x10
-//         004bfb79     PUSH       EAX
-//         004bfb7a     CALL       calloc                                           undefined calloc()
-//         004bfb7f     ADD        ESP,0x8
-//                              sprite.cpp:222 (10)
-//         004bfb82     CMP        word ptr [EBP],0x0
-//         004bfb87     MOV        dword ptr [ESI + 0x38],EAX
-//         004bfb8a     JLE        LAB_004bfbc3
-//                               LAB_004bfb8c                                                 XREF[1]:     004bfbbc(j)
-//                              sprite.cpp:227 (50)
-//         004bfb8c     MOV        EDX,dword ptr [ESI + 0x38]
-//         004bfb8f     MOVSX      this,DI
-//         004bfb92     SHL        this,0x4
-//         004bfb95     LEA        EAX,[this->pict_name[0] + EDX*0x1]
-//         004bfb98     LEA        this,[EAX + 0xc]
-//         004bfb9b     LEA        EDX,[EAX + 0xa]
-//         004bfb9e     PUSH       this
-//         004bfb9f     LEA        this,[EAX + 0x8]
-//         004bfba2     PUSH       EDX
-//         004bfba3     MOV        EDX,dword ptr [ESP + param_1]
-//         004bfba7     PUSH       this
-//         004bfba8     PUSH       EAX
-//         004bfba9     PUSH       s__%hd_%hd_%hd_%hd                               = " %hd %hd %hd %hd"
-//         004bfbae     PUSH       EDX
-//         004bfbaf     CALL       fscanf                                           undefined fscanf()
-//         004bfbb4     ADD        ESP,0x18
-//         004bfbb7     INC        EDI
-//         004bfbb8     CMP        DI,word ptr [EBP]
-//         004bfbbc     JL         LAB_004bfb8c
-//                              sprite.cpp:229 (2)
-//         004bfbbe     JMP        LAB_004bfbc3
-//                               LAB_004bfbc0                                                 XREF[1]:     004bfb72(j)
-//                              sprite.cpp:230 (3)
-//         004bfbc0     MOV        dword ptr [ESI + 0x38],EDI
-//                               LAB_004bfbc3                                                 XREF[2]:     004bfb8a(j), 004bfbbe(j)
-//                              sprite.cpp:232 (11)
-//         004bfbc3     MOV        AL,byte ptr [ESI + 0x40]
-//         004bfbc6     TEST       AL,AL
-//         004bfbc8     JZ         LAB_004bfcca
-//                              sprite.cpp:234 (12)
-//         004bfbce     MOVSX      EAX,word ptr [ESI + 0x60]
-//         004bfbd2     PUSH       0x14
-//         004bfbd4     PUSH       EAX
-//         004bfbd5     CALL       calloc                                           undefined calloc()
-//                              sprite.cpp:235 (14)
-//         004bfbda     XOR        EDX,EDX
-//         004bfbdc     ADD        ESP,0x8
-//         004bfbdf     CMP        word ptr [ESI + 0x60],DX
-//         004bfbe3     MOV        dword ptr [ESI + 0x44],EAX
-//         004bfbe6     JLE        LAB_004bfc11
-//                               LAB_004bfbe8                                                 XREF[1]:     004bfc0f(j)
-//                              sprite.cpp:236 (18)
-//         004bfbe8     MOVSX      EAX,DX
-//         004bfbeb     LEA        this,[EAX + EAX*0x4]
-//         004bfbee     LEA        EAX,[this->pict_name[0]*0x4 + 0xc]
-//         004bfbf5     MOV        this,0x3
-//                               LAB_004bfbfa                                                 XREF[1]:     004bfc08(j)
-//                              sprite.cpp:237 (23)
-//         004bfbfa     MOV        EDI,dword ptr [ESI + 0x44]
-//         004bfbfd     ADD        EAX,0x2
-//         004bfc00     DEC        this
-//         004bfc01     MOV        word ptr [EAX + EDI*0x1 + -0x2],0xffff
-//         004bfc08     JNZ        LAB_004bfbfa
-//         004bfc0a     INC        EDX
-//         004bfc0b     CMP        DX,word ptr [ESI + 0x60]
-//         004bfc0f     JL         LAB_004bfbe8
-//                               LAB_004bfc11                                                 XREF[1]:     004bfbe6(j)
-//                              sprite.cpp:239 (24)
-//         004bfc11     CMP        word ptr [ESP + param_2],0x0
-//         004bfc17     MOV        dword ptr [ESP + local_4],0x0
-//         004bfc1f     JLE        LAB_004bfcd1
-//         004bfc25     MOV        EDI,dword ptr [ESP + param_2]
-//                               LAB_004bfc29                                                 XREF[1]:     004bfcb8(j)
-//                              sprite.cpp:240 (38)
-//         004bfc29     LEA        EDX=>last_facet,[ESP + 0x24]
-//         004bfc2d     LEA        EAX=>local_e,[ESP + 0x26]
-//         004bfc31     PUSH       EDX
-//         004bfc32     MOV        EDX,dword ptr [ESP + param_1]
-//         004bfc36     LEA        this=>index1,[ESP + 0x30]
-//         004bfc3a     PUSH       EAX
-//         004bfc3b     PUSH       this
-//         004bfc3c     PUSH       s_%hd_%hd_%hd                                    = "%hd %hd %hd"
-//         004bfc41     PUSH       EDX
-//         004bfc42     CALL       fscanf                                           undefined fscanf()
-//         004bfc47     ADD        ESP,0x14
-//         004bfc4a     CMP        EAX,-0x1
-//         004bfc4d     JZ         LAB_004bfcaa
-//                              sprite.cpp:242 (11)
-//         004bfc4f     MOV        EAX,dword ptr [ESP + index1]
-//         004bfc53     CMP        word ptr [ESP + sound_facet],AX
-//         004bfc58     JNZ        LAB_004bfc5d
-//                              sprite.cpp:243 (1)
-//         004bfc5a     INC        EDI
-//                              sprite.cpp:244 (2)
-//         004bfc5b     JMP        LAB_004bfc63
-//                               LAB_004bfc5d                                                 XREF[1]:     004bfc58(j)
-//                              sprite.cpp:246 (2)
-//         004bfc5d     XOR        EDI,EDI
-//                              sprite.cpp:247 (4)
-//         004bfc5f     MOV        dword ptr [ESP + sound_facet],EAX
-//                               LAB_004bfc63                                                 XREF[1]:     004bfc5b(j)
-//                              sprite.cpp:251 (17)
-//         004bfc63     TEST       AX,AX
-//         004bfc66     JL         LAB_004bfcaa
-//         004bfc68     CMP        AX,word ptr [ESI + 0x60]
-//         004bfc6c     JGE        LAB_004bfcaa
-//         004bfc6e     CMP        DI,0x3
-//         004bfc72     JGE        LAB_004bfcaa
-//                              sprite.cpp:253 (30)
-//         004bfc74     MOVSX      EDX,word ptr [ESP + last_facet]
-//         004bfc79     MOV        EBP,dword ptr [ESP + param_3]
-//         004bfc7d     MOVSX      this,DI
-//         004bfc80     MOVSX      EAX,AX
-//         004bfc83     MOV        EDX,dword ptr [EBP + EDX*0x4]
-//         004bfc87     LEA        EBX,[this->pict_name[0] + EAX*0x4]
-//         004bfc8a     ADD        EAX,EBX
-//         004bfc8c     MOV        EBX,dword ptr [ESI + 0x44]
-//         004bfc8f     MOV        dword ptr [EBX + EAX*0x4],EDX
-//                              sprite.cpp:254 (44)
-//         004bfc92     MOV        EDX,dword ptr [ESI + 0x44]
-//         004bfc95     MOVSX      EAX,word ptr [ESP + index1]
-//         004bfc9a     LEA        EAX,[EAX + EAX*0x4]
-//         004bfc9d     LEA        this,[this->pict_name[0] + EAX*0x2]
-//         004bfca0     MOV        AX,word ptr [ESP + local_e]
-//         004bfca5     MOV        word ptr [EDX + this->pict_name[0]*0x2 + 0xc],AX
-//                               LAB_004bfcaa                                                 XREF[4]:     004bfc4d(j), 004bfc66(j),
-//                                                                                                         004bfc6c(j), 004bfc72(j)
-//         004bfcaa     MOV        EAX,dword ptr [ESP + local_4]
-//         004bfcae     INC        EAX
-//         004bfcaf     CMP        AX,word ptr [ESP + param_2]
-//         004bfcb4     MOV        dword ptr [ESP + local_4],EAX
-//         004bfcb8     JL         LAB_004bfc29
-//                              sprite.cpp:262 (12)
-//         004bfcbe     MOV        EAX,ESI
-//         004bfcc0     POP        EDI
-//         004bfcc1     POP        ESI
-//         004bfcc2     POP        EBP
-//         004bfcc3     POP        EBX
-//         004bfcc4     ADD        ESP,0x24
-//         004bfcc7     RET        0xc
-//                               LAB_004bfcca                                                 XREF[1]:     004bfbc8(j)
-//                              sprite.cpp:259 (7)
-//         004bfcca     MOV        dword ptr [ESI + 0x44],0x0
-//                               LAB_004bfcd1                                                 XREF[2]:     004bfac7(j), 004bfc1f(j)
-//                              sprite.cpp:262 (12)
-//         004bfcd1     MOV        EAX,ESI
-//         004bfcd3     POP        EDI
-//         004bfcd4     POP        ESI
-//         004bfcd5     POP        EBP
-//         004bfcd6     POP        EBX
-//         004bfcd7     ADD        ESP,0x24
-//         004bfcda     RET        0xc
-//         004bfcdd     ??         90h
-//         004bfcde     NOP
-//         004bfcdf     NOP
+//                              sprite.cpp:42 (16)
+//         004bf720     MOV        DX,word ptr [ESP + param_1]
+//         004bf725     MOV        EAX,this
+//         004bf727     XOR        this,this
+//         004bf729     MOV        dword ptr [EAX + 0x18],this
+//         004bf72c     MOV        word ptr [EAX + 0x72],DX
+//                              sprite.cpp:45 (3)
+//         004bf730     MOV        dword ptr [EAX + 0x20],this
+//                              sprite.cpp:46 (3)
+//         004bf733     MOV        dword ptr [EAX + 0x24],this
+//                              sprite.cpp:47 (3)
+//         004bf736     MOV        byte ptr [EAX + 0x48],this
+//                              sprite.cpp:48 (2)
+//         004bf739     MOV        byte ptr [EAX],this
+//                              sprite.cpp:49 (3)
+//         004bf73b     MOV        dword ptr [EAX + 0x10],this
+//                              sprite.cpp:50 (4)
+//         004bf73e     MOV        word ptr [EAX + 0x5e],this
+//                              sprite.cpp:51 (4)
+//         004bf742     MOV        word ptr [EAX + 0x60],this
+//                              sprite.cpp:52 (4)
+//         004bf746     MOV        word ptr [EAX + 0x2a],this
+//                              sprite.cpp:53 (4)
+//         004bf74a     MOV        word ptr [EAX + 0x2e],this
+//                              sprite.cpp:54 (4)
+//         004bf74e     MOV        word ptr [EAX + 0x30],this
+//                              sprite.cpp:55 (4)
+//         004bf752     MOV        word ptr [EAX + 0x32],this
+//                              sprite.cpp:56 (4)
+//         004bf756     MOV        word ptr [EAX + 0x34],this
+//                              sprite.cpp:57 (3)
+//         004bf75a     MOV        dword ptr [EAX + 0x64],this
+//                              sprite.cpp:58 (3)
+//         004bf75d     MOV        dword ptr [EAX + 0x68],this
+//                              sprite.cpp:59 (3)
+//         004bf760     MOV        dword ptr [EAX + 0x6c],this
+//                              sprite.cpp:60 (4)
+//         004bf763     MOV        word ptr [EAX + 0x36],this
+//                              sprite.cpp:61 (3)
+//         004bf767     MOV        byte ptr [EAX + 0x14],this
+//                              sprite.cpp:62 (3)
+//         004bf76a     MOV        dword ptr [EAX + 0x1c],this
+//                              sprite.cpp:63 (3)
+//         004bf76d     MOV        dword ptr [EAX + 0x3c],this
+//                              sprite.cpp:64 (3)
+//         004bf770     MOV        byte ptr [EAX + 0x74],this
+//                              sprite.cpp:65 (3)
+//         004bf773     MOV        byte ptr [EAX + 0x28],this
+//                              sprite.cpp:66 (3)
+//         004bf776     MOV        byte ptr [EAX + 0x29],this
+//                              sprite.cpp:67 (3)
+//         004bf779     MOV        byte ptr [EAX + 0x2c],this
+//                              sprite.cpp:68 (3)
+//         004bf77c     MOV        byte ptr [EAX + 0x40],this
+//                              sprite.cpp:69 (3)
+//         004bf77f     MOV        byte ptr [EAX + 0x70],this
+//                              sprite.cpp:70 (3)
+//         004bf782     MOV        dword ptr [EAX + 0x38],this
+//                              sprite.cpp:71 (3)
+//         004bf785     MOV        dword ptr [EAX + 0x44],this
+//                              sprite.cpp:72 (3)
+//         004bf788     RET        0x4
+//         004bf78b     ??         90h
+//         004bf78c     NOP
+//         004bf78d     NOP
+//         004bf78e     NOP
+//         004bf78f     NOP
 }
 
 RGE_Sprite::RGE_Sprite(int param_1, RGE_Sound** param_2, RGE_Color_Table** param_3) {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Sprite(RGE_Sprite * this, _iobuf * param_1,
+//                              undefined __thiscall RGE_Sprite(RGE_Sprite * this, int param_1, RGE_
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Sprite *      ECX:4 (auto)   this
-//              _iobuf *          Stack[0x4]:4   param_1                   XREF[3]:     004bfa96(R), 004bfba3(R), 004bfc32(R)
-//              short             Stack[0x8]:2   param_2                   XREF[6]:     004bfa28(R), 004bfa38(*), 004bfb27(R), 004bfc11(R),
-//                                                                                     004bfc25(R), 004bfcaf(R)
-//              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[2]:     004bfaf0(R), 004bfc79(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[3]:     004bfc17(W), 004bfcaa(R), 004bfcb4(W)
-//              short             Stack[-0x8]:2  index1                    XREF[3]:     004bfc36(*), 004bfc4f(R), 004bfc95(R)
-//              short             Stack[-0xc]:2  sound_facet               XREF[3]:     004bfab1(W), 004bfc53(R), 004bfc5f(W)
-//              undefined2        Stack[-0xe]:2  local_e                   XREF[2]:     004bfc2d(*), 004bfca0(R)
-//              short             Stack[-0x10]:2 last_facet                XREF[2]:     004bfc29(*), 004bfc74(R)
-//              short             Stack[-0x12]:2 sound_frame               XREF[2]:     004bfa66(*), 004bfb60(R)
-//              short             Stack[-0x14]:2 sound_id                  XREF[2]:     004bfa7a(*), 004bfb55(R)
-//              short             Stack[-0x16]:2 temp_loop_once            XREF[2]:     004bfa6b(*), 004bfb46(R)
-//              short             Stack[-0x18]:2 temp_randomize_on_start   XREF[2]:     004bfa70(*), 004bfb3b(R)
-//              short             Stack[-0x1a]:2 temp_directional          XREF[2]:     004bfa75(*), 004bfb2c(R)
-//              short             Stack[-0x1c]:2 temp_animated             XREF[2]:     004bfa83(*), 004bfb1e(R)
-//              short             Stack[-0x1e]:2 temp_transparent_picking  XREF[2]:     004bfa88(*), 004bfb1a(R)
-//              short             Stack[-0x20]:2 temp_draw_level           XREF[2]:     004bfa8d(*), 004bfafb(R)
-//              short             Stack[-0x22]:2 temp_color_flag           XREF[2]:     004bfa3d(*), 004bfade(R)
-//              short             Stack[-0x24]:2 temp_mirror_flag
-//              short             Stack[-0x26]:2 temp_main_sound
-//                               ??0RGE_Sprite@@QAE@PAU_iobuf@@FPAPAVRGE_Sound@@@Z            XREF[1]:     data_load_sprites:00541196(c)
+//              int               Stack[0x4]:4   param_1                   XREF[3]:     004bf79d(R), 004bf9a6(*), 004bf9b3(R)
+//              RGE_Sound * *     Stack[0x8]:4   param_2                   XREF[2]:     004bf910(R), 004bf9c0(R)
+//              RGE_Color_Tabl    Stack[0xc]:4   param_3                   XREF[3]:     004bf793(R), 004bf86c(*), 004bf900(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[3]:     004bf974(W), 004bf9e5(R), 004bf9f7(W)
+//              long              Stack[-0x8]:4  index1                    XREF[3]:     004bf98b(W), 004bf9d7(R), 004bf9df(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[4]:     004bf97e(W), 004bf984(R), 004bf9e9(R), 004bf9fb(W)
+//                               ??0RGE_Sprite@@QAE@HPAPAVRGE_Sound@@PAPAVRGE_Color_Table@@@Z XREF[1]:     init_sprites:00541b05(c)
 //                               RGE_Sprite::RGE_Sprite
-//                              sprite.cpp:140 (8)
-//         004bfa20     SUB        ESP,0x24
-//         004bfa23     PUSH       EBX
-//         004bfa24     PUSH       EBP
-//         004bfa25     PUSH       ESI
-//         004bfa26     MOV        ESI,this
-//                              sprite.cpp:163 (10)
-//         004bfa28     MOV        this,word ptr [ESP + param_2]
-//         004bfa2d     XOR        EAX,EAX
-//         004bfa2f     MOV        dword ptr [ESI + 0x18],EAX
-//                              sprite.cpp:164 (3)
-//         004bfa32     MOV        dword ptr [ESI + 0x20],EAX
-//                              sprite.cpp:165 (3)
-//         004bfa35     MOV        dword ptr [ESI + 0x24],EAX
-//                              sprite.cpp:195 (149)
-//         004bfa38     LEA        EDX=>param_2,[ESP + 0x38]
-//         004bfa3c     PUSH       EDI
-//         004bfa3d     LEA        EAX=>temp_color_flag,[ESP + 0x12]
-//         004bfa41     PUSH       EDX
-//         004bfa42     MOV        word ptr [ESI + 0x72],this
-//         004bfa46     LEA        EBP,[ESI + 0x36]
-//         004bfa49     PUSH       EAX
-//         004bfa4a     LEA        this,[ESI + 0x6c]
-//         004bfa4d     PUSH       EBP
-//         004bfa4e     LEA        EDX,[ESI + 0x68]
-//         004bfa51     PUSH       this
-//         004bfa52     LEA        EAX,[ESI + 0x64]
-//         004bfa55     PUSH       EDX
-//         004bfa56     LEA        this,[ESI + 0x34]
-//         004bfa59     PUSH       EAX
-//         004bfa5a     LEA        EDX,[ESI + 0x32]
-//         004bfa5d     PUSH       this
-//         004bfa5e     LEA        EAX,[ESI + 0x30]
-//         004bfa61     PUSH       EDX
-//         004bfa62     LEA        this,[ESI + 0x2e]
-//         004bfa65     PUSH       EAX
-//         004bfa66     LEA        EDX=>sound_frame,[ESP + 0x46]
-//         004bfa6a     PUSH       this
-//         004bfa6b     LEA        EAX=>temp_loop_once,[ESP + 0x46]
-//         004bfa6f     PUSH       EDX
-//         004bfa70     LEA        this=>temp_randomize_on_start,[ESP + 0x48]
-//         004bfa74     PUSH       EAX
-//         004bfa75     LEA        EDX=>temp_directional,[ESP + 0x4a]
-//         004bfa79     PUSH       this
-//         004bfa7a     LEA        EAX=>sound_id,[ESP + 0x54]
-//         004bfa7e     PUSH       EDX
-//         004bfa7f     LEA        this,[ESI + 0x2a]
-//         004bfa82     PUSH       EAX
-//         004bfa83     LEA        EDX=>temp_animated,[ESP + 0x54]
-//         004bfa87     PUSH       this
-//         004bfa88     LEA        EAX=>temp_transparent_picking_flag,[ESP + 0x56]
-//         004bfa8c     PUSH       EDX
-//         004bfa8d     LEA        this=>temp_draw_level,[ESP + 0x58]
-//         004bfa91     LEA        EBX,[ESI + 0x60]
-//         004bfa94     PUSH       EAX
-//         004bfa95     PUSH       this
-//         004bfa96     MOV        this,dword ptr [ESP + param_1]
-//         004bfa9d     LEA        EDX,[ESI + 0x5e]
-//         004bfaa0     PUSH       EBX
-//         004bfaa1     LEA        EAX,[ESI + 0x10]
-//         004bfaa4     PUSH       EDX
-//         004bfaa5     LEA        EDI,[ESI + 0x48]
-//         004bfaa8     PUSH       EAX
-//         004bfaa9     PUSH       ESI
-//         004bfaaa     PUSH       EDI
-//         004bfaab     PUSH       s__%s_%s_%d_%hd_%hd_%hd_%hd_%hd_%h               = " %s %s %d %hd %hd %hd %hd %hd %hd %hd %hd
-//         004bfab0     PUSH       this
-//         004bfab1     MOV        dword ptr [ESP + sound_facet],0xffffffff
-//         004bfabc     CALL       fscanf                                           undefined fscanf()
-//         004bfac1     ADD        ESP,0x68
-//         004bfac4     CMP        EAX,-0x1
-//         004bfac7     JZ         LAB_004bfcd1
-//                              sprite.cpp:200 (17)
-//         004bfacd     PUSH       EDI
-//         004bface     MOV        byte ptr [ESI + 0x14],0x0
-//         004bfad2     MOV        dword ptr [ESI + 0x1c],0x0
-//         004bfad9     CALL       convert_us                                       void convert_us(char * param_1)
-//                              sprite.cpp:201 (29)
-//         004bfade     MOV        AX,word ptr [ESP + temp_color_flag]
-//         004bfae3     XOR        EDI,EDI
-//         004bfae5     ADD        ESP,0x4
-//         004bfae8     CMP        AX,DI
-//         004bfaeb     JL         LAB_004bfaf9
-//         004bfaed     MOVSX      EDX,AX
-//         004bfaf0     MOV        EAX,dword ptr [ESP + param_3]
-//         004bfaf4     MOV        EAX,dword ptr [EAX + EDX*0x4]
-//         004bfaf7     JMP        LAB_004bfafb
-//                               LAB_004bfaf9                                                 XREF[1]:     004bfaeb(j)
-//         004bfaf9     XOR        EAX,EAX
-//                               LAB_004bfafb                                                 XREF[1]:     004bfaf7(j)
-//                              sprite.cpp:203 (10)
-//         004bfafb     CMP        word ptr [ESP + temp_draw_level],DI
-//         004bfb00     MOV        dword ptr [ESI + 0x3c],EAX
-//         004bfb03     JLE        LAB_004bfb16
-//                              sprite.cpp:204 (15)
-//         004bfb05     MOV        BX,word ptr [EBX]
-//         004bfb08     MOV        this,EBX
-//         004bfb0a     SAR        this,0x1
-//         004bfb0c     SAR        EBX,0x2
-//         004bfb0f     ADD        this,BL
-//         004bfb11     MOV        byte ptr [ESI + 0x74],this
-//                              sprite.cpp:205 (2)
-//         004bfb14     JMP        LAB_004bfb1a
-//                               LAB_004bfb16                                                 XREF[1]:     004bfb03(j)
-//                              sprite.cpp:206 (4)
-//         004bfb16     MOV        byte ptr [ESI + 0x74],0x0
-//                               LAB_004bfb1a                                                 XREF[1]:     004bfb14(j)
-//                              sprite.cpp:208 (4)
-//         004bfb1a     MOV        DL,byte ptr [ESP + temp_transparent_picking_fl
-//                              sprite.cpp:212 (27)
-//         004bfb1e     MOV        AL,byte ptr [ESP + temp_animated]
-//         004bfb22     MOV        byte ptr [ESI + 0x28],DL
-//         004bfb25     XOR        EDX,EDX
-//         004bfb27     CMP        word ptr [ESP + param_2],DI
-//         004bfb2c     MOV        this,byte ptr [ESP + temp_directional]
-//         004bfb30     MOV        byte ptr [ESI + 0x29],AL
-//         004bfb33     MOV        byte ptr [ESI + 0x2c],this
-//         004bfb36     SETG       DL
-//                              sprite.cpp:214 (13)
-//         004bfb39     XOR        EAX,EAX
-//         004bfb3b     CMP        word ptr [ESP + temp_randomize_on_start],DI
-//         004bfb40     MOV        byte ptr [ESI + 0x40],DL
-//         004bfb43     SETG       AL
-//                              sprite.cpp:215 (15)
-//         004bfb46     CMP        word ptr [ESP + temp_loop_once],DI
-//         004bfb4b     MOV        byte ptr [ESI + 0x70],AL
-//         004bfb4e     JZ         LAB_004bfb55
-//         004bfb50     ADD        AL,0x2
-//         004bfb52     MOV        byte ptr [ESI + 0x70],AL
-//                               LAB_004bfb55                                                 XREF[1]:     004bfb4e(j)
-//                              sprite.cpp:216 (11)
-//         004bfb55     CMP        word ptr [ESP + sound_id],DI
-//         004bfb5a     JZ         LAB_004bfb60
-//         004bfb5c     ADD        byte ptr [ESI + 0x70],0x4
-//                               LAB_004bfb60                                                 XREF[1]:     004bfb5a(j)
-//                              sprite.cpp:217 (11)
-//         004bfb60     CMP        word ptr [ESP + sound_frame],DI
-//         004bfb65     JZ         LAB_004bfb6b
-//         004bfb67     ADD        byte ptr [ESI + 0x70],0x8
-//                               LAB_004bfb6b                                                 XREF[1]:     004bfb65(j)
-//                              sprite.cpp:219 (9)
-//         004bfb6b     MOV        AX,word ptr [EBP]
-//         004bfb6f     CMP        AX,DI
-//         004bfb72     JLE        LAB_004bfbc0
-//                              sprite.cpp:221 (14)
-//         004bfb74     MOVSX      EAX,AX
-//         004bfb77     PUSH       0x10
-//         004bfb79     PUSH       EAX
-//         004bfb7a     CALL       calloc                                           undefined calloc()
-//         004bfb7f     ADD        ESP,0x8
-//                              sprite.cpp:222 (10)
-//         004bfb82     CMP        word ptr [EBP],0x0
-//         004bfb87     MOV        dword ptr [ESI + 0x38],EAX
-//         004bfb8a     JLE        LAB_004bfbc3
-//                               LAB_004bfb8c                                                 XREF[1]:     004bfbbc(j)
-//                              sprite.cpp:227 (50)
-//         004bfb8c     MOV        EDX,dword ptr [ESI + 0x38]
-//         004bfb8f     MOVSX      this,DI
-//         004bfb92     SHL        this,0x4
-//         004bfb95     LEA        EAX,[this->pict_name[0] + EDX*0x1]
-//         004bfb98     LEA        this,[EAX + 0xc]
-//         004bfb9b     LEA        EDX,[EAX + 0xa]
-//         004bfb9e     PUSH       this
-//         004bfb9f     LEA        this,[EAX + 0x8]
-//         004bfba2     PUSH       EDX
-//         004bfba3     MOV        EDX,dword ptr [ESP + param_1]
-//         004bfba7     PUSH       this
-//         004bfba8     PUSH       EAX
-//         004bfba9     PUSH       s__%hd_%hd_%hd_%hd                               = " %hd %hd %hd %hd"
-//         004bfbae     PUSH       EDX
-//         004bfbaf     CALL       fscanf                                           undefined fscanf()
-//         004bfbb4     ADD        ESP,0x18
-//         004bfbb7     INC        EDI
-//         004bfbb8     CMP        DI,word ptr [EBP]
-//         004bfbbc     JL         LAB_004bfb8c
-//                              sprite.cpp:229 (2)
-//         004bfbbe     JMP        LAB_004bfbc3
-//                               LAB_004bfbc0                                                 XREF[1]:     004bfb72(j)
-//                              sprite.cpp:230 (3)
-//         004bfbc0     MOV        dword ptr [ESI + 0x38],EDI
-//                               LAB_004bfbc3                                                 XREF[2]:     004bfb8a(j), 004bfbbe(j)
-//                              sprite.cpp:232 (11)
-//         004bfbc3     MOV        AL,byte ptr [ESI + 0x40]
-//         004bfbc6     TEST       AL,AL
-//         004bfbc8     JZ         LAB_004bfcca
-//                              sprite.cpp:234 (12)
-//         004bfbce     MOVSX      EAX,word ptr [ESI + 0x60]
-//         004bfbd2     PUSH       0x14
-//         004bfbd4     PUSH       EAX
-//         004bfbd5     CALL       calloc                                           undefined calloc()
-//                              sprite.cpp:235 (14)
-//         004bfbda     XOR        EDX,EDX
-//         004bfbdc     ADD        ESP,0x8
-//         004bfbdf     CMP        word ptr [ESI + 0x60],DX
-//         004bfbe3     MOV        dword ptr [ESI + 0x44],EAX
-//         004bfbe6     JLE        LAB_004bfc11
-//                               LAB_004bfbe8                                                 XREF[1]:     004bfc0f(j)
-//                              sprite.cpp:236 (18)
-//         004bfbe8     MOVSX      EAX,DX
-//         004bfbeb     LEA        this,[EAX + EAX*0x4]
-//         004bfbee     LEA        EAX,[this->pict_name[0]*0x4 + 0xc]
-//         004bfbf5     MOV        this,0x3
-//                               LAB_004bfbfa                                                 XREF[1]:     004bfc08(j)
-//                              sprite.cpp:237 (23)
-//         004bfbfa     MOV        EDI,dword ptr [ESI + 0x44]
-//         004bfbfd     ADD        EAX,0x2
-//         004bfc00     DEC        this
-//         004bfc01     MOV        word ptr [EAX + EDI*0x1 + -0x2],0xffff
-//         004bfc08     JNZ        LAB_004bfbfa
-//         004bfc0a     INC        EDX
-//         004bfc0b     CMP        DX,word ptr [ESI + 0x60]
-//         004bfc0f     JL         LAB_004bfbe8
-//                               LAB_004bfc11                                                 XREF[1]:     004bfbe6(j)
-//                              sprite.cpp:239 (24)
-//         004bfc11     CMP        word ptr [ESP + param_2],0x0
-//         004bfc17     MOV        dword ptr [ESP + local_4],0x0
-//         004bfc1f     JLE        LAB_004bfcd1
-//         004bfc25     MOV        EDI,dword ptr [ESP + param_2]
-//                               LAB_004bfc29                                                 XREF[1]:     004bfcb8(j)
-//                              sprite.cpp:240 (38)
-//         004bfc29     LEA        EDX=>last_facet,[ESP + 0x24]
-//         004bfc2d     LEA        EAX=>local_e,[ESP + 0x26]
-//         004bfc31     PUSH       EDX
-//         004bfc32     MOV        EDX,dword ptr [ESP + param_1]
-//         004bfc36     LEA        this=>index1,[ESP + 0x30]
-//         004bfc3a     PUSH       EAX
-//         004bfc3b     PUSH       this
-//         004bfc3c     PUSH       s_%hd_%hd_%hd                                    = "%hd %hd %hd"
-//         004bfc41     PUSH       EDX
-//         004bfc42     CALL       fscanf                                           undefined fscanf()
-//         004bfc47     ADD        ESP,0x14
-//         004bfc4a     CMP        EAX,-0x1
-//         004bfc4d     JZ         LAB_004bfcaa
-//                              sprite.cpp:242 (11)
-//         004bfc4f     MOV        EAX,dword ptr [ESP + index1]
-//         004bfc53     CMP        word ptr [ESP + sound_facet],AX
-//         004bfc58     JNZ        LAB_004bfc5d
-//                              sprite.cpp:243 (1)
-//         004bfc5a     INC        EDI
-//                              sprite.cpp:244 (2)
-//         004bfc5b     JMP        LAB_004bfc63
-//                               LAB_004bfc5d                                                 XREF[1]:     004bfc58(j)
-//                              sprite.cpp:246 (2)
-//         004bfc5d     XOR        EDI,EDI
-//                              sprite.cpp:247 (4)
-//         004bfc5f     MOV        dword ptr [ESP + sound_facet],EAX
-//                               LAB_004bfc63                                                 XREF[1]:     004bfc5b(j)
-//                              sprite.cpp:251 (17)
-//         004bfc63     TEST       AX,AX
-//         004bfc66     JL         LAB_004bfcaa
-//         004bfc68     CMP        AX,word ptr [ESI + 0x60]
-//         004bfc6c     JGE        LAB_004bfcaa
-//         004bfc6e     CMP        DI,0x3
-//         004bfc72     JGE        LAB_004bfcaa
-//                              sprite.cpp:253 (30)
-//         004bfc74     MOVSX      EDX,word ptr [ESP + last_facet]
-//         004bfc79     MOV        EBP,dword ptr [ESP + param_3]
-//         004bfc7d     MOVSX      this,DI
-//         004bfc80     MOVSX      EAX,AX
-//         004bfc83     MOV        EDX,dword ptr [EBP + EDX*0x4]
-//         004bfc87     LEA        EBX,[this->pict_name[0] + EAX*0x4]
-//         004bfc8a     ADD        EAX,EBX
-//         004bfc8c     MOV        EBX,dword ptr [ESI + 0x44]
-//         004bfc8f     MOV        dword ptr [EBX + EAX*0x4],EDX
-//                              sprite.cpp:254 (44)
-//         004bfc92     MOV        EDX,dword ptr [ESI + 0x44]
-//         004bfc95     MOVSX      EAX,word ptr [ESP + index1]
-//         004bfc9a     LEA        EAX,[EAX + EAX*0x4]
-//         004bfc9d     LEA        this,[this->pict_name[0] + EAX*0x2]
-//         004bfca0     MOV        AX,word ptr [ESP + local_e]
-//         004bfca5     MOV        word ptr [EDX + this->pict_name[0]*0x2 + 0xc],AX
-//                               LAB_004bfcaa                                                 XREF[4]:     004bfc4d(j), 004bfc66(j),
-//                                                                                                         004bfc6c(j), 004bfc72(j)
-//         004bfcaa     MOV        EAX,dword ptr [ESP + local_4]
-//         004bfcae     INC        EAX
-//         004bfcaf     CMP        AX,word ptr [ESP + param_2]
-//         004bfcb4     MOV        dword ptr [ESP + local_4],EAX
-//         004bfcb8     JL         LAB_004bfc29
-//                              sprite.cpp:262 (12)
-//         004bfcbe     MOV        EAX,ESI
-//         004bfcc0     POP        EDI
-//         004bfcc1     POP        ESI
-//         004bfcc2     POP        EBP
-//         004bfcc3     POP        EBX
-//         004bfcc4     ADD        ESP,0x24
-//         004bfcc7     RET        0xc
-//                               LAB_004bfcca                                                 XREF[1]:     004bfbc8(j)
-//                              sprite.cpp:259 (7)
-//         004bfcca     MOV        dword ptr [ESI + 0x44],0x0
-//                               LAB_004bfcd1                                                 XREF[2]:     004bfac7(j), 004bfc1f(j)
-//                              sprite.cpp:262 (12)
-//         004bfcd1     MOV        EAX,ESI
-//         004bfcd3     POP        EDI
-//         004bfcd4     POP        ESI
-//         004bfcd5     POP        EBP
-//         004bfcd6     POP        EBX
-//         004bfcd7     ADD        ESP,0x24
-//         004bfcda     RET        0xc
-//         004bfcdd     ??         90h
-//         004bfcde     NOP
-//         004bfcdf     NOP
+//                              sprite.cpp:78 (3)
+//         004bf790     SUB        ESP,0xc
+//                              sprite.cpp:84 (10)
+//         004bf793     MOV        EAX,dword ptr [ESP + param_3]
+//         004bf797     PUSH       EBX
+//         004bf798     PUSH       EBP
+//         004bf799     PUSH       ESI
+//         004bf79a     MOV        ESI,this
+//         004bf79c     PUSH       EDI
+//                              sprite.cpp:88 (30)
+//         004bf79d     MOV        EDI,dword ptr [ESP + param_1]
+//         004bf7a1     LEA        this,[ESI + 0x48]
+//         004bf7a4     MOV        dword ptr [ESI + 0x18],EAX
+//         004bf7a7     PUSH       0x15
+//         004bf7a9     XOR        EAX,EAX
+//         004bf7ab     PUSH       this
+//         004bf7ac     PUSH       EDI
+//         004bf7ad     MOV        dword ptr [ESI + 0x20],EAX
+//         004bf7b0     MOV        dword ptr [ESI + 0x24],EAX
+//         004bf7b3     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bf7b8     ADD        ESP,0xc
+//                              sprite.cpp:89 (12)
+//         004bf7bb     PUSH       0xd
+//         004bf7bd     PUSH       ESI
+//         004bf7be     PUSH       EDI
+//         004bf7bf     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bf7c4     ADD        ESP,0xc
+//                              sprite.cpp:90 (15)
+//         004bf7c7     LEA        EDX,[ESI + 0x10]
+//         004bf7ca     PUSH       0x4
+//         004bf7cc     PUSH       EDX
+//         004bf7cd     PUSH       EDI
+//         004bf7ce     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bf7d3     ADD        ESP,0xc
+//                              sprite.cpp:91 (15)
+//         004bf7d6     LEA        EAX,[ESI + 0x14]
+//         004bf7d9     PUSH       0x1
+//         004bf7db     PUSH       EAX
+//         004bf7dc     PUSH       EDI
+//         004bf7dd     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bf7e2     ADD        ESP,0xc
+//                              sprite.cpp:92 (15)
+//         004bf7e5     LEA        this,[ESI + 0x28]
+//         004bf7e8     PUSH       0x1
+//         004bf7ea     PUSH       this
+//         004bf7eb     PUSH       EDI
+//         004bf7ec     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bf7f1     ADD        ESP,0xc
+//                              sprite.cpp:93 (15)
+//         004bf7f4     LEA        EDX,[ESI + 0x29]
+//         004bf7f7     PUSH       0x1
+//         004bf7f9     PUSH       EDX
+//         004bf7fa     PUSH       EDI
+//         004bf7fb     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bf800     ADD        ESP,0xc
+//                              sprite.cpp:94 (15)
+//         004bf803     LEA        EAX,[ESI + 0x2a]
+//         004bf806     PUSH       0x2
+//         004bf808     PUSH       EAX
+//         004bf809     PUSH       EDI
+//         004bf80a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bf80f     ADD        ESP,0xc
+//                              sprite.cpp:95 (15)
+//         004bf812     LEA        this,[ESI + 0x2c]
+//         004bf815     PUSH       0x1
+//         004bf817     PUSH       this
+//         004bf818     PUSH       EDI
+//         004bf819     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bf81e     ADD        ESP,0xc
+//                              sprite.cpp:96 (15)
+//         004bf821     LEA        EDX,[ESI + 0x2e]
+//         004bf824     PUSH       0x2
+//         004bf826     PUSH       EDX
+//         004bf827     PUSH       EDI
+//         004bf828     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bf82d     ADD        ESP,0xc
+//                              sprite.cpp:97 (15)
+//         004bf830     LEA        EAX,[ESI + 0x30]
+//         004bf833     PUSH       0x2
+//         004bf835     PUSH       EAX
+//         004bf836     PUSH       EDI
+//         004bf837     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bf83c     ADD        ESP,0xc
+//                              sprite.cpp:98 (15)
+//         004bf83f     LEA        this,[ESI + 0x32]
+//         004bf842     PUSH       0x2
+//         004bf844     PUSH       this
+//         004bf845     PUSH       EDI
+//         004bf846     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bf84b     ADD        ESP,0xc
+//                              sprite.cpp:99 (15)
+//         004bf84e     LEA        EDX,[ESI + 0x34]
+//         004bf851     PUSH       0x2
+//         004bf853     PUSH       EDX
+//         004bf854     PUSH       EDI
+//         004bf855     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bf85a     ADD        ESP,0xc
+//                              sprite.cpp:100 (15)
+//         004bf85d     LEA        EBX,[ESI + 0x36]
+//         004bf860     PUSH       0x2
+//         004bf862     PUSH       EBX
+//         004bf863     PUSH       EDI
+//         004bf864     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bf869     ADD        ESP,0xc
+//                              sprite.cpp:101 (16)
+//         004bf86c     LEA        EAX=>param_3,[ESP + 0x28]
+//         004bf870     PUSH       0x2
+//         004bf872     PUSH       EAX
+//         004bf873     PUSH       EDI
+//         004bf874     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bf879     ADD        ESP,0xc
+//                              sprite.cpp:102 (15)
+//         004bf87c     LEA        EAX,[ESI + 0x40]
+//         004bf87f     PUSH       0x1
+//         004bf881     PUSH       EAX
+//         004bf882     PUSH       EDI
+//         004bf883     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bf888     ADD        ESP,0xc
+//                              sprite.cpp:103 (15)
+//         004bf88b     LEA        this,[ESI + 0x5e]
+//         004bf88e     PUSH       0x2
+//         004bf890     PUSH       this
+//         004bf891     PUSH       EDI
+//         004bf892     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bf897     ADD        ESP,0xc
+//                              sprite.cpp:104 (15)
+//         004bf89a     LEA        EBP,[ESI + 0x60]
+//         004bf89d     PUSH       0x2
+//         004bf89f     PUSH       EBP
+//         004bf8a0     PUSH       EDI
+//         004bf8a1     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bf8a6     ADD        ESP,0xc
+//                              sprite.cpp:105 (15)
+//         004bf8a9     LEA        EDX,[ESI + 0x64]
+//         004bf8ac     PUSH       0x4
+//         004bf8ae     PUSH       EDX
+//         004bf8af     PUSH       EDI
+//         004bf8b0     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bf8b5     ADD        ESP,0xc
+//                              sprite.cpp:106 (15)
+//         004bf8b8     LEA        EAX,[ESI + 0x68]
+//         004bf8bb     PUSH       0x4
+//         004bf8bd     PUSH       EAX
+//         004bf8be     PUSH       EDI
+//         004bf8bf     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bf8c4     ADD        ESP,0xc
+//                              sprite.cpp:107 (15)
+//         004bf8c7     LEA        this,[ESI + 0x6c]
+//         004bf8ca     PUSH       0x4
+//         004bf8cc     PUSH       this
+//         004bf8cd     PUSH       EDI
+//         004bf8ce     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bf8d3     ADD        ESP,0xc
+//                              sprite.cpp:108 (15)
+//         004bf8d6     LEA        EDX,[ESI + 0x70]
+//         004bf8d9     PUSH       0x1
+//         004bf8db     PUSH       EDX
+//         004bf8dc     PUSH       EDI
+//         004bf8dd     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bf8e2     ADD        ESP,0xc
+//                              sprite.cpp:109 (15)
+//         004bf8e5     LEA        EAX,[ESI + 0x72]
+//         004bf8e8     PUSH       0x2
+//         004bf8ea     PUSH       EAX
+//         004bf8eb     PUSH       EDI
+//         004bf8ec     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bf8f1     ADD        ESP,0xc
+//                              sprite.cpp:110 (12)
+//         004bf8f4     LEA        this,[ESI + 0x74]
+//         004bf8f7     PUSH       0x1
+//         004bf8f9     PUSH       this
+//         004bf8fa     PUSH       EDI
+//         004bf8fb     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              sprite.cpp:112 (30)
+//         004bf900     MOV        AX,word ptr [ESP + param_3]
+//         004bf905     ADD        ESP,0xc
+//         004bf908     TEST       AX,AX
+//         004bf90b     JL         LAB_004bf919
+//         004bf90d     MOVSX      EDX,AX
+//         004bf910     MOV        EAX,dword ptr [ESP + param_2]
+//         004bf914     MOV        EAX,dword ptr [EAX + EDX*0x4]
+//         004bf917     JMP        LAB_004bf91b
+//                               LAB_004bf919                                                 XREF[1]:     004bf90b(j)
+//         004bf919     XOR        EAX,EAX
+//                               LAB_004bf91b                                                 XREF[1]:     004bf917(j)
+//         004bf91b     MOV        dword ptr [ESI + 0x3c],EAX
+//                              sprite.cpp:114 (8)
+//         004bf91e     MOV        AX,word ptr [EBX]
+//         004bf921     TEST       AX,AX
+//         004bf924     JLE        LAB_004bf94a
+//                              sprite.cpp:116 (11)
+//         004bf926     MOVSX      this,AX
+//         004bf929     PUSH       0x10
+//         004bf92b     PUSH       this
+//         004bf92c     CALL       calloc                                           undefined calloc()
+//                              sprite.cpp:117 (23)
+//         004bf931     MOVSX      EDX,word ptr [EBX]
+//         004bf934     ADD        ESP,0x8
+//         004bf937     MOV        dword ptr [ESI + 0x38],EAX
+//         004bf93a     SHL        EDX,0x4
+//         004bf93d     PUSH       EDX
+//         004bf93e     PUSH       EAX
+//         004bf93f     PUSH       EDI
+//         004bf940     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bf945     ADD        ESP,0xc
+//                              sprite.cpp:119 (2)
+//         004bf948     JMP        LAB_004bf951
+//                               LAB_004bf94a                                                 XREF[1]:     004bf924(j)
+//                              sprite.cpp:120 (7)
+//         004bf94a     MOV        dword ptr [ESI + 0x38],0x0
+//                               LAB_004bf951                                                 XREF[1]:     004bf948(j)
+//                              sprite.cpp:122 (11)
+//         004bf951     MOV        AL,byte ptr [ESI + 0x40]
+//         004bf954     TEST       AL,AL
+//         004bf956     JZ         LAB_004bfa0d
+//                              sprite.cpp:124 (12)
+//         004bf95c     MOVSX      EAX,word ptr [EBP]
+//         004bf960     PUSH       0x14
+//         004bf962     PUSH       EAX
+//         004bf963     CALL       calloc                                           undefined calloc()
+//                              sprite.cpp:125 (22)
+//         004bf968     XOR        EBX,EBX
+//         004bf96a     ADD        ESP,0x8
+//         004bf96d     CMP        word ptr [EBP],BX
+//         004bf971     MOV        dword ptr [ESI + 0x44],EAX
+//         004bf974     MOV        dword ptr [ESP + local_4],EBX
+//         004bf978     JLE        LAB_004bfa14
+//                              sprite.cpp:135 (10)
+//         004bf97e     MOV        dword ptr [ESP + local_c],EBX
+//         004bf982     JMP        LAB_004bf988
+//                               LAB_004bf984                                                 XREF[1]:     004bf9ff(j)
+//         004bf984     MOV        EBX,dword ptr [ESP + local_c]
+//                               LAB_004bf988                                                 XREF[1]:     004bf982(j)
+//                              sprite.cpp:125 (3)
+//         004bf988     LEA        EBP,[EBX + 0xc]
+//                              sprite.cpp:126 (8)
+//         004bf98b     MOV        dword ptr [ESP + index1],0x3
+//                               LAB_004bf993                                                 XREF[1]:     004bf9e3(j)
+//                              sprite.cpp:128 (19)
+//         004bf993     MOV        EAX,dword ptr [ESI + 0x44]
+//         004bf996     MOV        this,EBP
+//         004bf998     ADD        this,EAX
+//         004bf99a     PUSH       0x2
+//         004bf99c     PUSH       this
+//         004bf99d     PUSH       EDI
+//         004bf99e     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bf9a3     ADD        ESP,0xc
+//                              sprite.cpp:129 (13)
+//         004bf9a6     LEA        EDX=>param_1,[ESP + 0x20]
+//         004bf9aa     PUSH       0x2
+//         004bf9ac     PUSH       EDX
+//         004bf9ad     PUSH       EDI
+//         004bf9ae     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              sprite.cpp:130 (78)
+//         004bf9b3     MOV        AX,word ptr [ESP + param_1]
+//         004bf9b8     ADD        ESP,0xc
+//         004bf9bb     TEST       AX,AX
+//         004bf9be     JL         LAB_004bf9cc
+//         004bf9c0     MOV        this,dword ptr [ESP + param_2]
+//         004bf9c4     MOVSX      EAX,AX
+//         004bf9c7     MOV        EAX,dword ptr [this->pict_name[0] + EAX*0x4]
+//         004bf9ca     JMP        LAB_004bf9ce
+//                               LAB_004bf9cc                                                 XREF[1]:     004bf9be(j)
+//         004bf9cc     XOR        EAX,EAX
+//                               LAB_004bf9ce                                                 XREF[1]:     004bf9ca(j)
+//         004bf9ce     MOV        EDX,dword ptr [ESI + 0x44]
+//         004bf9d1     ADD        EBP,0x2
+//         004bf9d4     MOV        dword ptr [EBX + EDX*0x1],EAX
+//         004bf9d7     MOV        EAX,dword ptr [ESP + index1]
+//         004bf9db     ADD        EBX,0x4
+//         004bf9de     DEC        EAX
+//         004bf9df     MOV        dword ptr [ESP + index1],EAX
+//         004bf9e3     JNZ        LAB_004bf993
+//         004bf9e5     MOV        EAX,dword ptr [ESP + local_4]
+//         004bf9e9     MOV        EBX,dword ptr [ESP + local_c]
+//         004bf9ed     MOVSX      this,word ptr [ESI + 0x60]
+//         004bf9f1     INC        EAX
+//         004bf9f2     ADD        EBX,0x14
+//         004bf9f5     CMP        EAX,this
+//         004bf9f7     MOV        dword ptr [ESP + local_4],EAX
+//         004bf9fb     MOV        dword ptr [ESP + local_c],EBX
+//         004bf9ff     JL         LAB_004bf984
+//                              sprite.cpp:135 (12)
+//         004bfa01     MOV        EAX,ESI
+//         004bfa03     POP        EDI
+//         004bfa04     POP        ESI
+//         004bfa05     POP        EBP
+//         004bfa06     POP        EBX
+//         004bfa07     ADD        ESP,0xc
+//         004bfa0a     RET        0xc
+//                               LAB_004bfa0d                                                 XREF[1]:     004bf956(j)
+//                              sprite.cpp:134 (7)
+//         004bfa0d     MOV        dword ptr [ESI + 0x44],0x0
+//                               LAB_004bfa14                                                 XREF[1]:     004bf978(j)
+//                              sprite.cpp:135 (12)
+//         004bfa14     MOV        EAX,ESI
+//         004bfa16     POP        EDI
+//         004bfa17     POP        ESI
+//         004bfa18     POP        EBP
+//         004bfa19     POP        EBX
+//         004bfa1a     ADD        ESP,0xc
+//         004bfa1d     RET        0xc
 }
 
 RGE_Sprite::RGE_Sprite(_iobuf* param_1, short param_2, RGE_Sound** param_3) {

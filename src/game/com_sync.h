@@ -2,6 +2,22 @@
 #include "../common.h"
 #include "Com_hand.h"
 
+
+// ----------------------------------------------------------------
+// CHECKSUMARRAY
+// Size: 0x24
+struct CHECKSUMARRAY {
+    uint PlayerNo; // 0x0
+    ulong WTime; // 0x4
+    ulong WTurn; // 0x8
+    long cs1; // 0xC
+    long cs2; // 0x10
+    long cs3; // 0x14
+    long cs4; // 0x18
+    long cs5; // 0x1C
+    uint Random; // 0x20
+};
+
 class RGE_Communications_Synchronize {
 public:
     ulong CheckTime;                         // 0x4

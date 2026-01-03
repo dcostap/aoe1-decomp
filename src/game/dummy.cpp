@@ -11769,297 +11769,329 @@ char FUN_0056db60() {
 
 TRIBE_Tech::TRIBE_Tech(int param_1, TRIBE_World* param_2) {
     /* TODO: Stub */
-//                              undefined __thiscall TRIBE_Tech(TRIBE_Tech * this, char * param_1)
+//                              undefined __thiscall TRIBE_Tech(TRIBE_Tech * this, int param_1, TRIB
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Tech *      ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0050bba4(R)
-//              undefined4        Stack[-0x8]:4  local_8                   XREF[2]:     0050bd18(W), 0050bd30(R)
-//              undefined2        Stack[-0xc]:2  local_c                   XREF[2]:     0050bbbd(*), 0050bc2c(R)
-//              undefined         Stack[-0x10]:1 local_10                  XREF[2]:     0050be0b(*), 0050be7b(R)
-//              undefined4        Stack[-0x14]:4 local_14                  XREF[6]:     0050bd1b(W), 0050bd24(R), 0050bd2a(W), 0050bd2d(R),
-//                                                                                     0050bd35(R), 0050bd42(R)
-//              undefined         Stack[-0x18]:1 local_18                  XREF[2]:     0050bc67(*), 0050bd05(R)
-//              undefined4        Stack[-0x1c]:4 local_1c                  XREF[9]:     0050bbb0(W), 0050bbb3(R), 0050bbd0(R), 0050bc44(R),
-//                                                                                     0050bce7(R), 0050bdd4(R), 0050be54(R), 0050beff(R),
-//                                                                                     0050bf10(R)
-//              undefined2        Stack[-0x20]:2 local_20                  XREF[4]:     0050bc14(W), 0050bc1c(R), 0050bc24(W), 0050bc28(R)
-//              undefined         Stack[-0x84]:1 local_84                  XREF[3]:     0050bcde(*), 0050bd0c(*), 0050bd65(*)
-//              undefined2        Stack[-0x88]:2 local_88                  XREF[12]:    0050bd86(W), 0050bd91(R), 0050bd9c(W), 0050bda3(R),
-//                                                                                     0050bdc3(R), 0050bde2(W), 0050bded(R), 0050bdf8(W),
-//                                                                                     0050bdff(R), 0050be23(R), 0050be43(R), 0050be74(R)
-//              undefined2        Stack[-0x8c]:2 local_8c                  XREF[19]:    0050bc38(*), 0050bc50(R), 0050bc6b(R), 0050bc82(R),
-//                                                                                     0050bc99(R), 0050bcb0(R), 0050bcc7(R), 0050bcf3(R),
-//                                                                                     0050bd4c(R), 0050bd69(R), 0050bdaf(R), 0050be0f(R),
-//                                                                                     0050be2f(R), 0050be60(R), 0050be87(R), 0050be9e(R),
-//                                                                                     0050beb5(R), 0050becc(R), 0050bee3(R)
-//              undefined4        Stack[-0x90]:4 local_90                  XREF[25]:    0050bb8d(W), 0050bb93(R), 0050bbc1(R), 0050bbe5(R),
-//                                                                                     0050bbf7(R), 0050bc0c(R), 0050bc5a(R), 0050bc75(R),
-//                                                                                     0050bc8c(R), 0050bca3(R), 0050bcba(R), 0050bcd1(R),
-//                                                                                     0050bcfd(R), 0050bd56(R), 0050bd73(R), 0050bdb9(R),
-//                                                                                     0050be19(R), 0050be39(R), 0050be6a(R), 0050be91(R)
-//                               ??0TRIBE_Tech@@QAE@PAD@Z                                     XREF[1]:     data_load_world:0052e3a9(c)
+//              int               Stack[0x4]:4   param_1                   XREF[19]:    0050b85b(R), 0050b8ea(R), 0050b92e(R), 0050b953(R),
+//                                                                                     0050b978(R), 0050b99c(R), 0050b9bb(R), 0050b9da(R),
+//                                                                                     0050b9f9(R), 0050ba18(R), 0050ba37(R), 0050ba56(R),
+//                                                                                     0050ba75(R), 0050ba94(R), 0050bab3(R), 0050bad2(R),
+//                                                                                     0050baf1(R), 0050bb03(R), 0050bb4a(R)
+//              TRIBE_World *     Stack[0x8]:4   param_2                   XREF[1]:     0050b84c(R)
+//              undefined2        Stack[-0x8]:2  local_8                   XREF[23]:    0050b88d(W), 0050b895(R), 0050b89d(W), 0050b8a1(R),
+//                                                                                     0050b8d3(R), 0050b917(R), 0050b93c(R), 0050b961(R),
+//                                                                                     0050b98b(R), 0050b9aa(R), 0050b9c9(R), 0050b9e8(R),
+//                                                                                     0050ba07(R), 0050ba26(R), 0050ba45(R), 0050ba64(R),
+//                                                                                     0050ba83(R), 0050baa2(R), 0050bac1(R), 0050bae0(R)
+//              undefined2        Stack[-0xc]:2  local_c                   XREF[4]:     0050baff(*), 0050bb0f(R), 0050bb17(R), 0050bb35(R)
+//              undefined2        Stack[-0x10]:2 local_10                  XREF[12]:    0050b8b4(W), 0050b8bc(R), 0050b8c4(W), 0050b8c8(R),
+//                                                                                     0050b8e1(R), 0050b8f8(W), 0050b900(R), 0050b908(W),
+//                                                                                     0050b90c(R), 0050b925(R), 0050b94a(R), 0050b96f(R)
+//              undefined4        Stack[-0x14]:4 local_14                  XREF[28]:    0050b846(W), 0050b849(R), 0050b854(R), 0050b867(R),
+//                                                                                     0050b876(R), 0050b888(R), 0050b8a5(R), 0050b8da(R),
+//                                                                                     0050b91e(R), 0050b943(R), 0050b968(R), 0050b992(R),
+//                                                                                     0050b9b1(R), 0050b9d0(R), 0050b9ef(R), 0050ba0e(R),
+//                                                                                     0050ba2d(R), 0050ba4c(R), 0050ba6b(R), 0050ba8a(R)
+//                               ??0TRIBE_Tech@@QAE@HPAVTRIBE_World@@@Z                       XREF[1]:     world_init:0052e6fc(c)
 //                               TRIBE_Tech::TRIBE_Tech
-//         0050bb84     PUSH       EBP
-//         0050bb85     MOV        EBP,ESP
-//         0050bb87     SUB        ESP,0x8c
-//         0050bb8d     MOV        dword ptr [EBP + local_90],this
-//         0050bb93     MOV        EAX,dword ptr [EBP + local_90]
-//         0050bb99     MOV        dword ptr [EAX],0x0
-//         0050bb9f     PUSH       DAT_00588f74                                     = 72h    r
-//         0050bba4     MOV        this,dword ptr [EBP + param_1]
-//         0050bba7     PUSH       this
-//         0050bba8     CALL       fopen                                            undefined fopen()
-//         0050bbad     ADD        ESP,0x8
-//         0050bbb0     MOV        dword ptr [EBP + local_1c],EAX
-//         0050bbb3     CMP        dword ptr [EBP + local_1c],0x0
-//         0050bbb7     JZ         LAB_0050bf1c
-//         0050bbbd     LEA        EDX=>local_c,[EBP + -0x8]
-//         0050bbc0     PUSH       EDX
-//         0050bbc1     MOV        EAX,dword ptr [EBP + local_90]
-//         0050bbc7     ADD        EAX,0x4
-//         0050bbca     PUSH       EAX
-//         0050bbcb     PUSH       s_%d_%d_00588f78                                 = "%d %d"
-//         0050bbd0     MOV        this,dword ptr [EBP + local_1c]
-//         0050bbd3     PUSH       this
-//         0050bbd4     CALL       fscanf                                           undefined fscanf()
-//         0050bbd9     ADD        ESP,0x10
-//         0050bbdc     CMP        EAX,-0x1
-//         0050bbdf     JZ         LAB_0050bf10
-//         0050bbe5     MOV        EDX,dword ptr [EBP + local_90]
-//         0050bbeb     MOVSX      EAX,word ptr [EDX + 0x4]
-//         0050bbef     TEST       EAX,EAX
-//         0050bbf1     JLE        LAB_0050bf10
-//         0050bbf7     MOV        this,dword ptr [EBP + local_90]
-//         0050bbfd     MOVSX      EDX,word ptr [ECX + this->tech_tree_num]
-//         0050bc01     PUSH       EDX
-//         0050bc02     PUSH       0x3c
-//         0050bc04     CALL       calloc                                           undefined calloc()
-//         0050bc09     ADD        ESP,0x8
-//         0050bc0c     MOV        this,dword ptr [EBP + local_90]
-//         0050bc12     MOV        dword ptr [this->tech_tree],EAX
-//         0050bc14     MOV        word ptr [EBP + local_20],0x0
-//         0050bc1a     JMP        LAB_0050bc28
-//                               LAB_0050bc1c                                                 XREF[1]:     0050bf0b(j)
-//         0050bc1c     MOV        DX,word ptr [EBP + local_20]
-//         0050bc20     ADD        DX,0x1
-//         0050bc24     MOV        word ptr [EBP + local_20],DX
-//                               LAB_0050bc28                                                 XREF[1]:     0050bc1a(j)
-//         0050bc28     MOVSX      EAX,word ptr [EBP + local_20]
-//         0050bc2c     MOVSX      this,word ptr [EBP + local_c]
-//         0050bc30     CMP        EAX,this
-//         0050bc32     JGE        LAB_0050bf10
-//         0050bc38     LEA        EDX=>local_8c,[EBP + 0xffffff78]
-//         0050bc3e     PUSH       EDX
-//         0050bc3f     PUSH       DAT_00588f80                                     = 25h    %
-//         0050bc44     MOV        EAX,dword ptr [EBP + local_1c]
-//         0050bc47     PUSH       EAX
-//         0050bc48     CALL       fscanf                                           undefined fscanf()
-//         0050bc4d     ADD        ESP,0xc
-//         0050bc50     MOVSX      this,word ptr [EBP + local_8c]
-//         0050bc57     IMUL       this,this,0x3c
-//         0050bc5a     MOV        EDX,dword ptr [EBP + local_90]
-//         0050bc60     MOV        EAX,dword ptr [EDX]
-//         0050bc62     LEA        this,[EAX + this->tech_tree*0x1 + 0x28]
-//         0050bc66     PUSH       this
-//         0050bc67     LEA        EDX=>local_18,[EBP + -0x14]
-//         0050bc6a     PUSH       EDX
-//         0050bc6b     MOVSX      EAX,word ptr [EBP + local_8c]
-//         0050bc72     IMUL       EAX,EAX,0x3c
-//         0050bc75     MOV        this,dword ptr [EBP + local_90]
-//         0050bc7b     MOV        EDX,dword ptr [this->tech_tree]
-//         0050bc7d     LEA        EAX,[EDX + EAX*0x1 + 0x24]
-//         0050bc81     PUSH       EAX
-//         0050bc82     MOVSX      this,word ptr [EBP + local_8c]
-//         0050bc89     IMUL       this,this,0x3c
-//         0050bc8c     MOV        EDX,dword ptr [EBP + local_90]
-//         0050bc92     MOV        EAX,dword ptr [EDX]
-//         0050bc94     LEA        this,[EAX + this->tech_tree*0x1 + 0x22]
-//         0050bc98     PUSH       this
-//         0050bc99     MOVSX      EDX,word ptr [EBP + local_8c]
-//         0050bca0     IMUL       EDX,EDX,0x3c
-//         0050bca3     MOV        EAX,dword ptr [EBP + local_90]
-//         0050bca9     MOV        this,dword ptr [EAX]
-//         0050bcab     LEA        EDX,[this->tech_tree + EDX*0x1 + 0x20]
-//         0050bcaf     PUSH       EDX
-//         0050bcb0     MOVSX      EAX,word ptr [EBP + local_8c]
-//         0050bcb7     IMUL       EAX,EAX,0x3c
-//         0050bcba     MOV        this,dword ptr [EBP + local_90]
-//         0050bcc0     MOV        EDX,dword ptr [this->tech_tree]
-//         0050bcc2     LEA        EAX,[EDX + EAX*0x1 + 0x1e]
-//         0050bcc6     PUSH       EAX
-//         0050bcc7     MOVSX      this,word ptr [EBP + local_8c]
-//         0050bcce     IMUL       this,this,0x3c
-//         0050bcd1     MOV        EDX,dword ptr [EBP + local_90]
-//         0050bcd7     MOV        EAX,dword ptr [EDX]
-//         0050bcd9     LEA        this,[EAX + this->tech_tree*0x1 + 0xc]
-//         0050bcdd     PUSH       this
-//         0050bcde     LEA        EDX=>local_84,[EBP + -0x80]
-//         0050bce1     PUSH       EDX
-//         0050bce2     PUSH       s_%s_%hd_%hd_%hd_%hd_%hd_%hd_%hd_00588f84        = "%s %hd %hd %hd %hd %hd %hd %hd"
-//         0050bce7     MOV        EAX,dword ptr [EBP + local_1c]
-//         0050bcea     PUSH       EAX
-//         0050bceb     CALL       fscanf                                           undefined fscanf()
-//         0050bcf0     ADD        ESP,0x28
-//         0050bcf3     MOVSX      this,word ptr [EBP + local_8c]
-//         0050bcfa     IMUL       this,this,0x3c
-//         0050bcfd     MOV        EDX,dword ptr [EBP + local_90]
-//         0050bd03     MOV        EAX,dword ptr [EDX]
-//         0050bd05     MOV        DL,byte ptr [EBP + local_18]
-//         0050bd08     MOV        byte ptr [EAX + this->tech_tree*0x1 + 0x26],DL
-//         0050bd0c     LEA        EAX=>local_84,[EBP + -0x80]
-//         0050bd0f     PUSH       EAX
-//         0050bd10     CALL       strlen                                           undefined strlen()
-//         0050bd15     ADD        ESP,0x4
-//         0050bd18     MOV        dword ptr [EBP + local_8],EAX
-//         0050bd1b     MOV        dword ptr [EBP + local_14],0x0
-//         0050bd22     JMP        LAB_0050bd2d
-//                               LAB_0050bd24                                                 XREF[1]:     0050bd4a(j)
-//         0050bd24     MOV        this,dword ptr [EBP + local_14]
-//         0050bd27     ADD        this,0x1
-//         0050bd2a     MOV        dword ptr [EBP + local_14],this
-//                               LAB_0050bd2d                                                 XREF[1]:     0050bd22(j)
-//         0050bd2d     MOV        EDX,dword ptr [EBP + local_14]
-//         0050bd30     CMP        EDX,dword ptr [EBP + local_8]
-//         0050bd33     JGE        LAB_0050bd4c
-//         0050bd35     MOV        EAX,dword ptr [EBP + local_14]
-//         0050bd38     MOVSX      this,byte ptr [EBP + EAX*0x1 + -0x80]
-//         0050bd3d     CMP        this,0x5f
-//         0050bd40     JNZ        LAB_0050bd4a
-//         0050bd42     MOV        EDX,dword ptr [EBP + local_14]
-//         0050bd45     MOV        byte ptr [EBP + EDX*0x1 + -0x80],0x20
-//                               LAB_0050bd4a                                                 XREF[1]:     0050bd40(j)
-//         0050bd4a     JMP        LAB_0050bd24
-//                               LAB_0050bd4c                                                 XREF[1]:     0050bd33(j)
-//         0050bd4c     MOVSX      EAX,word ptr [EBP + local_8c]
-//         0050bd53     IMUL       EAX,EAX,0x3c
-//         0050bd56     MOV        this,dword ptr [EBP + local_90]
-//         0050bd5c     MOV        EDX,dword ptr [this->tech_tree]
-//         0050bd5e     MOV        dword ptr [EDX + EAX*0x1],0x0
-//         0050bd65     LEA        EAX=>local_84,[EBP + -0x80]
-//         0050bd68     PUSH       EAX
-//         0050bd69     MOVSX      this,word ptr [EBP + local_8c]
-//         0050bd70     IMUL       this,this,0x3c
-//         0050bd73     MOV        EDX,dword ptr [EBP + local_90]
-//         0050bd79     MOV        EAX,dword ptr [EDX]
-//         0050bd7b     ADD        EAX,this
-//         0050bd7d     PUSH       EAX
-//         0050bd7e     CALL       getstring                                        void getstring(char * * param_1, char * param
-//         0050bd83     ADD        ESP,0x8
-//         0050bd86     MOV        word ptr [EBP + local_88],0x0
-//         0050bd8f     JMP        LAB_0050bda3
-//                               LAB_0050bd91                                                 XREF[1]:     0050bde0(j)
-//         0050bd91     MOV        this,word ptr [EBP + local_88]
-//         0050bd98     ADD        this,0x1
-//         0050bd9c     MOV        word ptr [EBP + local_88],this
-//                               LAB_0050bda3                                                 XREF[1]:     0050bd8f(j)
-//         0050bda3     MOVSX      EDX,word ptr [EBP + local_88]
-//         0050bdaa     CMP        EDX,0x4
-//         0050bdad     JGE        LAB_0050bde2
-//         0050bdaf     MOVSX      EAX,word ptr [EBP + local_8c]
-//         0050bdb6     IMUL       EAX,EAX,0x3c
-//         0050bdb9     MOV        this,dword ptr [EBP + local_90]
-//         0050bdbf     MOV        EDX,dword ptr [this->tech_tree]
-//         0050bdc1     ADD        EDX,EAX
-//         0050bdc3     MOVSX      EAX,word ptr [EBP + local_88]
-//         0050bdca     LEA        this,[EDX + EAX*0x2 + 0x4]
-//         0050bdce     PUSH       this
-//         0050bdcf     PUSH       PTR_aiPathSystem.MGP_costValue[29][208]+1_0058   = 00646825
-//         0050bdd4     MOV        EDX,dword ptr [EBP + local_1c]
-//         0050bdd7     PUSH       EDX
-//         0050bdd8     CALL       fscanf                                           undefined fscanf()
-//         0050bddd     ADD        ESP,0xc
-//         0050bde0     JMP        LAB_0050bd91
-//                               LAB_0050bde2                                                 XREF[1]:     0050bdad(j)
-//         0050bde2     MOV        word ptr [EBP + local_88],0x0
-//         0050bdeb     JMP        LAB_0050bdff
-//                               LAB_0050bded                                                 XREF[1]:     0050be82(j)
-//         0050bded     MOV        AX,word ptr [EBP + local_88]
-//         0050bdf4     ADD        AX,0x1
-//         0050bdf8     MOV        word ptr [EBP + local_88],AX
-//                               LAB_0050bdff                                                 XREF[1]:     0050bdeb(j)
-//         0050bdff     MOVSX      this,word ptr [EBP + local_88]
-//         0050be06     CMP        this,0x3
-//         0050be09     JGE        LAB_0050be87
-//         0050be0b     LEA        EDX=>local_10,[EBP + -0xc]
-//         0050be0e     PUSH       EDX
-//         0050be0f     MOVSX      EAX,word ptr [EBP + local_8c]
-//         0050be16     IMUL       EAX,EAX,0x3c
-//         0050be19     MOV        this,dword ptr [EBP + local_90]
-//         0050be1f     MOV        EDX,dword ptr [this->tech_tree]
-//         0050be21     ADD        EDX,EAX
-//         0050be23     MOVSX      EAX,word ptr [EBP + local_88]
-//         0050be2a     LEA        this,[EDX + EAX*0x2 + 0x14]
-//         0050be2e     PUSH       this
-//         0050be2f     MOVSX      EDX,word ptr [EBP + local_8c]
-//         0050be36     IMUL       EDX,EDX,0x3c
-//         0050be39     MOV        EAX,dword ptr [EBP + local_90]
-//         0050be3f     MOV        this,dword ptr [EAX]
-//         0050be41     ADD        this,EDX
-//         0050be43     MOVSX      EDX,word ptr [EBP + local_88]
-//         0050be4a     LEA        EAX,[this->tech_tree + EDX*0x2 + 0xe]
-//         0050be4e     PUSH       EAX
-//         0050be4f     PUSH       s_%hd_%hd_%hd_00588fa8                           = "%hd %hd %hd"
-//         0050be54     MOV        this,dword ptr [EBP + local_1c]
-//         0050be57     PUSH       this
-//         0050be58     CALL       fscanf                                           undefined fscanf()
-//         0050be5d     ADD        ESP,0x14
-//         0050be60     MOVSX      EDX,word ptr [EBP + local_8c]
-//         0050be67     IMUL       EDX,EDX,0x3c
-//         0050be6a     MOV        EAX,dword ptr [EBP + local_90]
-//         0050be70     MOV        this,dword ptr [EAX]
-//         0050be72     ADD        this,EDX
-//         0050be74     MOVSX      EDX,word ptr [EBP + local_88]
-//         0050be7b     MOV        AL,byte ptr [EBP + local_10]
-//         0050be7e     MOV        byte ptr [this->tech_tree + EDX*0x1 + 0x1a],AL
-//         0050be82     JMP        LAB_0050bded
-//                               LAB_0050be87                                                 XREF[1]:     0050be09(j)
-//         0050be87     MOVSX      this,word ptr [EBP + local_8c]
-//         0050be8e     IMUL       this,this,0x3c
-//         0050be91     MOV        EDX,dword ptr [EBP + local_90]
-//         0050be97     MOV        EAX,dword ptr [EDX]
-//         0050be99     LEA        this,[EAX + this->tech_tree*0x1 + 0x38]
-//         0050be9d     PUSH       this
-//         0050be9e     MOVSX      EDX,word ptr [EBP + local_8c]
-//         0050bea5     IMUL       EDX,EDX,0x3c
-//         0050bea8     MOV        EAX,dword ptr [EBP + local_90]
-//         0050beae     MOV        this,dword ptr [EAX]
-//         0050beb0     LEA        EDX,[this->tech_tree + EDX*0x1 + 0x34]
-//         0050beb4     PUSH       EDX
-//         0050beb5     MOVSX      EAX,word ptr [EBP + local_8c]
-//         0050bebc     IMUL       EAX,EAX,0x3c
-//         0050bebf     MOV        this,dword ptr [EBP + local_90]
-//         0050bec5     MOV        EDX,dword ptr [this->tech_tree]
-//         0050bec7     LEA        EAX,[EDX + EAX*0x1 + 0x30]
-//         0050becb     PUSH       EAX
-//         0050becc     MOVSX      this,word ptr [EBP + local_8c]
-//         0050bed3     IMUL       this,this,0x3c
-//         0050bed6     MOV        EDX,dword ptr [EBP + local_90]
-//         0050bedc     MOV        EAX,dword ptr [EDX]
-//         0050bede     LEA        this,[EAX + this->tech_tree*0x1 + 0x2c]
-//         0050bee2     PUSH       this
-//         0050bee3     MOVSX      EDX,word ptr [EBP + local_8c]
-//         0050beea     IMUL       EDX,EDX,0x3c
-//         0050beed     MOV        EAX,dword ptr [EBP + local_90]
-//         0050bef3     MOV        this,dword ptr [EAX]
-//         0050bef5     LEA        EDX,[this->tech_tree + EDX*0x1 + 0x2a]
-//         0050bef9     PUSH       EDX
-//         0050befa     PUSH       s_%hd_%hd_%d_%d_%d_00588fb4                      = "%hd %hd %d %d %d"
-//         0050beff     MOV        EAX,dword ptr [EBP + local_1c]
-//         0050bf02     PUSH       EAX
-//         0050bf03     CALL       fscanf                                           undefined fscanf()
-//         0050bf08     ADD        ESP,0x1c
-//         0050bf0b     JMP        LAB_0050bc1c
-//                               LAB_0050bf10                                                 XREF[3]:     0050bbdf(j), 0050bbf1(j),
-//                                                                                                         0050bc32(j)
-//         0050bf10     MOV        this,dword ptr [EBP + local_1c]
-//         0050bf13     PUSH       this
-//         0050bf14     CALL       fclose                                           undefined fclose()
-//         0050bf19     ADD        ESP,0x4
-//                               LAB_0050bf1c                                                 XREF[1]:     0050bbb7(j)
-//         0050bf1c     MOV        EAX,dword ptr [EBP + local_90]
-//         0050bf22     MOV        ESP,EBP
-//         0050bf24     POP        EBP
-//         0050bf25     RET        0x4
+//         0050b840     PUSH       EBP
+//         0050b841     MOV        EBP,ESP
+//         0050b843     SUB        ESP,0x10
+//         0050b846     MOV        dword ptr [EBP + local_14],this
+//         0050b849     MOV        EAX,dword ptr [EBP + local_14]
+//         0050b84c     MOV        this,dword ptr [EBP + param_2]
+//         0050b84f     MOV        dword ptr [EAX + 0x8],this
+//         0050b852     PUSH       0x2
+//         0050b854     MOV        EDX,dword ptr [EBP + local_14]
+//         0050b857     ADD        EDX,0x4
+//         0050b85a     PUSH       EDX
+//         0050b85b     MOV        EAX,dword ptr [EBP + param_1]
+//         0050b85e     PUSH       EAX
+//         0050b85f     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050b864     ADD        ESP,0xc
+//         0050b867     MOV        this,dword ptr [EBP + local_14]
+//         0050b86a     MOVSX      EDX,word ptr [ECX + this->tech_tree_num]
+//         0050b86e     TEST       EDX,EDX
+//         0050b870     JLE        LAB_0050bb72
+//         0050b876     MOV        EAX,dword ptr [EBP + local_14]
+//         0050b879     MOVSX      this,word ptr [EAX + 0x4]
+//         0050b87d     PUSH       this
+//         0050b87e     PUSH       0x3c
+//         0050b880     CALL       calloc                                           undefined calloc()
+//         0050b885     ADD        ESP,0x8
+//         0050b888     MOV        EDX,dword ptr [EBP + local_14]
+//         0050b88b     MOV        dword ptr [EDX],EAX
+//         0050b88d     MOV        word ptr [EBP + local_8],0x0
+//         0050b893     JMP        LAB_0050b8a1
+//                               LAB_0050b895                                                 XREF[1]:     0050bb6b(j)
+//         0050b895     MOV        AX,word ptr [EBP + local_8]
+//         0050b899     ADD        AX,0x1
+//         0050b89d     MOV        word ptr [EBP + local_8],AX
+//                               LAB_0050b8a1                                                 XREF[1]:     0050b893(j)
+//         0050b8a1     MOVSX      this,word ptr [EBP + local_8]
+//         0050b8a5     MOV        EDX,dword ptr [EBP + local_14]
+//         0050b8a8     MOVSX      EAX,word ptr [EDX + 0x4]
+//         0050b8ac     CMP        this,EAX
+//         0050b8ae     JGE        LAB_0050bb70
+//         0050b8b4     MOV        word ptr [EBP + local_10],0x0
+//         0050b8ba     JMP        LAB_0050b8c8
+//                               LAB_0050b8bc                                                 XREF[1]:     0050b8f6(j)
+//         0050b8bc     MOV        this,word ptr [EBP + local_10]
+//         0050b8c0     ADD        this,0x1
+//         0050b8c4     MOV        word ptr [EBP + local_10],this
+//                               LAB_0050b8c8                                                 XREF[1]:     0050b8ba(j)
+//         0050b8c8     MOVSX      EDX,word ptr [EBP + local_10]
+//         0050b8cc     CMP        EDX,0x4
+//         0050b8cf     JGE        LAB_0050b8f8
+//         0050b8d1     PUSH       0x2
+//         0050b8d3     MOVSX      EAX,word ptr [EBP + local_8]
+//         0050b8d7     IMUL       EAX,EAX,0x3c
+//         0050b8da     MOV        this,dword ptr [EBP + local_14]
+//         0050b8dd     MOV        EDX,dword ptr [this->tech_tree]
+//         0050b8df     ADD        EDX,EAX
+//         0050b8e1     MOVSX      EAX,word ptr [EBP + local_10]
+//         0050b8e5     LEA        this,[EDX + EAX*0x2 + 0x4]
+//         0050b8e9     PUSH       this
+//         0050b8ea     MOV        EDX,dword ptr [EBP + param_1]
+//         0050b8ed     PUSH       EDX
+//         0050b8ee     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050b8f3     ADD        ESP,0xc
+//         0050b8f6     JMP        LAB_0050b8bc
+//                               LAB_0050b8f8                                                 XREF[1]:     0050b8cf(j)
+//         0050b8f8     MOV        word ptr [EBP + local_10],0x0
+//         0050b8fe     JMP        LAB_0050b90c
+//                               LAB_0050b900                                                 XREF[1]:     0050b984(j)
+//         0050b900     MOV        AX,word ptr [EBP + local_10]
+//         0050b904     ADD        AX,0x1
+//         0050b908     MOV        word ptr [EBP + local_10],AX
+//                               LAB_0050b90c                                                 XREF[1]:     0050b8fe(j)
+//         0050b90c     MOVSX      this,word ptr [EBP + local_10]
+//         0050b910     CMP        this,0x3
+//         0050b913     JGE        LAB_0050b989
+//         0050b915     PUSH       0x2
+//         0050b917     MOVSX      EDX,word ptr [EBP + local_8]
+//         0050b91b     IMUL       EDX,EDX,0x3c
+//         0050b91e     MOV        EAX,dword ptr [EBP + local_14]
+//         0050b921     MOV        this,dword ptr [EAX]
+//         0050b923     ADD        this,EDX
+//         0050b925     MOVSX      EDX,word ptr [EBP + local_10]
+//         0050b929     LEA        EAX,[this->tech_tree + EDX*0x2 + 0xe]
+//         0050b92d     PUSH       EAX
+//         0050b92e     MOV        this,dword ptr [EBP + param_1]
+//         0050b931     PUSH       this
+//         0050b932     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050b937     ADD        ESP,0xc
+//         0050b93a     PUSH       0x2
+//         0050b93c     MOVSX      EDX,word ptr [EBP + local_8]
+//         0050b940     IMUL       EDX,EDX,0x3c
+//         0050b943     MOV        EAX,dword ptr [EBP + local_14]
+//         0050b946     MOV        this,dword ptr [EAX]
+//         0050b948     ADD        this,EDX
+//         0050b94a     MOVSX      EDX,word ptr [EBP + local_10]
+//         0050b94e     LEA        EAX,[this->tech_tree + EDX*0x2 + 0x14]
+//         0050b952     PUSH       EAX
+//         0050b953     MOV        this,dword ptr [EBP + param_1]
+//         0050b956     PUSH       this
+//         0050b957     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050b95c     ADD        ESP,0xc
+//         0050b95f     PUSH       0x1
+//         0050b961     MOVSX      EDX,word ptr [EBP + local_8]
+//         0050b965     IMUL       EDX,EDX,0x3c
+//         0050b968     MOV        EAX,dword ptr [EBP + local_14]
+//         0050b96b     MOV        this,dword ptr [EAX]
+//         0050b96d     ADD        this,EDX
+//         0050b96f     MOVSX      EDX,word ptr [EBP + local_10]
+//         0050b973     LEA        EAX,[this->tech_tree + EDX*0x1 + 0x1a]
+//         0050b977     PUSH       EAX
+//         0050b978     MOV        this,dword ptr [EBP + param_1]
+//         0050b97b     PUSH       this
+//         0050b97c     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050b981     ADD        ESP,0xc
+//         0050b984     JMP        LAB_0050b900
+//                               LAB_0050b989                                                 XREF[1]:     0050b913(j)
+//         0050b989     PUSH       0x2
+//         0050b98b     MOVSX      EDX,word ptr [EBP + local_8]
+//         0050b98f     IMUL       EDX,EDX,0x3c
+//         0050b992     MOV        EAX,dword ptr [EBP + local_14]
+//         0050b995     MOV        this,dword ptr [EAX]
+//         0050b997     LEA        EDX,[ECX + EDX*0x1 + this+0xc]
+//         0050b99b     PUSH       EDX
+//         0050b99c     MOV        EAX,dword ptr [EBP + param_1]
+//         0050b99f     PUSH       EAX
+//         0050b9a0     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050b9a5     ADD        ESP,0xc
+//         0050b9a8     PUSH       0x2
+//         0050b9aa     MOVSX      this,word ptr [EBP + local_8]
+//         0050b9ae     IMUL       this,this,0x3c
+//         0050b9b1     MOV        EDX,dword ptr [EBP + local_14]
+//         0050b9b4     MOV        EAX,dword ptr [EDX]
+//         0050b9b6     LEA        this,[EAX + this->tech_tree*0x1 + 0x28]
+//         0050b9ba     PUSH       this
+//         0050b9bb     MOV        EDX,dword ptr [EBP + param_1]
+//         0050b9be     PUSH       EDX
+//         0050b9bf     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050b9c4     ADD        ESP,0xc
+//         0050b9c7     PUSH       0x2
+//         0050b9c9     MOVSX      EAX,word ptr [EBP + local_8]
+//         0050b9cd     IMUL       EAX,EAX,0x3c
+//         0050b9d0     MOV        this,dword ptr [EBP + local_14]
+//         0050b9d3     MOV        EDX,dword ptr [this->tech_tree]
+//         0050b9d5     LEA        EAX,[EDX + EAX*0x1 + 0x2a]
+//         0050b9d9     PUSH       EAX
+//         0050b9da     MOV        this,dword ptr [EBP + param_1]
+//         0050b9dd     PUSH       this
+//         0050b9de     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050b9e3     ADD        ESP,0xc
+//         0050b9e6     PUSH       0x2
+//         0050b9e8     MOVSX      EDX,word ptr [EBP + local_8]
+//         0050b9ec     IMUL       EDX,EDX,0x3c
+//         0050b9ef     MOV        EAX,dword ptr [EBP + local_14]
+//         0050b9f2     MOV        this,dword ptr [EAX]
+//         0050b9f4     LEA        EDX,[this->tech_tree + EDX*0x1 + 0x2c]
+//         0050b9f8     PUSH       EDX
+//         0050b9f9     MOV        EAX,dword ptr [EBP + param_1]
+//         0050b9fc     PUSH       EAX
+//         0050b9fd     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050ba02     ADD        ESP,0xc
+//         0050ba05     PUSH       0x2
+//         0050ba07     MOVSX      this,word ptr [EBP + local_8]
+//         0050ba0b     IMUL       this,this,0x3c
+//         0050ba0e     MOV        EDX,dword ptr [EBP + local_14]
+//         0050ba11     MOV        EAX,dword ptr [EDX]
+//         0050ba13     LEA        this,[EAX + this->tech_tree*0x1 + 0x1e]
+//         0050ba17     PUSH       this
+//         0050ba18     MOV        EDX,dword ptr [EBP + param_1]
+//         0050ba1b     PUSH       EDX
+//         0050ba1c     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050ba21     ADD        ESP,0xc
+//         0050ba24     PUSH       0x2
+//         0050ba26     MOVSX      EAX,word ptr [EBP + local_8]
+//         0050ba2a     IMUL       EAX,EAX,0x3c
+//         0050ba2d     MOV        this,dword ptr [EBP + local_14]
+//         0050ba30     MOV        EDX,dword ptr [this->tech_tree]
+//         0050ba32     LEA        EAX,[EDX + EAX*0x1 + 0x20]
+//         0050ba36     PUSH       EAX
+//         0050ba37     MOV        this,dword ptr [EBP + param_1]
+//         0050ba3a     PUSH       this
+//         0050ba3b     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050ba40     ADD        ESP,0xc
+//         0050ba43     PUSH       0x2
+//         0050ba45     MOVSX      EDX,word ptr [EBP + local_8]
+//         0050ba49     IMUL       EDX,EDX,0x3c
+//         0050ba4c     MOV        EAX,dword ptr [EBP + local_14]
+//         0050ba4f     MOV        this,dword ptr [EAX]
+//         0050ba51     LEA        EDX,[this->tech_tree + EDX*0x1 + 0x22]
+//         0050ba55     PUSH       EDX
+//         0050ba56     MOV        EAX,dword ptr [EBP + param_1]
+//         0050ba59     PUSH       EAX
+//         0050ba5a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050ba5f     ADD        ESP,0xc
+//         0050ba62     PUSH       0x2
+//         0050ba64     MOVSX      this,word ptr [EBP + local_8]
+//         0050ba68     IMUL       this,this,0x3c
+//         0050ba6b     MOV        EDX,dword ptr [EBP + local_14]
+//         0050ba6e     MOV        EAX,dword ptr [EDX]
+//         0050ba70     LEA        this,[EAX + this->tech_tree*0x1 + 0x24]
+//         0050ba74     PUSH       this
+//         0050ba75     MOV        EDX,dword ptr [EBP + param_1]
+//         0050ba78     PUSH       EDX
+//         0050ba79     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050ba7e     ADD        ESP,0xc
+//         0050ba81     PUSH       0x1
+//         0050ba83     MOVSX      EAX,word ptr [EBP + local_8]
+//         0050ba87     IMUL       EAX,EAX,0x3c
+//         0050ba8a     MOV        this,dword ptr [EBP + local_14]
+//         0050ba8d     MOV        EDX,dword ptr [this->tech_tree]
+//         0050ba8f     LEA        EAX,[EDX + EAX*0x1 + 0x26]
+//         0050ba93     PUSH       EAX
+//         0050ba94     MOV        this,dword ptr [EBP + param_1]
+//         0050ba97     PUSH       this
+//         0050ba98     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050ba9d     ADD        ESP,0xc
+//         0050baa0     PUSH       0x4
+//         0050baa2     MOVSX      EDX,word ptr [EBP + local_8]
+//         0050baa6     IMUL       EDX,EDX,0x3c
+//         0050baa9     MOV        EAX,dword ptr [EBP + local_14]
+//         0050baac     MOV        this,dword ptr [EAX]
+//         0050baae     LEA        EDX,[this->tech_tree + EDX*0x1 + 0x30]
+//         0050bab2     PUSH       EDX
+//         0050bab3     MOV        EAX,dword ptr [EBP + param_1]
+//         0050bab6     PUSH       EAX
+//         0050bab7     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050babc     ADD        ESP,0xc
+//         0050babf     PUSH       0x4
+//         0050bac1     MOVSX      this,word ptr [EBP + local_8]
+//         0050bac5     IMUL       this,this,0x3c
+//         0050bac8     MOV        EDX,dword ptr [EBP + local_14]
+//         0050bacb     MOV        EAX,dword ptr [EDX]
+//         0050bacd     LEA        this,[EAX + this->tech_tree*0x1 + 0x34]
+//         0050bad1     PUSH       this
+//         0050bad2     MOV        EDX,dword ptr [EBP + param_1]
+//         0050bad5     PUSH       EDX
+//         0050bad6     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050badb     ADD        ESP,0xc
+//         0050bade     PUSH       0x4
+//         0050bae0     MOVSX      EAX,word ptr [EBP + local_8]
+//         0050bae4     IMUL       EAX,EAX,0x3c
+//         0050bae7     MOV        this,dword ptr [EBP + local_14]
+//         0050baea     MOV        EDX,dword ptr [this->tech_tree]
+//         0050baec     LEA        EAX,[EDX + EAX*0x1 + 0x38]
+//         0050baf0     PUSH       EAX
+//         0050baf1     MOV        this,dword ptr [EBP + param_1]
+//         0050baf4     PUSH       this
+//         0050baf5     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050bafa     ADD        ESP,0xc
+//         0050bafd     PUSH       0x2
+//         0050baff     LEA        EDX=>local_c,[EBP + -0x8]
+//         0050bb02     PUSH       EDX
+//         0050bb03     MOV        EAX,dword ptr [EBP + param_1]
+//         0050bb06     PUSH       EAX
+//         0050bb07     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050bb0c     ADD        ESP,0xc
+//         0050bb0f     MOVSX      this,word ptr [EBP + local_c]
+//         0050bb13     TEST       this,this
+//         0050bb15     JLE        LAB_0050bb58
+//         0050bb17     MOVSX      EDX,word ptr [EBP + local_c]
+//         0050bb1b     PUSH       EDX
+//         0050bb1c     PUSH       0x1
+//         0050bb1e     CALL       calloc                                           undefined calloc()
+//         0050bb23     ADD        ESP,0x8
+//         0050bb26     MOVSX      this,word ptr [EBP + local_8]
+//         0050bb2a     IMUL       this,this,0x3c
+//         0050bb2d     MOV        EDX,dword ptr [EBP + local_14]
+//         0050bb30     MOV        EDX,dword ptr [EDX]
+//         0050bb32     MOV        dword ptr [EDX + this->tech_tree*0x1],EAX
+//         0050bb35     MOVSX      EAX,word ptr [EBP + local_c]
+//         0050bb39     PUSH       EAX
+//         0050bb3a     MOVSX      this,word ptr [EBP + local_8]
+//         0050bb3e     IMUL       this,this,0x3c
+//         0050bb41     MOV        EDX,dword ptr [EBP + local_14]
+//         0050bb44     MOV        EAX,dword ptr [EDX]
+//         0050bb46     MOV        this,dword ptr [EAX + this->tech_tree*0x1]
+//         0050bb49     PUSH       this
+//         0050bb4a     MOV        EDX,dword ptr [EBP + param_1]
+//         0050bb4d     PUSH       EDX
+//         0050bb4e     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050bb53     ADD        ESP,0xc
+//         0050bb56     JMP        LAB_0050bb6b
+//                               LAB_0050bb58                                                 XREF[1]:     0050bb15(j)
+//         0050bb58     MOVSX      EAX,word ptr [EBP + local_8]
+//         0050bb5c     IMUL       EAX,EAX,0x3c
+//         0050bb5f     MOV        this,dword ptr [EBP + local_14]
+//         0050bb62     MOV        EDX,dword ptr [this->tech_tree]
+//         0050bb64     MOV        dword ptr [EDX + EAX*0x1],0x0
+//                               LAB_0050bb6b                                                 XREF[1]:     0050bb56(j)
+//         0050bb6b     JMP        LAB_0050b895
+//                               LAB_0050bb70                                                 XREF[1]:     0050b8ae(j)
+//         0050bb70     JMP        LAB_0050bb7b
+//                               LAB_0050bb72                                                 XREF[1]:     0050b870(j)
+//         0050bb72     MOV        EAX,dword ptr [EBP + local_14]
+//         0050bb75     MOV        dword ptr [EAX],0x0
+//                               LAB_0050bb7b                                                 XREF[1]:     0050bb70(j)
+//         0050bb7b     MOV        EAX,dword ptr [EBP + local_14]
+//         0050bb7e     MOV        ESP,EBP
+//         0050bb80     POP        EBP
+//         0050bb81     RET        0x8
 }
 
 TRIBE_Tech::TRIBE_Tech(char* param_1) {
@@ -12885,55 +12917,146 @@ long TRIBE_Tech::get_hotkey(short param_1) {
 
 TRIBE_Player_Tech::TRIBE_Player_Tech(int param_1, TRIBE_Tech* param_2, RGE_Player* param_3, uchar param_4) {
     /* TODO: Stub */
-//                              undefined __thiscall TRIBE_Player_Tech(TRIBE_Player_Tech * this, TRI
+//                              undefined __thiscall TRIBE_Player_Tech(TRIBE_Player_Tech * this, int
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Player_T    ECX:4 (auto)   this
-//              TRIBE_Tech *      Stack[0x4]:4   param_1                   XREF[2]:     0050c506(R), 0050c518(R)
-//              RGE_Player *      Stack[0x8]:4   param_2                   XREF[1]:     0050c50f(R)
-//              uchar             Stack[0xc]:1   param_3                   XREF[1]:     0050c545(R)
-//              undefined4        Stack[-0x8]:4  local_8                   XREF[9]:     0050c500(W), 0050c503(R), 0050c50c(R), 0050c515(R),
-//                                                                                     0050c523(R), 0050c52e(R), 0050c540(R), 0050c551(R),
-//                                                                                     0050c559(R)
-//                               ??0TRIBE_Player_Tech@@QAE@PAVTRIBE_Tech@@PAVRGE_Player@@E@Z  XREF[2]:     TRIBE_Player:005120ab(c),
-//                               TRIBE_Player_Tech::TRIBE_Player_Tech                                      scenario_load:00512803(c)
-//         0050c4fc     PUSH       EBP
-//         0050c4fd     MOV        EBP,ESP
-//         0050c4ff     PUSH       this
-//         0050c500     MOV        dword ptr [EBP + local_8],this
-//         0050c503     MOV        EAX,dword ptr [EBP + local_8]
-//         0050c506     MOV        this,dword ptr [EBP + param_1]
-//         0050c509     MOV        dword ptr [EAX + 0x8],this
-//         0050c50c     MOV        EDX,dword ptr [EBP + local_8]
-//         0050c50f     MOV        EAX,dword ptr [EBP + param_2]
-//         0050c512     MOV        dword ptr [EDX + 0xc],EAX
-//         0050c515     MOV        this,dword ptr [EBP + local_8]
-//         0050c518     MOV        EDX,dword ptr [EBP + param_1]
-//         0050c51b     MOV        AX,word ptr [EDX + 0x4]
-//         0050c51f     MOV        word ptr [ECX + this->tech_player_tree_num],AX
-//         0050c523     MOV        this,dword ptr [EBP + local_8]
-//         0050c526     MOVSX      EDX,word ptr [ECX + this->tech_player_tree_num]
-//         0050c52a     TEST       EDX,EDX
-//         0050c52c     JLE        LAB_0050c545
-//         0050c52e     MOV        EAX,dword ptr [EBP + local_8]
-//         0050c531     MOVSX      this,word ptr [EAX + 0x4]
-//         0050c535     PUSH       this
-//         0050c536     PUSH       0x8
-//         0050c538     CALL       calloc                                           undefined calloc()
-//         0050c53d     ADD        ESP,0x8
-//         0050c540     MOV        EDX,dword ptr [EBP + local_8]
-//         0050c543     MOV        dword ptr [EDX],EAX
-//                               LAB_0050c545                                                 XREF[1]:     0050c52c(j)
-//         0050c545     MOV        EAX,dword ptr [EBP + param_3]
-//         0050c548     AND        EAX,0xff
-//         0050c54d     TEST       EAX,EAX
-//         0050c54f     JZ         LAB_0050c559
-//         0050c551     MOV        this,dword ptr [EBP + local_8]
-//         0050c554     CALL       TRIBE_Player_Tech::check_for_new_tech            uchar check_for_new_tech(TRIBE_Player_Tech *
-//                               LAB_0050c559                                                 XREF[1]:     0050c54f(j)
-//         0050c559     MOV        EAX,dword ptr [EBP + local_8]
-//         0050c55c     MOV        ESP,EBP
-//         0050c55e     POP        EBP
-//         0050c55f     RET        0xc
+//              int               Stack[0x4]:4   param_1                   XREF[4]:     0050c3b7(R), 0050c440(R), 0050c45d(R), 0050c479(R)
+//              TRIBE_Tech *      Stack[0x8]:4   param_2                   XREF[1]:     0050c3c6(R)
+//              RGE_Player *      Stack[0xc]:4   param_3                   XREF[1]:     0050c3cf(R)
+//              uchar             Stack[0x10]:1  param_4                   XREF[1]:     0050c48a(R)
+//              undefined2        Stack[-0x8]:2  local_8                   XREF[14]:    0050c3fb(W), 0050c403(R), 0050c40b(W), 0050c40f(R),
+//                                                                                     0050c433(R), 0050c450(R), 0050c46b(R), 0050c496(W),
+//                                                                                     0050c49e(R), 0050c4a6(W), 0050c4aa(R), 0050c4b9(R),
+//                                                                                     0050c4cc(R), 0050c4dc(R)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[17]:    0050c3ab(W), 0050c3b0(R), 0050c3c3(R), 0050c3cc(R),
+//                                                                                     0050c3d5(R), 0050c3e4(R), 0050c3f6(R), 0050c413(R),
+//                                                                                     0050c437(R), 0050c454(R), 0050c46f(R), 0050c4ae(R),
+//                                                                                     0050c4bd(R), 0050c4d0(R), 0050c4e1(R), 0050c4eb(R),
+//                                                                                     0050c4f3(R)
+//                               ??0TRIBE_Player_Tech@@QAE@HPAVTRIBE_Tech@@PAVRGE_Player@@E@Z XREF[2]:     TRIBE_Player:00511c90(c),
+//                               TRIBE_Player_Tech::TRIBE_Player_Tech                                      scenario_load:005127a1(c)
+//         0050c3a5     PUSH       EBP
+//         0050c3a6     MOV        EBP,ESP
+//         0050c3a8     SUB        ESP,0x8
+//         0050c3ab     MOV        dword ptr [EBP + local_c],this
+//         0050c3ae     PUSH       0x2
+//         0050c3b0     MOV        EAX,dword ptr [EBP + local_c]
+//         0050c3b3     ADD        EAX,0x4
+//         0050c3b6     PUSH       EAX
+//         0050c3b7     MOV        this,dword ptr [EBP + param_1]
+//         0050c3ba     PUSH       this
+//         0050c3bb     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050c3c0     ADD        ESP,0xc
+//         0050c3c3     MOV        EDX,dword ptr [EBP + local_c]
+//         0050c3c6     MOV        EAX,dword ptr [EBP + param_2]
+//         0050c3c9     MOV        dword ptr [EDX + 0x8],EAX
+//         0050c3cc     MOV        this,dword ptr [EBP + local_c]
+//         0050c3cf     MOV        EDX,dword ptr [EBP + param_3]
+//         0050c3d2     MOV        dword ptr [ECX + this->owner],EDX
+//         0050c3d5     MOV        EAX,dword ptr [EBP + local_c]
+//         0050c3d8     MOVSX      this,word ptr [EAX + 0x4]
+//         0050c3dc     TEST       this,this
+//         0050c3de     JLE        LAB_0050c4f3
+//         0050c3e4     MOV        EDX,dword ptr [EBP + local_c]
+//         0050c3e7     MOVSX      EAX,word ptr [EDX + 0x4]
+//         0050c3eb     PUSH       EAX
+//         0050c3ec     PUSH       0x8
+//         0050c3ee     CALL       calloc                                           undefined calloc()
+//         0050c3f3     ADD        ESP,0x8
+//         0050c3f6     MOV        this,dword ptr [EBP + local_c]
+//         0050c3f9     MOV        dword ptr [this->tech_player_tree],EAX
+//         0050c3fb     MOV        word ptr [EBP + local_8],0x0
+//         0050c401     JMP        LAB_0050c40f
+//                               LAB_0050c403                                                 XREF[1]:     0050c485(j)
+//         0050c403     MOV        DX,word ptr [EBP + local_8]
+//         0050c407     ADD        DX,0x1
+//         0050c40b     MOV        word ptr [EBP + local_8],DX
+//                               LAB_0050c40f                                                 XREF[1]:     0050c401(j)
+//         0050c40f     MOVSX      EAX,word ptr [EBP + local_8]
+//         0050c413     MOV        this,dword ptr [EBP + local_c]
+//         0050c416     MOVSX      EDX,word ptr [ECX + this->tech_player_tree_num]
+//         0050c41a     CMP        EAX,EDX
+//         0050c41c     JGE        LAB_0050c48a
+//         0050c41e     FLD        float ptr [save_game_version]                    = 7.23
+//         0050c424     FCOMP      float ptr [DAT_005766c0]                         = C3h
+//         0050c42a     FNSTSW     AX
+//         0050c42c     TEST       AH,0x41
+//         0050c42f     JZ         LAB_0050c44e
+//         0050c431     PUSH       0x2
+//         0050c433     MOVSX      EAX,word ptr [EBP + local_8]
+//         0050c437     MOV        this,dword ptr [EBP + local_c]
+//         0050c43a     MOV        EDX,dword ptr [this->tech_player_tree]
+//         0050c43c     LEA        EAX,[EDX + EAX*0x8]
+//         0050c43f     PUSH       EAX
+//         0050c440     MOV        this,dword ptr [EBP + param_1]
+//         0050c443     PUSH       this
+//         0050c444     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050c449     ADD        ESP,0xc
+//         0050c44c     JMP        LAB_0050c469
+//                               LAB_0050c44e                                                 XREF[1]:     0050c42f(j)
+//         0050c44e     PUSH       0x4
+//         0050c450     MOVSX      EDX,word ptr [EBP + local_8]
+//         0050c454     MOV        EAX,dword ptr [EBP + local_c]
+//         0050c457     MOV        this,dword ptr [EAX]
+//         0050c459     LEA        EDX,[this->tech_player_tree + EDX*0x8]
+//         0050c45c     PUSH       EDX
+//         0050c45d     MOV        EAX,dword ptr [EBP + param_1]
+//         0050c460     PUSH       EAX
+//         0050c461     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050c466     ADD        ESP,0xc
+//                               LAB_0050c469                                                 XREF[1]:     0050c44c(j)
+//         0050c469     PUSH       0x2
+//         0050c46b     MOVSX      this,word ptr [EBP + local_8]
+//         0050c46f     MOV        EDX,dword ptr [EBP + local_c]
+//         0050c472     MOV        EAX,dword ptr [EDX]
+//         0050c474     LEA        this,[EAX + this->tech_player_tree*0x8 + 0x4]
+//         0050c478     PUSH       this
+//         0050c479     MOV        EDX,dword ptr [EBP + param_1]
+//         0050c47c     PUSH       EDX
+//         0050c47d     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050c482     ADD        ESP,0xc
+//         0050c485     JMP        LAB_0050c403
+//                               LAB_0050c48a                                                 XREF[1]:     0050c41c(j)
+//         0050c48a     MOV        EAX,dword ptr [EBP + param_4]
+//         0050c48d     AND        EAX,0xff
+//         0050c492     TEST       EAX,EAX
+//         0050c494     JZ         LAB_0050c4f3
+//         0050c496     MOV        word ptr [EBP + local_8],0x0
+//         0050c49c     JMP        LAB_0050c4aa
+//                               LAB_0050c49e                                                 XREF[1]:     0050c4e9(j)
+//         0050c49e     MOV        this,word ptr [EBP + local_8]
+//         0050c4a2     ADD        this,0x1
+//         0050c4a6     MOV        word ptr [EBP + local_8],this
+//                               LAB_0050c4aa                                                 XREF[1]:     0050c49c(j)
+//         0050c4aa     MOVSX      EDX,word ptr [EBP + local_8]
+//         0050c4ae     MOV        EAX,dword ptr [EBP + local_c]
+//         0050c4b1     MOVSX      this,word ptr [EAX + 0x4]
+//         0050c4b5     CMP        EDX,this
+//         0050c4b7     JGE        LAB_0050c4eb
+//         0050c4b9     MOVSX      EDX,word ptr [EBP + local_8]
+//         0050c4bd     MOV        EAX,dword ptr [EBP + local_c]
+//         0050c4c0     MOV        this,dword ptr [EAX]
+//         0050c4c2     MOVSX      EDX,word ptr [ECX + EDX*0x8 + this->tech_playe
+//         0050c4c7     CMP        EDX,0x3
+//         0050c4ca     JNZ        LAB_0050c4e9
+//         0050c4cc     MOVSX      EAX,word ptr [EBP + local_8]
+//         0050c4d0     MOV        this,dword ptr [EBP + local_c]
+//         0050c4d3     MOV        EDX,dword ptr [this->tech_player_tree]
+//         0050c4d5     MOV        word ptr [EDX + EAX*0x8 + 0x4],0x1
+//         0050c4dc     MOV        AX,word ptr [EBP + local_8]
+//         0050c4e0     PUSH       EAX
+//         0050c4e1     MOV        this,dword ptr [EBP + local_c]
+//         0050c4e4     CALL       TRIBE_Player_Tech::do_tech                       uchar do_tech(TRIBE_Player_Tech * this, short
+//                               LAB_0050c4e9                                                 XREF[1]:     0050c4ca(j)
+//         0050c4e9     JMP        LAB_0050c49e
+//                               LAB_0050c4eb                                                 XREF[1]:     0050c4b7(j)
+//         0050c4eb     MOV        this,dword ptr [EBP + local_c]
+//         0050c4ee     CALL       TRIBE_Player_Tech::check_for_new_tech            uchar check_for_new_tech(TRIBE_Player_Tech *
+//                               LAB_0050c4f3                                                 XREF[2]:     0050c3de(j), 0050c494(j)
+//         0050c4f3     MOV        EAX,dword ptr [EBP + local_c]
+//         0050c4f6     MOV        ESP,EBP
+//         0050c4f8     POP        EBP
+//         0050c4f9     RET        0x10
 }
 
 TRIBE_Player_Tech::TRIBE_Player_Tech(TRIBE_Tech* param_1, RGE_Player* param_2, uchar param_3) {
@@ -15742,110 +15865,95 @@ ostream* ostream::flush() {
 
 ostream::ostream() {
     /* TODO: Stub */
-//                              undefined __thiscall ostream(ostream * this, ostream * param_1)
+//                              undefined __thiscall ostream(ostream * this)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              ostream *         ECX:4 (auto)   this
-//              ostream *         Stack[0x4]:4   param_1                   XREF[1]:     0055a9e2(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0055a9d5(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0055aa03(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0055a9b9(W)
-//              undefined4        Stack[-0x14]:4 local_14                  XREF[2]:     0055a9af(W), 0055a9cd(W)
-//                               ??0ostream@@IAE@ABV0@@Z
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0055a89a(W)
+//                               ??0ostream@@IAE@XZ                                           XREF[1]:     ostream_withassign:0055ab31(c)
 //                               ostream::ostream
-//         0055a990     PUSH       -0x1
-//         0055a992     PUSH       FUN_00561f1a
-//         0055a997     MOV        EAX,FS:[0x0]
-//         0055a99d     PUSH       EAX
-//         0055a99e     MOV        dword ptr FS:[0x0],ESP
-//         0055a9a5     SUB        ESP,0x8
-//         0055a9a8     MOV        EAX,dword ptr [ESP + Stack[0x8]]
-//         0055a9ac     PUSH       ESI
-//         0055a9ad     MOV        ESI,this
-//         0055a9af     MOV        dword ptr [ESP + local_14],0x0
-//         0055a9b7     TEST       EAX,EAX
-//         0055a9b9     MOV        dword ptr [ESP + local_10],ESI
-//         0055a9bd     JZ         LAB_0055a9dd
-//         0055a9bf     LEA        this,[ESI + 0x8]
-//         0055a9c2     MOV        dword ptr [ESI],ostream::`vbtable'
-//         0055a9c8     CALL       ios::ios                                         undefined ios(ios * this)
-//         0055a9cd     MOV        dword ptr [ESP + local_14],0x1
-//         0055a9d5     MOV        dword ptr [ESP + local_4],0x0
-//                               LAB_0055a9dd                                                 XREF[1]:     0055a9bd(j)
-//         0055a9dd     MOV        EAX,dword ptr [ESI]
-//         0055a9df     MOV        this,dword ptr [EAX + 0x4]=>DAT_0057803c         = 00000008h
-//         0055a9e2     MOV        EAX,dword ptr [ESP + param_1]
-//         0055a9e6     MOV        dword ptr [this->field0_0x0 + ESI*0x1],ostream   = 0055a8d0
-//         0055a9ed     MOV        EDX,dword ptr [EAX]
-//         0055a9ef     MOV        this,dword ptr [EDX + 0x4]
-//         0055a9f2     MOV        EDX,dword ptr [ECX + EAX*0x1 + this->x_floatus
-//         0055a9f6     MOV        EAX,dword ptr [ESI]
-//         0055a9f8     PUSH       EDX
-//         0055a9f9     MOV        this,dword ptr [EAX + 0x4]=>DAT_0057803c         = 00000008h
-//         0055a9fc     ADD        this,ESI
-//         0055a9fe     CALL       ios::init                                        void init(ios * this, streambuf * param_1)
-//         0055aa03     MOV        this,dword ptr [ESP + local_c]
-//         0055aa07     MOV        dword ptr [ESI + 0x4],0x0
-//         0055aa0e     MOV        EAX,ESI
-//         0055aa10     MOV        dword ptr FS:[0x0],this
-//         0055aa17     POP        ESI
-//         0055aa18     ADD        ESP,0x14
-//         0055aa1b     RET        0x8
-//         0055aa1e     ??         90h
-//         0055aa1f     NOP
+//         0055a890     PUSH       this
+//         0055a891     MOV        EAX,dword ptr [ESP + Stack[0x4]]
+//         0055a895     PUSH       ESI
+//         0055a896     TEST       EAX,EAX
+//         0055a898     MOV        ESI,this
+//         0055a89a     MOV        dword ptr [ESP + local_4],0x0
+//         0055a8a2     JZ         LAB_0055a8b2
+//         0055a8a4     LEA        this,[ESI + 0x8]
+//         0055a8a7     MOV        dword ptr [ESI],ostream::`vbtable'
+//         0055a8ad     CALL       ios::ios                                         undefined ios(ios * this)
+//                               LAB_0055a8b2                                                 XREF[1]:     0055a8a2(j)
+//         0055a8b2     MOV        EAX,dword ptr [ESI]
+//         0055a8b4     MOV        this,dword ptr [EAX + 0x4]=>DAT_0057803c         = 00000008h
+//         0055a8b7     MOV        EAX,ESI
+//         0055a8b9     MOV        dword ptr [this->field0_0x0 + ESI*0x1],ostream   = 0055a8d0
+//         0055a8c0     MOV        dword ptr [ESI + 0x4],0x0
+//         0055a8c7     POP        ESI
+//         0055a8c8     POP        this
+//         0055a8c9     RET        0x4
+//         0055a8cc     ??         90h
+//         0055a8cd     NOP
+//         0055a8ce     NOP
+//         0055a8cf     NOP
 }
 
 ostream::ostream(streambuf* param_1) {
     /* TODO: Stub */
-//                              undefined __thiscall ostream(ostream * this, ostream * param_1)
+//                              undefined __thiscall ostream(ostream * this, streambuf * param_1)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              ostream *         ECX:4 (auto)   this
-//              ostream *         Stack[0x4]:4   param_1                   XREF[1]:     0055a9e2(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0055a9d5(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0055aa03(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0055a9b9(W)
-//              undefined4        Stack[-0x14]:4 local_14                  XREF[2]:     0055a9af(W), 0055a9cd(W)
-//                               ??0ostream@@IAE@ABV0@@Z
+//              streambuf *       Stack[0x4]:4   param_1                   XREF[1]:     0055a94f(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0055a945(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0055a96a(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0055a929(W)
+//              undefined4        Stack[-0x14]:4 local_14                  XREF[2]:     0055a91f(W), 0055a93d(W)
+//                               ??0ostream@@QAE@PAVstreambuf@@@Z                             XREF[1]:     ostream_withassign:0055abe6(c)
 //                               ostream::ostream
-//         0055a990     PUSH       -0x1
-//         0055a992     PUSH       FUN_00561f1a
-//         0055a997     MOV        EAX,FS:[0x0]
-//         0055a99d     PUSH       EAX
-//         0055a99e     MOV        dword ptr FS:[0x0],ESP
-//         0055a9a5     SUB        ESP,0x8
-//         0055a9a8     MOV        EAX,dword ptr [ESP + Stack[0x8]]
-//         0055a9ac     PUSH       ESI
-//         0055a9ad     MOV        ESI,this
-//         0055a9af     MOV        dword ptr [ESP + local_14],0x0
-//         0055a9b7     TEST       EAX,EAX
-//         0055a9b9     MOV        dword ptr [ESP + local_10],ESI
-//         0055a9bd     JZ         LAB_0055a9dd
-//         0055a9bf     LEA        this,[ESI + 0x8]
-//         0055a9c2     MOV        dword ptr [ESI],ostream::`vbtable'
-//         0055a9c8     CALL       ios::ios                                         undefined ios(ios * this)
-//         0055a9cd     MOV        dword ptr [ESP + local_14],0x1
-//         0055a9d5     MOV        dword ptr [ESP + local_4],0x0
-//                               LAB_0055a9dd                                                 XREF[1]:     0055a9bd(j)
-//         0055a9dd     MOV        EAX,dword ptr [ESI]
-//         0055a9df     MOV        this,dword ptr [EAX + 0x4]=>DAT_0057803c         = 00000008h
-//         0055a9e2     MOV        EAX,dword ptr [ESP + param_1]
-//         0055a9e6     MOV        dword ptr [this->field0_0x0 + ESI*0x1],ostream   = 0055a8d0
-//         0055a9ed     MOV        EDX,dword ptr [EAX]
-//         0055a9ef     MOV        this,dword ptr [EDX + 0x4]
-//         0055a9f2     MOV        EDX,dword ptr [ECX + EAX*0x1 + this->x_floatus
-//         0055a9f6     MOV        EAX,dword ptr [ESI]
-//         0055a9f8     PUSH       EDX
-//         0055a9f9     MOV        this,dword ptr [EAX + 0x4]=>DAT_0057803c         = 00000008h
-//         0055a9fc     ADD        this,ESI
-//         0055a9fe     CALL       ios::init                                        void init(ios * this, streambuf * param_1)
-//         0055aa03     MOV        this,dword ptr [ESP + local_c]
-//         0055aa07     MOV        dword ptr [ESI + 0x4],0x0
-//         0055aa0e     MOV        EAX,ESI
-//         0055aa10     MOV        dword ptr FS:[0x0],this
-//         0055aa17     POP        ESI
-//         0055aa18     ADD        ESP,0x14
-//         0055aa1b     RET        0x8
-//         0055aa1e     ??         90h
-//         0055aa1f     NOP
+//         0055a900     PUSH       -0x1
+//         0055a902     PUSH       FUN_00561ef6
+//         0055a907     MOV        EAX,FS:[0x0]
+//         0055a90d     PUSH       EAX
+//         0055a90e     MOV        dword ptr FS:[0x0],ESP
+//         0055a915     SUB        ESP,0x8
+//         0055a918     MOV        EAX,dword ptr [ESP + Stack[0x8]]
+//         0055a91c     PUSH       ESI
+//         0055a91d     MOV        ESI,this
+//         0055a91f     MOV        dword ptr [ESP + local_14],0x0
+//         0055a927     TEST       EAX,EAX
+//         0055a929     MOV        dword ptr [ESP + local_10],ESI
+//         0055a92d     JZ         LAB_0055a94d
+//         0055a92f     LEA        this,[ESI + 0x8]
+//         0055a932     MOV        dword ptr [ESI],ostream::`vbtable'
+//         0055a938     CALL       ios::ios                                         undefined ios(ios * this)
+//         0055a93d     MOV        dword ptr [ESP + local_14],0x1
+//         0055a945     MOV        dword ptr [ESP + local_4],0x0
+//                               LAB_0055a94d                                                 XREF[1]:     0055a92d(j)
+//         0055a94d     MOV        EAX,dword ptr [ESI]
+//         0055a94f     MOV        EDX,dword ptr [ESP + param_1]
+//         0055a953     PUSH       EDX
+//         0055a954     MOV        this,dword ptr [EAX + 0x4]=>DAT_0057803c         = 00000008h
+//         0055a957     MOV        dword ptr [this->field0_0x0 + ESI*0x1],ostream   = 0055a8d0
+//         0055a95e     MOV        EAX,dword ptr [ESI]
+//         0055a960     MOV        this,dword ptr [EAX + 0x4]=>DAT_0057803c         = 00000008h
+//         0055a963     ADD        this,ESI
+//         0055a965     CALL       ios::init                                        void init(ios * this, streambuf * param_1)
+//         0055a96a     MOV        this,dword ptr [ESP + local_c]
+//         0055a96e     MOV        dword ptr [ESI + 0x4],0x0
+//         0055a975     MOV        EAX,ESI
+//         0055a977     MOV        dword ptr FS:[0x0],this
+//         0055a97e     POP        ESI
+//         0055a97f     ADD        ESP,0x14
+//         0055a982     RET        0x8
+//         0055a985     ??         90h
+//         0055a986     NOP
+//         0055a987     NOP
+//         0055a988     NOP
+//         0055a989     NOP
+//         0055a98a     NOP
+//         0055a98b     NOP
+//         0055a98c     NOP
+//         0055a98d     NOP
+//         0055a98e     NOP
+//         0055a98f     NOP
 }
 
 ostream::ostream(ostream* param_1) {
@@ -15990,53 +16098,55 @@ ostream* ostream::operator=(streambuf* param_1) {
 
 ostream_withassign::ostream_withassign() {
     /* TODO: Stub */
-//                              undefined __thiscall ostream_withassign(ostream_withassign * this, s
+//                              undefined __thiscall ostream_withassign(ostream_withassign * this)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              ostream_withas    ECX:4 (auto)   this
-//              streambuf *       Stack[0x4]:4   param_1                   XREF[1]:     0055abdd(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0055abd5(W)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[2]:     0055abb9(W), 0055abf2(R)
-//              undefined4        Stack[-0x14]:4 local_14                  XREF[2]:     0055abaf(W), 0055abcd(W)
-//                               ??0ostream_withassign@@QAE@PAVstreambuf@@@Z
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0055ab25(W)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[2]:     0055ab09(W), 0055ab44(R)
+//              undefined4        Stack[-0x14]:4 local_14                  XREF[2]:     0055aaff(W), 0055ab1d(W)
+//                               ??0ostream_withassign@@QAE@XZ
 //                               ostream_withassign::ostream_withassign
-//         0055ab90     PUSH       -0x1
-//         0055ab92     PUSH       FUN_00561f86
-//         0055ab97     MOV        EAX,FS:[0x0]
-//         0055ab9d     PUSH       EAX
-//         0055ab9e     MOV        dword ptr FS:[0x0],ESP
-//         0055aba5     SUB        ESP,0x8
-//         0055aba8     MOV        EAX,dword ptr [ESP + Stack[0x8]]
-//         0055abac     PUSH       ESI
-//         0055abad     MOV        ESI,this
-//         0055abaf     MOV        dword ptr [ESP + local_14],0x0
-//         0055abb7     TEST       EAX,EAX
-//         0055abb9     MOV        dword ptr [ESP + local_10],ESI
-//         0055abbd     JZ         LAB_0055abdd
-//         0055abbf     LEA        this,[ESI + 0x8]
-//         0055abc2     MOV        dword ptr [ESI],ostream_withassign::`vbtable'    = 0000000800000000h
-//         0055abc8     CALL       ios::ios                                         undefined ios(ios * this)
-//         0055abcd     MOV        dword ptr [ESP + local_14],0x1
-//         0055abd5     MOV        dword ptr [ESP + local_4],0x0
-//                               LAB_0055abdd                                                 XREF[1]:     0055abbd(j)
-//         0055abdd     MOV        EAX,dword ptr [ESP + param_1]
-//         0055abe1     PUSH       0x0
-//         0055abe3     PUSH       EAX
-//         0055abe4     MOV        this,ESI
-//         0055abe6     CALL       ostream::ostream                                 undefined ostream(ostream * this, streambuf *
-//         0055abeb     MOV        this,dword ptr [ESI]
-//         0055abed     MOV        EAX,ESI
-//         0055abef     MOV        EDX,dword ptr [this + 0x4]=>`vbtable'+4
-//         0055abf2     MOV        this,dword ptr [ESP + local_10]
-//         0055abf6     MOV        dword ptr [EDX + ESI*0x1],ostream_withassign::   = 0055ab60
-//         0055abfd     MOV        dword ptr FS:[0x0],this
-//         0055ac04     POP        ESI
-//         0055ac05     ADD        ESP,0x14
-//         0055ac08     RET        0x8
-//         0055ac0b     ??         90h
-//         0055ac0c     NOP
-//         0055ac0d     NOP
-//         0055ac0e     NOP
-//         0055ac0f     NOP
+//         0055aae0     PUSH       -0x1
+//         0055aae2     PUSH       FUN_00561f66
+//         0055aae7     MOV        EAX,FS:[0x0]
+//         0055aaed     PUSH       EAX
+//         0055aaee     MOV        dword ptr FS:[0x0],ESP
+//         0055aaf5     SUB        ESP,0x8
+//         0055aaf8     MOV        EAX,dword ptr [ESP + Stack[0x4]]
+//         0055aafc     PUSH       ESI
+//         0055aafd     MOV        ESI,this
+//         0055aaff     MOV        dword ptr [ESP + local_14],0x0
+//         0055ab07     TEST       EAX,EAX
+//         0055ab09     MOV        dword ptr [ESP + local_10],ESI
+//         0055ab0d     JZ         LAB_0055ab2d
+//         0055ab0f     LEA        this,[ESI + 0x8]
+//         0055ab12     MOV        dword ptr [ESI],ostream_withassign::`vbtable'    = 0000000800000000h
+//         0055ab18     CALL       ios::ios                                         undefined ios(ios * this)
+//         0055ab1d     MOV        dword ptr [ESP + local_14],0x1
+//         0055ab25     MOV        dword ptr [ESP + local_4],0x0
+//                               LAB_0055ab2d                                                 XREF[1]:     0055ab0d(j)
+//         0055ab2d     PUSH       0x0
+//         0055ab2f     MOV        this,ESI
+//         0055ab31     CALL       ostream::ostream                                 undefined ostream(ostream * this)
+//         0055ab36     MOV        EAX,dword ptr [ESI]
+//         0055ab38     MOV        this,dword ptr [EAX + 0x4]=>`vbtable'+4
+//         0055ab3b     MOV        EAX,ESI
+//         0055ab3d     MOV        dword ptr [this + ESI*0x1],ostream_withassign:   = 0055ab60
+//         0055ab44     MOV        this,dword ptr [ESP + local_10]
+//         0055ab48     MOV        dword ptr FS:[0x0],this
+//         0055ab4f     POP        ESI
+//         0055ab50     ADD        ESP,0x14
+//         0055ab53     RET        0x4
+//         0055ab56     ??         90h
+//         0055ab57     NOP
+//         0055ab58     NOP
+//         0055ab59     NOP
+//         0055ab5a     NOP
+//         0055ab5b     NOP
+//         0055ab5c     NOP
+//         0055ab5d     NOP
+//         0055ab5e     NOP
+//         0055ab5f     NOP
 }
 
 ostream_withassign::ostream_withassign(streambuf* param_1) {
@@ -16750,76 +16860,80 @@ ostream* ostream::operator<<(double param_1) {
 
 ios::ios() {
     /* TODO: Stub */
-//                              undefined __thiscall ios(ios * this, ios * param_1)
+//                              undefined __thiscall ios(ios * this)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              ios *             ECX:4 (auto)   this
-//              ios *             Stack[0x4]:4   param_1                   XREF[1]:     0055b1bb(R)
-//                               ??0ios@@IAE@ABV0@@Z
-//                               ios::ios
-//         0055b1b0     PUSH       ESI
-//         0055b1b1     MOV        ESI,this
-//         0055b1b3     XOR        EAX,EAX
-//         0055b1b5     MOV        dword ptr [ESI + 0x4],EAX
-//         0055b1b8     MOV        dword ptr [ESI + 0x1c],EAX
-//         0055b1bb     MOV        EAX,dword ptr [ESP + param_1]
-//         0055b1bf     MOV        dword ptr [ESI],ios::`vftable'                   = 0055b150
-//         0055b1c5     PUSH       EAX
-//         0055b1c6     CALL       ios::operator=                                   ios * operator=(ios * this, ios * param_1)
-//         0055b1cb     MOV        EAX,ESI
-//         0055b1cd     POP        ESI
-//         0055b1ce     RET        0x4
-//         0055b1d1     ??         90h
-//         0055b1d2     NOP
-//         0055b1d3     NOP
-//         0055b1d4     NOP
-//         0055b1d5     NOP
-//         0055b1d6     NOP
-//         0055b1d7     NOP
-//         0055b1d8     NOP
-//         0055b1d9     NOP
-//         0055b1da     NOP
-//         0055b1db     NOP
-//         0055b1dc     NOP
-//         0055b1dd     NOP
-//         0055b1de     NOP
-//         0055b1df     NOP
+//                               ??0ios@@IAE@XZ                                               XREF[12]:    ostream:0055a8ad(c),
+//                               ios::ios                                                                  ostream:0055a938(c),
+//                                                                                                         ostream:0055a9c8(c),
+//                                                                                                         operator=:0055aa79(c),
+//                                                                                                         ostream_withassign:0055ab18(c),
+//                                                                                                         ostream_withassign:0055abc8(c),
+//                                                                                                         istream:0055b46d(c),
+//                                                                                                         istream:0055b517(c),
+//                                                                                                         istream:0055b5b7(c),
+//                                                                                                         operator=:0055b678(c),
+//                                                                                                         istream_withassign:0055b9c8(c),
+//                                                                                                         istream_withassign:0055ba78(c)
+//         0055b110     MOV        EAX,this
+//         0055b112     XOR        this,this
+//         0055b114     MOV        dword ptr [EAX],ios::`vftable'                   = 0055b150
+//         0055b11a     MOV        dword ptr [EAX + 0x4],this
+//         0055b11d     MOV        dword ptr [EAX + 0x8],0x4
+//         0055b124     MOV        dword ptr [EAX + 0xc],this
+//         0055b127     MOV        dword ptr [EAX + 0x10],this
+//         0055b12a     MOV        dword ptr [EAX + 0x20],this
+//         0055b12d     MOV        dword ptr [EAX + 0x24],this
+//         0055b130     MOV        dword ptr [EAX + 0x28],0x6
+//         0055b137     MOV        byte ptr [EAX + 0x2c],0x20
+//         0055b13b     MOV        dword ptr [EAX + 0x30],this
+//         0055b13e     MOV        dword ptr [EAX + 0x1c],this
+//         0055b141     RET
+//         0055b142     ??         90h
+//         0055b143     NOP
+//         0055b144     NOP
+//         0055b145     NOP
+//         0055b146     NOP
+//         0055b147     NOP
+//         0055b148     NOP
+//         0055b149     NOP
+//         0055b14a     NOP
+//         0055b14b     NOP
+//         0055b14c     NOP
+//         0055b14d     NOP
+//         0055b14e     NOP
+//         0055b14f     NOP
 }
 
 ios::ios(streambuf* param_1) {
     /* TODO: Stub */
-//                              undefined __thiscall ios(ios * this, ios * param_1)
+//                              undefined __thiscall ios(ios * this, streambuf * param_1)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              ios *             ECX:4 (auto)   this
-//              ios *             Stack[0x4]:4   param_1                   XREF[1]:     0055b1bb(R)
-//                               ??0ios@@IAE@ABV0@@Z
+//              streambuf *       Stack[0x4]:4   param_1                   XREF[1]:     0055b172(R)
+//                               ??0ios@@QAE@PAVstreambuf@@@Z
 //                               ios::ios
-//         0055b1b0     PUSH       ESI
-//         0055b1b1     MOV        ESI,this
-//         0055b1b3     XOR        EAX,EAX
-//         0055b1b5     MOV        dword ptr [ESI + 0x4],EAX
-//         0055b1b8     MOV        dword ptr [ESI + 0x1c],EAX
-//         0055b1bb     MOV        EAX,dword ptr [ESP + param_1]
-//         0055b1bf     MOV        dword ptr [ESI],ios::`vftable'                   = 0055b150
-//         0055b1c5     PUSH       EAX
-//         0055b1c6     CALL       ios::operator=                                   ios * operator=(ios * this, ios * param_1)
-//         0055b1cb     MOV        EAX,ESI
-//         0055b1cd     POP        ESI
-//         0055b1ce     RET        0x4
-//         0055b1d1     ??         90h
-//         0055b1d2     NOP
-//         0055b1d3     NOP
-//         0055b1d4     NOP
-//         0055b1d5     NOP
-//         0055b1d6     NOP
-//         0055b1d7     NOP
-//         0055b1d8     NOP
-//         0055b1d9     NOP
-//         0055b1da     NOP
-//         0055b1db     NOP
-//         0055b1dc     NOP
-//         0055b1dd     NOP
-//         0055b1de     NOP
-//         0055b1df     NOP
+//         0055b170     MOV        EAX,this
+//         0055b172     MOV        this,dword ptr [ESP + param_1]
+//         0055b176     MOV        dword ptr [EAX + 0x4],this
+//         0055b179     MOV        dword ptr [EAX],ios::`vftable'                   = 0055b150
+//         0055b17f     NEG        this
+//         0055b181     SBB        this,this
+//         0055b183     MOV        dword ptr [EAX + 0x28],0x6
+//         0055b18a     AND        this,0xfffffffc
+//         0055b18d     MOV        byte ptr [EAX + 0x2c],0x20
+//         0055b191     ADD        this,0x4
+//         0055b194     MOV        dword ptr [EAX + 0x8],this
+//         0055b197     XOR        this,this
+//         0055b199     MOV        dword ptr [EAX + 0xc],this
+//         0055b19c     MOV        dword ptr [EAX + 0x10],this
+//         0055b19f     MOV        dword ptr [EAX + 0x20],this
+//         0055b1a2     MOV        dword ptr [EAX + 0x24],this
+//         0055b1a5     MOV        dword ptr [EAX + 0x30],this
+//         0055b1a8     MOV        dword ptr [EAX + 0x1c],this
+//         0055b1ab     RET        0x4
+//         0055b1ae     ??         90h
+//         0055b1af     NOP
 }
 
 ios::ios(ios* param_1) {
@@ -17284,136 +17398,122 @@ int streambuf::sgetc() {
 
 istream::istream() {
     /* TODO: Stub */
-//                              undefined __thiscall istream(istream * this, istream * param_1)
+//                              undefined __thiscall istream(istream * this)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              istream *         ECX:4 (auto)   this
-//              istream *         Stack[0x4]:4   param_1                   XREF[1]:     0055b5cd(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0055b5c4(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0055b600(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0055b5a4(W)
-//              undefined4        Stack[-0x14]:4 local_14                  XREF[2]:     0055b5a8(W), 0055b5bc(W)
-//                               ??0istream@@IAE@ABV0@@Z
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0055b45a(W)
+//                               ??0istream@@IAE@XZ                                           XREF[1]:     istream_withassign:0055b9e1(c)
 //                               istream::istream
-//         0055b580     PUSH       -0x1
-//         0055b582     PUSH       FUN_00561fda
-//         0055b587     MOV        EAX,FS:[0x0]
-//         0055b58d     PUSH       EAX
-//         0055b58e     MOV        dword ptr FS:[0x0],ESP
-//         0055b595     SUB        ESP,0x8
-//         0055b598     MOV        EAX,dword ptr [ESP + Stack[0x8]]
-//         0055b59c     PUSH       ESI
-//         0055b59d     PUSH       EDI
-//         0055b59e     XOR        EDI,EDI
-//         0055b5a0     MOV        ESI,this
-//         0055b5a2     CMP        EAX,EDI
-//         0055b5a4     MOV        dword ptr [ESP + local_10],ESI
-//         0055b5a8     MOV        dword ptr [ESP + local_14],EDI
-//         0055b5ac     JZ         LAB_0055b5c8
-//         0055b5ae     LEA        this,[ESI + 0xc]
-//         0055b5b1     MOV        dword ptr [ESI],istream::`vbtable'
-//         0055b5b7     CALL       ios::ios                                         undefined ios(ios * this)
-//         0055b5bc     MOV        dword ptr [ESP + local_14],0x1
-//         0055b5c4     MOV        dword ptr [ESP + local_4],EDI
-//                               LAB_0055b5c8                                                 XREF[1]:     0055b5ac(j)
-//         0055b5c8     MOV        EAX,dword ptr [ESI]
-//         0055b5ca     MOV        this,dword ptr [EAX + 0x4]=>DAT_00578084         = 0000000Ch
-//         0055b5cd     MOV        EAX,dword ptr [ESP + param_1]
-//         0055b5d1     MOV        dword ptr [this->field0_0x0 + ESI*0x1],istream   = 0055b4b0
-//         0055b5d8     MOV        EDX,dword ptr [EAX]
-//         0055b5da     MOV        this,dword ptr [EDX + 0x4]
-//         0055b5dd     MOV        EDX,dword ptr [ECX + EAX*0x1 + this->_fGline]
-//         0055b5e1     MOV        EAX,dword ptr [ESI]
-//         0055b5e3     PUSH       EDX
-//         0055b5e4     MOV        this,dword ptr [EAX + 0x4]=>DAT_00578084         = 0000000Ch
-//         0055b5e7     ADD        this,ESI
-//         0055b5e9     CALL       ios::init                                        void init(ios * this, streambuf * param_1)
-//         0055b5ee     MOV        this,dword ptr [ESI]
-//         0055b5f0     MOV        EDX,dword ptr [ECX + this->_fGline]=>DAT_00578   = 0000000Ch
-//         0055b5f3     MOV        this,dword ptr [EDX + ESI*0x1 + 0x24]
-//         0055b5f7     OR         this,0x1
-//         0055b5fa     LEA        EAX,[EDX + ESI*0x1 + 0x24]
-//         0055b5fe     MOV        dword ptr [EAX],this
-//         0055b600     MOV        this,dword ptr [ESP + local_c]
-//         0055b604     MOV        dword ptr [ESI + 0x8],EDI
-//         0055b607     MOV        dword ptr [ESI + 0x4],EDI
-//         0055b60a     MOV        EAX,ESI
-//         0055b60c     POP        EDI
-//         0055b60d     MOV        dword ptr FS:[0x0],this
-//         0055b614     POP        ESI
-//         0055b615     ADD        ESP,0x14
-//         0055b618     RET        0x8
-//         0055b61b     ??         90h
-//         0055b61c     NOP
-//         0055b61d     NOP
-//         0055b61e     NOP
-//         0055b61f     NOP
+//         0055b450     PUSH       this
+//         0055b451     MOV        EAX,dword ptr [ESP + Stack[0x4]]
+//         0055b455     PUSH       ESI
+//         0055b456     TEST       EAX,EAX
+//         0055b458     MOV        ESI,this
+//         0055b45a     MOV        dword ptr [ESP + local_4],0x0
+//         0055b462     JZ         LAB_0055b472
+//         0055b464     LEA        this,[ESI + 0xc]
+//         0055b467     MOV        dword ptr [ESI],istream::`vbtable'
+//         0055b46d     CALL       ios::ios                                         undefined ios(ios * this)
+//                               LAB_0055b472                                                 XREF[1]:     0055b462(j)
+//         0055b472     MOV        EAX,dword ptr [ESI]
+//         0055b474     MOV        this,dword ptr [EAX + 0x4]=>DAT_00578084         = 0000000Ch
+//         0055b477     MOV        dword ptr [this->field0_0x0 + ESI*0x1],istream   = 0055b4b0
+//         0055b47e     MOV        EDX,dword ptr [ESI]
+//         0055b480     MOV        EAX,dword ptr [EDX + 0x4]=>DAT_00578084          = 0000000Ch
+//         0055b483     MOV        this,dword ptr [EAX + ESI*0x1 + 0x24]
+//         0055b487     LEA        EAX,[EAX + ESI*0x1 + 0x24]
+//         0055b48b     OR         this,0x1
+//         0055b48e     MOV        dword ptr [EAX],this
+//         0055b490     MOV        dword ptr [ESI + 0x8],0x0
+//         0055b497     MOV        dword ptr [ESI + 0x4],0x0
+//         0055b49e     MOV        EAX,ESI
+//         0055b4a0     POP        ESI
+//         0055b4a1     POP        this
+//         0055b4a2     RET        0x4
+//         0055b4a5     ??         90h
+//         0055b4a6     NOP
+//         0055b4a7     NOP
+//         0055b4a8     NOP
+//         0055b4a9     NOP
+//         0055b4aa     NOP
+//         0055b4ab     NOP
+//         0055b4ac     NOP
+//         0055b4ad     NOP
+//         0055b4ae     NOP
+//         0055b4af     NOP
 }
 
 istream::istream(streambuf* param_1) {
     /* TODO: Stub */
-//                              undefined __thiscall istream(istream * this, istream * param_1)
+//                              undefined __thiscall istream(istream * this, streambuf * param_1)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              istream *         ECX:4 (auto)   this
-//              istream *         Stack[0x4]:4   param_1                   XREF[1]:     0055b5cd(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0055b5c4(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0055b600(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0055b5a4(W)
-//              undefined4        Stack[-0x14]:4 local_14                  XREF[2]:     0055b5a8(W), 0055b5bc(W)
-//                               ??0istream@@IAE@ABV0@@Z
+//              streambuf *       Stack[0x4]:4   param_1                   XREF[1]:     0055b52a(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0055b524(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0055b557(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0055b504(W)
+//              undefined4        Stack[-0x14]:4 local_14                  XREF[2]:     0055b508(W), 0055b51c(W)
+//                               ??0istream@@QAE@PAVstreambuf@@@Z                             XREF[1]:     istream_withassign:0055ba96(c)
 //                               istream::istream
-//         0055b580     PUSH       -0x1
-//         0055b582     PUSH       FUN_00561fda
-//         0055b587     MOV        EAX,FS:[0x0]
-//         0055b58d     PUSH       EAX
-//         0055b58e     MOV        dword ptr FS:[0x0],ESP
-//         0055b595     SUB        ESP,0x8
-//         0055b598     MOV        EAX,dword ptr [ESP + Stack[0x8]]
-//         0055b59c     PUSH       ESI
-//         0055b59d     PUSH       EDI
-//         0055b59e     XOR        EDI,EDI
-//         0055b5a0     MOV        ESI,this
-//         0055b5a2     CMP        EAX,EDI
-//         0055b5a4     MOV        dword ptr [ESP + local_10],ESI
-//         0055b5a8     MOV        dword ptr [ESP + local_14],EDI
-//         0055b5ac     JZ         LAB_0055b5c8
-//         0055b5ae     LEA        this,[ESI + 0xc]
-//         0055b5b1     MOV        dword ptr [ESI],istream::`vbtable'
-//         0055b5b7     CALL       ios::ios                                         undefined ios(ios * this)
-//         0055b5bc     MOV        dword ptr [ESP + local_14],0x1
-//         0055b5c4     MOV        dword ptr [ESP + local_4],EDI
-//                               LAB_0055b5c8                                                 XREF[1]:     0055b5ac(j)
-//         0055b5c8     MOV        EAX,dword ptr [ESI]
-//         0055b5ca     MOV        this,dword ptr [EAX + 0x4]=>DAT_00578084         = 0000000Ch
-//         0055b5cd     MOV        EAX,dword ptr [ESP + param_1]
-//         0055b5d1     MOV        dword ptr [this->field0_0x0 + ESI*0x1],istream   = 0055b4b0
-//         0055b5d8     MOV        EDX,dword ptr [EAX]
-//         0055b5da     MOV        this,dword ptr [EDX + 0x4]
-//         0055b5dd     MOV        EDX,dword ptr [ECX + EAX*0x1 + this->_fGline]
-//         0055b5e1     MOV        EAX,dword ptr [ESI]
-//         0055b5e3     PUSH       EDX
-//         0055b5e4     MOV        this,dword ptr [EAX + 0x4]=>DAT_00578084         = 0000000Ch
-//         0055b5e7     ADD        this,ESI
-//         0055b5e9     CALL       ios::init                                        void init(ios * this, streambuf * param_1)
-//         0055b5ee     MOV        this,dword ptr [ESI]
-//         0055b5f0     MOV        EDX,dword ptr [ECX + this->_fGline]=>DAT_00578   = 0000000Ch
-//         0055b5f3     MOV        this,dword ptr [EDX + ESI*0x1 + 0x24]
-//         0055b5f7     OR         this,0x1
-//         0055b5fa     LEA        EAX,[EDX + ESI*0x1 + 0x24]
-//         0055b5fe     MOV        dword ptr [EAX],this
-//         0055b600     MOV        this,dword ptr [ESP + local_c]
-//         0055b604     MOV        dword ptr [ESI + 0x8],EDI
-//         0055b607     MOV        dword ptr [ESI + 0x4],EDI
-//         0055b60a     MOV        EAX,ESI
-//         0055b60c     POP        EDI
-//         0055b60d     MOV        dword ptr FS:[0x0],this
-//         0055b614     POP        ESI
-//         0055b615     ADD        ESP,0x14
-//         0055b618     RET        0x8
-//         0055b61b     ??         90h
-//         0055b61c     NOP
-//         0055b61d     NOP
-//         0055b61e     NOP
-//         0055b61f     NOP
+//         0055b4e0     PUSH       -0x1
+//         0055b4e2     PUSH       FUN_00561faa
+//         0055b4e7     MOV        EAX,FS:[0x0]
+//         0055b4ed     PUSH       EAX
+//         0055b4ee     MOV        dword ptr FS:[0x0],ESP
+//         0055b4f5     SUB        ESP,0x8
+//         0055b4f8     MOV        EAX,dword ptr [ESP + Stack[0x8]]
+//         0055b4fc     PUSH       ESI
+//         0055b4fd     PUSH       EDI
+//         0055b4fe     XOR        EDI,EDI
+//         0055b500     MOV        ESI,this
+//         0055b502     CMP        EAX,EDI
+//         0055b504     MOV        dword ptr [ESP + local_10],ESI
+//         0055b508     MOV        dword ptr [ESP + local_14],EDI
+//         0055b50c     JZ         LAB_0055b528
+//         0055b50e     LEA        this,[ESI + 0xc]
+//         0055b511     MOV        dword ptr [ESI],istream::`vbtable'
+//         0055b517     CALL       ios::ios                                         undefined ios(ios * this)
+//         0055b51c     MOV        dword ptr [ESP + local_14],0x1
+//         0055b524     MOV        dword ptr [ESP + local_4],EDI
+//                               LAB_0055b528                                                 XREF[1]:     0055b50c(j)
+//         0055b528     MOV        EAX,dword ptr [ESI]
+//         0055b52a     MOV        EDX,dword ptr [ESP + param_1]
+//         0055b52e     PUSH       EDX
+//         0055b52f     MOV        this,dword ptr [EAX + 0x4]=>DAT_00578084         = 0000000Ch
+//         0055b532     MOV        dword ptr [this->field0_0x0 + ESI*0x1],istream   = 0055b4b0
+//         0055b539     MOV        EAX,dword ptr [ESI]
+//         0055b53b     MOV        this,dword ptr [EAX + 0x4]=>DAT_00578084         = 0000000Ch
+//         0055b53e     ADD        this,ESI
+//         0055b540     CALL       ios::init                                        void init(ios * this, streambuf * param_1)
+//         0055b545     MOV        this,dword ptr [ESI]
+//         0055b547     MOV        EDX,dword ptr [ECX + this->_fGline]=>DAT_00578   = 0000000Ch
+//         0055b54a     MOV        this,dword ptr [EDX + ESI*0x1 + 0x24]
+//         0055b54e     OR         this,0x1
+//         0055b551     LEA        EAX,[EDX + ESI*0x1 + 0x24]
+//         0055b555     MOV        dword ptr [EAX],this
+//         0055b557     MOV        this,dword ptr [ESP + local_c]
+//         0055b55b     MOV        dword ptr [ESI + 0x8],EDI
+//         0055b55e     MOV        dword ptr [ESI + 0x4],EDI
+//         0055b561     MOV        EAX,ESI
+//         0055b563     POP        EDI
+//         0055b564     MOV        dword ptr FS:[0x0],this
+//         0055b56b     POP        ESI
+//         0055b56c     ADD        ESP,0x14
+//         0055b56f     RET        0x8
+//         0055b572     ??         90h
+//         0055b573     NOP
+//         0055b574     NOP
+//         0055b575     NOP
+//         0055b576     NOP
+//         0055b577     NOP
+//         0055b578     NOP
+//         0055b579     NOP
+//         0055b57a     NOP
+//         0055b57b     NOP
+//         0055b57c     NOP
+//         0055b57d     NOP
+//         0055b57e     NOP
+//         0055b57f     NOP
 }
 
 istream::istream(istream* param_1) {
@@ -17969,53 +18069,55 @@ void istream::eatwhite() {
 
 istream_withassign::istream_withassign() {
     /* TODO: Stub */
-//                              undefined __thiscall istream_withassign(istream_withassign * this, s
+//                              undefined __thiscall istream_withassign(istream_withassign * this)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              istream_withas    ECX:4 (auto)   this
-//              streambuf *       Stack[0x4]:4   param_1                   XREF[1]:     0055ba8d(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0055ba85(W)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[2]:     0055ba69(W), 0055baa2(R)
-//              undefined4        Stack[-0x14]:4 local_14                  XREF[2]:     0055ba5f(W), 0055ba7d(W)
-//                               ??0istream_withassign@@QAE@PAVstreambuf@@@Z
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0055b9d5(W)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[2]:     0055b9b9(W), 0055b9f4(R)
+//              undefined4        Stack[-0x14]:4 local_14                  XREF[2]:     0055b9af(W), 0055b9cd(W)
+//                               ??0istream_withassign@@QAE@XZ
 //                               istream_withassign::istream_withassign
-//         0055ba40     PUSH       -0x1
-//         0055ba42     PUSH       FUN_00562046
-//         0055ba47     MOV        EAX,FS:[0x0]
-//         0055ba4d     PUSH       EAX
-//         0055ba4e     MOV        dword ptr FS:[0x0],ESP
-//         0055ba55     SUB        ESP,0x8
-//         0055ba58     MOV        EAX,dword ptr [ESP + Stack[0x8]]
-//         0055ba5c     PUSH       ESI
-//         0055ba5d     MOV        ESI,this
-//         0055ba5f     MOV        dword ptr [ESP + local_14],0x0
-//         0055ba67     TEST       EAX,EAX
-//         0055ba69     MOV        dword ptr [ESP + local_10],ESI
-//         0055ba6d     JZ         LAB_0055ba8d
-//         0055ba6f     LEA        this,[ESI + 0xc]
-//         0055ba72     MOV        dword ptr [ESI],istream_withassign::`vbtable'
-//         0055ba78     CALL       ios::ios                                         undefined ios(ios * this)
-//         0055ba7d     MOV        dword ptr [ESP + local_14],0x1
-//         0055ba85     MOV        dword ptr [ESP + local_4],0x0
-//                               LAB_0055ba8d                                                 XREF[1]:     0055ba6d(j)
-//         0055ba8d     MOV        EAX,dword ptr [ESP + param_1]
-//         0055ba91     PUSH       0x0
-//         0055ba93     PUSH       EAX
-//         0055ba94     MOV        this,ESI
-//         0055ba96     CALL       istream::istream                                 undefined istream(istream * this, streambuf *
-//         0055ba9b     MOV        this,dword ptr [ESI]
-//         0055ba9d     MOV        EAX,ESI
-//         0055ba9f     MOV        EDX,dword ptr [this + 0x4]=>DAT_00578094         = 0000000Ch
-//         0055baa2     MOV        this,dword ptr [ESP + local_10]
-//         0055baa6     MOV        dword ptr [EDX + ESI*0x1],istream_withassign::   = 0055ba10
-//         0055baad     MOV        dword ptr FS:[0x0],this
-//         0055bab4     POP        ESI
-//         0055bab5     ADD        ESP,0x14
-//         0055bab8     RET        0x8
-//         0055babb     ??         90h
-//         0055babc     NOP
-//         0055babd     NOP
-//         0055babe     NOP
-//         0055babf     NOP
+//         0055b990     PUSH       -0x1
+//         0055b992     PUSH       FUN_00562026
+//         0055b997     MOV        EAX,FS:[0x0]
+//         0055b99d     PUSH       EAX
+//         0055b99e     MOV        dword ptr FS:[0x0],ESP
+//         0055b9a5     SUB        ESP,0x8
+//         0055b9a8     MOV        EAX,dword ptr [ESP + Stack[0x4]]
+//         0055b9ac     PUSH       ESI
+//         0055b9ad     MOV        ESI,this
+//         0055b9af     MOV        dword ptr [ESP + local_14],0x0
+//         0055b9b7     TEST       EAX,EAX
+//         0055b9b9     MOV        dword ptr [ESP + local_10],ESI
+//         0055b9bd     JZ         LAB_0055b9dd
+//         0055b9bf     LEA        this,[ESI + 0xc]
+//         0055b9c2     MOV        dword ptr [ESI],istream_withassign::`vbtable'
+//         0055b9c8     CALL       ios::ios                                         undefined ios(ios * this)
+//         0055b9cd     MOV        dword ptr [ESP + local_14],0x1
+//         0055b9d5     MOV        dword ptr [ESP + local_4],0x0
+//                               LAB_0055b9dd                                                 XREF[1]:     0055b9bd(j)
+//         0055b9dd     PUSH       0x0
+//         0055b9df     MOV        this,ESI
+//         0055b9e1     CALL       istream::istream                                 undefined istream(istream * this)
+//         0055b9e6     MOV        EAX,dword ptr [ESI]
+//         0055b9e8     MOV        this,dword ptr [EAX + 0x4]=>DAT_00578094         = 0000000Ch
+//         0055b9eb     MOV        EAX,ESI
+//         0055b9ed     MOV        dword ptr [this + ESI*0x1],istream_withassign:   = 0055ba10
+//         0055b9f4     MOV        this,dword ptr [ESP + local_10]
+//         0055b9f8     MOV        dword ptr FS:[0x0],this
+//         0055b9ff     POP        ESI
+//         0055ba00     ADD        ESP,0x14
+//         0055ba03     RET        0x4
+//         0055ba06     ??         90h
+//         0055ba07     NOP
+//         0055ba08     NOP
+//         0055ba09     NOP
+//         0055ba0a     NOP
+//         0055ba0b     NOP
+//         0055ba0c     NOP
+//         0055ba0d     NOP
+//         0055ba0e     NOP
+//         0055ba0f     NOP
 }
 
 istream_withassign::istream_withassign(streambuf* param_1) {

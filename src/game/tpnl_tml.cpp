@@ -514,197 +514,129 @@ void Time_Line_Panel::set_bevel_info(int param_1, int param_2, int param_3, int 
 
 int Time_Line_Panel::set_background(char* param_1) {
     /* TODO: Stub */
-//                              int __thiscall set_background(Time_Line_Panel * this, char * param_1
+//                              int __thiscall set_background(Time_Line_Panel * this, char * param_1)
 //              int               EAX:4          <RETURN>
 //              Time_Line_Pane    ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0051ec60(R)
-//              long              Stack[0x8]:4   param_2                   XREF[2]:     0051ecc8(R), 0051ecde(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[3]:     0051ecbf(W), 0051ecfa(W), 0051ed18(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0051edad(R)
-//              char[260]         Stack[-0x114   file_name2                XREF[2,3]:   0051ed6b(*), 0051ed80(R), 0051ec91(*), 0051ec9d(*),
-//                                                                                     0051eccf(*)
-//              long              Stack[-0x118   x_max                     XREF[2]:     0051ecb9(W), 0051ecf4(W)
-//              undefined4        Stack[-0x11c   local_11c                 XREF[2]:     0051ed75(*), 0051ed84(R)
-//              long              Stack[-0x120   x_min                     XREF[2]:     0051ed71(*), 0051ed9b(R)
-//              long              Stack[-0x124   y_min                     XREF[2]:     0051ed66(*), 0051ed88(R)
-//              long              Stack[-0x128   y_max
-//                               ?set_background@Time_Line_Panel@@QAEHPADJ@Z
+//              char *            Stack[0x4]:4   param_1                   XREF[2]:     0051eb4d(R), 0051eb6b(W)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     0051eb71(W), 0051eb9c(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[2]:     0051ebd8(R), 0051ebec(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[2]:     0051eb90(*), 0051ebbb(R)
+//              long              Stack[-0x14]:4 y_min                     XREF[2]:     0051eb85(*), 0051ebb7(R)
+//              long              Stack[-0x18]:4 y_max                     XREF[2]:     0051eb94(*), 0051ebb3(R)
+//              long              Stack[-0x1c]:4 x_min                     XREF[2]:     0051eb8a(*), 0051ebaf(R)
+//              long              Stack[-0x20]:4 x_max
+//                               ?set_background@Time_Line_Panel@@QAEHPAD@Z                   XREF[1]:     setup:0051ea73(c)
 //                               Time_Line_Panel::set_background
-//                              tpnl_tml.cpp:275 (32)
-//         0051ec10     MOV        EAX,FS:[0x0]
-//         0051ec16     PUSH       -0x1
-//         0051ec18     PUSH       FUN_005614dc
-//         0051ec1d     PUSH       EAX
-//         0051ec1e     MOV        dword ptr FS:[0x0],ESP
-//         0051ec25     SUB        ESP,0x118
-//         0051ec2b     PUSH       EBX
-//         0051ec2c     PUSH       ESI
-//         0051ec2d     MOV        ESI,this
-//         0051ec2f     PUSH       EDI
-//                              tpnl_tml.cpp:279 (12)
-//         0051ec30     XOR        EBX,EBX
-//         0051ec32     MOV        EDI,dword ptr [ESI + 0x4ac]
-//         0051ec38     CMP        EDI,EBX
-//         0051ec3a     JZ         LAB_0051ec60
-//                              tpnl_tml.cpp:281 (16)
-//         0051ec3c     MOV        this,EDI
-//         0051ec3e     CALL       TShape::~TShape                                  void ~TShape(TShape * this)
-//         0051ec43     PUSH       EDI
-//         0051ec44     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         0051ec49     ADD        ESP,0x4
-//                              tpnl_tml.cpp:282 (6)
-//         0051ec4c     MOV        dword ptr [ESI + 0x4ac],EBX
-//                              tpnl_tml.cpp:283 (7)
-//         0051ec52     MOV        word ptr [ESI + 0x4b0],BX
-//                              tpnl_tml.cpp:284 (7)
-//         0051ec59     MOV        word ptr [ESI + 0x4b2],BX
-//                               LAB_0051ec60                                                 XREF[1]:     0051ec3a(j)
-//                              tpnl_tml.cpp:287 (33)
-//         0051ec60     MOV        EDI,dword ptr [ESP + param_1]
-//         0051ec67     CMP        EDI,EBX
-//         0051ec69     JZ         LAB_0051ecde
-//         0051ec6b     CMP        byte ptr [EDI],BL
-//         0051ec6d     JZ         LAB_0051ecde
-//         0051ec6f     PUSH       s_none                                           = "none"
-//         0051ec74     PUSH       EDI
-//         0051ec75     CALL       stricmp                                          undefined stricmp()
-//         0051ec7a     ADD        ESP,0x8
-//         0051ec7d     TEST       EAX,EAX
-//         0051ec7f     JZ         LAB_0051ecde
-//                              tpnl_tml.cpp:289 (13)
-//         0051ec81     PUSH       0x2e
-//         0051ec83     PUSH       EDI
-//         0051ec84     CALL       strchr                                           undefined strchr()
-//         0051ec89     ADD        ESP,0x8
-//         0051ec8c     TEST       EAX,EAX
-//                              tpnl_tml.cpp:290 (13)
-//         0051ec8e     PUSH       EDI
-//         0051ec8f     JNZ        LAB_0051ec9d
-//         0051ec91     LEA        EAX=>file_name2[4],[ESP + 0x24]
-//         0051ec95     PUSH       s_%s.shp                                         = "%s.shp"
-//         0051ec9a     PUSH       EAX
-//                              tpnl_tml.cpp:291 (2)
-//         0051ec9b     JMP        LAB_0051eca7
-//                               LAB_0051ec9d                                                 XREF[1]:     0051ec8f(j)
-//                              tpnl_tml.cpp:292 (18)
-//         0051ec9d     LEA        this=>file_name2[4],[ESP + 0x24]
-//         0051eca1     PUSH       s_%s                                             = "%s"
-//         0051eca6     PUSH       this
-//                               LAB_0051eca7                                                 XREF[1]:     0051ec9b(j)
-//         0051eca7     CALL       sprintf                                          undefined sprintf()
-//         0051ecac     ADD        ESP,0xc
-//                              tpnl_tml.cpp:293 (38)
-//         0051ecaf     PUSH       0x20
-//         0051ecb1     CALL       operator_new                                     void * operator_new(uint param_1)
-//         0051ecb6     ADD        ESP,0x4
-//         0051ecb9     MOV        dword ptr [ESP + x_max],EAX
-//         0051ecbd     CMP        EAX,EBX
-//         0051ecbf     MOV        dword ptr [ESP + local_4],EBX
-//         0051ecc6     JZ         LAB_0051ed16
-//         0051ecc8     MOV        EDX,dword ptr [ESP + param_2]
-//         0051eccf     LEA        this=>file_name2[4],[ESP + 0x20]
-//         0051ecd3     PUSH       EDX
-//         0051ecd4     PUSH       this
-//                              tpnl_tml.cpp:296 (9)
-//         0051ecd5     MOV        this,EAX
-//         0051ecd7     CALL       TShape::TShape                                   undefined TShape(TShape * this, char * param_
-//         0051ecdc     JMP        LAB_0051ed18
-//                               LAB_0051ecde                                                 XREF[3]:     0051ec69(j), 0051ec6d(j),
-//                                                                                                         0051ec7f(j)
-//                              tpnl_tml.cpp:295 (12)
-//         0051ecde     MOV        EDI,dword ptr [ESP + param_2]
-//         0051ece5     CMP        EDI,-0x1
-//         0051ece8     JZ         LAB_0051ed29
-//                              tpnl_tml.cpp:296 (63)
-//         0051ecea     PUSH       0x20
-//         0051ecec     CALL       operator_new                                     void * operator_new(uint param_1)
-//         0051ecf1     ADD        ESP,0x4
-//         0051ecf4     MOV        dword ptr [ESP + x_max],EAX
-//         0051ecf8     CMP        EAX,EBX
-//         0051ecfa     MOV        dword ptr [ESP + local_4],0x1
-//         0051ed05     JZ         LAB_0051ed16
-//         0051ed07     PUSH       EDI
-//         0051ed08     PUSH       s_                                               = ""
-//         0051ed0d     MOV        this,EAX
-//         0051ed0f     CALL       TShape::TShape                                   undefined TShape(TShape * this, char * param_
-//         0051ed14     JMP        LAB_0051ed18
-//                               LAB_0051ed16                                                 XREF[2]:     0051ecc6(j), 0051ed05(j)
-//         0051ed16     XOR        EAX,EAX
-//                               LAB_0051ed18                                                 XREF[2]:     0051ecdc(j), 0051ed14(j)
-//         0051ed18     MOV        dword ptr [ESP + local_4],0xffffffff
-//         0051ed23     MOV        dword ptr [ESI + 0x4ac],EAX
-//                               LAB_0051ed29                                                 XREF[1]:     0051ece8(j)
-//                              tpnl_tml.cpp:298 (19)
-//         0051ed29     MOV        this,dword ptr [ESI + 0x4ac]
-//         0051ed2f     CMP        this,EBX
-//         0051ed31     JZ         LAB_0051ed5c
-//         0051ed33     CALL       TShape::is_loaded                                int is_loaded(TShape * this)
-//         0051ed38     TEST       EAX,EAX
-//         0051ed3a     JNZ        LAB_0051ed5c
-//                              tpnl_tml.cpp:300 (26)
-//         0051ed3c     MOV        EDI,dword ptr [ESI + 0x4ac]
-//         0051ed42     CMP        EDI,EBX
-//         0051ed44     JZ         LAB_0051ed56
-//         0051ed46     MOV        this,EDI
-//         0051ed48     CALL       TShape::~TShape                                  void ~TShape(TShape * this)
-//         0051ed4d     PUSH       EDI
-//         0051ed4e     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         0051ed53     ADD        ESP,0x4
-//                               LAB_0051ed56                                                 XREF[1]:     0051ed44(j)
-//                              tpnl_tml.cpp:301 (6)
-//         0051ed56     MOV        dword ptr [ESI + 0x4ac],EBX
-//                               LAB_0051ed5c                                                 XREF[2]:     0051ed31(j), 0051ed3a(j)
-//                              tpnl_tml.cpp:304 (10)
-//         0051ed5c     MOV        this,dword ptr [ESI + 0x4ac]
-//         0051ed62     CMP        this,EBX
-//         0051ed64     JZ         LAB_0051edab
-//                              tpnl_tml.cpp:306 (26)
-//         0051ed66     LEA        EDX=>y_min,[ESP + 0xc]
-//         0051ed6a     PUSH       EBX
-//         0051ed6b     LEA        EAX=>file_name2,[ESP + 0x20]
-//         0051ed6f     PUSH       EDX
-//         0051ed70     PUSH       EAX
-//         0051ed71     LEA        EDX=>x_min,[ESP + 0x1c]
-//         0051ed75     LEA        EAX=>local_11c,[ESP + 0x20]
-//         0051ed79     PUSH       EDX
-//         0051ed7a     PUSH       EAX
-//         0051ed7b     CALL       TShape::shape_minmax                             uchar shape_minmax(TShape * this, long * para
-//                              tpnl_tml.cpp:307 (8)
-//         0051ed80     MOV        this,dword ptr [ESP + file_name2[0]]
-//         0051ed84     MOV        EDI,dword ptr [ESP + local_11c]
-//                              tpnl_tml.cpp:308 (7)
-//         0051ed88     MOV        EDX,dword ptr [ESP + y_min]
-//         0051ed8c     SUB        this,EDI
-//         0051ed8e     INC        this
-//                              tpnl_tml.cpp:309 (28)
-//         0051ed8f     MOV        EAX,0x1
-//         0051ed94     MOV        word ptr [ESI + 0x4b0],this
-//         0051ed9b     MOV        this,dword ptr [ESP + x_min]
-//         0051ed9f     SUB        EDX,this
-//         0051eda1     INC        EDX
-//         0051eda2     MOV        word ptr [ESI + 0x4b2],DX
-//         0051eda9     JMP        LAB_0051edad
-//                               LAB_0051edab                                                 XREF[1]:     0051ed64(j)
-//                              tpnl_tml.cpp:312 (2)
-//         0051edab     XOR        EAX,EAX
-//                               LAB_0051edad                                                 XREF[1]:     0051eda9(j)
-//                              tpnl_tml.cpp:314 (26)
-//         0051edad     MOV        this,dword ptr [ESP + local_c]
-//         0051edb4     POP        EDI
-//         0051edb5     POP        ESI
-//         0051edb6     MOV        dword ptr FS:[0x0],this
-//         0051edbd     POP        EBX
-//         0051edbe     ADD        ESP,0x124
-//         0051edc4     RET        0x8
-//         0051edc7     ??         90h
-//         0051edc8     NOP
-//         0051edc9     NOP
-//         0051edca     NOP
-//         0051edcb     NOP
-//         0051edcc     NOP
-//         0051edcd     NOP
-//         0051edce     NOP
-//         0051edcf     NOP
+//                              tpnl_tml.cpp:248 (29)
+//         0051eb00     MOV        EAX,FS:[0x0]
+//         0051eb06     PUSH       -0x1
+//         0051eb08     PUSH       FUN_005614ab
+//         0051eb0d     PUSH       EAX
+//         0051eb0e     MOV        dword ptr FS:[0x0],ESP
+//         0051eb15     SUB        ESP,0x10
+//         0051eb18     PUSH       EBX
+//         0051eb19     PUSH       ESI
+//         0051eb1a     MOV        ESI,this
+//         0051eb1c     PUSH       EDI
+//                              tpnl_tml.cpp:251 (12)
+//         0051eb1d     XOR        EBX,EBX
+//         0051eb1f     MOV        EDI,dword ptr [ESI + 0x4ac]
+//         0051eb25     CMP        EDI,EBX
+//         0051eb27     JZ         LAB_0051eb4d
+//                              tpnl_tml.cpp:253 (16)
+//         0051eb29     MOV        this,EDI
+//         0051eb2b     CALL       TShape::~TShape                                  void ~TShape(TShape * this)
+//         0051eb30     PUSH       EDI
+//         0051eb31     CALL       operator_delete                                  void operator_delete(void * param_1)
+//         0051eb36     ADD        ESP,0x4
+//                              tpnl_tml.cpp:254 (6)
+//         0051eb39     MOV        dword ptr [ESI + 0x4ac],EBX
+//                              tpnl_tml.cpp:255 (7)
+//         0051eb3f     MOV        word ptr [ESI + 0x4b0],BX
+//                              tpnl_tml.cpp:256 (7)
+//         0051eb46     MOV        word ptr [ESI + 0x4b2],BX
+//                               LAB_0051eb4d                                                 XREF[1]:     0051eb27(j)
+//                              tpnl_tml.cpp:259 (20)
+//         0051eb4d     MOV        EDI,dword ptr [ESP + param_1]
+//         0051eb51     CMP        EDI,EBX
+//         0051eb53     JZ         LAB_0051ebec
+//         0051eb59     CMP        byte ptr [EDI],BL
+//         0051eb5b     JZ         LAB_0051ebec
+//                              tpnl_tml.cpp:261 (36)
+//         0051eb61     PUSH       0x20
+//         0051eb63     CALL       operator_new                                     void * operator_new(uint param_1)
+//         0051eb68     ADD        ESP,0x4
+//         0051eb6b     MOV        dword ptr [ESP + param_1],EAX
+//         0051eb6f     CMP        EAX,EBX
+//         0051eb71     MOV        dword ptr [ESP + local_4],EBX
+//         0051eb75     JZ         LAB_0051eb83
+//         0051eb77     PUSH       -0x1
+//         0051eb79     PUSH       EDI
+//         0051eb7a     MOV        this,EAX
+//         0051eb7c     CALL       TShape::TShape                                   undefined TShape(TShape * this, char * param_
+//         0051eb81     JMP        LAB_0051eb85
+//                               LAB_0051eb83                                                 XREF[1]:     0051eb75(j)
+//         0051eb83     XOR        EAX,EAX
+//                               LAB_0051eb85                                                 XREF[1]:     0051eb81(j)
+//                              tpnl_tml.cpp:262 (42)
+//         0051eb85     LEA        this=>y_min,[ESP + 0x14]
+//         0051eb89     PUSH       EBX
+//         0051eb8a     LEA        EDX=>x_min,[ESP + 0x10]
+//         0051eb8e     PUSH       this
+//         0051eb8f     PUSH       EDX
+//         0051eb90     LEA        this=>local_10,[ESP + 0x24]
+//         0051eb94     LEA        EDX=>y_max,[ESP + 0x1c]
+//         0051eb98     PUSH       this
+//         0051eb99     PUSH       EDX
+//         0051eb9a     MOV        this,EAX
+//         0051eb9c     MOV        dword ptr [ESP + local_4],0xffffffff
+//         0051eba4     MOV        dword ptr [ESI + 0x4ac],EAX
+//         0051ebaa     CALL       TShape::shape_minmax                             uchar shape_minmax(TShape * this, long * para
+//                              tpnl_tml.cpp:263 (8)
+//         0051ebaf     MOV        EAX,dword ptr [ESP + x_min]
+//         0051ebb3     MOV        EBX,dword ptr [ESP + y_max]
+//                              tpnl_tml.cpp:264 (28)
+//         0051ebb7     MOV        this,dword ptr [ESP + y_min]
+//         0051ebbb     MOV        EDX,dword ptr [ESP + local_10]
+//         0051ebbf     SUB        EAX,EBX
+//         0051ebc1     SUB        this,EDX
+//         0051ebc3     INC        EAX
+//         0051ebc4     INC        this
+//         0051ebc5     MOV        word ptr [ESI + 0x4b0],AX
+//         0051ebcc     MOV        word ptr [ESI + 0x4b2],this
+//                              tpnl_tml.cpp:265 (5)
+//         0051ebd3     MOV        EAX,0x1
+//                              tpnl_tml.cpp:268 (42)
+//         0051ebd8     MOV        this,dword ptr [ESP + local_c]
+//         0051ebdc     MOV        dword ptr FS:[0x0],this
+//         0051ebe3     POP        EDI
+//         0051ebe4     POP        ESI
+//         0051ebe5     POP        EBX
+//         0051ebe6     ADD        ESP,0x1c
+//         0051ebe9     RET        0x4
+//                               LAB_0051ebec                                                 XREF[2]:     0051eb53(j), 0051eb5b(j)
+//         0051ebec     MOV        this,dword ptr [ESP + local_c]
+//         0051ebf0     POP        EDI
+//         0051ebf1     POP        ESI
+//         0051ebf2     XOR        EAX,EAX
+//         0051ebf4     MOV        dword ptr FS:[0x0],this
+//         0051ebfb     POP        EBX
+//         0051ebfc     ADD        ESP,0x1c
+//         0051ebff     RET        0x4
+//         0051ec02     ??         90h
+//         0051ec03     NOP
+//         0051ec04     NOP
+//         0051ec05     NOP
+//         0051ec06     NOP
+//         0051ec07     NOP
+//         0051ec08     NOP
+//         0051ec09     NOP
+//         0051ec0a     NOP
+//         0051ec0b     NOP
+//         0051ec0c     NOP
+//         0051ec0d     NOP
+//         0051ec0e     NOP
+//         0051ec0f     NOP
     return 0;
 }
 
@@ -909,194 +841,126 @@ int Time_Line_Panel::set_special_events(char* param_1) {
 //                              int __thiscall set_special_events(Time_Line_Panel * this, char * par
 //              int               EAX:4          <RETURN>
 //              Time_Line_Pane    ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0051ef30(R)
-//              long              Stack[0x8]:4   param_2                   XREF[2]:     0051ef98(R), 0051efae(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[3]:     0051ef8f(W), 0051efca(W), 0051efe8(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0051f07d(R)
-//              char[260]         Stack[-0x114   file_name2                XREF[2,3]:   0051f03b(*), 0051f050(R), 0051ef61(*), 0051ef6d(*),
-//                                                                                     0051ef9f(*)
-//              long              Stack[-0x118   x_max                     XREF[2]:     0051ef89(W), 0051efc4(W)
-//              undefined4        Stack[-0x11c   local_11c                 XREF[2]:     0051f045(*), 0051f054(R)
-//              long              Stack[-0x120   x_min                     XREF[2]:     0051f041(*), 0051f06b(R)
-//              long              Stack[-0x124   y_min                     XREF[2]:     0051f036(*), 0051f058(R)
-//              long              Stack[-0x128   y_max
-//                               ?set_special_events@Time_Line_Panel@@QAEHPADJ@Z
-//                               Time_Line_Panel::set_special_events
-//                              tpnl_tml.cpp:348 (32)
-//         0051eee0     MOV        EAX,FS:[0x0]
-//         0051eee6     PUSH       -0x1
-//         0051eee8     PUSH       FUN_0056152c
-//         0051eeed     PUSH       EAX
-//         0051eeee     MOV        dword ptr FS:[0x0],ESP
-//         0051eef5     SUB        ESP,0x118
-//         0051eefb     PUSH       EBX
-//         0051eefc     PUSH       ESI
-//         0051eefd     MOV        ESI,this
-//         0051eeff     PUSH       EDI
-//                              tpnl_tml.cpp:352 (12)
-//         0051ef00     XOR        EBX,EBX
-//         0051ef02     MOV        EDI,dword ptr [ESI + 0x4d4]
-//         0051ef08     CMP        EDI,EBX
-//         0051ef0a     JZ         LAB_0051ef30
-//                              tpnl_tml.cpp:354 (16)
-//         0051ef0c     MOV        this,EDI
-//         0051ef0e     CALL       TShape::~TShape                                  void ~TShape(TShape * this)
-//         0051ef13     PUSH       EDI
-//         0051ef14     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         0051ef19     ADD        ESP,0x4
-//                              tpnl_tml.cpp:355 (6)
-//         0051ef1c     MOV        dword ptr [ESI + 0x4d4],EBX
-//                              tpnl_tml.cpp:356 (7)
-//         0051ef22     MOV        word ptr [ESI + 0x4d8],BX
-//                              tpnl_tml.cpp:357 (7)
-//         0051ef29     MOV        word ptr [ESI + 0x4da],BX
-//                               LAB_0051ef30                                                 XREF[1]:     0051ef0a(j)
-//                              tpnl_tml.cpp:360 (33)
-//         0051ef30     MOV        EDI,dword ptr [ESP + param_1]
-//         0051ef37     CMP        EDI,EBX
-//         0051ef39     JZ         LAB_0051efae
-//         0051ef3b     CMP        byte ptr [EDI],BL
-//         0051ef3d     JZ         LAB_0051efae
-//         0051ef3f     PUSH       s_none                                           = "none"
-//         0051ef44     PUSH       EDI
-//         0051ef45     CALL       stricmp                                          undefined stricmp()
-//         0051ef4a     ADD        ESP,0x8
-//         0051ef4d     TEST       EAX,EAX
-//         0051ef4f     JZ         LAB_0051efae
-//                              tpnl_tml.cpp:362 (13)
-//         0051ef51     PUSH       0x2e
-//         0051ef53     PUSH       EDI
-//         0051ef54     CALL       strchr                                           undefined strchr()
-//         0051ef59     ADD        ESP,0x8
-//         0051ef5c     TEST       EAX,EAX
-//                              tpnl_tml.cpp:363 (13)
-//         0051ef5e     PUSH       EDI
-//         0051ef5f     JNZ        LAB_0051ef6d
-//         0051ef61     LEA        EAX=>file_name2[4],[ESP + 0x24]
-//         0051ef65     PUSH       s_%s.shp                                         = "%s.shp"
-//         0051ef6a     PUSH       EAX
-//                              tpnl_tml.cpp:364 (2)
-//         0051ef6b     JMP        LAB_0051ef77
-//                               LAB_0051ef6d                                                 XREF[1]:     0051ef5f(j)
-//                              tpnl_tml.cpp:365 (18)
-//         0051ef6d     LEA        this=>file_name2[4],[ESP + 0x24]
-//         0051ef71     PUSH       s_%s                                             = "%s"
-//         0051ef76     PUSH       this
-//                               LAB_0051ef77                                                 XREF[1]:     0051ef6b(j)
-//         0051ef77     CALL       sprintf                                          undefined sprintf()
-//         0051ef7c     ADD        ESP,0xc
-//                              tpnl_tml.cpp:366 (38)
-//         0051ef7f     PUSH       0x20
-//         0051ef81     CALL       operator_new                                     void * operator_new(uint param_1)
-//         0051ef86     ADD        ESP,0x4
-//         0051ef89     MOV        dword ptr [ESP + x_max],EAX
-//         0051ef8d     CMP        EAX,EBX
-//         0051ef8f     MOV        dword ptr [ESP + local_4],EBX
-//         0051ef96     JZ         LAB_0051efe6
-//         0051ef98     MOV        EDX,dword ptr [ESP + param_2]
-//         0051ef9f     LEA        this=>file_name2[4],[ESP + 0x20]
-//         0051efa3     PUSH       EDX
-//         0051efa4     PUSH       this
-//                              tpnl_tml.cpp:369 (9)
-//         0051efa5     MOV        this,EAX
-//         0051efa7     CALL       TShape::TShape                                   undefined TShape(TShape * this, char * param_
-//         0051efac     JMP        LAB_0051efe8
-//                               LAB_0051efae                                                 XREF[3]:     0051ef39(j), 0051ef3d(j),
-//                                                                                                         0051ef4f(j)
-//                              tpnl_tml.cpp:368 (12)
-//         0051efae     MOV        EDI,dword ptr [ESP + param_2]
-//         0051efb5     CMP        EDI,-0x1
-//         0051efb8     JZ         LAB_0051eff9
-//                              tpnl_tml.cpp:369 (63)
-//         0051efba     PUSH       0x20
-//         0051efbc     CALL       operator_new                                     void * operator_new(uint param_1)
-//         0051efc1     ADD        ESP,0x4
-//         0051efc4     MOV        dword ptr [ESP + x_max],EAX
-//         0051efc8     CMP        EAX,EBX
-//         0051efca     MOV        dword ptr [ESP + local_4],0x1
-//         0051efd5     JZ         LAB_0051efe6
-//         0051efd7     PUSH       EDI
-//         0051efd8     PUSH       s_                                               = ""
-//         0051efdd     MOV        this,EAX
-//         0051efdf     CALL       TShape::TShape                                   undefined TShape(TShape * this, char * param_
-//         0051efe4     JMP        LAB_0051efe8
-//                               LAB_0051efe6                                                 XREF[2]:     0051ef96(j), 0051efd5(j)
-//         0051efe6     XOR        EAX,EAX
-//                               LAB_0051efe8                                                 XREF[2]:     0051efac(j), 0051efe4(j)
-//         0051efe8     MOV        dword ptr [ESP + local_4],0xffffffff
-//         0051eff3     MOV        dword ptr [ESI + 0x4d4],EAX
-//                               LAB_0051eff9                                                 XREF[1]:     0051efb8(j)
-//                              tpnl_tml.cpp:371 (19)
-//         0051eff9     MOV        this,dword ptr [ESI + 0x4d4]
-//         0051efff     CMP        this,EBX
-//         0051f001     JZ         LAB_0051f02c
-//         0051f003     CALL       TShape::is_loaded                                int is_loaded(TShape * this)
-//         0051f008     TEST       EAX,EAX
-//         0051f00a     JNZ        LAB_0051f02c
-//                              tpnl_tml.cpp:373 (26)
-//         0051f00c     MOV        EDI,dword ptr [ESI + 0x4d4]
-//         0051f012     CMP        EDI,EBX
-//         0051f014     JZ         LAB_0051f026
-//         0051f016     MOV        this,EDI
-//         0051f018     CALL       TShape::~TShape                                  void ~TShape(TShape * this)
-//         0051f01d     PUSH       EDI
-//         0051f01e     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         0051f023     ADD        ESP,0x4
-//                               LAB_0051f026                                                 XREF[1]:     0051f014(j)
-//                              tpnl_tml.cpp:374 (6)
-//         0051f026     MOV        dword ptr [ESI + 0x4d4],EBX
-//                               LAB_0051f02c                                                 XREF[2]:     0051f001(j), 0051f00a(j)
-//                              tpnl_tml.cpp:377 (10)
-//         0051f02c     MOV        this,dword ptr [ESI + 0x4d4]
-//         0051f032     CMP        this,EBX
-//         0051f034     JZ         LAB_0051f07b
-//                              tpnl_tml.cpp:379 (26)
-//         0051f036     LEA        EDX=>y_min,[ESP + 0xc]
-//         0051f03a     PUSH       EBX
-//         0051f03b     LEA        EAX=>file_name2,[ESP + 0x20]
-//         0051f03f     PUSH       EDX
-//         0051f040     PUSH       EAX
-//         0051f041     LEA        EDX=>x_min,[ESP + 0x1c]
-//         0051f045     LEA        EAX=>local_11c,[ESP + 0x20]
-//         0051f049     PUSH       EDX
-//         0051f04a     PUSH       EAX
-//         0051f04b     CALL       TShape::shape_minmax                             uchar shape_minmax(TShape * this, long * para
-//                              tpnl_tml.cpp:380 (8)
-//         0051f050     MOV        this,dword ptr [ESP + file_name2[0]]
-//         0051f054     MOV        EDI,dword ptr [ESP + local_11c]
-//                              tpnl_tml.cpp:381 (7)
-//         0051f058     MOV        EDX,dword ptr [ESP + y_min]
-//         0051f05c     SUB        this,EDI
-//         0051f05e     INC        this
-//                              tpnl_tml.cpp:382 (28)
-//         0051f05f     MOV        EAX,0x1
-//         0051f064     MOV        word ptr [ESI + 0x4d8],this
-//         0051f06b     MOV        this,dword ptr [ESP + x_min]
-//         0051f06f     SUB        EDX,this
-//         0051f071     INC        EDX
-//         0051f072     MOV        word ptr [ESI + 0x4da],DX
-//         0051f079     JMP        LAB_0051f07d
-//                               LAB_0051f07b                                                 XREF[1]:     0051f034(j)
-//                              tpnl_tml.cpp:385 (2)
-//         0051f07b     XOR        EAX,EAX
-//                               LAB_0051f07d                                                 XREF[1]:     0051f079(j)
-//                              tpnl_tml.cpp:387 (26)
-//         0051f07d     MOV        this,dword ptr [ESP + local_c]
-//         0051f084     POP        EDI
-//         0051f085     POP        ESI
-//         0051f086     MOV        dword ptr FS:[0x0],this
-//         0051f08d     POP        EBX
-//         0051f08e     ADD        ESP,0x124
-//         0051f094     RET        0x8
-//         0051f097     ??         90h
-//         0051f098     NOP
-//         0051f099     NOP
-//         0051f09a     NOP
-//         0051f09b     NOP
-//         0051f09c     NOP
-//         0051f09d     NOP
-//         0051f09e     NOP
-//         0051f09f     NOP
+//              char *            Stack[0x4]:4   param_1                   XREF[2]:     0051ee1d(R), 0051ee3b(W)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     0051ee41(W), 0051ee6c(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[2]:     0051eea8(R), 0051eebc(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[2]:     0051ee60(*), 0051ee8b(R)
+//              long              Stack[-0x14]:4 y_min                     XREF[2]:     0051ee55(*), 0051ee87(R)
+//              long              Stack[-0x18]:4 y_max                     XREF[2]:     0051ee64(*), 0051ee83(R)
+//              long              Stack[-0x1c]:4 x_min                     XREF[2]:     0051ee5a(*), 0051ee7f(R)
+//              long              Stack[-0x20]:4 x_max
+//                               ?set_special_events@Time_Line_Panel@@QAEHPAD@Z               XREF[2]:     TribeAchievementsScreen:0048d9c6(c
+//                               Time_Line_Panel::set_special_events                                       setup:0051ea7f(c)
+//                              tpnl_tml.cpp:321 (29)
+//         0051edd0     MOV        EAX,FS:[0x0]
+//         0051edd6     PUSH       -0x1
+//         0051edd8     PUSH       FUN_005614fb
+//         0051eddd     PUSH       EAX
+//         0051edde     MOV        dword ptr FS:[0x0],ESP
+//         0051ede5     SUB        ESP,0x10
+//         0051ede8     PUSH       EBX
+//         0051ede9     PUSH       ESI
+//         0051edea     MOV        ESI,this
+//         0051edec     PUSH       EDI
+//                              tpnl_tml.cpp:324 (12)
+//         0051eded     XOR        EBX,EBX
+//         0051edef     MOV        EDI,dword ptr [ESI + 0x4d4]
+//         0051edf5     CMP        EDI,EBX
+//         0051edf7     JZ         LAB_0051ee1d
+//                              tpnl_tml.cpp:326 (16)
+//         0051edf9     MOV        this,EDI
+//         0051edfb     CALL       TShape::~TShape                                  void ~TShape(TShape * this)
+//         0051ee00     PUSH       EDI
+//         0051ee01     CALL       operator_delete                                  void operator_delete(void * param_1)
+//         0051ee06     ADD        ESP,0x4
+//                              tpnl_tml.cpp:327 (6)
+//         0051ee09     MOV        dword ptr [ESI + 0x4d4],EBX
+//                              tpnl_tml.cpp:328 (7)
+//         0051ee0f     MOV        word ptr [ESI + 0x4d8],BX
+//                              tpnl_tml.cpp:329 (7)
+//         0051ee16     MOV        word ptr [ESI + 0x4da],BX
+//                               LAB_0051ee1d                                                 XREF[1]:     0051edf7(j)
+//                              tpnl_tml.cpp:332 (20)
+//         0051ee1d     MOV        EDI,dword ptr [ESP + param_1]
+//         0051ee21     CMP        EDI,EBX
+//         0051ee23     JZ         LAB_0051eebc
+//         0051ee29     CMP        byte ptr [EDI],BL
+//         0051ee2b     JZ         LAB_0051eebc
+//                              tpnl_tml.cpp:334 (36)
+//         0051ee31     PUSH       0x20
+//         0051ee33     CALL       operator_new                                     void * operator_new(uint param_1)
+//         0051ee38     ADD        ESP,0x4
+//         0051ee3b     MOV        dword ptr [ESP + param_1],EAX
+//         0051ee3f     CMP        EAX,EBX
+//         0051ee41     MOV        dword ptr [ESP + local_4],EBX
+//         0051ee45     JZ         LAB_0051ee53
+//         0051ee47     PUSH       -0x1
+//         0051ee49     PUSH       EDI
+//         0051ee4a     MOV        this,EAX
+//         0051ee4c     CALL       TShape::TShape                                   undefined TShape(TShape * this, char * param_
+//         0051ee51     JMP        LAB_0051ee55
+//                               LAB_0051ee53                                                 XREF[1]:     0051ee45(j)
+//         0051ee53     XOR        EAX,EAX
+//                               LAB_0051ee55                                                 XREF[1]:     0051ee51(j)
+//                              tpnl_tml.cpp:335 (42)
+//         0051ee55     LEA        this=>y_min,[ESP + 0x14]
+//         0051ee59     PUSH       EBX
+//         0051ee5a     LEA        EDX=>x_min,[ESP + 0x10]
+//         0051ee5e     PUSH       this
+//         0051ee5f     PUSH       EDX
+//         0051ee60     LEA        this=>local_10,[ESP + 0x24]
+//         0051ee64     LEA        EDX=>y_max,[ESP + 0x1c]
+//         0051ee68     PUSH       this
+//         0051ee69     PUSH       EDX
+//         0051ee6a     MOV        this,EAX
+//         0051ee6c     MOV        dword ptr [ESP + local_4],0xffffffff
+//         0051ee74     MOV        dword ptr [ESI + 0x4d4],EAX
+//         0051ee7a     CALL       TShape::shape_minmax                             uchar shape_minmax(TShape * this, long * para
+//                              tpnl_tml.cpp:336 (8)
+//         0051ee7f     MOV        EAX,dword ptr [ESP + x_min]
+//         0051ee83     MOV        EBX,dword ptr [ESP + y_max]
+//                              tpnl_tml.cpp:337 (28)
+//         0051ee87     MOV        this,dword ptr [ESP + y_min]
+//         0051ee8b     MOV        EDX,dword ptr [ESP + local_10]
+//         0051ee8f     SUB        EAX,EBX
+//         0051ee91     SUB        this,EDX
+//         0051ee93     INC        EAX
+//         0051ee94     INC        this
+//         0051ee95     MOV        word ptr [ESI + 0x4d8],AX
+//         0051ee9c     MOV        word ptr [ESI + 0x4da],this
+//                              tpnl_tml.cpp:338 (5)
+//         0051eea3     MOV        EAX,0x1
+//                              tpnl_tml.cpp:341 (42)
+//         0051eea8     MOV        this,dword ptr [ESP + local_c]
+//         0051eeac     MOV        dword ptr FS:[0x0],this
+//         0051eeb3     POP        EDI
+//         0051eeb4     POP        ESI
+//         0051eeb5     POP        EBX
+//         0051eeb6     ADD        ESP,0x1c
+//         0051eeb9     RET        0x4
+//                               LAB_0051eebc                                                 XREF[2]:     0051ee23(j), 0051ee2b(j)
+//         0051eebc     MOV        this,dword ptr [ESP + local_c]
+//         0051eec0     POP        EDI
+//         0051eec1     POP        ESI
+//         0051eec2     XOR        EAX,EAX
+//         0051eec4     MOV        dword ptr FS:[0x0],this
+//         0051eecb     POP        EBX
+//         0051eecc     ADD        ESP,0x1c
+//         0051eecf     RET        0x4
+//         0051eed2     ??         90h
+//         0051eed3     NOP
+//         0051eed4     NOP
+//         0051eed5     NOP
+//         0051eed6     NOP
+//         0051eed7     NOP
+//         0051eed8     NOP
+//         0051eed9     NOP
+//         0051eeda     NOP
+//         0051eedb     NOP
+//         0051eedc     NOP
+//         0051eedd     NOP
+//         0051eede     NOP
+//         0051eedf     NOP
     return 0;
 }
 

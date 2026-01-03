@@ -11,6 +11,46 @@ struct PanelNode {
     PanelNode * next_node; // 0x8
 };
 
+typedef enum MouseAction : unsigned int {
+    MouseActionNone = 0,
+    MouseActionDown = 1,
+    MouseActionHold = 2,
+    MouseActionMove = 3,
+};
+
+typedef enum MouseButton : unsigned int {
+    MouseButtonNone = 0,
+    LeftMouseButton = 1,
+    RightMouseButton = 2,
+};
+
+typedef enum PositionMode : unsigned int {
+    PositionFixed = 0,
+    PositionVariable = 1,
+    PositionCentered = 2,
+    PositionLeft = 3,
+    PositionTop = 4,
+    PositionRight = 5,
+    PositionBottom = 6,
+    PositionLeftTop = 7,
+    PositionLeftBottom = 8,
+    PositionRightTop = 9,
+    PositionRightBottom = 10,
+};
+
+typedef enum RedrawMode : unsigned int {
+    RedrawNone = 0,
+    RedrawNormal = 1,
+    RedrawFull = 2,
+};
+
+enum ZOrder : unsigned int {
+    ZOrderPosition = 0,
+    ZOrderTop = 1,
+    ZOrderBottom = 2,
+};
+
+
 class TPanel {
 public:
     TPanel* previousPanelValue;              // 0x4

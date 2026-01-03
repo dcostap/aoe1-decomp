@@ -5322,136 +5322,171 @@ long TDrawArea::AlignedWidth() {
 
 void TDrawArea::SetClipRect(tagRECT* param_1) {
     /* TODO: Stub */
-//                              void __thiscall SetClipRect(TDrawArea * this, long param_1, long par
+//                              void __thiscall SetClipRect(TDrawArea * this, tagRECT * param_1)
 //              void              <VOID>         <RETURN>
 //              TDrawArea *       ECX:4 (auto)   this
-//              long              Stack[0x4]:4   param_1                   XREF[2]:     00444c3e(R), 00444cab(W)
-//              long              Stack[0x8]:4   param_2                   XREF[1]:     00444c51(R)
-//              long              Stack[0xc]:4   param_3                   XREF[1]:     00444c42(R)
-//              long              Stack[0x10]:4  param_4                   XREF[1]:     00444c5e(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     00444cb1(W), 00444cce(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00444d2e(R)
-//                               ?SetClipRect@TDrawArea@@QAEXJJJJ@Z                           XREF[4]:     SetClipRect:00444c18(c),
-//                               TDrawArea::SetClipRect                                                    draw:0051a345(c),
-//                                                                                                         draw:0051a374(c),
-//                                                                                                         draw:0051a39e(c)
-//                              Drawarea.cpp:2986 (14)
-//         00444c30     MOV        EAX,FS:[0x0]
-//         00444c36     PUSH       -0x1
-//         00444c38     PUSH       FUN_0055d32b
-//         00444c3d     PUSH       EAX
-//                              Drawarea.cpp:2989 (4)
-//         00444c3e     MOV        EAX,dword ptr [ESP + param_1]
-//                              Drawarea.cpp:2991 (19)
-//         00444c42     MOV        EDX,dword ptr [ESP + param_3]
-//         00444c46     MOV        dword ptr FS:[0x0],ESP
-//         00444c4d     PUSH       ESI
-//         00444c4e     MOV        ESI,this
-//         00444c50     PUSH       EDI
-//         00444c51     MOV        this,dword ptr [ESP + param_2]
-//                              Drawarea.cpp:2996 (26)
-//         00444c55     MOV        EDI,dword ptr [ESI + 0xcc]
-//         00444c5b     MOV        dword ptr [ESI + 0x28],EAX
-//         00444c5e     MOV        EAX,dword ptr [ESP + param_4]
-//         00444c62     MOV        dword ptr [ESI + 0x2c],this
-//         00444c65     TEST       EDI,EDI
-//         00444c67     MOV        dword ptr [ESI + 0x30],EDX
-//         00444c6a     MOV        dword ptr [ESI + 0x34],EAX
-//         00444c6d     JZ         LAB_00444c97
-//                              Drawarea.cpp:2998 (10)
-//         00444c6f     MOV        EAX,dword ptr [EDI + 0x50]
-//         00444c72     MOV        this,dword ptr [ESI + 0x1c]
-//         00444c75     CMP        this,EAX
-//         00444c77     JZ         LAB_00444c97
-//                              Drawarea.cpp:3000 (20)
-//         00444c79     TEST       EDI,EDI
-//         00444c7b     JZ         LAB_00444c8d
-//         00444c7d     MOV        this,EDI
-//         00444c7f     CALL       TSpan_List_Manager::~TSpan_List_Manager          void ~TSpan_List_Manager(TSpan_List_Manager *
-//         00444c84     PUSH       EDI
-//         00444c85     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         00444c8a     ADD        ESP,0x4
-//                               LAB_00444c8d                                                 XREF[1]:     00444c7b(j)
-//                              Drawarea.cpp:3001 (10)
-//         00444c8d     MOV        dword ptr [ESI + 0xcc],0x0
-//                               LAB_00444c97                                                 XREF[2]:     00444c6d(j), 00444c77(j)
-//                              Drawarea.cpp:3005 (69)
-//         00444c97     MOV        EAX,dword ptr [ESI + 0xcc]
-//         00444c9d     TEST       EAX,EAX
-//         00444c9f     JNZ        LAB_00444cdc
-//                              language.dll match for 0x68: "Arial"
-//         00444ca1     PUSH       0x68
-//         00444ca3     CALL       operator_new                                     void * operator_new(uint param_1)
-//         00444ca8     ADD        ESP,0x4
-//         00444cab     MOV        dword ptr [ESP + param_1],EAX
-//         00444caf     TEST       EAX,EAX
-//         00444cb1     MOV        dword ptr [ESP + local_4],0x0
-//         00444cb9     JZ         LAB_00444ccc
-//         00444cbb     MOV        this,dword ptr [ESI + 0x1c]
-//         00444cbe     MOV        EDX,dword ptr [ESI + 0x18]
-//         00444cc1     PUSH       this
-//         00444cc2     PUSH       EDX
-//         00444cc3     MOV        this,EAX
-//         00444cc5     CALL       TSpan_List_Manager::TSpan_List_Manager           undefined TSpan_List_Manager(TSpan_List_Manag
-//         00444cca     JMP        LAB_00444cce
-//                               LAB_00444ccc                                                 XREF[1]:     00444cb9(j)
-//         00444ccc     XOR        EAX,EAX
-//                               LAB_00444cce                                                 XREF[1]:     00444cca(j)
-//         00444cce     MOV        dword ptr [ESP + local_4],0xffffffff
-//         00444cd6     MOV        dword ptr [ESI + 0xcc],EAX
-//                               LAB_00444cdc                                                 XREF[1]:     00444c9f(j)
-//                              Drawarea.cpp:3007 (11)
-//         00444cdc     MOV        this,dword ptr [ESI + 0xcc]
-//         00444ce2     CALL       TSpan_List_Manager::ResetAll                     void ResetAll(TSpan_List_Manager * this)
-//                              Drawarea.cpp:3008 (27)
-//         00444ce7     MOV        EAX,dword ptr [ESI + 0x34]
-//         00444cea     MOV        this,dword ptr [ESI + 0x30]
-//         00444ced     MOV        EDX,dword ptr [ESI + 0x2c]
-//         00444cf0     PUSH       EAX
-//         00444cf1     MOV        EAX,dword ptr [ESI + 0x28]
-//         00444cf4     PUSH       this
-//         00444cf5     MOV        this,dword ptr [ESI + 0xcc]
-//         00444cfb     PUSH       EDX
-//         00444cfc     PUSH       EAX
-//         00444cfd     CALL       TSpan_List_Manager::SetSpanRegions               void SetSpanRegions(TSpan_List_Manager * this
-//                              Drawarea.cpp:3010 (10)
-//         00444d02     MOV        EDI,dword ptr [ESI + 0x2c]
-//         00444d05     MOV        EAX,dword ptr [ESI + 0x34]
-//         00444d08     CMP        EDI,EAX
-//         00444d0a     JG         LAB_00444d28
-//                               LAB_00444d0c                                                 XREF[1]:     00444d26(j)
-//                              Drawarea.cpp:3011 (28)
-//         00444d0c     MOV        this,dword ptr [ESI + 0x30]
-//         00444d0f     MOV        EDX,dword ptr [ESI + 0x28]
-//         00444d12     PUSH       EDI
-//         00444d13     PUSH       this
-//         00444d14     MOV        this,dword ptr [ESI + 0xcc]
-//         00444d1a     PUSH       EDX
-//         00444d1b     CALL       TSpan_List_Manager::AddSpan                      void AddSpan(TSpan_List_Manager * this, int p
-//         00444d20     MOV        EAX,dword ptr [ESI + 0x34]
-//         00444d23     INC        EDI
-//         00444d24     CMP        EDI,EAX
-//         00444d26     JLE        LAB_00444d0c
-//                               LAB_00444d28                                                 XREF[1]:     00444d0a(j)
-//                              Drawarea.cpp:3013 (6)
-//         00444d28     MOV        EAX,dword ptr [ESI + 0xcc]
-//                              Drawarea.cpp:3015 (25)
-//         00444d2e     MOV        this,dword ptr [ESP + local_c]
-//         00444d32     MOV        dword ptr [ESI + 0xd0],EAX
-//         00444d38     POP        EDI
-//         00444d39     MOV        dword ptr FS:[0x0],this
-//         00444d40     POP        ESI
-//         00444d41     ADD        ESP,0xc
-//         00444d44     RET        0x10
-//         00444d47     ??         90h
-//         00444d48     NOP
-//         00444d49     NOP
-//         00444d4a     NOP
-//         00444d4b     NOP
-//         00444d4c     NOP
-//         00444d4d     NOP
-//         00444d4e     NOP
-//         00444d4f     NOP
+//              tagRECT *         Stack[0x4]:4   param_1                   XREF[1]:     00444b50(R)
+//                               ?SetClipRect@TDrawArea@@QAEXPAUtagRECT@@@Z                   XREF[18]:    SetSize:004445c0(c),
+//                               TDrawArea::SetClipRect                                                    draw_setup:00465343(c),
+//                                                                                                         draw_finish:00465392(c),
+//                                                                                                         render_to_image_buffer:00479b8b(c)
+//                                                                                                         draw_button_pic:0047b99c(c),
+//                                                                                                         draw:0049b5fb(c),
+//                                                                                                         draw:0049b708(c),
+//                                                                                                         render_to_image_buffer:0051d547(c)
+//                                                                                                         render_to_image_buffer:0051e307(c)
+//                                                                                                         draw_multi_object_outline:0052cb31
+//                                                                                                         draw_multi_object_outline:0052cc58
+//                                                                                                         draw_multi_object_outline:0052cc92
+//                                                                                                         draw_multi_object_outline:0052ccca
+//                                                                                                         draw_multi_object_outline:0052cd00
+//                                                                                                         draw_multi_object_outline:0052ce02
+//                                                                                                         draw_multi_object_outline:0052ceac
+//                                                                                                         draw_multi_object_outline:0052cfa6
+//                                                                                                         draw_multi_object_outline:0052d04c
+//                              Drawarea.cpp:2927 (15)
+//         00444b50     MOV        EAX,dword ptr [ESP + param_1]
+//         00444b54     PUSH       ESI
+//         00444b55     XOR        ESI,ESI
+//         00444b57     CMP        EAX,ESI
+//         00444b59     JZ         LAB_00444bf4
+//                              Drawarea.cpp:2932 (5)
+//         00444b5f     MOV        EDX,dword ptr [EAX]
+//         00444b61     MOV        dword ptr [ECX + this->ClipRect.left],EDX
+//                              Drawarea.cpp:2933 (6)
+//         00444b64     MOV        EDX,dword ptr [EAX + 0x4]
+//         00444b67     MOV        dword ptr [ECX + this+0x2c],EDX
+//                              Drawarea.cpp:2934 (6)
+//         00444b6a     MOV        EDX,dword ptr [EAX + 0x8]
+//         00444b6d     MOV        dword ptr [ECX + this+0x30],EDX
+//                              Drawarea.cpp:2935 (6)
+//         00444b70     MOV        EAX,dword ptr [EAX + 0xc]
+//         00444b73     MOV        dword ptr [ECX + this+0x34],EAX
+//                              Drawarea.cpp:2937 (7)
+//         00444b76     MOV        EAX,dword ptr [ECX + this->ClipRect.left]
+//         00444b79     CMP        EAX,ESI
+//         00444b7b     JGE        LAB_00444b82
+//                              Drawarea.cpp:2938 (3)
+//         00444b7d     MOV        dword ptr [ECX + this->ClipRect.left],ESI
+//                              Drawarea.cpp:2939 (10)
+//         00444b80     JMP        LAB_00444b8d
+//                               LAB_00444b82                                                 XREF[1]:     00444b7b(j)
+//         00444b82     MOV        EDX,dword ptr [ECX + this->Width]
+//         00444b85     DEC        EDX
+//         00444b86     CMP        EAX,EDX
+//         00444b88     JLE        LAB_00444b8d
+//                              Drawarea.cpp:2940 (3)
+//         00444b8a     MOV        dword ptr [ECX + this->ClipRect.left],EDX
+//                               LAB_00444b8d                                                 XREF[2]:     00444b80(j), 00444b88(j)
+//                              Drawarea.cpp:2942 (7)
+//         00444b8d     MOV        EDX,dword ptr [ECX + this+0x30]
+//         00444b90     CMP        EDX,ESI
+//         00444b92     JGE        LAB_00444b99
+//                              Drawarea.cpp:2943 (3)
+//         00444b94     MOV        dword ptr [ECX + this+0x30],ESI
+//                              Drawarea.cpp:2944 (10)
+//         00444b97     JMP        LAB_00444ba4
+//                               LAB_00444b99                                                 XREF[1]:     00444b92(j)
+//         00444b99     MOV        EAX,dword ptr [ECX + this->Width]
+//         00444b9c     DEC        EAX
+//         00444b9d     CMP        EDX,EAX
+//         00444b9f     JLE        LAB_00444ba4
+//                              Drawarea.cpp:2945 (3)
+//         00444ba1     MOV        dword ptr [ECX + this+0x30],EAX
+//                               LAB_00444ba4                                                 XREF[2]:     00444b97(j), 00444b9f(j)
+//                              Drawarea.cpp:2947 (7)
+//         00444ba4     MOV        EDX,dword ptr [ECX + this+0x2c]
+//         00444ba7     CMP        EDX,ESI
+//         00444ba9     JGE        LAB_00444bb0
+//                              Drawarea.cpp:2948 (3)
+//         00444bab     MOV        dword ptr [ECX + this+0x2c],ESI
+//                              Drawarea.cpp:2949 (10)
+//         00444bae     JMP        LAB_00444bbb
+//                               LAB_00444bb0                                                 XREF[1]:     00444ba9(j)
+//         00444bb0     MOV        EAX,dword ptr [ECX + this->Height]
+//         00444bb3     DEC        EAX
+//         00444bb4     CMP        EDX,EAX
+//         00444bb6     JLE        LAB_00444bbb
+//                              Drawarea.cpp:2950 (3)
+//         00444bb8     MOV        dword ptr [ECX + this+0x2c],EAX
+//                               LAB_00444bbb                                                 XREF[2]:     00444bae(j), 00444bb6(j)
+//                              Drawarea.cpp:2952 (7)
+//         00444bbb     MOV        EDX,dword ptr [ECX + this+0x34]
+//         00444bbe     CMP        EDX,ESI
+//         00444bc0     JGE        LAB_00444bc7
+//                              Drawarea.cpp:2953 (3)
+//         00444bc2     MOV        dword ptr [ECX + this+0x34],ESI
+//                              Drawarea.cpp:2954 (10)
+//         00444bc5     JMP        LAB_00444bd2
+//                               LAB_00444bc7                                                 XREF[1]:     00444bc0(j)
+//         00444bc7     MOV        EAX,dword ptr [ECX + this->Height]
+//         00444bca     DEC        EAX
+//         00444bcb     CMP        EDX,EAX
+//         00444bcd     JLE        LAB_00444bd2
+//                              Drawarea.cpp:2955 (3)
+//         00444bcf     MOV        dword ptr [ECX + this+0x34],EAX
+//                               LAB_00444bd2                                                 XREF[2]:     00444bc5(j), 00444bcd(j)
+//                              Drawarea.cpp:2957 (10)
+//         00444bd2     MOV        EAX,dword ptr [ECX + this+0x30]
+//         00444bd5     MOV        EDX,dword ptr [ECX + this->ClipRect.left]
+//         00444bd8     CMP        EAX,EDX
+//         00444bda     JGE        LAB_00444be2
+//                              Drawarea.cpp:2960 (3)
+//         00444bdc     MOV        dword ptr [ECX + this+0x30],EDX
+//                              Drawarea.cpp:2961 (3)
+//         00444bdf     MOV        dword ptr [ECX + this->ClipRect.left],EAX
+//                               LAB_00444be2                                                 XREF[1]:     00444bda(j)
+//                              Drawarea.cpp:2964 (10)
+//         00444be2     MOV        EAX,dword ptr [ECX + this+0x34]
+//         00444be5     MOV        EDX,dword ptr [ECX + this+0x2c]
+//         00444be8     CMP        EAX,EDX
+//         00444bea     JGE        LAB_00444c08
+//                              Drawarea.cpp:2967 (3)
+//         00444bec     MOV        dword ptr [ECX + this+0x34],EDX
+//                              Drawarea.cpp:2968 (3)
+//         00444bef     MOV        dword ptr [ECX + this+0x2c],EAX
+//                              Drawarea.cpp:2971 (2)
+//         00444bf2     JMP        LAB_00444c08
+//                               LAB_00444bf4                                                 XREF[1]:     00444b59(j)
+//                              Drawarea.cpp:2975 (3)
+//         00444bf4     MOV        EDX,dword ptr [ECX + this->Width]
+//                              Drawarea.cpp:2976 (17)
+//         00444bf7     MOV        EAX,dword ptr [ECX + this->Height]
+//         00444bfa     DEC        EDX
+//         00444bfb     DEC        EAX
+//         00444bfc     MOV        dword ptr [ECX + this->ClipRect.left],ESI
+//         00444bff     MOV        dword ptr [ECX + this+0x2c],ESI
+//         00444c02     MOV        dword ptr [ECX + this+0x30],EDX
+//         00444c05     MOV        dword ptr [ECX + this+0x34],EAX
+//                               LAB_00444c08                                                 XREF[2]:     00444bea(j), 00444bf2(j)
+//                              Drawarea.cpp:2979 (21)
+//         00444c08     MOV        EDX,dword ptr [ECX + this+0x34]
+//         00444c0b     MOV        EAX,dword ptr [ECX + this+0x30]
+//         00444c0e     PUSH       EDX
+//         00444c0f     MOV        EDX,dword ptr [ECX + this+0x2c]
+//         00444c12     PUSH       EAX
+//         00444c13     MOV        EAX,dword ptr [ECX + this->ClipRect.left]
+//         00444c16     PUSH       EDX
+//         00444c17     PUSH       EAX
+//         00444c18     CALL       TDrawArea::SetClipRect                           void SetClipRect(TDrawArea * this, long param
+//                              Drawarea.cpp:2980 (4)
+//         00444c1d     POP        ESI
+//         00444c1e     RET        0x4
+//         00444c21     ??         90h
+//         00444c22     NOP
+//         00444c23     NOP
+//         00444c24     NOP
+//         00444c25     NOP
+//         00444c26     NOP
+//         00444c27     NOP
+//         00444c28     NOP
+//         00444c29     NOP
+//         00444c2a     NOP
+//         00444c2b     NOP
+//         00444c2c     NOP
+//         00444c2d     NOP
+//         00444c2e     NOP
+//         00444c2f     NOP
     return;
 }
 
@@ -7485,28 +7520,129 @@ void TDrawArea::DrawLine(int param_1, int param_2, int param_3, int param_4, uch
 
 void TDrawArea::DrawRect(long param_1, long param_2, long param_3, long param_4, uchar param_5) {
     /* TODO: Stub */
-//                              void __thiscall DrawRect(TDrawArea * this, tagRECT * param_1, uchar
+//                              void __thiscall DrawRect(TDrawArea * this, long param_1, long param_
 //              void              <VOID>         <RETURN>
 //              TDrawArea *       ECX:4 (auto)   this
-//              tagRECT *         Stack[0x4]:4   param_1                   XREF[1]:     00445a45(R)
-//              uchar             Stack[0x8]:1   param_2                   XREF[1]:     00445a40(R)
-//                               ?DrawRect@TDrawArea@@QAEXPAUtagRECT@@E@Z
-//                               TDrawArea::DrawRect
-//                              Drawarea.cpp:3951 (29)
-//         00445a40     MOV        EAX,dword ptr [ESP + param_2]
-//         00445a44     PUSH       EAX
-//         00445a45     MOV        EAX,dword ptr [ESP + param_1]
-//         00445a49     MOV        EDX,dword ptr [EAX + 0xc]
-//         00445a4c     PUSH       EDX
-//         00445a4d     MOV        EDX,dword ptr [EAX + 0x8]
-//         00445a50     PUSH       EDX
-//         00445a51     MOV        EDX,dword ptr [EAX + 0x4]
-//         00445a54     MOV        EAX,dword ptr [EAX]
-//         00445a56     PUSH       EDX
-//         00445a57     PUSH       EAX
-//         00445a58     CALL       TDrawArea::DrawRect                              void DrawRect(TDrawArea * this, long param_1,
-//                              Drawarea.cpp:3953 (3)
-//         00445a5d     RET        0x8
+//              long              Stack[0x4]:4   param_1                   XREF[1]:     004459a3(R)
+//              long              Stack[0x8]:4   param_2                   XREF[1]:     004459bf(R)
+//              long              Stack[0xc]:4   param_3                   XREF[3]:     004459a9(R), 004459b9(W), 00445a1c(R)
+//              long              Stack[0x10]:4  param_4                   XREF[3]:     004459c3(R), 004459cf(W), 004459f6(R)
+//              uchar             Stack[0x14]:1  param_5                   XREF[4]:     004459e5(R), 004459f2(R), 00445a09(R), 00445a18(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     004459af(W), 004459fc(R)
+//                               ?DrawRect@TDrawArea@@QAEXJJJJE@Z                             XREF[14]:    DrawRect:00445a58(c),
+//                               TDrawArea::DrawRect                                                       draw:00472e4a(c),
+//                                                                                                         draw:00472e73(c),
+//                                                                                                         draw:00472ee0(c),
+//                                                                                                         draw:00473007(c),
+//                                                                                                         draw:00476786(c),
+//                                                                                                         draw_highlight_bar:00478da9(c),
+//                                                                                                         draw_border:0047b6f3(c),
+//                                                                                                         draw_border:0047b7db(c),
+//                                                                                                         draw_border:0047b7ef(c),
+//                                                                                                         draw_border:0047d5d1(c),
+//                                                                                                         draw_frame:004c3bcf(c),
+//                                                                                                         draw_frame:004c3c1e(c),
+//                                                                                                         draw_border:0051f181(c)
+//                              Drawarea.cpp:3915 (3)
+//         004459a0     PUSH       this
+//         004459a1     PUSH       EBX
+//         004459a2     PUSH       EBP
+//                              Drawarea.cpp:3919 (18)
+//         004459a3     MOV        EBP,dword ptr [ESP + param_1]
+//         004459a7     PUSH       ESI
+//         004459a8     PUSH       EDI
+//         004459a9     MOV        EDI,dword ptr [ESP + param_3]
+//         004459ad     CMP        EBP,EDI
+//         004459af     MOV        dword ptr [ESP + local_4],this
+//         004459b3     JLE        LAB_004459bf
+//                              Drawarea.cpp:3921 (2)
+//         004459b5     MOV        EAX,EBP
+//                              Drawarea.cpp:3922 (2)
+//         004459b7     MOV        EBP,EDI
+//                              Drawarea.cpp:3923 (6)
+//         004459b9     MOV        dword ptr [ESP + param_3],EAX
+//         004459bd     MOV        EDI,EAX
+//                               LAB_004459bf                                                 XREF[1]:     004459b3(j)
+//                              Drawarea.cpp:3926 (12)
+//         004459bf     MOV        EBX,dword ptr [ESP + param_2]
+//         004459c3     MOV        ESI,dword ptr [ESP + param_4]
+//         004459c7     CMP        EBX,ESI
+//         004459c9     JLE        LAB_004459d5
+//                              Drawarea.cpp:3928 (2)
+//         004459cb     MOV        EAX,EBX
+//                              Drawarea.cpp:3929 (2)
+//         004459cd     MOV        EBX,ESI
+//                              Drawarea.cpp:3930 (6)
+//         004459cf     MOV        dword ptr [ESP + param_4],EAX
+//         004459d3     MOV        ESI,EAX
+//                               LAB_004459d5                                                 XREF[1]:     004459c9(j)
+//                              Drawarea.cpp:3933 (3)
+//         004459d5     SUB        EDI,EBP
+//         004459d7     INC        EDI
+//                              Drawarea.cpp:3934 (5)
+//         004459d8     CMP        EDI,0x1
+//         004459db     JL         LAB_00445a2b
+//                              Drawarea.cpp:3937 (3)
+//         004459dd     SUB        ESI,EBX
+//         004459df     INC        ESI
+//                              Drawarea.cpp:3938 (5)
+//         004459e0     CMP        ESI,0x1
+//         004459e3     JL         LAB_00445a2b
+//                              Drawarea.cpp:3941 (13)
+//         004459e5     MOV        EAX,dword ptr [ESP + param_5]
+//         004459e9     PUSH       EAX
+//         004459ea     PUSH       EDI
+//         004459eb     PUSH       EBX
+//         004459ec     PUSH       EBP
+//         004459ed     CALL       TDrawArea::DrawHorzLine                          void DrawHorzLine(TDrawArea * this, long para
+//                              Drawarea.cpp:3942 (23)
+//         004459f2     MOV        this,dword ptr [ESP + param_5]
+//         004459f6     MOV        EDX,dword ptr [ESP + param_4]
+//         004459fa     PUSH       this
+//         004459fb     PUSH       EDI
+//         004459fc     MOV        EDI,dword ptr [ESP + local_4]
+//         00445a00     PUSH       EDX
+//         00445a01     PUSH       EBP
+//         00445a02     MOV        this,EDI
+//         00445a04     CALL       TDrawArea::DrawHorzLine                          void DrawHorzLine(TDrawArea * this, long para
+//                              Drawarea.cpp:3943 (15)
+//         00445a09     MOV        EAX,dword ptr [ESP + param_5]
+//         00445a0d     MOV        this,EDI
+//         00445a0f     PUSH       EAX
+//         00445a10     PUSH       ESI
+//         00445a11     PUSH       EBX
+//         00445a12     PUSH       EBP
+//         00445a13     CALL       TDrawArea::DrawVertLine                          void DrawVertLine(TDrawArea * this, long para
+//                              Drawarea.cpp:3944 (19)
+//         00445a18     MOV        this,dword ptr [ESP + param_5]
+//         00445a1c     MOV        EDX,dword ptr [ESP + param_3]
+//         00445a20     PUSH       this
+//         00445a21     PUSH       ESI
+//         00445a22     PUSH       EBX
+//         00445a23     PUSH       EDX
+//         00445a24     MOV        this,EDI
+//         00445a26     CALL       TDrawArea::DrawVertLine                          void DrawVertLine(TDrawArea * this, long para
+//                               LAB_00445a2b                                                 XREF[2]:     004459db(j), 004459e3(j)
+//                              Drawarea.cpp:3945 (8)
+//         00445a2b     POP        EDI
+//         00445a2c     POP        ESI
+//         00445a2d     POP        EBP
+//         00445a2e     POP        EBX
+//         00445a2f     POP        this
+//         00445a30     RET        0x14
+//         00445a33     ??         90h
+//         00445a34     NOP
+//         00445a35     NOP
+//         00445a36     NOP
+//         00445a37     NOP
+//         00445a38     NOP
+//         00445a39     NOP
+//         00445a3a     NOP
+//         00445a3b     NOP
+//         00445a3c     NOP
+//         00445a3d     NOP
+//         00445a3e     NOP
+//         00445a3f     NOP
     return;
 }
 

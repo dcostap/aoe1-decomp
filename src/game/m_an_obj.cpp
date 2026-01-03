@@ -6,74 +6,51 @@ RGE_Master_Animated_Object::RGE_Master_Animated_Object(RGE_Master_Animated_Objec
 //                              undefined __thiscall RGE_Master_Animated_Object(RGE_Master_Animated_
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Master_Ani    ECX:4 (auto)   this
-//              _iobuf *          Stack[0x4]:4   param_1                   XREF[2]:     0044fac6(R), 0044fb01(R)
-//              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[1]:     0044fad0(R)
-//              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[1]:     0044facb(R)
-//              short             Stack[0x10]:2  param_4                   XREF[1]:     0044fad6(R)
-//              int               Stack[0x14]:4  param_5                   XREF[1]:     0044faeb(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0044faef(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0044fb10(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0044fae2(W)
-//                               ??0RGE_Master_Animated_Object@@QAE@PAU_iobuf@@PAPAVRGE_Spri  XREF[3]:     RGE_Master_Doppleganger_Object:004
-//                               RGE_Master_Animated_Object::RGE_Master_Animated_Object                    RGE_Master_Moving_Object:00451b46(
-//                                                                                                         load_object:00461619(c)
-//                              m_an_obj.cpp:42 (59)
-//         0044fab0     PUSH       -0x1
-//         0044fab2     PUSH       FUN_0055d758
-//         0044fab7     MOV        EAX,FS:[0x0]
-//         0044fabd     PUSH       EAX
-//         0044fabe     MOV        dword ptr FS:[0x0],ESP
-//         0044fac5     PUSH       this
-//         0044fac6     MOV        EAX,dword ptr [ESP + param_1]
-//         0044faca     PUSH       EBX
-//         0044facb     MOV        EBX,dword ptr [ESP + param_3]
-//         0044facf     PUSH       EBP
-//         0044fad0     MOV        EBP,dword ptr [ESP + param_2]
-//         0044fad4     PUSH       ESI
-//         0044fad5     PUSH       EDI
-//         0044fad6     MOV        EDI,dword ptr [ESP + param_4]
-//         0044fada     PUSH       0x0
-//         0044fadc     PUSH       EDI
-//         0044fadd     PUSH       EBX
-//         0044fade     MOV        ESI,this
-//         0044fae0     PUSH       EBP
-//         0044fae1     PUSH       EAX
-//         0044fae2     MOV        dword ptr [ESP + local_10],ESI
-//         0044fae6     CALL       RGE_Master_Static_Object::RGE_Master_Static_Ob   undefined RGE_Master_Static_Object(RGE_Master
-//                              m_an_obj.cpp:43 (22)
-//         0044faeb     MOV        EAX,dword ptr [ESP + param_5]
-//         0044faef     MOV        dword ptr [ESP + local_4],0x0
-//         0044faf7     TEST       EAX,EAX
-//         0044faf9     MOV        dword ptr [ESI],RGE_Master_Animated_Object::`v   = 0044fa20
-//         0044faff     JZ         LAB_0044fb10
-//                              m_an_obj.cpp:44 (15)
-//         0044fb01     MOV        this,dword ptr [ESP + param_1]
-//         0044fb05     PUSH       EDI
-//         0044fb06     PUSH       EBX
-//         0044fb07     PUSH       EBP
-//         0044fb08     PUSH       this
-//         0044fb09     MOV        this,ESI
-//         0044fb0b     CALL       RGE_Master_Animated_Object::setup                int setup(RGE_Master_Animated_Object * this,
-//                               LAB_0044fb10                                                 XREF[1]:     0044faff(j)
-//                              m_an_obj.cpp:45 (23)
-//         0044fb10     MOV        this,dword ptr [ESP + local_c]
-//         0044fb14     MOV        EAX,ESI
-//         0044fb16     POP        EDI
-//         0044fb17     POP        ESI
-//         0044fb18     POP        EBP
-//         0044fb19     MOV        dword ptr FS:[0x0],this
-//         0044fb20     POP        EBX
-//         0044fb21     ADD        ESP,0x10
-//         0044fb24     RET        0x14
-//         0044fb27     ??         90h
-//         0044fb28     NOP
-//         0044fb29     NOP
-//         0044fb2a     NOP
-//         0044fb2b     NOP
-//         0044fb2c     NOP
-//         0044fb2d     NOP
-//         0044fb2e     NOP
-//         0044fb2f     NOP
+//              RGE_Master_Ani    Stack[0x4]:4   param_1                   XREF[1]:     0044f9d8(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     0044f9ea(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0044f9ee(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0044fa08(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0044f9e1(W)
+//                               ??0RGE_Master_Animated_Object@@QAE@PAV0@H@Z                  XREF[3]:     make_new_master:0044fd0b(c),
+//                               RGE_Master_Animated_Object::RGE_Master_Animated_Object                    RGE_Master_Doppleganger_Object:004
+//                                                                                                         RGE_Master_Moving_Object:00451a45(
+//                              m_an_obj.cpp:24 (42)
+//         0044f9c0     PUSH       -0x1
+//         0044f9c2     PUSH       FUN_0055d718
+//         0044f9c7     MOV        EAX,FS:[0x0]
+//         0044f9cd     PUSH       EAX
+//         0044f9ce     MOV        dword ptr FS:[0x0],ESP
+//         0044f9d5     PUSH       this
+//         0044f9d6     PUSH       ESI
+//         0044f9d7     PUSH       EDI
+//         0044f9d8     MOV        EDI,dword ptr [ESP + param_1]
+//         0044f9dc     MOV        ESI,this
+//         0044f9de     PUSH       0x0
+//         0044f9e0     PUSH       EDI
+//         0044f9e1     MOV        dword ptr [ESP + local_10],ESI
+//         0044f9e5     CALL       RGE_Master_Static_Object::RGE_Master_Static_Ob   undefined RGE_Master_Static_Object(RGE_Master
+//                              m_an_obj.cpp:25 (22)
+//         0044f9ea     MOV        EAX,dword ptr [ESP + param_2]
+//         0044f9ee     MOV        dword ptr [ESP + local_4],0x0
+//         0044f9f6     TEST       EAX,EAX
+//         0044f9f8     MOV        dword ptr [ESI],RGE_Master_Animated_Object::`v   = 0044fa20
+//         0044f9fe     JZ         LAB_0044fa08
+//                              m_an_obj.cpp:26 (8)
+//         0044fa00     PUSH       EDI
+//         0044fa01     MOV        this,ESI
+//         0044fa03     CALL       RGE_Master_Animated_Object::setup                int setup(RGE_Master_Animated_Object * this,
+//                               LAB_0044fa08                                                 XREF[1]:     0044f9fe(j)
+//                              m_an_obj.cpp:27 (21)
+//         0044fa08     MOV        this,dword ptr [ESP + local_c]
+//         0044fa0c     MOV        EAX,ESI
+//         0044fa0e     POP        EDI
+//         0044fa0f     MOV        dword ptr FS:[0x0],this
+//         0044fa16     POP        ESI
+//         0044fa17     ADD        ESP,0x10
+//         0044fa1a     RET        0x8
+//         0044fa1d     ??         90h
+//         0044fa1e     NOP
+//         0044fa1f     NOP
 }
 
 RGE_Master_Animated_Object::RGE_Master_Animated_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4) {
@@ -81,74 +58,64 @@ RGE_Master_Animated_Object::RGE_Master_Animated_Object(int param_1, RGE_Sprite**
 //                              undefined __thiscall RGE_Master_Animated_Object(RGE_Master_Animated_
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Master_Ani    ECX:4 (auto)   this
-//              _iobuf *          Stack[0x4]:4   param_1                   XREF[2]:     0044fac6(R), 0044fb01(R)
-//              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[1]:     0044fad0(R)
-//              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[1]:     0044facb(R)
-//              short             Stack[0x10]:2  param_4                   XREF[1]:     0044fad6(R)
-//              int               Stack[0x14]:4  param_5                   XREF[1]:     0044faeb(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0044faef(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0044fb10(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0044fae2(W)
-//                               ??0RGE_Master_Animated_Object@@QAE@PAU_iobuf@@PAPAVRGE_Spri  XREF[3]:     RGE_Master_Doppleganger_Object:004
-//                               RGE_Master_Animated_Object::RGE_Master_Animated_Object                    RGE_Master_Moving_Object:00451b46(
-//                                                                                                         load_object:00461619(c)
-//                              m_an_obj.cpp:42 (59)
-//         0044fab0     PUSH       -0x1
-//         0044fab2     PUSH       FUN_0055d758
-//         0044fab7     MOV        EAX,FS:[0x0]
-//         0044fabd     PUSH       EAX
-//         0044fabe     MOV        dword ptr FS:[0x0],ESP
-//         0044fac5     PUSH       this
-//         0044fac6     MOV        EAX,dword ptr [ESP + param_1]
-//         0044faca     PUSH       EBX
-//         0044facb     MOV        EBX,dword ptr [ESP + param_3]
-//         0044facf     PUSH       EBP
-//         0044fad0     MOV        EBP,dword ptr [ESP + param_2]
-//         0044fad4     PUSH       ESI
-//         0044fad5     PUSH       EDI
-//         0044fad6     MOV        EDI,dword ptr [ESP + param_4]
-//         0044fada     PUSH       0x0
-//         0044fadc     PUSH       EDI
-//         0044fadd     PUSH       EBX
-//         0044fade     MOV        ESI,this
-//         0044fae0     PUSH       EBP
-//         0044fae1     PUSH       EAX
-//         0044fae2     MOV        dword ptr [ESP + local_10],ESI
-//         0044fae6     CALL       RGE_Master_Static_Object::RGE_Master_Static_Ob   undefined RGE_Master_Static_Object(RGE_Master
-//                              m_an_obj.cpp:43 (22)
-//         0044faeb     MOV        EAX,dword ptr [ESP + param_5]
-//         0044faef     MOV        dword ptr [ESP + local_4],0x0
-//         0044faf7     TEST       EAX,EAX
-//         0044faf9     MOV        dword ptr [ESI],RGE_Master_Animated_Object::`v   = 0044fa20
-//         0044faff     JZ         LAB_0044fb10
-//                              m_an_obj.cpp:44 (15)
-//         0044fb01     MOV        this,dword ptr [ESP + param_1]
-//         0044fb05     PUSH       EDI
-//         0044fb06     PUSH       EBX
-//         0044fb07     PUSH       EBP
-//         0044fb08     PUSH       this
-//         0044fb09     MOV        this,ESI
-//         0044fb0b     CALL       RGE_Master_Animated_Object::setup                int setup(RGE_Master_Animated_Object * this,
-//                               LAB_0044fb10                                                 XREF[1]:     0044faff(j)
-//                              m_an_obj.cpp:45 (23)
-//         0044fb10     MOV        this,dword ptr [ESP + local_c]
-//         0044fb14     MOV        EAX,ESI
-//         0044fb16     POP        EDI
-//         0044fb17     POP        ESI
-//         0044fb18     POP        EBP
-//         0044fb19     MOV        dword ptr FS:[0x0],this
-//         0044fb20     POP        EBX
-//         0044fb21     ADD        ESP,0x10
-//         0044fb24     RET        0x14
-//         0044fb27     ??         90h
-//         0044fb28     NOP
-//         0044fb29     NOP
-//         0044fb2a     NOP
-//         0044fb2b     NOP
-//         0044fb2c     NOP
-//         0044fb2d     NOP
-//         0044fb2e     NOP
-//         0044fb2f     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     0044fa5c(R)
+//              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[1]:     0044fa57(R)
+//              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[1]:     0044fa62(R)
+//              int               Stack[0x10]:4  param_4                   XREF[1]:     0044fa76(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0044fa7a(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0044fa96(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0044fa6d(W)
+//                               ??0RGE_Master_Animated_Object@@QAE@HPAPAVRGE_Sprite@@PAPAVR  XREF[4]:     RGE_Master_Doppleganger_Object:004
+//                               RGE_Master_Animated_Object::RGE_Master_Animated_Object                    RGE_Master_Moving_Object:00451ad1(
+//                                                                                                         load_master_object:0046131e(c),
+//                                                                                                         load_master_object:0046fcee(c)
+//                              m_an_obj.cpp:33 (54)
+//         0044fa40     PUSH       -0x1
+//         0044fa42     PUSH       FUN_0055d738
+//         0044fa47     MOV        EAX,FS:[0x0]
+//         0044fa4d     PUSH       EAX
+//         0044fa4e     MOV        dword ptr FS:[0x0],ESP
+//         0044fa55     PUSH       this
+//         0044fa56     PUSH       EBX
+//         0044fa57     MOV        EBX,dword ptr [ESP + param_2]
+//         0044fa5b     PUSH       EBP
+//         0044fa5c     MOV        EBP,dword ptr [ESP + param_1]
+//         0044fa60     PUSH       ESI
+//         0044fa61     PUSH       EDI
+//         0044fa62     MOV        EDI,dword ptr [ESP + param_3]
+//         0044fa66     PUSH       0x0
+//         0044fa68     PUSH       EDI
+//         0044fa69     MOV        ESI,this
+//         0044fa6b     PUSH       EBX
+//         0044fa6c     PUSH       EBP
+//         0044fa6d     MOV        dword ptr [ESP + local_10],ESI
+//         0044fa71     CALL       RGE_Master_Static_Object::RGE_Master_Static_Ob   undefined RGE_Master_Static_Object(RGE_Master
+//                              m_an_obj.cpp:34 (22)
+//         0044fa76     MOV        EAX,dword ptr [ESP + param_4]
+//         0044fa7a     MOV        dword ptr [ESP + local_4],0x0
+//         0044fa82     TEST       EAX,EAX
+//         0044fa84     MOV        dword ptr [ESI],RGE_Master_Animated_Object::`v   = 0044fa20
+//         0044fa8a     JZ         LAB_0044fa96
+//                              m_an_obj.cpp:35 (10)
+//         0044fa8c     PUSH       EDI
+//         0044fa8d     PUSH       EBX
+//         0044fa8e     PUSH       EBP
+//         0044fa8f     MOV        this,ESI
+//         0044fa91     CALL       RGE_Master_Animated_Object::setup                int setup(RGE_Master_Animated_Object * this,
+//                               LAB_0044fa96                                                 XREF[1]:     0044fa8a(j)
+//                              m_an_obj.cpp:36 (23)
+//         0044fa96     MOV        this,dword ptr [ESP + local_c]
+//         0044fa9a     MOV        EAX,ESI
+//         0044fa9c     POP        EDI
+//         0044fa9d     POP        ESI
+//         0044fa9e     POP        EBP
+//         0044fa9f     MOV        dword ptr FS:[0x0],this
+//         0044faa6     POP        EBX
+//         0044faa7     ADD        ESP,0x10
+//         0044faaa     RET        0x10
+//         0044faad     ??         90h
+//         0044faae     NOP
+//         0044faaf     NOP
 }
 
 RGE_Master_Animated_Object::RGE_Master_Animated_Object(_iobuf* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4, int param_5) {
@@ -228,117 +195,86 @@ RGE_Master_Animated_Object::RGE_Master_Animated_Object(_iobuf* param_1, RGE_Spri
 
 int RGE_Master_Animated_Object::setup(RGE_Master_Animated_Object* param_1) {
     /* TODO: Stub */
-//                              int __thiscall setup(RGE_Master_Animated_Object * this, _iobuf * par
+//                              int __thiscall setup(RGE_Master_Animated_Object * this, RGE_Master_A
 //              int               EAX:4          <RETURN>
 //              RGE_Master_Ani    ECX:4 (auto)   this
-//              _iobuf *          Stack[0x4]:4   param_1                   XREF[1]:     0044fbb0(R)
-//              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[1]:     0044fba4(R)
-//              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[1]:     0044fbab(R)
-//              short             Stack[0x10]:2  param_4                   XREF[1]:     0044fba0(R)
-//                               ?setup@RGE_Master_Animated_Object@@IAEHPAU_iobuf@@PAPAVRGE_  XREF[3]:     RGE_Master_Animated_Object:0044fb0
-//                               RGE_Master_Animated_Object::setup                                         setup:00451299(c),
-//                                                                                                         setup:00451d2c(c)
-//                              m_an_obj.cpp:79 (31)
-//         0044fba0     MOV        EAX,dword ptr [ESP + param_4]
-//         0044fba4     MOV        EDX,dword ptr [ESP + param_2]
-//         0044fba8     PUSH       ESI
-//         0044fba9     MOV        ESI,this
-//         0044fbab     MOV        this,dword ptr [ESP + param_3]
-//         0044fbaf     PUSH       EDI
-//         0044fbb0     MOV        EDI,dword ptr [ESP + param_1]
-//         0044fbb4     PUSH       EAX
-//         0044fbb5     PUSH       this
-//         0044fbb6     PUSH       EDX
-//         0044fbb7     PUSH       EDI
-//         0044fbb8     MOV        this,ESI
-//         0044fbba     CALL       RGE_Master_Static_Object::setup                  int setup(RGE_Master_Static_Object * this, _i
-//                              m_an_obj.cpp:82 (4)
-//         0044fbbf     MOV        byte ptr [ESI + 0x4],0x14
-//                              m_an_obj.cpp:85 (21)
-//         0044fbc3     ADD        ESI,0xb8
-//         0044fbc9     PUSH       ESI
-//         0044fbca     PUSH       s_%f                                             = "%f"
-//         0044fbcf     PUSH       EDI
-//         0044fbd0     CALL       fscanf                                           undefined fscanf()
-//         0044fbd5     ADD        ESP,0xc
-//                              m_an_obj.cpp:88 (5)
-//         0044fbd8     MOV        EAX,0x1
-//                              m_an_obj.cpp:89 (5)
-//         0044fbdd     POP        EDI
-//         0044fbde     POP        ESI
-//         0044fbdf     RET        0x10
-//         0044fbe2     ??         90h
-//         0044fbe3     NOP
-//         0044fbe4     NOP
-//         0044fbe5     NOP
-//         0044fbe6     NOP
-//         0044fbe7     NOP
-//         0044fbe8     NOP
-//         0044fbe9     NOP
-//         0044fbea     NOP
-//         0044fbeb     NOP
-//         0044fbec     NOP
-//         0044fbed     NOP
-//         0044fbee     NOP
-//         0044fbef     NOP
+//              RGE_Master_Ani    Stack[0x4]:4   param_1                   XREF[1]:     0044fb32(R)
+//                               ?setup@RGE_Master_Animated_Object@@IAEHPAV1@@Z               XREF[3]:     RGE_Master_Animated_Object:0044fa0
+//                               RGE_Master_Animated_Object::setup                                         setup:00451238(c),
+//                                                                                                         setup:00451b99(c)
+//                              m_an_obj.cpp:51 (2)
+//         0044fb30     PUSH       ESI
+//         0044fb31     PUSH       EDI
+//                              m_an_obj.cpp:52 (12)
+//         0044fb32     MOV        EDI,dword ptr [ESP + param_1]
+//         0044fb36     MOV        ESI,this
+//         0044fb38     PUSH       EDI
+//         0044fb39     CALL       RGE_Master_Static_Object::setup                  int setup(RGE_Master_Static_Object * this, RG
+//                              m_an_obj.cpp:54 (4)
+//         0044fb3e     MOV        byte ptr [ESI + 0x4],0x14
+//                              m_an_obj.cpp:57 (12)
+//         0044fb42     MOV        EAX,dword ptr [EDI + 0xb8]
+//         0044fb48     MOV        dword ptr [ESI + 0xb8],EAX
+//                              m_an_obj.cpp:60 (10)
+//         0044fb4e     POP        EDI
+//         0044fb4f     MOV        EAX,0x1
+//         0044fb54     POP        ESI
+//         0044fb55     RET        0x4
+//         0044fb58     ??         90h
+//         0044fb59     NOP
+//         0044fb5a     NOP
+//         0044fb5b     NOP
+//         0044fb5c     NOP
+//         0044fb5d     NOP
+//         0044fb5e     NOP
+//         0044fb5f     NOP
     return 0;
 }
 
 int RGE_Master_Animated_Object::setup(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3) {
     /* TODO: Stub */
-//                              int __thiscall setup(RGE_Master_Animated_Object * this, _iobuf * par
+//                              int __thiscall setup(RGE_Master_Animated_Object * this, int param_1,
 //              int               EAX:4          <RETURN>
 //              RGE_Master_Ani    ECX:4 (auto)   this
-//              _iobuf *          Stack[0x4]:4   param_1                   XREF[1]:     0044fbb0(R)
-//              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[1]:     0044fba4(R)
-//              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[1]:     0044fbab(R)
-//              short             Stack[0x10]:2  param_4                   XREF[1]:     0044fba0(R)
-//                               ?setup@RGE_Master_Animated_Object@@IAEHPAU_iobuf@@PAPAVRGE_  XREF[3]:     RGE_Master_Animated_Object:0044fb0
-//                               RGE_Master_Animated_Object::setup                                         setup:00451299(c),
-//                                                                                                         setup:00451d2c(c)
-//                              m_an_obj.cpp:79 (31)
-//         0044fba0     MOV        EAX,dword ptr [ESP + param_4]
-//         0044fba4     MOV        EDX,dword ptr [ESP + param_2]
-//         0044fba8     PUSH       ESI
-//         0044fba9     MOV        ESI,this
-//         0044fbab     MOV        this,dword ptr [ESP + param_3]
-//         0044fbaf     PUSH       EDI
-//         0044fbb0     MOV        EDI,dword ptr [ESP + param_1]
-//         0044fbb4     PUSH       EAX
-//         0044fbb5     PUSH       this
-//         0044fbb6     PUSH       EDX
-//         0044fbb7     PUSH       EDI
-//         0044fbb8     MOV        this,ESI
-//         0044fbba     CALL       RGE_Master_Static_Object::setup                  int setup(RGE_Master_Static_Object * this, _i
-//                              m_an_obj.cpp:82 (4)
-//         0044fbbf     MOV        byte ptr [ESI + 0x4],0x14
-//                              m_an_obj.cpp:85 (21)
-//         0044fbc3     ADD        ESI,0xb8
-//         0044fbc9     PUSH       ESI
-//         0044fbca     PUSH       s_%f                                             = "%f"
-//         0044fbcf     PUSH       EDI
-//         0044fbd0     CALL       fscanf                                           undefined fscanf()
-//         0044fbd5     ADD        ESP,0xc
-//                              m_an_obj.cpp:88 (5)
-//         0044fbd8     MOV        EAX,0x1
-//                              m_an_obj.cpp:89 (5)
-//         0044fbdd     POP        EDI
-//         0044fbde     POP        ESI
-//         0044fbdf     RET        0x10
-//         0044fbe2     ??         90h
-//         0044fbe3     NOP
-//         0044fbe4     NOP
-//         0044fbe5     NOP
-//         0044fbe6     NOP
-//         0044fbe7     NOP
-//         0044fbe8     NOP
-//         0044fbe9     NOP
-//         0044fbea     NOP
-//         0044fbeb     NOP
-//         0044fbec     NOP
-//         0044fbed     NOP
-//         0044fbee     NOP
-//         0044fbef     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     0044fb6c(R)
+//              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[1]:     0044fb68(R)
+//              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[1]:     0044fb60(R)
+//                               ?setup@RGE_Master_Animated_Object@@IAEHHPAPAVRGE_Sprite@@PA  XREF[3]:     RGE_Master_Animated_Object:0044fa9
+//                               RGE_Master_Animated_Object::setup                                         setup:00451264(c),
+//                                                                                                         setup:00451c24(c)
+//                              m_an_obj.cpp:65 (26)
+//         0044fb60     MOV        EAX,dword ptr [ESP + param_3]
+//         0044fb64     PUSH       ESI
+//         0044fb65     MOV        ESI,this
+//         0044fb67     PUSH       EDI
+//         0044fb68     MOV        this,dword ptr [ESP + param_2]
+//         0044fb6c     MOV        EDI,dword ptr [ESP + param_1]
+//         0044fb70     PUSH       EAX
+//         0044fb71     PUSH       this
+//         0044fb72     PUSH       EDI
+//         0044fb73     MOV        this,ESI
+//         0044fb75     CALL       RGE_Master_Static_Object::setup                  int setup(RGE_Master_Static_Object * this, in
+//                              m_an_obj.cpp:68 (4)
+//         0044fb7a     MOV        byte ptr [ESI + 0x4],0x14
+//                              m_an_obj.cpp:71 (18)
+//         0044fb7e     ADD        ESI,0xb8
+//         0044fb84     PUSH       0x4
+//         0044fb86     PUSH       ESI
+//         0044fb87     PUSH       EDI
+//         0044fb88     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0044fb8d     ADD        ESP,0xc
+//                              m_an_obj.cpp:73 (5)
+//         0044fb90     MOV        EAX,0x1
+//                              m_an_obj.cpp:74 (5)
+//         0044fb95     POP        EDI
+//         0044fb96     POP        ESI
+//         0044fb97     RET        0xc
+//         0044fb9a     ??         90h
+//         0044fb9b     NOP
+//         0044fb9c     NOP
+//         0044fb9d     NOP
+//         0044fb9e     NOP
+//         0044fb9f     NOP
     return 0;
 }
 

@@ -4361,122 +4361,49 @@ int UnitAIModule::notify(int param_1, int param_2, int param_3, long param_4, lo
 
 int UnitAIModule::notifyCommander(NotifyEvent* param_1) {
     /* TODO: Stub */
-//                              int __thiscall notifyCommander(UnitAIModule * this, int param_1, int
+//                              int __thiscall notifyCommander(UnitAIModule * this, NotifyEvent * pa
 //              int               EAX:4          <RETURN>
 //              UnitAIModule *    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[2]:     00414f92(R), 0041501c(R)
-//              int               Stack[0x8]:4   param_2                   XREF[2]:     00414f96(R), 00415015(R)
-//              int               Stack[0xc]:4   param_3                   XREF[2]:     00414f9a(R), 00415010(R)
-//              long              Stack[0x10]:4  param_4                   XREF[1]:     00414f89(R)
-//              long              Stack[0x14]:4  param_5                   XREF[1]:     00414f85(R)
-//              long              Stack[0x18]:4  param_6                   XREF[3]:     00414f81(R), 00414fde(W), 00414fef(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     00414fb5(W)
-//              NotifyEvent       Stack[-0x1c]   nEvent                    XREF[0,7]:   00414f9e(W), 00414fc5(*), 00414ffa(*), 00414fa5(W),
-//                                                                                     00414fa9(W), 00414fad(W), 00414fb1(W)
-//                               ?notifyCommander@UnitAIModule@@UAEHHHHJJJ@Z                  XREF[16]:    0056eaf0(*), 005757e8(*),
-//                               UnitAIModule::notifyCommander                                             00575900(*), 005759e0(*),
-//                                                                                                         00575ac0(*), 00575ba0(*),
-//                                                                                                         00575c80(*), 00575d60(*),
-//                                                                                                         00575e40(*), 00575f28(*),
-//                                                                                                         00576008(*), 005760e8(*),
-//                                                                                                         005761c8(*), 005762a8(*),
-//                                                                                                         00576388(*), 00576468(*)
-//                              aiuaimod.cpp:1874 (9)
-//         00414f70     SUB        ESP,0x18
-//         00414f73     PUSH       EBX
-//         00414f74     PUSH       EBP
-//         00414f75     PUSH       ESI
-//         00414f76     MOV        ESI,this
-//         00414f78     PUSH       EDI
-//                              aiuaimod.cpp:1877 (25)
-//         00414f79     MOV        this,dword ptr [ESI + 0x4]
-//         00414f7c     CALL       RGE_Static_Object::inGroup                       int inGroup(RGE_Static_Object * this)
-//         00414f81     MOV        EDI,dword ptr [ESP + param_6]
-//         00414f85     MOV        EBX,dword ptr [ESP + param_5]
-//         00414f89     MOV        EBP,dword ptr [ESP + param_4]
-//         00414f8d     CMP        EAX,0x1
-//         00414f90     JNZ        LAB_00415007
-//                              aiuaimod.cpp:1879 (4)
-//         00414f92     MOV        EAX,dword ptr [ESP + param_1]
-//                              aiuaimod.cpp:1880 (4)
-//         00414f96     MOV        this,dword ptr [ESP + param_2]
-//                              aiuaimod.cpp:1881 (8)
-//         00414f9a     MOV        EDX,dword ptr [ESP + param_3]
-//         00414f9e     MOV        dword ptr [ESP + nEvent.recipient],EAX
-//                              aiuaimod.cpp:1885 (33)
-//         00414fa2     MOV        EAX,dword ptr [ESI + 0x4]
-//         00414fa5     MOV        dword ptr [ESP + nEvent.mType],this
-//         00414fa9     MOV        dword ptr [ESP + nEvent.p1],EDX
-//         00414fad     MOV        dword ptr [ESP + nEvent.p2],EBP
-//         00414fb1     MOV        dword ptr [ESP + nEvent.p3],EBX
-//         00414fb5     MOV        dword ptr [ESP + local_4],EDI
-//         00414fb9     MOV        this,dword ptr [EAX + 0x78]
-//         00414fbc     MOV        EDX,dword ptr [EAX + 0x4]
-//         00414fbf     CMP        EDX,this
-//         00414fc1     JNZ        LAB_00414fd4
-//                              aiuaimod.cpp:1886 (15)
-//         00414fc3     MOV        EAX,dword ptr [ESI]
-//         00414fc5     LEA        this=>nEvent.recipient,[ESP + 0x10]
-//         00414fc9     PUSH       this
-//         00414fca     MOV        this,ESI
-//         00414fcc     CALL       dword ptr [EAX + 0xd0]
-//                              aiuaimod.cpp:1887 (2)
-//         00414fd2     JMP        LAB_00415007
-//                               LAB_00414fd4                                                 XREF[1]:     00414fc1(j)
-//                              aiuaimod.cpp:1888 (8)
-//         00414fd4     PUSH       this
-//         00414fd5     MOV        this,ESI
-//         00414fd7     CALL       UnitAIModule::lookupObject                       RGE_Static_Object * lookupObject(UnitAIModule
-//                              aiuaimod.cpp:1889 (19)
-//         00414fdc     TEST       EAX,EAX
-//         00414fde     MOV        dword ptr [ESP + param_6],EAX
-//         00414fe2     JZ         LAB_00415007
-//         00414fe4     MOV        this,EAX
-//         00414fe6     CALL       RGE_Static_Object::unitAI                        UnitAIModule * unitAI(RGE_Static_Object * this)
-//         00414feb     TEST       EAX,EAX
-//         00414fed     JZ         LAB_00415007
-//                              aiuaimod.cpp:1890 (24)
-//         00414fef     MOV        this,dword ptr [ESP + param_6]
-//         00414ff3     CALL       RGE_Static_Object::unitAI                        UnitAIModule * unitAI(RGE_Static_Object * this)
-//         00414ff8     MOV        EDX,dword ptr [EAX]
-//         00414ffa     LEA        this=>nEvent.recipient,[ESP + 0x10]
-//         00414ffe     PUSH       this
-//         00414fff     MOV        this,EAX
-//         00415001     CALL       dword ptr [EDX + 0xd0]
-//                               LAB_00415007                                                 XREF[4]:     00414f90(j), 00414fd2(j),
-//                                                                                                         00414fe2(j), 00414fed(j)
-//                              aiuaimod.cpp:1893 (32)
-//         00415007     MOV        EDX,dword ptr [ESI + 0x4]
-//         0041500a     PUSH       EDI
-//         0041500b     PUSH       EBX=>DAT_fffffff8
-//         0041500c     PUSH       EBP=>DAT_fffffff4
-//         0041500d     MOV        this,dword ptr [EDX + 0xc]
-//         00415010     MOV        EDX,dword ptr [ESP + param_3]
-//         00415014     PUSH       EDX=>DAT_fffffff0
-//         00415015     MOV        EDX,dword ptr [ESP + param_2]
-//         00415019     MOV        EAX,dword ptr [this->_padding_]
-//         0041501b     PUSH       EDX
-//         0041501c     MOV        EDX,dword ptr [ESP + param_1]
-//         00415020     PUSH       EDX
-//         00415021     CALL       dword ptr [EAX + 0xe8]
-//                              aiuaimod.cpp:1895 (15)
-//         00415027     POP        EDI
-//         00415028     POP        ESI
-//         00415029     POP        EBP
-//         0041502a     MOV        EAX,0x1
-//         0041502f     POP        EBX
-//         00415030     ADD        ESP,0x18
-//         00415033     RET        0x18
-//         00415036     ??         90h
-//         00415037     NOP
-//         00415038     NOP
-//         00415039     NOP
-//         0041503a     NOP
-//         0041503b     NOP
-//         0041503c     NOP
-//         0041503d     NOP
-//         0041503e     NOP
-//         0041503f     NOP
+//              NotifyEvent *     Stack[0x4]:4   param_1                   XREF[1]:     00414f40(R)
+//                               ?notifyCommander@UnitAIModule@@UAEHPAUNotifyEvent@@@Z        XREF[16]:    0056eaf4(*), 005757ec(*),
+//                               UnitAIModule::notifyCommander                                             00575904(*), 005759e4(*),
+//                                                                                                         00575ac4(*), 00575ba4(*),
+//                                                                                                         00575c84(*), 00575d64(*),
+//                                                                                                         00575e44(*), 00575f2c(*),
+//                                                                                                         0057600c(*), 005760ec(*),
+//                                                                                                         005761cc(*), 005762ac(*),
+//                                                                                                         0057638c(*), 0057646c(*)
+//                              aiuaimod.cpp:1865 (33)
+//         00414f40     MOV        EAX,dword ptr [ESP + param_1]
+//         00414f44     PUSH       ESI
+//         00414f45     MOV        EDX,dword ptr [this->_padding_]
+//         00414f47     MOV        ESI,dword ptr [EAX + 0x14]
+//         00414f4a     PUSH       ESI
+//         00414f4b     MOV        ESI,dword ptr [EAX + 0x10]
+//         00414f4e     PUSH       ESI
+//         00414f4f     MOV        ESI,dword ptr [EAX + 0xc]
+//         00414f52     PUSH       ESI
+//         00414f53     MOV        ESI,dword ptr [EAX + 0x8]
+//         00414f56     PUSH       ESI
+//         00414f57     MOV        ESI,dword ptr [EAX + 0x4]
+//         00414f5a     MOV        EAX,dword ptr [EAX]
+//         00414f5c     PUSH       ESI
+//         00414f5d     PUSH       EAX
+//         00414f5e     CALL       dword ptr [EDX + 0x18]
+//                              aiuaimod.cpp:1868 (4)
+//         00414f61     POP        ESI
+//         00414f62     RET        0x4
+//         00414f65     ??         90h
+//         00414f66     NOP
+//         00414f67     NOP
+//         00414f68     NOP
+//         00414f69     NOP
+//         00414f6a     NOP
+//         00414f6b     NOP
+//         00414f6c     NOP
+//         00414f6d     NOP
+//         00414f6e     NOP
+//         00414f6f     NOP
     return 0;
 }
 
@@ -8358,171 +8285,201 @@ int UnitAIModule::unload(int param_1, float param_2, float param_3) {
 
 int UnitAIModule::moveTo(int param_1, int param_2) {
     /* TODO: Stub */
-//                              int __thiscall moveTo(UnitAIModule * this, float param_1, float para
+//                              int __thiscall moveTo(UnitAIModule * this, int param_1, int param_2)
 //              int               EAX:4          <RETURN>
 //              UnitAIModule *    ECX:4 (auto)   this
-//              float             Stack[0x4]:4   param_1                   XREF[1]:     00416c2f(R)
-//              float             Stack[0x8]:4   param_2                   XREF[1]:     00416c2b(R)
-//              float             Stack[0xc]:4   param_3                   XREF[1]:     00416c27(R)
-//              float             Stack[0x10]:4  param_4                   XREF[1]:     00416c36(R)
-//              int               Stack[0x14]:4  param_5                   XREF[1]:     00416c10(R)
-//                               ?moveTo@UnitAIModule@@UAEHMMMMH@Z                            XREF[16]:    0056eb68(*), 00575860(*),
-//                               UnitAIModule::moveTo                                                      00575978(*), 00575a58(*),
-//                                                                                                         00575b38(*), 00575c18(*),
-//                                                                                                         00575cf8(*), 00575dd8(*),
-//                                                                                                         00575eb8(*), 00575fa0(*),
-//                                                                                                         00576080(*), 00576160(*),
-//                                                                                                         00576240(*), 00576320(*),
-//                                                                                                         00576400(*), 005764e0(*)
-//                              aiuaimod.cpp:3434 (18)
-//         00416c10     MOV        EAX,dword ptr [ESP + param_5]
-//         00416c14     PUSH       EBX
-//         00416c15     PUSH       EBP
-//         00416c16     PUSH       ESI
-//         00416c17     TEST       EAX,EAX
-//         00416c19     PUSH       EDI
-//         00416c1a     MOV        ESI,this
-//         00416c1c     JNZ        LAB_00416c24
-//         00416c1e     CMP        dword ptr [ESI + 0x30],-0x1
-//                              aiuaimod.cpp:3439 (2)
-//         00416c22     JNZ        LAB_00416c6d
-//                               LAB_00416c24                                                 XREF[1]:     00416c1c(j)
-//                              aiuaimod.cpp:3441 (37)
-//         00416c24     MOV        this,dword ptr [ESI + 0x4]
-//         00416c27     MOV        EDI,dword ptr [ESP + param_3]
-//         00416c2b     MOV        EBX,dword ptr [ESP + param_2]
-//         00416c2f     MOV        EBP,dword ptr [ESP + param_1]
-//         00416c33     MOV        EDX,dword ptr [this->_padding_]
-//         00416c35     PUSH       EAX
-//         00416c36     MOV        EAX,dword ptr [ESP + param_4]
-//         00416c3a     PUSH       EAX
-//         00416c3b     PUSH       EDI
-//         00416c3c     PUSH       EBX
-//         00416c3d     PUSH       EBP
-//         00416c3e     CALL       dword ptr [EDX + 0x154]
-//         00416c44     CMP        EAX,0x1
-//         00416c47     JNZ        LAB_00416c6d
-//                              aiuaimod.cpp:3442 (12)
-//         00416c49     PUSH       0x262
-//         00416c4e     MOV        this,ESI
-//         00416c50     CALL       UnitAIModule::setCurrentAction                   void setCurrentAction(UnitAIModule * this, in
-//                              aiuaimod.cpp:3443 (12)
-//         00416c55     PUSH       EDI
-//         00416c56     PUSH       EBX=>DAT_fffffff8
-//         00416c57     PUSH       EBP=>DAT_fffffff4
-//         00416c58     PUSH       offset DAT_fffffff0
-//         00416c5a     MOV        this,ESI
-//         00416c5c     CALL       UnitAIModule::setCurrentTarget                   void setCurrentTarget(UnitAIModule * this, in
-//                              aiuaimod.cpp:3444 (5)
-//         00416c61     MOV        EAX,0x1
-//                              aiuaimod.cpp:3447 (16)
-//         00416c66     POP        EDI
-//         00416c67     POP        ESI
-//         00416c68     POP        EBP
-//         00416c69     POP        EBX
-//         00416c6a     RET        0x14
-//                               LAB_00416c6d                                                 XREF[2]:     00416c22(j), 00416c47(j)
-//         00416c6d     POP        EDI
-//         00416c6e     POP        ESI
-//         00416c6f     POP        EBP
-//         00416c70     XOR        EAX,EAX
-//         00416c72     POP        EBX
-//         00416c73     RET        0x14
-//         00416c76     ??         90h
-//         00416c77     NOP
-//         00416c78     NOP
-//         00416c79     NOP
-//         00416c7a     NOP
-//         00416c7b     NOP
-//         00416c7c     NOP
-//         00416c7d     NOP
-//         00416c7e     NOP
-//         00416c7f     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     00416b06(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     00416af0(R)
+//                               ?moveTo@UnitAIModule@@UAEHHH@Z                               XREF[16]:    0056eb70(*), 00575868(*),
+//                               UnitAIModule::moveTo                                                      00575980(*), 00575a60(*),
+//                                                                                                         00575b40(*), 00575c20(*),
+//                                                                                                         00575d00(*), 00575de0(*),
+//                                                                                                         00575ec0(*), 00575fa8(*),
+//                                                                                                         00576088(*), 00576168(*),
+//                                                                                                         00576248(*), 00576328(*),
+//                                                                                                         00576408(*), 005764e8(*)
+//                              aiuaimod.cpp:3386 (17)
+//         00416af0     MOV        EAX,dword ptr [ESP + param_2]
+//         00416af4     PUSH       EBX
+//         00416af5     PUSH       ESI
+//         00416af6     PUSH       EDI
+//         00416af7     TEST       EAX,EAX
+//         00416af9     MOV        ESI,this
+//         00416afb     JNZ        LAB_00416b03
+//         00416afd     CMP        dword ptr [ESI + 0x30],-0x1
+//                              aiuaimod.cpp:3391 (2)
+//         00416b01     JNZ        LAB_00416b6f
+//                               LAB_00416b03                                                 XREF[1]:     00416afb(j)
+//                              aiuaimod.cpp:3393 (22)
+//         00416b03     MOV        this,dword ptr [ESI + 0x4]
+//         00416b06     MOV        EBX,dword ptr [ESP + param_1]
+//         00416b0a     PUSH       EAX
+//         00416b0b     PUSH       EBX
+//         00416b0c     MOV        EDX,dword ptr [this->_padding_]
+//         00416b0e     CALL       dword ptr [EDX + 0x15c]
+//         00416b14     CMP        EAX,0x1
+//         00416b17     JNZ        LAB_00416b6f
+//                              aiuaimod.cpp:3394 (15)
+//         00416b19     MOV        EAX,dword ptr [ESI + 0x4]
+//         00416b1c     PUSH       EBX
+//         00416b1d     MOV        this,dword ptr [EAX + 0xc]
+//         00416b20     MOV        this,dword ptr [ECX + this->currentTargetXValue]
+//         00416b23     CALL       RGE_Game_World::object                           RGE_Static_Object * object(RGE_Game_World * t
+//                              aiuaimod.cpp:3395 (14)
+//         00416b28     PUSH       0x262
+//         00416b2d     MOV        this,ESI
+//         00416b2f     MOV        EDI,EAX
+//         00416b31     CALL       UnitAIModule::setCurrentAction                   void setCurrentAction(UnitAIModule * this, in
+//                              aiuaimod.cpp:3396 (4)
+//         00416b36     TEST       EDI,EDI
+//         00416b38     JNZ        LAB_00416b50
+//                              aiuaimod.cpp:3397 (3)
+//         00416b3a     PUSH       EDI
+//         00416b3b     PUSH       EDI=>DAT_fffffff8
+//         00416b3c     PUSH       EDI=>DAT_fffffff4
+//                              aiuaimod.cpp:3400 (8)
+//         00416b3d     PUSH       EBX=>DAT_fffffff0
+//         00416b3e     MOV        this,ESI
+//         00416b40     CALL       UnitAIModule::setCurrentTarget                   void setCurrentTarget(UnitAIModule * this, in
+//                              aiuaimod.cpp:3401 (5)
+//         00416b45     MOV        EAX,0x1
+//                              aiuaimod.cpp:3404 (6)
+//         00416b4a     POP        EDI
+//         00416b4b     POP        ESI
+//         00416b4c     POP        EBX
+//         00416b4d     RET        0x8
+//                               LAB_00416b50                                                 XREF[1]:     00416b38(j)
+//                              aiuaimod.cpp:3400 (20)
+//         00416b50     MOV        EDX,dword ptr [EDI + 0x40]
+//         00416b53     MOV        EAX,dword ptr [EDI + 0x3c]
+//         00416b56     MOV        this,dword ptr [EDI + 0x38]
+//         00416b59     PUSH       EDX
+//         00416b5a     PUSH       EAX=>DAT_fffffff8
+//         00416b5b     PUSH       this=>DAT_fffffff4
+//         00416b5c     PUSH       EBX=>DAT_fffffff0
+//         00416b5d     MOV        this,ESI
+//         00416b5f     CALL       UnitAIModule::setCurrentTarget                   void setCurrentTarget(UnitAIModule * this, in
+//                              aiuaimod.cpp:3401 (5)
+//         00416b64     MOV        EAX,0x1
+//                              aiuaimod.cpp:3404 (14)
+//         00416b69     POP        EDI
+//         00416b6a     POP        ESI
+//         00416b6b     POP        EBX
+//         00416b6c     RET        0x8
+//                               LAB_00416b6f                                                 XREF[2]:     00416b01(j), 00416b17(j)
+//         00416b6f     POP        EDI
+//         00416b70     POP        ESI
+//         00416b71     XOR        EAX,EAX
+//         00416b73     POP        EBX
+//         00416b74     RET        0x8
+//         00416b77     ??         90h
+//         00416b78     NOP
+//         00416b79     NOP
+//         00416b7a     NOP
+//         00416b7b     NOP
+//         00416b7c     NOP
+//         00416b7d     NOP
+//         00416b7e     NOP
+//         00416b7f     NOP
     return 0;
 }
 
 int UnitAIModule::moveTo(int param_1, float param_2, int param_3) {
     /* TODO: Stub */
-//                              int __thiscall moveTo(UnitAIModule * this, float param_1, float para
+//                              int __thiscall moveTo(UnitAIModule * this, int param_1, float param_
 //              int               EAX:4          <RETURN>
 //              UnitAIModule *    ECX:4 (auto)   this
-//              float             Stack[0x4]:4   param_1                   XREF[1]:     00416c2f(R)
-//              float             Stack[0x8]:4   param_2                   XREF[1]:     00416c2b(R)
-//              float             Stack[0xc]:4   param_3                   XREF[1]:     00416c27(R)
-//              float             Stack[0x10]:4  param_4                   XREF[1]:     00416c36(R)
-//              int               Stack[0x14]:4  param_5                   XREF[1]:     00416c10(R)
-//                               ?moveTo@UnitAIModule@@UAEHMMMMH@Z                            XREF[16]:    0056eb68(*), 00575860(*),
-//                               UnitAIModule::moveTo                                                      00575978(*), 00575a58(*),
-//                                                                                                         00575b38(*), 00575c18(*),
-//                                                                                                         00575cf8(*), 00575dd8(*),
-//                                                                                                         00575eb8(*), 00575fa0(*),
-//                                                                                                         00576080(*), 00576160(*),
-//                                                                                                         00576240(*), 00576320(*),
-//                                                                                                         00576400(*), 005764e0(*)
-//                              aiuaimod.cpp:3434 (18)
-//         00416c10     MOV        EAX,dword ptr [ESP + param_5]
-//         00416c14     PUSH       EBX
-//         00416c15     PUSH       EBP
-//         00416c16     PUSH       ESI
-//         00416c17     TEST       EAX,EAX
-//         00416c19     PUSH       EDI
-//         00416c1a     MOV        ESI,this
-//         00416c1c     JNZ        LAB_00416c24
-//         00416c1e     CMP        dword ptr [ESI + 0x30],-0x1
-//                              aiuaimod.cpp:3439 (2)
-//         00416c22     JNZ        LAB_00416c6d
-//                               LAB_00416c24                                                 XREF[1]:     00416c1c(j)
-//                              aiuaimod.cpp:3441 (37)
-//         00416c24     MOV        this,dword ptr [ESI + 0x4]
-//         00416c27     MOV        EDI,dword ptr [ESP + param_3]
-//         00416c2b     MOV        EBX,dword ptr [ESP + param_2]
-//         00416c2f     MOV        EBP,dword ptr [ESP + param_1]
-//         00416c33     MOV        EDX,dword ptr [this->_padding_]
-//         00416c35     PUSH       EAX
-//         00416c36     MOV        EAX,dword ptr [ESP + param_4]
-//         00416c3a     PUSH       EAX
-//         00416c3b     PUSH       EDI
-//         00416c3c     PUSH       EBX
-//         00416c3d     PUSH       EBP
-//         00416c3e     CALL       dword ptr [EDX + 0x154]
-//         00416c44     CMP        EAX,0x1
-//         00416c47     JNZ        LAB_00416c6d
-//                              aiuaimod.cpp:3442 (12)
-//         00416c49     PUSH       0x262
-//         00416c4e     MOV        this,ESI
-//         00416c50     CALL       UnitAIModule::setCurrentAction                   void setCurrentAction(UnitAIModule * this, in
-//                              aiuaimod.cpp:3443 (12)
-//         00416c55     PUSH       EDI
-//         00416c56     PUSH       EBX=>DAT_fffffff8
-//         00416c57     PUSH       EBP=>DAT_fffffff4
-//         00416c58     PUSH       offset DAT_fffffff0
-//         00416c5a     MOV        this,ESI
-//         00416c5c     CALL       UnitAIModule::setCurrentTarget                   void setCurrentTarget(UnitAIModule * this, in
-//                              aiuaimod.cpp:3444 (5)
-//         00416c61     MOV        EAX,0x1
-//                              aiuaimod.cpp:3447 (16)
-//         00416c66     POP        EDI
-//         00416c67     POP        ESI
-//         00416c68     POP        EBP
-//         00416c69     POP        EBX
-//         00416c6a     RET        0x14
-//                               LAB_00416c6d                                                 XREF[2]:     00416c22(j), 00416c47(j)
-//         00416c6d     POP        EDI
-//         00416c6e     POP        ESI
-//         00416c6f     POP        EBP
-//         00416c70     XOR        EAX,EAX
-//         00416c72     POP        EBX
-//         00416c73     RET        0x14
-//         00416c76     ??         90h
-//         00416c77     NOP
-//         00416c78     NOP
-//         00416c79     NOP
-//         00416c7a     NOP
-//         00416c7b     NOP
-//         00416c7c     NOP
-//         00416c7d     NOP
-//         00416c7e     NOP
-//         00416c7f     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     00416b96(R)
+//              float             Stack[0x8]:4   param_2                   XREF[1]:     00416b9b(R)
+//              int               Stack[0xc]:4   param_3                   XREF[1]:     00416b80(R)
+//                               ?moveTo@UnitAIModule@@UAEHHMH@Z                              XREF[16]:    0056eb6c(*), 00575864(*),
+//                               UnitAIModule::moveTo                                                      0057597c(*), 00575a5c(*),
+//                                                                                                         00575b3c(*), 00575c1c(*),
+//                                                                                                         00575cfc(*), 00575ddc(*),
+//                                                                                                         00575ebc(*), 00575fa4(*),
+//                                                                                                         00576084(*), 00576164(*),
+//                                                                                                         00576244(*), 00576324(*),
+//                                                                                                         00576404(*), 005764e4(*)
+//                              aiuaimod.cpp:3410 (17)
+//         00416b80     MOV        EAX,dword ptr [ESP + param_3]
+//         00416b84     PUSH       EBX
+//         00416b85     PUSH       ESI
+//         00416b86     PUSH       EDI
+//         00416b87     TEST       EAX,EAX
+//         00416b89     MOV        ESI,this
+//         00416b8b     JNZ        LAB_00416b93
+//         00416b8d     CMP        dword ptr [ESI + 0x30],-0x1
+//                              aiuaimod.cpp:3415 (2)
+//         00416b91     JNZ        LAB_00416c04
+//                               LAB_00416b93                                                 XREF[1]:     00416b8b(j)
+//                              aiuaimod.cpp:3417 (27)
+//         00416b93     MOV        this,dword ptr [ESI + 0x4]
+//         00416b96     MOV        EBX,dword ptr [ESP + param_1]
+//         00416b9a     PUSH       EAX
+//         00416b9b     MOV        EAX,dword ptr [ESP + param_2]
+//         00416b9f     MOV        EDX,dword ptr [this->_padding_]
+//         00416ba1     PUSH       EAX
+//         00416ba2     PUSH       EBX
+//         00416ba3     CALL       dword ptr [EDX + 0x158]
+//         00416ba9     CMP        EAX,0x1
+//         00416bac     JNZ        LAB_00416c04
+//                              aiuaimod.cpp:3418 (15)
+//         00416bae     MOV        this,dword ptr [ESI + 0x4]
+//         00416bb1     PUSH       EBX
+//         00416bb2     MOV        EDX,dword ptr [ECX + this->objectCategoryValue]
+//         00416bb5     MOV        this,dword ptr [EDX + 0x3c]
+//         00416bb8     CALL       RGE_Game_World::object                           RGE_Static_Object * object(RGE_Game_World * t
+//                              aiuaimod.cpp:3419 (14)
+//         00416bbd     PUSH       0x262
+//         00416bc2     MOV        this,ESI
+//         00416bc4     MOV        EDI,EAX
+//         00416bc6     CALL       UnitAIModule::setCurrentAction                   void setCurrentAction(UnitAIModule * this, in
+//                              aiuaimod.cpp:3420 (4)
+//         00416bcb     TEST       EDI,EDI
+//         00416bcd     JNZ        LAB_00416be5
+//                              aiuaimod.cpp:3421 (3)
+//         00416bcf     PUSH       EDI
+//         00416bd0     PUSH       EDI=>DAT_fffffff8
+//         00416bd1     PUSH       EDI=>DAT_fffffff4
+//                              aiuaimod.cpp:3424 (8)
+//         00416bd2     PUSH       EBX=>DAT_fffffff0
+//         00416bd3     MOV        this,ESI
+//         00416bd5     CALL       UnitAIModule::setCurrentTarget                   void setCurrentTarget(UnitAIModule * this, in
+//                              aiuaimod.cpp:3425 (5)
+//         00416bda     MOV        EAX,0x1
+//                              aiuaimod.cpp:3428 (6)
+//         00416bdf     POP        EDI
+//         00416be0     POP        ESI
+//         00416be1     POP        EBX
+//         00416be2     RET        0xc
+//                               LAB_00416be5                                                 XREF[1]:     00416bcd(j)
+//                              aiuaimod.cpp:3424 (20)
+//         00416be5     MOV        EAX,dword ptr [EDI + 0x40]
+//         00416be8     MOV        this,dword ptr [EDI + 0x3c]
+//         00416beb     MOV        EDX,dword ptr [EDI + 0x38]
+//         00416bee     PUSH       EAX
+//         00416bef     PUSH       this=>DAT_fffffff8
+//         00416bf0     PUSH       EDX=>DAT_fffffff4
+//         00416bf1     PUSH       EBX=>DAT_fffffff0
+//         00416bf2     MOV        this,ESI
+//         00416bf4     CALL       UnitAIModule::setCurrentTarget                   void setCurrentTarget(UnitAIModule * this, in
+//                              aiuaimod.cpp:3425 (5)
+//         00416bf9     MOV        EAX,0x1
+//                              aiuaimod.cpp:3428 (14)
+//         00416bfe     POP        EDI
+//         00416bff     POP        ESI
+//         00416c00     POP        EBX
+//         00416c01     RET        0xc
+//                               LAB_00416c04                                                 XREF[2]:     00416b91(j), 00416bac(j)
+//         00416c04     POP        EDI
+//         00416c05     POP        ESI
+//         00416c06     XOR        EAX,EAX
+//         00416c08     POP        EBX
+//         00416c09     RET        0xc
+//         00416c0c     ??         90h
+//         00416c0d     NOP
+//         00416c0e     NOP
+//         00416c0f     NOP
     return 0;
 }
 
@@ -9884,71 +9841,69 @@ void UnitAIModule::removeCurrentTarget() {
 
 void UnitAIModule::setCurrentTarget(int param_1, float param_2, float param_3, float param_4) {
     /* TODO: Stub */
-//                              void __thiscall setCurrentTarget(UnitAIModule * this, int param_1, i
+//                              void __thiscall setCurrentTarget(UnitAIModule * this, int param_1, f
 //              void              <VOID>         <RETURN>
 //              UnitAIModule *    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     00417609(R)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     00417610(R)
-//              float             Stack[0xc]:4   param_3                   XREF[1]:     00417617(R)
-//              float             Stack[0x10]:4  param_4                   XREF[1]:     0041761e(R)
-//              float             Stack[0x14]:4  param_5                   XREF[1]:     00417625(R)
-//                               ?setCurrentTarget@UnitAIModule@@QAEXHHMMM@Z                  XREF[23]:    move_to:004063fb(c),
-//                               UnitAIModule::setCurrentTarget                                            work2:00406770(c),
-//                                                                                                         huntObject:00416504(c),
-//                                                                                                         huntObject:0041652b(c),
-//                                                                                                         healObject:00416645(c),
-//                                                                                                         healObject:0041666c(c),
-//                                                                                                         gatherObject:004166e5(c),
-//                                                                                                         gatherObject:0041670c(c),
-//                                                                                                         repairObject:00416785(c),
-//                                                                                                         repairObject:004167ac(c),
-//                                                                                                         buildObject:00416825(c),
-//                                                                                                         buildObject:0041684c(c),
-//                                                                                                         tradeWithObject:004168c5(c),
-//                                                                                                         tradeWithObject:004168ec(c),
-//                                                                                                         unload:00416aa2(c),
-//                                                                                                         unload:00416ace(c),
-//                                                                                                         do_command_move:0043472e(c),
-//                                                                                                         do_command_move:00434873(c),
-//                                                                                                         do_repair:004cc71a(c),
-//                                                                                                         do_command_make:00509a84(c), [more]
-//                              aiuaimod.cpp:3825 (3)
-//         00417600     MOV        EAX,dword ptr [ECX + this->currentTargetValue]
-//                              aiuaimod.cpp:3828 (6)
-//         00417603     MOV        EDX,dword ptr [ECX + this->currentTargetTypeVa
-//         00417606     MOV        dword ptr [ECX + this->lastTargetValue],EAX
-//                              aiuaimod.cpp:3829 (7)
-//         00417609     MOV        EAX,dword ptr [ESP + param_1]
-//         0041760d     MOV        dword ptr [ECX + this->lastTargetTypeValue],EDX
-//                              aiuaimod.cpp:3830 (7)
-//         00417610     MOV        EDX,dword ptr [ESP + param_2]
-//         00417614     MOV        dword ptr [ECX + this->currentTargetValue],EAX
-//                              aiuaimod.cpp:3831 (7)
-//         00417617     MOV        EAX,dword ptr [ESP + param_3]
-//         0041761b     MOV        dword ptr [ECX + this->currentTargetTypeValue]
-//                              aiuaimod.cpp:3832 (7)
-//         0041761e     MOV        EDX,dword ptr [ESP + param_4]
-//         00417622     MOV        dword ptr [ECX + this->currentTargetXValue],EAX
-//                              aiuaimod.cpp:3833 (10)
-//         00417625     MOV        EAX,dword ptr [ESP + param_5]
-//         00417629     MOV        dword ptr [ECX + this->currentTargetYValue],EDX
-//         0041762c     MOV        dword ptr [ECX + this->currentTargetZValue],EAX
-//                              aiuaimod.cpp:3834 (3)
-//         0041762f     RET        0x14
-//         00417632     ??         90h
-//         00417633     NOP
-//         00417634     NOP
-//         00417635     NOP
-//         00417636     NOP
-//         00417637     NOP
-//         00417638     NOP
-//         00417639     NOP
-//         0041763a     NOP
-//         0041763b     NOP
-//         0041763c     NOP
-//         0041763d     NOP
-//         0041763e     NOP
-//         0041763f     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004175c0(R)
+//              float             Stack[0x8]:4   param_2                   XREF[1]:     004175b0(R)
+//              float             Stack[0xc]:4   param_3                   XREF[1]:     004175c7(R)
+//              float             Stack[0x10]:4  param_4                   XREF[1]:     004175d1(R)
+//                               ?setCurrentTarget@UnitAIModule@@QAEXHMMM@Z                   XREF[18]:    create_task_action:004042d1(c),
+//                               UnitAIModule::setCurrentTarget                                            attackObject:004163a6(c),
+//                                                                                                         attackRoundupObject:0041644d(c),
+//                                                                                                         explore:00416961(c),
+//                                                                                                         enterObject:004169c6(c),
+//                                                                                                         transportObject:00416a27(c),
+//                                                                                                         moveTo:00416b40(c),
+//                                                                                                         moveTo:00416b5f(c),
+//                                                                                                         moveTo:00416bd5(c),
+//                                                                                                         moveTo:00416bf4(c),
+//                                                                                                         moveTo:00416c5c(c),
+//                                                                                                         evasiveMoveTo:00416f06(c),
+//                                                                                                         intelligentEvasiveMoveTo:0041718a(
+//                                                                                                         followObject:004173b5(c),
+//                                                                                                         defendObject:00417425(c),
+//                                                                                                         defendPosition:00417478(c),
+//                                                                                                         seekAndDestroy:004174ec(c),
+//                                                                                                         exploreAndDestroy:00417561(c)
+//                              aiuaimod.cpp:3807 (23)
+//         004175b0     MOV        EDX,dword ptr [ESP + param_2]
+//         004175b4     PUSH       ESI
+//         004175b5     MOV        ESI,this
+//         004175b7     MOV        EAX,dword ptr [ESI + 0x34]
+//         004175ba     MOV        this,dword ptr [ESI + 0x38]
+//         004175bd     MOV        dword ptr [ESI + 0x58],EAX
+//         004175c0     MOV        EAX,dword ptr [ESP + param_1]
+//         004175c4     MOV        dword ptr [ESI + 0x5c],this
+//                              aiuaimod.cpp:3813 (10)
+//         004175c7     MOV        this,dword ptr [ESP + param_3]
+//         004175cb     MOV        dword ptr [ESI + 0x34],EAX
+//         004175ce     MOV        dword ptr [ESI + 0x3c],EDX
+//                              aiuaimod.cpp:3814 (4)
+//         004175d1     MOV        EDX,dword ptr [ESP + param_4]
+//                              aiuaimod.cpp:3817 (21)
+//         004175d5     PUSH       EAX
+//         004175d6     MOV        EAX,dword ptr [ESI + 0x4]
+//         004175d9     MOV        dword ptr [ESI + 0x40],this
+//         004175dc     MOV        dword ptr [ESI + 0x44],EDX
+//         004175df     MOV        this,dword ptr [EAX + 0xc]
+//         004175e2     MOV        this,dword ptr [ECX + this->currentTargetXValue]
+//         004175e5     CALL       RGE_Game_World::object                           RGE_Static_Object * object(RGE_Game_World * t
+//                              aiuaimod.cpp:3818 (4)
+//         004175ea     TEST       EAX,EAX
+//         004175ec     JZ         LAB_004175f8
+//                              aiuaimod.cpp:3819 (10)
+//         004175ee     MOV        EDX,dword ptr [EAX + 0x8]
+//         004175f1     MOVSX      EAX,word ptr [EDX + 0x14]
+//         004175f5     MOV        dword ptr [ESI + 0x38],EAX
+//                               LAB_004175f8                                                 XREF[1]:     004175ec(j)
+//                              aiuaimod.cpp:3820 (4)
+//         004175f8     POP        ESI
+//         004175f9     RET        0x10
+//         004175fc     ??         90h
+//         004175fd     NOP
+//         004175fe     NOP
+//         004175ff     NOP
     return;
 }
 
@@ -14927,276 +14882,50 @@ int UnitAIModule::processRetryableOrder() {
 
 int UnitAIModule::addToOrderQueue(OrderEvent* param_1, int param_2) {
     /* TODO: Stub */
-//                              int __thiscall addToOrderQueue(UnitAIModule * this, int param_1, int
+//                              int __thiscall addToOrderQueue(UnitAIModule * this, OrderEvent * par
 //              int               EAX:4          <RETURN>
 //              UnitAIModule *    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[2]:     00419dbd(R), 00419e28(R)
-//              int               Stack[0x8]:4   param_2                   XREF[2]:     00419dc6(R), 00419e3d(R)
-//              int               Stack[0xc]:4   param_3                   XREF[2]:     00419dda(R), 00419e5f(R)
-//              int               Stack[0x10]:4  param_4                   XREF[2]:     00419de4(R), 00419e70(R)
-//              float             Stack[0x14]:4  param_5                   XREF[2]:     00419dee(R), 00419e2c(R)
-//              float             Stack[0x18]:4  param_6                   XREF[2]:     00419df8(R), 00419e91(R)
-//              float             Stack[0x1c]:4  param_7                   XREF[2]:     00419e02(R), 00419ea2(R)
-//              float             Stack[0x20]:4  param_8                   XREF[2]:     00419e0c(R), 00419eb0(R)
-//              int               Stack[0x24]:4  param_9                   XREF[1]:     00419d2e(R)
-//              int               Stack[0x28]:4  param_10                  XREF[2]:     00419dd0(R), 00419e4e(R)
-//                               ?addToOrderQueue@UnitAIModule@@IAEHHHHHMMMMHH@Z              XREF[4]:     order:00414d8c(c),
-//                               UnitAIModule::addToOrderQueue                                             order:00414dca(c),
-//                                                                                                         order:00414e00(c),
-//                                                                                                         addToOrderQueue:00419c5c(c)
-//                              aiuaimod.cpp:5762 (5)
-//         00419c70     PUSH       EBX
-//         00419c71     PUSH       ESI
-//         00419c72     MOV        ESI,this
-//         00419c74     PUSH       EDI
-//                              aiuaimod.cpp:5764 (14)
-//         00419c75     MOV        EAX,dword ptr [ESI + 0x14]
-//         00419c78     MOV        this,dword ptr [ESI + 0x10]
-//         00419c7b     CMP        EAX,this
-//         00419c7d     JNZ        LAB_00419d2e
-//                              aiuaimod.cpp:5765 (17)
-//         00419c83     LEA        EAX,[EAX + EAX*0x8]
-//         00419c86     SHL        EAX,0x3
-//         00419c89     PUSH       EAX
-//         00419c8a     CALL       operator_new                                     void * operator_new(uint param_1)
-//         00419c8f     MOV        EDI,EAX
-//         00419c91     ADD        ESP,0x4
-//                              aiuaimod.cpp:5766 (4)
-//         00419c94     TEST       EDI,EDI
-//         00419c96     JNZ        LAB_00419c9e
-//                              aiuaimod.cpp:5826 (6)
-//         00419c98     POP        EDI
-//         00419c99     POP        ESI
-//         00419c9a     POP        EBX
-//         00419c9b     RET        0x28
-//                               LAB_00419c9e                                                 XREF[1]:     00419c96(j)
-//                              aiuaimod.cpp:5769 (9)
-//         00419c9e     MOV        EAX,dword ptr [ESI + 0x10]
-//         00419ca1     XOR        EDX,EDX
-//         00419ca3     TEST       EAX,EAX
-//         00419ca5     JLE        LAB_00419d13
-//                              aiuaimod.cpp:5826 (108)
-//         00419ca7     XOR        EAX,EAX
-//         00419ca9     LEA        this,[EDI + 0x8]
-//                               LAB_00419cac                                                 XREF[1]:     00419d11(j)
-//         00419cac     MOV        EBX,dword ptr [ESI + 0x18]
-//         00419caf     INC        EDX
-//         00419cb0     ADD        this,0x24
-//         00419cb3     MOV        EBX,dword ptr [EAX + EBX*0x1]
-//         00419cb6     ADD        EAX,0x24
-//         00419cb9     MOV        dword ptr [this->_padding_ + -0x2c],EBX
-//         00419cbc     MOV        EBX,dword ptr [ESI + 0x18]
-//         00419cbf     MOV        EBX,dword ptr [EAX + EBX*0x1 + -0x20]
-//         00419cc3     MOV        dword ptr [this->_padding_ + -0x28],EBX
-//         00419cc6     MOV        EBX,dword ptr [ESI + 0x18]
-//         00419cc9     MOV        EBX,dword ptr [EAX + EBX*0x1 + -0x1c]
-//         00419ccd     MOV        dword ptr [this->_padding_ + -0x24],EBX
-//         00419cd0     MOV        EBX,dword ptr [ESI + 0x18]
-//         00419cd3     MOV        EBX,dword ptr [EAX + EBX*0x1 + -0x18]
-//         00419cd7     MOV        dword ptr [this->_padding_ + -0x20],EBX
-//         00419cda     MOV        EBX,dword ptr [ESI + 0x18]
-//         00419cdd     MOV        EBX,dword ptr [EAX + EBX*0x1 + -0x14]
-//         00419ce1     MOV        dword ptr [this->_padding_ + -0x1c],EBX
-//         00419ce4     MOV        EBX,dword ptr [ESI + 0x18]
-//         00419ce7     MOV        EBX,dword ptr [EAX + EBX*0x1 + -0x10]
-//         00419ceb     MOV        dword ptr [this->_padding_ + -0x18],EBX
-//         00419cee     MOV        EBX,dword ptr [ESI + 0x18]
-//         00419cf1     MOV        EBX,dword ptr [EAX + EBX*0x1 + -0xc]
-//         00419cf5     MOV        dword ptr [this->_padding_ + -0x14],EBX
-//         00419cf8     MOV        EBX,dword ptr [ESI + 0x18]
-//         00419cfb     MOV        EBX,dword ptr [EAX + EBX*0x1 + -0x8]
-//         00419cff     MOV        dword ptr [this->_padding_ + -0x10],EBX
-//         00419d02     MOV        EBX,dword ptr [ESI + 0x18]
-//         00419d05     MOV        EBX,dword ptr [EAX + EBX*0x1 + -0x4]
-//         00419d09     MOV        dword ptr [this->_padding_ + -0xc],EBX
-//         00419d0c     MOV        EBX,dword ptr [ESI + 0x10]
-//         00419d0f     CMP        EDX,EBX
-//         00419d11     JL         LAB_00419cac
-//                               LAB_00419d13                                                 XREF[1]:     00419ca5(j)
-//                              aiuaimod.cpp:5780 (7)
-//         00419d13     MOV        EAX,dword ptr [ESI + 0x18]
-//         00419d16     TEST       EAX,EAX
-//         00419d18     JZ         LAB_00419d23
-//                              aiuaimod.cpp:5781 (9)
-//         00419d1a     PUSH       EAX
-//         00419d1b     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         00419d20     ADD        ESP,0x4
-//                               LAB_00419d23                                                 XREF[1]:     00419d18(j)
-//                              aiuaimod.cpp:5783 (11)
-//         00419d23     MOV        this,dword ptr [ESI + 0x14]
-//         00419d26     MOV        dword ptr [ESI + 0x18],EDI
-//         00419d29     SHL        this,0x1
-//         00419d2b     MOV        dword ptr [ESI + 0x14],this
-//                               LAB_00419d2e                                                 XREF[1]:     00419c7d(j)
-//                              aiuaimod.cpp:5789 (23)
-//         00419d2e     MOV        EAX,dword ptr [ESP + param_9]
-//         00419d32     TEST       EAX,EAX
-//         00419d34     JZ         LAB_00419e25
-//         00419d3a     MOV        EAX,dword ptr [ESI + 0x10]
-//         00419d3d     TEST       EAX,EAX
-//         00419d3f     JZ         LAB_00419e25
-//                              aiuaimod.cpp:5802 (6)
-//         00419d45     XOR        EDX,EDX
-//         00419d47     TEST       EAX,EAX
-//         00419d49     JLE        LAB_00419dba
-//                              aiuaimod.cpp:5826 (2)
-//         00419d4b     XOR        EAX,EAX
-//                               LAB_00419d4d                                                 XREF[1]:     00419db8(j)
-//                              aiuaimod.cpp:5803 (10)
-//         00419d4d     MOV        this,dword ptr [ESI + 0x18]
-//         00419d50     MOV        EDI,dword ptr [EAX + this->_padding_*0x1]
-//         00419d53     MOV        dword ptr [EAX + this->_padding_*0x1 + 0x24],EDI
-//                              aiuaimod.cpp:5804 (11)
-//         00419d57     MOV        this,dword ptr [ESI + 0x18]
-//         00419d5a     ADD        this,EAX
-//         00419d5c     MOV        EDI,dword ptr [ECX + this->objectValue]
-//         00419d5f     MOV        dword ptr [ECX + this->currentOrderValue],EDI
-//                              aiuaimod.cpp:5805 (11)
-//         00419d62     MOV        this,dword ptr [ESI + 0x18]
-//         00419d65     ADD        this,EAX
-//         00419d67     MOV        EDI,dword ptr [ECX + this->moodValue]
-//         00419d6a     MOV        dword ptr [ECX + this->currentOrderPriorityVal
-//                              aiuaimod.cpp:5806 (11)
-//         00419d6d     MOV        this,dword ptr [ESI + 0x18]
-//         00419d70     ADD        this,EAX
-//         00419d72     MOV        EDI,dword ptr [ECX + this->objectCategoryValue]
-//         00419d75     MOV        dword ptr [ECX + this->currentActionValue],EDI
-//                              aiuaimod.cpp:5807 (11)
-//         00419d78     MOV        this,dword ptr [ESI + 0x18]
-//         00419d7b     ADD        this,EAX
-//         00419d7d     MOV        EDI,dword ptr [ECX + this->orderQueueSizeValue]
-//         00419d80     MOV        dword ptr [ECX + this->currentTargetValue],EDI
-//                              aiuaimod.cpp:5808 (11)
-//         00419d83     MOV        this,dword ptr [ESI + 0x18]
-//         00419d86     ADD        this,EAX
-//         00419d88     MOV        EDI,dword ptr [ECX + this->orderQueueMaxSizeVa
-//         00419d8b     MOV        dword ptr [ECX + this->currentTargetTypeValue]
-//                              aiuaimod.cpp:5809 (11)
-//         00419d8e     MOV        this,dword ptr [ESI + 0x18]
-//         00419d91     ADD        this,EAX
-//         00419d93     MOV        EDI,dword ptr [ECX + this->orderQueueValue]
-//         00419d96     MOV        dword ptr [ECX + this->currentTargetXValue],EDI
-//                              aiuaimod.cpp:5810 (11)
-//         00419d99     MOV        this,dword ptr [ESI + 0x18]
-//         00419d9c     ADD        this,EAX
-//         00419d9e     MOV        EDI,dword ptr [ECX + this->notifyQueueSizeValue]
-//         00419da1     MOV        dword ptr [ECX + this->currentTargetYValue],EDI
-//                              aiuaimod.cpp:5811 (22)
-//         00419da4     MOV        this,dword ptr [ESI + 0x18]
-//         00419da7     ADD        this,EAX
-//         00419da9     INC        EDX
-//         00419daa     ADD        EAX,0x24
-//         00419dad     MOV        EDI,dword ptr [ECX + this->notifyQueueMaxSizeV
-//         00419db0     MOV        dword ptr [ECX + this->currentTargetZValue],EDI
-//         00419db3     MOV        this,dword ptr [ESI + 0x10]
-//         00419db6     CMP        EDX,this
-//         00419db8     JL         LAB_00419d4d
-//                               LAB_00419dba                                                 XREF[1]:     00419d49(j)
-//                              aiuaimod.cpp:5814 (9)
-//         00419dba     MOV        EDX,dword ptr [ESI + 0x18]
-//         00419dbd     MOV        EAX,dword ptr [ESP + param_1]
-//         00419dc1     MOV        dword ptr [EDX],EAX
-//                              aiuaimod.cpp:5815 (10)
-//         00419dc3     MOV        this,dword ptr [ESI + 0x18]
-//         00419dc6     MOV        EDX,dword ptr [ESP + param_2]
-//         00419dca     MOV        dword ptr [ECX + this->objectValue],EDX
-//                              aiuaimod.cpp:5816 (10)
-//         00419dcd     MOV        EAX,dword ptr [ESI + 0x18]
-//         00419dd0     MOV        this,dword ptr [ESP + param_10]
-//         00419dd4     MOV        dword ptr [EAX + 0x8],this
-//                              aiuaimod.cpp:5817 (10)
-//         00419dd7     MOV        EDX,dword ptr [ESI + 0x18]
-//         00419dda     MOV        EAX,dword ptr [ESP + param_3]
-//         00419dde     MOV        dword ptr [EDX + 0xc],EAX
-//                              aiuaimod.cpp:5818 (10)
-//         00419de1     MOV        this,dword ptr [ESI + 0x18]
-//         00419de4     MOV        EDX,dword ptr [ESP + param_4]
-//         00419de8     MOV        dword ptr [ECX + this->orderQueueSizeValue],EDX
-//                              aiuaimod.cpp:5819 (10)
-//         00419deb     MOV        EAX,dword ptr [ESI + 0x18]
-//         00419dee     MOV        this,dword ptr [ESP + param_5]
-//         00419df2     MOV        dword ptr [EAX + 0x14],this
-//                              aiuaimod.cpp:5820 (10)
-//         00419df5     MOV        EDX,dword ptr [ESI + 0x18]
-//         00419df8     MOV        EAX,dword ptr [ESP + param_6]
-//         00419dfc     MOV        dword ptr [EDX + 0x18],EAX
-//                              aiuaimod.cpp:5821 (10)
-//         00419dff     MOV        this,dword ptr [ESI + 0x18]
-//         00419e02     MOV        EDX,dword ptr [ESP + param_7]
-//         00419e06     MOV        dword ptr [ECX + this->notifyQueueSizeValue],EDX
-//                              aiuaimod.cpp:5822 (10)
-//         00419e09     MOV        EAX,dword ptr [ESI + 0x18]
-//         00419e0c     MOV        this,dword ptr [ESP + param_8]
-//         00419e10     MOV        dword ptr [EAX + 0x20],this
-//                              aiuaimod.cpp:5824 (7)
-//         00419e13     MOV        EAX,dword ptr [ESI + 0x10]
-//         00419e16     INC        EAX
-//         00419e17     MOV        dword ptr [ESI + 0x10],EAX
-//                              aiuaimod.cpp:5825 (5)
-//         00419e1a     MOV        EAX,0x1
-//                              aiuaimod.cpp:5826 (6)
-//         00419e1f     POP        EDI
-//         00419e20     POP        ESI
-//         00419e21     POP        EBX
-//         00419e22     RET        0x28
-//                               LAB_00419e25                                                 XREF[2]:     00419d34(j), 00419d3f(j)
-//                              aiuaimod.cpp:5790 (7)
-//         00419e25     MOV        EAX,dword ptr [ESI + 0x10]
-//         00419e28     MOV        this,dword ptr [ESP + param_1]
-//                              aiuaimod.cpp:5795 (10)
-//         00419e2c     FLD        float ptr [ESP + param_5]
-//         00419e30     LEA        EDX,[EAX + EAX*0x8]
-//         00419e33     MOV        EAX,dword ptr [ESI + 0x18]
-//                              aiuaimod.cpp:5826 (153)
-//         00419e36     POP        EDI
-//         00419e37     MOV        dword ptr [EAX + EDX*0x4],this
-//         00419e3a     MOV        EAX,dword ptr [ESI + 0x10]
-//         00419e3d     MOV        this,dword ptr [ESP + param_2]
-//         00419e41     LEA        EDX,[EAX + EAX*0x8]
-//         00419e44     MOV        EAX,dword ptr [ESI + 0x18]
-//         00419e47     MOV        dword ptr [EAX + EDX*0x4 + 0x4],this
-//         00419e4b     MOV        EAX,dword ptr [ESI + 0x10]
-//         00419e4e     MOV        this,dword ptr [ESP + param_10]
-//         00419e52     LEA        EDX,[EAX + EAX*0x8]
-//         00419e55     MOV        EAX,dword ptr [ESI + 0x18]
-//         00419e58     MOV        dword ptr [EAX + EDX*0x4 + 0x8],this
-//         00419e5c     MOV        EAX,dword ptr [ESI + 0x10]
-//         00419e5f     MOV        this,dword ptr [ESP + param_3]
-//         00419e63     LEA        EDX,[EAX + EAX*0x8]
-//         00419e66     MOV        EAX,dword ptr [ESI + 0x18]
-//         00419e69     MOV        dword ptr [EAX + EDX*0x4 + 0xc],this
-//         00419e6d     MOV        EAX,dword ptr [ESI + 0x10]
-//         00419e70     MOV        this,dword ptr [ESP + param_4]
-//         00419e74     LEA        EDX,[EAX + EAX*0x8]
-//         00419e77     MOV        EAX,dword ptr [ESI + 0x18]
-//         00419e7a     MOV        dword ptr [EAX + EDX*0x4 + 0x10],this
-//         00419e7e     MOV        EAX,dword ptr [ESI + 0x10]
-//         00419e81     LEA        EDX,[EAX + EAX*0x8]
-//         00419e84     MOV        EAX,dword ptr [ESI + 0x18]
-//         00419e87     FSTP       float ptr [EAX + EDX*0x4 + 0x14]
-//         00419e8b     MOV        EAX,dword ptr [ESI + 0x10]
-//         00419e8e     MOV        EDX,dword ptr [ESI + 0x18]
-//         00419e91     FLD        float ptr [ESP + param_6]
-//         00419e95     LEA        this,[EAX + EAX*0x8]
-//         00419e98     FSTP       float ptr [EDX + this->_padding_*0x4 + 0x18]
-//         00419e9c     MOV        EAX,dword ptr [ESI + 0x10]
-//         00419e9f     MOV        this,dword ptr [ESI + 0x18]
-//         00419ea2     FLD        float ptr [ESP + param_7]
-//         00419ea6     LEA        EAX,[EAX + EAX*0x8]
-//         00419ea9     FSTP       float ptr [ECX + EAX*0x4 + this->notifyQueueSi
-//         00419ead     MOV        EAX,dword ptr [ESI + 0x10]
-//         00419eb0     FLD        float ptr [ESP + param_8]
-//         00419eb4     LEA        EDX,[EAX + EAX*0x8]
-//         00419eb7     MOV        EAX,dword ptr [ESI + 0x18]
-//         00419eba     FSTP       float ptr [EAX + EDX*0x4 + 0x20]
-//         00419ebe     MOV        EAX,dword ptr [ESI + 0x10]
-//         00419ec1     INC        EAX
-//         00419ec2     MOV        dword ptr [ESI + 0x10],EAX
-//         00419ec5     POP        ESI
-//         00419ec6     MOV        EAX,0x1
-//         00419ecb     POP        EBX
-//         00419ecc     RET        0x28
-//         00419ecf     ??         90h
+//              OrderEvent *      Stack[0x4]:4   param_1                   XREF[1]:     00419c30(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     00419c38(R)
+//                               ?addToOrderQueue@UnitAIModule@@IAEHPAUOrderEvent@@H@Z        XREF[1]:     load:00413651(c)
+//                               UnitAIModule::addToOrderQueue
+//                              aiuaimod.cpp:5751 (49)
+//         00419c30     MOV        EAX,dword ptr [ESP + param_1]
+//         00419c34     MOV        EDX,dword ptr [EAX + 0x8]
+//         00419c37     PUSH       EDX
+//         00419c38     MOV        EDX,dword ptr [ESP + param_2]
+//         00419c3c     PUSH       EDX
+//         00419c3d     MOV        EDX,dword ptr [EAX + 0x20]
+//         00419c40     PUSH       EDX
+//         00419c41     MOV        EDX,dword ptr [EAX + 0x1c]
+//         00419c44     PUSH       EDX
+//         00419c45     MOV        EDX,dword ptr [EAX + 0x18]
+//         00419c48     PUSH       EDX
+//         00419c49     MOV        EDX,dword ptr [EAX + 0x14]
+//         00419c4c     PUSH       EDX
+//         00419c4d     MOV        EDX,dword ptr [EAX + 0x10]
+//         00419c50     PUSH       EDX
+//         00419c51     MOV        EDX,dword ptr [EAX + 0xc]
+//         00419c54     PUSH       EDX
+//         00419c55     MOV        EDX,dword ptr [EAX + 0x4]
+//         00419c58     MOV        EAX,dword ptr [EAX]
+//         00419c5a     PUSH       EDX
+//         00419c5b     PUSH       EAX
+//         00419c5c     CALL       UnitAIModule::addToOrderQueue                    int addToOrderQueue(UnitAIModule * this, int
+//                              aiuaimod.cpp:5755 (3)
+//         00419c61     RET        0x8
+//         00419c64     ??         90h
+//         00419c65     NOP
+//         00419c66     NOP
+//         00419c67     NOP
+//         00419c68     NOP
+//         00419c69     NOP
+//         00419c6a     NOP
+//         00419c6b     NOP
+//         00419c6c     NOP
+//         00419c6d     NOP
+//         00419c6e     NOP
+//         00419c6f     NOP
     return 0;
 }
 
@@ -15477,141 +15206,42 @@ int UnitAIModule::addToOrderQueue(int param_1, int param_2, int param_3, int par
 
 int UnitAIModule::addToNotifyQueue(NotifyEvent* param_1) {
     /* TODO: Stub */
-//                              int __thiscall addToNotifyQueue(UnitAIModule * this, int param_1, in
+//                              int __thiscall addToNotifyQueue(UnitAIModule * this, NotifyEvent * p
 //              int               EAX:4          <RETURN>
 //              UnitAIModule *    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     00419fa3(R)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     00419fb4(R)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     00419fc5(R)
-//              long              Stack[0x10]:4  param_4                   XREF[1]:     00419fd6(R)
-//              long              Stack[0x14]:4  param_5                   XREF[1]:     00419fe7(R)
-//              long              Stack[0x18]:4  param_6                   XREF[1]:     00419ff8(R)
-//                               ?addToNotifyQueue@UnitAIModule@@IAEHHHHJJJ@Z                 XREF[2]:     notify:00414f25(c),
-//                               UnitAIModule::addToNotifyQueue                                            addToNotifyQueue:00419eeb(c)
-//                              aiuaimod.cpp:5840 (5)
-//         00419f00     PUSH       EBX
-//         00419f01     PUSH       ESI
-//         00419f02     MOV        ESI,this
-//         00419f04     PUSH       EDI
-//                              aiuaimod.cpp:5842 (14)
-//         00419f05     MOV        EAX,dword ptr [ESI + 0x20]
-//         00419f08     MOV        this,dword ptr [ESI + 0x1c]
-//         00419f0b     CMP        EAX,this
-//         00419f0d     JNZ        LAB_00419fa0
-//                              aiuaimod.cpp:5843 (17)
-//         00419f13     LEA        EAX,[EAX + EAX*0x2]
-//         00419f16     SHL        EAX,0x4
-//         00419f19     PUSH       EAX
-//         00419f1a     CALL       operator_new                                     void * operator_new(uint param_1)
-//         00419f1f     MOV        EDI,EAX
-//         00419f21     ADD        ESP,0x4
-//                              aiuaimod.cpp:5844 (4)
-//         00419f24     TEST       EDI,EDI
-//         00419f26     JNZ        LAB_00419f2e
-//                              aiuaimod.cpp:5868 (6)
-//         00419f28     POP        EDI
-//         00419f29     POP        ESI
-//         00419f2a     POP        EBX
-//         00419f2b     RET        0x18
-//                               LAB_00419f2e                                                 XREF[1]:     00419f26(j)
-//                              aiuaimod.cpp:5847 (9)
-//         00419f2e     MOV        EAX,dword ptr [ESI + 0x1c]
-//         00419f31     XOR        EDX,EDX
-//         00419f33     TEST       EAX,EAX
-//         00419f35     JLE        LAB_00419f85
-//                              aiuaimod.cpp:5868 (78)
-//         00419f37     XOR        EAX,EAX
-//         00419f39     LEA        this,[EDI + 0x8]
-//                               LAB_00419f3c                                                 XREF[1]:     00419f83(j)
-//         00419f3c     MOV        EBX,dword ptr [ESI + 0x24]
-//         00419f3f     INC        EDX
-//         00419f40     ADD        this,0x18
-//         00419f43     MOV        EBX,dword ptr [EBX + EAX*0x1]
-//         00419f46     ADD        EAX,0x18
-//         00419f49     MOV        dword ptr [this->_padding_ + -0x20],EBX
-//         00419f4c     MOV        EBX,dword ptr [ESI + 0x24]
-//         00419f4f     MOV        EBX,dword ptr [EBX + EAX*0x1 + -0x14]
-//         00419f53     MOV        dword ptr [this->_padding_ + -0x1c],EBX
-//         00419f56     MOV        EBX,dword ptr [ESI + 0x24]
-//         00419f59     MOV        EBX,dword ptr [EBX + EAX*0x1 + -0x10]
-//         00419f5d     MOV        dword ptr [this->_padding_ + -0x18],EBX
-//         00419f60     MOV        EBX,dword ptr [ESI + 0x24]
-//         00419f63     MOV        EBX,dword ptr [EBX + EAX*0x1 + -0xc]
-//         00419f67     MOV        dword ptr [this->_padding_ + -0x14],EBX
-//         00419f6a     MOV        EBX,dword ptr [ESI + 0x24]
-//         00419f6d     MOV        EBX,dword ptr [EBX + EAX*0x1 + -0x8]
-//         00419f71     MOV        dword ptr [this->_padding_ + -0x10],EBX
-//         00419f74     MOV        EBX,dword ptr [ESI + 0x24]
-//         00419f77     MOV        EBX,dword ptr [EBX + EAX*0x1 + -0x4]
-//         00419f7b     MOV        dword ptr [this->_padding_ + -0xc],EBX
-//         00419f7e     MOV        EBX,dword ptr [ESI + 0x1c]
-//         00419f81     CMP        EDX,EBX
-//         00419f83     JL         LAB_00419f3c
-//                               LAB_00419f85                                                 XREF[1]:     00419f35(j)
-//                              aiuaimod.cpp:5855 (7)
-//         00419f85     MOV        EAX,dword ptr [ESI + 0x24]
-//         00419f88     TEST       EAX,EAX
-//         00419f8a     JZ         LAB_00419f95
-//                              aiuaimod.cpp:5856 (9)
-//         00419f8c     PUSH       EAX
-//         00419f8d     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         00419f92     ADD        ESP,0x4
-//                               LAB_00419f95                                                 XREF[1]:     00419f8a(j)
-//                              aiuaimod.cpp:5858 (11)
-//         00419f95     MOV        this,dword ptr [ESI + 0x20]
-//         00419f98     MOV        dword ptr [ESI + 0x24],EDI
-//         00419f9b     SHL        this,0x1
-//         00419f9d     MOV        dword ptr [ESI + 0x20],this
-//                               LAB_00419fa0                                                 XREF[1]:     00419f0d(j)
-//                              aiuaimod.cpp:5860 (7)
-//         00419fa0     MOV        EAX,dword ptr [ESI + 0x1c]
-//         00419fa3     MOV        this,dword ptr [ESP + param_1]
-//                              aiuaimod.cpp:5868 (112)
-//         00419fa7     POP        EDI
-//         00419fa8     LEA        EDX,[EAX + EAX*0x2]
-//         00419fab     MOV        EAX,dword ptr [ESI + 0x24]
-//         00419fae     MOV        dword ptr [EAX + EDX*0x8],this
-//         00419fb1     MOV        EAX,dword ptr [ESI + 0x1c]
-//         00419fb4     MOV        this,dword ptr [ESP + param_2]
-//         00419fb8     LEA        EDX,[EAX + EAX*0x2]
-//         00419fbb     MOV        EAX,dword ptr [ESI + 0x24]
-//         00419fbe     MOV        dword ptr [EAX + EDX*0x8 + 0x4],this
-//         00419fc2     MOV        EAX,dword ptr [ESI + 0x1c]
-//         00419fc5     MOV        this,dword ptr [ESP + param_3]
-//         00419fc9     LEA        EDX,[EAX + EAX*0x2]
-//         00419fcc     MOV        EAX,dword ptr [ESI + 0x24]
-//         00419fcf     MOV        dword ptr [EAX + EDX*0x8 + 0x8],this
-//         00419fd3     MOV        EAX,dword ptr [ESI + 0x1c]
-//         00419fd6     MOV        this,dword ptr [ESP + param_4]
-//         00419fda     LEA        EDX,[EAX + EAX*0x2]
-//         00419fdd     MOV        EAX,dword ptr [ESI + 0x24]
-//         00419fe0     MOV        dword ptr [EAX + EDX*0x8 + 0xc],this
-//         00419fe4     MOV        EAX,dword ptr [ESI + 0x1c]
-//         00419fe7     MOV        this,dword ptr [ESP + param_5]
-//         00419feb     LEA        EDX,[EAX + EAX*0x2]
-//         00419fee     MOV        EAX,dword ptr [ESI + 0x24]
-//         00419ff1     MOV        dword ptr [EAX + EDX*0x8 + 0x10],this
-//         00419ff5     MOV        EAX,dword ptr [ESI + 0x1c]
-//         00419ff8     MOV        this,dword ptr [ESP + param_6]
-//         00419ffc     LEA        EDX,[EAX + EAX*0x2]
-//         00419fff     MOV        EAX,dword ptr [ESI + 0x24]
-//         0041a002     MOV        dword ptr [EAX + EDX*0x8 + 0x14],this
-//         0041a006     MOV        EAX,dword ptr [ESI + 0x1c]
-//         0041a009     INC        EAX
-//         0041a00a     MOV        dword ptr [ESI + 0x1c],EAX
-//         0041a00d     POP        ESI
-//         0041a00e     MOV        EAX,0x1
-//         0041a013     POP        EBX
-//         0041a014     RET        0x18
-//         0041a017     ??         90h
-//         0041a018     NOP
-//         0041a019     NOP
-//         0041a01a     NOP
-//         0041a01b     NOP
-//         0041a01c     NOP
-//         0041a01d     NOP
-//         0041a01e     NOP
-//         0041a01f     NOP
+//              NotifyEvent *     Stack[0x4]:4   param_1                   XREF[1]:     00419ed0(R)
+//                               ?addToNotifyQueue@UnitAIModule@@IAEHPAUNotifyEvent@@@Z       XREF[1]:     load:00413690(c)
+//                               UnitAIModule::addToNotifyQueue
+//                              aiuaimod.cpp:5831 (32)
+//         00419ed0     MOV        EAX,dword ptr [ESP + param_1]
+//         00419ed4     MOV        EDX,dword ptr [EAX + 0x14]
+//         00419ed7     PUSH       EDX
+//         00419ed8     MOV        EDX,dword ptr [EAX + 0x10]
+//         00419edb     PUSH       EDX
+//         00419edc     MOV        EDX,dword ptr [EAX + 0xc]
+//         00419edf     PUSH       EDX
+//         00419ee0     MOV        EDX,dword ptr [EAX + 0x8]
+//         00419ee3     PUSH       EDX
+//         00419ee4     MOV        EDX,dword ptr [EAX + 0x4]
+//         00419ee7     MOV        EAX,dword ptr [EAX]
+//         00419ee9     PUSH       EDX
+//         00419eea     PUSH       EAX
+//         00419eeb     CALL       UnitAIModule::addToNotifyQueue                   int addToNotifyQueue(UnitAIModule * this, int
+//                              aiuaimod.cpp:5834 (3)
+//         00419ef0     RET        0x4
+//         00419ef3     ??         90h
+//         00419ef4     NOP
+//         00419ef5     NOP
+//         00419ef6     NOP
+//         00419ef7     NOP
+//         00419ef8     NOP
+//         00419ef9     NOP
+//         00419efa     NOP
+//         00419efb     NOP
+//         00419efc     NOP
+//         00419efd     NOP
+//         00419efe     NOP
+//         00419eff     NOP
     return 0;
 }
 

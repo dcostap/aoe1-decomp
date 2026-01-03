@@ -1,6 +1,17 @@
 #pragma once
 #include "../common.h"
 
+typedef struct rdlg_list_info rdlg_list_info;
+
+// ----------------------------------------------------------------
+// rdlg_list_info
+// Size: 0x66
+struct rdlg_list_info {
+    char text[100]; // 0x0
+    short id; // 0x64
+};
+
+
 class RGE_Dialog_List : public TListDialog {
 public:
     int list_type;                           // 0x4AC

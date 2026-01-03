@@ -209,202 +209,305 @@ void RGE_Task::copy(RGE_Task* param_1) {
 
 void RGE_Task::load(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3) {
     /* TODO: Stub */
-//                              void __thiscall load(RGE_Task * this, _iobuf * param_1, RGE_Sprite *
+//                              void __thiscall load(RGE_Task * this, int param_1, RGE_Sprite * * pa
 //              void              <VOID>         <RETURN>
 //              RGE_Task *        ECX:4 (auto)   this
-//              _iobuf *          Stack[0x4]:4   param_1                   XREF[3]:     00508a99(*), 00508aa1(R), 00508ab8(R)
-//              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[1]:     00508b00(R)
-//              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[1]:     00508b5f(R)
-//              undefined2        Stack[-0x2]:2  local_2                   XREF[2]:     00508a23(*), 00508b7e(R)
-//              undefined2        Stack[-0x4]:2  local_4                   XREF[2]:     00508a2e(*), 00508b66(R)
-//              short             Stack[-0x6]:2  work_sound2_id            XREF[2]:     00508a27(*), 00508b4a(R)
-//              short             Stack[-0x8]:2  work_sound_id             XREF[2]:     00508a34(*), 00508b32(R)
-//              short             Stack[-0xa]:2  carry_sprite_id           XREF[2]:     00508a39(*), 00508b1a(R)
-//              short             Stack[-0xc]:2  work_sprite2_id           XREF[2]:     00508a3e(*), 00508af2(R)
-//              short             Stack[-0xe]:2  work_sprite_id            XREF[2]:     00508a43(*), 00508ae8(R)
-//              short             Stack[-0x10]:2 move_sprite_id            XREF[2]:     00508a48(*), 00508ade(R)
-//              short             Stack[-0x12]:2 temp_state_building       XREF[2]:     00508a4d(*), 00508ad4(R)
-//              short             Stack[-0x14]:2 temp_holding_attr         XREF[2]:     00508a68(*), 00508aca(R)
-//              short             Stack[-0x16]:2 temp_owner_type           XREF[2]:     00508a5a(*), 00508ac3(R)
-//              short             Stack[-0x18]:2 temp_search_flag          XREF[2]:     00508a5f(*), 00508abf(R)
-//              short             Stack[-0x1a]:2 temp_combat_level_flag
-//              short             Stack[-0x1c]:2 temp_combat_level
-//                               ?load@RGE_Task@@QAEXPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_So  XREF[1]:     load:00508fed(c)
+//              int               Stack[0x4]:4   param_1                   XREF[13]:    005087c2(R), 00508913(*), 00508920(R), 0050893f(*),
+//                                                                                     0050894c(R), 00508964(*), 00508974(R), 0050898c(*),
+//                                                                                     0050899c(R), 005089b7(*), 005089c4(R), 005089e0(*),
+//                                                                                     005089f0(R)
+//              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[1]:     00508925(R)
+//              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[1]:     005089c9(R)
+//                               ?load@RGE_Task@@QAEXHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z     XREF[1]:     load:00508f47(c)
 //                               RGE_Task::load
-//                              task.cpp:154 (3)
-//         00508a20     SUB        ESP,0x18
-//                              task.cpp:200 (149)
-//         00508a23     LEA        EAX=>local_2,[ESP + 0x16]
-//         00508a27     LEA        EDX=>work_sound2_id,[ESP + 0x12]
-//         00508a2b     PUSH       ESI
-//         00508a2c     MOV        ESI,this
-//         00508a2e     LEA        this=>local_4,[ESP + 0x18]
-//         00508a32     PUSH       EAX
-//         00508a33     PUSH       this
-//         00508a34     LEA        EAX=>work_sound_id,[ESP + 0x1c]
-//         00508a38     PUSH       EDX
-//         00508a39     LEA        this=>carry_sprite_id,[ESP + 0x1e]
-//         00508a3d     PUSH       EAX
-//         00508a3e     LEA        EDX=>work_sprite2_id,[ESP + 0x20]
-//         00508a42     PUSH       this
-//         00508a43     LEA        EAX=>work_sprite_id,[ESP + 0x22]
-//         00508a47     PUSH       EDX
-//         00508a48     LEA        this=>move_sprite_id,[ESP + 0x24]
-//         00508a4c     PUSH       EAX
-//         00508a4d     LEA        EDX=>temp_state_building,[ESP + 0x26]
-//         00508a51     PUSH       this
-//         00508a52     LEA        EAX,[ESI + 0x32]
-//         00508a55     PUSH       EDX
-//         00508a56     LEA        this,[ESI + 0x30]
-//         00508a59     PUSH       EAX
-//         00508a5a     LEA        EDX=>temp_owner_type,[ESP + 0x2e]
-//         00508a5e     PUSH       this
-//         00508a5f     LEA        EAX=>temp_search_flag,[ESP + 0x30]
-//         00508a63     PUSH       EDX
-//         00508a64     LEA        this,[ESI + 0x2c]
-//         00508a67     PUSH       EAX
-//         00508a68     LEA        EDX=>temp_holding_attr,[ESP + 0x3c]
-//         00508a6c     PUSH       this
-//         00508a6d     LEA        EAX,[ESI + 0x24]
-//         00508a70     PUSH       EDX
-//         00508a71     LEA        this,[ESI + 0x20]
-//         00508a74     PUSH       EAX
-//         00508a75     LEA        EDX,[ESI + 0x1c]
-//         00508a78     PUSH       this
-//         00508a79     LEA        EAX,[ESI + 0x1a]
-//         00508a7c     PUSH       EDX
-//         00508a7d     LEA        this,[ESI + 0x18]
-//         00508a80     PUSH       EAX
-//         00508a81     LEA        EDX,[ESI + 0x16]
-//         00508a84     PUSH       this
-//         00508a85     LEA        EAX,[ESI + 0x14]
-//         00508a88     PUSH       EDX
-//         00508a89     LEA        this,[ESI + 0xe]
-//         00508a8c     PUSH       EAX
-//         00508a8d     LEA        EDX,[ESI + 0xa]
-//         00508a90     PUSH       this
-//         00508a91     LEA        EAX,[ESI + 0x8]
-//         00508a94     PUSH       EDX
-//         00508a95     LEA        this,[ESI + 0x6]
-//         00508a98     PUSH       EAX
-//         00508a99     LEA        EDX=>param_1,[ESP + 0x84]
-//         00508aa0     PUSH       this
-//         00508aa1     MOV        this,dword ptr [ESP + param_1]
-//         00508aa8     LEA        EAX,[ESI + 0x2]
-//         00508aab     PUSH       EDX
-//         00508aac     PUSH       EAX
-//         00508aad     PUSH       s_%hd_%hd_%hd_%hd_%hd_%hd_%hd_%hd_               = "%hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %f
-//         00508ab2     PUSH       this
-//         00508ab3     CALL       fscanf                                           undefined fscanf()
-//                              task.cpp:203 (7)
-//         00508ab8     MOV        DL,byte ptr [ESP + param_1]
-//                              task.cpp:204 (4)
-//         00508abf     MOV        AL,byte ptr [ESP + temp_search_flag]
-//                              task.cpp:205 (7)
-//         00508ac3     MOV        this,byte ptr [ESP + temp_owner_type]
-//         00508ac7     MOV        byte ptr [ESI + 0x4],DL
-//                              task.cpp:206 (10)
-//         00508aca     MOV        DL,byte ptr [ESP + temp_holding_attr]
-//         00508ad1     MOV        byte ptr [ESI + 0xc],AL
-//                              task.cpp:207 (10)
-//         00508ad4     MOV        AL,byte ptr [ESP + temp_state_building]
-//         00508adb     MOV        byte ptr [ESI + 0xd],this
-//                              task.cpp:208 (10)
-//         00508ade     MOV        this,byte ptr [ESP + move_sprite_id]
-//         00508ae5     MOV        byte ptr [ESI + 0x28],DL
-//                              task.cpp:209 (10)
-//         00508ae8     MOV        DL,byte ptr [ESP + work_sprite_id]
-//         00508aef     MOV        byte ptr [ESI + 0x10],AL
-//                              task.cpp:211 (40)
-//         00508af2     MOV        AX,word ptr [ESP + work_sprite2_id]
-//         00508afa     ADD        ESP,0x78
-//         00508afd     MOV        byte ptr [ESI + 0x11],this
-//         00508b00     MOV        this,dword ptr [ESP + param_2]
-//         00508b04     MOV        byte ptr [ESI + 0x12],DL
-//         00508b07     CMP        AX,0xffff
-//         00508b0b     JNZ        LAB_00508b11
-//         00508b0d     XOR        EAX,EAX
-//         00508b0f     JMP        LAB_00508b17
-//                               LAB_00508b11                                                 XREF[1]:     00508b0b(j)
-//         00508b11     MOVSX      EAX,AX
-//         00508b14     MOV        EAX,dword ptr [this->task_type + EAX*0x4]
-//                               LAB_00508b17                                                 XREF[1]:     00508b0f(j)
-//         00508b17     MOV        dword ptr [ESI + 0x34],EAX
-//                              task.cpp:212 (24)
-//         00508b1a     MOV        AX,word ptr [ESP + carry_sprite_id]
-//         00508b1f     CMP        AX,0xffff
-//         00508b23     JNZ        LAB_00508b29
-//         00508b25     XOR        EAX,EAX
-//         00508b27     JMP        LAB_00508b2f
-//                               LAB_00508b29                                                 XREF[1]:     00508b23(j)
-//         00508b29     MOVSX      EDX,AX
-//         00508b2c     MOV        EAX,dword ptr [this->task_type + EDX*0x4]
-//                               LAB_00508b2f                                                 XREF[1]:     00508b27(j)
-//         00508b2f     MOV        dword ptr [ESI + 0x38],EAX
-//                              task.cpp:213 (24)
-//         00508b32     MOV        AX,word ptr [ESP + work_sound_id]
-//         00508b37     CMP        AX,0xffff
-//         00508b3b     JNZ        LAB_00508b41
-//         00508b3d     XOR        EAX,EAX
-//         00508b3f     JMP        LAB_00508b47
-//                               LAB_00508b41                                                 XREF[1]:     00508b3b(j)
-//         00508b41     MOVSX      EAX,AX
-//         00508b44     MOV        EAX,dword ptr [this->task_type + EAX*0x4]
-//                               LAB_00508b47                                                 XREF[1]:     00508b3f(j)
-//         00508b47     MOV        dword ptr [ESI + 0x3c],EAX
-//                              task.cpp:214 (21)
-//         00508b4a     MOV        AX,word ptr [ESP + work_sound2_id]
-//         00508b4f     CMP        AX,0xffff
-//         00508b53     JNZ        LAB_00508b59
-//         00508b55     XOR        EAX,EAX
-//         00508b57     JMP        LAB_00508b5f
-//                               LAB_00508b59                                                 XREF[1]:     00508b53(j)
-//         00508b59     MOVSX      EDX,AX
-//         00508b5c     MOV        EAX,dword ptr [this->task_type + EDX*0x4]
-//                               LAB_00508b5f                                                 XREF[1]:     00508b57(j)
-//                              task.cpp:216 (31)
-//         00508b5f     MOV        this,dword ptr [ESP + param_3]
-//         00508b63     MOV        dword ptr [ESI + 0x40],EAX
-//         00508b66     MOV        AX,word ptr [ESP + local_4]
-//         00508b6b     CMP        AX,0xffff
-//         00508b6f     JNZ        LAB_00508b75
-//         00508b71     XOR        EAX,EAX
-//         00508b73     JMP        LAB_00508b7b
-//                               LAB_00508b75                                                 XREF[1]:     00508b6f(j)
-//         00508b75     MOVSX      EAX,AX
-//         00508b78     MOV        EAX,dword ptr [this->task_type + EAX*0x4]
-//                               LAB_00508b7b                                                 XREF[1]:     00508b73(j)
-//         00508b7b     MOV        dword ptr [ESI + 0x44],EAX
-//                              task.cpp:217 (16)
-//         00508b7e     MOV        AX,word ptr [ESP + local_2]
-//         00508b83     CMP        AX,0xffff
-//         00508b87     JNZ        LAB_00508b95
-//         00508b89     XOR        EAX,EAX
-//         00508b8b     MOV        dword ptr [ESI + 0x48],EAX
-//                              task.cpp:218 (7)
-//         00508b8e     POP        ESI
-//         00508b8f     ADD        ESP,0x18
-//         00508b92     RET        0xc
-//                               LAB_00508b95                                                 XREF[1]:     00508b87(j)
-//                              task.cpp:217 (9)
-//         00508b95     MOVSX      EDX,AX
-//         00508b98     MOV        EAX,dword ptr [this->task_type + EDX*0x4]
-//         00508b9b     MOV        dword ptr [ESI + 0x48],EAX
-//                              task.cpp:218 (7)
-//         00508b9e     POP        ESI
-//         00508b9f     ADD        ESP,0x18
-//         00508ba2     RET        0xc
-//         00508ba5     ??         90h
-//         00508ba6     NOP
-//         00508ba7     NOP
-//         00508ba8     NOP
-//         00508ba9     NOP
-//         00508baa     NOP
-//         00508bab     NOP
-//         00508bac     NOP
-//         00508bad     NOP
-//         00508bae     NOP
-//         00508baf     NOP
+//                              task.cpp:103 (2)
+//         005087c0     PUSH       EBX
+//         005087c1     PUSH       ESI
+//                              task.cpp:109 (22)
+//         005087c2     MOV        ESI,dword ptr [ESP + param_1]
+//         005087c6     PUSH       EDI
+//         005087c7     MOV        EDI,this
+//         005087c9     PUSH       0x2
+//         005087cb     LEA        EAX,[EDI + 0x2]
+//         005087ce     PUSH       EAX
+//         005087cf     PUSH       ESI
+//         005087d0     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         005087d5     ADD        ESP,0xc
+//                              task.cpp:110 (15)
+//         005087d8     LEA        this,[EDI + 0x4]
+//         005087db     PUSH       0x1
+//         005087dd     PUSH       this
+//         005087de     PUSH       ESI
+//         005087df     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         005087e4     ADD        ESP,0xc
+//                              task.cpp:111 (15)
+//         005087e7     LEA        EDX,[EDI + 0x6]
+//         005087ea     PUSH       0x2
+//         005087ec     PUSH       EDX
+//         005087ed     PUSH       ESI
+//         005087ee     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         005087f3     ADD        ESP,0xc
+//                              task.cpp:112 (15)
+//         005087f6     LEA        EAX,[EDI + 0x8]
+//         005087f9     PUSH       0x2
+//         005087fb     PUSH       EAX
+//         005087fc     PUSH       ESI
+//         005087fd     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00508802     ADD        ESP,0xc
+//                              task.cpp:113 (15)
+//         00508805     LEA        this,[EDI + 0xa]
+//         00508808     PUSH       0x2
+//         0050880a     PUSH       this
+//         0050880b     PUSH       ESI
+//         0050880c     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00508811     ADD        ESP,0xc
+//                              task.cpp:114 (15)
+//         00508814     LEA        EDX,[EDI + 0xe]
+//         00508817     PUSH       0x2
+//         00508819     PUSH       EDX
+//         0050881a     PUSH       ESI
+//         0050881b     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00508820     ADD        ESP,0xc
+//                              task.cpp:115 (15)
+//         00508823     LEA        EAX,[EDI + 0x14]
+//         00508826     PUSH       0x2
+//         00508828     PUSH       EAX
+//         00508829     PUSH       ESI
+//         0050882a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050882f     ADD        ESP,0xc
+//                              task.cpp:116 (15)
+//         00508832     LEA        this,[EDI + 0x16]
+//         00508835     PUSH       0x2
+//         00508837     PUSH       this
+//         00508838     PUSH       ESI
+//         00508839     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050883e     ADD        ESP,0xc
+//                              task.cpp:117 (15)
+//         00508841     LEA        EDX,[EDI + 0x18]
+//         00508844     PUSH       0x2
+//         00508846     PUSH       EDX
+//         00508847     PUSH       ESI
+//         00508848     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050884d     ADD        ESP,0xc
+//                              task.cpp:118 (15)
+//         00508850     LEA        EAX,[EDI + 0x1a]
+//         00508853     PUSH       0x2
+//         00508855     PUSH       EAX
+//         00508856     PUSH       ESI
+//         00508857     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050885c     ADD        ESP,0xc
+//                              task.cpp:119 (15)
+//         0050885f     LEA        this,[EDI + 0x1c]
+//         00508862     PUSH       0x4
+//         00508864     PUSH       this
+//         00508865     PUSH       ESI
+//         00508866     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050886b     ADD        ESP,0xc
+//                              task.cpp:120 (15)
+//         0050886e     LEA        EDX,[EDI + 0x20]
+//         00508871     PUSH       0x4
+//         00508873     PUSH       EDX
+//         00508874     PUSH       ESI
+//         00508875     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0050887a     ADD        ESP,0xc
+//                              task.cpp:121 (15)
+//         0050887d     LEA        EAX,[EDI + 0x24]
+//         00508880     PUSH       0x4
+//         00508882     PUSH       EAX
+//         00508883     PUSH       ESI
+//         00508884     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00508889     ADD        ESP,0xc
+//                              task.cpp:122 (15)
+//         0050888c     LEA        this,[EDI + 0x28]
+//         0050888f     PUSH       0x1
+//         00508891     PUSH       this
+//         00508892     PUSH       ESI
+//         00508893     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00508898     ADD        ESP,0xc
+//                              task.cpp:123 (15)
+//         0050889b     LEA        EDX,[EDI + 0x2c]
+//         0050889e     PUSH       0x4
+//         005088a0     PUSH       EDX
+//         005088a1     PUSH       ESI
+//         005088a2     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         005088a7     ADD        ESP,0xc
+//                              task.cpp:124 (15)
+//         005088aa     LEA        EAX,[EDI + 0xc]
+//         005088ad     PUSH       0x1
+//         005088af     PUSH       EAX
+//         005088b0     PUSH       ESI
+//         005088b1     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         005088b6     ADD        ESP,0xc
+//                              task.cpp:125 (15)
+//         005088b9     LEA        this,[EDI + 0xd]
+//         005088bc     PUSH       0x1
+//         005088be     PUSH       this
+//         005088bf     PUSH       ESI
+//         005088c0     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         005088c5     ADD        ESP,0xc
+//                              task.cpp:126 (15)
+//         005088c8     LEA        EDX,[EDI + 0x30]
+//         005088cb     PUSH       0x2
+//         005088cd     PUSH       EDX
+//         005088ce     PUSH       ESI
+//         005088cf     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         005088d4     ADD        ESP,0xc
+//                              task.cpp:127 (15)
+//         005088d7     LEA        EAX,[EDI + 0x32]
+//         005088da     PUSH       0x2
+//         005088dc     PUSH       EAX
+//         005088dd     PUSH       ESI
+//         005088de     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         005088e3     ADD        ESP,0xc
+//                              task.cpp:128 (15)
+//         005088e6     LEA        this,[EDI + 0x10]
+//         005088e9     PUSH       0x1
+//         005088eb     PUSH       this
+//         005088ec     PUSH       ESI
+//         005088ed     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         005088f2     ADD        ESP,0xc
+//                              task.cpp:129 (15)
+//         005088f5     LEA        EDX,[EDI + 0x11]
+//         005088f8     PUSH       0x1
+//         005088fa     PUSH       EDX
+//         005088fb     PUSH       ESI
+//         005088fc     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00508901     ADD        ESP,0xc
+//                              task.cpp:130 (15)
+//         00508904     LEA        EAX,[EDI + 0x12]
+//         00508907     PUSH       0x1
+//         00508909     PUSH       EAX
+//         0050890a     PUSH       ESI
+//         0050890b     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00508910     ADD        ESP,0xc
+//                              task.cpp:132 (13)
+//         00508913     LEA        this=>param_1,[ESP + 0x10]
+//         00508917     PUSH       0x2
+//         00508919     PUSH       this
+//         0050891a     PUSH       ESI
+//         0050891b     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              task.cpp:133 (31)
+//         00508920     MOV        AX,word ptr [ESP + param_1]
+//         00508925     MOV        EBX,dword ptr [ESP + param_2]
+//         00508929     ADD        ESP,0xc
+//         0050892c     CMP        AX,0xffff
+//         00508930     JNZ        LAB_00508936
+//         00508932     XOR        EAX,EAX
+//         00508934     JMP        LAB_0050893c
+//                               LAB_00508936                                                 XREF[1]:     00508930(j)
+//         00508936     MOVSX      EDX,AX
+//         00508939     MOV        EAX,dword ptr [EBX + EDX*0x4]
+//                               LAB_0050893c                                                 XREF[1]:     00508934(j)
+//         0050893c     MOV        dword ptr [EDI + 0x34],EAX
+//                              task.cpp:135 (13)
+//         0050893f     LEA        EAX=>param_1,[ESP + 0x10]
+//         00508943     PUSH       0x2
+//         00508945     PUSH       EAX
+//         00508946     PUSH       ESI
+//         00508947     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              task.cpp:136 (24)
+//         0050894c     MOV        AX,word ptr [ESP + param_1]
+//         00508951     ADD        ESP,0xc
+//         00508954     CMP        AX,0xffff
+//         00508958     JNZ        LAB_0050895e
+//         0050895a     XOR        EAX,EAX
+//         0050895c     JMP        LAB_00508964
+//                               LAB_0050895e                                                 XREF[1]:     00508958(j)
+//         0050895e     MOVSX      this,AX
+//         00508961     MOV        EAX,dword ptr [EBX + this->task_type*0x4]
+//                               LAB_00508964                                                 XREF[1]:     0050895c(j)
+//                              task.cpp:138 (16)
+//         00508964     LEA        EDX=>param_1,[ESP + 0x10]
+//         00508968     PUSH       0x2
+//         0050896a     PUSH       EDX
+//         0050896b     PUSH       ESI
+//         0050896c     MOV        dword ptr [EDI + 0x38],EAX
+//         0050896f     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              task.cpp:139 (24)
+//         00508974     MOV        AX,word ptr [ESP + param_1]
+//         00508979     ADD        ESP,0xc
+//         0050897c     CMP        AX,0xffff
+//         00508980     JNZ        LAB_00508986
+//         00508982     XOR        EAX,EAX
+//         00508984     JMP        LAB_0050898c
+//                               LAB_00508986                                                 XREF[1]:     00508980(j)
+//         00508986     MOVSX      EAX,AX
+//         00508989     MOV        EAX,dword ptr [EBX + EAX*0x4]
+//                               LAB_0050898c                                                 XREF[1]:     00508984(j)
+//                              task.cpp:141 (16)
+//         0050898c     LEA        this=>param_1,[ESP + 0x10]
+//         00508990     PUSH       0x2
+//         00508992     PUSH       this
+//         00508993     PUSH       ESI
+//         00508994     MOV        dword ptr [EDI + 0x3c],EAX
+//         00508997     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              task.cpp:142 (27)
+//         0050899c     MOV        AX,word ptr [ESP + param_1]
+//         005089a1     ADD        ESP,0xc
+//         005089a4     CMP        AX,0xffff
+//         005089a8     JNZ        LAB_005089ae
+//         005089aa     XOR        EAX,EAX
+//         005089ac     JMP        LAB_005089b4
+//                               LAB_005089ae                                                 XREF[1]:     005089a8(j)
+//         005089ae     MOVSX      EDX,AX
+//         005089b1     MOV        EAX,dword ptr [EBX + EDX*0x4]
+//                               LAB_005089b4                                                 XREF[1]:     005089ac(j)
+//         005089b4     MOV        dword ptr [EDI + 0x40],EAX
+//                              task.cpp:144 (13)
+//         005089b7     LEA        EAX=>param_1,[ESP + 0x10]
+//         005089bb     PUSH       0x2
+//         005089bd     PUSH       EAX
+//         005089be     PUSH       ESI
+//         005089bf     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              task.cpp:145 (28)
+//         005089c4     MOV        AX,word ptr [ESP + param_1]
+//         005089c9     MOV        EBX,dword ptr [ESP + param_3]
+//         005089cd     ADD        ESP,0xc
+//         005089d0     CMP        AX,0xffff
+//         005089d4     JNZ        LAB_005089da
+//         005089d6     XOR        EAX,EAX
+//         005089d8     JMP        LAB_005089e0
+//                               LAB_005089da                                                 XREF[1]:     005089d4(j)
+//         005089da     MOVSX      this,AX
+//         005089dd     MOV        EAX,dword ptr [EBX + this->task_type*0x4]
+//                               LAB_005089e0                                                 XREF[1]:     005089d8(j)
+//                              task.cpp:147 (16)
+//         005089e0     LEA        EDX=>param_1,[ESP + 0x10]
+//         005089e4     PUSH       0x2
+//         005089e6     PUSH       EDX
+//         005089e7     PUSH       ESI
+//         005089e8     MOV        dword ptr [EDI + 0x44],EAX
+//         005089eb     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              task.cpp:148 (19)
+//         005089f0     MOV        AX,word ptr [ESP + param_1]
+//         005089f5     ADD        ESP,0xc
+//         005089f8     CMP        AX,0xffff
+//         005089fc     JNZ        LAB_00508a09
+//         005089fe     XOR        EAX,EAX
+//         00508a00     MOV        dword ptr [EDI + 0x48],EAX
+//                              task.cpp:149 (6)
+//         00508a03     POP        EDI
+//         00508a04     POP        ESI
+//         00508a05     POP        EBX
+//         00508a06     RET        0xc
+//                               LAB_00508a09                                                 XREF[1]:     005089fc(j)
+//                              task.cpp:148 (9)
+//         00508a09     MOVSX      EAX,AX
+//         00508a0c     MOV        EAX,dword ptr [EBX + EAX*0x4]
+//         00508a0f     MOV        dword ptr [EDI + 0x48],EAX
+//                              task.cpp:149 (6)
+//         00508a12     POP        EDI
+//         00508a13     POP        ESI
+//         00508a14     POP        EBX
+//         00508a15     RET        0xc
+//         00508a18     ??         90h
+//         00508a19     NOP
+//         00508a1a     NOP
+//         00508a1b     NOP
+//         00508a1c     NOP
+//         00508a1d     NOP
+//         00508a1e     NOP
+//         00508a1f     NOP
     return;
 }
 

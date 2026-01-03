@@ -3,29 +3,24 @@
 
 TSound_Driver::TSound_Driver() {
     /* TODO: Stub */
-//                              undefined __thiscall TSound_Driver(TSound_Driver * this, void * para
+//                              undefined __thiscall TSound_Driver(TSound_Driver * this)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TSound_Driver *   ECX:4 (auto)   this
-//              void *            Stack[0x4]:4   param_1                   XREF[1]:     004bc5ac(R)
-//              char *            Stack[0x8]:4   param_2                   XREF[1]:     004bc5a8(R)
-//                               ??0TSound_Driver@@QAE@PAXPAD@Z                               XREF[1]:     setup_sound_system:0041f085(c)
+//                               ??0TSound_Driver@@QAE@XZ
 //                               TSound_Driver::TSound_Driver
-//                              Sounddrv.cpp:39 (3)
-//         004bc5a0     PUSH       ESI
-//         004bc5a1     MOV        ESI,this
-//                              Sounddrv.cpp:40 (5)
-//         004bc5a3     CALL       TSound_Driver::init_vars                         void init_vars(TSound_Driver * this)
-//                              Sounddrv.cpp:41 (17)
-//         004bc5a8     MOV        EAX,dword ptr [ESP + param_2]
-//         004bc5ac     MOV        this,dword ptr [ESP + param_1]
-//         004bc5b0     PUSH       EAX
-//         004bc5b1     PUSH       this
-//         004bc5b2     MOV        this,ESI
-//         004bc5b4     CALL       TSound_Driver::init                              int init(TSound_Driver * this, void * param_1
-//                              Sounddrv.cpp:42 (6)
-//         004bc5b9     MOV        EAX,ESI
-//         004bc5bb     POP        ESI
-//         004bc5bc     RET        0x8
+//                              Sounddrv.cpp:33 (3)
+//         004bc590     PUSH       ESI
+//         004bc591     MOV        ESI,this
+//                              Sounddrv.cpp:34 (5)
+//         004bc593     CALL       TSound_Driver::init_vars                         void init_vars(TSound_Driver * this)
+//                              Sounddrv.cpp:35 (4)
+//         004bc598     MOV        EAX,ESI
+//         004bc59a     POP        ESI
+//         004bc59b     RET
+//         004bc59c     ??         90h
+//         004bc59d     NOP
+//         004bc59e     NOP
+//         004bc59f     NOP
 }
 
 TSound_Driver::TSound_Driver(void* param_1, char* param_2) {
@@ -1087,36 +1082,71 @@ void TSound_Driver::close_mixer() {
 
 TDigital::TDigital(TSound_Driver* param_1, char* param_2, long param_3) {
     /* TODO: Stub */
-//                              undefined __thiscall TDigital(TDigital * this, TDigital * param_1)
+//                              undefined __thiscall TDigital(TDigital * this, TSound_Driver * param
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TDigital *        ECX:4 (auto)   this
-//              TDigital *        Stack[0x4]:4   param_1                   XREF[1]:     004bcc88(R)
-//                               ??0TDigital@@QAE@PAV0@@Z
-//                               TDigital::TDigital
-//                              Sounddrv.cpp:444 (3)
-//         004bcc80     PUSH       ESI
-//         004bcc81     MOV        ESI,this
-//                              Sounddrv.cpp:445 (5)
-//         004bcc83     CALL       TDigital::init_vars                              void init_vars(TDigital * this)
-//                              Sounddrv.cpp:447 (7)
-//         004bcc88     MOV        EAX,dword ptr [ESP + param_1]
-//         004bcc8c     MOV        dword ptr [ESI + 0x4],EAX
-//                              Sounddrv.cpp:449 (6)
-//         004bcc8f     MOV        this,dword ptr [EAX + 0x1c]
-//         004bcc92     MOV        dword ptr [ESI + 0x1c],this
-//                              Sounddrv.cpp:450 (6)
-//         004bcc95     MOV        EDX,dword ptr [EAX + 0x20]
-//         004bcc98     MOV        dword ptr [ESI + 0x20],EDX
-//                              Sounddrv.cpp:451 (6)
-//         004bcc9b     MOV        this,dword ptr [EAX + 0x24]
-//         004bcc9e     MOV        dword ptr [ESI + 0x24],this
-//                              Sounddrv.cpp:452 (6)
-//         004bcca1     MOV        EDX,dword ptr [EAX + 0x28]
-//         004bcca4     MOV        dword ptr [ESI + 0x28],EDX
-//                              Sounddrv.cpp:453 (6)
-//         004bcca7     MOV        EAX,ESI
-//         004bcca9     POP        ESI
-//         004bccaa     RET        0x4
+//              TSound_Driver *   Stack[0x4]:4   param_1                   XREF[1]:     004bcc48(R)
+//              char *            Stack[0x8]:4   param_2                   XREF[1]:     004bcc52(R)
+//              long              Stack[0xc]:4   param_3                   XREF[1]:     004bcc4c(R)
+//                               ??0TDigital@@QAE@PAVTSound_Driver@@PADJ@Z                    XREF[24]:    handle_game_update:00496d4a(c),
+//                               TDigital::TDigital                                                        RGE_Sound:004bc016(c),
+//                                                                                                         restart_sound:004bc206(c),
+//                                                                                                         RestartSoundSystem:005096ea(c),
+//                                                                                                         setup_sounds:0052234a(c),
+//                                                                                                         setup_sounds:00522389(c),
+//                                                                                                         setup_sounds:005223c6(c),
+//                                                                                                         setup_sounds:00522403(c),
+//                                                                                                         setup_sounds:00522440(c),
+//                                                                                                         setup_sounds:0052247d(c),
+//                                                                                                         setup_sounds:005224ba(c),
+//                                                                                                         setup_sounds:005224f7(c),
+//                                                                                                         setup_sounds:00522534(c),
+//                                                                                                         setup_sounds:00522571(c),
+//                                                                                                         setup_sounds:005225ae(c),
+//                                                                                                         setup_sounds:005225eb(c),
+//                                                                                                         setup_sounds:00522628(c),
+//                                                                                                         setup_sounds:00522665(c),
+//                                                                                                         setup_sounds:005226a2(c),
+//                                                                                                         setup_sounds:005226df(c), [more]
+//                              Sounddrv.cpp:424 (3)
+//         004bcc40     PUSH       ESI
+//         004bcc41     MOV        ESI,this
+//                              Sounddrv.cpp:425 (5)
+//         004bcc43     CALL       TDigital::init_vars                              void init_vars(TDigital * this)
+//                              Sounddrv.cpp:427 (4)
+//         004bcc48     MOV        EAX,dword ptr [ESP + param_1]
+//                              Sounddrv.cpp:429 (6)
+//         004bcc4c     MOV        this,dword ptr [ESP + param_3]
+//         004bcc50     MOV        dword ptr [ESI],EAX
+//                              Sounddrv.cpp:431 (11)
+//         004bcc52     MOV        EAX,dword ptr [ESP + param_2]
+//         004bcc56     TEST       EAX,EAX
+//         004bcc58     MOV        dword ptr [ESI + 0x18],this
+//         004bcc5b     JZ         LAB_004bcc70
+//                              Sounddrv.cpp:433 (15)
+//         004bcc5d     PUSH       0xc
+//         004bcc5f     LEA        EDX,[ESI + 0xa]
+//         004bcc62     PUSH       EAX
+//         004bcc63     PUSH       EDX
+//         004bcc64     CALL       strncpy                                          undefined strncpy()
+//         004bcc69     ADD        ESP,0xc
+//                              Sounddrv.cpp:434 (4)
+//         004bcc6c     MOV        byte ptr [ESI + 0x16],0x0
+//                               LAB_004bcc70                                                 XREF[1]:     004bcc5b(j)
+//                              Sounddrv.cpp:440 (6)
+//         004bcc70     MOV        EAX,ESI
+//         004bcc72     POP        ESI
+//         004bcc73     RET        0xc
+//         004bcc76     ??         90h
+//         004bcc77     NOP
+//         004bcc78     NOP
+//         004bcc79     NOP
+//         004bcc7a     NOP
+//         004bcc7b     NOP
+//         004bcc7c     NOP
+//         004bcc7d     NOP
+//         004bcc7e     NOP
+//         004bcc7f     NOP
 }
 
 TDigital::TDigital(TDigital* param_1) {

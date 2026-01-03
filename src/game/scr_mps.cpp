@@ -9714,30 +9714,30 @@ TRIBE_Screen_Wait::~TRIBE_Screen_Wait() {
 
 void TRIBE_Screen_Wait::set_text(char* param_1) {
     /* TODO: Stub */
-//                              void __thiscall set_text(TRIBE_Screen_Wait * this, long param_1)
+//                              void __thiscall set_text(TRIBE_Screen_Wait * this, char * param_1)
 //              void              <VOID>         <RETURN>
 //              TRIBE_Screen_W    ECX:4 (auto)   this
-//              long              Stack[0x4]:4   param_1                   XREF[1]:     004a6106(R)
-//                               ?set_text@TRIBE_Screen_Wait@@QAEXJ@Z                         XREF[1]:     create_game_screen:005278f4(c)
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     004a60e6(R)
+//                               ?set_text@TRIBE_Screen_Wait@@QAEXPAD@Z                       XREF[1]:     handle_idle:005298f9(c)
 //                               TRIBE_Screen_Wait::set_text
-//                              scr_mps.cpp:3259 (19)
-//         004a6100     MOV        this,dword ptr [ECX + this->message]
-//         004a6106     MOV        EDX,dword ptr [ESP + param_1]
-//         004a610a     PUSH       EDX
-//         004a610b     MOV        EAX,dword ptr [this->_padding_]
-//         004a610d     CALL       dword ptr [EAX + 0xe4]
-//                              scr_mps.cpp:3261 (3)
-//         004a6113     RET        0x4
-//         004a6116     ??         90h
-//         004a6117     NOP
-//         004a6118     NOP
-//         004a6119     NOP
-//         004a611a     NOP
-//         004a611b     NOP
-//         004a611c     NOP
-//         004a611d     NOP
-//         004a611e     NOP
-//         004a611f     NOP
+//                              scr_mps.cpp:3251 (19)
+//         004a60e0     MOV        this,dword ptr [ECX + this->message]
+//         004a60e6     MOV        EDX,dword ptr [ESP + param_1]
+//         004a60ea     PUSH       EDX
+//         004a60eb     MOV        EAX,dword ptr [this->_padding_]
+//         004a60ed     CALL       dword ptr [EAX + 0xe8]
+//                              scr_mps.cpp:3253 (3)
+//         004a60f3     RET        0x4
+//         004a60f6     ??         90h
+//         004a60f7     NOP
+//         004a60f8     NOP
+//         004a60f9     NOP
+//         004a60fa     NOP
+//         004a60fb     NOP
+//         004a60fc     NOP
+//         004a60fd     NOP
+//         004a60fe     NOP
+//         004a60ff     NOP
     return;
 }
 
@@ -10012,30 +10012,30 @@ TRIBE_Screen_Disconnect::~TRIBE_Screen_Disconnect() {
 
 void TRIBE_Screen_Disconnect::set_text(char* param_1) {
     /* TODO: Stub */
-//                              void __thiscall set_text(TRIBE_Screen_Disconnect * this, long param_1)
+//                              void __thiscall set_text(TRIBE_Screen_Disconnect * this, char * para
 //              void              <VOID>         <RETURN>
 //              TRIBE_Screen_D    ECX:4 (auto)   this
-//              long              Stack[0x4]:4   param_1                   XREF[1]:     004a6316(R)
-//                               ?set_text@TRIBE_Screen_Disconnect@@QAEXJ@Z
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     004a62f6(R)
+//                               ?set_text@TRIBE_Screen_Disconnect@@QAEXPAD@Z
 //                               TRIBE_Screen_Disconnect::set_text
-//                              scr_mps.cpp:3355 (19)
-//         004a6310     MOV        this,dword ptr [ECX + this->message]
-//         004a6316     MOV        EDX,dword ptr [ESP + param_1]
-//         004a631a     PUSH       EDX
-//         004a631b     MOV        EAX,dword ptr [this->_padding_]
-//         004a631d     CALL       dword ptr [EAX + 0xe4]
-//                              scr_mps.cpp:3357 (3)
-//         004a6323     RET        0x4
-//         004a6326     ??         90h
-//         004a6327     NOP
-//         004a6328     NOP
-//         004a6329     NOP
-//         004a632a     NOP
-//         004a632b     NOP
-//         004a632c     NOP
-//         004a632d     NOP
-//         004a632e     NOP
-//         004a632f     NOP
+//                              scr_mps.cpp:3347 (19)
+//         004a62f0     MOV        this,dword ptr [ECX + this->message]
+//         004a62f6     MOV        EDX,dword ptr [ESP + param_1]
+//         004a62fa     PUSH       EDX
+//         004a62fb     MOV        EAX,dword ptr [this->_padding_]
+//         004a62fd     CALL       dword ptr [EAX + 0xe8]
+//                              scr_mps.cpp:3349 (3)
+//         004a6303     RET        0x4
+//         004a6306     ??         90h
+//         004a6307     NOP
+//         004a6308     NOP
+//         004a6309     NOP
+//         004a630a     NOP
+//         004a630b     NOP
+//         004a630c     NOP
+//         004a630d     NOP
+//         004a630e     NOP
+//         004a630f     NOP
     return;
 }
 

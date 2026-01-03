@@ -537,42 +537,55 @@ uchar TRIBE_History_Info::get_history_event(long param_1, uchar* param_2, long* 
 //                              uchar __thiscall get_history_event(TRIBE_History_Info * this, long p
 //              uchar             AL:1           <RETURN>
 //              TRIBE_History_    ECX:4 (auto)   this
-//              long              Stack[0x4]:4   param_1                   XREF[1]:     004cca37(R)
-//              uchar *           Stack[0x8]:4   param_2                   XREF[1]:     004cca4c(R)
-//                               ?get_history_event@TRIBE_History_Info@@QAEEJAAE@Z            XREF[2]:     record_special_event:0051f572(c),
-//                               TRIBE_History_Info::get_history_event                                     draw_timeline:00520587(c)
-//                              t_histry.cpp:218 (11)
-//         004cca30     MOV        EAX,dword ptr [ECX + this->events]
-//         004cca33     TEST       EAX,EAX
-//         004cca35     JZ         LAB_004cca59
-//         004cca37     MOV        this,dword ptr [ESP + param_1]
-//                               LAB_004cca3b                                                 XREF[1]:     004cca45(j)
-//                              t_histry.cpp:222 (12)
-//         004cca3b     CMP        dword ptr [EAX + 0x4],this
-//         004cca3e     JZ         LAB_004cca4c
-//         004cca40     MOV        EAX,dword ptr [EAX + 0xc]
-//         004cca43     TEST       EAX,EAX
-//         004cca45     JNZ        LAB_004cca3b
-//                              t_histry.cpp:228 (2)
-//         004cca47     XOR        AL,AL
-//                              t_histry.cpp:229 (3)
-//         004cca49     RET        0x8
-//                               LAB_004cca4c                                                 XREF[1]:     004cca3e(j)
-//                              t_histry.cpp:224 (8)
-//         004cca4c     MOV        this,dword ptr [ESP + param_2]
-//         004cca50     MOV        AL,byte ptr [EAX]
-//         004cca52     MOV        byte ptr [this->history],AL
-//                              t_histry.cpp:225 (2)
-//         004cca54     MOV        AL,0x1
-//                              t_histry.cpp:229 (3)
-//         004cca56     RET        0x8
-//                               LAB_004cca59                                                 XREF[1]:     004cca35(j)
-//                              t_histry.cpp:228 (2)
-//         004cca59     XOR        AL,AL
-//                              t_histry.cpp:229 (3)
-//         004cca5b     RET        0x8
-//         004cca5e     ??         90h
-//         004cca5f     NOP
+//              long              Stack[0x4]:4   param_1                   XREF[1]:     004cc9f7(R)
+//              uchar *           Stack[0x8]:4   param_2                   XREF[1]:     004cca0b(R)
+//              long *            Stack[0xc]:4   param_3                   XREF[1]:     004cca13(R)
+//                               ?get_history_event@TRIBE_History_Info@@QAEEJAAEAAJ@Z
+//                               TRIBE_History_Info::get_history_event
+//                              t_histry.cpp:198 (11)
+//         004cc9f0     MOV        EAX,dword ptr [ECX + this->events]
+//         004cc9f3     TEST       EAX,EAX
+//         004cc9f5     JZ         LAB_004cca21
+//         004cc9f7     MOV        this,dword ptr [ESP + param_1]
+//                               LAB_004cc9fb                                                 XREF[1]:     004cca04(j)
+//                              t_histry.cpp:203 (11)
+//         004cc9fb     TEST       this,this
+//         004cc9fd     JZ         LAB_004cca0b
+//         004cc9ff     MOV        EAX,dword ptr [EAX + 0xc]
+//         004cca02     TEST       EAX,EAX
+//         004cca04     JNZ        LAB_004cc9fb
+//                              t_histry.cpp:210 (2)
+//         004cca06     XOR        AL,AL
+//                              t_histry.cpp:211 (3)
+//         004cca08     RET        0xc
+//                               LAB_004cca0b                                                 XREF[1]:     004cc9fd(j)
+//                              t_histry.cpp:205 (8)
+//         004cca0b     MOV        EDX,dword ptr [ESP + param_2]
+//         004cca0f     MOV        this,byte ptr [EAX]
+//         004cca11     MOV        byte ptr [EDX],this
+//                              t_histry.cpp:206 (9)
+//         004cca13     MOV        this,dword ptr [ESP + param_3]
+//         004cca17     MOV        EAX,dword ptr [EAX + 0x4]
+//         004cca1a     MOV        dword ptr [this->history],EAX
+//                              t_histry.cpp:207 (2)
+//         004cca1c     MOV        AL,0x1
+//                              t_histry.cpp:211 (3)
+//         004cca1e     RET        0xc
+//                               LAB_004cca21                                                 XREF[1]:     004cc9f5(j)
+//                              t_histry.cpp:210 (2)
+//         004cca21     XOR        AL,AL
+//                              t_histry.cpp:211 (3)
+//         004cca23     RET        0xc
+//         004cca26     ??         90h
+//         004cca27     NOP
+//         004cca28     NOP
+//         004cca29     NOP
+//         004cca2a     NOP
+//         004cca2b     NOP
+//         004cca2c     NOP
+//         004cca2d     NOP
+//         004cca2e     NOP
+//         004cca2f     NOP
     return 0;
 }
 

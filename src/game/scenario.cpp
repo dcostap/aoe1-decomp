@@ -6,117 +6,88 @@ RGE_Scenario_Header::RGE_Scenario_Header(RGE_Scenario* param_1) {
 //                              undefined __thiscall RGE_Scenario_Header(RGE_Scenario_Header * this,
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Scenario_H    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[4]:     0048abb6(R), 0048ac03(*), 0048ac10(R), 0048ac3c(R)
-//              undefined         Stack[-0x4]:1  local_4                   XREF[1]:     0048abd0(*)
-//              long              Stack[-0x8]:4  header_size
-//                               ??0RGE_Scenario_Header@@QAE@H@Z                              XREF[2]:     new_scenario_header:0041ce37(c),
-//                               RGE_Scenario_Header::RGE_Scenario_Header                                  TRIBE_Scenario_Header:0052aa14(c)
-//                              scenario.cpp:58 (6)
-//         0048abb0     PUSH       this
-//         0048abb1     PUSH       EBX
-//         0048abb2     PUSH       EBP
-//         0048abb3     PUSH       ESI
-//         0048abb4     MOV        ESI,this
-//                              scenario.cpp:67 (46)
-//         0048abb6     MOV        EBX,dword ptr [ESP + param_1]
-//         0048abba     PUSH       EDI
-//         0048abbb     LEA        EDI,[ESI + 0x8]
-//         0048abbe     LEA        EBP,[ESI + 0xc]
-//         0048abc1     XOR        EAX,EAX
-//         0048abc3     PUSH       0x4
-//         0048abc5     MOV        dword ptr [ESI + 0x4],EAX
-//         0048abc8     MOV        dword ptr [EDI],EAX
-//         0048abca     MOV        dword ptr [EBP],EAX
-//         0048abcd     MOV        dword ptr [ESI + 0x10],EAX
-//         0048abd0     LEA        EAX=>local_4,[ESP + 0x14]
-//         0048abd4     MOV        dword ptr [ESI],RGE_Scenario_Header::`vftable'   = 0048aca0
-//         0048abda     PUSH       EAX
-//         0048abdb     PUSH       EBX
-//         0048abdc     CALL       rge_read_uncompressed                            void rge_read_uncompressed(int param_1, void
-//         0048abe1     ADD        ESP,0xc
-//                              scenario.cpp:69 (9)
-//         0048abe4     PUSH       0x4
-//         0048abe6     PUSH       EDI
-//         0048abe7     PUSH       EBX
-//         0048abe8     CALL       rge_read_uncompressed                            void rge_read_uncompressed(int param_1, void
-//                              scenario.cpp:71 (10)
-//         0048abed     MOV        EAX,dword ptr [EDI]
-//         0048abef     ADD        ESP,0xc
-//         0048abf2     CMP        EAX,0x2
-//         0048abf5     JL         LAB_0048ac03
-//                              scenario.cpp:72 (12)
-//         0048abf7     PUSH       0x4
-//         0048abf9     PUSH       EBP
-//         0048abfa     PUSH       EBX
-//         0048abfb     CALL       rge_read_uncompressed                            void rge_read_uncompressed(int param_1, void
-//         0048ac00     ADD        ESP,0xc
-//                               LAB_0048ac03                                                 XREF[1]:     0048abf5(j)
-//                              scenario.cpp:74 (13)
-//         0048ac03     LEA        this=>param_1,[ESP + 0x18]
-//         0048ac07     PUSH       0x4
-//         0048ac09     PUSH       this
-//         0048ac0a     PUSH       EBX
-//         0048ac0b     CALL       rge_read_uncompressed                            void rge_read_uncompressed(int param_1, void
-//                              scenario.cpp:75 (11)
-//         0048ac10     MOV        EAX,dword ptr [ESP + param_1]
-//         0048ac14     ADD        ESP,0xc
-//         0048ac17     TEST       EAX,EAX
-//         0048ac19     JLE        LAB_0048ac55
-//                              scenario.cpp:77 (12)
-//         0048ac1b     PUSH       EAX
-//         0048ac1c     CALL       malloc                                           undefined malloc()
-//         0048ac21     ADD        ESP,0x4
-//         0048ac24     MOV        dword ptr [ESI + 0x10],EAX
-//                              scenario.cpp:78 (4)
-//         0048ac27     TEST       EAX,EAX
-//         0048ac29     JNZ        LAB_0048ac3c
-//                              scenario.cpp:79 (7)
-//         0048ac2b     MOV        dword ptr [ESI + 0x4],0x1
-//                              scenario.cpp:85 (10)
-//         0048ac32     MOV        EAX,ESI
-//         0048ac34     POP        EDI
-//         0048ac35     POP        ESI
-//         0048ac36     POP        EBP
-//         0048ac37     POP        EBX
-//         0048ac38     POP        this
-//         0048ac39     RET        0x4
-//                               LAB_0048ac3c                                                 XREF[1]:     0048ac29(j)
-//                              scenario.cpp:81 (15)
-//         0048ac3c     MOV        EDX,dword ptr [ESP + param_1]
-//         0048ac40     PUSH       EDX
-//         0048ac41     PUSH       EAX
-//         0048ac42     PUSH       EBX
-//         0048ac43     CALL       rge_read_uncompressed                            void rge_read_uncompressed(int param_1, void
-//         0048ac48     ADD        ESP,0xc
-//                              scenario.cpp:85 (10)
-//         0048ac4b     MOV        EAX,ESI
-//         0048ac4d     POP        EDI
-//         0048ac4e     POP        ESI
-//         0048ac4f     POP        EBP
-//         0048ac50     POP        EBX
-//         0048ac51     POP        this
-//         0048ac52     RET        0x4
-//                               LAB_0048ac55                                                 XREF[1]:     0048ac19(j)
-//                              scenario.cpp:84 (7)
-//         0048ac55     MOV        dword ptr [ESI + 0x10],0x0
-//                              scenario.cpp:85 (10)
-//         0048ac5c     MOV        EAX,ESI
-//         0048ac5e     POP        EDI
-//         0048ac5f     POP        ESI
-//         0048ac60     POP        EBP
-//         0048ac61     POP        EBX
-//         0048ac62     POP        this
-//         0048ac63     RET        0x4
-//         0048ac66     ??         90h
-//         0048ac67     NOP
-//         0048ac68     NOP
-//         0048ac69     NOP
-//         0048ac6a     NOP
-//         0048ac6b     NOP
-//         0048ac6c     NOP
-//         0048ac6d     NOP
-//         0048ac6e     NOP
-//         0048ac6f     NOP
+//              RGE_Scenario *    Stack[0x4]:4   param_1                   XREF[2]:     0048ab2f(R), 0048ab68(R)
+//                               ??0RGE_Scenario_Header@@QAE@PAVRGE_Scenario@@@Z              XREF[2]:     new_scenario_header:0041ce97(c),
+//                               RGE_Scenario_Header::RGE_Scenario_Header                                  TRIBE_Scenario_Header:0052a9b3(c)
+//                              scenario.cpp:29 (6)
+//         0048ab10     PUSH       EBX
+//         0048ab11     PUSH       EBP
+//         0048ab12     PUSH       ESI
+//         0048ab13     PUSH       EDI
+//         0048ab14     MOV        EBP,this
+//                              scenario.cpp:32 (2)
+//         0048ab16     XOR        EDI,EDI
+//                              scenario.cpp:36 (23)
+//         0048ab18     PUSH       EDI
+//         0048ab19     MOV        dword ptr [EBP],RGE_Scenario_Header::`vftable'   = 0048aca0
+//         0048ab20     MOV        dword ptr [EBP + 0x4],EDI
+//         0048ab23     MOV        dword ptr [EBP + 0x8],0x2
+//         0048ab2a     CALL       time                                             undefined time()
+//                              scenario.cpp:38 (21)
+//         0048ab2f     MOV        ESI,dword ptr [ESP + param_1]
+//         0048ab33     ADD        ESP,0x4
+//         0048ab36     MOV        this,ESI
+//         0048ab38     MOV        dword ptr [EBP + 0xc],EAX
+//         0048ab3b     CALL       RGE_Scenario::Get_description                    char * Get_description(RGE_Scenario * this)
+//         0048ab40     TEST       EAX,EAX
+//         0048ab42     JZ         LAB_0048ab68
+//                              scenario.cpp:40 (22)
+//         0048ab44     MOV        this,ESI
+//         0048ab46     CALL       RGE_Scenario::Get_description                    char * Get_description(RGE_Scenario * this)
+//         0048ab4b     MOV        EDI,EAX
+//         0048ab4d     OR         this,0xffffffff
+//         0048ab50     XOR        EAX,EAX
+//         0048ab52     SCASB.RE   ES:EDI
+//         0048ab54     NOT        this
+//         0048ab56     DEC        this
+//         0048ab57     MOV        EBX,this
+//         0048ab59     INC        EBX
+//                              scenario.cpp:41 (12)
+//         0048ab5a     PUSH       EBX
+//         0048ab5b     CALL       malloc                                           undefined malloc()
+//         0048ab60     ADD        ESP,0x4
+//         0048ab63     MOV        dword ptr [EBP + 0x10],EAX
+//                              scenario.cpp:43 (2)
+//         0048ab66     JMP        LAB_0048ab6f
+//                               LAB_0048ab68                                                 XREF[1]:     0048ab42(j)
+//                              scenario.cpp:44 (7)
+//         0048ab68     MOV        EBX,dword ptr [ESP + param_1]
+//         0048ab6c     MOV        dword ptr [EBP + 0x10],EDI
+//                               LAB_0048ab6f                                                 XREF[1]:     0048ab66(j)
+//                              scenario.cpp:45 (7)
+//         0048ab6f     MOV        EAX,dword ptr [EBP + 0x10]
+//         0048ab72     TEST       EAX,EAX
+//         0048ab74     JZ         LAB_0048aba5
+//                              scenario.cpp:47 (39)
+//         0048ab76     MOV        this,ESI
+//         0048ab78     CALL       RGE_Scenario::Get_description                    char * Get_description(RGE_Scenario * this)
+//         0048ab7d     MOV        EDI,EAX
+//         0048ab7f     OR         this,0xffffffff
+//         0048ab82     XOR        EAX,EAX
+//         0048ab84     SCASB.RE   ES:EDI
+//         0048ab86     NOT        this
+//         0048ab88     SUB        EDI,this
+//         0048ab8a     MOV        EAX,this
+//         0048ab8c     MOV        ESI,EDI
+//         0048ab8e     MOV        EDI,dword ptr [EBP + 0x10]
+//         0048ab91     SHR        this,0x2
+//         0048ab94     MOVSD.REP  ES:EDI,ESI
+//         0048ab96     MOV        this,EAX
+//         0048ab98     AND        this,0x3
+//         0048ab9b     MOVSB.REP  ES:EDI,ESI
+//                              scenario.cpp:48 (8)
+//         0048ab9d     MOV        this,dword ptr [EBP + 0x10]
+//         0048aba0     MOV        byte ptr [EBX + this->_padding_*0x1 + -0x1],0x0
+//                               LAB_0048aba5                                                 XREF[1]:     0048ab74(j)
+//                              scenario.cpp:50 (9)
+//         0048aba5     POP        EDI
+//         0048aba6     MOV        EAX,EBP
+//         0048aba8     POP        ESI
+//         0048aba9     POP        EBP
+//         0048abaa     POP        EBX
+//         0048abab     RET        0x4
+//         0048abae     ??         90h
+//         0048abaf     NOP
 }
 
 RGE_Scenario_Header::RGE_Scenario_Header(int param_1) {
@@ -419,779 +390,71 @@ void RGE_Scenario_Header::save(int param_1) {
 
 RGE_Scenario::RGE_Scenario(RGE_Game_World* param_1) {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Scenario(RGE_Scenario * this, int param_1,
+//                              undefined __thiscall RGE_Scenario(RGE_Scenario * this, RGE_Game_Worl
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Scenario *    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     0048ae43(R)
-//              RGE_Game_World    Stack[0x8]:4   param_2                   XREF[1]:     0048ae1e(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[5]:     0048af25(W), 0048af4c(W), 0048b31b(W), 0048b332(W),
-//                                                                                     0048b343(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0048b562(R)
-//              char[224]         Stack[-0xf0]   text                      XREF[2,3]:   0048b543(W), 0048b552(*), 0048b186(*), 0048b1b2(*),
-//                                                                                     0048b1de(*)
-//              int               Stack[-0xf4]:4 val                       XREF[5]:     0048af1d(W), 0048b315(W), 0048b44c(W), 0048b525(R),
-//                                                                                     0048b52d(W)
-//              undefined2        Stack[-0xf6]:2 local_f6                  XREF[49]:    0048af41(*), 0048af58(R), 0048af76(R), 0048af84(*),
-//                                                                                     0048af98(R), 0048afb0(R), 0048afc6(R), 0048aff8(*),
-//                                                                                     0048b005(R), 0048b01d(R), 0048b033(R), 0048b04e(*),
-//                                                                                     0048b05b(R), 0048b073(R), 0048b089(R), 0048b0a4(*),
-//                                                                                     0048b0b1(R), 0048b0c9(R), 0048b0df(R), 0048b0fa(*)
-//              short             Stack[-0xfa]:2 length
-//                               ??0RGE_Scenario@@QAE@HPAVRGE_Game_World@@@Z                  XREF[3]:     new_scenario_info:0041cefc(c),
-//                               RGE_Scenario::RGE_Scenario                                                T_Scenario:0052abba(c),
-//                                                                                                         scenario_init:00541ba2(c)
-//                              scenario.cpp:167 (14)
-//         0048ae10     MOV        EAX,FS:[0x0]
-//         0048ae16     PUSH       -0x1
-//         0048ae18     PUSH       FUN_0055e7ec
-//         0048ae1d     PUSH       EAX
-//                              scenario.cpp:171 (32)
-//         0048ae1e     MOV        EAX,dword ptr [ESP + param_2]
-//         0048ae22     MOV        dword ptr FS:[0x0],ESP
-//         0048ae29     SUB        ESP,0xec
-//         0048ae2f     PUSH       EBX
-//         0048ae30     PUSH       EBP
-//         0048ae31     MOV        EBX,this
-//         0048ae33     PUSH       ESI
-//         0048ae34     PUSH       EDI
-//         0048ae35     MOV        dword ptr [EBX],RGE_Scenario::`vftable'          = 0048b580
-//         0048ae3b     MOV        dword ptr [EBX + 0x8],EAX
-//                              scenario.cpp:173 (5)
-//         0048ae3e     CALL       RGE_Scenario::InitializeTextValues               void InitializeTextValues(RGE_Scenario * this)
-//                              scenario.cpp:175 (22)
-//         0048ae43     MOV        ESI,dword ptr [ESP + param_1]
-//         0048ae4a     LEA        EDI,[EBX + 0x1888]
-//         0048ae50     PUSH       0x4
-//         0048ae52     PUSH       EDI
-//         0048ae53     PUSH       ESI
-//         0048ae54     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              scenario.cpp:177 (18)
-//         0048ae59     FLD        float ptr [EDI]
-//         0048ae5b     FCOMP      float ptr [DAT_00572138]                         = D7h
-//         0048ae61     ADD        ESP,0xc
-//         0048ae64     FNSTSW     AX
-//         0048ae66     TEST       AH,0x41
-//         0048ae69     JNZ        LAB_0048ae8b
-//                              scenario.cpp:369 (32)
-//         0048ae6b     LEA        EDI,[EBX + 0xd]
-//         0048ae6e     MOV        EBP,0x10
-//                               LAB_0048ae73                                                 XREF[1]:     0048ae89(j)
-//         0048ae73     PUSH       0x100
-//         0048ae78     PUSH       EDI
-//         0048ae79     PUSH       ESI
-//         0048ae7a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048ae7f     ADD        ESP,0xc
-//         0048ae82     ADD        EDI,0x100
-//         0048ae88     DEC        EBP
-//         0048ae89     JNZ        LAB_0048ae73
-//                               LAB_0048ae8b                                                 XREF[1]:     0048ae69(j)
-//                              scenario.cpp:181 (19)
-//         0048ae8b     FLD        float ptr [EBX + 0x1888]
-//         0048ae91     FCOMP      double ptr [DAT_00572140]                        = 14h
-//         0048ae97     FNSTSW     AX
-//         0048ae99     TEST       AH,0x41
-//         0048ae9c     JNZ        LAB_0048aeeb
-//                              scenario.cpp:369 (77)
-//         0048ae9e     LEA        EDI,[EBX + 0x18cc]
-//         0048aea4     MOV        EBP,0x10
-//                               LAB_0048aea9                                                 XREF[1]:     0048aee9(j)
-//         0048aea9     LEA        this,[EDI + 0x80]
-//         0048aeaf     PUSH       0x4
-//         0048aeb1     PUSH       this
-//         0048aeb2     PUSH       ESI
-//         0048aeb3     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048aeb8     ADD        ESP,0xc
-//         0048aebb     PUSH       0x4
-//         0048aebd     PUSH       EDI
-//         0048aebe     PUSH       ESI
-//         0048aebf     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048aec4     ADD        ESP,0xc
-//         0048aec7     LEA        EDX,[EDI + 0x40]
-//         0048aeca     PUSH       0x4
-//         0048aecc     PUSH       EDX
-//         0048aecd     PUSH       ESI
-//         0048aece     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048aed3     ADD        ESP,0xc
-//         0048aed6     LEA        EAX,[EDI + -0x40]
-//         0048aed9     PUSH       0x4
-//         0048aedb     PUSH       EAX
-//         0048aedc     PUSH       ESI
-//         0048aedd     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048aee2     ADD        ESP,0xc
-//         0048aee5     ADD        EDI,0x4
-//         0048aee8     DEC        EBP
-//         0048aee9     JNZ        LAB_0048aea9
-//                               LAB_0048aeeb                                                 XREF[1]:     0048ae9c(j)
-//                              scenario.cpp:190 (19)
-//         0048aeeb     FLD        float ptr [EBX + 0x1888]
-//         0048aef1     FCOMP      double ptr [DAT_00572148]                        = 1Fh
-//         0048aef7     FNSTSW     AX
-//         0048aef9     TEST       AH,0x1
-//         0048aefc     JNZ        LAB_0048af0f
-//                              scenario.cpp:191 (15)
-//         0048aefe     LEA        this,[EBX + 0xc]
-//         0048af01     PUSH       0x1
-//         0048af03     PUSH       this
-//         0048af04     PUSH       ESI
-//         0048af05     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048af0a     ADD        ESP,0xc
-//                              scenario.cpp:192 (2)
-//         0048af0d     JMP        LAB_0048af13
-//                               LAB_0048af0f                                                 XREF[1]:     0048aefc(j)
-//                              scenario.cpp:193 (4)
-//         0048af0f     MOV        byte ptr [EBX + 0xc],0x1
-//                               LAB_0048af13                                                 XREF[1]:     0048af0d(j)
-//                              scenario.cpp:195 (46)
-//         0048af13     PUSH       0x14
-//         0048af15     CALL       operator_new                                     void * operator_new(uint param_1)
-//         0048af1a     ADD        ESP,0x4
-//         0048af1d     MOV        dword ptr [ESP + val],EAX
-//         0048af21     XOR        EDI,EDI
-//         0048af23     CMP        EAX,EDI
-//         0048af25     MOV        dword ptr [ESP + local_4],EDI
-//         0048af2c     JZ         LAB_0048af3c
-//         0048af2e     MOV        EDX,dword ptr [EBX + 0x8]
-//         0048af31     MOV        this,EAX
-//         0048af33     PUSH       EDX
-//         0048af34     PUSH       ESI
-//         0048af35     CALL       RGE_Timeline::RGE_Timeline                       undefined RGE_Timeline(RGE_Timeline * this, i
-//         0048af3a     JMP        LAB_0048af3e
-//                               LAB_0048af3c                                                 XREF[1]:     0048af2c(j)
-//         0048af3c     XOR        EAX,EAX
-//                               LAB_0048af3e                                                 XREF[1]:     0048af3a(j)
-//         0048af3e     MOV        dword ptr [EBX + 0x4],EAX
-//                              scenario.cpp:197 (23)
-//         0048af41     LEA        EAX=>local_f6,[ESP + 0x12]
-//         0048af45     PUSH       0x2
-//         0048af47     OR         EBP,0xffffffff
-//         0048af4a     PUSH       EAX
-//         0048af4b     PUSH       ESI
-//         0048af4c     MOV        dword ptr [ESP + local_4],EBP
-//         0048af53     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              scenario.cpp:198 (13)
-//         0048af58     MOV        AX,word ptr [ESP + local_f6]
-//         0048af5d     ADD        ESP,0xc
-//         0048af60     CMP        AX,DI
-//         0048af63     JLE        LAB_0048af7e
-//                              scenario.cpp:199 (25)
-//         0048af65     MOV        EDX,dword ptr [EBX + 0x1010]
-//         0048af6b     MOVSX      this,AX
-//         0048af6e     PUSH       this
-//         0048af6f     PUSH       EDX
-//         0048af70     PUSH       ESI
-//         0048af71     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048af76     MOV        AX,word ptr [ESP + local_f6]
-//         0048af7b     ADD        ESP,0xc
-//                               LAB_0048af7e                                                 XREF[1]:     0048af63(j)
-//                              scenario.cpp:200 (6)
-//         0048af7e     MOV        this,dword ptr [EBX + 0x1010]
-//                              scenario.cpp:202 (20)
-//         0048af84     LEA        EDX=>local_f6,[ESP + 0x12]
-//         0048af88     MOVSX      EAX,AX
-//         0048af8b     PUSH       0x2
-//         0048af8d     PUSH       EDX
-//         0048af8e     PUSH       ESI
-//         0048af8f     MOV        byte ptr [this->_padding_ + EAX*0x1],0x0
-//         0048af93     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              scenario.cpp:203 (13)
-//         0048af98     MOV        AX,word ptr [ESP + local_f6]
-//         0048af9d     ADD        ESP,0xc
-//         0048afa0     CMP        AX,DI
-//         0048afa3     JLE        LAB_0048afdb
-//                              scenario.cpp:205 (11)
-//         0048afa5     MOVSX      EAX,AX
-//         0048afa8     PUSH       0x1
-//         0048afaa     PUSH       EAX
-//         0048afab     CALL       calloc                                           undefined calloc()
-//                              scenario.cpp:206 (22)
-//         0048afb0     MOVSX      this,word ptr [ESP + local_f6]
-//         0048afb5     ADD        ESP,0x8
-//         0048afb8     MOV        dword ptr [EBX + 0x1014],EAX
-//         0048afbe     PUSH       this
-//         0048afbf     PUSH       EAX
-//         0048afc0     PUSH       ESI
-//         0048afc1     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              scenario.cpp:207 (19)
-//         0048afc6     MOVSX      EDX,word ptr [ESP + local_f6]
-//         0048afcb     MOV        EAX,dword ptr [EBX + 0x1014]
-//         0048afd1     ADD        ESP,0xc
-//         0048afd4     MOV        byte ptr [EDX + EAX*0x1 + -0x1],0x0
-//                              scenario.cpp:209 (2)
-//         0048afd9     JMP        LAB_0048afe1
-//                               LAB_0048afdb                                                 XREF[1]:     0048afa3(j)
-//                              scenario.cpp:210 (6)
-//         0048afdb     MOV        dword ptr [EBX + 0x1014],EDI
-//                               LAB_0048afe1                                                 XREF[1]:     0048afd9(j)
-//                              scenario.cpp:212 (23)
-//         0048afe1     FLD        float ptr [EBX + 0x1888]
-//         0048afe7     FCOMP      double ptr [DAT_00572150]                        = C3h
-//         0048afed     FNSTSW     AX
-//         0048afef     TEST       AH,0x1
-//         0048aff2     JNZ        LAB_0048b13a
-//                              scenario.cpp:214 (13)
-//         0048aff8     LEA        this=>local_f6,[ESP + 0x12]
-//         0048affc     PUSH       0x2
-//         0048affe     PUSH       this
-//         0048afff     PUSH       ESI
-//         0048b000     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              scenario.cpp:215 (13)
-//         0048b005     MOV        AX,word ptr [ESP + local_f6]
-//         0048b00a     ADD        ESP,0xc
-//         0048b00d     CMP        AX,DI
-//         0048b010     JLE        LAB_0048b048
-//                              scenario.cpp:217 (11)
-//         0048b012     MOVSX      EDX,AX
-//         0048b015     PUSH       0x1
-//         0048b017     PUSH       EDX
-//         0048b018     CALL       calloc                                           undefined calloc()
-//                              scenario.cpp:218 (22)
-//         0048b01d     MOVSX      this,word ptr [ESP + local_f6]
-//         0048b022     ADD        ESP,0x8
-//         0048b025     MOV        dword ptr [EBX + 0x1018],EAX
-//         0048b02b     PUSH       this
-//         0048b02c     PUSH       EAX
-//         0048b02d     PUSH       ESI
-//         0048b02e     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              scenario.cpp:219 (19)
-//         0048b033     MOVSX      EDX,word ptr [ESP + local_f6]
-//         0048b038     MOV        EAX,dword ptr [EBX + 0x1018]
-//         0048b03e     ADD        ESP,0xc
-//         0048b041     MOV        byte ptr [EDX + EAX*0x1 + -0x1],0x0
-//                              scenario.cpp:221 (2)
-//         0048b046     JMP        LAB_0048b04e
-//                               LAB_0048b048                                                 XREF[1]:     0048b010(j)
-//                              scenario.cpp:222 (6)
-//         0048b048     MOV        dword ptr [EBX + 0x1018],EDI
-//                               LAB_0048b04e                                                 XREF[1]:     0048b046(j)
-//                              scenario.cpp:224 (13)
-//         0048b04e     LEA        this=>local_f6,[ESP + 0x12]
-//         0048b052     PUSH       0x2
-//         0048b054     PUSH       this
-//         0048b055     PUSH       ESI
-//         0048b056     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              scenario.cpp:225 (13)
-//         0048b05b     MOV        AX,word ptr [ESP + local_f6]
-//         0048b060     ADD        ESP,0xc
-//         0048b063     CMP        AX,DI
-//         0048b066     JLE        LAB_0048b09e
-//                              scenario.cpp:227 (11)
-//         0048b068     MOVSX      EDX,AX
-//         0048b06b     PUSH       0x1
-//         0048b06d     PUSH       EDX
-//         0048b06e     CALL       calloc                                           undefined calloc()
-//                              scenario.cpp:228 (22)
-//         0048b073     MOVSX      this,word ptr [ESP + local_f6]
-//         0048b078     ADD        ESP,0x8
-//         0048b07b     MOV        dword ptr [EBX + 0x101c],EAX
-//         0048b081     PUSH       this
-//         0048b082     PUSH       EAX
-//         0048b083     PUSH       ESI
-//         0048b084     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              scenario.cpp:229 (19)
-//         0048b089     MOVSX      EDX,word ptr [ESP + local_f6]
-//         0048b08e     MOV        EAX,dword ptr [EBX + 0x101c]
-//         0048b094     ADD        ESP,0xc
-//         0048b097     MOV        byte ptr [EDX + EAX*0x1 + -0x1],0x0
-//                              scenario.cpp:231 (2)
-//         0048b09c     JMP        LAB_0048b0a4
-//                               LAB_0048b09e                                                 XREF[1]:     0048b066(j)
-//                              scenario.cpp:232 (6)
-//         0048b09e     MOV        dword ptr [EBX + 0x101c],EDI
-//                               LAB_0048b0a4                                                 XREF[1]:     0048b09c(j)
-//                              scenario.cpp:234 (13)
-//         0048b0a4     LEA        this=>local_f6,[ESP + 0x12]
-//         0048b0a8     PUSH       0x2
-//         0048b0aa     PUSH       this
-//         0048b0ab     PUSH       ESI
-//         0048b0ac     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              scenario.cpp:235 (13)
-//         0048b0b1     MOV        AX,word ptr [ESP + local_f6]
-//         0048b0b6     ADD        ESP,0xc
-//         0048b0b9     CMP        AX,DI
-//         0048b0bc     JLE        LAB_0048b0f4
-//                              scenario.cpp:237 (11)
-//         0048b0be     MOVSX      EDX,AX
-//         0048b0c1     PUSH       0x1
-//         0048b0c3     PUSH       EDX
-//         0048b0c4     CALL       calloc                                           undefined calloc()
-//                              scenario.cpp:238 (22)
-//         0048b0c9     MOVSX      this,word ptr [ESP + local_f6]
-//         0048b0ce     ADD        ESP,0x8
-//         0048b0d1     MOV        dword ptr [EBX + 0x1020],EAX
-//         0048b0d7     PUSH       this
-//         0048b0d8     PUSH       EAX
-//         0048b0d9     PUSH       ESI
-//         0048b0da     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              scenario.cpp:239 (19)
-//         0048b0df     MOVSX      EDX,word ptr [ESP + local_f6]
-//         0048b0e4     MOV        EAX,dword ptr [EBX + 0x1020]
-//         0048b0ea     ADD        ESP,0xc
-//         0048b0ed     MOV        byte ptr [EDX + EAX*0x1 + -0x1],0x0
-//                              scenario.cpp:241 (2)
-//         0048b0f2     JMP        LAB_0048b0fa
-//                               LAB_0048b0f4                                                 XREF[1]:     0048b0bc(j)
-//                              scenario.cpp:242 (6)
-//         0048b0f4     MOV        dword ptr [EBX + 0x1020],EDI
-//                               LAB_0048b0fa                                                 XREF[1]:     0048b0f2(j)
-//                              scenario.cpp:245 (13)
-//         0048b0fa     LEA        this=>local_f6,[ESP + 0x12]
-//         0048b0fe     PUSH       0x2
-//         0048b100     PUSH       this
-//         0048b101     PUSH       ESI
-//         0048b102     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              scenario.cpp:246 (13)
-//         0048b107     MOV        AX,word ptr [ESP + local_f6]
-//         0048b10c     ADD        ESP,0xc
-//         0048b10f     CMP        AX,DI
-//         0048b112     JLE        LAB_0048b14c
-//                              scenario.cpp:248 (11)
-//         0048b114     MOVSX      EDX,AX
-//         0048b117     PUSH       0x1
-//         0048b119     PUSH       EDX
-//         0048b11a     CALL       calloc                                           undefined calloc()
-//                              scenario.cpp:249 (25)
-//         0048b11f     MOVSX      this,word ptr [ESP + local_f6]
-//         0048b124     ADD        ESP,0x8
-//         0048b127     MOV        dword ptr [EBX + 0x1024],EAX
-//         0048b12d     PUSH       this
-//         0048b12e     PUSH       EAX
-//         0048b12f     PUSH       ESI
-//         0048b130     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048b135     ADD        ESP,0xc
-//                              scenario.cpp:252 (2)
-//         0048b138     JMP        LAB_0048b152
-//                               LAB_0048b13a                                                 XREF[1]:     0048aff2(j)
-//                              scenario.cpp:258 (6)
-//         0048b13a     MOV        dword ptr [EBX + 0x1018],EDI
-//                              scenario.cpp:259 (6)
-//         0048b140     MOV        dword ptr [EBX + 0x101c],EDI
-//                              scenario.cpp:260 (6)
-//         0048b146     MOV        dword ptr [EBX + 0x1020],EDI
-//                               LAB_0048b14c                                                 XREF[1]:     0048b112(j)
-//                              scenario.cpp:261 (6)
-//         0048b14c     MOV        dword ptr [EBX + 0x1024],EDI
-//                               LAB_0048b152                                                 XREF[1]:     0048b138(j)
-//                              scenario.cpp:264 (23)
-//         0048b152     FLD        float ptr [EBX + 0x1888]
-//         0048b158     FCOMP      float ptr [DAT_00572158]                         = 0Ah
-//         0048b15e     FNSTSW     AX
-//         0048b160     TEST       AH,0x1
-//         0048b163     JZ         LAB_0048b1ed
-//                              scenario.cpp:267 (13)
-//         0048b169     LEA        EDX=>local_f6,[ESP + 0x12]
-//         0048b16d     PUSH       0x2
-//         0048b16f     PUSH       EDX
-//         0048b170     PUSH       ESI
-//         0048b171     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              scenario.cpp:268 (13)
-//         0048b176     MOV        AX,word ptr [ESP + local_f6]
-//         0048b17b     ADD        ESP,0xc
-//         0048b17e     CMP        AX,DI
-//         0048b181     JLE        LAB_0048b195
-//                              scenario.cpp:269 (18)
-//         0048b183     MOVSX      EAX,AX
-//         0048b186     LEA        this=>text[4],[ESP + 0x1c]
-//         0048b18a     PUSH       EAX
-//         0048b18b     PUSH       this
-//         0048b18c     PUSH       ESI
-//         0048b18d     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048b192     ADD        ESP,0xc
-//                               LAB_0048b195                                                 XREF[1]:     0048b181(j)
-//                              scenario.cpp:271 (13)
-//         0048b195     LEA        EDX=>local_f6,[ESP + 0x12]
-//         0048b199     PUSH       0x2
-//         0048b19b     PUSH       EDX
-//         0048b19c     PUSH       ESI
-//         0048b19d     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              scenario.cpp:272 (13)
-//         0048b1a2     MOV        AX,word ptr [ESP + local_f6]
-//         0048b1a7     ADD        ESP,0xc
-//         0048b1aa     CMP        AX,DI
-//         0048b1ad     JLE        LAB_0048b1c1
-//                              scenario.cpp:273 (18)
-//         0048b1af     MOVSX      EAX,AX
-//         0048b1b2     LEA        this=>text[4],[ESP + 0x1c]
-//         0048b1b6     PUSH       EAX
-//         0048b1b7     PUSH       this
-//         0048b1b8     PUSH       ESI
-//         0048b1b9     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048b1be     ADD        ESP,0xc
-//                               LAB_0048b1c1                                                 XREF[1]:     0048b1ad(j)
-//                              scenario.cpp:275 (13)
-//         0048b1c1     LEA        EDX=>local_f6,[ESP + 0x12]
-//         0048b1c5     PUSH       0x2
-//         0048b1c7     PUSH       EDX
-//         0048b1c8     PUSH       ESI
-//         0048b1c9     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              scenario.cpp:276 (13)
-//         0048b1ce     MOV        AX,word ptr [ESP + local_f6]
-//         0048b1d3     ADD        ESP,0xc
-//         0048b1d6     CMP        AX,DI
-//         0048b1d9     JLE        LAB_0048b1ed
-//                              scenario.cpp:277 (18)
-//         0048b1db     MOVSX      EAX,AX
-//         0048b1de     LEA        this=>text[4],[ESP + 0x1c]
-//         0048b1e2     PUSH       EAX
-//         0048b1e3     PUSH       this
-//         0048b1e4     PUSH       ESI
-//         0048b1e5     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048b1ea     ADD        ESP,0xc
-//                               LAB_0048b1ed                                                 XREF[2]:     0048b163(j), 0048b1d9(j)
-//                              scenario.cpp:281 (13)
-//         0048b1ed     LEA        EDX=>local_f6,[ESP + 0x12]
-//         0048b1f1     PUSH       0x2
-//         0048b1f3     PUSH       EDX
-//         0048b1f4     PUSH       ESI
-//         0048b1f5     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              scenario.cpp:282 (13)
-//         0048b1fa     MOV        AX,word ptr [ESP + local_f6]
-//         0048b1ff     ADD        ESP,0xc
-//         0048b202     CMP        AX,DI
-//         0048b205     JLE        LAB_0048b220
-//                              scenario.cpp:283 (25)
-//         0048b207     MOVSX      EAX,AX
-//         0048b20a     LEA        this,[EBX + 0x1508]
-//         0048b210     PUSH       EAX
-//         0048b211     PUSH       this
-//         0048b212     PUSH       ESI
-//         0048b213     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048b218     MOV        AX,word ptr [ESP + local_f6]
-//         0048b21d     ADD        ESP,0xc
-//                               LAB_0048b220                                                 XREF[1]:     0048b205(j)
-//                              scenario.cpp:284 (3)
-//         0048b220     MOVSX      EDX,AX
-//                              scenario.cpp:286 (21)
-//         0048b223     LEA        EAX=>local_f6,[ESP + 0x12]
-//         0048b227     PUSH       0x2
-//         0048b229     PUSH       EAX
-//         0048b22a     PUSH       ESI
-//         0048b22b     MOV        byte ptr [EDX + EBX*0x1 + 0x1508],0x0
-//         0048b233     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              scenario.cpp:287 (13)
-//         0048b238     MOV        AX,word ptr [ESP + local_f6]
-//         0048b23d     ADD        ESP,0xc
-//         0048b240     CMP        AX,DI
-//         0048b243     JLE        LAB_0048b25e
-//                              scenario.cpp:288 (25)
-//         0048b245     MOVSX      this,AX
-//         0048b248     LEA        EDX,[EBX + 0x15e8]
-//         0048b24e     PUSH       this
-//         0048b24f     PUSH       EDX
-//         0048b250     PUSH       ESI
-//         0048b251     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048b256     MOV        AX,word ptr [ESP + local_f6]
-//         0048b25b     ADD        ESP,0xc
-//                               LAB_0048b25e                                                 XREF[1]:     0048b243(j)
-//                              scenario.cpp:289 (3)
-//         0048b25e     MOVSX      EAX,AX
-//                              scenario.cpp:291 (21)
-//         0048b261     LEA        this=>local_f6,[ESP + 0x12]
-//         0048b265     PUSH       0x2
-//         0048b267     PUSH       this
-//         0048b268     PUSH       ESI
-//         0048b269     MOV        byte ptr [EAX + EBX*0x1 + 0x15e8],0x0
-//         0048b271     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              scenario.cpp:292 (13)
-//         0048b276     MOV        AX,word ptr [ESP + local_f6]
-//         0048b27b     ADD        ESP,0xc
-//         0048b27e     CMP        AX,DI
-//         0048b281     JLE        LAB_0048b29c
-//                              scenario.cpp:293 (25)
-//         0048b283     MOVSX      EDX,AX
-//         0048b286     LEA        EAX,[EBX + 0x16c8]
-//         0048b28c     PUSH       EDX
-//         0048b28d     PUSH       EAX
-//         0048b28e     PUSH       ESI
-//         0048b28f     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048b294     MOV        AX,word ptr [ESP + local_f6]
-//         0048b299     ADD        ESP,0xc
-//                               LAB_0048b29c                                                 XREF[1]:     0048b281(j)
-//                              scenario.cpp:294 (11)
-//         0048b29c     MOVSX      this,AX
-//         0048b29f     MOV        byte ptr [ECX + EBX*0x1 + this->Cine_Loss[0]],
-//                              scenario.cpp:296 (19)
-//         0048b2a7     FLD        float ptr [EBX + 0x1888]
-//         0048b2ad     FCOMP      double ptr [DAT_00572160]                        = 71h    q
-//         0048b2b3     FNSTSW     AX
-//         0048b2b5     TEST       AH,0x1
-//         0048b2b8     JNZ        LAB_0048b2f8
-//                              scenario.cpp:298 (13)
-//         0048b2ba     LEA        EDX=>local_f6,[ESP + 0x12]
-//         0048b2be     PUSH       0x2
-//         0048b2c0     PUSH       EDX
-//         0048b2c1     PUSH       ESI
-//         0048b2c2     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              scenario.cpp:299 (13)
-//         0048b2c7     MOV        AX,word ptr [ESP + local_f6]
-//         0048b2cc     ADD        ESP,0xc
-//         0048b2cf     CMP        AX,DI
-//         0048b2d2     JLE        LAB_0048b2ed
-//                              scenario.cpp:300 (25)
-//         0048b2d4     MOVSX      EAX,AX
-//         0048b2d7     LEA        this,[EBX + 0x17a8]
-//         0048b2dd     PUSH       EAX
-//         0048b2de     PUSH       this
-//         0048b2df     PUSH       ESI
-//         0048b2e0     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048b2e5     MOV        AX,word ptr [ESP + local_f6]
-//         0048b2ea     ADD        ESP,0xc
-//                               LAB_0048b2ed                                                 XREF[1]:     0048b2d2(j)
-//                              scenario.cpp:301 (11)
-//         0048b2ed     MOVSX      EDX,AX
-//         0048b2f0     MOV        byte ptr [EDX + EBX*0x1 + 0x17a8],0x0
-//                               LAB_0048b2f8                                                 XREF[1]:     0048b2b8(j)
-//                              scenario.cpp:304 (19)
-//         0048b2f8     FLD        float ptr [EBX + 0x1888]
-//         0048b2fe     FCOMP      double ptr [DAT_00572168]                        = 9Ah
-//         0048b304     FNSTSW     AX
-//         0048b306     TEST       AH,0x1
-//         0048b309     JNZ        LAB_0048b352
-//                              scenario.cpp:305 (52)
-//         0048b30b     PUSH       0x20
-//         0048b30d     CALL       operator_new                                     void * operator_new(uint param_1)
-//         0048b312     ADD        ESP,0x4
-//         0048b315     MOV        dword ptr [ESP + val],EAX
-//         0048b319     CMP        EAX,EDI
-//         0048b31b     MOV        dword ptr [ESP + local_4],0x1
-//         0048b326     JZ         LAB_0048b341
-//         0048b328     PUSH       0x1
-//         0048b32a     PUSH       ESI
-//         0048b32b     MOV        this,EAX
-//         0048b32d     CALL       TPicture::TPicture                               undefined TPicture(TPicture * this, int param
-//         0048b332     MOV        dword ptr [ESP + local_4],EBP
-//         0048b339     MOV        dword ptr [EBX + 0x198c],EAX
-//                              scenario.cpp:306 (2)
-//         0048b33f     JMP        LAB_0048b358
-//                               LAB_0048b341                                                 XREF[1]:     0048b326(j)
-//                              scenario.cpp:305 (15)
-//         0048b341     XOR        EAX,EAX
-//         0048b343     MOV        dword ptr [ESP + local_4],EBP
-//         0048b34a     MOV        dword ptr [EBX + 0x198c],EAX
-//                              scenario.cpp:306 (2)
-//         0048b350     JMP        LAB_0048b358
-//                               LAB_0048b352                                                 XREF[1]:     0048b309(j)
-//                              scenario.cpp:307 (6)
-//         0048b352     MOV        dword ptr [EBX + 0x198c],EDI
-//                               LAB_0048b358                                                 XREF[2]:     0048b33f(j), 0048b350(j)
-//                              scenario.cpp:309 (11)
-//         0048b358     LEA        EDI,[EBX + 0x12c8]
-//         0048b35e     MOV        EBP,0x10
-//                               LAB_0048b363                                                 XREF[1]:     0048b39f(j)
-//                              scenario.cpp:311 (13)
-//         0048b363     LEA        EAX=>local_f6,[ESP + 0x12]
-//         0048b367     PUSH       0x2
-//         0048b369     PUSH       EAX
-//         0048b36a     PUSH       ESI
-//         0048b36b     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              scenario.cpp:312 (13)
-//         0048b370     MOV        AX,word ptr [ESP + local_f6]
-//         0048b375     ADD        ESP,0xc
-//         0048b378     TEST       AX,AX
-//         0048b37b     JLE        LAB_0048b392
-//                              scenario.cpp:313 (21)
-//         0048b37d     MOV        EDX,dword ptr [EDI]
-//         0048b37f     MOVSX      this,AX
-//         0048b382     PUSH       this
-//         0048b383     PUSH       EDX
-//         0048b384     PUSH       ESI
-//         0048b385     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048b38a     MOV        AX,word ptr [ESP + local_f6]
-//         0048b38f     ADD        ESP,0xc
-//                               LAB_0048b392                                                 XREF[1]:     0048b37b(j)
-//                              scenario.cpp:314 (15)
-//         0048b392     MOV        this,dword ptr [EDI]
-//         0048b394     ADD        EDI,0x4
-//         0048b397     MOVSX      EAX,AX
-//         0048b39a     DEC        EBP
-//         0048b39b     MOV        byte ptr [EAX + this->_padding_*0x1],0x0
-//         0048b39f     JNZ        LAB_0048b363
-//                              scenario.cpp:369 (165)
-//         0048b3a1     LEA        EDI,[EBX + 0x1308]
-//         0048b3a7     MOV        EBP,0x10
-//                               LAB_0048b3ac                                                 XREF[1]:     0048b3e8(j)
-//         0048b3ac     LEA        EDX=>local_f6,[ESP + 0x12]
-//         0048b3b0     PUSH       0x2
-//         0048b3b2     PUSH       EDX
-//         0048b3b3     PUSH       ESI
-//         0048b3b4     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048b3b9     MOV        AX,word ptr [ESP + local_f6]
-//         0048b3be     ADD        ESP,0xc
-//         0048b3c1     TEST       AX,AX
-//         0048b3c4     JLE        LAB_0048b3db
-//         0048b3c6     MOV        this,dword ptr [EDI]
-//         0048b3c8     MOVSX      EAX,AX
-//         0048b3cb     PUSH       EAX
-//         0048b3cc     PUSH       this
-//         0048b3cd     PUSH       ESI
-//         0048b3ce     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048b3d3     MOV        AX,word ptr [ESP + local_f6]
-//         0048b3d8     ADD        ESP,0xc
-//                               LAB_0048b3db                                                 XREF[1]:     0048b3c4(j)
-//         0048b3db     MOVSX      EDX,AX
-//         0048b3de     MOV        EAX,dword ptr [EDI]
-//         0048b3e0     ADD        EDI,0x4
-//         0048b3e3     DEC        EBP
-//         0048b3e4     MOV        byte ptr [EDX + EAX*0x1],0x0
-//         0048b3e8     JNZ        LAB_0048b3ac
-//         0048b3ea     FLD        float ptr [EBX + 0x1888]
-//         0048b3f0     FCOMP      double ptr [DAT_00572170]                        = 48h    H
-//         0048b3f6     FNSTSW     AX
-//         0048b3f8     TEST       AH,0x1
-//         0048b3fb     JNZ        LAB_0048b446
-//         0048b3fd     LEA        EDI,[EBX + 0x1348]
-//         0048b403     MOV        EBP,0x10
-//                               LAB_0048b408                                                 XREF[1]:     0048b444(j)
-//         0048b408     LEA        this=>local_f6,[ESP + 0x12]
-//         0048b40c     PUSH       0x2
-//         0048b40e     PUSH       this
-//         0048b40f     PUSH       ESI
-//         0048b410     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048b415     MOV        AX,word ptr [ESP + local_f6]
-//         0048b41a     ADD        ESP,0xc
-//         0048b41d     TEST       AX,AX
-//         0048b420     JLE        LAB_0048b437
-//         0048b422     MOVSX      EDX,AX
-//         0048b425     MOV        EAX,dword ptr [EDI]
-//         0048b427     PUSH       EDX
-//         0048b428     PUSH       EAX
-//         0048b429     PUSH       ESI
-//         0048b42a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048b42f     MOV        AX,word ptr [ESP + local_f6]
-//         0048b434     ADD        ESP,0xc
-//                               LAB_0048b437                                                 XREF[1]:     0048b420(j)
-//         0048b437     MOV        EDX,dword ptr [EDI]
-//         0048b439     ADD        EDI,0x4
-//         0048b43c     MOVSX      this,AX
-//         0048b43f     DEC        EBP
-//         0048b440     MOV        byte ptr [this->_padding_ + EDX*0x1],0x0
-//         0048b444     JNZ        LAB_0048b408
-//                               LAB_0048b446                                                 XREF[1]:     0048b3fb(j)
-//                              scenario.cpp:334 (14)
-//         0048b446     LEA        EDI,[EBX + 0x1448]
-//         0048b44c     MOV        dword ptr [ESP + val],0x10
-//                               LAB_0048b454                                                 XREF[1]:     0048b531(j)
-//                              scenario.cpp:336 (12)
-//         0048b454     PUSH       0x4
-//         0048b456     PUSH       EDI
-//         0048b457     PUSH       ESI
-//         0048b458     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048b45d     ADD        ESP,0xc
-//                              scenario.cpp:341 (60)
-//         0048b460     LEA        EBP,[EDI + 0x40]
-//         0048b463     PUSH       0x4
-//         0048b465     PUSH       EBP
-//         0048b466     PUSH       ESI
-//         0048b467     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048b46c     FLD        float ptr [EBX + 0x1888]
-//         0048b472     FCOMP      double ptr [DAT_00572170]                        = 48h    H
-//         0048b478     ADD        ESP,0xc
-//         0048b47b     FNSTSW     AX
-//         0048b47d     TEST       AH,0x1
-//         0048b480     JNZ        LAB_0048b494
-//         0048b482     LEA        EAX,[EDI + 0x80]
-//         0048b488     PUSH       0x4
-//         0048b48a     PUSH       EAX
-//         0048b48b     PUSH       ESI
-//         0048b48c     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048b491     ADD        ESP,0xc
-//                               LAB_0048b494                                                 XREF[1]:     0048b480(j)
-//         0048b494     XOR        this,this
-//         0048b496     MOV        dword ptr [EDI + 0xffffff40],this
-//                              scenario.cpp:342 (3)
-//         0048b49c     MOV        dword ptr [EDI + -0x80],this
-//                              scenario.cpp:343 (3)
-//         0048b49f     MOV        dword ptr [EDI + -0x40],this
-//                              scenario.cpp:344 (19)
-//         0048b4a2     FLD        float ptr [EBX + 0x1888]
-//         0048b4a8     FCOMP      float ptr [DAT_00572178]                         = 33h    3
-//         0048b4ae     FNSTSW     AX
-//         0048b4b0     TEST       AH,0x1
-//         0048b4b3     JNZ        LAB_0048b525
-//                              scenario.cpp:346 (6)
-//         0048b4b5     MOV        EAX,dword ptr [EDI]
-//         0048b4b7     CMP        EAX,this
-//         0048b4b9     JLE        LAB_0048b4d9
-//                              scenario.cpp:348 (17)
-//         0048b4bb     PUSH       0x1
-//         0048b4bd     PUSH       EAX
-//         0048b4be     CALL       calloc                                           undefined calloc()
-//         0048b4c3     ADD        ESP,0x8
-//         0048b4c6     MOV        dword ptr [EDI + 0xffffff40],EAX
-//                              scenario.cpp:349 (13)
-//         0048b4cc     MOV        this,dword ptr [EDI]
-//         0048b4ce     PUSH       this
-//         0048b4cf     PUSH       EAX
-//         0048b4d0     PUSH       ESI
-//         0048b4d1     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048b4d6     ADD        ESP,0xc
-//                               LAB_0048b4d9                                                 XREF[1]:     0048b4b9(j)
-//                              scenario.cpp:352 (7)
-//         0048b4d9     MOV        EAX,dword ptr [EBP]
-//         0048b4dc     TEST       EAX,EAX
-//         0048b4de     JLE        LAB_0048b4fc
-//                              scenario.cpp:354 (14)
-//         0048b4e0     PUSH       0x1
-//         0048b4e2     PUSH       EAX
-//         0048b4e3     CALL       calloc                                           undefined calloc()
-//         0048b4e8     ADD        ESP,0x8
-//         0048b4eb     MOV        dword ptr [EDI + -0x80],EAX
-//                              scenario.cpp:355 (14)
-//         0048b4ee     MOV        EDX,dword ptr [EBP]
-//         0048b4f1     PUSH       EDX
-//         0048b4f2     PUSH       EAX
-//         0048b4f3     PUSH       ESI
-//         0048b4f4     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048b4f9     ADD        ESP,0xc
-//                               LAB_0048b4fc                                                 XREF[1]:     0048b4de(j)
-//                              scenario.cpp:358 (10)
-//         0048b4fc     MOV        EAX,dword ptr [EDI + 0x80]
-//         0048b502     TEST       EAX,EAX
-//         0048b504     JLE        LAB_0048b525
-//                              scenario.cpp:360 (14)
-//         0048b506     PUSH       0x1
-//         0048b508     PUSH       EAX
-//         0048b509     CALL       calloc                                           undefined calloc()
-//         0048b50e     ADD        ESP,0x8
-//         0048b511     MOV        dword ptr [EDI + -0x40],EAX
-//                              scenario.cpp:361 (35)
-//         0048b514     MOV        this,dword ptr [EDI + 0x80]
-//         0048b51a     PUSH       this
-//         0048b51b     PUSH       EAX
-//         0048b51c     PUSH       ESI
-//         0048b51d     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048b522     ADD        ESP,0xc
-//                               LAB_0048b525                                                 XREF[2]:     0048b4b3(j), 0048b504(j)
-//         0048b525     MOV        EAX,dword ptr [ESP + val]
-//         0048b529     ADD        EDI,0x4
-//         0048b52c     DEC        EAX
-//         0048b52d     MOV        dword ptr [ESP + val],EAX
-//         0048b531     JNZ        LAB_0048b454
-//                              scenario.cpp:367 (27)
-//         0048b537     FLD        float ptr [EBX + 0x1888]
-//         0048b53d     FCOMP      float ptr [DAT_0057217c]                         = 5Ch    \
-//         0048b543     MOV        dword ptr [ESP + text[0]],0x0
-//         0048b54b     FNSTSW     AX
-//         0048b54d     TEST       AH,0x41
-//         0048b550     JNZ        LAB_0048b562
-//                              scenario.cpp:368 (16)
-//         0048b552     LEA        EDX=>text,[ESP + 0x18]
-//         0048b556     PUSH       0x4
-//         0048b558     PUSH       EDX
-//         0048b559     PUSH       ESI
-//         0048b55a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048b55f     ADD        ESP,0xc
-//                               LAB_0048b562                                                 XREF[1]:     0048b550(j)
-//                              scenario.cpp:369 (29)
-//         0048b562     MOV        this,dword ptr [ESP + local_c]
-//         0048b569     POP        EDI
-//         0048b56a     POP        ESI
-//         0048b56b     MOV        EAX,EBX
-//         0048b56d     POP        EBP
-//         0048b56e     MOV        dword ptr FS:[0x0],this
-//         0048b575     POP        EBX
-//         0048b576     ADD        ESP,0xf8
-//         0048b57c     RET        0x8
-//         0048b57f     ??         90h
+//              RGE_Game_World    Stack[0x4]:4   param_1                   XREF[2]:     0048ad6e(R), 0048ad90(W)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     0048ad98(W), 0048adaf(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0048add5(R)
+//                               ??0RGE_Scenario@@QAE@PAVRGE_Game_World@@@Z                   XREF[2]:     T_Scenario:0052aae3(c),
+//                               RGE_Scenario::RGE_Scenario                                                scenario_init:00541bfd(c)
+//                              scenario.cpp:152 (14)
+//         0048ad60     MOV        EAX,FS:[0x0]
+//         0048ad66     PUSH       -0x1
+//         0048ad68     PUSH       FUN_0055e7bb
+//         0048ad6d     PUSH       EAX
+//                              scenario.cpp:153 (15)
+//         0048ad6e     MOV        EAX,dword ptr [ESP + param_1]
+//         0048ad72     MOV        dword ptr FS:[0x0],ESP
+//         0048ad79     PUSH       ESI
+//         0048ad7a     MOV        ESI,this
+//         0048ad7c     PUSH       EDI
+//                              scenario.cpp:154 (48)
+//         0048ad7d     PUSH       0x14
+//         0048ad7f     MOV        dword ptr [ESI],RGE_Scenario::`vftable'          = 0048b580
+//         0048ad85     MOV        dword ptr [ESI + 0x8],EAX
+//         0048ad88     CALL       operator_new                                     void * operator_new(uint param_1)
+//         0048ad8d     ADD        ESP,0x4
+//         0048ad90     MOV        dword ptr [ESP + param_1],EAX
+//         0048ad94     XOR        EDI,EDI
+//         0048ad96     CMP        EAX,EDI
+//         0048ad98     MOV        dword ptr [ESP + local_4],EDI
+//         0048ad9c     JZ         LAB_0048adab
+//         0048ad9e     MOV        this,dword ptr [ESI + 0x8]
+//         0048ada1     PUSH       this
+//         0048ada2     MOV        this,EAX
+//         0048ada4     CALL       RGE_Timeline::RGE_Timeline                       undefined RGE_Timeline(RGE_Timeline * this, R
+//         0048ada9     JMP        LAB_0048adad
+//                               LAB_0048adab                                                 XREF[1]:     0048ad9c(j)
+//         0048adab     XOR        EAX,EAX
+//                               LAB_0048adad                                                 XREF[1]:     0048ada9(j)
+//                              scenario.cpp:156 (18)
+//         0048adad     MOV        this,ESI
+//         0048adaf     MOV        dword ptr [ESP + local_4],0xffffffff
+//         0048adb7     MOV        dword ptr [ESI + 0x4],EAX
+//         0048adba     CALL       RGE_Scenario::InitializeTextValues               void InitializeTextValues(RGE_Scenario * this)
+//                              scenario.cpp:158 (9)
+//         0048adbf     MOV        dword ptr [ESI + 0x198c],EDI
+//         0048adc5     LEA        EDI,[ESI + 0xd]
+//                              scenario.cpp:160 (13)
+//         0048adc8     MOV        this,0x400
+//         0048adcd     XOR        EAX,EAX
+//         0048adcf     MOV        byte ptr [ESI + 0xc],0x1
+//         0048add3     STOSD.REP  ES:EDI
+//                              scenario.cpp:161 (21)
+//         0048add5     MOV        this,dword ptr [ESP + local_c]
+//         0048add9     MOV        EAX,ESI
+//         0048addb     POP        EDI
+//         0048addc     MOV        dword ptr FS:[0x0],this
+//         0048ade3     POP        ESI
+//         0048ade4     ADD        ESP,0xc
+//         0048ade7     RET        0x4
+//         0048adea     ??         90h
+//         0048adeb     NOP
+//         0048adec     NOP
+//         0048aded     NOP
+//         0048adee     NOP
+//         0048adef     NOP
 }
 
 RGE_Scenario::RGE_Scenario(int param_1, RGE_Game_World* param_2) {

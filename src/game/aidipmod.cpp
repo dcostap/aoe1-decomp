@@ -3,92 +3,59 @@
 
 DiplomacyAIModule::DiplomacyAIModule(void* param_1, int param_2) {
     /* TODO: Stub */
-//                              undefined __thiscall DiplomacyAIModule(DiplomacyAIModule * this, int
+//                              undefined __thiscall DiplomacyAIModule(DiplomacyAIModule * this, voi
 //              undefined         <UNASSIGNED>   <RETURN>
 //              DiplomacyAIMod    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     0040bf56(R)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     0040bf81(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0040bf77(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0040bfca(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[2]:     0040bf6e(W), 0040bfce(R)
-//                               ??0DiplomacyAIModule@@QAE@HH@Z                               XREF[1]:     TribeMainDecisionAIModule:004e4be8
+//              void *            Stack[0x4]:4   param_1                   XREF[1]:     0040bec0(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     0040bec8(R)
+//                               ??0DiplomacyAIModule@@QAE@PAXH@Z                             XREF[1]:     TribeMainDecisionAIModule:004e4868
 //                               DiplomacyAIModule::DiplomacyAIModule
-//                              aidipmod.cpp:40 (92)
-//         0040bf40     PUSH       -0x1
-//         0040bf42     PUSH       FUN_0055c5f8
-//         0040bf47     MOV        EAX,FS:[0x0]
-//         0040bf4d     PUSH       EAX
-//         0040bf4e     MOV        dword ptr FS:[0x0],ESP
-//         0040bf55     PUSH       this
-//         0040bf56     MOV        EAX,dword ptr [ESP + param_1]
-//         0040bf5a     PUSH       EBX
-//         0040bf5b     PUSH       EBP
-//         0040bf5c     PUSH       ESI
-//         0040bf5d     PUSH       EDI
-//         0040bf5e     XOR        EDI,EDI
-//         0040bf60     PUSH       EDI
-//         0040bf61     PUSH       EAX
-//         0040bf62     MOV        ESI,this
+//                              aidipmod.cpp:26 (51)
+//         0040bec0     MOV        EAX,dword ptr [ESP + param_1]
+//         0040bec4     PUSH       ESI
+//         0040bec5     MOV        ESI,this
+//         0040bec7     PUSH       EDI
+//         0040bec8     MOV        this,dword ptr [ESP + param_2]
+//         0040becc     PUSH       EAX
+//         0040becd     PUSH       this
 //                              language.dll match for 0x3eb: "Age of Empires Help"
-//         0040bf64     PUSH       0x3eb
-//         0040bf69     PUSH       s_Diplomacy_AI                                   = "Diplomacy AI"
-//         0040bf6e     MOV        dword ptr [ESP + local_10],ESI
-//         0040bf72     CALL       AIModule::AIModule                               undefined AIModule(AIModule * this, char * pa
-//         0040bf77     MOV        dword ptr [ESP + local_4],EDI
-//         0040bf7b     MOV        dword ptr [ESI + 0xf0],EDI
-//         0040bf81     MOV        EDI,dword ptr [ESP + param_2]
-//         0040bf85     MOV        dword ptr [ESI],DiplomacyAIModule::`vftable'     = 0040bf20
-//         0040bf8b     LEA        EBX,[ESI + 0x144]
-//         0040bf91     ADD        ESI,0x11c
-//         0040bf97     MOV        EBP,0xa
-//                               LAB_0040bf9c                                                 XREF[1]:     0040bfc8(j)
-//                              aidipmod.cpp:42 (3)
-//         0040bf9c     LEA        this,[ESI + -0x28]
-//                              aidipmod.cpp:43 (12)
-//         0040bf9f     PUSH       0x4
-//         0040bfa1     PUSH       this
-//         0040bfa2     PUSH       EDI
-//         0040bfa3     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040bfa8     ADD        ESP,0xc
-//                              aidipmod.cpp:44 (12)
-//         0040bfab     PUSH       0x4
-//         0040bfad     PUSH       ESI
-//         0040bfae     PUSH       EDI
-//         0040bfaf     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040bfb4     ADD        ESP,0xc
-//                              aidipmod.cpp:45 (19)
-//         0040bfb7     PUSH       0x1
-//         0040bfb9     PUSH       EBX
-//         0040bfba     PUSH       EDI
-//         0040bfbb     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040bfc0     ADD        ESP,0xc
-//         0040bfc3     ADD        ESI,0x4
-//         0040bfc6     INC        EBX
-//         0040bfc7     DEC        EBP
-//         0040bfc8     JNZ        LAB_0040bf9c
-//                              aidipmod.cpp:47 (25)
-//         0040bfca     MOV        this,dword ptr [ESP + local_c]
-//         0040bfce     MOV        EAX,dword ptr [ESP + local_10]
-//         0040bfd2     POP        EDI
-//         0040bfd3     POP        ESI
-//         0040bfd4     POP        EBP
-//         0040bfd5     MOV        dword ptr FS:[0x0],this
-//         0040bfdc     POP        EBX
-//         0040bfdd     ADD        ESP,0x10
-//         0040bfe0     RET        0x8
-//         0040bfe3     ??         90h
-//         0040bfe4     NOP
-//         0040bfe5     NOP
-//         0040bfe6     NOP
-//         0040bfe7     NOP
-//         0040bfe8     NOP
-//         0040bfe9     NOP
-//         0040bfea     NOP
-//         0040bfeb     NOP
-//         0040bfec     NOP
-//         0040bfed     NOP
-//         0040bfee     NOP
-//         0040bfef     NOP
+//         0040bece     PUSH       0x3eb
+//         0040bed3     PUSH       s_Diplomacy_AI                                   = "Diplomacy AI"
+//         0040bed8     MOV        this,ESI
+//         0040beda     CALL       AIModule::AIModule                               undefined AIModule(AIModule * this, char * pa
+//         0040bedf     XOR        EAX,EAX
+//         0040bee1     MOV        dword ptr [ESI],DiplomacyAIModule::`vftable'     = 0040bf20
+//         0040bee7     MOV        dword ptr [ESI + 0xf0],EAX
+//         0040beed     LEA        this,[ESI + 0x11c]
+//                              aidipmod.cpp:28 (7)
+//         0040bef3     MOV        EDI,0x31
+//         0040bef8     MOV        DL,0x1
+//                               LAB_0040befa                                                 XREF[1]:     0040bf0d(j)
+//                              aidipmod.cpp:29 (3)
+//         0040befa     MOV        dword ptr [this->_padding_ + -0x28],EDI
+//                              aidipmod.cpp:30 (2)
+//         0040befd     MOV        dword ptr [this->_padding_],EDI
+//                              aidipmod.cpp:31 (16)
+//         0040beff     MOV        byte ptr [EAX + ESI*0x1 + 0x144],DL
+//         0040bf06     INC        EAX
+//         0040bf07     ADD        this,0x4
+//         0040bf0a     CMP        EAX,0x9
+//         0040bf0d     JLE        LAB_0040befa
+//                              aidipmod.cpp:33 (7)
+//         0040bf0f     MOV        EAX,ESI
+//         0040bf11     POP        EDI
+//         0040bf12     POP        ESI
+//         0040bf13     RET        0x8
+//         0040bf16     ??         90h
+//         0040bf17     NOP
+//         0040bf18     NOP
+//         0040bf19     NOP
+//         0040bf1a     NOP
+//         0040bf1b     NOP
+//         0040bf1c     NOP
+//         0040bf1d     NOP
+//         0040bf1e     NOP
+//         0040bf1f     NOP
 }
 
 DiplomacyAIModule::DiplomacyAIModule(int param_1, int param_2) {

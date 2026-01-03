@@ -3,30 +3,30 @@
 
 TRIBE_Effects::TRIBE_Effects(int param_1) {
     /* TODO: Stub */
-//                              undefined __thiscall TRIBE_Effects(TRIBE_Effects * this, char * para
+//                              undefined __thiscall TRIBE_Effects(TRIBE_Effects * this, int param_1)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Effects *   ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0050d4b0(R)
-//                               ??0TRIBE_Effects@@QAE@PAD@Z
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     0050d460(R)
+//                               ??0TRIBE_Effects@@QAE@H@Z                                    XREF[1]:     effects_init:0052e68a(c)
 //                               TRIBE_Effects::TRIBE_Effects
-//                              teffects.cpp:29 (19)
-//         0050d4b0     MOV        EAX,dword ptr [ESP + param_1]
-//         0050d4b4     PUSH       ESI
-//         0050d4b5     MOV        ESI,this
-//         0050d4b7     PUSH       EAX
-//         0050d4b8     CALL       RGE_Effects::RGE_Effects                         undefined RGE_Effects(RGE_Effects * this, cha
-//         0050d4bd     MOV        dword ptr [ESI],TRIBE_Effects::`vftable'         = 0050d480
-//                              teffects.cpp:30 (6)
-//         0050d4c3     MOV        EAX,ESI
-//         0050d4c5     POP        ESI
-//         0050d4c6     RET        0x4
-//         0050d4c9     ??         90h
-//         0050d4ca     NOP
-//         0050d4cb     NOP
-//         0050d4cc     NOP
-//         0050d4cd     NOP
-//         0050d4ce     NOP
-//         0050d4cf     NOP
+//                              teffects.cpp:22 (19)
+//         0050d460     MOV        EAX,dword ptr [ESP + param_1]
+//         0050d464     PUSH       ESI
+//         0050d465     MOV        ESI,this
+//         0050d467     PUSH       EAX
+//         0050d468     CALL       RGE_Effects::RGE_Effects                         undefined RGE_Effects(RGE_Effects * this, int
+//         0050d46d     MOV        dword ptr [ESI],TRIBE_Effects::`vftable'         = 0050d480
+//                              teffects.cpp:23 (6)
+//         0050d473     MOV        EAX,ESI
+//         0050d475     POP        ESI
+//         0050d476     RET        0x4
+//         0050d479     ??         90h
+//         0050d47a     NOP
+//         0050d47b     NOP
+//         0050d47c     NOP
+//         0050d47d     NOP
+//         0050d47e     NOP
+//         0050d47f     NOP
 }
 
 TRIBE_Effects::TRIBE_Effects(char* param_1) {

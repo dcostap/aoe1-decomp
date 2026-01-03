@@ -1814,279 +1814,41 @@ void TScrollBarPanel::draw_border(int param_1, int param_2, tagRECT* param_3) {
 //                              void __thiscall draw_border(TScrollBarPanel * this, int param_1, int
 //              void              <VOID>         <RETURN>
 //              TScrollBarPane    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[2]:     0047b6d9(R), 0047b79d(R)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     0047b6b6(R)
-//              long              Stack[0xc]:4   param_3                   XREF[1]:     0047b691(R)
-//              long              Stack[0x10]:4  param_4                   XREF[1]:     0047b6a6(R)
-//              long              Stack[0x14]:4  param_5                   XREF[1]:     0047b696(R)
-//              long              Stack[0x18]:4  param_6                   XREF[1]:     0047b6aa(R)
-//                               ?draw_border@TScrollBarPanel@@IAEXHHJJJJ@Z                   XREF[1]:     draw_border:0047b67d(c)
-//                               TScrollBarPanel::draw_border
-//                              Pnl_scbr.cpp:703 (1)
-//         0047b690     PUSH       EBX
-//                              Pnl_scbr.cpp:704 (37)
-//         0047b691     MOV        EBX,dword ptr [ESP + param_3]
-//         0047b695     PUSH       EBP
-//         0047b696     MOV        EBP,dword ptr [ESP + param_5]
-//         0047b69a     PUSH       ESI
-//         0047b69b     CMP        EBX,EBP
-//         0047b69d     PUSH       EDI
-//         0047b69e     MOV        ESI,this
-//         0047b6a0     JZ         switchD_0047b6d2::default
-//         0047b6a6     MOV        EDI,dword ptr [ESP + param_4]
-//         0047b6aa     MOV        EAX,dword ptr [ESP + param_6]
-//         0047b6ae     CMP        EDI,EAX
-//         0047b6b0     JZ         switchD_0047b6d2::default
-//                              Pnl_scbr.cpp:707 (6)
-//         0047b6b6     MOV        this,dword ptr [ESP + param_2]
-//         0047b6ba     TEST       this,this
-//                              Pnl_scbr.cpp:709 (29)
-//         0047b6bc     MOV        this,dword ptr [ESI + 0x1b8]
-//         0047b6c2     JZ         LAB_0047b78c
-//         0047b6c8     DEC        this
-//         0047b6c9     CMP        this,0x3
-//         0047b6cc     JA         switchD_0047b6d2::default
-//                               switchD_0047b6d2::switchD
-//         0047b6d2     JMP        dword ptr [this->_padding_*0x4 + switchD_0047b   = 0047b6d9
-//                               switchD_0047b6d2::caseD_0                                    XREF[2]:     0047b6d2(j), 0047b888(*)
-//                              Pnl_scbr.cpp:712 (4)
-//         0047b6d9     MOV        this,dword ptr [ESP + param_1]
-//                              Pnl_scbr.cpp:713 (27)
-//         0047b6dd     PUSH       0xff
-//         0047b6e2     TEST       this,this
-//         0047b6e4     PUSH       EAX
-//         0047b6e5     JZ         LAB_0047b7e8
-//         0047b6eb     MOV        this,dword ptr [ESI + 0x20]
-//         0047b6ee     INC        EDI
-//         0047b6ef     PUSH       EBP
-//         0047b6f0     INC        EBX
-//         0047b6f1     PUSH       EDI
-//         0047b6f2     PUSH       EBX
-//         0047b6f3     CALL       TDrawArea::DrawRect                              void DrawRect(TDrawArea * this, long param_1,
-//                              Pnl_scbr.cpp:759 (7)
-//         0047b6f8     POP        EDI
-//         0047b6f9     POP        ESI
-//         0047b6fa     POP        EBP
-//         0047b6fb     POP        EBX
-//         0047b6fc     RET        0x18
-//                               switchD_0047b6d2::caseD_1                                    XREF[2]:     0047b6d2(j), 0047b88c(*)
-//                              Pnl_scbr.cpp:719 (26)
-//         0047b6ff     MOV        this,byte ptr [ESI + 0x1bc]
-//         0047b705     MOV        DL,byte ptr [ESI + 0x1c1]
-//         0047b70b     PUSH       this
-//         0047b70c     MOV        this,dword ptr [ESI + 0x20]
-//         0047b70f     PUSH       EDX
-//         0047b710     PUSH       EAX
-//         0047b711     PUSH       EBP
-//         0047b712     PUSH       EDI
-//         0047b713     PUSH       EBX
-//         0047b714     CALL       TDrawArea::DrawBevel                             void DrawBevel(TDrawArea * this, long param_1
-//                              Pnl_scbr.cpp:759 (7)
-//         0047b719     POP        EDI
-//         0047b71a     POP        ESI
-//         0047b71b     POP        EBP
-//         0047b71c     POP        EBX
-//         0047b71d     RET        0x18
-//                               switchD_0047b6d2::caseD_2                                    XREF[2]:     0047b6d2(j), 0047b890(*)
-//                              Pnl_scbr.cpp:723 (40)
-//         0047b720     MOV        this,byte ptr [ESI + 0x1bc]
-//         0047b726     MOV        DL,byte ptr [ESI + 0x1bd]
-//         0047b72c     PUSH       this
-//         0047b72d     MOV        this,byte ptr [ESI + 0x1c0]
-//         0047b733     PUSH       EDX
-//         0047b734     MOV        DL,byte ptr [ESI + 0x1c1]
-//         0047b73a     PUSH       this
-//         0047b73b     MOV        this,dword ptr [ESI + 0x20]
-//         0047b73e     PUSH       EDX
-//         0047b73f     PUSH       EAX
-//         0047b740     PUSH       EBP
-//         0047b741     PUSH       EDI
-//         0047b742     PUSH       EBX
-//         0047b743     CALL       TDrawArea::DrawBevel2                            void DrawBevel2(TDrawArea * this, long param_
-//                              Pnl_scbr.cpp:759 (7)
-//         0047b748     POP        EDI
-//         0047b749     POP        ESI
-//         0047b74a     POP        EBP
-//         0047b74b     POP        EBX
-//         0047b74c     RET        0x18
-//                               switchD_0047b6d2::caseD_3                                    XREF[2]:     0047b6d2(j), 0047b894(*)
-//                              Pnl_scbr.cpp:727 (41)
-//         0047b74f     MOV        this,byte ptr [ESI + 0x1bc]
-//         0047b755     MOV        DL,byte ptr [ESI + 0x1bd]
-//         0047b75b     PUSH       this
-//         0047b75c     MOV        this,byte ptr [ESI + 0x1be]
-//         0047b762     PUSH       EDX
-//         0047b763     MOV        DL,byte ptr [ESI + 0x1bf]
-//         0047b769     PUSH       this
-//         0047b76a     MOV        this,byte ptr [ESI + 0x1c0]
-//         0047b770     PUSH       EDX
-//         0047b771     MOV        DL,byte ptr [ESI + 0x1c1]
-//         0047b777     PUSH       this
-//                              Pnl_scbr.cpp:755 (13)
-//         0047b778     MOV        this,dword ptr [ESI + 0x20]
-//         0047b77b     PUSH       EDX
-//         0047b77c     PUSH       EAX
-//         0047b77d     PUSH       EBP
-//         0047b77e     PUSH       EDI
-//         0047b77f     PUSH       EBX
-//         0047b780     CALL       TDrawArea::DrawBevel3                            void DrawBevel3(TDrawArea * this, long param_
-//                              Pnl_scbr.cpp:759 (7)
-//         0047b785     POP        EDI
-//         0047b786     POP        ESI
-//         0047b787     POP        EBP
-//         0047b788     POP        EBX
-//         0047b789     RET        0x18
-//                               LAB_0047b78c                                                 XREF[1]:     0047b6c2(j)
-//                              Pnl_scbr.cpp:733 (17)
-//         0047b78c     DEC        this
-//         0047b78d     CMP        this,0x3
-//         0047b790     JA         switchD_0047b6d2::default
-//                               switchD_0047b796::switchD
-//         0047b796     JMP        dword ptr [this->_padding_*0x4 + switchD_0047b   = 0047b79d
-//                               switchD_0047b796::caseD_0                                    XREF[2]:     0047b796(j), 0047b898(*)
-//                              Pnl_scbr.cpp:736 (4)
-//         0047b79d     MOV        this,dword ptr [ESP + param_1]
-//                              Pnl_scbr.cpp:738 (22)
-//         0047b7a1     PUSH       0x0
-//         0047b7a3     TEST       this,this
-//         0047b7a5     JZ         LAB_0047b7e7
-//         0047b7a7     MOV        this,dword ptr [ESI + 0x20]
-//         0047b7aa     SUB        EAX,EDI
-//         0047b7ac     PUSH       EAX
-//         0047b7ad     LEA        EAX,[EDI + 0x1]
-//         0047b7b0     PUSH       EAX
-//         0047b7b1     PUSH       EBP
-//         0047b7b2     CALL       TDrawArea::DrawVertLine                          void DrawVertLine(TDrawArea * this, long para
-//                              Pnl_scbr.cpp:739 (20)
-//         0047b7b7     MOV        this,EBP
-//         0047b7b9     PUSH       0x0
-//         0047b7bb     SUB        this,EBX
-//         0047b7bd     LEA        EDX,[EBX + 0x1]
-//         0047b7c0     PUSH       this
-//         0047b7c1     MOV        this,dword ptr [ESI + 0x20]
-//         0047b7c4     PUSH       EDI
-//         0047b7c5     PUSH       EDX
-//         0047b7c6     CALL       TDrawArea::DrawHorzLine                          void DrawHorzLine(TDrawArea * this, long para
-//                              Pnl_scbr.cpp:740 (21)
-//         0047b7cb     MOV        this,dword ptr [ESI + 0x20]
-//         0047b7ce     LEA        EAX,[EDI + -0x1]
-//         0047b7d1     PUSH       0xff
-//         0047b7d6     DEC        EBP
-//         0047b7d7     PUSH       EAX
-//         0047b7d8     PUSH       EBP
-//         0047b7d9     PUSH       EDI
-//         0047b7da     PUSH       EBX
-//         0047b7db     CALL       TDrawArea::DrawRect                              void DrawRect(TDrawArea * this, long param_1,
-//                              Pnl_scbr.cpp:759 (7)
-//         0047b7e0     POP        EDI
-//         0047b7e1     POP        ESI
-//         0047b7e2     POP        EBP
-//         0047b7e3     POP        EBX
-//         0047b7e4     RET        0x18
-//                               LAB_0047b7e7                                                 XREF[1]:     0047b7a5(j)
-//                              Pnl_scbr.cpp:743 (13)
-//         0047b7e7     PUSH       EAX
-//                               LAB_0047b7e8                                                 XREF[1]:     0047b6e5(j)
-//         0047b7e8     MOV        this,dword ptr [ESI + 0x20]
-//         0047b7eb     DEC        EBP
-//         0047b7ec     PUSH       EBP
-//         0047b7ed     PUSH       EDI
-//         0047b7ee     PUSH       EBX
-//         0047b7ef     CALL       TDrawArea::DrawRect                              void DrawRect(TDrawArea * this, long param_1,
-//                              Pnl_scbr.cpp:759 (7)
-//         0047b7f4     POP        EDI
-//         0047b7f5     POP        ESI
-//         0047b7f6     POP        EBP
-//         0047b7f7     POP        EBX
-//         0047b7f8     RET        0x18
-//                               switchD_0047b796::caseD_1                                    XREF[2]:     0047b796(j), 0047b89c(*)
-//                              Pnl_scbr.cpp:747 (26)
-//         0047b7fb     MOV        this,byte ptr [ESI + 0x1c1]
-//         0047b801     MOV        DL,byte ptr [ESI + 0x1bc]
-//         0047b807     PUSH       this
-//         0047b808     MOV        this,dword ptr [ESI + 0x20]
-//         0047b80b     PUSH       EDX
-//         0047b80c     PUSH       EAX
-//         0047b80d     PUSH       EBP
-//         0047b80e     PUSH       EDI
-//         0047b80f     PUSH       EBX
-//         0047b810     CALL       TDrawArea::DrawBevel                             void DrawBevel(TDrawArea * this, long param_1
-//                              Pnl_scbr.cpp:759 (7)
-//         0047b815     POP        EDI
-//         0047b816     POP        ESI
-//         0047b817     POP        EBP
-//         0047b818     POP        EBX
-//         0047b819     RET        0x18
-//                               switchD_0047b796::caseD_2                                    XREF[2]:     0047b796(j), 0047b8a0(*)
-//                              Pnl_scbr.cpp:751 (40)
-//         0047b81c     MOV        this,byte ptr [ESI + 0x1c1]
-//         0047b822     MOV        DL,byte ptr [ESI + 0x1c0]
-//         0047b828     PUSH       this
-//         0047b829     MOV        this,byte ptr [ESI + 0x1bd]
-//         0047b82f     PUSH       EDX
-//         0047b830     MOV        DL,byte ptr [ESI + 0x1bc]
-//         0047b836     PUSH       this
-//         0047b837     MOV        this,dword ptr [ESI + 0x20]
-//         0047b83a     PUSH       EDX
-//         0047b83b     PUSH       EAX
-//         0047b83c     PUSH       EBP
-//         0047b83d     PUSH       EDI
-//         0047b83e     PUSH       EBX
-//         0047b83f     CALL       TDrawArea::DrawBevel2                            void DrawBevel2(TDrawArea * this, long param_
-//                              Pnl_scbr.cpp:759 (7)
-//         0047b844     POP        EDI
-//         0047b845     POP        ESI
-//         0047b846     POP        EBP
-//         0047b847     POP        EBX
-//         0047b848     RET        0x18
-//                               switchD_0047b796::caseD_3                                    XREF[2]:     0047b796(j), 0047b8a4(*)
-//                              Pnl_scbr.cpp:755 (54)
-//         0047b84b     MOV        this,byte ptr [ESI + 0x1c1]
-//         0047b851     MOV        DL,byte ptr [ESI + 0x1c0]
-//         0047b857     PUSH       this
-//         0047b858     MOV        this,byte ptr [ESI + 0x1bf]
-//         0047b85e     PUSH       EDX
-//         0047b85f     MOV        DL,byte ptr [ESI + 0x1be]
-//         0047b865     PUSH       this
-//         0047b866     MOV        this,byte ptr [ESI + 0x1bd]
-//         0047b86c     PUSH       EDX
-//         0047b86d     MOV        DL,byte ptr [ESI + 0x1bc]
-//         0047b873     PUSH       this
-//         0047b874     MOV        this,dword ptr [ESI + 0x20]
-//         0047b877     PUSH       EDX
-//         0047b878     PUSH       EAX
-//         0047b879     PUSH       EBP
-//         0047b87a     PUSH       EDI
-//         0047b87b     PUSH       EBX
-//         0047b87c     CALL       TDrawArea::DrawBevel3                            void DrawBevel3(TDrawArea * this, long param_
-//                               switchD_0047b796::default                                    XREF[4]:     0047b6a0(j), 0047b6b0(j),
-//                               switchD_0047b6d2::default                                                 0047b6cc(j), 0047b790(j)
-//                              Pnl_scbr.cpp:759 (39)
-//         0047b881     POP        EDI
-//         0047b882     POP        ESI
-//         0047b883     POP        EBP
-//         0047b884     POP        EBX
-//         0047b885     RET        0x18
-//                              Symbol Ref: No symbol: NONAME
-//                               switchD_0047b6d2::switchdataD_0047b888                       XREF[1]:     draw_border:0047b6d2(*)
-//         0047b888     addr       switchD_0047b6d2::caseD_0
-//         0047b88c     addr       switchD_0047b6d2::caseD_1
-//         0047b890     addr       switchD_0047b6d2::caseD_2
-//         0047b894     addr       switchD_0047b6d2::caseD_3
-//                              Symbol Ref: No symbol: NONAME
-//                               switchD_0047b796::switchdataD_0047b898                       XREF[1]:     draw_border:0047b796(*)
-//         0047b898     addr       switchD_0047b796::caseD_0
-//         0047b89c     addr       switchD_0047b796::caseD_1
-//         0047b8a0     addr       switchD_0047b796::caseD_2
-//         0047b8a4     addr       switchD_0047b796::caseD_3
-//         0047b8a8     ??         90h
-//         0047b8a9     ??         90h
-//         0047b8aa     ??         90h
-//         0047b8ab     ??         90h
-//         0047b8ac     ??         90h
-//         0047b8ad     ??         90h
-//         0047b8ae     ??         90h
-//         0047b8af     ??         90h
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     0047b677(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     0047b672(R)
+//              tagRECT *         Stack[0xc]:4   param_3                   XREF[1]:     0047b660(R)
+//                               ?draw_border@TScrollBarPanel@@IAEXHHPAUtagRECT@@@Z           XREF[4]:     draw:0047b529(c),
+//                               TScrollBarPanel::draw_border                                              draw:0047b5a2(c),
+//                                                                                                         draw:0047b61b(c),
+//                                                                                                         draw:0047b63e(c)
+//                              Pnl_scbr.cpp:695 (34)
+//         0047b660     MOV        EAX,dword ptr [ESP + param_3]
+//         0047b664     MOV        EDX,dword ptr [EAX + 0xc]
+//         0047b667     PUSH       EDX
+//         0047b668     MOV        EDX,dword ptr [EAX + 0x8]
+//         0047b66b     PUSH       EDX
+//         0047b66c     MOV        EDX,dword ptr [EAX + 0x4]
+//         0047b66f     MOV        EAX,dword ptr [EAX]
+//         0047b671     PUSH       EDX
+//         0047b672     MOV        EDX,dword ptr [ESP + param_2]
+//         0047b676     PUSH       EAX
+//         0047b677     MOV        EAX,dword ptr [ESP + param_1]
+//         0047b67b     PUSH       EDX
+//         0047b67c     PUSH       EAX
+//         0047b67d     CALL       TScrollBarPanel::draw_border                     void draw_border(TScrollBarPanel * this, int
+//                              Pnl_scbr.cpp:697 (3)
+//         0047b682     RET        0xc
+//         0047b685     ??         90h
+//         0047b686     NOP
+//         0047b687     NOP
+//         0047b688     NOP
+//         0047b689     NOP
+//         0047b68a     NOP
+//         0047b68b     NOP
+//         0047b68c     NOP
+//         0047b68d     NOP
+//         0047b68e     NOP
+//         0047b68f     NOP
     return;
 }
 

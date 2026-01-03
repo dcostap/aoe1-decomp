@@ -6,54 +6,59 @@ TRIBE_Action_Repair::TRIBE_Action_Repair(int param_1, RGE_Action_Object* param_2
 //                              undefined __thiscall TRIBE_Action_Repair(TRIBE_Action_Repair * this,
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Action_R    ECX:4 (auto)   this
-//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     004d17b0(R)
-//              RGE_Task *        Stack[0x8]:4   param_2                   XREF[1]:     004d17bf(R)
-//              float             Stack[0xc]:4   param_3                   XREF[1]:     004d17c7(R)
-//              float             Stack[0x10]:4  param_4                   XREF[1]:     004d17c3(R)
-//              float             Stack[0x14]:4  param_5                   XREF[1]:     004d17ce(R)
-//                               ??0TRIBE_Action_Repair@@QAE@PAVRGE_Action_Object@@PAVRGE_Ta  XREF[1]:     create_task_action:004d0a2f(c)
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004d1697(R)
+//              RGE_Action_Obj    Stack[0x8]:4   param_2                   XREF[1]:     004d169d(R)
+//              int               Stack[0xc]:4   param_3                   XREF[1]:     004d16b0(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     004d16b4(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004d16d5(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004d16a7(W)
+//                               ??0TRIBE_Action_Repair@@QAE@HPAVRGE_Action_Object@@H@Z       XREF[1]:     create_action:004d0415(c)
 //                               TRIBE_Action_Repair::TRIBE_Action_Repair
-//                              tact_rep.cpp:74 (15)
-//         004d17b0     MOV        EAX,dword ptr [ESP + param_1]
-//         004d17b4     PUSH       ESI
-//         004d17b5     PUSH       0x1
-//         004d17b7     MOV        ESI,this
-//         004d17b9     PUSH       EAX
-//         004d17ba     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
-//                              tact_rep.cpp:76 (4)
-//         004d17bf     MOV        this,dword ptr [ESP + param_2]
-//                              tact_rep.cpp:78 (11)
-//         004d17c3     MOV        EAX,dword ptr [ESP + param_4]
-//         004d17c7     MOV        EDX,dword ptr [ESP + param_3]
-//         004d17cb     MOV        dword ptr [ESI + 0x30],this
-//                              tact_rep.cpp:79 (25)
-//         004d17ce     MOV        this,dword ptr [ESP + param_5]
-//         004d17d2     MOV        dword ptr [ESI + 0x24],EAX
-//         004d17d5     MOV        dword ptr [ESI],TRIBE_Action_Repair::`vftable'   = 004d16f0
-//         004d17db     MOV        word ptr [ESI + 0x4],0x6a
-//         004d17e1     MOV        dword ptr [ESI + 0x20],EDX
-//         004d17e4     MOV        dword ptr [ESI + 0x28],this
-//                              tact_rep.cpp:80 (4)
-//         004d17e7     MOV        byte ptr [ESI + 0x40],0x0
-//                              tact_rep.cpp:81 (6)
-//         004d17eb     MOV        EAX,ESI
-//         004d17ed     POP        ESI
-//         004d17ee     RET        0x14
-//         004d17f1     ??         90h
-//         004d17f2     NOP
-//         004d17f3     NOP
-//         004d17f4     NOP
-//         004d17f5     NOP
-//         004d17f6     NOP
-//         004d17f7     NOP
-//         004d17f8     NOP
-//         004d17f9     NOP
-//         004d17fa     NOP
-//         004d17fb     NOP
-//         004d17fc     NOP
-//         004d17fd     NOP
-//         004d17fe     NOP
-//         004d17ff     NOP
+//                              tact_rep.cpp:41 (48)
+//         004d1680     PUSH       -0x1
+//         004d1682     PUSH       FUN_005600e8
+//         004d1687     MOV        EAX,FS:[0x0]
+//         004d168d     PUSH       EAX
+//         004d168e     MOV        dword ptr FS:[0x0],ESP
+//         004d1695     PUSH       this
+//         004d1696     PUSH       EBX
+//         004d1697     MOV        EBX,dword ptr [ESP + param_1]
+//         004d169b     PUSH       ESI
+//         004d169c     PUSH       EDI
+//         004d169d     MOV        EDI,dword ptr [ESP + param_2]
+//         004d16a1     PUSH       0x0
+//         004d16a3     MOV        ESI,this
+//         004d16a5     PUSH       EDI
+//         004d16a6     PUSH       EBX
+//         004d16a7     MOV        dword ptr [ESP + local_10],ESI
+//         004d16ab     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, int p
+//                              tact_rep.cpp:44 (28)
+//         004d16b0     MOV        EAX,dword ptr [ESP + param_3]
+//         004d16b4     MOV        dword ptr [ESP + local_4],0x0
+//         004d16bc     TEST       EAX,EAX
+//         004d16be     MOV        dword ptr [ESI],TRIBE_Action_Repair::`vftable'   = 004d16f0
+//         004d16c4     MOV        word ptr [ESI + 0x4],0x6a
+//         004d16ca     JZ         LAB_004d16d5
+//                              tact_rep.cpp:45 (9)
+//         004d16cc     PUSH       EDI
+//         004d16cd     PUSH       EBX
+//         004d16ce     MOV        this,ESI
+//         004d16d0     CALL       TRIBE_Action_Repair::setup                       int setup(TRIBE_Action_Repair * this, int par
+//                               LAB_004d16d5                                                 XREF[1]:     004d16ca(j)
+//                              tact_rep.cpp:46 (22)
+//         004d16d5     MOV        this,dword ptr [ESP + local_c]
+//         004d16d9     MOV        EAX,ESI
+//         004d16db     POP        EDI
+//         004d16dc     POP        ESI
+//         004d16dd     MOV        dword ptr FS:[0x0],this
+//         004d16e4     POP        EBX
+//         004d16e5     ADD        ESP,0x10
+//         004d16e8     RET        0xc
+//         004d16eb     ??         90h
+//         004d16ec     NOP
+//         004d16ed     NOP
+//         004d16ee     NOP
+//         004d16ef     NOP
 }
 
 TRIBE_Action_Repair::TRIBE_Action_Repair(RGE_Action_Object* param_1, RGE_Task* param_2, RGE_Static_Object* param_3) {
@@ -61,54 +66,74 @@ TRIBE_Action_Repair::TRIBE_Action_Repair(RGE_Action_Object* param_1, RGE_Task* p
 //                              undefined __thiscall TRIBE_Action_Repair(TRIBE_Action_Repair * this,
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Action_R    ECX:4 (auto)   this
-//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     004d17b0(R)
-//              RGE_Task *        Stack[0x8]:4   param_2                   XREF[1]:     004d17bf(R)
-//              float             Stack[0xc]:4   param_3                   XREF[1]:     004d17c7(R)
-//              float             Stack[0x10]:4  param_4                   XREF[1]:     004d17c3(R)
-//              float             Stack[0x14]:4  param_5                   XREF[1]:     004d17ce(R)
-//                               ??0TRIBE_Action_Repair@@QAE@PAVRGE_Action_Object@@PAVRGE_Ta  XREF[1]:     create_task_action:004d0a2f(c)
-//                               TRIBE_Action_Repair::TRIBE_Action_Repair
-//                              tact_rep.cpp:74 (15)
-//         004d17b0     MOV        EAX,dword ptr [ESP + param_1]
-//         004d17b4     PUSH       ESI
-//         004d17b5     PUSH       0x1
-//         004d17b7     MOV        ESI,this
-//         004d17b9     PUSH       EAX
-//         004d17ba     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
-//                              tact_rep.cpp:76 (4)
-//         004d17bf     MOV        this,dword ptr [ESP + param_2]
-//                              tact_rep.cpp:78 (11)
-//         004d17c3     MOV        EAX,dword ptr [ESP + param_4]
-//         004d17c7     MOV        EDX,dword ptr [ESP + param_3]
-//         004d17cb     MOV        dword ptr [ESI + 0x30],this
-//                              tact_rep.cpp:79 (25)
-//         004d17ce     MOV        this,dword ptr [ESP + param_5]
-//         004d17d2     MOV        dword ptr [ESI + 0x24],EAX
-//         004d17d5     MOV        dword ptr [ESI],TRIBE_Action_Repair::`vftable'   = 004d16f0
-//         004d17db     MOV        word ptr [ESI + 0x4],0x6a
-//         004d17e1     MOV        dword ptr [ESI + 0x20],EDX
-//         004d17e4     MOV        dword ptr [ESI + 0x28],this
-//                              tact_rep.cpp:80 (4)
-//         004d17e7     MOV        byte ptr [ESI + 0x40],0x0
-//                              tact_rep.cpp:81 (6)
-//         004d17eb     MOV        EAX,ESI
-//         004d17ed     POP        ESI
-//         004d17ee     RET        0x14
-//         004d17f1     ??         90h
-//         004d17f2     NOP
-//         004d17f3     NOP
-//         004d17f4     NOP
-//         004d17f5     NOP
-//         004d17f6     NOP
-//         004d17f7     NOP
-//         004d17f8     NOP
-//         004d17f9     NOP
-//         004d17fa     NOP
-//         004d17fb     NOP
-//         004d17fc     NOP
-//         004d17fd     NOP
-//         004d17fe     NOP
-//         004d17ff     NOP
+//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     004d1736(R)
+//              RGE_Task *        Stack[0x8]:4   param_2                   XREF[1]:     004d174a(R)
+//              RGE_Static_Obj    Stack[0xc]:4   param_3                   XREF[1]:     004d174e(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     004d1758(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004d1792(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004d1741(W)
+//                               ??0TRIBE_Action_Repair@@QAE@PAVRGE_Action_Object@@PAVRGE_Ta  XREF[2]:     repair:004cb56d(c),
+//                               TRIBE_Action_Repair::TRIBE_Action_Repair                                  create_task_action:004d09e4(c)
+//                              tact_rep.cpp:54 (42)
+//         004d1720     PUSH       -0x1
+//         004d1722     PUSH       FUN_00560108
+//         004d1727     MOV        EAX,FS:[0x0]
+//         004d172d     PUSH       EAX
+//         004d172e     MOV        dword ptr FS:[0x0],ESP
+//         004d1735     PUSH       this
+//         004d1736     MOV        EAX,dword ptr [ESP + param_1]
+//         004d173a     PUSH       ESI
+//         004d173b     PUSH       EDI
+//         004d173c     MOV        ESI,this
+//         004d173e     PUSH       0x1
+//         004d1740     PUSH       EAX
+//         004d1741     MOV        dword ptr [ESP + local_10],ESI
+//         004d1745     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
+//                              tact_rep.cpp:56 (4)
+//         004d174a     MOV        this,dword ptr [ESP + param_2]
+//                              tact_rep.cpp:58 (39)
+//         004d174e     MOV        EDI,dword ptr [ESP + param_3]
+//         004d1752     MOV        dword ptr [ESI + 0x30],this
+//         004d1755     PUSH       EDI
+//         004d1756     MOV        this,ESI
+//         004d1758     MOV        dword ptr [ESP + local_4],0x0
+//         004d1760     MOV        dword ptr [ESI],TRIBE_Action_Repair::`vftable'   = 004d16f0
+//         004d1766     MOV        word ptr [ESI + 0x4],0x6a
+//         004d176c     MOV        byte ptr [ESI + 0x40],0x0
+//         004d1770     CALL       RGE_Action::set_target_obj                       void set_target_obj(RGE_Action * this, RGE_St
+//                              tact_rep.cpp:59 (4)
+//         004d1775     TEST       EDI,EDI
+//         004d1777     JZ         LAB_004d1792
+//                              tact_rep.cpp:61 (6)
+//         004d1779     MOV        EDX,dword ptr [EDI + 0x38]
+//         004d177c     MOV        dword ptr [ESI + 0x20],EDX
+//                              tact_rep.cpp:62 (6)
+//         004d177f     MOV        EAX,dword ptr [EDI + 0x3c]
+//         004d1782     MOV        dword ptr [ESI + 0x24],EAX
+//                              tact_rep.cpp:63 (6)
+//         004d1785     MOV        this,dword ptr [EDI + 0x40]
+//         004d1788     MOV        dword ptr [ESI + 0x28],this
+//                              tact_rep.cpp:64 (7)
+//         004d178b     MOV        this,ESI
+//         004d178d     CALL       TRIBE_Action_Repair::meet_target                 void meet_target(TRIBE_Action_Repair * this)
+//                               LAB_004d1792                                                 XREF[1]:     004d1777(j)
+//                              tact_rep.cpp:66 (21)
+//         004d1792     MOV        this,dword ptr [ESP + local_c]
+//         004d1796     MOV        EAX,ESI
+//         004d1798     POP        EDI
+//         004d1799     MOV        dword ptr FS:[0x0],this
+//         004d17a0     POP        ESI
+//         004d17a1     ADD        ESP,0x10
+//         004d17a4     RET        0xc
+//         004d17a7     ??         90h
+//         004d17a8     NOP
+//         004d17a9     NOP
+//         004d17aa     NOP
+//         004d17ab     NOP
+//         004d17ac     NOP
+//         004d17ad     NOP
+//         004d17ae     NOP
+//         004d17af     NOP
 }
 
 TRIBE_Action_Repair::TRIBE_Action_Repair(RGE_Action_Object* param_1, RGE_Task* param_2, float param_3, float param_4, float param_5) {

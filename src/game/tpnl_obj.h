@@ -1,6 +1,18 @@
 #pragma once
 #include "../common.h"
 
+typedef enum ActionType : unsigned int {
+    ActionObjectChanged = 1,
+};
+
+typedef enum ValueType : unsigned int {
+    ValueTypeNumber = 0,
+    ValueTypeBonus = 1,
+    ValueTypeCompare = 2,
+    ValueTypePercent = 3,
+    ValueTypeNone = 4,
+};
+
 class TRIBE_Panel_Object : public TPanel {
 public:
     void* font;                              // 0xF4

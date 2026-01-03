@@ -5874,1982 +5874,186 @@ TribeTacticalAIModule::TribeTacticalAIModule(void* param_1, int param_2) {
 //                              undefined __thiscall TribeTacticalAIModule(TribeTacticalAIModule * t
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TribeTacticalA    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[46]:    004ed508(R), 004ed6b3(*), 004ed74c(R), 004ed82d(R),
-//                                                                                     004ed842(*), 004ed84f(R), 004ed930(R), 004eda38(*),
-//                                                                                     004eda45(R), 004edb2a(R), 004edb56(*), 004edb63(R),
-//                                                                                     004edc48(R), 004edc5d(*), 004edc6a(R), 004edd4f(R),
-//                                                                                     004edd64(*), 004edd71(R), 004ede50(R), 004ede65(*)
-//              int               Stack[0x8]:4   param_2                   XREF[30]:    004ed6af(R), 004ed831(R), 004ed934(R), 004ed9b4(R),
-//                                                                                     004ed9f5(R), 004eda34(R), 004eda58(R), 004edb52(R),
-//                                                                                     004edb76(R), 004edc59(R), 004edc7d(R), 004edd60(R),
-//                                                                                     004edd84(R), 004ede61(R), 004ede89(R), 004edf66(R),
-//                                                                                     004edf8e(R), 004ee06b(R), 004ee093(R), 004ee187(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[4]:     004ed525(W), 004ed61f(W), 004ed699(W), 004ed6be(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004eeb1d(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004ed9da(R)
-//              undefined4        Stack[-0x14]:4 local_14                  XREF[2]:     004ed9d4(R), 004eda15(R)
-//              OldUnitData       Stack[-0x24]   tempUD                    XREF[1,8]:   004ed516(W), 004ed9b8(*), 004ed9c5(R), 004ed9f9(*),
-//                                                                                     004eda06(R), 004ed9c9(R), 004eda0a(R), 004ed9cd(R),
-//                                                                                     004eda0e(R)
-//              undefined4        Stack[-0x28]:4 local_28                  XREF[10]:    004ed77d(W), 004ed815(R), 004ed880(W), 004ed918(R),
-//                                                                                     004eda7a(W), 004edb12(R), 004edb98(W), 004edc30(R),
-//                                                                                     004edc9f(W), 004edd37(R)
-//              undefined4        Stack[-0x2c]:4 local_2c                  XREF[30]:    004ed75f(*), 004ed772(R), 004ed862(*), 004ed875(R),
-//                                                                                     004eda5c(*), 004eda6f(R), 004edb7a(*), 004edb8d(R),
-//                                                                                     004edc81(*), 004edc94(R), 004edd88(*), 004edd9b(R),
-//                                                                                     004ede8d(*), 004edea0(R), 004edf92(*), 004edfa5(R),
-//                                                                                     004ee097(*), 004ee0aa(R), 004ee1b3(*), 004ee1c6(R)
-//              int               Stack[-0x30]:4 tempInt                   XREF[42]:    004ed755(W), 004ed829(R), 004ed838(W), 004ed858(W),
-//                                                                                     004ed92c(R), 004ed93b(W), 004eda4e(W), 004edb26(R),
-//                                                                                     004edb31(W), 004edb6c(W), 004edc44(R), 004edc4f(W),
-//                                                                                     004edc73(W), 004edd4b(R), 004edd56(W), 004edd7a(W),
-//                                                                                     004ede4c(R), 004ede57(W), 004ede7b(W), 004edf51(R)
-//              int               Stack[-0x34]:4 i
-//                               ??0TribeTacticalAIModule@@QAE@HH@Z                           XREF[1]:     TribeMainDecisionAIModule:004e4c42
+//              void *            Stack[0x4]:4   param_1                   XREF[1]:     004ed1e0(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     004ed1d6(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[3]:     004ed1f9(W), 004ed2fb(W), 004ed3a9(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004ed49f(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004ed1e8(W)
+//                               ??0TribeTacticalAIModule@@QAE@PAXH@Z                         XREF[1]:     TribeMainDecisionAIModule:004e48d2
 //                               TribeTacticalAIModule::TribeTacticalAIModule
-//                              taitacmd.cpp:1803 (435)
-//         004ed4f0     PUSH       -0x1
-//         004ed4f2     PUSH       FUN_00560a28
-//         004ed4f7     MOV        EAX,FS:[0x0]
-//         004ed4fd     PUSH       EAX
-//         004ed4fe     MOV        dword ptr FS:[0x0],ESP
-//         004ed505     SUB        ESP,0x24
-//         004ed508     MOV        EAX,dword ptr [ESP + param_1]
-//         004ed50c     PUSH       EBX
-//         004ed50d     PUSH       EBP
-//         004ed50e     PUSH       ESI
-//         004ed50f     PUSH       EDI
-//         004ed510     XOR        EBP,EBP
-//         004ed512     MOV        ESI,this
-//         004ed514     PUSH       EAX
-//         004ed515     PUSH       EBP
-//         004ed516     MOV        dword ptr [ESP + tempUD.id],ESI
-//         004ed51a     CALL       TacticalAIModule::TacticalAIModule               undefined TacticalAIModule(TacticalAIModule *
-//         004ed51f     MOV        dword ptr [ESI + 0xf0],EBP
-//         004ed525     MOV        dword ptr [ESP + local_4],EBP
-//         004ed529     MOV        dword ptr [ESI + 0xf4],EBP
-//         004ed52f     MOV        dword ptr [ESI + 0xf8],EBP
-//         004ed535     MOV        dword ptr [ESI + 0xfc],EBP
-//         004ed53b     MOV        dword ptr [ESI + 0x100],EBP
-//         004ed541     MOV        dword ptr [ESI + 0x104],EBP
-//         004ed547     MOV        dword ptr [ESI + 0x108],EBP
-//         004ed54d     MOV        dword ptr [ESI + 0x10c],EBP
-//         004ed553     MOV        dword ptr [ESI + 0x110],EBP
-//         004ed559     MOV        dword ptr [ESI + 0x114],EBP
-//         004ed55f     MOV        dword ptr [ESI + 0x118],EBP
-//         004ed565     MOV        dword ptr [ESI + 0x11c],EBP
-//         004ed56b     MOV        dword ptr [ESI + 0x120],EBP
-//         004ed571     MOV        dword ptr [ESI + 0x124],EBP
-//         004ed577     MOV        dword ptr [ESI + 0x128],EBP
-//         004ed57d     MOV        dword ptr [ESI + 0x12c],EBP
-//         004ed583     MOV        dword ptr [ESI + 0x130],EBP
-//         004ed589     MOV        dword ptr [ESI + 0x134],EBP
-//         004ed58f     MOV        dword ptr [ESI + 0x138],EBP
-//         004ed595     MOV        dword ptr [ESI + 0x13c],EBP
-//         004ed59b     MOV        dword ptr [ESI + 0x140],EBP
-//         004ed5a1     MOV        dword ptr [ESI + 0x144],EBP
-//         004ed5a7     MOV        dword ptr [ESI + 0x148],EBP
-//         004ed5ad     MOV        dword ptr [ESI + 0x14c],EBP
-//         004ed5b3     MOV        dword ptr [ESI + 0x150],EBP
-//         004ed5b9     MOV        dword ptr [ESI + 0x154],EBP
-//         004ed5bf     MOV        dword ptr [ESI + 0x158],EBP
-//         004ed5c5     MOV        dword ptr [ESI + 0x15c],EBP
-//         004ed5cb     MOV        dword ptr [ESI + 0x160],EBP
-//         004ed5d1     MOV        dword ptr [ESI + 0x164],EBP
-//         004ed5d7     MOV        dword ptr [ESI + 0x168],EBP
-//         004ed5dd     MOV        dword ptr [ESI + 0x16c],EBP
-//         004ed5e3     MOV        dword ptr [ESI + 0x170],EBP
-//         004ed5e9     MOV        dword ptr [ESI + 0x174],EBP
-//         004ed5ef     MOV        dword ptr [ESI + 0x178],EBP
-//         004ed5f5     MOV        dword ptr [ESI + 0x17c],EBP
-//         004ed5fb     MOV        dword ptr [ESI + 0x180],EBP
-//         004ed601     MOV        dword ptr [ESI + 0x184],EBP
-//         004ed607     MOV        dword ptr [ESI + 0x188],EBP
-//         004ed60d     MOV        dword ptr [ESI + 0x18c],EBP
-//         004ed613     MOV        dword ptr [ESI + 0x190],EBP
-//         004ed619     LEA        EDI,[ESI + 0x9d4]
-//         004ed61f     MOV        byte ptr [ESP + local_4],0xa
-//         004ed624     MOV        this,EDI
-//         004ed626     CALL       TacticalAIGroup::TacticalAIGroup                 undefined TacticalAIGroup(TacticalAIGroup * t
-//         004ed62b     MOV        dword ptr [ESI + 0xd10],EBP
-//         004ed631     MOV        dword ptr [ESI + 0xd28],EBP
-//         004ed637     MOV        dword ptr [ESI + 0xd2c],EBP
-//         004ed63d     MOV        dword ptr [ESI + 0xd30],EBP
-//         004ed643     MOV        dword ptr [ESI + 0xd34],EBP
-//         004ed649     MOV        dword ptr [ESI + 0xd38],EBP
-//         004ed64f     MOV        dword ptr [ESI + 0xd3c],EBP
-//         004ed655     MOV        dword ptr [ESI + 0xd40],EBP
-//         004ed65b     MOV        dword ptr [ESI + 0xd44],EBP
-//         004ed661     MOV        dword ptr [ESI + 0xd48],EBP
-//         004ed667     MOV        dword ptr [ESI + 0xd4c],EBP
-//         004ed66d     MOV        dword ptr [ESI + 0xd50],EBP
-//         004ed673     MOV        dword ptr [ESI + 0xd54],EBP
-//         004ed679     MOV        dword ptr [ESI + 0xd58],EBP
-//         004ed67f     MOV        dword ptr [ESI + 0xd5c],EBP
-//         004ed685     MOV        dword ptr [ESI + 0xd60],EBP
-//         004ed68b     MOV        dword ptr [ESI + 0xd64],EBP
-//         004ed691     LEA        this,[ESI + 0xda8]
-//         004ed697     PUSH       0x4
-//         004ed699     MOV        byte ptr [ESP + local_4],0xf
-//         004ed69e     CALL       ResourceItem::ResourceItem                       undefined ResourceItem(ResourceItem * this, i
-//                              taitacmd.cpp:1805 (6)
-//         004ed6a3     MOV        dword ptr [ESI + 0x9d8],EDI
-//                              taitacmd.cpp:1806 (6)
-//         004ed6a9     MOV        dword ptr [ESI + 0x9dc],EDI
-//                              taitacmd.cpp:1810 (157)
-//         004ed6af     MOV        EDI,dword ptr [ESP + param_2]
-//         004ed6b3     LEA        this=>param_1,[ESP + 0x44]
-//         004ed6b7     PUSH       0x4
-//         004ed6b9     OR         EAX,0xffffffff
-//         004ed6bc     PUSH       this
-//         004ed6bd     PUSH       EDI
-//         004ed6be     MOV        byte ptr [ESP + local_4],0x10
-//         004ed6c3     MOV        dword ptr [ESI + 0xe18],EBP
-//         004ed6c9     MOV        dword ptr [ESI + 0xe1c],EBP
-//         004ed6cf     MOV        dword ptr [ESI + 0xe20],EBP
-//         004ed6d5     MOV        dword ptr [ESI + 0xe44],EBP
-//         004ed6db     MOV        dword ptr [ESI + 0xe48],EBP
-//         004ed6e1     MOV        dword ptr [ESI + 0xf7c],EAX
-//         004ed6e7     MOV        dword ptr [ESI + 0xf80],EAX
-//         004ed6ed     MOV        dword ptr [ESI + 0xf84],EAX
-//         004ed6f3     MOV        dword ptr [ESI + 0xf88],EBP
-//         004ed6f9     MOV        dword ptr [ESI + 0xf8c],EBP
-//         004ed6ff     MOV        dword ptr [ESI + 0xf90],EBP
-//         004ed705     MOV        dword ptr [ESI + 0xf94],EBP
-//         004ed70b     MOV        dword ptr [ESI + 0xf98],EBP
-//         004ed711     MOV        dword ptr [ESI + 0xf9c],EBP
-//         004ed717     MOV        dword ptr [ESI + 0xfa0],EBP
-//         004ed71d     MOV        dword ptr [ESI + 0xfa4],EBP
-//         004ed723     MOV        dword ptr [ESI + 0xfa8],EBP
-//         004ed729     MOV        dword ptr [ESI + 0xffc],EAX
-//         004ed72f     MOV        dword ptr [ESI + 0x1000],EAX
-//         004ed735     MOV        dword ptr [ESI + 0x1004],EBP
-//         004ed73b     MOV        dword ptr [ESI + 0x1008],EBP
-//         004ed741     MOV        dword ptr [ESI],TribeTacticalAIModule::`vftable' = 004ed4d0
-//         004ed747     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1811 (19)
-//         004ed74c     MOV        EAX,dword ptr [ESP + param_1]
-//         004ed750     ADD        ESP,0xc
-//         004ed753     CMP        EAX,EBP
-//         004ed755     MOV        dword ptr [ESP + tempInt],EBP
-//         004ed759     JLE        LAB_004ed842
-//                               LAB_004ed75f                                                 XREF[1]:     004ed83c(j)
-//                              taitacmd.cpp:1812 (13)
-//         004ed75f     LEA        EDX=>local_2c,[ESP + 0x14]
-//         004ed763     PUSH       0x4
-//         004ed765     PUSH       EDX
-//         004ed766     PUSH       EDI
-//         004ed767     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1813 (214)
-//         004ed76c     MOV        this,dword ptr [ESI + 0xf8]
-//         004ed772     MOV        EDX,dword ptr [ESP + local_2c]
-//         004ed776     ADD        ESP,0xc
-//         004ed779     XOR        EAX,EAX
-//         004ed77b     CMP        this,EBP
-//         004ed77d     MOV        dword ptr [ESP + local_28],EDX
-//         004ed781     JLE        LAB_004ed7a1
-//         004ed783     MOV        EDI,dword ptr [ESI + 0x100]
-//                               LAB_004ed789                                                 XREF[1]:     004ed79f(j)
-//         004ed789     CMP        EAX,EDI
-//         004ed78b     JGE        LAB_004ed7a1
-//         004ed78d     MOV        EBX,dword ptr [ESI + 0xf4]
-//         004ed793     CMP        dword ptr [EBX + EAX*0x4],EDX
-//         004ed796     JZ         LAB_004ed829
-//         004ed79c     INC        EAX
-//         004ed79d     CMP        EAX,this
-//         004ed79f     JL         LAB_004ed789
-//                               LAB_004ed7a1                                                 XREF[2]:     004ed781(j), 004ed78b(j)
-//         004ed7a1     MOV        EAX,dword ptr [ESI + 0x100]
-//         004ed7a7     DEC        EAX
-//         004ed7a8     CMP        this,EAX
-//         004ed7aa     JLE        LAB_004ed809
-//         004ed7ac     LEA        EBX,[ECX + this+0x1]
-//         004ed7af     LEA        this,[EBX*0x4 + 0x0]
-//         004ed7b6     PUSH       this
-//         004ed7b7     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004ed7bc     MOV        EDI,EAX
-//         004ed7be     ADD        ESP,0x4
-//         004ed7c1     CMP        EDI,EBP
-//         004ed7c3     JZ         LAB_004ed809
-//         004ed7c5     MOV        this,dword ptr [ESI + 0x100]
-//         004ed7cb     XOR        EAX,EAX
-//         004ed7cd     CMP        this,EBP
-//         004ed7cf     JLE        LAB_004ed7ee
-//                               LAB_004ed7d1                                                 XREF[1]:     004ed7ec(j)
-//         004ed7d1     CMP        EAX,EBX
-//         004ed7d3     JGE        LAB_004ed7ee
-//         004ed7d5     MOV        EDX,dword ptr [ESI + 0xf4]
-//         004ed7db     INC        EAX
-//         004ed7dc     MOV        this,dword ptr [EDX + EAX*0x4 + -0x4]
-//         004ed7e0     MOV        dword ptr [EDI + EAX*0x4 + -0x4],this
-//         004ed7e4     MOV        this,dword ptr [ESI + 0x100]
-//         004ed7ea     CMP        EAX,this
-//         004ed7ec     JL         LAB_004ed7d1
-//                               LAB_004ed7ee                                                 XREF[2]:     004ed7cf(j), 004ed7d3(j)
-//         004ed7ee     MOV        EDX,dword ptr [ESI + 0xf4]
-//         004ed7f4     PUSH       EDX
-//         004ed7f5     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         004ed7fa     ADD        ESP,0x4
-//         004ed7fd     MOV        dword ptr [ESI + 0xf4],EDI
-//         004ed803     MOV        dword ptr [ESI + 0x100],EBX
-//                               LAB_004ed809                                                 XREF[2]:     004ed7aa(j), 004ed7c3(j)
-//         004ed809     MOV        EAX,dword ptr [ESI + 0xf8]
-//         004ed80f     MOV        this,dword ptr [ESI + 0xf4]
-//         004ed815     MOV        EDX,dword ptr [ESP + local_28]
-//         004ed819     MOV        dword ptr [this->_padding_ + EAX*0x4],EDX
-//         004ed81c     MOV        EAX,dword ptr [ESI + 0xf8]
-//         004ed822     INC        EAX
-//         004ed823     MOV        dword ptr [ESI + 0xf8],EAX
-//                               LAB_004ed829                                                 XREF[1]:     004ed796(j)
-//         004ed829     MOV        EAX,dword ptr [ESP + tempInt]
-//         004ed82d     MOV        this,dword ptr [ESP + param_1]
-//         004ed831     MOV        EDI,dword ptr [ESP + param_2]
-//         004ed835     INC        EAX
-//         004ed836     CMP        EAX,this
-//         004ed838     MOV        dword ptr [ESP + tempInt],EAX
-//         004ed83c     JL         LAB_004ed75f
-//                               LAB_004ed842                                                 XREF[1]:     004ed759(j)
-//                              taitacmd.cpp:1815 (13)
-//         004ed842     LEA        EAX=>param_1,[ESP + 0x44]
-//         004ed846     PUSH       0x4
-//         004ed848     PUSH       EAX
-//         004ed849     PUSH       EDI
-//         004ed84a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1816 (19)
-//         004ed84f     MOV        EAX,dword ptr [ESP + param_1]
-//         004ed853     ADD        ESP,0xc
-//         004ed856     CMP        EAX,EBP
-//         004ed858     MOV        dword ptr [ESP + tempInt],EBP
-//         004ed85c     JLE        LAB_004ed945
-//                               LAB_004ed862                                                 XREF[1]:     004ed93f(j)
-//                              taitacmd.cpp:1817 (13)
-//         004ed862     LEA        this=>local_2c,[ESP + 0x14]
-//         004ed866     PUSH       0x4
-//         004ed868     PUSH       this
-//         004ed869     PUSH       EDI
-//         004ed86a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1818 (214)
-//         004ed86f     MOV        this,dword ptr [ESI + 0x108]
-//         004ed875     MOV        EDX,dword ptr [ESP + local_2c]
-//         004ed879     ADD        ESP,0xc
-//         004ed87c     XOR        EAX,EAX
-//         004ed87e     CMP        this,EBP
-//         004ed880     MOV        dword ptr [ESP + local_28],EDX
-//         004ed884     JLE        LAB_004ed8a4
-//         004ed886     MOV        EDI,dword ptr [ESI + 0x110]
-//                               LAB_004ed88c                                                 XREF[1]:     004ed8a2(j)
-//         004ed88c     CMP        EAX,EDI
-//         004ed88e     JGE        LAB_004ed8a4
-//         004ed890     MOV        EBX,dword ptr [ESI + 0x104]
-//         004ed896     CMP        dword ptr [EBX + EAX*0x4],EDX
-//         004ed899     JZ         LAB_004ed92c
-//         004ed89f     INC        EAX
-//         004ed8a0     CMP        EAX,this
-//         004ed8a2     JL         LAB_004ed88c
-//                               LAB_004ed8a4                                                 XREF[2]:     004ed884(j), 004ed88e(j)
-//         004ed8a4     MOV        EDX,dword ptr [ESI + 0x110]
-//         004ed8aa     DEC        EDX
-//         004ed8ab     CMP        this,EDX
-//         004ed8ad     JLE        LAB_004ed90c
-//         004ed8af     LEA        EBX,[ECX + this+0x1]
-//         004ed8b2     LEA        EAX,[EBX*0x4 + 0x0]
-//         004ed8b9     PUSH       EAX
-//         004ed8ba     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004ed8bf     MOV        EDI,EAX
-//         004ed8c1     ADD        ESP,0x4
-//         004ed8c4     CMP        EDI,EBP
-//         004ed8c6     JZ         LAB_004ed90c
-//         004ed8c8     MOV        this,dword ptr [ESI + 0x110]
-//         004ed8ce     XOR        EAX,EAX
-//         004ed8d0     CMP        this,EBP
-//         004ed8d2     JLE        LAB_004ed8f1
-//                               LAB_004ed8d4                                                 XREF[1]:     004ed8ef(j)
-//         004ed8d4     CMP        EAX,EBX
-//         004ed8d6     JGE        LAB_004ed8f1
-//         004ed8d8     MOV        this,dword ptr [ESI + 0x104]
-//         004ed8de     INC        EAX
-//         004ed8df     MOV        EDX,dword ptr [this->_padding_ + EAX*0x4 + -0x4]
-//         004ed8e3     MOV        dword ptr [EDI + EAX*0x4 + -0x4],EDX
-//         004ed8e7     MOV        this,dword ptr [ESI + 0x110]
-//         004ed8ed     CMP        EAX,this
-//         004ed8ef     JL         LAB_004ed8d4
-//                               LAB_004ed8f1                                                 XREF[2]:     004ed8d2(j), 004ed8d6(j)
-//         004ed8f1     MOV        EAX,dword ptr [ESI + 0x104]
-//         004ed8f7     PUSH       EAX
-//         004ed8f8     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         004ed8fd     ADD        ESP,0x4
-//         004ed900     MOV        dword ptr [ESI + 0x104],EDI
-//         004ed906     MOV        dword ptr [ESI + 0x110],EBX
-//                               LAB_004ed90c                                                 XREF[2]:     004ed8ad(j), 004ed8c6(j)
-//         004ed90c     MOV        this,dword ptr [ESI + 0x108]
-//         004ed912     MOV        EDX,dword ptr [ESI + 0x104]
-//         004ed918     MOV        EAX,dword ptr [ESP + local_28]
-//         004ed91c     MOV        dword ptr [EDX + this->_padding_*0x4],EAX
-//         004ed91f     MOV        EAX,dword ptr [ESI + 0x108]
-//         004ed925     INC        EAX
-//         004ed926     MOV        dword ptr [ESI + 0x108],EAX
-//                               LAB_004ed92c                                                 XREF[1]:     004ed899(j)
-//         004ed92c     MOV        EAX,dword ptr [ESP + tempInt]
-//         004ed930     MOV        this,dword ptr [ESP + param_1]
-//         004ed934     MOV        EDI,dword ptr [ESP + param_2]
-//         004ed938     INC        EAX
-//         004ed939     CMP        EAX,this
-//         004ed93b     MOV        dword ptr [ESP + tempInt],EAX
-//         004ed93f     JL         LAB_004ed862
-//                               LAB_004ed945                                                 XREF[1]:     004ed85c(j)
-//                              taitacmd.cpp:1822 (18)
-//         004ed945     LEA        this,[ESI + 0x9cc]
-//         004ed94b     PUSH       0x4
-//         004ed94d     PUSH       this
-//         004ed94e     PUSH       EDI
-//         004ed94f     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ed954     ADD        ESP,0xc
-//                              taitacmd.cpp:1823 (15)
-//         004ed957     LEA        EDX,[ESI + 0x9d0]
-//         004ed95d     PUSH       0x4
-//         004ed95f     PUSH       EDX
-//         004ed960     PUSH       EDI
-//         004ed961     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1824 (22)
-//         004ed966     FLD        float ptr [save_game_version]                    = 7.23
-//         004ed96c     FCOMP      float ptr [DAT_00575710]                         = 7Bh    {
-//         004ed972     ADD        ESP,0xc
-//         004ed975     FNSTSW     AX
-//         004ed977     TEST       AH,0x1
-//         004ed97a     JNZ        LAB_004ed996
-//                              taitacmd.cpp:1825 (21)
-//         004ed97c     LEA        EAX,[ESI + 0x51c]
-//                              language.dll match for 0x4b0: "Ready"
-//         004ed982     PUSH       0x4b0
-//         004ed987     PUSH       EAX
-//         004ed988     PUSH       EDI
-//         004ed989     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ed98e     ADD        ESP,0xc
-//                              taitacmd.cpp:1826 (17)
-//         004ed991     JMP        LAB_004eda34
-//                               LAB_004ed996                                                 XREF[1]:     004ed97a(j)
-//         004ed996     FLD        float ptr [save_game_version]                    = 7.23
-//         004ed99c     FCOMP      float ptr [DAT_00575714]                         = A4h
-//                              taitacmd.cpp:2027 (18)
-//         004ed9a2     LEA        EDI,[ESI + 0x520]
-//         004ed9a8     MOV        EBX,0x32
-//         004ed9ad     FNSTSW     AX
-//         004ed9af     TEST       AH,0x1
-//         004ed9b2     JNZ        LAB_004ed9f5
-//                               LAB_004ed9b4                                                 XREF[1]:     004ed9f1(j)
-//                              taitacmd.cpp:1830 (17)
-//         004ed9b4     MOV        EDX,dword ptr [ESP + param_2]
-//         004ed9b8     LEA        this=>tempUD.data1,[ESP + 0x20]
-//         004ed9bc     PUSH       0x14
-//         004ed9be     PUSH       this
-//         004ed9bf     PUSH       EDX
-//         004ed9c0     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1831 (4)
-//         004ed9c5     MOV        EAX,dword ptr [ESP + tempUD.data1]
-//                              taitacmd.cpp:1832 (4)
-//         004ed9c9     MOV        this,dword ptr [ESP + tempUD.data2]
-//                              taitacmd.cpp:1833 (7)
-//         004ed9cd     MOV        EDX,dword ptr [ESP + tempUD.data3]
-//         004ed9d1     MOV        dword ptr [EDI + -0x4],EAX
-//                              taitacmd.cpp:1834 (6)
-//         004ed9d4     MOV        EAX,dword ptr [ESP + local_14]
-//         004ed9d8     MOV        dword ptr [EDI],this
-//                              taitacmd.cpp:1835 (13)
-//         004ed9da     MOV        this,dword ptr [ESP + local_10]
-//         004ed9de     MOV        dword ptr [EDI + 0x4],EDX
-//         004ed9e1     MOV        dword ptr [EDI + 0x8],EAX
-//         004ed9e4     MOV        dword ptr [EDI + 0xc],this
-//                              taitacmd.cpp:1836 (12)
-//         004ed9e7     MOV        dword ptr [EDI + 0x10],EBP
-//         004ed9ea     ADD        ESP,0xc
-//         004ed9ed     ADD        EDI,0x18
-//         004ed9f0     DEC        EBX
-//         004ed9f1     JNZ        LAB_004ed9b4
-//                              taitacmd.cpp:1839 (2)
-//         004ed9f3     JMP        LAB_004eda34
-//                               LAB_004ed9f5                                                 XREF[2]:     004ed9b2(j), 004eda32(j)
-//                              taitacmd.cpp:1843 (17)
-//         004ed9f5     MOV        EAX,dword ptr [ESP + param_2]
-//         004ed9f9     LEA        EDX=>tempUD.data1,[ESP + 0x20]
-//         004ed9fd     PUSH       0x10
-//         004ed9ff     PUSH       EDX
-//         004eda00     PUSH       EAX
-//         004eda01     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1844 (4)
-//         004eda06     MOV        this,dword ptr [ESP + tempUD.data1]
-//                              taitacmd.cpp:1845 (4)
-//         004eda0a     MOV        EDX,dword ptr [ESP + tempUD.data2]
-//                              taitacmd.cpp:1846 (7)
-//         004eda0e     MOV        EAX,dword ptr [ESP + tempUD.data3]
-//         004eda12     MOV        dword ptr [EDI + -0x4],this
-//                              taitacmd.cpp:1847 (12)
-//         004eda15     MOV        this,dword ptr [ESP + local_14]
-//         004eda19     MOV        dword ptr [EDI],EDX
-//         004eda1b     MOV        dword ptr [EDI + 0x4],EAX
-//         004eda1e     MOV        dword ptr [EDI + 0x8],this
-//                              taitacmd.cpp:1848 (7)
-//         004eda21     MOV        dword ptr [EDI + 0xc],0xffffffff
-//                              taitacmd.cpp:1849 (12)
-//         004eda28     MOV        dword ptr [EDI + 0x10],EBP
-//         004eda2b     ADD        ESP,0xc
-//         004eda2e     ADD        EDI,0x18
-//         004eda31     DEC        EBX
-//         004eda32     JNZ        LAB_004ed9f5
-//                               LAB_004eda34                                                 XREF[2]:     004ed991(j), 004ed9f3(j)
-//                              taitacmd.cpp:1853 (17)
-//         004eda34     MOV        EAX,dword ptr [ESP + param_2]
-//         004eda38     LEA        EDX=>param_1,[ESP + 0x44]
-//         004eda3c     PUSH       0x4
-//         004eda3e     PUSH       EDX
-//         004eda3f     PUSH       EAX
-//         004eda40     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1854 (19)
-//         004eda45     MOV        EAX,dword ptr [ESP + param_1]
-//         004eda49     ADD        ESP,0xc
-//         004eda4c     CMP        EAX,EBP
-//         004eda4e     MOV        dword ptr [ESP + tempInt],EBP
-//         004eda52     JLE        LAB_004edb3b
-//                               LAB_004eda58                                                 XREF[1]:     004edb35(j)
-//                              taitacmd.cpp:1855 (17)
-//         004eda58     MOV        EDX,dword ptr [ESP + param_2]
-//         004eda5c     LEA        this=>local_2c,[ESP + 0x14]
-//         004eda60     PUSH       0x4
-//         004eda62     PUSH       this
-//         004eda63     PUSH       EDX
-//         004eda64     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1856 (210)
-//         004eda69     MOV        this,dword ptr [ESI + 0x118]
-//         004eda6f     MOV        EDX,dword ptr [ESP + local_2c]
-//         004eda73     ADD        ESP,0xc
-//         004eda76     XOR        EAX,EAX
-//         004eda78     CMP        this,EBP
-//         004eda7a     MOV        dword ptr [ESP + local_28],EDX
-//         004eda7e     JLE        LAB_004eda9e
-//         004eda80     MOV        EDI,dword ptr [ESI + 0x120]
-//                               LAB_004eda86                                                 XREF[1]:     004eda9c(j)
-//         004eda86     CMP        EAX,EDI
-//         004eda88     JGE        LAB_004eda9e
-//         004eda8a     MOV        EBX,dword ptr [ESI + 0x114]
-//         004eda90     CMP        dword ptr [EBX + EAX*0x4],EDX
-//         004eda93     JZ         LAB_004edb26
-//         004eda99     INC        EAX
-//         004eda9a     CMP        EAX,this
-//         004eda9c     JL         LAB_004eda86
-//                               LAB_004eda9e                                                 XREF[2]:     004eda7e(j), 004eda88(j)
-//         004eda9e     MOV        EAX,dword ptr [ESI + 0x120]
-//         004edaa4     DEC        EAX
-//         004edaa5     CMP        this,EAX
-//         004edaa7     JLE        LAB_004edb06
-//         004edaa9     LEA        EBX,[ECX + this+0x1]
-//         004edaac     LEA        this,[EBX*0x4 + 0x0]
-//         004edab3     PUSH       this
-//         004edab4     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004edab9     MOV        EDI,EAX
-//         004edabb     ADD        ESP,0x4
-//         004edabe     CMP        EDI,EBP
-//         004edac0     JZ         LAB_004edb06
-//         004edac2     MOV        this,dword ptr [ESI + 0x120]
-//         004edac8     XOR        EAX,EAX
-//         004edaca     CMP        this,EBP
-//         004edacc     JLE        LAB_004edaeb
-//                               LAB_004edace                                                 XREF[1]:     004edae9(j)
-//         004edace     CMP        EAX,EBX
-//         004edad0     JGE        LAB_004edaeb
-//         004edad2     MOV        EDX,dword ptr [ESI + 0x114]
-//         004edad8     INC        EAX
-//         004edad9     MOV        this,dword ptr [EDX + EAX*0x4 + -0x4]
-//         004edadd     MOV        dword ptr [EDI + EAX*0x4 + -0x4],this
-//         004edae1     MOV        this,dword ptr [ESI + 0x120]
-//         004edae7     CMP        EAX,this
-//         004edae9     JL         LAB_004edace
-//                               LAB_004edaeb                                                 XREF[2]:     004edacc(j), 004edad0(j)
-//         004edaeb     MOV        EDX,dword ptr [ESI + 0x114]
-//         004edaf1     PUSH       EDX
-//         004edaf2     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         004edaf7     ADD        ESP,0x4
-//         004edafa     MOV        dword ptr [ESI + 0x114],EDI
-//         004edb00     MOV        dword ptr [ESI + 0x120],EBX
-//                               LAB_004edb06                                                 XREF[2]:     004edaa7(j), 004edac0(j)
-//         004edb06     MOV        EAX,dword ptr [ESI + 0x118]
-//         004edb0c     MOV        this,dword ptr [ESI + 0x114]
-//         004edb12     MOV        EDX,dword ptr [ESP + local_28]
-//         004edb16     MOV        dword ptr [this->_padding_ + EAX*0x4],EDX
-//         004edb19     MOV        EAX,dword ptr [ESI + 0x118]
-//         004edb1f     INC        EAX
-//         004edb20     MOV        dword ptr [ESI + 0x118],EAX
-//                               LAB_004edb26                                                 XREF[1]:     004eda93(j)
-//         004edb26     MOV        EAX,dword ptr [ESP + tempInt]
-//         004edb2a     MOV        this,dword ptr [ESP + param_1]
-//         004edb2e     INC        EAX
-//         004edb2f     CMP        EAX,this
-//         004edb31     MOV        dword ptr [ESP + tempInt],EAX
-//         004edb35     JL         LAB_004eda58
-//                               LAB_004edb3b                                                 XREF[1]:     004eda52(j)
-//                              taitacmd.cpp:1858 (23)
-//         004edb3b     FLD        float ptr [save_game_version]                    = 7.23
-//         004edb41     FCOMP      float ptr [DAT_00575718]                         = 33h    3
-//         004edb47     FNSTSW     AX
-//         004edb49     TEST       AH,0x1
-//         004edb4c     JNZ        LAB_004edc59
-//                              taitacmd.cpp:1859 (17)
-//         004edb52     MOV        this,dword ptr [ESP + param_2]
-//         004edb56     LEA        EAX=>param_1,[ESP + 0x44]
-//         004edb5a     PUSH       0x4
-//         004edb5c     PUSH       EAX
-//         004edb5d     PUSH       this
-//         004edb5e     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1860 (19)
-//         004edb63     MOV        EAX,dword ptr [ESP + param_1]
-//         004edb67     ADD        ESP,0xc
-//         004edb6a     CMP        EAX,EBP
-//         004edb6c     MOV        dword ptr [ESP + tempInt],EBP
-//         004edb70     JLE        LAB_004edc59
-//                               LAB_004edb76                                                 XREF[1]:     004edc53(j)
-//                              taitacmd.cpp:1861 (17)
-//         004edb76     MOV        EAX,dword ptr [ESP + param_2]
-//         004edb7a     LEA        EDX=>local_2c,[ESP + 0x14]
-//         004edb7e     PUSH       0x4
-//         004edb80     PUSH       EDX
-//         004edb81     PUSH       EAX
-//         004edb82     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1862 (210)
-//         004edb87     MOV        this,dword ptr [ESI + 0x128]
-//         004edb8d     MOV        EDX,dword ptr [ESP + local_2c]
-//         004edb91     ADD        ESP,0xc
-//         004edb94     XOR        EAX,EAX
-//         004edb96     CMP        this,EBP
-//         004edb98     MOV        dword ptr [ESP + local_28],EDX
-//         004edb9c     JLE        LAB_004edbbc
-//         004edb9e     MOV        EDI,dword ptr [ESI + 0x130]
-//                               LAB_004edba4                                                 XREF[1]:     004edbba(j)
-//         004edba4     CMP        EAX,EDI
-//         004edba6     JGE        LAB_004edbbc
-//         004edba8     MOV        EBX,dword ptr [ESI + 0x124]
-//         004edbae     CMP        dword ptr [EBX + EAX*0x4],EDX
-//         004edbb1     JZ         LAB_004edc44
-//         004edbb7     INC        EAX
-//         004edbb8     CMP        EAX,this
-//         004edbba     JL         LAB_004edba4
-//                               LAB_004edbbc                                                 XREF[2]:     004edb9c(j), 004edba6(j)
-//         004edbbc     MOV        EDX,dword ptr [ESI + 0x130]
-//         004edbc2     DEC        EDX
-//         004edbc3     CMP        this,EDX
-//         004edbc5     JLE        LAB_004edc24
-//         004edbc7     LEA        EBX,[ECX + this+0x1]
-//         004edbca     LEA        EAX,[EBX*0x4 + 0x0]
-//         004edbd1     PUSH       EAX
-//         004edbd2     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004edbd7     MOV        EDI,EAX
-//         004edbd9     ADD        ESP,0x4
-//         004edbdc     CMP        EDI,EBP
-//         004edbde     JZ         LAB_004edc24
-//         004edbe0     MOV        this,dword ptr [ESI + 0x130]
-//         004edbe6     XOR        EAX,EAX
-//         004edbe8     CMP        this,EBP
-//         004edbea     JLE        LAB_004edc09
-//                               LAB_004edbec                                                 XREF[1]:     004edc07(j)
-//         004edbec     CMP        EAX,EBX
-//         004edbee     JGE        LAB_004edc09
-//         004edbf0     MOV        this,dword ptr [ESI + 0x124]
-//         004edbf6     INC        EAX
-//         004edbf7     MOV        EDX,dword ptr [this->_padding_ + EAX*0x4 + -0x4]
-//         004edbfb     MOV        dword ptr [EDI + EAX*0x4 + -0x4],EDX
-//         004edbff     MOV        this,dword ptr [ESI + 0x130]
-//         004edc05     CMP        EAX,this
-//         004edc07     JL         LAB_004edbec
-//                               LAB_004edc09                                                 XREF[2]:     004edbea(j), 004edbee(j)
-//         004edc09     MOV        EAX,dword ptr [ESI + 0x124]
-//         004edc0f     PUSH       EAX
-//         004edc10     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         004edc15     ADD        ESP,0x4
-//         004edc18     MOV        dword ptr [ESI + 0x124],EDI
-//         004edc1e     MOV        dword ptr [ESI + 0x130],EBX
-//                               LAB_004edc24                                                 XREF[2]:     004edbc5(j), 004edbde(j)
-//         004edc24     MOV        this,dword ptr [ESI + 0x128]
-//         004edc2a     MOV        EDX,dword ptr [ESI + 0x124]
-//         004edc30     MOV        EAX,dword ptr [ESP + local_28]
-//         004edc34     MOV        dword ptr [EDX + this->_padding_*0x4],EAX
-//         004edc37     MOV        EAX,dword ptr [ESI + 0x128]
-//         004edc3d     INC        EAX
-//         004edc3e     MOV        dword ptr [ESI + 0x128],EAX
-//                               LAB_004edc44                                                 XREF[1]:     004edbb1(j)
-//         004edc44     MOV        EAX,dword ptr [ESP + tempInt]
-//         004edc48     MOV        this,dword ptr [ESP + param_1]
-//         004edc4c     INC        EAX
-//         004edc4d     CMP        EAX,this
-//         004edc4f     MOV        dword ptr [ESP + tempInt],EAX
-//         004edc53     JL         LAB_004edb76
-//                               LAB_004edc59                                                 XREF[2]:     004edb4c(j), 004edb70(j)
-//                              taitacmd.cpp:1865 (17)
-//         004edc59     MOV        EDX,dword ptr [ESP + param_2]
-//         004edc5d     LEA        this=>param_1,[ESP + 0x44]
-//         004edc61     PUSH       0x4
-//         004edc63     PUSH       this
-//         004edc64     PUSH       EDX
-//         004edc65     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1866 (19)
-//         004edc6a     MOV        EAX,dword ptr [ESP + param_1]
-//         004edc6e     ADD        ESP,0xc
-//         004edc71     CMP        EAX,EBP
-//         004edc73     MOV        dword ptr [ESP + tempInt],EBP
-//         004edc77     JLE        LAB_004edd60
-//                               LAB_004edc7d                                                 XREF[1]:     004edd5a(j)
-//                              taitacmd.cpp:1867 (17)
-//         004edc7d     MOV        this,dword ptr [ESP + param_2]
-//         004edc81     LEA        EAX=>local_2c,[ESP + 0x14]
-//         004edc85     PUSH       0x4
-//         004edc87     PUSH       EAX
-//         004edc88     PUSH       this
-//         004edc89     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1868 (210)
-//         004edc8e     MOV        this,dword ptr [ESI + 0x138]
-//         004edc94     MOV        EDX,dword ptr [ESP + local_2c]
-//         004edc98     ADD        ESP,0xc
-//         004edc9b     XOR        EAX,EAX
-//         004edc9d     CMP        this,EBP
-//         004edc9f     MOV        dword ptr [ESP + local_28],EDX
-//         004edca3     JLE        LAB_004edcc3
-//         004edca5     MOV        EDI,dword ptr [ESI + 0x140]
-//                               LAB_004edcab                                                 XREF[1]:     004edcc1(j)
-//         004edcab     CMP        EAX,EDI
-//         004edcad     JGE        LAB_004edcc3
-//         004edcaf     MOV        EBX,dword ptr [ESI + 0x134]
-//         004edcb5     CMP        dword ptr [EBX + EAX*0x4],EDX
-//         004edcb8     JZ         LAB_004edd4b
-//         004edcbe     INC        EAX
-//         004edcbf     CMP        EAX,this
-//         004edcc1     JL         LAB_004edcab
-//                               LAB_004edcc3                                                 XREF[2]:     004edca3(j), 004edcad(j)
-//         004edcc3     MOV        EDX,dword ptr [ESI + 0x140]
-//         004edcc9     DEC        EDX
-//         004edcca     CMP        this,EDX
-//         004edccc     JLE        LAB_004edd2b
-//         004edcce     LEA        EBX,[ECX + this+0x1]
-//         004edcd1     LEA        EAX,[EBX*0x4 + 0x0]
-//         004edcd8     PUSH       EAX
-//         004edcd9     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004edcde     MOV        EDI,EAX
-//         004edce0     ADD        ESP,0x4
-//         004edce3     CMP        EDI,EBP
-//         004edce5     JZ         LAB_004edd2b
-//         004edce7     MOV        this,dword ptr [ESI + 0x140]
-//         004edced     XOR        EAX,EAX
-//         004edcef     CMP        this,EBP
-//         004edcf1     JLE        LAB_004edd10
-//                               LAB_004edcf3                                                 XREF[1]:     004edd0e(j)
-//         004edcf3     CMP        EAX,EBX
-//         004edcf5     JGE        LAB_004edd10
-//         004edcf7     MOV        this,dword ptr [ESI + 0x134]
-//         004edcfd     INC        EAX
-//         004edcfe     MOV        EDX,dword ptr [this->_padding_ + EAX*0x4 + -0x4]
-//         004edd02     MOV        dword ptr [EDI + EAX*0x4 + -0x4],EDX
-//         004edd06     MOV        this,dword ptr [ESI + 0x140]
-//         004edd0c     CMP        EAX,this
-//         004edd0e     JL         LAB_004edcf3
-//                               LAB_004edd10                                                 XREF[2]:     004edcf1(j), 004edcf5(j)
-//         004edd10     MOV        EAX,dword ptr [ESI + 0x134]
-//         004edd16     PUSH       EAX
-//         004edd17     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         004edd1c     ADD        ESP,0x4
-//         004edd1f     MOV        dword ptr [ESI + 0x134],EDI
-//         004edd25     MOV        dword ptr [ESI + 0x140],EBX
-//                               LAB_004edd2b                                                 XREF[2]:     004edccc(j), 004edce5(j)
-//         004edd2b     MOV        this,dword ptr [ESI + 0x138]
-//         004edd31     MOV        EDX,dword ptr [ESI + 0x134]
-//         004edd37     MOV        EAX,dword ptr [ESP + local_28]
-//         004edd3b     MOV        dword ptr [EDX + this->_padding_*0x4],EAX
-//         004edd3e     MOV        EAX,dword ptr [ESI + 0x138]
-//         004edd44     INC        EAX
-//         004edd45     MOV        dword ptr [ESI + 0x138],EAX
-//                               LAB_004edd4b                                                 XREF[1]:     004edcb8(j)
-//         004edd4b     MOV        EAX,dword ptr [ESP + tempInt]
-//         004edd4f     MOV        this,dword ptr [ESP + param_1]
-//         004edd53     INC        EAX
-//         004edd54     CMP        EAX,this
-//         004edd56     MOV        dword ptr [ESP + tempInt],EAX
-//         004edd5a     JL         LAB_004edc7d
-//                               LAB_004edd60                                                 XREF[1]:     004edc77(j)
-//                              taitacmd.cpp:1870 (17)
-//         004edd60     MOV        EDX,dword ptr [ESP + param_2]
-//         004edd64     LEA        this=>param_1,[ESP + 0x44]
-//         004edd68     PUSH       0x4
-//         004edd6a     PUSH       this
-//         004edd6b     PUSH       EDX
-//         004edd6c     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1871 (19)
-//         004edd71     MOV        EAX,dword ptr [ESP + param_1]
-//         004edd75     ADD        ESP,0xc
-//         004edd78     CMP        EAX,EBP
-//         004edd7a     MOV        dword ptr [ESP + tempInt],EBP
-//         004edd7e     JLE        LAB_004ede61
-//                               LAB_004edd84                                                 XREF[1]:     004ede5b(j)
-//                              taitacmd.cpp:1872 (17)
-//         004edd84     MOV        this,dword ptr [ESP + param_2]
-//         004edd88     LEA        EAX=>local_2c,[ESP + 0x14]
-//         004edd8c     PUSH       0x4
-//         004edd8e     PUSH       EAX
-//         004edd8f     PUSH       this
-//         004edd90     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1873 (204)
-//         004edd95     MOV        this,dword ptr [ESI + 0x148]
-//         004edd9b     MOV        EDX,dword ptr [ESP + local_2c]
-//         004edd9f     ADD        ESP,0xc
-//         004edda2     XOR        EAX,EAX
-//         004edda4     TEST       this,this
-//         004edda6     MOV        EBP,EDX
-//         004edda8     JLE        LAB_004eddc8
-//         004eddaa     MOV        EDI,dword ptr [ESI + 0x150]
-//                               LAB_004eddb0                                                 XREF[1]:     004eddc6(j)
-//         004eddb0     CMP        EAX,EDI
-//         004eddb2     JGE        LAB_004eddc8
-//         004eddb4     MOV        EBX,dword ptr [ESI + 0x144]
-//         004eddba     CMP        dword ptr [EBX + EAX*0x4],EDX
-//         004eddbd     JZ         LAB_004ede4c
-//         004eddc3     INC        EAX
-//         004eddc4     CMP        EAX,this
-//         004eddc6     JL         LAB_004eddb0
-//                               LAB_004eddc8                                                 XREF[2]:     004edda8(j), 004eddb2(j)
-//         004eddc8     MOV        EDX,dword ptr [ESI + 0x150]
-//         004eddce     DEC        EDX
-//         004eddcf     CMP        this,EDX
-//         004eddd1     JLE        LAB_004ede30
-//         004eddd3     LEA        EBX,[ECX + this+0x1]
-//         004eddd6     LEA        EAX,[EBX*0x4 + 0x0]
-//         004edddd     PUSH       EAX
-//         004eddde     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004edde3     MOV        EDI,EAX
-//         004edde5     ADD        ESP,0x4
-//         004edde8     TEST       EDI,EDI
-//         004eddea     JZ         LAB_004ede30
-//         004eddec     MOV        this,dword ptr [ESI + 0x150]
-//         004eddf2     XOR        EAX,EAX
-//         004eddf4     TEST       this,this
-//         004eddf6     JLE        LAB_004ede15
-//                               LAB_004eddf8                                                 XREF[1]:     004ede13(j)
-//         004eddf8     CMP        EAX,EBX
-//         004eddfa     JGE        LAB_004ede15
-//         004eddfc     MOV        this,dword ptr [ESI + 0x144]
-//         004ede02     INC        EAX
-//         004ede03     MOV        EDX,dword ptr [this->_padding_ + EAX*0x4 + -0x4]
-//         004ede07     MOV        dword ptr [EDI + EAX*0x4 + -0x4],EDX
-//         004ede0b     MOV        this,dword ptr [ESI + 0x150]
-//         004ede11     CMP        EAX,this
-//         004ede13     JL         LAB_004eddf8
-//                               LAB_004ede15                                                 XREF[2]:     004eddf6(j), 004eddfa(j)
-//         004ede15     MOV        EAX,dword ptr [ESI + 0x144]
-//         004ede1b     PUSH       EAX
-//         004ede1c     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         004ede21     ADD        ESP,0x4
-//         004ede24     MOV        dword ptr [ESI + 0x144],EDI
-//         004ede2a     MOV        dword ptr [ESI + 0x150],EBX
-//                               LAB_004ede30                                                 XREF[2]:     004eddd1(j), 004eddea(j)
-//         004ede30     MOV        this,dword ptr [ESI + 0x148]
-//         004ede36     MOV        EDX,dword ptr [ESI + 0x144]
-//         004ede3c     MOV        dword ptr [EDX + this->_padding_*0x4],EBP
-//         004ede3f     MOV        EAX,dword ptr [ESI + 0x148]
-//         004ede45     INC        EAX
-//         004ede46     MOV        dword ptr [ESI + 0x148],EAX
-//                               LAB_004ede4c                                                 XREF[1]:     004eddbd(j)
-//         004ede4c     MOV        EAX,dword ptr [ESP + tempInt]
-//         004ede50     MOV        this,dword ptr [ESP + param_1]
-//         004ede54     INC        EAX
-//         004ede55     CMP        EAX,this
-//         004ede57     MOV        dword ptr [ESP + tempInt],EAX
-//         004ede5b     JL         LAB_004edd84
-//                               LAB_004ede61                                                 XREF[1]:     004edd7e(j)
-//                              taitacmd.cpp:1875 (17)
-//         004ede61     MOV        this,dword ptr [ESP + param_2]
-//         004ede65     LEA        EAX=>param_1,[ESP + 0x44]
-//         004ede69     PUSH       0x4
-//         004ede6b     PUSH       EAX
-//         004ede6c     PUSH       this
-//         004ede6d     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1876 (23)
-//         004ede72     MOV        EAX,dword ptr [ESP + param_1]
-//         004ede76     ADD        ESP,0xc
-//         004ede79     TEST       EAX,EAX
-//         004ede7b     MOV        dword ptr [ESP + tempInt],0x0
-//         004ede83     JLE        LAB_004edf66
-//                               LAB_004ede89                                                 XREF[1]:     004edf60(j)
-//                              taitacmd.cpp:1877 (17)
-//         004ede89     MOV        EAX,dword ptr [ESP + param_2]
-//         004ede8d     LEA        EDX=>local_2c,[ESP + 0x14]
-//         004ede91     PUSH       0x4
-//         004ede93     PUSH       EDX
-//         004ede94     PUSH       EAX
-//         004ede95     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1878 (204)
-//         004ede9a     MOV        this,dword ptr [ESI + 0x158]
-//         004edea0     MOV        EDX,dword ptr [ESP + local_2c]
-//         004edea4     ADD        ESP,0xc
-//         004edea7     XOR        EAX,EAX
-//         004edea9     TEST       this,this
-//         004edeab     MOV        EBP,EDX
-//         004edead     JLE        LAB_004edecd
-//         004edeaf     MOV        EDI,dword ptr [ESI + 0x160]
-//                               LAB_004edeb5                                                 XREF[1]:     004edecb(j)
-//         004edeb5     CMP        EAX,EDI
-//         004edeb7     JGE        LAB_004edecd
-//         004edeb9     MOV        EBX,dword ptr [ESI + 0x154]
-//         004edebf     CMP        dword ptr [EBX + EAX*0x4],EDX
-//         004edec2     JZ         LAB_004edf51
-//         004edec8     INC        EAX
-//         004edec9     CMP        EAX,this
-//         004edecb     JL         LAB_004edeb5
-//                               LAB_004edecd                                                 XREF[2]:     004edead(j), 004edeb7(j)
-//         004edecd     MOV        EDX,dword ptr [ESI + 0x160]
-//         004eded3     DEC        EDX
-//         004eded4     CMP        this,EDX
-//         004eded6     JLE        LAB_004edf35
-//         004eded8     LEA        EBX,[ECX + this+0x1]
-//         004ededb     LEA        EAX,[EBX*0x4 + 0x0]
-//         004edee2     PUSH       EAX
-//         004edee3     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004edee8     MOV        EDI,EAX
-//         004edeea     ADD        ESP,0x4
-//         004edeed     TEST       EDI,EDI
-//         004edeef     JZ         LAB_004edf35
-//         004edef1     MOV        this,dword ptr [ESI + 0x160]
-//         004edef7     XOR        EAX,EAX
-//         004edef9     TEST       this,this
-//         004edefb     JLE        LAB_004edf1a
-//                               LAB_004edefd                                                 XREF[1]:     004edf18(j)
-//         004edefd     CMP        EAX,EBX
-//         004edeff     JGE        LAB_004edf1a
-//         004edf01     MOV        this,dword ptr [ESI + 0x154]
-//         004edf07     INC        EAX
-//         004edf08     MOV        EDX,dword ptr [this->_padding_ + EAX*0x4 + -0x4]
-//         004edf0c     MOV        dword ptr [EDI + EAX*0x4 + -0x4],EDX
-//         004edf10     MOV        this,dword ptr [ESI + 0x160]
-//         004edf16     CMP        EAX,this
-//         004edf18     JL         LAB_004edefd
-//                               LAB_004edf1a                                                 XREF[2]:     004edefb(j), 004edeff(j)
-//         004edf1a     MOV        EAX,dword ptr [ESI + 0x154]
-//         004edf20     PUSH       EAX
-//         004edf21     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         004edf26     ADD        ESP,0x4
-//         004edf29     MOV        dword ptr [ESI + 0x154],EDI
-//         004edf2f     MOV        dword ptr [ESI + 0x160],EBX
-//                               LAB_004edf35                                                 XREF[2]:     004eded6(j), 004edeef(j)
-//         004edf35     MOV        this,dword ptr [ESI + 0x158]
-//         004edf3b     MOV        EDX,dword ptr [ESI + 0x154]
-//         004edf41     MOV        dword ptr [EDX + this->_padding_*0x4],EBP
-//         004edf44     MOV        EAX,dword ptr [ESI + 0x158]
-//         004edf4a     INC        EAX
-//         004edf4b     MOV        dword ptr [ESI + 0x158],EAX
-//                               LAB_004edf51                                                 XREF[1]:     004edec2(j)
-//         004edf51     MOV        EAX,dword ptr [ESP + tempInt]
-//         004edf55     MOV        this,dword ptr [ESP + param_1]
-//         004edf59     INC        EAX
-//         004edf5a     CMP        EAX,this
-//         004edf5c     MOV        dword ptr [ESP + tempInt],EAX
-//         004edf60     JL         LAB_004ede89
-//                               LAB_004edf66                                                 XREF[1]:     004ede83(j)
-//                              taitacmd.cpp:1880 (17)
-//         004edf66     MOV        this,dword ptr [ESP + param_2]
-//         004edf6a     LEA        EAX=>param_1,[ESP + 0x44]
-//         004edf6e     PUSH       0x4
-//         004edf70     PUSH       EAX
-//         004edf71     PUSH       this
-//         004edf72     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1881 (23)
-//         004edf77     MOV        EAX,dword ptr [ESP + param_1]
-//         004edf7b     ADD        ESP,0xc
-//         004edf7e     TEST       EAX,EAX
-//         004edf80     MOV        dword ptr [ESP + tempInt],0x0
-//         004edf88     JLE        LAB_004ee06b
-//                               LAB_004edf8e                                                 XREF[1]:     004ee065(j)
-//                              taitacmd.cpp:1882 (17)
-//         004edf8e     MOV        EAX,dword ptr [ESP + param_2]
-//         004edf92     LEA        EDX=>local_2c,[ESP + 0x14]
-//         004edf96     PUSH       0x4
-//         004edf98     PUSH       EDX
-//         004edf99     PUSH       EAX
-//         004edf9a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1883 (204)
-//         004edf9f     MOV        this,dword ptr [ESI + 0x168]
-//         004edfa5     MOV        EDX,dword ptr [ESP + local_2c]
-//         004edfa9     ADD        ESP,0xc
-//         004edfac     XOR        EAX,EAX
-//         004edfae     TEST       this,this
-//         004edfb0     MOV        EBP,EDX
-//         004edfb2     JLE        LAB_004edfd2
-//         004edfb4     MOV        EDI,dword ptr [ESI + 0x170]
-//                               LAB_004edfba                                                 XREF[1]:     004edfd0(j)
-//         004edfba     CMP        EAX,EDI
-//         004edfbc     JGE        LAB_004edfd2
-//         004edfbe     MOV        EBX,dword ptr [ESI + 0x164]
-//         004edfc4     CMP        dword ptr [EBX + EAX*0x4],EDX
-//         004edfc7     JZ         LAB_004ee056
-//         004edfcd     INC        EAX
-//         004edfce     CMP        EAX,this
-//         004edfd0     JL         LAB_004edfba
-//                               LAB_004edfd2                                                 XREF[2]:     004edfb2(j), 004edfbc(j)
-//         004edfd2     MOV        EDX,dword ptr [ESI + 0x170]
-//         004edfd8     DEC        EDX
-//         004edfd9     CMP        this,EDX
-//         004edfdb     JLE        LAB_004ee03a
-//         004edfdd     LEA        EBX,[ECX + this+0x1]
-//         004edfe0     LEA        EAX,[EBX*0x4 + 0x0]
-//         004edfe7     PUSH       EAX
-//         004edfe8     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004edfed     MOV        EDI,EAX
-//         004edfef     ADD        ESP,0x4
-//         004edff2     TEST       EDI,EDI
-//         004edff4     JZ         LAB_004ee03a
-//         004edff6     MOV        this,dword ptr [ESI + 0x170]
-//         004edffc     XOR        EAX,EAX
-//         004edffe     TEST       this,this
-//         004ee000     JLE        LAB_004ee01f
-//                               LAB_004ee002                                                 XREF[1]:     004ee01d(j)
-//         004ee002     CMP        EAX,EBX
-//         004ee004     JGE        LAB_004ee01f
-//         004ee006     MOV        this,dword ptr [ESI + 0x164]
-//         004ee00c     INC        EAX
-//         004ee00d     MOV        EDX,dword ptr [this->_padding_ + EAX*0x4 + -0x4]
-//         004ee011     MOV        dword ptr [EDI + EAX*0x4 + -0x4],EDX
-//         004ee015     MOV        this,dword ptr [ESI + 0x170]
-//         004ee01b     CMP        EAX,this
-//         004ee01d     JL         LAB_004ee002
-//                               LAB_004ee01f                                                 XREF[2]:     004ee000(j), 004ee004(j)
-//         004ee01f     MOV        EAX,dword ptr [ESI + 0x164]
-//         004ee025     PUSH       EAX
-//         004ee026     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         004ee02b     ADD        ESP,0x4
-//         004ee02e     MOV        dword ptr [ESI + 0x164],EDI
-//         004ee034     MOV        dword ptr [ESI + 0x170],EBX
-//                               LAB_004ee03a                                                 XREF[2]:     004edfdb(j), 004edff4(j)
-//         004ee03a     MOV        this,dword ptr [ESI + 0x168]
-//         004ee040     MOV        EDX,dword ptr [ESI + 0x164]
-//         004ee046     MOV        dword ptr [EDX + this->_padding_*0x4],EBP
-//         004ee049     MOV        EAX,dword ptr [ESI + 0x168]
-//         004ee04f     INC        EAX
-//         004ee050     MOV        dword ptr [ESI + 0x168],EAX
-//                               LAB_004ee056                                                 XREF[1]:     004edfc7(j)
-//         004ee056     MOV        EAX,dword ptr [ESP + tempInt]
-//         004ee05a     MOV        this,dword ptr [ESP + param_1]
-//         004ee05e     INC        EAX
-//         004ee05f     CMP        EAX,this
-//         004ee061     MOV        dword ptr [ESP + tempInt],EAX
-//         004ee065     JL         LAB_004edf8e
-//                               LAB_004ee06b                                                 XREF[1]:     004edf88(j)
-//                              taitacmd.cpp:1885 (17)
-//         004ee06b     MOV        this,dword ptr [ESP + param_2]
-//         004ee06f     LEA        EAX=>param_1,[ESP + 0x44]
-//         004ee073     PUSH       0x4
-//         004ee075     PUSH       EAX
-//         004ee076     PUSH       this
-//         004ee077     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1886 (23)
-//         004ee07c     MOV        EAX,dword ptr [ESP + param_1]
-//         004ee080     ADD        ESP,0xc
-//         004ee083     TEST       EAX,EAX
-//         004ee085     MOV        dword ptr [ESP + tempInt],0x0
-//         004ee08d     JLE        LAB_004ee170
-//                               LAB_004ee093                                                 XREF[1]:     004ee16a(j)
-//                              taitacmd.cpp:1887 (17)
-//         004ee093     MOV        EAX,dword ptr [ESP + param_2]
-//         004ee097     LEA        EDX=>local_2c,[ESP + 0x14]
-//         004ee09b     PUSH       0x4
-//         004ee09d     PUSH       EDX
-//         004ee09e     PUSH       EAX
-//         004ee09f     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1888 (204)
-//         004ee0a4     MOV        this,dword ptr [ESI + 0x178]
-//         004ee0aa     MOV        EDX,dword ptr [ESP + local_2c]
-//         004ee0ae     ADD        ESP,0xc
-//         004ee0b1     XOR        EAX,EAX
-//         004ee0b3     TEST       this,this
-//         004ee0b5     MOV        EBP,EDX
-//         004ee0b7     JLE        LAB_004ee0d7
-//         004ee0b9     MOV        EDI,dword ptr [ESI + 0x180]
-//                               LAB_004ee0bf                                                 XREF[1]:     004ee0d5(j)
-//         004ee0bf     CMP        EAX,EDI
-//         004ee0c1     JGE        LAB_004ee0d7
-//         004ee0c3     MOV        EBX,dword ptr [ESI + 0x174]
-//         004ee0c9     CMP        dword ptr [EBX + EAX*0x4],EDX
-//         004ee0cc     JZ         LAB_004ee15b
-//         004ee0d2     INC        EAX
-//         004ee0d3     CMP        EAX,this
-//         004ee0d5     JL         LAB_004ee0bf
-//                               LAB_004ee0d7                                                 XREF[2]:     004ee0b7(j), 004ee0c1(j)
-//         004ee0d7     MOV        EDX,dword ptr [ESI + 0x180]
-//         004ee0dd     DEC        EDX
-//         004ee0de     CMP        this,EDX
-//         004ee0e0     JLE        LAB_004ee13f
-//         004ee0e2     LEA        EBX,[ECX + this+0x1]
-//         004ee0e5     LEA        EAX,[EBX*0x4 + 0x0]
-//         004ee0ec     PUSH       EAX
-//         004ee0ed     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004ee0f2     MOV        EDI,EAX
-//         004ee0f4     ADD        ESP,0x4
-//         004ee0f7     TEST       EDI,EDI
-//         004ee0f9     JZ         LAB_004ee13f
-//         004ee0fb     MOV        this,dword ptr [ESI + 0x180]
-//         004ee101     XOR        EAX,EAX
-//         004ee103     TEST       this,this
-//         004ee105     JLE        LAB_004ee124
-//                               LAB_004ee107                                                 XREF[1]:     004ee122(j)
-//         004ee107     CMP        EAX,EBX
-//         004ee109     JGE        LAB_004ee124
-//         004ee10b     MOV        this,dword ptr [ESI + 0x174]
-//         004ee111     INC        EAX
-//         004ee112     MOV        EDX,dword ptr [this->_padding_ + EAX*0x4 + -0x4]
-//         004ee116     MOV        dword ptr [EDI + EAX*0x4 + -0x4],EDX
-//         004ee11a     MOV        this,dword ptr [ESI + 0x180]
-//         004ee120     CMP        EAX,this
-//         004ee122     JL         LAB_004ee107
-//                               LAB_004ee124                                                 XREF[2]:     004ee105(j), 004ee109(j)
-//         004ee124     MOV        EAX,dword ptr [ESI + 0x174]
-//         004ee12a     PUSH       EAX
-//         004ee12b     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         004ee130     ADD        ESP,0x4
-//         004ee133     MOV        dword ptr [ESI + 0x174],EDI
-//         004ee139     MOV        dword ptr [ESI + 0x180],EBX
-//                               LAB_004ee13f                                                 XREF[2]:     004ee0e0(j), 004ee0f9(j)
-//         004ee13f     MOV        this,dword ptr [ESI + 0x178]
-//         004ee145     MOV        EDX,dword ptr [ESI + 0x174]
-//         004ee14b     MOV        dword ptr [EDX + this->_padding_*0x4],EBP
-//         004ee14e     MOV        EAX,dword ptr [ESI + 0x178]
-//         004ee154     INC        EAX
-//         004ee155     MOV        dword ptr [ESI + 0x178],EAX
-//                               LAB_004ee15b                                                 XREF[1]:     004ee0cc(j)
-//         004ee15b     MOV        EAX,dword ptr [ESP + tempInt]
-//         004ee15f     MOV        this,dword ptr [ESP + param_1]
-//         004ee163     INC        EAX
-//         004ee164     CMP        EAX,this
-//         004ee166     MOV        dword ptr [ESP + tempInt],EAX
-//         004ee16a     JL         LAB_004ee093
-//                               LAB_004ee170                                                 XREF[1]:     004ee08d(j)
-//                              taitacmd.cpp:1890 (23)
-//         004ee170     FLD        float ptr [save_game_version]                    = 7.23
-//         004ee176     FCOMP      float ptr [DAT_0057571c]                         = 33h    3
-//         004ee17c     FNSTSW     AX
-//         004ee17e     TEST       AH,0x1
-//         004ee181     JNZ        LAB_004ee28c
-//                              taitacmd.cpp:1891 (17)
-//         004ee187     MOV        this,dword ptr [ESP + param_2]
-//         004ee18b     LEA        EAX=>param_1,[ESP + 0x44]
-//         004ee18f     PUSH       0x4
-//         004ee191     PUSH       EAX
-//         004ee192     PUSH       this
-//         004ee193     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1892 (23)
-//         004ee198     MOV        EAX,dword ptr [ESP + param_1]
-//         004ee19c     ADD        ESP,0xc
-//         004ee19f     TEST       EAX,EAX
-//         004ee1a1     MOV        dword ptr [ESP + tempInt],0x0
-//         004ee1a9     JLE        LAB_004ee28c
-//                               LAB_004ee1af                                                 XREF[1]:     004ee286(j)
-//                              taitacmd.cpp:1893 (17)
-//         004ee1af     MOV        EAX,dword ptr [ESP + param_2]
-//         004ee1b3     LEA        EDX=>local_2c,[ESP + 0x14]
-//         004ee1b7     PUSH       0x4
-//         004ee1b9     PUSH       EDX
-//         004ee1ba     PUSH       EAX
-//         004ee1bb     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1894 (204)
-//         004ee1c0     MOV        this,dword ptr [ESI + 0x188]
-//         004ee1c6     MOV        EDX,dword ptr [ESP + local_2c]
-//         004ee1ca     ADD        ESP,0xc
-//         004ee1cd     XOR        EAX,EAX
-//         004ee1cf     TEST       this,this
-//         004ee1d1     MOV        EBP,EDX
-//         004ee1d3     JLE        LAB_004ee1f3
-//         004ee1d5     MOV        EDI,dword ptr [ESI + 0x190]
-//                               LAB_004ee1db                                                 XREF[1]:     004ee1f1(j)
-//         004ee1db     CMP        EAX,EDI
-//         004ee1dd     JGE        LAB_004ee1f3
-//         004ee1df     MOV        EBX,dword ptr [ESI + 0x184]
-//         004ee1e5     CMP        dword ptr [EBX + EAX*0x4],EDX
-//         004ee1e8     JZ         LAB_004ee277
-//         004ee1ee     INC        EAX
-//         004ee1ef     CMP        EAX,this
-//         004ee1f1     JL         LAB_004ee1db
-//                               LAB_004ee1f3                                                 XREF[2]:     004ee1d3(j), 004ee1dd(j)
-//         004ee1f3     MOV        EDX,dword ptr [ESI + 0x190]
-//         004ee1f9     DEC        EDX
-//         004ee1fa     CMP        this,EDX
-//         004ee1fc     JLE        LAB_004ee25b
-//         004ee1fe     LEA        EBX,[ECX + this+0x1]
-//         004ee201     LEA        EAX,[EBX*0x4 + 0x0]
-//         004ee208     PUSH       EAX
-//         004ee209     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004ee20e     MOV        EDI,EAX
-//         004ee210     ADD        ESP,0x4
-//         004ee213     TEST       EDI,EDI
-//         004ee215     JZ         LAB_004ee25b
-//         004ee217     MOV        this,dword ptr [ESI + 0x190]
-//         004ee21d     XOR        EAX,EAX
-//         004ee21f     TEST       this,this
-//         004ee221     JLE        LAB_004ee240
-//                               LAB_004ee223                                                 XREF[1]:     004ee23e(j)
-//         004ee223     CMP        EAX,EBX
-//         004ee225     JGE        LAB_004ee240
-//         004ee227     MOV        this,dword ptr [ESI + 0x184]
-//         004ee22d     INC        EAX
-//         004ee22e     MOV        EDX,dword ptr [this->_padding_ + EAX*0x4 + -0x4]
-//         004ee232     MOV        dword ptr [EDI + EAX*0x4 + -0x4],EDX
-//         004ee236     MOV        this,dword ptr [ESI + 0x190]
-//         004ee23c     CMP        EAX,this
-//         004ee23e     JL         LAB_004ee223
-//                               LAB_004ee240                                                 XREF[2]:     004ee221(j), 004ee225(j)
-//         004ee240     MOV        EAX,dword ptr [ESI + 0x184]
-//         004ee246     PUSH       EAX
-//         004ee247     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         004ee24c     ADD        ESP,0x4
-//         004ee24f     MOV        dword ptr [ESI + 0x184],EDI
-//         004ee255     MOV        dword ptr [ESI + 0x190],EBX
-//                               LAB_004ee25b                                                 XREF[2]:     004ee1fc(j), 004ee215(j)
-//         004ee25b     MOV        this,dword ptr [ESI + 0x188]
-//         004ee261     MOV        EDX,dword ptr [ESI + 0x184]
-//         004ee267     MOV        dword ptr [EDX + this->_padding_*0x4],EBP
-//         004ee26a     MOV        EAX,dword ptr [ESI + 0x188]
-//         004ee270     INC        EAX
-//         004ee271     MOV        dword ptr [ESI + 0x188],EAX
-//                               LAB_004ee277                                                 XREF[1]:     004ee1e8(j)
-//         004ee277     MOV        EAX,dword ptr [ESP + tempInt]
-//         004ee27b     MOV        this,dword ptr [ESP + param_1]
-//         004ee27f     INC        EAX
-//         004ee280     CMP        EAX,this
-//         004ee282     MOV        dword ptr [ESP + tempInt],EAX
-//         004ee286     JL         LAB_004ee1af
-//                               LAB_004ee28c                                                 XREF[2]:     004ee181(j), 004ee1a9(j)
-//                              taitacmd.cpp:1898 (17)
-//         004ee28c     MOV        EBP,dword ptr [ESP + param_2]
-//         004ee290     LEA        EAX=>param_1,[ESP + 0x44]
-//         004ee294     PUSH       0x4
-//         004ee296     PUSH       EAX
-//         004ee297     PUSH       EBP
-//         004ee298     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1899 (13)
-//         004ee29d     MOV        EAX,dword ptr [ESP + param_1]
-//         004ee2a1     ADD        ESP,0xc
-//         004ee2a4     XOR        EDI,EDI
-//         004ee2a6     TEST       EAX,EAX
-//         004ee2a8     JLE        LAB_004ee2c8
-//                              taitacmd.cpp:1898 (6)
-//         004ee2aa     LEA        EBX,[ESI + 0x194]
-//                               LAB_004ee2b0                                                 XREF[1]:     004ee2c6(j)
-//                              taitacmd.cpp:1900 (24)
-//         004ee2b0     PUSH       0x4
-//         004ee2b2     PUSH       EBX
-//         004ee2b3     PUSH       EBP
-//         004ee2b4     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ee2b9     MOV        EAX,dword ptr [ESP + param_1]
-//         004ee2bd     ADD        ESP,0xc
-//         004ee2c0     INC        EDI
-//         004ee2c1     ADD        EBX,0x4
-//         004ee2c4     CMP        EDI,EAX
-//         004ee2c6     JL         LAB_004ee2b0
-//                               LAB_004ee2c8                                                 XREF[1]:     004ee2a8(j)
-//                              taitacmd.cpp:1902 (13)
-//         004ee2c8     LEA        this=>param_1,[ESP + 0x44]
-//         004ee2cc     PUSH       0x4
-//         004ee2ce     PUSH       this
-//         004ee2cf     PUSH       EBP
-//         004ee2d0     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1903 (23)
-//         004ee2d5     MOV        EAX,dword ptr [ESP + param_1]
-//         004ee2d9     ADD        ESP,0xc
-//         004ee2dc     TEST       EAX,EAX
-//         004ee2de     MOV        dword ptr [ESP + tempInt],0x0
-//         004ee2e6     JLE        LAB_004ee3c9
-//                               LAB_004ee2ec                                                 XREF[1]:     004ee3c3(j)
-//                              taitacmd.cpp:1904 (17)
-//         004ee2ec     MOV        EAX,dword ptr [ESP + param_2]
-//         004ee2f0     LEA        EDX=>local_2c,[ESP + 0x14]
-//         004ee2f4     PUSH       0x4
-//         004ee2f6     PUSH       EDX
-//         004ee2f7     PUSH       EAX
-//         004ee2f8     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1905 (204)
-//         004ee2fd     MOV        this,dword ptr [ESI + 0xd2c]
-//         004ee303     MOV        EDX,dword ptr [ESP + local_2c]
-//         004ee307     ADD        ESP,0xc
-//         004ee30a     XOR        EAX,EAX
-//         004ee30c     TEST       this,this
-//         004ee30e     MOV        EBP,EDX
-//         004ee310     JLE        LAB_004ee330
-//         004ee312     MOV        EDI,dword ptr [ESI + 0xd34]
-//                               LAB_004ee318                                                 XREF[1]:     004ee32e(j)
-//         004ee318     CMP        EAX,EDI
-//         004ee31a     JGE        LAB_004ee330
-//         004ee31c     MOV        EBX,dword ptr [ESI + 0xd28]
-//         004ee322     CMP        dword ptr [EBX + EAX*0x4],EDX
-//         004ee325     JZ         LAB_004ee3b4
-//         004ee32b     INC        EAX
-//         004ee32c     CMP        EAX,this
-//         004ee32e     JL         LAB_004ee318
-//                               LAB_004ee330                                                 XREF[2]:     004ee310(j), 004ee31a(j)
-//         004ee330     MOV        EDX,dword ptr [ESI + 0xd34]
-//         004ee336     DEC        EDX
-//         004ee337     CMP        this,EDX
-//         004ee339     JLE        LAB_004ee398
-//         004ee33b     LEA        EBX,[ECX + this+0x1]
-//         004ee33e     LEA        EAX,[EBX*0x4 + 0x0]
-//         004ee345     PUSH       EAX
-//         004ee346     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004ee34b     MOV        EDI,EAX
-//         004ee34d     ADD        ESP,0x4
-//         004ee350     TEST       EDI,EDI
-//         004ee352     JZ         LAB_004ee398
-//         004ee354     MOV        this,dword ptr [ESI + 0xd34]
-//         004ee35a     XOR        EAX,EAX
-//         004ee35c     TEST       this,this
-//         004ee35e     JLE        LAB_004ee37d
-//                               LAB_004ee360                                                 XREF[1]:     004ee37b(j)
-//         004ee360     CMP        EAX,EBX
-//         004ee362     JGE        LAB_004ee37d
-//         004ee364     MOV        this,dword ptr [ESI + 0xd28]
-//         004ee36a     INC        EAX
-//         004ee36b     MOV        EDX,dword ptr [this->_padding_ + EAX*0x4 + -0x4]
-//         004ee36f     MOV        dword ptr [EDI + EAX*0x4 + -0x4],EDX
-//         004ee373     MOV        this,dword ptr [ESI + 0xd34]
-//         004ee379     CMP        EAX,this
-//         004ee37b     JL         LAB_004ee360
-//                               LAB_004ee37d                                                 XREF[2]:     004ee35e(j), 004ee362(j)
-//         004ee37d     MOV        EAX,dword ptr [ESI + 0xd28]
-//         004ee383     PUSH       EAX
-//         004ee384     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         004ee389     ADD        ESP,0x4
-//         004ee38c     MOV        dword ptr [ESI + 0xd28],EDI
-//         004ee392     MOV        dword ptr [ESI + 0xd34],EBX
-//                               LAB_004ee398                                                 XREF[2]:     004ee339(j), 004ee352(j)
-//         004ee398     MOV        this,dword ptr [ESI + 0xd2c]
-//         004ee39e     MOV        EDX,dword ptr [ESI + 0xd28]
-//         004ee3a4     MOV        dword ptr [EDX + this->_padding_*0x4],EBP
-//         004ee3a7     MOV        EAX,dword ptr [ESI + 0xd2c]
-//         004ee3ad     INC        EAX
-//         004ee3ae     MOV        dword ptr [ESI + 0xd2c],EAX
-//                               LAB_004ee3b4                                                 XREF[1]:     004ee325(j)
-//         004ee3b4     MOV        EAX,dword ptr [ESP + tempInt]
-//         004ee3b8     MOV        this,dword ptr [ESP + param_1]
-//         004ee3bc     INC        EAX
-//         004ee3bd     CMP        EAX,this
-//         004ee3bf     MOV        dword ptr [ESP + tempInt],EAX
-//         004ee3c3     JL         LAB_004ee2ec
-//                               LAB_004ee3c9                                                 XREF[1]:     004ee2e6(j)
-//                              taitacmd.cpp:1907 (17)
-//         004ee3c9     MOV        this,dword ptr [ESP + param_2]
-//         004ee3cd     LEA        EAX=>param_1,[ESP + 0x44]
-//         004ee3d1     PUSH       0x4
-//         004ee3d3     PUSH       EAX
-//         004ee3d4     PUSH       this
-//         004ee3d5     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1908 (23)
-//         004ee3da     MOV        EAX,dword ptr [ESP + param_1]
-//         004ee3de     ADD        ESP,0xc
-//         004ee3e1     TEST       EAX,EAX
-//         004ee3e3     MOV        dword ptr [ESP + tempInt],0x0
-//         004ee3eb     JLE        LAB_004ee4ce
-//                               LAB_004ee3f1                                                 XREF[1]:     004ee4c8(j)
-//                              taitacmd.cpp:1909 (17)
-//         004ee3f1     MOV        EAX,dword ptr [ESP + param_2]
-//         004ee3f5     LEA        EDX=>local_2c,[ESP + 0x14]
-//         004ee3f9     PUSH       0x4
-//         004ee3fb     PUSH       EDX
-//         004ee3fc     PUSH       EAX
-//         004ee3fd     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1910 (204)
-//         004ee402     MOV        this,dword ptr [ESI + 0xd3c]
-//         004ee408     MOV        EDX,dword ptr [ESP + local_2c]
-//         004ee40c     ADD        ESP,0xc
-//         004ee40f     XOR        EAX,EAX
-//         004ee411     TEST       this,this
-//         004ee413     MOV        EBP,EDX
-//         004ee415     JLE        LAB_004ee435
-//         004ee417     MOV        EDI,dword ptr [ESI + 0xd44]
-//                               LAB_004ee41d                                                 XREF[1]:     004ee433(j)
-//         004ee41d     CMP        EAX,EDI
-//         004ee41f     JGE        LAB_004ee435
-//         004ee421     MOV        EBX,dword ptr [ESI + 0xd38]
-//         004ee427     CMP        dword ptr [EBX + EAX*0x4],EDX
-//         004ee42a     JZ         LAB_004ee4b9
-//         004ee430     INC        EAX
-//         004ee431     CMP        EAX,this
-//         004ee433     JL         LAB_004ee41d
-//                               LAB_004ee435                                                 XREF[2]:     004ee415(j), 004ee41f(j)
-//         004ee435     MOV        EDX,dword ptr [ESI + 0xd44]
-//         004ee43b     DEC        EDX
-//         004ee43c     CMP        this,EDX
-//         004ee43e     JLE        LAB_004ee49d
-//         004ee440     LEA        EBX,[ECX + this+0x1]
-//         004ee443     LEA        EAX,[EBX*0x4 + 0x0]
-//         004ee44a     PUSH       EAX
-//         004ee44b     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004ee450     MOV        EDI,EAX
-//         004ee452     ADD        ESP,0x4
-//         004ee455     TEST       EDI,EDI
-//         004ee457     JZ         LAB_004ee49d
-//         004ee459     MOV        this,dword ptr [ESI + 0xd44]
-//         004ee45f     XOR        EAX,EAX
-//         004ee461     TEST       this,this
-//         004ee463     JLE        LAB_004ee482
-//                               LAB_004ee465                                                 XREF[1]:     004ee480(j)
-//         004ee465     CMP        EAX,EBX
-//         004ee467     JGE        LAB_004ee482
-//         004ee469     MOV        this,dword ptr [ESI + 0xd38]
-//         004ee46f     INC        EAX
-//         004ee470     MOV        EDX,dword ptr [this->_padding_ + EAX*0x4 + -0x4]
-//         004ee474     MOV        dword ptr [EDI + EAX*0x4 + -0x4],EDX
-//         004ee478     MOV        this,dword ptr [ESI + 0xd44]
-//         004ee47e     CMP        EAX,this
-//         004ee480     JL         LAB_004ee465
-//                               LAB_004ee482                                                 XREF[2]:     004ee463(j), 004ee467(j)
-//         004ee482     MOV        EAX,dword ptr [ESI + 0xd38]
-//         004ee488     PUSH       EAX
-//         004ee489     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         004ee48e     ADD        ESP,0x4
-//         004ee491     MOV        dword ptr [ESI + 0xd38],EDI
-//         004ee497     MOV        dword ptr [ESI + 0xd44],EBX
-//                               LAB_004ee49d                                                 XREF[2]:     004ee43e(j), 004ee457(j)
-//         004ee49d     MOV        this,dword ptr [ESI + 0xd3c]
-//         004ee4a3     MOV        EDX,dword ptr [ESI + 0xd38]
-//         004ee4a9     MOV        dword ptr [EDX + this->_padding_*0x4],EBP
-//         004ee4ac     MOV        EAX,dword ptr [ESI + 0xd3c]
-//         004ee4b2     INC        EAX
-//         004ee4b3     MOV        dword ptr [ESI + 0xd3c],EAX
-//                               LAB_004ee4b9                                                 XREF[1]:     004ee42a(j)
-//         004ee4b9     MOV        EAX,dword ptr [ESP + tempInt]
-//         004ee4bd     MOV        this,dword ptr [ESP + param_1]
-//         004ee4c1     INC        EAX
-//         004ee4c2     CMP        EAX,this
-//         004ee4c4     MOV        dword ptr [ESP + tempInt],EAX
-//         004ee4c8     JL         LAB_004ee3f1
-//                               LAB_004ee4ce                                                 XREF[1]:     004ee3eb(j)
-//                              taitacmd.cpp:1912 (17)
-//         004ee4ce     MOV        this,dword ptr [ESP + param_2]
-//         004ee4d2     LEA        EAX=>param_1,[ESP + 0x44]
-//         004ee4d6     PUSH       0x4
-//         004ee4d8     PUSH       EAX
-//         004ee4d9     PUSH       this
-//         004ee4da     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1913 (23)
-//         004ee4df     MOV        EAX,dword ptr [ESP + param_1]
-//         004ee4e3     ADD        ESP,0xc
-//         004ee4e6     TEST       EAX,EAX
-//         004ee4e8     MOV        dword ptr [ESP + tempInt],0x0
-//         004ee4f0     JLE        LAB_004ee5d3
-//                               LAB_004ee4f6                                                 XREF[1]:     004ee5cd(j)
-//                              taitacmd.cpp:1914 (17)
-//         004ee4f6     MOV        EAX,dword ptr [ESP + param_2]
-//         004ee4fa     LEA        EDX=>local_2c,[ESP + 0x14]
-//         004ee4fe     PUSH       0x4
-//         004ee500     PUSH       EDX
-//         004ee501     PUSH       EAX
-//         004ee502     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1915 (204)
-//         004ee507     MOV        this,dword ptr [ESI + 0xd4c]
-//         004ee50d     MOV        EDX,dword ptr [ESP + local_2c]
-//         004ee511     ADD        ESP,0xc
-//         004ee514     XOR        EAX,EAX
-//         004ee516     TEST       this,this
-//         004ee518     MOV        EBP,EDX
-//         004ee51a     JLE        LAB_004ee53a
-//         004ee51c     MOV        EDI,dword ptr [ESI + 0xd54]
-//                               LAB_004ee522                                                 XREF[1]:     004ee538(j)
-//         004ee522     CMP        EAX,EDI
-//         004ee524     JGE        LAB_004ee53a
-//         004ee526     MOV        EBX,dword ptr [ESI + 0xd48]
-//         004ee52c     CMP        dword ptr [EBX + EAX*0x4],EDX
-//         004ee52f     JZ         LAB_004ee5be
-//         004ee535     INC        EAX
-//         004ee536     CMP        EAX,this
-//         004ee538     JL         LAB_004ee522
-//                               LAB_004ee53a                                                 XREF[2]:     004ee51a(j), 004ee524(j)
-//         004ee53a     MOV        EDX,dword ptr [ESI + 0xd54]
-//         004ee540     DEC        EDX
-//         004ee541     CMP        this,EDX
-//         004ee543     JLE        LAB_004ee5a2
-//         004ee545     LEA        EBX,[ECX + this+0x1]
-//         004ee548     LEA        EAX,[EBX*0x4 + 0x0]
-//         004ee54f     PUSH       EAX
-//         004ee550     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004ee555     MOV        EDI,EAX
-//         004ee557     ADD        ESP,0x4
-//         004ee55a     TEST       EDI,EDI
-//         004ee55c     JZ         LAB_004ee5a2
-//         004ee55e     MOV        this,dword ptr [ESI + 0xd54]
-//         004ee564     XOR        EAX,EAX
-//         004ee566     TEST       this,this
-//         004ee568     JLE        LAB_004ee587
-//                               LAB_004ee56a                                                 XREF[1]:     004ee585(j)
-//         004ee56a     CMP        EAX,EBX
-//         004ee56c     JGE        LAB_004ee587
-//         004ee56e     MOV        this,dword ptr [ESI + 0xd48]
-//         004ee574     INC        EAX
-//         004ee575     MOV        EDX,dword ptr [this->_padding_ + EAX*0x4 + -0x4]
-//         004ee579     MOV        dword ptr [EDI + EAX*0x4 + -0x4],EDX
-//         004ee57d     MOV        this,dword ptr [ESI + 0xd54]
-//         004ee583     CMP        EAX,this
-//         004ee585     JL         LAB_004ee56a
-//                               LAB_004ee587                                                 XREF[2]:     004ee568(j), 004ee56c(j)
-//         004ee587     MOV        EAX,dword ptr [ESI + 0xd48]
-//         004ee58d     PUSH       EAX
-//         004ee58e     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         004ee593     ADD        ESP,0x4
-//         004ee596     MOV        dword ptr [ESI + 0xd48],EDI
-//         004ee59c     MOV        dword ptr [ESI + 0xd54],EBX
-//                               LAB_004ee5a2                                                 XREF[2]:     004ee543(j), 004ee55c(j)
-//         004ee5a2     MOV        this,dword ptr [ESI + 0xd4c]
-//         004ee5a8     MOV        EDX,dword ptr [ESI + 0xd48]
-//         004ee5ae     MOV        dword ptr [EDX + this->_padding_*0x4],EBP
-//         004ee5b1     MOV        EAX,dword ptr [ESI + 0xd4c]
-//         004ee5b7     INC        EAX
-//         004ee5b8     MOV        dword ptr [ESI + 0xd4c],EAX
-//                               LAB_004ee5be                                                 XREF[1]:     004ee52f(j)
-//         004ee5be     MOV        EAX,dword ptr [ESP + tempInt]
-//         004ee5c2     MOV        this,dword ptr [ESP + param_1]
-//         004ee5c6     INC        EAX
-//         004ee5c7     CMP        EAX,this
-//         004ee5c9     MOV        dword ptr [ESP + tempInt],EAX
-//         004ee5cd     JL         LAB_004ee4f6
-//                               LAB_004ee5d3                                                 XREF[1]:     004ee4f0(j)
-//                              taitacmd.cpp:1918 (17)
-//         004ee5d3     MOV        this,dword ptr [ESP + param_2]
-//         004ee5d7     LEA        EAX=>param_1,[ESP + 0x44]
-//         004ee5db     PUSH       0x4
-//         004ee5dd     PUSH       EAX
-//         004ee5de     PUSH       this
-//         004ee5df     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1919 (23)
-//         004ee5e4     MOV        EAX,dword ptr [ESP + param_1]
-//         004ee5e8     ADD        ESP,0xc
-//         004ee5eb     TEST       EAX,EAX
-//         004ee5ed     MOV        dword ptr [ESP + tempInt],0x0
-//         004ee5f5     JLE        LAB_004ee6d8
-//                               LAB_004ee5fb                                                 XREF[1]:     004ee6d2(j)
-//                              taitacmd.cpp:1920 (17)
-//         004ee5fb     MOV        EAX,dword ptr [ESP + param_2]
-//         004ee5ff     LEA        EDX=>local_2c,[ESP + 0x14]
-//         004ee603     PUSH       0x4
-//         004ee605     PUSH       EDX
-//         004ee606     PUSH       EAX
-//         004ee607     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1921 (204)
-//         004ee60c     MOV        this,dword ptr [ESI + 0xd5c]
-//         004ee612     MOV        EDX,dword ptr [ESP + local_2c]
-//         004ee616     ADD        ESP,0xc
-//         004ee619     XOR        EAX,EAX
-//         004ee61b     TEST       this,this
-//         004ee61d     MOV        EBP,EDX
-//         004ee61f     JLE        LAB_004ee63f
-//         004ee621     MOV        EDI,dword ptr [ESI + 0xd64]
-//                               LAB_004ee627                                                 XREF[1]:     004ee63d(j)
-//         004ee627     CMP        EAX,EDI
-//         004ee629     JGE        LAB_004ee63f
-//         004ee62b     MOV        EBX,dword ptr [ESI + 0xd58]
-//         004ee631     CMP        dword ptr [EBX + EAX*0x4],EDX
-//         004ee634     JZ         LAB_004ee6c3
-//         004ee63a     INC        EAX
-//         004ee63b     CMP        EAX,this
-//         004ee63d     JL         LAB_004ee627
-//                               LAB_004ee63f                                                 XREF[2]:     004ee61f(j), 004ee629(j)
-//         004ee63f     MOV        EDX,dword ptr [ESI + 0xd64]
-//         004ee645     DEC        EDX
-//         004ee646     CMP        this,EDX
-//         004ee648     JLE        LAB_004ee6a7
-//         004ee64a     LEA        EBX,[ECX + this+0x1]
-//         004ee64d     LEA        EAX,[EBX*0x4 + 0x0]
-//         004ee654     PUSH       EAX
-//         004ee655     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004ee65a     MOV        EDI,EAX
-//         004ee65c     ADD        ESP,0x4
-//         004ee65f     TEST       EDI,EDI
-//         004ee661     JZ         LAB_004ee6a7
-//         004ee663     MOV        this,dword ptr [ESI + 0xd64]
-//         004ee669     XOR        EAX,EAX
-//         004ee66b     TEST       this,this
-//         004ee66d     JLE        LAB_004ee68c
-//                               LAB_004ee66f                                                 XREF[1]:     004ee68a(j)
-//         004ee66f     CMP        EAX,EBX
-//         004ee671     JGE        LAB_004ee68c
-//         004ee673     MOV        this,dword ptr [ESI + 0xd58]
-//         004ee679     INC        EAX
-//         004ee67a     MOV        EDX,dword ptr [this->_padding_ + EAX*0x4 + -0x4]
-//         004ee67e     MOV        dword ptr [EDI + EAX*0x4 + -0x4],EDX
-//         004ee682     MOV        this,dword ptr [ESI + 0xd64]
-//         004ee688     CMP        EAX,this
-//         004ee68a     JL         LAB_004ee66f
-//                               LAB_004ee68c                                                 XREF[2]:     004ee66d(j), 004ee671(j)
-//         004ee68c     MOV        EAX,dword ptr [ESI + 0xd58]
-//         004ee692     PUSH       EAX
-//         004ee693     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         004ee698     ADD        ESP,0x4
-//         004ee69b     MOV        dword ptr [ESI + 0xd58],EDI
-//         004ee6a1     MOV        dword ptr [ESI + 0xd64],EBX
-//                               LAB_004ee6a7                                                 XREF[2]:     004ee648(j), 004ee661(j)
-//         004ee6a7     MOV        this,dword ptr [ESI + 0xd5c]
-//         004ee6ad     MOV        EDX,dword ptr [ESI + 0xd58]
-//         004ee6b3     MOV        dword ptr [EDX + this->_padding_*0x4],EBP
-//         004ee6b6     MOV        EAX,dword ptr [ESI + 0xd5c]
-//         004ee6bc     INC        EAX
-//         004ee6bd     MOV        dword ptr [ESI + 0xd5c],EAX
-//                               LAB_004ee6c3                                                 XREF[1]:     004ee634(j)
-//         004ee6c3     MOV        EAX,dword ptr [ESP + tempInt]
-//         004ee6c7     MOV        this,dword ptr [ESP + param_1]
-//         004ee6cb     INC        EAX
-//         004ee6cc     CMP        EAX,this
-//         004ee6ce     MOV        dword ptr [ESP + tempInt],EAX
-//         004ee6d2     JL         LAB_004ee5fb
-//                               LAB_004ee6d8                                                 XREF[1]:     004ee5f5(j)
-//                              taitacmd.cpp:1924 (15)
-//         004ee6d8     MOV        EBP,dword ptr [ESP + param_2]
-//         004ee6dc     LEA        EDI,[ESI + 0xd68]
-//         004ee6e2     MOV        EBX,0x4
-//                               LAB_004ee6e7                                                 XREF[1]:     004ee6f7(j)
-//                              taitacmd.cpp:1925 (18)
-//         004ee6e7     PUSH       0x4
-//         004ee6e9     PUSH       EDI
-//         004ee6ea     PUSH       EBP
-//         004ee6eb     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ee6f0     ADD        ESP,0xc
-//         004ee6f3     ADD        EDI,0x4
-//         004ee6f6     DEC        EBX
-//         004ee6f7     JNZ        LAB_004ee6e7
-//                              taitacmd.cpp:2027 (145)
-//         004ee6f9     LEA        EDI,[ESI + 0xd78]
-//         004ee6ff     MOV        EBX,0x4
-//                               LAB_004ee704                                                 XREF[1]:     004ee714(j)
-//         004ee704     PUSH       0x4
-//         004ee706     PUSH       EDI
-//         004ee707     PUSH       EBP
-//         004ee708     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ee70d     ADD        ESP,0xc
-//         004ee710     ADD        EDI,0x4
-//         004ee713     DEC        EBX
-//         004ee714     JNZ        LAB_004ee704
-//         004ee716     LEA        EDI,[ESI + 0xd88]
-//         004ee71c     MOV        EBX,0x4
-//                               LAB_004ee721                                                 XREF[1]:     004ee731(j)
-//         004ee721     PUSH       0x4
-//         004ee723     PUSH       EDI
-//         004ee724     PUSH       EBP
-//         004ee725     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ee72a     ADD        ESP,0xc
-//         004ee72d     ADD        EDI,0x4
-//         004ee730     DEC        EBX
-//         004ee731     JNZ        LAB_004ee721
-//         004ee733     LEA        EDI,[ESI + 0xd98]
-//         004ee739     MOV        EBX,0x4
-//                               LAB_004ee73e                                                 XREF[1]:     004ee74e(j)
-//         004ee73e     PUSH       0x4
-//         004ee740     PUSH       EDI
-//         004ee741     PUSH       EBP
-//         004ee742     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ee747     ADD        ESP,0xc
-//         004ee74a     ADD        EDI,0x4
-//         004ee74d     DEC        EBX
-//         004ee74e     JNZ        LAB_004ee73e
-//         004ee750     LEA        EDI,[ESI + 0xe24]
-//         004ee756     MOV        EBX,0x4
-//                               LAB_004ee75b                                                 XREF[1]:     004ee76b(j)
-//         004ee75b     PUSH       0x4
-//         004ee75d     PUSH       EDI
-//         004ee75e     PUSH       EBP
-//         004ee75f     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ee764     ADD        ESP,0xc
-//         004ee767     ADD        EDI,0x4
-//         004ee76a     DEC        EBX
-//         004ee76b     JNZ        LAB_004ee75b
-//         004ee76d     LEA        EDI,[ESI + 0xe34]
-//         004ee773     MOV        EBX,0x4
-//                               LAB_004ee778                                                 XREF[1]:     004ee788(j)
-//         004ee778     PUSH       0x4
-//         004ee77a     PUSH       EDI
-//         004ee77b     PUSH       EBP
-//         004ee77c     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ee781     ADD        ESP,0xc
-//         004ee784     ADD        EDI,0x4
-//         004ee787     DEC        EBX
-//         004ee788     JNZ        LAB_004ee778
-//                              taitacmd.cpp:1936 (2)
-//         004ee78a     XOR        EDI,EDI
-//                               LAB_004ee78c                                                 XREF[1]:     004ee7b1(j)
-//                              taitacmd.cpp:1937 (13)
-//         004ee78c     LEA        EAX=>local_2c,[ESP + 0x14]
-//         004ee790     PUSH       0x4
-//         004ee792     PUSH       EAX
-//         004ee793     PUSH       EBP
-//         004ee794     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1938 (26)
-//         004ee799     MOV        this,dword ptr [ESP + local_2c]
-//         004ee79d     ADD        ESP,0xc
-//         004ee7a0     PUSH       this
-//         004ee7a1     PUSH       EDI
-//         004ee7a2     LEA        this,[ESI + 0xda8]
-//         004ee7a8     CALL       ResourceItem::setValue                           void setValue(ResourceItem * this, int param_
-//         004ee7ad     INC        EDI
-//         004ee7ae     CMP        EDI,0x4
-//         004ee7b1     JL         LAB_004ee78c
-//                              taitacmd.cpp:1941 (18)
-//         004ee7b3     LEA        EDX,[ESI + 0xd04]
-//         004ee7b9     PUSH       0x4
-//         004ee7bb     PUSH       EDX
-//         004ee7bc     PUSH       EBP
-//         004ee7bd     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ee7c2     ADD        ESP,0xc
-//                              taitacmd.cpp:1942 (15)
-//         004ee7c5     LEA        EDI,[ESI + 0xd08]
-//         004ee7cb     PUSH       0x4
-//         004ee7cd     PUSH       EDI
-//         004ee7ce     PUSH       EBP
-//         004ee7cf     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1943 (11)
-//         004ee7d4     MOV        EAX,dword ptr [EDI]
-//         004ee7d6     ADD        ESP,0xc
-//         004ee7d9     XOR        EBX,EBX
-//         004ee7db     TEST       EAX,EAX
-//         004ee7dd     JLE        LAB_004ee7fb
-//                               LAB_004ee7df                                                 XREF[1]:     004ee7f9(j)
-//                              taitacmd.cpp:1945 (9)
-//         004ee7df     PUSH       0x0
-//         004ee7e1     MOV        this,ESI
-//         004ee7e3     CALL       TribeTacticalAIModule::createGroup               TacticalAIGroup * createGroup(TribeTacticalAI
-//                              taitacmd.cpp:1946 (4)
-//         004ee7e8     TEST       EAX,EAX
-//         004ee7ea     JZ         LAB_004ee7f4
-//                              taitacmd.cpp:1947 (15)
-//         004ee7ec     PUSH       EBP
-//         004ee7ed     MOV        this,EAX
-//         004ee7ef     CALL       TacticalAIGroup::load                            int load(TacticalAIGroup * this, int param_1)
-//                               LAB_004ee7f4                                                 XREF[1]:     004ee7ea(j)
-//         004ee7f4     MOV        EAX,dword ptr [EDI]
-//         004ee7f6     INC        EBX
-//         004ee7f7     CMP        EBX,EAX
-//         004ee7f9     JL         LAB_004ee7df
-//                               LAB_004ee7fb                                                 XREF[1]:     004ee7dd(j)
-//                              taitacmd.cpp:1949 (15)
-//         004ee7fb     LEA        EAX,[ESI + 0xd0c]
-//         004ee801     PUSH       0x4
-//         004ee803     PUSH       EAX
-//         004ee804     PUSH       EBP
-//         004ee805     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1950 (22)
-//         004ee80a     FLD        float ptr [save_game_version]                    = 7.23
-//         004ee810     FCOMP      float ptr [DAT_00575720]                         = 9Ah
-//         004ee816     ADD        ESP,0xc
-//         004ee819     FNSTSW     AX
-//         004ee81b     TEST       AH,0x1
-//         004ee81e     JNZ        LAB_004ee832
-//                              taitacmd.cpp:1951 (18)
-//         004ee820     LEA        EAX,[ESI + 0xd10]
-//         004ee826     PUSH       0x4
-//         004ee828     PUSH       EAX
-//         004ee829     PUSH       EBP
-//         004ee82a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ee82f     ADD        ESP,0xc
-//                               LAB_004ee832                                                 XREF[1]:     004ee81e(j)
-//                              taitacmd.cpp:1952 (18)
-//         004ee832     LEA        this,[ESI + 0xd14]
-//         004ee838     PUSH       0x4
-//         004ee83a     PUSH       this
-//         004ee83b     PUSH       EBP
-//         004ee83c     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ee841     ADD        ESP,0xc
-//                              taitacmd.cpp:1953 (18)
-//         004ee844     LEA        EDX,[ESI + 0xd18]
-//         004ee84a     PUSH       0x4
-//         004ee84c     PUSH       EDX
-//         004ee84d     PUSH       EBP
-//         004ee84e     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ee853     ADD        ESP,0xc
-//                              taitacmd.cpp:1954 (18)
-//         004ee856     LEA        EAX,[ESI + 0xd1c]
-//         004ee85c     PUSH       0x4
-//         004ee85e     PUSH       EAX
-//         004ee85f     PUSH       EBP
-//         004ee860     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ee865     ADD        ESP,0xc
-//                              taitacmd.cpp:1955 (18)
-//         004ee868     LEA        this,[ESI + 0xd20]
-//         004ee86e     PUSH       0x4
-//         004ee870     PUSH       this
-//         004ee871     PUSH       EBP
-//         004ee872     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ee877     ADD        ESP,0xc
-//                              taitacmd.cpp:1956 (15)
-//         004ee87a     LEA        EDX,[ESI + 0xd24]
-//         004ee880     PUSH       0x4
-//         004ee882     PUSH       EDX
-//         004ee883     PUSH       EBP
-//         004ee884     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1958 (22)
-//         004ee889     FLD        float ptr [save_game_version]                    = 7.23
-//         004ee88f     FCOMP      float ptr [DAT_00575724]                         = CDh
-//         004ee895     ADD        ESP,0xc
-//         004ee898     FNSTSW     AX
-//         004ee89a     TEST       AH,0x1
-//         004ee89d     JNZ        LAB_004ee8b1
-//                              taitacmd.cpp:1959 (18)
-//         004ee89f     LEA        EAX,[ESI + 0xe18]
-//         004ee8a5     PUSH       0x4
-//         004ee8a7     PUSH       EAX
-//         004ee8a8     PUSH       EBP
-//         004ee8a9     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ee8ae     ADD        ESP,0xc
-//                               LAB_004ee8b1                                                 XREF[1]:     004ee89d(j)
-//                              taitacmd.cpp:1961 (15)
-//         004ee8b1     LEA        EAX,[ESI + 0xe1c]
-//         004ee8b7     PUSH       0x4
-//         004ee8b9     PUSH       EAX
-//         004ee8ba     PUSH       EBP
-//         004ee8bb     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              taitacmd.cpp:1963 (22)
-//         004ee8c0     FLD        float ptr [save_game_version]                    = 7.23
-//         004ee8c6     FCOMP      float ptr [DAT_00575728]                         = 33h    3
-//         004ee8cc     ADD        ESP,0xc
-//         004ee8cf     FNSTSW     AX
-//         004ee8d1     TEST       AH,0x1
-//         004ee8d4     JNZ        LAB_004ee8fa
-//                              taitacmd.cpp:1964 (18)
-//         004ee8d6     LEA        EAX,[ESI + 0xe44]
-//         004ee8dc     PUSH       0x4
-//         004ee8de     PUSH       EAX
-//         004ee8df     PUSH       EBP
-//         004ee8e0     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ee8e5     ADD        ESP,0xc
-//                              taitacmd.cpp:1965 (18)
-//         004ee8e8     LEA        EAX,[ESI + 0xe48]
-//         004ee8ee     PUSH       0x4
-//         004ee8f0     PUSH       EAX
-//         004ee8f1     PUSH       EBP
-//         004ee8f2     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ee8f7     ADD        ESP,0xc
-//                               LAB_004ee8fa                                                 XREF[1]:     004ee8d4(j)
-//                              taitacmd.cpp:1970 (19)
-//         004ee8fa     FLD        float ptr [save_game_version]                    = 7.23
-//         004ee900     FCOMP      float ptr [DAT_0057572c]                         = 66h    f
-//         004ee906     FNSTSW     AX
-//         004ee908     TEST       AH,0x1
-//         004ee90b     JNZ        LAB_004ee924
-//                              taitacmd.cpp:1971 (21)
-//         004ee90d     LEA        EAX,[ESI + 0xe4c]
-//         004ee913     PUSH       0x130
-//         004ee918     PUSH       EAX
-//         004ee919     PUSH       EBP
-//         004ee91a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ee91f     ADD        ESP,0xc
-//                              taitacmd.cpp:1973 (2)
-//         004ee922     JMP        LAB_004ee933
-//                               LAB_004ee924                                                 XREF[1]:     004ee90b(j)
-//                              taitacmd.cpp:1974 (15)
-//         004ee924     MOV        this,0x4c
-//         004ee929     XOR        EAX,EAX
-//         004ee92b     LEA        EDI,[ESI + 0xe4c]
-//         004ee931     STOSD.REP  ES:EDI
-//                               LAB_004ee933                                                 XREF[1]:     004ee922(j)
-//                              taitacmd.cpp:1976 (8)
-//         004ee933     XOR        EBX,EBX
-//         004ee935     MOV        dword ptr [ESI + 0xf60],EBX
-//                              taitacmd.cpp:1978 (19)
-//         004ee93b     FLD        float ptr [save_game_version]                    = 7.23
-//         004ee941     FCOMP      float ptr [DAT_00575730]                         = 9Ah
-//         004ee947     FNSTSW     AX
-//         004ee949     TEST       AH,0x1
-//         004ee94c     JNZ        LAB_004ee960
-//                              taitacmd.cpp:1979 (18)
-//         004ee94e     LEA        EAX,[ESI + 0xf7c]
-//         004ee954     PUSH       0x4
-//         004ee956     PUSH       EAX
-//         004ee957     PUSH       EBP
-//         004ee958     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ee95d     ADD        ESP,0xc
-//                               LAB_004ee960                                                 XREF[1]:     004ee94c(j)
-//                              taitacmd.cpp:1981 (19)
-//         004ee960     FLD        float ptr [save_game_version]                    = 7.23
-//         004ee966     FCOMP      float ptr [DAT_00575734]                         = CDh
-//         004ee96c     FNSTSW     AX
-//         004ee96e     TEST       AH,0x1
-//         004ee971     JNZ        LAB_004ee997
-//                              taitacmd.cpp:1982 (18)
-//         004ee973     LEA        EAX,[ESI + 0xf80]
-//         004ee979     PUSH       0x4
-//         004ee97b     PUSH       EAX
-//         004ee97c     PUSH       EBP
-//         004ee97d     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ee982     ADD        ESP,0xc
-//                              taitacmd.cpp:1983 (18)
-//         004ee985     LEA        EAX,[ESI + 0xf84]
-//         004ee98b     PUSH       0x4
-//         004ee98d     PUSH       EAX
-//         004ee98e     PUSH       EBP
-//         004ee98f     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ee994     ADD        ESP,0xc
-//                               LAB_004ee997                                                 XREF[1]:     004ee971(j)
-//                              taitacmd.cpp:1986 (19)
-//         004ee997     FLD        float ptr [save_game_version]                    = 7.23
-//         004ee99d     FCOMP      float ptr [DAT_00575738]                         = CDh
-//         004ee9a3     FNSTSW     AX
-//         004ee9a5     TEST       AH,0x1
-//         004ee9a8     JNZ        LAB_004ee9ce
-//                              taitacmd.cpp:1987 (18)
-//         004ee9aa     LEA        EAX,[ESI + 0xf88]
-//         004ee9b0     PUSH       0x4
-//         004ee9b2     PUSH       EAX
-//         004ee9b3     PUSH       EBP
-//         004ee9b4     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ee9b9     ADD        ESP,0xc
-//                              taitacmd.cpp:1988 (18)
-//         004ee9bc     LEA        EAX,[ESI + 0xf8c]
-//         004ee9c2     PUSH       0x4
-//         004ee9c4     PUSH       EAX
-//         004ee9c5     PUSH       EBP
-//         004ee9c6     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ee9cb     ADD        ESP,0xc
-//                               LAB_004ee9ce                                                 XREF[1]:     004ee9a8(j)
-//                              taitacmd.cpp:1991 (19)
-//         004ee9ce     FLD        float ptr [save_game_version]                    = 7.23
-//         004ee9d4     FCOMP      float ptr [DAT_0057573c]                         = 66h    f
-//         004ee9da     FNSTSW     AX
-//         004ee9dc     TEST       AH,0x1
-//         004ee9df     JNZ        LAB_004eea17
-//                              taitacmd.cpp:1992 (18)
-//         004ee9e1     LEA        EAX,[ESI + 0xf90]
-//         004ee9e7     PUSH       0x4
-//         004ee9e9     PUSH       EAX
-//         004ee9ea     PUSH       EBP
-//         004ee9eb     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004ee9f0     ADD        ESP,0xc
-//                              taitacmd.cpp:1993 (18)
-//         004ee9f3     LEA        EAX,[ESI + 0xf94]
-//         004ee9f9     PUSH       0x4
-//         004ee9fb     PUSH       EAX
-//         004ee9fc     PUSH       EBP
-//         004ee9fd     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004eea02     ADD        ESP,0xc
-//                              taitacmd.cpp:1994 (18)
-//         004eea05     LEA        EAX,[ESI + 0xf98]
-//         004eea0b     PUSH       0x4
-//         004eea0d     PUSH       EAX
-//         004eea0e     PUSH       EBP
-//         004eea0f     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004eea14     ADD        ESP,0xc
-//                               LAB_004eea17                                                 XREF[1]:     004ee9df(j)
-//                              taitacmd.cpp:1997 (19)
-//         004eea17     FLD        float ptr [save_game_version]                    = 7.23
-//         004eea1d     FCOMP      float ptr [DAT_00575740]                         = 8Fh
-//         004eea23     FNSTSW     AX
-//         004eea25     TEST       AH,0x1
-//         004eea28     JNZ        LAB_004eea3c
-//                              taitacmd.cpp:1998 (18)
-//         004eea2a     LEA        EAX,[ESI + 0xf9c]
-//         004eea30     PUSH       0x4
-//         004eea32     PUSH       EAX
-//         004eea33     PUSH       EBP
-//         004eea34     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004eea39     ADD        ESP,0xc
-//                               LAB_004eea3c                                                 XREF[1]:     004eea28(j)
-//                              taitacmd.cpp:2000 (19)
-//         004eea3c     FLD        float ptr [save_game_version]                    = 7.23
-//         004eea42     FCOMP      float ptr [DAT_00575744]                         = 52h    R
-//         004eea48     FNSTSW     AX
-//         004eea4a     TEST       AH,0x1
-//         004eea4d     JNZ        LAB_004eea61
-//                              taitacmd.cpp:2001 (18)
-//         004eea4f     LEA        EAX,[ESI + 0xfa4]
-//         004eea55     PUSH       0x4
-//         004eea57     PUSH       EAX
-//         004eea58     PUSH       EBP
-//         004eea59     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004eea5e     ADD        ESP,0xc
-//                               LAB_004eea61                                                 XREF[1]:     004eea4d(j)
-//                              taitacmd.cpp:2003 (19)
-//         004eea61     FLD        float ptr [save_game_version]                    = 7.23
-//         004eea67     FCOMP      float ptr [DAT_00575748]                         = 29h    )
-//         004eea6d     FNSTSW     AX
-//         004eea6f     TEST       AH,0x1
-//         004eea72     JNZ        LAB_004eea86
-//                              taitacmd.cpp:2004 (18)
-//         004eea74     LEA        EAX,[ESI + 0xfa0]
-//         004eea7a     PUSH       0x4
-//         004eea7c     PUSH       EAX
-//         004eea7d     PUSH       EBP
-//         004eea7e     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004eea83     ADD        ESP,0xc
-//                               LAB_004eea86                                                 XREF[1]:     004eea72(j)
-//                              taitacmd.cpp:2006 (19)
-//         004eea86     FLD        float ptr [save_game_version]                    = 7.23
-//         004eea8c     FCOMP      float ptr [DAT_0057574c]                         = A8h
-//         004eea92     FNSTSW     AX
-//         004eea94     TEST       AH,0x1
-//         004eea97     JNZ        LAB_004eeaab
-//                              taitacmd.cpp:2007 (18)
-//         004eea99     LEA        EAX,[ESI + 0xfa8]
-//         004eea9f     PUSH       0x4
-//         004eeaa1     PUSH       EAX
-//         004eeaa2     PUSH       EBP
-//         004eeaa3     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004eeaa8     ADD        ESP,0xc
-//                               LAB_004eeaab                                                 XREF[1]:     004eea97(j)
-//                              taitacmd.cpp:2011 (19)
-//         004eeaab     FLD        float ptr [save_game_version]                    = 7.23
-//         004eeab1     FCOMP      float ptr [DAT_00575750]                         = AEh
-//         004eeab7     FNSTSW     AX
-//         004eeab9     TEST       AH,0x1
-//         004eeabc     JNZ        LAB_004eead2
-//                              taitacmd.cpp:2012 (18)
-//         004eeabe     LEA        this,[ESI + 0xfac]
-//         004eeac4     PUSH       0x2c
-//         004eeac6     PUSH       this
-//         004eeac7     PUSH       EBP
-//         004eeac8     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004eeacd     ADD        ESP,0xc
-//                              taitacmd.cpp:2014 (2)
-//         004eead0     JMP        LAB_004eeae1
-//                               LAB_004eead2                                                 XREF[1]:     004eeabc(j)
-//                              taitacmd.cpp:2015 (15)
-//         004eead2     MOV        this,0xb
-//         004eead7     XOR        EAX,EAX
-//         004eead9     LEA        EDI,[ESI + 0xfac]
-//         004eeadf     STOSD.REP  ES:EDI
-//                               LAB_004eeae1                                                 XREF[1]:     004eead0(j)
-//                              taitacmd.cpp:2017 (6)
-//         004eeae1     MOV        dword ptr [ESI + 0xfd4],EBX
-//                              taitacmd.cpp:2020 (19)
-//         004eeae7     FLD        float ptr [save_game_version]                    = 7.23
-//         004eeaed     FCOMP      float ptr [DAT_00575754]                         = CDh
-//         004eeaf3     FNSTSW     AX
-//         004eeaf5     TEST       AH,0x1
-//         004eeaf8     JNZ        LAB_004eeb0e
-//                              taitacmd.cpp:2021 (18)
-//         004eeafa     LEA        EDX,[ESI + 0xfd8]
-//         004eeb00     PUSH       0x24
-//         004eeb02     PUSH       EDX
-//         004eeb03     PUSH       EBP
-//         004eeb04     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004eeb09     ADD        ESP,0xc
-//                              taitacmd.cpp:2022 (2)
-//         004eeb0c     JMP        LAB_004eeb1d
-//                               LAB_004eeb0e                                                 XREF[1]:     004eeaf8(j)
-//                              taitacmd.cpp:2027 (38)
-//         004eeb0e     LEA        EDI,[ESI + 0xfd8]
-//         004eeb14     MOV        this,0x9
-//         004eeb19     XOR        EAX,EAX
-//         004eeb1b     STOSD.REP  ES:EDI
-//                               LAB_004eeb1d                                                 XREF[1]:     004eeb0c(j)
-//         004eeb1d     MOV        this,dword ptr [ESP + local_c]
-//         004eeb21     MOV        EAX,ESI
-//         004eeb23     POP        EDI
-//         004eeb24     POP        ESI
-//         004eeb25     POP        EBP
-//         004eeb26     MOV        dword ptr FS:[0x0],this
-//         004eeb2d     POP        EBX
-//         004eeb2e     ADD        ESP,0x30
-//         004eeb31     RET        0x8
-//         004eeb34     ??         90h
-//         004eeb35     NOP
-//         004eeb36     NOP
-//         004eeb37     NOP
-//         004eeb38     NOP
-//         004eeb39     NOP
-//         004eeb3a     NOP
-//         004eeb3b     NOP
-//         004eeb3c     NOP
-//         004eeb3d     NOP
-//         004eeb3e     NOP
-//         004eeb3f     NOP
+//                              taitacmd.cpp:1736 (645)
+//         004ed1c0     PUSH       -0x1
+//         004ed1c2     PUSH       FUN_0056092a
+//         004ed1c7     MOV        EAX,FS:[0x0]
+//         004ed1cd     PUSH       EAX
+//         004ed1ce     MOV        dword ptr FS:[0x0],ESP
+//         004ed1d5     PUSH       this
+//         004ed1d6     MOV        EAX,dword ptr [ESP + param_2]
+//         004ed1da     PUSH       EBX
+//         004ed1db     PUSH       EBP
+//         004ed1dc     PUSH       ESI
+//         004ed1dd     MOV        ESI,this
+//         004ed1df     PUSH       EDI
+//         004ed1e0     MOV        this,dword ptr [ESP + param_1]
+//         004ed1e4     PUSH       EAX
+//         004ed1e5     PUSH       this
+//         004ed1e6     MOV        this,ESI
+//         004ed1e8     MOV        dword ptr [ESP + local_10],ESI
+//         004ed1ec     CALL       TacticalAIModule::TacticalAIModule               undefined TacticalAIModule(TacticalAIModule *
+//         004ed1f1     XOR        EBX,EBX
+//         004ed1f3     MOV        dword ptr [ESI + 0xf0],EBX
+//         004ed1f9     MOV        dword ptr [ESP + local_4],EBX
+//         004ed1fd     MOV        dword ptr [ESI + 0xf4],EBX
+//         004ed203     MOV        dword ptr [ESI + 0xf8],EBX
+//         004ed209     MOV        dword ptr [ESI + 0xfc],EBX
+//         004ed20f     MOV        dword ptr [ESI + 0x100],EBX
+//         004ed215     MOV        dword ptr [ESI + 0x104],EBX
+//         004ed21b     MOV        dword ptr [ESI + 0x108],EBX
+//         004ed221     MOV        dword ptr [ESI + 0x10c],EBX
+//         004ed227     MOV        dword ptr [ESI + 0x110],EBX
+//         004ed22d     MOV        dword ptr [ESI + 0x114],EBX
+//         004ed233     MOV        dword ptr [ESI + 0x118],EBX
+//         004ed239     MOV        dword ptr [ESI + 0x11c],EBX
+//         004ed23f     MOV        dword ptr [ESI + 0x120],EBX
+//         004ed245     MOV        dword ptr [ESI + 0x124],EBX
+//         004ed24b     MOV        dword ptr [ESI + 0x128],EBX
+//         004ed251     MOV        dword ptr [ESI + 0x12c],EBX
+//         004ed257     MOV        dword ptr [ESI + 0x130],EBX
+//         004ed25d     MOV        dword ptr [ESI + 0x134],EBX
+//         004ed263     MOV        dword ptr [ESI + 0x138],EBX
+//         004ed269     MOV        dword ptr [ESI + 0x13c],EBX
+//         004ed26f     MOV        dword ptr [ESI + 0x140],EBX
+//         004ed275     MOV        dword ptr [ESI + 0x144],EBX
+//         004ed27b     MOV        dword ptr [ESI + 0x148],EBX
+//         004ed281     MOV        dword ptr [ESI + 0x14c],EBX
+//         004ed287     MOV        dword ptr [ESI + 0x150],EBX
+//         004ed28d     MOV        dword ptr [ESI + 0x154],EBX
+//         004ed293     MOV        dword ptr [ESI + 0x158],EBX
+//         004ed299     MOV        dword ptr [ESI + 0x15c],EBX
+//         004ed29f     MOV        dword ptr [ESI + 0x160],EBX
+//         004ed2a5     MOV        dword ptr [ESI + 0x164],EBX
+//         004ed2ab     MOV        dword ptr [ESI + 0x168],EBX
+//         004ed2b1     MOV        dword ptr [ESI + 0x16c],EBX
+//         004ed2b7     MOV        dword ptr [ESI + 0x170],EBX
+//         004ed2bd     MOV        dword ptr [ESI + 0x174],EBX
+//         004ed2c3     MOV        dword ptr [ESI + 0x178],EBX
+//         004ed2c9     MOV        dword ptr [ESI + 0x17c],EBX
+//         004ed2cf     MOV        dword ptr [ESI + 0x180],EBX
+//         004ed2d5     MOV        dword ptr [ESI + 0x184],EBX
+//         004ed2db     MOV        dword ptr [ESI + 0x188],EBX
+//         004ed2e1     MOV        dword ptr [ESI + 0x18c],EBX
+//         004ed2e7     MOV        dword ptr [ESI + 0x190],EBX
+//         004ed2ed     LEA        EBP,[ESI + 0x9d4]
+//         004ed2f3     MOV        dword ptr [ESI + 0x9cc],EBX
+//         004ed2f9     MOV        this,EBP
+//         004ed2fb     MOV        byte ptr [ESP + local_4],0xa
+//         004ed300     MOV        dword ptr [ESI + 0x9d0],EBX
+//         004ed306     CALL       TacticalAIGroup::TacticalAIGroup                 undefined TacticalAIGroup(TacticalAIGroup * t
+//         004ed30b     MOV        dword ptr [ESI + 0xd04],EBX
+//         004ed311     MOV        dword ptr [ESI + 0xd08],EBX
+//         004ed317     MOV        dword ptr [ESI + 0xd0c],EBX
+//         004ed31d     MOV        dword ptr [ESI + 0xd10],EBX
+//         004ed323     MOV        dword ptr [ESI + 0xd14],EBX
+//         004ed329     MOV        dword ptr [ESI + 0xd18],EBX
+//         004ed32f     MOV        dword ptr [ESI + 0xd1c],EBX
+//         004ed335     MOV        dword ptr [ESI + 0xd20],EBX
+//         004ed33b     MOV        dword ptr [ESI + 0xd24],EBX
+//         004ed341     MOV        dword ptr [ESI + 0xd28],EBX
+//         004ed347     MOV        dword ptr [ESI + 0xd2c],EBX
+//         004ed34d     MOV        dword ptr [ESI + 0xd30],EBX
+//         004ed353     MOV        dword ptr [ESI + 0xd34],EBX
+//         004ed359     MOV        dword ptr [ESI + 0xd38],EBX
+//         004ed35f     MOV        dword ptr [ESI + 0xd3c],EBX
+//         004ed365     MOV        dword ptr [ESI + 0xd40],EBX
+//         004ed36b     MOV        dword ptr [ESI + 0xd44],EBX
+//         004ed371     MOV        dword ptr [ESI + 0xd48],EBX
+//         004ed377     MOV        dword ptr [ESI + 0xd4c],EBX
+//         004ed37d     MOV        dword ptr [ESI + 0xd50],EBX
+//         004ed383     MOV        dword ptr [ESI + 0xd54],EBX
+//         004ed389     MOV        dword ptr [ESI + 0xd58],EBX
+//         004ed38f     MOV        dword ptr [ESI + 0xd5c],EBX
+//         004ed395     MOV        dword ptr [ESI + 0xd60],EBX
+//         004ed39b     MOV        dword ptr [ESI + 0xd64],EBX
+//         004ed3a1     PUSH       0x4
+//         004ed3a3     LEA        this,[ESI + 0xda8]
+//         004ed3a9     MOV        byte ptr [ESP + local_4],0xf
+//         004ed3ae     CALL       ResourceItem::ResourceItem                       undefined ResourceItem(ResourceItem * this, i
+//         004ed3b3     OR         EDX,0xffffffff
+//         004ed3b6     MOV        dword ptr [ESI + 0xe18],EBX
+//         004ed3bc     MOV        dword ptr [ESI + 0xe1c],EBX
+//         004ed3c2     MOV        dword ptr [ESI + 0xe20],EBX
+//         004ed3c8     MOV        dword ptr [ESI + 0xe44],EBX
+//         004ed3ce     MOV        dword ptr [ESI + 0xe48],EBX
+//         004ed3d4     MOV        dword ptr [ESI + 0xf7c],EDX
+//         004ed3da     MOV        dword ptr [ESI + 0xf80],EDX
+//         004ed3e0     MOV        dword ptr [ESI + 0xf84],EDX
+//         004ed3e6     MOV        dword ptr [ESI + 0xf88],EBX
+//         004ed3ec     MOV        dword ptr [ESI + 0xf8c],EBX
+//         004ed3f2     MOV        dword ptr [ESI + 0xf90],EBX
+//         004ed3f8     MOV        dword ptr [ESI + 0xf94],EBX
+//         004ed3fe     MOV        dword ptr [ESI + 0xf98],EBX
+//         004ed404     MOV        dword ptr [ESI + 0xf9c],EBX
+//         004ed40a     MOV        dword ptr [ESI + 0xfa0],EBX
+//         004ed410     MOV        dword ptr [ESI + 0xfa4],EBX
+//         004ed416     MOV        dword ptr [ESI + 0xfa8],EBX
+//         004ed41c     MOV        dword ptr [ESI + 0xffc],EDX
+//         004ed422     MOV        dword ptr [ESI + 0x1000],EDX
+//         004ed428     MOV        dword ptr [ESI + 0x1004],EBX
+//         004ed42e     MOV        dword ptr [ESI + 0x1008],EBX
+//         004ed434     MOV        dword ptr [ESI],TribeTacticalAIModule::`vftable' = 004ed4d0
+//         004ed43a     LEA        EAX,[ESI + 0xd78]
+//         004ed440     MOV        this,0x4
+//                               LAB_004ed445                                                 XREF[1]:     004ed460(j)
+//                              taitacmd.cpp:1739 (3)
+//         004ed445     MOV        dword ptr [EAX + 0x10],EDX
+//                              taitacmd.cpp:1740 (2)
+//         004ed448     MOV        dword ptr [EAX],EBX
+//                              taitacmd.cpp:1741 (3)
+//         004ed44a     MOV        dword ptr [EAX + -0x10],EBX
+//                              taitacmd.cpp:1742 (3)
+//         004ed44d     MOV        dword ptr [EAX + 0x20],EBX
+//                              taitacmd.cpp:1743 (6)
+//         004ed450     MOV        dword ptr [EAX + 0xac],EBX
+//                              taitacmd.cpp:1744 (12)
+//         004ed456     MOV        dword ptr [EAX + 0xbc],EBX
+//         004ed45c     ADD        EAX,0x4
+//         004ed45f     DEC        this
+//         004ed460     JNZ        LAB_004ed445
+//                              taitacmd.cpp:1773 (108)
+//         004ed462     LEA        EDI,[ESI + 0x194]
+//         004ed468     MOV        this,0xe2
+//         004ed46d     MOV        EAX,EDX
+//         004ed46f     STOSD.REP  ES:EDI
+//         004ed471     LEA        EDI,[ESI + 0xfd8]
+//         004ed477     MOV        this,0x9
+//         004ed47c     XOR        EAX,EAX
+//         004ed47e     STOSD.REP  ES:EDI
+//         004ed480     LEA        EAX,[ESI + 0x520]
+//         004ed486     MOV        this,0x32
+//                               LAB_004ed48b                                                 XREF[1]:     004ed49d(j)
+//         004ed48b     MOV        dword ptr [EAX + -0x4],EDX
+//         004ed48e     MOV        dword ptr [EAX],EDX
+//         004ed490     MOV        dword ptr [EAX + 0x4],EDX
+//         004ed493     MOV        dword ptr [EAX + 0x8],EDX
+//         004ed496     MOV        dword ptr [EAX + 0xc],EDX
+//         004ed499     ADD        EAX,0x18
+//         004ed49c     DEC        this
+//         004ed49d     JNZ        LAB_004ed48b
+//         004ed49f     MOV        this,dword ptr [ESP + local_c]
+//         004ed4a3     MOV        dword ptr [ESI + 0x9d8],EBP
+//         004ed4a9     MOV        dword ptr [ESI + 0x9dc],EBP
+//         004ed4af     MOV        dword ptr [ESI + 0xf60],EBX
+//         004ed4b5     MOV        dword ptr [ESI + 0xfd4],EBX
+//         004ed4bb     MOV        EAX,ESI
+//         004ed4bd     POP        EDI
+//         004ed4be     POP        ESI
+//         004ed4bf     POP        EBP
+//         004ed4c0     MOV        dword ptr FS:[0x0],this
+//         004ed4c7     POP        EBX
+//         004ed4c8     ADD        ESP,0x10
+//         004ed4cb     RET        0x8
+//         004ed4ce     ??         90h
+//         004ed4cf     NOP
 }
 
 TribeTacticalAIModule::TribeTacticalAIModule(int param_1, int param_2) {
@@ -24630,426 +22834,347 @@ int TribeTacticalAIModule::idleSoldier() {
 
 int TribeTacticalAIModule::idleCivilian(int param_1) {
     /* TODO: Stub */
-//                              int __thiscall idleCivilian(TribeTacticalAIModule * this, int param_
+//                              int __thiscall idleCivilian(TribeTacticalAIModule * this, int param_1)
 //              int               EAX:4          <RETURN>
 //              TribeTacticalA    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[2]:     004f83e3(R), 004f8463(R)
-//              XYPoint *         Stack[0x8]:4   param_2                   XREF[1]:     004f84dc(R)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     004f850c(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     004f83ca(W), 004f8446(R)
-//              RGE_Static_Obj    Stack[-0x8]:4  unitObj@fffffff8          XREF[5]:     004f81b1(W), 004f84f8(R), 004f8506(W), 004f853a(W),
-//                                                                                     004f8555(R)
-//              int               Stack[-0xc]:4  bestUnitID                XREF[6]:     004f8241(W), 004f82bd(R), 004f8309(W), 004f83fc(R),
-//                                                                                     004f844a(R), 004f854b(W)
-//              RGE_Static_Obj    Stack[-0x10]:4 unitObj                   XREF[5]:     004f81bb(W), 004f8502(W), 004f8515(R), 004f8526(R),
-//                                                                                     004f8536(W)
-//              float             Stack[-0x14]:4 bestUnitDistance
-//              undefined4        Stack[-0x28]:4 local_28                  XREF[1]:     004f84e8(*)
-//              undefined4        Stack[-0x2c]:4 local_2c                  XREF[1]:     004f84f0(*)
-//                               ?idleCivilian@TribeTacticalAIModule@@QAEHHAAUXYPoint@@H@Z    XREF[2]:     taskCivilians:004f169c(c),
-//                               TribeTacticalAIModule::idleCivilian                                       taskCivilians:004f194c(c)
-//                              taitacmd.cpp:7166 (8)
-//         004f81a0     SUB        ESP,0x10
-//         004f81a3     PUSH       EBX
-//         004f81a4     MOV        EBX,this
-//         004f81a6     PUSH       EBP
-//         004f81a7     PUSH       ESI
-//                              taitacmd.cpp:7182 (33)
-//         004f81a8     MOV        EAX,dword ptr [EBX + 0xf8]
-//         004f81ae     PUSH       EDI
-//         004f81af     XOR        EDI,EDI
-//         004f81b1     MOV        dword ptr [ESP + unitObj@fffffff8],0xffffffff
-//         004f81b9     TEST       EAX,EAX
-//         004f81bb     MOV        dword ptr [ESP + unitObj],0x0
-//         004f81c3     JLE        LAB_004f82ff
-//                              taitacmd.cpp:7184 (71)
-//         004f81c9     LEA        ESI,[EBX + 0xf4]
-//                               LAB_004f81cf                                                 XREF[1]:     004f82f9(j)
-//         004f81cf     MOV        EAX,dword ptr [ESI + 0xc]
-//         004f81d2     DEC        EAX
-//         004f81d3     CMP        EDI,EAX
-//         004f81d5     JLE        LAB_004f81e2
-//         004f81d7     LEA        this,[EDI + 0x1]
-//         004f81da     PUSH       this
-//         004f81db     MOV        this,ESI
-//         004f81dd     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
-//                               LAB_004f81e2                                                 XREF[1]:     004f81d5(j)
-//         004f81e2     MOV        this,dword ptr [EBX + 0xd5c]
-//         004f81e8     XOR        EAX,EAX
-//         004f81ea     TEST       this,this
-//         004f81ec     JLE        LAB_004f8210
-//                               LAB_004f81ee                                                 XREF[1]:     004f820e(j)
-//         004f81ee     CMP        EAX,dword ptr [EBX + 0xd64]
-//         004f81f4     JGE        LAB_004f8210
-//         004f81f6     MOV        EBP,dword ptr [EBX + 0xd58]
-//         004f81fc     MOV        EDX,dword ptr [ESI]
-//         004f81fe     MOV        EBP,dword ptr [EBP + EAX*0x4]
-//         004f8202     CMP        EBP,dword ptr [EDX + EDI*0x4]
-//         004f8205     JZ         LAB_004f82f0
-//         004f820b     INC        EAX
-//         004f820c     CMP        EAX,this
-//         004f820e     JL         LAB_004f81ee
-//                               LAB_004f8210                                                 XREF[2]:     004f81ec(j), 004f81f4(j)
-//                              taitacmd.cpp:7188 (47)
-//         004f8210     MOV        EAX,dword ptr [ESI + 0xc]
-//         004f8213     DEC        EAX
-//         004f8214     CMP        EDI,EAX
-//         004f8216     JLE        LAB_004f8223
-//         004f8218     LEA        this,[EDI + 0x1]
-//         004f821b     PUSH       this
-//         004f821c     MOV        this,ESI
-//         004f821e     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
-//                               LAB_004f8223                                                 XREF[1]:     004f8216(j)
-//         004f8223     MOV        EDX,dword ptr [ESI]
-//         004f8225     MOV        this,dword ptr [EBX + 0xf0]
-//         004f822b     MOV        EAX,dword ptr [EDX + EDI*0x4]
-//         004f822e     MOV        EDX,dword ptr [ECX + this->md]
-//         004f8234     PUSH       EAX
-//         004f8235     MOV        this,dword ptr [EDX + 0x3c]
-//         004f8238     CALL       RGE_Game_World::object                           RGE_Static_Object * object(RGE_Game_World * t
-//         004f823d     MOV        EBP,EAX
-//                              taitacmd.cpp:7189 (27)
-//         004f823f     TEST       EBP,EBP
-//         004f8241     MOV        dword ptr [ESP + bestUnitID],EBP
-//         004f8245     JZ         LAB_004f82f0
-//         004f824b     MOV        this,EBP
-//         004f824d     CALL       RGE_Static_Object::unitAI                        UnitAIModule * unitAI(RGE_Static_Object * this)
-//         004f8252     TEST       EAX,EAX
-//         004f8254     JZ         LAB_004f82f0
-//                              taitacmd.cpp:7193 (36)
-//         004f825a     MOV        EAX,dword ptr [ESI + 0xc]
-//         004f825d     DEC        EAX
-//         004f825e     CMP        EDI,EAX
-//         004f8260     JLE        LAB_004f826d
-//         004f8262     LEA        this,[EDI + 0x1]
-//         004f8265     PUSH       this
-//         004f8266     MOV        this,ESI
-//         004f8268     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
-//                               LAB_004f826d                                                 XREF[1]:     004f8260(j)
-//         004f826d     MOV        EDX,dword ptr [ESI]
-//         004f826f     MOV        this,EBX
-//         004f8271     MOV        EAX,dword ptr [EDX + EDI*0x4]
-//         004f8274     PUSH       EAX
-//         004f8275     CALL       TribeTacticalAIModule::isGatherer                int isGatherer(TribeTacticalAIModule * this,
-//         004f827a     TEST       EAX,EAX
-//         004f827c     JNZ        LAB_004f82f0
-//                              taitacmd.cpp:7195 (72)
-//         004f827e     MOV        this,dword ptr [ESI + 0xc]
-//         004f8281     DEC        this
-//         004f8282     CMP        EDI,this
-//         004f8284     JLE        LAB_004f8291
-//         004f8286     LEA        EDX,[EDI + 0x1]
-//         004f8289     MOV        this,ESI
-//         004f828b     PUSH       EDX
-//         004f828c     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
-//                               LAB_004f8291                                                 XREF[1]:     004f8284(j)
-//         004f8291     MOV        this,dword ptr [EBX + 0x108]
-//         004f8297     XOR        EAX,EAX
-//         004f8299     TEST       this,this
-//         004f829b     JLE        LAB_004f82c6
-//                               LAB_004f829d                                                 XREF[1]:     004f82c4(j)
-//         004f829d     CMP        EAX,dword ptr [EBX + 0x110]
-//         004f82a3     JGE        LAB_004f82c6
-//         004f82a5     MOV        this,dword ptr [ESI]
-//         004f82a7     MOV        EDX,dword ptr [EBX + 0x104]
-//         004f82ad     MOV        EDX,dword ptr [EDX + EAX*0x4]
-//         004f82b0     MOV        EBP,dword ptr [this->_padding_ + EDI*0x4]
-//         004f82b3     CMP        EDX,EBP
-//         004f82b5     JZ         LAB_004f82f0
-//         004f82b7     MOV        this,dword ptr [EBX + 0x108]
-//         004f82bd     MOV        EBP,dword ptr [ESP + bestUnitID]
-//         004f82c1     INC        EAX
-//         004f82c2     CMP        EAX,this
-//         004f82c4     JL         LAB_004f829d
-//                               LAB_004f82c6                                                 XREF[2]:     004f829b(j), 004f82a3(j)
-//                              taitacmd.cpp:7199 (42)
-//         004f82c6     MOV        this,EBP
-//         004f82c8     CALL       RGE_Static_Object::unitAI                        UnitAIModule * unitAI(RGE_Static_Object * this)
-//         004f82cd     MOV        this,EAX
-//         004f82cf     CALL       UnitAIModule::currentAction                      int currentAction(UnitAIModule * this)
-//         004f82d4     CMP        EAX,-0x1
-//         004f82d7     JNZ        LAB_004f82f0
-//         004f82d9     MOV        this,EBP
-//         004f82db     CALL       RGE_Static_Object::unitAI                        UnitAIModule * unitAI(RGE_Static_Object * this)
-//         004f82e0     MOV        this,EAX
-//         004f82e2     CALL       UnitAIModule::currentOrder                       int currentOrder(UnitAIModule * this)
-//         004f82e7     CMP        EAX,-0x1
-//         004f82ea     JZ         LAB_004f8563
-//                               LAB_004f82f0                                                 XREF[6]:     004f8205(j), 004f8245(j),
-//                                                                                                         004f8254(j), 004f827c(j),
-//                                                                                                         004f82b5(j), 004f82d7(j)
-//                              taitacmd.cpp:7182 (15)
-//         004f82f0     MOV        EAX,dword ptr [EBX + 0xf8]
-//         004f82f6     INC        EDI
-//         004f82f7     CMP        EDI,EAX
-//         004f82f9     JL         LAB_004f81cf
-//                               LAB_004f82ff                                                 XREF[1]:     004f81c3(j)
-//                              taitacmd.cpp:7203 (20)
-//         004f82ff     MOV        EAX,dword ptr [EBX + 0xf8]
-//         004f8305     XOR        EBP,EBP
-//         004f8307     TEST       EAX,EAX
-//         004f8309     MOV        dword ptr [ESP + bestUnitID],EBP
-//         004f830d     JLE        LAB_004f8555
-//                              taitacmd.cpp:7208 (70)
-//         004f8313     LEA        ESI,[EBX + 0xf4]
-//                               LAB_004f8319                                                 XREF[1]:     004f854f(j)
-//         004f8319     MOV        EAX,dword ptr [ESI + 0xc]
-//         004f831c     DEC        EAX
-//         004f831d     CMP        EBP,EAX
-//         004f831f     JLE        LAB_004f832c
-//         004f8321     LEA        this,[EBP + 0x1]
-//         004f8324     PUSH       this
-//         004f8325     MOV        this,ESI
-//         004f8327     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
-//                               LAB_004f832c                                                 XREF[1]:     004f831f(j)
-//         004f832c     MOV        this,dword ptr [EBX + 0xd5c]
-//         004f8332     XOR        EAX,EAX
-//         004f8334     TEST       this,this
-//         004f8336     JLE        LAB_004f8359
-//                               LAB_004f8338                                                 XREF[1]:     004f8357(j)
-//         004f8338     CMP        EAX,dword ptr [EBX + 0xd64]
-//         004f833e     JGE        LAB_004f8359
-//         004f8340     MOV        EDI,dword ptr [EBX + 0xd58]
-//         004f8346     MOV        EDX,dword ptr [ESI]
-//         004f8348     MOV        EDI,dword ptr [EDI + EAX*0x4]
-//         004f834b     CMP        EDI,dword ptr [EDX + EBP*0x4]
-//         004f834e     JZ         LAB_004f8542
-//         004f8354     INC        EAX
-//         004f8355     CMP        EAX,this
-//         004f8357     JL         LAB_004f8338
-//                               LAB_004f8359                                                 XREF[2]:     004f8336(j), 004f833e(j)
-//                              taitacmd.cpp:7212 (111)
-//         004f8359     MOV        EAX,dword ptr [ESI + 0xc]
-//         004f835c     DEC        EAX
-//         004f835d     CMP        EBP,EAX
-//         004f835f     JLE        LAB_004f83ac
-//         004f8361     LEA        this,[EBP*0x4 + 0x4]
-//         004f8368     PUSH       this
-//         004f8369     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004f836e     MOV        EDI,EAX
-//         004f8370     ADD        ESP,0x4
-//         004f8373     TEST       EDI,EDI
-//         004f8375     JZ         LAB_004f83ac
-//         004f8377     MOV        this,dword ptr [ESI + 0xc]
-//         004f837a     XOR        EAX,EAX
-//         004f837c     TEST       this,this
-//         004f837e     JLE        LAB_004f8399
-//                               LAB_004f8380                                                 XREF[1]:     004f8397(j)
-//         004f8380     LEA        this,[EBP + 0x1]
-//         004f8383     CMP        EAX,this
-//         004f8385     JGE        LAB_004f8399
-//         004f8387     MOV        EDX,dword ptr [ESI]
-//         004f8389     INC        EAX
-//         004f838a     MOV        this,dword ptr [EDX + EAX*0x4 + -0x4]
-//         004f838e     MOV        dword ptr [EDI + EAX*0x4 + -0x4],this
-//         004f8392     MOV        this,dword ptr [ESI + 0xc]
-//         004f8395     CMP        EAX,this
-//         004f8397     JL         LAB_004f8380
-//                               LAB_004f8399                                                 XREF[2]:     004f837e(j), 004f8385(j)
-//         004f8399     MOV        EDX,dword ptr [ESI]
-//         004f839b     PUSH       EDX
-//         004f839c     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         004f83a1     LEA        EAX,[EBP + 0x1]
-//         004f83a4     ADD        ESP,0x4
-//         004f83a7     MOV        dword ptr [ESI],EDI
-//         004f83a9     MOV        dword ptr [ESI + 0xc],EAX
-//                               LAB_004f83ac                                                 XREF[2]:     004f835f(j), 004f8375(j)
-//         004f83ac     MOV        EAX,dword ptr [ESI]
-//         004f83ae     MOV        EDX,dword ptr [EBX + 0xf0]
-//         004f83b4     MOV        this,dword ptr [EAX + EBP*0x4]
-//         004f83b7     MOV        EAX,dword ptr [EDX + 0xf0]
-//         004f83bd     PUSH       this
-//         004f83be     MOV        this,dword ptr [EAX + 0x3c]
-//         004f83c1     CALL       RGE_Game_World::object                           RGE_Static_Object * object(RGE_Game_World * t
-//         004f83c6     MOV        EDI,EAX
-//                              taitacmd.cpp:7213 (27)
-//         004f83c8     TEST       EDI,EDI
-//         004f83ca     MOV        dword ptr [ESP + local_4],EDI
-//         004f83ce     JZ         LAB_004f8542
-//         004f83d4     MOV        this,EDI
-//         004f83d6     CALL       RGE_Static_Object::unitAI                        UnitAIModule * unitAI(RGE_Static_Object * this)
-//         004f83db     TEST       EAX,EAX
-//         004f83dd     JZ         LAB_004f8542
-//                              taitacmd.cpp:7224 (132)
-//         004f83e3     MOV        EAX,dword ptr [ESP + param_1]
-//         004f83e7     TEST       EAX,EAX
-//         004f83e9     JZ         LAB_004f84b6
-//         004f83ef     CMP        EAX,0x3
-//         004f83f2     JZ         LAB_004f8467
-//         004f83f4     MOV        this,dword ptr [ESI + 0xc]
-//         004f83f7     DEC        this
-//         004f83f8     CMP        EBP,this
-//         004f83fa     JLE        LAB_004f844e
-//         004f83fc     MOV        EDX,dword ptr [ESP + bestUnitID]
-//         004f8400     INC        EBP
-//         004f8401     LEA        EAX,[EDX*0x4 + 0x4]
-//         004f8408     PUSH       EAX
-//         004f8409     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004f840e     MOV        EDI,EAX
-//         004f8410     ADD        ESP,0x4
-//         004f8413     TEST       EDI,EDI
-//         004f8415     JZ         LAB_004f8446
-//         004f8417     MOV        this,dword ptr [ESI + 0xc]
-//         004f841a     XOR        EAX,EAX
-//         004f841c     TEST       this,this
-//         004f841e     JLE        LAB_004f8436
-//                               LAB_004f8420                                                 XREF[1]:     004f8434(j)
-//         004f8420     CMP        EAX,EBP
-//         004f8422     JGE        LAB_004f8436
-//         004f8424     MOV        this,dword ptr [ESI]
-//         004f8426     INC        EAX
-//         004f8427     MOV        EDX,dword ptr [this->_padding_ + EAX*0x4 + -0x4]
-//         004f842b     MOV        dword ptr [EDI + EAX*0x4 + -0x4],EDX
-//         004f842f     MOV        this,dword ptr [ESI + 0xc]
-//         004f8432     CMP        EAX,this
-//         004f8434     JL         LAB_004f8420
-//                               LAB_004f8436                                                 XREF[2]:     004f841e(j), 004f8422(j)
-//         004f8436     MOV        EAX,dword ptr [ESI]
-//         004f8438     PUSH       EAX
-//         004f8439     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         004f843e     ADD        ESP,0x4
-//         004f8441     MOV        dword ptr [ESI],EDI
-//         004f8443     MOV        dword ptr [ESI + 0xc],EBP
-//                               LAB_004f8446                                                 XREF[1]:     004f8415(j)
-//         004f8446     MOV        EDI,dword ptr [ESP + local_4]
-//         004f844a     MOV        EBP,dword ptr [ESP + bestUnitID]
-//                               LAB_004f844e                                                 XREF[1]:     004f83fa(j)
-//         004f844e     MOV        this,dword ptr [ESI]
-//         004f8450     MOV        EDX,dword ptr [this->_padding_ + EBP*0x4]
-//         004f8453     MOV        this,EBX
-//         004f8455     PUSH       EDX
-//         004f8456     CALL       TribeTacticalAIModule::isGatherer                int isGatherer(TribeTacticalAIModule * this,
-//         004f845b     TEST       EAX,EAX
-//         004f845d     JNZ        LAB_004f8542
-//         004f8463     MOV        EAX,dword ptr [ESP + param_1]
-//                               LAB_004f8467                                                 XREF[1]:     004f83f2(j)
-//                              taitacmd.cpp:7230 (79)
-//         004f8467     TEST       EAX,EAX
-//         004f8469     JZ         LAB_004f84b6
-//         004f846b     CMP        EAX,0x1
-//         004f846e     JZ         LAB_004f84b6
-//         004f8470     MOV        EAX,dword ptr [ESI + 0xc]
-//         004f8473     DEC        EAX
-//         004f8474     CMP        EBP,EAX
-//         004f8476     JLE        LAB_004f8483
-//         004f8478     LEA        this,[EBP + 0x1]
-//         004f847b     PUSH       this
-//         004f847c     MOV        this,ESI
-//         004f847e     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
-//                               LAB_004f8483                                                 XREF[1]:     004f8476(j)
-//         004f8483     MOV        this,dword ptr [EBX + 0x108]
-//         004f8489     XOR        EAX,EAX
-//         004f848b     TEST       this,this
-//         004f848d     JLE        LAB_004f84b6
-//                               LAB_004f848f                                                 XREF[1]:     004f84b4(j)
-//         004f848f     CMP        EAX,dword ptr [EBX + 0x110]
-//         004f8495     JGE        LAB_004f84b6
-//         004f8497     MOV        this,dword ptr [EBX + 0x104]
-//         004f849d     MOV        EDX,dword ptr [ESI]
-//         004f849f     MOV        this,dword ptr [this->_padding_ + EAX*0x4]
-//         004f84a2     CMP        this,dword ptr [EDX + EBP*0x4]
-//         004f84a5     JZ         LAB_004f8542
-//         004f84ab     MOV        this,dword ptr [EBX + 0x108]
-//         004f84b1     INC        EAX
-//         004f84b2     CMP        EAX,this
-//         004f84b4     JL         LAB_004f848f
-//                               LAB_004f84b6                                                 XREF[5]:     004f83e9(j), 004f8469(j),
-//                                                                                                         004f846e(j), 004f848d(j),
-//                                                                                                         004f8495(j)
-//                              taitacmd.cpp:7239 (38)
-//         004f84b6     MOV        this,EDI
-//         004f84b8     CALL       RGE_Static_Object::unitAI                        UnitAIModule * unitAI(RGE_Static_Object * this)
-//         004f84bd     MOV        this,EAX
-//         004f84bf     CALL       UnitAIModule::currentAction                      int currentAction(UnitAIModule * this)
-//         004f84c4     CMP        EAX,-0x1
-//         004f84c7     JNZ        LAB_004f8542
-//         004f84c9     MOV        this,EDI
-//         004f84cb     CALL       RGE_Static_Object::unitAI                        UnitAIModule * unitAI(RGE_Static_Object * this)
-//         004f84d0     MOV        this,EAX
-//         004f84d2     CALL       UnitAIModule::currentOrder                       int currentOrder(UnitAIModule * this)
-//         004f84d7     CMP        EAX,-0x1
-//         004f84da     JNZ        LAB_004f8542
-//                              taitacmd.cpp:7244 (28)
-//         004f84dc     MOV        EAX,dword ptr [ESP + param_2]
-//         004f84e0     MOV        EDX,dword ptr [EDI + 0x40]
-//         004f84e3     PUSH       EDX
-//         004f84e4     PUSH       this
-//         004f84e5     FILD       dword ptr [EAX + 0x4]
-//         004f84e8     FSTP       float ptr [ESP]=>local_28
-//         004f84eb     FILD       dword ptr [EAX]
-//         004f84ed     PUSH       this
-//         004f84ee     MOV        this,EDI
-//         004f84f0     FSTP       float ptr [ESP]=>local_2c
-//         004f84f3     CALL       RGE_Static_Object::distance_to_position          float distance_to_position(RGE_Static_Object
-//                              taitacmd.cpp:7246 (7)
-//         004f84f8     CMP        dword ptr [ESP + unitObj@fffffff8],-0x1
-//         004f84fd     JNZ        LAB_004f850c
-//                              taitacmd.cpp:7247 (3)
-//         004f84ff     MOV        EAX,dword ptr [EDI + 0x4]
-//                              taitacmd.cpp:7248 (8)
-//         004f8502     FSTP       float ptr [ESP + unitObj]
-//         004f8506     MOV        dword ptr [ESP + unitObj@fffffff8],EAX
-//                              taitacmd.cpp:7252 (2)
-//         004f850a     JMP        LAB_004f8542
-//                               LAB_004f850c                                                 XREF[1]:     004f84fd(j)
-//                              taitacmd.cpp:7253 (39)
-//         004f850c     MOV        this,dword ptr [ESP + param_3]
-//         004f8510     CMP        this,0x1
-//         004f8513     JNZ        LAB_004f8522
-//         004f8515     FLD        float ptr [ESP + unitObj]
-//         004f8519     FCOMP
-//         004f851b     FNSTSW     AX
-//         004f851d     TEST       AH,0x41
-//         004f8520     JZ         LAB_004f8533
-//                               LAB_004f8522                                                 XREF[1]:     004f8513(j)
-//         004f8522     TEST       this,this
-//         004f8524     JNZ        LAB_004f8540
-//         004f8526     FLD        float ptr [ESP + unitObj]
-//         004f852a     FCOMP
-//         004f852c     FNSTSW     AX
-//         004f852e     TEST       AH,0x1
-//         004f8531     JZ         LAB_004f8540
-//                               LAB_004f8533                                                 XREF[1]:     004f8520(j)
-//                              taitacmd.cpp:7254 (3)
-//         004f8533     MOV        this,dword ptr [EDI + 0x4]
-//                              taitacmd.cpp:7255 (10)
-//         004f8536     FSTP       float ptr [ESP + unitObj]
-//         004f853a     MOV        dword ptr [ESP + unitObj@fffffff8],this
-//         004f853e     JMP        LAB_004f8542
-//                               LAB_004f8540                                                 XREF[2]:     004f8524(j), 004f8531(j)
-//                              taitacmd.cpp:7253 (2)
-//         004f8540     FSTP       ST0
-//                               LAB_004f8542                                                 XREF[9]:     004f834e(j), 004f83ce(j),
-//                                                                                                         004f83dd(j), 004f845d(j),
-//                                                                                                         004f84a5(j), 004f84c7(j),
-//                                                                                                         004f84da(j), 004f850a(j),
-//                                                                                                         004f853e(j)
-//                              taitacmd.cpp:7203 (19)
-//         004f8542     MOV        EAX,dword ptr [EBX + 0xf8]
-//         004f8548     INC        EBP
-//         004f8549     CMP        EBP,EAX
-//         004f854b     MOV        dword ptr [ESP + bestUnitID],EBP
-//         004f854f     JL         LAB_004f8319
-//                               LAB_004f8555                                                 XREF[1]:     004f830d(j)
-//                              taitacmd.cpp:7265 (4)
-//         004f8555     MOV        EAX,dword ptr [ESP + unitObj@fffffff8]
-//                              taitacmd.cpp:7266 (10)
-//         004f8559     POP        EDI
-//         004f855a     POP        ESI
-//         004f855b     POP        EBP
-//         004f855c     POP        EBX
-//         004f855d     ADD        ESP,0x10
-//         004f8560     RET        0xc
-//                               LAB_004f8563                                                 XREF[1]:     004f82ea(j)
-//                              taitacmd.cpp:7200 (3)
-//         004f8563     MOV        EAX,dword ptr [EBP + 0x4]
-//                              taitacmd.cpp:7266 (10)
-//         004f8566     POP        EDI
-//         004f8567     POP        ESI
-//         004f8568     POP        EBP
-//         004f8569     POP        EBX
-//         004f856a     ADD        ESP,0x10
-//         004f856d     RET        0xc
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004f8072(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     004f8059(W), 004f8136(R)
+//              RGE_Static_Obj    Stack[-0x8]:4  unitObj@fffffff8          XREF[5]:     004f7f11(W), 004f7f8d(R), 004f7fd9(W), 004f8108(R),
+//                                                                                     004f8169(W)
+//              RGE_Static_Obj    Stack[-0xc]:4  unitObj
+//                               ?idleCivilian@TribeTacticalAIModule@@QAEHH@Z                 XREF[2]:     taskCivilians:004f16a7(c),
+//                               TribeTacticalAIModule::idleCivilian                                       taskCivilians:004f1957(c)
+//                              taitacmd.cpp:7075 (9)
+//         004f7e80     SUB        ESP,0x8
+//         004f7e83     PUSH       EBX
+//         004f7e84     PUSH       EBP
+//         004f7e85     PUSH       ESI
+//         004f7e86     PUSH       EDI
+//         004f7e87     MOV        EDI,this
+//                              taitacmd.cpp:7089 (16)
+//         004f7e89     XOR        EBX,EBX
+//         004f7e8b     MOV        EAX,dword ptr [EDI + 0xf8]
+//         004f7e91     TEST       EAX,EAX
+//         004f7e93     JLE        LAB_004f7fcf
+//                              taitacmd.cpp:7091 (71)
+//         004f7e99     LEA        ESI,[EDI + 0xf4]
+//                               LAB_004f7e9f                                                 XREF[1]:     004f7fc9(j)
+//         004f7e9f     MOV        EAX,dword ptr [ESI + 0xc]
+//         004f7ea2     DEC        EAX
+//         004f7ea3     CMP        EBX,EAX
+//         004f7ea5     JLE        LAB_004f7eb2
+//         004f7ea7     LEA        this,[EBX + 0x1]
+//         004f7eaa     PUSH       this
+//         004f7eab     MOV        this,ESI
+//         004f7ead     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//                               LAB_004f7eb2                                                 XREF[1]:     004f7ea5(j)
+//         004f7eb2     MOV        this,dword ptr [EDI + 0xd5c]
+//         004f7eb8     XOR        EAX,EAX
+//         004f7eba     TEST       this,this
+//         004f7ebc     JLE        LAB_004f7ee0
+//                               LAB_004f7ebe                                                 XREF[1]:     004f7ede(j)
+//         004f7ebe     CMP        EAX,dword ptr [EDI + 0xd64]
+//         004f7ec4     JGE        LAB_004f7ee0
+//         004f7ec6     MOV        EBP,dword ptr [EDI + 0xd58]
+//         004f7ecc     MOV        EDX,dword ptr [ESI]
+//         004f7ece     MOV        EBP,dword ptr [EBP + EAX*0x4]
+//         004f7ed2     CMP        EBP,dword ptr [EDX + EBX*0x4]
+//         004f7ed5     JZ         LAB_004f7fc0
+//         004f7edb     INC        EAX
+//         004f7edc     CMP        EAX,this
+//         004f7ede     JL         LAB_004f7ebe
+//                               LAB_004f7ee0                                                 XREF[2]:     004f7ebc(j), 004f7ec4(j)
+//                              taitacmd.cpp:7095 (47)
+//         004f7ee0     MOV        EAX,dword ptr [ESI + 0xc]
+//         004f7ee3     DEC        EAX
+//         004f7ee4     CMP        EBX,EAX
+//         004f7ee6     JLE        LAB_004f7ef3
+//         004f7ee8     LEA        this,[EBX + 0x1]
+//         004f7eeb     PUSH       this
+//         004f7eec     MOV        this,ESI
+//         004f7eee     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//                               LAB_004f7ef3                                                 XREF[1]:     004f7ee6(j)
+//         004f7ef3     MOV        EDX,dword ptr [ESI]
+//         004f7ef5     MOV        this,dword ptr [EDI + 0xf0]
+//         004f7efb     MOV        EAX,dword ptr [EDX + EBX*0x4]
+//         004f7efe     MOV        EDX,dword ptr [ECX + this->md]
+//         004f7f04     PUSH       EAX
+//         004f7f05     MOV        this,dword ptr [EDX + 0x3c]
+//         004f7f08     CALL       RGE_Game_World::object                           RGE_Static_Object * object(RGE_Game_World * t
+//         004f7f0d     MOV        EBP,EAX
+//                              taitacmd.cpp:7096 (27)
+//         004f7f0f     TEST       EBP,EBP
+//         004f7f11     MOV        dword ptr [ESP + unitObj@fffffff8],EBP
+//         004f7f15     JZ         LAB_004f7fc0
+//         004f7f1b     MOV        this,EBP
+//         004f7f1d     CALL       RGE_Static_Object::unitAI                        UnitAIModule * unitAI(RGE_Static_Object * this)
+//         004f7f22     TEST       EAX,EAX
+//         004f7f24     JZ         LAB_004f7fc0
+//                              taitacmd.cpp:7100 (36)
+//         004f7f2a     MOV        EAX,dword ptr [ESI + 0xc]
+//         004f7f2d     DEC        EAX
+//         004f7f2e     CMP        EBX,EAX
+//         004f7f30     JLE        LAB_004f7f3d
+//         004f7f32     LEA        this,[EBX + 0x1]
+//         004f7f35     PUSH       this
+//         004f7f36     MOV        this,ESI
+//         004f7f38     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//                               LAB_004f7f3d                                                 XREF[1]:     004f7f30(j)
+//         004f7f3d     MOV        EDX,dword ptr [ESI]
+//         004f7f3f     MOV        this,EDI
+//         004f7f41     MOV        EAX,dword ptr [EDX + EBX*0x4]
+//         004f7f44     PUSH       EAX
+//         004f7f45     CALL       TribeTacticalAIModule::isGatherer                int isGatherer(TribeTacticalAIModule * this,
+//         004f7f4a     TEST       EAX,EAX
+//         004f7f4c     JNZ        LAB_004f7fc0
+//                              taitacmd.cpp:7102 (72)
+//         004f7f4e     MOV        this,dword ptr [ESI + 0xc]
+//         004f7f51     DEC        this
+//         004f7f52     CMP        EBX,this
+//         004f7f54     JLE        LAB_004f7f61
+//         004f7f56     LEA        EDX,[EBX + 0x1]
+//         004f7f59     MOV        this,ESI
+//         004f7f5b     PUSH       EDX
+//         004f7f5c     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//                               LAB_004f7f61                                                 XREF[1]:     004f7f54(j)
+//         004f7f61     MOV        this,dword ptr [EDI + 0x108]
+//         004f7f67     XOR        EAX,EAX
+//         004f7f69     TEST       this,this
+//         004f7f6b     JLE        LAB_004f7f96
+//                               LAB_004f7f6d                                                 XREF[1]:     004f7f94(j)
+//         004f7f6d     CMP        EAX,dword ptr [EDI + 0x110]
+//         004f7f73     JGE        LAB_004f7f96
+//         004f7f75     MOV        this,dword ptr [ESI]
+//         004f7f77     MOV        EDX,dword ptr [EDI + 0x104]
+//         004f7f7d     MOV        EDX,dword ptr [EDX + EAX*0x4]
+//         004f7f80     MOV        EBP,dword ptr [this->_padding_ + EBX*0x4]
+//         004f7f83     CMP        EDX,EBP
+//         004f7f85     JZ         LAB_004f7fc0
+//         004f7f87     MOV        this,dword ptr [EDI + 0x108]
+//         004f7f8d     MOV        EBP,dword ptr [ESP + unitObj@fffffff8]
+//         004f7f91     INC        EAX
+//         004f7f92     CMP        EAX,this
+//         004f7f94     JL         LAB_004f7f6d
+//                               LAB_004f7f96                                                 XREF[2]:     004f7f6b(j), 004f7f73(j)
+//                              taitacmd.cpp:7106 (42)
+//         004f7f96     MOV        this,EBP
+//         004f7f98     CALL       RGE_Static_Object::unitAI                        UnitAIModule * unitAI(RGE_Static_Object * this)
+//         004f7f9d     MOV        this,EAX
+//         004f7f9f     CALL       UnitAIModule::currentAction                      int currentAction(UnitAIModule * this)
+//         004f7fa4     CMP        EAX,-0x1
+//         004f7fa7     JNZ        LAB_004f7fc0
+//         004f7fa9     MOV        this,EBP
+//         004f7fab     CALL       RGE_Static_Object::unitAI                        UnitAIModule * unitAI(RGE_Static_Object * this)
+//         004f7fb0     MOV        this,EAX
+//         004f7fb2     CALL       UnitAIModule::currentOrder                       int currentOrder(UnitAIModule * this)
+//         004f7fb7     CMP        EAX,-0x1
+//         004f7fba     JZ         LAB_004f8180
+//                               LAB_004f7fc0                                                 XREF[6]:     004f7ed5(j), 004f7f15(j),
+//                                                                                                         004f7f24(j), 004f7f4c(j),
+//                                                                                                         004f7f85(j), 004f7fa7(j)
+//                              taitacmd.cpp:7089 (15)
+//         004f7fc0     MOV        EAX,dword ptr [EDI + 0xf8]
+//         004f7fc6     INC        EBX
+//         004f7fc7     CMP        EBX,EAX
+//         004f7fc9     JL         LAB_004f7e9f
+//                               LAB_004f7fcf                                                 XREF[1]:     004f7e93(j)
+//                              taitacmd.cpp:7110 (20)
+//         004f7fcf     MOV        EAX,dword ptr [EDI + 0xf8]
+//         004f7fd5     XOR        EBX,EBX
+//         004f7fd7     TEST       EAX,EAX
+//         004f7fd9     MOV        dword ptr [ESP + unitObj@fffffff8],EBX
+//         004f7fdd     JLE        LAB_004f818d
+//                              taitacmd.cpp:7115 (71)
+//         004f7fe3     LEA        ESI,[EDI + 0xf4]
+//                               LAB_004f7fe9                                                 XREF[1]:     004f816d(j)
+//         004f7fe9     MOV        EAX,dword ptr [ESI + 0xc]
+//         004f7fec     DEC        EAX
+//         004f7fed     CMP        EBX,EAX
+//         004f7fef     JLE        LAB_004f7ffc
+//         004f7ff1     LEA        this,[EBX + 0x1]
+//         004f7ff4     PUSH       this
+//         004f7ff5     MOV        this,ESI
+//         004f7ff7     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//                               LAB_004f7ffc                                                 XREF[1]:     004f7fef(j)
+//         004f7ffc     MOV        this,dword ptr [EDI + 0xd5c]
+//         004f8002     XOR        EAX,EAX
+//         004f8004     TEST       this,this
+//         004f8006     JLE        LAB_004f802a
+//                               LAB_004f8008                                                 XREF[1]:     004f8028(j)
+//         004f8008     CMP        EAX,dword ptr [EDI + 0xd64]
+//         004f800e     JGE        LAB_004f802a
+//         004f8010     MOV        EBP,dword ptr [EDI + 0xd58]
+//         004f8016     MOV        EDX,dword ptr [ESI]
+//         004f8018     MOV        EBP,dword ptr [EBP + EAX*0x4]
+//         004f801c     CMP        EBP,dword ptr [EDX + EBX*0x4]
+//         004f801f     JZ         LAB_004f8160
+//         004f8025     INC        EAX
+//         004f8026     CMP        EAX,this
+//         004f8028     JL         LAB_004f8008
+//                               LAB_004f802a                                                 XREF[2]:     004f8006(j), 004f800e(j)
+//                              taitacmd.cpp:7119 (45)
+//         004f802a     MOV        EAX,dword ptr [ESI + 0xc]
+//         004f802d     DEC        EAX
+//         004f802e     CMP        EBX,EAX
+//         004f8030     JLE        LAB_004f803d
+//         004f8032     LEA        this,[EBX + 0x1]
+//         004f8035     PUSH       this
+//         004f8036     MOV        this,ESI
+//         004f8038     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//                               LAB_004f803d                                                 XREF[1]:     004f8030(j)
+//         004f803d     MOV        EDX,dword ptr [ESI]
+//         004f803f     MOV        this,dword ptr [EDI + 0xf0]
+//         004f8045     MOV        EAX,dword ptr [EDX + EBX*0x4]
+//         004f8048     MOV        EDX,dword ptr [ECX + this->md]
+//         004f804e     PUSH       EAX
+//         004f804f     MOV        this,dword ptr [EDX + 0x3c]
+//         004f8052     CALL       RGE_Game_World::object                           RGE_Static_Object * object(RGE_Game_World * t
+//                              taitacmd.cpp:7120 (27)
+//         004f8057     TEST       EAX,EAX
+//         004f8059     MOV        dword ptr [ESP + local_4],EAX
+//         004f805d     JZ         LAB_004f8160
+//         004f8063     MOV        this,EAX
+//         004f8065     CALL       RGE_Static_Object::unitAI                        UnitAIModule * unitAI(RGE_Static_Object * this)
+//         004f806a     TEST       EAX,EAX
+//         004f806c     JZ         LAB_004f8160
+//                              taitacmd.cpp:7131 (57)
+//         004f8072     MOV        EBP,dword ptr [ESP + param_1]
+//         004f8076     TEST       EBP,EBP
+//         004f8078     JZ         LAB_004f8136
+//         004f807e     CMP        EBP,0x3
+//         004f8081     JZ         LAB_004f80ab
+//         004f8083     MOV        EAX,dword ptr [ESI + 0xc]
+//         004f8086     DEC        EAX
+//         004f8087     CMP        EBX,EAX
+//         004f8089     JLE        LAB_004f8096
+//         004f808b     LEA        this,[EBX + 0x1]
+//         004f808e     PUSH       this
+//         004f808f     MOV        this,ESI
+//         004f8091     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
+//                               LAB_004f8096                                                 XREF[1]:     004f8089(j)
+//         004f8096     MOV        EDX,dword ptr [ESI]
+//         004f8098     MOV        this,EDI
+//         004f809a     MOV        EAX,dword ptr [EDX + EBX*0x4]
+//         004f809d     PUSH       EAX
+//         004f809e     CALL       TribeTacticalAIModule::isGatherer                int isGatherer(TribeTacticalAIModule * this,
+//         004f80a3     TEST       EAX,EAX
+//         004f80a5     JNZ        LAB_004f8160
+//                               LAB_004f80ab                                                 XREF[1]:     004f8081(j)
+//                              taitacmd.cpp:7137 (139)
+//         004f80ab     TEST       EBP,EBP
+//         004f80ad     JZ         LAB_004f8136
+//         004f80b3     CMP        EBP,0x1
+//         004f80b6     JZ         LAB_004f8136
+//         004f80b8     MOV        this,dword ptr [ESI + 0xc]
+//         004f80bb     DEC        this
+//         004f80bc     CMP        EBX,this
+//         004f80be     JLE        LAB_004f810c
+//         004f80c0     LEA        EDX,[EBX*0x4 + 0x4]
+//         004f80c7     LEA        EBP,[EBX + 0x1]
+//         004f80ca     PUSH       EDX
+//         004f80cb     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004f80d0     MOV        EBX,EAX
+//         004f80d2     ADD        ESP,0x4
+//         004f80d5     TEST       EBX,EBX
+//         004f80d7     JZ         LAB_004f8108
+//         004f80d9     MOV        this,dword ptr [ESI + 0xc]
+//         004f80dc     XOR        EAX,EAX
+//         004f80de     TEST       this,this
+//         004f80e0     JLE        LAB_004f80f8
+//                               LAB_004f80e2                                                 XREF[1]:     004f80f6(j)
+//         004f80e2     CMP        EAX,EBP
+//         004f80e4     JGE        LAB_004f80f8
+//         004f80e6     MOV        this,dword ptr [ESI]
+//         004f80e8     INC        EAX
+//         004f80e9     MOV        EDX,dword ptr [this->_padding_ + EAX*0x4 + -0x4]
+//         004f80ed     MOV        dword ptr [EBX + EAX*0x4 + -0x4],EDX
+//         004f80f1     MOV        this,dword ptr [ESI + 0xc]
+//         004f80f4     CMP        EAX,this
+//         004f80f6     JL         LAB_004f80e2
+//                               LAB_004f80f8                                                 XREF[2]:     004f80e0(j), 004f80e4(j)
+//         004f80f8     MOV        EAX,dword ptr [ESI]
+//         004f80fa     PUSH       EAX
+//         004f80fb     CALL       operator_delete                                  void operator_delete(void * param_1)
+//         004f8100     ADD        ESP,0x4
+//         004f8103     MOV        dword ptr [ESI],EBX
+//         004f8105     MOV        dword ptr [ESI + 0xc],EBP
+//                               LAB_004f8108                                                 XREF[1]:     004f80d7(j)
+//         004f8108     MOV        EBX,dword ptr [ESP + unitObj@fffffff8]
+//                               LAB_004f810c                                                 XREF[1]:     004f80be(j)
+//         004f810c     MOV        this,dword ptr [EDI + 0x108]
+//         004f8112     XOR        EAX,EAX
+//         004f8114     TEST       this,this
+//         004f8116     JLE        LAB_004f8136
+//                               LAB_004f8118                                                 XREF[1]:     004f8134(j)
+//         004f8118     CMP        EAX,dword ptr [EDI + 0x110]
+//         004f811e     JGE        LAB_004f8136
+//         004f8120     MOV        EBP,dword ptr [EDI + 0x104]
+//         004f8126     MOV        EDX,dword ptr [ESI]
+//         004f8128     MOV        EBP,dword ptr [EBP + EAX*0x4]
+//         004f812c     CMP        EBP,dword ptr [EDX + EBX*0x4]
+//         004f812f     JZ         LAB_004f8160
+//         004f8131     INC        EAX
+//         004f8132     CMP        EAX,this
+//         004f8134     JL         LAB_004f8118
+//                               LAB_004f8136                                                 XREF[5]:     004f8078(j), 004f80ad(j),
+//                                                                                                         004f80b6(j), 004f8116(j),
+//                                                                                                         004f811e(j)
+//                              taitacmd.cpp:7146 (42)
+//         004f8136     MOV        EBP,dword ptr [ESP + local_4]
+//         004f813a     MOV        this,EBP
+//         004f813c     CALL       RGE_Static_Object::unitAI                        UnitAIModule * unitAI(RGE_Static_Object * this)
+//         004f8141     MOV        this,EAX
+//         004f8143     CALL       UnitAIModule::currentAction                      int currentAction(UnitAIModule * this)
+//         004f8148     CMP        EAX,-0x1
+//         004f814b     JNZ        LAB_004f8160
+//         004f814d     MOV        this,EBP
+//         004f814f     CALL       RGE_Static_Object::unitAI                        UnitAIModule * unitAI(RGE_Static_Object * this)
+//         004f8154     MOV        this,EAX
+//         004f8156     CALL       UnitAIModule::currentOrder                       int currentOrder(UnitAIModule * this)
+//         004f815b     CMP        EAX,-0x1
+//         004f815e     JZ         LAB_004f8180
+//                               LAB_004f8160                                                 XREF[6]:     004f801f(j), 004f805d(j),
+//                                                                                                         004f806c(j), 004f80a5(j),
+//                                                                                                         004f812f(j), 004f814b(j)
+//                              taitacmd.cpp:7110 (19)
+//         004f8160     MOV        EAX,dword ptr [EDI + 0xf8]
+//         004f8166     INC        EBX
+//         004f8167     CMP        EBX,EAX
+//         004f8169     MOV        dword ptr [ESP + unitObj@fffffff8],EBX
+//         004f816d     JL         LAB_004f7fe9
+//                              taitacmd.cpp:7159 (3)
+//         004f8173     OR         EAX,0xffffffff
+//                              taitacmd.cpp:7160 (10)
+//         004f8176     POP        EDI
+//         004f8177     POP        ESI
+//         004f8178     POP        EBP
+//         004f8179     POP        EBX
+//         004f817a     ADD        ESP,0x8
+//         004f817d     RET        0x4
+//                               LAB_004f8180                                                 XREF[2]:     004f7fba(j), 004f815e(j)
+//                              taitacmd.cpp:7150 (3)
+//         004f8180     MOV        EAX,dword ptr [EBP + 0x4]
+//                              taitacmd.cpp:7160 (23)
+//         004f8183     POP        EDI
+//         004f8184     POP        ESI
+//         004f8185     POP        EBP
+//         004f8186     POP        EBX
+//         004f8187     ADD        ESP,0x8
+//         004f818a     RET        0x4
+//                               LAB_004f818d                                                 XREF[1]:     004f7fdd(j)
+//         004f818d     POP        EDI
+//         004f818e     POP        ESI
+//         004f818f     POP        EBP
+//         004f8190     OR         EAX,0xffffffff
+//         004f8193     POP        EBX
+//         004f8194     ADD        ESP,0x8
+//         004f8197     RET        0x4
+//         004f819a     ??         90h
+//         004f819b     NOP
+//         004f819c     NOP
+//         004f819d     NOP
+//         004f819e     NOP
+//         004f819f     NOP
     return 0;
 }
 
@@ -25097,7 +23222,7 @@ int TribeTacticalAIModule::idleCivilian(int param_1, XYPoint* param_2, int param
 //         004f81d7     LEA        this,[EDI + 0x1]
 //         004f81da     PUSH       this
 //         004f81db     MOV        this,ESI
-//         004f81dd     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
+//         004f81dd     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
 //                               LAB_004f81e2                                                 XREF[1]:     004f81d5(j)
 //         004f81e2     MOV        this,dword ptr [EBX + 0xd5c]
 //         004f81e8     XOR        EAX,EAX
@@ -25123,7 +23248,7 @@ int TribeTacticalAIModule::idleCivilian(int param_1, XYPoint* param_2, int param
 //         004f8218     LEA        this,[EDI + 0x1]
 //         004f821b     PUSH       this
 //         004f821c     MOV        this,ESI
-//         004f821e     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
+//         004f821e     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
 //                               LAB_004f8223                                                 XREF[1]:     004f8216(j)
 //         004f8223     MOV        EDX,dword ptr [ESI]
 //         004f8225     MOV        this,dword ptr [EBX + 0xf0]
@@ -25149,7 +23274,7 @@ int TribeTacticalAIModule::idleCivilian(int param_1, XYPoint* param_2, int param
 //         004f8262     LEA        this,[EDI + 0x1]
 //         004f8265     PUSH       this
 //         004f8266     MOV        this,ESI
-//         004f8268     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
+//         004f8268     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
 //                               LAB_004f826d                                                 XREF[1]:     004f8260(j)
 //         004f826d     MOV        EDX,dword ptr [ESI]
 //         004f826f     MOV        this,EBX
@@ -25166,7 +23291,7 @@ int TribeTacticalAIModule::idleCivilian(int param_1, XYPoint* param_2, int param
 //         004f8286     LEA        EDX,[EDI + 0x1]
 //         004f8289     MOV        this,ESI
 //         004f828b     PUSH       EDX
-//         004f828c     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
+//         004f828c     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
 //                               LAB_004f8291                                                 XREF[1]:     004f8284(j)
 //         004f8291     MOV        this,dword ptr [EBX + 0x108]
 //         004f8297     XOR        EAX,EAX
@@ -25225,7 +23350,7 @@ int TribeTacticalAIModule::idleCivilian(int param_1, XYPoint* param_2, int param
 //         004f8321     LEA        this,[EBP + 0x1]
 //         004f8324     PUSH       this
 //         004f8325     MOV        this,ESI
-//         004f8327     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
+//         004f8327     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
 //                               LAB_004f832c                                                 XREF[1]:     004f831f(j)
 //         004f832c     MOV        this,dword ptr [EBX + 0xd5c]
 //         004f8332     XOR        EAX,EAX
@@ -25360,7 +23485,7 @@ int TribeTacticalAIModule::idleCivilian(int param_1, XYPoint* param_2, int param
 //         004f8478     LEA        this,[EBP + 0x1]
 //         004f847b     PUSH       this
 //         004f847c     MOV        this,ESI
-//         004f847e     CALL       ManagedArray_int::resize                        int resize(ManagedArray_int * this, int para
+//         004f847e     CALL       ManagedArray<int>::resize                        int resize(ManagedArray<int> * this, int para
 //                               LAB_004f8483                                                 XREF[1]:     004f8476(j)
 //         004f8483     MOV        this,dword ptr [EBX + 0x108]
 //         004f8489     XOR        EAX,EAX
@@ -27869,231 +25994,340 @@ int TribeTacticalAIModule::taskBuilder(int param_1, BuildItem* param_2, Construc
 //                              int __thiscall taskBuilder(TribeTacticalAIModule * this, int param_1
 //              int               EAX:4          <RETURN>
 //              TribeTacticalA    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     004f9e04(R)
-//              RGE_Static_Obj    Stack[0x8]:4   param_2                   XREF[1]:     004f9e30(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[5]:     004f9e22(W), 004f9e54(R), 004f9e75(R), 004f9e8e(R),
-//                                                                                     004f9eaf(R)
-//              RGE_Static_Obj    Stack[-0x8]:4  builderObj
-//              undefined4        Stack[-0x30]:4 local_30                  XREF[2]:     004f9e72(W), 004f9eac(W)
-//              undefined4        Stack[-0x34]:4 local_34                  XREF[2]:     004f9e6f(W), 004f9ea9(W)
-//              undefined4        Stack[-0x38]:4 local_38                  XREF[2]:     004f9e6d(*), 004f9ea7(*)
-//                               ?taskBuilder@TribeTacticalAIModule@@QAEHHPAVRGE_Static_Obje  XREF[1]:     doSomething:004f0608(c)
-//                               TribeTacticalAIModule::taskBuilder
-//                              taitacmd.cpp:8350 (4)
-//         004f9e00     PUSH       this
-//         004f9e01     PUSH       EBX
-//         004f9e02     PUSH       EBP
-//         004f9e03     PUSH       ESI
-//                              taitacmd.cpp:8355 (28)
-//         004f9e04     MOV        EAX,dword ptr [ESP + param_1]
-//         004f9e08     MOV        ESI,this
-//         004f9e0a     PUSH       EDI
-//         004f9e0b     PUSH       EAX
-//         004f9e0c     MOV        this,dword ptr [ESI + 0xf0]
-//         004f9e12     MOV        EDX,dword ptr [ECX + this->md]
-//         004f9e18     MOV        this,dword ptr [EDX + 0x3c]
-//         004f9e1b     CALL       RGE_Game_World::object                           RGE_Static_Object * object(RGE_Game_World * t
-//                              taitacmd.cpp:8356 (8)
-//         004f9e20     TEST       EAX,EAX
-//         004f9e22     MOV        dword ptr [ESP + local_4],EAX
-//         004f9e26     JNZ        LAB_004f9e30
-//                              taitacmd.cpp:8408 (8)
-//         004f9e28     POP        EDI
-//         004f9e29     POP        ESI
-//         004f9e2a     POP        EBP
-//         004f9e2b     POP        EBX
-//         004f9e2c     POP        this
-//         004f9e2d     RET        0x8
-//                               LAB_004f9e30                                                 XREF[1]:     004f9e26(j)
-//                              taitacmd.cpp:8364 (12)
-//         004f9e30     MOV        EDI,dword ptr [ESP + param_2]
-//         004f9e34     FLD        float ptr [EDI + 0x38]
-//         004f9e37     CALL       __ftol                                           undefined __ftol()
-//                              taitacmd.cpp:8365 (10)
-//         004f9e3c     FLD        float ptr [EDI + 0x3c]
-//         004f9e3f     MOV        EBX,EAX
-//         004f9e41     CALL       __ftol                                           undefined __ftol()
-//                              taitacmd.cpp:8366 (10)
-//         004f9e46     FLD        float ptr [EDI + 0x40]
-//         004f9e49     MOV        EBP,EAX
-//         004f9e4b     CALL       __ftol                                           undefined __ftol()
-//                              taitacmd.cpp:8367 (4)
-//         004f9e50     TEST       EDI,EDI
-//         004f9e52     JNZ        LAB_004f9e8b
-//                              taitacmd.cpp:8368 (47)
-//         004f9e54     MOV        this,dword ptr [ESP + local_4]
-//         004f9e58     PUSH       -0x1
-//         004f9e5a     PUSH       -0x1
-//         004f9e5c     PUSH       0x1
-//         004f9e5e     MOV        EDX,dword ptr [this->_padding_]
-//         004f9e60     PUSH       EDI
-//         004f9e61     PUSH       -0x1
-//         004f9e63     PUSH       0x3f800000
-//         004f9e68     SUB        ESP,0xc
-//         004f9e6b     MOV        this,ESP
-//         004f9e6d     MOV        dword ptr [this->_padding_]=>local_38,EBX
-//         004f9e6f     MOV        dword ptr [ECX + local_34],EBP
-//         004f9e72     MOV        dword ptr [ECX + local_30],EAX
-//         004f9e75     MOV        this,dword ptr [ESP + local_4]
-//         004f9e79     CALL       dword ptr [EDX + 0x198]
-//         004f9e7f     TEST       EAX,EAX
-//         004f9e81     JNZ        LAB_004f9edd
-//                              taitacmd.cpp:8408 (8)
-//         004f9e83     POP        EDI
-//         004f9e84     POP        ESI
-//         004f9e85     POP        EBP
-//         004f9e86     POP        EBX
-//         004f9e87     POP        this
-//         004f9e88     RET        0x8
-//                               LAB_004f9e8b                                                 XREF[1]:     004f9e52(j)
-//                              taitacmd.cpp:8376 (50)
-//         004f9e8b     MOV        this,dword ptr [EDI + 0x4]
-//         004f9e8e     MOV        EDX,dword ptr [ESP + local_4]
-//         004f9e92     PUSH       -0x1
-//         004f9e94     PUSH       -0x1
-//         004f9e96     PUSH       0x1
-//         004f9e98     MOV        EDX,dword ptr [EDX]
-//         004f9e9a     PUSH       0x0
-//         004f9e9c     PUSH       this
-//         004f9e9d     PUSH       0x3f800000
-//         004f9ea2     SUB        ESP,0xc
-//         004f9ea5     MOV        this,ESP
-//         004f9ea7     MOV        dword ptr [this->_padding_]=>local_38,EBX
-//         004f9ea9     MOV        dword ptr [ECX + local_34],EBP
-//         004f9eac     MOV        dword ptr [ECX + local_30],EAX
-//         004f9eaf     MOV        this,dword ptr [ESP + local_4]
-//         004f9eb3     CALL       dword ptr [EDX + 0x198]
-//         004f9eb9     TEST       EAX,EAX
-//         004f9ebb     JNZ        LAB_004f9edd
-//                              taitacmd.cpp:8378 (11)
-//         004f9ebd     MOV        EDX,dword ptr [EDI + 0x8]
-//         004f9ec0     CMP        word ptr [EDX + 0x10],0x114
-//         004f9ec6     JZ         LAB_004f9ed3
-//                              taitacmd.cpp:8382 (11)
-//         004f9ec8     MOV        EAX,dword ptr [EDI + 0x4]
-//         004f9ecb     MOV        this,ESI
-//         004f9ecd     PUSH       EAX
-//         004f9ece     CALL       TribeTacticalAIModule::deleteUnit                int deleteUnit(TribeTacticalAIModule * this,
-//                               LAB_004f9ed3                                                 XREF[1]:     004f9ec6(j)
-//                              taitacmd.cpp:8388 (2)
-//         004f9ed3     XOR        EAX,EAX
-//                              taitacmd.cpp:8408 (8)
-//         004f9ed5     POP        EDI
-//         004f9ed6     POP        ESI
-//         004f9ed7     POP        EBP
-//         004f9ed8     POP        EBX
-//         004f9ed9     POP        this
-//         004f9eda     RET        0x8
-//                               LAB_004f9edd                                                 XREF[2]:     004f9e81(j), 004f9ebb(j)
-//                              taitacmd.cpp:8392 (184)
-//         004f9edd     MOV        this,dword ptr [ESI + 0xd5c]
-//         004f9ee3     XOR        EAX,EAX
-//         004f9ee5     TEST       this,this
-//         004f9ee7     JLE        LAB_004f9f0d
-//         004f9ee9     MOV        EDX,dword ptr [ESI + 0xd64]
-//                               LAB_004f9eef                                                 XREF[1]:     004f9f0b(j)
-//         004f9eef     CMP        EAX,EDX
-//         004f9ef1     JGE        LAB_004f9f0d
-//         004f9ef3     MOV        EBX,dword ptr [ESI + 0xd58]
-//         004f9ef9     MOV        EBP,dword ptr [ESP + 0x18]
-//         004f9efd     MOV        EBX,dword ptr [EBX + EAX*0x4]
-//         004f9f00     CMP        EBX,EBP
-//         004f9f02     JZ         LAB_004f9f95
-//         004f9f08     INC        EAX
-//         004f9f09     CMP        EAX,this
-//         004f9f0b     JL         LAB_004f9eef
-//                               LAB_004f9f0d                                                 XREF[2]:     004f9ee7(j), 004f9ef1(j)
-//         004f9f0d     MOV        EDX,dword ptr [ESI + 0xd64]
-//         004f9f13     DEC        EDX
-//         004f9f14     CMP        this,EDX
-//         004f9f16     JLE        LAB_004f9f75
-//         004f9f18     LEA        EBP,[ECX + this+0x1]
-//         004f9f1b     LEA        EAX,[EBP*0x4 + 0x0]
-//         004f9f22     PUSH       EAX
-//         004f9f23     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004f9f28     MOV        EBX,EAX
-//         004f9f2a     ADD        ESP,0x4
-//         004f9f2d     TEST       EBX,EBX
-//         004f9f2f     JZ         LAB_004f9f75
-//         004f9f31     MOV        this,dword ptr [ESI + 0xd64]
-//         004f9f37     XOR        EAX,EAX
-//         004f9f39     TEST       this,this
-//         004f9f3b     JLE        LAB_004f9f5a
-//                               LAB_004f9f3d                                                 XREF[1]:     004f9f58(j)
-//         004f9f3d     CMP        EAX,EBP
-//         004f9f3f     JGE        LAB_004f9f5a
-//         004f9f41     MOV        this,dword ptr [ESI + 0xd58]
-//         004f9f47     INC        EAX
-//         004f9f48     MOV        EDX,dword ptr [this->_padding_ + EAX*0x4 + -0x4]
-//         004f9f4c     MOV        dword ptr [EBX + EAX*0x4 + -0x4],EDX
-//         004f9f50     MOV        this,dword ptr [ESI + 0xd64]
-//         004f9f56     CMP        EAX,this
-//         004f9f58     JL         LAB_004f9f3d
-//                               LAB_004f9f5a                                                 XREF[2]:     004f9f3b(j), 004f9f3f(j)
-//         004f9f5a     MOV        EAX,dword ptr [ESI + 0xd58]
-//         004f9f60     PUSH       EAX
-//         004f9f61     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         004f9f66     ADD        ESP,0x4
-//         004f9f69     MOV        dword ptr [ESI + 0xd58],EBX
-//         004f9f6f     MOV        dword ptr [ESI + 0xd64],EBP
-//                               LAB_004f9f75                                                 XREF[2]:     004f9f16(j), 004f9f2f(j)
-//         004f9f75     MOV        this,dword ptr [ESI + 0xd5c]
-//         004f9f7b     MOV        EDX,dword ptr [ESI + 0xd58]
-//         004f9f81     MOV        EAX,dword ptr [ESP + 0x18]
-//         004f9f85     MOV        dword ptr [EDX + this->_padding_*0x4],EAX
-//         004f9f88     MOV        EAX,dword ptr [ESI + 0xd5c]
-//         004f9f8e     INC        EAX
-//         004f9f8f     MOV        dword ptr [ESI + 0xd5c],EAX
-//                               LAB_004f9f95                                                 XREF[1]:     004f9f02(j)
-//                              taitacmd.cpp:8393 (16)
-//         004f9f95     MOV        this,dword ptr [ESP + 0x10]
-//         004f9f99     PUSH       this
-//         004f9f9a     MOV        this,EDI
-//         004f9f9c     CALL       RGE_Static_Object::distance_to_object            float distance_to_object(RGE_Static_Object *
-//         004f9fa1     FSTP       float ptr [ESP + 0x1c]
-//                              taitacmd.cpp:8394 (12)
-//         004f9fa5     MOV        EDX,dword ptr [ESP + 0x1c]
-//         004f9fa9     MOV        this,ESI
-//         004f9fab     PUSH       EDX
-//         004f9fac     CALL       TribeTacticalAIModule::calculatePriority         int calculatePriority(TribeTacticalAIModule *
-//                              taitacmd.cpp:8406 (59)
-//         004f9fb1     MOV        this,dword ptr [ESI + 0xf0]
-//         004f9fb7     PUSH       EAX
-//         004f9fb8     MOV        EAX,dword ptr [EDI + 0x40]
-//         004f9fbb     PUSH       offset DAT_fffffff8
-//         004f9fbd     MOV        this,dword ptr [ECX + this->md]
-//         004f9fc3     PUSH       offset DAT_fffffff4
-//         004f9fc5     PUSH       offset DAT_fffffff0
-//         004f9fca     PUSH       EAX
-//         004f9fcb     MOV        EAX,dword ptr [EDI + 0x3c]
-//         004f9fce     MOV        ESI,dword ptr [this->_padding_]
-//         004f9fd0     MOVSX      EDX,word ptr [ECX + this+0x4a]
-//         004f9fd4     PUSH       EAX
-//         004f9fd5     MOV        EAX,dword ptr [EDI + 0x38]
-//         004f9fd8     PUSH       EAX
-//         004f9fd9     MOV        EAX,dword ptr [EDI + 0x4]
-//         004f9fdc     PUSH       EDX
-//         004f9fdd     PUSH       EAX
-//         004f9fde     MOV        EAX,dword ptr [ESP + 0x3c]
-//         004f9fe2     PUSH       0x2be
-//         004f9fe7     PUSH       EAX
-//         004f9fe8     PUSH       EDX
-//         004f9fe9     CALL       dword ptr [ESI + 0x30]
-//                              taitacmd.cpp:8408 (13)
-//         004f9fec     POP        EDI
-//         004f9fed     POP        ESI
-//         004f9fee     POP        EBP
-//         004f9fef     MOV        EAX,0x1
-//         004f9ff4     POP        EBX
-//         004f9ff5     POP        this
-//         004f9ff6     RET        0x8
-//         004f9ff9     ??         90h
-//         004f9ffa     NOP
-//         004f9ffb     NOP
-//         004f9ffc     NOP
-//         004f9ffd     NOP
-//         004f9ffe     NOP
-//         004f9fff     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[4]:     004f9b0c(R), 004f9b3d(R), 004f9b83(W), 004f9b8d(R)
+//              BuildItem *       Stack[0x8]:4   param_2                   XREF[3]:     004f9ad0(R), 004f9af6(W), 004f9b17(R)
+//              ConstructionIt    Stack[0xc]:4   param_3                   XREF[2]:     004f9b00(R), 004f9b31(W)
+//              ulong             Stack[0x10]:4  param_4                   XREF[1]:     004f9b08(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     004f9b7a(W)
+//              XYPoint           Stack[-0xc]:8  position                  XREF[0,2]:   004f9b52(W), 004f9b71(*)
+//              undefined4        Stack[-0x34]:4 local_34                  XREF[1]:     004f9bf8(W)
+//              undefined4        Stack[-0x38]:4 local_38                  XREF[1]:     004f9bf5(W)
+//              undefined4        Stack[-0x3c]:4 local_3c                  XREF[1]:     004f9bf3(*)
+//                               ?taskBuilder@TribeTacticalAIModule@@QAEHHPAVBuildItem@@PAVC  XREF[2]:     doSomething:004f085d(c),
+//                               TribeTacticalAIModule::taskBuilder                                        doSomething:004f08d2(c)
+//                              taitacmd.cpp:8257 (17)
+//         004f9ad0     MOV        EAX,dword ptr [ESP + param_2]
+//         004f9ad4     SUB        ESP,0x8
+//         004f9ad7     TEST       EAX,EAX
+//         004f9ad9     PUSH       EBX
+//         004f9ada     PUSH       EBP
+//         004f9adb     PUSH       ESI
+//         004f9adc     PUSH       EDI
+//         004f9add     MOV        ESI,this
+//         004f9adf     JNZ        LAB_004f9b00
+//                              taitacmd.cpp:8265 (19)
+//         004f9ae1     MOV        this,dword ptr [ESI + 0xf0]
+//         004f9ae7     PUSH       0x0
+//         004f9ae9     ADD        this,0x104
+//         004f9aef     CALL       TribeBuildAIModule::nextBuildableItem            BuildItem * nextBuildableItem(TribeBuildAIMod
+//                              taitacmd.cpp:8266 (6)
+//         004f9af4     TEST       EAX,EAX
+//         004f9af6     MOV        dword ptr [ESP + param_2],EAX
+//                              taitacmd.cpp:8270 (6)
+//         004f9afa     JZ         LAB_004f9de5
+//                               LAB_004f9b00                                                 XREF[1]:     004f9adf(j)
+//                              taitacmd.cpp:8275 (8)
+//         004f9b00     MOV        EBP,dword ptr [ESP + param_3]
+//         004f9b04     TEST       EBP,EBP
+//         004f9b06     JNZ        LAB_004f9b3d
+//                              taitacmd.cpp:8280 (39)
+//         004f9b08     MOV        EAX,dword ptr [ESP + param_4]
+//         004f9b0c     MOV        EDX,dword ptr [ESP + param_1]
+//         004f9b10     LEA        this,[ESI + 0xe4c]
+//         004f9b16     PUSH       EAX
+//         004f9b17     MOV        EAX,dword ptr [ESP + param_2]
+//         004f9b1b     PUSH       this
+//         004f9b1c     MOV        this,dword ptr [ESI + 0xf0]
+//         004f9b22     PUSH       EDX
+//         004f9b23     PUSH       EAX
+//         004f9b24     ADD        this,0x6c4
+//         004f9b2a     CALL       TribeConstructionAIModule::placeStructure        ConstructionItem * placeStructure(TribeConstr
+//                              taitacmd.cpp:8281 (6)
+//         004f9b2f     TEST       EAX,EAX
+//         004f9b31     MOV        dword ptr [ESP + param_3],EAX
+//                              taitacmd.cpp:8285 (6)
+//         004f9b35     JZ         LAB_004f9de5
+//                              taitacmd.cpp:8281 (2)
+//         004f9b3b     MOV        EBP,EAX
+//                               LAB_004f9b3d                                                 XREF[1]:     004f9b06(j)
+//                              taitacmd.cpp:8290 (7)
+//         004f9b3d     CMP        dword ptr [ESP + param_1],-0x1
+//         004f9b42     JNZ        LAB_004f9b87
+//                              taitacmd.cpp:8295 (12)
+//         004f9b44     MOV        this,EBP
+//         004f9b46     CALL       BaseItem::x                                      float x(BaseItem * this)
+//         004f9b4b     CALL       __ftol                                           undefined __ftol()
+//                              taitacmd.cpp:8296 (16)
+//         004f9b50     MOV        this,EBP
+//         004f9b52     MOV        dword ptr [ESP + position.y],EAX
+//         004f9b56     CALL       BaseItem::y                                      float y(BaseItem * this)
+//         004f9b5b     CALL       __ftol                                           undefined __ftol()
+//                              taitacmd.cpp:8298 (39)
+//         004f9b60     PUSH       0x0
+//         004f9b62     PUSH       0x2bc
+//         004f9b67     PUSH       0x2ce
+//         004f9b6c     PUSH       0x2be
+//         004f9b71     LEA        this=>position.y,[ESP + 0x20]
+//         004f9b75     PUSH       0x1
+//         004f9b77     PUSH       this
+//         004f9b78     MOV        this,ESI
+//         004f9b7a     MOV        dword ptr [ESP + local_4],EAX
+//         004f9b7e     CALL       TribeTacticalAIModule::civilian                  int civilian(TribeTacticalAIModule * this, XY
+//         004f9b83     MOV        dword ptr [ESP + param_1],EAX
+//                               LAB_004f9b87                                                 XREF[1]:     004f9b42(j)
+//                              taitacmd.cpp:8303 (27)
+//         004f9b87     MOV        EAX,dword ptr [ESI + 0xf0]
+//         004f9b8d     MOV        EDX,dword ptr [ESP + param_1]
+//         004f9b91     PUSH       EDX
+//         004f9b92     MOV        this,dword ptr [EAX + 0xf0]
+//         004f9b98     MOV        this,dword ptr [ECX + this->_padding_]
+//         004f9b9b     CALL       RGE_Game_World::object                           RGE_Static_Object * object(RGE_Game_World * t
+//         004f9ba0     MOV        EDI,EAX
+//                              taitacmd.cpp:8304 (23)
+//         004f9ba2     TEST       EDI,EDI
+//         004f9ba4     JZ         LAB_004f9dd8
+//         004f9baa     MOV        this,EDI
+//         004f9bac     CALL       RGE_Static_Object::unitAI                        UnitAIModule * unitAI(RGE_Static_Object * this)
+//         004f9bb1     TEST       EAX,EAX
+//         004f9bb3     JZ         LAB_004f9dd8
+//                              taitacmd.cpp:8314 (12)
+//         004f9bb9     MOV        this,EBP
+//         004f9bbb     CALL       BaseItem::x                                      float x(BaseItem * this)
+//         004f9bc0     CALL       __ftol                                           undefined __ftol()
+//                              taitacmd.cpp:8315 (14)
+//         004f9bc5     MOV        this,EBP
+//         004f9bc7     MOV        EBX,EAX
+//         004f9bc9     CALL       BaseItem::y                                      float y(BaseItem * this)
+//         004f9bce     CALL       __ftol                                           undefined __ftol()
+//                              taitacmd.cpp:8316 (10)
+//         004f9bd3     FLD        float ptr [EDI + 0x40]
+//         004f9bd6     MOV        EBP,EAX
+//         004f9bd8     CALL       __ftol                                           undefined __ftol()
+//                              taitacmd.cpp:8317 (42)
+//         004f9bdd     PUSH       -0x1
+//         004f9bdf     PUSH       -0x1
+//         004f9be1     PUSH       0x1
+//         004f9be3     MOV        EDX,dword ptr [EDI]
+//         004f9be5     PUSH       0x0
+//         004f9be7     PUSH       -0x1
+//         004f9be9     PUSH       0x40000000
+//         004f9bee     SUB        ESP,0xc
+//         004f9bf1     MOV        this,ESP
+//         004f9bf3     MOV        dword ptr [this->_padding_]=>local_3c,EBX
+//         004f9bf5     MOV        dword ptr [ECX + local_38],EBP
+//         004f9bf8     MOV        dword ptr [ECX + local_34],EAX
+//         004f9bfb     MOV        this,EDI
+//         004f9bfd     CALL       dword ptr [EDX + 0x198]
+//         004f9c03     TEST       EAX,EAX
+//         004f9c05     JNZ        LAB_004f9c25
+//                              taitacmd.cpp:8321 (20)
+//         004f9c07     MOV        this,dword ptr [ESP + 0x24]
+//         004f9c0b     TEST       this,this
+//         004f9c0d     JZ         LAB_004f9de5
+//         004f9c13     MOV        EDX,dword ptr [this->_padding_]
+//         004f9c15     PUSH       0x1
+//         004f9c17     CALL       dword ptr [EDX]
+//         004f9c19     XOR        EAX,EAX
+//                              taitacmd.cpp:8344 (10)
+//         004f9c1b     POP        EDI
+//         004f9c1c     POP        ESI
+//         004f9c1d     POP        EBP
+//         004f9c1e     POP        EBX
+//         004f9c1f     ADD        ESP,0x8
+//         004f9c22     RET        0x10
+//                               LAB_004f9c25                                                 XREF[1]:     004f9c05(j)
+//                              taitacmd.cpp:8329 (13)
+//         004f9c25     MOV        EBX,dword ptr [ESP + 0x20]
+//         004f9c29     PUSH       0x1
+//         004f9c2b     MOV        this,EBX
+//         004f9c2d     CALL       BuildItem::setInProgress                         void setInProgress(BuildItem * this, int para
+//                              taitacmd.cpp:8330 (9)
+//         004f9c32     PUSH       0x0
+//         004f9c34     MOV        this,EBX
+//         004f9c36     CALL       BuildItem::setBuilt                              void setBuilt(BuildItem * this, int param_1)
+//                              taitacmd.cpp:8332 (12)
+//         004f9c3b     MOV        this,dword ptr [ESI + 0x110]
+//         004f9c41     XOR        EAX,EAX
+//         004f9c43     TEST       this,this
+//         004f9c45     JLE        LAB_004f9c61
+//                              taitacmd.cpp:8329 (6)
+//         004f9c47     MOV        EDX,dword ptr [ESI + 0x104]
+//                               LAB_004f9c4d                                                 XREF[1]:     004f9c5d(j)
+//                              taitacmd.cpp:8332 (83)
+//         004f9c4d     MOV        EBP,dword ptr [ESP + 0x1c]
+//         004f9c51     MOV        EDI,dword ptr [EDX]
+//         004f9c53     CMP        EDI,EBP
+//         004f9c55     JZ         LAB_004f9c65
+//         004f9c57     INC        EAX
+//         004f9c58     ADD        EDX,0x4
+//         004f9c5b     CMP        EAX,this
+//         004f9c5d     JL         LAB_004f9c4d
+//         004f9c5f     JMP        LAB_004f9c65
+//                               LAB_004f9c61                                                 XREF[1]:     004f9c45(j)
+//         004f9c61     MOV        EBP,dword ptr [ESP + 0x1c]
+//                               LAB_004f9c65                                                 XREF[2]:     004f9c55(j), 004f9c5f(j)
+//         004f9c65     CMP        EAX,this
+//         004f9c67     JGE        LAB_004f9ca0
+//         004f9c69     DEC        this
+//         004f9c6a     CMP        EAX,this
+//         004f9c6c     JGE        LAB_004f9c87
+//                               LAB_004f9c6e                                                 XREF[1]:     004f9c85(j)
+//         004f9c6e     MOV        this,dword ptr [ESI + 0x104]
+//         004f9c74     INC        EAX
+//         004f9c75     MOV        EDX,dword ptr [this->_padding_ + EAX*0x4]
+//         004f9c78     MOV        dword ptr [this->_padding_ + EAX*0x4 + -0x4],EDX
+//         004f9c7c     MOV        this,dword ptr [ESI + 0x110]
+//         004f9c82     DEC        this
+//         004f9c83     CMP        EAX,this
+//         004f9c85     JL         LAB_004f9c6e
+//                               LAB_004f9c87                                                 XREF[1]:     004f9c6c(j)
+//         004f9c87     MOV        EAX,dword ptr [ESI + 0x108]
+//         004f9c8d     DEC        EAX
+//         004f9c8e     MOV        dword ptr [ESI + 0x108],EAX
+//         004f9c94     JNS        LAB_004f9ca0
+//         004f9c96     MOV        dword ptr [ESI + 0x108],0x0
+//                               LAB_004f9ca0                                                 XREF[2]:     004f9c67(j), 004f9c94(j)
+//                              taitacmd.cpp:8333 (178)
+//         004f9ca0     MOV        this,dword ptr [ESI + 0xd5c]
+//         004f9ca6     XOR        EAX,EAX
+//         004f9ca8     TEST       this,this
+//         004f9caa     JLE        LAB_004f9cca
+//         004f9cac     MOV        EDX,dword ptr [ESI + 0xd64]
+//                               LAB_004f9cb2                                                 XREF[1]:     004f9cc8(j)
+//         004f9cb2     CMP        EAX,EDX
+//         004f9cb4     JGE        LAB_004f9cca
+//         004f9cb6     MOV        EDI,dword ptr [ESI + 0xd58]
+//         004f9cbc     CMP        dword ptr [EDI + EAX*0x4],EBP
+//         004f9cbf     JZ         LAB_004f9d52
+//         004f9cc5     INC        EAX
+//         004f9cc6     CMP        EAX,this
+//         004f9cc8     JL         LAB_004f9cb2
+//                               LAB_004f9cca                                                 XREF[2]:     004f9caa(j), 004f9cb4(j)
+//         004f9cca     MOV        EDX,dword ptr [ESI + 0xd64]
+//         004f9cd0     DEC        EDX
+//         004f9cd1     CMP        this,EDX
+//         004f9cd3     JLE        LAB_004f9d32
+//         004f9cd5     LEA        EBX,[ECX + this+0x1]
+//         004f9cd8     LEA        EAX,[EBX*0x4 + 0x0]
+//         004f9cdf     PUSH       EAX
+//         004f9ce0     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004f9ce5     MOV        EDI,EAX
+//         004f9ce7     ADD        ESP,0x4
+//         004f9cea     TEST       EDI,EDI
+//         004f9cec     JZ         LAB_004f9d32
+//         004f9cee     MOV        this,dword ptr [ESI + 0xd64]
+//         004f9cf4     XOR        EAX,EAX
+//         004f9cf6     TEST       this,this
+//         004f9cf8     JLE        LAB_004f9d17
+//                               LAB_004f9cfa                                                 XREF[1]:     004f9d15(j)
+//         004f9cfa     CMP        EAX,EBX
+//         004f9cfc     JGE        LAB_004f9d17
+//         004f9cfe     MOV        this,dword ptr [ESI + 0xd58]
+//         004f9d04     INC        EAX
+//         004f9d05     MOV        EDX,dword ptr [this->_padding_ + EAX*0x4 + -0x4]
+//         004f9d09     MOV        dword ptr [EDI + EAX*0x4 + -0x4],EDX
+//         004f9d0d     MOV        this,dword ptr [ESI + 0xd64]
+//         004f9d13     CMP        EAX,this
+//         004f9d15     JL         LAB_004f9cfa
+//                               LAB_004f9d17                                                 XREF[2]:     004f9cf8(j), 004f9cfc(j)
+//         004f9d17     MOV        EAX,dword ptr [ESI + 0xd58]
+//         004f9d1d     PUSH       EAX
+//         004f9d1e     CALL       operator_delete                                  void operator_delete(void * param_1)
+//         004f9d23     ADD        ESP,0x4
+//         004f9d26     MOV        dword ptr [ESI + 0xd58],EDI
+//         004f9d2c     MOV        dword ptr [ESI + 0xd64],EBX
+//                               LAB_004f9d32                                                 XREF[2]:     004f9cd3(j), 004f9cec(j)
+//         004f9d32     MOV        this,dword ptr [ESI + 0xd5c]
+//         004f9d38     MOV        EDX,dword ptr [ESI + 0xd58]
+//         004f9d3e     MOV        EBX,dword ptr [ESP + 0x20]
+//         004f9d42     MOV        dword ptr [EDX + this->_padding_*0x4],EBP
+//         004f9d45     MOV        EAX,dword ptr [ESI + 0xd5c]
+//         004f9d4b     INC        EAX
+//         004f9d4c     MOV        dword ptr [ESI + 0xd5c],EAX
+//                               LAB_004f9d52                                                 XREF[1]:     004f9cbf(j)
+//                              taitacmd.cpp:8336 (18)
+//         004f9d52     MOV        EDI,dword ptr [ESP + 0x24]
+//         004f9d56     MOV        this,EDI
+//         004f9d58     CALL       BaseItem::typeID                                 int typeID(BaseItem * this)
+//         004f9d5d     CMP        EAX,0x114
+//         004f9d62     JNZ        LAB_004f9d6e
+//                              taitacmd.cpp:8337 (10)
+//         004f9d64     MOV        dword ptr [ESI + 0xe44],0x1
+//                               LAB_004f9d6e                                                 XREF[1]:     004f9d62(j)
+//                              taitacmd.cpp:8341 (79)
+//         004f9d6e     MOV        EAX,dword ptr [ESI + 0xf0]
+//         004f9d74     MOV        this,dword ptr [EAX + 0x1256c]
+//         004f9d7a     MOV        EDX,dword ptr [this->_padding_]
+//         004f9d7c     MOV        this,EBX
+//         004f9d7e     MOV        dword ptr [ESP + 0x1c],EDX
+//         004f9d82     CALL       BaseItem::uniqueID                               int uniqueID(BaseItem * this)
+//         004f9d87     PUSH       EAX
+//         004f9d88     MOV        this,EDI
+//         004f9d8a     CALL       BaseItem::y                                      float y(BaseItem * this)
+//         004f9d8f     PUSH       this=>DAT_fffffff8
+//         004f9d90     MOV        this,EDI
+//         004f9d92     FSTP       float ptr [ESP]=>DAT_fffffff8
+//         004f9d95     CALL       BaseItem::x                                      float x(BaseItem * this)
+//         004f9d9a     PUSH       this=>DAT_fffffff4
+//         004f9d9b     MOV        this,EDI
+//         004f9d9d     FSTP       float ptr [ESP]=>DAT_fffffff4
+//         004f9da0     CALL       BaseItem::typeID                                 int typeID(BaseItem * this)
+//         004f9da5     MOV        EDX,dword ptr [ESI + 0xf0]
+//         004f9dab     PUSH       EAX=>DAT_fffffff0
+//         004f9dac     MOV        EAX,dword ptr [ESP + 0x2c]
+//         004f9db0     PUSH       EBP
+//         004f9db1     MOV        this,dword ptr [EDX + 0x1256c]
+//         004f9db7     CALL       dword ptr [EAX + 0xfc]
+//                              taitacmd.cpp:8342 (12)
+//         004f9dbd     TEST       EDI,EDI
+//         004f9dbf     JZ         LAB_004f9dc9
+//         004f9dc1     MOV        EDX,dword ptr [EDI]
+//         004f9dc3     PUSH       0x1
+//         004f9dc5     MOV        this,EDI
+//         004f9dc7     CALL       dword ptr [EDX]
+//                               LAB_004f9dc9                                                 XREF[1]:     004f9dbf(j)
+//                              taitacmd.cpp:8343 (5)
+//         004f9dc9     MOV        EAX,0x1
+//                              taitacmd.cpp:8344 (10)
+//         004f9dce     POP        EDI
+//         004f9dcf     POP        ESI
+//         004f9dd0     POP        EBP
+//         004f9dd1     POP        EBX
+//         004f9dd2     ADD        ESP,0x8
+//         004f9dd5     RET        0x10
+//                               LAB_004f9dd8                                                 XREF[2]:     004f9ba4(j), 004f9bb3(j)
+//                              taitacmd.cpp:8308 (13)
+//         004f9dd8     TEST       EBP,EBP
+//         004f9dda     JZ         LAB_004f9de5
+//         004f9ddc     MOV        EAX,dword ptr [EBP]
+//         004f9ddf     PUSH       0x1
+//         004f9de1     MOV        this,EBP
+//         004f9de3     CALL       dword ptr [EAX]
+//                               LAB_004f9de5                                                 XREF[4]:     004f9afa(j), 004f9b35(j),
+//                                                                                                         004f9c0d(j), 004f9dda(j)
+//                              taitacmd.cpp:8344 (12)
+//         004f9de5     POP        EDI
+//         004f9de6     POP        ESI
+//         004f9de7     POP        EBP
+//         004f9de8     XOR        EAX,EAX
+//         004f9dea     POP        EBX
+//         004f9deb     ADD        ESP,0x8
+//         004f9dee     RET        0x10
+//         004f9df1     ??         90h
+//         004f9df2     NOP
+//         004f9df3     NOP
+//         004f9df4     NOP
+//         004f9df5     NOP
+//         004f9df6     NOP
+//         004f9df7     NOP
+//         004f9df8     NOP
+//         004f9df9     NOP
+//         004f9dfa     NOP
+//         004f9dfb     NOP
+//         004f9dfc     NOP
+//         004f9dfd     NOP
+//         004f9dfe     NOP
+//         004f9dff     NOP
     return 0;
 }
 
@@ -29238,194 +27472,137 @@ int TribeTacticalAIModule::taskExplorer(int param_1, int param_2) {
 //                              int __thiscall taskExplorer(TribeTacticalAIModule * this, int param_
 //              int               EAX:4          <RETURN>
 //              TribeTacticalA    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     004faaa2(R)
-//              float             Stack[0x8]:4   param_2                   XREF[1]:     004fac66(R)
-//              float             Stack[0xc]:4   param_3                   XREF[1]:     004fac55(R)
-//              int               Stack[0x10]:4  param_4                   XREF[1]:     004fab58(R)
-//                               ?taskExplorer@TribeTacticalAIModule@@QAEHHMMH@Z              XREF[5]:     taskExplorer:004fa909(c),
-//                               TribeTacticalAIModule::taskExplorer                                       taskExplorer:004fa927(c),
-//                                                                                                         taskExplorer:004faa30(c),
-//                                                                                                         taskExplorer:004faa66(c),
-//                                                                                                         taskExplorer:004faa82(c)
-//                              taitacmd.cpp:8897 (2)
-//         004faaa0     PUSH       EBX
-//         004faaa1     PUSH       EBP
-//                              taitacmd.cpp:8902 (182)
-//         004faaa2     MOV        EBP,dword ptr [ESP + param_1]
-//         004faaa6     PUSH       ESI
-//         004faaa7     MOV        ESI,this
-//         004faaa9     XOR        EAX,EAX
-//         004faaab     PUSH       EDI
-//         004faaac     MOV        this,dword ptr [ESI + 0xd5c]
-//         004faab2     TEST       this,this
-//         004faab4     JLE        LAB_004faad4
-//         004faab6     MOV        EDX,dword ptr [ESI + 0xd64]
-//                               LAB_004faabc                                                 XREF[1]:     004faad2(j)
-//         004faabc     CMP        EAX,EDX
-//         004faabe     JGE        LAB_004faad4
-//         004faac0     MOV        EDI,dword ptr [ESI + 0xd58]
-//         004faac6     CMP        dword ptr [EDI + EAX*0x4],EBP
-//         004faac9     JZ         LAB_004fab58
-//         004faacf     INC        EAX
-//         004faad0     CMP        EAX,this
-//         004faad2     JL         LAB_004faabc
-//                               LAB_004faad4                                                 XREF[2]:     004faab4(j), 004faabe(j)
-//         004faad4     MOV        EAX,dword ptr [ESI + 0xd64]
-//         004faada     DEC        EAX
-//         004faadb     CMP        this,EAX
-//         004faadd     JLE        LAB_004fab3c
-//         004faadf     LEA        EBX,[ECX + this+0x1]
-//         004faae2     LEA        this,[EBX*0x4 + 0x0]
-//         004faae9     PUSH       this
-//         004faaea     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004faaef     MOV        EDI,EAX
-//         004faaf1     ADD        ESP,0x4
-//         004faaf4     TEST       EDI,EDI
-//         004faaf6     JZ         LAB_004fab3c
-//         004faaf8     MOV        this,dword ptr [ESI + 0xd64]
-//         004faafe     XOR        EAX,EAX
-//         004fab00     TEST       this,this
-//         004fab02     JLE        LAB_004fab21
-//                               LAB_004fab04                                                 XREF[1]:     004fab1f(j)
-//         004fab04     CMP        EAX,EBX
-//         004fab06     JGE        LAB_004fab21
-//         004fab08     MOV        EDX,dword ptr [ESI + 0xd58]
-//         004fab0e     INC        EAX
-//         004fab0f     MOV        this,dword ptr [EDX + EAX*0x4 + -0x4]
-//         004fab13     MOV        dword ptr [EDI + EAX*0x4 + -0x4],this
-//         004fab17     MOV        this,dword ptr [ESI + 0xd64]
-//         004fab1d     CMP        EAX,this
-//         004fab1f     JL         LAB_004fab04
-//                               LAB_004fab21                                                 XREF[2]:     004fab02(j), 004fab06(j)
-//         004fab21     MOV        EDX,dword ptr [ESI + 0xd58]
-//         004fab27     PUSH       EDX
-//         004fab28     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         004fab2d     ADD        ESP,0x4
-//         004fab30     MOV        dword ptr [ESI + 0xd58],EDI
-//         004fab36     MOV        dword ptr [ESI + 0xd64],EBX
-//                               LAB_004fab3c                                                 XREF[2]:     004faadd(j), 004faaf6(j)
-//         004fab3c     MOV        EAX,dword ptr [ESI + 0xd5c]
-//         004fab42     MOV        this,dword ptr [ESI + 0xd58]
-//         004fab48     MOV        dword ptr [this->_padding_ + EAX*0x4],EBP
-//         004fab4b     MOV        EAX,dword ptr [ESI + 0xd5c]
-//         004fab51     INC        EAX
-//         004fab52     MOV        dword ptr [ESI + 0xd5c],EAX
-//                               LAB_004fab58                                                 XREF[1]:     004faac9(j)
-//                              taitacmd.cpp:8903 (11)
-//         004fab58     CMP        dword ptr [ESP + param_4],0x1
-//         004fab5d     JNZ        LAB_004fac43
-//                              taitacmd.cpp:8904 (42)
-//         004fab63     MOV        this,dword ptr [ESI + 0x108]
-//         004fab69     XOR        EAX,EAX
-//         004fab6b     TEST       this,this
-//         004fab6d     JLE        LAB_004fab8d
-//         004fab6f     MOV        EDX,dword ptr [ESI + 0x110]
-//                               LAB_004fab75                                                 XREF[1]:     004fab8b(j)
-//         004fab75     CMP        EAX,EDX
-//         004fab77     JGE        LAB_004fab8d
-//         004fab79     MOV        EDI,dword ptr [ESI + 0x104]
-//         004fab7f     CMP        dword ptr [EDI + EAX*0x4],EBP
-//         004fab82     JZ         LAB_004fac3b
-//         004fab88     INC        EAX
-//         004fab89     CMP        EAX,this
-//         004fab8b     JL         LAB_004fab75
-//                               LAB_004fab8d                                                 XREF[2]:     004fab6d(j), 004fab77(j)
-//                              taitacmd.cpp:8905 (174)
-//         004fab8d     MOV        this,dword ptr [ESI + 0x108]
-//         004fab93     XOR        EAX,EAX
-//         004fab95     TEST       this,this
-//         004fab97     JLE        LAB_004fabb7
-//         004fab99     MOV        EDX,dword ptr [ESI + 0x110]
-//                               LAB_004fab9f                                                 XREF[1]:     004fabb5(j)
-//         004fab9f     CMP        EAX,EDX
-//         004faba1     JGE        LAB_004fabb7
-//         004faba3     MOV        EDI,dword ptr [ESI + 0x104]
-//         004faba9     CMP        dword ptr [EDI + EAX*0x4],EBP
-//         004fabac     JZ         LAB_004fac3b
-//         004fabb2     INC        EAX
-//         004fabb3     CMP        EAX,this
-//         004fabb5     JL         LAB_004fab9f
-//                               LAB_004fabb7                                                 XREF[2]:     004fab97(j), 004faba1(j)
-//         004fabb7     MOV        EDX,dword ptr [ESI + 0x110]
-//         004fabbd     DEC        EDX
-//         004fabbe     CMP        this,EDX
-//         004fabc0     JLE        LAB_004fac1f
-//         004fabc2     LEA        EBX,[ECX + this+0x1]
-//         004fabc5     LEA        EAX,[EBX*0x4 + 0x0]
-//         004fabcc     PUSH       EAX
-//         004fabcd     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004fabd2     MOV        EDI,EAX
-//         004fabd4     ADD        ESP,0x4
-//         004fabd7     TEST       EDI,EDI
-//         004fabd9     JZ         LAB_004fac1f
-//         004fabdb     MOV        this,dword ptr [ESI + 0x110]
-//         004fabe1     XOR        EAX,EAX
-//         004fabe3     TEST       this,this
-//         004fabe5     JLE        LAB_004fac04
-//                               LAB_004fabe7                                                 XREF[1]:     004fac02(j)
-//         004fabe7     CMP        EAX,EBX
-//         004fabe9     JGE        LAB_004fac04
-//         004fabeb     MOV        this,dword ptr [ESI + 0x104]
-//         004fabf1     INC        EAX
-//         004fabf2     MOV        EDX,dword ptr [this->_padding_ + EAX*0x4 + -0x4]
-//         004fabf6     MOV        dword ptr [EDI + EAX*0x4 + -0x4],EDX
-//         004fabfa     MOV        this,dword ptr [ESI + 0x110]
-//         004fac00     CMP        EAX,this
-//         004fac02     JL         LAB_004fabe7
-//                               LAB_004fac04                                                 XREF[2]:     004fabe5(j), 004fabe9(j)
-//         004fac04     MOV        EAX,dword ptr [ESI + 0x104]
-//         004fac0a     PUSH       EAX
-//         004fac0b     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         004fac10     ADD        ESP,0x4
-//         004fac13     MOV        dword ptr [ESI + 0x104],EDI
-//         004fac19     MOV        dword ptr [ESI + 0x110],EBX
-//                               LAB_004fac1f                                                 XREF[2]:     004fabc0(j), 004fabd9(j)
-//         004fac1f     MOV        this,dword ptr [ESI + 0x108]
-//         004fac25     MOV        EDX,dword ptr [ESI + 0x104]
-//         004fac2b     MOV        dword ptr [EDX + this->_padding_*0x4],EBP
-//         004fac2e     MOV        EAX,dword ptr [ESI + 0x108]
-//         004fac34     INC        EAX
-//         004fac35     MOV        dword ptr [ESI + 0x108],EAX
-//                               LAB_004fac3b                                                 XREF[2]:     004fab82(j), 004fabac(j)
-//                              taitacmd.cpp:8906 (8)
-//         004fac3b     PUSH       EBP
-//         004fac3c     MOV        this,ESI
-//         004fac3e     CALL       TribeTacticalAIModule::removeGatherer            int removeGatherer(TribeTacticalAIModule * th
-//                               LAB_004fac43                                                 XREF[1]:     004fab5d(j)
-//                              taitacmd.cpp:8911 (58)
-//         004fac43     MOV        EAX,dword ptr [ESI + 0xf0]
-//         004fac49     PUSH       0x1
-//         004fac4b     PUSH       0x0
-//         004fac4d     PUSH       0x1
-//         004fac4f     MOV        this,dword ptr [EAX + 0xf0]
-//         004fac55     MOV        EAX,dword ptr [ESP + param_3]
-//         004fac59     PUSH       0x3f800000
-//         004fac5e     PUSH       0xbf800000
-//         004fac63     MOV        EDX,dword ptr [this->_padding_]
-//         004fac65     PUSH       EAX
-//         004fac66     MOV        EAX,dword ptr [ESP + param_2]
-//         004fac6a     PUSH       EAX
-//         004fac6b     PUSH       -0x1
-//         004fac6d     MOVSX      EAX,word ptr [ECX + this+0x4a]
-//         004fac71     PUSH       -0x1
-//         004fac73     PUSH       0x2c1
-//         004fac78     PUSH       EBP
-//         004fac79     PUSH       EAX
-//         004fac7a     CALL       dword ptr [EDX + 0x30]
-//                              taitacmd.cpp:8913 (12)
-//         004fac7d     POP        EDI
-//         004fac7e     POP        ESI
-//         004fac7f     POP        EBP
-//         004fac80     MOV        EAX,0x1
-//         004fac85     POP        EBX
-//         004fac86     RET        0x10
-//         004fac89     ??         90h
-//         004fac8a     NOP
-//         004fac8b     NOP
-//         004fac8c     NOP
-//         004fac8d     NOP
-//         004fac8e     NOP
-//         004fac8f     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004fa827(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     004fa8db(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     004fa8f6(R)
+//              XYPoint           Stack[-0xc]:8  targetPoint               XREF[0,2]:   004fa8e2(*), 004fa8fe(R)
+//              undefined4        Stack[-0x20]:4 local_20                  XREF[1]:     004fa8fb(*)
+//              undefined4        Stack[-0x24]:4 local_24                  XREF[1]:     004fa905(*)
+//                               ?taskExplorer@TribeTacticalAIModule@@QAEHHH@Z                XREF[4]:     task:004ebcd1(c),
+//                               TribeTacticalAIModule::taskExplorer                                       task:004ebd47(c),
+//                                                                                                         task:004ebe63(c),
+//                                                                                                         highLevelTaskExplorer:004f9586(c)
+//                              taitacmd.cpp:8844 (3)
+//         004fa820     SUB        ESP,0x8
+//                              taitacmd.cpp:8851 (184)
+//         004fa823     XOR        EAX,EAX
+//         004fa825     PUSH       EBX
+//         004fa826     PUSH       EBP
+//         004fa827     MOV        EBP,dword ptr [ESP + param_1]
+//         004fa82b     PUSH       ESI
+//         004fa82c     MOV        ESI,this
+//         004fa82e     PUSH       EDI
+//         004fa82f     MOV        this,dword ptr [ESI + 0xd5c]
+//         004fa835     TEST       this,this
+//         004fa837     JLE        LAB_004fa857
+//         004fa839     MOV        EDX,dword ptr [ESI + 0xd64]
+//                               LAB_004fa83f                                                 XREF[1]:     004fa855(j)
+//         004fa83f     CMP        EAX,EDX
+//         004fa841     JGE        LAB_004fa857
+//         004fa843     MOV        EDI,dword ptr [ESI + 0xd58]
+//         004fa849     CMP        dword ptr [EDI + EAX*0x4],EBP
+//         004fa84c     JZ         LAB_004fa8db
+//         004fa852     INC        EAX
+//         004fa853     CMP        EAX,this
+//         004fa855     JL         LAB_004fa83f
+//                               LAB_004fa857                                                 XREF[2]:     004fa837(j), 004fa841(j)
+//         004fa857     MOV        EAX,dword ptr [ESI + 0xd64]
+//         004fa85d     DEC        EAX
+//         004fa85e     CMP        this,EAX
+//         004fa860     JLE        LAB_004fa8bf
+//         004fa862     LEA        EBX,[ECX + this+0x1]
+//         004fa865     LEA        this,[EBX*0x4 + 0x0]
+//         004fa86c     PUSH       this
+//         004fa86d     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004fa872     MOV        EDI,EAX
+//         004fa874     ADD        ESP,0x4
+//         004fa877     TEST       EDI,EDI
+//         004fa879     JZ         LAB_004fa8bf
+//         004fa87b     MOV        this,dword ptr [ESI + 0xd64]
+//         004fa881     XOR        EAX,EAX
+//         004fa883     TEST       this,this
+//         004fa885     JLE        LAB_004fa8a4
+//                               LAB_004fa887                                                 XREF[1]:     004fa8a2(j)
+//         004fa887     CMP        EAX,EBX
+//         004fa889     JGE        LAB_004fa8a4
+//         004fa88b     MOV        EDX,dword ptr [ESI + 0xd58]
+//         004fa891     INC        EAX
+//         004fa892     MOV        this,dword ptr [EDX + EAX*0x4 + -0x4]
+//         004fa896     MOV        dword ptr [EDI + EAX*0x4 + -0x4],this
+//         004fa89a     MOV        this,dword ptr [ESI + 0xd64]
+//         004fa8a0     CMP        EAX,this
+//         004fa8a2     JL         LAB_004fa887
+//                               LAB_004fa8a4                                                 XREF[2]:     004fa885(j), 004fa889(j)
+//         004fa8a4     MOV        EDX,dword ptr [ESI + 0xd58]
+//         004fa8aa     PUSH       EDX
+//         004fa8ab     CALL       operator_delete                                  void operator_delete(void * param_1)
+//         004fa8b0     ADD        ESP,0x4
+//         004fa8b3     MOV        dword ptr [ESI + 0xd58],EDI
+//         004fa8b9     MOV        dword ptr [ESI + 0xd64],EBX
+//                               LAB_004fa8bf                                                 XREF[2]:     004fa860(j), 004fa879(j)
+//         004fa8bf     MOV        EAX,dword ptr [ESI + 0xd5c]
+//         004fa8c5     MOV        this,dword ptr [ESI + 0xd58]
+//         004fa8cb     MOV        dword ptr [this->_padding_ + EAX*0x4],EBP
+//         004fa8ce     MOV        EAX,dword ptr [ESI + 0xd5c]
+//         004fa8d4     INC        EAX
+//         004fa8d5     MOV        dword ptr [ESI + 0xd5c],EAX
+//                               LAB_004fa8db                                                 XREF[1]:     004fa84c(j)
+//                              taitacmd.cpp:8852 (7)
+//         004fa8db     CMP        dword ptr [ESP + param_2],0x1
+//         004fa8e0     JNZ        LAB_004fa918
+//                              taitacmd.cpp:8854 (16)
+//         004fa8e2     LEA        EDX=>targetPoint.y,[ESP + 0x10]
+//         004fa8e6     MOV        this,ESI
+//         004fa8e8     PUSH       EDX
+//         004fa8e9     PUSH       EBP
+//         004fa8ea     CALL       TribeTacticalAIModule::unexploredArea            int unexploredArea(TribeTacticalAIModule * th
+//         004fa8ef     CMP        EAX,0x1
+//                              taitacmd.cpp:8859 (17)
+//         004fa8f2     PUSH       0x1
+//         004fa8f4     JNZ        LAB_004fa91a
+//         004fa8f6     FILD       dword ptr [ESP + local_4]
+//         004fa8fa     PUSH       this
+//         004fa8fb     FSTP       float ptr [ESP]=>local_20
+//         004fa8fe     FILD       dword ptr [ESP + targetPoint.y]
+//         004fa902     PUSH       this
+//                              taitacmd.cpp:8864 (11)
+//         004fa903     MOV        this,ESI
+//         004fa905     FSTP       float ptr [ESP]=>local_24
+//         004fa908     PUSH       EBP
+//         004fa909     CALL       TribeTacticalAIModule::taskExplorer              int taskExplorer(TribeTacticalAIModule * this
+//                              taitacmd.cpp:8865 (10)
+//         004fa90e     POP        EDI
+//         004fa90f     POP        ESI
+//         004fa910     POP        EBP
+//         004fa911     POP        EBX
+//         004fa912     ADD        ESP,0x8
+//         004fa915     RET        0x8
+//                               LAB_004fa918                                                 XREF[1]:     004fa8e0(j)
+//                              taitacmd.cpp:8864 (20)
+//         004fa918     PUSH       0x0
+//                               LAB_004fa91a                                                 XREF[1]:     004fa8f4(j)
+//         004fa91a     PUSH       0xbf800000
+//         004fa91f     PUSH       0xbf800000
+//         004fa924     PUSH       EBP
+//         004fa925     MOV        this,ESI
+//         004fa927     CALL       TribeTacticalAIModule::taskExplorer              int taskExplorer(TribeTacticalAIModule * this
+//                              taitacmd.cpp:8865 (10)
+//         004fa92c     POP        EDI
+//         004fa92d     POP        ESI
+//         004fa92e     POP        EBP
+//         004fa92f     POP        EBX
+//         004fa930     ADD        ESP,0x8
+//         004fa933     RET        0x8
+//         004fa936     ??         90h
+//         004fa937     NOP
+//         004fa938     NOP
+//         004fa939     NOP
+//         004fa93a     NOP
+//         004fa93b     NOP
+//         004fa93c     NOP
+//         004fa93d     NOP
+//         004fa93e     NOP
+//         004fa93f     NOP
     return 0;
 }
 
@@ -29434,194 +27611,172 @@ int TribeTacticalAIModule::taskExplorer(int param_1, float param_2, float param_
 //                              int __thiscall taskExplorer(TribeTacticalAIModule * this, int param_
 //              int               EAX:4          <RETURN>
 //              TribeTacticalA    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     004faaa2(R)
-//              float             Stack[0x8]:4   param_2                   XREF[1]:     004fac66(R)
-//              float             Stack[0xc]:4   param_3                   XREF[1]:     004fac55(R)
-//              int               Stack[0x10]:4  param_4                   XREF[1]:     004fab58(R)
-//                               ?taskExplorer@TribeTacticalAIModule@@QAEHHMMH@Z              XREF[5]:     taskExplorer:004fa909(c),
-//                               TribeTacticalAIModule::taskExplorer                                       taskExplorer:004fa927(c),
-//                                                                                                         taskExplorer:004faa30(c),
-//                                                                                                         taskExplorer:004faa66(c),
-//                                                                                                         taskExplorer:004faa82(c)
-//                              taitacmd.cpp:8897 (2)
-//         004faaa0     PUSH       EBX
-//         004faaa1     PUSH       EBP
-//                              taitacmd.cpp:8902 (182)
-//         004faaa2     MOV        EBP,dword ptr [ESP + param_1]
-//         004faaa6     PUSH       ESI
-//         004faaa7     MOV        ESI,this
-//         004faaa9     XOR        EAX,EAX
-//         004faaab     PUSH       EDI
-//         004faaac     MOV        this,dword ptr [ESI + 0xd5c]
-//         004faab2     TEST       this,this
-//         004faab4     JLE        LAB_004faad4
-//         004faab6     MOV        EDX,dword ptr [ESI + 0xd64]
-//                               LAB_004faabc                                                 XREF[1]:     004faad2(j)
-//         004faabc     CMP        EAX,EDX
-//         004faabe     JGE        LAB_004faad4
-//         004faac0     MOV        EDI,dword ptr [ESI + 0xd58]
-//         004faac6     CMP        dword ptr [EDI + EAX*0x4],EBP
-//         004faac9     JZ         LAB_004fab58
-//         004faacf     INC        EAX
-//         004faad0     CMP        EAX,this
-//         004faad2     JL         LAB_004faabc
-//                               LAB_004faad4                                                 XREF[2]:     004faab4(j), 004faabe(j)
-//         004faad4     MOV        EAX,dword ptr [ESI + 0xd64]
-//         004faada     DEC        EAX
-//         004faadb     CMP        this,EAX
-//         004faadd     JLE        LAB_004fab3c
-//         004faadf     LEA        EBX,[ECX + this+0x1]
-//         004faae2     LEA        this,[EBX*0x4 + 0x0]
-//         004faae9     PUSH       this
-//         004faaea     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004faaef     MOV        EDI,EAX
-//         004faaf1     ADD        ESP,0x4
-//         004faaf4     TEST       EDI,EDI
-//         004faaf6     JZ         LAB_004fab3c
-//         004faaf8     MOV        this,dword ptr [ESI + 0xd64]
-//         004faafe     XOR        EAX,EAX
-//         004fab00     TEST       this,this
-//         004fab02     JLE        LAB_004fab21
-//                               LAB_004fab04                                                 XREF[1]:     004fab1f(j)
-//         004fab04     CMP        EAX,EBX
-//         004fab06     JGE        LAB_004fab21
-//         004fab08     MOV        EDX,dword ptr [ESI + 0xd58]
-//         004fab0e     INC        EAX
-//         004fab0f     MOV        this,dword ptr [EDX + EAX*0x4 + -0x4]
-//         004fab13     MOV        dword ptr [EDI + EAX*0x4 + -0x4],this
-//         004fab17     MOV        this,dword ptr [ESI + 0xd64]
-//         004fab1d     CMP        EAX,this
-//         004fab1f     JL         LAB_004fab04
-//                               LAB_004fab21                                                 XREF[2]:     004fab02(j), 004fab06(j)
-//         004fab21     MOV        EDX,dword ptr [ESI + 0xd58]
-//         004fab27     PUSH       EDX
-//         004fab28     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         004fab2d     ADD        ESP,0x4
-//         004fab30     MOV        dword ptr [ESI + 0xd58],EDI
-//         004fab36     MOV        dword ptr [ESI + 0xd64],EBX
-//                               LAB_004fab3c                                                 XREF[2]:     004faadd(j), 004faaf6(j)
-//         004fab3c     MOV        EAX,dword ptr [ESI + 0xd5c]
-//         004fab42     MOV        this,dword ptr [ESI + 0xd58]
-//         004fab48     MOV        dword ptr [this->_padding_ + EAX*0x4],EBP
-//         004fab4b     MOV        EAX,dword ptr [ESI + 0xd5c]
-//         004fab51     INC        EAX
-//         004fab52     MOV        dword ptr [ESI + 0xd5c],EAX
-//                               LAB_004fab58                                                 XREF[1]:     004faac9(j)
-//                              taitacmd.cpp:8903 (11)
-//         004fab58     CMP        dword ptr [ESP + param_4],0x1
-//         004fab5d     JNZ        LAB_004fac43
-//                              taitacmd.cpp:8904 (42)
-//         004fab63     MOV        this,dword ptr [ESI + 0x108]
-//         004fab69     XOR        EAX,EAX
-//         004fab6b     TEST       this,this
-//         004fab6d     JLE        LAB_004fab8d
-//         004fab6f     MOV        EDX,dword ptr [ESI + 0x110]
-//                               LAB_004fab75                                                 XREF[1]:     004fab8b(j)
-//         004fab75     CMP        EAX,EDX
-//         004fab77     JGE        LAB_004fab8d
-//         004fab79     MOV        EDI,dword ptr [ESI + 0x104]
-//         004fab7f     CMP        dword ptr [EDI + EAX*0x4],EBP
-//         004fab82     JZ         LAB_004fac3b
-//         004fab88     INC        EAX
-//         004fab89     CMP        EAX,this
-//         004fab8b     JL         LAB_004fab75
-//                               LAB_004fab8d                                                 XREF[2]:     004fab6d(j), 004fab77(j)
-//                              taitacmd.cpp:8905 (174)
-//         004fab8d     MOV        this,dword ptr [ESI + 0x108]
-//         004fab93     XOR        EAX,EAX
-//         004fab95     TEST       this,this
-//         004fab97     JLE        LAB_004fabb7
-//         004fab99     MOV        EDX,dword ptr [ESI + 0x110]
-//                               LAB_004fab9f                                                 XREF[1]:     004fabb5(j)
-//         004fab9f     CMP        EAX,EDX
-//         004faba1     JGE        LAB_004fabb7
-//         004faba3     MOV        EDI,dword ptr [ESI + 0x104]
-//         004faba9     CMP        dword ptr [EDI + EAX*0x4],EBP
-//         004fabac     JZ         LAB_004fac3b
-//         004fabb2     INC        EAX
-//         004fabb3     CMP        EAX,this
-//         004fabb5     JL         LAB_004fab9f
-//                               LAB_004fabb7                                                 XREF[2]:     004fab97(j), 004faba1(j)
-//         004fabb7     MOV        EDX,dword ptr [ESI + 0x110]
-//         004fabbd     DEC        EDX
-//         004fabbe     CMP        this,EDX
-//         004fabc0     JLE        LAB_004fac1f
-//         004fabc2     LEA        EBX,[ECX + this+0x1]
-//         004fabc5     LEA        EAX,[EBX*0x4 + 0x0]
-//         004fabcc     PUSH       EAX
-//         004fabcd     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004fabd2     MOV        EDI,EAX
-//         004fabd4     ADD        ESP,0x4
-//         004fabd7     TEST       EDI,EDI
-//         004fabd9     JZ         LAB_004fac1f
-//         004fabdb     MOV        this,dword ptr [ESI + 0x110]
-//         004fabe1     XOR        EAX,EAX
-//         004fabe3     TEST       this,this
-//         004fabe5     JLE        LAB_004fac04
-//                               LAB_004fabe7                                                 XREF[1]:     004fac02(j)
-//         004fabe7     CMP        EAX,EBX
-//         004fabe9     JGE        LAB_004fac04
-//         004fabeb     MOV        this,dword ptr [ESI + 0x104]
-//         004fabf1     INC        EAX
-//         004fabf2     MOV        EDX,dword ptr [this->_padding_ + EAX*0x4 + -0x4]
-//         004fabf6     MOV        dword ptr [EDI + EAX*0x4 + -0x4],EDX
-//         004fabfa     MOV        this,dword ptr [ESI + 0x110]
-//         004fac00     CMP        EAX,this
-//         004fac02     JL         LAB_004fabe7
-//                               LAB_004fac04                                                 XREF[2]:     004fabe5(j), 004fabe9(j)
-//         004fac04     MOV        EAX,dword ptr [ESI + 0x104]
-//         004fac0a     PUSH       EAX
-//         004fac0b     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         004fac10     ADD        ESP,0x4
-//         004fac13     MOV        dword ptr [ESI + 0x104],EDI
-//         004fac19     MOV        dword ptr [ESI + 0x110],EBX
-//                               LAB_004fac1f                                                 XREF[2]:     004fabc0(j), 004fabd9(j)
-//         004fac1f     MOV        this,dword ptr [ESI + 0x108]
-//         004fac25     MOV        EDX,dword ptr [ESI + 0x104]
-//         004fac2b     MOV        dword ptr [EDX + this->_padding_*0x4],EBP
-//         004fac2e     MOV        EAX,dword ptr [ESI + 0x108]
-//         004fac34     INC        EAX
-//         004fac35     MOV        dword ptr [ESI + 0x108],EAX
-//                               LAB_004fac3b                                                 XREF[2]:     004fab82(j), 004fabac(j)
-//                              taitacmd.cpp:8906 (8)
-//         004fac3b     PUSH       EBP
-//         004fac3c     MOV        this,ESI
-//         004fac3e     CALL       TribeTacticalAIModule::removeGatherer            int removeGatherer(TribeTacticalAIModule * th
-//                               LAB_004fac43                                                 XREF[1]:     004fab5d(j)
-//                              taitacmd.cpp:8911 (58)
-//         004fac43     MOV        EAX,dword ptr [ESI + 0xf0]
-//         004fac49     PUSH       0x1
-//         004fac4b     PUSH       0x0
-//         004fac4d     PUSH       0x1
-//         004fac4f     MOV        this,dword ptr [EAX + 0xf0]
-//         004fac55     MOV        EAX,dword ptr [ESP + param_3]
-//         004fac59     PUSH       0x3f800000
-//         004fac5e     PUSH       0xbf800000
-//         004fac63     MOV        EDX,dword ptr [this->_padding_]
-//         004fac65     PUSH       EAX
-//         004fac66     MOV        EAX,dword ptr [ESP + param_2]
-//         004fac6a     PUSH       EAX
-//         004fac6b     PUSH       -0x1
-//         004fac6d     MOVSX      EAX,word ptr [ECX + this+0x4a]
-//         004fac71     PUSH       -0x1
-//         004fac73     PUSH       0x2c1
-//         004fac78     PUSH       EBP
-//         004fac79     PUSH       EAX
-//         004fac7a     CALL       dword ptr [EDX + 0x30]
-//                              taitacmd.cpp:8913 (12)
-//         004fac7d     POP        EDI
-//         004fac7e     POP        ESI
-//         004fac7f     POP        EBP
-//         004fac80     MOV        EAX,0x1
-//         004fac85     POP        EBX
-//         004fac86     RET        0x10
-//         004fac89     ??         90h
-//         004fac8a     NOP
-//         004fac8b     NOP
-//         004fac8c     NOP
-//         004fac8d     NOP
-//         004fac8e     NOP
-//         004fac8f     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004fa947(R)
+//              float             Stack[0x8]:4   param_2                   XREF[2]:     004faa25(R), 004faa79(R)
+//              float             Stack[0xc]:4   param_3                   XREF[2]:     004faa21(R), 004faa75(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     004faa53(R)
+//              XYPoint           Stack[-0xc]:8  targetPoint               XREF[0,2]:   004faa3f(*), 004faa5b(R)
+//              undefined4        Stack[-0x20]:4 local_20                  XREF[1]:     004faa58(*)
+//              undefined4        Stack[-0x24]:4 local_24                  XREF[1]:     004faa62(*)
+//                               ?taskExplorer@TribeTacticalAIModule@@QAEHHMM@Z               XREF[1]:     notifyAI:00515cf9(c)
+//                               TribeTacticalAIModule::taskExplorer
+//                              taitacmd.cpp:8870 (3)
+//         004fa940     SUB        ESP,0x8
+//                              taitacmd.cpp:8877 (184)
+//         004fa943     XOR        EAX,EAX
+//         004fa945     PUSH       EBX
+//         004fa946     PUSH       EBP
+//         004fa947     MOV        EBP,dword ptr [ESP + param_1]
+//         004fa94b     PUSH       ESI
+//         004fa94c     MOV        ESI,this
+//         004fa94e     PUSH       EDI
+//         004fa94f     MOV        this,dword ptr [ESI + 0xd5c]
+//         004fa955     TEST       this,this
+//         004fa957     JLE        LAB_004fa977
+//         004fa959     MOV        EDX,dword ptr [ESI + 0xd64]
+//                               LAB_004fa95f                                                 XREF[1]:     004fa975(j)
+//         004fa95f     CMP        EAX,EDX
+//         004fa961     JGE        LAB_004fa977
+//         004fa963     MOV        EDI,dword ptr [ESI + 0xd58]
+//         004fa969     CMP        dword ptr [EDI + EAX*0x4],EBP
+//         004fa96c     JZ         LAB_004fa9fb
+//         004fa972     INC        EAX
+//         004fa973     CMP        EAX,this
+//         004fa975     JL         LAB_004fa95f
+//                               LAB_004fa977                                                 XREF[2]:     004fa957(j), 004fa961(j)
+//         004fa977     MOV        EAX,dword ptr [ESI + 0xd64]
+//         004fa97d     DEC        EAX
+//         004fa97e     CMP        this,EAX
+//         004fa980     JLE        LAB_004fa9df
+//         004fa982     LEA        EBX,[ECX + this+0x1]
+//         004fa985     LEA        this,[EBX*0x4 + 0x0]
+//         004fa98c     PUSH       this
+//         004fa98d     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004fa992     MOV        EDI,EAX
+//         004fa994     ADD        ESP,0x4
+//         004fa997     TEST       EDI,EDI
+//         004fa999     JZ         LAB_004fa9df
+//         004fa99b     MOV        this,dword ptr [ESI + 0xd64]
+//         004fa9a1     XOR        EAX,EAX
+//         004fa9a3     TEST       this,this
+//         004fa9a5     JLE        LAB_004fa9c4
+//                               LAB_004fa9a7                                                 XREF[1]:     004fa9c2(j)
+//         004fa9a7     CMP        EAX,EBX
+//         004fa9a9     JGE        LAB_004fa9c4
+//         004fa9ab     MOV        EDX,dword ptr [ESI + 0xd58]
+//         004fa9b1     INC        EAX
+//         004fa9b2     MOV        this,dword ptr [EDX + EAX*0x4 + -0x4]
+//         004fa9b6     MOV        dword ptr [EDI + EAX*0x4 + -0x4],this
+//         004fa9ba     MOV        this,dword ptr [ESI + 0xd64]
+//         004fa9c0     CMP        EAX,this
+//         004fa9c2     JL         LAB_004fa9a7
+//                               LAB_004fa9c4                                                 XREF[2]:     004fa9a5(j), 004fa9a9(j)
+//         004fa9c4     MOV        EDX,dword ptr [ESI + 0xd58]
+//         004fa9ca     PUSH       EDX
+//         004fa9cb     CALL       operator_delete                                  void operator_delete(void * param_1)
+//         004fa9d0     ADD        ESP,0x4
+//         004fa9d3     MOV        dword ptr [ESI + 0xd58],EDI
+//         004fa9d9     MOV        dword ptr [ESI + 0xd64],EBX
+//                               LAB_004fa9df                                                 XREF[2]:     004fa980(j), 004fa999(j)
+//         004fa9df     MOV        EAX,dword ptr [ESI + 0xd5c]
+//         004fa9e5     MOV        this,dword ptr [ESI + 0xd58]
+//         004fa9eb     MOV        dword ptr [this->_padding_ + EAX*0x4],EBP
+//         004fa9ee     MOV        EAX,dword ptr [ESI + 0xd5c]
+//         004fa9f4     INC        EAX
+//         004fa9f5     MOV        dword ptr [ESI + 0xd5c],EAX
+//                               LAB_004fa9fb                                                 XREF[1]:     004fa96c(j)
+//                              taitacmd.cpp:8878 (38)
+//         004fa9fb     MOV        this,dword ptr [ESI + 0xf8]
+//         004faa01     XOR        EAX,EAX
+//         004faa03     TEST       this,this
+//         004faa05     JLE        LAB_004faa21
+//         004faa07     MOV        EDX,dword ptr [ESI + 0x100]
+//                               LAB_004faa0d                                                 XREF[1]:     004faa1f(j)
+//         004faa0d     CMP        EAX,EDX
+//         004faa0f     JGE        LAB_004faa21
+//         004faa11     MOV        EDI,dword ptr [ESI + 0xf4]
+//         004faa17     CMP        dword ptr [EDI + EAX*0x4],EBP
+//         004faa1a     JZ         LAB_004faa3f
+//         004faa1c     INC        EAX
+//         004faa1d     CMP        EAX,this
+//         004faa1f     JL         LAB_004faa0d
+//                               LAB_004faa21                                                 XREF[2]:     004faa05(j), 004faa0f(j)
+//                              taitacmd.cpp:8890 (20)
+//         004faa21     MOV        EDX,dword ptr [ESP + param_3]
+//         004faa25     MOV        EAX,dword ptr [ESP + param_2]
+//         004faa29     PUSH       0x0
+//         004faa2b     PUSH       EDX
+//         004faa2c     PUSH       EAX
+//         004faa2d     PUSH       EBP
+//         004faa2e     MOV        this,ESI
+//         004faa30     CALL       TribeTacticalAIModule::taskExplorer              int taskExplorer(TribeTacticalAIModule * this
+//                              taitacmd.cpp:8891 (10)
+//         004faa35     POP        EDI
+//         004faa36     POP        ESI
+//         004faa37     POP        EBP
+//         004faa38     POP        EBX
+//         004faa39     ADD        ESP,0x8
+//         004faa3c     RET        0xc
+//                               LAB_004faa3f                                                 XREF[1]:     004faa1a(j)
+//                              taitacmd.cpp:8880 (16)
+//         004faa3f     LEA        EDX=>targetPoint.y,[ESP + 0x10]
+//         004faa43     MOV        this,ESI
+//         004faa45     PUSH       EDX
+//         004faa46     PUSH       EBP
+//         004faa47     CALL       TribeTacticalAIModule::unexploredArea            int unexploredArea(TribeTacticalAIModule * th
+//         004faa4c     CMP        EAX,0x1
+//                              taitacmd.cpp:8885 (17)
+//         004faa4f     PUSH       0x1
+//         004faa51     JNZ        LAB_004faa75
+//         004faa53     FILD       dword ptr [ESP + local_4]
+//         004faa57     PUSH       this
+//         004faa58     FSTP       float ptr [ESP]=>local_20
+//         004faa5b     FILD       dword ptr [ESP + targetPoint.y]
+//         004faa5f     PUSH       this
+//                              taitacmd.cpp:8890 (11)
+//         004faa60     MOV        this,ESI
+//         004faa62     FSTP       float ptr [ESP]=>local_24
+//         004faa65     PUSH       EBP
+//         004faa66     CALL       TribeTacticalAIModule::taskExplorer              int taskExplorer(TribeTacticalAIModule * this
+//                              taitacmd.cpp:8891 (10)
+//         004faa6b     POP        EDI
+//         004faa6c     POP        ESI
+//         004faa6d     POP        EBP
+//         004faa6e     POP        EBX
+//         004faa6f     ADD        ESP,0x8
+//         004faa72     RET        0xc
+//                               LAB_004faa75                                                 XREF[1]:     004faa51(j)
+//                              taitacmd.cpp:8888 (10)
+//         004faa75     MOV        EAX,dword ptr [ESP + param_3]
+//         004faa79     MOV        this,dword ptr [ESP + param_2]
+//         004faa7d     PUSH       EAX
+//         004faa7e     PUSH       this
+//                              taitacmd.cpp:8890 (8)
+//         004faa7f     PUSH       EBP
+//         004faa80     MOV        this,ESI
+//         004faa82     CALL       TribeTacticalAIModule::taskExplorer              int taskExplorer(TribeTacticalAIModule * this
+//                              taitacmd.cpp:8891 (10)
+//         004faa87     POP        EDI
+//         004faa88     POP        ESI
+//         004faa89     POP        EBP
+//         004faa8a     POP        EBX
+//         004faa8b     ADD        ESP,0x8
+//         004faa8e     RET        0xc
+//         004faa91     ??         90h
+//         004faa92     NOP
+//         004faa93     NOP
+//         004faa94     NOP
+//         004faa95     NOP
+//         004faa96     NOP
+//         004faa97     NOP
+//         004faa98     NOP
+//         004faa99     NOP
+//         004faa9a     NOP
+//         004faa9b     NOP
+//         004faa9c     NOP
+//         004faa9d     NOP
+//         004faa9e     NOP
+//         004faa9f     NOP
     return 0;
 }
 
@@ -30652,34 +28807,832 @@ int TribeTacticalAIModule::taskDefender(int param_1, int param_2, float param_3,
 //                              int __thiscall taskDefender(TribeTacticalAIModule * this, int param_
 //              int               EAX:4          <RETURN>
 //              TribeTacticalA    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     004fb524(R)
-//              float             Stack[0x8]:4   param_2                   XREF[1]:     004fb52e(R)
-//              float             Stack[0xc]:4   param_3                   XREF[1]:     004fb520(R)
-//              undefined8        Stack[-0x8]:8  local_8                   XREF[1]:     004fb52b(*)
-//              undefined8        Stack[-0x10]:8 local_10                  XREF[1]:     004fb535(*)
-//                               ?taskDefender@TribeTacticalAIModule@@QAEHHMM@Z
-//                               TribeTacticalAIModule::taskDefender
-//                              taitacmd.cpp:9160 (39)
-//         004fb520     FLD        float ptr [ESP + param_3]
-//         004fb524     MOV        EAX,dword ptr [ESP + param_1]
-//         004fb528     SUB        ESP,0x8
-//         004fb52b     FSTP       double ptr [ESP]=>local_8
-//         004fb52e     FLD        float ptr [ESP + param_2]
-//         004fb532     SUB        ESP,0x8
-//         004fb535     FSTP       double ptr [ESP]=>local_10
-//         004fb538     PUSH       EAX
-//         004fb539     PUSH       s_ERROR:_Unused_taskDefender_call_               = "ERROR: Unused taskDefender call 2: defende
-//         004fb53e     PUSH       this
-//         004fb53f     CALL       AIModule::logCommonHistory                       void logCommonHistory(AIModule * this, char *
-//         004fb544     ADD        ESP,0x1c
-//                              taitacmd.cpp:9179 (2)
-//         004fb547     XOR        EAX,EAX
-//                              taitacmd.cpp:9180 (3)
-//         004fb549     RET        0xc
-//         004fb54c     ??         90h
-//         004fb54d     NOP
-//         004fb54e     NOP
-//         004fb54f     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004fada2(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     004fae72(R)
+//              float             Stack[0xc]:4   param_3                   XREF[1]:     004fae69(R)
+//              int               Stack[0x10]:4  param_4                   XREF[1]:     004fae64(R)
+//                               ?taskDefender@TribeTacticalAIModule@@QAEHHHMH@Z              XREF[10]:    task:004ebd22(c),
+//                               TribeTacticalAIModule::taskDefender                                       task:004ec138(c),
+//                                                                                                         task:004ec52a(c),
+//                                                                                                         task:004ec5f7(c),
+//                                                                                                         task:004ec855(c),
+//                                                                                                         task:004ec87e(c),
+//                                                                                                         task:004eca10(c),
+//                                                                                                         task:004ecbab(c),
+//                                                                                                         taskActiveSoldiers:004f33e0(c),
+//                                                                                                         notify:004f7234(c)
+//                              taitacmd.cpp:8935 (2)
+//         004fada0     PUSH       EBX
+//         004fada1     PUSH       EBP
+//                              taitacmd.cpp:8940 (182)
+//         004fada2     MOV        EBP,dword ptr [ESP + param_1]
+//         004fada6     PUSH       ESI
+//         004fada7     MOV        ESI,this
+//         004fada9     XOR        EAX,EAX
+//         004fadab     PUSH       EDI
+//         004fadac     MOV        this,dword ptr [ESI + 0xd5c]
+//         004fadb2     TEST       this,this
+//         004fadb4     JLE        LAB_004fadd4
+//         004fadb6     MOV        EDX,dword ptr [ESI + 0xd64]
+//                               LAB_004fadbc                                                 XREF[1]:     004fadd2(j)
+//         004fadbc     CMP        EAX,EDX
+//         004fadbe     JGE        LAB_004fadd4
+//         004fadc0     MOV        EDI,dword ptr [ESI + 0xd58]
+//         004fadc6     CMP        dword ptr [EDI + EAX*0x4],EBP
+//         004fadc9     JZ         LAB_004fae58
+//         004fadcf     INC        EAX
+//         004fadd0     CMP        EAX,this
+//         004fadd2     JL         LAB_004fadbc
+//                               LAB_004fadd4                                                 XREF[2]:     004fadb4(j), 004fadbe(j)
+//         004fadd4     MOV        EAX,dword ptr [ESI + 0xd64]
+//         004fadda     DEC        EAX
+//         004faddb     CMP        this,EAX
+//         004faddd     JLE        LAB_004fae3c
+//         004faddf     LEA        EBX,[ECX + this+0x1]
+//         004fade2     LEA        this,[EBX*0x4 + 0x0]
+//         004fade9     PUSH       this
+//         004fadea     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004fadef     MOV        EDI,EAX
+//         004fadf1     ADD        ESP,0x4
+//         004fadf4     TEST       EDI,EDI
+//         004fadf6     JZ         LAB_004fae3c
+//         004fadf8     MOV        this,dword ptr [ESI + 0xd64]
+//         004fadfe     XOR        EAX,EAX
+//         004fae00     TEST       this,this
+//         004fae02     JLE        LAB_004fae21
+//                               LAB_004fae04                                                 XREF[1]:     004fae1f(j)
+//         004fae04     CMP        EAX,EBX
+//         004fae06     JGE        LAB_004fae21
+//         004fae08     MOV        EDX,dword ptr [ESI + 0xd58]
+//         004fae0e     INC        EAX
+//         004fae0f     MOV        this,dword ptr [EDX + EAX*0x4 + -0x4]
+//         004fae13     MOV        dword ptr [EDI + EAX*0x4 + -0x4],this
+//         004fae17     MOV        this,dword ptr [ESI + 0xd64]
+//         004fae1d     CMP        EAX,this
+//         004fae1f     JL         LAB_004fae04
+//                               LAB_004fae21                                                 XREF[2]:     004fae02(j), 004fae06(j)
+//         004fae21     MOV        EDX,dword ptr [ESI + 0xd58]
+//         004fae27     PUSH       EDX
+//         004fae28     CALL       operator_delete                                  void operator_delete(void * param_1)
+//         004fae2d     ADD        ESP,0x4
+//         004fae30     MOV        dword ptr [ESI + 0xd58],EDI
+//         004fae36     MOV        dword ptr [ESI + 0xd64],EBX
+//                               LAB_004fae3c                                                 XREF[2]:     004faddd(j), 004fadf6(j)
+//         004fae3c     MOV        EAX,dword ptr [ESI + 0xd5c]
+//         004fae42     MOV        this,dword ptr [ESI + 0xd58]
+//         004fae48     MOV        dword ptr [this->_padding_ + EAX*0x4],EBP
+//         004fae4b     MOV        EAX,dword ptr [ESI + 0xd5c]
+//         004fae51     INC        EAX
+//         004fae52     MOV        dword ptr [ESI + 0xd5c],EAX
+//                               LAB_004fae58                                                 XREF[1]:     004fadc9(j)
+//                              taitacmd.cpp:8944 (64)
+//         004fae58     MOV        EDX,dword ptr [ESI + 0xf0]
+//         004fae5e     MOV        this,dword ptr [EDX + 0xf0]
+//         004fae64     MOV        EDX,dword ptr [ESP + param_4]
+//         004fae68     PUSH       EDX
+//         004fae69     MOV        EDX,dword ptr [ESP + param_3]
+//         004fae6d     PUSH       0x0
+//         004fae6f     PUSH       0x1
+//         004fae71     PUSH       EDX
+//         004fae72     MOV        EDX,dword ptr [ESP + param_2]
+//         004fae76     MOV        EAX,dword ptr [this->_padding_]
+//         004fae78     PUSH       0xbf800000
+//         004fae7d     PUSH       0xbf800000
+//         004fae82     PUSH       0xbf800000
+//         004fae87     PUSH       -0x1
+//         004fae89     PUSH       EDX
+//         004fae8a     MOVSX      EDX,word ptr [ECX + this+0x4a]
+//         004fae8e     PUSH       0x2bd
+//         004fae93     PUSH       EBP
+//         004fae94     PUSH       EDX
+//         004fae95     CALL       dword ptr [EAX + 0x30]
+//                              taitacmd.cpp:8946 (12)
+//         004fae98     POP        EDI
+//         004fae99     POP        ESI
+//         004fae9a     POP        EBP
+//         004fae9b     MOV        EAX,0x1
+//         004faea0     POP        EBX
+//         004faea1     RET        0x10
+//         004faea4     ??         90h
+//         004faea5     NOP
+//         004faea6     NOP
+//         004faea7     NOP
+//         004faea8     NOP
+//         004faea9     NOP
+//         004faeaa     NOP
+//         004faeab     NOP
+//         004faeac     NOP
+//         004faead     NOP
+//         004faeae     NOP
+//         004faeaf     NOP
+    return 0;
+}
+
+int TribeTacticalAIModule::taskWaterExplorer(int param_1) {
+    /* TODO: Stub */
+//                              int __thiscall taskWaterExplorer(TribeTacticalAIModule * this, int p
+//              int               EAX:4          <RETURN>
+//              TribeTacticalA    ECX:4 (auto)   this
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004faeb1(R)
+//                               ?taskWaterExplorer@TribeTacticalAIModule@@QAEHH@Z
+//                               TribeTacticalAIModule::taskWaterExplorer
+//                              taitacmd.cpp:8951 (1)
+//         004faeb0     PUSH       EBP
+//                              taitacmd.cpp:8953 (12)
+//         004faeb1     MOV        EBP,dword ptr [ESP + param_1]
+//         004faeb5     PUSH       ESI
+//         004faeb6     CMP        EBP,-0x1
+//         004faeb9     MOV        ESI,this
+//         004faebb     JNZ        LAB_004faec4
+//                              taitacmd.cpp:8957 (2)
+//         004faebd     XOR        EAX,EAX
+//                              taitacmd.cpp:8969 (5)
+//         004faebf     POP        ESI
+//         004faec0     POP        EBP
+//         004faec1     RET        0x4
+//                               LAB_004faec4                                                 XREF[1]:     004faebb(j)
+//                              taitacmd.cpp:8963 (176)
+//         004faec4     MOV        this,dword ptr [ESI + 0xd5c]
+//         004faeca     XOR        EAX,EAX
+//         004faecc     PUSH       EDI
+//         004faecd     PUSH       EBX
+//         004faece     TEST       this,this
+//         004faed0     JLE        LAB_004faef0
+//         004faed2     MOV        EDX,dword ptr [ESI + 0xd64]
+//                               LAB_004faed8                                                 XREF[1]:     004faeee(j)
+//         004faed8     CMP        EAX,EDX
+//         004faeda     JGE        LAB_004faef0
+//         004faedc     MOV        EDI,dword ptr [ESI + 0xd58]
+//         004faee2     CMP        dword ptr [EDI + EAX*0x4],EBP
+//         004faee5     JZ         LAB_004faf74
+//         004faeeb     INC        EAX
+//         004faeec     CMP        EAX,this
+//         004faeee     JL         LAB_004faed8
+//                               LAB_004faef0                                                 XREF[2]:     004faed0(j), 004faeda(j)
+//         004faef0     MOV        EAX,dword ptr [ESI + 0xd64]
+//         004faef6     DEC        EAX
+//         004faef7     CMP        this,EAX
+//         004faef9     JLE        LAB_004faf58
+//         004faefb     LEA        EBX,[ECX + this+0x1]
+//         004faefe     LEA        this,[EBX*0x4 + 0x0]
+//         004faf05     PUSH       this
+//         004faf06     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004faf0b     MOV        EDI,EAX
+//         004faf0d     ADD        ESP,0x4
+//         004faf10     TEST       EDI,EDI
+//         004faf12     JZ         LAB_004faf58
+//         004faf14     MOV        this,dword ptr [ESI + 0xd64]
+//         004faf1a     XOR        EAX,EAX
+//         004faf1c     TEST       this,this
+//         004faf1e     JLE        LAB_004faf3d
+//                               LAB_004faf20                                                 XREF[1]:     004faf3b(j)
+//         004faf20     CMP        EAX,EBX
+//         004faf22     JGE        LAB_004faf3d
+//         004faf24     MOV        EDX,dword ptr [ESI + 0xd58]
+//         004faf2a     INC        EAX
+//         004faf2b     MOV        this,dword ptr [EDX + EAX*0x4 + -0x4]
+//         004faf2f     MOV        dword ptr [EDI + EAX*0x4 + -0x4],this
+//         004faf33     MOV        this,dword ptr [ESI + 0xd64]
+//         004faf39     CMP        EAX,this
+//         004faf3b     JL         LAB_004faf20
+//                               LAB_004faf3d                                                 XREF[2]:     004faf1e(j), 004faf22(j)
+//         004faf3d     MOV        EDX,dword ptr [ESI + 0xd58]
+//         004faf43     PUSH       EDX
+//         004faf44     CALL       operator_delete                                  void operator_delete(void * param_1)
+//         004faf49     ADD        ESP,0x4
+//         004faf4c     MOV        dword ptr [ESI + 0xd58],EDI
+//         004faf52     MOV        dword ptr [ESI + 0xd64],EBX
+//                               LAB_004faf58                                                 XREF[2]:     004faef9(j), 004faf12(j)
+//         004faf58     MOV        EAX,dword ptr [ESI + 0xd5c]
+//         004faf5e     MOV        this,dword ptr [ESI + 0xd58]
+//         004faf64     MOV        dword ptr [this->_padding_ + EAX*0x4],EBP
+//         004faf67     MOV        EAX,dword ptr [ESI + 0xd5c]
+//         004faf6d     INC        EAX
+//         004faf6e     MOV        dword ptr [ESI + 0xd5c],EAX
+//                               LAB_004faf74                                                 XREF[1]:     004faee5(j)
+//                              taitacmd.cpp:8967 (60)
+//         004faf74     MOV        EDX,dword ptr [ESI + 0xf0]
+//         004faf7a     PUSH       0x1
+//         004faf7c     PUSH       0x0
+//         004faf7e     PUSH       0x1
+//         004faf80     MOV        this,dword ptr [EDX + 0xf0]
+//         004faf86     PUSH       0x3f800000
+//         004faf8b     PUSH       0xbf800000
+//         004faf90     PUSH       0xbf800000
+//         004faf95     MOVSX      EDX,word ptr [ECX + this+0x4a]
+//         004faf99     MOV        EAX,dword ptr [this->_padding_]
+//         004faf9b     PUSH       0xbf800000
+//         004fafa0     PUSH       -0x1
+//         004fafa2     PUSH       -0x1
+//         004fafa4     PUSH       0x2c1
+//         004fafa9     PUSH       EBP
+//         004fafaa     PUSH       EDX
+//         004fafab     CALL       dword ptr [EAX + 0x30]
+//         004fafae     POP        EBX
+//         004fafaf     POP        EDI
+//                              taitacmd.cpp:8969 (10)
+//         004fafb0     POP        ESI
+//         004fafb1     MOV        EAX,0x1
+//         004fafb6     POP        EBP
+//         004fafb7     RET        0x4
+//         004fafba     ??         90h
+//         004fafbb     NOP
+//         004fafbc     NOP
+//         004fafbd     NOP
+//         004fafbe     NOP
+//         004fafbf     NOP
+    return 0;
+}
+
+int TribeTacticalAIModule::taskWaterTrader(int param_1, int param_2) {
+    /* TODO: Stub */
+//                              int __thiscall taskWaterTrader(TribeTacticalAIModule * this, int par
+//              int               EAX:4          <RETURN>
+//              TribeTacticalA    ECX:4 (auto)   this
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004fafc2(R)
+//              int               Stack[0x8]:4   param_2                   XREF[2]:     004fafea(R), 004fb028(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     004faffe(W), 004fb01a(R)
+//              RGE_Static_Obj    Stack[-0x8]:4  targetObj
+//              undefined4        Stack[-0x30]:4 local_30                  XREF[1]:     004fb046(W)
+//              undefined4        Stack[-0x34]:4 local_34                  XREF[1]:     004fb043(W)
+//              undefined4        Stack[-0x38]:4 local_38                  XREF[1]:     004fb041(*)
+//                               ?taskWaterTrader@TribeTacticalAIModule@@QAEHHH@Z             XREF[1]:     task:004ecb73(c)
+//                               TribeTacticalAIModule::taskWaterTrader
+//                              taitacmd.cpp:8974 (2)
+//         004fafc0     PUSH       this
+//         004fafc1     PUSH       EBX
+//                              taitacmd.cpp:8976 (21)
+//         004fafc2     MOV        EBX,dword ptr [ESP + param_1]
+//         004fafc6     PUSH       EBP
+//         004fafc7     PUSH       ESI
+//         004fafc8     MOV        ESI,this
+//         004fafca     PUSH       EDI
+//         004fafcb     PUSH       EBX
+//         004fafcc     MOV        this,dword ptr [ESI + 0xf0]
+//         004fafd2     CALL       MainDecisionAIModule::object                     RGE_Static_Object * object(MainDecisionAIModu
+//                              taitacmd.cpp:8977 (19)
+//         004fafd7     CMP        EBX,-0x1
+//         004fafda     MOV        EDI,EAX
+//         004fafdc     JZ         LAB_004fb150
+//         004fafe2     TEST       EDI,EDI
+//         004fafe4     JZ         LAB_004fb150
+//                              taitacmd.cpp:8984 (18)
+//         004fafea     MOV        EAX,dword ptr [ESP + param_2]
+//         004fafee     MOV        this,dword ptr [ESI + 0xf0]
+//         004faff4     PUSH       EAX
+//         004faff5     CALL       MainDecisionAIModule::object                     RGE_Static_Object * object(MainDecisionAIModu
+//         004faffa     MOV        EBP,EAX
+//                              taitacmd.cpp:8985 (6)
+//         004faffc     TEST       EBP,EBP
+//         004faffe     MOV        dword ptr [ESP + local_4],EBP
+//                              taitacmd.cpp:8989 (6)
+//         004fb002     JZ         LAB_004fb150
+//                              taitacmd.cpp:8994 (8)
+//         004fb008     FLD        float ptr [EBP + 0x38]
+//         004fb00b     CALL       __ftol                                           undefined __ftol()
+//                              taitacmd.cpp:8995 (10)
+//         004fb010     FLD        float ptr [EBP + 0x3c]
+//         004fb013     MOV        EBX,EAX
+//         004fb015     CALL       __ftol                                           undefined __ftol()
+//                              taitacmd.cpp:8996 (14)
+//         004fb01a     MOV        this,dword ptr [ESP + local_4]
+//         004fb01e     MOV        EBP,EAX
+//         004fb020     FLD        float ptr [ECX + this->_padding_]
+//         004fb023     CALL       __ftol                                           undefined __ftol()
+//                              taitacmd.cpp:8997 (43)
+//         004fb028     MOV        this,dword ptr [ESP + param_2]
+//         004fb02c     PUSH       -0x1
+//         004fb02e     PUSH       -0x1
+//         004fb030     PUSH       0x1
+//         004fb032     MOV        EDX,dword ptr [EDI]
+//         004fb034     PUSH       0x0
+//         004fb036     PUSH       this
+//         004fb037     PUSH       0x40000000
+//         004fb03c     SUB        ESP,0xc
+//         004fb03f     MOV        this,ESP
+//         004fb041     MOV        dword ptr [this->_padding_]=>local_38,EBX
+//         004fb043     MOV        dword ptr [ECX + local_34],EBP
+//         004fb046     MOV        dword ptr [ECX + local_30],EAX
+//         004fb049     MOV        this,EDI
+//         004fb04b     CALL       dword ptr [EDX + 0x198]
+//         004fb051     TEST       EAX,EAX
+//                              taitacmd.cpp:9001 (6)
+//         004fb053     JZ         LAB_004fb150
+//                              taitacmd.cpp:9009 (184)
+//         004fb059     MOV        this,dword ptr [ESI + 0xd5c]
+//         004fb05f     XOR        EAX,EAX
+//         004fb061     TEST       this,this
+//         004fb063     JLE        LAB_004fb089
+//         004fb065     MOV        EDX,dword ptr [ESI + 0xd64]
+//                               LAB_004fb06b                                                 XREF[1]:     004fb087(j)
+//         004fb06b     CMP        EAX,EDX
+//         004fb06d     JGE        LAB_004fb089
+//         004fb06f     MOV        EDI,dword ptr [ESI + 0xd58]
+//         004fb075     MOV        EBX,dword ptr [ESP + 0x18]
+//         004fb079     MOV        EDI,dword ptr [EDI + EAX*0x4]
+//         004fb07c     CMP        EDI,EBX
+//         004fb07e     JZ         LAB_004fb111
+//         004fb084     INC        EAX
+//         004fb085     CMP        EAX,this
+//         004fb087     JL         LAB_004fb06b
+//                               LAB_004fb089                                                 XREF[2]:     004fb063(j), 004fb06d(j)
+//         004fb089     MOV        EDX,dword ptr [ESI + 0xd64]
+//         004fb08f     DEC        EDX
+//         004fb090     CMP        this,EDX
+//         004fb092     JLE        LAB_004fb0f1
+//         004fb094     LEA        EBX,[ECX + this+0x1]
+//         004fb097     LEA        EAX,[EBX*0x4 + 0x0]
+//         004fb09e     PUSH       EAX
+//         004fb09f     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004fb0a4     MOV        EDI,EAX
+//         004fb0a6     ADD        ESP,0x4
+//         004fb0a9     TEST       EDI,EDI
+//         004fb0ab     JZ         LAB_004fb0f1
+//         004fb0ad     MOV        this,dword ptr [ESI + 0xd64]
+//         004fb0b3     XOR        EAX,EAX
+//         004fb0b5     TEST       this,this
+//         004fb0b7     JLE        LAB_004fb0d6
+//                               LAB_004fb0b9                                                 XREF[1]:     004fb0d4(j)
+//         004fb0b9     CMP        EAX,EBX
+//         004fb0bb     JGE        LAB_004fb0d6
+//         004fb0bd     MOV        this,dword ptr [ESI + 0xd58]
+//         004fb0c3     INC        EAX
+//         004fb0c4     MOV        EDX,dword ptr [this->_padding_ + EAX*0x4 + -0x4]
+//         004fb0c8     MOV        dword ptr [EDI + EAX*0x4 + -0x4],EDX
+//         004fb0cc     MOV        this,dword ptr [ESI + 0xd64]
+//         004fb0d2     CMP        EAX,this
+//         004fb0d4     JL         LAB_004fb0b9
+//                               LAB_004fb0d6                                                 XREF[2]:     004fb0b7(j), 004fb0bb(j)
+//         004fb0d6     MOV        EAX,dword ptr [ESI + 0xd58]
+//         004fb0dc     PUSH       EAX
+//         004fb0dd     CALL       operator_delete                                  void operator_delete(void * param_1)
+//         004fb0e2     ADD        ESP,0x4
+//         004fb0e5     MOV        dword ptr [ESI + 0xd58],EDI
+//         004fb0eb     MOV        dword ptr [ESI + 0xd64],EBX
+//                               LAB_004fb0f1                                                 XREF[2]:     004fb092(j), 004fb0ab(j)
+//         004fb0f1     MOV        this,dword ptr [ESI + 0xd5c]
+//         004fb0f7     MOV        EDX,dword ptr [ESI + 0xd58]
+//         004fb0fd     MOV        EAX,dword ptr [ESP + 0x18]
+//         004fb101     MOV        dword ptr [EDX + this->_padding_*0x4],EAX
+//         004fb104     MOV        EAX,dword ptr [ESI + 0xd5c]
+//         004fb10a     INC        EAX
+//         004fb10b     MOV        dword ptr [ESI + 0xd5c],EAX
+//                               LAB_004fb111                                                 XREF[1]:     004fb07e(j)
+//                              taitacmd.cpp:9011 (50)
+//         004fb111     MOV        EAX,dword ptr [ESP + 0x10]
+//         004fb115     MOV        this,dword ptr [ESI + 0xf0]
+//         004fb11b     MOV        ESI,dword ptr [EAX + 0x3c]
+//         004fb11e     MOV        this,dword ptr [this->_padding_ + 0x1256c]
+//         004fb124     PUSH       ESI
+//         004fb125     MOV        ESI,dword ptr [EAX + 0x38]
+//         004fb128     MOV        EAX,dword ptr [EAX + 0xc]
+//         004fb12b     MOV        EDX,dword ptr [this->_padding_]
+//         004fb12d     PUSH       ESI=>DAT_fffffff8
+//         004fb12e     MOVSX      EAX,word ptr [EAX + 0x4a]
+//         004fb132     PUSH       EAX=>DAT_fffffff4
+//         004fb133     MOV        EAX,dword ptr [ESP + 0x28]
+//         004fb137     PUSH       EAX=>DAT_fffffff0
+//         004fb138     MOV        EAX,dword ptr [ESP + 0x28]
+//         004fb13c     PUSH       EAX
+//         004fb13d     CALL       dword ptr [EDX + 0x124]
+//                              taitacmd.cpp:9012 (5)
+//         004fb143     MOV        EAX,0x1
+//                              taitacmd.cpp:9013 (18)
+//         004fb148     POP        EDI
+//         004fb149     POP        ESI
+//         004fb14a     POP        EBP
+//         004fb14b     POP        EBX
+//         004fb14c     POP        this
+//         004fb14d     RET        0x8
+//                               LAB_004fb150                                                 XREF[4]:     004fafdc(j), 004fafe4(j),
+//                                                                                                         004fb002(j), 004fb053(j)
+//         004fb150     POP        EDI
+//         004fb151     POP        ESI
+//         004fb152     POP        EBP
+//         004fb153     XOR        EAX,EAX
+//         004fb155     POP        EBX
+//         004fb156     POP        this
+//         004fb157     RET        0x8
+//         004fb15a     ??         90h
+//         004fb15b     NOP
+//         004fb15c     NOP
+//         004fb15d     NOP
+//         004fb15e     NOP
+//         004fb15f     NOP
+    return 0;
+}
+
+int TribeTacticalAIModule::taskWaterFisher(int param_1, int param_2, float param_3, float param_4) {
+    /* TODO: Stub */
+//                              int __thiscall taskWaterFisher(TribeTacticalAIModule * this, int par
+//              int               EAX:4          <RETURN>
+//              TribeTacticalA    ECX:4 (auto)   this
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004fb161(R)
+//              int               Stack[0x8]:4   param_2
+//              float             Stack[0xc]:4   param_3                   XREF[1]:     004fb189(R)
+//              float             Stack[0x10]:4  param_4                   XREF[1]:     004fb192(R)
+//              undefined4        Stack[-0x2c]:4 local_2c                  XREF[1]:     004fb1bd(W)
+//              undefined4        Stack[-0x30]:4 local_30                  XREF[1]:     004fb1ba(W)
+//              undefined4        Stack[-0x34]:4 local_34                  XREF[1]:     004fb1b7(*)
+//                               ?taskWaterFisher@TribeTacticalAIModule@@QAEHHHMM@Z           XREF[1]:     task:004ec9d8(c)
+//                               TribeTacticalAIModule::taskWaterFisher
+//                              taitacmd.cpp:9019 (1)
+//         004fb160     PUSH       EBX
+//                              taitacmd.cpp:9021 (21)
+//         004fb161     MOV        EBX,dword ptr [ESP + param_1]
+//         004fb165     PUSH       EBP
+//         004fb166     PUSH       ESI
+//         004fb167     MOV        ESI,this
+//         004fb169     PUSH       EDI
+//         004fb16a     PUSH       EBX
+//         004fb16b     MOV        this,dword ptr [ESI + 0xf0]
+//         004fb171     CALL       MainDecisionAIModule::object                     RGE_Static_Object * object(MainDecisionAIModu
+//                              taitacmd.cpp:9022 (19)
+//         004fb176     CMP        EBX,-0x1
+//         004fb179     MOV        EDI,EAX
+//         004fb17b     JZ         LAB_004fb2ba
+//         004fb181     TEST       EDI,EDI
+//         004fb183     JZ         LAB_004fb2ba
+//                              taitacmd.cpp:9031 (9)
+//         004fb189     FLD        float ptr [ESP + param_3]
+//         004fb18d     CALL       __ftol                                           undefined __ftol()
+//                              taitacmd.cpp:9032 (11)
+//         004fb192     FLD        float ptr [ESP + param_4]
+//         004fb196     MOV        EBX,EAX
+//         004fb198     CALL       __ftol                                           undefined __ftol()
+//                              taitacmd.cpp:9033 (5)
+//         004fb19d     MOV        this,0x1
+//                              taitacmd.cpp:9034 (40)
+//         004fb1a2     PUSH       -0x1
+//         004fb1a4     PUSH       -0x1
+//         004fb1a6     PUSH       this
+//         004fb1a7     MOV        EDX,dword ptr [EDI]
+//         004fb1a9     PUSH       0x0
+//         004fb1ab     PUSH       -0x1
+//         004fb1ad     PUSH       0x3f800000
+//         004fb1b2     SUB        ESP,0xc
+//         004fb1b5     MOV        EBP,ESP
+//         004fb1b7     MOV        dword ptr [EBP]=>local_34,EBX
+//         004fb1ba     MOV        dword ptr [EBP + local_30],EAX
+//         004fb1bd     MOV        dword ptr [EBP + local_2c],this
+//         004fb1c0     MOV        this,EDI
+//         004fb1c2     CALL       dword ptr [EDX + 0x198]
+//         004fb1c8     TEST       EAX,EAX
+//                              taitacmd.cpp:9038 (6)
+//         004fb1ca     JZ         LAB_004fb2ba
+//                              taitacmd.cpp:9046 (184)
+//         004fb1d0     MOV        this,dword ptr [ESI + 0xd5c]
+//         004fb1d6     XOR        EAX,EAX
+//         004fb1d8     TEST       this,this
+//         004fb1da     JLE        LAB_004fb200
+//         004fb1dc     MOV        EDX,dword ptr [ESI + 0xd64]
+//         004fb1e2     MOV        EBP,dword ptr [ESP + 0x14]
+//                               LAB_004fb1e6                                                 XREF[1]:     004fb1fc(j)
+//         004fb1e6     CMP        EAX,EDX
+//         004fb1e8     JGE        LAB_004fb204
+//         004fb1ea     MOV        EDI,dword ptr [ESI + 0xd58]
+//         004fb1f0     CMP        dword ptr [EDI + EAX*0x4],EBP
+//         004fb1f3     JZ         LAB_004fb288
+//         004fb1f9     INC        EAX
+//         004fb1fa     CMP        EAX,this
+//         004fb1fc     JL         LAB_004fb1e6
+//         004fb1fe     JMP        LAB_004fb204
+//                               LAB_004fb200                                                 XREF[1]:     004fb1da(j)
+//         004fb200     MOV        EBP,dword ptr [ESP + 0x14]
+//                               LAB_004fb204                                                 XREF[2]:     004fb1e8(j), 004fb1fe(j)
+//         004fb204     MOV        EAX,dword ptr [ESI + 0xd64]
+//         004fb20a     DEC        EAX
+//         004fb20b     CMP        this,EAX
+//         004fb20d     JLE        LAB_004fb26c
+//         004fb20f     LEA        EBX,[ECX + this+0x1]
+//         004fb212     LEA        this,[EBX*0x4 + 0x0]
+//         004fb219     PUSH       this
+//         004fb21a     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004fb21f     MOV        EDI,EAX
+//         004fb221     ADD        ESP,0x4
+//         004fb224     TEST       EDI,EDI
+//         004fb226     JZ         LAB_004fb26c
+//         004fb228     MOV        this,dword ptr [ESI + 0xd64]
+//         004fb22e     XOR        EAX,EAX
+//         004fb230     TEST       this,this
+//         004fb232     JLE        LAB_004fb251
+//                               LAB_004fb234                                                 XREF[1]:     004fb24f(j)
+//         004fb234     CMP        EAX,EBX
+//         004fb236     JGE        LAB_004fb251
+//         004fb238     MOV        EDX,dword ptr [ESI + 0xd58]
+//         004fb23e     INC        EAX
+//         004fb23f     MOV        this,dword ptr [EDX + EAX*0x4 + -0x4]
+//         004fb243     MOV        dword ptr [EDI + EAX*0x4 + -0x4],this
+//         004fb247     MOV        this,dword ptr [ESI + 0xd64]
+//         004fb24d     CMP        EAX,this
+//         004fb24f     JL         LAB_004fb234
+//                               LAB_004fb251                                                 XREF[2]:     004fb232(j), 004fb236(j)
+//         004fb251     MOV        EDX,dword ptr [ESI + 0xd58]
+//         004fb257     PUSH       EDX
+//         004fb258     CALL       operator_delete                                  void operator_delete(void * param_1)
+//         004fb25d     ADD        ESP,0x4
+//         004fb260     MOV        dword ptr [ESI + 0xd58],EDI
+//         004fb266     MOV        dword ptr [ESI + 0xd64],EBX
+//                               LAB_004fb26c                                                 XREF[2]:     004fb20d(j), 004fb226(j)
+//         004fb26c     MOV        EAX,dword ptr [ESI + 0xd5c]
+//         004fb272     MOV        this,dword ptr [ESI + 0xd58]
+//         004fb278     MOV        dword ptr [this->_padding_ + EAX*0x4],EBP
+//         004fb27b     MOV        EAX,dword ptr [ESI + 0xd5c]
+//         004fb281     INC        EAX
+//         004fb282     MOV        dword ptr [ESI + 0xd5c],EAX
+//                               LAB_004fb288                                                 XREF[1]:     004fb1f3(j)
+//                              taitacmd.cpp:9047 (38)
+//         004fb288     MOV        EDX,dword ptr [ESI + 0xf0]
+//         004fb28e     MOV        this,dword ptr [EDX + 0x1256c]
+//         004fb294     MOV        EDX,dword ptr [ESP + 0x20]
+//         004fb298     PUSH       EDX
+//         004fb299     MOV        EDX,dword ptr [ESP + 0x20]
+//         004fb29d     MOV        EAX,dword ptr [this->_padding_]
+//         004fb29f     PUSH       EDX=>DAT_fffffff8
+//         004fb2a0     MOV        EDX,dword ptr [ESP + 0x20]
+//         004fb2a4     PUSH       0x0=>DAT_fffffff4
+//         004fb2a6     PUSH       EDX=>DAT_fffffff0
+//         004fb2a7     PUSH       EBP
+//         004fb2a8     CALL       dword ptr [EAX + 0x124]
+//                              taitacmd.cpp:9048 (5)
+//         004fb2ae     MOV        EAX,0x1
+//                              taitacmd.cpp:9049 (16)
+//         004fb2b3     POP        EDI
+//         004fb2b4     POP        ESI
+//         004fb2b5     POP        EBP
+//         004fb2b6     POP        EBX
+//         004fb2b7     RET        0x10
+//                               LAB_004fb2ba                                                 XREF[3]:     004fb17b(j), 004fb183(j),
+//                                                                                                         004fb1ca(j)
+//         004fb2ba     POP        EDI
+//         004fb2bb     POP        ESI
+//         004fb2bc     POP        EBP
+//         004fb2bd     XOR        EAX,EAX
+//         004fb2bf     POP        EBX
+//         004fb2c0     RET        0x10
+//         004fb2c3     ??         90h
+//         004fb2c4     NOP
+//         004fb2c5     NOP
+//         004fb2c6     NOP
+//         004fb2c7     NOP
+//         004fb2c8     NOP
+//         004fb2c9     NOP
+//         004fb2ca     NOP
+//         004fb2cb     NOP
+//         004fb2cc     NOP
+//         004fb2cd     NOP
+//         004fb2ce     NOP
+//         004fb2cf     NOP
+    return 0;
+}
+
+int TribeTacticalAIModule::taskAttacker(int param_1, float param_2, float param_3, int param_4, int param_5, Waypoint* param_6, int param_7, int param_8, int param_9) {
+    /* TODO: Stub */
+//                              int __thiscall taskAttacker(TribeTacticalAIModule * this, int param_
+//              int               EAX:4          <RETURN>
+//              TribeTacticalA    ECX:4 (auto)   this
+//              int               Stack[0x4]:4   param_1                   XREF[3]:     004fb2d0(R), 004fb331(R), 004fb41f(R)
+//              float             Stack[0x8]:4   param_2                   XREF[1]:     004fb3fd(R)
+//              float             Stack[0xc]:4   param_3                   XREF[1]:     004fb3f9(R)
+//              int               Stack[0x10]:4  param_4                   XREF[3]:     004fb344(R), 004fb40f(W), 004fb413(R)
+//              int               Stack[0x14]:4  param_5
+//              Waypoint *        Stack[0x18]:4  param_6                   XREF[4]:     004fb311(R), 004fb376(W), 004fb37a(R), 004fb3b8(W)
+//              int               Stack[0x1c]:4  param_7                   XREF[1]:     004fb319(R)
+//              int               Stack[0x20]:4  param_8
+//              int               Stack[0x24]:4  param_9                   XREF[1]:     004fb386(R)
+//                               ?taskAttacker@TribeTacticalAIModule@@QAEHHMMHHPAUWaypoint@@  XREF[8]:     task:004ec0ec(c),
+//                               TribeTacticalAIModule::taskAttacker                                       task:004ec5ab(c),
+//                                                                                                         taskActiveSoldiers:004f35a7(c),
+//                                                                                                         notify:004f6ead(c),
+//                                                                                                         notify:004f7047(c),
+//                                                                                                         dealWithGAIAAttacker:0050157f(c),
+//                                                                                                         saveTheTown:00503a6c(c),
+//                                                                                                         saveTheTown:00503b68(c)
+//                              taitacmd.cpp:9056 (13)
+//         004fb2d0     MOV        EAX,dword ptr [ESP + param_1]
+//         004fb2d4     PUSH       EBX
+//         004fb2d5     PUSH       EBP
+//         004fb2d6     PUSH       ESI
+//         004fb2d7     CMP        EAX,-0x1
+//         004fb2da     PUSH       EDI
+//         004fb2db     MOV        ESI,this
+//                              taitacmd.cpp:9065 (6)
+//         004fb2dd     JZ         LAB_004fb4e8
+//                              taitacmd.cpp:9067 (23)
+//         004fb2e3     PUSH       EAX
+//         004fb2e4     MOV        EAX,dword ptr [ESI + 0xf0]
+//         004fb2ea     MOV        this,dword ptr [EAX + 0xf0]
+//         004fb2f0     MOV        this,dword ptr [ECX + this->_padding_]
+//         004fb2f3     CALL       RGE_Game_World::object                           RGE_Static_Object * object(RGE_Game_World * t
+//         004fb2f8     MOV        EBP,EAX
+//                              taitacmd.cpp:9068 (23)
+//         004fb2fa     TEST       EBP,EBP
+//         004fb2fc     JZ         LAB_004fb4e8
+//         004fb302     MOV        this,EBP
+//         004fb304     CALL       RGE_Static_Object::unitAI                        UnitAIModule * unitAI(RGE_Static_Object * this)
+//         004fb309     TEST       EAX,EAX
+//         004fb30b     JZ         LAB_004fb4e8
+//                              taitacmd.cpp:9072 (16)
+//         004fb311     MOV        EDI,dword ptr [ESP + param_6]
+//         004fb315     TEST       EDI,EDI
+//         004fb317     JZ         LAB_004fb344
+//         004fb319     MOV        EBX,dword ptr [ESP + param_7]
+//         004fb31d     TEST       EBX,EBX
+//         004fb31f     JLE        LAB_004fb344
+//                               LAB_004fb321                                                 XREF[1]:     004fb342(j)
+//                              taitacmd.cpp:9078 (35)
+//         004fb321     FLD        float ptr [EDI + 0x4]
+//         004fb324     CALL       __ftol                                           undefined __ftol()
+//         004fb329     FLD        float ptr [EDI]
+//         004fb32b     PUSH       EAX
+//         004fb32c     CALL       __ftol                                           undefined __ftol()
+//         004fb331     MOV        EDX,dword ptr [ESP + param_1]
+//         004fb335     PUSH       EAX
+//         004fb336     PUSH       EDX
+//         004fb337     MOV        this,ESI
+//         004fb339     CALL       TribeTacticalAIModule::addWaypoint               void addWaypoint(TribeTacticalAIModule * this
+//         004fb33e     ADD        EDI,0x10
+//         004fb341     DEC        EBX
+//         004fb342     JNZ        LAB_004fb321
+//                               LAB_004fb344                                                 XREF[2]:     004fb317(j), 004fb31f(j)
+//                              taitacmd.cpp:9083 (13)
+//         004fb344     MOV        EAX,dword ptr [ESP + param_4]
+//         004fb348     CMP        EAX,-0x1
+//         004fb34b     JZ         LAB_004fb3f9
+//                              taitacmd.cpp:9084 (21)
+//         004fb351     PUSH       EAX
+//         004fb352     MOV        EAX,dword ptr [ESI + 0xf0]
+//         004fb358     MOV        this,dword ptr [EAX + 0xf0]
+//         004fb35e     MOV        this,dword ptr [ECX + this->_padding_]
+//         004fb361     CALL       RGE_Game_World::object                           RGE_Static_Object * object(RGE_Game_World * t
+//                              taitacmd.cpp:9085 (2)
+//         004fb366     TEST       EAX,EAX
+//                              taitacmd.cpp:9086 (6)
+//         004fb368     JZ         LAB_004fb4e8
+//                              taitacmd.cpp:9088 (12)
+//         004fb36e     PUSH       EAX
+//         004fb36f     MOV        this,EBP
+//         004fb371     CALL       RGE_Static_Object::distance_to_object            float distance_to_object(RGE_Static_Object *
+//         004fb376     FSTP       float ptr [ESP + param_6]
+//                              taitacmd.cpp:9089 (12)
+//         004fb37a     MOV        EDX,dword ptr [ESP + param_6]
+//         004fb37e     MOV        this,ESI
+//         004fb380     PUSH       EDX
+//         004fb381     CALL       TribeTacticalAIModule::calculatePriority         int calculatePriority(TribeTacticalAIModule *
+//                              taitacmd.cpp:9096 (4)
+//         004fb386     MOV        EDI,dword ptr [ESP + param_9]
+//                              taitacmd.cpp:9107 (105)
+//         004fb38a     MOV        this,dword ptr [ESI + 0xf0]
+//         004fb390     DEC        EDI
+//         004fb391     MOV        EDX,this
+//         004fb393     MOV        EBX,dword ptr [ECX + this->md]
+//         004fb399     PUSH       EAX
+//         004fb39a     MOV        this,dword ptr [EDX + 0xf0]
+//         004fb3a0     MOV        EAX,dword ptr [EBP]
+//         004fb3a3     NEG        EDI
+//         004fb3a5     MOV        EDX,dword ptr [this->_padding_]
+//         004fb3a7     PUSH       0x0
+//         004fb3a9     SBB        EDI,EDI
+//         004fb3ab     PUSH       0x1
+//         004fb3ad     AND        EDI,0xffffffe3
+//         004fb3b0     MOV        this,EBP
+//         004fb3b2     ADD        EDI,0x2d9
+//         004fb3b8     MOV        dword ptr [ESP + param_6],EDX
+//         004fb3bc     CALL       dword ptr [EAX + 0x10c]
+//         004fb3c2     MOV        EDX,dword ptr [ESP + 0x24]
+//         004fb3c6     MOV        EAX,dword ptr [ESP + 0x30]
+//         004fb3ca     PUSH       this
+//         004fb3cb     MOV        this,dword ptr [ESP + 0x2c]
+//         004fb3cf     FSTP       float ptr [ESP]
+//         004fb3d2     PUSH       offset DAT_fffffff8
+//         004fb3d7     PUSH       this=>DAT_fffffff4
+//         004fb3d8     MOV        this,dword ptr [ESP + 0x38]
+//         004fb3dc     PUSH       EDX=>DAT_fffffff0
+//         004fb3dd     MOV        EDX,dword ptr [ESP + 0x30]
+//         004fb3e1     PUSH       EAX
+//         004fb3e2     MOVSX      EAX,word ptr [EBX + 0x4a]
+//         004fb3e6     PUSH       this
+//         004fb3e7     PUSH       EDI
+//         004fb3e8     PUSH       EDX
+//         004fb3e9     MOV        EDX,dword ptr [ESP + 0x54]
+//         004fb3ed     PUSH       EAX
+//         004fb3ee     MOV        this,EBX
+//         004fb3f0     CALL       dword ptr [EDX + 0x30]
+//                              taitacmd.cpp:9110 (6)
+//         004fb3f3     MOV        EBP,dword ptr [ESP + 0x14]
+//         004fb3f7     JMP        LAB_004fb42e
+//                               LAB_004fb3f9                                                 XREF[1]:     004fb34b(j)
+//                              taitacmd.cpp:9112 (26)
+//         004fb3f9     MOV        EDI,dword ptr [ESP + param_3]
+//         004fb3fd     MOV        EBX,dword ptr [ESP + param_2]
+//         004fb401     PUSH       0x3f800000
+//         004fb406     PUSH       EDI
+//         004fb407     PUSH       EBX
+//         004fb408     MOV        this,EBP
+//         004fb40a     CALL       RGE_Static_Object::distance_to_position          float distance_to_position(RGE_Static_Object
+//         004fb40f     FSTP       float ptr [ESP + param_4]
+//                              taitacmd.cpp:9113 (12)
+//         004fb413     MOV        EAX,dword ptr [ESP + param_4]
+//         004fb417     MOV        this,ESI
+//         004fb419     PUSH       EAX
+//         004fb41a     CALL       TribeTacticalAIModule::calculatePriority         int calculatePriority(TribeTacticalAIModule *
+//                              taitacmd.cpp:9118 (15)
+//         004fb41f     MOV        EBP,dword ptr [ESP + param_1]
+//         004fb423     PUSH       EAX
+//         004fb424     PUSH       EDI
+//         004fb425     PUSH       EBX
+//         004fb426     PUSH       EBP
+//         004fb427     MOV        this,ESI
+//         004fb429     CALL       TribeTacticalAIModule::moveUnit                  int moveUnit(TribeTacticalAIModule * this, in
+//                               LAB_004fb42e                                                 XREF[1]:     004fb3f7(j)
+//                              taitacmd.cpp:9123 (174)
+//         004fb42e     MOV        this,dword ptr [ESI + 0xd5c]
+//         004fb434     XOR        EAX,EAX
+//         004fb436     TEST       this,this
+//         004fb438     JLE        LAB_004fb458
+//         004fb43a     MOV        EDX,dword ptr [ESI + 0xd64]
+//                               LAB_004fb440                                                 XREF[1]:     004fb456(j)
+//         004fb440     CMP        EAX,EDX
+//         004fb442     JGE        LAB_004fb458
+//         004fb444     MOV        EDI,dword ptr [ESI + 0xd58]
+//         004fb44a     CMP        dword ptr [EDI + EAX*0x4],EBP
+//         004fb44d     JZ         LAB_004fb4dc
+//         004fb453     INC        EAX
+//         004fb454     CMP        EAX,this
+//         004fb456     JL         LAB_004fb440
+//                               LAB_004fb458                                                 XREF[2]:     004fb438(j), 004fb442(j)
+//         004fb458     MOV        EDX,dword ptr [ESI + 0xd64]
+//         004fb45e     DEC        EDX
+//         004fb45f     CMP        this,EDX
+//         004fb461     JLE        LAB_004fb4c0
+//         004fb463     LEA        EBX,[ECX + this+0x1]
+//         004fb466     LEA        EAX,[EBX*0x4 + 0x0]
+//         004fb46d     PUSH       EAX
+//         004fb46e     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004fb473     MOV        EDI,EAX
+//         004fb475     ADD        ESP,0x4
+//         004fb478     TEST       EDI,EDI
+//         004fb47a     JZ         LAB_004fb4c0
+//         004fb47c     MOV        this,dword ptr [ESI + 0xd64]
+//         004fb482     XOR        EAX,EAX
+//         004fb484     TEST       this,this
+//         004fb486     JLE        LAB_004fb4a5
+//                               LAB_004fb488                                                 XREF[1]:     004fb4a3(j)
+//         004fb488     CMP        EAX,EBX
+//         004fb48a     JGE        LAB_004fb4a5
+//         004fb48c     MOV        this,dword ptr [ESI + 0xd58]
+//         004fb492     INC        EAX
+//         004fb493     MOV        EDX,dword ptr [this->_padding_ + EAX*0x4 + -0x4]
+//         004fb497     MOV        dword ptr [EDI + EAX*0x4 + -0x4],EDX
+//         004fb49b     MOV        this,dword ptr [ESI + 0xd64]
+//         004fb4a1     CMP        EAX,this
+//         004fb4a3     JL         LAB_004fb488
+//                               LAB_004fb4a5                                                 XREF[2]:     004fb486(j), 004fb48a(j)
+//         004fb4a5     MOV        EAX,dword ptr [ESI + 0xd58]
+//         004fb4ab     PUSH       EAX
+//         004fb4ac     CALL       operator_delete                                  void operator_delete(void * param_1)
+//         004fb4b1     ADD        ESP,0x4
+//         004fb4b4     MOV        dword ptr [ESI + 0xd58],EDI
+//         004fb4ba     MOV        dword ptr [ESI + 0xd64],EBX
+//                               LAB_004fb4c0                                                 XREF[2]:     004fb461(j), 004fb47a(j)
+//         004fb4c0     MOV        this,dword ptr [ESI + 0xd5c]
+//         004fb4c6     MOV        EDX,dword ptr [ESI + 0xd58]
+//         004fb4cc     MOV        dword ptr [EDX + this->_padding_*0x4],EBP
+//         004fb4cf     MOV        EAX,dword ptr [ESI + 0xd5c]
+//         004fb4d5     INC        EAX
+//         004fb4d6     MOV        dword ptr [ESI + 0xd5c],EAX
+//                               LAB_004fb4dc                                                 XREF[1]:     004fb44d(j)
+//                              taitacmd.cpp:9124 (5)
+//         004fb4dc     MOV        EAX,0x1
+//                              taitacmd.cpp:9125 (16)
+//         004fb4e1     POP        EDI
+//         004fb4e2     POP        ESI
+//         004fb4e3     POP        EBP
+//         004fb4e4     POP        EBX
+//         004fb4e5     RET        0x24
+//                               LAB_004fb4e8                                                 XREF[4]:     004fb2dd(j), 004fb2fc(j),
+//                                                                                                         004fb30b(j), 004fb368(j)
+//         004fb4e8     POP        EDI
+//         004fb4e9     POP        ESI
+//         004fb4ea     POP        EBP
+//         004fb4eb     XOR        EAX,EAX
+//         004fb4ed     POP        EBX
+//         004fb4ee     RET        0x24
+//         004fb4f1     ??         90h
+//         004fb4f2     NOP
+//         004fb4f3     NOP
+//         004fb4f4     NOP
+//         004fb4f5     NOP
+//         004fb4f6     NOP
+//         004fb4f7     NOP
+//         004fb4f8     NOP
+//         004fb4f9     NOP
+//         004fb4fa     NOP
+//         004fb4fb     NOP
+//         004fb4fc     NOP
+//         004fb4fd     NOP
+//         004fb4fe     NOP
+//         004fb4ff     NOP
     return 0;
 }
 
@@ -30688,34 +29641,26 @@ int TribeTacticalAIModule::taskDefender(int param_1, int param_2) {
 //                              int __thiscall taskDefender(TribeTacticalAIModule * this, int param_
 //              int               EAX:4          <RETURN>
 //              TribeTacticalA    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     004fb524(R)
-//              float             Stack[0x8]:4   param_2                   XREF[1]:     004fb52e(R)
-//              float             Stack[0xc]:4   param_3                   XREF[1]:     004fb520(R)
-//              undefined8        Stack[-0x8]:8  local_8                   XREF[1]:     004fb52b(*)
-//              undefined8        Stack[-0x10]:8 local_10                  XREF[1]:     004fb535(*)
-//                               ?taskDefender@TribeTacticalAIModule@@QAEHHMM@Z
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004fb504(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     004fb500(R)
+//                               ?taskDefender@TribeTacticalAIModule@@QAEHHH@Z
 //                               TribeTacticalAIModule::taskDefender
-//                              taitacmd.cpp:9160 (39)
-//         004fb520     FLD        float ptr [ESP + param_3]
-//         004fb524     MOV        EAX,dword ptr [ESP + param_1]
-//         004fb528     SUB        ESP,0x8
-//         004fb52b     FSTP       double ptr [ESP]=>local_8
-//         004fb52e     FLD        float ptr [ESP + param_2]
-//         004fb532     SUB        ESP,0x8
-//         004fb535     FSTP       double ptr [ESP]=>local_10
-//         004fb538     PUSH       EAX
-//         004fb539     PUSH       s_ERROR:_Unused_taskDefender_call_               = "ERROR: Unused taskDefender call 2: defende
-//         004fb53e     PUSH       this
-//         004fb53f     CALL       AIModule::logCommonHistory                       void logCommonHistory(AIModule * this, char *
-//         004fb544     ADD        ESP,0x1c
-//                              taitacmd.cpp:9179 (2)
-//         004fb547     XOR        EAX,EAX
-//                              taitacmd.cpp:9180 (3)
-//         004fb549     RET        0xc
-//         004fb54c     ??         90h
-//         004fb54d     NOP
-//         004fb54e     NOP
-//         004fb54f     NOP
+//                              taitacmd.cpp:9130 (24)
+//         004fb500     MOV        EAX,dword ptr [ESP + param_2]
+//         004fb504     MOV        EDX,dword ptr [ESP + param_1]
+//         004fb508     PUSH       EAX
+//         004fb509     PUSH       EDX
+//         004fb50a     PUSH       s_ERROR:_Unused_taskDefender_call_               = "ERROR: Unused taskDefender call 1: defende
+//         004fb50f     PUSH       this
+//         004fb510     CALL       AIModule::logCommonHistory                       void logCommonHistory(AIModule * this, char *
+//         004fb515     ADD        ESP,0x10
+//                              taitacmd.cpp:9154 (2)
+//         004fb518     XOR        EAX,EAX
+//                              taitacmd.cpp:9155 (3)
+//         004fb51a     RET        0x8
+//         004fb51d     ??         90h
+//         004fb51e     NOP
+//         004fb51f     NOP
     return 0;
 }
 
@@ -39526,62 +38471,72 @@ int TribeTacticalAIModule::removeFromGroup(int param_1, int param_2) {
 //                              int __thiscall removeFromGroup(TribeTacticalAIModule * this, int par
 //              int               EAX:4          <RETURN>
 //              TribeTacticalA    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     00500851(R)
-//                               ?removeFromGroup@TribeTacticalAIModule@@QAEHH@Z              XREF[9]:     removeObject:004f1166(c),
-//                               TribeTacticalAIModule::removeFromGroup                                    removeObject:004f1294(c),
-//                                                                                                         removeObject:004f1319(c),
-//                                                                                                         removeObject:004f1381(c),
-//                                                                                                         notify:004f72b2(c),
-//                                                                                                         fillSoldierGroups:004fcbdd(c),
-//                                                                                                         fillSoldierGroups:004fce3d(c),
-//                                                                                                         fillBoatGroups:004fee9b(c),
-//                                                                                                         fillBoatGroups:004ff0e9(c)
-//                              taitacmd.cpp:11451 (1)
-//         00500850     PUSH       EBX
-//                              taitacmd.cpp:11452 (16)
-//         00500851     MOV        EBX,dword ptr [ESP + param_1]
-//         00500855     PUSH       ESI
-//         00500856     PUSH       EDI
-//         00500857     MOV        EDI,this
-//         00500859     PUSH       EBX
-//         0050085a     CALL       TribeTacticalAIModule::groupUnitIsIn             TacticalAIGroup * groupUnitIsIn(TribeTactical
-//         0050085f     MOV        ESI,EAX
-//                              taitacmd.cpp:11453 (4)
-//         00500861     TEST       ESI,ESI
-//         00500863     JNZ        LAB_0050086b
-//                              taitacmd.cpp:11460 (6)
-//         00500865     POP        EDI
-//         00500866     POP        ESI
-//         00500867     POP        EBX
-//         00500868     RET        0x4
-//                               LAB_0050086b                                                 XREF[1]:     00500863(j)
-//                              taitacmd.cpp:11455 (15)
-//         0050086b     MOV        EAX,dword ptr [EDI + 0xf0]
-//         00500871     MOV        this,ESI
-//         00500873     PUSH       EAX
-//         00500874     PUSH       EBX
-//         00500875     CALL       TacticalAIGroup::removeUnit                      int removeUnit(TacticalAIGroup * this, int pa
-//                              taitacmd.cpp:11457 (13)
-//         0050087a     MOV        this,ESI
-//         0050087c     MOV        EBX,EAX
-//         0050087e     CALL       TacticalAIGroup::numberUnits                     int numberUnits(TacticalAIGroup * this)
-//         00500883     TEST       EAX,EAX
-//         00500885     JNZ        LAB_00500896
-//                              taitacmd.cpp:11458 (15)
-//         00500887     MOV        this,ESI
-//         00500889     CALL       TacticalAIGroup::id                              int id(TacticalAIGroup * this)
-//         0050088e     PUSH       EAX
-//         0050088f     MOV        this,EDI
-//         00500891     CALL       TribeTacticalAIModule::removeGroup               int removeGroup(TribeTacticalAIModule * this,
-//                               LAB_00500896                                                 XREF[1]:     00500885(j)
-//                              taitacmd.cpp:11460 (8)
-//         00500896     POP        EDI
-//         00500897     MOV        EAX,EBX
-//         00500899     POP        ESI
-//         0050089a     POP        EBX
-//         0050089b     RET        0x4
-//         0050089e     ??         90h
-//         0050089f     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     00500817(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     005007f1(R)
+//                               ?removeFromGroup@TribeTacticalAIModule@@QAEHHH@Z
+//                               TribeTacticalAIModule::removeFromGroup
+//                              taitacmd.cpp:11437 (1)
+//         005007f0     PUSH       EBX
+//                              taitacmd.cpp:11438 (22)
+//         005007f1     MOV        EBX,dword ptr [ESP + param_2]
+//         005007f5     PUSH       ESI
+//         005007f6     PUSH       EDI
+//         005007f7     PUSH       -0x1
+//         005007f9     PUSH       -0x1
+//         005007fb     PUSH       -0x1
+//         005007fd     MOV        EDI,this
+//         005007ff     PUSH       EBX
+//         00500800     CALL       TribeTacticalAIModule::group                     TacticalAIGroup * group(TribeTacticalAIModule
+//         00500805     MOV        ESI,EAX
+//                              taitacmd.cpp:11439 (4)
+//         00500807     TEST       ESI,ESI
+//         00500809     JNZ        LAB_00500811
+//                              taitacmd.cpp:11446 (6)
+//         0050080b     POP        EDI
+//         0050080c     POP        ESI
+//         0050080d     POP        EBX
+//         0050080e     RET        0x8
+//                               LAB_00500811                                                 XREF[1]:     00500809(j)
+//                              taitacmd.cpp:11441 (20)
+//         00500811     MOV        EAX,dword ptr [EDI + 0xf0]
+//         00500817     MOV        this,dword ptr [ESP + param_1]
+//         0050081b     PUSH       EBP
+//         0050081c     PUSH       EAX
+//         0050081d     PUSH       this
+//         0050081e     MOV        this,ESI
+//         00500820     CALL       TacticalAIGroup::removeUnit                      int removeUnit(TacticalAIGroup * this, int pa
+//                              taitacmd.cpp:11443 (13)
+//         00500825     MOV        this,ESI
+//         00500827     MOV        EBP,EAX
+//         00500829     CALL       TacticalAIGroup::numberUnits                     int numberUnits(TacticalAIGroup * this)
+//         0050082e     TEST       EAX,EAX
+//         00500830     JNZ        LAB_0050083a
+//                              taitacmd.cpp:11444 (8)
+//         00500832     PUSH       EBX
+//         00500833     MOV        this,EDI
+//         00500835     CALL       TribeTacticalAIModule::removeGroup               int removeGroup(TribeTacticalAIModule * this,
+//                               LAB_0050083a                                                 XREF[1]:     00500830(j)
+//                              taitacmd.cpp:11445 (3)
+//         0050083a     MOV        EAX,EBP
+//         0050083c     POP        EBP
+//                              taitacmd.cpp:11446 (6)
+//         0050083d     POP        EDI
+//         0050083e     POP        ESI
+//         0050083f     POP        EBX
+//         00500840     RET        0x8
+//         00500843     ??         90h
+//         00500844     NOP
+//         00500845     NOP
+//         00500846     NOP
+//         00500847     NOP
+//         00500848     NOP
+//         00500849     NOP
+//         0050084a     NOP
+//         0050084b     NOP
+//         0050084c     NOP
+//         0050084d     NOP
+//         0050084e     NOP
+//         0050084f     NOP
     return 0;
 }
 
@@ -40811,226 +39766,126 @@ void TribeTacticalAIModule::setGroupInfluences(InfluenceMap* param_1) {
 
 int TribeTacticalAIModule::selectBestCommander(TacticalAIGroup* param_1) {
     /* TODO: Stub */
-//                              int __thiscall selectBestCommander(TribeTacticalAIModule * this, Man
+//                              int __thiscall selectBestCommander(TribeTacticalAIModule * this, Tac
 //              int               EAX:4          <RETURN>
 //              TribeTacticalA    ECX:4 (auto)   this
-//              ManagedArray<i    Stack[0x4]:4   param_1                   XREF[1]:     00501265(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     00501272(W), 005012dd(R)
-//              undefined4        Stack[-0x8]:4  local_8                   XREF[2]:     00501278(W), 00501422(R)
-//              int               Stack[-0xc]:4  bestUnit                  XREF[3]:     0050127c(W), 005012d7(R), 00501417(W)
-//              int               Stack[-0x10]:4 i
-//                               ?selectBestCommander@TribeTacticalAIModule@@QAEHAAV?$Manage  XREF[2]:     fillSoldierGroups:004fc5cf(c),
-//                               TribeTacticalAIModule::selectBestCommander                                fillBoatGroups:004fea1f(c)
-//                              taitacmd.cpp:11806 (5)
-//         00501260     SUB        ESP,0xc
-//         00501263     PUSH       EBP
-//         00501264     PUSH       ESI
-//                              taitacmd.cpp:11815 (33)
-//         00501265     MOV        ESI,dword ptr [ESP + param_1]
-//         00501269     PUSH       EDI
-//         0050126a     OR         EBP,0xffffffff
-//         0050126d     XOR        EDI,EDI
-//         0050126f     MOV        EAX,dword ptr [ESI + 0x4]
-//         00501272     MOV        dword ptr [ESP + local_4],this
-//         00501276     TEST       EAX,EAX
-//         00501278     MOV        dword ptr [ESP + local_8],EBP
-//         0050127c     MOV        dword ptr [ESP + bestUnit],EDI
-//         00501280     JLE        LAB_00501422
-//                              taitacmd.cpp:11806 (1)
-//         00501286     PUSH       EBX
-//                               LAB_00501287                                                 XREF[1]:     0050141b(j)
-//                              taitacmd.cpp:11816 (105)
-//         00501287     MOV        EAX,dword ptr [ESI + 0xc]
-//         0050128a     DEC        EAX
-//         0050128b     CMP        EDI,EAX
-//         0050128d     JLE        LAB_005012db
-//         0050128f     LEA        this,[EDI*0x4 + 0x4]
-//         00501296     LEA        EBX,[EDI + 0x1]
-//         00501299     PUSH       this
-//         0050129a     CALL       operator_new                                     void * operator_new(uint param_1)
-//         0050129f     MOV        EDI,EAX
-//         005012a1     ADD        ESP,0x4
-//         005012a4     TEST       EDI,EDI
-//         005012a6     JZ         LAB_005012d7
-//         005012a8     MOV        this,dword ptr [ESI + 0xc]
-//         005012ab     XOR        EAX,EAX
-//         005012ad     TEST       this,this
-//         005012af     JLE        LAB_005012c7
-//                               LAB_005012b1                                                 XREF[1]:     005012c5(j)
-//         005012b1     CMP        EAX,EBX
-//         005012b3     JGE        LAB_005012c7
-//         005012b5     MOV        EDX,dword ptr [ESI]
-//         005012b7     INC        EAX
-//         005012b8     MOV        this,dword ptr [EDX + EAX*0x4 + -0x4]
-//         005012bc     MOV        dword ptr [EDI + EAX*0x4 + -0x4],this
-//         005012c0     MOV        this,dword ptr [ESI + 0xc]
-//         005012c3     CMP        EAX,this
-//         005012c5     JL         LAB_005012b1
-//                               LAB_005012c7                                                 XREF[2]:     005012af(j), 005012b3(j)
-//         005012c7     MOV        EDX,dword ptr [ESI]
-//         005012c9     PUSH       EDX
-//         005012ca     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         005012cf     ADD        ESP,0x4
-//         005012d2     MOV        dword ptr [ESI],EDI
-//         005012d4     MOV        dword ptr [ESI + 0xc],EBX
-//                               LAB_005012d7                                                 XREF[1]:     005012a6(j)
-//         005012d7     MOV        EDI,dword ptr [ESP + bestUnit]
-//                               LAB_005012db                                                 XREF[1]:     0050128d(j)
-//         005012db     MOV        EAX,dword ptr [ESI]
-//         005012dd     MOV        EBX,dword ptr [ESP + local_4]
-//         005012e1     MOV        this,dword ptr [EAX + EDI*0x4]
-//         005012e4     PUSH       this
-//         005012e5     MOV        this,dword ptr [EBX + 0xf0]
-//         005012eb     CALL       MainDecisionAIModule::object                     RGE_Static_Object * object(MainDecisionAIModu
-//                              taitacmd.cpp:11817 (8)
-//         005012f0     TEST       EAX,EAX
-//         005012f2     JZ         LAB_00501411
-//                              taitacmd.cpp:11821 (14)
-//         005012f8     MOV        EDX,dword ptr [EAX + 0x8]
-//         005012fb     CMP        word ptr [EDX + 0x10],0x7d
-//         00501300     JZ         LAB_00501411
-//                              taitacmd.cpp:11826 (9)
-//         00501306     CMP        dword ptr [EBX + 0x2c0],0x2
-//         0050130d     JNZ        LAB_0050131b
-//                              taitacmd.cpp:11827 (10)
-//         0050130f     MOV        EDX,dword ptr [EAX]
-//         00501311     MOV        this,EAX
-//         00501313     CALL       dword ptr [EDX + 0x10c]
-//                              taitacmd.cpp:11828 (2)
-//         00501319     JMP        LAB_0050131e
-//                               LAB_0050131b                                                 XREF[1]:     0050130d(j)
-//                              taitacmd.cpp:11829 (12)
-//         0050131b     FLD        float ptr [EAX + 0x30]
-//                               LAB_0050131e                                                 XREF[1]:     00501319(j)
-//         0050131e     CALL       __ftol                                           undefined __ftol()
-//         00501323     MOV        dword ptr [ESP + 0x20],EAX
-//                              taitacmd.cpp:11834 (16)
-//         00501327     MOV        EAX,dword ptr [EBX + 0x2c0]
-//         0050132d     CMP        EAX,0x1
-//         00501330     JZ         LAB_005013a5
-//         00501332     CMP        EAX,0x3
-//         00501335     JZ         LAB_005013a5
-//                              taitacmd.cpp:11841 (15)
-//         00501337     CMP        EBP,-0x1
-//         0050133a     JZ         LAB_00501346
-//         0050133c     CMP        dword ptr [ESP + 0x20],EBP
-//         00501340     JLE        LAB_00501411
-//                               LAB_00501346                                                 XREF[1]:     0050133a(j)
-//                              taitacmd.cpp:11842 (95)
-//         00501346     MOV        EAX,dword ptr [ESI + 0xc]
-//         00501349     DEC        EAX
-//         0050134a     CMP        EDI,EAX
-//         0050134c     JLE        LAB_0050139a
-//         0050134e     LEA        this,[EDI*0x4 + 0x4]
-//         00501355     LEA        EBX,[EDI + 0x1]
-//         00501358     PUSH       this
-//         00501359     CALL       operator_new                                     void * operator_new(uint param_1)
-//         0050135e     MOV        EDI,EAX
-//         00501360     ADD        ESP,0x4
-//         00501363     TEST       EDI,EDI
-//         00501365     JZ         LAB_00501396
-//         00501367     MOV        this,dword ptr [ESI + 0xc]
-//         0050136a     XOR        EAX,EAX
-//         0050136c     TEST       this,this
-//         0050136e     JLE        LAB_00501386
-//                               LAB_00501370                                                 XREF[1]:     00501384(j)
-//         00501370     CMP        EAX,EBX
-//         00501372     JGE        LAB_00501386
-//         00501374     MOV        EDX,dword ptr [ESI]
-//         00501376     INC        EAX
-//         00501377     MOV        this,dword ptr [EDX + EAX*0x4 + -0x4]
-//         0050137b     MOV        dword ptr [EDI + EAX*0x4 + -0x4],this
-//         0050137f     MOV        this,dword ptr [ESI + 0xc]
-//         00501382     CMP        EAX,this
-//         00501384     JL         LAB_00501370
-//                               LAB_00501386                                                 XREF[2]:     0050136e(j), 00501372(j)
-//         00501386     MOV        EDX,dword ptr [ESI]
-//         00501388     PUSH       EDX
-//         00501389     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         0050138e     ADD        ESP,0x4
-//         00501391     MOV        dword ptr [ESI],EDI
-//         00501393     MOV        dword ptr [ESI + 0xc],EBX
-//                               LAB_00501396                                                 XREF[1]:     00501365(j)
-//         00501396     MOV        EDI,dword ptr [ESP + 0x10]
-//                               LAB_0050139a                                                 XREF[1]:     0050134c(j)
-//         0050139a     MOV        EAX,dword ptr [ESI]
-//         0050139c     MOV        this,dword ptr [EAX + EDI*0x4]
-//         0050139f     MOV        dword ptr [ESP + 0x14],this
-//         005013a3     JMP        LAB_0050140d
-//                               LAB_005013a5                                                 XREF[2]:     00501330(j), 00501335(j)
-//                              taitacmd.cpp:11835 (11)
-//         005013a5     CMP        EBP,-0x1
-//         005013a8     JZ         LAB_005013b0
-//         005013aa     CMP        dword ptr [ESP + 0x20],EBP
-//         005013ae     JGE        LAB_00501411
-//                               LAB_005013b0                                                 XREF[1]:     005013a8(j)
-//                              taitacmd.cpp:11836 (93)
-//         005013b0     MOV        EDX,dword ptr [ESI + 0xc]
-//         005013b3     DEC        EDX
-//         005013b4     CMP        EDI,EDX
-//         005013b6     JLE        LAB_00501404
-//         005013b8     LEA        EAX,[EDI*0x4 + 0x4]
-//         005013bf     LEA        EBX,[EDI + 0x1]
-//         005013c2     PUSH       EAX
-//         005013c3     CALL       operator_new                                     void * operator_new(uint param_1)
-//         005013c8     MOV        EDI,EAX
-//         005013ca     ADD        ESP,0x4
-//         005013cd     TEST       EDI,EDI
-//         005013cf     JZ         LAB_00501400
-//         005013d1     MOV        this,dword ptr [ESI + 0xc]
-//         005013d4     XOR        EAX,EAX
-//         005013d6     TEST       this,this
-//         005013d8     JLE        LAB_005013f0
-//                               LAB_005013da                                                 XREF[1]:     005013ee(j)
-//         005013da     CMP        EAX,EBX
-//         005013dc     JGE        LAB_005013f0
-//         005013de     MOV        this,dword ptr [ESI]
-//         005013e0     INC        EAX
-//         005013e1     MOV        EDX,dword ptr [this->_padding_ + EAX*0x4 + -0x4]
-//         005013e5     MOV        dword ptr [EDI + EAX*0x4 + -0x4],EDX
-//         005013e9     MOV        this,dword ptr [ESI + 0xc]
-//         005013ec     CMP        EAX,this
-//         005013ee     JL         LAB_005013da
-//                               LAB_005013f0                                                 XREF[2]:     005013d8(j), 005013dc(j)
-//         005013f0     MOV        EAX,dword ptr [ESI]
-//         005013f2     PUSH       EAX
-//         005013f3     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         005013f8     ADD        ESP,0x4
-//         005013fb     MOV        dword ptr [ESI],EDI
-//         005013fd     MOV        dword ptr [ESI + 0xc],EBX
-//                               LAB_00501400                                                 XREF[1]:     005013cf(j)
-//         00501400     MOV        EDI,dword ptr [ESP + 0x10]
-//                               LAB_00501404                                                 XREF[1]:     005013b6(j)
-//         00501404     MOV        this,dword ptr [ESI]
-//         00501406     MOV        EDX,dword ptr [this->_padding_ + EDI*0x4]
-//         00501409     MOV        dword ptr [ESP + 0x14],EDX
-//                               LAB_0050140d                                                 XREF[1]:     005013a3(j)
-//                              taitacmd.cpp:11837 (4)
-//         0050140d     MOV        EBP,dword ptr [ESP + 0x20]
-//                               LAB_00501411                                                 XREF[4]:     005012f2(j), 00501300(j),
-//                                                                                                         00501340(j), 005013ae(j)
-//                              taitacmd.cpp:11815 (16)
-//         00501411     MOV        EAX,dword ptr [ESI + 0x4]
-//         00501414     INC        EDI
-//         00501415     CMP        EDI,EAX
-//         00501417     MOV        dword ptr [ESP + bestUnit],EDI
-//         0050141b     JL         LAB_00501287
-//                              taitacmd.cpp:11806 (1)
-//         00501421     POP        EBX
-//                               LAB_00501422                                                 XREF[1]:     00501280(j)
-//                              taitacmd.cpp:11847 (4)
-//         00501422     MOV        EAX,dword ptr [ESP + local_8]
-//                              taitacmd.cpp:11848 (9)
-//         00501426     POP        EDI
-//         00501427     POP        ESI
-//         00501428     POP        EBP
-//         00501429     ADD        ESP,0xc
-//         0050142c     RET        0x4
-//         0050142f     ??         90h
+//              TacticalAIGrou    Stack[0x4]:4   param_1                   XREF[1]:     00501195(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     005011a2(W)
+//              undefined4        Stack[-0x8]:4  local_8                   XREF[2]:     005011a6(W), 00501246(R)
+//              int               Stack[-0xc]:4  bestUnit
+//                               ?selectBestCommander@TribeTacticalAIModule@@QAEHPAVTactical  XREF[2]:     fillSoldierGroups:004fc580(c),
+//                               TribeTacticalAIModule::selectBestCommander                                fillBoatGroups:004fe9d0(c)
+//                              taitacmd.cpp:11755 (5)
+//         00501190     SUB        ESP,0x8
+//         00501193     PUSH       EBX
+//         00501194     PUSH       EBP
+//                              taitacmd.cpp:11768 (42)
+//         00501195     MOV        EBP,dword ptr [ESP + param_1]
+//         00501199     PUSH       ESI
+//         0050119a     MOV        ESI,this
+//         0050119c     OR         EBX,0xffffffff
+//         0050119f     PUSH       EDI
+//         005011a0     MOV        this,EBP
+//         005011a2     MOV        dword ptr [ESP + local_4],ESI
+//         005011a6     MOV        dword ptr [ESP + local_8],EBX
+//         005011aa     XOR        EDI,EDI
+//         005011ac     CALL       TacticalAIGroup::numberUnits                     int numberUnits(TacticalAIGroup * this)
+//         005011b1     TEST       EAX,EAX
+//         005011b3     JLE        LAB_00501246
+//         005011b9     JMP        LAB_005011bf
+//                               LAB_005011bb                                                 XREF[1]:     00501240(j)
+//         005011bb     MOV        ESI,dword ptr [ESP + 0x14]
+//                               LAB_005011bf                                                 XREF[1]:     005011b9(j)
+//                              taitacmd.cpp:11769 (20)
+//         005011bf     PUSH       EDI
+//         005011c0     MOV        this,EBP
+//         005011c2     CALL       TacticalAIGroup::unit                            int unit(TacticalAIGroup * this, int param_1)
+//         005011c7     MOV        this,dword ptr [ESI + 0xf0]
+//         005011cd     PUSH       EAX
+//         005011ce     CALL       MainDecisionAIModule::object                     RGE_Static_Object * object(MainDecisionAIModu
+//                              taitacmd.cpp:11770 (4)
+//         005011d3     TEST       EAX,EAX
+//         005011d5     JZ         LAB_00501236
+//                              taitacmd.cpp:11774 (10)
+//         005011d7     MOV        this,dword ptr [EAX + 0x8]
+//         005011da     CMP        word ptr [ECX + this->_padding_],0x7d
+//         005011df     JZ         LAB_00501236
+//                              taitacmd.cpp:11779 (9)
+//         005011e1     CMP        dword ptr [ESI + 0x2c0],0x2
+//         005011e8     JNZ        LAB_005011f6
+//                              taitacmd.cpp:11780 (10)
+//         005011ea     MOV        EDX,dword ptr [EAX]
+//         005011ec     MOV        this,EAX
+//         005011ee     CALL       dword ptr [EDX + 0x10c]
+//                              taitacmd.cpp:11781 (2)
+//         005011f4     JMP        LAB_005011f9
+//                               LAB_005011f6                                                 XREF[1]:     005011e8(j)
+//                              taitacmd.cpp:11782 (10)
+//         005011f6     FLD        float ptr [EAX + 0x30]
+//                               LAB_005011f9                                                 XREF[1]:     005011f4(j)
+//         005011f9     CALL       __ftol                                           undefined __ftol()
+//         005011fe     MOV        ESI,EAX
+//                              taitacmd.cpp:11787 (20)
+//         00501200     MOV        EAX,dword ptr [ESP + 0x14]
+//         00501204     MOV        EAX,dword ptr [EAX + 0x2c0]
+//         0050120a     CMP        EAX,0x1
+//         0050120d     JZ         LAB_0050121f
+//         0050120f     CMP        EAX,0x3
+//         00501212     JZ         LAB_0050121f
+//                              taitacmd.cpp:11794 (11)
+//         00501214     CMP        EBX,-0x1
+//         00501217     JZ         LAB_00501228
+//         00501219     CMP        ESI,EBX
+//         0050121b     JLE        LAB_00501236
+//         0050121d     JMP        LAB_00501228
+//                               LAB_0050121f                                                 XREF[2]:     0050120d(j), 00501212(j)
+//                              taitacmd.cpp:11788 (9)
+//         0050121f     CMP        EBX,-0x1
+//         00501222     JZ         LAB_00501228
+//         00501224     CMP        ESI,EBX
+//         00501226     JGE        LAB_00501236
+//                               LAB_00501228                                                 XREF[3]:     00501217(j), 0050121d(j),
+//                                                                                                         00501222(j)
+//                              taitacmd.cpp:11789 (12)
+//         00501228     PUSH       EDI
+//         00501229     MOV        this,EBP
+//         0050122b     CALL       TacticalAIGroup::unit                            int unit(TacticalAIGroup * this, int param_1)
+//         00501230     MOV        dword ptr [ESP + 0x10],EAX
+//                              taitacmd.cpp:11790 (18)
+//         00501234     MOV        EBX,ESI
+//                               LAB_00501236                                                 XREF[4]:     005011d5(j), 005011df(j),
+//                                                                                                         0050121b(j), 00501226(j)
+//         00501236     MOV        this,EBP
+//         00501238     INC        EDI
+//         00501239     CALL       TacticalAIGroup::numberUnits                     int numberUnits(TacticalAIGroup * this)
+//         0050123e     CMP        EDI,EAX
+//         00501240     JL         LAB_005011bb
+//                               LAB_00501246                                                 XREF[1]:     005011b3(j)
+//                              taitacmd.cpp:11800 (4)
+//         00501246     MOV        EAX,dword ptr [ESP + local_8]
+//                              taitacmd.cpp:11801 (10)
+//         0050124a     POP        EDI
+//         0050124b     POP        ESI
+//         0050124c     POP        EBP
+//         0050124d     POP        EBX
+//         0050124e     ADD        ESP,0x8
+//         00501251     RET        0x4
+//         00501254     ??         90h
+//         00501255     NOP
+//         00501256     NOP
+//         00501257     NOP
+//         00501258     NOP
+//         00501259     NOP
+//         0050125a     NOP
+//         0050125b     NOP
+//         0050125c     NOP
+//         0050125d     NOP
+//         0050125e     NOP
+//         0050125f     NOP
     return 0;
 }
 
-int TribeTacticalAIModule::selectBestCommander(ManagedArray_int* param_1) {
+int TribeTacticalAIModule::selectBestCommander(ManagedArray<int>* param_1) {
     /* TODO: Stub */
 //                              int __thiscall selectBestCommander(TribeTacticalAIModule * this, Man
 //              int               EAX:4          <RETURN>

@@ -3,50 +3,362 @@
 
 TRIBE_Map::TRIBE_Map(int param_1, RGE_Sound** param_2, uchar param_3) {
     /* TODO: Stub */
-//                              undefined __thiscall TRIBE_Map(TRIBE_Map * this, char * param_1, cha
+//                              undefined __thiscall TRIBE_Map(TRIBE_Map * this, int param_1, RGE_So
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Map *       ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0050f77f(R)
-//              char *            Stack[0x8]:4   param_2
-//              char *            Stack[0xc]:4   param_3                   XREF[1]:     0050f77a(R)
-//              char *            Stack[0x10]:4  param_4                   XREF[1]:     0050f775(R)
-//              short             Stack[0x14]:2  param_5                   XREF[1]:     0050f770(R)
-//              short             Stack[0x18]:2  param_6                   XREF[1]:     0050f764(R)
-//              short             Stack[0x1c]:2  param_7                   XREF[1]:     0050f76b(R)
-//              RGE_Sound * *     Stack[0x20]:4  param_8                   XREF[1]:     0050f760(R)
-//                               ??0TRIBE_Map@@QAE@PAD000FFFPAPAVRGE_Sound@@@Z                XREF[1]:     data_load_map:0052e310(c)
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     0050f42f(R)
+//              RGE_Sound * *     Stack[0x8]:4   param_2                   XREF[1]:     0050f426(R)
+//              uchar             Stack[0xc]:1   param_3                   XREF[1]:     0050f441(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0050f445(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0050f71f(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0050f438(W)
+//                               ??0TRIBE_Map@@QAE@HPAPAVRGE_Sound@@E@Z                       XREF[1]:     map_init:0052e503(c)
 //                               TRIBE_Map::TRIBE_Map
-//                              tmap.cpp:127 (51)
-//         0050f760     MOV        EAX,dword ptr [ESP + param_8]
-//         0050f764     MOV        EDX,dword ptr [ESP + param_6]
-//         0050f768     PUSH       ESI
-//         0050f769     MOV        ESI,this
-//         0050f76b     MOV        this,dword ptr [ESP + param_7]
-//         0050f76f     PUSH       EAX
-//         0050f770     MOV        EAX,dword ptr [ESP + param_5]
-//         0050f774     PUSH       this
-//         0050f775     MOV        this,dword ptr [ESP + param_4]
-//         0050f779     PUSH       EDX
-//         0050f77a     MOV        EDX,dword ptr [ESP + param_3]
-//         0050f77e     PUSH       EAX
-//         0050f77f     MOV        EAX,dword ptr [ESP + param_1]
-//         0050f783     PUSH       this
-//         0050f784     PUSH       EDX
-//         0050f785     PUSH       EAX
-//         0050f786     MOV        this,ESI
-//         0050f788     CALL       RGE_Map::RGE_Map                                 undefined RGE_Map(RGE_Map * this, char * para
-//         0050f78d     MOV        dword ptr [ESI],TRIBE_Map::`vftable'             = 0050f740
-//                              tmap.cpp:131 (6)
-//         0050f793     MOV        EAX,ESI
-//         0050f795     POP        ESI
-//         0050f796     RET        0x20
-//         0050f799     ??         90h
-//         0050f79a     NOP
-//         0050f79b     NOP
-//         0050f79c     NOP
-//         0050f79d     NOP
-//         0050f79e     NOP
-//         0050f79f     NOP
+//                              tmap.cpp:38 (49)
+//         0050f410     PUSH       -0x1
+//         0050f412     PUSH       FUN_00561048
+//         0050f417     MOV        EAX,FS:[0x0]
+//         0050f41d     PUSH       EAX
+//         0050f41e     MOV        dword ptr FS:[0x0],ESP
+//         0050f425     PUSH       this
+//         0050f426     MOV        EAX,dword ptr [ESP + param_2]
+//         0050f42a     PUSH       EBX
+//         0050f42b     PUSH       ESI
+//         0050f42c     XOR        EBX,EBX
+//         0050f42e     PUSH       EDI
+//         0050f42f     MOV        EDI,dword ptr [ESP + param_1]
+//         0050f433     PUSH       EBX
+//         0050f434     MOV        ESI,this
+//         0050f436     PUSH       EAX
+//         0050f437     PUSH       EDI
+//         0050f438     MOV        dword ptr [ESP + local_10],ESI
+//         0050f43c     CALL       RGE_Map::RGE_Map                                 undefined RGE_Map(RGE_Map * this, int param_1
+//                              tmap.cpp:41 (18)
+//         0050f441     MOV        AL,byte ptr [ESP + param_3]
+//         0050f445     MOV        dword ptr [ESP + local_4],EBX
+//         0050f449     CMP        AL,BL
+//         0050f44b     MOV        dword ptr [ESI],TRIBE_Map::`vftable'             = 0050f740
+//         0050f451     JZ         LAB_0050f45b
+//                              tmap.cpp:43 (8)
+//         0050f453     PUSH       EDI
+//         0050f454     MOV        this,ESI
+//         0050f456     CALL       TRIBE_Map::data_load_random_map                  void data_load_random_map(TRIBE_Map * this, i
+//                               LAB_0050f45b                                                 XREF[1]:     0050f451(j)
+//                              tmap.cpp:48 (15)
+//         0050f45b     OR         EDI,0xffffffff
+//         0050f45e     LEA        EAX,[ESI + 0x8e1c]
+//         0050f464     MOV        dword ptr [ESI + 0x8de4],EDI
+//                              tmap.cpp:49 (6)
+//         0050f46a     MOV        dword ptr [ESI + 0x8de8],EDI
+//                              tmap.cpp:50 (6)
+//         0050f470     MOV        dword ptr [ESI + 0x8dec],EDI
+//                              tmap.cpp:51 (11)
+//         0050f476     MOV        dword ptr [ESI + 0x8df0],EDI
+//         0050f47c     MOV        this,0x100
+//                               LAB_0050f481                                                 XREF[1]:     0050f4a2(j)
+//                              tmap.cpp:56 (3)
+//         0050f481     MOV        dword ptr [EAX + -0x4],EBX
+//                              tmap.cpp:57 (2)
+//         0050f484     MOV        dword ptr [EAX],EBX
+//                              tmap.cpp:58 (3)
+//         0050f486     MOV        dword ptr [EAX + -0x14],EBX
+//                              tmap.cpp:59 (3)
+//         0050f489     MOV        dword ptr [EAX + -0x10],EBX
+//                              tmap.cpp:60 (3)
+//         0050f48c     MOV        dword ptr [EAX + -0xc],EBX
+//                              tmap.cpp:61 (3)
+//         0050f48f     MOV        dword ptr [EAX + -0x8],EBX
+//                              tmap.cpp:62 (3)
+//         0050f492     MOV        dword ptr [EAX + -0x24],EDI
+//                              tmap.cpp:63 (3)
+//         0050f495     MOV        dword ptr [EAX + -0x20],EDI
+//                              tmap.cpp:64 (3)
+//         0050f498     MOV        dword ptr [EAX + -0x1c],EDI
+//                              tmap.cpp:65 (9)
+//         0050f49b     MOV        dword ptr [EAX + -0x18],EDI
+//         0050f49e     ADD        EAX,0x28
+//         0050f4a1     DEC        this
+//         0050f4a2     JNZ        LAB_0050f481
+//                              tmap.cpp:96 (31)
+//         0050f4a4     PUSH       0x3fc00000
+//         0050f4a9     PUSH       0x3fc00000
+//         0050f4ae     PUSH       EDI
+//         0050f4af     PUSH       EDI
+//         0050f4b0     PUSH       0x10
+//         0050f4b2     PUSH       0x108
+//         0050f4b7     PUSH       EBX
+//         0050f4b8     PUSH       EBX
+//         0050f4b9     PUSH       EBX
+//         0050f4ba     PUSH       0x1
+//         0050f4bc     MOV        this,ESI
+//         0050f4be     CALL       TRIBE_Map::setup_cliff_type                      void setup_cliff_type(TRIBE_Map * this, long
+//                              tmap.cpp:97 (31)
+//         0050f4c3     PUSH       0x3fc00000
+//         0050f4c8     PUSH       0x3fc00000
+//         0050f4cd     PUSH       EDI
+//         0050f4ce     PUSH       EDI
+//         0050f4cf     PUSH       0x12
+//         0050f4d1     PUSH       0x108
+//         0050f4d6     PUSH       EBX
+//         0050f4d7     PUSH       EBX
+//         0050f4d8     PUSH       0x1
+//         0050f4da     PUSH       EBX
+//         0050f4db     MOV        this,ESI
+//         0050f4dd     CALL       TRIBE_Map::setup_cliff_type                      void setup_cliff_type(TRIBE_Map * this, long
+//                              tmap.cpp:98 (31)
+//         0050f4e2     PUSH       0x3fc00000
+//         0050f4e7     PUSH       0x3fc00000
+//         0050f4ec     PUSH       EDI
+//         0050f4ed     PUSH       EDI
+//         0050f4ee     PUSH       0x11
+//         0050f4f0     PUSH       0x108
+//         0050f4f5     PUSH       EBX
+//         0050f4f6     PUSH       0x1
+//         0050f4f8     PUSH       EBX
+//         0050f4f9     PUSH       EBX
+//         0050f4fa     MOV        this,ESI
+//         0050f4fc     CALL       TRIBE_Map::setup_cliff_type                      void setup_cliff_type(TRIBE_Map * this, long
+//                              tmap.cpp:99 (31)
+//         0050f501     PUSH       0x3fc00000
+//         0050f506     PUSH       0x3fc00000
+//         0050f50b     PUSH       EDI
+//         0050f50c     PUSH       EDI
+//         0050f50d     PUSH       0x13
+//         0050f50f     PUSH       0x108
+//         0050f514     PUSH       0x1
+//         0050f516     PUSH       EBX
+//         0050f517     PUSH       EBX
+//         0050f518     PUSH       EBX
+//         0050f519     MOV        this,ESI
+//         0050f51b     CALL       TRIBE_Map::setup_cliff_type                      void setup_cliff_type(TRIBE_Map * this, long
+//                              tmap.cpp:100 (30)
+//         0050f520     PUSH       0x3fc00000
+//         0050f525     PUSH       0x3fc00000
+//         0050f52a     PUSH       EDI
+//         0050f52b     PUSH       EDI
+//         0050f52c     PUSH       0x14
+//         0050f52e     PUSH       0x10a
+//         0050f533     PUSH       EBX
+//         0050f534     PUSH       EBX
+//         0050f535     PUSH       EBX
+//         0050f536     PUSH       EDI
+//         0050f537     MOV        this,ESI
+//         0050f539     CALL       TRIBE_Map::setup_cliff_type                      void setup_cliff_type(TRIBE_Map * this, long
+//                              tmap.cpp:101 (30)
+//         0050f53e     PUSH       0x3fc00000
+//         0050f543     PUSH       0x3fc00000
+//         0050f548     PUSH       EDI
+//         0050f549     PUSH       EDI
+//         0050f54a     PUSH       0x16
+//         0050f54c     PUSH       0x109
+//         0050f551     PUSH       EBX
+//         0050f552     PUSH       EBX
+//         0050f553     PUSH       EDI
+//         0050f554     PUSH       EBX
+//         0050f555     MOV        this,ESI
+//         0050f557     CALL       TRIBE_Map::setup_cliff_type                      void setup_cliff_type(TRIBE_Map * this, long
+//                              tmap.cpp:102 (30)
+//         0050f55c     PUSH       0x3fc00000
+//         0050f561     PUSH       0x3fc00000
+//         0050f566     PUSH       EDI
+//         0050f567     PUSH       EDI
+//         0050f568     PUSH       0x15
+//         0050f56a     PUSH       0x10a
+//         0050f56f     PUSH       EBX
+//         0050f570     PUSH       EDI
+//         0050f571     PUSH       EBX
+//         0050f572     PUSH       EBX
+//         0050f573     MOV        this,ESI
+//         0050f575     CALL       TRIBE_Map::setup_cliff_type                      void setup_cliff_type(TRIBE_Map * this, long
+//                              tmap.cpp:103 (30)
+//         0050f57a     PUSH       0x3fc00000
+//         0050f57f     PUSH       0x3fc00000
+//         0050f584     PUSH       EDI
+//         0050f585     PUSH       EDI
+//         0050f586     PUSH       0x17
+//         0050f588     PUSH       0x109
+//         0050f58d     PUSH       EDI
+//         0050f58e     PUSH       EBX
+//         0050f58f     PUSH       EBX
+//         0050f590     PUSH       EBX
+//         0050f591     MOV        this,ESI
+//         0050f593     CALL       TRIBE_Map::setup_cliff_type                      void setup_cliff_type(TRIBE_Map * this, long
+//                              tmap.cpp:106 (30)
+//         0050f598     PUSH       0x40000000
+//         0050f59d     PUSH       0x3fc00000
+//         0050f5a2     PUSH       EDI
+//         0050f5a3     PUSH       EDI
+//         0050f5a4     PUSH       EBX
+//         0050f5a5     PUSH       0x10e
+//         0050f5aa     PUSH       EBX
+//         0050f5ab     PUSH       EBX
+//         0050f5ac     PUSH       0x1
+//         0050f5ae     PUSH       EDI
+//         0050f5af     MOV        this,ESI
+//         0050f5b1     CALL       TRIBE_Map::setup_cliff_type                      void setup_cliff_type(TRIBE_Map * this, long
+//                              tmap.cpp:107 (30)
+//         0050f5b6     PUSH       0x40000000
+//         0050f5bb     PUSH       0x3f800000
+//         0050f5c0     PUSH       EDI
+//         0050f5c1     PUSH       EDI
+//         0050f5c2     PUSH       0x9
+//         0050f5c4     PUSH       0x110
+//         0050f5c9     PUSH       EBX
+//         0050f5ca     PUSH       EDI
+//         0050f5cb     PUSH       EDI
+//         0050f5cc     PUSH       EBX
+//         0050f5cd     MOV        this,ESI
+//         0050f5cf     CALL       TRIBE_Map::setup_cliff_type                      void setup_cliff_type(TRIBE_Map * this, long
+//                              tmap.cpp:108 (31)
+//         0050f5d4     PUSH       0x3fc00000
+//         0050f5d9     PUSH       0x3f800000
+//         0050f5de     PUSH       EDI
+//         0050f5df     PUSH       EDI
+//         0050f5e0     PUSH       0x6
+//         0050f5e2     PUSH       0x10c
+//         0050f5e7     PUSH       EDI
+//         0050f5e8     PUSH       0x1
+//         0050f5ea     PUSH       EBX
+//         0050f5eb     PUSH       EBX
+//         0050f5ec     MOV        this,ESI
+//         0050f5ee     CALL       TRIBE_Map::setup_cliff_type                      void setup_cliff_type(TRIBE_Map * this, long
+//                              tmap.cpp:109 (32)
+//         0050f5f3     PUSH       0x3fc00000
+//         0050f5f8     PUSH       0x3fc00000
+//         0050f5fd     PUSH       EDI
+//         0050f5fe     PUSH       EDI
+//         0050f5ff     PUSH       0x3
+//         0050f601     PUSH       0x108
+//         0050f606     PUSH       0x1
+//         0050f608     PUSH       EBX
+//         0050f609     PUSH       EBX
+//         0050f60a     PUSH       0x1
+//         0050f60c     MOV        this,ESI
+//         0050f60e     CALL       TRIBE_Map::setup_cliff_type                      void setup_cliff_type(TRIBE_Map * this, long
+//                              tmap.cpp:111 (31)
+//         0050f613     PUSH       0x3fc00000
+//         0050f618     PUSH       0x40000000
+//         0050f61d     PUSH       EDI
+//         0050f61e     PUSH       EDI
+//         0050f61f     PUSH       0xc
+//         0050f621     PUSH       0x10b
+//         0050f626     PUSH       EBX
+//         0050f627     PUSH       EBX
+//         0050f628     PUSH       EDI
+//         0050f629     PUSH       0x1
+//         0050f62b     MOV        this,ESI
+//         0050f62d     CALL       TRIBE_Map::setup_cliff_type                      void setup_cliff_type(TRIBE_Map * this, long
+//                              tmap.cpp:112 (32)
+//         0050f632     PUSH       0x3fc00000
+//         0050f637     PUSH       0x3fc00000
+//         0050f63c     PUSH       EDI
+//         0050f63d     PUSH       EDI
+//         0050f63e     PUSH       0xf
+//         0050f640     PUSH       0x108
+//         0050f645     PUSH       EBX
+//         0050f646     PUSH       0x1
+//         0050f648     PUSH       0x1
+//         0050f64a     PUSH       EBX
+//         0050f64b     MOV        this,ESI
+//         0050f64d     CALL       TRIBE_Map::setup_cliff_type                      void setup_cliff_type(TRIBE_Map * this, long
+//                              tmap.cpp:113 (31)
+//         0050f652     PUSH       0x3f800000
+//         0050f657     PUSH       0x3fc00000
+//         0050f65c     PUSH       EDI
+//         0050f65d     PUSH       EDI
+//         0050f65e     PUSH       0xe
+//         0050f660     PUSH       0x10d
+//         0050f665     PUSH       0x1
+//         0050f667     PUSH       EDI
+//         0050f668     PUSH       EBX
+//         0050f669     PUSH       EBX
+//         0050f66a     MOV        this,ESI
+//         0050f66c     CALL       TRIBE_Map::setup_cliff_type                      void setup_cliff_type(TRIBE_Map * this, long
+//                              tmap.cpp:114 (30)
+//         0050f671     PUSH       0x3f800000
+//         0050f676     PUSH       0x40000000
+//         0050f67b     PUSH       EDI
+//         0050f67c     PUSH       EDI
+//         0050f67d     PUSH       0xd
+//         0050f67f     PUSH       0x10f
+//         0050f684     PUSH       EDI
+//         0050f685     PUSH       EBX
+//         0050f686     PUSH       EBX
+//         0050f687     PUSH       EDI
+//         0050f688     MOV        this,ESI
+//         0050f68a     CALL       TRIBE_Map::setup_cliff_type                      void setup_cliff_type(TRIBE_Map * this, long
+//                              tmap.cpp:117 (37)
+//         0050f68f     PUSH       0x3fc00000
+//         0050f694     PUSH       0x3fc00000
+//         0050f699     PUSH       0x5
+//         0050f69b     PUSH       0x108
+//         0050f6a0     PUSH       0x4
+//         0050f6a2     PUSH       0x108
+//         0050f6a7     PUSH       EBX
+//         0050f6a8     PUSH       0x1
+//         0050f6aa     PUSH       EBX
+//         0050f6ab     PUSH       0x1
+//         0050f6ad     MOV        this,ESI
+//         0050f6af     CALL       TRIBE_Map::setup_cliff_type                      void setup_cliff_type(TRIBE_Map * this, long
+//                              tmap.cpp:118 (37)
+//         0050f6b4     PUSH       0x3fc00000
+//         0050f6b9     PUSH       0x3fc00000
+//         0050f6be     PUSH       0x2
+//         0050f6c0     PUSH       0x108
+//         0050f6c5     PUSH       0x1
+//         0050f6c7     PUSH       0x108
+//         0050f6cc     PUSH       0x1
+//         0050f6ce     PUSH       EBX
+//         0050f6cf     PUSH       0x1
+//         0050f6d1     PUSH       EBX
+//         0050f6d2     MOV        this,ESI
+//         0050f6d4     CALL       TRIBE_Map::setup_cliff_type                      void setup_cliff_type(TRIBE_Map * this, long
+//                              tmap.cpp:119 (35)
+//         0050f6d9     PUSH       0x3fc00000
+//         0050f6de     PUSH       0x3fc00000
+//         0050f6e3     PUSH       0xa
+//         0050f6e5     PUSH       0x10a
+//         0050f6ea     PUSH       0xb
+//         0050f6ec     PUSH       0x10a
+//         0050f6f1     PUSH       EBX
+//         0050f6f2     PUSH       EDI
+//         0050f6f3     PUSH       EBX
+//         0050f6f4     PUSH       EDI
+//         0050f6f5     MOV        this,ESI
+//         0050f6f7     CALL       TRIBE_Map::setup_cliff_type                      void setup_cliff_type(TRIBE_Map * this, long
+//                              tmap.cpp:120 (35)
+//         0050f6fc     PUSH       0x3fc00000
+//         0050f701     PUSH       0x3fc00000
+//         0050f706     PUSH       0x7
+//         0050f708     PUSH       0x109
+//         0050f70d     PUSH       0x8
+//         0050f70f     PUSH       0x109
+//         0050f714     PUSH       EDI
+//         0050f715     PUSH       EBX
+//         0050f716     PUSH       EDI
+//         0050f717     PUSH       EBX
+//         0050f718     MOV        this,ESI
+//         0050f71a     CALL       TRIBE_Map::setup_cliff_type                      void setup_cliff_type(TRIBE_Map * this, long
+//                              tmap.cpp:121 (22)
+//         0050f71f     MOV        this,dword ptr [ESP + local_c]
+//         0050f723     MOV        EAX,ESI
+//         0050f725     MOV        dword ptr FS:[0x0],this
+//         0050f72c     POP        EDI
+//         0050f72d     POP        ESI
+//         0050f72e     POP        EBX
+//         0050f72f     ADD        ESP,0x10
+//         0050f732     RET        0xc
+//         0050f735     ??         90h
+//         0050f736     NOP
+//         0050f737     NOP
+//         0050f738     NOP
+//         0050f739     NOP
+//         0050f73a     NOP
+//         0050f73b     NOP
+//         0050f73c     NOP
+//         0050f73d     NOP
+//         0050f73e     NOP
+//         0050f73f     NOP
 }
 
 TRIBE_Map::TRIBE_Map(char* param_1, char* param_2, char* param_3, char* param_4, short param_5, short param_6, short param_7, RGE_Sound** param_8) {
@@ -137,27 +449,33 @@ void TRIBE_Map::save(int param_1) {
 
 void TRIBE_Map::map_generate(RGE_Player* param_1, RGE_Game_World* param_2, RGE_Player_Info* param_3, uchar* param_4) {
     /* TODO: Stub */
-//                              void __thiscall map_generate(TRIBE_Map * this, RGE_Player_Info * par
+//                              void __thiscall map_generate(TRIBE_Map * this, RGE_Player * param_1,
 //              void              <VOID>         <RETURN>
 //              TRIBE_Map *       ECX:4 (auto)   this
-//              RGE_Player_Inf    Stack[0x4]:4   param_1
-//                               ?map_generate@TRIBE_Map@@QAEXPAURGE_Player_Info@@@Z          XREF[1]:     map_generate:0050f7e3(c)
+//              RGE_Player *      Stack[0x4]:4   param_1                   XREF[1]:     0050f7c4(R)
+//              RGE_Game_World    Stack[0x8]:4   param_2                   XREF[1]:     0050f7c0(R)
+//              RGE_Player_Inf    Stack[0xc]:4   param_3                   XREF[1]:     0050f7ce(R)
+//              uchar *           Stack[0x10]:4  param_4                   XREF[1]:     0050f7d8(R)
+//                               ?map_generate@TRIBE_Map@@UAEXPAVRGE_Player@@PAVRGE_Game_Wor  XREF[1]:     005767ec(*)
 //                               TRIBE_Map::map_generate
-//                              tmap.cpp:160 (3)
-//         0050f7f0     RET        0x4
-//         0050f7f3     ??         90h
-//         0050f7f4     NOP
-//         0050f7f5     NOP
-//         0050f7f6     NOP
-//         0050f7f7     NOP
-//         0050f7f8     NOP
-//         0050f7f9     NOP
-//         0050f7fa     NOP
-//         0050f7fb     NOP
-//         0050f7fc     NOP
-//         0050f7fd     NOP
-//         0050f7fe     NOP
-//         0050f7ff     NOP
+//                              tmap.cpp:148 (14)
+//         0050f7c0     MOV        EDX,dword ptr [ESP + param_2]
+//         0050f7c4     MOV        EAX,dword ptr [ESP + param_1]
+//         0050f7c8     MOV        dword ptr [ECX + this->rge_game_world],EDX
+//                              tmap.cpp:155 (26)
+//         0050f7ce     MOV        EDX,dword ptr [ESP + param_3]
+//         0050f7d2     MOV        dword ptr [ECX + this->rge_player],EAX
+//         0050f7d8     MOV        EAX,dword ptr [ESP + param_4]
+//         0050f7dc     PUSH       EDX
+//         0050f7dd     MOV        dword ptr [ECX + this->zones],EAX
+//         0050f7e3     CALL       TRIBE_Map::map_generate                          void map_generate(TRIBE_Map * this, RGE_Playe
+//                              tmap.cpp:156 (3)
+//         0050f7e8     RET        0x10
+//         0050f7eb     ??         90h
+//         0050f7ec     NOP
+//         0050f7ed     NOP
+//         0050f7ee     NOP
+//         0050f7ef     NOP
     return;
 }
 

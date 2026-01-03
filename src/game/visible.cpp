@@ -3,160 +3,120 @@
 
 RGE_Visible_Map::RGE_Visible_Map(RGE_Map* param_1, RGE_Player* param_2) {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Visible_Map(RGE_Visible_Map * this, int par
+//                              undefined __thiscall RGE_Visible_Map(RGE_Visible_Map * this, RGE_Map
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Visible_Ma    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[2]:     0053c297(R), 0053c367(R)
-//              RGE_Game_World    Stack[0x8]:4   param_2                   XREF[2]:     0053c291(R), 0053c303(R)
-//              undefined2        Stack[-0x4]:2  local_4                   XREF[3]:     0053c2ef(*), 0053c30a(R), 0053c385(R)
-//              short             Stack[-0x8]:2  player_id
-//                               ??0RGE_Visible_Map@@QAE@HPAVRGE_Game_World@@@Z               XREF[2]:     load:0046fb25(c),
-//                               RGE_Visible_Map::RGE_Visible_Map                                          load:00512965(c)
-//                              visible.cpp:265 (7)
-//         0053c290     PUSH       this
-//         0053c291     MOV        EAX,dword ptr [ESP + param_2]
-//         0053c295     PUSH       EBX
-//         0053c296     PUSH       EBP
-//                              visible.cpp:268 (39)
-//         0053c297     MOV        EBP,dword ptr [ESP + param_1]
-//         0053c29b     PUSH       ESI
-//         0053c29c     MOV        ESI,this
-//         0053c29e     PUSH       EDI
-//         0053c29f     PUSH       0x4
-//         0053c2a1     LEA        EBX,[ESI + 0x14]
-//         0053c2a4     MOV        dword ptr [ESI + 0x4],EAX
-//         0053c2a7     MOV        EAX,dword ptr [EAX + 0x28]
-//         0053c2aa     PUSH       EBX
-//         0053c2ab     PUSH       EBP
-//         0053c2ac     MOV        dword ptr [ESI + 0xc],EAX
-//         0053c2af     MOV        dword ptr [ESI + 0x1c],0x0
-//         0053c2b6     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0053c2bb     ADD        ESP,0xc
-//                              visible.cpp:269 (12)
-//         0053c2be     LEA        EDI,[ESI + 0x18]
-//         0053c2c1     PUSH       0x4
-//         0053c2c3     PUSH       EDI
-//         0053c2c4     PUSH       EBP
-//         0053c2c5     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              visible.cpp:271 (22)
-//         0053c2ca     FLD        float ptr [save_game_version]                    = 7.23
-//         0053c2d0     FCOMP      float ptr [DAT_005776e0]                         = 66h    f
-//         0053c2d6     ADD        ESP,0xc
-//         0053c2d9     FNSTSW     AX
-//         0053c2db     TEST       AH,0x1
-//         0053c2de     JNZ        LAB_0053c2ef
-//                              visible.cpp:273 (15)
-//         0053c2e0     LEA        EAX,[ESI + 0x1c]
-//         0053c2e3     PUSH       0x4
-//         0053c2e5     PUSH       EAX
-//         0053c2e6     PUSH       EBP
-//         0053c2e7     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0053c2ec     ADD        ESP,0xc
-//                               LAB_0053c2ef                                                 XREF[1]:     0053c2de(j)
-//                              visible.cpp:275 (13)
-//         0053c2ef     LEA        this=>local_4,[ESP + 0x10]
-//         0053c2f3     PUSH       0x2
-//         0053c2f5     PUSH       this
-//         0053c2f6     PUSH       EBP
-//         0053c2f7     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              visible.cpp:277 (7)
-//         0053c2fc     MOV        EBP,dword ptr [EBX]
-//         0053c2fe     MOV        EAX,dword ptr [EDI]
-//         0053c300     IMUL       EAX,EBP
-//                              visible.cpp:279 (18)
-//         0053c303     MOV        this,dword ptr [ESP + param_2]
-//         0053c307     MOV        dword ptr [ESI + 0x20],EAX
-//         0053c30a     MOVSX      EDX,word ptr [ESP + local_4]
-//         0053c30f     MOV        this,dword ptr [this->map_offsets + 0x40]
-//         0053c312     ADD        ESP,0xc
-//                              visible.cpp:281 (15)
-//         0053c315     TEST       EBP,EBP
-//         0053c317     MOV        EDX,dword ptr [this->map_offsets + EDX*0x4]
-//         0053c31a     MOV        dword ptr [ESI + 0x8],EDX
-//         0053c31d     JLE        LAB_0053c378
-//         0053c31f     CMP        dword ptr [EDI],0x0
-//         0053c322     JLE        LAB_0053c378
-//                              visible.cpp:283 (14)
-//         0053c324     PUSH       0x1
-//         0053c326     PUSH       EAX
-//         0053c327     CALL       calloc                                           undefined calloc()
-//         0053c32c     ADD        ESP,0x8
-//         0053c32f     MOV        dword ptr [ESI + 0x10],EAX
-//                              visible.cpp:284 (10)
-//         0053c332     MOV        EAX,dword ptr [EDI]
-//         0053c334     PUSH       0x4
-//         0053c336     PUSH       EAX
-//         0053c337     CALL       calloc                                           undefined calloc()
-//                              visible.cpp:286 (13)
-//         0053c33c     MOV        this,dword ptr [EDI]
-//         0053c33e     MOV        dword ptr [ESI],EAX
-//         0053c340     ADD        ESP,0x8
-//         0053c343     XOR        EAX,EAX
-//         0053c345     TEST       this,this
-//         0053c347     JLE        LAB_0053c35f
-//                               LAB_0053c349                                                 XREF[1]:     0053c35d(j)
-//                              visible.cpp:287 (22)
-//         0053c349     MOV        this,EAX
-//         0053c34b     MOV        EBP,dword ptr [ESI + 0x10]
-//         0053c34e     IMUL       this,dword ptr [EBX]
-//         0053c351     MOV        EDX,dword ptr [ESI]
-//         0053c353     ADD        this,EBP
-//         0053c355     MOV        dword ptr [EDX + EAX*0x4],this
-//         0053c358     MOV        this,dword ptr [EDI]
-//         0053c35a     INC        EAX
-//         0053c35b     CMP        EAX,this
-//         0053c35d     JL         LAB_0053c349
-//                               LAB_0053c35f                                                 XREF[1]:     0053c347(j)
-//                              visible.cpp:289 (23)
-//         0053c35f     MOV        EAX,dword ptr [EBX]
-//         0053c361     MOV        this,dword ptr [ESI + 0x10]
-//         0053c364     IMUL       EAX,dword ptr [EDI]
-//         0053c367     MOV        EDX,dword ptr [ESP + param_1]
-//         0053c36b     PUSH       EAX
-//         0053c36c     PUSH       this
-//         0053c36d     PUSH       EDX
-//         0053c36e     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0053c373     ADD        ESP,0xc
-//                              visible.cpp:291 (2)
-//         0053c376     JMP        LAB_0053c385
-//                               LAB_0053c378                                                 XREF[2]:     0053c31d(j), 0053c322(j)
-//                              visible.cpp:293 (7)
-//         0053c378     MOV        dword ptr [ESI + 0x10],0x0
-//                              visible.cpp:294 (6)
-//         0053c37f     MOV        dword ptr [ESI],0x0
-//                               LAB_0053c385                                                 XREF[1]:     0053c376(j)
-//                              visible.cpp:297 (11)
-//         0053c385     MOV        this,byte ptr [ESP + local_4]
-//         0053c389     MOV        EAX,0x1
-//         0053c38e     SHL        EAX,this
-//                              visible.cpp:304 (7)
-//         0053c390     MOV        dword ptr [ESI + 0x34],0x0
-//                              visible.cpp:307 (31)
-//         0053c397     POP        EDI
-//         0053c398     MOV        dword ptr [ESI + 0x24],EAX
-//         0053c39b     MOV        this,EAX
-//         0053c39d     SHL        EAX,0x10
-//         0053c3a0     MOV        dword ptr [ESI + 0x2c],EAX
-//         0053c3a3     NOT        EAX
-//         0053c3a5     NOT        this
-//         0053c3a7     MOV        dword ptr [ESI + 0x30],EAX
-//         0053c3aa     MOV        dword ptr [ESI + 0x28],this
-//         0053c3ad     MOV        EAX,ESI
-//         0053c3af     POP        ESI
-//         0053c3b0     POP        EBP
-//         0053c3b1     POP        EBX
-//         0053c3b2     POP        this
-//         0053c3b3     RET        0x8
-//         0053c3b6     ??         90h
-//         0053c3b7     NOP
-//         0053c3b8     NOP
-//         0053c3b9     NOP
-//         0053c3ba     NOP
-//         0053c3bb     NOP
-//         0053c3bc     NOP
-//         0053c3bd     NOP
-//         0053c3be     NOP
-//         0053c3bf     NOP
+//              RGE_Map *         Stack[0x4]:4   param_1                   XREF[1]:     0053c1bf(R)
+//              RGE_Player *      Stack[0x8]:4   param_2                   XREF[1]:     0053c1b1(R)
+//                               ??0RGE_Visible_Map@@QAE@PAVRGE_Map@@PAVRGE_Player@@@Z        XREF[3]:     RGE_Player:0046e9a5(c),
+//                               RGE_Visible_Map::RGE_Visible_Map                                          remake_visible_map:00471c55(c),
+//                                                                                                         TRIBE_Player:00511fd6(c)
+//                              visible.cpp:226 (42)
+//         0053c1b0     PUSH       EBX
+//         0053c1b1     MOV        EBX,dword ptr [ESP + param_2]
+//         0053c1b5     PUSH       ESI
+//         0053c1b6     MOV        ESI,this
+//         0053c1b8     MOV        EAX,dword ptr [EBX + 0x3c]
+//         0053c1bb     PUSH       EDI
+//         0053c1bc     MOV        dword ptr [ESI + 0x4],EAX
+//         0053c1bf     MOV        EAX,dword ptr [ESP + param_1]
+//         0053c1c3     MOV        dword ptr [ESI + 0x8],EBX
+//         0053c1c6     MOV        dword ptr [ESI + 0xc],EAX
+//         0053c1c9     MOV        this,dword ptr [EAX + 0x8]
+//         0053c1cc     MOV        dword ptr [ESI + 0x14],this
+//         0053c1cf     MOV        EDX,dword ptr [EAX + 0xc]
+//         0053c1d2     MOV        EAX,EDX
+//         0053c1d4     MOV        dword ptr [ESI + 0x18],EDX
+//         0053c1d7     IMUL       EAX,this
+//                              visible.cpp:228 (18)
+//         0053c1da     TEST       this,this
+//         0053c1dc     MOV        dword ptr [ESI + 0x1c],0x0
+//         0053c1e3     MOV        dword ptr [ESI + 0x20],EAX
+//         0053c1e6     JLE        LAB_0053c248
+//         0053c1e8     TEST       EDX,EDX
+//         0053c1ea     JLE        LAB_0053c248
+//                              visible.cpp:230 (14)
+//         0053c1ec     PUSH       0x1
+//         0053c1ee     PUSH       EAX
+//         0053c1ef     CALL       calloc                                           undefined calloc()
+//         0053c1f4     ADD        ESP,0x8
+//         0053c1f7     MOV        dword ptr [ESI + 0x10],EAX
+//                              visible.cpp:231 (11)
+//         0053c1fa     MOV        EAX,dword ptr [ESI + 0x18]
+//         0053c1fd     PUSH       0x4
+//         0053c1ff     PUSH       EAX
+//         0053c200     CALL       calloc                                           undefined calloc()
+//                              visible.cpp:233 (14)
+//         0053c205     MOV        this,dword ptr [ESI + 0x18]
+//         0053c208     MOV        dword ptr [ESI],EAX
+//         0053c20a     ADD        ESP,0x8
+//         0053c20d     XOR        EAX,EAX
+//         0053c20f     TEST       this,this
+//         0053c211     JLE        LAB_0053c22b
+//                               LAB_0053c213                                                 XREF[1]:     0053c229(j)
+//                              visible.cpp:234 (24)
+//         0053c213     MOV        this,EAX
+//         0053c215     MOV        EDI,dword ptr [ESI + 0x10]
+//         0053c218     IMUL       this,dword ptr [ESI + 0x14]
+//         0053c21c     MOV        EDX,dword ptr [ESI]
+//         0053c21e     ADD        this,EDI
+//         0053c220     MOV        dword ptr [EDX + EAX*0x4],this
+//         0053c223     MOV        this,dword ptr [ESI + 0x18]
+//         0053c226     INC        EAX
+//         0053c227     CMP        EAX,this
+//         0053c229     JL         LAB_0053c213
+//                               LAB_0053c22b                                                 XREF[1]:     0053c211(j)
+//                              visible.cpp:236 (27)
+//         0053c22b     MOV        this,dword ptr [ESI + 0x18]
+//         0053c22e     MOV        EDI,dword ptr [ESI + 0x10]
+//         0053c231     IMUL       this,dword ptr [ESI + 0x14]
+//         0053c235     MOV        EDX,this
+//         0053c237     OR         EAX,0xffffffff
+//         0053c23a     SHR        this,0x2
+//         0053c23d     STOSD.REP  ES:EDI
+//         0053c23f     MOV        this,EDX
+//         0053c241     AND        this,0x3
+//         0053c244     STOSB.REP  ES:EDI
+//                              visible.cpp:238 (2)
+//         0053c246     JMP        LAB_0053c255
+//                               LAB_0053c248                                                 XREF[2]:     0053c1e6(j), 0053c1ea(j)
+//                              visible.cpp:240 (7)
+//         0053c248     MOV        dword ptr [ESI + 0x10],0x0
+//                              visible.cpp:241 (6)
+//         0053c24f     MOV        dword ptr [ESI],0x0
+//                               LAB_0053c255                                                 XREF[1]:     0053c246(j)
+//                              visible.cpp:244 (10)
+//         0053c255     MOV        this,byte ptr [EBX + 0x4a]
+//         0053c258     MOV        EAX,0x1
+//         0053c25d     SHL        EAX,this
+//                              visible.cpp:252 (7)
+//         0053c25f     MOV        dword ptr [ESI + 0x34],0x0
+//                              visible.cpp:256 (30)
+//         0053c266     POP        EDI
+//         0053c267     MOV        dword ptr [ESI + 0x24],EAX
+//         0053c26a     NOT        EAX
+//         0053c26c     MOV        dword ptr [ESI + 0x28],EAX
+//         0053c26f     MOV        EAX,dword ptr [ESI + 0x24]
+//         0053c272     SHL        EAX,0x10
+//         0053c275     MOV        dword ptr [ESI + 0x2c],EAX
+//         0053c278     NOT        EAX
+//         0053c27a     MOV        dword ptr [ESI + 0x30],EAX
+//         0053c27d     MOV        EAX,ESI
+//         0053c27f     POP        ESI
+//         0053c280     POP        EBX
+//         0053c281     RET        0x8
+//         0053c284     ??         90h
+//         0053c285     NOP
+//         0053c286     NOP
+//         0053c287     NOP
+//         0053c288     NOP
+//         0053c289     NOP
+//         0053c28a     NOP
+//         0053c28b     NOP
+//         0053c28c     NOP
+//         0053c28d     NOP
+//         0053c28e     NOP
+//         0053c28f     NOP
 }
 
 RGE_Visible_Map::RGE_Visible_Map(int param_1, RGE_Game_World* param_2) {
@@ -1997,40 +1957,60 @@ RGE_Unified_Visible_Map::RGE_Unified_Visible_Map(int param_1, int param_2) {
 //                              undefined __thiscall RGE_Unified_Visible_Map(RGE_Unified_Visible_Map
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Unified_Vi    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     0053cef2(R)
-//              RGE_Game_World    Stack[0x8]:4   param_2
-//                               ??0RGE_Unified_Visible_Map@@QAE@HPAVRGE_Game_World@@@Z
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     0053ce80(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     0053ce89(R)
+//                               ??0RGE_Unified_Visible_Map@@QAE@HH@Z                         XREF[1]:     new_map:00455ba5(c)
 //                               RGE_Unified_Visible_Map::RGE_Unified_Visible_Map
-//                              visible.cpp:1032 (3)
-//         0053cee0     PUSH       ESI
-//         0053cee1     MOV        ESI,this
-//                              visible.cpp:1034 (5)
-//         0053cee3     XOR        EAX,EAX
-//         0053cee5     MOV        dword ptr [ESI + 0x8],EAX
-//                              visible.cpp:1035 (2)
-//         0053cee8     MOV        dword ptr [ESI],EAX
-//                              visible.cpp:1036 (3)
-//         0053ceea     MOV        dword ptr [ESI + 0x4],EAX
-//                              visible.cpp:1037 (5)
-//         0053ceed     MOV        [Map_Update_Suppresion],EAX
-//                              visible.cpp:1039 (10)
-//         0053cef2     MOV        EAX,dword ptr [ESP + param_1]
-//         0053cef6     PUSH       EAX
-//         0053cef7     CALL       RGE_Unified_Visible_Map::load                    void load(RGE_Unified_Visible_Map * this, int
-//                              visible.cpp:1041 (7)
-//         0053cefc     MOV        this,ESI
-//         0053cefe     CALL       RGE_Unified_Visible_Map::Set_Map_Offsets         void Set_Map_Offsets(RGE_Unified_Visible_Map
-//                              visible.cpp:1042 (6)
-//         0053cf03     MOV        EAX,ESI
-//         0053cf05     POP        ESI
-//         0053cf06     RET        0x8
-//         0053cf09     ??         90h
-//         0053cf0a     NOP
-//         0053cf0b     NOP
-//         0053cf0c     NOP
-//         0053cf0d     NOP
-//         0053cf0e     NOP
-//         0053cf0f     NOP
+//                              visible.cpp:1005 (7)
+//         0053ce80     MOV        EAX,dword ptr [ESP + param_1]
+//         0053ce84     PUSH       ESI
+//         0053ce85     MOV        ESI,this
+//                              visible.cpp:1011 (17)
+//         0053ce87     XOR        EDX,EDX
+//         0053ce89     MOV        this,dword ptr [ESP + param_2]
+//         0053ce8d     MOV        dword ptr [ESI],EAX
+//         0053ce8f     MOV        dword ptr [ESI + 0x4],this
+//         0053ce92     MOV        dword ptr [Map_Update_Suppresion],EDX
+//                              visible.cpp:1013 (13)
+//         0053ce98     MOV        this,dword ptr [ESI + 0x4]
+//         0053ce9b     CMP        this,EDX
+//         0053ce9d     JLE        LAB_0053cec3
+//         0053ce9f     MOV        EAX,dword ptr [ESI]
+//         0053cea1     CMP        EAX,EDX
+//         0053cea3     JLE        LAB_0053cec3
+//                              visible.cpp:1015 (14)
+//         0053cea5     IMUL       EAX,this
+//         0053cea8     PUSH       0x4
+//         0053ceaa     PUSH       EAX
+//         0053ceab     CALL       calloc                                           undefined calloc()
+//         0053ceb0     ADD        ESP,0x8
+//                              visible.cpp:1024 (10)
+//         0053ceb3     MOV        this,ESI
+//         0053ceb5     MOV        dword ptr [ESI + 0x8],EAX
+//         0053ceb8     CALL       RGE_Unified_Visible_Map::Set_Map_Offsets         void Set_Map_Offsets(RGE_Unified_Visible_Map
+//                              visible.cpp:1026 (6)
+//         0053cebd     MOV        EAX,ESI
+//         0053cebf     POP        ESI
+//         0053cec0     RET        0x8
+//                               LAB_0053cec3                                                 XREF[2]:     0053ce9d(j), 0053cea3(j)
+//                              visible.cpp:1024 (15)
+//         0053cec3     MOV        this,ESI
+//         0053cec5     MOV        dword ptr [ESI + 0x8],EDX
+//         0053cec8     MOV        dword ptr [ESI],EDX
+//         0053ceca     MOV        dword ptr [ESI + 0x4],EDX
+//         0053cecd     CALL       RGE_Unified_Visible_Map::Set_Map_Offsets         void Set_Map_Offsets(RGE_Unified_Visible_Map
+//                              visible.cpp:1026 (6)
+//         0053ced2     MOV        EAX,ESI
+//         0053ced4     POP        ESI
+//         0053ced5     RET        0x8
+//         0053ced8     ??         90h
+//         0053ced9     NOP
+//         0053ceda     NOP
+//         0053cedb     NOP
+//         0053cedc     NOP
+//         0053cedd     NOP
+//         0053cede     NOP
+//         0053cedf     NOP
 }
 
 RGE_Unified_Visible_Map::RGE_Unified_Visible_Map(int param_1, RGE_Game_World* param_2) {

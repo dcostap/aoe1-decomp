@@ -6,31 +6,31 @@ TribeConstructionAIModule::TribeConstructionAIModule(void* param_1, int param_2)
 //                              undefined __thiscall TribeConstructionAIModule(TribeConstructionAIMo
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TribeConstruct    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     004d5eb8(R)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     004d5eb0(R)
-//                               ??0TribeConstructionAIModule@@QAE@HH@Z                       XREF[1]:     TribeMainDecisionAIModule:004e4bd6
+//              void *            Stack[0x4]:4   param_1                   XREF[1]:     004d5e68(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     004d5e60(R)
+//                               ??0TribeConstructionAIModule@@QAE@PAXH@Z                     XREF[1]:     TribeMainDecisionAIModule:004e4856
 //                               TribeConstructionAIModule::TribeConstructionAIModule
-//                              taiconmd.cpp:45 (36)
-//         004d5eb0     MOV        EAX,dword ptr [ESP + param_2]
-//         004d5eb4     PUSH       ESI
-//         004d5eb5     MOV        ESI,this
-//         004d5eb7     PUSH       EAX
-//         004d5eb8     MOV        this,dword ptr [ESP + param_1]
-//         004d5ebc     PUSH       this
-//         004d5ebd     MOV        this,ESI
-//         004d5ebf     CALL       ConstructionAIModule::ConstructionAIModule       undefined ConstructionAIModule(ConstructionAI
-//         004d5ec4     MOV        dword ptr [ESI + 0x314],0x0
-//         004d5ece     MOV        dword ptr [ESI],TribeConstructionAIModule::`vf   = 004d5e90
-//                              taiconmd.cpp:46 (6)
-//         004d5ed4     MOV        EAX,ESI
-//         004d5ed6     POP        ESI
-//         004d5ed7     RET        0x8
-//         004d5eda     ??         90h
-//         004d5edb     NOP
-//         004d5edc     NOP
-//         004d5edd     NOP
-//         004d5ede     NOP
-//         004d5edf     NOP
+//                              taiconmd.cpp:37 (36)
+//         004d5e60     MOV        EAX,dword ptr [ESP + param_2]
+//         004d5e64     PUSH       ESI
+//         004d5e65     MOV        ESI,this
+//         004d5e67     PUSH       EAX
+//         004d5e68     MOV        this,dword ptr [ESP + param_1]
+//         004d5e6c     PUSH       this
+//         004d5e6d     MOV        this,ESI
+//         004d5e6f     CALL       ConstructionAIModule::ConstructionAIModule       undefined ConstructionAIModule(ConstructionAI
+//         004d5e74     MOV        dword ptr [ESI + 0x314],0x0
+//         004d5e7e     MOV        dword ptr [ESI],TribeConstructionAIModule::`vf   = 004d5e90
+//                              taiconmd.cpp:38 (6)
+//         004d5e84     MOV        EAX,ESI
+//         004d5e86     POP        ESI
+//         004d5e87     RET        0x8
+//         004d5e8a     ??         90h
+//         004d5e8b     NOP
+//         004d5e8c     NOP
+//         004d5e8d     NOP
+//         004d5e8e     NOP
+//         004d5e8f     NOP
 }
 
 TribeConstructionAIModule::TribeConstructionAIModule(int param_1, int param_2) {

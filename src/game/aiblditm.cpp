@@ -3,140 +3,135 @@
 
 BuildItem::BuildItem() {
     /* TODO: Stub */
-//                              undefined __thiscall BuildItem(BuildItem * this, BuildItem * param_1)
+//                              undefined __thiscall BuildItem(BuildItem * this)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              BuildItem *       ECX:4 (auto)   this
-//              BuildItem *       Stack[0x4]:4   param_1                   XREF[1]:     004083b2(R)
-//                               ??0BuildItem@@QAE@ABV0@@Z
-//                               BuildItem::BuildItem
-//                              aiblditm.cpp:111 (146)
-//         004083b0     PUSH       ESI
-//         004083b1     PUSH       EDI
-//         004083b2     MOV        EDI,dword ptr [ESP + param_1]
-//         004083b6     MOV        ESI,this
-//         004083b8     PUSH       EDI
-//         004083b9     CALL       BaseItem::BaseItem                               undefined BaseItem(BaseItem * this, BaseItem
-//         004083be     XOR        EAX,EAX
-//         004083c0     MOV        dword ptr [ESI + 0x6c],EAX
-//         004083c3     MOV        dword ptr [ESI + 0x70],EAX
-//         004083c6     MOV        this,dword ptr [EDI + 0x74]
-//         004083c9     MOV        dword ptr [ESI + 0x74],this
-//         004083cc     MOV        EDX,dword ptr [EDI + 0x78]
-//         004083cf     MOV        dword ptr [ESI + 0x78],EDX
-//         004083d2     MOV        this,dword ptr [EDI + 0x7c]
-//         004083d5     MOV        dword ptr [ESI + 0x7c],this
-//         004083d8     MOV        EDX,dword ptr [EDI + 0x80]
-//         004083de     MOV        dword ptr [ESI + 0x80],EDX
-//         004083e4     MOV        this,dword ptr [EDI + 0x80]
-//         004083ea     MOV        dword ptr [ESI + 0x84],this
-//         004083f0     MOV        EDX,dword ptr [EDI + 0x88]
-//         004083f6     MOV        dword ptr [ESI + 0x88],EDX
-//         004083fc     MOV        this,dword ptr [EDI + 0x8c]
-//         00408402     MOV        dword ptr [ESI + 0x8c],this
-//         00408408     MOV        EDX,dword ptr [EDI + 0x90]
-//         0040840e     MOV        dword ptr [ESI + 0x90],EDX
-//         00408414     MOV        this,dword ptr [EDI + 0x9c]
-//         0040841a     MOV        dword ptr [ESI + 0x9c],this
-//         00408420     MOV        dword ptr [ESI + 0xa0],EAX
-//         00408426     MOV        dword ptr [ESI + 0xa4],0xffffffff
-//         00408430     MOV        dword ptr [ESI + 0xa8],EAX
-//         00408436     MOV        byte ptr [ESI + 0xac],AL
-//         0040843c     MOV        dword ptr [ESI],BuildItem::`vftable'             = 00408200
-//                              aiblditm.cpp:112 (12)
-//         00408442     MOV        EDX,dword ptr [EDI + 0x94]
-//         00408448     MOV        dword ptr [ESI + 0x94],EDX
-//                              aiblditm.cpp:113 (12)
-//         0040844e     MOV        EAX,dword ptr [EDI + 0x98]
-//         00408454     MOV        dword ptr [ESI + 0x98],EAX
-//                              aiblditm.cpp:114 (7)
-//         0040845a     MOV        EAX,ESI
-//         0040845c     POP        EDI
-//         0040845d     POP        ESI
-//         0040845e     RET        0x4
-//         00408461     ??         90h
-//         00408462     NOP
-//         00408463     NOP
-//         00408464     NOP
-//         00408465     NOP
-//         00408466     NOP
-//         00408467     NOP
-//         00408468     NOP
-//         00408469     NOP
-//         0040846a     NOP
-//         0040846b     NOP
-//         0040846c     NOP
-//         0040846d     NOP
-//         0040846e     NOP
-//         0040846f     NOP
+//                               ??0BuildItem@@QAE@XZ                                         XREF[2]:     BuildAIModule:004086f8(c),
+//                               BuildItem::BuildItem                                                      BuildAIModule:00408891(c)
+//                              aiblditm.cpp:36 (94)
+//         00408190     PUSH       ESI
+//         00408191     MOV        ESI,this
+//         00408193     CALL       BaseItem::BaseItem                               undefined BaseItem(BaseItem * this)
+//         00408198     XOR        EAX,EAX
+//         0040819a     OR         this,0xffffffff
+//         0040819d     MOV        dword ptr [ESI + 0x6c],EAX
+//         004081a0     MOV        dword ptr [ESI + 0x70],EAX
+//         004081a3     MOV        dword ptr [ESI + 0x78],EAX
+//         004081a6     MOV        dword ptr [ESI + 0x7c],EAX
+//         004081a9     MOV        dword ptr [ESI + 0x80],EAX
+//         004081af     MOV        dword ptr [ESI + 0x84],EAX
+//         004081b5     MOV        dword ptr [ESI + 0x88],EAX
+//         004081bb     MOV        dword ptr [ESI + 0x9c],EAX
+//         004081c1     MOV        dword ptr [ESI + 0xa0],EAX
+//         004081c7     MOV        dword ptr [ESI + 0xa8],EAX
+//         004081cd     MOV        byte ptr [ESI + 0xac],AL
+//         004081d3     MOV        dword ptr [ESI + 0x74],this
+//         004081d6     MOV        dword ptr [ESI + 0x8c],this
+//         004081dc     MOV        dword ptr [ESI + 0x90],this
+//         004081e2     MOV        dword ptr [ESI + 0xa4],this
+//         004081e8     MOV        dword ptr [ESI],BuildItem::`vftable'             = 00408200
+//                              aiblditm.cpp:37 (6)
+//         004081ee     MOV        dword ptr [ESI + 0x94],this
+//                              aiblditm.cpp:38 (6)
+//         004081f4     MOV        dword ptr [ESI + 0x98],this
+//                              aiblditm.cpp:39 (4)
+//         004081fa     MOV        EAX,ESI
+//         004081fc     POP        ESI
+//         004081fd     RET
+//         004081fe     ??         90h
+//         004081ff     NOP
 }
 
 BuildItem::BuildItem(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, char* param_7, float param_8, float param_9, float param_10, int param_11, int param_12, int param_13, int param_14) {
     /* TODO: Stub */
-//                              undefined __thiscall BuildItem(BuildItem * this, BuildItem * param_1)
+//                              undefined __thiscall BuildItem(BuildItem * this, int param_1, int pa
 //              undefined         <UNASSIGNED>   <RETURN>
 //              BuildItem *       ECX:4 (auto)   this
-//              BuildItem *       Stack[0x4]:4   param_1                   XREF[1]:     004083b2(R)
-//                               ??0BuildItem@@QAE@ABV0@@Z
-//                               BuildItem::BuildItem
-//                              aiblditm.cpp:111 (146)
-//         004083b0     PUSH       ESI
-//         004083b1     PUSH       EDI
-//         004083b2     MOV        EDI,dword ptr [ESP + param_1]
-//         004083b6     MOV        ESI,this
-//         004083b8     PUSH       EDI
-//         004083b9     CALL       BaseItem::BaseItem                               undefined BaseItem(BaseItem * this, BaseItem
-//         004083be     XOR        EAX,EAX
-//         004083c0     MOV        dword ptr [ESI + 0x6c],EAX
-//         004083c3     MOV        dword ptr [ESI + 0x70],EAX
-//         004083c6     MOV        this,dword ptr [EDI + 0x74]
-//         004083c9     MOV        dword ptr [ESI + 0x74],this
-//         004083cc     MOV        EDX,dword ptr [EDI + 0x78]
-//         004083cf     MOV        dword ptr [ESI + 0x78],EDX
-//         004083d2     MOV        this,dword ptr [EDI + 0x7c]
-//         004083d5     MOV        dword ptr [ESI + 0x7c],this
-//         004083d8     MOV        EDX,dword ptr [EDI + 0x80]
-//         004083de     MOV        dword ptr [ESI + 0x80],EDX
-//         004083e4     MOV        this,dword ptr [EDI + 0x80]
-//         004083ea     MOV        dword ptr [ESI + 0x84],this
-//         004083f0     MOV        EDX,dword ptr [EDI + 0x88]
-//         004083f6     MOV        dword ptr [ESI + 0x88],EDX
-//         004083fc     MOV        this,dword ptr [EDI + 0x8c]
-//         00408402     MOV        dword ptr [ESI + 0x8c],this
-//         00408408     MOV        EDX,dword ptr [EDI + 0x90]
-//         0040840e     MOV        dword ptr [ESI + 0x90],EDX
-//         00408414     MOV        this,dword ptr [EDI + 0x9c]
-//         0040841a     MOV        dword ptr [ESI + 0x9c],this
-//         00408420     MOV        dword ptr [ESI + 0xa0],EAX
-//         00408426     MOV        dword ptr [ESI + 0xa4],0xffffffff
-//         00408430     MOV        dword ptr [ESI + 0xa8],EAX
-//         00408436     MOV        byte ptr [ESI + 0xac],AL
-//         0040843c     MOV        dword ptr [ESI],BuildItem::`vftable'             = 00408200
-//                              aiblditm.cpp:112 (12)
-//         00408442     MOV        EDX,dword ptr [EDI + 0x94]
-//         00408448     MOV        dword ptr [ESI + 0x94],EDX
-//                              aiblditm.cpp:113 (12)
-//         0040844e     MOV        EAX,dword ptr [EDI + 0x98]
-//         00408454     MOV        dword ptr [ESI + 0x98],EAX
-//                              aiblditm.cpp:114 (7)
-//         0040845a     MOV        EAX,ESI
-//         0040845c     POP        EDI
-//         0040845d     POP        ESI
-//         0040845e     RET        0x4
-//         00408461     ??         90h
-//         00408462     NOP
-//         00408463     NOP
-//         00408464     NOP
-//         00408465     NOP
-//         00408466     NOP
-//         00408467     NOP
-//         00408468     NOP
-//         00408469     NOP
-//         0040846a     NOP
-//         0040846b     NOP
-//         0040846c     NOP
-//         0040846d     NOP
-//         0040846e     NOP
-//         0040846f     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     00408259(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     0040823a(R)
+//              int               Stack[0xc]:4   param_3                   XREF[1]:     00408235(R)
+//              int               Stack[0x10]:4  param_4                   XREF[1]:     0040825d(R)
+//              int               Stack[0x14]:4  param_5                   XREF[1]:     00408264(R)
+//              int               Stack[0x18]:4  param_6                   XREF[1]:     0040826d(R)
+//              char *            Stack[0x1c]:4  param_7                   XREF[1]:     00408230(R)
+//              float             Stack[0x20]:4  param_8                   XREF[1]:     00408224(R)
+//              float             Stack[0x24]:4  param_9                   XREF[1]:     0040822b(R)
+//              float             Stack[0x28]:4  param_10                  XREF[1]:     00408220(R)
+//              int               Stack[0x2c]:4  param_11                  XREF[1]:     00408274(R)
+//              int               Stack[0x30]:4  param_12                  XREF[1]:     004082a2(R)
+//              int               Stack[0x34]:4  param_13                  XREF[1]:     004082b6(R)
+//              int               Stack[0x38]:4  param_14                  XREF[1]:     004082ac(R)
+//                               ??0BuildItem@@QAE@HHHHHHPADMMMHHHH@Z                         XREF[3]:     BuildAIModule:00408c2e(c),
+//                               BuildItem::BuildItem                                                      loadBuildList:00409733(c),
+//                                                                                                         insertItem:00409a93(c)
+//                              aiblditm.cpp:63 (130)
+//         00408220     MOV        EAX,dword ptr [ESP + param_10]
+//         00408224     MOV        EDX,dword ptr [ESP + param_8]
+//         00408228     PUSH       ESI
+//         00408229     MOV        ESI,this
+//         0040822b     MOV        this,dword ptr [ESP + param_9]
+//         0040822f     PUSH       EAX
+//         00408230     MOV        EAX,dword ptr [ESP + param_7]
+//         00408234     PUSH       this
+//         00408235     MOV        this,dword ptr [ESP + param_3]
+//         00408239     PUSH       EDX
+//         0040823a     MOV        EDX,dword ptr [ESP + param_2]
+//         0040823e     PUSH       0xbf800000
+//         00408243     PUSH       0xbf800000
+//         00408248     PUSH       0xbf800000
+//         0040824d     PUSH       EAX
+//         0040824e     PUSH       this
+//         0040824f     PUSH       -0x1
+//         00408251     PUSH       EDX
+//         00408252     MOV        this,ESI
+//         00408254     CALL       BaseItem::BaseItem                               undefined BaseItem(BaseItem * this, int param
+//         00408259     MOV        this,dword ptr [ESP + param_1]
+//         0040825d     MOV        EDX,dword ptr [ESP + param_4]
+//         00408261     MOV        dword ptr [ESI + 0x74],this
+//         00408264     MOV        this,dword ptr [ESP + param_5]
+//         00408268     XOR        EAX,EAX
+//         0040826a     MOV        dword ptr [ESI + 0x78],EDX
+//         0040826d     MOV        EDX,dword ptr [ESP + param_6]
+//         00408271     MOV        dword ptr [ESI + 0x7c],this
+//         00408274     MOV        this,dword ptr [ESP + param_11]
+//         00408278     MOV        dword ptr [ESI + 0x6c],EAX
+//         0040827b     MOV        dword ptr [ESI + 0x70],EAX
+//         0040827e     MOV        dword ptr [ESI + 0x80],EAX
+//         00408284     MOV        dword ptr [ESI + 0x84],EAX
+//         0040828a     MOV        dword ptr [ESI + 0x88],EAX
+//         00408290     MOV        dword ptr [ESI + 0xa0],EAX
+//         00408296     MOV        dword ptr [ESI + 0xa8],EAX
+//         0040829c     MOV        byte ptr [ESI + 0xac],AL
+//                              aiblditm.cpp:64 (20)
+//         004082a2     MOV        EAX,dword ptr [ESP + param_12]
+//         004082a6     MOV        dword ptr [ESI + 0x8c],EDX
+//         004082ac     MOV        EDX,dword ptr [ESP + param_14]
+//         004082b0     MOV        dword ptr [ESI + 0x90],this
+//                              aiblditm.cpp:65 (38)
+//         004082b6     MOV        this,dword ptr [ESP + param_13]
+//         004082ba     MOV        dword ptr [ESI + 0x94],EAX
+//         004082c0     MOV        dword ptr [ESI + 0x9c],EDX
+//         004082c6     MOV        dword ptr [ESI + 0xa4],0xffffffff
+//         004082d0     MOV        dword ptr [ESI],BuildItem::`vftable'             = 00408200
+//         004082d6     MOV        dword ptr [ESI + 0x98],this
+//                              aiblditm.cpp:66 (6)
+//         004082dc     MOV        EAX,ESI
+//         004082de     POP        ESI
+//         004082df     RET        0x38
+//         004082e2     ??         90h
+//         004082e3     NOP
+//         004082e4     NOP
+//         004082e5     NOP
+//         004082e6     NOP
+//         004082e7     NOP
+//         004082e8     NOP
+//         004082e9     NOP
+//         004082ea     NOP
+//         004082eb     NOP
+//         004082ec     NOP
+//         004082ed     NOP
+//         004082ee     NOP
+//         004082ef     NOP
 }
 
 BuildItem::BuildItem(BuildItem* param_1) {
@@ -144,68 +139,68 @@ BuildItem::BuildItem(BuildItem* param_1) {
 //                              undefined __thiscall BuildItem(BuildItem * this, BuildItem * param_1)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              BuildItem *       ECX:4 (auto)   this
-//              BuildItem *       Stack[0x4]:4   param_1                   XREF[1]:     004083b2(R)
-//                               ??0BuildItem@@QAE@ABV0@@Z
+//              BuildItem *       Stack[0x4]:4   param_1                   XREF[1]:     004082f2(R)
+//                               ??0BuildItem@@QAE@PAV0@@Z
 //                               BuildItem::BuildItem
-//                              aiblditm.cpp:111 (146)
-//         004083b0     PUSH       ESI
-//         004083b1     PUSH       EDI
-//         004083b2     MOV        EDI,dword ptr [ESP + param_1]
-//         004083b6     MOV        ESI,this
-//         004083b8     PUSH       EDI
-//         004083b9     CALL       BaseItem::BaseItem                               undefined BaseItem(BaseItem * this, BaseItem
-//         004083be     XOR        EAX,EAX
-//         004083c0     MOV        dword ptr [ESI + 0x6c],EAX
-//         004083c3     MOV        dword ptr [ESI + 0x70],EAX
-//         004083c6     MOV        this,dword ptr [EDI + 0x74]
-//         004083c9     MOV        dword ptr [ESI + 0x74],this
-//         004083cc     MOV        EDX,dword ptr [EDI + 0x78]
-//         004083cf     MOV        dword ptr [ESI + 0x78],EDX
-//         004083d2     MOV        this,dword ptr [EDI + 0x7c]
-//         004083d5     MOV        dword ptr [ESI + 0x7c],this
-//         004083d8     MOV        EDX,dword ptr [EDI + 0x80]
-//         004083de     MOV        dword ptr [ESI + 0x80],EDX
-//         004083e4     MOV        this,dword ptr [EDI + 0x80]
-//         004083ea     MOV        dword ptr [ESI + 0x84],this
-//         004083f0     MOV        EDX,dword ptr [EDI + 0x88]
-//         004083f6     MOV        dword ptr [ESI + 0x88],EDX
-//         004083fc     MOV        this,dword ptr [EDI + 0x8c]
-//         00408402     MOV        dword ptr [ESI + 0x8c],this
-//         00408408     MOV        EDX,dword ptr [EDI + 0x90]
-//         0040840e     MOV        dword ptr [ESI + 0x90],EDX
-//         00408414     MOV        this,dword ptr [EDI + 0x9c]
-//         0040841a     MOV        dword ptr [ESI + 0x9c],this
-//         00408420     MOV        dword ptr [ESI + 0xa0],EAX
-//         00408426     MOV        dword ptr [ESI + 0xa4],0xffffffff
-//         00408430     MOV        dword ptr [ESI + 0xa8],EAX
-//         00408436     MOV        byte ptr [ESI + 0xac],AL
-//         0040843c     MOV        dword ptr [ESI],BuildItem::`vftable'             = 00408200
-//                              aiblditm.cpp:112 (12)
-//         00408442     MOV        EDX,dword ptr [EDI + 0x94]
-//         00408448     MOV        dword ptr [ESI + 0x94],EDX
-//                              aiblditm.cpp:113 (12)
-//         0040844e     MOV        EAX,dword ptr [EDI + 0x98]
-//         00408454     MOV        dword ptr [ESI + 0x98],EAX
-//                              aiblditm.cpp:114 (7)
-//         0040845a     MOV        EAX,ESI
-//         0040845c     POP        EDI
-//         0040845d     POP        ESI
-//         0040845e     RET        0x4
-//         00408461     ??         90h
-//         00408462     NOP
-//         00408463     NOP
-//         00408464     NOP
-//         00408465     NOP
-//         00408466     NOP
-//         00408467     NOP
-//         00408468     NOP
-//         00408469     NOP
-//         0040846a     NOP
-//         0040846b     NOP
-//         0040846c     NOP
-//         0040846d     NOP
-//         0040846e     NOP
-//         0040846f     NOP
+//                              aiblditm.cpp:87 (146)
+//         004082f0     PUSH       ESI
+//         004082f1     PUSH       EDI
+//         004082f2     MOV        EDI,dword ptr [ESP + param_1]
+//         004082f6     MOV        ESI,this
+//         004082f8     PUSH       EDI
+//         004082f9     CALL       BaseItem::BaseItem                               undefined BaseItem(BaseItem * this, BaseItem
+//         004082fe     XOR        EAX,EAX
+//         00408300     MOV        dword ptr [ESI + 0x6c],EAX
+//         00408303     MOV        dword ptr [ESI + 0x70],EAX
+//         00408306     MOV        this,dword ptr [EDI + 0x74]
+//         00408309     MOV        dword ptr [ESI + 0x74],this
+//         0040830c     MOV        EDX,dword ptr [EDI + 0x78]
+//         0040830f     MOV        dword ptr [ESI + 0x78],EDX
+//         00408312     MOV        this,dword ptr [EDI + 0x7c]
+//         00408315     MOV        dword ptr [ESI + 0x7c],this
+//         00408318     MOV        EDX,dword ptr [EDI + 0x80]
+//         0040831e     MOV        dword ptr [ESI + 0x80],EDX
+//         00408324     MOV        this,dword ptr [EDI + 0x80]
+//         0040832a     MOV        dword ptr [ESI + 0x84],this
+//         00408330     MOV        EDX,dword ptr [EDI + 0x88]
+//         00408336     MOV        dword ptr [ESI + 0x88],EDX
+//         0040833c     MOV        this,dword ptr [EDI + 0x8c]
+//         00408342     MOV        dword ptr [ESI + 0x8c],this
+//         00408348     MOV        EDX,dword ptr [EDI + 0x90]
+//         0040834e     MOV        dword ptr [ESI + 0x90],EDX
+//         00408354     MOV        this,dword ptr [EDI + 0x9c]
+//         0040835a     MOV        dword ptr [ESI + 0x9c],this
+//         00408360     MOV        dword ptr [ESI + 0xa0],EAX
+//         00408366     MOV        dword ptr [ESI + 0xa4],0xffffffff
+//         00408370     MOV        dword ptr [ESI + 0xa8],EAX
+//         00408376     MOV        byte ptr [ESI + 0xac],AL
+//         0040837c     MOV        dword ptr [ESI],BuildItem::`vftable'             = 00408200
+//                              aiblditm.cpp:88 (12)
+//         00408382     MOV        EDX,dword ptr [EDI + 0x94]
+//         00408388     MOV        dword ptr [ESI + 0x94],EDX
+//                              aiblditm.cpp:89 (12)
+//         0040838e     MOV        EAX,dword ptr [EDI + 0x98]
+//         00408394     MOV        dword ptr [ESI + 0x98],EAX
+//                              aiblditm.cpp:90 (7)
+//         0040839a     MOV        EAX,ESI
+//         0040839c     POP        EDI
+//         0040839d     POP        ESI
+//         0040839e     RET        0x4
+//         004083a1     ??         90h
+//         004083a2     NOP
+//         004083a3     NOP
+//         004083a4     NOP
+//         004083a5     NOP
+//         004083a6     NOP
+//         004083a7     NOP
+//         004083a8     NOP
+//         004083a9     NOP
+//         004083aa     NOP
+//         004083ab     NOP
+//         004083ac     NOP
+//         004083ad     NOP
+//         004083ae     NOP
+//         004083af     NOP
 }
 
 BuildItem::BuildItem(BuildItem* param_1) {

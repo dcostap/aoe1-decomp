@@ -1,6 +1,34 @@
 #pragma once
 #include "../common.h"
 
+
+// ----------------------------------------------------------------
+// BYTEPoint
+// Size: 0x2
+struct BYTEPoint {
+    uchar x; // 0x0
+    uchar y; // 0x1
+};
+
+// ----------------------------------------------------------------
+// FloatHeap
+// Size: 0x8
+struct FloatHeap {
+    uchar x; // 0x0
+    uchar y; // 0x1
+    float total; // 0x4
+};
+
+// ----------------------------------------------------------------
+// MGP_FloatHeap
+// Size: 0x8
+struct MGP_FloatHeap {
+    uchar x; // 0x0
+    uchar y; // 0x1
+    ushort next; // 0x2
+    int total; // 0x4
+};
+
 class PathingSystem {
 public:
     int xSizeValue;                          // 0x4

@@ -1023,41 +1023,34 @@ int TPanelSystem::destroyPanel(char* param_1) {
 
 int TPanelSystem::inSystem(char* param_1) {
     /* TODO: Stub */
-//                              int __thiscall inSystem(TPanelSystem * this, TPanel * param_1)
+//                              int __thiscall inSystem(TPanelSystem * this, char * param_1)
 //              int               EAX:4          <RETURN>
 //              TPanelSystem *    ECX:4 (auto)   this
-//              TPanel *          Stack[0x4]:4   param_1                   XREF[1]:     00464123(R)
-//                               ?inSystem@TPanelSystem@@QAEHPAVTPanel@@@Z                    XREF[1]:     ~TPanel:004649fb(c)
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     00464100(R)
+//                               ?inSystem@TPanelSystem@@QAEHPAD@Z
 //                               TPanelSystem::inSystem
-//                              Panel.cpp:418 (3)
-//         00464120     PUSH       ESI
-//         00464121     MOV        ESI,this
-//                              Panel.cpp:419 (25)
-//         00464123     MOV        this,dword ptr [ESP + param_1]
-//         00464127     TEST       this,this
-//         00464129     JZ         LAB_00464145
-//         0046412b     CALL       TPanel::panelName                                char * panelName(TPanel * this)
-//         00464130     PUSH       EAX
-//         00464131     MOV        this,ESI
-//         00464133     CALL       TPanelSystem::findPanelNode                      PanelNode * findPanelNode(TPanelSystem * this
-//         00464138     TEST       EAX,EAX
-//         0046413a     JZ         LAB_00464145
-//                              Panel.cpp:421 (5)
-//         0046413c     MOV        EAX,0x1
-//                              Panel.cpp:422 (4)
-//         00464141     POP        ESI
-//         00464142     RET        0x4
-//                               LAB_00464145                                                 XREF[2]:     00464129(j), 0046413a(j)
-//                              Panel.cpp:420 (2)
-//         00464145     XOR        EAX,EAX
-//                              Panel.cpp:422 (4)
-//         00464147     POP        ESI
-//         00464148     RET        0x4
-//         0046414b     ??         90h
-//         0046414c     NOP
-//         0046414d     NOP
-//         0046414e     NOP
-//         0046414f     NOP
+//                              Panel.cpp:409 (16)
+//         00464100     MOV        EAX,dword ptr [ESP + param_1]
+//         00464104     PUSH       EAX
+//         00464105     CALL       TPanelSystem::findPanelNode                      PanelNode * findPanelNode(TPanelSystem * this
+//         0046410a     NEG        EAX
+//         0046410c     SBB        EAX,EAX
+//         0046410e     NEG        EAX
+//                              Panel.cpp:413 (3)
+//         00464110     RET        0x4
+//         00464113     ??         90h
+//         00464114     NOP
+//         00464115     NOP
+//         00464116     NOP
+//         00464117     NOP
+//         00464118     NOP
+//         00464119     NOP
+//         0046411a     NOP
+//         0046411b     NOP
+//         0046411c     NOP
+//         0046411d     NOP
+//         0046411e     NOP
+//         0046411f     NOP
     return 0;
 }
 
@@ -1281,62 +1274,783 @@ PanelNode* TPanelSystem::findPanelNode(char* param_1) {
 
 int TPanelSystem::setCurrentPanel(char* param_1, int param_2) {
     /* TODO: Stub */
-//                              void __thiscall setCurrentPanel(TPanelSystem * this, TPanel * param_
+//                              int __thiscall setCurrentPanel(TPanelSystem * this, char * param_1,
+//              int               EAX:4          <RETURN>
+//              TPanelSystem *    ECX:4 (auto)   this
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     00463e60(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     00463e7f(R)
+//                               ?setCurrentPanel@TPanelSystem@@QAEHPADH@Z                    XREF[124]:   action:00493d03(c),
+//                               TPanelSystem::setCurrentPanel                                             action:00498402(c),
+//                                                                                                         action:00498486(c),
+//                                                                                                         action:0049850e(c),
+//                                                                                                         action:004985e2(c),
+//                                                                                                         action:00498691(c),
+//                                                                                                         action:004986dd(c),
+//                                                                                                         action:004a70c6(c),
+//                                                                                                         action:004a7173(c),
+//                                                                                                         command_save:004ad921(c),
+//                                                                                                         command_save_as:004ada44(c),
+//                                                                                                         show_status_message:0052372d(c),
+//                                                                                                         start_menu:005240cc(c),
+//                                                                                                         quit_game:0052434d(c),
+//                                                                                                         load_game:005262dd(c),
+//                                                                                                         create_game_screen:00527905(c),
+//                                                                                                         create_game_screen:0052795b(c),
+//                                                                                                         let_game_begin:00528688(c),
+//                                                                                                         start_scenario_editor:00528e7b(c),
+//                                                                                                         start_scenario_editor:00528f18(c),
+//                                                                                                         [more]
+//                              Panel.cpp:222 (16)
+//         00463e60     MOV        EAX,dword ptr [ESP + param_1]
+//         00463e64     PUSH       ESI
+//         00463e65     PUSH       EDI
+//         00463e66     MOV        ESI,this
+//         00463e68     PUSH       EAX
+//         00463e69     CALL       TPanelSystem::findPanelNode                      PanelNode * findPanelNode(TPanelSystem * this
+//         00463e6e     MOV        EDI,EAX
+//                              Panel.cpp:226 (4)
+//         00463e70     TEST       EDI,EDI
+//         00463e72     JZ         LAB_00463ea6
+//                              Panel.cpp:231 (6)
+//         00463e74     MOV        this,dword ptr [ESI]
+//         00463e76     TEST       this,this
+//         00463e78     JZ         LAB_00463e7f
+//                              Panel.cpp:232 (5)
+//         00463e7a     CALL       TPanel::release_mouse                            void release_mouse(TPanel * this)
+//                               LAB_00463e7f                                                 XREF[1]:     00463e78(j)
+//                              Panel.cpp:236 (29)
+//         00463e7f     MOV        this,dword ptr [ESP + param_2]
+//         00463e83     MOV        dword ptr [ESI + 0x8],0x0
+//         00463e8a     MOV        dword ptr [ESI + 0x4],0x0
+//         00463e91     MOV        EDX,dword ptr [EDI]
+//         00463e93     PUSH       this
+//         00463e94     PUSH       EDX
+//         00463e95     MOV        this,ESI
+//         00463e97     CALL       TPanelSystem::setCurrentPanel                    void setCurrentPanel(TPanelSystem * this, TPa
+//                              Panel.cpp:237 (5)
+//         00463e9c     MOV        EAX,0x1
+//                              Panel.cpp:240 (12)
+//         00463ea1     POP        EDI
+//         00463ea2     POP        ESI
+//         00463ea3     RET        0x8
+//                               LAB_00463ea6                                                 XREF[1]:     00463e72(j)
+//         00463ea6     POP        EDI
+//         00463ea7     XOR        EAX,EAX
+//         00463ea9     POP        ESI
+//         00463eaa     RET        0x8
+//         00463ead     ??         90h
+//         00463eae     NOP
+//         00463eaf     NOP
+    return 0;
+}
+
+int TPanelSystem::restorePreviousPanel(int param_1) {
+    /* TODO: Stub */
+//                              int __thiscall restorePreviousPanel(TPanelSystem * this, int param_1)
+//              int               EAX:4          <RETURN>
+//              TPanelSystem *    ECX:4 (auto)   this
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     00463ed5(R)
+//                               ?restorePreviousPanel@TPanelSystem@@QAEHH@Z                  XREF[1]:     close_status_message:005237a7(c)
+//                               TPanelSystem::restorePreviousPanel
+//                              Panel.cpp:245 (5)
+//         00463eb0     PUSH       EBX
+//         00463eb1     PUSH       ESI
+//         00463eb2     PUSH       EDI
+//         00463eb3     MOV        EDI,this
+//                              Panel.cpp:248 (7)
+//         00463eb5     MOV        this,dword ptr [EDI + 0xc]
+//         00463eb8     TEST       this,this
+//         00463eba     JNZ        LAB_00463ec4
+//                              Panel.cpp:249 (2)
+//         00463ebc     XOR        EAX,EAX
+//                              Panel.cpp:278 (6)
+//         00463ebe     POP        EDI
+//         00463ebf     POP        ESI
+//         00463ec0     POP        EBX
+//         00463ec1     RET        0x4
+//                               LAB_00463ec4                                                 XREF[1]:     00463eba(j)
+//                              Panel.cpp:250 (7)
+//         00463ec4     CALL       TPanel::previousPanel                            TPanel * previousPanel(TPanel * this)
+//         00463ec9     MOV        ESI,EAX
+//                              Panel.cpp:251 (4)
+//         00463ecb     TEST       ESI,ESI
+//         00463ecd     JNZ        LAB_00463ed5
+//                              Panel.cpp:278 (6)
+//         00463ecf     POP        EDI
+//         00463ed0     POP        ESI
+//         00463ed1     POP        EBX
+//         00463ed2     RET        0x4
+//                               LAB_00463ed5                                                 XREF[1]:     00463ecd(j)
+//                              Panel.cpp:261 (11)
+//         00463ed5     MOV        EAX,dword ptr [ESP + param_1]
+//         00463ed9     MOV        EBX,dword ptr [EDI + 0xc]
+//         00463edc     TEST       EAX,EAX
+//         00463ede     JNZ        LAB_00463eea
+//                              Panel.cpp:263 (8)
+//         00463ee0     PUSH       EBX
+//         00463ee1     MOV        this,ESI
+//         00463ee3     CALL       TPanel::setPreviousPanel                         void setPreviousPanel(TPanel * this, TPanel *
+//                              Panel.cpp:265 (2)
+//         00463ee8     JMP        LAB_00463f0d
+//                               LAB_00463eea                                                 XREF[1]:     00463ede(j)
+//                              Panel.cpp:266 (11)
+//         00463eea     MOV        this,ESI
+//         00463eec     CALL       TPanel::previousPanel                            TPanel * previousPanel(TPanel * this)
+//         00463ef1     CMP        EAX,EBX
+//         00463ef3     JNZ        LAB_00463efe
+//                              Panel.cpp:267 (9)
+//         00463ef5     PUSH       0x0
+//         00463ef7     MOV        this,ESI
+//         00463ef9     CALL       TPanel::setPreviousPanel                         void setPreviousPanel(TPanel * this, TPanel *
+//                               LAB_00463efe                                                 XREF[1]:     00463ef3(j)
+//                              Panel.cpp:268 (15)
+//         00463efe     MOV        this,EBX
+//         00463f00     CALL       TPanel::panelName                                char * panelName(TPanel * this)
+//         00463f05     PUSH       EAX
+//         00463f06     MOV        this,EDI
+//         00463f08     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
+//                               LAB_00463f0d                                                 XREF[1]:     00463ee8(j)
+//                              Panel.cpp:273 (15)
+//         00463f0d     MOV        EAX,dword ptr [ESI]
+//         00463f0f     PUSH       0x1
+//         00463f11     MOV        this,ESI
+//         00463f13     MOV        dword ptr [EDI + 0xc],ESI
+//         00463f16     CALL       dword ptr [EAX + 0xc0]
+//                              Panel.cpp:274 (10)
+//         00463f1c     MOV        this,dword ptr [EDI + 0xc]
+//         00463f1f     PUSH       0x2
+//         00463f21     MOV        EDX,dword ptr [this->mouseOwnerValue]
+//         00463f23     CALL       dword ptr [EDX + 0x20]
+//                              Panel.cpp:275 (12)
+//         00463f26     MOV        EAX,[AppWnd]                                     = 00000000
+//         00463f2b     PUSH       EAX
+//         00463f2c     CALL       dword ptr [->USER32.DLL::UpdateWindow]           = 0048adb6
+//                              Panel.cpp:278 (11)
+//         00463f32     POP        EDI
+//         00463f33     POP        ESI
+//         00463f34     MOV        EAX,0x1
+//         00463f39     POP        EBX
+//         00463f3a     RET        0x4
+//         00463f3d     ??         90h
+//         00463f3e     NOP
+//         00463f3f     NOP
+    return 0;
+}
+
+void TPanelSystem::setMouseOwner(TPanel* param_1) {
+    /* TODO: Stub */
+//                              void __thiscall setMouseOwner(TPanelSystem * this, TPanel * param_1)
 //              void              <VOID>         <RETURN>
 //              TPanelSystem *    ECX:4 (auto)   this
-//              TPanel *          Stack[0x4]:4   param_1                   XREF[1]:     00464264(R)
-//              int               Stack[0x8]:4   param_2
-//                               ?setCurrentPanel@TPanelSystem@@IAEXPAVTPanel@@H@Z            XREF[2]:     addPanel:00463df1(c),
-//                               TPanelSystem::setCurrentPanel                                             setCurrentPanel:00463e97(c)
-//                              Panel.cpp:467 (4)
-//         00464260     PUSH       ESI
-//         00464261     MOV        ESI,this
-//         00464263     PUSH       EDI
-//                              Panel.cpp:470 (15)
-//         00464264     MOV        EDI,dword ptr [ESP + param_1]
-//         00464268     MOV        EAX,dword ptr [ESI + 0xc]
-//         0046426b     MOV        this,EDI
-//         0046426d     PUSH       EAX
-//         0046426e     CALL       TPanel::setPreviousPanel                         void setPreviousPanel(TPanel * this, TPanel *
-//                              Panel.cpp:473 (7)
-//         00464273     MOV        this,dword ptr [ESI + 0xc]
-//         00464276     TEST       this,this
-//         00464278     JZ         LAB_00464284
-//                              Panel.cpp:474 (10)
-//         0046427a     MOV        EDX,dword ptr [this->mouseOwnerValue]
-//         0046427c     PUSH       0x0
-//         0046427e     CALL       dword ptr [EDX + 0xc0]
-//                               LAB_00464284                                                 XREF[1]:     00464278(j)
-//                              Panel.cpp:478 (15)
-//         00464284     MOV        EAX,dword ptr [EDI]
-//         00464286     PUSH       0x1
-//         00464288     MOV        this,EDI
-//         0046428a     MOV        dword ptr [ESI + 0xc],EDI
-//         0046428d     CALL       dword ptr [EAX + 0xc0]
-//                              Panel.cpp:479 (10)
-//         00464293     MOV        this,dword ptr [ESI + 0xc]
-//         00464296     PUSH       0x2
-//         00464298     MOV        EDX,dword ptr [this->mouseOwnerValue]
-//         0046429a     CALL       dword ptr [EDX + 0x20]
-//                              Panel.cpp:480 (12)
-//         0046429d     MOV        EAX,[AppWnd]                                     = 00000000
-//         004642a2     PUSH       EAX
-//         004642a3     CALL       dword ptr [->USER32.DLL::UpdateWindow]           = 0048adb6
-//                              Panel.cpp:482 (8)
-//         004642a9     MOV        EAX,dword ptr [ESP + 0x10]
-//         004642ad     TEST       EAX,EAX
-//         004642af     JZ         LAB_004642b8
-//                              Panel.cpp:483 (7)
-//         004642b1     MOV        this,ESI
-//         004642b3     CALL       TPanelSystem::setCurrentPanelModal               void setCurrentPanelModal(TPanelSystem * this)
-//                               LAB_004642b8                                                 XREF[1]:     004642af(j)
-//                              Panel.cpp:484 (5)
-//         004642b8     POP        EDI
-//         004642b9     POP        ESI
-//         004642ba     RET        0x8
-//         004642bd     ??         90h
-//         004642be     NOP
-//         004642bf     NOP
+//              TPanel *          Stack[0x4]:4   param_1                   XREF[1]:     00463f40(R)
+//                               ?setMouseOwner@TPanelSystem@@QAEXPAVTPanel@@@Z               XREF[3]:     restorePreviousModalPanel:0046403d
+//                               TPanelSystem::setMouseOwner                                               capture_mouse:0046626b(c),
+//                                                                                                         release_mouse:0046629f(c)
+//                              Panel.cpp:283 (6)
+//         00463f40     MOV        EAX,dword ptr [ESP + param_1]
+//         00463f44     MOV        dword ptr [this->mouseOwnerValue],EAX
+//                              Panel.cpp:285 (3)
+//         00463f46     RET        0x4
+//         00463f49     ??         90h
+//         00463f4a     NOP
+//         00463f4b     NOP
+//         00463f4c     NOP
+//         00463f4d     NOP
+//         00463f4e     NOP
+//         00463f4f     NOP
+    return;
+}
+
+void TPanelSystem::setKeyboardOwner(TPanel* param_1) {
+    /* TODO: Stub */
+//                              void __thiscall setKeyboardOwner(TPanelSystem * this, TPanel * param
+//              void              <VOID>         <RETURN>
+//              TPanelSystem *    ECX:4 (auto)   this
+//              TPanel *          Stack[0x4]:4   param_1                   XREF[1]:     00463f50(R)
+//                               ?setKeyboardOwner@TPanelSystem@@QAEXPAVTPanel@@@Z            XREF[1]:     restorePreviousModalPanel:00464045
+//                               TPanelSystem::setKeyboardOwner
+//                              Panel.cpp:290 (7)
+//         00463f50     MOV        EAX,dword ptr [ESP + param_1]
+//         00463f54     MOV        dword ptr [ECX + this->keyboardOwnerValue],EAX
+//                              Panel.cpp:292 (3)
+//         00463f57     RET        0x4
+//         00463f5a     ??         90h
+//         00463f5b     NOP
+//         00463f5c     NOP
+//         00463f5d     NOP
+//         00463f5e     NOP
+//         00463f5f     NOP
+    return;
+}
+
+void TPanelSystem::setModalPanel(TPanel* param_1) {
+    /* TODO: Stub */
+//                              void __thiscall setModalPanel(TPanelSystem * this, TPanel * param_1)
+//              void              <VOID>         <RETURN>
+//              TPanelSystem *    ECX:4 (auto)   this
+//              TPanel *          Stack[0x4]:4   param_1                   XREF[1]:     00463f64(R)
+//                               ?setModalPanel@TPanelSystem@@QAEXPAVTPanel@@@Z               XREF[5]:     setup:00473d4a(c),
+//                               TPanelSystem::setModalPanel                                               setup:00473e0c(c),
+//                                                                                                         ~TDialogPanel:00473e7f(c),
+//                                                                                                         set_mode:00474ab7(c),
+//                                                                                                         set_mode:004750da(c)
+//                              Panel.cpp:297 (4)
+//         00463f60     PUSH       ESI
+//         00463f61     MOV        ESI,this
+//         00463f63     PUSH       EDI
+//                              Panel.cpp:301 (15)
+//         00463f64     MOV        EDI,dword ptr [ESP + param_1]
+//         00463f68     MOV        EAX,dword ptr [ESI + 0x8]
+//         00463f6b     TEST       EAX,EAX
+//         00463f6d     JZ         LAB_00463f7b
+//         00463f6f     TEST       EDI,EDI
+//         00463f71     JZ         LAB_00463f7b
+//                              Panel.cpp:302 (8)
+//         00463f73     PUSH       EAX
+//         00463f74     MOV        this,EDI
+//         00463f76     CALL       TPanel::setPreviousModalPanel                    void setPreviousModalPanel(TPanel * this, TPa
+//                               LAB_00463f7b                                                 XREF[2]:     00463f6d(j), 00463f71(j)
+//                              Panel.cpp:304 (7)
+//         00463f7b     MOV        EAX,dword ptr [ESI + 0x8]
+//         00463f7e     TEST       EAX,EAX
+//         00463f80     JNZ        LAB_00463f93
+//                              Panel.cpp:305 (7)
+//         00463f82     MOV        EAX,dword ptr [ESI + 0x18]
+//         00463f85     TEST       EAX,EAX
+//         00463f87     JZ         LAB_00463fac
+//                              Panel.cpp:306 (3)
+//         00463f89     MOV        this,dword ptr [EAX + 0x40]
+//                              Panel.cpp:307 (4)
+//         00463f8c     TEST       this,this
+//         00463f8e     JZ         LAB_00463fac
+//                              Panel.cpp:308 (1)
+//         00463f90     PUSH       EAX
+//                              Panel.cpp:311 (9)
+//         00463f91     JMP        LAB_00463fa7
+//                               LAB_00463f93                                                 XREF[1]:     00463f80(j)
+//         00463f93     MOV        this,dword ptr [EAX + 0x74]
+//         00463f96     TEST       this,this
+//         00463f98     JNZ        LAB_00463fac
+//                              Panel.cpp:312 (3)
+//         00463f9a     MOV        EAX,dword ptr [EAX + 0x40]
+//                              Panel.cpp:313 (4)
+//         00463f9d     TEST       EAX,EAX
+//         00463f9f     JZ         LAB_00463fac
+//                              Panel.cpp:314 (11)
+//         00463fa1     MOV        this,dword ptr [ESI + 0x18]
+//         00463fa4     PUSH       this
+//         00463fa5     MOV        this,EAX
+//                               LAB_00463fa7                                                 XREF[1]:     00463f91(j)
+//         00463fa7     CALL       TPanel::set_curr_child                           void set_curr_child(TPanel * this, TPanel * p
+//                               LAB_00463fac                                                 XREF[4]:     00463f87(j), 00463f8e(j),
+//                                                                                                         00463f98(j), 00463f9f(j)
+//                              Panel.cpp:322 (19)
+//         00463fac     TEST       EDI,EDI
+//         00463fae     MOV        dword ptr [ESI + 0x18],0x0
+//         00463fb5     MOV        dword ptr [ESI + 0x8],EDI
+//         00463fb8     JZ         LAB_00463fea
+//         00463fba     CMP        EDI,dword ptr [ESI + 0xc]
+//         00463fbd     JZ         LAB_00463fea
+//                              Panel.cpp:327 (3)
+//         00463fbf     MOV        this,dword ptr [EDI + 0x40]
+//                              Panel.cpp:328 (4)
+//         00463fc2     TEST       this,this
+//         00463fc4     JZ         LAB_00463fd7
+//                              Panel.cpp:329 (3)
+//         00463fc6     MOV        EDX,dword ptr [ECX + this+0x3c]
+//                              Panel.cpp:330 (9)
+//         00463fc9     PUSH       EDI
+//         00463fca     MOV        dword ptr [ESI + 0x18],EDX
+//         00463fcd     CALL       TPanel::set_curr_child                           void set_curr_child(TPanel * this, TPanel * p
+//                              Panel.cpp:337 (5)
+//         00463fd2     POP        EDI
+//         00463fd3     POP        ESI
+//         00463fd4     RET        0x4
+//                               LAB_00463fd7                                                 XREF[1]:     00463fc4(j)
+//                              Panel.cpp:334 (19)
+//         00463fd7     MOV        EAX,dword ptr [EDI]
+//         00463fd9     PUSH       0x1
+//         00463fdb     MOV        this,EDI
+//         00463fdd     MOV        dword ptr [ESI + 0x18],0x0
+//         00463fe4     CALL       dword ptr [EAX + 0xc0]
+//                               LAB_00463fea                                                 XREF[2]:     00463fb8(j), 00463fbd(j)
+//                              Panel.cpp:337 (5)
+//         00463fea     POP        EDI
+//         00463feb     POP        ESI
+//         00463fec     RET        0x4
+//         00463fef     ??         90h
+    return;
+}
+
+void TPanelSystem::setCurrentPanelModal() {
+    /* TODO: Stub */
+//                              void __thiscall setCurrentPanelModal(TPanelSystem * this)
+//              void              <VOID>         <RETURN>
+//              TPanelSystem *    ECX:4 (auto)   this
+//                               ?setCurrentPanelModal@TPanelSystem@@QAEXXZ                   XREF[1]:     setCurrentPanel:004642b3(c)
+//                               TPanelSystem::setCurrentPanelModal
+//                              Panel.cpp:342 (3)
+//         00463ff0     PUSH       ESI
+//         00463ff1     MOV        ESI,this
+//                              Panel.cpp:345 (14)
+//         00463ff3     MOV        EAX,dword ptr [ESI + 0x8]
+//         00463ff6     TEST       EAX,EAX
+//         00463ff8     JZ         LAB_00464007
+//         00463ffa     MOV        this,dword ptr [ESI + 0xc]
+//         00463ffd     CMP        EAX,this
+//         00463fff     JZ         LAB_00464007
+//                              Panel.cpp:346 (6)
+//         00464001     PUSH       EAX
+//         00464002     CALL       TPanel::setPreviousModalPanel                    void setPreviousModalPanel(TPanel * this, TPa
+//                               LAB_00464007                                                 XREF[2]:     00463ff8(j), 00463fff(j)
+//                              Panel.cpp:348 (6)
+//         00464007     MOV        EAX,dword ptr [ESI + 0xc]
+//         0046400a     MOV        dword ptr [ESI + 0x8],EAX
+//                              Panel.cpp:349 (2)
+//         0046400d     POP        ESI
+//         0046400e     RET
+//         0046400f     ??         90h
+    return;
+}
+
+int TPanelSystem::restorePreviousModalPanel() {
+    /* TODO: Stub */
+//                              int __thiscall restorePreviousModalPanel(TPanelSystem * this)
+//              int               EAX:4          <RETURN>
+//              TPanelSystem *    ECX:4 (auto)   this
+//                               ?restorePreviousModalPanel@TPanelSystem@@QAEHXZ              XREF[2]:     ~TDialogPanel:00473e70(c),
+//                               TPanelSystem::restorePreviousModalPanel                                   set_mode:00474aa8(c)
+//                              Panel.cpp:354 (4)
+//         00464010     PUSH       ESI
+//         00464011     PUSH       EDI
+//         00464012     MOV        EDI,this
+//                              Panel.cpp:357 (7)
+//         00464014     MOV        this,dword ptr [EDI + 0x8]
+//         00464017     TEST       this,this
+//         00464019     JNZ        LAB_00464020
+//                              Panel.cpp:358 (2)
+//         0046401b     XOR        EAX,EAX
+//                              Panel.cpp:371 (3)
+//         0046401d     POP        EDI
+//         0046401e     POP        ESI
+//         0046401f     RET
+//                               LAB_00464020                                                 XREF[1]:     00464019(j)
+//                              Panel.cpp:359 (7)
+//         00464020     CALL       TPanel::previousModalPanel                       TPanel * previousModalPanel(TPanel * this)
+//         00464025     MOV        ESI,EAX
+//                              Panel.cpp:360 (4)
+//         00464027     TEST       ESI,ESI
+//         00464029     JNZ        LAB_0046402e
+//                              Panel.cpp:371 (3)
+//         0046402b     POP        EDI
+//         0046402c     POP        ESI
+//         0046402d     RET
+//                               LAB_0046402e                                                 XREF[1]:     00464029(j)
+//                              Panel.cpp:365 (12)
+//         0046402e     MOV        EAX,dword ptr [ESI]
+//         00464030     PUSH       0x1
+//         00464032     MOV        this,ESI
+//         00464034     CALL       dword ptr [EAX + 0xc0]
+//                              Panel.cpp:367 (8)
+//         0046403a     PUSH       ESI
+//         0046403b     MOV        this,EDI
+//         0046403d     CALL       TPanelSystem::setMouseOwner                      void setMouseOwner(TPanelSystem * this, TPane
+//                              Panel.cpp:368 (8)
+//         00464042     PUSH       ESI
+//         00464043     MOV        this,EDI
+//         00464045     CALL       TPanelSystem::setKeyboardOwner                   void setKeyboardOwner(TPanelSystem * this, TP
+//                              Panel.cpp:369 (3)
+//         0046404a     MOV        dword ptr [EDI + 0x8],ESI
+//                              Panel.cpp:371 (8)
+//         0046404d     POP        EDI
+//         0046404e     MOV        EAX,0x1
+//         00464053     POP        ESI
+//         00464054     RET
+//         00464055     ??         90h
+//         00464056     NOP
+//         00464057     NOP
+//         00464058     NOP
+//         00464059     NOP
+//         0046405a     NOP
+//         0046405b     NOP
+//         0046405c     NOP
+//         0046405d     NOP
+//         0046405e     NOP
+//         0046405f     NOP
+    return 0;
+}
+
+int TPanelSystem::destroyPanel(char* param_1) {
+    /* TODO: Stub */
+//                              int __thiscall destroyPanel(TPanelSystem * this, char * param_1)
+//              int               EAX:4          <RETURN>
+//              TPanelSystem *    ECX:4 (auto)   this
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     00464060(R)
+//                               ?destroyPanel@TPanelSystem@@QAEHPAD@Z                        XREF[232]:   restorePreviousPanel:00463f08(c),
+//                               TPanelSystem::destroyPanel                                                popupOKDialog:00469fa9(c),
+//                                                                                                         action:0046a555(c),
+//                                                                                                         action:0046a5c9(c),
+//                                                                                                         action:0046a63e(c),
+//                                                                                                         action:00493d12(c),
+//                                                                                                         startGame:004a2691(c),
+//                                                                                                         action:004a70d5(c),
+//                                                                                                         action:004a70e4(c),
+//                                                                                                         action:004a7182(c),
+//                                                                                                         command_save:004ad754(c),
+//                                                                                                         command_save:004ad790(c),
+//                                                                                                         command_save:004ad801(c),
+//                                                                                                         command_save:004ad8d8(c),
+//                                                                                                         command_save_as:004ada53(c),
+//                                                                                                         start_scenario_editor:00528e08(c),
+//                                                                                                         start_scenario_editor:00528e8a(c),
+//                                                                                                         start_scenario_editor:00528e99(c),
+//                                                                                                         start_scenario_editor:00528ea8(c),
+//                                                                                                         start_scenario_editor:00528f27(c),
+//                                                                                                         [more]
+//                              Panel.cpp:376 (12)
+//         00464060     MOV        EAX,dword ptr [ESP + param_1]
+//         00464064     PUSH       ESI
+//         00464065     PUSH       EDI
+//         00464066     MOV        EDI,this
+//         00464068     TEST       EAX,EAX
+//         0046406a     JNZ        LAB_00464071
+//                              Panel.cpp:404 (5)
+//         0046406c     POP        EDI
+//         0046406d     POP        ESI
+//         0046406e     RET        0x4
+//                               LAB_00464071                                                 XREF[1]:     0046406a(j)
+//                              Panel.cpp:382 (10)
+//         00464071     PUSH       EAX
+//         00464072     MOV        this,EDI
+//         00464074     CALL       TPanelSystem::findPanelNode                      PanelNode * findPanelNode(TPanelSystem * this
+//         00464079     MOV        ESI,EAX
+//                              Panel.cpp:383 (4)
+//         0046407b     TEST       ESI,ESI
+//         0046407d     JNZ        LAB_00464084
+//                              Panel.cpp:404 (5)
+//         0046407f     POP        EDI
+//         00464080     POP        ESI
+//         00464081     RET        0x4
+//                               LAB_00464084                                                 XREF[1]:     0046407d(j)
+//                              Panel.cpp:387 (3)
+//         00464084     MOV        EDX,dword ptr [EDI + 0x14]
+//                              Panel.cpp:390 (13)
+//         00464087     MOV        EAX,dword ptr [EDI + 0xc]
+//         0046408a     DEC        EDX
+//         0046408b     MOV        dword ptr [EDI + 0x14],EDX
+//         0046408e     MOV        this,dword ptr [ESI]
+//         00464090     CMP        EAX,this
+//         00464092     JNZ        LAB_0046409b
+//                              Panel.cpp:391 (7)
+//         00464094     MOV        dword ptr [EDI + 0xc],0x0
+//                               LAB_0046409b                                                 XREF[1]:     00464092(j)
+//                              Panel.cpp:392 (8)
+//         0046409b     MOV        this,dword ptr [EDI]
+//         0046409d     MOV        EAX,dword ptr [ESI]
+//         0046409f     CMP        this,EAX
+//         004640a1     JNZ        LAB_004640a9
+//                              Panel.cpp:393 (6)
+//         004640a3     MOV        dword ptr [EDI],0x0
+//                               LAB_004640a9                                                 XREF[1]:     004640a1(j)
+//                              Panel.cpp:394 (9)
+//         004640a9     MOV        EDX,dword ptr [EDI + 0x4]
+//         004640ac     MOV        EAX,dword ptr [ESI]
+//         004640ae     CMP        EDX,EAX
+//         004640b0     JNZ        LAB_004640b9
+//                              Panel.cpp:395 (7)
+//         004640b2     MOV        dword ptr [EDI + 0x4],0x0
+//                               LAB_004640b9                                                 XREF[1]:     004640b0(j)
+//                              Panel.cpp:396 (9)
+//         004640b9     MOV        EAX,dword ptr [EDI + 0x8]
+//         004640bc     MOV        this,dword ptr [ESI]
+//         004640be     CMP        EAX,this
+//         004640c0     JNZ        LAB_004640c9
+//                              Panel.cpp:397 (7)
+//         004640c2     MOV        dword ptr [EDI + 0x8],0x0
+//                               LAB_004640c9                                                 XREF[1]:     004640c0(j)
+//                              Panel.cpp:399 (9)
+//         004640c9     MOV        this,dword ptr [ESI + 0x4]
+//         004640cc     MOV        EDX,dword ptr [ESI + 0x8]
+//         004640cf     MOV        dword ptr [ECX + this->modalPanelValue],EDX
+//                              Panel.cpp:400 (9)
+//         004640d2     MOV        EAX,dword ptr [ESI + 0x8]
+//         004640d5     MOV        this,dword ptr [ESI + 0x4]
+//         004640d8     MOV        dword ptr [EAX + 0x4],this
+//                              Panel.cpp:401 (12)
+//         004640db     MOV        this,dword ptr [ESI]
+//         004640dd     TEST       this,this
+//         004640df     JZ         LAB_004640e7
+//         004640e1     MOV        EDX,dword ptr [this->mouseOwnerValue]
+//         004640e3     PUSH       0x1
+//         004640e5     CALL       dword ptr [EDX]
+//                               LAB_004640e7                                                 XREF[1]:     004640df(j)
+//                              Panel.cpp:402 (9)
+//         004640e7     PUSH       ESI
+//         004640e8     CALL       free                                             undefined free()
+//         004640ed     ADD        ESP,0x4
+//                              Panel.cpp:403 (5)
+//         004640f0     MOV        EAX,0x1
+//                              Panel.cpp:404 (5)
+//         004640f5     POP        EDI
+//         004640f6     POP        ESI
+//         004640f7     RET        0x4
+//         004640fa     ??         90h
+//         004640fb     NOP
+//         004640fc     NOP
+//         004640fd     NOP
+//         004640fe     NOP
+//         004640ff     NOP
+    return 0;
+}
+
+int TPanelSystem::inSystem(char* param_1) {
+    /* TODO: Stub */
+//                              int __thiscall inSystem(TPanelSystem * this, char * param_1)
+//              int               EAX:4          <RETURN>
+//              TPanelSystem *    ECX:4 (auto)   this
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     00464100(R)
+//                               ?inSystem@TPanelSystem@@QAEHPAD@Z
+//                               TPanelSystem::inSystem
+//                              Panel.cpp:409 (16)
+//         00464100     MOV        EAX,dword ptr [ESP + param_1]
+//         00464104     PUSH       EAX
+//         00464105     CALL       TPanelSystem::findPanelNode                      PanelNode * findPanelNode(TPanelSystem * this
+//         0046410a     NEG        EAX
+//         0046410c     SBB        EAX,EAX
+//         0046410e     NEG        EAX
+//                              Panel.cpp:413 (3)
+//         00464110     RET        0x4
+//         00464113     ??         90h
+//         00464114     NOP
+//         00464115     NOP
+//         00464116     NOP
+//         00464117     NOP
+//         00464118     NOP
+//         00464119     NOP
+//         0046411a     NOP
+//         0046411b     NOP
+//         0046411c     NOP
+//         0046411d     NOP
+//         0046411e     NOP
+//         0046411f     NOP
+    return 0;
+}
+
+int TPanelSystem::inSystem(TPanel* param_1) {
+    /* TODO: Stub */
+//                              int __thiscall inSystem(TPanelSystem * this, TPanel * param_1)
+//              int               EAX:4          <RETURN>
+//              TPanelSystem *    ECX:4 (auto)   this
+//              TPanel *          Stack[0x4]:4   param_1                   XREF[1]:     00464123(R)
+//                               ?inSystem@TPanelSystem@@QAEHPAVTPanel@@@Z                    XREF[1]:     ~TPanel:004649fb(c)
+//                               TPanelSystem::inSystem
+//                              Panel.cpp:418 (3)
+//         00464120     PUSH       ESI
+//         00464121     MOV        ESI,this
+//                              Panel.cpp:419 (25)
+//         00464123     MOV        this,dword ptr [ESP + param_1]
+//         00464127     TEST       this,this
+//         00464129     JZ         LAB_00464145
+//         0046412b     CALL       TPanel::panelName                                char * panelName(TPanel * this)
+//         00464130     PUSH       EAX
+//         00464131     MOV        this,ESI
+//         00464133     CALL       TPanelSystem::findPanelNode                      PanelNode * findPanelNode(TPanelSystem * this
+//         00464138     TEST       EAX,EAX
+//         0046413a     JZ         LAB_00464145
+//                              Panel.cpp:421 (5)
+//         0046413c     MOV        EAX,0x1
+//                              Panel.cpp:422 (4)
+//         00464141     POP        ESI
+//         00464142     RET        0x4
+//                               LAB_00464145                                                 XREF[2]:     00464129(j), 0046413a(j)
+//                              Panel.cpp:420 (2)
+//         00464145     XOR        EAX,EAX
+//                              Panel.cpp:422 (4)
+//         00464147     POP        ESI
+//         00464148     RET        0x4
+//         0046414b     ??         90h
+//         0046414c     NOP
+//         0046414d     NOP
+//         0046414e     NOP
+//         0046414f     NOP
+    return 0;
+}
+
+int TPanelSystem::setup() {
+    /* TODO: Stub */
+//                              int __thiscall setup(TPanelSystem * this)
+//              int               EAX:4          <RETURN>
+//              TPanelSystem *    ECX:4 (auto)   this
+//                               ?setup@TPanelSystem@@IAEHXZ                                  XREF[1]:     TPanelSystem:00463c46(c)
+//                               TPanelSystem::setup
+//                              Panel.cpp:427 (1)
+//         00464150     PUSH       ESI
+//                              Panel.cpp:429 (17)
+//         00464151     PUSH       0xc
+//         00464153     MOV        ESI,this
+//         00464155     PUSH       0x1
+//         00464157     CALL       calloc                                           undefined calloc()
+//         0046415c     ADD        ESP,0x8
+//         0046415f     MOV        dword ptr [ESI + 0x10],EAX
+//                              Panel.cpp:430 (4)
+//         00464162     TEST       EAX,EAX
+//         00464164     JNZ        LAB_00464168
+//                              Panel.cpp:443 (2)
+//         00464166     POP        ESI
+//         00464167     RET
+//                               LAB_00464168                                                 XREF[1]:     00464164(j)
+//                              Panel.cpp:432 (6)
+//         00464168     MOV        dword ptr [EAX],0x0
+//                              Panel.cpp:435 (4)
+//         0046416e     MOV        EAX,dword ptr [ESI + 0x10]
+//         00464171     PUSH       EDI
+//                              Panel.cpp:438 (19)
+//         00464172     MOV        EDI,dword ptr [->USER32.DLL::GetSysColor]        = 0048b02a
+//         00464178     MOV        dword ptr [EAX + 0x4],EAX
+//         0046417b     MOV        EAX,dword ptr [ESI + 0x10]
+//         0046417e     PUSH       0x5
+//         00464180     MOV        dword ptr [EAX + 0x8],EAX
+//         00464183     CALL       EDI=>USER32.DLL::GetSysColor
+//                              Panel.cpp:439 (16)
+//         00464185     PUSH       0x8
+//         00464187     MOV        dword ptr [ESI + 0xad0],EAX
+//         0046418d     CALL       EDI=>USER32.DLL::GetSysColor
+//         0046418f     MOV        dword ptr [ESI + 0xad4],EAX
+//                              Panel.cpp:440 (11)
+//         00464195     MOV        dword ptr [ESI + 0xacc],0x1
+//         0046419f     POP        EDI
+//                              Panel.cpp:442 (5)
+//         004641a0     MOV        EAX,0x1
+//                              Panel.cpp:443 (2)
+//         004641a5     POP        ESI
+//         004641a6     RET
+//         004641a7     ??         90h
+//         004641a8     NOP
+//         004641a9     NOP
+//         004641aa     NOP
+//         004641ab     NOP
+//         004641ac     NOP
+//         004641ad     NOP
+//         004641ae     NOP
+//         004641af     NOP
+    return 0;
+}
+
+PanelNode* TPanelSystem::findPanelNode(char* param_1) {
+    /* TODO: Stub */
+//                              PanelNode * __thiscall findPanelNode(TPanelSystem * this, char * par
+//              PanelNode *       EAX:4          <RETURN>
+//              TPanelSystem *    ECX:4 (auto)   this
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     004641b2(R)
+//                               ?findPanelNode@TPanelSystem@@IAEPAUPanelNode@@PAD@Z          XREF[7]:     panel:00463d55(c),
+//                               TPanelSystem::findPanelNode                                               addPanel:00463d93(c),
+//                                                                                                         removePanel:00463e22(c),
+//                                                                                                         setCurrentPanel:00463e69(c),
+//                                                                                                         destroyPanel:00464074(c),
+//                                                                                                         inSystem:00464105(c),
+//                                                                                                         inSystem:00464133(c)
+//                              Panel.cpp:448 (2)
+//         004641b0     PUSH       EBX
+//         004641b1     PUSH       EBP
+//                              Panel.cpp:449 (10)
+//         004641b2     MOV        EBP,dword ptr [ESP + param_1]
+//         004641b6     PUSH       ESI
+//         004641b7     TEST       EBP,EBP
+//         004641b9     PUSH       EDI
+//         004641ba     MOV        EBX,this
+//                              Panel.cpp:450 (6)
+//         004641bc     JZ         LAB_00464254
+//                              Panel.cpp:454 (6)
+//         004641c2     MOV        EAX,dword ptr [EBX + 0x10]
+//         004641c5     MOV        EDI,dword ptr [EAX + 0x8]
+//                              Panel.cpp:456 (58)
+//         004641c8     CMP        EDI,EAX
+//         004641ca     JZ         LAB_0046420c
+//                               LAB_004641cc                                                 XREF[1]:     0046420a(j)
+//         004641cc     MOV        this,dword ptr [EDI]
+//         004641ce     MOV        ESI,EBP
+//         004641d0     CALL       TPanel::panelName                                char * panelName(TPanel * this)
+//                               LAB_004641d5                                                 XREF[1]:     004641f3(j)
+//         004641d5     MOV        DL,byte ptr [EAX]
+//         004641d7     MOV        this,DL
+//         004641d9     CMP        DL,byte ptr [ESI]
+//         004641db     JNZ        LAB_004641f9
+//         004641dd     TEST       this,this
+//         004641df     JZ         LAB_004641f5
+//         004641e1     MOV        DL,byte ptr [EAX + 0x1]
+//         004641e4     MOV        this,DL
+//         004641e6     CMP        DL,byte ptr [ESI + 0x1]
+//         004641e9     JNZ        LAB_004641f9
+//         004641eb     ADD        EAX,0x2
+//         004641ee     ADD        ESI,0x2
+//         004641f1     TEST       this,this
+//         004641f3     JNZ        LAB_004641d5
+//                               LAB_004641f5                                                 XREF[1]:     004641df(j)
+//         004641f5     XOR        EAX,EAX
+//         004641f7     JMP        LAB_004641fe
+//                               LAB_004641f9                                                 XREF[2]:     004641db(j), 004641e9(j)
+//         004641f9     SBB        EAX,EAX
+//         004641fb     SBB        EAX,-0x1
+//                               LAB_004641fe                                                 XREF[1]:     004641f7(j)
+//         004641fe     TEST       EAX,EAX
+//         00464200     JZ         LAB_0046420c
+//                              Panel.cpp:457 (10)
+//         00464202     MOV        EDI,dword ptr [EDI + 0x8]
+//         00464205     MOV        EAX,dword ptr [EBX + 0x10]
+//         00464208     CMP        EDI,EAX
+//         0046420a     JNZ        LAB_004641cc
+//                               LAB_0046420c                                                 XREF[2]:     004641ca(j), 00464200(j)
+//                              Panel.cpp:459 (63)
+//         0046420c     CMP        EDI,dword ptr [EBX + 0x10]
+//         0046420f     JZ         LAB_00464254
+//         00464211     MOV        this,dword ptr [EDI]
+//         00464213     MOV        ESI,EBP
+//         00464215     CALL       TPanel::panelName                                char * panelName(TPanel * this)
+//                               LAB_0046421a                                                 XREF[1]:     0046423c(j)
+//         0046421a     MOV        DL,byte ptr [EAX]
+//         0046421c     MOV        BL,byte ptr [ESI]
+//         0046421e     MOV        this,DL
+//         00464220     CMP        DL,BL
+//         00464222     JNZ        LAB_00464242
+//         00464224     TEST       this,this
+//         00464226     JZ         LAB_0046423e
+//         00464228     MOV        DL,byte ptr [EAX + 0x1]
+//         0046422b     MOV        BL,byte ptr [ESI + 0x1]
+//         0046422e     MOV        this,DL
+//         00464230     CMP        DL,BL
+//         00464232     JNZ        LAB_00464242
+//         00464234     ADD        EAX,0x2
+//         00464237     ADD        ESI,0x2
+//         0046423a     TEST       this,this
+//         0046423c     JNZ        LAB_0046421a
+//                               LAB_0046423e                                                 XREF[1]:     00464226(j)
+//         0046423e     XOR        EAX,EAX
+//         00464240     JMP        LAB_00464247
+//                               LAB_00464242                                                 XREF[2]:     00464222(j), 00464232(j)
+//         00464242     SBB        EAX,EAX
+//         00464244     SBB        EAX,-0x1
+//                               LAB_00464247                                                 XREF[1]:     00464240(j)
+//         00464247     TEST       EAX,EAX
+//         00464249     JNZ        LAB_00464254
+//                              Panel.cpp:460 (2)
+//         0046424b     MOV        EAX,EDI
+//                              Panel.cpp:462 (16)
+//         0046424d     POP        EDI
+//         0046424e     POP        ESI
+//         0046424f     POP        EBP
+//         00464250     POP        EBX
+//         00464251     RET        0x4
+//                               LAB_00464254                                                 XREF[3]:     004641bc(j), 0046420f(j),
+//                                                                                                         00464249(j)
+//         00464254     POP        EDI
+//         00464255     POP        ESI
+//         00464256     POP        EBP
+//         00464257     XOR        EAX,EAX
+//         00464259     POP        EBX
+//         0046425a     RET        0x4
+//         0046425d     ??         90h
+//         0046425e     NOP
+//         0046425f     NOP
     return 0;
 }
 
@@ -2175,104 +2889,119 @@ void TPanelSystem::set_restore() {
 
 TPanel::TPanel(char* param_1) {
     /* TODO: Stub */
-//                              undefined __thiscall TPanel(TPanel * this)
+//                              undefined __thiscall TPanel(TPanel * this, char * param_1)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TPanel *          ECX:4 (auto)   this
-//                               ??0TPanel@@QAE@XZ                                            XREF[18]:    RGE_Diamond_Map:00436833(c),
-//                               TPanel::TPanel                                                            TEasy_Panel:0046711d(c),
-//                                                                                                         TButtonPanel:00471ec6(c),
-//                                                                                                         TDropDownPanel:00473ed3(c),
-//                                                                                                         TEditPanel:004755c3(c),
-//                                                                                                         TMessagePanel:00478f5d(c),
-//                                                                                                         TPicturePanel:0047a1d3(c),
-//                                                                                                         TScrollBarPanel:0047a71f(c),
-//                                                                                                         TTextPanel:0047bf43(c),
-//                                                                                                         RGE_Panel_Tool_Box:004898f2(c),
-//                                                                                                         RGE_Panel_Time:0048a69d(c),
-//                                                                                                         TRIBE_Screen_Sed:004a8583(c),
-//                                                                                                         TRIBE_Panel_Inven:0051a5dd(c),
-//                                                                                                         TRIBE_Panel_Object:0051ae0f(c),
-//                                                                                                         TRIBE_Panel_Pop:0051ccbe(c),
-//                                                                                                         TRIBE_Panel_Time:0051d7ae(c),
-//                                                                                                         TRIBE_Panel_Text_Line:00520d8d(c),
-//                                                                                                         RGE_View:0053352e(c)
-//                              Panel.cpp:872 (244)
-//         004648b0     MOV        EAX,this
-//         004648b2     MOV        EDX,0x1
-//         004648b7     XOR        this,this
-//         004648b9     MOV        dword ptr [EAX + 0x4],this
-//         004648bc     MOV        dword ptr [EAX + 0x8],this
-//         004648bf     MOV        dword ptr [EAX + 0xc],this
-//         004648c2     MOV        dword ptr [EAX + 0x10],this
-//         004648c5     MOV        dword ptr [EAX + 0x14],this
-//         004648c8     MOV        dword ptr [EAX + 0x18],this
-//         004648cb     MOV        dword ptr [EAX + 0x1c],this
-//         004648ce     MOV        dword ptr [EAX + 0x20],this
-//         004648d1     MOV        dword ptr [EAX + 0x34],this
-//         004648d4     MOV        dword ptr [EAX + 0x38],0x2
-//         004648db     MOV        dword ptr [EAX + 0x3c],this
-//         004648de     MOV        dword ptr [EAX + 0x40],this
-//         004648e1     MOV        dword ptr [EAX + 0x44],this
-//         004648e4     MOV        dword ptr [EAX + 0x48],this
-//         004648e7     MOV        dword ptr [EAX + 0x4c],this
-//         004648ea     MOV        dword ptr [EAX + 0x50],this
-//         004648ed     MOV        dword ptr [EAX + 0x54],this
-//         004648f0     MOV        dword ptr [EAX + 0x58],this
-//         004648f3     MOV        dword ptr [EAX + 0x5c],this
-//         004648f6     MOV        dword ptr [EAX + 0x60],this
-//         004648f9     MOV        dword ptr [EAX + 0x64],this
-//         004648fc     MOV        dword ptr [EAX + 0x68],this
-//         004648ff     MOV        dword ptr [EAX + 0x6c],EDX
-//         00464902     MOV        dword ptr [EAX + 0x70],this
-//         00464905     MOV        dword ptr [EAX + 0x74],this
-//         00464908     MOV        dword ptr [EAX + 0x78],this
-//         0046490b     MOV        dword ptr [EAX + 0x7c],EDX
-//         0046490e     MOV        dword ptr [EAX + 0x80],EDX
-//         00464914     MOV        dword ptr [EAX + 0x88],this
-//         0046491a     MOV        dword ptr [EAX + 0x9c],this
-//         00464920     MOV        dword ptr [EAX + 0xa0],this
-//         00464926     MOV        dword ptr [EAX + 0xa4],this
-//         0046492c     MOV        dword ptr [EAX + 0xa8],this
-//         00464932     MOV        dword ptr [EAX + 0xac],this
-//         00464938     MOV        dword ptr [EAX + 0xb0],this
-//         0046493e     MOV        dword ptr [EAX + 0xb4],this
-//         00464944     MOV        dword ptr [EAX + 0xb8],this
-//         0046494a     MOV        dword ptr [EAX + 0xc0],this
-//         00464950     MOV        dword ptr [EAX + 0xc4],this
-//         00464956     MOV        dword ptr [EAX + 0xc8],this
-//         0046495c     MOV        dword ptr [EAX + 0xcc],this
-//         00464962     MOV        dword ptr [EAX + 0xd0],this
-//         00464968     MOV        dword ptr [EAX + 0xd4],this
-//         0046496e     MOV        dword ptr [EAX + 0xd8],this
-//         00464974     MOV        dword ptr [EAX + 0xdc],this
-//         0046497a     MOV        dword ptr [EAX + 0xe0],this
-//         00464980     MOV        byte ptr [EAX + 0xec],this
-//         00464986     MOV        byte ptr [EAX + 0xed],this
-//         0046498c     MOV        byte ptr [EAX + 0xee],this
-//         00464992     MOV        byte ptr [EAX + 0xef],this
-//         00464998     MOV        byte ptr [EAX + 0xf0],this
-//         0046499e     MOV        byte ptr [EAX + 0xf2],this
-//                              Panel.cpp:873 (6)
-//         004649a4     MOV        dword ptr [EAX + 0x8c],this
-//                              Panel.cpp:874 (6)
-//         004649aa     MOV        dword ptr [EAX + 0x90],this
-//                              Panel.cpp:875 (6)
-//         004649b0     MOV        dword ptr [EAX + 0x94],this
-//                              Panel.cpp:876 (6)
-//         004649b6     MOV        dword ptr [EAX + 0x98],this
-//                              Panel.cpp:877 (25)
-//         004649bc     OR         this,0xffffffff
-//         004649bf     MOV        dword ptr [EAX + 0xbc],0xfa
-//         004649c9     MOV        dword ptr [EAX],TPanel::`vftable'                = 00464890
-//         004649cf     MOV        dword ptr [EAX + 0xe4],this
-//                              Panel.cpp:878 (6)
-//         004649d5     MOV        dword ptr [EAX + 0xe8],this
-//                              Panel.cpp:879 (1)
-//         004649db     RET
-//         004649dc     ??         90h
-//         004649dd     NOP
-//         004649de     NOP
-//         004649df     NOP
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     00464786(R)
+//                               ??0TPanel@@QAE@PAD@Z                                         XREF[1]:     TEasy_Panel:00466a42(c)
+//                               TPanel::TPanel
+//                              Panel.cpp:799 (102)
+//         00464720     PUSH       EBX
+//         00464721     PUSH       ESI
+//         00464722     MOV        ESI,this
+//         00464724     XOR        EBX,EBX
+//         00464726     MOV        EAX,0x1
+//         0046472b     MOV        dword ptr [ESI + 0x4],EBX
+//         0046472e     MOV        dword ptr [ESI + 0x8],EBX
+//         00464731     MOV        dword ptr [ESI + 0xc],EBX
+//         00464734     MOV        dword ptr [ESI + 0x10],EBX
+//         00464737     MOV        dword ptr [ESI + 0x14],EBX
+//         0046473a     MOV        dword ptr [ESI + 0x18],EBX
+//         0046473d     MOV        dword ptr [ESI + 0x1c],EBX
+//         00464740     MOV        dword ptr [ESI + 0x20],EBX
+//         00464743     MOV        dword ptr [ESI + 0x34],EBX
+//         00464746     MOV        dword ptr [ESI + 0x38],0x2
+//         0046474d     MOV        dword ptr [ESI + 0x3c],EBX
+//         00464750     MOV        dword ptr [ESI + 0x40],EBX
+//         00464753     MOV        dword ptr [ESI + 0x44],EBX
+//         00464756     MOV        dword ptr [ESI + 0x48],EBX
+//         00464759     MOV        dword ptr [ESI + 0x4c],EBX
+//         0046475c     MOV        dword ptr [ESI + 0x50],EBX
+//         0046475f     MOV        dword ptr [ESI + 0x54],EBX
+//         00464762     MOV        dword ptr [ESI + 0x58],EBX
+//         00464765     MOV        dword ptr [ESI + 0x5c],EBX
+//         00464768     MOV        dword ptr [ESI + 0x60],EBX
+//         0046476b     MOV        dword ptr [ESI + 0x64],EBX
+//         0046476e     MOV        dword ptr [ESI + 0x68],EBX
+//         00464771     MOV        dword ptr [ESI + 0x6c],EAX
+//         00464774     MOV        dword ptr [ESI + 0x70],EBX
+//         00464777     MOV        dword ptr [ESI + 0x74],EBX
+//         0046477a     MOV        dword ptr [ESI + 0x78],EBX
+//         0046477d     MOV        dword ptr [ESI + 0x7c],EAX
+//         00464780     MOV        dword ptr [ESI + 0x80],EAX
+//                              Panel.cpp:804 (200)
+//         00464786     MOV        EAX,dword ptr [ESP + param_1]
+//         0046478a     MOV        dword ptr [ESI + 0x84],EBX
+//         00464790     MOV        dword ptr [ESI + 0x88],EBX
+//         00464796     PUSH       EAX
+//         00464797     MOV        dword ptr [ESI + 0x9c],EBX
+//         0046479d     MOV        dword ptr [ESI + 0xa0],EBX
+//         004647a3     MOV        dword ptr [ESI + 0xa4],EBX
+//         004647a9     MOV        dword ptr [ESI + 0xa8],EBX
+//         004647af     MOV        dword ptr [ESI + 0xac],EBX
+//         004647b5     MOV        dword ptr [ESI + 0xb0],EBX
+//         004647bb     MOV        dword ptr [ESI + 0xb4],EBX
+//         004647c1     MOV        dword ptr [ESI + 0xb8],EBX
+//         004647c7     MOV        dword ptr [ESI + 0xbc],0xfa
+//         004647d1     MOV        dword ptr [ESI + 0xc0],EBX
+//         004647d7     MOV        dword ptr [ESI + 0xc4],EBX
+//         004647dd     MOV        dword ptr [ESI + 0xc8],EBX
+//         004647e3     MOV        dword ptr [ESI + 0xcc],EBX
+//         004647e9     MOV        dword ptr [ESI + 0xd0],EBX
+//         004647ef     MOV        dword ptr [ESI + 0xd4],EBX
+//         004647f5     MOV        dword ptr [ESI + 0xd8],EBX
+//         004647fb     MOV        dword ptr [ESI + 0xdc],EBX
+//         00464801     MOV        dword ptr [ESI + 0xe0],EBX
+//         00464807     MOV        byte ptr [ESI + 0xec],BL
+//         0046480d     MOV        byte ptr [ESI + 0xed],BL
+//         00464813     MOV        byte ptr [ESI + 0xee],BL
+//         00464819     MOV        byte ptr [ESI + 0xef],BL
+//         0046481f     MOV        byte ptr [ESI + 0xf0],BL
+//         00464825     MOV        byte ptr [ESI + 0xf2],BL
+//         0046482b     MOV        dword ptr [ESI],TPanel::`vftable'                = 00464890
+//         00464831     MOV        dword ptr [ESI + 0x8c],EBX
+//         00464837     MOV        dword ptr [ESI + 0x90],EBX
+//         0046483d     MOV        dword ptr [ESI + 0x94],EBX
+//         00464843     MOV        dword ptr [ESI + 0x98],EBX
+//         00464849     CALL       TPanel::setPanelName                             void setPanelName(TPanel * this, char * param
+//                              Panel.cpp:805 (3)
+//         0046484e     OR         EAX,0xffffffff
+//                              Panel.cpp:807 (18)
+//         00464851     MOV        byte ptr [ESI + 0xf3],BL
+//         00464857     MOV        dword ptr [ESI + 0xe4],EAX
+//         0046485d     MOV        dword ptr [ESI + 0xe8],EAX
+//                              Panel.cpp:811 (11)
+//         00464863     MOV        EAX,dword ptr [ESI + 0x1c]
+//         00464866     CMP        EAX,EBX
+//         00464868     JZ         LAB_0046487b
+//         0046486a     CMP        byte ptr [EAX],BL
+//         0046486c     JZ         LAB_0046487b
+//                              Panel.cpp:812 (13)
+//         0046486e     PUSH       EBX
+//         0046486f     PUSH       EBX
+//         00464870     PUSH       ESI
+//         00464871     MOV        this,panel_system
+//         00464876     CALL       TPanelSystem::addPanel                           int addPanel(TPanelSystem * this, TPanel * pa
+//                               LAB_0046487b                                                 XREF[2]:     00464868(j), 0046486c(j)
+//                              Panel.cpp:813 (7)
+//         0046487b     MOV        EAX,ESI
+//         0046487d     POP        ESI
+//         0046487e     POP        EBX
+//         0046487f     RET        0x4
+//         00464882     ??         90h
+//         00464883     NOP
+//         00464884     NOP
+//         00464885     NOP
+//         00464886     NOP
+//         00464887     NOP
+//         00464888     NOP
+//         00464889     NOP
+//         0046488a     NOP
+//         0046488b     NOP
+//         0046488c     NOP
+//         0046488d     NOP
+//         0046488e     NOP
+//         0046488f     NOP
 }
 
 TPanel::TPanel() {
@@ -2808,51 +3537,178 @@ void TPanel::remove_panel_node(PanelNode* param_1) {
 
 void TPanel::set_rect(long param_1, long param_2, long param_3, long param_4) {
     /* TODO: Stub */
-//                              void __thiscall set_rect(TPanel * this, tagRECT param_1)
+//                              void __thiscall set_rect(TPanel * this, long param_1, long param_2,
 //              void              <VOID>         <RETURN>
 //              TPanel *          ECX:4 (auto)   this
-//              tagRECT           Stack[0x4]:16  param_1                   XREF[1,3]:   00464d84(R), 00464d74(R), 00464d7d(R), 00464d70(R)
-//                               ?set_rect@TPanel@@UAEXUtagRECT@@@Z                           XREF[73]:    0056f510(*), 0056f618(*),
-//                               TPanel::set_rect                                                          0056f758(*), 0056f8a0(*),
-//                                                                                                         0056f9d0(*), 0056fb00(*),
-//                                                                                                         0056fc38(*), 0056fd68(*),
-//                                                                                                         0056fe98(*), 0056ffc8(*),
-//                                                                                                         005700f8(*), 00570c40(*),
-//                                                                                                         00570d20(*), 00570fd0(*),
-//                                                                                                         005710b8(*), 005711e8(*),
-//                                                                                                         005712c8(*), 005713b0(*),
-//                                                                                                         00571490(*), 00571580(*), [more]
-//                              Panel.cpp:1118 (33)
-//         00464d70     MOV        EDX,dword ptr [ESP + param_1.bottom]
-//         00464d74     MOV        EAX,dword ptr [ESP + param_1.top]
-//         00464d78     SUB        EDX,EAX
-//         00464d7a     PUSH       ESI
-//         00464d7b     INC        EDX
-//         00464d7c     PUSH       EDI
-//         00464d7d     MOV        EDI,dword ptr [ESP + param_1.right]
-//         00464d81     MOV        ESI,dword ptr [this->_padding_]
-//         00464d83     PUSH       EDX
-//         00464d84     MOV        EDX,dword ptr [ESP + param_1.left]
-//         00464d88     SUB        EDI,EDX
-//         00464d8a     INC        EDI
-//         00464d8b     PUSH       EDI
-//         00464d8c     PUSH       EAX
-//         00464d8d     PUSH       EDX
-//         00464d8e     CALL       dword ptr [ESI + 0xc]
-//                              Panel.cpp:1120 (5)
-//         00464d91     POP        EDI
-//         00464d92     POP        ESI
-//         00464d93     RET        0x10
-//         00464d96     ??         90h
-//         00464d97     NOP
-//         00464d98     NOP
-//         00464d99     NOP
-//         00464d9a     NOP
-//         00464d9b     NOP
-//         00464d9c     NOP
-//         00464d9d     NOP
-//         00464d9e     NOP
-//         00464d9f     NOP
+//              long              Stack[0x4]:4   param_1                   XREF[1]:     00464c50(R)
+//              long              Stack[0x8]:4   param_2                   XREF[1]:     00464c5d(R)
+//              long              Stack[0xc]:4   param_3                   XREF[1]:     00464c62(R)
+//              long              Stack[0x10]:4  param_4                   XREF[1]:     00464c56(R)
+//                               ?set_rect@TPanel@@UAEXJJJJ@Z                                 XREF[66]:    set_rect:00472804(c),
+//                               TPanel::set_rect                                                          set_rect:00474569(c),
+//                                                                                                         set_rect:00475cda(c),
+//                                                                                                         set_rect:00479110(c),
+//                                                                                                         set_rect:0047a92c(c),
+//                                                                                                         set_rect:0047c3cf(c),
+//                                                                                                         calc_draw_info:0047cfe6(c),
+//                                                                                                         calc_draw_info:0047d032(c),
+//                                                                                                         set_rect:0051ce70(c),
+//                                                                                                         set_rect:0051d970(c),
+//                                                                                                         set_rect:00533fa1(c), 0056f514(*),
+//                                                                                                         0056f61c(*), 0056f75c(*),
+//                                                                                                         0056f8a4(*), 0056f9d4(*),
+//                                                                                                         0056fb04(*), 0056fc3c(*),
+//                                                                                                         0056fd6c(*), 0056fe9c(*), [more]
+//                              Panel.cpp:1051 (6)
+//         00464c50     MOV        EAX,dword ptr [ESP + param_1]
+//         00464c54     PUSH       EBX
+//         00464c55     PUSH       EBP
+//                              Panel.cpp:1057 (16)
+//         00464c56     MOV        EBP,dword ptr [ESP + param_4]
+//         00464c5a     PUSH       ESI
+//         00464c5b     MOV        ESI,this
+//         00464c5d     MOV        this,dword ptr [ESP + param_2]
+//         00464c61     PUSH       EDI
+//         00464c62     MOV        EDI,dword ptr [ESP + param_3]
+//                              Panel.cpp:1071 (73)
+//         00464c66     MOV        EDX,dword ptr [ESI + 0x40]
+//         00464c69     MOV        dword ptr [ESI + 0x14],EDI
+//         00464c6c     MOV        dword ptr [ESI + 0x18],EBP
+//         00464c6f     XOR        EBX,EBX
+//         00464c71     LEA        EDI,[EDI + EAX*0x1 + -0x1]
+//         00464c75     LEA        EBP,[EBP + this->_padding_*0x1 + -0x1]
+//         00464c79     CMP        EDX,EBX
+//         00464c7b     MOV        dword ptr [ESI + 0xc],EAX
+//         00464c7e     MOV        dword ptr [ESI + 0x10],this
+//         00464c81     MOV        dword ptr [ESI + 0x8c],EAX
+//         00464c87     MOV        dword ptr [ESI + 0x90],this
+//         00464c8d     MOV        dword ptr [ESI + 0x94],EDI
+//         00464c93     MOV        dword ptr [ESI + 0x98],EBP
+//         00464c99     MOV        dword ptr [ESI + 0x24],EAX
+//         00464c9c     MOV        dword ptr [ESI + 0x28],this
+//         00464c9f     MOV        dword ptr [ESI + 0x2c],EDI
+//         00464ca2     MOV        dword ptr [ESI + 0x30],EBP
+//         00464ca5     JZ         LAB_00464cd9
+//         00464ca7     CMP        byte ptr [ESI + 0xf1],BL
+//         00464cad     JZ         LAB_00464cd9
+//                              Panel.cpp:1073 (7)
+//         00464caf     MOV        EBX,dword ptr [EDX + 0x24]
+//         00464cb2     CMP        EAX,EBX
+//         00464cb4     JGE        LAB_00464cb9
+//                              Panel.cpp:1074 (3)
+//         00464cb6     MOV        dword ptr [ESI + 0x24],EBX
+//                               LAB_00464cb9                                                 XREF[1]:     00464cb4(j)
+//                              Panel.cpp:1076 (7)
+//         00464cb9     MOV        EAX,dword ptr [EDX + 0x28]
+//         00464cbc     CMP        this,EAX
+//         00464cbe     JGE        LAB_00464cc3
+//                              Panel.cpp:1077 (3)
+//         00464cc0     MOV        dword ptr [ESI + 0x28],EAX
+//                               LAB_00464cc3                                                 XREF[1]:     00464cbe(j)
+//                              Panel.cpp:1079 (7)
+//         00464cc3     MOV        EAX,dword ptr [EDX + 0x2c]
+//         00464cc6     CMP        EDI,EAX
+//         00464cc8     JLE        LAB_00464ccd
+//                              Panel.cpp:1080 (3)
+//         00464cca     MOV        dword ptr [ESI + 0x2c],EAX
+//                               LAB_00464ccd                                                 XREF[1]:     00464cc8(j)
+//                              Panel.cpp:1082 (7)
+//         00464ccd     MOV        EDX,dword ptr [EDX + 0x30]
+//         00464cd0     CMP        EBP,EDX
+//         00464cd2     JLE        LAB_00464cd7
+//                              Panel.cpp:1083 (5)
+//         00464cd4     MOV        dword ptr [ESI + 0x30],EDX
+//                               LAB_00464cd7                                                 XREF[1]:     00464cd2(j)
+//         00464cd7     XOR        EBX,EBX
+//                               LAB_00464cd9                                                 XREF[2]:     00464ca5(j), 00464cad(j)
+//                              Panel.cpp:1086 (5)
+//         00464cd9     CMP        dword ptr [ESI + 0x24],EBX
+//         00464cdc     JGE        LAB_00464ce1
+//                              Panel.cpp:1087 (3)
+//         00464cde     MOV        dword ptr [ESI + 0x24],EBX
+//                               LAB_00464ce1                                                 XREF[1]:     00464cdc(j)
+//                              Panel.cpp:1088 (5)
+//         00464ce1     CMP        dword ptr [ESI + 0x28],EBX
+//         00464ce4     JGE        LAB_00464ce9
+//                              Panel.cpp:1089 (3)
+//         00464ce6     MOV        dword ptr [ESI + 0x28],EBX
+//                               LAB_00464ce9                                                 XREF[1]:     00464ce4(j)
+//                              Panel.cpp:1090 (17)
+//         00464ce9     MOV        EAX,dword ptr [ESI + 0x20]
+//         00464cec     CMP        EAX,EBX
+//         00464cee     JZ         LAB_00464d10
+//         00464cf0     MOV        this,dword ptr [EAX + 0x18]
+//         00464cf3     MOV        EDX,dword ptr [ESI + 0x2c]
+//         00464cf6     CMP        EDX,this
+//         00464cf8     JL         LAB_00464cfe
+//                              Panel.cpp:1091 (4)
+//         00464cfa     DEC        this
+//         00464cfb     MOV        dword ptr [ESI + 0x2c],this
+//                               LAB_00464cfe                                                 XREF[1]:     00464cf8(j)
+//                              Panel.cpp:1092 (14)
+//         00464cfe     CMP        EAX,EBX
+//         00464d00     JZ         LAB_00464d10
+//         00464d02     MOV        EAX,dword ptr [EAX + 0x1c]
+//         00464d05     MOV        this,dword ptr [ESI + 0x30]
+//         00464d08     CMP        this,EAX
+//         00464d0a     JL         LAB_00464d10
+//                              Panel.cpp:1093 (4)
+//         00464d0c     DEC        EAX
+//         00464d0d     MOV        dword ptr [ESI + 0x30],EAX
+//                               LAB_00464d10                                                 XREF[3]:     00464cee(j), 00464d00(j),
+//                                                                                                         00464d0a(j)
+//                              Panel.cpp:1095 (10)
+//         00464d10     MOV        EAX,dword ptr [ESI + 0x88]
+//         00464d16     CMP        EAX,EBX
+//         00464d18     JZ         LAB_00464d27
+//                              Panel.cpp:1097 (7)
+//         00464d1a     PUSH       EAX
+//         00464d1b     CALL       dword ptr [->GDI32.DLL::DeleteObject]            = 0048b160
+//                              Panel.cpp:1098 (6)
+//         00464d21     MOV        dword ptr [ESI + 0x88],EBX
+//                               LAB_00464d27                                                 XREF[1]:     00464d18(j)
+//                              Panel.cpp:1101 (20)
+//         00464d27     MOV        EDX,dword ptr [ESI + 0x2c]
+//         00464d2a     MOV        EDI,dword ptr [ESI + 0x24]
+//         00464d2d     CMP        EDX,EDI
+//         00464d2f     JL         LAB_00464d54
+//         00464d31     MOV        EAX,dword ptr [ESI + 0x30]
+//         00464d34     MOV        this,dword ptr [ESI + 0x28]
+//         00464d37     CMP        EAX,this
+//         00464d39     JL         LAB_00464d54
+//                              Panel.cpp:1104 (23)
+//         00464d3b     PUSH       EAX
+//         00464d3c     PUSH       EDX
+//         00464d3d     PUSH       this
+//         00464d3e     PUSH       EDI
+//         00464d3f     MOV        dword ptr [ESI + 0x70],0x1
+//         00464d46     CALL       dword ptr [->GDI32.DLL::CreateRectRgn]           = 0048b2ec
+//         00464d4c     MOV        dword ptr [ESI + 0x88],EAX
+//                              Panel.cpp:1106 (2)
+//         00464d52     JMP        LAB_00464d57
+//                               LAB_00464d54                                                 XREF[2]:     00464d2f(j), 00464d39(j)
+//                              Panel.cpp:1107 (3)
+//         00464d54     MOV        dword ptr [ESI + 0x70],EBX
+//                               LAB_00464d57                                                 XREF[1]:     00464d52(j)
+//                              Panel.cpp:1110 (5)
+//         00464d57     CMP        dword ptr [ESI + 0x6c],EBX
+//         00464d5a     JZ         LAB_00464d65
+//                              Panel.cpp:1111 (9)
+//         00464d5c     MOV        EAX,dword ptr [ESI]
+//         00464d5e     PUSH       0x2
+//         00464d60     MOV        this,ESI
+//         00464d62     CALL       dword ptr [EAX + 0x20]
+//                               LAB_00464d65                                                 XREF[1]:     00464d5a(j)
+//                              Panel.cpp:1112 (7)
+//         00464d65     POP        EDI
+//         00464d66     POP        ESI
+//         00464d67     POP        EBP
+//         00464d68     POP        EBX
+//         00464d69     RET        0x10
+//         00464d6c     ??         90h
+//         00464d6d     NOP
+//         00464d6e     NOP
+//         00464d6f     NOP
     return;
 }
 
@@ -7183,40 +8039,89 @@ void TPanel::set_child_z_order(TPanel* param_1, uchar param_2, short param_3) {
 
 void TPanel::set_tab_order(TPanel** param_1, short param_2) {
     /* TODO: Stub */
-//                              void __thiscall set_tab_order(TPanel * this, TPanel * param_1, TPane
+//                              void __thiscall set_tab_order(TPanel * this, TPanel * * param_1, sho
 //              void              <VOID>         <RETURN>
 //              TPanel *          ECX:4 (auto)   this
-//              TPanel *          Stack[0x4]:4   param_1                   XREF[1]:     00466650(R)
-//              TPanel *          Stack[0x8]:4   param_2                   XREF[1]:     00466654(R)
-//                               ?set_tab_order@TPanel@@UAEXPAV1@0@Z                          XREF[73]:    set_tab_order:004751ef(c),
-//                               TPanel::set_tab_order                                                     0056f5cc(*), 0056f6d4(*),
-//                                                                                                         0056f814(*), 0056f95c(*),
-//                                                                                                         0056fa8c(*), 0056fbbc(*),
-//                                                                                                         0056fcf4(*), 0056fe24(*),
-//                                                                                                         0056ff54(*), 00570084(*),
-//                                                                                                         005701b4(*), 00570cfc(*),
-//                                                                                                         00570ddc(*), 0057108c(*),
-//                                                                                                         00571174(*), 00571384(*),
-//                                                                                                         0057146c(*), 0057154c(*),
-//                                                                                                         0057163c(*), [more]
-//                              Panel.cpp:2353 (4)
-//         00466650     MOV        EAX,dword ptr [ESP + param_1]
-//                              Panel.cpp:2355 (10)
-//         00466654     MOV        EDX,dword ptr [ESP + param_2]
-//         00466658     MOV        dword ptr [ECX + this->tab_prev_panel],EAX
-//         0046665b     MOV        dword ptr [ECX + this->tab_next_panel],EDX
-//                              Panel.cpp:2356 (7)
-//         0046665e     MOV        dword ptr [ECX + this->tab_stop],0x1
-//                              Panel.cpp:2357 (3)
-//         00466665     RET        0x8
-//         00466668     ??         90h
-//         00466669     NOP
-//         0046666a     NOP
-//         0046666b     NOP
-//         0046666c     NOP
-//         0046666d     NOP
-//         0046666e     NOP
-//         0046666f     NOP
+//              TPanel * *        Stack[0x4]:4   param_1                   XREF[1]:     0046660e(R)
+//              short             Stack[0x8]:2   param_2                   XREF[1]:     00466602(R)
+//                               ?set_tab_order@TPanel@@UAEXPAPAV1@F@Z                        XREF[91]:    TribeAboutDialog:0043b2b0(c),
+//                               TPanel::set_tab_order                                                     TribeConfigDialog:0043c084(c),
+//                                                                                                         TribeDiplomacyDialog:0043d68f(c),
+//                                                                                                         TribeMenuDialog:0043f66a(c),
+//                                                                                                         TribeAchievementsScreen:0048e163(c
+//                                                                                                         TRIBE_Campaign_Editor_Screen:0048f
+//                                                                                                         TRIBE_Screen_Campaign_Selection:00
+//                                                                                                         TribeJoinScreen:00491953(c),
+//                                                                                                         TribeMPCreateDialog:004922d7(c),
+//                                                                                                         TribeLoadSavedGameScreen:0049e056(
+//                                                                                                         TRIBE_Screen_Main_Menu:0049eba7(c)
+//                                                                                                         TribeMPStartupScreen:0049f84e(c),
+//                                                                                                         TRIBE_Dialog_Name:004a6f0d(c),
+//                                                                                                         TribeSaveGameScreen:004a757c(c),
+//                                                                                                         TRIBE_Screen_Sed_Menu:004b30c3(c),
+//                                                                                                         TRIBE_Screen_Sed_Open:004b365b(c),
+//                                                                                                         TribeSPMenuScreen:004b6bc3(c),
+//                                                                                                         TribeSelectTribeScreen:004b7dab(c)
+//                                                                                                         0056f5d0(*), 0056f6d8(*), [more]
+//                              Panel.cpp:2328 (2)
+//         00466600     PUSH       EBX
+//         00466601     PUSH       ESI
+//                              Panel.cpp:2333 (12)
+//         00466602     MOVSX      EBX,word ptr [ESP + param_2]
+//         00466607     XOR        ESI,ESI
+//         00466609     TEST       EBX,EBX
+//         0046660b     JLE        LAB_00466644
+//         0046660d     PUSH       EDI
+//                              Panel.cpp:2340 (5)
+//         0046660e     MOV        EDI,dword ptr [ESP + param_1]
+//         00466612     PUSH       EBP
+//                               LAB_00466613                                                 XREF[1]:     00466640(j)
+//                              Panel.cpp:2335 (4)
+//         00466613     TEST       ESI,ESI
+//         00466615     JNZ        LAB_0046661d
+//                              Panel.cpp:2336 (4)
+//         00466617     MOV        EDX,dword ptr [EDI + EBX*0x4 + -0x4]
+//                              Panel.cpp:2337 (2)
+//         0046661b     JMP        LAB_00466621
+//                               LAB_0046661d                                                 XREF[1]:     00466615(j)
+//                              Panel.cpp:2338 (4)
+//         0046661d     MOV        EDX,dword ptr [EDI + ESI*0x4 + -0x4]
+//                               LAB_00466621                                                 XREF[1]:     0046661b(j)
+//                              Panel.cpp:2340 (7)
+//         00466621     LEA        EAX,[EBX + -0x1]
+//         00466624     CMP        ESI,EAX
+//         00466626     JNZ        LAB_0046662c
+//                              Panel.cpp:2341 (2)
+//         00466628     MOV        EAX,dword ptr [EDI]
+//                              Panel.cpp:2342 (2)
+//         0046662a     JMP        LAB_00466630
+//                               LAB_0046662c                                                 XREF[1]:     00466626(j)
+//                              Panel.cpp:2343 (4)
+//         0046662c     MOV        EAX,dword ptr [EDI + ESI*0x4 + 0x4]
+//                               LAB_00466630                                                 XREF[1]:     0046662a(j)
+//                              Panel.cpp:2345 (20)
+//         00466630     MOV        this,dword ptr [EDI + ESI*0x4]
+//         00466633     PUSH       EAX
+//         00466634     PUSH       EDX=>DAT_fffffff8
+//         00466635     MOV        EBP,dword ptr [this->_padding_]
+//         00466637     CALL       dword ptr [EBP + 0xc4]
+//         0046663d     INC        ESI
+//         0046663e     CMP        ESI,EBX
+//         00466640     JL         LAB_00466613
+//         00466642     POP        EBP
+//         00466643     POP        EDI
+//                               LAB_00466644                                                 XREF[1]:     0046660b(j)
+//                              Panel.cpp:2347 (5)
+//         00466644     POP        ESI
+//         00466645     POP        EBX
+//         00466646     RET        0x8
+//         00466649     ??         90h
+//         0046664a     NOP
+//         0046664b     NOP
+//         0046664c     NOP
+//         0046664d     NOP
+//         0046664e     NOP
+//         0046664f     NOP
     return;
 }
 
@@ -7855,45 +8760,59 @@ void TPanel::delete_panel(TPanel** param_1) {
 
 int TPanel::get_string(int param_1, char* param_2, int param_3) {
     /* TODO: Stub */
-//                              char * __thiscall get_string(TPanel * this, int param_1)
-//              char *            EAX:4          <RETURN>
+//                              int __thiscall get_string(TPanel * this, int param_1, char * param_2
+//              int               EAX:4          <RETURN>
 //              TPanel *          ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     00466870(R)
-//                               ?get_string@TPanel@@QAEPADH@Z                                XREF[106]:   action:00493ce2(c),
-//                               TPanel::get_string                                                        TRIBE_Screen_Game:00494001(c),
-//                                                                                                         TRIBE_Screen_Game:0049401c(c),
-//                                                                                                         TRIBE_Screen_Game:00494037(c),
-//                                                                                                         TRIBE_Screen_Game:00494060(c),
-//                                                                                                         set_button:0049ad02(c),
-//                                                                                                         TRIBE_Screen_Main_Menu:0049ea64(c)
-//                                                                                                         TRIBE_Screen_Main_Menu:0049ea93(c)
-//                                                                                                         TRIBE_Screen_Main_Menu:0049eaf6(c)
-//                                                                                                         startGame:004a217e(c),
-//                                                                                                         startGame:004a233d(c),
-//                                                                                                         startGame:004a23a0(c),
-//                                                                                                         startGame:004a275c(c),
-//                                                                                                         TRIBE_Screen_Wait:004a57df(c),
-//                                                                                                         TRIBE_Screen_Wait:004a5849(c),
-//                                                                                                         TRIBE_Screen_Wait:004a5902(c),
-//                                                                                                         TRIBE_Screen_Wait:004a59c8(c),
-//                                                                                                         TRIBE_Screen_Wait:004a5aaa(c),
-//                                                                                                         TRIBE_Screen_Wait:004a5ade(c),
-//                                                                                                         TRIBE_Screen_Wait:004a5b6e(c),
-//                                                                                                         [more]
-//                              Panel.cpp:2499 (20)
-//         00466870     MOV        EAX,dword ptr [ESP + param_1]
-//         00466874     PUSH       0x200
-//         00466879     PUSH       null_0062e670                                    = align(512)
-//         0046687e     PUSH       EAX
-//         0046687f     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
-//                              Panel.cpp:2501 (5)
-//         00466884     MOV        EAX,null_0062e670                                = align(512)
-//                              Panel.cpp:2502 (3)
-//         00466889     RET        0x4
-//         0046688c     ??         90h
-//         0046688d     NOP
-//         0046688e     NOP
-//         0046688f     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     00466852(R)
+//              char *            Stack[0x8]:4   param_2                   XREF[1]:     0046684b(R)
+//              int               Stack[0xc]:4   param_3                   XREF[1]:     00466840(R)
+//                               ?get_string@TPanel@@QAEHHPADH@Z                              XREF[51]:    get_string:0046687f(c),
+//                               TPanel::get_string                                                        create_button:004684aa(c),
+//                                                                                                         create_button:004684c0(c),
+//                                                                                                         create_text:00468c3d(c),
+//                                                                                                         popupOKDialog:00469efd(c),
+//                                                                                                         set_text:0047255d(c),
+//                                                                                                         insert_line:0047dfad(c),
+//                                                                                                         TRIBE_Screen_Game:00494815(c),
+//                                                                                                         TRIBE_Screen_Main_Menu:0049e870(c)
+//                                                                                                         updateSummary:004a46a6(c),
+//                                                                                                         updateSummary:004a4a88(c),
+//                                                                                                         TRIBE_Screen_Wait:004a5838(c),
+//                                                                                                         TRIBE_Screen_Wait:004a5b5d(c),
+//                                                                                                         TRIBE_Screen_Wait:004a5bd7(c),
+//                                                                                                         TRIBE_Screen_Wait:004a5c4c(c),
+//                                                                                                         TRIBE_Screen_Wait:004a5c65(c),
+//                                                                                                         TRIBE_Screen_Wait:004a5cd9(c),
+//                                                                                                         TRIBE_Screen_Wait:004a5ddf(c),
+//                                                                                                         TRIBE_Screen_Wait:004a5f0f(c),
+//                                                                                                         set_string:004a87df(c), [more]
+//                              Panel.cpp:2480 (27)
+//         00466840     MOV        EDX,dword ptr [ESP + param_3]
+//         00466844     MOV        this,dword ptr [rge_base_game]                   = 00000000
+//         0046684a     PUSH       ESI
+//         0046684b     MOV        ESI,dword ptr [ESP + param_2]
+//         0046684f     MOV        EAX,dword ptr [this->_padding_]
+//         00466851     PUSH       EDX
+//         00466852     MOV        EDX,dword ptr [ESP + param_1]
+//         00466856     PUSH       ESI
+//         00466857     PUSH       EDX
+//         00466858     CALL       dword ptr [EAX + 0x20]
+//                              Panel.cpp:2485 (9)
+//         0046685b     MOV        this,byte ptr [ESI]
+//         0046685d     XOR        EAX,EAX
+//         0046685f     TEST       this,this
+//         00466861     SETNZ      AL
+//                              Panel.cpp:2493 (4)
+//         00466864     POP        ESI
+//         00466865     RET        0xc
+//         00466868     ??         90h
+//         00466869     NOP
+//         0046686a     NOP
+//         0046686b     NOP
+//         0046686c     NOP
+//         0046686d     NOP
+//         0046686e     NOP
+//         0046686f     NOP
     return 0;
 }
 

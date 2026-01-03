@@ -1,5 +1,9 @@
 #pragma once
 #include "../common.h"
+#include "m_s_obj.h"
+#include "tpnl_obj.h"
+#include "Panel.h"
+#include "tplayer.h"
 
 class TRIBE_Scenario_Editor_Panel_Object : public TRIBE_Panel_Object {
 public:

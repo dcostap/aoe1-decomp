@@ -1,6 +1,23 @@
 #pragma once
 #include "../common.h"
 
+typedef enum JustType : unsigned int {
+    TopJust = 0,
+    BottomJust = 1,
+    LeftJust = 2,
+    RightJust = 3,
+    CenterJust = 4,
+};
+
+typedef enum MessageType : unsigned int {
+    InfoMessage = 0,
+    BadMessage = 1,
+    DebugMessage = 2,
+    ChatMessage = 3,
+    ColoredChatMessage = 4,
+    RightInfoMessage = 5,
+};
+
 class TMessagePanel : public TPanel {
 public:
     MessageType message_type;                // 0xF4

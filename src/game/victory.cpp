@@ -6,40 +6,456 @@ RGE_Victory_Conditions::RGE_Victory_Conditions(RGE_Player* param_1, int param_2,
 //                              undefined __thiscall RGE_Victory_Conditions(RGE_Victory_Conditions *
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Victory_Co    ECX:4 (auto)   this
-//              RGE_Player *      Stack[0x4]:4   param_1                   XREF[1]:     00531af2(R)
-//                               ??0RGE_Victory_Conditions@@QAE@PAVRGE_Player@@@Z             XREF[2]:     new_victory:00471d36(c),
-//                               RGE_Victory_Conditions::RGE_Victory_Conditions                            TRIBE_Victory_Conditions:0052c928(
-//                              victory.cpp:150 (2)
-//         00531af0     MOV        EAX,this
-//                              victory.cpp:151 (7)
-//         00531af2     MOV        this,dword ptr [ESP + param_1]
-//         00531af6     MOV        dword ptr [EAX + 0xc],this
-//                              victory.cpp:152 (11)
-//         00531af9     XOR        this,this
-//         00531afb     MOV        dword ptr [EAX],RGE_Victory_Conditions::`vftab   = 00531f30
-//         00531b01     MOV        dword ptr [EAX + 0x8],this
-//                              victory.cpp:153 (3)
-//         00531b04     MOV        dword ptr [EAX + 0x4],this
-//                              victory.cpp:154 (3)
-//         00531b07     MOV        dword ptr [EAX + 0x14],this
-//                              victory.cpp:155 (3)
-//         00531b0a     MOV        byte ptr [EAX + 0x10],this
-//                              victory.cpp:156 (3)
-//         00531b0d     MOV        dword ptr [EAX + 0x18],this
-//                              victory.cpp:157 (3)
-//         00531b10     MOV        dword ptr [EAX + 0x1c],this
-//                              victory.cpp:158 (3)
-//         00531b13     RET        0x4
-//         00531b16     ??         90h
-//         00531b17     NOP
-//         00531b18     NOP
-//         00531b19     NOP
-//         00531b1a     NOP
-//         00531b1b     NOP
-//         00531b1c     NOP
-//         00531b1d     NOP
-//         00531b1e     NOP
-//         00531b1f     NOP
+//              RGE_Player *      Stack[0x4]:4   param_1                   XREF[5]:     005317a8(R), 0053189f(W), 0053191f(R), 00531986(R),
+//                                                                                     0053199d(R)
+//              int               Stack[0x8]:4   param_2                   XREF[5]:     0053175c(R), 0053185e(*), 005318bb(R), 005318e2(R),
+//                                                                                     0053190c(R)
+//              long *            Stack[0xc]:4   param_3                   XREF[1]:     00531945(R)
+//              uchar             Stack[0x10]:1  param_4                   XREF[7]:     00531753(R), 005317c1(W), 005319a8(R), 005319af(W),
+//                                                                                     005319fb(W), 00531aa7(R), 00531ab6(W)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     00531790(W), 005319a4(R)
+//              undefined4        Stack[-0x8]:4  local_8                   XREF[3]:     005319e5(*), 005319f2(R), 00531aab(R)
+//              long              Stack[-0xc]:4  temp_num                  XREF[3]:     0053176f(*), 00531781(W), 005319bb(R)
+//              float             Stack[-0x10]:4 version                   XREF[3]:     005317f4(*), 0053193d(R), 00531950(W)
+//              long              Stack[-0x14]:4 target_player             XREF[3]:     005317b1(W), 005318ac(R), 005318c7(W)
+//              RGE_Victory_En    Stack[-0x18]:4 temp2                     XREF[4]:     0053186e(*), 00531926(R), 00531970(R), 00531992(R)
+//              long              Stack[-0x1c]:4 target_obj                XREF[5]:     00531763(W), 005318cd(R), 005318f9(R), 00531910(R),
+//                                                                                     00531aaf(R)
+//                               ??0RGE_Victory_Conditions@@QAE@PAVRGE_Player@@HPAJE@Z        XREF[2]:     load_victory:00471cd5(c),
+//                               RGE_Victory_Conditions::RGE_Victory_Conditions                            TRIBE_Victory_Conditions:0052c909(
+//                              victory.cpp:28 (3)
+//         00531750     SUB        ESP,0x1c
+//                              victory.cpp:40 (28)
+//         00531753     MOV        AL,byte ptr [ESP + param_4]
+//         00531757     PUSH       EBX
+//         00531758     MOV        EBX,this
+//         0053175a     PUSH       EBP
+//         0053175b     PUSH       ESI
+//         0053175c     MOV        ESI,dword ptr [ESP + param_2]
+//         00531760     CMP        AL,0x1
+//         00531762     PUSH       EDI
+//         00531763     MOV        dword ptr [ESP + target_obj],EBX
+//         00531767     MOV        dword ptr [EBX],RGE_Victory_Conditions::`vftab   = 00531f30
+//         0053176d     JNZ        LAB_00531781
+//                              victory.cpp:41 (16)
+//         0053176f     LEA        EAX=>temp_num,[ESP + 0x20]
+//         00531773     PUSH       0x4
+//         00531775     PUSH       EAX
+//         00531776     PUSH       ESI
+//         00531777     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0053177c     ADD        ESP,0xc
+//                              victory.cpp:42 (2)
+//         0053177f     JMP        LAB_00531789
+//                               LAB_00531781                                                 XREF[1]:     0053176d(j)
+//                              victory.cpp:43 (8)
+//         00531781     MOV        dword ptr [ESP + temp_num],0x0
+//                               LAB_00531789                                                 XREF[1]:     0053177f(j)
+//                              victory.cpp:46 (19)
+//         00531789     LEA        EDI,[EBX + 0x8]
+//         0053178c     PUSH       0x4
+//         0053178e     PUSH       EDI
+//         0053178f     PUSH       ESI
+//         00531790     MOV        dword ptr [ESP + local_4],EDI
+//         00531794     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00531799     ADD        ESP,0xc
+//                              victory.cpp:47 (12)
+//         0053179c     LEA        this,[EBX + 0x10]
+//         0053179f     PUSH       0x1
+//         005317a1     PUSH       this
+//         005317a2     PUSH       ESI
+//         005317a3     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              victory.cpp:50 (9)
+//         005317a8     MOV        EDX,dword ptr [ESP + param_1]
+//         005317ac     LEA        EAX,[EBX + 0x4]
+//         005317af     XOR        EBP,EBP
+//                              victory.cpp:53 (6)
+//         005317b1     MOV        dword ptr [ESP + target_player],EAX
+//         005317b5     MOV        dword ptr [EAX],EBP
+//                              victory.cpp:54 (20)
+//         005317b7     MOV        EAX,dword ptr [EDI]
+//         005317b9     ADD        ESP,0xc
+//         005317bc     CMP        EAX,EBP
+//         005317be     MOV        dword ptr [EBX + 0xc],EDX
+//         005317c1     MOV        dword ptr [ESP + param_4],EBP
+//         005317c5     JLE        LAB_005319bb
+//                               LAB_005317cb                                                 XREF[1]:     005319b5(j)
+//                              victory.cpp:56 (14)
+//         005317cb     PUSH       0x34
+//         005317cd     PUSH       0x1
+//         005317cf     CALL       calloc                                           undefined calloc()
+//         005317d4     ADD        ESP,0x8
+//         005317d7     MOV        EDI,EAX
+//                              victory.cpp:58 (12)
+//         005317d9     PUSH       0x1
+//         005317db     PUSH       EDI
+//         005317dc     PUSH       ESI
+//         005317dd     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         005317e2     ADD        ESP,0xc
+//                              victory.cpp:59 (15)
+//         005317e5     LEA        EAX,[EDI + 0x4]
+//         005317e8     PUSH       0x4
+//         005317ea     PUSH       EAX
+//         005317eb     PUSH       ESI
+//         005317ec     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         005317f1     ADD        ESP,0xc
+//                              victory.cpp:60 (16)
+//         005317f4     LEA        this=>version,[ESP + 0x1c]
+//         005317f8     PUSH       0x4
+//         005317fa     PUSH       this
+//         005317fb     PUSH       ESI
+//         005317fc     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00531801     ADD        ESP,0xc
+//                              victory.cpp:61 (15)
+//         00531804     LEA        EDX,[EDI + 0xc]
+//         00531807     PUSH       0x4
+//         00531809     PUSH       EDX
+//         0053180a     PUSH       ESI
+//         0053180b     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00531810     ADD        ESP,0xc
+//                              victory.cpp:62 (15)
+//         00531813     LEA        EAX,[EDI + 0x10]
+//         00531816     PUSH       0x4
+//         00531818     PUSH       EAX
+//         00531819     PUSH       ESI
+//         0053181a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0053181f     ADD        ESP,0xc
+//                              victory.cpp:63 (15)
+//         00531822     LEA        this,[EDI + 0x14]
+//         00531825     PUSH       0x4
+//         00531827     PUSH       this
+//         00531828     PUSH       ESI
+//         00531829     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0053182e     ADD        ESP,0xc
+//                              victory.cpp:64 (15)
+//         00531831     LEA        EDX,[EDI + 0x18]
+//         00531834     PUSH       0x4
+//         00531836     PUSH       EDX
+//         00531837     PUSH       ESI
+//         00531838     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0053183d     ADD        ESP,0xc
+//                              victory.cpp:65 (15)
+//         00531840     LEA        EAX,[EDI + 0x1c]
+//         00531843     PUSH       0x4
+//         00531845     PUSH       EAX
+//         00531846     PUSH       ESI
+//         00531847     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0053184c     ADD        ESP,0xc
+//                              victory.cpp:66 (15)
+//         0053184f     LEA        this,[EDI + 0x20]
+//         00531852     PUSH       0x4
+//         00531854     PUSH       this
+//         00531855     PUSH       ESI
+//         00531856     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0053185b     ADD        ESP,0xc
+//                              victory.cpp:67 (16)
+//         0053185e     LEA        EDX=>param_2,[ESP + 0x34]
+//         00531862     PUSH       0x4
+//         00531864     PUSH       EDX
+//         00531865     PUSH       ESI
+//         00531866     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0053186b     ADD        ESP,0xc
+//                              victory.cpp:68 (16)
+//         0053186e     LEA        EAX=>temp2,[ESP + 0x14]
+//         00531872     PUSH       0x4
+//         00531874     PUSH       EAX
+//         00531875     PUSH       ESI
+//         00531876     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0053187b     ADD        ESP,0xc
+//                              victory.cpp:69 (15)
+//         0053187e     LEA        this,[EDI + 0x2c]
+//         00531881     PUSH       0x1
+//         00531883     PUSH       this
+//         00531884     PUSH       ESI
+//         00531885     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0053188a     ADD        ESP,0xc
+//                              victory.cpp:70 (15)
+//         0053188d     LEA        EDX,[EDI + 0x2d]
+//         00531890     PUSH       0x1
+//         00531892     PUSH       EDX
+//         00531893     PUSH       ESI
+//         00531894     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00531899     ADD        ESP,0xc
+//                              victory.cpp:71 (16)
+//         0053189c     LEA        EAX,[EDI + 0x2e]
+//         0053189f     MOV        dword ptr [ESP + param_1],EAX
+//         005318a3     PUSH       0x1
+//         005318a5     PUSH       EAX
+//         005318a6     PUSH       ESI
+//         005318a7     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              victory.cpp:76 (15)
+//         005318ac     MOV        EAX,dword ptr [ESP + target_player]
+//         005318b0     MOV        dword ptr [EDI + 0x28],EBP
+//         005318b3     MOV        dword ptr [EDI + 0x24],EBP
+//         005318b6     MOV        dword ptr [EDI + 0x8],EBP
+//         005318b9     MOV        dword ptr [EAX],EDI
+//                              victory.cpp:80 (18)
+//         005318bb     MOV        EAX,dword ptr [ESP + param_2]
+//         005318bf     ADD        ESP,0xc
+//         005318c2     LEA        this,[EDI + 0x30]
+//         005318c5     CMP        EAX,EBP
+//         005318c7     MOV        dword ptr [ESP + target_player],this
+//         005318cb     JL         LAB_00531926
+//                              victory.cpp:82 (18)
+//         005318cd     MOV        EDX,dword ptr [ESP + target_obj]
+//         005318d1     XOR        EBX,EBX
+//         005318d3     MOV        EAX,dword ptr [EDX + 0xc]
+//         005318d6     MOV        EAX,dword ptr [EAX + 0x3c]
+//         005318d9     CMP        word ptr [EAX + 0x3c],BX
+//         005318dd     JLE        LAB_0053190c
+//                               LAB_005318df                                                 XREF[1]:     0053190a(j)
+//                              victory.cpp:84 (19)
+//         005318df     MOV        EDX,dword ptr [EAX + 0x40]
+//         005318e2     MOV        this,dword ptr [ESP + param_2]
+//         005318e6     PUSH       this
+//         005318e7     MOV        EAX,dword ptr [EDX + EBX*0x4]
+//         005318ea     MOV        this,dword ptr [EAX + 0x28]
+//         005318ed     CALL       RGE_Object_List::find_by_id                      RGE_Static_Object * find_by_id(RGE_Object_Lis
+//                              victory.cpp:85 (26)
+//         005318f2     TEST       EAX,EAX
+//         005318f4     MOV        dword ptr [EDI + 0x24],EAX
+//         005318f7     JNZ        LAB_0053190c
+//         005318f9     MOV        this,dword ptr [ESP + target_obj]
+//         005318fd     INC        EBX
+//         005318fe     MOV        EDX,dword ptr [ECX + this->player]
+//         00531901     MOV        EAX,dword ptr [EDX + 0x3c]
+//         00531904     MOVSX      this,word ptr [EAX + 0x3c]
+//         00531908     CMP        EBX,this
+//         0053190a     JL         LAB_005318df
+//                               LAB_0053190c                                                 XREF[2]:     005318dd(j), 005318f7(j)
+//                              victory.cpp:89 (19)
+//         0053190c     MOV        EAX,dword ptr [ESP + param_2]
+//         00531910     MOV        EBX,dword ptr [ESP + target_obj]
+//         00531914     XOR        EBP,EBP
+//         00531916     CMP        EAX,EBP
+//         00531918     JL         LAB_00531926
+//         0053191a     CMP        dword ptr [EDI + 0x24],EBP
+//         0053191d     JNZ        LAB_00531926
+//                              victory.cpp:90 (7)
+//         0053191f     MOV        EDX,dword ptr [ESP + param_1]
+//         00531923     MOV        byte ptr [EDX],0x3
+//                               LAB_00531926                                                 XREF[3]:     005318cb(j), 00531918(j),
+//                                                                                                         0053191d(j)
+//                              victory.cpp:92 (8)
+//         00531926     MOV        EAX,dword ptr [ESP + temp2]
+//         0053192a     CMP        EAX,EBP
+//         0053192c     JL         LAB_0053193d
+//                              victory.cpp:93 (15)
+//         0053192e     PUSH       EAX
+//         0053192f     MOV        EAX,dword ptr [EBX + 0xc]
+//         00531932     MOV        this,dword ptr [EAX + 0x28]
+//         00531935     CALL       RGE_Object_List::find_by_id                      RGE_Static_Object * find_by_id(RGE_Object_Lis
+//         0053193a     MOV        dword ptr [EDI + 0x28],EAX
+//                               LAB_0053193d                                                 XREF[1]:     0053192c(j)
+//                              victory.cpp:96 (8)
+//         0053193d     MOV        EAX,dword ptr [ESP + version]
+//         00531941     CMP        EAX,EBP
+//         00531943     JL         LAB_0053198f
+//                              victory.cpp:98 (8)
+//         00531945     MOV        this,dword ptr [ESP + param_3]
+//         00531949     CMP        this,EBP
+//         0053194b     JZ         LAB_00531954
+//                              victory.cpp:99 (7)
+//         0053194d     MOV        EAX,dword ptr [this->_padding_ + EAX*0x4]
+//         00531950     MOV        dword ptr [ESP + version],EAX
+//                               LAB_00531954                                                 XREF[1]:     0053194b(j)
+//                              victory.cpp:101 (4)
+//         00531954     CMP        EAX,EBP
+//         00531956     JL         LAB_00531986
+//                              victory.cpp:103 (12)
+//         00531958     MOV        this,dword ptr [EBX + 0xc]
+//         0053195b     MOV        EDX,dword ptr [this->_padding_ + 0x3c]
+//         0053195e     MOV        this,dword ptr [EDX + 0x40]
+//         00531961     MOV        EAX,dword ptr [this->_padding_ + EAX*0x4]
+//                              victory.cpp:104 (20)
+//         00531964     CMP        EAX,EBP
+//         00531966     MOV        dword ptr [EDI + 0x8],EAX
+//         00531969     JZ         LAB_00531992
+//         0053196b     CMP        dword ptr [EDI + 0x28],EBP
+//         0053196e     JNZ        LAB_00531992
+//         00531970     MOV        this,dword ptr [ESP + temp2]
+//         00531974     CMP        this,EBP
+//         00531976     JL         LAB_00531992
+//                              victory.cpp:105 (12)
+//         00531978     PUSH       this
+//         00531979     MOV        this,dword ptr [EAX + 0x28]
+//         0053197c     CALL       RGE_Object_List::find_by_id                      RGE_Static_Object * find_by_id(RGE_Object_Lis
+//         00531981     MOV        dword ptr [EDI + 0x28],EAX
+//                              victory.cpp:107 (2)
+//         00531984     JMP        LAB_00531992
+//                               LAB_00531986                                                 XREF[1]:     00531956(j)
+//                              victory.cpp:108 (7)
+//         00531986     MOV        EDX,dword ptr [ESP + param_1]
+//         0053198a     MOV        byte ptr [EDX],0x3
+//                              victory.cpp:110 (2)
+//         0053198d     JMP        LAB_00531992
+//                               LAB_0053198f                                                 XREF[1]:     00531943(j)
+//                              victory.cpp:111 (3)
+//         0053198f     MOV        dword ptr [EDI + 0x8],EBP
+//                               LAB_00531992                                                 XREF[5]:     00531969(j), 0053196e(j),
+//                                                                                                         00531976(j), 00531984(j),
+//                                                                                                         0053198d(j)
+//                              victory.cpp:113 (11)
+//         00531992     CMP        dword ptr [ESP + temp2],EBP
+//         00531996     JL         LAB_005319a4
+//         00531998     CMP        dword ptr [EDI + 0x28],EBP
+//         0053199b     JNZ        LAB_005319a4
+//                              victory.cpp:114 (30)
+//         0053199d     MOV        EAX,dword ptr [ESP + param_1]
+//         005319a1     MOV        byte ptr [EAX],0x3
+//                               LAB_005319a4                                                 XREF[2]:     00531996(j), 0053199b(j)
+//         005319a4     MOV        this,dword ptr [ESP + local_4]
+//         005319a8     MOV        EAX,dword ptr [ESP + param_4]
+//         005319ac     INC        EAX
+//         005319ad     MOV        EDX,dword ptr [this->_padding_]
+//         005319af     MOV        dword ptr [ESP + param_4],EAX
+//         005319b3     CMP        EAX,EDX
+//         005319b5     JL         LAB_005317cb
+//                               LAB_005319bb                                                 XREF[1]:     005317c5(j)
+//                              victory.cpp:120 (27)
+//         005319bb     FLD        float ptr [ESP + temp_num]
+//         005319bf     FCOMP      double ptr [DAT_00577590]
+//         005319c5     MOV        dword ptr [EBX + 0x14],EBP
+//         005319c8     MOV        dword ptr [EBX + 0x18],EBP
+//         005319cb     FNSTSW     AX
+//         005319cd     TEST       AH,0x1
+//         005319d0     JNZ        LAB_00531ad9
+//                              victory.cpp:122 (15)
+//         005319d6     LEA        EBP,[EBX + 0x1c]
+//         005319d9     PUSH       0x4
+//         005319db     PUSH       EBP
+//         005319dc     PUSH       ESI
+//         005319dd     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         005319e2     ADD        ESP,0xc
+//                              victory.cpp:123 (13)
+//         005319e5     LEA        EDX=>local_8,[ESP + 0x24]
+//         005319e9     PUSH       0x4
+//         005319eb     PUSH       EDX
+//         005319ec     PUSH       ESI
+//         005319ed     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              victory.cpp:125 (23)
+//         005319f2     MOV        EAX,dword ptr [ESP + local_8]
+//         005319f6     ADD        ESP,0xc
+//         005319f9     TEST       EAX,EAX
+//         005319fb     MOV        dword ptr [ESP + param_4],0x0
+//         00531a03     JLE        LAB_00531ac0
+//                               LAB_00531a09                                                 XREF[1]:     00531aba(j)
+//                              victory.cpp:127 (13)
+//         00531a09     PUSH       0x0
+//         00531a0b     PUSH       0x0
+//         00531a0d     MOV        this,EBX
+//         00531a0f     CALL       RGE_Victory_Conditions::add_point                RGE_Victory_Point_Entry * add_point(RGE_Victo
+//         00531a14     MOV        EDI,EAX
+//                              victory.cpp:128 (12)
+//         00531a16     PUSH       0x1
+//         00531a18     PUSH       EDI
+//         00531a19     PUSH       ESI
+//         00531a1a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00531a1f     ADD        ESP,0xc
+//                              victory.cpp:129 (15)
+//         00531a22     LEA        EAX,[EDI + 0x1]
+//         00531a25     PUSH       0x1
+//         00531a27     PUSH       EAX
+//         00531a28     PUSH       ESI
+//         00531a29     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00531a2e     ADD        ESP,0xc
+//                              victory.cpp:130 (15)
+//         00531a31     LEA        this,[EDI + 0x4]
+//         00531a34     PUSH       0x4
+//         00531a36     PUSH       this
+//         00531a37     PUSH       ESI
+//         00531a38     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00531a3d     ADD        ESP,0xc
+//                              victory.cpp:131 (15)
+//         00531a40     LEA        EDX,[EDI + 0x8]
+//         00531a43     PUSH       0x4
+//         00531a45     PUSH       EDX
+//         00531a46     PUSH       ESI
+//         00531a47     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00531a4c     ADD        ESP,0xc
+//                              victory.cpp:132 (15)
+//         00531a4f     LEA        EBX,[EDI + 0xc]
+//         00531a52     PUSH       0x4
+//         00531a54     PUSH       EBX
+//         00531a55     PUSH       ESI
+//         00531a56     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00531a5b     ADD        ESP,0xc
+//                              victory.cpp:133 (15)
+//         00531a5e     LEA        EAX,[EDI + 0x10]
+//         00531a61     PUSH       0x4
+//         00531a63     PUSH       EAX
+//         00531a64     PUSH       ESI
+//         00531a65     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00531a6a     ADD        ESP,0xc
+//                              victory.cpp:134 (15)
+//         00531a6d     LEA        this,[EDI + 0x2]
+//         00531a70     PUSH       0x1
+//         00531a72     PUSH       this
+//         00531a73     PUSH       ESI
+//         00531a74     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00531a79     ADD        ESP,0xc
+//                              victory.cpp:135 (15)
+//         00531a7c     LEA        EDX,[EDI + 0x3]
+//         00531a7f     PUSH       0x1
+//         00531a81     PUSH       EDX
+//         00531a82     PUSH       ESI
+//         00531a83     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00531a88     ADD        ESP,0xc
+//                              victory.cpp:136 (12)
+//         00531a8b     ADD        EDI,0x14
+//         00531a8e     PUSH       0x4
+//         00531a90     PUSH       EDI
+//         00531a91     PUSH       ESI
+//         00531a92     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              victory.cpp:137 (10)
+//         00531a97     MOV        EAX,dword ptr [EBP]
+//         00531a9a     ADD        ESP,0xc
+//         00531a9d     TEST       EAX,EAX
+//         00531a9f     JGE        LAB_00531aa7
+//                              victory.cpp:138 (6)
+//         00531aa1     MOV        dword ptr [EBX],0x0
+//                               LAB_00531aa7                                                 XREF[1]:     00531a9f(j)
+//                              victory.cpp:125 (25)
+//         00531aa7     MOV        EAX,dword ptr [ESP + param_4]
+//         00531aab     MOV        this,dword ptr [ESP + local_8]
+//         00531aaf     MOV        EBX,dword ptr [ESP + target_obj]
+//         00531ab3     INC        EAX
+//         00531ab4     CMP        EAX,this
+//         00531ab6     MOV        dword ptr [ESP + param_4],EAX
+//         00531aba     JL         LAB_00531a09
+//                               LAB_00531ac0                                                 XREF[1]:     00531a03(j)
+//                              victory.cpp:140 (6)
+//         00531ac0     CMP        dword ptr [EBP],0x0
+//         00531ac4     JGE        LAB_00531adc
+//                              victory.cpp:141 (7)
+//         00531ac6     MOV        dword ptr [EBP],0x0
+//                              victory.cpp:145 (12)
+//         00531acd     MOV        EAX,EBX
+//         00531acf     POP        EDI
+//         00531ad0     POP        ESI
+//         00531ad1     POP        EBP
+//         00531ad2     POP        EBX
+//         00531ad3     ADD        ESP,0x1c
+//         00531ad6     RET        0x10
+//                               LAB_00531ad9                                                 XREF[1]:     005319d0(j)
+//                              victory.cpp:144 (3)
+//         00531ad9     MOV        dword ptr [EBX + 0x1c],EBP
+//                               LAB_00531adc                                                 XREF[1]:     00531ac4(j)
+//                              victory.cpp:145 (12)
+//         00531adc     POP        EDI
+//         00531add     POP        ESI
+//         00531ade     MOV        EAX,EBX
+//         00531ae0     POP        EBP
+//         00531ae1     POP        EBX
+//         00531ae2     ADD        ESP,0x1c
+//         00531ae5     RET        0x10
+//         00531ae8     ??         90h
+//         00531ae9     NOP
+//         00531aea     NOP
+//         00531aeb     NOP
+//         00531aec     NOP
+//         00531aed     NOP
+//         00531aee     NOP
+//         00531aef     NOP
 }
 
 RGE_Victory_Conditions::RGE_Victory_Conditions(RGE_Player* param_1) {
@@ -2294,59 +2710,39 @@ uchar RGE_Victory_Conditions::add_create(uchar param_1, long param_2, long param
 //                              uchar __thiscall add_create(RGE_Victory_Conditions * this, uchar par
 //              uchar             AL:1           <RETURN>
 //              RGE_Victory_Co    ECX:4 (auto)   this
-//              uchar             Stack[0x4]:1   param_1                   XREF[1]:     005329d4(R)
-//              long              Stack[0x8]:4   param_2                   XREF[1]:     005329e3(R)
-//              long              Stack[0xc]:4   param_3                   XREF[1]:     005329e7(R)
-//              float             Stack[0x10]:4  param_4                   XREF[1]:     005329ee(R)
-//              float             Stack[0x14]:4  param_5                   XREF[1]:     005329f5(R)
-//              float             Stack[0x18]:4  param_6                   XREF[1]:     005329fc(R)
-//              float             Stack[0x1c]:4  param_7                   XREF[1]:     00532a03(R)
-//              uchar             Stack[0x20]:1  param_8                   XREF[1]:     005329d0(R)
-//                               ?add_create@RGE_Victory_Conditions@@QAEEEJJMMMME@Z           XREF[1]:     Save_victory_conditions_into_playe
+//              uchar             Stack[0x4]:1   param_1                   XREF[1]:     005329a4(R)
+//              long              Stack[0x8]:4   param_2                   XREF[1]:     005329b3(R)
+//              long              Stack[0xc]:4   param_3                   XREF[1]:     005329b7(R)
+//              uchar             Stack[0x10]:1  param_4                   XREF[1]:     005329a0(R)
+//                               ?add_create@RGE_Victory_Conditions@@QAEEEJJE@Z               XREF[1]:     Save_victory_conditions_into_playe
 //                               RGE_Victory_Conditions::add_create
-//                              victory.cpp:872 (15)
-//         005329d0     MOV        EAX,dword ptr [ESP + param_8]
-//         005329d4     MOV        EDX,dword ptr [ESP + param_1]
-//         005329d8     PUSH       EAX
-//         005329d9     PUSH       EDX
-//         005329da     CALL       RGE_Victory_Conditions::add                      RGE_Victory_Entry * add(RGE_Victory_Condition
-//                              victory.cpp:876 (4)
-//         005329df     TEST       EAX,EAX
-//         005329e1     JZ         LAB_00532a15
-//                              victory.cpp:879 (4)
-//         005329e3     MOV        this,dword ptr [ESP + param_2]
-//                              victory.cpp:880 (7)
-//         005329e7     MOV        EDX,dword ptr [ESP + param_3]
-//         005329eb     MOV        dword ptr [EAX + 0x4],this
-//                              victory.cpp:881 (7)
-//         005329ee     MOV        this,dword ptr [ESP + param_4]
-//         005329f2     MOV        dword ptr [EAX + 0x1c],EDX
-//                              victory.cpp:882 (7)
-//         005329f5     MOV        EDX,dword ptr [ESP + param_5]
-//         005329f9     MOV        dword ptr [EAX + 0xc],this
-//                              victory.cpp:883 (7)
-//         005329fc     MOV        this,dword ptr [ESP + param_6]
-//         00532a00     MOV        dword ptr [EAX + 0x10],EDX
-//                              victory.cpp:884 (13)
-//         00532a03     MOV        EDX,dword ptr [ESP + param_7]
-//         00532a07     MOV        byte ptr [EAX],0x8
-//         00532a0a     MOV        dword ptr [EAX + 0x14],this
-//         00532a0d     MOV        dword ptr [EAX + 0x18],EDX
-//                              victory.cpp:885 (2)
-//         00532a10     MOV        AL,0x1
-//                              victory.cpp:889 (3)
-//         00532a12     RET        0x20
-//                               LAB_00532a15                                                 XREF[1]:     005329e1(j)
-//                              victory.cpp:888 (2)
-//         00532a15     XOR        AL,AL
-//                              victory.cpp:889 (3)
-//         00532a17     RET        0x20
-//         00532a1a     ??         90h
-//         00532a1b     NOP
-//         00532a1c     NOP
-//         00532a1d     NOP
-//         00532a1e     NOP
-//         00532a1f     NOP
+//                              victory.cpp:854 (15)
+//         005329a0     MOV        EAX,dword ptr [ESP + param_4]
+//         005329a4     MOV        EDX,dword ptr [ESP + param_1]
+//         005329a8     PUSH       EAX
+//         005329a9     PUSH       EDX
+//         005329aa     CALL       RGE_Victory_Conditions::add                      RGE_Victory_Entry * add(RGE_Victory_Condition
+//                              victory.cpp:858 (4)
+//         005329af     TEST       EAX,EAX
+//         005329b1     JZ         LAB_005329c9
+//                              victory.cpp:861 (4)
+//         005329b3     MOV        this,dword ptr [ESP + param_2]
+//                              victory.cpp:862 (13)
+//         005329b7     MOV        EDX,dword ptr [ESP + param_3]
+//         005329bb     MOV        byte ptr [EAX],0x1
+//         005329be     MOV        dword ptr [EAX + 0x4],this
+//         005329c1     MOV        dword ptr [EAX + 0x1c],EDX
+//                              victory.cpp:863 (2)
+//         005329c4     MOV        AL,0x1
+//                              victory.cpp:867 (3)
+//         005329c6     RET        0x10
+//                               LAB_005329c9                                                 XREF[1]:     005329b1(j)
+//                              victory.cpp:866 (2)
+//         005329c9     XOR        AL,AL
+//                              victory.cpp:867 (3)
+//         005329cb     RET        0x10
+//         005329ce     ??         90h
+//         005329cf     NOP
     return 0;
 }
 
@@ -2416,43 +2812,40 @@ uchar RGE_Victory_Conditions::add_destroy(uchar param_1, RGE_Static_Object* para
 //                              uchar __thiscall add_destroy(RGE_Victory_Conditions * this, uchar pa
 //              uchar             AL:1           <RETURN>
 //              RGE_Victory_Co    ECX:4 (auto)   this
-//              uchar             Stack[0x4]:1   param_1                   XREF[1]:     00532ac0(R)
-//              RGE_Player *      Stack[0x8]:4   param_2                   XREF[1]:     00532ad0(R)
-//                               ?add_destroy@RGE_Victory_Conditions@@QAEEEPAVRGE_Player@@@Z  XREF[1]:     Save_victory_conditions_into_playe
+//              uchar             Stack[0x4]:1   param_1                   XREF[1]:     00532a20(R)
+//              RGE_Static_Obj    Stack[0x8]:4   param_2                   XREF[1]:     00532a30(R)
+//                               ?add_destroy@RGE_Victory_Conditions@@QAEEEPAVRGE_Static_Obj  XREF[1]:     Save_victory_conditions_into_playe
 //                               RGE_Victory_Conditions::add_destroy
-//                              victory.cpp:949 (12)
-//         00532ac0     MOV        EAX,dword ptr [ESP + param_1]
-//         00532ac4     PUSH       0x0
-//         00532ac6     PUSH       EAX
-//         00532ac7     CALL       RGE_Victory_Conditions::add                      RGE_Victory_Entry * add(RGE_Victory_Condition
-//                              victory.cpp:953 (4)
-//         00532acc     TEST       EAX,EAX
-//         00532ace     JZ         LAB_00532adf
-//                              victory.cpp:956 (10)
-//         00532ad0     MOV        this,dword ptr [ESP + param_2]
-//         00532ad4     MOV        byte ptr [EAX],0xa
-//         00532ad7     MOV        dword ptr [EAX + 0x8],this
-//                              victory.cpp:957 (2)
-//         00532ada     MOV        AL,0x1
-//                              victory.cpp:961 (3)
-//         00532adc     RET        0x8
-//                               LAB_00532adf                                                 XREF[1]:     00532ace(j)
-//                              victory.cpp:960 (2)
-//         00532adf     XOR        AL,AL
-//                              victory.cpp:961 (3)
-//         00532ae1     RET        0x8
-//         00532ae4     ??         90h
-//         00532ae5     NOP
-//         00532ae6     NOP
-//         00532ae7     NOP
-//         00532ae8     NOP
-//         00532ae9     NOP
-//         00532aea     NOP
-//         00532aeb     NOP
-//         00532aec     NOP
-//         00532aed     NOP
-//         00532aee     NOP
-//         00532aef     NOP
+//                              victory.cpp:894 (12)
+//         00532a20     MOV        EAX,dword ptr [ESP + param_1]
+//         00532a24     PUSH       0x0
+//         00532a26     PUSH       EAX
+//         00532a27     CALL       RGE_Victory_Conditions::add                      RGE_Victory_Entry * add(RGE_Victory_Condition
+//                              victory.cpp:898 (4)
+//         00532a2c     TEST       EAX,EAX
+//         00532a2e     JZ         LAB_00532a45
+//                              victory.cpp:901 (10)
+//         00532a30     MOV        this,dword ptr [ESP + param_2]
+//         00532a34     MOV        byte ptr [EAX],0x2
+//         00532a37     MOV        dword ptr [EAX + 0x28],this
+//                              victory.cpp:902 (6)
+//         00532a3a     MOV        this,dword ptr [ECX + this->player]
+//         00532a3d     MOV        dword ptr [EAX + 0x8],this
+//                              victory.cpp:903 (2)
+//         00532a40     MOV        AL,0x1
+//                              victory.cpp:907 (3)
+//         00532a42     RET        0x8
+//                               LAB_00532a45                                                 XREF[1]:     00532a2e(j)
+//                              victory.cpp:906 (2)
+//         00532a45     XOR        AL,AL
+//                              victory.cpp:907 (3)
+//         00532a47     RET        0x8
+//         00532a4a     ??         90h
+//         00532a4b     NOP
+//         00532a4c     NOP
+//         00532a4d     NOP
+//         00532a4e     NOP
+//         00532a4f     NOP
     return 0;
 }
 
@@ -2461,43 +2854,53 @@ uchar RGE_Victory_Conditions::add_destroy(uchar param_1, long param_2, long para
 //                              uchar __thiscall add_destroy(RGE_Victory_Conditions * this, uchar pa
 //              uchar             AL:1           <RETURN>
 //              RGE_Victory_Co    ECX:4 (auto)   this
-//              uchar             Stack[0x4]:1   param_1                   XREF[1]:     00532ac0(R)
-//              RGE_Player *      Stack[0x8]:4   param_2                   XREF[1]:     00532ad0(R)
-//                               ?add_destroy@RGE_Victory_Conditions@@QAEEEPAVRGE_Player@@@Z  XREF[1]:     Save_victory_conditions_into_playe
+//              uchar             Stack[0x4]:1   param_1                   XREF[1]:     00532a50(R)
+//              long              Stack[0x8]:4   param_2                   XREF[1]:     00532a60(R)
+//              long              Stack[0xc]:4   param_3                   XREF[1]:     00532a64(R)
+//              RGE_Player *      Stack[0x10]:4  param_4                   XREF[1]:     00532a6b(R)
+//                               ?add_destroy@RGE_Victory_Conditions@@QAEEEJJPAVRGE_Player@@@Z XREF[1]:     Save_victory_conditions_into_playe
 //                               RGE_Victory_Conditions::add_destroy
-//                              victory.cpp:949 (12)
-//         00532ac0     MOV        EAX,dword ptr [ESP + param_1]
-//         00532ac4     PUSH       0x0
-//         00532ac6     PUSH       EAX
-//         00532ac7     CALL       RGE_Victory_Conditions::add                      RGE_Victory_Entry * add(RGE_Victory_Condition
-//                              victory.cpp:953 (4)
-//         00532acc     TEST       EAX,EAX
-//         00532ace     JZ         LAB_00532adf
-//                              victory.cpp:956 (10)
-//         00532ad0     MOV        this,dword ptr [ESP + param_2]
-//         00532ad4     MOV        byte ptr [EAX],0xa
-//         00532ad7     MOV        dword ptr [EAX + 0x8],this
-//                              victory.cpp:957 (2)
-//         00532ada     MOV        AL,0x1
-//                              victory.cpp:961 (3)
-//         00532adc     RET        0x8
-//                               LAB_00532adf                                                 XREF[1]:     00532ace(j)
-//                              victory.cpp:960 (2)
-//         00532adf     XOR        AL,AL
-//                              victory.cpp:961 (3)
-//         00532ae1     RET        0x8
-//         00532ae4     ??         90h
-//         00532ae5     NOP
-//         00532ae6     NOP
-//         00532ae7     NOP
-//         00532ae8     NOP
-//         00532ae9     NOP
-//         00532aea     NOP
-//         00532aeb     NOP
-//         00532aec     NOP
-//         00532aed     NOP
-//         00532aee     NOP
-//         00532aef     NOP
+//                              victory.cpp:912 (12)
+//         00532a50     MOV        EAX,dword ptr [ESP + param_1]
+//         00532a54     PUSH       0x0
+//         00532a56     PUSH       EAX
+//         00532a57     CALL       RGE_Victory_Conditions::add                      RGE_Victory_Entry * add(RGE_Victory_Condition
+//                              victory.cpp:916 (4)
+//         00532a5c     TEST       EAX,EAX
+//         00532a5e     JZ         LAB_00532a7d
+//                              victory.cpp:919 (4)
+//         00532a60     MOV        this,dword ptr [ESP + param_2]
+//                              victory.cpp:920 (7)
+//         00532a64     MOV        EDX,dword ptr [ESP + param_3]
+//         00532a68     MOV        dword ptr [EAX + 0x4],this
+//                              victory.cpp:921 (13)
+//         00532a6b     MOV        this,dword ptr [ESP + param_4]
+//         00532a6f     MOV        byte ptr [EAX],0x3
+//         00532a72     MOV        dword ptr [EAX + 0x1c],EDX
+//         00532a75     MOV        dword ptr [EAX + 0x8],this
+//                              victory.cpp:922 (2)
+//         00532a78     MOV        AL,0x1
+//                              victory.cpp:926 (3)
+//         00532a7a     RET        0x10
+//                               LAB_00532a7d                                                 XREF[1]:     00532a5e(j)
+//                              victory.cpp:925 (2)
+//         00532a7d     XOR        AL,AL
+//                              victory.cpp:926 (3)
+//         00532a7f     RET        0x10
+//         00532a82     ??         90h
+//         00532a83     NOP
+//         00532a84     NOP
+//         00532a85     NOP
+//         00532a86     NOP
+//         00532a87     NOP
+//         00532a88     NOP
+//         00532a89     NOP
+//         00532a8a     NOP
+//         00532a8b     NOP
+//         00532a8c     NOP
+//         00532a8d     NOP
+//         00532a8e     NOP
+//         00532a8f     NOP
     return 0;
 }
 
@@ -2506,43 +2909,40 @@ uchar RGE_Victory_Conditions::add_destroy(uchar param_1, long param_2, RGE_Playe
 //                              uchar __thiscall add_destroy(RGE_Victory_Conditions * this, uchar pa
 //              uchar             AL:1           <RETURN>
 //              RGE_Victory_Co    ECX:4 (auto)   this
-//              uchar             Stack[0x4]:1   param_1                   XREF[1]:     00532ac0(R)
-//              RGE_Player *      Stack[0x8]:4   param_2                   XREF[1]:     00532ad0(R)
-//                               ?add_destroy@RGE_Victory_Conditions@@QAEEEPAVRGE_Player@@@Z  XREF[1]:     Save_victory_conditions_into_playe
+//              uchar             Stack[0x4]:1   param_1                   XREF[1]:     00532a90(R)
+//              long              Stack[0x8]:4   param_2                   XREF[1]:     00532aa0(R)
+//              RGE_Player *      Stack[0xc]:4   param_3                   XREF[1]:     00532aa4(R)
+//                               ?add_destroy@RGE_Victory_Conditions@@QAEEEJPAVRGE_Player@@@Z XREF[1]:     Save_victory_conditions_into_playe
 //                               RGE_Victory_Conditions::add_destroy
-//                              victory.cpp:949 (12)
-//         00532ac0     MOV        EAX,dword ptr [ESP + param_1]
-//         00532ac4     PUSH       0x0
-//         00532ac6     PUSH       EAX
-//         00532ac7     CALL       RGE_Victory_Conditions::add                      RGE_Victory_Entry * add(RGE_Victory_Condition
-//                              victory.cpp:953 (4)
-//         00532acc     TEST       EAX,EAX
-//         00532ace     JZ         LAB_00532adf
-//                              victory.cpp:956 (10)
-//         00532ad0     MOV        this,dword ptr [ESP + param_2]
-//         00532ad4     MOV        byte ptr [EAX],0xa
-//         00532ad7     MOV        dword ptr [EAX + 0x8],this
-//                              victory.cpp:957 (2)
-//         00532ada     MOV        AL,0x1
-//                              victory.cpp:961 (3)
-//         00532adc     RET        0x8
-//                               LAB_00532adf                                                 XREF[1]:     00532ace(j)
-//                              victory.cpp:960 (2)
-//         00532adf     XOR        AL,AL
-//                              victory.cpp:961 (3)
-//         00532ae1     RET        0x8
-//         00532ae4     ??         90h
-//         00532ae5     NOP
-//         00532ae6     NOP
-//         00532ae7     NOP
-//         00532ae8     NOP
-//         00532ae9     NOP
-//         00532aea     NOP
-//         00532aeb     NOP
-//         00532aec     NOP
-//         00532aed     NOP
-//         00532aee     NOP
-//         00532aef     NOP
+//                              victory.cpp:931 (12)
+//         00532a90     MOV        EAX,dword ptr [ESP + param_1]
+//         00532a94     PUSH       0x0
+//         00532a96     PUSH       EAX
+//         00532a97     CALL       RGE_Victory_Conditions::add                      RGE_Victory_Entry * add(RGE_Victory_Condition
+//                              victory.cpp:935 (4)
+//         00532a9c     TEST       EAX,EAX
+//         00532a9e     JZ         LAB_00532ab6
+//                              victory.cpp:938 (4)
+//         00532aa0     MOV        this,dword ptr [ESP + param_2]
+//                              victory.cpp:939 (13)
+//         00532aa4     MOV        EDX,dword ptr [ESP + param_3]
+//         00532aa8     MOV        byte ptr [EAX],0x9
+//         00532aab     MOV        dword ptr [EAX + 0x4],this
+//         00532aae     MOV        dword ptr [EAX + 0x8],EDX
+//                              victory.cpp:940 (2)
+//         00532ab1     MOV        AL,0x1
+//                              victory.cpp:944 (3)
+//         00532ab3     RET        0xc
+//                               LAB_00532ab6                                                 XREF[1]:     00532a9e(j)
+//                              victory.cpp:943 (2)
+//         00532ab6     XOR        AL,AL
+//                              victory.cpp:944 (3)
+//         00532ab8     RET        0xc
+//         00532abb     ??         90h
+//         00532abc     NOP
+//         00532abd     NOP
+//         00532abe     NOP
+//         00532abf     NOP
     return 0;
 }
 
@@ -2596,47 +2996,53 @@ uchar RGE_Victory_Conditions::add_bring(uchar param_1, RGE_Static_Object* param_
 //                              uchar __thiscall add_bring(RGE_Victory_Conditions * this, uchar para
 //              uchar             AL:1           <RETURN>
 //              RGE_Victory_Co    ECX:4 (auto)   this
-//              uchar             Stack[0x4]:1   param_1                   XREF[1]:     00532b30(R)
-//              RGE_Static_Obj    Stack[0x8]:4   param_2                   XREF[1]:     00532b40(R)
-//              float             Stack[0xc]:4   param_3                   XREF[1]:     00532b44(R)
-//              float             Stack[0x10]:4  param_4                   XREF[1]:     00532b4b(R)
-//              float             Stack[0x14]:4  param_5                   XREF[1]:     00532b52(R)
-//              float             Stack[0x18]:4  param_6                   XREF[1]:     00532b59(R)
+//              uchar             Stack[0x4]:1   param_1                   XREF[1]:     00532af0(R)
+//              RGE_Static_Obj    Stack[0x8]:4   param_2                   XREF[1]:     00532b00(R)
+//              RGE_Static_Obj    Stack[0xc]:4   param_3                   XREF[1]:     00532b0a(R)
 //                               ?add_bring@RGE_Victory_Conditions@@QAEEEPAVRGE_Static_Objec  XREF[1]:     Save_victory_conditions_into_playe
 //                               RGE_Victory_Conditions::add_bring
-//                              victory.cpp:985 (12)
-//         00532b30     MOV        EAX,dword ptr [ESP + param_1]
-//         00532b34     PUSH       0x0
-//         00532b36     PUSH       EAX
-//         00532b37     CALL       RGE_Victory_Conditions::add                      RGE_Victory_Entry * add(RGE_Victory_Condition
-//                              victory.cpp:989 (4)
-//         00532b3c     TEST       EAX,EAX
-//         00532b3e     JZ         LAB_00532b6b
-//                              victory.cpp:992 (4)
-//         00532b40     MOV        this,dword ptr [ESP + param_2]
-//                              victory.cpp:993 (7)
-//         00532b44     MOV        EDX,dword ptr [ESP + param_3]
-//         00532b48     MOV        dword ptr [EAX + 0x24],this
-//                              victory.cpp:994 (7)
-//         00532b4b     MOV        this,dword ptr [ESP + param_4]
-//         00532b4f     MOV        dword ptr [EAX + 0xc],EDX
-//                              victory.cpp:995 (7)
-//         00532b52     MOV        EDX,dword ptr [ESP + param_5]
-//         00532b56     MOV        dword ptr [EAX + 0x10],this
-//                              victory.cpp:996 (13)
-//         00532b59     MOV        this,dword ptr [ESP + param_6]
-//         00532b5d     MOV        byte ptr [EAX],0x4
-//         00532b60     MOV        dword ptr [EAX + 0x14],EDX
-//         00532b63     MOV        dword ptr [EAX + 0x18],this
-//                              victory.cpp:997 (2)
-//         00532b66     MOV        AL,0x1
-//                              victory.cpp:1001 (3)
-//         00532b68     RET        0x18
-//                               LAB_00532b6b                                                 XREF[1]:     00532b3e(j)
-//                              victory.cpp:1000 (2)
-//         00532b6b     XOR        AL,AL
-//                              victory.cpp:1001 (3)
-//         00532b6d     RET        0x18
+//                              victory.cpp:966 (12)
+//         00532af0     MOV        EAX,dword ptr [ESP + param_1]
+//         00532af4     PUSH       0x0
+//         00532af6     PUSH       EAX
+//         00532af7     CALL       RGE_Victory_Conditions::add                      RGE_Victory_Entry * add(RGE_Victory_Condition
+//                              victory.cpp:970 (4)
+//         00532afc     TEST       EAX,EAX
+//         00532afe     JZ         LAB_00532b1c
+//                              victory.cpp:973 (10)
+//         00532b00     MOV        this,dword ptr [ESP + param_2]
+//         00532b04     MOV        byte ptr [EAX],0x5
+//         00532b07     MOV        dword ptr [EAX + 0x24],this
+//                              victory.cpp:974 (7)
+//         00532b0a     MOV        this,dword ptr [ESP + param_3]
+//         00532b0e     MOV        dword ptr [EAX + 0x28],this
+//                              victory.cpp:975 (6)
+//         00532b11     MOV        EDX,dword ptr [ECX + this->player]
+//         00532b14     MOV        dword ptr [EAX + 0x8],EDX
+//                              victory.cpp:976 (2)
+//         00532b17     MOV        AL,0x1
+//                              victory.cpp:980 (3)
+//         00532b19     RET        0xc
+//                               LAB_00532b1c                                                 XREF[1]:     00532afe(j)
+//                              victory.cpp:979 (2)
+//         00532b1c     XOR        AL,AL
+//                              victory.cpp:980 (3)
+//         00532b1e     RET        0xc
+//         00532b21     ??         90h
+//         00532b22     NOP
+//         00532b23     NOP
+//         00532b24     NOP
+//         00532b25     NOP
+//         00532b26     NOP
+//         00532b27     NOP
+//         00532b28     NOP
+//         00532b29     NOP
+//         00532b2a     NOP
+//         00532b2b     NOP
+//         00532b2c     NOP
+//         00532b2d     NOP
+//         00532b2e     NOP
+//         00532b2f     NOP
     return 0;
 }
 

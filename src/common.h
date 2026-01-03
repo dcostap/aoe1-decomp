@@ -20,406 +20,7 @@ static_assert(sizeof(void*) == 4, "Build must be 32-bit (x86) to match the binar
 #pragma once
 #include <stdint.h>
 
-// FORWARD DECLARATIONS
-typedef struct AttackMemory AttackMemory;
-typedef struct AttackState AttackState;
-typedef struct Attribute_Cost Attribute_Cost;
-typedef struct BITMAPINFO256 BITMAPINFO256;
-typedef struct BYTEPoint BYTEPoint;
-typedef struct Blit_Queue_Entry Blit_Queue_Entry;
-typedef struct BuildRes_id_node BuildRes_id_node;
-typedef struct BuildRes_type_node BuildRes_type_node;
-typedef struct BuildingLot BuildingLot;
-typedef struct CHECKSUMARRAY CHECKSUMARRAY;
-typedef struct COMMPLAYEROPTIONS COMMPLAYEROPTIONS;
-typedef struct DClipInfo_Node DClipInfo_Node;
-typedef struct DIDEVCAPS DIDEVCAPS;
-typedef struct DIDEVICEINSTANCEA DIDEVICEINSTANCEA;
-typedef struct DIDEVICEOBJECTDATA DIDEVICEOBJECTDATA;
-typedef struct DIDEVICEOBJECTINSTANCEA DIDEVICEOBJECTINSTANCEA;
-typedef struct DIPROPHEADER DIPROPHEADER;
-typedef struct DPCAPS DPCAPS;
-typedef struct DPCHAT_u_8 DPCHAT_u_8;
-typedef struct DPCHAT DPCHAT;
-typedef struct DPCOMPOUNDADDRESSELEMENT DPCOMPOUNDADDRESSELEMENT;
-typedef struct DPCREDENTIALS_u_8 DPCREDENTIALS_u_8;
-typedef struct DPCREDENTIALS_u_16 DPCREDENTIALS_u_16;
-typedef struct DPCREDENTIALS_u_12 DPCREDENTIALS_u_12;
-typedef struct DPCREDENTIALS DPCREDENTIALS;
-typedef struct DPLAPPINFO_u_20 DPLAPPINFO_u_20;
-typedef struct DPLAPPINFO DPLAPPINFO;
-typedef struct DPLCONNECTION DPLCONNECTION;
-typedef struct DPNAME_u_8 DPNAME_u_8;
-typedef struct DPNAME_u_12 DPNAME_u_12;
-typedef struct DPNAME DPNAME;
-typedef struct DPSECURITYDESC_u_8 DPSECURITYDESC_u_8;
-typedef struct DPSECURITYDESC_u_12 DPSECURITYDESC_u_12;
-typedef struct DPSECURITYDESC DPSECURITYDESC;
-typedef struct DPSESSIONDESC DPSESSIONDESC;
-typedef struct DPSESSIONDESC2_u_52 DPSESSIONDESC2_u_52;
-typedef struct DPSESSIONDESC2_u_48 DPSESSIONDESC2_u_48;
-typedef struct DPSESSIONDESC2 DPSESSIONDESC2;
-typedef struct DisplaySelectedObjRec DisplaySelectedObjRec;
-typedef struct DrawAreaNode DrawAreaNode;
-typedef struct FlicHead FlicHead;
-typedef struct FloatHeap FloatHeap;
-typedef struct FrameHead FrameHead;
-typedef struct Friendliness Friendliness;
-typedef struct GroupingStruct GroupingStruct;
-typedef struct ICINFO ICINFO;
-typedef struct IDirectDraw IDirectDraw;
-typedef struct IDirectDraw2 IDirectDraw2;
-typedef struct IDirectDrawClipper IDirectDrawClipper;
-typedef struct IDirectDrawPalette IDirectDrawPalette;
-typedef struct IDirectDrawSurface IDirectDrawSurface;
-typedef struct IDirectDrawSurface3 IDirectDrawSurface3;
-typedef struct IDirectInputA IDirectInputA;
-typedef struct IDirectInputDeviceA IDirectInputDeviceA;
-typedef struct IDirectPlay IDirectPlay;
-typedef struct IDirectPlay2 IDirectPlay2;
-typedef struct IDirectPlay3 IDirectPlay3;
-typedef struct IDirectPlayLobby IDirectPlayLobby;
-typedef struct IDirectPlayLobby2 IDirectPlayLobby2;
-typedef struct IDirectSound IDirectSound;
-typedef struct IDirectSoundBuffer IDirectSoundBuffer;
-typedef struct IUnknown IUnknown;
-typedef struct Item_Avail Item_Avail;
-typedef struct LINEINFO LINEINFO;
-typedef struct LOSTBL LOSTBL;
-typedef struct List_Info List_Info;
-typedef struct MGP_FloatHeap MGP_FloatHeap;
-typedef struct MSGFORMAT_ACKNOWLEDGE_GUARANTEED MSGFORMAT_ACKNOWLEDGE_GUARANTEED;
-typedef struct MSGFORMAT_ALL_DONE MSGFORMAT_ALL_DONE;
-typedef struct MSGFORMAT_CHAT MSGFORMAT_CHAT;
-typedef struct MSGFORMAT_CHECKSUM MSGFORMAT_CHECKSUM;
-typedef struct MSGFORMAT_HEADER_GUARANTEED MSGFORMAT_HEADER_GUARANTEED;
-typedef struct MSGFORMAT_KILL_PLAYER MSGFORMAT_KILL_PLAYER;
-typedef struct MSGFORMAT_LATENCY MSGFORMAT_LATENCY;
-typedef struct MSGFORMAT_MISSING_PLAYER MSGFORMAT_MISSING_PLAYER;
-typedef struct MSGFORMAT_ONTURN MSGFORMAT_ONTURN;
-typedef struct MSGFORMAT_RESEND MSGFORMAT_RESEND;
-typedef struct MSGFORMAT_SETREADYOPTIONS MSGFORMAT_SETREADYOPTIONS;
-typedef struct MSGFORMAT_SPEEDCHANGE MSGFORMAT_SPEEDCHANGE;
-typedef struct Map_Stack Map_Stack;
-typedef struct MouseClickInfo MouseClickInfo;
-typedef struct NotifyEvent NotifyEvent;
-typedef struct ObjectMemory ObjectMemory;
-typedef struct OldUnitData OldUnitData;
-typedef struct OldUnitData2 OldUnitData2;
-typedef struct OrderEvent OrderEvent;
-typedef struct Ov_Sprite_Draw_Rec Ov_Sprite_Draw_Rec;
-typedef struct PAL_TABLE PAL_TABLE;
-typedef struct PLAYER_SCORE PLAYER_SCORE;
-typedef struct PanelNode PanelNode;
-typedef struct XYPoint XYPoint;
-typedef struct PlacementState PlacementState;
-typedef struct PlayerName PlayerName;
-typedef struct Player_Start_Info Player_Start_Info;
-typedef struct PrimaryPt PrimaryPt;
-typedef struct Production_Queue_Record Production_Queue_Record;
-typedef struct PtToPt PtToPt;
-typedef struct QuadrantLog QuadrantLog;
-typedef struct RGE_Action_Node RGE_Action_Node;
-typedef struct RGE_Active_Sprite_Node RGE_Active_Sprite_Node;
-typedef struct RGE_Armor_Weapon_Info RGE_Armor_Weapon_Info;
-typedef struct RGE_TOB_Picts RGE_TOB_Picts;
-typedef struct RGE_Border_Set RGE_Border_Set;
-typedef struct RGE_Campaign_Header RGE_Campaign_Header;
-typedef struct RGE_Check_Node RGE_Check_Node;
-typedef struct RGE_Cliffs_Hot_Spots RGE_Cliffs_Hot_Spots;
-typedef struct RGE_Cliffs_Info RGE_Cliffs_Info;
-typedef struct RGE_Command_AI_Order RGE_Command_AI_Order;
-typedef struct RGE_Command_Add_Attribute RGE_Command_Add_Attribute;
-typedef struct RGE_Command_Add_To_Group RGE_Command_Add_To_Group;
-typedef struct XYZBYTEPoint XYZBYTEPoint;
-typedef struct RGE_Command_Add_Waypoint RGE_Command_Add_Waypoint;
-typedef struct RGE_Command_Create RGE_Command_Create;
-typedef struct RGE_Command_Create_Group RGE_Command_Create_Group;
-typedef struct RGE_Command_Destroy_Group RGE_Command_Destroy_Group;
-typedef struct RGE_Command_Formation RGE_Command_Formation;
-typedef struct RGE_Command_Give_Attribute RGE_Command_Give_Attribute;
-typedef struct RGE_Command_Group_AI_Order RGE_Command_Group_AI_Order;
-typedef struct RGE_Command_Group_Waypoint RGE_Command_Group_Waypoint;
-typedef struct RGE_Obj_Info RGE_Obj_Info;
-typedef struct RGE_Command_Order RGE_Command_Order;
-typedef struct RGE_Command_Pause RGE_Command_Pause;
-typedef struct RGE_Command_Remove_From_Group RGE_Command_Remove_From_Group;
-typedef struct RGE_Command_Resign RGE_Command_Resign;
-typedef struct RGE_Command_Stop RGE_Command_Stop;
-typedef struct RGE_Damage_Sprite_Info RGE_Damage_Sprite_Info;
-typedef struct RGE_Effect RGE_Effect;
-typedef struct RGE_Effect_Command RGE_Effect_Command;
-typedef struct RGE_Elevation_Data RGE_Elevation_Data;
-typedef struct RGE_Elevation_Data_Entry RGE_Elevation_Data_Entry;
-typedef struct RGE_Elevation_Hot_Spots RGE_Elevation_Hot_Spots;
-typedef struct RGE_Elevation_Info_Line RGE_Elevation_Info_Line;
-typedef struct RGE_Elevation_Info RGE_Elevation_Info;
-typedef struct RGE_Font RGE_Font;
-typedef struct RGE_Game_Options RGE_Game_Options;
-typedef struct RGE_Info_Line RGE_Info_Line;
-typedef struct RGE_Land_Data RGE_Land_Data;
-typedef struct RGE_Land_Data_Entry RGE_Land_Data_Entry;
-typedef struct RGE_Land_Info_Line RGE_Land_Info_Line;
-typedef struct RGE_Land_Info RGE_Land_Info;
-typedef struct RGE_Land_Point_Info_Line RGE_Land_Point_Info_Line;
-typedef struct RGE_Map_Data RGE_Map_Data;
-typedef struct RGE_Object_Data RGE_Object_Data;
-typedef struct RGE_Terrain_Data RGE_Terrain_Data;
-typedef struct RGE_Map_Data_Entry RGE_Map_Data_Entry;
-typedef struct RGE_Map_Gen_Info RGE_Map_Gen_Info;
-typedef struct RGE_Map_Image_Line RGE_Map_Image_Line;
-typedef struct RGE_Map_Tile_Row RGE_Map_Tile_Row;
-typedef struct RGE_Object_Data_Entry RGE_Object_Data_Entry;
-typedef struct RGE_Object_Info_Line RGE_Object_Info_Line;
-typedef struct RGE_Object_Info RGE_Object_Info;
-typedef struct RGE_Object_Node RGE_Object_Node;
-typedef struct RGE_Pick_Info RGE_Pick_Info;
-typedef struct RGE_Pick_Obj_Info RGE_Pick_Obj_Info;
-typedef struct RGE_Picture_List RGE_Picture_List;
-typedef struct RGE_Player_Info RGE_Player_Info;
-typedef struct RGE_Prog_Info RGE_Prog_Info;
-typedef struct RGE_Random_Map_Module_List RGE_Random_Map_Module_List;
-typedef struct RGE_SPick_Info RGE_SPick_Info;
-typedef struct RGE_Scenario_File_Entry RGE_Scenario_File_Entry;
-typedef struct RGE_Scenario_Info RGE_Scenario_Info;
-typedef struct RGE_Scenario_Offset RGE_Scenario_Offset;
-typedef struct RGE_Shallows_Info_Line RGE_Shallows_Info_Line;
-typedef struct RGE_Shallows_Info RGE_Shallows_Info;
-typedef struct RGE_Sound_Info RGE_Sound_Info;
-typedef struct RGE_Sound_List RGE_Sound_List;
-typedef struct RGE_Terrain_Data_Entry RGE_Terrain_Data_Entry;
-typedef struct RGE_Terrain_Hot_Spots RGE_Terrain_Hot_Spots;
-typedef struct RGE_Terrain_Info_Line RGE_Terrain_Info_Line;
-typedef struct RGE_Terrain_Info RGE_Terrain_Info;
-typedef struct RGE_Tile RGE_Tile;
-typedef struct RGE_Tile_List_Node RGE_Tile_List_Node;
-typedef struct RGE_Tile_Set RGE_Tile_Set;
-typedef struct RGE_Tile_Size RGE_Tile_Size;
-typedef struct RGE_Time_Entry RGE_Time_Entry;
-typedef struct RGE_Timing_Info RGE_Timing_Info;
-typedef struct RGE_Victory_Entry RGE_Victory_Entry;
-typedef struct RGE_Victory_Point_Entry RGE_Victory_Point_Entry;
-typedef struct ResFileHdr ResFileHdr;
-typedef struct ResourceMemory ResourceMemory;
-typedef struct SEs SEs;
-typedef struct SLhape_File_Header SLhape_File_Header;
-typedef struct SNDOBJ SNDOBJ;
-typedef struct SP_Victory_Info SP_Victory_Info;
-typedef struct SPs SPs;
-typedef struct Shape_File_Header Shape_File_Header;
-typedef struct Shape_Header Shape_Header;
-typedef struct Shape_Info Shape_Info;
-typedef struct Shape_Offsets Shape_Offsets;
-typedef struct Special_Events Special_Events;
-typedef struct TRANSINFO TRANSINFO;
-typedef struct TRIBE_Cliff_Info TRIBE_Cliff_Info;
-typedef struct TRIBE_Command_Attack_Ground TRIBE_Command_Attack_Ground;
-typedef struct TRIBE_Command_Build TRIBE_Command_Build;
-typedef struct TRIBE_Command_Build_Wall TRIBE_Command_Build_Wall;
-typedef struct TRIBE_Command_Cancel_Build TRIBE_Command_Cancel_Build;
-typedef struct TRIBE_Command_Explore TRIBE_Command_Explore;
-typedef struct TRIBE_Command_Game TRIBE_Command_Game;
-typedef struct TRIBE_Command_Give_Attribute TRIBE_Command_Give_Attribute;
-typedef struct TRIBE_Command_Make TRIBE_Command_Make;
-typedef struct TRIBE_Command_Queue TRIBE_Command_Queue;
-typedef struct TRIBE_Command_Repair TRIBE_Command_Repair;
-typedef struct TRIBE_Command_Research TRIBE_Command_Research;
-typedef struct TRIBE_Command_Trade_Attribute TRIBE_Command_Trade_Attribute;
-typedef struct TRIBE_Command_Unload TRIBE_Command_Unload;
-typedef struct TRIBE_Game_Options TRIBE_Game_Options;
-typedef struct TRIBE_History_Entry TRIBE_History_Entry;
-typedef struct TRIBE_History_Events TRIBE_History_Events;
-typedef struct TRIBE_Master_Cliff_Info TRIBE_Master_Cliff_Info;
-typedef struct TRIBE_Zone_High_Score_Info TRIBE_Zone_High_Score_Info;
-typedef struct TRIBE_Zone_Player_Info TRIBE_Zone_Player_Info;
-typedef struct TRIBE_Zone_Map_Info TRIBE_Zone_Map_Info;
-typedef struct TRIBE_Zone_Info TRIBE_Zone_Info;
-typedef struct Tech_Player_Tree Tech_Player_Tree;
-typedef struct Tech_Tree Tech_Tree;
-typedef struct TextNode TextNode;
-typedef struct Tile_BlackEdge_Table Tile_BlackEdge_Table;
-typedef struct Tile_FogEdge_Table Tile_FogEdge_Table;
-typedef struct Trade_Avail Trade_Avail;
-typedef struct UnitData UnitData;
-typedef struct VC_LOG VC_LOG;
-typedef struct VISIBLE_RESOURCE_REC VISIBLE_RESOURCE_REC;
-typedef struct VISIBLE_UNIT_PTR VISIBLE_UNIT_PTR;
-typedef struct VISIBLE_UNIT_REC VISIBLE_UNIT_REC;
-typedef struct VSpanMiniList VSpanMiniList;
-typedef struct VSpan_Node VSpan_Node;
-typedef struct Victory_StartInfo Victory_StartInfo;
-typedef struct WSAData WSAData;
-typedef struct Waypoint Waypoint;
-typedef struct XYZPoint XYZPoint;
-typedef struct Zone_Queue Zone_Queue;
-typedef struct combined_options combined_options;
-typedef struct waveformat_tag waveformat_tag;
-typedef struct pcmwaveformat_tag pcmwaveformat_tag;
-typedef struct rdlg_list_info rdlg_list_info;
-typedef struct res_file_type_info res_file_type_info;
-typedef struct resfile_header resfile_header;
-typedef struct resfile_id_dir_node resfile_id_dir_node;
-typedef struct resfile_type_dir_node resfile_type_dir_node;
-typedef struct tMIXERCONTROLDETAILS_u_12 tMIXERCONTROLDETAILS_u_12;
-typedef struct tMIXERCONTROLDETAILS tMIXERCONTROLDETAILS;
-typedef struct tMIXERCONTROLDETAILS_UNSIGNED tMIXERCONTROLDETAILS_UNSIGNED;
-typedef struct tWAVEFORMATEX tWAVEFORMATEX;
-typedef struct tm tm;
-
-// ENUMS
-enum Action : unsigned int {
-    OK = 0,
-    Cancel = 1,
-    Other = 2,
-};
-
-enum Action : unsigned int {
-    ActionSelect = 1,
-};
-
-enum ActionType : unsigned int {
-    ActionSelect = 1,
-    ActionDown = 2,
-    ActionUp = 3,
-    ActionRightSelect = 4,
-    ActionRightDown = 5,
-    ActionRightUp = 6,
-};
-
-enum ActionType : unsigned int {
-    ActionItem = 0,
-    ActionList = 1,
-    ActionValue = 2,
-};
-
-enum ActionType : unsigned int {
-    ActionEnter = 0,
-    ActionEscape = 1,
-    ActionTab = 2,
-};
-
-enum ActionType : unsigned int {
-    ActionEnter = 0,
-    ActionEscape = 1,
-    ActionTab = 2,
-};
-
-enum ActionType : unsigned int {
-    ActionItem = 1,
-    ActionLand = 2,
-    ActionSelect = 3,
-};
-
-enum ActionType : unsigned int {
-    ActionObjectChanged = 1,
-};
-
-enum ActionType : unsigned int {
-    ActionUp = 0,
-    ActionDown = 1,
-    ActionPrior = 2,
-    ActionNext = 3,
-    ActionPosition = 4,
-    ActionEnd = 5,
-    ActionChange = 6,
-};
-
-enum ActionType : unsigned int {
-    ActionDone = 1,
-};
-
-enum Age : unsigned int {
-    DefaultAge = 0,
-    NomadAge = 1,
-    StoneAge = 2,
-    ToolAge = 3,
-    BronzeAge = 4,
-    IronAge = 5,
-};
-
-enum Alignment : unsigned int {
-    AlignCenter = 0,
-    AlignLeft = 1,
-    AlignRight = 2,
-    AlignTop = 3,
-    AlignBottom = 4,
-    AlignHorizontalScroll = 5,
-    AlignWordwrap = 6,
-};
-
-enum BevelType : unsigned int {
-    BevelNone = 0,
-    BevelFlat = 1,
-    Bevel1 = 2,
-    Bevel2 = 3,
-    Bevel3 = 4,
-};
-
-enum BevelType : unsigned int {
-    BevelNone = 0,
-    BevelFlat = 1,
-    Bevel1 = 2,
-    Bevel2 = 3,
-    Bevel3 = 4,
-};
-
-enum BevelType : unsigned int {
-    BevelNone = 0,
-    BevelFlat = 1,
-    BevelIn1 = 2,
-    BevelIn2 = 3,
-    BevelIn3 = 4,
-    BevelOut1 = 5,
-    BevelOut2 = 6,
-    BevelOut3 = 7,
-};
-
-enum BevelType : unsigned int {
-    BevelNone = 0,
-    BevelFlat = 1,
-    Bevel1 = 2,
-    Bevel2 = 3,
-    Bevel3 = 4,
-};
-
-enum BevelType : unsigned int {
-    BevelNone = 0,
-    BevelFlat = 1,
-    BevelIn1 = 2,
-    BevelIn2 = 3,
-    BevelIn3 = 4,
-    BevelOut1 = 5,
-    BevelOut2 = 6,
-    BevelOut3 = 7,
-};
-
-enum BevelType : unsigned int {
-    BevelNone = 0,
-    BevelFlat = 1,
-    BevelIn1 = 2,
-    BevelIn2 = 3,
-    BevelIn3 = 4,
-    BevelOut1 = 5,
-    BevelOut2 = 6,
-    BevelOut3 = 7,
-};
-
-enum BrushSize : unsigned int {
-    BrushSizeNone = 0,
-    BrushSizeVerySmall = 1,
-    BrushSizeSmall = 2,
-    BrushSizeMedium = 3,
-    BrushSizeLarge = 4,
-    BrushSizeXLarge = 5,
-};
-
-enum ButtonType : unsigned int {
-    Normal = 1,
-    Radio = 2,
-    State = 3,
-};
-
-enum COMMMESSAGES : unsigned int {
+typedef enum COMMMESSAGES : unsigned int {
     COMM_PAUSE = 6050,
     COMM_RESUME = 6051,
     COMM_UPDATE_PLAYERS = 6052,
@@ -451,13 +52,13 @@ enum COMMMESSAGES : unsigned int {
     COMM_UNKNOWN = 6078,
 };
 
-enum COMMSPEEDS : unsigned int {
+typedef enum COMMSPEEDS : unsigned int {
     SPEED_OKAY = 0,
     SPEED_FASTER = 1,
     SPEED_SLOWER = 2,
 };
 
-enum COMMSTATES : unsigned int {
+typedef enum COMMSTATES : unsigned int {
     COMM_STATE_ERROR = 1,
     COMM_STATE_INITIALIZE = 2,
     COMM_STATE_JOINNOW = 3,
@@ -466,7 +67,7 @@ enum COMMSTATES : unsigned int {
     COMM_STATE_FINISHED = 6,
 };
 
-enum COMMSTATUS : unsigned int {
+typedef enum COMMSTATUS : unsigned int {
     UNINITIALIZED = 0,
     INITIALIZED = 1,
     SINGLE_PLAYER = 2,
@@ -485,164 +86,7 @@ enum COMMSTATUS : unsigned int {
     GAME_IS_PAUSED = 15,
 };
 
-enum CharType : unsigned int {
-    SingleByteChar = 0,
-    SingleByteKanaChar = 1,
-    DoubleByteChar = 2,
-};
-
-enum DrawStyle : unsigned int {
-    DrawStyleNormal = 0,
-    DrawStyleLeftButton = 1,
-};
-
-enum DrawType : unsigned int {
-    DrawClear = 1,
-    DrawPicture = 2,
-    DrawTextA = 3,
-    DrawPictureAndText = 4,
-    DrawFillAndText = 5,
-    DrawBevelPicture = 6,
-};
-
-enum DropdownMode : unsigned int {
-    ModeNone = 0,
-    ModeValue = 1,
-    ModeList = 2,
-};
-
-enum FormatType : unsigned int {
-    FormatText = 0,
-    FormatNumber = 1,
-    FormatInteger = 2,
-    FormatUnsignedInt = 3,
-    FormatFile = 4,
-    FormatFileNoExt = 5,
-    FormatPath = 6,
-    FormatMultiLine = 7,
-    FormatPercent = 8,
-};
-
-enum FormatType : unsigned int {
-    FormatText = 0,
-    FormatNumber = 1,
-    FormatInteger = 2,
-    FormatUnsignedInt = 3,
-    FormatFile = 4,
-    FormatFileNoExt = 5,
-    FormatPath = 6,
-    FormatMultiLine = 7,
-    FormatPercent = 8,
-};
-
-enum ItemType : unsigned int {
-    ItemNone = 0,
-    ItemUp = 1,
-    ItemDown = 2,
-    ItemTab = 3,
-    ItemTop = 4,
-    ItemBottom = 5,
-};
-
-enum JustType : unsigned int {
-    TopJust = 0,
-    BottomJust = 1,
-    LeftJust = 2,
-    RightJust = 3,
-    CenterJust = 4,
-};
-
-enum MapSize : unsigned int {
-    Tiny = 0,
-    Small = 1,
-    Medium = 2,
-    Large = 3,
-    Huge = 4,
-    Humongous = 5,
-};
-
-enum MapType : unsigned int {
-    AllWater = 0,
-    MostlyWater = 1,
-    WaterAndLand = 2,
-    MostlyLand = 3,
-    AllLand = 4,
-    Continental = 5,
-    Lake = 6,
-    Hilly = 7,
-    Isthmas = 8,
-};
-
-enum MapType : unsigned int {
-    MapTypeNone = 0,
-    MapTypeBlank = 1,
-    MapTypeRandom = 2,
-    MapTypeSeed = 3,
-};
-
-enum MessageType : unsigned int {
-    InfoMessage = 0,
-    BadMessage = 1,
-    DebugMessage = 2,
-    ChatMessage = 3,
-    ColoredChatMessage = 4,
-    RightInfoMessage = 5,
-};
-
-enum MessageType : unsigned int {
-    MessageTypeNone = 0,
-    MessageTypeDescription = 1,
-    MessageTypeInstructions = 2,
-    MessageTypeVictory = 3,
-    MessageTypeFailure = 4,
-};
-
-enum Mode : unsigned int {
-    ModeNone = 0,
-    ModeDown = 1,
-    ModeHold = 2,
-};
-
-enum Mode : unsigned int {
-    InGame = 0,
-    InPregame = 1,
-};
-
-enum Mode : unsigned int {
-    SaveGame = 0,
-    SaveScenario = 1,
-    SaveScenarioEdit = 2,
-};
-
-enum Mode : unsigned int {
-    AsChat = 0,
-    AsComment = 1,
-};
-
-enum MouseAction : unsigned int {
-    MouseActionNone = 0,
-    MouseActionDown = 1,
-    MouseActionHold = 2,
-    MouseActionMove = 3,
-};
-
-enum MouseButton : unsigned int {
-    MouseButtonNone = 0,
-    LeftMouseButton = 1,
-    RightMouseButton = 2,
-};
-
-enum NotifyType : unsigned int {
-    NotifyAction = 1,
-    NotifyCommand = 2,
-};
-
-enum Orientation : unsigned int {
-    Vertical = 0,
-    Horizontal = 1,
-};
-
-enum PLAYERHUMANITY : unsigned int {
+typedef enum PLAYERHUMANITY : unsigned int {
     ME_ABSENT = 0,
     ME_CLOSED = 1,
     ME_HUMAN = 2,
@@ -652,7 +96,7 @@ enum PLAYERHUMANITY : unsigned int {
     ME_VIEWONLY = 6,
 };
 
-enum PROXY_PHASE : unsigned int {
+typedef enum PROXY_PHASE : unsigned int {
     PROXY_CALCSIZE = 0,
     PROXY_GETBUFFER = 1,
     PROXY_MARSHAL = 2,
@@ -660,210 +104,18 @@ enum PROXY_PHASE : unsigned int {
     PROXY_UNMARSHAL = 4,
 };
 
-enum PaintType : unsigned int {
-    PaintTypeNone = 0,
-    PaintTypeTerrain = 1,
-    PaintTypeElevation = 2,
-    PaintTypeCliffs = 3,
-};
-
-enum PathResult : unsigned int {
-    PathFound = 0,
-    NoPathFound = 1,
-    WaitingOnPathingCap = 2,
-};
-
-enum PictureType : unsigned int {
-    Picture = 0,
-    Shape = 1,
-};
-
-enum PlacementResult : unsigned int {
-    PlacementOk = 0,
-    PlacementOnImpassableTile = 1,
-    PlacementObstructed = 2,
-    PlacementUnknownObject = 3,
-    PlacementFailed = 4,
-    PlacementFailedNoLot = 5,
-};
-
-enum PositionMode : unsigned int {
-    PositionFixed = 0,
-    PositionVariable = 1,
-    PositionCentered = 2,
-    PositionLeft = 3,
-    PositionTop = 4,
-    PositionRight = 5,
-    PositionBottom = 6,
-    PositionLeftTop = 7,
-    PositionLeftBottom = 8,
-    PositionRightTop = 9,
-    PositionRightBottom = 10,
-};
-
-enum RedrawMode : unsigned int {
-    RedrawNone = 0,
-    RedrawNormal = 1,
-    RedrawFull = 2,
-};
-
-enum ResourceLevel : unsigned int {
-    DefaultResources = 0,
-    LowResource = 1,
-    MediumResources = 2,
-    HighResources = 3,
-    VeryHighResources = 4,
-};
-
-enum SELECT_REGION_e : unsigned int {
-    SELECT_OFF = 0,
-    SELECT_OBJECT = 1,
-    SELECT_DEST_OBJECT = 2,
-    SELECT_AREA = 3,
-};
-
-enum STUB_PHASE : unsigned int {
+typedef enum STUB_PHASE : unsigned int {
     STUB_UNMARSHAL = 0,
     STUB_CALL_SERVER = 1,
     STUB_MARSHAL = 2,
     STUB_CALL_SERVER_NO_HRESULT = 3,
 };
 
-enum ScenarioMode : unsigned int {
-    ScenarioModeNone = 0,
-    ScenarioModeMap = 1,
-    ScenarioModeTerrain = 2,
-    ScenarioModePlayers = 3,
-    ScenarioModeUnits = 4,
-    ScenarioModeDiplomacy = 5,
-    ScenarioModeVictory = 6,
-    ScenarioModeVictoryMulti = 7,
-    ScenarioModeOptions = 8,
-    ScenarioModeMessages = 9,
-    ScenarioModeCinematics = 10,
-    ScenarioModeSave = 11,
-};
-
-enum ScreenMode : unsigned int {
-    ModeNone = 1,
-    ModeFadeOut = 2,
-    ModeFadeOutDone = 3,
-    ModePause = 4,
-    ModeFadeIn = 5,
-};
-
-enum ScrollAction : unsigned int {
-    ScrollCount = 0,
-    ScrollLine = 1,
-    ScrollDown = 2,
-    ScrollUp = 3,
-    ScrollNext = 4,
-    ScrollPrior = 5,
-    ScrollHome = 6,
-    ScrollEnd = 7,
-};
-
-enum SliderAction : unsigned int {
-    ActionUp = 0,
-    ActionDown = 1,
-    ActionStartSlide = 2,
-    ActionEndSlide = 3,
-    ActionSelect = 4,
-};
-
-enum State : unsigned int {
-    StateScenario = 0,
-    StateRandom = 1,
-};
-
-enum Style : unsigned int {
-    NormalStyle = 0,
-    BeveledStyle = 1,
-    ChiseledStyle = 2,
-};
-
-enum Style : unsigned int {
-    NormalStyle = 0,
-    BeveledStyle = 1,
-    ChiseledStyle = 2,
-};
-
-enum Type : unsigned int {
-    OKDialog = 0,
-    OKCancelDialog = 1,
-    YesNoDialog = 2,
-    RetryAbortDialog = 3,
-    YesNoCancelDialog = 4,
-};
-
-enum ValueType : unsigned int {
-    ValueTypeNumber = 0,
-    ValueTypeBonus = 1,
-    ValueTypeCompare = 2,
-    ValueTypePercent = 3,
-    ValueTypeNone = 4,
-};
-
-enum VictoryType : unsigned int {
-    VictoryDefault = 0,
-    VictoryConquest = 1,
-    VictoryExplore = 2,
-    VictoryRuins = 3,
-    VictoryArtifacts = 4,
-    VictoryDiscoveries = 5,
-    VictoryGold = 6,
-    VictoryTime = 7,
-    VictoryScore = 8,
-    VictoryStandard = 9,
-};
-
-enum VictoryType : unsigned int {
-    VictoryTypeNone = 0,
-    VictoryTypeStandard = 1,
-    VictoryTypeConquest = 2,
-    VictoryTypeScore = 3,
-    VictoryTypeTime = 4,
-    VictoryTypeCustom = 5,
-};
-
-enum XLAT_SIDE : unsigned int {
+typedef enum XLAT_SIDE : unsigned int {
     XLAT_SERVER = 1,
     XLAT_CLIENT = 2,
 };
 
-enum ZOrder : unsigned int {
-    ZOrderPosition = 0,
-    ZOrderTop = 1,
-    ZOrderBottom = 2,
-};
-
-enum io_state : unsigned int {
-    goodbit = 0,
-    eofbit = 1,
-    failbit = 2,
-    badbit = 4,
-};
-
-enum open_mode : unsigned int {
-    in = 1,
-    out = 2,
-    ate = 4,
-    app = 8,
-    trunc = 16,
-    nocreate = 32,
-    noreplace = 64,
-    binary = 128,
-};
-
-enum seek_dir : unsigned int {
-    beg = 0,
-    cur = 1,
-    end = 2,
-};
-
-
-// STRUCTURES
-// ----------------------------------------------------------------
 // AttackMemory
 // Size: 0x18
 struct AttackMemory {
@@ -916,14 +168,6 @@ struct BITMAPINFO256 {
 };
 
 // ----------------------------------------------------------------
-// BYTEPoint
-// Size: 0x2
-struct BYTEPoint {
-    uchar x; // 0x0
-    uchar y; // 0x1
-};
-
-// ----------------------------------------------------------------
 // Blit_Queue_Entry
 // Size: 0x20
 struct Blit_Queue_Entry {
@@ -962,21 +206,6 @@ struct BuildingLot {
     uchar status; // 0x4
     uchar x; // 0x5
     uchar y; // 0x6
-};
-
-// ----------------------------------------------------------------
-// CHECKSUMARRAY
-// Size: 0x24
-struct CHECKSUMARRAY {
-    uint PlayerNo; // 0x0
-    ulong WTime; // 0x4
-    ulong WTurn; // 0x8
-    long cs1; // 0xC
-    long cs2; // 0x10
-    long cs3; // 0x14
-    long cs4; // 0x18
-    long cs5; // 0x1C
-    uint Random; // 0x20
 };
 
 // ----------------------------------------------------------------
@@ -1162,15 +391,6 @@ struct FlicHead {
 };
 
 // ----------------------------------------------------------------
-// FloatHeap
-// Size: 0x8
-struct FloatHeap {
-    uchar x; // 0x0
-    uchar y; // 0x1
-    float total; // 0x4
-};
-
-// ----------------------------------------------------------------
 // FrameHead
 // Size: 0x10
 struct FrameHead {
@@ -1185,15 +405,6 @@ struct FrameHead {
 // Size: 0x40
 struct Friendliness {
     int Attitude[16]; // 0x0
-};
-
-// ----------------------------------------------------------------
-// GroupingStruct
-// Size: 0x8
-struct GroupingStruct {
-    int id; // 0x0
-    uchar groupID; // 0x4
-    uchar type; // 0x5
 };
 
 // ----------------------------------------------------------------
@@ -1357,24 +568,6 @@ struct LOSTBL {
     int y_delta; // 0x0
     int x_left; // 0x4
     int x_right; // 0x8
-};
-
-// ----------------------------------------------------------------
-// List_Info
-// Size: 0x66
-struct List_Info {
-    char text[100]; // 0x0
-    short id; // 0x64
-};
-
-// ----------------------------------------------------------------
-// MGP_FloatHeap
-// Size: 0x8
-struct MGP_FloatHeap {
-    uchar x; // 0x0
-    uchar y; // 0x1
-    ushort next; // 0x2
-    int total; // 0x4
 };
 
 // ----------------------------------------------------------------
@@ -2022,31 +1215,6 @@ struct RGE_Font {
     void * font; // 0x0
     long font_wid; // 0x4
     long font_hgt; // 0x8
-};
-
-// ----------------------------------------------------------------
-// RGE_Game_Options
-// Size: 0xA8
-struct RGE_Game_Options {
-    float versionValue; // 0x0
-    uchar scenarioGameValue; // 0x4
-    char scenarioNameValue[128]; // 0x5
-    uchar singlePlayerGameValue; // 0x85
-    uchar multiplayerGameValue; // 0x86
-    uchar mapXSizeValue; // 0x87
-    uchar mapYSizeValue; // 0x88
-    uchar mapZSizeValue; // 0x89
-    uchar allowCheatCodesValue; // 0x8A
-    uchar mpPathFindingValue; // 0x8B
-    uchar cheatNotificationValue; // 0x8C
-    uchar fullVisibilityValue; // 0x8D
-    uchar fogOfWarValue; // 0x8E
-    uchar coloredChatValue; // 0x8F
-    uchar numberPlayersValue; // 0x90
-    uchar gameDeveloperModeValue; // 0x91
-    uchar playerCDAndVersionValue[9]; // 0x92
-    uchar difficultyValue; // 0x9B
-    uchar playerTeamValue[9]; // 0x9C
 };
 
 // ----------------------------------------------------------------
@@ -2983,31 +2151,6 @@ struct TRIBE_Command_Unload {
 };
 
 // ----------------------------------------------------------------
-// TRIBE_Game_Options
-// Size: 0x6C
-struct TRIBE_Game_Options {
-    MapSize mapSizeValue; // 0x0
-    MapType mapTypeValue; // 0x4
-    int animalsValue; // 0x8
-    int predatorsValue; // 0xC
-    VictoryType victoryTypeValue; // 0x10
-    int victoryAmountValue; // 0x14
-    uchar civilizationValue[9]; // 0x18
-    int scenarioPlayerValue[9]; // 0x24
-    uchar playerColorValue[9]; // 0x48
-    uchar computerNameValue[9]; // 0x51
-    uchar allowTradingValue; // 0x5A
-    uchar longCombatValue; // 0x5B
-    uchar randomizePositionsValue; // 0x5C
-    uchar fullTechTreeValue; // 0x5D
-    ResourceLevel resourceLevelValue; // 0x60
-    Age startingAgeValue; // 0x64
-    uchar startingUnitsValue; // 0x68
-    uchar deathMatchValue; // 0x69
-    uchar popLimitValue; // 0x6A
-};
-
-// ----------------------------------------------------------------
 // TRIBE_History_Entry
 // Size: 0x1
 struct TRIBE_History_Entry {
@@ -3131,16 +2274,6 @@ struct Tech_Tree {
     long help_string_id; // 0x30
     long help_page_id; // 0x34
     long hotkey_id; // 0x38
-};
-
-// ----------------------------------------------------------------
-// TextNode
-// Size: 0x10
-struct TextNode {
-    char * text; // 0x0
-    char * text2; // 0x4
-    long id; // 0x8
-    TextNode * next_node; // 0xC
 };
 
 // ----------------------------------------------------------------
@@ -3295,41 +2428,6 @@ struct Zone_Queue {
     long x; // 0x0
     long y; // 0x4
     Zone_Queue * next; // 0x8
-};
-
-// ----------------------------------------------------------------
-// combined_options
-// Size: 0x114
-struct combined_options {
-    RGE_Game_Options rge_options; // 0x0
-    TRIBE_Game_Options tribe_options; // 0xA8
-};
-
-// ----------------------------------------------------------------
-// waveformat_tag
-// Size: 0xE
-struct waveformat_tag {
-    ushort wFormatTag; // 0x0
-    ushort nChannels; // 0x2
-    ulong nSamplesPerSec; // 0x4
-    ulong nAvgBytesPerSec; // 0x8
-    ushort nBlockAlign; // 0xC
-};
-
-// ----------------------------------------------------------------
-// pcmwaveformat_tag
-// Size: 0x10
-struct pcmwaveformat_tag {
-    waveformat_tag wf; // 0x0
-    ushort wBitsPerSample; // 0xE
-};
-
-// ----------------------------------------------------------------
-// rdlg_list_info
-// Size: 0x66
-struct rdlg_list_info {
-    char text[100]; // 0x0
-    short id; // 0x64
 };
 
 // ----------------------------------------------------------------

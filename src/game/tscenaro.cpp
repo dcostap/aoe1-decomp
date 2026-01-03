@@ -6,61 +6,45 @@ TRIBE_Scenario_Header::TRIBE_Scenario_Header(T_Scenario* param_1) {
 //                              undefined __thiscall TRIBE_Scenario_Header(TRIBE_Scenario_Header * t
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Scenario    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     0052aa07(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0052aa22(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0052aa58(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0052aa10(W)
-//                               ??0TRIBE_Scenario_Header@@QAE@H@Z                            XREF[1]:     new_scenario_header:00523547(c)
+//              T_Scenario *      Stack[0x4]:4   param_1                   XREF[1]:     0052a9a8(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0052a9ba(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0052a9d7(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0052a9af(W)
+//                               ??0TRIBE_Scenario_Header@@QAE@PAVT_Scenario@@@Z              XREF[1]:     new_scenario_header:005235a7(c)
 //                               TRIBE_Scenario_Header::TRIBE_Scenario_Header
-//                              tscenaro.cpp:56 (41)
-//         0052a9f0     PUSH       -0x1
-//         0052a9f2     PUSH       FUN_00561868
-//         0052a9f7     MOV        EAX,FS:[0x0]
-//         0052a9fd     PUSH       EAX
-//         0052a9fe     MOV        dword ptr FS:[0x0],ESP
-//         0052aa05     PUSH       this
-//         0052aa06     PUSH       EBX
-//         0052aa07     MOV        EBX,dword ptr [ESP + param_1]
-//         0052aa0b     PUSH       ESI
-//         0052aa0c     PUSH       EDI
-//         0052aa0d     MOV        ESI,this
-//         0052aa0f     PUSH       EBX
-//         0052aa10     MOV        dword ptr [ESP + local_10],ESI
-//         0052aa14     CALL       RGE_Scenario_Header::RGE_Scenario_Header         undefined RGE_Scenario_Header(RGE_Scenario_He
-//                              tscenaro.cpp:61 (39)
-//         0052aa19     MOV        this,dword ptr [ESI + 0x4]
-//         0052aa1c     LEA        EAX,[ESI + 0x14]
-//         0052aa1f     LEA        EDI,[ESI + 0x18]
-//         0052aa22     MOV        dword ptr [ESP + local_4],0x0
-//         0052aa2a     TEST       this,this
-//         0052aa2c     MOV        dword ptr [ESI],TRIBE_Scenario_Header::`vftable' = 0052aa70
-//         0052aa32     MOV        dword ptr [EAX],0x0
-//         0052aa38     MOV        dword ptr [EDI],0x0
-//         0052aa3e     JNZ        LAB_0052aa58
-//                              tscenaro.cpp:64 (12)
-//         0052aa40     PUSH       0x4
-//         0052aa42     PUSH       EAX
-//         0052aa43     PUSH       EBX
-//         0052aa44     CALL       rge_read_uncompressed                            void rge_read_uncompressed(int param_1, void
-//         0052aa49     ADD        ESP,0xc
-//                              tscenaro.cpp:65 (12)
-//         0052aa4c     PUSH       0x4
-//         0052aa4e     PUSH       EDI
-//         0052aa4f     PUSH       EBX
-//         0052aa50     CALL       rge_read_uncompressed                            void rge_read_uncompressed(int param_1, void
-//         0052aa55     ADD        ESP,0xc
-//                               LAB_0052aa58                                                 XREF[1]:     0052aa3e(j)
-//                              tscenaro.cpp:66 (22)
-//         0052aa58     MOV        this,dword ptr [ESP + local_c]
-//         0052aa5c     MOV        EAX,ESI
-//         0052aa5e     POP        EDI
-//         0052aa5f     POP        ESI
-//         0052aa60     MOV        dword ptr FS:[0x0],this
-//         0052aa67     POP        EBX
-//         0052aa68     ADD        ESP,0x10
-//         0052aa6b     RET        0x4
-//         0052aa6e     ??         90h
-//         0052aa6f     NOP
+//                              tscenaro.cpp:48 (40)
+//         0052a990     PUSH       -0x1
+//         0052a992     PUSH       FUN_00561848
+//         0052a997     MOV        EAX,FS:[0x0]
+//         0052a99d     PUSH       EAX
+//         0052a99e     MOV        dword ptr FS:[0x0],ESP
+//         0052a9a5     PUSH       this
+//         0052a9a6     PUSH       ESI
+//         0052a9a7     PUSH       EDI
+//         0052a9a8     MOV        EDI,dword ptr [ESP + param_1]
+//         0052a9ac     MOV        ESI,this
+//         0052a9ae     PUSH       EDI
+//         0052a9af     MOV        dword ptr [ESP + local_10],ESI
+//         0052a9b3     CALL       RGE_Scenario_Header::RGE_Scenario_Header         undefined RGE_Scenario_Header(RGE_Scenario_He
+//                              tscenaro.cpp:49 (21)
+//         0052a9b8     MOV        this,EDI
+//         0052a9ba     MOV        dword ptr [ESP + local_4],0x0
+//         0052a9c2     MOV        dword ptr [ESI],TRIBE_Scenario_Header::`vftable' = 0052aa70
+//         0052a9c8     CALL       T_Scenario::any_sp_victory                       int any_sp_victory(T_Scenario * this)
+//                              tscenaro.cpp:50 (10)
+//         0052a9cd     MOV        this,EDI
+//         0052a9cf     MOV        dword ptr [ESI + 0x14],EAX
+//         0052a9d2     CALL       RGE_Scenario::active_player_count                int active_player_count(RGE_Scenario * this)
+//                              tscenaro.cpp:51 (24)
+//         0052a9d7     MOV        this,dword ptr [ESP + local_c]
+//         0052a9db     MOV        dword ptr [ESI + 0x18],EAX
+//         0052a9de     MOV        EAX,ESI
+//         0052a9e0     POP        EDI
+//         0052a9e1     MOV        dword ptr FS:[0x0],this
+//         0052a9e8     POP        ESI
+//         0052a9e9     ADD        ESP,0x10
+//         0052a9ec     RET        0x4
+//         0052a9ef     ??         90h
 }
 
 TRIBE_Scenario_Header::TRIBE_Scenario_Header(int param_1) {
@@ -201,354 +185,63 @@ void TRIBE_Scenario_Header::save(int param_1) {
 
 T_Scenario::T_Scenario(RGE_Game_World* param_1) {
     /* TODO: Stub */
-//                              undefined __thiscall T_Scenario(T_Scenario * this, int param_1, RGE_
+//                              undefined __thiscall T_Scenario(T_Scenario * this, RGE_Game_World *
 //              undefined         <UNASSIGNED>   <RETURN>
 //              T_Scenario *      ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[4]:     0052abad(R), 0052ac7b(W), 0052acc8(R), 0052acd6(W)
-//              RGE_Game_World    Stack[0x8]:4   param_2                   XREF[5]:     0052aba6(R), 0052abcd(W), 0052acef(*), 0052add7(*),
-//                                                                                     0052aeec(*)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0052abc3(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0052af09(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0052abb6(W)
-//                               ??0T_Scenario@@QAE@HPAVRGE_Game_World@@@Z                    XREF[2]:     new_scenario_info:0052360c(c),
-//                               T_Scenario::T_Scenario                                                    scenario_init:0052e5d2(c)
-//                              tscenaro.cpp:114 (49)
-//         0052ab90     PUSH       -0x1
-//         0052ab92     PUSH       FUN_005618a8
-//         0052ab97     MOV        EAX,FS:[0x0]
-//         0052ab9d     PUSH       EAX
-//         0052ab9e     MOV        dword ptr FS:[0x0],ESP
-//         0052aba5     PUSH       this
-//         0052aba6     MOV        EAX,dword ptr [ESP + param_2]
-//         0052abaa     PUSH       EBX
-//         0052abab     PUSH       EBP
-//         0052abac     PUSH       ESI
-//         0052abad     MOV        ESI,dword ptr [ESP + param_1]
-//         0052abb1     PUSH       EDI
-//         0052abb2     MOV        EDI,this
-//         0052abb4     PUSH       EAX
-//         0052abb5     PUSH       ESI
-//         0052abb6     MOV        dword ptr [ESP + local_10],EDI
-//         0052abba     CALL       RGE_Scenario::RGE_Scenario                       undefined RGE_Scenario(RGE_Scenario * this, i
-//         0052abbf     XOR        EBX,EBX
-//                              tscenaro.cpp:119 (21)
-//         0052abc1     MOV        this,EDI
-//         0052abc3     MOV        dword ptr [ESP + local_4],EBX
-//         0052abc7     MOV        dword ptr [EDI],T_Scenario::`vftable'            = 0052c080
-//         0052abcd     MOV        dword ptr [ESP + param_2],EBX
-//         0052abd1     CALL       T_Scenario::InitializeVictoryValues              void InitializeVictoryValues(T_Scenario * this)
-//                              tscenaro.cpp:120 (7)
-//         0052abd6     MOV        this,EDI
-//         0052abd8     CALL       T_Scenario::InitializeFriendlinessValues         void InitializeFriendlinessValues(T_Scenario
-//                              tscenaro.cpp:121 (7)
-//         0052abdd     MOV        this,EDI
-//         0052abdf     CALL       T_Scenario::ClearDisabledTechnologies            void ClearDisabledTechnologies(T_Scenario * t
-//                              tscenaro.cpp:129 (57)
-//         0052abe4     FLD        float ptr [EDI + 0x1888]
-//         0052abea     FCOMP      float ptr [DAT_00577318]                         = D7h
-//         0052abf0     MOV        dword ptr [EDI + 0x5140],EBX
-//         0052abf6     MOV        dword ptr [EDI + 0x5144],0x384
-//         0052ac00     MOV        dword ptr [EDI + 0x5148],0x2328
-//         0052ac0a     MOV        dword ptr [EDI + 0x4be8],EBX
-//         0052ac10     MOV        dword ptr [EDI + 0x4bf0],EBX
-//         0052ac16     FNSTSW     AX
-//         0052ac18     TEST       AH,0x41
-//         0052ac1b     JZ         LAB_0052ac3d
-//                              tscenaro.cpp:207 (32)
-//         0052ac1d     LEA        EBX,[EDI + 0xd]
-//         0052ac20     MOV        EBP,0x10
-//                               LAB_0052ac25                                                 XREF[1]:     0052ac3b(j)
-//         0052ac25     PUSH       0x100
-//         0052ac2a     PUSH       EBX
-//         0052ac2b     PUSH       ESI
-//         0052ac2c     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0052ac31     ADD        ESP,0xc
-//         0052ac34     ADD        EBX,0x100
-//         0052ac3a     DEC        EBP
-//         0052ac3b     JNZ        LAB_0052ac25
-//                               LAB_0052ac3d                                                 XREF[1]:     0052ac1b(j)
-//                              tscenaro.cpp:133 (19)
-//         0052ac3d     FLD        float ptr [EDI + 0x1888]
-//         0052ac43     FCOMP      float ptr [DAT_00577318]                         = D7h
-//         0052ac49     FNSTSW     AX
-//         0052ac4b     TEST       AH,0x41
-//         0052ac4e     JNZ        LAB_0052ac6f
-//                              tscenaro.cpp:207 (29)
-//         0052ac50     LEA        EBX,[EDI + 0x1990]
-//         0052ac56     MOV        EBP,0x10
-//                               LAB_0052ac5b                                                 XREF[1]:     0052ac6b(j)
-//         0052ac5b     PUSH       0x10
-//         0052ac5d     PUSH       EBX
-//         0052ac5e     PUSH       ESI
-//         0052ac5f     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0052ac64     ADD        ESP,0xc
-//         0052ac67     ADD        EBX,0x10
-//         0052ac6a     DEC        EBP
-//         0052ac6b     JNZ        LAB_0052ac5b
-//                              tscenaro.cpp:136 (2)
-//         0052ac6d     JMP        LAB_0052acdc
-//                               LAB_0052ac6f                                                 XREF[1]:     0052ac4e(j)
-//                              tscenaro.cpp:207 (109)
-//         0052ac6f     LEA        EBX,[EDI + 0x18cc]
-//         0052ac75     LEA        EBP,[EDI + 0x1990]
-//         0052ac7b     MOV        dword ptr [ESP + param_1],0x10
-//                               LAB_0052ac83                                                 XREF[1]:     0052acda(j)
-//         0052ac83     LEA        this,[EBX + 0x80]
-//         0052ac89     PUSH       0x4
-//         0052ac8b     PUSH       this
-//         0052ac8c     PUSH       ESI
-//         0052ac8d     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0052ac92     ADD        ESP,0xc
-//         0052ac95     PUSH       0x10
-//         0052ac97     PUSH       EBP
-//         0052ac98     PUSH       ESI
-//         0052ac99     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0052ac9e     ADD        ESP,0xc
-//         0052aca1     PUSH       0x4
-//         0052aca3     PUSH       EBX
-//         0052aca4     PUSH       ESI
-//         0052aca5     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0052acaa     ADD        ESP,0xc
-//         0052acad     LEA        EDX,[EBX + 0x40]
-//         0052acb0     PUSH       0x4
-//         0052acb2     PUSH       EDX
-//         0052acb3     PUSH       ESI
-//         0052acb4     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0052acb9     ADD        ESP,0xc
-//         0052acbc     LEA        EAX,[EBX + -0x40]
-//         0052acbf     PUSH       0x4
-//         0052acc1     PUSH       EAX
-//         0052acc2     PUSH       ESI
-//         0052acc3     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0052acc8     MOV        EAX,dword ptr [ESP + param_1]
-//         0052accc     ADD        ESP,0xc
-//         0052accf     ADD        EBP,0x10
-//         0052acd2     ADD        EBX,0x4
-//         0052acd5     DEC        EAX
-//         0052acd6     MOV        dword ptr [ESP + param_1],EAX
-//         0052acda     JNZ        LAB_0052ac83
-//                               LAB_0052acdc                                                 XREF[1]:     0052ac6d(j)
-//                              tscenaro.cpp:146 (19)
-//         0052acdc     FLD        float ptr [EDI + 0x1888]
-//         0052ace2     FCOMP      float ptr [DAT_0057731c]                         = 5Ch    \
-//         0052ace8     FNSTSW     AX
-//         0052acea     TEST       AH,0x41
-//         0052aced     JNZ        LAB_0052acff
-//                              tscenaro.cpp:147 (16)
-//         0052acef     LEA        this=>param_2,[ESP + 0x28]
-//         0052acf3     PUSH       0x4
-//         0052acf5     PUSH       this
-//         0052acf6     PUSH       ESI
-//         0052acf7     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0052acfc     ADD        ESP,0xc
-//                               LAB_0052acff                                                 XREF[1]:     0052aced(j)
-//                              tscenaro.cpp:149 (18)
-//         0052acff     LEA        EAX,[EDI + 0x1a90]
-//         0052ad05     PUSH       0x18
-//         0052ad07     PUSH       EAX
-//         0052ad08     PUSH       ESI
-//         0052ad09     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0052ad0e     ADD        ESP,0xc
-//                              tscenaro.cpp:150 (15)
-//         0052ad11     LEA        EAX,[EDI + 0x4be8]
-//         0052ad17     PUSH       0x4
-//         0052ad19     PUSH       EAX
-//         0052ad1a     PUSH       ESI
-//         0052ad1b     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              tscenaro.cpp:152 (22)
-//         0052ad20     FLD        float ptr [EDI + 0x1888]
-//         0052ad26     FCOMP      float ptr [DAT_00577318]                         = D7h
-//         0052ad2c     ADD        ESP,0xc
-//         0052ad2f     FNSTSW     AX
-//         0052ad31     TEST       AH,0x1
-//         0052ad34     JNZ        LAB_0052ad6e
-//                              tscenaro.cpp:154 (18)
-//         0052ad36     LEA        EAX,[EDI + 0x5140]
-//         0052ad3c     PUSH       0x4
-//         0052ad3e     PUSH       EAX
-//         0052ad3f     PUSH       ESI
-//         0052ad40     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0052ad45     ADD        ESP,0xc
-//                              tscenaro.cpp:155 (18)
-//         0052ad48     LEA        EAX,[EDI + 0x5144]
-//         0052ad4e     PUSH       0x4
-//         0052ad50     PUSH       EAX
-//         0052ad51     PUSH       ESI
-//         0052ad52     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0052ad57     ADD        ESP,0xc
-//                              tscenaro.cpp:156 (18)
-//         0052ad5a     LEA        EAX,[EDI + 0x5148]
-//         0052ad60     PUSH       0x4
-//         0052ad62     PUSH       EAX
-//         0052ad63     PUSH       ESI
-//         0052ad64     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0052ad69     ADD        ESP,0xc
-//                              tscenaro.cpp:158 (2)
-//         0052ad6c     JMP        LAB_0052ad8c
-//                               LAB_0052ad6e                                                 XREF[1]:     0052ad34(j)
-//                              tscenaro.cpp:160 (10)
-//         0052ad6e     MOV        dword ptr [EDI + 0x5140],0x4
-//                              tscenaro.cpp:161 (10)
-//         0052ad78     MOV        dword ptr [EDI + 0x5144],0x384
-//                              tscenaro.cpp:162 (10)
-//         0052ad82     MOV        dword ptr [EDI + 0x5148],0x2328
-//                               LAB_0052ad8c                                                 XREF[1]:     0052ad6c(j)
-//                              tscenaro.cpp:166 (32)
-//         0052ad8c     LEA        EDX,[EDI + 0x47a8]
-//         0052ad92     PUSH       0x400
-//         0052ad97     PUSH       EDX
-//         0052ad98     PUSH       ESI
-//         0052ad99     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0052ad9e     ADD        ESP,0xc
-//         0052ada1     LEA        EBX,[EDI + 0x1aa8]
-//         0052ada7     MOV        EBP,0x10
-//                               LAB_0052adac                                                 XREF[1]:     0052adc2(j)
-//                              tscenaro.cpp:168 (24)
-//         0052adac     PUSH       0x2d0
-//         0052adb1     PUSH       EBX
-//         0052adb2     PUSH       ESI
-//         0052adb3     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0052adb8     ADD        ESP,0xc
-//         0052adbb     ADD        EBX,0x2d0
-//         0052adc1     DEC        EBP
-//         0052adc2     JNZ        LAB_0052adac
-//                              tscenaro.cpp:170 (19)
-//         0052adc4     FLD        float ptr [EDI + 0x1888]
-//         0052adca     FCOMP      float ptr [DAT_0057731c]                         = 5Ch    \
-//         0052add0     FNSTSW     AX
-//         0052add2     TEST       AH,0x41
-//         0052add5     JNZ        LAB_0052ade7
-//                              tscenaro.cpp:171 (16)
-//         0052add7     LEA        EAX=>param_2,[ESP + 0x28]
-//         0052addb     PUSH       0x4
-//         0052addd     PUSH       EAX
-//         0052adde     PUSH       ESI
-//         0052addf     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0052ade4     ADD        ESP,0xc
-//                               LAB_0052ade7                                                 XREF[1]:     0052add5(j)
-//                              tscenaro.cpp:172 (12)
-//         0052ade7     CMP        dword ptr [EDI + 0x1888],0x3f8147ae
-//         0052adf1     JNZ        LAB_0052ae0d
-//                              tscenaro.cpp:175 (6)
-//         0052adf3     LEA        EBP,[EDI + 0x4ba8]
-//                              tscenaro.cpp:207 (20)
-//         0052adf9     MOV        EBX,0x10
-//                               LAB_0052adfe                                                 XREF[1]:     0052ae0b(j)
-//         0052adfe     PUSH       0x40
-//         0052ae00     PUSH       EBP
-//         0052ae01     PUSH       ESI
-//         0052ae02     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0052ae07     ADD        ESP,0xc
-//         0052ae0a     DEC        EBX
-//         0052ae0b     JNZ        LAB_0052adfe
-//                               LAB_0052ae0d                                                 XREF[1]:     0052adf1(j)
-//                              tscenaro.cpp:177 (19)
-//         0052ae0d     FLD        float ptr [EDI + 0x1888]
-//         0052ae13     FCOMP      float ptr [DAT_0057731c]                         = 5Ch    \
-//         0052ae19     FNSTSW     AX
-//         0052ae1b     TEST       AH,0x1
-//         0052ae1e     JNZ        LAB_0052ae32
-//                              tscenaro.cpp:179 (18)
-//         0052ae20     LEA        this,[EDI + 0x4ba8]
-//         0052ae26     PUSH       0x40
-//         0052ae28     PUSH       this
-//         0052ae29     PUSH       ESI
-//         0052ae2a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0052ae2f     ADD        ESP,0xc
-//                               LAB_0052ae32                                                 XREF[1]:     0052ae1e(j)
-//                              tscenaro.cpp:182 (19)
-//         0052ae32     FLD        float ptr [EDI + 0x1888]
-//         0052ae38     FCOMP      float ptr [DAT_00577320]                         = 0Ah
-//         0052ae3e     FNSTSW     AX
-//         0052ae40     TEST       AH,0x41
-//         0052ae43     JNZ        LAB_0052ae5a
-//                              tscenaro.cpp:184 (21)
-//         0052ae45     LEA        EDX,[EDI + 0x4bf4]
-//         0052ae4b     PUSH       0x500
-//         0052ae50     PUSH       EDX
-//         0052ae51     PUSH       ESI
-//         0052ae52     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0052ae57     ADD        ESP,0xc
-//                               LAB_0052ae5a                                                 XREF[1]:     0052ae43(j)
-//                              tscenaro.cpp:187 (19)
-//         0052ae5a     FLD        float ptr [EDI + 0x1888]
-//         0052ae60     FCOMP      float ptr [DAT_00577324]                         = B8h
-//         0052ae66     FNSTSW     AX
-//         0052ae68     TEST       AH,0x41
-//         0052ae6b     JNZ        LAB_0052aeb4
-//                              tscenaro.cpp:189 (19)
-//         0052ae6d     FLD        float ptr [EDI + 0x1888]
-//         0052ae73     FCOMP      float ptr [DAT_00577328]                         = 29h    )
-//         0052ae79     FNSTSW     AX
-//         0052ae7b     TEST       AH,0x1
-//         0052ae7e     JZ         LAB_0052aea2
-//                              tscenaro.cpp:191 (18)
-//         0052ae80     LEA        EAX,[EDI + 0x50f4]
-//         0052ae86     PUSH       0x4
-//         0052ae88     PUSH       EAX
-//         0052ae89     PUSH       ESI
-//         0052ae8a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0052ae8f     ADD        ESP,0xc
-//                              tscenaro.cpp:192 (8)
-//         0052ae92     XOR        EAX,EAX
-//         0052ae94     MOV        dword ptr [EDI + 0x50f8],EAX
-//                              tscenaro.cpp:193 (6)
-//         0052ae9a     MOV        dword ptr [EDI + 0x50fc],EAX
-//                              tscenaro.cpp:195 (2)
-//         0052aea0     JMP        LAB_0052aeb4
-//                               LAB_0052aea2                                                 XREF[1]:     0052ae7e(j)
-//                              tscenaro.cpp:196 (18)
-//         0052aea2     LEA        this,[EDI + 0x50f4]
-//         0052aea8     PUSH       0xc
-//         0052aeaa     PUSH       this
-//         0052aeab     PUSH       ESI
-//         0052aeac     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0052aeb1     ADD        ESP,0xc
-//                               LAB_0052aeb4                                                 XREF[2]:     0052ae6b(j), 0052aea0(j)
-//                              tscenaro.cpp:199 (19)
-//         0052aeb4     FLD        float ptr [EDI + 0x1888]
-//         0052aeba     FCOMP      float ptr [DAT_0057732c]                         = 66h    f
-//         0052aec0     FNSTSW     AX
-//         0052aec2     TEST       AH,0x41
-//         0052aec5     JNZ        LAB_0052aed9
-//                              tscenaro.cpp:200 (18)
-//         0052aec7     LEA        EDX,[EDI + 0x5100]
-//         0052aecd     PUSH       0x40
-//         0052aecf     PUSH       EDX
-//         0052aed0     PUSH       ESI
-//         0052aed1     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0052aed6     ADD        ESP,0xc
-//                               LAB_0052aed9                                                 XREF[1]:     0052aec5(j)
-//                              tscenaro.cpp:202 (19)
-//         0052aed9     FLD        float ptr [EDI + 0x1888]
-//         0052aedf     FCOMP      float ptr [DAT_0057731c]                         = 5Ch    \
-//         0052aee5     FNSTSW     AX
-//         0052aee7     TEST       AH,0x41
-//         0052aeea     JNZ        LAB_0052aefc
-//                              tscenaro.cpp:203 (16)
-//         0052aeec     LEA        EAX=>param_2,[ESP + 0x28]
-//         0052aef0     PUSH       0x4
-//         0052aef2     PUSH       EAX
-//         0052aef3     PUSH       ESI
-//         0052aef4     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0052aef9     ADD        ESP,0xc
-//                               LAB_0052aefc                                                 XREF[1]:     0052aeea(j)
-//                              tscenaro.cpp:206 (2)
-//         0052aefc     XOR        this,this
-//                              tscenaro.cpp:207 (32)
-//         0052aefe     MOV        EAX,EDI
-//         0052af00     MOV        this,byte ptr [EDI + 0xc]
-//         0052af03     MOV        dword ptr [EDI + 0x1a90],this
-//         0052af09     MOV        this,dword ptr [ESP + local_c]
-//         0052af0d     POP        EDI
-//         0052af0e     POP        ESI
-//         0052af0f     POP        EBP
-//         0052af10     MOV        dword ptr FS:[0x0],this
-//         0052af17     POP        EBX
-//         0052af18     ADD        ESP,0x10
-//         0052af1b     RET        0x8
-//         0052af1e     ??         90h
-//         0052af1f     NOP
+//              RGE_Game_World    Stack[0x4]:4   param_1                   XREF[1]:     0052aad6(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0052aaec(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0052ab4a(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0052aadf(W)
+//                               ??0T_Scenario@@QAE@PAVRGE_Game_World@@@Z                     XREF[1]:     scenario_init:0052e62d(c)
+//                               T_Scenario::T_Scenario
+//                              tscenaro.cpp:93 (42)
+//         0052aac0     PUSH       -0x1
+//         0052aac2     PUSH       FUN_00561888
+//         0052aac7     MOV        EAX,FS:[0x0]
+//         0052aacd     PUSH       EAX
+//         0052aace     MOV        dword ptr FS:[0x0],ESP
+//         0052aad5     PUSH       this
+//         0052aad6     MOV        EAX,dword ptr [ESP + param_1]
+//         0052aada     PUSH       ESI
+//         0052aadb     PUSH       EDI
+//         0052aadc     MOV        ESI,this
+//         0052aade     PUSH       EAX
+//         0052aadf     MOV        dword ptr [ESP + local_10],ESI
+//         0052aae3     CALL       RGE_Scenario::RGE_Scenario                       undefined RGE_Scenario(RGE_Scenario * this, R
+//         0052aae8     XOR        EDI,EDI
+//                              tscenaro.cpp:97 (17)
+//         0052aaea     MOV        this,ESI
+//         0052aaec     MOV        dword ptr [ESP + local_4],EDI
+//         0052aaf0     MOV        dword ptr [ESI],T_Scenario::`vftable'            = 0052c080
+//         0052aaf6     CALL       T_Scenario::InitializePlayerValues               void InitializePlayerValues(T_Scenario * this)
+//                              tscenaro.cpp:98 (7)
+//         0052aafb     MOV        this,ESI
+//         0052aafd     CALL       T_Scenario::InitializeVictoryValues              void InitializeVictoryValues(T_Scenario * this)
+//                              tscenaro.cpp:99 (7)
+//         0052ab02     MOV        this,ESI
+//         0052ab04     CALL       T_Scenario::InitializeFriendlinessValues         void InitializeFriendlinessValues(T_Scenario
+//                              tscenaro.cpp:106 (58)
+//         0052ab09     XOR        this,this
+//         0052ab0b     MOV        dword ptr [ESI + 0x5140],EDI
+//         0052ab11     MOV        dword ptr [ESI + 0x5144],0x384
+//         0052ab1b     MOV        dword ptr [ESI + 0x5148],0x2328
+//         0052ab25     MOV        dword ptr [ESI + 0x4be8],EDI
+//         0052ab2b     MOV        dword ptr [ESI + 0x4bf0],EDI
+//         0052ab31     MOV        dword ptr [ESI + 0x50f4],this
+//         0052ab37     MOV        dword ptr [ESI + 0x50f8],this
+//         0052ab3d     MOV        dword ptr [ESI + 0x50fc],this
+//                              tscenaro.cpp:107 (7)
+//         0052ab43     MOV        this,ESI
+//         0052ab45     CALL       T_Scenario::ClearDisabledTechnologies            void ClearDisabledTechnologies(T_Scenario * t
+//                              tscenaro.cpp:108 (21)
+//         0052ab4a     MOV        this,dword ptr [ESP + local_c]
+//         0052ab4e     MOV        EAX,ESI
+//         0052ab50     POP        EDI
+//         0052ab51     MOV        dword ptr FS:[0x0],this
+//         0052ab58     POP        ESI
+//         0052ab59     ADD        ESP,0x10
+//         0052ab5c     RET        0x4
+//         0052ab5f     ??         90h
 }
 
 T_Scenario::T_Scenario(int param_1, RGE_Game_World* param_2) {

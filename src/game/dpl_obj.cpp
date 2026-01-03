@@ -6,126 +6,162 @@ RGE_Doppleganger_Object::RGE_Doppleganger_Object(RGE_Master_Doppleganger_Object*
 //                              undefined __thiscall RGE_Doppleganger_Object(RGE_Doppleganger_Object
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Dopplegang    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[5]:     00441a90(R), 00441b04(*), 00441b11(R), 00441b4c(*),
-//                                                                                     00441b59(R)
-//              RGE_Game_World    Stack[0x8]:4   param_2                   XREF[2]:     00441a86(R), 00441af7(R)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     00441aa2(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     00441aae(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00441b97(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     00441a99(W)
-//                               ??0RGE_Doppleganger_Object@@QAE@HPAVRGE_Game_World@@H@Z      XREF[1]:     load:00463a22(c)
+//              RGE_Master_Dop    Stack[0x4]:4   param_1                   XREF[2]:     004418bb(R), 0044193d(R)
+//              RGE_Player *      Stack[0x8]:4   param_2                   XREF[2]:     004418ce(R), 00441939(R)
+//              float             Stack[0xc]:4   param_3                   XREF[2]:     004418b6(R), 00441935(R)
+//              float             Stack[0x10]:4  param_4                   XREF[1]:     004418c0(R)
+//              float             Stack[0x14]:4  param_5                   XREF[1]:     004418c6(R)
+//              int               Stack[0x18]:4  param_6                   XREF[1]:     004418e3(R)
+//              RGE_Static_Obj    Stack[0x1c]:4  param_7                   XREF[1]:     0044194d(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     004418e7(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00441a23(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004418da(W)
+//                               ??0RGE_Doppleganger_Object@@QAE@PAVRGE_Master_Doppleganger_  XREF[1]:     make_new_obj:00451377(c)
 //                               RGE_Doppleganger_Object::RGE_Doppleganger_Object
-//                              dpl_obj.cpp:121 (50)
-//         00441a70     PUSH       -0x1
-//         00441a72     PUSH       FUN_0055d2b8
-//         00441a77     MOV        EAX,FS:[0x0]
-//         00441a7d     PUSH       EAX
-//         00441a7e     MOV        dword ptr FS:[0x0],ESP
-//         00441a85     PUSH       this
-//         00441a86     MOV        EAX,dword ptr [ESP + param_2]
-//         00441a8a     PUSH       EBX
-//         00441a8b     PUSH       EBP
-//         00441a8c     PUSH       ESI
-//         00441a8d     XOR        EBX,EBX
-//         00441a8f     PUSH       EDI
-//         00441a90     MOV        EDI,dword ptr [ESP + param_1]
-//         00441a94     PUSH       EBX
-//         00441a95     MOV        ESI,this
-//         00441a97     PUSH       EAX
-//         00441a98     PUSH       EDI
-//         00441a99     MOV        dword ptr [ESP + local_10],ESI
-//         00441a9d     CALL       RGE_Animated_Object::RGE_Animated_Object         undefined RGE_Animated_Object(RGE_Animated_Ob
-//                              dpl_obj.cpp:136 (85)
-//         00441aa2     MOV        EAX,dword ptr [ESP + param_3]
-//         00441aa6     LEA        EBP,[ESI + 0x98]
-//         00441aac     CMP        EAX,EBX
-//         00441aae     MOV        dword ptr [ESP + local_4],EBX
-//         00441ab2     MOV        dword ptr [ESI],RGE_Doppleganger_Object::`vfta   = 00441a40
-//         00441ab8     MOV        dword ptr [ESI + 0x8c],EBX
-//         00441abe     MOV        dword ptr [ESI + 0x90],EBX
-//         00441ac4     MOV        dword ptr [ESI + 0x94],EBX
-//         00441aca     MOV        dword ptr [EBP],EBX
-//         00441acd     MOV        dword ptr [ESI + 0x9c],EBX
-//         00441ad3     MOV        dword ptr [ESI + 0xa0],EBX
-//         00441ad9     MOV        dword ptr [ESI + 0xa4],EBX
-//         00441adf     MOV        byte ptr [ESI + 0xa8],BL
-//         00441ae5     MOV        byte ptr [ESI + 0xa9],BL
-//         00441aeb     MOV        dword ptr [ESI + 0xac],0xffffffff
-//         00441af5     JZ         LAB_00441b04
-//                              dpl_obj.cpp:137 (13)
-//         00441af7     MOV        this,dword ptr [ESP + param_2]
-//         00441afb     PUSH       this
-//         00441afc     PUSH       EDI
-//         00441afd     MOV        this,ESI
-//         00441aff     CALL       RGE_Doppleganger_Object::setup                   int setup(RGE_Doppleganger_Object * this, int
-//                               LAB_00441b04                                                 XREF[1]:     00441af5(j)
-//                              dpl_obj.cpp:139 (13)
-//         00441b04     LEA        EDX=>param_1,[ESP + 0x24]
-//         00441b08     PUSH       0x4
-//         00441b0a     PUSH       EDX
-//         00441b0b     PUSH       EDI
-//         00441b0c     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              dpl_obj.cpp:140 (13)
-//         00441b11     MOV        EAX,dword ptr [ESP + param_1]
-//         00441b15     ADD        ESP,0xc
-//         00441b18     MOV        dword ptr [ESI + 0x8c],EAX
-//                              dpl_obj.cpp:146 (28)
-//         00441b1e     LEA        EAX,[ESI + 0xa8]
-//         00441b24     PUSH       0x1
-//         00441b26     PUSH       EAX
-//         00441b27     PUSH       EDI
-//         00441b28     MOV        dword ptr [ESI + 0xac],0xffffffff
-//         00441b32     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00441b37     ADD        ESP,0xc
-//                              dpl_obj.cpp:147 (18)
-//         00441b3a     LEA        EAX,[ESI + 0xa9]
-//         00441b40     PUSH       0x4
-//         00441b42     PUSH       EAX
-//         00441b43     PUSH       EDI
-//         00441b44     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00441b49     ADD        ESP,0xc
-//                              dpl_obj.cpp:150 (13)
-//         00441b4c     LEA        this=>param_1,[ESP + 0x24]
-//         00441b50     PUSH       0x4
-//         00441b52     PUSH       this
-//         00441b53     PUSH       EDI
-//         00441b54     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              dpl_obj.cpp:151 (13)
-//         00441b59     MOV        EDX,dword ptr [ESP + param_1]
-//         00441b5d     ADD        ESP,0xc
-//         00441b60     MOV        dword ptr [ESI + 0x94],EDX
-//                              dpl_obj.cpp:153 (9)
-//         00441b66     PUSH       0x4
-//         00441b68     PUSH       EBP
-//         00441b69     PUSH       EDI
-//         00441b6a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              dpl_obj.cpp:156 (22)
-//         00441b6f     FLD        float ptr [save_game_version]                    = 7.23
-//         00441b75     FCOMP      float ptr [DAT_00570418]                         = 85h
-//         00441b7b     ADD        ESP,0xc
-//         00441b7e     FNSTSW     AX
-//         00441b80     TEST       AH,0x1
-//         00441b83     JNZ        LAB_00441b97
-//                              dpl_obj.cpp:158 (18)
-//         00441b85     LEA        EAX,[ESI + 0xa4]
-//         00441b8b     PUSH       0x4
-//         00441b8d     PUSH       EAX
-//         00441b8e     PUSH       EDI
-//         00441b8f     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00441b94     ADD        ESP,0xc
-//                               LAB_00441b97                                                 XREF[1]:     00441b83(j)
-//                              dpl_obj.cpp:162 (23)
-//         00441b97     MOV        this,dword ptr [ESP + local_c]
-//         00441b9b     MOV        EAX,ESI
-//         00441b9d     POP        EDI
-//         00441b9e     POP        ESI
-//         00441b9f     POP        EBP
-//         00441ba0     MOV        dword ptr FS:[0x0],this
-//         00441ba7     POP        EBX
-//         00441ba8     ADD        ESP,0x10
-//         00441bab     RET        0xc
-//         00441bae     ??         90h
-//         00441baf     NOP
+//                              dpl_obj.cpp:52 (67)
+//         004418a0     PUSH       -0x1
+//         004418a2     PUSH       FUN_0055d298
+//         004418a7     MOV        EAX,FS:[0x0]
+//         004418ad     PUSH       EAX
+//         004418ae     MOV        dword ptr FS:[0x0],ESP
+//         004418b5     PUSH       this
+//         004418b6     MOV        EAX,dword ptr [ESP + param_3]
+//         004418ba     PUSH       EBX
+//         004418bb     MOV        EDX,dword ptr [ESP + param_1]
+//         004418bf     PUSH       EBP
+//         004418c0     MOV        EBP,dword ptr [ESP + param_4]
+//         004418c4     PUSH       ESI
+//         004418c5     PUSH       EDI
+//         004418c6     MOV        EDI,dword ptr [ESP + param_5]
+//         004418ca     XOR        EBX,EBX
+//         004418cc     MOV        ESI,this
+//         004418ce     MOV        this,dword ptr [ESP + param_2]
+//         004418d2     PUSH       EBX
+//         004418d3     PUSH       EDI
+//         004418d4     PUSH       EBP
+//         004418d5     PUSH       EAX
+//         004418d6     PUSH       this
+//         004418d7     PUSH       EDX
+//         004418d8     MOV        this,ESI
+//         004418da     MOV        dword ptr [ESP + local_10],ESI
+//         004418de     CALL       RGE_Animated_Object::RGE_Animated_Object         undefined RGE_Animated_Object(RGE_Animated_Ob
+//                              dpl_obj.cpp:65 (82)
+//         004418e3     MOV        EAX,dword ptr [ESP + param_6]
+//         004418e7     MOV        dword ptr [ESP + local_4],EBX
+//         004418eb     CMP        EAX,EBX
+//         004418ed     MOV        dword ptr [ESI],RGE_Doppleganger_Object::`vfta   = 00441a40
+//         004418f3     MOV        dword ptr [ESI + 0x8c],EBX
+//         004418f9     MOV        dword ptr [ESI + 0x90],EBX
+//         004418ff     MOV        dword ptr [ESI + 0x94],EBX
+//         00441905     MOV        dword ptr [ESI + 0x98],EBX
+//         0044190b     MOV        dword ptr [ESI + 0x9c],EBX
+//         00441911     MOV        dword ptr [ESI + 0xa0],EBX
+//         00441917     MOV        dword ptr [ESI + 0xa4],EBX
+//         0044191d     MOV        byte ptr [ESI + 0xa8],BL
+//         00441923     MOV        byte ptr [ESI + 0xa9],BL
+//         00441929     MOV        dword ptr [ESI + 0xac],0xffffffff
+//         00441933     JZ         LAB_0044194d
+//                              dpl_obj.cpp:66 (24)
+//         00441935     MOV        EAX,dword ptr [ESP + param_3]
+//         00441939     MOV        this,dword ptr [ESP + param_2]
+//         0044193d     MOV        EDX,dword ptr [ESP + param_1]
+//         00441941     PUSH       EDI
+//         00441942     PUSH       EBP
+//         00441943     PUSH       EAX
+//         00441944     PUSH       this
+//         00441945     PUSH       EDX
+//         00441946     MOV        this,ESI
+//         00441948     CALL       RGE_Doppleganger_Object::setup                   int setup(RGE_Doppleganger_Object * this, RGE
+//                               LAB_0044194d                                                 XREF[1]:     00441933(j)
+//                              dpl_obj.cpp:69 (4)
+//         0044194d     MOV        EAX,dword ptr [ESP + param_7]
+//                              dpl_obj.cpp:70 (14)
+//         00441951     CMP        EAX,EBX
+//         00441953     MOV        dword ptr [ESI + 0x8c],EAX
+//         00441959     JZ         LAB_004419ff
+//                              dpl_obj.cpp:72 (9)
+//         0044195f     MOV        this,dword ptr [EAX + 0x8]
+//         00441962     MOV        dword ptr [ESI + 0x94],this
+//                              dpl_obj.cpp:73 (13)
+//         00441968     MOV        EDX,dword ptr [EAX + 0xc]
+//         0044196b     MOVSX      this,word ptr [EDX + 0x4a]
+//         0044196f     MOV        dword ptr [ESI + 0x98],this
+//                              dpl_obj.cpp:74 (9)
+//         00441975     MOV        EDX,dword ptr [EAX + 0x4]
+//         00441978     MOV        dword ptr [ESI + 0xac],EDX
+//                              dpl_obj.cpp:76 (6)
+//         0044197e     MOV        this,dword ptr [EAX + 0x10]
+//         00441981     MOV        dword ptr [ESI + 0x10],this
+//                              dpl_obj.cpp:77 (17)
+//         00441984     MOV        this,dword ptr [EAX + 0x18]
+//         00441987     CALL       RGE_Active_Sprite_List::copy_sprite_list         RGE_Active_Sprite_Node * copy_sprite_list(RGE
+//         0044198c     MOV        this,dword ptr [ESI + 0x18]
+//         0044198f     PUSH       EAX
+//         00441990     CALL       RGE_Active_Sprite_List::use_sprite_list          void use_sprite_list(RGE_Active_Sprite_List *
+//                              dpl_obj.cpp:78 (12)
+//         00441995     MOV        EAX,dword ptr [ESI + 0x8c]
+//         0044199b     MOV        DL,byte ptr [EAX + 0x35]
+//         0044199e     MOV        byte ptr [ESI + 0x35],DL
+//                              dpl_obj.cpp:80 (15)
+//         004419a1     MOV        this,dword ptr [EAX + 0xc]
+//         004419a4     MOV        EDX,dword ptr [this->_padding_ + 0x108]
+//         004419aa     MOV        dword ptr [ESI + 0x90],EDX
+//                              dpl_obj.cpp:84 (9)
+//         004419b0     MOV        this,dword ptr [EAX + 0x8]
+//         004419b3     MOV        this,byte ptr [ECX + this+0x8e]
+//                              dpl_obj.cpp:86 (11)
+//         004419b9     CMP        this,0x3
+//         004419bc     MOV        byte ptr [ESI + 0xa8],this
+//         004419c2     JNZ        LAB_004419d5
+//                              dpl_obj.cpp:87 (15)
+//         004419c4     MOV        EDX,dword ptr [EAX + 0x8]
+//         004419c7     MOV        this,byte ptr [EDX + 0x90]
+//         004419cd     MOV        byte ptr [ESI + 0xa9],this
+//                              dpl_obj.cpp:88 (2)
+//         004419d3     JMP        LAB_004419e7
+//                               LAB_004419d5                                                 XREF[1]:     004419c2(j)
+//                              dpl_obj.cpp:89 (18)
+//         004419d5     MOV        EDX,dword ptr [EAX + 0xc]
+//         004419d8     MOV        this,dword ptr [EDX + 0x108]
+//         004419de     MOV        DL,byte ptr [ECX + this+0x25]
+//         004419e1     MOV        byte ptr [ESI + 0xa9],DL
+//                               LAB_004419e7                                                 XREF[1]:     004419d3(j)
+//                              dpl_obj.cpp:92 (6)
+//         004419e7     CMP        byte ptr [EAX + 0x48],0x7
+//         004419eb     JC         LAB_00441a1c
+//                              dpl_obj.cpp:94 (6)
+//         004419ed     MOV        dword ptr [ESI + 0x8c],EBX
+//                              dpl_obj.cpp:95 (10)
+//         004419f3     MOV        dword ptr [ESI + 0xac],0xffffffff
+//                              dpl_obj.cpp:99 (2)
+//         004419fd     JMP        LAB_00441a1c
+//                               LAB_004419ff                                                 XREF[1]:     00441959(j)
+//                              dpl_obj.cpp:109 (29)
+//         004419ff     MOV        this,ESI
+//         00441a01     MOV        dword ptr [ESI + 0xac],0xffffffff
+//         00441a0b     MOV        dword ptr [ESI + 0x94],EBX
+//         00441a11     MOV        dword ptr [ESI + 0x98],EBX
+//         00441a17     CALL       RGE_Static_Object::destroy_obj                   void destroy_obj(RGE_Static_Object * this)
+//                               LAB_00441a1c                                                 XREF[2]:     004419eb(j), 004419fd(j)
+//                              dpl_obj.cpp:113 (7)
+//         00441a1c     MOV        this,ESI
+//         00441a1e     CALL       RGE_Doppleganger_Object::validate                void validate(RGE_Doppleganger_Object * this)
+//                              dpl_obj.cpp:115 (23)
+//         00441a23     MOV        this,dword ptr [ESP + local_c]
+//         00441a27     MOV        EAX,ESI
+//         00441a29     POP        EDI
+//         00441a2a     POP        ESI
+//         00441a2b     POP        EBP
+//         00441a2c     MOV        dword ptr FS:[0x0],this
+//         00441a33     POP        EBX
+//         00441a34     ADD        ESP,0x10
+//         00441a37     RET        0x1c
+//         00441a3a     ??         90h
+//         00441a3b     NOP
+//         00441a3c     NOP
+//         00441a3d     NOP
+//         00441a3e     NOP
+//         00441a3f     NOP
 }
 
 RGE_Doppleganger_Object::RGE_Doppleganger_Object(int param_1, RGE_Game_World* param_2, int param_3) {
@@ -404,54 +440,62 @@ void RGE_Doppleganger_Object::recycle_in_to_game(RGE_Master_Static_Object* param
 
 int RGE_Doppleganger_Object::setup(RGE_Master_Doppleganger_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) {
     /* TODO: Stub */
-//                              int __thiscall setup(RGE_Doppleganger_Object * this, int param_1, RG
+//                              int __thiscall setup(RGE_Doppleganger_Object * this, RGE_Master_Dopp
 //              int               EAX:4          <RETURN>
 //              RGE_Dopplegang    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     00441da8(R)
-//              RGE_Game_World    Stack[0x8]:4   param_2                   XREF[1]:     00441da0(R)
-//                               ?setup@RGE_Doppleganger_Object@@MAEHHPAVRGE_Game_World@@@Z   XREF[2]:     RGE_Doppleganger_Object:00441aff(c
-//                               RGE_Doppleganger_Object::setup                                            005703f8(*)
-//                              dpl_obj.cpp:254 (21)
-//         00441da0     MOV        EAX,dword ptr [ESP + param_2]
-//         00441da4     PUSH       ESI
-//         00441da5     MOV        ESI,this
-//         00441da7     PUSH       EDI
-//         00441da8     MOV        this,dword ptr [ESP + param_1]
-//         00441dac     PUSH       EAX
-//         00441dad     PUSH       this
-//         00441dae     MOV        this,ESI
-//         00441db0     CALL       RGE_Animated_Object::setup                       int setup(RGE_Animated_Object * this, int par
-//                              dpl_obj.cpp:259 (29)
-//         00441db5     FLD        float ptr [ESI + 0x3c]
-//         00441db8     MOV        byte ptr [ESI + 0x4e],0x19
-//         00441dbc     CALL       __ftol                                           undefined __ftol()
-//         00441dc1     FLD        float ptr [ESI + 0x38]
-//         00441dc4     MOV        EDI,EAX
-//         00441dc6     CALL       __ftol                                           undefined __ftol()
-//         00441dcb     MOV        EDX,dword ptr [EDI*0x4 + unified_map_offsets]    = 00000000
-//                              dpl_obj.cpp:276 (33)
-//         00441dd2     POP        EDI
-//         00441dd3     LEA        EAX,[EDX + EAX*0x4]
-//         00441dd6     MOV        dword ptr [ESI + 0x9c],EAX
-//         00441ddc     XOR        EAX,EAX
-//         00441dde     MOV        dword ptr [ESI + 0xa0],EAX
-//         00441de4     MOV        dword ptr [ESI + 0xa4],EAX
-//         00441dea     MOV        EAX,0x1
-//         00441def     POP        ESI
-//         00441df0     RET        0x8
-//         00441df3     ??         90h
-//         00441df4     NOP
-//         00441df5     NOP
-//         00441df6     NOP
-//         00441df7     NOP
-//         00441df8     NOP
-//         00441df9     NOP
-//         00441dfa     NOP
-//         00441dfb     NOP
-//         00441dfc     NOP
-//         00441dfd     NOP
-//         00441dfe     NOP
-//         00441dff     NOP
+//              RGE_Master_Dop    Stack[0x4]:4   param_1                   XREF[1]:     00441d46(R)
+//              RGE_Player *      Stack[0x8]:4   param_2                   XREF[1]:     00441d41(R)
+//              float             Stack[0xc]:4   param_3                   XREF[2]:     00441d34(R), 00441d61(R)
+//              float             Stack[0x10]:4  param_4                   XREF[2]:     00441d3b(R), 00441d54(R)
+//              float             Stack[0x14]:4  param_5                   XREF[1]:     00441d30(R)
+//                               ?setup@RGE_Doppleganger_Object@@MAEHPAVRGE_Master_Dopplegan  XREF[2]:     RGE_Doppleganger_Object:00441948(c
+//                               RGE_Doppleganger_Object::setup                                            00570414(*)
+//                              dpl_obj.cpp:239 (36)
+//         00441d30     MOV        EAX,dword ptr [ESP + param_5]
+//         00441d34     MOV        EDX,dword ptr [ESP + param_3]
+//         00441d38     PUSH       ESI
+//         00441d39     MOV        ESI,this
+//         00441d3b     MOV        this,dword ptr [ESP + param_4]
+//         00441d3f     PUSH       EDI
+//         00441d40     PUSH       EAX
+//         00441d41     MOV        EAX,dword ptr [ESP + param_2]
+//         00441d45     PUSH       this
+//         00441d46     MOV        this,dword ptr [ESP + param_1]
+//         00441d4a     PUSH       EDX
+//         00441d4b     PUSH       EAX
+//         00441d4c     PUSH       this
+//         00441d4d     MOV        this,ESI
+//         00441d4f     CALL       RGE_Animated_Object::setup                       int setup(RGE_Animated_Object * this, RGE_Mas
+//                              dpl_obj.cpp:244 (31)
+//         00441d54     FLD        float ptr [ESP + param_4]
+//         00441d58     MOV        byte ptr [ESI + 0x4e],0x19
+//         00441d5c     CALL       __ftol                                           undefined __ftol()
+//         00441d61     FLD        float ptr [ESP + param_3]
+//         00441d65     MOV        EDI,EAX
+//         00441d67     CALL       __ftol                                           undefined __ftol()
+//         00441d6c     MOV        EDX,dword ptr [EDI*0x4 + unified_map_offsets]    = 00000000
+//                              dpl_obj.cpp:250 (33)
+//         00441d73     POP        EDI
+//         00441d74     LEA        EAX,[EDX + EAX*0x4]
+//         00441d77     MOV        dword ptr [ESI + 0x9c],EAX
+//         00441d7d     XOR        EAX,EAX
+//         00441d7f     MOV        dword ptr [ESI + 0xa0],EAX
+//         00441d85     MOV        dword ptr [ESI + 0xa4],EAX
+//         00441d8b     MOV        EAX,0x1
+//         00441d90     POP        ESI
+//         00441d91     RET        0x14
+//         00441d94     ??         90h
+//         00441d95     NOP
+//         00441d96     NOP
+//         00441d97     NOP
+//         00441d98     NOP
+//         00441d99     NOP
+//         00441d9a     NOP
+//         00441d9b     NOP
+//         00441d9c     NOP
+//         00441d9d     NOP
+//         00441d9e     NOP
+//         00441d9f     NOP
     return 0;
 }
 

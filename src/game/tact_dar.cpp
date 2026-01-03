@@ -6,56 +6,66 @@ TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(int param_1, RG
 //                              undefined __thiscall TRIBE_Action_Discovery_Artifact(TRIBE_Action_Di
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Action_D    ECX:4 (auto)   this
-//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     004ce670(R)
-//              RGE_Task *        Stack[0x8]:4   param_2                   XREF[1]:     004ce67f(R)
-//              float             Stack[0xc]:4   param_3                   XREF[1]:     004ce683(R)
-//              float             Stack[0x10]:4  param_4                   XREF[1]:     004ce687(R)
-//              float             Stack[0x14]:4  param_5                   XREF[1]:     004ce68e(R)
-//                               ??0TRIBE_Action_Discovery_Artifact@@QAE@PAVRGE_Action_Objec  XREF[1]:     create_task_action:004d090b(c)
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004ce54c(R)
+//              RGE_Action_Obj    Stack[0x8]:4   param_2                   XREF[1]:     004ce546(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     004ce573(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004ce5a3(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004ce556(W)
+//                               ??0TRIBE_Action_Discovery_Artifact@@QAE@HPAVRGE_Action_Obje  XREF[1]:     create_action:004d0393(c)
 //                               TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Art
-//                              tact_dar.cpp:53 (15)
-//         004ce670     MOV        EAX,dword ptr [ESP + param_1]
-//         004ce674     PUSH       ESI
-//         004ce675     PUSH       0x1
-//         004ce677     MOV        ESI,this
-//         004ce679     PUSH       EAX
-//         004ce67a     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
-//                              tact_dar.cpp:56 (4)
-//         004ce67f     MOV        this,dword ptr [ESP + param_2]
-//                              tact_dar.cpp:57 (4)
-//         004ce683     MOV        EDX,dword ptr [ESP + param_3]
-//                              tact_dar.cpp:58 (7)
-//         004ce687     MOV        EAX,dword ptr [ESP + param_4]
-//         004ce68b     MOV        dword ptr [ESI + 0x30],this
-//                              tact_dar.cpp:59 (7)
-//         004ce68e     MOV        this,dword ptr [ESP + param_5]
-//         004ce692     MOV        dword ptr [ESI + 0x20],EDX
-//                              tact_dar.cpp:60 (45)
-//         004ce695     MOV        EDX,dword ptr [ESI + 0x8]
-//         004ce698     MOV        dword ptr [ESI],TRIBE_Action_Discovery_Artifac   = 004ce5c0
-//         004ce69e     MOV        word ptr [ESI + 0x4],0x6c
-//         004ce6a4     MOV        dword ptr [ESI + 0x24],EAX
-//         004ce6a7     MOV        dword ptr [ESI + 0x28],this
-//         004ce6aa     MOV        EAX,dword ptr [EDX + 0xc]
-//         004ce6ad     PUSH       0x1
-//         004ce6af     MOV        this,dword ptr [EAX + 0x3c]
-//         004ce6b2     MOVSX      EDX,word ptr [ECX + this->_padding_]
-//         004ce6b6     PUSH       EDX
-//         004ce6b7     CALL       calloc                                           undefined calloc()
-//         004ce6bc     ADD        ESP,0x8
-//         004ce6bf     MOV        dword ptr [ESI + 0x40],EAX
-//                              tact_dar.cpp:61 (6)
-//         004ce6c2     MOV        EAX,ESI
-//         004ce6c4     POP        ESI
-//         004ce6c5     RET        0x14
-//         004ce6c8     ??         90h
-//         004ce6c9     NOP
-//         004ce6ca     NOP
-//         004ce6cb     NOP
-//         004ce6cc     NOP
-//         004ce6cd     NOP
-//         004ce6ce     NOP
-//         004ce6cf     NOP
+//                              tact_dar.cpp:32 (47)
+//         004ce530     PUSH       -0x1
+//         004ce532     PUSH       FUN_0055fe28
+//         004ce537     MOV        EAX,FS:[0x0]
+//         004ce53d     PUSH       EAX
+//         004ce53e     MOV        dword ptr FS:[0x0],ESP
+//         004ce545     PUSH       this
+//         004ce546     MOV        EAX,dword ptr [ESP + param_2]
+//         004ce54a     PUSH       ESI
+//         004ce54b     PUSH       EDI
+//         004ce54c     MOV        EDI,dword ptr [ESP + param_1]
+//         004ce550     PUSH       0x1
+//         004ce552     MOV        ESI,this
+//         004ce554     PUSH       EAX
+//         004ce555     PUSH       EDI
+//         004ce556     MOV        dword ptr [ESP + local_10],ESI
+//         004ce55a     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, int p
+//                              tact_dar.cpp:35 (41)
+//         004ce55f     MOV        this,dword ptr [ESI + 0x8]
+//         004ce562     MOV        dword ptr [ESI],TRIBE_Action_Discovery_Artifac   = 004ce5c0
+//         004ce568     MOV        word ptr [ESI + 0x4],0x6c
+//         004ce56e     PUSH       0x1
+//         004ce570     MOV        EDX,dword ptr [ECX + this->_padding_]
+//         004ce573     MOV        dword ptr [ESP + local_4],0x0
+//         004ce57b     MOV        EAX,dword ptr [EDX + 0x3c]
+//         004ce57e     MOVSX      this,word ptr [EAX + 0x3c]
+//         004ce582     PUSH       this
+//         004ce583     CALL       calloc                                           undefined calloc()
+//                              tact_dar.cpp:36 (27)
+//         004ce588     MOV        EDX,dword ptr [ESI + 0x8]
+//         004ce58b     MOV        dword ptr [ESI + 0x40],EAX
+//         004ce58e     ADD        ESP,0x8
+//         004ce591     MOV        this,dword ptr [EDX + 0xc]
+//         004ce594     MOV        EDX,dword ptr [ECX + this->_padding_]
+//         004ce597     MOVSX      this,word ptr [EDX + 0x3c]
+//         004ce59b     PUSH       this
+//         004ce59c     PUSH       EAX
+//         004ce59d     PUSH       EDI
+//         004ce59e     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              tact_dar.cpp:37 (24)
+//         004ce5a3     MOV        this,dword ptr [ESP + local_c]
+//         004ce5a7     ADD        ESP,0xc
+//         004ce5aa     MOV        EAX,ESI
+//         004ce5ac     MOV        dword ptr FS:[0x0],this
+//         004ce5b3     POP        EDI
+//         004ce5b4     POP        ESI
+//         004ce5b5     ADD        ESP,0x10
+//         004ce5b8     RET        0x8
+//         004ce5bb     ??         90h
+//         004ce5bc     NOP
+//         004ce5bd     NOP
+//         004ce5be     NOP
+//         004ce5bf     NOP
 }
 
 TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(RGE_Action_Object* param_1, RGE_Task* param_2, RGE_Static_Object* param_3) {
@@ -63,56 +73,57 @@ TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(RGE_Action_Obje
 //                              undefined __thiscall TRIBE_Action_Discovery_Artifact(TRIBE_Action_Di
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Action_D    ECX:4 (auto)   this
-//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     004ce670(R)
-//              RGE_Task *        Stack[0x8]:4   param_2                   XREF[1]:     004ce67f(R)
-//              float             Stack[0xc]:4   param_3                   XREF[1]:     004ce683(R)
-//              float             Stack[0x10]:4  param_4                   XREF[1]:     004ce687(R)
-//              float             Stack[0x14]:4  param_5                   XREF[1]:     004ce68e(R)
-//                               ??0TRIBE_Action_Discovery_Artifact@@QAE@PAVRGE_Action_Objec  XREF[1]:     create_task_action:004d090b(c)
+//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     004ce606(R)
+//              RGE_Task *        Stack[0x8]:4   param_2                   XREF[1]:     004ce619(R)
+//              RGE_Static_Obj    Stack[0xc]:4   param_3                   XREF[1]:     004ce61d(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     004ce627(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004ce655(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004ce610(W)
+//                               ??0TRIBE_Action_Discovery_Artifact@@QAE@PAVRGE_Action_Objec  XREF[1]:     create_task_action:004d08c0(c)
 //                               TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Art
-//                              tact_dar.cpp:53 (15)
-//         004ce670     MOV        EAX,dword ptr [ESP + param_1]
-//         004ce674     PUSH       ESI
-//         004ce675     PUSH       0x1
-//         004ce677     MOV        ESI,this
-//         004ce679     PUSH       EAX
-//         004ce67a     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
-//                              tact_dar.cpp:56 (4)
-//         004ce67f     MOV        this,dword ptr [ESP + param_2]
-//                              tact_dar.cpp:57 (4)
-//         004ce683     MOV        EDX,dword ptr [ESP + param_3]
-//                              tact_dar.cpp:58 (7)
-//         004ce687     MOV        EAX,dword ptr [ESP + param_4]
-//         004ce68b     MOV        dword ptr [ESI + 0x30],this
-//                              tact_dar.cpp:59 (7)
-//         004ce68e     MOV        this,dword ptr [ESP + param_5]
-//         004ce692     MOV        dword ptr [ESI + 0x20],EDX
-//                              tact_dar.cpp:60 (45)
-//         004ce695     MOV        EDX,dword ptr [ESI + 0x8]
-//         004ce698     MOV        dword ptr [ESI],TRIBE_Action_Discovery_Artifac   = 004ce5c0
-//         004ce69e     MOV        word ptr [ESI + 0x4],0x6c
-//         004ce6a4     MOV        dword ptr [ESI + 0x24],EAX
-//         004ce6a7     MOV        dword ptr [ESI + 0x28],this
-//         004ce6aa     MOV        EAX,dword ptr [EDX + 0xc]
-//         004ce6ad     PUSH       0x1
-//         004ce6af     MOV        this,dword ptr [EAX + 0x3c]
-//         004ce6b2     MOVSX      EDX,word ptr [ECX + this->_padding_]
-//         004ce6b6     PUSH       EDX
-//         004ce6b7     CALL       calloc                                           undefined calloc()
-//         004ce6bc     ADD        ESP,0x8
-//         004ce6bf     MOV        dword ptr [ESI + 0x40],EAX
-//                              tact_dar.cpp:61 (6)
-//         004ce6c2     MOV        EAX,ESI
-//         004ce6c4     POP        ESI
-//         004ce6c5     RET        0x14
-//         004ce6c8     ??         90h
-//         004ce6c9     NOP
-//         004ce6ca     NOP
-//         004ce6cb     NOP
-//         004ce6cc     NOP
-//         004ce6cd     NOP
-//         004ce6ce     NOP
-//         004ce6cf     NOP
+//                              tact_dar.cpp:42 (41)
+//         004ce5f0     PUSH       -0x1
+//         004ce5f2     PUSH       FUN_0055fe48
+//         004ce5f7     MOV        EAX,FS:[0x0]
+//         004ce5fd     PUSH       EAX
+//         004ce5fe     MOV        dword ptr FS:[0x0],ESP
+//         004ce605     PUSH       this
+//         004ce606     MOV        EAX,dword ptr [ESP + param_1]
+//         004ce60a     PUSH       ESI
+//         004ce60b     MOV        ESI,this
+//         004ce60d     PUSH       0x1
+//         004ce60f     PUSH       EAX
+//         004ce610     MOV        dword ptr [ESP + local_10],ESI
+//         004ce614     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
+//                              tact_dar.cpp:45 (4)
+//         004ce619     MOV        this,dword ptr [ESP + param_2]
+//                              tact_dar.cpp:46 (35)
+//         004ce61d     MOV        EDX,dword ptr [ESP + param_3]
+//         004ce621     MOV        dword ptr [ESI + 0x30],this
+//         004ce624     PUSH       EDX
+//         004ce625     MOV        this,ESI
+//         004ce627     MOV        dword ptr [ESP + local_4],0x0
+//         004ce62f     MOV        dword ptr [ESI],TRIBE_Action_Discovery_Artifac   = 004ce5c0
+//         004ce635     MOV        word ptr [ESI + 0x4],0x6c
+//         004ce63b     CALL       RGE_Action::set_target_obj                       void set_target_obj(RGE_Action * this, RGE_St
+//                              tact_dar.cpp:47 (21)
+//         004ce640     MOV        EAX,dword ptr [ESI + 0x8]
+//         004ce643     PUSH       0x1
+//         004ce645     MOV        this,dword ptr [EAX + 0xc]
+//         004ce648     MOV        EDX,dword ptr [ECX + this->_padding_]
+//         004ce64b     MOVSX      EAX,word ptr [EDX + 0x3c]
+//         004ce64f     PUSH       EAX
+//         004ce650     CALL       calloc                                           undefined calloc()
+//                              tact_dar.cpp:48 (26)
+//         004ce655     MOV        this,dword ptr [ESP + local_c]
+//         004ce659     ADD        ESP,0x8
+//         004ce65c     MOV        dword ptr [ESI + 0x40],EAX
+//         004ce65f     MOV        EAX,ESI
+//         004ce661     MOV        dword ptr FS:[0x0],this
+//         004ce668     POP        ESI
+//         004ce669     ADD        ESP,0x10
+//         004ce66c     RET        0xc
+//         004ce66f     ??         90h
 }
 
 TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(RGE_Action_Object* param_1, RGE_Task* param_2, float param_3, float param_4, float param_5) {

@@ -6,228 +6,544 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(char* param_1, char* pa
 //                              undefined __thiscall RGE_RMM_Database_Controller(RGE_RMM_Database_Co
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_RMM_Databa    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[5]:     0048304c(R), 004830b9(W), 004830c3(R), 004831bd(R),
-//                                                                                     004831c7(W)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0048305a(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004831db(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[2]:     00483071(W), 004831b5(R)
-//              undefined4        Stack[-0x14]:4 local_14                  XREF[2]:     004830d9(W), 0048317e(R)
-//              RGE_Elevation_    Stack[-0x18]:4 elevation_info            XREF[2]:     00483043(W), 004831cb(R)
-//              undefined4        Stack[-0x1c]:4 local_1c                  XREF[3]:     004830af(W), 004831b9(R), 004831d1(W)
-//              long              Stack[-0x20]:4 index
-//                               ??0RGE_RMM_Database_Controller@@QAE@H@Z                      XREF[2]:     data_load_random_map:004557fd(c),
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     00482c52(R)
+//              char *            Stack[0x8]:4   param_2                   XREF[1]:     00482dd1(R)
+//              char *            Stack[0xc]:4   param_3                   XREF[1]:     00482ec6(R)
+//              char *            Stack[0x10]:4  param_4                   XREF[10]:    00482b87(R), 00482c8b(W), 00482db3(R), 00482dbe(W),
+//                                                                                     00482e06(W), 00482ea8(R), 00482eb3(W), 00482efb(W),
+//                                                                                     00482fc6(R), 00482fd1(W)
+//              undefined         Stack[-0x4]:1  local_4                   XREF[2]:     00482f7f(*), 00482fac(R)
+//              long              Stack[-0x8]:4  temp_scale_flag           XREF[2]:     00482f85(*), 00482f9d(R)
+//              long              Stack[-0xc]:4  temp_group_flag           XREF[2]:     00482d1e(*), 00482d8b(R)
+//              long              Stack[-0x10]:4 temp_by_player_flag       XREF[2]:     00482d24(*), 00482d80(R)
+//              long              Stack[-0x14]:4 temp_amount_of_land_used  XREF[2]:     00482d30(*), 00482d75(R)
+//              long              Stack[-0x18]:4 temp_placement_type       XREF[2]:     00482d36(*), 00482d6a(R)
+//              long              Stack[-0x1c]:4 temp_zone                 XREF[2]:     00482d42(*), 00482d5b(R)
+//              long              Stack[-0x20]:4 temp_terrain_type         XREF[3]:     00482ee2(*), 00482ef2(R), 00482fca(R)
+//              long              Stack[-0x24]:4 object_num                XREF[3]:     00482ded(*), 00482dfd(R), 00482eac(R)
+//              long              Stack[-0x28]:4 terrain_num               XREF[3]:     00482c72(*), 00482c82(R), 00482db7(R)
+//              long              Stack[-0x2c]:4 land_num                  XREF[4]:     00482b7e(W), 00482dab(R), 00482e9f(R), 00482fbd(R)
+//              undefined4        Stack[-0x30]:4 local_30                  XREF[6]:     00482c99(*), 00482ca9(R), 00482e14(*), 00482e24(R),
+//                                                                                     00482f09(*), 00482f19(R)
+//              long              Stack[-0x34]:4 map_id                    XREF[6]:     00482bb0(W), 00482bfa(R), 00482c18(R), 00482c68(W),
+//                                                                                     00482d47(R), 00482daf(R)
+//              _iobuf *          Stack[-0x38]:4 infile
+//                               ??0RGE_RMM_Database_Controller@@QAE@PAD000@Z                 XREF[2]:     load_random_map:0045586c(c),
 //                               RGE_RMM_Database_Controller::RGE_RMM_Database_Controller                  TRIBE_RMM_Database_Controller:0048
-//                              rmm_dbct.cpp:249 (44)
-//         00483020     PUSH       -0x1
-//         00483022     PUSH       FUN_0055e658
-//         00483027     MOV        EAX,FS:[0x0]
-//         0048302d     PUSH       EAX
-//         0048302e     MOV        dword ptr FS:[0x0],ESP
-//         00483035     SUB        ESP,0x10
-//         00483038     PUSH       EBX
-//         00483039     PUSH       EBP
-//         0048303a     PUSH       ESI
-//         0048303b     XOR        EBP,EBP
-//         0048303d     PUSH       EDI
-//         0048303e     PUSH       EBP
-//         0048303f     MOV        EDI,this
-//         00483041     PUSH       EBP
-//         00483042     PUSH       EBP
-//         00483043     MOV        dword ptr [ESP + elevation_info],EDI
-//         00483047     CALL       RGE_Random_Map_Module::RGE_Random_Map_Module     undefined RGE_Random_Map_Module(RGE_Random_Ma
-//                              rmm_dbct.cpp:262 (46)
-//         0048304c     MOV        ESI,dword ptr [ESP + param_1]
-//         00483050     LEA        EBX,[EDI + 0x4f54]
-//         00483056     PUSH       0x8
-//         00483058     PUSH       EBX
-//         00483059     PUSH       ESI
-//         0048305a     MOV        dword ptr [ESP + local_4],EBP
-//         0048305e     MOV        dword ptr [EDI],RGE_RMM_Database_Controller::`   = 00483430
-//         00483064     MOV        dword ptr [EDI + 0x30],EBP
-//         00483067     MOV        dword ptr [EDI + 0x34],0xffffffff
-//         0048306e     MOV        dword ptr [EDI + 0x38],EBP
-//         00483071     MOV        dword ptr [ESP + local_10],EBX
-//         00483075     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              rmm_dbct.cpp:263 (13)
-//         0048307a     MOV        EAX,dword ptr [EBX]
-//         0048307c     ADD        ESP,0xc
-//         0048307f     CMP        EAX,EBP
-//         00483081     JLE        LAB_004831db
-//                              rmm_dbct.cpp:265 (8)
-//         00483087     PUSH       0x48
-//         00483089     PUSH       EAX
-//         0048308a     CALL       calloc                                           undefined calloc()
-//                              rmm_dbct.cpp:266 (25)
-//         0048308f     MOV        this,dword ptr [EBX]
-//         00483091     ADD        ESP,0x8
-//         00483094     MOV        dword ptr [EDI + 0x4f58],EAX
-//         0048309a     LEA        this,[ECX + ECX*0x8]
-//         0048309d     SHL        this,0x3
-//         004830a0     PUSH       this
-//         004830a1     PUSH       EAX
-//         004830a2     PUSH       ESI
-//         004830a3     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              rmm_dbct.cpp:268 (17)
-//         004830a8     MOV        EAX,dword ptr [EBX]
-//         004830aa     ADD        ESP,0xc
-//         004830ad     CMP        EAX,EBP
-//         004830af     MOV        dword ptr [ESP + local_1c],EBP
-//         004830b3     JLE        LAB_004831db
-//                              rmm_dbct.cpp:304 (4)
-//         004830b9     MOV        dword ptr [ESP + param_1],EBP
-//                               LAB_004830bd                                                 XREF[1]:     004831d5(j)
-//                              rmm_dbct.cpp:270 (12)
-//         004830bd     MOV        EDX,dword ptr [EDI + 0x4f58]
-//         004830c3     MOV        EAX,dword ptr [ESP + param_1]
-//         004830c7     ADD        EAX,EDX
-//                              rmm_dbct.cpp:275 (25)
-//         004830c9     PUSH       0x2c
-//         004830cb     LEA        EDI,[EAX + 0x4]
-//         004830ce     LEA        EBX,[EAX + 0x30]
-//         004830d1     LEA        EBP,[EAX + 0x38]
-//         004830d4     ADD        EAX,0x40
-//         004830d7     PUSH       EDI
-//         004830d8     PUSH       ESI
-//         004830d9     MOV        dword ptr [ESP + local_14],EAX
-//         004830dd     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              rmm_dbct.cpp:276 (10)
-//         004830e2     MOV        EAX,dword ptr [EDI + 0x24]
-//         004830e5     ADD        ESP,0xc
-//         004830e8     TEST       EAX,EAX
-//         004830ea     JLE        LAB_00483111
-//                              rmm_dbct.cpp:278 (11)
-//         004830ec     PUSH       0x2c
-//         004830ee     PUSH       EAX
-//         004830ef     CALL       calloc                                           undefined calloc()
-//         004830f4     MOV        dword ptr [EDI + 0x28],EAX
-//                              rmm_dbct.cpp:279 (26)
-//         004830f7     MOV        EDI,dword ptr [EDI + 0x24]
-//         004830fa     ADD        ESP,0x8
-//         004830fd     LEA        this,[EDI + EDI*0x4]
-//         00483100     LEA        EDX,[EDI + this->_padding_*0x2]
-//         00483103     SHL        EDX,0x2
-//         00483106     PUSH       EDX
-//         00483107     PUSH       EAX
-//         00483108     PUSH       ESI
-//         00483109     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048310e     ADD        ESP,0xc
-//                               LAB_00483111                                                 XREF[1]:     004830ea(j)
-//                              rmm_dbct.cpp:282 (9)
-//         00483111     PUSH       0x8
-//         00483113     PUSH       EBX
-//         00483114     PUSH       ESI
-//         00483115     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              rmm_dbct.cpp:283 (9)
-//         0048311a     MOV        EAX,dword ptr [EBX]
-//         0048311c     ADD        ESP,0xc
-//         0048311f     TEST       EAX,EAX
-//         00483121     JLE        LAB_00483144
-//                              rmm_dbct.cpp:285 (11)
-//         00483123     PUSH       0x18
-//         00483125     PUSH       EAX
-//         00483126     CALL       calloc                                           undefined calloc()
-//         0048312b     MOV        dword ptr [EBX + 0x4],EAX
-//                              rmm_dbct.cpp:286 (22)
-//         0048312e     MOV        EBX,dword ptr [EBX]
-//         00483130     ADD        ESP,0x8
-//         00483133     LEA        this,[EBX + EBX*0x2]
-//         00483136     SHL        this,0x3
-//         00483139     PUSH       this
-//         0048313a     PUSH       EAX
-//         0048313b     PUSH       ESI
-//         0048313c     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00483141     ADD        ESP,0xc
-//                               LAB_00483144                                                 XREF[1]:     00483121(j)
-//                              rmm_dbct.cpp:289 (9)
-//         00483144     PUSH       0x8
-//         00483146     PUSH       EBP
-//         00483147     PUSH       ESI
-//         00483148     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              rmm_dbct.cpp:290 (10)
-//         0048314d     MOV        EAX,dword ptr [EBP]
-//         00483150     ADD        ESP,0xc
-//         00483153     TEST       EAX,EAX
-//         00483155     JLE        LAB_0048317e
-//                              rmm_dbct.cpp:292 (11)
-//         00483157     PUSH       0x2c
-//         00483159     PUSH       EAX
-//         0048315a     CALL       calloc                                           undefined calloc()
-//         0048315f     MOV        dword ptr [EBP + 0x4],EAX
-//                              rmm_dbct.cpp:293 (28)
-//         00483162     MOV        EBP,dword ptr [EBP]
-//         00483165     ADD        ESP,0x8
-//         00483168     LEA        EDX,[EBP + EBP*0x4]
-//         0048316c     LEA        this,[EBP + EDX*0x2]
-//         00483170     SHL        this,0x2
-//         00483173     PUSH       this
-//         00483174     PUSH       EAX
-//         00483175     PUSH       ESI
-//         00483176     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0048317b     ADD        ESP,0xc
-//                               LAB_0048317e                                                 XREF[1]:     00483155(j)
-//                              rmm_dbct.cpp:296 (13)
-//         0048317e     MOV        EDI,dword ptr [ESP + local_14]
-//         00483182     PUSH       0x8
-//         00483184     PUSH       EDI
-//         00483185     PUSH       ESI
-//         00483186     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              rmm_dbct.cpp:297 (9)
-//         0048318b     MOV        EAX,dword ptr [EDI]
-//         0048318d     ADD        ESP,0xc
-//         00483190     TEST       EAX,EAX
-//         00483192     JLE        LAB_004831b5
-//                              rmm_dbct.cpp:299 (11)
-//         00483194     PUSH       0x18
-//         00483196     PUSH       EAX
-//         00483197     CALL       calloc                                           undefined calloc()
-//         0048319c     MOV        dword ptr [EDI + 0x4],EAX
-//                              rmm_dbct.cpp:300 (60)
-//         0048319f     MOV        EDI,dword ptr [EDI]
-//         004831a1     ADD        ESP,0x8
-//         004831a4     LEA        EDX,[EDI + EDI*0x2]
-//         004831a7     SHL        EDX,0x3
-//         004831aa     PUSH       EDX
-//         004831ab     PUSH       EAX
-//         004831ac     PUSH       ESI
-//         004831ad     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004831b2     ADD        ESP,0xc
-//                               LAB_004831b5                                                 XREF[1]:     00483192(j)
-//         004831b5     MOV        this,dword ptr [ESP + local_10]
-//         004831b9     MOV        EAX,dword ptr [ESP + local_1c]
-//         004831bd     MOV        EDI,dword ptr [ESP + param_1]
-//         004831c1     INC        EAX
-//         004831c2     MOV        EDX,dword ptr [this->_padding_]
-//         004831c4     ADD        EDI,0x48
-//         004831c7     MOV        dword ptr [ESP + param_1],EDI
-//         004831cb     MOV        EDI,dword ptr [ESP + elevation_info]
-//         004831cf     CMP        EAX,EDX
-//         004831d1     MOV        dword ptr [ESP + local_1c],EAX
-//         004831d5     JL         LAB_004830bd
-//                               LAB_004831db                                                 XREF[2]:     00483081(j), 004830b3(j)
-//                              rmm_dbct.cpp:304 (23)
-//         004831db     MOV        this,dword ptr [ESP + local_c]
-//         004831df     MOV        EAX,EDI
-//         004831e1     POP        EDI
-//         004831e2     POP        ESI
-//         004831e3     POP        EBP
-//         004831e4     MOV        dword ptr FS:[0x0],this
-//         004831eb     POP        EBX
-//         004831ec     ADD        ESP,0x1c
-//         004831ef     RET        0x4
-//         004831f2     ??         90h
-//         004831f3     NOP
-//         004831f4     NOP
-//         004831f5     NOP
-//         004831f6     NOP
-//         004831f7     NOP
-//         004831f8     NOP
-//         004831f9     NOP
-//         004831fa     NOP
-//         004831fb     NOP
-//         004831fc     NOP
-//         004831fd     NOP
-//         004831fe     NOP
-//         004831ff     NOP
+//                              rmm_dbct.cpp:29 (23)
+//         00482b70     SUB        ESP,0x34
+//         00482b73     PUSH       EBX
+//         00482b74     PUSH       EBP
+//         00482b75     PUSH       ESI
+//         00482b76     XOR        ESI,ESI
+//         00482b78     PUSH       EDI
+//         00482b79     PUSH       ESI
+//         00482b7a     MOV        EDI,this
+//         00482b7c     PUSH       ESI
+//         00482b7d     PUSH       ESI
+//         00482b7e     MOV        dword ptr [ESP + land_num],EDI
+//         00482b82     CALL       RGE_Random_Map_Module::RGE_Random_Map_Module     undefined RGE_Random_Map_Module(RGE_Random_Ma
+//                              rmm_dbct.cpp:55 (39)
+//         00482b87     MOV        EAX,dword ptr [ESP + param_4]
+//         00482b8b     PUSH       s_r                                              = "r"
+//         00482b90     PUSH       EAX
+//         00482b91     MOV        dword ptr [EDI],RGE_RMM_Database_Controller::`   = 00483430
+//         00482b97     MOV        dword ptr [EDI + 0x30],ESI
+//         00482b9a     MOV        dword ptr [EDI + 0x34],0xffffffff
+//         00482ba1     MOV        dword ptr [EDI + 0x38],ESI
+//         00482ba4     CALL       fopen                                            undefined fopen()
+//         00482ba9     MOV        EBX,EAX
+//         00482bab     ADD        ESP,0x8
+//                              rmm_dbct.cpp:56 (12)
+//         00482bae     CMP        EBX,ESI
+//         00482bb0     MOV        dword ptr [ESP + map_id],EBX
+//         00482bb4     JZ         LAB_00482c3a
+//                              rmm_dbct.cpp:58 (18)
+//         00482bba     LEA        EBP,[EDI + 0x4f54]
+//         00482bc0     PUSH       EBP
+//         00482bc1     PUSH       s__%d                                            = " %d"
+//         00482bc6     PUSH       EBX
+//         00482bc7     CALL       fscanf                                           undefined fscanf()
+//                              rmm_dbct.cpp:60 (10)
+//         00482bcc     MOV        EAX,dword ptr [EBP]
+//         00482bcf     ADD        ESP,0xc
+//         00482bd2     CMP        EAX,ESI
+//         00482bd4     JLE        LAB_00482c29
+//                              rmm_dbct.cpp:62 (14)
+//         00482bd6     PUSH       0x48
+//         00482bd8     PUSH       EAX
+//         00482bd9     CALL       calloc                                           undefined calloc()
+//         00482bde     MOV        dword ptr [EDI + 0x4f58],EAX
+//                              rmm_dbct.cpp:63 (10)
+//         00482be4     MOV        EAX,dword ptr [EBP]
+//         00482be7     ADD        ESP,0x8
+//         00482bea     CMP        EAX,ESI
+//         00482bec     JLE        LAB_00482c2f
+//                              rmm_dbct.cpp:242 (2)
+//         00482bee     XOR        EBX,EBX
+//                               LAB_00482bf0                                                 XREF[1]:     00482c16(j)
+//                              rmm_dbct.cpp:64 (40)
+//         00482bf0     MOV        EDX,dword ptr [EDI + 0x4f58]
+//         00482bf6     MOV        this,EBX
+//         00482bf8     ADD        this,EDX
+//         00482bfa     MOV        EDX,dword ptr [ESP + map_id]
+//         00482bfe     PUSH       this
+//         00482bff     PUSH       s_%d                                             = 6425h
+//         00482c04     PUSH       EDX
+//         00482c05     CALL       fscanf                                           undefined fscanf()
+//         00482c0a     MOV        EAX,dword ptr [EBP]
+//         00482c0d     ADD        ESP,0xc
+//         00482c10     INC        ESI
+//         00482c11     ADD        EBX,0x48
+//         00482c14     CMP        ESI,EAX
+//         00482c16     JL         LAB_00482bf0
+//                              rmm_dbct.cpp:66 (6)
+//         00482c18     MOV        EBX,dword ptr [ESP + map_id]
+//         00482c1c     XOR        ESI,ESI
+//                              rmm_dbct.cpp:69 (9)
+//         00482c1e     PUSH       EBX
+//         00482c1f     CALL       fclose                                           undefined fclose()
+//         00482c24     ADD        ESP,0x4
+//                              rmm_dbct.cpp:71 (2)
+//         00482c27     JMP        LAB_00482c49
+//                               LAB_00482c29                                                 XREF[1]:     00482bd4(j)
+//                              rmm_dbct.cpp:67 (6)
+//         00482c29     MOV        dword ptr [EDI + 0x4f58],ESI
+//                               LAB_00482c2f                                                 XREF[1]:     00482bec(j)
+//                              rmm_dbct.cpp:69 (9)
+//         00482c2f     PUSH       EBX
+//         00482c30     CALL       fclose                                           undefined fclose()
+//         00482c35     ADD        ESP,0x4
+//                              rmm_dbct.cpp:71 (2)
+//         00482c38     JMP        LAB_00482c49
+//                               LAB_00482c3a                                                 XREF[1]:     00482bb4(j)
+//                              rmm_dbct.cpp:74 (15)
+//         00482c3a     LEA        EBP,[EDI + 0x4f54]
+//         00482c40     MOV        dword ptr [EDI + 0x4f58],ESI
+//         00482c46     MOV        dword ptr [EBP],ESI
+//                               LAB_00482c49                                                 XREF[2]:     00482c27(j), 00482c38(j)
+//                              rmm_dbct.cpp:77 (9)
+//         00482c49     CMP        dword ptr [EBP],ESI
+//         00482c4c     JLE        LAB_00482ff0
+//                              rmm_dbct.cpp:81 (20)
+//         00482c52     MOV        EAX,dword ptr [ESP + param_1]
+//         00482c56     PUSH       s_r                                              = "r"
+//         00482c5b     PUSH       EAX
+//         00482c5c     CALL       fopen                                            undefined fopen()
+//         00482c61     MOV        EBP,EAX
+//         00482c63     ADD        ESP,0x8
+//                              rmm_dbct.cpp:82 (12)
+//         00482c66     TEST       EBP,EBP
+//         00482c68     MOV        dword ptr [ESP + map_id],EBP
+//         00482c6c     JZ         LAB_00482dd1
+//                              rmm_dbct.cpp:84 (16)
+//         00482c72     LEA        this=>terrain_num,[ESP + 0x1c]
+//         00482c76     PUSH       this
+//         00482c77     PUSH       s_%d                                             = 6425h
+//         00482c7c     PUSH       EBP
+//         00482c7d     CALL       fscanf                                           undefined fscanf()
+//                              rmm_dbct.cpp:85 (23)
+//         00482c82     MOV        EAX,dword ptr [ESP + terrain_num]
+//         00482c86     ADD        ESP,0xc
+//         00482c89     TEST       EAX,EAX
+//         00482c8b     MOV        dword ptr [ESP + param_4],0x0
+//         00482c93     JLE        LAB_00482dc8
+//                               LAB_00482c99                                                 XREF[1]:     00482dc2(j)
+//                              rmm_dbct.cpp:87 (16)
+//         00482c99     LEA        EDX=>local_30,[ESP + 0x14]
+//         00482c9d     PUSH       EDX
+//         00482c9e     PUSH       s_%d                                             = 6425h
+//         00482ca3     PUSH       EBP
+//         00482ca4     CALL       fscanf                                           undefined fscanf()
+//                              rmm_dbct.cpp:88 (20)
+//         00482ca9     MOV        EAX,dword ptr [ESP + local_30]
+//         00482cad     MOV        this,dword ptr [EDI + 0x4f58]
+//         00482cb3     ADD        ESP,0xc
+//         00482cb6     LEA        EAX,[EAX + EAX*0x8]
+//         00482cb9     LEA        ESI,[ECX + EAX*0x8 + this->_padding_]
+//                              rmm_dbct.cpp:98 (44)
+//         00482cbd     LEA        EDX,[ESI + 0x1c]
+//         00482cc0     LEA        EAX,[ESI + 0x18]
+//         00482cc3     PUSH       EDX
+//         00482cc4     LEA        this,[ESI + 0x14]
+//         00482cc7     PUSH       EAX
+//         00482cc8     LEA        EDX,[ESI + 0x10]
+//         00482ccb     PUSH       this
+//         00482ccc     LEA        EAX,[ESI + 0xc]
+//         00482ccf     PUSH       EDX
+//         00482cd0     LEA        this,[ESI + 0x8]
+//         00482cd3     PUSH       EAX
+//         00482cd4     LEA        EDX,[ESI + 0x4]
+//         00482cd7     PUSH       this
+//         00482cd8     LEA        EBX,[ESI + 0x24]
+//         00482cdb     PUSH       EDX
+//         00482cdc     PUSH       ESI
+//         00482cdd     PUSH       EBX
+//         00482cde     PUSH       s_%d_%d_%d_%d_%d_%d_%d_%d_%d                     = "%d %d %d %d %d %d %d %d %d"
+//         00482ce3     PUSH       EBP
+//         00482ce4     CALL       fscanf                                           undefined fscanf()
+//                              rmm_dbct.cpp:100 (13)
+//         00482ce9     MOV        EAX,dword ptr [EBX]
+//         00482ceb     ADD        ESP,0x2c
+//         00482cee     TEST       EAX,EAX
+//         00482cf0     JLE        LAB_00483005
+//                              rmm_dbct.cpp:102 (11)
+//         00482cf6     PUSH       0x2c
+//         00482cf8     PUSH       EAX
+//         00482cf9     CALL       calloc                                           undefined calloc()
+//         00482cfe     MOV        dword ptr [ESI + 0x28],EAX
+//                              rmm_dbct.cpp:103 (15)
+//         00482d01     MOV        EAX,dword ptr [EBX]
+//         00482d03     ADD        ESP,0x8
+//         00482d06     XOR        EBP,EBP
+//         00482d08     TEST       EAX,EAX
+//         00482d0a     JLE        LAB_00482daf
+//                              rmm_dbct.cpp:242 (2)
+//         00482d10     XOR        EDI,EDI
+//                               LAB_00482d12                                                 XREF[1]:     00482da5(j)
+//                              rmm_dbct.cpp:117 (70)
+//         00482d12     MOV        EAX,dword ptr [ESI + 0x28]
+//         00482d15     ADD        EAX,EDI
+//         00482d17     LEA        this,[EAX + 0x24]
+//         00482d1a     LEA        EDX,[EAX + 0x20]
+//         00482d1d     PUSH       this
+//         00482d1e     LEA        this=>temp_group_flag,[ESP + 0x3c]
+//         00482d22     PUSH       EDX
+//         00482d23     PUSH       this
+//         00482d24     LEA        EDX=>temp_by_player_flag,[ESP + 0x40]
+//         00482d28     LEA        this,[EAX + 0x18]
+//         00482d2b     PUSH       EDX
+//         00482d2c     PUSH       this
+//         00482d2d     LEA        EDX,[EAX + 0x14]
+//         00482d30     LEA        this=>temp_amount_of_land_used_percent,[ESP +
+//         00482d34     PUSH       EDX
+//         00482d35     PUSH       this
+//         00482d36     LEA        EDX=>temp_placement_type,[ESP + 0x48]
+//         00482d3a     LEA        this,[EAX + 0xc]
+//         00482d3d     PUSH       EDX
+//         00482d3e     PUSH       this
+//         00482d3f     LEA        EDX,[EAX + 0x8]
+//         00482d42     LEA        this=>temp_zone,[ESP + 0x4c]
+//         00482d46     PUSH       EDX
+//         00482d47     MOV        EDX,dword ptr [ESP + map_id]
+//         00482d4b     PUSH       this
+//         00482d4c     PUSH       EAX
+//         00482d4d     PUSH       s_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d               = "%d %d %d %d %d %d %d %d %d %d %d %d"
+//         00482d52     PUSH       EDX
+//         00482d53     CALL       fscanf                                           undefined fscanf()
+//                              rmm_dbct.cpp:119 (15)
+//         00482d58     MOV        EAX,dword ptr [ESI + 0x28]
+//         00482d5b     MOV        this,byte ptr [ESP + temp_zone]
+//         00482d5f     ADD        ESP,0x38
+//         00482d62     INC        EBP
+//         00482d63     MOV        byte ptr [EAX + EDI*0x1 + 0x4],this
+//                              rmm_dbct.cpp:120 (11)
+//         00482d67     MOV        EDX,dword ptr [ESI + 0x28]
+//         00482d6a     MOV        AL,byte ptr [ESP + temp_placement_type]
+//         00482d6e     MOV        byte ptr [EDX + EDI*0x1 + 0x10],AL
+//                              rmm_dbct.cpp:121 (11)
+//         00482d72     MOV        this,dword ptr [ESI + 0x28]
+//         00482d75     MOV        DL,byte ptr [ESP + temp_amount_of_land_used_pe
+//         00482d79     MOV        byte ptr [ECX + EDI*0x1 + this+0x11],DL
+//                              rmm_dbct.cpp:122 (11)
+//         00482d7d     MOV        EAX,dword ptr [ESI + 0x28]
+//         00482d80     MOV        this,byte ptr [ESP + temp_by_player_flag]
+//         00482d84     MOV        byte ptr [EAX + EDI*0x1 + 0x1c],this
+//                              rmm_dbct.cpp:123 (11)
+//         00482d88     MOV        EDX,dword ptr [ESI + 0x28]
+//         00482d8b     MOV        AL,byte ptr [ESP + temp_group_flag]
+//         00482d8f     MOV        byte ptr [EDX + EDI*0x1 + 0x1d],AL
+//                              rmm_dbct.cpp:125 (24)
+//         00482d93     MOV        this,dword ptr [ESI + 0x28]
+//         00482d96     MOV        dword ptr [ECX + EDI*0x1 + this->_padding_],0x8
+//         00482d9e     MOV        EAX,dword ptr [EBX]
+//         00482da0     ADD        EDI,0x2c
+//         00482da3     CMP        EBP,EAX
+//         00482da5     JL         LAB_00482d12
+//                              rmm_dbct.cpp:128 (8)
+//         00482dab     MOV        EDI,dword ptr [ESP + land_num]
+//                               LAB_00482daf                                                 XREF[1]:     00482d0a(j)
+//         00482daf     MOV        EBP,dword ptr [ESP + map_id]
+//                               LAB_00482db3                                                 XREF[1]:     0048300c(j)
+//                              rmm_dbct.cpp:85 (21)
+//         00482db3     MOV        EAX,dword ptr [ESP + param_4]
+//         00482db7     MOV        this,dword ptr [ESP + terrain_num]
+//         00482dbb     INC        EAX
+//         00482dbc     CMP        EAX,this
+//         00482dbe     MOV        dword ptr [ESP + param_4],EAX
+//         00482dc2     JL         LAB_00482c99
+//                               LAB_00482dc8                                                 XREF[1]:     00482c93(j)
+//                              rmm_dbct.cpp:131 (9)
+//         00482dc8     PUSH       EBP
+//         00482dc9     CALL       fclose                                           undefined fclose()
+//         00482dce     ADD        ESP,0x4
+//                               LAB_00482dd1                                                 XREF[1]:     00482c6c(j)
+//                              rmm_dbct.cpp:135 (20)
+//         00482dd1     MOV        EDX,dword ptr [ESP + param_2]
+//         00482dd5     PUSH       s_r                                              = "r"
+//         00482dda     PUSH       EDX
+//         00482ddb     CALL       fopen                                            undefined fopen()
+//         00482de0     MOV        EBP,EAX
+//         00482de2     ADD        ESP,0x8
+//                              rmm_dbct.cpp:136 (8)
+//         00482de5     TEST       EBP,EBP
+//         00482de7     JZ         LAB_00482ec6
+//                              rmm_dbct.cpp:138 (16)
+//         00482ded     LEA        EAX=>object_num,[ESP + 0x20]
+//         00482df1     PUSH       EAX
+//         00482df2     PUSH       s_%d                                             = 6425h
+//         00482df7     PUSH       EBP
+//         00482df8     CALL       fscanf                                           undefined fscanf()
+//                              rmm_dbct.cpp:139 (23)
+//         00482dfd     MOV        EAX,dword ptr [ESP + object_num]
+//         00482e01     ADD        ESP,0xc
+//         00482e04     TEST       EAX,EAX
+//         00482e06     MOV        dword ptr [ESP + param_4],0x0
+//         00482e0e     JLE        LAB_00482ebd
+//                               LAB_00482e14                                                 XREF[1]:     00482eb7(j)
+//                              rmm_dbct.cpp:141 (16)
+//         00482e14     LEA        this=>local_30,[ESP + 0x14]
+//         00482e18     PUSH       this
+//         00482e19     PUSH       s_%d                                             = 6425h
+//         00482e1e     PUSH       EBP
+//         00482e1f     CALL       fscanf                                           undefined fscanf()
+//                              rmm_dbct.cpp:142 (20)
+//         00482e24     MOV        EAX,dword ptr [ESP + local_30]
+//         00482e28     ADD        ESP,0xc
+//         00482e2b     LEA        EDX,[EAX + EAX*0x8]
+//         00482e2e     MOV        EAX,dword ptr [EDI + 0x4f58]
+//         00482e34     LEA        ESI,[EAX + EDX*0x8 + 0x30]
+//                              rmm_dbct.cpp:143 (12)
+//         00482e38     PUSH       ESI
+//         00482e39     PUSH       s_%d                                             = 6425h
+//         00482e3e     PUSH       EBP
+//         00482e3f     CALL       fscanf                                           undefined fscanf()
+//                              rmm_dbct.cpp:145 (11)
+//         00482e44     MOV        EAX,dword ptr [ESI]
+//         00482e46     XOR        EBX,EBX
+//         00482e48     ADD        ESP,0xc
+//         00482e4b     CMP        EAX,EBX
+//         00482e4d     JLE        LAB_00482ea5
+//                              rmm_dbct.cpp:147 (11)
+//         00482e4f     PUSH       0x18
+//         00482e51     PUSH       EAX
+//         00482e52     CALL       calloc                                           undefined calloc()
+//         00482e57     MOV        dword ptr [ESI + 0x4],EAX
+//                              rmm_dbct.cpp:148 (9)
+//         00482e5a     MOV        EAX,dword ptr [ESI]
+//         00482e5c     ADD        ESP,0x8
+//         00482e5f     TEST       EAX,EAX
+//         00482e61     JLE        LAB_00482ea8
+//                              rmm_dbct.cpp:242 (2)
+//         00482e63     XOR        EDI,EDI
+//                               LAB_00482e65                                                 XREF[1]:     00482e9d(j)
+//                              rmm_dbct.cpp:155 (34)
+//         00482e65     MOV        this,dword ptr [ESI + 0x4]
+//         00482e68     LEA        EAX,[this->_padding_ + EDI*0x1]
+//         00482e6b     LEA        EDX,[EAX + 0x10]
+//         00482e6e     LEA        this,[EAX + 0xc]
+//         00482e71     PUSH       EDX
+//         00482e72     PUSH       this
+//         00482e73     LEA        EDX,[EAX + 0x8]
+//         00482e76     LEA        this,[EAX + 0x4]
+//         00482e79     PUSH       EDX
+//         00482e7a     PUSH       this
+//         00482e7b     PUSH       EAX
+//         00482e7c     PUSH       s_%d_%d_%d_%d_%d                                 = "%d %d %d %d %d"
+//         00482e81     PUSH       EBP
+//         00482e82     CALL       fscanf                                           undefined fscanf()
+//                              rmm_dbct.cpp:156 (24)
+//         00482e87     MOV        EDX,dword ptr [ESI + 0x4]
+//         00482e8a     ADD        ESP,0x1c
+//         00482e8d     INC        EBX
+//         00482e8e     MOV        dword ptr [EDX + EDI*0x1 + 0x14],0x14
+//         00482e96     MOV        EAX,dword ptr [ESI]
+//         00482e98     ADD        EDI,0x18
+//         00482e9b     CMP        EBX,EAX
+//         00482e9d     JL         LAB_00482e65
+//                              rmm_dbct.cpp:159 (6)
+//         00482e9f     MOV        EDI,dword ptr [ESP + land_num]
+//         00482ea3     JMP        LAB_00482ea8
+//                               LAB_00482ea5                                                 XREF[1]:     00482e4d(j)
+//                              rmm_dbct.cpp:160 (3)
+//         00482ea5     MOV        dword ptr [ESI + 0x4],EBX
+//                               LAB_00482ea8                                                 XREF[2]:     00482e61(j), 00482ea3(j)
+//                              rmm_dbct.cpp:139 (21)
+//         00482ea8     MOV        EAX,dword ptr [ESP + param_4]
+//         00482eac     MOV        this,dword ptr [ESP + object_num]
+//         00482eb0     INC        EAX
+//         00482eb1     CMP        EAX,this
+//         00482eb3     MOV        dword ptr [ESP + param_4],EAX
+//         00482eb7     JL         LAB_00482e14
+//                               LAB_00482ebd                                                 XREF[1]:     00482e0e(j)
+//                              rmm_dbct.cpp:162 (9)
+//         00482ebd     PUSH       EBP
+//         00482ebe     CALL       fclose                                           undefined fclose()
+//         00482ec3     ADD        ESP,0x4
+//                               LAB_00482ec6                                                 XREF[1]:     00482de7(j)
+//                              rmm_dbct.cpp:166 (20)
+//         00482ec6     MOV        EAX,dword ptr [ESP + param_3]
+//         00482eca     PUSH       s_r                                              = "r"
+//         00482ecf     PUSH       EAX
+//         00482ed0     CALL       fopen                                            undefined fopen()
+//         00482ed5     MOV        EBP,EAX
+//         00482ed7     ADD        ESP,0x8
+//                              rmm_dbct.cpp:167 (8)
+//         00482eda     TEST       EBP,EBP
+//         00482edc     JZ         LAB_00482ff9
+//                              rmm_dbct.cpp:169 (16)
+//         00482ee2     LEA        this=>temp_terrain_type,[ESP + 0x24]
+//         00482ee6     PUSH       this
+//         00482ee7     PUSH       s_%d                                             = 6425h
+//         00482eec     PUSH       EBP
+//         00482eed     CALL       fscanf                                           undefined fscanf()
+//                              rmm_dbct.cpp:170 (23)
+//         00482ef2     MOV        EAX,dword ptr [ESP + temp_terrain_type]
+//         00482ef6     ADD        ESP,0xc
+//         00482ef9     TEST       EAX,EAX
+//         00482efb     MOV        dword ptr [ESP + param_4],0x0
+//         00482f03     JLE        LAB_00482fdb
+//                               LAB_00482f09                                                 XREF[1]:     00482fd5(j)
+//                              rmm_dbct.cpp:172 (16)
+//         00482f09     LEA        EDX=>local_30,[ESP + 0x14]
+//         00482f0d     PUSH       EDX
+//         00482f0e     PUSH       s_%d                                             = 6425h
+//         00482f13     PUSH       EBP
+//         00482f14     CALL       fscanf                                           undefined fscanf()
+//                              rmm_dbct.cpp:173 (20)
+//         00482f19     MOV        EAX,dword ptr [ESP + local_30]
+//         00482f1d     MOV        this,dword ptr [EDI + 0x4f58]
+//         00482f23     ADD        ESP,0xc
+//         00482f26     LEA        EAX,[EAX + EAX*0x8]
+//         00482f29     LEA        ESI,[ECX + EAX*0x8 + this->number_of_players]
+//                              rmm_dbct.cpp:174 (12)
+//         00482f2d     PUSH       ESI
+//         00482f2e     PUSH       s_%d                                             = 6425h
+//         00482f33     PUSH       EBP
+//         00482f34     CALL       fscanf                                           undefined fscanf()
+//                              rmm_dbct.cpp:176 (11)
+//         00482f39     MOV        EAX,dword ptr [ESI]
+//         00482f3b     XOR        EBX,EBX
+//         00482f3d     ADD        ESP,0xc
+//         00482f40     CMP        EAX,EBX
+//         00482f42     JLE        LAB_00482fc3
+//                              rmm_dbct.cpp:178 (11)
+//         00482f44     PUSH       0x2c
+//         00482f46     PUSH       EAX
+//         00482f47     CALL       calloc                                           undefined calloc()
+//         00482f4c     MOV        dword ptr [ESI + 0x4],EAX
+//                              rmm_dbct.cpp:179 (9)
+//         00482f4f     MOV        EAX,dword ptr [ESI]
+//         00482f51     ADD        ESP,0x8
+//         00482f54     TEST       EAX,EAX
+//         00482f56     JLE        LAB_00482fc6
+//                              rmm_dbct.cpp:242 (2)
+//         00482f58     XOR        EDI,EDI
+//                               LAB_00482f5a                                                 XREF[1]:     00482fbb(j)
+//                              rmm_dbct.cpp:193 (64)
+//         00482f5a     MOV        EDX,dword ptr [ESI + 0x4]
+//         00482f5d     LEA        EAX,[EDX + EDI*0x1]
+//         00482f60     LEA        this,[EAX + 0x28]
+//         00482f63     LEA        EDX,[EAX + 0x24]
+//         00482f66     PUSH       this
+//         00482f67     LEA        this,[EAX + 0x20]
+//         00482f6a     PUSH       EDX
+//         00482f6b     PUSH       this
+//         00482f6c     LEA        EDX,[EAX + 0x1c]
+//         00482f6f     LEA        this,[EAX + 0x18]
+//         00482f72     PUSH       EDX
+//         00482f73     PUSH       this
+//         00482f74     LEA        EDX,[EAX + 0x14]
+//         00482f77     LEA        this,[EAX + 0x10]
+//         00482f7a     PUSH       EDX
+//         00482f7b     PUSH       this
+//         00482f7c     LEA        EDX,[EAX + 0xc]
+//         00482f7f     LEA        this=>local_4,[ESP + 0x5c]
+//         00482f83     PUSH       EDX
+//         00482f84     PUSH       this
+//         00482f85     LEA        EDX=>temp_scale_flag,[ESP + 0x60]
+//         00482f89     LEA        this,[EAX + 0x4]
+//         00482f8c     PUSH       EDX
+//         00482f8d     PUSH       this
+//         00482f8e     PUSH       EAX
+//         00482f8f     PUSH       s_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d               = "%d %d %d %d %d %d %d %d %d %d %d %d"
+//         00482f94     PUSH       EBP
+//         00482f95     CALL       fscanf                                           undefined fscanf()
+//                              rmm_dbct.cpp:194 (15)
+//         00482f9a     MOV        EDX,dword ptr [ESI + 0x4]
+//         00482f9d     MOV        AL,byte ptr [ESP + temp_scale_flag]
+//         00482fa1     ADD        ESP,0x38
+//         00482fa4     INC        EBX
+//         00482fa5     MOV        byte ptr [EDX + EDI*0x1 + 0x8],AL
+//                              rmm_dbct.cpp:195 (20)
+//         00482fa9     MOV        this,dword ptr [ESI + 0x4]
+//         00482fac     MOV        DL,byte ptr [ESP + local_4]
+//         00482fb0     MOV        byte ptr [ECX + EDI*0x1 + this+0x9],DL
+//         00482fb4     MOV        EAX,dword ptr [ESI]
+//         00482fb6     ADD        EDI,0x2c
+//         00482fb9     CMP        EBX,EAX
+//         00482fbb     JL         LAB_00482f5a
+//                              rmm_dbct.cpp:198 (6)
+//         00482fbd     MOV        EDI,dword ptr [ESP + land_num]
+//         00482fc1     JMP        LAB_00482fc6
+//                               LAB_00482fc3                                                 XREF[1]:     00482f42(j)
+//                              rmm_dbct.cpp:199 (3)
+//         00482fc3     MOV        dword ptr [ESI + 0x4],EBX
+//                               LAB_00482fc6                                                 XREF[2]:     00482f56(j), 00482fc1(j)
+//                              rmm_dbct.cpp:170 (21)
+//         00482fc6     MOV        EAX,dword ptr [ESP + param_4]
+//         00482fca     MOV        this,dword ptr [ESP + temp_terrain_type]
+//         00482fce     INC        EAX
+//         00482fcf     CMP        EAX,this
+//         00482fd1     MOV        dword ptr [ESP + param_4],EAX
+//         00482fd5     JL         LAB_00482f09
+//                               LAB_00482fdb                                                 XREF[1]:     00482f03(j)
+//                              rmm_dbct.cpp:201 (9)
+//         00482fdb     PUSH       EBP
+//         00482fdc     CALL       fclose                                           undefined fclose()
+//         00482fe1     ADD        ESP,0x4
+//                              rmm_dbct.cpp:242 (12)
+//         00482fe4     MOV        EAX,EDI
+//         00482fe6     POP        EDI
+//         00482fe7     POP        ESI
+//         00482fe8     POP        EBP
+//         00482fe9     POP        EBX
+//         00482fea     ADD        ESP,0x34
+//         00482fed     RET        0x10
+//                               LAB_00482ff0                                                 XREF[1]:     00482c4c(j)
+//                              rmm_dbct.cpp:239 (3)
+//         00482ff0     MOV        dword ptr [EBP],ESI
+//                              rmm_dbct.cpp:240 (6)
+//         00482ff3     MOV        dword ptr [EDI + 0x4f58],ESI
+//                               LAB_00482ff9                                                 XREF[1]:     00482edc(j)
+//                              rmm_dbct.cpp:242 (12)
+//         00482ff9     MOV        EAX,EDI
+//         00482ffb     POP        EDI
+//         00482ffc     POP        ESI
+//         00482ffd     POP        EBP
+//         00482ffe     POP        EBX
+//         00482fff     ADD        ESP,0x34
+//         00483002     RET        0x10
+//                               LAB_00483005                                                 XREF[1]:     00482cf0(j)
+//                              rmm_dbct.cpp:129 (7)
+//         00483005     MOV        dword ptr [ESI + 0x28],0x0
+//                              rmm_dbct.cpp:128 (5)
+//         0048300c     JMP        LAB_00482db3
+//         00483011     ??         90h
+//         00483012     NOP
+//         00483013     NOP
+//         00483014     NOP
+//         00483015     NOP
+//         00483016     NOP
+//         00483017     NOP
+//         00483018     NOP
+//         00483019     NOP
+//         0048301a     NOP
+//         0048301b     NOP
+//         0048301c     NOP
+//         0048301d     NOP
+//         0048301e     NOP
+//         0048301f     NOP
 }
 
 RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(int param_1) {

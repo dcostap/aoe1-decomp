@@ -6,44 +6,66 @@ TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech(int param_1, RGE_Action_Object* p
 //                              undefined __thiscall TRIBE_Action_Make_Tech(TRIBE_Action_Make_Tech *
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Action_M    ECX:4 (auto)   this
-//              RGE_Action_Obj    Stack[0x4]:4   param_1                   XREF[1]:     004d2250(R)
-//              short             Stack[0x8]:2   param_2                   XREF[1]:     004d2263(R)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     004d225f(R)
-//                               ??0TRIBE_Action_Make_Tech@@QAE@PAVRGE_Action_Object@@FH@Z    XREF[1]:     do_command_research:00509b8f(c)
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004d21cc(R)
+//              RGE_Action_Obj    Stack[0x8]:4   param_2                   XREF[1]:     004d21c6(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     004d21e6(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004d220e(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004d21d6(W)
+//                               ??0TRIBE_Action_Make_Tech@@QAE@HPAVRGE_Action_Object@@@Z     XREF[1]:     create_action:004d0253(c)
 //                               TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech
-//                              tact_tek.cpp:41 (19)
-//         004d2250     MOV        EAX,dword ptr [ESP + param_1]
-//         004d2254     PUSH       ESI
-//         004d2255     PUSH       0x1
-//         004d2257     MOV        ESI,this
-//         004d2259     PUSH       EAX
-//         004d225a     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, RGE_A
-//         004d225f     MOV        this,dword ptr [ESP + param_3]
-//                              tact_tek.cpp:44 (24)
-//         004d2263     MOV        DX,word ptr [ESP + param_2]
-//         004d2268     MOV        dword ptr [ESI + 0x44],this
-//         004d226b     MOV        dword ptr [ESI],TRIBE_Action_Make_Tech::`vftab   = 004d2230
-//         004d2271     MOV        word ptr [ESI + 0x4],0x67
-//         004d2277     MOV        word ptr [ESI + 0x40],DX
-//                              tact_tek.cpp:45 (6)
-//         004d227b     MOV        EAX,ESI
-//         004d227d     POP        ESI
-//         004d227e     RET        0xc
-//         004d2281     ??         90h
-//         004d2282     NOP
-//         004d2283     NOP
-//         004d2284     NOP
-//         004d2285     NOP
-//         004d2286     NOP
-//         004d2287     NOP
-//         004d2288     NOP
-//         004d2289     NOP
-//         004d228a     NOP
-//         004d228b     NOP
-//         004d228c     NOP
-//         004d228d     NOP
-//         004d228e     NOP
-//         004d228f     NOP
+//                              tact_tek.cpp:29 (47)
+//         004d21b0     PUSH       -0x1
+//         004d21b2     PUSH       FUN_00560148
+//         004d21b7     MOV        EAX,FS:[0x0]
+//         004d21bd     PUSH       EAX
+//         004d21be     MOV        dword ptr FS:[0x0],ESP
+//         004d21c5     PUSH       this
+//         004d21c6     MOV        EAX,dword ptr [ESP + param_2]
+//         004d21ca     PUSH       ESI
+//         004d21cb     PUSH       EDI
+//         004d21cc     MOV        EDI,dword ptr [ESP + param_1]
+//         004d21d0     PUSH       0x1
+//         004d21d2     MOV        ESI,this
+//         004d21d4     PUSH       EAX
+//         004d21d5     PUSH       EDI
+//         004d21d6     MOV        dword ptr [ESP + local_10],ESI
+//         004d21da     CALL       RGE_Action::RGE_Action                           undefined RGE_Action(RGE_Action * this, int p
+//                              tact_tek.cpp:32 (35)
+//         004d21df     LEA        this,[ESI + 0x40]
+//         004d21e2     PUSH       0x2
+//         004d21e4     PUSH       this
+//         004d21e5     PUSH       EDI
+//         004d21e6     MOV        dword ptr [ESP + local_4],0x0
+//         004d21ee     MOV        dword ptr [ESI],TRIBE_Action_Make_Tech::`vftab   = 004d2230
+//                              language.dll match for 0x67: "Comic Sans MS"
+//         004d21f4     MOV        word ptr [ESI + 0x4],0x67
+//         004d21fa     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004d21ff     ADD        ESP,0xc
+//                              tact_tek.cpp:33 (12)
+//         004d2202     LEA        EDX,[ESI + 0x44]
+//         004d2205     PUSH       0x4
+//         004d2207     PUSH       EDX
+//         004d2208     PUSH       EDI
+//         004d2209     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              tact_tek.cpp:34 (24)
+//         004d220e     MOV        this,dword ptr [ESP + local_c]
+//         004d2212     ADD        ESP,0xc
+//         004d2215     MOV        EAX,ESI
+//         004d2217     MOV        dword ptr FS:[0x0],this
+//         004d221e     POP        EDI
+//         004d221f     POP        ESI
+//         004d2220     ADD        ESP,0x10
+//         004d2223     RET        0x8
+//         004d2226     ??         90h
+//         004d2227     NOP
+//         004d2228     NOP
+//         004d2229     NOP
+//         004d222a     NOP
+//         004d222b     NOP
+//         004d222c     NOP
+//         004d222d     NOP
+//         004d222e     NOP
+//         004d222f     NOP
 }
 
 TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech(RGE_Action_Object* param_1, short param_2, int param_3) {

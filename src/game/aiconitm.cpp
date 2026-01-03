@@ -3,88 +3,113 @@
 
 ConstructionItem::ConstructionItem() {
     /* TODO: Stub */
-//                              undefined __thiscall ConstructionItem(ConstructionItem * this, Const
+//                              undefined __thiscall ConstructionItem(ConstructionItem * this)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              ConstructionIt    ECX:4 (auto)   this
-//              ConstructionIt    Stack[0x4]:4   param_1                   XREF[1]:     0040a912(R)
-//                               ??0ConstructionItem@@QAE@ABV0@@Z
-//                               ConstructionItem::ConstructionItem
-//                              aiconitm.cpp:63 (46)
-//         0040a910     PUSH       ESI
-//         0040a911     PUSH       EDI
-//         0040a912     MOV        EDI,dword ptr [ESP + param_1]
-//         0040a916     MOV        ESI,this
-//         0040a918     PUSH       EDI
-//         0040a919     CALL       BaseItem::BaseItem                               undefined BaseItem(BaseItem * this, BaseItem
-//         0040a91e     XOR        EAX,EAX
-//         0040a920     MOV        dword ptr [ESI + 0x6c],EAX
-//         0040a923     MOV        dword ptr [ESI + 0x70],EAX
-//         0040a926     MOV        EAX,dword ptr [EDI + 0x74]
-//         0040a929     MOV        dword ptr [ESI + 0x74],EAX
-//         0040a92c     MOV        this,dword ptr [EDI + 0x78]
-//         0040a92f     MOV        dword ptr [ESI + 0x78],this
-//         0040a932     MOV        EDX,dword ptr [EDI + 0x7c]
-//         0040a935     MOV        dword ptr [ESI + 0x7c],EDX
-//         0040a938     MOV        dword ptr [ESI],ConstructionItem::`vftable'      = 0040a850
-//                              aiconitm.cpp:64 (7)
-//         0040a93e     MOV        EAX,ESI
-//         0040a940     POP        EDI
-//         0040a941     POP        ESI
-//         0040a942     RET        0x4
-//         0040a945     ??         90h
-//         0040a946     NOP
-//         0040a947     NOP
-//         0040a948     NOP
-//         0040a949     NOP
-//         0040a94a     NOP
-//         0040a94b     NOP
-//         0040a94c     NOP
-//         0040a94d     NOP
-//         0040a94e     NOP
-//         0040a94f     NOP
+//                               ??0ConstructionItem@@QAE@XZ                                  XREF[6]:     ConstructionAIModule:0040aadf(c),
+//                               ConstructionItem::ConstructionItem                                        ConstructionAIModule:0040aaf7(c),
+//                                                                                                         ConstructionAIModule:0040ac0d(c),
+//                                                                                                         ConstructionAIModule:0040ac2c(c),
+//                                                                                                         canPlace:004d5fb9(c),
+//                                                                                                         placeStructure:004d62b5(c)
+//                              aiconitm.cpp:26 (31)
+//         0040a820     PUSH       ESI
+//         0040a821     MOV        ESI,this
+//         0040a823     CALL       BaseItem::BaseItem                               undefined BaseItem(BaseItem * this)
+//         0040a828     XOR        EAX,EAX
+//         0040a82a     MOV        dword ptr [ESI],ConstructionItem::`vftable'      = 0040a850
+//         0040a830     MOV        dword ptr [ESI + 0x6c],EAX
+//         0040a833     MOV        dword ptr [ESI + 0x70],EAX
+//         0040a836     MOV        dword ptr [ESI + 0x74],EAX
+//         0040a839     MOV        dword ptr [ESI + 0x78],EAX
+//         0040a83c     MOV        dword ptr [ESI + 0x7c],EAX
+//                              aiconitm.cpp:27 (4)
+//         0040a83f     MOV        EAX,ESI
+//         0040a841     POP        ESI
+//         0040a842     RET
+//         0040a843     ??         90h
+//         0040a844     NOP
+//         0040a845     NOP
+//         0040a846     NOP
+//         0040a847     NOP
+//         0040a848     NOP
+//         0040a849     NOP
+//         0040a84a     NOP
+//         0040a84b     NOP
+//         0040a84c     NOP
+//         0040a84d     NOP
+//         0040a84e     NOP
+//         0040a84f     NOP
 }
 
 ConstructionItem::ConstructionItem(float param_1, float param_2, float param_3, float param_4, float param_5, float param_6, int param_7, char* param_8) {
     /* TODO: Stub */
-//                              undefined __thiscall ConstructionItem(ConstructionItem * this, Const
+//                              undefined __thiscall ConstructionItem(ConstructionItem * this, float
 //              undefined         <UNASSIGNED>   <RETURN>
 //              ConstructionIt    ECX:4 (auto)   this
-//              ConstructionIt    Stack[0x4]:4   param_1                   XREF[1]:     0040a912(R)
-//                               ??0ConstructionItem@@QAE@ABV0@@Z
-//                               ConstructionItem::ConstructionItem
-//                              aiconitm.cpp:63 (46)
-//         0040a910     PUSH       ESI
-//         0040a911     PUSH       EDI
-//         0040a912     MOV        EDI,dword ptr [ESP + param_1]
-//         0040a916     MOV        ESI,this
-//         0040a918     PUSH       EDI
-//         0040a919     CALL       BaseItem::BaseItem                               undefined BaseItem(BaseItem * this, BaseItem
-//         0040a91e     XOR        EAX,EAX
-//         0040a920     MOV        dword ptr [ESI + 0x6c],EAX
-//         0040a923     MOV        dword ptr [ESI + 0x70],EAX
-//         0040a926     MOV        EAX,dword ptr [EDI + 0x74]
-//         0040a929     MOV        dword ptr [ESI + 0x74],EAX
-//         0040a92c     MOV        this,dword ptr [EDI + 0x78]
-//         0040a92f     MOV        dword ptr [ESI + 0x78],this
-//         0040a932     MOV        EDX,dword ptr [EDI + 0x7c]
-//         0040a935     MOV        dword ptr [ESI + 0x7c],EDX
-//         0040a938     MOV        dword ptr [ESI],ConstructionItem::`vftable'      = 0040a850
-//                              aiconitm.cpp:64 (7)
-//         0040a93e     MOV        EAX,ESI
-//         0040a940     POP        EDI
-//         0040a941     POP        ESI
-//         0040a942     RET        0x4
-//         0040a945     ??         90h
-//         0040a946     NOP
-//         0040a947     NOP
-//         0040a948     NOP
-//         0040a949     NOP
-//         0040a94a     NOP
-//         0040a94b     NOP
-//         0040a94c     NOP
-//         0040a94d     NOP
-//         0040a94e     NOP
-//         0040a94f     NOP
+//              float             Stack[0x4]:4   param_1                   XREF[1]:     0040a88a(R)
+//              float             Stack[0x8]:4   param_2                   XREF[1]:     0040a885(R)
+//              float             Stack[0xc]:4   param_3                   XREF[1]:     0040a880(R)
+//              float             Stack[0x10]:4  param_4                   XREF[1]:     0040a874(R)
+//              float             Stack[0x14]:4  param_5                   XREF[1]:     0040a87b(R)
+//              float             Stack[0x18]:4  param_6                   XREF[1]:     0040a870(R)
+//              int               Stack[0x1c]:4  param_7                   XREF[1]:     0040a894(R)
+//              char *            Stack[0x20]:4  param_8                   XREF[1]:     0040a88f(R)
+//                               ??0ConstructionItem@@QAE@MMMMMMHPAD@Z                        XREF[8]:     ConstructionAIModule:0040ae86(c),
+//                               ConstructionItem::ConstructionItem                                        ConstructionAIModule:0040b071(c),
+//                                                                                                         loadConstructionPlan:0040b89d(c),
+//                                                                                                         placeDock:004d9e96(c),
+//                                                                                                         influencePlaceStructure:004db774(c
+//                                                                                                         influencePlaceStructure:004db7f0(c
+//                                                                                                         influencePlaceStructure:004dc00b(c
+//                                                                                                         influencePlaceStructure:004dc068(c
+//                              aiconitm.cpp:39 (77)
+//         0040a870     MOV        EAX,dword ptr [ESP + param_6]
+//         0040a874     MOV        EDX,dword ptr [ESP + param_4]
+//         0040a878     PUSH       ESI
+//         0040a879     MOV        ESI,this
+//         0040a87b     MOV        this,dword ptr [ESP + param_5]
+//         0040a87f     PUSH       EAX
+//         0040a880     MOV        EAX,dword ptr [ESP + param_3]
+//         0040a884     PUSH       this
+//         0040a885     MOV        this,dword ptr [ESP + param_2]
+//         0040a889     PUSH       EDX
+//         0040a88a     MOV        EDX,dword ptr [ESP + param_1]
+//         0040a88e     PUSH       EAX
+//         0040a88f     MOV        EAX,dword ptr [ESP + param_8]
+//         0040a893     PUSH       this
+//         0040a894     MOV        this,dword ptr [ESP + param_7]
+//         0040a898     PUSH       EDX
+//         0040a899     PUSH       EAX
+//         0040a89a     PUSH       -0x1
+//         0040a89c     PUSH       -0x1
+//         0040a89e     PUSH       this
+//         0040a89f     MOV        this,ESI
+//         0040a8a1     CALL       BaseItem::BaseItem                               undefined BaseItem(BaseItem * this, int param
+//         0040a8a6     XOR        EAX,EAX
+//         0040a8a8     MOV        dword ptr [ESI],ConstructionItem::`vftable'      = 0040a850
+//         0040a8ae     MOV        dword ptr [ESI + 0x6c],EAX
+//         0040a8b1     MOV        dword ptr [ESI + 0x70],EAX
+//         0040a8b4     MOV        dword ptr [ESI + 0x74],EAX
+//         0040a8b7     MOV        dword ptr [ESI + 0x78],EAX
+//         0040a8ba     MOV        dword ptr [ESI + 0x7c],EAX
+//                              aiconitm.cpp:40 (6)
+//         0040a8bd     MOV        EAX,ESI
+//         0040a8bf     POP        ESI
+//         0040a8c0     RET        0x20
+//         0040a8c3     ??         90h
+//         0040a8c4     NOP
+//         0040a8c5     NOP
+//         0040a8c6     NOP
+//         0040a8c7     NOP
+//         0040a8c8     NOP
+//         0040a8c9     NOP
+//         0040a8ca     NOP
+//         0040a8cb     NOP
+//         0040a8cc     NOP
+//         0040a8cd     NOP
+//         0040a8ce     NOP
+//         0040a8cf     NOP
 }
 
 ConstructionItem::ConstructionItem(ConstructionItem* param_1) {
@@ -92,42 +117,43 @@ ConstructionItem::ConstructionItem(ConstructionItem* param_1) {
 //                              undefined __thiscall ConstructionItem(ConstructionItem * this, Const
 //              undefined         <UNASSIGNED>   <RETURN>
 //              ConstructionIt    ECX:4 (auto)   this
-//              ConstructionIt    Stack[0x4]:4   param_1                   XREF[1]:     0040a912(R)
-//                               ??0ConstructionItem@@QAE@ABV0@@Z
-//                               ConstructionItem::ConstructionItem
-//                              aiconitm.cpp:63 (46)
-//         0040a910     PUSH       ESI
-//         0040a911     PUSH       EDI
-//         0040a912     MOV        EDI,dword ptr [ESP + param_1]
-//         0040a916     MOV        ESI,this
-//         0040a918     PUSH       EDI
-//         0040a919     CALL       BaseItem::BaseItem                               undefined BaseItem(BaseItem * this, BaseItem
-//         0040a91e     XOR        EAX,EAX
-//         0040a920     MOV        dword ptr [ESI + 0x6c],EAX
-//         0040a923     MOV        dword ptr [ESI + 0x70],EAX
-//         0040a926     MOV        EAX,dword ptr [EDI + 0x74]
-//         0040a929     MOV        dword ptr [ESI + 0x74],EAX
-//         0040a92c     MOV        this,dword ptr [EDI + 0x78]
-//         0040a92f     MOV        dword ptr [ESI + 0x78],this
-//         0040a932     MOV        EDX,dword ptr [EDI + 0x7c]
-//         0040a935     MOV        dword ptr [ESI + 0x7c],EDX
-//         0040a938     MOV        dword ptr [ESI],ConstructionItem::`vftable'      = 0040a850
-//                              aiconitm.cpp:64 (7)
-//         0040a93e     MOV        EAX,ESI
-//         0040a940     POP        EDI
-//         0040a941     POP        ESI
-//         0040a942     RET        0x4
-//         0040a945     ??         90h
-//         0040a946     NOP
-//         0040a947     NOP
-//         0040a948     NOP
-//         0040a949     NOP
-//         0040a94a     NOP
-//         0040a94b     NOP
-//         0040a94c     NOP
-//         0040a94d     NOP
-//         0040a94e     NOP
-//         0040a94f     NOP
+//              ConstructionIt    Stack[0x4]:4   param_1                   XREF[1]:     0040a8d2(R)
+//                               ??0ConstructionItem@@QAE@PAV0@@Z                             XREF[3]:     placeStructure:004d61ad(c),
+//                               ConstructionItem::ConstructionItem                                        placeStructure:004d64ba(c),
+//                                                                                                         placeStructure:004d669a(c)
+//                              aiconitm.cpp:51 (46)
+//         0040a8d0     PUSH       ESI
+//         0040a8d1     PUSH       EDI
+//         0040a8d2     MOV        EDI,dword ptr [ESP + param_1]
+//         0040a8d6     MOV        ESI,this
+//         0040a8d8     PUSH       EDI
+//         0040a8d9     CALL       BaseItem::BaseItem                               undefined BaseItem(BaseItem * this, BaseItem
+//         0040a8de     XOR        EAX,EAX
+//         0040a8e0     MOV        dword ptr [ESI + 0x6c],EAX
+//         0040a8e3     MOV        dword ptr [ESI + 0x70],EAX
+//         0040a8e6     MOV        EAX,dword ptr [EDI + 0x74]
+//         0040a8e9     MOV        dword ptr [ESI + 0x74],EAX
+//         0040a8ec     MOV        this,dword ptr [EDI + 0x78]
+//         0040a8ef     MOV        dword ptr [ESI + 0x78],this
+//         0040a8f2     MOV        EDX,dword ptr [EDI + 0x7c]
+//         0040a8f5     MOV        dword ptr [ESI + 0x7c],EDX
+//         0040a8f8     MOV        dword ptr [ESI],ConstructionItem::`vftable'      = 0040a850
+//                              aiconitm.cpp:52 (7)
+//         0040a8fe     MOV        EAX,ESI
+//         0040a900     POP        EDI
+//         0040a901     POP        ESI
+//         0040a902     RET        0x4
+//         0040a905     ??         90h
+//         0040a906     NOP
+//         0040a907     NOP
+//         0040a908     NOP
+//         0040a909     NOP
+//         0040a90a     NOP
+//         0040a90b     NOP
+//         0040a90c     NOP
+//         0040a90d     NOP
+//         0040a90e     NOP
+//         0040a90f     NOP
 }
 
 ConstructionItem::ConstructionItem(ConstructionItem* param_1) {

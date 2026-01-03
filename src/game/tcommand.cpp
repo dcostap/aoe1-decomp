@@ -2214,78 +2214,71 @@ void TRIBE_Command::do_command_queue(TRIBE_Command_Queue* param_1) {
 
 void TRIBE_Command::command_make(RGE_Static_Object* param_1, short param_2) {
     /* TODO: Stub */
-//                              void __thiscall command_make(TRIBE_Command * this, int param_1, int
+//                              void __thiscall command_make(TRIBE_Command * this, RGE_Static_Object
 //              void              <VOID>         <RETURN>
 //              TRIBE_Command *   ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     0050a883(R)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     0050a863(R)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     0050a87f(R)
-//              int               Stack[0x10]:4  param_4                   XREF[1]:     0050a887(R)
-//                               ?command_make@TRIBE_Command@@QAEXHHHH@Z                      XREF[1]:     trainUnit:0051520a(c)
-//                               TRIBE_Command::command_make
-//                              tcommand.cpp:906 (3)
-//         0050a860     PUSH       EBX
-//         0050a861     PUSH       ESI
-//         0050a862     PUSH       EDI
-//                              tcommand.cpp:916 (10)
-//         0050a863     MOV        EDI,dword ptr [ESP + param_2]
-//         0050a867     TEST       EDI,EDI
-//         0050a869     MOV        EBX,this
-//         0050a86b     JL         LAB_0050a8bb
-//                              tcommand.cpp:921 (14)
-//         0050a86d     PUSH       0x10
-//         0050a86f     PUSH       0x1
-//         0050a871     CALL       calloc                                           undefined calloc()
-//         0050a876     MOV        ESI,EAX
-//         0050a878     ADD        ESP,0x8
-//                              tcommand.cpp:922 (4)
-//         0050a87b     TEST       ESI,ESI
-//         0050a87d     JZ         LAB_0050a8bb
-//                              tcommand.cpp:929 (8)
-//         0050a87f     MOV        this,dword ptr [ESP + param_3]
-//         0050a883     MOV        EAX,dword ptr [ESP + param_1]
-//                              tcommand.cpp:930 (4)
-//         0050a887     MOV        EDX,dword ptr [ESP + param_4]
-//                              tcommand.cpp:934 (38)
-//         0050a88b     PUSH       this
-//         0050a88c     PUSH       EDI
-//         0050a88d     MOV        dword ptr [ESI + 0x4],EDI
-//         0050a890     MOV        byte ptr [ESI + 0x8],AL
-//         0050a893     MOV        byte ptr [ESI],0x64
-//         0050a896     MOV        word ptr [ESI + 0xa],this
-//         0050a89a     MOV        dword ptr [ESI + 0xc],EDX
-//         0050a89d     PUSH       EAX
-//         0050a89e     MOV        EAX,[L]                                          = 00000000
-//         0050a8a3     PUSH       s_______>SEND_CMD_MAKE2_(PLR=%d,BL               = "      >SEND CMD MAKE2 (PLR=%d,BLDG=%d,OBJ=
-//         0050a8a8     PUSH       EAX
-//         0050a8a9     CALL       TDebuggingLog::Log                               void Log(TDebuggingLog * this, char * param_1
-//         0050a8ae     ADD        ESP,0x14
-//                              tcommand.cpp:937 (10)
-//         0050a8b1     MOV        this,EBX
-//         0050a8b3     PUSH       0x10
-//         0050a8b5     PUSH       ESI
-//         0050a8b6     CALL       RGE_Command::submit                              void submit(RGE_Command * this, void * param_
-//                               LAB_0050a8bb                                                 XREF[2]:     0050a86b(j), 0050a87d(j)
-//                              tcommand.cpp:938 (6)
-//         0050a8bb     POP        EDI
-//         0050a8bc     POP        ESI
-//         0050a8bd     POP        EBX
-//         0050a8be     RET        0x10
-//         0050a8c1     ??         90h
-//         0050a8c2     NOP
-//         0050a8c3     NOP
-//         0050a8c4     NOP
-//         0050a8c5     NOP
-//         0050a8c6     NOP
-//         0050a8c7     NOP
-//         0050a8c8     NOP
-//         0050a8c9     NOP
-//         0050a8ca     NOP
-//         0050a8cb     NOP
-//         0050a8cc     NOP
-//         0050a8cd     NOP
-//         0050a8ce     NOP
-//         0050a8cf     NOP
+//              RGE_Static_Obj    Stack[0x4]:4   param_1                   XREF[1]:     0050a7f3(R)
+//              short             Stack[0x8]:2   param_2                   XREF[1]:     0050a818(R)
+//                               ?command_make@TRIBE_Command@@QAEXPAVRGE_Static_Object@@F@Z   XREF[6]:     command_building_make_obj:0051393f
+//                               TRIBE_Command::command_make                                               cheat:00530b5a(c),
+//                                                                                                         cheat:00530ba8(c),
+//                                                                                                         cheat:00530df1(c),
+//                                                                                                         cheat:00530e6b(c),
+//                                                                                                         cheat:0053106e(c)
+//                              tcommand.cpp:872 (3)
+//         0050a7f0     PUSH       EBX
+//         0050a7f1     PUSH       ESI
+//         0050a7f2     PUSH       EDI
+//                              tcommand.cpp:878 (10)
+//         0050a7f3     MOV        EDI,dword ptr [ESP + param_1]
+//         0050a7f7     TEST       EDI,EDI
+//         0050a7f9     MOV        EBX,this
+//         0050a7fb     JZ         LAB_0050a859
+//                              tcommand.cpp:883 (14)
+//         0050a7fd     PUSH       0x10
+//         0050a7ff     PUSH       0x1
+//         0050a801     CALL       calloc                                           undefined calloc()
+//         0050a806     MOV        ESI,EAX
+//         0050a808     ADD        ESP,0x8
+//                              tcommand.cpp:884 (4)
+//         0050a80b     TEST       ESI,ESI
+//         0050a80d     JZ         LAB_0050a859
+//                              tcommand.cpp:888 (6)
+//         0050a80f     MOV        EAX,dword ptr [EDI + 0x4]
+//         0050a812     MOV        dword ptr [ESI + 0x4],EAX
+//                              tcommand.cpp:889 (3)
+//         0050a815     MOV        this,dword ptr [EDI + 0xc]
+//                              tcommand.cpp:891 (18)
+//         0050a818     MOV        AX,word ptr [ESP + param_2]
+//         0050a81d     MOV        DL,byte ptr [this->field0_0x0 + 0x4a]
+//         0050a820     MOV        byte ptr [ESI],0x64
+//         0050a823     MOV        byte ptr [ESI + 0x8],DL
+//         0050a826     MOV        word ptr [ESI + 0xa],AX
+//                              tcommand.cpp:892 (7)
+//         0050a82a     MOV        dword ptr [ESI + 0xc],0xffffffff
+//                              tcommand.cpp:896 (30)
+//         0050a831     MOV        this,dword ptr [EDI + 0x8]
+//         0050a834     MOVSX      EAX,AX
+//         0050a837     MOV        EDX,dword ptr [ECX + this->field8_0x8]
+//         0050a83a     PUSH       EAX
+//         0050a83b     MOV        EAX,[L]                                          = 00000000
+//         0050a840     PUSH       EDX
+//         0050a841     PUSH       s_______>SEND_CMD_MAKE_(UNIT=%s,OB               = "      >SEND CMD MAKE (UNIT=%s,OBJ=%d)"
+//         0050a846     PUSH       EAX
+//         0050a847     CALL       TDebuggingLog::Log                               void Log(TDebuggingLog * this, char * param_1
+//         0050a84c     ADD        ESP,0x10
+//                              tcommand.cpp:899 (10)
+//         0050a84f     MOV        this,EBX
+//         0050a851     PUSH       0x10
+//         0050a853     PUSH       ESI
+//         0050a854     CALL       RGE_Command::submit                              void submit(RGE_Command * this, void * param_
+//                               LAB_0050a859                                                 XREF[2]:     0050a7fb(j), 0050a80d(j)
+//                              tcommand.cpp:900 (6)
+//         0050a859     POP        EDI
+//         0050a85a     POP        ESI
+//         0050a85b     POP        EBX
+//         0050a85c     RET        0x8
+//         0050a85f     ??         90h
     return;
 }
 
@@ -2368,79 +2361,68 @@ void TRIBE_Command::command_make(int param_1, int param_2, int param_3, int para
 
 void TRIBE_Command::command_research(RGE_Static_Object* param_1, short param_2) {
     /* TODO: Stub */
-//                              void __thiscall command_research(TRIBE_Command * this, int param_1,
+//                              void __thiscall command_research(TRIBE_Command * this, RGE_Static_Ob
 //              void              <VOID>         <RETURN>
 //              TRIBE_Command *   ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     0050a963(R)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     0050a943(R)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     0050a95f(R)
-//              int               Stack[0x10]:4  param_4                   XREF[1]:     0050a967(R)
-//                               ?command_research@TRIBE_Command@@QAEXHHHH@Z                  XREF[1]:     research:0051529a(c)
+//              RGE_Static_Obj    Stack[0x4]:4   param_1                   XREF[1]:     0050a8d3(R)
+//              short             Stack[0x8]:2   param_2                   XREF[1]:     0050a8f8(R)
+//                               ?command_research@TRIBE_Command@@QAEXPAVRGE_Static_Object@@  XREF[1]:     command_building_make_tech:0051373
 //                               TRIBE_Command::command_research
-//                              tcommand.cpp:978 (3)
-//         0050a940     PUSH       EBX
-//         0050a941     PUSH       ESI
-//         0050a942     PUSH       EDI
-//                              tcommand.cpp:988 (10)
-//         0050a943     MOV        EDI,dword ptr [ESP + param_2]
-//         0050a947     TEST       EDI,EDI
-//         0050a949     MOV        EBX,this
-//         0050a94b     JL         LAB_0050a99b
-//                              tcommand.cpp:993 (14)
-//         0050a94d     PUSH       0x10
-//         0050a94f     PUSH       0x1
-//         0050a951     CALL       calloc                                           undefined calloc()
-//         0050a956     MOV        ESI,EAX
-//         0050a958     ADD        ESP,0x8
-//                              tcommand.cpp:994 (4)
-//         0050a95b     TEST       ESI,ESI
-//         0050a95d     JZ         LAB_0050a99b
-//                              tcommand.cpp:1001 (8)
-//         0050a95f     MOV        this,dword ptr [ESP + param_3]
-//         0050a963     MOV        EAX,dword ptr [ESP + param_1]
-//                              tcommand.cpp:1002 (4)
-//         0050a967     MOV        EDX,dword ptr [ESP + param_4]
-//                              tcommand.cpp:1006 (38)
-//         0050a96b     PUSH       this
-//         0050a96c     PUSH       EDI
-//         0050a96d     MOV        dword ptr [ESI + 0x4],EDI
-//         0050a970     MOV        byte ptr [ESI + 0x8],AL
+//                              tcommand.cpp:944 (3)
+//         0050a8d0     PUSH       EBX
+//         0050a8d1     PUSH       ESI
+//         0050a8d2     PUSH       EDI
+//                              tcommand.cpp:950 (10)
+//         0050a8d3     MOV        EDI,dword ptr [ESP + param_1]
+//         0050a8d7     TEST       EDI,EDI
+//         0050a8d9     MOV        EBX,this
+//         0050a8db     JZ         LAB_0050a939
+//                              tcommand.cpp:955 (14)
+//         0050a8dd     PUSH       0x10
+//         0050a8df     PUSH       0x1
+//         0050a8e1     CALL       calloc                                           undefined calloc()
+//         0050a8e6     MOV        ESI,EAX
+//         0050a8e8     ADD        ESP,0x8
+//                              tcommand.cpp:956 (4)
+//         0050a8eb     TEST       ESI,ESI
+//         0050a8ed     JZ         LAB_0050a939
+//                              tcommand.cpp:960 (6)
+//         0050a8ef     MOV        EAX,dword ptr [EDI + 0x4]
+//         0050a8f2     MOV        dword ptr [ESI + 0x4],EAX
+//                              tcommand.cpp:961 (3)
+//         0050a8f5     MOV        this,dword ptr [EDI + 0xc]
+//                              tcommand.cpp:963 (18)
+//         0050a8f8     MOV        AX,word ptr [ESP + param_2]
+//         0050a8fd     MOV        DL,byte ptr [this->field0_0x0 + 0x4a]
 //                              language.dll match for 0x65: "1"
-//         0050a973     MOV        byte ptr [ESI],0x65
-//         0050a976     MOV        word ptr [ESI + 0xa],this
-//         0050a97a     MOV        dword ptr [ESI + 0xc],EDX
-//         0050a97d     PUSH       EAX
-//         0050a97e     MOV        EAX,[L]                                          = 00000000
-//         0050a983     PUSH       s_______>SEND_CMD_RESEARCH2_(PLR=%               = "      >SEND CMD RESEARCH2 (PLR=%d,BLDG=%d,
-//         0050a988     PUSH       EAX
-//         0050a989     CALL       TDebuggingLog::Log                               void Log(TDebuggingLog * this, char * param_1
-//         0050a98e     ADD        ESP,0x14
-//                              tcommand.cpp:1008 (10)
-//         0050a991     MOV        this,EBX
-//         0050a993     PUSH       0x10
-//         0050a995     PUSH       ESI
-//         0050a996     CALL       RGE_Command::submit                              void submit(RGE_Command * this, void * param_
-//                               LAB_0050a99b                                                 XREF[2]:     0050a94b(j), 0050a95d(j)
-//                              tcommand.cpp:1009 (6)
-//         0050a99b     POP        EDI
-//         0050a99c     POP        ESI
-//         0050a99d     POP        EBX
-//         0050a99e     RET        0x10
-//         0050a9a1     ??         90h
-//         0050a9a2     NOP
-//         0050a9a3     NOP
-//         0050a9a4     NOP
-//         0050a9a5     NOP
-//         0050a9a6     NOP
-//         0050a9a7     NOP
-//         0050a9a8     NOP
-//         0050a9a9     NOP
-//         0050a9aa     NOP
-//         0050a9ab     NOP
-//         0050a9ac     NOP
-//         0050a9ad     NOP
-//         0050a9ae     NOP
-//         0050a9af     NOP
+//         0050a900     MOV        byte ptr [ESI],0x65
+//         0050a903     MOV        byte ptr [ESI + 0x8],DL
+//         0050a906     MOV        word ptr [ESI + 0xa],AX
+//                              tcommand.cpp:964 (7)
+//         0050a90a     MOV        dword ptr [ESI + 0xc],0xffffffff
+//                              tcommand.cpp:968 (30)
+//         0050a911     MOV        this,dword ptr [EDI + 0x8]
+//         0050a914     MOVSX      EAX,AX
+//         0050a917     MOV        EDX,dword ptr [ECX + this->field8_0x8]
+//         0050a91a     PUSH       EAX
+//         0050a91b     MOV        EAX,[L]                                          = 00000000
+//         0050a920     PUSH       EDX
+//         0050a921     PUSH       s_______>SEND_CMD_RESEARCH_(UNIT=%               = "      >SEND CMD RESEARCH (UNIT=%s,TECH=%d)"
+//         0050a926     PUSH       EAX
+//         0050a927     CALL       TDebuggingLog::Log                               void Log(TDebuggingLog * this, char * param_1
+//         0050a92c     ADD        ESP,0x10
+//                              tcommand.cpp:971 (10)
+//         0050a92f     MOV        this,EBX
+//         0050a931     PUSH       0x10
+//         0050a933     PUSH       ESI
+//         0050a934     CALL       RGE_Command::submit                              void submit(RGE_Command * this, void * param_
+//                               LAB_0050a939                                                 XREF[2]:     0050a8db(j), 0050a8ed(j)
+//                              tcommand.cpp:972 (6)
+//         0050a939     POP        EDI
+//         0050a93a     POP        ESI
+//         0050a93b     POP        EBX
+//         0050a93c     RET        0x8
+//         0050a93f     ??         90h
     return;
 }
 
@@ -2524,98 +2506,124 @@ void TRIBE_Command::command_research(int param_1, int param_2, int param_3, int 
 
 void TRIBE_Command::command_build(RGE_Static_Object** param_1, short param_2, short param_3, float param_4, float param_5) {
     /* TODO: Stub */
-//                              void __thiscall command_build(TRIBE_Command * this, int param_1, int
+//                              void __thiscall command_build(TRIBE_Command * this, RGE_Static_Objec
 //              void              <VOID>         <RETURN>
 //              TRIBE_Command *   ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     0050aaf4(R)
-//              int *             Stack[0x8]:4   param_2                   XREF[1]:     0050aa93(R)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     0050aaa5(R)
-//              int               Stack[0x10]:4  param_4                   XREF[1]:     0050aae6(R)
-//              float             Stack[0x14]:4  param_5                   XREF[1]:     0050aade(R)
-//              float             Stack[0x18]:4  param_6                   XREF[1]:     0050aae2(R)
-//              int               Stack[0x1c]:4  param_7                   XREF[1]:     0050aaed(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     0050aa9b(W), 0050ab1a(R)
-//                               ?command_build@TRIBE_Command@@QAEXHPAHHHMMH@Z                XREF[1]:     buildObject:0051516a(c)
+//              RGE_Static_Obj    Stack[0x4]:4   param_1                   XREF[2]:     0050a9b3(R), 0050aa1a(R)
+//              short             Stack[0x8]:2   param_2                   XREF[2]:     0050a9c5(R), 0050aa1e(R)
+//              short             Stack[0xc]:2   param_3                   XREF[1]:     0050aa46(R)
+//              float             Stack[0x10]:4  param_4                   XREF[1]:     0050aa3b(R)
+//              float             Stack[0x14]:4  param_5                   XREF[1]:     0050aa3f(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     0050a9bb(W), 0050aa72(R)
+//                               ?command_build@TRIBE_Command@@QAEXPAPAVRGE_Static_Object@@F  XREF[1]:     command_make_building:00513669(c)
 //                               TRIBE_Command::command_build
-//                              tcommand.cpp:1066 (3)
-//         0050aa90     PUSH       this
-//         0050aa91     PUSH       EBX
-//         0050aa92     PUSH       EBP
-//                              tcommand.cpp:1073 (27)
-//         0050aa93     MOV        EBP,dword ptr [ESP + param_2]
-//         0050aa97     PUSH       ESI
-//         0050aa98     TEST       EBP,EBP
-//         0050aa9a     PUSH       EDI
-//         0050aa9b     MOV        dword ptr [ESP + local_4],this
-//         0050aa9f     JZ         LAB_0050ab28
-//         0050aaa5     MOV        EBX,dword ptr [ESP + param_3]
-//         0050aaa9     CMP        EBX,0x1
-//         0050aaac     JL         LAB_0050ab28
-//                              tcommand.cpp:1077 (7)
-//         0050aaae     LEA        EDI,[EBX*0x4 + 0x14]
-//                              tcommand.cpp:1078 (13)
-//         0050aab5     PUSH       EDI
-//         0050aab6     PUSH       0x1
-//         0050aab8     CALL       calloc                                           undefined calloc()
-//         0050aabd     MOV        ESI,EAX
-//         0050aabf     ADD        ESP,0x8
-//                              tcommand.cpp:1083 (7)
-//         0050aac2     TEST       ESI,ESI
-//         0050aac4     LEA        EAX,[ESI + 0x14]
-//         0050aac7     JZ         LAB_0050ab28
-//                              tcommand.cpp:1087 (6)
-//         0050aac9     TEST       EBX,EBX
-//         0050aacb     JLE        LAB_0050aade
-//         0050aacd     MOV        this,EBP
-//                              tcommand.cpp:1110 (15)
-//         0050aacf     MOV        EDX,EBX
-//         0050aad1     SUB        this,EAX
-//                               LAB_0050aad3                                                 XREF[1]:     0050aadc(j)
-//         0050aad3     MOV        EBP,dword ptr [this->field0_0x0 + EAX*0x1]
-//         0050aad6     MOV        dword ptr [EAX],EBP
-//         0050aad8     ADD        EAX,0x4
-//         0050aadb     DEC        EDX
-//         0050aadc     JNZ        LAB_0050aad3
-//                               LAB_0050aade                                                 XREF[1]:     0050aacb(j)
-//                              tcommand.cpp:1100 (4)
-//         0050aade     MOV        this,dword ptr [ESP + param_5]
-//                              tcommand.cpp:1101 (11)
-//         0050aae2     MOV        EDX,dword ptr [ESP + param_6]
-//         0050aae6     MOV        EAX,dword ptr [ESP + param_4]
-//         0050aaea     MOV        dword ptr [ESI + 0x4],this
-//                              tcommand.cpp:1102 (7)
-//         0050aaed     MOV        this,dword ptr [ESP + param_7]
-//         0050aaf1     MOV        dword ptr [ESI + 0x8],EDX
-//                              tcommand.cpp:1103 (20)
-//         0050aaf4     MOV        DL,byte ptr [ESP + param_1]
-//                              language.dll match for 0x66: "Copperplate Gothic Light"
-//         0050aaf8     MOV        byte ptr [ESI],0x66
-//         0050aafb     MOV        byte ptr [ESI + 0x1],BL
-//         0050aafe     MOV        word ptr [ESI + 0xc],AX
-//         0050ab02     MOV        dword ptr [ESI + 0x10],this
-//         0050ab05     MOV        byte ptr [ESI + 0x2],DL
-//                              tcommand.cpp:1107 (18)
-//         0050ab08     PUSH       EAX
-//         0050ab09     MOV        EAX,[L]                                          = 00000000
-//         0050ab0e     PUSH       EBX
-//         0050ab0f     PUSH       s_______>SEND_CMD_BUILD2_(CNT=%d,O               = "      >SEND CMD BUILD2 (CNT=%d,OBJ=%d)"
-//         0050ab14     PUSH       EAX
-//         0050ab15     CALL       TDebuggingLog::Log                               void Log(TDebuggingLog * this, char * param_1
-//                              tcommand.cpp:1109 (14)
-//         0050ab1a     MOV        this,dword ptr [ESP + local_4]
-//         0050ab1e     ADD        ESP,0x10
-//         0050ab21     PUSH       EDI
-//         0050ab22     PUSH       ESI
-//         0050ab23     CALL       RGE_Command::submit                              void submit(RGE_Command * this, void * param_
-//                               LAB_0050ab28                                                 XREF[3]:     0050aa9f(j), 0050aaac(j),
-//                                                                                                         0050aac7(j)
-//                              tcommand.cpp:1110 (8)
-//         0050ab28     POP        EDI
-//         0050ab29     POP        ESI
-//         0050ab2a     POP        EBP
-//         0050ab2b     POP        EBX
-//         0050ab2c     POP        this
-//         0050ab2d     RET        0x1c
+//                              tcommand.cpp:1015 (3)
+//         0050a9b0     PUSH       this
+//         0050a9b1     PUSH       EBX
+//         0050a9b2     PUSH       EBP
+//                              tcommand.cpp:1022 (33)
+//         0050a9b3     MOV        EBP,dword ptr [ESP + param_1]
+//         0050a9b7     PUSH       ESI
+//         0050a9b8     TEST       EBP,EBP
+//         0050a9ba     PUSH       EDI
+//         0050a9bb     MOV        dword ptr [ESP + local_4],this
+//         0050a9bf     JZ         LAB_0050aa80
+//         0050a9c5     MOV        AX,word ptr [ESP + param_2]
+//         0050a9ca     CMP        AX,0x1
+//         0050a9ce     JL         LAB_0050aa80
+//                              tcommand.cpp:1026 (10)
+//         0050a9d4     MOVSX      EDI,AX
+//         0050a9d7     LEA        EBX,[EDI*0x4 + 0x14]
+//                              tcommand.cpp:1027 (13)
+//         0050a9de     PUSH       EBX
+//         0050a9df     PUSH       0x1
+//         0050a9e1     CALL       calloc                                           undefined calloc()
+//         0050a9e6     MOV        ESI,EAX
+//         0050a9e8     ADD        ESP,0x8
+//                              tcommand.cpp:1032 (11)
+//         0050a9eb     TEST       ESI,ESI
+//         0050a9ed     LEA        EAX,[ESI + 0x14]
+//         0050a9f0     JZ         LAB_0050aa80
+//                              tcommand.cpp:1036 (4)
+//         0050a9f6     TEST       EDI,EDI
+//         0050a9f8     JLE        LAB_0050aa1e
+//                              tcommand.cpp:1042 (2)
+//         0050a9fa     MOV        EDX,EBP
+//                              tcommand.cpp:1060 (18)
+//         0050a9fc     MOV        EBP,EDI
+//         0050a9fe     SUB        EDX,EAX
+//                               LAB_0050aa00                                                 XREF[1]:     0050aa18(j)
+//         0050aa00     MOV        this,dword ptr [EDX + EAX*0x1]
+//         0050aa03     TEST       this,this
+//         0050aa05     JZ         LAB_0050aa0e
+//         0050aa07     MOV        this,dword ptr [ECX + this->field4_0x4]
+//         0050aa0a     MOV        dword ptr [EAX],this
+//         0050aa0c     JMP        LAB_0050aa14
+//                               LAB_0050aa0e                                                 XREF[1]:     0050aa05(j)
+//                              tcommand.cpp:1042 (6)
+//         0050aa0e     MOV        dword ptr [EAX],0xffffffff
+//                               LAB_0050aa14                                                 XREF[1]:     0050aa0c(j)
+//                              tcommand.cpp:1036 (10)
+//         0050aa14     ADD        EAX,0x4
+//         0050aa17     DEC        EBP
+//         0050aa18     JNZ        LAB_0050aa00
+//         0050aa1a     MOV        EBP,dword ptr [ESP + param_1]
+//                               LAB_0050aa1e                                                 XREF[1]:     0050a9f8(j)
+//                              tcommand.cpp:1048 (10)
+//         0050aa1e     MOV        DL,byte ptr [ESP + param_2]
+//         0050aa22     MOV        byte ptr [ESI],0x66
+//         0050aa25     MOV        byte ptr [ESI + 0x1],DL
+//                              tcommand.cpp:1049 (19)
+//         0050aa28     MOV        EAX,dword ptr [EBP]
+//         0050aa2b     TEST       EAX,EAX
+//         0050aa2d     JZ         LAB_0050aa38
+//         0050aa2f     MOV        EAX,dword ptr [EAX + 0xc]
+//         0050aa32     MOVSX      EAX,word ptr [EAX + 0x4a]
+//         0050aa36     JMP        LAB_0050aa3b
+//                               LAB_0050aa38                                                 XREF[1]:     0050aa2d(j)
+//         0050aa38     OR         EAX,0xffffffff
+//                               LAB_0050aa3b                                                 XREF[1]:     0050aa36(j)
+//                              tcommand.cpp:1051 (4)
+//         0050aa3b     MOV        this,dword ptr [ESP + param_4]
+//                              tcommand.cpp:1052 (19)
+//         0050aa3f     MOV        EDX,dword ptr [ESP + param_5]
+//         0050aa43     MOV        byte ptr [ESI + 0x2],AL
+//         0050aa46     MOV        AX,word ptr [ESP + param_3]
+//         0050aa4b     MOV        word ptr [ESI + 0xc],AX
+//         0050aa4f     MOV        dword ptr [ESI + 0x4],this
+//                              tcommand.cpp:1056 (32)
+//         0050aa52     MOVSX      EAX,AX
+//         0050aa55     MOV        dword ptr [ESI + 0x8],EDX
+//         0050aa58     MOV        dword ptr [ESI + 0x10],0xffffffff
+//         0050aa5f     MOV        this,dword ptr [L]                               = 00000000
+//         0050aa65     PUSH       EAX
+//         0050aa66     PUSH       EDI
+//         0050aa67     PUSH       s_______>SEND_CMD_BUILD_(CNT=%d,OB               = "      >SEND CMD BUILD (CNT=%d,OBJ=%d)"
+//         0050aa6c     PUSH       this
+//         0050aa6d     CALL       TDebuggingLog::Log                               void Log(TDebuggingLog * this, char * param_1
+//                              tcommand.cpp:1059 (14)
+//         0050aa72     MOV        this,dword ptr [ESP + local_4]
+//         0050aa76     ADD        ESP,0x10
+//         0050aa79     PUSH       EBX
+//         0050aa7a     PUSH       ESI
+//         0050aa7b     CALL       RGE_Command::submit                              void submit(RGE_Command * this, void * param_
+//                               LAB_0050aa80                                                 XREF[3]:     0050a9bf(j), 0050a9ce(j),
+//                                                                                                         0050a9f0(j)
+//                              tcommand.cpp:1060 (8)
+//         0050aa80     POP        EDI
+//         0050aa81     POP        ESI
+//         0050aa82     POP        EBP
+//         0050aa83     POP        EBX
+//         0050aa84     POP        this
+//         0050aa85     RET        0x14
+//         0050aa88     ??         90h
+//         0050aa89     NOP
+//         0050aa8a     NOP
+//         0050aa8b     NOP
+//         0050aa8c     NOP
+//         0050aa8d     NOP
+//         0050aa8e     NOP
+//         0050aa8f     NOP
     return;
 }
 
@@ -3743,67 +3751,103 @@ void TRIBE_Command::command_give_attribute(int param_1, int param_2, int param_3
 
 void TRIBE_Command::command_trade_attribute(RGE_Static_Object** param_1, short param_2, long param_3) {
     /* TODO: Stub */
-//                              void __thiscall command_trade_attribute(TRIBE_Command * this, int pa
+//                              void __thiscall command_trade_attribute(TRIBE_Command * this, RGE_St
 //              void              <VOID>         <RETURN>
 //              TRIBE_Command *   ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     0050b24d(R)
-//              int               Stack[0x8]:4   param_2
-//              long              Stack[0xc]:4   param_3                   XREF[1]:     0050b251(R)
-//                               ?command_trade_attribute@TRIBE_Command@@QAEXHHJ@Z            XREF[1]:     command_trade_attribute:00513855(c
+//              RGE_Static_Obj    Stack[0x4]:4   param_1                   XREF[1]:     0050b193(R)
+//              short             Stack[0x8]:2   param_2                   XREF[2]:     0050b1a1(R), 0050b1ee(R)
+//              long              Stack[0xc]:4   param_3                   XREF[1]:     0050b1f2(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     0050b19b(W), 0050b211(R)
+//                               ?command_trade_attribute@TRIBE_Command@@QAEXPAPAVRGE_Static  XREF[1]:     command_trade_attribute:00513816(c
 //                               TRIBE_Command::command_trade_attribute
-//                              tcommand.cpp:1632 (2)
-//         0050b230     PUSH       ESI
-//         0050b231     PUSH       EDI
-//                              tcommand.cpp:1639 (16)
-//         0050b232     PUSH       0xc
-//         0050b234     MOV        EDI,this
-//         0050b236     PUSH       0x1
-//         0050b238     CALL       calloc                                           undefined calloc()
-//         0050b23d     MOV        ESI,EAX
-//         0050b23f     ADD        ESP,0x8
-//                              tcommand.cpp:1643 (11)
-//         0050b242     TEST       ESI,ESI
-//         0050b244     LEA        EAX,[ESI + 0x8]
-//         0050b247     JZ         LAB_0050b27e
-//         0050b249     TEST       EAX,EAX
-//         0050b24b     JZ         LAB_0050b27e
-//                              tcommand.cpp:1647 (4)
-//         0050b24d     MOV        this,dword ptr [ESP + param_1]
-//                              tcommand.cpp:1653 (16)
-//         0050b251     MOV        EDX,dword ptr [ESP + param_3]
-//         0050b255     MOV        dword ptr [EAX],this
-//         0050b257     MOV        byte ptr [ESI],0x6d
-//         0050b25a     MOV        byte ptr [ESI + 0x1],0x1
-//         0050b25e     MOV        dword ptr [ESI + 0x4],EDX
-//                              tcommand.cpp:1656 (19)
-//         0050b261     MOV        EAX,[L]                                          = 00000000
-//         0050b266     PUSH       s_______>SEND_CMD_TRADE_ATTR2                    = "      >SEND CMD TRADE ATTR2"
-//         0050b26b     PUSH       EAX
-//         0050b26c     CALL       TDebuggingLog::Log                               void Log(TDebuggingLog * this, char * param_1
-//         0050b271     ADD        ESP,0x8
-//                              tcommand.cpp:1659 (10)
-//         0050b274     MOV        this,EDI
-//         0050b276     PUSH       0xc
-//         0050b278     PUSH       ESI
-//         0050b279     CALL       RGE_Command::submit                              void submit(RGE_Command * this, void * param_
-//                               LAB_0050b27e                                                 XREF[2]:     0050b247(j), 0050b24b(j)
-//                              tcommand.cpp:1660 (5)
-//         0050b27e     POP        EDI
-//         0050b27f     POP        ESI
-//         0050b280     RET        0xc
-//         0050b283     ??         90h
-//         0050b284     NOP
-//         0050b285     NOP
-//         0050b286     NOP
-//         0050b287     NOP
-//         0050b288     NOP
-//         0050b289     NOP
-//         0050b28a     NOP
-//         0050b28b     NOP
-//         0050b28c     NOP
-//         0050b28d     NOP
-//         0050b28e     NOP
-//         0050b28f     NOP
+//                              tcommand.cpp:1585 (3)
+//         0050b190     PUSH       this
+//         0050b191     PUSH       EBX
+//         0050b192     PUSH       EBP
+//                              tcommand.cpp:1591 (25)
+//         0050b193     MOV        EBP,dword ptr [ESP + param_1]
+//         0050b197     PUSH       ESI
+//         0050b198     TEST       EBP,EBP
+//         0050b19a     PUSH       EDI
+//         0050b19b     MOV        dword ptr [ESP + local_4],this
+//         0050b19f     JZ         LAB_0050b21f
+//         0050b1a1     MOV        AX,word ptr [ESP + param_2]
+//         0050b1a6     CMP        AX,0x1
+//         0050b1aa     JL         LAB_0050b21f
+//                              tcommand.cpp:1595 (10)
+//         0050b1ac     MOVSX      EDI,AX
+//         0050b1af     LEA        EBX,[EDI*0x4 + 0x8]
+//                              tcommand.cpp:1596 (13)
+//         0050b1b6     PUSH       EBX
+//         0050b1b7     PUSH       0x1
+//         0050b1b9     CALL       calloc                                           undefined calloc()
+//         0050b1be     MOV        ESI,EAX
+//         0050b1c0     ADD        ESP,0x8
+//                              tcommand.cpp:1601 (7)
+//         0050b1c3     TEST       ESI,ESI
+//         0050b1c5     LEA        EAX,[ESI + 0x8]
+//         0050b1c8     JZ         LAB_0050b21f
+//                              tcommand.cpp:1605 (4)
+//         0050b1ca     TEST       EDI,EDI
+//         0050b1cc     JLE        LAB_0050b1ee
+//                              tcommand.cpp:1611 (2)
+//         0050b1ce     MOV        EDX,EBP
+//                              tcommand.cpp:1625 (18)
+//         0050b1d0     MOV        EBP,EDI
+//         0050b1d2     SUB        EDX,EAX
+//                               LAB_0050b1d4                                                 XREF[1]:     0050b1ec(j)
+//         0050b1d4     MOV        this,dword ptr [EDX + EAX*0x1]
+//         0050b1d7     TEST       this,this
+//         0050b1d9     JZ         LAB_0050b1e2
+//         0050b1db     MOV        this,dword ptr [ECX + this->field4_0x4]
+//         0050b1de     MOV        dword ptr [EAX],this
+//         0050b1e0     JMP        LAB_0050b1e8
+//                               LAB_0050b1e2                                                 XREF[1]:     0050b1d9(j)
+//                              tcommand.cpp:1611 (6)
+//         0050b1e2     MOV        dword ptr [EAX],0xffffffff
+//                               LAB_0050b1e8                                                 XREF[1]:     0050b1e0(j)
+//                              tcommand.cpp:1605 (6)
+//         0050b1e8     ADD        EAX,0x4
+//         0050b1eb     DEC        EBP
+//         0050b1ec     JNZ        LAB_0050b1d4
+//                               LAB_0050b1ee                                                 XREF[1]:     0050b1cc(j)
+//                              tcommand.cpp:1617 (4)
+//         0050b1ee     MOV        DL,byte ptr [ESP + param_2]
+//                              tcommand.cpp:1618 (13)
+//         0050b1f2     MOV        EAX,dword ptr [ESP + param_3]
+//         0050b1f6     MOV        byte ptr [ESI],0x6d
+//         0050b1f9     MOV        byte ptr [ESI + 0x1],DL
+//         0050b1fc     MOV        dword ptr [ESI + 0x4],EAX
+//                              tcommand.cpp:1621 (18)
+//         0050b1ff     MOV        this,dword ptr [L]                               = 00000000
+//         0050b205     PUSH       EDI
+//         0050b206     PUSH       s_______>SEND_CMD_TRADE_ATTR_(CNT=               = "      >SEND CMD TRADE ATTR (CNT=%d)"
+//         0050b20b     PUSH       this
+//         0050b20c     CALL       TDebuggingLog::Log                               void Log(TDebuggingLog * this, char * param_1
+//                              tcommand.cpp:1624 (14)
+//         0050b211     MOV        this,dword ptr [ESP + local_4]
+//         0050b215     ADD        ESP,0xc
+//         0050b218     PUSH       EBX
+//         0050b219     PUSH       ESI
+//         0050b21a     CALL       RGE_Command::submit                              void submit(RGE_Command * this, void * param_
+//                               LAB_0050b21f                                                 XREF[3]:     0050b19f(j), 0050b1aa(j),
+//                                                                                                         0050b1c8(j)
+//                              tcommand.cpp:1625 (8)
+//         0050b21f     POP        EDI
+//         0050b220     POP        ESI
+//         0050b221     POP        EBP
+//         0050b222     POP        EBX
+//         0050b223     POP        this
+//         0050b224     RET        0xc
+//         0050b227     ??         90h
+//         0050b228     NOP
+//         0050b229     NOP
+//         0050b22a     NOP
+//         0050b22b     NOP
+//         0050b22c     NOP
+//         0050b22d     NOP
+//         0050b22e     NOP
+//         0050b22f     NOP
     return;
 }
 

@@ -10,6 +10,31 @@
 #include "Mouseptr.h"
 #include "scenario.h"
 
+// ----------------------------------------------------------------
+// RGE_Game_Options
+// Size: 0xA8
+struct RGE_Game_Options {
+    float versionValue; // 0x0
+    uchar scenarioGameValue; // 0x4
+    char scenarioNameValue[128]; // 0x5
+    uchar singlePlayerGameValue; // 0x85
+    uchar multiplayerGameValue; // 0x86
+    uchar mapXSizeValue; // 0x87
+    uchar mapYSizeValue; // 0x88
+    uchar mapZSizeValue; // 0x89
+    uchar allowCheatCodesValue; // 0x8A
+    uchar mpPathFindingValue; // 0x8B
+    uchar cheatNotificationValue; // 0x8C
+    uchar fullVisibilityValue; // 0x8D
+    uchar fogOfWarValue; // 0x8E
+    uchar coloredChatValue; // 0x8F
+    uchar numberPlayersValue; // 0x90
+    uchar gameDeveloperModeValue; // 0x91
+    uchar playerCDAndVersionValue[9]; // 0x92
+    uchar difficultyValue; // 0x9B
+    uchar playerTeamValue[9]; // 0x9C
+};
+
 class RGE_Base_Game {
 public:
     RGE_Game_Info* player_game_info;         // 0x4

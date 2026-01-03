@@ -3,64 +3,241 @@
 
 TPicture::TPicture(char* param_1, long param_2, int param_3, void* param_4, int param_5) {
     /* TODO: Stub */
-//                              undefined __thiscall TPicture(TPicture * this)
+//                              undefined __thiscall TPicture(TPicture * this, char * param_1, long
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TPicture *        ECX:4 (auto)   this
-//                               ??0TPicture@@QAE@XZ
-//                               TPicture::TPicture
-//                              Picture.cpp:79 (2)
-//         0046dfa0     MOV        EAX,this
-//                              Picture.cpp:80 (4)
-//         0046dfa2     XOR        this,this
-//         0046dfa4     MOV        dword ptr [EAX],this
-//                              Picture.cpp:81 (3)
-//         0046dfa6     MOV        dword ptr [EAX + 0x4],this
-//                              Picture.cpp:82 (3)
-//         0046dfa9     MOV        dword ptr [EAX + 0x8],this
-//                              Picture.cpp:83 (3)
-//         0046dfac     MOV        dword ptr [EAX + 0xc],this
-//                              Picture.cpp:84 (3)
-//         0046dfaf     MOV        dword ptr [EAX + 0x10],this
-//                              Picture.cpp:85 (3)
-//         0046dfb2     MOV        dword ptr [EAX + 0x14],this
-//                              Picture.cpp:86 (3)
-//         0046dfb5     MOV        dword ptr [EAX + 0x18],this
-//                              Picture.cpp:87 (6)
-//         0046dfb8     MOV        word ptr [EAX + 0x1c],0x1
-//                              Picture.cpp:88 (1)
-//         0046dfbe     RET
-//         0046dfbf     ??         90h
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0046de0b(R)
+//              long              Stack[0x8]:4   param_2                   XREF[1]:     0046de06(R)
+//              int               Stack[0xc]:4   param_3                   XREF[1]:     0046dde0(R)
+//              void *            Stack[0x10]:4  param_4                   XREF[1]:     0046dde9(R)
+//              int               Stack[0x14]:4  param_5                   XREF[1]:     0046de01(R)
+//                               ??0TPicture@@QAE@PADJHPAXH@Z                                 XREF[3]:     set_bitmap:00436a87(c),
+//                               TPicture::TPicture                                                        load_pic:0047a53f(c),
+//                                                                                                         save:0048c7a5(c)
+//                              Picture.cpp:11 (63)
+//         0046dde0     MOV        EDX,dword ptr [ESP + param_3]
+//         0046dde4     PUSH       ESI
+//         0046dde5     MOV        ESI,this
+//         0046dde7     XOR        EAX,EAX
+//         0046dde9     MOV        this,dword ptr [ESP + param_4]
+//         0046dded     MOV        dword ptr [ESI],EAX
+//         0046ddef     MOV        dword ptr [ESI + 0x4],EAX
+//         0046ddf2     MOV        dword ptr [ESI + 0x8],EAX
+//         0046ddf5     MOV        dword ptr [ESI + 0xc],EAX
+//         0046ddf8     MOV        dword ptr [ESI + 0x10],EAX
+//         0046ddfb     MOV        dword ptr [ESI + 0x14],EAX
+//         0046ddfe     MOV        dword ptr [ESI + 0x18],EAX
+//         0046de01     MOV        EAX,dword ptr [ESP + param_5]
+//         0046de05     PUSH       EAX
+//         0046de06     MOV        EAX,dword ptr [ESP + param_2]
+//         0046de0a     PUSH       this
+//         0046de0b     MOV        this,dword ptr [ESP + param_1]
+//         0046de0f     PUSH       EDX
+//         0046de10     PUSH       EAX
+//         0046de11     PUSH       this
+//         0046de12     MOV        this,ESI
+//         0046de14     MOV        word ptr [ESI + 0x1c],0x1
+//         0046de1a     CALL       TPicture::Load                                   void Load(TPicture * this, char * param_1, lo
+//                              Picture.cpp:22 (6)
+//         0046de1f     MOV        EAX,ESI
+//         0046de21     POP        ESI
+//         0046de22     RET        0x14
+//         0046de25     ??         90h
+//         0046de26     NOP
+//         0046de27     NOP
+//         0046de28     NOP
+//         0046de29     NOP
+//         0046de2a     NOP
+//         0046de2b     NOP
+//         0046de2c     NOP
+//         0046de2d     NOP
+//         0046de2e     NOP
+//         0046de2f     NOP
 }
 
 TPicture::TPicture(int param_1, int param_2) {
     /* TODO: Stub */
-//                              undefined __thiscall TPicture(TPicture * this)
+//                              undefined __thiscall TPicture(TPicture * this, int param_1, int para
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TPicture *        ECX:4 (auto)   this
-//                               ??0TPicture@@QAE@XZ
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     0046de31(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     0046defb(R)
+//                               ??0TPicture@@QAE@HH@Z                                        XREF[1]:     RGE_Scenario:0048b32d(c)
 //                               TPicture::TPicture
-//                              Picture.cpp:79 (2)
-//         0046dfa0     MOV        EAX,this
-//                              Picture.cpp:80 (4)
-//         0046dfa2     XOR        this,this
-//         0046dfa4     MOV        dword ptr [EAX],this
-//                              Picture.cpp:81 (3)
-//         0046dfa6     MOV        dword ptr [EAX + 0x4],this
-//                              Picture.cpp:82 (3)
-//         0046dfa9     MOV        dword ptr [EAX + 0x8],this
-//                              Picture.cpp:83 (3)
-//         0046dfac     MOV        dword ptr [EAX + 0xc],this
-//                              Picture.cpp:84 (3)
-//         0046dfaf     MOV        dword ptr [EAX + 0x10],this
-//                              Picture.cpp:85 (3)
-//         0046dfb2     MOV        dword ptr [EAX + 0x14],this
-//                              Picture.cpp:86 (3)
-//         0046dfb5     MOV        dword ptr [EAX + 0x18],this
-//                              Picture.cpp:87 (6)
-//         0046dfb8     MOV        word ptr [EAX + 0x1c],0x1
-//                              Picture.cpp:88 (1)
-//         0046dfbe     RET
-//         0046dfbf     ??         90h
+//                              Picture.cpp:25 (1)
+//         0046de30     PUSH       EBX
+//                              Picture.cpp:35 (54)
+//         0046de31     MOV        EBX,dword ptr [ESP + param_1]
+//         0046de35     PUSH       EBP
+//         0046de36     PUSH       ESI
+//         0046de37     MOV        ESI,this
+//         0046de39     PUSH       EDI
+//         0046de3a     PUSH       0x4
+//         0046de3c     XOR        EAX,EAX
+//         0046de3e     LEA        EBP,[ESI + 0x10]
+//         0046de41     LEA        EDI,[ESI + 0x18]
+//         0046de44     PUSH       EBP
+//         0046de45     PUSH       EBX
+//         0046de46     MOV        dword ptr [ESI],EAX
+//         0046de48     MOV        dword ptr [ESI + 0x4],EAX
+//         0046de4b     MOV        dword ptr [ESI + 0x8],EAX
+//         0046de4e     MOV        dword ptr [ESI + 0xc],EAX
+//         0046de51     MOV        dword ptr [EBP],EAX
+//         0046de54     MOV        dword ptr [ESI + 0x14],EAX
+//         0046de57     MOV        dword ptr [EDI],EAX
+//         0046de59     MOV        word ptr [ESI + 0x1c],0x1
+//         0046de5f     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0046de64     ADD        ESP,0xc
+//                              Picture.cpp:36 (15)
+//         0046de67     LEA        EAX,[ESI + 0x14]
+//         0046de6a     PUSH       0x4
+//         0046de6c     PUSH       EAX
+//         0046de6d     PUSH       EBX
+//         0046de6e     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0046de73     ADD        ESP,0xc
+//                              Picture.cpp:37 (12)
+//         0046de76     PUSH       0x4
+//         0046de78     PUSH       EDI
+//         0046de79     PUSH       EBX
+//         0046de7a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0046de7f     ADD        ESP,0xc
+//                              Picture.cpp:38 (12)
+//         0046de82     LEA        EAX,[ESI + 0x1c]
+//         0046de85     PUSH       0x2
+//         0046de87     PUSH       EAX
+//         0046de88     PUSH       EBX
+//         0046de89     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              Picture.cpp:40 (12)
+//         0046de8e     MOV        this,dword ptr [EBP]
+//         0046de91     XOR        EAX,EAX
+//         0046de93     ADD        ESP,0xc
+//         0046de96     CMP        this,EAX
+//         0046de98     JZ         LAB_0046dea1
+//                              Picture.cpp:41 (7)
+//         0046de9a     MOV        dword ptr [EBP],0x2
+//                               LAB_0046dea1                                                 XREF[1]:     0046de98(j)
+//                              Picture.cpp:43 (9)
+//         0046dea1     CMP        dword ptr [ESI + 0x14],EAX
+//         0046dea4     JLE        LAB_0046def3
+//         0046dea6     CMP        dword ptr [EDI],EAX
+//         0046dea8     JLE        LAB_0046def3
+//                              Picture.cpp:45 (26)
+//         0046deaa     PUSH       0x1
+//         0046deac     MOV        this,ESI
+//         0046deae     CALL       TPicture::AlignedWidth                           long AlignedWidth(TPicture * this)
+//         0046deb3     IMUL       EAX,dword ptr [EDI]
+//         0046deb6     ADD        EAX,0x428
+//         0046debb     PUSH       EAX
+//         0046debc     CALL       calloc                                           undefined calloc()
+//         0046dec1     ADD        ESP,0x8
+//                              Picture.cpp:46 (27)
+//         0046dec4     MOV        this,ESI
+//         0046dec6     MOV        dword ptr [ESI],EAX
+//         0046dec8     CALL       TPicture::AlignedWidth                           long AlignedWidth(TPicture * this)
+//         0046decd     IMUL       EAX,dword ptr [EDI]
+//         0046ded0     ADD        EAX,0x428
+//         0046ded5     PUSH       EAX
+//         0046ded6     MOV        EAX,dword ptr [ESI]
+//         0046ded8     PUSH       EAX
+//         0046ded9     PUSH       EBX
+//         0046deda     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              Picture.cpp:48 (8)
+//         0046dedf     MOV        EAX,dword ptr [ESI]
+//         0046dee1     ADD        ESP,0xc
+//         0046dee4     MOV        dword ptr [ESI + 0x4],EAX
+//                              Picture.cpp:49 (8)
+//         0046dee7     ADD        EAX,0x428
+//         0046deec     MOV        dword ptr [ESI + 0x8],EAX
+//                              Picture.cpp:51 (4)
+//         0046deef     XOR        EAX,EAX
+//         0046def1     JMP        LAB_0046defb
+//                               LAB_0046def3                                                 XREF[2]:     0046dea4(j), 0046dea8(j)
+//                              Picture.cpp:53 (2)
+//         0046def3     MOV        dword ptr [ESI],EAX
+//                              Picture.cpp:54 (3)
+//         0046def5     MOV        dword ptr [ESI + 0x4],EAX
+//                              Picture.cpp:55 (3)
+//         0046def8     MOV        dword ptr [ESI + 0x8],EAX
+//                               LAB_0046defb                                                 XREF[1]:     0046def1(j)
+//                              Picture.cpp:60 (23)
+//         0046defb     MOV        this,dword ptr [ESP + param_2]
+//         0046deff     MOV        dword ptr [ESI + 0xc],EAX
+//         0046df02     CMP        this,EAX
+//         0046df04     JZ         LAB_0046df95
+//         0046df0a     CMP        dword ptr [ESI],EAX
+//         0046df0c     JZ         LAB_0046df95
+//                              Picture.cpp:62 (13)
+//         0046df12     PUSH       0x18
+//         0046df14     CALL       malloc                                           undefined malloc()
+//         0046df19     ADD        ESP,0x4
+//         0046df1c     MOV        dword ptr [ESI + 0xc],EAX
+//                              Picture.cpp:63 (4)
+//         0046df1f     TEST       EAX,EAX
+//         0046df21     JZ         LAB_0046df63
+//                              Picture.cpp:64 (25)
+//         0046df23     MOV        this,dword ptr [ESI]
+//         0046df25     CMP        dword ptr [ECX + this->OwnMemory],0x3
+//         0046df29     JNZ        LAB_0046df45
+//         0046df2b     MOV        EDX,dword ptr [this->Dib]
+//         0046df2d     LEA        EDX,[EDX + this->Dib*0x1 + 0xc]
+//         0046df31     PUSH       EDX
+//         0046df32     PUSH       EAX
+//         0046df33     PUSH       this
+//         0046df34     CALL       DibCheckTrans                                    int DibCheckTrans(BITMAPINFO256 * param_1, TR
+//         0046df39     ADD        ESP,0xc
+//                              Picture.cpp:76 (9)
+//         0046df3c     MOV        EAX,ESI
+//         0046df3e     POP        EDI
+//         0046df3f     POP        ESI
+//         0046df40     POP        EBP
+//         0046df41     POP        EBX
+//         0046df42     RET        0x8
+//                               LAB_0046df45                                                 XREF[1]:     0046df29(j)
+//                              Picture.cpp:64 (21)
+//         0046df45     MOV        EDX,dword ptr [ECX + this+0x20]
+//         0046df48     MOV        EDI,dword ptr [this->Dib]
+//         0046df4a     LEA        EDX,[EDI + EDX*0x4]
+//         0046df4d     ADD        EDX,this
+//         0046df4f     PUSH       EDX
+//         0046df50     PUSH       EAX
+//         0046df51     PUSH       this
+//         0046df52     CALL       DibCheckTrans                                    int DibCheckTrans(BITMAPINFO256 * param_1, TR
+//         0046df57     ADD        ESP,0xc
+//                              Picture.cpp:76 (9)
+//         0046df5a     MOV        EAX,ESI
+//         0046df5c     POP        EDI
+//         0046df5d     POP        ESI
+//         0046df5e     POP        EBP
+//         0046df5f     POP        EBX
+//         0046df60     RET        0x8
+//                               LAB_0046df63                                                 XREF[1]:     0046df21(j)
+//                              Picture.cpp:67 (11)
+//         0046df63     MOV        EAX,dword ptr [ESI]
+//         0046df65     PUSH       EAX
+//         0046df66     CALL       DibFree                                          void DibFree(tagBITMAPINFOHEADER * param_1)
+//         0046df6b     ADD        ESP,0x4
+//                              Picture.cpp:68 (6)
+//         0046df6e     MOV        dword ptr [ESI],0x0
+//                              Picture.cpp:69 (7)
+//         0046df74     MOV        dword ptr [ESI + 0x4],0x0
+//                              Picture.cpp:70 (7)
+//         0046df7b     MOV        dword ptr [EBP],0x0
+//                              Picture.cpp:71 (7)
+//         0046df82     MOV        dword ptr [ESI + 0x14],0x0
+//                              Picture.cpp:72 (6)
+//         0046df89     MOV        dword ptr [EDI],0x0
+//                              Picture.cpp:73 (6)
+//         0046df8f     MOV        word ptr [ESI + 0x1c],0x1
+//                               LAB_0046df95                                                 XREF[2]:     0046df04(j), 0046df0c(j)
+//                              Picture.cpp:76 (9)
+//         0046df95     MOV        EAX,ESI
+//         0046df97     POP        EDI
+//         0046df98     POP        ESI
+//         0046df99     POP        EBP
+//         0046df9a     POP        EBX
+//         0046df9b     RET        0x8
+//         0046df9e     ??         90h
+//         0046df9f     NOP
 }
 
 TPicture::TPicture() {

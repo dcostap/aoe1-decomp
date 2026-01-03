@@ -6,65 +6,84 @@ RGE_Animated_Object::RGE_Animated_Object(RGE_Master_Animated_Object* param_1, RG
 //                              undefined __thiscall RGE_Animated_Object(RGE_Animated_Object * this,
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Animated_O    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     0041a227(R)
-//              RGE_Game_World    Stack[0x8]:4   param_2                   XREF[1]:     0041a22d(R)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     0041a240(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0041a244(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0041a25f(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0041a237(W)
-//                               ??0RGE_Animated_Object@@QAE@HPAVRGE_Game_World@@H@Z          XREF[3]:     RGE_Doppleganger_Object:00441a9d(c
-//                               RGE_Animated_Object::RGE_Animated_Object                                  RGE_Moving_Object:0045c5ec(c),
-//                                                                                                         load:004639dd(c)
-//                              ani_obj.cpp:38 (48)
-//         0041a210     PUSH       -0x1
-//         0041a212     PUSH       FUN_0055c948
-//         0041a217     MOV        EAX,FS:[0x0]
-//         0041a21d     PUSH       EAX
-//         0041a21e     MOV        dword ptr FS:[0x0],ESP
-//         0041a225     PUSH       this
-//         0041a226     PUSH       EBX
-//         0041a227     MOV        EBX,dword ptr [ESP + param_1]
-//         0041a22b     PUSH       ESI
-//         0041a22c     PUSH       EDI
-//         0041a22d     MOV        EDI,dword ptr [ESP + param_2]
-//         0041a231     PUSH       0x0
-//         0041a233     MOV        ESI,this
-//         0041a235     PUSH       EDI
-//         0041a236     PUSH       EBX
-//         0041a237     MOV        dword ptr [ESP + local_10],ESI
-//         0041a23b     CALL       RGE_Static_Object::RGE_Static_Object             undefined RGE_Static_Object(RGE_Static_Object
-//                              ani_obj.cpp:39 (22)
-//         0041a240     MOV        EAX,dword ptr [ESP + param_3]
-//         0041a244     MOV        dword ptr [ESP + local_4],0x0
-//         0041a24c     TEST       EAX,EAX
-//         0041a24e     MOV        dword ptr [ESI],RGE_Animated_Object::`vftable'   = 0041a1e0
-//         0041a254     JZ         LAB_0041a25f
-//                              ani_obj.cpp:40 (9)
-//         0041a256     PUSH       EDI
-//         0041a257     PUSH       EBX
-//         0041a258     MOV        this,ESI
-//         0041a25a     CALL       RGE_Animated_Object::setup                       int setup(RGE_Animated_Object * this, int par
-//                               LAB_0041a25f                                                 XREF[1]:     0041a254(j)
-//                              ani_obj.cpp:41 (22)
-//         0041a25f     MOV        this,dword ptr [ESP + local_c]
-//         0041a263     MOV        EAX,ESI
-//         0041a265     POP        EDI
-//         0041a266     POP        ESI
-//         0041a267     MOV        dword ptr FS:[0x0],this
-//         0041a26e     POP        EBX
-//         0041a26f     ADD        ESP,0x10
-//         0041a272     RET        0xc
-//         0041a275     ??         90h
-//         0041a276     NOP
-//         0041a277     NOP
-//         0041a278     NOP
-//         0041a279     NOP
-//         0041a27a     NOP
-//         0041a27b     NOP
-//         0041a27c     NOP
-//         0041a27d     NOP
-//         0041a27e     NOP
-//         0041a27f     NOP
+//              RGE_Master_Ani    Stack[0x4]:4   param_1                   XREF[2]:     0041a17e(R), 0041a1ac(R)
+//              RGE_Player *      Stack[0x8]:4   param_2                   XREF[2]:     0041a166(R), 0041a1a8(R)
+//              float             Stack[0xc]:4   param_3                   XREF[1]:     0041a170(R)
+//              float             Stack[0x10]:4  param_4                   XREF[1]:     0041a16b(R)
+//              float             Stack[0x14]:4  param_5                   XREF[1]:     0041a176(R)
+//              int               Stack[0x18]:4  param_6                   XREF[1]:     0041a192(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0041a196(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0041a1bc(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0041a189(W)
+//                               ??0RGE_Animated_Object@@QAE@PAVRGE_Master_Animated_Object@@  XREF[3]:     RGE_Doppleganger_Object:004418de(c
+//                               RGE_Animated_Object::RGE_Animated_Object                                  make_new_obj:0044fc9a(c),
+//                                                                                                         RGE_Moving_Object:0045c48e(c)
+//                              ani_obj.cpp:29 (66)
+//         0041a150     PUSH       -0x1
+//         0041a152     PUSH       FUN_0055c928
+//         0041a157     MOV        EAX,FS:[0x0]
+//         0041a15d     PUSH       EAX
+//         0041a15e     MOV        dword ptr FS:[0x0],ESP
+//         0041a165     PUSH       this
+//         0041a166     MOV        EAX,dword ptr [ESP + param_2]
+//         0041a16a     PUSH       EBX
+//         0041a16b     MOV        EBX,dword ptr [ESP + param_4]
+//         0041a16f     PUSH       EBP
+//         0041a170     MOV        EBP,dword ptr [ESP + param_3]
+//         0041a174     PUSH       ESI
+//         0041a175     PUSH       EDI
+//         0041a176     MOV        EDI,dword ptr [ESP + param_5]
+//         0041a17a     PUSH       0x0
+//         0041a17c     MOV        ESI,this
+//         0041a17e     MOV        this,dword ptr [ESP + param_1]
+//         0041a182     PUSH       EDI
+//         0041a183     PUSH       EBX
+//         0041a184     PUSH       EBP
+//         0041a185     PUSH       EAX
+//         0041a186     PUSH       this
+//         0041a187     MOV        this,ESI
+//         0041a189     MOV        dword ptr [ESP + local_10],ESI
+//         0041a18d     CALL       RGE_Static_Object::RGE_Static_Object             undefined RGE_Static_Object(RGE_Static_Object
+//                              ani_obj.cpp:30 (22)
+//         0041a192     MOV        EAX,dword ptr [ESP + param_6]
+//         0041a196     MOV        dword ptr [ESP + local_4],0x0
+//         0041a19e     TEST       EAX,EAX
+//         0041a1a0     MOV        dword ptr [ESI],RGE_Animated_Object::`vftable'   = 0041a1e0
+//         0041a1a6     JZ         LAB_0041a1bc
+//                              ani_obj.cpp:31 (20)
+//         0041a1a8     MOV        EDX,dword ptr [ESP + param_2]
+//         0041a1ac     MOV        EAX,dword ptr [ESP + param_1]
+//         0041a1b0     PUSH       EDI
+//         0041a1b1     PUSH       EBX
+//         0041a1b2     PUSH       EBP
+//         0041a1b3     PUSH       EDX
+//         0041a1b4     PUSH       EAX
+//         0041a1b5     MOV        this,ESI
+//         0041a1b7     CALL       RGE_Animated_Object::setup                       int setup(RGE_Animated_Object * this, RGE_Mas
+//                               LAB_0041a1bc                                                 XREF[1]:     0041a1a6(j)
+//                              ani_obj.cpp:32 (23)
+//         0041a1bc     MOV        this,dword ptr [ESP + local_c]
+//         0041a1c0     MOV        EAX,ESI
+//         0041a1c2     POP        EDI
+//         0041a1c3     POP        ESI
+//         0041a1c4     POP        EBP
+//         0041a1c5     MOV        dword ptr FS:[0x0],this
+//         0041a1cc     POP        EBX
+//         0041a1cd     ADD        ESP,0x10
+//         0041a1d0     RET        0x18
+//         0041a1d3     ??         90h
+//         0041a1d4     NOP
+//         0041a1d5     NOP
+//         0041a1d6     NOP
+//         0041a1d7     NOP
+//         0041a1d8     NOP
+//         0041a1d9     NOP
+//         0041a1da     NOP
+//         0041a1db     NOP
+//         0041a1dc     NOP
+//         0041a1dd     NOP
+//         0041a1de     NOP
+//         0041a1df     NOP
 }
 
 RGE_Animated_Object::RGE_Animated_Object(int param_1, RGE_Game_World* param_2, int param_3) {
@@ -180,51 +199,60 @@ void RGE_Animated_Object::recycle_in_to_game(RGE_Master_Static_Object* param_1, 
 
 int RGE_Animated_Object::setup(RGE_Master_Animated_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) {
     /* TODO: Stub */
-//                              int __thiscall setup(RGE_Animated_Object * this, int param_1, RGE_Ga
+//                              int __thiscall setup(RGE_Animated_Object * this, RGE_Master_Animated
 //              int               EAX:4          <RETURN>
 //              RGE_Animated_O    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     0041a316(R)
-//              RGE_Game_World    Stack[0x8]:4   param_2                   XREF[1]:     0041a310(R)
-//                               ?setup@RGE_Animated_Object@@MAEHHPAVRGE_Game_World@@@Z       XREF[4]:     RGE_Animated_Object:0041a25a(c),
-//                               RGE_Animated_Object::setup                                                setup:00441db0(c),
-//                                                                                                         setup:0045cab3(c), 0056ede8(*)
-//                              ani_obj.cpp:67 (19)
-//         0041a310     MOV        EAX,dword ptr [ESP + param_2]
-//         0041a314     PUSH       ESI
-//         0041a315     PUSH       EDI
-//         0041a316     MOV        EDI,dword ptr [ESP + param_1]
-//         0041a31a     PUSH       EAX
-//         0041a31b     MOV        ESI,this
-//         0041a31d     PUSH       EDI
-//         0041a31e     CALL       RGE_Static_Object::setup                         int setup(RGE_Static_Object * this, int param
-//                              ani_obj.cpp:70 (4)
-//         0041a323     MOV        byte ptr [ESI + 0x4e],0x14
-//                              ani_obj.cpp:72 (18)
-//         0041a327     ADD        ESI,0x88
-//         0041a32d     PUSH       0x4
-//         0041a32f     PUSH       ESI
-//         0041a330     PUSH       EDI
-//         0041a331     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0041a336     ADD        ESP,0xc
-//                              ani_obj.cpp:74 (5)
-//         0041a339     MOV        EAX,0x1
-//                              ani_obj.cpp:75 (5)
-//         0041a33e     POP        EDI
-//         0041a33f     POP        ESI
-//         0041a340     RET        0x8
-//         0041a343     ??         90h
-//         0041a344     NOP
-//         0041a345     NOP
-//         0041a346     NOP
-//         0041a347     NOP
-//         0041a348     NOP
-//         0041a349     NOP
-//         0041a34a     NOP
-//         0041a34b     NOP
-//         0041a34c     NOP
-//         0041a34d     NOP
-//         0041a34e     NOP
-//         0041a34f     NOP
+//              RGE_Master_Ani    Stack[0x4]:4   param_1                   XREF[1]:     0041a2d5(R)
+//              RGE_Player *      Stack[0x8]:4   param_2                   XREF[1]:     0041a2d0(R)
+//              float             Stack[0xc]:4   param_3                   XREF[1]:     0041a2c4(R)
+//              float             Stack[0x10]:4  param_4                   XREF[1]:     0041a2cb(R)
+//              float             Stack[0x14]:4  param_5                   XREF[1]:     0041a2c0(R)
+//                               ?setup@RGE_Animated_Object@@MAEHPAVRGE_Master_Animated_Obje  XREF[11]:    RGE_Animated_Object:0041a1b7(c),
+//                               RGE_Animated_Object::setup                                                setup:00441d4f(c),
+//                                                                                                         setup:0045c98f(c), 0056e608(*),
+//                                                                                                         0056edf8(*), 0056f440(*),
+//                                                                                                         00570408(*), 005708d8(*),
+//                                                                                                         00570b30(*), 00574960(*),
+//                                                                                                         00574c08(*)
+//                              ani_obj.cpp:55 (35)
+//         0041a2c0     MOV        EAX,dword ptr [ESP + param_5]
+//         0041a2c4     MOV        EDX,dword ptr [ESP + param_3]
+//         0041a2c8     PUSH       ESI
+//         0041a2c9     MOV        ESI,this
+//         0041a2cb     MOV        this,dword ptr [ESP + param_4]
+//         0041a2cf     PUSH       EAX
+//         0041a2d0     MOV        EAX,dword ptr [ESP + param_2]
+//         0041a2d4     PUSH       this
+//         0041a2d5     MOV        this,dword ptr [ESP + param_1]
+//         0041a2d9     PUSH       EDX
+//         0041a2da     PUSH       EAX
+//         0041a2db     PUSH       this
+//         0041a2dc     MOV        this,ESI
+//         0041a2de     CALL       RGE_Static_Object::setup                         int setup(RGE_Static_Object * this, RGE_Maste
+//                              ani_obj.cpp:60 (23)
+//         0041a2e3     PUSH       0x0
+//         0041a2e5     MOV        this,ESI
+//         0041a2e7     MOV        byte ptr [ESI + 0x4e],0x14
+//         0041a2eb     MOV        dword ptr [ESI + 0x88],0x0
+//         0041a2f5     CALL       RGE_Static_Object::set_sleep_flag                void set_sleep_flag(RGE_Static_Object * this,
+//                              ani_obj.cpp:62 (5)
+//         0041a2fa     MOV        EAX,0x1
+//                              ani_obj.cpp:63 (4)
+//         0041a2ff     POP        ESI
+//         0041a300     RET        0x14
+//         0041a303     ??         90h
+//         0041a304     NOP
+//         0041a305     NOP
+//         0041a306     NOP
+//         0041a307     NOP
+//         0041a308     NOP
+//         0041a309     NOP
+//         0041a30a     NOP
+//         0041a30b     NOP
+//         0041a30c     NOP
+//         0041a30d     NOP
+//         0041a30e     NOP
+//         0041a30f     NOP
     return 0;
 }
 

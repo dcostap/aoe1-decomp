@@ -6,64 +6,84 @@ TRIBE_Combat_Object::TRIBE_Combat_Object(TRIBE_Master_Combat_Object* param_1, RG
 //                              undefined __thiscall TRIBE_Combat_Object(TRIBE_Combat_Object * this,
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Combat_O    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     004ca1b7(R)
-//              RGE_Game_World    Stack[0x8]:4   param_2                   XREF[1]:     004ca1bd(R)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     004ca1d0(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     004ca1d4(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004ca1ef(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004ca1c7(W)
-//                               ??0TRIBE_Combat_Object@@QAE@HPAVRGE_Game_World@@H@Z          XREF[2]:     TRIBE_Building_Object:004c81fd(c),
-//                               TRIBE_Combat_Object::TRIBE_Combat_Object                                  load:00511bae(c)
-//                              t_c_obj.cpp:72 (48)
-//         004ca1a0     PUSH       -0x1
-//         004ca1a2     PUSH       FUN_0055fb38
-//         004ca1a7     MOV        EAX,FS:[0x0]
-//         004ca1ad     PUSH       EAX
-//         004ca1ae     MOV        dword ptr FS:[0x0],ESP
-//         004ca1b5     PUSH       this
-//         004ca1b6     PUSH       EBX
-//         004ca1b7     MOV        EBX,dword ptr [ESP + param_1]
-//         004ca1bb     PUSH       ESI
-//         004ca1bc     PUSH       EDI
-//         004ca1bd     MOV        EDI,dword ptr [ESP + param_2]
-//         004ca1c1     PUSH       0x0
-//         004ca1c3     MOV        ESI,this
-//         004ca1c5     PUSH       EDI
-//         004ca1c6     PUSH       EBX
-//         004ca1c7     MOV        dword ptr [ESP + local_10],ESI
-//         004ca1cb     CALL       RGE_Combat_Object::RGE_Combat_Object             undefined RGE_Combat_Object(RGE_Combat_Object
-//                              t_c_obj.cpp:73 (22)
-//         004ca1d0     MOV        EAX,dword ptr [ESP + param_3]
-//         004ca1d4     MOV        dword ptr [ESP + local_4],0x0
-//         004ca1dc     TEST       EAX,EAX
-//         004ca1de     MOV        dword ptr [ESI],TRIBE_Combat_Object::`vftable'   = 004ca180
-//         004ca1e4     JZ         LAB_004ca1ef
-//                              t_c_obj.cpp:74 (9)
-//         004ca1e6     PUSH       EDI
-//         004ca1e7     PUSH       EBX
-//         004ca1e8     MOV        this,ESI
-//         004ca1ea     CALL       TRIBE_Combat_Object::setup                       int setup(TRIBE_Combat_Object * this, int par
-//                               LAB_004ca1ef                                                 XREF[1]:     004ca1e4(j)
-//                              t_c_obj.cpp:75 (22)
-//         004ca1ef     MOV        this,dword ptr [ESP + local_c]
-//         004ca1f3     MOV        EAX,ESI
-//         004ca1f5     POP        EDI
-//         004ca1f6     POP        ESI
-//         004ca1f7     MOV        dword ptr FS:[0x0],this
-//         004ca1fe     POP        EBX
-//         004ca1ff     ADD        ESP,0x10
-//         004ca202     RET        0xc
-//         004ca205     ??         90h
-//         004ca206     NOP
-//         004ca207     NOP
-//         004ca208     NOP
-//         004ca209     NOP
-//         004ca20a     NOP
-//         004ca20b     NOP
-//         004ca20c     NOP
-//         004ca20d     NOP
-//         004ca20e     NOP
-//         004ca20f     NOP
+//              TRIBE_Master_C    Stack[0x4]:4   param_1                   XREF[2]:     004ca11e(R), 004ca14c(R)
+//              RGE_Player *      Stack[0x8]:4   param_2                   XREF[2]:     004ca106(R), 004ca148(R)
+//              float             Stack[0xc]:4   param_3                   XREF[1]:     004ca110(R)
+//              float             Stack[0x10]:4  param_4                   XREF[1]:     004ca10b(R)
+//              float             Stack[0x14]:4  param_5                   XREF[1]:     004ca116(R)
+//              int               Stack[0x18]:4  param_6                   XREF[1]:     004ca132(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     004ca136(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004ca15c(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004ca129(W)
+//                               ??0TRIBE_Combat_Object@@QAE@PAVTRIBE_Master_Combat_Object@@  XREF[3]:     TRIBE_Building_Object:004c7f8e(c),
+//                               TRIBE_Combat_Object::TRIBE_Combat_Object                                  TRIBE_Building_Object:004c80ee(c),
+//                                                                                                         make_new_obj:0050f0df(c)
+//                              t_c_obj.cpp:61 (66)
+//         004ca0f0     PUSH       -0x1
+//         004ca0f2     PUSH       FUN_0055fb18
+//         004ca0f7     MOV        EAX,FS:[0x0]
+//         004ca0fd     PUSH       EAX
+//         004ca0fe     MOV        dword ptr FS:[0x0],ESP
+//         004ca105     PUSH       this
+//         004ca106     MOV        EAX,dword ptr [ESP + param_2]
+//         004ca10a     PUSH       EBX
+//         004ca10b     MOV        EBX,dword ptr [ESP + param_4]
+//         004ca10f     PUSH       EBP
+//         004ca110     MOV        EBP,dword ptr [ESP + param_3]
+//         004ca114     PUSH       ESI
+//         004ca115     PUSH       EDI
+//         004ca116     MOV        EDI,dword ptr [ESP + param_5]
+//         004ca11a     PUSH       0x0
+//         004ca11c     MOV        ESI,this
+//         004ca11e     MOV        this,dword ptr [ESP + param_1]
+//         004ca122     PUSH       EDI
+//         004ca123     PUSH       EBX
+//         004ca124     PUSH       EBP
+//         004ca125     PUSH       EAX
+//         004ca126     PUSH       this
+//         004ca127     MOV        this,ESI
+//         004ca129     MOV        dword ptr [ESP + local_10],ESI
+//         004ca12d     CALL       RGE_Combat_Object::RGE_Combat_Object             undefined RGE_Combat_Object(RGE_Combat_Object
+//                              t_c_obj.cpp:62 (22)
+//         004ca132     MOV        EAX,dword ptr [ESP + param_6]
+//         004ca136     MOV        dword ptr [ESP + local_4],0x0
+//         004ca13e     TEST       EAX,EAX
+//         004ca140     MOV        dword ptr [ESI],TRIBE_Combat_Object::`vftable'   = 004ca180
+//         004ca146     JZ         LAB_004ca15c
+//                              t_c_obj.cpp:63 (20)
+//         004ca148     MOV        EDX,dword ptr [ESP + param_2]
+//         004ca14c     MOV        EAX,dword ptr [ESP + param_1]
+//         004ca150     PUSH       EDI
+//         004ca151     PUSH       EBX
+//         004ca152     PUSH       EBP
+//         004ca153     PUSH       EDX
+//         004ca154     PUSH       EAX
+//         004ca155     MOV        this,ESI
+//         004ca157     CALL       TRIBE_Combat_Object::setup                       int setup(TRIBE_Combat_Object * this, TRIBE_M
+//                               LAB_004ca15c                                                 XREF[1]:     004ca146(j)
+//                              t_c_obj.cpp:64 (23)
+//         004ca15c     MOV        this,dword ptr [ESP + local_c]
+//         004ca160     MOV        EAX,ESI
+//         004ca162     POP        EDI
+//         004ca163     POP        ESI
+//         004ca164     POP        EBP
+//         004ca165     MOV        dword ptr FS:[0x0],this
+//         004ca16c     POP        EBX
+//         004ca16d     ADD        ESP,0x10
+//         004ca170     RET        0x18
+//         004ca173     ??         90h
+//         004ca174     NOP
+//         004ca175     NOP
+//         004ca176     NOP
+//         004ca177     NOP
+//         004ca178     NOP
+//         004ca179     NOP
+//         004ca17a     NOP
+//         004ca17b     NOP
+//         004ca17c     NOP
+//         004ca17d     NOP
+//         004ca17e     NOP
+//         004ca17f     NOP
 }
 
 TRIBE_Combat_Object::TRIBE_Combat_Object(int param_1, RGE_Game_World* param_2, int param_3) {
@@ -242,143 +262,108 @@ TRIBE_Combat_Object::~TRIBE_Combat_Object() {
 
 int TRIBE_Combat_Object::setup(TRIBE_Master_Combat_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) {
     /* TODO: Stub */
-//                              int __thiscall setup(TRIBE_Combat_Object * this, int param_1, RGE_Ga
+//                              int __thiscall setup(TRIBE_Combat_Object * this, TRIBE_Master_Combat
 //              int               EAX:4          <RETURN>
 //              TRIBE_Combat_O    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[3]:     004ca3fd(R), 004ca4c1(*), 004ca4ce(R)
-//              RGE_Game_World    Stack[0x8]:4   param_2                   XREF[3]:     004ca3f6(R), 004ca42a(*), 004ca437(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[3]:     004ca455(W), 004ca490(W), 004ca4b6(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004ca4f3(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[2]:     004ca44f(W), 004ca48a(W)
-//                               ?setup@TRIBE_Combat_Object@@MAEHHPAVRGE_Game_World@@@Z       XREF[3]:     setup:004c849e(c),
-//                               TRIBE_Combat_Object::setup                                                TRIBE_Combat_Object:004ca1ea(c),
-//                                                                                                         00574bf8(*)
-//                              t_c_obj.cpp:152 (22)
-//         004ca3e0     PUSH       -0x1
-//         004ca3e2     PUSH       FUN_0055fb86
-//         004ca3e7     MOV        EAX,FS:[0x0]
-//         004ca3ed     PUSH       EAX
-//         004ca3ee     MOV        dword ptr FS:[0x0],ESP
-//         004ca3f5     PUSH       this
-//                              t_c_obj.cpp:155 (20)
-//         004ca3f6     MOV        EAX,dword ptr [ESP + param_2]
-//         004ca3fa     PUSH       EBX
-//         004ca3fb     PUSH       ESI
-//         004ca3fc     PUSH       EDI
-//         004ca3fd     MOV        EDI,dword ptr [ESP + param_1]
-//         004ca401     PUSH       EAX
-//         004ca402     MOV        ESI,this
-//         004ca404     PUSH       EDI
-//         004ca405     CALL       RGE_Combat_Object::setup                         int setup(RGE_Combat_Object * this, int param
-//                              t_c_obj.cpp:159 (19)
-//         004ca40a     LEA        EBX,[ESI + 0x1c4]
-//         004ca410     PUSH       0x1
-//         004ca412     PUSH       EBX
-//         004ca413     PUSH       EDI
-//         004ca414     MOV        byte ptr [ESI + 0x4e],0x46
-//         004ca418     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              t_c_obj.cpp:160 (13)
-//         004ca41d     MOV        AL,byte ptr [EBX]
-//         004ca41f     ADD        ESP,0xc
-//         004ca422     TEST       AL,AL
-//         004ca424     JZ         LAB_004ca4c1
-//                              t_c_obj.cpp:162 (13)
-//         004ca42a     LEA        this=>param_2,[ESP + 0x24]
-//         004ca42e     PUSH       0x1
-//         004ca430     PUSH       this
-//         004ca431     PUSH       EDI
-//         004ca432     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              t_c_obj.cpp:163 (11)
-//         004ca437     MOV        AL,byte ptr [ESP + param_2]
-//         004ca43b     ADD        ESP,0xc
-//         004ca43e     CMP        AL,0x46
-//         004ca440     JNZ        LAB_004ca479
-//                              t_c_obj.cpp:164 (53)
-//         004ca442     PUSH       0x164
-//         004ca447     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004ca44c     ADD        ESP,0x4
-//         004ca44f     MOV        dword ptr [ESP + local_10],EAX
-//         004ca453     TEST       EAX,EAX
-//         004ca455     MOV        dword ptr [ESP + local_4],0x0
-//         004ca45d     JZ         LAB_004ca4b4
-//         004ca45f     MOV        EDX,dword ptr [ESI + 0xc]
-//         004ca462     PUSH       0x1
-//         004ca464     MOV        EDX,dword ptr [EDX + 0x3c]
-//         004ca467     MOV        this,dword ptr [EDX + 0x30]
-//         004ca46a     MOV        EDX,dword ptr [EDX + 0x38]
-//         004ca46d     PUSH       this
-//         004ca46e     PUSH       EDX
-//         004ca46f     PUSH       EDI
-//         004ca470     MOV        this,EAX
-//         004ca472     CALL       TRIBE_Master_Combat_Object::TRIBE_Master_Comba   undefined TRIBE_Master_Combat_Object(TRIBE_Ma
-//                              t_c_obj.cpp:165 (6)
-//         004ca477     JMP        LAB_004ca4b6
-//                               LAB_004ca479                                                 XREF[1]:     004ca440(j)
-//         004ca479     CMP        AL,0x50
-//         004ca47b     JNZ        LAB_004ca4c1
-//                              t_c_obj.cpp:166 (68)
-//         004ca47d     PUSH       0x17c
-//         004ca482     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004ca487     ADD        ESP,0x4
-//         004ca48a     MOV        dword ptr [ESP + local_10],EAX
-//         004ca48e     TEST       EAX,EAX
-//         004ca490     MOV        dword ptr [ESP + local_4],0x1
-//         004ca498     JZ         LAB_004ca4b4
-//         004ca49a     MOV        this,dword ptr [ESI + 0xc]
-//         004ca49d     PUSH       0x1
-//         004ca49f     MOV        EDX,dword ptr [ECX + this->_padding_]
-//         004ca4a2     MOV        this,dword ptr [EDX + 0x30]
-//         004ca4a5     MOV        EDX,dword ptr [EDX + 0x38]
-//         004ca4a8     PUSH       this
-//         004ca4a9     PUSH       EDX
-//         004ca4aa     PUSH       EDI
-//         004ca4ab     MOV        this,EAX
-//         004ca4ad     CALL       TRIBE_Master_Building_Object::TRIBE_Master_Bui   undefined TRIBE_Master_Building_Object(TRIBE_
-//         004ca4b2     JMP        LAB_004ca4b6
-//                               LAB_004ca4b4                                                 XREF[2]:     004ca45d(j), 004ca498(j)
-//         004ca4b4     XOR        EAX,EAX
-//                               LAB_004ca4b6                                                 XREF[2]:     004ca477(j), 004ca4b2(j)
-//         004ca4b6     MOV        dword ptr [ESP + local_4],0xffffffff
-//         004ca4be     MOV        dword ptr [ESI + 0x8],EAX
-//                               LAB_004ca4c1                                                 XREF[2]:     004ca424(j), 004ca47b(j)
-//                              t_c_obj.cpp:170 (13)
-//         004ca4c1     LEA        EAX=>param_1,[ESP + 0x20]
-//         004ca4c5     PUSH       0x4
-//         004ca4c7     PUSH       EAX
-//         004ca4c8     PUSH       EDI
-//         004ca4c9     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              t_c_obj.cpp:172 (12)
-//         004ca4ce     MOV        EAX,dword ptr [ESP + param_1]
-//         004ca4d2     ADD        ESP,0xc
-//         004ca4d5     CMP        EAX,0x1
-//         004ca4d8     JNZ        LAB_004ca4f3
-//                              t_c_obj.cpp:174 (10)
-//         004ca4da     MOV        EDX,dword ptr [ESI]
-//         004ca4dc     MOV        this,ESI
-//         004ca4de     CALL       dword ptr [EDX + 0x250]
-//                              t_c_obj.cpp:175 (7)
-//         004ca4e4     MOV        ESI,dword ptr [ESI + 0x74]
-//         004ca4e7     TEST       ESI,ESI
-//         004ca4e9     JZ         LAB_004ca4f3
-//                              t_c_obj.cpp:176 (8)
-//         004ca4eb     MOV        EAX,dword ptr [ESI]
-//         004ca4ed     PUSH       EDI
-//         004ca4ee     MOV        this,ESI
-//         004ca4f0     CALL       dword ptr [EAX + 0x8]
-//                               LAB_004ca4f3                                                 XREF[2]:     004ca4d8(j), 004ca4e9(j)
-//                              t_c_obj.cpp:180 (25)
-//         004ca4f3     MOV        this,dword ptr [ESP + local_c]
-//         004ca4f7     POP        EDI
-//         004ca4f8     POP        ESI
-//         004ca4f9     MOV        EAX,0x1
-//         004ca4fe     MOV        dword ptr FS:[0x0],this
-//         004ca505     POP        EBX
-//         004ca506     ADD        ESP,0x10
-//         004ca509     RET        0x8
-//         004ca50c     ??         90h
-//         004ca50d     NOP
-//         004ca50e     NOP
-//         004ca50f     NOP
+//              TRIBE_Master_C    Stack[0x4]:4   param_1                   XREF[1]:     004ca315(R)
+//              RGE_Player *      Stack[0x8]:4   param_2                   XREF[1]:     004ca310(R)
+//              float             Stack[0xc]:4   param_3                   XREF[1]:     004ca304(R)
+//              float             Stack[0x10]:4  param_4                   XREF[1]:     004ca30b(R)
+//              float             Stack[0x14]:4  param_5                   XREF[1]:     004ca300(R)
+//                               ?setup@TRIBE_Combat_Object@@MAEHPAVTRIBE_Master_Combat_Obje  XREF[4]:     setup:004c8407(c),
+//                               TRIBE_Combat_Object::setup                                                TRIBE_Combat_Object:004ca157(c),
+//                                                                                                         005749cc(*), 00574c74(*)
+//                              t_c_obj.cpp:111 (35)
+//         004ca300     MOV        EAX,dword ptr [ESP + param_5]
+//         004ca304     MOV        EDX,dword ptr [ESP + param_3]
+//         004ca308     PUSH       ESI
+//         004ca309     MOV        ESI,this
+//         004ca30b     MOV        this,dword ptr [ESP + param_4]
+//         004ca30f     PUSH       EAX
+//         004ca310     MOV        EAX,dword ptr [ESP + param_2]
+//         004ca314     PUSH       this
+//         004ca315     MOV        this,dword ptr [ESP + param_1]
+//         004ca319     PUSH       EDX
+//         004ca31a     PUSH       EAX
+//         004ca31b     PUSH       this
+//         004ca31c     MOV        this,ESI
+//         004ca31e     CALL       RGE_Combat_Object::setup                         int setup(RGE_Combat_Object * this, RGE_Maste
+//                              t_c_obj.cpp:116 (10)
+//         004ca323     MOV        EDX,dword ptr [ESI + 0xc]
+//         004ca326     CMP        word ptr [EDX + 0x4a],0x0
+//         004ca32b     JNZ        LAB_004ca334
+//                              t_c_obj.cpp:117 (7)
+//         004ca32d     MOV        byte ptr [ESI + 0x1c0],0x1
+//                               LAB_004ca334                                                 XREF[1]:     004ca32b(j)
+//                              t_c_obj.cpp:121 (14)
+//         004ca334     MOV        EAX,dword ptr [ESI]
+//         004ca336     MOV        this,ESI
+//         004ca338     MOV        byte ptr [ESI + 0x4e],0x46
+//         004ca33c     CALL       dword ptr [EAX + 0x250]
+//                              t_c_obj.cpp:128 (32)
+//         004ca342     MOV        this,dword ptr [ESI + 0x8]
+//         004ca345     MOV        byte ptr [ESI + 0x1c4],0x0
+//         004ca34c     MOV        AX,word ptr [ECX + this->_padding_]
+//         004ca350     CMP        AX,0x4
+//         004ca354     JZ         LAB_004ca39f
+//         004ca356     CMP        AX,0x15
+//         004ca35a     JZ         LAB_004ca39f
+//         004ca35c     CMP        AX,0x2
+//         004ca360     JZ         LAB_004ca39f
+//                              t_c_obj.cpp:135 (35)
+//         004ca362     CMP        AX,0x12
+//         004ca366     JZ         LAB_004ca36e
+//         004ca368     CMP        byte ptr [ECX + this->_padding_],0x46
+//         004ca36c     JZ         LAB_004ca385
+//                               LAB_004ca36e                                                 XREF[1]:     004ca366(j)
+//         004ca36e     MOV        this,word ptr [ECX + this->_padding_]
+//         004ca372     CMP        this,0x4f
+//         004ca376     JZ         LAB_004ca385
+//         004ca378     CMP        this,0x45
+//         004ca37c     JZ         LAB_004ca385
+//         004ca37e     CMP        this,0xc7
+//         004ca383     JNZ        LAB_004ca3b7
+//                               LAB_004ca385                                                 XREF[3]:     004ca36c(j), 004ca376(j),
+//                                                                                                         004ca37c(j)
+//                              t_c_obj.cpp:136 (26)
+//         004ca385     MOV        this,dword ptr [ESI + 0xc]
+//         004ca388     MOV        EAX,dword ptr [ECX + this->_padding_]
+//         004ca38b     FLD        float ptr [EAX + 0xa0]
+//         004ca391     FSUB       float ptr [DAT_00574c7c]
+//         004ca397     FSTP       float ptr [EAX + 0xa0]
+//         004ca39d     JMP        LAB_004ca3b7
+//                               LAB_004ca39f                                                 XREF[3]:     004ca354(j), 004ca35a(j),
+//                                                                                                         004ca360(j)
+//                              t_c_obj.cpp:129 (24)
+//         004ca39f     MOV        EDX,dword ptr [ESI + 0xc]
+//         004ca3a2     MOV        EAX,dword ptr [EDX + 0x50]
+//         004ca3a5     FLD        float ptr [EAX + 0x94]
+//         004ca3ab     FSUB       float ptr [DAT_00574c7c]
+//         004ca3b1     FSTP       float ptr [EAX + 0x94]
+//                               LAB_004ca3b7                                                 XREF[2]:     004ca383(j), 004ca39d(j)
+//                              t_c_obj.cpp:139 (10)
+//         004ca3b7     MOV        EAX,dword ptr [ESI + 0x8]
+//         004ca3ba     CMP        word ptr [EAX + 0x14],0x12
+//         004ca3bf     JNZ        LAB_004ca3ce
+//                              t_c_obj.cpp:141 (7)
+//         004ca3c1     MOV        dword ptr [ESI + 0x44],0x42c80000
+//                              t_c_obj.cpp:142 (6)
+//         004ca3c8     MOV        word ptr [ESI + 0x4c],0x22
+//                               LAB_004ca3ce                                                 XREF[1]:     004ca3bf(j)
+//                              t_c_obj.cpp:145 (5)
+//         004ca3ce     MOV        EAX,0x1
+//                              t_c_obj.cpp:146 (4)
+//         004ca3d3     POP        ESI
+//         004ca3d4     RET        0x14
+//         004ca3d7     ??         90h
+//         004ca3d8     NOP
+//         004ca3d9     NOP
+//         004ca3da     NOP
+//         004ca3db     NOP
+//         004ca3dc     NOP
+//         004ca3dd     NOP
+//         004ca3de     NOP
+//         004ca3df     NOP
     return 0;
 }
 
@@ -4399,98 +4384,2150 @@ uchar TRIBE_Combat_Object::area_attack(float param_1, float param_2, float param
 
 int TRIBE_Combat_Object::heal(int param_1, int param_2) {
     /* TODO: Stub */
-//                              uchar __thiscall heal(TRIBE_Combat_Object * this, float param_1)
+//                              int __thiscall heal(TRIBE_Combat_Object * this, int param_1, int par
+//              int               EAX:4          <RETURN>
+//              TRIBE_Combat_O    ECX:4 (auto)   this
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004cb316(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     004cb335(R)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004cb436(R)
+//                               ?heal@TRIBE_Combat_Object@@UAEHHH@Z                          XREF[2]:     00574800(*), 00574aa8(*)
+//                               TRIBE_Combat_Object::heal
+//                              t_c_obj.cpp:933 (22)
+//         004cb300     MOV        EAX,FS:[0x0]
+//         004cb306     PUSH       -0x1
+//         004cb308     PUSH       FUN_0055fbfb
+//         004cb30d     PUSH       EAX
+//         004cb30e     MOV        dword ptr FS:[0x0],ESP
+//         004cb315     PUSH       EBX
+//                              t_c_obj.cpp:934 (23)
+//         004cb316     MOV        EAX,dword ptr [ESP + param_1]
+//         004cb31a     PUSH       EBP
+//         004cb31b     PUSH       ESI
+//         004cb31c     PUSH       EDI
+//         004cb31d     MOV        EDI,this
+//         004cb31f     PUSH       EAX
+//         004cb320     MOV        this,dword ptr [EDI + 0xc]
+//         004cb323     MOV        this,dword ptr [ECX + this->_padding_]
+//         004cb326     CALL       RGE_Game_World::object                           RGE_Static_Object * object(RGE_Game_World * t
+//         004cb32b     MOV        ESI,EAX
+//                              t_c_obj.cpp:935 (8)
+//         004cb32d     TEST       ESI,ESI
+//         004cb32f     JZ         LAB_004cb436
+//                              t_c_obj.cpp:947 (67)
+//         004cb335     MOV        EAX,dword ptr [ESP + param_2]
+//         004cb339     TEST       EAX,EAX
+//         004cb33b     JNZ        LAB_004cb37e
+//         004cb33d     MOV        this,dword ptr [EDI + 0x184]
+//         004cb343     CALL       RGE_Action_List::have_action                     uchar have_action(RGE_Action_List * this)
+//         004cb348     CMP        AL,0x1
+//         004cb34a     JNZ        LAB_004cb37e
+//         004cb34c     MOV        this,dword ptr [EDI + 0x184]
+//         004cb352     CALL       RGE_Action_List::get_action                      RGE_Action * get_action(RGE_Action_List * this)
+//         004cb357     MOV        EDX,dword ptr [EAX]
+//         004cb359     MOV        this,EAX
+//         004cb35b     CALL       dword ptr [EDX + 0x4c]
+//         004cb35e     CMP        EAX,ESI
+//         004cb360     JNZ        LAB_004cb37e
+//         004cb362     MOV        this,dword ptr [EDI + 0x184]
+//         004cb368     CALL       RGE_Action_List::get_action                      RGE_Action * get_action(RGE_Action_List * this)
+//         004cb36d     MOV        EDX,dword ptr [EAX]
+//         004cb36f     MOV        this,EAX
+//         004cb371     CALL       dword ptr [EDX + 0x18]
+//         004cb374     CMP        AX,0x69
+//                              t_c_obj.cpp:952 (6)
+//         004cb378     JZ         LAB_004cb431
+//                               LAB_004cb37e                                                 XREF[3]:     004cb33b(j), 004cb34a(j),
+//                                                                                                         004cb360(j)
+//                              t_c_obj.cpp:958 (39)
+//         004cb37e     MOV        this,dword ptr [EDI + 0x184]
+//         004cb384     CALL       RGE_Action_List::have_action                     uchar have_action(RGE_Action_List * this)
+//         004cb389     CMP        AL,0x1
+//         004cb38b     JNZ        LAB_004cb3c6
+//         004cb38d     MOV        this,dword ptr [EDI + 0x184]
+//         004cb393     CALL       RGE_Action_List::get_action                      RGE_Action * get_action(RGE_Action_List * this)
+//         004cb398     MOV        EDX,dword ptr [EAX]
+//         004cb39a     MOV        this,EAX
+//         004cb39c     CALL       dword ptr [EDX + 0x18]
+//         004cb39f     CMP        AX,0x69
+//         004cb3a3     JNZ        LAB_004cb3c6
+//                              t_c_obj.cpp:961 (31)
+//         004cb3a5     MOV        this,dword ptr [EDI + 0x184]
+//         004cb3ab     CALL       RGE_Action_List::get_action                      RGE_Action * get_action(RGE_Action_List * this)
+//         004cb3b0     MOV        this,dword ptr [ESI + 0x40]
+//         004cb3b3     MOV        EDX,dword ptr [EAX]
+//         004cb3b5     PUSH       this
+//         004cb3b6     MOV        this,dword ptr [ESI + 0x3c]
+//         004cb3b9     PUSH       this=>DAT_fffffff8
+//         004cb3ba     MOV        this,dword ptr [ESI + 0x38]
+//         004cb3bd     PUSH       this=>DAT_fffffff4
+//         004cb3be     PUSH       ESI=>DAT_fffffff0
+//         004cb3bf     MOV        this,EAX
+//         004cb3c1     CALL       dword ptr [EDX + 0x34]
+//                              t_c_obj.cpp:962 (2)
+//         004cb3c4     JMP        LAB_004cb431
+//                               LAB_004cb3c6                                                 XREF[2]:     004cb38b(j), 004cb3a3(j)
+//                              t_c_obj.cpp:967 (25)
+//         004cb3c6     MOV        EDX,dword ptr [ESI + 0x40]
+//         004cb3c9     MOV        EAX,dword ptr [ESI + 0x3c]
+//         004cb3cc     MOV        this,dword ptr [ESI + 0x38]
+//         004cb3cf     MOV        EBP,dword ptr [EDI]
+//         004cb3d1     PUSH       EDX
+//         004cb3d2     PUSH       EAX=>DAT_fffffff8
+//         004cb3d3     PUSH       this=>DAT_fffffff4
+//         004cb3d4     PUSH       ESI=>DAT_fffffff0
+//         004cb3d5     MOV        this,EDI
+//         004cb3d7     CALL       dword ptr [EBP + 0x210]
+//         004cb3dd     MOV        EBX,EAX
+//                              t_c_obj.cpp:968 (4)
+//         004cb3df     TEST       EBX,EBX
+//         004cb3e1     JZ         LAB_004cb436
+//                              t_c_obj.cpp:975 (42)
+//         004cb3e3     PUSH       0x40
+//         004cb3e5     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004cb3ea     ADD        ESP,0x4
+//         004cb3ed     MOV        dword ptr [ESP + 0x20],EAX
+//         004cb3f1     TEST       EAX,EAX
+//         004cb3f3     MOV        dword ptr [ESP + 0x18],0x0
+//         004cb3fb     JZ         LAB_004cb40b
+//         004cb3fd     PUSH       ESI
+//         004cb3fe     PUSH       EBX=>DAT_fffffff8
+//         004cb3ff     PUSH       EDI=>DAT_fffffff4
+//         004cb400     MOV        this,EAX
+//         004cb402     CALL       TRIBE_Action_Heal::TRIBE_Action_Heal             undefined TRIBE_Action_Heal(TRIBE_Action_Heal
+//         004cb407     MOV        ESI,EAX
+//         004cb409     JMP        LAB_004cb40d
+//                               LAB_004cb40b                                                 XREF[1]:     004cb3fb(j)
+//         004cb40b     XOR        ESI,ESI
+//                               LAB_004cb40d                                                 XREF[1]:     004cb409(j)
+//                              t_c_obj.cpp:976 (12)
+//         004cb40d     TEST       ESI,ESI
+//         004cb40f     MOV        dword ptr [ESP + 0x18],0xffffffff
+//         004cb417     JNZ        LAB_004cb41d
+//                              t_c_obj.cpp:980 (4)
+//         004cb419     XOR        EAX,EAX
+//         004cb41b     JMP        LAB_004cb436
+//                               LAB_004cb41d                                                 XREF[1]:     004cb417(j)
+//                              t_c_obj.cpp:982 (11)
+//         004cb41d     MOV        this,dword ptr [EDI + 0x184]
+//         004cb423     CALL       RGE_Action_List::delete_list                     void delete_list(RGE_Action_List * this)
+//                              t_c_obj.cpp:983 (9)
+//         004cb428     PUSH       ESI
+//         004cb429     MOV        this,EDI
+//         004cb42b     CALL       dword ptr [EBP + 0x208]
+//                               LAB_004cb431                                                 XREF[2]:     004cb378(j), 004cb3c4(j)
+//                              t_c_obj.cpp:984 (5)
+//         004cb431     MOV        EAX,0x1
+//                               LAB_004cb436                                                 XREF[3]:     004cb32f(j), 004cb3e1(j),
+//                                                                                                         004cb41b(j)
+//                              t_c_obj.cpp:985 (21)
+//         004cb436     MOV        this,dword ptr [ESP + local_c]
+//         004cb43a     POP        EDI
+//         004cb43b     POP        ESI
+//         004cb43c     POP        EBP
+//         004cb43d     MOV        dword ptr FS:[0x0],this
+//         004cb444     POP        EBX
+//         004cb445     ADD        ESP,0xc
+//         004cb448     RET        0x8
+//         004cb44b     ??         90h
+//         004cb44c     NOP
+//         004cb44d     NOP
+//         004cb44e     NOP
+//         004cb44f     NOP
+    return 0;
+}
+
+int TRIBE_Combat_Object::repair(int param_1, int param_2) {
+    /* TODO: Stub */
+//                              int __thiscall repair(TRIBE_Combat_Object * this, int param_1, int p
+//              int               EAX:4          <RETURN>
+//              TRIBE_Combat_O    ECX:4 (auto)   this
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004cb465(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     004cb485(R)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004cb5a1(R)
+//                               ?repair@TRIBE_Combat_Object@@UAEHHH@Z                        XREF[2]:     005748e8(*), 00574b90(*)
+//                               TRIBE_Combat_Object::repair
+//                              t_c_obj.cpp:991 (21)
+//         004cb450     MOV        EAX,FS:[0x0]
+//         004cb456     PUSH       -0x1
+//         004cb458     PUSH       FUN_0055fc1b
+//         004cb45d     PUSH       EAX
+//         004cb45e     MOV        dword ptr FS:[0x0],ESP
+//                              t_c_obj.cpp:992 (24)
+//         004cb465     MOV        EAX,dword ptr [ESP + param_1]
+//         004cb469     PUSH       EBX
+//         004cb46a     PUSH       EBP
+//         004cb46b     PUSH       ESI
+//         004cb46c     MOV        ESI,this
+//         004cb46e     PUSH       EDI
+//         004cb46f     PUSH       EAX
+//         004cb470     MOV        this,dword ptr [ESI + 0xc]
+//         004cb473     MOV        this,dword ptr [ECX + this->_padding_]
+//         004cb476     CALL       RGE_Game_World::object                           RGE_Static_Object * object(RGE_Game_World * t
+//         004cb47b     MOV        EDI,EAX
+//                              t_c_obj.cpp:993 (8)
+//         004cb47d     TEST       EDI,EDI
+//         004cb47f     JZ         LAB_004cb5a1
+//                              t_c_obj.cpp:1005 (67)
+//         004cb485     MOV        EAX,dword ptr [ESP + param_2]
+//         004cb489     TEST       EAX,EAX
+//         004cb48b     JNZ        LAB_004cb4ce
+//         004cb48d     MOV        this,dword ptr [ESI + 0x184]
+//         004cb493     CALL       RGE_Action_List::have_action                     uchar have_action(RGE_Action_List * this)
+//         004cb498     CMP        AL,0x1
+//         004cb49a     JNZ        LAB_004cb4ce
+//         004cb49c     MOV        this,dword ptr [ESI + 0x184]
+//         004cb4a2     CALL       RGE_Action_List::get_action                      RGE_Action * get_action(RGE_Action_List * this)
+//         004cb4a7     MOV        EDX,dword ptr [EAX]
+//         004cb4a9     MOV        this,EAX
+//         004cb4ab     CALL       dword ptr [EDX + 0x4c]
+//         004cb4ae     CMP        EAX,EDI
+//         004cb4b0     JNZ        LAB_004cb4ce
+//         004cb4b2     MOV        this,dword ptr [ESI + 0x184]
+//         004cb4b8     CALL       RGE_Action_List::get_action                      RGE_Action * get_action(RGE_Action_List * this)
+//         004cb4bd     MOV        EDX,dword ptr [EAX]
+//         004cb4bf     MOV        this,EAX
+//         004cb4c1     CALL       dword ptr [EDX + 0x18]
+//         004cb4c4     CMP        AX,0x6a
+//                              t_c_obj.cpp:1010 (6)
+//         004cb4c8     JZ         LAB_004cb59c
+//                               LAB_004cb4ce                                                 XREF[3]:     004cb48b(j), 004cb49a(j),
+//                                                                                                         004cb4b0(j)
+//                              t_c_obj.cpp:1016 (39)
+//         004cb4ce     MOV        this,dword ptr [ESI + 0x184]
+//         004cb4d4     CALL       RGE_Action_List::have_action                     uchar have_action(RGE_Action_List * this)
+//         004cb4d9     CMP        AL,0x1
+//         004cb4db     JNZ        LAB_004cb519
+//         004cb4dd     MOV        this,dword ptr [ESI + 0x184]
+//         004cb4e3     CALL       RGE_Action_List::get_action                      RGE_Action * get_action(RGE_Action_List * this)
+//         004cb4e8     MOV        EDX,dword ptr [EAX]
+//         004cb4ea     MOV        this,EAX
+//         004cb4ec     CALL       dword ptr [EDX + 0x18]
+//         004cb4ef     CMP        AX,0x6a
+//         004cb4f3     JNZ        LAB_004cb519
+//                              t_c_obj.cpp:1019 (31)
+//         004cb4f5     MOV        this,dword ptr [ESI + 0x184]
+//         004cb4fb     CALL       RGE_Action_List::get_action                      RGE_Action * get_action(RGE_Action_List * this)
+//         004cb500     MOV        this,dword ptr [EDI + 0x40]
+//         004cb503     MOV        EDX,dword ptr [EAX]
+//         004cb505     PUSH       this
+//         004cb506     MOV        this,dword ptr [EDI + 0x3c]
+//         004cb509     PUSH       this=>DAT_fffffff8
+//         004cb50a     MOV        this,dword ptr [EDI + 0x38]
+//         004cb50d     PUSH       this=>DAT_fffffff4
+//         004cb50e     PUSH       EDI=>DAT_fffffff0
+//         004cb50f     MOV        this,EAX
+//         004cb511     CALL       dword ptr [EDX + 0x34]
+//                              t_c_obj.cpp:1020 (5)
+//         004cb514     JMP        LAB_004cb59c
+//                               LAB_004cb519                                                 XREF[2]:     004cb4db(j), 004cb4f3(j)
+//                              t_c_obj.cpp:1024 (16)
+//         004cb519     MOV        EDX,dword ptr [ESI + 0xc]
+//         004cb51c     MOV        EAX,dword ptr [EDX + 0x24]
+//         004cb51f     MOV        EAX,dword ptr [EAX + 0x270]
+//         004cb525     TEST       EAX,EAX
+//         004cb527     JZ         LAB_004cb531
+//                              t_c_obj.cpp:1025 (8)
+//         004cb529     MOV        EDX,dword ptr [ESI]
+//         004cb52b     PUSH       EAX
+//         004cb52c     MOV        this,ESI
+//         004cb52e     CALL       dword ptr [EDX + 0x54]
+//                               LAB_004cb531                                                 XREF[1]:     004cb527(j)
+//                              t_c_obj.cpp:1029 (25)
+//         004cb531     MOV        EAX,dword ptr [EDI + 0x40]
+//         004cb534     MOV        this,dword ptr [EDI + 0x3c]
+//         004cb537     MOV        EDX,dword ptr [EDI + 0x38]
+//         004cb53a     MOV        EBP,dword ptr [ESI]
+//         004cb53c     PUSH       EAX
+//         004cb53d     PUSH       this=>DAT_fffffff8
+//         004cb53e     PUSH       EDX=>DAT_fffffff4
+//         004cb53f     PUSH       EDI=>DAT_fffffff0
+//         004cb540     MOV        this,ESI
+//         004cb542     CALL       dword ptr [EBP + 0x210]
+//         004cb548     MOV        EBX,EAX
+//                              t_c_obj.cpp:1030 (4)
+//         004cb54a     TEST       EBX,EBX
+//         004cb54c     JZ         LAB_004cb5a1
+//                              t_c_obj.cpp:1037 (42)
+//         004cb54e     PUSH       0x44
+//         004cb550     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004cb555     ADD        ESP,0x4
+//         004cb558     MOV        dword ptr [ESP + 0x20],EAX
+//         004cb55c     TEST       EAX,EAX
+//         004cb55e     MOV        dword ptr [ESP + 0x18],0x0
+//         004cb566     JZ         LAB_004cb576
+//         004cb568     PUSH       EDI
+//         004cb569     PUSH       EBX=>DAT_fffffff8
+//         004cb56a     PUSH       ESI=>DAT_fffffff4
+//         004cb56b     MOV        this,EAX
+//         004cb56d     CALL       TRIBE_Action_Repair::TRIBE_Action_Repair         undefined TRIBE_Action_Repair(TRIBE_Action_Re
+//         004cb572     MOV        EDI,EAX
+//         004cb574     JMP        LAB_004cb578
+//                               LAB_004cb576                                                 XREF[1]:     004cb566(j)
+//         004cb576     XOR        EDI,EDI
+//                               LAB_004cb578                                                 XREF[1]:     004cb574(j)
+//                              t_c_obj.cpp:1038 (12)
+//         004cb578     TEST       EDI,EDI
+//         004cb57a     MOV        dword ptr [ESP + 0x18],0xffffffff
+//         004cb582     JNZ        LAB_004cb588
+//                              t_c_obj.cpp:1042 (4)
+//         004cb584     XOR        EAX,EAX
+//         004cb586     JMP        LAB_004cb5a1
+//                               LAB_004cb588                                                 XREF[1]:     004cb582(j)
+//                              t_c_obj.cpp:1044 (11)
+//         004cb588     MOV        this,dword ptr [ESI + 0x184]
+//         004cb58e     CALL       RGE_Action_List::delete_list                     void delete_list(RGE_Action_List * this)
+//                              t_c_obj.cpp:1045 (9)
+//         004cb593     PUSH       EDI
+//         004cb594     MOV        this,ESI
+//         004cb596     CALL       dword ptr [EBP + 0x208]
+//                               LAB_004cb59c                                                 XREF[2]:     004cb4c8(j), 004cb514(j)
+//                              t_c_obj.cpp:1046 (5)
+//         004cb59c     MOV        EAX,0x1
+//                               LAB_004cb5a1                                                 XREF[3]:     004cb47f(j), 004cb54c(j),
+//                                                                                                         004cb586(j)
+//                              t_c_obj.cpp:1047 (21)
+//         004cb5a1     MOV        this,dword ptr [ESP + local_c]
+//         004cb5a5     POP        EDI
+//         004cb5a6     POP        ESI
+//         004cb5a7     POP        EBP
+//         004cb5a8     MOV        dword ptr FS:[0x0],this
+//         004cb5af     POP        EBX
+//         004cb5b0     ADD        ESP,0xc
+//         004cb5b3     RET        0x8
+//         004cb5b6     ??         90h
+//         004cb5b7     NOP
+//         004cb5b8     NOP
+//         004cb5b9     NOP
+//         004cb5ba     NOP
+//         004cb5bb     NOP
+//         004cb5bc     NOP
+//         004cb5bd     NOP
+//         004cb5be     NOP
+//         004cb5bf     NOP
+    return 0;
+}
+
+int TRIBE_Combat_Object::build(int param_1, int param_2) {
+    /* TODO: Stub */
+//                              int __thiscall build(TRIBE_Combat_Object * this, int param_1, int pa
+//              int               EAX:4          <RETURN>
+//              TRIBE_Combat_O    ECX:4 (auto)   this
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004cb5d6(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     004cb5f5(R)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004cb6f6(R)
+//                               ?build@TRIBE_Combat_Object@@UAEHHH@Z                         XREF[2]:     005748ec(*), 00574b94(*)
+//                               TRIBE_Combat_Object::build
+//                              t_c_obj.cpp:1053 (22)
+//         004cb5c0     MOV        EAX,FS:[0x0]
+//         004cb5c6     PUSH       -0x1
+//         004cb5c8     PUSH       FUN_0055fc3b
+//         004cb5cd     PUSH       EAX
+//         004cb5ce     MOV        dword ptr FS:[0x0],ESP
+//         004cb5d5     PUSH       EBX
+//                              t_c_obj.cpp:1054 (23)
+//         004cb5d6     MOV        EAX,dword ptr [ESP + param_1]
+//         004cb5da     PUSH       EBP
+//         004cb5db     PUSH       ESI
+//         004cb5dc     PUSH       EDI
+//         004cb5dd     MOV        EDI,this
+//         004cb5df     PUSH       EAX
+//         004cb5e0     MOV        this,dword ptr [EDI + 0xc]
+//         004cb5e3     MOV        this,dword ptr [ECX + this->_padding_]
+//         004cb5e6     CALL       RGE_Game_World::object                           RGE_Static_Object * object(RGE_Game_World * t
+//         004cb5eb     MOV        ESI,EAX
+//                              t_c_obj.cpp:1055 (8)
+//         004cb5ed     TEST       ESI,ESI
+//         004cb5ef     JZ         LAB_004cb6f6
+//                              t_c_obj.cpp:1067 (67)
+//         004cb5f5     MOV        EAX,dword ptr [ESP + param_2]
+//         004cb5f9     TEST       EAX,EAX
+//         004cb5fb     JNZ        LAB_004cb63e
+//         004cb5fd     MOV        this,dword ptr [EDI + 0x184]
+//         004cb603     CALL       RGE_Action_List::have_action                     uchar have_action(RGE_Action_List * this)
+//         004cb608     CMP        AL,0x1
+//         004cb60a     JNZ        LAB_004cb63e
+//         004cb60c     MOV        this,dword ptr [EDI + 0x184]
+//         004cb612     CALL       RGE_Action_List::get_action                      RGE_Action * get_action(RGE_Action_List * this)
+//         004cb617     MOV        EDX,dword ptr [EAX]
+//         004cb619     MOV        this,EAX
+//         004cb61b     CALL       dword ptr [EDX + 0x4c]
+//         004cb61e     CMP        EAX,ESI
+//         004cb620     JNZ        LAB_004cb63e
+//         004cb622     MOV        this,dword ptr [EDI + 0x184]
+//         004cb628     CALL       RGE_Action_List::get_action                      RGE_Action * get_action(RGE_Action_List * this)
+//         004cb62d     MOV        EDX,dword ptr [EAX]
+//         004cb62f     MOV        this,EAX
+//         004cb631     CALL       dword ptr [EDX + 0x18]
+//         004cb634     CMP        AX,0x65
+//                              t_c_obj.cpp:1072 (6)
+//         004cb638     JZ         LAB_004cb6f1
+//                               LAB_004cb63e                                                 XREF[3]:     004cb5fb(j), 004cb60a(j),
+//                                                                                                         004cb620(j)
+//                              t_c_obj.cpp:1078 (39)
+//         004cb63e     MOV        this,dword ptr [EDI + 0x184]
+//         004cb644     CALL       RGE_Action_List::have_action                     uchar have_action(RGE_Action_List * this)
+//         004cb649     CMP        AL,0x1
+//         004cb64b     JNZ        LAB_004cb686
+//         004cb64d     MOV        this,dword ptr [EDI + 0x184]
+//         004cb653     CALL       RGE_Action_List::get_action                      RGE_Action * get_action(RGE_Action_List * this)
+//         004cb658     MOV        EDX,dword ptr [EAX]
+//         004cb65a     MOV        this,EAX
+//         004cb65c     CALL       dword ptr [EDX + 0x18]
+//         004cb65f     CMP        AX,0x65
+//         004cb663     JNZ        LAB_004cb686
+//                              t_c_obj.cpp:1081 (31)
+//         004cb665     MOV        this,dword ptr [EDI + 0x184]
+//         004cb66b     CALL       RGE_Action_List::get_action                      RGE_Action * get_action(RGE_Action_List * this)
+//         004cb670     MOV        this,dword ptr [ESI + 0x40]
+//         004cb673     MOV        EDX,dword ptr [EAX]
+//         004cb675     PUSH       this
+//         004cb676     MOV        this,dword ptr [ESI + 0x3c]
+//         004cb679     PUSH       this=>DAT_fffffff8
+//         004cb67a     MOV        this,dword ptr [ESI + 0x38]
+//         004cb67d     PUSH       this=>DAT_fffffff4
+//         004cb67e     PUSH       ESI=>DAT_fffffff0
+//         004cb67f     MOV        this,EAX
+//         004cb681     CALL       dword ptr [EDX + 0x34]
+//                              t_c_obj.cpp:1082 (2)
+//         004cb684     JMP        LAB_004cb6f1
+//                               LAB_004cb686                                                 XREF[2]:     004cb64b(j), 004cb663(j)
+//                              t_c_obj.cpp:1087 (25)
+//         004cb686     MOV        EDX,dword ptr [ESI + 0x40]
+//         004cb689     MOV        EAX,dword ptr [ESI + 0x3c]
+//         004cb68c     MOV        this,dword ptr [ESI + 0x38]
+//         004cb68f     MOV        EBP,dword ptr [EDI]
+//         004cb691     PUSH       EDX
+//         004cb692     PUSH       EAX=>DAT_fffffff8
+//         004cb693     PUSH       this=>DAT_fffffff4
+//         004cb694     PUSH       ESI=>DAT_fffffff0
+//         004cb695     MOV        this,EDI
+//         004cb697     CALL       dword ptr [EBP + 0x210]
+//         004cb69d     MOV        EBX,EAX
+//                              t_c_obj.cpp:1088 (4)
+//         004cb69f     TEST       EBX,EBX
+//         004cb6a1     JZ         LAB_004cb6f6
+//                              t_c_obj.cpp:1095 (42)
+//         004cb6a3     PUSH       0x40
+//         004cb6a5     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004cb6aa     ADD        ESP,0x4
+//         004cb6ad     MOV        dword ptr [ESP + 0x20],EAX
+//         004cb6b1     TEST       EAX,EAX
+//         004cb6b3     MOV        dword ptr [ESP + 0x18],0x0
+//         004cb6bb     JZ         LAB_004cb6cb
+//         004cb6bd     PUSH       ESI
+//         004cb6be     PUSH       EBX=>DAT_fffffff8
+//         004cb6bf     PUSH       EDI=>DAT_fffffff4
+//         004cb6c0     MOV        this,EAX
+//         004cb6c2     CALL       TRIBE_Action_Build::TRIBE_Action_Build           undefined TRIBE_Action_Build(TRIBE_Action_Bui
+//         004cb6c7     MOV        ESI,EAX
+//         004cb6c9     JMP        LAB_004cb6cd
+//                               LAB_004cb6cb                                                 XREF[1]:     004cb6bb(j)
+//         004cb6cb     XOR        ESI,ESI
+//                               LAB_004cb6cd                                                 XREF[1]:     004cb6c9(j)
+//                              t_c_obj.cpp:1096 (12)
+//         004cb6cd     TEST       ESI,ESI
+//         004cb6cf     MOV        dword ptr [ESP + 0x18],0xffffffff
+//         004cb6d7     JNZ        LAB_004cb6dd
+//                              t_c_obj.cpp:1100 (4)
+//         004cb6d9     XOR        EAX,EAX
+//         004cb6db     JMP        LAB_004cb6f6
+//                               LAB_004cb6dd                                                 XREF[1]:     004cb6d7(j)
+//                              t_c_obj.cpp:1102 (11)
+//         004cb6dd     MOV        this,dword ptr [EDI + 0x184]
+//         004cb6e3     CALL       RGE_Action_List::delete_list                     void delete_list(RGE_Action_List * this)
+//                              t_c_obj.cpp:1103 (9)
+//         004cb6e8     PUSH       ESI
+//         004cb6e9     MOV        this,EDI
+//         004cb6eb     CALL       dword ptr [EBP + 0x208]
+//                               LAB_004cb6f1                                                 XREF[2]:     004cb638(j), 004cb684(j)
+//                              t_c_obj.cpp:1104 (5)
+//         004cb6f1     MOV        EAX,0x1
+//                               LAB_004cb6f6                                                 XREF[3]:     004cb5ef(j), 004cb6a1(j),
+//                                                                                                         004cb6db(j)
+//                              t_c_obj.cpp:1105 (21)
+//         004cb6f6     MOV        this,dword ptr [ESP + local_c]
+//         004cb6fa     POP        EDI
+//         004cb6fb     POP        ESI
+//         004cb6fc     POP        EBP
+//         004cb6fd     MOV        dword ptr FS:[0x0],this
+//         004cb704     POP        EBX
+//         004cb705     ADD        ESP,0xc
+//         004cb708     RET        0x8
+//         004cb70b     ??         90h
+//         004cb70c     NOP
+//         004cb70d     NOP
+//         004cb70e     NOP
+//         004cb70f     NOP
+    return 0;
+}
+
+int TRIBE_Combat_Object::trade(int param_1, int param_2) {
+    /* TODO: Stub */
+//                              int __thiscall trade(TRIBE_Combat_Object * this, int param_1, int pa
+//              int               EAX:4          <RETURN>
+//              TRIBE_Combat_O    ECX:4 (auto)   this
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004cb726(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     004cb745(R)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004cb846(R)
+//                               ?trade@TRIBE_Combat_Object@@UAEHHH@Z                         XREF[2]:     005748f0(*), 00574b98(*)
+//                               TRIBE_Combat_Object::trade
+//                              t_c_obj.cpp:1111 (22)
+//         004cb710     MOV        EAX,FS:[0x0]
+//         004cb716     PUSH       -0x1
+//         004cb718     PUSH       FUN_0055fc5b
+//         004cb71d     PUSH       EAX
+//         004cb71e     MOV        dword ptr FS:[0x0],ESP
+//         004cb725     PUSH       EBX
+//                              t_c_obj.cpp:1112 (23)
+//         004cb726     MOV        EAX,dword ptr [ESP + param_1]
+//         004cb72a     PUSH       EBP
+//         004cb72b     PUSH       ESI
+//         004cb72c     PUSH       EDI
+//         004cb72d     MOV        EDI,this
+//         004cb72f     PUSH       EAX
+//         004cb730     MOV        this,dword ptr [EDI + 0xc]
+//         004cb733     MOV        this,dword ptr [ECX + this->_padding_]
+//         004cb736     CALL       RGE_Game_World::object                           RGE_Static_Object * object(RGE_Game_World * t
+//         004cb73b     MOV        ESI,EAX
+//                              t_c_obj.cpp:1113 (8)
+//         004cb73d     TEST       ESI,ESI
+//         004cb73f     JZ         LAB_004cb846
+//                              t_c_obj.cpp:1125 (67)
+//         004cb745     MOV        EAX,dword ptr [ESP + param_2]
+//         004cb749     TEST       EAX,EAX
+//         004cb74b     JNZ        LAB_004cb78e
+//         004cb74d     MOV        this,dword ptr [EDI + 0x184]
+//         004cb753     CALL       RGE_Action_List::have_action                     uchar have_action(RGE_Action_List * this)
+//         004cb758     CMP        AL,0x1
+//         004cb75a     JNZ        LAB_004cb78e
+//         004cb75c     MOV        this,dword ptr [EDI + 0x184]
+//         004cb762     CALL       RGE_Action_List::get_action                      RGE_Action * get_action(RGE_Action_List * this)
+//         004cb767     MOV        EDX,dword ptr [EAX]
+//         004cb769     MOV        this,EAX
+//         004cb76b     CALL       dword ptr [EDX + 0x4c]
+//         004cb76e     CMP        EAX,ESI
+//         004cb770     JNZ        LAB_004cb78e
+//         004cb772     MOV        this,dword ptr [EDI + 0x184]
+//         004cb778     CALL       RGE_Action_List::get_action                      RGE_Action * get_action(RGE_Action_List * this)
+//         004cb77d     MOV        EDX,dword ptr [EAX]
+//         004cb77f     MOV        this,EAX
+//         004cb781     CALL       dword ptr [EDX + 0x18]
+//         004cb784     CMP        AX,0x6f
+//                              t_c_obj.cpp:1130 (6)
+//         004cb788     JZ         LAB_004cb841
+//                               LAB_004cb78e                                                 XREF[3]:     004cb74b(j), 004cb75a(j),
+//                                                                                                         004cb770(j)
+//                              t_c_obj.cpp:1136 (39)
+//         004cb78e     MOV        this,dword ptr [EDI + 0x184]
+//         004cb794     CALL       RGE_Action_List::have_action                     uchar have_action(RGE_Action_List * this)
+//         004cb799     CMP        AL,0x1
+//         004cb79b     JNZ        LAB_004cb7d6
+//         004cb79d     MOV        this,dword ptr [EDI + 0x184]
+//         004cb7a3     CALL       RGE_Action_List::get_action                      RGE_Action * get_action(RGE_Action_List * this)
+//         004cb7a8     MOV        EDX,dword ptr [EAX]
+//         004cb7aa     MOV        this,EAX
+//         004cb7ac     CALL       dword ptr [EDX + 0x18]
+//         004cb7af     CMP        AX,0x6f
+//         004cb7b3     JNZ        LAB_004cb7d6
+//                              t_c_obj.cpp:1139 (31)
+//         004cb7b5     MOV        this,dword ptr [EDI + 0x184]
+//         004cb7bb     CALL       RGE_Action_List::get_action                      RGE_Action * get_action(RGE_Action_List * this)
+//         004cb7c0     MOV        this,dword ptr [ESI + 0x40]
+//         004cb7c3     MOV        EDX,dword ptr [EAX]
+//         004cb7c5     PUSH       this
+//         004cb7c6     MOV        this,dword ptr [ESI + 0x3c]
+//         004cb7c9     PUSH       this=>DAT_fffffff8
+//         004cb7ca     MOV        this,dword ptr [ESI + 0x38]
+//         004cb7cd     PUSH       this=>DAT_fffffff4
+//         004cb7ce     PUSH       ESI=>DAT_fffffff0
+//         004cb7cf     MOV        this,EAX
+//         004cb7d1     CALL       dword ptr [EDX + 0x34]
+//                              t_c_obj.cpp:1140 (2)
+//         004cb7d4     JMP        LAB_004cb841
+//                               LAB_004cb7d6                                                 XREF[2]:     004cb79b(j), 004cb7b3(j)
+//                              t_c_obj.cpp:1145 (25)
+//         004cb7d6     MOV        EDX,dword ptr [ESI + 0x40]
+//         004cb7d9     MOV        EAX,dword ptr [ESI + 0x3c]
+//         004cb7dc     MOV        this,dword ptr [ESI + 0x38]
+//         004cb7df     MOV        EBP,dword ptr [EDI]
+//         004cb7e1     PUSH       EDX
+//         004cb7e2     PUSH       EAX=>DAT_fffffff8
+//         004cb7e3     PUSH       this=>DAT_fffffff4
+//         004cb7e4     PUSH       ESI=>DAT_fffffff0
+//         004cb7e5     MOV        this,EDI
+//         004cb7e7     CALL       dword ptr [EBP + 0x210]
+//         004cb7ed     MOV        EBX,EAX
+//                              t_c_obj.cpp:1146 (4)
+//         004cb7ef     TEST       EBX,EBX
+//         004cb7f1     JZ         LAB_004cb846
+//                              t_c_obj.cpp:1153 (42)
+//         004cb7f3     PUSH       0x48
+//         004cb7f5     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004cb7fa     ADD        ESP,0x4
+//         004cb7fd     MOV        dword ptr [ESP + 0x20],EAX
+//         004cb801     TEST       EAX,EAX
+//         004cb803     MOV        dword ptr [ESP + 0x18],0x0
+//         004cb80b     JZ         LAB_004cb81b
+//         004cb80d     PUSH       ESI
+//         004cb80e     PUSH       EBX=>DAT_fffffff8
+//         004cb80f     PUSH       EDI=>DAT_fffffff4
+//         004cb810     MOV        this,EAX
+//         004cb812     CALL       TRIBE_Action_Trade::TRIBE_Action_Trade           undefined TRIBE_Action_Trade(TRIBE_Action_Tra
+//         004cb817     MOV        ESI,EAX
+//         004cb819     JMP        LAB_004cb81d
+//                               LAB_004cb81b                                                 XREF[1]:     004cb80b(j)
+//         004cb81b     XOR        ESI,ESI
+//                               LAB_004cb81d                                                 XREF[1]:     004cb819(j)
+//                              t_c_obj.cpp:1154 (12)
+//         004cb81d     TEST       ESI,ESI
+//         004cb81f     MOV        dword ptr [ESP + 0x18],0xffffffff
+//         004cb827     JNZ        LAB_004cb82d
+//                              t_c_obj.cpp:1158 (4)
+//         004cb829     XOR        EAX,EAX
+//         004cb82b     JMP        LAB_004cb846
+//                               LAB_004cb82d                                                 XREF[1]:     004cb827(j)
+//                              t_c_obj.cpp:1160 (11)
+//         004cb82d     MOV        this,dword ptr [EDI + 0x184]
+//         004cb833     CALL       RGE_Action_List::delete_list                     void delete_list(RGE_Action_List * this)
+//                              t_c_obj.cpp:1161 (9)
+//         004cb838     PUSH       ESI
+//         004cb839     MOV        this,EDI
+//         004cb83b     CALL       dword ptr [EBP + 0x208]
+//                               LAB_004cb841                                                 XREF[2]:     004cb788(j), 004cb7d4(j)
+//                              t_c_obj.cpp:1162 (5)
+//         004cb841     MOV        EAX,0x1
+//                               LAB_004cb846                                                 XREF[3]:     004cb73f(j), 004cb7f1(j),
+//                                                                                                         004cb82b(j)
+//                              t_c_obj.cpp:1163 (21)
+//         004cb846     MOV        this,dword ptr [ESP + local_c]
+//         004cb84a     POP        EDI
+//         004cb84b     POP        ESI
+//         004cb84c     POP        EBP
+//         004cb84d     MOV        dword ptr FS:[0x0],this
+//         004cb854     POP        EBX
+//         004cb855     ADD        ESP,0xc
+//         004cb858     RET        0x8
+//         004cb85b     ??         90h
+//         004cb85c     NOP
+//         004cb85d     NOP
+//         004cb85e     NOP
+//         004cb85f     NOP
+    return 0;
+}
+
+uchar TRIBE_Combat_Object::keepGatheringWhenObjectIsOut(int param_1) {
+    /* TODO: Stub */
+//                              uchar __thiscall keepGatheringWhenObjectIsOut(TRIBE_Combat_Object *
 //              uchar             AL:1           <RETURN>
 //              TRIBE_Combat_O    ECX:4 (auto)   this
-//              float             Stack[0x4]:4   param_1                   XREF[8]:     004cc4e3(R), 004cc507(R), 004cc50b(W), 004cc511(R),
-//                                                                                     004cc515(W), 004cc528(W), 004cc544(R), 004cc555(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[4]:     004cc4ff(W), 004cc503(R), 004cc536(W), 004cc53c(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004cc548(*)
-//                               ?heal@TRIBE_Combat_Object@@MAEEM@Z                           XREF[2]:     heal:004c872f(c), 00574aac(*)
-//                               TRIBE_Combat_Object::heal
-//                              t_c_obj.cpp:1637 (4)
-//         004cc4c0     PUSH       this
-//         004cc4c1     PUSH       ESI
-//         004cc4c2     MOV        ESI,this
-//                              t_c_obj.cpp:1643 (31)
-//         004cc4c4     MOV        this,dword ptr [ESI + 0x8]
-//         004cc4c7     MOV        AX,word ptr [ECX + this->_padding_]
-//         004cc4cb     CMP        AX,0x2
-//         004cc4cf     JZ         LAB_004cc4f4
-//         004cc4d1     CMP        AX,0x14
-//         004cc4d5     JZ         LAB_004cc4f4
-//         004cc4d7     CMP        AX,0x15
-//         004cc4db     JZ         LAB_004cc4f4
-//         004cc4dd     CMP        AX,0x16
-//         004cc4e1     JZ         LAB_004cc4f4
-//                              t_c_obj.cpp:1656 (12)
-//         004cc4e3     MOV        EAX,dword ptr [ESP + param_1]
-//         004cc4e7     MOV        this,ESI
-//         004cc4e9     PUSH       EAX
-//         004cc4ea     CALL       RGE_Static_Object::heal                          uchar heal(RGE_Static_Object * this, float pa
-//                              t_c_obj.cpp:1657 (5)
-//         004cc4ef     POP        ESI
-//         004cc4f0     POP        this
-//         004cc4f1     RET        0x4
-//                               LAB_004cc4f4                                                 XREF[4]:     004cc4cf(j), 004cc4d5(j),
-//                                                                                                         004cc4db(j), 004cc4e1(j)
-//                              t_c_obj.cpp:1645 (29)
-//         004cc4f4     MOVSX      EDX,word ptr [ECX + this+0x26]
-//         004cc4f8     MOVSX      EAX,word ptr [ECX + this+0x15a]
-//         004cc4ff     MOV        dword ptr [ESP + local_4],EDX
-//         004cc503     FILD       dword ptr [ESP + local_4]
-//         004cc507     FLD        float ptr [ESP + param_1]
-//         004cc50b     MOV        dword ptr [ESP + param_1],EAX
-//         004cc50f     FMUL       ST1
-//                              t_c_obj.cpp:1647 (20)
-//         004cc511     FIDIV      dword ptr [ESP + param_1]
-//         004cc515     FST        float ptr [ESP + param_1]
-//         004cc519     FADD       float ptr [ESI + 0x30]
-//         004cc51c     FCOMP
-//         004cc51e     FNSTSW     AX
-//         004cc520     TEST       AH,0x41
-//         004cc523     JNZ        LAB_004cc52e
-//                              t_c_obj.cpp:1648 (9)
-//         004cc525     FSUB       float ptr [ESI + 0x30]
-//         004cc528     FSTP       float ptr [ESP + param_1]
-//         004cc52c     JMP        LAB_004cc530
-//                               LAB_004cc52e                                                 XREF[1]:     004cc523(j)
-//                              t_c_obj.cpp:1647 (2)
-//         004cc52e     FSTP       ST0
-//                               LAB_004cc530                                                 XREF[1]:     004cc52c(j)
-//                              t_c_obj.cpp:1650 (37)
-//         004cc530     ADD        EDX,EDX
-//         004cc532     MOV        AX,word ptr [ECX + this->_padding_]
-//         004cc536     MOV        dword ptr [ESP + local_4],EDX
-//         004cc53a     PUSH       0x1
-//         004cc53c     FILD       dword ptr [ESP + local_4]
-//         004cc540     PUSH       this
-//         004cc541     MOV        this,dword ptr [ESI + 0xc]
-//         004cc544     FDIVR      float ptr [ESP + param_1]
-//         004cc548     FSTP       float ptr [ESP]=>local_10
-//         004cc54b     PUSH       EAX
-//         004cc54c     CALL       TRIBE_Player::pay_obj_cost                       uchar pay_obj_cost(TRIBE_Player * this, short
-//         004cc551     TEST       AL,AL
-//         004cc553     JZ         LAB_004cc566
-//                              t_c_obj.cpp:1651 (12)
-//         004cc555     MOV        this,dword ptr [ESP + param_1]
-//         004cc559     PUSH       this
-//         004cc55a     MOV        this,ESI
-//         004cc55c     CALL       RGE_Static_Object::heal                          uchar heal(RGE_Static_Object * this, float pa
-//                              t_c_obj.cpp:1657 (5)
-//         004cc561     POP        ESI
-//         004cc562     POP        this
-//         004cc563     RET        0x4
-//                               LAB_004cc566                                                 XREF[1]:     004cc553(j)
-//                              t_c_obj.cpp:1653 (2)
-//         004cc566     MOV        AL,0x2
-//                              t_c_obj.cpp:1657 (5)
-//         004cc568     POP        ESI
-//         004cc569     POP        this
-//         004cc56a     RET        0x4
-//         004cc56d     ??         90h
-//         004cc56e     NOP
-//         004cc56f     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004cb860(R)
+//                               ?keepGatheringWhenObjectIsOut@TRIBE_Combat_Object@@UBEEH@Z   XREF[2]:     005748b0(*), 00574b58(*)
+//                               TRIBE_Combat_Object::keepGatheringWhenObjectIsOut
+//                              t_c_obj.cpp:1168 (14)
+//         004cb860     MOV        EAX,dword ptr [ESP + param_1]
+//         004cb864     CMP        EAX,0x32
+//         004cb867     JZ         LAB_004cb873
+//         004cb869     CMP        EAX,0x2d
+//         004cb86c     JZ         LAB_004cb873
+//                              t_c_obj.cpp:1171 (2)
+//         004cb86e     XOR        AL,AL
+//                              t_c_obj.cpp:1172 (3)
+//         004cb870     RET        0x4
+//                               LAB_004cb873                                                 XREF[2]:     004cb867(j), 004cb86c(j)
+//                              t_c_obj.cpp:1170 (2)
+//         004cb873     MOV        AL,0x1
+//                              t_c_obj.cpp:1172 (3)
+//         004cb875     RET        0x4
+//         004cb878     ??         90h
+//         004cb879     NOP
+//         004cb87a     NOP
+//         004cb87b     NOP
+//         004cb87c     NOP
+//         004cb87d     NOP
+//         004cb87e     NOP
+//         004cb87f     NOP
+    return 0;
+}
+
+uchar TRIBE_Combat_Object::produceWhenKilledBy(int param_1) {
+    /* TODO: Stub */
+//                              uchar __thiscall produceWhenKilledBy(TRIBE_Combat_Object * this, int
+//              uchar             AL:1           <RETURN>
+//              TRIBE_Combat_O    ECX:4 (auto)   this
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     004cb896(R)
+//                               ?produceWhenKilledBy@TRIBE_Combat_Object@@UBEEH@Z            XREF[2]:     005748b4(*), 00574b5c(*)
+//                               TRIBE_Combat_Object::produceWhenKilledBy
+//                              t_c_obj.cpp:1177 (7)
+//         004cb880     MOV        EAX,dword ptr [ECX + this->_padding_]
+//         004cb883     MOVSX      EAX,word ptr [EAX + 0x14]
+//                              t_c_obj.cpp:1181 (10)
+//         004cb887     CMP        EAX,0x9
+//         004cb88a     JZ         LAB_004cb896
+//         004cb88c     CMP        EAX,0xa
+//         004cb88f     JZ         LAB_004cb896
+//                              t_c_obj.cpp:1182 (2)
+//         004cb891     MOV        AL,0x1
+//                              t_c_obj.cpp:1188 (3)
+//         004cb893     RET        0x4
+//                               LAB_004cb896                                                 XREF[2]:     004cb88a(j), 004cb88f(j)
+//                              t_c_obj.cpp:1185 (8)
+//         004cb896     CMP        dword ptr [ESP + param_1],0x4
+//         004cb89b     SETZ       AL
+//                              t_c_obj.cpp:1188 (3)
+//         004cb89e     RET        0x4
+//         004cb8a1     ??         90h
+//         004cb8a2     NOP
+//         004cb8a3     NOP
+//         004cb8a4     NOP
+//         004cb8a5     NOP
+//         004cb8a6     NOP
+//         004cb8a7     NOP
+//         004cb8a8     NOP
+//         004cb8a9     NOP
+//         004cb8aa     NOP
+//         004cb8ab     NOP
+//         004cb8ac     NOP
+//         004cb8ad     NOP
+//         004cb8ae     NOP
+//         004cb8af     NOP
+    return 0;
+}
+
+uchar TRIBE_Combat_Object::useSameZoneDropsite() {
+    /* TODO: Stub */
+//                              uchar __thiscall useSameZoneDropsite(TRIBE_Combat_Object * this)
+//              uchar             AL:1           <RETURN>
+//              TRIBE_Combat_O    ECX:4 (auto)   this
+//                               ?useSameZoneDropsite@TRIBE_Combat_Object@@UBEEXZ             XREF[2]:     005748b8(*), 00574b60(*)
+//                               TRIBE_Combat_Object::useSameZoneDropsite
+//                              t_c_obj.cpp:1193 (7)
+//         004cb8b0     MOV        EAX,dword ptr [ECX + this->_padding_]
+//         004cb8b3     MOVSX      EAX,word ptr [EAX + 0x14]
+//                              t_c_obj.cpp:1198 (10)
+//         004cb8b7     CMP        EAX,0x15
+//         004cb8ba     JZ         LAB_004cb8c4
+//         004cb8bc     CMP        EAX,0x2
+//         004cb8bf     JZ         LAB_004cb8c4
+//                              t_c_obj.cpp:1201 (2)
+//         004cb8c1     MOV        AL,0x1
+//                              t_c_obj.cpp:1202 (1)
+//         004cb8c3     RET
+//                               LAB_004cb8c4                                                 XREF[2]:     004cb8ba(j), 004cb8bf(j)
+//                              t_c_obj.cpp:1199 (2)
+//         004cb8c4     XOR        AL,AL
+//                              t_c_obj.cpp:1202 (1)
+//         004cb8c6     RET
+//         004cb8c7     ??         90h
+//         004cb8c8     NOP
+//         004cb8c9     NOP
+//         004cb8ca     NOP
+//         004cb8cb     NOP
+//         004cb8cc     NOP
+//         004cb8cd     NOP
+//         004cb8ce     NOP
+//         004cb8cf     NOP
+    return 0;
+}
+
+void TRIBE_Combat_Object::initUnitAI() {
+    /* TODO: Stub */
+//                              void __thiscall initUnitAI(TRIBE_Combat_Object * this)
+//              void              <VOID>         <RETURN>
+//              TRIBE_Combat_O    ECX:4 (auto)   this
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[14]:    004cb934(W), 004cb972(W), 004cb9b0(W), 004cb9ee(W),
+//                                                                                     004cba36(W), 004cba7a(W), 004cbabe(W), 004cbaf7(W),
+//                                                                                     004cbb35(W), 004cbb73(W), 004cbbb1(W), 004cbc17(W),
+//                                                                                     004cbc55(W), 004cbc8f(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[15]:    004cb94f(R), 004cb98d(R), 004cb9cb(R), 004cba09(R),
+//                                                                                     004cba51(R), 004cba95(R), 004cbad9(R), 004cbb12(R),
+//                                                                                     004cbb50(R), 004cbb8e(R), 004cbbcc(R), 004cbc32(R),
+//                                                                                     004cbc6c(R), 004cbca6(R), 004cbcbb(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[14]:    004cb92e(W), 004cb96c(W), 004cb9aa(W), 004cb9e8(W),
+//                                                                                     004cba30(W), 004cba74(W), 004cbab8(W), 004cbaf1(W),
+//                                                                                     004cbb2f(W), 004cbb6d(W), 004cbbab(W), 004cbc11(W),
+//                                                                                     004cbc4f(W), 004cbc89(W)
+//                               ?initUnitAI@TRIBE_Combat_Object@@MAEXXZ                      XREF[2]:     005749c8(*), 00574c70(*)
+//                               TRIBE_Combat_Object::initUnitAI
+//                              t_c_obj.cpp:1208 (25)
+//         004cb8d0     PUSH       -0x1
+//         004cb8d2     PUSH       FUN_0055fd0a
+//         004cb8d7     MOV        EAX,FS:[0x0]
+//         004cb8dd     PUSH       EAX
+//         004cb8de     MOV        dword ptr FS:[0x0],ESP
+//         004cb8e5     PUSH       this
+//         004cb8e6     PUSH       ESI
+//         004cb8e7     MOV        ESI,this
+//                              t_c_obj.cpp:1213 (32)
+//         004cb8e9     MOV        EAX,dword ptr [ESI + 0x8]
+//         004cb8ec     MOVSX      this,word ptr [EAX + 0x14]
+//         004cb8f0     DEC        this
+//         004cb8f1     CMP        this,0x20
+//         004cb8f4     JA         switchD_004cb902::caseD_6
+//         004cb8fa     XOR        EDX,EDX
+//         004cb8fc     MOV        DL,byte ptr [this->_padding_ + 0x4cbd0c]=>PTR_
+//                               switchD_004cb902::switchD
+//         004cb902     JMP        dword ptr [EDX*0x4 + switchD_004cb902::switchd   = 004cb909
+//                               switchD_004cb902::caseD_1                                    XREF[2]:     004cb902(j), 004cbccc(*)
+//                              t_c_obj.cpp:1218 (24)
+//         004cb909     MOV        AX,word ptr [EAX + 0x10]
+//         004cb90d     CMP        AX,0x63
+//         004cb911     JZ         switchD_004cb902::caseD_5
+//         004cb917     CMP        AX,0xa
+//         004cb91b     JZ         switchD_004cb902::caseD_5
+//                              t_c_obj.cpp:1219 (43)
+//         004cb921     PUSH       0x134
+//         004cb926     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004cb92b     ADD        ESP,0x4
+//         004cb92e     MOV        dword ptr [ESP + local_10],EAX
+//         004cb932     TEST       EAX,EAX
+//         004cb934     MOV        dword ptr [ESP + local_4],0x0
+//         004cb93c     JZ         LAB_004cbcb6
+//         004cb942     PUSH       0x5
+//         004cb944     PUSH       ESI
+//         004cb945     MOV        this,EAX
+//         004cb947     CALL       TribeArtifactUnitAIModule::TribeArtifactUnitAI   undefined TribeArtifactUnitAIModule(TribeArti
+//                              t_c_obj.cpp:1307 (3)
+//         004cb94c     MOV        dword ptr [ESI + 0x74],EAX
+//                              t_c_obj.cpp:1310 (16)
+//         004cb94f     MOV        this,dword ptr [ESP + local_c]
+//         004cb953     MOV        dword ptr FS:[0x0],this
+//         004cb95a     POP        ESI
+//         004cb95b     ADD        ESP,0x10
+//         004cb95e     RET
+//                               switchD_004cb902::caseD_4                                    XREF[2]:     004cb902(j), 004cbcd8(*)
+//                              t_c_obj.cpp:1223 (43)
+//         004cb95f     PUSH       0x134
+//         004cb964     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004cb969     ADD        ESP,0x4
+//         004cb96c     MOV        dword ptr [ESP + local_10],EAX
+//         004cb970     TEST       EAX,EAX
+//         004cb972     MOV        dword ptr [ESP + local_4],0x1
+//         004cb97a     JZ         LAB_004cbcb6
+//         004cb980     PUSH       0xa
+//         004cb982     PUSH       ESI
+//         004cb983     MOV        this,EAX
+//         004cb985     CALL       TribeCivilianUnitAIModule::TribeCivilianUnitAI   undefined TribeCivilianUnitAIModule(TribeCivi
+//                              t_c_obj.cpp:1307 (3)
+//         004cb98a     MOV        dword ptr [ESI + 0x74],EAX
+//                              t_c_obj.cpp:1310 (16)
+//         004cb98d     MOV        this,dword ptr [ESP + local_c]
+//         004cb991     MOV        dword ptr FS:[0x0],this
+//         004cb998     POP        ESI
+//         004cb999     ADD        ESP,0x10
+//         004cb99c     RET
+//                               switchD_004cb902::caseD_12                                   XREF[2]:     004cb902(j), 004cbcf4(*)
+//                              t_c_obj.cpp:1227 (43)
+//         004cb99d     PUSH       0x134
+//         004cb9a2     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004cb9a7     ADD        ESP,0x4
+//         004cb9aa     MOV        dword ptr [ESP + local_10],EAX
+//         004cb9ae     TEST       EAX,EAX
+//         004cb9b0     MOV        dword ptr [ESP + local_4],0x2
+//         004cb9b8     JZ         LAB_004cbcb6
+//         004cb9be     PUSH       0xa
+//         004cb9c0     PUSH       ESI
+//         004cb9c1     MOV        this,EAX
+//         004cb9c3     CALL       TribePriestUnitAIModule::TribePriestUnitAIModule undefined TribePriestUnitAIModule(TribePriest
+//                              t_c_obj.cpp:1307 (3)
+//         004cb9c8     MOV        dword ptr [ESI + 0x74],EAX
+//                              t_c_obj.cpp:1310 (16)
+//         004cb9cb     MOV        this,dword ptr [ESP + local_c]
+//         004cb9cf     MOV        dword ptr FS:[0x0],this
+//         004cb9d6     POP        ESI
+//         004cb9d7     ADD        ESP,0x10
+//         004cb9da     RET
+//                               switchD_004cb902::caseD_9                                    XREF[2]:     004cb902(j), 004cbce4(*)
+//                              t_c_obj.cpp:1231 (43)
+//         004cb9db     PUSH       0x134
+//         004cb9e0     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004cb9e5     ADD        ESP,0x4
+//         004cb9e8     MOV        dword ptr [ESP + local_10],EAX
+//         004cb9ec     TEST       EAX,EAX
+//         004cb9ee     MOV        dword ptr [ESP + local_4],0x3
+//         004cb9f6     JZ         LAB_004cbcb6
+//         004cb9fc     PUSH       0xa
+//         004cb9fe     PUSH       ESI
+//         004cb9ff     MOV        this,EAX
+//         004cba01     CALL       TribeHuntedAnimalUnitAIModule::TribeHuntedAnim   undefined TribeHuntedAnimalUnitAIModule(Tribe
+//                              t_c_obj.cpp:1307 (3)
+//         004cba06     MOV        dword ptr [ESI + 0x74],EAX
+//                              t_c_obj.cpp:1310 (16)
+//         004cba09     MOV        this,dword ptr [ESP + local_c]
+//         004cba0d     MOV        dword ptr FS:[0x0],this
+//         004cba14     POP        ESI
+//         004cba15     ADD        ESP,0x10
+//         004cba18     RET
+//                               switchD_004cb902::caseD_a                                    XREF[2]:     004cb902(j), 004cbce8(*)
+//                              t_c_obj.cpp:1236 (10)
+//         004cba19     MOV        AX,word ptr [EAX + 0x10]
+//         004cba1d     CMP        AX,0x9d
+//         004cba21     JNZ        LAB_004cba61
+//                              t_c_obj.cpp:1237 (43)
+//         004cba23     PUSH       0x134
+//         004cba28     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004cba2d     ADD        ESP,0x4
+//         004cba30     MOV        dword ptr [ESP + local_10],EAX
+//         004cba34     TEST       EAX,EAX
+//         004cba36     MOV        dword ptr [ESP + local_4],0x4
+//         004cba3e     JZ         LAB_004cbcb6
+//         004cba44     PUSH       0xa
+//         004cba46     PUSH       ESI
+//         004cba47     MOV        this,EAX
+//         004cba49     CALL       TribeHuntedAnimalUnitAIModule::TribeHuntedAnim   undefined TribeHuntedAnimalUnitAIModule(Tribe
+//                              t_c_obj.cpp:1307 (3)
+//         004cba4e     MOV        dword ptr [ESI + 0x74],EAX
+//                              t_c_obj.cpp:1310 (16)
+//         004cba51     MOV        this,dword ptr [ESP + local_c]
+//         004cba55     MOV        dword ptr FS:[0x0],this
+//         004cba5c     POP        ESI
+//         004cba5d     ADD        ESP,0x10
+//         004cba60     RET
+//                               LAB_004cba61                                                 XREF[1]:     004cba21(j)
+//                              t_c_obj.cpp:1239 (6)
+//         004cba61     CMP        AX,0x30
+//         004cba65     JNZ        LAB_004cbaa5
+//                              t_c_obj.cpp:1240 (43)
+//         004cba67     PUSH       0x134
+//         004cba6c     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004cba71     ADD        ESP,0x4
+//         004cba74     MOV        dword ptr [ESP + local_10],EAX
+//         004cba78     TEST       EAX,EAX
+//         004cba7a     MOV        dword ptr [ESP + local_4],0x5
+//         004cba82     JZ         LAB_004cbcb6
+//         004cba88     PUSH       0xa
+//         004cba8a     PUSH       ESI
+//         004cba8b     MOV        this,EAX
+//         004cba8d     CALL       TribeElephantUnitAIModule::TribeElephantUnitAI   undefined TribeElephantUnitAIModule(TribeElep
+//                              t_c_obj.cpp:1307 (3)
+//         004cba92     MOV        dword ptr [ESI + 0x74],EAX
+//                              t_c_obj.cpp:1310 (16)
+//         004cba95     MOV        this,dword ptr [ESP + local_c]
+//         004cba99     MOV        dword ptr FS:[0x0],this
+//         004cbaa0     POP        ESI
+//         004cbaa1     ADD        ESP,0x10
+//         004cbaa4     RET
+//                               LAB_004cbaa5                                                 XREF[1]:     004cba65(j)
+//                              t_c_obj.cpp:1242 (4)
+//         004cbaa5     CMP        AX,0x7e
+//                              t_c_obj.cpp:1243 (45)
+//         004cbaa9     PUSH       0x134
+//         004cbaae     JNZ        LAB_004cbae9
+//         004cbab0     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004cbab5     ADD        ESP,0x4
+//         004cbab8     MOV        dword ptr [ESP + local_10],EAX
+//         004cbabc     TEST       EAX,EAX
+//         004cbabe     MOV        dword ptr [ESP + local_4],0x6
+//         004cbac6     JZ         LAB_004cbcb6
+//         004cbacc     PUSH       0xa
+//         004cbace     PUSH       ESI
+//         004cbacf     MOV        this,EAX
+//         004cbad1     CALL       TribeLionUnitAIModule::TribeLionUnitAIModule     undefined TribeLionUnitAIModule(TribeLionUnit
+//                              t_c_obj.cpp:1307 (3)
+//         004cbad6     MOV        dword ptr [ESI + 0x74],EAX
+//                              t_c_obj.cpp:1310 (16)
+//         004cbad9     MOV        this,dword ptr [ESP + local_c]
+//         004cbadd     MOV        dword ptr FS:[0x0],this
+//         004cbae4     POP        ESI
+//         004cbae5     ADD        ESP,0x10
+//         004cbae8     RET
+//                               LAB_004cbae9                                                 XREF[1]:     004cbaae(j)
+//                              t_c_obj.cpp:1246 (38)
+//         004cbae9     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004cbaee     ADD        ESP,0x4
+//         004cbaf1     MOV        dword ptr [ESP + local_10],EAX
+//         004cbaf5     TEST       EAX,EAX
+//         004cbaf7     MOV        dword ptr [ESP + local_4],0x7
+//         004cbaff     JZ         LAB_004cbcb6
+//         004cbb05     PUSH       0xa
+//         004cbb07     PUSH       ESI
+//         004cbb08     MOV        this,EAX
+//         004cbb0a     CALL       TribePreditorUnitAIModule::TribePreditorUnitAI   undefined TribePreditorUnitAIModule(TribePred
+//                              t_c_obj.cpp:1307 (3)
+//         004cbb0f     MOV        dword ptr [ESI + 0x74],EAX
+//                              t_c_obj.cpp:1310 (16)
+//         004cbb12     MOV        this,dword ptr [ESP + local_c]
+//         004cbb16     MOV        dword ptr FS:[0x0],this
+//         004cbb1d     POP        ESI
+//         004cbb1e     ADD        ESP,0x10
+//         004cbb21     RET
+//                               switchD_004cb902::caseD_15                                   XREF[2]:     004cb902(j), 004cbcfc(*)
+//                              t_c_obj.cpp:1250 (43)
+//         004cbb22     PUSH       0x134
+//         004cbb27     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004cbb2c     ADD        ESP,0x4
+//         004cbb2f     MOV        dword ptr [ESP + local_10],EAX
+//         004cbb33     TEST       EAX,EAX
+//         004cbb35     MOV        dword ptr [ESP + local_4],0x8
+//         004cbb3d     JZ         LAB_004cbcb6
+//         004cbb43     PUSH       0xa
+//         004cbb45     PUSH       ESI
+//         004cbb46     MOV        this,EAX
+//         004cbb48     CALL       TribeFishingShipUnitAIModule::TribeFishingShip   undefined TribeFishingShipUnitAIModule(TribeF
+//                              t_c_obj.cpp:1307 (3)
+//         004cbb4d     MOV        dword ptr [ESI + 0x74],EAX
+//                              t_c_obj.cpp:1310 (16)
+//         004cbb50     MOV        this,dword ptr [ESP + local_c]
+//         004cbb54     MOV        dword ptr FS:[0x0],this
+//         004cbb5b     POP        ESI
+//         004cbb5c     ADD        ESP,0x10
+//         004cbb5f     RET
+//                               switchD_004cb902::caseD_2                                    XREF[2]:     004cb902(j), 004cbcd0(*)
+//                              t_c_obj.cpp:1254 (43)
+//         004cbb60     PUSH       0x134
+//         004cbb65     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004cbb6a     ADD        ESP,0x4
+//         004cbb6d     MOV        dword ptr [ESP + local_10],EAX
+//         004cbb71     TEST       EAX,EAX
+//         004cbb73     MOV        dword ptr [ESP + local_4],0x9
+//         004cbb7b     JZ         LAB_004cbcb6
+//         004cbb81     PUSH       0xa
+//         004cbb83     PUSH       ESI
+//         004cbb84     MOV        this,EAX
+//         004cbb86     CALL       TribeTradeShipUnitAIModule::TribeTradeShipUnit   undefined TribeTradeShipUnitAIModule(TribeTra
+//                              t_c_obj.cpp:1307 (3)
+//         004cbb8b     MOV        dword ptr [ESI + 0x74],EAX
+//                              t_c_obj.cpp:1310 (16)
+//         004cbb8e     MOV        this,dword ptr [ESP + local_c]
+//         004cbb92     MOV        dword ptr FS:[0x0],this
+//         004cbb99     POP        ESI
+//         004cbb9a     ADD        ESP,0x10
+//         004cbb9d     RET
+//                               switchD_004cb902::caseD_14                                   XREF[2]:     004cb902(j), 004cbcf8(*)
+//                              t_c_obj.cpp:1258 (43)
+//         004cbb9e     PUSH       0x134
+//         004cbba3     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004cbba8     ADD        ESP,0x4
+//         004cbbab     MOV        dword ptr [ESP + local_10],EAX
+//         004cbbaf     TEST       EAX,EAX
+//         004cbbb1     MOV        dword ptr [ESP + local_4],0xa
+//         004cbbb9     JZ         LAB_004cbcb6
+//         004cbbbf     PUSH       0xa
+//         004cbbc1     PUSH       ESI
+//         004cbbc2     MOV        this,EAX
+//         004cbbc4     CALL       TribeTransportShipUnitAIModule::TribeTransport   undefined TribeTransportShipUnitAIModule(Trib
+//                              t_c_obj.cpp:1307 (3)
+//         004cbbc9     MOV        dword ptr [ESI + 0x74],EAX
+//                              t_c_obj.cpp:1310 (16)
+//         004cbbcc     MOV        this,dword ptr [ESP + local_c]
+//         004cbbd0     MOV        dword ptr FS:[0x0],this
+//         004cbbd7     POP        ESI
+//         004cbbd8     ADD        ESP,0x10
+//         004cbbdb     RET
+//                               switchD_004cb902::caseD_1b                                   XREF[3]:     004cb902(j), 004cbcd4(*),
+//                               switchD_004cb902::caseD_3                                                 004cbd00(*)
+//                              t_c_obj.cpp:1270 (40)
+//         004cbbdc     MOV        AX,word ptr [EAX + 0x10]
+//         004cbbe0     CMP        AX,0x4f
+//         004cbbe4     JZ         LAB_004cbc42
+//         004cbbe6     CMP        AX,0xc7
+//         004cbbea     JZ         LAB_004cbc42
+//         004cbbec     CMP        AX,0x45
+//         004cbbf0     JZ         LAB_004cbc42
+//         004cbbf2     CMP        AX,0x116
+//         004cbbf6     JZ         LAB_004cbc42
+//         004cbbf8     CMP        AX,0x17f
+//         004cbbfc     JZ         LAB_004cbc42
+//         004cbbfe     CMP        AX,0x17c
+//         004cbc02     JZ         LAB_004cbc42
+//                              t_c_obj.cpp:1273 (43)
+//         004cbc04     PUSH       0x134
+//         004cbc09     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004cbc0e     ADD        ESP,0x4
+//         004cbc11     MOV        dword ptr [ESP + local_10],EAX
+//         004cbc15     TEST       EAX,EAX
+//         004cbc17     MOV        dword ptr [ESP + local_4],0xc
+//         004cbc1f     JZ         LAB_004cbcb6
+//         004cbc25     PUSH       0xa
+//         004cbc27     PUSH       ESI
+//         004cbc28     MOV        this,EAX
+//         004cbc2a     CALL       TribeBuildingUnitAIModule::TribeBuildingUnitAI   undefined TribeBuildingUnitAIModule(TribeBuil
+//                              t_c_obj.cpp:1307 (3)
+//         004cbc2f     MOV        dword ptr [ESI + 0x74],EAX
+//                              t_c_obj.cpp:1310 (16)
+//         004cbc32     MOV        this,dword ptr [ESP + local_c]
+//         004cbc36     MOV        dword ptr FS:[0x0],this
+//         004cbc3d     POP        ESI
+//         004cbc3e     ADD        ESP,0x10
+//         004cbc41     RET
+//                               LAB_004cbc42                                                 XREF[6]:     004cbbe4(j), 004cbbea(j),
+//                                                                                                         004cbbf0(j), 004cbbf6(j),
+//                                                                                                         004cbbfc(j), 004cbc02(j)
+//                              t_c_obj.cpp:1271 (39)
+//         004cbc42     PUSH       0x134
+//         004cbc47     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004cbc4c     ADD        ESP,0x4
+//         004cbc4f     MOV        dword ptr [ESP + local_10],EAX
+//         004cbc53     TEST       EAX,EAX
+//         004cbc55     MOV        dword ptr [ESP + local_4],0xb
+//         004cbc5d     JZ         LAB_004cbcb6
+//         004cbc5f     PUSH       0xa
+//         004cbc61     PUSH       ESI
+//         004cbc62     MOV        this,EAX
+//         004cbc64     CALL       TribeTowerUnitAIModule::TribeTowerUnitAIModule   undefined TribeTowerUnitAIModule(TribeTowerUn
+//                              t_c_obj.cpp:1307 (3)
+//         004cbc69     MOV        dword ptr [ESI + 0x74],EAX
+//                              t_c_obj.cpp:1310 (16)
+//         004cbc6c     MOV        this,dword ptr [ESP + local_c]
+//         004cbc70     MOV        dword ptr FS:[0x0],this
+//         004cbc77     POP        ESI
+//         004cbc78     ADD        ESP,0x10
+//         004cbc7b     RET
+//                               switchD_004cb902::caseD_c                                    XREF[3]:     004cb8f4(j), 004cb902(j),
+//                               switchD_004cb902::caseD_d                                                 004cbd08(*)
+//                               switchD_004cb902::caseD_11
+//                               switchD_004cb902::caseD_13
+//                               switchD_004cb902::caseD_16
+//                               switchD_004cb902::caseD_17
+//                               switchD_004cb902::caseD_18
+//                               switchD_004cb902::caseD_19
+//                               switchD_004cb902::caseD_1a
+//                               switchD_004cb902::caseD_1c
+//                               switchD_004cb902::caseD_6
+//                              t_c_obj.cpp:1307 (42)
+//         004cbc7c     PUSH       0x134
+//         004cbc81     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004cbc86     ADD        ESP,0x4
+//         004cbc89     MOV        dword ptr [ESP + local_10],EAX
+//         004cbc8d     TEST       EAX,EAX
+//         004cbc8f     MOV        dword ptr [ESP + local_4],0xd
+//         004cbc97     JZ         LAB_004cbcb6
+//         004cbc99     PUSH       0xa
+//         004cbc9b     PUSH       ESI
+//         004cbc9c     MOV        this,EAX
+//         004cbc9e     CALL       TribeSoldierUnitAIModule::TribeSoldierUnitAIMo   undefined TribeSoldierUnitAIModule(TribeSoldi
+//         004cbca3     MOV        dword ptr [ESI + 0x74],EAX
+//                              t_c_obj.cpp:1310 (16)
+//         004cbca6     MOV        this,dword ptr [ESP + local_c]
+//         004cbcaa     MOV        dword ptr FS:[0x0],this
+//         004cbcb1     POP        ESI
+//         004cbcb2     ADD        ESP,0x10
+//         004cbcb5     RET
+//                               LAB_004cbcb6                                                 XREF[14]:    004cb93c(j), 004cb97a(j),
+//                                                                                                         004cb9b8(j), 004cb9f6(j),
+//                                                                                                         004cba3e(j), 004cba82(j),
+//                                                                                                         004cbac6(j), 004cbaff(j),
+//                                                                                                         004cbb3d(j), 004cbb7b(j),
+//                                                                                                         004cbbb9(j), 004cbc1f(j),
+//                                                                                                         004cbc5d(j), 004cbc97(j)
+//                              t_c_obj.cpp:1307 (5)
+//         004cbcb6     XOR        EAX,EAX
+//         004cbcb8     MOV        dword ptr [ESI + 0x74],EAX
+//                               switchD_004cb902::caseD_7                                    XREF[8]:     004cb902(j), 004cb911(j),
+//                               switchD_004cb902::caseD_8                                                 004cb91b(j), 004cbcdc(*),
+//                               switchD_004cb902::caseD_b                                                 004cbce0(*), 004cbcec(*),
+//                               switchD_004cb902::caseD_e                                                 004cbcf0(*), 004cbd04(*)
+//                               switchD_004cb902::caseD_f
+//                               switchD_004cb902::caseD_10
+//                               switchD_004cb902::caseD_1d
+//                               switchD_004cb902::caseD_1e
+//                               switchD_004cb902::caseD_1f
+//                               switchD_004cb902::caseD_20
+//                               switchD_004cb902::caseD_21
+//                               switchD_004cb902::caseD_5
+//                              t_c_obj.cpp:1310 (114)
+//         004cbcbb     MOV        this,dword ptr [ESP + local_c]
+//         004cbcbf     POP        ESI
+//         004cbcc0     MOV        dword ptr FS:[0x0],this
+//         004cbcc7     ADD        ESP,0x10
+//         004cbcca     RET
+//         004cbccb     ??         90h
+//                              Symbol Ref: No symbol: NONAME
+//                               switchD_004cb902::switchdataD_004cbccc                       XREF[1]:     initUnitAI:004cb902(*)
+//         004cbccc     addr       switchD_004cb902::caseD_1
+//         004cbcd0     addr       switchD_004cb902::caseD_2
+//         004cbcd4     addr       switchD_004cb902::caseD_3
+//         004cbcd8     addr       switchD_004cb902::caseD_4
+//         004cbcdc     addr       switchD_004cb902::caseD_5
+//         004cbce0     addr       switchD_004cb902::caseD_5
+//         004cbce4     addr       switchD_004cb902::caseD_9
+//         004cbce8     addr       switchD_004cb902::caseD_a
+//         004cbcec     addr       switchD_004cb902::caseD_5
+//         004cbcf0     addr       switchD_004cb902::caseD_5
+//         004cbcf4     addr       switchD_004cb902::caseD_12
+//         004cbcf8     addr       switchD_004cb902::caseD_14
+//         004cbcfc     addr       switchD_004cb902::caseD_15
+//         004cbd00     addr       switchD_004cb902::caseD_3
+//         004cbd04     addr       switchD_004cb902::caseD_5
+//                               PTR_caseD_6_004cbd08+3                                       XREF[0,1]:   initUnitAI:004cb8fc(*)
+//         004cbd08     addr       switchD_004cb902::caseD_6
+//                              Symbol Ref: No symbol: NONAME
+//                               switchD_004cb902::switchdataD_004cbd0c
+//         004cbd0c     db         0h
+//         004cbd0d     db         1h
+//         004cbd0e     db         2h
+//         004cbd0f     db         3h
+//         004cbd10     db         4h
+//         004cbd11     db         Fh
+//         004cbd12     db         5h
+//         004cbd13     db         5h
+//         004cbd14     db         6h
+//         004cbd15     db         7h
+//         004cbd16     db         8h
+//         004cbd17     db         Fh
+//         004cbd18     db         Fh
+//         004cbd19     db         9h
+//         004cbd1a     db         9h
+//         004cbd1b     db         9h
+//         004cbd1c     db         Fh
+//         004cbd1d     db         Ah
+//         004cbd1e     db         Fh
+//         004cbd1f     db         Bh
+//         004cbd20     db         Ch
+//         004cbd21     db         Fh
+//         004cbd22     db         Fh
+//         004cbd23     db         Fh
+//         004cbd24     db         Fh
+//         004cbd25     db         Fh
+//         004cbd26     db         Dh
+//         004cbd27     db         Fh
+//         004cbd28     db         Eh
+//         004cbd29     db         Eh
+//         004cbd2a     db         Eh
+//         004cbd2b     db         Eh
+//         004cbd2c     db         Eh
+//         004cbd2d     ??         90h
+//         004cbd2e     ??         90h
+//         004cbd2f     ??         90h
+    return;
+}
+
+int lines_intersect(float param_1, float param_2, float param_3, float param_4, float param_5, float param_6, float param_7, float param_8) {
+    /* TODO: Stub */
+//                              int __cdecl lines_intersect(float param_1, float param_2, float para
+//              int               EAX:4          <RETURN>
+//              float             Stack[0x4]:4   param_1
+//              float             Stack[0x8]:4   param_2
+//              float             Stack[0xc]:4   param_3
+//              float             Stack[0x10]:4  param_4
+//              float             Stack[0x14]:4  param_5
+//              float             Stack[0x18]:4  param_6
+//              float             Stack[0x1c]:4  param_7
+//              float             Stack[0x20]:4  param_8
+//                               ?lines_intersect@@YAHMMMMMMMM@Z                              XREF[1]:     higher_check_for_cliff:004cbe41(c)
+//                               lines_intersect
+//                              t_c_obj.cpp:1373 (5)
+//         004cbd30     MOV        EAX,0x1
+//                              t_c_obj.cpp:1375 (1)
+//         004cbd35     RET
+//         004cbd36     ??         90h
+//         004cbd37     NOP
+//         004cbd38     NOP
+//         004cbd39     NOP
+//         004cbd3a     NOP
+//         004cbd3b     NOP
+//         004cbd3c     NOP
+//         004cbd3d     NOP
+//         004cbd3e     NOP
+//         004cbd3f     NOP
+    return 0;
+}
+
+int TRIBE_Combat_Object::higher_check_for_cliff(RGE_Static_Object* param_1, int param_2, int param_3, float param_4, float param_5, float param_6, float param_7, RGE_Map* param_8, RGE_Static_Object* param_9, float* param_10, int* param_11) {
+    /* TODO: Stub */
+//                              int __thiscall higher_check_for_cliff(TRIBE_Combat_Object * this, RG
+//              int               EAX:4          <RETURN>
+//              TRIBE_Combat_O    ECX:4 (auto)   this
+//              RGE_Static_Obj    Stack[0x4]:4   param_1                   XREF[1]:     004cbdc0(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     004cbd64(R)
+//              int               Stack[0xc]:4   param_3                   XREF[1]:     004cbd41(R)
+//              float             Stack[0x10]:4  param_4                   XREF[2]:     004cbe2d(R), 004cbe31(R)
+//              float             Stack[0x14]:4  param_5                   XREF[2]:     004cbdf5(R), 004cbe1f(R)
+//              float             Stack[0x18]:4  param_6                   XREF[2]:     004cbe11(R), 004cbe36(R)
+//              float             Stack[0x1c]:4  param_7                   XREF[2]:     004cbd95(R), 004cbe04(R)
+//              RGE_Map *         Stack[0x20]:4  param_8                   XREF[1]:     004cbd57(R)
+//              RGE_Static_Obj    Stack[0x24]:4  param_9                   XREF[2]:     004cbda9(R), 004cbdb5(W)
+//              float *           Stack[0x28]:4  param_10                  XREF[1]:     004cbd91(R)
+//              int *             Stack[0x2c]:4  param_11                  XREF[2]:     004cbeaf(R), 004cbec5(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     004cbd4d(W), 004cbe4d(R)
+//              undefined4        Stack[-0x18]:4 local_18                  XREF[1]:     004cbe08(*)
+//              undefined4        Stack[-0x1c]:4 local_1c                  XREF[1]:     004cbe16(*)
+//              undefined4        Stack[-0x20]:4 local_20                  XREF[1]:     004cbe24(*)
+//              undefined4        Stack[-0x24]:4 local_24                  XREF[1]:     004cbe3a(*)
+//                               ?higher_check_for_cliff@TRIBE_Combat_Object@@UAEHPAVRGE_Sta  XREF[2]:     005749c0(*), 00574c68(*)
+//                               TRIBE_Combat_Object::higher_check_for_cliff
+//                              t_c_obj.cpp:1379 (1)
+//         004cbd40     PUSH       this
+//                              t_c_obj.cpp:1385 (56)
+//         004cbd41     MOV        EDX,dword ptr [ESP + param_3]
+//         004cbd45     PUSH       EBX
+//         004cbd46     PUSH       EBP
+//         004cbd47     PUSH       ESI
+//         004cbd48     MOV        ESI,this
+//         004cbd4a     PUSH       EDI
+//         004cbd4b     TEST       EDX,EDX
+//         004cbd4d     MOV        dword ptr [ESP + local_4],ESI
+//         004cbd51     JL         LAB_004cbedb
+//         004cbd57     MOV        this,dword ptr [ESP + param_8]
+//         004cbd5b     CMP        EDX,dword ptr [ECX + this->_padding_]
+//         004cbd5e     JGE        LAB_004cbedb
+//         004cbd64     MOV        EAX,dword ptr [ESP + param_2]
+//         004cbd68     TEST       EAX,EAX
+//         004cbd6a     JL         LAB_004cbedb
+//         004cbd70     CMP        EAX,dword ptr [ECX + this->_padding_]
+//         004cbd73     JGE        LAB_004cbedb
+//                              t_c_obj.cpp:1390 (32)
+//         004cbd79     MOV        this,dword ptr [this->_padding_ + 0x8d8c]
+//         004cbd7f     LEA        EAX,[EAX + EAX*0x2]
+//         004cbd82     MOV        this,dword ptr [this->_padding_ + EDX*0x4]
+//         004cbd85     MOV        EBX,dword ptr [ECX + EAX*0x8 + this->_padding_]
+//         004cbd89     TEST       EBX,EBX
+//         004cbd8b     JZ         LAB_004cbedb
+//         004cbd91     MOV        EDI,dword ptr [ESP + param_10]
+//         004cbd95     MOV        EBP,dword ptr [ESP + param_7]
+//                               LAB_004cbd99                                                 XREF[1]:     004cbe56(j)
+//                              t_c_obj.cpp:1393 (2)
+//         004cbd99     MOV        this,dword ptr [EBX]
+//                              t_c_obj.cpp:1394 (14)
+//         004cbd9b     MOV        EDX,dword ptr [ECX + this->_padding_]
+//         004cbd9e     CMP        word ptr [EDX + 0x14],0x22
+//         004cbda3     JNZ        LAB_004cbe51
+//                              t_c_obj.cpp:1397 (10)
+//         004cbda9     CMP        this,dword ptr [ESP + param_9]
+//         004cbdad     JZ         LAB_004cbe51
+//                              t_c_obj.cpp:1402 (13)
+//         004cbdb3     MOV        EAX,dword ptr [EDI]
+//         004cbdb5     MOV        dword ptr [ESP + param_9],this
+//         004cbdb9     CMP        EAX,0xbf800000
+//         004cbdbe     JNZ        LAB_004cbdef
+//                              t_c_obj.cpp:1404 (20)
+//         004cbdc0     MOV        EAX,dword ptr [ESP + param_1]
+//         004cbdc4     FLD        float ptr [EAX + 0x38]
+//         004cbdc7     FLD        float ptr [EAX + 0x3c]
+//         004cbdca     FSUB       float ptr [ESI + 0x3c]
+//         004cbdcd     FXCH
+//         004cbdcf     FSUB       float ptr [ESI + 0x38]
+//         004cbdd2     FPATAN
+//                              t_c_obj.cpp:1405 (15)
+//         004cbdd4     FCOM       float ptr [DAT_00574c98]
+//         004cbdda     FST        float ptr [EDI]
+//         004cbddc     FNSTSW     AX
+//         004cbdde     TEST       AH,0x1
+//         004cbde1     JZ         LAB_004cbded
+//                              t_c_obj.cpp:1406 (10)
+//         004cbde3     FSUB       float ptr [DAT_00574ca4]                         = DBh
+//         004cbde9     FSTP       float ptr [EDI]
+//         004cbdeb     JMP        LAB_004cbdef
+//                               LAB_004cbded                                                 XREF[1]:     004cbde1(j)
+//                              t_c_obj.cpp:1405 (2)
+//         004cbded     FSTP       ST0
+//                               LAB_004cbdef                                                 XREF[2]:     004cbdbe(j), 004cbdeb(j)
+//                              t_c_obj.cpp:1412 (2)
+//         004cbdef     XOR        EAX,EAX
+//                              t_c_obj.cpp:1423 (96)
+//         004cbdf1     PUSH       this
+//         004cbdf2     MOV        AL,byte ptr [ECX + this+0x35]
+//         004cbdf5     MOV        EDX,dword ptr [ESP + param_5]
+//         004cbdf9     MOV        ESI,EAX
+//         004cbdfb     SHL        EAX,0x5
+//         004cbdfe     FLD        float ptr [EAX + DAT_00587274]
+//         004cbe04     FADD       float ptr [ESP + param_7]
+//         004cbe08     FSTP       float ptr [ESP]=>local_18
+//         004cbe0b     FLD        float ptr [EAX + DAT_00587270]
+//         004cbe11     FADD       float ptr [ESP + param_6]
+//         004cbe15     PUSH       this
+//         004cbe16     FSTP       float ptr [ESP]=>local_1c
+//         004cbe19     FLD        float ptr [EAX + DAT_0058726c]
+//         004cbe1f     FADD       float ptr [ESP + param_5]
+//         004cbe23     PUSH       this
+//         004cbe24     FSTP       float ptr [ESP]=>local_20
+//         004cbe27     FLD        float ptr [EAX + DAT_00587268]
+//         004cbe2d     FADD       float ptr [ESP + param_4]
+//         004cbe31     MOV        EAX,dword ptr [ESP + param_4]
+//         004cbe35     PUSH       this
+//         004cbe36     MOV        this,dword ptr [ESP + param_6]
+//         004cbe3a     FSTP       float ptr [ESP]=>local_24
+//         004cbe3d     PUSH       EBP
+//         004cbe3e     PUSH       this
+//         004cbe3f     PUSH       EDX
+//         004cbe40     PUSH       EAX
+//         004cbe41     CALL       lines_intersect                                  int lines_intersect(float param_1, float para
+//         004cbe46     ADD        ESP,0x20
+//         004cbe49     TEST       EAX,EAX
+//         004cbe4b     JNZ        LAB_004cbe66
+//         004cbe4d     MOV        ESI,dword ptr [ESP + local_4]
+//                               LAB_004cbe51                                                 XREF[2]:     004cbda3(j), 004cbdad(j)
+//                              t_c_obj.cpp:1390 (11)
+//         004cbe51     MOV        EBX,dword ptr [EBX + 0x4]
+//         004cbe54     TEST       EBX,EBX
+//         004cbe56     JNZ        LAB_004cbd99
+//                              t_c_obj.cpp:1386 (2)
+//         004cbe5c     XOR        EAX,EAX
+//                              t_c_obj.cpp:1442 (8)
+//         004cbe5e     POP        EDI
+//         004cbe5f     POP        ESI
+//         004cbe60     POP        EBP
+//         004cbe61     POP        EBX
+//         004cbe62     POP        this
+//         004cbe63     RET        0x2c
+//                               LAB_004cbe66                                                 XREF[1]:     004cbe4b(j)
+//                              t_c_obj.cpp:1429 (73)
+//         004cbe66     CMP        ESI,0x19
+//         004cbe69     JGE        LAB_004cbe8e
+//         004cbe6b     FLD        float ptr [EDI]
+//         004cbe6d     MOV        this,ESI
+//         004cbe6f     SHL        this,0x5
+//         004cbe72     FCOMP      float ptr [this->_padding_ + TRIBE_Cliff_Highe   = 4048f5c3
+//         004cbe78     FNSTSW     AX
+//         004cbe7a     TEST       AH,0x1
+//         004cbe7d     JNZ        LAB_004cbe8e
+//         004cbe7f     FLD        float ptr [EDI]
+//         004cbe81     FCOMP      float ptr [this->_padding_ + DAT_0058725c]       = 52h    R
+//         004cbe87     FNSTSW     AX
+//         004cbe89     TEST       AH,0x41
+//         004cbe8c     JNZ        LAB_004cbeaf
+//                               LAB_004cbe8e                                                 XREF[2]:     004cbe69(j), 004cbe7d(j)
+//         004cbe8e     FLD        float ptr [EDI]
+//         004cbe90     SHL        ESI,0x5
+//         004cbe93     FCOMP      float ptr [ESI + DAT_00587260]
+//         004cbe99     FNSTSW     AX
+//         004cbe9b     TEST       AH,0x1
+//         004cbe9e     JNZ        LAB_004cbec5
+//         004cbea0     FLD        float ptr [EDI]
+//         004cbea2     FCOMP      float ptr [ESI + DAT_00587264]
+//         004cbea8     FNSTSW     AX
+//         004cbeaa     TEST       AH,0x41
+//         004cbead     JZ         LAB_004cbec5
+//                               LAB_004cbeaf                                                 XREF[1]:     004cbe8c(j)
+//                              t_c_obj.cpp:1431 (7)
+//         004cbeaf     MOV        EAX,dword ptr [ESP + param_11]
+//         004cbeb3     MOV        this,dword ptr [EAX]
+//         004cbeb5     INC        this
+//                              t_c_obj.cpp:1434 (2)
+//         004cbeb6     MOV        dword ptr [EAX],this
+//                              t_c_obj.cpp:1435 (5)
+//         004cbeb8     MOV        EAX,0x1
+//                              t_c_obj.cpp:1442 (8)
+//         004cbebd     POP        EDI
+//         004cbebe     POP        ESI
+//         004cbebf     POP        EBP
+//         004cbec0     POP        EBX
+//         004cbec1     POP        this
+//         004cbec2     RET        0x2c
+//                               LAB_004cbec5                                                 XREF[2]:     004cbe9e(j), 004cbead(j)
+//                              t_c_obj.cpp:1434 (9)
+//         004cbec5     MOV        EAX,dword ptr [ESP + param_11]
+//         004cbec9     MOV        this,dword ptr [EAX]
+//         004cbecb     DEC        this
+//         004cbecc     MOV        dword ptr [EAX],this
+//                              t_c_obj.cpp:1435 (5)
+//         004cbece     MOV        EAX,0x1
+//                              t_c_obj.cpp:1442 (18)
+//         004cbed3     POP        EDI
+//         004cbed4     POP        ESI
+//         004cbed5     POP        EBP
+//         004cbed6     POP        EBX
+//         004cbed7     POP        this
+//         004cbed8     RET        0x2c
+//                               LAB_004cbedb                                                 XREF[5]:     004cbd51(j), 004cbd5e(j),
+//                                                                                                         004cbd6a(j), 004cbd73(j),
+//                                                                                                         004cbd8b(j)
+//         004cbedb     POP        EDI
+//         004cbedc     POP        ESI
+//         004cbedd     POP        EBP
+//         004cbede     XOR        EAX,EAX
+//         004cbee0     POP        EBX
+//         004cbee1     POP        this
+//         004cbee2     RET        0x2c
+//         004cbee5     ??         90h
+//         004cbee6     NOP
+//         004cbee7     NOP
+//         004cbee8     NOP
+//         004cbee9     NOP
+//         004cbeea     NOP
+//         004cbeeb     NOP
+//         004cbeec     NOP
+//         004cbeed     NOP
+//         004cbeee     NOP
+//         004cbeef     NOP
+    return 0;
+}
+
+int TRIBE_Combat_Object::higher_than_target(RGE_Static_Object* param_1) {
+    /* TODO: Stub */
+//                              int __thiscall higher_than_target(TRIBE_Combat_Object * this, RGE_St
+//              int               EAX:4          <RETURN>
+//              TRIBE_Combat_O    ECX:4 (auto)   this
+//              RGE_Static_Obj    Stack[0x4]:4   param_1                   XREF[2]:     004cbef8(R), 004cc0e3(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[3]:     004cc073(W), 004cc177(R), 004cc17c(W)
+//              undefined4        Stack[-0x8]:4  local_8                   XREF[2]:     004cc00b(W), 004cc027(W)
+//              int               Stack[-0xc]:4  Tile_Dx2                  XREF[2]:     004cc00f(W), 004cc02f(W)
+//              int               Stack[-0x10]:4 Tile_Dy2                  XREF[2]:     004cc007(W), 004cc01b(W)
+//              int               Stack[-0x14]:4 Tile_Dx1                  XREF[2]:     004cbfff(W), 004cc023(W)
+//              int               Stack[-0x18]:4 Tile_Dy1                  XREF[3]:     004cc048(W), 004cc0ad(R), 004cc0f2(W)
+//              int               Stack[-0x1c]:4 PriorY                    XREF[3]:     004cc044(W), 004cc0a3(R), 004cc0ee(W)
+//              int               Stack[-0x20]:4 PriorX                    XREF[7]:     004cbf98(W), 004cbf9c(R), 004cbfc4(W), 004cbfee(W),
+//                                                                                     004cbff2(R), 004cc061(W), 004cc0c9(R)
+//              int               Stack[-0x24]:4 NumSteps                  XREF[2]:     004cc059(W), 004cc0be(*)
+//              float             Stack[-0x28]:4 AngleToTarget             XREF[4]:     004cc04f(W), 004cc07f(R), 004cc08f(W), 004cc098(R)
+//              float             Stack[-0x2c]:4 YTile                     XREF[3]:     004cc03b(W), 004cc077(R), 004cc089(W)
+//              float             Stack[-0x30]:4 XTile                     XREF[3]:     004cc069(W), 004cc0ba(*), 004cc186(R)
+//              int               Stack[-0x34]:4 HigherCalc                XREF[3]:     004cbf1f(W), 004cbf27(R), 004cc0d2(R)
+//              float             Stack[-0x38]:4 DestX                     XREF[3]:     004cbf35(W), 004cbf43(R), 004cc0cd(R)
+//              float             Stack[-0x3c]:4 DestY                     XREF[5]:     004cbfba(W), 004cbfbe(R), 004cbfd7(R), 004cbfe8(R),
+//                                                                                     004cc083(R)
+//              float             Stack[-0x40]:4 YStep                     XREF[4]:     004cbfaa(W), 004cbfb4(R), 004cbfd1(R), 004cc07b(R)
+//              float             Stack[-0x44]:4 XStep                     XREF[4]:     004cbf23(W), 004cbf2b(R), 004cc033(R), 004cc0de(R)
+//              float             Stack[-0x48]:4 StartX                    XREF[4]:     004cbf39(W), 004cbf47(R), 004cc037(R), 004cc0d9(R)
+//              float             Stack[-0x4c]:4 StartY
+//                               ?higher_than_target@TRIBE_Combat_Object@@UAEHPAVRGE_Static_  XREF[2]:     005749c4(*), 00574c6c(*)
+//                               TRIBE_Combat_Object::higher_than_target
+//                              t_c_obj.cpp:1446 (8)
+//         004cbef0     SUB        ESP,0x48
+//         004cbef3     PUSH       EBX
+//         004cbef4     PUSH       EBP
+//         004cbef5     MOV        EBP,this
+//         004cbef7     PUSH       ESI
+//                              t_c_obj.cpp:1448 (18)
+//         004cbef8     MOV        this,dword ptr [ESP + param_1]
+//         004cbefc     PUSH       EDI
+//         004cbefd     FLD        float ptr [EBP + 0x40]
+//         004cbf00     FCOMP      float ptr [ECX + this->_padding_]
+//         004cbf03     FNSTSW     AX
+//         004cbf05     TEST       AH,0x41
+//         004cbf08     JNZ        LAB_004cbf19
+//                              t_c_obj.cpp:1449 (5)
+//         004cbf0a     MOV        EAX,0x1
+//                              t_c_obj.cpp:1549 (10)
+//         004cbf0f     POP        EDI
+//         004cbf10     POP        ESI
+//         004cbf11     POP        EBP
+//         004cbf12     POP        EBX
+//         004cbf13     ADD        ESP,0x48
+//         004cbf16     RET        0x4
+//                               LAB_004cbf19                                                 XREF[1]:     004cbf08(j)
+//                              t_c_obj.cpp:1467 (3)
+//         004cbf19     MOV        EAX,dword ptr [ECX + this->_padding_]
+//                              t_c_obj.cpp:1470 (22)
+//         004cbf1c     MOV        EDX,dword ptr [EBP + 0x38]
+//         004cbf1f     MOV        dword ptr [ESP + HigherCalc],EAX
+//         004cbf23     MOV        dword ptr [ESP + XStep],EDX
+//         004cbf27     FLD        float ptr [ESP + HigherCalc]
+//         004cbf2b     FSUB       float ptr [ESP + XStep]
+//         004cbf2f     MOV        EAX,dword ptr [ECX + this->_padding_]
+//                              t_c_obj.cpp:1474 (49)
+//         004cbf32     MOV        this,dword ptr [EBP + 0x3c]
+//         004cbf35     MOV        dword ptr [ESP + DestX],EAX
+//         004cbf39     MOV        dword ptr [ESP + StartX],this
+//         004cbf3d     FCOM       float ptr [DAT_00574c98]
+//         004cbf43     FLD        float ptr [ESP + DestX]
+//         004cbf47     FSUB       float ptr [ESP + StartX]
+//         004cbf4b     FNSTSW     AX
+//         004cbf4d     TEST       AH,0x40
+//         004cbf50     JZ         LAB_004cbf6f
+//         004cbf52     FCOM       float ptr [DAT_00574c98]
+//         004cbf58     FNSTSW     AX
+//         004cbf5a     TEST       AH,0x40
+//         004cbf5d     JZ         LAB_004cbf6f
+//         004cbf5f     FSTP       ST0
+//         004cbf61     FSTP       ST0
+//                              t_c_obj.cpp:1475 (2)
+//         004cbf63     XOR        EAX,EAX
+//                              t_c_obj.cpp:1549 (10)
+//         004cbf65     POP        EDI
+//         004cbf66     POP        ESI
+//         004cbf67     POP        EBP
+//         004cbf68     POP        EBX
+//         004cbf69     ADD        ESP,0x48
+//         004cbf6c     RET        0x4
+//                               LAB_004cbf6f                                                 XREF[2]:     004cbf50(j), 004cbf5d(j)
+//                              t_c_obj.cpp:1478 (21)
+//         004cbf6f     FLD        ST0
+//         004cbf71     FLD        ST2
+//         004cbf73     FXCH
+//         004cbf75     FABS
+//         004cbf77     FXCH
+//         004cbf79     FABS
+//         004cbf7b     FCOMPP
+//         004cbf7d     FNSTSW     AX
+//         004cbf7f     TEST       AH,0x1
+//         004cbf82     JZ         LAB_004cbf88
+//                              t_c_obj.cpp:1479 (2)
+//         004cbf84     FLD        ST0
+//                              t_c_obj.cpp:1480 (2)
+//         004cbf86     JMP        LAB_004cbf8a
+//                               LAB_004cbf88                                                 XREF[1]:     004cbf82(j)
+//                              t_c_obj.cpp:1481 (20)
+//         004cbf88     FLD        ST1
+//                               LAB_004cbf8a                                                 XREF[1]:     004cbf86(j)
+//         004cbf8a     CALL       __ftol                                           undefined __ftol()
+//         004cbf8f     CDQ
+//         004cbf90     MOV        this,EAX
+//         004cbf92     XOR        this,EDX
+//         004cbf94     SUB        this,EDX
+//         004cbf96     SHL        this,0x1
+//         004cbf98     MOV        dword ptr [ESP + PriorX],this
+//                              t_c_obj.cpp:1483 (4)
+//         004cbf9c     FILD       dword ptr [ESP + PriorX]
+//                              t_c_obj.cpp:1484 (14)
+//         004cbfa0     FXCH       ST2
+//         004cbfa2     FDIV       ST0,ST2
+//         004cbfa4     FXCH
+//         004cbfa6     FDIV       ST0,ST2
+//         004cbfa8     FXCH
+//         004cbfaa     FST        float ptr [ESP + YStep]
+//                              t_c_obj.cpp:1491 (41)
+//         004cbfae     FCOMP      float ptr [DAT_00574c98]
+//         004cbfb4     FLD        float ptr [ESP + YStep]
+//         004cbfb8     FXCH
+//         004cbfba     FSTP       float ptr [ESP + DestY]
+//         004cbfbe     MOV        EDX,dword ptr [ESP + DestY]
+//         004cbfc2     FNSTSW     AX
+//         004cbfc4     MOV        dword ptr [ESP + PriorX],EDX
+//         004cbfc8     TEST       AH,0x1
+//         004cbfcb     FSTP       ST1
+//         004cbfcd     JZ         LAB_004cbfd7
+//         004cbfcf     FSTP       ST0
+//         004cbfd1     FLD        float ptr [ESP + YStep]
+//         004cbfd5     FCHS
+//                               LAB_004cbfd7                                                 XREF[1]:     004cbfcd(j)
+//                              t_c_obj.cpp:1492 (27)
+//         004cbfd7     FLD        float ptr [ESP + DestY]
+//         004cbfdb     FCOMP      float ptr [DAT_00574c98]
+//         004cbfe1     FNSTSW     AX
+//         004cbfe3     TEST       AH,0x1
+//         004cbfe6     JZ         LAB_004cbff2
+//         004cbfe8     FLD        float ptr [ESP + DestY]
+//         004cbfec     FCHS
+//         004cbfee     FSTP       float ptr [ESP + PriorX]
+//                               LAB_004cbff2                                                 XREF[1]:     004cbfe6(j)
+//                              t_c_obj.cpp:1494 (11)
+//         004cbff2     FCOMP      float ptr [ESP + PriorX]
+//         004cbff6     FNSTSW     AX
+//         004cbff8     TEST       AH,0x41
+//         004cbffb     JNZ        LAB_004cc019
+//                              t_c_obj.cpp:1496 (14)
+//         004cbffd     XOR        EAX,EAX
+//         004cbfff     MOV        dword ptr [ESP + Tile_Dx1],0xffffffff
+//         004cc007     MOV        dword ptr [ESP + Tile_Dy2],EAX
+//                              t_c_obj.cpp:1497 (12)
+//         004cc00b     MOV        dword ptr [ESP + local_8],EAX
+//         004cc00f     MOV        dword ptr [ESP + Tile_Dx2],0x1
+//                              t_c_obj.cpp:1499 (2)
+//         004cc017     JMP        LAB_004cc033
+//                               LAB_004cc019                                                 XREF[1]:     004cbffb(j)
+//                              t_c_obj.cpp:1501 (14)
+//         004cc019     XOR        EAX,EAX
+//         004cc01b     MOV        dword ptr [ESP + Tile_Dy2],0xffffffff
+//         004cc023     MOV        dword ptr [ESP + Tile_Dx1],EAX
+//                              t_c_obj.cpp:1502 (12)
+//         004cc027     MOV        dword ptr [ESP + local_8],0x1
+//         004cc02f     MOV        dword ptr [ESP + Tile_Dx2],EAX
+//                               LAB_004cc033                                                 XREF[1]:     004cc017(j)
+//                              t_c_obj.cpp:1506 (4)
+//         004cc033     MOV        EAX,dword ptr [ESP + XStep]
+//                              t_c_obj.cpp:1507 (8)
+//         004cc037     MOV        EDX,dword ptr [ESP + StartX]
+//         004cc03b     MOV        dword ptr [ESP + YTile],EAX
+//                              t_c_obj.cpp:1509 (9)
+//         004cc03f     MOV        EAX,0xfffffc19
+//         004cc044     MOV        dword ptr [ESP + PriorY],EAX
+//                              t_c_obj.cpp:1510 (4)
+//         004cc048     MOV        dword ptr [ESP + Tile_Dy1],EAX
+//                              t_c_obj.cpp:1512 (13)
+//         004cc04c     MOV        EAX,dword ptr [EBP + 0xc]
+//         004cc04f     MOV        dword ptr [ESP + AngleToTarget],EDX
+//         004cc053     MOV        EDX,dword ptr [EAX + 0x3c]
+//         004cc056     MOV        EAX,dword ptr [EDX + 0x28]
+//                              t_c_obj.cpp:1516 (14)
+//         004cc059     MOV        dword ptr [ESP + NumSteps],0xbf800000
+//         004cc061     MOV        dword ptr [ESP + PriorX],EAX
+//         004cc065     XOR        EAX,EAX
+//                              t_c_obj.cpp:1518 (12)
+//         004cc067     TEST       this,this
+//         004cc069     MOV        dword ptr [ESP + XTile],EAX
+//         004cc06d     JLE        LAB_004cc18a
+//                              t_c_obj.cpp:1506 (4)
+//         004cc073     MOV        dword ptr [ESP + local_4],this
+//                               LAB_004cc077                                                 XREF[1]:     004cc180(j)
+//                              t_c_obj.cpp:1520 (8)
+//         004cc077     FLD        float ptr [ESP + YTile]
+//         004cc07b     FADD       float ptr [ESP + YStep]
+//                              t_c_obj.cpp:1521 (16)
+//         004cc07f     FLD        float ptr [ESP + AngleToTarget]
+//         004cc083     FADD       float ptr [ESP + DestY]
+//         004cc087     FXCH
+//         004cc089     FST        float ptr [ESP + YTile]
+//         004cc08d     FXCH
+//                              t_c_obj.cpp:1523 (9)
+//         004cc08f     FSTP       float ptr [ESP + AngleToTarget]
+//         004cc093     CALL       __ftol                                           undefined __ftol()
+//                              t_c_obj.cpp:1524 (11)
+//         004cc098     FLD        float ptr [ESP + AngleToTarget]
+//         004cc09c     MOV        ESI,EAX
+//         004cc09e     CALL       __ftol                                           undefined __ftol()
+//                              t_c_obj.cpp:1526 (20)
+//         004cc0a3     MOV        this,dword ptr [ESP + PriorY]
+//         004cc0a7     MOV        EDI,EAX
+//         004cc0a9     CMP        ESI,this
+//         004cc0ab     JNZ        LAB_004cc0b7
+//         004cc0ad     CMP        EDI,dword ptr [ESP + Tile_Dy1]
+//         004cc0b1     JZ         LAB_004cc177
+//                               LAB_004cc0b7                                                 XREF[1]:     004cc0ab(j)
+//                              t_c_obj.cpp:1536 (69)
+//         004cc0b7     MOV        this,dword ptr [EBP]
+//         004cc0ba     LEA        EDX=>XTile,[ESP + 0x28]
+//         004cc0be     LEA        EAX=>NumSteps,[ESP + 0x34]
+//         004cc0c2     PUSH       EDX
+//         004cc0c3     MOV        EBX,dword ptr [this->_padding_ + 0x248]
+//         004cc0c9     MOV        this,dword ptr [ESP + PriorX]
+//         004cc0cd     MOV        EDX,dword ptr [ESP + DestX]
+//         004cc0d1     PUSH       EAX
+//         004cc0d2     MOV        EAX,dword ptr [ESP + HigherCalc]
+//         004cc0d6     PUSH       0x0
+//         004cc0d8     PUSH       this
+//         004cc0d9     MOV        this,dword ptr [ESP + StartX]
+//         004cc0dd     PUSH       EDX
+//         004cc0de     MOV        EDX,dword ptr [ESP + XStep]
+//         004cc0e2     PUSH       EAX
+//         004cc0e3     MOV        EAX,dword ptr [ESP + param_1]
+//         004cc0e7     PUSH       this
+//         004cc0e8     PUSH       EDX
+//         004cc0e9     PUSH       EDI
+//         004cc0ea     PUSH       ESI
+//         004cc0eb     PUSH       EAX
+//         004cc0ec     MOV        this,EBP
+//         004cc0ee     MOV        dword ptr [ESP + PriorY],ESI
+//         004cc0f2     MOV        dword ptr [ESP + Tile_Dy1],EDI
+//         004cc0f6     CALL       EBX
+//         004cc0f8     TEST       EAX,EAX
+//         004cc0fa     JNZ        LAB_004cc177
+//                              t_c_obj.cpp:1537 (63)
+//         004cc0fc     LEA        this,[ESP + 0x28]
+//         004cc100     LEA        EDX,[ESP + 0x34]
+//         004cc104     PUSH       this
+//         004cc105     MOV        this,dword ptr [ESP + 0x24]
+//         004cc109     PUSH       EDX=>DAT_fffffff8
+//         004cc10a     MOV        EDX,dword ptr [ESP + 0x2c]
+//         004cc10e     PUSH       EAX=>DAT_fffffff4
+//         004cc10f     MOV        EAX,dword ptr [ESP + 0x44]
+//         004cc113     PUSH       EAX=>DAT_fffffff0
+//         004cc114     MOV        EAX,dword ptr [ESP + 0x20]
+//         004cc118     PUSH       this
+//         004cc119     MOV        this,dword ptr [ESP + 0x28]
+//         004cc11d     PUSH       EDX
+//         004cc11e     MOV        EDX,dword ptr [ESP + 0x5c]
+//         004cc122     PUSH       EAX
+//         004cc123     MOV        EAX,dword ptr [ESP + 0x64]
+//         004cc127     ADD        EDX,EDI
+//         004cc129     PUSH       this
+//         004cc12a     MOV        this,dword ptr [ESP + 0x7c]
+//         004cc12e     ADD        EAX,ESI
+//         004cc130     PUSH       EDX
+//         004cc131     PUSH       EAX
+//         004cc132     PUSH       this
+//         004cc133     MOV        this,EBP
+//         004cc135     CALL       EBX
+//         004cc137     TEST       EAX,EAX
+//         004cc139     JNZ        LAB_004cc177
+//                              t_c_obj.cpp:1538 (75)
+//         004cc13b     MOV        this,dword ptr [ESP + 0x38]
+//         004cc13f     LEA        EDX,[ESP + 0x28]
+//         004cc143     LEA        EAX,[ESP + 0x34]
+//         004cc147     PUSH       EDX
+//         004cc148     MOV        EDX,dword ptr [ESP + 0x24]
+//         004cc14c     PUSH       EAX=>DAT_fffffff8
+//         004cc14d     MOV        EAX,dword ptr [ESP + 0x2c]
+//         004cc151     PUSH       0x0=>DAT_fffffff4
+//         004cc153     PUSH       this=>DAT_fffffff0
+//         004cc154     MOV        this,dword ptr [ESP + 0x20]
+//         004cc158     PUSH       EDX
+//         004cc159     MOV        EDX,dword ptr [ESP + 0x28]
+//         004cc15d     PUSH       EAX
+//         004cc15e     MOV        EAX,dword ptr [ESP + 0x64]
+//         004cc162     PUSH       this
+//         004cc163     MOV        this,dword ptr [ESP + 0x6c]
+//         004cc167     ADD        EAX,EDI
+//         004cc169     PUSH       EDX
+//         004cc16a     MOV        EDX,dword ptr [ESP + 0x7c]
+//         004cc16e     ADD        this,ESI
+//         004cc170     PUSH       EAX
+//         004cc171     PUSH       this
+//         004cc172     PUSH       EDX
+//         004cc173     MOV        this,EBP
+//         004cc175     CALL       EBX
+//                               LAB_004cc177                                                 XREF[3]:     004cc0b1(j), 004cc0fa(j),
+//                                                                                                         004cc139(j)
+//         004cc177     MOV        EAX,dword ptr [ESP + local_4]
+//         004cc17b     DEC        EAX
+//         004cc17c     MOV        dword ptr [ESP + local_4],EAX
+//         004cc180     JNZ        LAB_004cc077
+//                              t_c_obj.cpp:1518 (4)
+//         004cc186     MOV        EAX,dword ptr [ESP + XTile]
+//                               LAB_004cc18a                                                 XREF[1]:     004cc06d(j)
+//                              t_c_obj.cpp:1543 (5)
+//         004cc18a     CMP        EAX,0x1
+//         004cc18d     JGE        LAB_004cc191
+//                              t_c_obj.cpp:1544 (2)
+//         004cc18f     XOR        EAX,EAX
+//                               LAB_004cc191                                                 XREF[1]:     004cc18d(j)
+//                              t_c_obj.cpp:1545 (4)
+//         004cc191     TEST       EAX,EAX
+//         004cc193     JLE        LAB_004cc19a
+//                              t_c_obj.cpp:1546 (5)
+//         004cc195     MOV        EAX,0x1
+//                               LAB_004cc19a                                                 XREF[1]:     004cc193(j)
+//                              t_c_obj.cpp:1548 (2)
+//         004cc19a     XOR        this,this
+//                              t_c_obj.cpp:1549 (17)
+//         004cc19c     POP        EDI
+//         004cc19d     TEST       EAX,EAX
+//         004cc19f     SETG       this
+//         004cc1a2     POP        ESI
+//         004cc1a3     POP        EBP
+//         004cc1a4     MOV        EAX,this
+//         004cc1a6     POP        EBX
+//         004cc1a7     ADD        ESP,0x48
+//         004cc1aa     RET        0x4
+//         004cc1ad     ??         90h
+//         004cc1ae     NOP
+//         004cc1af     NOP
+    return 0;
+}
+
+uchar TRIBE_Combat_Object::area_attack(float param_1, float param_2, float param_3, RGE_Combat_Object* param_4, RGE_Static_Object* param_5) {
+    /* TODO: Stub */
+//                              uchar __thiscall area_attack(TRIBE_Combat_Object * this, float param
+//              uchar             AL:1           <RETURN>
+//              TRIBE_Combat_O    ECX:4 (auto)   this
+//              float             Stack[0x4]:4   param_1                   XREF[3]:     004cc1fc(R), 004cc20a(R), 004cc337(R)
+//              float             Stack[0x8]:4   param_2                   XREF[3]:     004cc21a(R), 004cc22c(R), 004cc33e(R)
+//              float             Stack[0xc]:4   param_3
+//              RGE_Combat_Obj    Stack[0x10]:4  param_4
+//              RGE_Static_Obj    Stack[0x14]:4  param_5                   XREF[1]:     004cc2dc(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     004cc1da(W), 004cc3c2(R)
+//              float             Stack[-0x8]:4  r2                        XREF[2]:     004cc1ce(W), 004cc2bc(R)
+//              RGE_Map *         Stack[-0xc]:4  map                       XREF[3]:     004cc291(W), 004cc496(R), 004cc4a2(W)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[3]:     004cc2b8(W), 004cc47c(R), 004cc488(W)
+//              undefined4        Stack[-0x14]:4 local_14                  XREF[3]:     004cc2b4(W), 004cc478(R), 004cc484(W)
+//              undefined4        Stack[-0x18]:4 local_18                  XREF[3]:     004cc37c(W), 004cc39f(R), 004cc3ae(R)
+//              float             Stack[-0x1c]:4 ry                        XREF[4]:     004cc28d(W), 004cc2c6(R), 004cc492(R), 004cc49e(W)
+//              undefined4        Stack[-0x20]:4 local_20                  XREF[4]:     004cc223(W), 004cc24e(R), 004cc25c(W), 004cc299(R)
+//              short             Stack[-0x24]:2 x1                        XREF[4]:     004cc211(W), 004cc23e(R), 004cc246(W), 004cc295(R)
+//              short             Stack[-0x28]:2 x0                        XREF[6]:     004cc34a(W), 004cc357(R), 004cc368(R), 004cc36e(W),
+//                                                                                     004cc39b(R), 004cc3aa(R)
+//              float             Stack[-0x2c]:4 attack_modifier
+//                               ?area_attack@TRIBE_Combat_Object@@MAEEMMMPAVRGE_Combat_Obje  XREF[2]:     00574994(*), 00574c3c(*)
+//                               TRIBE_Combat_Object::area_attack
+//                              t_c_obj.cpp:1556 (8)
+//         004cc1b0     SUB        ESP,0x28
+//         004cc1b3     PUSH       EBX
+//         004cc1b4     PUSH       EBP
+//         004cc1b5     PUSH       EDI
+//         004cc1b6     MOV        EDI,this
+//                              t_c_obj.cpp:1567 (15)
+//         004cc1b8     MOV        EDX,dword ptr [EDI + 0x8]
+//         004cc1bb     MOV        EAX,dword ptr [EDI + 0xc]
+//         004cc1be     FLD        float ptr [EDX + 0x118]
+//         004cc1c4     MOV        this,dword ptr [EAX + 0x3c]
+//                              t_c_obj.cpp:1573 (27)
+//         004cc1c7     FLD        ST0
+//         004cc1c9     FMUL       ST1
+//         004cc1cb     MOV        EAX,dword ptr [ECX + this->_padding_]
+//         004cc1ce     MOV        dword ptr [ESP + r2],EAX
+//         004cc1d2     MOV        BX,word ptr [EAX + 0x8]
+//         004cc1d6     MOV        BP,word ptr [EAX + 0xc]
+//         004cc1da     FSTP       float ptr [ESP + local_4]
+//         004cc1de     DEC        BX
+//         004cc1e0     DEC        BP
+//                              t_c_obj.cpp:1579 (15)
+//         004cc1e2     FCOM       double ptr [DAT_00574ca8]
+//         004cc1e8     FNSTSW     AX
+//         004cc1ea     TEST       AH,0x41
+//         004cc1ed     JZ         LAB_004cc1fc
+//         004cc1ef     FSTP       ST0
+//                              t_c_obj.cpp:1580 (2)
+//         004cc1f1     XOR        AL,AL
+//                              t_c_obj.cpp:1633 (9)
+//         004cc1f3     POP        EDI
+//         004cc1f4     POP        EBP
+//         004cc1f5     POP        EBX
+//         004cc1f6     ADD        ESP,0x28
+//         004cc1f9     RET        0x14
+//                               LAB_004cc1fc                                                 XREF[1]:     004cc1ed(j)
+//                              t_c_obj.cpp:1582 (12)
+//         004cc1fc     FLD        float ptr [ESP + param_1]
+//         004cc200     FSUB       ST0,ST1
+//         004cc202     PUSH       ESI
+//         004cc203     CALL       __ftol                                           undefined __ftol()
+//                              t_c_obj.cpp:1583 (18)
+//         004cc208     FLD        ST0
+//         004cc20a     FADD       float ptr [ESP + param_1]
+//         004cc20e     SUB        EAX,0x2
+//         004cc211     MOV        dword ptr [ESP + x1],EAX
+//         004cc215     CALL       __ftol                                           undefined __ftol()
+//                              t_c_obj.cpp:1584 (18)
+//         004cc21a     FLD        float ptr [ESP + param_2]
+//         004cc21e     FSUB       ST0,ST1
+//         004cc220     ADD        EAX,0x2
+//         004cc223     MOV        dword ptr [ESP + local_20],EAX
+//         004cc227     CALL       __ftol                                           undefined __ftol()
+//                              t_c_obj.cpp:1585 (18)
+//         004cc22c     FADD       float ptr [ESP + param_2]
+//         004cc230     MOV        SI,AX
+//         004cc233     SUB        ESI,0x2
+//         004cc236     CALL       __ftol                                           undefined __ftol()
+//         004cc23b     ADD        EAX,0x2
+//                              t_c_obj.cpp:1587 (16)
+//         004cc23e     CMP        word ptr [ESP + x1],0x0
+//         004cc244     JGE        LAB_004cc24e
+//         004cc246     MOV        dword ptr [ESP + x1],0x0
+//                               LAB_004cc24e                                                 XREF[1]:     004cc244(j)
+//                              t_c_obj.cpp:1588 (18)
+//         004cc24e     MOVSX      EDX,word ptr [ESP + local_20]
+//         004cc253     MOVSX      this,BX
+//         004cc256     INC        this
+//         004cc257     CMP        EDX,this
+//         004cc259     JLE        LAB_004cc260
+//         004cc25b     INC        EBX
+//         004cc25c     MOV        dword ptr [ESP + local_20],EBX
+//                               LAB_004cc260                                                 XREF[1]:     004cc259(j)
+//                              t_c_obj.cpp:1589 (7)
+//         004cc260     TEST       SI,SI
+//         004cc263     JGE        LAB_004cc267
+//         004cc265     XOR        ESI,ESI
+//                               LAB_004cc267                                                 XREF[1]:     004cc263(j)
+//                              t_c_obj.cpp:1590 (14)
+//         004cc267     MOVSX      this,BP
+//         004cc26a     MOVSX      EDX,AX
+//         004cc26d     INC        this
+//         004cc26e     CMP        EDX,this
+//         004cc270     JLE        LAB_004cc275
+//         004cc272     LEA        EAX,[EBP + 0x1]
+//                               LAB_004cc275                                                 XREF[1]:     004cc270(j)
+//                              t_c_obj.cpp:1592 (32)
+//         004cc275     CMP        SI,AX
+//         004cc278     JGE        LAB_004cc4ac
+//         004cc27e     MOVSX      this,SI
+//         004cc281     MOVSX      EAX,AX
+//         004cc284     LEA        EDX,[this->_padding_*0x4 + 0x0]
+//         004cc28b     SUB        EAX,this
+//         004cc28d     MOV        dword ptr [ESP + ry],EDX
+//         004cc291     MOV        dword ptr [ESP + map],EAX
+//                               LAB_004cc295                                                 XREF[1]:     004cc4a6(j)
+//                              t_c_obj.cpp:1593 (39)
+//         004cc295     MOV        EAX,dword ptr [ESP + x1]
+//         004cc299     MOV        EDX,dword ptr [ESP + local_20]
+//         004cc29d     CMP        AX,DX
+//         004cc2a0     JGE        LAB_004cc492
+//         004cc2a6     MOVSX      EAX,AX
+//         004cc2a9     MOVSX      EDX,DX
+//         004cc2ac     LEA        this,[EAX + EAX*0x2]
+//         004cc2af     SHL        this,0x3
+//         004cc2b2     SUB        EDX,EAX
+//         004cc2b4     MOV        dword ptr [ESP + local_14],this
+//         004cc2b8     MOV        dword ptr [ESP + local_10],EDX
+//                               LAB_004cc2bc                                                 XREF[1]:     004cc48c(j)
+//                              t_c_obj.cpp:1594 (29)
+//         004cc2bc     MOV        EAX,dword ptr [ESP + r2]
+//         004cc2c0     MOV        EDX,dword ptr [EAX + 0x8d8c]
+//         004cc2c6     MOV        EAX,dword ptr [ESP + ry]
+//         004cc2ca     MOV        EDX,dword ptr [EAX + EDX*0x1]
+//         004cc2cd     MOV        EBP,dword ptr [EDX + this->_padding_*0x1 + 0x10]
+//         004cc2d1     TEST       EBP,EBP
+//         004cc2d3     JZ         LAB_004cc47c
+//                               LAB_004cc2d9                                                 XREF[1]:     004cc472(j)
+//                              t_c_obj.cpp:1597 (3)
+//         004cc2d9     MOV        ESI,dword ptr [EBP]
+//                              t_c_obj.cpp:1598 (12)
+//         004cc2dc     MOV        EAX,dword ptr [ESP + param_5]
+//         004cc2e0     CMP        ESI,EAX
+//         004cc2e2     JZ         LAB_004cc46d
+//                              t_c_obj.cpp:1600 (31)
+//         004cc2e8     MOV        EDX,dword ptr [EDI + 0x8]
+//         004cc2eb     MOV        AX,word ptr [EDX + 0x10]
+//         004cc2ef     CMP        AX,0x2e
+//         004cc2f3     JZ         LAB_004cc307
+//         004cc2f5     CMP        AX,0x28
+//         004cc2f9     JZ         LAB_004cc307
+//         004cc2fb     CMP        AX,0x153
+//         004cc2ff     JZ         LAB_004cc307
+//         004cc301     CMP        AX,0x159
+//         004cc305     JNZ        LAB_004cc315
+//                               LAB_004cc307                                                 XREF[3]:     004cc2f3(j), 004cc2f9(j),
+//                                                                                                         004cc2ff(j)
+//                              t_c_obj.cpp:1601 (14)
+//         004cc307     MOV        EAX,dword ptr [ESI + 0xc]
+//         004cc30a     MOV        this,dword ptr [EDI + 0xc]
+//         004cc30d     CMP        EAX,this
+//         004cc30f     JZ         LAB_004cc46d
+//                               LAB_004cc315                                                 XREF[1]:     004cc305(j)
+//                              t_c_obj.cpp:1604 (31)
+//         004cc315     CMP        ESI,EDI
+//         004cc317     JZ         LAB_004cc46d
+//         004cc31d     MOV        this,dword ptr [ESI + 0x8]
+//         004cc320     MOV        BL,byte ptr [EDX + 0x11c]
+//         004cc326     MOV        AL,byte ptr [ECX + this+0x8b]
+//         004cc32c     CMP        AL,BL
+//         004cc32e     JC         LAB_004cc46d
+//                              t_c_obj.cpp:1607 (7)
+//         004cc334     FLD        float ptr [ESI + 0x38]
+//         004cc337     FSUB       float ptr [ESP + param_1]
+//                              t_c_obj.cpp:1608 (7)
+//         004cc33b     FLD        float ptr [ESI + 0x3c]
+//         004cc33e     FSUB       float ptr [ESP + param_2]
+//                              t_c_obj.cpp:1610 (21)
+//         004cc342     FLD        ST1
+//         004cc344     FCOMP      float ptr [DAT_00574c98]
+//         004cc34a     FSTP       float ptr [ESP + x0]
+//         004cc34e     FNSTSW     AX
+//         004cc350     TEST       AH,0x1
+//         004cc353     JZ         LAB_004cc357
+//         004cc355     FCHS
+//                               LAB_004cc357                                                 XREF[1]:     004cc353(j)
+//                              t_c_obj.cpp:1611 (27)
+//         004cc357     FLD        float ptr [ESP + x0]
+//         004cc35b     FCOMP      float ptr [DAT_00574c98]
+//         004cc361     FNSTSW     AX
+//         004cc363     TEST       AH,0x1
+//         004cc366     JZ         LAB_004cc372
+//         004cc368     FLD        float ptr [ESP + x0]
+//         004cc36c     FCHS
+//         004cc36e     FSTP       float ptr [ESP + x0]
+//                               LAB_004cc372                                                 XREF[1]:     004cc366(j)
+//                              t_c_obj.cpp:1612 (3)
+//         004cc372     FLD        float ptr [ECX + this->_padding_]
+//                              t_c_obj.cpp:1614 (38)
+//         004cc375     FLD        ST1
+//         004cc377     MOV        this,dword ptr [ECX + this->_padding_]
+//         004cc37a     FCOMP
+//         004cc37c     MOV        dword ptr [ESP + local_18],this
+//         004cc380     FNSTSW     AX
+//         004cc382     TEST       AH,0x41
+//         004cc385     JNZ        LAB_004cc391
+//         004cc387     FXCH
+//         004cc389     FSUB       ST0,ST1
+//         004cc38b     FXCH
+//         004cc38d     FSTP       ST0
+//         004cc38f     JMP        LAB_004cc39b
+//                               LAB_004cc391                                                 XREF[1]:     004cc385(j)
+//         004cc391     FSTP       ST0
+//         004cc393     FSTP       ST0
+//         004cc395     FLD        float ptr [DAT_00574c98]
+//                               LAB_004cc39b                                                 XREF[1]:     004cc38f(j)
+//                              t_c_obj.cpp:1615 (31)
+//         004cc39b     FLD        float ptr [ESP + x0]
+//         004cc39f     FCOMP      float ptr [ESP + local_18]
+//         004cc3a3     FNSTSW     AX
+//         004cc3a5     TEST       AH,0x41
+//         004cc3a8     JNZ        LAB_004cc3b4
+//         004cc3aa     FLD        float ptr [ESP + x0]
+//         004cc3ae     FSUB       float ptr [ESP + local_18]
+//         004cc3b2     JMP        LAB_004cc3ba
+//                               LAB_004cc3b4                                                 XREF[1]:     004cc3a8(j)
+//         004cc3b4     FLD        float ptr [DAT_00574c98]
+//                               LAB_004cc3ba                                                 XREF[1]:     004cc3b2(j)
+//                              t_c_obj.cpp:1617 (37)
+//         004cc3ba     FLD        ST1
+//         004cc3bc     FLD        ST1
+//         004cc3be     FXCH
+//         004cc3c0     FMUL       ST3
+//         004cc3c2     FLD        float ptr [ESP + local_4]
+//         004cc3c6     FXCH       ST2
+//         004cc3c8     FMUL       ST3
+//         004cc3ca     FADDP
+//         004cc3cc     FXCH
+//         004cc3ce     FCOMPP
+//         004cc3d0     FNSTSW     AX
+//         004cc3d2     FSTP       ST0
+//         004cc3d4     TEST       AH,0x41
+//         004cc3d7     FSTP       ST0
+//         004cc3d9     JNZ        LAB_004cc46d
+//                              t_c_obj.cpp:1619 (36)
+//         004cc3df     PUSH       0x653
+//         004cc3e4     PUSH       s_C:\msdev\work\age1_x1\t_c_obj.cp               = "C:\\msdev\\work\\age1_x1\\t_c_obj.cpp"
+//         004cc3e9     CALL       debug_rand                                       int debug_rand(char * param_1, int param_2)
+//         004cc3ee     LEA        EAX,[EAX + EAX*0x4]
+//         004cc3f1     ADD        ESP,0x8
+//         004cc3f4     LEA        this,[EAX + EAX*0x4]
+//         004cc3f7     MOV        EAX,0x80010003
+//         004cc3fc     SHL        this,0x2
+//         004cc3ff     IMUL       this
+//         004cc401     ADD        EDX,this
+//                              t_c_obj.cpp:1620 (22)
+//         004cc403     MOV        this,dword ptr [EDI + 0x8]
+//         004cc406     SAR        EDX,0xe
+//         004cc409     MOV        EAX,EDX
+//         004cc40b     SHR        EAX,0x1f
+//         004cc40e     ADD        EDX,EAX
+//         004cc410     CMP        DX,word ptr [ECX + this+0x126]
+//         004cc417     JG         LAB_004cc46d
+//                              t_c_obj.cpp:1622 (11)
+//         004cc419     MOV        EDX,dword ptr [EDI]
+//         004cc41b     PUSH       ESI
+//         004cc41c     MOV        this,EDI
+//         004cc41e     CALL       dword ptr [EDX + 0xf0]
+//                              t_c_obj.cpp:1624 (43)
+//         004cc424     MOV        this,dword ptr [ESP + 0x48]
+//         004cc428     MOV        EAX,dword ptr [EDI + 0x8]
+//         004cc42b     MOV        EDX,dword ptr [EDI + 0xc]
+//         004cc42e     MOV        EBX,dword ptr [ESI]
+//         004cc430     FSTP       float ptr [ESP + 0x10]
+//         004cc434     PUSH       this
+//         004cc435     MOV        this,dword ptr [ESP + 0x14]
+//         004cc439     PUSH       EDX=>DAT_fffffff8
+//         004cc43a     MOV        EDX,dword ptr [EAX + 0x10c]
+//         004cc440     MOVSX      EAX,word ptr [EAX + 0x108]
+//         004cc447     PUSH       this=>DAT_fffffff4
+//         004cc448     PUSH       EDX=>DAT_fffffff0
+//         004cc449     PUSH       EAX
+//         004cc44a     MOV        this,ESI
+//         004cc44c     CALL       dword ptr [EBX + 0x70]
+//                              t_c_obj.cpp:1625 (16)
+//         004cc44f     FLD        float ptr [ESI + 0x30]
+//         004cc452     FCOMP      float ptr [DAT_00574c78]                         = align(2)
+//         004cc458     FNSTSW     AX
+//         004cc45a     TEST       AH,0x1
+//         004cc45d     JZ         LAB_004cc46d
+//                              t_c_obj.cpp:1626 (25)
+//         004cc45f     PUSH       0x1
+//         004cc461     PUSH       0x0=>DAT_fffffff8
+//         004cc463     PUSH       0x0=>DAT_fffffff4
+//         004cc465     MOV        this,ESI
+//         004cc467     CALL       dword ptr [EBX + 0x84]
+//                               LAB_004cc46d                                                 XREF[7]:     004cc2e2(j), 004cc30f(j),
+//                                                                                                         004cc317(j), 004cc32e(j),
+//                                                                                                         004cc3d9(j), 004cc417(j),
+//                                                                                                         004cc45d(j)
+//         004cc46d     MOV        EBP,dword ptr [EBP + 0x4]
+//         004cc470     TEST       EBP,EBP
+//         004cc472     JNZ        LAB_004cc2d9
+//                              t_c_obj.cpp:1594 (4)
+//         004cc478     MOV        this,dword ptr [ESP + local_14]
+//                               LAB_004cc47c                                                 XREF[1]:     004cc2d3(j)
+//                              t_c_obj.cpp:1593 (22)
+//         004cc47c     MOV        EAX,dword ptr [ESP + local_10]
+//         004cc480     ADD        this,0x18
+//         004cc483     DEC        EAX
+//         004cc484     MOV        dword ptr [ESP + local_14],this
+//         004cc488     MOV        dword ptr [ESP + local_10],EAX
+//         004cc48c     JNZ        LAB_004cc2bc
+//                               LAB_004cc492                                                 XREF[1]:     004cc2a0(j)
+//                              t_c_obj.cpp:1592 (26)
+//         004cc492     MOV        this,dword ptr [ESP + ry]
+//         004cc496     MOV        EAX,dword ptr [ESP + map]
+//         004cc49a     ADD        this,0x4
+//         004cc49d     DEC        EAX
+//         004cc49e     MOV        dword ptr [ESP + ry],this
+//         004cc4a2     MOV        dword ptr [ESP + map],EAX
+//         004cc4a6     JNZ        LAB_004cc295
+//                               LAB_004cc4ac                                                 XREF[1]:     004cc278(j)
+//                              t_c_obj.cpp:1556 (1)
+//         004cc4ac     POP        ESI
+//                              t_c_obj.cpp:1633 (11)
+//         004cc4ad     POP        EDI
+//         004cc4ae     POP        EBP
+//         004cc4af     MOV        AL,0x1
+//         004cc4b1     POP        EBX
+//         004cc4b2     ADD        ESP,0x28
+//         004cc4b5     RET        0x14
+//         004cc4b8     ??         90h
+//         004cc4b9     NOP
+//         004cc4ba     NOP
+//         004cc4bb     NOP
+//         004cc4bc     NOP
+//         004cc4bd     NOP
+//         004cc4be     NOP
+//         004cc4bf     NOP
     return 0;
 }
 

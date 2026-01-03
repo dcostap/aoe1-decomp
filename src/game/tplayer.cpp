@@ -3,309 +3,235 @@
 
 TRIBE_Player::TRIBE_Player(int param_1, TRIBE_World* param_2, uchar param_3) {
     /* TODO: Stub */
-//                              undefined __thiscall TRIBE_Player(TRIBE_Player * this, TRIBE_World *
+//                              undefined __thiscall TRIBE_Player(TRIBE_Player * this, int param_1,
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Player *    ECX:4 (auto)   this
-//              TRIBE_World *     Stack[0x4]:4   param_1                   XREF[1]:     00511e40(R)
-//              RGE_Master_Pla    Stack[0x8]:4   param_2                   XREF[1]:     00511e50(R)
-//              uchar             Stack[0xc]:1   param_3                   XREF[1]:     00511e3a(R)
-//              char *            Stack[0x10]:4  param_4                   XREF[1]:     00511e49(R)
-//              uchar             Stack[0x14]:1  param_5                   XREF[2]:     00511e36(R), 00511e7d(W)
-//              uchar             Stack[0x18]:1  param_6                   XREF[8]:     00511e9e(R), 00511ed8(W), 00511f2a(W), 00511f5b(W),
-//                                                                                     00511f8c(W), 00511fc2(W), 00512064(W), 00512092(W)
-//              uchar             Stack[0x1c]:1  param_7                   XREF[1]:     00511f14(R)
-//              char *            Stack[0x20]:4  param_8                   XREF[1]:     00511eee(R)
-//              char *            Stack[0x24]:4  param_9                   XREF[1]:     00511ee9(R)
-//              char *            Stack[0x28]:4  param_10                  XREF[1]:     00511ee5(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[16]:    00511e65(W), 00511e83(W), 00511ea4(W), 00511ede(W),
-//                                                                                     00511f0a(W), 00511f30(W), 00511f4a(W), 00511f61(W),
-//                                                                                     00511f7b(W), 00511f92(W), 00511fac(W), 00511fc8(W),
-//                                                                                     00511fdf(W), 0051206a(W), 00512080(W), 00512098(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     005120b4(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     00511e5a(W)
-//                               ??0TRIBE_Player@@QAE@PAVTRIBE_World@@PAVRGE_Master_Player@@  XREF[5]:     TRIBE_Gaia:00519bf8(c),
-//                               TRIBE_Player::TRIBE_Player                                                setup_players:0052ea3c(c),
-//                                                                                                         setup_players:0052ea84(c),
-//                                                                                                         scenario_make_player:0052ed82(c),
-//                                                                                                         scenario_make_player:0052edca(c)
-//                              tplayer.cpp:287 (67)
-//         00511e20     PUSH       -0x1
-//         00511e22     PUSH       FUN_005611c0
-//         00511e27     MOV        EAX,FS:[0x0]
-//         00511e2d     PUSH       EAX
-//         00511e2e     MOV        dword ptr FS:[0x0],ESP
-//         00511e35     PUSH       this
-//         00511e36     MOV        EAX,dword ptr [ESP + param_5]
-//         00511e3a     MOV        EDX,dword ptr [ESP + param_3]
-//         00511e3e     PUSH       EBX
-//         00511e3f     PUSH       EBP
-//         00511e40     MOV        EBP,dword ptr [ESP + param_1]
-//         00511e44     PUSH       ESI
-//         00511e45     MOV        ESI,this
-//         00511e47     XOR        EBX,EBX
-//         00511e49     MOV        this,dword ptr [ESP + param_4]
-//         00511e4d     PUSH       EDI
-//         00511e4e     PUSH       EBX
-//         00511e4f     PUSH       EAX
-//         00511e50     MOV        EAX,dword ptr [ESP + param_2]
-//         00511e54     PUSH       this
-//         00511e55     PUSH       EDX
-//         00511e56     PUSH       EAX
-//         00511e57     PUSH       EBP
-//         00511e58     MOV        this,ESI
-//         00511e5a     MOV        dword ptr [ESP + local_10],ESI
-//         00511e5e     CALL       RGE_Player::RGE_Player                           undefined RGE_Player(RGE_Player * this, RGE_G
-//                              tplayer.cpp:289 (59)
-//         00511e63     PUSH       0x14
-//         00511e65     MOV        dword ptr [ESP + local_4],EBX
-//         00511e69     MOV        dword ptr [ESI + 0x238],EBX
-//         00511e6f     MOV        dword ptr [ESI],TRIBE_Player::`vftable'          = 00511e00
-//         00511e75     CALL       operator_new                                     void * operator_new(uint param_1)
-//         00511e7a     ADD        ESP,0x4
-//         00511e7d     MOV        dword ptr [ESP + param_5],EAX
-//         00511e81     CMP        EAX,EBX
-//         00511e83     MOV        byte ptr [ESP + local_4],0x1
-//         00511e88     JZ         LAB_00511e96
-//         00511e8a     PUSH       0x5
-//         00511e8c     PUSH       ESI
-//         00511e8d     MOV        this,EAX
-//         00511e8f     CALL       Visible_Resource_Manager::Visible_Resource_Man   undefined Visible_Resource_Manager(Visible_Re
-//         00511e94     JMP        LAB_00511e98
-//                               LAB_00511e96                                                 XREF[1]:     00511e88(j)
-//         00511e96     XOR        EAX,EAX
-//                               LAB_00511e98                                                 XREF[1]:     00511e94(j)
-//         00511e98     MOV        dword ptr [ESI + 0x110],EAX
-//                              tplayer.cpp:291 (12)
-//         00511e9e     MOV        AL,byte ptr [ESP + param_6]
-//         00511ea2     CMP        AL,BL
-//         00511ea4     MOV        byte ptr [ESP + local_4],BL
-//         00511ea8     JNZ        LAB_00511eb0
-//                              tplayer.cpp:292 (4)
-//         00511eaa     MOV        byte ptr [ESI + 0x48],0x1
-//                              tplayer.cpp:293 (2)
-//         00511eae     JMP        LAB_00511f14
-//                               LAB_00511eb0                                                 XREF[1]:     00511ea8(j)
-//                              tplayer.cpp:295 (4)
-//         00511eb0     MOV        byte ptr [ESI + 0x48],0x3
-//                              tplayer.cpp:296 (7)
-//         00511eb4     MOV        dword ptr [ESI + 0x4],0x1
-//                              tplayer.cpp:297 (16)
-//         00511ebb     MOV        this,dword ptr [comm]                            = 00000000
-//         00511ec1     CALL       TCommunications_Handler::IsHost                  int IsHost(TCommunications_Handler * this)
-//         00511ec6     CMP        EAX,0x1
-//         00511ec9     JNZ        LAB_00511f14
-//                              tplayer.cpp:299 (73)
-//         00511ecb     PUSH       0x125c8
-//         00511ed0     CALL       operator_new                                     void * operator_new(uint param_1)
-//         00511ed5     ADD        ESP,0x4
-//         00511ed8     MOV        dword ptr [ESP + param_6],EAX
-//         00511edc     CMP        EAX,EBX
-//         00511ede     MOV        byte ptr [ESP + local_4],0x2
-//         00511ee3     JZ         LAB_00511f08
-//         00511ee5     MOV        this,dword ptr [ESP + param_10]
-//         00511ee9     MOV        EDX,dword ptr [ESP + param_9]
-//         00511eed     PUSH       this
-//         00511eee     MOV        this,dword ptr [ESP + param_8]
-//         00511ef2     PUSH       EDX
-//         00511ef3     MOV        EDX,dword ptr [ESI + 0x44]
-//         00511ef6     PUSH       this
-//         00511ef7     PUSH       ESI
-//         00511ef8     MOVSX      this,word ptr [ESI + 0x4a]
-//         00511efc     PUSH       EDX
-//         00511efd     PUSH       this
-//         00511efe     PUSH       EBX
-//         00511eff     MOV        this,EAX
-//         00511f01     CALL       TribeMainDecisionAIModule::TribeMainDecisionAI   undefined TribeMainDecisionAIModule(TribeMain
-//         00511f06     JMP        LAB_00511f0a
-//                               LAB_00511f08                                                 XREF[1]:     00511ee3(j)
-//         00511f08     XOR        EAX,EAX
-//                               LAB_00511f0a                                                 XREF[1]:     00511f06(j)
-//         00511f0a     MOV        byte ptr [ESP + local_4],BL
-//         00511f0e     MOV        dword ptr [ESI + 0x238],EAX
-//                               LAB_00511f14                                                 XREF[2]:     00511eae(j), 00511ec9(j)
-//                              tplayer.cpp:302 (10)
-//         00511f14     CMP        byte ptr [ESP + param_7],BL
-//         00511f18     JZ         LAB_00511fe6
-//                              tplayer.cpp:304 (42)
-//         00511f1e     PUSH       0xc
-//         00511f20     CALL       operator_new                                     void * operator_new(uint param_1)
-//         00511f25     MOV        EDI,EAX
-//         00511f27     ADD        ESP,0x4
-//         00511f2a     MOV        dword ptr [ESP + param_6],EDI
-//         00511f2e     CMP        EDI,EBX
-//         00511f30     MOV        byte ptr [ESP + local_4],0x3
-//         00511f35     JZ         LAB_00511f46
-//         00511f37     MOV        this,EDI
-//         00511f39     CALL       RGE_Object_List::RGE_Object_List                 undefined RGE_Object_List(RGE_Object_List * t
-//         00511f3e     MOV        dword ptr [EDI],TRIBE_Object_List::`vftable'     = 00511b00
-//         00511f44     JMP        LAB_00511f48
-//                               LAB_00511f46                                                 XREF[1]:     00511f35(j)
-//         00511f46     XOR        EDI,EDI
-//                               LAB_00511f48                                                 XREF[1]:     00511f44(j)
-//                              tplayer.cpp:305 (49)
-//         00511f48     PUSH       0xc
-//         00511f4a     MOV        byte ptr [ESP + local_4],BL
-//         00511f4e     MOV        dword ptr [ESI + 0x28],EDI
-//         00511f51     CALL       operator_new                                     void * operator_new(uint param_1)
-//         00511f56     MOV        EDI,EAX
-//         00511f58     ADD        ESP,0x4
-//         00511f5b     MOV        dword ptr [ESP + param_6],EDI
-//         00511f5f     CMP        EDI,EBX
-//         00511f61     MOV        byte ptr [ESP + local_4],0x4
-//         00511f66     JZ         LAB_00511f77
-//         00511f68     MOV        this,EDI
-//         00511f6a     CALL       RGE_Object_List::RGE_Object_List                 undefined RGE_Object_List(RGE_Object_List * t
-//         00511f6f     MOV        dword ptr [EDI],TRIBE_Object_List::`vftable'     = 00511b00
-//         00511f75     JMP        LAB_00511f79
-//                               LAB_00511f77                                                 XREF[1]:     00511f66(j)
-//         00511f77     XOR        EDI,EDI
-//                               LAB_00511f79                                                 XREF[1]:     00511f75(j)
-//                              tplayer.cpp:306 (49)
-//         00511f79     PUSH       0xc
-//         00511f7b     MOV        byte ptr [ESP + local_4],BL
-//         00511f7f     MOV        dword ptr [ESI + 0x2c],EDI
-//         00511f82     CALL       operator_new                                     void * operator_new(uint param_1)
-//         00511f87     MOV        EDI,EAX
-//         00511f89     ADD        ESP,0x4
-//         00511f8c     MOV        dword ptr [ESP + param_6],EDI
-//         00511f90     CMP        EDI,EBX
-//         00511f92     MOV        byte ptr [ESP + local_4],0x5
-//         00511f97     JZ         LAB_00511fa8
-//         00511f99     MOV        this,EDI
-//         00511f9b     CALL       RGE_Object_List::RGE_Object_List                 undefined RGE_Object_List(RGE_Object_List * t
-//         00511fa0     MOV        dword ptr [EDI],TRIBE_Object_List::`vftable'     = 00511b00
-//         00511fa6     JMP        LAB_00511faa
-//                               LAB_00511fa8                                                 XREF[1]:     00511f97(j)
-//         00511fa8     XOR        EDI,EDI
-//                               LAB_00511faa                                                 XREF[1]:     00511fa6(j)
-//                              tplayer.cpp:308 (14)
-//         00511faa     MOV        this,ESI
-//         00511fac     MOV        byte ptr [ESP + local_4],BL
-//         00511fb0     MOV        dword ptr [ESI + 0x30],EDI
-//         00511fb3     CALL       TRIBE_Player::new_victory                        void new_victory(TRIBE_Player * this)
-//                              tplayer.cpp:309 (46)
-//         00511fb8     PUSH       0x38
-//         00511fba     CALL       operator_new                                     void * operator_new(uint param_1)
-//         00511fbf     ADD        ESP,0x4
-//         00511fc2     MOV        dword ptr [ESP + param_6],EAX
-//         00511fc6     CMP        EAX,EBX
-//         00511fc8     MOV        byte ptr [ESP + local_4],0x6
-//         00511fcd     JZ         LAB_00511fdd
-//         00511fcf     MOV        EDX,dword ptr [EBP + 0x28]
-//         00511fd2     PUSH       ESI
-//         00511fd3     PUSH       EDX
-//         00511fd4     MOV        this,EAX
-//         00511fd6     CALL       RGE_Visible_Map::RGE_Visible_Map                 undefined RGE_Visible_Map(RGE_Visible_Map * t
-//         00511fdb     JMP        LAB_00511fdf
-//                               LAB_00511fdd                                                 XREF[1]:     00511fcd(j)
-//         00511fdd     XOR        EAX,EAX
-//                               LAB_00511fdf                                                 XREF[1]:     00511fdb(j)
-//         00511fdf     MOV        byte ptr [ESP + local_4],BL
-//         00511fe3     MOV        dword ptr [ESI + 0x38],EAX
-//                               LAB_00511fe6                                                 XREF[1]:     00511f18(j)
-//                              tplayer.cpp:313 (14)
-//         00511fe6     MOV        EAX,dword ptr [ESI + 0x3c]
-//         00511fe9     MOV        EDI,0x1
-//         00511fee     CMP        word ptr [EAX + 0x3c],DI
-//         00511ff2     JLE        LAB_00512012
-//                               LAB_00511ff4                                                 XREF[1]:     00512010(j)
-//                              tplayer.cpp:314 (8)
-//         00511ff4     MOVSX      this,word ptr [ESI + 0x4a]
-//         00511ff8     CMP        EDI,this
-//         00511ffa     JZ         LAB_00512006
-//                              tplayer.cpp:315 (22)
-//         00511ffc     PUSH       0x3
-//         00511ffe     PUSH       EDI
-//         00511fff     MOV        this,ESI
-//         00512001     CALL       RGE_Player::set_relation                         void set_relation(RGE_Player * this, long par
-//                               LAB_00512006                                                 XREF[1]:     00511ffa(j)
-//         00512006     MOV        EDX,dword ptr [ESI + 0x3c]
-//         00512009     INC        EDI
-//         0051200a     MOVSX      EAX,word ptr [EDX + 0x3c]
-//         0051200e     CMP        EDI,EAX
-//         00512010     JL         LAB_00511ff4
-//                               LAB_00512012                                                 XREF[1]:     00511ff2(j)
-//                              tplayer.cpp:320 (53)
-//         00512012     PUSH       0x140
-//         00512017     PUSH       s_C:\msdev\work\age1_x1\tplayer.cp               = "C:\\msdev\\work\\age1_x1\\tplayer.cpp"
-//         0051201c     MOV        dword ptr [ESI + 0x228],EBX
-//         00512022     MOV        dword ptr [ESI + 0x22c],EBX
-//         00512028     MOV        dword ptr [ESI + 0x230],EBX
-//         0051202e     CALL       debug_rand                                       int debug_rand(char * param_1, int param_2)
-//         00512033     LEA        this,[EAX + EAX*0x2]
-//         00512036     MOV        EAX,0x80010003
-//         0051203b     IMUL       this
-//         0051203d     ADD        EDX,this
-//         0051203f     ADD        ESP,0x8
-//         00512042     SAR        EDX,0xe
-//         00512045     MOV        this,EDX
-//                              tplayer.cpp:322 (55)
-//         00512047     PUSH       0x14
-//         00512049     SHR        this,0x1f
-//         0051204c     MOV        dword ptr [ESI + 0x234],EBX
-//         00512052     LEA        EDX,[EDX + this->_padding_*0x1 + 0x3]
-//         00512056     MOV        dword ptr [ESI + 0x224],EDX
-//         0051205c     CALL       operator_new                                     void * operator_new(uint param_1)
-//         00512061     ADD        ESP,0x4
-//         00512064     MOV        dword ptr [ESP + param_6],EAX
-//         00512068     CMP        EAX,EBX
-//         0051206a     MOV        byte ptr [ESP + local_4],0x7
-//         0051206f     JZ         LAB_0051207c
-//         00512071     PUSH       -0x1
-//         00512073     MOV        this,EAX
-//         00512075     CALL       TRIBE_History_Info::TRIBE_History_Info           undefined TRIBE_History_Info(TRIBE_History_In
-//         0051207a     JMP        LAB_0051207e
-//                               LAB_0051207c                                                 XREF[1]:     0051206f(j)
-//         0051207c     XOR        EAX,EAX
-//                               LAB_0051207e                                                 XREF[1]:     0051207a(j)
-//                              tplayer.cpp:323 (54)
-//         0051207e     PUSH       0x10
-//         00512080     MOV        byte ptr [ESP + local_4],BL
-//         00512084     MOV        dword ptr [ESI + 0x83c],EAX
-//         0051208a     CALL       operator_new                                     void * operator_new(uint param_1)
-//         0051208f     ADD        ESP,0x4
-//         00512092     MOV        dword ptr [ESP + param_6],EAX
-//         00512096     CMP        EAX,EBX
-//         00512098     MOV        byte ptr [ESP + local_4],0x8
-//         0051209d     JZ         LAB_005120b2
-//         0051209f     MOV        this,dword ptr [EBP + 0x104]
-//         005120a5     PUSH       0x1
-//         005120a7     PUSH       ESI
-//         005120a8     PUSH       this
-//         005120a9     MOV        this,EAX
-//         005120ab     CALL       TRIBE_Player_Tech::TRIBE_Player_Tech             undefined TRIBE_Player_Tech(TRIBE_Player_Tech
-//         005120b0     JMP        LAB_005120b4
-//                               LAB_005120b2                                                 XREF[1]:     0051209d(j)
-//         005120b2     XOR        EAX,EAX
-//                               LAB_005120b4                                                 XREF[1]:     005120b0(j)
-//                              tplayer.cpp:329 (46)
-//         005120b4     MOV        this,dword ptr [ESP + local_c]
-//         005120b8     MOV        dword ptr [ESI + 0x220],EAX
-//         005120be     MOV        EAX,0xbf800000
-//         005120c3     POP        EDI
-//         005120c4     MOV        dword ptr [ESI + 0x840],EAX
-//         005120ca     MOV        dword ptr [ESI + 0x844],EAX
-//         005120d0     MOV        EAX,ESI
-//         005120d2     POP        ESI
-//         005120d3     POP        EBP
-//         005120d4     MOV        dword ptr FS:[0x0],this
-//         005120db     POP        EBX
-//         005120dc     ADD        ESP,0x10
-//         005120df     RET        0x28
-//         005120e2     ??         90h
-//         005120e3     NOP
-//         005120e4     NOP
-//         005120e5     NOP
-//         005120e6     NOP
-//         005120e7     NOP
-//         005120e8     NOP
-//         005120e9     NOP
-//         005120ea     NOP
-//         005120eb     NOP
-//         005120ec     NOP
-//         005120ed     NOP
-//         005120ee     NOP
-//         005120ef     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     00511bf2(R)
+//              TRIBE_World *     Stack[0x8]:4   param_2                   XREF[2]:     00511bec(R), 00511dbb(W)
+//              uchar             Stack[0xc]:1   param_3                   XREF[7]:     00511be6(R), 00511c77(W), 00511cd2(W), 00511cf9(W),
+//                                                                                     00511d7e(W), 00511d89(*), 00511da8(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[7]:     00511c0d(W), 00511c7d(W), 00511c9f(W), 00511cd8(W),
+//                                                                                     00511cff(W), 00511d19(W), 00511dc1(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00511de7(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     00511bfb(W)
+//                               ??0TRIBE_Player@@QAE@HPAVTRIBE_World@@E@Z                    XREF[2]:     TRIBE_Gaia:00519b1f(c),
+//                               TRIBE_Player::TRIBE_Player                                                load_player:0052e8df(c)
+//                              tplayer.cpp:232 (52)
+//         00511bd0     PUSH       -0x1
+//         00511bd2     PUSH       FUN_00561154
+//         00511bd7     MOV        EAX,FS:[0x0]
+//         00511bdd     PUSH       EAX
+//         00511bde     MOV        dword ptr FS:[0x0],ESP
+//         00511be5     PUSH       this
+//         00511be6     MOV        EAX,dword ptr [ESP + param_3]
+//         00511bea     PUSH       EBX
+//         00511beb     PUSH       EBP
+//         00511bec     MOV        EBP,dword ptr [ESP + param_2]
+//         00511bf0     PUSH       ESI
+//         00511bf1     PUSH       EDI
+//         00511bf2     MOV        EDI,dword ptr [ESP + param_1]
+//         00511bf6     PUSH       EAX
+//         00511bf7     MOV        ESI,this
+//         00511bf9     PUSH       EBP
+//         00511bfa     PUSH       EDI
+//         00511bfb     MOV        dword ptr [ESP + local_10],ESI
+//         00511bff     CALL       RGE_Player::RGE_Player                           undefined RGE_Player(RGE_Player * this, int p
+//                              tplayer.cpp:233 (33)
+//         00511c04     LEA        EAX,[ESI + 0x48]
+//         00511c07     PUSH       0x1
+//         00511c09     XOR        EBX,EBX
+//         00511c0b     PUSH       EAX
+//         00511c0c     PUSH       EDI
+//         00511c0d     MOV        dword ptr [ESP + local_4],EBX
+//         00511c11     MOV        dword ptr [ESI + 0x238],EBX
+//         00511c17     MOV        dword ptr [ESI],TRIBE_Player::`vftable'          = 00511e00
+//         00511c1d     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00511c22     ADD        ESP,0xc
+//                              tplayer.cpp:234 (18)
+//         00511c25     LEA        this,[ESI + 0x228]
+//         00511c2b     PUSH       0x4
+//         00511c2d     PUSH       this
+//         00511c2e     PUSH       EDI
+//         00511c2f     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00511c34     ADD        ESP,0xc
+//                              tplayer.cpp:235 (18)
+//         00511c37     LEA        EDX,[ESI + 0x230]
+//         00511c3d     PUSH       0x4
+//         00511c3f     PUSH       EDX
+//         00511c40     PUSH       EDI
+//         00511c41     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00511c46     ADD        ESP,0xc
+//                              tplayer.cpp:236 (18)
+//         00511c49     LEA        EAX,[ESI + 0x224]
+//         00511c4f     PUSH       0x4
+//         00511c51     PUSH       EAX
+//         00511c52     PUSH       EDI
+//         00511c53     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00511c58     ADD        ESP,0xc
+//                              tplayer.cpp:237 (18)
+//         00511c5b     LEA        this,[ESI + 0x234]
+//         00511c61     PUSH       0x4
+//         00511c63     PUSH       this
+//         00511c64     PUSH       EDI
+//         00511c65     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00511c6a     ADD        ESP,0xc
+//                              tplayer.cpp:238 (54)
+//         00511c6d     PUSH       0x10
+//         00511c6f     CALL       operator_new                                     void * operator_new(uint param_1)
+//         00511c74     ADD        ESP,0x4
+//         00511c77     MOV        dword ptr [ESP + param_3],EAX
+//         00511c7b     CMP        EAX,EBX
+//         00511c7d     MOV        byte ptr [ESP + local_4],0x1
+//         00511c82     JZ         LAB_00511c97
+//         00511c84     MOV        EDX,dword ptr [EBP + 0x104]
+//         00511c8a     PUSH       EBX
+//         00511c8b     PUSH       ESI
+//         00511c8c     PUSH       EDX
+//         00511c8d     PUSH       EDI
+//         00511c8e     MOV        this,EAX
+//         00511c90     CALL       TRIBE_Player_Tech::TRIBE_Player_Tech             undefined TRIBE_Player_Tech(TRIBE_Player_Tech
+//         00511c95     JMP        LAB_00511c99
+//                               LAB_00511c97                                                 XREF[1]:     00511c82(j)
+//         00511c97     XOR        EAX,EAX
+//                               LAB_00511c99                                                 XREF[1]:     00511c95(j)
+//         00511c99     MOV        dword ptr [ESI + 0x220],EAX
+//         00511c9f     MOV        byte ptr [ESP + local_4],BL
+//                              tplayer.cpp:240 (19)
+//         00511ca3     FLD        float ptr [save_game_version]                    = 7.23
+//         00511ca9     FCOMP      float ptr [DAT_00576818]                         = align(2)
+//         00511caf     FNSTSW     AX
+//         00511cb1     TEST       AH,0x41
+//         00511cb4     JNZ        LAB_00511ce9
+//                              tplayer.cpp:242 (18)
+//         00511cb6     LEA        EAX,[ESI + 0x22c]
+//         00511cbc     PUSH       0x4
+//         00511cbe     PUSH       EAX
+//         00511cbf     PUSH       EDI
+//         00511cc0     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00511cc5     ADD        ESP,0xc
+//                              tplayer.cpp:243 (24)
+//         00511cc8     PUSH       0x14
+//         00511cca     CALL       operator_new                                     void * operator_new(uint param_1)
+//         00511ccf     ADD        ESP,0x4
+//         00511cd2     MOV        dword ptr [ESP + param_3],EAX
+//         00511cd6     CMP        EAX,EBX
+//         00511cd8     MOV        byte ptr [ESP + local_4],0x2
+//         00511cdd     JZ         LAB_00511d11
+//         00511cdf     PUSH       EDI
+//                              tplayer.cpp:248 (61)
+//         00511ce0     MOV        this,EAX
+//         00511ce2     CALL       TRIBE_History_Info::TRIBE_History_Info           undefined TRIBE_History_Info(TRIBE_History_In
+//         00511ce7     JMP        LAB_00511d13
+//                               LAB_00511ce9                                                 XREF[1]:     00511cb4(j)
+//         00511ce9     PUSH       0x14
+//         00511ceb     MOV        dword ptr [ESI + 0x22c],EBX
+//         00511cf1     CALL       operator_new                                     void * operator_new(uint param_1)
+//         00511cf6     ADD        ESP,0x4
+//         00511cf9     MOV        dword ptr [ESP + param_3],EAX
+//         00511cfd     CMP        EAX,EBX
+//         00511cff     MOV        byte ptr [ESP + local_4],0x3
+//         00511d04     JZ         LAB_00511d11
+//         00511d06     PUSH       -0x1
+//         00511d08     MOV        this,EAX
+//         00511d0a     CALL       TRIBE_History_Info::TRIBE_History_Info           undefined TRIBE_History_Info(TRIBE_History_In
+//         00511d0f     JMP        LAB_00511d13
+//                               LAB_00511d11                                                 XREF[2]:     00511cdd(j), 00511d04(j)
+//         00511d11     XOR        EAX,EAX
+//                               LAB_00511d13                                                 XREF[2]:     00511ce7(j), 00511d0f(j)
+//         00511d13     MOV        dword ptr [ESI + 0x83c],EAX
+//         00511d19     MOV        byte ptr [ESP + local_4],BL
+//                              tplayer.cpp:251 (19)
+//         00511d1d     FLD        float ptr [save_game_version]                    = 7.23
+//         00511d23     FCOMP      float ptr [DAT_0057681c]                         = 9Ah
+//         00511d29     FNSTSW     AX
+//         00511d2b     TEST       AH,0x1
+//         00511d2e     JNZ        LAB_00511d56
+//                              tplayer.cpp:253 (18)
+//         00511d30     LEA        this,[ESI + 0x840]
+//         00511d36     PUSH       0x4
+//         00511d38     PUSH       this
+//         00511d39     PUSH       EDI
+//         00511d3a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00511d3f     ADD        ESP,0xc
+//                              tplayer.cpp:254 (18)
+//         00511d42     LEA        EDX,[ESI + 0x844]
+//         00511d48     PUSH       0x4
+//         00511d4a     PUSH       EDX
+//         00511d4b     PUSH       EDI
+//         00511d4c     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00511d51     ADD        ESP,0xc
+//                              tplayer.cpp:256 (2)
+//         00511d54     JMP        LAB_00511d67
+//                               LAB_00511d56                                                 XREF[1]:     00511d2e(j)
+//                              tplayer.cpp:258 (11)
+//         00511d56     MOV        EAX,0xbf800000
+//         00511d5b     MOV        dword ptr [ESI + 0x840],EAX
+//                              tplayer.cpp:259 (6)
+//         00511d61     MOV        dword ptr [ESI + 0x844],EAX
+//                               LAB_00511d67                                                 XREF[1]:     00511d54(j)
+//                              tplayer.cpp:263 (6)
+//         00511d67     CMP        byte ptr [ESI + 0x48],0x3
+//         00511d6b     JNZ        LAB_00511de7
+//                              tplayer.cpp:268 (28)
+//         00511d6d     FLD        float ptr [save_game_version]                    = 7.23
+//         00511d73     FCOMP      float ptr [DAT_00576820]                         = C3h
+//         00511d79     MOV        EBP,0x1
+//         00511d7e     MOV        dword ptr [ESP + param_3],EBP
+//         00511d82     FNSTSW     AX
+//         00511d84     TEST       AH,0x1
+//         00511d87     JNZ        LAB_00511d99
+//                              tplayer.cpp:269 (16)
+//         00511d89     LEA        EAX=>param_3,[ESP + 0x2c]
+//         00511d8d     PUSH       0x4
+//         00511d8f     PUSH       EAX
+//         00511d90     PUSH       EDI
+//         00511d91     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00511d96     ADD        ESP,0xc
+//                               LAB_00511d99                                                 XREF[1]:     00511d87(j)
+//                              tplayer.cpp:270 (21)
+//         00511d99     MOV        this,dword ptr [comm]                            = 00000000
+//         00511d9f     CALL       TCommunications_Handler::IsHost                  int IsHost(TCommunications_Handler * this)
+//         00511da4     CMP        EAX,EBP
+//         00511da6     JNZ        LAB_00511de4
+//         00511da8     CMP        dword ptr [ESP + param_3],EBP
+//         00511dac     JNZ        LAB_00511de4
+//                              tplayer.cpp:272 (54)
+//         00511dae     PUSH       0x125c8
+//         00511db3     CALL       operator_new                                     void * operator_new(uint param_1)
+//         00511db8     ADD        ESP,0x4
+//         00511dbb     MOV        dword ptr [ESP + param_2],EAX
+//         00511dbf     CMP        EAX,EBX
+//         00511dc1     MOV        byte ptr [ESP + local_4],0x4
+//         00511dc6     JZ         LAB_00511ddc
+//         00511dc8     MOVSX      EDX,word ptr [ESI + 0x4a]
+//         00511dcc     MOV        this,dword ptr [ESI + 0x44]
+//         00511dcf     PUSH       EDI
+//         00511dd0     PUSH       ESI
+//         00511dd1     PUSH       this
+//         00511dd2     PUSH       EDX
+//         00511dd3     MOV        this,EAX
+//         00511dd5     CALL       TribeMainDecisionAIModule::TribeMainDecisionAI   undefined TribeMainDecisionAIModule(TribeMain
+//         00511dda     JMP        LAB_00511dde
+//                               LAB_00511ddc                                                 XREF[1]:     00511dc6(j)
+//         00511ddc     XOR        EAX,EAX
+//                               LAB_00511dde                                                 XREF[1]:     00511dda(j)
+//         00511dde     MOV        dword ptr [ESI + 0x238],EAX
+//                               LAB_00511de4                                                 XREF[2]:     00511da6(j), 00511dac(j)
+//                              tplayer.cpp:276 (3)
+//         00511de4     MOV        dword ptr [ESI + 0x4],EBP
+//                               LAB_00511de7                                                 XREF[1]:     00511d6b(j)
+//                              tplayer.cpp:278 (23)
+//         00511de7     MOV        this,dword ptr [ESP + local_c]
+//         00511deb     MOV        EAX,ESI
+//         00511ded     POP        EDI
+//         00511dee     POP        ESI
+//         00511def     POP        EBP
+//         00511df0     MOV        dword ptr FS:[0x0],this
+//         00511df7     POP        EBX
+//         00511df8     ADD        ESP,0x10
+//         00511dfb     RET        0xc
+//         00511dfe     ??         90h
+//         00511dff     NOP
 }
 
 TRIBE_Player::TRIBE_Player(TRIBE_World* param_1, RGE_Master_Player* param_2, uchar param_3, char* param_4, uchar param_5, uchar param_6, uchar param_7, char* param_8, char* param_9, char* param_10) {
@@ -3493,28 +3419,71 @@ uchar TRIBE_Player::command_delete_object(RGE_Static_Object* param_1) {
 
 uchar TRIBE_Player::command_trade_attribute(long param_1) {
     /* TODO: Stub */
-//                              uchar __thiscall command_trade_attribute(TRIBE_Player * this, int pa
+//                              uchar __thiscall command_trade_attribute(TRIBE_Player * this, long p
 //              uchar             AL:1           <RETURN>
 //              TRIBE_Player *    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     0051384c(R)
-//              long              Stack[0x8]:4   param_2                   XREF[1]:     00513840(R)
-//                               ?command_trade_attribute@TRIBE_Player@@QAEEHJ@Z              XREF[1]:     checkTradeBoats:00503454(c)
+//              long              Stack[0x4]:4   param_1
+//              undefined         Stack[-0x4]:1  local_4                   XREF[1]:     005137d3(*)
+//              short             Stack[-0x8]:2  list_num                  XREF[2]:     005137e2(*), 005137f3(R)
+//              RGE_Static_Obj    Stack[-0xc]:4  list
+//                               ?command_trade_attribute@TRIBE_Player@@QAEEJ@Z               XREF[1]:     command_trade_attribute:0049d361(c
 //                               TRIBE_Player::command_trade_attribute
-//                              tplayer.cpp:1220 (26)
-//         00513840     MOV        EAX,dword ptr [ESP + param_2]
-//         00513844     MOVSX      EDX,word ptr [ECX + this+0x4a]
-//         00513848     MOV        this,dword ptr [ECX + this->_padding_]
-//         0051384b     PUSH       EAX
-//         0051384c     MOV        EAX,dword ptr [ESP + param_1]
-//         00513850     PUSH       EDX
-//         00513851     MOV        this,dword ptr [ECX + this->_padding_]
-//         00513854     PUSH       EAX
-//         00513855     CALL       TRIBE_Command::command_trade_attribute           void command_trade_attribute(TRIBE_Command *
-//                              tplayer.cpp:1222 (2)
-//         0051385a     MOV        AL,0x1
-//                              tplayer.cpp:1223 (3)
-//         0051385c     RET        0x8
-//         0051385f     ??         90h
+//                              tplayer.cpp:1202 (3)
+//         005137d0     SUB        ESP,0x8
+//                              tplayer.cpp:1206 (32)
+//         005137d3     LEA        EAX=>local_4,[ESP + 0x4]
+//         005137d7     PUSH       ESI
+//         005137d8     PUSH       0x5
+//         005137da     MOV        ESI,this
+//         005137dc     PUSH       -0x1
+//         005137de     PUSH       -0x1
+//         005137e0     PUSH       0x4
+//         005137e2     LEA        this=>list_num,[ESP + 0x14]
+//         005137e6     PUSH       EAX
+//         005137e7     PUSH       this
+//         005137e8     MOV        this,ESI
+//         005137ea     CALL       RGE_Player::get_selected_objects_to_command      uchar get_selected_objects_to_command(RGE_Pla
+//         005137ef     TEST       AL,AL
+//         005137f1     JZ         LAB_00513831
+//                              tplayer.cpp:1208 (14)
+//         005137f3     MOV        EDX,dword ptr [ESP + list_num]
+//         005137f7     MOV        this,dword ptr [EDX]
+//         005137f9     MOV        EAX,dword ptr [this->_padding_]
+//         005137fb     CALL       dword ptr [EAX + 0xac]
+//                              tplayer.cpp:1209 (26)
+//         00513801     MOV        this,dword ptr [ESP + 0x10]
+//         00513805     MOV        EDX,dword ptr [ESP + 0x8]
+//         00513809     MOV        EAX,dword ptr [ESP + 0x4]
+//         0051380d     PUSH       this
+//         0051380e     MOV        this,dword ptr [ESI + 0x3c]
+//         00513811     PUSH       EDX=>DAT_fffffff8
+//         00513812     PUSH       EAX=>DAT_fffffff4
+//         00513813     MOV        this,dword ptr [ECX + this->_padding_]
+//         00513816     CALL       TRIBE_Command::command_trade_attribute           void command_trade_attribute(TRIBE_Command *
+//                              tplayer.cpp:1210 (13)
+//         0051381b     MOV        EDX,dword ptr [ESP + 0x4]
+//         0051381f     PUSH       EDX
+//         00513820     CALL       free                                             undefined free()
+//         00513825     ADD        ESP,0x4
+//                              tplayer.cpp:1211 (2)
+//         00513828     MOV        AL,0x1
+//                              tplayer.cpp:1215 (7)
+//         0051382a     POP        ESI
+//         0051382b     ADD        ESP,0x8
+//         0051382e     RET        0x4
+//                               LAB_00513831                                                 XREF[1]:     005137f1(j)
+//                              tplayer.cpp:1214 (2)
+//         00513831     XOR        AL,AL
+//                              tplayer.cpp:1215 (7)
+//         00513833     POP        ESI
+//         00513834     ADD        ESP,0x8
+//         00513837     RET        0x4
+//         0051383a     ??         90h
+//         0051383b     NOP
+//         0051383c     NOP
+//         0051383d     NOP
+//         0051383e     NOP
+//         0051383f     NOP
     return 0;
 }
 
@@ -14676,62 +14645,88 @@ int TRIBE_Player::get_mouse_pointer_action_vars(int param_1, int* param_2, int* 
 
 TRIBE_Gaia::TRIBE_Gaia(int param_1, TRIBE_World* param_2, uchar param_3) {
     /* TODO: Stub */
-//                              undefined __thiscall TRIBE_Gaia(TRIBE_Gaia * this, TRIBE_World * par
+//                              undefined __thiscall TRIBE_Gaia(TRIBE_Gaia * this, int param_1, TRIB
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Gaia *      ECX:4 (auto)   this
-//              TRIBE_World *     Stack[0x4]:4   param_1                   XREF[1]:     00519bef(R)
-//              RGE_Master_Pla    Stack[0x8]:4   param_2                   XREF[1]:     00519bea(R)
-//              uchar             Stack[0xc]:1   param_3                   XREF[1]:     00519bd4(R)
-//              char *            Stack[0x10]:4  param_4                   XREF[1]:     00519bdf(R)
-//              uchar             Stack[0x14]:1  param_5                   XREF[1]:     00519bd0(R)
-//                               ??0TRIBE_Gaia@@QAE@PAVTRIBE_World@@PAVRGE_Master_Player@@EP  XREF[1]:     setup_gaia:0052e968(c)
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     00519b12(R)
+//              TRIBE_World *     Stack[0x8]:4   param_2                   XREF[1]:     00519b0e(R)
+//              uchar             Stack[0xc]:1   param_3                   XREF[1]:     00519b06(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     00519b2e(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00519b7b(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     00519b1b(W)
+//                               ??0TRIBE_Gaia@@QAE@HPAVTRIBE_World@@E@Z                      XREF[1]:     load_player:0052e8ae(c)
 //                               TRIBE_Gaia::TRIBE_Gaia
-//                              tplayer.cpp:5275 (51)
-//         00519bd0     MOV        EAX,dword ptr [ESP + param_5]
-//         00519bd4     MOV        EDX,dword ptr [ESP + param_3]
-//         00519bd8     PUSH       ESI
-//         00519bd9     PUSH       0x0
-//         00519bdb     PUSH       0x0
-//         00519bdd     MOV        ESI,this
-//         00519bdf     MOV        this,dword ptr [ESP + param_4]
-//         00519be3     PUSH       0x0
-//         00519be5     PUSH       0x1
-//         00519be7     PUSH       0x0
-//         00519be9     PUSH       EAX
-//         00519bea     MOV        EAX,dword ptr [ESP + param_2]
-//         00519bee     PUSH       this
-//         00519bef     MOV        this,dword ptr [ESP + param_1]
-//         00519bf3     PUSH       EDX
-//         00519bf4     PUSH       EAX
-//         00519bf5     PUSH       this
-//         00519bf6     MOV        this,ESI
-//         00519bf8     CALL       TRIBE_Player::TRIBE_Player                       undefined TRIBE_Player(TRIBE_Player * this, T
-//         00519bfd     MOV        dword ptr [ESI],TRIBE_Gaia::`vftable'            = 00519ba0
-//                              tplayer.cpp:5276 (4)
-//         00519c03     MOV        byte ptr [ESI + 0x48],0x2
-//                              tplayer.cpp:5278 (10)
-//         00519c07     MOV        dword ptr [ESI + 0x848],0x0
-//                              tplayer.cpp:5279 (10)
-//         00519c11     MOV        dword ptr [ESI + 0x84c],0x1d
-//                              tplayer.cpp:5280 (10)
-//         00519c1b     MOV        dword ptr [ESI + 0x854],0x0
-//                              tplayer.cpp:5281 (10)
-//         00519c25     MOV        dword ptr [ESI + 0x850],0x0
-//                              tplayer.cpp:5282 (6)
-//         00519c2f     MOV        EAX,ESI
-//         00519c31     POP        ESI
-//         00519c32     RET        0x14
-//         00519c35     ??         90h
-//         00519c36     NOP
-//         00519c37     NOP
-//         00519c38     NOP
-//         00519c39     NOP
-//         00519c3a     NOP
-//         00519c3b     NOP
-//         00519c3c     NOP
-//         00519c3d     NOP
-//         00519c3e     NOP
-//         00519c3f     NOP
+//                              tplayer.cpp:5263 (52)
+//         00519af0     PUSH       -0x1
+//         00519af2     PUSH       FUN_005612d8
+//         00519af7     MOV        EAX,FS:[0x0]
+//         00519afd     PUSH       EAX
+//         00519afe     MOV        dword ptr FS:[0x0],ESP
+//         00519b05     PUSH       this
+//         00519b06     MOV        EAX,dword ptr [ESP + param_3]
+//         00519b0a     PUSH       ESI
+//         00519b0b     MOV        ESI,this
+//         00519b0d     PUSH       EDI
+//         00519b0e     MOV        this,dword ptr [ESP + param_2]
+//         00519b12     MOV        EDI,dword ptr [ESP + param_1]
+//         00519b16     PUSH       EAX
+//         00519b17     PUSH       this
+//         00519b18     PUSH       EDI
+//         00519b19     MOV        this,ESI
+//         00519b1b     MOV        dword ptr [ESP + local_10],ESI
+//         00519b1f     CALL       TRIBE_Player::TRIBE_Player                       undefined TRIBE_Player(TRIBE_Player * this, i
+//                              tplayer.cpp:5266 (36)
+//         00519b24     LEA        EDX,[ESI + 0x848]
+//         00519b2a     PUSH       0x4
+//         00519b2c     PUSH       EDX
+//         00519b2d     PUSH       EDI
+//         00519b2e     MOV        dword ptr [ESP + local_4],0x0
+//         00519b36     MOV        dword ptr [ESI],TRIBE_Gaia::`vftable'            = 00519ba0
+//         00519b3c     MOV        byte ptr [ESI + 0x48],0x2
+//         00519b40     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00519b45     ADD        ESP,0xc
+//                              tplayer.cpp:5267 (18)
+//         00519b48     LEA        EAX,[ESI + 0x84c]
+//         00519b4e     PUSH       0x4
+//         00519b50     PUSH       EAX
+//         00519b51     PUSH       EDI
+//         00519b52     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00519b57     ADD        ESP,0xc
+//                              tplayer.cpp:5268 (18)
+//         00519b5a     LEA        this,[ESI + 0x854]
+//         00519b60     PUSH       0x4
+//         00519b62     PUSH       this
+//         00519b63     PUSH       EDI
+//         00519b64     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00519b69     ADD        ESP,0xc
+//                              tplayer.cpp:5269 (15)
+//         00519b6c     LEA        EDX,[ESI + 0x850]
+//         00519b72     PUSH       0x4
+//         00519b74     PUSH       EDX
+//         00519b75     PUSH       EDI
+//         00519b76     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              tplayer.cpp:5270 (24)
+//         00519b7b     MOV        this,dword ptr [ESP + local_c]
+//         00519b7f     ADD        ESP,0xc
+//         00519b82     MOV        EAX,ESI
+//         00519b84     MOV        dword ptr FS:[0x0],this
+//         00519b8b     POP        EDI
+//         00519b8c     POP        ESI
+//         00519b8d     ADD        ESP,0x10
+//         00519b90     RET        0xc
+//         00519b93     ??         90h
+//         00519b94     NOP
+//         00519b95     NOP
+//         00519b96     NOP
+//         00519b97     NOP
+//         00519b98     NOP
+//         00519b99     NOP
+//         00519b9a     NOP
+//         00519b9b     NOP
+//         00519b9c     NOP
+//         00519b9d     NOP
+//         00519b9e     NOP
+//         00519b9f     NOP
 }
 
 TRIBE_Gaia::TRIBE_Gaia(TRIBE_World* param_1, RGE_Master_Player* param_2, uchar param_3, char* param_4, uchar param_5) {

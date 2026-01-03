@@ -661,44 +661,698 @@ long TEasy_Panel::setup(TDrawArea* param_1, TPanel* param_2, char* param_3, long
 
 TEasy_Panel::TEasy_Panel(char* param_1) {
     /* TODO: Stub */
-//                              undefined __thiscall TEasy_Panel(TEasy_Panel * this)
+//                              undefined __thiscall TEasy_Panel(TEasy_Panel * this, char * param_1)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TEasy_Panel *     ECX:4 (auto)   this
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     00467124(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00467137(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     00467119(W)
-//                               ??0TEasy_Panel@@QAE@XZ                                       XREF[2]:     TScreenPanel:0047ba73(c),
-//                               TEasy_Panel::TEasy_Panel                                                  Time_Line_Panel:0051e653(c)
-//                              Panel_ez.cpp:222 (34)
-//         00467100     PUSH       -0x1
-//         00467102     PUSH       FUN_0055de58
-//         00467107     MOV        EAX,FS:[0x0]
-//         0046710d     PUSH       EAX
-//         0046710e     MOV        dword ptr FS:[0x0],ESP
-//         00467115     PUSH       this
-//         00467116     PUSH       ESI
-//         00467117     MOV        ESI,this
-//         00467119     MOV        dword ptr [ESP + local_10],ESI
-//         0046711d     CALL       TPanel::TPanel                                   undefined TPanel(TPanel * this)
-//                              Panel_ez.cpp:223 (21)
-//         00467122     MOV        this,ESI
-//         00467124     MOV        dword ptr [ESP + local_4],0x0
-//         0046712c     MOV        dword ptr [ESI],TEasy_Panel::`vftable'           = 00466a70
-//         00467132     CALL       TEasy_Panel::init_vars                           void init_vars(TEasy_Panel * this)
-//                              Panel_ez.cpp:224 (18)
-//         00467137     MOV        this,dword ptr [ESP + local_c]
-//         0046713b     MOV        EAX,ESI
-//         0046713d     MOV        dword ptr FS:[0x0],this
-//         00467144     POP        ESI
-//         00467145     ADD        ESP,0x10
-//         00467148     RET
-//         00467149     ??         90h
-//         0046714a     NOP
-//         0046714b     NOP
-//         0046714c     NOP
-//         0046714d     NOP
-//         0046714e     NOP
-//         0046714f     NOP
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     00466a36(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     00466a49(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00466a5c(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     00466a3e(W)
+//                               ??0TEasy_Panel@@QAE@PAD@Z                                    XREF[2]:     TDialogPanel:00473c18(c),
+//                               TEasy_Panel::TEasy_Panel                                                  TScreenPanel:0047bab8(c)
+//                              Panel_ez.cpp:44 (39)
+//         00466a20     PUSH       -0x1
+//         00466a22     PUSH       FUN_0055de38
+//         00466a27     MOV        EAX,FS:[0x0]
+//         00466a2d     PUSH       EAX
+//         00466a2e     MOV        dword ptr FS:[0x0],ESP
+//         00466a35     PUSH       this
+//         00466a36     MOV        EAX,dword ptr [ESP + param_1]
+//         00466a3a     PUSH       ESI
+//         00466a3b     MOV        ESI,this
+//         00466a3d     PUSH       EAX
+//         00466a3e     MOV        dword ptr [ESP + local_10],ESI
+//         00466a42     CALL       TPanel::TPanel                                   undefined TPanel(TPanel * this, char * param_1)
+//                              Panel_ez.cpp:45 (21)
+//         00466a47     MOV        this,ESI
+//         00466a49     MOV        dword ptr [ESP + local_4],0x0
+//         00466a51     MOV        dword ptr [ESI],TEasy_Panel::`vftable'           = 00466a70
+//         00466a57     CALL       TEasy_Panel::init_vars                           void init_vars(TEasy_Panel * this)
+//                              Panel_ez.cpp:46 (20)
+//         00466a5c     MOV        this,dword ptr [ESP + local_c]
+//         00466a60     MOV        EAX,ESI
+//         00466a62     MOV        dword ptr FS:[0x0],this
+//         00466a69     POP        ESI
+//         00466a6a     ADD        ESP,0x10
+//         00466a6d     RET        0x4
+}
+
+long TEasy_Panel::setup(TDrawArea* param_1, TPanel* param_2, char* param_3, long param_4, int param_5, long param_6, long param_7, long param_8, long param_9, int param_10) {
+    /* TODO: Stub */
+//                              long __thiscall setup(TEasy_Panel * this, TDrawArea * param_1, TPane
+//              long              EAX:4          <RETURN>
+//              TEasy_Panel *     ECX:4 (auto)   this
+//              TDrawArea *       Stack[0x4]:4   param_1                   XREF[4]:     00466ad3(R), 00466b06(R), 00466b3c(R), 00466b66(R)
+//              TPanel *          Stack[0x8]:4   param_2                   XREF[1]:     00466b72(R)
+//              char *            Stack[0xc]:4   param_3                   XREF[1]:     00466a96(R)
+//              long              Stack[0x10]:4  param_4                   XREF[1]:     00466aa9(R)
+//              int               Stack[0x14]:4  param_5                   XREF[1]:     00466ac8(R)
+//              long              Stack[0x18]:4  param_6                   XREF[2]:     00466b11(R), 00466b5f(R)
+//              long              Stack[0x1c]:4  param_7                   XREF[2]:     00466b30(R), 00466b58(R)
+//              long              Stack[0x20]:4  param_8                   XREF[1]:     00466af0(R)
+//              long              Stack[0x24]:4  param_9                   XREF[1]:     00466af7(R)
+//              int               Stack[0x28]:4  param_10                  XREF[1]:     00466a9d(R)
+//              char[260]         Stack[-0x108   popup_info_file_name_in
+//              char[260]         Stack[-0x20c   background_pic_file_name
+//              char[260]         Stack[-0x310   button_pics_file_name
+//              char[260]         Stack[-0x414   background_pic_file_name
+//              char[260]         Stack[-0x518   cursor_file_name
+//              char[260]         Stack[-0x61c   background_pic_file_name
+//              char[260]         Stack[-0x720   palette_file_name
+//              char[260]         Stack[-0x824   background_pic_file_name
+//              char[260]         Stack[-0x928   background_pic_file_name
+//              char[260]         Stack[-0xa2c   background_pic_file_name
+//              char[260]         Stack[-0xb30   info_file_name2
+//              char[256]         Stack[-0xc30   temp_label
+//              int               Stack[-0xc34   resDataSize
+//              int               Stack[-0xc38   back_pic_id_b1
+//              int               Stack[-0xc3c   shad_amt
+//              int               Stack[-0xc40   t1r
+//              int               Stack[-0xc44   background_color1_in
+//              int               Stack[-0xc48   t1b
+//              int               Stack[-0xc4c   back_pic_id_c1
+//              int               Stack[-0xc50   t2g
+//              int               Stack[-0xc54   cursor_id
+//              int               Stack[-0xc58   bc1
+//              int               Stack[-0xc5c   back_pic_id_a1
+//              int               Stack[-0xc60   bc3
+//              int               Stack[-0xc64   bc5
+//              int               Stack[-0xc68   f2b
+//              int               Stack[-0xc6c   popup_info_id
+//              int               Stack[-0xc70   t1g
+//              int               Stack[-0xc74   button_pic_id
+//              int               Stack[-0xc78   t2r
+//              int               Stack[-0xc7c   s1r
+//              int               Stack[-0xc80   t2b
+//              int               Stack[-0xc84   s1g
+//              int               Stack[-0xc88   bc2
+//              int               Stack[-0xc8c   s1b
+//              int               Stack[-0xc90   bc4
+//              int               Stack[-0xc94   s2r
+//              int               Stack[-0xc98   bc6
+//              int               Stack[-0xc9c   s2g
+//              int               Stack[-0xca0   background_pos_in
+//              int               Stack[-0xca4   s2b
+//              int               Stack[-0xca8   pal_id
+//              int               Stack[-0xcac   f1r
+//              int               Stack[-0xcb0   back_pic_id_a2
+//              int               Stack[-0xcb4   f1g
+//              int               Stack[-0xcb8   back_pic_id_c2
+//              int               Stack[-0xcbc   f1b
+//              int               Stack[-0xcc0   back_pic_id_b2
+//              int               Stack[-0xcc4   f2r
+//              int               Stack[-0xcc8   f2g                       XREF[1]:     00466ab5(W)
+//              int               Stack[-0xccc   own_mem
+//                               ?setup@TEasy_Panel@@QAEJPAVTDrawArea@@PAVTPanel@@PADJHJJJJH@Z XREF[8]:     setup:00473d09(c),
+//                               TEasy_Panel::setup                                                        setup:00473dd5(c),
+//                                                                                                         setup:0047bb00(c),
+//                                                                                                         setup:0047bb2a(c),
+//                                                                                                         TribeMPSetupScreen:004a0173(c),
+//                                                                                                         TRIBE_Screen_Name:004a6431(c),
+//                                                                                                         TribeSelectScenarioScreen:004b3d14
+//                                                                                                         TribeGameSettingsScreen:004b491a(c
+//                              Panel_ez.cpp:52 (6)
+//         00466a90     SUB        ESP,0xcc8
+//                              Panel_ez.cpp:93 (50)
+//         00466a96     MOV        EDX,dword ptr [ESP + param_3]
+//         00466a9d     MOV        EAX,dword ptr [ESP + param_10]
+//         00466aa4     PUSH       EBX
+//         00466aa5     PUSH       EBP
+//         00466aa6     PUSH       ESI
+//         00466aa7     MOV        ESI,this
+//         00466aa9     MOV        this,dword ptr [ESP + param_4]
+//         00466ab0     PUSH       EDI
+//         00466ab1     PUSH       this
+//         00466ab2     PUSH       EDX
+//         00466ab3     MOV        this,ESI
+//         00466ab5     MOV        dword ptr [ESP + f2g],0xffffffff
+//         00466abd     MOV        dword ptr [ESI + 0x470],EAX
+//         00466ac3     CALL       TEasy_Panel::set_info_file                       void set_info_file(TEasy_Panel * this, char *
+//                              Panel_ez.cpp:96 (11)
+//         00466ac8     MOV        EAX,dword ptr [ESP + param_5]
+//         00466acf     TEST       EAX,EAX
+//         00466ad1     JZ         LAB_00466af0
+//                              Panel_ez.cpp:100 (15)
+//         00466ad3     MOV        EAX,dword ptr [ESP + param_1]
+//         00466ada     XOR        EBX,EBX
+//         00466adc     XOR        this,this
+//         00466ade     TEST       EAX,EAX
+//         00466ae0     JZ         LAB_00466aea
+//                              Panel_ez.cpp:102 (3)
+//         00466ae2     MOV        EBP,dword ptr [EAX + 0x18]
+//                              Panel_ez.cpp:103 (3)
+//         00466ae5     MOV        EDI,dword ptr [EAX + 0x1c]
+//                              Panel_ez.cpp:105 (2)
+//         00466ae8     JMP        LAB_00466b66
+//                               LAB_00466aea                                                 XREF[1]:     00466ae0(j)
+//                              Panel_ez.cpp:107 (2)
+//         00466aea     XOR        EBP,EBP
+//                              Panel_ez.cpp:108 (2)
+//         00466aec     XOR        EDI,EDI
+//                              Panel_ez.cpp:111 (35)
+//         00466aee     JMP        LAB_00466b66
+//                               LAB_00466af0                                                 XREF[1]:     00466ad1(j)
+//         00466af0     MOV        EBP,dword ptr [ESP + param_8]
+//         00466af7     MOV        EDI,dword ptr [ESP + param_9]
+//         00466afe     TEST       EBP,EBP
+//         00466b00     JLE        LAB_00466b58
+//         00466b02     TEST       EDI,EDI
+//         00466b04     JLE        LAB_00466b58
+//         00466b06     MOV        EAX,dword ptr [ESP + param_1]
+//         00466b0d     TEST       EAX,EAX
+//         00466b0f     JZ         LAB_00466b58
+//                              Panel_ez.cpp:113 (12)
+//         00466b11     MOV        EBX,dword ptr [ESP + param_6]
+//         00466b18     CMP        EBX,-0x1
+//         00466b1b     JNZ        LAB_00466b30
+//                              Panel_ez.cpp:114 (19)
+//         00466b1d     MOV        EAX,dword ptr [EAX + 0x18]
+//         00466b20     CDQ
+//         00466b21     SUB        EAX,EDX
+//         00466b23     MOV        EBX,EAX
+//         00466b25     MOV        EAX,EBP
+//         00466b27     CDQ
+//         00466b28     SUB        EAX,EDX
+//         00466b2a     SAR        EBX,0x1
+//         00466b2c     SAR        EAX,0x1
+//         00466b2e     SUB        EBX,EAX
+//                               LAB_00466b30                                                 XREF[1]:     00466b1b(j)
+//                              Panel_ez.cpp:116 (12)
+//         00466b30     MOV        this,dword ptr [ESP + param_7]
+//         00466b37     CMP        this,-0x1
+//         00466b3a     JNZ        LAB_00466b66
+//                              Panel_ez.cpp:117 (42)
+//         00466b3c     MOV        EAX,dword ptr [ESP + param_1]
+//         00466b43     MOV        EAX,dword ptr [EAX + 0x1c]
+//         00466b46     CDQ
+//         00466b47     SUB        EAX,EDX
+//         00466b49     MOV        this,EAX
+//         00466b4b     MOV        EAX,EDI
+//         00466b4d     CDQ
+//         00466b4e     SUB        EAX,EDX
+//         00466b50     SAR        this,0x1
+//         00466b52     SAR        EAX,0x1
+//         00466b54     SUB        this,EAX
+//         00466b56     JMP        LAB_00466b66
+//                               LAB_00466b58                                                 XREF[3]:     00466b00(j), 00466b04(j),
+//                                                                                                         00466b0f(j)
+//         00466b58     MOV        this,dword ptr [ESP + param_7]
+//         00466b5f     MOV        EBX,dword ptr [ESP + param_6]
+//                               LAB_00466b66                                                 XREF[4]:     00466ae8(j), 00466aee(j),
+//                                                                                                         00466b3a(j), 00466b56(j)
+//                              Panel_ez.cpp:120 (33)
+//         00466b66     MOV        EDX,dword ptr [ESP + param_1]
+//         00466b6d     PUSH       0x0
+//         00466b6f     PUSH       EDI
+//         00466b70     PUSH       EBP
+//         00466b71     PUSH       this
+//         00466b72     MOV        this,dword ptr [ESP + param_2]
+//         00466b79     PUSH       EBX
+//         00466b7a     PUSH       this
+//         00466b7b     PUSH       EDX
+//         00466b7c     MOV        this,ESI
+//         00466b7e     CALL       TPanel::setup                                    long setup(TPanel * this, TDrawArea * param_1
+//         00466b83     TEST       EAX,EAX
+//         00466b85     JNZ        LAB_00466b94
+//                              Panel_ez.cpp:215 (13)
+//         00466b87     POP        EDI
+//         00466b88     POP        ESI
+//         00466b89     POP        EBP
+//         00466b8a     POP        EBX
+//         00466b8b     ADD        ESP,0xcc8
+//         00466b91     RET        0x28
+//                               LAB_00466b94                                                 XREF[1]:     00466b85(j)
+//                              Panel_ez.cpp:123 (12)
+//         00466b94     MOV        EBX,dword ptr [ESI]
+//         00466b96     PUSH       EDI
+//         00466b97     PUSH       EBP
+//         00466b98     MOV        this,ESI
+//         00466b9a     CALL       dword ptr [EBX + 0xe4]
+//                              Panel_ez.cpp:125 (11)
+//         00466ba0     MOV        EAX,dword ptr [ESP + 0xcec]
+//         00466ba7     TEST       EAX,EAX
+//         00466ba9     JZ         LAB_00466bca
+//                              Panel_ez.cpp:126 (31)
+//         00466bab     PUSH       0x0
+//         00466bad     PUSH       0x0=>DAT_fffffff8
+//         00466baf     PUSH       0x0=>DAT_fffffff4
+//         00466bb1     PUSH       0x0=>DAT_fffffff0
+//         00466bb3     PUSH       0x0
+//         00466bb5     PUSH       0x0
+//         00466bb7     PUSH       0x0
+//         00466bb9     PUSH       0x0
+//         00466bbb     PUSH       0x0
+//         00466bbd     PUSH       0x0
+//         00466bbf     PUSH       0x0
+//         00466bc1     PUSH       0x0
+//         00466bc3     PUSH       0x1
+//         00466bc5     MOV        this,ESI
+//         00466bc7     CALL       dword ptr [EBX + 0x18]
+//                               LAB_00466bca                                                 XREF[1]:     00466ba9(j)
+//                              Panel_ez.cpp:131 (38)
+//         00466bca     MOV        AL,[shape_file_first]                            = 00h
+//         00466bcf     XOR        EBP,EBP
+//         00466bd1     TEST       AL,AL
+//         00466bd3     JZ         LAB_00466c90
+//         00466bd9     LEA        EDI,[ESI + 0xfc]
+//         00466bdf     TEST       EDI,EDI
+//         00466be1     JZ         LAB_00466c90
+//         00466be7     CMP        byte ptr [EDI],0x0
+//         00466bea     JZ         LAB_00466c90
+//                              Panel_ez.cpp:133 (13)
+//         00466bf0     PUSH       0x2e
+//         00466bf2     PUSH       EDI=>DAT_fffffff8
+//         00466bf3     CALL       strchr                                           undefined strchr()
+//         00466bf8     ADD        ESP,0x8
+//         00466bfb     TEST       EAX,EAX
+//                              Panel_ez.cpp:134 (16)
+//         00466bfd     PUSH       EDI
+//         00466bfe     JNZ        LAB_00466c0f
+//         00466c00     LEA        EAX,[ESP + 0x1b0]
+//         00466c07     PUSH       s_%s.sin                                         = "%s.sin"
+//         00466c0c     PUSH       EAX=>DAT_fffffff4
+//                              Panel_ez.cpp:135 (2)
+//         00466c0d     JMP        LAB_00466c1c
+//                               LAB_00466c0f                                                 XREF[1]:     00466bfe(j)
+//                              Panel_ez.cpp:136 (21)
+//         00466c0f     LEA        this,[ESP + 0x1b0]
+//         00466c16     PUSH       s_%s                                             = "%s"
+//         00466c1b     PUSH       this=>DAT_fffffff4
+//                               LAB_00466c1c                                                 XREF[1]:     00466c0d(j)
+//         00466c1c     CALL       sprintf                                          undefined sprintf()
+//         00466c21     ADD        ESP,0xc
+//                              Panel_ez.cpp:137 (23)
+//         00466c24     LEA        EDX,[ESP + 0x1ac]
+//         00466c2b     PUSH       0x8000
+//         00466c30     PUSH       EDX=>DAT_fffffff8
+//         00466c31     CALL       __open                                           undefined __open()
+//         00466c36     MOV        EDI,EAX
+//         00466c38     ADD        ESP,0x8
+//                              Panel_ez.cpp:138 (5)
+//         00466c3b     CMP        EDI,-0x1
+//         00466c3e     JZ         LAB_00466c90
+//                              Panel_ez.cpp:140 (13)
+//         00466c40     PUSH       0x2
+//         00466c42     PUSH       0x0=>DAT_fffffff8
+//         00466c44     PUSH       EDI=>DAT_fffffff4
+//         00466c45     CALL       lseek                                            undefined lseek()
+//         00466c4a     ADD        ESP,0xc
+//                              Panel_ez.cpp:141 (11)
+//         00466c4d     PUSH       EDI
+//         00466c4e     CALL       __tell                                           undefined __tell()
+//         00466c53     ADD        ESP,0x4
+//         00466c56     MOV        EBX,EAX
+//                              Panel_ez.cpp:142 (11)
+//         00466c58     PUSH       EBX
+//         00466c59     CALL       malloc                                           undefined malloc()
+//         00466c5e     MOV        EBP,EAX
+//         00466c60     ADD        ESP,0x4
+//                              Panel_ez.cpp:143 (4)
+//         00466c63     TEST       EBP,EBP
+//         00466c65     JZ         LAB_00466c87
+//                              Panel_ez.cpp:145 (13)
+//         00466c67     PUSH       0x0
+//         00466c69     PUSH       0x0=>DAT_fffffff8
+//         00466c6b     PUSH       EDI=>DAT_fffffff4
+//         00466c6c     CALL       lseek                                            undefined lseek()
+//         00466c71     ADD        ESP,0xc
+//                              Panel_ez.cpp:146 (11)
+//         00466c74     PUSH       EBX
+//         00466c75     PUSH       EBP=>DAT_fffffff8
+//         00466c76     PUSH       EDI=>DAT_fffffff4
+//         00466c77     CALL       read                                             undefined read()
+//         00466c7c     ADD        ESP,0xc
+//                              Panel_ez.cpp:147 (8)
+//         00466c7f     MOV        dword ptr [ESP + 0x10],0x1
+//                               LAB_00466c87                                                 XREF[1]:     00466c65(j)
+//                              Panel_ez.cpp:149 (9)
+//         00466c87     PUSH       EDI
+//         00466c88     CALL       close                                            undefined close()
+//         00466c8d     ADD        ESP,0x4
+//                               LAB_00466c90                                                 XREF[4]:     00466bd3(j), 00466be1(j),
+//                                                                                                         00466bea(j), 00466c3e(j)
+//                              Panel_ez.cpp:153 (15)
+//         00466c90     TEST       EBP,EBP
+//         00466c92     JNZ        LAB_00466cc4
+//         00466c94     MOV        EAX,dword ptr [ESI + 0x200]
+//         00466c9a     CMP        EAX,-0x1
+//         00466c9d     JZ         LAB_00466cbc
+//                              Panel_ez.cpp:154 (29)
+//         00466c9f     LEA        this,[ESP + 0xa8]
+//         00466ca6     LEA        EDX,[ESP + 0x10]
+//         00466caa     PUSH       this
+//         00466cab     PUSH       EDX=>DAT_fffffff8
+//         00466cac     PUSH       EAX=>DAT_fffffff4
+//         00466cad     PUSH       offset DAT_fffffff0
+//         00466cb2     CALL       RESFILE_load                                     uchar * RESFILE_load(ulong param_1, ulong par
+//         00466cb7     ADD        ESP,0x10
+//         00466cba     MOV        EBP,EAX
+//                               LAB_00466cbc                                                 XREF[1]:     00466c9d(j)
+//                              Panel_ez.cpp:156 (8)
+//         00466cbc     TEST       EBP,EBP
+//         00466cbe     JZ         LAB_004670e7
+//                               LAB_00466cc4                                                 XREF[1]:     00466c92(j)
+//                              Panel_ez.cpp:177 (513)
+//         00466cc4     LEA        EAX,[ESP + 0x38]
+//         00466cc8     LEA        this,[ESP + 0x40]
+//         00466ccc     PUSH       EAX
+//         00466ccd     LEA        EDX,[ESP + 0x4c]
+//         00466cd1     PUSH       this=>DAT_fffffff8
+//         00466cd2     LEA        EAX,[ESP + 0xb4]
+//         00466cd9     PUSH       EDX=>DAT_fffffff4
+//         00466cda     LEA        this,[ESP + 0x5c]
+//         00466cde     PUSH       EAX=>DAT_fffffff0
+//         00466cdf     LEA        EDX,[ESP + 0x68]
+//         00466ce3     PUSH       this
+//         00466ce4     LEA        EAX,[ESP + 0x74]
+//         00466ce8     PUSH       EDX
+//         00466ce9     LEA        this,[ESP + 0xc4]
+//         00466cf0     PUSH       EAX
+//         00466cf1     LEA        EDX,[ESP + 0x90]
+//         00466cf8     PUSH       this
+//         00466cf9     LEA        EAX,[ESP + 0x34]
+//         00466cfd     PUSH       EDX
+//         00466cfe     LEA        this,[ESP + 0x3c]
+//         00466d02     PUSH       EAX
+//         00466d03     LEA        EDX,[ESP + 0xd4]
+//         00466d0a     PUSH       this
+//         00466d0b     LEA        EAX,[ESP + 0x4c]
+//         00466d0f     PUSH       EDX
+//         00466d10     LEA        this,[ESP + 0x58]
+//         00466d14     PUSH       EAX
+//         00466d15     LEA        EDX,[ESP + 0x64]
+//         00466d19     PUSH       this
+//         00466d1a     LEA        EAX,[ESP + 0xe4]
+//         00466d21     PUSH       EDX
+//         00466d22     LEA        this,[ESP + 0x98]
+//         00466d29     PUSH       EAX
+//         00466d2a     LEA        EDX,[ESP + 0xcc]
+//         00466d31     PUSH       this
+//         00466d32     LEA        EAX,[ESP + 0xa8]
+//         00466d39     PUSH       EDX
+//         00466d3a     LEA        this,[ESP + 0xf4]
+//         00466d41     PUSH       EAX
+//         00466d42     LEA        EDX,[ESP + 0xe0]
+//         00466d49     PUSH       this
+//         00466d4a     LEA        EAX,[ESP + 0xbc]
+//         00466d51     PUSH       EDX
+//         00466d52     LEA        this,[ESP + 0xf0]
+//         00466d59     PUSH       EAX
+//         00466d5a     LEA        EDX,[ESP + 0x104]
+//         00466d61     PUSH       this
+//         00466d62     LEA        EAX,[ESP + 0xa0]
+//         00466d69     PUSH       EDX
+//         00466d6a     LEA        this,[ESP + 0xd8]
+//         00466d71     PUSH       EAX
+//         00466d72     LEA        EDX,[ESP + 0xb0]
+//         00466d79     PUSH       this
+//         00466d7a     LEA        EAX,[ESP + 0xe4]
+//         00466d81     PUSH       EDX
+//         00466d82     LEA        this,[ESP + 0xc0]
+//         00466d89     PUSH       EAX
+//         00466d8a     LEA        EDX,[ESP + 0xf4]
+//         00466d91     PUSH       this
+//         00466d92     LEA        EAX,[ESP + 0x120]
+//         00466d99     PUSH       EDX
+//         00466d9a     LEA        this,[ESP + 0x110]
+//         00466da1     PUSH       EAX
+//         00466da2     LEA        EDX,[ESP + 0x128]
+//         00466da9     PUSH       this
+//         00466daa     LEA        EAX,[ESP + 0xbc]
+//         00466db1     PUSH       EDX
+//         00466db2     LEA        this,[ESP + 0x130]
+//         00466db9     PUSH       EAX
+//         00466dba     LEA        EDX,[ESP + 0xf8]
+//         00466dc1     PUSH       this
+//         00466dc2     LEA        EAX,[ESP + 0xc60]
+//         00466dc9     PUSH       EDX
+//         00466dca     LEA        this,[ESP + 0x13c]
+//         00466dd1     PUSH       EAX
+//         00466dd2     LEA        EDX,[ESP + 0xfc]
+//         00466dd9     PUSH       this
+//         00466dda     LEA        EAX,[ESP + 0xa64]
+//         00466de1     PUSH       EDX
+//         00466de2     PUSH       EAX
+//         00466de3     LEA        this,[ESP + 0x14c]
+//         00466dea     LEA        EDX,[ESP + 0x140]
+//         00466df1     PUSH       this
+//         00466df2     LEA        EAX,[ESP + 0x150]
+//         00466df9     PUSH       EDX
+//         00466dfa     LEA        this,[ESP + 0x154]
+//         00466e01     PUSH       EAX
+//         00466e02     LEA        EDX,[ESP + 0x134]
+//         00466e09     PUSH       this
+//         00466e0a     LEA        EAX,[ESP + 0x874]
+//         00466e11     PUSH       EDX
+//         00466e12     LEA        this,[ESP + 0x160]
+//         00466e19     PUSH       EAX
+//         00466e1a     LEA        EDX,[ESP + 0xec]
+//         00466e21     PUSH       this
+//         00466e22     LEA        EAX,[ESP + 0x678]
+//         00466e29     PUSH       EDX
+//         00466e2a     LEA        this,[ESP + 0x16c]
+//         00466e31     PUSH       EAX
+//         00466e32     LEA        EDX,[ESP + 0xe8]
+//         00466e39     PUSH       this
+//         00466e3a     LEA        EAX,[ESP + 0x158]
+//         00466e41     PUSH       EDX
+//         00466e42     LEA        this,[ESP + 0x480]
+//         00466e49     PUSH       EAX
+//         00466e4a     LEA        EDX,[ESP + 0x998]
+//         00466e51     PUSH       this
+//         00466e52     LEA        EAX,[ESP + 0x180]
+//         00466e59     PUSH       EDX
+//         00466e5a     LEA        this,[ESP + 0xf4]
+//         00466e61     PUSH       EAX
+//         00466e62     LEA        EDX,[ESP + 0x180]
+//         00466e69     PUSH       this
+//         00466e6a     LEA        EAX,[ESP + 0x7a0]
+//         00466e71     PUSH       EDX
+//         00466e72     LEA        this,[ESP + 0x394]
+//         00466e79     PUSH       EAX
+//         00466e7a     LEA        EDX,[ESP + 0x194]
+//         00466e81     PUSH       this
+//         00466e82     LEA        EAX,[ESP + 0x118]
+//         00466e89     PUSH       EDX
+//         00466e8a     LEA        this,[ESP + 0x170]
+//         00466e91     PUSH       EAX
+//         00466e92     LEA        EDX,[ESP + 0x5ac]
+//         00466e99     PUSH       this
+//         00466e9a     LEA        EAX,[ESP + 0xbc8]
+//         00466ea1     PUSH       EDX
+//         00466ea2     LEA        this,[ESP + 0x1a8]
+//         00466ea9     PUSH       EAX
+//         00466eaa     PUSH       this
+//         00466eab     PUSH       s_%s_%s_%s_%d_%d___%s_%s_%s_%d_%d_               = "%s %s %s %d %d   %s %s %s %d %d   %s %s %s
+//         00466eb0     PUSH       EBP
+//         00466eb1     CALL       sscanf                                           undefined sscanf()
+//         00466eb6     ADD        ESP,0x10c
+//         00466ebc     CMP        EAX,-0x1
+//         00466ebf     JZ         LAB_004670d7
+//                              Panel_ez.cpp:179 (9)
+//         00466ec5     PUSH       0x1
+//         00466ec7     MOV        this,ESI
+//         00466ec9     CALL       TEasy_Panel::set_use_bevels                      void set_use_bevels(TEasy_Panel * this, int p
+//                              Panel_ez.cpp:181 (37)
+//         00466ece     MOV        EDX,dword ptr [ESI + 0x20]
+//         00466ed1     CMP        dword ptr [EDX + 0x18],0x320
+//         00466ed8     JL         LAB_00466f4b
+//         00466eda     LEA        EAX,[ESP + 0x2b0]
+//         00466ee1     PUSH       s_none                                           = "none"
+//         00466ee6     PUSH       EAX=>DAT_fffffff8
+//         00466ee7     CALL       stricmp                                          undefined stricmp()
+//         00466eec     ADD        ESP,0x8
+//         00466eef     TEST       EAX,EAX
+//         00466ef1     JZ         LAB_00466f4b
+//                              Panel_ez.cpp:186 (12)
+//         00466ef3     MOV        this,dword ptr [ESI + 0x20]
+//         00466ef6     CMP        dword ptr [ECX + this->_padding_],0x400
+//         00466efd     JGE        LAB_00466f25
+//                              Panel_ez.cpp:188 (23)
+//         00466eff     MOV        EDX,dword ptr [ESP + 0xa4]
+//         00466f06     LEA        EAX,[ESP + 0x2b0]
+//         00466f0d     PUSH       EDX
+//         00466f0e     PUSH       EAX=>DAT_fffffff8
+//         00466f0f     MOV        this,ESI
+//         00466f11     CALL       TEasy_Panel::set_background                      int set_background(TEasy_Panel * this, char *
+//                              Panel_ez.cpp:189 (13)
+//         00466f16     MOV        this,dword ptr [ESP + 0x1c]
+//         00466f1a     LEA        EDX,[ESP + 0x6c0]
+//         00466f21     PUSH       this
+//         00466f22     PUSH       EDX=>DAT_fffffff8
+//                              Panel_ez.cpp:191 (2)
+//         00466f23     JMP        LAB_00466f6f
+//                               LAB_00466f25                                                 XREF[1]:     00466efd(j)
+//                              Panel_ez.cpp:193 (23)
+//         00466f25     MOV        EAX,dword ptr [ESP + 0x90]
+//         00466f2c     LEA        this,[ESP + 0x8c8]
+//         00466f33     PUSH       EAX
+//         00466f34     PUSH       this=>DAT_fffffff8
+//         00466f35     MOV        this,ESI
+//         00466f37     CALL       TEasy_Panel::set_background                      int set_background(TEasy_Panel * this, char *
+//                              Panel_ez.cpp:194 (15)
+//         00466f3c     MOV        EDX,dword ptr [ESP + 0x24]
+//         00466f40     LEA        EAX,[ESP + 0x3b4]
+//         00466f47     PUSH       EDX
+//         00466f48     PUSH       EAX=>DAT_fffffff8
+//         00466f49     JMP        LAB_00466f6f
+//                               LAB_00466f4b                                                 XREF[2]:     00466ed8(j), 00466ef1(j)
+//                              Panel_ez.cpp:183 (23)
+//         00466f4b     MOV        this,dword ptr [ESP + 0x80]
+//         00466f52     LEA        EDX,[ESP + 0xad0]
+//         00466f59     PUSH       this
+//         00466f5a     PUSH       EDX=>DAT_fffffff8
+//         00466f5b     MOV        this,ESI
+//         00466f5d     CALL       TEasy_Panel::set_background                      int set_background(TEasy_Panel * this, char *
+//                              Panel_ez.cpp:184 (20)
+//         00466f62     MOV        EAX,dword ptr [ESP + 0x2c]
+//         00466f66     LEA        this,[ESP + 0x4b8]
+//         00466f6d     PUSH       EAX
+//         00466f6e     PUSH       this=>DAT_fffffff8
+//                               LAB_00466f6f                                                 XREF[2]:     00466f23(j), 00466f49(j)
+//         00466f6f     MOV        this,ESI
+//         00466f71     CALL       TEasy_Panel::set_background2                     int set_background2(TEasy_Panel * this, char
+//                              Panel_ez.cpp:197 (15)
+//         00466f76     MOV        EDX,dword ptr [ESP + 0xa0]
+//         00466f7d     MOV        this,ESI
+//         00466f7f     PUSH       EDX
+//         00466f80     CALL       TEasy_Panel::set_shadow_amount                   void set_shadow_amount(TEasy_Panel * this, lo
+//                              Panel_ez.cpp:198 (20)
+//         00466f85     MOV        EAX,dword ptr [ESP + 0x34]
+//         00466f89     LEA        this,[ESP + 0x5bc]
+//         00466f90     PUSH       EAX
+//         00466f91     PUSH       this=>DAT_fffffff8
+//         00466f92     MOV        this,ESI
+//         00466f94     CALL       TEasy_Panel::set_palette                         int set_palette(TEasy_Panel * this, char * pa
+//                              Panel_ez.cpp:199 (23)
+//         00466f99     MOV        EDX,dword ptr [ESP + 0x88]
+//         00466fa0     LEA        EAX,[ESP + 0x7c4]
+//         00466fa7     PUSH       EDX
+//         00466fa8     PUSH       EAX=>DAT_fffffff8
+//         00466fa9     MOV        this,ESI
+//         00466fab     CALL       TEasy_Panel::set_cursor                          int set_cursor(TEasy_Panel * this, char * par
+//                              Panel_ez.cpp:200 (12)
+//         00466fb0     MOV        this,dword ptr [ESP + 0x3c]
+//         00466fb4     PUSH       this
+//         00466fb5     MOV        this,ESI
+//         00466fb7     CALL       TEasy_Panel::set_background_pos                  void set_background_pos(TEasy_Panel * this, i
+//                              Panel_ez.cpp:201 (16)
+//         00466fbc     MOV        EAX,dword ptr [ESP + 0x98]
+//         00466fc3     MOV        this,ESI
+//         00466fc5     PUSH       EAX
+//         00466fc6     PUSH       EAX=>DAT_fffffff8
+//         00466fc7     CALL       TEasy_Panel::set_background_colors               void set_background_colors(TEasy_Panel * this
+//                              Panel_ez.cpp:202 (43)
+//         00466fcc     MOV        EDX,dword ptr [ESP + 0x44]
+//         00466fd0     MOV        EAX,dword ptr [ESP + 0x78]
+//         00466fd4     MOV        this,dword ptr [ESP + 0x4c]
+//         00466fd8     PUSH       EDX
+//         00466fd9     MOV        EDX,dword ptr [ESP + 0x80]
+//         00466fe0     PUSH       EAX=>DAT_fffffff8
+//         00466fe1     MOV        EAX,dword ptr [ESP + 0x5c]
+//         00466fe5     PUSH       this=>DAT_fffffff4
+//         00466fe6     MOV        this,dword ptr [ESP + 0x90]
+//         00466fed     PUSH       EDX=>DAT_fffffff0
+//         00466fee     PUSH       EAX
+//         00466fef     PUSH       this
+//         00466ff0     MOV        this,ESI
+//         00466ff2     CALL       TEasy_Panel::set_bevel_colors                    void set_bevel_colors(TEasy_Panel * this, uch
+//                              Panel_ez.cpp:203 (67)
+//         00466ff7     MOV        EAX,dword ptr [ESP + 0x64]
+//         00466ffb     XOR        EDX,EDX
+//         00466ffd     MOV        DH,byte ptr [ESP + 0x5c]
+//         00467001     AND        EAX,0xff
+//         00467006     MOV        DL,byte ptr [ESP + 0x8c]
+//         0046700d     XOR        this,this
+//         0046700f     MOV        this,byte ptr [ESP + 0x94]
+//         00467016     MOV        this,byte ptr [ESP + 0x6c]
+//         0046701a     SHL        EDX,0x8
+//         0046701d     OR         EDX,EAX
+//         0046701f     PUSH       EDX
+//         00467020     MOV        EDX,dword ptr [ESP + 0xa0]
+//         00467027     SHL        this,0x8
+//         0046702a     AND        EDX,0xff
+//         00467030     OR         this,EDX
+//         00467032     PUSH       this=>DAT_fffffff8
+//         00467033     MOV        this,ESI
+//         00467035     CALL       TEasy_Panel::set_text_colors                     void set_text_colors(TEasy_Panel * this, ulon
+//                              Panel_ez.cpp:204 (58)
+//         0046703a     MOV        this,dword ptr [ESP + 0x18]
+//         0046703e     XOR        EAX,EAX
+//         00467040     MOV        AH,byte ptr [ESP + 0x74]
+//         00467044     AND        this,0xff
+//         0046704a     MOV        AL,byte ptr [ESP + 0x14]
+//         0046704e     XOR        EDX,EDX
+//         00467050     MOV        DH,byte ptr [ESP + 0x20]
+//         00467054     MOV        DL,byte ptr [ESP + 0x28]
+//         00467058     SHL        EAX,0x8
+//         0046705b     OR         EAX,this
+//         0046705d     MOV        this,ESI
+//         0046705f     PUSH       EAX
+//         00467060     MOV        EAX,dword ptr [ESP + 0x34]
+//         00467064     SHL        EDX,0x8
+//         00467067     AND        EAX,0xff
+//         0046706c     OR         EDX,EAX
+//         0046706e     PUSH       EDX=>DAT_fffffff8
+//         0046706f     CALL       TEasy_Panel::set_focus_colors                    void set_focus_colors(TEasy_Panel * this, ulo
+//                              Panel_ez.cpp:205 (59)
+//         00467074     XOR        this,this
+//         00467076     MOV        this,byte ptr [ESP + 0x38]
+//         0046707a     MOV        this,byte ptr [ESP + 0x40]
+//         0046707e     SHL        this,0x8
+//         00467081     MOV        EDX,dword ptr [ESP + 0x48]
+//         00467085     XOR        EAX,EAX
+//         00467087     MOV        AH,byte ptr [ESP + 0x50]
+//         0046708b     AND        EDX,0xff
+//         00467091     MOV        AL,byte ptr [ESP + 0x58]
+//         00467095     OR         this,EDX
+//         00467097     PUSH       this
+//         00467098     MOV        this,dword ptr [ESP + 0x64]
+//         0046709c     SHL        EAX,0x8
+//         0046709f     AND        this,0xff
+//         004670a5     OR         EAX,this
+//         004670a7     MOV        this,ESI
+//         004670a9     PUSH       EAX=>DAT_fffffff8
+//         004670aa     CALL       TEasy_Panel::set_state_colors                    void set_state_colors(TEasy_Panel * this, ulo
+//                              Panel_ez.cpp:206 (20)
+//         004670af     MOV        EDX,dword ptr [ESP + 0x68]
+//         004670b3     LEA        EAX,[ESP + 0x9cc]
+//         004670ba     PUSH       EDX
+//         004670bb     PUSH       EAX=>DAT_fffffff8
+//         004670bc     MOV        this,ESI
+//         004670be     CALL       TEasy_Panel::set_button_pics                     void set_button_pics(TEasy_Panel * this, char
+//                              Panel_ez.cpp:207 (20)
+//         004670c3     MOV        this,dword ptr [ESP + 0x70]
+//         004670c7     LEA        EDX,[ESP + 0xbd4]
+//         004670ce     PUSH       this
+//         004670cf     PUSH       EDX=>DAT_fffffff8
+//         004670d0     MOV        this,ESI
+//         004670d2     CALL       TEasy_Panel::set_popup_info_file                 void set_popup_info_file(TEasy_Panel * this,
+//                               LAB_004670d7                                                 XREF[1]:     00466ebf(j)
+//                              Panel_ez.cpp:210 (7)
+//         004670d7     CMP        dword ptr [ESP + 0x10],0x1
+//         004670dc     JNZ        LAB_004670e7
+//                              Panel_ez.cpp:211 (9)
+//         004670de     PUSH       EBP
+//         004670df     CALL       free                                             undefined free()
+//         004670e4     ADD        ESP,0x4
+//                               LAB_004670e7                                                 XREF[2]:     00466cbe(j), 004670dc(j)
+//                              Panel_ez.cpp:215 (18)
+//         004670e7     POP        EDI
+//         004670e8     POP        ESI
+//         004670e9     POP        EBP
+//         004670ea     MOV        EAX,0x1
+//         004670ef     POP        EBX
+//         004670f0     ADD        ESP,0xcc8
+//         004670f6     RET        0x28
+//         004670f9     ??         90h
+//         004670fa     NOP
+//         004670fb     NOP
+//         004670fc     NOP
+//         004670fd     NOP
+//         004670fe     NOP
+//         004670ff     NOP
+    return 0;
 }
 
 TEasy_Panel::TEasy_Panel() {
@@ -3522,268 +4176,94 @@ int TEasy_Panel::create_button(TPanel* param_1, TButtonPanel** param_2, long par
 //                              int __thiscall create_button(TEasy_Panel * this, TPanel * param_1, T
 //              int               EAX:4          <RETURN>
 //              TEasy_Panel *     ECX:4 (auto)   this
-//              TPanel *          Stack[0x4]:4   param_1                   XREF[1]:     0046860b(R)
-//              TButtonPanel *    Stack[0x8]:4   param_2                   XREF[1]:     004685c4(R)
-//              char *            Stack[0xc]:4   param_3                   XREF[1]:     00468661(R)
-//              char *            Stack[0x10]:4  param_4                   XREF[1]:     0046866f(R)
-//              long              Stack[0x14]:4  param_5                   XREF[3]:     00468548(R), 00468585(W), 00468606(R)
-//              long              Stack[0x18]:4  param_6                   XREF[2]:     0046857b(R), 004685a9(W)
-//              long              Stack[0x1c]:4  param_7                   XREF[1]:     00468589(R)
-//              long              Stack[0x20]:4  param_8                   XREF[1]:     00468595(R)
-//              long              Stack[0x24]:4  param_9                   XREF[1]:     0046863c(R)
-//              long              Stack[0x28]:4  param_10                  XREF[2]:     004685e8(R), 00468630(R)
-//              long              Stack[0x2c]:4  param_11                  XREF[1]:     00468602(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     004685af(W), 004685c8(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0046873f(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[2]:     00468577(W), 00468612(R)
-//              long              Stack[-0x14]:4 ideal_x                   XREF[2]:     00468557(W), 004685fe(R)
-//              TDigital *        Stack[-0x18]:4 sound
-//                               ?create_button@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTButtonPane  XREF[51]:    TRIBE_Screen_Main_Menu:0049e7ad(c)
-//                               TEasy_Panel::create_button                                                TribeMPSetupScreen:004a0555(c),
-//                                                                                                         TribeMPSetupScreen:004a0a09(c),
-//                                                                                                         TribeMPSetupScreen:004a0b09(c),
-//                                                                                                         create_button:004a8868(c),
-//                                                                                                         TRIBE_Screen_Sed_Menu:004b2fee(c),
-//                                                                                                         TribeSPMenuScreen:004b6ab2(c),
-//                                                                                                         0056f6fc(*), 0056f83c(*),
-//                                                                                                         0056f984(*), 0056fab4(*),
-//                                                                                                         0056fbe4(*), 0056fd1c(*),
-//                                                                                                         0056fe4c(*), 0056ff7c(*),
-//                                                                                                         005700ac(*), 005701dc(*),
-//                                                                                                         00570e04(*), 0057119c(*),
-//                                                                                                         005719fc(*), [more]
-//                              Panel_ez.cpp:1043 (24)
-//         00468530     PUSH       -0x1
-//         00468532     PUSH       FUN_0055df8b
-//         00468537     MOV        EAX,FS:[0x0]
-//         0046853d     PUSH       EAX
-//         0046853e     MOV        dword ptr FS:[0x0],ESP
-//         00468545     SUB        ESP,0x8
-//                              Panel_ez.cpp:1046 (10)
-//         00468548     MOV        EAX,dword ptr [ESP + param_5]
-//         0046854c     PUSH       EBX
-//         0046854d     PUSH       EBP
-//         0046854e     PUSH       ESI
-//         0046854f     MOV        ESI,this
-//         00468551     PUSH       EDI
-//                              Panel_ez.cpp:1052 (126)
-//         00468552     PUSH       0x2b8
-//         00468557     MOV        dword ptr [ESP + ideal_x],0x0
-//         0046855f     MOV        this,dword ptr [ESI + 0x14]
-//         00468562     MOV        EDI,dword ptr [ESI + 0xf4]
-//         00468568     IMUL       EAX,this
-//         0046856b     CDQ
-//         0046856c     IDIV       EDI
-//         0046856e     MOV        EBX,dword ptr [ESI + 0x18]
-//         00468571     MOV        EBP,dword ptr [ESI + 0xf8]
-//         00468577     MOV        dword ptr [ESP + local_10],EAX
-//         0046857b     MOV        EAX,dword ptr [ESP + param_6]
-//         0046857f     IMUL       EAX,EBX
-//         00468582     CDQ
-//         00468583     IDIV       EBP
-//         00468585     MOV        dword ptr [ESP + param_5],EAX
-//         00468589     MOV        EAX,dword ptr [ESP + param_7]
-//         0046858d     IMUL       EAX,this
-//         00468590     CDQ
-//         00468591     IDIV       EDI
-//         00468593     MOV        EDI,EAX
-//         00468595     MOV        EAX,dword ptr [ESP + param_8]
-//         00468599     IMUL       EAX,EBX
-//         0046859c     CDQ
-//         0046859d     IDIV       EBP
-//         0046859f     MOV        EBP,EAX
-//         004685a1     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004685a6     ADD        ESP,0x4
-//         004685a9     MOV        dword ptr [ESP + param_6],EAX
-//         004685ad     TEST       EAX,EAX
-//         004685af     MOV        dword ptr [ESP + local_4],0x0
-//         004685b7     JZ         LAB_004685c2
-//         004685b9     MOV        this,EAX
-//         004685bb     CALL       TButtonPanel::TButtonPanel                       undefined TButtonPanel(TButtonPanel * this)
-//         004685c0     JMP        LAB_004685c4
-//                               LAB_004685c2                                                 XREF[1]:     004685b7(j)
-//         004685c2     XOR        EAX,EAX
-//                               LAB_004685c4                                                 XREF[1]:     004685c0(j)
-//         004685c4     MOV        EBX,dword ptr [ESP + param_2]
-//         004685c8     MOV        dword ptr [ESP + local_4],0xffffffff
-//                              Panel_ez.cpp:1053 (24)
-//         004685d0     TEST       EAX,EAX
-//         004685d2     MOV        dword ptr [EBX],EAX
-//         004685d4     JZ         LAB_00468733
-//         004685da     MOV        this,dword ptr [EAX + 0xd8]
-//         004685e0     TEST       this,this
-//         004685e2     JNZ        LAB_00468733
-//                              Panel_ez.cpp:1059 (8)
-//         004685e8     MOV        EAX,dword ptr [ESP + param_10]
-//         004685ec     TEST       EAX,EAX
-//         004685ee     JL         LAB_004685fe
-//                              Panel_ez.cpp:1060 (18)
-//         004685f0     MOV        this,dword ptr [rge_base_game]                   = 00000000
-//         004685f6     PUSH       EAX
-//         004685f7     CALL       RGE_Base_Game::get_sound                         TDigital * get_sound(RGE_Base_Game * this, in
-//         004685fc     JMP        LAB_00468602
-//                               LAB_004685fe                                                 XREF[1]:     004685ee(j)
-//         004685fe     MOV        EAX,dword ptr [ESP + ideal_x]
-//                               LAB_00468602                                                 XREF[1]:     004685fc(j)
-//                              Panel_ez.cpp:1063 (40)
-//         00468602     MOV        this,dword ptr [ESP + param_11]
-//         00468606     MOV        EDX,dword ptr [ESP + param_5]
-//         0046860a     PUSH       this
-//         0046860b     MOV        this,dword ptr [ESP + param_1]
-//         0046860f     PUSH       0x1
-//         00468611     PUSH       EAX
-//         00468612     MOV        EAX,dword ptr [ESP + local_10]
-//         00468616     PUSH       0x3
-//         00468618     PUSH       EBP
-//         00468619     PUSH       EDI
-//         0046861a     PUSH       EDX
-//         0046861b     MOV        EDX,dword ptr [ESI + 0x20]
-//         0046861e     PUSH       EAX
-//         0046861f     PUSH       this
-//         00468620     MOV        this,dword ptr [EBX]
-//         00468622     PUSH       EDX
-//         00468623     CALL       TButtonPanel::setup                              long setup(TButtonPanel * this, TDrawArea * p
-//         00468628     TEST       EAX,EAX
-//                              Panel_ez.cpp:1066 (6)
-//         0046862a     JZ         LAB_00468733
-//                              Panel_ez.cpp:1069 (12)
-//         00468630     MOV        EAX,dword ptr [ESP + param_10]
-//         00468634     MOV        this,dword ptr [EBX]
-//         00468636     PUSH       EAX
-//         00468637     CALL       TButtonPanel::set_sound_number                   void set_sound_number(TButtonPanel * this, in
-//                              Panel_ez.cpp:1071 (8)
-//         0046863c     MOV        EAX,dword ptr [ESP + param_9]
-//         00468640     TEST       EAX,EAX
-//         00468642     JL         LAB_00468647
-//                              Panel_ez.cpp:1072 (1)
-//         00468644     PUSH       EAX
-//                              Panel_ez.cpp:1073 (2)
-//         00468645     JMP        LAB_00468649
-//                               LAB_00468647                                                 XREF[1]:     00468642(j)
-//                              Panel_ez.cpp:1074 (13)
-//         00468647     PUSH       0xa
-//                               LAB_00468649                                                 XREF[1]:     00468645(j)
-//         00468649     MOV        this,dword ptr [rge_base_game]                   = 00000000
-//         0046864f     CALL       RGE_Base_Game::get_font                          RGE_Font * get_font(RGE_Base_Game * this, int
-//                              Panel_ez.cpp:1076 (27)
-//         00468654     MOV        this,dword ptr [EAX + 0x8]
-//         00468657     MOV        EDX,dword ptr [EAX + 0x4]
-//         0046865a     MOV        EAX,dword ptr [EAX]
-//         0046865c     PUSH       -0x1
-//         0046865e     PUSH       -0x1
-//         00468660     PUSH       this
-//         00468661     MOV        this,dword ptr [ESP + param_3]
-//         00468665     PUSH       EDX
-//         00468666     PUSH       EAX
-//         00468667     PUSH       this
-//         00468668     MOV        this,dword ptr [EBX]
-//         0046866a     CALL       TButtonPanel::set_text_info                      void set_text_info(TButtonPanel * this, char
-//                              Panel_ez.cpp:1077 (8)
-//         0046866f     MOV        EAX,dword ptr [ESP + param_4]
-//         00468673     TEST       EAX,EAX
-//         00468675     JZ         LAB_00468681
-//                              Panel_ez.cpp:1078 (10)
-//         00468677     MOV        this,dword ptr [EBX]
-//         00468679     PUSH       EAX
-//         0046867a     PUSH       0x1
-//         0046867c     CALL       TButtonPanel::set_text                           void set_text(TButtonPanel * this, short para
-//                               LAB_00468681                                                 XREF[1]:     00468675(j)
-//                              Panel_ez.cpp:1080 (10)
-//         00468681     MOV        EAX,dword ptr [ESI + 0x31c]
-//         00468687     TEST       EAX,EAX
-//         00468689     JZ         LAB_004686ca
-//                              Panel_ez.cpp:1081 (63)
-//         0046868b     XOR        EDX,EDX
-//         0046868d     XOR        EAX,EAX
-//         0046868f     MOV        DL,byte ptr [ESI + 0x325]
-//         00468695     MOV        AL,byte ptr [ESI + 0x324]
-//         0046869b     XOR        this,this
-//         0046869d     PUSH       EDX
-//         0046869e     MOV        this,byte ptr [ESI + 0x323]
-//         004686a4     PUSH       EAX
-//         004686a5     XOR        EDX,EDX
-//         004686a7     PUSH       this
-//         004686a8     MOV        DL,byte ptr [ESI + 0x322]
-//         004686ae     XOR        EAX,EAX
-//         004686b0     MOV        AL,byte ptr [ESI + 0x321]
-//         004686b6     XOR        this,this
-//         004686b8     MOV        this,byte ptr [ESI + 0x320]
-//         004686be     PUSH       EDX
-//         004686bf     PUSH       EAX
-//         004686c0     PUSH       this
-//         004686c1     MOV        this,dword ptr [EBX]
-//         004686c3     PUSH       0x4
-//         004686c5     CALL       TButtonPanel::set_bevel_info                     void set_bevel_info(TButtonPanel * this, int
-//                               LAB_004686ca                                                 XREF[1]:     00468689(j)
-//                              Panel_ez.cpp:1083 (2)
-//         004686ca     XOR        EDI,EDI
-//                               LAB_004686cc                                                 XREF[1]:     004686fc(j)
-//                              Panel_ez.cpp:1085 (22)
-//         004686cc     MOV        EDX,dword ptr [ESI + 0x32c]
-//         004686d2     MOV        EAX,dword ptr [ESI + 0x328]
-//         004686d8     MOV        this,dword ptr [EBX]
-//         004686da     PUSH       EDX
-//         004686db     PUSH       EAX
-//         004686dc     PUSH       EDI
-//         004686dd     CALL       TButtonPanel::set_text_color                     void set_text_color(TButtonPanel * this, int
-//                              Panel_ez.cpp:1086 (28)
-//         004686e2     MOV        this,dword ptr [ESI + 0x334]
-//         004686e8     MOV        EDX,dword ptr [ESI + 0x330]
-//         004686ee     PUSH       this
-//         004686ef     MOV        this,dword ptr [EBX]
-//         004686f1     PUSH       EDX
-//         004686f2     PUSH       EDI
-//         004686f3     CALL       TButtonPanel::set_highlight_text_color           void set_highlight_text_color(TButtonPanel *
-//         004686f8     INC        EDI
-//         004686f9     CMP        EDI,0x9
-//         004686fc     JL         LAB_004686cc
-//                              Panel_ez.cpp:1089 (23)
-//         004686fe     MOV        EAX,dword ptr [ESI + 0x33c]
-//         00468704     MOV        this,dword ptr [ESI + 0x338]
-//         0046870a     PUSH       EAX
-//         0046870b     PUSH       this
-//         0046870c     MOV        this,dword ptr [EBX]
-//         0046870e     PUSH       0x1
-//         00468710     CALL       TButtonPanel::set_text_color                     void set_text_color(TButtonPanel * this, int
-//                              Panel_ez.cpp:1090 (23)
-//         00468715     MOV        EDX,dword ptr [ESI + 0x334]
-//         0046871b     MOV        EAX,dword ptr [ESI + 0x330]
-//         00468721     MOV        this,dword ptr [EBX]
-//         00468723     PUSH       EDX
-//         00468724     PUSH       EAX
-//         00468725     PUSH       0x1
-//         00468727     CALL       TButtonPanel::set_highlight_text_color           void set_highlight_text_color(TButtonPanel *
-//                              Panel_ez.cpp:1092 (7)
-//         0046872c     MOV        EAX,0x1
-//         00468731     JMP        LAB_0046873f
-//                               LAB_00468733                                                 XREF[3]:     004685d4(j), 004685e2(j),
-//                                                                                                         0046862a(j)
-//                              Panel_ez.cpp:1055 (10)
-//         00468733     MOV        dword ptr [ESI + 0xd8],0x1
-//                              Panel_ez.cpp:1056 (2)
-//         0046873d     XOR        EAX,EAX
-//                               LAB_0046873f                                                 XREF[1]:     00468731(j)
-//                              Panel_ez.cpp:1093 (21)
-//         0046873f     MOV        this,dword ptr [ESP + local_c]
-//         00468743     POP        EDI
-//         00468744     POP        ESI
-//         00468745     POP        EBP
-//         00468746     MOV        dword ptr FS:[0x0],this
-//         0046874d     POP        EBX
-//         0046874e     ADD        ESP,0x14
-//         00468751     RET        0x2c
-//         00468754     ??         90h
-//         00468755     NOP
-//         00468756     NOP
-//         00468757     NOP
-//         00468758     NOP
-//         00468759     NOP
-//         0046875a     NOP
-//         0046875b     NOP
-//         0046875c     NOP
-//         0046875d     NOP
-//         0046875e     NOP
-//         0046875f     NOP
+//              TPanel *          Stack[0x4]:4   param_1                   XREF[1]:     00468513(R)
+//              TButtonPanel *    Stack[0x8]:4   param_2                   XREF[1]:     0046850b(R)
+//              long              Stack[0xc]:4   param_3                   XREF[1]:     0046849d(R)
+//              long              Stack[0x10]:4  param_4                   XREF[1]:     004684af(R)
+//              long              Stack[0x14]:4  param_5                   XREF[1]:     004684f6(R)
+//              long              Stack[0x18]:4  param_6                   XREF[1]:     004684ec(R)
+//              long              Stack[0x1c]:4  param_7                   XREF[1]:     004684e4(R)
+//              long              Stack[0x20]:4  param_8                   XREF[1]:     004684dc(R)
+//              long              Stack[0x24]:4  param_9                   XREF[1]:     004684d4(R)
+//              long              Stack[0x28]:4  param_10                  XREF[1]:     004684cc(R)
+//              long              Stack[0x2c]:4  param_11                  XREF[1]:     004684c5(R)
+//              char[120]         Stack[-0x7c]   text1                     XREF[0,2]:   00468496(*), 00468503(*)
+//              char[120]         Stack[-0xf4]   text2                     XREF[0,2]:   004684b6(*), 004684ff(*)
+//                               ?create_button@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTButtonPane  XREF[145]:   TribeAchievementsScreen:0048d9e4(c
+//                               TEasy_Panel::create_button                                                TribeAchievementsScreen:0048dec0(c
+//                                                                                                         TribeAchievementsScreen:0048deed(c
+//                                                                                                         TribeAchievementsScreen:0048df1a(c
+//                                                                                                         TribeAchievementsScreen:0048df58(c
+//                                                                                                         TribeAchievementsScreen:0048df85(c
+//                                                                                                         TribeAchievementsScreen:0048dfc8(c
+//                                                                                                         TribeAchievementsScreen:0048dff5(c
+//                                                                                                         TribeAchievementsScreen:0048e022(c
+//                                                                                                         TribeAchievementsScreen:0048e06f(c
+//                                                                                                         TRIBE_Screen_Campaign_Selection:00
+//                                                                                                         TRIBE_Screen_Campaign_Selection:00
+//                                                                                                         TRIBE_Screen_Campaign_Selection:00
+//                                                                                                         TRIBE_Screen_Wait:004a56f6(c),
+//                                                                                                         TribeSaveGameScreen:004a7466(c),
+//                                                                                                         TribeSaveGameScreen:004a749b(c),
+//                                                                                                         TribeSaveGameScreen:004a74d0(c),
+//                                                                                                         TRIBE_Screen_Sed_Open:004b3566(c),
+//                                                                                                         TRIBE_Screen_Sed_Open:004b359b(c),
+//                                                                                                         TRIBE_Screen_Sed_Open:004b35d0(c),
+//                                                                                                         [more]
+//                              Panel_ez.cpp:1030 (6)
+//         00468490     SUB        ESP,0xf0
+//                              Panel_ez.cpp:1033 (25)
+//         00468496     LEA        EAX=>text1[4],[ESP + 0x78]
+//         0046849a     PUSH       ESI
+//         0046849b     MOV        ESI,this
+//         0046849d     MOV        this,dword ptr [ESP + param_3]
+//                              language.dll match for 0x78: "10"
+//         004684a4     PUSH       0x78
+//         004684a6     PUSH       EAX
+//         004684a7     PUSH       this
+//         004684a8     MOV        this,ESI
+//         004684aa     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
+//                              Panel_ez.cpp:1034 (22)
+//         004684af     MOV        EAX,dword ptr [ESP + param_4]
+//         004684b6     LEA        EDX=>text2[4],[ESP + 0x4]
+//                              language.dll match for 0x78: "10"
+//         004684ba     PUSH       0x78
+//         004684bc     PUSH       EDX
+//         004684bd     PUSH       EAX
+//         004684be     MOV        this,ESI
+//         004684c0     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
+//                              Panel_ez.cpp:1036 (95)
+//         004684c5     MOV        EAX,dword ptr [ESP + param_11]
+//         004684cc     MOV        this,dword ptr [ESP + param_10]
+//         004684d3     PUSH       EAX
+//         004684d4     MOV        EAX,dword ptr [ESP + param_9]
+//         004684db     PUSH       this
+//         004684dc     MOV        this,dword ptr [ESP + param_8]
+//         004684e3     PUSH       EAX
+//         004684e4     MOV        EAX,dword ptr [ESP + param_7]
+//         004684eb     PUSH       this
+//         004684ec     MOV        this,dword ptr [ESP + param_6]
+//         004684f3     MOV        EDX,dword ptr [ESI]
+//         004684f5     PUSH       EAX
+//         004684f6     MOV        EAX,dword ptr [ESP + param_5]
+//         004684fd     PUSH       this
+//         004684fe     PUSH       EAX
+//         004684ff     LEA        this=>text2[4],[ESP + 0x20]
+//         00468503     LEA        EAX=>text1[4],[ESP + 0x98]
+//         0046850a     PUSH       this
+//         0046850b     MOV        this,dword ptr [ESP + param_2]
+//         00468512     PUSH       EAX
+//         00468513     MOV        EAX,dword ptr [ESP + param_1]
+//         0046851a     PUSH       this
+//         0046851b     PUSH       EAX
+//         0046851c     MOV        this,ESI
+//         0046851e     CALL       dword ptr [EDX + 0xec]
+//                              Panel_ez.cpp:1037 (10)
+//         00468524     POP        ESI
+//         00468525     ADD        ESP,0xf0
+//         0046852b     RET        0x2c
+//         0046852e     ??         90h
+//         0046852f     NOP
     return 0;
 }
 
@@ -4613,223 +5093,86 @@ int TEasy_Panel::create_text(TPanel* param_1, TTextPanel** param_2, int param_3,
 //                              int __thiscall create_text(TEasy_Panel * this, TPanel * param_1, TTe
 //              int               EAX:4          <RETURN>
 //              TEasy_Panel *     ECX:4 (auto)   this
-//              TPanel *          Stack[0x4]:4   param_1                   XREF[1]:     00468f37(R)
-//              TTextPanel * *    Stack[0x8]:4   param_2                   XREF[1]:     00468eda(R)
-//              char * *          Stack[0xc]:4   param_3                   XREF[1]:     00468f5a(R)
-//              long              Stack[0x10]:4  param_4                   XREF[1]:     00468f53(R)
-//              long              Stack[0x14]:4  param_5                   XREF[3]:     00468e66(R), 00468e9b(W), 00468f2d(R)
-//              long              Stack[0x18]:4  param_6                   XREF[2]:     00468e91(R), 00468ebf(W)
-//              long              Stack[0x1c]:4  param_7                   XREF[1]:     00468e9f(R)
-//              long              Stack[0x20]:4  param_8                   XREF[1]:     00468eab(R)
-//              long              Stack[0x24]:4  param_9                   XREF[1]:     00468efe(R)
-//              int               Stack[0x28]:4  param_10
-//              int               Stack[0x2c]:4  param_11
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     00468ec5(W), 00468ede(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00468fe2(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[2]:     00468e8d(W), 00468f32(R)
-//              long              Stack[-0x14]:4 ideal_x
-//                               ?create_text@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTTextPanel@@P  XREF[44]:    0056f70c(*), 0056f84c(*),
-//                               TEasy_Panel::create_text                                                  0056f994(*), 0056fac4(*),
-//                                                                                                         0056fbf4(*), 0056fd2c(*),
-//                                                                                                         0056fe5c(*), 0056ff8c(*),
-//                                                                                                         005700bc(*), 005701ec(*),
-//                                                                                                         00570e14(*), 005711ac(*),
-//                                                                                                         00571a0c(*), 00571dec(*),
-//                                                                                                         0057227c(*), 005723a4(*),
-//                                                                                                         005724cc(*), 005725f4(*),
-//                                                                                                         0057271c(*), 0057284c(*), [more]
-//                              Panel_ez.cpp:1281 (22)
-//         00468e50     PUSH       -0x1
-//         00468e52     PUSH       FUN_0055e00b
-//         00468e57     MOV        EAX,FS:[0x0]
-//         00468e5d     PUSH       EAX
-//         00468e5e     MOV        dword ptr FS:[0x0],ESP
-//         00468e65     PUSH       this
-//                              Panel_ez.cpp:1283 (10)
-//         00468e66     MOV        EAX,dword ptr [ESP + param_5]
-//         00468e6a     PUSH       EBX
-//         00468e6b     PUSH       EBP
-//         00468e6c     PUSH       ESI
-//         00468e6d     MOV        ESI,this
-//         00468e6f     PUSH       EDI
-//                              Panel_ez.cpp:1288 (118)
-//         00468e70     PUSH       0x188
-//         00468e75     MOV        this,dword ptr [ESI + 0x14]
-//         00468e78     MOV        EDI,dword ptr [ESI + 0xf4]
-//         00468e7e     IMUL       EAX,this
-//         00468e81     CDQ
-//         00468e82     IDIV       EDI
-//         00468e84     MOV        EBX,dword ptr [ESI + 0x18]
-//         00468e87     MOV        EBP,dword ptr [ESI + 0xf8]
-//         00468e8d     MOV        dword ptr [ESP + local_10],EAX
-//         00468e91     MOV        EAX,dword ptr [ESP + param_6]
-//         00468e95     IMUL       EAX,EBX
-//         00468e98     CDQ
-//         00468e99     IDIV       EBP
-//         00468e9b     MOV        dword ptr [ESP + param_5],EAX
-//         00468e9f     MOV        EAX,dword ptr [ESP + param_7]
-//         00468ea3     IMUL       EAX,this
-//         00468ea6     CDQ
-//         00468ea7     IDIV       EDI
-//         00468ea9     MOV        EDI,EAX
-//         00468eab     MOV        EAX,dword ptr [ESP + param_8]
-//         00468eaf     IMUL       EAX,EBX
-//         00468eb2     CDQ
-//         00468eb3     IDIV       EBP
-//         00468eb5     MOV        EBP,EAX
-//         00468eb7     CALL       operator_new                                     void * operator_new(uint param_1)
-//         00468ebc     ADD        ESP,0x4
-//         00468ebf     MOV        dword ptr [ESP + param_6],EAX
-//         00468ec3     TEST       EAX,EAX
-//         00468ec5     MOV        dword ptr [ESP + local_4],0x0
-//         00468ecd     JZ         LAB_00468ed8
-//         00468ecf     MOV        this,EAX
-//         00468ed1     CALL       TTextPanel::TTextPanel                           undefined TTextPanel(TTextPanel * this)
-//         00468ed6     JMP        LAB_00468eda
-//                               LAB_00468ed8                                                 XREF[1]:     00468ecd(j)
-//         00468ed8     XOR        EAX,EAX
-//                               LAB_00468eda                                                 XREF[1]:     00468ed6(j)
-//         00468eda     MOV        EBX,dword ptr [ESP + param_2]
-//         00468ede     MOV        dword ptr [ESP + local_4],0xffffffff
-//                              Panel_ez.cpp:1289 (24)
-//         00468ee6     TEST       EAX,EAX
-//         00468ee8     MOV        dword ptr [EBX],EAX
-//         00468eea     JZ         LAB_00468fd6
-//         00468ef0     MOV        this,dword ptr [EAX + 0xd8]
-//         00468ef6     TEST       this,this
-//         00468ef8     JNZ        LAB_00468fd6
-//                              Panel_ez.cpp:1295 (8)
-//         00468efe     MOV        EAX,dword ptr [ESP + param_9]
-//         00468f02     TEST       EAX,EAX
-//         00468f04     JL         LAB_00468f09
-//                              Panel_ez.cpp:1296 (1)
-//         00468f06     PUSH       EAX
-//                              Panel_ez.cpp:1297 (2)
-//         00468f07     JMP        LAB_00468f0b
-//                               LAB_00468f09                                                 XREF[1]:     00468f04(j)
-//                              Panel_ez.cpp:1298 (13)
-//         00468f09     PUSH       0xa
-//                               LAB_00468f0b                                                 XREF[1]:     00468f07(j)
-//         00468f0b     MOV        this,dword ptr [rge_base_game]                   = 00000000
-//         00468f11     CALL       RGE_Base_Game::get_font                          RGE_Font * get_font(RGE_Base_Game * this, int
-//                              Panel_ez.cpp:1301 (55)
-//         00468f16     MOV        this,dword ptr [EAX + 0x8]
-//         00468f19     MOV        EDX,dword ptr [EAX + 0x4]
-//         00468f1c     MOV        EAX,dword ptr [EAX]
-//         00468f1e     PUSH       0x0
-//         00468f20     PUSH       0x0
-//         00468f22     PUSH       0x0
-//         00468f24     PUSH       0x0
-//         00468f26     PUSH       0x0
-//         00468f28     PUSH       0x0
-//         00468f2a     PUSH       0x0
-//         00468f2c     PUSH       this
-//         00468f2d     MOV        this,dword ptr [ESP + param_5]
-//         00468f31     PUSH       EDX
-//         00468f32     MOV        EDX,dword ptr [ESP + local_10]
-//         00468f36     PUSH       EAX
-//         00468f37     MOV        EAX,dword ptr [ESP + param_1]
-//         00468f3b     PUSH       EBP
-//         00468f3c     PUSH       EDI
-//         00468f3d     PUSH       this
-//         00468f3e     MOV        this,dword ptr [ESI + 0x20]
-//         00468f41     PUSH       EDX
-//         00468f42     PUSH       EAX
-//         00468f43     PUSH       this
-//         00468f44     MOV        this,dword ptr [EBX]
-//         00468f46     CALL       TTextPanel::setup                                long setup(TTextPanel * this, TDrawArea * par
-//         00468f4b     TEST       EAX,EAX
-//                              Panel_ez.cpp:1304 (6)
-//         00468f4d     JZ         LAB_00468fd6
-//                              Panel_ez.cpp:1307 (20)
-//         00468f53     MOV        EAX,dword ptr [ESP + param_4]
-//         00468f57     MOV        this,dword ptr [EBX]
-//         00468f59     PUSH       EAX
-//         00468f5a     MOV        EAX,dword ptr [ESP + param_3]
-//         00468f5e     MOV        EDX,dword ptr [this->_padding_]
-//         00468f60     PUSH       EAX
-//         00468f61     CALL       dword ptr [EDX + 0xe0]
-//                              Panel_ez.cpp:1308 (13)
-//         00468f67     MOV        this,dword ptr [EBX]
-//         00468f69     PUSH       0x1
-//         00468f6b     PUSH       0x0=>DAT_fffffff8
-//         00468f6d     PUSH       offset DAT_fffffff4
-//         00468f6f     CALL       TTextPanel::scroll                               void scroll(TTextPanel * this, uchar param_1,
-//                              Panel_ez.cpp:1310 (16)
-//         00468f74     MOV        EAX,dword ptr [ESP + 0x48]
-//         00468f78     MOV        this,dword ptr [ESP + 0x4c]
-//         00468f7c     TEST       EAX,EAX
-//         00468f7e     JZ         LAB_00468f8a
-//         00468f80     TEST       this,this
-//         00468f82     JZ         LAB_00468f8a
-//                              Panel_ez.cpp:1311 (4)
-//         00468f84     PUSH       0x0
-//         00468f86     PUSH       0x0=>DAT_fffffff8
-//                              Panel_ez.cpp:1312 (6)
-//         00468f88     JMP        LAB_00468f9e
-//                               LAB_00468f8a                                                 XREF[2]:     00468f7e(j), 00468f82(j)
-//         00468f8a     TEST       EAX,EAX
-//         00468f8c     JZ         LAB_00468f92
-//                              Panel_ez.cpp:1313 (2)
-//         00468f8e     PUSH       0x0
-//                              Panel_ez.cpp:1314 (4)
-//         00468f90     JMP        LAB_00468f9c
-//                               LAB_00468f92                                                 XREF[1]:     00468f8c(j)
-//         00468f92     TEST       this,this
-//                              Panel_ez.cpp:1315 (6)
-//         00468f94     PUSH       0x1
-//         00468f96     JZ         LAB_00468f9c
-//         00468f98     PUSH       0x0=>DAT_fffffff8
-//                              Panel_ez.cpp:1316 (2)
-//         00468f9a     JMP        LAB_00468f9e
-//                               LAB_00468f9c                                                 XREF[2]:     00468f90(j), 00468f96(j)
-//                              Panel_ez.cpp:1317 (9)
-//         00468f9c     PUSH       offset DAT_fffffff8
-//                               LAB_00468f9e                                                 XREF[2]:     00468f88(j), 00468f9a(j)
-//         00468f9e     MOV        this,dword ptr [EBX]
-//         00468fa0     CALL       TTextPanel::set_alignment                        void set_alignment(TTextPanel * this, Alignme
-//                              Panel_ez.cpp:1324 (21)
-//         00468fa5     MOV        this,dword ptr [ESI + 0x32c]
-//         00468fab     MOV        EDX,dword ptr [ESI + 0x328]
-//         00468fb1     PUSH       this
-//         00468fb2     MOV        this,dword ptr [EBX]
-//         00468fb4     PUSH       EDX=>DAT_fffffff8
-//         00468fb5     CALL       TTextPanel::set_text_color                       void set_text_color(TTextPanel * this, ulong
-//                              Panel_ez.cpp:1325 (21)
-//         00468fba     MOV        EAX,dword ptr [ESI + 0x334]
-//         00468fc0     MOV        this,dword ptr [ESI + 0x330]
-//         00468fc6     PUSH       EAX
-//         00468fc7     PUSH       this=>DAT_fffffff8
-//         00468fc8     MOV        this,dword ptr [EBX]
-//         00468fca     CALL       TTextPanel::set_highlight_text_color             void set_highlight_text_color(TTextPanel * th
-//                              Panel_ez.cpp:1327 (7)
-//         00468fcf     MOV        EAX,0x1
-//         00468fd4     JMP        LAB_00468fe2
-//                               LAB_00468fd6                                                 XREF[3]:     00468eea(j), 00468ef8(j),
-//                                                                                                         00468f4d(j)
-//                              Panel_ez.cpp:1291 (10)
-//         00468fd6     MOV        dword ptr [ESI + 0xd8],0x1
-//                              Panel_ez.cpp:1292 (2)
-//         00468fe0     XOR        EAX,EAX
-//                               LAB_00468fe2                                                 XREF[1]:     00468fd4(j)
-//                              Panel_ez.cpp:1328 (21)
-//         00468fe2     MOV        this,dword ptr [ESP + local_c]
-//         00468fe6     POP        EDI
-//         00468fe7     POP        ESI
-//         00468fe8     POP        EBP
-//         00468fe9     MOV        dword ptr FS:[0x0],this
-//         00468ff0     POP        EBX
-//         00468ff1     ADD        ESP,0x10
-//         00468ff4     RET        0x2c
-//         00468ff7     ??         90h
-//         00468ff8     NOP
-//         00468ff9     NOP
-//         00468ffa     NOP
-//         00468ffb     NOP
-//         00468ffc     NOP
-//         00468ffd     NOP
-//         00468ffe     NOP
-//         00468fff     NOP
+//              TPanel *          Stack[0x4]:4   param_1                   XREF[1]:     00468c90(R)
+//              TTextPanel * *    Stack[0x8]:4   param_2                   XREF[1]:     00468c88(R)
+//              int               Stack[0xc]:4   param_3                   XREF[1]:     00468c2d(R)
+//              long              Stack[0x10]:4  param_4                   XREF[1]:     00468c7b(R)
+//              long              Stack[0x14]:4  param_5                   XREF[1]:     00468c73(R)
+//              long              Stack[0x18]:4  param_6                   XREF[1]:     00468c69(R)
+//              long              Stack[0x1c]:4  param_7                   XREF[1]:     00468c61(R)
+//              long              Stack[0x20]:4  param_8                   XREF[1]:     00468c59(R)
+//              int               Stack[0x24]:4  param_9                   XREF[1]:     00468c51(R)
+//              int               Stack[0x28]:4  param_10                  XREF[1]:     00468c49(R)
+//              int               Stack[0x2c]:4  param_11                  XREF[1]:     00468c42(R)
+//              char[256]         Stack[-0x104   text                      XREF[0,2]:   00468c26(*), 00468c83(*)
+//                               ?create_text@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTTextPanel@@H  XREF[179]:   TribeAchievementsScreen:0048d810(c
+//                               TEasy_Panel::create_text                                                  TribeAchievementsScreen:0048d834(c
+//                                                                                                         TribeAchievementsScreen:0048d85e(c
+//                                                                                                         TribeAchievementsScreen:0048da3d(c
+//                                                                                                         TribeAchievementsScreen:0048da67(c
+//                                                                                                         TribeAchievementsScreen:0048da8e(c
+//                                                                                                         TribeAchievementsScreen:0048dab5(c
+//                                                                                                         TribeAchievementsScreen:0048dadc(c
+//                                                                                                         TRIBE_Screen_Campaign_Selection:00
+//                                                                                                         TRIBE_Screen_Campaign_Selection:00
+//                                                                                                         TRIBE_Screen_Campaign_Selection:00
+//                                                                                                         TRIBE_Screen_Campaign_Selection:00
+//                                                                                                         TRIBE_Screen_Main_Menu:0049e85a(c)
+//                                                                                                         TRIBE_Screen_Main_Menu:0049e8a2(c)
+//                                                                                                         TRIBE_Screen_Main_Menu:0049e96d(c)
+//                                                                                                         TRIBE_Screen_Main_Menu:0049eb75(c)
+//                                                                                                         TribeSaveGameScreen:004a7365(c),
+//                                                                                                         create_text:004a8930(c),
+//                                                                                                         create_all_buttons_etc:004afaa3(c)
+//                                                                                                         TRIBE_Screen_Sed_Open:004b34f8(c),
+//                                                                                                         [more]
+//                              Panel_ez.cpp:1215 (6)
+//         00468c20     SUB        ESP,0x100
+//                              Panel_ez.cpp:1218 (28)
+//         00468c26     LEA        EAX=>text[4],[ESP]
+//         00468c2a     PUSH       ESI
+//         00468c2b     MOV        ESI,this
+//         00468c2d     MOV        this,dword ptr [ESP + param_3]
+//         00468c34     PUSH       0x100
+//         00468c39     PUSH       EAX
+//         00468c3a     PUSH       this
+//         00468c3b     MOV        this,ESI
+//         00468c3d     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
+//                              Panel_ez.cpp:1220 (95)
+//         00468c42     MOV        EAX,dword ptr [ESP + param_11]
+//         00468c49     MOV        this,dword ptr [ESP + param_10]
+//         00468c50     PUSH       EAX
+//         00468c51     MOV        EAX,dword ptr [ESP + param_9]
+//         00468c58     PUSH       this
+//         00468c59     MOV        this,dword ptr [ESP + param_8]
+//         00468c60     PUSH       EAX
+//         00468c61     MOV        EAX,dword ptr [ESP + param_7]
+//         00468c68     PUSH       this
+//         00468c69     MOV        this,dword ptr [ESP + param_6]
+//         00468c70     MOV        EDX,dword ptr [ESI]
+//         00468c72     PUSH       EAX
+//         00468c73     MOV        EAX,dword ptr [ESP + param_5]
+//         00468c7a     PUSH       this
+//         00468c7b     MOV        this,dword ptr [ESP + param_4]
+//         00468c82     PUSH       EAX
+//         00468c83     LEA        EAX=>text[4],[ESP + 0x20]
+//         00468c87     PUSH       this
+//         00468c88     MOV        this,dword ptr [ESP + param_2]
+//         00468c8f     PUSH       EAX
+//         00468c90     MOV        EAX,dword ptr [ESP + param_1]
+//         00468c97     PUSH       this
+//         00468c98     PUSH       EAX
+//         00468c99     MOV        this,ESI
+//         00468c9b     CALL       dword ptr [EDX + 0x100]
+//                              Panel_ez.cpp:1221 (10)
+//         00468ca1     POP        ESI
+//         00468ca2     ADD        ESP,0x100
+//         00468ca8     RET        0x2c
+//         00468cab     ??         90h
+//         00468cac     NOP
+//         00468cad     NOP
+//         00468cae     NOP
+//         00468caf     NOP
     return 0;
 }
 
@@ -4838,223 +5181,225 @@ int TEasy_Panel::create_text(TPanel* param_1, TTextPanel** param_2, char* param_
 //                              int __thiscall create_text(TEasy_Panel * this, TPanel * param_1, TTe
 //              int               EAX:4          <RETURN>
 //              TEasy_Panel *     ECX:4 (auto)   this
-//              TPanel *          Stack[0x4]:4   param_1                   XREF[1]:     00468f37(R)
-//              TTextPanel * *    Stack[0x8]:4   param_2                   XREF[1]:     00468eda(R)
-//              char * *          Stack[0xc]:4   param_3                   XREF[1]:     00468f5a(R)
-//              long              Stack[0x10]:4  param_4                   XREF[1]:     00468f53(R)
-//              long              Stack[0x14]:4  param_5                   XREF[3]:     00468e66(R), 00468e9b(W), 00468f2d(R)
-//              long              Stack[0x18]:4  param_6                   XREF[2]:     00468e91(R), 00468ebf(W)
-//              long              Stack[0x1c]:4  param_7                   XREF[1]:     00468e9f(R)
-//              long              Stack[0x20]:4  param_8                   XREF[1]:     00468eab(R)
-//              long              Stack[0x24]:4  param_9                   XREF[1]:     00468efe(R)
-//              int               Stack[0x28]:4  param_10
-//              int               Stack[0x2c]:4  param_11
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     00468ec5(W), 00468ede(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00468fe2(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[2]:     00468e8d(W), 00468f32(R)
+//              TPanel *          Stack[0x4]:4   param_1                   XREF[1]:     00468d97(R)
+//              TTextPanel * *    Stack[0x8]:4   param_2                   XREF[1]:     00468d3a(R)
+//              char *            Stack[0xc]:4   param_3                   XREF[1]:     00468dee(R)
+//              long              Stack[0x10]:4  param_4                   XREF[3]:     00468cc6(R), 00468cfb(W), 00468d8d(R)
+//              long              Stack[0x14]:4  param_5                   XREF[2]:     00468cf1(R), 00468d1f(W)
+//              long              Stack[0x18]:4  param_6                   XREF[1]:     00468cff(R)
+//              long              Stack[0x1c]:4  param_7                   XREF[1]:     00468d0b(R)
+//              long              Stack[0x20]:4  param_8                   XREF[1]:     00468d5e(R)
+//              int               Stack[0x24]:4  param_9                   XREF[1]:     00468daf(R)
+//              int               Stack[0x28]:4  param_10                  XREF[1]:     00468db3(R)
+//              int               Stack[0x2c]:4  param_11                  XREF[1]:     00468de0(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     00468d25(W), 00468d3e(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00468e38(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[2]:     00468ced(W), 00468d92(R)
 //              long              Stack[-0x14]:4 ideal_x
-//                               ?create_text@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTTextPanel@@P  XREF[44]:    0056f70c(*), 0056f84c(*),
-//                               TEasy_Panel::create_text                                                  0056f994(*), 0056fac4(*),
-//                                                                                                         0056fbf4(*), 0056fd2c(*),
-//                                                                                                         0056fe5c(*), 0056ff8c(*),
-//                                                                                                         005700bc(*), 005701ec(*),
-//                                                                                                         00570e14(*), 005711ac(*),
-//                                                                                                         00571a0c(*), 00571dec(*),
-//                                                                                                         0057227c(*), 005723a4(*),
-//                                                                                                         005724cc(*), 005725f4(*),
-//                                                                                                         0057271c(*), 0057284c(*), [more]
-//                              Panel_ez.cpp:1281 (22)
-//         00468e50     PUSH       -0x1
-//         00468e52     PUSH       FUN_0055e00b
-//         00468e57     MOV        EAX,FS:[0x0]
-//         00468e5d     PUSH       EAX
-//         00468e5e     MOV        dword ptr FS:[0x0],ESP
-//         00468e65     PUSH       this
-//                              Panel_ez.cpp:1283 (10)
-//         00468e66     MOV        EAX,dword ptr [ESP + param_5]
-//         00468e6a     PUSH       EBX
-//         00468e6b     PUSH       EBP
-//         00468e6c     PUSH       ESI
-//         00468e6d     MOV        ESI,this
-//         00468e6f     PUSH       EDI
-//                              Panel_ez.cpp:1288 (118)
-//         00468e70     PUSH       0x188
-//         00468e75     MOV        this,dword ptr [ESI + 0x14]
-//         00468e78     MOV        EDI,dword ptr [ESI + 0xf4]
-//         00468e7e     IMUL       EAX,this
-//         00468e81     CDQ
-//         00468e82     IDIV       EDI
-//         00468e84     MOV        EBX,dword ptr [ESI + 0x18]
-//         00468e87     MOV        EBP,dword ptr [ESI + 0xf8]
-//         00468e8d     MOV        dword ptr [ESP + local_10],EAX
-//         00468e91     MOV        EAX,dword ptr [ESP + param_6]
-//         00468e95     IMUL       EAX,EBX
-//         00468e98     CDQ
-//         00468e99     IDIV       EBP
-//         00468e9b     MOV        dword ptr [ESP + param_5],EAX
-//         00468e9f     MOV        EAX,dword ptr [ESP + param_7]
-//         00468ea3     IMUL       EAX,this
-//         00468ea6     CDQ
-//         00468ea7     IDIV       EDI
-//         00468ea9     MOV        EDI,EAX
-//         00468eab     MOV        EAX,dword ptr [ESP + param_8]
-//         00468eaf     IMUL       EAX,EBX
-//         00468eb2     CDQ
-//         00468eb3     IDIV       EBP
-//         00468eb5     MOV        EBP,EAX
-//         00468eb7     CALL       operator_new                                     void * operator_new(uint param_1)
-//         00468ebc     ADD        ESP,0x4
-//         00468ebf     MOV        dword ptr [ESP + param_6],EAX
-//         00468ec3     TEST       EAX,EAX
-//         00468ec5     MOV        dword ptr [ESP + local_4],0x0
-//         00468ecd     JZ         LAB_00468ed8
-//         00468ecf     MOV        this,EAX
-//         00468ed1     CALL       TTextPanel::TTextPanel                           undefined TTextPanel(TTextPanel * this)
-//         00468ed6     JMP        LAB_00468eda
-//                               LAB_00468ed8                                                 XREF[1]:     00468ecd(j)
-//         00468ed8     XOR        EAX,EAX
-//                               LAB_00468eda                                                 XREF[1]:     00468ed6(j)
-//         00468eda     MOV        EBX,dword ptr [ESP + param_2]
-//         00468ede     MOV        dword ptr [ESP + local_4],0xffffffff
-//                              Panel_ez.cpp:1289 (24)
-//         00468ee6     TEST       EAX,EAX
-//         00468ee8     MOV        dword ptr [EBX],EAX
-//         00468eea     JZ         LAB_00468fd6
-//         00468ef0     MOV        this,dword ptr [EAX + 0xd8]
-//         00468ef6     TEST       this,this
-//         00468ef8     JNZ        LAB_00468fd6
-//                              Panel_ez.cpp:1295 (8)
-//         00468efe     MOV        EAX,dword ptr [ESP + param_9]
-//         00468f02     TEST       EAX,EAX
-//         00468f04     JL         LAB_00468f09
-//                              Panel_ez.cpp:1296 (1)
-//         00468f06     PUSH       EAX
-//                              Panel_ez.cpp:1297 (2)
-//         00468f07     JMP        LAB_00468f0b
-//                               LAB_00468f09                                                 XREF[1]:     00468f04(j)
-//                              Panel_ez.cpp:1298 (13)
-//         00468f09     PUSH       0xa
-//                               LAB_00468f0b                                                 XREF[1]:     00468f07(j)
-//         00468f0b     MOV        this,dword ptr [rge_base_game]                   = 00000000
-//         00468f11     CALL       RGE_Base_Game::get_font                          RGE_Font * get_font(RGE_Base_Game * this, int
-//                              Panel_ez.cpp:1301 (55)
-//         00468f16     MOV        this,dword ptr [EAX + 0x8]
-//         00468f19     MOV        EDX,dword ptr [EAX + 0x4]
-//         00468f1c     MOV        EAX,dword ptr [EAX]
-//         00468f1e     PUSH       0x0
-//         00468f20     PUSH       0x0
-//         00468f22     PUSH       0x0
-//         00468f24     PUSH       0x0
-//         00468f26     PUSH       0x0
-//         00468f28     PUSH       0x0
-//         00468f2a     PUSH       0x0
-//         00468f2c     PUSH       this
-//         00468f2d     MOV        this,dword ptr [ESP + param_5]
-//         00468f31     PUSH       EDX
-//         00468f32     MOV        EDX,dword ptr [ESP + local_10]
-//         00468f36     PUSH       EAX
-//         00468f37     MOV        EAX,dword ptr [ESP + param_1]
-//         00468f3b     PUSH       EBP
-//         00468f3c     PUSH       EDI
-//         00468f3d     PUSH       this
-//         00468f3e     MOV        this,dword ptr [ESI + 0x20]
-//         00468f41     PUSH       EDX
-//         00468f42     PUSH       EAX
-//         00468f43     PUSH       this
-//         00468f44     MOV        this,dword ptr [EBX]
-//         00468f46     CALL       TTextPanel::setup                                long setup(TTextPanel * this, TDrawArea * par
-//         00468f4b     TEST       EAX,EAX
-//                              Panel_ez.cpp:1304 (6)
-//         00468f4d     JZ         LAB_00468fd6
-//                              Panel_ez.cpp:1307 (20)
-//         00468f53     MOV        EAX,dword ptr [ESP + param_4]
-//         00468f57     MOV        this,dword ptr [EBX]
-//         00468f59     PUSH       EAX
-//         00468f5a     MOV        EAX,dword ptr [ESP + param_3]
-//         00468f5e     MOV        EDX,dword ptr [this->_padding_]
-//         00468f60     PUSH       EAX
-//         00468f61     CALL       dword ptr [EDX + 0xe0]
-//                              Panel_ez.cpp:1308 (13)
-//         00468f67     MOV        this,dword ptr [EBX]
-//         00468f69     PUSH       0x1
-//         00468f6b     PUSH       0x0=>DAT_fffffff8
-//         00468f6d     PUSH       offset DAT_fffffff4
-//         00468f6f     CALL       TTextPanel::scroll                               void scroll(TTextPanel * this, uchar param_1,
-//                              Panel_ez.cpp:1310 (16)
-//         00468f74     MOV        EAX,dword ptr [ESP + 0x48]
-//         00468f78     MOV        this,dword ptr [ESP + 0x4c]
-//         00468f7c     TEST       EAX,EAX
-//         00468f7e     JZ         LAB_00468f8a
-//         00468f80     TEST       this,this
-//         00468f82     JZ         LAB_00468f8a
-//                              Panel_ez.cpp:1311 (4)
-//         00468f84     PUSH       0x0
-//         00468f86     PUSH       0x0=>DAT_fffffff8
-//                              Panel_ez.cpp:1312 (6)
-//         00468f88     JMP        LAB_00468f9e
-//                               LAB_00468f8a                                                 XREF[2]:     00468f7e(j), 00468f82(j)
-//         00468f8a     TEST       EAX,EAX
-//         00468f8c     JZ         LAB_00468f92
-//                              Panel_ez.cpp:1313 (2)
-//         00468f8e     PUSH       0x0
-//                              Panel_ez.cpp:1314 (4)
-//         00468f90     JMP        LAB_00468f9c
-//                               LAB_00468f92                                                 XREF[1]:     00468f8c(j)
-//         00468f92     TEST       this,this
-//                              Panel_ez.cpp:1315 (6)
-//         00468f94     PUSH       0x1
-//         00468f96     JZ         LAB_00468f9c
-//         00468f98     PUSH       0x0=>DAT_fffffff8
-//                              Panel_ez.cpp:1316 (2)
-//         00468f9a     JMP        LAB_00468f9e
-//                               LAB_00468f9c                                                 XREF[2]:     00468f90(j), 00468f96(j)
-//                              Panel_ez.cpp:1317 (9)
-//         00468f9c     PUSH       offset DAT_fffffff8
-//                               LAB_00468f9e                                                 XREF[2]:     00468f88(j), 00468f9a(j)
-//         00468f9e     MOV        this,dword ptr [EBX]
-//         00468fa0     CALL       TTextPanel::set_alignment                        void set_alignment(TTextPanel * this, Alignme
-//                              Panel_ez.cpp:1324 (21)
-//         00468fa5     MOV        this,dword ptr [ESI + 0x32c]
-//         00468fab     MOV        EDX,dword ptr [ESI + 0x328]
-//         00468fb1     PUSH       this
-//         00468fb2     MOV        this,dword ptr [EBX]
-//         00468fb4     PUSH       EDX=>DAT_fffffff8
-//         00468fb5     CALL       TTextPanel::set_text_color                       void set_text_color(TTextPanel * this, ulong
-//                              Panel_ez.cpp:1325 (21)
-//         00468fba     MOV        EAX,dword ptr [ESI + 0x334]
-//         00468fc0     MOV        this,dword ptr [ESI + 0x330]
-//         00468fc6     PUSH       EAX
-//         00468fc7     PUSH       this=>DAT_fffffff8
-//         00468fc8     MOV        this,dword ptr [EBX]
-//         00468fca     CALL       TTextPanel::set_highlight_text_color             void set_highlight_text_color(TTextPanel * th
-//                              Panel_ez.cpp:1327 (7)
-//         00468fcf     MOV        EAX,0x1
-//         00468fd4     JMP        LAB_00468fe2
-//                               LAB_00468fd6                                                 XREF[3]:     00468eea(j), 00468ef8(j),
-//                                                                                                         00468f4d(j)
-//                              Panel_ez.cpp:1291 (10)
-//         00468fd6     MOV        dword ptr [ESI + 0xd8],0x1
-//                              Panel_ez.cpp:1292 (2)
-//         00468fe0     XOR        EAX,EAX
-//                               LAB_00468fe2                                                 XREF[1]:     00468fd4(j)
-//                              Panel_ez.cpp:1328 (21)
-//         00468fe2     MOV        this,dword ptr [ESP + local_c]
-//         00468fe6     POP        EDI
-//         00468fe7     POP        ESI
-//         00468fe8     POP        EBP
-//         00468fe9     MOV        dword ptr FS:[0x0],this
-//         00468ff0     POP        EBX
-//         00468ff1     ADD        ESP,0x10
-//         00468ff4     RET        0x2c
-//         00468ff7     ??         90h
-//         00468ff8     NOP
-//         00468ff9     NOP
-//         00468ffa     NOP
-//         00468ffb     NOP
-//         00468ffc     NOP
-//         00468ffd     NOP
-//         00468ffe     NOP
-//         00468fff     NOP
+//                               ?create_text@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTTextPanel@@P  XREF[81]:    TribeAchievementsScreen:0048d7de(c
+//                               TEasy_Panel::create_text                                                  TribeAchievementsScreen:0048d8e6(c
+//                                                                                                         TribeAchievementsScreen:0048dc8e(c
+//                                                                                                         TRIBE_Screen_Game:004950f5(c),
+//                                                                                                         TRIBE_Screen_Main_Menu:0049eb4a(c)
+//                                                                                                         TRIBE_Screen_Main_Error:0049f18d(c
+//                                                                                                         TribeMPSetupScreen:004a0592(c),
+//                                                                                                         TribeMPSetupScreen:004a0647(c),
+//                                                                                                         TribeMPSetupScreen:004a0678(c),
+//                                                                                                         TribeMPSetupScreen:004a06a6(c),
+//                                                                                                         TribeMPSetupScreen:004a06d4(c),
+//                                                                                                         TribeMPSetupScreen:004a0733(c),
+//                                                                                                         TribeMPSetupScreen:004a07e9(c),
+//                                                                                                         TribeMPSetupScreen:004a081c(c),
+//                                                                                                         TribeMPSetupScreen:004a0899(c),
+//                                                                                                         TRIBE_Screen_Wait:004a56d8(c),
+//                                                                                                         TRIBE_Screen_Wait:004a5752(c),
+//                                                                                                         TRIBE_Screen_Wait:004a5788(c),
+//                                                                                                         create_text:004a8980(c),
+//                                                                                                         TribeSelectScenarioScreen:004b3f55
+//                                                                                                         [more]
+//                              Panel_ez.cpp:1227 (22)
+//         00468cb0     PUSH       -0x1
+//         00468cb2     PUSH       FUN_0055dfeb
+//         00468cb7     MOV        EAX,FS:[0x0]
+//         00468cbd     PUSH       EAX
+//         00468cbe     MOV        dword ptr FS:[0x0],ESP
+//         00468cc5     PUSH       this
+//                              Panel_ez.cpp:1229 (10)
+//         00468cc6     MOV        EAX,dword ptr [ESP + param_4]
+//         00468cca     PUSH       EBX
+//         00468ccb     PUSH       EBP
+//         00468ccc     PUSH       ESI
+//         00468ccd     MOV        ESI,this
+//         00468ccf     PUSH       EDI
+//                              Panel_ez.cpp:1234 (118)
+//         00468cd0     PUSH       0x188
+//         00468cd5     MOV        this,dword ptr [ESI + 0x14]
+//         00468cd8     MOV        EDI,dword ptr [ESI + 0xf4]
+//         00468cde     IMUL       EAX,this
+//         00468ce1     CDQ
+//         00468ce2     IDIV       EDI
+//         00468ce4     MOV        EBX,dword ptr [ESI + 0x18]
+//         00468ce7     MOV        EBP,dword ptr [ESI + 0xf8]
+//         00468ced     MOV        dword ptr [ESP + local_10],EAX
+//         00468cf1     MOV        EAX,dword ptr [ESP + param_5]
+//         00468cf5     IMUL       EAX,EBX
+//         00468cf8     CDQ
+//         00468cf9     IDIV       EBP
+//         00468cfb     MOV        dword ptr [ESP + param_4],EAX
+//         00468cff     MOV        EAX,dword ptr [ESP + param_6]
+//         00468d03     IMUL       EAX,this
+//         00468d06     CDQ
+//         00468d07     IDIV       EDI
+//         00468d09     MOV        EDI,EAX
+//         00468d0b     MOV        EAX,dword ptr [ESP + param_7]
+//         00468d0f     IMUL       EAX,EBX
+//         00468d12     CDQ
+//         00468d13     IDIV       EBP
+//         00468d15     MOV        EBP,EAX
+//         00468d17     CALL       operator_new                                     void * operator_new(uint param_1)
+//         00468d1c     ADD        ESP,0x4
+//         00468d1f     MOV        dword ptr [ESP + param_5],EAX
+//         00468d23     TEST       EAX,EAX
+//         00468d25     MOV        dword ptr [ESP + local_4],0x0
+//         00468d2d     JZ         LAB_00468d38
+//         00468d2f     MOV        this,EAX
+//         00468d31     CALL       TTextPanel::TTextPanel                           undefined TTextPanel(TTextPanel * this)
+//         00468d36     JMP        LAB_00468d3a
+//                               LAB_00468d38                                                 XREF[1]:     00468d2d(j)
+//         00468d38     XOR        EAX,EAX
+//                               LAB_00468d3a                                                 XREF[1]:     00468d36(j)
+//         00468d3a     MOV        EBX,dword ptr [ESP + param_2]
+//         00468d3e     MOV        dword ptr [ESP + local_4],0xffffffff
+//                              Panel_ez.cpp:1235 (24)
+//         00468d46     TEST       EAX,EAX
+//         00468d48     MOV        dword ptr [EBX],EAX
+//         00468d4a     JZ         LAB_00468e2c
+//         00468d50     MOV        this,dword ptr [EAX + 0xd8]
+//         00468d56     TEST       this,this
+//         00468d58     JNZ        LAB_00468e2c
+//                              Panel_ez.cpp:1241 (8)
+//         00468d5e     MOV        EAX,dword ptr [ESP + param_8]
+//         00468d62     TEST       EAX,EAX
+//         00468d64     JL         LAB_00468d69
+//                              Panel_ez.cpp:1242 (1)
+//         00468d66     PUSH       EAX
+//                              Panel_ez.cpp:1243 (2)
+//         00468d67     JMP        LAB_00468d6b
+//                               LAB_00468d69                                                 XREF[1]:     00468d64(j)
+//                              Panel_ez.cpp:1244 (13)
+//         00468d69     PUSH       0xa
+//                               LAB_00468d6b                                                 XREF[1]:     00468d67(j)
+//         00468d6b     MOV        this,dword ptr [rge_base_game]                   = 00000000
+//         00468d71     CALL       RGE_Base_Game::get_font                          RGE_Font * get_font(RGE_Base_Game * this, int
+//                              Panel_ez.cpp:1247 (55)
+//         00468d76     MOV        this,dword ptr [EAX + 0x8]
+//         00468d79     MOV        EDX,dword ptr [EAX + 0x4]
+//         00468d7c     MOV        EAX,dword ptr [EAX]
+//         00468d7e     PUSH       0x0
+//         00468d80     PUSH       0x0
+//         00468d82     PUSH       0x0
+//         00468d84     PUSH       0x0
+//         00468d86     PUSH       0x0
+//         00468d88     PUSH       0x0
+//         00468d8a     PUSH       0x0
+//         00468d8c     PUSH       this
+//         00468d8d     MOV        this,dword ptr [ESP + param_4]
+//         00468d91     PUSH       EDX
+//         00468d92     MOV        EDX,dword ptr [ESP + local_10]
+//         00468d96     PUSH       EAX
+//         00468d97     MOV        EAX,dword ptr [ESP + param_1]
+//         00468d9b     PUSH       EBP
+//         00468d9c     PUSH       EDI
+//         00468d9d     PUSH       this
+//         00468d9e     MOV        this,dword ptr [ESI + 0x20]
+//         00468da1     PUSH       EDX
+//         00468da2     PUSH       EAX
+//         00468da3     PUSH       this
+//         00468da4     MOV        this,dword ptr [EBX]
+//         00468da6     CALL       TTextPanel::setup                                long setup(TTextPanel * this, TDrawArea * par
+//         00468dab     TEST       EAX,EAX
+//                              Panel_ez.cpp:1250 (2)
+//         00468dad     JZ         LAB_00468e2c
+//                              Panel_ez.cpp:1253 (16)
+//         00468daf     MOV        EAX,dword ptr [ESP + param_9]
+//         00468db3     MOV        this,dword ptr [ESP + param_10]
+//         00468db7     TEST       EAX,EAX
+//         00468db9     JZ         LAB_00468dc5
+//         00468dbb     TEST       this,this
+//         00468dbd     JZ         LAB_00468dc5
+//                              Panel_ez.cpp:1254 (4)
+//         00468dbf     PUSH       0x0
+//         00468dc1     PUSH       0x0
+//                              Panel_ez.cpp:1255 (6)
+//         00468dc3     JMP        LAB_00468dd9
+//                               LAB_00468dc5                                                 XREF[2]:     00468db9(j), 00468dbd(j)
+//         00468dc5     TEST       EAX,EAX
+//         00468dc7     JZ         LAB_00468dcd
+//                              Panel_ez.cpp:1256 (2)
+//         00468dc9     PUSH       0x0
+//                              Panel_ez.cpp:1257 (4)
+//         00468dcb     JMP        LAB_00468dd7
+//                               LAB_00468dcd                                                 XREF[1]:     00468dc7(j)
+//         00468dcd     TEST       this,this
+//                              Panel_ez.cpp:1258 (6)
+//         00468dcf     PUSH       0x1
+//         00468dd1     JZ         LAB_00468dd7
+//         00468dd3     PUSH       0x0
+//                              Panel_ez.cpp:1259 (2)
+//         00468dd5     JMP        LAB_00468dd9
+//                               LAB_00468dd7                                                 XREF[2]:     00468dcb(j), 00468dd1(j)
+//                              Panel_ez.cpp:1260 (9)
+//         00468dd7     PUSH       0x3
+//                               LAB_00468dd9                                                 XREF[2]:     00468dc3(j), 00468dd5(j)
+//         00468dd9     MOV        this,dword ptr [EBX]
+//         00468ddb     CALL       TTextPanel::set_alignment                        void set_alignment(TTextPanel * this, Alignme
+//                              Panel_ez.cpp:1262 (12)
+//         00468de0     MOV        EDX,dword ptr [ESP + param_11]
+//         00468de4     MOV        this,dword ptr [EBX]
+//         00468de6     PUSH       EDX
+//         00468de7     CALL       TTextPanel::set_word_wrap                        void set_word_wrap(TTextPanel * this, int par
+//                              Panel_ez.cpp:1264 (15)
+//         00468dec     MOV        this,dword ptr [EBX]
+//         00468dee     MOV        EDX,dword ptr [ESP + param_3]
+//         00468df2     PUSH       EDX
+//         00468df3     MOV        EAX,dword ptr [this->_padding_]
+//         00468df5     CALL       dword ptr [EAX + 0xe8]
+//                              Panel_ez.cpp:1271 (21)
+//         00468dfb     MOV        EAX,dword ptr [ESI + 0x32c]
+//         00468e01     MOV        this,dword ptr [ESI + 0x328]
+//         00468e07     PUSH       EAX
+//         00468e08     PUSH       this=>DAT_fffffff8
+//         00468e09     MOV        this,dword ptr [EBX]
+//         00468e0b     CALL       TTextPanel::set_text_color                       void set_text_color(TTextPanel * this, ulong
+//                              Panel_ez.cpp:1272 (21)
+//         00468e10     MOV        EDX,dword ptr [ESI + 0x334]
+//         00468e16     MOV        EAX,dword ptr [ESI + 0x330]
+//         00468e1c     MOV        this,dword ptr [EBX]
+//         00468e1e     PUSH       EDX
+//         00468e1f     PUSH       EAX=>DAT_fffffff8
+//         00468e20     CALL       TTextPanel::set_highlight_text_color             void set_highlight_text_color(TTextPanel * th
+//                              Panel_ez.cpp:1274 (7)
+//         00468e25     MOV        EAX,0x1
+//         00468e2a     JMP        LAB_00468e38
+//                               LAB_00468e2c                                                 XREF[3]:     00468d4a(j), 00468d58(j),
+//                                                                                                         00468dad(j)
+//                              Panel_ez.cpp:1237 (10)
+//         00468e2c     MOV        dword ptr [ESI + 0xd8],0x1
+//                              Panel_ez.cpp:1238 (2)
+//         00468e36     XOR        EAX,EAX
+//                               LAB_00468e38                                                 XREF[1]:     00468e2a(j)
+//                              Panel_ez.cpp:1275 (21)
+//         00468e38     MOV        this,dword ptr [ESP + local_c]
+//         00468e3c     POP        EDI
+//         00468e3d     POP        ESI
+//         00468e3e     POP        EBP
+//         00468e3f     MOV        dword ptr FS:[0x0],this
+//         00468e46     POP        EBX
+//         00468e47     ADD        ESP,0x10
+//         00468e4a     RET        0x2c
+//         00468e4d     ??         90h
+//         00468e4e     NOP
+//         00468e4f     NOP
     return 0;
 }
 
@@ -7159,130 +7504,61 @@ void TEasy_Panel::set_focus(int param_1) {
 
 void TEasy_Panel::popupOKDialog(long param_1, char* param_2, int param_3, int param_4) {
     /* TODO: Stub */
-//                              void __thiscall popupOKDialog(TEasy_Panel * this, char * param_1, ch
+//                              void __thiscall popupOKDialog(TEasy_Panel * this, long param_1, char
 //              void              <VOID>         <RETURN>
 //              TEasy_Panel *     ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     00469fde(R)
-//              char *            Stack[0x8]:4   param_2                   XREF[1]:     00469f4e(R)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     00469ff1(R)
-//              int               Stack[0x10]:4  param_4                   XREF[1]:     00469fe5(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     00469fc1(W), 0046a00d(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0046a01d(R)
-//              char[256]         Stack[-0x110   temp_title                XREF[1,5]:   00469fbb(W), 00469f60(*), 00469f66(*), 00469f8c(*),
-//                                                                                     00469f9f(*), 00469fce(*)
-//                               ?popupOKDialog@TEasy_Panel@@QAEXPAD0HH@Z                     XREF[9]:     popupOKDialog:00469f21(c),
-//                               TEasy_Panel::popupOKDialog                                                action:00491f25(c),
-//                                                                                                         startGame:004a21a7(c),
-//                                                                                                         startGame:004a2363(c),
-//                                                                                                         startGame:004a23c3(c),
-//                                                                                                         startGame:004a2785(c),
-//                                                                                                         showNetInfo:004a2b50(c),
-//                                                                                                         handle_user_command:004a35ff(c),
-//                                                                                                         handle_user_command:004a3669(c)
-//                              Panel_ez.cpp:1772 (30)
-//         00469f30     MOV        EAX,FS:[0x0]
-//         00469f36     PUSH       -0x1
-//         00469f38     PUSH       FUN_0055e10e
-//         00469f3d     PUSH       EAX
-//         00469f3e     MOV        dword ptr FS:[0x0],ESP
-//         00469f45     SUB        ESP,0x104
-//         00469f4b     PUSH       EBX
-//         00469f4c     PUSH       ESI
-//         00469f4d     PUSH       EDI
-//                              Panel_ez.cpp:1776 (18)
-//         00469f4e     MOV        EDI,dword ptr [ESP + param_2]
-//         00469f55     TEST       EDI,EDI
-//         00469f57     MOV        EBX,this
-//         00469f59     JZ         LAB_00469f66
-//         00469f5b     CMP        byte ptr [EDI],0x0
-//         00469f5e     JZ         LAB_00469f66
-//                              Panel_ez.cpp:1777 (4)
-//         00469f60     LEA        EDX=>temp_title[4],[ESP + 0x10]
-//                              Panel_ez.cpp:1778 (2)
-//         00469f64     JMP        LAB_00469f6f
-//                               LAB_00469f66                                                 XREF[2]:     00469f59(j), 00469f5e(j)
-//                              Panel_ez.cpp:1779 (38)
-//         00469f66     LEA        EDX=>temp_title[4],[ESP + 0x10]
-//         00469f6a     MOV        EDI,s_OKDialog                                   = 4Fh
-//                               LAB_00469f6f                                                 XREF[1]:     00469f64(j)
-//         00469f6f     OR         this,0xffffffff
-//         00469f72     XOR        EAX,EAX
-//         00469f74     SCASB.RE   ES:EDI=>s_OKDialog                               = 4Fh
-//         00469f76     NOT        this
-//         00469f78     SUB        EDI,this
-//         00469f7a     MOV        EAX,this
-//         00469f7c     MOV        ESI,EDI
-//         00469f7e     MOV        EDI,EDX
-//         00469f80     SHR        this,0x2
-//         00469f83     MOVSD.REP  ES:EDI,ESI
-//         00469f85     MOV        this,EAX
-//         00469f87     AND        this,0x3
-//         00469f8a     MOVSB.REP  ES:EDI,ESI
-//                              Panel_ez.cpp:1781 (15)
-//         00469f8c     LEA        this=>temp_title[4],[ESP + 0x10]
-//         00469f90     PUSH       this
-//         00469f91     MOV        this,panel_system
-//         00469f96     CALL       TPanelSystem::panel                              TPanel * panel(TPanelSystem * this, char * pa
-//                              Panel_ez.cpp:1782 (4)
-//         00469f9b     TEST       EAX,EAX
-//         00469f9d     JZ         LAB_00469fae
-//                              Panel_ez.cpp:1783 (15)
-//         00469f9f     LEA        EDX=>temp_title[4],[ESP + 0x10]
-//         00469fa3     MOV        this,panel_system
-//         00469fa8     PUSH       EDX
-//         00469fa9     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                               LAB_00469fae                                                 XREF[1]:     00469f9d(j)
-//                              Panel_ez.cpp:1785 (48)
-//         00469fae     PUSH       0x4a4
-//         00469fb3     CALL       operator_new                                     void * operator_new(uint param_1)
-//         00469fb8     ADD        ESP,0x4
-//         00469fbb     MOV        dword ptr [ESP + temp_title[0]],EAX
-//         00469fbf     TEST       EAX,EAX
-//         00469fc1     MOV        dword ptr [ESP + local_4],0x0
-//         00469fcc     JZ         LAB_00469fdc
-//         00469fce     LEA        this=>temp_title[4],[ESP + 0x10]
-//         00469fd2     PUSH       this
-//         00469fd3     MOV        this,EAX
-//         00469fd5     CALL       TMessageDialog::TMessageDialog                   undefined TMessageDialog(TMessageDialog * thi
-//         00469fda     JMP        LAB_00469fde
-//                               LAB_00469fdc                                                 XREF[1]:     00469fcc(j)
-//         00469fdc     XOR        EAX,EAX
-//                               LAB_00469fde                                                 XREF[1]:     00469fda(j)
-//                              Panel_ez.cpp:1792 (63)
-//         00469fde     MOV        EDX,dword ptr [ESP + param_1]
-//         00469fe5     MOV        this,dword ptr [ESP + param_4]
-//         00469fec     PUSH       0x1e
-//         00469fee     PUSH       0x5a
-//         00469ff0     PUSH       EDX
-//         00469ff1     MOV        EDX,dword ptr [ESP + param_3]
-//         00469ff8     PUSH       0x0
-//         00469ffa     PUSH       this
-//         00469ffb     MOV        this,dword ptr [EBX + 0x444]
-//         0046a001     PUSH       EDX
-//         0046a002     LEA        EDX,[EBX + 0x340]
-//         0046a008     PUSH       this
-//         0046a009     PUSH       EDX
-//         0046a00a     PUSH       EBX
-//         0046a00b     MOV        this,EAX
-//         0046a00d     MOV        dword ptr [ESP + local_4],0xffffffff
-//         0046a018     CALL       TMessageDialog::setup                            long setup(TMessageDialog * this, TPanel * pa
-//                              Panel_ez.cpp:1793 (26)
-//         0046a01d     MOV        this,dword ptr [ESP + local_c]
-//         0046a024     POP        EDI
-//         0046a025     POP        ESI
-//         0046a026     MOV        dword ptr FS:[0x0],this
-//         0046a02d     POP        EBX
-//         0046a02e     ADD        ESP,0x110
-//         0046a034     RET        0x10
-//         0046a037     ??         90h
-//         0046a038     NOP
-//         0046a039     NOP
-//         0046a03a     NOP
-//         0046a03b     NOP
-//         0046a03c     NOP
-//         0046a03d     NOP
-//         0046a03e     NOP
-//         0046a03f     NOP
+//              long              Stack[0x4]:4   param_1                   XREF[1]:     00469eed(R)
+//              char *            Stack[0x8]:4   param_2                   XREF[1]:     00469f10(R)
+//              int               Stack[0xc]:4   param_3                   XREF[1]:     00469f09(R)
+//              int               Stack[0x10]:4  param_4                   XREF[1]:     00469f02(R)
+//              char[256]         Stack[-0x104   text                      XREF[0,2]:   00469ee6(*), 00469f19(*)
+//                               ?popupOKDialog@TEasy_Panel@@QAEXJPADHH@Z                     XREF[45]:    startGame:004914c8(c),
+//                               TEasy_Panel::popupOKDialog                                                startGame:0049163d(c),
+//                                                                                                         handle_idle:00491b09(c),
+//                                                                                                         action:00492665(c),
+//                                                                                                         key_down_action:0049ed67(c),
+//                                                                                                         action:0049fa90(c),
+//                                                                                                         action:0049fabe(c),
+//                                                                                                         action:004a17d8(c),
+//                                                                                                         startGame:004a20c3(c),
+//                                                                                                         startGame:004a21e2(c),
+//                                                                                                         startGame:004a230a(c),
+//                                                                                                         startGame:004a244f(c),
+//                                                                                                         startGame:004a2725(c),
+//                                                                                                         showNetInfo:004a2b67(c),
+//                                                                                                         command_save:004ad769(c),
+//                                                                                                         command_save:004ad7a5(c),
+//                                                                                                         command_save:004ad834(c),
+//                                                                                                         command_save_as:004ad9b8(c),
+//                                                                                                         command_save_as:004ad9e5(c),
+//                                                                                                         setup:00521f5d(c), [more]
+//                              Panel_ez.cpp:1762 (6)
+//         00469ee0     SUB        ESP,0x100
+//                              Panel_ez.cpp:1764 (28)
+//         00469ee6     LEA        EAX=>text[4],[ESP]
+//         00469eea     PUSH       ESI
+//         00469eeb     MOV        ESI,this
+//         00469eed     MOV        this,dword ptr [ESP + param_1]
+//         00469ef4     PUSH       0x100
+//         00469ef9     PUSH       EAX
+//         00469efa     PUSH       this
+//         00469efb     MOV        this,ESI
+//         00469efd     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
+//                              Panel_ez.cpp:1765 (36)
+//         00469f02     MOV        EDX,dword ptr [ESP + param_4]
+//         00469f09     MOV        EAX,dword ptr [ESP + param_3]
+//         00469f10     MOV        this,dword ptr [ESP + param_2]
+//         00469f17     PUSH       EDX
+//         00469f18     PUSH       EAX
+//         00469f19     LEA        EDX=>text[4],[ESP + 0xc]
+//         00469f1d     PUSH       this
+//         00469f1e     PUSH       EDX
+//         00469f1f     MOV        this,ESI
+//         00469f21     CALL       TEasy_Panel::popupOKDialog                       void popupOKDialog(TEasy_Panel * this, char *
+//                              Panel_ez.cpp:1766 (10)
+//         00469f26     POP        ESI
+//         00469f27     ADD        ESP,0x100
+//         00469f2d     RET        0x10
     return;
 }
 
@@ -7417,90 +7693,48 @@ void TEasy_Panel::popupOKDialog(char* param_1, char* param_2, int param_3, int p
 
 void TEasy_Panel::popupYesNoDialog(long param_1, char* param_2, int param_3, int param_4) {
     /* TODO: Stub */
-//                              void __thiscall popupYesNoDialog(TEasy_Panel * this, char * param_1,
+//                              void __thiscall popupYesNoDialog(TEasy_Panel * this, long param_1, c
 //              void              <VOID>         <RETURN>
 //              TEasy_Panel *     ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0046a10a(R)
-//              char *            Stack[0x8]:4   param_2                   XREF[3]:     0046a0a6(R), 0046a0c3(W), 0046a0ea(W)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     0046a117(R)
-//              int               Stack[0x10]:4  param_4                   XREF[1]:     0046a10e(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[3]:     0046a0c9(W), 0046a0f0(W), 0046a130(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0046a13d(R)
-//                               ?popupYesNoDialog@TEasy_Panel@@QAEXPAD0HH@Z                  XREF[7]:     popupYesNoDialog:0046a081(c),
-//                               TEasy_Panel::popupYesNoDialog                                             wnd_proc:0048f597(c),
-//                                                                                                         action:0049e4ae(c),
-//                                                                                                         kickPlayer:004a500d(c),
-//                                                                                                         action:004a6bfa(c),
-//                                                                                                         action:004a7a72(c),
-//                                                                                                         action:004b3a6e(c)
-//                              Panel_ez.cpp:1809 (22)
-//         0046a090     MOV        EAX,FS:[0x0]
-//         0046a096     PUSH       -0x1
-//         0046a098     PUSH       FUN_0055e136
-//         0046a09d     PUSH       EAX
-//         0046a09e     MOV        dword ptr FS:[0x0],ESP
-//         0046a0a5     PUSH       ESI
-//                              Panel_ez.cpp:1812 (16)
-//         0046a0a6     MOV        ESI,dword ptr [ESP + param_2]
-//         0046a0aa     PUSH       EDI
-//         0046a0ab     TEST       ESI,ESI
-//         0046a0ad     MOV        EDI,this
-//         0046a0af     JZ         LAB_0046a0dd
-//         0046a0b1     CMP        byte ptr [ESI],0x0
-//         0046a0b4     JZ         LAB_0046a0dd
-//                              Panel_ez.cpp:1813 (30)
-//         0046a0b6     PUSH       0x4a4
-//         0046a0bb     CALL       operator_new                                     void * operator_new(uint param_1)
-//         0046a0c0     ADD        ESP,0x4
-//         0046a0c3     MOV        dword ptr [ESP + param_2],EAX
-//         0046a0c7     TEST       EAX,EAX
-//         0046a0c9     MOV        dword ptr [ESP + local_4],0x0
-//         0046a0d1     JZ         LAB_0046a108
-//         0046a0d3     PUSH       ESI
-//                              Panel_ez.cpp:1815 (54)
-//         0046a0d4     MOV        this,EAX
-//         0046a0d6     CALL       TMessageDialog::TMessageDialog                   undefined TMessageDialog(TMessageDialog * thi
-//         0046a0db     JMP        LAB_0046a10a
-//                               LAB_0046a0dd                                                 XREF[2]:     0046a0af(j), 0046a0b4(j)
-//         0046a0dd     PUSH       0x4a4
-//         0046a0e2     CALL       operator_new                                     void * operator_new(uint param_1)
-//         0046a0e7     ADD        ESP,0x4
-//         0046a0ea     MOV        dword ptr [ESP + param_2],EAX
-//         0046a0ee     TEST       EAX,EAX
-//         0046a0f0     MOV        dword ptr [ESP + local_4],0x1
-//         0046a0f8     JZ         LAB_0046a108
-//         0046a0fa     PUSH       s_YesNoDialog                                    = 59h
-//         0046a0ff     MOV        this,EAX
-//         0046a101     CALL       TMessageDialog::TMessageDialog                   undefined TMessageDialog(TMessageDialog * thi
-//         0046a106     JMP        LAB_0046a10a
-//                               LAB_0046a108                                                 XREF[2]:     0046a0d1(j), 0046a0f8(j)
-//         0046a108     XOR        EAX,EAX
-//                               LAB_0046a10a                                                 XREF[2]:     0046a0db(j), 0046a106(j)
-//                              Panel_ez.cpp:1822 (51)
-//         0046a10a     MOV        this,dword ptr [ESP + param_1]
-//         0046a10e     MOV        EDX,dword ptr [ESP + param_4]
-//         0046a112     PUSH       0x1e
-//         0046a114     PUSH       0x5a
-//         0046a116     PUSH       this
-//         0046a117     MOV        this,dword ptr [ESP + param_3]
-//         0046a11b     PUSH       0x2
-//         0046a11d     PUSH       EDX
-//         0046a11e     MOV        EDX,dword ptr [EDI + 0x444]
-//         0046a124     PUSH       this
-//         0046a125     LEA        this,[EDI + 0x340]
-//         0046a12b     PUSH       EDX
-//         0046a12c     PUSH       this
-//         0046a12d     PUSH       EDI
-//         0046a12e     MOV        this,EAX
-//         0046a130     MOV        dword ptr [ESP + local_4],0xffffffff
-//         0046a138     CALL       TMessageDialog::setup                            long setup(TMessageDialog * this, TPanel * pa
-//                              Panel_ez.cpp:1823 (19)
-//         0046a13d     MOV        this,dword ptr [ESP + local_c]
-//         0046a141     POP        EDI
-//         0046a142     MOV        dword ptr FS:[0x0],this
-//         0046a149     POP        ESI
-//         0046a14a     ADD        ESP,0xc
-//         0046a14d     RET        0x10
+//              long              Stack[0x4]:4   param_1                   XREF[1]:     0046a04d(R)
+//              char *            Stack[0x8]:4   param_2                   XREF[1]:     0046a070(R)
+//              int               Stack[0xc]:4   param_3                   XREF[1]:     0046a069(R)
+//              int               Stack[0x10]:4  param_4                   XREF[1]:     0046a062(R)
+//              char[256]         Stack[-0x104   text                      XREF[0,2]:   0046a046(*), 0046a079(*)
+//                               ?popupYesNoDialog@TEasy_Panel@@QAEXJPADHH@Z                  XREF[7]:     action:0043f85f(c),
+//                               TEasy_Panel::popupYesNoDialog                                             action:0043f93f(c),
+//                                                                                                         action:0043fae5(c),
+//                                                                                                         action:0043fc26(c),
+//                                                                                                         wnd_proc:004971d5(c),
+//                                                                                                         action:0049fafa(c),
+//                                                                                                         action:004a7d1c(c)
+//                              Panel_ez.cpp:1799 (6)
+//         0046a040     SUB        ESP,0x100
+//                              Panel_ez.cpp:1801 (28)
+//         0046a046     LEA        EAX=>text[4],[ESP]
+//         0046a04a     PUSH       ESI
+//         0046a04b     MOV        ESI,this
+//         0046a04d     MOV        this,dword ptr [ESP + param_1]
+//         0046a054     PUSH       0x100
+//         0046a059     PUSH       EAX
+//         0046a05a     PUSH       this
+//         0046a05b     MOV        this,ESI
+//         0046a05d     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
+//                              Panel_ez.cpp:1802 (36)
+//         0046a062     MOV        EDX,dword ptr [ESP + param_4]
+//         0046a069     MOV        EAX,dword ptr [ESP + param_3]
+//         0046a070     MOV        this,dword ptr [ESP + param_2]
+//         0046a077     PUSH       EDX
+//         0046a078     PUSH       EAX
+//         0046a079     LEA        EDX=>text[4],[ESP + 0xc]
+//         0046a07d     PUSH       this
+//         0046a07e     PUSH       EDX
+//         0046a07f     MOV        this,ESI
+//         0046a081     CALL       TEasy_Panel::popupYesNoDialog                    void popupYesNoDialog(TEasy_Panel * this, cha
+//                              Panel_ez.cpp:1803 (10)
+//         0046a086     POP        ESI
+//         0046a087     ADD        ESP,0x100
+//         0046a08d     RET        0x10
     return;
 }
 
@@ -7595,87 +7829,44 @@ void TEasy_Panel::popupYesNoDialog(char* param_1, char* param_2, int param_3, in
 
 void TEasy_Panel::popupYesNoCancelDialog(long param_1, char* param_2, int param_3, int param_4) {
     /* TODO: Stub */
-//                              void __thiscall popupYesNoCancelDialog(TEasy_Panel * this, char * pa
+//                              void __thiscall popupYesNoCancelDialog(TEasy_Panel * this, long para
 //              void              <VOID>         <RETURN>
 //              TEasy_Panel *     ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0046a21a(R)
-//              char *            Stack[0x8]:4   param_2                   XREF[3]:     0046a1b6(R), 0046a1d3(W), 0046a1fa(W)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     0046a227(R)
-//              int               Stack[0x10]:4  param_4                   XREF[1]:     0046a21e(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[3]:     0046a1d9(W), 0046a200(W), 0046a240(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0046a24d(R)
-//                               ?popupYesNoCancelDialog@TEasy_Panel@@QAEXPAD0HH@Z            XREF[3]:     popupYesNoCancelDialog:0046a191(c)
-//                               TEasy_Panel::popupYesNoCancelDialog                                       action:004906e9(c),
-//                                                                                                         action:00490789(c)
-//                              Panel_ez.cpp:1840 (22)
-//         0046a1a0     MOV        EAX,FS:[0x0]
-//         0046a1a6     PUSH       -0x1
-//         0046a1a8     PUSH       FUN_0055e156
-//         0046a1ad     PUSH       EAX
-//         0046a1ae     MOV        dword ptr FS:[0x0],ESP
-//         0046a1b5     PUSH       ESI
-//                              Panel_ez.cpp:1843 (16)
-//         0046a1b6     MOV        ESI,dword ptr [ESP + param_2]
-//         0046a1ba     PUSH       EDI
-//         0046a1bb     TEST       ESI,ESI
-//         0046a1bd     MOV        EDI,this
-//         0046a1bf     JZ         LAB_0046a1ed
-//         0046a1c1     CMP        byte ptr [ESI],0x0
-//         0046a1c4     JZ         LAB_0046a1ed
-//                              Panel_ez.cpp:1844 (30)
-//         0046a1c6     PUSH       0x4a4
-//         0046a1cb     CALL       operator_new                                     void * operator_new(uint param_1)
-//         0046a1d0     ADD        ESP,0x4
-//         0046a1d3     MOV        dword ptr [ESP + param_2],EAX
-//         0046a1d7     TEST       EAX,EAX
-//         0046a1d9     MOV        dword ptr [ESP + local_4],0x0
-//         0046a1e1     JZ         LAB_0046a218
-//         0046a1e3     PUSH       ESI
-//                              Panel_ez.cpp:1846 (54)
-//         0046a1e4     MOV        this,EAX
-//         0046a1e6     CALL       TMessageDialog::TMessageDialog                   undefined TMessageDialog(TMessageDialog * thi
-//         0046a1eb     JMP        LAB_0046a21a
-//                               LAB_0046a1ed                                                 XREF[2]:     0046a1bf(j), 0046a1c4(j)
-//         0046a1ed     PUSH       0x4a4
-//         0046a1f2     CALL       operator_new                                     void * operator_new(uint param_1)
-//         0046a1f7     ADD        ESP,0x4
-//         0046a1fa     MOV        dword ptr [ESP + param_2],EAX
-//         0046a1fe     TEST       EAX,EAX
-//         0046a200     MOV        dword ptr [ESP + local_4],0x1
-//         0046a208     JZ         LAB_0046a218
-//         0046a20a     PUSH       s_YesNoCancelDialog                              = 59h
-//         0046a20f     MOV        this,EAX
-//         0046a211     CALL       TMessageDialog::TMessageDialog                   undefined TMessageDialog(TMessageDialog * thi
-//         0046a216     JMP        LAB_0046a21a
-//                               LAB_0046a218                                                 XREF[2]:     0046a1e1(j), 0046a208(j)
-//         0046a218     XOR        EAX,EAX
-//                               LAB_0046a21a                                                 XREF[2]:     0046a1eb(j), 0046a216(j)
-//                              Panel_ez.cpp:1853 (51)
-//         0046a21a     MOV        this,dword ptr [ESP + param_1]
-//         0046a21e     MOV        EDX,dword ptr [ESP + param_4]
-//         0046a222     PUSH       0x19
-//                              language.dll match for 0x78: "10"
-//         0046a224     PUSH       0x78
-//         0046a226     PUSH       this
-//         0046a227     MOV        this,dword ptr [ESP + param_3]
-//         0046a22b     PUSH       0x4
-//         0046a22d     PUSH       EDX
-//         0046a22e     MOV        EDX,dword ptr [EDI + 0x444]
-//         0046a234     PUSH       this
-//         0046a235     LEA        this,[EDI + 0x340]
-//         0046a23b     PUSH       EDX
-//         0046a23c     PUSH       this
-//         0046a23d     PUSH       EDI
-//         0046a23e     MOV        this,EAX
-//         0046a240     MOV        dword ptr [ESP + local_4],0xffffffff
-//         0046a248     CALL       TMessageDialog::setup                            long setup(TMessageDialog * this, TPanel * pa
-//                              Panel_ez.cpp:1854 (19)
-//         0046a24d     MOV        this,dword ptr [ESP + local_c]
-//         0046a251     POP        EDI
-//         0046a252     MOV        dword ptr FS:[0x0],this
-//         0046a259     POP        ESI
-//         0046a25a     ADD        ESP,0xc
-//         0046a25d     RET        0x10
+//              long              Stack[0x4]:4   param_1                   XREF[1]:     0046a15d(R)
+//              char *            Stack[0x8]:4   param_2                   XREF[1]:     0046a180(R)
+//              int               Stack[0xc]:4   param_3                   XREF[1]:     0046a179(R)
+//              int               Stack[0x10]:4  param_4                   XREF[1]:     0046a172(R)
+//              char[256]         Stack[-0x104   text                      XREF[0,2]:   0046a156(*), 0046a189(*)
+//                               ?popupYesNoCancelDialog@TEasy_Panel@@QAEXJPADHH@Z            XREF[3]:     command_new:004ad31f(c),
+//                               TEasy_Panel::popupYesNoCancelDialog                                       command_open:004ad5c5(c),
+//                                                                                                         command_quit:004ad6bf(c)
+//                              Panel_ez.cpp:1830 (6)
+//         0046a150     SUB        ESP,0x100
+//                              Panel_ez.cpp:1832 (28)
+//         0046a156     LEA        EAX=>text[4],[ESP]
+//         0046a15a     PUSH       ESI
+//         0046a15b     MOV        ESI,this
+//         0046a15d     MOV        this,dword ptr [ESP + param_1]
+//         0046a164     PUSH       0x100
+//         0046a169     PUSH       EAX
+//         0046a16a     PUSH       this
+//         0046a16b     MOV        this,ESI
+//         0046a16d     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
+//                              Panel_ez.cpp:1833 (36)
+//         0046a172     MOV        EDX,dword ptr [ESP + param_4]
+//         0046a179     MOV        EAX,dword ptr [ESP + param_3]
+//         0046a180     MOV        this,dword ptr [ESP + param_2]
+//         0046a187     PUSH       EDX
+//         0046a188     PUSH       EAX
+//         0046a189     LEA        EDX=>text[4],[ESP + 0xc]
+//         0046a18d     PUSH       this
+//         0046a18e     PUSH       EDX
+//         0046a18f     MOV        this,ESI
+//         0046a191     CALL       TEasy_Panel::popupYesNoCancelDialog              void popupYesNoCancelDialog(TEasy_Panel * thi
+//                              Panel_ez.cpp:1834 (10)
+//         0046a196     POP        ESI
+//         0046a197     ADD        ESP,0x100
+//         0046a19d     RET        0x10
     return;
 }
 
@@ -7767,75 +7958,72 @@ void TEasy_Panel::popupYesNoCancelDialog(char* param_1, char* param_2, int param
 
 void TEasy_Panel::command_help(char* param_1, long param_2, long param_3, long param_4, long param_5) {
     /* TODO: Stub */
-//                              void __thiscall command_help(TEasy_Panel * this, char * param_1, cha
+//                              void __thiscall command_help(TEasy_Panel * this, char * param_1, lon
 //              void              <VOID>         <RETURN>
 //              TEasy_Panel *     ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0046a331(R)
-//              char *            Stack[0x8]:4   param_2                   XREF[2]:     0046a2f6(R), 0046a313(W)
-//              long              Stack[0xc]:4   param_3                   XREF[1]:     0046a32c(R)
-//              long              Stack[0x10]:4  param_4                   XREF[1]:     0046a327(R)
-//              long              Stack[0x14]:4  param_5                   XREF[1]:     0046a323(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0046a319(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0046a340(R)
-//                               ?command_help@TEasy_Panel@@IAEXPAD0JJJ@Z                     XREF[1]:     command_do_popup_help:0046a4ba(c)
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0046a2bb(R)
+//              long              Stack[0x8]:4   param_2                   XREF[2]:     0046a277(R), 0046a29d(W)
+//              long              Stack[0xc]:4   param_3                   XREF[1]:     0046a2b6(R)
+//              long              Stack[0x10]:4  param_4                   XREF[1]:     0046a2b1(R)
+//              long              Stack[0x14]:4  param_5                   XREF[1]:     0046a2ad(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0046a2a3(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0046a2ca(R)
+//                               ?command_help@TEasy_Panel@@IAEXPADJJJJ@Z
 //                               TEasy_Panel::command_help
-//                              Panel_ez.cpp:1883 (22)
-//         0046a2e0     MOV        EAX,FS:[0x0]
-//         0046a2e6     PUSH       -0x1
-//         0046a2e8     PUSH       FUN_0055e18b
-//         0046a2ed     PUSH       EAX
-//         0046a2ee     MOV        dword ptr FS:[0x0],ESP
-//         0046a2f5     PUSH       ESI
-//                              Panel_ez.cpp:1886 (16)
-//         0046a2f6     MOV        ESI,dword ptr [ESP + param_2]
-//         0046a2fa     PUSH       EDI
-//         0046a2fb     TEST       ESI,ESI
-//         0046a2fd     MOV        EDI,this
-//         0046a2ff     JZ         LAB_0046a340
-//         0046a301     CMP        byte ptr [ESI],0x0
-//         0046a304     JZ         LAB_0046a340
-//                              Panel_ez.cpp:1890 (58)
-//         0046a306     PUSH       0x5a4
-//         0046a30b     CALL       operator_new                                     void * operator_new(uint param_1)
-//         0046a310     ADD        ESP,0x4
-//         0046a313     MOV        dword ptr [ESP + param_2],EAX
-//         0046a317     TEST       EAX,EAX
-//         0046a319     MOV        dword ptr [ESP + local_4],0x0
-//         0046a321     JZ         LAB_0046a340
-//         0046a323     MOV        this,dword ptr [ESP + param_5]
-//         0046a327     MOV        EDX,dword ptr [ESP + param_4]
-//         0046a32b     PUSH       this
-//         0046a32c     MOV        this,dword ptr [ESP + param_3]
-//         0046a330     PUSH       EDX
-//         0046a331     MOV        EDX,dword ptr [ESP + param_1]
-//         0046a335     PUSH       this
-//         0046a336     PUSH       ESI
-//         0046a337     PUSH       EDX
-//         0046a338     PUSH       EDI
-//         0046a339     MOV        this,EAX
-//         0046a33b     CALL       THelpDialog::THelpDialog                         undefined THelpDialog(THelpDialog * this, TEa
-//                               LAB_0046a340                                                 XREF[3]:     0046a2ff(j), 0046a304(j),
-//                                                                                                         0046a321(j)
-//                              Panel_ez.cpp:1892 (19)
-//         0046a340     MOV        this,dword ptr [ESP + local_c]
-//         0046a344     POP        EDI
-//         0046a345     MOV        dword ptr FS:[0x0],this
-//         0046a34c     POP        ESI
-//         0046a34d     ADD        ESP,0xc
-//         0046a350     RET        0x14
-//         0046a353     ??         90h
-//         0046a354     NOP
-//         0046a355     NOP
-//         0046a356     NOP
-//         0046a357     NOP
-//         0046a358     NOP
-//         0046a359     NOP
-//         0046a35a     NOP
-//         0046a35b     NOP
-//         0046a35c     NOP
-//         0046a35d     NOP
-//         0046a35e     NOP
-//         0046a35f     NOP
+//                              Panel_ez.cpp:1861 (23)
+//         0046a260     MOV        EAX,FS:[0x0]
+//         0046a266     PUSH       -0x1
+//         0046a268     PUSH       FUN_0055e16b
+//         0046a26d     PUSH       EAX
+//         0046a26e     MOV        dword ptr FS:[0x0],ESP
+//         0046a275     PUSH       ESI
+//         0046a276     PUSH       EDI
+//                              Panel_ez.cpp:1866 (10)
+//         0046a277     MOV        EDI,dword ptr [ESP + param_2]
+//         0046a27b     TEST       EDI,EDI
+//         0046a27d     MOV        ESI,this
+//         0046a27f     JL         LAB_0046a2ca
+//                              Panel_ez.cpp:1868 (6)
+//         0046a281     PUSH       EDI
+//         0046a282     CALL       TPanel::get_string                               char * get_string(TPanel * this, int param_1)
+//                              Panel_ez.cpp:1869 (9)
+//         0046a287     TEST       EAX,EAX
+//         0046a289     JNZ        LAB_0046a290
+//         0046a28b     CMP        byte ptr [EAX],0x0
+//         0046a28e     JZ         LAB_0046a2ca
+//                               LAB_0046a290                                                 XREF[1]:     0046a289(j)
+//                              Panel_ez.cpp:1873 (58)
+//         0046a290     PUSH       0x5a4
+//         0046a295     CALL       operator_new                                     void * operator_new(uint param_1)
+//         0046a29a     ADD        ESP,0x4
+//         0046a29d     MOV        dword ptr [ESP + param_2],EAX
+//         0046a2a1     TEST       EAX,EAX
+//         0046a2a3     MOV        dword ptr [ESP + local_4],0x0
+//         0046a2ab     JZ         LAB_0046a2ca
+//         0046a2ad     MOV        this,dword ptr [ESP + param_5]
+//         0046a2b1     MOV        EDX,dword ptr [ESP + param_4]
+//         0046a2b5     PUSH       this
+//         0046a2b6     MOV        this,dword ptr [ESP + param_3]
+//         0046a2ba     PUSH       EDX
+//         0046a2bb     MOV        EDX,dword ptr [ESP + param_1]
+//         0046a2bf     PUSH       this
+//         0046a2c0     PUSH       EDI
+//         0046a2c1     PUSH       EDX
+//         0046a2c2     PUSH       ESI
+//         0046a2c3     MOV        this,EAX
+//         0046a2c5     CALL       THelpDialog::THelpDialog                         undefined THelpDialog(THelpDialog * this, TEa
+//                               LAB_0046a2ca                                                 XREF[3]:     0046a27f(j), 0046a28e(j),
+//                                                                                                         0046a2ab(j)
+//                              Panel_ez.cpp:1876 (19)
+//         0046a2ca     MOV        this,dword ptr [ESP + local_c]
+//         0046a2ce     POP        EDI
+//         0046a2cf     MOV        dword ptr FS:[0x0],this
+//         0046a2d6     POP        ESI
+//         0046a2d7     ADD        ESP,0xc
+//         0046a2da     RET        0x14
+//         0046a2dd     ??         90h
+//         0046a2de     NOP
+//         0046a2df     NOP
     return;
 }
 

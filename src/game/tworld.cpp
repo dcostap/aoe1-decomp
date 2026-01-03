@@ -741,52 +741,50 @@ void TRIBE_World::command_init(int param_1, TCommunications_Handler* param_2) {
 
 void TRIBE_World::scenario_init(int param_1, RGE_Game_World* param_2) {
     /* TODO: Stub */
-//                              void __thiscall scenario_init(TRIBE_World * this, RGE_Game_World * p
+//                              void __thiscall scenario_init(TRIBE_World * this, int param_1, RGE_G
 //              void              <VOID>         <RETURN>
 //              TRIBE_World *     ECX:4 (auto)   this
-//              RGE_Game_World    Stack[0x4]:4   param_1                   XREF[1]:     0052e626(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0052e61c(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0052e636(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0052e616(W)
-//                               ?scenario_init@TRIBE_World@@UAEXPAVRGE_Game_World@@@Z        XREF[1]:     00577548(*)
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     0052e5ca(R)
+//              RGE_Game_World    Stack[0x8]:4   param_2                   XREF[1]:     0052e5c6(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0052e5bc(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0052e5db(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0052e5b6(W)
+//                               ?scenario_init@TRIBE_World@@UAEXHPAVRGE_Game_World@@@Z       XREF[1]:     0057754c(*)
 //                               TRIBE_World::scenario_init
-//                              tworld.cpp:269 (25)
-//         0052e5f0     PUSH       -0x1
-//         0052e5f2     PUSH       FUN_005619eb
-//         0052e5f7     MOV        EAX,FS:[0x0]
-//         0052e5fd     PUSH       EAX
-//         0052e5fe     MOV        dword ptr FS:[0x0],ESP
-//         0052e605     PUSH       this
-//         0052e606     PUSH       ESI
-//         0052e607     MOV        ESI,this
-//                              tworld.cpp:270 (45)
-//         0052e609     PUSH       0x514c
-//         0052e60e     CALL       operator_new                                     void * operator_new(uint param_1)
-//         0052e613     ADD        ESP,0x4
-//         0052e616     MOV        dword ptr [ESP + local_10],EAX
-//         0052e61a     TEST       EAX,EAX
-//         0052e61c     MOV        dword ptr [ESP + local_4],0x0
-//         0052e624     JZ         LAB_0052e634
-//         0052e626     MOV        this,dword ptr [ESP + param_1]
-//         0052e62a     PUSH       this
-//         0052e62b     MOV        this,EAX
-//         0052e62d     CALL       T_Scenario::T_Scenario                           undefined T_Scenario(T_Scenario * this, RGE_G
-//         0052e632     JMP        LAB_0052e636
-//                               LAB_0052e634                                                 XREF[1]:     0052e624(j)
-//         0052e634     XOR        EAX,EAX
-//                               LAB_0052e636                                                 XREF[1]:     0052e632(j)
-//                              tworld.cpp:271 (21)
-//         0052e636     MOV        this,dword ptr [ESP + local_c]
-//         0052e63a     MOV        dword ptr [ESI + 0x5c],EAX
-//         0052e63d     MOV        dword ptr FS:[0x0],this
-//         0052e644     POP        ESI
-//         0052e645     ADD        ESP,0x10
-//         0052e648     RET        0x4
-//         0052e64b     ??         90h
-//         0052e64c     NOP
-//         0052e64d     NOP
-//         0052e64e     NOP
-//         0052e64f     NOP
+//                              tworld.cpp:264 (25)
+//         0052e590     PUSH       -0x1
+//         0052e592     PUSH       FUN_005619cb
+//         0052e597     MOV        EAX,FS:[0x0]
+//         0052e59d     PUSH       EAX
+//         0052e59e     MOV        dword ptr FS:[0x0],ESP
+//         0052e5a5     PUSH       this
+//         0052e5a6     PUSH       ESI
+//         0052e5a7     MOV        ESI,this
+//                              tworld.cpp:265 (50)
+//         0052e5a9     PUSH       0x514c
+//         0052e5ae     CALL       operator_new                                     void * operator_new(uint param_1)
+//         0052e5b3     ADD        ESP,0x4
+//         0052e5b6     MOV        dword ptr [ESP + local_10],EAX
+//         0052e5ba     TEST       EAX,EAX
+//         0052e5bc     MOV        dword ptr [ESP + local_4],0x0
+//         0052e5c4     JZ         LAB_0052e5d9
+//         0052e5c6     MOV        this,dword ptr [ESP + param_2]
+//         0052e5ca     MOV        EDX,dword ptr [ESP + param_1]
+//         0052e5ce     PUSH       this
+//         0052e5cf     PUSH       EDX
+//         0052e5d0     MOV        this,EAX
+//         0052e5d2     CALL       T_Scenario::T_Scenario                           undefined T_Scenario(T_Scenario * this, int p
+//         0052e5d7     JMP        LAB_0052e5db
+//                               LAB_0052e5d9                                                 XREF[1]:     0052e5c4(j)
+//         0052e5d9     XOR        EAX,EAX
+//                               LAB_0052e5db                                                 XREF[1]:     0052e5d7(j)
+//                              tworld.cpp:266 (21)
+//         0052e5db     MOV        this,dword ptr [ESP + local_c]
+//         0052e5df     MOV        dword ptr [ESI + 0x5c],EAX
+//         0052e5e2     MOV        dword ptr FS:[0x0],this
+//         0052e5e9     POP        ESI
+//         0052e5ea     ADD        ESP,0x10
+//         0052e5ed     RET        0x8
     return;
 }
 

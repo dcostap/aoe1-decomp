@@ -3,36 +3,102 @@
 
 InfluenceMap::InfluenceMap(int param_1, int param_2, uchar param_3) {
     /* TODO: Stub */
-//                              undefined __thiscall InfluenceMap(InfluenceMap * this, int param_1)
+//                              undefined __thiscall InfluenceMap(InfluenceMap * this, int param_1,
 //              undefined         <UNASSIGNED>   <RETURN>
 //              InfluenceMap *    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     0044e06a(R)
-//                               ??0InfluenceMap@@QAE@H@Z
-//                               InfluenceMap::InfluenceMap
-//                              infmap.cpp:45 (26)
-//         0044e050     PUSH       ESI
-//         0044e051     MOV        ESI,this
-//         0044e053     OR         EAX,0xffffffff
-//         0044e056     MOV        dword ptr [ESI + 0x4],EAX
-//         0044e059     MOV        dword ptr [ESI + 0x8],EAX
-//         0044e05c     XOR        EAX,EAX
-//         0044e05e     MOV        dword ptr [ESI],InfluenceMap::`vftable'          = 0044e030
-//         0044e064     MOV        dword ptr [ESI + 0xc],EAX
-//         0044e067     MOV        dword ptr [ESI + 0x10],EAX
-//                              infmap.cpp:46 (10)
-//         0044e06a     MOV        EAX,dword ptr [ESP + param_1]
-//         0044e06e     PUSH       EAX
-//         0044e06f     CALL       InfluenceMap::load                               void load(InfluenceMap * this, int param_1)
-//                              infmap.cpp:47 (6)
-//         0044e074     MOV        EAX,ESI
-//         0044e076     POP        ESI
-//         0044e077     RET        0x4
-//         0044e07a     ??         90h
-//         0044e07b     NOP
-//         0044e07c     NOP
-//         0044e07d     NOP
-//         0044e07e     NOP
-//         0044e07f     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     0044df88(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     0044df80(R)
+//              uchar             Stack[0xc]:1   param_3                   XREF[1]:     0044dfb4(R)
+//                               ??0InfluenceMap@@QAE@HHE@Z                                   XREF[5]:     $E9:004d6ae1(c), $E14:004d6b2b(c),
+//                               InfluenceMap::InfluenceMap                                                $E19:004d6b7b(c),
+//                                                                                                         TribeInformationAIModule:004d6c9e(
+//                                                                                                         TribeInformationAIModule:004d713b(
+//                              infmap.cpp:26 (16)
+//         0044df80     MOV        EAX,dword ptr [ESP + param_2]
+//         0044df84     PUSH       EBX
+//         0044df85     PUSH       ESI
+//         0044df86     MOV        ESI,this
+//         0044df88     MOV        this,dword ptr [ESP + param_1]
+//         0044df8c     PUSH       EDI
+//         0044df8d     MOV        dword ptr [ESI + 0x8],EAX
+//                              infmap.cpp:27 (8)
+//         0044df90     IMUL       EAX,this
+//         0044df93     MOV        EBX,EAX
+//         0044df95     MOV        dword ptr [ESI + 0x4],this
+//                              infmap.cpp:28 (28)
+//         0044df98     PUSH       EBX
+//         0044df99     MOV        dword ptr [ESI + 0xc],0x0
+//         0044dfa0     MOV        dword ptr [ESI + 0x10],0x0
+//         0044dfa7     MOV        dword ptr [ESI],InfluenceMap::`vftable'          = 0044e030
+//         0044dfad     CALL       operator_new                                     void * operator_new(uint param_1)
+//         0044dfb2     MOV        EDI,EAX
+//                              infmap.cpp:29 (43)
+//         0044dfb4     MOV        EAX,dword ptr [ESP + param_3]
+//         0044dfb8     AND        EAX,0xff
+//         0044dfbd     MOV        this,EBX
+//         0044dfbf     MOV        BL,AL
+//         0044dfc1     MOV        EDX,this
+//         0044dfc3     MOV        BH,BL
+//         0044dfc5     MOV        dword ptr [ESI + 0x14],EDI
+//         0044dfc8     MOV        EAX,EBX
+//         0044dfca     ADD        ESP,0x4
+//         0044dfcd     SHL        EAX,0x10
+//         0044dfd0     MOV        AX,BX
+//         0044dfd3     SHR        this,0x2
+//         0044dfd6     STOSD.REP  ES:EDI
+//         0044dfd8     MOV        this,EDX
+//         0044dfda     AND        this,0x3
+//         0044dfdd     STOSB.REP  ES:EDI
+//                              infmap.cpp:30 (18)
+//         0044dfdf     MOV        EAX,dword ptr [ESI + 0x8]
+//         0044dfe2     SHL        EAX,0x2
+//         0044dfe5     PUSH       EAX
+//         0044dfe6     CALL       operator_new                                     void * operator_new(uint param_1)
+//         0044dfeb     ADD        ESP,0x4
+//         0044dfee     MOV        dword ptr [ESI + 0x18],EAX
+//                              infmap.cpp:31 (4)
+//         0044dff1     TEST       EAX,EAX
+//         0044dff3     JZ         LAB_0044e01a
+//                              infmap.cpp:32 (11)
+//         0044dff5     MOV        EDX,dword ptr [ESI + 0x8]
+//         0044dff8     XOR        EAX,EAX
+//         0044dffa     XOR        this,this
+//         0044dffc     TEST       EDX,EDX
+//         0044dffe     JLE        LAB_0044e01a
+//                               LAB_0044e000                                                 XREF[1]:     0044e018(j)
+//                              infmap.cpp:33 (26)
+//         0044e000     MOV        EDI,dword ptr [ESI + 0x14]
+//         0044e003     MOV        EDX,this
+//         0044e005     ADD        EDX,EDI
+//         0044e007     MOV        EDI,dword ptr [ESI + 0x18]
+//         0044e00a     MOV        dword ptr [EDI + EAX*0x4],EDX
+//         0044e00d     MOV        EDI,dword ptr [ESI + 0x4]
+//         0044e010     MOV        EDX,dword ptr [ESI + 0x8]
+//         0044e013     INC        EAX
+//         0044e014     ADD        this,EDI
+//         0044e016     CMP        EAX,EDX
+//         0044e018     JL         LAB_0044e000
+//                               LAB_0044e01a                                                 XREF[2]:     0044dff3(j), 0044dffe(j)
+//                              infmap.cpp:36 (8)
+//         0044e01a     MOV        EAX,ESI
+//         0044e01c     POP        EDI
+//         0044e01d     POP        ESI
+//         0044e01e     POP        EBX
+//         0044e01f     RET        0xc
+//         0044e022     ??         90h
+//         0044e023     NOP
+//         0044e024     NOP
+//         0044e025     NOP
+//         0044e026     NOP
+//         0044e027     NOP
+//         0044e028     NOP
+//         0044e029     NOP
+//         0044e02a     NOP
+//         0044e02b     NOP
+//         0044e02c     NOP
+//         0044e02d     NOP
+//         0044e02e     NOP
+//         0044e02f     NOP
 }
 
 InfluenceMap::InfluenceMap(int param_1) {
@@ -767,107 +833,70 @@ int InfluenceMap::setValue(int param_1, int param_2, uchar param_3) {
 //                              int __thiscall setValue(InfluenceMap * this, int param_1, int param_
 //              int               EAX:4          <RETURN>
 //              InfluenceMap *    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[4]:     0044e573(R), 0044e5b0(W), 0044e5d7(R), 0044e5de(W)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     0044e563(R)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     0044e56e(R)
-//              int               Stack[0x10]:4  param_4                   XREF[3]:     0044e569(R), 0044e584(W), 0044e5d3(R)
-//              uchar             Stack[0x14]:1  param_5                   XREF[1]:     0044e5b6(R)
-//                               ?setValue@InfluenceMap@@QAEHHHHHE@Z                          XREF[4]:     setupInfluenceMap:004df09b(c),
-//                               InfluenceMap::setValue                                                    setupInfluenceMap:004df67d(c),
-//                                                                                                         setGroupInfluences:00500ef2(c),
-//                                                                                                         setGroupInfluences:005010be(c)
-//                              infmap.cpp:219 (3)
-//         0044e560     MOV        EAX,dword ptr [ECX + this->xReferencePointValue]
-//                              infmap.cpp:224 (6)
-//         0044e563     MOV        EDX,dword ptr [ESP + param_2]
-//         0044e567     PUSH       EBX
-//         0044e568     PUSH       EBP
-//                              infmap.cpp:225 (25)
-//         0044e569     MOV        EBP,dword ptr [ESP + param_4]
-//         0044e56d     PUSH       ESI
-//         0044e56e     MOV        ESI,dword ptr [ESP + param_3]
-//         0044e572     PUSH       EDI
-//         0044e573     MOV        EDI,dword ptr [ESP + param_1]
-//         0044e577     SUB        ESI,EAX
-//         0044e579     SUB        EDI,EAX
-//         0044e57b     MOV        EAX,dword ptr [ECX + this->yReferencePointValue]
-//         0044e57e     SUB        EDX,EAX
-//         0044e580     SUB        EBP,EAX
-//                              infmap.cpp:227 (26)
-//         0044e582     TEST       EDI,EDI
-//         0044e584     MOV        dword ptr [ESP + param_4],EBP
-//         0044e588     JL         LAB_0044e5f0
-//         0044e58a     TEST       EDX,EDX
-//         0044e58c     JL         LAB_0044e5f0
-//         0044e58e     MOV        EBX,dword ptr [ECX + this->xSizeValue]
-//         0044e591     CMP        EDI,EBX
-//         0044e593     JGE        LAB_0044e5f0
-//         0044e595     MOV        EAX,dword ptr [ECX + this->ySizeValue]
-//         0044e598     CMP        EDX,EAX
-//         0044e59a     JGE        LAB_0044e5f0
-//                              infmap.cpp:229 (16)
-//         0044e59c     TEST       ESI,ESI
-//         0044e59e     JL         LAB_0044e5f0
-//         0044e5a0     TEST       EBP,EBP
-//         0044e5a2     JL         LAB_0044e5f0
-//         0044e5a4     CMP        ESI,EBX
-//         0044e5a6     JGE        LAB_0044e5f0
-//         0044e5a8     CMP        EBP,EAX
-//         0044e5aa     JGE        LAB_0044e5f0
-//                              infmap.cpp:231 (14)
-//         0044e5ac     MOV        EBX,EDX
-//         0044e5ae     CMP        EDX,EBP
-//         0044e5b0     MOV        dword ptr [ESP + param_1],EBX
-//         0044e5b4     JG         LAB_0044e5e4
-//         0044e5b6     MOV        DL,byte ptr [ESP + param_5]
-//                               LAB_0044e5ba                                                 XREF[1]:     0044e5e2(j)
-//                              infmap.cpp:232 (6)
-//         0044e5ba     CMP        EDI,ESI
-//         0044e5bc     MOV        EAX,EDI
-//         0044e5be     JG         LAB_0044e5db
-//                              infmap.cpp:231 (3)
-//         0044e5c0     SHL        EBX,0x2
-//                               LAB_0044e5c3                                                 XREF[1]:     0044e5d1(j)
-//                              infmap.cpp:233 (33)
-//         0044e5c3     MOV        EBP,dword ptr [ECX + this->rowValue]
-//         0044e5c6     INC        EAX
-//         0044e5c7     CMP        EAX,ESI
-//         0044e5c9     MOV        EBP,dword ptr [EBP + EBX*0x1]
-//         0044e5cd     MOV        byte ptr [EBP + EAX*0x1 + -0x1],DL
-//         0044e5d1     JLE        LAB_0044e5c3
-//         0044e5d3     MOV        EBP,dword ptr [ESP + param_4]
-//         0044e5d7     MOV        EBX,dword ptr [ESP + param_1]
-//                               LAB_0044e5db                                                 XREF[1]:     0044e5be(j)
-//         0044e5db     INC        EBX
-//         0044e5dc     CMP        EBX,EBP
-//         0044e5de     MOV        dword ptr [ESP + param_1],EBX
-//         0044e5e2     JLE        LAB_0044e5ba
-//                               LAB_0044e5e4                                                 XREF[1]:     0044e5b4(j)
-//                              infmap.cpp:234 (5)
-//         0044e5e4     MOV        EAX,0x1
-//                              infmap.cpp:235 (16)
-//         0044e5e9     POP        EDI
-//         0044e5ea     POP        ESI
-//         0044e5eb     POP        EBP
-//         0044e5ec     POP        EBX
-//         0044e5ed     RET        0x14
-//                               LAB_0044e5f0                                                 XREF[8]:     0044e588(j), 0044e58c(j),
-//                                                                                                         0044e593(j), 0044e59a(j),
-//                                                                                                         0044e59e(j), 0044e5a2(j),
-//                                                                                                         0044e5a6(j), 0044e5aa(j)
-//         0044e5f0     POP        EDI
-//         0044e5f1     POP        ESI
-//         0044e5f2     POP        EBP
-//         0044e5f3     XOR        EAX,EAX
-//         0044e5f5     POP        EBX
-//         0044e5f6     RET        0x14
-//         0044e5f9     ??         90h
-//         0044e5fa     NOP
-//         0044e5fb     NOP
-//         0044e5fc     NOP
-//         0044e5fd     NOP
-//         0044e5fe     NOP
-//         0044e5ff     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     0044e510(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     0044e51d(R)
+//              uchar             Stack[0xc]:1   param_3                   XREF[1]:     0044e53b(R)
+//                               ?setValue@InfluenceMap@@QAEHHHE@Z                            XREF[11]:    update:004d8401(c),
+//                               InfluenceMap::setValue                                                    blotExploredMap:004d8cf3(c),
+//                                                                                                         closestUnexploredTile:004d8f92(c),
+//                                                                                                         closestUnexploredTile:004d90c9(c),
+//                                                                                                         setTileExplored:004d921a(c),
+//                                                                                                         setupInfluenceMap:004df0b6(c),
+//                                                                                                         setupInfluenceMap:004dfac7(c),
+//                                                                                                         setupInfluenceMap:004dfcba(c),
+//                                                                                                         unexploredPlayerLocation:004e18e3(
+//                                                                                                         unexploredPlayerLocation:004e1903(
+//                                                                                                         lookAtMap:004e40e8(c)
+//                              infmap.cpp:203 (8)
+//         0044e510     MOV        EAX,dword ptr [ESP + param_1]
+//         0044e514     MOV        EDX,dword ptr [ECX + this->xReferencePointValue]
+//         0044e517     PUSH       ESI
+//                              infmap.cpp:207 (11)
+//         0044e518     MOV        ESI,dword ptr [ECX + this->yReferencePointValue]
+//         0044e51b     SUB        EAX,EDX
+//         0044e51d     MOV        EDX,dword ptr [ESP + param_2]
+//         0044e521     SUB        EDX,ESI
+//                              infmap.cpp:209 (18)
+//         0044e523     TEST       EAX,EAX
+//         0044e525     JL         LAB_0044e54b
+//         0044e527     TEST       EDX,EDX
+//         0044e529     JL         LAB_0044e54b
+//         0044e52b     CMP        EAX,dword ptr [ECX + this->xSizeValue]
+//         0044e52e     JGE        LAB_0044e54b
+//         0044e530     CMP        EDX,dword ptr [ECX + this->ySizeValue]
+//         0044e533     JGE        LAB_0044e54b
+//                              infmap.cpp:211 (13)
+//         0044e535     MOV        this,dword ptr [ECX + this->rowValue]
+//         0044e538     MOV        EDX,dword ptr [this->_padding_ + EDX*0x4]
+//         0044e53b     MOV        this,byte ptr [ESP + param_3]
+//         0044e53f     MOV        byte ptr [EDX + EAX*0x1],this
+//                              infmap.cpp:212 (5)
+//         0044e542     MOV        EAX,0x1
+//                              infmap.cpp:213 (4)
+//         0044e547     POP        ESI
+//         0044e548     RET        0xc
+//                               LAB_0044e54b                                                 XREF[4]:     0044e525(j), 0044e529(j),
+//                                                                                                         0044e52e(j), 0044e533(j)
+//                              infmap.cpp:210 (2)
+//         0044e54b     XOR        EAX,EAX
+//                              infmap.cpp:213 (4)
+//         0044e54d     POP        ESI
+//         0044e54e     RET        0xc
+//         0044e551     ??         90h
+//         0044e552     NOP
+//         0044e553     NOP
+//         0044e554     NOP
+//         0044e555     NOP
+//         0044e556     NOP
+//         0044e557     NOP
+//         0044e558     NOP
+//         0044e559     NOP
+//         0044e55a     NOP
+//         0044e55b     NOP
+//         0044e55c     NOP
+//         0044e55d     NOP
+//         0044e55e     NOP
+//         0044e55f     NOP
     return 0;
 }
 
@@ -985,182 +1014,82 @@ int InfluenceMap::incrementValue(int param_1, int param_2, uchar param_3) {
 //                              int __thiscall incrementValue(InfluenceMap * this, int param_1, int
 //              int               EAX:4          <RETURN>
 //              InfluenceMap *    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[4]:     0044e695(R), 0044e6a0(W), 0044e6be(W), 0044e75d(R)
-//              int               Stack[0x8]:4   param_2                   XREF[5]:     0044e681(R), 0044e70a(W), 0044e71d(R), 0044e761(R),
-//                                                                                     0044e76d(W)
-//              int               Stack[0xc]:4   param_3                   XREF[4]:     0044e690(R), 0044e6aa(W), 0044e6e6(W), 0044e754(R)
-//              int               Stack[0x10]:4  param_4                   XREF[4]:     0044e688(R), 0044e70e(W), 0044e765(R), 0044e771(W)
-//              uchar             Stack[0x14]:1  param_5                   XREF[1]:     0044e712(R)
-//                               ?incrementValue@InfluenceMap@@QAEHHHHHE@Z                    XREF[10]:    setupInfluenceMap:004df185(c),
-//                               InfluenceMap::incrementValue                                              setupInfluenceMap:004df1e5(c),
-//                                                                                                         setupInfluenceMap:004df335(c),
-//                                                                                                         setupInfluenceMap:004df7a9(c),
-//                                                                                                         setupInfluenceMap:004df812(c),
-//                                                                                                         setupInfluenceMap:004df882(c),
-//                                                                                                         setupInfluenceMap:004df9ab(c),
-//                                                                                                         setupInfluenceMap:004dfc04(c),
-//                                                                                                         setupLOSMap:004e22ae(c),
-//                                                                                                         setupAttackMap:004e2371(c)
-//                              infmap.cpp:263 (1)
-//         0044e680     PUSH       EBX
-//                              infmap.cpp:267 (7)
-//         0044e681     MOV        EDX,dword ptr [ESP + param_2]
-//         0044e685     PUSH       EBP
-//         0044e686     MOV        EBP,this
-//                              infmap.cpp:268 (32)
-//         0044e688     MOV        this,dword ptr [ESP + param_4]
-//         0044e68c     PUSH       ESI
-//         0044e68d     MOV        EAX,dword ptr [EBP + 0xc]
-//         0044e690     MOV        ESI,dword ptr [ESP + param_3]
-//         0044e694     PUSH       EDI
-//         0044e695     MOV        EDI,dword ptr [ESP + param_1]
-//         0044e699     SUB        EDI,EAX
-//         0044e69b     SUB        ESI,EAX
-//         0044e69d     MOV        EAX,dword ptr [EBP + 0x10]
-//         0044e6a0     MOV        dword ptr [ESP + param_1],EDI
-//         0044e6a4     SUB        EDX,EAX
-//         0044e6a6     SUB        this,EAX
-//                              infmap.cpp:270 (8)
-//         0044e6a8     TEST       EDI,EDI
-//         0044e6aa     MOV        dword ptr [ESP + param_3],ESI
-//         0044e6ae     JGE        LAB_0044e6b4
-//                              infmap.cpp:271 (2)
-//         0044e6b0     XOR        EDI,EDI
-//                              infmap.cpp:272 (9)
-//         0044e6b2     JMP        LAB_0044e6be
-//                               LAB_0044e6b4                                                 XREF[1]:     0044e6ae(j)
-//         0044e6b4     MOV        EAX,dword ptr [EBP + 0x4]
-//         0044e6b7     CMP        EDI,EAX
-//         0044e6b9     JL         LAB_0044e6c2
-//                              infmap.cpp:273 (7)
-//         0044e6bb     LEA        EDI,[EAX + -0x1]
-//                               LAB_0044e6be                                                 XREF[1]:     0044e6b2(j)
-//         0044e6be     MOV        dword ptr [ESP + param_1],EDI
-//                               LAB_0044e6c2                                                 XREF[1]:     0044e6b9(j)
-//                              infmap.cpp:274 (4)
-//         0044e6c2     TEST       EDX,EDX
-//         0044e6c4     JGE        LAB_0044e6ca
-//                              infmap.cpp:275 (2)
-//         0044e6c6     XOR        EDX,EDX
-//                              infmap.cpp:276 (9)
-//         0044e6c8     JMP        LAB_0044e6d4
-//                               LAB_0044e6ca                                                 XREF[1]:     0044e6c4(j)
-//         0044e6ca     MOV        EAX,dword ptr [EBP + 0x4]
-//         0044e6cd     CMP        EDX,EAX
-//         0044e6cf     JL         LAB_0044e6d4
-//                              infmap.cpp:277 (3)
-//         0044e6d1     LEA        EDX,[EAX + -0x1]
-//                               LAB_0044e6d4                                                 XREF[2]:     0044e6c8(j), 0044e6cf(j)
-//                              infmap.cpp:278 (4)
-//         0044e6d4     TEST       ESI,ESI
-//         0044e6d6     JGE        LAB_0044e6dc
-//                              infmap.cpp:279 (2)
-//         0044e6d8     XOR        ESI,ESI
-//                              infmap.cpp:280 (9)
-//         0044e6da     JMP        LAB_0044e6e6
-//                               LAB_0044e6dc                                                 XREF[1]:     0044e6d6(j)
-//         0044e6dc     MOV        EAX,dword ptr [EBP + 0x4]
-//         0044e6df     CMP        ESI,EAX
-//         0044e6e1     JL         LAB_0044e6ea
-//                              infmap.cpp:281 (7)
-//         0044e6e3     LEA        ESI,[EAX + -0x1]
-//                               LAB_0044e6e6                                                 XREF[1]:     0044e6da(j)
-//         0044e6e6     MOV        dword ptr [ESP + param_3],ESI
-//                               LAB_0044e6ea                                                 XREF[1]:     0044e6e1(j)
-//                              infmap.cpp:282 (4)
-//         0044e6ea     TEST       this,this
-//         0044e6ec     JGE        LAB_0044e6f2
-//                              infmap.cpp:283 (2)
-//         0044e6ee     XOR        this,this
-//                              infmap.cpp:284 (9)
-//         0044e6f0     JMP        LAB_0044e6fc
-//                               LAB_0044e6f2                                                 XREF[1]:     0044e6ec(j)
-//         0044e6f2     MOV        EAX,dword ptr [EBP + 0x4]
-//         0044e6f5     CMP        this,EAX
-//         0044e6f7     JL         LAB_0044e6fc
-//                              infmap.cpp:285 (3)
-//         0044e6f9     LEA        this,[EAX + -0x1]
-//                               LAB_0044e6fc                                                 XREF[2]:     0044e6f0(j), 0044e6f7(j)
-//                              infmap.cpp:287 (26)
-//         0044e6fc     CMP        EDX,this
-//         0044e6fe     JG         LAB_0044e777
-//         0044e700     SUB        this,EDX
-//         0044e702     LEA        EAX,[EDX*0x4 + 0x0]
-//         0044e709     INC        this
-//         0044e70a     MOV        dword ptr [ESP + param_2],EAX
-//         0044e70e     MOV        dword ptr [ESP + param_4],this
-//         0044e712     MOV        this,dword ptr [ESP + param_5]
-//                               LAB_0044e716                                                 XREF[1]:     0044e775(j)
-//                              infmap.cpp:288 (4)
-//         0044e716     CMP        EDI,ESI
-//         0044e718     JG         LAB_0044e761
-//                               LAB_0044e71a                                                 XREF[1]:     0044e75b(j)
-//                              infmap.cpp:289 (19)
-//         0044e71a     MOV        EDX,dword ptr [EBP + 0x18]
-//         0044e71d     MOV        EAX,dword ptr [ESP + param_2]
-//         0044e721     ADD        EAX,EDX
-//         0044e723     MOV        DL,byte ptr [EBP + 0x24]
-//         0044e726     MOV        ESI,dword ptr [EAX]
-//         0044e728     CMP        byte ptr [EDI + ESI*0x1],DL
-//         0044e72b     JNC        LAB_0044e754
-//                              infmap.cpp:292 (19)
-//         0044e72d     MOV        EAX,ESI
-//         0044e72f     XOR        EBX,EBX
-//         0044e731     MOV        BL,byte ptr [EDI + EAX*0x1]
-//         0044e734     LEA        ESI,[EDI + EAX*0x1]
-//         0044e737     MOV        EAX,this
-//         0044e739     AND        EAX,0xff
-//         0044e73e     ADD        EAX,EBX
-//                              infmap.cpp:293 (12)
-//         0044e740     MOV        EBX,EDX
-//         0044e742     AND        EBX,0xff
-//         0044e748     CMP        EAX,EBX
-//         0044e74a     JL         LAB_0044e752
-//                              infmap.cpp:294 (4)
-//         0044e74c     DEC        DL
-//         0044e74e     MOV        byte ptr [ESI],DL
-//                              infmap.cpp:295 (2)
-//         0044e750     JMP        LAB_0044e754
-//                               LAB_0044e752                                                 XREF[1]:     0044e74a(j)
-//                              infmap.cpp:296 (2)
-//         0044e752     MOV        byte ptr [ESI],AL
-//                               LAB_0044e754                                                 XREF[2]:     0044e72b(j), 0044e750(j)
-//                              infmap.cpp:288 (13)
-//         0044e754     MOV        ESI,dword ptr [ESP + param_3]
-//         0044e758     INC        EDI
-//         0044e759     CMP        EDI,ESI
-//         0044e75b     JLE        LAB_0044e71a
-//         0044e75d     MOV        EDI,dword ptr [ESP + param_1]
-//                               LAB_0044e761                                                 XREF[1]:     0044e718(j)
-//                              infmap.cpp:287 (22)
-//         0044e761     MOV        EDX,dword ptr [ESP + param_2]
-//         0044e765     MOV        EAX,dword ptr [ESP + param_4]
-//         0044e769     ADD        EDX,0x4
-//         0044e76c     DEC        EAX
-//         0044e76d     MOV        dword ptr [ESP + param_2],EDX
-//         0044e771     MOV        dword ptr [ESP + param_4],EAX
-//         0044e775     JNZ        LAB_0044e716
-//                               LAB_0044e777                                                 XREF[1]:     0044e6fe(j)
-//                              infmap.cpp:299 (12)
-//         0044e777     POP        EDI
-//         0044e778     POP        ESI
-//         0044e779     POP        EBP
-//         0044e77a     MOV        EAX,0x1
-//         0044e77f     POP        EBX
-//         0044e780     RET        0x14
-//         0044e783     ??         90h
-//         0044e784     NOP
-//         0044e785     NOP
-//         0044e786     NOP
-//         0044e787     NOP
-//         0044e788     NOP
-//         0044e789     NOP
-//         0044e78a     NOP
-//         0044e78b     NOP
-//         0044e78c     NOP
-//         0044e78d     NOP
-//         0044e78e     NOP
-//         0044e78f     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     0044e600(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     0044e60d(R)
+//              uchar             Stack[0xc]:1   param_3                   XREF[1]:     0044e641(R)
+//                               ?incrementValue@InfluenceMap@@QAEHHHE@Z                      XREF[3]:     changeInfluenceMap:004c6fda(c),
+//                               InfluenceMap::incrementValue                                              changeInfluenceMap:004c6fef(c),
+//                                                                                                         setupInfluenceMap:004dfb0c(c)
+//                              infmap.cpp:240 (8)
+//         0044e600     MOV        EAX,dword ptr [ESP + param_1]
+//         0044e604     MOV        EDX,dword ptr [ECX + this->xReferencePointValue]
+//         0044e607     PUSH       ESI
+//                              infmap.cpp:244 (11)
+//         0044e608     MOV        ESI,dword ptr [ECX + this->yReferencePointValue]
+//         0044e60b     SUB        EAX,EDX
+//         0044e60d     MOV        EDX,dword ptr [ESP + param_2]
+//         0044e611     SUB        EDX,ESI
+//                              infmap.cpp:246 (18)
+//         0044e613     TEST       EAX,EAX
+//         0044e615     JL         LAB_0044e675
+//         0044e617     TEST       EDX,EDX
+//         0044e619     JL         LAB_0044e675
+//         0044e61b     CMP        EAX,dword ptr [ECX + this->xSizeValue]
+//         0044e61e     JGE        LAB_0044e675
+//         0044e620     CMP        EDX,dword ptr [ECX + this->ySizeValue]
+//         0044e623     JGE        LAB_0044e675
+//                              infmap.cpp:248 (19)
+//         0044e625     MOV        ESI,dword ptr [ECX + this->rowValue]
+//         0044e628     MOV        this,byte ptr [ECX + this->unchangeableLimitVa
+//         0044e62b     MOV        EDX,dword ptr [ESI + EDX*0x4]
+//         0044e62e     LEA        ESI,[EDX + EAX*0x1]
+//         0044e631     MOV        AL,byte ptr [EDX + EAX*0x1]
+//         0044e634     CMP        AL,this
+//         0044e636     JC         LAB_0044e641
+//                              infmap.cpp:249 (5)
+//         0044e638     MOV        EAX,0x1
+//                              infmap.cpp:257 (4)
+//         0044e63d     POP        ESI
+//         0044e63e     RET        0xc
+//                               LAB_0044e641                                                 XREF[1]:     0044e636(j)
+//                              infmap.cpp:251 (17)
+//         0044e641     MOV        EDX,dword ptr [ESP + param_3]
+//         0044e645     AND        EAX,0xff
+//         0044e64a     AND        EDX,0xff
+//         0044e650     ADD        EDX,EAX
+//                              infmap.cpp:252 (11)
+//         0044e652     MOV        EAX,this
+//         0044e654     AND        EAX,0xff
+//         0044e659     CMP        EDX,EAX
+//         0044e65b     JL         LAB_0044e66a
+//                              infmap.cpp:253 (2)
+//         0044e65d     DEC        this
+//                              infmap.cpp:256 (7)
+//         0044e65f     MOV        EAX,0x1
+//         0044e664     MOV        byte ptr [ESI],this
+//                              infmap.cpp:257 (4)
+//         0044e666     POP        ESI
+//         0044e667     RET        0xc
+//                               LAB_0044e66a                                                 XREF[1]:     0044e65b(j)
+//                              infmap.cpp:255 (2)
+//         0044e66a     MOV        byte ptr [ESI],DL
+//                              infmap.cpp:256 (5)
+//         0044e66c     MOV        EAX,0x1
+//                              infmap.cpp:257 (4)
+//         0044e671     POP        ESI
+//         0044e672     RET        0xc
+//                               LAB_0044e675                                                 XREF[4]:     0044e615(j), 0044e619(j),
+//                                                                                                         0044e61e(j), 0044e623(j)
+//                              infmap.cpp:247 (2)
+//         0044e675     XOR        EAX,EAX
+//                              infmap.cpp:257 (4)
+//         0044e677     POP        ESI
+//         0044e678     RET        0xc
+//         0044e67b     ??         90h
+//         0044e67c     NOP
+//         0044e67d     NOP
+//         0044e67e     NOP
+//         0044e67f     NOP
     return 0;
 }
 
@@ -1353,172 +1282,72 @@ int InfluenceMap::decrementValue(int param_1, int param_2, uchar param_3) {
 //                              int __thiscall decrementValue(InfluenceMap * this, int param_1, int
 //              int               EAX:4          <RETURN>
 //              InfluenceMap *    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[5]:     0044e801(R), 0044e822(W), 0044e832(W), 0044e840(W),
-//                                                                                     0044e894(R)
-//              int               Stack[0x8]:4   param_2                   XREF[4]:     0044e80b(R), 0044e890(W), 0044e8d8(R), 0044e8e0(W)
-//              int               Stack[0xc]:4   param_3                   XREF[6]:     0044e807(R), 0044e82c(W), 0044e85a(W), 0044e868(W),
-//                                                                                     0044e898(R), 0044e8cf(R)
-//              int               Stack[0x10]:4  param_4                   XREF[1]:     0044e812(R)
-//              uchar             Stack[0x14]:1  param_5                   XREF[1]:     0044e882(R)
-//                               ?decrementValue@InfluenceMap@@QAEHHHHHE@Z                    XREF[7]:     setupInfluenceMap:004df2bc(c),
-//                               InfluenceMap::decrementValue                                              setupInfluenceMap:004df72e(c),
-//                                                                                                         setupInfluenceMap:004df917(c),
-//                                                                                                         setupInfluenceMap:004df9cd(c),
-//                                                                                                         setupInfluenceMap:004dfae7(c),
-//                                                                                                         setGroupInfluences:00500f9d(c),
-//                                                                                                         setGroupInfluences:00501166(c)
-//                              infmap.cpp:327 (1)
-//         0044e800     PUSH       EBX
-//                              infmap.cpp:329 (6)
-//         0044e801     MOV        EBX,dword ptr [ESP + param_1]
-//         0044e805     PUSH       EBP
-//         0044e806     PUSH       ESI
-//                              infmap.cpp:330 (4)
-//         0044e807     MOV        ESI,dword ptr [ESP + param_3]
-//                              infmap.cpp:331 (7)
-//         0044e80b     MOV        EDX,dword ptr [ESP + param_2]
-//         0044e80f     PUSH       EDI
-//         0044e810     MOV        EDI,this
-//                              infmap.cpp:332 (4)
-//         0044e812     MOV        this,dword ptr [ESP + param_4]
-//                              infmap.cpp:334 (28)
-//         0044e816     XOR        EBP,EBP
-//         0044e818     MOV        EAX,dword ptr [EDI + 0xc]
-//         0044e81b     SUB        EBX,EAX
-//         0044e81d     SUB        ESI,EAX
-//         0044e81f     MOV        EAX,dword ptr [EDI + 0x10]
-//         0044e822     MOV        dword ptr [ESP + param_1],EBX
-//         0044e826     SUB        EDX,EAX
-//         0044e828     SUB        this,EAX
-//         0044e82a     CMP        EBX,EBP
-//         0044e82c     MOV        dword ptr [ESP + param_3],ESI
-//         0044e830     JGE        LAB_0044e838
-//                              infmap.cpp:335 (4)
-//         0044e832     MOV        dword ptr [ESP + param_1],EBP
-//                              infmap.cpp:336 (9)
-//         0044e836     JMP        LAB_0044e844
-//                               LAB_0044e838                                                 XREF[1]:     0044e830(j)
-//         0044e838     MOV        EAX,dword ptr [EDI + 0x4]
-//         0044e83b     CMP        EBX,EAX
-//         0044e83d     JL         LAB_0044e844
-//                              infmap.cpp:337 (5)
-//         0044e83f     DEC        EAX
-//         0044e840     MOV        dword ptr [ESP + param_1],EAX
-//                               LAB_0044e844                                                 XREF[2]:     0044e836(j), 0044e83d(j)
-//                              infmap.cpp:338 (4)
-//         0044e844     CMP        EDX,EBP
-//         0044e846     JGE        LAB_0044e84c
-//                              infmap.cpp:339 (2)
-//         0044e848     XOR        EDX,EDX
-//                              infmap.cpp:340 (9)
-//         0044e84a     JMP        LAB_0044e856
-//                               LAB_0044e84c                                                 XREF[1]:     0044e846(j)
-//         0044e84c     MOV        EAX,dword ptr [EDI + 0x4]
-//         0044e84f     CMP        EDX,EAX
-//         0044e851     JL         LAB_0044e856
-//                              infmap.cpp:341 (3)
-//         0044e853     LEA        EDX,[EAX + -0x1]
-//                               LAB_0044e856                                                 XREF[2]:     0044e84a(j), 0044e851(j)
-//                              infmap.cpp:342 (4)
-//         0044e856     CMP        ESI,EBP
-//         0044e858     JGE        LAB_0044e860
-//                              infmap.cpp:343 (4)
-//         0044e85a     MOV        dword ptr [ESP + param_3],EBP
-//                              infmap.cpp:344 (9)
-//         0044e85e     JMP        LAB_0044e86c
-//                               LAB_0044e860                                                 XREF[1]:     0044e858(j)
-//         0044e860     MOV        EAX,dword ptr [EDI + 0x4]
-//         0044e863     CMP        ESI,EAX
-//         0044e865     JL         LAB_0044e86c
-//                              infmap.cpp:345 (5)
-//         0044e867     DEC        EAX
-//         0044e868     MOV        dword ptr [ESP + param_3],EAX
-//                               LAB_0044e86c                                                 XREF[2]:     0044e85e(j), 0044e865(j)
-//                              infmap.cpp:346 (4)
-//         0044e86c     CMP        this,EBP
-//         0044e86e     JGE        LAB_0044e874
-//                              infmap.cpp:347 (2)
-//         0044e870     XOR        this,this
-//                              infmap.cpp:348 (9)
-//         0044e872     JMP        LAB_0044e87e
-//                               LAB_0044e874                                                 XREF[1]:     0044e86e(j)
-//         0044e874     MOV        EAX,dword ptr [EDI + 0x4]
-//         0044e877     CMP        this,EAX
-//         0044e879     JL         LAB_0044e87e
-//                              infmap.cpp:349 (3)
-//         0044e87b     LEA        this,[EAX + -0x1]
-//                               LAB_0044e87e                                                 XREF[2]:     0044e872(j), 0044e879(j)
-//                              infmap.cpp:351 (22)
-//         0044e87e     CMP        EDX,this
-//         0044e880     JG         LAB_0044e8e6
-//         0044e882     MOV        EBP,dword ptr [ESP + param_5]
-//         0044e886     SUB        this,EDX
-//         0044e888     INC        this
-//         0044e889     LEA        EBX,[EDX*0x4 + 0x0]
-//         0044e890     MOV        dword ptr [ESP + param_2],this
-//                               LAB_0044e894                                                 XREF[1]:     0044e8e4(j)
-//                              infmap.cpp:352 (14)
-//         0044e894     MOV        ESI,dword ptr [ESP + param_1]
-//         0044e898     MOV        this,dword ptr [ESP + param_3]
-//         0044e89c     MOV        EAX,ESI
-//         0044e89e     CMP        EAX,this
-//         0044e8a0     JG         LAB_0044e8d8
-//                               LAB_0044e8a2                                                 XREF[1]:     0044e8d6(j)
-//                              infmap.cpp:353 (19)
-//         0044e8a2     MOV        this,dword ptr [EDI + 0x18]
-//         0044e8a5     MOV        EDX,dword ptr [this->_padding_ + EBX*0x1]
-//         0044e8a8     LEA        EAX,[this->_padding_ + EBX*0x1]
-//         0044e8ab     MOV        this,byte ptr [ESI + EDX*0x1]
-//         0044e8ae     MOV        DL,byte ptr [EDI + 0x24]
-//         0044e8b1     CMP        this,DL
-//         0044e8b3     JNC        LAB_0044e8cf
-//                              infmap.cpp:356 (18)
-//         0044e8b5     MOV        EDX,dword ptr [EAX]
-//         0044e8b7     MOV        this,EBP
-//         0044e8b9     ADD        EDX,ESI
-//         0044e8bb     XOR        EAX,EAX
-//         0044e8bd     AND        this,0xff
-//         0044e8c3     MOV        AL,byte ptr [EDX]
-//         0044e8c5     SUB        EAX,this
-//                              infmap.cpp:357 (17)
-//         0044e8c7     SETS       this
-//         0044e8ca     DEC        this
-//         0044e8cb     AND        this,EAX
-//         0044e8cd     MOV        byte ptr [EDX],this
-//                               LAB_0044e8cf                                                 XREF[1]:     0044e8b3(j)
-//         0044e8cf     MOV        EAX,dword ptr [ESP + param_3]
-//         0044e8d3     INC        ESI
-//         0044e8d4     CMP        ESI,EAX
-//         0044e8d6     JLE        LAB_0044e8a2
-//                               LAB_0044e8d8                                                 XREF[1]:     0044e8a0(j)
-//                              infmap.cpp:351 (14)
-//         0044e8d8     MOV        EAX,dword ptr [ESP + param_2]
-//         0044e8dc     ADD        EBX,0x4
-//         0044e8df     DEC        EAX
-//         0044e8e0     MOV        dword ptr [ESP + param_2],EAX
-//         0044e8e4     JNZ        LAB_0044e894
-//                               LAB_0044e8e6                                                 XREF[1]:     0044e880(j)
-//                              infmap.cpp:363 (12)
-//         0044e8e6     POP        EDI
-//         0044e8e7     POP        ESI
-//         0044e8e8     POP        EBP
-//         0044e8e9     MOV        EAX,0x1
-//         0044e8ee     POP        EBX
-//         0044e8ef     RET        0x14
-//         0044e8f2     ??         90h
-//         0044e8f3     NOP
-//         0044e8f4     NOP
-//         0044e8f5     NOP
-//         0044e8f6     NOP
-//         0044e8f7     NOP
-//         0044e8f8     NOP
-//         0044e8f9     NOP
-//         0044e8fa     NOP
-//         0044e8fb     NOP
-//         0044e8fc     NOP
-//         0044e8fd     NOP
-//         0044e8fe     NOP
-//         0044e8ff     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     0044e790(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     0044e79e(R)
+//              uchar             Stack[0xc]:1   param_3                   XREF[1]:     0044e7d1(R)
+//                               ?decrementValue@InfluenceMap@@QAEHHHE@Z                      XREF[2]:     changeInfluenceMap:004c6ff6(c),
+//                               InfluenceMap::decrementValue                                              setupInfluenceMap:004def40(c)
+//                              infmap.cpp:304 (9)
+//         0044e790     MOV        EAX,dword ptr [ESP + param_1]
+//         0044e794     MOV        EDX,dword ptr [ECX + this->xReferencePointValue]
+//         0044e797     PUSH       EBX
+//         0044e798     PUSH       ESI
+//                              infmap.cpp:307 (11)
+//         0044e799     MOV        ESI,dword ptr [ECX + this->yReferencePointValue]
+//         0044e79c     SUB        EAX,EDX
+//         0044e79e     MOV        EDX,dword ptr [ESP + param_2]
+//         0044e7a2     SUB        EDX,ESI
+//                              infmap.cpp:309 (18)
+//         0044e7a4     TEST       EAX,EAX
+//         0044e7a6     JL         LAB_0044e7f4
+//         0044e7a8     TEST       EDX,EDX
+//         0044e7aa     JL         LAB_0044e7f4
+//         0044e7ac     CMP        EAX,dword ptr [ECX + this->xSizeValue]
+//         0044e7af     JGE        LAB_0044e7f4
+//         0044e7b1     CMP        EDX,dword ptr [ECX + this->ySizeValue]
+//         0044e7b4     JGE        LAB_0044e7f4
+//                              infmap.cpp:312 (17)
+//         0044e7b6     MOV        ESI,dword ptr [ECX + this->rowValue]
+//         0044e7b9     MOV        BL,byte ptr [ECX + this->unchangeableLimitValue]
+//         0044e7bc     MOV        EDX,dword ptr [ESI + EDX*0x4]
+//         0044e7bf     ADD        EDX,EAX
+//         0044e7c1     MOV        AL,byte ptr [EDX]
+//         0044e7c3     CMP        AL,BL
+//         0044e7c5     JC         LAB_0044e7d1
+//                              infmap.cpp:313 (5)
+//         0044e7c7     MOV        EAX,0x1
+//                              infmap.cpp:321 (5)
+//         0044e7cc     POP        ESI
+//         0044e7cd     POP        EBX
+//         0044e7ce     RET        0xc
+//                               LAB_0044e7d1                                                 XREF[1]:     0044e7c5(j)
+//                              infmap.cpp:315 (17)
+//         0044e7d1     MOV        this,dword ptr [ESP + param_3]
+//         0044e7d5     AND        EAX,0xff
+//         0044e7da     AND        this,0xff
+//         0044e7e0     SUB        EAX,this
+//                              infmap.cpp:316 (6)
+//         0044e7e2     SETS       this
+//         0044e7e5     DEC        this
+//         0044e7e6     AND        this,EAX
+//                              infmap.cpp:320 (7)
+//         0044e7e8     MOV        EAX,0x1
+//         0044e7ed     MOV        byte ptr [EDX],this
+//                              infmap.cpp:321 (12)
+//         0044e7ef     POP        ESI
+//         0044e7f0     POP        EBX
+//         0044e7f1     RET        0xc
+//                               LAB_0044e7f4                                                 XREF[4]:     0044e7a6(j), 0044e7aa(j),
+//                                                                                                         0044e7af(j), 0044e7b4(j)
+//         0044e7f4     POP        ESI
+//         0044e7f5     XOR        EAX,EAX
+//         0044e7f7     POP        EBX
+//         0044e7f8     RET        0xc
+//         0044e7fb     ??         90h
+//         0044e7fc     NOP
+//         0044e7fd     NOP
+//         0044e7fe     NOP
+//         0044e7ff     NOP
     return 0;
 }
 

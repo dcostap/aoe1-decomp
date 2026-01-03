@@ -158,154 +158,173 @@ void AIModuleID::setID(int param_1, char* param_2) {
 
 AIModuleMessage::AIModuleMessage() {
     /* TODO: Stub */
-//                              undefined __thiscall AIModuleMessage(AIModuleMessage * this, AIModul
+//                              undefined __thiscall AIModuleMessage(AIModuleMessage * this)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              AIModuleMessag    ECX:4 (auto)   this
-//              AIModuleMessag    Stack[0x4]:4   param_1                   XREF[1]:     0040e048(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     0040e091(W), 0040e0e0(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0040e104(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0040e04e(W)
-//                               ??0AIModuleMessage@@QAE@PAV0@@Z
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0040deb7(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0040df17(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0040de99(W)
+//                               ??0AIModuleMessage@@QAE@XZ
 //                               AIModuleMessage::AIModuleMessage
-//                              aimodule.cpp:103 (116)
-//         0040e030     PUSH       -0x1
-//         0040e032     PUSH       FUN_0055c6ec
-//         0040e037     MOV        EAX,FS:[0x0]
-//         0040e03d     PUSH       EAX
-//         0040e03e     MOV        dword ptr FS:[0x0],ESP
-//         0040e045     PUSH       this
-//         0040e046     PUSH       ESI
-//         0040e047     PUSH       EDI
-//         0040e048     MOV        EDI,dword ptr [ESP + param_1]
-//         0040e04c     MOV        ESI,this
-//         0040e04e     MOV        dword ptr [ESP + local_10],ESI
-//         0040e052     MOV        EAX,dword ptr [EDI + 0x4]
-//         0040e055     MOV        dword ptr [ESI + 0x4],EAX
-//         0040e058     MOV        this,dword ptr [EDI + 0x88]
-//         0040e05e     MOV        dword ptr [ESI + 0x88],this
-//         0040e064     MOV        EDX,dword ptr [EDI + 0x90]
-//         0040e06a     LEA        EAX,[EDI + 0x94]
-//         0040e070     PUSH       EDX
-//         0040e071     PUSH       EAX
-//         0040e072     LEA        this,[ESI + 0x8c]
-//         0040e078     CALL       AIModuleID::AIModuleID                           undefined AIModuleID(AIModuleID * this, char
-//         0040e07d     MOV        this,dword ptr [EDI + 0xd8]
-//         0040e083     LEA        EDX,[EDI + 0xdc]
-//         0040e089     PUSH       this
-//         0040e08a     PUSH       EDX
-//         0040e08b     LEA        this,[ESI + 0xd4]
-//         0040e091     MOV        dword ptr [ESP + local_4],0x0
-//         0040e099     CALL       AIModuleID::AIModuleID                           undefined AIModuleID(AIModuleID * this, char
-//         0040e09e     MOV        EAX,dword ptr [EDI + 0x11c]
-//                              aimodule.cpp:104 (96)
-//         0040e0a4     ADD        EDI,0x8
-//         0040e0a7     MOV        dword ptr [ESI + 0x11c],EAX
-//         0040e0ad     MOV        this,dword ptr [EDI + 0x118]
-//         0040e0b3     MOV        dword ptr [ESI + 0x120],this
-//         0040e0b9     MOV        EDX,dword ptr [EDI + 0x11c]
-//         0040e0bf     MOV        dword ptr [ESI + 0x124],EDX
-//         0040e0c5     MOV        EAX,dword ptr [EDI + 0x120]
-//         0040e0cb     MOV        dword ptr [ESI + 0x128],EAX
-//         0040e0d1     MOV        this,dword ptr [EDI + 0x124]
-//         0040e0d7     MOV        dword ptr [ESI + 0x12c],this
-//         0040e0dd     PUSH       EDI
-//         0040e0de     MOV        this,ESI
-//         0040e0e0     MOV        byte ptr [ESP + local_4],0x1
-//         0040e0e5     MOV        dword ptr [ESI + 0x130],0x0
-//         0040e0ef     MOV        dword ptr [ESI + 0x134],0x0
-//         0040e0f9     MOV        dword ptr [ESI],AIModuleMessage::`vftable'       = 0040df30
-//         0040e0ff     CALL       AIModuleMessage::setText                         void setText(AIModuleMessage * this, char * p
-//                              aimodule.cpp:105 (21)
-//         0040e104     MOV        this,dword ptr [ESP + local_c]
-//         0040e108     MOV        EAX,ESI
-//         0040e10a     POP        EDI
-//         0040e10b     MOV        dword ptr FS:[0x0],this
-//         0040e112     POP        ESI
-//         0040e113     ADD        ESP,0x10
-//         0040e116     RET        0x4
-//         0040e119     ??         90h
-//         0040e11a     NOP
-//         0040e11b     NOP
-//         0040e11c     NOP
-//         0040e11d     NOP
-//         0040e11e     NOP
-//         0040e11f     NOP
+//                              aimodule.cpp:68 (80)
+//         0040de70     PUSH       -0x1
+//         0040de72     PUSH       FUN_0055c69e
+//         0040de77     MOV        EAX,FS:[0x0]
+//         0040de7d     PUSH       EAX
+//         0040de7e     MOV        dword ptr FS:[0x0],ESP
+//         0040de85     PUSH       this
+//         0040de86     PUSH       EBX
+//         0040de87     PUSH       ESI
+//         0040de88     MOV        EBX,this
+//         0040de8a     XOR        ESI,ESI
+//         0040de8c     PUSH       EDI
+//         0040de8d     PUSH       ESI
+//         0040de8e     PUSH       s_Sender                                         = "Sender"
+//         0040de93     LEA        this,[EBX + 0x8c]
+//         0040de99     MOV        dword ptr [ESP + local_10],EBX
+//         0040de9d     MOV        dword ptr [EBX + 0x4],ESI
+//         0040dea0     MOV        dword ptr [EBX + 0x88],ESI
+//         0040dea6     CALL       AIModuleID::AIModuleID                           undefined AIModuleID(AIModuleID * this, char
+//         0040deab     PUSH       ESI
+//         0040deac     PUSH       s_Recipient                                      = "Recipient"
+//         0040deb1     LEA        this,[EBX + 0xd4]
+//         0040deb7     MOV        dword ptr [ESP + local_4],ESI
+//         0040debb     CALL       AIModuleID::AIModuleID                           undefined AIModuleID(AIModuleID * this, char
+//                              aimodule.cpp:69 (80)
+//         0040dec0     MOV        EDI,s_                                           = ""
+//         0040dec5     OR         this,0xffffffff
+//         0040dec8     XOR        EAX,EAX
+//         0040deca     MOV        dword ptr [EBX + 0x11c],ESI
+//         0040ded0     MOV        dword ptr [EBX + 0x120],ESI
+//         0040ded6     MOV        dword ptr [EBX + 0x124],ESI
+//         0040dedc     MOV        dword ptr [EBX + 0x128],ESI
+//         0040dee2     MOV        dword ptr [EBX + 0x12c],ESI
+//         0040dee8     MOV        dword ptr [EBX + 0x130],ESI
+//         0040deee     MOV        dword ptr [EBX + 0x134],ESI
+//         0040def4     MOV        dword ptr [EBX],AIModuleMessage::`vftable'       = 0040df30
+//         0040defa     LEA        EDX,[EBX + 0x8]
+//         0040defd     SCASB.RE   ES:EDI=>s_                                       = ""
+//         0040deff     NOT        this
+//         0040df01     SUB        EDI,this
+//         0040df03     MOV        EAX,this
+//         0040df05     MOV        ESI,EDI
+//         0040df07     MOV        EDI,EDX
+//         0040df09     SHR        this,0x2
+//         0040df0c     MOVSD.REP  ES:EDI,ESI
+//         0040df0e     MOV        this,EAX
+//                              aimodule.cpp:70 (25)
+//         0040df10     MOV        EAX,EBX
+//         0040df12     AND        this,0x3
+//         0040df15     MOVSB.REP  ES:EDI,ESI
+//         0040df17     MOV        this,dword ptr [ESP + local_c]
+//         0040df1b     POP        EDI
+//         0040df1c     POP        ESI
+//         0040df1d     MOV        dword ptr FS:[0x0],this
+//         0040df24     POP        EBX
+//         0040df25     ADD        ESP,0x10
+//         0040df28     RET
+//         0040df29     ??         90h
+//         0040df2a     NOP
+//         0040df2b     NOP
+//         0040df2c     NOP
+//         0040df2d     NOP
+//         0040df2e     NOP
+//         0040df2f     NOP
 }
 
 AIModuleMessage::AIModuleMessage(int param_1, int param_2, int param_3, int param_4, long param_5, long param_6, long param_7, AIModuleMessage* param_8, int param_9) {
     /* TODO: Stub */
-//                              undefined __thiscall AIModuleMessage(AIModuleMessage * this, AIModul
+//                              undefined __thiscall AIModuleMessage(AIModuleMessage * this, int par
 //              undefined         <UNASSIGNED>   <RETURN>
 //              AIModuleMessag    ECX:4 (auto)   this
-//              AIModuleMessag    Stack[0x4]:4   param_1                   XREF[1]:     0040e048(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     0040e091(W), 0040e0e0(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0040e104(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0040e04e(W)
-//                               ??0AIModuleMessage@@QAE@PAV0@@Z
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     0040df66(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     0040df95(R)
+//              int               Stack[0xc]:4   param_3                   XREF[1]:     0040df6a(R)
+//              int               Stack[0x10]:4  param_4                   XREF[1]:     0040df71(R)
+//              long              Stack[0x14]:4  param_5                   XREF[1]:     0040dfb2(R)
+//              long              Stack[0x18]:4  param_6                   XREF[1]:     0040dfb6(R)
+//              long              Stack[0x1c]:4  param_7                   XREF[1]:     0040dfba(R)
+//              AIModuleMessag    Stack[0x20]:4  param_8                   XREF[1]:     0040dfc4(R)
+//              int               Stack[0x24]:4  param_9                   XREF[1]:     0040dfce(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0040dfa5(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0040e011(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0040df89(W)
+//                               ??0AIModuleMessage@@QAE@HHHHJJJPAV0@H@Z
 //                               AIModuleMessage::AIModuleMessage
-//                              aimodule.cpp:103 (116)
-//         0040e030     PUSH       -0x1
-//         0040e032     PUSH       FUN_0055c6ec
-//         0040e037     MOV        EAX,FS:[0x0]
-//         0040e03d     PUSH       EAX
-//         0040e03e     MOV        dword ptr FS:[0x0],ESP
-//         0040e045     PUSH       this
-//         0040e046     PUSH       ESI
-//         0040e047     PUSH       EDI
-//         0040e048     MOV        EDI,dword ptr [ESP + param_1]
-//         0040e04c     MOV        ESI,this
-//         0040e04e     MOV        dword ptr [ESP + local_10],ESI
-//         0040e052     MOV        EAX,dword ptr [EDI + 0x4]
-//         0040e055     MOV        dword ptr [ESI + 0x4],EAX
-//         0040e058     MOV        this,dword ptr [EDI + 0x88]
-//         0040e05e     MOV        dword ptr [ESI + 0x88],this
-//         0040e064     MOV        EDX,dword ptr [EDI + 0x90]
-//         0040e06a     LEA        EAX,[EDI + 0x94]
-//         0040e070     PUSH       EDX
-//         0040e071     PUSH       EAX
-//         0040e072     LEA        this,[ESI + 0x8c]
-//         0040e078     CALL       AIModuleID::AIModuleID                           undefined AIModuleID(AIModuleID * this, char
-//         0040e07d     MOV        this,dword ptr [EDI + 0xd8]
-//         0040e083     LEA        EDX,[EDI + 0xdc]
-//         0040e089     PUSH       this
-//         0040e08a     PUSH       EDX
-//         0040e08b     LEA        this,[ESI + 0xd4]
-//         0040e091     MOV        dword ptr [ESP + local_4],0x0
-//         0040e099     CALL       AIModuleID::AIModuleID                           undefined AIModuleID(AIModuleID * this, char
-//         0040e09e     MOV        EAX,dword ptr [EDI + 0x11c]
-//                              aimodule.cpp:104 (96)
-//         0040e0a4     ADD        EDI,0x8
-//         0040e0a7     MOV        dword ptr [ESI + 0x11c],EAX
-//         0040e0ad     MOV        this,dword ptr [EDI + 0x118]
-//         0040e0b3     MOV        dword ptr [ESI + 0x120],this
-//         0040e0b9     MOV        EDX,dword ptr [EDI + 0x11c]
-//         0040e0bf     MOV        dword ptr [ESI + 0x124],EDX
-//         0040e0c5     MOV        EAX,dword ptr [EDI + 0x120]
-//         0040e0cb     MOV        dword ptr [ESI + 0x128],EAX
-//         0040e0d1     MOV        this,dword ptr [EDI + 0x124]
-//         0040e0d7     MOV        dword ptr [ESI + 0x12c],this
-//         0040e0dd     PUSH       EDI
-//         0040e0de     MOV        this,ESI
-//         0040e0e0     MOV        byte ptr [ESP + local_4],0x1
-//         0040e0e5     MOV        dword ptr [ESI + 0x130],0x0
-//         0040e0ef     MOV        dword ptr [ESI + 0x134],0x0
-//         0040e0f9     MOV        dword ptr [ESI],AIModuleMessage::`vftable'       = 0040df30
-//         0040e0ff     CALL       AIModuleMessage::setText                         void setText(AIModuleMessage * this, char * p
-//                              aimodule.cpp:105 (21)
-//         0040e104     MOV        this,dword ptr [ESP + local_c]
-//         0040e108     MOV        EAX,ESI
-//         0040e10a     POP        EDI
-//         0040e10b     MOV        dword ptr FS:[0x0],this
-//         0040e112     POP        ESI
-//         0040e113     ADD        ESP,0x10
-//         0040e116     RET        0x4
-//         0040e119     ??         90h
-//         0040e11a     NOP
-//         0040e11b     NOP
-//         0040e11c     NOP
-//         0040e11d     NOP
-//         0040e11e     NOP
-//         0040e11f     NOP
+//                              aimodule.cpp:85 (142)
+//         0040df50     PUSH       -0x1
+//         0040df52     PUSH       FUN_0055c6be
+//         0040df57     MOV        EAX,FS:[0x0]
+//         0040df5d     PUSH       EAX
+//         0040df5e     MOV        dword ptr FS:[0x0],ESP
+//         0040df65     PUSH       this
+//         0040df66     MOV        EDX,dword ptr [ESP + param_1]
+//         0040df6a     MOV        EAX,dword ptr [ESP + param_3]
+//         0040df6e     PUSH       EBX
+//         0040df6f     MOV        EBX,this
+//         0040df71     MOV        this,dword ptr [ESP + param_4]
+//         0040df75     PUSH       ESI
+//         0040df76     PUSH       EDI
+//         0040df77     MOV        dword ptr [EBX + 0x88],this
+//         0040df7d     PUSH       EDX
+//         0040df7e     PUSH       s_                                               = ""
+//         0040df83     LEA        this,[EBX + 0x8c]
+//         0040df89     MOV        dword ptr [ESP + local_10],EBX
+//         0040df8d     MOV        dword ptr [EBX + 0x4],EAX
+//         0040df90     CALL       AIModuleID::AIModuleID                           undefined AIModuleID(AIModuleID * this, char
+//         0040df95     MOV        EAX,dword ptr [ESP + param_2]
+//         0040df99     LEA        this,[EBX + 0xd4]
+//         0040df9f     PUSH       EAX
+//         0040dfa0     PUSH       s_                                               = ""
+//         0040dfa5     MOV        dword ptr [ESP + local_4],0x0
+//         0040dfad     CALL       AIModuleID::AIModuleID                           undefined AIModuleID(AIModuleID * this, char
+//         0040dfb2     MOV        this,dword ptr [ESP + param_5]
+//         0040dfb6     MOV        EDX,dword ptr [ESP + param_6]
+//         0040dfba     MOV        EAX,dword ptr [ESP + param_7]
+//         0040dfbe     MOV        dword ptr [EBX + 0x11c],this
+//         0040dfc4     MOV        this,dword ptr [ESP + param_8]
+//         0040dfc8     MOV        dword ptr [EBX + 0x120],EDX
+//         0040dfce     MOV        EDX,dword ptr [ESP + param_9]
+//         0040dfd2     MOV        dword ptr [EBX + 0x124],EAX
+//         0040dfd8     MOV        dword ptr [EBX + 0x128],this
+//                              aimodule.cpp:86 (44)
+//         0040dfde     MOV        EDI,s_                                           = ""
+//         0040dfe3     OR         this,0xffffffff
+//         0040dfe6     XOR        EAX,EAX
+//         0040dfe8     MOV        dword ptr [EBX + 0x12c],EDX
+//         0040dfee     MOV        dword ptr [EBX],AIModuleMessage::`vftable'       = 0040df30
+//         0040dff4     SCASB.RE   ES:EDI=>s_                                       = ""
+//         0040dff6     NOT        this
+//         0040dff8     SUB        EDI,this
+//         0040dffa     LEA        EDX,[EBX + 0x8]
+//         0040dffd     MOV        EAX,this
+//         0040dfff     MOV        ESI,EDI
+//         0040e001     MOV        EDI,EDX
+//         0040e003     SHR        this,0x2
+//         0040e006     MOVSD.REP  ES:EDI,ESI
+//         0040e008     MOV        this,EAX
+//                              aimodule.cpp:87 (27)
+//         0040e00a     MOV        EAX,EBX
+//         0040e00c     AND        this,0x3
+//         0040e00f     MOVSB.REP  ES:EDI,ESI
+//         0040e011     MOV        this,dword ptr [ESP + local_c]
+//         0040e015     POP        EDI
+//         0040e016     POP        ESI
+//         0040e017     MOV        dword ptr FS:[0x0],this
+//         0040e01e     POP        EBX
+//         0040e01f     ADD        ESP,0x10
+//         0040e022     RET        0x24
+//         0040e025     ??         90h
+//         0040e026     NOP
+//         0040e027     NOP
+//         0040e028     NOP
+//         0040e029     NOP
+//         0040e02a     NOP
+//         0040e02b     NOP
+//         0040e02c     NOP
+//         0040e02d     NOP
+//         0040e02e     NOP
+//         0040e02f     NOP
 }
 
 AIModuleMessage::AIModuleMessage(AIModuleMessage* param_1) {
@@ -549,85 +568,65 @@ void AIModuleMessage::setRecipient(int param_1, char* param_2) {
 
 AIModule::AIModule() {
     /* TODO: Stub */
-//                              undefined __thiscall AIModule(AIModule * this, char * param_1, int p
+//                              undefined __thiscall AIModule(AIModule * this)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              AIModule *        ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0040e2d8(R)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     0040e2d0(R)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     0040e2e7(R)
-//              void *            Stack[0x10]:4  param_4
-//                               ??0AIModule@@QAE@PADHHPAX@Z                                  XREF[20]:    BuildAIModule:004086e5(c),
-//                               AIModule::AIModule                                                        BuildAIModule:0040887d(c),
-//                                                                                                         ConstructionAIModule:0040aac6(c),
-//                                                                                                         ConstructionAIModule:0040abe9(c),
-//                                                                                                         DiplomacyAIModule:0040beda(c),
-//                                                                                                         DiplomacyAIModule:0040bf72(c),
-//                                                                                                         EmotionalAIModule:0040c7db(c),
-//                                                                                                         EmotionalAIModule:0040c952(c),
-//                                                                                                         InformationAIModule:0040cda9(c),
-//                                                                                                         MainDecisionAIModule:0040ce1e(c),
-//                                                                                                         MainDecisionAIModule:0040cec2(c),
-//                                                                                                         ResearchAIModule:004116a5(c),
-//                                                                                                         ResearchAIModule:0041177a(c),
-//                                                                                                         ResourceAIModule:00412343(c),
-//                                                                                                         StrategyAIModule:00412b09(c),
-//                                                                                                         TacticalAIModule:00412b69(c),
-//                                                                                                         TradeAIModule:00412e59(c),
-//                                                                                                         TradeAIModule:00412eb4(c),
-//                                                                                                         TribeResourceAIModule:004e6b59(c),
-//                                                                                                         TribeResourceAIModule:004e6bce(c)
-//                              aimodule.cpp:188 (29)
-//         0040e2d0     MOV        EAX,dword ptr [ESP + param_2]
-//         0040e2d4     PUSH       EBX
-//         0040e2d5     MOV        EBX,this
-//         0040e2d7     PUSH       ESI
-//         0040e2d8     MOV        this,dword ptr [ESP + param_1]
-//         0040e2dc     PUSH       EDI
-//         0040e2dd     PUSH       EAX
-//         0040e2de     PUSH       this
-//         0040e2df     LEA        this,[EBX + 0x4]
-//         0040e2e2     CALL       AIModuleID::AIModuleID                           undefined AIModuleID(AIModuleID * this, char
-//         0040e2e7     MOV        EDX,dword ptr [ESP + param_3]
-//         0040e2eb     XOR        EAX,EAX
-//                              aimodule.cpp:201 (95)
-//         0040e2ed     MOV        EDI,s_Unknown                                    = 55h
-//         0040e2f2     OR         this,0xffffffff
-//         0040e2f5     MOV        dword ptr [EBX + 0x4c],EDX
-//         0040e2f8     MOV        dword ptr [EBX + 0x90],EAX
-//         0040e2fe     MOV        dword ptr [EBX + 0x94],EAX
-//         0040e304     MOV        dword ptr [EBX + 0x98],EAX
-//         0040e30a     MOV        dword ptr [EBX + 0x9c],EAX
-//         0040e310     MOV        dword ptr [EBX + 0xa0],EAX
-//         0040e316     MOV        dword ptr [EBX + 0xe4],0x5
-//         0040e320     MOV        dword ptr [EBX + 0xe8],0x32
-//         0040e32a     MOV        dword ptr [EBX + 0xec],EAX
-//         0040e330     MOV        dword ptr [EBX],AIModule::`vftable'              = 0040e2b0
-//         0040e336     SCASB.RE   ES:EDI=>s_Unknown                                = 55h
+//                               ??0AIModule@@QAE@XZ
+//                               AIModule::AIModule
+//                              aimodule.cpp:161 (22)
+//         0040e220     PUSH       EBX
+//         0040e221     PUSH       ESI
+//         0040e222     MOV        EBX,this
+//         0040e224     PUSH       EDI
+//         0040e225     PUSH       -0x1
+//         0040e227     PUSH       s_                                               = ""
+//         0040e22c     LEA        this,[EBX + 0x4]
+//         0040e22f     CALL       AIModuleID::AIModuleID                           undefined AIModuleID(AIModuleID * this, char
+//         0040e234     XOR        EAX,EAX
+//                              aimodule.cpp:164 (99)
+//         0040e236     MOV        EDI,s_Unknown                                    = 55h
+//         0040e23b     OR         this,0xffffffff
+//         0040e23e     MOV        dword ptr [EBX + 0x4c],0xffffffff
+//         0040e245     MOV        dword ptr [EBX + 0x90],EAX
+//         0040e24b     MOV        dword ptr [EBX + 0x94],EAX
+//         0040e251     MOV        dword ptr [EBX + 0x98],EAX
+//         0040e257     MOV        dword ptr [EBX + 0x9c],EAX
+//         0040e25d     MOV        dword ptr [EBX + 0xa0],EAX
+//         0040e263     MOV        dword ptr [EBX + 0xe4],0x5
+//         0040e26d     MOV        dword ptr [EBX + 0xe8],0x32
+//         0040e277     MOV        dword ptr [EBX + 0xec],EAX
+//         0040e27d     MOV        dword ptr [EBX],AIModule::`vftable'              = 0040e2b0
+//         0040e283     LEA        EDX,[EBX + 0x50]
+//         0040e286     SCASB.RE   ES:EDI=>s_Unknown                                = 55h
 //                                                                                  = 6Eh
-//         0040e338     NOT        this
-//         0040e33a     SUB        EDI,this
-//         0040e33c     LEA        EDX,[EBX + 0x50]
-//         0040e33f     MOV        EAX,this
-//         0040e341     MOV        ESI,EDI
-//         0040e343     MOV        EDI,EDX
-//         0040e345     SHR        this,0x2
-//         0040e348     MOVSD.REP  ES:EDI,ESI
-//         0040e34a     MOV        this,EAX
-//                              aimodule.cpp:202 (13)
-//         0040e34c     MOV        EAX,EBX
-//         0040e34e     AND        this,0x3
-//         0040e351     MOVSB.REP  ES:EDI,ESI
-//         0040e353     POP        EDI
-//         0040e354     POP        ESI
-//         0040e355     POP        EBX
-//         0040e356     RET        0x10
-//         0040e359     ??         90h
-//         0040e35a     NOP
-//         0040e35b     NOP
-//         0040e35c     NOP
-//         0040e35d     NOP
-//         0040e35e     NOP
-//         0040e35f     NOP
+//         0040e288     NOT        this
+//         0040e28a     SUB        EDI,this
+//         0040e28c     MOV        EAX,this
+//         0040e28e     MOV        ESI,EDI
+//         0040e290     MOV        EDI,EDX
+//         0040e292     SHR        this,0x2
+//         0040e295     MOVSD.REP  ES:EDI,ESI
+//         0040e297     MOV        this,EAX
+//                              aimodule.cpp:165 (11)
+//         0040e299     MOV        EAX,EBX
+//         0040e29b     AND        this,0x3
+//         0040e29e     MOVSB.REP  ES:EDI,ESI
+//         0040e2a0     POP        EDI
+//         0040e2a1     POP        ESI
+//         0040e2a2     POP        EBX
+//         0040e2a3     RET
+//         0040e2a4     ??         90h
+//         0040e2a5     NOP
+//         0040e2a6     NOP
+//         0040e2a7     NOP
+//         0040e2a8     NOP
+//         0040e2a9     NOP
+//         0040e2aa     NOP
+//         0040e2ab     NOP
+//         0040e2ac     NOP
+//         0040e2ad     NOP
+//         0040e2ae     NOP
+//         0040e2af     NOP
 }
 
 AIModule::AIModule(char* param_1, int param_2, int param_3, void* param_4) {

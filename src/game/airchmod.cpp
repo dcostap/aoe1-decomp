@@ -3,189 +3,78 @@
 
 ResearchAIModule::ResearchAIModule(void* param_1, int param_2) {
     /* TODO: Stub */
-//                              undefined __thiscall ResearchAIModule(ResearchAIModule * this, int p
+//                              undefined __thiscall ResearchAIModule(ResearchAIModule * this, void
 //              undefined         <UNASSIGNED>   <RETURN>
 //              ResearchAIModu    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     0041175b(R)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     004117ac(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[5]:     00411785(W), 004117a2(W), 0041188a(W), 004118a2(W),
-//                                                                                     004118e6(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00411923(R)
-//              char[257]         Stack[-0x114   name                      XREF[0,2]:   00411825(*), 004118cc(*)
-//              ResourceItem      Stack[-0x184   newRCost                  XREF[0,3]:   0041187c(*), 004118af(*), 004118fd(*)
-//              int[4]            Stack[-0x194   rc                        XREF[1,3]:   004118b8(W), 00411853(*), 00411870(*), 00411878(*)
-//              undefined4        Stack[-0x198   local_198                 XREF[1]:     00411776(W)
-//              undefined4        Stack[-0x19c   local_19c                 XREF[1]:     0041189c(W)
-//              undefined4        Stack[-0x1a0   local_1a0                 XREF[2]:     0041183b(*), 004118c5(R)
-//              int               Stack[-0x1a4   typeID                    XREF[3]:     004117f7(W), 0041190c(R), 00411919(W)
-//              int               Stack[-0x1a8   i                         XREF[8]:     004117ce(*), 004117db(R), 004117f0(R), 00411811(*),
-//                                                                                     0041181e(R), 00411834(R), 0041185c(*), 00411869(R)
-//              int               Stack[-0x1ac   tempInt
-//                               ??0ResearchAIModule@@QAE@HH@Z
+//              void *            Stack[0x4]:4   param_1                   XREF[1]:     00411686(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     0041168e(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     004116b4(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00411705(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004116a1(W)
+//                               ??0ResearchAIModule@@QAE@PAXH@Z
 //                               ResearchAIModule::ResearchAIModule
-//                              airchmod.cpp:38 (95)
-//         00411740     PUSH       -0x1
-//         00411742     PUSH       FUN_0055c7a5
-//         00411747     MOV        EAX,FS:[0x0]
-//         0041174d     PUSH       EAX
-//         0041174e     MOV        dword ptr FS:[0x0],ESP
-//         00411755     SUB        ESP,0x19c
-//         0041175b     MOV        EAX,dword ptr [ESP + param_1]
-//         00411762     PUSH       EBX
-//         00411763     PUSH       EBP
-//         00411764     PUSH       ESI
-//         00411765     XOR        EBP,EBP
-//         00411767     PUSH       EDI
-//         00411768     PUSH       EBP
-//         00411769     PUSH       EAX
-//         0041176a     MOV        ESI,this
-//         0041176c     PUSH       0x3ee
-//         00411771     PUSH       s_Research_AI                                    = "Research AI"
-//         00411776     MOV        dword ptr [ESP + local_198],ESI
-//         0041177a     CALL       AIModule::AIModule                               undefined AIModule(AIModule * this, char * pa
-//         0041177f     LEA        EDI,[ESI + 0xf4]
-//         00411785     MOV        dword ptr [ESP + local_4],EBP
-//         0041178c     MOV        this,EDI
-//         0041178e     MOV        dword ptr [ESI + 0xf0],EBP
-//         00411794     CALL       TechnologyItem::TechnologyItem                   undefined TechnologyItem(TechnologyItem * this)
-//         00411799     LEA        EBX,[ESI + 0x148]
-//                              airchmod.cpp:42 (47)
-//         0041179f     PUSH       0x4
-//         004117a1     PUSH       EBX
-//         004117a2     MOV        byte ptr [ESP + local_4],0x1
-//         004117aa     MOV        dword ptr [EBX],EBP
-//         004117ac     MOV        EBP,dword ptr [ESP + param_2]
-//         004117b3     PUSH       EBP
-//         004117b4     MOV        dword ptr [ESI],ResearchAIModule::`vftable'      = 00411720
-//         004117ba     MOV        dword ptr [ESI + 0xf8],EDI
-//         004117c0     MOV        dword ptr [ESI + 0xfc],EDI
-//         004117c6     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004117cb     ADD        ESP,0xc
-//                              airchmod.cpp:45 (13)
-//         004117ce     LEA        this=>i,[ESP + 0x10]
-//         004117d2     PUSH       0x4
-//         004117d4     PUSH       this
-//         004117d5     PUSH       EBP
-//         004117d6     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              airchmod.cpp:46 (21)
-//         004117db     MOV        EDX,dword ptr [ESP + i]
-//         004117df     ADD        ESP,0xc
-//         004117e2     LEA        EAX,[ESI + 0x14c]
-//         004117e8     PUSH       EDX
-//         004117e9     PUSH       EAX
-//         004117ea     PUSH       EBP
-//         004117eb     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              airchmod.cpp:47 (7)
-//         004117f0     MOV        this,dword ptr [ESP + i]
-//         004117f4     ADD        ESP,0xc
-//                              airchmod.cpp:50 (26)
-//         004117f7     MOV        dword ptr [ESP + typeID],0x0
-//         004117ff     MOV        byte ptr [ECX + ESI*0x1 + this->techTreeNameVa
-//         00411807     MOV        EAX,dword ptr [EBX]
-//         00411809     TEST       EAX,EAX
-//         0041180b     JLE        LAB_00411923
-//                               LAB_00411811                                                 XREF[1]:     0041191d(j)
-//                              airchmod.cpp:53 (13)
-//         00411811     LEA        EDX=>i,[ESP + 0x10]
-//         00411815     PUSH       0x4
-//         00411817     PUSH       EDX
-//         00411818     PUSH       EBP
-//         00411819     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              airchmod.cpp:54 (22)
-//         0041181e     MOV        EAX,dword ptr [ESP + i]
-//         00411822     ADD        ESP,0xc
-//         00411825     LEA        this=>name[4],[ESP + 0xa8]
-//         0041182c     PUSH       EAX
-//         0041182d     PUSH       this
-//         0041182e     PUSH       EBP
-//         0041182f     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              airchmod.cpp:55 (7)
-//         00411834     MOV        EDX,dword ptr [ESP + i]
-//         00411838     ADD        ESP,0xc
-//                              airchmod.cpp:57 (33)
-//         0041183b     LEA        EAX=>local_1a0,[ESP + 0x18]
-//         0041183f     PUSH       0x4
-//         00411841     PUSH       EAX
-//         00411842     PUSH       EBP
-//         00411843     MOV        byte ptr [ESP + EDX*0x1 + 0xb4],0x0
-//         0041184b     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         00411850     ADD        ESP,0xc
-//         00411853     LEA        EDI=>rc[1],[ESP + 0x28]
-//         00411857     MOV        EBX,0x4
-//                               LAB_0041185c                                                 XREF[1]:     00411876(j)
-//                              airchmod.cpp:62 (13)
-//         0041185c     LEA        this=>i,[ESP + 0x10]
-//         00411860     PUSH       0x4
-//         00411862     PUSH       this
-//         00411863     PUSH       EBP
-//         00411864     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              airchmod.cpp:63 (15)
-//         00411869     MOV        EDX,dword ptr [ESP + i]
-//         0041186d     ADD        ESP,0xc
-//         00411870     MOV        dword ptr [EDI]=>rc[1],EDX
-//         00411872     ADD        EDI,0x4
-//         00411875     DEC        EBX
-//         00411876     JNZ        LAB_0041185c
-//                              airchmod.cpp:65 (16)
-//         00411878     LEA        EAX=>rc[1],[ESP + 0x28]
-//         0041187c     LEA        this=>newRCost.next,[ESP + 0x38]
-//         00411880     PUSH       EAX
-//         00411881     PUSH       0x4
-//         00411883     CALL       ResourceItem::ResourceItem                       undefined ResourceItem(ResourceItem * this, i
-//                              airchmod.cpp:67 (88)
-//         00411888     PUSH       0x54
-//         0041188a     MOV        byte ptr [ESP + local_4],0x2
-//         00411892     CALL       operator_new                                     void * operator_new(uint param_1)
-//         00411897     MOV        EDI,EAX
-//         00411899     ADD        ESP,0x4
-//         0041189c     MOV        dword ptr [ESP + local_19c],EDI
-//         004118a0     TEST       EDI,EDI
-//         004118a2     MOV        byte ptr [ESP + local_4],0x3
-//         004118aa     JZ         LAB_004118de
-//         004118ac     SUB        ESP,0x70
-//         004118af     LEA        EDX=>newRCost.next,[ESP + 0xa8]
-//         004118b6     MOV        this,ESP
-//         004118b8     MOV        dword ptr [ESP + rc[0]],ESP
-//         004118bf     PUSH       EDX
-//         004118c0     CALL       ResourceItem::ResourceItem                       undefined ResourceItem(ResourceItem * this, R
-//         004118c5     MOV        this,dword ptr [ESP + local_1a0]
-//         004118cc     LEA        EAX=>name[4],[ESP + 0x118]
-//         004118d3     PUSH       EAX
-//         004118d4     PUSH       this
-//         004118d5     MOV        this,EDI
-//         004118d7     CALL       TechnologyItem::TechnologyItem                   undefined TechnologyItem(TechnologyItem * thi
-//         004118dc     JMP        LAB_004118e0
-//                               LAB_004118de                                                 XREF[1]:     004118aa(j)
-//         004118de     XOR        EAX,EAX
-//                               LAB_004118e0                                                 XREF[1]:     004118dc(j)
-//                              airchmod.cpp:70 (6)
-//         004118e0     LEA        this,[ESI + 0xf4]
-//                              airchmod.cpp:74 (61)
-//         004118e6     MOV        byte ptr [ESP + local_4],0x1
-//         004118ee     MOV        dword ptr [EAX + 0x4],this
-//         004118f1     MOV        this,dword ptr [ESI + 0xfc]
-//         004118f7     MOV        dword ptr [EAX + 0x8],this
-//         004118fa     MOV        dword ptr [ECX + this->_padding_],EAX
-//         004118fd     LEA        this=>newRCost.next,[ESP + 0x38]
-//         00411901     MOV        dword ptr [ESI + 0xfc],EAX
-//         00411907     CALL       ResourceItem::~ResourceItem                      void ~ResourceItem(ResourceItem * this)
-//         0041190c     MOV        EAX,dword ptr [ESP + typeID]
-//         00411910     MOV        this,dword ptr [ESI + 0x148]
-//         00411916     INC        EAX
-//         00411917     CMP        EAX,this
-//         00411919     MOV        dword ptr [ESP + typeID],EAX
-//         0041191d     JL         LAB_00411811
-//                               LAB_00411923                                                 XREF[1]:     0041180b(j)
-//                              airchmod.cpp:75 (29)
-//         00411923     MOV        this,dword ptr [ESP + local_c]
-//         0041192a     MOV        EAX,ESI
-//         0041192c     POP        EDI
-//         0041192d     POP        ESI
-//         0041192e     POP        EBP
-//         0041192f     MOV        dword ptr FS:[0x0],this
-//         00411936     POP        EBX
-//         00411937     ADD        ESP,0x1a8
-//         0041193d     RET        0x8
+//                              airchmod.cpp:26 (89)
+//         00411670     PUSH       -0x1
+//         00411672     PUSH       FUN_0055c758
+//         00411677     MOV        EAX,FS:[0x0]
+//         0041167d     PUSH       EAX
+//         0041167e     MOV        dword ptr FS:[0x0],ESP
+//         00411685     PUSH       this
+//         00411686     MOV        EAX,dword ptr [ESP + param_1]
+//         0041168a     PUSH       EBX
+//         0041168b     MOV        EBX,this
+//         0041168d     PUSH       ESI
+//         0041168e     MOV        this,dword ptr [ESP + param_2]
+//         00411692     PUSH       EDI
+//         00411693     PUSH       EAX
+//         00411694     PUSH       this
+//         00411695     PUSH       0x3ee
+//         0041169a     PUSH       s_Research_AI                                    = "Research AI"
+//         0041169f     MOV        this,EBX
+//         004116a1     MOV        dword ptr [ESP + local_10],EBX
+//         004116a5     CALL       AIModule::AIModule                               undefined AIModule(AIModule * this, char * pa
+//         004116aa     LEA        ESI,[EBX + 0xf4]
+//         004116b0     XOR        EDI,EDI
+//         004116b2     MOV        this,ESI
+//         004116b4     MOV        dword ptr [ESP + local_4],EDI
+//         004116b8     MOV        dword ptr [EBX + 0xf0],EDI
+//         004116be     CALL       TechnologyItem::TechnologyItem                   undefined TechnologyItem(TechnologyItem * this)
+//         004116c3     MOV        dword ptr [EBX + 0x148],EDI
+//                              airchmod.cpp:29 (53)
+//         004116c9     MOV        EDI,s_                                           = ""
+//         004116ce     OR         this,0xffffffff
+//         004116d1     XOR        EAX,EAX
+//         004116d3     MOV        dword ptr [EBX],ResearchAIModule::`vftable'      = 00411720
+//         004116d9     MOV        dword ptr [EBX + 0xf8],ESI
+//         004116df     MOV        dword ptr [EBX + 0xfc],ESI
+//         004116e5     LEA        EDX,[EBX + 0x14c]
+//         004116eb     SCASB.RE   ES:EDI=>s_                                       = ""
+//         004116ed     NOT        this
+//         004116ef     SUB        EDI,this
+//         004116f1     MOV        EAX,this
+//         004116f3     MOV        ESI,EDI
+//         004116f5     MOV        EDI,EDX
+//         004116f7     SHR        this,0x2
+//         004116fa     MOVSD.REP  ES:EDI,ESI
+//         004116fc     MOV        this,EAX
+//                              airchmod.cpp:30 (27)
+//         004116fe     MOV        EAX,EBX
+//         00411700     AND        this,0x3
+//         00411703     MOVSB.REP  ES:EDI,ESI
+//         00411705     MOV        this,dword ptr [ESP + local_c]
+//         00411709     POP        EDI
+//         0041170a     POP        ESI
+//         0041170b     MOV        dword ptr FS:[0x0],this
+//         00411712     POP        EBX
+//         00411713     ADD        ESP,0x10
+//         00411716     RET        0x8
+//         00411719     ??         90h
+//         0041171a     NOP
+//         0041171b     NOP
+//         0041171c     NOP
+//         0041171d     NOP
+//         0041171e     NOP
+//         0041171f     NOP
 }
 
 ResearchAIModule::ResearchAIModule(int param_1, int param_2) {

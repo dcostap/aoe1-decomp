@@ -4,6 +4,15 @@
 #include "aiconitm.h"
 #include "aiblditm.h"
 
+typedef enum PlacementResult : unsigned int {
+    PlacementOk = 0,
+    PlacementOnImpassableTile = 1,
+    PlacementObstructed = 2,
+    PlacementUnknownObject = 3,
+    PlacementFailed = 4,
+    PlacementFailedNoLot = 5,
+};
+
 class ConstructionAIModule : public AIModule {
 public:
     int numberConstructionLotsValue;         // 0xF0

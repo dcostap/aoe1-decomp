@@ -126,94 +126,246 @@ long TListDialog::setup(TPanel* param_1, char* param_2, long param_3, long param
 //                              long __thiscall setup(TListDialog * this, TPanel * param_1, char * p
 //              long              EAX:4          <RETURN>
 //              TListDialog *     ECX:4 (auto)   this
-//              TPanel *          Stack[0x4]:4   param_1                   XREF[1]:     0043f1f5(R)
-//              char *            Stack[0x8]:4   param_2                   XREF[1]:     0043f1ed(R)
-//              long              Stack[0xc]:4   param_3                   XREF[1]:     0043f1e5(R)
-//              long              Stack[0x10]:4  param_4                   XREF[1]:     0043f1dd(R)
-//              long              Stack[0x14]:4  param_5                   XREF[1]:     0043f1d5(R)
-//              long              Stack[0x18]:4  param_6                   XREF[1]:     0043f1cd(R)
-//              long              Stack[0x1c]:4  param_7                   XREF[1]:     0043f1c5(R)
-//              long              Stack[0x20]:4  param_8                   XREF[1]:     0043f1bd(R)
-//              long              Stack[0x24]:4  param_9                   XREF[1]:     0043f1b1(R)
-//              int               Stack[0x28]:4  param_10                  XREF[1]:     0043f13d(R)
-//              long              Stack[0x2c]:4  param_11                  XREF[1]:     0043f1a8(R)
-//              long              Stack[0x30]:4  param_12                  XREF[1]:     0043f1a0(R)
-//              long              Stack[0x34]:4  param_13                  XREF[1]:     0043f198(R)
-//              long              Stack[0x38]:4  param_14                  XREF[1]:     0043f190(R)
-//              char * *          Stack[0x3c]:4  param_15                  XREF[1]:     0043f188(R)
-//              short             Stack[0x40]:2  param_16                  XREF[1]:     0043f180(R)
-//              short             Stack[0x44]:2  param_17                  XREF[1]:     0043f178(R)
-//              long              Stack[0x48]:4  param_18                  XREF[1]:     0043f170(R)
-//              long              Stack[0x4c]:4  param_19                  XREF[1]:     0043f168(R)
-//              long              Stack[0x50]:4  param_20                  XREF[1]:     0043f160(R)
-//              long              Stack[0x54]:4  param_21                  XREF[1]:     0043f159(R)
-//              long              Stack[0x58]:4  param_22                  XREF[1]:     0043f152(R)
-//              char[256]         Stack[-0x104   str                       XREF[0,2]:   0043f136(*), 0043f1b8(*)
-//                               ?setup@TListDialog@@QAEJPAVTPanel@@PADJJJJJJJHJJJJPAPADFFJJ
-//                               TListDialog::setup
-//                              dlg_list.cpp:106 (6)
-//         0043f130     SUB        ESP,0x100
-//                              dlg_list.cpp:109 (28)
-//         0043f136     LEA        EAX=>str[4],[ESP]
-//         0043f13a     PUSH       ESI
-//         0043f13b     MOV        ESI,this
-//         0043f13d     MOV        this,dword ptr [ESP + param_10]
-//         0043f144     PUSH       0x100
-//         0043f149     PUSH       EAX
-//         0043f14a     PUSH       this
-//         0043f14b     MOV        this,ESI
-//         0043f14d     CALL       TPanel::get_string                               int get_string(TPanel * this, int param_1, ch
-//                              dlg_list.cpp:115 (180)
-//         0043f152     MOV        EDX,dword ptr [ESP + param_22]
-//         0043f159     MOV        EAX,dword ptr [ESP + param_21]
-//         0043f160     MOV        this,dword ptr [ESP + param_20]
-//         0043f167     PUSH       EDX
-//         0043f168     MOV        EDX,dword ptr [ESP + param_19]
-//         0043f16f     PUSH       EAX
-//         0043f170     MOV        EAX,dword ptr [ESP + param_18]
-//         0043f177     PUSH       this
-//         0043f178     MOV        this,dword ptr [ESP + param_17]
-//         0043f17f     PUSH       EDX
-//         0043f180     MOV        EDX,dword ptr [ESP + param_16]
-//         0043f187     PUSH       EAX
-//         0043f188     MOV        EAX,dword ptr [ESP + param_15]
-//         0043f18f     PUSH       this
-//         0043f190     MOV        this,dword ptr [ESP + param_14]
-//         0043f197     PUSH       EDX
-//         0043f198     MOV        EDX,dword ptr [ESP + param_13]
-//         0043f19f     PUSH       EAX
-//         0043f1a0     MOV        EAX,dword ptr [ESP + param_12]
-//         0043f1a7     PUSH       this
-//         0043f1a8     MOV        this,dword ptr [ESP + param_11]
-//         0043f1af     PUSH       EDX
-//         0043f1b0     PUSH       EAX
-//         0043f1b1     MOV        EAX,dword ptr [ESP + param_9]
-//         0043f1b8     LEA        EDX=>str[4],[ESP + 0x30]
-//         0043f1bc     PUSH       this
-//         0043f1bd     MOV        this,dword ptr [ESP + param_8]
-//         0043f1c4     PUSH       EDX
-//         0043f1c5     MOV        EDX,dword ptr [ESP + param_7]
-//         0043f1cc     PUSH       EAX
-//         0043f1cd     MOV        EAX,dword ptr [ESP + param_6]
-//         0043f1d4     PUSH       this
-//         0043f1d5     MOV        this,dword ptr [ESP + param_5]
-//         0043f1dc     PUSH       EDX
-//         0043f1dd     MOV        EDX,dword ptr [ESP + param_4]
-//         0043f1e4     PUSH       EAX
-//         0043f1e5     MOV        EAX,dword ptr [ESP + param_3]
-//         0043f1ec     PUSH       this
-//         0043f1ed     MOV        this,dword ptr [ESP + param_2]
-//         0043f1f4     PUSH       EDX
-//         0043f1f5     MOV        EDX,dword ptr [ESP + param_1]
-//         0043f1fc     PUSH       EAX
-//         0043f1fd     PUSH       this
-//         0043f1fe     PUSH       EDX
-//         0043f1ff     MOV        this,ESI
-//         0043f201     CALL       TListDialog::setup                               long setup(TListDialog * this, TPanel * param
-//                              dlg_list.cpp:116 (10)
-//         0043f206     POP        ESI
-//         0043f207     ADD        ESP,0x100
-//         0043f20d     RET        0x58
+//              TPanel *          Stack[0x4]:4   param_1                   XREF[1]:     0043ef9a(R)
+//              char *            Stack[0x8]:4   param_2                   XREF[1]:     0043ef8d(R)
+//              long              Stack[0xc]:4   param_3                   XREF[1]:     0043ef80(R)
+//              long              Stack[0x10]:4  param_4                   XREF[1]:     0043ef95(R)
+//              long              Stack[0x14]:4  param_5                   XREF[1]:     0043ef84(R)
+//              long              Stack[0x18]:4  param_6                   XREF[1]:     0043efdf(R)
+//              long              Stack[0x1c]:4  param_7                   XREF[1]:     0043efda(R)
+//              long              Stack[0x20]:4  param_8                   XREF[1]:     0043efd3(R)
+//              long              Stack[0x24]:4  param_9                   XREF[1]:     0043efc6(R)
+//              char *            Stack[0x28]:4  param_10                  XREF[1]:     0043efb9(R)
+//              long              Stack[0x2c]:4  param_11                  XREF[1]:     0043f011(R)
+//              long              Stack[0x30]:4  param_12                  XREF[1]:     0043f008(R)
+//              long              Stack[0x34]:4  param_13                  XREF[1]:     0043f004(R)
+//              long              Stack[0x38]:4  param_14                  XREF[1]:     0043f000(R)
+//              char * *          Stack[0x3c]:4  param_15
+//              short             Stack[0x40]:2  param_16
+//              short             Stack[0x44]:2  param_17
+//              long              Stack[0x48]:4  param_18
+//              long              Stack[0x4c]:4  param_19
+//              long              Stack[0x50]:4  param_20
+//              long              Stack[0x54]:4  param_21
+//              long              Stack[0x58]:4  param_22
+//                               ?setup@TListDialog@@QAEJPAVTPanel@@PADJJJJJJJ1JJJJPAPADFFJJ  XREF[2]:     setup:0043f201(c),
+//                               TListDialog::setup                                                        setup:0047e80d(c)
+//                              dlg_list.cpp:66 (50)
+//         0043ef80     MOV        EAX,dword ptr [ESP + param_3]
+//         0043ef84     MOV        EDX,dword ptr [ESP + param_5]
+//         0043ef88     PUSH       EBX
+//         0043ef89     PUSH       EBP
+//         0043ef8a     PUSH       ESI
+//         0043ef8b     MOV        ESI,this
+//         0043ef8d     MOV        this,dword ptr [ESP + param_2]
+//         0043ef91     PUSH       EDI
+//         0043ef92     PUSH       0x1
+//         0043ef94     PUSH       EAX
+//         0043ef95     MOV        EAX,dword ptr [ESP + param_4]
+//         0043ef99     PUSH       this
+//         0043ef9a     MOV        this,dword ptr [ESP + param_1]
+//         0043ef9e     PUSH       EDX
+//         0043ef9f     PUSH       EAX
+//         0043efa0     PUSH       this
+//         0043efa1     CALL       TPanel::renderArea                               TDrawArea * renderArea(TPanel * this)
+//         0043efa6     PUSH       EAX
+//         0043efa7     MOV        this,ESI
+//         0043efa9     CALL       TDialogPanel::setup                              int setup(TDialogPanel * this, TDrawArea * pa
+//         0043efae     TEST       EAX,EAX
+//         0043efb0     JNZ        LAB_0043efb9
+//                              dlg_list.cpp:96 (7)
+//         0043efb2     POP        EDI
+//         0043efb3     POP        ESI
+//         0043efb4     POP        EBP
+//         0043efb5     POP        EBX
+//         0043efb6     RET        0x58
+//                               LAB_0043efb9                                                 XREF[1]:     0043efb0(j)
+//                              dlg_list.cpp:71 (13)
+//         0043efb9     MOV        EAX,dword ptr [ESP + param_10]
+//         0043efbd     TEST       EAX,EAX
+//         0043efbf     JZ         LAB_0043f000
+//         0043efc1     CMP        byte ptr [EAX],0x0
+//         0043efc4     JZ         LAB_0043f000
+//                              dlg_list.cpp:73 (51)
+//         0043efc6     MOV        this,dword ptr [ESP + param_9]
+//         0043efca     PUSH       0x1
+//         0043efcc     PUSH       0x1
+//         0043efce     PUSH       0x1
+//         0043efd0     PUSH       0x4
+//         0043efd2     PUSH       this
+//         0043efd3     MOV        this,dword ptr [ESP + param_8]
+//         0043efd7     MOV        EDX,dword ptr [ESI]
+//         0043efd9     PUSH       this
+//         0043efda     MOV        this,dword ptr [ESP + param_7]
+//         0043efde     PUSH       this
+//         0043efdf     MOV        this,dword ptr [ESP + param_6]
+//         0043efe3     PUSH       this
+//         0043efe4     PUSH       EAX
+//         0043efe5     LEA        EAX,[ESI + 0x490]
+//         0043efeb     MOV        this,ESI
+//         0043efed     PUSH       EAX
+//         0043efee     PUSH       ESI
+//         0043efef     CALL       dword ptr [EDX + 0x100]
+//         0043eff5     TEST       EAX,EAX
+//         0043eff7     JNZ        LAB_0043f000
+//                              dlg_list.cpp:96 (7)
+//         0043eff9     POP        EDI
+//         0043effa     POP        ESI
+//         0043effb     POP        EBP
+//         0043effc     POP        EBX
+//         0043effd     RET        0x58
+//                               LAB_0043f000                                                 XREF[3]:     0043efbf(j), 0043efc4(j),
+//                                                                                                         0043eff7(j)
+//                              dlg_list.cpp:77 (44)
+//         0043f000     MOV        this,dword ptr [ESP + param_14]
+//         0043f004     MOV        EDX,dword ptr [ESP + param_13]
+//         0043f008     MOV        EAX,dword ptr [ESP + param_12]
+//         0043f00c     MOV        EDI,dword ptr [ESI]
+//         0043f00e     PUSH       0xb
+//         0043f010     PUSH       this=>DAT_fffffff8
+//         0043f011     MOV        this,dword ptr [ESP + param_11]
+//         0043f015     PUSH       EDX=>DAT_fffffff4
+//         0043f016     LEA        EBX,[ESI + 0x494]
+//         0043f01c     PUSH       EAX=>DAT_fffffff0
+//         0043f01d     PUSH       this
+//         0043f01e     PUSH       EBX
+//         0043f01f     PUSH       ESI
+//         0043f020     MOV        this,ESI
+//         0043f022     CALL       dword ptr [EDI + 0x110]
+//         0043f028     TEST       EAX,EAX
+//         0043f02a     JNZ        LAB_0043f033
+//                              dlg_list.cpp:96 (7)
+//         0043f02c     POP        EDI
+//         0043f02d     POP        ESI
+//         0043f02e     POP        EBP
+//         0043f02f     POP        EBX
+//         0043f030     RET        0x58
+//                               LAB_0043f033                                                 XREF[1]:     0043f02a(j)
+//                              dlg_list.cpp:78 (24)
+//         0043f033     MOV        EDX,dword ptr [EBX]
+//         0043f035     PUSH       0x14
+//         0043f037     LEA        EAX,[ESI + 0x498]
+//         0043f03d     PUSH       EDX=>DAT_fffffff8
+//         0043f03e     PUSH       EAX=>DAT_fffffff4
+//         0043f03f     MOV        this,ESI
+//         0043f041     CALL       dword ptr [EDI + 0x118]
+//         0043f047     TEST       EAX,EAX
+//         0043f049     JNZ        LAB_0043f052
+//                              dlg_list.cpp:96 (7)
+//         0043f04b     POP        EDI
+//         0043f04c     POP        ESI
+//         0043f04d     POP        EBP
+//         0043f04e     POP        EBX
+//         0043f04f     RET        0x58
+//                               LAB_0043f052                                                 XREF[1]:     0043f049(j)
+//                              dlg_list.cpp:80 (8)
+//         0043f052     MOV        EAX,dword ptr [ESP + 0x4c]
+//         0043f056     TEST       EAX,EAX
+//         0043f058     JZ         LAB_0043f06a
+//                              dlg_list.cpp:81 (16)
+//         0043f05a     MOV        this,dword ptr [EBX]
+//         0043f05c     MOV        EBP,dword ptr [ESP + 0x50]
+//         0043f060     PUSH       EBP
+//         0043f061     PUSH       EAX=>DAT_fffffff8
+//         0043f062     MOV        EDX,dword ptr [this->_padding_]
+//         0043f064     CALL       dword ptr [EDX + 0xe0]
+//                               LAB_0043f06a                                                 XREF[1]:     0043f058(j)
+//                              dlg_list.cpp:84 (4)
+//         0043f06a     MOV        EAX,dword ptr [ESP + 0x54]
+//                              dlg_list.cpp:85 (19)
+//         0043f06e     MOV        this,dword ptr [EBX]
+//         0043f070     PUSH       0x1
+//         0043f072     PUSH       EAX=>DAT_fffffff8
+//         0043f073     PUSH       offset DAT_fffffff4
+//         0043f075     MOV        word ptr [ESI + 0x4a4],AX
+//         0043f07c     CALL       TListPanel::scroll_cur_line                      void scroll_cur_line(TListPanel * this, uchar
+//                              dlg_list.cpp:88 (55)
+//         0043f081     MOV        EAX,dword ptr [ESP + 0x68]
+//         0043f085     MOV        this,dword ptr [ESP + 0x64]
+//         0043f089     MOV        EDX,dword ptr [ESP + 0x60]
+//         0043f08d     PUSH       0x0
+//         0043f08f     PUSH       0x0=>DAT_fffffff8
+//         0043f091     MOV        EDI,dword ptr [EDI + 0xe8]
+//         0043f097     PUSH       0x0=>DAT_fffffff4
+//         0043f099     PUSH       EAX=>DAT_fffffff0
+//         0043f09a     MOV        EAX,dword ptr [ESP + 0x68]
+//         0043f09e     PUSH       this
+//         0043f09f     PUSH       EDX
+//         0043f0a0     PUSH       EAX
+//         0043f0a1     PUSH       0x0
+//         0043f0a3     LEA        this,[ESI + 0x49c]
+//                              language.dll match for 0xfa1: "OK"
+//         0043f0a9     PUSH       0xfa1
+//         0043f0ae     PUSH       this
+//         0043f0af     PUSH       ESI
+//         0043f0b0     MOV        this,ESI
+//         0043f0b2     CALL       EDI
+//         0043f0b4     TEST       EAX,EAX
+//         0043f0b6     JNZ        LAB_0043f0bf
+//                              dlg_list.cpp:96 (7)
+//         0043f0b8     POP        EDI
+//         0043f0b9     POP        ESI
+//         0043f0ba     POP        EBP
+//         0043f0bb     POP        EBX
+//         0043f0bc     RET        0x58
+//                               LAB_0043f0bf                                                 XREF[1]:     0043f0b6(j)
+//                              dlg_list.cpp:89 (49)
+//         0043f0bf     MOV        EDX,dword ptr [ESP + 0x68]
+//         0043f0c3     MOV        EAX,dword ptr [ESP + 0x64]
+//         0043f0c7     MOV        this,dword ptr [ESP + 0x60]
+//         0043f0cb     PUSH       0x0
+//         0043f0cd     PUSH       0x0=>DAT_fffffff8
+//         0043f0cf     PUSH       0x0=>DAT_fffffff4
+//         0043f0d1     PUSH       EDX=>DAT_fffffff0
+//         0043f0d2     MOV        EDX,dword ptr [ESP + 0x6c]
+//         0043f0d6     PUSH       EAX
+//         0043f0d7     PUSH       this
+//         0043f0d8     PUSH       EDX
+//         0043f0d9     LEA        EBP,[ESI + 0x4a0]
+//         0043f0df     PUSH       0x0
+//                              language.dll match for 0xfa2: "Cancel"
+//         0043f0e1     PUSH       0xfa2
+//         0043f0e6     PUSH       EBP
+//         0043f0e7     PUSH       ESI
+//         0043f0e8     MOV        this,ESI
+//         0043f0ea     CALL       EDI
+//         0043f0ec     TEST       EAX,EAX
+//         0043f0ee     JNZ        LAB_0043f0f7
+//                              dlg_list.cpp:96 (7)
+//         0043f0f0     POP        EDI
+//         0043f0f1     POP        ESI
+//         0043f0f2     POP        EBP
+//         0043f0f3     POP        EBX
+//         0043f0f4     RET        0x58
+//                               LAB_0043f0f7                                                 XREF[1]:     0043f0ee(j)
+//                              dlg_list.cpp:90 (3)
+//         0043f0f7     MOV        EBP,dword ptr [EBP]
+//                              dlg_list.cpp:93 (30)
+//         0043f0fa     MOV        this,ESI
+//         0043f0fc     MOV        dword ptr [EBP + 0x298],0x1b
+//         0043f106     MOV        dword ptr [EBP + 0x29c],0x0
+//         0043f110     MOV        EAX,dword ptr [EBX]
+//         0043f112     PUSH       EAX
+//         0043f113     CALL       TPanel::set_curr_child                           void set_curr_child(TPanel * this, TPanel * p
+//                              dlg_list.cpp:96 (12)
+//         0043f118     POP        EDI
+//         0043f119     POP        ESI
+//         0043f11a     POP        EBP
+//         0043f11b     MOV        EAX,0x1
+//         0043f120     POP        EBX
+//         0043f121     RET        0x58
+//         0043f124     ??         90h
+//         0043f125     NOP
+//         0043f126     NOP
+//         0043f127     NOP
+//         0043f128     NOP
+//         0043f129     NOP
+//         0043f12a     NOP
+//         0043f12b     NOP
+//         0043f12c     NOP
+//         0043f12d     NOP
+//         0043f12e     NOP
+//         0043f12f     NOP
     return 0;
 }
 

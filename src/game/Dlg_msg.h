@@ -1,6 +1,20 @@
 #pragma once
 #include "../common.h"
 
+typedef enum Action : unsigned int {
+    OK = 0,
+    Cancel = 1,
+    Other = 2,
+};
+
+typedef enum Type : unsigned int {
+    OKDialog = 0,
+    OKCancelDialog = 1,
+    YesNoDialog = 2,
+    RetryAbortDialog = 3,
+    YesNoCancelDialog = 4,
+};
+
 class TMessageDialog : public TDialogPanel {
 public:
     uchar dlg_type;                          // 0x490

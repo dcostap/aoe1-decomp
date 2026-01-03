@@ -4376,50 +4376,361 @@ uchar RGE_View::pick(uchar param_1, uchar param_2, long param_3, long param_4, R
 //                              uchar __thiscall pick(RGE_View * this, uchar param_1, uchar param_2,
 //              uchar             AL:1           <RETURN>
 //              RGE_View *        ECX:4 (auto)   this
-//              uchar             Stack[0x4]:1   param_1                   XREF[1]:     00535c97(R)
-//              uchar             Stack[0x8]:1   param_2                   XREF[1]:     00535c92(R)
-//              tagPOINT *        Stack[0xc]:4   param_3                   XREF[1]:     00535c8d(R)
-//              tagPOINT *        Stack[0x10]:4  param_4                   XREF[1]:     00535c88(R)
-//              void * *          Stack[0x14]:4  param_5                   XREF[1]:     00535c83(R)
-//              float *           Stack[0x18]:4  param_6                   XREF[1]:     00535c7e(R)
-//              float *           Stack[0x1c]:4  param_7                   XREF[1]:     00535c79(R)
-//              short *           Stack[0x20]:4  param_8                   XREF[1]:     00535c74(R)
-//              short *           Stack[0x24]:4  param_9                   XREF[1]:     00535c70(R)
-//                               ?pick@RGE_View@@QAEEEEPAUtagPOINT@@0PAPAXPAM2PAF3@Z
-//                               RGE_View::pick
-//                              view.cpp:2377 (50)
-//         00535c70     MOV        EAX,dword ptr [ESP + param_9]
-//         00535c74     MOV        EDX,dword ptr [ESP + param_8]
-//         00535c78     PUSH       EAX
-//         00535c79     MOV        EAX,dword ptr [ESP + param_7]
-//         00535c7d     PUSH       EDX
-//         00535c7e     MOV        EDX,dword ptr [ESP + param_6]
-//         00535c82     PUSH       EAX
-//         00535c83     MOV        EAX,dword ptr [ESP + param_5]
-//         00535c87     PUSH       EDX
-//         00535c88     MOV        EDX,dword ptr [ESP + param_4]
-//         00535c8c     PUSH       EAX
-//         00535c8d     MOV        EAX,dword ptr [ESP + param_3]
-//         00535c91     PUSH       EDX
-//         00535c92     MOV        EDX,dword ptr [ESP + param_2]
-//         00535c96     PUSH       EAX
-//         00535c97     MOV        EAX,dword ptr [ESP + param_1]
-//         00535c9b     PUSH       EDX
-//         00535c9c     PUSH       EAX
-//         00535c9d     CALL       RGE_View::view_function                          long view_function(RGE_View * this, uchar par
-//                              view.cpp:2380 (3)
-//         00535ca2     RET        0x24
-//         00535ca5     ??         90h
-//         00535ca6     NOP
-//         00535ca7     NOP
-//         00535ca8     NOP
-//         00535ca9     NOP
-//         00535caa     NOP
-//         00535cab     NOP
-//         00535cac     NOP
-//         00535cad     NOP
-//         00535cae     NOP
-//         00535caf     NOP
+//              uchar             Stack[0x4]:1   param_1                   XREF[5]:     005359e3(R), 005359fc(W), 00535a36(*), 00535a55(R),
+//                                                                                     00535a68(R)
+//              uchar             Stack[0x8]:1   param_2                   XREF[1]:     00535a46(R)
+//              long              Stack[0xc]:4   param_3                   XREF[1]:     00535a00(R)
+//              long              Stack[0x10]:4  param_4                   XREF[1]:     005359f8(R)
+//              RGE_Pick_Info *   Stack[0x14]:4  param_5                   XREF[1]:     00535a0c(R)
+//              RGE_Static_Obj    Stack[0x18]:4  param_6                   XREF[1]:     005359e8(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     00535a04(W)
+//              tagPOINT          Stack[-0xc]:8  mouse_pos                 XREF[1,2]:   00535a08(W), 00535a10(W), 00535a41(*)
+//              tagPOINT          Stack[-0x14]:8 start_mouse_pos           XREF[0,2]:   00535a14(W), 00535a3c(*)
+//                               ?pick@RGE_View@@QAEEEEJJPAURGE_Pick_Info@@PAVRGE_Static_Obj  XREF[12]:    draw_object_outline:005356a5(c),
+//                               RGE_View::pick                                                            draw_paint_brush:0053591e(c),
+//                                                                                                         start_scroll_view:0053a0f7(c),
+//                                                                                                         start_scroll_view:0053a147(c),
+//                                                                                                         start_scroll_view:0053a22f(c),
+//                                                                                                         handle_scroll_view:0053a350(c),
+//                                                                                                         handle_scroll_view:0053a844(c),
+//                                                                                                         handle_scroll_view:0053a8b8(c),
+//                                                                                                         do_paint:0053ab0d(c),
+//                                                                                                         do_paint:0053ab4f(c),
+//                                                                                                         pick1:0053ff97(c),
+//                                                                                                         pick_objects1:0053ffdd(c)
+//                              view.cpp:2272 (3)
+//         005359e0     SUB        ESP,0x10
+//                              view.cpp:2278 (21)
+//         005359e3     MOV        EAX,dword ptr [ESP + param_1]
+//         005359e7     PUSH       ESI
+//         005359e8     MOV        ESI,dword ptr [ESP + param_6]
+//         005359ec     MOV        DL,AL
+//         005359ee     SUB        DL,0x28
+//         005359f1     PUSH       EDI
+//         005359f2     NEG        DL
+//         005359f4     SBB        EDX,EDX
+//         005359f6     AND        EDX,ESI
+//                              view.cpp:2284 (16)
+//         005359f8     MOV        ESI,dword ptr [ESP + param_4]
+//         005359fc     MOV        dword ptr [ESP + param_1],EDX
+//         00535a00     MOV        EDX,dword ptr [ESP + param_3]
+//         00535a04     MOV        dword ptr [ESP + local_4],ESI
+//                              view.cpp:2287 (4)
+//         00535a08     MOV        dword ptr [ESP + mouse_pos.x],ESI
+//                              view.cpp:2289 (30)
+//         00535a0c     MOV        ESI,dword ptr [ESP + param_5]
+//         00535a10     MOV        dword ptr [ESP + mouse_pos.y],EDX
+//         00535a14     MOV        dword ptr [ESP + start_mouse_pos.y],EDX
+//         00535a18     MOV        EDI,ESI
+//         00535a1a     XOR        EDX,EDX
+//         00535a1c     MOV        dword ptr [EDI],EDX
+//         00535a1e     MOV        dword ptr [EDI + 0x4],EDX
+//         00535a21     MOV        dword ptr [EDI + 0x8],EDX
+//         00535a24     MOV        dword ptr [EDI + 0xc],EDX
+//         00535a27     MOV        dword ptr [EDI + 0x10],EDX
+//                              view.cpp:2292 (39)
+//         00535a2a     LEA        EDX,[ESI + 0xa]
+//         00535a2d     PUSH       EDX
+//         00535a2e     LEA        EDX,[ESI + 0x8]
+//         00535a31     PUSH       EDX
+//         00535a32     LEA        EDX,[ESI + 0x4]
+//         00535a35     PUSH       EDX
+//         00535a36     LEA        EDX=>param_1,[ESP + 0x28]
+//         00535a3a     PUSH       ESI
+//         00535a3b     PUSH       EDX
+//         00535a3c     LEA        EDX=>start_mouse_pos.y,[ESP + 0x1c]
+//         00535a40     PUSH       EDX
+//         00535a41     LEA        EDX=>mouse_pos.y,[ESP + 0x28]
+//         00535a45     PUSH       EDX
+//         00535a46     MOV        EDX,dword ptr [ESP + param_2]
+//         00535a4a     PUSH       EDX
+//         00535a4b     PUSH       EAX
+//         00535a4c     CALL       RGE_View::view_function                          long view_function(RGE_View * this, uchar par
+//                              view.cpp:2294 (4)
+//         00535a51     CMP        AL,0x34
+//         00535a53     JNZ        LAB_00535a64
+//                              view.cpp:2295 (7)
+//         00535a55     MOV        this,dword ptr [ESP + param_1]
+//         00535a59     MOV        dword ptr [ESI + 0xc],this
+//                              view.cpp:2300 (8)
+//         00535a5c     POP        EDI
+//         00535a5d     POP        ESI
+//         00535a5e     ADD        ESP,0x10
+//         00535a61     RET        0x18
+//                               LAB_00535a64                                                 XREF[1]:     00535a53(j)
+//                              view.cpp:2296 (4)
+//         00535a64     CMP        AL,0x33
+//         00535a66     JNZ        LAB_00535a6f
+//                              view.cpp:2297 (7)
+//         00535a68     MOV        EDX,dword ptr [ESP + param_1]
+//         00535a6c     MOV        dword ptr [ESI + 0x10],EDX
+//                               LAB_00535a6f                                                 XREF[1]:     00535a66(j)
+//                              view.cpp:2300 (8)
+//         00535a6f     POP        EDI
+//         00535a70     POP        ESI
+//         00535a71     ADD        ESP,0x10
+//         00535a74     RET        0x18
+//         00535a77     ??         90h
+//         00535a78     NOP
+//         00535a79     NOP
+//         00535a7a     NOP
+//         00535a7b     NOP
+//         00535a7c     NOP
+//         00535a7d     NOP
+//         00535a7e     NOP
+//         00535a7f     NOP
+    return 0;
+}
+
+uchar RGE_View::pick_multi(uchar param_1, long param_2, long param_3, long param_4, long param_5) {
+    /* TODO: Stub */
+//                              uchar __thiscall pick_multi(RGE_View * this, uchar param_1, long par
+//              uchar             AL:1           <RETURN>
+//              RGE_View *        ECX:4 (auto)   this
+//              uchar             Stack[0x4]:1   param_1                   XREF[1]:     00535a85(R)
+//              long              Stack[0x8]:4   param_2                   XREF[2]:     00535aa7(R), 00535b25(R)
+//              long              Stack[0xc]:4   param_3                   XREF[3]:     00535a8b(R), 00535b0b(R), 00535b8e(W)
+//              long              Stack[0x10]:4  param_4                   XREF[3]:     00535aa2(R), 00535b21(R), 00535b7f(W)
+//              long              Stack[0x14]:4  param_5                   XREF[2]:     00535a98(R), 00535b29(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[3]:     00535ab5(W), 00535afb(W), 00535b0f(R)
+//              int               Stack[-0x8]:4  picked_any
+//                               ?pick_multi@RGE_View@@QAEEEJJJJ@Z                            XREF[1]:     end_scroll_view:0053aa1b(c)
+//                               RGE_View::pick_multi
+//                              view.cpp:2306 (5)
+//         00535a80     PUSH       this
+//         00535a81     PUSH       EBX
+//         00535a82     PUSH       EBP
+//         00535a83     PUSH       ESI
+//         00535a84     PUSH       EDI
+//                              view.cpp:2317 (59)
+//         00535a85     MOV        EAX,dword ptr [ESP + param_1]
+//         00535a89     MOV        EDI,this
+//         00535a8b     MOV        EBX,dword ptr [ESP + param_3]
+//         00535a8f     PUSH       0x1
+//         00535a91     MOV        this,dword ptr [EDI + 0x100]
+//         00535a97     PUSH       EAX
+//         00535a98     MOV        EAX,dword ptr [ESP + param_5]
+//         00535a9c     XOR        ESI,ESI
+//         00535a9e     MOVSX      EDX,word ptr [ECX + this+0x4a]
+//         00535aa2     MOV        this,dword ptr [ESP + param_4]
+//         00535aa6     PUSH       EDX
+//         00535aa7     MOV        EDX,dword ptr [ESP + param_2]
+//         00535aab     PUSH       0x14
+//         00535aad     PUSH       0xa
+//         00535aaf     PUSH       EAX
+//         00535ab0     PUSH       this
+//         00535ab1     PUSH       EBX
+//         00535ab2     PUSH       EDX
+//         00535ab3     MOV        this,EDI
+//         00535ab5     MOV        dword ptr [ESP + local_4],ESI
+//         00535ab9     CALL       RGE_View::pick_multi_objects                     int pick_multi_objects(RGE_View * this, int p
+//         00535abe     MOV        EBP,EAX
+//                              view.cpp:2319 (4)
+//         00535ac0     TEST       EBP,EBP
+//         00535ac2     JLE        LAB_00535b0f
+//                              view.cpp:2315 (5)
+//         00535ac4     MOV        EBX,Picked_Objects                               = 00000000
+//                               LAB_00535ac9                                                 XREF[1]:     00535b09(j)
+//                              view.cpp:2321 (7)
+//         00535ac9     MOV        EAX,dword ptr [EBX]=>Picked_Objects              = 00000000
+//         00535acb     CMP        EAX,-0x1
+//         00535ace     JZ         LAB_00535b03
+//                              view.cpp:2323 (15)
+//         00535ad0     MOV        this,dword ptr [EDI + 0xfc]
+//         00535ad6     MOV        EDX,dword ptr [ECX + this->_padding_]
+//         00535adc     MOV        EAX,dword ptr [EDX + EAX*0x4]
+//                              view.cpp:2324 (10)
+//         00535adf     TEST       EAX,EAX
+//         00535ae1     JZ         LAB_00535b03
+//         00535ae3     CMP        byte ptr [EAX + 0x48],0x7
+//         00535ae7     JNC        LAB_00535b03
+//                              view.cpp:2326 (18)
+//         00535ae9     MOV        this,dword ptr [EDI + 0x100]
+//         00535aef     PUSH       0x0
+//         00535af1     PUSH       EAX
+//         00535af2     CALL       RGE_Player::select_one_object                    int select_one_object(RGE_Player * this, RGE_
+//         00535af7     TEST       EAX,EAX
+//         00535af9     JZ         LAB_00535b0b
+//                              view.cpp:2329 (8)
+//         00535afb     MOV        dword ptr [ESP + local_4],0x1
+//                               LAB_00535b03                                                 XREF[3]:     00535ace(j), 00535ae1(j),
+//                                                                                                         00535ae7(j)
+//                              view.cpp:2319 (12)
+//         00535b03     INC        ESI
+//         00535b04     ADD        EBX,0xc
+//         00535b07     CMP        ESI,EBP
+//         00535b09     JL         LAB_00535ac9
+//                               LAB_00535b0b                                                 XREF[1]:     00535af9(j)
+//         00535b0b     MOV        EBX,dword ptr [ESP + param_3]
+//                               LAB_00535b0f                                                 XREF[1]:     00535ac2(j)
+//                              view.cpp:2334 (8)
+//         00535b0f     MOV        EAX,dword ptr [ESP + local_4]
+//         00535b13     TEST       EAX,EAX
+//         00535b15     JZ         LAB_00535b21
+//                              view.cpp:2335 (2)
+//         00535b17     MOV        AL,0x1
+//                              view.cpp:2370 (8)
+//         00535b19     POP        EDI
+//         00535b1a     POP        ESI
+//         00535b1b     POP        EBP
+//         00535b1c     POP        EBX
+//         00535b1d     POP        this
+//         00535b1e     RET        0x14
+//                               LAB_00535b21                                                 XREF[1]:     00535b15(j)
+//                              view.cpp:2337 (80)
+//         00535b21     MOV        this,dword ptr [ESP + param_4]
+//         00535b25     MOV        ESI,dword ptr [ESP + param_2]
+//         00535b29     MOV        EAX,dword ptr [ESP + param_5]
+//         00535b2d     SUB        this,ESI
+//         00535b2f     SUB        EAX,EBX
+//         00535b31     MOV        EDX,this
+//         00535b33     CMP        this,EAX
+//         00535b35     JL         LAB_00535b39
+//         00535b37     MOV        EDX,EAX
+//                               LAB_00535b39                                                 XREF[1]:     00535b35(j)
+//         00535b39     CMP        EDX,0x32
+//         00535b3c     JGE        LAB_00535b4a
+//         00535b3e     CMP        this,EAX
+//         00535b40     JGE        LAB_00535b46
+//         00535b42     MOV        EDX,this
+//         00535b44     JMP        LAB_00535b4f
+//                               LAB_00535b46                                                 XREF[1]:     00535b40(j)
+//         00535b46     MOV        EDX,EAX
+//         00535b48     JMP        LAB_00535b4f
+//                               LAB_00535b4a                                                 XREF[1]:     00535b3c(j)
+//         00535b4a     MOV        EDX,0x32
+//                               LAB_00535b4f                                                 XREF[2]:     00535b44(j), 00535b48(j)
+//         00535b4f     PUSH       0x1
+//         00535b51     PUSH       0x4
+//         00535b53     PUSH       EDX
+//         00535b54     PUSH       0x14
+//         00535b56     CDQ
+//         00535b57     SUB        EAX,EDX
+//         00535b59     PUSH       0xa
+//         00535b5b     SAR        EAX,0x1
+//         00535b5d     ADD        EAX,EBX
+//         00535b5f     PUSH       EAX
+//         00535b60     MOV        EAX,this
+//         00535b62     CDQ
+//         00535b63     SUB        EAX,EDX
+//         00535b65     MOV        this,EDI
+//         00535b67     SAR        EAX,0x1
+//         00535b69     ADD        EAX,ESI
+//         00535b6b     PUSH       EAX
+//         00535b6c     CALL       RGE_View::pick_objects                           int pick_objects(RGE_View * this, int param_1
+//                              view.cpp:2338 (2)
+//         00535b71     TEST       EAX,EAX
+//                              view.cpp:2339 (6)
+//         00535b73     JZ         LAB_00535c65
+//                              view.cpp:2342 (2)
+//         00535b79     XOR        this,this
+//                              view.cpp:2343 (2)
+//         00535b7b     XOR        EBX,EBX
+//                              view.cpp:2344 (12)
+//         00535b7d     TEST       EAX,EAX
+//         00535b7f     MOV        dword ptr [ESP + param_4],this
+//         00535b83     JLE        LAB_00535c45
+//                              view.cpp:2370 (124)
+//         00535b89     MOV        EBP,Picked_Objects                               = 00000000
+//         00535b8e     MOV        dword ptr [ESP + param_3],EAX
+//                               LAB_00535b92                                                 XREF[1]:     00535c3b(j)
+//         00535b92     MOV        EAX,dword ptr [EBP]=>Picked_Objects              = 00000000
+//         00535b95     TEST       EAX,EAX
+//         00535b97     JL         LAB_00535c2f
+//         00535b9d     MOV        this,dword ptr [EDI + 0xfc]
+//         00535ba3     MOV        EDX,dword ptr [ECX + this->_padding_]
+//         00535ba9     MOV        ESI,dword ptr [EDX + EAX*0x4]
+//         00535bac     TEST       ESI,ESI
+//         00535bae     JZ         LAB_00535c2f
+//         00535bb0     CMP        byte ptr [ESI + 0x48],0x7
+//         00535bb4     JNC        LAB_00535c2f
+//         00535bb6     MOV        EAX,dword ptr [ESI + 0x8]
+//         00535bb9     CMP        byte ptr [EAX + 0x8d],0x2
+//         00535bc0     JC         LAB_00535c2f
+//         00535bc2     MOV        this,dword ptr [EDI + 0x104]
+//         00535bc8     MOV        AL,byte ptr [this->_padding_ + 0x8db8]
+//         00535bce     TEST       AL,AL
+//         00535bd0     JNZ        LAB_00535c05
+//         00535bd2     MOV        EDX,dword ptr [EDI]
+//         00535bd4     PUSH       ESI
+//         00535bd5     MOV        this,EDI
+//         00535bd7     CALL       dword ptr [EDX + 0xe0]
+//         00535bdd     TEST       EAX,EAX
+//         00535bdf     JNZ        LAB_00535c05
+//         00535be1     FLD        float ptr [ESI + 0x3c]
+//         00535be4     CALL       __ftol                                           undefined __ftol()
+//         00535be9     FLD        float ptr [ESI + 0x38]
+//         00535bec     PUSH       EAX
+//         00535bed     CALL       __ftol                                           undefined __ftol()
+//         00535bf2     PUSH       EAX=>DAT_fffffff8
+//         00535bf3     MOV        EAX,dword ptr [EDI + 0x100]
+//         00535bf9     MOV        this,dword ptr [EAX + 0x38]
+//         00535bfc     CALL       RGE_Visible_Map::get_visible                     uchar get_visible(RGE_Visible_Map * this, int
+//         00535c01     CMP        AL,0xf
+//         00535c03     JNZ        LAB_00535c2f
+//                               LAB_00535c05                                                 XREF[2]:     00535bd0(j), 00535bdf(j)
+//                              view.cpp:2351 (16)
+//         00535c05     MOVSX      EAX,word ptr [EBP + 0x4]=>DAT_0087d4a4
+//         00535c09     MOV        EDX,dword ptr [EDI]
+//         00535c0b     PUSH       EAX
+//         00535c0c     PUSH       ESI=>DAT_fffffff8
+//         00535c0d     MOV        this,EDI
+//         00535c0f     CALL       dword ptr [EDX + 0xe4]
+//                              view.cpp:2353 (13)
+//         00535c15     MOV        this,dword ptr [ESI + 0xc]
+//         00535c18     MOV        EDX,dword ptr [EDI + 0x100]
+//         00535c1e     CMP        this,EDX
+//         00535c20     JNZ        LAB_00535c25
+//                              view.cpp:2354 (3)
+//         00535c22     ADD        EAX,0x5
+//                               LAB_00535c25                                                 XREF[1]:     00535c20(j)
+//                              view.cpp:2355 (4)
+//         00535c25     CMP        EAX,EBX
+//         00535c27     JLE        LAB_00535c2f
+//                              view.cpp:2357 (4)
+//         00535c29     MOV        dword ptr [ESP + 0x24],ESI
+//                              view.cpp:2358 (20)
+//         00535c2d     MOV        EBX,EAX
+//                               LAB_00535c2f                                                 XREF[6]:     00535b97(j), 00535bae(j),
+//                                                                                                         00535bb4(j), 00535bc0(j),
+//                                                                                                         00535c03(j), 00535c27(j)
+//         00535c2f     MOV        EAX,dword ptr [ESP + 0x20]
+//         00535c33     ADD        EBP,0xc
+//         00535c36     DEC        EAX
+//         00535c37     MOV        dword ptr [ESP + 0x20],EAX
+//         00535c3b     JNZ        LAB_00535b92
+//                              view.cpp:2344 (4)
+//         00535c41     MOV        this,dword ptr [ESP + 0x24]
+//                               LAB_00535c45                                                 XREF[1]:     00535b83(j)
+//                              view.cpp:2363 (4)
+//         00535c45     TEST       this,this
+//         00535c47     JZ         LAB_00535c65
+//                              view.cpp:2365 (18)
+//         00535c49     PUSH       0x0
+//         00535c4b     PUSH       this=>DAT_fffffff8
+//         00535c4c     MOV        this,dword ptr [EDI + 0x100]
+//         00535c52     CALL       RGE_Player::select_one_object                    int select_one_object(RGE_Player * this, RGE_
+//         00535c57     TEST       EAX,EAX
+//         00535c59     JZ         LAB_00535c65
+//                              view.cpp:2366 (2)
+//         00535c5b     MOV        AL,0x1
+//                              view.cpp:2370 (18)
+//         00535c5d     POP        EDI
+//         00535c5e     POP        ESI
+//         00535c5f     POP        EBP
+//         00535c60     POP        EBX
+//         00535c61     POP        this
+//         00535c62     RET        0x14
+//                               LAB_00535c65                                                 XREF[3]:     00535b73(j), 00535c47(j),
+//                                                                                                         00535c59(j)
+//         00535c65     POP        EDI
+//         00535c66     POP        ESI
+//         00535c67     POP        EBP
+//         00535c68     XOR        AL,AL
+//         00535c6a     POP        EBX
+//         00535c6b     POP        this
+//         00535c6c     RET        0x14
+//         00535c6f     ??         90h
     return 0;
 }
 

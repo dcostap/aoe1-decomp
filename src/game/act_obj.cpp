@@ -281,70 +281,49 @@ void RGE_Action_Object::recycle_in_to_game(RGE_Master_Static_Object* param_1, RG
 
 int RGE_Action_Object::setup(RGE_Master_Action_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) {
     /* TODO: Stub */
-//                              int __thiscall setup(RGE_Action_Object * this, int param_1, RGE_Game
+//                              int __thiscall setup(RGE_Action_Object * this, RGE_Master_Action_Obj
 //              int               EAX:4          <RETURN>
 //              RGE_Action_Obj    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     00406126(R)
-//              RGE_Game_World    Stack[0x8]:4   param_2                   XREF[1]:     00406120(R)
-//                               ?setup@RGE_Action_Object@@MAEHHPAVRGE_Game_World@@@Z         XREF[3]:     RGE_Action_Object:00405fe9(c),
-//                               RGE_Action_Object::setup                                                  setup:0042fbc5(c), 0056e5f8(*)
-//                              act_obj.cpp:129 (19)
-//         00406120     MOV        EAX,dword ptr [ESP + param_2]
-//         00406124     PUSH       ESI
-//         00406125     PUSH       EDI
-//         00406126     MOV        EDI,dword ptr [ESP + param_1]
-//         0040612a     PUSH       EAX
-//         0040612b     MOV        ESI,this
-//         0040612d     PUSH       EDI
-//         0040612e     CALL       RGE_Moving_Object::setup                         int setup(RGE_Moving_Object * this, int param
-//                              act_obj.cpp:134 (19)
-//         00406133     LEA        this,[ESI + 0x180]
-//         00406139     PUSH       0x1
-//         0040613b     PUSH       this
-//         0040613c     PUSH       EDI
-//         0040613d     MOV        byte ptr [ESI + 0x4e],0x28
-//         00406141     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              act_obj.cpp:136 (22)
-//         00406146     FLD        float ptr [save_game_version]                    = 7.23
-//         0040614c     FCOMP      float ptr [DAT_0056e648]
-//         00406152     ADD        ESP,0xc
-//         00406155     FNSTSW     AX
-//         00406157     TEST       AH,0x1
-//         0040615a     JNZ        LAB_00406170
-//                              act_obj.cpp:137 (18)
-//         0040615c     LEA        EDX,[ESI + 0x188]
-//         00406162     PUSH       0x1
-//         00406164     PUSH       EDX
-//         00406165     PUSH       EDI
-//         00406166     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         0040616b     ADD        ESP,0xc
-//                              act_obj.cpp:138 (2)
-//         0040616e     JMP        LAB_00406177
-//                               LAB_00406170                                                 XREF[1]:     0040615a(j)
-//                              act_obj.cpp:139 (7)
-//         00406170     MOV        byte ptr [ESI + 0x188],0x0
-//                               LAB_00406177                                                 XREF[1]:     0040616e(j)
-//                              act_obj.cpp:141 (10)
-//         00406177     MOV        EAX,dword ptr [ESI]
-//         00406179     MOV        this,ESI
-//         0040617b     CALL       dword ptr [EAX + 0x218]
-//                              act_obj.cpp:142 (14)
-//         00406181     PUSH       EDI
-//         00406182     MOV        this,EAX
-//         00406184     MOV        dword ptr [ESI + 0x184],EAX
-//         0040618a     CALL       RGE_Action_List::load                            void load(RGE_Action_List * this, int param_1)
-//                              act_obj.cpp:145 (10)
-//         0040618f     POP        EDI
-//         00406190     MOV        EAX,0x1
-//         00406195     POP        ESI
-//         00406196     RET        0x8
-//         00406199     ??         90h
-//         0040619a     NOP
-//         0040619b     NOP
-//         0040619c     NOP
-//         0040619d     NOP
-//         0040619e     NOP
-//         0040619f     NOP
+//              RGE_Master_Act    Stack[0x4]:4   param_1                   XREF[1]:     004060e5(R)
+//              RGE_Player *      Stack[0x8]:4   param_2                   XREF[1]:     004060e0(R)
+//              float             Stack[0xc]:4   param_3                   XREF[1]:     004060d4(R)
+//              float             Stack[0x10]:4  param_4                   XREF[1]:     004060db(R)
+//              float             Stack[0x14]:4  param_5                   XREF[1]:     004060d0(R)
+//                               ?setup@RGE_Action_Object@@MAEHPAVRGE_Master_Action_Object@@  XREF[7]:     RGE_Action_Object:00405cd6(c),
+//                               RGE_Action_Object::setup                                                  setup:0042fb74(c), 0056e634(*),
+//                                                                                                         0056f46c(*), 00570904(*),
+//                                                                                                         0057498c(*), 00574c34(*)
+//                              act_obj.cpp:105 (35)
+//         004060d0     MOV        EAX,dword ptr [ESP + param_5]
+//         004060d4     MOV        EDX,dword ptr [ESP + param_3]
+//         004060d8     PUSH       ESI
+//         004060d9     MOV        ESI,this
+//         004060db     MOV        this,dword ptr [ESP + param_4]
+//         004060df     PUSH       EAX
+//         004060e0     MOV        EAX,dword ptr [ESP + param_2]
+//         004060e4     PUSH       this
+//         004060e5     MOV        this,dword ptr [ESP + param_1]
+//         004060e9     PUSH       EDX
+//         004060ea     PUSH       EAX
+//         004060eb     PUSH       this
+//         004060ec     MOV        this,ESI
+//         004060ee     CALL       RGE_Moving_Object::setup                         int setup(RGE_Moving_Object * this, RGE_Maste
+//                              act_obj.cpp:110 (27)
+//         004060f3     MOV        EDX,dword ptr [ESI]
+//         004060f5     MOV        this,ESI
+//         004060f7     MOV        byte ptr [ESI + 0x4e],0x28
+//         004060fb     MOV        byte ptr [ESI + 0x180],0x0
+//         00406102     CALL       dword ptr [EDX + 0x218]
+//         00406108     MOV        dword ptr [ESI + 0x184],EAX
+//                              act_obj.cpp:115 (7)
+//         0040610e     MOV        byte ptr [ESI + 0x188],0x0
+//                              act_obj.cpp:123 (5)
+//         00406115     MOV        EAX,0x1
+//                              act_obj.cpp:124 (4)
+//         0040611a     POP        ESI
+//         0040611b     RET        0x14
+//         0040611e     ??         90h
+//         0040611f     NOP
     return 0;
 }
 

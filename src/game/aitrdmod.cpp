@@ -3,29 +3,42 @@
 
 TradeAIModule::TradeAIModule(void* param_1, int param_2) {
     /* TODO: Stub */
-//                              undefined __thiscall TradeAIModule(TradeAIModule * this, int param_1
+//                              undefined __thiscall TradeAIModule(TradeAIModule * this, void * para
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TradeAIModule *   ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     00412ea0(R)
-//              int               Stack[0x8]:4   param_2
-//                               ??0TradeAIModule@@QAE@HH@Z                                   XREF[1]:     TribeMainDecisionAIModule:004e4c54
+//              void *            Stack[0x4]:4   param_1                   XREF[1]:     00412e40(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     00412e48(R)
+//                               ??0TradeAIModule@@QAE@PAXH@Z                                 XREF[1]:     TribeMainDecisionAIModule:004e48e4
 //                               TradeAIModule::TradeAIModule
-//                              aitrdmod.cpp:31 (41)
-//         00412ea0     MOV        EAX,dword ptr [ESP + param_1]
-//         00412ea4     PUSH       ESI
-//         00412ea5     PUSH       0x0
-//         00412ea7     PUSH       EAX
-//         00412ea8     PUSH       0x3f2
-//         00412ead     MOV        ESI,this
-//         00412eaf     PUSH       s_Trade_AI                                       = "Trade AI"
-//         00412eb4     CALL       AIModule::AIModule                               undefined AIModule(AIModule * this, char * pa
-//         00412eb9     MOV        dword ptr [ESI + 0xf0],0x0
-//         00412ec3     MOV        dword ptr [ESI],TradeAIModule::`vftable'         = 00412e80
-//                              aitrdmod.cpp:32 (6)
-//         00412ec9     MOV        EAX,ESI
-//         00412ecb     POP        ESI
-//         00412ecc     RET        0x8
-//         00412ecf     ??         90h
+//                              aitrdmod.cpp:23 (46)
+//         00412e40     MOV        EAX,dword ptr [ESP + param_1]
+//         00412e44     PUSH       ESI
+//         00412e45     MOV        ESI,this
+//         00412e47     PUSH       EAX
+//         00412e48     MOV        this,dword ptr [ESP + param_2]
+//         00412e4c     PUSH       this
+//         00412e4d     PUSH       0x3f2
+//         00412e52     PUSH       s_Trade_AI                                       = "Trade AI"
+//         00412e57     MOV        this,ESI
+//         00412e59     CALL       AIModule::AIModule                               undefined AIModule(AIModule * this, char * pa
+//         00412e5e     MOV        dword ptr [ESI + 0xf0],0x0
+//         00412e68     MOV        dword ptr [ESI],TradeAIModule::`vftable'         = 00412e80
+//                              aitrdmod.cpp:24 (6)
+//         00412e6e     MOV        EAX,ESI
+//         00412e70     POP        ESI
+//         00412e71     RET        0x8
+//         00412e74     ??         90h
+//         00412e75     NOP
+//         00412e76     NOP
+//         00412e77     NOP
+//         00412e78     NOP
+//         00412e79     NOP
+//         00412e7a     NOP
+//         00412e7b     NOP
+//         00412e7c     NOP
+//         00412e7d     NOP
+//         00412e7e     NOP
+//         00412e7f     NOP
 }
 
 TradeAIModule::TradeAIModule(int param_1, int param_2) {

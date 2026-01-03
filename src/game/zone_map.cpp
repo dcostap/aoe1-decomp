@@ -125,118 +125,123 @@ void zone_push(Zone_Queue** param_1, Zone_Queue** param_2, long param_3, long pa
 
 RGE_Zone_Map::RGE_Zone_Map(int param_1, RGE_Map* param_2) {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Zone_Map(RGE_Zone_Map * this, RGE_Map * par
+//                              undefined __thiscall RGE_Zone_Map(RGE_Zone_Map * this, int param_1,
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Zone_Map *    ECX:4 (auto)   this
-//              RGE_Map *         Stack[0x4]:4   param_1                   XREF[1]:     005468c0(R)
-//              float *           Stack[0x8]:4   param_2                   XREF[1]:     00546989(R)
-//              long              Stack[0xc]:4   param_3                   XREF[1]:     00546971(R)
-//                               ??0RGE_Zone_Map@@QAE@PAVRGE_Map@@PAMJ@Z                      XREF[2]:     create_zone_map:0054735f(c),
-//                               RGE_Zone_Map::RGE_Zone_Map                                                get_zone_map:0054745e(c)
-//                              zone_map.cpp:117 (9)
-//         005468c0     MOV        EAX,dword ptr [ESP + param_1]
-//         005468c4     PUSH       EBX
-//         005468c5     MOV        EBX,this
-//         005468c7     PUSH       ESI
-//         005468c8     PUSH       EDI
-//                              zone_map.cpp:123 (23)
-//         005468c9     PUSH       0x1
-//         005468cb     MOV        dword ptr [EBX + 0x518],EAX
-//         005468d1     MOV        this,dword ptr [EAX + 0xc]
-//         005468d4     IMUL       this,dword ptr [EAX + 0x8]
-//         005468d8     PUSH       this
-//         005468d9     CALL       calloc                                           undefined calloc()
-//         005468de     MOV        EDI,EAX
-//                              zone_map.cpp:124 (34)
-//         005468e0     MOV        EAX,dword ptr [EBX + 0x518]
-//         005468e6     MOV        dword ptr [EBX + 0x404],EDI
-//         005468ec     ADD        ESP,0x8
-//         005468ef     MOV        this,dword ptr [EAX + 0xc]
-//         005468f2     IMUL       this,dword ptr [EAX + 0x8]
-//         005468f6     MOV        EDX,this
-//         005468f8     OR         EAX,0xffffffff
-//         005468fb     SHR        this,0x2
-//         005468fe     STOSD.REP  ES:EDI
-//         00546900     MOV        this,EDX
-//                              zone_map.cpp:127 (22)
-//         00546902     PUSH       0x4
-//         00546904     AND        this,0x3
-//         00546907     STOSB.REP  ES:EDI
-//         00546909     MOV        EAX,dword ptr [EBX + 0x518]
-//         0054690f     MOV        this,dword ptr [EAX + 0xc]
-//         00546912     PUSH       this
-//         00546913     CALL       calloc                                           undefined calloc()
-//                              zone_map.cpp:128 (24)
-//         00546918     MOV        this,dword ptr [EBX + 0x518]
-//         0054691e     MOV        dword ptr [EBX + 0x408],EAX
-//         00546924     ADD        ESP,0x8
-//         00546927     XOR        EAX,EAX
-//         00546929     MOV        EDX,dword ptr [ECX + this+0xc]
-//         0054692c     TEST       EDX,EDX
-//         0054692e     JLE        LAB_00546953
-//                               LAB_00546930                                                 XREF[1]:     00546951(j)
-//                              zone_map.cpp:129 (35)
-//         00546930     MOV        EDX,dword ptr [ECX + this+0x8]
-//         00546933     MOV        EDI,dword ptr [EBX + 0x404]
-//         00546939     IMUL       EDX,EAX
-//         0054693c     MOV        this,dword ptr [EBX + 0x408]
-//         00546942     ADD        EDX,EDI
-//         00546944     MOV        dword ptr [this->numberTilesInZoneValue[0] + E
-//         00546947     MOV        this,dword ptr [EBX + 0x518]
-//         0054694d     INC        EAX
-//         0054694e     CMP        EAX,dword ptr [ECX + this+0xc]
-//         00546951     JL         LAB_00546930
-//                               LAB_00546953                                                 XREF[1]:     0054692e(j)
-//                              zone_map.cpp:132 (9)
-//         00546953     XOR        EAX,EAX
-//         00546955     MOV        this,EBX
-//         00546957     MOV        EDX,0xff
-//                               LAB_0054695c                                                 XREF[1]:     0054696f(j)
-//                              zone_map.cpp:134 (7)
-//         0054695c     MOV        byte ptr [EAX + EBX*0x1 + 0x40c],DL
-//                              zone_map.cpp:135 (14)
-//         00546963     MOV        dword ptr [this->numberTilesInZoneValue[0]],0x0
-//         00546969     INC        EAX
-//         0054696a     ADD        this,0x4
-//         0054696d     CMP        EAX,EDX
-//         0054696f     JL         LAB_0054695c
-//                              zone_map.cpp:139 (4)
-//         00546971     MOV        EAX,dword ptr [ESP + param_3]
-//                              zone_map.cpp:140 (14)
-//         00546975     PUSH       0x4
-//         00546977     PUSH       EAX
-//         00546978     MOV        dword ptr [EBX + 0x514],EAX
-//         0054697e     CALL       calloc                                           undefined calloc()
-//                              zone_map.cpp:141 (38)
-//         00546983     MOV        this,dword ptr [EBX + 0x514]
-//         00546989     MOV        ESI,dword ptr [ESP + param_2]
-//         0054698d     SHL        this,0x2
-//         00546990     MOV        EDX,this
-//         00546992     MOV        EDI,EAX
-//         00546994     SHR        this,0x2
-//         00546997     MOV        dword ptr [EBX + 0x510],EAX
-//         0054699d     ADD        ESP,0x8
-//         005469a0     MOVSD.REP  ES:EDI,ESI
-//         005469a2     MOV        this,EDX
-//         005469a4     AND        this,0x3
-//         005469a7     MOVSB.REP  ES:EDI,ESI
-//                              zone_map.cpp:143 (7)
-//         005469a9     MOV        this,EBX
-//         005469ab     CALL       RGE_Zone_Map::do_zone_map                        uchar do_zone_map(RGE_Zone_Map * this)
-//                              zone_map.cpp:144 (8)
-//         005469b0     POP        EDI
-//         005469b1     MOV        EAX,EBX
-//         005469b3     POP        ESI
-//         005469b4     POP        EBX
-//         005469b5     RET        0xc
-//         005469b8     ??         90h
-//         005469b9     NOP
-//         005469ba     NOP
-//         005469bb     NOP
-//         005469bc     NOP
-//         005469bd     NOP
-//         005469be     NOP
-//         005469bf     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     00546823(R)
+//              RGE_Map *         Stack[0x8]:4   param_2                   XREF[1]:     005467b0(R)
+//                               ??0RGE_Zone_Map@@QAE@HPAVRGE_Map@@@Z                         XREF[1]:     RGE_Zone_Map_List:005471fa(c)
+//                               RGE_Zone_Map::RGE_Zone_Map
+//                              zone_map.cpp:78 (9)
+//         005467b0     MOV        EAX,dword ptr [ESP + param_2]
+//         005467b4     PUSH       EBX
+//         005467b5     PUSH       ESI
+//         005467b6     MOV        ESI,this
+//         005467b8     PUSH       EDI
+//                              zone_map.cpp:84 (21)
+//         005467b9     PUSH       0x1
+//         005467bb     MOV        dword ptr [ESI + 0x518],EAX
+//         005467c1     MOV        this,dword ptr [EAX + 0x8]
+//         005467c4     IMUL       this,dword ptr [EAX + 0xc]
+//         005467c8     PUSH       this
+//         005467c9     CALL       calloc                                           undefined calloc()
+//                              zone_map.cpp:87 (26)
+//         005467ce     MOV        EDX,dword ptr [ESI + 0x518]
+//         005467d4     ADD        ESP,0x8
+//         005467d7     MOV        dword ptr [ESI + 0x404],EAX
+//         005467dd     MOV        EAX,dword ptr [EDX + 0xc]
+//         005467e0     PUSH       0x4
+//         005467e2     PUSH       EAX
+//         005467e3     CALL       calloc                                           undefined calloc()
+//                              zone_map.cpp:88 (24)
+//         005467e8     MOV        this,dword ptr [ESI + 0x518]
+//         005467ee     MOV        dword ptr [ESI + 0x408],EAX
+//         005467f4     ADD        ESP,0x8
+//         005467f7     XOR        EAX,EAX
+//         005467f9     MOV        EDX,dword ptr [ECX + this+0xc]
+//         005467fc     TEST       EDX,EDX
+//         005467fe     JLE        LAB_00546823
+//                               LAB_00546800                                                 XREF[1]:     00546821(j)
+//                              zone_map.cpp:89 (35)
+//         00546800     MOV        this,dword ptr [ECX + this+0x8]
+//         00546803     MOV        EBX,dword ptr [ESI + 0x404]
+//         00546809     IMUL       this,EAX
+//         0054680c     MOV        EDX,dword ptr [ESI + 0x408]
+//         00546812     ADD        this,EBX
+//         00546814     MOV        dword ptr [EDX + EAX*0x4],this
+//         00546817     MOV        this,dword ptr [ESI + 0x518]
+//         0054681d     INC        EAX
+//         0054681e     CMP        EAX,dword ptr [ECX + this+0xc]
+//         00546821     JL         LAB_00546800
+//                               LAB_00546823                                                 XREF[1]:     005467fe(j)
+//                              zone_map.cpp:92 (25)
+//         00546823     MOV        EDI,dword ptr [ESP + param_1]
+//         00546827     LEA        EAX,[ESI + 0x40c]
+//         0054682d     PUSH       0xff
+//         00546832     PUSH       EAX
+//         00546833     PUSH       EDI
+//         00546834     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00546839     ADD        ESP,0xc
+//                              zone_map.cpp:95 (12)
+//         0054683c     PUSH       0x3fc
+//         00546841     PUSH       ESI
+//         00546842     PUSH       EDI
+//         00546843     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              zone_map.cpp:98 (33)
+//         00546848     MOV        EAX,dword ptr [ESI + 0x518]
+//         0054684e     MOV        EDX,dword ptr [ESI + 0x404]
+//         00546854     ADD        ESP,0xc
+//         00546857     MOV        this,dword ptr [EAX + 0xc]
+//         0054685a     IMUL       this,dword ptr [EAX + 0x8]
+//         0054685e     PUSH       this
+//         0054685f     PUSH       EDX
+//         00546860     PUSH       EDI
+//         00546861     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00546866     ADD        ESP,0xc
+//                              zone_map.cpp:101 (15)
+//         00546869     LEA        EBX,[ESI + 0x514]
+//         0054686f     PUSH       0x4
+//         00546871     PUSH       EBX
+//         00546872     PUSH       EDI
+//         00546873     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              zone_map.cpp:102 (9)
+//         00546878     MOV        EAX,dword ptr [EBX]
+//         0054687a     ADD        ESP,0xc
+//         0054687d     TEST       EAX,EAX
+//         0054687f     JLE        LAB_005468aa
+//                              zone_map.cpp:104 (8)
+//         00546881     PUSH       0x4
+//         00546883     PUSH       EAX
+//         00546884     CALL       calloc                                           undefined calloc()
+//                              zone_map.cpp:105 (25)
+//         00546889     MOV        this,dword ptr [EBX]
+//         0054688b     ADD        ESP,0x8
+//         0054688e     SHL        this,0x2
+//         00546891     PUSH       this
+//         00546892     PUSH       EAX
+//         00546893     PUSH       EDI
+//         00546894     MOV        dword ptr [ESI + 0x510],EAX
+//         0054689a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0054689f     ADD        ESP,0xc
+//                              zone_map.cpp:112 (8)
+//         005468a2     MOV        EAX,ESI
+//         005468a4     POP        EDI
+//         005468a5     POP        ESI
+//         005468a6     POP        EBX
+//         005468a7     RET        0x8
+//                               LAB_005468aa                                                 XREF[1]:     0054687f(j)
+//                              zone_map.cpp:110 (10)
+//         005468aa     MOV        dword ptr [ESI + 0x510],0x0
+//                              zone_map.cpp:112 (8)
+//         005468b4     MOV        EAX,ESI
+//         005468b6     POP        EDI
+//         005468b7     POP        ESI
+//         005468b8     POP        EBX
+//         005468b9     RET        0x8
+//         005468bc     ??         90h
+//         005468bd     NOP
+//         005468be     NOP
+//         005468bf     NOP
 }
 
 RGE_Zone_Map::RGE_Zone_Map(RGE_Map* param_1, float* param_2, long param_3) {
@@ -1019,161 +1024,37 @@ uchar RGE_Zone_Map::get_zone_info(long param_1, long param_2) {
 
 int RGE_Zone_Map::withinRange(XYPoint param_1, XYPoint param_2, float param_3) {
     /* TODO: Stub */
-//                              int __thiscall withinRange(RGE_Zone_Map * this, uchar param_1, XYPoi
+//                              int __thiscall withinRange(RGE_Zone_Map * this, XYPoint param_1, XYP
 //              int               EAX:4          <RETURN>
 //              RGE_Zone_Map *    ECX:4 (auto)   this
-//              uchar             Stack[0x4]:1   param_1                   XREF[1]:     00546fa2(R)
-//              XYPoint           Stack[0x8]:8   param_2                   XREF[1,2]:   00546f16(R), 00546f1a(R), 00546f79(R)
-//              float             Stack[0x10]:4  param_3                   XREF[2]:     00546f03(R), 00546f93(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[3]:     00546f45(W), 00546f5f(W), 00546fb4(R)
-//              XYPoint           Stack[-0xc]:8  max                       XREF[2,5]:   00546f0d(W), 00546f9e(R), 00546f3d(W), 00546f41(R),
-//                                                                                     00546f51(W), 00546f63(R), 00546fc2(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[2]:     00546f89(W), 00546f8d(R)
-//              undefined4        Stack[-0x14]:4 local_14                  XREF[3]:     00546f6f(W), 00546fbe(R), 00546fca(W)
-//                               ?withinRange@RGE_Zone_Map@@QAEHEUXYPoint@@M@Z                XREF[3]:     withinRangeOfZoneAtPoint:004c7615(
-//                               RGE_Zone_Map::withinRange                                                 withinRangeOfZone:004c76a4(c),
-//                                                                                                         withinRange:00546ef4(c)
-//                              zone_map.cpp:318 (3)
-//         00546f00     SUB        ESP,0x14
-//                              zone_map.cpp:328 (23)
-//         00546f03     FLD        float ptr [ESP + param_3]
-//         00546f07     PUSH       EBX
-//         00546f08     PUSH       EBP
-//         00546f09     PUSH       ESI
-//         00546f0a     PUSH       EDI
-//         00546f0b     MOV        EDI,this
-//         00546f0d     MOV        dword ptr [ESP + max.x],EDI
-//         00546f11     CALL       __ftol                                           undefined __ftol()
-//         00546f16     MOV        ESI,dword ptr [ESP + param_2.x]
-//                              zone_map.cpp:329 (12)
-//         00546f1a     MOV        EBX,dword ptr [ESP + param_2.y]
-//         00546f1e     MOV        this,ESI
-//         00546f20     MOV        EBP,EBX
-//         00546f22     SUB        this,EAX
-//         00546f24     SUB        EBP,EAX
-//                              zone_map.cpp:330 (4)
-//         00546f26     TEST       this,this
-//         00546f28     JGE        LAB_00546f2c
-//                              zone_map.cpp:331 (2)
-//         00546f2a     XOR        this,this
-//                               LAB_00546f2c                                                 XREF[1]:     00546f28(j)
-//                              zone_map.cpp:332 (4)
-//         00546f2c     TEST       EBP,EBP
-//         00546f2e     JGE        LAB_00546f32
-//                              zone_map.cpp:333 (2)
-//         00546f30     XOR        EBP,EBP
-//                               LAB_00546f32                                                 XREF[1]:     00546f2e(j)
-//                              zone_map.cpp:335 (3)
-//         00546f32     LEA        EDX,[ESI + EAX*0x1]
-//                              zone_map.cpp:336 (2)
-//         00546f35     ADD        EBX,EAX
-//                              zone_map.cpp:337 (26)
-//         00546f37     MOV        EAX,dword ptr [EDI + 0x518]
-//         00546f3d     MOV        dword ptr [ESP + max.y],EDX
-//         00546f41     MOV        EDI,dword ptr [ESP + max.y]
-//         00546f45     MOV        dword ptr [ESP + local_4],EBX
-//         00546f49     MOV        EDX,dword ptr [EAX + 0x8]
-//         00546f4c     DEC        EDX
-//         00546f4d     CMP        EDI,EDX
-//         00546f4f     JLE        LAB_00546f55
-//                              zone_map.cpp:338 (4)
-//         00546f51     MOV        dword ptr [ESP + max.y],EDX
-//                               LAB_00546f55                                                 XREF[1]:     00546f4f(j)
-//                              zone_map.cpp:339 (8)
-//         00546f55     MOV        EAX,dword ptr [EAX + 0xc]
-//         00546f58     DEC        EAX
-//         00546f59     CMP        EBX,EAX
-//         00546f5b     JLE        LAB_00546f63
-//                              zone_map.cpp:340 (6)
-//         00546f5d     MOV        EBX,EAX
-//         00546f5f     MOV        dword ptr [ESP + local_4],EBX
-//                               LAB_00546f63                                                 XREF[1]:     00546f5b(j)
-//                              zone_map.cpp:342 (16)
-//         00546f63     MOV        EAX,dword ptr [ESP + max.y]
-//         00546f67     MOV        EDI,this
-//         00546f69     CMP        this,EAX
-//         00546f6b     JG         LAB_00546feb
-//         00546f6d     SUB        ESI,this
-//         00546f6f     MOV        dword ptr [ESP + local_14],ESI
-//                               LAB_00546f73                                                 XREF[1]:     00546fce(j)
-//                              zone_map.cpp:343 (10)
-//         00546f73     CMP        EBP,EBX
-//         00546f75     MOV        EDX,EBP
-//         00546f77     JG         LAB_00546fc2
-//         00546f79     MOV        this,dword ptr [ESP + param_2.y]
-//                              zone_map.cpp:348 (33)
-//         00546f7d     IMUL       ESI,ESI
-//         00546f80     SUB        this,EBP
-//                               LAB_00546f82                                                 XREF[1]:     00546fbc(j)
-//         00546f82     MOV        EAX,this
-//         00546f84     IMUL       EAX,this
-//         00546f87     ADD        EAX,ESI
-//         00546f89     MOV        dword ptr [ESP + local_10],EAX
-//         00546f8d     FILD       dword ptr [ESP + local_10]
-//         00546f91     FSQRT
-//         00546f93     FCOMP      float ptr [ESP + param_3]
-//         00546f97     FNSTSW     AX
-//         00546f99     TEST       AH,0x41
-//         00546f9c     JZ         LAB_00546fb8
-//                              zone_map.cpp:354 (26)
-//         00546f9e     MOV        EAX,dword ptr [ESP + max.x]
-//         00546fa2     MOV        BL,byte ptr [ESP + param_1]
-//         00546fa6     MOV        EAX,dword ptr [EAX + 0x408]
-//         00546fac     MOV        EAX,dword ptr [EAX + EDX*0x4]
-//         00546faf     CMP        byte ptr [EAX + EDI*0x1],BL
-//         00546fb2     JZ         LAB_00546fdc
-//         00546fb4     MOV        EBX,dword ptr [ESP + local_4]
-//                               LAB_00546fb8                                                 XREF[1]:     00546f9c(j)
-//                              zone_map.cpp:343 (10)
-//         00546fb8     INC        EDX
-//         00546fb9     DEC        this
-//         00546fba     CMP        EDX,EBX
-//         00546fbc     JLE        LAB_00546f82
-//         00546fbe     MOV        ESI,dword ptr [ESP + local_14]
-//                               LAB_00546fc2                                                 XREF[1]:     00546f77(j)
-//                              zone_map.cpp:342 (14)
-//         00546fc2     MOV        EAX,dword ptr [ESP + max.y]
-//         00546fc6     INC        EDI
-//         00546fc7     DEC        ESI
-//         00546fc8     CMP        EDI,EAX
-//         00546fca     MOV        dword ptr [ESP + local_14],ESI
-//         00546fce     JLE        LAB_00546f73
-//                              zone_map.cpp:359 (2)
-//         00546fd0     XOR        EAX,EAX
-//                              zone_map.cpp:360 (10)
-//         00546fd2     POP        EDI
-//         00546fd3     POP        ESI
-//         00546fd4     POP        EBP
-//         00546fd5     POP        EBX
-//         00546fd6     ADD        ESP,0x14
-//         00546fd9     RET        0x10
-//                               LAB_00546fdc                                                 XREF[1]:     00546fb2(j)
-//                              zone_map.cpp:355 (5)
-//         00546fdc     MOV        EAX,0x1
-//                              zone_map.cpp:360 (22)
-//         00546fe1     POP        EDI
-//         00546fe2     POP        ESI
-//         00546fe3     POP        EBP
-//         00546fe4     POP        EBX
-//         00546fe5     ADD        ESP,0x14
-//         00546fe8     RET        0x10
-//                               LAB_00546feb                                                 XREF[1]:     00546f6b(j)
-//         00546feb     POP        EDI
-//         00546fec     POP        ESI
-//         00546fed     POP        EBP
-//         00546fee     XOR        EAX,EAX
-//         00546ff0     POP        EBX
-//         00546ff1     ADD        ESP,0x14
-//         00546ff4     RET        0x10
-//         00546ff7     ??         90h
-//         00546ff8     NOP
-//         00546ff9     NOP
-//         00546ffa     NOP
-//         00546ffb     NOP
-//         00546ffc     NOP
-//         00546ffd     NOP
-//         00546ffe     NOP
-//         00546fff     NOP
+//              XYPoint           Stack[0x4]:8   param_1                   XREF[1,1]:   00546eec(R), 00546ee5(R)
+//              XYPoint           Stack[0xc]:8   param_2                   XREF[1,1]:   00546ed9(R), 00546ed4(R)
+//              float             Stack[0x14]:4  param_3                   XREF[1]:     00546ed0(R)
+//                               ?withinRange@RGE_Zone_Map@@QAEHUXYPoint@@0M@Z                XREF[5]:     canPath:0045f8ff(c),
+//                               RGE_Zone_Map::withinRange                                                 canPath:0045fad8(c),
+//                                                                                                         canBidirectionPath:0045fce3(c),
+//                                                                                                         canPathWithObstructions:0045ffd8(c
+//                                                                                                         findAvoidancePath:00460caf(c)
+//                              zone_map.cpp:307 (41)
+//         00546ed0     MOV        EAX,dword ptr [ESP + param_3]
+//         00546ed4     MOV        EDX,dword ptr [ESP + param_2.y]
+//         00546ed8     PUSH       EAX
+//         00546ed9     MOV        EAX,dword ptr [ESP + param_2.x]
+//         00546edd     PUSH       EDX
+//         00546ede     MOV        EDX,dword ptr [ECX + this->zone_map_rows]
+//         00546ee4     PUSH       EAX
+//         00546ee5     MOV        EAX,dword ptr [ESP + param_1.y]
+//         00546ee9     MOV        EDX,dword ptr [EDX + EAX*0x4]
+//         00546eec     MOV        EAX,dword ptr [ESP + param_1.x]
+//         00546ef0     MOV        DL,byte ptr [EDX + EAX*0x1]
+//         00546ef3     PUSH       EDX
+//         00546ef4     CALL       RGE_Zone_Map::withinRange                        int withinRange(RGE_Zone_Map * this, uchar pa
+//                              zone_map.cpp:312 (3)
+//         00546ef9     RET        0x14
+//         00546efc     ??         90h
+//         00546efd     NOP
+//         00546efe     NOP
+//         00546eff     NOP
     return 0;
 }
 
@@ -1583,23 +1464,103 @@ int RGE_Zone_Map::findClosestPointInTerrainType(XYPoint param_1, XYPoint* param_
 
 RGE_Zone_Map_List::RGE_Zone_Map_List(int param_1, RGE_Map* param_2) {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Zone_Map_List(RGE_Zone_Map_List * this, RGE
+//                              undefined __thiscall RGE_Zone_Map_List(RGE_Zone_Map_List * this, int
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Zone_Map_L    ECX:4 (auto)   this
-//              RGE_Map *         Stack[0x4]:4   param_1                   XREF[1]:     00547242(R)
-//                               ??0RGE_Zone_Map_List@@QAE@PAVRGE_Map@@@Z                     XREF[1]:     new_map:00455b4f(c)
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     0054719b(R)
+//              RGE_Map *         Stack[0x8]:4   param_2                   XREF[2]:     00547196(R), 005471e3(W)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     005471e9(W), 00547206(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00547220(R)
+//                               ??0RGE_Zone_Map_List@@QAE@HPAVRGE_Map@@@Z                    XREF[1]:     load_map:00457a49(c)
 //                               RGE_Zone_Map_List::RGE_Zone_Map_List
-//                              zone_map.cpp:465 (2)
-//         00547240     MOV        EAX,this
-//                              zone_map.cpp:466 (7)
-//         00547242     MOV        this,dword ptr [ESP + param_1]
-//         00547246     MOV        dword ptr [EAX + 0x8],this
-//                              zone_map.cpp:467 (6)
-//         00547249     MOV        dword ptr [EAX],0x0
-//                              zone_map.cpp:468 (7)
-//         0054724f     MOV        dword ptr [EAX + 0x4],0x0
-//                              zone_map.cpp:469 (3)
-//         00547256     RET        0x4
+//                              zone_map.cpp:446 (22)
+//         00547180     MOV        EAX,FS:[0x0]
+//         00547186     PUSH       -0x1
+//         00547188     PUSH       FUN_00561e8b
+//         0054718d     PUSH       EAX
+//         0054718e     MOV        dword ptr FS:[0x0],ESP
+//         00547195     PUSH       EBX
+//                              zone_map.cpp:449 (5)
+//         00547196     MOV        EAX,dword ptr [ESP + param_2]
+//         0054719a     PUSH       EBP
+//                              zone_map.cpp:451 (29)
+//         0054719b     MOV        EBP,dword ptr [ESP + param_1]
+//         0054719f     PUSH       ESI
+//         005471a0     MOV        ESI,this
+//         005471a2     PUSH       EDI
+//         005471a3     PUSH       0x4
+//         005471a5     LEA        EBX,[ESI + 0x4]
+//         005471a8     MOV        dword ptr [ESI],0x0
+//         005471ae     PUSH       EBX
+//         005471af     PUSH       EBP
+//         005471b0     MOV        dword ptr [ESI + 0x8],EAX
+//         005471b3     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              zone_map.cpp:452 (9)
+//         005471b8     MOV        EAX,dword ptr [EBX]
+//         005471ba     ADD        ESP,0xc
+//         005471bd     TEST       EAX,EAX
+//         005471bf     JLE        LAB_0054721a
+//                              zone_map.cpp:454 (10)
+//         005471c1     PUSH       0x4
+//         005471c3     PUSH       EAX
+//         005471c4     CALL       calloc                                           undefined calloc()
+//         005471c9     MOV        dword ptr [ESI],EAX
+//                              zone_map.cpp:455 (11)
+//         005471cb     MOV        EAX,dword ptr [EBX]
+//         005471cd     ADD        ESP,0x8
+//         005471d0     XOR        EDI,EDI
+//         005471d2     TEST       EAX,EAX
+//         005471d4     JLE        LAB_00547220
+//                               LAB_005471d6                                                 XREF[1]:     00547216(j)
+//                              zone_map.cpp:456 (66)
+//         005471d6     PUSH       0x51c
+//         005471db     CALL       operator_new                                     void * operator_new(uint param_1)
+//         005471e0     ADD        ESP,0x4
+//         005471e3     MOV        dword ptr [ESP + param_2],EAX
+//         005471e7     TEST       EAX,EAX
+//         005471e9     MOV        dword ptr [ESP + local_4],0x0
+//         005471f1     JZ         LAB_00547201
+//         005471f3     MOV        this,dword ptr [ESI + 0x8]
+//         005471f6     PUSH       this
+//         005471f7     PUSH       EBP
+//         005471f8     MOV        this,EAX
+//         005471fa     CALL       RGE_Zone_Map::RGE_Zone_Map                       undefined RGE_Zone_Map(RGE_Zone_Map * this, i
+//         005471ff     JMP        LAB_00547203
+//                               LAB_00547201                                                 XREF[1]:     005471f1(j)
+//         00547201     XOR        EAX,EAX
+//                               LAB_00547203                                                 XREF[1]:     005471ff(j)
+//         00547203     MOV        EDX,dword ptr [ESI]
+//         00547205     INC        EDI
+//         00547206     MOV        dword ptr [ESP + local_4],0xffffffff
+//         0054720e     MOV        dword ptr [EDX + EDI*0x4 + -0x4],EAX
+//         00547212     MOV        EAX,dword ptr [EBX]
+//         00547214     CMP        EDI,EAX
+//         00547216     JL         LAB_005471d6
+//                              zone_map.cpp:458 (2)
+//         00547218     JMP        LAB_00547220
+//                               LAB_0054721a                                                 XREF[1]:     005471bf(j)
+//                              zone_map.cpp:459 (6)
+//         0054721a     MOV        dword ptr [ESI],0x0
+//                               LAB_00547220                                                 XREF[2]:     005471d4(j), 00547218(j)
+//                              zone_map.cpp:460 (23)
+//         00547220     MOV        this,dword ptr [ESP + local_c]
+//         00547224     MOV        EAX,ESI
+//         00547226     POP        EDI
+//         00547227     POP        ESI
+//         00547228     POP        EBP
+//         00547229     MOV        dword ptr FS:[0x0],this
+//         00547230     POP        EBX
+//         00547231     ADD        ESP,0xc
+//         00547234     RET        0x8
+//         00547237     ??         90h
+//         00547238     NOP
+//         00547239     NOP
+//         0054723a     NOP
+//         0054723b     NOP
+//         0054723c     NOP
+//         0054723d     NOP
+//         0054723e     NOP
+//         0054723f     NOP
 }
 
 RGE_Zone_Map_List::RGE_Zone_Map_List(RGE_Map* param_1) {
@@ -1836,43 +1797,149 @@ long RGE_Zone_Map_List::create_zone_map(float* param_1, long param_2) {
 
 RGE_Zone_Map* RGE_Zone_Map_List::get_zone_map(float* param_1, long param_2, int* param_3) {
     /* TODO: Stub */
-//                              RGE_Zone_Map * __thiscall get_zone_map(RGE_Zone_Map_List * this, lon
+//                              RGE_Zone_Map * __thiscall get_zone_map(RGE_Zone_Map_List * this, flo
 //              RGE_Zone_Map *    EAX:4          <RETURN>
 //              RGE_Zone_Map_L    ECX:4 (auto)   this
-//              long              Stack[0x4]:4   param_1                   XREF[1]:     005474b0(R)
-//                               ?get_zone_map@RGE_Zone_Map_List@@QAEPAVRGE_Zone_Map@@J@Z     XREF[12]:    canPath:0045f895(c),
-//                               RGE_Zone_Map_List::get_zone_map                                           canPath:0045fa3e(c),
-//                                                                                                         canBidirectionPath:0045fc43(c),
-//                                                                                                         canPathWithObstructions:0045ff3e(c
-//                                                                                                         findAvoidancePath:00460c4b(c),
-//                                                                                                         generate:0048896e(c),
-//                                                                                                         lookupZone:004c7487(c),
-//                                                                                                         lookupZone:004c7507(c),
-//                                                                                                         currentZone:004c7579(c),
-//                                                                                                         withinRangeOfZoneAtPoint:004c75f5(
-//                                                                                                         withinRangeOfZone:004c768d(c),
+//              float *           Stack[0x4]:4   param_1                   XREF[2]:     005473d9(R), 00547452(R)
+//              long              Stack[0x8]:4   param_2                   XREF[2]:     005473d5(R), 0054744e(R)
+//              int *             Stack[0xc]:4   param_3                   XREF[2]:     0054746a(R), 0054749a(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     00547444(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00547485(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0054743e(W)
+//                               ?get_zone_map@RGE_Zone_Map_List@@QAEPAVRGE_Zone_Map@@PAMJAA  XREF[13]:    canPath:0045f87e(c),
+//                               RGE_Zone_Map_List::get_zone_map                                           canPath:0045fa27(c),
+//                                                                                                         canBidirectionPath:0045fc2b(c),
+//                                                                                                         canPathWithObstructions:0045ff27(c
+//                                                                                                         findAvoidancePath:00460c34(c),
+//                                                                                                         place_land_objects:00486829(c),
+//                                                                                                         lookupZone:004c7470(c),
+//                                                                                                         lookupZone:004c74f0(c),
+//                                                                                                         currentZone:004c7562(c),
+//                                                                                                         withinRangeOfZoneAtPoint:004c75de(
+//                                                                                                         withinRangeOfZone:004c7676(c),
 //                                                                                                         findClosestPointInTerrainType:004c
-//                              zone_map.cpp:562 (15)
-//         005474b0     MOV        EAX,dword ptr [ESP + param_1]
-//         005474b4     MOV        EDX,dword ptr [ECX + this->zone_map_num]
-//         005474b7     CMP        EAX,EDX
-//         005474b9     JGE        LAB_005474c7
-//         005474bb     TEST       EAX,EAX
-//         005474bd     JL         LAB_005474c7
-//                              zone_map.cpp:566 (5)
-//         005474bf     MOV        this,dword ptr [this->zone_maps]
-//         005474c1     MOV        EAX,dword ptr [this->zone_maps + EAX*0x4]
-//                              zone_map.cpp:567 (3)
-//         005474c4     RET        0x4
-//                               LAB_005474c7                                                 XREF[2]:     005474b9(j), 005474bd(j)
-//                              zone_map.cpp:564 (2)
-//         005474c7     XOR        EAX,EAX
-//                              zone_map.cpp:567 (3)
-//         005474c9     RET        0x4
-//         005474cc     ??         90h
-//         005474cd     NOP
-//         005474ce     NOP
-//         005474cf     NOP
+//                                                                                                         placeDock:004d9baa(c)
+//                              zone_map.cpp:529 (27)
+//         005473b0     PUSH       -0x1
+//         005473b2     PUSH       FUN_00561ecb
+//         005473b7     MOV        EAX,FS:[0x0]
+//         005473bd     PUSH       EAX
+//         005473be     MOV        dword ptr FS:[0x0],ESP
+//         005473c5     PUSH       this
+//         005473c6     PUSH       EBX
+//         005473c7     MOV        EBX,this
+//         005473c9     PUSH       EBP
+//         005473ca     PUSH       ESI
+//                              zone_map.cpp:534 (10)
+//         005473cb     MOV        EAX,dword ptr [EBX + 0x4]
+//         005473ce     XOR        ESI,ESI
+//         005473d0     TEST       EAX,EAX
+//         005473d2     PUSH       EDI
+//         005473d3     JLE        LAB_005473f9
+//                               LAB_005473d5                                                 XREF[1]:     005473f7(j)
+//                              zone_map.cpp:535 (36)
+//         005473d5     MOV        EAX,dword ptr [ESP + param_2]
+//         005473d9     MOV        this,dword ptr [ESP + param_1]
+//         005473dd     MOV        EDX,dword ptr [EBX]
+//         005473df     PUSH       EAX
+//         005473e0     PUSH       this
+//         005473e1     MOV        this,dword ptr [EDX + ESI*0x4]
+//         005473e4     CALL       RGE_Zone_Map::check_info                         RGE_Zone_Map * check_info(RGE_Zone_Map * this
+//         005473e9     TEST       EAX,EAX
+//         005473eb     JNZ        LAB_0054749a
+//         005473f1     MOV        EAX,dword ptr [EBX + 0x4]
+//         005473f4     INC        ESI
+//         005473f5     CMP        ESI,EAX
+//         005473f7     JL         LAB_005473d5
+//                               LAB_005473f9                                                 XREF[1]:     005473d3(j)
+//                              zone_map.cpp:542 (12)
+//         005473f9     MOV        EDX,dword ptr [EBX + 0x4]
+//         005473fc     PUSH       0x4
+//         005473fe     INC        EDX
+//         005473ff     PUSH       EDX
+//         00547400     CALL       calloc                                           undefined calloc()
+//                              zone_map.cpp:544 (11)
+//         00547405     MOV        ESI,dword ptr [EBX]
+//         00547407     ADD        ESP,0x8
+//         0054740a     TEST       ESI,ESI
+//         0054740c     MOV        EBP,EAX
+//         0054740e     JZ         LAB_00547431
+//                              zone_map.cpp:546 (22)
+//         00547410     MOV        this,dword ptr [EBX + 0x4]
+//         00547413     MOV        EDI,EBP
+//         00547415     SHL        this,0x2
+//         00547418     MOV        EAX,this
+//         0054741a     SHR        this,0x2
+//         0054741d     MOVSD.REP  ES:EDI,ESI
+//         0054741f     MOV        this,EAX
+//         00547421     AND        this,0x3
+//         00547424     MOVSB.REP  ES:EDI,ESI
+//                              zone_map.cpp:547 (11)
+//         00547426     MOV        this,dword ptr [EBX]
+//         00547428     PUSH       this
+//         00547429     CALL       free                                             undefined free()
+//         0054742e     ADD        ESP,0x4
+//                               LAB_00547431                                                 XREF[1]:     0054740e(j)
+//                              zone_map.cpp:550 (57)
+//         00547431     PUSH       0x51c
+//         00547436     CALL       operator_new                                     void * operator_new(uint param_1)
+//         0054743b     ADD        ESP,0x4
+//         0054743e     MOV        dword ptr [ESP + local_10],EAX
+//         00547442     TEST       EAX,EAX
+//         00547444     MOV        dword ptr [ESP + local_4],0x0
+//         0054744c     JZ         LAB_00547465
+//         0054744e     MOV        EDX,dword ptr [ESP + param_2]
+//         00547452     MOV        this,dword ptr [ESP + param_1]
+//         00547456     PUSH       EDX
+//         00547457     MOV        EDX,dword ptr [EBX + 0x8]
+//         0054745a     PUSH       this
+//         0054745b     PUSH       EDX
+//         0054745c     MOV        this,EAX
+//         0054745e     CALL       RGE_Zone_Map::RGE_Zone_Map                       undefined RGE_Zone_Map(RGE_Zone_Map * this, R
+//         00547463     JMP        LAB_00547467
+//                               LAB_00547465                                                 XREF[1]:     0054744c(j)
+//         00547465     XOR        EAX,EAX
+//                               LAB_00547467                                                 XREF[1]:     00547463(j)
+//         00547467     MOV        this,dword ptr [EBX + 0x4]
+//                              zone_map.cpp:554 (20)
+//         0054746a     MOV        EDX,dword ptr [ESP + param_3]
+//         0054746e     MOV        dword ptr [EBP + this->zone_maps*0x4],EAX
+//         00547472     MOV        EAX,dword ptr [EBX + 0x4]
+//         00547475     INC        EAX
+//         00547476     MOV        dword ptr [EBX],EBP
+//         00547478     MOV        dword ptr [EBX + 0x4],EAX
+//         0054747b     DEC        EAX
+//         0054747c     MOV        dword ptr [EDX],EAX
+//                              zone_map.cpp:555 (7)
+//         0054747e     MOV        EAX,dword ptr [EBX + 0x4]
+//         00547481     MOV        EAX,dword ptr [EBP + EAX*0x4 + -0x4]
+//                               LAB_00547485                                                 XREF[1]:     005474a5(j)
+//                              zone_map.cpp:556 (21)
+//         00547485     MOV        this,dword ptr [ESP + local_c]
+//         00547489     POP        EDI
+//         0054748a     POP        ESI
+//         0054748b     POP        EBP
+//         0054748c     MOV        dword ptr FS:[0x0],this
+//         00547493     POP        EBX
+//         00547494     ADD        ESP,0x10
+//         00547497     RET        0xc
+//                               LAB_0054749a                                                 XREF[1]:     005473eb(j)
+//                              zone_map.cpp:537 (6)
+//         0054749a     MOV        EAX,dword ptr [ESP + param_3]
+//         0054749e     MOV        dword ptr [EAX],ESI
+//                              zone_map.cpp:538 (7)
+//         005474a0     MOV        this,dword ptr [EBX]
+//         005474a2     MOV        EAX,dword ptr [this->zone_maps + ESI*0x4]
+//         005474a5     JMP        LAB_00547485
+//         005474a7     ??         90h
+//         005474a8     NOP
+//         005474a9     NOP
+//         005474aa     NOP
+//         005474ab     NOP
+//         005474ac     NOP
+//         005474ad     NOP
+//         005474ae     NOP
+//         005474af     NOP
     return 0;
 }
 

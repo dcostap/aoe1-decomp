@@ -1,6 +1,12 @@
 #pragma once
 #include "../common.h"
 
+typedef enum Mode : unsigned int {
+    SaveGame = 0,
+    SaveScenario = 1,
+    SaveScenarioEdit = 2,
+};
+
 class TribeSaveGameScreen : public TScreenPanel {
 public:
     TTextPanel* title;                       // 0x478

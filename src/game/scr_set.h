@@ -1,6 +1,12 @@
 #pragma once
 #include "../common.h"
 
+typedef enum State : unsigned int {
+    StateScenario = 0,
+    StateRandom = 1,
+};
+
+
 class TribeGameSettingsScreen : public TScreenPanel {
 public:
     TTextPanel* title;                       // 0x478

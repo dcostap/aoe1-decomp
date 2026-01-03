@@ -3,120 +3,212 @@
 
 RGE_Campaign_Info::RGE_Campaign_Info(int param_1, RGE_Campaign** param_2, long param_3) {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Campaign_Info(RGE_Campaign_Info * this, RGE
+//                              undefined __thiscall RGE_Campaign_Info(RGE_Campaign_Info * this, int
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Campaign_I    ECX:4 (auto)   this
-//              RGE_Campaign *    Stack[0x4]:4   param_1                   XREF[1]:     0044c783(R)
-//                               ??0RGE_Campaign_Info@@QAE@PAVRGE_Campaign@@@Z                XREF[1]:     set_current_campaign:0044cff1(c)
+//              int               Stack[0x4]:4   param_1                   XREF[4]:     0044c5a3(R), 0044c637(W), 0044c716(R), 0044c763(W)
+//              RGE_Campaign *    Stack[0x8]:4   param_2                   XREF[1]:     0044c62f(R)
+//              long              Stack[0xc]:4   param_3                   XREF[4]:     0044c61d(R), 0044c633(W), 0044c75b(R), 0044c767(W)
+//                               ??0RGE_Campaign_Info@@QAE@HPAPAVRGE_Campaign@@J@Z            XREF[1]:     RGE_Person_Info:0044ccf3(c)
 //                               RGE_Campaign_Info::RGE_Campaign_Info
-//                              gameinfo.cpp:84 (3)
-//         0044c780     PUSH       EBX
-//         0044c781     MOV        EBX,this
-//                              gameinfo.cpp:87 (17)
-//         0044c783     MOV        this,dword ptr [ESP + param_1]
-//         0044c787     PUSH       EBP
-//         0044c788     XOR        EBP,EBP
-//         0044c78a     PUSH       ESI
-//         0044c78b     CMP        this,EBP
-//         0044c78d     PUSH       EDI
-//         0044c78e     JZ         LAB_0044c81a
-//                              gameinfo.cpp:90 (6)
-//         0044c794     MOV        dword ptr [EBX + 0x110],this
-//                              gameinfo.cpp:91 (36)
-//         0044c79a     CALL       RGE_Campaign::get_name                           char * get_name(RGE_Campaign * this)
-//         0044c79f     MOV        EDI,EAX
-//         0044c7a1     OR         this,0xffffffff
-//         0044c7a4     XOR        EAX,EAX
-//         0044c7a6     SCASB.RE   ES:EDI
-//         0044c7a8     NOT        this
-//         0044c7aa     SUB        EDI,this
-//         0044c7ac     MOV        EAX,this
-//         0044c7ae     MOV        ESI,EDI
-//         0044c7b0     MOV        EDI,EBX
-//         0044c7b2     SHR        this,0x2
-//         0044c7b5     MOVSD.REP  ES:EDI,ESI
-//         0044c7b7     MOV        this,EAX
-//         0044c7b9     AND        this,0x3
-//         0044c7bc     MOVSB.REP  ES:EDI,ESI
-//                              gameinfo.cpp:92 (11)
-//         0044c7be     MOV        this,dword ptr [EBX + 0x110]
-//         0044c7c4     CALL       RGE_Campaign::scenario_number                    long scenario_number(RGE_Campaign * this)
-//                              gameinfo.cpp:93 (10)
-//         0044c7c9     CMP        EAX,EBP
-//         0044c7cb     MOV        dword ptr [EBX + 0x104],EAX
-//         0044c7d1     JLE        LAB_0044c7fc
-//                              gameinfo.cpp:97 (26)
-//         0044c7d3     PUSH       0x1
-//         0044c7d5     PUSH       EAX
-//         0044c7d6     MOV        dword ptr [EBX + 0x100],EBP
-//         0044c7dc     MOV        dword ptr [EBX + 0x10c],EBP
-//         0044c7e2     CALL       calloc                                           undefined calloc()
-//         0044c7e7     MOV        dword ptr [EBX + 0x108],EAX
-//                              gameinfo.cpp:98 (6)
-//         0044c7ed     MOV        byte ptr [EAX],0x2
-//         0044c7f0     ADD        ESP,0x8
-//                              gameinfo.cpp:126 (9)
-//         0044c7f3     MOV        EAX,EBX
-//         0044c7f5     POP        EDI
-//         0044c7f6     POP        ESI
-//         0044c7f7     POP        EBP
-//         0044c7f8     POP        EBX
-//         0044c7f9     RET        0x4
-//                               LAB_0044c7fc                                                 XREF[1]:     0044c7d1(j)
-//                              gameinfo.cpp:111 (3)
-//         0044c7fc     OR         EAX,0xffffffff
-//                              gameinfo.cpp:124 (18)
-//         0044c7ff     MOV        dword ptr [EBX + 0x108],EBP
-//         0044c805     MOV        dword ptr [EBX + 0x100],EAX
-//         0044c80b     MOV        dword ptr [EBX + 0x10c],EAX
-//                              gameinfo.cpp:126 (9)
-//         0044c811     MOV        EAX,EBX
-//         0044c813     POP        EDI
-//         0044c814     POP        ESI
-//         0044c815     POP        EBP
-//         0044c816     POP        EBX
-//         0044c817     RET        0x4
-//                               LAB_0044c81a                                                 XREF[1]:     0044c78e(j)
-//                              gameinfo.cpp:120 (22)
-//         0044c81a     MOV        EDI,s_                                           = ""
-//         0044c81f     OR         this,0xffffffff
-//         0044c822     XOR        EAX,EAX
-//         0044c824     MOV        dword ptr [EBX + 0x110],EBP
-//         0044c82a     SCASB.RE   ES:EDI=>s_                                       = ""
-//         0044c82c     NOT        this
-//         0044c82e     SUB        EDI,this
-//                              gameinfo.cpp:126 (51)
-//         0044c830     MOV        EAX,EBX
-//         0044c832     MOV        EDX,this
-//         0044c834     MOV        ESI,EDI
-//         0044c836     MOV        EDI,EBX
-//         0044c838     SHR        this,0x2
-//         0044c83b     MOVSD.REP  ES:EDI,ESI
-//         0044c83d     MOV        this,EDX
-//         0044c83f     AND        this,0x3
-//         0044c842     MOVSB.REP  ES:EDI,ESI
-//         0044c844     POP        EDI
-//         0044c845     MOV        dword ptr [EBX + 0x100],EBP
-//         0044c84b     MOV        dword ptr [EBX + 0x10c],EBP
-//         0044c851     MOV        dword ptr [EBX + 0x104],EBP
-//         0044c857     MOV        dword ptr [EBX + 0x108],EBP
-//         0044c85d     POP        ESI
-//         0044c85e     POP        EBP
-//         0044c85f     POP        EBX
-//         0044c860     RET        0x4
-//         0044c863     ??         90h
-//         0044c864     NOP
-//         0044c865     NOP
-//         0044c866     NOP
-//         0044c867     NOP
-//         0044c868     NOP
-//         0044c869     NOP
-//         0044c86a     NOP
-//         0044c86b     NOP
-//         0044c86c     NOP
-//         0044c86d     NOP
-//         0044c86e     NOP
-//         0044c86f     NOP
+//                              gameinfo.cpp:28 (3)
+//         0044c5a0     PUSH       EBX
+//         0044c5a1     PUSH       EBP
+//         0044c5a2     PUSH       ESI
+//                              gameinfo.cpp:33 (22)
+//         0044c5a3     MOV        ESI,dword ptr [ESP + param_1]
+//         0044c5a7     PUSH       EDI
+//         0044c5a8     MOV        EBP,this
+//         0044c5aa     PUSH       0xff
+//         0044c5af     PUSH       EBP
+//         0044c5b0     PUSH       ESI
+//         0044c5b1     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0044c5b6     ADD        ESP,0xc
+//                              gameinfo.cpp:34 (18)
+//         0044c5b9     LEA        EAX,[EBP + 0x100]
+//         0044c5bf     PUSH       0x4
+//         0044c5c1     PUSH       EAX
+//         0044c5c2     PUSH       ESI
+//         0044c5c3     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0044c5c8     ADD        ESP,0xc
+//                              gameinfo.cpp:35 (18)
+//         0044c5cb     LEA        EDI,[EBP + 0x104]
+//         0044c5d1     PUSH       0x4
+//         0044c5d3     PUSH       EDI
+//         0044c5d4     PUSH       ESI
+//         0044c5d5     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0044c5da     ADD        ESP,0xc
+//                              gameinfo.cpp:36 (15)
+//         0044c5dd     LEA        EAX,[EBP + 0x10c]
+//         0044c5e3     PUSH       0x4
+//         0044c5e5     PUSH       EAX
+//         0044c5e6     PUSH       ESI
+//         0044c5e7     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              gameinfo.cpp:39 (11)
+//         0044c5ec     MOV        EAX,dword ptr [EDI]
+//         0044c5ee     XOR        EBX,EBX
+//         0044c5f0     ADD        ESP,0xc
+//         0044c5f3     CMP        EAX,EBX
+//         0044c5f5     JLE        LAB_0044c617
+//                              gameinfo.cpp:41 (8)
+//         0044c5f7     PUSH       0x1
+//         0044c5f9     PUSH       EAX
+//         0044c5fa     CALL       calloc                                           undefined calloc()
+//                              gameinfo.cpp:42 (22)
+//         0044c5ff     MOV        this,dword ptr [EDI]
+//         0044c601     ADD        ESP,0x8
+//         0044c604     MOV        dword ptr [EBP + 0x108],EAX
+//         0044c60a     PUSH       this
+//         0044c60b     PUSH       EAX
+//         0044c60c     PUSH       ESI
+//         0044c60d     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0044c612     ADD        ESP,0xc
+//                              gameinfo.cpp:44 (2)
+//         0044c615     JMP        LAB_0044c61d
+//                               LAB_0044c617                                                 XREF[1]:     0044c5f5(j)
+//                              gameinfo.cpp:45 (6)
+//         0044c617     MOV        dword ptr [EBP + 0x108],EBX
+//                               LAB_0044c61d                                                 XREF[1]:     0044c615(j)
+//                              gameinfo.cpp:49 (30)
+//         0044c61d     MOV        EAX,dword ptr [ESP + param_3]
+//         0044c621     MOV        dword ptr [EBP + 0x110],EBX
+//         0044c627     CMP        EAX,EBX
+//         0044c629     JLE        LAB_0044c771
+//         0044c62f     MOV        EDI,dword ptr [ESP + param_2]
+//         0044c633     MOV        dword ptr [ESP + param_3],EAX
+//         0044c637     MOV        dword ptr [ESP + param_1],EDI
+//                               LAB_0044c63b                                                 XREF[1]:     0044c76b(j)
+//                              gameinfo.cpp:50 (62)
+//         0044c63b     MOV        this,dword ptr [EDI]
+//         0044c63d     MOV        ESI,EBP
+//         0044c63f     CALL       RGE_Campaign::get_name                           char * get_name(RGE_Campaign * this)
+//                               LAB_0044c644                                                 XREF[1]:     0044c666(j)
+//         0044c644     MOV        DL,byte ptr [EAX]
+//         0044c646     MOV        BL,byte ptr [ESI]
+//         0044c648     MOV        this,DL
+//         0044c64a     CMP        DL,BL
+//         0044c64c     JNZ        LAB_0044c66c
+//         0044c64e     TEST       this,this
+//         0044c650     JZ         LAB_0044c668
+//         0044c652     MOV        DL,byte ptr [EAX + 0x1]
+//         0044c655     MOV        BL,byte ptr [ESI + 0x1]
+//         0044c658     MOV        this,DL
+//         0044c65a     CMP        DL,BL
+//         0044c65c     JNZ        LAB_0044c66c
+//         0044c65e     ADD        EAX,0x2
+//         0044c661     ADD        ESI,0x2
+//         0044c664     TEST       this,this
+//         0044c666     JNZ        LAB_0044c644
+//                               LAB_0044c668                                                 XREF[1]:     0044c650(j)
+//         0044c668     XOR        EAX,EAX
+//         0044c66a     JMP        LAB_0044c671
+//                               LAB_0044c66c                                                 XREF[2]:     0044c64c(j), 0044c65c(j)
+//         0044c66c     SBB        EAX,EAX
+//         0044c66e     SBB        EAX,-0x1
+//                               LAB_0044c671                                                 XREF[1]:     0044c66a(j)
+//         0044c671     TEST       EAX,EAX
+//         0044c673     JNZ        LAB_0044c75b
+//                              gameinfo.cpp:52 (8)
+//         0044c679     MOV        this,dword ptr [EDI]
+//         0044c67b     MOV        dword ptr [EBP + 0x110],this
+//                              gameinfo.cpp:53 (17)
+//         0044c681     CALL       RGE_Campaign::scenario_number                    long scenario_number(RGE_Campaign * this)
+//         0044c686     CMP        dword ptr [EBP + 0x104],EAX
+//         0044c68c     JZ         LAB_0044c75b
+//                              gameinfo.cpp:56 (19)
+//         0044c692     MOV        this,dword ptr [EBP + 0x110]
+//         0044c698     CALL       RGE_Campaign::scenario_number                    long scenario_number(RGE_Campaign * this)
+//         0044c69d     CMP        dword ptr [EBP + 0x104],EAX
+//         0044c6a3     JLE        LAB_0044c723
+//                              gameinfo.cpp:59 (19)
+//         0044c6a5     MOV        this,dword ptr [EBP + 0x110]
+//         0044c6ab     PUSH       0x1
+//         0044c6ad     CALL       RGE_Campaign::scenario_number                    long scenario_number(RGE_Campaign * this)
+//         0044c6b2     PUSH       EAX
+//         0044c6b3     CALL       calloc                                           undefined calloc()
+//                              gameinfo.cpp:61 (26)
+//         0044c6b8     MOV        this,dword ptr [EBP + 0x110]
+//         0044c6be     MOV        ESI,dword ptr [EBP + 0x104]
+//         0044c6c4     ADD        ESP,0x8
+//         0044c6c7     MOV        EBX,EAX
+//         0044c6c9     CALL       RGE_Campaign::scenario_number                    long scenario_number(RGE_Campaign * this)
+//         0044c6ce     CMP        ESI,EAX
+//         0044c6d0     JGE        LAB_0044c6e7
+//                              gameinfo.cpp:62 (19)
+//         0044c6d2     MOV        this,ESI
+//         0044c6d4     MOV        ESI,dword ptr [EBP + 0x108]
+//         0044c6da     MOV        EAX,this
+//         0044c6dc     MOV        EDI,EBX
+//         0044c6de     SHR        this,0x2
+//         0044c6e1     MOVSD.REP  ES:EDI,ESI
+//         0044c6e3     MOV        this,EAX
+//                              gameinfo.cpp:63 (2)
+//         0044c6e5     JMP        LAB_0044c705
+//                               LAB_0044c6e7                                                 XREF[1]:     0044c6d0(j)
+//                              gameinfo.cpp:64 (35)
+//         0044c6e7     MOV        this,dword ptr [EBP + 0x110]
+//         0044c6ed     CALL       RGE_Campaign::scenario_number                    long scenario_number(RGE_Campaign * this)
+//         0044c6f2     MOV        ESI,dword ptr [EBP + 0x108]
+//         0044c6f8     MOV        this,EAX
+//         0044c6fa     MOV        EDX,this
+//         0044c6fc     MOV        EDI,EBX
+//         0044c6fe     SHR        this,0x2
+//         0044c701     MOVSD.REP  ES:EDI,ESI
+//         0044c703     MOV        this,EDX
+//                               LAB_0044c705                                                 XREF[1]:     0044c6e5(j)
+//         0044c705     AND        this,0x3
+//         0044c708     MOVSB.REP  ES:EDI,ESI
+//                              gameinfo.cpp:66 (12)
+//         0044c70a     MOV        EAX,dword ptr [EBP + 0x108]
+//         0044c710     PUSH       EAX
+//         0044c711     CALL       free                                             undefined free()
+//                              gameinfo.cpp:67 (13)
+//         0044c716     MOV        EDI,dword ptr [ESP + param_1]
+//         0044c71a     ADD        ESP,0x4
+//         0044c71d     MOV        dword ptr [EBP + 0x108],EBX
+//                               LAB_0044c723                                                 XREF[1]:     0044c6a3(j)
+//                              gameinfo.cpp:70 (11)
+//         0044c723     MOV        this,dword ptr [EBP + 0x110]
+//         0044c729     CALL       RGE_Campaign::scenario_number                    long scenario_number(RGE_Campaign * this)
+//                              gameinfo.cpp:72 (16)
+//         0044c72e     MOV        this,dword ptr [EBP + 0x10c]
+//         0044c734     MOV        dword ptr [EBP + 0x104],EAX
+//         0044c73a     CMP        this,EAX
+//         0044c73c     JL         LAB_0044c745
+//                              gameinfo.cpp:73 (7)
+//         0044c73e     DEC        EAX
+//         0044c73f     MOV        dword ptr [EBP + 0x10c],EAX
+//                               LAB_0044c745                                                 XREF[1]:     0044c73c(j)
+//                              gameinfo.cpp:75 (16)
+//         0044c745     MOV        EAX,dword ptr [EBP + 0x10c]
+//         0044c74b     MOV        this,dword ptr [EBP + 0x100]
+//         0044c751     CMP        this,EAX
+//         0044c753     JLE        LAB_0044c75b
+//                              gameinfo.cpp:76 (6)
+//         0044c755     MOV        dword ptr [EBP + 0x100],EAX
+//                               LAB_0044c75b                                                 XREF[3]:     0044c673(j), 0044c68c(j),
+//                                                                                                         0044c753(j)
+//                              gameinfo.cpp:49 (22)
+//         0044c75b     MOV        EAX,dword ptr [ESP + param_3]
+//         0044c75f     ADD        EDI,0x4
+//         0044c762     DEC        EAX
+//         0044c763     MOV        dword ptr [ESP + param_1],EDI
+//         0044c767     MOV        dword ptr [ESP + param_3],EAX
+//         0044c76b     JNZ        LAB_0044c63b
+//                               LAB_0044c771                                                 XREF[1]:     0044c629(j)
+//                              gameinfo.cpp:79 (9)
+//         0044c771     POP        EDI
+//         0044c772     MOV        EAX,EBP
+//         0044c774     POP        ESI
+//         0044c775     POP        EBP
+//         0044c776     POP        EBX
+//         0044c777     RET        0xc
+//         0044c77a     ??         90h
+//         0044c77b     NOP
+//         0044c77c     NOP
+//         0044c77d     NOP
+//         0044c77e     NOP
+//         0044c77f     NOP
 }
 
 RGE_Campaign_Info::RGE_Campaign_Info(RGE_Campaign* param_1) {
@@ -807,57 +899,123 @@ int RGE_Campaign_Info::open_scenario() {
 
 RGE_Person_Info::RGE_Person_Info(int param_1, RGE_Campaign** param_2, long param_3) {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Person_Info(RGE_Person_Info * this, char *
+//                              undefined __thiscall RGE_Person_Info(RGE_Person_Info * this, int par
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Person_Inf    ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0044cd44(R)
-//              RGE_Campaign *    Stack[0x8]:4   param_2                   XREF[1]:     0044cd77(R)
-//              long              Stack[0xc]:4   param_3                   XREF[1]:     0044cd67(R)
-//                               ??0RGE_Person_Info@@QAE@PADPAPAVRGE_Campaign@@J@Z            XREF[1]:     add_new_person:0044d791(c)
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     0044cc5b(R)
+//              RGE_Campaign *    Stack[0x8]:4   param_2                   XREF[1]:     0044cc63(R)
+//              long              Stack[0xc]:4   param_3                   XREF[2]:     0044cc4e(R), 0044ccd2(W)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     0044ccd8(W), 0044cd03(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0044cd1d(R)
+//                               ??0RGE_Person_Info@@QAE@HPAPAVRGE_Campaign@@J@Z              XREF[1]:     RGE_Game_Info:0044d296(c)
 //                               RGE_Person_Info::RGE_Person_Info
-//                              gameinfo.cpp:301 (4)
-//         0044cd40     PUSH       ESI
-//         0044cd41     MOV        EDX,this
-//         0044cd43     PUSH       EDI
-//                              gameinfo.cpp:302 (28)
-//         0044cd44     MOV        EDI,dword ptr [ESP + param_1]
-//         0044cd48     OR         this,0xffffffff
-//         0044cd4b     XOR        EAX,EAX
-//         0044cd4d     SCASB.RE   ES:EDI
-//         0044cd4f     NOT        this
-//         0044cd51     SUB        EDI,this
-//         0044cd53     MOV        EAX,this
-//         0044cd55     MOV        ESI,EDI
-//         0044cd57     MOV        EDI,EDX
-//         0044cd59     SHR        this,0x2
-//         0044cd5c     MOVSD.REP  ES:EDI,ESI
-//         0044cd5e     MOV        this,EAX
-//                              gameinfo.cpp:304 (7)
-//         0044cd60     XOR        EAX,EAX
-//         0044cd62     AND        this,0x3
-//         0044cd65     MOVSB.REP  ES:EDI,ESI
-//                              gameinfo.cpp:306 (16)
-//         0044cd67     MOV        this,dword ptr [ESP + param_3]
-//         0044cd6b     MOV        dword ptr [EDX + 0x104],EAX
-//         0044cd71     MOV        dword ptr [EDX + 0x108],EAX
-//                              gameinfo.cpp:307 (10)
-//         0044cd77     MOV        EAX,dword ptr [ESP + param_2]
-//         0044cd7b     MOV        dword ptr [EDX + 0x110],EAX
-//                              gameinfo.cpp:308 (23)
-//         0044cd81     POP        EDI
-//         0044cd82     MOV        dword ptr [EDX + 0x100],0xffffffff
-//         0044cd8c     MOV        dword ptr [EDX + 0x10c],this
-//         0044cd92     MOV        EAX,EDX
-//         0044cd94     POP        ESI
-//         0044cd95     RET        0xc
-//         0044cd98     ??         90h
-//         0044cd99     NOP
-//         0044cd9a     NOP
-//         0044cd9b     NOP
-//         0044cd9c     NOP
-//         0044cd9d     NOP
-//         0044cd9e     NOP
-//         0044cd9f     NOP
+//                              gameinfo.cpp:278 (14)
+//         0044cc40     MOV        EAX,FS:[0x0]
+//         0044cc46     PUSH       -0x1
+//         0044cc48     PUSH       FUN_0055d58b
+//         0044cc4d     PUSH       EAX
+//                              gameinfo.cpp:281 (13)
+//         0044cc4e     MOV        EAX,dword ptr [ESP + param_3]
+//         0044cc52     MOV        dword ptr FS:[0x0],ESP
+//         0044cc59     PUSH       EBX
+//         0044cc5a     PUSH       EBP
+//                              gameinfo.cpp:284 (39)
+//         0044cc5b     MOV        EBP,dword ptr [ESP + param_1]
+//         0044cc5f     PUSH       ESI
+//         0044cc60     PUSH       EDI
+//         0044cc61     MOV        ESI,this
+//         0044cc63     MOV        this,dword ptr [ESP + param_2]
+//         0044cc67     PUSH       0xff
+//         0044cc6c     PUSH       ESI
+//         0044cc6d     PUSH       EBP
+//         0044cc6e     MOV        dword ptr [ESI + 0x10c],EAX
+//         0044cc74     MOV        dword ptr [ESI + 0x110],this
+//         0044cc7a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0044cc7f     ADD        ESP,0xc
+//                              gameinfo.cpp:285 (18)
+//         0044cc82     LEA        EDX,[ESI + 0x100]
+//         0044cc88     PUSH       0x4
+//         0044cc8a     PUSH       EDX
+//         0044cc8b     PUSH       EBP
+//         0044cc8c     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0044cc91     ADD        ESP,0xc
+//                              gameinfo.cpp:286 (15)
+//         0044cc94     LEA        EBX,[ESI + 0x104]
+//         0044cc9a     PUSH       0x4
+//         0044cc9c     PUSH       EBX
+//         0044cc9d     PUSH       EBP
+//         0044cc9e     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              gameinfo.cpp:288 (11)
+//         0044cca3     MOV        EAX,dword ptr [EBX]
+//         0044cca5     XOR        EDI,EDI
+//         0044cca7     ADD        ESP,0xc
+//         0044ccaa     CMP        EAX,EDI
+//         0044ccac     JLE        LAB_0044cd17
+//                              gameinfo.cpp:290 (14)
+//         0044ccae     PUSH       0x4
+//         0044ccb0     PUSH       EAX
+//         0044ccb1     CALL       calloc                                           undefined calloc()
+//         0044ccb6     MOV        dword ptr [ESI + 0x108],EAX
+//                              gameinfo.cpp:291 (9)
+//         0044ccbc     MOV        EAX,dword ptr [EBX]
+//         0044ccbe     ADD        ESP,0x8
+//         0044ccc1     TEST       EAX,EAX
+//         0044ccc3     JLE        LAB_0044cd1d
+//                               LAB_0044ccc5                                                 XREF[1]:     0044cd13(j)
+//                              gameinfo.cpp:292 (80)
+//         0044ccc5     PUSH       0x114
+//         0044ccca     CALL       operator_new                                     void * operator_new(uint param_1)
+//         0044cccf     ADD        ESP,0x4
+//         0044ccd2     MOV        dword ptr [ESP + param_3],EAX
+//         0044ccd6     TEST       EAX,EAX
+//         0044ccd8     MOV        dword ptr [ESP + local_4],0x0
+//         0044cce0     JZ         LAB_0044ccfa
+//         0044cce2     MOV        this,dword ptr [ESI + 0x10c]
+//         0044cce8     MOV        EDX,dword ptr [ESI + 0x110]
+//         0044ccee     PUSH       this
+//         0044ccef     PUSH       EDX
+//         0044ccf0     PUSH       EBP
+//         0044ccf1     MOV        this,EAX
+//         0044ccf3     CALL       RGE_Campaign_Info::RGE_Campaign_Info             undefined RGE_Campaign_Info(RGE_Campaign_Info
+//         0044ccf8     JMP        LAB_0044ccfc
+//                               LAB_0044ccfa                                                 XREF[1]:     0044cce0(j)
+//         0044ccfa     XOR        EAX,EAX
+//                               LAB_0044ccfc                                                 XREF[1]:     0044ccf8(j)
+//         0044ccfc     MOV        this,dword ptr [ESI + 0x108]
+//         0044cd02     INC        EDI
+//         0044cd03     MOV        dword ptr [ESP + local_4],0xffffffff
+//         0044cd0b     MOV        dword ptr [this->name[0] + EDI*0x4 + -0x4],EAX
+//         0044cd0f     MOV        EAX,dword ptr [EBX]
+//         0044cd11     CMP        EDI,EAX
+//         0044cd13     JL         LAB_0044ccc5
+//                              gameinfo.cpp:294 (2)
+//         0044cd15     JMP        LAB_0044cd1d
+//                               LAB_0044cd17                                                 XREF[1]:     0044ccac(j)
+//                              gameinfo.cpp:295 (6)
+//         0044cd17     MOV        dword ptr [ESI + 0x108],EDI
+//                               LAB_0044cd1d                                                 XREF[2]:     0044ccc3(j), 0044cd15(j)
+//                              gameinfo.cpp:296 (23)
+//         0044cd1d     MOV        this,dword ptr [ESP + local_c]
+//         0044cd21     MOV        EAX,ESI
+//         0044cd23     POP        EDI
+//         0044cd24     POP        ESI
+//         0044cd25     POP        EBP
+//         0044cd26     MOV        dword ptr FS:[0x0],this
+//         0044cd2d     POP        EBX
+//         0044cd2e     ADD        ESP,0xc
+//         0044cd31     RET        0xc
+//         0044cd34     ??         90h
+//         0044cd35     NOP
+//         0044cd36     NOP
+//         0044cd37     NOP
+//         0044cd38     NOP
+//         0044cd39     NOP
+//         0044cd3a     NOP
+//         0044cd3b     NOP
+//         0044cd3c     NOP
+//         0044cd3d     NOP
+//         0044cd3e     NOP
+//         0044cd3f     NOP
 }
 
 RGE_Person_Info::RGE_Person_Info(char* param_1, RGE_Campaign** param_2, long param_3) {

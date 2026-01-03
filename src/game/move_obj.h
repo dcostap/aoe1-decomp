@@ -2,6 +2,12 @@
 #include "../common.h"
 #include "ani_obj.h"
 
+typedef enum PathResult : unsigned int {
+    PathFound = 0,
+    NoPathFound = 1,
+    WaitingOnPathingCap = 2,
+};
+
 class RGE_Moving_Object : public RGE_Animated_Object {
 public:
     float trail_remainder;                   // 0x8C

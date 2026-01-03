@@ -1,6 +1,12 @@
 #pragma once
 #include "../common.h"
 
+typedef enum ActionType : unsigned int {
+    ActionItem = 1,
+    ActionLand = 2,
+    ActionSelect = 3,
+};
+
 class TListPanel : public TTextPanel {
 public:
     int auto_track;                          // 0x188

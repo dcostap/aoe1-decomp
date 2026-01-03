@@ -3,34 +3,22 @@
 
 XYZ::XYZ() {
     /* TODO: Stub */
-//                              undefined __thiscall XYZ(XYZ * this, int param_1, int param_2, int p
+//                              undefined __thiscall XYZ(XYZ * this)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              XYZ *             ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     0047e496(R)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     0047e490(R)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     0047e49c(R)
-//                               ??0XYZ@@QAE@HHH@Z                                            XREF[5]:     AIPlayStatus:0040fc4f(c),
-//                               XYZ::XYZ                                                                  loadPlays:00411201(c),
-//                                                                                                         loadPlays:0041121f(c),
-//                                                                                                         operator+:0047e555(c),
-//                                                                                                         operator-:0047e5a5(c)
-//                              point.cpp:32 (22)
-//         0047e490     MOV        EDX,dword ptr [ESP + param_2]
-//         0047e494     MOV        EAX,this
-//         0047e496     MOV        this,dword ptr [ESP + param_1]
-//         0047e49a     MOV        dword ptr [EAX],this
-//         0047e49c     MOV        this,dword ptr [ESP + param_3]
-//         0047e4a0     MOV        dword ptr [EAX + 0x4],EDX
-//         0047e4a3     MOV        dword ptr [EAX + 0x8],this
-//                              point.cpp:33 (3)
-//         0047e4a6     RET        0xc
-//         0047e4a9     ??         90h
-//         0047e4aa     NOP
-//         0047e4ab     NOP
-//         0047e4ac     NOP
-//         0047e4ad     NOP
-//         0047e4ae     NOP
-//         0047e4af     NOP
+//                               ??0XYZ@@QAE@XZ                                               XREF[1]:     loadPlays:0041120a(c)
+//                               XYZ::XYZ
+//                              point.cpp:22 (12)
+//         0047e480     MOV        EAX,this
+//         0047e482     XOR        this,this
+//         0047e484     MOV        dword ptr [EAX],this
+//         0047e486     MOV        dword ptr [EAX + 0x4],this
+//         0047e489     MOV        dword ptr [EAX + 0x8],this
+//                              point.cpp:23 (1)
+//         0047e48c     RET
+//         0047e48d     ??         90h
+//         0047e48e     NOP
+//         0047e48f     NOP
 }
 
 XYZ::XYZ(int param_1, int param_2, int param_3) {

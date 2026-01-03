@@ -6,51 +6,42 @@ RGE_Master_Static_Object::RGE_Master_Static_Object(RGE_Master_Static_Object* par
 //                              undefined __thiscall RGE_Master_Static_Object(RGE_Master_Static_Obje
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Master_Sta    ECX:4 (auto)   this
-//              _iobuf *          Stack[0x4]:4   param_1                   XREF[1]:     004521be(R)
-//              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[1]:     004521b9(R)
-//              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[1]:     004521b5(R)
-//              short             Stack[0x10]:2  param_4                   XREF[1]:     004521b1(R)
-//              int               Stack[0x14]:4  param_5                   XREF[1]:     004521a0(R)
-//                               ??0RGE_Master_Static_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite  XREF[3]:     RGE_Master_Animated_Object:0044fae
-//                               RGE_Master_Static_Object::RGE_Master_Static_Object                        load_object:004615d6(c),
-//                                                                                                         TRIBE_Master_Tree_Object:0050f2d6(
-//                              m_s_obj.cpp:56 (17)
-//         004521a0     MOV        EAX,dword ptr [ESP + param_5]
-//         004521a4     PUSH       ESI
-//         004521a5     MOV        ESI,this
-//         004521a7     TEST       EAX,EAX
-//         004521a9     MOV        dword ptr [ESI],RGE_Master_Static_Object::`vft   = 00452150
-//         004521af     JZ         LAB_004521cc
-//                              m_s_obj.cpp:58 (27)
-//         004521b1     MOV        EAX,dword ptr [ESP + param_4]
-//         004521b5     MOV        this,dword ptr [ESP + param_3]
-//         004521b9     MOV        EDX,dword ptr [ESP + param_2]
-//         004521bd     PUSH       EAX
-//         004521be     MOV        EAX,dword ptr [ESP + param_1]
-//         004521c2     PUSH       this
-//         004521c3     PUSH       EDX
-//         004521c4     PUSH       EAX
-//         004521c5     MOV        this,ESI
-//         004521c7     CALL       RGE_Master_Static_Object::setup                  int setup(RGE_Master_Static_Object * this, _i
-//                               LAB_004521cc                                                 XREF[1]:     004521af(j)
-//                              m_s_obj.cpp:59 (6)
-//         004521cc     MOV        EAX,ESI
-//         004521ce     POP        ESI
-//         004521cf     RET        0x14
-//         004521d2     ??         90h
-//         004521d3     NOP
-//         004521d4     NOP
-//         004521d5     NOP
-//         004521d6     NOP
-//         004521d7     NOP
-//         004521d8     NOP
-//         004521d9     NOP
-//         004521da     NOP
-//         004521db     NOP
-//         004521dc     NOP
-//         004521dd     NOP
-//         004521de     NOP
-//         004521df     NOP
+//              RGE_Master_Sta    Stack[0x4]:4   param_1                   XREF[1]:     00452131(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     00452120(R)
+//                               ??0RGE_Master_Static_Object@@QAE@PAV0@H@Z                    XREF[3]:     RGE_Master_Animated_Object:0044f9e
+//                               RGE_Master_Static_Object::RGE_Master_Static_Object                        make_new_master:004530eb(c),
+//                                                                                                         TRIBE_Master_Tree_Object:0050f1a5(
+//                              m_s_obj.cpp:40 (17)
+//         00452120     MOV        EAX,dword ptr [ESP + param_2]
+//         00452124     PUSH       ESI
+//         00452125     MOV        ESI,this
+//         00452127     TEST       EAX,EAX
+//         00452129     MOV        dword ptr [ESI],RGE_Master_Static_Object::`vft   = 00452150
+//         0045212f     JZ         LAB_0045213b
+//                              m_s_obj.cpp:42 (10)
+//         00452131     MOV        EAX,dword ptr [ESP + param_1]
+//         00452135     PUSH       EAX
+//         00452136     CALL       RGE_Master_Static_Object::setup                  int setup(RGE_Master_Static_Object * this, RG
+//                               LAB_0045213b                                                 XREF[1]:     0045212f(j)
+//                              m_s_obj.cpp:43 (6)
+//         0045213b     MOV        EAX,ESI
+//         0045213d     POP        ESI
+//         0045213e     RET        0x8
+//         00452141     ??         90h
+//         00452142     NOP
+//         00452143     NOP
+//         00452144     NOP
+//         00452145     NOP
+//         00452146     NOP
+//         00452147     NOP
+//         00452148     NOP
+//         00452149     NOP
+//         0045214a     NOP
+//         0045214b     NOP
+//         0045214c     NOP
+//         0045214d     NOP
+//         0045214e     NOP
+//         0045214f     NOP
 }
 
 RGE_Master_Static_Object::RGE_Master_Static_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4) {
@@ -58,51 +49,38 @@ RGE_Master_Static_Object::RGE_Master_Static_Object(int param_1, RGE_Sprite** par
 //                              undefined __thiscall RGE_Master_Static_Object(RGE_Master_Static_Obje
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Master_Sta    ECX:4 (auto)   this
-//              _iobuf *          Stack[0x4]:4   param_1                   XREF[1]:     004521be(R)
-//              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[1]:     004521b9(R)
-//              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[1]:     004521b5(R)
-//              short             Stack[0x10]:2  param_4                   XREF[1]:     004521b1(R)
-//              int               Stack[0x14]:4  param_5                   XREF[1]:     004521a0(R)
-//                               ??0RGE_Master_Static_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite  XREF[3]:     RGE_Master_Animated_Object:0044fae
-//                               RGE_Master_Static_Object::RGE_Master_Static_Object                        load_object:004615d6(c),
-//                                                                                                         TRIBE_Master_Tree_Object:0050f2d6(
-//                              m_s_obj.cpp:56 (17)
-//         004521a0     MOV        EAX,dword ptr [ESP + param_5]
-//         004521a4     PUSH       ESI
-//         004521a5     MOV        ESI,this
-//         004521a7     TEST       EAX,EAX
-//         004521a9     MOV        dword ptr [ESI],RGE_Master_Static_Object::`vft   = 00452150
-//         004521af     JZ         LAB_004521cc
-//                              m_s_obj.cpp:58 (27)
-//         004521b1     MOV        EAX,dword ptr [ESP + param_4]
-//         004521b5     MOV        this,dword ptr [ESP + param_3]
-//         004521b9     MOV        EDX,dword ptr [ESP + param_2]
-//         004521bd     PUSH       EAX
-//         004521be     MOV        EAX,dword ptr [ESP + param_1]
-//         004521c2     PUSH       this
-//         004521c3     PUSH       EDX
-//         004521c4     PUSH       EAX
-//         004521c5     MOV        this,ESI
-//         004521c7     CALL       RGE_Master_Static_Object::setup                  int setup(RGE_Master_Static_Object * this, _i
-//                               LAB_004521cc                                                 XREF[1]:     004521af(j)
-//                              m_s_obj.cpp:59 (6)
-//         004521cc     MOV        EAX,ESI
-//         004521ce     POP        ESI
-//         004521cf     RET        0x14
-//         004521d2     ??         90h
-//         004521d3     NOP
-//         004521d4     NOP
-//         004521d5     NOP
-//         004521d6     NOP
-//         004521d7     NOP
-//         004521d8     NOP
-//         004521d9     NOP
-//         004521da     NOP
-//         004521db     NOP
-//         004521dc     NOP
-//         004521dd     NOP
-//         004521de     NOP
-//         004521df     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     00452189(R)
+//              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[1]:     00452185(R)
+//              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[1]:     00452181(R)
+//              int               Stack[0x10]:4  param_4                   XREF[1]:     00452170(R)
+//                               ??0RGE_Master_Static_Object@@QAE@HPAPAVRGE_Sprite@@PAPAVRGE  XREF[4]:     RGE_Master_Animated_Object:0044fa7
+//                               RGE_Master_Static_Object::RGE_Master_Static_Object                        load_master_object:004612e0(c),
+//                                                                                                         load_master_object:0046fcb0(c),
+//                                                                                                         TRIBE_Master_Tree_Object:0050f251(
+//                              m_s_obj.cpp:48 (17)
+//         00452170     MOV        EAX,dword ptr [ESP + param_4]
+//         00452174     PUSH       ESI
+//         00452175     MOV        ESI,this
+//         00452177     TEST       EAX,EAX
+//         00452179     MOV        dword ptr [ESI],RGE_Master_Static_Object::`vft   = 00452150
+//         0045217f     JZ         LAB_00452197
+//                              m_s_obj.cpp:50 (22)
+//         00452181     MOV        EAX,dword ptr [ESP + param_3]
+//         00452185     MOV        this,dword ptr [ESP + param_2]
+//         00452189     MOV        EDX,dword ptr [ESP + param_1]
+//         0045218d     PUSH       EAX
+//         0045218e     PUSH       this
+//         0045218f     PUSH       EDX
+//         00452190     MOV        this,ESI
+//         00452192     CALL       RGE_Master_Static_Object::setup                  int setup(RGE_Master_Static_Object * this, in
+//                               LAB_00452197                                                 XREF[1]:     0045217f(j)
+//                              m_s_obj.cpp:51 (6)
+//         00452197     MOV        EAX,ESI
+//         00452199     POP        ESI
+//         0045219a     RET        0x10
+//         0045219d     ??         90h
+//         0045219e     NOP
+//         0045219f     NOP
 }
 
 RGE_Master_Static_Object::RGE_Master_Static_Object(_iobuf* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4, int param_5) {
@@ -159,935 +137,991 @@ RGE_Master_Static_Object::RGE_Master_Static_Object(_iobuf* param_1, RGE_Sprite**
 
 int RGE_Master_Static_Object::setup(RGE_Master_Static_Object* param_1) {
     /* TODO: Stub */
-//                              int __thiscall setup(RGE_Master_Static_Object * this, _iobuf * param
+//                              int __thiscall setup(RGE_Master_Static_Object * this, RGE_Master_Sta
 //              int               EAX:4          <RETURN>
 //              RGE_Master_Sta    ECX:4 (auto)   this
-//              _iobuf *          Stack[0x4]:4   param_1                   XREF[3]:     00452c3f(R), 00452c74(R), 00452ca9(R)
-//              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[1]:     00452cc4(R)
-//              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[1]:     00452d98(R)
-//              short             Stack[0x10]:2  param_4                   XREF[1]:     00452b06(R)
-//              char[120]         Stack[-0x7c]   temp_name                 XREF[2,3]:   00452cb0(*), 00452cc0(R), 00452c46(*), 00452f63(*),
-//                                                                                     00452f76(*)
-//              short             Stack[-0x80]:2 temp_damage_sprite_num    XREF[3]:     00452c6c(W), 00452c91(R), 00452ca3(W)
-//              undefined         Stack[-0x82]:1 local_82                  XREF[2]:     00452d02(*), 00452d45(R)
-//              undefined         Stack[-0x84]:1 local_84                  XREF[2]:     00452bab(*), 00452e27(R)
-//              short             Stack[-0x86]:2 temp_damage_percent       XREF[2]:     00452bed(*), 00452e4b(R)
-//              short             Stack[-0x88]:2 temp_elevation_flag       XREF[2]:     00452b31(*), 00452ef0(R)
-//              short             Stack[-0x8a]:2 temp_can_be_built_on      XREF[2]:     00452b96(*), 00452dcb(R)
-//              short             Stack[-0x8c]:2 temp_draw_color           XREF[2]:     00452b35(*), 00452ec3(R)
-//              short             Stack[-0x8e]:2 temp_created_sound        XREF[2]:     00452b8e(*), 00452e3d(R)
-//              short             Stack[-0x90]:2 temp_draw_flag            XREF[2]:     00452b3a(*), 00452ee6(R)
-//              short             Stack[-0x92]:2 temp_movement_type        XREF[2]:     00452c07(*), 00452e36(R)
-//              short             Stack[-0x94]:2 temp_resource_group       XREF[2]:     00452b3f(*), 00452ed4(R)
-//              short             Stack[-0x96]:2 temp_obj_max              XREF[2]:     00452c26(*), 00452df9(R)
-//              short             Stack[-0x98]:2 temp_create_doppleganger  XREF[2]:     00452b44(*), 00452ea8(R)
-//              short             Stack[-0x9a]:2 temp_death_sprite         XREF[2]:     00452d82(*), 00452d93(R)
-//              short             Stack[-0x9c]:2 temp_track_as_resource    XREF[2]:     00452b5e(*), 00452eca(R)
-//              short             Stack[-0x9e]:2 temp_selected_sound       XREF[2]:     00452c7b(*), 00452c8d(R)
-//              short             Stack[-0xa0]:2 temp_map_color            XREF[2]:     00452d74(*), 00452eb9(R)
-//              short             Stack[-0xa2]:2 temp_attribute_flag       XREF[2]:     00452bcb(*), 00452e6a(R)
-//              short             Stack[-0xa4]:2 temp_convert_terrain_flag XREF[2]:     00452d78(*), 00452e8a(R)
-//              short             Stack[-0xa6]:2 temp_available            XREF[2]:     00452bf4(*), 00452e32(R)
-//              short             Stack[-0xa8]:2 temp_attack_reaction      XREF[2]:     00452bd7(*), 00452eb2(R)
-//              short             Stack[-0xaa]:2 temp_sort_number          XREF[2]:     00452ba3(*), 00452e2b(R)
-//              short             Stack[-0xac]:2 temp_hide_in_scenario_ed  XREF[2]:     00452c16(*), 00452e9e(R)
-//              short             Stack[-0xae]:2 temp_fog_flag             XREF[2]:     00452c1e(*), 00452e10(R)
-//              short             Stack[-0xb0]:2 temp_undead_flag          XREF[2]:     00452b9e(*), 00452e58(R)
-//              short             Stack[-0xb2]:2 temp_undead_sprite        XREF[2]:     00452c2e(*), 00452de2(R)
-//              short             Stack[-0xb4]:2 temp_terrain              XREF[2]:     00452b63(*), 00452e94(R)
-//              short             Stack[-0xb6]:2 temp_sprite               XREF[2]:     00452d7d(*), 00452db4(R)
-//              short             Stack[-0xb8]:2 temp_command_level        XREF[2]:     00452b68(*), 00452e82(R)
-//              short             Stack[-0xba]:2 temp_death_sound          XREF[2]:     00452cfe(*), 00452d53(R)
-//              short             Stack[-0xbc]:2 temp_map_draw_level       XREF[2]:     00452b6d(*), 00452e44(R)
-//              short             Stack[-0xbe]:2 temp_flag                 XREF[2]:     00452d07(*), 00452d18(R)
-//              short             Stack[-0xc0]:2 temp_select_level         XREF[2]:     00452b72(*), 00452e78(R)
-//              short             Stack[-0xc2]:2 temp_damage_sprite        XREF[2]:     00452b77(*), 00452e71(R)
-//              short             Stack[-0xc4]:2 temp_combat_level
-//              short             Stack[-0xc6]:2 temp_area_effect_object_
-//                               ?setup@RGE_Master_Static_Object@@IAEHPAU_iobuf@@PAPAVRGE_Sp  XREF[3]:     setup:0044fbba(c),
-//                               RGE_Master_Static_Object::setup                                           RGE_Master_Static_Object:004521c7(
-//                                                                                                         TRIBE_Master_Tree_Object:0050f2fb(
-//                              m_s_obj.cpp:299 (6)
-//         00452b00     SUB        ESP,0xc4
-//                              m_s_obj.cpp:339 (22)
-//         00452b06     MOV        AX,word ptr [ESP + param_4]
-//         00452b0e     PUSH       EBX
-//         00452b0f     PUSH       EBP
-//         00452b10     PUSH       ESI
-//         00452b11     MOV        ESI,this
-//         00452b13     PUSH       EDI
-//         00452b14     MOV        byte ptr [ESI + 0x4],0xa
-//         00452b18     MOV        word ptr [ESI + 0x10],AX
-//                              m_s_obj.cpp:394 (344)
-//         00452b1c     LEA        EAX,[ESI + 0xb4]
-//         00452b22     LEA        this,[ESI + 0xb0]
-//         00452b28     PUSH       EAX
-//         00452b29     LEA        EDX,[ESI + 0xac]
-//         00452b2f     PUSH       this
-//         00452b30     PUSH       EDX
-//         00452b31     LEA        this=>temp_elevation_flag,[ESP + 0x58]
-//         00452b35     LEA        EDX=>temp_draw_color,[ESP + 0x54]
-//         00452b39     PUSH       this
-//         00452b3a     LEA        EAX=>temp_draw_flag,[ESP + 0x54]
-//         00452b3e     PUSH       EDX
-//         00452b3f     LEA        this=>temp_resource_group,[ESP + 0x54]
-//         00452b43     PUSH       EAX
-//         00452b44     LEA        EDX=>temp_create_doppleganger_on_death,[ESP +
-//         00452b48     PUSH       this
-//         00452b49     LEA        EAX,[ESI + 0xa0]
-//         00452b4f     PUSH       EDX
-//         00452b50     LEA        this,[ESI + 0x9c]
-//         00452b56     PUSH       EAX
-//         00452b57     LEA        EDX,[ESI + 0x98]
-//         00452b5d     PUSH       this
-//         00452b5e     LEA        EAX=>temp_track_as_resource,[ESP + 0x60]
-//         00452b62     PUSH       EDX
-//         00452b63     LEA        this=>temp_terrain,[ESP + 0x4c]
-//         00452b67     PUSH       EAX
-//         00452b68     LEA        EDX=>temp_command_level,[ESP + 0x4c]
-//         00452b6c     PUSH       this
-//         00452b6d     LEA        EAX=>temp_map_draw_level,[ESP + 0x4c]
-//         00452b71     PUSH       EDX
-//         00452b72     LEA        this=>temp_select_level,[ESP + 0x4c]
-//         00452b76     PUSH       EAX
-//         00452b77     LEA        EDX=>temp_damage_sprite,[ESP + 0x4e]
-//         00452b7b     PUSH       this
-//         00452b7c     LEA        EAX,[ESI + 0x80]
-//         00452b82     PUSH       EDX
-//         00452b83     LEA        this,[ESI + 0x84]
-//         00452b89     PUSH       EAX
-//         00452b8a     LEA        EDX,[ESI + 0x7c]
-//         00452b8d     PUSH       this
-//         00452b8e     LEA        EAX=>temp_created_sound,[ESP + 0x92]
-//         00452b95     PUSH       EDX
-//         00452b96     LEA        this=>temp_can_be_built_on,[ESP + 0x9a]
-//         00452b9d     PUSH       EAX
-//         00452b9e     LEA        EDX=>temp_undead_flag,[ESP + 0x78]
-//         00452ba2     PUSH       this
-//         00452ba3     LEA        EAX=>temp_sort_number,[ESP + 0x82]
-//         00452baa     PUSH       EDX
-//         00452bab     LEA        this=>local_84,[ESP + 0xac]
-//         00452bb2     PUSH       EAX
-//         00452bb3     LEA        EDX,[ESI + 0x60]
-//         00452bb6     PUSH       this
-//         00452bb7     LEA        EAX,[ESI + 0x5c]
-//         00452bba     PUSH       EDX
-//         00452bbb     LEA        this,[ESI + 0x5a]
-//         00452bbe     PUSH       EAX
-//         00452bbf     LEA        EDX,[ESI + 0x58]
-//         00452bc2     PUSH       this
-//         00452bc3     LEA        EAX,[ESI + 0x56]
-//         00452bc6     PUSH       EDX
-//         00452bc7     LEA        this,[ESI + 0x54]
-//         00452bca     PUSH       EAX
-//         00452bcb     LEA        EDX=>temp_attribute_flag,[ESP + 0xaa]
-//         00452bd2     PUSH       this
-//         00452bd3     LEA        EAX,[ESI + 0x50]
-//         00452bd6     PUSH       EDX
-//         00452bd7     LEA        this=>temp_attack_reaction,[ESP + 0xac]
-//         00452bde     PUSH       EAX
-//         00452bdf     LEA        EDX,[ESI + 0x4c]
-//         00452be2     PUSH       this
-//         00452be3     LEA        EDI,[ESI + 0x38]
-//         00452be6     LEA        EBX,[ESI + 0x34]
-//         00452be9     LEA        EBP,[ESI + 0x14]
-//         00452bec     PUSH       EDX
-//         00452bed     LEA        EAX=>temp_damage_percent,[ESP + 0xda]
-//         00452bf4     LEA        this=>temp_available,[ESP + 0xba]
-//         00452bfb     PUSH       EAX
-//         00452bfc     LEA        EDX,[ESI + 0x48]
-//         00452bff     PUSH       this
-//         00452c00     PUSH       EDX
-//         00452c01     PUSH       EDI
-//         00452c02     LEA        EAX,[ESI + 0x30]
-//         00452c05     PUSH       EBX
-//         00452c06     PUSH       EAX
-//         00452c07     LEA        EAX=>temp_movement_type,[ESP + 0xe6]
-//         00452c0e     LEA        this,[ESI + 0x28]
-//         00452c11     PUSH       EAX
-//         00452c12     LEA        EDX,[ESI + 0x26]
-//         00452c15     PUSH       this
-//         00452c16     LEA        EAX=>temp_hide_in_scenario_editor,[ESP + 0xd4]
-//         00452c1d     PUSH       EDX
-//         00452c1e     LEA        this=>temp_fog_flag,[ESP + 0xd6]
-//         00452c25     PUSH       EAX
-//         00452c26     LEA        EDX=>temp_obj_max,[ESP + 0xf2]
-//         00452c2d     PUSH       this
-//         00452c2e     LEA        EAX=>temp_undead_sprite,[ESP + 0xda]
-//         00452c35     PUSH       EDX
-//         00452c36     PUSH       EAX
-//         00452c37     LEA        this,[ESI + 0xe]
-//         00452c3a     PUSH       EBP
-//         00452c3b     LEA        EDX,[ESI + 0xc]
-//         00452c3e     PUSH       this
-//         00452c3f     MOV        this,dword ptr [ESP + param_1]
-//         00452c46     LEA        EAX=>temp_name[4],[ESP + 0x124]
-//         00452c4d     PUSH       EDX
-//         00452c4e     PUSH       EAX
-//         00452c4f     PUSH       s_%s_%hd_%hd_%hd_%hd_%hd_%hd_%hd_%               = "%s %hd %hd %hd %hd %hd %hd %hd %hd %f %hd
-//         00452c54     PUSH       this
-//         00452c55     CALL       fscanf                                           undefined fscanf()
-//         00452c5a     ADD        ESP,0xd8
-//         00452c60     LEA        EBP,[ESI + 0x88]
-//         00452c66     LEA        EBX,[ESI + 0x6a]
-//         00452c69     LEA        EDI,[ESI + 0x70]
-//         00452c6c     MOV        dword ptr [ESP + temp_damage_sprite_num],0x3
-//                               LAB_00452c74                                                 XREF[1]:     00452ca7(j)
-//                              m_s_obj.cpp:403 (25)
-//         00452c74     MOV        EAX,dword ptr [ESP + param_1]
-//         00452c7b     LEA        EDX=>temp_selected_sound,[ESP + 0x36]
-//         00452c7f     PUSH       EDX
-//         00452c80     PUSH       EDI
-//         00452c81     PUSH       EBX
-//         00452c82     PUSH       s_%hd_%f_%hd                                     = "%hd %f %hd"
-//         00452c87     PUSH       EAX
-//         00452c88     CALL       fscanf                                           undefined fscanf()
-//                              m_s_obj.cpp:404 (28)
-//         00452c8d     MOV        this,byte ptr [ESP + temp_selected_sound]
-//         00452c91     MOV        EAX,dword ptr [ESP + temp_damage_sprite_num]
-//         00452c95     ADD        ESP,0x14
-//         00452c98     MOV        byte ptr [EBP],this
-//         00452c9b     ADD        EDI,0x4
-//         00452c9e     ADD        EBX,0x2
-//         00452ca1     INC        EBP
-//         00452ca2     DEC        EAX
-//         00452ca3     MOV        dword ptr [ESP + temp_damage_sprite_num],EAX
-//         00452ca7     JNZ        LAB_00452c74
-//                              m_s_obj.cpp:407 (23)
-//         00452ca9     MOV        EBP,dword ptr [ESP + param_1]
-//         00452cb0     LEA        EDX=>temp_name,[ESP + 0x58]
-//         00452cb4     PUSH       EDX
-//         00452cb5     PUSH       s_%hd                                            = "%hd"
-//         00452cba     PUSH       EBP
-//         00452cbb     CALL       fscanf                                           undefined fscanf()
-//                              m_s_obj.cpp:408 (4)
-//         00452cc0     MOV        EAX,dword ptr [ESP + temp_name[0]]
-//                              m_s_obj.cpp:409 (24)
-//         00452cc4     MOV        EBX,dword ptr [ESP + param_2]
-//         00452ccb     ADD        ESP,0xc
-//         00452cce     MOV        byte ptr [ESI + 0x93],AL
-//         00452cd4     TEST       AL,AL
-//         00452cd6     JBE        LAB_00452d6a
-//                              m_s_obj.cpp:411 (19)
-//         00452cdc     AND        EAX,0xff
-//         00452ce1     PUSH       0x8
-//         00452ce3     PUSH       EAX
-//         00452ce4     CALL       calloc                                           undefined calloc()
-//         00452ce9     MOV        dword ptr [ESI + 0x94],EAX
-//                              m_s_obj.cpp:412 (15)
-//         00452cef     MOV        AL,byte ptr [ESI + 0x93]
-//         00452cf5     ADD        ESP,0x8
-//         00452cf8     XOR        EDI,EDI
-//         00452cfa     TEST       AL,AL
-//         00452cfc     JBE        LAB_00452d74
-//                               LAB_00452cfe                                                 XREF[1]:     00452d66(j)
-//                              m_s_obj.cpp:414 (26)
-//         00452cfe     LEA        EAX=>temp_death_sound,[ESP + 0x1a]
-//         00452d02     LEA        this=>local_82,[ESP + 0x52]
-//         00452d06     PUSH       EAX
-//         00452d07     LEA        EDX=>temp_flag,[ESP + 0x1a]
-//         00452d0b     PUSH       this
-//         00452d0c     PUSH       EDX
-//         00452d0d     PUSH       s_%hd_%hd_%hd                                    = "%hd %hd %hd"
-//         00452d12     PUSH       EBP
-//         00452d13     CALL       fscanf                                           undefined fscanf()
-//                              m_s_obj.cpp:416 (39)
-//         00452d18     MOV        AX,word ptr [ESP + temp_flag]
-//         00452d1d     ADD        ESP,0x14
-//         00452d20     TEST       AX,AX
-//         00452d23     JL         LAB_00452d2d
-//         00452d25     MOVSX      EAX,AX
-//         00452d28     MOV        this,dword ptr [EBX + EAX*0x4]
-//         00452d2b     JMP        LAB_00452d2f
-//                               LAB_00452d2d                                                 XREF[1]:     00452d23(j)
-//         00452d2d     XOR        this,this
-//                               LAB_00452d2f                                                 XREF[1]:     00452d2b(j)
-//         00452d2f     MOV        EDX,dword ptr [ESI + 0x94]
-//         00452d35     MOVSX      EAX,DI
-//         00452d38     SHL        EAX,0x3
-//         00452d3b     INC        EDI
-//         00452d3c     MOV        dword ptr [EAX + EDX*0x1],this
-//                              m_s_obj.cpp:417 (14)
-//         00452d3f     MOV        this,dword ptr [ESI + 0x94]
-//         00452d45     MOV        DL,byte ptr [ESP + local_82]
-//         00452d49     MOV        byte ptr [EAX + this->_padding_*0x1 + 0x4],DL
-//                              m_s_obj.cpp:418 (27)
-//         00452d4d     MOV        this,dword ptr [ESI + 0x94]
-//         00452d53     MOV        DL,byte ptr [ESP + temp_death_sound]
-//         00452d57     MOV        byte ptr [EAX + this->_padding_*0x1 + 0x5],DL
-//         00452d5b     MOVZX      AX,byte ptr [ESI + 0x93]
-//         00452d63     CMP        DI,AX
-//         00452d66     JL         LAB_00452cfe
-//                              m_s_obj.cpp:421 (2)
-//         00452d68     JMP        LAB_00452d74
-//                               LAB_00452d6a                                                 XREF[1]:     00452cd6(j)
-//                              m_s_obj.cpp:422 (10)
-//         00452d6a     MOV        dword ptr [ESI + 0x94],0x0
-//                               LAB_00452d74                                                 XREF[2]:     00452cfc(j), 00452d68(j)
-//                              m_s_obj.cpp:429 (31)
-//         00452d74     LEA        this=>temp_map_color,[ESP + 0x34]
-//         00452d78     LEA        EDX=>temp_convert_terrain_flag,[ESP + 0x30]
-//         00452d7c     PUSH       this
-//         00452d7d     LEA        EAX=>temp_sprite,[ESP + 0x22]
-//         00452d81     PUSH       EDX
-//         00452d82     LEA        this=>temp_death_sprite,[ESP + 0x42]
-//         00452d86     PUSH       EAX
-//         00452d87     PUSH       this
-//         00452d88     PUSH       s_%hd_%hd_%hd_%hd                                = "%hd %hd %hd %hd"
-//         00452d8d     PUSH       EBP
-//         00452d8e     CALL       fscanf                                           undefined fscanf()
-//                              m_s_obj.cpp:432 (33)
-//         00452d93     MOV        AX,word ptr [ESP + temp_death_sprite]
-//         00452d98     MOV        this,dword ptr [ESP + param_3]
-//         00452d9f     ADD        ESP,0x18
-//         00452da2     TEST       AX,AX
-//         00452da5     JL         LAB_00452daf
-//         00452da7     MOVSX      EDX,AX
-//         00452daa     MOV        EAX,dword ptr [this->_padding_ + EDX*0x4]
-//         00452dad     JMP        LAB_00452db1
-//                               LAB_00452daf                                                 XREF[1]:     00452da5(j)
-//         00452daf     XOR        EAX,EAX
-//                               LAB_00452db1                                                 XREF[1]:     00452dad(j)
-//         00452db1     MOV        dword ptr [ESI + 0x3c],EAX
-//                              m_s_obj.cpp:433 (23)
-//         00452db4     MOV        AX,word ptr [ESP + temp_sprite]
-//         00452db9     TEST       AX,AX
-//         00452dbc     JL         LAB_00452dc6
-//         00452dbe     MOVSX      EAX,AX
-//         00452dc1     MOV        EAX,dword ptr [this->_padding_ + EAX*0x4]
-//         00452dc4     JMP        LAB_00452dc8
-//                               LAB_00452dc6                                                 XREF[1]:     00452dbc(j)
-//         00452dc6     XOR        EAX,EAX
-//                               LAB_00452dc8                                                 XREF[1]:     00452dc4(j)
-//         00452dc8     MOV        dword ptr [ESI + 0x44],EAX
-//                              m_s_obj.cpp:434 (23)
-//         00452dcb     MOV        AX,word ptr [ESP + temp_can_be_built_on]
-//         00452dd0     TEST       AX,AX
-//         00452dd3     JL         LAB_00452ddd
-//         00452dd5     MOVSX      EDX,AX
-//         00452dd8     MOV        EAX,dword ptr [this->_padding_ + EDX*0x4]
-//         00452ddb     JMP        LAB_00452ddf
-//                               LAB_00452ddd                                                 XREF[1]:     00452dd3(j)
-//         00452ddd     XOR        EAX,EAX
-//                               LAB_00452ddf                                                 XREF[1]:     00452ddb(j)
-//         00452ddf     MOV        dword ptr [ESI + 0x40],EAX
-//                              m_s_obj.cpp:437 (23)
-//         00452de2     MOV        AX,word ptr [ESP + temp_undead_sprite]
-//         00452de7     TEST       AX,AX
-//         00452dea     JL         LAB_00452df4
-//         00452dec     MOVSX      EAX,AX
-//         00452def     MOV        EAX,dword ptr [EBX + EAX*0x4]
-//         00452df2     JMP        LAB_00452df6
-//                               LAB_00452df4                                                 XREF[1]:     00452dea(j)
-//         00452df4     XOR        EAX,EAX
-//                               LAB_00452df6                                                 XREF[1]:     00452df2(j)
-//         00452df6     MOV        dword ptr [ESI + 0x18],EAX
-//                              m_s_obj.cpp:438 (23)
-//         00452df9     MOV        AX,word ptr [ESP + temp_obj_max]
-//         00452dfe     TEST       AX,AX
-//         00452e01     JL         LAB_00452e0b
-//         00452e03     MOVSX      this,AX
-//         00452e06     MOV        EAX,dword ptr [EBX + this->_padding_*0x4]
-//         00452e09     JMP        LAB_00452e0d
-//                               LAB_00452e0b                                                 XREF[1]:     00452e01(j)
-//         00452e0b     XOR        EAX,EAX
-//                               LAB_00452e0d                                                 XREF[1]:     00452e09(j)
-//         00452e0d     MOV        dword ptr [ESI + 0x1c],EAX
-//                              m_s_obj.cpp:439 (23)
-//         00452e10     MOV        AX,word ptr [ESP + temp_fog_flag]
-//         00452e15     TEST       AX,AX
-//         00452e18     JL         LAB_00452e22
-//         00452e1a     MOVSX      EDX,AX
-//         00452e1d     MOV        EAX,dword ptr [EBX + EDX*0x4]
-//         00452e20     JMP        LAB_00452e24
-//                               LAB_00452e22                                                 XREF[1]:     00452e18(j)
-//         00452e22     XOR        EAX,EAX
-//                               LAB_00452e24                                                 XREF[1]:     00452e20(j)
-//         00452e24     MOV        dword ptr [ESI + 0x20],EAX
-//                              m_s_obj.cpp:442 (4)
-//         00452e27     MOV        AL,byte ptr [ESP + local_84]
-//                              m_s_obj.cpp:443 (7)
-//         00452e2b     MOV        this,byte ptr [ESP + temp_sort_number]
-//         00452e2f     MOV        byte ptr [ESI + 0x64],AL
-//                              m_s_obj.cpp:445 (11)
-//         00452e32     MOV        AL,byte ptr [ESP + temp_available]
-//         00452e36     MOV        DL,byte ptr [ESP + temp_movement_type]
-//         00452e3a     MOV        byte ptr [ESI + 0x4a],AL
-//                              m_s_obj.cpp:448 (7)
-//         00452e3d     MOV        AL,byte ptr [ESP + temp_created_sound]
-//         00452e41     MOV        byte ptr [ESI + 0x68],AL
-//                              m_s_obj.cpp:451 (20)
-//         00452e44     MOV        AL,byte ptr [ESP + temp_map_draw_level]
-//         00452e48     MOV        byte ptr [ESI + 0x65],this
-//         00452e4b     MOV        this,byte ptr [ESP + temp_damage_percent]
-//         00452e4f     MOV        byte ptr [ESI + 0x8d],AL
-//         00452e55     MOV        byte ptr [ESI + 0x2c],DL
-//                              m_s_obj.cpp:454 (6)
-//         00452e58     MOVZX      AX,byte ptr [ESP + temp_undead_flag]
-//                              m_s_obj.cpp:465 (176)
-//         00452e5e     FLD        float ptr [ESI + 0xac]
-//         00452e64     FCOMP      float ptr [DAT_00570618]
-//         00452e6a     MOV        DL,byte ptr [ESP + temp_attribute_flag]
-//         00452e6e     MOV        byte ptr [ESI + 0x4b],this
-//         00452e71     MOV        this,byte ptr [ESP + temp_damage_sprite]
-//         00452e75     MOV        byte ptr [ESI + 0x52],DL
-//         00452e78     MOV        DL,byte ptr [ESP + temp_select_level]
-//         00452e7c     MOV        byte ptr [ESI + 0x8b],this
-//         00452e82     MOV        this,byte ptr [ESP + temp_command_level]
-//         00452e86     MOV        word ptr [ESI + 0x66],AX
-//         00452e8a     MOV        AL,byte ptr [ESP + temp_convert_terrain_flag]
-//         00452e8e     MOV        byte ptr [ESI + 0x8c],DL
-//         00452e94     MOV        DL,byte ptr [ESP + temp_terrain]
-//         00452e98     MOV        byte ptr [ESI + 0x8e],this
-//         00452e9e     MOV        this,byte ptr [ESP + temp_hide_in_scenario_edi
-//         00452ea2     MOV        byte ptr [ESI + 0x91],AL
-//         00452ea8     MOV        AL,byte ptr [ESP + temp_create_doppleganger_on
-//         00452eac     MOV        byte ptr [ESI + 0x8f],DL
-//         00452eb2     MOV        DL,byte ptr [ESP + temp_attack_reaction]
-//         00452eb6     MOV        byte ptr [ESI + 0x24],this
-//         00452eb9     MOV        this,byte ptr [ESP + temp_map_color]
-//         00452ebd     MOV        byte ptr [ESI + 0xa5],AL
-//         00452ec3     MOV        AL,byte ptr [ESP + temp_draw_color]
-//         00452ec7     MOV        byte ptr [ESI + 0x4e],DL
-//         00452eca     MOV        DL,byte ptr [ESP + temp_track_as_resource]
-//         00452ece     MOV        byte ptr [ESI + 0x92],this
-//         00452ed4     MOV        this,byte ptr [ESP + temp_resource_group]
-//         00452ed8     MOV        byte ptr [ESI + 0xa8],AL
-//         00452ede     FNSTSW     AX
-//         00452ee0     MOV        byte ptr [ESI + 0x90],DL
-//         00452ee6     MOV        DL,byte ptr [ESP + temp_draw_flag]
-//         00452eea     MOV        byte ptr [ESI + 0xa6],this
-//         00452ef0     MOV        this,byte ptr [ESP + temp_elevation_flag]
-//         00452ef4     TEST       AH,0x40
-//         00452ef7     MOV        byte ptr [ESI + 0xa7],DL
-//         00452efd     MOV        byte ptr [ESI + 0xa9],this
-//         00452f03     JZ         LAB_00452f0e
-//         00452f05     MOV        EDX,dword ptr [ESI + 0x30]
-//         00452f08     MOV        dword ptr [ESI + 0xac],EDX
-//                               LAB_00452f0e                                                 XREF[1]:     00452f03(j)
-//                              m_s_obj.cpp:466 (28)
-//         00452f0e     FLD        float ptr [ESI + 0xb0]
-//         00452f14     FCOMP      float ptr [DAT_00570618]
-//         00452f1a     FNSTSW     AX
-//         00452f1c     TEST       AH,0x40
-//         00452f1f     JZ         LAB_00452f2a
-//         00452f21     MOV        EAX,dword ptr [ESI + 0x34]
-//         00452f24     MOV        dword ptr [ESI + 0xb0],EAX
-//                               LAB_00452f2a                                                 XREF[1]:     00452f1f(j)
-//                              m_s_obj.cpp:467 (28)
-//         00452f2a     FLD        float ptr [ESI + 0xb4]
-//         00452f30     FCOMP      float ptr [DAT_00570618]
-//         00452f36     FNSTSW     AX
-//         00452f38     TEST       AH,0x40
-//         00452f3b     JZ         LAB_00452f46
-//         00452f3d     MOV        this,dword ptr [ESI + 0x38]
-//         00452f40     MOV        dword ptr [ESI + 0xb4],this
-//                               LAB_00452f46                                                 XREF[1]:     00452f3b(j)
-//                              m_s_obj.cpp:470 (4)
-//         00452f46     MOV        DX,word ptr [ESI + 0x10]
-//                              m_s_obj.cpp:473 (18)
-//         00452f4a     CMP        word ptr [ESI + 0x14],0xb
-//         00452f4f     MOV        byte ptr [ESI + 0xa4],0x0
-//         00452f56     MOV        word ptr [ESI + 0x12],DX
-//         00452f5a     JNZ        LAB_00452f63
-//                              m_s_obj.cpp:474 (7)
-//         00452f5c     MOV        byte ptr [ESI + 0xa4],0x1
-//                               LAB_00452f63                                                 XREF[1]:     00452f5a(j)
-//                              m_s_obj.cpp:477 (14)
-//         00452f63     LEA        EDI=>temp_name[4],[ESP + 0x5c]
-//         00452f67     OR         this,0xffffffff
-//         00452f6a     XOR        EAX,EAX
-//         00452f6c     SCASB.RE   ES:EDI
-//         00452f6e     NOT        this
-//         00452f70     DEC        this
-//                              m_s_obj.cpp:478 (5)
-//         00452f71     TEST       this,this
-//         00452f74     JLE        LAB_00452f8d
-//                              m_s_obj.cpp:481 (23)
-//         00452f76     LEA        this=>temp_name[4],[ESP + 0x5c]
-//         00452f7a     LEA        EAX,[ESI + 0x8]
-//         00452f7d     PUSH       this
-//         00452f7e     PUSH       EAX
-//         00452f7f     MOV        dword ptr [EAX],0x0
-//         00452f85     CALL       getstring                                        void getstring(char * * param_1, char * param
-//         00452f8a     ADD        ESP,0x8
-//                               LAB_00452f8d                                                 XREF[1]:     00452f74(j)
-//                              m_s_obj.cpp:485 (18)
-//         00452f8d     POP        EDI
-//         00452f8e     POP        ESI
-//         00452f8f     POP        EBP
-//         00452f90     MOV        EAX,0x1
-//         00452f95     POP        EBX
-//         00452f96     ADD        ESP,0xc4
-//         00452f9c     RET        0x10
-//         00452f9f     ??         90h
+//              RGE_Master_Sta    Stack[0x4]:4   param_1                   XREF[4]:     004521e6(R), 004523f8(W), 00452416(R), 0045241f(W)
+//                               ?setup@RGE_Master_Static_Object@@IAEHPAV1@@Z                 XREF[3]:     setup:0044fb39(c),
+//                               RGE_Master_Static_Object::setup                                           RGE_Master_Static_Object:00452136(
+//                                                                                                         TRIBE_Master_Tree_Object:0050f1c3(
+//                              m_s_obj.cpp:65 (6)
+//         004521e0     PUSH       EBX
+//         004521e1     PUSH       EBP
+//         004521e2     PUSH       ESI
+//         004521e3     MOV        ESI,this
+//         004521e5     PUSH       EDI
+//                              m_s_obj.cpp:71 (20)
+//         004521e6     MOV        EDI,dword ptr [ESP + param_1]
+//         004521ea     MOV        byte ptr [ESI + 0x4],0xa
+//         004521ee     MOV        AL,byte ptr [EDI + 0xa4]
+//         004521f4     MOV        byte ptr [ESI + 0xa4],AL
+//                              m_s_obj.cpp:72 (8)
+//         004521fa     MOV        this,word ptr [EDI + 0xc]
+//         004521fe     MOV        word ptr [ESI + 0xc],this
+//                              m_s_obj.cpp:73 (8)
+//         00452202     MOV        DX,word ptr [EDI + 0xe]
+//         00452206     MOV        word ptr [ESI + 0xe],DX
+//                              m_s_obj.cpp:74 (8)
+//         0045220a     MOV        AX,word ptr [EDI + 0x10]
+//         0045220e     MOV        word ptr [ESI + 0x10],AX
+//                              m_s_obj.cpp:75 (4)
+//         00452212     MOV        word ptr [ESI + 0x12],AX
+//                              m_s_obj.cpp:76 (8)
+//         00452216     MOV        AX,word ptr [EDI + 0x14]
+//         0045221a     MOV        word ptr [ESI + 0x14],AX
+//                              m_s_obj.cpp:77 (6)
+//         0045221e     MOV        this,dword ptr [EDI + 0x18]
+//         00452221     MOV        dword ptr [ESI + 0x18],this
+//                              m_s_obj.cpp:78 (6)
+//         00452224     MOV        EDX,dword ptr [EDI + 0x1c]
+//         00452227     MOV        dword ptr [ESI + 0x1c],EDX
+//                              m_s_obj.cpp:79 (6)
+//         0045222a     MOV        EAX,dword ptr [EDI + 0x20]
+//         0045222d     MOV        dword ptr [ESI + 0x20],EAX
+//                              m_s_obj.cpp:80 (6)
+//         00452230     MOV        this,byte ptr [EDI + 0x24]
+//         00452233     MOV        byte ptr [ESI + 0x24],this
+//                              m_s_obj.cpp:81 (8)
+//         00452236     MOV        DX,word ptr [EDI + 0x26]
+//         0045223a     MOV        word ptr [ESI + 0x26],DX
+//                              m_s_obj.cpp:82 (6)
+//         0045223e     MOV        EAX,dword ptr [EDI + 0x28]
+//         00452241     MOV        dword ptr [ESI + 0x28],EAX
+//                              m_s_obj.cpp:83 (6)
+//         00452244     MOV        this,byte ptr [EDI + 0x2c]
+//         00452247     MOV        byte ptr [ESI + 0x2c],this
+//                              m_s_obj.cpp:84 (6)
+//         0045224a     MOV        EDX,dword ptr [EDI + 0x30]
+//         0045224d     MOV        dword ptr [ESI + 0x30],EDX
+//                              m_s_obj.cpp:85 (6)
+//         00452250     MOV        EAX,dword ptr [EDI + 0x34]
+//         00452253     MOV        dword ptr [ESI + 0x34],EAX
+//                              m_s_obj.cpp:86 (6)
+//         00452256     MOV        this,dword ptr [EDI + 0x38]
+//         00452259     MOV        dword ptr [ESI + 0x38],this
+//                              m_s_obj.cpp:87 (6)
+//         0045225c     MOV        EDX,dword ptr [EDI + 0x40]
+//         0045225f     MOV        dword ptr [ESI + 0x40],EDX
+//                              m_s_obj.cpp:88 (8)
+//         00452262     MOV        AX,word ptr [EDI + 0x48]
+//         00452266     MOV        word ptr [ESI + 0x48],AX
+//                              m_s_obj.cpp:89 (6)
+//         0045226a     MOV        this,byte ptr [EDI + 0x4a]
+//         0045226d     MOV        byte ptr [ESI + 0x4a],this
+//                              m_s_obj.cpp:90 (6)
+//         00452270     MOV        DL,byte ptr [EDI + 0x4b]
+//         00452273     MOV        byte ptr [ESI + 0x4b],DL
+//                              m_s_obj.cpp:91 (8)
+//         00452276     MOV        AX,word ptr [EDI + 0x4c]
+//         0045227a     MOV        word ptr [ESI + 0x4c],AX
+//                              m_s_obj.cpp:92 (6)
+//         0045227e     MOV        this,byte ptr [EDI + 0x4e]
+//         00452281     MOV        byte ptr [ESI + 0x4e],this
+//                              m_s_obj.cpp:93 (8)
+//         00452284     MOV        DX,word ptr [EDI + 0x50]
+//         00452288     MOV        word ptr [ESI + 0x50],DX
+//                              m_s_obj.cpp:94 (6)
+//         0045228c     MOV        AL,byte ptr [EDI + 0x52]
+//         0045228f     MOV        byte ptr [ESI + 0x52],AL
+//                              m_s_obj.cpp:95 (8)
+//         00452292     MOV        this,word ptr [EDI + 0x54]
+//         00452296     MOV        word ptr [ESI + 0x54],this
+//                              m_s_obj.cpp:96 (8)
+//         0045229a     MOV        DX,word ptr [EDI + 0x56]
+//         0045229e     MOV        word ptr [ESI + 0x56],DX
+//                              m_s_obj.cpp:97 (8)
+//         004522a2     MOV        AX,word ptr [EDI + 0x58]
+//         004522a6     MOV        word ptr [ESI + 0x58],AX
+//                              m_s_obj.cpp:98 (8)
+//         004522aa     MOV        this,word ptr [EDI + 0x5a]
+//         004522ae     MOV        word ptr [ESI + 0x5a],this
+//                              m_s_obj.cpp:99 (6)
+//         004522b2     MOV        EDX,dword ptr [EDI + 0x5c]
+//         004522b5     MOV        dword ptr [ESI + 0x5c],EDX
+//                              m_s_obj.cpp:100 (6)
+//         004522b8     MOV        EAX,dword ptr [EDI + 0x60]
+//         004522bb     MOV        dword ptr [ESI + 0x60],EAX
+//                              m_s_obj.cpp:101 (6)
+//         004522be     MOV        this,byte ptr [EDI + 0x64]
+//         004522c1     MOV        byte ptr [ESI + 0x64],this
+//                              m_s_obj.cpp:102 (6)
+//         004522c4     MOV        DL,byte ptr [EDI + 0x65]
+//         004522c7     MOV        byte ptr [ESI + 0x65],DL
+//                              m_s_obj.cpp:103 (8)
+//         004522ca     MOV        AX,word ptr [EDI + 0x66]
+//         004522ce     MOV        word ptr [ESI + 0x66],AX
+//                              m_s_obj.cpp:104 (6)
+//         004522d2     MOV        this,byte ptr [EDI + 0x68]
+//         004522d5     MOV        byte ptr [ESI + 0x68],this
+//                              m_s_obj.cpp:105 (8)
+//         004522d8     MOV        DX,word ptr [EDI + 0x7c]
+//         004522dc     MOV        word ptr [ESI + 0x7c],DX
+//                              m_s_obj.cpp:106 (12)
+//         004522e0     MOV        EAX,dword ptr [EDI + 0x80]
+//         004522e6     MOV        dword ptr [ESI + 0x80],EAX
+//                              m_s_obj.cpp:107 (12)
+//         004522ec     MOV        this,byte ptr [EDI + 0x8b]
+//         004522f2     MOV        byte ptr [ESI + 0x8b],this
+//                              m_s_obj.cpp:108 (12)
+//         004522f8     MOV        DL,byte ptr [EDI + 0x8c]
+//         004522fe     MOV        byte ptr [ESI + 0x8c],DL
+//                              m_s_obj.cpp:109 (12)
+//         00452304     MOV        AL,byte ptr [EDI + 0x8d]
+//         0045230a     MOV        byte ptr [ESI + 0x8d],AL
+//                              m_s_obj.cpp:110 (12)
+//         00452310     MOV        this,byte ptr [EDI + 0x8e]
+//         00452316     MOV        byte ptr [ESI + 0x8e],this
+//                              m_s_obj.cpp:111 (12)
+//         0045231c     MOV        DL,byte ptr [EDI + 0x8f]
+//         00452322     MOV        byte ptr [ESI + 0x8f],DL
+//                              m_s_obj.cpp:112 (12)
+//         00452328     MOV        EAX,dword ptr [EDI + 0x84]
+//         0045232e     MOV        dword ptr [ESI + 0x84],EAX
+//                              m_s_obj.cpp:113 (6)
+//         00452334     MOV        this,dword ptr [EDI + 0x3c]
+//         00452337     MOV        dword ptr [ESI + 0x3c],this
+//                              m_s_obj.cpp:114 (6)
+//         0045233a     MOV        EDX,dword ptr [EDI + 0x44]
+//         0045233d     MOV        dword ptr [ESI + 0x44],EDX
+//                              m_s_obj.cpp:115 (12)
+//         00452340     MOV        AL,byte ptr [EDI + 0x91]
+//         00452346     MOV        byte ptr [ESI + 0x91],AL
+//                              m_s_obj.cpp:116 (12)
+//         0045234c     MOV        this,byte ptr [EDI + 0x92]
+//         00452352     MOV        byte ptr [ESI + 0x92],this
+//                              m_s_obj.cpp:117 (12)
+//         00452358     MOV        DL,byte ptr [EDI + 0x90]
+//         0045235e     MOV        byte ptr [ESI + 0x90],DL
+//                              m_s_obj.cpp:118 (12)
+//         00452364     MOV        EAX,dword ptr [EDI + 0x98]
+//         0045236a     MOV        dword ptr [ESI + 0x98],EAX
+//                              m_s_obj.cpp:119 (12)
+//         00452370     MOV        this,dword ptr [EDI + 0x9c]
+//         00452376     MOV        dword ptr [ESI + 0x9c],this
+//                              m_s_obj.cpp:120 (12)
+//         0045237c     MOV        EDX,dword ptr [EDI + 0xa0]
+//         00452382     MOV        dword ptr [ESI + 0xa0],EDX
+//                              m_s_obj.cpp:121 (12)
+//         00452388     MOV        AL,byte ptr [EDI + 0xa5]
+//         0045238e     MOV        byte ptr [ESI + 0xa5],AL
+//                              m_s_obj.cpp:122 (12)
+//         00452394     MOV        this,byte ptr [EDI + 0xa6]
+//         0045239a     MOV        byte ptr [ESI + 0xa6],this
+//                              m_s_obj.cpp:123 (12)
+//         004523a0     MOV        DL,byte ptr [EDI + 0xa7]
+//         004523a6     MOV        byte ptr [ESI + 0xa7],DL
+//                              m_s_obj.cpp:124 (12)
+//         004523ac     MOV        AL,byte ptr [EDI + 0xa8]
+//         004523b2     MOV        byte ptr [ESI + 0xa8],AL
+//                              m_s_obj.cpp:125 (12)
+//         004523b8     MOV        this,byte ptr [EDI + 0xa9]
+//         004523be     MOV        byte ptr [ESI + 0xa9],this
+//                              m_s_obj.cpp:126 (12)
+//         004523c4     MOV        EDX,dword ptr [EDI + 0xac]
+//         004523ca     MOV        dword ptr [ESI + 0xac],EDX
+//                              m_s_obj.cpp:127 (12)
+//         004523d0     MOV        EAX,dword ptr [EDI + 0xb0]
+//         004523d6     MOV        dword ptr [ESI + 0xb0],EAX
+//                              m_s_obj.cpp:128 (6)
+//         004523dc     MOV        this,dword ptr [EDI + 0xb4]
+//                              m_s_obj.cpp:130 (30)
+//         004523e2     MOV        EAX,EDI
+//         004523e4     MOV        dword ptr [ESI + 0xb4],this
+//         004523ea     LEA        EDX,[ESI + 0x88]
+//         004523f0     LEA        EBP,[ESI + 0x70]
+//         004523f3     LEA        this,[ESI + 0x6a]
+//         004523f6     SUB        EAX,ESI
+//         004523f8     MOV        dword ptr [ESP + param_1],0x3
+//                               LAB_00452400                                                 XREF[1]:     00452423(j)
+//                              m_s_obj.cpp:132 (10)
+//         00452400     MOV        BX,word ptr [EAX + this->_padding_*0x1]
+//         00452404     ADD        EBP,0x4
+//         00452407     MOV        word ptr [this->_padding_],BX
+//                              m_s_obj.cpp:133 (7)
+//         0045240a     MOV        EBX,dword ptr [EAX + EBP*0x1 + -0x4]
+//         0045240e     MOV        dword ptr [EBP + -0x4],EBX
+//                              m_s_obj.cpp:134 (20)
+//         00452411     MOV        BL,byte ptr [EAX + EDX*0x1]
+//         00452414     MOV        byte ptr [EDX],BL
+//         00452416     MOV        EBX,dword ptr [ESP + param_1]
+//         0045241a     ADD        this,0x2
+//         0045241d     INC        EDX
+//         0045241e     DEC        EBX
+//         0045241f     MOV        dword ptr [ESP + param_1],EBX
+//         00452423     JNZ        LAB_00452400
+//                              m_s_obj.cpp:138 (6)
+//         00452425     MOV        AL,byte ptr [EDI + 0x93]
+//                              m_s_obj.cpp:139 (10)
+//         0045242b     TEST       AL,AL
+//         0045242d     MOV        byte ptr [ESI + 0x93],AL
+//         00452433     JBE        LAB_004524a7
+//                              m_s_obj.cpp:141 (19)
+//         00452435     AND        EAX,0xff
+//         0045243a     PUSH       0x8
+//         0045243c     PUSH       EAX
+//         0045243d     CALL       calloc                                           undefined calloc()
+//         00452442     MOV        dword ptr [ESI + 0x94],EAX
+//                              m_s_obj.cpp:142 (15)
+//         00452448     MOV        AL,byte ptr [ESI + 0x93]
+//         0045244e     ADD        ESP,0x8
+//         00452451     XOR        this,this
+//         00452453     TEST       AL,AL
+//         00452455     JBE        LAB_004524b1
+//                               LAB_00452457                                                 XREF[1]:     004524a3(j)
+//                              m_s_obj.cpp:144 (25)
+//         00452457     MOV        EDX,dword ptr [EDI + 0x94]
+//         0045245d     MOV        EBX,dword ptr [ESI + 0x94]
+//         00452463     MOVSX      EAX,this
+//         00452466     SHL        EAX,0x3
+//         00452469     INC        this
+//         0045246a     MOV        EDX,dword ptr [EDX + EAX*0x1]
+//         0045246d     MOV        dword ptr [EBX + EAX*0x1],EDX
+//                              m_s_obj.cpp:145 (20)
+//         00452470     MOV        EDX,dword ptr [EDI + 0x94]
+//         00452476     MOV        EBX,dword ptr [ESI + 0x94]
+//         0045247c     MOV        DL,byte ptr [EDX + EAX*0x1 + 0x4]
+//         00452480     MOV        byte ptr [EBX + EAX*0x1 + 0x4],DL
+//                              m_s_obj.cpp:146 (33)
+//         00452484     MOV        EDX,dword ptr [EDI + 0x94]
+//         0045248a     MOV        EBX,dword ptr [ESI + 0x94]
+//         00452490     MOV        DL,byte ptr [EDX + EAX*0x1 + 0x5]
+//         00452494     MOV        byte ptr [EBX + EAX*0x1 + 0x5],DL
+//         00452498     MOVZX      AX,byte ptr [ESI + 0x93]
+//         004524a0     CMP        this,AX
+//         004524a3     JL         LAB_00452457
+//                              m_s_obj.cpp:149 (2)
+//         004524a5     JMP        LAB_004524b1
+//                               LAB_004524a7                                                 XREF[1]:     00452433(j)
+//                              m_s_obj.cpp:150 (10)
+//         004524a7     MOV        dword ptr [ESI + 0x94],0x0
+//                               LAB_004524b1                                                 XREF[2]:     00452455(j), 004524a5(j)
+//                              m_s_obj.cpp:153 (9)
+//         004524b1     LEA        EAX,[ESI + 0x8]
+//         004524b4     MOV        dword ptr [EAX],0x0
+//                              m_s_obj.cpp:154 (13)
+//         004524ba     MOV        this,dword ptr [EDI + 0x8]
+//         004524bd     PUSH       this
+//         004524be     PUSH       EAX
+//         004524bf     CALL       getstring                                        void getstring(char * * param_1, char * param
+//         004524c4     ADD        ESP,0x8
+//                              m_s_obj.cpp:156 (5)
+//         004524c7     MOV        EAX,0x1
+//                              m_s_obj.cpp:157 (7)
+//         004524cc     POP        EDI
+//         004524cd     POP        ESI
+//         004524ce     POP        EBP
+//         004524cf     POP        EBX
+//         004524d0     RET        0x4
+//         004524d3     ??         90h
+//         004524d4     NOP
+//         004524d5     NOP
+//         004524d6     NOP
+//         004524d7     NOP
+//         004524d8     NOP
+//         004524d9     NOP
+//         004524da     NOP
+//         004524db     NOP
+//         004524dc     NOP
+//         004524dd     NOP
+//         004524de     NOP
+//         004524df     NOP
     return 0;
 }
 
 int RGE_Master_Static_Object::setup(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3) {
     /* TODO: Stub */
-//                              int __thiscall setup(RGE_Master_Static_Object * this, _iobuf * param
+//                              int __thiscall setup(RGE_Master_Static_Object * this, int param_1, R
 //              int               EAX:4          <RETURN>
 //              RGE_Master_Sta    ECX:4 (auto)   this
-//              _iobuf *          Stack[0x4]:4   param_1                   XREF[3]:     00452c3f(R), 00452c74(R), 00452ca9(R)
-//              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[1]:     00452cc4(R)
-//              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[1]:     00452d98(R)
-//              short             Stack[0x10]:2  param_4                   XREF[1]:     00452b06(R)
-//              char[120]         Stack[-0x7c]   temp_name                 XREF[2,3]:   00452cb0(*), 00452cc0(R), 00452c46(*), 00452f63(*),
-//                                                                                     00452f76(*)
-//              short             Stack[-0x80]:2 temp_damage_sprite_num    XREF[3]:     00452c6c(W), 00452c91(R), 00452ca3(W)
-//              undefined         Stack[-0x82]:1 local_82                  XREF[2]:     00452d02(*), 00452d45(R)
-//              undefined         Stack[-0x84]:1 local_84                  XREF[2]:     00452bab(*), 00452e27(R)
-//              short             Stack[-0x86]:2 temp_damage_percent       XREF[2]:     00452bed(*), 00452e4b(R)
-//              short             Stack[-0x88]:2 temp_elevation_flag       XREF[2]:     00452b31(*), 00452ef0(R)
-//              short             Stack[-0x8a]:2 temp_can_be_built_on      XREF[2]:     00452b96(*), 00452dcb(R)
-//              short             Stack[-0x8c]:2 temp_draw_color           XREF[2]:     00452b35(*), 00452ec3(R)
-//              short             Stack[-0x8e]:2 temp_created_sound        XREF[2]:     00452b8e(*), 00452e3d(R)
-//              short             Stack[-0x90]:2 temp_draw_flag            XREF[2]:     00452b3a(*), 00452ee6(R)
-//              short             Stack[-0x92]:2 temp_movement_type        XREF[2]:     00452c07(*), 00452e36(R)
-//              short             Stack[-0x94]:2 temp_resource_group       XREF[2]:     00452b3f(*), 00452ed4(R)
-//              short             Stack[-0x96]:2 temp_obj_max              XREF[2]:     00452c26(*), 00452df9(R)
-//              short             Stack[-0x98]:2 temp_create_doppleganger  XREF[2]:     00452b44(*), 00452ea8(R)
-//              short             Stack[-0x9a]:2 temp_death_sprite         XREF[2]:     00452d82(*), 00452d93(R)
-//              short             Stack[-0x9c]:2 temp_track_as_resource    XREF[2]:     00452b5e(*), 00452eca(R)
-//              short             Stack[-0x9e]:2 temp_selected_sound       XREF[2]:     00452c7b(*), 00452c8d(R)
-//              short             Stack[-0xa0]:2 temp_map_color            XREF[2]:     00452d74(*), 00452eb9(R)
-//              short             Stack[-0xa2]:2 temp_attribute_flag       XREF[2]:     00452bcb(*), 00452e6a(R)
-//              short             Stack[-0xa4]:2 temp_convert_terrain_flag XREF[2]:     00452d78(*), 00452e8a(R)
-//              short             Stack[-0xa6]:2 temp_available            XREF[2]:     00452bf4(*), 00452e32(R)
-//              short             Stack[-0xa8]:2 temp_attack_reaction      XREF[2]:     00452bd7(*), 00452eb2(R)
-//              short             Stack[-0xaa]:2 temp_sort_number          XREF[2]:     00452ba3(*), 00452e2b(R)
-//              short             Stack[-0xac]:2 temp_hide_in_scenario_ed  XREF[2]:     00452c16(*), 00452e9e(R)
-//              short             Stack[-0xae]:2 temp_fog_flag             XREF[2]:     00452c1e(*), 00452e10(R)
-//              short             Stack[-0xb0]:2 temp_undead_flag          XREF[2]:     00452b9e(*), 00452e58(R)
-//              short             Stack[-0xb2]:2 temp_undead_sprite        XREF[2]:     00452c2e(*), 00452de2(R)
-//              short             Stack[-0xb4]:2 temp_terrain              XREF[2]:     00452b63(*), 00452e94(R)
-//              short             Stack[-0xb6]:2 temp_sprite               XREF[2]:     00452d7d(*), 00452db4(R)
-//              short             Stack[-0xb8]:2 temp_command_level        XREF[2]:     00452b68(*), 00452e82(R)
-//              short             Stack[-0xba]:2 temp_death_sound          XREF[2]:     00452cfe(*), 00452d53(R)
-//              short             Stack[-0xbc]:2 temp_map_draw_level       XREF[2]:     00452b6d(*), 00452e44(R)
-//              short             Stack[-0xbe]:2 temp_flag                 XREF[2]:     00452d07(*), 00452d18(R)
-//              short             Stack[-0xc0]:2 temp_select_level         XREF[2]:     00452b72(*), 00452e78(R)
-//              short             Stack[-0xc2]:2 temp_damage_sprite        XREF[2]:     00452b77(*), 00452e71(R)
-//              short             Stack[-0xc4]:2 temp_combat_level
-//              short             Stack[-0xc6]:2 temp_area_effect_object_
-//                               ?setup@RGE_Master_Static_Object@@IAEHPAU_iobuf@@PAPAVRGE_Sp  XREF[3]:     setup:0044fbba(c),
-//                               RGE_Master_Static_Object::setup                                           RGE_Master_Static_Object:004521c7(
-//                                                                                                         TRIBE_Master_Tree_Object:0050f2fb(
-//                              m_s_obj.cpp:299 (6)
-//         00452b00     SUB        ESP,0xc4
-//                              m_s_obj.cpp:339 (22)
-//         00452b06     MOV        AX,word ptr [ESP + param_4]
-//         00452b0e     PUSH       EBX
-//         00452b0f     PUSH       EBP
-//         00452b10     PUSH       ESI
-//         00452b11     MOV        ESI,this
-//         00452b13     PUSH       EDI
-//         00452b14     MOV        byte ptr [ESI + 0x4],0xa
-//         00452b18     MOV        word ptr [ESI + 0x10],AX
-//                              m_s_obj.cpp:394 (344)
-//         00452b1c     LEA        EAX,[ESI + 0xb4]
-//         00452b22     LEA        this,[ESI + 0xb0]
-//         00452b28     PUSH       EAX
-//         00452b29     LEA        EDX,[ESI + 0xac]
-//         00452b2f     PUSH       this
-//         00452b30     PUSH       EDX
-//         00452b31     LEA        this=>temp_elevation_flag,[ESP + 0x58]
-//         00452b35     LEA        EDX=>temp_draw_color,[ESP + 0x54]
-//         00452b39     PUSH       this
-//         00452b3a     LEA        EAX=>temp_draw_flag,[ESP + 0x54]
-//         00452b3e     PUSH       EDX
-//         00452b3f     LEA        this=>temp_resource_group,[ESP + 0x54]
-//         00452b43     PUSH       EAX
-//         00452b44     LEA        EDX=>temp_create_doppleganger_on_death,[ESP +
-//         00452b48     PUSH       this
-//         00452b49     LEA        EAX,[ESI + 0xa0]
-//         00452b4f     PUSH       EDX
-//         00452b50     LEA        this,[ESI + 0x9c]
-//         00452b56     PUSH       EAX
-//         00452b57     LEA        EDX,[ESI + 0x98]
-//         00452b5d     PUSH       this
-//         00452b5e     LEA        EAX=>temp_track_as_resource,[ESP + 0x60]
-//         00452b62     PUSH       EDX
-//         00452b63     LEA        this=>temp_terrain,[ESP + 0x4c]
-//         00452b67     PUSH       EAX
-//         00452b68     LEA        EDX=>temp_command_level,[ESP + 0x4c]
-//         00452b6c     PUSH       this
-//         00452b6d     LEA        EAX=>temp_map_draw_level,[ESP + 0x4c]
-//         00452b71     PUSH       EDX
-//         00452b72     LEA        this=>temp_select_level,[ESP + 0x4c]
-//         00452b76     PUSH       EAX
-//         00452b77     LEA        EDX=>temp_damage_sprite,[ESP + 0x4e]
-//         00452b7b     PUSH       this
-//         00452b7c     LEA        EAX,[ESI + 0x80]
-//         00452b82     PUSH       EDX
-//         00452b83     LEA        this,[ESI + 0x84]
-//         00452b89     PUSH       EAX
-//         00452b8a     LEA        EDX,[ESI + 0x7c]
-//         00452b8d     PUSH       this
-//         00452b8e     LEA        EAX=>temp_created_sound,[ESP + 0x92]
-//         00452b95     PUSH       EDX
-//         00452b96     LEA        this=>temp_can_be_built_on,[ESP + 0x9a]
-//         00452b9d     PUSH       EAX
-//         00452b9e     LEA        EDX=>temp_undead_flag,[ESP + 0x78]
-//         00452ba2     PUSH       this
-//         00452ba3     LEA        EAX=>temp_sort_number,[ESP + 0x82]
-//         00452baa     PUSH       EDX
-//         00452bab     LEA        this=>local_84,[ESP + 0xac]
-//         00452bb2     PUSH       EAX
-//         00452bb3     LEA        EDX,[ESI + 0x60]
-//         00452bb6     PUSH       this
-//         00452bb7     LEA        EAX,[ESI + 0x5c]
-//         00452bba     PUSH       EDX
-//         00452bbb     LEA        this,[ESI + 0x5a]
-//         00452bbe     PUSH       EAX
-//         00452bbf     LEA        EDX,[ESI + 0x58]
-//         00452bc2     PUSH       this
-//         00452bc3     LEA        EAX,[ESI + 0x56]
-//         00452bc6     PUSH       EDX
-//         00452bc7     LEA        this,[ESI + 0x54]
-//         00452bca     PUSH       EAX
-//         00452bcb     LEA        EDX=>temp_attribute_flag,[ESP + 0xaa]
-//         00452bd2     PUSH       this
-//         00452bd3     LEA        EAX,[ESI + 0x50]
-//         00452bd6     PUSH       EDX
-//         00452bd7     LEA        this=>temp_attack_reaction,[ESP + 0xac]
-//         00452bde     PUSH       EAX
-//         00452bdf     LEA        EDX,[ESI + 0x4c]
-//         00452be2     PUSH       this
-//         00452be3     LEA        EDI,[ESI + 0x38]
-//         00452be6     LEA        EBX,[ESI + 0x34]
-//         00452be9     LEA        EBP,[ESI + 0x14]
-//         00452bec     PUSH       EDX
-//         00452bed     LEA        EAX=>temp_damage_percent,[ESP + 0xda]
-//         00452bf4     LEA        this=>temp_available,[ESP + 0xba]
-//         00452bfb     PUSH       EAX
-//         00452bfc     LEA        EDX,[ESI + 0x48]
-//         00452bff     PUSH       this
-//         00452c00     PUSH       EDX
-//         00452c01     PUSH       EDI
-//         00452c02     LEA        EAX,[ESI + 0x30]
-//         00452c05     PUSH       EBX
-//         00452c06     PUSH       EAX
-//         00452c07     LEA        EAX=>temp_movement_type,[ESP + 0xe6]
-//         00452c0e     LEA        this,[ESI + 0x28]
-//         00452c11     PUSH       EAX
-//         00452c12     LEA        EDX,[ESI + 0x26]
-//         00452c15     PUSH       this
-//         00452c16     LEA        EAX=>temp_hide_in_scenario_editor,[ESP + 0xd4]
-//         00452c1d     PUSH       EDX
-//         00452c1e     LEA        this=>temp_fog_flag,[ESP + 0xd6]
-//         00452c25     PUSH       EAX
-//         00452c26     LEA        EDX=>temp_obj_max,[ESP + 0xf2]
-//         00452c2d     PUSH       this
-//         00452c2e     LEA        EAX=>temp_undead_sprite,[ESP + 0xda]
-//         00452c35     PUSH       EDX
-//         00452c36     PUSH       EAX
-//         00452c37     LEA        this,[ESI + 0xe]
-//         00452c3a     PUSH       EBP
-//         00452c3b     LEA        EDX,[ESI + 0xc]
-//         00452c3e     PUSH       this
-//         00452c3f     MOV        this,dword ptr [ESP + param_1]
-//         00452c46     LEA        EAX=>temp_name[4],[ESP + 0x124]
-//         00452c4d     PUSH       EDX
-//         00452c4e     PUSH       EAX
-//         00452c4f     PUSH       s_%s_%hd_%hd_%hd_%hd_%hd_%hd_%hd_%               = "%s %hd %hd %hd %hd %hd %hd %hd %hd %f %hd
-//         00452c54     PUSH       this
-//         00452c55     CALL       fscanf                                           undefined fscanf()
-//         00452c5a     ADD        ESP,0xd8
-//         00452c60     LEA        EBP,[ESI + 0x88]
-//         00452c66     LEA        EBX,[ESI + 0x6a]
-//         00452c69     LEA        EDI,[ESI + 0x70]
-//         00452c6c     MOV        dword ptr [ESP + temp_damage_sprite_num],0x3
-//                               LAB_00452c74                                                 XREF[1]:     00452ca7(j)
-//                              m_s_obj.cpp:403 (25)
-//         00452c74     MOV        EAX,dword ptr [ESP + param_1]
-//         00452c7b     LEA        EDX=>temp_selected_sound,[ESP + 0x36]
-//         00452c7f     PUSH       EDX
-//         00452c80     PUSH       EDI
-//         00452c81     PUSH       EBX
-//         00452c82     PUSH       s_%hd_%f_%hd                                     = "%hd %f %hd"
-//         00452c87     PUSH       EAX
-//         00452c88     CALL       fscanf                                           undefined fscanf()
-//                              m_s_obj.cpp:404 (28)
-//         00452c8d     MOV        this,byte ptr [ESP + temp_selected_sound]
-//         00452c91     MOV        EAX,dword ptr [ESP + temp_damage_sprite_num]
-//         00452c95     ADD        ESP,0x14
-//         00452c98     MOV        byte ptr [EBP],this
-//         00452c9b     ADD        EDI,0x4
-//         00452c9e     ADD        EBX,0x2
-//         00452ca1     INC        EBP
-//         00452ca2     DEC        EAX
-//         00452ca3     MOV        dword ptr [ESP + temp_damage_sprite_num],EAX
-//         00452ca7     JNZ        LAB_00452c74
-//                              m_s_obj.cpp:407 (23)
-//         00452ca9     MOV        EBP,dword ptr [ESP + param_1]
-//         00452cb0     LEA        EDX=>temp_name,[ESP + 0x58]
-//         00452cb4     PUSH       EDX
-//         00452cb5     PUSH       s_%hd                                            = "%hd"
-//         00452cba     PUSH       EBP
-//         00452cbb     CALL       fscanf                                           undefined fscanf()
-//                              m_s_obj.cpp:408 (4)
-//         00452cc0     MOV        EAX,dword ptr [ESP + temp_name[0]]
-//                              m_s_obj.cpp:409 (24)
-//         00452cc4     MOV        EBX,dword ptr [ESP + param_2]
-//         00452ccb     ADD        ESP,0xc
-//         00452cce     MOV        byte ptr [ESI + 0x93],AL
-//         00452cd4     TEST       AL,AL
-//         00452cd6     JBE        LAB_00452d6a
-//                              m_s_obj.cpp:411 (19)
-//         00452cdc     AND        EAX,0xff
-//         00452ce1     PUSH       0x8
-//         00452ce3     PUSH       EAX
-//         00452ce4     CALL       calloc                                           undefined calloc()
-//         00452ce9     MOV        dword ptr [ESI + 0x94],EAX
-//                              m_s_obj.cpp:412 (15)
-//         00452cef     MOV        AL,byte ptr [ESI + 0x93]
-//         00452cf5     ADD        ESP,0x8
-//         00452cf8     XOR        EDI,EDI
-//         00452cfa     TEST       AL,AL
-//         00452cfc     JBE        LAB_00452d74
-//                               LAB_00452cfe                                                 XREF[1]:     00452d66(j)
-//                              m_s_obj.cpp:414 (26)
-//         00452cfe     LEA        EAX=>temp_death_sound,[ESP + 0x1a]
-//         00452d02     LEA        this=>local_82,[ESP + 0x52]
-//         00452d06     PUSH       EAX
-//         00452d07     LEA        EDX=>temp_flag,[ESP + 0x1a]
-//         00452d0b     PUSH       this
-//         00452d0c     PUSH       EDX
-//         00452d0d     PUSH       s_%hd_%hd_%hd                                    = "%hd %hd %hd"
-//         00452d12     PUSH       EBP
-//         00452d13     CALL       fscanf                                           undefined fscanf()
-//                              m_s_obj.cpp:416 (39)
-//         00452d18     MOV        AX,word ptr [ESP + temp_flag]
-//         00452d1d     ADD        ESP,0x14
-//         00452d20     TEST       AX,AX
-//         00452d23     JL         LAB_00452d2d
-//         00452d25     MOVSX      EAX,AX
-//         00452d28     MOV        this,dword ptr [EBX + EAX*0x4]
-//         00452d2b     JMP        LAB_00452d2f
-//                               LAB_00452d2d                                                 XREF[1]:     00452d23(j)
-//         00452d2d     XOR        this,this
-//                               LAB_00452d2f                                                 XREF[1]:     00452d2b(j)
-//         00452d2f     MOV        EDX,dword ptr [ESI + 0x94]
-//         00452d35     MOVSX      EAX,DI
-//         00452d38     SHL        EAX,0x3
-//         00452d3b     INC        EDI
-//         00452d3c     MOV        dword ptr [EAX + EDX*0x1],this
-//                              m_s_obj.cpp:417 (14)
-//         00452d3f     MOV        this,dword ptr [ESI + 0x94]
-//         00452d45     MOV        DL,byte ptr [ESP + local_82]
-//         00452d49     MOV        byte ptr [EAX + this->_padding_*0x1 + 0x4],DL
-//                              m_s_obj.cpp:418 (27)
-//         00452d4d     MOV        this,dword ptr [ESI + 0x94]
-//         00452d53     MOV        DL,byte ptr [ESP + temp_death_sound]
-//         00452d57     MOV        byte ptr [EAX + this->_padding_*0x1 + 0x5],DL
-//         00452d5b     MOVZX      AX,byte ptr [ESI + 0x93]
-//         00452d63     CMP        DI,AX
-//         00452d66     JL         LAB_00452cfe
-//                              m_s_obj.cpp:421 (2)
-//         00452d68     JMP        LAB_00452d74
-//                               LAB_00452d6a                                                 XREF[1]:     00452cd6(j)
-//                              m_s_obj.cpp:422 (10)
-//         00452d6a     MOV        dword ptr [ESI + 0x94],0x0
-//                               LAB_00452d74                                                 XREF[2]:     00452cfc(j), 00452d68(j)
-//                              m_s_obj.cpp:429 (31)
-//         00452d74     LEA        this=>temp_map_color,[ESP + 0x34]
-//         00452d78     LEA        EDX=>temp_convert_terrain_flag,[ESP + 0x30]
-//         00452d7c     PUSH       this
-//         00452d7d     LEA        EAX=>temp_sprite,[ESP + 0x22]
-//         00452d81     PUSH       EDX
-//         00452d82     LEA        this=>temp_death_sprite,[ESP + 0x42]
-//         00452d86     PUSH       EAX
-//         00452d87     PUSH       this
-//         00452d88     PUSH       s_%hd_%hd_%hd_%hd                                = "%hd %hd %hd %hd"
-//         00452d8d     PUSH       EBP
-//         00452d8e     CALL       fscanf                                           undefined fscanf()
-//                              m_s_obj.cpp:432 (33)
-//         00452d93     MOV        AX,word ptr [ESP + temp_death_sprite]
-//         00452d98     MOV        this,dword ptr [ESP + param_3]
-//         00452d9f     ADD        ESP,0x18
-//         00452da2     TEST       AX,AX
-//         00452da5     JL         LAB_00452daf
-//         00452da7     MOVSX      EDX,AX
-//         00452daa     MOV        EAX,dword ptr [this->_padding_ + EDX*0x4]
-//         00452dad     JMP        LAB_00452db1
-//                               LAB_00452daf                                                 XREF[1]:     00452da5(j)
-//         00452daf     XOR        EAX,EAX
-//                               LAB_00452db1                                                 XREF[1]:     00452dad(j)
-//         00452db1     MOV        dword ptr [ESI + 0x3c],EAX
-//                              m_s_obj.cpp:433 (23)
-//         00452db4     MOV        AX,word ptr [ESP + temp_sprite]
-//         00452db9     TEST       AX,AX
-//         00452dbc     JL         LAB_00452dc6
-//         00452dbe     MOVSX      EAX,AX
-//         00452dc1     MOV        EAX,dword ptr [this->_padding_ + EAX*0x4]
-//         00452dc4     JMP        LAB_00452dc8
-//                               LAB_00452dc6                                                 XREF[1]:     00452dbc(j)
-//         00452dc6     XOR        EAX,EAX
-//                               LAB_00452dc8                                                 XREF[1]:     00452dc4(j)
-//         00452dc8     MOV        dword ptr [ESI + 0x44],EAX
-//                              m_s_obj.cpp:434 (23)
-//         00452dcb     MOV        AX,word ptr [ESP + temp_can_be_built_on]
-//         00452dd0     TEST       AX,AX
-//         00452dd3     JL         LAB_00452ddd
-//         00452dd5     MOVSX      EDX,AX
-//         00452dd8     MOV        EAX,dword ptr [this->_padding_ + EDX*0x4]
-//         00452ddb     JMP        LAB_00452ddf
-//                               LAB_00452ddd                                                 XREF[1]:     00452dd3(j)
-//         00452ddd     XOR        EAX,EAX
-//                               LAB_00452ddf                                                 XREF[1]:     00452ddb(j)
-//         00452ddf     MOV        dword ptr [ESI + 0x40],EAX
-//                              m_s_obj.cpp:437 (23)
-//         00452de2     MOV        AX,word ptr [ESP + temp_undead_sprite]
-//         00452de7     TEST       AX,AX
-//         00452dea     JL         LAB_00452df4
-//         00452dec     MOVSX      EAX,AX
-//         00452def     MOV        EAX,dword ptr [EBX + EAX*0x4]
-//         00452df2     JMP        LAB_00452df6
-//                               LAB_00452df4                                                 XREF[1]:     00452dea(j)
-//         00452df4     XOR        EAX,EAX
-//                               LAB_00452df6                                                 XREF[1]:     00452df2(j)
-//         00452df6     MOV        dword ptr [ESI + 0x18],EAX
-//                              m_s_obj.cpp:438 (23)
-//         00452df9     MOV        AX,word ptr [ESP + temp_obj_max]
-//         00452dfe     TEST       AX,AX
-//         00452e01     JL         LAB_00452e0b
-//         00452e03     MOVSX      this,AX
-//         00452e06     MOV        EAX,dword ptr [EBX + this->_padding_*0x4]
-//         00452e09     JMP        LAB_00452e0d
-//                               LAB_00452e0b                                                 XREF[1]:     00452e01(j)
-//         00452e0b     XOR        EAX,EAX
-//                               LAB_00452e0d                                                 XREF[1]:     00452e09(j)
-//         00452e0d     MOV        dword ptr [ESI + 0x1c],EAX
-//                              m_s_obj.cpp:439 (23)
-//         00452e10     MOV        AX,word ptr [ESP + temp_fog_flag]
-//         00452e15     TEST       AX,AX
-//         00452e18     JL         LAB_00452e22
-//         00452e1a     MOVSX      EDX,AX
-//         00452e1d     MOV        EAX,dword ptr [EBX + EDX*0x4]
-//         00452e20     JMP        LAB_00452e24
-//                               LAB_00452e22                                                 XREF[1]:     00452e18(j)
-//         00452e22     XOR        EAX,EAX
-//                               LAB_00452e24                                                 XREF[1]:     00452e20(j)
-//         00452e24     MOV        dword ptr [ESI + 0x20],EAX
-//                              m_s_obj.cpp:442 (4)
-//         00452e27     MOV        AL,byte ptr [ESP + local_84]
-//                              m_s_obj.cpp:443 (7)
-//         00452e2b     MOV        this,byte ptr [ESP + temp_sort_number]
-//         00452e2f     MOV        byte ptr [ESI + 0x64],AL
-//                              m_s_obj.cpp:445 (11)
-//         00452e32     MOV        AL,byte ptr [ESP + temp_available]
-//         00452e36     MOV        DL,byte ptr [ESP + temp_movement_type]
-//         00452e3a     MOV        byte ptr [ESI + 0x4a],AL
-//                              m_s_obj.cpp:448 (7)
-//         00452e3d     MOV        AL,byte ptr [ESP + temp_created_sound]
-//         00452e41     MOV        byte ptr [ESI + 0x68],AL
-//                              m_s_obj.cpp:451 (20)
-//         00452e44     MOV        AL,byte ptr [ESP + temp_map_draw_level]
-//         00452e48     MOV        byte ptr [ESI + 0x65],this
-//         00452e4b     MOV        this,byte ptr [ESP + temp_damage_percent]
-//         00452e4f     MOV        byte ptr [ESI + 0x8d],AL
-//         00452e55     MOV        byte ptr [ESI + 0x2c],DL
-//                              m_s_obj.cpp:454 (6)
-//         00452e58     MOVZX      AX,byte ptr [ESP + temp_undead_flag]
-//                              m_s_obj.cpp:465 (176)
-//         00452e5e     FLD        float ptr [ESI + 0xac]
-//         00452e64     FCOMP      float ptr [DAT_00570618]
-//         00452e6a     MOV        DL,byte ptr [ESP + temp_attribute_flag]
-//         00452e6e     MOV        byte ptr [ESI + 0x4b],this
-//         00452e71     MOV        this,byte ptr [ESP + temp_damage_sprite]
-//         00452e75     MOV        byte ptr [ESI + 0x52],DL
-//         00452e78     MOV        DL,byte ptr [ESP + temp_select_level]
-//         00452e7c     MOV        byte ptr [ESI + 0x8b],this
-//         00452e82     MOV        this,byte ptr [ESP + temp_command_level]
-//         00452e86     MOV        word ptr [ESI + 0x66],AX
-//         00452e8a     MOV        AL,byte ptr [ESP + temp_convert_terrain_flag]
-//         00452e8e     MOV        byte ptr [ESI + 0x8c],DL
-//         00452e94     MOV        DL,byte ptr [ESP + temp_terrain]
-//         00452e98     MOV        byte ptr [ESI + 0x8e],this
-//         00452e9e     MOV        this,byte ptr [ESP + temp_hide_in_scenario_edi
-//         00452ea2     MOV        byte ptr [ESI + 0x91],AL
-//         00452ea8     MOV        AL,byte ptr [ESP + temp_create_doppleganger_on
-//         00452eac     MOV        byte ptr [ESI + 0x8f],DL
-//         00452eb2     MOV        DL,byte ptr [ESP + temp_attack_reaction]
-//         00452eb6     MOV        byte ptr [ESI + 0x24],this
-//         00452eb9     MOV        this,byte ptr [ESP + temp_map_color]
-//         00452ebd     MOV        byte ptr [ESI + 0xa5],AL
-//         00452ec3     MOV        AL,byte ptr [ESP + temp_draw_color]
-//         00452ec7     MOV        byte ptr [ESI + 0x4e],DL
-//         00452eca     MOV        DL,byte ptr [ESP + temp_track_as_resource]
-//         00452ece     MOV        byte ptr [ESI + 0x92],this
-//         00452ed4     MOV        this,byte ptr [ESP + temp_resource_group]
-//         00452ed8     MOV        byte ptr [ESI + 0xa8],AL
-//         00452ede     FNSTSW     AX
-//         00452ee0     MOV        byte ptr [ESI + 0x90],DL
-//         00452ee6     MOV        DL,byte ptr [ESP + temp_draw_flag]
-//         00452eea     MOV        byte ptr [ESI + 0xa6],this
-//         00452ef0     MOV        this,byte ptr [ESP + temp_elevation_flag]
-//         00452ef4     TEST       AH,0x40
-//         00452ef7     MOV        byte ptr [ESI + 0xa7],DL
-//         00452efd     MOV        byte ptr [ESI + 0xa9],this
-//         00452f03     JZ         LAB_00452f0e
-//         00452f05     MOV        EDX,dword ptr [ESI + 0x30]
-//         00452f08     MOV        dword ptr [ESI + 0xac],EDX
-//                               LAB_00452f0e                                                 XREF[1]:     00452f03(j)
-//                              m_s_obj.cpp:466 (28)
-//         00452f0e     FLD        float ptr [ESI + 0xb0]
-//         00452f14     FCOMP      float ptr [DAT_00570618]
-//         00452f1a     FNSTSW     AX
-//         00452f1c     TEST       AH,0x40
-//         00452f1f     JZ         LAB_00452f2a
-//         00452f21     MOV        EAX,dword ptr [ESI + 0x34]
-//         00452f24     MOV        dword ptr [ESI + 0xb0],EAX
-//                               LAB_00452f2a                                                 XREF[1]:     00452f1f(j)
-//                              m_s_obj.cpp:467 (28)
-//         00452f2a     FLD        float ptr [ESI + 0xb4]
-//         00452f30     FCOMP      float ptr [DAT_00570618]
-//         00452f36     FNSTSW     AX
-//         00452f38     TEST       AH,0x40
-//         00452f3b     JZ         LAB_00452f46
-//         00452f3d     MOV        this,dword ptr [ESI + 0x38]
-//         00452f40     MOV        dword ptr [ESI + 0xb4],this
-//                               LAB_00452f46                                                 XREF[1]:     00452f3b(j)
-//                              m_s_obj.cpp:470 (4)
-//         00452f46     MOV        DX,word ptr [ESI + 0x10]
-//                              m_s_obj.cpp:473 (18)
-//         00452f4a     CMP        word ptr [ESI + 0x14],0xb
-//         00452f4f     MOV        byte ptr [ESI + 0xa4],0x0
-//         00452f56     MOV        word ptr [ESI + 0x12],DX
-//         00452f5a     JNZ        LAB_00452f63
-//                              m_s_obj.cpp:474 (7)
-//         00452f5c     MOV        byte ptr [ESI + 0xa4],0x1
-//                               LAB_00452f63                                                 XREF[1]:     00452f5a(j)
-//                              m_s_obj.cpp:477 (14)
-//         00452f63     LEA        EDI=>temp_name[4],[ESP + 0x5c]
-//         00452f67     OR         this,0xffffffff
-//         00452f6a     XOR        EAX,EAX
-//         00452f6c     SCASB.RE   ES:EDI
-//         00452f6e     NOT        this
-//         00452f70     DEC        this
-//                              m_s_obj.cpp:478 (5)
-//         00452f71     TEST       this,this
-//         00452f74     JLE        LAB_00452f8d
-//                              m_s_obj.cpp:481 (23)
-//         00452f76     LEA        this=>temp_name[4],[ESP + 0x5c]
-//         00452f7a     LEA        EAX,[ESI + 0x8]
-//         00452f7d     PUSH       this
-//         00452f7e     PUSH       EAX
-//         00452f7f     MOV        dword ptr [EAX],0x0
-//         00452f85     CALL       getstring                                        void getstring(char * * param_1, char * param
-//         00452f8a     ADD        ESP,0x8
-//                               LAB_00452f8d                                                 XREF[1]:     00452f74(j)
-//                              m_s_obj.cpp:485 (18)
-//         00452f8d     POP        EDI
-//         00452f8e     POP        ESI
-//         00452f8f     POP        EBP
-//         00452f90     MOV        EAX,0x1
-//         00452f95     POP        EBX
-//         00452f96     ADD        ESP,0xc4
-//         00452f9c     RET        0x10
-//         00452f9f     ??         90h
+//              int               Stack[0x4]:4   param_1                   XREF[4]:     004524e3(*), 004524ea(R), 004529ed(R), 00452a05(R)
+//              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[3]:     0045297b(R), 00452a99(R), 00452aa5(R)
+//              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[1]:     00452a4b(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[3]:     004528a9(W), 004528da(R), 004528ed(W)
+//              undefined4        Stack[-0x8]:4  local_8                   XREF[4]:     004528a2(W), 004528c6(R), 004528d6(R), 004528e9(W)
+//              undefined2        Stack[-0xa]:2  local_a                   XREF[2]:     0045255d(*), 00452ac5(R)
+//              undefined2        Stack[-0xc]:2  local_c                   XREF[2]:     0045254d(*), 00452aae(R)
+//              short             Stack[-0xe]:2  undead_sprite_num         XREF[2]:     0045253d(*), 00452a8f(R)
+//              short             Stack[-0x10]:2 death_sprite_num          XREF[2]:     004525d6(*), 00452a78(R)
+//              short             Stack[-0x12]:2 sprite_num                XREF[2]:     004529bc(*), 00452a61(R)
+//              short             Stack[-0x14]:2 created_sound_num         XREF[2]:     004529ac(*), 00452a46(R)
+//              short             Stack[-0x16]:2 death_sound_num           XREF[2]:     0045292f(*), 0045296e(R)
+//              short             Stack[-0x18]:2 selected_sound_num
+//              short             Stack[-0x1a]:2 temp_damage_sprite
+//                               ?setup@RGE_Master_Static_Object@@IAEHHPAPAVRGE_Sprite@@PAPA  XREF[3]:     setup:0044fb75(c),
+//                               RGE_Master_Static_Object::setup                                           RGE_Master_Static_Object:00452192(
+//                                                                                                         TRIBE_Master_Tree_Object:0050f271(
+//                              m_s_obj.cpp:162 (3)
+//         004524e0     SUB        ESP,0x18
+//                              m_s_obj.cpp:176 (30)
+//         004524e3     LEA        EAX=>param_1,[ESP + 0x1c]
+//         004524e7     PUSH       EBX
+//         004524e8     PUSH       EBP
+//         004524e9     PUSH       ESI
+//         004524ea     MOV        ESI,dword ptr [ESP + param_1]
+//         004524ee     PUSH       EDI
+//         004524ef     MOV        EDI,this
+//         004524f1     PUSH       0x2
+//         004524f3     PUSH       EAX
+//         004524f4     PUSH       ESI
+//         004524f5     MOV        byte ptr [EDI + 0x4],0xa
+//         004524f9     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004524fe     ADD        ESP,0xc
+//                              m_s_obj.cpp:177 (15)
+//         00452501     LEA        this,[EDI + 0x10]
+//         00452504     PUSH       0x2
+//         00452506     PUSH       this
+//         00452507     PUSH       ESI
+//         00452508     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0045250d     ADD        ESP,0xc
+//                              m_s_obj.cpp:178 (15)
+//         00452510     LEA        EDX,[EDI + 0xc]
+//         00452513     PUSH       0x2
+//         00452515     PUSH       EDX
+//         00452516     PUSH       ESI
+//         00452517     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0045251c     ADD        ESP,0xc
+//                              m_s_obj.cpp:179 (15)
+//         0045251f     LEA        EAX,[EDI + 0xe]
+//         00452522     PUSH       0x2
+//         00452524     PUSH       EAX
+//         00452525     PUSH       ESI
+//         00452526     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0045252b     ADD        ESP,0xc
+//                              m_s_obj.cpp:180 (15)
+//         0045252e     LEA        this,[EDI + 0x14]
+//         00452531     PUSH       0x2
+//         00452533     PUSH       this
+//         00452534     PUSH       ESI
+//         00452535     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0045253a     ADD        ESP,0xc
+//                              m_s_obj.cpp:181 (16)
+//         0045253d     LEA        EDX=>undead_sprite_num,[ESP + 0x1a]
+//         00452541     PUSH       0x2
+//         00452543     PUSH       EDX
+//         00452544     PUSH       ESI
+//         00452545     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0045254a     ADD        ESP,0xc
+//                              m_s_obj.cpp:182 (16)
+//         0045254d     LEA        EAX=>local_c,[ESP + 0x1c]
+//         00452551     PUSH       0x2
+//         00452553     PUSH       EAX
+//         00452554     PUSH       ESI
+//         00452555     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0045255a     ADD        ESP,0xc
+//                              m_s_obj.cpp:183 (16)
+//         0045255d     LEA        this=>local_a,[ESP + 0x1e]
+//         00452561     PUSH       0x2
+//         00452563     PUSH       this
+//         00452564     PUSH       ESI
+//         00452565     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0045256a     ADD        ESP,0xc
+//                              m_s_obj.cpp:184 (15)
+//         0045256d     LEA        EDX,[EDI + 0x24]
+//         00452570     PUSH       0x1
+//         00452572     PUSH       EDX
+//         00452573     PUSH       ESI
+//         00452574     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00452579     ADD        ESP,0xc
+//                              m_s_obj.cpp:185 (15)
+//         0045257c     LEA        EAX,[EDI + 0x26]
+//         0045257f     PUSH       0x2
+//         00452581     PUSH       EAX
+//         00452582     PUSH       ESI
+//         00452583     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00452588     ADD        ESP,0xc
+//                              m_s_obj.cpp:186 (15)
+//         0045258b     LEA        this,[EDI + 0x28]
+//         0045258e     PUSH       0x4
+//         00452590     PUSH       this
+//         00452591     PUSH       ESI
+//         00452592     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00452597     ADD        ESP,0xc
+//                              m_s_obj.cpp:187 (15)
+//         0045259a     LEA        EDX,[EDI + 0x2c]
+//         0045259d     PUSH       0x1
+//         0045259f     PUSH       EDX
+//         004525a0     PUSH       ESI
+//         004525a1     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004525a6     ADD        ESP,0xc
+//                              m_s_obj.cpp:188 (15)
+//         004525a9     LEA        EBX,[EDI + 0x30]
+//         004525ac     PUSH       0x4
+//         004525ae     PUSH       EBX
+//         004525af     PUSH       ESI
+//         004525b0     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004525b5     ADD        ESP,0xc
+//                              m_s_obj.cpp:189 (15)
+//         004525b8     LEA        EBP,[EDI + 0x34]
+//         004525bb     PUSH       0x4
+//         004525bd     PUSH       EBP
+//         004525be     PUSH       ESI
+//         004525bf     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004525c4     ADD        ESP,0xc
+//                              m_s_obj.cpp:190 (15)
+//         004525c7     LEA        EAX,[EDI + 0x38]
+//         004525ca     PUSH       0x4
+//         004525cc     PUSH       EAX
+//         004525cd     PUSH       ESI
+//         004525ce     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004525d3     ADD        ESP,0xc
+//                              m_s_obj.cpp:191 (16)
+//         004525d6     LEA        EAX=>death_sprite_num,[ESP + 0x18]
+//         004525da     PUSH       0x2
+//         004525dc     PUSH       EAX
+//         004525dd     PUSH       ESI
+//         004525de     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004525e3     ADD        ESP,0xc
+//                              m_s_obj.cpp:192 (15)
+//         004525e6     LEA        this,[EDI + 0x48]
+//         004525e9     PUSH       0x2
+//         004525eb     PUSH       this
+//         004525ec     PUSH       ESI
+//         004525ed     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004525f2     ADD        ESP,0xc
+//                              m_s_obj.cpp:193 (15)
+//         004525f5     LEA        EDX,[EDI + 0x4a]
+//         004525f8     PUSH       0x1
+//         004525fa     PUSH       EDX
+//         004525fb     PUSH       ESI
+//         004525fc     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00452601     ADD        ESP,0xc
+//                              m_s_obj.cpp:194 (15)
+//         00452604     LEA        EAX,[EDI + 0x4b]
+//         00452607     PUSH       0x1
+//         00452609     PUSH       EAX
+//         0045260a     PUSH       ESI
+//         0045260b     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00452610     ADD        ESP,0xc
+//                              m_s_obj.cpp:195 (15)
+//         00452613     LEA        this,[EDI + 0x4c]
+//         00452616     PUSH       0x2
+//         00452618     PUSH       this
+//         00452619     PUSH       ESI
+//         0045261a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0045261f     ADD        ESP,0xc
+//                              m_s_obj.cpp:196 (15)
+//         00452622     LEA        EDX,[EDI + 0x4e]
+//         00452625     PUSH       0x1
+//         00452627     PUSH       EDX
+//         00452628     PUSH       ESI
+//         00452629     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0045262e     ADD        ESP,0xc
+//                              m_s_obj.cpp:197 (15)
+//         00452631     LEA        EAX,[EDI + 0x50]
+//         00452634     PUSH       0x2
+//         00452636     PUSH       EAX
+//         00452637     PUSH       ESI
+//         00452638     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0045263d     ADD        ESP,0xc
+//                              m_s_obj.cpp:198 (15)
+//         00452640     LEA        this,[EDI + 0x52]
+//         00452643     PUSH       0x1
+//         00452645     PUSH       this
+//         00452646     PUSH       ESI
+//         00452647     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0045264c     ADD        ESP,0xc
+//                              m_s_obj.cpp:199 (15)
+//         0045264f     LEA        EDX,[EDI + 0x54]
+//         00452652     PUSH       0x2
+//         00452654     PUSH       EDX
+//         00452655     PUSH       ESI
+//         00452656     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0045265b     ADD        ESP,0xc
+//                              m_s_obj.cpp:200 (15)
+//         0045265e     LEA        EAX,[EDI + 0x56]
+//         00452661     PUSH       0x2
+//         00452663     PUSH       EAX
+//         00452664     PUSH       ESI
+//         00452665     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0045266a     ADD        ESP,0xc
+//                              m_s_obj.cpp:201 (15)
+//         0045266d     LEA        this,[EDI + 0x58]
+//         00452670     PUSH       0x2
+//         00452672     PUSH       this
+//         00452673     PUSH       ESI
+//         00452674     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00452679     ADD        ESP,0xc
+//                              m_s_obj.cpp:202 (15)
+//         0045267c     LEA        EDX,[EDI + 0x5a]
+//         0045267f     PUSH       0x2
+//         00452681     PUSH       EDX
+//         00452682     PUSH       ESI
+//         00452683     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00452688     ADD        ESP,0xc
+//                              m_s_obj.cpp:203 (15)
+//         0045268b     LEA        EAX,[EDI + 0x5c]
+//         0045268e     PUSH       0x4
+//         00452690     PUSH       EAX
+//         00452691     PUSH       ESI
+//         00452692     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00452697     ADD        ESP,0xc
+//                              m_s_obj.cpp:204 (15)
+//         0045269a     LEA        this,[EDI + 0x60]
+//         0045269d     PUSH       0x4
+//         0045269f     PUSH       this
+//         004526a0     PUSH       ESI
+//         004526a1     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004526a6     ADD        ESP,0xc
+//                              m_s_obj.cpp:205 (15)
+//         004526a9     LEA        EDX,[EDI + 0x64]
+//         004526ac     PUSH       0x1
+//         004526ae     PUSH       EDX
+//         004526af     PUSH       ESI
+//         004526b0     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004526b5     ADD        ESP,0xc
+//                              m_s_obj.cpp:206 (15)
+//         004526b8     LEA        EAX,[EDI + 0x65]
+//         004526bb     PUSH       0x1
+//         004526bd     PUSH       EAX
+//         004526be     PUSH       ESI
+//         004526bf     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004526c4     ADD        ESP,0xc
+//                              m_s_obj.cpp:207 (15)
+//         004526c7     LEA        this,[EDI + 0x66]
+//         004526ca     PUSH       0x2
+//         004526cc     PUSH       this
+//         004526cd     PUSH       ESI
+//         004526ce     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004526d3     ADD        ESP,0xc
+//                              m_s_obj.cpp:208 (15)
+//         004526d6     LEA        EDX,[EDI + 0x68]
+//         004526d9     PUSH       0x1
+//         004526db     PUSH       EDX
+//         004526dc     PUSH       ESI
+//         004526dd     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004526e2     ADD        ESP,0xc
+//                              m_s_obj.cpp:209 (15)
+//         004526e5     LEA        EAX,[EDI + 0x7c]
+//         004526e8     PUSH       0x2
+//         004526ea     PUSH       EAX
+//         004526eb     PUSH       ESI
+//         004526ec     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004526f1     ADD        ESP,0xc
+//                              m_s_obj.cpp:210 (18)
+//         004526f4     LEA        this,[EDI + 0x80]
+//         004526fa     PUSH       0x4
+//         004526fc     PUSH       this
+//         004526fd     PUSH       ESI
+//         004526fe     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00452703     ADD        ESP,0xc
+//                              m_s_obj.cpp:211 (18)
+//         00452706     LEA        EDX,[EDI + 0x8b]
+//         0045270c     PUSH       0x1
+//         0045270e     PUSH       EDX
+//         0045270f     PUSH       ESI
+//         00452710     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00452715     ADD        ESP,0xc
+//                              m_s_obj.cpp:212 (18)
+//         00452718     LEA        EAX,[EDI + 0x8c]
+//         0045271e     PUSH       0x1
+//         00452720     PUSH       EAX
+//         00452721     PUSH       ESI
+//         00452722     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00452727     ADD        ESP,0xc
+//                              m_s_obj.cpp:213 (18)
+//         0045272a     LEA        this,[EDI + 0x8d]
+//         00452730     PUSH       0x1
+//         00452732     PUSH       this
+//         00452733     PUSH       ESI
+//         00452734     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00452739     ADD        ESP,0xc
+//                              m_s_obj.cpp:214 (18)
+//         0045273c     LEA        EDX,[EDI + 0x8e]
+//         00452742     PUSH       0x1
+//         00452744     PUSH       EDX
+//         00452745     PUSH       ESI
+//         00452746     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0045274b     ADD        ESP,0xc
+//                              m_s_obj.cpp:215 (18)
+//         0045274e     PUSH       0x1
+//         00452750     LEA        EAX,[EDI + 0x8f]
+//         00452756     PUSH       EAX
+//         00452757     PUSH       ESI
+//         00452758     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0045275d     ADD        ESP,0xc
+//                              m_s_obj.cpp:216 (18)
+//         00452760     LEA        this,[EDI + 0x84]
+//         00452766     PUSH       0x4
+//         00452768     PUSH       this
+//         00452769     PUSH       ESI
+//         0045276a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0045276f     ADD        ESP,0xc
+//                              m_s_obj.cpp:217 (18)
+//         00452772     LEA        EDX,[EDI + 0x90]
+//         00452778     PUSH       0x1
+//         0045277a     PUSH       EDX
+//         0045277b     PUSH       ESI
+//         0045277c     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00452781     ADD        ESP,0xc
+//                              m_s_obj.cpp:218 (18)
+//         00452784     LEA        EAX,[EDI + 0x98]
+//         0045278a     PUSH       0x4
+//         0045278c     PUSH       EAX
+//         0045278d     PUSH       ESI
+//         0045278e     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00452793     ADD        ESP,0xc
+//                              m_s_obj.cpp:219 (18)
+//         00452796     LEA        this,[EDI + 0x9c]
+//         0045279c     PUSH       0x4
+//         0045279e     PUSH       this
+//         0045279f     PUSH       ESI
+//         004527a0     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004527a5     ADD        ESP,0xc
+//                              m_s_obj.cpp:220 (18)
+//         004527a8     LEA        EDX,[EDI + 0xa0]
+//         004527ae     PUSH       0x4
+//         004527b0     PUSH       EDX
+//         004527b1     PUSH       ESI
+//         004527b2     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004527b7     ADD        ESP,0xc
+//                              m_s_obj.cpp:221 (18)
+//         004527ba     LEA        EAX,[EDI + 0xa4]
+//         004527c0     PUSH       0x1
+//         004527c2     PUSH       EAX
+//         004527c3     PUSH       ESI
+//         004527c4     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004527c9     ADD        ESP,0xc
+//                              m_s_obj.cpp:222 (18)
+//         004527cc     LEA        this,[EDI + 0xa5]
+//         004527d2     PUSH       0x1
+//         004527d4     PUSH       this
+//         004527d5     PUSH       ESI
+//         004527d6     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004527db     ADD        ESP,0xc
+//                              m_s_obj.cpp:223 (18)
+//         004527de     LEA        EDX,[EDI + 0xa6]
+//         004527e4     PUSH       0x1
+//         004527e6     PUSH       EDX
+//         004527e7     PUSH       ESI
+//         004527e8     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004527ed     ADD        ESP,0xc
+//                              m_s_obj.cpp:224 (15)
+//         004527f0     LEA        EAX,[EDI + 0xa7]
+//         004527f6     PUSH       0x1
+//         004527f8     PUSH       EAX
+//         004527f9     PUSH       ESI
+//         004527fa     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              m_s_obj.cpp:226 (22)
+//         004527ff     FLD        float ptr [save_game_version]                    = 7.23
+//         00452805     FCOMP      float ptr [DAT_00570610]                         = AEh
+//         0045280b     ADD        ESP,0xc
+//         0045280e     FNSTSW     AX
+//         00452810     TEST       AH,0x1
+//         00452813     JNZ        LAB_00452871
+//                              m_s_obj.cpp:228 (18)
+//         00452815     LEA        this,[EDI + 0xa8]
+//         0045281b     PUSH       0x1
+//         0045281d     PUSH       this
+//         0045281e     PUSH       ESI
+//         0045281f     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00452824     ADD        ESP,0xc
+//                              m_s_obj.cpp:229 (18)
+//         00452827     LEA        EDX,[EDI + 0xa9]
+//         0045282d     PUSH       0x1
+//         0045282f     PUSH       EDX
+//         00452830     PUSH       ESI
+//         00452831     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00452836     ADD        ESP,0xc
+//                              m_s_obj.cpp:230 (18)
+//         00452839     LEA        EAX,[EDI + 0xac]
+//         0045283f     PUSH       0x4
+//         00452841     PUSH       EAX
+//         00452842     PUSH       ESI
+//         00452843     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00452848     ADD        ESP,0xc
+//                              m_s_obj.cpp:231 (18)
+//         0045284b     LEA        this,[EDI + 0xb0]
+//         00452851     PUSH       0x4
+//         00452853     PUSH       this
+//         00452854     PUSH       ESI
+//         00452855     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0045285a     ADD        ESP,0xc
+//                              m_s_obj.cpp:232 (18)
+//         0045285d     LEA        EDX,[EDI + 0xb4]
+//         00452863     PUSH       0x4
+//         00452865     PUSH       EDX
+//         00452866     PUSH       ESI
+//         00452867     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         0045286c     ADD        ESP,0xc
+//                              m_s_obj.cpp:234 (2)
+//         0045286f     JMP        LAB_00452899
+//                               LAB_00452871                                                 XREF[1]:     00452813(j)
+//                              m_s_obj.cpp:238 (2)
+//         00452871     MOV        EAX,dword ptr [EBX]
+//                              m_s_obj.cpp:239 (3)
+//         00452873     MOV        this,dword ptr [EBP]
+//                              m_s_obj.cpp:240 (35)
+//         00452876     MOV        EDX,dword ptr [EDI + 0x38]
+//         00452879     MOV        byte ptr [EDI + 0xa8],0x0
+//         00452880     MOV        byte ptr [EDI + 0xa9],0x0
+//         00452887     MOV        dword ptr [EDI + 0xac],EAX
+//         0045288d     MOV        dword ptr [EDI + 0xb0],this
+//         00452893     MOV        dword ptr [EDI + 0xb4],EDX
+//                               LAB_00452899                                                 XREF[1]:     0045286f(j)
+//                              m_s_obj.cpp:243 (24)
+//         00452899     LEA        EAX,[EDI + 0x88]
+//         0045289f     LEA        EBX,[EDI + 0x70]
+//         004528a2     MOV        dword ptr [ESP + local_8],EAX
+//         004528a6     LEA        EBP,[EDI + 0x6a]
+//         004528a9     MOV        dword ptr [ESP + local_4],0x3
+//                               LAB_004528b1                                                 XREF[1]:     004528f1(j)
+//                              m_s_obj.cpp:245 (12)
+//         004528b1     PUSH       0x2
+//         004528b3     PUSH       EBP
+//         004528b4     PUSH       ESI
+//         004528b5     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004528ba     ADD        ESP,0xc
+//                              m_s_obj.cpp:246 (9)
+//         004528bd     PUSH       0x4
+//         004528bf     PUSH       EBX
+//         004528c0     PUSH       ESI
+//         004528c1     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              m_s_obj.cpp:247 (45)
+//         004528c6     MOV        this,dword ptr [ESP + local_8]
+//         004528ca     ADD        ESP,0xc
+//         004528cd     PUSH       0x1
+//         004528cf     PUSH       this
+//         004528d0     PUSH       ESI
+//         004528d1     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004528d6     MOV        this,dword ptr [ESP + local_8]
+//         004528da     MOV        EAX,dword ptr [ESP + local_4]
+//         004528de     ADD        ESP,0xc
+//         004528e1     ADD        EBP,0x2
+//         004528e4     ADD        EBX,0x4
+//         004528e7     INC        this
+//         004528e8     DEC        EAX
+//         004528e9     MOV        dword ptr [ESP + local_8],this
+//         004528ed     MOV        dword ptr [ESP + local_4],EAX
+//         004528f1     JNZ        LAB_004528b1
+//                              m_s_obj.cpp:250 (15)
+//         004528f3     LEA        EBP,[EDI + 0x93]
+//         004528f9     PUSH       0x1
+//         004528fb     PUSH       EBP
+//         004528fc     PUSH       ESI
+//         004528fd     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              m_s_obj.cpp:251 (14)
+//         00452902     MOV        AL,byte ptr [EBP]
+//         00452905     ADD        ESP,0xc
+//         00452908     TEST       AL,AL
+//         0045290a     JBE        LAB_004529a2
+//                              m_s_obj.cpp:253 (19)
+//         00452910     AND        EAX,0xff
+//         00452915     PUSH       0x8
+//         00452917     PUSH       EAX
+//         00452918     CALL       calloc                                           undefined calloc()
+//         0045291d     MOV        dword ptr [EDI + 0x94],EAX
+//                              m_s_obj.cpp:254 (12)
+//         00452923     MOV        AL,byte ptr [EBP]
+//         00452926     ADD        ESP,0x8
+//         00452929     XOR        EBX,EBX
+//         0045292b     TEST       AL,AL
+//         0045292d     JBE        LAB_004529ac
+//                               LAB_0045292f                                                 XREF[1]:     0045299e(j)
+//                              m_s_obj.cpp:256 (13)
+//         0045292f     LEA        EDX=>death_sound_num,[ESP + 0x12]
+//         00452933     PUSH       0x2
+//         00452935     PUSH       EDX
+//         00452936     PUSH       ESI
+//         00452937     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              m_s_obj.cpp:257 (28)
+//         0045293c     MOV        EAX,dword ptr [EDI + 0x94]
+//         00452942     ADD        ESP,0xc
+//         00452945     MOVSX      EBP,BX
+//         00452948     SHL        EBP,0x3
+//         0045294b     PUSH       0x2
+//         0045294d     LEA        this,[EAX + EBP*0x1 + 0x4]
+//         00452951     PUSH       this
+//         00452952     PUSH       ESI
+//         00452953     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              m_s_obj.cpp:258 (22)
+//         00452958     MOV        EDX,dword ptr [EDI + 0x94]
+//         0045295e     ADD        ESP,0xc
+//         00452961     LEA        EAX,[EDX + EBP*0x1 + 0x5]
+//         00452965     PUSH       0x1
+//         00452967     PUSH       EAX
+//         00452968     PUSH       ESI
+//         00452969     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              m_s_obj.cpp:260 (50)
+//         0045296e     MOV        AX,word ptr [ESP + death_sound_num]
+//         00452973     ADD        ESP,0xc
+//         00452976     TEST       AX,AX
+//         00452979     JL         LAB_00452987
+//         0045297b     MOV        EDX,dword ptr [ESP + param_2]
+//         0045297f     MOVSX      this,AX
+//         00452982     MOV        EAX,dword ptr [EDX + this->_padding_*0x4]
+//         00452985     JMP        LAB_00452989
+//                               LAB_00452987                                                 XREF[1]:     00452979(j)
+//         00452987     XOR        EAX,EAX
+//                               LAB_00452989                                                 XREF[1]:     00452985(j)
+//         00452989     MOV        this,dword ptr [EDI + 0x94]
+//         0045298f     INC        EBX
+//         00452990     MOV        dword ptr [this->_padding_ + EBP*0x1],EAX
+//         00452993     MOVZX      DX,byte ptr [EDI + 0x93]
+//         0045299b     CMP        BX,DX
+//         0045299e     JL         LAB_0045292f
+//                              m_s_obj.cpp:263 (2)
+//         004529a0     JMP        LAB_004529ac
+//                               LAB_004529a2                                                 XREF[1]:     0045290a(j)
+//                              m_s_obj.cpp:264 (10)
+//         004529a2     MOV        dword ptr [EDI + 0x94],0x0
+//                               LAB_004529ac                                                 XREF[2]:     0045292d(j), 004529a0(j)
+//                              m_s_obj.cpp:266 (16)
+//         004529ac     LEA        EAX=>created_sound_num,[ESP + 0x14]
+//         004529b0     PUSH       0x2
+//         004529b2     PUSH       EAX
+//         004529b3     PUSH       ESI
+//         004529b4     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004529b9     ADD        ESP,0xc
+//                              m_s_obj.cpp:267 (16)
+//         004529bc     LEA        this=>sprite_num,[ESP + 0x16]
+//         004529c0     PUSH       0x2
+//         004529c2     PUSH       this
+//         004529c3     PUSH       ESI
+//         004529c4     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004529c9     ADD        ESP,0xc
+//                              m_s_obj.cpp:268 (18)
+//         004529cc     LEA        EDX,[EDI + 0x91]
+//         004529d2     PUSH       0x1
+//         004529d4     PUSH       EDX
+//         004529d5     PUSH       ESI
+//         004529d6     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004529db     ADD        ESP,0xc
+//                              m_s_obj.cpp:269 (15)
+//         004529de     LEA        EAX,[EDI + 0x92]
+//         004529e4     PUSH       0x1
+//         004529e6     PUSH       EAX
+//         004529e7     PUSH       ESI
+//         004529e8     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              m_s_obj.cpp:272 (13)
+//         004529ed     MOV        AX,word ptr [ESP + param_1]
+//         004529f2     ADD        ESP,0xc
+//         004529f5     TEST       AX,AX
+//         004529f8     JLE        LAB_00452a1d
+//                              m_s_obj.cpp:274 (11)
+//         004529fa     MOVSX      this,AX
+//         004529fd     PUSH       0x1
+//         004529ff     PUSH       this
+//         00452a00     CALL       calloc                                           undefined calloc()
+//                              m_s_obj.cpp:275 (22)
+//         00452a05     MOVSX      EDX,word ptr [ESP + param_1]
+//         00452a0a     ADD        ESP,0x8
+//         00452a0d     MOV        dword ptr [EDI + 0x8],EAX
+//         00452a10     PUSH       EDX
+//         00452a11     PUSH       EAX
+//         00452a12     PUSH       ESI
+//         00452a13     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00452a18     ADD        ESP,0xc
+//                              m_s_obj.cpp:277 (2)
+//         00452a1b     JMP        LAB_00452a24
+//                               LAB_00452a1d                                                 XREF[1]:     004529f8(j)
+//                              m_s_obj.cpp:278 (7)
+//         00452a1d     MOV        dword ptr [EDI + 0x8],0x0
+//                               LAB_00452a24                                                 XREF[1]:     00452a1b(j)
+//                              m_s_obj.cpp:280 (19)
+//         00452a24     FLD        float ptr [save_game_version]                    = 7.23
+//         00452a2a     FCOMP      float ptr [DAT_00570614]                         = 0Ah
+//         00452a30     FNSTSW     AX
+//         00452a32     TEST       AH,0x1
+//         00452a35     JNZ        LAB_00452a46
+//                              m_s_obj.cpp:281 (15)
+//         00452a37     LEA        EAX,[EDI + 0x12]
+//         00452a3a     PUSH       0x2
+//         00452a3c     PUSH       EAX
+//         00452a3d     PUSH       ESI
+//         00452a3e     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         00452a43     ADD        ESP,0xc
+//                               LAB_00452a46                                                 XREF[1]:     00452a35(j)
+//                              m_s_obj.cpp:284 (27)
+//         00452a46     MOV        AX,word ptr [ESP + created_sound_num]
+//         00452a4b     MOV        this,dword ptr [ESP + param_3]
+//         00452a4f     TEST       AX,AX
+//         00452a52     JL         LAB_00452a5c
+//         00452a54     MOVSX      EDX,AX
+//         00452a57     MOV        EAX,dword ptr [this->_padding_ + EDX*0x4]
+//         00452a5a     JMP        LAB_00452a5e
+//                               LAB_00452a5c                                                 XREF[1]:     00452a52(j)
+//         00452a5c     XOR        EAX,EAX
+//                               LAB_00452a5e                                                 XREF[1]:     00452a5a(j)
+//         00452a5e     MOV        dword ptr [EDI + 0x3c],EAX
+//                              m_s_obj.cpp:285 (23)
+//         00452a61     MOV        AX,word ptr [ESP + sprite_num]
+//         00452a66     TEST       AX,AX
+//         00452a69     JL         LAB_00452a73
+//         00452a6b     MOVSX      EAX,AX
+//         00452a6e     MOV        EAX,dword ptr [this->_padding_ + EAX*0x4]
+//         00452a71     JMP        LAB_00452a75
+//                               LAB_00452a73                                                 XREF[1]:     00452a69(j)
+//         00452a73     XOR        EAX,EAX
+//                               LAB_00452a75                                                 XREF[1]:     00452a71(j)
+//         00452a75     MOV        dword ptr [EDI + 0x44],EAX
+//                              m_s_obj.cpp:286 (23)
+//         00452a78     MOV        AX,word ptr [ESP + death_sprite_num]
+//         00452a7d     TEST       AX,AX
+//         00452a80     JL         LAB_00452a8a
+//         00452a82     MOVSX      EDX,AX
+//         00452a85     MOV        EAX,dword ptr [this->_padding_ + EDX*0x4]
+//         00452a88     JMP        LAB_00452a8c
+//                               LAB_00452a8a                                                 XREF[1]:     00452a80(j)
+//         00452a8a     XOR        EAX,EAX
+//                               LAB_00452a8c                                                 XREF[1]:     00452a88(j)
+//         00452a8c     MOV        dword ptr [EDI + 0x40],EAX
+//                              m_s_obj.cpp:289 (31)
+//         00452a8f     MOV        AX,word ptr [ESP + undead_sprite_num]
+//         00452a94     TEST       AX,AX
+//         00452a97     JL         LAB_00452aa5
+//         00452a99     MOV        this,dword ptr [ESP + param_2]
+//         00452a9d     MOVSX      EAX,AX
+//         00452aa0     MOV        EAX,dword ptr [this->_padding_ + EAX*0x4]
+//         00452aa3     JMP        LAB_00452aab
+//                               LAB_00452aa5                                                 XREF[1]:     00452a97(j)
+//         00452aa5     MOV        this,dword ptr [ESP + param_2]
+//         00452aa9     XOR        EAX,EAX
+//                               LAB_00452aab                                                 XREF[1]:     00452aa3(j)
+//         00452aab     MOV        dword ptr [EDI + 0x18],EAX
+//                              m_s_obj.cpp:290 (23)
+//         00452aae     MOV        AX,word ptr [ESP + local_c]
+//         00452ab3     TEST       AX,AX
+//         00452ab6     JL         LAB_00452ac0
+//         00452ab8     MOVSX      EDX,AX
+//         00452abb     MOV        EAX,dword ptr [this->_padding_ + EDX*0x4]
+//         00452abe     JMP        LAB_00452ac2
+//                               LAB_00452ac0                                                 XREF[1]:     00452ab6(j)
+//         00452ac0     XOR        EAX,EAX
+//                               LAB_00452ac2                                                 XREF[1]:     00452abe(j)
+//         00452ac2     MOV        dword ptr [EDI + 0x1c],EAX
+//                              m_s_obj.cpp:291 (19)
+//         00452ac5     MOV        AX,word ptr [ESP + local_a]
+//         00452aca     TEST       AX,AX
+//         00452acd     JL         LAB_00452ae7
+//         00452acf     MOVSX      EAX,AX
+//         00452ad2     MOV        EAX,dword ptr [this->_padding_ + EAX*0x4]
+//         00452ad5     MOV        dword ptr [EDI + 0x20],EAX
+//                              m_s_obj.cpp:293 (5)
+//         00452ad8     MOV        EAX,0x1
+//                              m_s_obj.cpp:294 (10)
+//         00452add     POP        EDI
+//         00452ade     POP        ESI
+//         00452adf     POP        EBP
+//         00452ae0     POP        EBX
+//         00452ae1     ADD        ESP,0x18
+//         00452ae4     RET        0xc
+//                               LAB_00452ae7                                                 XREF[1]:     00452acd(j)
+//                              m_s_obj.cpp:291 (5)
+//         00452ae7     XOR        EAX,EAX
+//         00452ae9     MOV        dword ptr [EDI + 0x20],EAX
+//                              m_s_obj.cpp:294 (15)
+//         00452aec     POP        EDI
+//         00452aed     POP        ESI
+//         00452aee     POP        EBP
+//         00452aef     MOV        EAX,0x1
+//         00452af4     POP        EBX
+//         00452af5     ADD        ESP,0x18
+//         00452af8     RET        0xc
+//         00452afb     ??         90h
+//         00452afc     NOP
+//         00452afd     NOP
+//         00452afe     NOP
+//         00452aff     NOP
     return 0;
 }
 

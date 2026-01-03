@@ -6,6 +6,44 @@
 #include "tvw_main.h"
 #include "tvw_dmap.h"
 
+typedef enum ActionType : unsigned int {
+    ActionUp = 0,
+    ActionDown = 1,
+    ActionPrior = 2,
+    ActionNext = 3,
+    ActionPosition = 4,
+    ActionEnd = 5,
+    ActionChange = 6,
+};
+
+typedef enum BevelType : unsigned int {
+    BevelNone = 0,
+    BevelFlat = 1,
+    Bevel1 = 2,
+    Bevel2 = 3,
+    Bevel3 = 4,
+};
+
+typedef enum ItemType : unsigned int {
+    ItemNone = 0,
+    ItemUp = 1,
+    ItemDown = 2,
+    ItemTab = 3,
+    ItemTop = 4,
+    ItemBottom = 5,
+};
+
+typedef enum Mode : unsigned int {
+    ModeNone = 0,
+    ModeDown = 1,
+    ModeHold = 2,
+};
+
+typedef enum Orientation : unsigned int {
+    Vertical = 0,
+    Horizontal = 1,
+};
+
 class TScrollBarPanel : public TPanel {
 public:
     TPanel* list_panel;                      // 0xF4

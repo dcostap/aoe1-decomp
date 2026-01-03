@@ -6,27 +6,36 @@ TRIBE_Victory_Conditions::TRIBE_Victory_Conditions(RGE_Player* param_1, int para
 //                              undefined __thiscall TRIBE_Victory_Conditions(TRIBE_Victory_Conditio
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Victory_    ECX:4 (auto)   this
-//              RGE_Player *      Stack[0x4]:4   param_1                   XREF[1]:     0052c920(R)
-//                               ??0TRIBE_Victory_Conditions@@QAE@PAVRGE_Player@@@Z           XREF[1]:     new_victory:00519536(c)
+//              RGE_Player *      Stack[0x4]:4   param_1                   XREF[1]:     0052c900(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     0052c8f4(R)
+//              long *            Stack[0xc]:4   param_3                   XREF[1]:     0052c8fb(R)
+//              uchar             Stack[0x10]:1  param_4                   XREF[1]:     0052c8f0(R)
+//                               ??0TRIBE_Victory_Conditions@@QAE@PAVRGE_Player@@HPAJE@Z      XREF[1]:     load_victory:005194d5(c)
 //                               TRIBE_Victory_Conditions::TRIBE_Victory_Conditions
-//                              tvictory.cpp:37 (19)
-//         0052c920     MOV        EAX,dword ptr [ESP + param_1]
-//         0052c924     PUSH       ESI
-//         0052c925     MOV        ESI,this
-//         0052c927     PUSH       EAX
-//         0052c928     CALL       RGE_Victory_Conditions::RGE_Victory_Conditions   undefined RGE_Victory_Conditions(RGE_Victory_
-//         0052c92d     MOV        dword ptr [ESI],TRIBE_Victory_Conditions::`vft   = 00531f30
-//                              tvictory.cpp:38 (6)
-//         0052c933     MOV        EAX,ESI
-//         0052c935     POP        ESI
-//         0052c936     RET        0x4
-//         0052c939     ??         90h
-//         0052c93a     NOP
-//         0052c93b     NOP
-//         0052c93c     NOP
-//         0052c93d     NOP
-//         0052c93e     NOP
-//         0052c93f     NOP
+//                              tvictory.cpp:30 (36)
+//         0052c8f0     MOV        EAX,dword ptr [ESP + param_4]
+//         0052c8f4     MOV        EDX,dword ptr [ESP + param_2]
+//         0052c8f8     PUSH       ESI
+//         0052c8f9     MOV        ESI,this
+//         0052c8fb     MOV        this,dword ptr [ESP + param_3]
+//         0052c8ff     PUSH       EAX
+//         0052c900     MOV        EAX,dword ptr [ESP + param_1]
+//         0052c904     PUSH       this
+//         0052c905     PUSH       EDX
+//         0052c906     PUSH       EAX
+//         0052c907     MOV        this,ESI
+//         0052c909     CALL       RGE_Victory_Conditions::RGE_Victory_Conditions   undefined RGE_Victory_Conditions(RGE_Victory_
+//         0052c90e     MOV        dword ptr [ESI],TRIBE_Victory_Conditions::`vft   = 00531f30
+//                              tvictory.cpp:31 (6)
+//         0052c914     MOV        EAX,ESI
+//         0052c916     POP        ESI
+//         0052c917     RET        0x10
+//         0052c91a     ??         90h
+//         0052c91b     NOP
+//         0052c91c     NOP
+//         0052c91d     NOP
+//         0052c91e     NOP
+//         0052c91f     NOP
 }
 
 TRIBE_Victory_Conditions::TRIBE_Victory_Conditions(RGE_Player* param_1) {

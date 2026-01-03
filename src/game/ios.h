@@ -1,6 +1,30 @@
 #pragma once
 #include "../common.h"
 
+typedef enum io_state : unsigned int {
+    goodbit = 0,
+    eofbit = 1,
+    failbit = 2,
+    badbit = 4,
+};
+
+typedef enum open_mode : unsigned int {
+    in = 1,
+    out = 2,
+    ate = 4,
+    app = 8,
+    trunc = 16,
+    nocreate = 32,
+    noreplace = 64,
+    binary = 128,
+};
+
+typedef enum seek_dir : unsigned int {
+    beg = 0,
+    cur = 1,
+    end = 2,
+};
+
 class ios {
 public:
     streambuf* bp;                           // 0x4

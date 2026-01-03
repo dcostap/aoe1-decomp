@@ -1,5 +1,108 @@
 #pragma once
 #include "../common.h"
+#include "diam_map.h"
+#include "dlg_abt.h"
+#include "dlg_conf.h"
+#include "dlg_dip.h"
+#include "dlg_help.h"
+#include "dlg_list.h"
+#include "dlg_menu.h"
+#include "Dlg_msg.h"
+#include "dlg_sedm.h"
+#include "dlg_smsg.h"
+#include "Mouseptr.h"
+#include "Panel_ez.h"
+#include "Panel.h"
+#include "Pnl_btn.h"
+#include "pnl_dlg.h"
+#include "Pnl_drop.h"
+#include "pnl_edit.h"
+#include "Pnl_inp.h"
+#include "Pnl_lst.h"
+#include "Pnl_msg.h"
+#include "Pnl_pic.h"
+#include "Pnl_scbr.h"
+#include "Pnl_scr.h"
+#include "pnl_sld.h"
+#include "Pnl_txt.h"
+#include "rpnl_tbx.h"
+#include "rpnl_tim.h"
+#include "tpnl_btn.h"
+#include "tpnl_inv.h"
+#include "tpnl_obj.h"
+#include "tpnl_pop.h"
+#include "tpnl_tim.h"
+#include "tpnl_tml.h"
+#include "tpnl_txl.h"
+#include "spnl_obj.h"
+
+typedef enum BrushSize : unsigned int {
+    BrushSizeNone = 0,
+    BrushSizeVerySmall = 1,
+    BrushSizeSmall = 2,
+    BrushSizeMedium = 3,
+    BrushSizeLarge = 4,
+    BrushSizeXLarge = 5,
+};
+
+typedef struct List_Info {
+    char text[100]; // 0x0
+    short id; // 0x64
+};
+
+typedef enum MapType : unsigned int {
+    MapTypeNone = 0,
+    MapTypeBlank = 1,
+    MapTypeRandom = 2,
+    MapTypeSeed = 3,
+};
+
+
+typedef enum MessageType : unsigned int {
+    MessageTypeNone = 0,
+    MessageTypeDescription = 1,
+    MessageTypeInstructions = 2,
+    MessageTypeVictory = 3,
+    MessageTypeFailure = 4,
+};
+
+typedef enum PaintType : unsigned int {
+    PaintTypeNone = 0,
+    PaintTypeTerrain = 1,
+    PaintTypeElevation = 2,
+    PaintTypeCliffs = 3,
+};
+
+typedef enum ScenarioMode : unsigned int {
+    ScenarioModeNone = 0,
+    ScenarioModeMap = 1,
+    ScenarioModeTerrain = 2,
+    ScenarioModePlayers = 3,
+    ScenarioModeUnits = 4,
+    ScenarioModeDiplomacy = 5,
+    ScenarioModeVictory = 6,
+    ScenarioModeVictoryMulti = 7,
+    ScenarioModeOptions = 8,
+    ScenarioModeMessages = 9,
+    ScenarioModeCinematics = 10,
+    ScenarioModeSave = 11,
+};
+
+typedef enum VictoryType : unsigned int {
+    VictoryTypeNone = 0,
+    VictoryTypeStandard = 1,
+    VictoryTypeConquest = 2,
+    VictoryTypeScore = 3,
+    VictoryTypeTime = 4,
+    VictoryTypeCustom = 5,
+};
+
+typedef enum SELECT_REGION_e : unsigned int {
+    SELECT_OFF = 0,
+    SELECT_OBJECT = 1,
+    SELECT_DEST_OBJECT = 2,
+    SELECT_AREA = 3,
+};
 
 class TRIBE_Screen_Sed : public TScreenPanel {
 public:

@@ -4,82 +4,92 @@
 
 RGE_Static_Object::RGE_Static_Object(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5, int param_6) {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Static_Object(RGE_Static_Object * this, int
+//                              undefined __thiscall RGE_Static_Object(RGE_Static_Object * this, RGE
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Static_Obj    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     004c1263(R)
-//              RGE_Game_World    Stack[0x8]:4   param_2                   XREF[1]:     004c125f(R)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     004c122f(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     004c1211(W), 004c1224(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004c1270(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004c11fb(W)
-//                               ??0RGE_Static_Object@@QAE@HPAVRGE_Game_World@@H@Z            XREF[3]:     RGE_Animated_Object:0041a23b(c),
-//                               RGE_Static_Object::RGE_Static_Object                                      load:00463998(c),
-//                                                                                                         TRIBE_Tree_Object:004ccb4b(c)
-//                              stat_obj.cpp:182 (79)
-//         004c11e0     PUSH       -0x1
-//         004c11e2     PUSH       FUN_0055f9c6
-//         004c11e7     MOV        EAX,FS:[0x0]
-//         004c11ed     PUSH       EAX
-//         004c11ee     MOV        dword ptr FS:[0x0],ESP
-//         004c11f5     PUSH       this
-//         004c11f6     PUSH       ESI
-//         004c11f7     MOV        ESI,this
-//         004c11f9     XOR        EAX,EAX
-//         004c11fb     MOV        dword ptr [ESP + local_10],ESI
-//         004c11ff     MOV        dword ptr [ESI + 0x10],EAX
-//         004c1202     MOV        dword ptr [ESI + 0x14],EAX
-//         004c1205     MOV        dword ptr [ESI + 0x54],EAX
-//         004c1208     MOV        dword ptr [ESI + 0x58],EAX
-//         004c120b     MOV        dword ptr [ESI + 0x5c],EAX
-//         004c120e     MOV        dword ptr [ESI + 0x60],EAX
-//         004c1211     MOV        dword ptr [ESP + local_4],EAX
-//         004c1215     MOV        dword ptr [ESI + 0x64],EAX
-//         004c1218     MOV        dword ptr [ESI + 0x68],EAX
-//         004c121b     MOV        dword ptr [ESI + 0x6c],EAX
-//         004c121e     MOV        dword ptr [ESI + 0x70],EAX
-//         004c1221     OR         this,0xffffffff
-//         004c1224     MOV        byte ptr [ESP + local_4],0x1
-//         004c1229     MOV        dword ptr [ESI + 0x78],this
-//         004c122c     MOV        dword ptr [ESI + 0x7c],this
-//                              stat_obj.cpp:184 (48)
-//         004c122f     MOV        this,dword ptr [ESP + param_3]
-//         004c1233     MOV        dword ptr [ESI + 0x74],EAX
-//         004c1236     CMP        this,EAX
-//         004c1238     MOV        dword ptr [ESI + 0x80],0x40a00000
-//         004c1242     MOV        byte ptr [ESI + 0x84],AL
-//         004c1248     MOV        byte ptr [ESI + 0x85],AL
-//         004c124e     MOV        byte ptr [ESI + 0x86],AL
-//         004c1254     MOV        dword ptr [ESI],RGE_Static_Object::`vftable'     = 004c11c0
-//         004c125a     MOV        dword ptr [ESI + 0x50],EAX
-//         004c125d     JZ         LAB_004c1270
-//                              stat_obj.cpp:185 (17)
-//         004c125f     MOV        EAX,dword ptr [ESP + param_2]
-//         004c1263     MOV        this,dword ptr [ESP + param_1]
-//         004c1267     PUSH       EAX
-//         004c1268     PUSH       this
-//         004c1269     MOV        this,ESI
-//         004c126b     CALL       RGE_Static_Object::setup                         int setup(RGE_Static_Object * this, int param
-//                               LAB_004c1270                                                 XREF[1]:     004c125d(j)
-//                              stat_obj.cpp:186 (20)
-//         004c1270     MOV        this,dword ptr [ESP + local_c]
-//         004c1274     MOV        EAX,ESI
-//         004c1276     MOV        dword ptr FS:[0x0],this
-//         004c127d     POP        ESI
-//         004c127e     ADD        ESP,0x10
-//         004c1281     RET        0xc
-//         004c1284     ??         90h
-//         004c1285     NOP
-//         004c1286     NOP
-//         004c1287     NOP
-//         004c1288     NOP
-//         004c1289     NOP
-//         004c128a     NOP
-//         004c128b     NOP
-//         004c128c     NOP
-//         004c128d     NOP
-//         004c128e     NOP
-//         004c128f     NOP
+//              RGE_Master_Sta    Stack[0x4]:4   param_1                   XREF[1]:     004c1191(R)
+//              RGE_Player *      Stack[0x8]:4   param_2                   XREF[1]:     004c118c(R)
+//              float             Stack[0xc]:4   param_3                   XREF[1]:     004c1187(R)
+//              float             Stack[0x10]:4  param_4                   XREF[1]:     004c1183(R)
+//              float             Stack[0x14]:4  param_5                   XREF[1]:     004c117f(R)
+//              int               Stack[0x18]:4  param_6                   XREF[1]:     004c114f(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     004c1131(W), 004c1144(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004c119f(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004c111b(W)
+//                               ??0RGE_Static_Object@@QAE@PAVRGE_Master_Static_Object@@PAVR  XREF[3]:     RGE_Animated_Object:0041a18d(c),
+//                               RGE_Static_Object::RGE_Static_Object                                      make_new_obj:0045307a(c),
+//                                                                                                         TRIBE_Tree_Object:004cca9d(c)
+//                              stat_obj.cpp:132 (79)
+//         004c1100     PUSH       -0x1
+//         004c1102     PUSH       FUN_0055f9a6
+//         004c1107     MOV        EAX,FS:[0x0]
+//         004c110d     PUSH       EAX
+//         004c110e     MOV        dword ptr FS:[0x0],ESP
+//         004c1115     PUSH       this
+//         004c1116     PUSH       ESI
+//         004c1117     MOV        ESI,this
+//         004c1119     XOR        EAX,EAX
+//         004c111b     MOV        dword ptr [ESP + local_10],ESI
+//         004c111f     MOV        dword ptr [ESI + 0x10],EAX
+//         004c1122     MOV        dword ptr [ESI + 0x14],EAX
+//         004c1125     MOV        dword ptr [ESI + 0x54],EAX
+//         004c1128     MOV        dword ptr [ESI + 0x58],EAX
+//         004c112b     MOV        dword ptr [ESI + 0x5c],EAX
+//         004c112e     MOV        dword ptr [ESI + 0x60],EAX
+//         004c1131     MOV        dword ptr [ESP + local_4],EAX
+//         004c1135     MOV        dword ptr [ESI + 0x64],EAX
+//         004c1138     MOV        dword ptr [ESI + 0x68],EAX
+//         004c113b     MOV        dword ptr [ESI + 0x6c],EAX
+//         004c113e     MOV        dword ptr [ESI + 0x70],EAX
+//         004c1141     OR         this,0xffffffff
+//         004c1144     MOV        byte ptr [ESP + local_4],0x1
+//         004c1149     MOV        dword ptr [ESI + 0x78],this
+//         004c114c     MOV        dword ptr [ESI + 0x7c],this
+//                              stat_obj.cpp:134 (48)
+//         004c114f     MOV        this,dword ptr [ESP + param_6]
+//         004c1153     MOV        dword ptr [ESI + 0x74],EAX
+//         004c1156     CMP        this,EAX
+//         004c1158     MOV        dword ptr [ESI + 0x80],0x40a00000
+//         004c1162     MOV        byte ptr [ESI + 0x84],AL
+//         004c1168     MOV        byte ptr [ESI + 0x85],AL
+//         004c116e     MOV        byte ptr [ESI + 0x86],AL
+//         004c1174     MOV        dword ptr [ESI],RGE_Static_Object::`vftable'     = 004c11c0
+//         004c117a     MOV        dword ptr [ESI + 0x50],EAX
+//         004c117d     JZ         LAB_004c119f
+//                              stat_obj.cpp:135 (32)
+//         004c117f     MOV        EAX,dword ptr [ESP + param_5]
+//         004c1183     MOV        this,dword ptr [ESP + param_4]
+//         004c1187     MOV        EDX,dword ptr [ESP + param_3]
+//         004c118b     PUSH       EAX
+//         004c118c     MOV        EAX,dword ptr [ESP + param_2]
+//         004c1190     PUSH       this
+//         004c1191     MOV        this,dword ptr [ESP + param_1]
+//         004c1195     PUSH       EDX
+//         004c1196     PUSH       EAX
+//         004c1197     PUSH       this
+//         004c1198     MOV        this,ESI
+//         004c119a     CALL       RGE_Static_Object::setup                         int setup(RGE_Static_Object * this, RGE_Maste
+//                               LAB_004c119f                                                 XREF[1]:     004c117d(j)
+//                              stat_obj.cpp:136 (20)
+//         004c119f     MOV        this,dword ptr [ESP + local_c]
+//         004c11a3     MOV        EAX,ESI
+//         004c11a5     MOV        dword ptr FS:[0x0],this
+//         004c11ac     POP        ESI
+//         004c11ad     ADD        ESP,0x10
+//         004c11b0     RET        0x18
+//         004c11b3     ??         90h
+//         004c11b4     NOP
+//         004c11b5     NOP
+//         004c11b6     NOP
+//         004c11b7     NOP
+//         004c11b8     NOP
+//         004c11b9     NOP
+//         004c11ba     NOP
+//         004c11bb     NOP
+//         004c11bc     NOP
+//         004c11bd     NOP
+//         004c11be     NOP
+//         004c11bf     NOP
 }
 
 RGE_Static_Object::RGE_Static_Object(int param_1, RGE_Game_World* param_2, int param_3) {
@@ -715,550 +725,186 @@ void RGE_Static_Object::recycle_out_of_game() {
 
 int RGE_Static_Object::setup(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5) {
     /* TODO: Stub */
-//                              int __thiscall setup(RGE_Static_Object * this, int param_1, RGE_Game
+//                              int __thiscall setup(RGE_Static_Object * this, RGE_Master_Static_Obj
 //              int               EAX:4          <RETURN>
 //              RGE_Static_Obj    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[5]:     004c184b(R), 004c1877(*), 004c188b(R), 004c1893(*),
-//                                                                                     004c18a6(R)
-//              RGE_Game_World    Stack[0x8]:4   param_2                   XREF[1]:     004c185e(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[5]:     004c1a93(*), 004c1afe(W), 004c1b72(R), 004c1bb9(*),
-//                                                                                     004c1bc9(R)
-//              int               Stack[-0x8]:4  tempInt@fffffff8          XREF[6]:     004c1aa3(*), 004c1ab3(*), 004c1ae3(*), 004c1af3(R),
-//                                                                                     004c1bd4(W), 004c1c48(R)
-//              int               Stack[-0xc]:4  tempInt                   XREF[2]:     004c18c6(*), 004c18d6(R)
-//              long              Stack[-0x10]:4 long_val                  XREF[2]:     004c1843(*), 004c1862(R)
-//              uchar             Stack[-0x14]:1 byte_val                  XREF[6]:     004c1ac3(*), 004c1ad0(R), 004c1b84(R), 004c1b95(*),
-//                                                                                     004c1ba2(R), 004c1c5a(R)
-//              int               Stack[-0x18]:4 numberUnits               XREF[9]:     004c1a63(*), 004c1a73(*), 004c1a83(*), 004c1ad9(W),
-//                                                                                     004c1b80(R), 004c1b8b(W), 004c1bab(W), 004c1c56(R),
-//                                                                                     004c1c61(W)
-//              float             Stack[-0x1c]:4 temp_float
-//                               ?setup@RGE_Static_Object@@MAEHHPAVRGE_Game_World@@@Z         XREF[5]:     setup:0041a31e(c),
-//                               RGE_Static_Object::setup                                                  RGE_Static_Object:004c126b(c),
-//                                                                                                         TRIBE_Tree_Object:004ccb6a(c),
-//                                                                                                         00574708(*), 00574e88(*)
-//                              stat_obj.cpp:572 (3)
-//         004c1840     SUB        ESP,0x18
-//                              stat_obj.cpp:579 (27)
-//         004c1843     LEA        EAX=>long_val,[ESP + 0x8]
-//         004c1847     PUSH       EBX
-//         004c1848     PUSH       EBP
-//         004c1849     PUSH       ESI
-//         004c184a     PUSH       EDI
-//         004c184b     MOV        EDI,dword ptr [ESP + param_1]
-//         004c184f     MOV        ESI,this
-//         004c1851     PUSH       0x1
-//         004c1853     PUSH       EAX
-//         004c1854     PUSH       EDI
-//         004c1855     MOV        byte ptr [ESI + 0x4e],0xa
-//         004c1859     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              stat_obj.cpp:580 (20)
-//         004c185e     MOV        EBX,dword ptr [ESP + param_2]
-//         004c1862     MOV        this,dword ptr [ESP + long_val]
-//         004c1866     AND        this,0xff
-//         004c186c     ADD        ESP,0xc
-//         004c186f     MOV        EDX,dword ptr [EBX + 0x40]
-//                              stat_obj.cpp:582 (19)
-//         004c1872     PUSH       0x2
-//         004c1874     MOV        EAX,dword ptr [EDX + this->_padding_*0x4]
-//         004c1877     LEA        this=>param_1,[ESP + 0x30]
-//         004c187b     PUSH       this
-//         004c187c     PUSH       EDI
-//         004c187d     MOV        dword ptr [ESI + 0xc],EAX
-//         004c1880     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              stat_obj.cpp:583 (14)
-//         004c1885     MOV        EAX,dword ptr [ESI + 0xc]
-//         004c1888     ADD        ESP,0xc
-//         004c188b     MOVSX      EDX,word ptr [ESP + param_1]
-//         004c1890     MOV        this,dword ptr [EAX + 0x24]
-//                              stat_obj.cpp:585 (19)
-//         004c1893     LEA        EAX=>param_1,[ESP + 0x2c]
-//         004c1897     PUSH       0x2
-//         004c1899     PUSH       EAX
-//         004c189a     MOV        EDX,dword ptr [this->_padding_ + EDX*0x4]
-//         004c189d     PUSH       EDI
-//         004c189e     MOV        dword ptr [ESI + 0x8],EDX
-//         004c18a1     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              stat_obj.cpp:586 (15)
-//         004c18a6     MOV        AX,word ptr [ESP + param_1]
-//         004c18ab     XOR        EBP,EBP
-//         004c18ad     ADD        ESP,0xc
-//         004c18b0     CMP        AX,BP
-//         004c18b3     JL         LAB_004c18c3
-//                              stat_obj.cpp:587 (12)
-//         004c18b5     MOV        EDX,dword ptr [EBX + 0x38]
-//         004c18b8     MOVSX      this,AX
-//         004c18bb     MOV        EAX,dword ptr [EDX + this->_padding_*0x4]
-//         004c18be     MOV        dword ptr [ESI + 0x10],EAX
-//                              stat_obj.cpp:588 (2)
-//         004c18c1     JMP        LAB_004c18c6
-//                               LAB_004c18c3                                                 XREF[1]:     004c18b3(j)
-//                              stat_obj.cpp:589 (3)
-//         004c18c3     MOV        dword ptr [ESI + 0x10],EBP
-//                               LAB_004c18c6                                                 XREF[1]:     004c18c1(j)
-//                              stat_obj.cpp:595 (16)
-//         004c18c6     LEA        this=>tempInt,[ESP + 0x1c]
-//         004c18ca     PUSH       0x4
-//         004c18cc     PUSH       this
-//         004c18cd     PUSH       EDI
-//         004c18ce     MOV        dword ptr [ESI + 0x14],EBP
-//         004c18d1     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              stat_obj.cpp:596 (12)
-//         004c18d6     MOV        EAX,dword ptr [ESP + tempInt]
-//         004c18da     ADD        ESP,0xc
-//         004c18dd     CMP        EAX,-0x1
-//         004c18e0     JNZ        LAB_004c18e7
-//                              stat_obj.cpp:597 (3)
-//         004c18e2     MOV        dword ptr [ESI + 0x20],EBP
-//                              stat_obj.cpp:598 (2)
-//         004c18e5     JMP        LAB_004c18ea
-//                               LAB_004c18e7                                                 XREF[1]:     004c18e0(j)
-//                              stat_obj.cpp:599 (3)
-//         004c18e7     MOV        dword ptr [ESI + 0x20],EAX
-//                               LAB_004c18ea                                                 XREF[1]:     004c18e5(j)
-//                              stat_obj.cpp:601 (15)
-//         004c18ea     LEA        EDX,[ESI + 0x30]
-//         004c18ed     PUSH       0x4
-//         004c18ef     PUSH       EDX
-//         004c18f0     PUSH       EDI
-//         004c18f1     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c18f6     ADD        ESP,0xc
-//                              stat_obj.cpp:602 (15)
-//         004c18f9     LEA        EAX,[ESI + 0x48]
-//         004c18fc     PUSH       0x1
-//         004c18fe     PUSH       EAX
-//         004c18ff     PUSH       EDI
-//         004c1900     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c1905     ADD        ESP,0xc
-//                              stat_obj.cpp:603 (12)
-//         004c1908     LEA        EAX,[ESI + 0x49]
-//         004c190b     PUSH       0x1
-//         004c190d     PUSH       EAX
-//         004c190e     PUSH       EDI
-//         004c190f     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              stat_obj.cpp:605 (22)
-//         004c1914     FLD        float ptr [save_game_version]                    = 7.23
-//         004c191a     FCOMP      float ptr [DAT_00574724]                         = 48h    H
-//         004c1920     ADD        ESP,0xc
-//         004c1923     FNSTSW     AX
-//         004c1925     TEST       AH,0x1
-//         004c1928     JNZ        LAB_004c1939
-//                              stat_obj.cpp:606 (15)
-//         004c192a     LEA        this,[ESI + 0x4a]
-//         004c192d     PUSH       0x1
-//         004c192f     PUSH       this
-//         004c1930     PUSH       EDI
-//         004c1931     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c1936     ADD        ESP,0xc
-//                               LAB_004c1939                                                 XREF[1]:     004c1928(j)
-//                              stat_obj.cpp:608 (15)
-//         004c1939     LEA        EDX,[ESI + 0x4b]
-//         004c193c     PUSH       0x1
-//         004c193e     PUSH       EDX
-//         004c193f     PUSH       EDI
-//         004c1940     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c1945     ADD        ESP,0xc
-//                              stat_obj.cpp:609 (15)
-//         004c1948     LEA        EAX,[ESI + 0x4]
-//         004c194b     PUSH       0x4
-//         004c194d     PUSH       EAX
-//         004c194e     PUSH       EDI
-//         004c194f     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c1954     ADD        ESP,0xc
-//                              stat_obj.cpp:610 (15)
-//         004c1957     LEA        this,[ESI + 0x35]
-//         004c195a     PUSH       0x1
-//         004c195c     PUSH       this
-//         004c195d     PUSH       EDI
-//         004c195e     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c1963     ADD        ESP,0xc
-//                              stat_obj.cpp:611 (15)
-//         004c1966     LEA        EDX,[ESI + 0x38]
-//         004c1969     PUSH       0x4
-//         004c196b     PUSH       EDX
-//         004c196c     PUSH       EDI
-//         004c196d     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c1972     ADD        ESP,0xc
-//                              stat_obj.cpp:612 (15)
-//         004c1975     LEA        EAX,[ESI + 0x3c]
-//         004c1978     PUSH       0x4
-//         004c197a     PUSH       EAX
-//         004c197b     PUSH       EDI
-//         004c197c     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c1981     ADD        ESP,0xc
-//                              stat_obj.cpp:613 (15)
-//         004c1984     LEA        this,[ESI + 0x40]
-//         004c1987     PUSH       0x4
-//         004c1989     PUSH       this
-//         004c198a     PUSH       EDI
-//         004c198b     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c1990     ADD        ESP,0xc
-//                              stat_obj.cpp:614 (15)
-//         004c1993     LEA        EDX,[ESI + 0x28]
-//         004c1996     PUSH       0x2
-//         004c1998     PUSH       EDX
-//         004c1999     PUSH       EDI
-//         004c199a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c199f     ADD        ESP,0xc
-//                              stat_obj.cpp:615 (15)
-//         004c19a2     LEA        EAX,[ESI + 0x2a]
-//         004c19a5     PUSH       0x2
-//         004c19a7     PUSH       EAX
-//         004c19a8     PUSH       EDI
-//         004c19a9     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c19ae     ADD        ESP,0xc
-//                              stat_obj.cpp:616 (15)
-//         004c19b1     LEA        this,[ESI + 0x2c]
-//         004c19b4     PUSH       0x2
-//         004c19b6     PUSH       this
-//         004c19b7     PUSH       EDI
-//         004c19b8     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c19bd     ADD        ESP,0xc
-//                              stat_obj.cpp:617 (15)
-//         004c19c0     LEA        EDX,[ESI + 0x2e]
-//         004c19c3     PUSH       0x2
-//         004c19c5     PUSH       EDX
-//         004c19c6     PUSH       EDI
-//         004c19c7     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c19cc     ADD        ESP,0xc
-//                              stat_obj.cpp:619 (15)
-//         004c19cf     LEA        EAX,[ESI + 0x37]
-//         004c19d2     PUSH       0x1
-//         004c19d4     PUSH       EAX
-//         004c19d5     PUSH       EDI
-//         004c19d6     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c19db     ADD        ESP,0xc
-//                              stat_obj.cpp:620 (15)
-//         004c19de     LEA        this,[ESI + 0x4c]
-//         004c19e1     PUSH       0x2
-//         004c19e3     PUSH       this
-//         004c19e4     PUSH       EDI
-//         004c19e5     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c19ea     ADD        ESP,0xc
-//                              stat_obj.cpp:621 (15)
-//         004c19ed     LEA        EDX,[ESI + 0x44]
-//         004c19f0     PUSH       0x4
-//         004c19f2     PUSH       EDX
-//         004c19f3     PUSH       EDI
-//         004c19f4     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c19f9     ADD        ESP,0xc
-//                              stat_obj.cpp:622 (15)
-//         004c19fc     LEA        EAX,[ESI + 0x4f]
-//         004c19ff     PUSH       0x1
-//         004c1a01     PUSH       EAX
-//         004c1a02     PUSH       EDI
-//         004c1a03     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c1a08     ADD        ESP,0xc
-//                              stat_obj.cpp:623 (15)
-//         004c1a0b     LEA        this,[ESI + 0x34]
-//         004c1a0e     PUSH       0x1
-//         004c1a10     PUSH       this
-//         004c1a11     PUSH       EDI
-//         004c1a12     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c1a17     ADD        ESP,0xc
-//                              stat_obj.cpp:625 (18)
-//         004c1a1a     LEA        EDX,[ESI + 0x86]
-//         004c1a20     PUSH       0x1
-//         004c1a22     PUSH       EDX
-//         004c1a23     PUSH       EDI
-//         004c1a24     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c1a29     ADD        ESP,0xc
-//                              stat_obj.cpp:629 (18)
-//         004c1a2c     LEA        EAX,[ESI + 0x78]
-//         004c1a2f     MOV        dword ptr [ESI + 0x1c],EBP
-//         004c1a32     PUSH       0x4
-//         004c1a34     PUSH       EAX
-//         004c1a35     PUSH       EDI
-//         004c1a36     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c1a3b     ADD        ESP,0xc
-//                              stat_obj.cpp:630 (15)
-//         004c1a3e     LEA        this,[ESI + 0x80]
-//         004c1a44     PUSH       0x4
-//         004c1a46     PUSH       this
-//         004c1a47     PUSH       EDI
-//         004c1a48     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              stat_obj.cpp:633 (22)
-//         004c1a4d     FLD        float ptr [save_game_version]                    = 7.23
-//         004c1a53     FCOMP      float ptr [DAT_00574728]                         = 46h    F
-//         004c1a59     ADD        ESP,0xc
-//         004c1a5c     FNSTSW     AX
-//         004c1a5e     TEST       AH,0x40
-//         004c1a61     JZ         LAB_004c1ac3
-//                              stat_obj.cpp:638 (16)
-//         004c1a63     LEA        EDX=>numberUnits,[ESP + 0x10]
-//         004c1a67     PUSH       0x4
-//         004c1a69     PUSH       EDX
-//         004c1a6a     PUSH       EDI
-//         004c1a6b     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c1a70     ADD        ESP,0xc
-//                              stat_obj.cpp:639 (16)
-//         004c1a73     LEA        EAX=>numberUnits,[ESP + 0x10]
-//         004c1a77     PUSH       0x4
-//         004c1a79     PUSH       EAX
-//         004c1a7a     PUSH       EDI
-//         004c1a7b     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c1a80     ADD        ESP,0xc
-//                              stat_obj.cpp:640 (16)
-//         004c1a83     LEA        this=>numberUnits,[ESP + 0x10]
-//         004c1a87     PUSH       0x4
-//         004c1a89     PUSH       this
-//         004c1a8a     PUSH       EDI
-//         004c1a8b     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c1a90     ADD        ESP,0xc
-//                              stat_obj.cpp:641 (16)
-//         004c1a93     LEA        EDX=>local_4,[ESP + 0x24]
-//         004c1a97     PUSH       0x4
-//         004c1a99     PUSH       EDX
-//         004c1a9a     PUSH       EDI
-//         004c1a9b     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c1aa0     ADD        ESP,0xc
-//                              stat_obj.cpp:642 (16)
-//         004c1aa3     LEA        EAX=>tempInt@fffffff8,[ESP + 0x20]
-//         004c1aa7     PUSH       0x4
-//         004c1aa9     PUSH       EAX
-//         004c1aaa     PUSH       EDI
-//         004c1aab     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c1ab0     ADD        ESP,0xc
-//                              stat_obj.cpp:643 (16)
-//         004c1ab3     LEA        this=>tempInt@fffffff8,[ESP + 0x20]
-//         004c1ab7     PUSH       0x4
-//         004c1ab9     PUSH       this
-//         004c1aba     PUSH       EDI
-//         004c1abb     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//         004c1ac0     ADD        ESP,0xc
-//                               LAB_004c1ac3                                                 XREF[1]:     004c1a61(j)
-//                              stat_obj.cpp:664 (13)
-//         004c1ac3     LEA        EDX=>byte_val,[ESP + 0x14]
-//         004c1ac7     PUSH       0x4
-//         004c1ac9     PUSH       EDX
-//         004c1aca     PUSH       EDI
-//         004c1acb     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              stat_obj.cpp:665 (19)
-//         004c1ad0     MOV        EAX,dword ptr [ESP + byte_val]
-//         004c1ad4     ADD        ESP,0xc
-//         004c1ad7     CMP        EAX,EBP
-//         004c1ad9     MOV        dword ptr [ESP + numberUnits],EBP
-//         004c1add     JLE        LAB_004c1b95
-//                               LAB_004c1ae3                                                 XREF[1]:     004c1b8f(j)
-//                              stat_obj.cpp:667 (13)
-//         004c1ae3     LEA        EAX=>tempInt@fffffff8,[ESP + 0x20]
-//         004c1ae7     PUSH       0x4
-//         004c1ae9     PUSH       EAX
-//         004c1aea     PUSH       EDI
-//         004c1aeb     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              stat_obj.cpp:668 (165)
-//         004c1af0     MOV        this,dword ptr [ESI + 0x68]
-//         004c1af3     MOV        EDX,dword ptr [ESP + tempInt@fffffff8]
-//         004c1af7     ADD        ESP,0xc
-//         004c1afa     XOR        EAX,EAX
-//         004c1afc     TEST       this,this
-//         004c1afe     MOV        dword ptr [ESP + local_4],EDX
-//         004c1b02     JLE        LAB_004c1b19
-//         004c1b04     MOV        EBX,dword ptr [ESI + 0x70]
-//                               LAB_004c1b07                                                 XREF[1]:     004c1b17(j)
-//         004c1b07     CMP        EAX,EBX
-//         004c1b09     JGE        LAB_004c1b19
-//         004c1b0b     MOV        EBP,dword ptr [ESI + 0x64]
-//         004c1b0e     CMP        dword ptr [EBP + EAX*0x4],EDX
-//         004c1b12     JZ         LAB_004c1b80
-//         004c1b14     INC        EAX
-//         004c1b15     CMP        EAX,this
-//         004c1b17     JL         LAB_004c1b07
-//                               LAB_004c1b19                                                 XREF[2]:     004c1b02(j), 004c1b09(j)
-//         004c1b19     MOV        EDX,dword ptr [ESI + 0x70]
-//         004c1b1c     DEC        EDX
-//         004c1b1d     CMP        this,EDX
-//         004c1b1f     JLE        LAB_004c1b6c
-//         004c1b21     LEA        EBX,[ECX + this+0x1]
-//         004c1b24     LEA        EAX,[EBX*0x4 + 0x0]
-//         004c1b2b     PUSH       EAX
-//         004c1b2c     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004c1b31     MOV        EBP,EAX
-//         004c1b33     ADD        ESP,0x4
-//         004c1b36     TEST       EBP,EBP
-//         004c1b38     JZ         LAB_004c1b6c
-//         004c1b3a     MOV        this,dword ptr [ESI + 0x70]
-//         004c1b3d     XOR        EAX,EAX
-//         004c1b3f     TEST       this,this
-//         004c1b41     JLE        LAB_004c1b5a
-//                               LAB_004c1b43                                                 XREF[1]:     004c1b58(j)
-//         004c1b43     CMP        EAX,EBX
-//         004c1b45     JGE        LAB_004c1b5a
-//         004c1b47     MOV        this,dword ptr [ESI + 0x64]
-//         004c1b4a     INC        EAX
-//         004c1b4b     MOV        EDX,dword ptr [this->_padding_ + EAX*0x4 + -0x4]
-//         004c1b4f     MOV        dword ptr [EBP + EAX*0x4 + -0x4],EDX
-//         004c1b53     MOV        this,dword ptr [ESI + 0x70]
-//         004c1b56     CMP        EAX,this
-//         004c1b58     JL         LAB_004c1b43
-//                               LAB_004c1b5a                                                 XREF[2]:     004c1b41(j), 004c1b45(j)
-//         004c1b5a     MOV        EAX,dword ptr [ESI + 0x64]
-//         004c1b5d     PUSH       EAX
-//         004c1b5e     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         004c1b63     ADD        ESP,0x4
-//         004c1b66     MOV        dword ptr [ESI + 0x64],EBP
-//         004c1b69     MOV        dword ptr [ESI + 0x70],EBX
-//                               LAB_004c1b6c                                                 XREF[2]:     004c1b1f(j), 004c1b38(j)
-//         004c1b6c     MOV        this,dword ptr [ESI + 0x68]
-//         004c1b6f     MOV        EDX,dword ptr [ESI + 0x64]
-//         004c1b72     MOV        EAX,dword ptr [ESP + local_4]
-//         004c1b76     MOV        dword ptr [EDX + this->_padding_*0x4],EAX
-//         004c1b79     MOV        EAX,dword ptr [ESI + 0x68]
-//         004c1b7c     INC        EAX
-//         004c1b7d     MOV        dword ptr [ESI + 0x68],EAX
-//                               LAB_004c1b80                                                 XREF[1]:     004c1b12(j)
-//         004c1b80     MOV        EAX,dword ptr [ESP + numberUnits]
-//         004c1b84     MOV        this,dword ptr [ESP + byte_val]
-//         004c1b88     INC        EAX
-//         004c1b89     CMP        EAX,this
-//         004c1b8b     MOV        dword ptr [ESP + numberUnits],EAX
-//         004c1b8f     JL         LAB_004c1ae3
-//                               LAB_004c1b95                                                 XREF[1]:     004c1add(j)
-//                              stat_obj.cpp:670 (13)
-//         004c1b95     LEA        this=>byte_val,[ESP + 0x14]
-//         004c1b99     PUSH       0x4
-//         004c1b9b     PUSH       this
-//         004c1b9c     PUSH       EDI
-//         004c1b9d     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              stat_obj.cpp:671 (23)
-//         004c1ba2     MOV        EAX,dword ptr [ESP + byte_val]
-//         004c1ba6     ADD        ESP,0xc
-//         004c1ba9     TEST       EAX,EAX
-//         004c1bab     MOV        dword ptr [ESP + numberUnits],0x0
-//         004c1bb3     JLE        LAB_004c1c6b
-//                               LAB_004c1bb9                                                 XREF[1]:     004c1c65(j)
-//                              stat_obj.cpp:673 (13)
-//         004c1bb9     LEA        EDX=>local_4,[ESP + 0x24]
-//         004c1bbd     PUSH       0x4
-//         004c1bbf     PUSH       EDX
-//         004c1bc0     PUSH       EDI
-//         004c1bc1     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
-//                              stat_obj.cpp:674 (165)
-//         004c1bc6     MOV        this,dword ptr [ESI + 0x58]
-//         004c1bc9     MOV        EDX,dword ptr [ESP + local_4]
-//         004c1bcd     ADD        ESP,0xc
-//         004c1bd0     XOR        EAX,EAX
-//         004c1bd2     TEST       this,this
-//         004c1bd4     MOV        dword ptr [ESP + tempInt@fffffff8],EDX
-//         004c1bd8     JLE        LAB_004c1bef
-//         004c1bda     MOV        EBX,dword ptr [ESI + 0x60]
-//                               LAB_004c1bdd                                                 XREF[1]:     004c1bed(j)
-//         004c1bdd     CMP        EAX,EBX
-//         004c1bdf     JGE        LAB_004c1bef
-//         004c1be1     MOV        EBP,dword ptr [ESI + 0x54]
-//         004c1be4     CMP        dword ptr [EBP + EAX*0x4],EDX
-//         004c1be8     JZ         LAB_004c1c56
-//         004c1bea     INC        EAX
-//         004c1beb     CMP        EAX,this
-//         004c1bed     JL         LAB_004c1bdd
-//                               LAB_004c1bef                                                 XREF[2]:     004c1bd8(j), 004c1bdf(j)
-//         004c1bef     MOV        EAX,dword ptr [ESI + 0x60]
-//         004c1bf2     DEC        EAX
-//         004c1bf3     CMP        this,EAX
-//         004c1bf5     JLE        LAB_004c1c42
-//         004c1bf7     LEA        EBX,[ECX + this+0x1]
-//         004c1bfa     LEA        this,[EBX*0x4 + 0x0]
-//         004c1c01     PUSH       this
-//         004c1c02     CALL       operator_new                                     void * operator_new(uint param_1)
-//         004c1c07     MOV        EBP,EAX
-//         004c1c09     ADD        ESP,0x4
-//         004c1c0c     TEST       EBP,EBP
-//         004c1c0e     JZ         LAB_004c1c42
-//         004c1c10     MOV        this,dword ptr [ESI + 0x60]
-//         004c1c13     XOR        EAX,EAX
-//         004c1c15     TEST       this,this
-//         004c1c17     JLE        LAB_004c1c30
-//                               LAB_004c1c19                                                 XREF[1]:     004c1c2e(j)
-//         004c1c19     CMP        EAX,EBX
-//         004c1c1b     JGE        LAB_004c1c30
-//         004c1c1d     MOV        EDX,dword ptr [ESI + 0x54]
-//         004c1c20     INC        EAX
-//         004c1c21     MOV        this,dword ptr [EDX + EAX*0x4 + -0x4]
-//         004c1c25     MOV        dword ptr [EBP + EAX*0x4 + -0x4],this
-//         004c1c29     MOV        this,dword ptr [ESI + 0x60]
-//         004c1c2c     CMP        EAX,this
-//         004c1c2e     JL         LAB_004c1c19
-//                               LAB_004c1c30                                                 XREF[2]:     004c1c17(j), 004c1c1b(j)
-//         004c1c30     MOV        EDX,dword ptr [ESI + 0x54]
-//         004c1c33     PUSH       EDX
-//         004c1c34     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         004c1c39     ADD        ESP,0x4
-//         004c1c3c     MOV        dword ptr [ESI + 0x54],EBP
-//         004c1c3f     MOV        dword ptr [ESI + 0x60],EBX
-//                               LAB_004c1c42                                                 XREF[2]:     004c1bf5(j), 004c1c0e(j)
-//         004c1c42     MOV        EAX,dword ptr [ESI + 0x58]
-//         004c1c45     MOV        this,dword ptr [ESI + 0x54]
-//         004c1c48     MOV        EDX,dword ptr [ESP + tempInt@fffffff8]
-//         004c1c4c     MOV        dword ptr [this->_padding_ + EAX*0x4],EDX
-//         004c1c4f     MOV        EAX,dword ptr [ESI + 0x58]
-//         004c1c52     INC        EAX
-//         004c1c53     MOV        dword ptr [ESI + 0x58],EAX
-//                               LAB_004c1c56                                                 XREF[1]:     004c1be8(j)
-//         004c1c56     MOV        EAX,dword ptr [ESP + numberUnits]
-//         004c1c5a     MOV        this,dword ptr [ESP + byte_val]
-//         004c1c5e     INC        EAX
-//         004c1c5f     CMP        EAX,this
-//         004c1c61     MOV        dword ptr [ESP + numberUnits],EAX
-//         004c1c65     JL         LAB_004c1bb9
-//                               LAB_004c1c6b                                                 XREF[1]:     004c1bb3(j)
-//                              stat_obj.cpp:677 (10)
-//         004c1c6b     MOV        EBX,dword ptr [ESI]
-//         004c1c6d     MOV        this,ESI
-//         004c1c6f     CALL       dword ptr [EBX + 0x1e4]
-//                              stat_obj.cpp:678 (19)
-//         004c1c75     MOV        this,dword ptr [ESP + 0x30]
-//         004c1c79     MOV        dword ptr [ESI + 0x18],EAX
-//         004c1c7c     MOV        EDX,dword ptr [ECX + this->world_x]
-//         004c1c7f     MOV        this,EAX
-//         004c1c81     PUSH       EDX
-//         004c1c82     PUSH       EDI=>DAT_fffffff8
-//         004c1c83     CALL       RGE_Active_Sprite_List::load                     void load(RGE_Active_Sprite_List * this, int
-//                              stat_obj.cpp:684 (15)
-//         004c1c88     MOV        EAX,dword ptr [ESI + 0xc]
-//         004c1c8b     PUSH       ESI
-//         004c1c8c     MOV        this,dword ptr [EAX + 0x3c]
-//         004c1c8f     MOV        EDX,dword ptr [this->_padding_]
-//         004c1c91     CALL       dword ptr [EDX + 0xf8]
-//                              stat_obj.cpp:689 (7)
-//         004c1c97     MOV        AL,byte ptr [ESI + 0x49]
-//         004c1c9a     TEST       AL,AL
-//         004c1c9c     JZ         LAB_004c1ca7
-//                              stat_obj.cpp:690 (7)
-//         004c1c9e     MOV        EAX,dword ptr [ESI + 0xc]
-//         004c1ca1     PUSH       ESI
-//         004c1ca2     MOV        this,dword ptr [EAX + 0x2c]
-//                              stat_obj.cpp:691 (5)
-//         004c1ca5     JMP        LAB_004c1cbd
-//                               LAB_004c1ca7                                                 XREF[1]:     004c1c9c(j)
-//         004c1ca7     MOV        AL,byte ptr [ESI + 0x4a]
-//                              stat_obj.cpp:692 (11)
-//         004c1caa     PUSH       ESI
-//         004c1cab     TEST       AL,AL
-//         004c1cad     JZ         LAB_004c1cb7
-//         004c1caf     MOV        this,dword ptr [ESI + 0xc]
-//         004c1cb2     MOV        this,dword ptr [ECX + this->hp]
-//                              stat_obj.cpp:693 (2)
-//         004c1cb5     JMP        LAB_004c1cbd
-//                               LAB_004c1cb7                                                 XREF[1]:     004c1cad(j)
-//                              stat_obj.cpp:694 (11)
-//         004c1cb7     MOV        EDX,dword ptr [ESI + 0xc]
-//         004c1cba     MOV        this,dword ptr [EDX + 0x28]
-//                               LAB_004c1cbd                                                 XREF[2]:     004c1ca5(j), 004c1cb5(j)
-//         004c1cbd     CALL       RGE_Object_List::add_node                        RGE_Object_Node * add_node(RGE_Object_List *
-//                              stat_obj.cpp:700 (11)
-//         004c1cc2     MOV        this,ESI
-//         004c1cc4     CALL       dword ptr [EBX + 0x1e0]
-//         004c1cca     MOV        dword ptr [ESI + 0x24],EAX
-//                              stat_obj.cpp:702 (4)
-//         004c1ccd     MOV        byte ptr [ESI + 0x36],0x0
-//                              stat_obj.cpp:712 (15)
-//         004c1cd1     POP        EDI
-//         004c1cd2     POP        ESI
-//         004c1cd3     POP        EBP
-//         004c1cd4     MOV        EAX,0x1
-//         004c1cd9     POP        EBX
-//         004c1cda     ADD        ESP,0x18
-//         004c1cdd     RET        0x8
+//              RGE_Master_Sta    Stack[0x4]:4   param_1                   XREF[1]:     004c16ba(R)
+//              RGE_Player *      Stack[0x8]:4   param_2                   XREF[1]:     004c16b0(R)
+//              float             Stack[0xc]:4   param_3
+//              float             Stack[0x10]:4  param_4
+//              float             Stack[0x14]:4  param_5
+//                               ?setup@RGE_Static_Object@@MAEHPAVRGE_Master_Static_Object@@  XREF[13]:    setup:0041a2de(c),
+//                               RGE_Static_Object::setup                                                  RGE_Static_Object:004c119a(c),
+//                                                                                                         TRIBE_Tree_Object:004ccac7(c),
+//                                                                                                         0056e5fc(*), 0056edec(*),
+//                                                                                                         0056f434(*), 005703fc(*),
+//                                                                                                         005708cc(*), 00570b24(*),
+//                                                                                                         0057470c(*), 00574954(*),
+//                                                                                                         00574bfc(*), 00574e8c(*)
+//                              stat_obj.cpp:484 (10)
+//         004c16b0     MOV        EAX,dword ptr [ESP + param_2]
+//         004c16b4     PUSH       EBX
+//         004c16b5     PUSH       EBP
+//         004c16b6     PUSH       ESI
+//         004c16b7     MOV        ESI,this
+//         004c16b9     PUSH       EDI
+//                              stat_obj.cpp:487 (4)
+//         004c16ba     MOV        this,dword ptr [ESP + param_1]
+//                              stat_obj.cpp:488 (2)
+//         004c16be     XOR        EBX,EBX
+//                              stat_obj.cpp:490 (26)
+//         004c16c0     MOV        EDI,dword ptr [ESI]
+//         004c16c2     MOV        dword ptr [ESI + 0x8],this
+//         004c16c5     MOV        this,ESI
+//         004c16c7     MOV        byte ptr [ESI + 0x4e],0xa
+//         004c16cb     MOV        dword ptr [ESI + 0xc],EAX
+//         004c16ce     MOV        dword ptr [ESI + 0x1c],EBX
+//         004c16d1     MOV        dword ptr [ESI + 0x20],EBX
+//         004c16d4     CALL       dword ptr [EDI + 0x1e0]
+//                              stat_obj.cpp:491 (21)
+//         004c16da     MOV        this,dword ptr [ESI + 0x8]
+//         004c16dd     MOV        dword ptr [ESI + 0x24],EAX
+//         004c16e0     MOVSX      EDX,word ptr [ECX + this+0x26]
+//         004c16e4     MOV        dword ptr [ESP + 0x18],EDX
+//         004c16e8     FILD       dword ptr [ESP + 0x18]
+//         004c16ec     FST        float ptr [ESI + 0x30]
+//                              stat_obj.cpp:492 (25)
+//         004c16ef     FCOMP      float ptr [null_00574720]                        = align(4)
+//         004c16f5     FNSTSW     AX
+//         004c16f7     TEST       AH,0x41
+//         004c16fa     JNZ        LAB_004c1703
+//         004c16fc     MOV        EAX,0x1
+//         004c1701     JMP        LAB_004c1705
+//                               LAB_004c1703                                                 XREF[1]:     004c16fa(j)
+//         004c1703     XOR        EAX,EAX
+//                               LAB_004c1705                                                 XREF[1]:     004c1701(j)
+//         004c1705     MOV        byte ptr [ESI + 0x49],AL
+//                              stat_obj.cpp:493 (14)
+//         004c1708     MOV        DL,byte ptr [ECX + this->id]
+//         004c170b     XOR        EAX,EAX
+//         004c170d     CMP        DL,0x19
+//         004c1710     SETZ       AL
+//         004c1713     MOV        byte ptr [ESI + 0x4a],AL
+//                              stat_obj.cpp:495 (5)
+//         004c1716     MOV        EAX,0xc479c000
+//                              stat_obj.cpp:509 (54)
+//         004c171b     MOV        this,ESI
+//         004c171d     MOV        byte ptr [ESI + 0x35],BL
+//         004c1720     MOV        dword ptr [ESI + 0x38],EAX
+//         004c1723     MOV        dword ptr [ESI + 0x3c],EAX
+//         004c1726     MOV        dword ptr [ESI + 0x40],EBX
+//         004c1729     MOV        word ptr [ESI + 0x28],BX
+//         004c172d     MOV        word ptr [ESI + 0x2a],BX
+//         004c1731     MOV        word ptr [ESI + 0x2c],BX
+//         004c1735     MOV        word ptr [ESI + 0x2e],BX
+//         004c1739     MOV        byte ptr [ESI + 0x36],BL
+//         004c173c     MOV        byte ptr [ESI + 0x37],BL
+//         004c173f     MOV        byte ptr [ESI + 0x4f],BL
+//         004c1742     MOV        byte ptr [ESI + 0x48],0x2
+//         004c1746     MOV        byte ptr [ESI + 0x34],BL
+//         004c1749     MOV        byte ptr [ESI + 0x4b],BL
+//         004c174c     CALL       RGE_Static_Object::get_starting_attribute        void get_starting_attribute(RGE_Static_Object
+//                              stat_obj.cpp:510 (7)
+//         004c1751     MOV        this,ESI
+//         004c1753     CALL       RGE_Static_Object::give_attribute_to_owner       void give_attribute_to_owner(RGE_Static_Objec
+//                              stat_obj.cpp:515 (11)
+//         004c1758     MOV        this,dword ptr [ESI + 0x8]
+//         004c175b     CMP        byte ptr [this->_padding_ + 0xa4],BL
+//         004c1761     JZ         LAB_004c1770
+//                              stat_obj.cpp:516 (11)
+//         004c1763     MOV        EDX,dword ptr [ESI + 0xc]
+//         004c1766     MOV        this,dword ptr [EDX + 0x3c]
+//         004c1769     CALL       RGE_Game_World::get_next_reusable_object_id      long get_next_reusable_object_id(RGE_Game_Wor
+//                              stat_obj.cpp:517 (2)
+//         004c176e     JMP        LAB_004c177b
+//                               LAB_004c1770                                                 XREF[1]:     004c1761(j)
+//                              stat_obj.cpp:518 (11)
+//         004c1770     MOV        EAX,dword ptr [ESI + 0xc]
+//         004c1773     MOV        this,dword ptr [EAX + 0x3c]
+//         004c1776     CALL       RGE_Game_World::get_next_object_id               long get_next_object_id(RGE_Game_World * this)
+//                               LAB_004c177b                                                 XREF[1]:     004c176e(j)
+//                              stat_obj.cpp:520 (11)
+//         004c177b     MOV        this,ESI
+//         004c177d     MOV        dword ptr [ESI + 0x4],EAX
+//         004c1780     CALL       dword ptr [EDI + 0x1e4]
+//                              stat_obj.cpp:522 (15)
+//         004c1786     MOV        this,dword ptr [ESI + 0x8]
+//         004c1789     MOV        dword ptr [ESI + 0x18],EAX
+//         004c178c     MOV        EDX,dword ptr [ECX + this->sprite_list]
+//         004c178f     MOV        this,ESI
+//         004c1791     PUSH       EDX
+//         004c1792     CALL       dword ptr [EDI + 0x38]
+//                              stat_obj.cpp:525 (4)
+//         004c1795     MOV        EAX,dword ptr [ESP + 0x1c]
+//                              stat_obj.cpp:527 (11)
+//         004c1799     MOV        EDX,dword ptr [ESP + 0x24]
+//         004c179d     MOV        this,dword ptr [ESP + 0x20]
+//         004c17a1     MOV        dword ptr [ESI + 0x38],EAX
+//                              stat_obj.cpp:529 (23)
+//         004c17a4     MOV        EAX,EDX
+//         004c17a6     MOV        dword ptr [ESI + 0x40],EDX
+//         004c17a9     MOV        EDX,dword ptr [ESP + 0x1c]
+//         004c17ad     PUSH       EAX
+//         004c17ae     MOV        dword ptr [ESI + 0x3c],this
+//         004c17b1     PUSH       this=>DAT_fffffff8
+//         004c17b2     PUSH       EDX=>DAT_fffffff4
+//         004c17b3     MOV        this,ESI
+//         004c17b5     MOV        dword ptr [ESI + 0x14],EBX
+//         004c17b8     CALL       dword ptr [EDI + 0x34]
+//                              stat_obj.cpp:538 (26)
+//         004c17bb     MOV        this,dword ptr [ESI + 0xc]
+//         004c17be     XOR        EDX,EDX
+//         004c17c0     MOV        DL,byte ptr [ESI + 0x4a]
+//         004c17c3     MOV        EAX,dword ptr [this->_padding_]
+//         004c17c5     PUSH       EDX
+//         004c17c6     XOR        EDX,EDX
+//         004c17c8     MOV        DL,byte ptr [ESI + 0x49]
+//         004c17cb     PUSH       EDX=>DAT_fffffff8
+//         004c17cc     PUSH       ESI=>DAT_fffffff4
+//         004c17cd     FSTP       ST0
+//         004c17cf     CALL       dword ptr [EAX + 0xdc]
+//                              stat_obj.cpp:554 (18)
+//         004c17d5     PUSH       0x22a
+//         004c17da     PUSH       s_C:\msdev\work\age1_x1\stat_obj.c               = "C:\\msdev\\work\\age1_x1\\stat_obj.cpp"
+//         004c17df     MOV        dword ptr [ESI + 0x50],EAX
+//         004c17e2     CALL       debug_rand                                       int debug_rand(char * param_1, int param_2)
+//                              stat_obj.cpp:556 (8)
+//         004c17e7     MOV        EBP,dword ptr [debug_random_on]
+//         004c17ed     MOV        EDI,EAX
+//                              stat_obj.cpp:557 (6)
+//         004c17ef     MOV        dword ptr [debug_random_on],EBX
+//                              stat_obj.cpp:560 (29)
+//         004c17f5     MOV        EAX,dword ptr [ESI + 0x8]
+//         004c17f8     ADD        ESP,0x8
+//         004c17fb     MOV        this,dword ptr [EAX + 0x40]
+//         004c17fe     CMP        this,EBX
+//         004c1800     JZ         LAB_004c1819
+//         004c1802     MOV        ESI,dword ptr [ESI + 0xc]
+//         004c1805     MOV        EDX,dword ptr [ESI + 0x3c]
+//         004c1808     MOV        AX,word ptr [ESI + 0x4a]
+//         004c180c     CMP        AX,word ptr [EDX + 0x7c]
+//         004c1810     JNZ        LAB_004c1819
+//                              stat_obj.cpp:561 (7)
+//         004c1812     PUSH       0x1
+//         004c1814     CALL       RGE_Sound::play                                  void play(RGE_Sound * this, int param_1)
+//                               LAB_004c1819                                                 XREF[2]:     004c1800(j), 004c1810(j)
+//                              stat_obj.cpp:565 (25)
+//         004c1819     PUSH       EDI
+//         004c181a     PUSH       offset DAT_fffffff8
+//         004c181f     PUSH       s_C:\msdev\work\age1_x1\stat_obj.c               = "C:\\msdev\\work\\age1_x1\\stat_obj.cpp"
+//         004c1824     MOV        dword ptr [debug_random_on],EBP
+//         004c182a     CALL       debug_srand                                      void debug_srand(char * param_1, int param_2,
+//         004c182f     ADD        ESP,0xc
+//                              stat_obj.cpp:566 (5)
+//         004c1832     MOV        EAX,0x1
+//                              stat_obj.cpp:567 (7)
+//         004c1837     POP        EDI
+//         004c1838     POP        ESI
+//         004c1839     POP        EBP
+//         004c183a     POP        EBX
+//         004c183b     RET        0x14
+//         004c183e     ??         90h
+//         004c183f     NOP
     return 0;
 }
 
@@ -9960,68 +9606,6 @@ void RGE_Static_Object::set_attribute_amount(float param_1, uchar param_2, uchar
     return;
 }
 
-int RGE_Static_Object::heal(int param_1, int param_2) {
-    /* TODO: Stub */
-//                              uchar __thiscall heal(RGE_Static_Object * this, float param_1)
-//              uchar             AL:1           <RETURN>
-//              RGE_Static_Obj    ECX:4 (auto)   this
-//              float             Stack[0x4]:4   param_1                   XREF[4]:     004c5cb0(R), 004c5cb4(R), 004c5cec(W), 004c5cf0(R)
-//                               ?heal@RGE_Static_Object@@UAEEM@Z                             XREF[10]:    heal:004cc4ea(c),
-//                               RGE_Static_Object::heal                                                   heal:004cc55c(c), 0056e4ac(*),
-//                                                                                                         0056ec9c(*), 0056f2e4(*),
-//                                                                                                         005702ac(*), 0057077c(*),
-//                                                                                                         005709d4(*), 005745bc(*),
-//                                                                                                         00574d3c(*)
-//                              stat_obj.cpp:3163 (4)
-//         004c5cb0     FLD        float ptr [ESP + param_1]
-//                              stat_obj.cpp:3166 (38)
-//         004c5cb4     FLD        float ptr [ESP + param_1]
-//         004c5cb8     FCOMP      float ptr [null_00574720]                        = align(4)
-//         004c5cbe     FADD       float ptr [ECX + this->hp]
-//         004c5cc1     FNSTSW     AX
-//         004c5cc3     FLD        ST0
-//         004c5cc5     TEST       AH,0x1
-//         004c5cc8     FSTP       float ptr [ECX + this->hp]
-//         004c5ccb     JZ         LAB_004c5ce3
-//         004c5ccd     FCOMP      float ptr [DAT_0057472c]
-//         004c5cd3     FNSTSW     AX
-//         004c5cd5     TEST       AH,0x1
-//         004c5cd8     JZ         LAB_004c5ce5
-//                              stat_obj.cpp:3167 (7)
-//         004c5cda     MOV        dword ptr [ECX + this->hp],0x3f800000
-//                              stat_obj.cpp:3166 (4)
-//         004c5ce1     JMP        LAB_004c5ce5
-//                               LAB_004c5ce3                                                 XREF[1]:     004c5ccb(j)
-//         004c5ce3     FSTP       ST0
-//                               LAB_004c5ce5                                                 XREF[2]:     004c5cd8(j), 004c5ce1(j)
-//                              stat_obj.cpp:3169 (25)
-//         004c5ce5     MOV        EAX,dword ptr [ECX + this->master_obj]
-//         004c5ce8     MOVSX      EDX,word ptr [EAX + 0x26]
-//         004c5cec     MOV        dword ptr [ESP + param_1],EDX
-//         004c5cf0     FILD       dword ptr [ESP + param_1]
-//         004c5cf4     FCOM       float ptr [ECX + this->hp]
-//         004c5cf7     FNSTSW     AX
-//         004c5cf9     TEST       AH,0x41
-//         004c5cfc     JZ         LAB_004c5d06
-//                              stat_obj.cpp:3171 (3)
-//         004c5cfe     FSTP       float ptr [ECX + this->hp]
-//                              stat_obj.cpp:3172 (2)
-//         004c5d01     MOV        AL,0x1
-//                              stat_obj.cpp:3180 (3)
-//         004c5d03     RET        0x4
-//                               LAB_004c5d06                                                 XREF[1]:     004c5cfc(j)
-//                              stat_obj.cpp:3169 (2)
-//         004c5d06     FSTP       ST0
-//                              stat_obj.cpp:3175 (2)
-//         004c5d08     XOR        AL,AL
-//                              stat_obj.cpp:3180 (3)
-//         004c5d0a     RET        0x4
-//         004c5d0d     ??         90h
-//         004c5d0e     NOP
-//         004c5d0f     NOP
-    return 0;
-}
-
 uchar RGE_Static_Object::heal(float param_1) {
     /* TODO: Stub */
 //                              uchar __thiscall heal(RGE_Static_Object * this, float param_1)
@@ -13253,101 +12837,81 @@ UnitAIModule* RGE_Static_Object::unitAI() {
 
 uchar RGE_Static_Object::lookupZone(XYPoint param_1) {
     /* TODO: Stub */
-//                              uchar __thiscall lookupZone(RGE_Static_Object * this, int param_1, i
+//                              uchar __thiscall lookupZone(RGE_Static_Object * this, XYPoint param_1)
 //              uchar             AL:1           <RETURN>
 //              RGE_Static_Obj    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     004c74b2(R)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     004c74ba(R)
-//                               ?lookupZone@RGE_Static_Object@@QAEEHH@Z                      XREF[33]:    targetZone:00407441(c),
-//                               RGE_Static_Object::lookupZone                                             closestUndiscoveredTile:00416081(c
-//                                                                                                         doMove:0045de76(c),
-//                                                                                                         doMove:0045de91(c),
-//                                                                                                         find_by_master_id:00463509(c),
-//                                                                                                         find_by_master_id:004635aa(c),
-//                                                                                                         find_drop_location:004c65c2(c),
-//                                                                                                         placeStructure:004d6443(c),
-//                                                                                                         closestUnexploredTile:004d8ee8(c),
-//                                                                                                         influencePlaceStructure:004db4c2(c
-//                                                                                                         objectToAttack:004dcc74(c),
-//                                                                                                         objectToAttackByGroup:004dd175(c),
-//                                                                                                         objectToAttackByGroup:004dd538(c),
-//                                                                                                         objectToAttackByGroup2:004de028(c)
-//                                                                                                         unexploredPlayerLocation:004e17e9(
-//                                                                                                         findClosestDropsite:004e2ad9(c),
-//                                                                                                         findClosestReturnDropsite:004e2c73
-//                                                                                                         numberAvailableStoragePits:004e3f3
-//                                                                                                         numberAvailableGranaries:004e3ff7(
-//                                                                                                         taskIdleSoldiers:004f1f75(c),
-//                                                                                                         [more]
-//                              stat_obj.cpp:4685 (2)
-//         004c74b0     PUSH       ESI
-//         004c74b1     PUSH       EDI
-//                              stat_obj.cpp:4686 (16)
-//         004c74b2     MOV        EDI,dword ptr [ESP + param_1]
-//         004c74b6     TEST       EDI,EDI
-//         004c74b8     JL         LAB_004c751e
-//         004c74ba     MOV        ESI,dword ptr [ESP + param_2]
-//         004c74be     TEST       ESI,ESI
-//         004c74c0     JL         LAB_004c751e
-//                              stat_obj.cpp:4690 (11)
-//         004c74c2     MOV        EAX,dword ptr [ECX + this->zoneMapIndex]
-//         004c74c5     LEA        EDX,[ECX + this->zoneMapIndex]
-//         004c74c8     CMP        EAX,-0x1
-//         004c74cb     JNZ        LAB_004c74f7
-//                              stat_obj.cpp:4693 (40)
-//         004c74cd     MOV        EAX,dword ptr [ECX + this->owner]
-//         004c74d0     MOV        this,dword ptr [ECX + this->master_obj]
-//         004c74d3     PUSH       EDX
-//         004c74d4     MOV        EAX,dword ptr [EAX + 0x3c]
-//         004c74d7     MOVSX      EDX,word ptr [EAX + 0x52]
-//         004c74db     PUSH       EDX
-//         004c74dc     MOVSX      EDX,word ptr [ECX + this+0x66]
-//         004c74e0     MOV        this,dword ptr [EAX + 0x54]
-//         004c74e3     MOV        EAX,dword ptr [EAX + 0x28]
-//         004c74e6     MOV        EDX,dword ptr [this->_padding_ + EDX*0x4]
-//         004c74e9     MOV        this,dword ptr [EAX + 0x8dc4]
-//         004c74ef     PUSH       EDX
-//         004c74f0     CALL       RGE_Zone_Map_List::get_zone_map                  RGE_Zone_Map * get_zone_map(RGE_Zone_Map_List
-//                              stat_obj.cpp:4695 (2)
-//         004c74f5     JMP        LAB_004c750c
-//                               LAB_004c74f7                                                 XREF[1]:     004c74cb(j)
-//                              stat_obj.cpp:4696 (21)
-//         004c74f7     MOV        this,dword ptr [ECX + this->owner]
-//         004c74fa     PUSH       EAX
-//         004c74fb     MOV        EDX,dword ptr [ECX + this->world_y]
-//         004c74fe     MOV        EAX,dword ptr [EDX + 0x28]
-//         004c7501     MOV        this,dword ptr [EAX + 0x8dc4]
-//         004c7507     CALL       RGE_Zone_Map_List::get_zone_map                  RGE_Zone_Map * get_zone_map(RGE_Zone_Map_List
-//                               LAB_004c750c                                                 XREF[1]:     004c74f5(j)
-//                              stat_obj.cpp:4697 (4)
-//         004c750c     TEST       EAX,EAX
-//         004c750e     JZ         LAB_004c751e
-//                              stat_obj.cpp:4698 (9)
-//         004c7510     PUSH       ESI
-//         004c7511     PUSH       EDI
-//         004c7512     MOV        this,EAX
-//         004c7514     CALL       RGE_Zone_Map::get_zone_info                      uchar get_zone_info(RGE_Zone_Map * this, long
-//                              stat_obj.cpp:4700 (12)
-//         004c7519     POP        EDI
-//         004c751a     POP        ESI
-//         004c751b     RET        0x8
-//                               LAB_004c751e                                                 XREF[3]:     004c74b8(j), 004c74c0(j),
-//                                                                                                         004c750e(j)
-//         004c751e     POP        EDI
-//         004c751f     XOR        AL,AL
-//         004c7521     POP        ESI
-//         004c7522     RET        0x8
-//         004c7525     ??         90h
-//         004c7526     NOP
-//         004c7527     NOP
-//         004c7528     NOP
-//         004c7529     NOP
-//         004c752a     NOP
-//         004c752b     NOP
-//         004c752c     NOP
-//         004c752d     NOP
-//         004c752e     NOP
-//         004c752f     NOP
+//              XYPoint           Stack[0x4]:8   param_1                   XREF[1,1]:   004c7432(R), 004c743a(R)
+//                               ?lookupZone@RGE_Static_Object@@QAEEUXYPoint@@@Z              XREF[1]:     taskActiveSoldiers:004f316a(c)
+//                               RGE_Static_Object::lookupZone
+//                              stat_obj.cpp:4664 (2)
+//         004c7430     PUSH       ESI
+//         004c7431     PUSH       EDI
+//                              stat_obj.cpp:4665 (16)
+//         004c7432     MOV        EDI,dword ptr [ESP + param_1.x]
+//         004c7436     TEST       EDI,EDI
+//         004c7438     JL         LAB_004c749e
+//         004c743a     MOV        ESI,dword ptr [ESP + param_1.y]
+//         004c743e     TEST       ESI,ESI
+//         004c7440     JL         LAB_004c749e
+//                              stat_obj.cpp:4669 (11)
+//         004c7442     MOV        EAX,dword ptr [ECX + this->zoneMapIndex]
+//         004c7445     LEA        EDX,[ECX + this->zoneMapIndex]
+//         004c7448     CMP        EAX,-0x1
+//         004c744b     JNZ        LAB_004c7477
+//                              stat_obj.cpp:4672 (40)
+//         004c744d     MOV        EAX,dword ptr [ECX + this->owner]
+//         004c7450     MOV        this,dword ptr [ECX + this->master_obj]
+//         004c7453     PUSH       EDX
+//         004c7454     MOV        EAX,dword ptr [EAX + 0x3c]
+//         004c7457     MOVSX      EDX,word ptr [EAX + 0x52]
+//         004c745b     PUSH       EDX
+//         004c745c     MOVSX      EDX,word ptr [ECX + this+0x66]
+//         004c7460     MOV        this,dword ptr [EAX + 0x54]
+//         004c7463     MOV        EAX,dword ptr [EAX + 0x28]
+//         004c7466     MOV        EDX,dword ptr [this->_padding_ + EDX*0x4]
+//         004c7469     MOV        this,dword ptr [EAX + 0x8dc4]
+//         004c746f     PUSH       EDX
+//         004c7470     CALL       RGE_Zone_Map_List::get_zone_map                  RGE_Zone_Map * get_zone_map(RGE_Zone_Map_List
+//                              stat_obj.cpp:4674 (2)
+//         004c7475     JMP        LAB_004c748c
+//                               LAB_004c7477                                                 XREF[1]:     004c744b(j)
+//                              stat_obj.cpp:4675 (21)
+//         004c7477     MOV        this,dword ptr [ECX + this->owner]
+//         004c747a     PUSH       EAX
+//         004c747b     MOV        EDX,dword ptr [ECX + this->world_y]
+//         004c747e     MOV        EAX,dword ptr [EDX + 0x28]
+//         004c7481     MOV        this,dword ptr [EAX + 0x8dc4]
+//         004c7487     CALL       RGE_Zone_Map_List::get_zone_map                  RGE_Zone_Map * get_zone_map(RGE_Zone_Map_List
+//                               LAB_004c748c                                                 XREF[1]:     004c7475(j)
+//                              stat_obj.cpp:4676 (4)
+//         004c748c     TEST       EAX,EAX
+//         004c748e     JZ         LAB_004c749e
+//                              stat_obj.cpp:4677 (9)
+//         004c7490     PUSH       ESI
+//         004c7491     PUSH       EDI
+//         004c7492     MOV        this,EAX
+//         004c7494     CALL       RGE_Zone_Map::get_zone_info                      uchar get_zone_info(RGE_Zone_Map * this, long
+//                              stat_obj.cpp:4679 (12)
+//         004c7499     POP        EDI
+//         004c749a     POP        ESI
+//         004c749b     RET        0x8
+//                               LAB_004c749e                                                 XREF[3]:     004c7438(j), 004c7440(j),
+//                                                                                                         004c748e(j)
+//         004c749e     POP        EDI
+//         004c749f     XOR        AL,AL
+//         004c74a1     POP        ESI
+//         004c74a2     RET        0x8
+//         004c74a5     ??         90h
+//         004c74a6     NOP
+//         004c74a7     NOP
+//         004c74a8     NOP
+//         004c74a9     NOP
+//         004c74aa     NOP
+//         004c74ab     NOP
+//         004c74ac     NOP
+//         004c74ad     NOP
+//         004c74ae     NOP
+//         004c74af     NOP
     return 0;
 }
 

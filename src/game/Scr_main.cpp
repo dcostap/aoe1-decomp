@@ -1233,30 +1233,30 @@ TRIBE_Screen_Main_Error::~TRIBE_Screen_Main_Error() {
 
 void TRIBE_Screen_Main_Error::set_text(char* param_1) {
     /* TODO: Stub */
-//                              void __thiscall set_text(TRIBE_Screen_Main_Error * this, long param_1)
+//                              void __thiscall set_text(TRIBE_Screen_Main_Error * this, char * para
 //              void              <VOID>         <RETURN>
 //              TRIBE_Screen_M    ECX:4 (auto)   this
-//              long              Stack[0x4]:4   param_1                   XREF[1]:     0049f2d6(R)
-//                               ?set_text@TRIBE_Screen_Main_Error@@QAEXJ@Z                   XREF[2]:     cancelScreen:004a2cae(c),
-//                               TRIBE_Screen_Main_Error::set_text                                         setup:00521c65(c)
-//                              Scr_main.cpp:443 (19)
-//         0049f2d0     MOV        this,dword ptr [ECX + this->message]
-//         0049f2d6     MOV        EDX,dword ptr [ESP + param_1]
-//         0049f2da     PUSH       EDX
-//         0049f2db     MOV        EAX,dword ptr [this->_padding_]
-//         0049f2dd     CALL       dword ptr [EAX + 0xe4]
-//                              Scr_main.cpp:445 (3)
-//         0049f2e3     RET        0x4
-//         0049f2e6     ??         90h
-//         0049f2e7     NOP
-//         0049f2e8     NOP
-//         0049f2e9     NOP
-//         0049f2ea     NOP
-//         0049f2eb     NOP
-//         0049f2ec     NOP
-//         0049f2ed     NOP
-//         0049f2ee     NOP
-//         0049f2ef     NOP
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0049f2b6(R)
+//                               ?set_text@TRIBE_Screen_Main_Error@@QAEXPAD@Z
+//                               TRIBE_Screen_Main_Error::set_text
+//                              Scr_main.cpp:435 (19)
+//         0049f2b0     MOV        this,dword ptr [ECX + this->message]
+//         0049f2b6     MOV        EDX,dword ptr [ESP + param_1]
+//         0049f2ba     PUSH       EDX
+//         0049f2bb     MOV        EAX,dword ptr [this->_padding_]
+//         0049f2bd     CALL       dword ptr [EAX + 0xe8]
+//                              Scr_main.cpp:437 (3)
+//         0049f2c3     RET        0x4
+//         0049f2c6     ??         90h
+//         0049f2c7     NOP
+//         0049f2c8     NOP
+//         0049f2c9     NOP
+//         0049f2ca     NOP
+//         0049f2cb     NOP
+//         0049f2cc     NOP
+//         0049f2cd     NOP
+//         0049f2ce     NOP
+//         0049f2cf     NOP
     return;
 }
 

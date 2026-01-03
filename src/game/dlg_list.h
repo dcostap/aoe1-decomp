@@ -1,5 +1,10 @@
 #pragma once
 #include "../common.h"
+#include "Pnl_txt.h"
+#include "Pnl_scbr.h"
+#include "Pnl_lst.h"
+#include "Pnl_btn.h"
+#include "pnl_dlg.h"
 
 class TListDialog : public TDialogPanel {
 public:

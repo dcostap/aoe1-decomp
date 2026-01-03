@@ -3,44 +3,280 @@
 
 RGE_Sound::RGE_Sound(_iobuf* param_1, short param_2) {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Sound(RGE_Sound * this)
+//                              undefined __thiscall RGE_Sound(RGE_Sound * this, _iobuf * param_1, s
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Sound *       ECX:4 (auto)   this
-//                               ??0RGE_Sound@@QAE@XZ
+//              _iobuf *          Stack[0x4]:4   param_1                   XREF[2]:     004bbe49(R), 004bbe98(R)
+//              short             Stack[0x8]:2   param_2                   XREF[4]:     004bbe41(R), 004bbe8b(W), 004bbef2(R), 004bbefd(W)
+//                               ??0RGE_Sound@@QAE@PAU_iobuf@@F@Z                             XREF[1]:     data_load_sounds:00540e4b(c)
 //                               RGE_Sound::RGE_Sound
-//                              Sound.cpp:94 (2)
-//         004bc070     MOV        EAX,this
-//                              Sound.cpp:95 (5)
-//         004bc072     XOR        this,this
-//         004bc074     MOV        word ptr [EAX],this
-//                              Sound.cpp:96 (4)
-//         004bc077     MOV        word ptr [EAX + 0x2],this
-//                              Sound.cpp:97 (3)
-//         004bc07b     MOV        dword ptr [EAX + 0x4],this
-//                              Sound.cpp:98 (1)
-//         004bc07e     RET
-//         004bc07f     ??         90h
+//                              Sound.cpp:35 (1)
+//         004bbe40     PUSH       EBX
+//                              Sound.cpp:38 (8)
+//         004bbe41     MOV        AX,word ptr [ESP + param_2]
+//         004bbe46     PUSH       EBP
+//         004bbe47     MOV        EBP,this
+//                              Sound.cpp:41 (31)
+//         004bbe49     MOV        this,dword ptr [ESP + param_1]
+//         004bbe4d     PUSH       ESI
+//         004bbe4e     LEA        ESI,[EBP + 0x2]
+//         004bbe51     PUSH       EDI
+//         004bbe52     PUSH       ESI
+//         004bbe53     XOR        EBX,EBX
+//         004bbe55     PUSH       s_%hd                                            = "%hd"
+//         004bbe5a     PUSH       this
+//         004bbe5b     MOV        word ptr [EBP + 0xc],AX
+//         004bbe5f     MOV        word ptr [EBP],BX
+//         004bbe63     CALL       fscanf                                           undefined fscanf()
+//                              Sound.cpp:43 (15)
+//         004bbe68     MOV        AX,word ptr [ESI]
+//         004bbe6b     ADD        ESP,0xc
+//         004bbe6e     CMP        AX,BX
+//         004bbe71     JLE        LAB_004bbf13
+//                              Sound.cpp:45 (14)
+//         004bbe77     MOVSX      EDX,AX
+//         004bbe7a     PUSH       0x24
+//         004bbe7c     PUSH       EDX
+//         004bbe7d     CALL       calloc                                           undefined calloc()
+//         004bbe82     ADD        ESP,0x8
+//                              Sound.cpp:46 (16)
+//         004bbe85     CMP        word ptr [ESI],BX
+//         004bbe88     MOV        dword ptr [EBP + 0x4],EAX
+//         004bbe8b     MOV        dword ptr [ESP + param_2],EBX
+//         004bbe8f     JLE        LAB_004bbf16
+//                               LAB_004bbe95                                                 XREF[1]:     004bbf01(j)
+//                              Sound.cpp:48 (29)
+//         004bbe95     MOV        EAX,dword ptr [EBP + 0x4]
+//         004bbe98     MOV        EDX,dword ptr [ESP + param_1]
+//         004bbe9c     ADD        EAX,EBX
+//         004bbe9e     LEA        this,[EAX + 0x14]
+//         004bbea1     PUSH       this
+//         004bbea2     PUSH       EAX
+//         004bbea3     ADD        EAX,0x10
+//         004bbea6     PUSH       EAX
+//         004bbea7     PUSH       s_%d_%s_%hd                                      = "%d %s %hd"
+//         004bbeac     PUSH       EDX
+//         004bbead     CALL       fscanf                                           undefined fscanf()
+//                              Sound.cpp:49 (53)
+//         004bbeb2     MOV        EDX,dword ptr [EBP + 0x4]
+//         004bbeb5     MOV        EDI,s_.wav                                       = 2Eh
+//         004bbeba     OR         this,0xffffffff
+//         004bbebd     XOR        EAX,EAX
+//         004bbebf     ADD        ESP,0x14
+//         004bbec2     ADD        EDX,EBX
+//         004bbec4     SCASB.RE   ES:EDI=>s_.wav                                   = 2Eh
+//                                                                                  = 00766177
+//         004bbec6     NOT        this
+//         004bbec8     SUB        EDI,this
+//         004bbeca     ADD        EBX,0x24
+//         004bbecd     MOV        ESI,EDI
+//         004bbecf     MOV        EDI,EDX
+//         004bbed1     MOV        EDX,this
+//         004bbed3     OR         this,0xffffffff
+//         004bbed6     SCASB.RE   ES:EDI
+//         004bbed8     MOV        this,EDX
+//         004bbeda     DEC        EDI
+//         004bbedb     SHR        this,0x2
+//         004bbede     MOVSD.REP  ES:EDI,ESI
+//         004bbee0     MOV        this,EDX
+//         004bbee2     AND        this,0x3
+//         004bbee5     MOVSB.REP  ES:EDI,ESI
+//                              Sound.cpp:50 (28)
+//         004bbee7     MOV        EAX,dword ptr [EBP + 0x4]
+//         004bbeea     MOV        dword ptr [EAX + EBX*0x1 + -0xc],0x0
+//         004bbef2     MOV        EAX,dword ptr [ESP + param_2]
+//         004bbef6     MOVSX      this,word ptr [EBP + 0x2]
+//         004bbefa     INC        EAX
+//         004bbefb     CMP        EAX,this
+//         004bbefd     MOV        dword ptr [ESP + param_2],EAX
+//         004bbf01     JL         LAB_004bbe95
+//                              Sound.cpp:57 (7)
+//         004bbf03     MOV        dword ptr [EBP + 0x8],0x493e0
+//                              Sound.cpp:58 (9)
+//         004bbf0a     MOV        EAX,EBP
+//         004bbf0c     POP        EDI
+//         004bbf0d     POP        ESI
+//         004bbf0e     POP        EBP
+//         004bbf0f     POP        EBX
+//         004bbf10     RET        0x8
+//                               LAB_004bbf13                                                 XREF[1]:     004bbe71(j)
+//                              Sound.cpp:54 (3)
+//         004bbf13     MOV        dword ptr [EBP + 0x4],EBX
+//                               LAB_004bbf16                                                 XREF[1]:     004bbe8f(j)
+//                              Sound.cpp:58 (16)
+//         004bbf16     POP        EDI
+//         004bbf17     MOV        dword ptr [EBP + 0x8],0x493e0
+//         004bbf1e     MOV        EAX,EBP
+//         004bbf20     POP        ESI
+//         004bbf21     POP        EBP
+//         004bbf22     POP        EBX
+//         004bbf23     RET        0x8
+//         004bbf26     ??         90h
+//         004bbf27     NOP
+//         004bbf28     NOP
+//         004bbf29     NOP
+//         004bbf2a     NOP
+//         004bbf2b     NOP
+//         004bbf2c     NOP
+//         004bbf2d     NOP
+//         004bbf2e     NOP
+//         004bbf2f     NOP
 }
 
 RGE_Sound::RGE_Sound(int param_1, TSound_Driver* param_2) {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Sound(RGE_Sound * this)
+//                              undefined __thiscall RGE_Sound(RGE_Sound * this, int param_1, TSound
 //              undefined         <UNASSIGNED>   <RETURN>
 //              RGE_Sound *       ECX:4 (auto)   this
-//                               ??0RGE_Sound@@QAE@XZ
+//              int               Stack[0x4]:4   param_1                   XREF[2]:     004bbf47(R), 004bbff3(W)
+//              TSound_Driver *   Stack[0x8]:4   param_2                   XREF[1]:     004bc00f(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     004bbff9(W), 004bc023(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     004bc04b(R)
+//                               ??0RGE_Sound@@QAE@HPAVTSound_Driver@@@Z                      XREF[1]:     init_sounds:00541a4a(c)
 //                               RGE_Sound::RGE_Sound
-//                              Sound.cpp:94 (2)
-//         004bc070     MOV        EAX,this
-//                              Sound.cpp:95 (5)
-//         004bc072     XOR        this,this
-//         004bc074     MOV        word ptr [EAX],this
-//                              Sound.cpp:96 (4)
-//         004bc077     MOV        word ptr [EAX + 0x2],this
-//                              Sound.cpp:97 (3)
-//         004bc07b     MOV        dword ptr [EAX + 0x4],this
-//                              Sound.cpp:98 (1)
-//         004bc07e     RET
-//         004bc07f     ??         90h
+//                              Sound.cpp:64 (23)
+//         004bbf30     MOV        EAX,FS:[0x0]
+//         004bbf36     PUSH       -0x1
+//         004bbf38     PUSH       FUN_0055f89b
+//         004bbf3d     PUSH       EAX
+//         004bbf3e     MOV        dword ptr FS:[0x0],ESP
+//         004bbf45     PUSH       EBX
+//         004bbf46     PUSH       EBP
+//                              Sound.cpp:67 (23)
+//         004bbf47     MOV        EBP,dword ptr [ESP + param_1]
+//         004bbf4b     PUSH       ESI
+//         004bbf4c     MOV        ESI,this
+//         004bbf4e     PUSH       EDI
+//         004bbf4f     PUSH       0x2
+//         004bbf51     LEA        EAX,[ESI + 0xc]
+//         004bbf54     PUSH       EAX
+//         004bbf55     PUSH       EBP
+//         004bbf56     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bbf5b     ADD        ESP,0xc
+//                              Sound.cpp:68 (12)
+//         004bbf5e     PUSH       0x2
+//         004bbf60     PUSH       ESI
+//         004bbf61     PUSH       EBP
+//         004bbf62     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bbf67     ADD        ESP,0xc
+//                              Sound.cpp:69 (15)
+//         004bbf6a     LEA        EDI,[ESI + 0x2]
+//         004bbf6d     PUSH       0x2
+//         004bbf6f     PUSH       EDI
+//         004bbf70     PUSH       EBP
+//         004bbf71     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bbf76     ADD        ESP,0xc
+//                              Sound.cpp:70 (12)
+//         004bbf79     LEA        this,[ESI + 0x8]
+//         004bbf7c     PUSH       0x4
+//         004bbf7e     PUSH       this
+//         004bbf7f     PUSH       EBP
+//         004bbf80     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              Sound.cpp:72 (17)
+//         004bbf85     MOV        AX,word ptr [EDI]
+//         004bbf88     XOR        EBX,EBX
+//         004bbf8a     ADD        ESP,0xc
+//         004bbf8d     CMP        AX,BX
+//         004bbf90     JLE        LAB_004bc048
+//                              Sound.cpp:74 (14)
+//         004bbf96     MOVSX      EDX,AX
+//         004bbf99     PUSH       0x24
+//         004bbf9b     PUSH       EDX
+//         004bbf9c     CALL       calloc                                           undefined calloc()
+//         004bbfa1     ADD        ESP,0x8
+//                              Sound.cpp:75 (12)
+//         004bbfa4     CMP        word ptr [EDI],BX
+//         004bbfa7     MOV        dword ptr [ESI + 0x4],EAX
+//         004bbfaa     JLE        LAB_004bc04b
+//                              Sound.cpp:89 (2)
+//         004bbfb0     XOR        EDI,EDI
+//                               LAB_004bbfb2                                                 XREF[1]:     004bc040(j)
+//                              Sound.cpp:77 (14)
+//         004bbfb2     MOV        EAX,dword ptr [ESI + 0x4]
+//         004bbfb5     PUSH       0xd
+//         004bbfb7     ADD        EAX,EDI
+//         004bbfb9     PUSH       EAX
+//         004bbfba     PUSH       EBP
+//         004bbfbb     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              Sound.cpp:78 (19)
+//         004bbfc0     MOV        this,dword ptr [ESI + 0x4]
+//         004bbfc3     ADD        ESP,0xc
+//         004bbfc6     LEA        EDX,[ECX + EDI*0x1 + this+0x10]
+//         004bbfca     PUSH       0x4
+//         004bbfcc     PUSH       EDX
+//         004bbfcd     PUSH       EBP
+//         004bbfce     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//                              Sound.cpp:79 (22)
+//         004bbfd3     MOV        EAX,dword ptr [ESI + 0x4]
+//         004bbfd6     ADD        ESP,0xc
+//         004bbfd9     LEA        this,[EAX + EDI*0x1 + 0x14]
+//         004bbfdd     PUSH       0x2
+//         004bbfdf     PUSH       this
+//         004bbfe0     PUSH       EBP
+//         004bbfe1     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+//         004bbfe6     ADD        ESP,0xc
+//                              Sound.cpp:81 (70)
+//         004bbfe9     PUSH       0x3c
+//         004bbfeb     CALL       operator_new                                     void * operator_new(uint param_1)
+//         004bbff0     ADD        ESP,0x4
+//         004bbff3     MOV        dword ptr [ESP + param_1],EAX
+//         004bbff7     TEST       EAX,EAX
+//         004bbff9     MOV        dword ptr [ESP + local_4],0x0
+//         004bc001     JZ         LAB_004bc01d
+//         004bc003     MOV        EDX,dword ptr [ESI + 0x4]
+//         004bc006     LEA        this,[EDX + EDI*0x1]
+//         004bc009     MOV        EDX,dword ptr [EDX + EDI*0x1 + 0x10]
+//         004bc00d     PUSH       EDX
+//         004bc00e     PUSH       this
+//         004bc00f     MOV        this,dword ptr [ESP + param_2]
+//         004bc013     PUSH       this
+//         004bc014     MOV        this,EAX
+//         004bc016     CALL       TDigital::TDigital                               undefined TDigital(TDigital * this, TSound_Dr
+//         004bc01b     JMP        LAB_004bc01f
+//                               LAB_004bc01d                                                 XREF[1]:     004bc001(j)
+//         004bc01d     XOR        EAX,EAX
+//                               LAB_004bc01f                                                 XREF[1]:     004bc01b(j)
+//         004bc01f     MOV        EDX,dword ptr [ESI + 0x4]
+//         004bc022     INC        EBX
+//         004bc023     MOV        dword ptr [ESP + local_4],0xffffffff
+//         004bc02b     MOV        dword ptr [EDX + EDI*0x1 + 0x18],EAX
+//                              Sound.cpp:83 (23)
+//         004bc02f     MOV        EAX,dword ptr [ESI + 0x4]
+//         004bc032     MOV        byte ptr [EAX + EDI*0x1 + 0x1c],0x2
+//         004bc037     ADD        EDI,0x24
+//         004bc03a     MOVSX      this,word ptr [ESI + 0x2]
+//         004bc03e     CMP        EBX,this
+//         004bc040     JL         LAB_004bbfb2
+//                              Sound.cpp:87 (2)
+//         004bc046     JMP        LAB_004bc04b
+//                               LAB_004bc048                                                 XREF[1]:     004bbf90(j)
+//                              Sound.cpp:88 (3)
+//         004bc048     MOV        dword ptr [ESI + 0x4],EBX
+//                               LAB_004bc04b                                                 XREF[2]:     004bbfaa(j), 004bc046(j)
+//                              Sound.cpp:89 (23)
+//         004bc04b     MOV        this,dword ptr [ESP + local_c]
+//         004bc04f     MOV        EAX,ESI
+//         004bc051     POP        EDI
+//         004bc052     POP        ESI
+//         004bc053     POP        EBP
+//         004bc054     MOV        dword ptr FS:[0x0],this
+//         004bc05b     POP        EBX
+//         004bc05c     ADD        ESP,0xc
+//         004bc05f     RET        0x8
+//         004bc062     ??         90h
+//         004bc063     NOP
+//         004bc064     NOP
+//         004bc065     NOP
+//         004bc066     NOP
+//         004bc067     NOP
+//         004bc068     NOP
+//         004bc069     NOP
+//         004bc06a     NOP
+//         004bc06b     NOP
+//         004bc06c     NOP
+//         004bc06d     NOP
+//         004bc06e     NOP
+//         004bc06f     NOP
 }
 
 RGE_Sound::RGE_Sound() {

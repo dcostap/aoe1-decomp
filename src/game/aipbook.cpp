@@ -3,49 +3,34 @@
 
 AIPlayPhaseCommand::AIPlayPhaseCommand() {
     /* TODO: Stub */
-//                              undefined __thiscall AIPlayPhaseCommand(AIPlayPhaseCommand * this, u
+//                              undefined __thiscall AIPlayPhaseCommand(AIPlayPhaseCommand * this)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              AIPlayPhaseCom    ECX:4 (auto)   this
-//              uchar             Stack[0x4]:1   param_1                   XREF[1]:     0040e980(R)
-//              char *            Stack[0x8]:4   param_2                   XREF[1]:     0040e987(R)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     0040e995(R)
-//              int               Stack[0x10]:4  param_4                   XREF[1]:     0040e9a0(R)
-//              int               Stack[0x14]:4  param_5                   XREF[1]:     0040e999(R)
-//                               ??0AIPlayPhaseCommand@@QAE@EPADHHH@Z                         XREF[1]:     loadPlays:00410dfd(c)
+//                               ??0AIPlayPhaseCommand@@QAE@XZ                                XREF[1]:     AIPlayPhase:0040f0ae(c)
 //                               AIPlayPhaseCommand::AIPlayPhaseCommand
-//                              aipbook.cpp:48 (45)
-//         0040e980     MOV        AL,byte ptr [ESP + param_1]
-//         0040e984     PUSH       ESI
-//         0040e985     MOV        ESI,this
-//         0040e987     MOV        this,dword ptr [ESP + param_2]
-//         0040e98b     PUSH       this
-//         0040e98c     MOV        this,ESI
-//         0040e98e     MOV        byte ptr [ESI],AL
-//         0040e990     CALL       AIPlayPhaseCommand::convertToIntType             uchar convertToIntType(AIPlayPhaseCommand * t
-//         0040e995     MOV        EDX,dword ptr [ESP + param_3]
-//         0040e999     MOV        this,dword ptr [ESP + param_5]
-//         0040e99d     MOV        byte ptr [ESI + 0x1],AL
-//         0040e9a0     MOV        EAX,dword ptr [ESP + param_4]
-//         0040e9a4     MOV        dword ptr [ESI + 0x8],EAX
-//         0040e9a7     MOV        dword ptr [ESI + 0x4],EDX
-//         0040e9aa     MOV        dword ptr [ESI + 0xc],this
-//                              aipbook.cpp:49 (6)
-//         0040e9ad     MOV        EAX,ESI
-//         0040e9af     POP        ESI
-//         0040e9b0     RET        0x14
-//         0040e9b3     ??         90h
-//         0040e9b4     NOP
-//         0040e9b5     NOP
-//         0040e9b6     NOP
-//         0040e9b7     NOP
-//         0040e9b8     NOP
-//         0040e9b9     NOP
-//         0040e9ba     NOP
-//         0040e9bb     NOP
-//         0040e9bc     NOP
-//         0040e9bd     NOP
-//         0040e9be     NOP
-//         0040e9bf     NOP
+//                              aipbook.cpp:26 (18)
+//         0040e930     MOV        EAX,this
+//         0040e932     XOR        this,this
+//         0040e934     MOV        byte ptr [EAX],this
+//         0040e936     MOV        byte ptr [EAX + 0x1],this
+//         0040e939     MOV        dword ptr [EAX + 0x4],this
+//         0040e93c     MOV        dword ptr [EAX + 0x8],this
+//         0040e93f     MOV        dword ptr [EAX + 0xc],this
+//                              aipbook.cpp:27 (1)
+//         0040e942     RET
+//         0040e943     ??         90h
+//         0040e944     NOP
+//         0040e945     NOP
+//         0040e946     NOP
+//         0040e947     NOP
+//         0040e948     NOP
+//         0040e949     NOP
+//         0040e94a     NOP
+//         0040e94b     NOP
+//         0040e94c     NOP
+//         0040e94d     NOP
+//         0040e94e     NOP
+//         0040e94f     NOP
 }
 
 AIPlayPhaseCommand::AIPlayPhaseCommand(uchar param_1, uchar param_2, int param_3, int param_4, int param_5) {
@@ -53,46 +38,36 @@ AIPlayPhaseCommand::AIPlayPhaseCommand(uchar param_1, uchar param_2, int param_3
 //                              undefined __thiscall AIPlayPhaseCommand(AIPlayPhaseCommand * this, u
 //              undefined         <UNASSIGNED>   <RETURN>
 //              AIPlayPhaseCom    ECX:4 (auto)   this
-//              uchar             Stack[0x4]:1   param_1                   XREF[1]:     0040e980(R)
-//              char *            Stack[0x8]:4   param_2                   XREF[1]:     0040e987(R)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     0040e995(R)
-//              int               Stack[0x10]:4  param_4                   XREF[1]:     0040e9a0(R)
-//              int               Stack[0x14]:4  param_5                   XREF[1]:     0040e999(R)
-//                               ??0AIPlayPhaseCommand@@QAE@EPADHHH@Z                         XREF[1]:     loadPlays:00410dfd(c)
+//              uchar             Stack[0x4]:1   param_1                   XREF[1]:     0040e956(R)
+//              uchar             Stack[0x8]:1   param_2                   XREF[1]:     0040e950(R)
+//              int               Stack[0xc]:4   param_3                   XREF[1]:     0040e95c(R)
+//              int               Stack[0x10]:4  param_4                   XREF[1]:     0040e963(R)
+//              int               Stack[0x14]:4  param_5                   XREF[1]:     0040e96a(R)
+//                               ??0AIPlayPhaseCommand@@QAE@EEHHH@Z                           XREF[1]:     loadPlays:00411259(c)
 //                               AIPlayPhaseCommand::AIPlayPhaseCommand
-//                              aipbook.cpp:48 (45)
-//         0040e980     MOV        AL,byte ptr [ESP + param_1]
-//         0040e984     PUSH       ESI
-//         0040e985     MOV        ESI,this
-//         0040e987     MOV        this,dword ptr [ESP + param_2]
-//         0040e98b     PUSH       this
-//         0040e98c     MOV        this,ESI
-//         0040e98e     MOV        byte ptr [ESI],AL
-//         0040e990     CALL       AIPlayPhaseCommand::convertToIntType             uchar convertToIntType(AIPlayPhaseCommand * t
-//         0040e995     MOV        EDX,dword ptr [ESP + param_3]
-//         0040e999     MOV        this,dword ptr [ESP + param_5]
-//         0040e99d     MOV        byte ptr [ESI + 0x1],AL
-//         0040e9a0     MOV        EAX,dword ptr [ESP + param_4]
-//         0040e9a4     MOV        dword ptr [ESI + 0x8],EAX
-//         0040e9a7     MOV        dword ptr [ESI + 0x4],EDX
-//         0040e9aa     MOV        dword ptr [ESI + 0xc],this
-//                              aipbook.cpp:49 (6)
-//         0040e9ad     MOV        EAX,ESI
-//         0040e9af     POP        ESI
-//         0040e9b0     RET        0x14
-//         0040e9b3     ??         90h
-//         0040e9b4     NOP
-//         0040e9b5     NOP
-//         0040e9b6     NOP
-//         0040e9b7     NOP
-//         0040e9b8     NOP
-//         0040e9b9     NOP
-//         0040e9ba     NOP
-//         0040e9bb     NOP
-//         0040e9bc     NOP
-//         0040e9bd     NOP
-//         0040e9be     NOP
-//         0040e9bf     NOP
+//                              aipbook.cpp:37 (36)
+//         0040e950     MOV        DL,byte ptr [ESP + param_2]
+//         0040e954     MOV        EAX,this
+//         0040e956     MOV        this,byte ptr [ESP + param_1]
+//         0040e95a     MOV        byte ptr [EAX],this
+//         0040e95c     MOV        this,dword ptr [ESP + param_3]
+//         0040e960     MOV        byte ptr [EAX + 0x1],DL
+//         0040e963     MOV        EDX,dword ptr [ESP + param_4]
+//         0040e967     MOV        dword ptr [EAX + 0x4],this
+//         0040e96a     MOV        this,dword ptr [ESP + param_5]
+//         0040e96e     MOV        dword ptr [EAX + 0x8],EDX
+//         0040e971     MOV        dword ptr [EAX + 0xc],this
+//                              aipbook.cpp:38 (3)
+//         0040e974     RET        0x14
+//         0040e977     ??         90h
+//         0040e978     NOP
+//         0040e979     NOP
+//         0040e97a     NOP
+//         0040e97b     NOP
+//         0040e97c     NOP
+//         0040e97d     NOP
+//         0040e97e     NOP
+//         0040e97f     NOP
 }
 
 AIPlayPhaseCommand::AIPlayPhaseCommand(uchar param_1, char* param_2, int param_3, int param_4, int param_5) {
@@ -574,90 +549,65 @@ char* AIPlayPhaseCommand::convertToNameType(uchar param_1) {
 
 AIPlayPhaseTrigger::AIPlayPhaseTrigger() {
     /* TODO: Stub */
-//                              undefined __thiscall AIPlayPhaseTrigger(AIPlayPhaseTrigger * this, c
+//                              undefined __thiscall AIPlayPhaseTrigger(AIPlayPhaseTrigger * this)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              AIPlayPhaseTri    ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0040ecc0(R)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     0040eccd(R)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     0040ecd1(R)
-//              uchar             Stack[0x10]:1  param_4                   XREF[1]:     0040ecd7(R)
-//              uchar             Stack[0x14]:1  param_5                   XREF[1]:     0040ecde(R)
-//              int               Stack[0x18]:4  param_6                   XREF[1]:     0040ece5(R)
-//                               ??0AIPlayPhaseTrigger@@QAE@PADHHEEH@Z                        XREF[2]:     loadPlays:00410eca(c),
-//                               AIPlayPhaseTrigger::AIPlayPhaseTrigger                                    loadPlays:00410f9f(c)
-//                              aipbook.cpp:131 (50)
-//         0040ecc0     MOV        EAX,dword ptr [ESP + param_1]
-//         0040ecc4     PUSH       ESI
-//         0040ecc5     MOV        ESI,this
-//         0040ecc7     PUSH       EAX
-//         0040ecc8     CALL       AIPlayPhaseTrigger::convertToIntType             uchar convertToIntType(AIPlayPhaseTrigger * t
-//         0040eccd     MOV        this,dword ptr [ESP + param_2]
-//         0040ecd1     MOV        EDX,dword ptr [ESP + param_3]
-//         0040ecd5     MOV        byte ptr [ESI],AL
-//         0040ecd7     MOV        AL,byte ptr [ESP + param_4]
-//         0040ecdb     MOV        dword ptr [ESI + 0x4],this
-//         0040ecde     MOV        this,byte ptr [ESP + param_5]
-//         0040ece2     MOV        dword ptr [ESI + 0x8],EDX
-//         0040ece5     MOV        EDX,dword ptr [ESP + param_6]
-//         0040ece9     MOV        byte ptr [ESI + 0xc],AL
-//         0040ecec     MOV        byte ptr [ESI + 0xd],this
-//         0040ecef     MOV        dword ptr [ESI + 0x10],EDX
-//                              aipbook.cpp:132 (6)
-//         0040ecf2     MOV        EAX,ESI
-//         0040ecf4     POP        ESI
-//         0040ecf5     RET        0x18
-//         0040ecf8     ??         90h
-//         0040ecf9     NOP
-//         0040ecfa     NOP
-//         0040ecfb     NOP
-//         0040ecfc     NOP
-//         0040ecfd     NOP
-//         0040ecfe     NOP
-//         0040ecff     NOP
+//                               ??0AIPlayPhaseTrigger@@QAE@XZ                                XREF[1]:     AIPlayPhase:0040f0c3(c)
+//                               AIPlayPhaseTrigger::AIPlayPhaseTrigger
+//                              aipbook.cpp:107 (21)
+//         0040ec70     MOV        EAX,this
+//         0040ec72     XOR        DL,DL
+//         0040ec74     OR         this,0xffffffff
+//         0040ec77     MOV        byte ptr [EAX],DL
+//         0040ec79     MOV        dword ptr [EAX + 0x4],this
+//         0040ec7c     MOV        dword ptr [EAX + 0x8],this
+//         0040ec7f     MOV        byte ptr [EAX + 0xc],DL
+//         0040ec82     MOV        byte ptr [EAX + 0xd],DL
+//                              aipbook.cpp:108 (1)
+//         0040ec85     RET
+//         0040ec86     ??         90h
+//         0040ec87     NOP
+//         0040ec88     NOP
+//         0040ec89     NOP
+//         0040ec8a     NOP
+//         0040ec8b     NOP
+//         0040ec8c     NOP
+//         0040ec8d     NOP
+//         0040ec8e     NOP
+//         0040ec8f     NOP
 }
 
 AIPlayPhaseTrigger::AIPlayPhaseTrigger(uchar param_1, int param_2, int param_3, uchar param_4, uchar param_5, int param_6) {
     /* TODO: Stub */
-//                              undefined __thiscall AIPlayPhaseTrigger(AIPlayPhaseTrigger * this, c
+//                              undefined __thiscall AIPlayPhaseTrigger(AIPlayPhaseTrigger * this, u
 //              undefined         <UNASSIGNED>   <RETURN>
 //              AIPlayPhaseTri    ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0040ecc0(R)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     0040eccd(R)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     0040ecd1(R)
-//              uchar             Stack[0x10]:1  param_4                   XREF[1]:     0040ecd7(R)
-//              uchar             Stack[0x14]:1  param_5                   XREF[1]:     0040ecde(R)
-//              int               Stack[0x18]:4  param_6                   XREF[1]:     0040ece5(R)
-//                               ??0AIPlayPhaseTrigger@@QAE@PADHHEEH@Z                        XREF[2]:     loadPlays:00410eca(c),
-//                               AIPlayPhaseTrigger::AIPlayPhaseTrigger                                    loadPlays:00410f9f(c)
-//                              aipbook.cpp:131 (50)
-//         0040ecc0     MOV        EAX,dword ptr [ESP + param_1]
-//         0040ecc4     PUSH       ESI
-//         0040ecc5     MOV        ESI,this
-//         0040ecc7     PUSH       EAX
-//         0040ecc8     CALL       AIPlayPhaseTrigger::convertToIntType             uchar convertToIntType(AIPlayPhaseTrigger * t
-//         0040eccd     MOV        this,dword ptr [ESP + param_2]
-//         0040ecd1     MOV        EDX,dword ptr [ESP + param_3]
-//         0040ecd5     MOV        byte ptr [ESI],AL
-//         0040ecd7     MOV        AL,byte ptr [ESP + param_4]
-//         0040ecdb     MOV        dword ptr [ESI + 0x4],this
-//         0040ecde     MOV        this,byte ptr [ESP + param_5]
-//         0040ece2     MOV        dword ptr [ESI + 0x8],EDX
-//         0040ece5     MOV        EDX,dword ptr [ESP + param_6]
-//         0040ece9     MOV        byte ptr [ESI + 0xc],AL
-//         0040ecec     MOV        byte ptr [ESI + 0xd],this
-//         0040ecef     MOV        dword ptr [ESI + 0x10],EDX
-//                              aipbook.cpp:132 (6)
-//         0040ecf2     MOV        EAX,ESI
-//         0040ecf4     POP        ESI
-//         0040ecf5     RET        0x18
-//         0040ecf8     ??         90h
-//         0040ecf9     NOP
-//         0040ecfa     NOP
-//         0040ecfb     NOP
-//         0040ecfc     NOP
-//         0040ecfd     NOP
-//         0040ecfe     NOP
-//         0040ecff     NOP
+//              uchar             Stack[0x4]:1   param_1                   XREF[1]:     0040ec96(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     0040ec90(R)
+//              int               Stack[0xc]:4   param_3                   XREF[1]:     0040ec9c(R)
+//              uchar             Stack[0x10]:1  param_4                   XREF[1]:     0040eca3(R)
+//              uchar             Stack[0x14]:1  param_5                   XREF[1]:     0040ecaa(R)
+//              int               Stack[0x18]:4  param_6                   XREF[1]:     0040ecb1(R)
+//                               ??0AIPlayPhaseTrigger@@QAE@EHHEEH@Z
+//                               AIPlayPhaseTrigger::AIPlayPhaseTrigger
+//                              aipbook.cpp:119 (43)
+//         0040ec90     MOV        EDX,dword ptr [ESP + param_2]
+//         0040ec94     MOV        EAX,this
+//         0040ec96     MOV        this,byte ptr [ESP + param_1]
+//         0040ec9a     MOV        byte ptr [EAX],this
+//         0040ec9c     MOV        this,dword ptr [ESP + param_3]
+//         0040eca0     MOV        dword ptr [EAX + 0x4],EDX
+//         0040eca3     MOV        DL,byte ptr [ESP + param_4]
+//         0040eca7     MOV        dword ptr [EAX + 0x8],this
+//         0040ecaa     MOV        this,byte ptr [ESP + param_5]
+//         0040ecae     MOV        byte ptr [EAX + 0xc],DL
+//         0040ecb1     MOV        EDX,dword ptr [ESP + param_6]
+//         0040ecb5     MOV        byte ptr [EAX + 0xd],this
+//         0040ecb8     MOV        dword ptr [EAX + 0x10],EDX
+//                              aipbook.cpp:120 (3)
+//         0040ecbb     RET        0x18
+//         0040ecbe     ??         90h
+//         0040ecbf     NOP
 }
 
 AIPlayPhaseTrigger::AIPlayPhaseTrigger(char* param_1, int param_2, int param_3, uchar param_4, uchar param_5, int param_6) {
@@ -6077,106 +6027,49 @@ int AIPlayBook::loadPlays(char* param_1) {
 
 AIPlay* AIPlayBook::play(int param_1) {
     /* TODO: Stub */
-//                              AIPlay * __thiscall play(AIPlayBook * this, char * param_1)
+//                              AIPlay * __thiscall play(AIPlayBook * this, int param_1)
 //              AIPlay *          EAX:4          <RETURN>
 //              AIPlayBook *      ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     00411389(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     0041137a(W), 004113d1(R)
-//                               ?play@AIPlayBook@@QAEPAVAIPlay@@PAD@Z
-//                               AIPlayBook::play
-//                              aipbook.cpp:1304 (5)
-//         00411370     PUSH       this
-//         00411371     PUSH       EBX
-//         00411372     PUSH       EBP
-//         00411373     PUSH       ESI
-//         00411374     PUSH       EDI
-//                              aipbook.cpp:1305 (9)
-//         00411375     MOV        EDI,dword ptr [ECX + this->plays]
-//         00411378     TEST       EDI,EDI
-//         0041137a     MOV        dword ptr [ESP + local_4],EDI
-//                              aipbook.cpp:1306 (2)
-//         0041137e     JZ         LAB_004113e9
-//                              aipbook.cpp:1308 (9)
-//         00411380     MOV        EDX,dword ptr [ECX + this->numberPlaysValue]
-//         00411383     XOR        EBP,EBP
-//         00411385     TEST       EDX,EDX
-//         00411387     JLE        LAB_004113e9
-//                               LAB_00411389                                                 XREF[1]:     004113c5(j)
-//                              aipbook.cpp:1309 (62)
-//         00411389     MOV        ESI,dword ptr [ESP + param_1]
-//         0041138d     MOV        EAX,EDI
-//                               LAB_0041138f                                                 XREF[1]:     004113ad(j)
-//         0041138f     MOV        BL,byte ptr [EAX]
-//         00411391     MOV        this,BL
-//         00411393     CMP        BL,byte ptr [ESI]
-//         00411395     JNZ        LAB_004113b3
-//         00411397     TEST       this,this
-//         00411399     JZ         LAB_004113af
-//         0041139b     MOV        BL,byte ptr [EAX + 0x1]
-//         0041139e     MOV        this,BL
-//         004113a0     CMP        BL,byte ptr [ESI + 0x1]
-//         004113a3     JNZ        LAB_004113b3
-//         004113a5     ADD        EAX,0x2
-//         004113a8     ADD        ESI,0x2
-//         004113ab     TEST       this,this
-//         004113ad     JNZ        LAB_0041138f
-//                               LAB_004113af                                                 XREF[1]:     00411399(j)
-//         004113af     XOR        EAX,EAX
-//         004113b1     JMP        LAB_004113b8
-//                               LAB_004113b3                                                 XREF[2]:     00411395(j), 004113a3(j)
-//         004113b3     SBB        EAX,EAX
-//         004113b5     SBB        EAX,-0x1
-//                               LAB_004113b8                                                 XREF[1]:     004113b1(j)
-//         004113b8     TEST       EAX,EAX
-//         004113ba     JZ         LAB_004113d1
-//         004113bc     INC        EBP
-//         004113bd     ADD        EDI,0x608
-//         004113c3     CMP        EBP,EDX
-//         004113c5     JL         LAB_00411389
-//                              aipbook.cpp:1311 (2)
-//         004113c7     XOR        EAX,EAX
-//                              aipbook.cpp:1312 (8)
-//         004113c9     POP        EDI
-//         004113ca     POP        ESI
-//         004113cb     POP        EBP
-//         004113cc     POP        EBX
-//         004113cd     POP        this
-//         004113ce     RET        0x4
-//                               LAB_004113d1                                                 XREF[1]:     004113ba(j)
-//                              aipbook.cpp:1310 (16)
-//         004113d1     MOV        this,dword ptr [ESP + local_4]
-//         004113d5     LEA        EAX,[EBP + EBP*0x2]
-//         004113d9     SHL        EAX,0x6
-//         004113dc     ADD        EAX,EBP
-//         004113de     LEA        EAX,[this->_padding_ + EAX*0x8]
-//                              aipbook.cpp:1312 (18)
-//         004113e1     POP        EDI
-//         004113e2     POP        ESI
-//         004113e3     POP        EBP
-//         004113e4     POP        EBX
-//         004113e5     POP        this
-//         004113e6     RET        0x4
-//                               LAB_004113e9                                                 XREF[2]:     0041137e(j), 00411387(j)
-//         004113e9     POP        EDI
-//         004113ea     POP        ESI
-//         004113eb     POP        EBP
-//         004113ec     XOR        EAX,EAX
-//         004113ee     POP        EBX
-//         004113ef     POP        this
-//         004113f0     RET        0x4
-//         004113f3     ??         90h
-//         004113f4     NOP
-//         004113f5     NOP
-//         004113f6     NOP
-//         004113f7     NOP
-//         004113f8     NOP
-//         004113f9     NOP
-//         004113fa     NOP
-//         004113fb     NOP
-//         004113fc     NOP
-//         004113fd     NOP
-//         004113fe     NOP
-//         004113ff     NOP
+//              int               Stack[0x4]:4   param_1                   XREF[1]:     00411347(R)
+//                               ?play@AIPlayBook@@QAEPAVAIPlay@@H@Z                          XREF[8]:     fillGroups:0040f559(c),
+//                               AIPlayBook::play                                                          updateGroup:00414070(c),
+//                                                                                                         selectNewPlayPhase:00414837(c),
+//                                                                                                         processOrder:00417ba4(c),
+//                                                                                                         processGroupNotify:00419538(c),
+//                                                                                                         sendPlayCommand:0046f077(c),
+//                                                                                                         sendPlayCommand:0046f161(c),
+//                                                                                                         objectToAttackWithPlay:004dc526(c)
+//                              aipbook.cpp:1295 (20)
+//         00411340     MOV        EDX,dword ptr [ECX + this->plays]
+//         00411343     TEST       EDX,EDX
+//         00411345     JZ         LAB_00411362
+//         00411347     MOV        EAX,dword ptr [ESP + param_1]
+//         0041134b     TEST       EAX,EAX
+//         0041134d     JL         LAB_00411362
+//         0041134f     CMP        EAX,dword ptr [ECX + this->numberPlaysValue]
+//         00411352     JGE        LAB_00411362
+//                              aipbook.cpp:1297 (11)
+//         00411354     LEA        this,[EAX + EAX*0x2]
+//         00411357     SHL        this,0x6
+//         0041135a     ADD        this,EAX
+//         0041135c     LEA        EAX,[EDX + this->_padding_*0x8]
+//                              aipbook.cpp:1299 (3)
+//         0041135f     RET        0x4
+//                               LAB_00411362                                                 XREF[3]:     00411345(j), 0041134d(j),
+//                                                                                                         00411352(j)
+//                              aipbook.cpp:1298 (2)
+//         00411362     XOR        EAX,EAX
+//                              aipbook.cpp:1299 (3)
+//         00411364     RET        0x4
+//         00411367     ??         90h
+//         00411368     NOP
+//         00411369     NOP
+//         0041136a     NOP
+//         0041136b     NOP
+//         0041136c     NOP
+//         0041136d     NOP
+//         0041136e     NOP
+//         0041136f     NOP
     return 0;
 }
 

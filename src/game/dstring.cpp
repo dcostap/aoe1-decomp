@@ -3,158 +3,132 @@
 
 DString::DString() {
     /* TODO: Stub */
-//                              undefined __thiscall DString(DString * this, char * param_1)
+//                              undefined __thiscall DString(DString * this)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              DString *         ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     00446692(R)
-//                               ??0DString@@QAE@PBD@Z                                        XREF[6]:     word:00446fb1(c),
-//                               DString::DString                                                          subString:004471a3(c),
-//                                                                                                         asUppercase:00447488(c),
-//                                                                                                         asLowercase:00447548(c),
-//                                                                                                         DKeyString:004475f2(c),
-//                                                                                                         DKeyString:00447607(c)
-//                              dstring.cpp:54 (28)
-//         00446690     PUSH       EBX
-//         00446691     PUSH       ESI
-//         00446692     MOV        ESI,dword ptr [ESP + param_1]
-//         00446696     MOV        EBX,this
-//         00446698     PUSH       EDI
-//         00446699     MOV        EDI,ESI
-//         0044669b     OR         this,0xffffffff
-//         0044669e     XOR        EAX,EAX
-//         004466a0     SCASB.RE   ES:EDI
-//         004466a2     NOT        this
-//         004466a4     DEC        this
-//         004466a5     MOV        dword ptr [EBX + 0x8],0xffffffff
-//                              dstring.cpp:55 (13)
-//         004466ac     CMP        this,EAX
-//         004466ae     MOV        dword ptr [EBX + 0x4],this
-//         004466b1     MOV        dword ptr [EBX + 0xc],EAX
-//         004466b4     MOV        dword ptr [EBX + 0x10],EAX
-//         004466b7     JLE        LAB_004466ee
-//                              dstring.cpp:56 (9)
-//         004466b9     INC        this
-//         004466ba     PUSH       this
-//         004466bb     CALL       malloc                                           undefined malloc()
-//         004466c0     MOV        EDX,EAX
-//                              dstring.cpp:57 (31)
-//         004466c2     MOV        EDI,ESI
-//         004466c4     OR         this,0xffffffff
-//         004466c7     XOR        EAX,EAX
-//         004466c9     ADD        ESP,0x4
-//         004466cc     MOV        dword ptr [EBX],EDX
-//         004466ce     SCASB.RE   ES:EDI
-//         004466d0     NOT        this
-//         004466d2     SUB        EDI,this
-//         004466d4     MOV        EAX,this
-//         004466d6     MOV        ESI,EDI
-//         004466d8     MOV        EDI,EDX
-//         004466da     SHR        this,0x2
-//         004466dd     MOVSD.REP  ES:EDI,ESI
-//         004466df     MOV        this,EAX
-//                              dstring.cpp:61 (13)
-//         004466e1     MOV        EAX,EBX
-//         004466e3     AND        this,0x3
-//         004466e6     MOVSB.REP  ES:EDI,ESI
-//         004466e8     POP        EDI
-//         004466e9     POP        ESI
-//         004466ea     POP        EBX
-//         004466eb     RET        0x4
-//                               LAB_004466ee                                                 XREF[1]:     004466b7(j)
-//                              dstring.cpp:60 (2)
-//         004466ee     MOV        dword ptr [EBX],EAX
-//                              dstring.cpp:61 (8)
-//         004466f0     POP        EDI
-//         004466f1     MOV        EAX,EBX
-//         004466f3     POP        ESI
-//         004466f4     POP        EBX
-//         004466f5     RET        0x4
-//         004466f8     ??         90h
-//         004466f9     NOP
-//         004466fa     NOP
-//         004466fb     NOP
-//         004466fc     NOP
-//         004466fd     NOP
-//         004466fe     NOP
-//         004466ff     NOP
+//                               ??0DString@@QAE@XZ
+//                               DString::DString
+//                              dstring.cpp:31 (7)
+//         004465d0     PUSH       EBX
+//         004465d1     PUSH       ESI
+//         004465d2     MOV        EBX,this
+//         004465d4     PUSH       EDI
+//         004465d5     XOR        EAX,EAX
+//                              dstring.cpp:32 (27)
+//         004465d7     PUSH       0x1
+//         004465d9     MOV        dword ptr [EBX],EAX
+//         004465db     MOV        dword ptr [EBX + 0x4],EAX
+//         004465de     MOV        dword ptr [EBX + 0x8],0xffffffff
+//         004465e5     MOV        dword ptr [EBX + 0xc],EAX
+//         004465e8     MOV        dword ptr [EBX + 0x10],EAX
+//         004465eb     CALL       malloc                                           undefined malloc()
+//         004465f0     MOV        EDX,EAX
+//                              dstring.cpp:33 (34)
+//         004465f2     MOV        EDI,s_                                           = ""
+//         004465f7     OR         this,0xffffffff
+//         004465fa     XOR        EAX,EAX
+//         004465fc     ADD        ESP,0x4
+//         004465ff     MOV        dword ptr [EBX],EDX
+//         00446601     SCASB.RE   ES:EDI=>s_                                       = ""
+//         00446603     NOT        this
+//         00446605     SUB        EDI,this
+//         00446607     MOV        EAX,this
+//         00446609     MOV        ESI,EDI
+//         0044660b     MOV        EDI,EDX
+//         0044660d     SHR        this,0x2
+//         00446610     MOVSD.REP  ES:EDI,ESI
+//         00446612     MOV        this,EAX
+//                              dstring.cpp:35 (11)
+//         00446614     MOV        EAX,EBX
+//         00446616     AND        this,0x3
+//         00446619     MOVSB.REP  ES:EDI,ESI
+//         0044661b     POP        EDI
+//         0044661c     POP        ESI
+//         0044661d     POP        EBX
+//         0044661e     RET
+//         0044661f     ??         90h
 }
 
 DString::DString(DString* param_1) {
     /* TODO: Stub */
-//                              undefined __thiscall DString(DString * this, char * param_1)
+//                              undefined __thiscall DString(DString * this, DString * param_1)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              DString *         ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     00446692(R)
-//                               ??0DString@@QAE@PBD@Z                                        XREF[6]:     word:00446fb1(c),
-//                               DString::DString                                                          subString:004471a3(c),
-//                                                                                                         asUppercase:00447488(c),
-//                                                                                                         asLowercase:00447548(c),
-//                                                                                                         DKeyString:004475f2(c),
-//                                                                                                         DKeyString:00447607(c)
-//                              dstring.cpp:54 (28)
-//         00446690     PUSH       EBX
-//         00446691     PUSH       ESI
-//         00446692     MOV        ESI,dword ptr [ESP + param_1]
-//         00446696     MOV        EBX,this
-//         00446698     PUSH       EDI
-//         00446699     MOV        EDI,ESI
-//         0044669b     OR         this,0xffffffff
-//         0044669e     XOR        EAX,EAX
-//         004466a0     SCASB.RE   ES:EDI
-//         004466a2     NOT        this
-//         004466a4     DEC        this
-//         004466a5     MOV        dword ptr [EBX + 0x8],0xffffffff
-//                              dstring.cpp:55 (13)
-//         004466ac     CMP        this,EAX
-//         004466ae     MOV        dword ptr [EBX + 0x4],this
-//         004466b1     MOV        dword ptr [EBX + 0xc],EAX
-//         004466b4     MOV        dword ptr [EBX + 0x10],EAX
-//         004466b7     JLE        LAB_004466ee
-//                              dstring.cpp:56 (9)
-//         004466b9     INC        this
-//         004466ba     PUSH       this
-//         004466bb     CALL       malloc                                           undefined malloc()
-//         004466c0     MOV        EDX,EAX
-//                              dstring.cpp:57 (31)
-//         004466c2     MOV        EDI,ESI
-//         004466c4     OR         this,0xffffffff
-//         004466c7     XOR        EAX,EAX
-//         004466c9     ADD        ESP,0x4
-//         004466cc     MOV        dword ptr [EBX],EDX
-//         004466ce     SCASB.RE   ES:EDI
-//         004466d0     NOT        this
-//         004466d2     SUB        EDI,this
-//         004466d4     MOV        EAX,this
-//         004466d6     MOV        ESI,EDI
-//         004466d8     MOV        EDI,EDX
-//         004466da     SHR        this,0x2
-//         004466dd     MOVSD.REP  ES:EDI,ESI
-//         004466df     MOV        this,EAX
-//                              dstring.cpp:61 (13)
-//         004466e1     MOV        EAX,EBX
-//         004466e3     AND        this,0x3
-//         004466e6     MOVSB.REP  ES:EDI,ESI
-//         004466e8     POP        EDI
-//         004466e9     POP        ESI
-//         004466ea     POP        EBX
-//         004466eb     RET        0x4
-//                               LAB_004466ee                                                 XREF[1]:     004466b7(j)
-//                              dstring.cpp:60 (2)
-//         004466ee     MOV        dword ptr [EBX],EAX
-//                              dstring.cpp:61 (8)
-//         004466f0     POP        EDI
-//         004466f1     MOV        EAX,EBX
-//         004466f3     POP        ESI
-//         004466f4     POP        EBX
-//         004466f5     RET        0x4
-//         004466f8     ??         90h
-//         004466f9     NOP
-//         004466fa     NOP
-//         004466fb     NOP
-//         004466fc     NOP
-//         004466fd     NOP
-//         004466fe     NOP
-//         004466ff     NOP
+//              DString *         Stack[0x4]:4   param_1                   XREF[1]:     00446622(R)
+//                               ??0DString@@QAE@ABV0@@Z                                      XREF[14]:    operator+:00446ca6(c),
+//                               DString::DString                                                          operator+:00446cc1(c),
+//                                                                                                         operator+:00446cda(c),
+//                                                                                                         word:00446f8e(c),
+//                                                                                                         nextWord:00447081(c),
+//                                                                                                         subString:004471bc(c),
+//                                                                                                         stripTrailing:00447348(c),
+//                                                                                                         stripLeading:004473e6(c),
+//                                                                                                         asUppercase:004474a9(c),
+//                                                                                                         asLowercase:00447569(c),
+//                                                                                                         DKeyString:0044764a(c),
+//                                                                                                         DKeyString:0044765c(c),
+//                                                                                                         key:00447701(c),
+//                                                                                                         value:00447774(c)
+//                              dstring.cpp:41 (32)
+//         00446620     PUSH       EBX
+//         00446621     PUSH       ESI
+//         00446622     MOV        ESI,dword ptr [ESP + param_1]
+//         00446626     MOV        EBX,this
+//         00446628     MOV        EAX,dword ptr [ESI + 0x4]
+//         0044662b     MOV        dword ptr [EBX + 0x4],EAX
+//         0044662e     MOV        this,dword ptr [ESI + 0x8]
+//         00446631     MOV        dword ptr [EBX + 0x8],this
+//         00446634     MOV        EDX,dword ptr [ESI + 0xc]
+//         00446637     MOV        dword ptr [EBX + 0xc],EDX
+//         0044663a     MOV        EAX,dword ptr [ESI + 0x10]
+//         0044663d     MOV        dword ptr [EBX + 0x10],EAX
+//                              dstring.cpp:42 (7)
+//         00446640     MOV        EAX,dword ptr [EBX + 0x4]
+//         00446643     TEST       EAX,EAX
+//         00446645     JLE        LAB_0044667d
+//                              dstring.cpp:43 (10)
+//         00446647     INC        EAX
+//         00446648     PUSH       EDI
+//         00446649     PUSH       EAX
+//         0044664a     CALL       malloc                                           undefined malloc()
+//         0044664f     MOV        EDX,EAX
+//                              dstring.cpp:44 (31)
+//         00446651     OR         this,0xffffffff
+//         00446654     MOV        dword ptr [EBX],EDX
+//         00446656     MOV        EDI,dword ptr [ESI]
+//         00446658     XOR        EAX,EAX
+//         0044665a     ADD        ESP,0x4
+//         0044665d     SCASB.RE   ES:EDI
+//         0044665f     NOT        this
+//         00446661     SUB        EDI,this
+//         00446663     MOV        EAX,this
+//         00446665     MOV        ESI,EDI
+//         00446667     MOV        EDI,EDX
+//         00446669     SHR        this,0x2
+//         0044666c     MOVSD.REP  ES:EDI,ESI
+//         0044666e     MOV        this,EAX
+//                              dstring.cpp:48 (13)
+//         00446670     MOV        EAX,EBX
+//         00446672     AND        this,0x3
+//         00446675     MOVSB.REP  ES:EDI,ESI
+//         00446677     POP        EDI
+//         00446678     POP        ESI
+//         00446679     POP        EBX
+//         0044667a     RET        0x4
+//                               LAB_0044667d                                                 XREF[1]:     00446645(j)
+//                              dstring.cpp:47 (6)
+//         0044667d     MOV        dword ptr [EBX],0x0
+//                              dstring.cpp:48 (7)
+//         00446683     MOV        EAX,EBX
+//         00446685     POP        ESI
+//         00446686     POP        EBX
+//         00446687     RET        0x4
+//         0044668a     ??         90h
+//         0044668b     NOP
+//         0044668c     NOP
+//         0044668d     NOP
+//         0044668e     NOP
+//         0044668f     NOP
 }
 
 DString::DString(char* param_1) {
@@ -1564,31 +1538,58 @@ int DString::index() {
 
 int DString::contains(DString param_1) {
     /* TODO: Stub */
-//                              int __thiscall contains(DString * this, char * param_1)
+//                              int __thiscall contains(DString * this, DString param_1)
 //              int               EAX:4          <RETURN>
 //              DString *         ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     00446de0(R)
-//                               ?contains@DString@@QBEHPBD@Z
+//              DString           Stack[0x4]:20  param_1                   XREF[2]:     00446d78(*), 00446d9f(*)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[2]:     00446d7c(W), 00446d95(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[2]:     00446daf(R), 00446dc6(R)
+//                               ?contains@DString@@QBEHV1@@Z
 //                               DString::contains
-//                              dstring.cpp:222 (22)
-//         00446de0     MOV        EAX,dword ptr [ESP + param_1]
-//         00446de4     MOV        this,dword ptr [this->stringValue]
-//         00446de6     PUSH       EAX
-//         00446de7     PUSH       this
-//         00446de8     CALL       strstr                                           undefined strstr()
-//         00446ded     ADD        ESP,0x8
-//         00446df0     NEG        EAX
-//         00446df2     SBB        EAX,EAX
-//         00446df4     NEG        EAX
-//                              dstring.cpp:226 (3)
-//         00446df6     RET        0x4
-//         00446df9     ??         90h
-//         00446dfa     NOP
-//         00446dfb     NOP
-//         00446dfc     NOP
-//         00446dfd     NOP
-//         00446dfe     NOP
-//         00446dff     NOP
+//                              dstring.cpp:216 (24)
+//         00446d60     MOV        EAX,FS:[0x0]
+//         00446d66     PUSH       -0x1
+//         00446d68     PUSH       FUN_0055d378
+//         00446d6d     PUSH       EAX
+//         00446d6e     MOV        dword ptr FS:[0x0],ESP
+//         00446d75     PUSH       ESI
+//         00446d76     MOV        ESI,this
+//                              dstring.cpp:217 (29)
+//         00446d78     LEA        this=>param_1,[ESP + 0x14]
+//         00446d7c     MOV        dword ptr [ESP + local_4],0x0
+//         00446d84     CALL       DString::operator_char*                          char * operator_char*(DString * this)
+//         00446d89     PUSH       EAX
+//         00446d8a     MOV        EAX,dword ptr [ESI]
+//         00446d8c     PUSH       EAX
+//         00446d8d     CALL       strstr                                           undefined strstr()
+//         00446d92     ADD        ESP,0x8
+//                              dstring.cpp:218 (26)
+//         00446d95     MOV        dword ptr [ESP + local_4],0xffffffff
+//         00446d9d     TEST       EAX,EAX
+//         00446d9f     LEA        this=>param_1,[ESP + 0x14]
+//         00446da3     JZ         LAB_00446dc1
+//         00446da5     CALL       DString::~DString                                void ~DString(DString * this)
+//         00446daa     MOV        EAX,0x1
+//                              dstring.cpp:220 (43)
+//         00446daf     MOV        this,dword ptr [ESP + local_c]
+//         00446db3     MOV        dword ptr FS:[0x0],this
+//         00446dba     POP        ESI
+//         00446dbb     ADD        ESP,0xc
+//         00446dbe     RET        0x14
+//                               LAB_00446dc1                                                 XREF[1]:     00446da3(j)
+//         00446dc1     CALL       DString::~DString                                void ~DString(DString * this)
+//         00446dc6     MOV        this,dword ptr [ESP + local_c]
+//         00446dca     XOR        EAX,EAX
+//         00446dcc     MOV        dword ptr FS:[0x0],this
+//         00446dd3     POP        ESI
+//         00446dd4     ADD        ESP,0xc
+//         00446dd7     RET        0x14
+//         00446dda     ??         90h
+//         00446ddb     NOP
+//         00446ddc     NOP
+//         00446ddd     NOP
+//         00446dde     NOP
+//         00446ddf     NOP
     return 0;
 }
 
@@ -2765,60 +2766,39 @@ void DString::change(char param_1, char param_2) {
 
 DKeyString::DKeyString() {
     /* TODO: Stub */
-//                              undefined __thiscall DKeyString(DKeyString * this, DString param_1,
+//                              undefined __thiscall DKeyString(DKeyString * this)
 //              undefined         <UNASSIGNED>   <RETURN>
 //              DKeyString *      ECX:4 (auto)   this
-//              DString           Stack[0x4]:20  param_1                   XREF[2]:     0044763d(*), 00447661(*)
-//              DString           Stack[0x18]:20 param_2                   XREF[2]:     0044764f(*), 0044766f(*)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[4]:     00447641(W), 00447653(W), 00447665(W), 00447673(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00447680(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     00447639(W)
-//                               ??0DKeyString@@QAE@VDString@@0@Z
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     004475ff(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0044760c(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004475ee(W)
+//                               ??0DKeyString@@QAE@XZ
 //                               DKeyString::DKeyString
-//                              dstring.cpp:431 (69)
-//         00447620     PUSH       -0x1
-//         00447622     PUSH       FUN_0055d508
-//         00447627     MOV        EAX,FS:[0x0]
-//         0044762d     PUSH       EAX
-//         0044762e     MOV        dword ptr FS:[0x0],ESP
-//         00447635     PUSH       this
-//         00447636     PUSH       ESI
-//         00447637     MOV        ESI,this
-//         00447639     MOV        dword ptr [ESP + local_10],ESI
-//         0044763d     LEA        EAX=>param_1,[ESP + 0x18]
-//         00447641     MOV        dword ptr [ESP + local_4],0x1
-//         00447649     PUSH       EAX
-//         0044764a     CALL       DString::DString                                 undefined DString(DString * this, DString * p
-//         0044764f     LEA        this=>param_2,[ESP + 0x2c]
-//         00447653     MOV        byte ptr [ESP + local_4],0x2
-//         00447658     PUSH       this
-//         00447659     LEA        this,[ESI + 0x14]
-//         0044765c     CALL       DString::DString                                 undefined DString(DString * this, DString * p
-//         00447661     LEA        this=>param_1,[ESP + 0x18]
-//                              dstring.cpp:432 (47)
-//         00447665     MOV        byte ptr [ESP + local_4],0x0
-//         0044766a     CALL       DString::~DString                                void ~DString(DString * this)
-//         0044766f     LEA        this=>param_2,[ESP + 0x2c]
-//         00447673     MOV        dword ptr [ESP + local_4],0xffffffff
-//         0044767b     CALL       DString::~DString                                void ~DString(DString * this)
-//         00447680     MOV        this,dword ptr [ESP + local_c]
-//         00447684     MOV        EAX,ESI
-//         00447686     MOV        dword ptr FS:[0x0],this
-//         0044768d     POP        ESI
-//         0044768e     ADD        ESP,0x10
-//         00447691     RET        0x28
-//         00447694     ??         90h
-//         00447695     NOP
-//         00447696     NOP
-//         00447697     NOP
-//         00447698     NOP
-//         00447699     NOP
-//         0044769a     NOP
-//         0044769b     NOP
-//         0044769c     NOP
-//         0044769d     NOP
-//         0044769e     NOP
-//         0044769f     NOP
+//                              dstring.cpp:426 (60)
+//         004475d0     PUSH       -0x1
+//         004475d2     PUSH       FUN_0055d4d8
+//         004475d7     MOV        EAX,FS:[0x0]
+//         004475dd     PUSH       EAX
+//         004475de     MOV        dword ptr FS:[0x0],ESP
+//         004475e5     PUSH       this
+//         004475e6     PUSH       ESI
+//         004475e7     MOV        ESI,this
+//         004475e9     PUSH       s_                                               = ""
+//         004475ee     MOV        dword ptr [ESP + local_10],ESI
+//         004475f2     CALL       DString::DString                                 undefined DString(DString * this, char * para
+//         004475f7     PUSH       s_                                               = ""
+//         004475fc     LEA        this,[ESI + 0x14]
+//         004475ff     MOV        dword ptr [ESP + local_4],0x0
+//         00447607     CALL       DString::DString                                 undefined DString(DString * this, char * para
+//                              dstring.cpp:427 (18)
+//         0044760c     MOV        this,dword ptr [ESP + local_c]
+//         00447610     MOV        EAX,ESI
+//         00447612     MOV        dword ptr FS:[0x0],this
+//         00447619     POP        ESI
+//         0044761a     ADD        ESP,0x10
+//         0044761d     RET
+//         0044761e     ??         90h
+//         0044761f     NOP
 }
 
 DKeyString::DKeyString(DString param_1, DString param_2) {

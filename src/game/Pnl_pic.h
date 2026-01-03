@@ -1,5 +1,11 @@
 #pragma once
 #include "../common.h"
+#include "Picture.h"
+
+typedef enum PictureType : unsigned int {
+    Picture = 0,
+    Shape = 1,
+};
 
 class TPicturePanel : public TPanel {
 public:

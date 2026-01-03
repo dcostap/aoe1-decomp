@@ -6,25 +6,25 @@ TRIBE_Master_Player::TRIBE_Master_Player(_iobuf* param_1) {
 //                              undefined __thiscall TRIBE_Master_Player(TRIBE_Master_Player * this,
 //              undefined         <UNASSIGNED>   <RETURN>
 //              TRIBE_Master_P    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1                   XREF[1]:     00511800(R)
-//                               ??0TRIBE_Master_Player@@QAE@H@Z                              XREF[1]:     init_player_type:0052e46c(c)
+//              _iobuf *          Stack[0x4]:4   param_1                   XREF[1]:     005117c0(R)
+//                               ??0TRIBE_Master_Player@@QAE@PAU_iobuf@@@Z                    XREF[1]:     data_load_players_type:0052e287(c)
 //                               TRIBE_Master_Player::TRIBE_Master_Player
-//                              tmplayer.cpp:30 (19)
-//         00511800     MOV        EAX,dword ptr [ESP + param_1]
-//         00511804     PUSH       ESI
-//         00511805     MOV        ESI,this
-//         00511807     PUSH       EAX
-//         00511808     CALL       RGE_Master_Player::RGE_Master_Player             undefined RGE_Master_Player(RGE_Master_Player
-//         0051180d     MOV        dword ptr [ESI],TRIBE_Master_Player::`vftable'   = 005117e0
-//                              tmplayer.cpp:31 (4)
-//         00511813     MOV        byte ptr [ESI + 0x29],0x1
-//                              tmplayer.cpp:32 (6)
-//         00511817     MOV        EAX,ESI
-//         00511819     POP        ESI
-//         0051181a     RET        0x4
-//         0051181d     ??         90h
-//         0051181e     NOP
-//         0051181f     NOP
+//                              tmplayer.cpp:23 (19)
+//         005117c0     MOV        EAX,dword ptr [ESP + param_1]
+//         005117c4     PUSH       ESI
+//         005117c5     MOV        ESI,this
+//         005117c7     PUSH       EAX
+//         005117c8     CALL       RGE_Master_Player::RGE_Master_Player             undefined RGE_Master_Player(RGE_Master_Player
+//         005117cd     MOV        dword ptr [ESI],TRIBE_Master_Player::`vftable'   = 005117e0
+//                              tmplayer.cpp:24 (4)
+//         005117d3     MOV        byte ptr [ESI + 0x29],0x1
+//                              tmplayer.cpp:25 (6)
+//         005117d7     MOV        EAX,ESI
+//         005117d9     POP        ESI
+//         005117da     RET        0x4
+//         005117dd     ??         90h
+//         005117de     NOP
+//         005117df     NOP
 }
 
 TRIBE_Master_Player::TRIBE_Master_Player(int param_1) {

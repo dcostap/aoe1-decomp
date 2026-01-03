@@ -6,55 +6,67 @@ THelpDialog::THelpDialog(TEasy_Panel* param_1, char* param_2, long param_3, long
 //                              undefined __thiscall THelpDialog(THelpDialog * this, TEasy_Panel * p
 //              undefined         <UNASSIGNED>   <RETURN>
 //              THelpDialog *     ECX:4 (auto)   this
-//              TEasy_Panel *     Stack[0x4]:4   param_1                   XREF[1]:     0043e91e(R)
-//              char *            Stack[0x8]:4   param_2                   XREF[1]:     0043e919(R)
-//              char *            Stack[0xc]:4   param_3                   XREF[1]:     0043e914(R)
-//              long              Stack[0x10]:4  param_4                   XREF[1]:     0043e90f(R)
-//              long              Stack[0x14]:4  param_5                   XREF[1]:     0043e90b(R)
-//              long              Stack[0x18]:4  param_6                   XREF[1]:     0043e907(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0043e927(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0043e93a(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0043e8fe(W)
-//                               ??0THelpDialog@@QAE@PAVTEasy_Panel@@PAD1JJJ@Z                XREF[1]:     command_help:0046a33b(c)
+//              TEasy_Panel *     Stack[0x4]:4   param_1                   XREF[1]:     0043e895(R)
+//              char *            Stack[0x8]:4   param_2                   XREF[1]:     0043e88f(R)
+//              long              Stack[0xc]:4   param_3                   XREF[1]:     0043e867(R)
+//              long              Stack[0x10]:4  param_4                   XREF[1]:     0043e88a(R)
+//              long              Stack[0x14]:4  param_5                   XREF[1]:     0043e885(R)
+//              long              Stack[0x18]:4  param_6                   XREF[1]:     0043e881(R)
+//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0043e86e(W)
+//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0043e8a2(R)
+//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     0043e85e(W)
+//                               ??0THelpDialog@@QAE@PAVTEasy_Panel@@PADJJJJ@Z                XREF[1]:     command_help:0046a2c5(c)
 //                               THelpDialog::THelpDialog
-//                              dlg_help.cpp:68 (39)
-//         0043e8e0     PUSH       -0x1
-//         0043e8e2     PUSH       FUN_0055d0a8
-//         0043e8e7     MOV        EAX,FS:[0x0]
-//         0043e8ed     PUSH       EAX
-//         0043e8ee     MOV        dword ptr FS:[0x0],ESP
-//         0043e8f5     PUSH       this
-//         0043e8f6     PUSH       ESI
-//         0043e8f7     MOV        ESI,this
-//         0043e8f9     PUSH       s_Help_Dialog                                    = "Help Dialog"
-//         0043e8fe     MOV        dword ptr [ESP + local_10],ESI
-//         0043e902     CALL       TDialogPanel::TDialogPanel                       undefined TDialogPanel(TDialogPanel * this, c
-//                              dlg_help.cpp:69 (51)
-//         0043e907     MOV        EAX,dword ptr [ESP + param_6]
-//         0043e90b     MOV        this,dword ptr [ESP + param_5]
-//         0043e90f     MOV        EDX,dword ptr [ESP + param_4]
-//         0043e913     PUSH       EAX
-//         0043e914     MOV        EAX,dword ptr [ESP + param_3]
-//         0043e918     PUSH       this
-//         0043e919     MOV        this,dword ptr [ESP + param_2]
-//         0043e91d     PUSH       EDX
-//         0043e91e     MOV        EDX,dword ptr [ESP + param_1]
-//         0043e922     PUSH       EAX
-//         0043e923     PUSH       this
-//         0043e924     PUSH       EDX
-//         0043e925     MOV        this,ESI
-//         0043e927     MOV        dword ptr [ESP + local_4],0x0
-//         0043e92f     MOV        dword ptr [ESI],THelpDialog::`vftable'           = 0043e8c0
-//         0043e935     CALL       THelpDialog::setup_help                          void setup_help(THelpDialog * this, TEasy_Pan
-//                              dlg_help.cpp:70 (20)
-//         0043e93a     MOV        this,dword ptr [ESP + local_c]
-//         0043e93e     MOV        EAX,ESI
-//         0043e940     MOV        dword ptr FS:[0x0],this
-//         0043e947     POP        ESI
-//         0043e948     ADD        ESP,0x10
-//         0043e94b     RET        0x18
-//         0043e94e     ??         90h
-//         0043e94f     NOP
+//                              dlg_help.cpp:57 (39)
+//         0043e840     PUSH       -0x1
+//         0043e842     PUSH       FUN_0055d088
+//         0043e847     MOV        EAX,FS:[0x0]
+//         0043e84d     PUSH       EAX
+//         0043e84e     MOV        dword ptr FS:[0x0],ESP
+//         0043e855     PUSH       this
+//         0043e856     PUSH       ESI
+//         0043e857     MOV        ESI,this
+//         0043e859     PUSH       s_Help_Dialog                                    = "Help Dialog"
+//         0043e85e     MOV        dword ptr [ESP + local_10],ESI
+//         0043e862     CALL       TDialogPanel::TDialogPanel                       undefined TDialogPanel(TDialogPanel * this, c
+//                              dlg_help.cpp:58 (26)
+//         0043e867     MOV        EAX,dword ptr [ESP + param_3]
+//         0043e86b     MOV        this,ESI
+//         0043e86d     PUSH       EAX
+//         0043e86e     MOV        dword ptr [ESP + local_4],0x0
+//         0043e876     MOV        dword ptr [ESI],THelpDialog::`vftable'           = 0043e8c0
+//         0043e87c     CALL       TPanel::get_string                               char * get_string(TPanel * this, int param_1)
+//                              dlg_help.cpp:60 (33)
+//         0043e881     MOV        this,dword ptr [ESP + param_6]
+//         0043e885     MOV        EDX,dword ptr [ESP + param_5]
+//         0043e889     PUSH       this
+//         0043e88a     MOV        this,dword ptr [ESP + param_4]
+//         0043e88e     PUSH       EDX
+//         0043e88f     MOV        EDX,dword ptr [ESP + param_2]
+//         0043e893     PUSH       this
+//         0043e894     PUSH       EAX
+//         0043e895     MOV        EAX,dword ptr [ESP + param_1]
+//         0043e899     PUSH       EDX
+//         0043e89a     PUSH       EAX
+//         0043e89b     MOV        this,ESI
+//         0043e89d     CALL       THelpDialog::setup_help                          void setup_help(THelpDialog * this, TEasy_Pan
+//                              dlg_help.cpp:61 (20)
+//         0043e8a2     MOV        this,dword ptr [ESP + local_c]
+//         0043e8a6     MOV        EAX,ESI
+//         0043e8a8     MOV        dword ptr FS:[0x0],this
+//         0043e8af     POP        ESI
+//         0043e8b0     ADD        ESP,0x10
+//         0043e8b3     RET        0x18
+//         0043e8b6     ??         90h
+//         0043e8b7     NOP
+//         0043e8b8     NOP
+//         0043e8b9     NOP
+//         0043e8ba     NOP
+//         0043e8bb     NOP
+//         0043e8bc     NOP
+//         0043e8bd     NOP
+//         0043e8be     NOP
+//         0043e8bf     NOP
 }
 
 THelpDialog::THelpDialog(TEasy_Panel* param_1, char* param_2, char* param_3, long param_4, long param_5, long param_6) {
