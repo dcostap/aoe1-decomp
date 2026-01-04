@@ -10,24 +10,24 @@ public:
     int driveValues[27];                     // 0x208
 
     DriveInformation();
-    virtual int initialDrive();
-    virtual char initialDriveAsLetter();
-    virtual char* initialDirectory();
-    virtual int currentDrive();
-    virtual char currentDriveAsLetter();
-    virtual char* currentDirectory();
-    virtual int numberDrives();
-    virtual int validDrive(int param_1);
-    virtual void checkDrives();
-    virtual int numberOfFilesWithFilename(char* param_1);
-    virtual int numberOfFilesWithAttribute(int param_1);
-    virtual int numberOfFilesWithFilenameOrAttribute(char* param_1, int param_2);
-    virtual int resetCurrentDriveAndDirectory();
-    virtual int resetCurrentDrive();
-    virtual int resetCurrentDirectory();
-    virtual int changeDrive(int param_1);
-    virtual int changeDirectory(char* param_1);
-    virtual void updateDirectory();
+    int initialDrive();
+    char initialDriveAsLetter();
+    char* initialDirectory();
+    int currentDrive();
+    char currentDriveAsLetter();
+    char* currentDirectory();
+    int numberDrives();
+    int validDrive(int param_1);
+    void checkDrives();
+    int numberOfFilesWithFilename(char* param_1);
+    int numberOfFilesWithAttribute(int param_1);
+    int numberOfFilesWithFilenameOrAttribute(char* param_1, int param_2);
+    int resetCurrentDriveAndDirectory();
+    int resetCurrentDrive();
+    int resetCurrentDirectory();
+    int changeDrive(int param_1);
+    int changeDirectory(char* param_1);
+    void updateDirectory();
 };
 
 static_assert(sizeof(DriveInformation) == 0x274, "DriveInformation Size Mismatch");

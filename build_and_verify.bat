@@ -31,7 +31,7 @@ echo Compiling empiresx.exe...
 cl /EHsc /std:c++17 /MDd /D_DEBUG ^
   /I"%DP_INC%" ^
   /Fo"build\\" ^
-  src\main.cpp src\game\tribegam.cpp ^
+  src\main.cpp src\game\tribegam.cpp src\game\basegame.cpp src\game\Res_file.cpp ^
   user32.lib gdi32.lib kernel32.lib ole32.lib ddraw.lib dxguid.lib ^
   /link /LIBPATH:"%DP_LIB%" dplayx.lib dplay.lib uuid.lib winmm.lib ws2_32.lib ^
   /OUT:"build\empiresx.exe"

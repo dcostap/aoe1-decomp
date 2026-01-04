@@ -1,4 +1,4 @@
-#include "RGE_Base_Game.h"
+#include "basegame.h"
 #include <stdio.h>
 #include <string.h>
 

@@ -1,6 +1,8 @@
 #pragma once
 #include "../common.h"
-#include "Com_hand.h"
+#include "RGE_TSLC.h"
+
+class TCommunications_Handler;
 
 class RGE_Communications_Speed {
 public:

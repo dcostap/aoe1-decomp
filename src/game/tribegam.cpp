@@ -7,7 +7,6 @@ TPanelSystem* panel_system = nullptr; // Global pointer
 HINSTANCE StringTableX = nullptr;
 
 int player_dropped[9];
-HINSTANCE StringTableX = nullptr;
 int disable_terrain_sounds = 0;
 int out_of_sync = 0;
 int out_of_sync2 = 0;
@@ -14840,7 +14839,7 @@ MapSize TRIBE_Game::mapSize() {
 //         005291fd     NOP
 //         005291fe     NOP
 //         005291ff     NOP
-    return 0;
+    return {};
 }
 
 void TRIBE_Game::setMapSize(MapSize param_1) {
@@ -14971,7 +14970,7 @@ MapType TRIBE_Game::mapType() {
 //         005292ad     NOP
 //         005292ae     NOP
 //         005292af     NOP
-    return 0;
+    return {};
 }
 
 void TRIBE_Game::setMapType(MapType param_1) {
@@ -15120,7 +15119,7 @@ VictoryType TRIBE_Game::victoryType() {
 //         0052930d     NOP
 //         0052930e     NOP
 //         0052930f     NOP
-    return 0;
+    return {};
 }
 
 int TRIBE_Game::victoryAmount() {
@@ -15602,7 +15601,7 @@ ResourceLevel TRIBE_Game::resourceLevel() {
 //         0052944d     NOP
 //         0052944e     NOP
 //         0052944f     NOP
-    return 0;
+    return {};
 }
 
 Age TRIBE_Game::startingAge() {
@@ -15631,7 +15630,7 @@ Age TRIBE_Game::startingAge() {
 //         0052945d     NOP
 //         0052945e     NOP
 //         0052945f     NOP
-    return 0;
+    return {};
 }
 
 int TRIBE_Game::startingUnits() {

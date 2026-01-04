@@ -2,7 +2,7 @@
 #include "../common.h"
 #include "basegame.h"
 #include "Panel.h"
-#include "Res_file.cpp"
+#include "Res_file.h"
 
 class TRIBE_Screen_Game;
 class TPanel;

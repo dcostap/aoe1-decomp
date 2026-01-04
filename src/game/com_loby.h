@@ -1,5 +1,6 @@
 #pragma once
 #include "../common.h"
+#include "com_err.h"
 
 class RGE_Lobby : public RGE_Comm_Error {
 public:

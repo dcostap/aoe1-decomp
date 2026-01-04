@@ -49,7 +49,7 @@ public:
 static_assert(sizeof(RGE_Communications_Queue) == 0x118, "RGE_Communications_Queue Size Mismatch");
 static_assert(offsetof(RGE_Communications_Queue, Queue) == 0x114, "RGE_Communications_Queue Offset Mismatch");
 
-MsgQueue::MsgQueue() {
+inline MsgQueue::MsgQueue() {
     /* TODO: Stub */
 //                              undefined __thiscall MsgQueue(MsgQueue * this)
 //              undefined         <UNASSIGNED>   <RETURN>
@@ -78,7 +78,7 @@ MsgQueue::MsgQueue() {
 //         00431f7f     NOP
 }
 
-MsgQueue::~MsgQueue() {
+inline MsgQueue::~MsgQueue() {
     /* TODO: Stub */
 //                              void __thiscall ~MsgQueue(MsgQueue * this)
 //              void              <VOID>         <RETURN>

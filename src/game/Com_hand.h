@@ -1,17 +1,44 @@
 #pragma once
 #include "../common.h"
-#include "Chat.h"
 #include "com_q.h"
 #include "com_loby.h"
 #include "RGE_TSLC.h"
 #include "com_spd.h"
 #include "com_sync.h"
 #include "com_addr.h"
-#include "com_err.h"
 
 struct NAME {
     char Name[256]; // 0x0
 };
+
+class HOLDER {
+public:
+    uint Serial;                             // 0x4
+    uint Length;                             // 0x8
+    ulong dcoFromID;                         // 0xC
+    ulong dcoReceiveID;                      // 0x10
+    uint fromPlayer;                         // 0x14
+
+    HOLDER();
+    virtual ~HOLDER();
+};
+
+static_assert(sizeof(HOLDER) == 0x18, "HOLDER Size Mismatch");
+static_assert(offsetof(HOLDER, fromPlayer) == 0x14, "HOLDER Offset Mismatch");
+
+class RESENDER {
+public:
+    uint Serial;                             // 0x4
+    char* ResendMsg;                         // 0x8
+    uint Length;                             // 0xC
+    uint DestMap[10];                        // 0x10
+
+    RESENDER();
+    virtual ~RESENDER();
+};
+
+static_assert(sizeof(RESENDER) == 0x38, "RESENDER Size Mismatch");
+static_assert(offsetof(RESENDER, DestMap) == 0x10, "RESENDER Offset Mismatch");
 
 class TCommunications_Handler {
 public:
@@ -264,36 +291,7 @@ public:
 static_assert(sizeof(TCommunications_Handler) == 0x1774, "TCommunications_Handler Size Mismatch");
 static_assert(offsetof(TCommunications_Handler, WasKicked) == 0x174C, "TCommunications_Handler Offset Mismatch");
 
-class HOLDER {
-public:
-    uint Serial;                             // 0x4
-    uint Length;                             // 0x8
-    ulong dcoFromID;                         // 0xC
-    ulong dcoReceiveID;                      // 0x10
-    uint fromPlayer;                         // 0x14
-
-    HOLDER();
-    virtual ~HOLDER();
-};
-
-static_assert(sizeof(HOLDER) == 0x18, "HOLDER Size Mismatch");
-static_assert(offsetof(HOLDER, fromPlayer) == 0x14, "HOLDER Offset Mismatch");
-
-class RESENDER {
-public:
-    uint Serial;                             // 0x4
-    char* ResendMsg;                         // 0x8
-    uint Length;                             // 0xC
-    uint DestMap[10];                        // 0x10
-
-    RESENDER();
-    virtual ~RESENDER();
-};
-
-static_assert(sizeof(RESENDER) == 0x38, "RESENDER Size Mismatch");
-static_assert(offsetof(RESENDER, DestMap) == 0x10, "RESENDER Offset Mismatch");
-
-RESENDER::RESENDER() {
+inline RESENDER::RESENDER() {
     /* TODO: Stub */
 //                              undefined __thiscall RESENDER(RESENDER * this)
 //              undefined         <UNASSIGNED>   <RETURN>
@@ -320,7 +318,7 @@ RESENDER::RESENDER() {
 //         0042646f     NOP
 }
 
-RESENDER::~RESENDER() {
+inline RESENDER::~RESENDER() {
     /* TODO: Stub */
 //                              void __thiscall ~RESENDER(RESENDER * this)
 //              void              <VOID>         <RETURN>
@@ -355,7 +353,7 @@ RESENDER::~RESENDER() {
 //         004264cf     RET
 }
 
-HOLDER::HOLDER() {
+inline HOLDER::HOLDER() {
     /* TODO: Stub */
 //                              undefined __thiscall HOLDER(HOLDER * this)
 //              undefined         <UNASSIGNED>   <RETURN>
@@ -388,7 +386,7 @@ HOLDER::HOLDER() {
 //         004265ff     NOP
 }
 
-HOLDER::~HOLDER() {
+inline HOLDER::~HOLDER() {
     /* TODO: Stub */
 //                              void __thiscall ~HOLDER(HOLDER * this)
 //              void              <VOID>         <RETURN>

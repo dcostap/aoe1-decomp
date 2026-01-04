@@ -1,6 +1,8 @@
 #pragma once
 #include "../common.h"
 
+class TSound_Driver;
+
 class TDigital {
 public:
     TDigital* owner;                         // 0x4
