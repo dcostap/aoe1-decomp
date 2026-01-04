@@ -1,5 +1,16 @@
 #pragma once
 #include "../common.h"
+#include "map.h"
+
+class RGE_Random_Map_Module;
+
+// ----------------------------------------------------------------
+// RGE_Random_Map_Module_List
+// Size: 0x8
+struct RGE_Random_Map_Module_List {
+    RGE_Random_Map_Module * module; // 0x0
+    RGE_Random_Map_Module_List * next; // 0x4
+};
 
 class RGE_Random_Map_Module {
 public:

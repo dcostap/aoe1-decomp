@@ -1,14 +1,18 @@
 #pragma once
 #include "../common.h"
 #include "gameinfo.h"
-#include "sceninfo.h"
-#include "Sounddrv.h"
-#include "music.h"
-#include "Com_hand.h"
-#include "Debuglog.h"
-#include "registry.h"
-#include "Mouseptr.h"
-#include "scenario.h"
+
+class TDrawSystem;
+class TPanel;
+class RGE_Scenario_File_Info;
+class TSound_Driver;
+class TMusic_System;
+class TDigital;
+class TCommunications_Handler;
+class TDebuggingLog;
+class TRegistry;
+class TMousePointer;
+class RGE_Scenario;
 
 // ----------------------------------------------------------------
 // RGE_Game_Options

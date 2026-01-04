@@ -1,4 +1,3 @@
-#include "../common.h"
 #include "Res_file.h"
 
 void RESFILE_open_new_resource_file(char* param_1, char* param_2, char* param_3, int param_4) {

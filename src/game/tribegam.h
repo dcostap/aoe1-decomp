@@ -1,7 +1,15 @@
 #pragma once
 #include "../common.h"
-#include "scr_game.h"
 #include "basegame.h"
+#include "Panel.h"
+#include "Res_file.cpp"
+
+class TRIBE_Screen_Game;
+class TPanel;
+
+extern int player_dropped[9]; 
+extern int out_of_sync;
+extern int disable_terrain_sounds;
 
 enum Age : unsigned int {
     DefaultAge = 0,
@@ -42,10 +50,23 @@ enum ResourceLevel : unsigned int {
 };
 
 
+enum VictoryType : unsigned int {
+    VictoryDefault = 0,
+    VictoryConquest = 1,
+    VictoryExplore = 2,
+    VictoryRuins = 3,
+    VictoryArtifacts = 4,
+    VictoryDiscoveries = 5,
+    VictoryGold = 6,
+    VictoryTime = 7,
+    VictoryScore = 8,
+    VictoryStandard = 9,
+};
+
 // ----------------------------------------------------------------
 // TRIBE_Game_Options
 // Size: 0x6C
-typedef struct TRIBE_Game_Options {
+struct TRIBE_Game_Options {
     MapSize mapSizeValue; // 0x0
     MapType mapTypeValue; // 0x4
     int animalsValue; // 0x8
@@ -67,23 +88,10 @@ typedef struct TRIBE_Game_Options {
     uchar popLimitValue; // 0x6A
 };
 
-enum VictoryType : unsigned int {
-    VictoryDefault = 0,
-    VictoryConquest = 1,
-    VictoryExplore = 2,
-    VictoryRuins = 3,
-    VictoryArtifacts = 4,
-    VictoryDiscoveries = 5,
-    VictoryGold = 6,
-    VictoryTime = 7,
-    VictoryScore = 8,
-    VictoryStandard = 9,
-};
-
 // ----------------------------------------------------------------
 // combined_options
 // Size: 0x114
-typedef struct combined_options {
+struct combined_options {
     RGE_Game_Options rge_options; // 0x0
     TRIBE_Game_Options tribe_options; // 0xA8
 };

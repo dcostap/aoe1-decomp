@@ -6,6 +6,8 @@
 #include <cstddef>
 #include <ddraw.h>
 #include <dsound.h>
+#include <dplay.h>
+#include <dplobby.h>
 #include <mmsystem.h> 
 #include <mmiscapi.h>
 
@@ -1359,16 +1361,6 @@ struct RGE_Prog_Info {
     char resource_dir[261]; // 0xF26
     char ai_dir[261]; // 0x102B
     char avi_dir[261]; // 0x1130
-};
-
-class RGE_Random_Map_Module;
-
-// ----------------------------------------------------------------
-// RGE_Random_Map_Module_List
-// Size: 0x8
-struct RGE_Random_Map_Module_List {
-    RGE_Random_Map_Module * module; // 0x0
-    RGE_Random_Map_Module_List * next; // 0x4
 };
 
 // ----------------------------------------------------------------

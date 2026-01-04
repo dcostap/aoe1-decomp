@@ -1,5 +1,6 @@
 #pragma once
 #include "../common.h"
+#include "map.h"
 
 class RGE_Unified_Visible_Map {
 public:

@@ -1,6 +1,8 @@
 #pragma once
 #include "../common.h"
 #include "rmm_dbct.h"
+#include "zone_map.h"
+#include "visible.h"
 
 class RGE_Map {
 public:

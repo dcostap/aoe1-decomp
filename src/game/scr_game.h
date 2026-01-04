@@ -1,30 +1,19 @@
 #pragma once
 #include "../common.h"
 #include "Pnl_scr.h"
-#include "Shape.h"
-#include "tvw_main.h"
-#include "tvw_dmap.h"
-#include "World.h"
-#include "tworld.h"
-#include "Pnl_scr.h"
-#include "Shape.h"
-#include "tvw_main.h"
-#include "tvw_dmap.h"
-#include "map.h"
-#include "Panel.h"
-#include "Drawarea.h"
-#include "view.h"
-#include "player.h"
-#include "tpnl_inv.h"
-#include "tpnl_obj.h"
-#include "tpnl_btn.h"
 #include "Pnl_msg.h"
-#include "Pnl_txt.h"
-#include "tpnl_tim.h"
-#include "tpnl_pop.h"
-#include "rpnl_tbx.h"
-#include "Pnl_scbr.h"
-#include "Sound.h"
+
+class TRIBE_Main_View;
+class TRIBE_Diamond_Map_View;
+class TRIBE_Panel_Inven;
+class TRIBE_Panel_Object;
+class TRIBE_Panel_Button;
+class TTextPanel;
+class TRIBE_Panel_Time;
+class TRIBE_Panel_Pop;
+class RGE_Panel_Tool_Box;
+class TScrollBarPanel;
+class TRIBE_World;
 
 // Guess based on offsets of _unnamed properties 
 #pragma pack(push, 1)

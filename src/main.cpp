@@ -87,7 +87,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     // --- 4. Game Initialization (00454e82) ---
     TRIBE_Game* game = (TRIBE_Game*)operator new(0x1254);
     if (game) {
-        game = new (game) TRIBE_Game(&info, 1);
+        game = new TRIBE_Game(&info, 1);
 
         int status = game->get_error_code(); // vtable + 0x18
 

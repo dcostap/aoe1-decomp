@@ -1,663 +1,189 @@
 #include "../common.h"
 #include "tribegam.h"
+#include "Res_file.h"
 
-void encrypt_codes(char* param_1, char* param_2, int param_3) {
-    /* TODO: Stub */
-//                              void __cdecl encrypt_codes(char * param_1, char * param_2, int param
-//              void              <VOID>         <RETURN>
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     00520fc0(R)
-//              char *            Stack[0x8]:4   param_2                   XREF[1]:     00520fc4(R)
-//              int               Stack[0xc]:4   param_3                   XREF[1]:     00520fd6(R)
-//                               ?encrypt_codes@@YAXPAD0H@Z                                   XREF[2]:     setup_cmd_options:00521fed(c),
-//                               encrypt_codes                                                             processCheatCode:00527af4(c)
-//                              tribegam.cpp:160 (18)
-//         00520fc0     MOV        EDX,dword ptr [ESP + param_1]
-//         00520fc4     MOV        EAX,dword ptr [ESP + param_2]
-//         00520fc8     PUSH       EBP
-//         00520fc9     PUSH       ESI
-//         00520fca     MOV        CL,byte ptr [EDX]
-//         00520fcc     XOR        ESI,ESI
-//         00520fce     PUSH       EDI
-//         00520fcf     LEA        EDI,[EDX + 0x1]
-//                              tribegam.cpp:168 (12)
-//         00520fd2     TEST       CL,CL
-//         00520fd4     JZ         LAB_0052100d
-//         00520fd6     MOV        EBP,dword ptr [ESP + param_3]
-//                               LAB_00520fda                                                 XREF[1]:     0052100b(j)
-//         00520fda     CMP        ESI,EBP
-//         00520fdc     JGE        LAB_0052100d
-//                              tribegam.cpp:170 (10)
-//         00520fde     CMP        CL,0x41
-//         00520fe1     JL         LAB_00521002
-//         00520fe3     CMP        CL,0x5f
-//         00520fe6     JG         LAB_00521002
-//                              tribegam.cpp:173 (10)
-//         00520fe8     MOVSX      ECX,CL
-//         00520feb     MOV        ECX,dword ptr [ECX*0x4 + s_1\tpnl_tim.cpp_0058   = "1\\tpnl_tim.cpp"
-//                              tribegam.cpp:174 (7)
-//         00520ff2     MOV        EDX,ECX
-//         00520ff4     SAR        EDX,0x8
-//         00520ff7     MOV        byte ptr [EAX],DL
-//                              tribegam.cpp:175 (1)
-//         00520ff9     INC        EAX
-//                              tribegam.cpp:176 (2)
-//         00520ffa     MOV        byte ptr [EAX],CL
-//                              tribegam.cpp:177 (1)
-//         00520ffc     INC        EAX
-//                              tribegam.cpp:178 (3)
-//         00520ffd     ADD        ESI,0x2
-//                              tribegam.cpp:180 (2)
-//         00521000     JMP        LAB_00521006
-//                               LAB_00521002                                                 XREF[2]:     00520fe1(j), 00520fe6(j)
-//                              tribegam.cpp:182 (2)
-//         00521002     MOV        byte ptr [EAX],CL
-//                              tribegam.cpp:183 (1)
-//         00521004     INC        EAX
-//                              tribegam.cpp:184 (1)
-//         00521005     INC        ESI
-//                               LAB_00521006                                                 XREF[1]:     00521000(j)
-//                              tribegam.cpp:186 (7)
-//         00521006     MOV        CL,byte ptr [EDI]
-//         00521008     INC        EDI
-//         00521009     TEST       CL,CL
-//         0052100b     JNZ        LAB_00520fda
-//                               LAB_0052100d                                                 XREF[2]:     00520fd4(j), 00520fdc(j)
-//                              tribegam.cpp:191 (7)
-//         0052100d     POP        EDI
-//         0052100e     POP        ESI
-//         0052100f     MOV        byte ptr [EAX],0x0
-//         00521012     POP        EBP
-//         00521013     RET
-//         00521014     ??         90h
-//         00521015     NOP
-//         00521016     NOP
-//         00521017     NOP
-//         00521018     NOP
-//         00521019     NOP
-//         0052101a     NOP
-//         0052101b     NOP
-//         0052101c     NOP
-//         0052101d     NOP
-//         0052101e     NOP
-//         0052101f     NOP
-    return;
-}
+TPanelSystem* panel_system = nullptr; // Global pointer
 
-void run_log(char* param_1, int param_2) {
-    /* TODO: Stub */
-//                              void __cdecl run_log(char * param_1, int param_2)
-//              void              <VOID>         <RETURN>
-//              char *            Stack[0x4]:4   param_1                   XREF[2]:     005210ba(R), 005210ef(R)
-//              int               Stack[0x8]:4   param_2                   XREF[3]:     0052107c(R), 00521084(*), 0052109e(*)
-//              char[26]          Stack[-0x20]   stime                     XREF[0,3]:   00521095(*), 005210af(*), 005210c7(*)
-//                               ?run_log@@YAXPADH@Z                                          XREF[10]:    setup:00521c9b(c),
-//                               run_log                                                                   setup:00521ca9(c),
-//                                                                                                         setup:00521d63(c),
-//                                                                                                         setup:00521e1a(c),
-//                                                                                                         setup:00521e4e(c),
-//                                                                                                         let_game_begin:005286b2(c),
-//                                                                                                         let_game_begin:0052881e(c),
-//                                                                                                         let_game_begin:00528a44(c),
-//                                                                                                         let_game_begin:00528a7b(c),
-//                                                                                                         let_game_begin:00528c8d(c)
-//                              tribegam.cpp:199 (17)
-//         00521020     MOV        EAX,[do_run_log]
-//         00521025     SUB        ESP,0x1c
-//         00521028     TEST       EAX,EAX
-//         0052102a     PUSH       EDI
-//         0052102b     JZ         LAB_00521111
-//                              tribegam.cpp:202 (9)
-//         00521031     MOV        EAX,[run_log_created]
-//         00521036     TEST       EAX,EAX
-//         00521038     JZ         LAB_00521053
-//                              tribegam.cpp:203 (23)
-//         0052103a     PUSH       s_a                                              = "a"
-//         0052103f     PUSH       s_c:\aoerun.txt                                  = "c:\\aoerun.txt"
-//         00521044     CALL       fopen                                            undefined fopen()
-//         00521049     ADD        ESP,0x8
-//         0052104c     MOV        [run_log_file],EAX                               = 00000000
-//                              tribegam.cpp:204 (2)
-//         00521051     JMP        LAB_00521074
-//                               LAB_00521053                                                 XREF[1]:     00521038(j)
-//                              tribegam.cpp:206 (23)
-//         00521053     PUSH       s_w                                              = "w"
-//         00521058     PUSH       s_c:\aoerun.txt                                  = "c:\\aoerun.txt"
-//         0052105d     CALL       fopen                                            undefined fopen()
-//         00521062     ADD        ESP,0x8
-//         00521065     MOV        [run_log_file],EAX                               = 00000000
-//                              tribegam.cpp:207 (10)
-//         0052106a     MOV        dword ptr [run_log_created],0x1
-//                               LAB_00521074                                                 XREF[1]:     00521051(j)
-//                              tribegam.cpp:209 (8)
-//         00521074     TEST       EAX,EAX
-//         00521076     JZ         LAB_00521111
-//                              tribegam.cpp:211 (8)
-//         0052107c     MOV        ECX,dword ptr [ESP + param_2]
-//         00521080     TEST       ECX,ECX
-//         00521082     JZ         LAB_005210ef
-//                              tribegam.cpp:214 (10)
-//         00521084     LEA        EAX=>param_2,[ESP + 0x28]
-//         00521088     PUSH       EAX
-//         00521089     CALL       time                                             undefined time()
-//                              tribegam.cpp:216 (16)
-//         0052108e     MOV        ECX,0x6
-//         00521093     XOR        EAX,EAX
-//         00521095     LEA        EDI=>stime[4],[ESP + 0x8]
-//         00521099     ADD        ESP,0x4
-//         0052109c     STOSD.REP  ES:EDI
-//                              tribegam.cpp:217 (28)
-//         0052109e     LEA        ECX=>param_2,[ESP + 0x28]
-//         005210a2     PUSH       0x18
-//         005210a4     PUSH       ECX
-//         005210a5     STOSW      ES:EDI
-//         005210a7     CALL       ctime                                            undefined ctime()
-//         005210ac     ADD        ESP,0x4
-//         005210af     LEA        EDX=>stime[4],[ESP + 0x8]
-//         005210b3     PUSH       EAX
-//         005210b4     PUSH       EDX
-//         005210b5     CALL       strncpy                                          undefined strncpy()
-//                              tribegam.cpp:218 (30)
-//         005210ba     MOV        EAX,dword ptr [ESP + param_1]
-//         005210be     MOV        EDX,dword ptr [run_log_file]                     = 00000000
-//         005210c4     ADD        ESP,0xc
-//         005210c7     LEA        ECX=>stime[4],[ESP + 0x4]
-//         005210cb     PUSH       EAX
-//         005210cc     PUSH       ECX
-//         005210cd     PUSH       s_%s_-_%s_                                       = "%s - %s\n"
-//         005210d2     PUSH       EDX
-//         005210d3     CALL       fprintf                                          undefined fprintf()
-//                              tribegam.cpp:222 (18)
-//         005210d8     MOV        EDX,dword ptr [run_log_file]                     = 00000000
-//         005210de     ADD        ESP,0x10
-//         005210e1     PUSH       EDX
-//         005210e2     CALL       fclose                                           undefined fclose()
-//         005210e7     ADD        ESP,0x4
-//                              tribegam.cpp:224 (5)
-//         005210ea     POP        EDI
-//         005210eb     ADD        ESP,0x1c
-//         005210ee     RET
-//                               LAB_005210ef                                                 XREF[1]:     00521082(j)
-//                              tribegam.cpp:221 (16)
-//         005210ef     MOV        ECX,dword ptr [ESP + param_1]
-//         005210f3     PUSH       ECX
-//         005210f4     PUSH       s_%s_                                            = "%s\n"
-//         005210f9     PUSH       EAX
-//         005210fa     CALL       fprintf                                          undefined fprintf()
-//                              tribegam.cpp:222 (18)
-//         005210ff     MOV        EDX,dword ptr [run_log_file]                     = 00000000
-//         00521105     ADD        ESP,0xc
-//         00521108     PUSH       EDX
-//         00521109     CALL       fclose                                           undefined fclose()
-//         0052110e     ADD        ESP,0x4
-//                               LAB_00521111                                                 XREF[2]:     0052102b(j), 00521076(j)
-//                              tribegam.cpp:224 (5)
-//         00521111     POP        EDI
-//         00521112     ADD        ESP,0x1c
-//         00521115     RET
-//         00521116     ??         90h
-//         00521117     NOP
-//         00521118     NOP
-//         00521119     NOP
-//         0052111a     NOP
-//         0052111b     NOP
-//         0052111c     NOP
-//         0052111d     NOP
-//         0052111e     NOP
-//         0052111f     NOP
-    return;
-}
+HINSTANCE StringTableX = nullptr;
 
-TRIBE_Game::TRIBE_Game(RGE_Prog_Info* param_1, int param_2) {
-    /* TODO: Stub */
-//                              undefined __thiscall TRIBE_Game(TRIBE_Game * this, RGE_Prog_Info * p
-//              undefined         <UNASSIGNED>   <RETURN>
-//              TRIBE_Game *      ECX:4 (auto)   this
-//              RGE_Prog_Info *   Stack[0x4]:4   param_1                   XREF[6]:     00521136(R), 005212cb(W), 005212d6(R), 005212e3(R),
-//                                                                                     005212eb(W), 005212f1(W)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     00521343(R)
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0052120d(W)
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00521360(R)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     00521144(W)
-//                               ??0TRIBE_Game@@QAE@PAURGE_Prog_Info@@H@Z                     XREF[1]:     _WinMain@16:00454f3f(c)
-//                               TRIBE_Game::TRIBE_Game
-//                              tribegam.cpp:256 (48)
-//         00521120     PUSH       -0x1
-//         00521122     PUSH       FUN_00561568
-//         00521127     MOV        EAX,FS:[0x0]
-//         0052112d     PUSH       EAX
-//         0052112e     MOV        dword ptr FS:[0x0],ESP
-//         00521135     PUSH       this
-//         00521136     MOV        EAX,dword ptr [ESP + param_1]
-//         0052113a     PUSH       EBX
-//         0052113b     PUSH       EBP
-//         0052113c     PUSH       ESI
-//         0052113d     XOR        EBX,EBX
-//         0052113f     PUSH       EDI
-//         00521140     MOV        ESI,this
-//         00521142     PUSH       EBX
-//         00521143     PUSH       EAX
-//         00521144     MOV        dword ptr [ESP + local_10],ESI
-//         00521148     CALL       RGE_Base_Game::RGE_Base_Game                     undefined RGE_Base_Game(RGE_Base_Game * this,
-//         0052114d     OR         EDI,0xffffffff
-//                              tribegam.cpp:263 (113)
-//         00521150     MOV        EBP,0x1
-//         00521155     MOV        dword ptr [ESI + 0xbec],EBX
-//         0052115b     MOV        dword ptr [ESI + 0xbf0],EDI
-//         00521161     MOV        dword ptr [ESI + 0xbf4],EBX
-//         00521167     MOV        dword ptr [ESI + 0xbf8],EBX
-//         0052116d     MOV        dword ptr [ESI + 0xbfc],EBX
-//         00521173     MOV        dword ptr [ESI + 0xc00],EBX
-//         00521179     MOV        dword ptr [ESI + 0xc04],EBX
-//         0052117f     MOV        dword ptr [ESI + 0xc08],EBX
-//         00521185     MOV        dword ptr [ESI + 0xc0c],EBX
-//         0052118b     MOV        dword ptr [ESI + 0xc10],EBX
-//         00521191     MOV        dword ptr [ESI + 0xc14],EBX
-//         00521197     MOV        dword ptr [ESI + 0xc18],EBX
-//         0052119d     MOV        dword ptr [ESI + 0xc1c],EBX
-//         005211a3     MOV        dword ptr [ESI + 0xc20],EBX
-//         005211a9     MOV        dword ptr [ESI + 0xc24],EBX
-//         005211af     MOV        dword ptr [ESI + 0x1250],EBX
-//         005211b5     MOV        dword ptr [ESI],TRIBE_Game::`vftable'            = 00521380
-//         005211bb     MOV        dword ptr [ESI + 0x1d8],EBP
-//                              tribegam.cpp:264 (6)
-//         005211c1     MOV        dword ptr [ESI + 0x1dc],EBX
-//                              tribegam.cpp:265 (6)
-//         005211c7     MOV        byte ptr [ESI + 0xae8],BL
-//                              tribegam.cpp:266 (6)
-//         005211cd     MOV        dword ptr [StringTableX],EBX                     = 00000000
-//                              tribegam.cpp:268 (6)
-//         005211d3     MOV        byte ptr [ESI + 0xc58],BL
-//                              tribegam.cpp:269 (6)
-//         005211d9     MOV        byte ptr [ESI + 0xd5c],BL
-//                              tribegam.cpp:270 (6)
-//         005211df     MOV        byte ptr [ESI + 0xe64],BL
-//                              tribegam.cpp:271 (6)
-//         005211e5     MOV        byte ptr [ESI + 0xf68],BL
-//                              tribegam.cpp:272 (6)
-//         005211eb     MOV        dword ptr [ESI + 0xe60],EBX
-//                              tribegam.cpp:273 (6)
-//         005211f1     MOV        byte ptr [ESI + 0x106c],BL
-//                              tribegam.cpp:275 (6)
-//         005211f7     MOV        dword ptr [disable_terrain_sounds],EBX
-//                              tribegam.cpp:276 (6)
-//         005211fd     MOV        dword ptr [out_of_sync],EBX
-//                              tribegam.cpp:277 (6)
-//         00521203     MOV        dword ptr [out_of_sync2],EBX
-//                              tribegam.cpp:287 (37)
-//         00521209     PUSH       0x2
-//         0052120b     MOV        this,ESI
-//         0052120d     MOV        dword ptr [ESP + local_4],EBX
-//         00521211     MOV        dword ptr [ESI + 0xa24],EBX
-//         00521217     MOV        dword ptr [ESI + 0xa28],EBX
-//         0052121d     MOV        dword ptr [ESI + 0xa2c],EBX
-//         00521223     MOV        dword ptr [ESI + 0xa30],EBX
-//         00521229     CALL       TRIBE_Game::setMapSize                           void setMapSize(TRIBE_Game * this, MapSize pa
-//                              tribegam.cpp:288 (9)
-//         0052122e     PUSH       0x2
-//         00521230     MOV        this,ESI
-//         00521232     CALL       TRIBE_Game::setMapType                           void setMapType(TRIBE_Game * this, MapType pa
-//                              tribegam.cpp:289 (8)
-//         00521237     PUSH       EBP
-//         00521238     MOV        this,ESI
-//         0052123a     CALL       TRIBE_Game::setAnimals                           void setAnimals(TRIBE_Game * this, int param_1)
-//                              tribegam.cpp:290 (8)
-//         0052123f     PUSH       EBP
-//         00521240     MOV        this,ESI
-//         00521242     CALL       TRIBE_Game::setPredators                         void setPredators(TRIBE_Game * this, int para
-//                              tribegam.cpp:291 (9)
-//         00521247     PUSH       EBP
-//         00521248     PUSH       EBP
-//         00521249     MOV        this,ESI
-//         0052124b     CALL       TRIBE_Game::setVictoryType                       void setVictoryType(TRIBE_Game * this, Victor
-//                              tribegam.cpp:292 (8)
-//         00521250     PUSH       EBP
-//         00521251     MOV        this,ESI
-//         00521253     CALL       TRIBE_Game::setAllowTrading                      void setAllowTrading(TRIBE_Game * this, int p
-//                              tribegam.cpp:293 (8)
-//         00521258     PUSH       EBX
-//         00521259     MOV        this,ESI
-//         0052125b     CALL       TRIBE_Game::setLongCombat                        void setLongCombat(TRIBE_Game * this, int par
-//                              tribegam.cpp:294 (8)
-//         00521260     PUSH       EBX
-//         00521261     MOV        this,ESI
-//         00521263     CALL       TRIBE_Game::setRandomizePositions                void setRandomizePositions(TRIBE_Game * this,
-//                              tribegam.cpp:295 (8)
-//         00521268     PUSH       EBX
-//         00521269     MOV        this,ESI
-//         0052126b     CALL       TRIBE_Game::setFullTechTree                      void setFullTechTree(TRIBE_Game * this, int p
-//                              tribegam.cpp:296 (8)
-//         00521270     PUSH       EBX
-//         00521271     MOV        this,ESI
-//         00521273     CALL       TRIBE_Game::setResourceLevel                     void setResourceLevel(TRIBE_Game * this, Reso
-//                              tribegam.cpp:297 (8)
-//         00521278     PUSH       EBX
-//         00521279     MOV        this,ESI
-//         0052127b     CALL       TRIBE_Game::setStartingAge                       void setStartingAge(TRIBE_Game * this, Age pa
-//                              tribegam.cpp:298 (8)
-//         00521280     PUSH       EBX
-//         00521281     MOV        this,ESI
-//         00521283     CALL       TRIBE_Game::setStartingUnits                     void setStartingUnits(TRIBE_Game * this, int
-//                              tribegam.cpp:299 (8)
-//         00521288     PUSH       EBX
-//         00521289     MOV        this,ESI
-//         0052128b     CALL       TRIBE_Game::setDeathMatch                        void setDeathMatch(TRIBE_Game * this, uchar p
-//                              tribegam.cpp:300 (9)
-//         00521290     PUSH       0x32
-//         00521292     MOV        this,ESI
-//         00521294     CALL       TRIBE_Game::setPopLimit                          void setPopLimit(TRIBE_Game * this, uchar par
-//                              tribegam.cpp:301 (8)
-//         00521299     PUSH       EBX
-//         0052129a     MOV        this,ESI
-//         0052129c     CALL       TRIBE_Game::setQuickStartGame                    void setQuickStartGame(TRIBE_Game * this, uch
-//                              tribegam.cpp:302 (19)
-//         005212a1     PUSH       EDI
-//         005212a2     MOV        this,ESI
-//         005212a4     CALL       TRIBE_Game::setRandomStartValue                  void setRandomStartValue(TRIBE_Game * this, i
-//         005212a9     LEA        EAX,[ESI + 0xc3c]
-//         005212af     MOV        this,0x5
-//                               LAB_005212b4                                                 XREF[1]:     005212bd(j)
-//                              tribegam.cpp:306 (3)
-//         005212b4     MOV        dword ptr [EAX + -0x14],EDI
-//                              tribegam.cpp:307 (8)
-//         005212b7     MOV        dword ptr [EAX],EDI
-//         005212b9     ADD        EAX,0x4
-//         005212bc     DEC        this
-//         005212bd     JNZ        LAB_005212b4
-//                              tribegam.cpp:309 (6)
-//         005212bf     MOV        dword ptr [ESI + 0xc50],EDI
-//                              tribegam.cpp:310 (6)
-//         005212c5     MOV        dword ptr [ESI + 0xc54],EDI
-//                              tribegam.cpp:312 (4)
-//         005212cb     MOV        dword ptr [ESP + param_1],EBP
-//                              tribegam.cpp:313 (2)
-//         005212cf     XOR        EDI,EDI
-//                              tribegam.cpp:342 (32)
-//         005212d1     MOV        EBP,player_dropped                               = 00000000
-//                               LAB_005212d6                                                 XREF[1]:     00521322(j)
-//         005212d6     MOV        this,dword ptr [ESP + param_1]
-//         005212da     PUSH       this
-//         005212db     PUSH       EDI
-//         005212dc     MOV        this,ESI
-//         005212de     CALL       TRIBE_Game::setCivilization                      void setCivilization(TRIBE_Game * this, int p
-//         005212e3     MOV        EAX,dword ptr [ESP + param_1]
-//         005212e7     INC        EAX
-//         005212e8     CMP        EAX,0x10
-//         005212eb     MOV        dword ptr [ESP + param_1],EAX
-//         005212ef     JLE        LAB_005212f9
-//                              tribegam.cpp:318 (8)
-//         005212f1     MOV        dword ptr [ESP + param_1],0x1
-//                               LAB_005212f9                                                 XREF[1]:     005212ef(j)
-//                              tribegam.cpp:319 (9)
-//         005212f9     PUSH       EDI
-//         005212fa     PUSH       EDI
-//         005212fb     MOV        this,ESI
-//         005212fd     CALL       TRIBE_Game::setScenarioPlayer                    void setScenarioPlayer(TRIBE_Game * this, int
-//                              tribegam.cpp:320 (10)
-//         00521302     PUSH       0x1
-//         00521304     PUSH       EDI
-//         00521305     MOV        this,ESI
-//         00521307     CALL       TRIBE_Game::setPlayerColor                       void setPlayerColor(TRIBE_Game * this, int pa
-//                              tribegam.cpp:321 (9)
-//         0052130c     PUSH       EBX
-//         0052130d     PUSH       EDI
-//         0052130e     MOV        this,ESI
-//         00521310     CALL       TRIBE_Game::setComputerName                      void setComputerName(TRIBE_Game * this, int p
-//                              tribegam.cpp:322 (15)
-//         00521315     MOV        dword ptr [EBP]=>player_dropped,EBX              = 00000000
-//         00521318     ADD        EBP,0x4
-//         0052131b     INC        EDI
-//         0052131c     CMP        EBP,PalSetRes
-//         00521322     JL         LAB_005212d6
-//                              tribegam.cpp:342 (53)
-//         00521324     LEA        EDI,[ESI + 0x116c]
-//         0052132a     MOV        this,0x9
-//         0052132f     XOR        EAX,EAX
-//         00521331     PUSH       0x4
-//         00521333     STOSD.REP  ES:EDI
-//         00521335     MOV        this,ESI
-//         00521337     CALL       RGE_Base_Game::setNumberPlayers                  void setNumberPlayers(RGE_Base_Game * this, i
-//         0052133c     MOV        this,ESI
-//         0052133e     CALL       TRIBE_Game::resetRandomComputerName              void resetRandomComputerName(TRIBE_Game * this)
-//         00521343     CMP        dword ptr [ESP + param_2],EBX
-//         00521347     JZ         LAB_00521360
-//         00521349     MOV        this,ESI
-//         0052134b     CALL       TRIBE_Game::setup                                int setup(TRIBE_Game * this)
-//         00521350     TEST       EAX,EAX
-//         00521352     JNZ        LAB_00521360
-//         00521354     CMP        dword ptr [ESI + 0x40],EBX
-//         00521357     JNZ        LAB_00521360
-//                              tribegam.cpp:338 (7)
-//         00521359     MOV        dword ptr [ESI + 0x40],0x1
-//                               LAB_00521360                                                 XREF[3]:     00521347(j), 00521352(j),
-//                                                                                                         00521357(j)
-//                              tribegam.cpp:342 (23)
-//         00521360     MOV        this,dword ptr [ESP + local_c]
-//         00521364     MOV        EAX,ESI
-//         00521366     POP        EDI
-//         00521367     POP        ESI
-//         00521368     POP        EBP
-//         00521369     MOV        dword ptr FS:[0x0],this
-//         00521370     POP        EBX
-//         00521371     ADD        ESP,0x10
-//         00521374     RET        0x8
-//         00521377     ??         90h
-//         00521378     NOP
-//         00521379     NOP
-//         0052137a     NOP
-//         0052137b     NOP
-//         0052137c     NOP
-//         0052137d     NOP
-//         0052137e     NOP
-//         0052137f     NOP
+int player_dropped[9];
+HINSTANCE StringTableX = nullptr;
+int disable_terrain_sounds = 0;
+int out_of_sync = 0;
+int out_of_sync2 = 0;
+
+TRIBE_Game::TRIBE_Game(RGE_Prog_Info* param_1, int param_2) : RGE_Base_Game(param_1, 0) {
+    this->video_window = nullptr;
+    this->cur_video = -1;
+    this->old_video_wnd_proc = nullptr;
+    this->video_paused = 0;
+    this->last_video_time = 0;
+    this->video_setup = 0;
+    this->video_double_size = 0;
+    this->video_changed_res = 0;
+    this->video_hi_color = 0;
+    this->video_save_res_wid = 0;
+    this->video_save_res_hgt = 0;
+    this->video_save_palette = nullptr;
+    this->started_menu_music = 0;
+    this->show_object_id = 0;
+    this->game_screen = nullptr;
+    this->inHandleIdle = 0;
+
+    // RGE_Base_Game member initialization matching assembly
+    // The assembly initializes offset 0x1D8 (input_enabled) and 0x1DC (input_disabled_window)
+    this->input_enabled = 1;
+    this->input_disabled_window = nullptr;
+
+    this->testing_scenario[0] = 0;
+    StringTableX = nullptr;
+
+    this->startup_scenario[0] = 0;
+    this->startup_game[0] = 0;
+    this->save_game_name[0] = 0;
+    this->load_game_name[0] = 0;
+    this->auto_exit_time = 0;
+    this->timing_text2[0] = 0;
+
+    disable_terrain_sounds = 0;
+    out_of_sync = 0;
+    out_of_sync2 = 0;
+
+    this->MouseRightClickTable = nullptr;
+    this->MouseRightClickTableSize = 0;
+    this->MouseLeftClickTable = nullptr;
+    this->MouseLeftClickTableSize = 0;
+
+    setMapSize(Medium);
+    setMapType(WaterAndLand);
+    setAnimals(1);
+    setPredators(1);
+    setVictoryType(VictoryConquest, 1);
+    setAllowTrading(1);
+    setLongCombat(0);
+    setRandomizePositions(0);
+    setFullTechTree(0);
+    setResourceLevel(DefaultResources);
+    setStartingAge(DefaultAge);
+    setStartingUnits(0);
+    setDeathMatch(0);
+    setPopLimit(50);
+    setQuickStartGame(0);
+    setRandomStartValue(-1);
+
+    // Initialize notification location arrays
+    for (int i = 0; i < 5; i++) {
+        this->notification_loc_x[i] = -1;
+        this->notification_loc_y[i] = -1;
+    }
+    this->current_notification_loc = -1;
+    this->current_notification_recalled = -1;
+
+    // Player Initialization Loop
+    // The assembly reuses 'param_1' (on stack) as the civ_id counter.
+    int civ_id = 1;
+    
+    // The loop iterates over players. Assembly uses EDI as index.
+    for (int i = 0; i < 9; i++) {
+        setCivilization(i, civ_id);
+        
+        // Logic from assembly 005212e3 to 005212f1:
+        // increment civ_id, if > 16 (0x10), reset to 1.
+        civ_id++;
+        if (civ_id > 16) {
+            civ_id = 1;
+        }
+
+        setScenarioPlayer(i, 0);
+        setPlayerColor(i, 1);
+        setComputerName(i, 0);
+        
+        // Logic from assembly 00521315: MOV dword ptr [EBP]=>player_dropped, EBX
+        // Resets the player_dropped status for this index.
+        player_dropped[i] = 0;
+    }
+
+    // Assembly 00521324: LEA EDI, [ESI + 0x116c]; MOV ECX, 9; REP STOSD
+    // Offset 0x116c corresponds to save_humanity[9] in TRIBE_Game.
+    memset(this->save_humanity, 0, sizeof(this->save_humanity));
+
+    setNumberPlayers(4);
+    resetRandomComputerName();
+
+    // Assembly 00521343: CMP dword ptr [ESP + param_2], EBX (0)
+    if (param_2 != 0) {
+        if (!setup()) {
+            // Assembly 00521354: Check error_code (offset 0x40). If 0, set to 1.
+            if (this->error_code == 0) {
+                this->error_code = 1;
+            }
+        }
+    }
 }
 
 TRIBE_Game::~TRIBE_Game() {
-    /* TODO: Stub */
-//                              void __thiscall ~TRIBE_Game(TRIBE_Game * this)
-//              void              <VOID>         <RETURN>
-//              TRIBE_Game *      ECX:4 (auto)   this
-//              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     005213ce(W)
-//              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     005213ba(W)
-//                               ??1TRIBE_Game@@UAE@XZ                                        XREF[1]:     `vector_deleting_destructor':00521
-//                               TRIBE_Game::~TRIBE_Game
-//                              tribegam.cpp:347 (36)
-//         005213a0     PUSH       -0x1
-//         005213a2     PUSH       FUN_00561588
-//         005213a7     MOV        EAX,FS:[0x0]
-//         005213ad     PUSH       EAX
-//         005213ae     MOV        dword ptr FS:[0x0],ESP
-//         005213b5     PUSH       this
-//         005213b6     PUSH       ESI
-//         005213b7     MOV        ESI,this
-//         005213b9     PUSH       EDI
-//         005213ba     MOV        dword ptr [ESP + local_10],ESI
-//         005213be     MOV        dword ptr [ESI],TRIBE_Game::`vftable'            = 00521380
-//                              tribegam.cpp:357 (28)
-//         005213c4     MOV        EAX,dword ptr [ESI + 0x1dc]
-//         005213ca     XOR        EDI,EDI
-//         005213cc     CMP        EAX,EDI
-//         005213ce     MOV        dword ptr [ESP + local_4],EDI
-//         005213d2     MOV        dword ptr [ESI + 0x1250],EDI
-//         005213d8     MOV        dword ptr [ESI + 0x1b0],EDI
-//         005213de     JZ         LAB_005213ed
-//                              tribegam.cpp:359 (7)
-//         005213e0     PUSH       EAX
-//         005213e1     CALL       dword ptr [->USER32.DLL::DestroyWindow]          = 0048ad26
-//                              tribegam.cpp:360 (6)
-//         005213e7     MOV        dword ptr [ESI + 0x1dc],EDI
-//                               LAB_005213ed                                                 XREF[1]:     005213de(j)
-//                              tribegam.cpp:364 (9)
-//         005213ed     PUSH       0x1
-//         005213ef     MOV        this,ESI
-//         005213f1     CALL       TRIBE_Game::close_game_screens                   void close_game_screens(TRIBE_Game * this, in
-//                              tribegam.cpp:367 (15)
-//         005213f6     PUSH       s_Video_Screen                                   = "Video Screen"
-//         005213fb     MOV        this,panel_system
-//         00521400     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:371 (15)
-//         00521405     PUSH       s_Create_Dialog                                  = "Create Dialog"
-//         0052140a     MOV        this,panel_system
-//         0052140f     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:372 (15)
-//         00521414     PUSH       s_Campaign_Editor_Screen                         = "Campaign Editor Screen"
-//         00521419     MOV        this,panel_system
-//         0052141e     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:373 (15)
-//         00521423     PUSH       s_Game_Setup_Screen                              = "Game Setup Screen"
-//         00521428     MOV        this,panel_system
-//         0052142d     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:374 (15)
-//         00521432     PUSH       s_Game_Settings_Screen                           = 47h
-//         00521437     MOV        this,panel_system
-//         0052143c     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:375 (15)
-//         00521441     PUSH       s_Select_Scenario_Screen                         = "Select Scenario Screen"
-//         00521446     MOV        this,panel_system
-//         0052144b     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:376 (15)
-//         00521450     PUSH       s_Campaign_Selection_Screen                      = "Campaign Selection Screen"
-//         00521455     MOV        this,panel_system
-//         0052145a     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:377 (15)
-//         0052145f     PUSH       s_Load_Saved_Game_Screen                         = "Load Saved Game Screen"
-//         00521464     MOV        this,panel_system
-//         00521469     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:378 (15)
-//         0052146e     PUSH       s_MP_Startup_Screen                              = "MP Startup Screen"
-//         00521473     MOV        this,panel_system
-//         00521478     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:379 (15)
-//         0052147d     PUSH       s_MP_Setup_Screen                                = "MP Setup Screen"
-//         00521482     MOV        this,panel_system
-//         00521487     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:380 (15)
-//         0052148c     PUSH       s_Connecting_Screen                              = "Connecting Screen"
-//         00521491     MOV        this,panel_system
-//         00521496     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:381 (15)
-//         0052149b     PUSH       s_Join_Screen                                    = "Join Screen"
-//         005214a0     MOV        this,panel_system
-//         005214a5     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:382 (15)
-//         005214aa     PUSH       s_Main_Menu                                      = "Main Menu"
-//         005214af     MOV        this,panel_system
-//         005214b4     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:383 (15)
-//         005214b9     PUSH       s_Save_Game_Screen                               = "Save Game Screen"
-//         005214be     MOV        this,panel_system
-//         005214c3     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:384 (15)
-//         005214c8     PUSH       s_End_Screen                                     = "End Screen"
-//         005214cd     MOV        this,panel_system
-//         005214d2     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:385 (15)
-//         005214d7     PUSH       s_Scenario_Editor_Menu                           = "Scenario Editor Menu"
-//         005214dc     MOV        this,panel_system
-//         005214e1     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:386 (15)
-//         005214e6     PUSH       s_Scenario_Editor_Open                           = "Scenario Editor Open"
-//         005214eb     MOV        this,panel_system
-//         005214f0     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:387 (15)
-//         005214f5     PUSH       s_Scenario_Editor_Screen                         = "Scenario Editor Screen"
-//         005214fa     MOV        this,panel_system
-//         005214ff     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:388 (15)
-//         00521504     PUSH       s_Single_Player_Menu                             = "Single Player Menu"
-//         00521509     MOV        this,panel_system
-//         0052150e     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:389 (15)
-//         00521513     PUSH       s_New_Name_Dialog                                = 4Eh
-//         00521518     MOV        this,panel_system
-//         0052151d     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:390 (15)
-//         00521522     PUSH       s_Name_Selection_Screen                          = "Name Selection Screen"
-//         00521527     MOV        this,panel_system
-//         0052152c     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:391 (15)
-//         00521531     PUSH       s_Status_Screen                                  = "Status Screen"
-//         00521536     MOV        this,panel_system
-//         0052153b     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:392 (15)
-//         00521540     PUSH       s_Temp_Screen                                    = "Temp Screen"
-//         00521545     MOV        this,panel_system
-//         0052154a     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:393 (15)
-//         0052154f     PUSH       s_ScenarioEditorInfo                             = 53h
-//         00521554     MOV        this,panel_system
-//         00521559     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:394 (15)
-//         0052155e     PUSH       s_FeaturesInfo                                   = 46h
-//         00521563     MOV        this,panel_system
-//         00521568     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:395 (15)
-//         0052156d     PUSH       s_QuotesInfo                                     = "QuotesInfo"
-//         00521572     MOV        this,panel_system
-//         00521577     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:396 (15)
-//         0052157c     PUSH       s_Logo1Screen                                    = 4Ch
-//         00521581     MOV        this,panel_system
-//         00521586     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:397 (15)
-//         0052158b     PUSH       s_Logo2Screen                                    = 4Ch
-//         00521590     MOV        this,panel_system
-//         00521595     CALL       TPanelSystem::destroyPanel                       int destroyPanel(TPanelSystem * this, char *
-//                              tribegam.cpp:401 (13)
-//         0052159a     PUSH       s_sounds.drs                                     = "sounds.drs"
-//         0052159f     CALL       RESFILE_close_new_resource_file                  void RESFILE_close_new_resource_file(char * p
-//         005215a4     ADD        ESP,0x4
-//                              tribegam.cpp:402 (13)
-//         005215a7     PUSH       s_graphics.drs                                   = "graphics.drs"
-//         005215ac     CALL       RESFILE_close_new_resource_file                  void RESFILE_close_new_resource_file(char * p
-//         005215b1     ADD        ESP,0x4
-//                              tribegam.cpp:403 (13)
-//         005215b4     PUSH       s_Terrain.drs                                    = "Terrain.drs"
-//         005215b9     CALL       RESFILE_close_new_resource_file                  void RESFILE_close_new_resource_file(char * p
-//         005215be     ADD        ESP,0x4
-//                              tribegam.cpp:404 (13)
-//         005215c1     PUSH       s_Border.drs                                     = "Border.drs"
-//         005215c6     CALL       RESFILE_close_new_resource_file                  void RESFILE_close_new_resource_file(char * p
-//         005215cb     ADD        ESP,0x4
-//                              tribegam.cpp:405 (10)
-//         005215ce     PUSH       s_Interfac.drs                                   = "Interfac.drs"
-//         005215d3     CALL       RESFILE_close_new_resource_file                  void RESFILE_close_new_resource_file(char * p
-//                              tribegam.cpp:407 (12)
-//         005215d8     MOV        EAX,[StringTableX]                               = 00000000
-//         005215dd     ADD        ESP,0x4
-//         005215e0     CMP        EAX,EDI
-//         005215e2     JZ         LAB_005215f1
-//                              tribegam.cpp:409 (7)
-//         005215e4     PUSH       EAX
-//         005215e5     CALL       dword ptr [->KERNEL32.DLL::FreeLibrary]          = 0048aa18
-//                              tribegam.cpp:410 (8)
-//         005215eb     MOV        dword ptr [StringTableX],EDI                     = 00000000
-//                               LAB_005215f1                                                 XREF[1]:     005215e2(j)
-//         005215f1     MOV        this,ESI
-//                              tribegam.cpp:413 (30)
-//         005215f3     MOV        dword ptr [ESP + 0x14],0xffffffff
-//         005215fb     CALL       RGE_Base_Game::~RGE_Base_Game                    void ~RGE_Base_Game(RGE_Base_Game * this)
-//         00521600     MOV        this,dword ptr [ESP + 0xc]
-//         00521604     POP        EDI
-//         00521605     MOV        dword ptr FS:[0x0],this
-//         0052160c     POP        ESI
-//         0052160d     ADD        ESP,0x10
-//         00521610     RET
-//         00521611     ??         90h
-//         00521612     NOP
-//         00521613     NOP
-//         00521614     NOP
-//         00521615     NOP
-//         00521616     NOP
-//         00521617     NOP
-//         00521618     NOP
-//         00521619     NOP
-//         0052161a     NOP
-//         0052161b     NOP
-//         0052161c     NOP
-//         0052161d     NOP
-//         0052161e     NOP
-//         0052161f     NOP
+    // Assembly 005213a0 - 005213be: vftable setup and stack cookies (standard prologue)
+    
+    this->inHandleIdle = 0;         // Offset 0x1250
+    this->prog_mode = 0;            // Offset 0x1b0 (in RGE_Base_Game)
+
+    // Assembly 005213c4: MOV EAX, [ESI + 0x1dc] -> input_disabled_window
+    if (this->input_disabled_window) {
+        DestroyWindow((HWND)this->input_disabled_window);
+        this->input_disabled_window = nullptr;
+    }
+
+    close_game_screens(1);
+
+    if (panel_system) {
+        // ID 0x53 is 'S' (ScenarioEditorInfo)
+        // ID 0x46 is 'F' (FeaturesInfo)
+        // ID 0x4C is 'L' (Logo1Screen/Logo2Screen)
+        // ID 0x47 is 'G' (Game Settings Screen)
+        // ID 0x4E is 'N' (New Name Dialog)
+        
+        panel_system->destroyPanel("Video Screen");
+        panel_system->destroyPanel("Create Dialog");
+        panel_system->destroyPanel("Campaign Editor Screen");
+        panel_system->destroyPanel("Game Setup Screen");
+        panel_system->destroyPanel("Game Settings Screen"); // 0x47
+        panel_system->destroyPanel("Select Scenario Screen");
+        panel_system->destroyPanel("Campaign Selection Screen");
+        panel_system->destroyPanel("Load Saved Game Screen");
+        panel_system->destroyPanel("MP Startup Screen");
+        panel_system->destroyPanel("MP Setup Screen");
+        panel_system->destroyPanel("Connecting Screen");
+        panel_system->destroyPanel("Join Screen");
+        panel_system->destroyPanel("Main Menu");
+        panel_system->destroyPanel("Save Game Screen");
+        panel_system->destroyPanel("End Screen");
+        panel_system->destroyPanel("Scenario Editor Menu");
+        panel_system->destroyPanel("Scenario Editor Open");
+        panel_system->destroyPanel("Scenario Editor Screen");
+        panel_system->destroyPanel("Single Player Menu");
+        panel_system->destroyPanel("New Name Dialog");      // 0x4E
+        panel_system->destroyPanel("Name Selection Screen");
+        panel_system->destroyPanel("Status Screen");
+        panel_system->destroyPanel("Temp Screen");
+        panel_system->destroyPanel("ScenarioEditorInfo");   // 0x53
+        panel_system->destroyPanel("FeaturesInfo");         // 0x46
+        panel_system->destroyPanel("QuotesInfo");
+        panel_system->destroyPanel("Logo1Screen");          // 0x4C
+        panel_system->destroyPanel("Logo2Screen");          // 0x4C
+    }
+
+    RESFILE_close_new_resource_file("sounds.drs");
+    RESFILE_close_new_resource_file("graphics.drs");
+    RESFILE_close_new_resource_file("Terrain.drs");
+    RESFILE_close_new_resource_file("Border.drs");
+    RESFILE_close_new_resource_file("Interfac.drs");
+
+    if (StringTableX) {
+        FreeLibrary(StringTableX);
+        StringTableX = nullptr;
+    }
 }
+
 
 void TRIBE_Game::close_game_screens(int param_1) {
     /* TODO: Stub */
@@ -18748,3 +18274,209 @@ void TRIBE_Game::goto_notification_loc() {
     return;
 }
 
+
+void encrypt_codes(char* param_1, char* param_2, int param_3) {
+    /* TODO: Stub */
+//                              void __cdecl encrypt_codes(char * param_1, char * param_2, int param
+//              void              <VOID>         <RETURN>
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     00520fc0(R)
+//              char *            Stack[0x8]:4   param_2                   XREF[1]:     00520fc4(R)
+//              int               Stack[0xc]:4   param_3                   XREF[1]:     00520fd6(R)
+//                               ?encrypt_codes@@YAXPAD0H@Z                                   XREF[2]:     setup_cmd_options:00521fed(c),
+//                               encrypt_codes                                                             processCheatCode:00527af4(c)
+//                              tribegam.cpp:160 (18)
+//         00520fc0     MOV        EDX,dword ptr [ESP + param_1]
+//         00520fc4     MOV        EAX,dword ptr [ESP + param_2]
+//         00520fc8     PUSH       EBP
+//         00520fc9     PUSH       ESI
+//         00520fca     MOV        CL,byte ptr [EDX]
+//         00520fcc     XOR        ESI,ESI
+//         00520fce     PUSH       EDI
+//         00520fcf     LEA        EDI,[EDX + 0x1]
+//                              tribegam.cpp:168 (12)
+//         00520fd2     TEST       CL,CL
+//         00520fd4     JZ         LAB_0052100d
+//         00520fd6     MOV        EBP,dword ptr [ESP + param_3]
+//                               LAB_00520fda                                                 XREF[1]:     0052100b(j)
+//         00520fda     CMP        ESI,EBP
+//         00520fdc     JGE        LAB_0052100d
+//                              tribegam.cpp:170 (10)
+//         00520fde     CMP        CL,0x41
+//         00520fe1     JL         LAB_00521002
+//         00520fe3     CMP        CL,0x5f
+//         00520fe6     JG         LAB_00521002
+//                              tribegam.cpp:173 (10)
+//         00520fe8     MOVSX      ECX,CL
+//         00520feb     MOV        ECX,dword ptr [ECX*0x4 + s_1\tpnl_tim.cpp_0058   = "1\\tpnl_tim.cpp"
+//                              tribegam.cpp:174 (7)
+//         00520ff2     MOV        EDX,ECX
+//         00520ff4     SAR        EDX,0x8
+//         00520ff7     MOV        byte ptr [EAX],DL
+//                              tribegam.cpp:175 (1)
+//         00520ff9     INC        EAX
+//                              tribegam.cpp:176 (2)
+//         00520ffa     MOV        byte ptr [EAX],CL
+//                              tribegam.cpp:177 (1)
+//         00520ffc     INC        EAX
+//                              tribegam.cpp:178 (3)
+//         00520ffd     ADD        ESI,0x2
+//                              tribegam.cpp:180 (2)
+//         00521000     JMP        LAB_00521006
+//                               LAB_00521002                                                 XREF[2]:     00520fe1(j), 00520fe6(j)
+//                              tribegam.cpp:182 (2)
+//         00521002     MOV        byte ptr [EAX],CL
+//                              tribegam.cpp:183 (1)
+//         00521004     INC        EAX
+//                              tribegam.cpp:184 (1)
+//         00521005     INC        ESI
+//                               LAB_00521006                                                 XREF[1]:     00521000(j)
+//                              tribegam.cpp:186 (7)
+//         00521006     MOV        CL,byte ptr [EDI]
+//         00521008     INC        EDI
+//         00521009     TEST       CL,CL
+//         0052100b     JNZ        LAB_00520fda
+//                               LAB_0052100d                                                 XREF[2]:     00520fd4(j), 00520fdc(j)
+//                              tribegam.cpp:191 (7)
+//         0052100d     POP        EDI
+//         0052100e     POP        ESI
+//         0052100f     MOV        byte ptr [EAX],0x0
+//         00521012     POP        EBP
+//         00521013     RET
+//         00521014     ??         90h
+//         00521015     NOP
+//         00521016     NOP
+//         00521017     NOP
+//         00521018     NOP
+//         00521019     NOP
+//         0052101a     NOP
+//         0052101b     NOP
+//         0052101c     NOP
+//         0052101d     NOP
+//         0052101e     NOP
+//         0052101f     NOP
+    return;
+}
+
+void run_log(char* param_1, int param_2) {
+    /* TODO: Stub */
+//                              void __cdecl run_log(char * param_1, int param_2)
+//              void              <VOID>         <RETURN>
+//              char *            Stack[0x4]:4   param_1                   XREF[2]:     005210ba(R), 005210ef(R)
+//              int               Stack[0x8]:4   param_2                   XREF[3]:     0052107c(R), 00521084(*), 0052109e(*)
+//              char[26]          Stack[-0x20]   stime                     XREF[0,3]:   00521095(*), 005210af(*), 005210c7(*)
+//                               ?run_log@@YAXPADH@Z                                          XREF[10]:    setup:00521c9b(c),
+//                               run_log                                                                   setup:00521ca9(c),
+//                                                                                                         setup:00521d63(c),
+//                                                                                                         setup:00521e1a(c),
+//                                                                                                         setup:00521e4e(c),
+//                                                                                                         let_game_begin:005286b2(c),
+//                                                                                                         let_game_begin:0052881e(c),
+//                                                                                                         let_game_begin:00528a44(c),
+//                                                                                                         let_game_begin:00528a7b(c),
+//                                                                                                         let_game_begin:00528c8d(c)
+//                              tribegam.cpp:199 (17)
+//         00521020     MOV        EAX,[do_run_log]
+//         00521025     SUB        ESP,0x1c
+//         00521028     TEST       EAX,EAX
+//         0052102a     PUSH       EDI
+//         0052102b     JZ         LAB_00521111
+//                              tribegam.cpp:202 (9)
+//         00521031     MOV        EAX,[run_log_created]
+//         00521036     TEST       EAX,EAX
+//         00521038     JZ         LAB_00521053
+//                              tribegam.cpp:203 (23)
+//         0052103a     PUSH       s_a                                              = "a"
+//         0052103f     PUSH       s_c:\aoerun.txt                                  = "c:\\aoerun.txt"
+//         00521044     CALL       fopen                                            undefined fopen()
+//         00521049     ADD        ESP,0x8
+//         0052104c     MOV        [run_log_file],EAX                               = 00000000
+//                              tribegam.cpp:204 (2)
+//         00521051     JMP        LAB_00521074
+//                               LAB_00521053                                                 XREF[1]:     00521038(j)
+//                              tribegam.cpp:206 (23)
+//         00521053     PUSH       s_w                                              = "w"
+//         00521058     PUSH       s_c:\aoerun.txt                                  = "c:\\aoerun.txt"
+//         0052105d     CALL       fopen                                            undefined fopen()
+//         00521062     ADD        ESP,0x8
+//         00521065     MOV        [run_log_file],EAX                               = 00000000
+//                              tribegam.cpp:207 (10)
+//         0052106a     MOV        dword ptr [run_log_created],0x1
+//                               LAB_00521074                                                 XREF[1]:     00521051(j)
+//                              tribegam.cpp:209 (8)
+//         00521074     TEST       EAX,EAX
+//         00521076     JZ         LAB_00521111
+//                              tribegam.cpp:211 (8)
+//         0052107c     MOV        ECX,dword ptr [ESP + param_2]
+//         00521080     TEST       ECX,ECX
+//         00521082     JZ         LAB_005210ef
+//                              tribegam.cpp:214 (10)
+//         00521084     LEA        EAX=>param_2,[ESP + 0x28]
+//         00521088     PUSH       EAX
+//         00521089     CALL       time                                             undefined time()
+//                              tribegam.cpp:216 (16)
+//         0052108e     MOV        ECX,0x6
+//         00521093     XOR        EAX,EAX
+//         00521095     LEA        EDI=>stime[4],[ESP + 0x8]
+//         00521099     ADD        ESP,0x4
+//         0052109c     STOSD.REP  ES:EDI
+//                              tribegam.cpp:217 (28)
+//         0052109e     LEA        ECX=>param_2,[ESP + 0x28]
+//         005210a2     PUSH       0x18
+//         005210a4     PUSH       ECX
+//         005210a5     STOSW      ES:EDI
+//         005210a7     CALL       ctime                                            undefined ctime()
+//         005210ac     ADD        ESP,0x4
+//         005210af     LEA        EDX=>stime[4],[ESP + 0x8]
+//         005210b3     PUSH       EAX
+//         005210b4     PUSH       EDX
+//         005210b5     CALL       strncpy                                          undefined strncpy()
+//                              tribegam.cpp:218 (30)
+//         005210ba     MOV        EAX,dword ptr [ESP + param_1]
+//         005210be     MOV        EDX,dword ptr [run_log_file]                     = 00000000
+//         005210c4     ADD        ESP,0xc
+//         005210c7     LEA        ECX=>stime[4],[ESP + 0x4]
+//         005210cb     PUSH       EAX
+//         005210cc     PUSH       ECX
+//         005210cd     PUSH       s_%s_-_%s_                                       = "%s - %s\n"
+//         005210d2     PUSH       EDX
+//         005210d3     CALL       fprintf                                          undefined fprintf()
+//                              tribegam.cpp:222 (18)
+//         005210d8     MOV        EDX,dword ptr [run_log_file]                     = 00000000
+//         005210de     ADD        ESP,0x10
+//         005210e1     PUSH       EDX
+//         005210e2     CALL       fclose                                           undefined fclose()
+//         005210e7     ADD        ESP,0x4
+//                              tribegam.cpp:224 (5)
+//         005210ea     POP        EDI
+//         005210eb     ADD        ESP,0x1c
+//         005210ee     RET
+//                               LAB_005210ef                                                 XREF[1]:     00521082(j)
+//                              tribegam.cpp:221 (16)
+//         005210ef     MOV        ECX,dword ptr [ESP + param_1]
+//         005210f3     PUSH       ECX
+//         005210f4     PUSH       s_%s_                                            = "%s\n"
+//         005210f9     PUSH       EAX
+//         005210fa     CALL       fprintf                                          undefined fprintf()
+//                              tribegam.cpp:222 (18)
+//         005210ff     MOV        EDX,dword ptr [run_log_file]                     = 00000000
+//         00521105     ADD        ESP,0xc
+//         00521108     PUSH       EDX
+//         00521109     CALL       fclose                                           undefined fclose()
+//         0052110e     ADD        ESP,0x4
+//                               LAB_00521111                                                 XREF[2]:     0052102b(j), 00521076(j)
+//                              tribegam.cpp:224 (5)
+//         00521111     POP        EDI
+//         00521112     ADD        ESP,0x1c
+//         00521115     RET
+//         00521116     ??         90h
+//         00521117     NOP
+//         00521118     NOP
+//         00521119     NOP
+//         0052111a     NOP
+//         0052111b     NOP
+//         0052111c     NOP
+//         0052111d     NOP
+//         0052111e     NOP
+//         0052111f     NOP
+    return;
+}
