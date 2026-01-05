@@ -1,1269 +1,1012 @@
 #include "../common.h"
 #include "basegame.h"
+#include <cstdio>
+#include <io.h>   // _findfirst, _finddata_t
+#include <new>    // std::nothrow
 
+// --- Global Variable Definitions ---
+// These are declared as 'extern' in basegame.h. We define them here.
+
+// Logging and Debugging
+int do_draw_log;
+int safe_draw_log;
+char draw_log_name[256];
+FILE* draw_log;
+class TDebuggingLog* L;
+
+// Application State
+HWND AppWnd;
+HINSTANCE AppInst;
+HMODULE StringTable;
+RGE_Base_Game* rge_base_game;
+
+// Subsystems
+class TChat* chat;
+class TCommunications_Handler* comm;
+class TRegistry* Regs;
+class TSound_Driver* sound_driver;
+class DriveInformation* driveInfo;
+
+// --- Constants ---
+#ifndef SPI_GETSCREENSAVEACTIVE
+#define SPI_GETSCREENSAVEACTIVE 0x0010
+#endif
+#ifndef SPI_SETSCREENSAVEACTIVE
+#define SPI_SETSCREENSAVEACTIVE 0x0011
+#endif
+#ifndef SPI_GETPOWEROFFACTIVE
+#define SPI_GETPOWEROFFACTIVE 0x0054
+#endif
+#ifndef SPI_SETPOWEROFFACTIVE
+#define SPI_SETPOWEROFFACTIVE 0x0055
+#endif
+
+// --- Helper for VTable Calls ---
+// Allows calling functions by raw vtable offset as seen in ASM
+template<typename FuncSig>
+FuncSig get_vfunc(void* this_ptr, int offset) {
+    // Dereference the vptr (first 4 bytes), add offset, cast to function pointer
+    return (FuncSig)(*(*(int**)this_ptr + (offset / 4)));
+}
+
+
+FILE* fps_log = nullptr;
+int do_fps_log = 0;
+
+int do_debug_random = 0;
+int wrote_debug_random_log = 0;
+
+int debugActions = 0;
+FILE* actionFile = nullptr;
+
+// Constants (from original data segment)
+float GAME_SPEED_TO_FLOAT = 0.1f;   // DAT_0056f014 = 0x3DCCCCCD
+float FLOAT_TO_GAME_SPEED = 10.0f;  // Likely inverse (not used in setup)
+
+
+// --- Function Implementations ---
 
 void write_draw_log(char* param_1) {
-    /* TODO: Stub */
-//                              void __cdecl write_draw_log(char * param_1)
-//              void              <VOID>         <RETURN>
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0041b629(R)
-//                               ?write_draw_log@@YAXPAD@Z                                    XREF[5]:     play:004bc3d3(c),
-//                               write_draw_log                                                            play:004bc41e(c),
-//                                                                                                         do_draw:004c0328(c),
-//                                                                                                         do_draw:004c0414(c),
-//                                                                                                         do_draw:004c04c2(c)
-//                              basegame.cpp:199 (9)
-//         0041b620     MOV        EAX,[draw_log]                                   = 00000000
-//         0041b625     TEST       EAX,EAX
-//         0041b627     JZ         LAB_0041b64b
-//                              basegame.cpp:202 (16)
-//         0041b629     MOV        ECX,dword ptr [ESP + param_1]
-//         0041b62d     PUSH       ECX
-//         0041b62e     PUSH       s_%s                                             = "%s"
-//         0041b633     PUSH       EAX
-//         0041b634     CALL       fprintf                                          undefined fprintf()
-//                              basegame.cpp:203 (18)
-//         0041b639     MOV        EDX,dword ptr [draw_log]                         = 00000000
-//         0041b63f     ADD        ESP,0xc
-//         0041b642     PUSH       EDX
-//         0041b643     CALL       fflush                                           undefined fflush()
-//         0041b648     ADD        ESP,0x4
-//                               LAB_0041b64b                                                 XREF[1]:     0041b627(j)
-//                              basegame.cpp:205 (1)
-//         0041b64b     RET
-//         0041b64c     ??         90h
-//         0041b64d     NOP
-//         0041b64e     NOP
-//         0041b64f     NOP
-    return;
+    // If the draw log file is open...
+    if (draw_log) {
+        // ...write the provided string to it.
+        fprintf(draw_log, "%s", param_1);
+        // and flush the buffer to ensure it's written to disk.
+        fflush(draw_log);
+    }
 }
 
 void write_draw_log2(char* param_1) {
+    // If the draw log file is open...
+    if (draw_log) {
+        // ...write the string to it.
+        fprintf(draw_log, "%s", param_1);
+        // Close the file.
+        fclose(draw_log);
+        // Re-open the file in append+update mode ("a+"), effectively committing the previous write
+        // and preparing for the next one.
+        draw_log = fopen(draw_log_name, "a+");
+    }
+}
+
+void debug_random_reset() {
     /* TODO: Stub */
-//                              void __cdecl write_draw_log2(char * param_1)
+//                              void __cdecl debug_random_reset(void)
 //              void              <VOID>         <RETURN>
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0041b659(R)
-//                               ?write_draw_log2@@YAXPAD@Z                                   XREF[7]:     play:004bc3c7(c),
-//                               write_draw_log2                                                           play:004bc417(c),
-//                                                                                                         do_draw:004c031c(c),
-//                                                                                                         do_draw:004c0408(c),
-//                                                                                                         do_draw:004c04bb(c),
-//                                                                                                         draw:0053f73b(c),
-//                                                                                                         draw:0053f774(c)
-//                              basegame.cpp:208 (9)
-//         0041b650     MOV        EAX,[draw_log]                                   = 00000000
-//         0041b655     TEST       EAX,EAX
-//         0041b657     JZ         LAB_0041b692
-//                              basegame.cpp:211 (16)
-//         0041b659     MOV        ECX,dword ptr [ESP + param_1]
-//         0041b65d     PUSH       ECX
-//         0041b65e     PUSH       s_%s                                             = "%s"
-//         0041b663     PUSH       EAX
-//         0041b664     CALL       fprintf                                          undefined fprintf()
-//                              basegame.cpp:212 (18)
-//         0041b669     MOV        EDX,dword ptr [draw_log]                         = 00000000
-//         0041b66f     ADD        ESP,0xc
-//         0041b672     PUSH       EDX
-//         0041b673     CALL       fclose                                           undefined fclose()
-//         0041b678     ADD        ESP,0x4
-//                              basegame.cpp:213 (23)
-//         0041b67b     PUSH       s_a+                                             = "a+"
-//         0041b680     PUSH       draw_log_name                                    = 00000000
-//         0041b685     CALL       fopen                                            undefined fopen()
-//         0041b68a     ADD        ESP,0x8
-//         0041b68d     MOV        [draw_log],EAX                                   = 00000000
-//                               LAB_0041b692                                                 XREF[1]:     0041b657(j)
-//                              basegame.cpp:215 (1)
-//         0041b692     RET
-//         0041b693     ??         90h
-//         0041b694     NOP
-//         0041b695     NOP
-//         0041b696     NOP
-//         0041b697     NOP
-//         0041b698     NOP
-//         0041b699     NOP
-//         0041b69a     NOP
-//         0041b69b     NOP
-//         0041b69c     NOP
-//         0041b69d     NOP
-//         0041b69e     NOP
-//         0041b69f     NOP
+//                               ?debug_random_reset@@YAXXZ                                   XREF[1]:     new_game:0054279a(c)
+//                               debug_random_reset
+//                              basegame.cpp:6172 (5)
+//         00423010     MOV        EAX,debug_random_log                             = 00000000
+//                               LAB_00423015                                                 XREF[1]:     00423020(j)
+//                              basegame.cpp:6174 (13)
+//         00423015     MOV        byte ptr [EAX]=>debug_random_log,0x0             = 00000000
+//         00423018     ADD        EAX=>null_005b2440,0x64                          = align(499800)
+//         0042301b     CMP        EAX,do_draw_log
+//         00423020     JL         LAB_00423015
+//                              basegame.cpp:6175 (10)
+//         00423022     MOV        dword ptr [debug_random_index],0xffffffff
+//                              basegame.cpp:6176 (1)
+//         0042302c     RET
+//         0042302d     ??         90h
+//         0042302e     NOP
+//         0042302f     NOP
     return;
 }
 
-RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* param_1, int param_2) {
+void debug_random_write() {
     /* TODO: Stub */
-//                              undefined __thiscall RGE_Base_Game(RGE_Base_Game * this, RGE_Prog_In
-//              undefined         <UNASSIGNED>   <RETURN>
-//              RGE_Base_Game *   ECX:4 (auto)   this
-//              RGE_Prog_Info *   Stack[0x4]:4   param_1                   XREF[1]:     0041b7ac(R)
+//                              void __cdecl debug_random_write(void)
+//              void              <VOID>         <RETURN>
+//                               ?debug_random_write@@YAXXZ                                   XREF[4]:     ~RGE_Base_Game:0041c295(c),
+//                               debug_random_write                                                        do_command_game:0050a2ef(c),
+//                                                                                                         quit_game:005241aa(c),
+//                                                                                                         action_user_command:00529d02(c)
+//                              basegame.cpp:6182 (1)
+//         00423030     PUSH       EBX
+//                              basegame.cpp:6183 (20)
+//         00423031     PUSH       s_w                                              = "w"
+//         00423036     PUSH       s_c:\aoerand.txt                                 = "c:\\aoerand.txt"
+//         0042303b     CALL       fopen                                            undefined fopen()
+//         00423040     MOV        EBX,EAX
+//         00423042     ADD        ESP,0x8
+//                              basegame.cpp:6184 (6)
+//         00423045     TEST       EBX,EBX
+//         00423047     JZ         LAB_00423097
+//         00423049     PUSH       EDI
+//         0042304a     PUSH       ESI
+//                              basegame.cpp:6186 (2)
+//         0042304b     XOR        EDI,EDI
+//                              basegame.cpp:6191 (19)
+//         0042304d     MOV        ESI,debug_random_log                             = 00000000
+//                               LAB_00423052                                                 XREF[1]:     00423080(j)
+//         00423052     MOV        EAX,[debug_random_index]
+//         00423057     CMP        EDI,EAX
+//         00423059     MOV        EAX,s_>                                          = 3Eh
+//         0042305e     JZ         LAB_00423065
+//                              basegame.cpp:6187 (34)
+//         00423060     MOV        EAX,s__                                          = 20h
+//                               LAB_00423065                                                 XREF[1]:     0042305e(j)
+//         00423065     PUSH       ESI=>debug_random_log                            = 00000000
+//         00423066     PUSH       EDI
+//         00423067     PUSH       EAX=>s__                                         = 20h
+//                                                                                  = 3Eh
+//         00423068     PUSH       s_%s%d_-_%s_                                     = "%s%d - %s\n"
+//         0042306d     PUSH       EBX
+//         0042306e     CALL       fprintf                                          undefined fprintf()
+//         00423073     ADD        ESP,0x14
+//         00423076     ADD        ESI,0x64
+//         00423079     INC        EDI
+//         0042307a     CMP        ESI,do_draw_log
+//         00423080     JL         LAB_00423052
+//                              basegame.cpp:6188 (9)
+//         00423082     PUSH       EBX
+//         00423083     CALL       fclose                                           undefined fclose()
+//         00423088     ADD        ESP,0x4
+//                              basegame.cpp:6189 (12)
+//         0042308b     MOV        dword ptr [wrote_debug_random_log],0x1
+//         00423095     POP        ESI
+//         00423096     POP        EDI
+//                               LAB_00423097                                                 XREF[1]:     00423047(j)
+//                              basegame.cpp:6191 (2)
+//         00423097     POP        EBX
+//         00423098     RET
+//         00423099     ??         90h
+//         0042309a     NOP
+//         0042309b     NOP
+//         0042309c     NOP
+//         0042309d     NOP
+//         0042309e     NOP
+//         0042309f     NOP
+    return;
+}
+
+int debug_rand(char* param_1, int param_2) {
+    /* TODO: Stub */
+//                              int __cdecl debug_rand(char * param_1, int param_2)
+//              int               EAX:4          <RETURN>
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     004230bd(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     004230f7(R)
+//              char[9]           Stack[-0x10]:9 temp_name                 XREF[0,4]:   004230c5(*), 004230d7(*), 00423103(*), 004230e8(*)
+//                               ?debug_rand@@YAHPADH@Z                                       XREF[245]:   closestUndiscoveredTile:00416024(c
+//                               debug_rand                                                                create_terrain_object:00458a19(c),
+//                                                                                                         create_terrain_object:00458a52(c),
+//                                                                                                         create_terrain_object:00458a88(c),
+//                                                                                                         place_terrain_object:00458dac(c),
+//                                                                                                         place_terrain_object:00458de3(c),
+//                                                                                                         place_terrain_object:00458e19(c),
+//                                                                                                         place_terrain_object:00458f13(c),
+//                                                                                                         place_terrain_object:00458f4a(c),
+//                                                                                                         base_land_generate:004857f9(c),
+//                                                                                                         base_land_generate:004858d8(c),
+//                                                                                                         base_land_generate:00485963(c),
+//                                                                                                         base_land_generate:004859e2(c),
+//                                                                                                         base_land_generate:00485a65(c),
+//                                                                                                         make_placement_stack:00486072(c),
+//                                                                                                         make_placement_stack:004860a0(c),
+//                                                                                                         place_group:00486aa7(c),
+//                                                                                                         play:004bc331(c),
+//                                                                                                         objectToAttack:004dcbc2(c),
+//                                                                                                         make_new_cliff:00510182(c), [more]
+//                              basegame.cpp:6197 (4)
+//         004230a0     SUB        ESP,0xc
+//         004230a3     PUSH       EDI
+//                              basegame.cpp:6200 (7)
+//         004230a4     CALL       rand                                             undefined rand()
+//         004230a9     MOV        EDI,EAX
+//                              basegame.cpp:6202 (18)
+//         004230ab     MOV        EAX,[do_debug_random]
+//         004230b0     TEST       EAX,EAX
+//         004230b2     JZ         LAB_00423133
+//         004230b4     MOV        EAX,[debug_random_on]
+//         004230b9     TEST       EAX,EAX
+//         004230bb     JZ         LAB_00423133
+//                              basegame.cpp:6206 (12)
+//         004230bd     MOV        EAX,dword ptr [ESP + param_1]
+//         004230c1     PUSH       ESI
+//         004230c2     ADD        EAX,0xa
+//         004230c5     LEA        EDX=>temp_name[4],[ESP + 0x8]
+//                              basegame.cpp:6208 (14)
+//         004230c9     MOV        CL,byte ptr [EAX]
+//         004230cb     LEA        ESI,[EAX + 0x8]
+//         004230ce     CMP        CL,0x2e
+//         004230d1     JZ         LAB_004230e3
+//                               LAB_004230d3                                                 XREF[1]:     004230e1(j)
+//         004230d3     CMP        EAX,ESI
+//         004230d5     JNC        LAB_004230e3
+//                              basegame.cpp:6210 (5)
+//         004230d7     MOV        byte ptr [EDX]=>temp_name[4],CL
+//         004230d9     MOV        CL,byte ptr [EAX + 0x1]
+//                              basegame.cpp:6211 (1)
+//         004230dc     INC        EDX
+//                              basegame.cpp:6212 (6)
+//         004230dd     INC        EAX
+//         004230de     CMP        CL,0x2e
+//         004230e1     JNZ        LAB_004230d3
+//                               LAB_004230e3                                                 XREF[2]:     004230d1(j), 004230d5(j)
+//                              basegame.cpp:6216 (15)
+//         004230e3     MOV        EAX,[debug_random_index]
+//         004230e8     MOV        byte ptr [EDX]=>temp_name[5],0x0
+//         004230eb     CMP        EAX,0x1387
+//         004230f0     JGE        LAB_004230f5
+//                              basegame.cpp:6217 (1)
+//         004230f2     INC        EAX
+//                              basegame.cpp:6218 (2)
+//         004230f3     JMP        LAB_004230f7
+//                               LAB_004230f5                                                 XREF[1]:     004230f0(j)
+//                              basegame.cpp:6219 (2)
+//         004230f5     XOR        EAX,EAX
+//                               LAB_004230f7                                                 XREF[1]:     004230f3(j)
+//                              basegame.cpp:6221 (60)
+//         004230f7     MOV        ECX,dword ptr [ESP + param_2]
+//         004230fb     PUSH       EDI
+//         004230fc     PUSH       ECX
+//         004230fd     MOV        ECX,dword ptr [rge_base_game]                    = 00000000
+//         00423103     LEA        EDX=>temp_name[4],[ESP + 0x10]
+//         00423107     MOV        [debug_random_index],EAX
+//         0042310c     PUSH       EDX
+//         0042310d     MOV        EDX,dword ptr [ECX + 0x3f4]
+//         00423113     LEA        EAX,[EAX + EAX*0x4]
+//         00423116     MOV        ECX,dword ptr [EDX + 0x4]
+//         00423119     LEA        EDX,[EAX + EAX*0x4]
+//         0042311c     PUSH       ECX
+//         0042311d     PUSH       s_t%d,%s,l%d,r%d                                 = "t%d,%s,l%d,r%d"
+//         00423122     LEA        EAX,[EDX*0x4 + debug_random_log]                 = 00000000
+//         00423129     PUSH       EAX=>debug_random_log                            = 00000000
+//         0042312a     CALL       sprintf                                          undefined sprintf()
+//         0042312f     ADD        ESP,0x18
+//         00423132     POP        ESI
+//                               LAB_00423133                                                 XREF[2]:     004230b2(j), 004230bb(j)
+//                              basegame.cpp:6224 (2)
+//         00423133     MOV        EAX,EDI
+//                              basegame.cpp:6225 (5)
+//         00423135     POP        EDI
+//         00423136     ADD        ESP,0xc
+//         00423139     RET
+//         0042313a     ??         90h
+//         0042313b     NOP
+//         0042313c     NOP
+//         0042313d     NOP
+//         0042313e     NOP
+//         0042313f     NOP
+    return 0;
+}
+
+void debug_srand(char* param_1, int param_2, uint param_3) {
+    /* TODO: Stub */
+//                              void __cdecl debug_srand(char * param_1, int param_2, uint param_3)
+//              void              <VOID>         <RETURN>
+//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0042315a(R)
+//              int               Stack[0x8]:4   param_2                   XREF[1]:     00423194(R)
+//              uint              Stack[0xc]:4   param_3                   XREF[1]:     0042314b(R)
+//              char[9]           Stack[-0x10]:9 temp_name                 XREF[0,4]:   00423162(*), 00423174(*), 004231a0(*), 00423185(*)
+//                               ?debug_srand@@YAXPADHI@Z                                     XREF[20]:    setup:0041bade(c),
+//                               debug_srand                                                               SetRandomSeed:0042ca50(c),
+//                                                                                                         GetRandomSeed:0042caba(c),
+//                                                                                                         map_generate2:0045790d(c),
+//                                                                                                         map_generate2:0045793a(c),
+//                                                                                                         map_generate2:00457966(c),
+//                                                                                                         init_vars:004a109a(c),
+//                                                                                                         recycle_in_to_game:004c157a(c),
+//                                                                                                         setup:004c182a(c),
+//                                                                                                         update:004c3e53(c),
+//                                                                                                         set_object_state:004c87c5(c),
+//                                                                                                         update:00512601(c),
+//                                                                                                         loadAIInformation:005159a5(c),
+//                                                                                                         notify:00515ab1(c),
+//                                                                                                         notify:00515b78(c),
+//                                                                                                         create_game:00527173(c),
+//                                                                                                         new_game:00542805(c),
+//                                                                                                         new_scenario:00542c2d(c),
+//                                                                                                         update:00542f7b(c),
+//                                                                                                         update:00543127(c)
+//                              basegame.cpp:6231 (26)
+//         00423140     MOV        EAX,[do_debug_random]
+//         00423145     SUB        ESP,0xc
+//         00423148     TEST       EAX,EAX
+//         0042314a     PUSH       EDI
+//         0042314b     MOV        EDI,dword ptr [ESP + param_3]
+//         0042314f     JZ         LAB_004231d0
+//         00423151     MOV        EAX,[debug_random_on]
+//         00423156     TEST       EAX,EAX
+//         00423158     JZ         LAB_004231d0
+//                              basegame.cpp:6238 (12)
+//         0042315a     MOV        EAX,dword ptr [ESP + param_1]
+//         0042315e     PUSH       ESI
+//         0042315f     ADD        EAX,0xa
+//         00423162     LEA        EDX=>temp_name[4],[ESP + 0x8]
+//                              basegame.cpp:6240 (14)
+//         00423166     MOV        CL,byte ptr [EAX]
+//         00423168     LEA        ESI,[EAX + 0x8]
+//         0042316b     CMP        CL,0x2e
+//         0042316e     JZ         LAB_00423180
+//                               LAB_00423170                                                 XREF[1]:     0042317e(j)
+//         00423170     CMP        EAX,ESI
+//         00423172     JNC        LAB_00423180
+//                              basegame.cpp:6242 (5)
+//         00423174     MOV        byte ptr [EDX]=>temp_name[4],CL
+//         00423176     MOV        CL,byte ptr [EAX + 0x1]
+//                              basegame.cpp:6243 (1)
+//         00423179     INC        EDX
+//                              basegame.cpp:6244 (6)
+//         0042317a     INC        EAX
+//         0042317b     CMP        CL,0x2e
+//         0042317e     JNZ        LAB_00423170
+//                               LAB_00423180                                                 XREF[2]:     0042316e(j), 00423172(j)
+//                              basegame.cpp:6248 (15)
+//         00423180     MOV        EAX,[debug_random_index]
+//         00423185     MOV        byte ptr [EDX]=>temp_name[5],0x0
+//         00423188     CMP        EAX,0x1387
+//         0042318d     JGE        LAB_00423192
+//                              basegame.cpp:6249 (1)
+//         0042318f     INC        EAX
+//                              basegame.cpp:6250 (2)
+//         00423190     JMP        LAB_00423194
+//                               LAB_00423192                                                 XREF[1]:     0042318d(j)
+//                              basegame.cpp:6251 (2)
+//         00423192     XOR        EAX,EAX
+//                               LAB_00423194                                                 XREF[1]:     00423190(j)
+//                              basegame.cpp:6253 (60)
+//         00423194     MOV        ECX,dword ptr [ESP + param_2]
+//         00423198     PUSH       EDI
+//         00423199     PUSH       ECX
+//         0042319a     MOV        ECX,dword ptr [rge_base_game]                    = 00000000
+//         004231a0     LEA        EDX=>temp_name[4],[ESP + 0x10]
+//         004231a4     MOV        [debug_random_index],EAX
+//         004231a9     PUSH       EDX
+//         004231aa     MOV        EDX,dword ptr [ECX + 0x3f4]
+//         004231b0     LEA        EAX,[EAX + EAX*0x4]
+//         004231b3     MOV        ECX,dword ptr [EDX + 0x4]
+//         004231b6     LEA        EDX,[EAX + EAX*0x4]
+//         004231b9     PUSH       ECX
+//         004231ba     PUSH       s_t%d,%s,l%d,s%u                                 = "t%d,%s,l%d,s%u"
+//         004231bf     LEA        EAX,[EDX*0x4 + debug_random_log]                 = 00000000
+//         004231c6     PUSH       EAX=>debug_random_log                            = 00000000
+//         004231c7     CALL       sprintf                                          undefined sprintf()
+//         004231cc     ADD        ESP,0x18
+//         004231cf     POP        ESI
+//                               LAB_004231d0                                                 XREF[2]:     0042314f(j), 00423158(j)
+//                              basegame.cpp:6256 (9)
+//         004231d0     PUSH       EDI
+//         004231d1     CALL       srand                                            undefined srand()
+//         004231d6     ADD        ESP,0x4
+//                              basegame.cpp:6257 (5)
+//         004231d9     POP        EDI
+//         004231da     ADD        ESP,0xc
+//         004231dd     RET
+//         004231de     ??         90h
+//         004231df     NOP
+    return;
+}
+
+ulong debug_timeGetTime(char* param_1, int param_2) {
+    /* TODO: Stub */
+//                              ulong __cdecl debug_timeGetTime(char * param_1, int param_2)
+//              ulong             EAX:4          <RETURN>
+//              char *            Stack[0x4]:4   param_1
 //              int               Stack[0x8]:4   param_2
-//                               ??0RGE_Base_Game@@QAE@PAURGE_Prog_Info@@H@Z                  XREF[1]:     TRIBE_Game:00521148(c)
-//                               RGE_Base_Game::RGE_Base_Game
-//                              basegame.cpp:247 (39)
-//         0041b6a0     PUSH       EBX
-//         0041b6a1     PUSH       EBP
-//         0041b6a2     MOV        EBP,this
-//         0041b6a4     XOR        EBX,EBX
-//         0041b6a6     OR         EAX,0xffffffff
-//         0041b6a9     PUSH       ESI
-//         0041b6aa     MOV        dword ptr [EBP + 0x4],EBX
-//         0041b6ad     MOV        dword ptr [EBP + 0x28],EAX
-//         0041b6b0     MOV        dword ptr [EBP + 0x2c],EAX
-//         0041b6b3     MOV        dword ptr [EBP + 0x30],EAX
-//         0041b6b6     MOV        dword ptr [EBP + 0x34],EAX
-//         0041b6b9     PUSH       EDI
-//         0041b6ba     MOV        dword ptr [EBP + 0x9a8],EBX
-//         0041b6c0     MOV        dword ptr [EBP],RGE_Base_Game::`vftable'         = 0041ba80
-//                              basegame.cpp:261 (34)
-//         0041b6c7     PUSH       0x3f800000
-//         0041b6cc     MOV        dword ptr [do_draw_log],EBX
-//         0041b6d2     MOV        dword ptr [safe_draw_log],EBX
-//         0041b6d8     MOV        byte ptr [draw_log_name],BL                      = 00000000
-//         0041b6de     MOV        dword ptr [draw_log],EBX                         = 00000000
-//         0041b6e4     CALL       RGE_Base_Game::setVersion                        void setVersion(RGE_Base_Game * this, float p
-//                              basegame.cpp:262 (8)
-//         0041b6e9     PUSH       EBX
-//         0041b6ea     MOV        this,EBP
-//         0041b6ec     CALL       RGE_Base_Game::setScenarioGame                   void setScenarioGame(RGE_Base_Game * this, in
-//                              basegame.cpp:263 (8)
-//         0041b6f1     PUSH       EBX
-//         0041b6f2     MOV        this,EBP
-//         0041b6f4     CALL       RGE_Base_Game::setCampaignGame                   void setCampaignGame(RGE_Base_Game * this, in
-//                              basegame.cpp:264 (8)
-//         0041b6f9     PUSH       EBX
-//         0041b6fa     MOV        this,EBP
-//         0041b6fc     CALL       RGE_Base_Game::setSavedGame                      void setSavedGame(RGE_Base_Game * this, int p
-//                              basegame.cpp:265 (13)
-//         0041b701     MOV        ESI,0x1
-//         0041b706     MOV        this,EBP
-//         0041b708     PUSH       ESI
-//         0041b709     CALL       RGE_Base_Game::setSinglePlayerGame               void setSinglePlayerGame(RGE_Base_Game * this
-//                              basegame.cpp:266 (8)
-//         0041b70e     PUSH       EBX
-//         0041b70f     MOV        this,EBP
-//         0041b711     CALL       RGE_Base_Game::setMultiplayerGame                void setMultiplayerGame(RGE_Base_Game * this,
-//                              basegame.cpp:267 (13)
-//         0041b716     PUSH       0x8
-//         0041b718     PUSH       0x60
-//         0041b71a     PUSH       0x60
-//         0041b71c     MOV        this,EBP
-//         0041b71e     CALL       RGE_Base_Game::setMapSize                        void setMapSize(RGE_Base_Game * this, int par
-//                              basegame.cpp:268 (8)
-//         0041b723     PUSH       EBX
-//         0041b724     MOV        this,EBP
-//         0041b726     CALL       RGE_Base_Game::setAllowCheatCodes                void setAllowCheatCodes(RGE_Base_Game * this,
-//                              basegame.cpp:269 (8)
-//         0041b72b     PUSH       ESI
-//         0041b72c     MOV        this,EBP
-//         0041b72e     CALL       RGE_Base_Game::setCheatNotification              void setCheatNotification(RGE_Base_Game * thi
-//                              basegame.cpp:270 (8)
-//         0041b733     PUSH       EBX
-//         0041b734     MOV        this,EBP
-//         0041b736     CALL       RGE_Base_Game::setFullVisibility                 void setFullVisibility(RGE_Base_Game * this,
-//                              basegame.cpp:271 (8)
-//         0041b73b     PUSH       ESI
-//         0041b73c     MOV        this,EBP
-//         0041b73e     CALL       RGE_Base_Game::setFogOfWar                       void setFogOfWar(RGE_Base_Game * this, int pa
-//                              basegame.cpp:272 (8)
-//         0041b743     PUSH       ESI
-//         0041b744     MOV        this,EBP
-//         0041b746     CALL       RGE_Base_Game::setColoredChat                    void setColoredChat(RGE_Base_Game * this, int
-//                              basegame.cpp:275 (8)
-//         0041b74b     PUSH       EBX
-//         0041b74c     MOV        this,EBP
-//         0041b74e     CALL       RGE_Base_Game::setGameDeveloperMode              void setGameDeveloperMode(RGE_Base_Game * thi
-//                              basegame.cpp:276 (8)
-//         0041b753     PUSH       EBX
-//         0041b754     MOV        this,EBP
-//         0041b756     CALL       RGE_Base_Game::setDifficulty                     void setDifficulty(RGE_Base_Game * this, int
-//                              basegame.cpp:278 (2)
-//         0041b75b     XOR        EDI,EDI
-//                               LAB_0041b75d                                                 XREF[1]:     0041b785(j)
-//                              basegame.cpp:280 (9)
-//         0041b75d     PUSH       EBX
-//         0041b75e     PUSH       EDI
-//         0041b75f     MOV        this,EBP
-//         0041b761     CALL       RGE_Base_Game::setPlayerCDAndVersion             void setPlayerCDAndVersion(RGE_Base_Game * th
-//                              basegame.cpp:281 (9)
-//         0041b766     PUSH       EBX
-//         0041b767     PUSH       EDI
-//         0041b768     MOV        this,EBP
-//         0041b76a     CALL       RGE_Base_Game::setPlayerHasCD                    void setPlayerHasCD(RGE_Base_Game * this, int
-//                              basegame.cpp:282 (9)
-//         0041b76f     PUSH       EBX
-//         0041b770     PUSH       EDI
-//         0041b771     MOV        this,EBP
-//         0041b773     CALL       RGE_Base_Game::setPlayerVersion                  void setPlayerVersion(RGE_Base_Game * this, i
-//                              basegame.cpp:283 (15)
-//         0041b778     PUSH       ESI
-//         0041b779     PUSH       EDI
-//         0041b77a     MOV        this,EBP
-//         0041b77c     CALL       RGE_Base_Game::setPlayerTeam                     void setPlayerTeam(RGE_Base_Game * this, int
-//         0041b781     INC        EDI
-//         0041b782     CMP        EDI,0x9
-//         0041b785     JL         LAB_0041b75d
-//                              basegame.cpp:286 (8)
-//         0041b787     PUSH       EBX
-//         0041b788     MOV        this,EBP
-//         0041b78a     CALL       RGE_Base_Game::setPathFinding                    void setPathFinding(RGE_Base_Game * this, uch
-//                              basegame.cpp:287 (8)
-//         0041b78f     PUSH       EBX
-//         0041b790     MOV        this,EBP
-//         0041b792     CALL       RGE_Base_Game::setMpPathFinding                  void setMpPathFinding(RGE_Base_Game * this, u
-//                              basegame.cpp:288 (9)
-//         0041b797     PUSH       0x4
-//         0041b799     MOV        this,EBP
-//         0041b79b     CALL       RGE_Base_Game::setNumberPlayers                  void setNumberPlayers(RGE_Base_Game * this, i
-//                              basegame.cpp:289 (12)
-//         0041b7a0     PUSH       s_                                               = ""
-//         0041b7a5     MOV        this,EBP
-//         0041b7a7     CALL       RGE_Base_Game::setScenarioName                   void setScenarioName(RGE_Base_Game * this, ch
-//                              basegame.cpp:297 (13)
-//         0041b7ac     MOV        EAX,dword ptr [ESP + param_1]
-//         0041b7b0     MOV        dword ptr [rge_base_game],EBP                    = 00000000
-//         0041b7b6     MOV        dword ptr [EBP + 0xc],EAX
-//                              basegame.cpp:298 (3)
-//         0041b7b9     MOV        dword ptr [EBP + 0x10],EBX
-//                              basegame.cpp:299 (3)
-//         0041b7bc     MOV        dword ptr [EBP + 0x14],EBX
-//                              basegame.cpp:300 (3)
-//         0041b7bf     MOV        dword ptr [EBP + 0x18],ESI
-//                              basegame.cpp:301 (3)
-//         0041b7c2     MOV        dword ptr [EBP + 0x1c],EBX
-//                              basegame.cpp:302 (3)
-//         0041b7c5     MOV        dword ptr [EBP + 0x24],EBX
-//                              basegame.cpp:303 (6)
-//         0041b7c8     MOV        dword ptr [StringTable],EBX                      = 00000000
-//                              basegame.cpp:305 (3)
-//         0041b7ce     MOV        dword ptr [EBP + 0x38],EBX
-//                              basegame.cpp:308 (3)
-//         0041b7d1     MOV        dword ptr [EBP + 0x40],EBX
-//                              basegame.cpp:311 (3)
-//         0041b7d4     MOV        dword ptr [EBP + 0x44],EBX
-//                              basegame.cpp:314 (3)
-//         0041b7d7     MOV        dword ptr [EBP + 0x48],EBX
-//                              basegame.cpp:315 (3)
-//         0041b7da     MOV        dword ptr [EBP + 0x4c],EBX
-//                              basegame.cpp:316 (4)
-//         0041b7dd     MOV        byte ptr [EBP + 0x50],0x2
-//                              basegame.cpp:317 (3)
-//         0041b7e1     MOV        dword ptr [EBP + 0x54],EBX
-//                              basegame.cpp:318 (3)
-//         0041b7e4     MOV        dword ptr [EBP + 0x5c],EBX
-//                              basegame.cpp:321 (3)
-//         0041b7e7     MOV        dword ptr [EBP + 0x60],EBX
-//                              basegame.cpp:322 (3)
-//         0041b7ea     MOV        dword ptr [EBP + 0x64],EBX
-//                              basegame.cpp:323 (4)
-//         0041b7ed     MOV        word ptr [EBP + 0x68],BX
-//                              basegame.cpp:324 (3)
-//         0041b7f1     MOV        dword ptr [EBP + 0x6c],EBX
-//                              basegame.cpp:326 (3)
-//         0041b7f4     MOV        byte ptr [EBP + 0x70],BL
-//                              basegame.cpp:327 (3)
-//         0041b7f7     MOV        dword ptr [EBP + 0x74],EBX
-//                              basegame.cpp:328 (3)
-//         0041b7fa     MOV        dword ptr [EBP + 0x78],EBX
-//                              basegame.cpp:329 (3)
-//         0041b7fd     MOV        dword ptr [EBP + 0x7c],EBX
-//                              basegame.cpp:330 (6)
-//         0041b800     MOV        byte ptr [EBP + 0x80],BL
-//                              basegame.cpp:331 (6)
-//         0041b806     MOV        dword ptr [EBP + 0x184],EBX
-//                              basegame.cpp:332 (6)
-//         0041b80c     MOV        dword ptr [EBP + 0x188],EBX
-//                              basegame.cpp:335 (6)
-//         0041b812     MOV        dword ptr [EBP + 0x18c],EBX
-//                              basegame.cpp:336 (6)
-//         0041b818     MOV        dword ptr [EBP + 0x1a4],EBX
-//                              basegame.cpp:337 (6)
-//         0041b81e     MOV        dword ptr [EBP + 0x1a8],EBX
-//                              basegame.cpp:338 (6)
-//         0041b824     MOV        dword ptr [EBP + 0x190],EBX
-//                              basegame.cpp:339 (6)
-//         0041b82a     MOV        dword ptr [EBP + 0x198],EBX
-//                              basegame.cpp:340 (6)
-//         0041b830     MOV        dword ptr [EBP + 0x19c],EBX
-//                              basegame.cpp:341 (6)
-//         0041b836     MOV        dword ptr [EBP + 0x1a0],ESI
-//                              basegame.cpp:342 (6)
-//         0041b83c     MOV        dword ptr [EBP + 0x194],EBX
-//                              basegame.cpp:345 (6)
-//         0041b842     MOV        dword ptr [EBP + 0x1ac],EBX
-//                              basegame.cpp:348 (6)
-//         0041b848     MOV        dword ptr [EBP + 0x1b0],EBX
-//                              basegame.cpp:349 (6)
-//         0041b84e     MOV        dword ptr [EBP + 0x1b4],EBX
-//                              basegame.cpp:350 (6)
-//         0041b854     MOV        dword ptr [EBP + 0x1b8],EBX
-//                              basegame.cpp:351 (6)
-//         0041b85a     MOV        dword ptr [EBP + 0x1bc],EBX
-//                              basegame.cpp:354 (6)
-//         0041b860     MOV        dword ptr [EBP + 0x1c0],EBX
-//                              basegame.cpp:355 (6)
-//         0041b866     MOV        dword ptr [EBP + 0x1c4],EBX
-//                              basegame.cpp:356 (6)
-//         0041b86c     MOV        dword ptr [EBP + 0x1c8],EBX
-//                              basegame.cpp:360 (24)
-//         0041b872     PUSH       0x7f00
-//         0041b877     MOV        dword ptr [EBP + 0x1cc],ESI
-//         0041b87d     PUSH       EBX
-//         0041b87e     MOV        dword ptr [EBP + 0x1d0],ESI
-//         0041b884     CALL       dword ptr [->USER32.DLL::LoadCursorA]            = 0048acbc
-//                              basegame.cpp:367 (37)
-//         0041b88a     LEA        this,[EBP + 0x1e8]
-//         0041b890     MOV        dword ptr [EBP + 0x1d4],EAX
-//         0041b896     PUSH       this
-//         0041b897     PUSH       0x105
-//         0041b89c     MOV        word ptr [EBP + 0x1e0],BX
-//         0041b8a3     MOV        dword ptr [EBP + 0x1e4],EBX
-//         0041b8a9     CALL       dword ptr [->KERNEL32.DLL::GetCurrentDirectoryA] = 0048a9ce
-//                              basegame.cpp:369 (38)
-//         0041b8af     MOV        EDI,s_language.dll                               = 6Ch
-//         0041b8b4     OR         this,0xffffffff
-//         0041b8b7     XOR        EAX,EAX
-//         0041b8b9     LEA        EDX,[EBP + 0x2ed]
-//         0041b8bf     SCASB.RE   ES:EDI=>s_language.dll                           = 6Ch
-//                                                                                  = "anguage.dll"
-//         0041b8c1     NOT        this
-//         0041b8c3     SUB        EDI,this
-//         0041b8c5     MOV        EAX,this
-//         0041b8c7     MOV        ESI,EDI
-//         0041b8c9     MOV        EDI,EDX
-//         0041b8cb     SHR        this,0x2
-//         0041b8ce     MOVSD.REP  ES:EDI,ESI
-//         0041b8d0     MOV        this,EAX
-//         0041b8d2     AND        this,0x3
-//                              basegame.cpp:378 (17)
-//         0041b8d5     OR         EAX,0xffffffff
-//         0041b8d8     MOVSB.REP  ES:EDI,ESI
-//         0041b8da     MOV        ESI,0x1
-//         0041b8df     MOV        word ptr [EBP + 0x3fc],AX
-//                              basegame.cpp:379 (7)
-//         0041b8e6     MOV        word ptr [EBP + 0x3fe],AX
-//                              basegame.cpp:380 (19)
-//         0041b8ed     MOV        word ptr [EBP + 0x400],AX
-//         0041b8f4     MOV        dword ptr [EBP + 0x3f4],EBX
-//         0041b8fa     MOV        dword ptr [EBP + 0x3f8],ESI
-//                              basegame.cpp:381 (7)
-//         0041b900     MOV        word ptr [EBP + 0x402],SI
-//                              basegame.cpp:384 (6)
-//         0041b907     MOV        byte ptr [EBP + 0x404],BL
-//                              basegame.cpp:385 (6)
-//         0041b90d     MOV        dword ptr [EBP + 0x504],EBX
-//                              basegame.cpp:386 (6)
-//         0041b913     MOV        dword ptr [EBP + 0x508],EBX
-//                              basegame.cpp:387 (6)
-//         0041b919     MOV        dword ptr [EBP + 0x50c],EBX
-//                              basegame.cpp:388 (6)
-//         0041b91f     MOV        dword ptr [EBP + 0x510],EBX
-//                              basegame.cpp:389 (6)
-//         0041b925     MOV        dword ptr [EBP + 0x514],EBX
-//                              basegame.cpp:390 (6)
-//         0041b92b     MOV        dword ptr [EBP + 0x518],EBX
-//                              basegame.cpp:391 (6)
-//         0041b931     MOV        dword ptr [EBP + 0x51c],EBX
-//                              basegame.cpp:392 (6)
-//         0041b937     MOV        dword ptr [EBP + 0x520],EBX
-//                              basegame.cpp:393 (6)
-//         0041b93d     MOV        dword ptr [EBP + 0x524],EBX
-//                              basegame.cpp:394 (6)
-//         0041b943     MOV        dword ptr [EBP + 0x8f4],EBX
-//                              basegame.cpp:481 (199)
-//         0041b949     LEA        EAX,[EBP + 0x52c]
-//         0041b94f     MOV        this,0x1e
-//                               LAB_0041b954                                                 XREF[1]:     0041b96f(j)
-//         0041b954     MOV        dword ptr [EAX + -0x4],EBX
-//         0041b957     MOV        dword ptr [EAX],EBX
-//         0041b959     MOV        dword ptr [EAX + 0x4],EBX
-//         0041b95c     MOV        dword ptr [EAX + 0x10],EBX
-//         0041b95f     MOV        dword ptr [EAX + 0x14],EBX
-//         0041b962     MOV        dword ptr [EAX + 0x18],EBX
-//         0041b965     MOV        dword ptr [EAX + 0x8],EBX
-//         0041b968     MOV        dword ptr [EAX + 0xc],EBX
-//         0041b96b     ADD        EAX,0x20
-//         0041b96e     DEC        this
-//         0041b96f     JNZ        LAB_0041b954
-//         0041b971     MOV        dword ptr [EBP + 0x8e8],EBX
-//         0041b977     MOV        dword ptr [EBP + 0x8ec],EBX
-//         0041b97d     MOV        dword ptr [EBP + 0x8f0],EBX
-//         0041b983     MOV        dword ptr [EBP + 0x9ac],ESI
-//         0041b989     MOV        dword ptr [L],EBX                                = 00000000
-//         0041b98f     MOV        this,dword ptr [EBP + 0xc]
-//         0041b992     XOR        EAX,EAX
-//         0041b994     MOV        EDX,dword ptr [ECX + this+0x410]
-//         0041b99a     MOV        dword ptr [AppWnd],EBX                           = 00000000
-//         0041b9a0     MOV        dword ptr [AppInst],EDX                          = 00000000
-//         0041b9a6     MOV        dword ptr [chat],EBX                             = 00000000
-//         0041b9ac     MOV        dword ptr [comm],EBX                             = 00000000
-//         0041b9b2     MOV        dword ptr [Regs],EBX                             = 00000000
-//         0041b9b8     MOV        dword ptr [sound_driver],EBX                     = 00000000
-//         0041b9be     MOV        dword ptr [driveInfo],EBX                        = 00000000
-//         0041b9c4     MOV        dword ptr [EBP + 0x8],EBX
-//         0041b9c7     LEA        this,[EBP + 0x9b0]
-//                               LAB_0041b9cd                                                 XREF[1]:     0041b9dd(j)
-//         0041b9cd     MOV        dword ptr [this->_padding_],EBX
-//         0041b9cf     MOV        byte ptr [EAX + EBP*0x1 + 0xa15],BL
-//         0041b9d6     INC        EAX
-//         0041b9d7     ADD        this,0x4
-//         0041b9da     CMP        EAX,0x9
-//         0041b9dd     JL         LAB_0041b9cd
-//         0041b9df     MOV        this,EBP
-//         0041b9e1     MOV        dword ptr [EBP + 0x9fc],EBX
-//         0041b9e7     MOV        dword ptr [EBP + 0xa08],ESI
-//         0041b9ed     MOV        dword ptr [EBP + 0xa20],EBX
-//         0041b9f3     MOV        dword ptr [EBP + 0xa0c],0x3f800000
-//         0041b9fd     MOV        dword ptr [EBP + 0xa10],0x2
-//         0041ba07     CALL       RGE_Base_Game::setup_registry                    int setup_registry(RGE_Base_Game * this)
-//         0041ba0c     TEST       EAX,EAX
-//         0041ba0e     JNZ        LAB_0041ba20
-//                              basegame.cpp:450 (7)
-//         0041ba10     MOV        dword ptr [EBP + 0x40],0xe
-//                              basegame.cpp:481 (9)
-//         0041ba17     MOV        EAX,EBP
-//         0041ba19     POP        EDI
-//         0041ba1a     POP        ESI
-//         0041ba1b     POP        EBP
-//         0041ba1c     POP        EBX
-//         0041ba1d     RET        0x8
-//                               LAB_0041ba20                                                 XREF[1]:     0041ba0e(j)
-//                              basegame.cpp:453 (6)
-//         0041ba20     MOV        EAX,dword ptr [EBP + 0x1ac]
-//                              basegame.cpp:460 (16)
-//         0041ba26     MOV        this,EBP
-//         0041ba28     MOV        [Regs],EAX                                       = 00000000
-//         0041ba2d     CALL       RGE_Base_Game::setup_debugging_log               int setup_debugging_log(RGE_Base_Game * this)
-//         0041ba32     TEST       EAX,EAX
-//         0041ba34     JNZ        LAB_0041ba46
-//                              basegame.cpp:462 (7)
-//         0041ba36     MOV        dword ptr [EBP + 0x40],0xf
-//                              basegame.cpp:481 (9)
-//         0041ba3d     MOV        EAX,EBP
-//         0041ba3f     POP        EDI
-//         0041ba40     POP        ESI
-//         0041ba41     POP        EBP
-//         0041ba42     POP        EBX
-//         0041ba43     RET        0x8
-//                               LAB_0041ba46                                                 XREF[1]:     0041ba34(j)
-//                              basegame.cpp:469 (20)
-//         0041ba46     MOV        EAX,dword ptr [ESP + 0x18]
-//         0041ba4a     MOV        this,dword ptr [EBP + 0x1a4]
-//         0041ba50     CMP        EAX,EBX
-//         0041ba52     MOV        dword ptr [L],this                               = 00000000
-//         0041ba58     JZ         LAB_0041ba6d
-//                              basegame.cpp:471 (11)
-//         0041ba5a     MOV        this,EBP
-//         0041ba5c     CALL       RGE_Base_Game::setup                             int setup(RGE_Base_Game * this)
-//         0041ba61     TEST       EAX,EAX
-//         0041ba63     JNZ        LAB_0041ba6d
-//                              basegame.cpp:473 (5)
-//         0041ba65     CMP        dword ptr [EBP + 0x40],EBX
-//         0041ba68     JNZ        LAB_0041ba6d
-//                              basegame.cpp:474 (3)
-//         0041ba6a     MOV        dword ptr [EBP + 0x40],ESI
-//                               LAB_0041ba6d                                                 XREF[3]:     0041ba58(j), 0041ba63(j),
-//                                                                                                         0041ba68(j)
-//                              basegame.cpp:481 (15)
-//         0041ba6d     POP        EDI
-//         0041ba6e     MOV        dword ptr [EBP + 0x9d4],EBX
-//         0041ba74     MOV        EAX,EBP
-//         0041ba76     POP        ESI
-//         0041ba77     POP        EBP
-//         0041ba78     POP        EBX
-//         0041ba79     RET        0x8
-//         0041ba7c     ??         90h
-//         0041ba7d     NOP
-//         0041ba7e     NOP
-//         0041ba7f     NOP
+//                               ?debug_timeGetTime@@YAKPADH@Z                                XREF[228]:   StoreForResend:0042a517(c),
+//                               debug_timeGetTime                                                         CommOut:0042b54b(c),
+//                                                                                                         CommOut:0042b580(c),
+//                                                                                                         CommOut:0042b67f(c),
+//                                                                                                         CommOut:0042b6b8(c),
+//                                                                                                         CommOut:0042b78b(c),
+//                                                                                                         check_for_duplicate_orders:0043528
+//                                                                                                         submit:00435302(c),
+//                                                                                                         Time:004363ae(c),
+//                                                                                                         OpenLog:004364de(c),
+//                                                                                                         handle_idle:0046579d(c),
+//                                                                                                         handle_idle:00476f44(c),
+//                                                                                                         handle_idle:00476f84(c),
+//                                                                                                         show_message:00479357(c),
+//                                                                                                         Skip:0048051a(c),
+//                                                                                                         Skip:00480529(c),
+//                                                                                                         handle_idle:004ab75c(c),
+//                                                                                                         play:004bc448(c),
+//                                                                                                         shape_hit_test:004c0dd8(c),
+//                                                                                                         shape_hit_test:004c0e25(c), [more]
+//                              basegame.cpp:6263 (18)
+//         004231e0     MOV        EAX,[do_debug_timeGetTime]
+//         004231e5     TEST       EAX,EAX
+//         004231e7     JZ         LAB_00423222
+//         004231e9     MOV        EAX,[debug_timeGetTime_on]
+//         004231ee     TEST       EAX,EAX
+//         004231f0     JZ         LAB_00423222
+//                              basegame.cpp:6269 (5)
+//         004231f2     MOV        EAX,[debug_timeGetTime_cnt]
+//                              basegame.cpp:6270 (16)
+//         004231f7     MOV        ECX,dword ptr [debug_timeGetTime_interval]       = 5h
+//         004231fd     INC        EAX
+//         004231fe     CMP        EAX,ECX
+//         00423200     MOV        [debug_timeGetTime_cnt],EAX
+//         00423205     JNZ        LAB_0042321c
+//                              basegame.cpp:6272 (5)
+//         00423207     MOV        EAX,[debug_timeGetTime_time]
+//                              basegame.cpp:6273 (16)
+//         0042320c     MOV        dword ptr [debug_timeGetTime_cnt],0x0
+//         00423216     INC        EAX
+//         00423217     MOV        [debug_timeGetTime_time],EAX
+//                               LAB_0042321c                                                 XREF[1]:     00423205(j)
+//                              basegame.cpp:6277 (5)
+//         0042321c     MOV        EAX,[debug_timeGetTime_time]
+//                              basegame.cpp:6281 (1)
+//         00423221     RET
+//                               LAB_00423222                                                 XREF[2]:     004231e7(j), 004231f0(j)
+//                              basegame.cpp:6280 (6)
+//         00423222     JMP        dword ptr [->WINMM.DLL::timeGetTime]
+//         00423228     ??         90h
+//         00423229     NOP
+//         0042322a     NOP
+//         0042322b     NOP
+//         0042322c     NOP
+//         0042322d     NOP
+//         0042322e     NOP
+//         0042322f     NOP
+    return 0;
+}
+
+RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* param_1, int param_2) {
+    // The constructor logic is extensive. We will initialize members and globals
+    // in the same order as the original assembly code.
+
+    // Initialize member variables. The compiler will handle setting the vftable.
+    this->player_game_info = nullptr;
+    this->random_game_seed = -1;
+    this->random_map_seed = -1;
+    this->save_random_game_seed = -1;
+    this->save_random_map_seed = -1;
+    this->quick_build = 0;
+
+    // Initialize logging globals
+    do_draw_log = 0;
+    safe_draw_log = 0;
+    draw_log_name[0] = '\0';
+    draw_log = nullptr;
+
+    // Call setters to establish default game options
+    this->setVersion(1.0f);
+    this->setScenarioGame(0);
+    this->setCampaignGame(0);
+    this->setSavedGame(0);
+    this->setSinglePlayerGame(1);
+    this->setMultiplayerGame(0);
+    this->setMapSize(96, 96, 8); // 0x60, 0x60, 0x8
+    this->setAllowCheatCodes(0);
+    this->setCheatNotification(1);
+    this->setFullVisibility(0);
+    this->setFogOfWar(1);
+    this->setColoredChat(1);
+    this->setGameDeveloperMode(0);
+    this->setDifficulty(0);
+
+    // Loop to initialize per-player settings (9 players max)
+    for (int i = 0; i < 9; ++i) {
+        this->setPlayerCDAndVersion(i, 0);
+        this->setPlayerHasCD(i, 0);
+        this->setPlayerVersion(i, 0);
+        this->setPlayerTeam(i, 1);
+    }
+
+    // Set more game options
+    this->setPathFinding(0);
+    this->setMpPathFinding(0);
+    this->setNumberPlayers(4);
+    this->setScenarioName((char*)"");
+
+    // Set the static global instance pointer to this object
+    rge_base_game = this;
+
+    // Initialize a large block of member variables
+    this->prog_info = param_1;
+    this->prog_window = nullptr;
+    this->prog_ready = 0;
+    this->prog_active = 1;
+    this->prog_palette = nullptr;
+    // prog_mutex (0x20) is not initialized here in the assembly
+    this->window_style = 0;
+    this->screen_saver_enabled = 0;
+    // low_power_enabled (0x3C) is not initialized
+    this->error_code = 0;
+    this->is_timer = 0;
+    this->draw_system = nullptr;
+    this->draw_area = nullptr;
+    this->outline_type = 2;
+    this->custom_mouse = 0;
+    // shape_num (0x58) is not initialized
+    this->shapes = nullptr;
+    this->sound_system = nullptr;
+    this->music_system = nullptr;
+    this->sound_num = 0;
+    this->sounds = nullptr;
+    this->save_music_type = 0;
+    this->save_music_track_from = 0;
+    this->save_music_track_to = 0;
+    this->save_music_cur_track = 0;
+    this->save_music_file[0] = '\0';
+    this->save_music_loop = 0;
+    this->save_music_pos = 0;
+    this->comm_handler = nullptr;
+    this->comm_syncstop = 0;
+    this->comm_droppackets = 0;
+    this->comm_syncmsg = 0;
+    this->comm_stepmode = 0;
+    this->comm_speed = 1;
+    this->debugLog = nullptr;
+    this->log_comm = 0;
+    this->registry = nullptr;
+    this->prog_mode = 0;
+    this->game_mode = 0;
+    this->sub_game_mode = 0;
+    this->paused = 0;
+    this->mouse_pointer = nullptr;
+    this->erase_mouse = 0;
+    this->mouse_blit_sync = 0;
+    this->is_mouse_on = 1;
+    this->windows_mouse = 1;
+    this->input_enabled = 1; // Based on ESI=1 being used for other "on" values
+    // input_disabled_window (0x1DC) not initialized
+    this->font_num = 0;
+    this->fonts = nullptr;
+    this->world = nullptr;
+    this->render_all = 1;
+    this->master_obj_id = -1;
+    this->terrain_id = -1;
+    this->elevation_height = -1;
+    this->brush_size = 1;
+    this->timing_text[0] = '\0';
+    this->frame_count = 0;
+    this->world_update_count = 0;
+    this->view_update_count = 0;
+    this->last_frame_count = 0;
+    this->last_world_update_count = 0;
+    this->last_view_update_count = 0;
+    this->fps = 0;
+    this->world_update_fps = 0;
+    this->view_update_fps = 0;
+    this->do_show_timings = 0;
+    this->do_show_comm = 0;
+    this->do_show_ai = 0;
+    this->last_view_time = 0;
+    this->save_check_for_cd = 1;
+    // This is weirdly out of order in the asm, but belongs to the block
+    this->scenario_info = nullptr; 
+
+    // Windows API Calls
+    this->mouse_cursor = LoadCursorA(NULL, IDC_ARROW);
+    GetCurrentDirectoryA(sizeof(this->work_dir), this->work_dir);
+    strcpy_s(this->string_dll_name, sizeof(this->string_dll_name), "language.dll");
+
+    // Initialize timing structures
+    memset(this->timings, 0, sizeof(this->timings));
+
+    // Initialize more global variables
+    L = nullptr;
+    StringTable = nullptr; // Note: StringTable is an HMODULE
+    // AppWnd is set to NULL/0 in assembly
+    AppWnd = nullptr;
+    if (this->prog_info) {
+        AppInst = (HINSTANCE)this->prog_info->instance;
+    } else {
+        AppInst = nullptr;
+    }
+    chat = nullptr;
+    comm = nullptr;
+    Regs = nullptr;
+    sound_driver = nullptr;
+    driveInfo = nullptr;
+
+    // Loop to initialize more per-player members
+    for (int i = 0; i < 9; ++i) {
+        this->playerIDValue[i] = 0;
+        this->resigned[i] = 0;
+    }
+
+    // Final member initializations
+    this->auto_paused = 0;
+    this->rollover = 1;
+    this->map_save_area = nullptr;
+    this->game_speed = 1.0f;
+    this->single_player_difficulty = 2;
+
+    // Perform initial setup and handle errors
+    if (!this->setup_registry()) {
+        this->error_code = 14;
+        return;
+    }
+
+    Regs = this->registry;
+
+    if (!this->setup_debugging_log()) {
+        this->error_code = 15;
+        return;
+    }
+
+    L = this->debugLog;
+
+    // The second parameter to the constructor is a flag to run setup immediately
+    if (param_2 != 0) {
+        if (!this->setup()) {
+            // Only set error code 1 if no other error has occurred
+            if (this->error_code == 0) {
+                this->error_code = 1;
+            }
+        }
+    }
+
+    this->display_selected_ids = 0;
 }
 
 int RGE_Base_Game::setup() {
-    /* TODO: Stub */
-//                              int __thiscall setup(RGE_Base_Game * this)
-//              int               EAX:4          <RETURN>
-//              RGE_Base_Game *   ECX:4 (auto)   this
-//              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     0041c223(R)
-//              _finddata_t       Stack[-0x128   file_info                 XREF[0,1]:   0041bc9b(*)
-//              _OFSTRUCT         Stack[-0x1b0   of
-//              char[256]         Stack[-0x2b0   s
-//              char[260]         Stack[-0x3b4   filename
-//              _MEMORYSTATUS     Stack[-0x3d4   ms                        XREF[2]:     0041bbed(W), 0041bbf3(R)
-//              ulong             Stack[-0x3d8   DXVersion
-//              ulong             Stack[-0x3dc   DXPlatform
-//                               ?setup@RGE_Base_Game@@MAEHXZ                                 XREF[3]:     RGE_Base_Game:0041ba5c(c),
-//                               RGE_Base_Game::setup                                                      setup:0052193d(c), 0056ef30(*)
-//                              basegame.cpp:491 (31)
-//         0041baa0     MOV        EAX,FS:[0x0]
-//         0041baa6     PUSH       -0x1
-//         0041baa8     PUSH       FUN_0055c9f8
-//         0041baad     PUSH       EAX
-//         0041baae     MOV        dword ptr FS:[0x0],ESP
-//         0041bab5     SUB        ESP,0x3cc
-//         0041babb     PUSH       EBX
-//         0041babc     PUSH       EBP
-//         0041babd     PUSH       ESI
-//         0041babe     PUSH       EDI
-//                              basegame.cpp:522 (36)
-//         0041babf     PUSH       0x20a
-//         0041bac4     MOV        ESI,this
-//         0041bac6     PUSH       s_C:\msdev\work\age1_x1\basegame.c               = "C:\\msdev\\work\\age1_x1\\basegame.cpp"
-//         0041bacb     CALL       debug_timeGetTime                                ulong debug_timeGetTime(char * param_1, int p
-//         0041bad0     ADD        ESP,0x8
-//         0041bad3     PUSH       EAX
-//         0041bad4     PUSH       0x20a
-//         0041bad9     PUSH       s_C:\msdev\work\age1_x1\basegame.c               = "C:\\msdev\\work\\age1_x1\\basegame.cpp"
-//         0041bade     CALL       debug_srand                                      void debug_srand(char * param_1, int param_2,
-//                              basegame.cpp:526 (25)
-//         0041bae3     MOV        this,dword ptr [ESI + 0x1ac]
-//         0041bae9     ADD        ESP,0xc
-//         0041baec     MOV        EBP,0x1
-//         0041baf1     PUSH       s_Screen_Size                                    = "Screen Size"
-//         0041baf6     PUSH       EBP
-//         0041baf7     CALL       TRegistry::RegGetInt                             int RegGetInt(TRegistry * this, int param_1,
-//                              basegame.cpp:527 (16)
-//         0041bafc     CMP        EAX,0x320
-//         0041bb01     JG         LAB_0041bb44
-//         0041bb03     JZ         LAB_0041bb28
-//         0041bb05     CMP        EAX,0x280
-//         0041bb0a     JNZ        LAB_0041bb7e
-//                              basegame.cpp:530 (13)
-//         0041bb0c     MOV        EAX,dword ptr [ESI + 0xc]
-//         0041bb0f     MOV        dword ptr [EAX + 0x8e0],0x280
-//                              basegame.cpp:531 (13)
-//         0041bb19     MOV        this,dword ptr [ESI + 0xc]
-//         0041bb1c     MOV        dword ptr [ECX + this+0x8e4],0x1e0
-//                              basegame.cpp:532 (2)
-//         0041bb26     JMP        LAB_0041bb7e
-//                               LAB_0041bb28                                                 XREF[1]:     0041bb03(j)
-//                              basegame.cpp:535 (13)
-//         0041bb28     MOV        EDX,dword ptr [ESI + 0xc]
-//         0041bb2b     MOV        dword ptr [EDX + 0x8e0],0x320
-//                              basegame.cpp:536 (13)
-//         0041bb35     MOV        EAX,dword ptr [ESI + 0xc]
-//         0041bb38     MOV        dword ptr [EAX + 0x8e4],0x258
-//                              basegame.cpp:537 (2)
-//         0041bb42     JMP        LAB_0041bb7e
-//                               LAB_0041bb44                                                 XREF[1]:     0041bb01(j)
-//                              basegame.cpp:527 (16)
-//         0041bb44     MOV        this,0x400
-//         0041bb49     CMP        EAX,this
-//         0041bb4b     JZ         LAB_0041bb68
-//         0041bb4d     CMP        EAX,0x500
-//         0041bb52     JNZ        LAB_0041bb7e
-//                              basegame.cpp:545 (9)
-//         0041bb54     MOV        EDX,dword ptr [ESI + 0xc]
-//         0041bb57     MOV        dword ptr [EDX + 0x8e0],EAX
-//                              basegame.cpp:546 (9)
-//         0041bb5d     MOV        EAX,dword ptr [ESI + 0xc]
-//         0041bb60     MOV        dword ptr [EAX + 0x8e4],this
-//                              basegame.cpp:547 (2)
-//         0041bb66     JMP        LAB_0041bb7e
-//                               LAB_0041bb68                                                 XREF[1]:     0041bb4b(j)
-//                              basegame.cpp:540 (9)
-//         0041bb68     MOV        EDX,dword ptr [ESI + 0xc]
-//         0041bb6b     MOV        dword ptr [EDX + 0x8e0],this
-//                              basegame.cpp:541 (13)
-//         0041bb71     MOV        EAX,dword ptr [ESI + 0xc]
-//         0041bb74     MOV        dword ptr [EAX + 0x8e4],0x300
-//                               LAB_0041bb7e                                                 XREF[5]:     0041bb0a(j), 0041bb26(j),
-//                                                                                                         0041bb42(j), 0041bb52(j),
-//                                                                                                         0041bb66(j)
-//                              basegame.cpp:557 (26)
-//         0041bb7e     MOV        this,dword ptr [ESI + 0x1ac]
-//         0041bb84     PUSH       s_Rollover_Text                                  = "Rollover Text"
-//         0041bb89     PUSH       EBP
-//         0041bb8a     CALL       TRegistry::RegGetInt                             int RegGetInt(TRegistry * this, int param_1,
-//         0041bb8f     MOV        EBX,0x2
-//         0041bb94     CMP        EAX,EBX
-//         0041bb96     JNZ        LAB_0041bba4
-//                              basegame.cpp:558 (10)
-//         0041bb98     MOV        dword ptr [ESI + 0xa08],0x0
-//                              basegame.cpp:559 (2)
-//         0041bba2     JMP        LAB_0041bbaa
-//                               LAB_0041bba4                                                 XREF[1]:     0041bb96(j)
-//                              basegame.cpp:560 (6)
-//         0041bba4     MOV        dword ptr [ESI + 0xa08],EBP
-//                               LAB_0041bbaa                                                 XREF[1]:     0041bba2(j)
-//                              basegame.cpp:563 (17)
-//         0041bbaa     MOV        this,dword ptr [ESI + 0x1ac]
-//         0041bbb0     PUSH       s_Mouse_Style                                    = "Mouse Style"
-//         0041bbb5     PUSH       EBP
-//         0041bbb6     CALL       TRegistry::RegGetInt                             int RegGetInt(TRegistry * this, int param_1,
-//                              basegame.cpp:564 (4)
-//         0041bbbb     CMP        EAX,EBX
-//         0041bbbd     JNZ        LAB_0041bbcb
-//                              basegame.cpp:565 (10)
-//         0041bbbf     MOV        this,dword ptr [ESI + 0xc]
-//         0041bbc2     MOV        word ptr [ECX + this+0x8dc],BX
-//                              basegame.cpp:566 (6)
-//         0041bbc9     JMP        LAB_0041bbd9
-//                               LAB_0041bbcb                                                 XREF[1]:     0041bbbd(j)
-//         0041bbcb     CMP        EAX,EBP
-//         0041bbcd     JNZ        LAB_0041bbd9
-//                              basegame.cpp:567 (10)
-//         0041bbcf     MOV        EDX,dword ptr [ESI + 0xc]
-//         0041bbd2     MOV        word ptr [EDX + 0x8dc],BP
-//                               LAB_0041bbd9                                                 XREF[2]:     0041bbc9(j), 0041bbcd(j)
-//                              basegame.cpp:570 (17)
-//         0041bbd9     MOV        this,dword ptr [ESI + 0x1ac]
-//         0041bbdf     PUSH       s_Game_Speed                                     = "Game Speed"
-//         0041bbe4     PUSH       EBP
-//         0041bbe5     CALL       TRegistry::RegGetInt                             int RegGetInt(TRegistry * this, int param_1,
-//                              basegame.cpp:571 (9)
-//         0041bbea     CMP        EAX,-0x1
-//         0041bbed     MOV        dword ptr [ESP + ms.dwLength],EAX
-//         0041bbf1     JZ         LAB_0041bc03
-//                              basegame.cpp:572 (16)
-//         0041bbf3     FILD       dword ptr [ESP + ms.dwLength]
-//         0041bbf7     FMUL       float ptr [DAT_0056f014]                         = CDh
-//         0041bbfd     FSTP       float ptr [ESI + 0xa0c]
-//                               LAB_0041bc03                                                 XREF[1]:     0041bbf1(j)
-//                              basegame.cpp:574 (17)
-//         0041bc03     MOV        this,dword ptr [ESI + 0x1ac]
-//         0041bc09     PUSH       s_Difficulty                                     = "Difficulty"
-//         0041bc0e     PUSH       EBP
-//         0041bc0f     CALL       TRegistry::RegGetInt                             int RegGetInt(TRegistry * this, int param_1,
-//                              basegame.cpp:575 (5)
-//         0041bc14     CMP        EAX,-0x1
-//         0041bc17     JZ         LAB_0041bc1f
-//                              basegame.cpp:576 (6)
-//         0041bc19     MOV        dword ptr [ESI + 0xa10],EAX
-//                               LAB_0041bc1f                                                 XREF[1]:     0041bc17(j)
-//                              basegame.cpp:578 (17)
-//         0041bc1f     MOV        this,dword ptr [ESI + 0x1ac]
-//         0041bc25     PUSH       s_Path_Finding                                   = "Path Finding"
-//         0041bc2a     PUSH       EBP
-//         0041bc2b     CALL       TRegistry::RegGetInt                             int RegGetInt(TRegistry * this, int param_1,
-//                              basegame.cpp:579 (9)
-//         0041bc30     CMP        EAX,EBP
-//         0041bc32     JL         LAB_0041bc43
-//         0041bc34     CMP        EAX,0x3
-//         0041bc37     JG         LAB_0041bc43
-//                              basegame.cpp:580 (10)
-//         0041bc39     DEC        AL
-//         0041bc3b     MOV        this,ESI
-//         0041bc3d     PUSH       EAX
-//         0041bc3e     CALL       RGE_Base_Game::setPathFinding                    void setPathFinding(RGE_Base_Game * this, uch
-//                               LAB_0041bc43                                                 XREF[2]:     0041bc32(j), 0041bc37(j)
-//                              basegame.cpp:582 (17)
-//         0041bc43     MOV        this,dword ptr [ESI + 0x1ac]
-//         0041bc49     PUSH       s_MP_Path_Finding                                = "MP Path Finding"
-//         0041bc4e     PUSH       EBP
-//         0041bc4f     CALL       TRegistry::RegGetInt                             int RegGetInt(TRegistry * this, int param_1,
-//                              basegame.cpp:583 (9)
-//         0041bc54     CMP        EAX,EBP
-//         0041bc56     JL         LAB_0041bc67
-//         0041bc58     CMP        EAX,0x3
-//         0041bc5b     JG         LAB_0041bc67
-//                              basegame.cpp:584 (10)
-//         0041bc5d     DEC        AL
-//         0041bc5f     MOV        this,ESI
-//         0041bc61     PUSH       EAX
-//         0041bc62     CALL       RGE_Base_Game::setMpPathFinding                  void setMpPathFinding(RGE_Base_Game * this, u
-//                               LAB_0041bc67                                                 XREF[2]:     0041bc56(j), 0041bc5b(j)
-//                              basegame.cpp:586 (17)
-//         0041bc67     MOV        this,dword ptr [ESI + 0x1ac]
-//         0041bc6d     PUSH       s_Scroll_Speed                                   = "Scroll Speed"
-//         0041bc72     PUSH       EBP
-//         0041bc73     CALL       TRegistry::RegGetInt                             int RegGetInt(TRegistry * this, int param_1,
-//                              basegame.cpp:587 (17)
-//         0041bc78     CMP        EAX,-0x1
-//         0041bc7b     JZ         LAB_0041bc9b
-//         0041bc7d     CMP        EAX,0xa
-//         0041bc80     JL         LAB_0041bc9b
-//         0041bc82     CMP        EAX,0xc8
-//         0041bc87     JG         LAB_0041bc9b
-//                              basegame.cpp:589 (9)
-//         0041bc89     MOV        this,dword ptr [ESI + 0xc]
-//         0041bc8c     MOV        dword ptr [ECX + this+0x8c8],EAX
-//                              basegame.cpp:590 (9)
-//         0041bc92     MOV        EDX,dword ptr [ESI + 0xc]
-//         0041bc95     MOV        dword ptr [EDX + 0x8d0],EAX
-//                               LAB_0041bc9b                                                 XREF[3]:     0041bc7b(j), 0041bc80(j),
-//                                                                                                         0041bc87(j)
-//                              basegame.cpp:594 (26)
-//         0041bc9b     LEA        EAX=>file_info.time_create,[ESP + 0x2c4]
-//         0041bca2     PUSH       EAX
-//         0041bca3     PUSH       s_empires.exe                                    = "empires.exe"
-//         0041bca8     CALL       __findfirst                                      undefined __findfirst()
-//         0041bcad     ADD        ESP,0x8
-//         0041bcb0     CMP        EAX,-0x1
-//         0041bcb3     JNZ        LAB_0041bcc1
-//                              basegame.cpp:596 (7)
-//         0041bcb5     MOV        dword ptr [ESI + 0x40],0x17
-//                              basegame.cpp:597 (5)
-//         0041bcbc     JMP        LAB_0041c221
-//                               LAB_0041bcc1                                                 XREF[1]:     0041bcb3(j)
-//                              basegame.cpp:601 (11)
-//         0041bcc1     MOV        EDI,dword ptr [ESI]
-//         0041bcc3     MOV        this,ESI
-//         0041bcc5     CALL       dword ptr [EDI + 0x64]
-//         0041bcc8     TEST       EAX,EAX
-//         0041bcca     JNZ        LAB_0041bcd4
-//                              basegame.cpp:603 (3)
-//         0041bccc     MOV        dword ptr [ESI + 0x40],EBX
-//                              basegame.cpp:604 (5)
-//         0041bccf     JMP        LAB_0041c221
-//                               LAB_0041bcd4                                                 XREF[1]:     0041bcca(j)
-//                              basegame.cpp:611 (13)
-//         0041bcd4     LEA        this,[ESI + 0x2ed]
-//         0041bcda     PUSH       this
-//         0041bcdb     CALL       dword ptr [->KERNEL32.DLL::LoadLibraryA]         = 0048aa08
-//                              basegame.cpp:612 (9)
-//         0041bce1     TEST       EAX,EAX
-//         0041bce3     MOV        [StringTable],EAX                                = 00000000
-//         0041bce8     JNZ        LAB_0041bcf2
-//                              basegame.cpp:614 (3)
-//         0041bcea     MOV        dword ptr [ESI + 0x40],EBP
-//                              basegame.cpp:615 (5)
-//         0041bced     JMP        LAB_0041c221
-//                               LAB_0041bcf2                                                 XREF[1]:     0041bce8(j)
-//                              basegame.cpp:620 (11)
-//         0041bcf2     LEA        EDX,[ESP + 0x18]
-//         0041bcf6     PUSH       EDX
-//         0041bcf7     CALL       dword ptr [->KERNEL32.DLL::GlobalMemoryStatus]   = 0048a9f2
-//                              basegame.cpp:621 (23)
-//         0041bcfd     MOV        EAX,dword ptr [ESP + 0x24]
-//         0041bd01     MOV        this,dword ptr [ESP + 0x2c]
-//         0041bd05     CMP        EAX,0x1400000
-//         0041bd0a     JC         LAB_0041bd14
-//         0041bd0c     CMP        this,0xa00000
-//         0041bd12     JNC        LAB_0041bd2f
-//                               LAB_0041bd14                                                 XREF[1]:     0041bd0a(j)
-//                              basegame.cpp:623 (15)
-//         0041bd14     CMP        EAX,0xa00000
-//         0041bd19     JC         LAB_0041bd23
-//         0041bd1b     CMP        this,0x1400000
-//         0041bd21     JNC        LAB_0041bd2f
-//                               LAB_0041bd23                                                 XREF[1]:     0041bd19(j)
-//                              basegame.cpp:625 (12)
-//         0041bd23     CMP        this,0x1e00000
-//         0041bd29     JC         LAB_0041c21a
-//                               LAB_0041bd2f                                                 XREF[2]:     0041bd12(j), 0041bd21(j)
-//                              basegame.cpp:633 (8)
-//         0041bd2f     MOV        this,ESI
-//         0041bd31     CALL       dword ptr [EDI + 0x140]
-//                              basegame.cpp:636 (8)
-//         0041bd37     CMP        dword ptr [debugActions],EBP
-//         0041bd3d     JNZ        LAB_0041bd56
-//                              basegame.cpp:637 (23)
-//         0041bd3f     PUSH       s_w                                              = "w"
-//         0041bd44     PUSH       s_c:\aoeact.txt                                  = "c:\\aoeact.txt"
-//         0041bd49     CALL       fopen                                            undefined fopen()
-//         0041bd4e     ADD        ESP,0x8
-//         0041bd51     MOV        [actionFile],EAX                                 = 00000000
-//                               LAB_0041bd56                                                 XREF[1]:     0041bd3d(j)
-//                              basegame.cpp:654 (13)
-//         0041bd56     MOV        EAX,dword ptr [ESI + 0xc]
-//         0041bd59     MOV        this,dword ptr [EAX + 0x87c]
-//         0041bd5f     TEST       this,this
-//         0041bd61     JZ         LAB_0041bd7a
-//                              basegame.cpp:656 (11)
-//         0041bd63     MOV        this,ESI
-//         0041bd65     CALL       RGE_Base_Game::check_expiration                  int check_expiration(RGE_Base_Game * this)
-//         0041bd6a     TEST       EAX,EAX
-//         0041bd6c     JNZ        LAB_0041bd7a
-//                              basegame.cpp:658 (7)
-//         0041bd6e     MOV        dword ptr [ESI + 0x40],0x3
-//                              basegame.cpp:659 (5)
-//         0041bd75     JMP        LAB_0041c221
-//                               LAB_0041bd7a                                                 XREF[2]:     0041bd61(j), 0041bd6c(j)
-//                              basegame.cpp:664 (13)
-//         0041bd7a     MOV        this,dword ptr [ESI + 0xc]
-//         0041bd7d     MOV        EAX,dword ptr [ECX + this+0x88c]
-//         0041bd83     TEST       EAX,EAX
-//         0041bd85     JZ         LAB_0041bd9e
-//                              basegame.cpp:666 (11)
-//         0041bd87     MOV        this,ESI
-//         0041bd89     CALL       RGE_Base_Game::check_multi_copies                int check_multi_copies(RGE_Base_Game * this)
-//         0041bd8e     TEST       EAX,EAX
-//         0041bd90     JNZ        LAB_0041bd9e
-//                              basegame.cpp:668 (7)
-//         0041bd92     MOV        dword ptr [ESI + 0x40],0x4
-//                              basegame.cpp:669 (5)
-//         0041bd99     JMP        LAB_0041c221
-//                               LAB_0041bd9e                                                 XREF[2]:     0041bd85(j), 0041bd90(j)
-//                              basegame.cpp:676 (16)
-//         0041bd9e     PUSH       s_NODXCHECK                                      = "NODXCHECK"
-//         0041bda3     MOV        this,ESI
-//         0041bda5     CALL       RGE_Base_Game::check_prog_argument               uchar check_prog_argument(RGE_Base_Game * thi
-//         0041bdaa     TEST       AL,AL
-//         0041bdac     JNZ        LAB_0041bdd7
-//                              basegame.cpp:681 (15)
-//         0041bdae     LEA        EDX,[ESP + 0x10]
-//         0041bdb2     LEA        EAX,[ESP + 0x14]
-//         0041bdb6     PUSH       EDX
-//         0041bdb7     PUSH       EAX=>DAT_fffffff8
-//         0041bdb8     CALL       GetDXVersion                                     void GetDXVersion(ulong * param_1, ulong * pa
-//                              basegame.cpp:682 (14)
-//         0041bdbd     MOV        EAX,dword ptr [ESP + 0x1c]
-//         0041bdc1     ADD        ESP,0x8
-//         0041bdc4     CMP        EAX,0x501
-//         0041bdc9     JNC        LAB_0041bdd7
-//                              basegame.cpp:684 (7)
-//         0041bdcb     MOV        dword ptr [ESI + 0x40],0x14
-//                              basegame.cpp:685 (5)
-//         0041bdd2     JMP        LAB_0041c221
-//                               LAB_0041bdd7                                                 XREF[2]:     0041bdac(j), 0041bdc9(j)
-//                              basegame.cpp:690 (18)
-//         0041bdd7     MOV        EBX,dword ptr [->USER32.DLL::SystemParametersI   = 0048acf0
-//         0041bddd     LEA        EBP,[ESI + 0x38]
-//         0041bde0     PUSH       0x0
-//         0041bde2     PUSH       EBP=>DAT_fffffff8
-//         0041bde3     PUSH       0x0=>DAT_fffffff4
-//         0041bde5     PUSH       offset DAT_fffffff0
-//         0041bde7     CALL       EBX=>USER32.DLL::SystemParametersInfoA
-//                              basegame.cpp:691 (6)
-//         0041bde9     CMP        dword ptr [EBP],0x0
-//         0041bded     JZ         LAB_0041bdf9
-//                              basegame.cpp:692 (10)
-//         0041bdef     PUSH       0x2
-//         0041bdf1     PUSH       0x0=>DAT_fffffff8
-//         0041bdf3     PUSH       0x0=>DAT_fffffff4
-//         0041bdf5     PUSH       offset DAT_fffffff0
-//         0041bdf7     CALL       EBX=>USER32.DLL::SystemParametersInfoA
-//                               LAB_0041bdf9                                                 XREF[1]:     0041bded(j)
-//                              basegame.cpp:694 (12)
-//         0041bdf9     LEA        EBP,[ESI + 0x3c]
-//         0041bdfc     PUSH       0x0
-//         0041bdfe     PUSH       EBP=>DAT_fffffff8
-//         0041bdff     PUSH       0x0=>DAT_fffffff4
-//         0041be01     PUSH       offset DAT_fffffff0
-//         0041be03     CALL       EBX=>USER32.DLL::SystemParametersInfoA
-//                              basegame.cpp:695 (6)
-//         0041be05     CMP        dword ptr [EBP],0x0
-//         0041be09     JZ         LAB_0041be15
-//                              basegame.cpp:696 (10)
-//         0041be0b     PUSH       0x2
-//         0041be0d     PUSH       0x0=>DAT_fffffff8
-//         0041be0f     PUSH       0x0=>DAT_fffffff4
-//         0041be11     PUSH       offset DAT_fffffff0
-//         0041be13     CALL       EBX=>USER32.DLL::SystemParametersInfoA
-//                               LAB_0041be15                                                 XREF[1]:     0041be09(j)
-//                              basegame.cpp:699 (9)
-//         0041be15     PUSH       0x0
-//         0041be17     MOV        this,ESI
-//         0041be19     CALL       RGE_Base_Game::check_for_cd                      int check_for_cd(RGE_Base_Game * this, int pa
-//                              basegame.cpp:702 (15)
-//         0041be1e     MOV        this,ESI
-//         0041be20     MOV        dword ptr [ESI + 0x9ac],EAX
-//         0041be26     CALL       dword ptr [EDI + 0x68]
-//         0041be29     TEST       EAX,EAX
-//         0041be2b     JNZ        LAB_0041be39
-//                              basegame.cpp:704 (7)
-//         0041be2d     MOV        dword ptr [ESI + 0x40],0x5
-//                              basegame.cpp:705 (5)
-//         0041be34     JMP        LAB_0041c221
-//                               LAB_0041be39                                                 XREF[1]:     0041be2b(j)
-//                              basegame.cpp:709 (9)
-//         0041be39     MOV        this,ESI
-//         0041be3b     CALL       dword ptr [EDI + 0x6c]
-//         0041be3e     TEST       EAX,EAX
-//         0041be40     JNZ        LAB_0041be4e
-//                              basegame.cpp:711 (7)
-//         0041be42     MOV        dword ptr [ESI + 0x40],0x6
-//                              basegame.cpp:712 (5)
-//         0041be49     JMP        LAB_0041c221
-//                               LAB_0041be4e                                                 XREF[1]:     0041be40(j)
-//                              basegame.cpp:716 (9)
-//         0041be4e     MOV        this,ESI
-//         0041be50     CALL       dword ptr [EDI + 0x70]
-//         0041be53     TEST       EAX,EAX
-//         0041be55     JNZ        LAB_0041be6e
-//                              basegame.cpp:718 (11)
-//         0041be57     MOV        EAX,dword ptr [ESI + 0x40]
-//         0041be5a     TEST       EAX,EAX
-//         0041be5c     JNZ        LAB_0041c221
-//                              basegame.cpp:719 (7)
-//         0041be62     MOV        dword ptr [ESI + 0x40],0x7
-//                              basegame.cpp:720 (5)
-//         0041be69     JMP        LAB_0041c221
-//                               LAB_0041be6e                                                 XREF[1]:     0041be55(j)
-//                              basegame.cpp:724 (9)
-//         0041be6e     MOV        this,ESI
-//         0041be70     CALL       dword ptr [EDI + 0x74]
-//         0041be73     TEST       EAX,EAX
-//         0041be75     JNZ        LAB_0041be83
-//                              basegame.cpp:726 (7)
-//         0041be77     MOV        dword ptr [ESI + 0x40],0x11
-//                              basegame.cpp:727 (5)
-//         0041be7e     JMP        LAB_0041c221
-//                               LAB_0041be83                                                 XREF[1]:     0041be75(j)
-//                              basegame.cpp:731 (12)
-//         0041be83     MOV        this,ESI
-//         0041be85     CALL       dword ptr [EDI + 0x98]
-//         0041be8b     TEST       EAX,EAX
-//         0041be8d     JNZ        LAB_0041be9b
-//                              basegame.cpp:733 (7)
-//         0041be8f     MOV        dword ptr [ESI + 0x40],0x7
-//                              basegame.cpp:734 (5)
-//         0041be96     JMP        LAB_0041c221
-//                               LAB_0041be9b                                                 XREF[1]:     0041be8d(j)
-//                              basegame.cpp:738 (12)
-//         0041be9b     MOV        this,ESI
-//         0041be9d     CALL       dword ptr [EDI + 0x13c]
-//         0041bea3     TEST       EAX,EAX
-//         0041bea5     JNZ        LAB_0041beb3
-//                              basegame.cpp:740 (7)
-//         0041bea7     MOV        dword ptr [ESI + 0x40],0x7
-//                              basegame.cpp:741 (5)
-//         0041beae     JMP        LAB_0041c221
-//                               LAB_0041beb3                                                 XREF[1]:     0041bea5(j)
-//                              basegame.cpp:745 (9)
-//         0041beb3     MOV        this,ESI
-//         0041beb5     CALL       dword ptr [EDI + 0x78]
-//         0041beb8     TEST       EAX,EAX
-//         0041beba     JNZ        LAB_0041bec8
-//                              basegame.cpp:747 (7)
-//         0041bebc     MOV        dword ptr [ESI + 0x40],0x8
-//                              basegame.cpp:748 (5)
-//         0041bec3     JMP        LAB_0041c221
-//                               LAB_0041bec8                                                 XREF[1]:     0041beba(j)
-//                              basegame.cpp:752 (12)
-//         0041bec8     MOV        this,ESI
-//         0041beca     CALL       dword ptr [EDI + 0x8c]
-//         0041bed0     TEST       EAX,EAX
-//         0041bed2     JNZ        LAB_0041bee0
-//                              basegame.cpp:754 (7)
-//         0041bed4     MOV        dword ptr [ESI + 0x40],0xa
-//                              basegame.cpp:755 (5)
-//         0041bedb     JMP        LAB_0041c221
-//                               LAB_0041bee0                                                 XREF[1]:     0041bed2(j)
-//                              basegame.cpp:760 (12)
-//         0041bee0     MOV        this,ESI
-//         0041bee2     CALL       dword ptr [EDI + 0x84]
-//         0041bee8     TEST       EAX,EAX
-//         0041beea     JNZ        LAB_0041bef8
-//                              basegame.cpp:762 (7)
-//         0041beec     MOV        dword ptr [ESI + 0x40],0x10
-//                              basegame.cpp:763 (5)
-//         0041bef3     JMP        LAB_0041c221
-//                               LAB_0041bef8                                                 XREF[1]:     0041beea(j)
-//                              basegame.cpp:767 (12)
-//         0041bef8     MOV        this,ESI
-//         0041befa     CALL       dword ptr [EDI + 0x88]
-//         0041bf00     TEST       EAX,EAX
-//         0041bf02     JNZ        LAB_0041bf10
-//                              basegame.cpp:769 (7)
-//         0041bf04     MOV        dword ptr [ESI + 0x40],0x9
-//                              basegame.cpp:770 (5)
-//         0041bf0b     JMP        LAB_0041c221
-//                               LAB_0041bf10                                                 XREF[1]:     0041bf02(j)
-//                              basegame.cpp:774 (12)
-//         0041bf10     MOV        this,ESI
-//         0041bf12     CALL       dword ptr [EDI + 0x90]
-//         0041bf18     TEST       EAX,EAX
-//         0041bf1a     JNZ        LAB_0041bf28
-//                              basegame.cpp:776 (7)
-//         0041bf1c     MOV        dword ptr [ESI + 0x40],0xb
-//                              basegame.cpp:777 (5)
-//         0041bf23     JMP        LAB_0041c221
-//                               LAB_0041bf28                                                 XREF[1]:     0041bf1a(j)
-//                              basegame.cpp:781 (12)
-//         0041bf28     MOV        this,ESI
-//         0041bf2a     CALL       dword ptr [EDI + 0x94]
-//         0041bf30     TEST       EAX,EAX
-//         0041bf32     JNZ        LAB_0041bf40
-//                              basegame.cpp:783 (7)
-//         0041bf34     MOV        dword ptr [ESI + 0x40],0xc
-//                              basegame.cpp:784 (5)
-//         0041bf3b     JMP        LAB_0041c221
-//                               LAB_0041bf40                                                 XREF[1]:     0041bf32(j)
-//                              basegame.cpp:788 (51)
-//         0041bf40     PUSH       0x274
-//         0041bf45     CALL       operator_new                                     void * operator_new(uint param_1)
-//         0041bf4a     ADD        ESP,0x4
-//         0041bf4d     MOV        dword ptr [ESP + 0x10],EAX
-//         0041bf51     TEST       EAX,EAX
-//         0041bf53     MOV        dword ptr [ESP + 0x3e4],0x0
-//         0041bf5e     JZ         LAB_0041bf69
-//         0041bf60     MOV        this,EAX
-//         0041bf62     CALL       DriveInformation::DriveInformation               undefined DriveInformation(DriveInformation *
-//         0041bf67     JMP        LAB_0041bf6b
-//                               LAB_0041bf69                                                 XREF[1]:     0041bf5e(j)
-//         0041bf69     XOR        EAX,EAX
-//                               LAB_0041bf6b                                                 XREF[1]:     0041bf67(j)
-//         0041bf6b     OR         EBX,0xffffffff
-//         0041bf6e     MOV        [driveInfo],EAX                                  = 00000000
-//                              basegame.cpp:789 (9)
-//         0041bf73     TEST       EAX,EAX
-//         0041bf75     MOV        dword ptr [ESP + 0x3e4],EBX
-//                              basegame.cpp:790 (6)
-//         0041bf7c     JZ         LAB_0041c221
-//                              basegame.cpp:793 (12)
-//         0041bf82     MOV        this,ESI
-//         0041bf84     CALL       dword ptr [EDI + 0x9c]
-//         0041bf8a     TEST       EAX,EAX
-//         0041bf8c     JNZ        LAB_0041bf9a
-//                              basegame.cpp:795 (7)
-//         0041bf8e     MOV        dword ptr [ESI + 0x40],0xd
-//                              basegame.cpp:796 (5)
-//         0041bf95     JMP        LAB_0041c221
-//                               LAB_0041bf9a                                                 XREF[1]:     0041bf8c(j)
-//                              basegame.cpp:798 (7)
-//         0041bf9a     PUSH       0x0
-//         0041bf9c     MOV        this,ESI
-//         0041bf9e     CALL       dword ptr [EDI + 0xc]
-//                              basegame.cpp:801 (8)
-//         0041bfa1     MOV        this,ESI
-//         0041bfa3     CALL       dword ptr [EDI + 0xa0]
-//                              basegame.cpp:804 (18)
-//         0041bfa9     MOV        this,dword ptr [ESI + 0x10]
-//         0041bfac     PUSH       0x0
-//         0041bfae     PUSH       0x0=>DAT_fffffff8
-//         0041bfb0     PUSH       0x0=>DAT_fffffff4
-//         0041bfb2     PUSH       this=>DAT_fffffff0
-//         0041bfb3     MOV        this,ESI
-//         0041bfb5     CALL       dword ptr [EDI + 0xe4]
-//                              basegame.cpp:808 (20)
-//         0041bfbb     MOV        EDX,dword ptr [ESI + 0x10]
-//         0041bfbe     MOV        EBP,0x1
-//         0041bfc3     PUSH       0x5
-//         0041bfc5     PUSH       EDX=>DAT_fffffff8
-//         0041bfc6     MOV        dword ptr [ESI + 0x14],EBP
-//         0041bfc9     CALL       dword ptr [->USER32.DLL::ShowWindow]             = 0048ace2
-//                              basegame.cpp:809 (10)
-//         0041bfcf     MOV        EAX,dword ptr [ESI + 0x10]
-//         0041bfd2     PUSH       EAX
-//         0041bfd3     CALL       dword ptr [->USER32.DLL::SetFocus]               = 0048acd6
-//                              basegame.cpp:811 (7)
-//         0041bfd9     MOV        this,ESI
-//         0041bfdb     CALL       RGE_Base_Game::mouse_on                          void mouse_on(RGE_Base_Game * this)
-//                              basegame.cpp:814 (15)
-//         0041bfe0     MOV        this,dword ptr [ESI + 0x10]
-//         0041bfe3     PUSH       0x0
-//         0041bfe5     PUSH       offset DAT_fffffff8
-//         0041bfe7     PUSH       EBP=>DAT_fffffff4
-//         0041bfe8     PUSH       this=>DAT_fffffff0
-//         0041bfe9     CALL       dword ptr [->USER32.DLL::SetTimer]               = 0048acca
-//                              basegame.cpp:817 (25)
-//         0041bfef     MOV        this,dword ptr [ESI + 0x1ac]
-//         0041bff5     PUSH       s_Game_File_Number                               = "Game File Number"
-//         0041bffa     PUSH       0x0=>DAT_fffffff8
-//         0041bffc     MOV        dword ptr [ESI + 0x44],EAX
-//         0041bfff     CALL       TRegistry::RegGetInt                             int RegGetInt(TRegistry * this, int param_1,
-//         0041c004     TEST       EAX,EAX
-//         0041c006     JL         LAB_0041c05b
-//                              basegame.cpp:819 (37)
-//         0041c008     MOV        this,dword ptr [ESI + 0x1ac]
-//         0041c00e     PUSH       s_Game_File_Number                               = "Game File Number"
-//         0041c013     PUSH       0x0=>DAT_fffffff8
-//         0041c015     CALL       TRegistry::RegGetInt                             int RegGetInt(TRegistry * this, int param_1,
-//         0041c01a     PUSH       EAX
-//         0041c01b     LEA        EDX,[ESP + 0x3c]
-//         0041c01f     PUSH       s_game%d.nfo                                     = "game%d.nfo"
-//         0041c024     PUSH       EDX=>DAT_fffffff4
-//         0041c025     CALL       sprintf                                          undefined sprintf()
-//         0041c02a     ADD        ESP,0xc
-//                              basegame.cpp:820 (37)
-//         0041c02d     PUSH       0x118
-//         0041c032     CALL       operator_new                                     void * operator_new(uint param_1)
-//         0041c037     ADD        ESP,0x4
-//         0041c03a     MOV        dword ptr [ESP + 0x10],EAX
-//         0041c03e     TEST       EAX,EAX
-//         0041c040     MOV        dword ptr [ESP + 0x3e4],EBP
-//         0041c047     JZ         LAB_0041c0d5
-//         0041c04d     LEA        this,[ESP + 0x38]
-//         0041c051     PUSH       this
-//                              basegame.cpp:831 (9)
-//         0041c052     MOV        this,EAX
-//         0041c054     CALL       RGE_Game_Info::RGE_Game_Info                     undefined RGE_Game_Info(RGE_Game_Info * this,
-//         0041c059     JMP        LAB_0041c0d7
-//                               LAB_0041c05b                                                 XREF[1]:     0041c006(j)
-//                              basegame.cpp:824 (2)
-//         0041c05b     XOR        EDI,EDI
-//                               LAB_0041c05d                                                 XREF[1]:     0041c090(j)
-//                              basegame.cpp:826 (19)
-//         0041c05d     PUSH       EDI
-//         0041c05e     LEA        EDX,[ESP + 0x3c]
-//         0041c062     PUSH       s_game%d.nfo                                     = "game%d.nfo"
-//         0041c067     PUSH       EDX=>DAT_fffffff4
-//         0041c068     CALL       sprintf                                          undefined sprintf()
-//         0041c06d     ADD        ESP,0xc
-//                              basegame.cpp:827 (21)
-//         0041c070     LEA        EAX,[ESP + 0x2c4]
-//         0041c077     LEA        this,[ESP + 0x38]
-//         0041c07b     PUSH       EAX
-//         0041c07c     PUSH       this=>DAT_fffffff8
-//         0041c07d     CALL       __findfirst                                      undefined __findfirst()
-//         0041c082     ADD        ESP,0x8
-//                              basegame.cpp:828 (15)
-//         0041c085     CMP        EAX,EBX
-//         0041c087     JZ         LAB_0041c094
-//         0041c089     INC        EDI
-//         0041c08a     CMP        EDI,0x270f
-//         0041c090     JL         LAB_0041c05d
-//         0041c092     JMP        LAB_0041c0e1
-//                               LAB_0041c094                                                 XREF[1]:     0041c087(j)
-//                              basegame.cpp:830 (19)
-//         0041c094     MOV        this,dword ptr [ESI + 0x1ac]
-//         0041c09a     PUSH       EDI
-//         0041c09b     PUSH       s_Game_File_Number                               = "Game File Number"
-//         0041c0a0     PUSH       0x0=>DAT_fffffff4
-//         0041c0a2     CALL       TRegistry::RegSetInt                             int RegSetInt(TRegistry * this, int param_1,
-//                              basegame.cpp:831 (58)
-//         0041c0a7     PUSH       0x118
-//         0041c0ac     CALL       operator_new                                     void * operator_new(uint param_1)
-//         0041c0b1     ADD        ESP,0x4
-//         0041c0b4     MOV        dword ptr [ESP + 0x10],EAX
-//         0041c0b8     TEST       EAX,EAX
-//         0041c0ba     MOV        dword ptr [ESP + 0x3e4],0x2
-//         0041c0c5     JZ         LAB_0041c0d5
-//         0041c0c7     LEA        EDX,[ESP + 0x38]
-//         0041c0cb     MOV        this,EAX
-//         0041c0cd     PUSH       EDX
-//         0041c0ce     CALL       RGE_Game_Info::RGE_Game_Info                     undefined RGE_Game_Info(RGE_Game_Info * this,
-//         0041c0d3     JMP        LAB_0041c0d7
-//                               LAB_0041c0d5                                                 XREF[2]:     0041c047(j), 0041c0c5(j)
-//         0041c0d5     XOR        EAX,EAX
-//                               LAB_0041c0d7                                                 XREF[2]:     0041c059(j), 0041c0d3(j)
-//         0041c0d7     MOV        dword ptr [ESP + 0x3e4],EBX
-//         0041c0de     MOV        dword ptr [ESI + 0x4],EAX
-//                               LAB_0041c0e1                                                 XREF[1]:     0041c092(j)
-//                              basegame.cpp:838 (27)
-//         0041c0e1     MOV        EAX,dword ptr [ESI + 0xc]
-//         0041c0e4     LEA        this,[ESP + 0x38]
-//         0041c0e8     ADD        EAX,0xc17
-//         0041c0ed     PUSH       EAX
-//         0041c0ee     PUSH       s_%sscenario.inf                                 = "%sscenario.inf"
-//         0041c0f3     PUSH       this=>DAT_fffffff4
-//         0041c0f4     CALL       sprintf                                          undefined sprintf()
-//         0041c0f9     ADD        ESP,0xc
-//                              basegame.cpp:839 (51)
-//         0041c0fc     PUSH       0x10c
-//         0041c101     CALL       operator_new                                     void * operator_new(uint param_1)
-//         0041c106     ADD        ESP,0x4
-//         0041c109     MOV        dword ptr [ESP + 0x10],EAX
-//         0041c10d     TEST       EAX,EAX
-//         0041c10f     MOV        dword ptr [ESP + 0x3e4],0x3
-//         0041c11a     JZ         LAB_0041c12a
-//         0041c11c     LEA        EDX,[ESP + 0x38]
-//         0041c120     MOV        this,EAX
-//         0041c122     PUSH       EDX
-//         0041c123     CALL       RGE_Scenario_File_Info::RGE_Scenario_File_Info   undefined RGE_Scenario_File_Info(RGE_Scenario
-//         0041c128     JMP        LAB_0041c12c
-//                               LAB_0041c12a                                                 XREF[1]:     0041c11a(j)
-//         0041c12a     XOR        EAX,EAX
-//                               LAB_0041c12c                                                 XREF[1]:     0041c128(j)
-//         0041c12c     MOV        dword ptr [ESI + 0x8],EAX
-//                              basegame.cpp:841 (20)
-//         0041c12f     MOV        EAX,[do_draw_log]
-//         0041c134     TEST       EAX,EAX
-//         0041c136     MOV        dword ptr [ESP + 0x3e4],EBX
-//         0041c13d     JZ         LAB_0041c1ed
-//                              basegame.cpp:843 (13)
-//         0041c143     MOV        AL,[draw_log_name]                               = 00000000
-//         0041c148     TEST       AL,AL
-//         0041c14a     JNZ        LAB_0041c1d6
-//                              basegame.cpp:847 (8)
-//         0041c150     MOV        EDI,dword ptr [->KERNEL32.DLL::OpenFile]         = 0048a9e6
-//         0041c156     XOR        ESI,ESI
-//                               LAB_0041c158                                                 XREF[1]:     0041c190(j)
-//                              basegame.cpp:849 (22)
-//         0041c158     PUSH       ESI
-//         0041c159     LEA        EAX,[ESP + 0x140]
-//         0041c160     PUSH       s_drawlog%d.txt                                  = "drawlog%d.txt"
-//         0041c165     PUSH       EAX=>DAT_fffffff4
-//         0041c166     CALL       sprintf                                          undefined sprintf()
-//         0041c16b     ADD        ESP,0xc
-//                              basegame.cpp:850 (38)
-//         0041c16e     LEA        this,[ESP + 0x23c]
-//         0041c175     LEA        EDX,[ESP + 0x13c]
-//         0041c17c     PUSH       0x4000
-//         0041c181     PUSH       this=>DAT_fffffff8
-//         0041c182     PUSH       EDX=>DAT_fffffff4
-//         0041c183     CALL       EDI=>KERNEL32.DLL::OpenFile
-//         0041c185     CMP        EAX,EBX
-//         0041c187     JZ         LAB_0041c194
-//         0041c189     INC        ESI
-//         0041c18a     CMP        ESI,0x3e8
-//         0041c190     JL         LAB_0041c158
-//         0041c192     JMP        LAB_0041c1ed
-//                               LAB_0041c194                                                 XREF[1]:     0041c187(j)
-//                              basegame.cpp:852 (23)
-//         0041c194     LEA        EAX,[ESP + 0x13c]
-//         0041c19b     PUSH       s_w                                              = "w"
-//         0041c1a0     PUSH       EAX=>DAT_fffffff8
-//         0041c1a1     CALL       fopen                                            undefined fopen()
-//         0041c1a6     MOV        [draw_log],EAX                                   = 00000000
-//                              basegame.cpp:853 (41)
-//         0041c1ab     LEA        EDI,[ESP + 0x144]
-//         0041c1b2     MOV        this,EBX
-//         0041c1b4     XOR        EAX,EAX
-//         0041c1b6     ADD        ESP,0x8
-//         0041c1b9     SCASB.RE   ES:EDI
-//         0041c1bb     NOT        this
-//         0041c1bd     SUB        EDI,this
-//         0041c1bf     MOV        EDX,this
-//         0041c1c1     MOV        ESI,EDI
-//         0041c1c3     MOV        EDI,draw_log_name                                = 00000000
-//         0041c1c8     SHR        this,0x2
-//         0041c1cb     MOVSD.REP  ES:EDI=>draw_log_name,ESI                        = 00000000
-//         0041c1cd     MOV        this,EDX
-//         0041c1cf     AND        this,0x3
-//         0041c1d2     MOVSB.REP  ES:EDI=>DAT_00592a6c,ESI
-//                              basegame.cpp:858 (2)
-//         0041c1d4     JMP        LAB_0041c1ed
-//                               LAB_0041c1d6                                                 XREF[1]:     0041c14a(j)
-//                              basegame.cpp:859 (23)
-//         0041c1d6     PUSH       s_w                                              = "w"
-//         0041c1db     PUSH       draw_log_name                                    = 00000000
-//         0041c1e0     CALL       fopen                                            undefined fopen()
-//         0041c1e5     ADD        ESP,0x8
-//         0041c1e8     MOV        [draw_log],EAX                                   = 00000000
-//                               LAB_0041c1ed                                                 XREF[3]:     0041c13d(j), 0041c192(j),
-//                                                                                                         0041c1d4(j)
-//                              basegame.cpp:863 (9)
-//         0041c1ed     MOV        EAX,[do_fps_log]
-//         0041c1f2     TEST       EAX,EAX
-//         0041c1f4     JZ         LAB_0041c216
-//                              basegame.cpp:865 (23)
-//         0041c1f6     PUSH       s_w                                              = "w"
-//         0041c1fb     PUSH       s_c:\fps.txt                                     = "c:\\fps.txt"
-//         0041c200     CALL       fopen                                            undefined fopen()
-//         0041c205     ADD        ESP,0x8
-//         0041c208     MOV        [fps_log],EAX                                    = 00000000
-//                              basegame.cpp:866 (4)
-//         0041c20d     TEST       EAX,EAX
-//         0041c20f     JNZ        LAB_0041c216
-//                              basegame.cpp:867 (5)
-//         0041c211     MOV        [do_fps_log],EAX
-//                               LAB_0041c216                                                 XREF[2]:     0041c1f4(j), 0041c20f(j)
-//                              basegame.cpp:870 (4)
-//         0041c216     MOV        EAX,EBP
-//         0041c218     JMP        LAB_0041c223
-//                               LAB_0041c21a                                                 XREF[1]:     0041bd29(j)
-//                              basegame.cpp:629 (7)
-//         0041c21a     MOV        dword ptr [ESI + 0x40],0x16
-//                               LAB_0041c221                                                 XREF[21]:    0041bcbc(j), 0041bccf(j),
-//                                                                                                         0041bced(j), 0041bd75(j),
-//                                                                                                         0041bd99(j), 0041bdd2(j),
-//                                                                                                         0041be34(j), 0041be49(j),
-//                                                                                                         0041be5c(j), 0041be69(j),
-//                                                                                                         0041be7e(j), 0041be96(j),
-//                                                                                                         0041beae(j), 0041bec3(j),
-//                                                                                                         0041bedb(j), 0041bef3(j),
-//                                                                                                         0041bf0b(j), 0041bf23(j),
-//                                                                                                         0041bf3b(j), 0041bf7c(j), [more]
-//                              basegame.cpp:630 (2)
-//         0041c221     XOR        EAX,EAX
-//                               LAB_0041c223                                                 XREF[1]:     0041c218(j)
-//                              basegame.cpp:871 (25)
-//         0041c223     MOV        this,dword ptr [ESP + local_c]
-//         0041c22a     POP        EDI
-//         0041c22b     POP        ESI
-//         0041c22c     POP        EBP
-//         0041c22d     MOV        dword ptr FS:[0x0],this
-//         0041c234     POP        EBX
-//         0041c235     ADD        ESP,0x3d8
-//         0041c23b     RET
-//         0041c23c     ??         90h
-//         0041c23d     NOP
-//         0041c23e     NOP
-//         0041c23f     NOP
-    return 0;
+    // Match original debug calls (they used the hardcoded source path/line).
+    static const char* const kBasegamePath = "C:\\msdev\\work\\age1_x1\\basegame.cpp";
+    const ulong seed = debug_timeGetTime((char*)kBasegamePath, 0x20A);
+    debug_srand((char*)kBasegamePath, 0x20A, seed);
+
+    // --- Read registry settings ---
+
+    // Screen Size: allowed values in asm: 640, 800, 1024, 1280 (width),
+    // with height paired to 480, 600, 768, 1024 respectively.
+    {
+        int screenW = this->registry->RegGetInt(1, (char*)"Screen Size");
+        if (screenW == 0x280) { // 640
+            this->prog_info->main_wid = 0x280;
+            this->prog_info->main_hgt = 0x1E0; // 480
+        } else if (screenW == 0x320) { // 800
+            this->prog_info->main_wid = 0x320;
+            this->prog_info->main_hgt = 0x258; // 600
+        } else if (screenW == 0x400) { // 1024
+            this->prog_info->main_wid = 0x400;
+            this->prog_info->main_hgt = 0x300; // 768
+        } else if (screenW == 0x500) { // 1280
+            this->prog_info->main_wid = 0x500;
+            this->prog_info->main_hgt = 0x400; // 1024
+        }
+    }
+
+    // Rollover Text: if == 2 => rollover = 0, else rollover = 1
+    {
+        int roll = this->registry->RegGetInt(1, (char*)"Rollover Text");
+        this->rollover = (roll == 2) ? 0 : 1;
+    }
+
+    // Mouse Style: if == 2 => interface_style = 2, else if == 1 => 1
+    {
+        int ms = this->registry->RegGetInt(1, (char*)"Mouse Style");
+        if (ms == 2) {
+            this->prog_info->interface_style = 2;
+        } else if (ms == 1) {
+            this->prog_info->interface_style = 1;
+        }
+    }
+
+    // Game Speed: if not -1 => game_speed = value * 0.1
+    {
+        int gs = this->registry->RegGetInt(1, (char*)"Game Speed");
+        if (gs != -1) {
+            this->game_speed = (float)gs * GAME_SPEED_TO_FLOAT;
+        }
+    }
+
+    // Difficulty: if not -1 => set single_player_difficulty
+    {
+        int diff = this->registry->RegGetInt(1, (char*)"Difficulty");
+        if (diff != -1) {
+            this->single_player_difficulty = diff;
+        }
+    }
+
+    // Path Finding: allowed 1..3, stored internally as 0..2 (value-1)
+    {
+        int pf = this->registry->RegGetInt(1, (char*)"Path Finding");
+        if (pf >= 1 && pf <= 3) {
+            this->setPathFinding((uchar)(pf - 1));
+        }
+    }
+
+    // MP Path Finding: allowed 1..3, stored internally as 0..2 (value-1)
+    {
+        int mp = this->registry->RegGetInt(1, (char*)"MP Path Finding");
+        if (mp >= 1 && mp <= 3) {
+            this->setMpPathFinding((uchar)(mp - 1));
+        }
+    }
+
+    // Scroll Speed: if not -1 and within [10..200], copy into both intervals
+    {
+        int ss = this->registry->RegGetInt(1, (char*)"Scroll Speed");
+        if (ss != -1 && ss >= 10 && ss <= 200) {
+            this->prog_info->mouse_scroll_interval = (ulong)ss;
+            this->prog_info->key_scroll_interval   = (ulong)ss;
+        }
+    }
+
+    // --- Verify empires.exe exists ---
+    {
+        _finddata_t file_info;
+        intptr_t h = _findfirst("empires.exe", &file_info);
+        if (h == -1) {
+            this->error_code = 0x17;
+            return 0;
+        }
+        // Original code does not _findclose(h); keep behavior.
+    }
+
+    // --- Call vtable function at offset 0x64; if fails => error 2 ---
+    // We cannot reliably map this to a named virtual without the exact MSVC vftable layout.
+    {
+        // TODO: Resolve VTable Index 0x19 (Offset 0x64)
+        int ok = (*((int(__thiscall **)(RGE_Base_Game*))(*(int*)this + 0x64)))(this);
+        if (ok == 0) {
+            this->error_code = 2;
+            return 0;
+        }
+    }
+
+    // --- Load language DLL ---
+    StringTable = LoadLibraryA(this->string_dll_name);
+    if (!StringTable) {
+        this->error_code = 1;
+        return 0;
+    }
+
+    // --- Memory sanity check ---
+    {
+        MEMORYSTATUS ms;
+        ms.dwLength = sizeof(ms);
+        GlobalMemoryStatus(&ms);
+
+        const DWORD totalPageFile = ms.dwTotalPageFile;
+        const DWORD totalVirtual  = ms.dwTotalVirtual;
+
+        // This matches the (slightly odd) original threshold logic exactly.
+        const bool lowMem =
+            (((totalPageFile < 0x01400000) || (totalVirtual < 0x00A00000)) &&
+             ((totalPageFile < 0x00A00000) || (totalVirtual < 0x01400000)) &&
+             (totalVirtual < 0x01E00000));
+
+        if (lowMem) {
+            this->error_code = 0x16;
+            return 0;
+        }
+    }
+
+    // --- vtable call at 0x140 (no return checked) ---
+    {
+        // TODO: Resolve VTable Index 0x50 (Offset 0x140)
+        (*((void(__thiscall **)(RGE_Base_Game*))(*(int*)this + 0x140)))(this);
+    }
+
+    // --- Optional action logging ---
+    if (debugActions == 1) {
+        actionFile = fopen("c:\\aoeact.txt", "w");
+    }
+
+    // --- Expiration / multicopy checks (gated by prog_info flags) ---
+    if (this->prog_info->check_expiration) {
+        if (this->check_expiration() == 0) {
+            this->error_code = 3;
+            return 0;
+        }
+    }
+
+    if (this->prog_info->check_multi_copies) {
+        if (this->check_multi_copies() == 0) {
+            this->error_code = 4;
+            return 0;
+        }
+    }
+
+    // --- DirectX version check (unless NODXCHECK argument present) ---
+    if (this->check_prog_argument((char*)"NODXCHECK") == 0) {
+        ulong dxVersion = 0;
+        ulong dxPlatform = 0;
+
+        // Based on the assembly push order, DXVersion appears to be the primary value checked.
+        GetDXVersion(&dxVersion, &dxPlatform);
+
+        if (dxVersion < 0x501) {
+            this->error_code = 0x14;
+            return 0;
+        }
+    }
+
+    // --- Disable screen saver / low power if enabled ---
+    SystemParametersInfoA(0x10, 0, &this->screen_saver_enabled, 0); // SPI_GETSCREENSAVEACTIVE
+    if (this->screen_saver_enabled) {
+        SystemParametersInfoA(0x11, 0, 0, 2); // SPI_SETSCREENSAVEACTIVE (disable), SPIF_SENDCHANGE
+    }
+
+    SystemParametersInfoA(0x53, 0, &this->low_power_enabled, 0); // SPI_GETLOWPOWERACTIVE
+    if (this->low_power_enabled) {
+        SystemParametersInfoA(0x55, 0, 0, 2); // SPI_SETLOWPOWERACTIVE (disable), SPIF_SENDCHANGE
+    }
+
+    // --- Check for CD (saved) ---
+    this->save_check_for_cd = this->check_for_cd(0);
+
+    // --- Big setup chain (all via vtable offsets) ---
+    // Error codes match original assembly.
+    {
+        // TODO: Resolve VTable Index 0x1A (Offset 0x68)
+        int ok = (*((int(__thiscall **)(RGE_Base_Game*))(*(int*)this + 0x68)))(this);
+        if (!ok) { this->error_code = 5; return 0; }
+
+        // TODO: Resolve VTable Index 0x1B (Offset 0x6C)
+        ok = (*((int(__thiscall **)(RGE_Base_Game*))(*(int*)this + 0x6C)))(this);
+        if (!ok) { this->error_code = 6; return 0; }
+
+        // TODO: Resolve VTable Index 0x1C (Offset 0x70)
+        ok = (*((int(__thiscall **)(RGE_Base_Game*))(*(int*)this + 0x70)))(this);
+        if (!ok) {
+            // If some other code already set an error, keep it; otherwise set 7.
+            if (this->error_code == 0) {
+                this->error_code = 7;
+            }
+            return 0;
+        }
+
+        // TODO: Resolve VTable Index 0x1D (Offset 0x74)
+        ok = (*((int(__thiscall **)(RGE_Base_Game*))(*(int*)this + 0x74)))(this);
+        if (!ok) { this->error_code = 0x11; return 0; }
+
+        // TODO: Resolve VTable Index 0x26 (Offset 0x98)
+        ok = (*((int(__thiscall **)(RGE_Base_Game*))(*(int*)this + 0x98)))(this);
+        if (!ok) { this->error_code = 7; return 0; }
+
+        // TODO: Resolve VTable Index 0x4F (Offset 0x13C)
+        ok = (*((int(__thiscall **)(RGE_Base_Game*))(*(int*)this + 0x13C)))(this);
+        if (!ok) { this->error_code = 7; return 0; }
+
+        // TODO: Resolve VTable Index 0x1E (Offset 0x78)
+        ok = (*((int(__thiscall **)(RGE_Base_Game*))(*(int*)this + 0x78)))(this);
+        if (!ok) { this->error_code = 8; return 0; }
+
+        // TODO: Resolve VTable Index 0x23 (Offset 0x8C)
+        ok = (*((int(__thiscall **)(RGE_Base_Game*))(*(int*)this + 0x8C)))(this);
+        if (!ok) { this->error_code = 0x0A; return 0; }
+
+        // TODO: Resolve VTable Index 0x21 (Offset 0x84)
+        ok = (*((int(__thiscall **)(RGE_Base_Game*))(*(int*)this + 0x84)))(this);
+        if (!ok) { this->error_code = 0x10; return 0; }
+
+        // TODO: Resolve VTable Index 0x22 (Offset 0x88)
+        ok = (*((int(__thiscall **)(RGE_Base_Game*))(*(int*)this + 0x88)))(this);
+        if (!ok) { this->error_code = 9; return 0; }
+
+        // TODO: Resolve VTable Index 0x24 (Offset 0x90)
+        ok = (*((int(__thiscall **)(RGE_Base_Game*))(*(int*)this + 0x90)))(this);
+        if (!ok) { this->error_code = 0x0B; return 0; }
+
+        // TODO: Resolve VTable Index 0x25 (Offset 0x94)
+        ok = (*((int(__thiscall **)(RGE_Base_Game*))(*(int*)this + 0x94)))(this);
+        if (!ok) { this->error_code = 0x0C; return 0; }
+    }
+
+    // --- Drive information object (global) ---
+    driveInfo = new (std::nothrow) DriveInformation();
+    if (!driveInfo) {
+        // Original simply bails out without setting a specific error.
+        return 0;
+    }
+
+    // TODO: Resolve VTable Index 0x27 (Offset 0x9C)
+    {
+        int ok = (*((int(__thiscall **)(RGE_Base_Game*))(*(int*)this + 0x9C)))(this);
+        if (!ok) {
+            this->error_code = 0x0D;
+            return 0;
+        }
+    }
+
+    // TODO: Resolve VTable Index 0x03 (Offset 0x0C) — takes an int argument (0)
+    (*((void(__thiscall **)(RGE_Base_Game*, int))(*(int*)this + 0x0C)))(this, 0);
+
+    // TODO: Resolve VTable Index 0x28 (Offset 0xA0)
+    (*((void(__thiscall **)(RGE_Base_Game*))(*(int*)this + 0xA0)))(this);
+
+    // TODO: Resolve VTable Index 0x39 (Offset 0xE4) — called with (prog_window,0,0,0)
+    (*((void(__thiscall **)(RGE_Base_Game*, void*, int, int, int))(*(int*)this + 0xE4)))(
+        this, this->prog_window, 0, 0, 0);
+
+    // --- Final window/timer bring-up ---
+    this->prog_ready = 1;
+    ShowWindow((HWND)this->prog_window, 5);
+    SetFocus((HWND)this->prog_window);
+    this->mouse_on();
+
+    this->is_timer = (int)SetTimer((HWND)this->prog_window, 1, 0x32, 0);
+
+    // --- Create player_game_info (game%d.nfo) ---
+    {
+        _finddata_t file_info;
+
+        int regNum = this->registry->RegGetInt(0, (char*)"Game File Number");
+        char filename[260];
+
+        if (regNum >= 0) {
+            // Original re-reads the value.
+            int n = this->registry->RegGetInt(0, (char*)"Game File Number");
+            sprintf(filename, "game%d.nfo", n);
+
+            this->player_game_info = new (std::nothrow) RGE_Game_Info(filename);
+        } else {
+            // Find first unused in [0..9998]
+            for (int i = 0; i < 9999; ++i) {
+                sprintf(filename, "game%d.nfo", i);
+                intptr_t h = _findfirst(filename, &file_info);
+                if (h == -1) {
+                    this->registry->RegSetInt(0, (char*)"Game File Number", i);
+                    this->player_game_info = new (std::nothrow) RGE_Game_Info(filename);
+                    break;
+                }
+                // Original does not _findclose(h); keep behavior.
+            }
+        }
+    }
+
+    // --- Create scenario_info (%sscenario.inf) ---
+    {
+        char filename[260];
+        sprintf(filename, "%sscenario.inf", this->prog_info->scenario_dir);
+        this->scenario_info = new (std::nothrow) RGE_Scenario_File_Info(filename);
+    }
+
+    // --- Draw logging setup (optional) ---
+    if (do_draw_log) {
+        if (draw_log_name[0] == '\0') {
+            _OFSTRUCT of;
+            char s[256];
+
+            for (int i = 0; i < 1000; ++i) {
+                sprintf(s, "drawlog%d.txt", i);
+
+                // OpenFile with OF_EXIST (0x4000). Returns HFILE_ERROR (-1) if not found.
+                HFILE hf = OpenFile(s, &of, 0x4000);
+                if (hf == (HFILE)-1) {
+                    draw_log = fopen(s, "w");
+
+                    // Assembly does a raw byte copy into draw_log_name.
+                    // Keep it simple but safe.
+                    strncpy(draw_log_name, s, sizeof(draw_log_name) - 1);
+                    draw_log_name[sizeof(draw_log_name) - 1] = '\0';
+                    break;
+                }
+            }
+        } else {
+            draw_log = fopen(draw_log_name, "w");
+        }
+    }
+
+    // --- FPS logging setup (optional) ---
+    if (do_fps_log) {
+        fps_log = fopen("c:\\fps.txt", "w");
+        if (!fps_log) {
+            do_fps_log = 0;
+        }
+    }
+
+    return 1;
 }
+
 
 RGE_Base_Game::~RGE_Base_Game() {
     /* TODO: Stub */
@@ -16587,385 +16330,6 @@ void RGE_Base_Game::set_render_all() {
 //         0042300f     NOP
     return;
 }
-
-void debug_random_reset() {
-    /* TODO: Stub */
-//                              void __cdecl debug_random_reset(void)
-//              void              <VOID>         <RETURN>
-//                               ?debug_random_reset@@YAXXZ                                   XREF[1]:     new_game:0054279a(c)
-//                               debug_random_reset
-//                              basegame.cpp:6172 (5)
-//         00423010     MOV        EAX,debug_random_log                             = 00000000
-//                               LAB_00423015                                                 XREF[1]:     00423020(j)
-//                              basegame.cpp:6174 (13)
-//         00423015     MOV        byte ptr [EAX]=>debug_random_log,0x0             = 00000000
-//         00423018     ADD        EAX=>null_005b2440,0x64                          = align(499800)
-//         0042301b     CMP        EAX,do_draw_log
-//         00423020     JL         LAB_00423015
-//                              basegame.cpp:6175 (10)
-//         00423022     MOV        dword ptr [debug_random_index],0xffffffff
-//                              basegame.cpp:6176 (1)
-//         0042302c     RET
-//         0042302d     ??         90h
-//         0042302e     NOP
-//         0042302f     NOP
-    return;
-}
-
-void debug_random_write() {
-    /* TODO: Stub */
-//                              void __cdecl debug_random_write(void)
-//              void              <VOID>         <RETURN>
-//                               ?debug_random_write@@YAXXZ                                   XREF[4]:     ~RGE_Base_Game:0041c295(c),
-//                               debug_random_write                                                        do_command_game:0050a2ef(c),
-//                                                                                                         quit_game:005241aa(c),
-//                                                                                                         action_user_command:00529d02(c)
-//                              basegame.cpp:6182 (1)
-//         00423030     PUSH       EBX
-//                              basegame.cpp:6183 (20)
-//         00423031     PUSH       s_w                                              = "w"
-//         00423036     PUSH       s_c:\aoerand.txt                                 = "c:\\aoerand.txt"
-//         0042303b     CALL       fopen                                            undefined fopen()
-//         00423040     MOV        EBX,EAX
-//         00423042     ADD        ESP,0x8
-//                              basegame.cpp:6184 (6)
-//         00423045     TEST       EBX,EBX
-//         00423047     JZ         LAB_00423097
-//         00423049     PUSH       EDI
-//         0042304a     PUSH       ESI
-//                              basegame.cpp:6186 (2)
-//         0042304b     XOR        EDI,EDI
-//                              basegame.cpp:6191 (19)
-//         0042304d     MOV        ESI,debug_random_log                             = 00000000
-//                               LAB_00423052                                                 XREF[1]:     00423080(j)
-//         00423052     MOV        EAX,[debug_random_index]
-//         00423057     CMP        EDI,EAX
-//         00423059     MOV        EAX,s_>                                          = 3Eh
-//         0042305e     JZ         LAB_00423065
-//                              basegame.cpp:6187 (34)
-//         00423060     MOV        EAX,s__                                          = 20h
-//                               LAB_00423065                                                 XREF[1]:     0042305e(j)
-//         00423065     PUSH       ESI=>debug_random_log                            = 00000000
-//         00423066     PUSH       EDI
-//         00423067     PUSH       EAX=>s__                                         = 20h
-//                                                                                  = 3Eh
-//         00423068     PUSH       s_%s%d_-_%s_                                     = "%s%d - %s\n"
-//         0042306d     PUSH       EBX
-//         0042306e     CALL       fprintf                                          undefined fprintf()
-//         00423073     ADD        ESP,0x14
-//         00423076     ADD        ESI,0x64
-//         00423079     INC        EDI
-//         0042307a     CMP        ESI,do_draw_log
-//         00423080     JL         LAB_00423052
-//                              basegame.cpp:6188 (9)
-//         00423082     PUSH       EBX
-//         00423083     CALL       fclose                                           undefined fclose()
-//         00423088     ADD        ESP,0x4
-//                              basegame.cpp:6189 (12)
-//         0042308b     MOV        dword ptr [wrote_debug_random_log],0x1
-//         00423095     POP        ESI
-//         00423096     POP        EDI
-//                               LAB_00423097                                                 XREF[1]:     00423047(j)
-//                              basegame.cpp:6191 (2)
-//         00423097     POP        EBX
-//         00423098     RET
-//         00423099     ??         90h
-//         0042309a     NOP
-//         0042309b     NOP
-//         0042309c     NOP
-//         0042309d     NOP
-//         0042309e     NOP
-//         0042309f     NOP
-    return;
-}
-
-int debug_rand(char* param_1, int param_2) {
-    /* TODO: Stub */
-//                              int __cdecl debug_rand(char * param_1, int param_2)
-//              int               EAX:4          <RETURN>
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     004230bd(R)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     004230f7(R)
-//              char[9]           Stack[-0x10]:9 temp_name                 XREF[0,4]:   004230c5(*), 004230d7(*), 00423103(*), 004230e8(*)
-//                               ?debug_rand@@YAHPADH@Z                                       XREF[245]:   closestUndiscoveredTile:00416024(c
-//                               debug_rand                                                                create_terrain_object:00458a19(c),
-//                                                                                                         create_terrain_object:00458a52(c),
-//                                                                                                         create_terrain_object:00458a88(c),
-//                                                                                                         place_terrain_object:00458dac(c),
-//                                                                                                         place_terrain_object:00458de3(c),
-//                                                                                                         place_terrain_object:00458e19(c),
-//                                                                                                         place_terrain_object:00458f13(c),
-//                                                                                                         place_terrain_object:00458f4a(c),
-//                                                                                                         base_land_generate:004857f9(c),
-//                                                                                                         base_land_generate:004858d8(c),
-//                                                                                                         base_land_generate:00485963(c),
-//                                                                                                         base_land_generate:004859e2(c),
-//                                                                                                         base_land_generate:00485a65(c),
-//                                                                                                         make_placement_stack:00486072(c),
-//                                                                                                         make_placement_stack:004860a0(c),
-//                                                                                                         place_group:00486aa7(c),
-//                                                                                                         play:004bc331(c),
-//                                                                                                         objectToAttack:004dcbc2(c),
-//                                                                                                         make_new_cliff:00510182(c), [more]
-//                              basegame.cpp:6197 (4)
-//         004230a0     SUB        ESP,0xc
-//         004230a3     PUSH       EDI
-//                              basegame.cpp:6200 (7)
-//         004230a4     CALL       rand                                             undefined rand()
-//         004230a9     MOV        EDI,EAX
-//                              basegame.cpp:6202 (18)
-//         004230ab     MOV        EAX,[do_debug_random]
-//         004230b0     TEST       EAX,EAX
-//         004230b2     JZ         LAB_00423133
-//         004230b4     MOV        EAX,[debug_random_on]
-//         004230b9     TEST       EAX,EAX
-//         004230bb     JZ         LAB_00423133
-//                              basegame.cpp:6206 (12)
-//         004230bd     MOV        EAX,dword ptr [ESP + param_1]
-//         004230c1     PUSH       ESI
-//         004230c2     ADD        EAX,0xa
-//         004230c5     LEA        EDX=>temp_name[4],[ESP + 0x8]
-//                              basegame.cpp:6208 (14)
-//         004230c9     MOV        CL,byte ptr [EAX]
-//         004230cb     LEA        ESI,[EAX + 0x8]
-//         004230ce     CMP        CL,0x2e
-//         004230d1     JZ         LAB_004230e3
-//                               LAB_004230d3                                                 XREF[1]:     004230e1(j)
-//         004230d3     CMP        EAX,ESI
-//         004230d5     JNC        LAB_004230e3
-//                              basegame.cpp:6210 (5)
-//         004230d7     MOV        byte ptr [EDX]=>temp_name[4],CL
-//         004230d9     MOV        CL,byte ptr [EAX + 0x1]
-//                              basegame.cpp:6211 (1)
-//         004230dc     INC        EDX
-//                              basegame.cpp:6212 (6)
-//         004230dd     INC        EAX
-//         004230de     CMP        CL,0x2e
-//         004230e1     JNZ        LAB_004230d3
-//                               LAB_004230e3                                                 XREF[2]:     004230d1(j), 004230d5(j)
-//                              basegame.cpp:6216 (15)
-//         004230e3     MOV        EAX,[debug_random_index]
-//         004230e8     MOV        byte ptr [EDX]=>temp_name[5],0x0
-//         004230eb     CMP        EAX,0x1387
-//         004230f0     JGE        LAB_004230f5
-//                              basegame.cpp:6217 (1)
-//         004230f2     INC        EAX
-//                              basegame.cpp:6218 (2)
-//         004230f3     JMP        LAB_004230f7
-//                               LAB_004230f5                                                 XREF[1]:     004230f0(j)
-//                              basegame.cpp:6219 (2)
-//         004230f5     XOR        EAX,EAX
-//                               LAB_004230f7                                                 XREF[1]:     004230f3(j)
-//                              basegame.cpp:6221 (60)
-//         004230f7     MOV        ECX,dword ptr [ESP + param_2]
-//         004230fb     PUSH       EDI
-//         004230fc     PUSH       ECX
-//         004230fd     MOV        ECX,dword ptr [rge_base_game]                    = 00000000
-//         00423103     LEA        EDX=>temp_name[4],[ESP + 0x10]
-//         00423107     MOV        [debug_random_index],EAX
-//         0042310c     PUSH       EDX
-//         0042310d     MOV        EDX,dword ptr [ECX + 0x3f4]
-//         00423113     LEA        EAX,[EAX + EAX*0x4]
-//         00423116     MOV        ECX,dword ptr [EDX + 0x4]
-//         00423119     LEA        EDX,[EAX + EAX*0x4]
-//         0042311c     PUSH       ECX
-//         0042311d     PUSH       s_t%d,%s,l%d,r%d                                 = "t%d,%s,l%d,r%d"
-//         00423122     LEA        EAX,[EDX*0x4 + debug_random_log]                 = 00000000
-//         00423129     PUSH       EAX=>debug_random_log                            = 00000000
-//         0042312a     CALL       sprintf                                          undefined sprintf()
-//         0042312f     ADD        ESP,0x18
-//         00423132     POP        ESI
-//                               LAB_00423133                                                 XREF[2]:     004230b2(j), 004230bb(j)
-//                              basegame.cpp:6224 (2)
-//         00423133     MOV        EAX,EDI
-//                              basegame.cpp:6225 (5)
-//         00423135     POP        EDI
-//         00423136     ADD        ESP,0xc
-//         00423139     RET
-//         0042313a     ??         90h
-//         0042313b     NOP
-//         0042313c     NOP
-//         0042313d     NOP
-//         0042313e     NOP
-//         0042313f     NOP
-    return 0;
-}
-
-void debug_srand(char* param_1, int param_2, uint param_3) {
-    /* TODO: Stub */
-//                              void __cdecl debug_srand(char * param_1, int param_2, uint param_3)
-//              void              <VOID>         <RETURN>
-//              char *            Stack[0x4]:4   param_1                   XREF[1]:     0042315a(R)
-//              int               Stack[0x8]:4   param_2                   XREF[1]:     00423194(R)
-//              uint              Stack[0xc]:4   param_3                   XREF[1]:     0042314b(R)
-//              char[9]           Stack[-0x10]:9 temp_name                 XREF[0,4]:   00423162(*), 00423174(*), 004231a0(*), 00423185(*)
-//                               ?debug_srand@@YAXPADHI@Z                                     XREF[20]:    setup:0041bade(c),
-//                               debug_srand                                                               SetRandomSeed:0042ca50(c),
-//                                                                                                         GetRandomSeed:0042caba(c),
-//                                                                                                         map_generate2:0045790d(c),
-//                                                                                                         map_generate2:0045793a(c),
-//                                                                                                         map_generate2:00457966(c),
-//                                                                                                         init_vars:004a109a(c),
-//                                                                                                         recycle_in_to_game:004c157a(c),
-//                                                                                                         setup:004c182a(c),
-//                                                                                                         update:004c3e53(c),
-//                                                                                                         set_object_state:004c87c5(c),
-//                                                                                                         update:00512601(c),
-//                                                                                                         loadAIInformation:005159a5(c),
-//                                                                                                         notify:00515ab1(c),
-//                                                                                                         notify:00515b78(c),
-//                                                                                                         create_game:00527173(c),
-//                                                                                                         new_game:00542805(c),
-//                                                                                                         new_scenario:00542c2d(c),
-//                                                                                                         update:00542f7b(c),
-//                                                                                                         update:00543127(c)
-//                              basegame.cpp:6231 (26)
-//         00423140     MOV        EAX,[do_debug_random]
-//         00423145     SUB        ESP,0xc
-//         00423148     TEST       EAX,EAX
-//         0042314a     PUSH       EDI
-//         0042314b     MOV        EDI,dword ptr [ESP + param_3]
-//         0042314f     JZ         LAB_004231d0
-//         00423151     MOV        EAX,[debug_random_on]
-//         00423156     TEST       EAX,EAX
-//         00423158     JZ         LAB_004231d0
-//                              basegame.cpp:6238 (12)
-//         0042315a     MOV        EAX,dword ptr [ESP + param_1]
-//         0042315e     PUSH       ESI
-//         0042315f     ADD        EAX,0xa
-//         00423162     LEA        EDX=>temp_name[4],[ESP + 0x8]
-//                              basegame.cpp:6240 (14)
-//         00423166     MOV        CL,byte ptr [EAX]
-//         00423168     LEA        ESI,[EAX + 0x8]
-//         0042316b     CMP        CL,0x2e
-//         0042316e     JZ         LAB_00423180
-//                               LAB_00423170                                                 XREF[1]:     0042317e(j)
-//         00423170     CMP        EAX,ESI
-//         00423172     JNC        LAB_00423180
-//                              basegame.cpp:6242 (5)
-//         00423174     MOV        byte ptr [EDX]=>temp_name[4],CL
-//         00423176     MOV        CL,byte ptr [EAX + 0x1]
-//                              basegame.cpp:6243 (1)
-//         00423179     INC        EDX
-//                              basegame.cpp:6244 (6)
-//         0042317a     INC        EAX
-//         0042317b     CMP        CL,0x2e
-//         0042317e     JNZ        LAB_00423170
-//                               LAB_00423180                                                 XREF[2]:     0042316e(j), 00423172(j)
-//                              basegame.cpp:6248 (15)
-//         00423180     MOV        EAX,[debug_random_index]
-//         00423185     MOV        byte ptr [EDX]=>temp_name[5],0x0
-//         00423188     CMP        EAX,0x1387
-//         0042318d     JGE        LAB_00423192
-//                              basegame.cpp:6249 (1)
-//         0042318f     INC        EAX
-//                              basegame.cpp:6250 (2)
-//         00423190     JMP        LAB_00423194
-//                               LAB_00423192                                                 XREF[1]:     0042318d(j)
-//                              basegame.cpp:6251 (2)
-//         00423192     XOR        EAX,EAX
-//                               LAB_00423194                                                 XREF[1]:     00423190(j)
-//                              basegame.cpp:6253 (60)
-//         00423194     MOV        ECX,dword ptr [ESP + param_2]
-//         00423198     PUSH       EDI
-//         00423199     PUSH       ECX
-//         0042319a     MOV        ECX,dword ptr [rge_base_game]                    = 00000000
-//         004231a0     LEA        EDX=>temp_name[4],[ESP + 0x10]
-//         004231a4     MOV        [debug_random_index],EAX
-//         004231a9     PUSH       EDX
-//         004231aa     MOV        EDX,dword ptr [ECX + 0x3f4]
-//         004231b0     LEA        EAX,[EAX + EAX*0x4]
-//         004231b3     MOV        ECX,dword ptr [EDX + 0x4]
-//         004231b6     LEA        EDX,[EAX + EAX*0x4]
-//         004231b9     PUSH       ECX
-//         004231ba     PUSH       s_t%d,%s,l%d,s%u                                 = "t%d,%s,l%d,s%u"
-//         004231bf     LEA        EAX,[EDX*0x4 + debug_random_log]                 = 00000000
-//         004231c6     PUSH       EAX=>debug_random_log                            = 00000000
-//         004231c7     CALL       sprintf                                          undefined sprintf()
-//         004231cc     ADD        ESP,0x18
-//         004231cf     POP        ESI
-//                               LAB_004231d0                                                 XREF[2]:     0042314f(j), 00423158(j)
-//                              basegame.cpp:6256 (9)
-//         004231d0     PUSH       EDI
-//         004231d1     CALL       srand                                            undefined srand()
-//         004231d6     ADD        ESP,0x4
-//                              basegame.cpp:6257 (5)
-//         004231d9     POP        EDI
-//         004231da     ADD        ESP,0xc
-//         004231dd     RET
-//         004231de     ??         90h
-//         004231df     NOP
-    return;
-}
-
-ulong debug_timeGetTime(char* param_1, int param_2) {
-    /* TODO: Stub */
-//                              ulong __cdecl debug_timeGetTime(char * param_1, int param_2)
-//              ulong             EAX:4          <RETURN>
-//              char *            Stack[0x4]:4   param_1
-//              int               Stack[0x8]:4   param_2
-//                               ?debug_timeGetTime@@YAKPADH@Z                                XREF[228]:   StoreForResend:0042a517(c),
-//                               debug_timeGetTime                                                         CommOut:0042b54b(c),
-//                                                                                                         CommOut:0042b580(c),
-//                                                                                                         CommOut:0042b67f(c),
-//                                                                                                         CommOut:0042b6b8(c),
-//                                                                                                         CommOut:0042b78b(c),
-//                                                                                                         check_for_duplicate_orders:0043528
-//                                                                                                         submit:00435302(c),
-//                                                                                                         Time:004363ae(c),
-//                                                                                                         OpenLog:004364de(c),
-//                                                                                                         handle_idle:0046579d(c),
-//                                                                                                         handle_idle:00476f44(c),
-//                                                                                                         handle_idle:00476f84(c),
-//                                                                                                         show_message:00479357(c),
-//                                                                                                         Skip:0048051a(c),
-//                                                                                                         Skip:00480529(c),
-//                                                                                                         handle_idle:004ab75c(c),
-//                                                                                                         play:004bc448(c),
-//                                                                                                         shape_hit_test:004c0dd8(c),
-//                                                                                                         shape_hit_test:004c0e25(c), [more]
-//                              basegame.cpp:6263 (18)
-//         004231e0     MOV        EAX,[do_debug_timeGetTime]
-//         004231e5     TEST       EAX,EAX
-//         004231e7     JZ         LAB_00423222
-//         004231e9     MOV        EAX,[debug_timeGetTime_on]
-//         004231ee     TEST       EAX,EAX
-//         004231f0     JZ         LAB_00423222
-//                              basegame.cpp:6269 (5)
-//         004231f2     MOV        EAX,[debug_timeGetTime_cnt]
-//                              basegame.cpp:6270 (16)
-//         004231f7     MOV        ECX,dword ptr [debug_timeGetTime_interval]       = 5h
-//         004231fd     INC        EAX
-//         004231fe     CMP        EAX,ECX
-//         00423200     MOV        [debug_timeGetTime_cnt],EAX
-//         00423205     JNZ        LAB_0042321c
-//                              basegame.cpp:6272 (5)
-//         00423207     MOV        EAX,[debug_timeGetTime_time]
-//                              basegame.cpp:6273 (16)
-//         0042320c     MOV        dword ptr [debug_timeGetTime_cnt],0x0
-//         00423216     INC        EAX
-//         00423217     MOV        [debug_timeGetTime_time],EAX
-//                               LAB_0042321c                                                 XREF[1]:     00423205(j)
-//                              basegame.cpp:6277 (5)
-//         0042321c     MOV        EAX,[debug_timeGetTime_time]
-//                              basegame.cpp:6281 (1)
-//         00423221     RET
-//                               LAB_00423222                                                 XREF[2]:     004231e7(j), 004231f0(j)
-//                              basegame.cpp:6280 (6)
-//         00423222     JMP        dword ptr [->WINMM.DLL::timeGetTime]
-//         00423228     ??         90h
-//         00423229     NOP
-//         0042322a     NOP
-//         0042322b     NOP
-//         0042322c     NOP
-//         0042322d     NOP
-//         0042322e     NOP
-//         0042322f     NOP
-    return 0;
-}
-
-
-
-
 
 void RGE_Base_Game::set_prog_mode(int param_1) {
     /* TODO: Stub */

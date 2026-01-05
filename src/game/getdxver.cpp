@@ -1,4 +1,3 @@
-#include "../common.h"
 #include "getdxver.h"
 
 void GetDXVersion(ulong* param_1, ulong* param_2) {

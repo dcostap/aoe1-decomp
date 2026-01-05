@@ -3,6 +3,8 @@
 #include "gameinfo.h"
 #include "file_stf.h"
 #include "registry.h"
+#include "getdxver.h"
+#include "sceninfo.h"
 
 class TDrawSystem;
 class TPanel;
