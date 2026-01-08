@@ -8,7 +8,7 @@
 #include "Drawarea.h"
 #include "m_co_obj.h"
 
-class RGE_Master_Static_Object {
+class RGE_Master_Static_Object       {
 public:
     uchar master_type;                       // 0x4
     char* name;                              // 0x8
@@ -76,31 +76,63 @@ public:
     float outline_radius_y;                  // 0xB0
     float outline_radius_z;                  // 0xB4
 
-    virtual void play_command_sound();
-    virtual void play_move_sound();
     RGE_Master_Static_Object(RGE_Master_Static_Object* param_1, int param_2);
     RGE_Master_Static_Object(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3, int param_4);
     RGE_Master_Static_Object(_iobuf* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4, int param_5);
-    virtual int setup(RGE_Master_Static_Object* param_1);
-    virtual int setup(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3);
-    virtual int setup(_iobuf* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4);
-    virtual ~RGE_Master_Static_Object();
-    virtual RGE_Static_Object* make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4);
-    virtual RGE_Master_Static_Object* make_new_master();
-    virtual void copy_obj(RGE_Master_Static_Object* param_1);
-    virtual void modify(float param_1, uchar param_2);
-    virtual void modify_delta(float param_1, uchar param_2);
-    virtual void modify_percent(float param_1, uchar param_2);
-    virtual void save(int param_1);
-    virtual uchar check_placement(RGE_Player* param_1, float param_2, float param_3, int* param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8, uchar param_9, uchar param_10);
-    virtual void make_available(uchar param_1);
-    virtual uchar alignment(float* param_1, float* param_2, RGE_Game_World* param_3, uchar param_4);
-    virtual uchar alignment_box(RGE_Game_World* param_1, float param_2, float param_3, short* param_4, short* param_5, short* param_6, short* param_7, short* param_8, short* param_9, short* param_10, short* param_11);
-    virtual void draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4, long param_5, long param_6, int param_7, uchar param_8);
-    virtual long get_help_message();
-    virtual long get_help_page();
-    virtual long get_hotkey();
-    virtual long calc_base_damage_ability(RGE_Master_Combat_Object* param_1);
+
+    // --- VTABLE DUMP (Source: Ghidra) ---
+
+    // [Slot 00] Offset 0x00 (Override)
+    virtual  ~RGE_Master_Static_Object() noexcept(false); // Ghidra: `scalar_deleting_destructor'
+
+    // [Slot 01] Offset 0x04 (Override)
+    virtual void copy_obj(RGE_Master_Static_Object* param_1); // Ghidra: copy_obj
+
+    // [Slot 02] Offset 0x08 (Override)
+    virtual void modify(float param_1, uchar param_2); // Ghidra: modify
+
+    // [Slot 03] Offset 0x0C (Override)
+    virtual void modify_delta(float param_1, uchar param_2); // Ghidra: modify_delta
+
+    // [Slot 04] Offset 0x10 (Override)
+    virtual void modify_percent(float param_1, uchar param_2); // Ghidra: modify_percent
+
+    // [Slot 05] Offset 0x14 (Override)
+    virtual void save(int param_1); // Ghidra: save
+
+    // [Slot 06] Offset 0x18 (Override)
+    virtual RGE_Static_Object* make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4); // Ghidra: make_new_obj
+
+    // [Slot 07] Offset 0x1C (Override)
+    virtual RGE_Master_Static_Object* make_new_master(); // Ghidra: make_new_master
+
+    // [Slot 08] Offset 0x20 (Override)
+    virtual uchar check_placement(RGE_Player* param_1, float param_2, float param_3, int* param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8, uchar param_9, uchar param_10); // Ghidra: check_placement
+
+    // [Slot 09] Offset 0x24 (Override)
+    virtual uchar alignment(float* param_1, float* param_2, RGE_Game_World* param_3, uchar param_4); // Ghidra: alignment
+
+    // [Slot 10] Offset 0x28 (Override)
+    virtual long calc_base_damage_ability(RGE_Master_Combat_Object* param_1); // Ghidra: calc_base_damage_ability
+
+    // [Slot 11] Offset 0x2C (Override)
+    virtual void play_command_sound(); // Ghidra: play_command_sound
+
+    // [Slot 12] Offset 0x30 (Override)
+    virtual void play_move_sound(); // Ghidra: play_move_sound
+
+    // [Slot 13] Offset 0x34 (Override)
+    virtual void draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4, long param_5, long param_6, int param_7, uchar param_8); // Ghidra: draw
+
+    // --- Non-Virtual Members ---
+    int setup(RGE_Master_Static_Object* param_1);
+    int setup(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3);
+    int setup(_iobuf* param_1, RGE_Sprite** param_2, RGE_Sound** param_3, short param_4);
+    void make_available(uchar param_1);
+    uchar alignment_box(RGE_Game_World* param_1, float param_2, float param_3, short* param_4, short* param_5, short* param_6, short* param_7, short* param_8, short* param_9, short* param_10, short* param_11);
+    long get_help_message();
+    long get_help_page();
+    long get_hotkey();
 };
 
 static_assert(sizeof(RGE_Master_Static_Object) == 0xB8, "RGE_Master_Static_Object Size Mismatch");

@@ -3,7 +3,7 @@
 
 class RGE_Campaign;
 
-class RGE_Campaign_Info {
+class RGE_Campaign_Info       {
 public:
     char campaign_name[255];                 // 0x0
     long current_scenario;                   // 0x100
@@ -14,7 +14,10 @@ public:
 
     RGE_Campaign_Info(int param_1, RGE_Campaign** param_2, long param_3);
     RGE_Campaign_Info(RGE_Campaign* param_1);
-    ~RGE_Campaign_Info();
+
+    // --- Non-Virtual Destructor ---
+    ~RGE_Campaign_Info() noexcept(false);
+    // --- Non-Virtual Members ---
     void save(int param_1);
     void rehook_campaigns(RGE_Campaign** param_1, long param_2);
     uchar set_current_scenario(long param_1);
@@ -29,7 +32,7 @@ static_assert(sizeof(RGE_Campaign_Info) == 0x114, "RGE_Campaign_Info Size Mismat
 static_assert(offsetof(RGE_Campaign_Info, campaign) == 0x110, "RGE_Campaign_Info Offset Mismatch");
 
 
-class RGE_Person_Info {
+class RGE_Person_Info       {
 public:
     char name[255];                          // 0x0
     long current_campaign;                   // 0x100
@@ -40,7 +43,10 @@ public:
 
     RGE_Person_Info(int param_1, RGE_Campaign** param_2, long param_3);
     RGE_Person_Info(char* param_1, RGE_Campaign** param_2, long param_3);
-    ~RGE_Person_Info();
+
+    // --- Non-Virtual Destructor ---
+    ~RGE_Person_Info() noexcept(false);
+    // --- Non-Virtual Members ---
     void save(int param_1);
     void rehook_campaigns(RGE_Campaign** param_1, long param_2);
     char* get_name();
@@ -56,7 +62,7 @@ public:
 static_assert(sizeof(RGE_Person_Info) == 0x114, "RGE_Person_Info Size Mismatch");
 static_assert(offsetof(RGE_Person_Info, campaigns) == 0x110, "RGE_Person_Info Offset Mismatch");
 
-class RGE_Game_Info {
+class RGE_Game_Info       {
 public:
     long current_person;                     // 0x0
     long people_num;                         // 0x4
@@ -66,7 +72,10 @@ public:
     char save_filename[260];                 // 0x14
 
     RGE_Game_Info(char* param_1);
-    ~RGE_Game_Info();
+
+    // --- Non-Virtual Destructor ---
+    ~RGE_Game_Info() noexcept(false);
+    // --- Non-Virtual Members ---
     void save(char* param_1);
     void find_campaigns();
     uchar add_new_person(char* param_1);

@@ -3,16 +3,18 @@
 
 class ManagedArray_int {
 public:
+    int* value;                              // 0x0
     int numberValue;                         // 0x4
     int desiredNumberValue;                  // 0x8
     int maximumSizeValue;                    // 0xC
 
-    virtual ~ManagedArray_int();
-    virtual int resize(int param_1);
-    virtual int contains(int* param_1);
-    virtual int add(int param_1);
-    virtual int* operator[](int param_1);
-    virtual int remove(int param_1);
+    // --- Non-Virtual Members ---
+    ~ManagedArray_int();
+    int resize(int param_1);
+    int contains(int* param_1);
+    int add(int param_1);
+    int* operator[](int param_1);
+    int remove(int param_1);
 };
 
 static_assert(sizeof(ManagedArray_int) == 0x10, "ManagedArray_int Size Mismatch");

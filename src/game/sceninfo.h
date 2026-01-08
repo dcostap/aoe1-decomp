@@ -1,14 +1,17 @@
 #pragma once
 #include "../common.h"
 
-class RGE_Scenario_File_Info {
+class RGE_Scenario_File_Info       {
 public:
     char filename[260];                      // 0x0
     long scenario_num;                       // 0x104
     RGE_Scenario_File_Entry* scenarios;      // 0x108
 
     RGE_Scenario_File_Info(char* param_1);
-    ~RGE_Scenario_File_Info();
+
+    // --- Non-Virtual Destructor ---
+    ~RGE_Scenario_File_Info() noexcept(false);
+    // --- Non-Virtual Members ---
     void save();
     void reload_scenarios();
     char* get_scenario_name(long param_1);

@@ -1,8 +1,9 @@
 #pragma once
 #include "../common.h"
 
-class PointMaker {
+class PointMaker       {
 public:
+    PrimaryPt Prime;                         // 0x0
     PtToPt Point[500];                       // 0x8
     char* Mask_2x2;                          // 0xFA8
     char* Mask_3x3;                          // 0xFAC
@@ -49,47 +50,50 @@ public:
     int BottomLimit;                         // 0x1050
     char SpecialLandType;                    // 0x1054
 
-    virtual void SetDefaultValues();
     PointMaker();
-    virtual ~PointMaker();
-    virtual void CreateMasks();
-    virtual void DeleteMasks();
-    virtual void DrawMask(int param_1, int param_2, int param_3);
-    virtual void ClearArrays();
-    virtual void DeleteArrays();
-    virtual void MakeArrays();
-    virtual int CreateShape();
-    virtual int CreateShape(int param_1, int param_2);
-    virtual void Branch(int param_1);
-    virtual int MakeFirstLink();
-    virtual int MakeNewLink();
-    virtual int MakeSatelliteLink();
-    virtual void DrawPrimaryIntoProbabilityArray();
-    virtual void DrawCurrentBranchIntoProbArray(int param_1);
-    virtual void DrawCurrentSatelliteIntoProbArray(int param_1);
-    virtual void AddingRect(int param_1, int param_2, int param_3, int param_4);
-    virtual void AddingCircle(int param_1, int param_2, int param_3);
-    virtual void CreateMapBasedOnProbabilityArray();
-    virtual void SetPoint(int param_1, int param_2);
-    virtual void SetMaxNumberOfBranches(int param_1);
-    virtual void SetChanceOfNextNode(int param_1);
-    virtual void SetNumberOfSatellites(int param_1);
-    virtual void SetSplitsPerBranch(int param_1);
-    virtual void SetWidthAndHeight(int param_1, int param_2);
-    virtual void SetStartPositionRadius(int param_1);
-    virtual void SetBranchsRadius(int param_1);
-    virtual void SetSatelliteRadius(int param_1);
-    virtual void SetMaxNumberOfBranchLevels(int param_1);
-    virtual void SetSatelliteDistance(int param_1);
-    virtual void SetBranchDistance(int param_1);
-    virtual void SetMinimumNumberOfTiles(int param_1);
-    virtual void SetDrawToOneArray();
-    virtual void SetBorderDepthPercentage(int param_1);
-    virtual char* RetrieveMap();
-    virtual char* RetrieveProbMap();
-    virtual void ErrorCheckingAndCorrection();
-    virtual void PrepareLimits();
-    virtual void MapCleanUpEliminatingSinglesOnly();
+
+    // --- Non-Virtual Members ---
+    void SetDefaultValues();
+    // --- Non-Virtual Destructor ---
+    ~PointMaker() noexcept(false);
+    void CreateMasks();
+    void DeleteMasks();
+    void DrawMask(int param_1, int param_2, int param_3);
+    void ClearArrays();
+    void DeleteArrays();
+    void MakeArrays();
+    int CreateShape();
+    int CreateShape(int param_1, int param_2);
+    void Branch(int param_1);
+    int MakeFirstLink();
+    int MakeNewLink();
+    int MakeSatelliteLink();
+    void DrawPrimaryIntoProbabilityArray();
+    void DrawCurrentBranchIntoProbArray(int param_1);
+    void DrawCurrentSatelliteIntoProbArray(int param_1);
+    void AddingRect(int param_1, int param_2, int param_3, int param_4);
+    void AddingCircle(int param_1, int param_2, int param_3);
+    void CreateMapBasedOnProbabilityArray();
+    void SetPoint(int param_1, int param_2);
+    void SetMaxNumberOfBranches(int param_1);
+    void SetChanceOfNextNode(int param_1);
+    void SetNumberOfSatellites(int param_1);
+    void SetSplitsPerBranch(int param_1);
+    void SetWidthAndHeight(int param_1, int param_2);
+    void SetStartPositionRadius(int param_1);
+    void SetBranchsRadius(int param_1);
+    void SetSatelliteRadius(int param_1);
+    void SetMaxNumberOfBranchLevels(int param_1);
+    void SetSatelliteDistance(int param_1);
+    void SetBranchDistance(int param_1);
+    void SetMinimumNumberOfTiles(int param_1);
+    void SetDrawToOneArray();
+    void SetBorderDepthPercentage(int param_1);
+    char* RetrieveMap();
+    char* RetrieveProbMap();
+    void ErrorCheckingAndCorrection();
+    void PrepareLimits();
+    void MapCleanUpEliminatingSinglesOnly();
 };
 
 static_assert(sizeof(PointMaker) == 0x1058, "PointMaker Size Mismatch");

@@ -1,8 +1,9 @@
 #pragma once
 #include "../common.h"
 
-class TDebuggingLog {
+class TDebuggingLog       {
 public:
+    int Timestamp;                           // 0x0
     int DateTimestamp;                       // 0x4
     int LogToFile;                           // 0x8
     int LogToOutput;                         // 0xC
@@ -17,19 +18,22 @@ public:
     char Filename[128];                      // 0x730
 
     TDebuggingLog();
-    virtual ~TDebuggingLog();
-    virtual void LogFile(int param_1);
-    virtual void LogOutput(int param_1);
-    virtual void LogTimestamp(int param_1);
-    virtual void LogDateTimestamp(int param_1);
-    virtual void Time();
-    virtual void FlushToDisk(int param_1);
-    virtual void LogSequence(int param_1);
-    virtual void OpenLog();
-    virtual void FlushLog();
-    virtual void CloseLog();
-    virtual void Log(char* param_1);
-    virtual char* YesOrNo(int param_1);
+
+    // --- Non-Virtual Destructor ---
+    ~TDebuggingLog() noexcept(false);
+    // --- Non-Virtual Members ---
+    void LogFile(int param_1);
+    void LogOutput(int param_1);
+    void LogTimestamp(int param_1);
+    void LogDateTimestamp(int param_1);
+    void Time();
+    void FlushToDisk(int param_1);
+    void LogSequence(int param_1);
+    void OpenLog();
+    void FlushLog();
+    void CloseLog();
+    void Log(char* param_1);
+    char* YesOrNo(int param_1);
 };
 
 static_assert(sizeof(TDebuggingLog) == 0x7B0, "TDebuggingLog Size Mismatch");

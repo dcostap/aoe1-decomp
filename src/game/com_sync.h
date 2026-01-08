@@ -18,8 +18,9 @@ struct CHECKSUMARRAY {
     uint Random; // 0x20
 };
 
-class RGE_Communications_Synchronize {
+class RGE_Communications_Synchronize       {
 public:
+    TCommunications_Handler* Comm;           // 0x0
     ulong CheckTime;                         // 0x4
     ulong CheckTurn;                         // 0x8
     int StopOnSyncFail;                      // 0xC
@@ -34,17 +35,20 @@ public:
     CHECKSUMARRAY Check[55];                 // 0x30
 
     RGE_Communications_Synchronize(TCommunications_Handler* param_1);
-    virtual ~RGE_Communications_Synchronize();
-    virtual int Add(uint param_1, ulong param_2, ulong param_3, ulong param_4, long param_5, long param_6, long param_7, long param_8, long param_9);
-    virtual int ValidateChecksums(uint param_1, ulong param_2, ulong param_3, ulong param_4, long param_5, long param_6, long param_7, long param_8, long param_9);
-    virtual ulong DoChecksum(ulong param_1);
-    virtual void SetLastWorldRandom(ulong param_1);
-    virtual void LogChecksums(uint param_1, ulong param_2, ulong param_3, long param_4, long param_5, long param_6, long param_7, long param_8, ulong param_9);
-    virtual void EnableSyncChecking(int param_1);
-    virtual void SetStopOnFail(int param_1);
-    virtual void SetDialogOnFail(int param_1);
-    virtual void SendChatMsgsAtChecksum(int param_1);
-    virtual int IsPlayerOutOfSync(uint param_1, ulong param_2);
+
+    // --- Non-Virtual Destructor ---
+    ~RGE_Communications_Synchronize() noexcept(false);
+    // --- Non-Virtual Members ---
+    int Add(uint param_1, ulong param_2, ulong param_3, ulong param_4, long param_5, long param_6, long param_7, long param_8, long param_9);
+    int ValidateChecksums(uint param_1, ulong param_2, ulong param_3, ulong param_4, long param_5, long param_6, long param_7, long param_8, long param_9);
+    ulong DoChecksum(ulong param_1);
+    void SetLastWorldRandom(ulong param_1);
+    void LogChecksums(uint param_1, ulong param_2, ulong param_3, long param_4, long param_5, long param_6, long param_7, long param_8, ulong param_9);
+    void EnableSyncChecking(int param_1);
+    void SetStopOnFail(int param_1);
+    void SetDialogOnFail(int param_1);
+    void SendChatMsgsAtChecksum(int param_1);
+    int IsPlayerOutOfSync(uint param_1, ulong param_2);
 };
 
 static_assert(sizeof(RGE_Communications_Synchronize) == 0x7EC, "RGE_Communications_Synchronize Size Mismatch");

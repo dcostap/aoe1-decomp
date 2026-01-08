@@ -1,8 +1,9 @@
 #pragma once
 #include "../common.h"
 
-class TMusic_System {
+class TMusic_System       {
 public:
+    char path[260];                          // 0x0
     uchar music_type;                        // 0x104
     TSound_Driver* sound_system;             // 0x108
     void* instance;                          // 0x10C
@@ -41,29 +42,32 @@ public:
     ulong last_check_time;                   // 0x3F4
 
     TMusic_System(uchar param_1, void* param_2, void* param_3, TSound_Driver* param_4, char* param_5);
-    virtual ~TMusic_System();
-    virtual int open_device();
-    virtual void close_device();
-    virtual int open_mixer();
-    virtual void close_mixer();
-    virtual int set_music_type(uchar param_1);
-    virtual void set_fade_out(int param_1, ulong param_2);
-    virtual void set_volume(long param_1, int param_2);
-    virtual int play_track(int param_1, int param_2, ulong param_3);
-    virtual int play_file(char* param_1, int param_2, ulong param_3);
-    virtual int play_tracks(int param_1, int param_2, int param_3, int param_4, ulong param_5);
-    virtual int play(int param_1, int param_2, char* param_3, int param_4, ulong param_5);
-    virtual int pause_play();
-    virtual int resume_play();
-    virtual int stop_track();
-    virtual int stop_playing();
-    virtual int fade_track();
-    virtual void start_fade();
-    virtual void do_fade();
-    virtual void end_fade();
-    virtual uint handle_messages(void* param_1, uint param_2, uint param_3, long param_4);
-    virtual void after_end_track();
-    virtual int get_play_info(uchar* param_1, int* param_2, int* param_3, int* param_4, char* param_5, int* param_6, ulong* param_7);
+
+    // --- Non-Virtual Destructor ---
+    ~TMusic_System() noexcept(false);
+    // --- Non-Virtual Members ---
+    int open_device();
+    void close_device();
+    int open_mixer();
+    void close_mixer();
+    int set_music_type(uchar param_1);
+    void set_fade_out(int param_1, ulong param_2);
+    void set_volume(long param_1, int param_2);
+    int play_track(int param_1, int param_2, ulong param_3);
+    int play_file(char* param_1, int param_2, ulong param_3);
+    int play_tracks(int param_1, int param_2, int param_3, int param_4, ulong param_5);
+    int play(int param_1, int param_2, char* param_3, int param_4, ulong param_5);
+    int pause_play();
+    int resume_play();
+    int stop_track();
+    int stop_playing();
+    int fade_track();
+    void start_fade();
+    void do_fade();
+    void end_fade();
+    uint handle_messages(void* param_1, uint param_2, uint param_3, long param_4);
+    void after_end_track();
+    int get_play_info(uchar* param_1, int* param_2, int* param_3, int* param_4, char* param_5, int* param_6, ulong* param_7);
 };
 
 static_assert(sizeof(TMusic_System) == 0x3F8, "TMusic_System Size Mismatch");

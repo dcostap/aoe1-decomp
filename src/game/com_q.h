@@ -1,8 +1,9 @@
 #pragma once
 #include "../common.h"
 
-class MsgQueue {
+class MsgQueue       {
 public:
+    ulong Code;                              // 0x0
     ulong ExecTurn;                          // 0x4
     uchar SeqNo;                             // 0x8
     char* msgptr;                            // 0xC
@@ -11,14 +12,19 @@ public:
     int ControlCommand;                      // 0x18
 
     MsgQueue();
-    virtual ~MsgQueue();
+
+    // --- Non-Virtual Members ---
+    void* `vector_deleting_destructor'(uint param_1);
+    // --- Non-Virtual Destructor ---
+    ~MsgQueue() noexcept(false);
 };
 
 static_assert(sizeof(MsgQueue) == 0x1C, "MsgQueue Size Mismatch");
 static_assert(offsetof(MsgQueue, ControlCommand) == 0x18, "MsgQueue Offset Mismatch");
 
-class RGE_Communications_Queue {
+class RGE_Communications_Queue       {
 public:
+    uint QueueDepth;                         // 0x0
     uint HighQueueDepth;                     // 0x4
     uint MaxQSize;                           // 0x8
     char TBuff[255];                         // 0xC
@@ -27,23 +33,26 @@ public:
     MsgQueue* Queue;                         // 0x114
 
     RGE_Communications_Queue(int param_1);
-    virtual ~RGE_Communications_Queue();
-    virtual int AllocateQueue(uint param_1);
-    virtual uchar ExpectedNextSequence(ulong param_1, uint param_2);
-    virtual uint QueuedForTurn(ulong param_1);
-    virtual void FlushAll();
-    virtual uint FlushTurnRange(ulong param_1, ulong param_2);
-    virtual void FlushForPlayer(uint param_1);
-    virtual uint FlushForTurn(ulong param_1);
-    virtual uint FlushThruTurn(ulong param_1);
-    virtual int AddItem(ulong param_1, void* param_2, ulong param_3, uint param_4, uchar param_5, int param_6);
-    virtual uint GetQueueDepth();
-    virtual uint GetHighQueueDepth();
-    virtual void* GetSpecificItem(uint param_1, ulong param_2, uchar param_3, uint* param_4);
-    virtual void* GetNextItemSingle();
-    virtual void* GetNextItemOrdered(ulong param_1);
-    virtual uchar GetNextSequence(ulong param_1);
-    virtual void TestShowQueue();
+
+    // --- Non-Virtual Destructor ---
+    ~RGE_Communications_Queue() noexcept(false);
+    // --- Non-Virtual Members ---
+    int AllocateQueue(uint param_1);
+    uchar ExpectedNextSequence(ulong param_1, uint param_2);
+    uint QueuedForTurn(ulong param_1);
+    void FlushAll();
+    uint FlushTurnRange(ulong param_1, ulong param_2);
+    void FlushForPlayer(uint param_1);
+    uint FlushForTurn(ulong param_1);
+    uint FlushThruTurn(ulong param_1);
+    int AddItem(ulong param_1, void* param_2, ulong param_3, uint param_4, uchar param_5, int param_6);
+    uint GetQueueDepth();
+    uint GetHighQueueDepth();
+    void* GetSpecificItem(uint param_1, ulong param_2, uchar param_3, uint* param_4);
+    void* GetNextItemSingle();
+    void* GetNextItemOrdered(ulong param_1);
+    uchar GetNextSequence(ulong param_1);
+    void TestShowQueue();
 };
 
 static_assert(sizeof(RGE_Communications_Queue) == 0x118, "RGE_Communications_Queue Size Mismatch");

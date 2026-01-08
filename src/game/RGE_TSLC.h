@@ -1,9 +1,9 @@
 #pragma once
 #include "../common.h"
 
-class RGE_TimeSinceLastCall {
+class RGE_TimeSinceLastCall       {
 public:
-    char TBuff[255];
+    char TBuff[255];                         // 0x0
     ulong lowTSLC;                           // 0x100
     ulong highTSLC;                          // 0x104
     ulong TSLC;                              // 0x108
@@ -15,7 +15,10 @@ public:
     ulong cps;                               // 0x2B0
 
     RGE_TimeSinceLastCall();
-    ~RGE_TimeSinceLastCall();
+
+    // --- Non-Virtual Destructor ---
+    ~RGE_TimeSinceLastCall() noexcept(false);
+    // --- Non-Virtual Members ---
     ulong GetAvg(int param_1);
     ulong Get();
     ulong Set();

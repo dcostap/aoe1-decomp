@@ -2,20 +2,25 @@
 #include "../common.h"
 #include "Com_hand.h"
 
-class IPAD {
+class IPAD       {
 public:
-    char DottedIPAddress[32];
+    char DottedIPAddress[32];                // 0x0
     char Alias[128];                         // 0x20
+
     IPAD();
-    ~IPAD();
+
+    // --- Non-Virtual Members ---
+    void* `vector_deleting_destructor'(uint param_1);
+    // --- Non-Virtual Destructor ---
+    ~IPAD() noexcept(false);
 };
 
 static_assert(sizeof(IPAD) == 0xA0, "IPAD Size Mismatch");
 static_assert(offsetof(IPAD, Alias) == 0x20, "IPAD Offset Mismatch");
 
-class RGE_Communications_Addresses {
+class RGE_Communications_Addresses       {
 public:
-    TCommunications_Handler * comm;          // 0x0
+    TCommunications_Handler* comm;           // 0x0
     WSAData wsaData;                         // 0x4
     char hostname[128];                      // 0x194
     int Status;                              // 0x214
@@ -24,7 +29,10 @@ public:
     IPAD* pIPAD;                             // 0x220
 
     RGE_Communications_Addresses(TCommunications_Handler* param_1);
-    ~RGE_Communications_Addresses();
+
+    // --- Non-Virtual Destructor ---
+    ~RGE_Communications_Addresses() noexcept(false);
+    // --- Non-Virtual Members ---
     char* GetHostName();
     int SetIPAliases(char* param_1);
     char* GetAddress(uint param_1);

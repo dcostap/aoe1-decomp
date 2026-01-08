@@ -1,7 +1,7 @@
 #pragma once
 #include "../common.h"
 
-class streambuf {
+class streambuf       {
 public:
     char _pad_0x0[0x4];
     int _fAlloc;                             // 0x4
@@ -16,10 +16,12 @@ public:
     char* _gptr;                             // 0x28
     char* _egptr;                            // 0x2C
 
-    virtual int snextc();
-    virtual int sbumpc();
-    virtual void stossc();
-    virtual int sgetc();
+
+    // --- Non-Virtual Members ---
+    int snextc();
+    int sbumpc();
+    void stossc();
+    int sgetc();
 };
 
 static_assert(sizeof(streambuf) == 0x30, "streambuf Size Mismatch");

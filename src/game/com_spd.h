@@ -4,9 +4,9 @@
 
 class TCommunications_Handler;
 
-class RGE_Communications_Speed {
+class RGE_Communications_Speed       {
 public:
-    char TBuff[255];                         
+    char TBuff[255];                         // 0x0
     RGE_TimeSinceLastCall* TurnTSLC;         // 0x100
     RGE_TimeSinceLastCall* FrameTSLC;        // 0x104
     TCommunications_Handler* Comm;           // 0x108
@@ -44,7 +44,10 @@ public:
     int LastFrameHadTime;                    // 0x23C
 
     RGE_Communications_Speed(TCommunications_Handler* param_1);
-    ~RGE_Communications_Speed();
+
+    // --- Non-Virtual Destructor ---
+    ~RGE_Communications_Speed() noexcept(false);
+    // --- Non-Virtual Members ---
     void SetPlayerTurnSpeed(uint param_1, uchar param_2, uchar param_3);
     void SetActualLatency(uint param_1, ulong param_2);
     void SetFutureSpeedChange(uint param_1, uint param_2, ulong param_3);

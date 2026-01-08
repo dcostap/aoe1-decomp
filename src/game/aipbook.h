@@ -4,12 +4,14 @@
 #include "World.h"
 #include "stat_obj.h"
 
-class AIPlayPhase {
+class AIPlayPhase       {
 public:
     AIPlayPhaseCommand commands[5];          // 0x0
     AIPlayPhaseTrigger triggers[3];          // 0x50
 
     AIPlayPhase();
+
+    // --- Non-Virtual Members ---
     AIPlayPhaseCommand* command(int param_1);
     AIPlayPhaseTrigger* trigger(int param_1);
     int addCommand(AIPlayPhaseCommand* param_1);
@@ -29,21 +31,21 @@ struct GroupingStruct {
     uchar type; // 0x5
 };
 
-class AIPlayStatus {
+class AIPlayStatus       {
 public:
-    GroupingStruct groupings[50];            // 0x00
+    GroupingStruct groupings[50];            // 0x0
     int playNumberValue;                     // 0x190
     int targetValue;                         // 0x194
     XYZ originalPointValue;                  // 0x198
     int originalHitPointsValue[5];           // 0x1A4
     uchar currentPhaseValue;                 // 0x1B8
-    // 3 bytes padding
     int savedAttackerValue;                  // 0x1BC
     ulong lastPhaseChangeTimeValue;          // 0x1C0
     uchar deviationValue;                    // 0x1C4
-    // 3 bytes padding to reach 0x1C8
 
     AIPlayStatus();
+
+    // --- Non-Virtual Members ---
     int originalHitPoints(int param_1);
     void setOriginalHitPoints(int param_1, int param_2);
     uchar numberInPlay();
@@ -64,7 +66,7 @@ public:
 static_assert(sizeof(AIPlayStatus) == 0x1C8, "AIPlayStatus Size Mismatch");
 static_assert(offsetof(AIPlayStatus, deviationValue) == 0x1C4, "AIPlayStatus Offset Mismatch");
 
-class AIPlayPhaseTrigger {
+class AIPlayPhaseTrigger       {
 public:
     uchar typeValue;                         // 0x0
     int value1Value;                         // 0x4
@@ -76,6 +78,8 @@ public:
     AIPlayPhaseTrigger();
     AIPlayPhaseTrigger(uchar param_1, int param_2, int param_3, uchar param_4, uchar param_5, int param_6);
     AIPlayPhaseTrigger(char* param_1, int param_2, int param_3, uchar param_4, uchar param_5, int param_6);
+
+    // --- Non-Virtual Members ---
     char* nameType();
     uchar convertToIntType(char* param_1);
     char* convertToNameType(uchar param_1);
@@ -84,9 +88,9 @@ public:
 static_assert(sizeof(AIPlayPhaseTrigger) == 0x14, "AIPlayPhaseTrigger Size Mismatch");
 static_assert(offsetof(AIPlayPhaseTrigger, randomnessValue) == 0x10, "AIPlayPhaseTrigger Offset Mismatch");
 
-class AIPlay {
+class AIPlay       {
 public:
-    char name[65];                           // 0x0
+    char nameValue[65];                      // 0x0
     uchar minimumNumberUnitsValue;           // 0x41
     uchar maximumNumberUnitsValue;           // 0x42
     uchar typeValue;                         // 0x43
@@ -98,11 +102,11 @@ public:
     uchar deathPercentageValue;              // 0x51
     uchar numberGroupsValue;                 // 0x52
     AIPlayGroup groups[5];                   // 0x53
-    // 0x53 + (5*12 = 0x3C) = 0x8F. Padded to 0x90.
     AIPlayPhase phases[10];                  // 0x90
 
     AIPlay();
-    // These functions might not be virtual in the binary if there is no vtable
+
+    // --- Non-Virtual Members ---
     void setName(char* param_1);
     int humanPlay();
     char* typeName();
@@ -125,12 +129,14 @@ public:
 static_assert(sizeof(AIPlay) == 0x608, "AIPlay Size Mismatch");
 static_assert(offsetof(AIPlay, phases) == 0x90, "AIPlay Offset Mismatch");
 
-class AIPlayGroup {
+class AIPlayGroup       {
 public:
     uchar minValue[6];                       // 0x0
     uchar maxValue[6];                       // 0x6
 
     AIPlayGroup();
+
+    // --- Non-Virtual Members ---
     uchar minimum(int param_1);
     void setMinimum(int param_1, int param_2);
     uchar maximum(int param_1);
@@ -141,28 +147,42 @@ public:
 static_assert(sizeof(AIPlayGroup) == 0xC, "AIPlayGroup Size Mismatch");
 static_assert(offsetof(AIPlayGroup, maxValue) == 0x6, "AIPlayGroup Offset Mismatch");
 
-class AIPlayBook {
+class AIPlayBook       {
 public:
     int numberPlaysValue;                    // 0x4
     char nameValue[65];                      // 0x8
     AIPlay* plays;                           // 0x4C
 
     AIPlayBook();
-    virtual ~AIPlayBook();
-    virtual int loadPlays(char* param_1);
-    virtual AIPlay* play(int param_1);
-    virtual AIPlay* play(char* param_1);
-    virtual int playNumber(char* param_1);
-    virtual int convertTargetNameToIntType(char* param_1);
-    virtual int convertTargetCharacteristicNameToIntType(char* param_1);
-    virtual int convertUnitNameToIntType(char* param_1);
-    virtual int convertUnitToIntType(RGE_Static_Object* param_1);
+
+    // --- VTABLE DUMP (Source: Ghidra) ---
+
+    // [Slot 00] Offset 0x00 (Override)
+    virtual  ~AIPlayBook() noexcept(false); // Ghidra: `vector_deleting_destructor'
+
+    // [Slot 01] Offset 0x04 (Override)
+    virtual int convertTargetNameToIntType(char* param_1); // Ghidra: convertTargetNameToIntType
+
+    // [Slot 02] Offset 0x08 (Override)
+    virtual int convertTargetCharacteristicNameToIntType(char* param_1); // Ghidra: convertTargetCharacteristicNameToIntType
+
+    // [Slot 03] Offset 0x0C (Override)
+    virtual int convertUnitNameToIntType(char* param_1); // Ghidra: convertUnitNameToIntType
+
+    // [Slot 04] Offset 0x10 (Override)
+    virtual int convertUnitToIntType(RGE_Static_Object* param_1); // Ghidra: convertUnitToIntType
+
+    // --- Non-Virtual Members ---
+    int loadPlays(char* param_1);
+    AIPlay* play(int param_1);
+    AIPlay* play(char* param_1);
+    int playNumber(char* param_1);
 };
 
 static_assert(sizeof(AIPlayBook) == 0x50, "AIPlayBook Size Mismatch");
 static_assert(offsetof(AIPlayBook, plays) == 0x4C, "AIPlayBook Offset Mismatch");
 
-class AIPlayPhaseCommand {
+class AIPlayPhaseCommand       {
 public:
     uchar groupValue;                        // 0x0
     uchar typeValue;                         // 0x1
@@ -173,6 +193,8 @@ public:
     AIPlayPhaseCommand();
     AIPlayPhaseCommand(uchar param_1, uchar param_2, int param_3, int param_4, int param_5);
     AIPlayPhaseCommand(uchar param_1, char* param_2, int param_3, int param_4, int param_5);
+
+    // --- Non-Virtual Members ---
     char* nameType();
     uchar convertToIntType(char* param_1);
     char* convertToNameType(uchar param_1);

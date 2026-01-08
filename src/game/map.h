@@ -4,7 +4,7 @@
 #include "zone_map.h"
 #include "visible.h"
 
-class RGE_Map {
+class RGE_Map       {
 public:
     RGE_Tile* map;                           // 0x4
     long map_width;                          // 0x8
@@ -42,68 +42,96 @@ public:
 
     RGE_Map(int param_1, RGE_Sound** param_2, uchar param_3);
     RGE_Map(char* param_1, char* param_2, char* param_3, short param_4, short param_5, short param_6, RGE_Sound** param_7);
-    virtual ~RGE_Map();
-    virtual void init_tile_sizes();
-    virtual void data_load_random_map(int param_1);
-    virtual void load_random_map(char* param_1, char* param_2, char* param_3, char* param_4);
-    virtual void set_map_visible(uchar param_1);
-    virtual void set_map_fog(uchar param_1);
-    virtual void clear_map(RGE_Player* param_1, RGE_Game_World* param_2, uchar param_3, long param_4, long param_5);
-    virtual void new_map(long param_1, long param_2);
-    virtual void clear_map(uchar param_1, uchar param_2);
-    virtual void request_redraw(int param_1, int param_2, int param_3, int param_4, uchar param_5);
-    virtual void clear_map_view_info();
-    virtual void coordinate_map();
-    virtual void set_map_screen_pos(int param_1, int param_2, int param_3, int param_4);
-    virtual void scenario_save(int param_1);
-    virtual void scenario_load(int param_1, uchar* param_2);
-    virtual RGE_Tile** give_up_map_offsets();
-    virtual long get_map_width();
-    virtual long get_map_height();
-    virtual uchar postclean_elevation(long param_1, long param_2, long param_3, long param_4, uchar param_5);
-    virtual void preclean_elevation(long param_1, long param_2, long param_3, long param_4, uchar param_5);
-    virtual void clean_elevation(long param_1, long param_2, long param_3, long param_4, uchar param_5);
-    virtual void clean_terrain(long param_1, long param_2, long param_3, long param_4, uchar param_5);
-    virtual void clean_borders(long param_1, long param_2, long param_3, long param_4);
-    virtual long clean_border_tile(long param_1, long param_2, long* param_3);
-    virtual uchar do_terrain_brush(long param_1, long param_2, long param_3, uchar param_4);
-    virtual uchar do_terrain_brush_stroke(long param_1, long param_2, long param_3, long param_4, long param_5, uchar param_6);
-    virtual uchar do_elevation_brush(long param_1, long param_2, long param_3, uchar param_4);
-    virtual uchar do_elevation_brush_stroke(long param_1, long param_2, long param_3, long param_4, long param_5, uchar param_6);
-    virtual uchar do_cliff_brush(long param_1, long param_2, uchar param_3, uchar param_4);
-    virtual uchar do_cliff_brush_stroke(long param_1, long param_2, long param_3, long param_4, uchar param_5, uchar param_6);
-    virtual void map_generate(RGE_Player* param_1, RGE_Game_World* param_2, RGE_Player_Info* param_3, uchar* param_4);
-    virtual void map_generate2(RGE_Game_World* param_1, long param_2, long param_3, uchar param_4, long param_5);
-    virtual void load_map(int param_1);
-    virtual void save_map(int param_1);
-    virtual void save(int param_1);
-    virtual void load_terrain_types(RGE_Sound** param_1);
-    virtual void load_terrain_types(char* param_1, RGE_Sound** param_2);
-    virtual void load_border_types(RGE_Sound** param_1);
-    virtual void load_border_types(char* param_1, RGE_Sound** param_2);
-    virtual void load_terrain_obj_types(char* param_1);
-    virtual void delete_objects_on_tile(RGE_Player* param_1, RGE_Game_World* param_2, int param_3, int param_4, int param_5, int param_6);
-    virtual void delete_all_objects_on_tile(int param_1, int param_2);
-    virtual void create_terrain_object(RGE_Player* param_1, RGE_Game_World* param_2, short param_3, short param_4, short param_5, int param_6, int param_7, int param_8);
-    virtual int clear_terrain_object(RGE_Game_World* param_1, short param_2, short param_3, short param_4, int param_5, int param_6, int param_7);
-    virtual void place_terrain_object(RGE_Player* param_1, RGE_Game_World* param_2, short param_3, short param_4, int param_5, int param_6);
-    virtual void create_terrain_objects(RGE_Player* param_1, RGE_Game_World* param_2);
-    virtual void set_tile_size(uchar param_1, short param_2, short param_3, short param_4);
-    virtual void tile_map_coords(short param_1, short param_2, RGE_Tile* param_3, float* param_4, float* param_5);
-    virtual uchar check_map_coords(short param_1, short param_2);
-    virtual uchar get_elev(short param_1, short param_2);
-    virtual uchar get_terrain(short param_1, short param_2);
-    virtual uchar get_border(short param_1, short param_2);
-    virtual void set_terrain_passablity(short param_1, short param_2, short param_3, short param_4, uchar param_5);
-    virtual void set_elev(short param_1, short param_2, short param_3, short param_4, uchar param_5, short param_6, uchar param_7);
-    virtual void set_terrain(RGE_Game_World* param_1, short param_2, short param_3, uchar param_4, int param_5, int param_6);
-    virtual void set_terrain_absolute(RGE_Game_World* param_1, short param_2, short param_3, uchar param_4, int param_5, int param_6);
-    virtual void set_terrain(RGE_Player* param_1, RGE_Game_World* param_2, short param_3, short param_4, short param_5, short param_6, uchar param_7, uchar param_8, int param_9);
-    virtual uchar get_tile_type(short param_1, short param_2);
-    virtual void get_border_type(short param_1, short param_2);
-    virtual void check_for_border(uchar param_1, uchar* param_2);
-    virtual void update(ulong param_1);
-    virtual void get_point(short* param_1, short* param_2, float param_3, float param_4, float param_5, short param_6, short param_7);
+
+    // --- VTABLE DUMP (Source: Ghidra) ---
+
+    // [Slot 00] Offset 0x00 (Override)
+    virtual  ~RGE_Map() noexcept(false); // Ghidra: `vector_deleting_destructor'
+
+    // [Slot 01] Offset 0x04 (Override)
+    virtual void data_load_random_map(int param_1); // Ghidra: data_load_random_map
+
+    // [Slot 02] Offset 0x08 (Override)
+    virtual void load_random_map(char* param_1, char* param_2, char* param_3, char* param_4); // Ghidra: load_random_map
+
+    // [Slot 03] Offset 0x0C (Override)
+    virtual uchar do_terrain_brush(long param_1, long param_2, long param_3, uchar param_4); // Ghidra: do_terrain_brush
+
+    // [Slot 04] Offset 0x10 (Override)
+    virtual uchar do_terrain_brush_stroke(long param_1, long param_2, long param_3, long param_4, long param_5, uchar param_6); // Ghidra: do_terrain_brush_stroke
+
+    // [Slot 05] Offset 0x14 (Override)
+    virtual uchar do_elevation_brush(long param_1, long param_2, long param_3, uchar param_4); // Ghidra: do_elevation_brush
+
+    // [Slot 06] Offset 0x18 (Override)
+    virtual uchar do_elevation_brush_stroke(long param_1, long param_2, long param_3, long param_4, long param_5, uchar param_6); // Ghidra: do_elevation_brush_stroke
+
+    // [Slot 07] Offset 0x1C (Override)
+    virtual uchar do_cliff_brush(long param_1, long param_2, uchar param_3, uchar param_4); // Ghidra: do_cliff_brush
+
+    // [Slot 08] Offset 0x20 (Override)
+    virtual uchar do_cliff_brush_stroke(long param_1, long param_2, long param_3, long param_4, uchar param_5, uchar param_6); // Ghidra: do_cliff_brush_stroke
+
+    // [Slot 09] Offset 0x24 (Override)
+    virtual void map_generate(RGE_Player* param_1, RGE_Game_World* param_2, RGE_Player_Info* param_3, uchar* param_4); // Ghidra: map_generate
+
+    // [Slot 10] Offset 0x28 (Override)
+    virtual void map_generate2(RGE_Game_World* param_1, long param_2, long param_3, uchar param_4, long param_5); // Ghidra: map_generate2
+
+    // [Slot 11] Offset 0x2C (Override)
+    virtual void save(int param_1); // Ghidra: save
+
+    // --- Non-Virtual Members ---
+    void init_tile_sizes();
+    void set_map_visible(uchar param_1);
+    void set_map_fog(uchar param_1);
+    void clear_map(RGE_Player* param_1, RGE_Game_World* param_2, uchar param_3, long param_4, long param_5);
+    void new_map(long param_1, long param_2);
+    void clear_map(uchar param_1, uchar param_2);
+    void request_redraw(int param_1, int param_2, int param_3, int param_4, uchar param_5);
+    void clear_map_view_info();
+    void coordinate_map();
+    void set_map_screen_pos(int param_1, int param_2, int param_3, int param_4);
+    void scenario_save(int param_1);
+    void scenario_load(int param_1, uchar* param_2);
+    RGE_Tile** give_up_map_offsets();
+    long get_map_width();
+    long get_map_height();
+    uchar postclean_elevation(long param_1, long param_2, long param_3, long param_4, uchar param_5);
+    void preclean_elevation(long param_1, long param_2, long param_3, long param_4, uchar param_5);
+    void clean_elevation(long param_1, long param_2, long param_3, long param_4, uchar param_5);
+    void clean_terrain(long param_1, long param_2, long param_3, long param_4, uchar param_5);
+    void clean_borders(long param_1, long param_2, long param_3, long param_4);
+    long clean_border_tile(long param_1, long param_2, long* param_3);
+    void load_map(int param_1);
+    void save_map(int param_1);
+    void load_terrain_types(RGE_Sound** param_1);
+    void load_terrain_types(char* param_1, RGE_Sound** param_2);
+    void load_border_types(RGE_Sound** param_1);
+    void load_border_types(char* param_1, RGE_Sound** param_2);
+    void load_terrain_obj_types(char* param_1);
+    void delete_objects_on_tile(RGE_Player* param_1, RGE_Game_World* param_2, int param_3, int param_4, int param_5, int param_6);
+    void delete_all_objects_on_tile(int param_1, int param_2);
+    void create_terrain_object(RGE_Player* param_1, RGE_Game_World* param_2, short param_3, short param_4, short param_5, int param_6, int param_7, int param_8);
+    int clear_terrain_object(RGE_Game_World* param_1, short param_2, short param_3, short param_4, int param_5, int param_6, int param_7);
+    void place_terrain_object(RGE_Player* param_1, RGE_Game_World* param_2, short param_3, short param_4, int param_5, int param_6);
+    void create_terrain_objects(RGE_Player* param_1, RGE_Game_World* param_2);
+    void set_tile_size(uchar param_1, short param_2, short param_3, short param_4);
+    void tile_map_coords(short param_1, short param_2, RGE_Tile* param_3, float* param_4, float* param_5);
+    uchar check_map_coords(short param_1, short param_2);
+    uchar get_elev(short param_1, short param_2);
+    uchar get_terrain(short param_1, short param_2);
+    uchar get_border(short param_1, short param_2);
+    void set_terrain_passablity(short param_1, short param_2, short param_3, short param_4, uchar param_5);
+    void set_elev(short param_1, short param_2, short param_3, short param_4, uchar param_5, short param_6, uchar param_7);
+    void set_terrain(RGE_Game_World* param_1, short param_2, short param_3, uchar param_4, int param_5, int param_6);
+    void set_terrain_absolute(RGE_Game_World* param_1, short param_2, short param_3, uchar param_4, int param_5, int param_6);
+    void set_terrain(RGE_Player* param_1, RGE_Game_World* param_2, short param_3, short param_4, short param_5, short param_6, uchar param_7, uchar param_8, int param_9);
+    uchar get_tile_type(short param_1, short param_2);
+    void get_border_type(short param_1, short param_2);
+    void check_for_border(uchar param_1, uchar* param_2);
+    void update(ulong param_1);
+    void get_point(short* param_1, short* param_2, float param_3, float param_4, float param_5, short param_6, short param_7);
 };
 
 static_assert(sizeof(RGE_Map) == 0x8DD0, "RGE_Map Size Mismatch");

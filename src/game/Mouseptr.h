@@ -1,8 +1,9 @@
 #pragma once
 #include "../common.h"
 
-class TMousePointer {
+class TMousePointer       {
 public:
+    int custom_draw;                         // 0x0
     TDrawArea* render_area;                  // 0x4
     TDrawArea* save_area;                    // 0x8
     TDrawArea* primary_area;                 // 0xC
@@ -56,29 +57,32 @@ public:
     int cursor_file_id;                      // 0x250
 
     TMousePointer(int param_1);
-    virtual ~TMousePointer();
-    virtual int Shutdown_Mouse();
-    virtual int Restore_Mouse(TDrawArea* param_1);
-    virtual int setup(int param_1, TDrawArea* param_2, char* param_3, int param_4, int param_5);
-    virtual void set_game_mode(int param_1);
-    virtual void set_game_enable(int param_1);
-    virtual int get_game_enable();
-    virtual int in_game_mode();
-    virtual void set_game_window(int param_1, int param_2, int param_3, int param_4);
-    virtual int LoadCursors(char* param_1, int param_2, int param_3);
-    virtual void delete_surfaces();
-    virtual int create_surfaces();
-    virtual int update_mouse_position();
-    virtual void draw(int param_1);
-    virtual void erase();
-    virtual void set_facet(int param_1);
-    virtual void set_game_facet(int param_1);
-    virtual void off();
-    virtual void on();
-    virtual void reset();
-    virtual void center();
-    virtual void Poll();
-    virtual int GetDDBltError(long param_1);
+
+    // --- Non-Virtual Destructor ---
+    ~TMousePointer() noexcept(false);
+    // --- Non-Virtual Members ---
+    int Shutdown_Mouse();
+    int Restore_Mouse(TDrawArea* param_1);
+    int setup(int param_1, TDrawArea* param_2, char* param_3, int param_4, int param_5);
+    void set_game_mode(int param_1);
+    void set_game_enable(int param_1);
+    int get_game_enable();
+    int in_game_mode();
+    void set_game_window(int param_1, int param_2, int param_3, int param_4);
+    int LoadCursors(char* param_1, int param_2, int param_3);
+    void delete_surfaces();
+    int create_surfaces();
+    int update_mouse_position();
+    void draw(int param_1);
+    void erase();
+    void set_facet(int param_1);
+    void set_game_facet(int param_1);
+    void off();
+    void on();
+    void reset();
+    void center();
+    void Poll();
+    int GetDDBltError(long param_1);
 };
 
 static_assert(sizeof(TMousePointer) == 0x254, "TMousePointer Size Mismatch");

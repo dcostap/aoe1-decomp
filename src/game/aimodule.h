@@ -1,24 +1,77 @@
 #pragma once
 #include "../common.h"
 
-class AIModuleID {
+class AIModuleID       {
 public:
     int id;                                  // 0x4
     char name[64];                           // 0x8
 
     AIModuleID(char* param_1, int param_2);
-    virtual ~AIModuleID();
-    virtual void setID(int param_1, char* param_2);
+
+    // --- VTABLE DUMP (Source: Ghidra) ---
+
+    // [Slot 00] Offset 0x00 (Override)
+    virtual  ~AIModuleID() noexcept(false); // Ghidra: `vector_deleting_destructor'
+
+    // [Slot 01] Offset 0x04 WARNING: Function body missing in analysis
+    // virtual void `scalar_deleting_destructor'();
+
+    // [Slot 02] Offset 0x08 WARNING: Function body missing in analysis
+    // virtual void `scalar_deleting_destructor'();
+
+    // [Slot 03] Offset 0x0C WARNING: Function body missing in analysis
+    // virtual void loggingHistory();
+
+    // [Slot 04] Offset 0x10 WARNING: Function body missing in analysis
+    // virtual void setLogHistory();
+
+    // [Slot 05] Offset 0x14 WARNING: Function body missing in analysis
+    // virtual void toggleLogHistory();
+
+    // [Slot 06] Offset 0x18 WARNING: Function body missing in analysis
+    // virtual void setHistoryFilename();
+
+    // [Slot 07] Offset 0x1C WARNING: Function body missing in analysis
+    // virtual void loggingCommonHistory();
+
+    // [Slot 08] Offset 0x20 WARNING: Function body missing in analysis
+    // virtual void setLogCommonHistory();
+
+    // [Slot 09] Offset 0x24 WARNING: Function body missing in analysis
+    // virtual void toggleLogCommonHistory();
+
+    // [Slot 10] Offset 0x28 WARNING: Function body missing in analysis
+    // virtual void loadState();
+
+    // [Slot 11] Offset 0x2C WARNING: Function body missing in analysis
+    // virtual void saveState();
+
+    // [Slot 12] Offset 0x30 WARNING: Function body missing in analysis
+    // virtual void gleanState();
+
+    // [Slot 13] Offset 0x34 WARNING: Function body missing in analysis
+    // virtual void processMessage();
+
+    // [Slot 14] Offset 0x38 WARNING: Function body missing in analysis
+    // virtual void update();
+
+    // [Slot 15] Offset 0x3C WARNING: Function body missing in analysis
+    // virtual void setCallbackMessage();
+
+    // [Slot 16] Offset 0x40 WARNING: Function body missing in analysis
+    // virtual void filterOutMessage();
+
+    // --- Non-Virtual Members ---
+    void setID(int param_1, char* param_2);
 };
 
 static_assert(sizeof(AIModuleID) == 0x48, "AIModuleID Size Mismatch");
 static_assert(offsetof(AIModuleID, name) == 0x8, "AIModuleID Offset Mismatch");
 
-class AIModuleMessage {
+class AIModuleMessage       {
 public:
-    // 0x0 is vtable (implied by virtuals)
     int id;                                  // 0x4
-    char text[128];                          // 0x8  <-- DIFFERENT than AIModuleID
+    char text[128];                          // 0x8
     int priority;                            // 0x88
     AIModuleID sender;                       // 0x8C
     AIModuleID recipient;                    // 0xD4
@@ -33,18 +86,69 @@ public:
     AIModuleMessage();
     AIModuleMessage(int param_1, int param_2, int param_3, int param_4, long param_5, long param_6, long param_7, AIModuleMessage* param_8, int param_9);
     AIModuleMessage(AIModuleMessage* param_1);
-    virtual ~AIModuleMessage();
-    virtual void setText(char* param_1);
-    virtual void setSender(int param_1, char* param_2);
-    virtual void setRecipient(int param_1, char* param_2);
+
+    // --- VTABLE DUMP (Source: Ghidra) ---
+
+    // [Slot 00] Offset 0x00 (Override)
+    virtual  ~AIModuleMessage() noexcept(false); // Ghidra: `scalar_deleting_destructor'
+
+    // [Slot 01] Offset 0x04 WARNING: Function body missing in analysis
+    // virtual void `scalar_deleting_destructor'();
+
+    // [Slot 02] Offset 0x08 WARNING: Function body missing in analysis
+    // virtual void loggingHistory();
+
+    // [Slot 03] Offset 0x0C WARNING: Function body missing in analysis
+    // virtual void setLogHistory();
+
+    // [Slot 04] Offset 0x10 WARNING: Function body missing in analysis
+    // virtual void toggleLogHistory();
+
+    // [Slot 05] Offset 0x14 WARNING: Function body missing in analysis
+    // virtual void setHistoryFilename();
+
+    // [Slot 06] Offset 0x18 WARNING: Function body missing in analysis
+    // virtual void loggingCommonHistory();
+
+    // [Slot 07] Offset 0x1C WARNING: Function body missing in analysis
+    // virtual void setLogCommonHistory();
+
+    // [Slot 08] Offset 0x20 WARNING: Function body missing in analysis
+    // virtual void toggleLogCommonHistory();
+
+    // [Slot 09] Offset 0x24 WARNING: Function body missing in analysis
+    // virtual void loadState();
+
+    // [Slot 10] Offset 0x28 WARNING: Function body missing in analysis
+    // virtual void saveState();
+
+    // [Slot 11] Offset 0x2C WARNING: Function body missing in analysis
+    // virtual void gleanState();
+
+    // [Slot 12] Offset 0x30 WARNING: Function body missing in analysis
+    // virtual void processMessage();
+
+    // [Slot 13] Offset 0x34 WARNING: Function body missing in analysis
+    // virtual void update();
+
+    // [Slot 14] Offset 0x38 WARNING: Function body missing in analysis
+    // virtual void setCallbackMessage();
+
+    // [Slot 15] Offset 0x3C WARNING: Function body missing in analysis
+    // virtual void filterOutMessage();
+
+    // --- Non-Virtual Members ---
+    void setText(char* param_1);
+    void setSender(int param_1, char* param_2);
+    void setRecipient(int param_1, char* param_2);
 };
 
 static_assert(sizeof(AIModuleMessage) == 0x138, "AIModuleMessage Size Mismatch");
 static_assert(offsetof(AIModuleMessage, prev) == 0x134, "AIModuleMessage Offset Mismatch");
 
-class AIModule {
+class AIModule       {
 public:
-    AIModuleID idValue;                      // 0x04
+    AIModuleID idValue;                      // 0x4
     int playerNumberValue;                   // 0x4C
     char playerNameValue[64];                // 0x50
     int runningValue;                        // 0x90
@@ -57,65 +161,99 @@ public:
     int priorityValue;                       // 0xE8
     int processFrameValue;                   // 0xEC
 
-    virtual int loadState(char* param_1);
-    virtual int saveState(char* param_1);
-    virtual int gleanState(int param_1);
     AIModule();
     AIModule(char* param_1, int param_2, int param_3, void* param_4);
-    virtual ~AIModule();
-    virtual AIModuleID* id(AIModuleID* __return_storage_ptr__);
-    virtual int idNumber();
-    virtual int playerNumber();
-    virtual char* playerName();
-    virtual void setPlayer(int param_1, char* param_2);
-    virtual void start();
-    virtual void stop();
-    virtual void toggleRun();
-    virtual void togglePause();
-    virtual void step();
-    virtual int running();
-    virtual int paused();
-    virtual int loggingHistory();
-    virtual void setLogHistory(int param_1);
-    virtual void toggleLogHistory();
-    virtual int loggingCommonHistory();
-    virtual void setLogCommonHistory(int param_1);
-    virtual void toggleLogCommonHistory();
-    virtual void setHistoryFilename(char* param_1);
-    virtual int intelligenceLevel();
-    virtual int setIntelligenceLevel(int param_1);
-    virtual int priority();
-    virtual int setPriority(int param_1);
-    virtual int incrementPriority(int param_1);
-    virtual int decrementPriority(int param_1);
-    virtual int sendMessage(AIModuleMessage* param_1, int param_2);
-    virtual void receiveMessage(AIModuleMessage* param_1);
-    virtual int processMessage(AIModuleMessage* param_1);
-    virtual int update(int param_1);
-    virtual void setCallbackMessage(AIModuleMessage* param_1);
-    virtual int messageLimit();
-    virtual void setMessageLimit(int param_1);
-    virtual int callbackLimit();
-    virtual void setCallbackLimit(int param_1);
-    virtual int messageTimeout();
-    virtual void setMessageTimeout(int param_1);
-    virtual int purgeMessages(AIModuleID param_1);
-    virtual int purgeMessagesWithID(AIModuleID param_1, int param_2);
-    virtual int purgeMessagesWithPriorityBelow(AIModuleID param_1, int param_2);
-    virtual int purgeMessagesWithData(AIModuleID param_1, int param_2, int param_3, long param_4);
-    virtual int purgeCallbacks(AIModuleID param_1);
-    virtual int purgeCallbacksWithID(AIModuleID param_1, int param_2);
-    virtual int purgeCallbacksWithPriorityBelow(AIModuleID param_1, int param_2);
-    virtual int purgeCallbacksWithData(AIModuleID param_1, int param_2, int param_3, long param_4);
-    virtual void checkMessageLimit();
-    virtual void checkCallbackLimit();
-    virtual int filterOutMessage(AIModuleMessage* param_1);
-    virtual void logHistory(char* param_1);
-    virtual void logCommonHistory(char* param_1);
-    virtual void logDebug(char* param_1);
-    virtual int processFrame();
-    virtual void incrementProcessFrame();
-    virtual int timeDifference(AIModuleMessage* param_1);
+
+    // --- VTABLE DUMP (Source: Ghidra) ---
+
+    // [Slot 00] Offset 0x00 (Override)
+    virtual  ~AIModule() noexcept(false); // Ghidra: `scalar_deleting_destructor'
+
+    // [Slot 01] Offset 0x04 (Override)
+    virtual int loggingHistory(); // Ghidra: loggingHistory
+
+    // [Slot 02] Offset 0x08 (Override)
+    virtual void setLogHistory(int param_1); // Ghidra: setLogHistory
+
+    // [Slot 03] Offset 0x0C (Override)
+    virtual void toggleLogHistory(); // Ghidra: toggleLogHistory
+
+    // [Slot 04] Offset 0x10 (Override)
+    virtual void setHistoryFilename(char* param_1); // Ghidra: setHistoryFilename
+
+    // [Slot 05] Offset 0x14 (Override)
+    virtual int loggingCommonHistory(); // Ghidra: loggingCommonHistory
+
+    // [Slot 06] Offset 0x18 (Override)
+    virtual void setLogCommonHistory(int param_1); // Ghidra: setLogCommonHistory
+
+    // [Slot 07] Offset 0x1C (Override)
+    virtual void toggleLogCommonHistory(); // Ghidra: toggleLogCommonHistory
+
+    // [Slot 08] Offset 0x20 (Override)
+    virtual int loadState(char* param_1); // Ghidra: loadState
+
+    // [Slot 09] Offset 0x24 (Override)
+    virtual int saveState(char* param_1); // Ghidra: saveState
+
+    // [Slot 10] Offset 0x28 (Override)
+    virtual int gleanState(int param_1); // Ghidra: gleanState
+
+    // [Slot 11] Offset 0x2C (Override)
+    virtual int processMessage(AIModuleMessage* param_1); // Ghidra: processMessage
+
+    // [Slot 12] Offset 0x30 (Override)
+    virtual int update(int param_1); // Ghidra: update
+
+    // [Slot 13] Offset 0x34 (Override)
+    virtual void setCallbackMessage(AIModuleMessage* param_1); // Ghidra: setCallbackMessage
+
+    // [Slot 14] Offset 0x38 (Override)
+    virtual int filterOutMessage(AIModuleMessage* param_1); // Ghidra: filterOutMessage
+
+    // --- Non-Virtual Members ---
+    AIModuleID* id(AIModuleID* __return_storage_ptr__);
+    int idNumber();
+    int playerNumber();
+    char* playerName();
+    void setPlayer(int param_1, char* param_2);
+    void start();
+    void stop();
+    void toggleRun();
+    void togglePause();
+    void step();
+    int running();
+    int paused();
+    int intelligenceLevel();
+    int setIntelligenceLevel(int param_1);
+    int priority();
+    int setPriority(int param_1);
+    int incrementPriority(int param_1);
+    int decrementPriority(int param_1);
+    int sendMessage(AIModuleMessage* param_1, int param_2);
+    void receiveMessage(AIModuleMessage* param_1);
+    int messageLimit();
+    void setMessageLimit(int param_1);
+    int callbackLimit();
+    void setCallbackLimit(int param_1);
+    int messageTimeout();
+    void setMessageTimeout(int param_1);
+    int purgeMessages(AIModuleID param_1);
+    int purgeMessagesWithID(AIModuleID param_1, int param_2);
+    int purgeMessagesWithPriorityBelow(AIModuleID param_1, int param_2);
+    int purgeMessagesWithData(AIModuleID param_1, int param_2, int param_3, long param_4);
+    int purgeCallbacks(AIModuleID param_1);
+    int purgeCallbacksWithID(AIModuleID param_1, int param_2);
+    int purgeCallbacksWithPriorityBelow(AIModuleID param_1, int param_2);
+    int purgeCallbacksWithData(AIModuleID param_1, int param_2, int param_3, long param_4);
+    void checkMessageLimit();
+    void checkCallbackLimit();
+    void logHistory(char* param_1);
+    void logCommonHistory(char* param_1);
+    void logDebug(char* param_1);
+    int processFrame();
+    void incrementProcessFrame();
+    int timeDifference(AIModuleMessage* param_1);
 };
 
 static_assert(sizeof(AIModule) == 0xF0, "AIModule Size Mismatch");

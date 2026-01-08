@@ -1,8 +1,9 @@
 #pragma once
 #include "../common.h"
 
-class TSpan_Node_List {
+class TSpan_Node_List       {
 public:
+    VSpan_Node** Zone_Ptrs;                  // 0x0
     int* Zone_Size_Ptrs;                     // 0x4
     int Used_Zones;                          // 0x8
     int Max_Zones;                           // 0xC
@@ -19,20 +20,23 @@ public:
     int Reset_Count;                         // 0x38
 
     TSpan_Node_List(int param_1, int param_2, int param_3);
-    virtual ~TSpan_Node_List();
-    virtual void SetNumZones(int param_1);
-    virtual void InitNewZone(int param_1);
-    virtual VSpan_Node* GetNode();
-    virtual void FreeNode(VSpan_Node* param_1);
-    virtual int FreeThread(VSpan_Node* param_1, VSpan_Node* param_2);
-    virtual void ReclaimAllNodes();
-    virtual void ResetStats();
+
+    // --- Non-Virtual Destructor ---
+    ~TSpan_Node_List() noexcept(false);
+    // --- Non-Virtual Members ---
+    void SetNumZones(int param_1);
+    void InitNewZone(int param_1);
+    VSpan_Node* GetNode();
+    void FreeNode(VSpan_Node* param_1);
+    int FreeThread(VSpan_Node* param_1, VSpan_Node* param_2);
+    void ReclaimAllNodes();
+    void ResetStats();
 };
 
 static_assert(sizeof(TSpan_Node_List) == 0x3C, "TSpan_Node_List Size Mismatch");
 static_assert(offsetof(TSpan_Node_List, Reset_Count) == 0x38, "TSpan_Node_List Offset Mismatch");
 
-class TSpan_List_Manager : public TSpan_Node_List {
+class TSpan_List_Manager : public TSpan_Node_List       {
 public:
     VSpan_Node** Line_Head_Ptrs;             // 0x3C
     VSpan_Node** Line_Tail_Ptrs;             // 0x40
@@ -47,25 +51,28 @@ public:
     int Max_Line;                            // 0x64
 
     TSpan_List_Manager(int param_1, int param_2);
-    virtual ~TSpan_List_Manager();
-    virtual void SetSpanRegions(int param_1, int param_2, int param_3, int param_4);
-    virtual void ResetAll();
-    virtual void AddSpan(int param_1, int param_2, int param_3);
-    virtual void AddShape(TShape* param_1, int param_2, int param_3, int param_4, int param_5);
-    virtual void AddShape_Align(uchar* param_1, Shape_Info* param_2, int param_3, int param_4, int param_5);
-    virtual void AddLine_Align(int param_1, int param_2, int param_3, int param_4);
-    virtual void AddMiniList(VSpanMiniList* param_1, int param_2, int param_3);
-    virtual void SubtractMiniList(VSpanMiniList* param_1, int param_2, int param_3);
-    virtual void DeleteSpan(int param_1, int param_2, int param_3);
-    virtual void DeleteShape(TShape* param_1, int param_2, int param_3, int param_4, int param_5);
-    virtual int PointVisible(int param_1, int param_2);
-    virtual void Merge_n_Align(TSpan_List_Manager* param_1, TSpan_List_Manager* param_2);
-    virtual void AlignamizeSpans();
-    virtual void ScrollSpansHorizontally(int param_1, int param_2);
-    virtual void ScrollSpansVertically(int param_1, int param_2);
-    virtual int ValidateSpan(int param_1);
-    virtual int DecodeLine(uchar* param_1, int param_2, uchar param_3, int param_4);
-    virtual void take_snapshot(char* param_1, int* param_2, TDrawArea* param_3, int param_4, TSpan_List_Manager** param_5, int* param_6, int param_7);
+
+    // --- Non-Virtual Destructor ---
+    ~TSpan_List_Manager() noexcept(false);
+    // --- Non-Virtual Members ---
+    void SetSpanRegions(int param_1, int param_2, int param_3, int param_4);
+    void ResetAll();
+    void AddSpan(int param_1, int param_2, int param_3);
+    void AddShape(TShape* param_1, int param_2, int param_3, int param_4, int param_5);
+    void AddShape_Align(uchar* param_1, Shape_Info* param_2, int param_3, int param_4, int param_5);
+    void AddLine_Align(int param_1, int param_2, int param_3, int param_4);
+    void AddMiniList(VSpanMiniList* param_1, int param_2, int param_3);
+    void SubtractMiniList(VSpanMiniList* param_1, int param_2, int param_3);
+    void DeleteSpan(int param_1, int param_2, int param_3);
+    void DeleteShape(TShape* param_1, int param_2, int param_3, int param_4, int param_5);
+    int PointVisible(int param_1, int param_2);
+    void Merge_n_Align(TSpan_List_Manager* param_1, TSpan_List_Manager* param_2);
+    void AlignamizeSpans();
+    void ScrollSpansHorizontally(int param_1, int param_2);
+    void ScrollSpansVertically(int param_1, int param_2);
+    int ValidateSpan(int param_1);
+    int DecodeLine(uchar* param_1, int param_2, uchar param_3, int param_4);
+    void take_snapshot(char* param_1, int* param_2, TDrawArea* param_3, int param_4, TSpan_List_Manager** param_5, int* param_6, int param_7);
 };
 
 static_assert(sizeof(TSpan_List_Manager) == 0x68, "TSpan_List_Manager Size Mismatch");

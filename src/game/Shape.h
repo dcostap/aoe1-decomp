@@ -52,8 +52,9 @@ struct RGE_Border_Set {
     short border_style; // 0x59E
 };
 
-class TShape {
+class TShape       {
 public:
+    uchar* shape;                            // 0x0
     int load_type;                           // 0x4
     int load_size;                           // 0x8
     Shape_Header* shape_header;              // 0xC
@@ -64,30 +65,33 @@ public:
 
     TShape();
     TShape(char* param_1, long param_2);
-    virtual ~TShape();
-    virtual uchar Check_shape(long param_1, char* param_2);
-    virtual int is_loaded();
-    virtual uchar shape_bounds(long param_1, short* param_2, short* param_3);
-    virtual long shape_count();
-    virtual uchar shape_minmax(long* param_1, long* param_2, long* param_3, long* param_4, long param_5);
-    virtual uchar shape_check(long param_1, long param_2, long param_3);
-    virtual uchar shape_draw(TDrawArea* param_1, long param_2, long param_3, long param_4, uchar param_5, uchar* param_6);
-    virtual uchar shape_draw_unclipped(TDrawArea* param_1, long param_2, long param_3, long param_4);
-    virtual uchar shape_color_trans_unclipped(TDrawArea* param_1, long param_2, long param_3, long param_4, uchar* param_5);
-    virtual uchar shape_shadow_unclipped(TDrawArea* param_1, long param_2, long param_3, uchar* param_4);
-    virtual uchar shape_draw_clipped(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7);
-    virtual uchar shape_color_trans_clipped(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, uchar* param_9);
-    virtual uchar shape_shadow_clipped(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, uchar* param_8);
-    virtual uchar shape_mirror(TDrawArea* param_1, long param_2, long param_3, long param_4, uchar param_5, uchar* param_6);
-    virtual uchar shape_mirror_unclipped(TDrawArea* param_1, long param_2, long param_3);
-    virtual uchar shape_mirror_color_trans_unclipped(TDrawArea* param_1, long param_2, long param_3, long param_4, uchar* param_5);
-    virtual uchar shape_mirror_shadow_unclipped(TDrawArea* param_1, long param_2, long param_3, uchar* param_4);
-    virtual uchar shape_mirror_clipped(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7);
-    virtual uchar shape_mirror_color_trans_clipped(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, uchar* param_9);
-    virtual uchar shape_mirror_shadow_clipped(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, uchar* param_8);
-    virtual uchar shape_dither(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5, long param_6);
-    virtual uchar shape_dithered_unclipped(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5);
-    virtual uchar shape_dithered_clipped(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9);
+
+    // --- Non-Virtual Destructor ---
+    ~TShape() noexcept(false);
+    // --- Non-Virtual Members ---
+    uchar Check_shape(long param_1, char* param_2);
+    int is_loaded();
+    uchar shape_bounds(long param_1, short* param_2, short* param_3);
+    long shape_count();
+    uchar shape_minmax(long* param_1, long* param_2, long* param_3, long* param_4, long param_5);
+    uchar shape_check(long param_1, long param_2, long param_3);
+    uchar shape_draw(TDrawArea* param_1, long param_2, long param_3, long param_4, uchar param_5, uchar* param_6);
+    uchar shape_draw_unclipped(TDrawArea* param_1, long param_2, long param_3, long param_4);
+    uchar shape_color_trans_unclipped(TDrawArea* param_1, long param_2, long param_3, long param_4, uchar* param_5);
+    uchar shape_shadow_unclipped(TDrawArea* param_1, long param_2, long param_3, uchar* param_4);
+    uchar shape_draw_clipped(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7);
+    uchar shape_color_trans_clipped(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, uchar* param_9);
+    uchar shape_shadow_clipped(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, uchar* param_8);
+    uchar shape_mirror(TDrawArea* param_1, long param_2, long param_3, long param_4, uchar param_5, uchar* param_6);
+    uchar shape_mirror_unclipped(TDrawArea* param_1, long param_2, long param_3);
+    uchar shape_mirror_color_trans_unclipped(TDrawArea* param_1, long param_2, long param_3, long param_4, uchar* param_5);
+    uchar shape_mirror_shadow_unclipped(TDrawArea* param_1, long param_2, long param_3, uchar* param_4);
+    uchar shape_mirror_clipped(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7);
+    uchar shape_mirror_color_trans_clipped(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, uchar* param_9);
+    uchar shape_mirror_shadow_clipped(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, uchar* param_8);
+    uchar shape_dither(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5, long param_6);
+    uchar shape_dithered_unclipped(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5);
+    uchar shape_dithered_clipped(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9);
 };
 
 static_assert(sizeof(TShape) == 0x20, "TShape Size Mismatch");

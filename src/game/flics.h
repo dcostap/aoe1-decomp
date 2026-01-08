@@ -1,8 +1,9 @@
 #pragma once
 #include "../common.h"
 
-class RGE_Flic_Player {
+class RGE_Flic_Player       {
 public:
+    uchar* flic_buffer;                      // 0x0
     int flic_handle;                         // 0x4
     FlicHead flichead;                       // 0x8
     TDrawArea* drawarea;                     // 0x8C
@@ -20,19 +21,22 @@ public:
 
     RGE_Flic_Player(char* param_1);
     RGE_Flic_Player(int param_1);
-    virtual ~RGE_Flic_Player();
-    virtual void palette(tagRGBQUAD* param_1);
-    virtual long resolution();
-    virtual long time_delay();
-    virtual short frames();
-    virtual void start();
-    virtual void reset();
-    virtual uchar draw(TDrawArea* param_1, long param_2, long param_3);
-    virtual void literal();
-    virtual void delta_flc();
-    virtual void delta_fli();
-    virtual void black();
-    virtual void byte_run();
+
+    // --- Non-Virtual Destructor ---
+    ~RGE_Flic_Player() noexcept(false);
+    // --- Non-Virtual Members ---
+    void palette(tagRGBQUAD* param_1);
+    long resolution();
+    long time_delay();
+    short frames();
+    void start();
+    void reset();
+    uchar draw(TDrawArea* param_1, long param_2, long param_3);
+    void literal();
+    void delta_flc();
+    void delta_fli();
+    void black();
+    void byte_run();
 };
 
 static_assert(sizeof(RGE_Flic_Player) == 0xBC, "RGE_Flic_Player Size Mismatch");

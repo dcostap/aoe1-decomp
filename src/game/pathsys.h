@@ -29,15 +29,15 @@ struct MGP_FloatHeap {
     int total; // 0x4
 };
 
-class PathingSystem {
+class PathingSystem       {
 public:
     int xSizeValue;                          // 0x4
     int ySizeValue;                          // 0x8
-    uchar* facetValue[255];                  // 0xC
-    int* MGP_costValue[255];                 // 0xFE10
+    uchar facetValue[255][255];              // 0xC
+    int MGP_costValue[255][255];             // 0xFE10
     MGP_FloatHeap MGP_openPaths[65026];      // 0x4F614
-    uchar* obstructionValue[1020];           // 0xCE624
-    uchar* miscValue[255];                   // 0x10DE28
+    uchar obstructionValue[1020][255];       // 0xCE624
+    uchar miscValue[255][255];               // 0x10DE28
     int numberOpenPathsValue;                // 0x11DC2C
     MGP_FloatHeap MGP_bestTraversedPath;     // 0x11DC30
     int numberTraversedPathsValue;           // 0x11DC38
@@ -51,7 +51,7 @@ public:
     float currentYOffset;                    // 0x11DC58
     int currentTerrainException1;            // 0x11DC5C
     int currentTerrainException2;            // 0x11DC60
-    ManagedArray_int initialCollidingObjects; // 0x11DC64
+    ManagedArray<int> initialCollidingObjects; // 0x11DC64
     int startOfPath;                         // 0x11DC74
     int checkTerrainOnFirstPass;             // 0x11DC78
     XYPoint initialTile;                     // 0x11DC7C
@@ -75,29 +75,35 @@ public:
     uchar CurrentFacetMask;                  // 0x11DCD8
     int currentUnobstructibleGroupID;        // 0x11DCDC
     int currentUnobstructiblePlayerID;       // 0x11DCE0
-    ManagedArray_int currentUnobstructibles; // 0x11DCE4
+    ManagedArray<int> currentUnobstructibles; // 0x11DCE4
     int aiPS;                                // 0x11DCF4
 
     PathingSystem(int param_1, int param_2, int param_3, RGE_Map* param_4, RGE_Game_World* param_5);
-    virtual ~PathingSystem();
-    virtual int initialize(int param_1, int param_2, RGE_Map* param_3, RGE_Game_World* param_4);
-    virtual void printToFile(char* param_1);
-    virtual uchar lookupMisc(int param_1, int param_2);
-    virtual void setMisc(int param_1, int param_2, uchar param_3);
-    virtual void initMisc(uchar param_1);
-    virtual void zeroObstructionMap();
-    virtual uchar obstruction(int param_1, int param_2);
-    virtual void incrementObstruction(int param_1, int param_2);
-    virtual void decrementObstruction(int param_1, int param_2);
-    virtual int findTilePath(int param_1, int param_2, int param_3, int param_4, RGE_Moving_Object* param_5, float param_6, int param_7, int param_8, float* param_9, int param_10, int param_11, int param_12, int param_13, int param_14, int param_15);
-    virtual void incrementInitialPaths();
-    virtual void incrementContinuePaths();
-    virtual void incrementCanPaths();
-    virtual int passable(RGE_Moving_Object* param_1, float param_2, float param_3, int param_4);
-    virtual long checksum();
-    virtual void printState(RGE_Moving_Object* param_1);
-    virtual int copyPath(int param_1);
-    virtual void copyUnobstructibles(ManagedArray_int* param_1);
+
+    // --- VTABLE DUMP (Source: Ghidra) ---
+
+    // [Slot 00] Offset 0x00 (Override)
+    virtual  ~PathingSystem() noexcept(false); // Ghidra: `vector_deleting_destructor'
+
+    // --- Non-Virtual Members ---
+    int initialize(int param_1, int param_2, RGE_Map* param_3, RGE_Game_World* param_4);
+    void printToFile(char* param_1);
+    uchar lookupMisc(int param_1, int param_2);
+    void setMisc(int param_1, int param_2, uchar param_3);
+    void initMisc(uchar param_1);
+    void zeroObstructionMap();
+    uchar obstruction(int param_1, int param_2);
+    void incrementObstruction(int param_1, int param_2);
+    void decrementObstruction(int param_1, int param_2);
+    int findTilePath(int param_1, int param_2, int param_3, int param_4, RGE_Moving_Object* param_5, float param_6, int param_7, int param_8, float* param_9, int param_10, int param_11, int param_12, int param_13, int param_14, int param_15);
+    void incrementInitialPaths();
+    void incrementContinuePaths();
+    void incrementCanPaths();
+    int passable(RGE_Moving_Object* param_1, float param_2, float param_3, int param_4);
+    long checksum();
+    void printState(RGE_Moving_Object* param_1);
+    int copyPath(int param_1);
+    void copyUnobstructibles(ManagedArray<int>* param_1);
 };
 
 static_assert(sizeof(PathingSystem) == 0x11DCF8, "PathingSystem Size Mismatch");

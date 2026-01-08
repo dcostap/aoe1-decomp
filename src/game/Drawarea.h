@@ -13,8 +13,9 @@ struct DrawAreaNode {
 };
 
 
-class TDrawSystem {
+class TDrawSystem       {
 public:
+    void* Inst;                              // 0x0
     void* Wnd;                               // 0x4
     void* Pal;                               // 0x8
     TDrawArea* DrawArea;                     // 0xC
@@ -49,38 +50,42 @@ public:
     uchar ScreenMode;                        // 0x479
 
     TDrawSystem();
-    virtual ~TDrawSystem();
-    virtual void CheckAvailModes(int param_1);
-    virtual long CheckAvailModesCallback(_DDSURFACEDESC* param_1, void* param_2);
-    virtual int IsModeAvail(long param_1, long param_2, int param_3);
-    virtual int Init(void* param_1, void* param_2, void* param_3, uchar param_4, uchar param_5, long param_6, long param_7, ulong param_8);
-    virtual int SetDisplaySize(long param_1, long param_2, int param_3);
-    virtual void ClearPrimarySurface();
-    virtual uchar CheckSurfaces();
-    virtual void ClearRestored();
-    virtual void DeleteSurfaces();
-    virtual int CreateSurfaces();
-    virtual void HandleSize(void* param_1, uint param_2, uint param_3, long param_4);
-    virtual void HandlePaletteChanged(void* param_1, uint param_2, uint param_3, long param_4);
-    virtual int HandleQueryNewPalette(void* param_1, uint param_2, uint param_3, long param_4);
-    virtual void Paint(tagRECT* param_1);
-    virtual int GetIsLostErrorNum(long param_1);
-    virtual int GetRestoreErrorNum(long param_1);
-    virtual int GetSetDispModeErrorNum(long param_1);
-    virtual int GetLockErrorNum(long param_1);
-    virtual int GetDCErrorNum(long param_1);
-    virtual int GetBlitErrorNum(long param_1);
-    virtual int GetCreateErrorNum(long param_1);
-    virtual int GetColorKeyErrorNum(long param_1);
-    virtual void SetPalette(void* param_1);
-    virtual void ModifyPalette(int param_1, int param_2, tagPALETTEENTRY* param_3);
+
+    // --- Non-Virtual Destructor ---
+    ~TDrawSystem() noexcept(false);
+    // --- Non-Virtual Members ---
+    void CheckAvailModes(int param_1);
+    long CheckAvailModesCallback(_DDSURFACEDESC* param_1, void* param_2);
+    int IsModeAvail(long param_1, long param_2, int param_3);
+    int Init(void* param_1, void* param_2, void* param_3, uchar param_4, uchar param_5, long param_6, long param_7, ulong param_8);
+    int SetDisplaySize(long param_1, long param_2, int param_3);
+    void ClearPrimarySurface();
+    uchar CheckSurfaces();
+    void ClearRestored();
+    void DeleteSurfaces();
+    int CreateSurfaces();
+    void HandleSize(void* param_1, uint param_2, uint param_3, long param_4);
+    void HandlePaletteChanged(void* param_1, uint param_2, uint param_3, long param_4);
+    int HandleQueryNewPalette(void* param_1, uint param_2, uint param_3, long param_4);
+    void Paint(tagRECT* param_1);
+    int GetIsLostErrorNum(long param_1);
+    int GetRestoreErrorNum(long param_1);
+    int GetSetDispModeErrorNum(long param_1);
+    int GetLockErrorNum(long param_1);
+    int GetDCErrorNum(long param_1);
+    int GetBlitErrorNum(long param_1);
+    int GetCreateErrorNum(long param_1);
+    int GetColorKeyErrorNum(long param_1);
+    void SetPalette(void* param_1);
+    void ModifyPalette(int param_1, int param_2, tagPALETTEENTRY* param_3);
 };
 
 static_assert(sizeof(TDrawSystem) == 0x47C, "TDrawSystem Size Mismatch");
 static_assert(offsetof(TDrawSystem, ScreenMode) == 0x479, "TDrawSystem Offset Mismatch");
 
-class TDrawArea {
+class TDrawArea       {
 public:
+    TDrawSystem* DrawSystem;                 // 0x0
     void* Wnd;                               // 0x4
     uchar* Bits;                             // 0x8
     BITMAPINFO256* BitmapInfo;               // 0xC
@@ -117,46 +122,49 @@ public:
     uchar TransColor;                        // 0xFC
 
     TDrawArea(char* param_1, int param_2);
-    virtual ~TDrawArea();
-    virtual int Init(TDrawSystem* param_1, long param_2, long param_3, int param_4, int param_5);
-    virtual uchar CheckSurface();
-    virtual uchar* Lock(char* param_1, int param_2);
-    virtual void Unlock(char* param_1);
-    virtual void* GetDc(char* param_1);
-    virtual void ReleaseDc(char* param_1);
-    virtual void SetSize(long param_1, long param_2, int param_3);
-    virtual void Clear(tagRECT* param_1, int param_2);
-    virtual void PtrClear(tagRECT* param_1, int param_2);
-    virtual void SetAccessOffsets();
-    virtual void SetFloatOffsets(int param_1, int param_2);
-    virtual void SetInfo();
-    virtual long AlignedWidth();
-    virtual void SetClipRect(tagRECT* param_1);
-    virtual void SetClipRect(long param_1, long param_2, long param_3, long param_4);
-    virtual void Copy(TDrawArea* param_1, long param_2, long param_3, tagRECT* param_4, int param_5);
-    virtual void PtrCopy(TDrawArea* param_1, long param_2, long param_3, tagRECT* param_4);
-    virtual void PtrSpanCopy(TDrawArea* param_1, long param_2, long param_3, tagRECT* param_4, uchar** param_5);
-    virtual void PtrSurfaceCopy(TDrawArea* param_1, long param_2, long param_3, tagRECT* param_4, int param_5, int param_6);
-    virtual void OverlayMemCopy(tagRECT* param_1, tagRECT* param_2, int param_3, int param_4, int param_5, int param_6);
-    virtual void SetTrans(int param_1, uchar param_2);
-    virtual void SetOverlayTrans(int param_1, uchar param_2);
-    virtual void SetPixel(long param_1, long param_2, uchar param_3);
-    virtual void DrawLine(int param_1, int param_2, int param_3, int param_4, uchar param_5);
-    virtual void DrawRect(long param_1, long param_2, long param_3, long param_4, uchar param_5);
-    virtual void DrawRect(tagRECT* param_1, uchar param_2);
-    virtual void DrawHorzLine(long param_1, long param_2, long param_3, uchar param_4);
-    virtual void DrawVertLine(long param_1, long param_2, long param_3, uchar param_4);
-    virtual void FillRect(long param_1, long param_2, long param_3, long param_4, uchar param_5);
-    virtual void DrawBevel(long param_1, long param_2, long param_3, long param_4, uchar param_5, uchar param_6);
-    virtual void DrawBevel2(long param_1, long param_2, long param_3, long param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8);
-    virtual void DrawBevel3(long param_1, long param_2, long param_3, long param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8, uchar param_9, uchar param_10);
-    virtual void DrawBevel21(long param_1, long param_2, long param_3, long param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8);
-    virtual void DrawBevel32(long param_1, long param_2, long param_3, long param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8, uchar param_9, uchar param_10);
-    virtual void SetShadowTable(RGE_Color_Table* param_1);
-    virtual void DrawShadowBox(long param_1, long param_2, long param_3, long param_4);
-    virtual void GetPalette(tagPALETTEENTRY* param_1);
-    virtual void SetPalette(tagPALETTEENTRY* param_1);
-    virtual void take_snapshot(char* param_1, int* param_2);
+
+    // --- Non-Virtual Destructor ---
+    ~TDrawArea() noexcept(false);
+    // --- Non-Virtual Members ---
+    int Init(TDrawSystem* param_1, long param_2, long param_3, int param_4, int param_5);
+    uchar CheckSurface();
+    uchar* Lock(char* param_1, int param_2);
+    void Unlock(char* param_1);
+    void* GetDc(char* param_1);
+    void ReleaseDc(char* param_1);
+    void SetSize(long param_1, long param_2, int param_3);
+    void Clear(tagRECT* param_1, int param_2);
+    void PtrClear(tagRECT* param_1, int param_2);
+    void SetAccessOffsets();
+    void SetFloatOffsets(int param_1, int param_2);
+    void SetInfo();
+    long AlignedWidth();
+    void SetClipRect(tagRECT* param_1);
+    void SetClipRect(long param_1, long param_2, long param_3, long param_4);
+    void Copy(TDrawArea* param_1, long param_2, long param_3, tagRECT* param_4, int param_5);
+    void PtrCopy(TDrawArea* param_1, long param_2, long param_3, tagRECT* param_4);
+    void PtrSpanCopy(TDrawArea* param_1, long param_2, long param_3, tagRECT* param_4, uchar** param_5);
+    void PtrSurfaceCopy(TDrawArea* param_1, long param_2, long param_3, tagRECT* param_4, int param_5, int param_6);
+    void OverlayMemCopy(tagRECT* param_1, tagRECT* param_2, int param_3, int param_4, int param_5, int param_6);
+    void SetTrans(int param_1, uchar param_2);
+    void SetOverlayTrans(int param_1, uchar param_2);
+    void SetPixel(long param_1, long param_2, uchar param_3);
+    void DrawLine(int param_1, int param_2, int param_3, int param_4, uchar param_5);
+    void DrawRect(long param_1, long param_2, long param_3, long param_4, uchar param_5);
+    void DrawRect(tagRECT* param_1, uchar param_2);
+    void DrawHorzLine(long param_1, long param_2, long param_3, uchar param_4);
+    void DrawVertLine(long param_1, long param_2, long param_3, uchar param_4);
+    void FillRect(long param_1, long param_2, long param_3, long param_4, uchar param_5);
+    void DrawBevel(long param_1, long param_2, long param_3, long param_4, uchar param_5, uchar param_6);
+    void DrawBevel2(long param_1, long param_2, long param_3, long param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8);
+    void DrawBevel3(long param_1, long param_2, long param_3, long param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8, uchar param_9, uchar param_10);
+    void DrawBevel21(long param_1, long param_2, long param_3, long param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8);
+    void DrawBevel32(long param_1, long param_2, long param_3, long param_4, uchar param_5, uchar param_6, uchar param_7, uchar param_8, uchar param_9, uchar param_10);
+    void SetShadowTable(RGE_Color_Table* param_1);
+    void DrawShadowBox(long param_1, long param_2, long param_3, long param_4);
+    void GetPalette(tagPALETTEENTRY* param_1);
+    void SetPalette(tagPALETTEENTRY* param_1);
+    void take_snapshot(char* param_1, int* param_2);
 };
 
 static_assert(sizeof(TDrawArea) == 0x100, "TDrawArea Size Mismatch");

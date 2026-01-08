@@ -7,17 +7,21 @@
 #include "act_obj.h"
 #include "infmap.h"
 
-class RGE_Check_List {
+class RGE_Check_List       {
 public:
+    RGE_Check_Node* list;                    // 0x0
 
     RGE_Check_List();
-    virtual ~RGE_Check_List();
-    virtual void add_node(RGE_Static_Object* param_1, float param_2, float param_3, uchar param_4);
+
+    // --- Non-Virtual Destructor ---
+    ~RGE_Check_List() noexcept(false);
+    // --- Non-Virtual Members ---
+    void add_node(RGE_Static_Object* param_1, float param_2, float param_3, uchar param_4);
 };
 
 static_assert(sizeof(RGE_Check_List) == 0x4, "RGE_Check_List Size Mismatch");
 
-class RGE_Static_Object {
+class RGE_Static_Object       {
 public:
     long id;                                 // 0x4
     RGE_Master_Static_Object* master_obj;    // 0x8
@@ -49,8 +53,8 @@ public:
     uchar type;                              // 0x4E
     uchar worker_num;                        // 0x4F
     RGE_Object_Node* player_object_node;     // 0x50
-    ManagedArray_int pathingGroupMembers;   // 0x54
-    ManagedArray_int groupMembers;          // 0x64
+    ManagedArray<int> pathingGroupMembers;   // 0x54
+    ManagedArray<int> groupMembers;          // 0x64
     UnitAIModule* unitAIValue;               // 0x74
     int groupCommanderValue;                 // 0x78
     int zoneMapIndex;                        // 0x7C
@@ -59,186 +63,434 @@ public:
     uchar lastInObstructionMapValue;         // 0x85
     uchar underAttackValue;                  // 0x86
 
-    virtual uchar can_attack();
-    virtual int canRepair();
-    virtual int inAttackRange(RGE_Static_Object* param_1);
-    virtual float calc_attack_modifier(RGE_Static_Object* param_1);
-    virtual float rateOfFire();
-    virtual float damageCapability();
-    virtual float damageCapability(RGE_Static_Object* param_1);
-    virtual float weaponRange();
-    virtual float minimumWeaponRange();
-    virtual int currentTargetID();
-    virtual float currentTargetX();
-    virtual float currentTargetY();
-    virtual float currentTargetZ();
-    virtual uchar keepGatheringWhenObjectIsOut(int param_1);
-    virtual uchar produceWhenKilledBy(int param_1);
-    virtual uchar useSameZoneDropsite();
-    virtual void notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6);
-    virtual int attack(int param_1, int param_2);
-    virtual int attack(float param_1, float param_2, float param_3, int param_4);
-    virtual int moveTo(int param_1, int param_2);
-    virtual int moveTo(int param_1, float param_2, int param_3);
-    virtual int moveTo(float param_1, float param_2, float param_3, float param_4, int param_5);
-    virtual int moveAwayFrom(int param_1, int param_2);
-    virtual int hunt(int param_1, int param_2);
-    virtual int gather(int param_1, int param_2);
-    virtual int convert(int param_1, int param_2);
-    virtual int heal(int param_1, int param_2);
-    virtual int repair(int param_1, int param_2);
-    virtual int build(int param_1, int param_2);
-    virtual int trade(int param_1, int param_2);
-    virtual int explore(int param_1, int param_2, int param_3);
-    virtual int enter(int param_1, int param_2);
-    virtual int unload(int param_1, float param_2, float param_3, float param_4);
-    virtual int transport(float param_1, float param_2, float param_3, int param_4);
-    virtual int stopAction();
-    virtual int pause();
-    virtual void do_command(RGE_Static_Object* param_1, float param_2, float param_3, float param_4);
-    virtual void move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4);
-    virtual void work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4);
-    virtual void stop();
-    virtual void set_attack(RGE_Static_Object* param_1);
-    virtual void play_command_sound();
-    virtual void play_move_sound();
-    virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object* param_1, float param_2, float param_3, float param_4);
-    virtual RGE_Static_Object* get_target_obj();
-    virtual float getAngle();
-    virtual float maximumSpeed();
-    virtual int passableTile(float param_1, float param_2, int param_3);
-    virtual uchar facetToNextWaypoint();
-    virtual void setWaitingToMove(uchar param_1);
-    virtual uchar waitingToMove();
-    virtual uchar actionState();
-    virtual int canPath(XYZPoint param_1, float param_2, int param_3, float* param_4, int param_5, int param_6, int param_7);
-    virtual int canPath(int param_1, float param_2, float* param_3, int param_4, int param_5, int param_6);
-    virtual int canBidirectionPath(int param_1, int param_2, float param_3, float* param_4, int param_5, int param_6, int param_7);
-    virtual int canPathWithObstructions(int param_1, float param_2, float* param_3, int param_4, int param_5, int param_6, ManagedArray_int* param_7);
-    virtual int canPathWithAdditionalPassability(XYZPoint param_1, float param_2, int param_3, float* param_4, int param_5, int param_6, int param_7, int param_8, int param_9);
-    virtual int findFirstTerrainAlongExceptionPath(int param_1, float* param_2, float* param_3);
-    virtual int canLinePath(XYPoint* param_1, XYPoint* param_2, float param_3, XYPoint* param_4, int param_5);
-    virtual int canLinePath(int param_1, int param_2, int param_3, int param_4, float param_5, int param_6);
-    virtual int firstTileAlongLine(XYPoint* param_1, XYPoint* param_2, XYPoint* param_3, int param_4, int param_5, int param_6);
-    virtual XYZBYTEPoint* userDefinedWaypoint(int param_1);
-    virtual int addUserDefinedWaypoint(XYZBYTEPoint* param_1, int param_2);
-    virtual void removeAllUserDefinedWaypoints(int param_1);
-    virtual void removeUserDefinedWaypoint(int param_1);
-    virtual int numberUserDefinedWaypoints();
-    virtual Path* findAvoidancePath(XYZPoint* param_1, float param_2, int param_3);
     RGE_Static_Object(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5, int param_6);
     RGE_Static_Object(int param_1, RGE_Game_World* param_2, int param_3);
-    virtual ~RGE_Static_Object();
-    virtual void recycle_in_to_game(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5);
-    virtual void recycle_out_of_game();
-    virtual int setup(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5);
-    virtual int setup(int param_1, RGE_Game_World* param_2);
-    virtual float getSpeed();
-    virtual void change_unique_id();
-    virtual RGE_Object_List* create_object_list();
-    virtual RGE_Active_Sprite_List* create_sprite_list();
-    virtual void get_starting_attribute();
-    virtual void give_attribute_to_owner();
-    virtual void take_attribute_from_owner();
-    virtual void draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4);
-    virtual void shadow_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4);
-    virtual void normal_draw(TDrawArea* param_1, short param_2, short param_3);
-    virtual void draw_front_frame(TDrawArea* param_1, short param_2, short param_3);
-    virtual void draw_back_frame(TDrawArea* param_1, short param_2, short param_3);
-    virtual void capture_frame(TDrawArea* param_1, short param_2, short param_3);
-    virtual void capture_square_frame(TDrawArea* param_1, short param_2, short param_3);
-    virtual void capture_frame_3d_cube(TDrawArea* param_1, short param_2, short param_3);
-    virtual void capture_frame_3d_square(TDrawArea* param_1, short param_2, short param_3);
-    virtual void draw_frame_3d_square_back(TDrawArea* param_1, short param_2, short param_3);
-    virtual void draw_frame_3d_square_front(TDrawArea* param_1, short param_2, short param_3);
-    virtual void draw_frame_3d_cube_back(TDrawArea* param_1, short param_2, short param_3);
-    virtual void draw_frame_3d_cube_front(TDrawArea* param_1, short param_2, short param_3);
-    virtual void draw_frame(TDrawArea* param_1, short param_2, short param_3);
-    virtual uchar update();
-    virtual void check_damage_sprites();
-    virtual RGE_Static_Object* spawn_death_obj();
-    virtual void rehook();
-    virtual RGE_Static_Object* get_object_pointer(long param_1);
-    virtual RGE_Sprite* get_sprite_pointer(short param_1);
-    virtual void save(int param_1);
-    virtual float teleport(float param_1, float param_2, float param_3);
-    virtual void new_sprite(RGE_Sprite* param_1);
-    virtual void add_overlay_sprite(RGE_Sprite* param_1, uchar param_2);
-    virtual void remove_overlay_sprite(RGE_Sprite* param_1);
-    virtual void change_ownership(RGE_Player* param_1);
-    virtual void modify(float param_1, uchar param_2);
-    virtual void modify_delta(float param_1, uchar param_2);
-    virtual void modify_percent(float param_1, uchar param_2);
-    virtual void transform(RGE_Master_Static_Object* param_1);
-    virtual void copy_obj(RGE_Master_Static_Object* param_1);
-    virtual void destroy_obj();
-    virtual void die_die_die();
-    virtual void remove_visible_resource();
-    virtual void create_doppleganger_when_dying();
-    virtual void set_object_state(uchar param_1);
-    virtual RGE_Static_Object* check_object_bounds();
-    virtual float get_terrain_speed(uchar param_1);
-    virtual uchar is_moving();
-    virtual uchar is_dying();
-    virtual int get_frame(short* param_1, short* param_2, short* param_3, short* param_4);
-    virtual uchar more_room();
-    virtual void enter_obj(RGE_Static_Object* param_1);
-    virtual void exit_obj();
-    virtual LOSTBL* get_los_table();
-    virtual int explore_terrain(RGE_Player* param_1, uchar param_2, int param_3);
-    virtual void unexplore_terrain(RGE_Player* param_1, uchar param_2, int param_3);
-    virtual void damage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4, RGE_Static_Object* param_5);
-    virtual float calculateDamage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4, RGE_Static_Object* param_5);
-    virtual void rotate(long param_1);
-    virtual void set_attribute(short param_1, float param_2);
-    virtual void set_attribute_amount(float param_1, uchar param_2, uchar param_3);
-    virtual uchar heal(float param_1);
-    virtual void notify_of_relation(long param_1, uchar param_2);
-    virtual void set_being_worked_on(RGE_Action_Object* param_1, short param_2, uchar param_3);
-    virtual void release_being_worked_on(RGE_Static_Object* param_1);
-    virtual int inRange(RGE_Static_Object* param_1, float param_2);
-    virtual float distance_to_object(RGE_Static_Object* param_1);
-    virtual float distance_to_position(float param_1, float param_2, float param_3);
-    virtual uchar hit_test(short param_1, short param_2, short param_3, short param_4, short param_5);
-    virtual uchar box_hit_test(short param_1, short param_2, short param_3, short param_4, short param_5, short param_6);
-    virtual void set_location(float param_1, float param_2, float param_3);
-    virtual void new_angle(float param_1);
-    virtual uchar drop_held_objects(int param_1);
-    virtual uchar find_drop_location(int param_1, float* param_2, float* param_3, RGE_Master_Static_Object* param_4, RGE_Static_Object* param_5, float param_6, float param_7, float param_8, float param_9);
-    virtual RGE_Check_List* make_object_bounds_list(float param_1);
-    virtual int boundToFacet(float param_1, float param_2, int param_3);
-    virtual int numberFacets();
-    virtual uchar underAttack();
-    virtual void setUnderAttack(uchar param_1);
-    virtual int addToObstructionMap(int param_1);
-    virtual int removeFromObstructionMap(int param_1);
-    virtual void changeInfluenceMap(InfluenceMap* param_1, int param_2, int param_3, int param_4);
-    virtual RGE_Check_List* objectCollisionList(float param_1);
-    virtual void logDebug(char* param_1);
-    virtual UnitAIModule* unitAI();
-    virtual uchar lookupZone(XYPoint param_1);
-    virtual uchar lookupZone(int param_1, int param_2);
-    virtual uchar currentZone();
-    virtual int withinRangeOfZoneAtPoint(uchar param_1, float param_2, XYPoint* param_3);
-    virtual int withinRangeOfZone(uchar param_1, float param_2);
-    virtual int findClosestPointInTerrainType(XYPoint param_1, XYPoint* param_2, int param_3, int param_4, int param_5);
-    virtual int isGroupCommander();
-    virtual int inGroup();
-    virtual int unitIsInGroup(int param_1);
-    virtual int createGroup(int* param_1, int param_2, int param_3, float param_4);
-    virtual int commanderCreateGroup(int* param_1, int param_2, int param_3, float param_4);
-    virtual int addToGroup(int param_1, float param_2);
-    virtual int commanderAddToGroup(int param_1, float param_2);
-    virtual int removeFromGroup(int param_1);
-    virtual int commanderRemoveFromGroup(int param_1);
-    virtual int destroyGroup();
-    virtual int commanderDestroyGroup();
-    virtual void addToPathingGroup(int param_1);
-    virtual void removeAllFromPathingGroup();
-    virtual void remove_shadows();
-    virtual void set_sleep_flag(uchar param_1);
-    virtual long get_action_checksum();
-    virtual long get_waypoint_checksum();
+
+    // --- VTABLE DUMP (Source: Ghidra) ---
+
+    // [Slot 00] Offset 0x00 (Override)
+    virtual  ~RGE_Static_Object() noexcept(false); // Ghidra: `scalar_deleting_destructor'
+
+    // [Slot 01] Offset 0x04 (Override)
+    virtual void recycle_in_to_game(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5); // Ghidra: recycle_in_to_game
+
+    // [Slot 02] Offset 0x08 (Override)
+    virtual void recycle_out_of_game(); // Ghidra: recycle_out_of_game
+
+    // [Slot 03] Offset 0x0C (Override)
+    virtual void draw(TDrawArea* param_1, short param_2, short param_3, RGE_Color_Table* param_4); // Ghidra: draw
+
+    // [Slot 04] Offset 0x10 (Override)
+    virtual void shadow_draw(TDrawArea* param_1, short param_2, short param_3, uchar param_4); // Ghidra: shadow_draw
+
+    // [Slot 05] Offset 0x14 (Override)
+    virtual void normal_draw(TDrawArea* param_1, short param_2, short param_3); // Ghidra: normal_draw
+
+    // [Slot 06] Offset 0x18 (Override)
+    virtual void draw_front_frame(TDrawArea* param_1, short param_2, short param_3); // Ghidra: draw_front_frame
+
+    // [Slot 07] Offset 0x1C (Override)
+    virtual void draw_back_frame(TDrawArea* param_1, short param_2, short param_3); // Ghidra: draw_back_frame
+
+    // [Slot 08] Offset 0x20 (Override)
+    virtual void draw_frame(TDrawArea* param_1, short param_2, short param_3); // Ghidra: draw_frame
+
+    // [Slot 09] Offset 0x24 (Override)
+    virtual uchar update(); // Ghidra: update
+
+    // [Slot 10] Offset 0x28 (Override)
+    virtual void check_damage_sprites(); // Ghidra: check_damage_sprites
+
+    // [Slot 11] Offset 0x2C (Override)
+    virtual void rehook(); // Ghidra: rehook
+
+    // [Slot 12] Offset 0x30 (Override)
+    virtual void save(int param_1); // Ghidra: save
+
+    // [Slot 13] Offset 0x34 (Override)
+    virtual float teleport(float param_1, float param_2, float param_3); // Ghidra: teleport
+
+    // [Slot 14] Offset 0x38 (Override)
+    virtual void new_sprite(RGE_Sprite* param_1); // Ghidra: new_sprite
+
+    // [Slot 15] Offset 0x3C (Override)
+    virtual void add_overlay_sprite(RGE_Sprite* param_1, uchar param_2); // Ghidra: add_overlay_sprite
+
+    // [Slot 16] Offset 0x40 (Override)
+    virtual void remove_overlay_sprite(RGE_Sprite* param_1); // Ghidra: remove_overlay_sprite
+
+    // [Slot 17] Offset 0x44 (Override)
+    virtual void change_ownership(RGE_Player* param_1); // Ghidra: change_ownership
+
+    // [Slot 18] Offset 0x48 (Override)
+    virtual void modify(float param_1, uchar param_2); // Ghidra: modify
+
+    // [Slot 19] Offset 0x4C (Override)
+    virtual void modify_delta(float param_1, uchar param_2); // Ghidra: modify_delta
+
+    // [Slot 20] Offset 0x50 (Override)
+    virtual void modify_percent(float param_1, uchar param_2); // Ghidra: modify_percent
+
+    // [Slot 21] Offset 0x54 (Override)
+    virtual void transform(RGE_Master_Static_Object* param_1); // Ghidra: transform
+
+    // [Slot 22] Offset 0x58 (Override)
+    virtual void copy_obj(RGE_Master_Static_Object* param_1); // Ghidra: copy_obj
+
+    // [Slot 23] Offset 0x5C (Override)
+    virtual void set_object_state(uchar param_1); // Ghidra: set_object_state
+
+    // [Slot 24] Offset 0x60 (Override)
+    virtual void remove_visible_resource(); // Ghidra: remove_visible_resource
+
+    // [Slot 25] Offset 0x64 (Override)
+    virtual void create_doppleganger_when_dying(); // Ghidra: create_doppleganger_when_dying
+
+    // [Slot 26] Offset 0x68 (Override)
+    virtual void destroy_obj(); // Ghidra: destroy_obj
+
+    // [Slot 27] Offset 0x6C (Override)
+    virtual void die_die_die(); // Ghidra: die_die_die
+
+    // [Slot 28] Offset 0x70 (Override)
+    virtual void damage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4, RGE_Static_Object* param_5); // Ghidra: damage
+
+    // [Slot 29] Offset 0x74 (Override)
+    virtual float calculateDamage(int param_1, RGE_Armor_Weapon_Info* param_2, float param_3, RGE_Player* param_4, RGE_Static_Object* param_5); // Ghidra: calculateDamage
+
+    // [Slot 30] Offset 0x78 (Override)
+    virtual void rotate(long param_1); // Ghidra: rotate
+
+    // [Slot 31] Offset 0x7C (Override)
+    virtual uchar can_attack(); // Ghidra: can_attack
+
+    // [Slot 32] Offset 0x80 (Override)
+    virtual void set_attribute(short param_1, float param_2); // Ghidra: set_attribute
+
+    // [Slot 33] Offset 0x84 (Override)
+    virtual void set_attribute_amount(float param_1, uchar param_2, uchar param_3); // Ghidra: set_attribute_amount
+
+    // [Slot 34] Offset 0x88 (Override)
+    virtual int heal(int param_1, int param_2); // Ghidra: heal
+
+    // [Slot 35] Offset 0x8C (Override)
+    virtual uchar heal(float param_1); // Ghidra: heal
+
+    // [Slot 36] Offset 0x90 (Override)
+    virtual int canRepair(); // Ghidra: canRepair
+
+    // [Slot 37] Offset 0x94 (Override)
+    virtual void notify_of_relation(long param_1, uchar param_2); // Ghidra: notify_of_relation
+
+    // [Slot 38] Offset 0x98 (Override)
+    virtual void do_command(RGE_Static_Object* param_1, float param_2, float param_3, float param_4); // Ghidra: do_command
+
+    // [Slot 39] Offset 0x9C (Override)
+    virtual void move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4); // Ghidra: move_to
+
+    // [Slot 40] Offset 0xA0 (Override)
+    virtual void work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4); // Ghidra: work
+
+    // [Slot 41] Offset 0xA4 (Override)
+    virtual void stop(); // Ghidra: stop
+
+    // [Slot 42] Offset 0xA8 (Override)
+    virtual void set_attack(RGE_Static_Object* param_1); // Ghidra: set_attack
+
+    // [Slot 43] Offset 0xAC (Override)
+    virtual void play_command_sound(); // Ghidra: play_command_sound
+
+    // [Slot 44] Offset 0xB0 (Override)
+    virtual void play_move_sound(); // Ghidra: play_move_sound
+
+    // [Slot 45] Offset 0xB4 (Override)
+    virtual void new_angle(float param_1); // Ghidra: new_angle
+
+    // [Slot 46] Offset 0xB8 (Override)
+    virtual RGE_Static_Object* spawn_death_obj(); // Ghidra: spawn_death_obj
+
+    // [Slot 47] Offset 0xBC (Override)
+    virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object* param_1, float param_2, float param_3, float param_4); // Ghidra: get_command_master
+
+    // [Slot 48] Offset 0xC0 (Override)
+    virtual void set_being_worked_on(RGE_Action_Object* param_1, short param_2, uchar param_3); // Ghidra: set_being_worked_on
+
+    // [Slot 49] Offset 0xC4 (Override)
+    virtual void release_being_worked_on(RGE_Static_Object* param_1); // Ghidra: release_being_worked_on
+
+    // [Slot 50] Offset 0xC8 (Override)
+    virtual uchar is_moving(); // Ghidra: is_moving
+
+    // [Slot 51] Offset 0xCC (Override)
+    virtual RGE_Static_Object* get_target_obj(); // Ghidra: get_target_obj
+
+    // [Slot 52] Offset 0xD0 (Override)
+    virtual void enter_obj(RGE_Static_Object* param_1); // Ghidra: enter_obj
+
+    // [Slot 53] Offset 0xD4 (Override)
+    virtual void exit_obj(); // Ghidra: exit_obj
+
+    // [Slot 54] Offset 0xD8 (Override)
+    virtual int explore_terrain(RGE_Player* param_1, uchar param_2, int param_3); // Ghidra: explore_terrain
+
+    // [Slot 55] Offset 0xDC (Override)
+    virtual void unexplore_terrain(RGE_Player* param_1, uchar param_2, int param_3); // Ghidra: unexplore_terrain
+
+    // [Slot 56] Offset 0xE0 (Override)
+    virtual LOSTBL* get_los_table(); // Ghidra: get_los_table
+
+    // [Slot 57] Offset 0xE4 (Override)
+    virtual int inAttackRange(RGE_Static_Object* param_1); // Ghidra: inAttackRange
+
+    // [Slot 58] Offset 0xE8 (Override)
+    virtual uchar underAttack(); // Ghidra: underAttack
+
+    // [Slot 59] Offset 0xEC (Override)
+    virtual void setUnderAttack(uchar param_1); // Ghidra: setUnderAttack
+
+    // [Slot 60] Offset 0xF0 (Override)
+    virtual float calc_attack_modifier(RGE_Static_Object* param_1); // Ghidra: calc_attack_modifier
+
+    // [Slot 61] Offset 0xF4 (Override)
+    virtual float getSpeed(); // Ghidra: getSpeed
+
+    // [Slot 62] Offset 0xF8 (Override)
+    virtual float getAngle(); // Ghidra: getAngle
+
+    // [Slot 63] Offset 0xFC (Override)
+    virtual float maximumSpeed(); // Ghidra: maximumSpeed
+
+    // [Slot 64] Offset 0x100 (Override)
+    virtual float rateOfFire(); // Ghidra: rateOfFire
+
+    // [Slot 65] Offset 0x104 (Override)
+    virtual float damageCapability(RGE_Static_Object* param_1); // Ghidra: damageCapability
+
+    // [Slot 66] Offset 0x108 (Override)
+    virtual float damageCapability(); // Ghidra: damageCapability
+
+    // [Slot 67] Offset 0x10C (Override)
+    virtual float weaponRange(); // Ghidra: weaponRange
+
+    // [Slot 68] Offset 0x110 (Override)
+    virtual float minimumWeaponRange(); // Ghidra: minimumWeaponRange
+
+    // [Slot 69] Offset 0x114 (Override)
+    virtual int passableTile(float param_1, float param_2, int param_3); // Ghidra: passableTile
+
+    // [Slot 70] Offset 0x118 (Override)
+    virtual uchar facetToNextWaypoint(); // Ghidra: facetToNextWaypoint
+
+    // [Slot 71] Offset 0x11C (Override)
+    virtual int currentTargetID(); // Ghidra: currentTargetID
+
+    // [Slot 72] Offset 0x120 (Override)
+    virtual float currentTargetX(); // Ghidra: currentTargetX
+
+    // [Slot 73] Offset 0x124 (Override)
+    virtual float currentTargetY(); // Ghidra: currentTargetY
+
+    // [Slot 74] Offset 0x128 (Override)
+    virtual float currentTargetZ(); // Ghidra: currentTargetZ
+
+    // [Slot 75] Offset 0x12C (Override)
+    virtual void setWaitingToMove(uchar param_1); // Ghidra: setWaitingToMove
+
+    // [Slot 76] Offset 0x130 (Override)
+    virtual uchar waitingToMove(); // Ghidra: waitingToMove
+
+    // [Slot 77] Offset 0x134 (Override)
+    virtual uchar actionState(); // Ghidra: actionState
+
+    // [Slot 78] Offset 0x138 (Override)
+    virtual uchar keepGatheringWhenObjectIsOut(int param_1); // Ghidra: keepGatheringWhenObjectIsOut
+
+    // [Slot 79] Offset 0x13C (Override)
+    virtual uchar produceWhenKilledBy(int param_1); // Ghidra: produceWhenKilledBy
+
+    // [Slot 80] Offset 0x140 (Override)
+    virtual uchar useSameZoneDropsite(); // Ghidra: useSameZoneDropsite
+
+    // [Slot 81] Offset 0x144 (Override)
+    virtual void logDebug(char* param_1); // Ghidra: logDebug
+
+    // [Slot 82] Offset 0x148 (Override)
+    virtual void notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6); // Ghidra: notify
+
+    // [Slot 83] Offset 0x14C (Override)
+    virtual int attack(float param_1, float param_2, float param_3, int param_4); // Ghidra: attack
+
+    // [Slot 84] Offset 0x150 (Override)
+    virtual int attack(int param_1, int param_2); // Ghidra: attack
+
+    // [Slot 85] Offset 0x154 (Override)
+    virtual int moveTo(float param_1, float param_2, float param_3, float param_4, int param_5); // Ghidra: moveTo
+
+    // [Slot 86] Offset 0x158 (Override)
+    virtual int moveTo(int param_1, float param_2, int param_3); // Ghidra: moveTo
+
+    // [Slot 87] Offset 0x15C (Override)
+    virtual int moveTo(int param_1, int param_2); // Ghidra: moveTo
+
+    // [Slot 88] Offset 0x160 (Override)
+    virtual int moveAwayFrom(int param_1, int param_2); // Ghidra: moveAwayFrom
+
+    // [Slot 89] Offset 0x164 (Override)
+    virtual int hunt(int param_1, int param_2); // Ghidra: hunt
+
+    // [Slot 90] Offset 0x168 (Override)
+    virtual int gather(int param_1, int param_2); // Ghidra: gather
+
+    // [Slot 91] Offset 0x16C (Override)
+    virtual int convert(int param_1, int param_2); // Ghidra: convert
+
+    // [Slot 92] Offset 0x170 (Override)
+    virtual int repair(int param_1, int param_2); // Ghidra: repair
+
+    // [Slot 93] Offset 0x174 (Override)
+    virtual int build(int param_1, int param_2); // Ghidra: build
+
+    // [Slot 94] Offset 0x178 (Override)
+    virtual int trade(int param_1, int param_2); // Ghidra: trade
+
+    // [Slot 95] Offset 0x17C (Override)
+    virtual int explore(int param_1, int param_2, int param_3); // Ghidra: explore
+
+    // [Slot 96] Offset 0x180 (Override)
+    virtual int enter(int param_1, int param_2); // Ghidra: enter
+
+    // [Slot 97] Offset 0x184 (Override)
+    virtual int unload(int param_1, float param_2, float param_3, float param_4); // Ghidra: unload
+
+    // [Slot 98] Offset 0x188 (Override)
+    virtual int transport(float param_1, float param_2, float param_3, int param_4); // Ghidra: transport
+
+    // [Slot 99] Offset 0x18C (Override)
+    virtual int stopAction(); // Ghidra: stopAction
+
+    // [Slot 100] Offset 0x190 (Override)
+    virtual int pause(); // Ghidra: pause
+
+    // [Slot 101] Offset 0x194 (Override)
+    virtual int canPath(int param_1, float param_2, float* param_3, int param_4, int param_5, int param_6); // Ghidra: canPath
+
+    // [Slot 102] Offset 0x198 (Override)
+    virtual int canPath(XYZPoint param_1, float param_2, int param_3, float* param_4, int param_5, int param_6, int param_7); // Ghidra: canPath
+
+    // [Slot 103] Offset 0x19C (Override)
+    virtual int canBidirectionPath(int param_1, int param_2, float param_3, float* param_4, int param_5, int param_6, int param_7); // Ghidra: canBidirectionPath
+
+    // [Slot 104] Offset 0x1A0 (Override)
+    virtual int canPathWithObstructions(int param_1, float param_2, float* param_3, int param_4, int param_5, int param_6, ManagedArray<int>* param_7); // Ghidra: canPathWithObstructions
+
+    // [Slot 105] Offset 0x1A4 (Override)
+    virtual int canPathWithAdditionalPassability(XYZPoint param_1, float param_2, int param_3, float* param_4, int param_5, int param_6, int param_7, int param_8, int param_9); // Ghidra: canPathWithAdditionalPassability
+
+    // [Slot 106] Offset 0x1A8 (Override)
+    virtual int findFirstTerrainAlongExceptionPath(int param_1, float* param_2, float* param_3); // Ghidra: findFirstTerrainAlongExceptionPath
+
+    // [Slot 107] Offset 0x1AC (Override)
+    virtual int canLinePath(int param_1, int param_2, int param_3, int param_4, float param_5, int param_6); // Ghidra: canLinePath
+
+    // [Slot 108] Offset 0x1B0 (Override)
+    virtual int canLinePath(XYPoint* param_1, XYPoint* param_2, float param_3, XYPoint* param_4, int param_5); // Ghidra: canLinePath
+
+    // [Slot 109] Offset 0x1B4 (Override)
+    virtual int firstTileAlongLine(XYPoint* param_1, XYPoint* param_2, XYPoint* param_3, int param_4, int param_5, int param_6); // Ghidra: firstTileAlongLine
+
+    // [Slot 110] Offset 0x1B8 (Override)
+    virtual XYZBYTEPoint* userDefinedWaypoint(int param_1); // Ghidra: userDefinedWaypoint
+
+    // [Slot 111] Offset 0x1BC (Override)
+    virtual int addUserDefinedWaypoint(XYZBYTEPoint* param_1, int param_2); // Ghidra: addUserDefinedWaypoint
+
+    // [Slot 112] Offset 0x1C0 (Override)
+    virtual void removeAllUserDefinedWaypoints(int param_1); // Ghidra: removeAllUserDefinedWaypoints
+
+    // [Slot 113] Offset 0x1C4 (Override)
+    virtual void removeUserDefinedWaypoint(int param_1); // Ghidra: removeUserDefinedWaypoint
+
+    // [Slot 114] Offset 0x1C8 (Override)
+    virtual int numberUserDefinedWaypoints(); // Ghidra: numberUserDefinedWaypoints
+
+    // [Slot 115] Offset 0x1CC (Override)
+    virtual Path* findAvoidancePath(XYZPoint* param_1, float param_2, int param_3); // Ghidra: findAvoidancePath
+
+    // [Slot 116] Offset 0x1D0 (Override)
+    virtual long get_action_checksum(); // Ghidra: get_action_checksum
+
+    // [Slot 117] Offset 0x1D4 (Override)
+    virtual long get_waypoint_checksum(); // Ghidra: get_waypoint_checksum
+
+    // [Slot 118] Offset 0x1D8 (Override)
+    virtual int setup(int param_1, RGE_Game_World* param_2); // Ghidra: setup
+
+    // [Slot 119] Offset 0x1DC (Override)
+    virtual int setup(RGE_Master_Static_Object* param_1, RGE_Player* param_2, float param_3, float param_4, float param_5); // Ghidra: setup
+
+    // [Slot 120] Offset 0x1E0 (Override)
+    virtual RGE_Object_List* create_object_list(); // Ghidra: create_object_list
+
+    // [Slot 121] Offset 0x1E4 (Override)
+    virtual RGE_Active_Sprite_List* create_sprite_list(); // Ghidra: create_sprite_list
+
+    // --- Non-Virtual Members ---
+    void change_unique_id();
+    void get_starting_attribute();
+    void give_attribute_to_owner();
+    void take_attribute_from_owner();
+    void capture_frame(TDrawArea* param_1, short param_2, short param_3);
+    void capture_square_frame(TDrawArea* param_1, short param_2, short param_3);
+    void capture_frame_3d_cube(TDrawArea* param_1, short param_2, short param_3);
+    void capture_frame_3d_square(TDrawArea* param_1, short param_2, short param_3);
+    void draw_frame_3d_square_back(TDrawArea* param_1, short param_2, short param_3);
+    void draw_frame_3d_square_front(TDrawArea* param_1, short param_2, short param_3);
+    void draw_frame_3d_cube_back(TDrawArea* param_1, short param_2, short param_3);
+    void draw_frame_3d_cube_front(TDrawArea* param_1, short param_2, short param_3);
+    RGE_Static_Object* get_object_pointer(long param_1);
+    RGE_Sprite* get_sprite_pointer(short param_1);
+    RGE_Static_Object* check_object_bounds();
+    float get_terrain_speed(uchar param_1);
+    uchar is_dying();
+    int get_frame(short* param_1, short* param_2, short* param_3, short* param_4);
+    uchar more_room();
+    int inRange(RGE_Static_Object* param_1, float param_2);
+    float distance_to_object(RGE_Static_Object* param_1);
+    float distance_to_position(float param_1, float param_2, float param_3);
+    uchar hit_test(short param_1, short param_2, short param_3, short param_4, short param_5);
+    uchar box_hit_test(short param_1, short param_2, short param_3, short param_4, short param_5, short param_6);
+    void set_location(float param_1, float param_2, float param_3);
+    uchar drop_held_objects(int param_1);
+    uchar find_drop_location(int param_1, float* param_2, float* param_3, RGE_Master_Static_Object* param_4, RGE_Static_Object* param_5, float param_6, float param_7, float param_8, float param_9);
+    RGE_Check_List* make_object_bounds_list(float param_1);
+    int boundToFacet(float param_1, float param_2, int param_3);
+    int numberFacets();
+    int addToObstructionMap(int param_1);
+    int removeFromObstructionMap(int param_1);
+    void changeInfluenceMap(InfluenceMap* param_1, int param_2, int param_3, int param_4);
+    RGE_Check_List* objectCollisionList(float param_1);
+    UnitAIModule* unitAI();
+    uchar lookupZone(XYPoint param_1);
+    uchar lookupZone(int param_1, int param_2);
+    uchar currentZone();
+    int withinRangeOfZoneAtPoint(uchar param_1, float param_2, XYPoint* param_3);
+    int withinRangeOfZone(uchar param_1, float param_2);
+    int findClosestPointInTerrainType(XYPoint param_1, XYPoint* param_2, int param_3, int param_4, int param_5);
+    int isGroupCommander();
+    int inGroup();
+    int unitIsInGroup(int param_1);
+    int createGroup(int* param_1, int param_2, int param_3, float param_4);
+    int commanderCreateGroup(int* param_1, int param_2, int param_3, float param_4);
+    int addToGroup(int param_1, float param_2);
+    int commanderAddToGroup(int param_1, float param_2);
+    int removeFromGroup(int param_1);
+    int commanderRemoveFromGroup(int param_1);
+    int destroyGroup();
+    int commanderDestroyGroup();
+    void addToPathingGroup(int param_1);
+    void removeAllFromPathingGroup();
+    void remove_shadows();
+    void set_sleep_flag(uchar param_1);
 };
 
 static_assert(sizeof(RGE_Static_Object) == 0x88, "RGE_Static_Object Size Mismatch");

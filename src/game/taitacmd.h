@@ -23,7 +23,7 @@
 #include "taistrmd.h"
 #include "tplayer.h"
 
-class TacticalAIGroup {
+class TacticalAIGroup       {
 public:
     TacticalAIGroup* next;                   // 0x4
     TacticalAIGroup* prev;                   // 0x8
@@ -63,92 +63,99 @@ public:
     ulong lastAddedUnitTimeValue;            // 0x32C
 
     TacticalAIGroup();
-    virtual ~TacticalAIGroup();
-    virtual int load(int param_1);
-    virtual int save(int param_1);
-    virtual int id();
-    virtual void setID(int param_1);
-    virtual int inUse();
-    virtual void setInUse(int param_1);
-    virtual int type();
-    virtual void setType(int param_1);
-    virtual int subType();
-    virtual void setSubType(int param_1);
-    virtual int addUnit(int param_1, TribeMainDecisionAIModule* param_2);
-    virtual int removeUnit(int param_1, TribeMainDecisionAIModule* param_2);
-    virtual int removeUnitByIndex(int param_1, TribeMainDecisionAIModule* param_2);
-    virtual void removeUnits(TribeMainDecisionAIModule* param_1);
-    virtual int removeExtraUnits(TribeMainDecisionAIModule* param_1);
-    virtual int removeUnboardedUnits(TribeTacticalAIModule* param_1, TribeMainDecisionAIModule* param_2);
-    virtual int containsUnit(int param_1);
-    virtual int numberUnits();
-    virtual int unit(int param_1);
-    virtual int unitOriginalHitPoints(int param_1);
-    virtual int desiredNumberUnits();
-    virtual void setDesiredNumberUnits(int param_1);
-    virtual int commander();
-    virtual void setSpecificCommander(int param_1, TribeMainDecisionAIModule* param_2);
-    virtual int currentHitPoints(TribeMainDecisionAIModule* param_1);
-    virtual int originalHitPoints();
-    virtual void setOriginalHitPoints(int param_1);
-    virtual int originalUnitNumber();
-    virtual void setOriginalUnitNumber(int param_1);
-    virtual Waypoint* location();
-    virtual void setLocation(float param_1, float param_2, float param_3);
-    virtual int action();
-    virtual void setAction(int param_1);
-    virtual int target();
-    virtual void setTarget(int param_1);
-    virtual int targetType();
-    virtual void setTargetType(int param_1);
-    virtual Waypoint* targetLocation();
-    virtual void setAllLocations(float param_1, float param_2, float param_3);
-    virtual void setTargetLocation(float param_1, float param_2, float param_3);
-    virtual Waypoint* gatherLocation();
-    virtual void setGatherLocation(float param_1, float param_2, float param_3);
-    virtual Waypoint* retreatLocation();
-    virtual void setRetreatLocation(float param_1, float param_2, float param_3);
-    virtual int priority();
-    virtual void setPriority(int param_1);
-    virtual int waitCode();
-    virtual void setWaitCode(int param_1);
-    virtual int assistGroupID();
-    virtual void setAssistGroupID(int param_1);
-    virtual int assistGroupType();
-    virtual void setAssistGroupType(int param_1);
-    virtual int task(TribeTacticalAIModule* param_1, TribeMainDecisionAIModule* param_2, int param_3, int param_4, int param_5);
-    virtual int isGathered(TribeTacticalAIModule* param_1, TribeMainDecisionAIModule* param_2);
-    virtual int isTightGathered(TribeTacticalAIModule* param_1, TribeMainDecisionAIModule* param_2);
-    virtual int allUnitsIdle(TribeMainDecisionAIModule* param_1, int param_2);
-    virtual ulong consecutiveIdleUnitCount();
-    virtual void setConsecutiveIdleUnitCount(ulong param_1);
-    virtual void incrementConsecutiveIdleUnitCount(ulong param_1);
-    virtual uchar numberAttackWaypoints();
-    virtual uchar currentAttackWaypoint();
-    virtual void setCurrentAttackWaypoint(uchar param_1);
-    virtual void addAttackWaypoint(float param_1, float param_2);
-    virtual Waypoint* attackWaypoint(uchar param_1);
-    virtual int firstIdleUnit(TribeMainDecisionAIModule* param_1);
-    virtual int objectToDestroy(int param_1);
-    virtual int addObjectToDestroy(int param_1);
+
+    // --- VTABLE DUMP (Source: Ghidra) ---
+
+    // [Slot 00] Offset 0x00 (Override)
+    virtual  ~TacticalAIGroup() noexcept(false); // Ghidra: `scalar_deleting_destructor'
+
+    // --- Non-Virtual Members ---
+    int load(int param_1);
+    int save(int param_1);
+    int id();
+    void setID(int param_1);
+    int inUse();
+    void setInUse(int param_1);
+    int type();
+    void setType(int param_1);
+    int subType();
+    void setSubType(int param_1);
+    int addUnit(int param_1, TribeMainDecisionAIModule* param_2);
+    int removeUnit(int param_1, TribeMainDecisionAIModule* param_2);
+    int removeUnitByIndex(int param_1, TribeMainDecisionAIModule* param_2);
+    void removeUnits(TribeMainDecisionAIModule* param_1);
+    int removeExtraUnits(TribeMainDecisionAIModule* param_1);
+    int removeUnboardedUnits(TribeTacticalAIModule* param_1, TribeMainDecisionAIModule* param_2);
+    int containsUnit(int param_1);
+    int numberUnits();
+    int unit(int param_1);
+    int unitOriginalHitPoints(int param_1);
+    int desiredNumberUnits();
+    void setDesiredNumberUnits(int param_1);
+    int commander();
+    void setSpecificCommander(int param_1, TribeMainDecisionAIModule* param_2);
+    int currentHitPoints(TribeMainDecisionAIModule* param_1);
+    int originalHitPoints();
+    void setOriginalHitPoints(int param_1);
+    int originalUnitNumber();
+    void setOriginalUnitNumber(int param_1);
+    Waypoint* location();
+    void setLocation(float param_1, float param_2, float param_3);
+    int action();
+    void setAction(int param_1);
+    int target();
+    void setTarget(int param_1);
+    int targetType();
+    void setTargetType(int param_1);
+    Waypoint* targetLocation();
+    void setAllLocations(float param_1, float param_2, float param_3);
+    void setTargetLocation(float param_1, float param_2, float param_3);
+    Waypoint* gatherLocation();
+    void setGatherLocation(float param_1, float param_2, float param_3);
+    Waypoint* retreatLocation();
+    void setRetreatLocation(float param_1, float param_2, float param_3);
+    int priority();
+    void setPriority(int param_1);
+    int waitCode();
+    void setWaitCode(int param_1);
+    int assistGroupID();
+    void setAssistGroupID(int param_1);
+    int assistGroupType();
+    void setAssistGroupType(int param_1);
+    int task(TribeTacticalAIModule* param_1, TribeMainDecisionAIModule* param_2, int param_3, int param_4, int param_5);
+    int isGathered(TribeTacticalAIModule* param_1, TribeMainDecisionAIModule* param_2);
+    int isTightGathered(TribeTacticalAIModule* param_1, TribeMainDecisionAIModule* param_2);
+    int allUnitsIdle(TribeMainDecisionAIModule* param_1, int param_2);
+    ulong consecutiveIdleUnitCount();
+    void setConsecutiveIdleUnitCount(ulong param_1);
+    void incrementConsecutiveIdleUnitCount(ulong param_1);
+    uchar numberAttackWaypoints();
+    uchar currentAttackWaypoint();
+    void setCurrentAttackWaypoint(uchar param_1);
+    void addAttackWaypoint(float param_1, float param_2);
+    Waypoint* attackWaypoint(uchar param_1);
+    int firstIdleUnit(TribeMainDecisionAIModule* param_1);
+    int objectToDestroy(int param_1);
+    int addObjectToDestroy(int param_1);
 };
 
 static_assert(sizeof(TacticalAIGroup) == 0x330, "TacticalAIGroup Size Mismatch");
 static_assert(offsetof(TacticalAIGroup, lastAddedUnitTimeValue) == 0x32C, "TacticalAIGroup Offset Mismatch");
 
-class TribeTacticalAIModule : public TacticalAIModule {
+class TribeTacticalAIModule : public TacticalAIModule       {
 public:
+    char _pad_0x4[0xEC];
     TribeMainDecisionAIModule* md;           // 0xF0
-    ManagedArray_int civilians;             // 0xF4
-    ManagedArray_int civilianExplorers;     // 0x104
-    ManagedArray_int soldiers;              // 0x114
-    ManagedArray_int ungroupedSoldiers;     // 0x124
-    ManagedArray_int boats;                 // 0x134
-    ManagedArray_int warBoats;              // 0x144
-    ManagedArray_int fishingBoats;          // 0x154
-    ManagedArray_int tradeBoats;            // 0x164
-    ManagedArray_int transportBoats;        // 0x174
-    ManagedArray_int artifacts;             // 0x184
+    ManagedArray<int> civilians;             // 0xF4
+    ManagedArray<int> civilianExplorers;     // 0x104
+    ManagedArray<int> soldiers;              // 0x114
+    ManagedArray<int> ungroupedSoldiers;     // 0x124
+    ManagedArray<int> boats;                 // 0x134
+    ManagedArray<int> warBoats;              // 0x144
+    ManagedArray<int> fishingBoats;          // 0x154
+    ManagedArray<int> tradeBoats;            // 0x164
+    ManagedArray<int> transportBoats;        // 0x174
+    ManagedArray<int> artifacts;             // 0x184
     int sn[226];                             // 0x194
     UnitData gatherers[50];                  // 0x51C
     int numberGatherersValue;                // 0x9CC
@@ -163,10 +170,10 @@ public:
     ulong lastScalingUpdateValue;            // 0xD1C
     int numberBuildUpdatesSkipped;           // 0xD20
     int randomizedAttackSeparationTime;      // 0xD24
-    ManagedArray_int playersToAttack;       // 0xD28
-    ManagedArray_int playersToDefend;       // 0xD38
-    ManagedArray_int workingArea;           // 0xD48
-    ManagedArray_int unitsTaskedThisUpdate; // 0xD58
+    ManagedArray<int> playersToAttack;       // 0xD28
+    ManagedArray<int> playersToDefend;       // 0xD38
+    ManagedArray<int> workingArea;           // 0xD48
+    ManagedArray<int> unitsTaskedThisUpdate; // 0xD58
     int actualGathererDistribution[4];       // 0xD68
     int desiredGathererDistribution[4];      // 0xD78
     int neededResourceValue[4];              // 0xD88
@@ -201,151 +208,202 @@ public:
 
     TribeTacticalAIModule(void* param_1, int param_2);
     TribeTacticalAIModule(int param_1, int param_2);
-    virtual ~TribeTacticalAIModule();
-    virtual char* updateAreaName();
-    virtual int update(int param_1);
-    virtual void setMainDecisionAI(TribeMainDecisionAIModule* param_1);
-    virtual int save(int param_1);
-    virtual void logGroupDebug(int param_1, char* param_2);
-    virtual int doSomething();
-    virtual int clearArea(int param_1, float param_2, float param_3, float param_4, float param_5);
-    virtual void addObject(RGE_Static_Object* param_1);
-    virtual void removeObject(int param_1);
-    virtual void evaluateCivilianDistribution();
-    virtual int taskCivilians(ulong param_1, ulong param_2);
-    virtual void taskIdleSoldiers(ulong param_1, ulong param_2);
-    virtual void taskActiveSoldiers(ulong param_1, ulong param_2);
-    virtual void playTaskSoldiers(ulong param_1, ulong param_2);
-    virtual void taskUngroupedSoldiers();
-    virtual void taskBoats();
-    virtual void evaluateOpenTasks();
-    virtual void evaluateBuildListInsertions();
-    virtual int numberCivilians();
-    virtual int numberCivilianExplorers();
-    virtual int numberGatherers();
-    virtual int desiredNumberCivilianExplorers();
-    virtual int desiredNumberGatherers();
-    virtual int numberSoldiers();
-    virtual int numberSoldierExplorers();
-    virtual int numberBoats();
-    virtual int neededResource(int param_1);
-    virtual int neededResourceAmount(int param_1);
-    virtual void detask(int param_1);
-    virtual int strategicNumber(int param_1);
-    virtual void setStrategicNumber(int param_1, int param_2);
-    virtual void notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6);
-    virtual int numberIdleSoldiers();
-    virtual int numberSoldiersWithPriority(int param_1, int param_2, int param_3);
-    virtual int numberWarshipsWithPriority(int param_1, int param_2);
-    virtual int idleSoldier();
-    virtual int idleCivilian(int param_1);
-    virtual int idleCivilian(int param_1, XYPoint* param_2, int param_3);
-    virtual int civilian(XYPoint* param_1, int param_2, int param_3, int param_4, int param_5, int param_6);
-    virtual int unit(int param_1, int param_2, int param_3);
-    virtual int busyWithAction(int param_1, int param_2);
-    virtual void displayCivilianDistribution();
-    virtual void updateNeededResources();
-    virtual void updateGathererDistribution();
-    virtual int stopUnit(int param_1, int param_2);
-    virtual int moveUnit(int param_1, float param_2, float param_3, int param_4);
-    virtual int groupGatherUnit(int param_1, int param_2, float param_3, float param_4, float param_5, float param_6, int param_7);
-    virtual int highLevelTaskExplorer(int param_1, int param_2);
-    virtual int highLevelTaskGatherer(int param_1, ulong param_2);
-    virtual int taskPlay(int param_1, int* param_2, int param_3, int param_4, int param_5, Waypoint* param_6, int param_7);
-    virtual int taskBuilder(int param_1, BuildItem* param_2, ConstructionItem* param_3, ulong param_4);
-    virtual int taskBuilder(int param_1, RGE_Static_Object* param_2);
-    virtual int taskRepairer(int param_1, RGE_Static_Object* param_2);
-    virtual int taskGatherer(int param_1, int param_2, int param_3, ulong param_4, int* param_5);
-    virtual int taskExplorer(int param_1, int param_2);
-    virtual int taskExplorer(int param_1, float param_2, float param_3);
-    virtual int taskExplorer(int param_1, float param_2, float param_3, int param_4);
-    virtual int taskFollower(int param_1, int param_2, float param_3, int param_4);
-    virtual int taskDefender(int param_1, int param_2, float param_3, int param_4);
-    virtual int taskWaterExplorer(int param_1);
-    virtual int taskWaterTrader(int param_1, int param_2);
-    virtual int taskWaterFisher(int param_1, int param_2, float param_3, float param_4);
-    virtual int taskAttacker(int param_1, float param_2, float param_3, int param_4, int param_5, Waypoint* param_6, int param_7, int param_8, int param_9);
-    virtual int taskDefender(int param_1, int param_2);
-    virtual int taskDefender(int param_1, float param_2, float param_3);
-    virtual int taskTrain(BuildItem* param_1);
-    virtual int taskResearch(BuildItem* param_1);
-    virtual int taskToEnter(int param_1, int param_2);
-    virtual int taskTransporter(int param_1, float param_2, float param_3);
-    virtual void removeFromTaskLists(int param_1);
-    virtual int calculatePriority(float param_1);
-    virtual void setupSoldierGroups();
-    virtual void fillSoldierGroups();
-    virtual int numberUngroupedSoldiers();
-    virtual int numberExtraGroupedSoldiers();
-    virtual int numberUngroupedArtifacts();
-    virtual void displaySoldierGroups();
-    virtual void setupBoatGroups();
-    virtual void fillBoatGroups();
-    virtual int numberUngroupedWarBoats();
-    virtual int numberExtraGroupedWarBoats();
-    virtual int numberUngroupedFishingBoats();
-    virtual int numberUngroupedTradeBoats();
-    virtual int numberUngroupedTransportBoats();
-    virtual void displayBoatGroups();
-    virtual TacticalAIGroup* createGroup(int param_1);
-    virtual int removeGroup(int param_1);
-    virtual int removeAllGroups(int param_1);
-    virtual TacticalAIGroup* group(int param_1, int param_2, int param_3, int param_4);
-    virtual TacticalAIGroup* bestGroup(int param_1, int param_2, int param_3, XYPoint* param_4, int param_5);
-    virtual TacticalAIGroup* readyAndIdleGroup(int param_1, int param_2, XYPoint* param_3);
-    virtual int addToGroup(int param_1, int param_2);
-    virtual int removeFromGroup(int param_1, int param_2);
-    virtual int removeFromGroup(int param_1);
-    virtual TacticalAIGroup* groupUnitIsIn(int param_1);
-    virtual int numberGroups(int param_1, int param_2);
-    virtual int numberUnitsInGroups(int param_1);
-    virtual int numberItemsToAttack();
-    virtual int itemToCapture();
-    virtual int itemToBringToArea();
-    virtual int numberItemsToDefend();
-    virtual ulong attackLimiterTime(int param_1);
-    virtual void resetAttackSeparationTime();
-    virtual int setGatherLocation(TacticalAIGroup* param_1);
-    virtual int setAllGroupLocations(TacticalAIGroup* param_1);
-    virtual void setGroupInfluences(InfluenceMap* param_1);
-    virtual int selectBestCommander(TacticalAIGroup* param_1);
-    virtual int selectBestCommander(ManagedArray_int* param_1);
-    virtual int dealWithGAIAAttacker(RGE_Static_Object* param_1, RGE_Static_Object* param_2);
-    virtual void addWaypoint(int param_1, uchar param_2, uchar param_3);
-    virtual int importantGroupLeader(int param_1);
-    virtual void enableAttack(int param_1);
-    virtual int unexploredArea(int param_1, XYPoint* param_2);
-    virtual UnitData* gatherer(int param_1);
-    virtual UnitData* addGatherer(int param_1);
-    virtual int removeGatherer(int param_1);
-    virtual int isGatherer(int param_1);
-    virtual int requiredGatherAmount(int param_1);
-    virtual void trackUnitGather(int param_1, int param_2, int param_3);
-    virtual int deleteUnit(int param_1);
-    virtual int numberAvailableStoragePits(int* param_1, int* param_2, int param_3);
-    virtual int numberAvailableGranaries(int* param_1, int* param_2);
-    virtual int initialExplorationSatisfied();
-    virtual void checkForBuildInsertion(int param_1, int param_2, int param_3);
-    virtual int isFarmer(RGE_Static_Object* param_1);
-    virtual int numberFarmers();
-    virtual int inAge(int param_1);
-    virtual void stuffAvoidancePath(TacticalAIGroup* param_1, Path* param_2);
-    virtual void checkForAttackResponseBuildInsertions(int param_1);
-    virtual void checkForCoopTributeDemand();
-    virtual void checkForCoopTributeGift();
-    virtual void checkForASAPAgeResearch();
-    virtual void checkForCoopAttack(int param_1, int param_2, int param_3);
-    virtual int processCoopAttack(int param_1, int param_2, int param_3, int param_4);
-    virtual int resourceDifference(int param_1);
-    virtual int actualGathererCount(int param_1);
-    virtual int actualGathererCountByRealResourceID(int param_1);
-    virtual int desiredGathererCount(int param_1);
-    virtual void taskElephantGatherers(int param_1, int param_2, int param_3);
-    virtual void checkTradeBoats();
-    virtual int numberGatherersWithTarget(int param_1);
-    virtual void checkStaleAttackGroups();
-    virtual int numberWaterExplorers();
-    virtual void saveTheTown(int param_1);
+
+    // --- VTABLE DUMP (Source: Ghidra) ---
+
+    // [Slot 00] Offset 0x00 (Override)
+    virtual  ~TribeTacticalAIModule() noexcept(false); // Ghidra: `scalar_deleting_destructor'
+
+    // [Slot 01] Offset 0x04 WARNING: Function body missing in analysis
+    // virtual void loggingHistory();
+
+    // [Slot 02] Offset 0x08 WARNING: Function body missing in analysis
+    // virtual void setLogHistory();
+
+    // [Slot 03] Offset 0x0C WARNING: Function body missing in analysis
+    // virtual void toggleLogHistory();
+
+    // [Slot 04] Offset 0x10 WARNING: Function body missing in analysis
+    // virtual void setHistoryFilename();
+
+    // [Slot 05] Offset 0x14 WARNING: Function body missing in analysis
+    // virtual void loggingCommonHistory();
+
+    // [Slot 06] Offset 0x18 WARNING: Function body missing in analysis
+    // virtual void setLogCommonHistory();
+
+    // [Slot 07] Offset 0x1C WARNING: Function body missing in analysis
+    // virtual void toggleLogCommonHistory();
+
+    // [Slot 08] Offset 0x20 WARNING: Function body missing in analysis
+    // virtual void loadState();
+
+    // [Slot 09] Offset 0x24 WARNING: Function body missing in analysis
+    // virtual void saveState();
+
+    // [Slot 10] Offset 0x28 WARNING: Function body missing in analysis
+    // virtual void gleanState();
+
+    // [Slot 11] Offset 0x2C WARNING: Function body missing in analysis
+    // virtual void processMessage();
+
+    // [Slot 12] Offset 0x30 (Override)
+    virtual int update(int param_1); // Ghidra: update
+
+    // [Slot 13] Offset 0x34 WARNING: Function body missing in analysis
+    // virtual void setCallbackMessage();
+
+    // [Slot 14] Offset 0x38 WARNING: Function body missing in analysis
+    // virtual void filterOutMessage();
+
+    // [Slot 15] Offset 0x3C (Override)
+    virtual int save(int param_1); // Ghidra: save
+
+    // [Slot 16] Offset 0x40 (Override)
+    virtual void notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6); // Ghidra: notify
+
+    // --- Non-Virtual Members ---
+    char* updateAreaName();
+    void setMainDecisionAI(TribeMainDecisionAIModule* param_1);
+    void logGroupDebug(int param_1, char* param_2);
+    int doSomething();
+    int clearArea(int param_1, float param_2, float param_3, float param_4, float param_5);
+    void addObject(RGE_Static_Object* param_1);
+    void removeObject(int param_1);
+    void evaluateCivilianDistribution();
+    int taskCivilians(ulong param_1, ulong param_2);
+    void taskIdleSoldiers(ulong param_1, ulong param_2);
+    void taskActiveSoldiers(ulong param_1, ulong param_2);
+    void playTaskSoldiers(ulong param_1, ulong param_2);
+    void taskUngroupedSoldiers();
+    void taskBoats();
+    void evaluateOpenTasks();
+    void evaluateBuildListInsertions();
+    int numberCivilians();
+    int numberCivilianExplorers();
+    int numberGatherers();
+    int desiredNumberCivilianExplorers();
+    int desiredNumberGatherers();
+    int numberSoldiers();
+    int numberSoldierExplorers();
+    int numberBoats();
+    int neededResource(int param_1);
+    int neededResourceAmount(int param_1);
+    void detask(int param_1);
+    int strategicNumber(int param_1);
+    void setStrategicNumber(int param_1, int param_2);
+    int numberIdleSoldiers();
+    int numberSoldiersWithPriority(int param_1, int param_2, int param_3);
+    int numberWarshipsWithPriority(int param_1, int param_2);
+    int idleSoldier();
+    int idleCivilian(int param_1);
+    int idleCivilian(int param_1, XYPoint* param_2, int param_3);
+    int civilian(XYPoint* param_1, int param_2, int param_3, int param_4, int param_5, int param_6);
+    int unit(int param_1, int param_2, int param_3);
+    int busyWithAction(int param_1, int param_2);
+    void displayCivilianDistribution();
+    void updateNeededResources();
+    void updateGathererDistribution();
+    int stopUnit(int param_1, int param_2);
+    int moveUnit(int param_1, float param_2, float param_3, int param_4);
+    int groupGatherUnit(int param_1, int param_2, float param_3, float param_4, float param_5, float param_6, int param_7);
+    int highLevelTaskExplorer(int param_1, int param_2);
+    int highLevelTaskGatherer(int param_1, ulong param_2);
+    int taskPlay(int param_1, int* param_2, int param_3, int param_4, int param_5, Waypoint* param_6, int param_7);
+    int taskBuilder(int param_1, BuildItem* param_2, ConstructionItem* param_3, ulong param_4);
+    int taskBuilder(int param_1, RGE_Static_Object* param_2);
+    int taskRepairer(int param_1, RGE_Static_Object* param_2);
+    int taskGatherer(int param_1, int param_2, int param_3, ulong param_4, int* param_5);
+    int taskExplorer(int param_1, int param_2);
+    int taskExplorer(int param_1, float param_2, float param_3);
+    int taskExplorer(int param_1, float param_2, float param_3, int param_4);
+    int taskFollower(int param_1, int param_2, float param_3, int param_4);
+    int taskDefender(int param_1, int param_2, float param_3, int param_4);
+    int taskWaterExplorer(int param_1);
+    int taskWaterTrader(int param_1, int param_2);
+    int taskWaterFisher(int param_1, int param_2, float param_3, float param_4);
+    int taskAttacker(int param_1, float param_2, float param_3, int param_4, int param_5, Waypoint* param_6, int param_7, int param_8, int param_9);
+    int taskDefender(int param_1, int param_2);
+    int taskDefender(int param_1, float param_2, float param_3);
+    int taskTrain(BuildItem* param_1);
+    int taskResearch(BuildItem* param_1);
+    int taskToEnter(int param_1, int param_2);
+    int taskTransporter(int param_1, float param_2, float param_3);
+    void removeFromTaskLists(int param_1);
+    int calculatePriority(float param_1);
+    void setupSoldierGroups();
+    void fillSoldierGroups();
+    int numberUngroupedSoldiers();
+    int numberExtraGroupedSoldiers();
+    int numberUngroupedArtifacts();
+    void displaySoldierGroups();
+    void setupBoatGroups();
+    void fillBoatGroups();
+    int numberUngroupedWarBoats();
+    int numberExtraGroupedWarBoats();
+    int numberUngroupedFishingBoats();
+    int numberUngroupedTradeBoats();
+    int numberUngroupedTransportBoats();
+    void displayBoatGroups();
+    TacticalAIGroup* createGroup(int param_1);
+    int removeGroup(int param_1);
+    int removeAllGroups(int param_1);
+    TacticalAIGroup* group(int param_1, int param_2, int param_3, int param_4);
+    TacticalAIGroup* bestGroup(int param_1, int param_2, int param_3, XYPoint* param_4, int param_5);
+    TacticalAIGroup* readyAndIdleGroup(int param_1, int param_2, XYPoint* param_3);
+    int addToGroup(int param_1, int param_2);
+    int removeFromGroup(int param_1, int param_2);
+    int removeFromGroup(int param_1);
+    TacticalAIGroup* groupUnitIsIn(int param_1);
+    int numberGroups(int param_1, int param_2);
+    int numberUnitsInGroups(int param_1);
+    int numberItemsToAttack();
+    int itemToCapture();
+    int itemToBringToArea();
+    int numberItemsToDefend();
+    ulong attackLimiterTime(int param_1);
+    void resetAttackSeparationTime();
+    int setGatherLocation(TacticalAIGroup* param_1);
+    int setAllGroupLocations(TacticalAIGroup* param_1);
+    void setGroupInfluences(InfluenceMap* param_1);
+    int selectBestCommander(TacticalAIGroup* param_1);
+    int selectBestCommander(ManagedArray<int>* param_1);
+    int dealWithGAIAAttacker(RGE_Static_Object* param_1, RGE_Static_Object* param_2);
+    void addWaypoint(int param_1, uchar param_2, uchar param_3);
+    int importantGroupLeader(int param_1);
+    void enableAttack(int param_1);
+    int unexploredArea(int param_1, XYPoint* param_2);
+    UnitData* gatherer(int param_1);
+    UnitData* addGatherer(int param_1);
+    int removeGatherer(int param_1);
+    int isGatherer(int param_1);
+    int requiredGatherAmount(int param_1);
+    void trackUnitGather(int param_1, int param_2, int param_3);
+    int deleteUnit(int param_1);
+    int numberAvailableStoragePits(int* param_1, int* param_2, int param_3);
+    int numberAvailableGranaries(int* param_1, int* param_2);
+    int initialExplorationSatisfied();
+    void checkForBuildInsertion(int param_1, int param_2, int param_3);
+    int isFarmer(RGE_Static_Object* param_1);
+    int numberFarmers();
+    int inAge(int param_1);
+    void stuffAvoidancePath(TacticalAIGroup* param_1, Path* param_2);
+    void checkForAttackResponseBuildInsertions(int param_1);
+    void checkForCoopTributeDemand();
+    void checkForCoopTributeGift();
+    void checkForASAPAgeResearch();
+    void checkForCoopAttack(int param_1, int param_2, int param_3);
+    int processCoopAttack(int param_1, int param_2, int param_3, int param_4);
+    int resourceDifference(int param_1);
+    int actualGathererCount(int param_1);
+    int actualGathererCountByRealResourceID(int param_1);
+    int desiredGathererCount(int param_1);
+    void taskElephantGatherers(int param_1, int param_2, int param_3);
+    void checkTradeBoats();
+    int numberGatherersWithTarget(int param_1);
+    void checkStaleAttackGroups();
+    int numberWaterExplorers();
+    void saveTheTown(int param_1);
 };
 
 static_assert(sizeof(TribeTacticalAIModule) == 0x100C, "TribeTacticalAIModule Size Mismatch");

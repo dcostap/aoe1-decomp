@@ -11,8 +11,9 @@ struct NAME {
     char Name[256]; // 0x0
 };
 
-class HOLDER {
+class HOLDER       {
 public:
+    char* HoldMsg;                           // 0x0
     uint Serial;                             // 0x4
     uint Length;                             // 0x8
     ulong dcoFromID;                         // 0xC
@@ -20,28 +21,38 @@ public:
     uint fromPlayer;                         // 0x14
 
     HOLDER();
-    virtual ~HOLDER();
+
+    // --- Non-Virtual Members ---
+    void* `vector_deleting_destructor'(uint param_1);
+    // --- Non-Virtual Destructor ---
+    ~HOLDER() noexcept(false);
 };
 
 static_assert(sizeof(HOLDER) == 0x18, "HOLDER Size Mismatch");
 static_assert(offsetof(HOLDER, fromPlayer) == 0x14, "HOLDER Offset Mismatch");
 
-class RESENDER {
+class RESENDER       {
 public:
+    ulong TimeSent;                          // 0x0
     uint Serial;                             // 0x4
     char* ResendMsg;                         // 0x8
     uint Length;                             // 0xC
     uint DestMap[10];                        // 0x10
 
     RESENDER();
-    virtual ~RESENDER();
+
+    // --- Non-Virtual Members ---
+    void* `vector_deleting_destructor'(uint param_1);
+    // --- Non-Virtual Destructor ---
+    ~RESENDER() noexcept(false);
 };
 
 static_assert(sizeof(RESENDER) == 0x38, "RESENDER Size Mismatch");
 static_assert(offsetof(RESENDER, DestMap) == 0x10, "RESENDER Offset Mismatch");
 
-class TCommunications_Handler {
+class TCommunications_Handler       {
 public:
+    int OptionsChanged;                      // 0x0
     char* OptionsData;                       // 0x4
     int Steps;                               // 0x8
     ulong TickStart;                         // 0xC
@@ -142,150 +153,153 @@ public:
     uint HoldCount;                          // 0x1748
     int WasKicked[10];                       // 0x174C
 
-    virtual void GameOver();
-    virtual char* WaitingOnNamedInfo(uint param_1);
-    virtual char* WaitingOnInfo(uint param_1);
-    virtual void StopIfSyncFail(int param_1);
-    virtual void ShowSyncChatMsgs(int param_1);
-    virtual void DropPacketsIntentionally(int param_1);
-    virtual void SetStepMode(int param_1);
-    virtual void SetSpeedControl(int param_1);
-    virtual int CalculatePlayerRange();
-    virtual void Step(int param_1);
     TCommunications_Handler(void* param_1, uchar param_2, TChat* param_3, _GUID param_4);
-    virtual ~TCommunications_Handler();
-    virtual void KillAnyMissingPlayers();
-    virtual int AddCommand(ulong param_1, void* param_2, ulong param_3, int param_4, uchar param_5, int param_6);
-    virtual void* get_command();
-    virtual uchar new_command(void* param_1, int param_2);
-    virtual int NewCommand(void* param_1, int param_2, int param_3);
-    virtual void LastWorldRandom(int param_1);
-    virtual int DoCycle(ulong param_1);
-    virtual int HasKicked(uint param_1);
-    virtual long SendPlayerName();
-    virtual void LogRXMsg(uint param_1, uint param_2, ulong param_3, uchar param_4, uchar param_5);
-    virtual void ReceiveGameMessages();
-    virtual void ShutdownGameMessages();
-    virtual void GetDPLAYMessages();
-    virtual void CheckPingTime(int param_1);
-    virtual int TXPing(uint param_1);
-    virtual int TXDebugPing();
-    virtual long FastSend(ulong param_1, void* param_2, ulong param_3, int param_4, int param_5);
-    virtual int PreprocessMessages(ulong param_1, char* param_2, ulong param_3, ulong param_4, int param_5);
-    virtual void NotifyWindow(COMMMESSAGES param_1);
-    virtual void NotifyWindowParam(COMMMESSAGES param_1, long param_2);
-    virtual int EvaluatePlayerMessage(ulong param_1, uint param_2, ulong param_3, uchar param_4, uchar param_5, char* param_6, uint param_7, ulong param_8, ulong param_9);
-    virtual void SetPlayerStopTurn(uint param_1, ulong param_2);
-    virtual void CheckPlayerStopTurn(ulong param_1);
-    virtual void ReleaseSettings();
-    virtual long SendSharedData(int param_1);
-    virtual int TEST();
-    virtual void SetSelfPlayer();
-    virtual void DropDeadPlayer(uint param_1, ulong param_2);
-    virtual void EvaluateSystemMessage(ulong param_1, char* param_2, ulong param_3, ulong param_4);
-    virtual void SendGroupChatMsg(char* param_1);
-    virtual void SendChatMsgAll(char* param_1);
-    virtual void SendChatMsg(uint param_1, uint param_2, char* param_3);
-    virtual long TXChat(uint param_1, uchar* param_2, char* param_3);
-    virtual void SendSpeedChange(uint param_1, uint param_2);
-    virtual void SendIResignMsg();
-    virtual ulong HiTurnAcknowledged();
-    virtual int AllPlayersAcknowledged();
-    virtual long SendChecksumMessage(ulong param_1, uint param_2, long param_3, long param_4, long param_5, long param_6, long param_7);
-    virtual uint ExecuteIncoming();
-    virtual void ClearAllSerialNumbers();
-    virtual void ClearRXandTX();
-    virtual void ClearRXForPlayer(uint param_1);
-    virtual int CountWaitingMessages();
-    virtual void ClearTXForPlayer(uint param_1);
-    virtual void ClearRXTXForPlayer(uint param_1);
-    virtual int StoreIncoming(uint param_1, char* param_2, uint param_3, ulong param_4, ulong param_5);
-    virtual int StoreForResend(uint param_1, char* param_2, uint param_3, uint* param_4);
-    virtual int TXAcknowledgeMessage(uint param_1, uint param_2);
-    virtual int RXAcknowledgeStoredMessage(uint param_1, uint param_2);
-    virtual int PurgeAcknowledgedStoredMessages();
-    virtual int SendStoredMessages();
-    virtual int TXResendReply(uint param_1, uint param_2);
-    virtual int TXResendRequest(uint param_1, uint param_2);
-    virtual uchar GetNextSequence(ulong param_1);
-    virtual long CommOut(ulong param_1, uchar param_2, void* param_3, int param_4, uchar param_5);
-    virtual void DestroyMultiplayerGame();
-    virtual COMMSTATUS GetCommunicationsStatus();
-    virtual COMMSTATUS UnlinkCurrentLevel();
-    virtual COMMSTATUS UnlinkToLevel(COMMSTATUS param_1);
-    virtual COMMSTATUS AnalyzeCommunicationsStatus();
-    virtual void ResetLastCommunicationTimes();
-    virtual int IsPaused();
-    virtual void DropAllHostedPlayers();
-    virtual void LocalResumeGame(uint param_1);
-    virtual void LocalPauseGame(uint param_1);
-    virtual void SendPauseGame(int param_1);
-    virtual int TogglePauseGame();
-    virtual void RequestPauseGame(int param_1);
-    virtual void RequestResumeGame(int param_1);
-    virtual void SetRandomSeed(int param_1);
-    virtual uint GetRandomSeed();
-    virtual int WhoAmI();
-    virtual int IsHost();
-    virtual char* GetCommStateStr();
-    virtual char* GetReadyPlayerStr();
-    virtual int GetPlayerHumanity(uint param_1);
-    virtual void SetPlayerHumanity(uint param_1, PLAYERHUMANITY param_2);
-    virtual int GetActivePlayerCount();
-    virtual int IsPlayerHuman(uint param_1);
-    virtual int IsPlayerComputer(uint param_1);
-    virtual char* GetCommInfo(uchar param_1);
-    virtual char* GetPlayerName(uint param_1);
-    virtual void UpdatePlayerInformation(ulong param_1, char* param_2, char* param_3);
-    virtual int IsLobbyLaunched();
-    virtual int LaunchLobbyGame();
-    virtual void InitPlayerInformation(uint param_1, ulong param_2, char* param_3, char* param_4);
-    virtual int SetGameTitle(char* param_1);
-    virtual void SetMyPlayerName(char* param_1);
-    virtual void SetPlayerName(uint param_1, char* param_2);
-    virtual void* SetWindowHandle(void* param_1);
-    virtual long CreateDirectPlayConversation();
-    virtual int OpenMultiplayerConnection();
-    virtual int CreateMultiplayerGame();
-    virtual void PackPlayersDown();
-    virtual int AddSelfPlayer();
-    virtual long InitJoinGame();
-    virtual int JoinMultiplayerGame(_GUID* param_1);
-    virtual void LaunchMultiplayerGame();
-    virtual long GetMyMultiPlayerCaps();
-    virtual void SetApplicationGUID(_GUID param_1);
-    virtual IDirectPlay3* GetDPInterface();
-    virtual void SetServiceGUID(_GUID param_1);
-    virtual void SetSessionGUID(_GUID param_1);
-    virtual void UpdatePlayers();
-    virtual void UpdatePlayer(uint param_1, int param_2);
-    virtual int SetMyReadiness(int param_1, ulong param_2, ulong param_3, ulong param_4, ulong param_5, ulong param_6, ulong param_7, ulong param_8);
-    virtual int GetClientReadiness(uint param_1, int* param_2, ulong* param_3, ulong* param_4, ulong* param_5, ulong* param_6, ulong* param_7, ulong* param_8, ulong* param_9);
-    virtual int IsPlayerReady(uint param_1);
-    virtual int ComputerPlayerGameStart();
-    virtual int MultiplayerGameStart();
-    virtual int AllPlayersReady();
-    virtual long DPlayGetSessionDesc();
-    virtual long CommGetCaps();
-    virtual long CloseSession();
-    virtual long ReleaseComm();
-    virtual int Kick(uint param_1);
-    virtual long DestroyMyPlayer();
-    virtual int SetMyGameOptions(char* param_1, ulong param_2);
-    virtual void* GetMyGameOptions(ulong* param_1);
-    virtual void FreeOptions();
-    virtual void SetHostPlayerNumber(uint param_1);
-    virtual uint GetHostPlayerNumber();
-    virtual void DebugSessionInformation(DPSESSIONDESC2* param_1);
-    virtual long EnableNewPlayers(IDirectPlay2* param_1, int param_2);
-    virtual void OutOfSync(int param_1, ulong param_2);
-    virtual int SendZoneMessage(char* param_1, ulong param_2);
-    virtual void ForcePlayerEnumeration();
-    virtual void ForcePlayerDestroyAndCreate();
-    virtual void ForceNameChange();
-    virtual void SetSpeedV1(ulong param_1);
-    virtual void SetSpeedV2(ulong param_1);
-    virtual int IsPlayerOutOfSync(uint param_1, ulong param_2);
+
+    // --- Non-Virtual Members ---
+    void GameOver();
+    char* WaitingOnNamedInfo(uint param_1);
+    char* WaitingOnInfo(uint param_1);
+    void StopIfSyncFail(int param_1);
+    void ShowSyncChatMsgs(int param_1);
+    void DropPacketsIntentionally(int param_1);
+    void SetStepMode(int param_1);
+    void SetSpeedControl(int param_1);
+    int CalculatePlayerRange();
+    void Step(int param_1);
+    // --- Non-Virtual Destructor ---
+    ~TCommunications_Handler() noexcept(false);
+    void KillAnyMissingPlayers();
+    int AddCommand(ulong param_1, void* param_2, ulong param_3, int param_4, uchar param_5, int param_6);
+    void* get_command();
+    uchar new_command(void* param_1, int param_2);
+    int NewCommand(void* param_1, int param_2, int param_3);
+    void LastWorldRandom(int param_1);
+    int DoCycle(ulong param_1);
+    int HasKicked(uint param_1);
+    long SendPlayerName();
+    void LogRXMsg(uint param_1, uint param_2, ulong param_3, uchar param_4, uchar param_5);
+    void ReceiveGameMessages();
+    void ShutdownGameMessages();
+    void GetDPLAYMessages();
+    void CheckPingTime(int param_1);
+    int TXPing(uint param_1);
+    int TXDebugPing();
+    long FastSend(ulong param_1, void* param_2, ulong param_3, int param_4, int param_5);
+    int PreprocessMessages(ulong param_1, char* param_2, ulong param_3, ulong param_4, int param_5);
+    void NotifyWindow(COMMMESSAGES param_1);
+    void NotifyWindowParam(COMMMESSAGES param_1, long param_2);
+    int EvaluatePlayerMessage(ulong param_1, uint param_2, ulong param_3, uchar param_4, uchar param_5, char* param_6, uint param_7, ulong param_8, ulong param_9);
+    void SetPlayerStopTurn(uint param_1, ulong param_2);
+    void CheckPlayerStopTurn(ulong param_1);
+    void ReleaseSettings();
+    long SendSharedData(int param_1);
+    int TEST();
+    void SetSelfPlayer();
+    void DropDeadPlayer(uint param_1, ulong param_2);
+    void EvaluateSystemMessage(ulong param_1, char* param_2, ulong param_3, ulong param_4);
+    void SendGroupChatMsg(char* param_1);
+    void SendChatMsgAll(char* param_1);
+    void SendChatMsg(uint param_1, uint param_2, char* param_3);
+    long TXChat(uint param_1, uchar* param_2, char* param_3);
+    void SendSpeedChange(uint param_1, uint param_2);
+    void SendIResignMsg();
+    ulong HiTurnAcknowledged();
+    int AllPlayersAcknowledged();
+    long SendChecksumMessage(ulong param_1, uint param_2, long param_3, long param_4, long param_5, long param_6, long param_7);
+    uint ExecuteIncoming();
+    void ClearAllSerialNumbers();
+    void ClearRXandTX();
+    void ClearRXForPlayer(uint param_1);
+    int CountWaitingMessages();
+    void ClearTXForPlayer(uint param_1);
+    void ClearRXTXForPlayer(uint param_1);
+    int StoreIncoming(uint param_1, char* param_2, uint param_3, ulong param_4, ulong param_5);
+    int StoreForResend(uint param_1, char* param_2, uint param_3, uint* param_4);
+    int TXAcknowledgeMessage(uint param_1, uint param_2);
+    int RXAcknowledgeStoredMessage(uint param_1, uint param_2);
+    int PurgeAcknowledgedStoredMessages();
+    int SendStoredMessages();
+    int TXResendReply(uint param_1, uint param_2);
+    int TXResendRequest(uint param_1, uint param_2);
+    uchar GetNextSequence(ulong param_1);
+    long CommOut(ulong param_1, uchar param_2, void* param_3, int param_4, uchar param_5);
+    void DestroyMultiplayerGame();
+    COMMSTATUS GetCommunicationsStatus();
+    COMMSTATUS UnlinkCurrentLevel();
+    COMMSTATUS UnlinkToLevel(COMMSTATUS param_1);
+    COMMSTATUS AnalyzeCommunicationsStatus();
+    void ResetLastCommunicationTimes();
+    int IsPaused();
+    void DropAllHostedPlayers();
+    void LocalResumeGame(uint param_1);
+    void LocalPauseGame(uint param_1);
+    void SendPauseGame(int param_1);
+    int TogglePauseGame();
+    void RequestPauseGame(int param_1);
+    void RequestResumeGame(int param_1);
+    void SetRandomSeed(int param_1);
+    uint GetRandomSeed();
+    int WhoAmI();
+    int IsHost();
+    char* GetCommStateStr();
+    char* GetReadyPlayerStr();
+    int GetPlayerHumanity(uint param_1);
+    void SetPlayerHumanity(uint param_1, PLAYERHUMANITY param_2);
+    int GetActivePlayerCount();
+    int IsPlayerHuman(uint param_1);
+    int IsPlayerComputer(uint param_1);
+    char* GetCommInfo(uchar param_1);
+    char* GetPlayerName(uint param_1);
+    void UpdatePlayerInformation(ulong param_1, char* param_2, char* param_3);
+    int IsLobbyLaunched();
+    int LaunchLobbyGame();
+    void InitPlayerInformation(uint param_1, ulong param_2, char* param_3, char* param_4);
+    int SetGameTitle(char* param_1);
+    void SetMyPlayerName(char* param_1);
+    void SetPlayerName(uint param_1, char* param_2);
+    void* SetWindowHandle(void* param_1);
+    long CreateDirectPlayConversation();
+    int OpenMultiplayerConnection();
+    int CreateMultiplayerGame();
+    void PackPlayersDown();
+    int AddSelfPlayer();
+    long InitJoinGame();
+    int JoinMultiplayerGame(_GUID* param_1);
+    void LaunchMultiplayerGame();
+    long GetMyMultiPlayerCaps();
+    void SetApplicationGUID(_GUID param_1);
+    IDirectPlay3* GetDPInterface();
+    void SetServiceGUID(_GUID param_1);
+    void SetSessionGUID(_GUID param_1);
+    void UpdatePlayers();
+    void UpdatePlayer(uint param_1, int param_2);
+    int SetMyReadiness(int param_1, ulong param_2, ulong param_3, ulong param_4, ulong param_5, ulong param_6, ulong param_7, ulong param_8);
+    int GetClientReadiness(uint param_1, int* param_2, ulong* param_3, ulong* param_4, ulong* param_5, ulong* param_6, ulong* param_7, ulong* param_8, ulong* param_9);
+    int IsPlayerReady(uint param_1);
+    int ComputerPlayerGameStart();
+    int MultiplayerGameStart();
+    int AllPlayersReady();
+    long DPlayGetSessionDesc();
+    long CommGetCaps();
+    long CloseSession();
+    long ReleaseComm();
+    int Kick(uint param_1);
+    long DestroyMyPlayer();
+    int SetMyGameOptions(char* param_1, ulong param_2);
+    void* GetMyGameOptions(ulong* param_1);
+    void FreeOptions();
+    void SetHostPlayerNumber(uint param_1);
+    uint GetHostPlayerNumber();
+    void DebugSessionInformation(DPSESSIONDESC2* param_1);
+    long EnableNewPlayers(IDirectPlay2* param_1, int param_2);
+    void OutOfSync(int param_1, ulong param_2);
+    int SendZoneMessage(char* param_1, ulong param_2);
+    void ForcePlayerEnumeration();
+    void ForcePlayerDestroyAndCreate();
+    void ForceNameChange();
+    void SetSpeedV1(ulong param_1);
+    void SetSpeedV2(ulong param_1);
+    int IsPlayerOutOfSync(uint param_1, ulong param_2);
 };
 
 static_assert(sizeof(TCommunications_Handler) == 0x1774, "TCommunications_Handler Size Mismatch");

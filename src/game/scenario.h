@@ -1,8 +1,12 @@
 #pragma once
 #include "../common.h"
 
-class RGE_Scenario : public RGE_Timeline {
+class RGE_Scenario : public RGE_Timeline       {
 public:
+    RGE_Timeline* time_line;                 // 0x4
+    RGE_Game_World* world;                   // 0x8
+    uchar victory_conquest;                  // 0xC
+    PlayerName player_name[16];              // 0xD
     char* scenario_name;                     // 0x1010
     char* description;                       // 0x1014
     char* hints;                             // 0x1018
@@ -34,55 +38,67 @@ public:
 
     RGE_Scenario(RGE_Game_World* param_1);
     RGE_Scenario(int param_1, RGE_Game_World* param_2);
-    virtual RGE_Static_Object* get_object_pointer(int param_1);
-    virtual void rehook();
-    virtual ~RGE_Scenario();
-    virtual void InitializeTextValues();
-    virtual void Set_scenario_name(char* param_1);
-    virtual void Set_description(char* param_1);
-    virtual void Set_Cine_PreGame(char* param_1);
-    virtual void Set_Cine_Victory(char* param_1);
-    virtual void Set_Cine_Loss(char* param_1);
-    virtual void Set_Mission_Bmp(char* param_1);
-    virtual void Set_BuildList(int param_1, char* param_2, int param_3);
-    virtual void Set_CityPlan(int param_1, char* param_2, int param_3);
-    virtual void Set_player_AI(int param_1, char* param_2, int param_3);
-    virtual void Set_Version(float param_1);
-    virtual void Set_player_Type(int param_1, int param_2);
-    virtual void Set_player_Civ(int param_1, int param_2);
-    virtual void Set_player_Active(int param_1, int param_2);
-    virtual void SetPlayerName(int param_1, char* param_2);
-    virtual char* Get_scenario_name();
-    virtual char* Get_description();
-    virtual char* Get_Cine_PreGame();
-    virtual char* Get_Cine_Victory();
-    virtual char* Get_Cine_Loss();
-    virtual char* Get_Mission_Bmp();
-    virtual char* Get_BuildList(int param_1, int param_2);
-    virtual char* Get_CityPlan(int param_1, int param_2);
-    virtual float Get_Version();
-    virtual char* Get_player_AI(int param_1, int param_2);
-    virtual int GetPlayerPosture(int param_1);
-    virtual char* GetPlayerName(int param_1);
-    virtual int Get_player_Type(int param_1);
-    virtual int Get_player_Civ(int param_1);
-    virtual int Get_player_Active(int param_1);
-    virtual void update();
-    virtual void save(int param_1);
-    virtual int active_player_count();
-    virtual int any_player_count();
-    virtual int computer_player_count();
-    virtual void Set_conquest_victory(uchar param_1);
-    virtual uchar Get_conquest_victory();
-    virtual void add_description(char* param_1);
-    virtual void Set_message(char* param_1, long param_2);
-    virtual char* Get_message(long param_1);
+
+    // --- VTABLE DUMP (Source: Ghidra) ---
+
+    // [Slot 00] Offset 0x00 (Override)
+    virtual RGE_Static_Object* get_object_pointer(int param_1); // Ghidra: get_object_pointer
+
+    // [Slot 01] Offset 0x04 (Override)
+    virtual  ~RGE_Scenario() noexcept(false); // Ghidra: `scalar_deleting_destructor'
+
+    // [Slot 02] Offset 0x08 (Override)
+    virtual void rehook(); // Ghidra: rehook
+
+    // [Slot 03] Offset 0x0C (Override)
+    virtual void save(int param_1); // Ghidra: save
+
+    // --- Non-Virtual Members ---
+    void InitializeTextValues();
+    void Set_scenario_name(char* param_1);
+    void Set_description(char* param_1);
+    void Set_Cine_PreGame(char* param_1);
+    void Set_Cine_Victory(char* param_1);
+    void Set_Cine_Loss(char* param_1);
+    void Set_Mission_Bmp(char* param_1);
+    void Set_BuildList(int param_1, char* param_2, int param_3);
+    void Set_CityPlan(int param_1, char* param_2, int param_3);
+    void Set_player_AI(int param_1, char* param_2, int param_3);
+    void Set_Version(float param_1);
+    void Set_player_Type(int param_1, int param_2);
+    void Set_player_Civ(int param_1, int param_2);
+    void Set_player_Active(int param_1, int param_2);
+    void SetPlayerName(int param_1, char* param_2);
+    char* Get_scenario_name();
+    char* Get_description();
+    char* Get_Cine_PreGame();
+    char* Get_Cine_Victory();
+    char* Get_Cine_Loss();
+    char* Get_Mission_Bmp();
+    char* Get_BuildList(int param_1, int param_2);
+    char* Get_CityPlan(int param_1, int param_2);
+    float Get_Version();
+    char* Get_player_AI(int param_1, int param_2);
+    int GetPlayerPosture(int param_1);
+    char* GetPlayerName(int param_1);
+    int Get_player_Type(int param_1);
+    int Get_player_Civ(int param_1);
+    int Get_player_Active(int param_1);
+    void update();
+    int active_player_count();
+    int any_player_count();
+    int computer_player_count();
+    void Set_conquest_victory(uchar param_1);
+    uchar Get_conquest_victory();
+    void add_description(char* param_1);
+    void Set_message(char* param_1, long param_2);
+    char* Get_message(long param_1);
 };
 
 static_assert(sizeof(RGE_Scenario) == 0x1990, "RGE_Scenario Size Mismatch");
 static_assert(offsetof(RGE_Scenario, mission_picture) == 0x198C, "RGE_Scenario Offset Mismatch");
 
-class RGE_Scenario_Header {
+class RGE_Scenario_Header       {
 public:
     int error_code;                          // 0x4
     long version;                            // 0x8
@@ -91,9 +107,29 @@ public:
 
     RGE_Scenario_Header(RGE_Scenario* param_1);
     RGE_Scenario_Header(int param_1);
-    virtual ~RGE_Scenario_Header();
-    virtual long get_size();
-    virtual void save(int param_1);
+
+    // --- VTABLE DUMP (Source: Ghidra) ---
+
+    // [Slot 00] Offset 0x00 (Override)
+    virtual long get_size(); // Ghidra: get_size
+
+    // [Slot 01] Offset 0x04 (Override)
+    virtual void save(int param_1); // Ghidra: save
+
+    // [Slot 02] Offset 0x08 WARNING: Function body missing in analysis
+    // virtual void get_object_pointer();
+
+    // [Slot 03] Offset 0x0C WARNING: Function body missing in analysis
+    // virtual void `scalar_deleting_destructor'();
+
+    // [Slot 04] Offset 0x10 WARNING: Function body missing in analysis
+    // virtual void rehook();
+
+    // [Slot 05] Offset 0x14 WARNING: Function body missing in analysis
+    // virtual void save();
+
+    // --- Non-Virtual Destructor ---
+    ~RGE_Scenario_Header() noexcept(false);
 };
 
 static_assert(sizeof(RGE_Scenario_Header) == 0x14, "RGE_Scenario_Header Size Mismatch");

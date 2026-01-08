@@ -104,8 +104,9 @@ enum SELECT_REGION_e : unsigned int {
     SELECT_AREA = 3,
 };
 
-class TRIBE_Screen_Sed : public TScreenPanel {
+class TRIBE_Screen_Sed : public TScreenPanel       {
 public:
+    char _pad_0x4[0x474];
     int is_multi_player;                     // 0x478
     int set_player_first_flag;               // 0x47C
     RGE_Static_Object* SelectedObject;       // 0x480
@@ -243,7 +244,7 @@ public:
     TTextPanel* Diplomacy_player_text[8];    // 0x874
     TDropDownPanel* Diplomacy_player_list;   // 0x894
     TTextPanel* Diplomacy_status_label[4];   // 0x898
-    TButtonPanel** Diplomacy_friend_box[8];  // 0x8A8
+    TButtonPanel* Diplomacy_friend_box[8][3]; // 0x8A8
     TButtonPanel* Diplomacy_AlliedVictory[8]; // 0x908
     TRIBE_World* world;                      // 0x928
     ulong update_interval;                   // 0x92C
@@ -255,70 +256,289 @@ public:
     ulong save_window_color;                 // 0x944
 
     TRIBE_Screen_Sed(char* param_1, int param_2);
-    virtual void set_panel_info();
-    virtual void set_string(char* param_1, long param_2, int param_3);
-    virtual int create_button(TPanel* param_1, TButtonPanel** param_2, long param_3, int param_4);
-    virtual int create_button(TPanel* param_1, TButtonPanel** param_2, char* param_3, char* param_4, char* param_5, char* param_6);
-    virtual int create_text(TPanel* param_1, TTextPanel** param_2, long param_3);
-    virtual int create_text(TPanel* param_1, TTextPanel** param_2, char* param_3);
-    virtual int create_input(TPanel* param_1, TInputPanel** param_2, char* param_3, short param_4, FormatType param_5);
-    virtual int create_edit(TPanel* param_1, TEditPanel** param_2, char* param_3, short param_4, FormatType param_5, int param_6, int param_7);
-    virtual int create_drop_down(TPanel* param_1, TDropDownPanel** param_2);
-    virtual int SetupListOfTerrain(TListPanel* param_1);
-    virtual int create_list(TPanel* param_1, TListPanel** param_2, TScrollBarPanel** param_3);
-    virtual ~TRIBE_Screen_Sed();
-    virtual void set_scenario_mode(ScenarioMode param_1);
-    virtual void set_paint_object_mode();
-    virtual void set_map_type(MapType param_1, int param_2);
-    virtual void set_mp_victory_type(VictoryType param_1, int param_2);
-    virtual void set_brush_size(BrushSize param_1);
-    virtual void set_paint_type(PaintType param_1, int param_2);
-    virtual void set_terrain(short param_1);
-    virtual void set_elevation(short param_1);
-    virtual void set_player(short param_1, uchar param_2, uchar param_3);
-    virtual void set_player_active(short param_1, int param_2);
-    virtual void set_unit_player(short param_1);
-    virtual void set_unit(short param_1);
-    virtual void set_message_type(MessageType param_1, int param_2);
-    virtual long handle_size(long param_1, long param_2);
-    virtual long handle_idle();
-    virtual long key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5);
-    virtual long action(TPanel* param_1, long param_2, ulong param_3, ulong param_4);
-    virtual void draw();
-    virtual void command_cancel();
-    virtual int command_menu();
-    virtual void command_new();
-    virtual int command_new_map(char* param_1, int param_2, int param_3, int param_4, int param_5, int param_6);
-    virtual void command_open();
-    virtual void command_outline();
-    virtual void command_player(int param_1);
-    virtual void command_quit();
-    virtual void command_save(uchar param_1, uchar param_2);
-    virtual void command_save_as(uchar param_1);
-    virtual char* scenario_get_default_name();
-    virtual void command_quick_save();
-    virtual char* scenario_save_defaulted();
-    virtual uchar need_to_save();
-    virtual void set_focus(int param_1);
-    virtual void SaveDisabledItemsInScenario();
-    virtual void LoadDisabledItemsFromScenario();
-    virtual void save_info_in_scenario();
-    virtual void save_multi_victory_cond_in_scenario();
-    virtual void save_victory_cond_in_scenario(int param_1);
-    virtual void load_victory_cond_from_scenario(int param_1);
-    virtual void load_multi_victory_cond_from_scenario();
-    virtual void save_diplomacy_in_scenario(int param_1);
-    virtual void load_diplomacy_from_scenario(int param_1);
-    virtual void activate_victory_proper_fields(int param_1, int param_2);
-    virtual void init_module_variables();
-    virtual void create_all_buttons_etc();
-    virtual void position_panels();
-    virtual void activate_victory_panel(int param_1);
-    virtual int MakeFileList(TDropDownPanel* param_1, char* param_2, char* param_3, uchar param_4, uchar param_5);
-    virtual int Set_player_advance_civilization_text(int param_1);
-    virtual void SavePlayerActiveStatus();
-    virtual int create_check_box(TPanel* param_1, TButtonPanel** param_2);
-    virtual int create_radio_button(TPanel* param_1, TButtonPanel** param_2);
+
+    // --- VTABLE DUMP (Source: Ghidra) ---
+
+    // [Slot 00] Offset 0x00 (Override)
+    virtual  ~TRIBE_Screen_Sed() noexcept(false); // Ghidra: `vector_deleting_destructor'
+
+    // [Slot 01] Offset 0x04 WARNING: Function body missing in analysis
+    // virtual void setup();
+
+    // [Slot 02] Offset 0x08 WARNING: Function body missing in analysis
+    // virtual void set_rect();
+
+    // [Slot 03] Offset 0x0C WARNING: Function body missing in analysis
+    // virtual void set_rect();
+
+    // [Slot 04] Offset 0x10 WARNING: Function body missing in analysis
+    // virtual void set_color();
+
+    // [Slot 05] Offset 0x14 WARNING: Function body missing in analysis
+    // virtual void set_active();
+
+    // [Slot 06] Offset 0x18 WARNING: Function body missing in analysis
+    // virtual void set_positioning();
+
+    // [Slot 07] Offset 0x1C WARNING: Function body missing in analysis
+    // virtual void set_fixed_position();
+
+    // [Slot 08] Offset 0x20 WARNING: Function body missing in analysis
+    // virtual void set_redraw();
+
+    // [Slot 09] Offset 0x24 WARNING: Function body missing in analysis
+    // virtual void set_overlapped_redraw();
+
+    // [Slot 10] Offset 0x28 WARNING: Function body missing in analysis
+    // virtual void draw_setup();
+
+    // [Slot 11] Offset 0x2C WARNING: Function body missing in analysis
+    // virtual void draw_finish();
+
+    // [Slot 12] Offset 0x30 (Override)
+    virtual void draw(); // Ghidra: draw
+
+    // [Slot 13] Offset 0x34 WARNING: Function body missing in analysis
+    // virtual void draw_rect();
+
+    // [Slot 14] Offset 0x38 WARNING: Function body missing in analysis
+    // virtual void draw_offset();
+
+    // [Slot 15] Offset 0x3C WARNING: Function body missing in analysis
+    // virtual void draw_rect2();
+
+    // [Slot 16] Offset 0x40 WARNING: Function body missing in analysis
+    // virtual void draw_offset2();
+
+    // [Slot 17] Offset 0x44 WARNING: Function body missing in analysis
+    // virtual void paint();
+
+    // [Slot 18] Offset 0x48 WARNING: Function body missing in analysis
+    // virtual void wnd_proc();
+
+    // [Slot 19] Offset 0x4C (Override)
+    virtual long handle_idle(); // Ghidra: handle_idle
+
+    // [Slot 20] Offset 0x50 (Override)
+    virtual long handle_size(long param_1, long param_2); // Ghidra: handle_size
+
+    // [Slot 21] Offset 0x54 WARNING: Function body missing in analysis
+    // virtual void handle_paint();
+
+    // [Slot 22] Offset 0x58 WARNING: Function body missing in analysis
+    // virtual void handle_key_down();
+
+    // [Slot 23] Offset 0x5C WARNING: Function body missing in analysis
+    // virtual void handle_char();
+
+    // [Slot 24] Offset 0x60 WARNING: Function body missing in analysis
+    // virtual void handle_command();
+
+    // [Slot 25] Offset 0x64 WARNING: Function body missing in analysis
+    // virtual void handle_user_command();
+
+    // [Slot 26] Offset 0x68 WARNING: Function body missing in analysis
+    // virtual void handle_timer_command();
+
+    // [Slot 27] Offset 0x6C WARNING: Function body missing in analysis
+    // virtual void handle_scroll();
+
+    // [Slot 28] Offset 0x70 WARNING: Function body missing in analysis
+    // virtual void handle_mouse_down();
+
+    // [Slot 29] Offset 0x74 WARNING: Function body missing in analysis
+    // virtual void handle_mouse_move();
+
+    // [Slot 30] Offset 0x78 WARNING: Function body missing in analysis
+    // virtual void handle_mouse_up();
+
+    // [Slot 31] Offset 0x7C WARNING: Function body missing in analysis
+    // virtual void handle_mouse_dbl_click();
+
+    // [Slot 32] Offset 0x80 WARNING: Function body missing in analysis
+    // virtual void mouse_move_action();
+
+    // [Slot 33] Offset 0x84 WARNING: Function body missing in analysis
+    // virtual void mouse_left_down_action();
+
+    // [Slot 34] Offset 0x88 WARNING: Function body missing in analysis
+    // virtual void mouse_left_hold_action();
+
+    // [Slot 35] Offset 0x8C WARNING: Function body missing in analysis
+    // virtual void mouse_left_move_action();
+
+    // [Slot 36] Offset 0x90 WARNING: Function body missing in analysis
+    // virtual void mouse_left_up_action();
+
+    // [Slot 37] Offset 0x94 WARNING: Function body missing in analysis
+    // virtual void mouse_left_dbl_click_action();
+
+    // [Slot 38] Offset 0x98 WARNING: Function body missing in analysis
+    // virtual void mouse_right_down_action();
+
+    // [Slot 39] Offset 0x9C WARNING: Function body missing in analysis
+    // virtual void mouse_right_hold_action();
+
+    // [Slot 40] Offset 0xA0 WARNING: Function body missing in analysis
+    // virtual void mouse_right_move_action();
+
+    // [Slot 41] Offset 0xA4 WARNING: Function body missing in analysis
+    // virtual void mouse_right_up_action();
+
+    // [Slot 42] Offset 0xA8 WARNING: Function body missing in analysis
+    // virtual void mouse_right_dbl_click_action();
+
+    // [Slot 43] Offset 0xAC (Override)
+    virtual long key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5); // Ghidra: key_down_action
+
+    // [Slot 44] Offset 0xB0 WARNING: Function body missing in analysis
+    // virtual void char_action();
+
+    // [Slot 45] Offset 0xB4 (Override)
+    virtual long action(TPanel* param_1, long param_2, ulong param_3, ulong param_4); // Ghidra: action
+
+    // [Slot 46] Offset 0xB8 WARNING: Function body missing in analysis
+    // virtual void get_true_render_rect();
+
+    // [Slot 47] Offset 0xBC WARNING: Function body missing in analysis
+    // virtual void is_inside();
+
+    // [Slot 48] Offset 0xC0 (Override)
+    virtual void set_focus(int param_1); // Ghidra: set_focus
+
+    // [Slot 49] Offset 0xC4 WARNING: Function body missing in analysis
+    // virtual void set_tab_order();
+
+    // [Slot 50] Offset 0xC8 WARNING: Function body missing in analysis
+    // virtual void set_tab_order();
+
+    // [Slot 51] Offset 0xCC WARNING: Function body missing in analysis
+    // virtual void get_help_info();
+
+    // [Slot 52] Offset 0xD0 WARNING: Function body missing in analysis
+    // virtual void stop_sound_system();
+
+    // [Slot 53] Offset 0xD4 WARNING: Function body missing in analysis
+    // virtual void restart_sound_system();
+
+    // [Slot 54] Offset 0xD8 WARNING: Function body missing in analysis
+    // virtual void take_snapshot();
+
+    // [Slot 55] Offset 0xDC WARNING: Function body missing in analysis
+    // virtual void handle_reactivate();
+
+    // [Slot 56] Offset 0xE0 WARNING: Function body missing in analysis
+    // virtual void draw_background();
+
+    // [Slot 57] Offset 0xE4 WARNING: Function body missing in analysis
+    // virtual void set_ideal_size();
+
+    // [Slot 58] Offset 0xE8 WARNING: Function body missing in analysis
+    // virtual void create_button();
+
+    // [Slot 59] Offset 0xEC WARNING: Function body missing in analysis
+    // virtual void create_button();
+
+    // [Slot 60] Offset 0xF0 WARNING: Function body missing in analysis
+    // virtual void create_check_box();
+
+    // [Slot 61] Offset 0xF4 WARNING: Function body missing in analysis
+    // virtual void create_radio_button();
+
+    // [Slot 62] Offset 0xF8 WARNING: Function body missing in analysis
+    // virtual void create_text();
+
+    // [Slot 63] Offset 0xFC WARNING: Function body missing in analysis
+    // virtual void create_text();
+
+    // [Slot 64] Offset 0x100 WARNING: Function body missing in analysis
+    // virtual void create_text();
+
+    // [Slot 65] Offset 0x104 WARNING: Function body missing in analysis
+    // virtual void create_input();
+
+    // [Slot 66] Offset 0x108 WARNING: Function body missing in analysis
+    // virtual void create_edit();
+
+    // [Slot 67] Offset 0x10C WARNING: Function body missing in analysis
+    // virtual void create_drop_down();
+
+    // [Slot 68] Offset 0x110 WARNING: Function body missing in analysis
+    // virtual void create_list();
+
+    // [Slot 69] Offset 0x114 WARNING: Function body missing in analysis
+    // virtual void create_scrollbar();
+
+    // [Slot 70] Offset 0x118 WARNING: Function body missing in analysis
+    // virtual void create_auto_scrollbar();
+
+    // [Slot 71] Offset 0x11C WARNING: Function body missing in analysis
+    // virtual void create_vert_slider();
+
+    // [Slot 72] Offset 0x120 WARNING: Function body missing in analysis
+    // virtual void create_horz_slider();
+
+    // [Slot 73] Offset 0x124 WARNING: Function body missing in analysis
+    // virtual void position_panel();
+
+    // --- Non-Virtual Members ---
+    void set_panel_info();
+    void set_string(char* param_1, long param_2, int param_3);
+    int create_button(TPanel* param_1, TButtonPanel** param_2, long param_3, int param_4);
+    int create_button(TPanel* param_1, TButtonPanel** param_2, char* param_3, char* param_4, char* param_5, char* param_6);
+    int create_text(TPanel* param_1, TTextPanel** param_2, long param_3);
+    int create_text(TPanel* param_1, TTextPanel** param_2, char* param_3);
+    int create_input(TPanel* param_1, TInputPanel** param_2, char* param_3, short param_4, FormatType param_5);
+    int create_edit(TPanel* param_1, TEditPanel** param_2, char* param_3, short param_4, FormatType param_5, int param_6, int param_7);
+    int create_drop_down(TPanel* param_1, TDropDownPanel** param_2);
+    int SetupListOfTerrain(TListPanel* param_1);
+    int create_list(TPanel* param_1, TListPanel** param_2, TScrollBarPanel** param_3);
+    void set_scenario_mode(ScenarioMode param_1);
+    void set_paint_object_mode();
+    void set_map_type(MapType param_1, int param_2);
+    void set_mp_victory_type(VictoryType param_1, int param_2);
+    void set_brush_size(BrushSize param_1);
+    void set_paint_type(PaintType param_1, int param_2);
+    void set_terrain(short param_1);
+    void set_elevation(short param_1);
+    void set_player(short param_1, uchar param_2, uchar param_3);
+    void set_player_active(short param_1, int param_2);
+    void set_unit_player(short param_1);
+    void set_unit(short param_1);
+    void set_message_type(MessageType param_1, int param_2);
+    void command_cancel();
+    int command_menu();
+    void command_new();
+    int command_new_map(char* param_1, int param_2, int param_3, int param_4, int param_5, int param_6);
+    void command_open();
+    void command_outline();
+    void command_player(int param_1);
+    void command_quit();
+    void command_save(uchar param_1, uchar param_2);
+    void command_save_as(uchar param_1);
+    char* scenario_get_default_name();
+    void command_quick_save();
+    char* scenario_save_defaulted();
+    uchar need_to_save();
+    void SaveDisabledItemsInScenario();
+    void LoadDisabledItemsFromScenario();
+    void save_info_in_scenario();
+    void save_multi_victory_cond_in_scenario();
+    void save_victory_cond_in_scenario(int param_1);
+    void load_victory_cond_from_scenario(int param_1);
+    void load_multi_victory_cond_from_scenario();
+    void save_diplomacy_in_scenario(int param_1);
+    void load_diplomacy_from_scenario(int param_1);
+    void activate_victory_proper_fields(int param_1, int param_2);
+    void init_module_variables();
+    void create_all_buttons_etc();
+    void position_panels();
+    void activate_victory_panel(int param_1);
+    int MakeFileList(TDropDownPanel* param_1, char* param_2, char* param_3, uchar param_4, uchar param_5);
+    int Set_player_advance_civilization_text(int param_1);
+    void SavePlayerActiveStatus();
+    int create_check_box(TPanel* param_1, TButtonPanel** param_2);
+    int create_radio_button(TPanel* param_1, TButtonPanel** param_2);
 };
 
 static_assert(sizeof(TRIBE_Screen_Sed) == 0x948, "TRIBE_Screen_Sed Size Mismatch");

@@ -1,8 +1,9 @@
 #pragma once
 #include "../common.h"
 
-class DClipInfo_List {
+class DClipInfo_List       {
 public:
+    DClipInfo_Node** Zone_Ptrs;              // 0x0
     int* Zone_Size_Ptrs;                     // 0x4
     int Used_Zones;                          // 0x8
     int Max_Zones;                           // 0xC
@@ -32,27 +33,31 @@ public:
     short* Select_Box;                       // 0x6C
 
     DClipInfo_List(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6);
-    virtual ~DClipInfo_List();
-    virtual void SetCaptureLevel(int param_1, int param_2);
-    virtual void SetNumZones(int param_1);
-    virtual void InitNewZone(int param_1);
-    virtual DClipInfo_Node* GetNode();
-    virtual void SetDrawRegion(int param_1, int param_2, int param_3, int param_4);
-    virtual void AddDrawNode(void* param_1, Shape_Info* param_2, int param_3, int param_4, int param_5, int param_6, uchar* param_7, int param_8, int param_9, int param_10);
-    virtual DClipInfo_Node* AddGDINode(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7, int param_8, int param_9, int param_10, int param_11, int param_12, int param_13);
-    virtual DClipInfo_Node* LocateIDbyDrawLevel(int param_1, int param_2, int param_3, int param_4);
-    virtual void Scroll(int param_1, int param_2);
-    virtual void FreeNode(DClipInfo_Node* param_1);
-    virtual int FreeThread(DClipInfo_Node* param_1, DClipInfo_Node* param_2);
-    virtual void ReclaimAllNodes();
-    virtual void ResetStats();
+
+    // --- Non-Virtual Destructor ---
+    ~DClipInfo_List() noexcept(false);
+    // --- Non-Virtual Members ---
+    void SetCaptureLevel(int param_1, int param_2);
+    void SetNumZones(int param_1);
+    void InitNewZone(int param_1);
+    DClipInfo_Node* GetNode();
+    void SetDrawRegion(int param_1, int param_2, int param_3, int param_4);
+    void AddDrawNode(void* param_1, Shape_Info* param_2, int param_3, int param_4, int param_5, int param_6, uchar* param_7, int param_8, int param_9, int param_10);
+    DClipInfo_Node* AddGDINode(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7, int param_8, int param_9, int param_10, int param_11, int param_12, int param_13);
+    DClipInfo_Node* LocateIDbyDrawLevel(int param_1, int param_2, int param_3, int param_4);
+    void Scroll(int param_1, int param_2);
+    void FreeNode(DClipInfo_Node* param_1);
+    int FreeThread(DClipInfo_Node* param_1, DClipInfo_Node* param_2);
+    void ReclaimAllNodes();
+    void ResetStats();
 };
 
 static_assert(sizeof(DClipInfo_List) == 0x70, "DClipInfo_List Size Mismatch");
 static_assert(offsetof(DClipInfo_List, Select_Box) == 0x6C, "DClipInfo_List Offset Mismatch");
 
-class RGE_View : public TPanel {
+class RGE_View : public TPanel       {
 public:
+    char _pad_0x4[0xF0];
     TDrawArea* cur_render_area;              // 0xF4
     int calc_draw_count;                     // 0xF8
     RGE_Game_World* world;                   // 0xFC
@@ -141,69 +146,250 @@ public:
     int DispSel_List_Max;                    // 0x35C
 
     RGE_View();
-    virtual ~RGE_View();
-    virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7, int param_8, char* param_9);
-    virtual void set_focus(int param_1);
-    virtual void Init_Tile_Edge_Tables();
-    virtual void update_display_selected_objects();
-    virtual void display_object_selection(int param_1, int param_2, int param_3, int param_4);
-    virtual void set_rect(long param_1, long param_2, long param_3, long param_4);
-    virtual void delete_surfaces();
-    virtual int create_surfaces();
-    virtual void calc_draw_vars();
-    virtual void set_redraw(RedrawMode param_1);
-    virtual void set_world(RGE_Game_World* param_1);
-    virtual void set_player(RGE_Player* param_1);
-    virtual void set_selection_area(long param_1, long param_2, long param_3, long param_4);
-    virtual int get_selection_area(long* param_1, long* param_2, long* param_3, long* param_4, int param_5);
-    virtual void CreateBlitQueue(tagRECT* param_1, tagRECT* param_2, int param_3, int param_4);
-    virtual void ProcessQueuedBlit(int param_1);
-    virtual void draw();
-    virtual void update();
-    virtual void draw_view(uchar param_1, TDrawArea* param_2);
-    virtual void draw_object_outline();
-    virtual void draw_paint_brush();
-    virtual uchar pick(uchar param_1, uchar param_2, long param_3, long param_4, RGE_Pick_Info* param_5, RGE_Static_Object* param_6);
-    virtual uchar pick_multi(uchar param_1, long param_2, long param_3, long param_4, long param_5);
-    virtual uchar pick(uchar param_1, uchar param_2, tagPOINT* param_3, tagPOINT* param_4, void** param_5, float* param_6, float* param_7, short* param_8, short* param_9);
-    virtual int pick_through_fog(RGE_Static_Object* param_1);
-    virtual int pick_weight(RGE_Static_Object* param_1, int param_2);
-    virtual int get_tile_screen_coords(short param_1, short param_2, short* param_3, short* param_4, int param_5);
-    virtual void get_center_screen_pos(short* param_1, short* param_2);
-    virtual void get_start_coords(short* param_1, short* param_2, short* param_3, short* param_4);
-    virtual void get_center_coords(short* param_1, short* param_2, short* param_3, short* param_4);
-    virtual void get_tile_sizes(short* param_1, short* param_2, short* param_3, short* param_4);
-    virtual void get_max_size(short* param_1, short* param_2);
-    virtual long view_function(uchar param_1, uchar param_2, tagPOINT* param_3, tagPOINT* param_4, void** param_5, float* param_6, float* param_7, short* param_8, short* param_9);
-    virtual long view_function_terrain(uchar param_1, tagRECT param_2);
-    virtual void Update_Render_Pointers();
-    virtual void Add_GDI_Clip_Mask(DClipInfo_Node* param_1, TSpan_List_Manager* param_2);
-    virtual void draw_multi_object_outline();
-    virtual void Draw_GDI_Object(DClipInfo_Node* param_1, TDrawArea* param_2);
-    virtual int get_tile_mask_num(int param_1, int param_2, int param_3, int param_4, ulong param_5);
-    virtual int draw_tile(RGE_Tile* param_1, uchar param_2, short param_3, short param_4, short param_5, short param_6, uchar param_7, int param_8, int param_9);
-    virtual void draw_terrain_shape(int param_1, int param_2, TShape* param_3, int param_4, uchar param_5, uchar param_6, int param_7, int param_8);
-    virtual void draw_terrain_obstruction_map(int param_1, int param_2, TShape* param_3, int param_4, int param_5, int param_6);
-    virtual int Get_Cursor_Position(tagPOINT* param_1, int param_2, int param_3);
-    virtual int Pick_Tile(long param_1, long param_2, int* param_3, int* param_4);
-    virtual void get_tile_bounding_coords(int param_1, int param_2, int* param_3, int* param_4, int* param_5, int* param_6);
-    virtual int pick_objects(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7);
-    virtual int sprite_check(uchar* param_1, Shape_Info* param_2, int param_3, int param_4);
-    virtual int pick_multi_objects(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7, uchar param_8, int param_9);
-    virtual int pick_touched_object(DClipInfo_List* param_1, int param_2, int param_3, int param_4, int param_5, int* param_6);
-    virtual short get_tile_picture(uchar param_1, uchar param_2, short param_3, short param_4);
-    virtual short get_border_picture(uchar param_1, uchar param_2, uchar param_3, short param_4, short param_5);
-    virtual int get_border_edge_pictures(uchar param_1, uchar param_2, uchar param_3, short param_4, short param_5, int* param_6, int* param_7, int* param_8, int* param_9);
-    virtual int hit_tile(RGE_Tile* param_1, short param_2, short param_3, short param_4, short param_5, tagPOINT* param_6);
-    virtual RGE_Static_Object* hit_object(RGE_Tile* param_1, short param_2, short param_3, short param_4, short param_5, tagPOINT* param_6, tagPOINT* param_7, short* param_8, short* param_9, RGE_Static_Object* param_10, uchar param_11);
-    virtual int start_scroll_view(uchar param_1, long param_2, long param_3, int param_4, int param_5);
-    virtual int handle_scroll_view(long param_1, long param_2);
-    virtual void end_scroll_view();
-    virtual int do_paint(long param_1, long param_2, long param_3, long param_4, int param_5);
-    virtual void reset_overlay_sprites();
-    virtual void reset_cyclic_overlay_sprites();
-    virtual void add_overlay_sprite(TShape* param_1, int param_2, int param_3, int param_4, int param_5, int param_6, uchar* param_7, int param_8, ulong param_9);
-    virtual bool Object_Was_Displayed(int param_1, bool param_2);
+
+    // --- VTABLE DUMP (Source: Ghidra) ---
+
+    // [Slot 00] Offset 0x00 (Override)
+    virtual  ~RGE_View() noexcept(false); // Ghidra: `vector_deleting_destructor'
+
+    // [Slot 01] Offset 0x04 WARNING: Function body missing in analysis
+    // virtual void setup();
+
+    // [Slot 02] Offset 0x08 WARNING: Function body missing in analysis
+    // virtual void set_rect();
+
+    // [Slot 03] Offset 0x0C (Override)
+    virtual void set_rect(long param_1, long param_2, long param_3, long param_4); // Ghidra: set_rect
+
+    // [Slot 04] Offset 0x10 WARNING: Function body missing in analysis
+    // virtual void set_color();
+
+    // [Slot 05] Offset 0x14 WARNING: Function body missing in analysis
+    // virtual void set_active();
+
+    // [Slot 06] Offset 0x18 WARNING: Function body missing in analysis
+    // virtual void set_positioning();
+
+    // [Slot 07] Offset 0x1C WARNING: Function body missing in analysis
+    // virtual void set_fixed_position();
+
+    // [Slot 08] Offset 0x20 (Override)
+    virtual void set_redraw(RedrawMode param_1); // Ghidra: set_redraw
+
+    // [Slot 09] Offset 0x24 WARNING: Function body missing in analysis
+    // virtual void set_overlapped_redraw();
+
+    // [Slot 10] Offset 0x28 WARNING: Function body missing in analysis
+    // virtual void draw_setup();
+
+    // [Slot 11] Offset 0x2C WARNING: Function body missing in analysis
+    // virtual void draw_finish();
+
+    // [Slot 12] Offset 0x30 (Override)
+    virtual void draw(); // Ghidra: draw
+
+    // [Slot 13] Offset 0x34 WARNING: Function body missing in analysis
+    // virtual void draw_rect();
+
+    // [Slot 14] Offset 0x38 WARNING: Function body missing in analysis
+    // virtual void draw_offset();
+
+    // [Slot 15] Offset 0x3C WARNING: Function body missing in analysis
+    // virtual void draw_rect2();
+
+    // [Slot 16] Offset 0x40 WARNING: Function body missing in analysis
+    // virtual void draw_offset2();
+
+    // [Slot 17] Offset 0x44 WARNING: Function body missing in analysis
+    // virtual void paint();
+
+    // [Slot 18] Offset 0x48 WARNING: Function body missing in analysis
+    // virtual void wnd_proc();
+
+    // [Slot 19] Offset 0x4C WARNING: Function body missing in analysis
+    // virtual void handle_idle();
+
+    // [Slot 20] Offset 0x50 WARNING: Function body missing in analysis
+    // virtual void handle_size();
+
+    // [Slot 21] Offset 0x54 WARNING: Function body missing in analysis
+    // virtual void handle_paint();
+
+    // [Slot 22] Offset 0x58 WARNING: Function body missing in analysis
+    // virtual void handle_key_down();
+
+    // [Slot 23] Offset 0x5C WARNING: Function body missing in analysis
+    // virtual void handle_char();
+
+    // [Slot 24] Offset 0x60 WARNING: Function body missing in analysis
+    // virtual void handle_command();
+
+    // [Slot 25] Offset 0x64 WARNING: Function body missing in analysis
+    // virtual void handle_user_command();
+
+    // [Slot 26] Offset 0x68 WARNING: Function body missing in analysis
+    // virtual void handle_timer_command();
+
+    // [Slot 27] Offset 0x6C WARNING: Function body missing in analysis
+    // virtual void handle_scroll();
+
+    // [Slot 28] Offset 0x70 WARNING: Function body missing in analysis
+    // virtual void handle_mouse_down();
+
+    // [Slot 29] Offset 0x74 WARNING: Function body missing in analysis
+    // virtual void handle_mouse_move();
+
+    // [Slot 30] Offset 0x78 WARNING: Function body missing in analysis
+    // virtual void handle_mouse_up();
+
+    // [Slot 31] Offset 0x7C WARNING: Function body missing in analysis
+    // virtual void handle_mouse_dbl_click();
+
+    // [Slot 32] Offset 0x80 WARNING: Function body missing in analysis
+    // virtual void mouse_move_action();
+
+    // [Slot 33] Offset 0x84 WARNING: Function body missing in analysis
+    // virtual void mouse_left_down_action();
+
+    // [Slot 34] Offset 0x88 WARNING: Function body missing in analysis
+    // virtual void mouse_left_hold_action();
+
+    // [Slot 35] Offset 0x8C WARNING: Function body missing in analysis
+    // virtual void mouse_left_move_action();
+
+    // [Slot 36] Offset 0x90 WARNING: Function body missing in analysis
+    // virtual void mouse_left_up_action();
+
+    // [Slot 37] Offset 0x94 WARNING: Function body missing in analysis
+    // virtual void mouse_left_dbl_click_action();
+
+    // [Slot 38] Offset 0x98 WARNING: Function body missing in analysis
+    // virtual void mouse_right_down_action();
+
+    // [Slot 39] Offset 0x9C WARNING: Function body missing in analysis
+    // virtual void mouse_right_hold_action();
+
+    // [Slot 40] Offset 0xA0 WARNING: Function body missing in analysis
+    // virtual void mouse_right_move_action();
+
+    // [Slot 41] Offset 0xA4 WARNING: Function body missing in analysis
+    // virtual void mouse_right_up_action();
+
+    // [Slot 42] Offset 0xA8 WARNING: Function body missing in analysis
+    // virtual void mouse_right_dbl_click_action();
+
+    // [Slot 43] Offset 0xAC WARNING: Function body missing in analysis
+    // virtual void key_down_action();
+
+    // [Slot 44] Offset 0xB0 WARNING: Function body missing in analysis
+    // virtual void char_action();
+
+    // [Slot 45] Offset 0xB4 WARNING: Function body missing in analysis
+    // virtual void action();
+
+    // [Slot 46] Offset 0xB8 WARNING: Function body missing in analysis
+    // virtual void get_true_render_rect();
+
+    // [Slot 47] Offset 0xBC WARNING: Function body missing in analysis
+    // virtual void is_inside();
+
+    // [Slot 48] Offset 0xC0 (Override)
+    virtual void set_focus(int param_1); // Ghidra: set_focus
+
+    // [Slot 49] Offset 0xC4 WARNING: Function body missing in analysis
+    // virtual void set_tab_order();
+
+    // [Slot 50] Offset 0xC8 WARNING: Function body missing in analysis
+    // virtual void set_tab_order();
+
+    // [Slot 51] Offset 0xCC WARNING: Function body missing in analysis
+    // virtual void get_help_info();
+
+    // [Slot 52] Offset 0xD0 WARNING: Function body missing in analysis
+    // virtual void stop_sound_system();
+
+    // [Slot 53] Offset 0xD4 WARNING: Function body missing in analysis
+    // virtual void restart_sound_system();
+
+    // [Slot 54] Offset 0xD8 WARNING: Function body missing in analysis
+    // virtual void take_snapshot();
+
+    // [Slot 55] Offset 0xDC WARNING: Function body missing in analysis
+    // virtual void handle_reactivate();
+
+    // [Slot 56] Offset 0xE0 (Override)
+    virtual int pick_through_fog(RGE_Static_Object* param_1); // Ghidra: pick_through_fog
+
+    // [Slot 57] Offset 0xE4 (Override)
+    virtual int pick_weight(RGE_Static_Object* param_1, int param_2); // Ghidra: pick_weight
+
+    // [Slot 58] Offset 0xE8 (Override)
+    virtual int start_scroll_view(uchar param_1, long param_2, long param_3, int param_4, int param_5); // Ghidra: start_scroll_view
+
+    // [Slot 59] Offset 0xEC (Override)
+    virtual int handle_scroll_view(long param_1, long param_2); // Ghidra: handle_scroll_view
+
+    // [Slot 60] Offset 0xF0 (Override)
+    virtual void end_scroll_view(); // Ghidra: end_scroll_view
+
+    // [Slot 61] Offset 0xF4 (Override)
+    virtual int do_paint(long param_1, long param_2, long param_3, long param_4, int param_5); // Ghidra: do_paint
+
+    // [Slot 62] Offset 0xF8 (Override)
+    virtual void draw_multi_object_outline(); // Ghidra: draw_multi_object_outline
+
+    // --- Non-Virtual Members ---
+    long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7, int param_8, char* param_9);
+    void Init_Tile_Edge_Tables();
+    void update_display_selected_objects();
+    void display_object_selection(int param_1, int param_2, int param_3, int param_4);
+    void delete_surfaces();
+    int create_surfaces();
+    void calc_draw_vars();
+    void set_world(RGE_Game_World* param_1);
+    void set_player(RGE_Player* param_1);
+    void set_selection_area(long param_1, long param_2, long param_3, long param_4);
+    int get_selection_area(long* param_1, long* param_2, long* param_3, long* param_4, int param_5);
+    void CreateBlitQueue(tagRECT* param_1, tagRECT* param_2, int param_3, int param_4);
+    void ProcessQueuedBlit(int param_1);
+    void update();
+    void draw_view(uchar param_1, TDrawArea* param_2);
+    void draw_object_outline();
+    void draw_paint_brush();
+    uchar pick(uchar param_1, uchar param_2, long param_3, long param_4, RGE_Pick_Info* param_5, RGE_Static_Object* param_6);
+    uchar pick_multi(uchar param_1, long param_2, long param_3, long param_4, long param_5);
+    uchar pick(uchar param_1, uchar param_2, tagPOINT* param_3, tagPOINT* param_4, void** param_5, float* param_6, float* param_7, short* param_8, short* param_9);
+    int get_tile_screen_coords(short param_1, short param_2, short* param_3, short* param_4, int param_5);
+    void get_center_screen_pos(short* param_1, short* param_2);
+    void get_start_coords(short* param_1, short* param_2, short* param_3, short* param_4);
+    void get_center_coords(short* param_1, short* param_2, short* param_3, short* param_4);
+    void get_tile_sizes(short* param_1, short* param_2, short* param_3, short* param_4);
+    void get_max_size(short* param_1, short* param_2);
+    long view_function(uchar param_1, uchar param_2, tagPOINT* param_3, tagPOINT* param_4, void** param_5, float* param_6, float* param_7, short* param_8, short* param_9);
+    long view_function_terrain(uchar param_1, tagRECT param_2);
+    void Update_Render_Pointers();
+    void Add_GDI_Clip_Mask(DClipInfo_Node* param_1, TSpan_List_Manager* param_2);
+    void Draw_GDI_Object(DClipInfo_Node* param_1, TDrawArea* param_2);
+    int get_tile_mask_num(int param_1, int param_2, int param_3, int param_4, ulong param_5);
+    int draw_tile(RGE_Tile* param_1, uchar param_2, short param_3, short param_4, short param_5, short param_6, uchar param_7, int param_8, int param_9);
+    void draw_terrain_shape(int param_1, int param_2, TShape* param_3, int param_4, uchar param_5, uchar param_6, int param_7, int param_8);
+    void draw_terrain_obstruction_map(int param_1, int param_2, TShape* param_3, int param_4, int param_5, int param_6);
+    int Get_Cursor_Position(tagPOINT* param_1, int param_2, int param_3);
+    int Pick_Tile(long param_1, long param_2, int* param_3, int* param_4);
+    void get_tile_bounding_coords(int param_1, int param_2, int* param_3, int* param_4, int* param_5, int* param_6);
+    int pick_objects(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7);
+    int sprite_check(uchar* param_1, Shape_Info* param_2, int param_3, int param_4);
+    int pick_multi_objects(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7, uchar param_8, int param_9);
+    int pick_touched_object(DClipInfo_List* param_1, int param_2, int param_3, int param_4, int param_5, int* param_6);
+    short get_tile_picture(uchar param_1, uchar param_2, short param_3, short param_4);
+    short get_border_picture(uchar param_1, uchar param_2, uchar param_3, short param_4, short param_5);
+    int get_border_edge_pictures(uchar param_1, uchar param_2, uchar param_3, short param_4, short param_5, int* param_6, int* param_7, int* param_8, int* param_9);
+    int hit_tile(RGE_Tile* param_1, short param_2, short param_3, short param_4, short param_5, tagPOINT* param_6);
+    RGE_Static_Object* hit_object(RGE_Tile* param_1, short param_2, short param_3, short param_4, short param_5, tagPOINT* param_6, tagPOINT* param_7, short* param_8, short* param_9, RGE_Static_Object* param_10, uchar param_11);
+    void reset_overlay_sprites();
+    void reset_cyclic_overlay_sprites();
+    void add_overlay_sprite(TShape* param_1, int param_2, int param_3, int param_4, int param_5, int param_6, uchar* param_7, int param_8, ulong param_9);
+    bool Object_Was_Displayed(int param_1, bool param_2);
 };
 
 static_assert(sizeof(RGE_View) == 0x360, "RGE_View Size Mismatch");

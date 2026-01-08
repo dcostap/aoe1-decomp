@@ -1,8 +1,9 @@
 #pragma once
 #include "../common.h"
 
-class Path {
+class Path       {
 public:
+    ulong timeStampValue;                    // 0x0
     Waypoint startValue;                     // 0x4
     Waypoint goalValue;                      // 0x14
     Waypoint* pathValue;                     // 0x24
@@ -11,34 +12,37 @@ public:
     int currentWaypointValue;                // 0x30
 
     Path(int param_1);
-    virtual ~Path();
-    virtual Path* operator+(Path* __return_storage_ptr__, Path* param_1);
-    virtual Path* operator=(Path* param_1);
-    virtual int operator==(Path* param_1);
-    virtual int insertAtCurrent(Waypoint* param_1);
-    virtual int insertAtEnd(Waypoint param_1);
-    virtual int contains(Waypoint* param_1);
-    virtual void killPath();
-    virtual int maxNumberOfWaypoints();
-    virtual int numberOfWaypoints();
-    virtual ulong timeStamp();
-    virtual void setTimeStamp(ulong param_1);
-    virtual float length();
-    virtual Waypoint* start();
-    virtual Waypoint* goal();
-    virtual Waypoint* waypoint(int param_1);
-    virtual Waypoint* currentWaypoint();
-    virtual int currentWaypointNumber();
-    virtual void setCurrentWaypointNumber(int param_1);
-    virtual Waypoint* nextWaypoint();
-    virtual Waypoint* previousWaypoint();
-    virtual Waypoint* firstWaypoint();
-    virtual Waypoint* lastWaypoint();
-    virtual void initToStart();
-    virtual void initToEnd();
-    virtual int moveToNextWaypoint();
-    virtual int moveToLastWaypoint();
-    virtual float distanceToNextWaypoint();
+
+    // --- Non-Virtual Destructor ---
+    ~Path() noexcept(false);
+    // --- Non-Virtual Members ---
+    Path* operator+(Path* __return_storage_ptr__, Path* param_1);
+    Path* operator=(Path* param_1);
+    int operator==(Path* param_1);
+    int insertAtCurrent(Waypoint* param_1);
+    int insertAtEnd(Waypoint param_1);
+    int contains(Waypoint* param_1);
+    void killPath();
+    int maxNumberOfWaypoints();
+    int numberOfWaypoints();
+    ulong timeStamp();
+    void setTimeStamp(ulong param_1);
+    float length();
+    Waypoint* start();
+    Waypoint* goal();
+    Waypoint* waypoint(int param_1);
+    Waypoint* currentWaypoint();
+    int currentWaypointNumber();
+    void setCurrentWaypointNumber(int param_1);
+    Waypoint* nextWaypoint();
+    Waypoint* previousWaypoint();
+    Waypoint* firstWaypoint();
+    Waypoint* lastWaypoint();
+    void initToStart();
+    void initToEnd();
+    int moveToNextWaypoint();
+    int moveToLastWaypoint();
+    float distanceToNextWaypoint();
 };
 
 static_assert(sizeof(Path) == 0x34, "Path Size Mismatch");

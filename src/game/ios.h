@@ -25,7 +25,7 @@ enum seek_dir : unsigned int {
     end = 2,
 };
 
-class ios {
+class ios       {
 public:
     streambuf* bp;                           // 0x4
     int state;                               // 0x8
@@ -43,11 +43,17 @@ public:
     ios();
     ios(streambuf* param_1);
     ios(ios* param_1);
-    virtual ~ios();
-    virtual void init(streambuf* param_1);
-    virtual ios* operator=(ios* param_1);
-    virtual int xalloc();
-    virtual long bitalloc();
+
+    // --- VTABLE DUMP (Source: Ghidra) ---
+
+    // [Slot 00] Offset 0x00 (Override)
+    virtual  ~ios() noexcept(false); // Ghidra: `vector_deleting_destructor'
+
+    // --- Non-Virtual Members ---
+    void init(streambuf* param_1);
+    ios* operator=(ios* param_1);
+    int xalloc();
+    long bitalloc();
 };
 
 static_assert(sizeof(ios) == 0x34, "ios Size Mismatch");

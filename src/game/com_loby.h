@@ -2,8 +2,10 @@
 #include "../common.h"
 #include "com_err.h"
 
-class RGE_Lobby : public RGE_Comm_Error {
+class RGE_Lobby : public RGE_Comm_Error       {
 public:
+    void* HostHWND;                          // 0x0
+    IDirectPlayLobby* glpDPL;                // 0x4
     IDirectPlayLobby2* glpDPL2;              // 0x8
     IDirectPlay2* glpDP;                     // 0xC
     DPLCONNECTION* glpdplConnection;         // 0x10
@@ -11,17 +13,20 @@ public:
     RGE_Comm_Error* Err;                     // 0x18
 
     RGE_Lobby(void* param_1);
-    virtual ~RGE_Lobby();
-    virtual void ClearLobbyInfo();
-    virtual int IsLobbyLaunched();
-    virtual uchar CheckForLobbyLaunch(IDirectPlay3** param_1);
-    virtual uchar IsThisHost();
-    virtual uchar GetPlayerInfo(char** param_1);
-    virtual uchar GetSessionInfo(DPSESSIONDESC2* param_1);
-    virtual long SendZoneHandshakeResponse();
-    virtual int GameIsOver();
-    virtual long ReceiveZoneMessages();
-    virtual long SendZoneMessage(char* param_1, ulong param_2, _GUID param_3);
+
+    // --- Non-Virtual Destructor ---
+    ~RGE_Lobby() noexcept(false);
+    // --- Non-Virtual Members ---
+    void ClearLobbyInfo();
+    int IsLobbyLaunched();
+    uchar CheckForLobbyLaunch(IDirectPlay3** param_1);
+    uchar IsThisHost();
+    uchar GetPlayerInfo(char** param_1);
+    uchar GetSessionInfo(DPSESSIONDESC2* param_1);
+    long SendZoneHandshakeResponse();
+    int GameIsOver();
+    long ReceiveZoneMessages();
+    long SendZoneMessage(char* param_1, ulong param_2, _GUID param_3);
 };
 
 static_assert(sizeof(RGE_Lobby) == 0x1C, "RGE_Lobby Size Mismatch");
