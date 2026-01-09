@@ -1,7 +1,7 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class DClipInfo_List       {
+class DClipInfo_List {
 public:
     DClipInfo_Node** Zone_Ptrs;              // 0x0
     int* Zone_Size_Ptrs;                     // 0x4
@@ -33,10 +33,7 @@ public:
     short* Select_Box;                       // 0x6C
 
     DClipInfo_List(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6);
-
-    // --- Non-Virtual Destructor ---
-    ~DClipInfo_List() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~DClipInfo_List();
     void SetCaptureLevel(int param_1, int param_2);
     void SetNumZones(int param_1);
     void InitNewZone(int param_1);
@@ -53,11 +50,9 @@ public:
 };
 
 static_assert(sizeof(DClipInfo_List) == 0x70, "DClipInfo_List Size Mismatch");
-static_assert(offsetof(DClipInfo_List, Select_Box) == 0x6C, "DClipInfo_List Offset Mismatch");
 
-class RGE_View : public TPanel       {
+class RGE_View : public TPanel {
 public:
-    char _pad_0x4[0xF0];
     TDrawArea* cur_render_area;              // 0xF4
     int calc_draw_count;                     // 0xF8
     RGE_Game_World* world;                   // 0xFC
@@ -145,200 +140,19 @@ public:
     int DispSel_List_Size;                   // 0x358
     int DispSel_List_Max;                    // 0x35C
 
+    virtual void set_rect(long param_1, long param_2, long param_3, long param_4); // vt0[3]+0xC=0x533F70
+    virtual void set_redraw(RedrawMode param_1);            // vt0[8]+0x20=0x534420
+    virtual void draw();                                    // vt0[12]+0x30=0x534AE0
+    virtual void set_focus(int param_1);                    // vt0[48]+0xC0=0x533AC0
+    virtual int pick_through_fog(RGE_Static_Object* param_1); // vt0[56]+0xE0=0x535CB0
+    virtual int pick_weight(RGE_Static_Object* param_1, int param_2); // vt0[57]+0xE4=0x535CC0
+    virtual int start_scroll_view(uchar param_1, long param_2, long param_3, int param_4, int param_5); // vt0[58]+0xE8=0x53A0D0
+    virtual int handle_scroll_view(long param_1, long param_2); // vt0[59]+0xEC=0x53A290
+    virtual void end_scroll_view();                         // vt0[60]+0xF0=0x53A9C0
+    virtual int do_paint(long param_1, long param_2, long param_3, long param_4, int param_5); // vt0[61]+0xF4=0x53AAF0
+    virtual void draw_multi_object_outline();               // vt0[62]+0xF8=0x538410
     RGE_View();
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual  ~RGE_View() noexcept(false); // Ghidra: `vector_deleting_destructor'
-
-    // [Slot 01] Offset 0x04 WARNING: Function body missing in analysis
-    // virtual void setup();
-
-    // [Slot 02] Offset 0x08 WARNING: Function body missing in analysis
-    // virtual void set_rect();
-
-    // [Slot 03] Offset 0x0C (Override)
-    virtual void set_rect(long param_1, long param_2, long param_3, long param_4); // Ghidra: set_rect
-
-    // [Slot 04] Offset 0x10 WARNING: Function body missing in analysis
-    // virtual void set_color();
-
-    // [Slot 05] Offset 0x14 WARNING: Function body missing in analysis
-    // virtual void set_active();
-
-    // [Slot 06] Offset 0x18 WARNING: Function body missing in analysis
-    // virtual void set_positioning();
-
-    // [Slot 07] Offset 0x1C WARNING: Function body missing in analysis
-    // virtual void set_fixed_position();
-
-    // [Slot 08] Offset 0x20 (Override)
-    virtual void set_redraw(RedrawMode param_1); // Ghidra: set_redraw
-
-    // [Slot 09] Offset 0x24 WARNING: Function body missing in analysis
-    // virtual void set_overlapped_redraw();
-
-    // [Slot 10] Offset 0x28 WARNING: Function body missing in analysis
-    // virtual void draw_setup();
-
-    // [Slot 11] Offset 0x2C WARNING: Function body missing in analysis
-    // virtual void draw_finish();
-
-    // [Slot 12] Offset 0x30 (Override)
-    virtual void draw(); // Ghidra: draw
-
-    // [Slot 13] Offset 0x34 WARNING: Function body missing in analysis
-    // virtual void draw_rect();
-
-    // [Slot 14] Offset 0x38 WARNING: Function body missing in analysis
-    // virtual void draw_offset();
-
-    // [Slot 15] Offset 0x3C WARNING: Function body missing in analysis
-    // virtual void draw_rect2();
-
-    // [Slot 16] Offset 0x40 WARNING: Function body missing in analysis
-    // virtual void draw_offset2();
-
-    // [Slot 17] Offset 0x44 WARNING: Function body missing in analysis
-    // virtual void paint();
-
-    // [Slot 18] Offset 0x48 WARNING: Function body missing in analysis
-    // virtual void wnd_proc();
-
-    // [Slot 19] Offset 0x4C WARNING: Function body missing in analysis
-    // virtual void handle_idle();
-
-    // [Slot 20] Offset 0x50 WARNING: Function body missing in analysis
-    // virtual void handle_size();
-
-    // [Slot 21] Offset 0x54 WARNING: Function body missing in analysis
-    // virtual void handle_paint();
-
-    // [Slot 22] Offset 0x58 WARNING: Function body missing in analysis
-    // virtual void handle_key_down();
-
-    // [Slot 23] Offset 0x5C WARNING: Function body missing in analysis
-    // virtual void handle_char();
-
-    // [Slot 24] Offset 0x60 WARNING: Function body missing in analysis
-    // virtual void handle_command();
-
-    // [Slot 25] Offset 0x64 WARNING: Function body missing in analysis
-    // virtual void handle_user_command();
-
-    // [Slot 26] Offset 0x68 WARNING: Function body missing in analysis
-    // virtual void handle_timer_command();
-
-    // [Slot 27] Offset 0x6C WARNING: Function body missing in analysis
-    // virtual void handle_scroll();
-
-    // [Slot 28] Offset 0x70 WARNING: Function body missing in analysis
-    // virtual void handle_mouse_down();
-
-    // [Slot 29] Offset 0x74 WARNING: Function body missing in analysis
-    // virtual void handle_mouse_move();
-
-    // [Slot 30] Offset 0x78 WARNING: Function body missing in analysis
-    // virtual void handle_mouse_up();
-
-    // [Slot 31] Offset 0x7C WARNING: Function body missing in analysis
-    // virtual void handle_mouse_dbl_click();
-
-    // [Slot 32] Offset 0x80 WARNING: Function body missing in analysis
-    // virtual void mouse_move_action();
-
-    // [Slot 33] Offset 0x84 WARNING: Function body missing in analysis
-    // virtual void mouse_left_down_action();
-
-    // [Slot 34] Offset 0x88 WARNING: Function body missing in analysis
-    // virtual void mouse_left_hold_action();
-
-    // [Slot 35] Offset 0x8C WARNING: Function body missing in analysis
-    // virtual void mouse_left_move_action();
-
-    // [Slot 36] Offset 0x90 WARNING: Function body missing in analysis
-    // virtual void mouse_left_up_action();
-
-    // [Slot 37] Offset 0x94 WARNING: Function body missing in analysis
-    // virtual void mouse_left_dbl_click_action();
-
-    // [Slot 38] Offset 0x98 WARNING: Function body missing in analysis
-    // virtual void mouse_right_down_action();
-
-    // [Slot 39] Offset 0x9C WARNING: Function body missing in analysis
-    // virtual void mouse_right_hold_action();
-
-    // [Slot 40] Offset 0xA0 WARNING: Function body missing in analysis
-    // virtual void mouse_right_move_action();
-
-    // [Slot 41] Offset 0xA4 WARNING: Function body missing in analysis
-    // virtual void mouse_right_up_action();
-
-    // [Slot 42] Offset 0xA8 WARNING: Function body missing in analysis
-    // virtual void mouse_right_dbl_click_action();
-
-    // [Slot 43] Offset 0xAC WARNING: Function body missing in analysis
-    // virtual void key_down_action();
-
-    // [Slot 44] Offset 0xB0 WARNING: Function body missing in analysis
-    // virtual void char_action();
-
-    // [Slot 45] Offset 0xB4 WARNING: Function body missing in analysis
-    // virtual void action();
-
-    // [Slot 46] Offset 0xB8 WARNING: Function body missing in analysis
-    // virtual void get_true_render_rect();
-
-    // [Slot 47] Offset 0xBC WARNING: Function body missing in analysis
-    // virtual void is_inside();
-
-    // [Slot 48] Offset 0xC0 (Override)
-    virtual void set_focus(int param_1); // Ghidra: set_focus
-
-    // [Slot 49] Offset 0xC4 WARNING: Function body missing in analysis
-    // virtual void set_tab_order();
-
-    // [Slot 50] Offset 0xC8 WARNING: Function body missing in analysis
-    // virtual void set_tab_order();
-
-    // [Slot 51] Offset 0xCC WARNING: Function body missing in analysis
-    // virtual void get_help_info();
-
-    // [Slot 52] Offset 0xD0 WARNING: Function body missing in analysis
-    // virtual void stop_sound_system();
-
-    // [Slot 53] Offset 0xD4 WARNING: Function body missing in analysis
-    // virtual void restart_sound_system();
-
-    // [Slot 54] Offset 0xD8 WARNING: Function body missing in analysis
-    // virtual void take_snapshot();
-
-    // [Slot 55] Offset 0xDC WARNING: Function body missing in analysis
-    // virtual void handle_reactivate();
-
-    // [Slot 56] Offset 0xE0 (Override)
-    virtual int pick_through_fog(RGE_Static_Object* param_1); // Ghidra: pick_through_fog
-
-    // [Slot 57] Offset 0xE4 (Override)
-    virtual int pick_weight(RGE_Static_Object* param_1, int param_2); // Ghidra: pick_weight
-
-    // [Slot 58] Offset 0xE8 (Override)
-    virtual int start_scroll_view(uchar param_1, long param_2, long param_3, int param_4, int param_5); // Ghidra: start_scroll_view
-
-    // [Slot 59] Offset 0xEC (Override)
-    virtual int handle_scroll_view(long param_1, long param_2); // Ghidra: handle_scroll_view
-
-    // [Slot 60] Offset 0xF0 (Override)
-    virtual void end_scroll_view(); // Ghidra: end_scroll_view
-
-    // [Slot 61] Offset 0xF4 (Override)
-    virtual int do_paint(long param_1, long param_2, long param_3, long param_4, int param_5); // Ghidra: do_paint
-
-    // [Slot 62] Offset 0xF8 (Override)
-    virtual void draw_multi_object_outline(); // Ghidra: draw_multi_object_outline
-
-    // --- Non-Virtual Members ---
+    ~RGE_View();
     long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7, int param_8, char* param_9);
     void Init_Tile_Edge_Tables();
     void update_display_selected_objects();
@@ -393,5 +207,4 @@ public:
 };
 
 static_assert(sizeof(RGE_View) == 0x360, "RGE_View Size Mismatch");
-static_assert(offsetof(RGE_View, DispSel_List_Max) == 0x35C, "RGE_View Offset Mismatch");
 

@@ -1,8 +1,9 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class BaseObject       {
+class BaseObject {
 public:
+    // [omitted] vfptr @ 0x0 ('_padding_')
     BaseObject* next;                        // 0x4
     BaseObject* prev;                        // 0x8
     int numberGroupsValue;                   // 0xC
@@ -31,86 +32,7 @@ public:
     BaseObject();
     BaseObject(int param_1, int param_2, int param_3, int param_4, char* param_5, float param_6, float param_7, float param_8, float param_9, float param_10, float param_11, int param_12, int param_13, int param_14);
     BaseObject(BaseObject* param_1);
-    BaseObject(BaseObject* param_1);
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual  ~BaseObject() noexcept(false); // Ghidra: `vector_deleting_destructor'
-
-    // [Slot 01] Offset 0x04 WARNING: Function body missing in analysis
-    // virtual void `scalar_deleting_destructor'();
-
-    // [Slot 02] Offset 0x08 WARNING: Function body missing in analysis
-    // virtual void `scalar_deleting_destructor'();
-
-    // [Slot 03] Offset 0x0C WARNING: Function body missing in analysis
-    // virtual void loggingHistory();
-
-    // [Slot 04] Offset 0x10 WARNING: Function body missing in analysis
-    // virtual void setLogHistory();
-
-    // [Slot 05] Offset 0x14 WARNING: Function body missing in analysis
-    // virtual void toggleLogHistory();
-
-    // [Slot 06] Offset 0x18 WARNING: Function body missing in analysis
-    // virtual void setHistoryFilename();
-
-    // [Slot 07] Offset 0x1C WARNING: Function body missing in analysis
-    // virtual void loggingCommonHistory();
-
-    // [Slot 08] Offset 0x20 WARNING: Function body missing in analysis
-    // virtual void setLogCommonHistory();
-
-    // [Slot 09] Offset 0x24 WARNING: Function body missing in analysis
-    // virtual void toggleLogCommonHistory();
-
-    // [Slot 10] Offset 0x28 WARNING: Function body missing in analysis
-    // virtual void loadState();
-
-    // [Slot 11] Offset 0x2C WARNING: Function body missing in analysis
-    // virtual void saveState();
-
-    // [Slot 12] Offset 0x30 WARNING: Function body missing in analysis
-    // virtual void gleanState();
-
-    // [Slot 13] Offset 0x34 WARNING: Function body missing in analysis
-    // virtual void processMessage();
-
-    // [Slot 14] Offset 0x38 WARNING: Function body missing in analysis
-    // virtual void update();
-
-    // [Slot 15] Offset 0x3C WARNING: Function body missing in analysis
-    // virtual void setCallbackMessage();
-
-    // [Slot 16] Offset 0x40 WARNING: Function body missing in analysis
-    // virtual void filterOutMessage();
-
-    // [Slot 17] Offset 0x44 WARNING: Function body missing in analysis
-    // virtual void save();
-
-    // [Slot 18] Offset 0x48 WARNING: Function body missing in analysis
-    // virtual void loadConstructionPlan();
-
-    // [Slot 19] Offset 0x4C WARNING: Function body missing in analysis
-    // virtual void placeStructure();
-
-    // [Slot 20] Offset 0x50 WARNING: Function body missing in analysis
-    // virtual void setBuilt();
-
-    // [Slot 21] Offset 0x54 WARNING: Function body missing in analysis
-    // virtual void unplaceStructure();
-
-    // [Slot 22] Offset 0x58 WARNING: Function body missing in analysis
-    // virtual void unplaceStructure();
-
-    // [Slot 23] Offset 0x5C WARNING: Function body missing in analysis
-    // virtual void decrementBuildAttempts();
-
-    // [Slot 24] Offset 0x60 WARNING: Function body missing in analysis
-    // virtual void incrementBuildAttempts();
-
-    // --- Non-Virtual Members ---
+    ~BaseObject();
     int numberGroups();
     int groupID(int param_1);
     int inGroup(int param_1);
@@ -159,5 +81,4 @@ public:
 };
 
 static_assert(sizeof(BaseObject) == 0xA0, "BaseObject Size Mismatch");
-static_assert(offsetof(BaseObject, currentTargetZPositionValue) == 0x9C, "BaseObject Offset Mismatch");
 

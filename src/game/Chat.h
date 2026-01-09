@@ -1,9 +1,7 @@
 #pragma once
-#include "../common.h"
-#include "taunt.h"
-#include "Sounddrv.h"
+#include "common.h"
 
-class TChat       {
+class TChat {
 public:
     void* HostWnd;                           // 0x0
     int chatGroupPlayers[10];                // 0x4
@@ -12,10 +10,7 @@ public:
     TTaunt* taunt;                           // 0xFC
 
     TChat(void* param_1);
-
-    // --- Non-Virtual Destructor ---
-    ~TChat() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~TChat();
     int AddChatMsg(char* param_1, char* param_2, uchar param_3);
     char* GetChatMsg(int param_1);
     void ClearChat();
@@ -28,5 +23,4 @@ public:
 };
 
 static_assert(sizeof(TChat) == 0x100, "TChat Size Mismatch");
-static_assert(offsetof(TChat, taunt) == 0xFC, "TChat Offset Mismatch");
 

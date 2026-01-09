@@ -1,6 +1,6 @@
 #pragma once
-#include "../common.h"
-#include "aibitm.h"
+#include "common.h"
+
 
 // ----------------------------------------------------------------
 // PlacementState
@@ -20,9 +20,8 @@ struct PlacementState {
     BuildItem * buildItem; // 0x12C
 };
 
-class BuildItem : public BaseItem       {
+class BuildItem : public BaseItem {
 public:
-    char _pad_0x4[0x68];
     BuildItem* next;                         // 0x6C
     BuildItem* prev;                         // 0x70
     int buildCategoryValue;                  // 0x74
@@ -43,71 +42,7 @@ public:
     BuildItem();
     BuildItem(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, char* param_7, float param_8, float param_9, float param_10, int param_11, int param_12, int param_13, int param_14);
     BuildItem(BuildItem* param_1);
-    BuildItem(BuildItem* param_1);
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual  ~BuildItem() noexcept(false); // Ghidra: `vector_deleting_destructor'
-
-    // [Slot 01] Offset 0x04 WARNING: Function body missing in analysis
-    // virtual void `scalar_deleting_destructor'();
-
-    // [Slot 02] Offset 0x08 WARNING: Function body missing in analysis
-    // virtual void loggingHistory();
-
-    // [Slot 03] Offset 0x0C WARNING: Function body missing in analysis
-    // virtual void setLogHistory();
-
-    // [Slot 04] Offset 0x10 WARNING: Function body missing in analysis
-    // virtual void toggleLogHistory();
-
-    // [Slot 05] Offset 0x14 WARNING: Function body missing in analysis
-    // virtual void setHistoryFilename();
-
-    // [Slot 06] Offset 0x18 WARNING: Function body missing in analysis
-    // virtual void loggingCommonHistory();
-
-    // [Slot 07] Offset 0x1C WARNING: Function body missing in analysis
-    // virtual void setLogCommonHistory();
-
-    // [Slot 08] Offset 0x20 WARNING: Function body missing in analysis
-    // virtual void toggleLogCommonHistory();
-
-    // [Slot 09] Offset 0x24 WARNING: Function body missing in analysis
-    // virtual void loadState();
-
-    // [Slot 10] Offset 0x28 WARNING: Function body missing in analysis
-    // virtual void saveState();
-
-    // [Slot 11] Offset 0x2C WARNING: Function body missing in analysis
-    // virtual void gleanState();
-
-    // [Slot 12] Offset 0x30 WARNING: Function body missing in analysis
-    // virtual void processMessage();
-
-    // [Slot 13] Offset 0x34 WARNING: Function body missing in analysis
-    // virtual void update();
-
-    // [Slot 14] Offset 0x38 WARNING: Function body missing in analysis
-    // virtual void setCallbackMessage();
-
-    // [Slot 15] Offset 0x3C WARNING: Function body missing in analysis
-    // virtual void filterOutMessage();
-
-    // [Slot 16] Offset 0x40 WARNING: Function body missing in analysis
-    // virtual void save();
-
-    // [Slot 17] Offset 0x44 WARNING: Function body missing in analysis
-    // virtual void displayBuildList();
-
-    // [Slot 18] Offset 0x48 WARNING: Function body missing in analysis
-    // virtual void loadBuildList();
-
-    // [Slot 19] Offset 0x4C WARNING: Function body missing in analysis
-    // virtual void numberBuiltOrInProgressItemsOfType();
-
-    // --- Non-Virtual Members ---
+    ~BuildItem();
     int buildCategory();
     int number();
     int priority();
@@ -136,5 +71,4 @@ public:
 };
 
 static_assert(sizeof(BuildItem) == 0xB0, "BuildItem Size Mismatch");
-static_assert(offsetof(BuildItem, permanentSkipValue) == 0xAC, "BuildItem Offset Mismatch");
 

@@ -1,22 +1,5 @@
 #pragma once
-#include "../common.h"
-#include "Pnl_scr.h"
-#include "Pnl_msg.h"
-
-class TRIBE_Main_View;
-class TRIBE_Diamond_Map_View;
-class TRIBE_Panel_Inven;
-class TRIBE_Panel_Object;
-class TRIBE_Panel_Button;
-class TTextPanel;
-class TRIBE_Panel_Time;
-class TRIBE_Panel_Pop;
-class RGE_Panel_Tool_Box;
-class TScrollBarPanel;
-class TRIBE_World;
-
-// Guess based on offsets of _unnamed properties 
-#pragma pack(push, 1)
+#include "common.h"
 
 // 16 bytes each
 struct PortInfo {          // portrait / selection slot
@@ -34,12 +17,8 @@ struct AnimPalEntry {      // palette animation entry
     uint32_t d;
 };
 
-#pragma pack(pop)
-
-class TRIBE_Screen_Game : public TScreenPanel       {
+class TRIBE_Screen_Game : public TScreenPanel {
 public:
-    char _pad_0x4[0x471];
-    TShape* game_screen_pic;                 // 0x475
     TShape* button_border1_pic;              // 0x479
     TShape* button_other_pic;                // 0x47D
     TShape* button_border2_pic;              // 0x481
@@ -108,233 +87,23 @@ public:
     __unnamed anim_pal_table[7];             // 0x69B
     char _pad_0x70B[0xB9];
 
+    virtual void set_redraw(RedrawMode param_1);            // vt0[8]+0x20=0x4959A0
+    virtual void set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3); // vt0[9]+0x24=0x4959B0
+    virtual void draw();                                    // vt0[12]+0x30=0x49B560
+    virtual long wnd_proc(void* param_1, uint param_2, uint param_3, long param_4); // vt0[18]+0x48=0x4970A0
+    virtual long handle_idle();                             // vt0[19]+0x4C=0x496700
+    virtual long handle_size(long param_1, long param_2);   // vt0[20]+0x50=0x495AE0
+    virtual long handle_paint();                            // vt0[21]+0x54=0x496550
+    virtual long handle_user_command(uint param_1, long param_2); // vt0[25]+0x64=0x497280
+    virtual long handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5); // vt0[28]+0x70=0x497210
+    virtual long key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5); // vt0[43]+0xAC=0x497440
+    virtual long char_action(long param_1, short param_2);  // vt0[44]+0xB0=0x498290
+    virtual long action(TPanel* param_1, long param_2, ulong param_3, ulong param_4); // vt0[45]+0xB4=0x4982E0
+    virtual void set_focus(int param_1);                    // vt0[48]+0xC0=0x49D4B0
+    virtual void stop_sound_system();                       // vt0[52]+0xD0=0x49D4F0
+    virtual int restart_sound_system();                     // vt0[53]+0xD4=0x49D530
     TRIBE_Screen_Game();
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual  ~TRIBE_Screen_Game() noexcept(false); // Ghidra: `vector_deleting_destructor'
-
-    // [Slot 01] Offset 0x04 WARNING: Function body missing in analysis
-    // virtual void setup();
-
-    // [Slot 02] Offset 0x08 WARNING: Function body missing in analysis
-    // virtual void set_rect();
-
-    // [Slot 03] Offset 0x0C WARNING: Function body missing in analysis
-    // virtual void set_rect();
-
-    // [Slot 04] Offset 0x10 WARNING: Function body missing in analysis
-    // virtual void set_color();
-
-    // [Slot 05] Offset 0x14 WARNING: Function body missing in analysis
-    // virtual void set_active();
-
-    // [Slot 06] Offset 0x18 WARNING: Function body missing in analysis
-    // virtual void set_positioning();
-
-    // [Slot 07] Offset 0x1C WARNING: Function body missing in analysis
-    // virtual void set_fixed_position();
-
-    // [Slot 08] Offset 0x20 (Override)
-    virtual void set_redraw(RedrawMode param_1); // Ghidra: set_redraw
-
-    // [Slot 09] Offset 0x24 (Override)
-    virtual void set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3); // Ghidra: set_overlapped_redraw
-
-    // [Slot 10] Offset 0x28 WARNING: Function body missing in analysis
-    // virtual void draw_setup();
-
-    // [Slot 11] Offset 0x2C WARNING: Function body missing in analysis
-    // virtual void draw_finish();
-
-    // [Slot 12] Offset 0x30 (Override)
-    virtual void draw(); // Ghidra: draw
-
-    // [Slot 13] Offset 0x34 WARNING: Function body missing in analysis
-    // virtual void draw_rect();
-
-    // [Slot 14] Offset 0x38 WARNING: Function body missing in analysis
-    // virtual void draw_offset();
-
-    // [Slot 15] Offset 0x3C WARNING: Function body missing in analysis
-    // virtual void draw_rect2();
-
-    // [Slot 16] Offset 0x40 WARNING: Function body missing in analysis
-    // virtual void draw_offset2();
-
-    // [Slot 17] Offset 0x44 WARNING: Function body missing in analysis
-    // virtual void paint();
-
-    // [Slot 18] Offset 0x48 (Override)
-    virtual long wnd_proc(void* param_1, uint param_2, uint param_3, long param_4); // Ghidra: wnd_proc
-
-    // [Slot 19] Offset 0x4C (Override)
-    virtual long handle_idle(); // Ghidra: handle_idle
-
-    // [Slot 20] Offset 0x50 (Override)
-    virtual long handle_size(long param_1, long param_2); // Ghidra: handle_size
-
-    // [Slot 21] Offset 0x54 (Override)
-    virtual long handle_paint(); // Ghidra: handle_paint
-
-    // [Slot 22] Offset 0x58 WARNING: Function body missing in analysis
-    // virtual void handle_key_down();
-
-    // [Slot 23] Offset 0x5C WARNING: Function body missing in analysis
-    // virtual void handle_char();
-
-    // [Slot 24] Offset 0x60 WARNING: Function body missing in analysis
-    // virtual void handle_command();
-
-    // [Slot 25] Offset 0x64 (Override)
-    virtual long handle_user_command(uint param_1, long param_2); // Ghidra: handle_user_command
-
-    // [Slot 26] Offset 0x68 WARNING: Function body missing in analysis
-    // virtual void handle_timer_command();
-
-    // [Slot 27] Offset 0x6C WARNING: Function body missing in analysis
-    // virtual void handle_scroll();
-
-    // [Slot 28] Offset 0x70 (Override)
-    virtual long handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5); // Ghidra: handle_mouse_down
-
-    // [Slot 29] Offset 0x74 WARNING: Function body missing in analysis
-    // virtual void handle_mouse_move();
-
-    // [Slot 30] Offset 0x78 WARNING: Function body missing in analysis
-    // virtual void handle_mouse_up();
-
-    // [Slot 31] Offset 0x7C WARNING: Function body missing in analysis
-    // virtual void handle_mouse_dbl_click();
-
-    // [Slot 32] Offset 0x80 WARNING: Function body missing in analysis
-    // virtual void mouse_move_action();
-
-    // [Slot 33] Offset 0x84 WARNING: Function body missing in analysis
-    // virtual void mouse_left_down_action();
-
-    // [Slot 34] Offset 0x88 WARNING: Function body missing in analysis
-    // virtual void mouse_left_hold_action();
-
-    // [Slot 35] Offset 0x8C WARNING: Function body missing in analysis
-    // virtual void mouse_left_move_action();
-
-    // [Slot 36] Offset 0x90 WARNING: Function body missing in analysis
-    // virtual void mouse_left_up_action();
-
-    // [Slot 37] Offset 0x94 WARNING: Function body missing in analysis
-    // virtual void mouse_left_dbl_click_action();
-
-    // [Slot 38] Offset 0x98 WARNING: Function body missing in analysis
-    // virtual void mouse_right_down_action();
-
-    // [Slot 39] Offset 0x9C WARNING: Function body missing in analysis
-    // virtual void mouse_right_hold_action();
-
-    // [Slot 40] Offset 0xA0 WARNING: Function body missing in analysis
-    // virtual void mouse_right_move_action();
-
-    // [Slot 41] Offset 0xA4 WARNING: Function body missing in analysis
-    // virtual void mouse_right_up_action();
-
-    // [Slot 42] Offset 0xA8 WARNING: Function body missing in analysis
-    // virtual void mouse_right_dbl_click_action();
-
-    // [Slot 43] Offset 0xAC (Override)
-    virtual long key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5); // Ghidra: key_down_action
-
-    // [Slot 44] Offset 0xB0 (Override)
-    virtual long char_action(long param_1, short param_2); // Ghidra: char_action
-
-    // [Slot 45] Offset 0xB4 (Override)
-    virtual long action(TPanel* param_1, long param_2, ulong param_3, ulong param_4); // Ghidra: action
-
-    // [Slot 46] Offset 0xB8 WARNING: Function body missing in analysis
-    // virtual void get_true_render_rect();
-
-    // [Slot 47] Offset 0xBC WARNING: Function body missing in analysis
-    // virtual void is_inside();
-
-    // [Slot 48] Offset 0xC0 (Override)
-    virtual void set_focus(int param_1); // Ghidra: set_focus
-
-    // [Slot 49] Offset 0xC4 WARNING: Function body missing in analysis
-    // virtual void set_tab_order();
-
-    // [Slot 50] Offset 0xC8 WARNING: Function body missing in analysis
-    // virtual void set_tab_order();
-
-    // [Slot 51] Offset 0xCC WARNING: Function body missing in analysis
-    // virtual void get_help_info();
-
-    // [Slot 52] Offset 0xD0 (Override)
-    virtual void stop_sound_system(); // Ghidra: stop_sound_system
-
-    // [Slot 53] Offset 0xD4 (Override)
-    virtual int restart_sound_system(); // Ghidra: restart_sound_system
-
-    // [Slot 54] Offset 0xD8 WARNING: Function body missing in analysis
-    // virtual void take_snapshot();
-
-    // [Slot 55] Offset 0xDC WARNING: Function body missing in analysis
-    // virtual void handle_reactivate();
-
-    // [Slot 56] Offset 0xE0 WARNING: Function body missing in analysis
-    // virtual void draw_background();
-
-    // [Slot 57] Offset 0xE4 WARNING: Function body missing in analysis
-    // virtual void set_ideal_size();
-
-    // [Slot 58] Offset 0xE8 WARNING: Function body missing in analysis
-    // virtual void create_button();
-
-    // [Slot 59] Offset 0xEC WARNING: Function body missing in analysis
-    // virtual void create_button();
-
-    // [Slot 60] Offset 0xF0 WARNING: Function body missing in analysis
-    // virtual void create_check_box();
-
-    // [Slot 61] Offset 0xF4 WARNING: Function body missing in analysis
-    // virtual void create_radio_button();
-
-    // [Slot 62] Offset 0xF8 WARNING: Function body missing in analysis
-    // virtual void create_text();
-
-    // [Slot 63] Offset 0xFC WARNING: Function body missing in analysis
-    // virtual void create_text();
-
-    // [Slot 64] Offset 0x100 WARNING: Function body missing in analysis
-    // virtual void create_text();
-
-    // [Slot 65] Offset 0x104 WARNING: Function body missing in analysis
-    // virtual void create_input();
-
-    // [Slot 66] Offset 0x108 WARNING: Function body missing in analysis
-    // virtual void create_edit();
-
-    // [Slot 67] Offset 0x10C WARNING: Function body missing in analysis
-    // virtual void create_drop_down();
-
-    // [Slot 68] Offset 0x110 WARNING: Function body missing in analysis
-    // virtual void create_list();
-
-    // [Slot 69] Offset 0x114 WARNING: Function body missing in analysis
-    // virtual void create_scrollbar();
-
-    // [Slot 70] Offset 0x118 WARNING: Function body missing in analysis
-    // virtual void create_auto_scrollbar();
-
-    // [Slot 71] Offset 0x11C WARNING: Function body missing in analysis
-    // virtual void create_vert_slider();
-
-    // [Slot 72] Offset 0x120 WARNING: Function body missing in analysis
-    // virtual void create_horz_slider();
-
-    // [Slot 73] Offset 0x124 WARNING: Function body missing in analysis
-    // virtual void position_panel();
-
-    // --- Non-Virtual Members ---
+    ~TRIBE_Screen_Game();
     void set_map_buttons_redraw(RedrawMode param_1);
     void handle_game_update();
     void handle_pause();

@@ -1,33 +1,14 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class TRIBE_Command : public RGE_Command       {
+class TRIBE_Command : public RGE_Command {
 public:
-    char _pad_0x4[0x14];
 
+    virtual void do_command(void* param_1);                 // vt0[2]+0x8=0x509770
+    virtual void do_command_give_attribute(TRIBE_Command_Give_Attribute* param_1); // vt0[4]+0x10=0x50A510
+    virtual void command_give_attribute(int param_1, int param_2, int param_3, float param_4, float param_5); // vt0[5]+0x14=0x50B130
     TRIBE_Command(TRIBE_World* param_1, TCommunications_Handler* param_2);
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 WARNING: Function body missing in analysis
-    // virtual void do_command_give_attribute();
-
-    // [Slot 01] Offset 0x04 (Override)
-    virtual  ~TRIBE_Command() noexcept(false); // Ghidra: `vector_deleting_destructor'
-
-    // [Slot 02] Offset 0x08 (Override)
-    virtual void do_command(void* param_1); // Ghidra: do_command
-
-    // [Slot 03] Offset 0x0C WARNING: Function body missing in analysis
-    // virtual void command_give_attribute();
-
-    // [Slot 04] Offset 0x10 (Override)
-    virtual void do_command_give_attribute(TRIBE_Command_Give_Attribute* param_1); // Ghidra: do_command_give_attribute
-
-    // [Slot 05] Offset 0x14 (Override)
-    virtual void command_give_attribute(int param_1, int param_2, int param_3, float param_4, float param_5); // Ghidra: command_give_attribute
-
-    // --- Non-Virtual Members ---
+    ~TRIBE_Command();
     void do_command_tribe_create(RGE_Command_Create* param_1);
     void do_command_make(TRIBE_Command_Make* param_1);
     void do_command_research(TRIBE_Command_Research* param_1);

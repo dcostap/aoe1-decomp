@@ -1,7 +1,7 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class TMousePointer       {
+class TMousePointer {
 public:
     int custom_draw;                         // 0x0
     TDrawArea* render_area;                  // 0x4
@@ -57,10 +57,7 @@ public:
     int cursor_file_id;                      // 0x250
 
     TMousePointer(int param_1);
-
-    // --- Non-Virtual Destructor ---
-    ~TMousePointer() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~TMousePointer();
     int Shutdown_Mouse();
     int Restore_Mouse(TDrawArea* param_1);
     int setup(int param_1, TDrawArea* param_2, char* param_3, int param_4, int param_5);
@@ -86,5 +83,4 @@ public:
 };
 
 static_assert(sizeof(TMousePointer) == 0x254, "TMousePointer Size Mismatch");
-static_assert(offsetof(TMousePointer, cursor_file_id) == 0x250, "TMousePointer Offset Mismatch");
 

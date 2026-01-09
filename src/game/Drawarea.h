@@ -1,7 +1,5 @@
 #pragma once
-#include "../common.h"
-#include "color.h"
-#include "spanlist.h"
+#include "common.h"
 
 // ----------------------------------------------------------------
 // DrawAreaNode
@@ -13,77 +11,7 @@ struct DrawAreaNode {
 };
 
 
-class TDrawSystem       {
-public:
-    void* Inst;                              // 0x0
-    void* Wnd;                               // 0x4
-    void* Pal;                               // 0x8
-    TDrawArea* DrawArea;                     // 0xC
-    TDrawArea* PrimaryArea;                  // 0x10
-    DrawAreaNode* DrawAreaList;              // 0x14
-    IDirectDraw* DirDraw;                    // 0x18
-    IDirectDrawSurface* PrimarySurface;      // 0x1C
-    IDirectDrawClipper* Clipper;             // 0x20
-    IDirectDrawPalette* DirDrawPal;          // 0x24
-    ulong Flags;                             // 0x28
-    int ScreenWidth;                         // 0x2C
-    int ScreenHeight;                        // 0x30
-    int ColorBits;                           // 0x34
-    int ErrorCode;                           // 0x38
-    int ChangedMode;                         // 0x3C
-    int IsBanked;                            // 0x40
-    int CanSrcBlt;                           // 0x44
-    int Restored;                            // 0x48
-    int ModeAvail640;                        // 0x4C
-    int ModeAvail800;                        // 0x50
-    int ModeAvail1024;                       // 0x54
-    int ModeAvail1280;                       // 0x58
-    int ModeAvail320_200;                    // 0x5C
-    int ModeAvail320_240;                    // 0x60
-    int ModeAvail320_200_16;                 // 0x64
-    int ModeAvail320_240_16;                 // 0x68
-    int ModeAvail640_16;                     // 0x6C
-    int ModeAvail800_16;                     // 0x70
-    int ModeAvail1024_16;                    // 0x74
-    tagPALETTEENTRY palette[256];            // 0x78
-    uchar DrawType;                          // 0x478
-    uchar ScreenMode;                        // 0x479
-
-    TDrawSystem();
-
-    // --- Non-Virtual Destructor ---
-    ~TDrawSystem() noexcept(false);
-    // --- Non-Virtual Members ---
-    void CheckAvailModes(int param_1);
-    long CheckAvailModesCallback(_DDSURFACEDESC* param_1, void* param_2);
-    int IsModeAvail(long param_1, long param_2, int param_3);
-    int Init(void* param_1, void* param_2, void* param_3, uchar param_4, uchar param_5, long param_6, long param_7, ulong param_8);
-    int SetDisplaySize(long param_1, long param_2, int param_3);
-    void ClearPrimarySurface();
-    uchar CheckSurfaces();
-    void ClearRestored();
-    void DeleteSurfaces();
-    int CreateSurfaces();
-    void HandleSize(void* param_1, uint param_2, uint param_3, long param_4);
-    void HandlePaletteChanged(void* param_1, uint param_2, uint param_3, long param_4);
-    int HandleQueryNewPalette(void* param_1, uint param_2, uint param_3, long param_4);
-    void Paint(tagRECT* param_1);
-    int GetIsLostErrorNum(long param_1);
-    int GetRestoreErrorNum(long param_1);
-    int GetSetDispModeErrorNum(long param_1);
-    int GetLockErrorNum(long param_1);
-    int GetDCErrorNum(long param_1);
-    int GetBlitErrorNum(long param_1);
-    int GetCreateErrorNum(long param_1);
-    int GetColorKeyErrorNum(long param_1);
-    void SetPalette(void* param_1);
-    void ModifyPalette(int param_1, int param_2, tagPALETTEENTRY* param_3);
-};
-
-static_assert(sizeof(TDrawSystem) == 0x47C, "TDrawSystem Size Mismatch");
-static_assert(offsetof(TDrawSystem, ScreenMode) == 0x479, "TDrawSystem Offset Mismatch");
-
-class TDrawArea       {
+class TDrawArea {
 public:
     TDrawSystem* DrawSystem;                 // 0x0
     void* Wnd;                               // 0x4
@@ -122,10 +50,7 @@ public:
     uchar TransColor;                        // 0xFC
 
     TDrawArea(char* param_1, int param_2);
-
-    // --- Non-Virtual Destructor ---
-    ~TDrawArea() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~TDrawArea();
     int Init(TDrawSystem* param_1, long param_2, long param_3, int param_4, int param_5);
     uchar CheckSurface();
     uchar* Lock(char* param_1, int param_2);
@@ -168,5 +93,70 @@ public:
 };
 
 static_assert(sizeof(TDrawArea) == 0x100, "TDrawArea Size Mismatch");
-static_assert(offsetof(TDrawArea, TransColor) == 0xFC, "TDrawArea Offset Mismatch");
+
+class TDrawSystem {
+public:
+    void* Inst;                              // 0x0
+    void* Wnd;                               // 0x4
+    void* Pal;                               // 0x8
+    TDrawArea* DrawArea;                     // 0xC
+    TDrawArea* PrimaryArea;                  // 0x10
+    DrawAreaNode* DrawAreaList;              // 0x14
+    IDirectDraw* DirDraw;                    // 0x18
+    IDirectDrawSurface* PrimarySurface;      // 0x1C
+    IDirectDrawClipper* Clipper;             // 0x20
+    IDirectDrawPalette* DirDrawPal;          // 0x24
+    ulong Flags;                             // 0x28
+    int ScreenWidth;                         // 0x2C
+    int ScreenHeight;                        // 0x30
+    int ColorBits;                           // 0x34
+    int ErrorCode;                           // 0x38
+    int ChangedMode;                         // 0x3C
+    int IsBanked;                            // 0x40
+    int CanSrcBlt;                           // 0x44
+    int Restored;                            // 0x48
+    int ModeAvail640;                        // 0x4C
+    int ModeAvail800;                        // 0x50
+    int ModeAvail1024;                       // 0x54
+    int ModeAvail1280;                       // 0x58
+    int ModeAvail320_200;                    // 0x5C
+    int ModeAvail320_240;                    // 0x60
+    int ModeAvail320_200_16;                 // 0x64
+    int ModeAvail320_240_16;                 // 0x68
+    int ModeAvail640_16;                     // 0x6C
+    int ModeAvail800_16;                     // 0x70
+    int ModeAvail1024_16;                    // 0x74
+    tagPALETTEENTRY palette[256];            // 0x78
+    uchar DrawType;                          // 0x478
+    uchar ScreenMode;                        // 0x479
+
+    TDrawSystem();
+    ~TDrawSystem();
+    void CheckAvailModes(int param_1);
+    long CheckAvailModesCallback(_DDSURFACEDESC* param_1, void* param_2);
+    int IsModeAvail(long param_1, long param_2, int param_3);
+    int Init(void* param_1, void* param_2, void* param_3, uchar param_4, uchar param_5, long param_6, long param_7, ulong param_8);
+    int SetDisplaySize(long param_1, long param_2, int param_3);
+    void ClearPrimarySurface();
+    uchar CheckSurfaces();
+    void ClearRestored();
+    void DeleteSurfaces();
+    int CreateSurfaces();
+    void HandleSize(void* param_1, uint param_2, uint param_3, long param_4);
+    void HandlePaletteChanged(void* param_1, uint param_2, uint param_3, long param_4);
+    int HandleQueryNewPalette(void* param_1, uint param_2, uint param_3, long param_4);
+    void Paint(tagRECT* param_1);
+    int GetIsLostErrorNum(long param_1);
+    int GetRestoreErrorNum(long param_1);
+    int GetSetDispModeErrorNum(long param_1);
+    int GetLockErrorNum(long param_1);
+    int GetDCErrorNum(long param_1);
+    int GetBlitErrorNum(long param_1);
+    int GetCreateErrorNum(long param_1);
+    int GetColorKeyErrorNum(long param_1);
+    void SetPalette(void* param_1);
+    void ModifyPalette(int param_1, int param_2, tagPALETTEENTRY* param_3);
+};
+
+static_assert(sizeof(TDrawSystem) == 0x47C, "TDrawSystem Size Mismatch");
 

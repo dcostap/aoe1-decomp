@@ -1,12 +1,8 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class RGE_Scenario : public RGE_Timeline       {
+class RGE_Scenario : public RGE_Timeline {
 public:
-    RGE_Timeline* time_line;                 // 0x4
-    RGE_Game_World* world;                   // 0x8
-    uchar victory_conquest;                  // 0xC
-    PlayerName player_name[16];              // 0xD
     char* scenario_name;                     // 0x1010
     char* description;                       // 0x1014
     char* hints;                             // 0x1018
@@ -36,24 +32,12 @@ public:
     int PlActive[16];                        // 0x194C
     TPicture* mission_picture;               // 0x198C
 
+    virtual RGE_Static_Object* get_object_pointer(int param_1); // vt0[0]+0x0=0x48B580
+    virtual void rehook();                                  // vt0[2]+0x8=0x48B590
+    virtual void save(int param_1);                         // vt0[3]+0xC=0x48C3E0
     RGE_Scenario(RGE_Game_World* param_1);
     RGE_Scenario(int param_1, RGE_Game_World* param_2);
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual RGE_Static_Object* get_object_pointer(int param_1); // Ghidra: get_object_pointer
-
-    // [Slot 01] Offset 0x04 (Override)
-    virtual  ~RGE_Scenario() noexcept(false); // Ghidra: `scalar_deleting_destructor'
-
-    // [Slot 02] Offset 0x08 (Override)
-    virtual void rehook(); // Ghidra: rehook
-
-    // [Slot 03] Offset 0x0C (Override)
-    virtual void save(int param_1); // Ghidra: save
-
-    // --- Non-Virtual Members ---
+    ~RGE_Scenario();
     void InitializeTextValues();
     void Set_scenario_name(char* param_1);
     void Set_description(char* param_1);
@@ -96,94 +80,21 @@ public:
 };
 
 static_assert(sizeof(RGE_Scenario) == 0x1990, "RGE_Scenario Size Mismatch");
-static_assert(offsetof(RGE_Scenario, mission_picture) == 0x198C, "RGE_Scenario Offset Mismatch");
 
-class RGE_Scenario_Header       {
+class RGE_Scenario_Header {
 public:
+    // [omitted] vfptr @ 0x0 ('_padding_')
     int error_code;                          // 0x4
     long version;                            // 0x8
     ulong checksum;                          // 0xC
     char* description;                       // 0x10
 
+    virtual long get_size();                                // vt0[0]+0x0=0x48ACA0
+    virtual void save(int param_1);                         // vt0[1]+0x4=0x48ACC0
     RGE_Scenario_Header(RGE_Scenario* param_1);
     RGE_Scenario_Header(int param_1);
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual long get_size(); // Ghidra: get_size
-
-    // [Slot 01] Offset 0x04 (Override)
-    virtual void save(int param_1); // Ghidra: save
-
-    // [Slot 02] Offset 0x08 WARNING: Function body missing in analysis
-    // virtual void get_object_pointer();
-
-    // [Slot 03] Offset 0x0C WARNING: Function body missing in analysis
-    // virtual void `scalar_deleting_destructor'();
-
-    // [Slot 04] Offset 0x10 WARNING: Function body missing in analysis
-    // virtual void rehook();
-
-    // [Slot 05] Offset 0x14 WARNING: Function body missing in analysis
-    // virtual void save();
-
-    // --- Non-Virtual Destructor ---
-    ~RGE_Scenario_Header() noexcept(false);
+    ~RGE_Scenario_Header();
 };
 
 static_assert(sizeof(RGE_Scenario_Header) == 0x14, "RGE_Scenario_Header Size Mismatch");
-static_assert(offsetof(RGE_Scenario_Header, description) == 0x10, "RGE_Scenario_Header Offset Mismatch");
-
-RGE_Static_Object* RGE_Scenario::get_object_pointer(int param_1) {
-    /* TODO: Stub */
-//                              RGE_Static_Object * __thiscall get_object_pointer(RGE_Scenario * thi
-//              RGE_Static_Obj    EAX:4          <RETURN>
-//              RGE_Scenario *    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1
-//                               ?get_object_pointer@RGE_Scenario@@MAEPAVRGE_Static_Object@@  XREF[1]:     00572128(*)
-//                               RGE_Scenario::get_object_pointer
-//                              scenario.h:59 (5)
-//         0048b580     XOR        EAX,EAX
-//         0048b582     RET        0x4
-//         0048b585     ??         90h
-//         0048b586     NOP
-//         0048b587     NOP
-//         0048b588     NOP
-//         0048b589     NOP
-//         0048b58a     NOP
-//         0048b58b     NOP
-//         0048b58c     NOP
-//         0048b58d     NOP
-//         0048b58e     NOP
-//         0048b58f     NOP
-    return 0;
-}
-
-void RGE_Scenario::rehook() {
-    /* TODO: Stub */
-//                              void __thiscall rehook(RGE_Scenario * this)
-//              void              <VOID>         <RETURN>
-//              RGE_Scenario *    ECX:4 (auto)   this
-//                               ?rehook@RGE_Scenario@@UAEXXZ                                 XREF[1]:     00572130(*)
-//                               RGE_Scenario::rehook
-//                              scenario.h:148 (1)
-//         0048b590     RET
-//         0048b591     ??         90h
-//         0048b592     NOP
-//         0048b593     NOP
-//         0048b594     NOP
-//         0048b595     NOP
-//         0048b596     NOP
-//         0048b597     NOP
-//         0048b598     NOP
-//         0048b599     NOP
-//         0048b59a     NOP
-//         0048b59b     NOP
-//         0048b59c     NOP
-//         0048b59d     NOP
-//         0048b59e     NOP
-//         0048b59f     NOP
-    return;
-}
 

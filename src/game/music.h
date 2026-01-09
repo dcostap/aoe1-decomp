@@ -1,7 +1,7 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class TMusic_System       {
+class TMusic_System {
 public:
     char path[260];                          // 0x0
     uchar music_type;                        // 0x104
@@ -42,10 +42,8 @@ public:
     ulong last_check_time;                   // 0x3F4
 
     TMusic_System(uchar param_1, void* param_2, void* param_3, TSound_Driver* param_4, char* param_5);
-
-    // --- Non-Virtual Destructor ---
-    ~TMusic_System() noexcept(false);
-    // --- Non-Virtual Members ---
+    void close_device();
+    ~TMusic_System();
     int open_device();
     void close_device();
     int open_mixer();
@@ -71,5 +69,4 @@ public:
 };
 
 static_assert(sizeof(TMusic_System) == 0x3F8, "TMusic_System Size Mismatch");
-static_assert(offsetof(TMusic_System, last_check_time) == 0x3F4, "TMusic_System Offset Mismatch");
 

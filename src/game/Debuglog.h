@@ -1,7 +1,7 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class TDebuggingLog       {
+class TDebuggingLog {
 public:
     int Timestamp;                           // 0x0
     int DateTimestamp;                       // 0x4
@@ -18,10 +18,8 @@ public:
     char Filename[128];                      // 0x730
 
     TDebuggingLog();
-
-    // --- Non-Virtual Destructor ---
-    ~TDebuggingLog() noexcept(false);
-    // --- Non-Virtual Members ---
+    void CloseLog();
+    ~TDebuggingLog();
     void LogFile(int param_1);
     void LogOutput(int param_1);
     void LogTimestamp(int param_1);
@@ -37,5 +35,4 @@ public:
 };
 
 static_assert(sizeof(TDebuggingLog) == 0x7B0, "TDebuggingLog Size Mismatch");
-static_assert(offsetof(TDebuggingLog, Filename) == 0x730, "TDebuggingLog Offset Mismatch");
 

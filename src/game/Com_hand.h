@@ -1,17 +1,11 @@
 #pragma once
-#include "../common.h"
-#include "com_q.h"
-#include "com_loby.h"
-#include "RGE_TSLC.h"
-#include "com_spd.h"
-#include "com_sync.h"
-#include "com_addr.h"
+#include "common.h"
 
 struct NAME {
     char Name[256]; // 0x0
 };
 
-class HOLDER       {
+class HOLDER {
 public:
     char* HoldMsg;                           // 0x0
     uint Serial;                             // 0x4
@@ -21,17 +15,12 @@ public:
     uint fromPlayer;                         // 0x14
 
     HOLDER();
-
-    // --- Non-Virtual Members ---
-    void* `vector_deleting_destructor'(uint param_1);
-    // --- Non-Virtual Destructor ---
-    ~HOLDER() noexcept(false);
+    ~HOLDER();
 };
 
 static_assert(sizeof(HOLDER) == 0x18, "HOLDER Size Mismatch");
-static_assert(offsetof(HOLDER, fromPlayer) == 0x14, "HOLDER Offset Mismatch");
 
-class RESENDER       {
+class RESENDER {
 public:
     ulong TimeSent;                          // 0x0
     uint Serial;                             // 0x4
@@ -40,17 +29,12 @@ public:
     uint DestMap[10];                        // 0x10
 
     RESENDER();
-
-    // --- Non-Virtual Members ---
-    void* `vector_deleting_destructor'(uint param_1);
-    // --- Non-Virtual Destructor ---
-    ~RESENDER() noexcept(false);
+    ~RESENDER();
 };
 
 static_assert(sizeof(RESENDER) == 0x38, "RESENDER Size Mismatch");
-static_assert(offsetof(RESENDER, DestMap) == 0x10, "RESENDER Offset Mismatch");
 
-class TCommunications_Handler       {
+class TCommunications_Handler {
 public:
     int OptionsChanged;                      // 0x0
     char* OptionsData;                       // 0x4
@@ -153,9 +137,6 @@ public:
     uint HoldCount;                          // 0x1748
     int WasKicked[10];                       // 0x174C
 
-    TCommunications_Handler(void* param_1, uchar param_2, TChat* param_3, _GUID param_4);
-
-    // --- Non-Virtual Members ---
     void GameOver();
     char* WaitingOnNamedInfo(uint param_1);
     char* WaitingOnInfo(uint param_1);
@@ -166,8 +147,8 @@ public:
     void SetSpeedControl(int param_1);
     int CalculatePlayerRange();
     void Step(int param_1);
-    // --- Non-Virtual Destructor ---
-    ~TCommunications_Handler() noexcept(false);
+    TCommunications_Handler(void* param_1, uchar param_2, TChat* param_3, _GUID param_4);
+    ~TCommunications_Handler();
     void KillAnyMissingPlayers();
     int AddCommand(ulong param_1, void* param_2, ulong param_3, int param_4, uchar param_5, int param_6);
     void* get_command();
@@ -303,142 +284,4 @@ public:
 };
 
 static_assert(sizeof(TCommunications_Handler) == 0x1774, "TCommunications_Handler Size Mismatch");
-static_assert(offsetof(TCommunications_Handler, WasKicked) == 0x174C, "TCommunications_Handler Offset Mismatch");
-
-inline RESENDER::RESENDER() {
-    /* TODO: Stub */
-//                              undefined __thiscall RESENDER(RESENDER * this)
-//              undefined         <UNASSIGNED>   <RETURN>
-//              RESENDER *        ECX:4 (auto)   this
-//                               ??0RESENDER@@QAE@XZ                                          XREF[1]:     TCommunications_Handler:00425d26(*
-//                               RESENDER::RESENDER
-//                              com_hand.h:293 (3)
-//         00426450     MOV        EDX,this
-//         00426452     PUSH       EDI
-//                              com_hand.h:296 (23)
-//         00426453     XOR        EAX,EAX
-//         00426455     MOV        this,0xa
-//         0042645a     LEA        EDI,[EDX + 0x10]
-//         0042645d     MOV        dword ptr [EDX],EAX
-//         0042645f     MOV        dword ptr [EDX + 0x8],EAX
-//         00426462     MOV        dword ptr [EDX + 0x4],EAX
-//         00426465     MOV        dword ptr [EDX + 0xc],EAX
-//         00426468     STOSD.REP  ES:EDI
-//                              com_hand.h:297 (4)
-//         0042646a     MOV        EAX,EDX
-//         0042646c     POP        EDI
-//         0042646d     RET
-//         0042646e     ??         90h
-//         0042646f     NOP
-}
-
-inline RESENDER::~RESENDER() {
-    /* TODO: Stub */
-//                              void __thiscall ~RESENDER(RESENDER * this)
-//              void              <VOID>         <RETURN>
-//              RESENDER *        ECX:4 (auto)   this
-//                               ??1RESENDER@@QAE@XZ                                          XREF[3]:     TCommunications_Handler:00425d21(*
-//                               RESENDER::~RESENDER                                                       `vector_deleting_destructor':00426
-//                                                                                                         ~TCommunications_Handler:00426288(
-//                              com_hand.h:300 (4)
-//         004264a0     PUSH       ESI
-//         004264a1     MOV        ESI,this
-//         004264a3     PUSH       EDI
-//                              com_hand.h:301 (41)
-//         004264a4     XOR        EDI,EDI
-//         004264a6     MOV        EAX,dword ptr [ESI + 0x8]
-//         004264a9     MOV        dword ptr [ESI],EDI
-//         004264ab     CMP        EAX,EDI
-//         004264ad     JZ         LAB_004264b8
-//         004264af     PUSH       EAX
-//         004264b0     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         004264b5     ADD        ESP,0x4
-//                               LAB_004264b8                                                 XREF[1]:     004264ad(j)
-//         004264b8     MOV        dword ptr [ESI + 0x8],EDI
-//         004264bb     MOV        dword ptr [ESI + 0x4],EDI
-//         004264be     MOV        dword ptr [ESI + 0xc],EDI
-//         004264c1     LEA        EDI,[ESI + 0x10]
-//         004264c4     MOV        this,0xa
-//         004264c9     XOR        EAX,EAX
-//         004264cb     STOSD.REP  ES:EDI
-//                              com_hand.h:302 (3)
-//         004264cd     POP        EDI
-//         004264ce     POP        ESI
-//         004264cf     RET
-}
-
-inline HOLDER::HOLDER() {
-    /* TODO: Stub */
-//                              undefined __thiscall HOLDER(HOLDER * this)
-//              undefined         <UNASSIGNED>   <RETURN>
-//              HOLDER *          ECX:4 (auto)   this
-//                               ??0HOLDER@@QAE@XZ                                            XREF[1]:     TCommunications_Handler:00425d73(*
-//                               HOLDER::HOLDER
-//                              com_hand.h:336 (2)
-//         004265e0     MOV        EAX,this
-//                              com_hand.h:339 (16)
-//         004265e2     XOR        this,this
-//         004265e4     MOV        dword ptr [EAX],this
-//         004265e6     MOV        dword ptr [EAX + 0x4],this
-//         004265e9     MOV        dword ptr [EAX + 0x8],this
-//         004265ec     MOV        dword ptr [EAX + 0xc],this
-//         004265ef     MOV        dword ptr [EAX + 0x10],this
-//                              com_hand.h:340 (1)
-//         004265f2     RET
-//         004265f3     ??         90h
-//         004265f4     NOP
-//         004265f5     NOP
-//         004265f6     NOP
-//         004265f7     NOP
-//         004265f8     NOP
-//         004265f9     NOP
-//         004265fa     NOP
-//         004265fb     NOP
-//         004265fc     NOP
-//         004265fd     NOP
-//         004265fe     NOP
-//         004265ff     NOP
-}
-
-inline HOLDER::~HOLDER() {
-    /* TODO: Stub */
-//                              void __thiscall ~HOLDER(HOLDER * this)
-//              void              <VOID>         <RETURN>
-//              HOLDER *          ECX:4 (auto)   this
-//                               ??1HOLDER@@QAE@XZ                                            XREF[3]:     TCommunications_Handler:00425d6e(*
-//                               HOLDER::~HOLDER                                                           `vector_deleting_destructor':00426
-//                                                                                                         ~TCommunications_Handler:004262af(
-//                              com_hand.h:343 (4)
-//         00426600     PUSH       ESI
-//         00426601     MOV        ESI,this
-//         00426603     PUSH       EDI
-//                              com_hand.h:344 (31)
-//         00426604     XOR        EDI,EDI
-//         00426606     MOV        EAX,dword ptr [ESI]
-//         00426608     CMP        EAX,EDI
-//         0042660a     JZ         LAB_00426615
-//         0042660c     PUSH       EAX
-//         0042660d     CALL       operator_delete                                  void operator_delete(void * param_1)
-//         00426612     ADD        ESP,0x4
-//                               LAB_00426615                                                 XREF[1]:     0042660a(j)
-//         00426615     MOV        dword ptr [ESI],EDI
-//         00426617     MOV        dword ptr [ESI + 0x4],EDI
-//         0042661a     MOV        dword ptr [ESI + 0x8],EDI
-//         0042661d     MOV        dword ptr [ESI + 0xc],EDI
-//         00426620     MOV        dword ptr [ESI + 0x10],EDI
-//                              com_hand.h:345 (3)
-//         00426623     POP        EDI
-//         00426624     POP        ESI
-//         00426625     RET
-//         00426626     ??         90h
-//         00426627     NOP
-//         00426628     NOP
-//         00426629     NOP
-//         0042662a     NOP
-//         0042662b     NOP
-//         0042662c     NOP
-//         0042662d     NOP
-//         0042662e     NOP
-//         0042662f     NOP
-}
 

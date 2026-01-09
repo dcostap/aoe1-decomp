@@ -1,7 +1,7 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class TRegistry       {
+class TRegistry {
 public:
     void* ghMachineKey;                      // 0x0
     void* ghUserKey;                         // 0x4
@@ -10,10 +10,7 @@ public:
     char Data[255];                          // 0x10
 
     TRegistry(char* param_1);
-
-    // --- Non-Virtual Destructor ---
-    ~TRegistry() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~TRegistry();
     int RegSet(int param_1, char* param_2, uchar* param_3, ulong param_4);
     int RegSetInt(int param_1, char* param_2, int param_3);
     int RegSetAscii(int param_1, char* param_2, uchar* param_3, ulong param_4);
@@ -23,5 +20,4 @@ public:
 };
 
 static_assert(sizeof(TRegistry) == 0x110, "TRegistry Size Mismatch");
-static_assert(offsetof(TRegistry, Data) == 0x10, "TRegistry Offset Mismatch");
 

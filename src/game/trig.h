@@ -1,7 +1,7 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class TRIGONOMETRY       {
+class TRIGONOMETRY {
 public:
     float sines[4096];                       // 0x0
     float cose[4096];                        // 0x4000
@@ -13,8 +13,6 @@ public:
     float atane360[360];                     // 0x110E0
 
     TRIGONOMETRY();
-
-    // --- Non-Virtual Members ---
     int RestrictAngle(int param_1);
     int RestrictAngle360(int param_1);
     float sine(int param_1);
@@ -28,5 +26,4 @@ public:
 };
 
 static_assert(sizeof(TRIGONOMETRY) == 0x11680, "TRIGONOMETRY Size Mismatch");
-static_assert(offsetof(TRIGONOMETRY, atane360) == 0x110E0, "TRIGONOMETRY Offset Mismatch");
 

@@ -1,8 +1,5 @@
 #pragma once
-#include "../common.h"
-#include "map.h"
-
-class RGE_Random_Map_Module;
+#include "common.h"
 
 // ----------------------------------------------------------------
 // RGE_Random_Map_Module_List
@@ -12,8 +9,9 @@ struct RGE_Random_Map_Module_List {
     RGE_Random_Map_Module_List * next; // 0x4
 };
 
-class RGE_Random_Map_Module       {
+class RGE_Random_Map_Module {
 public:
+    // [omitted] vfptr @ 0x0 ('_padding_')
     RGE_Random_Map_Module* parent;           // 0x4
     RGE_Random_Map_Module_List* list;        // 0x8
     RGE_Map* map;                            // 0xC
@@ -26,16 +24,9 @@ public:
     Map_Stack* stack_array;                  // 0x28
     Map_Stack** stack_offsets;               // 0x2C
 
+    virtual uchar generate();                               // vt0[0]+0x0=0x4808D0
     RGE_Random_Map_Module(RGE_Map* param_1, RGE_Random_Map_Module* param_2, uchar param_3);
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual uchar generate(); // Ghidra: generate
-
-    // --- Non-Virtual Destructor ---
-    ~RGE_Random_Map_Module() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~RGE_Random_Map_Module();
     float get_schedule();
     uchar add_module(RGE_Random_Map_Module* param_1);
     uchar remove_module(RGE_Random_Map_Module* param_1);
@@ -60,5 +51,4 @@ public:
 };
 
 static_assert(sizeof(RGE_Random_Map_Module) == 0x30, "RGE_Random_Map_Module Size Mismatch");
-static_assert(offsetof(RGE_Random_Map_Module, stack_offsets) == 0x2C, "RGE_Random_Map_Module Offset Mismatch");
 

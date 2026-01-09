@@ -1,8 +1,7 @@
 #pragma once
-#include "../common.h"
-#include "Sounddrv.h"
+#include "common.h"
 
-class TTaunt       {
+class TTaunt {
 public:
     TDigital* Audio[4];                      // 0x0
     int LastAudioPlayed;                     // 0x10
@@ -11,10 +10,7 @@ public:
     int Mute;                                // 0x194
 
     TTaunt(TSound_Driver* param_1);
-
-    // --- Non-Virtual Destructor ---
-    ~TTaunt() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~TTaunt();
     int PlayTauntStr(char* param_1, uchar param_2);
     int PlayTauntNo(int param_1);
     int GetTauntNo(char* param_1);
@@ -24,5 +20,4 @@ public:
 };
 
 static_assert(sizeof(TTaunt) == 0x198, "TTaunt Size Mismatch");
-static_assert(offsetof(TTaunt, Mute) == 0x194, "TTaunt Offset Mismatch");
 

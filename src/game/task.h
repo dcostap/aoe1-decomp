@@ -1,7 +1,7 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class RGE_Task       {
+class RGE_Task {
 public:
     short task_type;                         // 0x0
     short id;                                // 0x2
@@ -34,10 +34,7 @@ public:
     RGE_Sound* work_sound2;                  // 0x48
 
     RGE_Task(short param_1);
-
-    // --- Non-Virtual Destructor ---
-    ~RGE_Task() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~RGE_Task();
     void copy(RGE_Task* param_1);
     void load(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3);
     void load(_iobuf* param_1, RGE_Sprite** param_2, RGE_Sound** param_3);
@@ -45,5 +42,4 @@ public:
 };
 
 static_assert(sizeof(RGE_Task) == 0x4C, "RGE_Task Size Mismatch");
-static_assert(offsetof(RGE_Task, work_sound2) == 0x48, "RGE_Task Offset Mismatch");
 

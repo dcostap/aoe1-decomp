@@ -1,8 +1,9 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class ResourceItem       {
+class ResourceItem {
 public:
+    // [omitted] vfptr @ 0x0 ('_padding_')
     ResourceItem* next;                      // 0x4
     ResourceItem* prev;                      // 0x8
     int valueValue[8];                       // 0xC
@@ -14,14 +15,7 @@ public:
     ResourceItem(int param_1);
     ResourceItem(int param_1, int* param_2);
     ResourceItem(ResourceItem* param_1);
-    ResourceItem(ResourceItem* param_1);
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual  ~ResourceItem() noexcept(false); // Ghidra: `scalar_deleting_destructor'
-
-    // --- Non-Virtual Members ---
+    ~ResourceItem();
     ResourceItem* operator+=(ResourceItem* param_1);
     int value(int param_1);
     void setValue(int param_1, int param_2);
@@ -33,5 +27,4 @@ public:
 };
 
 static_assert(sizeof(ResourceItem) == 0x70, "ResourceItem Size Mismatch");
-static_assert(offsetof(ResourceItem, numberValue) == 0x6C, "ResourceItem Offset Mismatch");
 

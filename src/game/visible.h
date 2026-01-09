@@ -1,8 +1,7 @@
 #pragma once
-#include "../common.h"
-#include "map.h"
+#include "common.h"
 
-class RGE_Unified_Visible_Map       {
+class RGE_Unified_Visible_Map {
 public:
     int mapWidth;                            // 0x0
     int mapHeight;                           // 0x4
@@ -10,11 +9,8 @@ public:
 
     RGE_Unified_Visible_Map(int param_1, int param_2);
     RGE_Unified_Visible_Map(int param_1, RGE_Game_World* param_2);
-
-    // --- Non-Virtual Members ---
     void load(int param_1);
-    // --- Non-Virtual Destructor ---
-    ~RGE_Unified_Visible_Map() noexcept(false);
+    ~RGE_Unified_Visible_Map();
     void save(int param_1);
     void reset();
     void Set_Map_Offsets();
@@ -22,9 +18,8 @@ public:
 };
 
 static_assert(sizeof(RGE_Unified_Visible_Map) == 0xC, "RGE_Unified_Visible_Map Size Mismatch");
-static_assert(offsetof(RGE_Unified_Visible_Map, UnifiedVisibleMap) == 0x8, "RGE_Unified_Visible_Map Offset Mismatch");
 
-class RGE_Visible_Map       {
+class RGE_Visible_Map {
 public:
     uchar** map_offsets;                     // 0x0
     RGE_Game_World* world;                   // 0x4
@@ -43,10 +38,7 @@ public:
 
     RGE_Visible_Map(RGE_Map* param_1, RGE_Player* param_2);
     RGE_Visible_Map(int param_1, RGE_Game_World* param_2);
-
-    // --- Non-Virtual Destructor ---
-    ~RGE_Visible_Map() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~RGE_Visible_Map();
     void save(int param_1);
     uchar get_visible(int param_1, int param_2);
     void set_all(uchar param_1);
@@ -64,5 +56,4 @@ public:
 };
 
 static_assert(sizeof(RGE_Visible_Map) == 0x38, "RGE_Visible_Map Size Mismatch");
-static_assert(offsetof(RGE_Visible_Map, input_csum) == 0x34, "RGE_Visible_Map Offset Mismatch");
 

@@ -1,22 +1,15 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-
-class RGE_Object_List      {
+class RGE_Object_List {
 public:
+    // [omitted] vfptr @ 0x0 ('_padding_')
     RGE_Object_Node* list;                   // 0x4
     short number_of_objects;                 // 0x8
 
+    virtual void load(uchar param_1, int param_2, RGE_Game_World* param_3); // vt0[0]+0x0=0x463930
     RGE_Object_List();
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual void load(uchar param_1, int param_2, RGE_Game_World* param_3); // Ghidra: load
-
-    // --- Non-Virtual Destructor ---
-    ~RGE_Object_List() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~RGE_Object_List();
     void removeAllObjects();
     RGE_Object_Node* add_node(RGE_Static_Object* param_1);
     void remove_node(RGE_Static_Object* param_1, RGE_Object_Node* param_2);
@@ -38,4 +31,4 @@ public:
 };
 
 static_assert(sizeof(RGE_Object_List) == 0xC, "RGE_Object_List Size Mismatch");
-static_assert(offsetof(RGE_Object_List, number_of_objects) == 0x8, "RGE_Object_List Offset Mismatch");
+

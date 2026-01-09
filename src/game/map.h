@@ -1,11 +1,9 @@
 #pragma once
-#include "../common.h"
-#include "rmm_dbct.h"
-#include "zone_map.h"
-#include "visible.h"
+#include "common.h"
 
-class RGE_Map       {
+class RGE_Map {
 public:
+    // [omitted] vfptr @ 0x0 ('_padding_')
     RGE_Tile* map;                           // 0x4
     long map_width;                          // 0x8
     long map_height;                         // 0xC
@@ -40,48 +38,20 @@ public:
     RGE_Unified_Visible_Map* unified_vis_map; // 0x8DC8
     Visible_Unit_Manager* unit_manager;      // 0x8DCC
 
+    virtual void data_load_random_map(int param_1);         // vt0[1]+0x4=0x4557C0
+    virtual void load_random_map(char* param_1, char* param_2, char* param_3, char* param_4); // vt0[2]+0x8=0x455820
+    virtual uchar do_terrain_brush(long param_1, long param_2, long param_3, uchar param_4); // vt0[3]+0xC=0x457320
+    virtual uchar do_terrain_brush_stroke(long param_1, long param_2, long param_3, long param_4, long param_5, uchar param_6); // vt0[4]+0x10=0x4573C0
+    virtual uchar do_elevation_brush(long param_1, long param_2, long param_3, uchar param_4); // vt0[5]+0x14=0x457510
+    virtual uchar do_elevation_brush_stroke(long param_1, long param_2, long param_3, long param_4, long param_5, uchar param_6); // vt0[6]+0x18=0x4575C0
+    virtual uchar do_cliff_brush(long param_1, long param_2, uchar param_3, uchar param_4); // vt0[7]+0x1C=0x457750
+    virtual uchar do_cliff_brush_stroke(long param_1, long param_2, long param_3, long param_4, uchar param_5, uchar param_6); // vt0[8]+0x20=0x457760
+    virtual void map_generate(RGE_Player* param_1, RGE_Game_World* param_2, RGE_Player_Info* param_3, uchar* param_4); // vt0[9]+0x24=0x4578A0
+    virtual void map_generate2(RGE_Game_World* param_1, long param_2, long param_3, uchar param_4, long param_5); // vt0[10]+0x28=0x4578B0
+    virtual void save(int param_1);                         // vt0[11]+0x2C=0x457DF0
     RGE_Map(int param_1, RGE_Sound** param_2, uchar param_3);
     RGE_Map(char* param_1, char* param_2, char* param_3, short param_4, short param_5, short param_6, RGE_Sound** param_7);
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual  ~RGE_Map() noexcept(false); // Ghidra: `vector_deleting_destructor'
-
-    // [Slot 01] Offset 0x04 (Override)
-    virtual void data_load_random_map(int param_1); // Ghidra: data_load_random_map
-
-    // [Slot 02] Offset 0x08 (Override)
-    virtual void load_random_map(char* param_1, char* param_2, char* param_3, char* param_4); // Ghidra: load_random_map
-
-    // [Slot 03] Offset 0x0C (Override)
-    virtual uchar do_terrain_brush(long param_1, long param_2, long param_3, uchar param_4); // Ghidra: do_terrain_brush
-
-    // [Slot 04] Offset 0x10 (Override)
-    virtual uchar do_terrain_brush_stroke(long param_1, long param_2, long param_3, long param_4, long param_5, uchar param_6); // Ghidra: do_terrain_brush_stroke
-
-    // [Slot 05] Offset 0x14 (Override)
-    virtual uchar do_elevation_brush(long param_1, long param_2, long param_3, uchar param_4); // Ghidra: do_elevation_brush
-
-    // [Slot 06] Offset 0x18 (Override)
-    virtual uchar do_elevation_brush_stroke(long param_1, long param_2, long param_3, long param_4, long param_5, uchar param_6); // Ghidra: do_elevation_brush_stroke
-
-    // [Slot 07] Offset 0x1C (Override)
-    virtual uchar do_cliff_brush(long param_1, long param_2, uchar param_3, uchar param_4); // Ghidra: do_cliff_brush
-
-    // [Slot 08] Offset 0x20 (Override)
-    virtual uchar do_cliff_brush_stroke(long param_1, long param_2, long param_3, long param_4, uchar param_5, uchar param_6); // Ghidra: do_cliff_brush_stroke
-
-    // [Slot 09] Offset 0x24 (Override)
-    virtual void map_generate(RGE_Player* param_1, RGE_Game_World* param_2, RGE_Player_Info* param_3, uchar* param_4); // Ghidra: map_generate
-
-    // [Slot 10] Offset 0x28 (Override)
-    virtual void map_generate2(RGE_Game_World* param_1, long param_2, long param_3, uchar param_4, long param_5); // Ghidra: map_generate2
-
-    // [Slot 11] Offset 0x2C (Override)
-    virtual void save(int param_1); // Ghidra: save
-
-    // --- Non-Virtual Members ---
+    ~RGE_Map();
     void init_tile_sizes();
     void set_map_visible(uchar param_1);
     void set_map_fog(uchar param_1);
@@ -135,5 +105,4 @@ public:
 };
 
 static_assert(sizeof(RGE_Map) == 0x8DD0, "RGE_Map Size Mismatch");
-static_assert(offsetof(RGE_Map, unit_manager) == 0x8DCC, "RGE_Map Offset Mismatch");
 

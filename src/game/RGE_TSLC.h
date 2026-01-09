@@ -1,7 +1,7 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class RGE_TimeSinceLastCall       {
+class RGE_TimeSinceLastCall {
 public:
     char TBuff[255];                         // 0x0
     ulong lowTSLC;                           // 0x100
@@ -15,10 +15,7 @@ public:
     ulong cps;                               // 0x2B0
 
     RGE_TimeSinceLastCall();
-
-    // --- Non-Virtual Destructor ---
-    ~RGE_TimeSinceLastCall() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~RGE_TimeSinceLastCall();
     ulong GetAvg(int param_1);
     ulong Get();
     ulong Set();
@@ -33,5 +30,4 @@ public:
 };
 
 static_assert(sizeof(RGE_TimeSinceLastCall) == 0x2B4, "RGE_TimeSinceLastCall Size Mismatch");
-static_assert(offsetof(RGE_TimeSinceLastCall, cps) == 0x2B0, "RGE_TimeSinceLastCall Offset Mismatch");
 

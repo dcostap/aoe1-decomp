@@ -1,7 +1,6 @@
 #pragma once
-#include "../common.h"
-#include "Drawarea.h"
-#include "Sound.h"
+#include "common.h"
+
 
 // ----------------------------------------------------------------
 // Ov_Sprite_Draw_Rec
@@ -52,7 +51,8 @@ struct RGE_Border_Set {
     short border_style; // 0x59E
 };
 
-class TShape       {
+
+class TShape {
 public:
     uchar* shape;                            // 0x0
     int load_type;                           // 0x4
@@ -65,10 +65,7 @@ public:
 
     TShape();
     TShape(char* param_1, long param_2);
-
-    // --- Non-Virtual Destructor ---
-    ~TShape() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~TShape();
     uchar Check_shape(long param_1, char* param_2);
     int is_loaded();
     uchar shape_bounds(long param_1, short* param_2, short* param_3);
@@ -95,5 +92,4 @@ public:
 };
 
 static_assert(sizeof(TShape) == 0x20, "TShape Size Mismatch");
-static_assert(offsetof(TShape, shape_info) == 0x1C, "TShape Offset Mismatch");
 

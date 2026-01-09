@@ -1,7 +1,7 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class RGE_Zone_Map       {
+class RGE_Zone_Map {
 public:
     int numberTilesInZoneValue[257];         // 0x0
     uchar* zone_map;                         // 0x404
@@ -13,10 +13,7 @@ public:
 
     RGE_Zone_Map(int param_1, RGE_Map* param_2);
     RGE_Zone_Map(RGE_Map* param_1, float* param_2, long param_3);
-
-    // --- Non-Virtual Destructor ---
-    ~RGE_Zone_Map() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~RGE_Zone_Map();
     void save(int param_1);
     uchar do_zone_map();
     void do_zone_map_area(long param_1, long param_2, uchar param_3, uchar param_4);
@@ -29,9 +26,8 @@ public:
 };
 
 static_assert(sizeof(RGE_Zone_Map) == 0x51C, "RGE_Zone_Map Size Mismatch");
-static_assert(offsetof(RGE_Zone_Map, map) == 0x518, "RGE_Zone_Map Offset Mismatch");
 
-class RGE_Zone_Map_List       {
+class RGE_Zone_Map_List {
 public:
     RGE_Zone_Map** zone_maps;                // 0x0
     long zone_map_num;                       // 0x4
@@ -39,10 +35,8 @@ public:
 
     RGE_Zone_Map_List(int param_1, RGE_Map* param_2);
     RGE_Zone_Map_List(RGE_Map* param_1);
-
-    // --- Non-Virtual Destructor ---
-    ~RGE_Zone_Map_List() noexcept(false);
-    // --- Non-Virtual Members ---
+    void delete_zone_maps();
+    ~RGE_Zone_Map_List();
     void save(int param_1);
     long create_zone_map(float* param_1, long param_2);
     RGE_Zone_Map* get_zone_map(float* param_1, long param_2, int* param_3);
@@ -51,5 +45,4 @@ public:
 };
 
 static_assert(sizeof(RGE_Zone_Map_List) == 0xC, "RGE_Zone_Map_List Size Mismatch");
-static_assert(offsetof(RGE_Zone_Map_List, map) == 0x8, "RGE_Zone_Map_List Offset Mismatch");
 

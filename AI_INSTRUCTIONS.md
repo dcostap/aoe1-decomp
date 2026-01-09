@@ -1,38 +1,144 @@
-# AoE1 Decompilation Project - AI Protocol v3
+# Decompilation Guidelines (AI Agent)
 
-## 1. Project Mission & Philosophy
-We are reconstructing *Age of Empires (1997)* (Rise of Rome Beta) from x86 Assembly to clean C++.
+These rules exist to keep progress steady, builds stable, and the original information preserved. Re-read this document occasionally; it’s easy to drift.
 
-*   **Behavioral Fidelity > Lossless Decompilation:**
-    *   We aim for **exact behavior matching**, not a byte-perfect reproduction of the original assembly.
-    *   If the original code contains optimization artifacts (e.g., weird loop unrolling) or dead code, you may refactor it into clean, logical C++ *as long as the side effects and logic remain identical*.
-    *   We aim for simple, C-like, C++ code, avoiding complex C++ features
-*   **Architecture:** Windows x86 (32-bit). Pointers = 4 bytes.
-*   **Compiler:** MSVC (1997 era). Default alignment (4 bytes).
-*   **Source of Truth:** PDB-enabled Ghidra export.
-*   **Current situation**: 99% of structs, functions, and classes, were recovered from the PDB + Ghidra. Most .h files are complete, but they may need adjustments in imports, forward declarations, or minor tweaks. Most that weren't still involved in the current main code path probably don't compile straight away.
-*   **Naming Conventions:** All the existing names of files and functions and classes are straight from the PDB. Do not change them or rename them.
+---
 
-## 2. Handling Ambiguity & Refactoring
+## Non-negotiables
 
-### A. Unresolved VTable Calls
-Sometimes Ghidra cannot identify the function name and shows a raw offset call (e.g., `(this->vtable + 0x14)(...)`).
-*   **Action:** If you cannot map it to a named function in the header, **preserve the raw logic** using a cast, but tag it.
-*   **Format:**
-    ```cpp
-    // TODO: Resolve VTable Index 0x5 (Offset 0x14)
-    (*((void(__thiscall **)(void*))(*(int*)this + 0x14)))(this);
-    ```
+* `*.cpp.asm` is **immutable reference**. Never edit it.
+* `.h` files define **layout truth**. Keep size/offset/`static_assert(sizeof(...))` checks intact.
+* Prefer **small changes** that unblock the current goal. Don’t refactor for style.
 
-### B. Inline Helpers
-The original code often aggressively inlined logic (macros, linked list manipulation).
-*   **Action:** You are **allowed** to extract repetitive, complex inlined assembly into small `private` helper functions to keep the main logic readable. Include this in your final report.
+If you get stuck on a key decision or something feels impossible/unclear, **stop and ask the user** for guidance rather than guessing wildly.
 
-### 3. Task
-We are mostly lacking the main implementation of the functions. 99% of the functions are included as stubs, with an empty body that just includes, as commented code, the original assembly for that function. 
-Our job is to implement the actual code. This may introduce new dependencies, global variables, etc. 
-You will be provided a bunch of context. We will never provide every full file, only the probably relevant parts. You will have to ask for more context if you need it. You will be provided stubbed functions, which are the ones you have to implement.
-1. Analyze the stubbed functions I provide, with the dump of commented assembly inside the body. Analyze, with the context you have about the project, if we're ready to start implementing the code right now.
-   a) You may be missing context about the definition of a struct, class or function, as the code may be manipulating that data. Thus, ask the user, and WAIT FOR HIS ANSWER.
-   b) There may be access to global variables, which may already be defined, but the context doesn't make clear. Thus, ask the user, and WAIT FOR HIS ANSWER.
-2. Once everything is settled, you actually implement the code, being as faithful as possible to the original assembly logic, and adding plentiful comments to explain your reasoning. You output all the new code: every function you implemented, every new global variable, etc, with helpful commentary to let the user know what to copy paste and where.
+---
+
+## Goal-first workflow
+
+When given an objective, work in this order:
+
+1. **Build blockers**: missing types, missing includes, missing globals, missing declarations/definitions.
+2. **Objective-critical functions**: code paths needed for the objective.
+3. **Stubs** for required-but-not-critical functions.
+
+Don’t try to “finish the module” just because you opened it.
+
+---
+
+## Stubs (allowed and expected)
+
+Use stubs to keep moving when full implementation isn’t needed yet.
+
+Rules:
+
+* Keep the exact signature.
+* Minimal/no side effects.
+* Return safe defaults.
+
+Stub TODO can be simple:
+
+```cpp
+// TODO: implement (see <module>.cpp.asm)
+```
+
+---
+
+## Includes (keep it simple)
+
+### In headers (`.h`)
+
+Include only what you must:
+
+* You **must include** a type’s header if you inherit from it or store it **by value**.
+* Use forward declarations for pointer/reference members (`X*`, `X&`) when possible.
+
+### In source (`.cpp`)
+
+* Include your own header first.
+* Add other includes only as needed.
+
+Avoid pulling platform headers into headers if you can.
+
+---
+
+## Globals (`globals.h` / `globals.cpp`)
+
+Keep shared globals centralized:
+
+* `globals.h`: `extern` declarations
+* `globals.cpp`: one actual definition
+
+Prefer pointer globals (less include pressure). If something is truly used only in one `.cpp`, keep it file-local (`static` or anonymous namespace).
+
+---
+
+## Coding style: keep it “old C++ / C-like”
+
+Write straightforward, boring C++:
+
+* Avoid modern/clever features (templates-heavy helpers, fancy RAII patterns, complex STL use).
+* Prefer simple control flow, simple data, explicit local variables.
+* It’s fine to look like C with classes.
+
+The goal is correctness and readability for reverse engineering, not idiomatic modern C++.
+
+---
+
+## The hard part: ASM → C++ behavior matching
+
+Your job is to make the C++ **behave like the original**. Perfect translation is hard and mistakes are expected; review passes will happen later. Still, aim for closest behavior.
+
+### Practical translation rules
+
+* Prefer matching **effects** (reads/writes/calls/branches) over matching instruction patterns.
+* Keep calling order and side effects consistent (especially around globals, virtual calls, memory writes).
+* Be careful with:
+
+  * signed vs unsigned math
+  * overflow/wrap behavior
+  * pointer aliasing and byte/word access
+  * structure packing/layout assumptions
+  * string handling and buffer sizes
+  * error paths / early exits
+
+### Document assumptions and doubts in the `.cpp`
+
+Whenever you are unsure or you make a guess, leave notes right in the code near the relevant logic. This is required because later review runs depend on it.
+
+Use simple comments like:
+
+```cpp
+// ASSUMPTION: ...
+// DOUBT: ...
+// NOTE: assembly suggests ..., but unclear because ...
+```
+
+If you don’t know which is correct, prefer:
+
+* a stub (if acceptable for the current goal), or
+* the simplest implementation with a clear DOUBT comment.
+
+---
+
+## Implementation loop
+
+For each function you touch:
+
+1. Read its listing in `*.cpp.asm`.
+2. Implement or stub in the real `.cpp`.
+3. Add only the includes/globals needed.
+4. Build.
+5. Fix compile errors first, then linker errors.
+6. Keep notes on assumptions and uncertainties.
+
+---
+
+## Quick reminders
+
+* Never edit `*.cpp.asm`.
+* Keep layout asserts.
+* Use stubs freely, but mark them.
+* Write simple C-like C++.
+* Match behavior, and **document every guess**.
+* If blocked or uncertain on a key point: **ask the user**.

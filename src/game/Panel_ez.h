@@ -1,10 +1,8 @@
 #pragma once
-#include "../common.h"
-#include "Panel.h"
+#include "common.h"
 
-class TEasy_Panel : public TPanel       {
+class TEasy_Panel : public TPanel {
 public:
-    char _pad_0x4[0xF0];
     long ideal_width;                        // 0xF4
     long ideal_height;                       // 0xF8
     char info_file_name[260];                // 0xFC
@@ -44,236 +42,34 @@ public:
     int allow_shadow_area;                   // 0x470
     int saved_mouse_mode;                    // 0x474
 
+    virtual void draw_setup(int param_1);                   // vt0[10]+0x28=0x467560
+    virtual void draw();                                    // vt0[12]+0x30=0x467570
+    virtual long handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5); // vt0[28]+0x70=0x4679A0
+    virtual long action(TPanel* param_1, long param_2, ulong param_3, ulong param_4); // vt0[45]+0xB4=0x46A4E0
+    virtual void set_focus(int param_1);                    // vt0[48]+0xC0=0x469E10
+    virtual void draw_background(int param_1);              // vt0[56]+0xE0=0x4675C0
+    virtual void set_ideal_size(long param_1, long param_2); // vt0[57]+0xE4=0x467A50
+    virtual int create_button(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, long param_10, long param_11); // vt0[58]+0xE8=0x468490
+    virtual int create_button(TPanel* param_1, TButtonPanel** param_2, char* param_3, char* param_4, long param_5, long param_6, long param_7, long param_8, long param_9, long param_10, long param_11); // vt0[59]+0xEC=0x468530
+    virtual int create_check_box(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8); // vt0[60]+0xF0=0x468760
+    virtual int create_radio_button(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8); // vt0[61]+0xF4=0x4689C0
+    virtual int create_text(TPanel* param_1, TTextPanel** param_2, int param_3, long param_4, long param_5, long param_6, long param_7, long param_8, int param_9, int param_10, int param_11); // vt0[62]+0xF8=0x468C20
+    virtual int create_text(TPanel* param_1, TTextPanel** param_2, char** param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, int param_10, int param_11); // vt0[63]+0xFC=0x468E50
+    virtual int create_text(TPanel* param_1, TTextPanel** param_2, char* param_3, long param_4, long param_5, long param_6, long param_7, long param_8, int param_9, int param_10, int param_11); // vt0[64]+0x100=0x468CB0
+    virtual int create_input(TPanel* param_1, TInputPanel** param_2, char* param_3, short param_4, FormatType param_5, long param_6, long param_7, long param_8, long param_9, long param_10); // vt0[65]+0x104=0x469000
+    virtual int create_edit(TPanel* param_1, TEditPanel** param_2, char* param_3, short param_4, FormatType param_5, long param_6, long param_7, long param_8, long param_9, long param_10, int param_11, int param_12); // vt0[66]+0x108=0x4691C0
+    virtual int create_drop_down(TPanel* param_1, TDropDownPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9); // vt0[67]+0x10C=0x469380
+    virtual int create_list(TPanel* param_1, TListPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7); // vt0[68]+0x110=0x4696B0
+    virtual int create_scrollbar(TPanel* param_1, TScrollBarPanel** param_2, TTextPanel* param_3, long param_4, long param_5, long param_6, long param_7, long param_8); // vt0[69]+0x114=0x469910
+    virtual int create_auto_scrollbar(TScrollBarPanel** param_1, TTextPanel* param_2, long param_3); // vt0[70]+0x118=0x469A80
+    virtual int create_vert_slider(TPanel* param_1, TVerticalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9); // vt0[71]+0x11C=0x469AD0
+    virtual int create_horz_slider(TPanel* param_1, THorizontalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9); // vt0[72]+0x120=0x469C40
+    virtual void position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5); // vt0[73]+0x124=0x469DB0
     TEasy_Panel(char* param_1);
-    TEasy_Panel();
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual  ~TEasy_Panel() noexcept(false); // Ghidra: `scalar_deleting_destructor'
-
-    // [Slot 01] Offset 0x04 WARNING: Function body missing in analysis
-    // virtual void setup();
-
-    // [Slot 02] Offset 0x08 WARNING: Function body missing in analysis
-    // virtual void set_rect();
-
-    // [Slot 03] Offset 0x0C WARNING: Function body missing in analysis
-    // virtual void set_rect();
-
-    // [Slot 04] Offset 0x10 WARNING: Function body missing in analysis
-    // virtual void set_color();
-
-    // [Slot 05] Offset 0x14 WARNING: Function body missing in analysis
-    // virtual void set_active();
-
-    // [Slot 06] Offset 0x18 WARNING: Function body missing in analysis
-    // virtual void set_positioning();
-
-    // [Slot 07] Offset 0x1C WARNING: Function body missing in analysis
-    // virtual void set_fixed_position();
-
-    // [Slot 08] Offset 0x20 WARNING: Function body missing in analysis
-    // virtual void set_redraw();
-
-    // [Slot 09] Offset 0x24 WARNING: Function body missing in analysis
-    // virtual void set_overlapped_redraw();
-
-    // [Slot 10] Offset 0x28 (Override)
-    virtual void draw_setup(int param_1); // Ghidra: draw_setup
-
-    // [Slot 11] Offset 0x2C WARNING: Function body missing in analysis
-    // virtual void draw_finish();
-
-    // [Slot 12] Offset 0x30 (Override)
-    virtual void draw(); // Ghidra: draw
-
-    // [Slot 13] Offset 0x34 WARNING: Function body missing in analysis
-    // virtual void draw_rect();
-
-    // [Slot 14] Offset 0x38 WARNING: Function body missing in analysis
-    // virtual void draw_offset();
-
-    // [Slot 15] Offset 0x3C WARNING: Function body missing in analysis
-    // virtual void draw_rect2();
-
-    // [Slot 16] Offset 0x40 WARNING: Function body missing in analysis
-    // virtual void draw_offset2();
-
-    // [Slot 17] Offset 0x44 WARNING: Function body missing in analysis
-    // virtual void paint();
-
-    // [Slot 18] Offset 0x48 WARNING: Function body missing in analysis
-    // virtual void wnd_proc();
-
-    // [Slot 19] Offset 0x4C WARNING: Function body missing in analysis
-    // virtual void handle_idle();
-
-    // [Slot 20] Offset 0x50 WARNING: Function body missing in analysis
-    // virtual void handle_size();
-
-    // [Slot 21] Offset 0x54 WARNING: Function body missing in analysis
-    // virtual void handle_paint();
-
-    // [Slot 22] Offset 0x58 WARNING: Function body missing in analysis
-    // virtual void handle_key_down();
-
-    // [Slot 23] Offset 0x5C WARNING: Function body missing in analysis
-    // virtual void handle_char();
-
-    // [Slot 24] Offset 0x60 WARNING: Function body missing in analysis
-    // virtual void handle_command();
-
-    // [Slot 25] Offset 0x64 WARNING: Function body missing in analysis
-    // virtual void handle_user_command();
-
-    // [Slot 26] Offset 0x68 WARNING: Function body missing in analysis
-    // virtual void handle_timer_command();
-
-    // [Slot 27] Offset 0x6C WARNING: Function body missing in analysis
-    // virtual void handle_scroll();
-
-    // [Slot 28] Offset 0x70 (Override)
-    virtual long handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5); // Ghidra: handle_mouse_down
-
-    // [Slot 29] Offset 0x74 WARNING: Function body missing in analysis
-    // virtual void handle_mouse_move();
-
-    // [Slot 30] Offset 0x78 WARNING: Function body missing in analysis
-    // virtual void handle_mouse_up();
-
-    // [Slot 31] Offset 0x7C WARNING: Function body missing in analysis
-    // virtual void handle_mouse_dbl_click();
-
-    // [Slot 32] Offset 0x80 WARNING: Function body missing in analysis
-    // virtual void mouse_move_action();
-
-    // [Slot 33] Offset 0x84 WARNING: Function body missing in analysis
-    // virtual void mouse_left_down_action();
-
-    // [Slot 34] Offset 0x88 WARNING: Function body missing in analysis
-    // virtual void mouse_left_hold_action();
-
-    // [Slot 35] Offset 0x8C WARNING: Function body missing in analysis
-    // virtual void mouse_left_move_action();
-
-    // [Slot 36] Offset 0x90 WARNING: Function body missing in analysis
-    // virtual void mouse_left_up_action();
-
-    // [Slot 37] Offset 0x94 WARNING: Function body missing in analysis
-    // virtual void mouse_left_dbl_click_action();
-
-    // [Slot 38] Offset 0x98 WARNING: Function body missing in analysis
-    // virtual void mouse_right_down_action();
-
-    // [Slot 39] Offset 0x9C WARNING: Function body missing in analysis
-    // virtual void mouse_right_hold_action();
-
-    // [Slot 40] Offset 0xA0 WARNING: Function body missing in analysis
-    // virtual void mouse_right_move_action();
-
-    // [Slot 41] Offset 0xA4 WARNING: Function body missing in analysis
-    // virtual void mouse_right_up_action();
-
-    // [Slot 42] Offset 0xA8 WARNING: Function body missing in analysis
-    // virtual void mouse_right_dbl_click_action();
-
-    // [Slot 43] Offset 0xAC WARNING: Function body missing in analysis
-    // virtual void key_down_action();
-
-    // [Slot 44] Offset 0xB0 WARNING: Function body missing in analysis
-    // virtual void char_action();
-
-    // [Slot 45] Offset 0xB4 (Override)
-    virtual long action(TPanel* param_1, long param_2, ulong param_3, ulong param_4); // Ghidra: action
-
-    // [Slot 46] Offset 0xB8 WARNING: Function body missing in analysis
-    // virtual void get_true_render_rect();
-
-    // [Slot 47] Offset 0xBC WARNING: Function body missing in analysis
-    // virtual void is_inside();
-
-    // [Slot 48] Offset 0xC0 (Override)
-    virtual void set_focus(int param_1); // Ghidra: set_focus
-
-    // [Slot 49] Offset 0xC4 WARNING: Function body missing in analysis
-    // virtual void set_tab_order();
-
-    // [Slot 50] Offset 0xC8 WARNING: Function body missing in analysis
-    // virtual void set_tab_order();
-
-    // [Slot 51] Offset 0xCC WARNING: Function body missing in analysis
-    // virtual void get_help_info();
-
-    // [Slot 52] Offset 0xD0 WARNING: Function body missing in analysis
-    // virtual void stop_sound_system();
-
-    // [Slot 53] Offset 0xD4 WARNING: Function body missing in analysis
-    // virtual void restart_sound_system();
-
-    // [Slot 54] Offset 0xD8 WARNING: Function body missing in analysis
-    // virtual void take_snapshot();
-
-    // [Slot 55] Offset 0xDC WARNING: Function body missing in analysis
-    // virtual void handle_reactivate();
-
-    // [Slot 56] Offset 0xE0 (Override)
-    virtual void draw_background(int param_1); // Ghidra: draw_background
-
-    // [Slot 57] Offset 0xE4 (Override)
-    virtual void set_ideal_size(long param_1, long param_2); // Ghidra: set_ideal_size
-
-    // [Slot 58] Offset 0xE8 (Override)
-    virtual int create_button(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, long param_10, long param_11); // Ghidra: create_button
-
-    // [Slot 59] Offset 0xEC (Override)
-    virtual int create_button(TPanel* param_1, TButtonPanel** param_2, char* param_3, char* param_4, long param_5, long param_6, long param_7, long param_8, long param_9, long param_10, long param_11); // Ghidra: create_button
-
-    // [Slot 60] Offset 0xF0 (Override)
-    virtual int create_check_box(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8); // Ghidra: create_check_box
-
-    // [Slot 61] Offset 0xF4 (Override)
-    virtual int create_radio_button(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8); // Ghidra: create_radio_button
-
-    // [Slot 62] Offset 0xF8 (Override)
-    virtual int create_text(TPanel* param_1, TTextPanel** param_2, int param_3, long param_4, long param_5, long param_6, long param_7, long param_8, int param_9, int param_10, int param_11); // Ghidra: create_text
-
-    // [Slot 63] Offset 0xFC (Override)
-    virtual int create_text(TPanel* param_1, TTextPanel** param_2, char** param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, int param_10, int param_11); // Ghidra: create_text
-
-    // [Slot 64] Offset 0x100 (Override)
-    virtual int create_text(TPanel* param_1, TTextPanel** param_2, char* param_3, long param_4, long param_5, long param_6, long param_7, long param_8, int param_9, int param_10, int param_11); // Ghidra: create_text
-
-    // [Slot 65] Offset 0x104 (Override)
-    virtual int create_input(TPanel* param_1, TInputPanel** param_2, char* param_3, short param_4, FormatType param_5, long param_6, long param_7, long param_8, long param_9, long param_10); // Ghidra: create_input
-
-    // [Slot 66] Offset 0x108 (Override)
-    virtual int create_edit(TPanel* param_1, TEditPanel** param_2, char* param_3, short param_4, FormatType param_5, long param_6, long param_7, long param_8, long param_9, long param_10, int param_11, int param_12); // Ghidra: create_edit
-
-    // [Slot 67] Offset 0x10C (Override)
-    virtual int create_drop_down(TPanel* param_1, TDropDownPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9); // Ghidra: create_drop_down
-
-    // [Slot 68] Offset 0x110 (Override)
-    virtual int create_list(TPanel* param_1, TListPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7); // Ghidra: create_list
-
-    // [Slot 69] Offset 0x114 (Override)
-    virtual int create_scrollbar(TPanel* param_1, TScrollBarPanel** param_2, TTextPanel* param_3, long param_4, long param_5, long param_6, long param_7, long param_8); // Ghidra: create_scrollbar
-
-    // [Slot 70] Offset 0x118 (Override)
-    virtual int create_auto_scrollbar(TScrollBarPanel** param_1, TTextPanel* param_2, long param_3); // Ghidra: create_auto_scrollbar
-
-    // [Slot 71] Offset 0x11C (Override)
-    virtual int create_vert_slider(TPanel* param_1, TVerticalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9); // Ghidra: create_vert_slider
-
-    // [Slot 72] Offset 0x120 (Override)
-    virtual int create_horz_slider(TPanel* param_1, THorizontalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9); // Ghidra: create_horz_slider
-
-    // [Slot 73] Offset 0x124 (Override)
-    virtual void position_panel(TPanel* param_1, long param_2, long param_3, long param_4, long param_5); // Ghidra: position_panel
-
-    // --- Non-Virtual Members ---
     long setup(TDrawArea* param_1, TPanel* param_2, char* param_3, long param_4, int param_5, long param_6, long param_7, long param_8, long param_9, int param_10);
+    TEasy_Panel();
     void init_vars();
+    ~TEasy_Panel();
     void prepare_for_close();
     void setup_shadow_area(int param_1);
     void set_info_file(char* param_1, long param_2);
@@ -325,5 +121,4 @@ public:
 };
 
 static_assert(sizeof(TEasy_Panel) == 0x478, "TEasy_Panel Size Mismatch");
-static_assert(offsetof(TEasy_Panel, saved_mouse_mode) == 0x474, "TEasy_Panel Offset Mismatch");
 

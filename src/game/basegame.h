@@ -1,22 +1,5 @@
 #pragma once
-#include "../common.h"
-#include "gameinfo.h"
-#include "file_stf.h"
-#include "registry.h"
-#include "getdxver.h"
-#include "sceninfo.h"
-
-class TDrawSystem;
-class TPanel;
-class RGE_Scenario_File_Info;
-class TSound_Driver;
-class TMusic_System;
-class TDigital;
-class TCommunications_Handler;
-class TDebuggingLog;
-class TRegistry;
-class TMousePointer;
-class RGE_Scenario;
+#include "common.h"
 
 // ----------------------------------------------------------------
 // RGE_Game_Options
@@ -43,8 +26,9 @@ struct RGE_Game_Options {
     uchar playerTeamValue[9]; // 0x9C
 };
 
-class RGE_Base_Game       {
+class RGE_Base_Game {
 public:
+    // [omitted] vfptr @ 0x0 ('_padding_')
     RGE_Game_Info* player_game_info;         // 0x4
     RGE_Scenario_File_Info* scenario_info;   // 0x8
     RGE_Prog_Info* prog_info;                // 0xC
@@ -143,254 +127,88 @@ public:
     uchar resigned[9];                       // 0xA15
     TDrawArea* map_save_area;                // 0xA20
 
+    virtual int run();                                      // vt0[1]+0x4=0x41CFD0
+    virtual long wnd_proc(void* param_1, uint param_2, uint param_3, long param_4); // vt0[2]+0x8=0x4206D0
+    virtual void set_prog_mode(int param_1);                // vt0[3]+0xC=0x41C240
+    virtual void set_game_mode(int param_1, int param_2);   // vt0[4]+0x10=0x420130
+    virtual void set_player(short param_1);                 // vt0[5]+0x14=0x420150
+    virtual int get_error_code();                           // vt0[6]+0x18=0x41C990
+    virtual char* get_string(int param_1, long param_2, char* param_3, int param_4); // vt0[7]+0x1C=0x41C9F0
+    virtual char* get_string(long param_1, char* param_2, int param_3); // vt0[8]+0x20=0x41C9C0
+    virtual char* get_string(long param_1);                 // vt0[9]+0x24=0x41C9A0
+    virtual char* get_string2(int param_1, long param_2, long param_3, char* param_4, int param_5); // vt0[10]+0x28=0x41CA10
+    virtual TPanel* get_view_panel();                       // vt0[11]+0x2C=0x41C250
+    virtual TPanel* get_map_panel();                        // vt0[12]+0x30=0x41C260
+    virtual RGE_Scenario_Header* new_scenario_header(RGE_Scenario* param_1); // vt0[13]+0x34=0x41CE60
+    virtual RGE_Scenario_Header* new_scenario_header(int param_1); // vt0[14]+0x38=0x41CE00
+    virtual RGE_Scenario* new_scenario_info(int param_1);   // vt0[15]+0x3C=0x41CEC0
+    virtual void notification(int param_1, long param_2, long param_3, long param_4, long param_5); // vt0[16]+0x40=0x41C6E0
+    virtual int reset_comm();                               // vt0[17]+0x44=0x41EFF0
+    virtual void send_game_options();                       // vt0[18]+0x48=0x4220D0
+    virtual void receive_game_options();                    // vt0[19]+0x4C=0x4220F0
+    virtual char* gameSummary();                            // vt0[20]+0x50=0x422690
+    virtual int processCheatCode(int param_1, char* param_2); // vt0[21]+0x54=0x41C6F0
+    virtual int setup_music_system();                       // vt0[22]+0x58=0x41F110
+    virtual void shutdown_music_system();                   // vt0[23]+0x5C=0x41FA90
+    virtual int setup();                                    // vt0[24]+0x60=0x41BAA0
+    virtual int setup_cmd_options();                        // vt0[25]+0x64=0x41D0A0
+    virtual int setup_class();                              // vt0[26]+0x68=0x41E700
+    virtual int setup_main_window();                        // vt0[27]+0x6C=0x41E7D0
+    virtual int setup_graphics_system();                    // vt0[28]+0x70=0x41E920
+    virtual int setup_palette();                            // vt0[29]+0x74=0x41EBC0
+    virtual int setup_mouse();                              // vt0[30]+0x78=0x41EBF0
+    virtual int setup_registry();                           // vt0[31]+0x7C=0x41ED70
+    virtual int setup_debugging_log();                      // vt0[32]+0x80=0x41EDE0
+    virtual int setup_chat();                               // vt0[33]+0x84=0x41ED00
+    virtual int setup_comm();                               // vt0[34]+0x88=0x41EE90
+    virtual int setup_sound_system();                       // vt0[35]+0x8C=0x41F030
+    virtual int setup_fonts();                              // vt0[36]+0x90=0x41F560
+    virtual int setup_sounds();                             // vt0[37]+0x94=0x41F400
+    virtual int setup_shapes();                             // vt0[38]+0x98=0x41F2D0
+    virtual int setup_blank_screen();                       // vt0[39]+0x9C=0x41F730
+    virtual void setup_timings();                           // vt0[40]+0xA0=0x41F800
+    virtual void stop_sound_system();                       // vt0[41]+0xA4=0x41F830
+    virtual int restart_sound_system();                     // vt0[42]+0xA8=0x41F920
+    virtual void stop_music_system();                       // vt0[43]+0xAC=0x41F9B0
+    virtual int restart_music_system();                     // vt0[44]+0xB0=0x41F9F0
+    virtual RGE_Game_World* create_world();                 // vt0[45]+0xB4=0x420050
+    virtual int handle_message(tagMSG* param_1);            // vt0[46]+0xB8=0x41C700
+    virtual int handle_idle();                              // vt0[47]+0xBC=0x420F60
+    virtual int handle_mouse_move(void* param_1, uint param_2, uint param_3, long param_4); // vt0[48]+0xC0=0x421110
+    virtual int handle_key_down(void* param_1, uint param_2, uint param_3, long param_4); // vt0[49]+0xC4=0x4211D0
+    virtual int handle_user_command(void* param_1, uint param_2, uint param_3, long param_4); // vt0[50]+0xC8=0x4212E0
+    virtual int handle_command(void* param_1, uint param_2, uint param_3, long param_4); // vt0[51]+0xCC=0x4213A0
+    virtual int handle_music_done(void* param_1, uint param_2, uint param_3, long param_4); // vt0[52]+0xD0=0x4213C0
+    virtual int handle_paint(void* param_1, uint param_2, uint param_3, long param_4); // vt0[53]+0xD4=0x4213E0
+    virtual int handle_activate(void* param_1, uint param_2, uint param_3, long param_4); // vt0[54]+0xD8=0x421830
+    virtual int handle_init_menu(void* param_1, uint param_2, uint param_3, long param_4); // vt0[55]+0xDC=0x421910
+    virtual int handle_exit_menu(void* param_1, uint param_2, uint param_3, long param_4); // vt0[56]+0xE0=0x421930
+    virtual int handle_size(void* param_1, uint param_2, uint param_3, long param_4); // vt0[57]+0xE4=0x421950
+    virtual int handle_palette_changed(void* param_1, uint param_2, uint param_3, long param_4); // vt0[58]+0xE8=0x4219F0
+    virtual int handle_query_new_palette(void* param_1, uint param_2, uint param_3, long param_4); // vt0[59]+0xEC=0x421A80
+    virtual int handle_close(void* param_1, uint param_2, uint param_3, long param_4); // vt0[60]+0xF0=0x421B70
+    virtual int handle_destroy(void* param_1, uint param_2, uint param_3, long param_4); // vt0[61]+0xF4=0x421BB0
+    virtual int action_update();                            // vt0[62]+0xF8=0x41C710
+    virtual int action_mouse_move(long param_1, long param_2, int param_3, int param_4, int param_5, int param_6); // vt0[63]+0xFC=0x41C720
+    virtual int action_key_down(ulong param_1, int param_2, int param_3, int param_4, int param_5); // vt0[64]+0x100=0x41C730
+    virtual int action_user_command(ulong param_1, ulong param_2); // vt0[65]+0x104=0x41C740
+    virtual int action_command(ulong param_1, ulong param_2); // vt0[66]+0x108=0x41C750
+    virtual int action_music_done();                        // vt0[67]+0x10C=0x41C760
+    virtual int action_activate();                          // vt0[68]+0x110=0x41C770
+    virtual int action_deactivate();                        // vt0[69]+0x114=0x41C780
+    virtual int action_init_menu();                         // vt0[70]+0x118=0x41C790
+    virtual int action_exit_menu();                         // vt0[71]+0x11C=0x41C7A0
+    virtual int action_size();                              // vt0[72]+0x120=0x41C7B0
+    virtual int action_close();                             // vt0[73]+0x124=0x41C7C0
+    virtual void calc_timings();                            // vt0[74]+0x128=0x421BF0
+    virtual void calc_timing_text();                        // vt0[75]+0x12C=0x421FA0
+    virtual void show_timings();                            // vt0[76]+0x130=0x422030
+    virtual void show_comm();                               // vt0[77]+0x134=0x422050
+    virtual void show_ai();                                 // vt0[78]+0x138=0x422090
+    virtual int setup_map_save_area();                      // vt0[79]+0x13C=0x422EF0
+    virtual void set_interface_messages();                  // vt0[80]+0x140=0x422FE0
     RGE_Base_Game(RGE_Prog_Info* param_1, int param_2);
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual  ~RGE_Base_Game(); // Ghidra: `vector_deleting_destructor'
-
-    // [Slot 01] Offset 0x04 (Override)
-    virtual int run(); // Ghidra: run
-
-    // [Slot 02] Offset 0x08 (Override)
-    virtual long wnd_proc(void* param_1, uint param_2, uint param_3, long param_4); // Ghidra: wnd_proc
-
-    // [Slot 03] Offset 0x0C (Override)
-    virtual void set_prog_mode(int param_1); // Ghidra: set_prog_mode
-
-    // [Slot 04] Offset 0x10 (Override)
-    virtual void set_game_mode(int param_1, int param_2); // Ghidra: set_game_mode
-
-    // [Slot 05] Offset 0x14 (Override)
-    virtual void set_player(short param_1); // Ghidra: set_player
-
-    // [Slot 06] Offset 0x18 (Override)
-    virtual int get_error_code(); // Ghidra: get_error_code
-
-    // [Slot 07] Offset 0x1C (Override)
-    virtual char* get_string(int param_1, long param_2, char* param_3, int param_4); // Ghidra: get_string
-
-    // [Slot 08] Offset 0x20 (Override)
-    virtual char* get_string(long param_1, char* param_2, int param_3); // Ghidra: get_string
-
-    // [Slot 09] Offset 0x24 (Override)
-    virtual char* get_string(long param_1); // Ghidra: get_string
-
-    // [Slot 10] Offset 0x28 (Override)
-    virtual char* get_string2(int param_1, long param_2, long param_3, char* param_4, int param_5); // Ghidra: get_string2
-
-    // [Slot 11] Offset 0x2C (Override)
-    virtual TPanel* get_view_panel(); // Ghidra: get_view_panel
-
-    // [Slot 12] Offset 0x30 (Override)
-    virtual TPanel* get_map_panel(); // Ghidra: get_map_panel
-
-    // [Slot 13] Offset 0x34 (Override)
-    virtual RGE_Scenario_Header* new_scenario_header(RGE_Scenario* param_1); // Ghidra: new_scenario_header
-
-    // [Slot 14] Offset 0x38 (Override)
-    virtual RGE_Scenario_Header* new_scenario_header(int param_1); // Ghidra: new_scenario_header
-
-    // [Slot 15] Offset 0x3C (Override)
-    virtual RGE_Scenario* new_scenario_info(int param_1); // Ghidra: new_scenario_info
-
-    // [Slot 16] Offset 0x40 (Override)
-    virtual void notification(int param_1, long param_2, long param_3, long param_4, long param_5); // Ghidra: notification
-
-    // [Slot 17] Offset 0x44 (Override)
-    virtual int reset_comm(); // Ghidra: reset_comm
-
-    // [Slot 18] Offset 0x48 (Override)
-    virtual void send_game_options(); // Ghidra: send_game_options
-
-    // [Slot 19] Offset 0x4C (Override)
-    virtual void receive_game_options(); // Ghidra: receive_game_options
-
-    // [Slot 20] Offset 0x50 (Override)
-    virtual char* gameSummary(); // Ghidra: gameSummary
-
-    // [Slot 21] Offset 0x54 (Override)
-    virtual int processCheatCode(int param_1, char* param_2); // Ghidra: processCheatCode
-
-    // [Slot 22] Offset 0x58 (Override)
-    virtual int setup_music_system(); // Ghidra: setup_music_system
-
-    // [Slot 23] Offset 0x5C (Override)
-    virtual void shutdown_music_system(); // Ghidra: shutdown_music_system
-
-    // [Slot 24] Offset 0x60 (Override)
-    virtual int setup(); // Ghidra: setup
-
-    // [Slot 25] Offset 0x64 (Override)
-    virtual int setup_cmd_options(); // Ghidra: setup_cmd_options
-
-    // [Slot 26] Offset 0x68 (Override)
-    virtual int setup_class(); // Ghidra: setup_class
-
-    // [Slot 27] Offset 0x6C (Override)
-    virtual int setup_main_window(); // Ghidra: setup_main_window
-
-    // [Slot 28] Offset 0x70 (Override)
-    virtual int setup_graphics_system(); // Ghidra: setup_graphics_system
-
-    // [Slot 29] Offset 0x74 (Override)
-    virtual int setup_palette(); // Ghidra: setup_palette
-
-    // [Slot 30] Offset 0x78 (Override)
-    virtual int setup_mouse(); // Ghidra: setup_mouse
-
-    // [Slot 31] Offset 0x7C (Override)
-    virtual int setup_registry(); // Ghidra: setup_registry
-
-    // [Slot 32] Offset 0x80 (Override)
-    virtual int setup_debugging_log(); // Ghidra: setup_debugging_log
-
-    // [Slot 33] Offset 0x84 (Override)
-    virtual int setup_chat(); // Ghidra: setup_chat
-
-    // [Slot 34] Offset 0x88 (Override)
-    virtual int setup_comm(); // Ghidra: setup_comm
-
-    // [Slot 35] Offset 0x8C (Override)
-    virtual int setup_sound_system(); // Ghidra: setup_sound_system
-
-    // [Slot 36] Offset 0x90 (Override)
-    virtual int setup_fonts(); // Ghidra: setup_fonts
-
-    // [Slot 37] Offset 0x94 (Override)
-    virtual int setup_sounds(); // Ghidra: setup_sounds
-
-    // [Slot 38] Offset 0x98 (Override)
-    virtual int setup_shapes(); // Ghidra: setup_shapes
-
-    // [Slot 39] Offset 0x9C (Override)
-    virtual int setup_blank_screen(); // Ghidra: setup_blank_screen
-
-    // [Slot 40] Offset 0xA0 (Override)
-    virtual void setup_timings(); // Ghidra: setup_timings
-
-    // [Slot 41] Offset 0xA4 (Override)
-    virtual void stop_sound_system(); // Ghidra: stop_sound_system
-
-    // [Slot 42] Offset 0xA8 (Override)
-    virtual int restart_sound_system(); // Ghidra: restart_sound_system
-
-    // [Slot 43] Offset 0xAC (Override)
-    virtual void stop_music_system(); // Ghidra: stop_music_system
-
-    // [Slot 44] Offset 0xB0 (Override)
-    virtual int restart_music_system(); // Ghidra: restart_music_system
-
-    // [Slot 45] Offset 0xB4 (Override)
-    virtual RGE_Game_World* create_world(); // Ghidra: create_world
-
-    // [Slot 46] Offset 0xB8 (Override)
-    virtual int handle_message(tagMSG* param_1); // Ghidra: handle_message
-
-    // [Slot 47] Offset 0xBC (Override)
-    virtual int handle_idle(); // Ghidra: handle_idle
-
-    // [Slot 48] Offset 0xC0 (Override)
-    virtual int handle_mouse_move(void* param_1, uint param_2, uint param_3, long param_4); // Ghidra: handle_mouse_move
-
-    // [Slot 49] Offset 0xC4 (Override)
-    virtual int handle_key_down(void* param_1, uint param_2, uint param_3, long param_4); // Ghidra: handle_key_down
-
-    // [Slot 50] Offset 0xC8 (Override)
-    virtual int handle_user_command(void* param_1, uint param_2, uint param_3, long param_4); // Ghidra: handle_user_command
-
-    // [Slot 51] Offset 0xCC (Override)
-    virtual int handle_command(void* param_1, uint param_2, uint param_3, long param_4); // Ghidra: handle_command
-
-    // [Slot 52] Offset 0xD0 (Override)
-    virtual int handle_music_done(void* param_1, uint param_2, uint param_3, long param_4); // Ghidra: handle_music_done
-
-    // [Slot 53] Offset 0xD4 (Override)
-    virtual int handle_paint(void* param_1, uint param_2, uint param_3, long param_4); // Ghidra: handle_paint
-
-    // [Slot 54] Offset 0xD8 (Override)
-    virtual int handle_activate(void* param_1, uint param_2, uint param_3, long param_4); // Ghidra: handle_activate
-
-    // [Slot 55] Offset 0xDC (Override)
-    virtual int handle_init_menu(void* param_1, uint param_2, uint param_3, long param_4); // Ghidra: handle_init_menu
-
-    // [Slot 56] Offset 0xE0 (Override)
-    virtual int handle_exit_menu(void* param_1, uint param_2, uint param_3, long param_4); // Ghidra: handle_exit_menu
-
-    // [Slot 57] Offset 0xE4 (Override)
-    virtual int handle_size(void* param_1, uint param_2, uint param_3, long param_4); // Ghidra: handle_size
-
-    // [Slot 58] Offset 0xE8 (Override)
-    virtual int handle_palette_changed(void* param_1, uint param_2, uint param_3, long param_4); // Ghidra: handle_palette_changed
-
-    // [Slot 59] Offset 0xEC (Override)
-    virtual int handle_query_new_palette(void* param_1, uint param_2, uint param_3, long param_4); // Ghidra: handle_query_new_palette
-
-    // [Slot 60] Offset 0xF0 (Override)
-    virtual int handle_close(void* param_1, uint param_2, uint param_3, long param_4); // Ghidra: handle_close
-
-    // [Slot 61] Offset 0xF4 (Override)
-    virtual int handle_destroy(void* param_1, uint param_2, uint param_3, long param_4); // Ghidra: handle_destroy
-
-    // [Slot 62] Offset 0xF8 (Override)
-    virtual int action_update(); // Ghidra: action_update
-
-    // [Slot 63] Offset 0xFC (Override)
-    virtual int action_mouse_move(long param_1, long param_2, int param_3, int param_4, int param_5, int param_6); // Ghidra: action_mouse_move
-
-    // [Slot 64] Offset 0x100 (Override)
-    virtual int action_key_down(ulong param_1, int param_2, int param_3, int param_4, int param_5); // Ghidra: action_key_down
-
-    // [Slot 65] Offset 0x104 (Override)
-    virtual int action_user_command(ulong param_1, ulong param_2); // Ghidra: action_user_command
-
-    // [Slot 66] Offset 0x108 (Override)
-    virtual int action_command(ulong param_1, ulong param_2); // Ghidra: action_command
-
-    // [Slot 67] Offset 0x10C (Override)
-    virtual int action_music_done(); // Ghidra: action_music_done
-
-    // [Slot 68] Offset 0x110 (Override)
-    virtual int action_activate(); // Ghidra: action_activate
-
-    // [Slot 69] Offset 0x114 (Override)
-    virtual int action_deactivate(); // Ghidra: action_deactivate
-
-    // [Slot 70] Offset 0x118 (Override)
-    virtual int action_init_menu(); // Ghidra: action_init_menu
-
-    // [Slot 71] Offset 0x11C (Override)
-    virtual int action_exit_menu(); // Ghidra: action_exit_menu
-
-    // [Slot 72] Offset 0x120 (Override)
-    virtual int action_size(); // Ghidra: action_size
-
-    // [Slot 73] Offset 0x124 (Override)
-    virtual int action_close(); // Ghidra: action_close
-
-    // [Slot 74] Offset 0x128 (Override)
-    virtual void calc_timings(); // Ghidra: calc_timings
-
-    // [Slot 75] Offset 0x12C (Override)
-    virtual void calc_timing_text(); // Ghidra: calc_timing_text
-
-    // [Slot 76] Offset 0x130 (Override)
-    virtual void show_timings(); // Ghidra: show_timings
-
-    // [Slot 77] Offset 0x134 (Override)
-    virtual void show_comm(); // Ghidra: show_comm
-
-    // [Slot 78] Offset 0x138 (Override)
-    virtual void show_ai(); // Ghidra: show_ai
-
-    // [Slot 79] Offset 0x13C (Override)
-    virtual int setup_map_save_area(); // Ghidra: setup_map_save_area
-
-    // [Slot 80] Offset 0x140 (Override)
-    virtual void set_interface_messages(); // Ghidra: set_interface_messages
-
-    // --- Non-Virtual Members ---
+    ~RGE_Base_Game();
     void reset_timings();
     void add_to_timing(int param_1, ulong param_2);
     void increment_world_update_count();
@@ -519,36 +337,4 @@ public:
 };
 
 static_assert(sizeof(RGE_Base_Game) == 0xA24, "RGE_Base_Game Size Mismatch");
-static_assert(offsetof(RGE_Base_Game, map_save_area) == 0xA20, "RGE_Base_Game Offset Mismatch");
 
-
-// Logging and Debugging
-extern int do_draw_log;
-extern int safe_draw_log;
-extern char draw_log_name[256];
-extern FILE* draw_log;
-extern FILE* fps_log;
-extern int do_fps_log;
-extern int do_debug_random;
-extern int wrote_debug_random_log;
-extern int debugActions;
-extern FILE* actionFile;
-extern class TDebuggingLog* L;
-
-// Application State
-extern HWND AppWnd;
-extern HINSTANCE AppInst;
-extern HMODULE StringTable;
-extern RGE_Base_Game* rge_base_game;
-
-// Subsystems
-extern class TChat* chat;
-extern class TCommunications_Handler* comm;
-extern class TRegistry* Regs;
-extern class TSound_Driver* sound_driver;
-extern class TPanelSystem* panel_system;
-extern class DriveInformation* driveInfo;
-
-// Constants (deduced from float usage)
-extern float GAME_SPEED_TO_FLOAT; // DAT_0056f014
-extern float FLOAT_TO_GAME_SPEED; // DAT_0056f018

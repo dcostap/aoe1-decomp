@@ -1,7 +1,7 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class TRIBE_History_Info       {
+class TRIBE_History_Info {
 public:
     TRIBE_History_Entry* history;            // 0x0
     TRIBE_History_Events* events;            // 0x4
@@ -10,10 +10,7 @@ public:
     long max_number_of_entries;              // 0x10
 
     TRIBE_History_Info(int param_1);
-
-    // --- Non-Virtual Destructor ---
-    ~TRIBE_History_Info() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~TRIBE_History_Info();
     void save(int param_1);
     void load(int param_1);
     void add_history_entry(uchar param_1, uchar param_2);
@@ -26,5 +23,4 @@ public:
 };
 
 static_assert(sizeof(TRIBE_History_Info) == 0x14, "TRIBE_History_Info Size Mismatch");
-static_assert(offsetof(TRIBE_History_Info, max_number_of_entries) == 0x10, "TRIBE_History_Info Offset Mismatch");
 

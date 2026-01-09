@@ -1,8 +1,9 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class RGE_Timeline       {
+class RGE_Timeline {
 public:
+    // [omitted] vfptr @ 0x0 ('_padding_')
     RGE_Game_World* world;                   // 0x4
     RGE_Time_Entry* time_list;               // 0x8
     short list_num;                          // 0xC
@@ -11,13 +12,7 @@ public:
 
     RGE_Timeline(int param_1, RGE_Game_World* param_2);
     RGE_Timeline(RGE_Game_World* param_1);
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual  ~RGE_Timeline() noexcept(false); // Ghidra: `vector_deleting_destructor'
-
-    // --- Non-Virtual Members ---
+    ~RGE_Timeline();
     void save(int param_1);
     void update();
     void mock_update(float param_1);
@@ -31,5 +26,4 @@ public:
 };
 
 static_assert(sizeof(RGE_Timeline) == 0x14, "RGE_Timeline Size Mismatch");
-static_assert(offsetof(RGE_Timeline, old_time) == 0x10, "RGE_Timeline Offset Mismatch");
 

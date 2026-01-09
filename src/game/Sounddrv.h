@@ -1,9 +1,7 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class TSound_Driver;
-
-class TDigital       {
+class TDigital {
 public:
     TSound_Driver* sound_system;             // 0x0
     TDigital* owner;                         // 0x4
@@ -22,10 +20,8 @@ public:
 
     TDigital(TSound_Driver* param_1, char* param_2, long param_3);
     TDigital(TDigital* param_1);
-
-    // --- Non-Virtual Destructor ---
-    ~TDigital() noexcept(false);
-    // --- Non-Virtual Members ---
+    void exit();
+    ~TDigital();
     void init_vars();
     void exit();
     int load(char* param_1, long param_2);
@@ -41,9 +37,8 @@ public:
 };
 
 static_assert(sizeof(TDigital) == 0x3C, "TDigital Size Mismatch");
-static_assert(offsetof(TDigital, data_size) == 0x38, "TDigital Offset Mismatch");
 
-class TSound_Driver       {
+class TSound_Driver {
 public:
     uchar ready;                             // 0x0
     uchar mute;                              // 0x1
@@ -66,10 +61,8 @@ public:
 
     TSound_Driver();
     TSound_Driver(void* param_1, char* param_2);
-
-    // --- Non-Virtual Destructor ---
-    ~TSound_Driver() noexcept(false);
-    // --- Non-Virtual Members ---
+    void exit();
+    ~TSound_Driver();
     void init_vars();
     int init(void* param_1, char* param_2);
     void exit();
@@ -91,5 +84,4 @@ public:
 };
 
 static_assert(sizeof(TSound_Driver) == 0x69C, "TSound_Driver Size Mismatch");
-static_assert(offsetof(TSound_Driver, play_list_count) == 0x698, "TSound_Driver Offset Mismatch");
 

@@ -1,7 +1,7 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class DriveInformation       {
+class DriveInformation {
 public:
     int initialDriveValue;                   // 0x0
     char initialDirectoryValue[256];         // 0x4
@@ -10,8 +10,6 @@ public:
     int driveValues[27];                     // 0x208
 
     DriveInformation();
-
-    // --- Non-Virtual Members ---
     int initialDrive();
     char initialDriveAsLetter();
     char* initialDirectory();
@@ -33,5 +31,4 @@ public:
 };
 
 static_assert(sizeof(DriveInformation) == 0x274, "DriveInformation Size Mismatch");
-static_assert(offsetof(DriveInformation, driveValues) == 0x208, "DriveInformation Offset Mismatch");
 

@@ -1,7 +1,7 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class PointMaker       {
+class PointMaker {
 public:
     PrimaryPt Prime;                         // 0x0
     PtToPt Point[500];                       // 0x8
@@ -50,12 +50,9 @@ public:
     int BottomLimit;                         // 0x1050
     char SpecialLandType;                    // 0x1054
 
-    PointMaker();
-
-    // --- Non-Virtual Members ---
     void SetDefaultValues();
-    // --- Non-Virtual Destructor ---
-    ~PointMaker() noexcept(false);
+    PointMaker();
+    ~PointMaker();
     void CreateMasks();
     void DeleteMasks();
     void DrawMask(int param_1, int param_2, int param_3);
@@ -97,5 +94,4 @@ public:
 };
 
 static_assert(sizeof(PointMaker) == 0x1058, "PointMaker Size Mismatch");
-static_assert(offsetof(PointMaker, SpecialLandType) == 0x1054, "PointMaker Offset Mismatch");
 

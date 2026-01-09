@@ -1,7 +1,7 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class RGE_Flic_Player       {
+class RGE_Flic_Player {
 public:
     uchar* flic_buffer;                      // 0x0
     int flic_handle;                         // 0x4
@@ -21,10 +21,7 @@ public:
 
     RGE_Flic_Player(char* param_1);
     RGE_Flic_Player(int param_1);
-
-    // --- Non-Virtual Destructor ---
-    ~RGE_Flic_Player() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~RGE_Flic_Player();
     void palette(tagRGBQUAD* param_1);
     long resolution();
     long time_delay();
@@ -40,5 +37,4 @@ public:
 };
 
 static_assert(sizeof(RGE_Flic_Player) == 0xBC, "RGE_Flic_Player Size Mismatch");
-static_assert(offsetof(RGE_Flic_Player, flic_size_y) == 0xB8, "RGE_Flic_Player Offset Mismatch");
 

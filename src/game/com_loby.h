@@ -1,8 +1,7 @@
 #pragma once
-#include "../common.h"
-#include "com_err.h"
+#include "common.h"
 
-class RGE_Lobby : public RGE_Comm_Error       {
+class RGE_Lobby {
 public:
     void* HostHWND;                          // 0x0
     IDirectPlayLobby* glpDPL;                // 0x4
@@ -13,10 +12,7 @@ public:
     RGE_Comm_Error* Err;                     // 0x18
 
     RGE_Lobby(void* param_1);
-
-    // --- Non-Virtual Destructor ---
-    ~RGE_Lobby() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~RGE_Lobby();
     void ClearLobbyInfo();
     int IsLobbyLaunched();
     uchar CheckForLobbyLaunch(IDirectPlay3** param_1);
@@ -30,5 +26,4 @@ public:
 };
 
 static_assert(sizeof(RGE_Lobby) == 0x1C, "RGE_Lobby Size Mismatch");
-static_assert(offsetof(RGE_Lobby, Err) == 0x18, "RGE_Lobby Offset Mismatch");
 

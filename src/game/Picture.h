@@ -1,7 +1,7 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class TPicture       {
+class TPicture {
 public:
     tagBITMAPINFOHEADER* Dib;                // 0x0
     BITMAPINFO256* BitmapInfo;               // 0x4
@@ -15,10 +15,7 @@ public:
     TPicture(char* param_1, long param_2, int param_3, void* param_4, int param_5);
     TPicture(int param_1, int param_2);
     TPicture();
-
-    // --- Non-Virtual Destructor ---
-    ~TPicture() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~TPicture();
     void Save(int param_1);
     void Load(char* param_1, long param_2, int param_3, void* param_4, int param_5);
     void Init(BITMAPINFO256* param_1, uchar* param_2, TRANSINFO* param_3);
@@ -29,5 +26,4 @@ public:
 };
 
 static_assert(sizeof(TPicture) == 0x20, "TPicture Size Mismatch");
-static_assert(offsetof(TPicture, Orien) == 0x1C, "TPicture Offset Mismatch");
 

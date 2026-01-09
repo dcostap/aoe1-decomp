@@ -1,5 +1,5 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
 enum Action : unsigned int {
     ActionSelect = 1,
@@ -59,9 +59,8 @@ struct TextNode {
     TextNode * next_node; // 0xC
 };
 
-class TTextPanel : public TPanel       {
+class TTextPanel : public TPanel {
 public:
-    char _pad_0x4[0xF0];
     TextNode* list;                          // 0xF4
     short num_lines;                         // 0xF8
     short draw_lines;                        // 0xFA
@@ -108,191 +107,18 @@ public:
     int border_size;                         // 0x180
     int spacer_size;                         // 0x184
 
+    virtual void set_rect(long param_1, long param_2, long param_3, long param_4); // vt0[3]+0xC=0x47C3B0
+    virtual void set_active(int param_1);                   // vt0[5]+0x14=0x47CE20
+    virtual void draw();                                    // vt0[12]+0x30=0x47D2C0
+    virtual long mouse_left_down_action(long param_1, long param_2, int param_3, int param_4); // vt0[33]+0x84=0x47DC10
+    virtual long key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5); // vt0[43]+0xAC=0x47D120
+    virtual long action(TPanel* param_1, long param_2, ulong param_3, ulong param_4); // vt0[45]+0xB4=0x47D200
+    virtual void set_text(char** param_1, short param_2);   // vt0[56]+0xE0=0x47CAB0
+    virtual void set_text(long param_1);                    // vt0[57]+0xE4=0x47CA70
+    virtual void set_text(char* param_1);                   // vt0[58]+0xE8=0x47C560
+    virtual void set_bevel_info(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7); // vt0[59]+0xEC=0x47CD40
     TTextPanel();
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual  ~TTextPanel() noexcept(false); // Ghidra: `scalar_deleting_destructor'
-
-    // [Slot 01] Offset 0x04 WARNING: Function body missing in analysis
-    // virtual void setup();
-
-    // [Slot 02] Offset 0x08 WARNING: Function body missing in analysis
-    // virtual void set_rect();
-
-    // [Slot 03] Offset 0x0C (Override)
-    virtual void set_rect(long param_1, long param_2, long param_3, long param_4); // Ghidra: set_rect
-
-    // [Slot 04] Offset 0x10 WARNING: Function body missing in analysis
-    // virtual void set_color();
-
-    // [Slot 05] Offset 0x14 (Override)
-    virtual void set_active(int param_1); // Ghidra: set_active
-
-    // [Slot 06] Offset 0x18 WARNING: Function body missing in analysis
-    // virtual void set_positioning();
-
-    // [Slot 07] Offset 0x1C WARNING: Function body missing in analysis
-    // virtual void set_fixed_position();
-
-    // [Slot 08] Offset 0x20 WARNING: Function body missing in analysis
-    // virtual void set_redraw();
-
-    // [Slot 09] Offset 0x24 WARNING: Function body missing in analysis
-    // virtual void set_overlapped_redraw();
-
-    // [Slot 10] Offset 0x28 WARNING: Function body missing in analysis
-    // virtual void draw_setup();
-
-    // [Slot 11] Offset 0x2C WARNING: Function body missing in analysis
-    // virtual void draw_finish();
-
-    // [Slot 12] Offset 0x30 (Override)
-    virtual void draw(); // Ghidra: draw
-
-    // [Slot 13] Offset 0x34 WARNING: Function body missing in analysis
-    // virtual void draw_rect();
-
-    // [Slot 14] Offset 0x38 WARNING: Function body missing in analysis
-    // virtual void draw_offset();
-
-    // [Slot 15] Offset 0x3C WARNING: Function body missing in analysis
-    // virtual void draw_rect2();
-
-    // [Slot 16] Offset 0x40 WARNING: Function body missing in analysis
-    // virtual void draw_offset2();
-
-    // [Slot 17] Offset 0x44 WARNING: Function body missing in analysis
-    // virtual void paint();
-
-    // [Slot 18] Offset 0x48 WARNING: Function body missing in analysis
-    // virtual void wnd_proc();
-
-    // [Slot 19] Offset 0x4C WARNING: Function body missing in analysis
-    // virtual void handle_idle();
-
-    // [Slot 20] Offset 0x50 WARNING: Function body missing in analysis
-    // virtual void handle_size();
-
-    // [Slot 21] Offset 0x54 WARNING: Function body missing in analysis
-    // virtual void handle_paint();
-
-    // [Slot 22] Offset 0x58 WARNING: Function body missing in analysis
-    // virtual void handle_key_down();
-
-    // [Slot 23] Offset 0x5C WARNING: Function body missing in analysis
-    // virtual void handle_char();
-
-    // [Slot 24] Offset 0x60 WARNING: Function body missing in analysis
-    // virtual void handle_command();
-
-    // [Slot 25] Offset 0x64 WARNING: Function body missing in analysis
-    // virtual void handle_user_command();
-
-    // [Slot 26] Offset 0x68 WARNING: Function body missing in analysis
-    // virtual void handle_timer_command();
-
-    // [Slot 27] Offset 0x6C WARNING: Function body missing in analysis
-    // virtual void handle_scroll();
-
-    // [Slot 28] Offset 0x70 WARNING: Function body missing in analysis
-    // virtual void handle_mouse_down();
-
-    // [Slot 29] Offset 0x74 WARNING: Function body missing in analysis
-    // virtual void handle_mouse_move();
-
-    // [Slot 30] Offset 0x78 WARNING: Function body missing in analysis
-    // virtual void handle_mouse_up();
-
-    // [Slot 31] Offset 0x7C WARNING: Function body missing in analysis
-    // virtual void handle_mouse_dbl_click();
-
-    // [Slot 32] Offset 0x80 WARNING: Function body missing in analysis
-    // virtual void mouse_move_action();
-
-    // [Slot 33] Offset 0x84 (Override)
-    virtual long mouse_left_down_action(long param_1, long param_2, int param_3, int param_4); // Ghidra: mouse_left_down_action
-
-    // [Slot 34] Offset 0x88 WARNING: Function body missing in analysis
-    // virtual void mouse_left_hold_action();
-
-    // [Slot 35] Offset 0x8C WARNING: Function body missing in analysis
-    // virtual void mouse_left_move_action();
-
-    // [Slot 36] Offset 0x90 WARNING: Function body missing in analysis
-    // virtual void mouse_left_up_action();
-
-    // [Slot 37] Offset 0x94 WARNING: Function body missing in analysis
-    // virtual void mouse_left_dbl_click_action();
-
-    // [Slot 38] Offset 0x98 WARNING: Function body missing in analysis
-    // virtual void mouse_right_down_action();
-
-    // [Slot 39] Offset 0x9C WARNING: Function body missing in analysis
-    // virtual void mouse_right_hold_action();
-
-    // [Slot 40] Offset 0xA0 WARNING: Function body missing in analysis
-    // virtual void mouse_right_move_action();
-
-    // [Slot 41] Offset 0xA4 WARNING: Function body missing in analysis
-    // virtual void mouse_right_up_action();
-
-    // [Slot 42] Offset 0xA8 WARNING: Function body missing in analysis
-    // virtual void mouse_right_dbl_click_action();
-
-    // [Slot 43] Offset 0xAC (Override)
-    virtual long key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5); // Ghidra: key_down_action
-
-    // [Slot 44] Offset 0xB0 WARNING: Function body missing in analysis
-    // virtual void char_action();
-
-    // [Slot 45] Offset 0xB4 (Override)
-    virtual long action(TPanel* param_1, long param_2, ulong param_3, ulong param_4); // Ghidra: action
-
-    // [Slot 46] Offset 0xB8 WARNING: Function body missing in analysis
-    // virtual void get_true_render_rect();
-
-    // [Slot 47] Offset 0xBC WARNING: Function body missing in analysis
-    // virtual void is_inside();
-
-    // [Slot 48] Offset 0xC0 WARNING: Function body missing in analysis
-    // virtual void set_focus();
-
-    // [Slot 49] Offset 0xC4 WARNING: Function body missing in analysis
-    // virtual void set_tab_order();
-
-    // [Slot 50] Offset 0xC8 WARNING: Function body missing in analysis
-    // virtual void set_tab_order();
-
-    // [Slot 51] Offset 0xCC WARNING: Function body missing in analysis
-    // virtual void get_help_info();
-
-    // [Slot 52] Offset 0xD0 WARNING: Function body missing in analysis
-    // virtual void stop_sound_system();
-
-    // [Slot 53] Offset 0xD4 WARNING: Function body missing in analysis
-    // virtual void restart_sound_system();
-
-    // [Slot 54] Offset 0xD8 WARNING: Function body missing in analysis
-    // virtual void take_snapshot();
-
-    // [Slot 55] Offset 0xDC WARNING: Function body missing in analysis
-    // virtual void handle_reactivate();
-
-    // [Slot 56] Offset 0xE0 (Override)
-    virtual void set_text(char** param_1, short param_2); // Ghidra: set_text
-
-    // [Slot 57] Offset 0xE4 (Override)
-    virtual void set_text(long param_1); // Ghidra: set_text
-
-    // [Slot 58] Offset 0xE8 (Override)
-    virtual void set_text(char* param_1); // Ghidra: set_text
-
-    // [Slot 59] Offset 0xEC (Override)
-    virtual void set_bevel_info(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7); // Ghidra: set_bevel_info
-
-    // --- Non-Virtual Members ---
+    ~TTextPanel();
     long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, void* param_7, long param_8, long param_9, char* param_10, int param_11, uchar param_12, int param_13, uchar param_14, short param_15, char* param_16);
     long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, void* param_7, long param_8, long param_9, char* param_10, int param_11, uchar param_12, int param_13, uchar param_14, short param_15, long param_16);
     long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, void* param_7, long param_8, long param_9, char* param_10, int param_11, uchar param_12, int param_13, uchar param_14, short param_15, char** param_16, short param_17);
@@ -319,6 +145,7 @@ public:
     int numberDrawLines();
     int currentLineNumber();
     void setCurrentLineNumber(int param_1);
+    char* get_text();
     char* currentLine();
     void set_line(long param_1);
     void set_line_by_id(long param_1);
@@ -342,6 +169,7 @@ public:
     char* get_text2(long param_1);
     long get_id();
     long get_id(long param_1);
+    void free_text();
     void empty_list();
     void free_text();
     void set_second_column_pos(long param_1);
@@ -349,5 +177,4 @@ public:
 };
 
 static_assert(sizeof(TTextPanel) == 0x188, "TTextPanel Size Mismatch");
-static_assert(offsetof(TTextPanel, spacer_size) == 0x184, "TTextPanel Offset Mismatch");
 

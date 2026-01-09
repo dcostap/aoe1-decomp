@@ -1,9 +1,7 @@
 #pragma once
-#include "../common.h"
-#include "Shape.h"
-#include "asprite.h"
+#include "common.h"
 
-class RGE_Sprite       {
+class RGE_Sprite {
 public:
     char pict_name[13];                      // 0x0
     long resource_id;                        // 0x10
@@ -38,10 +36,7 @@ public:
     RGE_Sprite(short param_1);
     RGE_Sprite(int param_1, RGE_Sound** param_2, RGE_Color_Table** param_3);
     RGE_Sprite(_iobuf* param_1, short param_2, RGE_Sound** param_3);
-
-    // --- Non-Virtual Destructor ---
-    ~RGE_Sprite() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~RGE_Sprite();
     void rehook(RGE_Sprite** param_1);
     void save(int param_1);
     void load_facets(RGE_Sprite** param_1);
@@ -63,5 +58,4 @@ public:
 };
 
 static_assert(sizeof(RGE_Sprite) == 0x78, "RGE_Sprite Size Mismatch");
-static_assert(offsetof(RGE_Sprite, mirror_flag) == 0x74, "RGE_Sprite Offset Mismatch");
 

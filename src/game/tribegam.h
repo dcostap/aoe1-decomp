@@ -1,67 +1,5 @@
 #pragma once
-#include "../common.h"
-#include "basegame.h"
-#include "Panel.h"
-#include "Res_file.h"
-
-class TRIBE_Screen_Game;
-class TPanel;
-
-extern int player_dropped[9]; 
-extern int out_of_sync;
-extern int disable_terrain_sounds;
-
-enum Age : unsigned int {
-    DefaultAge = 0,
-    NomadAge = 1,
-    StoneAge = 2,
-    ToolAge = 3,
-    BronzeAge = 4,
-    IronAge = 5,
-};
-
-enum MapSize : unsigned int {
-    Tiny = 0,
-    Small = 1,
-    Medium = 2,
-    Large = 3,
-    Huge = 4,
-    Humongous = 5,
-};
-
-enum MapType : unsigned int {
-    AllWater = 0,
-    MostlyWater = 1,
-    WaterAndLand = 2,
-    MostlyLand = 3,
-    AllLand = 4,
-    Continental = 5,
-    Lake = 6,
-    Hilly = 7,
-    Isthmas = 8,
-};
-
-enum ResourceLevel : unsigned int {
-    DefaultResources = 0,
-    LowResource = 1,
-    MediumResources = 2,
-    HighResources = 3,
-    VeryHighResources = 4,
-};
-
-
-enum VictoryType : unsigned int {
-    VictoryDefault = 0,
-    VictoryConquest = 1,
-    VictoryExplore = 2,
-    VictoryRuins = 3,
-    VictoryArtifacts = 4,
-    VictoryDiscoveries = 5,
-    VictoryGold = 6,
-    VictoryTime = 7,
-    VictoryScore = 8,
-    VictoryStandard = 9,
-};
+#include "common.h"
 
 // ----------------------------------------------------------------
 // TRIBE_Game_Options
@@ -96,7 +34,7 @@ struct combined_options {
     TRIBE_Game_Options tribe_options; // 0xA8
 };
 
-class TRIBE_Game : public RGE_Base_Game       {
+class TRIBE_Game : public RGE_Base_Game {
 public:
     MouseClickInfo* MouseRightClickTable;    // 0xA24
     int MouseRightClickTableSize;            // 0xA28
@@ -134,258 +72,43 @@ public:
     int save_humanity[9];                    // 0x116C
     uchar quick_start_game;                  // 0x1190
     int random_start_value;                  // 0x1194
-    uchar computerNameUsed[18][10];          // 0x1198
+    uchar* computerNameUsed[18];             // 0x1198
     void* handleIdleLock;                    // 0x124C
     int inHandleIdle;                        // 0x1250
 
+    virtual long wnd_proc(void* param_1, uint param_2, uint param_3, long param_4); // vt0[2]+0x8=0x529580
+    virtual void set_game_mode(int param_1, int param_2);   // vt0[4]+0x10=0x5227D0
+    virtual void set_player(short param_1);                 // vt0[5]+0x14=0x522810
+    virtual char* get_string(long param_1, char* param_2, int param_3); // vt0[8]+0x20=0x5228E0
+    virtual char* get_string2(int param_1, long param_2, long param_3, char* param_4, int param_5); // vt0[10]+0x28=0x522930
+    virtual TPanel* get_view_panel();                       // vt0[11]+0x2C=0x523450
+    virtual TPanel* get_map_panel();                        // vt0[12]+0x30=0x5234A0
+    virtual RGE_Scenario_Header* new_scenario_header(RGE_Scenario* param_1); // vt0[13]+0x34=0x523570
+    virtual RGE_Scenario_Header* new_scenario_header(int param_1); // vt0[14]+0x38=0x523510
+    virtual RGE_Scenario* new_scenario_info(int param_1);   // vt0[15]+0x3C=0x5235D0
+    virtual void notification(int param_1, long param_2, long param_3, long param_4, long param_5); // vt0[16]+0x40=0x524D70
+    virtual void send_game_options();                       // vt0[18]+0x48=0x528F60
+    virtual void receive_game_options();                    // vt0[19]+0x4C=0x528FB0
+    virtual char* gameSummary();                            // vt0[20]+0x50=0x529570
+    virtual int processCheatCode(int param_1, char* param_2); // vt0[21]+0x54=0x527A70
+    virtual int setup();                                    // vt0[24]+0x60=0x521790
+    virtual int setup_cmd_options();                        // vt0[25]+0x64=0x521FA0
+    virtual int setup_palette();                            // vt0[29]+0x74=0x522200
+    virtual int setup_sounds();                             // vt0[37]+0x94=0x5222C0
+    virtual RGE_Game_World* create_world();                 // vt0[45]+0xB4=0x522770
+    virtual int handle_idle();                              // vt0[47]+0xBC=0x529610
+    virtual int handle_activate(void* param_1, uint param_2, uint param_3, long param_4); // vt0[54]+0xD8=0x5299E0
+    virtual int handle_query_new_palette(void* param_1, uint param_2, uint param_3, long param_4); // vt0[59]+0xEC=0x529980
+    virtual int action_key_down(ulong param_1, int param_2, int param_3, int param_4, int param_5); // vt0[64]+0x100=0x529F60
+    virtual int action_user_command(ulong param_1, ulong param_2); // vt0[65]+0x104=0x529A70
+    virtual int action_close();                             // vt0[73]+0x124=0x52A000
+    virtual void calc_timing_text();                        // vt0[75]+0x12C=0x524880
+    virtual void show_timings();                            // vt0[76]+0x130=0x524A60
+    virtual void show_comm();                               // vt0[77]+0x134=0x524A80
+    virtual void show_ai();                                 // vt0[78]+0x138=0x524AF0
+    virtual void set_interface_messages();                  // vt0[80]+0x140=0x52A210
     TRIBE_Game(RGE_Prog_Info* param_1, int param_2);
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual  ~TRIBE_Game() noexcept(false); // Ghidra: `vector_deleting_destructor'
-
-    // [Slot 01] Offset 0x04 WARNING: Function body missing in analysis
-    // virtual void run();
-
-    // [Slot 02] Offset 0x08 (Override)
-    virtual long wnd_proc(void* param_1, uint param_2, uint param_3, long param_4); // Ghidra: wnd_proc
-
-    // [Slot 03] Offset 0x0C WARNING: Function body missing in analysis
-    // virtual void set_prog_mode();
-
-    // [Slot 04] Offset 0x10 (Override)
-    virtual void set_game_mode(int param_1, int param_2); // Ghidra: set_game_mode
-
-    // [Slot 05] Offset 0x14 (Override)
-    virtual void set_player(short param_1); // Ghidra: set_player
-
-    // [Slot 06] Offset 0x18 WARNING: Function body missing in analysis
-    // virtual void get_error_code();
-
-    // [Slot 07] Offset 0x1C WARNING: Function body missing in analysis
-    // virtual void get_string();
-
-    // [Slot 08] Offset 0x20 (Override)
-    virtual char* get_string(long param_1, char* param_2, int param_3); // Ghidra: get_string
-
-    // [Slot 09] Offset 0x24 WARNING: Function body missing in analysis
-    // virtual void get_string();
-
-    // [Slot 10] Offset 0x28 (Override)
-    virtual char* get_string2(int param_1, long param_2, long param_3, char* param_4, int param_5); // Ghidra: get_string2
-
-    // [Slot 11] Offset 0x2C (Override)
-    virtual TPanel* get_view_panel(); // Ghidra: get_view_panel
-
-    // [Slot 12] Offset 0x30 (Override)
-    virtual TPanel* get_map_panel(); // Ghidra: get_map_panel
-
-    // [Slot 13] Offset 0x34 (Override)
-    virtual RGE_Scenario_Header* new_scenario_header(RGE_Scenario* param_1); // Ghidra: new_scenario_header
-
-    // [Slot 14] Offset 0x38 (Override)
-    virtual RGE_Scenario_Header* new_scenario_header(int param_1); // Ghidra: new_scenario_header
-
-    // [Slot 15] Offset 0x3C (Override)
-    virtual RGE_Scenario* new_scenario_info(int param_1); // Ghidra: new_scenario_info
-
-    // [Slot 16] Offset 0x40 (Override)
-    virtual void notification(int param_1, long param_2, long param_3, long param_4, long param_5); // Ghidra: notification
-
-    // [Slot 17] Offset 0x44 WARNING: Function body missing in analysis
-    // virtual void reset_comm();
-
-    // [Slot 18] Offset 0x48 (Override)
-    virtual void send_game_options(); // Ghidra: send_game_options
-
-    // [Slot 19] Offset 0x4C (Override)
-    virtual void receive_game_options(); // Ghidra: receive_game_options
-
-    // [Slot 20] Offset 0x50 (Override)
-    virtual char* gameSummary(); // Ghidra: gameSummary
-
-    // [Slot 21] Offset 0x54 (Override)
-    virtual int processCheatCode(int param_1, char* param_2); // Ghidra: processCheatCode
-
-    // [Slot 22] Offset 0x58 WARNING: Function body missing in analysis
-    // virtual void setup_music_system();
-
-    // [Slot 23] Offset 0x5C WARNING: Function body missing in analysis
-    // virtual void shutdown_music_system();
-
-    // [Slot 24] Offset 0x60 (Override)
-    virtual int setup(); // Ghidra: setup
-
-    // [Slot 25] Offset 0x64 (Override)
-    virtual int setup_cmd_options(); // Ghidra: setup_cmd_options
-
-    // [Slot 26] Offset 0x68 WARNING: Function body missing in analysis
-    // virtual void setup_class();
-
-    // [Slot 27] Offset 0x6C WARNING: Function body missing in analysis
-    // virtual void setup_main_window();
-
-    // [Slot 28] Offset 0x70 WARNING: Function body missing in analysis
-    // virtual void setup_graphics_system();
-
-    // [Slot 29] Offset 0x74 (Override)
-    virtual int setup_palette(); // Ghidra: setup_palette
-
-    // [Slot 30] Offset 0x78 WARNING: Function body missing in analysis
-    // virtual void setup_mouse();
-
-    // [Slot 31] Offset 0x7C WARNING: Function body missing in analysis
-    // virtual void setup_registry();
-
-    // [Slot 32] Offset 0x80 WARNING: Function body missing in analysis
-    // virtual void setup_debugging_log();
-
-    // [Slot 33] Offset 0x84 WARNING: Function body missing in analysis
-    // virtual void setup_chat();
-
-    // [Slot 34] Offset 0x88 WARNING: Function body missing in analysis
-    // virtual void setup_comm();
-
-    // [Slot 35] Offset 0x8C WARNING: Function body missing in analysis
-    // virtual void setup_sound_system();
-
-    // [Slot 36] Offset 0x90 WARNING: Function body missing in analysis
-    // virtual void setup_fonts();
-
-    // [Slot 37] Offset 0x94 (Override)
-    virtual int setup_sounds(); // Ghidra: setup_sounds
-
-    // [Slot 38] Offset 0x98 WARNING: Function body missing in analysis
-    // virtual void setup_shapes();
-
-    // [Slot 39] Offset 0x9C WARNING: Function body missing in analysis
-    // virtual void setup_blank_screen();
-
-    // [Slot 40] Offset 0xA0 WARNING: Function body missing in analysis
-    // virtual void setup_timings();
-
-    // [Slot 41] Offset 0xA4 WARNING: Function body missing in analysis
-    // virtual void stop_sound_system();
-
-    // [Slot 42] Offset 0xA8 WARNING: Function body missing in analysis
-    // virtual void restart_sound_system();
-
-    // [Slot 43] Offset 0xAC WARNING: Function body missing in analysis
-    // virtual void stop_music_system();
-
-    // [Slot 44] Offset 0xB0 WARNING: Function body missing in analysis
-    // virtual void restart_music_system();
-
-    // [Slot 45] Offset 0xB4 (Override)
-    virtual RGE_Game_World* create_world(); // Ghidra: create_world
-
-    // [Slot 46] Offset 0xB8 WARNING: Function body missing in analysis
-    // virtual void handle_message();
-
-    // [Slot 47] Offset 0xBC (Override)
-    virtual int handle_idle(); // Ghidra: handle_idle
-
-    // [Slot 48] Offset 0xC0 WARNING: Function body missing in analysis
-    // virtual void handle_mouse_move();
-
-    // [Slot 49] Offset 0xC4 WARNING: Function body missing in analysis
-    // virtual void handle_key_down();
-
-    // [Slot 50] Offset 0xC8 WARNING: Function body missing in analysis
-    // virtual void handle_user_command();
-
-    // [Slot 51] Offset 0xCC WARNING: Function body missing in analysis
-    // virtual void handle_command();
-
-    // [Slot 52] Offset 0xD0 WARNING: Function body missing in analysis
-    // virtual void handle_music_done();
-
-    // [Slot 53] Offset 0xD4 WARNING: Function body missing in analysis
-    // virtual void handle_paint();
-
-    // [Slot 54] Offset 0xD8 (Override)
-    virtual int handle_activate(void* param_1, uint param_2, uint param_3, long param_4); // Ghidra: handle_activate
-
-    // [Slot 55] Offset 0xDC WARNING: Function body missing in analysis
-    // virtual void handle_init_menu();
-
-    // [Slot 56] Offset 0xE0 WARNING: Function body missing in analysis
-    // virtual void handle_exit_menu();
-
-    // [Slot 57] Offset 0xE4 WARNING: Function body missing in analysis
-    // virtual void handle_size();
-
-    // [Slot 58] Offset 0xE8 WARNING: Function body missing in analysis
-    // virtual void handle_palette_changed();
-
-    // [Slot 59] Offset 0xEC (Override)
-    virtual int handle_query_new_palette(void* param_1, uint param_2, uint param_3, long param_4); // Ghidra: handle_query_new_palette
-
-    // [Slot 60] Offset 0xF0 WARNING: Function body missing in analysis
-    // virtual void handle_close();
-
-    // [Slot 61] Offset 0xF4 WARNING: Function body missing in analysis
-    // virtual void handle_destroy();
-
-    // [Slot 62] Offset 0xF8 WARNING: Function body missing in analysis
-    // virtual void action_update();
-
-    // [Slot 63] Offset 0xFC WARNING: Function body missing in analysis
-    // virtual void action_mouse_move();
-
-    // [Slot 64] Offset 0x100 (Override)
-    virtual int action_key_down(ulong param_1, int param_2, int param_3, int param_4, int param_5); // Ghidra: action_key_down
-
-    // [Slot 65] Offset 0x104 (Override)
-    virtual int action_user_command(ulong param_1, ulong param_2); // Ghidra: action_user_command
-
-    // [Slot 66] Offset 0x108 WARNING: Function body missing in analysis
-    // virtual void action_command();
-
-    // [Slot 67] Offset 0x10C WARNING: Function body missing in analysis
-    // virtual void action_music_done();
-
-    // [Slot 68] Offset 0x110 WARNING: Function body missing in analysis
-    // virtual void action_activate();
-
-    // [Slot 69] Offset 0x114 WARNING: Function body missing in analysis
-    // virtual void action_deactivate();
-
-    // [Slot 70] Offset 0x118 WARNING: Function body missing in analysis
-    // virtual void action_init_menu();
-
-    // [Slot 71] Offset 0x11C WARNING: Function body missing in analysis
-    // virtual void action_exit_menu();
-
-    // [Slot 72] Offset 0x120 WARNING: Function body missing in analysis
-    // virtual void action_size();
-
-    // [Slot 73] Offset 0x124 (Override)
-    virtual int action_close(); // Ghidra: action_close
-
-    // [Slot 74] Offset 0x128 WARNING: Function body missing in analysis
-    // virtual void calc_timings();
-
-    // [Slot 75] Offset 0x12C (Override)
-    virtual void calc_timing_text(); // Ghidra: calc_timing_text
-
-    // [Slot 76] Offset 0x130 (Override)
-    virtual void show_timings(); // Ghidra: show_timings
-
-    // [Slot 77] Offset 0x134 (Override)
-    virtual void show_comm(); // Ghidra: show_comm
-
-    // [Slot 78] Offset 0x138 (Override)
-    virtual void show_ai(); // Ghidra: show_ai
-
-    // [Slot 79] Offset 0x13C WARNING: Function body missing in analysis
-    // virtual void setup_map_save_area();
-
-    // [Slot 80] Offset 0x140 (Override)
-    virtual void set_interface_messages(); // Ghidra: set_interface_messages
-
-    // --- Non-Virtual Members ---
+    ~TRIBE_Game();
     void close_game_screens(int param_1);
     void set_save_game_name(char* param_1);
     void set_load_game_name(char* param_1);
@@ -471,5 +194,4 @@ public:
 };
 
 static_assert(sizeof(TRIBE_Game) == 0x1254, "TRIBE_Game Size Mismatch");
-static_assert(offsetof(TRIBE_Game, inHandleIdle) == 0x1250, "TRIBE_Game Offset Mismatch");
 

@@ -1,12 +1,9 @@
 #pragma once
-#include "../common.h"
-#include "stat_obj.h"
-#include "player.h"
-#include "m_an_obj.h"
-#include "aipbook.h"
+#include "common.h"
 
-class UnitAIModule       {
+class UnitAIModule {
 public:
+    // [omitted] vfptr @ 0x0 ('_padding_')
     RGE_Static_Object* objectValue;          // 0x4
     int moodValue;                           // 0x8
     int objectCategoryValue;                 // 0xC
@@ -47,179 +44,63 @@ public:
     AIPlayStatus* playStatus;                // 0x12C
     uchar stopAfterTargetKilledValue;        // 0x130
 
+    virtual void save(int param_1);                         // vt0[1]+0x4=0x413150
+    virtual void load(int param_1);                         // vt0[2]+0x8=0x413450
+    virtual RGE_Player* owner();                            // vt0[3]+0xC=0x413810
+    virtual int order(int param_1, int param_2, int param_3, int param_4, float param_5, float param_6, float param_7, float param_8, int param_9, int param_10, int param_11); // vt0[4]+0x10=0x414D40
+    virtual int notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6); // vt0[5]+0x14=0x414E80
+    virtual int notifyCommander(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6); // vt0[6]+0x18=0x414F70
+    virtual int notifyCommander(NotifyEvent* param_1);      // vt0[7]+0x1C=0x414F40
+    virtual void search();                                  // vt0[8]+0x20=0x415040
+    virtual int importantWhenDead(int param_1);             // vt0[9]+0x24=0x415120
+    virtual int retryableOrder(int param_1);                // vt0[10]+0x28=0x415150
+    virtual int actionRequiresLiveTarget(int param_1);      // vt0[11]+0x2C=0x415160
+    virtual int bestUnitToAttack(int param_1, int param_2, float* param_3); // vt0[12]+0x30=0x4151B0
+    virtual int mostDangerousEnemy(float* param_1);         // vt0[13]+0x34=0x415A10
+    virtual int weakestEnemy(float* param_1);               // vt0[14]+0x38=0x415AD0
+    virtual int closestAttacker(float* param_1);            // vt0[15]+0x3C=0x415B50
+    virtual int closestObject(int param_1, int param_2, int param_3, int param_4, int* param_5); // vt0[16]+0x40=0x415CA0
+    virtual int closestResourceObject(int param_1, int* param_2); // vt0[17]+0x44=0x415E50
+    virtual int closestUndiscoveredTile(int* param_1, int* param_2, int param_3); // vt0[18]+0x48=0x415F40
+    virtual void logDebug(char* param_1);                   // vt0[19]+0x4C=0x41A100
+    virtual int canAttackUnit(RGE_Static_Object* param_1);  // vt0[20]+0x50=0x4162A0
+    virtual int canAttackUnitAtNeutrality(int param_1);     // vt0[21]+0x54=0x4162B0
+    virtual int stopObject(int param_1);                    // vt0[22]+0x58=0x4162C0
+    virtual int attackObject(int param_1, int param_2);     // vt0[23]+0x5C=0x416340
+    virtual int attackRoundupObject(int param_1);           // vt0[24]+0x60=0x4163C0
+    virtual int huntObject(int param_1, int param_2);       // vt0[25]+0x64=0x416470
+    virtual int gatherObject(int param_1, int param_2);     // vt0[26]+0x68=0x416690
+    virtual int convertObject(int param_1, int param_2);    // vt0[27]+0x6C=0x416550
+    virtual int healObject(int param_1, int param_2);       // vt0[28]+0x70=0x4165F0
+    virtual int repairObject(int param_1, int param_2);     // vt0[29]+0x74=0x416730
+    virtual int buildObject(int param_1, int param_2);      // vt0[30]+0x78=0x4167D0
+    virtual int tradeWithObject(int param_1, int param_2);  // vt0[31]+0x7C=0x416870
+    virtual int explore(int param_1, int param_2, int param_3); // vt0[32]+0x80=0x416910
+    virtual int enterObject(int param_1, int param_2);      // vt0[33]+0x84=0x416980
+    virtual int unload(int param_1, float param_2, float param_3); // vt0[34]+0x88=0x416A50
+    virtual int transportObject(float param_1, float param_2, float param_3, int param_4); // vt0[35]+0x8C=0x4169E0
+    virtual int moveTo(float param_1, float param_2, float param_3, float param_4, int param_5); // vt0[36]+0x90=0x416C10
+    virtual int moveTo(int param_1, float param_2, int param_3); // vt0[37]+0x94=0x416B80
+    virtual int moveTo(int param_1, int param_2);           // vt0[38]+0x98=0x416AF0
+    virtual int evasiveMoveTo(float param_1, float param_2, float param_3, int param_4); // vt0[39]+0x9C=0x416C80
+    virtual int intelligentEvasiveMoveTo(float param_1, float param_2, float param_3, int param_4, int param_5); // vt0[40]+0xA0=0x416F30
+    virtual int runAwayFromAttackers(int param_1);          // vt0[41]+0xA4=0x4171F0
+    virtual int followObject(int param_1, float param_2, int param_3); // vt0[42]+0xA8=0x417360
+    virtual int defendObject(int param_1, float param_2, int param_3); // vt0[43]+0xAC=0x4173D0
+    virtual int defendPosition(float param_1, float param_2, float param_3, int param_4); // vt0[44]+0xB0=0x417440
+    virtual int seekAndDestroy(int param_1, int param_2, int param_3, int param_4); // vt0[45]+0xB4=0x4174A0
+    virtual int exploreAndDestroy(int param_1, int param_2, int param_3); // vt0[46]+0xB8=0x417510
+    virtual int importantObject(int param_1);               // vt0[47]+0xBC=0x417640
+    virtual int convertToLOSResourceType(int param_1);      // vt0[48]+0xC0=0x4177C0
+    virtual int canConvert(int param_1);                    // vt0[49]+0xC4=0x4138B0
+    virtual int processOrder(OrderEvent* param_1, int param_2); // vt0[50]+0xC8=0x417B50
+    virtual int processNotify(NotifyEvent* param_1, ulong param_2); // vt0[51]+0xCC=0x4180C0
+    virtual void processGroupNotify(NotifyEvent* param_1);  // vt0[52]+0xD0=0x419510
+    virtual int processIdle(int param_1);                   // vt0[53]+0xD4=0x4195F0
+    virtual int processMisc();                              // vt0[54]+0xD8=0x419650
+    virtual int processRetryableOrder();                    // vt0[55]+0xDC=0x419BC0
     UnitAIModule(RGE_Static_Object* param_1, int param_2);
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual  ~UnitAIModule() noexcept(false); // Ghidra: `scalar_deleting_destructor'
-
-    // [Slot 01] Offset 0x04 (Override)
-    virtual void save(int param_1); // Ghidra: save
-
-    // [Slot 02] Offset 0x08 (Override)
-    virtual void load(int param_1); // Ghidra: load
-
-    // [Slot 03] Offset 0x0C (Override)
-    virtual RGE_Player* owner(); // Ghidra: owner
-
-    // [Slot 04] Offset 0x10 (Override)
-    virtual int order(int param_1, int param_2, int param_3, int param_4, float param_5, float param_6, float param_7, float param_8, int param_9, int param_10, int param_11); // Ghidra: order
-
-    // [Slot 05] Offset 0x14 (Override)
-    virtual int notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6); // Ghidra: notify
-
-    // [Slot 06] Offset 0x18 (Override)
-    virtual int notifyCommander(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6); // Ghidra: notifyCommander
-
-    // [Slot 07] Offset 0x1C (Override)
-    virtual int notifyCommander(NotifyEvent* param_1); // Ghidra: notifyCommander
-
-    // [Slot 08] Offset 0x20 (Override)
-    virtual void search(); // Ghidra: search
-
-    // [Slot 09] Offset 0x24 (Override)
-    virtual int importantWhenDead(int param_1); // Ghidra: importantWhenDead
-
-    // [Slot 10] Offset 0x28 (Override)
-    virtual int retryableOrder(int param_1); // Ghidra: retryableOrder
-
-    // [Slot 11] Offset 0x2C (Override)
-    virtual int actionRequiresLiveTarget(int param_1); // Ghidra: actionRequiresLiveTarget
-
-    // [Slot 12] Offset 0x30 (Override)
-    virtual int bestUnitToAttack(int param_1, int param_2, float* param_3); // Ghidra: bestUnitToAttack
-
-    // [Slot 13] Offset 0x34 (Override)
-    virtual int mostDangerousEnemy(float* param_1); // Ghidra: mostDangerousEnemy
-
-    // [Slot 14] Offset 0x38 (Override)
-    virtual int weakestEnemy(float* param_1); // Ghidra: weakestEnemy
-
-    // [Slot 15] Offset 0x3C (Override)
-    virtual int closestAttacker(float* param_1); // Ghidra: closestAttacker
-
-    // [Slot 16] Offset 0x40 (Override)
-    virtual int closestObject(int param_1, int param_2, int param_3, int param_4, int* param_5); // Ghidra: closestObject
-
-    // [Slot 17] Offset 0x44 (Override)
-    virtual int closestResourceObject(int param_1, int* param_2); // Ghidra: closestResourceObject
-
-    // [Slot 18] Offset 0x48 (Override)
-    virtual int closestUndiscoveredTile(int* param_1, int* param_2, int param_3); // Ghidra: closestUndiscoveredTile
-
-    // [Slot 19] Offset 0x4C (Override)
-    virtual void logDebug(char* param_1); // Ghidra: logDebug
-
-    // [Slot 20] Offset 0x50 (Override)
-    virtual int canAttackUnit(RGE_Static_Object* param_1); // Ghidra: canAttackUnit
-
-    // [Slot 21] Offset 0x54 (Override)
-    virtual int canAttackUnitAtNeutrality(int param_1); // Ghidra: canAttackUnitAtNeutrality
-
-    // [Slot 22] Offset 0x58 (Override)
-    virtual int stopObject(int param_1); // Ghidra: stopObject
-
-    // [Slot 23] Offset 0x5C (Override)
-    virtual int attackObject(int param_1, int param_2); // Ghidra: attackObject
-
-    // [Slot 24] Offset 0x60 (Override)
-    virtual int attackRoundupObject(int param_1); // Ghidra: attackRoundupObject
-
-    // [Slot 25] Offset 0x64 (Override)
-    virtual int huntObject(int param_1, int param_2); // Ghidra: huntObject
-
-    // [Slot 26] Offset 0x68 (Override)
-    virtual int gatherObject(int param_1, int param_2); // Ghidra: gatherObject
-
-    // [Slot 27] Offset 0x6C (Override)
-    virtual int convertObject(int param_1, int param_2); // Ghidra: convertObject
-
-    // [Slot 28] Offset 0x70 (Override)
-    virtual int healObject(int param_1, int param_2); // Ghidra: healObject
-
-    // [Slot 29] Offset 0x74 (Override)
-    virtual int repairObject(int param_1, int param_2); // Ghidra: repairObject
-
-    // [Slot 30] Offset 0x78 (Override)
-    virtual int buildObject(int param_1, int param_2); // Ghidra: buildObject
-
-    // [Slot 31] Offset 0x7C (Override)
-    virtual int tradeWithObject(int param_1, int param_2); // Ghidra: tradeWithObject
-
-    // [Slot 32] Offset 0x80 (Override)
-    virtual int explore(int param_1, int param_2, int param_3); // Ghidra: explore
-
-    // [Slot 33] Offset 0x84 (Override)
-    virtual int enterObject(int param_1, int param_2); // Ghidra: enterObject
-
-    // [Slot 34] Offset 0x88 (Override)
-    virtual int unload(int param_1, float param_2, float param_3); // Ghidra: unload
-
-    // [Slot 35] Offset 0x8C (Override)
-    virtual int transportObject(float param_1, float param_2, float param_3, int param_4); // Ghidra: transportObject
-
-    // [Slot 36] Offset 0x90 (Override)
-    virtual int moveTo(float param_1, float param_2, float param_3, float param_4, int param_5); // Ghidra: moveTo
-
-    // [Slot 37] Offset 0x94 (Override)
-    virtual int moveTo(int param_1, float param_2, int param_3); // Ghidra: moveTo
-
-    // [Slot 38] Offset 0x98 (Override)
-    virtual int moveTo(int param_1, int param_2); // Ghidra: moveTo
-
-    // [Slot 39] Offset 0x9C (Override)
-    virtual int evasiveMoveTo(float param_1, float param_2, float param_3, int param_4); // Ghidra: evasiveMoveTo
-
-    // [Slot 40] Offset 0xA0 (Override)
-    virtual int intelligentEvasiveMoveTo(float param_1, float param_2, float param_3, int param_4, int param_5); // Ghidra: intelligentEvasiveMoveTo
-
-    // [Slot 41] Offset 0xA4 (Override)
-    virtual int runAwayFromAttackers(int param_1); // Ghidra: runAwayFromAttackers
-
-    // [Slot 42] Offset 0xA8 (Override)
-    virtual int followObject(int param_1, float param_2, int param_3); // Ghidra: followObject
-
-    // [Slot 43] Offset 0xAC (Override)
-    virtual int defendObject(int param_1, float param_2, int param_3); // Ghidra: defendObject
-
-    // [Slot 44] Offset 0xB0 (Override)
-    virtual int defendPosition(float param_1, float param_2, float param_3, int param_4); // Ghidra: defendPosition
-
-    // [Slot 45] Offset 0xB4 (Override)
-    virtual int seekAndDestroy(int param_1, int param_2, int param_3, int param_4); // Ghidra: seekAndDestroy
-
-    // [Slot 46] Offset 0xB8 (Override)
-    virtual int exploreAndDestroy(int param_1, int param_2, int param_3); // Ghidra: exploreAndDestroy
-
-    // [Slot 47] Offset 0xBC (Override)
-    virtual int importantObject(int param_1); // Ghidra: importantObject
-
-    // [Slot 48] Offset 0xC0 (Override)
-    virtual int convertToLOSResourceType(int param_1); // Ghidra: convertToLOSResourceType
-
-    // [Slot 49] Offset 0xC4 (Override)
-    virtual int canConvert(int param_1); // Ghidra: canConvert
-
-    // [Slot 50] Offset 0xC8 (Override)
-    virtual int processOrder(OrderEvent* param_1, int param_2); // Ghidra: processOrder
-
-    // [Slot 51] Offset 0xCC (Override)
-    virtual int processNotify(NotifyEvent* param_1, ulong param_2); // Ghidra: processNotify
-
-    // [Slot 52] Offset 0xD0 (Override)
-    virtual void processGroupNotify(NotifyEvent* param_1); // Ghidra: processGroupNotify
-
-    // [Slot 53] Offset 0xD4 (Override)
-    virtual int processIdle(int param_1); // Ghidra: processIdle
-
-    // [Slot 54] Offset 0xD8 (Override)
-    virtual int processMisc(); // Ghidra: processMisc
-
-    // [Slot 55] Offset 0xDC (Override)
-    virtual int processRetryableOrder(); // Ghidra: processRetryableOrder
-
-    // --- Non-Virtual Members ---
+    ~UnitAIModule();
     RGE_Static_Object* object();
     int objectID();
     int objectCategory();
@@ -281,36 +162,4 @@ public:
 };
 
 static_assert(sizeof(UnitAIModule) == 0x134, "UnitAIModule Size Mismatch");
-static_assert(offsetof(UnitAIModule, stopAfterTargetKilledValue) == 0x130, "UnitAIModule Offset Mismatch");
-
-int UnitAIModule::canConvert(int param_1) {
-    /* TODO: Stub */
-//                              int __thiscall canConvert(UnitAIModule * this, int param_1)
-//              int               EAX:4          <RETURN>
-//              UnitAIModule *    ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1
-//                               ?canConvert@UnitAIModule@@UAEHH@Z                            XREF[15]:    0056eb9c(*), 00575894(*),
-//                               UnitAIModule::canConvert                                                  005759ac(*), 00575a8c(*),
-//                                                                                                         00575b6c(*), 00575c4c(*),
-//                                                                                                         00575d2c(*), 00575e0c(*),
-//                                                                                                         00575fd4(*), 005760b4(*),
-//                                                                                                         00576194(*), 00576274(*),
-//                                                                                                         00576354(*), 00576434(*),
-//                                                                                                         00576514(*)
-//                              aiuaimod.h:210 (5)
-//         004138b0     XOR        EAX,EAX
-//         004138b2     RET        0x4
-//         004138b5     ??         90h
-//         004138b6     NOP
-//         004138b7     NOP
-//         004138b8     NOP
-//         004138b9     NOP
-//         004138ba     NOP
-//         004138bb     NOP
-//         004138bc     NOP
-//         004138bd     NOP
-//         004138be     NOP
-//         004138bf     NOP
-    return 0;
-}
 

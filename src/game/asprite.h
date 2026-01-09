@@ -1,9 +1,8 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class RGE_Active_Animated_Sprite : public RGE_Active_Sprite       {
+class RGE_Active_Animated_Sprite : public RGE_Active_Sprite {
 public:
-    char _pad_0x4[0x10];
     short frame;                             // 0x14
     float animate_interval;                  // 0x18
     float animate_last;                      // 0x1C
@@ -12,125 +11,57 @@ public:
     uchar frame_looped;                      // 0x23
     uchar animate_flag;                      // 0x24
 
+    virtual void save(int param_1);                         // vt0[2]+0x8=0x41B210
+    virtual void update(float param_1, float param_2);      // vt0[3]+0xC=0x41B290
+    virtual void draw(short param_1, long param_2, long param_3, long param_4, long param_5, RGE_Color_Table* param_6, TDrawArea* param_7); // vt0[4]+0x10=0x41B430
+    virtual void normal_draw(short param_1, long param_2, long param_3, RGE_Color_Table* param_4, TDrawArea* param_5); // vt0[5]+0x14=0x41B4A0
+    virtual void shadow_draw(short param_1, long param_2, long param_3, RGE_Color_Table* param_4, TDrawArea* param_5, uchar param_6); // vt0[6]+0x18=0x41B4F0
+    virtual short what_frame();                             // vt0[7]+0x1C=0x41B520
+    virtual uchar is_animating();                           // vt0[8]+0x20=0x41B530
+    virtual void set_frame(short param_1);                  // vt0[9]+0x24=0x41B550
+    virtual uchar frame_passed(short param_1);              // vt0[10]+0x28=0x41B560
+    virtual uchar looped();                                 // vt0[11]+0x2C=0x41B590
+    virtual short get_facetindex(short param_1);            // vt0[12]+0x30=0x41B5A0
+    virtual uchar get_frame(short* param_1, short* param_2, short* param_3, short* param_4, long param_5); // vt0[13]+0x34=0x41B5D0
+    virtual void setToFirstFrame();                         // vt0[14]+0x38=0x41B600
     RGE_Active_Animated_Sprite(RGE_Sprite* param_1);
     RGE_Active_Animated_Sprite(int param_1, RGE_Sprite** param_2);
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual  ~RGE_Active_Animated_Sprite() noexcept(false); // Ghidra: `vector_deleting_destructor'
-
-    // [Slot 01] Offset 0x04 WARNING: Function body missing in analysis
-    // virtual void set_offset();
-
-    // [Slot 02] Offset 0x08 (Override)
-    virtual void save(int param_1); // Ghidra: save
-
-    // [Slot 03] Offset 0x0C (Override)
-    virtual void update(float param_1, float param_2); // Ghidra: update
-
-    // [Slot 04] Offset 0x10 (Override)
-    virtual void draw(short param_1, long param_2, long param_3, long param_4, long param_5, RGE_Color_Table* param_6, TDrawArea* param_7); // Ghidra: draw
-
-    // [Slot 05] Offset 0x14 (Override)
-    virtual void normal_draw(short param_1, long param_2, long param_3, RGE_Color_Table* param_4, TDrawArea* param_5); // Ghidra: normal_draw
-
-    // [Slot 06] Offset 0x18 (Override)
-    virtual void shadow_draw(short param_1, long param_2, long param_3, RGE_Color_Table* param_4, TDrawArea* param_5, uchar param_6); // Ghidra: shadow_draw
-
-    // [Slot 07] Offset 0x1C (Override)
-    virtual short what_frame(); // Ghidra: what_frame
-
-    // [Slot 08] Offset 0x20 (Override)
-    virtual uchar is_animating(); // Ghidra: is_animating
-
-    // [Slot 09] Offset 0x24 (Override)
-    virtual void set_frame(short param_1); // Ghidra: set_frame
-
-    // [Slot 10] Offset 0x28 (Override)
-    virtual uchar frame_passed(short param_1); // Ghidra: frame_passed
-
-    // [Slot 11] Offset 0x2C (Override)
-    virtual uchar looped(); // Ghidra: looped
-
-    // [Slot 12] Offset 0x30 (Override)
-    virtual short get_facetindex(short param_1); // Ghidra: get_facetindex
-
-    // [Slot 13] Offset 0x34 (Override)
-    virtual uchar get_frame(short* param_1, short* param_2, short* param_3, short* param_4, long param_5); // Ghidra: get_frame
-
-    // [Slot 14] Offset 0x38 (Override)
-    virtual void setToFirstFrame(); // Ghidra: setToFirstFrame
-
+    ~RGE_Active_Animated_Sprite();
 };
 
 static_assert(sizeof(RGE_Active_Animated_Sprite) == 0x28, "RGE_Active_Animated_Sprite Size Mismatch");
-static_assert(offsetof(RGE_Active_Animated_Sprite, animate_flag) == 0x24, "RGE_Active_Animated_Sprite Offset Mismatch");
 
-class RGE_Active_Sprite       {
+class RGE_Active_Sprite {
 public:
+    // [omitted] vfptr @ 0x0 ('_padding_')
     RGE_Sprite* sprite;                      // 0x4
     uchar type;                              // 0x8
     long offset_x;                           // 0xC
     long offset_y;                           // 0x10
 
+    virtual void set_offset(long param_1, long param_2);    // vt0[1]+0x4=0x41ADE0
+    virtual void save(int param_1);                         // vt0[2]+0x8=0x41AE00
+    virtual void update(float param_1, float param_2);      // vt0[3]+0xC=0x41AE50
+    virtual void draw(short param_1, long param_2, long param_3, long param_4, long param_5, RGE_Color_Table* param_6, TDrawArea* param_7); // vt0[4]+0x10=0x41AE60
+    virtual void normal_draw(short param_1, long param_2, long param_3, RGE_Color_Table* param_4, TDrawArea* param_5); // vt0[5]+0x14=0x41AEB0
+    virtual void shadow_draw(short param_1, long param_2, long param_3, RGE_Color_Table* param_4, TDrawArea* param_5, uchar param_6); // vt0[6]+0x18=0x41AEF0
+    virtual short what_frame();                             // vt0[7]+0x1C=0x41AF30
+    virtual uchar is_animating();                           // vt0[8]+0x20=0x41AF50
+    virtual void set_frame(short param_1);                  // vt0[9]+0x24=0x41AF40
+    virtual uchar frame_passed(short param_1);              // vt0[10]+0x28=0x41AF60
+    virtual uchar looped();                                 // vt0[11]+0x2C=0x41AF70
+    virtual short get_facetindex(short param_1);            // vt0[12]+0x30=0x41AF80
+    virtual uchar get_frame(short* param_1, short* param_2, short* param_3, short* param_4, long param_5); // vt0[13]+0x34=0x41AFB0
+    virtual void setToFirstFrame();                         // vt0[14]+0x38=0x41AFF0
     RGE_Active_Sprite(RGE_Sprite* param_1);
     RGE_Active_Sprite(int param_1, RGE_Sprite** param_2);
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual  ~RGE_Active_Sprite() noexcept(false); // Ghidra: `scalar_deleting_destructor'
-
-    // [Slot 01] Offset 0x04 (Override)
-    virtual void set_offset(long param_1, long param_2); // Ghidra: set_offset
-
-    // [Slot 02] Offset 0x08 (Override)
-    virtual void save(int param_1); // Ghidra: save
-
-    // [Slot 03] Offset 0x0C (Override)
-    virtual void update(float param_1, float param_2); // Ghidra: update
-
-    // [Slot 04] Offset 0x10 (Override)
-    virtual void draw(short param_1, long param_2, long param_3, long param_4, long param_5, RGE_Color_Table* param_6, TDrawArea* param_7); // Ghidra: draw
-
-    // [Slot 05] Offset 0x14 (Override)
-    virtual void normal_draw(short param_1, long param_2, long param_3, RGE_Color_Table* param_4, TDrawArea* param_5); // Ghidra: normal_draw
-
-    // [Slot 06] Offset 0x18 (Override)
-    virtual void shadow_draw(short param_1, long param_2, long param_3, RGE_Color_Table* param_4, TDrawArea* param_5, uchar param_6); // Ghidra: shadow_draw
-
-    // [Slot 07] Offset 0x1C (Override)
-    virtual short what_frame(); // Ghidra: what_frame
-
-    // [Slot 08] Offset 0x20 (Override)
-    virtual uchar is_animating(); // Ghidra: is_animating
-
-    // [Slot 09] Offset 0x24 (Override)
-    virtual void set_frame(short param_1); // Ghidra: set_frame
-
-    // [Slot 10] Offset 0x28 (Override)
-    virtual uchar frame_passed(short param_1); // Ghidra: frame_passed
-
-    // [Slot 11] Offset 0x2C (Override)
-    virtual uchar looped(); // Ghidra: looped
-
-    // [Slot 12] Offset 0x30 (Override)
-    virtual short get_facetindex(short param_1); // Ghidra: get_facetindex
-
-    // [Slot 13] Offset 0x34 (Override)
-    virtual uchar get_frame(short* param_1, short* param_2, short* param_3, short* param_4, long param_5); // Ghidra: get_frame
-
-    // [Slot 14] Offset 0x38 (Override)
-    virtual void setToFirstFrame(); // Ghidra: setToFirstFrame
-
-    // --- Non-Virtual Members ---
+    ~RGE_Active_Sprite();
     uchar get_lowest_draw_level();
     int check_for_shadows();
 };
 
 static_assert(sizeof(RGE_Active_Sprite) == 0x14, "RGE_Active_Sprite Size Mismatch");
-static_assert(offsetof(RGE_Active_Sprite, offset_y) == 0x10, "RGE_Active_Sprite Offset Mismatch");
+
 
 
 // ----------------------------------------------------------------

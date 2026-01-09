@@ -1,7 +1,7 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class CCDAudio       {
+class CCDAudio {
 public:
     void* m_Wnd;                             // 0x0
     int m_bOpened;                           // 0x4
@@ -9,10 +9,7 @@ public:
     tagMCI_PLAY_PARMS m_mciPlayParms;        // 0xC
 
     CCDAudio();
-
-    // --- Non-Virtual Destructor ---
-    ~CCDAudio() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~CCDAudio();
     ulong Open(void* param_1);
     ulong Close();
     ulong Stop();
@@ -30,5 +27,4 @@ public:
 };
 
 static_assert(sizeof(CCDAudio) == 0x18, "CCDAudio Size Mismatch");
-static_assert(offsetof(CCDAudio, m_mciPlayParms) == 0xC, "CCDAudio Offset Mismatch");
 

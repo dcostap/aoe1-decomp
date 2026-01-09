@@ -1,154 +1,8 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class AIModuleID       {
+class AIModule : public AIModuleID {
 public:
-    int id;                                  // 0x4
-    char name[64];                           // 0x8
-
-    AIModuleID(char* param_1, int param_2);
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual  ~AIModuleID() noexcept(false); // Ghidra: `vector_deleting_destructor'
-
-    // [Slot 01] Offset 0x04 WARNING: Function body missing in analysis
-    // virtual void `scalar_deleting_destructor'();
-
-    // [Slot 02] Offset 0x08 WARNING: Function body missing in analysis
-    // virtual void `scalar_deleting_destructor'();
-
-    // [Slot 03] Offset 0x0C WARNING: Function body missing in analysis
-    // virtual void loggingHistory();
-
-    // [Slot 04] Offset 0x10 WARNING: Function body missing in analysis
-    // virtual void setLogHistory();
-
-    // [Slot 05] Offset 0x14 WARNING: Function body missing in analysis
-    // virtual void toggleLogHistory();
-
-    // [Slot 06] Offset 0x18 WARNING: Function body missing in analysis
-    // virtual void setHistoryFilename();
-
-    // [Slot 07] Offset 0x1C WARNING: Function body missing in analysis
-    // virtual void loggingCommonHistory();
-
-    // [Slot 08] Offset 0x20 WARNING: Function body missing in analysis
-    // virtual void setLogCommonHistory();
-
-    // [Slot 09] Offset 0x24 WARNING: Function body missing in analysis
-    // virtual void toggleLogCommonHistory();
-
-    // [Slot 10] Offset 0x28 WARNING: Function body missing in analysis
-    // virtual void loadState();
-
-    // [Slot 11] Offset 0x2C WARNING: Function body missing in analysis
-    // virtual void saveState();
-
-    // [Slot 12] Offset 0x30 WARNING: Function body missing in analysis
-    // virtual void gleanState();
-
-    // [Slot 13] Offset 0x34 WARNING: Function body missing in analysis
-    // virtual void processMessage();
-
-    // [Slot 14] Offset 0x38 WARNING: Function body missing in analysis
-    // virtual void update();
-
-    // [Slot 15] Offset 0x3C WARNING: Function body missing in analysis
-    // virtual void setCallbackMessage();
-
-    // [Slot 16] Offset 0x40 WARNING: Function body missing in analysis
-    // virtual void filterOutMessage();
-
-    // --- Non-Virtual Members ---
-    void setID(int param_1, char* param_2);
-};
-
-static_assert(sizeof(AIModuleID) == 0x48, "AIModuleID Size Mismatch");
-static_assert(offsetof(AIModuleID, name) == 0x8, "AIModuleID Offset Mismatch");
-
-class AIModuleMessage       {
-public:
-    int id;                                  // 0x4
-    char text[128];                          // 0x8
-    int priority;                            // 0x88
-    AIModuleID sender;                       // 0x8C
-    AIModuleID recipient;                    // 0xD4
-    long data1;                              // 0x11C
-    long data2;                              // 0x120
-    long data3;                              // 0x124
-    AIModuleMessage* callbackMessage;        // 0x128
-    int timeStamp;                           // 0x12C
-    AIModuleMessage* next;                   // 0x130
-    AIModuleMessage* prev;                   // 0x134
-
-    AIModuleMessage();
-    AIModuleMessage(int param_1, int param_2, int param_3, int param_4, long param_5, long param_6, long param_7, AIModuleMessage* param_8, int param_9);
-    AIModuleMessage(AIModuleMessage* param_1);
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual  ~AIModuleMessage() noexcept(false); // Ghidra: `scalar_deleting_destructor'
-
-    // [Slot 01] Offset 0x04 WARNING: Function body missing in analysis
-    // virtual void `scalar_deleting_destructor'();
-
-    // [Slot 02] Offset 0x08 WARNING: Function body missing in analysis
-    // virtual void loggingHistory();
-
-    // [Slot 03] Offset 0x0C WARNING: Function body missing in analysis
-    // virtual void setLogHistory();
-
-    // [Slot 04] Offset 0x10 WARNING: Function body missing in analysis
-    // virtual void toggleLogHistory();
-
-    // [Slot 05] Offset 0x14 WARNING: Function body missing in analysis
-    // virtual void setHistoryFilename();
-
-    // [Slot 06] Offset 0x18 WARNING: Function body missing in analysis
-    // virtual void loggingCommonHistory();
-
-    // [Slot 07] Offset 0x1C WARNING: Function body missing in analysis
-    // virtual void setLogCommonHistory();
-
-    // [Slot 08] Offset 0x20 WARNING: Function body missing in analysis
-    // virtual void toggleLogCommonHistory();
-
-    // [Slot 09] Offset 0x24 WARNING: Function body missing in analysis
-    // virtual void loadState();
-
-    // [Slot 10] Offset 0x28 WARNING: Function body missing in analysis
-    // virtual void saveState();
-
-    // [Slot 11] Offset 0x2C WARNING: Function body missing in analysis
-    // virtual void gleanState();
-
-    // [Slot 12] Offset 0x30 WARNING: Function body missing in analysis
-    // virtual void processMessage();
-
-    // [Slot 13] Offset 0x34 WARNING: Function body missing in analysis
-    // virtual void update();
-
-    // [Slot 14] Offset 0x38 WARNING: Function body missing in analysis
-    // virtual void setCallbackMessage();
-
-    // [Slot 15] Offset 0x3C WARNING: Function body missing in analysis
-    // virtual void filterOutMessage();
-
-    // --- Non-Virtual Members ---
-    void setText(char* param_1);
-    void setSender(int param_1, char* param_2);
-    void setRecipient(int param_1, char* param_2);
-};
-
-static_assert(sizeof(AIModuleMessage) == 0x138, "AIModuleMessage Size Mismatch");
-static_assert(offsetof(AIModuleMessage, prev) == 0x134, "AIModuleMessage Offset Mismatch");
-
-class AIModule       {
-public:
-    AIModuleID idValue;                      // 0x4
     int playerNumberValue;                   // 0x4C
     char playerNameValue[64];                // 0x50
     int runningValue;                        // 0x90
@@ -161,58 +15,24 @@ public:
     int priorityValue;                       // 0xE8
     int processFrameValue;                   // 0xEC
 
+    virtual int loggingHistory();                           // vt0[1]+0x4=0x40E4E0 | vt0[21]+0x54=0x40E4E0 | vt0[40]+0xA0=0x40E4E0 | vt0[55]+0xDC=0x40E4E0 | vt0[70]+0x118=0x40E4E0 | vt0[86]+0x158=0x40E4E0
+    virtual void setLogHistory(int param_1);                // vt0[2]+0x8=0x40E4F0 | vt0[22]+0x58=0x40E4F0 | vt0[41]+0xA4=0x40E4F0 | vt0[56]+0xE0=0x40E4F0 | vt0[71]+0x11C=0x40E4F0 | vt0[87]+0x15C=0x40E4F0
+    virtual void toggleLogHistory();                        // vt0[3]+0xC=0x40E500 | vt0[23]+0x5C=0x40E500 | vt0[42]+0xA8=0x40E500 | vt0[57]+0xE4=0x40E500 | vt0[72]+0x120=0x40E500 | vt0[88]+0x160=0x40E500
+    virtual void setHistoryFilename(char* param_1);         // vt0[4]+0x10=0x40E5D0 | vt0[24]+0x60=0x40E5D0 | vt0[43]+0xAC=0x40E5D0 | vt0[58]+0xE8=0x40E5D0 | vt0[73]+0x124=0x40E5D0 | vt0[89]+0x164=0x40E5D0
+    virtual int loggingCommonHistory();                     // vt0[5]+0x14=0x40E510 | vt0[25]+0x64=0x40E510 | vt0[44]+0xB0=0x40E510 | vt0[59]+0xEC=0x40E510 | vt0[74]+0x128=0x40E510 | vt0[90]+0x168=0x40E510
+    virtual void setLogCommonHistory(int param_1);          // vt0[6]+0x18=0x40E520 | vt0[26]+0x68=0x40E520 | vt0[45]+0xB4=0x40E520 | vt0[60]+0xF0=0x40E520 | vt0[75]+0x12C=0x40E520 | vt0[91]+0x16C=0x40E520
+    virtual void toggleLogCommonHistory();                  // vt0[7]+0x1C=0x40E5C0 | vt0[27]+0x6C=0x40E5C0 | vt0[46]+0xB8=0x40E5C0 | vt0[61]+0xF4=0x40E5C0 | vt0[76]+0x130=0x40E5C0 | vt0[92]+0x170=0x40E5C0
+    virtual int loadState(char* param_1);                   // vt0[8]+0x20=0x4087F0 | vt0[28]+0x70=0x4087F0 | vt0[47]+0xBC=0x4087F0 | vt0[62]+0xF8=0x4087F0 | vt0[77]+0x134=0x4087F0 | vt0[93]+0x174=0x4087F0
+    virtual int saveState(char* param_1);                   // vt0[9]+0x24=0x408800 | vt0[29]+0x74=0x408800 | vt0[48]+0xC0=0x408800 | vt0[63]+0xFC=0x408800 | vt0[78]+0x138=0x408800 | vt0[94]+0x178=0x408800
+    virtual int gleanState(int param_1);                    // vt0[10]+0x28=0x408810 | vt0[30]+0x78=0x408810 | vt0[49]+0xC4=0x408810 | vt0[64]+0x100=0x408810 | vt0[79]+0x13C=0x408810 | vt0[95]+0x17C=0x408810
+    virtual int processMessage(AIModuleMessage* param_1);   // vt0[11]+0x2C=0x40E6E0 | vt0[31]+0x7C=0x40E6E0 | vt0[65]+0x104=0x40E6E0 | vt0[80]+0x140=0x40E6E0 | vt0[96]+0x180=0x40E6E0
+    virtual int update(int param_1);                        // vt0[12]+0x30=0x40E6F0 | vt0[32]+0x80=0x40E6F0 | vt0[66]+0x108=0x40E6F0 | vt0[81]+0x144=0x40E6F0 | vt0[97]+0x184=0x40E6F0
+    virtual void setCallbackMessage(AIModuleMessage* param_1); // vt0[13]+0x34=0x40E700 | vt0[33]+0x84=0x40E700 | vt0[67]+0x10C=0x40E700 | vt0[82]+0x148=0x40E700 | vt0[98]+0x188=0x40E700
+    virtual int filterOutMessage(AIModuleMessage* param_1); // vt0[14]+0x38=0x40E810 | vt0[34]+0x88=0x40E810 | vt0[68]+0x110=0x40E810 | vt0[83]+0x14C=0x40E810 | vt0[99]+0x18C=0x40E810
     AIModule();
     AIModule(char* param_1, int param_2, int param_3, void* param_4);
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual  ~AIModule() noexcept(false); // Ghidra: `scalar_deleting_destructor'
-
-    // [Slot 01] Offset 0x04 (Override)
-    virtual int loggingHistory(); // Ghidra: loggingHistory
-
-    // [Slot 02] Offset 0x08 (Override)
-    virtual void setLogHistory(int param_1); // Ghidra: setLogHistory
-
-    // [Slot 03] Offset 0x0C (Override)
-    virtual void toggleLogHistory(); // Ghidra: toggleLogHistory
-
-    // [Slot 04] Offset 0x10 (Override)
-    virtual void setHistoryFilename(char* param_1); // Ghidra: setHistoryFilename
-
-    // [Slot 05] Offset 0x14 (Override)
-    virtual int loggingCommonHistory(); // Ghidra: loggingCommonHistory
-
-    // [Slot 06] Offset 0x18 (Override)
-    virtual void setLogCommonHistory(int param_1); // Ghidra: setLogCommonHistory
-
-    // [Slot 07] Offset 0x1C (Override)
-    virtual void toggleLogCommonHistory(); // Ghidra: toggleLogCommonHistory
-
-    // [Slot 08] Offset 0x20 (Override)
-    virtual int loadState(char* param_1); // Ghidra: loadState
-
-    // [Slot 09] Offset 0x24 (Override)
-    virtual int saveState(char* param_1); // Ghidra: saveState
-
-    // [Slot 10] Offset 0x28 (Override)
-    virtual int gleanState(int param_1); // Ghidra: gleanState
-
-    // [Slot 11] Offset 0x2C (Override)
-    virtual int processMessage(AIModuleMessage* param_1); // Ghidra: processMessage
-
-    // [Slot 12] Offset 0x30 (Override)
-    virtual int update(int param_1); // Ghidra: update
-
-    // [Slot 13] Offset 0x34 (Override)
-    virtual void setCallbackMessage(AIModuleMessage* param_1); // Ghidra: setCallbackMessage
-
-    // [Slot 14] Offset 0x38 (Override)
-    virtual int filterOutMessage(AIModuleMessage* param_1); // Ghidra: filterOutMessage
-
-    // --- Non-Virtual Members ---
-    AIModuleID* id(AIModuleID* __return_storage_ptr__);
+    ~AIModule();
+    AIModuleID* id();
     int idNumber();
     int playerNumber();
     char* playerName();
@@ -257,104 +77,41 @@ public:
 };
 
 static_assert(sizeof(AIModule) == 0xF0, "AIModule Size Mismatch");
-static_assert(offsetof(AIModule, processFrameValue) == 0xEC, "AIModule Offset Mismatch");
 
-int AIModule::loadState(char* param_1) {
-    /* TODO: Stub */
-//                              int __thiscall loadState(AIModule * this, char * param_1)
-//              int               EAX:4          <RETURN>
-//              AIModule *        ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1
-//                               ?loadState@AIModule@@UAEHPAD@Z                               XREF[19]:    0056e758(*), 0056e7c0(*),
-//                               AIModule::loadState                                                       0056e838(*), 0056e878(*),
-//                                                                                                         0056e8b8(*), 0056e8f8(*),
-//                                                                                                         0056e950(*), 0056e9a8(*),
-//                                                                                                         0056e9f8(*), 0056ea38(*),
-//                                                                                                         0056ea78(*), 0056eab8(*),
-//                                                                                                         00575460(*), 005754c0(*),
-//                                                                                                         00575530(*), 005755e8(*),
-//                                                                                                         00575658(*), 005756b8(*),
-//                                                                                                         005757a8(*)
-//                              aimodule.h:156 (5)
-//         004087f0     XOR        EAX,EAX
-//         004087f2     RET        0x4
-//         004087f5     ??         90h
-//         004087f6     NOP
-//         004087f7     NOP
-//         004087f8     NOP
-//         004087f9     NOP
-//         004087fa     NOP
-//         004087fb     NOP
-//         004087fc     NOP
-//         004087fd     NOP
-//         004087fe     NOP
-//         004087ff     NOP
-    return 0;
-}
+class AIModuleID {
+public:
+    // [omitted] vfptr @ 0x0 ('_padding_')
+    int id;                                  // 0x4
+    char name[64];                           // 0x8
 
-int AIModule::saveState(char* param_1) {
-    /* TODO: Stub */
-//                              int __thiscall saveState(AIModule * this, char * param_1)
-//              int               EAX:4          <RETURN>
-//              AIModule *        ECX:4 (auto)   this
-//              char *            Stack[0x4]:4   param_1
-//                               ?saveState@AIModule@@UAEHPAD@Z                               XREF[19]:    0056e75c(*), 0056e7c4(*),
-//                               AIModule::saveState                                                       0056e83c(*), 0056e87c(*),
-//                                                                                                         0056e8bc(*), 0056e8fc(*),
-//                                                                                                         0056e954(*), 0056e9ac(*),
-//                                                                                                         0056e9fc(*), 0056ea3c(*),
-//                                                                                                         0056ea7c(*), 0056eabc(*),
-//                                                                                                         00575464(*), 005754c4(*),
-//                                                                                                         00575534(*), 005755ec(*),
-//                                                                                                         0057565c(*), 005756bc(*),
-//                                                                                                         005757ac(*)
-//                              aimodule.h:157 (5)
-//         00408800     XOR        EAX,EAX
-//         00408802     RET        0x4
-//         00408805     ??         90h
-//         00408806     NOP
-//         00408807     NOP
-//         00408808     NOP
-//         00408809     NOP
-//         0040880a     NOP
-//         0040880b     NOP
-//         0040880c     NOP
-//         0040880d     NOP
-//         0040880e     NOP
-//         0040880f     NOP
-    return 0;
-}
+    AIModuleID(char* param_1, int param_2);
+    ~AIModuleID();
+    void setID(int param_1, char* param_2);
+};
 
-int AIModule::gleanState(int param_1) {
-    /* TODO: Stub */
-//                              int __thiscall gleanState(AIModule * this, int param_1)
-//              int               EAX:4          <RETURN>
-//              AIModule *        ECX:4 (auto)   this
-//              int               Stack[0x4]:4   param_1
-//                               ?gleanState@AIModule@@UAEHH@Z                                XREF[19]:    0056e760(*), 0056e7c8(*),
-//                               AIModule::gleanState                                                      0056e840(*), 0056e880(*),
-//                                                                                                         0056e8c0(*), 0056e900(*),
-//                                                                                                         0056e958(*), 0056e9b0(*),
-//                                                                                                         0056ea00(*), 0056ea40(*),
-//                                                                                                         0056ea80(*), 0056eac0(*),
-//                                                                                                         00575468(*), 005754c8(*),
-//                                                                                                         00575538(*), 005755f0(*),
-//                                                                                                         00575660(*), 005756c0(*),
-//                                                                                                         005757b0(*)
-//                              aimodule.h:158 (5)
-//         00408810     XOR        EAX,EAX
-//         00408812     RET        0x4
-//         00408815     ??         90h
-//         00408816     NOP
-//         00408817     NOP
-//         00408818     NOP
-//         00408819     NOP
-//         0040881a     NOP
-//         0040881b     NOP
-//         0040881c     NOP
-//         0040881d     NOP
-//         0040881e     NOP
-//         0040881f     NOP
-    return 0;
-}
+static_assert(sizeof(AIModuleID) == 0x48, "AIModuleID Size Mismatch");
+
+class AIModuleMessage : public AIModuleID {
+public:
+    int priority;                            // 0x88
+    AIModuleID sender;                       // 0x8C
+    AIModuleID recipient;                    // 0xD4
+    long data1;                              // 0x11C
+    long data2;                              // 0x120
+    long data3;                              // 0x124
+    AIModuleMessage* callbackMessage;        // 0x128
+    int timeStamp;                           // 0x12C
+    AIModuleMessage* next;                   // 0x130
+    AIModuleMessage* prev;                   // 0x134
+
+    AIModuleMessage();
+    AIModuleMessage(int param_1, int param_2, int param_3, int param_4, long param_5, long param_6, long param_7, AIModuleMessage* param_8, int param_9);
+    AIModuleMessage(AIModuleMessage* param_1);
+    ~AIModuleMessage();
+    void setText(char* param_1);
+    void setSender(int param_1, char* param_2);
+    void setRecipient(int param_1, char* param_2);
+};
+
+static_assert(sizeof(AIModuleMessage) == 0x138, "AIModuleMessage Size Mismatch");
 

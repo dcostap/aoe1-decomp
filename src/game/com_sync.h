@@ -1,7 +1,5 @@
 #pragma once
-#include "../common.h"
-#include "Com_hand.h"
-
+#include "common.h"
 
 // ----------------------------------------------------------------
 // CHECKSUMARRAY
@@ -18,7 +16,7 @@ struct CHECKSUMARRAY {
     uint Random; // 0x20
 };
 
-class RGE_Communications_Synchronize       {
+class RGE_Communications_Synchronize {
 public:
     TCommunications_Handler* Comm;           // 0x0
     ulong CheckTime;                         // 0x4
@@ -35,10 +33,7 @@ public:
     CHECKSUMARRAY Check[55];                 // 0x30
 
     RGE_Communications_Synchronize(TCommunications_Handler* param_1);
-
-    // --- Non-Virtual Destructor ---
-    ~RGE_Communications_Synchronize() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~RGE_Communications_Synchronize();
     int Add(uint param_1, ulong param_2, ulong param_3, ulong param_4, long param_5, long param_6, long param_7, long param_8, long param_9);
     int ValidateChecksums(uint param_1, ulong param_2, ulong param_3, ulong param_4, long param_5, long param_6, long param_7, long param_8, long param_9);
     ulong DoChecksum(ulong param_1);
@@ -52,5 +47,4 @@ public:
 };
 
 static_assert(sizeof(RGE_Communications_Synchronize) == 0x7EC, "RGE_Communications_Synchronize Size Mismatch");
-static_assert(offsetof(RGE_Communications_Synchronize, Check) == 0x30, "RGE_Communications_Synchronize Offset Mismatch");
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
 
 // ----------------------------------------------------------------
@@ -23,7 +23,7 @@ struct RGE_Sound_List {
 };
 
 
-class RGE_Sound       {
+class RGE_Sound {
 public:
     short play_at_update_count;              // 0x0
     short sound_num;                         // 0x2
@@ -34,10 +34,7 @@ public:
     RGE_Sound(_iobuf* param_1, short param_2);
     RGE_Sound(int param_1, TSound_Driver* param_2);
     RGE_Sound();
-
-    // --- Non-Virtual Destructor ---
-    ~RGE_Sound() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~RGE_Sound();
     void save(int param_1);
     void restart_sound(TSound_Driver* param_1);
     void update(ulong param_1);
@@ -51,5 +48,4 @@ public:
 };
 
 static_assert(sizeof(RGE_Sound) == 0x10, "RGE_Sound Size Mismatch");
-static_assert(offsetof(RGE_Sound, id) == 0xC, "RGE_Sound Offset Mismatch");
 

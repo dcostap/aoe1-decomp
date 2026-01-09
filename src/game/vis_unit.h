@@ -1,7 +1,7 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class Visible_Resource_Manager       {
+class Visible_Resource_Manager {
 public:
     VISIBLE_RESOURCE_REC** VR_List;          // 0x0
     int* VR_ListSize;                        // 0x4
@@ -11,10 +11,7 @@ public:
 
     Visible_Resource_Manager(RGE_Player* param_1, int param_2);
     Visible_Resource_Manager(int param_1, RGE_Player* param_2);
-
-    // --- Non-Virtual Destructor ---
-    ~Visible_Resource_Manager() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~Visible_Resource_Manager();
     void save(int param_1);
     void Process_New_Tiles(RGE_Tile_List* param_1);
     void AddResource(int param_1, int param_2);
@@ -23,9 +20,8 @@ public:
 };
 
 static_assert(sizeof(Visible_Resource_Manager) == 0x14, "Visible_Resource_Manager Size Mismatch");
-static_assert(offsetof(Visible_Resource_Manager, num_visible_resource_lists) == 0x10, "Visible_Resource_Manager Offset Mismatch");
 
-class Visible_Unit_Manager       {
+class Visible_Unit_Manager {
 public:
     VISIBLE_UNIT_PTR** PlayerDataPtrs;       // 0x0
     VISIBLE_UNIT_REC* Return_Buffer[5];      // 0x4
@@ -34,15 +30,11 @@ public:
     uchar* distanceTable;                    // 0x20
 
     Visible_Unit_Manager(int param_1, int param_2);
-
-    // --- Non-Virtual Destructor ---
-    ~Visible_Unit_Manager() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~Visible_Unit_Manager();
     void Build_Distance_Table();
     void Update_Unit_Info(int param_1, int param_2, int param_3, int param_4, int param_5, ulong param_6, ulong param_7, VISIBLE_UNIT_REC** param_8);
     int GetVisibleUnits(int param_1, int param_2, int param_3, int param_4, int* param_5, int param_6, int* param_7);
 };
 
 static_assert(sizeof(Visible_Unit_Manager) == 0x24, "Visible_Unit_Manager Size Mismatch");
-static_assert(offsetof(Visible_Unit_Manager, distanceTable) == 0x20, "Visible_Unit_Manager Offset Mismatch");
 

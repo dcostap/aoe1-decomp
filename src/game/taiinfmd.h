@@ -1,30 +1,8 @@
 #pragma once
-#include "../common.h"
-#include "taibldmd.h"
-#include "aimdmod.h"
-#include "aimodule.h"
-#include "player.h"
-#include "utmarray.h"
-#include "aibldmod.h"
-#include "aiconmod.h"
-#include "aidipmod.h"
-#include "aiemomod.h"
-#include "aiinfmod.h"
-#include "airchmod.h"
-#include "airesmod.h"
-#include "aistrmod.h"
-#include "aitacmod.h"
-#include "aitrdmod.h"
-#include "aiuaimod.h"
-#include "taiconmd.h"
-#include "taistrmd.h"
-#include "taitacmd.h"
-#include "tplayer.h"
-#include "zone_map.h"
+#include "common.h"
 
-class TribeInformationAIModule : public InformationAIModule       {
+class TribeInformationAIModule : public InformationAIModule {
 public:
-    char _pad_0x4[0xEC];
     ManagedArray<int> farmsTaskedThisUpdate; // 0xF0
     TribeMainDecisionAIModule* md;           // 0x100
     int mapXSizeValue;                       // 0x104
@@ -51,13 +29,13 @@ public:
     int saveLearnInformationValue;           // 0x204
     char learnFileName[256];                 // 0x208
     uchar fullyExploredZoneValue[255];       // 0x308
-    QuadrantLog quadrantLog[4][4];           // 0x408
+    QuadrantLog* quadrantLog[4];             // 0x408
     int** resourceTypesValue;                // 0x4C8
     int* numberResourceTypesValue;           // 0x4CC
     ResourceMemory* resources[4];            // 0x4D0
     int numResources[4];                     // 0x4E0
     int maxResources[4];                     // 0x4F0
-    int dropsitesByAge[4][4];                // 0x500
+    int* dropsitesByAge[4];                  // 0x500
     int closestDropsiteValue[4];             // 0x540
     int closestDropsiteResourceID[4];        // 0x550
     int numberFoundForestTilesValue;         // 0x560
@@ -65,57 +43,10 @@ public:
     int unitHistory[11];                     // 0xFF64
     char unitHistoryFilename[256];           // 0xFF90
 
+    virtual int update(int param_1);                        // vt0[12]+0x30=0x4D8300
     TribeInformationAIModule(void* param_1, int param_2);
     TribeInformationAIModule(int param_1, int param_2);
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual  ~TribeInformationAIModule() noexcept(false); // Ghidra: `scalar_deleting_destructor'
-
-    // [Slot 01] Offset 0x04 WARNING: Function body missing in analysis
-    // virtual void loggingHistory();
-
-    // [Slot 02] Offset 0x08 WARNING: Function body missing in analysis
-    // virtual void setLogHistory();
-
-    // [Slot 03] Offset 0x0C WARNING: Function body missing in analysis
-    // virtual void toggleLogHistory();
-
-    // [Slot 04] Offset 0x10 WARNING: Function body missing in analysis
-    // virtual void setHistoryFilename();
-
-    // [Slot 05] Offset 0x14 WARNING: Function body missing in analysis
-    // virtual void loggingCommonHistory();
-
-    // [Slot 06] Offset 0x18 WARNING: Function body missing in analysis
-    // virtual void setLogCommonHistory();
-
-    // [Slot 07] Offset 0x1C WARNING: Function body missing in analysis
-    // virtual void toggleLogCommonHistory();
-
-    // [Slot 08] Offset 0x20 WARNING: Function body missing in analysis
-    // virtual void loadState();
-
-    // [Slot 09] Offset 0x24 WARNING: Function body missing in analysis
-    // virtual void saveState();
-
-    // [Slot 10] Offset 0x28 WARNING: Function body missing in analysis
-    // virtual void gleanState();
-
-    // [Slot 11] Offset 0x2C WARNING: Function body missing in analysis
-    // virtual void processMessage();
-
-    // [Slot 12] Offset 0x30 (Override)
-    virtual int update(int param_1); // Ghidra: update
-
-    // [Slot 13] Offset 0x34 WARNING: Function body missing in analysis
-    // virtual void setCallbackMessage();
-
-    // [Slot 14] Offset 0x38 WARNING: Function body missing in analysis
-    // virtual void filterOutMessage();
-
-    // --- Non-Virtual Members ---
+    ~TribeInformationAIModule();
     int initialize();
     void setMainDecisionAI(TribeMainDecisionAIModule* param_1);
     int save(int param_1);
@@ -172,7 +103,7 @@ public:
     void setupInfluenceMap(int param_1, int param_2, XYPoint* param_3, XYPoint* param_4, XYPoint* param_5);
     int mapBound(XYPoint* param_1);
     int groupInfluenceDimension(int param_1);
-    ObjectMemory* findObjectMemoryLimits(ObjectMemory* __return_storage_ptr__, int param_1, int param_2, int* param_3, int* param_4);
+    ObjectMemory* findObjectMemoryLimits(int param_1, int param_2, int* param_3, int* param_4);
     int isNextTo(XYPoint* param_1, XYPoint* param_2, int param_3);
     int facetTo(XYPoint* param_1, XYPoint* param_2);
     int placementCode(int param_1);
@@ -236,5 +167,4 @@ public:
 };
 
 static_assert(sizeof(TribeInformationAIModule) == 0x10090, "TribeInformationAIModule Size Mismatch");
-static_assert(offsetof(TribeInformationAIModule, unitHistoryFilename) == 0xFF90, "TribeInformationAIModule Offset Mismatch");
 

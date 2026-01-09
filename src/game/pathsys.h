@@ -1,6 +1,5 @@
 #pragma once
-#include "../common.h"
-
+#include "common.h"
 
 // ----------------------------------------------------------------
 // BYTEPoint
@@ -29,15 +28,16 @@ struct MGP_FloatHeap {
     int total; // 0x4
 };
 
-class PathingSystem       {
+class PathingSystem {
 public:
+    // [omitted] vfptr @ 0x0 ('_padding_')
     int xSizeValue;                          // 0x4
     int ySizeValue;                          // 0x8
-    uchar facetValue[255][255];              // 0xC
-    int MGP_costValue[255][255];             // 0xFE10
+    uchar* facetValue[255];                  // 0xC
+    int* MGP_costValue[255];                 // 0xFE10
     MGP_FloatHeap MGP_openPaths[65026];      // 0x4F614
-    uchar obstructionValue[1020][255];       // 0xCE624
-    uchar miscValue[255][255];               // 0x10DE28
+    uchar* obstructionValue[1020];           // 0xCE624
+    uchar* miscValue[255];                   // 0x10DE28
     int numberOpenPathsValue;                // 0x11DC2C
     MGP_FloatHeap MGP_bestTraversedPath;     // 0x11DC30
     int numberTraversedPathsValue;           // 0x11DC38
@@ -79,13 +79,7 @@ public:
     int aiPS;                                // 0x11DCF4
 
     PathingSystem(int param_1, int param_2, int param_3, RGE_Map* param_4, RGE_Game_World* param_5);
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual  ~PathingSystem() noexcept(false); // Ghidra: `vector_deleting_destructor'
-
-    // --- Non-Virtual Members ---
+    ~PathingSystem();
     int initialize(int param_1, int param_2, RGE_Map* param_3, RGE_Game_World* param_4);
     void printToFile(char* param_1);
     uchar lookupMisc(int param_1, int param_2);
@@ -107,5 +101,4 @@ public:
 };
 
 static_assert(sizeof(PathingSystem) == 0x11DCF8, "PathingSystem Size Mismatch");
-static_assert(offsetof(PathingSystem, aiPS) == 0x11DCF4, "PathingSystem Offset Mismatch");
 

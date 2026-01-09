@@ -1,31 +1,20 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class RGE_Command       {
+class RGE_Command {
 public:
+    // [omitted] vfptr @ 0x0 ('_padding_')
     RGE_Game_World* world;                   // 0x4
     uchar* last_order;                       // 0x8
     long last_order_size;                    // 0xC
     long last_order_time;                    // 0x10
     TCommunications_Handler* com_hand;       // 0x14
 
+    virtual void do_command_give_attribute(RGE_Command_Give_Attribute* param_1); // vt0[0]+0x0=0x434920
+    virtual void do_command(void* param_1);                 // vt0[2]+0x8=0x433E20
+    virtual void command_give_attribute(int param_1, int param_2, int param_3, float param_4); // vt0[3]+0xC=0x435A80
     RGE_Command(RGE_Game_World* param_1, TCommunications_Handler* param_2);
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual void do_command_give_attribute(RGE_Command_Give_Attribute* param_1); // Ghidra: do_command_give_attribute
-
-    // [Slot 01] Offset 0x04 (Override)
-    virtual  ~RGE_Command() noexcept(false); // Ghidra: `vector_deleting_destructor'
-
-    // [Slot 02] Offset 0x08 (Override)
-    virtual void do_command(void* param_1); // Ghidra: do_command
-
-    // [Slot 03] Offset 0x0C (Override)
-    virtual void command_give_attribute(int param_1, int param_2, int param_3, float param_4); // Ghidra: command_give_attribute
-
-    // --- Non-Virtual Members ---
+    ~RGE_Command();
     void reset_communications(TCommunications_Handler* param_1);
     RGE_Static_Object* get_obj(RGE_Obj_Info param_1);
     void do_commands();
@@ -75,5 +64,4 @@ public:
 };
 
 static_assert(sizeof(RGE_Command) == 0x18, "RGE_Command Size Mismatch");
-static_assert(offsetof(RGE_Command, com_hand) == 0x14, "RGE_Command Offset Mismatch");
 

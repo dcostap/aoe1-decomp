@@ -1,43 +1,9 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class TSpan_Node_List       {
+class TSpan_List_Manager {
 public:
-    VSpan_Node** Zone_Ptrs;                  // 0x0
-    int* Zone_Size_Ptrs;                     // 0x4
-    int Used_Zones;                          // 0x8
-    int Max_Zones;                           // 0xC
-    VSpan_Node* Free_Head;                   // 0x10
-    int Free_Pool_Zone;                      // 0x14
-    int Free_Pool_Index;                     // 0x18
-    int Total_Blocks;                        // 0x1C
-    int Free_Blocks;                         // 0x20
-    int Default_Grow_Size;                   // 0x24
-    int Element_Size;                        // 0x28
-    int Alloc_Count;                         // 0x2C
-    int Dealloc_Count;                       // 0x30
-    int NewZone_Count;                       // 0x34
-    int Reset_Count;                         // 0x38
-
-    TSpan_Node_List(int param_1, int param_2, int param_3);
-
-    // --- Non-Virtual Destructor ---
-    ~TSpan_Node_List() noexcept(false);
-    // --- Non-Virtual Members ---
-    void SetNumZones(int param_1);
-    void InitNewZone(int param_1);
-    VSpan_Node* GetNode();
-    void FreeNode(VSpan_Node* param_1);
-    int FreeThread(VSpan_Node* param_1, VSpan_Node* param_2);
-    void ReclaimAllNodes();
-    void ResetStats();
-};
-
-static_assert(sizeof(TSpan_Node_List) == 0x3C, "TSpan_Node_List Size Mismatch");
-static_assert(offsetof(TSpan_Node_List, Reset_Count) == 0x38, "TSpan_Node_List Offset Mismatch");
-
-class TSpan_List_Manager : public TSpan_Node_List       {
-public:
+    TSpan_Node_List VSList;                  // 0x0
     VSpan_Node** Line_Head_Ptrs;             // 0x3C
     VSpan_Node** Line_Tail_Ptrs;             // 0x40
     int* LeftMostPx;                         // 0x44
@@ -51,10 +17,7 @@ public:
     int Max_Line;                            // 0x64
 
     TSpan_List_Manager(int param_1, int param_2);
-
-    // --- Non-Virtual Destructor ---
-    ~TSpan_List_Manager() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~TSpan_List_Manager();
     void SetSpanRegions(int param_1, int param_2, int param_3, int param_4);
     void ResetAll();
     void AddSpan(int param_1, int param_2, int param_3);
@@ -76,5 +39,35 @@ public:
 };
 
 static_assert(sizeof(TSpan_List_Manager) == 0x68, "TSpan_List_Manager Size Mismatch");
-static_assert(offsetof(TSpan_List_Manager, Max_Line) == 0x64, "TSpan_List_Manager Offset Mismatch");
+
+class TSpan_Node_List {
+public:
+    VSpan_Node** Zone_Ptrs;                  // 0x0
+    int* Zone_Size_Ptrs;                     // 0x4
+    int Used_Zones;                          // 0x8
+    int Max_Zones;                           // 0xC
+    VSpan_Node* Free_Head;                   // 0x10
+    int Free_Pool_Zone;                      // 0x14
+    int Free_Pool_Index;                     // 0x18
+    int Total_Blocks;                        // 0x1C
+    int Free_Blocks;                         // 0x20
+    int Default_Grow_Size;                   // 0x24
+    int Element_Size;                        // 0x28
+    int Alloc_Count;                         // 0x2C
+    int Dealloc_Count;                       // 0x30
+    int NewZone_Count;                       // 0x34
+    int Reset_Count;                         // 0x38
+
+    TSpan_Node_List(int param_1, int param_2, int param_3);
+    ~TSpan_Node_List();
+    void SetNumZones(int param_1);
+    void InitNewZone(int param_1);
+    VSpan_Node* GetNode();
+    void FreeNode(VSpan_Node* param_1);
+    int FreeThread(VSpan_Node* param_1, VSpan_Node* param_2);
+    void ReclaimAllNodes();
+    void ResetStats();
+};
+
+static_assert(sizeof(TSpan_Node_List) == 0x3C, "TSpan_Node_List Size Mismatch");
 

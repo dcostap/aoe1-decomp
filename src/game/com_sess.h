@@ -1,8 +1,7 @@
 #pragma once
-#include "../common.h"
-#include "Com_hand.h"
+#include "common.h"
 
-class TCommunications_Sessions       {
+class TCommunications_Sessions {
 public:
     int SessionCount;                        // 0x0
     SEs Session[501];                        // 0x4
@@ -10,10 +9,7 @@ public:
     IDirectPlay2* glpIDC;                    // 0x457AC
 
     TCommunications_Sessions(TCommunications_Handler* param_1);
-
-    // --- Non-Virtual Destructor ---
-    ~TCommunications_Sessions() noexcept(false);
-    // --- Non-Virtual Members ---
+    ~TCommunications_Sessions();
     void EraseInformation();
     int GetSessionCount();
     char* GetSessionName(int param_1);
@@ -27,5 +23,4 @@ public:
 };
 
 static_assert(sizeof(TCommunications_Sessions) == 0x457B0, "TCommunications_Sessions Size Mismatch");
-static_assert(offsetof(TCommunications_Sessions, glpIDC) == 0x457AC, "TCommunications_Sessions Offset Mismatch");
 

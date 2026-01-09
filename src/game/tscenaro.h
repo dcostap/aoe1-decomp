@@ -1,42 +1,42 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class T_Scenario : public RGE_Scenario       {
+class TRIBE_Scenario_Header : public RGE_Scenario_Header {
 public:
-    char _pad_0x4[0x198C];
+    int any_sp_victory;                      // 0x14
+    int active_player_count;                 // 0x18
+
+    virtual long get_size();                                // vt0[0]+0x0=0x52AA70
+    virtual void save(int param_1);                         // vt0[1]+0x4=0x52AA80
+    TRIBE_Scenario_Header(T_Scenario* param_1);
+    TRIBE_Scenario_Header(int param_1);
+};
+
+static_assert(sizeof(TRIBE_Scenario_Header) == 0x1C, "TRIBE_Scenario_Header Size Mismatch");
+
+class T_Scenario : public RGE_Scenario {
+public:
     Player_Start_Info player_info[16];       // 0x1990
     Victory_StartInfo victory;               // 0x1A90
-    SP_Victory_Info sp_victory[16][12];      // 0x1AA8
+    SP_Victory_Info* sp_victory[16];         // 0x1AA8
     Friendliness Opponent[16];               // 0x47A8
     int AlliedVictory[16];                   // 0x4BA8
     int victory_all_flag;                    // 0x4BE8
     int is_multi_player_flag;                // 0x4BEC
     int which_player;                        // 0x4BF0
-    int DisabledTechnology[16][20];          // 0x4BF4
+    int* DisabledTechnology[16];             // 0x4BF4
     int ScenarioOptions[3];                  // 0x50F4
     int PlayerAge[16];                       // 0x5100
     int mp_victory_type;                     // 0x5140
     int victory_score;                       // 0x5144
     int victory_time;                        // 0x5148
 
+    virtual RGE_Static_Object* get_object_pointer(int param_1); // vt0[0]+0x0=0x52C080
+    virtual void rehook();                                  // vt0[2]+0x8=0x52C070
+    virtual void save(int param_1);                         // vt0[3]+0xC=0x52AF20
     T_Scenario(RGE_Game_World* param_1);
+    ~T_Scenario();
     T_Scenario(int param_1, RGE_Game_World* param_2);
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual RGE_Static_Object* get_object_pointer(int param_1); // Ghidra: get_object_pointer
-
-    // [Slot 01] Offset 0x04 (Override)
-    virtual  ~T_Scenario() noexcept(false); // Ghidra: `vector_deleting_destructor'
-
-    // [Slot 02] Offset 0x08 (Override)
-    virtual void rehook(); // Ghidra: rehook
-
-    // [Slot 03] Offset 0x0C (Override)
-    virtual void save(int param_1); // Ghidra: save
-
-    // --- Non-Virtual Members ---
     void InitializePlayerValues();
     void ClearDisabledTechnologies();
     void InitializeAIInformation();
@@ -113,39 +113,4 @@ public:
 };
 
 static_assert(sizeof(T_Scenario) == 0x514C, "T_Scenario Size Mismatch");
-static_assert(offsetof(T_Scenario, victory_time) == 0x5148, "T_Scenario Offset Mismatch");
-
-class TRIBE_Scenario_Header : public RGE_Scenario_Header       {
-public:
-    char _pad_0x4[0x10];
-    int any_sp_victory;                      // 0x14
-    int active_player_count;                 // 0x18
-
-    TRIBE_Scenario_Header(T_Scenario* param_1);
-    TRIBE_Scenario_Header(int param_1);
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual long get_size(); // Ghidra: get_size
-
-    // [Slot 01] Offset 0x04 (Override)
-    virtual void save(int param_1); // Ghidra: save
-
-    // [Slot 02] Offset 0x08 WARNING: Function body missing in analysis
-    // virtual void get_object_pointer();
-
-    // [Slot 03] Offset 0x0C WARNING: Function body missing in analysis
-    // virtual void `vector_deleting_destructor'();
-
-    // [Slot 04] Offset 0x10 WARNING: Function body missing in analysis
-    // virtual void rehook();
-
-    // [Slot 05] Offset 0x14 WARNING: Function body missing in analysis
-    // virtual void save();
-
-};
-
-static_assert(sizeof(TRIBE_Scenario_Header) == 0x1C, "TRIBE_Scenario_Header Size Mismatch");
-static_assert(offsetof(TRIBE_Scenario_Header, active_player_count) == 0x18, "TRIBE_Scenario_Header Offset Mismatch");
 

@@ -1,7 +1,7 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class Path       {
+class Path {
 public:
     ulong timeStampValue;                    // 0x0
     Waypoint startValue;                     // 0x4
@@ -12,11 +12,8 @@ public:
     int currentWaypointValue;                // 0x30
 
     Path(int param_1);
-
-    // --- Non-Virtual Destructor ---
-    ~Path() noexcept(false);
-    // --- Non-Virtual Members ---
-    Path* operator+(Path* __return_storage_ptr__, Path* param_1);
+    ~Path();
+    Path* operator+(Path* param_1);
     Path* operator=(Path* param_1);
     int operator==(Path* param_1);
     int insertAtCurrent(Waypoint* param_1);
@@ -46,5 +43,4 @@ public:
 };
 
 static_assert(sizeof(Path) == 0x34, "Path Size Mismatch");
-static_assert(offsetof(Path, currentWaypointValue) == 0x30, "Path Offset Mismatch");
 

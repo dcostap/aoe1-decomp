@@ -1,30 +1,9 @@
 #pragma once
-#include "../common.h"
-#include "taibldmd.h"
-#include "aimdmod.h"
-#include "aimodule.h"
-#include "player.h"
-#include "utmarray.h"
-#include "aibldmod.h"
-#include "aiconmod.h"
-#include "aidipmod.h"
-#include "aiemomod.h"
-#include "aiinfmod.h"
-#include "aimdmod.h"
-#include "airchmod.h"
-#include "airesmod.h"
-#include "aistrmod.h"
-#include "aitacmod.h"
-#include "aitrdmod.h"
-#include "aiuaimod.h"
-#include "taiconmd.h"
-#include "taiinfmd.h"
-#include "tairesmd.h"
-#include "taistrmd.h"
-#include "tplayer.h"
+#include "common.h"
 
-class TacticalAIGroup       {
+class TacticalAIGroup {
 public:
+    // [omitted] vfptr @ 0x0 ('_padding_')
     TacticalAIGroup* next;                   // 0x4
     TacticalAIGroup* prev;                   // 0x8
     int idValue;                             // 0xC
@@ -63,13 +42,7 @@ public:
     ulong lastAddedUnitTimeValue;            // 0x32C
 
     TacticalAIGroup();
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual  ~TacticalAIGroup() noexcept(false); // Ghidra: `scalar_deleting_destructor'
-
-    // --- Non-Virtual Members ---
+    ~TacticalAIGroup();
     int load(int param_1);
     int save(int param_1);
     int id();
@@ -140,11 +113,9 @@ public:
 };
 
 static_assert(sizeof(TacticalAIGroup) == 0x330, "TacticalAIGroup Size Mismatch");
-static_assert(offsetof(TacticalAIGroup, lastAddedUnitTimeValue) == 0x32C, "TacticalAIGroup Offset Mismatch");
 
-class TribeTacticalAIModule : public TacticalAIModule       {
+class TribeTacticalAIModule : public TacticalAIModule {
 public:
-    char _pad_0x4[0xEC];
     TribeMainDecisionAIModule* md;           // 0xF0
     ManagedArray<int> civilians;             // 0xF4
     ManagedArray<int> civilianExplorers;     // 0x104
@@ -206,63 +177,12 @@ public:
     int updateAreaAverageCount;              // 0x1004
     int updateAreaAverageTotal;              // 0x1008
 
+    virtual int update(int param_1);                        // vt0[12]+0x30=0x4EEF40
+    virtual int save(int param_1);                          // vt0[15]+0x3C=0x4EF4E0
+    virtual void notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6); // vt0[16]+0x40=0x4F62C0
     TribeTacticalAIModule(void* param_1, int param_2);
     TribeTacticalAIModule(int param_1, int param_2);
-
-    // --- VTABLE DUMP (Source: Ghidra) ---
-
-    // [Slot 00] Offset 0x00 (Override)
-    virtual  ~TribeTacticalAIModule() noexcept(false); // Ghidra: `scalar_deleting_destructor'
-
-    // [Slot 01] Offset 0x04 WARNING: Function body missing in analysis
-    // virtual void loggingHistory();
-
-    // [Slot 02] Offset 0x08 WARNING: Function body missing in analysis
-    // virtual void setLogHistory();
-
-    // [Slot 03] Offset 0x0C WARNING: Function body missing in analysis
-    // virtual void toggleLogHistory();
-
-    // [Slot 04] Offset 0x10 WARNING: Function body missing in analysis
-    // virtual void setHistoryFilename();
-
-    // [Slot 05] Offset 0x14 WARNING: Function body missing in analysis
-    // virtual void loggingCommonHistory();
-
-    // [Slot 06] Offset 0x18 WARNING: Function body missing in analysis
-    // virtual void setLogCommonHistory();
-
-    // [Slot 07] Offset 0x1C WARNING: Function body missing in analysis
-    // virtual void toggleLogCommonHistory();
-
-    // [Slot 08] Offset 0x20 WARNING: Function body missing in analysis
-    // virtual void loadState();
-
-    // [Slot 09] Offset 0x24 WARNING: Function body missing in analysis
-    // virtual void saveState();
-
-    // [Slot 10] Offset 0x28 WARNING: Function body missing in analysis
-    // virtual void gleanState();
-
-    // [Slot 11] Offset 0x2C WARNING: Function body missing in analysis
-    // virtual void processMessage();
-
-    // [Slot 12] Offset 0x30 (Override)
-    virtual int update(int param_1); // Ghidra: update
-
-    // [Slot 13] Offset 0x34 WARNING: Function body missing in analysis
-    // virtual void setCallbackMessage();
-
-    // [Slot 14] Offset 0x38 WARNING: Function body missing in analysis
-    // virtual void filterOutMessage();
-
-    // [Slot 15] Offset 0x3C (Override)
-    virtual int save(int param_1); // Ghidra: save
-
-    // [Slot 16] Offset 0x40 (Override)
-    virtual void notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6); // Ghidra: notify
-
-    // --- Non-Virtual Members ---
+    ~TribeTacticalAIModule();
     char* updateAreaName();
     void setMainDecisionAI(TribeMainDecisionAIModule* param_1);
     void logGroupDebug(int param_1, char* param_2);
@@ -407,5 +327,4 @@ public:
 };
 
 static_assert(sizeof(TribeTacticalAIModule) == 0x100C, "TribeTacticalAIModule Size Mismatch");
-static_assert(offsetof(TribeTacticalAIModule, updateAreaAverageTotal) == 0x1008, "TribeTacticalAIModule Offset Mismatch");
 

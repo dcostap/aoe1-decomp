@@ -1,7 +1,7 @@
 #pragma once
-#include "../common.h"
+#include "common.h"
 
-class XYZ       {
+class XYZ {
 public:
     int xValue;                              // 0x0
     int yValue;                              // 0x4
@@ -9,14 +9,11 @@ public:
 
     XYZ();
     XYZ(int param_1, int param_2, int param_3);
-
-    // --- Non-Virtual Members ---
     XYZ* operator=(XYZ* param_1);
-    XYZ* operator+(XYZ* __return_storage_ptr__, XYZ* param_1);
-    XYZ* operator-(XYZ* __return_storage_ptr__, XYZ* param_1);
+    XYZ* operator+(XYZ* param_1);
+    XYZ* operator-(XYZ* param_1);
     void rotateXYByFacet(XYZ* param_1, XYZ* param_2, uchar param_3);
 };
 
 static_assert(sizeof(XYZ) == 0xC, "XYZ Size Mismatch");
-static_assert(offsetof(XYZ, zValue) == 0x8, "XYZ Offset Mismatch");
 
