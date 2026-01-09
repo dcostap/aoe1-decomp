@@ -276,3 +276,10 @@ class RGE_Main_View;
 class RGE_Game_World;
 class RGE_Zone_Map;
 class RGE_Zone_Map_List;
+
+// Game enums (simple types used in structs)
+typedef int MapSize;
+typedef int MapType;
+typedef int VictoryType;
+typedef int ResourceLevel;
+typedef int Age;

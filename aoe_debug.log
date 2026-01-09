@@ -1,0 +1,28 @@
+TRIBE_Game::setup() starting...
+RESFILE_open_new_resource_file called: filename=sounds.drs, directory=data2\, mode=1
+Header: version='1.00', num_tables=1, first_file_offset=520
+RESFILE_open_new_resource_file called: filename=graphics.drs, directory=data2\, mode=0
+Opening resource file: data2\graphics.drs
+Warning: Memory-mapped mode not yet implemented for graphics.drs, using file handle mode
+Header: version='1.00', num_tables=1, first_file_offset=1840
+RESFILE_open_new_resource_file called: filename=Interfac.drs, directory=data2\, mode=0
+Opening resource file: data2\Interfac.drs
+Warning: Memory-mapped mode not yet implemented for Interfac.drs, using file handle mode
+Header: version='1.00', num_tables=4, first_file_offset=448
+RESFILE_open_new_resource_file called: filename=sounds.drs, directory=data\, mode=1
+Opening resource file: data\sounds.drs
+Error: Open_new_ResFile, could not open file sounds.drs
+RESFILE_open_new_resource_file called: filename=graphics.drs, directory=data\, mode=0
+Opening resource file: data\graphics.drs
+Warning: Memory-mapped mode not yet implemented for graphics.drs, using file handle mode
+RESFILE_open_new_resource_file called: filename=Terrain.drs, directory=data\, mode=0
+Opening resource file: data\Terrain.drs
+Warning: Memory-mapped mode not yet implemented for Terrain.drs, using file handle mode
+RESFILE_open_new_resource_file called: filename=Border.drs, directory=data\, mode=0
+Opening resource file: data\Border.drs
+Warning: Memory-mapped mode not yet implemented for Border.drs, using file handle mode
+RESFILE_open_new_resource_file called: filename=Interfac.drs, directory=data\, mode=0
+Opening resource file: data\Interfac.drs
+Warning: Memory-mapped mode not yet implemented for Interfac.drs, using file handle mode
+TRIBE_Game::setup() completed successfully!
+Opening resource file: data2\sounds.drs
