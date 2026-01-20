@@ -1,0 +1,783 @@
+// Auto-generated scaffold unit: m_mi_obj.cpp.asm
+// SourceMap: C:/msdev/work/age1_x1/m_mi_obj.cpp
+#include "../include/common.h"
+
+// Offset: 0x00451440
+undefined RGE_Master_Missile_Object(RGE_Master_Missile_Object* this_, RGE_Master_Missile_Object* param_2, int param_3) {
+    // --- Ghidra listing dump ---
+    //                              *********************************************************************************************************
+    //                              * public: __thiscall RGE_Master_Missile_Object::RGE_Master_Missile_Object(class RGE_Master_Missile_O... *
+    //                              *********************************************************************************************************
+    //                              undefined __thiscall RGE_Master_Missile_Object(RGE_Master_Missile_Ob
+    //              undefined         <UNASSIGNED>   <RETURN>
+    //              RGE_Master_Mis    ECX:4 (auto)   this
+    //              RGE_Master_Mis    Stack[0x4]:4   param_1                   XREF[1]:     00451458(R)  
+    //              int               Stack[0x8]:4   param_2                   XREF[1]:     0045146a(R)  
+    //              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0045146e(W)  
+    //              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00451488(R)  
+    //              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     00451461(W)  
+    //                               ??0RGE_Master_Missile_Object@@QAE@PAV0@H@Z                   XREF[1]:     make_new_master:0045187b(c)  
+    //                               RGE_Master_Missile_Object::RGE_Master_Missile_Object
+    //                              m_mi_obj.cpp:24 (42)
+    //         00451440     PUSH       -0x1
+    //         00451442     PUSH       FUN_0055d8f8
+    //         00451447     MOV        EAX,FS:[0x0]
+    //         0045144d     PUSH       EAX
+    //         0045144e     MOV        dword ptr FS:[0x0],ESP
+    //         00451455     PUSH       this
+    //         00451456     PUSH       ESI
+    //         00451457     PUSH       EDI
+    //         00451458     MOV        EDI,dword ptr [ESP + param_1]
+    //         0045145c     MOV        ESI,this
+    //         0045145e     PUSH       0x0
+    //         00451460     PUSH       EDI
+    //         00451461     MOV        dword ptr [ESP + local_10],ESI
+    //         00451465     CALL       RGE_Master_Combat_Object::RGE_Master_Combat_Ob   undefined RGE_Master_Combat_Object(RGE_Master
+    //                              m_mi_obj.cpp:25 (22)
+    //         0045146a     MOV        EAX,dword ptr [ESP + param_2]
+    //         0045146e     MOV        dword ptr [ESP + local_4],0x0
+    //         00451476     TEST       EAX,EAX
+    //         00451478     MOV        dword ptr [ESI],RGE_Master_Missile_Object::`vf   = 004514a0
+    //         0045147e     JZ         LAB_00451488
+    //                              m_mi_obj.cpp:26 (8)
+    //         00451480     PUSH       EDI
+    //         00451481     MOV        this,ESI
+    //         00451483     CALL       RGE_Master_Missile_Object::setup                 int setup(RGE_Master_Missile_Object * this, R
+    //                               LAB_00451488                                                 XREF[1]:     0045147e(j)  
+    //                              m_mi_obj.cpp:27 (21)
+    //         00451488     MOV        this,dword ptr [ESP + local_c]
+    //         0045148c     MOV        EAX,ESI
+    //         0045148e     POP        EDI
+    //         0045148f     MOV        dword ptr FS:[0x0],this
+    //         00451496     POP        ESI
+    //         00451497     ADD        ESP,0x10
+    //         0045149a     RET        0x8
+}
+
+// Offset: 0x004514C0
+undefined RGE_Master_Missile_Object(RGE_Master_Missile_Object* this_, int param_2, RGE_Sprite** param_3, RGE_Sound** param_4, int param_5) {
+    // --- Ghidra listing dump ---
+    //                              *********************************************************************************************************
+    //                              * public: __thiscall RGE_Master_Missile_Object::RGE_Master_Missile_Object(int,class RGE_Sprite * *,c... *
+    //                              *********************************************************************************************************
+    //                              undefined __thiscall RGE_Master_Missile_Object(RGE_Master_Missile_Ob
+    //              undefined         <UNASSIGNED>   <RETURN>
+    //              RGE_Master_Mis    ECX:4 (auto)   this
+    //              int               Stack[0x4]:4   param_1                   XREF[1]:     004514dc(R)  
+    //              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[1]:     004514d7(R)  
+    //              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[1]:     004514e2(R)  
+    //              int               Stack[0x10]:4  param_4                   XREF[1]:     004514f6(R)  
+    //              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     004514fa(W)  
+    //              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00451516(R)  
+    //              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     004514ed(W)  
+    //                               ??0RGE_Master_Missile_Object@@QAE@HPAPAVRGE_Sprite@@PAPAVRG  XREF[2]:     load_master_object:004613b2(c), 
+    //                               RGE_Master_Missile_Object::RGE_Master_Missile_Object                      load_master_object:0046fd82(c)  
+    //                              m_mi_obj.cpp:33 (54)
+    //         004514c0     PUSH       -0x1
+    //         004514c2     PUSH       FUN_0055d918
+    //         004514c7     MOV        EAX,FS:[0x0]
+    //         004514cd     PUSH       EAX
+    //         004514ce     MOV        dword ptr FS:[0x0],ESP
+    //         004514d5     PUSH       this
+    //         004514d6     PUSH       EBX
+    //         004514d7     MOV        EBX,dword ptr [ESP + param_2]
+    //         004514db     PUSH       EBP
+    //         004514dc     MOV        EBP,dword ptr [ESP + param_1]
+    //         004514e0     PUSH       ESI
+    //         004514e1     PUSH       EDI
+    //         004514e2     MOV        EDI,dword ptr [ESP + param_3]
+    //         004514e6     PUSH       0x0
+    //         004514e8     PUSH       EDI
+    //         004514e9     MOV        ESI,this
+    //         004514eb     PUSH       EBX
+    //         004514ec     PUSH       EBP
+    //         004514ed     MOV        dword ptr [ESP + local_10],ESI
+    //         004514f1     CALL       RGE_Master_Combat_Object::RGE_Master_Combat_Ob   undefined RGE_Master_Combat_Object(RGE_Master
+    //                              m_mi_obj.cpp:34 (22)
+    //         004514f6     MOV        EAX,dword ptr [ESP + param_4]
+    //         004514fa     MOV        dword ptr [ESP + local_4],0x0
+    //         00451502     TEST       EAX,EAX
+    //         00451504     MOV        dword ptr [ESI],RGE_Master_Missile_Object::`vf   = 004514a0
+    //         0045150a     JZ         LAB_00451516
+    //                              m_mi_obj.cpp:35 (10)
+    //         0045150c     PUSH       EDI
+    //         0045150d     PUSH       EBX
+    //         0045150e     PUSH       EBP
+    //         0045150f     MOV        this,ESI
+    //         00451511     CALL       RGE_Master_Missile_Object::setup                 int setup(RGE_Master_Missile_Object * this, i
+    //                               LAB_00451516                                                 XREF[1]:     0045150a(j)  
+    //                              m_mi_obj.cpp:36 (23)
+    //         00451516     MOV        this,dword ptr [ESP + local_c]
+    //         0045151a     MOV        EAX,ESI
+    //         0045151c     POP        EDI
+    //         0045151d     POP        ESI
+    //         0045151e     POP        EBP
+    //         0045151f     MOV        dword ptr FS:[0x0],this
+    //         00451526     POP        EBX
+    //         00451527     ADD        ESP,0x10
+    //         0045152a     RET        0x10
+}
+
+// Offset: 0x00451530
+undefined RGE_Master_Missile_Object(RGE_Master_Missile_Object* this_, FILE* param_2, RGE_Sprite** param_3, RGE_Sound** param_4, short param_5, int param_6) {
+    // --- Ghidra listing dump ---
+    //                              *********************************************************************************************************
+    //                              * public: __thiscall RGE_Master_Missile_Object::RGE_Master_Missile_Object(struct _iobuf *,class RGE_... *
+    //                              *********************************************************************************************************
+    //                              undefined __thiscall RGE_Master_Missile_Object(RGE_Master_Missile_Ob
+    //              undefined         <UNASSIGNED>   <RETURN>
+    //              RGE_Master_Mis    ECX:4 (auto)   this
+    //              _iobuf *          Stack[0x4]:4   param_1                   XREF[2]:     00451546(R), 00451581(R)  
+    //              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[1]:     00451550(R)  
+    //              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[1]:     0045154b(R)  
+    //              short             Stack[0x10]:2  param_4                   XREF[1]:     00451556(R)  
+    //              int               Stack[0x14]:4  param_5                   XREF[1]:     0045156b(R)  
+    //              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0045156f(W)  
+    //              undefined4        Stack[-0xc]:4  local_c                   XREF[1]:     00451590(R)  
+    //              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     00451562(W)  
+    //                               ??0RGE_Master_Missile_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprit  XREF[1]:     load_object:004616b6(c)  
+    //                               RGE_Master_Missile_Object::RGE_Master_Missile_Object
+    //                              m_mi_obj.cpp:42 (59)
+    //         00451530     PUSH       -0x1
+    //         00451532     PUSH       FUN_0055d938
+    //         00451537     MOV        EAX,FS:[0x0]
+    //         0045153d     PUSH       EAX
+    //         0045153e     MOV        dword ptr FS:[0x0],ESP
+    //         00451545     PUSH       this
+    //         00451546     MOV        EAX,dword ptr [ESP + param_1]
+    //         0045154a     PUSH       EBX
+    //         0045154b     MOV        EBX,dword ptr [ESP + param_3]
+    //         0045154f     PUSH       EBP
+    //         00451550     MOV        EBP,dword ptr [ESP + param_2]
+    //         00451554     PUSH       ESI
+    //         00451555     PUSH       EDI
+    //         00451556     MOV        EDI,dword ptr [ESP + param_4]
+    //         0045155a     PUSH       0x0
+    //         0045155c     PUSH       EDI
+    //         0045155d     PUSH       EBX
+    //         0045155e     MOV        ESI,this
+    //         00451560     PUSH       EBP
+    //         00451561     PUSH       EAX
+    //         00451562     MOV        dword ptr [ESP + local_10],ESI
+    //         00451566     CALL       RGE_Master_Combat_Object::RGE_Master_Combat_Ob   undefined RGE_Master_Combat_Object(RGE_Master
+    //                              m_mi_obj.cpp:43 (22)
+    //         0045156b     MOV        EAX,dword ptr [ESP + param_5]
+    //         0045156f     MOV        dword ptr [ESP + local_4],0x0
+    //         00451577     TEST       EAX,EAX
+    //         00451579     MOV        dword ptr [ESI],RGE_Master_Missile_Object::`vf   = 004514a0
+    //         0045157f     JZ         LAB_00451590
+    //                              m_mi_obj.cpp:44 (15)
+    //         00451581     MOV        this,dword ptr [ESP + param_1]
+    //         00451585     PUSH       EDI
+    //         00451586     PUSH       EBX
+    //         00451587     PUSH       EBP
+    //         00451588     PUSH       this
+    //         00451589     MOV        this,ESI
+    //         0045158b     CALL       RGE_Master_Missile_Object::setup                 int setup(RGE_Master_Missile_Object * this, _
+    //                               LAB_00451590                                                 XREF[1]:     0045157f(j)  
+    //                              m_mi_obj.cpp:45 (23)
+    //         00451590     MOV        this,dword ptr [ESP + local_c]
+    //         00451594     MOV        EAX,ESI
+    //         00451596     POP        EDI
+    //         00451597     POP        ESI
+    //         00451598     POP        EBP
+    //         00451599     MOV        dword ptr FS:[0x0],this
+    //         004515a0     POP        EBX
+    //         004515a1     ADD        ESP,0x10
+    //         004515a4     RET        0x14
+}
+
+// Offset: 0x004515B0
+int setup(RGE_Master_Missile_Object* this_, RGE_Master_Missile_Object* param_2) {
+    // --- Ghidra listing dump ---
+    //                              *********************************************************************************************************
+    //                              * protected: int __thiscall RGE_Master_Missile_Object::setup(class RGE_Master_Missile_Object *)         *
+    //                              *********************************************************************************************************
+    //                              int __thiscall setup(RGE_Master_Missile_Object * this, RGE_Master_Mi
+    //              int               EAX:4          <RETURN>
+    //              RGE_Master_Mis    ECX:4 (auto)   this
+    //              RGE_Master_Mis    Stack[0x4]:4   param_1                   XREF[1]:     004515b2(R)  
+    //                               ?setup@RGE_Master_Missile_Object@@IAEHPAV1@@Z                XREF[1]:     RGE_Master_Missile_Object:00451483
+    //                               RGE_Master_Missile_Object::setup
+    //                              m_mi_obj.cpp:50 (2)
+    //         004515b0     PUSH       ESI
+    //         004515b1     PUSH       EDI
+    //                              m_mi_obj.cpp:51 (12)
+    //         004515b2     MOV        EDI,dword ptr [ESP + param_1]
+    //         004515b6     MOV        ESI,this
+    //         004515b8     PUSH       EDI
+    //         004515b9     CALL       RGE_Master_Combat_Object::setup                  int setup(RGE_Master_Combat_Object * this, RG
+    //                              m_mi_obj.cpp:53 (4)
+    //         004515be     MOV        byte ptr [ESI + 0x4],0x3c
+    //                              m_mi_obj.cpp:56 (12)
+    //         004515c2     MOV        AL,byte ptr [EDI + 0x148]
+    //         004515c8     MOV        byte ptr [ESI + 0x148],AL
+    //                              m_mi_obj.cpp:57 (12)
+    //         004515ce     MOV        this,byte ptr [EDI + 0x149]
+    //         004515d4     MOV        byte ptr [ESI + 0x149],this
+    //                              m_mi_obj.cpp:58 (12)
+    //         004515da     MOV        DL,byte ptr [EDI + 0x14a]
+    //         004515e0     MOV        byte ptr [ESI + 0x14a],DL
+    //                              m_mi_obj.cpp:59 (12)
+    //         004515e6     MOV        AL,byte ptr [EDI + 0x14b]
+    //         004515ec     MOV        byte ptr [ESI + 0x14b],AL
+    //                              m_mi_obj.cpp:60 (12)
+    //         004515f2     MOV        this,byte ptr [EDI + 0x14c]
+    //         004515f8     MOV        byte ptr [ESI + 0x14c],this
+    //                              m_mi_obj.cpp:61 (12)
+    //         004515fe     MOV        EDX,dword ptr [EDI + 0x150]
+    //         00451604     MOV        dword ptr [ESI + 0x150],EDX
+    //                              m_mi_obj.cpp:64 (10)
+    //         0045160a     POP        EDI
+    //         0045160b     MOV        EAX,0x1
+    //         00451610     POP        ESI
+    //         00451611     RET        0x4
+}
+
+// Offset: 0x00451620
+int setup(RGE_Master_Missile_Object* this_, int param_2, RGE_Sprite** param_3, RGE_Sound** param_4) {
+    // --- Ghidra listing dump ---
+    //                              *********************************************************************************************************
+    //                              * protected: int __thiscall RGE_Master_Missile_Object::setup(int,class RGE_Sprite * *,class RGE_Soun... *
+    //                              *********************************************************************************************************
+    //                              int __thiscall setup(RGE_Master_Missile_Object * this, int param_1, 
+    //              int               EAX:4          <RETURN>
+    //              RGE_Master_Mis    ECX:4 (auto)   this
+    //              int               Stack[0x4]:4   param_1                   XREF[1]:     0045162c(R)  
+    //              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[1]:     00451628(R)  
+    //              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[1]:     00451620(R)  
+    //                               ?setup@RGE_Master_Missile_Object@@IAEHHPAPAVRGE_Sprite@@PAP  XREF[1]:     RGE_Master_Missile_Object:00451511
+    //                               RGE_Master_Missile_Object::setup
+    //                              m_mi_obj.cpp:69 (26)
+    //         00451620     MOV        EAX,dword ptr [ESP + param_3]
+    //         00451624     PUSH       ESI
+    //         00451625     MOV        ESI,this
+    //         00451627     PUSH       EDI
+    //         00451628     MOV        this,dword ptr [ESP + param_2]
+    //         0045162c     MOV        EDI,dword ptr [ESP + param_1]
+    //         00451630     PUSH       EAX
+    //         00451631     PUSH       this
+    //         00451632     PUSH       EDI
+    //         00451633     MOV        this,ESI
+    //         00451635     CALL       RGE_Master_Combat_Object::setup                  int setup(RGE_Master_Combat_Object * this, in
+    //                              m_mi_obj.cpp:75 (22)
+    //         0045163a     LEA        EDX,[ESI + 0x148]
+    //         00451640     PUSH       0x1
+    //         00451642     PUSH       EDX
+    //         00451643     PUSH       EDI
+    //         00451644     MOV        byte ptr [ESI + 0x4],0x3c
+    //         00451648     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+    //         0045164d     ADD        ESP,0xc
+    //                              m_mi_obj.cpp:76 (18)
+    //         00451650     LEA        EAX,[ESI + 0x149]
+    //         00451656     PUSH       0x1
+    //         00451658     PUSH       EAX
+    //         00451659     PUSH       EDI
+    //         0045165a     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+    //         0045165f     ADD        ESP,0xc
+    //                              m_mi_obj.cpp:77 (18)
+    //         00451662     LEA        this,[ESI + 0x14a]
+    //         00451668     PUSH       0x1
+    //         0045166a     PUSH       this
+    //         0045166b     PUSH       EDI
+    //         0045166c     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+    //         00451671     ADD        ESP,0xc
+    //                              m_mi_obj.cpp:78 (18)
+    //         00451674     LEA        EDX,[ESI + 0x14b]
+    //         0045167a     PUSH       0x1
+    //         0045167c     PUSH       EDX
+    //         0045167d     PUSH       EDI
+    //         0045167e     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+    //         00451683     ADD        ESP,0xc
+    //                              m_mi_obj.cpp:79 (18)
+    //         00451686     LEA        EAX,[ESI + 0x14c]
+    //         0045168c     PUSH       0x1
+    //         0045168e     PUSH       EAX
+    //         0045168f     PUSH       EDI
+    //         00451690     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+    //         00451695     ADD        ESP,0xc
+    //                              m_mi_obj.cpp:80 (18)
+    //         00451698     ADD        ESI,0x150
+    //         0045169e     PUSH       0x4
+    //         004516a0     PUSH       ESI
+    //         004516a1     PUSH       EDI
+    //         004516a2     CALL       rge_read                                         void rge_read(int param_1, void * param_2, in
+    //         004516a7     ADD        ESP,0xc
+    //                              m_mi_obj.cpp:82 (5)
+    //         004516aa     MOV        EAX,0x1
+    //                              m_mi_obj.cpp:83 (5)
+    //         004516af     POP        EDI
+    //         004516b0     POP        ESI
+    //         004516b1     RET        0xc
+}
+
+// Offset: 0x004516C0
+int setup(RGE_Master_Missile_Object* this_, FILE* param_2, RGE_Sprite** param_3, RGE_Sound** param_4, short param_5) {
+    // --- Ghidra listing dump ---
+    //                              *********************************************************************************************************
+    //                              * protected: int __thiscall RGE_Master_Missile_Object::setup(struct _iobuf *,class RGE_Sprite * *,cl... *
+    //                              *********************************************************************************************************
+    //                              int __thiscall setup(RGE_Master_Missile_Object * this, _iobuf * para
+    //              int               EAX:4          <RETURN>
+    //              RGE_Master_Mis    ECX:4 (auto)   this
+    //              _iobuf *          Stack[0x4]:4   param_1                   XREF[3]:     004516d1(R), 004516e6(*), 0045172b(R)  
+    //              RGE_Sprite * *    Stack[0x8]:4   param_2                   XREF[3]:     004516c5(R), 004516eb(*), 0045171e(R)  
+    //              RGE_Sound * *     Stack[0xc]:4   param_3                   XREF[3]:     004516cc(R), 004516f0(*), 0045171a(R)  
+    //              short             Stack[0x10]:2  param_4                   XREF[3]:     004516c1(R), 004516f5(*), 00451716(R)  
+    //              undefined         Stack[-0x2]:1  local_2                   XREF[2]:     004516fa(*), 00451735(R)  
+    //              short             Stack[-0x6]:2  temp_missile_type
+    //                               ?setup@RGE_Master_Missile_Object@@IAEHPAU_iobuf@@PAPAVRGE_S  XREF[1]:     RGE_Master_Missile_Object:0045158b
+    //                               RGE_Master_Missile_Object::setup
+    //                              m_mi_obj.cpp:88 (1)
+    //         004516c0     PUSH       this
+    //                              m_mi_obj.cpp:95 (31)
+    //         004516c1     MOV        EAX,dword ptr [ESP + param_4]
+    //         004516c5     MOV        EDX,dword ptr [ESP + param_2]
+    //         004516c9     PUSH       ESI
+    //         004516ca     MOV        ESI,this
+    //         004516cc     MOV        this,dword ptr [ESP + param_3]
+    //         004516d0     PUSH       EDI
+    //         004516d1     MOV        EDI,dword ptr [ESP + param_1]
+    //         004516d5     PUSH       EAX
+    //         004516d6     PUSH       this
+    //         004516d7     PUSH       EDX
+    //         004516d8     PUSH       EDI
+    //         004516d9     MOV        this,ESI
+    //         004516db     CALL       RGE_Master_Combat_Object::setup                  int setup(RGE_Master_Combat_Object * this, _i
+    //                              m_mi_obj.cpp:108 (54)
+    //         004516e0     LEA        EAX,[ESI + 0x150]
+    //         004516e6     LEA        this=>param_1,[ESP + 0x10]
+    //         004516ea     PUSH       EAX
+    //         004516eb     LEA        EDX=>param_2,[ESP + 0x18]
+    //         004516ef     PUSH       this
+    //         004516f0     LEA        EAX=>param_3,[ESP + 0x20]
+    //         004516f4     PUSH       EDX
+    //         004516f5     LEA        this=>param_4,[ESP + 0x28]
+    //         004516f9     PUSH       EAX
+    //         004516fa     LEA        EDX=>local_2,[ESP + 0x1a]
+    //         004516fe     PUSH       this
+    //         004516ff     PUSH       EDX
+    //         00451700     PUSH       s_%hd_%hd_%hd_%hd_%hd_%f                         = "%hd %hd %hd %hd %hd %f"
+    //         00451705     PUSH       EDI
+    //         00451706     MOV        byte ptr [ESI + 0xa4],0x1
+    //         0045170d     MOV        byte ptr [ESI + 0x4],0x3c
+    //         00451711     CALL       fscanf                                           undefined fscanf()
+    //                              m_mi_obj.cpp:111 (4)
+    //         00451716     MOV        AL,byte ptr [ESP + param_4]
+    //                              m_mi_obj.cpp:112 (4)
+    //         0045171a     MOV        this,byte ptr [ESP + param_3]
+    //                              m_mi_obj.cpp:113 (13)
+    //         0045171e     MOV        DL,byte ptr [ESP + param_2]
+    //         00451722     ADD        ESP,0x20
+    //         00451725     MOV        byte ptr [ESI + 0x149],AL
+    //                              m_mi_obj.cpp:114 (10)
+    //         0045172b     MOV        AL,byte ptr [ESP + param_1]
+    //         0045172f     MOV        byte ptr [ESI + 0x14a],this
+    //                              m_mi_obj.cpp:115 (22)
+    //         00451735     MOV        this,byte ptr [ESP + local_2]
+    //         00451739     MOV        byte ptr [ESI + 0x14b],DL
+    //         0045173f     MOV        byte ptr [ESI + 0x14c],AL
+    //         00451745     MOV        byte ptr [ESI + 0x148],this
+    //                              m_mi_obj.cpp:118 (11)
+    //         0045174b     POP        EDI
+    //         0045174c     MOV        EAX,0x1
+    //         00451751     POP        ESI
+    //         00451752     POP        this
+    //         00451753     RET        0x10
+}
+
+// Offset: 0x00451760
+void RGE_Master_Missile_Object(RGE_Master_Missile_Object* this_) {
+    // --- Ghidra listing dump ---
+    //                              *********************************************************************************************************
+    //                              * public: virtual __thiscall RGE_Master_Missile_Object::~RGE_Master_Missile_Object(void)                *
+    //                              *********************************************************************************************************
+    //                              void __thiscall ~RGE_Master_Missile_Object(RGE_Master_Missile_Object
+    //              void              <VOID>         <RETURN>
+    //              RGE_Master_Mis    ECX:4 (auto)   this
+    //                               ??1RGE_Master_Missile_Object@@UAE@XZ                         XREF[1]:     `vector_deleting_destructor':00451
+    //                               RGE_Master_Missile_Object::~RGE_Master_Missile_Object
+    //                              m_mi_obj.cpp:123 (11)
+    //         00451760     MOV        dword ptr [this->_padding_],RGE_Master_Missile   = 004514a0
+    //         00451766     JMP        RGE_Master_Combat_Object::~RGE_Master_Combat_O   void ~RGE_Master_Combat_Object(RGE_Master_Com
+    //                              -- Flow Override: CALL_RETURN (CALL_TERMINATOR)
+}
+
+// Offset: 0x00451770
+RGE_Static_Object* RGE_Master_Missile_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4) {
+    // --- Ghidra listing dump ---
+    //                              *********************************************************************************************************
+    //                              * public: virtual class RGE_Static_Object * __thiscall RGE_Master_Missile_Object::make_new_obj(class... *
+    //                              *********************************************************************************************************
+    //                              RGE_Static_Object * __thiscall make_new_obj(RGE_Master_Missile_Objec
+    //              RGE_Static_Obj    EAX:4          <RETURN>
+    //              RGE_Master_Mis    ECX:4 (auto)   this
+    //              RGE_Player *      Stack[0x4]:4   param_1                   XREF[2]:     00451787(R), 004517e5(W)  
+    //              float             Stack[0x8]:4   param_2                   XREF[2]:     004517b5(R), 00451800(R)  
+    //              float             Stack[0xc]:4   param_3                   XREF[2]:     004517ae(R), 004517f9(R)  
+    //              float             Stack[0x10]:4  param_4                   XREF[2]:     004517aa(R), 004517f5(R)  
+    //              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     004517eb(W)  
+    //              undefined4        Stack[-0xc]:4  local_c                   XREF[2]:     0045180f(R), 00451823(R)  
+    //                               ?make_new_obj@RGE_Master_Missile_Object@@UAEPAVRGE_Static_O  XREF[1]:     00570578(*)  
+    //                               RGE_Master_Missile_Object::make_new_obj
+    //                              m_mi_obj.cpp:129 (23)
+    //         00451770     MOV        EAX,FS:[0x0]
+    //         00451776     PUSH       -0x1
+    //         00451778     PUSH       FUN_0055d95b
+    //         0045177d     PUSH       EAX
+    //         0045177e     MOV        dword ptr FS:[0x0],ESP
+    //         00451785     PUSH       EBX
+    //         00451786     PUSH       ESI
+    //                              m_mi_obj.cpp:132 (17)
+    //         00451787     MOV        EBX,dword ptr [ESP + param_1]
+    //         0045178b     PUSH       EDI
+    //         0045178c     MOV        EDI,this
+    //         0045178e     MOV        AL,byte ptr [EDI + 0xa4]
+    //         00451794     TEST       AL,AL
+    //         00451796     JZ         LAB_004517d8
+    //                              m_mi_obj.cpp:134 (14)
+    //         00451798     MOV        AL,byte ptr [EDI + 0x4]
+    //         0045179b     MOV        this,dword ptr [EBX + 0x3c]
+    //         0045179e     PUSH       EAX
+    //         0045179f     CALL       RGE_Game_World::recycle_object_in_to_game        RGE_Static_Object * recycle_object_in_to_game
+    //         004517a4     MOV        ESI,EAX
+    //                              m_mi_obj.cpp:135 (4)
+    //         004517a6     TEST       ESI,ESI
+    //         004517a8     JZ         LAB_004517d8
+    //                              m_mi_obj.cpp:137 (24)
+    //         004517aa     MOV        EAX,dword ptr [ESP + param_4]
+    //         004517ae     MOV        this,dword ptr [ESP + param_3]
+    //         004517b2     MOV        EDX,dword ptr [ESI]
+    //         004517b4     PUSH       EAX
+    //         004517b5     MOV        EAX,dword ptr [ESP + param_2]
+    //         004517b9     PUSH       this
+    //         004517ba     PUSH       EAX
+    //         004517bb     PUSH       EBX
+    //         004517bc     PUSH       EDI
+    //         004517bd     MOV        this,ESI
+    //         004517bf     CALL       dword ptr [EDX + 0x4]
+    //                              m_mi_obj.cpp:138 (2)
+    //         004517c2     MOV        EAX,ESI
+    //                              m_mi_obj.cpp:143 (20)
+    //         004517c4     MOV        this,dword ptr [ESP + 0xc]
+    //         004517c8     MOV        dword ptr FS:[0x0],this
+    //         004517cf     POP        EDI
+    //         004517d0     POP        ESI
+    //         004517d1     POP        EBX
+    //         004517d2     ADD        ESP,0xc
+    //         004517d5     RET        0x10
+    //                               LAB_004517d8                                                 XREF[2]:     00451796(j), 004517a8(j)  
+    //                              m_mi_obj.cpp:142 (55)
+    //         004517d8     PUSH       0x1c8
+    //         004517dd     CALL       operator_new                                     void * operator_new(uint param_1)
+    //         004517e2     ADD        ESP,0x4
+    //         004517e5     MOV        dword ptr [ESP + param_1],EAX
+    //         004517e9     TEST       EAX,EAX
+    //         004517eb     MOV        dword ptr [ESP + local_4],0x0
+    //         004517f3     JZ         LAB_00451823
+    //         004517f5     MOV        this,dword ptr [ESP + param_4]
+    //         004517f9     MOV        EDX,dword ptr [ESP + param_3]
+    //         004517fd     PUSH       0x1
+    //         004517ff     PUSH       this
+    //         00451800     MOV        this,dword ptr [ESP + param_2]
+    //         00451804     PUSH       EDX
+    //         00451805     PUSH       this
+    //         00451806     PUSH       EBX
+    //         00451807     PUSH       EDI
+    //         00451808     MOV        this,EAX
+    //         0045180a     CALL       RGE_Missile_Object::RGE_Missile_Object           undefined RGE_Missile_Object(RGE_Missile_Obje
+    //                              m_mi_obj.cpp:143 (42)
+    //         0045180f     MOV        this,dword ptr [ESP + local_c]
+    //         00451813     MOV        dword ptr FS:[0x0],this
+    //         0045181a     POP        EDI
+    //         0045181b     POP        ESI
+    //         0045181c     POP        EBX
+    //         0045181d     ADD        ESP,0xc
+    //         00451820     RET        0x10
+    //                               LAB_00451823                                                 XREF[1]:     004517f3(j)  
+    //         00451823     MOV        this,dword ptr [ESP + local_c]
+    //         00451827     POP        EDI
+    //         00451828     POP        ESI
+    //         00451829     XOR        EAX,EAX
+    //         0045182b     MOV        dword ptr FS:[0x0],this
+    //         00451832     POP        EBX
+    //         00451833     ADD        ESP,0xc
+    //         00451836     RET        0x10
+}
+
+// Offset: 0x00451840
+RGE_Master_Static_Object* RGE_Master_Missile_Object::make_new_master() {
+    // --- Ghidra listing dump ---
+    //                              *********************************************************************************************************
+    //                              * public: virtual class RGE_Master_Static_Object * __thiscall RGE_Master_Missile_Object::make_new_ma... *
+    //                              *********************************************************************************************************
+    //                              RGE_Master_Static_Object * __thiscall make_new_master(RGE_Master_Mis
+    //              RGE_Master_Sta    EAX:4          <RETURN>
+    //              RGE_Master_Mis    ECX:4 (auto)   this
+    //              undefined4        Stack[-0x4]:4  local_4                   XREF[1]:     0045186c(W)  
+    //              undefined4        Stack[-0xc]:4  local_c                   XREF[2]:     00451880(R), 00451890(R)  
+    //              undefined4        Stack[-0x10]:4 local_10                  XREF[1]:     00451866(W)  
+    //                               ?make_new_master@RGE_Master_Missile_Object@@UAEPAVRGE_Maste  XREF[1]:     0057057c(*)  
+    //                               RGE_Master_Missile_Object::make_new_master
+    //                              m_mi_obj.cpp:148 (25)
+    //         00451840     PUSH       -0x1
+    //         00451842     PUSH       FUN_0055d97b
+    //         00451847     MOV        EAX,FS:[0x0]
+    //         0045184d     PUSH       EAX
+    //         0045184e     MOV        dword ptr FS:[0x0],ESP
+    //         00451855     PUSH       this
+    //         00451856     PUSH       ESI
+    //         00451857     MOV        ESI,this
+    //                              m_mi_obj.cpp:149 (39)
+    //         00451859     PUSH       0x154
+    //         0045185e     CALL       operator_new                                     void * operator_new(uint param_1)
+    //         00451863     ADD        ESP,0x4
+    //         00451866     MOV        dword ptr [ESP + local_10],EAX
+    //         0045186a     TEST       EAX,EAX
+    //         0045186c     MOV        dword ptr [ESP + local_4],0x0
+    //         00451874     JZ         LAB_00451890
+    //         00451876     PUSH       0x1
+    //         00451878     PUSH       ESI
+    //         00451879     MOV        this,EAX
+    //         0045187b     CALL       RGE_Master_Missile_Object::RGE_Master_Missile_   undefined RGE_Master_Missile_Object(RGE_Maste
+    //                              m_mi_obj.cpp:150 (34)
+    //         00451880     MOV        this,dword ptr [ESP + local_c]
+    //         00451884     MOV        dword ptr FS:[0x0],this
+    //         0045188b     POP        ESI
+    //         0045188c     ADD        ESP,0x10
+    //         0045188f     RET
+    //                               LAB_00451890                                                 XREF[1]:     00451874(j)  
+    //         00451890     MOV        this,dword ptr [ESP + local_c]
+    //         00451894     XOR        EAX,EAX
+    //         00451896     MOV        dword ptr FS:[0x0],this
+    //         0045189d     POP        ESI
+    //         0045189e     ADD        ESP,0x10
+    //         004518a1     RET
+}
+
+// Offset: 0x004518B0
+void RGE_Master_Missile_Object::copy_obj(RGE_Master_Static_Object* param_1) {
+    // --- Ghidra listing dump ---
+    //                              *********************************************************************************************************
+    //                              * public: virtual void __thiscall RGE_Master_Missile_Object::copy_obj(class RGE_Master_Static_Object *) *
+    //                              *********************************************************************************************************
+    //                              void __thiscall copy_obj(RGE_Master_Missile_Object * this, RGE_Maste
+    //              void              <VOID>         <RETURN>
+    //              RGE_Master_Mis    ECX:4 (auto)   this
+    //              RGE_Master_Sta    Stack[0x4]:4   param_1                   XREF[1]:     004518b2(R)  
+    //                               ?copy_obj@RGE_Master_Missile_Object@@UAEXPAVRGE_Master_Stat  XREF[1]:     00570564(*)  
+    //                               RGE_Master_Missile_Object::copy_obj
+    //                              m_mi_obj.cpp:155 (2)
+    //         004518b0     PUSH       ESI
+    //         004518b1     PUSH       EDI
+    //                              m_mi_obj.cpp:158 (12)
+    //         004518b2     MOV        EDI,dword ptr [ESP + param_1]
+    //         004518b6     MOV        ESI,this
+    //         004518b8     PUSH       EDI
+    //         004518b9     CALL       RGE_Master_Combat_Object::copy_obj               void copy_obj(RGE_Master_Combat_Object * this
+    //                              m_mi_obj.cpp:160 (12)
+    //         004518be     MOV        AL,byte ptr [EDI + 0x148]
+    //         004518c4     MOV        byte ptr [ESI + 0x148],AL
+    //                              m_mi_obj.cpp:161 (12)
+    //         004518ca     MOV        this,byte ptr [EDI + 0x149]
+    //         004518d0     MOV        byte ptr [ESI + 0x149],this
+    //                              m_mi_obj.cpp:162 (12)
+    //         004518d6     MOV        DL,byte ptr [EDI + 0x14a]
+    //         004518dc     MOV        byte ptr [ESI + 0x14a],DL
+    //                              m_mi_obj.cpp:163 (12)
+    //         004518e2     MOV        AL,byte ptr [EDI + 0x14b]
+    //         004518e8     MOV        byte ptr [ESI + 0x14b],AL
+    //                              m_mi_obj.cpp:164 (12)
+    //         004518ee     MOV        this,byte ptr [EDI + 0x14c]
+    //         004518f4     MOV        byte ptr [ESI + 0x14c],this
+    //                              m_mi_obj.cpp:165 (12)
+    //         004518fa     MOV        EDX,dword ptr [EDI + 0x150]
+    //         00451900     MOV        dword ptr [ESI + 0x150],EDX
+    //                              m_mi_obj.cpp:166 (5)
+    //         00451906     POP        EDI
+    //         00451907     POP        ESI
+    //         00451908     RET        0x4
+}
+
+// Offset: 0x00451910
+void RGE_Master_Missile_Object::modify(float param_1, uchar param_2) {
+    // --- Ghidra listing dump ---
+    //                              *********************************************************************************************************
+    //                              * public: virtual void __thiscall RGE_Master_Missile_Object::modify(float,unsigned char)                *
+    //                              *********************************************************************************************************
+    //                              void __thiscall modify(RGE_Master_Missile_Object * this, float param
+    //              void              <VOID>         <RETURN>
+    //              RGE_Master_Mis    ECX:4 (auto)   this
+    //              float             Stack[0x4]:4   param_1                   XREF[2]:     0045191d(R), 0045192c(R)  
+    //              uchar             Stack[0x8]:1   param_2                   XREF[1]:     00451911(R)  
+    //                               ?modify@RGE_Master_Missile_Object@@UAEXME@Z                  XREF[1]:     00570568(*)  
+    //                               RGE_Master_Missile_Object::modify
+    //                              m_mi_obj.cpp:170 (1)
+    //         00451910     PUSH       EBX
+    //                              m_mi_obj.cpp:171 (12)
+    //         00451911     MOV        EBX,dword ptr [ESP + param_2]
+    //         00451915     PUSH       ESI
+    //         00451916     CMP        BL,0x13
+    //         00451919     MOV        ESI,this
+    //         0045191b     JNZ        LAB_0045192c
+    //                              m_mi_obj.cpp:174 (15)
+    //         0045191d     FLD        float ptr [ESP + param_1]
+    //         00451921     CALL       __ftol                                           undefined __ftol()
+    //         00451926     MOV        byte ptr [ESI + 0x149],AL
+    //                               LAB_0045192c                                                 XREF[1]:     0045191b(j)  
+    //                              m_mi_obj.cpp:178 (13)
+    //         0045192c     MOV        EAX,dword ptr [ESP + param_1]
+    //         00451930     PUSH       EBX
+    //         00451931     PUSH       EAX
+    //         00451932     MOV        this,ESI
+    //         00451934     CALL       RGE_Master_Combat_Object::modify                 void modify(RGE_Master_Combat_Object * this, 
+    //                              m_mi_obj.cpp:179 (5)
+    //         00451939     POP        ESI
+    //         0045193a     POP        EBX
+    //         0045193b     RET        0x8
+}
+
+// Offset: 0x00451940
+void RGE_Master_Missile_Object::modify_delta(float param_1, uchar param_2) {
+    // --- Ghidra listing dump ---
+    //                              *********************************************************************************************************
+    //                              * public: virtual void __thiscall RGE_Master_Missile_Object::modify_delta(float,unsigned char)          *
+    //                              *********************************************************************************************************
+    //                              void __thiscall modify_delta(RGE_Master_Missile_Object * this, float
+    //              void              <VOID>         <RETURN>
+    //              RGE_Master_Mis    ECX:4 (auto)   this
+    //              float             Stack[0x4]:4   param_1                   XREF[2]:     0045194d(R), 0045195c(R)  
+    //              uchar             Stack[0x8]:1   param_2                   XREF[1]:     00451941(R)  
+    //                               ?modify_delta@RGE_Master_Missile_Object@@UAEXME@Z            XREF[1]:     0057056c(*)  
+    //                               RGE_Master_Missile_Object::modify_delta
+    //                              m_mi_obj.cpp:183 (1)
+    //         00451940     PUSH       EBX
+    //                              m_mi_obj.cpp:184 (12)
+    //         00451941     MOV        EBX,dword ptr [ESP + param_2]
+    //         00451945     PUSH       ESI
+    //         00451946     CMP        BL,0x13
+    //         00451949     MOV        ESI,this
+    //         0045194b     JNZ        LAB_0045195c
+    //                              m_mi_obj.cpp:187 (15)
+    //         0045194d     FLD        float ptr [ESP + param_1]
+    //         00451951     CALL       __ftol                                           undefined __ftol()
+    //         00451956     MOV        byte ptr [ESI + 0x149],AL
+    //                               LAB_0045195c                                                 XREF[1]:     0045194b(j)  
+    //                              m_mi_obj.cpp:191 (13)
+    //         0045195c     MOV        EAX,dword ptr [ESP + param_1]
+    //         00451960     PUSH       EBX
+    //         00451961     PUSH       EAX
+    //         00451962     MOV        this,ESI
+    //         00451964     CALL       RGE_Master_Combat_Object::modify_delta           void modify_delta(RGE_Master_Combat_Object * 
+    //                              m_mi_obj.cpp:192 (5)
+    //         00451969     POP        ESI
+    //         0045196a     POP        EBX
+    //         0045196b     RET        0x8
+}
+
+// Offset: 0x00451970
+void RGE_Master_Missile_Object::modify_percent(float param_1, uchar param_2) {
+    // --- Ghidra listing dump ---
+    //                              *********************************************************************************************************
+    //                              * public: virtual void __thiscall RGE_Master_Missile_Object::modify_percent(float,unsigned char)        *
+    //                              *********************************************************************************************************
+    //                              void __thiscall modify_percent(RGE_Master_Missile_Object * this, flo
+    //              void              <VOID>         <RETURN>
+    //              RGE_Master_Mis    ECX:4 (auto)   this
+    //              float             Stack[0x4]:4   param_1                   XREF[2]:     0045197d(R), 0045198c(R)  
+    //              uchar             Stack[0x8]:1   param_2                   XREF[1]:     00451971(R)  
+    //                               ?modify_percent@RGE_Master_Missile_Object@@UAEXME@Z          XREF[1]:     00570570(*)  
+    //                               RGE_Master_Missile_Object::modify_percent
+    //                              m_mi_obj.cpp:196 (1)
+    //         00451970     PUSH       EBX
+    //                              m_mi_obj.cpp:197 (12)
+    //         00451971     MOV        EBX,dword ptr [ESP + param_2]
+    //         00451975     PUSH       ESI
+    //         00451976     CMP        BL,0x13
+    //         00451979     MOV        ESI,this
+    //         0045197b     JNZ        LAB_0045198c
+    //                              m_mi_obj.cpp:200 (15)
+    //         0045197d     FLD        float ptr [ESP + param_1]
+    //         00451981     CALL       __ftol                                           undefined __ftol()
+    //         00451986     MOV        byte ptr [ESI + 0x149],AL
+    //                               LAB_0045198c                                                 XREF[1]:     0045197b(j)  
+    //                              m_mi_obj.cpp:204 (13)
+    //         0045198c     MOV        EAX,dword ptr [ESP + param_1]
+    //         00451990     PUSH       EBX
+    //         00451991     PUSH       EAX
+    //         00451992     MOV        this,ESI
+    //         00451994     CALL       RGE_Master_Combat_Object::modify_percent         void modify_percent(RGE_Master_Combat_Object 
+    //                              m_mi_obj.cpp:205 (5)
+    //         00451999     POP        ESI
+    //         0045199a     POP        EBX
+    //         0045199b     RET        0x8
+}
+
+// Offset: 0x004519A0
+void RGE_Master_Missile_Object::save(int param_1) {
+    // --- Ghidra listing dump ---
+    //                              *********************************************************************************************************
+    //                              * public: virtual void __thiscall RGE_Master_Missile_Object::save(int)                                  *
+    //                              *********************************************************************************************************
+    //                              void __thiscall save(RGE_Master_Missile_Object * this, int param_1)
+    //              void              <VOID>         <RETURN>
+    //              RGE_Master_Mis    ECX:4 (auto)   this
+    //              int               Stack[0x4]:4   param_1                   XREF[1]:     004519a2(R)  
+    //                               ?save@RGE_Master_Missile_Object@@UAEXH@Z                     XREF[1]:     00570574(*)  
+    //                               RGE_Master_Missile_Object::save
+    //                              m_mi_obj.cpp:210 (2)
+    //         004519a0     PUSH       ESI
+    //         004519a1     PUSH       EDI
+    //                              m_mi_obj.cpp:211 (12)
+    //         004519a2     MOV        EDI,dword ptr [ESP + param_1]
+    //         004519a6     MOV        ESI,this
+    //         004519a8     PUSH       EDI
+    //         004519a9     CALL       RGE_Master_Combat_Object::save                   void save(RGE_Master_Combat_Object * this, in
+    //                              m_mi_obj.cpp:213 (18)
+    //         004519ae     LEA        EAX,[ESI + 0x148]
+    //         004519b4     PUSH       0x1
+    //         004519b6     PUSH       EAX
+    //         004519b7     PUSH       EDI
+    //         004519b8     CALL       rge_write                                        void rge_write(int param_1, void * param_2, i
+    //         004519bd     ADD        ESP,0xc
+    //                              m_mi_obj.cpp:214 (18)
+    //         004519c0     LEA        this,[ESI + 0x149]
+    //         004519c6     PUSH       0x1
+    //         004519c8     PUSH       this
+    //         004519c9     PUSH       EDI
+    //         004519ca     CALL       rge_write                                        void rge_write(int param_1, void * param_2, i
+    //         004519cf     ADD        ESP,0xc
+    //                              m_mi_obj.cpp:215 (18)
+    //         004519d2     LEA        EDX,[ESI + 0x14a]
+    //         004519d8     PUSH       0x1
+    //         004519da     PUSH       EDX
+    //         004519db     PUSH       EDI
+    //         004519dc     CALL       rge_write                                        void rge_write(int param_1, void * param_2, i
+    //         004519e1     ADD        ESP,0xc
+    //                              m_mi_obj.cpp:216 (18)
+    //         004519e4     LEA        EAX,[ESI + 0x14b]
+    //         004519ea     PUSH       0x1
+    //         004519ec     PUSH       EAX
+    //         004519ed     PUSH       EDI
+    //         004519ee     CALL       rge_write                                        void rge_write(int param_1, void * param_2, i
+    //         004519f3     ADD        ESP,0xc
+    //                              m_mi_obj.cpp:217 (18)
+    //         004519f6     LEA        this,[ESI + 0x14c]
+    //         004519fc     PUSH       0x1
+    //         004519fe     PUSH       this
+    //         004519ff     PUSH       EDI
+    //         00451a00     CALL       rge_write                                        void rge_write(int param_1, void * param_2, i
+    //         00451a05     ADD        ESP,0xc
+    //                              m_mi_obj.cpp:218 (18)
+    //         00451a08     ADD        ESI,0x150
+    //         00451a0e     PUSH       0x4
+    //         00451a10     PUSH       ESI
+    //         00451a11     PUSH       EDI
+    //         00451a12     CALL       rge_write                                        void rge_write(int param_1, void * param_2, i
+    //         00451a17     ADD        ESP,0xc
+    //                              m_mi_obj.cpp:219 (5)
+    //         00451a1a     POP        EDI
+    //         00451a1b     POP        ESI
+    //         00451a1c     RET        0x4
+}
+

@@ -1,0 +1,52 @@
+#pragma once
+#include "common.h"
+
+struct PointMaker {
+    PrimaryPt Prime;
+    PtToPt Point[500];
+    char* Mask_2x2;
+    char* Mask_3x3;
+    char* Mask_4x4;
+    char* Mask_5x5;
+    int x;
+    int y;
+    int NumSplitsPerBranch;
+    int NumberOfSatellites;
+    int ChanceOfNextNode;
+    int MaxNumberOfBranches;
+    int MaxBranchFlag;
+    int Width;
+    int Height;
+    int MinimumNumTiles;
+    int NumNodes;
+    int NumTilesActuallyChosen;
+    int CurrentPoint;
+    int ProbabilityTiles;
+    int TargetProbabilityCount;
+    int ProbabilityAdd;
+    int BranchRadius;
+    int SatelliteRadius;
+    int PrimaryRadius;
+    int SizeArrays;
+    int SatelliteDistance;
+    int BranchDistance;
+    int DirX;
+    int DirY;
+    int MaxNumberOfBranchLevels;
+    int CurrentNumberOfBranchLevels;
+    char* ExternalArray;
+    char* ProbArray;
+    char* PlacementArray;
+    char* WritableExternalArray;
+    int DoNotDrawOnFlag;
+    int DrawOnOnlyFlag;
+    int DrawOnlyInExternalArrayFlag;
+    int DrawToOneArrayFlag;
+    int BorderDepthPercentage;
+    int LeftLimit;
+    int RightLimit;
+    int TopLimit;
+    int BottomLimit;
+    char SpecialLandType;
+};
+static_assert(sizeof(PointMaker) == 0x1058, "Size mismatch");
