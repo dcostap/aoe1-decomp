@@ -60,6 +60,23 @@ Include only what you must:
 
 Avoid pulling platform headers into headers if you can.
 
+## Header Modification Rules (Reimplementation)
+
+The dumped headers (`include/*.h`) define the **memory layout** (members) and **vtable layout** (virtuals), but they often lack standard methods and constructors.
+
+### 🛑 IMMUTABLE (Do Not Touch)
+*   **Member Variables:** Never add, remove, or reorder member variables. This breaks `sizeof` and offsets.
+*   **Virtual Functions:** Never reorder or remove existing `virtual` functions. This breaks the vtable.
+*   **Inheritance:** Do not change the base class unless confirmed by the dump.
+
+### ✅ MUTABLE (Add as needed)
+*   **Constructors:** You **must** add declarations for constructors (e.g., `RGE_Base_Game(args...);`) to the class.
+*   **Non-Virtual Methods:** You **must** add declarations for regular functions found in the ASM calls (e.g., `void setVersion(float v);`).
+*   **Static Methods:** Safe to add.
+*   **Inner Structs/Enums:** If a member variable uses an undefined inner type (e.g., `RGE_Game_Options`), define it so the member variable compiles.
+
+**Rule of Thumb:** If it changes the **bytes in memory** (variables, vtable), don't touch it. If it’s just **code linkage** (functions, constructors), add it to the header.
+
 ---
 
 ## Globals (`globals.h` / `globals.cpp`)
