@@ -77,6 +77,9 @@ The dumped headers (`include/*.h`) define the **memory layout** (members) and **
 
 **Rule of Thumb:** If it changes the **bytes in memory** (variables, vtable), don't touch it. If it’s just **code linkage** (functions, constructors), add it to the header.
 
+## SOURCE OF TRUTH for types and structs
+Look at `all_types_ground_truth.h` from time to time to verify types, sizes, and member offsets, as all headers will eventually be modified over time (their exported form may not be perfect!). Never edit `all_types_ground_truth.h` itself.
+
 ---
 
 ## Globals (`globals.h` / `globals.cpp`)
