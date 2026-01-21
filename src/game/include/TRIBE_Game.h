@@ -1,9 +1,15 @@
 #pragma once
+#include <windows.h>
 #include "common.h"
 #include "RGE_Base_Game.h"
+#include "TRIBE_Game_Options.h"
+
+class MouseClickInfo;
+class TRIBE_Screen_Game;
 
 class TRIBE_Game : public RGE_Base_Game {
 public:
+    TRIBE_Game(RGE_Prog_Info* info, int param_2);
     // Virtuals (best-effort)
     virtual ~TRIBE_Game(); // vt[0] (0x0)
     virtual int run(); // vt[1] (0x4)
@@ -51,7 +57,7 @@ public:
     virtual void stop_music_system(); // vt[43] (0xAC)
     virtual int restart_music_system(); // vt[44] (0xB0)
     virtual RGE_Game_World* create_world(); // vt[45] (0xB4)
-    virtual int handle_message(tagMSG* param_1); // vt[46] (0xB8)
+    virtual int handle_message(struct tagMSG* param_1); // vt[46] (0xB8)
     virtual int handle_idle(); // vt[47] (0xBC)
     virtual int handle_mouse_move(void* param_1, uint param_2, uint param_3, long param_4); // vt[48] (0xC0)
     virtual int handle_key_down(void* param_1, uint param_2, uint param_3, long param_4); // vt[49] (0xC4)
@@ -86,6 +92,34 @@ public:
     virtual void show_ai(); // vt[78] (0x138)
     virtual int setup_map_save_area(); // vt[79] (0x13C)
     virtual void set_interface_messages(); // vt[80] (0x140)
+
+    void setMapSize(MapSize p1);
+    void setMapType(MapType p1);
+    void setAnimals(int p1);
+    void setPredators(int p1);
+    void setVictoryType(VictoryType p1, int p2);
+    void setAllowTrading(int p1);
+    void setLongCombat(int p1);
+    void setRandomizePositions(int p1);
+    void setFullTechTree(int p1);
+    void setResourceLevel(ResourceLevel p1);
+    void setStartingAge(Age p1);
+    void setStartingUnits(int p1);
+    void setDeathMatch(unsigned char p1);
+    void setPopLimit(unsigned char p1);
+    void setQuickStartGame(unsigned char p1);
+    void setRandomStartValue(int p1);
+    void setCivilization(int p1, int p2);
+    void setScenarioPlayer(int p1, int p2);
+    void setPlayerColor(int p1, int p2);
+    void setComputerName(int p1, int p2);
+    void resetRandomComputerName();
+    void close_game_screens(int p1);
+    int start_scenario(char* p1);
+    int load_game(char* p1);
+    int start_menu();
+    int start_video(const char* p1, int p2);
+    void close();
 
     MouseClickInfo* MouseRightClickTable;
     int MouseRightClickTableSize;

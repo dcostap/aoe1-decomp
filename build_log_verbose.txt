@@ -1,0 +1,1004 @@
+Setting up VS 2022 x86 environment...
+**********************************************************************
+** Visual Studio 2022 Developer Command Prompt v17.0
+** Copyright (c) 2022 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x86'
+DP_INC = "C:\Projects\my_decomps\aoe1\src\third_party\directplay\Include"
+DP_LIB = "C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86"
+Compiling empiresx.exe...
+Microsoft (R) C/C++ Optimizing Compiler Version 19.36.32537 for x86
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+main.cpp
+tribegam.cpp
+basegame.cpp
+globals.cpp
+Res_file.cpp
+sceninfo.cpp
+gameinfo.cpp
+file_stf.cpp
+getdxver.cpp
+TRegistry.cpp
+TDebuggingLog.cpp
+Generating Code...
+Microsoft (R) Incremental Linker Version 14.36.32537.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+/out:main.exe 
+/VERBOSE 
+/LIBPATH:C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86 
+kernel32.lib 
+user32.lib 
+gdi32.lib 
+advapi32.lib 
+ole32.lib 
+ddraw.lib 
+dxguid.lib 
+dplayx.lib 
+dplay.lib 
+uuid.lib 
+winmm.lib 
+ws2_32.lib 
+/OUT:build\empiresx.exe 
+build\main.obj 
+build\tribegam.obj 
+build\basegame.obj 
+build\globals.obj 
+build\Res_file.obj 
+build\sceninfo.obj 
+build\gameinfo.obj 
+build\file_stf.obj 
+build\getdxver.obj 
+build\TRegistry.obj 
+build\TDebuggingLog.obj 
+
+Starting pass 1
+Processed /DEFAULTLIB:uuid.lib
+Processed /DEFAULTLIB:MSVCRTD
+Processed /DEFAULTLIB:OLDNAMES
+Processed /DEFAULTLIB:advapi32.lib
+Processed /DEFAULTLIB:kernel32.lib
+Processed /DEFAULTLIB:user32.lib
+
+Searching libraries
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\kernel32.lib:
+      Found __imp__LoadLibraryA@4
+        Referenced in tribegam.obj
+        Loaded kernel32.lib(KERNEL32.dll)
+      Found __imp__GlobalMemoryStatus@4
+        Referenced in basegame.obj
+        Loaded kernel32.lib(KERNEL32.dll)
+      Found __imp__CreateFileA@28
+        Referenced in Res_file.obj
+        Loaded kernel32.lib(KERNEL32.dll)
+      Found __imp__CloseHandle@4
+        Referenced in Res_file.obj
+        Loaded kernel32.lib(KERNEL32.dll)
+      Found __imp__MapViewOfFile@20
+        Referenced in Res_file.obj
+        Loaded kernel32.lib(KERNEL32.dll)
+      Found __imp__UnmapViewOfFile@4
+        Referenced in Res_file.obj
+        Loaded kernel32.lib(KERNEL32.dll)
+      Found __imp__CreateFileMappingA@24
+        Referenced in Res_file.obj
+        Loaded kernel32.lib(KERNEL32.dll)
+      Found __imp__OutputDebugStringA@4
+        Referenced in TDebuggingLog.obj
+        Loaded kernel32.lib(KERNEL32.dll)
+      Found __imp__GetTickCount@0
+        Referenced in TDebuggingLog.obj
+        Loaded kernel32.lib(KERNEL32.dll)
+      Found __IMPORT_DESCRIPTOR_KERNEL32
+        Referenced in kernel32.lib(KERNEL32.dll)
+        Referenced in kernel32.lib(KERNEL32.dll)
+        Referenced in kernel32.lib(KERNEL32.dll)
+        Referenced in kernel32.lib(KERNEL32.dll)
+        Referenced in kernel32.lib(KERNEL32.dll)
+        Referenced in kernel32.lib(KERNEL32.dll)
+        Referenced in kernel32.lib(KERNEL32.dll)
+        Referenced in kernel32.lib(KERNEL32.dll)
+        Referenced in kernel32.lib(KERNEL32.dll)
+        Loaded kernel32.lib(KERNEL32.dll)
+      Found __NULL_IMPORT_DESCRIPTOR
+        Referenced in kernel32.lib(KERNEL32.dll)
+        Loaded kernel32.lib(KERNEL32.dll)
+      Found KERNEL32_NULL_THUNK_DATA
+        Referenced in kernel32.lib(KERNEL32.dll)
+        Loaded kernel32.lib(KERNEL32.dll)
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\user32.lib:
+      Found __imp__MessageBoxA@16
+        Referenced in main.obj
+        Referenced in Res_file.obj
+        Loaded user32.lib(USER32.dll)
+      Found __IMPORT_DESCRIPTOR_USER32
+        Referenced in user32.lib(USER32.dll)
+        Loaded user32.lib(USER32.dll)
+      Found USER32_NULL_THUNK_DATA
+        Referenced in user32.lib(USER32.dll)
+        Loaded user32.lib(USER32.dll)
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\gdi32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\advapi32.lib:
+      Found __imp__RegCloseKey@4
+        Referenced in TRegistry.obj
+        Loaded advapi32.lib(ADVAPI32.dll)
+      Found __imp__RegCreateKeyExA@36
+        Referenced in TRegistry.obj
+        Loaded advapi32.lib(ADVAPI32.dll)
+      Found __imp__RegQueryValueExA@24
+        Referenced in TRegistry.obj
+        Loaded advapi32.lib(ADVAPI32.dll)
+      Found __imp__RegSetValueExA@24
+        Referenced in TRegistry.obj
+        Loaded advapi32.lib(ADVAPI32.dll)
+      Found __IMPORT_DESCRIPTOR_ADVAPI32
+        Referenced in advapi32.lib(ADVAPI32.dll)
+        Referenced in advapi32.lib(ADVAPI32.dll)
+        Referenced in advapi32.lib(ADVAPI32.dll)
+        Referenced in advapi32.lib(ADVAPI32.dll)
+        Loaded advapi32.lib(ADVAPI32.dll)
+      Found ADVAPI32_NULL_THUNK_DATA
+        Referenced in advapi32.lib(ADVAPI32.dll)
+        Loaded advapi32.lib(ADVAPI32.dll)
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ole32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ddraw.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\dxguid.lib:
+    Searching C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86\dplayx.lib:
+    Searching C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86\dplay.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\uuid.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\winmm.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ws2_32.lib:
+    Searching C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\lib\x86\MSVCRTD.lib:
+      Found "void * __cdecl operator new(unsigned int)" (??2@YAPAXI@Z)
+        Referenced in main.obj
+        Referenced in basegame.obj
+        Loaded MSVCRTD.lib(new_scalar.obj)
+      Found @__security_check_cookie@4
+        Referenced in TDebuggingLog.obj
+        Referenced in main.obj
+        Referenced in tribegam.obj
+        Referenced in basegame.obj
+        Referenced in Res_file.obj
+        Loaded MSVCRTD.lib(secchk.obj)
+      Found __chkstk
+        Referenced in main.obj
+        Loaded MSVCRTD.lib(chkstk.obj)
+      Found ___security_cookie
+        Referenced in TDebuggingLog.obj
+        Referenced in MSVCRTD.lib(secchk.obj)
+        Referenced in main.obj
+        Referenced in tribegam.obj
+        Referenced in basegame.obj
+        Referenced in Res_file.obj
+        Loaded MSVCRTD.lib(gs_cookie.obj)
+      Found __fltused
+        Referenced in main.obj
+        Referenced in basegame.obj
+        Referenced in TDebuggingLog.obj
+        Loaded MSVCRTD.lib(fltused.obj)
+      Found "void __cdecl operator delete(void *,unsigned int)" (??3@YAXPAXI@Z)
+        Referenced in tribegam.obj
+        Referenced in basegame.obj
+        Loaded MSVCRTD.lib(delete_scalar_size.obj)
+      Found ___report_rangecheckfailure
+        Referenced in tribegam.obj
+        Referenced in TDebuggingLog.obj
+        Loaded MSVCRTD.lib(gs_report.obj)
+      Found "const type_info::`vftable'" (??_7type_info@@6B@)
+        Referenced in tribegam.obj
+        Referenced in basegame.obj
+        Loaded MSVCRTD.lib(std_type_info_static.obj)
+      Found _WinMainCRTStartup
+        Loaded MSVCRTD.lib(exe_winmain.obj)
+      Found "void __cdecl __scrt_throw_std_bad_alloc(void)" (?__scrt_throw_std_bad_alloc@@YAXXZ)
+        Referenced in MSVCRTD.lib(new_scalar.obj)
+        Loaded MSVCRTD.lib(throw_bad_alloc.obj)
+      Found "void __cdecl operator delete(void *)" (??3@YAXPAX@Z)
+        Referenced in MSVCRTD.lib(delete_scalar_size.obj)
+        Loaded MSVCRTD.lib(delete_scalar.obj)
+      Found _atexit
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded MSVCRTD.lib(utility.obj)
+      Found ___security_init_cookie
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded MSVCRTD.lib(gs_support.obj)
+      Found __matherr
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded MSVCRTD.lib(matherr.obj)
+      Found __get_startup_argv_mode
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Referenced in MSVCRTD.lib(utility.obj)
+        Loaded MSVCRTD.lib(argv_mode.obj)
+      Found __get_startup_commit_mode
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded MSVCRTD.lib(commit_mode.obj)
+      Found __get_startup_file_mode
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded MSVCRTD.lib(file_mode.obj)
+      Found __get_startup_new_mode
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded MSVCRTD.lib(new_mode.obj)
+      Found __get_startup_thread_locale_mode
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded MSVCRTD.lib(thread_locale.obj)
+      Found "void __cdecl __scrt_initialize_type_info(void)" (?__scrt_initialize_type_info@@YAXXZ)
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded MSVCRTD.lib(tncleanup.obj)
+      Found __should_initialize_environment
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded MSVCRTD.lib(env_mode.obj)
+      Found __initialize_default_precision
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded MSVCRTD.lib(default_precision.obj)
+      Found __initialize_invalid_parameter_handler
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded MSVCRTD.lib(invalid_parameter_handler.obj)
+      Found __initialize_denormal_control
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded MSVCRTD.lib(denormal_control.obj)
+      Found ___scrt_initialize_default_local_stdio_options
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded MSVCRTD.lib(default_local_stdio_options.obj)
+      Found ___scrt_is_user_matherr_present
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded MSVCRTD.lib(matherr_detection.obj)
+      Found ___scrt_get_dyn_tls_init_callback
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded MSVCRTD.lib(dyn_tls_init.obj)
+      Found ___scrt_get_dyn_tls_dtor_callback
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded MSVCRTD.lib(dyn_tls_dtor.obj)
+      Found ___scrt_get_show_window_mode
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded MSVCRTD.lib(utility_desktop.obj)
+      Found __RTC_Initialize
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded MSVCRTD.lib(initsect.obj)
+      Found __except_handler4
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Referenced in MSVCRTD.lib(utility.obj)
+        Loaded MSVCRTD.lib(chandler4gs.obj)
+      Found ___xi_a
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded MSVCRTD.lib(initializers.obj)
+ Processed /DISALLOWLIB:msvcrt.lib
+ Processed /DISALLOWLIB:libcmt.lib
+ Processed /DISALLOWLIB:libcmtd.lib
+ Processed /DISALLOWLIB:vcruntime.lib
+Processed /DEFAULTLIB:vcruntimed.lib
+ Processed /DISALLOWLIB:libvcruntime.lib
+ Processed /DISALLOWLIB:libvcruntimed.lib
+ Processed /DISALLOWLIB:ucrt.lib
+Processed /DEFAULTLIB:ucrtd.lib
+ Processed /DISALLOWLIB:libucrt.lib
+ Processed /DISALLOWLIB:libucrtd.lib
+      Found ___guard_check_icall_fptr
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Referenced in MSVCRTD.lib(utility.obj)
+        Referenced in MSVCRTD.lib(initsect.obj)
+        Loaded MSVCRTD.lib(guard_support.obj)
+      Found ___isa_available_init
+        Referenced in MSVCRTD.lib(utility.obj)
+        Loaded MSVCRTD.lib(cpu_disp.obj)
+      Found ___scrt_is_ucrt_dll_in_use
+        Referenced in MSVCRTD.lib(utility.obj)
+        Loaded MSVCRTD.lib(ucrt_detection.obj)
+    Searching C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\lib\x86\OLDNAMES.lib:
+    Searching C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\lib\x86\vcruntimed.lib:
+      Found _memset
+        Referenced in main.obj
+        Referenced in tribegam.obj
+        Referenced in TDebuggingLog.obj
+        Referenced in MSVCRTD.lib(utility_desktop.obj)
+        Loaded vcruntimed.lib(VCRUNTIME140D.dll)
+      Found _strstr
+        Referenced in tribegam.obj
+        Loaded vcruntimed.lib(VCRUNTIME140D.dll)
+      Found ___CxxFrameHandler3
+        Referenced in tribegam.obj
+        Referenced in basegame.obj
+        Referenced in TDebuggingLog.obj
+        Loaded vcruntimed.lib(VCRUNTIME140D.dll)
+      Found _strchr
+        Referenced in TDebuggingLog.obj
+        Loaded vcruntimed.lib(VCRUNTIME140D.dll)
+      Found ___std_exception_copy
+        Referenced in MSVCRTD.lib(throw_bad_alloc.obj)
+        Loaded vcruntimed.lib(VCRUNTIME140D.dll)
+      Found ___std_exception_destroy
+        Referenced in MSVCRTD.lib(throw_bad_alloc.obj)
+        Loaded vcruntimed.lib(VCRUNTIME140D.dll)
+      Found __CxxThrowException@8
+        Referenced in MSVCRTD.lib(throw_bad_alloc.obj)
+        Loaded vcruntimed.lib(VCRUNTIME140D.dll)
+      Found ___std_type_info_destroy_list
+        Referenced in MSVCRTD.lib(tncleanup.obj)
+        Loaded vcruntimed.lib(VCRUNTIME140D.dll)
+      Found ___current_exception
+        Referenced in MSVCRTD.lib(utility_desktop.obj)
+        Loaded vcruntimed.lib(VCRUNTIME140D.dll)
+      Found ___current_exception_context
+        Referenced in MSVCRTD.lib(utility_desktop.obj)
+        Loaded vcruntimed.lib(VCRUNTIME140D.dll)
+      Found __except_handler4_common
+        Referenced in MSVCRTD.lib(chandler4gs.obj)
+        Loaded vcruntimed.lib(VCRUNTIME140D.dll)
+      Found __IMPORT_DESCRIPTOR_VCRUNTIME140D
+        Referenced in vcruntimed.lib(VCRUNTIME140D.dll)
+        Referenced in vcruntimed.lib(VCRUNTIME140D.dll)
+        Referenced in vcruntimed.lib(VCRUNTIME140D.dll)
+        Referenced in vcruntimed.lib(VCRUNTIME140D.dll)
+        Referenced in vcruntimed.lib(VCRUNTIME140D.dll)
+        Referenced in vcruntimed.lib(VCRUNTIME140D.dll)
+        Referenced in vcruntimed.lib(VCRUNTIME140D.dll)
+        Referenced in vcruntimed.lib(VCRUNTIME140D.dll)
+        Referenced in vcruntimed.lib(VCRUNTIME140D.dll)
+        Referenced in vcruntimed.lib(VCRUNTIME140D.dll)
+        Referenced in vcruntimed.lib(VCRUNTIME140D.dll)
+        Loaded vcruntimed.lib(VCRUNTIME140D.dll)
+      Found VCRUNTIME140D_NULL_THUNK_DATA
+        Referenced in vcruntimed.lib(VCRUNTIME140D.dll)
+        Loaded vcruntimed.lib(VCRUNTIME140D.dll)
+    Searching C:\Program Files (x86)\Windows Kits\10\lib\10.0.26100.0\ucrt\x86\ucrtd.lib:
+      Found _strcpy
+        Referenced in main.obj
+        Referenced in Res_file.obj
+        Referenced in TDebuggingLog.obj
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __imp__strncpy
+        Referenced in main.obj
+        Referenced in tribegam.obj
+        Referenced in basegame.obj
+        Referenced in TDebuggingLog.obj
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __imp____stdio_common_vsprintf
+        Referenced in main.obj
+        Referenced in Res_file.obj
+        Referenced in TDebuggingLog.obj
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __imp___strupr
+        Referenced in tribegam.obj
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __imp___stricmp
+        Referenced in Res_file.obj
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __imp__strncmp
+        Referenced in Res_file.obj
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __imp__free
+        Referenced in Res_file.obj
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __imp__malloc
+        Referenced in Res_file.obj
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __imp__fclose
+        Referenced in Res_file.obj
+        Referenced in TDebuggingLog.obj
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __imp__fopen
+        Referenced in Res_file.obj
+        Referenced in TDebuggingLog.obj
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __imp__fwrite
+        Referenced in Res_file.obj
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __imp___close
+        Referenced in Res_file.obj
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __imp___lseek
+        Referenced in Res_file.obj
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __imp___read
+        Referenced in Res_file.obj
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __imp___sopen_dispatch
+        Referenced in Res_file.obj
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found _strcat
+        Referenced in TDebuggingLog.obj
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __imp__fflush
+        Referenced in TDebuggingLog.obj
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __imp__fputs
+        Referenced in TDebuggingLog.obj
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __imp__asctime
+        Referenced in TDebuggingLog.obj
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __imp___ctime64
+        Referenced in TDebuggingLog.obj
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __imp___localtime64
+        Referenced in TDebuggingLog.obj
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __imp___time64
+        Referenced in TDebuggingLog.obj
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __callnewh
+        Referenced in MSVCRTD.lib(new_scalar.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __seh_filter_exe
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __set_app_type
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found ___setusermatherr
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __configure_narrow_argv
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Referenced in MSVCRTD.lib(utility.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __initialize_narrow_environment
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Referenced in MSVCRTD.lib(utility.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __get_narrow_winmain_command_line
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __initterm
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __initterm_e
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found _exit
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __exit
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __set_fmode
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __cexit
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Referenced in MSVCRTD.lib(utility.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __c_exit
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __register_thread_local_exe_atexit_callback
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __configthreadlocale
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __set_new_mode
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found ___p__commode
+        Referenced in MSVCRTD.lib(exe_winmain.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __free_dbg
+        Referenced in MSVCRTD.lib(delete_scalar.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __seh_filter_dll
+        Referenced in MSVCRTD.lib(utility.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __initialize_onexit_table
+        Referenced in MSVCRTD.lib(utility.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __register_onexit_function
+        Referenced in MSVCRTD.lib(utility.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __execute_onexit_table
+        Referenced in MSVCRTD.lib(utility.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __crt_atexit
+        Referenced in MSVCRTD.lib(utility.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __crt_at_quick_exit
+        Referenced in MSVCRTD.lib(utility.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __controlfp_s
+        Referenced in MSVCRTD.lib(default_precision.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found _terminate
+        Referenced in MSVCRTD.lib(utility_desktop.obj)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found __IMPORT_DESCRIPTOR_ucrtbased
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Loaded ucrtd.lib(ucrtbased.dll)
+      Found ucrtbased_NULL_THUNK_DATA
+        Referenced in ucrtd.lib(ucrtbased.dll)
+        Loaded ucrtd.lib(ucrtbased.dll)
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\kernel32.lib:
+      Found __imp__UnhandledExceptionFilter@4
+        Referenced in MSVCRTD.lib(gs_report.obj)
+        Referenced in MSVCRTD.lib(utility_desktop.obj)
+        Loaded kernel32.lib(KERNEL32.dll)
+      Found __imp__SetUnhandledExceptionFilter@4
+        Referenced in MSVCRTD.lib(gs_report.obj)
+        Referenced in MSVCRTD.lib(utility_desktop.obj)
+        Loaded kernel32.lib(KERNEL32.dll)
+      Found __imp__GetCurrentProcess@0
+        Referenced in MSVCRTD.lib(gs_report.obj)
+        Loaded kernel32.lib(KERNEL32.dll)
+      Found __imp__TerminateProcess@8
+        Referenced in MSVCRTD.lib(gs_report.obj)
+        Loaded kernel32.lib(KERNEL32.dll)
+      Found __imp__IsProcessorFeaturePresent@4
+        Referenced in MSVCRTD.lib(gs_report.obj)
+        Referenced in MSVCRTD.lib(utility_desktop.obj)
+        Referenced in MSVCRTD.lib(cpu_disp.obj)
+        Loaded kernel32.lib(KERNEL32.dll)
+      Found __imp__QueryPerformanceCounter@4
+        Referenced in MSVCRTD.lib(gs_support.obj)
+        Loaded kernel32.lib(KERNEL32.dll)
+      Found __imp__GetCurrentProcessId@0
+        Referenced in MSVCRTD.lib(gs_support.obj)
+        Loaded kernel32.lib(KERNEL32.dll)
+      Found __imp__GetCurrentThreadId@0
+        Referenced in MSVCRTD.lib(gs_support.obj)
+        Loaded kernel32.lib(KERNEL32.dll)
+      Found __imp__GetSystemTimeAsFileTime@4
+        Referenced in MSVCRTD.lib(gs_support.obj)
+        Loaded kernel32.lib(KERNEL32.dll)
+      Found __imp__InitializeSListHead@4
+        Referenced in MSVCRTD.lib(tncleanup.obj)
+        Loaded kernel32.lib(KERNEL32.dll)
+      Found __imp__IsDebuggerPresent@0
+        Referenced in MSVCRTD.lib(utility_desktop.obj)
+        Loaded kernel32.lib(KERNEL32.dll)
+      Found __imp__GetStartupInfoW@4
+        Referenced in MSVCRTD.lib(utility_desktop.obj)
+        Loaded kernel32.lib(KERNEL32.dll)
+      Found __imp__GetModuleHandleW@4
+        Referenced in MSVCRTD.lib(utility_desktop.obj)
+        Loaded kernel32.lib(KERNEL32.dll)
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\user32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\gdi32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\advapi32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ole32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ddraw.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\dxguid.lib:
+    Searching C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86\dplayx.lib:
+    Searching C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86\dplay.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\uuid.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\winmm.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ws2_32.lib:
+    Searching C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\lib\x86\MSVCRTD.lib:
+    Searching C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\lib\x86\OLDNAMES.lib:
+    Searching C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\lib\x86\vcruntimed.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\lib\10.0.26100.0\ucrt\x86\ucrtd.lib:
+
+Finished searching libraries
+
+Searching libraries
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\kernel32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\user32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\gdi32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\advapi32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ole32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ddraw.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\dxguid.lib:
+    Searching C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86\dplayx.lib:
+    Searching C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86\dplay.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\uuid.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\winmm.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ws2_32.lib:
+    Searching C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\lib\x86\MSVCRTD.lib:
+      Found ___scrt_stub_for_acrt_initialize
+        Loaded MSVCRTD.lib(ucrt_stubs.obj)
+      Found __filter_x86_sse2_floating_point_exception_default
+        Loaded MSVCRTD.lib(x86_exception_filter.obj)
+    Searching C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\lib\x86\OLDNAMES.lib:
+    Searching C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\lib\x86\vcruntimed.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\lib\10.0.26100.0\ucrt\x86\ucrtd.lib:
+
+Finished searching libraries
+
+Searching libraries
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\kernel32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\user32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\gdi32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\advapi32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ole32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ddraw.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\dxguid.lib:
+    Searching C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86\dplayx.lib:
+    Searching C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86\dplay.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\uuid.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\winmm.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ws2_32.lib:
+    Searching C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\lib\x86\MSVCRTD.lib:
+    Searching C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\lib\x86\OLDNAMES.lib:
+    Searching C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\lib\x86\vcruntimed.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\lib\10.0.26100.0\ucrt\x86\ucrtd.lib:
+
+Finished searching libraries
+
+Searching libraries
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\kernel32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\user32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\gdi32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\advapi32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ole32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ddraw.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\dxguid.lib:
+    Searching C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86\dplayx.lib:
+    Searching C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86\dplay.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\uuid.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\winmm.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ws2_32.lib:
+    Searching C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\lib\x86\MSVCRTD.lib:
+    Searching C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\lib\x86\OLDNAMES.lib:
+    Searching C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\lib\x86\vcruntimed.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\lib\10.0.26100.0\ucrt\x86\ucrtd.lib:
+
+Finished searching libraries
+
+Finished pass 1
+
+
+Searching libraries
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\kernel32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\user32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\gdi32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\advapi32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ole32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ddraw.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\dxguid.lib:
+    Searching C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86\dplayx.lib:
+    Searching C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86\dplay.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\uuid.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\winmm.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ws2_32.lib:
+    Searching C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\lib\x86\MSVCRTD.lib:
+      Found __load_config_used
+        Loaded MSVCRTD.lib(loadcfg.obj)
+    Searching C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\lib\x86\OLDNAMES.lib:
+    Searching C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\lib\x86\vcruntimed.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\lib\10.0.26100.0\ucrt\x86\ucrtd.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\kernel32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\user32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\gdi32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\advapi32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ole32.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ddraw.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\dxguid.lib:
+    Searching C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86\dplayx.lib:
+    Searching C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86\dplay.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\uuid.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\winmm.lib:
+    Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ws2_32.lib:
+
+Finished searching libraries
+
+
+Unused libraries:
+  C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\gdi32.lib
+  C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ole32.lib
+  C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ddraw.lib
+  C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\dxguid.lib
+  C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86\dplayx.lib
+  C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86\dplay.lib
+  C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\uuid.lib
+  C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\winmm.lib
+  C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ws2_32.lib
+  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\lib\x86\OLDNAMES.lib
+
+    Discarded ___CastGuardVftablesStart from MSVCRTD.lib(guard_support.obj)
+    Discarded ___CastGuardVftablesEnd from MSVCRTD.lib(guard_support.obj)
+    Discarded ___castguard_check_failure_user_handled_fptr from MSVCRTD.lib(guard_support.obj)
+    Discarded '.idata$4' from vcruntimed.lib(VCRUNTIME140D.dll)
+    Discarded '.idata$4' from ucrtd.lib(ucrtbased.dll)
+    Discarded '.idata$4' from ucrtd.lib(ucrtbased.dll)
+    Discarded '.idata$4' from ucrtd.lib(ucrtbased.dll)
+    Discarded __imp____std_type_info_destroy_list from vcruntimed.lib(VCRUNTIME140D.dll)
+    Discarded __imp___seh_filter_dll from ucrtd.lib(ucrtbased.dll)
+    Discarded __imp___execute_onexit_table from ucrtd.lib(ucrtbased.dll)
+    Discarded __imp___crt_at_quick_exit from ucrtd.lib(ucrtbased.dll)
+    Discarded '.idata$6' from vcruntimed.lib(VCRUNTIME140D.dll)
+    Discarded '.idata$6' from ucrtd.lib(ucrtbased.dll)
+    Discarded '.idata$6' from ucrtd.lib(ucrtbased.dll)
+    Discarded '.idata$6' from ucrtd.lib(ucrtbased.dll)
+    Discarded _LoadLibraryA@4 from kernel32.lib(KERNEL32.dll)
+    Discarded _GlobalMemoryStatus@4 from kernel32.lib(KERNEL32.dll)
+    Discarded _CreateFileA@28 from kernel32.lib(KERNEL32.dll)
+    Discarded _CloseHandle@4 from kernel32.lib(KERNEL32.dll)
+    Discarded _MapViewOfFile@20 from kernel32.lib(KERNEL32.dll)
+    Discarded _UnmapViewOfFile@4 from kernel32.lib(KERNEL32.dll)
+    Discarded _CreateFileMappingA@24 from kernel32.lib(KERNEL32.dll)
+    Discarded _OutputDebugStringA@4 from kernel32.lib(KERNEL32.dll)
+    Discarded _GetTickCount@0 from kernel32.lib(KERNEL32.dll)
+    Discarded _MessageBoxA@16 from user32.lib(USER32.dll)
+    Discarded _RegCloseKey@4 from advapi32.lib(ADVAPI32.dll)
+    Discarded _RegCreateKeyExA@36 from advapi32.lib(ADVAPI32.dll)
+    Discarded _RegQueryValueExA@24 from advapi32.lib(ADVAPI32.dll)
+    Discarded _RegSetValueExA@24 from advapi32.lib(ADVAPI32.dll)
+    Discarded ___report_securityfailureEx from MSVCRTD.lib(gs_report.obj)
+    Discarded ___scrt_dllmain_after_initialize_c from MSVCRTD.lib(utility.obj)
+    Discarded ___scrt_dllmain_before_initialize_c from MSVCRTD.lib(utility.obj)
+    Discarded ___scrt_dllmain_crt_thread_attach from MSVCRTD.lib(utility.obj)
+    Discarded ___scrt_dllmain_crt_thread_detach from MSVCRTD.lib(utility.obj)
+    Discarded ___scrt_dllmain_exception_filter from MSVCRTD.lib(utility.obj)
+    Discarded ___scrt_dllmain_uninitialize_c from MSVCRTD.lib(utility.obj)
+    Discarded ___scrt_dllmain_uninitialize_critical from MSVCRTD.lib(utility.obj)
+    Discarded _at_quick_exit from MSVCRTD.lib(utility.obj)
+    Discarded "void __cdecl __scrt_uninitialize_type_info(void)" (?__scrt_uninitialize_type_info@@YAXXZ) from MSVCRTD.lib(tncleanup.obj)
+    Discarded _ReadNoFence from MSVCRTD.lib(guard_support.obj)
+    Discarded _ReadPointerNoFence from MSVCRTD.lib(guard_support.obj)
+    Discarded __InlineInterlockedExchangePointer from MSVCRTD.lib(guard_support.obj)
+    Discarded ___castguard_check_failure_debugbreak from MSVCRTD.lib(guard_support.obj)
+    Discarded ___castguard_check_failure_fastfail from MSVCRTD.lib(guard_support.obj)
+    Discarded ___castguard_check_failure_nop from MSVCRTD.lib(guard_support.obj)
+    Discarded ___castguard_check_failure_os_handled from MSVCRTD.lib(guard_support.obj)
+    Discarded ___castguard_check_failure_os_handled_wrapper from MSVCRTD.lib(guard_support.obj)
+    Discarded ___castguard_check_failure_user_handled from MSVCRTD.lib(guard_support.obj)
+    Discarded ___castguard_check_failure_user_handled_wrapper from MSVCRTD.lib(guard_support.obj)
+    Discarded ___castguard_compat_check from MSVCRTD.lib(guard_support.obj)
+    Discarded ___castguard_set_user_handler from MSVCRTD.lib(guard_support.obj)
+    Discarded ___castguard_slow_path_check_debugbreak from MSVCRTD.lib(guard_support.obj)
+    Discarded ___castguard_slow_path_check_fastfail from MSVCRTD.lib(guard_support.obj)
+    Discarded ___castguard_slow_path_check_nop from MSVCRTD.lib(guard_support.obj)
+    Discarded ___castguard_slow_path_check_os_handled from MSVCRTD.lib(guard_support.obj)
+    Discarded ___castguard_slow_path_check_user_handled from MSVCRTD.lib(guard_support.obj)
+    Discarded ___castguard_slow_path_compat_check from MSVCRTD.lib(guard_support.obj)
+    Discarded __guard_icall_checks_enforced from MSVCRTD.lib(guard_support.obj)
+    Discarded ___std_type_info_destroy_list from vcruntimed.lib(VCRUNTIME140D.dll)
+    Discarded _strncpy from ucrtd.lib(ucrtbased.dll)
+    Discarded ___stdio_common_vsprintf from ucrtd.lib(ucrtbased.dll)
+    Discarded __strupr from ucrtd.lib(ucrtbased.dll)
+    Discarded __stricmp from ucrtd.lib(ucrtbased.dll)
+    Discarded _strncmp from ucrtd.lib(ucrtbased.dll)
+    Discarded _free from ucrtd.lib(ucrtbased.dll)
+    Discarded _fclose from ucrtd.lib(ucrtbased.dll)
+    Discarded _fopen from ucrtd.lib(ucrtbased.dll)
+    Discarded _fwrite from ucrtd.lib(ucrtbased.dll)
+    Discarded __close from ucrtd.lib(ucrtbased.dll)
+    Discarded __lseek from ucrtd.lib(ucrtbased.dll)
+    Discarded __read from ucrtd.lib(ucrtbased.dll)
+    Discarded __sopen_dispatch from ucrtd.lib(ucrtbased.dll)
+    Discarded _fflush from ucrtd.lib(ucrtbased.dll)
+    Discarded _fputs from ucrtd.lib(ucrtbased.dll)
+    Discarded _asctime from ucrtd.lib(ucrtbased.dll)
+    Discarded __ctime64 from ucrtd.lib(ucrtbased.dll)
+    Discarded __localtime64 from ucrtd.lib(ucrtbased.dll)
+    Discarded __time64 from ucrtd.lib(ucrtbased.dll)
+    Discarded __seh_filter_dll from ucrtd.lib(ucrtbased.dll)
+    Discarded __execute_onexit_table from ucrtd.lib(ucrtbased.dll)
+    Discarded __crt_at_quick_exit from ucrtd.lib(ucrtbased.dll)
+    Discarded _UnhandledExceptionFilter@4 from kernel32.lib(KERNEL32.dll)
+    Discarded _SetUnhandledExceptionFilter@4 from kernel32.lib(KERNEL32.dll)
+    Discarded _GetCurrentProcess@0 from kernel32.lib(KERNEL32.dll)
+    Discarded _TerminateProcess@8 from kernel32.lib(KERNEL32.dll)
+    Discarded _IsProcessorFeaturePresent@4 from kernel32.lib(KERNEL32.dll)
+    Discarded _QueryPerformanceCounter@4 from kernel32.lib(KERNEL32.dll)
+    Discarded _GetCurrentProcessId@0 from kernel32.lib(KERNEL32.dll)
+    Discarded _GetCurrentThreadId@0 from kernel32.lib(KERNEL32.dll)
+    Discarded _GetSystemTimeAsFileTime@4 from kernel32.lib(KERNEL32.dll)
+    Discarded _InitializeSListHead@4 from kernel32.lib(KERNEL32.dll)
+    Discarded _IsDebuggerPresent@0 from kernel32.lib(KERNEL32.dll)
+    Discarded _GetStartupInfoW@4 from kernel32.lib(KERNEL32.dll)
+    Discarded _GetModuleHandleW@4 from kernel32.lib(KERNEL32.dll)
+    Discarded ___scrt_stub_for_acrt_thread_attach from MSVCRTD.lib(ucrt_stubs.obj)
+    Discarded ___scrt_stub_for_acrt_thread_detach from MSVCRTD.lib(ucrt_stubs.obj)
+    Discarded ___scrt_stub_for_acrt_uninitialize_critical from MSVCRTD.lib(ucrt_stubs.obj)
+    Discarded ___scrt_stub_for_is_c_termination_complete from MSVCRTD.lib(ucrt_stubs.obj)
+    Discarded ___guard_xfg_check_icall_fptr from MSVCRTD.lib(guard_support.obj)
+
+    Selected symbol:
+        __matherr from MSVCRTD.lib(matherr.obj)
+    Replaced symbol(s):
+        ___scrt_stub_for_initialize_mta from MSVCRTD.lib(utility_desktop.obj)
+        __get_startup_thread_locale_mode from MSVCRTD.lib(thread_locale.obj)
+        __get_startup_new_mode from MSVCRTD.lib(new_mode.obj)
+        ___scrt_initialize_winrt from MSVCRTD.lib(utility_desktop.obj)
+        __get_startup_commit_mode from MSVCRTD.lib(commit_mode.obj)
+
+    Selected symbol:
+        __initialize_invalid_parameter_handler from MSVCRTD.lib(invalid_parameter_handler.obj)
+    Replaced symbol(s):
+        __initialize_denormal_control from MSVCRTD.lib(denormal_control.obj)
+
+    Selected symbol:
+        __should_initialize_environment from MSVCRTD.lib(env_mode.obj)
+    Replaced symbol(s):
+        ___scrt_stub_for_acrt_initialize from MSVCRTD.lib(ucrt_stubs.obj)
+        ___scrt_stub_for_acrt_uninitialize from MSVCRTD.lib(ucrt_stubs.obj)
+
+    ICF total savings: 54 bytes
+
+Starting pass 2
+     TDebuggingLog.obj
+     TRegistry.obj
+     getdxver.obj
+     file_stf.obj
+     gameinfo.obj
+     sceninfo.obj
+     Res_file.obj
+     globals.obj
+     basegame.obj
+     tribegam.obj
+     main.obj
+     kernel32.lib(KERNEL32.dll)
+     kernel32.lib(KERNEL32.dll)
+     kernel32.lib(KERNEL32.dll)
+     kernel32.lib(KERNEL32.dll)
+     kernel32.lib(KERNEL32.dll)
+     kernel32.lib(KERNEL32.dll)
+     kernel32.lib(KERNEL32.dll)
+     kernel32.lib(KERNEL32.dll)
+     kernel32.lib(KERNEL32.dll)
+     kernel32.lib(KERNEL32.dll)
+     kernel32.lib(KERNEL32.dll)
+     kernel32.lib(KERNEL32.dll)
+     kernel32.lib(KERNEL32.dll)
+     kernel32.lib(KERNEL32.dll)
+     kernel32.lib(KERNEL32.dll)
+     kernel32.lib(KERNEL32.dll)
+     kernel32.lib(KERNEL32.dll)
+     kernel32.lib(KERNEL32.dll)
+     kernel32.lib(KERNEL32.dll)
+     kernel32.lib(KERNEL32.dll)
+     kernel32.lib(KERNEL32.dll)
+     kernel32.lib(KERNEL32.dll)
+     kernel32.lib(KERNEL32.dll)
+     kernel32.lib(KERNEL32.dll)
+     kernel32.lib(KERNEL32.dll)
+     user32.lib(USER32.dll)
+     user32.lib(USER32.dll)
+     user32.lib(USER32.dll)
+     advapi32.lib(ADVAPI32.dll)
+     advapi32.lib(ADVAPI32.dll)
+     advapi32.lib(ADVAPI32.dll)
+     advapi32.lib(ADVAPI32.dll)
+     advapi32.lib(ADVAPI32.dll)
+     advapi32.lib(ADVAPI32.dll)
+     MSVCRTD.lib(chkstk.obj)
+     MSVCRTD.lib(gs_cookie.obj)
+     MSVCRTD.lib(gs_report.obj)
+     MSVCRTD.lib(gs_support.obj)
+     MSVCRTD.lib(guard_support.obj)
+     MSVCRTD.lib(loadcfg.obj)
+     MSVCRTD.lib(dyn_tls_dtor.obj)
+     MSVCRTD.lib(dyn_tls_init.obj)
+     MSVCRTD.lib(matherr_detection.obj)
+     MSVCRTD.lib(ucrt_detection.obj)
+     MSVCRTD.lib(cpu_disp.obj)
+     MSVCRTD.lib(chandler4gs.obj)
+     MSVCRTD.lib(secchk.obj)
+     MSVCRTD.lib(argv_mode.obj)
+     MSVCRTD.lib(commit_mode.obj)
+     MSVCRTD.lib(default_local_stdio_options.obj)
+     MSVCRTD.lib(denormal_control.obj)
+     MSVCRTD.lib(env_mode.obj)
+     MSVCRTD.lib(file_mode.obj)
+     MSVCRTD.lib(fltused.obj)
+     MSVCRTD.lib(invalid_parameter_handler.obj)
+     MSVCRTD.lib(matherr.obj)
+     MSVCRTD.lib(new_mode.obj)
+     MSVCRTD.lib(thread_locale.obj)
+     MSVCRTD.lib(std_type_info_static.obj)
+     MSVCRTD.lib(tncleanup.obj)
+     MSVCRTD.lib(delete_scalar.obj)
+     MSVCRTD.lib(delete_scalar_size.obj)
+     MSVCRTD.lib(new_scalar.obj)
+     MSVCRTD.lib(throw_bad_alloc.obj)
+     MSVCRTD.lib(exe_winmain.obj)
+     MSVCRTD.lib(initializers.obj)
+     MSVCRTD.lib(utility.obj)
+     MSVCRTD.lib(ucrt_stubs.obj)
+     MSVCRTD.lib(utility_desktop.obj)
+     MSVCRTD.lib(initsect.obj)
+     MSVCRTD.lib(default_precision.obj)
+     MSVCRTD.lib(x86_exception_filter.obj)
+     vcruntimed.lib(VCRUNTIME140D.dll)
+     vcruntimed.lib(VCRUNTIME140D.dll)
+     vcruntimed.lib(VCRUNTIME140D.dll)
+     vcruntimed.lib(VCRUNTIME140D.dll)
+     vcruntimed.lib(VCRUNTIME140D.dll)
+     vcruntimed.lib(VCRUNTIME140D.dll)
+     vcruntimed.lib(VCRUNTIME140D.dll)
+     vcruntimed.lib(VCRUNTIME140D.dll)
+     vcruntimed.lib(VCRUNTIME140D.dll)
+     vcruntimed.lib(VCRUNTIME140D.dll)
+     vcruntimed.lib(VCRUNTIME140D.dll)
+     vcruntimed.lib(VCRUNTIME140D.dll)
+     vcruntimed.lib(VCRUNTIME140D.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+     ucrtd.lib(ucrtbased.dll)
+Finished pass 2
+Build OK.

@@ -1,6 +1,12 @@
 #pragma once
 #include "common.h"
 
+typedef int MapSize;
+typedef int MapType;
+typedef int VictoryType;
+typedef int ResourceLevel;
+typedef int Age;
+
 struct TRIBE_Game_Options {
     MapSize mapSizeValue;
     MapType mapTypeValue;

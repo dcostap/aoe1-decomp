@@ -1,8 +1,31 @@
 #pragma once
+#include <windows.h>
 #include "common.h"
+#include "RGE_Prog_Info.h"
+#include "RGE_Game_Options.h"
+#include "RGE_Timing_Info.h"
+
+class TPanel;
+class RGE_Scenario_Header;
+class RGE_Scenario;
+class TDrawSystem;
+class TDrawArea;
+class TShape;
+class TSound_Driver;
+class TMusic_System;
+class TDigital;
+class TCommunications_Handler;
+class TDebuggingLog;
+class TRegistry;
+class TMousePointer;
+class RGE_Font;
+class RGE_Game_World;
+class RGE_Game_Info;
+class RGE_Scenario_File_Info;
 
 class RGE_Base_Game {
 public:
+    RGE_Base_Game(RGE_Prog_Info* info, int param_2);
     // Virtuals (best-effort)
     virtual ~RGE_Base_Game(); // vt[0] (0x0)
     virtual int run(); // vt[1] (0x4)
@@ -50,7 +73,7 @@ public:
     virtual void stop_music_system(); // vt[43] (0xAC)
     virtual int restart_music_system(); // vt[44] (0xB0)
     virtual RGE_Game_World* create_world(); // vt[45] (0xB4)
-    virtual int handle_message(tagMSG* param_1); // vt[46] (0xB8)
+    virtual int handle_message(struct tagMSG* param_1); // vt[46] (0xB8)
     virtual int handle_idle(); // vt[47] (0xBC)
     virtual int handle_mouse_move(void* param_1, uint param_2, uint param_3, long param_4); // vt[48] (0xC0)
     virtual int handle_key_down(void* param_1, uint param_2, uint param_3, long param_4); // vt[49] (0xC4)
@@ -85,6 +108,33 @@ public:
     virtual void show_ai(); // vt[78] (0x138)
     virtual int setup_map_save_area(); // vt[79] (0x13C)
     virtual void set_interface_messages(); // vt[80] (0x140)
+
+    void setVersion(float p1);
+    void setScenarioGame(int p1);
+    void setCampaignGame(int p1);
+    void setSavedGame(int p1);
+    void setSinglePlayerGame(int p1);
+    void setMultiplayerGame(int p1);
+    void setMapSize(int p1, int p2, int p3);
+    void setAllowCheatCodes(int p1);
+    void setCheatNotification(int p1);
+    void setFullVisibility(int p1);
+    void setFogOfWar(int p1);
+    void setColoredChat(int p1);
+    void setGameDeveloperMode(int p1);
+    void setDifficulty(int p1);
+    void setPlayerCDAndVersion(int p1, int p2);
+    void setPlayerHasCD(int p1, int p2);
+    void setPlayerVersion(int p1, int p2);
+    void setPlayerTeam(int p1, int p2);
+    void setPathFinding(unsigned char p1);
+    void setMpPathFinding(unsigned char p1);
+    void setNumberPlayers(int p1);
+    void setScenarioName(char* p1);
+    int check_expiration();
+    int check_multi_copies();
+    unsigned char check_prog_argument(const char* p1);
+    void close();
 
     RGE_Game_Info* player_game_info;
     RGE_Scenario_File_Info* scenario_info;

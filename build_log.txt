@@ -1,0 +1,61 @@
+Setting up VS 2022 x86 environment...
+**********************************************************************
+** Visual Studio 2022 Developer Command Prompt v17.0
+** Copyright (c) 2022 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x86'
+DP_INC = "C:\Projects\my_decomps\aoe1\src\third_party\directplay\Include"
+DP_LIB = "C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86"
+Compiling empiresx.exe...
+Microsoft (R) C/C++ Optimizing Compiler Version 19.36.32537 for x86
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+main.cpp
+tribegam.cpp
+basegame.cpp
+globals.cpp
+Res_file.cpp
+sceninfo.cpp
+gameinfo.cpp
+file_stf.cpp
+getdxver.cpp
+TRegistry.cpp
+TDebuggingLog.cpp
+Generating Code...
+Microsoft (R) Incremental Linker Version 14.36.32537.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+/out:main.exe 
+/LIBPATH:C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86 
+user32.lib 
+gdi32.lib 
+kernel32.lib 
+advapi32.lib 
+ole32.lib 
+ddraw.lib 
+dxguid.lib 
+dplayx.lib 
+dplay.lib 
+uuid.lib 
+winmm.lib 
+ws2_32.lib 
+/OUT:build\empiresx.exe 
+build\main.obj 
+build\tribegam.obj 
+build\basegame.obj 
+build\globals.obj 
+build\Res_file.obj 
+build\sceninfo.obj 
+build\gameinfo.obj 
+build\file_stf.obj 
+build\getdxver.obj 
+build\TRegistry.obj 
+build\TDebuggingLog.obj 
+TRegistry.obj : error LNK2019: unresolved external symbol __imp__RegCloseKey referenced in function "public: __thiscall TRegistry::~TRegistry(void)" (??1TRegistry@@QAE@XZ)
+TRegistry.obj : error LNK2019: unresolved external symbol __imp__RegCreateKeyExA referenced in function "public: __thiscall TRegistry::TRegistry(char const *)" (??0TRegistry@@QAE@PBD@Z)
+TRegistry.obj : error LNK2019: unresolved external symbol __imp__RegQueryValueExA referenced in function "public: int __thiscall TRegistry::RegGetInt(int,char const *)" (?RegGetInt@TRegistry@@QAEHHPBD@Z)
+TRegistry.obj : error LNK2019: unresolved external symbol __imp__RegSetValueExA referenced in function "public: int __thiscall TRegistry::RegSetInt(int,char const *,int)" (?RegSetInt@TRegistry@@QAEHHPBDH@Z)
+TDebuggingLog.obj : error LNK2019: unresolved external symbol __imp__OutputDebugStringA referenced in function "public: void __cdecl TDebuggingLog::Log(char const *,...)" (?Log@TDebuggingLog@@QAAXPBDZZ)
+TDebuggingLog.obj : error LNK2019: unresolved external symbol __imp__GetTickCount referenced in function "public: void __thiscall TDebuggingLog::OpenLog(void)" (?OpenLog@TDebuggingLog@@QAEXXZ)
+build\empiresx.exe : fatal error LNK1120: 6 unresolved externals
+Compilation of empiresx.exe Failed!
