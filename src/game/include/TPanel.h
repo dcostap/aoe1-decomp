@@ -1,8 +1,16 @@
 #pragma once
 #include "common.h"
+#include "PanelNode.h"
 
 class TPanel {
 public:
+    enum PositionMode : int {
+        // Enums used in virtual functions
+    };
+    enum RedrawMode : int {
+        // Enums used in virtual functions
+    };
+
     // Virtuals (best-effort)
     virtual ~TPanel(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5, uchar param_6); // vt[1] (0x4)

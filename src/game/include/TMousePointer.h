@@ -2,6 +2,20 @@
 #include "common.h"
 
 struct TMousePointer {
+    TMousePointer(int p1);
+    int setup(int custom_draw, struct TDrawArea* draw_area, char* filename, int file_id, int max_cursors);
+    void on();
+    void off();
+    void set_facet(int facet_index);
+    void set_game_facet(int facet_index);
+    
+    // Helper methods
+    int LoadCursors(char* filename, int file_id, int reload);
+    int create_surfaces();
+    void delete_surfaces();
+    void reset();
+    void erase();
+
     int custom_draw;
     TDrawArea* render_area;
     TDrawArea* save_area;
@@ -55,4 +69,7 @@ struct TMousePointer {
     char cursor_file[260];
     int cursor_file_id;
 };
+#include <stddef.h>
+static_assert(offsetof(TMousePointer, save_rect) == 0xBC, "Offset mismatch save_rect");
+static_assert(offsetof(TMousePointer, cursor_file) == 0x14C, "Offset mismatch cursor_file");
 static_assert(sizeof(TMousePointer) == 0x254, "Size mismatch");

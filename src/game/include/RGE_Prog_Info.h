@@ -4,66 +4,68 @@
 
 #pragma pack(push, 1)
 struct RGE_Prog_Info {
-    class TRIBE_Game* prog_game_ptr; // 0x0000
-    char prog_name_init[101];   // 0x0004
-    char prog_version[21];      // 0x0069
-    char prog_title[121];       // 0x007E
-    char world_db_file[261];    // 0x00F7
-    char game_data_file[261];   // 0x01FC
-    char vol_name[261];         // 0x0301
-    unsigned long vol_ser_num;  // 0x0406
-    int verify_cd;              // 0x040A
-    int max_players_per_cd;     // 0x040E
-    void* instance;             // 0x0412
-    void* prev_instance;        // 0x0416
-    char _pad0[2];              // 0x041A
-    char registry_key[256];     // 0x041C
-    char cmd_line[260];         // 0x051C
-    char icon_name[41];         // 0x0620
-    char menu_name[41];         // 0x0649
-    char pal_file[261];         // 0x0672
-    char cursor_file[261];      // 0x0777
-    int show_wnd_flag;          // 0x087C
-    int max_players;            // 0x0880
-    int check_expiration;       // 0x0884
-    int expire_month;           // 0x0888
-    short expire_day;           // 0x088C
-    short expire_year;          // 0x088E
-    unsigned long update_interval; // 0x0890
-    int check_multi_copies;     // 0x0894
-    int skip_startup;           // 0x0898
-    int full_screen;            // 0x089C
-    int fixed_window_size;      // 0x08A0
-    int use_dir_draw;           // 0x08A4
-    int use_sys_mem;            // 0x08A8
-    int use_music;              // 0x08AC
-    int use_sound;              // 0x08B0
-    int use_cd_audio;           // 0x08B4
-    int auto_scroll;            // 0x08B8
-    int mouse_scroll_edge;      // 0x08BC
-    unsigned long mouse_scroll_interval; // 0x08C0
-    unsigned long key_scroll_interval;   // 0x08C4
-    float mouse_scroll_max_dist;         // 0x08C8
-    float key_scroll_max_dist;           // 0x08CC
-    float key_scroll_object_move;        // 0x08D0
-    int use_ima;                // 0x08D4
-    int use_midi;               // 0x08D8
-    int use_wave_music;         // 0x08DC
-    int fast_view;              // 0x08E0
-    short interface_style;      // 0x08E4
-    short main_wid;             // 0x08E6
-    long main_hgt;              // 0x08E8
-    GUID game_guid;             // 0x08EC
-    GUID zone_guid;             // 0x08FC
-    char data_dir[261];         // 0x090C
-    char graphics_dir[261];     // 0x0A11
-    char save_dir[261];         // 0x0B16
-    char scenario_dir[261];     // 0x0C1B
-    char campaign_dir[261];     // 0x0D20
-    char sounds_dir[261];       // 0x0E23
-    char resource_dir[261];     // 0x0F2A
-    char ai_dir[261];           // 0x102F
-    char avi_dir[260];          // 0x1134
+    char prog_name[101]; // +0x0 (Size: 0x65)
+    char prog_version[21]; // +0x65 (Size: 0x15)
+    char prog_title[121]; // +0x7A (Size: 0x79)
+    char world_db_file[261]; // +0xF3 (Size: 0x105)
+    char game_data_file[261]; // +0x1F8 (Size: 0x105)
+    char vol_name[261]; // +0x2FD (Size: 0x105)
+    unsigned char _pad_0[0x2]; // 0x0402 (Gap: 2)
+    unsigned long vol_ser_num; // +0x404 (Size: 0x4)
+    int verify_cd; // +0x408 (Size: 0x4)
+    int max_players_per_cd; // +0x40C (Size: 0x4)
+    void* instance; // +0x410 (Size: 0x4)
+    void* prev_instance; // +0x414 (Size: 0x4)
+    char registry_key[256]; // +0x418 (Size: 0x100)
+    char cmd_line[256]; // +0x518 (Size: 0x100)
+    int show_wnd_flag; // +0x618 (Size: 0x4)
+    char icon_name[41]; // +0x61C (Size: 0x29)
+    char menu_name[41]; // +0x645 (Size: 0x29)
+    char pal_file[261]; // +0x66E (Size: 0x105)
+    char cursor_file[261]; // +0x773 (Size: 0x105)
+    int max_players; // +0x878 (Size: 0x4)
+    int check_expiration; // +0x87C (Size: 0x4)
+    short expire_month; // +0x880 (Size: 0x2)
+    short expire_day; // +0x882 (Size: 0x2)
+    short expire_year; // +0x884 (Size: 0x2)
+    unsigned char _pad_1[0x2]; // 0x0886 (Gap: 2)
+    unsigned long update_interval; // +0x888 (Size: 0x4)
+    int check_multi_copies; // +0x88C (Size: 0x4)
+    int skip_startup; // +0x890 (Size: 0x4)
+    int full_screen; // +0x894 (Size: 0x4)
+    int fixed_window_size; // +0x898 (Size: 0x4)
+    int use_dir_draw; // +0x89C (Size: 0x4)
+    int use_sys_mem; // +0x8A0 (Size: 0x4)
+    int use_music; // +0x8A4 (Size: 0x4)
+    int use_sound; // +0x8A8 (Size: 0x4)
+    int use_cd_audio; // +0x8AC (Size: 0x4)
+    int use_ima; // +0x8B0 (Size: 0x4)
+    int use_midi; // +0x8B4 (Size: 0x4)
+    int use_wave_music; // +0x8B8 (Size: 0x4)
+    int fast_view; // +0x8BC (Size: 0x4)
+    int auto_scroll; // +0x8C0 (Size: 0x4)
+    long mouse_scroll_edge; // +0x8C4 (Size: 0x4)
+    unsigned long mouse_scroll_interval; // +0x8C8 (Size: 0x4)
+    float mouse_scroll_max_dist; // +0x8CC (Size: 0x4)
+    unsigned long key_scroll_interval; // +0x8D0 (Size: 0x4)
+    float key_scroll_max_dist; // +0x8D4 (Size: 0x4)
+    float key_scroll_object_move; // +0x8D8 (Size: 0x4)
+    short interface_style; // +0x8DC (Size: 0x2)
+    unsigned char _pad_2[0x2]; // 0x08de (Gap: 2)
+    long main_wid; // +0x8E0 (Size: 0x4)
+    long main_hgt; // +0x8E4 (Size: 0x4)
+    _GUID game_guid; // +0x8E8 (Size: 0x10)
+    _GUID zone_guid; // +0x8F8 (Size: 0x10)
+    char data_dir[261]; // +0x908 (Size: 0x105)
+    char graphics_dir[261]; // +0xA0D (Size: 0x105)
+    char save_dir[261]; // +0xB12 (Size: 0x105)
+    char scenario_dir[261]; // +0xC17 (Size: 0x105)
+    char campaign_dir[261]; // +0xD1C (Size: 0x105)
+    char sounds_dir[261]; // +0xE21 (Size: 0x105)
+    char resource_dir[261]; // +0xF26 (Size: 0x105)
+    char ai_dir[261]; // +0x102B (Size: 0x105)
+    char avi_dir[261]; // +0x1130 (Size: 0x105)
+    unsigned char _pad_end[0x3]; // 0x1235 (Gap: 3)
 };
 #pragma pack(pop)
 static_assert(sizeof(RGE_Prog_Info) == 0x1238, "Size mismatch");

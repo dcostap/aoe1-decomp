@@ -1,7 +1,25 @@
 #pragma once
 #include "common.h"
+#include "DrawAreaNode.h"
 
 struct TDrawSystem {
+    TDrawSystem();
+    ~TDrawSystem();
+
+    int Init(void* param_1, void* param_2, void* param_3, uchar param_4, uchar err, long param_7, long param_8, ulong param_9);
+    void CheckAvailModes(int param_1);
+    static long __stdcall CheckAvailModesCallback(_DDSURFACEDESC* param_1, void* param_2);
+    int IsModeAvail(long param_1, long param_2, int param_3);
+    
+    void DeleteSurfaces();
+    void SetPalette(void* pal);
+    void ClearPrimarySurface();
+    uchar CheckSurfaces();
+    void ClearRestored();
+    void Paint(tagRECT* rect);
+    void ModifyPalette(int p1, tagPALETTEENTRY* p2, int p3, int p4);
+    int SetDisplaySize(long p1, long p2, int p3);
+
     void* Inst;
     void* Wnd;
     void* Pal;

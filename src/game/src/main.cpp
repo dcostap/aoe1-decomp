@@ -14,37 +14,44 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     RGE_Prog_Info info;
     memset(&info, 0, sizeof(info));
 
-    // String initialization (reconstructed from main.cpp.asm)
+    // main.cpp:74
     strcpy(info.prog_title, "Age of Empires, Roman Expansion");
+    // main.cpp:75
     strcpy(info.prog_version, "00.03.01.0717");
     
-    // 0x00454a61: sprintf(info.prog_name_init, "%s", info.prog_title)
-    sprintf(info.prog_name_init, "%s", info.prog_title);
+    // main.cpp:76
+    sprintf(info.prog_name, "%s", info.prog_title);
     
+    // main.cpp:77
     strcpy(info.world_db_file, "tr_wrld.txt");
+    // main.cpp:83
     strcpy(info.game_data_file, "data2\\empires.dat");
 
-    // 0x00454aca: Software\Microsoft\Games\Age of Empires\1.0
-    // Note: The assembly actually uses a longer string or multiple parts.
+    // main.cpp:86
     strcpy(info.registry_key, "Software\\Microsoft\\Games\\Age of Empires\\1.0");
 
     info.instance = hInstance;
     info.prev_instance = hPrevInstance;
     
-    // 0x00454adb: cmd_line setup
+    // main.cpp:108
     if (lpCmdLine) {
         strncpy(info.cmd_line, lpCmdLine, sizeof(info.cmd_line) - 1);
     }
     
     info.show_wnd_flag = nShowCmd;
     
+    // main.cpp:134
     strcpy(info.icon_name, "AppIcon");
+    // main.cpp:153 (Offset 0x649)
     strcpy(info.menu_name, "AOE");
+    // main.cpp:153 (Offset 0x672)
     strcpy(info.pal_file, "palette");
+    // main.cpp:153 (Offset 0x777)
     strcpy(info.cursor_file, "mcursors");
 
-    // Scalar initializations (0x00454c1d+)
-    info.mouse_scroll_max_dist = 84.0f; 
+    // main.cpp:153 (Scalar initializations)
+    // NOTE: ASM stores integer 84 (0x54) into these float fields.
+    info.mouse_scroll_max_dist = 84.0f; // TODO: verify if should be integer bit-pattern 0x54
     info.key_scroll_max_dist = 84.0f; 
     
     info.game_guid = AGE1_TRIBE_GUID;
@@ -69,49 +76,44 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     info.mouse_scroll_edge = 1;
     info.mouse_scroll_interval = 3;
     info.key_scroll_interval = 4;
-    info.key_scroll_object_move = 1.25f;
+    info.key_scroll_object_move = 1.2f; // 0x3f99999a
     info.interface_style = 2;
     info.main_wid = 800;
     info.main_hgt = 600;
 
-    // Directories (0x00454d79+)
+    // main.cpp:156 (Directories)
     strcpy(info.data_dir, "data2\\");
+    // main.cpp:157
     strcpy(info.sounds_dir, "sound\\");
+    // main.cpp:158
     strcpy(info.resource_dir, "");
+    // main.cpp:159
     strcpy(info.save_dir, "savegame\\");
+    // main.cpp:160
     strcpy(info.scenario_dir, "scenario\\");
+    // main.cpp:161
     strcpy(info.campaign_dir, "campaign\\");
+    // main.cpp:168
     strcpy(info.graphics_dir, "data2\\");
     strcpy(info.ai_dir, "data2\\");
     strcpy(info.avi_dir, "avi\\");
 
-    // 0x00454f20: game instantiation
-    TRIBE_Game* game = new TRIBE_Game((RGE_Prog_Info*)&info.prog_name_init, 1);
-    info.prog_game_ptr = game;
-    
     int retval = 0;
+    TRIBE_Game* game = new TRIBE_Game(&info, 1);
     if (game) {
-        // 0x00454f5d: Check error code via virtual call?
-        // ASM calls a virtual function at [EDI + 0x18]. 0x18 / 4 = 6. vt[6] is get_error_code.
         if (game->get_error_code() == 0) {
             retval = game->run();
         } else {
             int err = game->get_error_code();
-            // 0x00454f7f: If error is 4, just exit.
             if (err != 4) {
                 char msg[256];
                 char title[256];
-                // 0x00454f98: Get title (2001 = "Error")
                 game->get_string(2001, title, sizeof(title));
-                // 0x00454fb1: Get message
                 game->get_string2(err, 0, err, msg, sizeof(msg));
-                // 0x00454fcc: Show MessageBox
-                MessageBox(NULL, msg, title, MB_OK | MB_ICONERROR);
+                MessageBoxA(NULL, msg, title, MB_OK | MB_ICONERROR);
             }
             retval = err;
         }
-        // 0x00454fb7: Cleanup via virtual call? [EDI + 0x0] is likely destructor or close.
-        // ASM calls [EDI] after run/error check. vt[0] is destructor.
         delete game;
     }
     

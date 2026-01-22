@@ -1,6 +1,9 @@
 #pragma once
 #include "common.h"
 #include "RGE_Animated_Object.h"
+#include "Waypoint.h"
+#include "Path.h"
+#include "XYPoint.h"
 
 class RGE_Moving_Object : public RGE_Animated_Object {
 public:

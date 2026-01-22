@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "XYZPoint.h"
 
 class RGE_Static_Object {
 public:
@@ -69,7 +70,7 @@ public:
     virtual float getAngle(); // vt[62] (0xF8)
     virtual float maximumSpeed(); // vt[63] (0xFC)
     virtual float rateOfFire(); // vt[64] (0x100)
-    virtual float damageCapability(); // vt[65] (0x104)
+    virtual float damageCapability(RGE_Static_Object* param_1); // vt[65] (0x104)
     virtual float damageCapability(); // vt[66] (0x108)
     virtual float weaponRange(); // vt[67] (0x10C)
     virtual float minimumWeaponRange(); // vt[68] (0x110)

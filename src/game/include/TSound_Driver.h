@@ -4,6 +4,7 @@
 struct TSound_Driver {
     uchar ready;
     uchar mute;
+    unsigned char _pad_0[0x2]; // 0x0002 (Gap: 2)
     void* main_wnd;
     IDirectSound* direct_sound;
     IDirectSoundBuffer* primary_buffer;

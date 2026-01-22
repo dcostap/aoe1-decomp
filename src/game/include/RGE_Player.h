@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "RGE_Tile_List.h"
 
 class RGE_Player {
 public:

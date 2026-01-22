@@ -131,107 +131,147 @@ public:
     void setMpPathFinding(unsigned char p1);
     void setNumberPlayers(int p1);
     void setScenarioName(char* p1);
+    int check_for_cd(int p1);
+    void mouse_on();
+    void mouse_off();
     int check_expiration();
     int check_multi_copies();
     unsigned char check_prog_argument(const char* p1);
     void close();
+    int get_paused();
+    RGE_Font* get_font(int index);
+    unsigned long get_last_max_time();
+    unsigned long get_last_world_update_count();
+    unsigned long get_last_view_update_count();
+    unsigned long get_world_update_count();
+    unsigned long get_view_update_count();
+    
+    void* create_font(void* dc, int id1, int id2);
 
-    RGE_Game_Info* player_game_info;
-    RGE_Scenario_File_Info* scenario_info;
-    RGE_Prog_Info* prog_info;
-    void* prog_window;
-    int prog_ready;
-    int prog_active;
-    void* prog_palette;
-    void* prog_mutex;
-    long window_style;
-    int random_game_seed;
-    int random_map_seed;
-    int save_random_game_seed;
-    int save_random_map_seed;
-    int screen_saver_enabled;
-    int low_power_enabled;
-    int error_code;
-    int is_timer;
-    TDrawSystem* draw_system;
-    TDrawArea* draw_area;
-    unsigned char outline_type;
-    int custom_mouse;
-    short shape_num;
-    TShape** shapes;
-    TSound_Driver* sound_system;
-    TMusic_System* music_system;
-    short sound_num;
-    TDigital** sounds;
-    unsigned char save_music_type;
-    int save_music_track_from;
-    int save_music_track_to;
-    int save_music_cur_track;
-    char save_music_file[260];
-    int save_music_loop;
-    unsigned long save_music_pos;
-    TCommunications_Handler* comm_handler;
-    int comm_syncstop;
-    int comm_droppackets;
-    int comm_syncmsg;
-    int comm_stepmode;
-    int comm_speed;
-    TDebuggingLog* debugLog;
-    int log_comm;
-    TRegistry* registry;
-    int prog_mode;
-    int game_mode;
-    int sub_game_mode;
-    int paused;
-    TMousePointer* mouse_pointer;
-    int erase_mouse;
-    int mouse_blit_sync;
-    int is_mouse_on;
-    int windows_mouse;
-    void* mouse_cursor;
-    int input_enabled;
-    void* input_disabled_window;
-    short font_num;
-    RGE_Font* fonts;
-    char work_dir[261];
-    char string_dll_name[261];
-    RGE_Game_World* world;
-    int render_all;
-    short master_obj_id;
-    short terrain_id;
-    short elevation_height;
-    short brush_size;
-    char timing_text[256];
-    unsigned long frame_count;
-    unsigned long world_update_count;
-    unsigned long view_update_count;
-    unsigned long last_frame_count;
-    unsigned long last_world_update_count;
-    unsigned long last_view_update_count;
-    unsigned long fps;
-    unsigned long world_update_fps;
-    unsigned long view_update_fps;
-    RGE_Timing_Info timings[30];
-    int do_show_timings;
-    int do_show_comm;
-    int do_show_ai;
-    unsigned long last_view_time;
-    RGE_Base_Game::RGE_Game_Options rge_game_options;
-    int campaignGameValue;
-    int savedGameValue;
-    int quick_build;
-    int save_check_for_cd;
-    int playerIDValue[9];
-    int display_selected_ids;
-    long countdown_timer[9];
-    int auto_paused;
-    int save_paused;
-    int non_user_pause;
-    int rollover;
-    float game_speed;
-    int single_player_difficulty;
-    unsigned char pathFindingValue;
-    unsigned char resigned[9];
-    TDrawArea* map_save_area;
+    RGE_Game_Info* player_game_info; // +0x4 (Size: 0x4)
+    RGE_Scenario_File_Info* scenario_info; // +0x8 (Size: 0x4)
+    RGE_Prog_Info* prog_info; // +0xC (Size: 0x4)
+    void* prog_window; // +0x10 (Size: 0x4)
+    int prog_ready; // +0x14 (Size: 0x4)
+    int prog_active; // +0x18 (Size: 0x4)
+    void* prog_palette; // +0x1C (Size: 0x4)
+    void* prog_mutex; // +0x20 (Size: 0x4)
+    long window_style; // +0x24 (Size: 0x4)
+    int random_game_seed; // +0x28 (Size: 0x4)
+    int random_map_seed; // +0x2C (Size: 0x4)
+    int save_random_game_seed; // +0x30 (Size: 0x4)
+    int save_random_map_seed; // +0x34 (Size: 0x4)
+    int screen_saver_enabled; // +0x38 (Size: 0x4)
+    int low_power_enabled; // +0x3C (Size: 0x4)
+    int error_code; // +0x40 (Size: 0x4)
+    int is_timer; // +0x44 (Size: 0x4)
+    TDrawSystem* draw_system; // +0x48 (Size: 0x4)
+    TDrawArea* draw_area; // +0x4C (Size: 0x4)
+    unsigned char outline_type; // +0x50 (Size: 0x1)
+    unsigned char _pad_0[0x3]; // 0x0051 (Gap: 3)
+    int custom_mouse; // +0x54 (Size: 0x4)
+    short shape_num; // +0x58 (Size: 0x2)
+    unsigned char _pad_1[0x2]; // 0x005a (Gap: 2)
+    TShape** shapes; // +0x5C (Size: 0x4)
+    TSound_Driver* sound_system; // +0x60 (Size: 0x4)
+    TMusic_System* music_system; // +0x64 (Size: 0x4)
+    short sound_num; // +0x68 (Size: 0x2)
+    unsigned char _pad_2[0x2]; // 0x006a (Gap: 2)
+    TDigital** sounds; // +0x6C (Size: 0x4)
+    unsigned char save_music_type; // +0x70 (Size: 0x1)
+    unsigned char _pad_3[0x3]; // 0x0071 (Gap: 3)
+    int save_music_track_from; // +0x74 (Size: 0x4)
+    int save_music_track_to; // +0x78 (Size: 0x4)
+    int save_music_cur_track; // +0x7C (Size: 0x4)
+    char save_music_file[260]; // +0x80 (Size: 0x104)
+    int save_music_loop; // +0x184 (Size: 0x4)
+    unsigned long save_music_pos; // +0x188 (Size: 0x4)
+    TCommunications_Handler* comm_handler; // +0x18C (Size: 0x4)
+    int comm_syncstop; // +0x190 (Size: 0x4)
+    int comm_droppackets; // +0x194 (Size: 0x4)
+    int comm_syncmsg; // +0x198 (Size: 0x4)
+    int comm_stepmode; // +0x19C (Size: 0x4)
+    int comm_speed; // +0x1A0 (Size: 0x4)
+    TDebuggingLog* debugLog; // +0x1A4 (Size: 0x4)
+    int log_comm; // +0x1A8 (Size: 0x4)
+    TRegistry* registry; // +0x1AC (Size: 0x4)
+    int prog_mode; // +0x1B0 (Size: 0x4)
+    int game_mode; // +0x1B4 (Size: 0x4)
+    int sub_game_mode; // +0x1B8 (Size: 0x4)
+    int paused; // +0x1BC (Size: 0x4)
+    TMousePointer* mouse_pointer; // +0x1C0 (Size: 0x4)
+    int erase_mouse; // +0x1C4 (Size: 0x4)
+    int mouse_blit_sync; // +0x1C8 (Size: 0x4)
+    int is_mouse_on; // +0x1CC (Size: 0x4)
+    int windows_mouse; // +0x1D0 (Size: 0x4)
+    void* mouse_cursor; // +0x1D4 (Size: 0x4)
+    int input_enabled; // +0x1D8 (Size: 0x4)
+    void* input_disabled_window; // +0x1DC (Size: 0x4)
+    short font_num; // +0x1E0 (Size: 0x2)
+    unsigned char _pad_4[0x2]; // 0x01e2 (Gap: 2)
+    RGE_Font* fonts; // +0x1E4 (Size: 0x4)
+    char work_dir[261]; // +0x1E8 (Size: 0x105)
+    char string_dll_name[261]; // +0x2ED (Size: 0x105)
+    unsigned char _pad_5[0x2]; // 0x03f2 (Gap: 2)
+    RGE_Game_World* world; // +0x3F4 (Size: 0x4)
+    int render_all; // +0x3F8 (Size: 0x4)
+    short master_obj_id; // +0x3FC (Size: 0x2)
+    short terrain_id; // +0x3FE (Size: 0x2)
+    short elevation_height; // +0x400 (Size: 0x2)
+    short brush_size; // +0x402 (Size: 0x2)
+    char timing_text[256]; // +0x404 (Size: 0x100)
+    unsigned long frame_count; // +0x504 (Size: 0x4)
+    unsigned long world_update_count; // +0x508 (Size: 0x4)
+    unsigned long view_update_count; // +0x50C (Size: 0x4)
+    unsigned long last_frame_count; // +0x510 (Size: 0x4)
+    unsigned long last_world_update_count; // +0x514 (Size: 0x4)
+    unsigned long last_view_update_count; // +0x518 (Size: 0x4)
+    unsigned long fps; // +0x51C (Size: 0x4)
+    unsigned long world_update_fps; // +0x520 (Size: 0x4)
+    unsigned long view_update_fps; // +0x524 (Size: 0x4)
+    RGE_Timing_Info timings[30]; // +0x528 (Size: 0x3C0)
+    int do_show_timings; // +0x8E8 (Size: 0x4)
+    int do_show_comm; // +0x8EC (Size: 0x4)
+    int do_show_ai; // +0x8F0 (Size: 0x4)
+    unsigned long last_view_time; // +0x8F4 (Size: 0x4)
+    struct RGE_Game_Options {
+        float versionValue; // +0x0 (Size: 0x4)
+        unsigned char scenarioGameValue; // +0x4 (Size: 0x1)
+        char scenarioNameValue[128]; // +0x5 (Size: 0x80)
+        unsigned char singlePlayerGameValue; // +0x85 (Size: 0x1)
+        unsigned char multiplayerGameValue; // +0x86 (Size: 0x1)
+        unsigned char mapXSizeValue; // +0x87 (Size: 0x1)
+        unsigned char mapYSizeValue; // +0x88 (Size: 0x1)
+        unsigned char mapZSizeValue; // +0x89 (Size: 0x1)
+        unsigned char allowCheatCodesValue; // +0x8A (Size: 0x1)
+        unsigned char mpPathFindingValue; // +0x8B (Size: 0x1)
+        unsigned char cheatNotificationValue; // +0x8C (Size: 0x1)
+        unsigned char fullVisibilityValue; // +0x8D (Size: 0x1)
+        unsigned char fogOfWarValue; // +0x8E (Size: 0x1)
+        unsigned char coloredChatValue; // +0x8F (Size: 0x1)
+        unsigned char numberPlayersValue; // +0x90 (Size: 0x1)
+        unsigned char gameDeveloperModeValue; // +0x91 (Size: 0x1)
+        unsigned char playerCDAndVersionValue[9]; // +0x92 (Size: 0x9)
+        unsigned char difficultyValue; // +0x9B (Size: 0x1)
+        unsigned char playerTeamValue[9]; // +0x9C (Size: 0x9)
+        unsigned char _pad_end[0x3]; // 0x00a5 (Gap: 3)
+    } rge_game_options; // +0x8F8 (Size: 0xA8)
+    int campaignGameValue; // +0x9A0 (Size: 0x4)
+    int savedGameValue; // +0x9A4 (Size: 0x4)
+    int quick_build; // +0x9A8 (Size: 0x4)
+    int save_check_for_cd; // +0x9AC (Size: 0x4)
+    int playerIDValue[9]; // +0x9B0 (Size: 0x24)
+    int display_selected_ids; // +0x9D4 (Size: 0x4)
+    long countdown_timer[9]; // +0x9D8 (Size: 0x24)
+    int auto_paused; // +0x9FC (Size: 0x4)
+    int save_paused; // +0xA00 (Size: 0x4)
+    int non_user_pause; // +0xA04 (Size: 0x4)
+    int rollover; // +0xA08 (Size: 0x4)
+    float game_speed; // +0xA0C (Size: 0x4)
+    int single_player_difficulty; // +0xA10 (Size: 0x4)
+    unsigned char pathFindingValue; // +0xA14 (Size: 0x1)
+    unsigned char resigned[9]; // +0xA15 (Size: 0x9)
+    unsigned char _pad_6[0x2]; // 0x0a1e (Gap: 2)
+    TDrawArea* map_save_area; // +0xA20 (Size: 0x4)
 };
 static_assert(sizeof(RGE_Base_Game) == 0xA24, "Size mismatch");

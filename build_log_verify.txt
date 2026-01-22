@@ -1,16 +1,18 @@
+Setting up VS 2022 x86 environment...
+**********************************************************************
+** Visual Studio 2022 Developer Command Prompt v17.0
+** Copyright (c) 2022 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x86'
+DP_INC = "C:\Projects\my_decomps\aoe1\src\third_party\directplay\Include"
+DP_LIB = "C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86"
+Compiling empiresx.exe...
 Microsoft (R) C/C++ Optimizing Compiler Version 19.36.32537 for x86
 Copyright (C) Microsoft Corporation.  All rights reserved.
 
 main.cpp
 tribegam.cpp
 basegame.cpp
-RGE_Game_World.cpp
-TRIBE_World.cpp
-RGE_Player.cpp
-TRIBE_Player.cpp
-RGE_Static_Object.cpp
-RGE_Map.cpp
-com_hand.cpp
 globals.cpp
 Res_file.cpp
 sceninfo.cpp
@@ -19,15 +21,6 @@ file_stf.cpp
 getdxver.cpp
 TRegistry.cpp
 TDebuggingLog.cpp
-Mouseptr.cpp
-TShape.cpp
-Generating Code...
-Compiling...
-Chat.cpp
-debug_helpers.cpp
-screens.cpp
-TPanel.cpp
-Drawarea.cpp
 Generating Code...
 Microsoft (R) Incremental Linker Version 14.36.32537.0
 Copyright (C) Microsoft Corporation.  All rights reserved.
@@ -51,13 +44,6 @@ ws2_32.lib
 build\main.obj 
 build\tribegam.obj 
 build\basegame.obj 
-build\RGE_Game_World.obj 
-build\TRIBE_World.obj 
-build\RGE_Player.obj 
-build\TRIBE_Player.obj 
-build\RGE_Static_Object.obj 
-build\RGE_Map.obj 
-build\com_hand.obj 
 build\globals.obj 
 build\Res_file.obj 
 build\sceninfo.obj 
@@ -66,13 +52,6 @@ build\file_stf.obj
 build\getdxver.obj 
 build\TRegistry.obj 
 build\TDebuggingLog.obj 
-build\Mouseptr.obj 
-build\TShape.obj 
-build\Chat.obj 
-build\debug_helpers.obj 
-build\screens.obj 
-build\TPanel.obj 
-build\Drawarea.obj 
 
 Starting pass 1
 Processed /DEFAULTLIB:uuid.lib
@@ -84,31 +63,11 @@ Processed /DEFAULTLIB:user32.lib
 
 Searching libraries
     Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\kernel32.lib:
-      Found __imp__FindClose@4
-        Referenced in tribegam.obj
-        Loaded kernel32.lib(KERNEL32.dll)
-      Found __imp__FindFirstFileA@8
-        Referenced in tribegam.obj
-        Loaded kernel32.lib(KERNEL32.dll)
-      Found __imp__GetModuleFileNameA@12
-        Referenced in tribegam.obj
-        Loaded kernel32.lib(KERNEL32.dll)
       Found __imp__LoadLibraryA@4
         Referenced in tribegam.obj
-        Referenced in basegame.obj
-        Loaded kernel32.lib(KERNEL32.dll)
-      Found __imp__FileTimeToSystemTime@8
-        Referenced in tribegam.obj
-        Loaded kernel32.lib(KERNEL32.dll)
-      Found __imp__GetCurrentDirectoryA@8
-        Referenced in basegame.obj
         Loaded kernel32.lib(KERNEL32.dll)
       Found __imp__GlobalMemoryStatus@4
         Referenced in basegame.obj
-        Loaded kernel32.lib(KERNEL32.dll)
-      Found __imp__GetTickCount@0
-        Referenced in com_hand.obj
-        Referenced in TDebuggingLog.obj
         Loaded kernel32.lib(KERNEL32.dll)
       Found __imp__CreateFileA@28
         Referenced in Res_file.obj
@@ -128,12 +87,10 @@ Searching libraries
       Found __imp__OutputDebugStringA@4
         Referenced in TDebuggingLog.obj
         Loaded kernel32.lib(KERNEL32.dll)
+      Found __imp__GetTickCount@0
+        Referenced in TDebuggingLog.obj
+        Loaded kernel32.lib(KERNEL32.dll)
       Found __IMPORT_DESCRIPTOR_KERNEL32
-        Referenced in kernel32.lib(KERNEL32.dll)
-        Referenced in kernel32.lib(KERNEL32.dll)
-        Referenced in kernel32.lib(KERNEL32.dll)
-        Referenced in kernel32.lib(KERNEL32.dll)
-        Referenced in kernel32.lib(KERNEL32.dll)
         Referenced in kernel32.lib(KERNEL32.dll)
         Referenced in kernel32.lib(KERNEL32.dll)
         Referenced in kernel32.lib(KERNEL32.dll)
@@ -155,135 +112,13 @@ Searching libraries
         Referenced in main.obj
         Referenced in Res_file.obj
         Loaded user32.lib(USER32.dll)
-      Found __imp__CreateWindowExA@48
-        Referenced in tribegam.obj
-        Referenced in basegame.obj
-        Loaded user32.lib(USER32.dll)
-      Found __imp__CharUpperA@4
-        Referenced in tribegam.obj
-        Loaded user32.lib(USER32.dll)
-      Found __imp__LoadStringA@16
-        Referenced in basegame.obj
-        Loaded user32.lib(USER32.dll)
-      Found __imp__GetMessageA@16
-        Referenced in basegame.obj
-        Loaded user32.lib(USER32.dll)
-      Found __imp__TranslateMessage@4
-        Referenced in basegame.obj
-        Loaded user32.lib(USER32.dll)
-      Found __imp__DispatchMessageA@4
-        Referenced in basegame.obj
-        Loaded user32.lib(USER32.dll)
-      Found __imp__PeekMessageA@20
-        Referenced in basegame.obj
-        Loaded user32.lib(USER32.dll)
-      Found __imp__SendMessageA@16
-        Referenced in basegame.obj
-        Loaded user32.lib(USER32.dll)
-      Found __imp__DefWindowProcA@16
-        Referenced in basegame.obj
-        Loaded user32.lib(USER32.dll)
-      Found __imp__RegisterClassA@4
-        Referenced in basegame.obj
-        Loaded user32.lib(USER32.dll)
-      Found __imp__ShowWindow@8
-        Referenced in basegame.obj
-        Loaded user32.lib(USER32.dll)
-      Found __imp__SetWindowPos@28
-        Referenced in basegame.obj
-        Loaded user32.lib(USER32.dll)
-      Found __imp__SetFocus@4
-        Referenced in basegame.obj
-        Loaded user32.lib(USER32.dll)
-      Found __imp__SetTimer@16
-        Referenced in basegame.obj
-        Loaded user32.lib(USER32.dll)
-      Found __imp__GetSystemMetrics@4
-        Referenced in basegame.obj
-        Loaded user32.lib(USER32.dll)
-      Found __imp__UpdateWindow@4
-        Referenced in basegame.obj
-        Loaded user32.lib(USER32.dll)
-      Found __imp__GetDC@4
-        Referenced in basegame.obj
-        Loaded user32.lib(USER32.dll)
-      Found __imp__ReleaseDC@8
-        Referenced in basegame.obj
-        Loaded user32.lib(USER32.dll)
-      Found __imp__LoadCursorA@8
-        Referenced in basegame.obj
-        Loaded user32.lib(USER32.dll)
-      Found __imp__LoadIconA@8
-        Referenced in basegame.obj
-        Loaded user32.lib(USER32.dll)
-      Found __imp__SystemParametersInfoA@16
-        Referenced in basegame.obj
-        Loaded user32.lib(USER32.dll)
-      Found __imp__SetCursor@4
-        Referenced in Mouseptr.obj
-        Loaded user32.lib(USER32.dll)
       Found __IMPORT_DESCRIPTOR_USER32
-        Referenced in user32.lib(USER32.dll)
-        Referenced in user32.lib(USER32.dll)
-        Referenced in user32.lib(USER32.dll)
-        Referenced in user32.lib(USER32.dll)
-        Referenced in user32.lib(USER32.dll)
-        Referenced in user32.lib(USER32.dll)
-        Referenced in user32.lib(USER32.dll)
-        Referenced in user32.lib(USER32.dll)
-        Referenced in user32.lib(USER32.dll)
-        Referenced in user32.lib(USER32.dll)
-        Referenced in user32.lib(USER32.dll)
-        Referenced in user32.lib(USER32.dll)
-        Referenced in user32.lib(USER32.dll)
-        Referenced in user32.lib(USER32.dll)
-        Referenced in user32.lib(USER32.dll)
-        Referenced in user32.lib(USER32.dll)
-        Referenced in user32.lib(USER32.dll)
-        Referenced in user32.lib(USER32.dll)
-        Referenced in user32.lib(USER32.dll)
-        Referenced in user32.lib(USER32.dll)
-        Referenced in user32.lib(USER32.dll)
-        Referenced in user32.lib(USER32.dll)
         Referenced in user32.lib(USER32.dll)
         Loaded user32.lib(USER32.dll)
       Found USER32_NULL_THUNK_DATA
         Referenced in user32.lib(USER32.dll)
         Loaded user32.lib(USER32.dll)
     Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\gdi32.lib:
-      Found __imp__SetPaletteEntries@16
-        Referenced in tribegam.obj
-        Loaded gdi32.lib(GDI32.dll)
-      Found __imp__CreateFontA@56
-        Referenced in basegame.obj
-        Loaded gdi32.lib(GDI32.dll)
-      Found __imp__SelectObject@8
-        Referenced in basegame.obj
-        Loaded gdi32.lib(GDI32.dll)
-      Found __imp__GetTextMetricsA@8
-        Referenced in basegame.obj
-        Loaded gdi32.lib(GDI32.dll)
-      Found __imp__CreateICA@16
-        Referenced in Drawarea.obj
-        Loaded gdi32.lib(GDI32.dll)
-      Found __imp__DeleteDC@4
-        Referenced in Drawarea.obj
-        Loaded gdi32.lib(GDI32.dll)
-      Found __imp__GetDeviceCaps@8
-        Referenced in Drawarea.obj
-        Loaded gdi32.lib(GDI32.dll)
-      Found __IMPORT_DESCRIPTOR_GDI32
-        Referenced in gdi32.lib(GDI32.dll)
-        Referenced in gdi32.lib(GDI32.dll)
-        Referenced in gdi32.lib(GDI32.dll)
-        Referenced in gdi32.lib(GDI32.dll)
-        Referenced in gdi32.lib(GDI32.dll)
-        Referenced in gdi32.lib(GDI32.dll)
-        Referenced in gdi32.lib(GDI32.dll)
-        Loaded gdi32.lib(GDI32.dll)
-      Found GDI32_NULL_THUNK_DATA
-        Referenced in gdi32.lib(GDI32.dll)
-        Loaded gdi32.lib(GDI32.dll)
     Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\advapi32.lib:
       Found __imp__RegCloseKey@4
         Referenced in TRegistry.obj
@@ -308,41 +143,19 @@ Searching libraries
         Loaded advapi32.lib(ADVAPI32.dll)
     Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ole32.lib:
     Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ddraw.lib:
-      Found _DirectDrawCreate@12
-        Referenced in Drawarea.obj
-        Loaded ddraw.lib(DDRAW.dll)
-      Found __IMPORT_DESCRIPTOR_DDRAW
-        Referenced in ddraw.lib(DDRAW.dll)
-        Loaded ddraw.lib(DDRAW.dll)
-      Found DDRAW_NULL_THUNK_DATA
-        Referenced in ddraw.lib(DDRAW.dll)
-        Loaded ddraw.lib(DDRAW.dll)
     Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\dxguid.lib:
     Searching C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86\dplayx.lib:
     Searching C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86\dplay.lib:
     Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\uuid.lib:
     Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\winmm.lib:
-      Found __imp__timeGetTime@0
-        Referenced in debug_helpers.obj
-        Loaded winmm.lib(WINMM.dll)
-      Found __IMPORT_DESCRIPTOR_WINMM
-        Referenced in winmm.lib(WINMM.dll)
-        Loaded winmm.lib(WINMM.dll)
-      Found WINMM_NULL_THUNK_DATA
-        Referenced in winmm.lib(WINMM.dll)
-        Loaded winmm.lib(WINMM.dll)
     Searching C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ws2_32.lib:
     Searching C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\lib\x86\MSVCRTD.lib:
       Found "void * __cdecl operator new(unsigned int)" (??2@YAPAXI@Z)
         Referenced in main.obj
-        Referenced in tribegam.obj
         Referenced in basegame.obj
-        Referenced in Mouseptr.obj
         Loaded MSVCRTD.lib(new_scalar.obj)
       Found @__security_check_cookie@4
         Referenced in TDebuggingLog.obj
-        Referenced in Mouseptr.obj
-        Referenced in Drawarea.obj
         Referenced in main.obj
         Referenced in tribegam.obj
         Referenced in basegame.obj
@@ -350,12 +163,9 @@ Searching libraries
         Loaded MSVCRTD.lib(secchk.obj)
       Found __chkstk
         Referenced in main.obj
-        Referenced in tribegam.obj
         Loaded MSVCRTD.lib(chkstk.obj)
       Found ___security_cookie
         Referenced in TDebuggingLog.obj
-        Referenced in Mouseptr.obj
-        Referenced in Drawarea.obj
         Referenced in MSVCRTD.lib(secchk.obj)
         Referenced in main.obj
         Referenced in tribegam.obj
@@ -363,40 +173,21 @@ Searching libraries
         Referenced in Res_file.obj
         Loaded MSVCRTD.lib(gs_cookie.obj)
       Found __fltused
-        Referenced in TDebuggingLog.obj
         Referenced in main.obj
         Referenced in basegame.obj
-        Referenced in TRIBE_Player.obj
-        Referenced in RGE_Static_Object.obj
+        Referenced in TDebuggingLog.obj
         Loaded MSVCRTD.lib(fltused.obj)
       Found "void __cdecl operator delete(void *,unsigned int)" (??3@YAXPAXI@Z)
-        Referenced in Mouseptr.obj
-        Referenced in screens.obj
-        Referenced in TPanel.obj
-        Referenced in RGE_Player.obj
-        Referenced in TRIBE_Player.obj
-        Referenced in RGE_Static_Object.obj
-        Referenced in RGE_Map.obj
         Referenced in tribegam.obj
         Referenced in basegame.obj
-        Referenced in RGE_Game_World.obj
-        Referenced in TRIBE_World.obj
         Loaded MSVCRTD.lib(delete_scalar_size.obj)
       Found ___report_rangecheckfailure
         Referenced in tribegam.obj
         Referenced in TDebuggingLog.obj
         Loaded MSVCRTD.lib(gs_report.obj)
       Found "const type_info::`vftable'" (??_7type_info@@6B@)
-        Referenced in screens.obj
-        Referenced in TPanel.obj
-        Referenced in RGE_Player.obj
-        Referenced in TRIBE_Player.obj
-        Referenced in RGE_Static_Object.obj
-        Referenced in RGE_Map.obj
         Referenced in tribegam.obj
         Referenced in basegame.obj
-        Referenced in RGE_Game_World.obj
-        Referenced in TRIBE_World.obj
         Loaded MSVCRTD.lib(std_type_info_static.obj)
       Found _WinMainCRTStartup
         Loaded MSVCRTD.lib(exe_winmain.obj)
@@ -496,27 +287,18 @@ Processed /DEFAULTLIB:ucrtd.lib
     Searching C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\lib\x86\OLDNAMES.lib:
     Searching C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\lib\x86\vcruntimed.lib:
       Found _memset
-        Referenced in Chat.obj
-        Referenced in Drawarea.obj
-        Referenced in MSVCRTD.lib(utility_desktop.obj)
-        Referenced in basegame.obj
-        Referenced in TDebuggingLog.obj
-        Referenced in Mouseptr.obj
-        Referenced in TShape.obj
         Referenced in main.obj
         Referenced in tribegam.obj
-        Referenced in tribegam.obj
-        Referenced in basegame.obj
+        Referenced in TDebuggingLog.obj
+        Referenced in MSVCRTD.lib(utility_desktop.obj)
         Loaded vcruntimed.lib(VCRUNTIME140D.dll)
       Found _strstr
         Referenced in tribegam.obj
         Loaded vcruntimed.lib(VCRUNTIME140D.dll)
       Found ___CxxFrameHandler3
-        Referenced in Drawarea.obj
         Referenced in tribegam.obj
         Referenced in basegame.obj
         Referenced in TDebuggingLog.obj
-        Referenced in Mouseptr.obj
         Loaded vcruntimed.lib(VCRUNTIME140D.dll)
       Found _strchr
         Referenced in TDebuggingLog.obj
@@ -560,11 +342,9 @@ Processed /DEFAULTLIB:ucrtd.lib
         Loaded vcruntimed.lib(VCRUNTIME140D.dll)
     Searching C:\Program Files (x86)\Windows Kits\10\lib\10.0.26100.0\ucrt\x86\ucrtd.lib:
       Found _strcpy
-        Referenced in TDebuggingLog.obj
         Referenced in main.obj
-        Referenced in tribegam.obj
-        Referenced in basegame.obj
         Referenced in Res_file.obj
+        Referenced in TDebuggingLog.obj
         Loaded ucrtd.lib(ucrtbased.dll)
       Found __imp__strncpy
         Referenced in main.obj
@@ -573,20 +353,12 @@ Processed /DEFAULTLIB:ucrtd.lib
         Referenced in TDebuggingLog.obj
         Loaded ucrtd.lib(ucrtbased.dll)
       Found __imp____stdio_common_vsprintf
-        Referenced in Mouseptr.obj
         Referenced in main.obj
-        Referenced in tribegam.obj
         Referenced in Res_file.obj
         Referenced in TDebuggingLog.obj
         Loaded ucrtd.lib(ucrtbased.dll)
       Found __imp___strupr
         Referenced in tribegam.obj
-        Loaded ucrtd.lib(ucrtbased.dll)
-      Found __imp__calloc
-        Referenced in basegame.obj
-        Loaded ucrtd.lib(ucrtbased.dll)
-      Found __imp___findfirst64i32
-        Referenced in basegame.obj
         Loaded ucrtd.lib(ucrtbased.dll)
       Found __imp___stricmp
         Referenced in Res_file.obj
@@ -596,7 +368,6 @@ Processed /DEFAULTLIB:ucrtd.lib
         Loaded ucrtd.lib(ucrtbased.dll)
       Found __imp__free
         Referenced in Res_file.obj
-        Referenced in Drawarea.obj
         Loaded ucrtd.lib(ucrtbased.dll)
       Found __imp__malloc
         Referenced in Res_file.obj
@@ -644,12 +415,6 @@ Processed /DEFAULTLIB:ucrtd.lib
         Loaded ucrtd.lib(ucrtbased.dll)
       Found __imp___time64
         Referenced in TDebuggingLog.obj
-        Loaded ucrtd.lib(ucrtbased.dll)
-      Found __imp__srand
-        Referenced in debug_helpers.obj
-        Loaded ucrtd.lib(ucrtbased.dll)
-      Found __imp___strdup
-        Referenced in Drawarea.obj
         Loaded ucrtd.lib(ucrtbased.dll)
       Found __callnewh
         Referenced in MSVCRTD.lib(new_scalar.obj)
@@ -736,10 +501,6 @@ Processed /DEFAULTLIB:ucrtd.lib
         Referenced in MSVCRTD.lib(utility_desktop.obj)
         Loaded ucrtd.lib(ucrtbased.dll)
       Found __IMPORT_DESCRIPTOR_ucrtbased
-        Referenced in ucrtd.lib(ucrtbased.dll)
-        Referenced in ucrtd.lib(ucrtbased.dll)
-        Referenced in ucrtd.lib(ucrtbased.dll)
-        Referenced in ucrtd.lib(ucrtbased.dll)
         Referenced in ucrtd.lib(ucrtbased.dll)
         Referenced in ucrtd.lib(ucrtbased.dll)
         Referenced in ucrtd.lib(ucrtbased.dll)
@@ -958,15 +719,17 @@ Finished searching libraries
 
 
 Unused libraries:
+  C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\gdi32.lib
   C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ole32.lib
+  C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ddraw.lib
   C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\dxguid.lib
   C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86\dplayx.lib
   C:\Projects\my_decomps\aoe1\src\third_party\directplay\Lib\x86\dplay.lib
   C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\uuid.lib
+  C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\winmm.lib
   C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x86\ws2_32.lib
   C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\lib\x86\OLDNAMES.lib
 
-    Discarded __real@00000000 from RGE_Static_Object.obj
     Discarded ___CastGuardVftablesStart from MSVCRTD.lib(guard_support.obj)
     Discarded ___CastGuardVftablesEnd from MSVCRTD.lib(guard_support.obj)
     Discarded ___castguard_check_failure_user_handled_fptr from MSVCRTD.lib(guard_support.obj)
@@ -982,55 +745,20 @@ Unused libraries:
     Discarded '.idata$6' from ucrtd.lib(ucrtbased.dll)
     Discarded '.idata$6' from ucrtd.lib(ucrtbased.dll)
     Discarded '.idata$6' from ucrtd.lib(ucrtbased.dll)
-    Discarded _FindClose@4 from kernel32.lib(KERNEL32.dll)
-    Discarded _FindFirstFileA@8 from kernel32.lib(KERNEL32.dll)
-    Discarded _GetModuleFileNameA@12 from kernel32.lib(KERNEL32.dll)
     Discarded _LoadLibraryA@4 from kernel32.lib(KERNEL32.dll)
-    Discarded _FileTimeToSystemTime@8 from kernel32.lib(KERNEL32.dll)
-    Discarded _GetCurrentDirectoryA@8 from kernel32.lib(KERNEL32.dll)
     Discarded _GlobalMemoryStatus@4 from kernel32.lib(KERNEL32.dll)
-    Discarded _GetTickCount@0 from kernel32.lib(KERNEL32.dll)
     Discarded _CreateFileA@28 from kernel32.lib(KERNEL32.dll)
     Discarded _CloseHandle@4 from kernel32.lib(KERNEL32.dll)
     Discarded _MapViewOfFile@20 from kernel32.lib(KERNEL32.dll)
     Discarded _UnmapViewOfFile@4 from kernel32.lib(KERNEL32.dll)
     Discarded _CreateFileMappingA@24 from kernel32.lib(KERNEL32.dll)
     Discarded _OutputDebugStringA@4 from kernel32.lib(KERNEL32.dll)
+    Discarded _GetTickCount@0 from kernel32.lib(KERNEL32.dll)
     Discarded _MessageBoxA@16 from user32.lib(USER32.dll)
-    Discarded _CreateWindowExA@48 from user32.lib(USER32.dll)
-    Discarded _CharUpperA@4 from user32.lib(USER32.dll)
-    Discarded _LoadStringA@16 from user32.lib(USER32.dll)
-    Discarded _GetMessageA@16 from user32.lib(USER32.dll)
-    Discarded _TranslateMessage@4 from user32.lib(USER32.dll)
-    Discarded _DispatchMessageA@4 from user32.lib(USER32.dll)
-    Discarded _PeekMessageA@20 from user32.lib(USER32.dll)
-    Discarded _SendMessageA@16 from user32.lib(USER32.dll)
-    Discarded _DefWindowProcA@16 from user32.lib(USER32.dll)
-    Discarded _RegisterClassA@4 from user32.lib(USER32.dll)
-    Discarded _ShowWindow@8 from user32.lib(USER32.dll)
-    Discarded _SetWindowPos@28 from user32.lib(USER32.dll)
-    Discarded _SetFocus@4 from user32.lib(USER32.dll)
-    Discarded _SetTimer@16 from user32.lib(USER32.dll)
-    Discarded _GetSystemMetrics@4 from user32.lib(USER32.dll)
-    Discarded _UpdateWindow@4 from user32.lib(USER32.dll)
-    Discarded _GetDC@4 from user32.lib(USER32.dll)
-    Discarded _ReleaseDC@8 from user32.lib(USER32.dll)
-    Discarded _LoadCursorA@8 from user32.lib(USER32.dll)
-    Discarded _LoadIconA@8 from user32.lib(USER32.dll)
-    Discarded _SystemParametersInfoA@16 from user32.lib(USER32.dll)
-    Discarded _SetCursor@4 from user32.lib(USER32.dll)
-    Discarded _SetPaletteEntries@16 from gdi32.lib(GDI32.dll)
-    Discarded _CreateFontA@56 from gdi32.lib(GDI32.dll)
-    Discarded _SelectObject@8 from gdi32.lib(GDI32.dll)
-    Discarded _GetTextMetricsA@8 from gdi32.lib(GDI32.dll)
-    Discarded _CreateICA@16 from gdi32.lib(GDI32.dll)
-    Discarded _DeleteDC@4 from gdi32.lib(GDI32.dll)
-    Discarded _GetDeviceCaps@8 from gdi32.lib(GDI32.dll)
     Discarded _RegCloseKey@4 from advapi32.lib(ADVAPI32.dll)
     Discarded _RegCreateKeyExA@36 from advapi32.lib(ADVAPI32.dll)
     Discarded _RegQueryValueExA@24 from advapi32.lib(ADVAPI32.dll)
     Discarded _RegSetValueExA@24 from advapi32.lib(ADVAPI32.dll)
-    Discarded _timeGetTime@0 from winmm.lib(WINMM.dll)
     Discarded ___report_securityfailureEx from MSVCRTD.lib(gs_report.obj)
     Discarded ___scrt_dllmain_after_initialize_c from MSVCRTD.lib(utility.obj)
     Discarded ___scrt_dllmain_before_initialize_c from MSVCRTD.lib(utility.obj)
@@ -1064,8 +792,6 @@ Unused libraries:
     Discarded _strncpy from ucrtd.lib(ucrtbased.dll)
     Discarded ___stdio_common_vsprintf from ucrtd.lib(ucrtbased.dll)
     Discarded __strupr from ucrtd.lib(ucrtbased.dll)
-    Discarded _calloc from ucrtd.lib(ucrtbased.dll)
-    Discarded __findfirst64i32 from ucrtd.lib(ucrtbased.dll)
     Discarded __stricmp from ucrtd.lib(ucrtbased.dll)
     Discarded _strncmp from ucrtd.lib(ucrtbased.dll)
     Discarded _free from ucrtd.lib(ucrtbased.dll)
@@ -1082,8 +808,6 @@ Unused libraries:
     Discarded __ctime64 from ucrtd.lib(ucrtbased.dll)
     Discarded __localtime64 from ucrtd.lib(ucrtbased.dll)
     Discarded __time64 from ucrtd.lib(ucrtbased.dll)
-    Discarded _srand from ucrtd.lib(ucrtbased.dll)
-    Discarded __strdup from ucrtd.lib(ucrtbased.dll)
     Discarded __seh_filter_dll from ucrtd.lib(ucrtbased.dll)
     Discarded __execute_onexit_table from ucrtd.lib(ucrtbased.dll)
     Discarded __crt_at_quick_exit from ucrtd.lib(ucrtbased.dll)
@@ -1107,49 +831,28 @@ Unused libraries:
     Discarded ___guard_xfg_check_icall_fptr from MSVCRTD.lib(guard_support.obj)
 
     Selected symbol:
+        __matherr from MSVCRTD.lib(matherr.obj)
+    Replaced symbol(s):
+        ___scrt_stub_for_initialize_mta from MSVCRTD.lib(utility_desktop.obj)
+        __get_startup_thread_locale_mode from MSVCRTD.lib(thread_locale.obj)
+        __get_startup_new_mode from MSVCRTD.lib(new_mode.obj)
+        ___scrt_initialize_winrt from MSVCRTD.lib(utility_desktop.obj)
+        __get_startup_commit_mode from MSVCRTD.lib(commit_mode.obj)
+
+    Selected symbol:
         __initialize_invalid_parameter_handler from MSVCRTD.lib(invalid_parameter_handler.obj)
     Replaced symbol(s):
         __initialize_denormal_control from MSVCRTD.lib(denormal_control.obj)
 
     Selected symbol:
-        __matherr from MSVCRTD.lib(matherr.obj)
-    Replaced symbol(s):
-        ___scrt_stub_for_initialize_mta from MSVCRTD.lib(utility_desktop.obj)
-        __get_startup_commit_mode from MSVCRTD.lib(commit_mode.obj)
-        __get_startup_thread_locale_mode from MSVCRTD.lib(thread_locale.obj)
-        __get_startup_new_mode from MSVCRTD.lib(new_mode.obj)
-        ___scrt_initialize_winrt from MSVCRTD.lib(utility_desktop.obj)
-
-    Selected symbol:
         __should_initialize_environment from MSVCRTD.lib(env_mode.obj)
     Replaced symbol(s):
-        ___scrt_stub_for_acrt_uninitialize from MSVCRTD.lib(ucrt_stubs.obj)
         ___scrt_stub_for_acrt_initialize from MSVCRTD.lib(ucrt_stubs.obj)
+        ___scrt_stub_for_acrt_uninitialize from MSVCRTD.lib(ucrt_stubs.obj)
 
-    Selected symbol:
-        "public: virtual __thiscall TRIBE_Screen_Main_Error::~TRIBE_Screen_Main_Error(void)" (??1TRIBE_Screen_Main_Error@@UAE@XZ) from screens.obj
-    Replaced symbol(s):
-        "public: virtual __thiscall TRIBE_Screen_Status_Message::~TRIBE_Screen_Status_Message(void)" (??1TRIBE_Screen_Status_Message@@UAE@XZ) from screens.obj
-        "public: virtual __thiscall TRIBE_Screen_Main_Menu::~TRIBE_Screen_Main_Menu(void)" (??1TRIBE_Screen_Main_Menu@@UAE@XZ) from screens.obj
-        "public: virtual __thiscall TribeMPSetupScreen::~TribeMPSetupScreen(void)" (??1TribeMPSetupScreen@@UAE@XZ) from screens.obj
-
-    Selected symbol:
-        "public: virtual void * __thiscall TRIBE_Screen_Main_Error::`scalar deleting destructor'(unsigned int)" (??_GTRIBE_Screen_Main_Error@@UAEPAXI@Z) from screens.obj
-    Replaced symbol(s):
-        "public: virtual void * __thiscall TribeMPSetupScreen::`scalar deleting destructor'(unsigned int)" (??_GTribeMPSetupScreen@@UAEPAXI@Z) from screens.obj
-        "public: virtual void * __thiscall TRIBE_Screen_Status_Message::`scalar deleting destructor'(unsigned int)" (??_GTRIBE_Screen_Status_Message@@UAEPAXI@Z) from screens.obj
-        "public: virtual void * __thiscall TRIBE_Screen_Main_Menu::`scalar deleting destructor'(unsigned int)" (??_GTRIBE_Screen_Main_Menu@@UAEPAXI@Z) from screens.obj
-
-    ICF total savings: 258 bytes
+    ICF total savings: 54 bytes
 
 Starting pass 2
-     Drawarea.obj
-     TPanel.obj
-     screens.obj
-     debug_helpers.obj
-     Chat.obj
-     TShape.obj
-     Mouseptr.obj
      TDebuggingLog.obj
      TRegistry.obj
      getdxver.obj
@@ -1158,13 +861,6 @@ Starting pass 2
      sceninfo.obj
      Res_file.obj
      globals.obj
-     com_hand.obj
-     RGE_Map.obj
-     RGE_Static_Object.obj
-     TRIBE_Player.obj
-     RGE_Player.obj
-     TRIBE_World.obj
-     RGE_Game_World.obj
      basegame.obj
      tribegam.obj
      main.obj
@@ -1193,57 +889,15 @@ Starting pass 2
      kernel32.lib(KERNEL32.dll)
      kernel32.lib(KERNEL32.dll)
      kernel32.lib(KERNEL32.dll)
-     kernel32.lib(KERNEL32.dll)
-     kernel32.lib(KERNEL32.dll)
-     kernel32.lib(KERNEL32.dll)
-     kernel32.lib(KERNEL32.dll)
-     kernel32.lib(KERNEL32.dll)
      user32.lib(USER32.dll)
      user32.lib(USER32.dll)
      user32.lib(USER32.dll)
-     user32.lib(USER32.dll)
-     user32.lib(USER32.dll)
-     user32.lib(USER32.dll)
-     user32.lib(USER32.dll)
-     user32.lib(USER32.dll)
-     user32.lib(USER32.dll)
-     user32.lib(USER32.dll)
-     user32.lib(USER32.dll)
-     user32.lib(USER32.dll)
-     user32.lib(USER32.dll)
-     user32.lib(USER32.dll)
-     user32.lib(USER32.dll)
-     user32.lib(USER32.dll)
-     user32.lib(USER32.dll)
-     user32.lib(USER32.dll)
-     user32.lib(USER32.dll)
-     user32.lib(USER32.dll)
-     user32.lib(USER32.dll)
-     user32.lib(USER32.dll)
-     user32.lib(USER32.dll)
-     user32.lib(USER32.dll)
-     user32.lib(USER32.dll)
-     gdi32.lib(GDI32.dll)
-     gdi32.lib(GDI32.dll)
-     gdi32.lib(GDI32.dll)
-     gdi32.lib(GDI32.dll)
-     gdi32.lib(GDI32.dll)
-     gdi32.lib(GDI32.dll)
-     gdi32.lib(GDI32.dll)
-     gdi32.lib(GDI32.dll)
-     gdi32.lib(GDI32.dll)
      advapi32.lib(ADVAPI32.dll)
      advapi32.lib(ADVAPI32.dll)
      advapi32.lib(ADVAPI32.dll)
      advapi32.lib(ADVAPI32.dll)
      advapi32.lib(ADVAPI32.dll)
      advapi32.lib(ADVAPI32.dll)
-     ddraw.lib(DDRAW.dll)
-     ddraw.lib(DDRAW.dll)
-     ddraw.lib(DDRAW.dll)
-     winmm.lib(WINMM.dll)
-     winmm.lib(WINMM.dll)
-     winmm.lib(WINMM.dll)
      MSVCRTD.lib(chkstk.obj)
      MSVCRTD.lib(gs_cookie.obj)
      MSVCRTD.lib(gs_report.obj)
@@ -1346,8 +1000,5 @@ Starting pass 2
      ucrtd.lib(ucrtbased.dll)
      ucrtd.lib(ucrtbased.dll)
      ucrtd.lib(ucrtbased.dll)
-     ucrtd.lib(ucrtbased.dll)
-     ucrtd.lib(ucrtbased.dll)
-     ucrtd.lib(ucrtbased.dll)
-     ucrtd.lib(ucrtbased.dll)
 Finished pass 2
+Build OK.

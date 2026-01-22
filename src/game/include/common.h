@@ -1,6 +1,9 @@
 // Auto-generated scaffold header
 #pragma once
 
+#include <windows.h>
+#include <ddraw.h>
+#include <dsound.h>
 #include <stdint.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -11,18 +14,117 @@ typedef unsigned short ushort;
 typedef unsigned int   uint;
 typedef unsigned long  ulong;
 
-#ifndef __cdecl
-#define __cdecl
-#endif
-#ifndef __stdcall
-#define __stdcall
-#endif
-#ifndef __fastcall
-#define __fastcall
-#endif
-#ifndef __thiscall
-#define __thiscall
-#endif
+// External struct/class forward declarations
+struct TDrawArea;
+struct TDrawSystem;
+class TShape;
+class TTaunt;
+struct TSound_Driver;
+class TMusic_System;
+class TDigital;
+class TRegistry;
+class TDebuggingLog;
+class TCommunications_Handler;
+class TMousePointer;
+class TChat;
+class TPanel;
+class TPanelSystem;
+class TPicture;
+
+// RGE and TRIBE game classes
+class RGE_Base_Game;
+class RGE_Game_World;
+class RGE_Player;
+class RGE_Master_Player;
+class RGE_Static_Object;
+class RGE_Moving_Object;
+class RGE_Animated_Object;
+class RGE_Action_Object;
+class RGE_Sound;
+class RGE_Sound_Info;
+class RGE_Sprite;
+class RGE_Effects;
+class RGE_Command;
+class RGE_Scenario;
+class RGE_Timeline;
+class RGE_Font;
+class RGE_Scenario_Header;
+class RGE_Player_Info;
+class RGE_Color_Table;
+class RGE_Map;
+class RGE_Action_List;
+class RGE_Action;
+class RGE_Action_Node;
+class RGE_Effect;
+class RGE_Damage_Sprite_Info;
+class RGE_Picture_List;
+class RGE_Sound_List;
+class RGE_Active_Sprite_List;
+class RGE_Active_Sprite_Node;
+class RGE_Object_List;
+class RGE_Master_Static_Object;
+class RGE_Master_Animated_Object;
+class RGE_Master_Moving_Object;
+class RGE_Master_Combat_Object;
+class RGE_Master_Action_Object;
+class TRIBE_Game;
+class TRIBE_World;
+class TRIBE_Player;
+class TRIBE_Tech;
+class TRIBE_Player_Tech;
+class TRIBE_History_Info;
+class TRIBE_Screen_Game;
+
+// AI related
+class AIPlayBook;
+class UnitAIModule;
+class TribeMainDecisionAIModule;
+
+// Map and Terrain
+struct RGE_Tile;
+struct RGE_Tile_List_Node;
+class RGE_Visible_Map;
+class RGE_Doppleganger_Creator;
+class Visible_Resource_Manager;
+
+// Lists and nodes
+struct RGE_Object_Node;
+struct DrawAreaNode;
+struct PanelNode;
+
+// Utility types
+struct XYZBYTEPoint;
+struct XYZPoint;
+struct XYPoint;
+struct Waypoint;
+class Path;
+struct LOSTBL;
+struct RGE_Armor_Weapon_Info;
+class RGE_Victory_Conditions;
+class TSpan_List_Manager;
+
+struct BITMAPINFO256 {
+    tagBITMAPINFOHEADER bmiHeader;
+    tagRGBQUAD bmiColors[256];
+};
+
+struct RGE_Tile_Size {
+    short width;
+    short height;
+};
+
+struct RGE_Tile_Set {
+    char data[4]; // placeholder size
+};
+
+struct RGE_Border_Set {
+    char data[4]; // placeholder size
+};
+
+class RGE_RMM_Database_Controller;
+class RGE_Zone_Map_List;
+class RGE_Unified_Visible_Map;
+class Visible_Unit_Manager;
 
 // Stubs for templates found in PDB
 template <typename T> struct ManagedArray {
@@ -31,4 +133,3 @@ template <typename T> struct ManagedArray {
     int desiredNumberValue;
     int maximumSizeValue;
 };
-

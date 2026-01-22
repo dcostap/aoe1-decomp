@@ -1,7 +1,49 @@
-#pragma once
+#include <windows.h>
 #include "common.h"
 
-struct TCommunications_Handler {
+enum COMMSTATUS {
+    COMM_NONE = 0,
+    COMM_IDLE = 1,
+    COMM_ACTIVE = 2,
+    // ... more values based on ASM
+};
+
+struct TChat;
+struct NAME;
+struct RGE_Communications_Queue;
+struct RGE_Lobby;
+struct RGE_TimeSinceLastCall;
+struct RGE_Communications_Speed;
+struct RGE_Communications_Synchronize;
+struct RGE_Communications_Addresses;
+struct RGE_Comm_Error;
+struct RESENDER;
+struct HOLDER;
+#pragma pack(push, 1)
+struct COMMPLAYEROPTIONS {
+    char data[464]; // Adjusted size
+};
+
+#pragma pack(pop)
+
+#pragma pack(push, 4)
+class TCommunications_Handler {
+public:
+    int IsPaused();
+    void Update();
+    void HandleMessage();
+    void UpdatePlayers();
+    void UpdatePlayer(uint id, int timeout);
+    void ReceiveGameMessages();
+    int DoCycle(ulong now);
+    void EvaluateSystemMessage(ulong p1, char* p2, ulong p3, ulong p4);
+    uint ExecuteIncoming();
+    void GetDPLAYMessages();
+    long CommOut(uchar p1, void* p2, long p3, ulong p4);
+    void DropDeadPlayer(uint id, ulong turn);
+    void CheckPingTime(int p1);
+    void SendStoredMessages();
+    int PreprocessMessages(void* p1, ulong p2, void* p3, ulong p4);
     int OptionsChanged;
     char* OptionsData;
     int Steps;
@@ -103,4 +145,5 @@ struct TCommunications_Handler {
     uint HoldCount;
     int WasKicked[10];
 };
+#pragma pack(pop)
 static_assert(sizeof(TCommunications_Handler) == 0x1774, "Size mismatch");

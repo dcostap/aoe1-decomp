@@ -1,68 +1,188 @@
 #include "../include/RGE_Base_Game.h"
 #include "../include/TRegistry.h"
 #include "../include/TDebuggingLog.h"
+#include "../include/TCommunications_Handler.h"
+#include "../include/TMousePointer.h"
+#include "../include/TChat.h"
+#include "../include/TDrawSystem.h"
+#include "../include/TDrawArea.h"
+#include "../include/TShape.h"
+#include "../include/TSound_Driver.h"
+#include "../include/TMusic_System.h"
+#include "../include/TDigital.h"
+#include "../include/RGE_Font.h"
+#include "../include/RGE_Game_World.h"
+#include "../include/RGE_Scenario.h"
+#include "../include/RGE_Scenario_Header.h"
+#include "../include/TPanel.h"
+#include "../include/debug_helpers.h"
 #include <windows.h>
 #include <stdio.h>
+#include <io.h>
+#include <timeapi.h>
 
-extern RGE_Base_Game* rge_base_game;
-extern int do_draw_log;
-extern int safe_draw_log;
-extern char draw_log_name[260];
-extern FILE* draw_log;
-extern HINSTANCE StringTable;
-extern TRegistry* Regs;
-extern HWND AppWnd;
-extern HINSTANCE AppInst;
-extern int log_output; // Added global
+#include "../include/globals.h"
+
+LRESULT CALLBACK rge_base_game_wnd_proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    if (rge_base_game) {
+        return rge_base_game->wnd_proc(hWnd, (uint)msg, (uint)wParam, (long)lParam);
+    }
+    return DefWindowProcA(hWnd, msg, wParam, lParam);
+}
 
 RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
     rge_base_game = this;
-    prog_info = info;
-
-    // Default initialization based on ASM at 0x0041B6A0
-    error_code = 0;
     
-    setVersion(1.0f);
-    setScenarioGame(0);
-    setCampaignGame(0);
-    setSavedGame(0);
-    setSinglePlayerGame(1);
-    setMultiplayerGame(0);
-    setMapSize(96, 96, 8);
-    setAllowCheatCodes(0);
-    setCheatNotification(1);
-    setFullVisibility(0);
-    setFogOfWar(1);
-    setColoredChat(1);
-    setGameDeveloperMode(0);
-    setDifficulty(0);
+    // ASM at 0x0041B6A0
+    this->player_game_info = nullptr; // [EBP + 0x4] = 0
+    this->random_game_seed = -1;      // [EBP + 0x28] = -1
+    this->random_map_seed = -1;       // [EBP + 0x2C] = -1
+    this->save_random_game_seed = -1; // [EBP + 0x30] = -1
+    this->save_random_map_seed = -1;  // [EBP + 0x34] = -1
+    this->quick_build = 0;            // [EBP + 0x9a8] = 0
+
+    // Set vftable
+    // *(void**)this = RGE_Base_Game::vftable;
+
+    this->setVersion(1.0f);
+    this->setScenarioGame(0);
+    this->setCampaignGame(0);
+    this->setSavedGame(0);
+    this->setSinglePlayerGame(1);
+    this->setMultiplayerGame(0);
+    this->setMapSize(96, 96, 8);
+    this->setAllowCheatCodes(0);
+    this->setCheatNotification(1);
+    this->setFullVisibility(0);
+    this->setFogOfWar(1);
+    this->setColoredChat(1);
+    this->setGameDeveloperMode(0);
+    this->setDifficulty(0);
 
     for (int i = 0; i < 9; i++) {
-        setPlayerCDAndVersion(i, 0);
-        setPlayerHasCD(i, 0);
-        setPlayerVersion(i, 0);
-        setPlayerTeam(i, 1);
+        this->setPlayerCDAndVersion(i, 0);
+        this->setPlayerHasCD(i, 0);
+        this->setPlayerVersion(i, 0);
+        this->setPlayerTeam(i, 1);
     }
 
-    setPathFinding(0);
-    setMpPathFinding(0);
-    setNumberPlayers(4);
-    setScenarioName("");
+    this->setPathFinding(0);
+    this->setMpPathFinding(0);
+    this->setNumberPlayers(4);
+    this->setScenarioName("");
+
+    this->prog_info = info;
+    this->prog_window = nullptr;
+    this->prog_ready = 0; // ASM 0x0041b7b9
+    this->prog_active = 0;
+    this->prog_palette = nullptr;
+    this->prog_mutex = nullptr;
+    
+    StringTable = nullptr;
+    
+    this->is_timer = 0; // +0x44
+    this->draw_system = nullptr; // +0x48
+    this->draw_area = nullptr; // +0x4C
+    this->outline_type = 2; // +0x50
+    this->custom_mouse = 0; // +0x54
+    this->shape_num = 0; // +0x58
+    this->shapes = nullptr; // +0x5C
+    this->sound_system = nullptr; // +0x60
+    this->music_system = nullptr; // +0x64
+    this->sound_num = 0; // +0x68
+    this->sounds = nullptr; // +0x6C
+    this->save_music_type = 0; // +0x70
+    this->save_music_track_from = 0;
+    this->save_music_track_to = 0;
+    this->save_music_cur_track = 0;
+    this->save_music_file[0] = '\0';
+    this->save_music_loop = 0;
+    this->save_music_pos = 0;
+    this->comm_handler = nullptr;
+    this->debugLog = nullptr;
+    this->log_comm = 0;
+    this->comm_syncstop = 0;
+    this->comm_syncmsg = 0;
+    this->comm_stepmode = 0;
+    this->comm_speed = 1;
+    this->comm_droppackets = 0;
+    this->registry = nullptr;
+    this->prog_mode = 0;
+    this->game_mode = 0;
+    this->sub_game_mode = 0;
+    this->paused = 0;
+    this->mouse_pointer = nullptr;
+    this->erase_mouse = 0;
+    this->mouse_blit_sync = 0;
+    this->is_mouse_on = 0;
+    this->windows_mouse = 0;
+    this->mouse_cursor = LoadCursorA(NULL, (LPCSTR)IDC_ARROW);
+    this->font_num = 0;
+    this->fonts = nullptr;
+    
+    GetCurrentDirectoryA(sizeof(this->work_dir), this->work_dir);
+    strcpy(this->string_dll_name, "language.dll");
+    
+    this->master_obj_id = -1;
+    this->terrain_id = -1;
+    this->elevation_height = -1;
+    this->world = nullptr;
+    this->render_all = 1;
+    this->brush_size = 1;
+    this->timing_text[0] = '\0';
+    this->frame_count = 0;
+    this->world_update_count = 0;
+    this->view_update_count = 0;
+    this->last_frame_count = 0;
+    this->last_world_update_count = 0;
+    this->last_view_update_count = 0;
+    this->fps = 0;
+    this->world_update_fps = 0;
+    this->view_update_fps = 0;
+    this->last_view_time = 0;
+
+    for (int i = 0; i < 30; i++) {
+        memset(&this->timings[i], 0, sizeof(RGE_Timing_Info));
+    }
+
+    this->do_show_timings = 0;
+    this->do_show_comm = 0;
+    this->do_show_ai = 0;
+    this->save_check_for_cd = 1; // +0x9ac
+    
+    AppInst = this->prog_info ? (HINSTANCE)this->prog_info->instance : nullptr;
+    AppWnd = nullptr;
+    chat = nullptr;
+    comm = nullptr;
+    Regs = nullptr;
+    sound_driver = nullptr;
+    driveInfo = nullptr;
+    
+    for (int i = 0; i < 9; i++) {
+        this->playerIDValue[i] = 0;
+        this->resigned[i] = 0;
+    }
+    
+    this->auto_paused = 0;
+    this->rollover = 1;
+    this->map_save_area = nullptr;
+    this->game_speed = 1.0f;
+    this->single_player_difficulty = 2;
 
     // Registry and Debug log setup
-    if (setup_registry()) {
-        Regs = (TRegistry*)this->registry; 
-        if (setup_debugging_log()) {
-            if (param_2 && setup() == 0) {
-                if (error_code == 0) {
-                    error_code = 1;
+    if (this->setup_registry()) {
+        Regs = this->registry; 
+        if (this->setup_debugging_log()) {
+            if (param_2 && this->setup() == 0) {
+                if (this->error_code == 0) {
+                    this->error_code = 1;
                 }
             }
         } else {
-            error_code = 15;
+            this->error_code = 15;
         }
     } else {
-        error_code = 14;
+        this->error_code = 14;
     }
 }
 
@@ -116,38 +236,245 @@ int RGE_Base_Game::setup_debugging_log() {
 }
 
 int RGE_Base_Game::setup() {
-    // Basic setup logic based on assembly at 0x0041BA80
-    // Environmental checks, memory, DX etc.
-    
-    // Check Multi Copies
     if (this->prog_info->check_multi_copies && !this->check_multi_copies()) {
+        this->error_code = 4;
         return 0;
     }
 
-    // Check Expiration
-    if (this->prog_info->check_expiration && !this->check_expiration()) {
+    // Random seed initialization
+    debug_srand("C:\\msdev\\work\\age1_x1\\basegame.cpp", 522, debug_timeGetTime("C:\\msdev\\work\\age1_x1\\basegame.cpp", 522));
+
+    // Registry settings
+    if (this->registry) {
+        int screen_size = this->registry->RegGetInt(1, "Screen Size");
+        if (screen_size == 640) {
+            this->prog_info->main_wid = 640;
+            this->prog_info->main_hgt = 480;
+        } else if (screen_size == 800) {
+            this->prog_info->main_wid = 800;
+            this->prog_info->main_hgt = 600;
+        } else if (screen_size == 1024) {
+            this->prog_info->main_wid = 1024;
+            this->prog_info->main_hgt = 768;
+        } else if (screen_size == 1280) {
+            this->prog_info->main_wid = 1280;
+            this->prog_info->main_hgt = 1024;
+        }
+
+        this->rollover = this->registry->RegGetInt(1, "Rollover Text") != 2;
+        
+        int interface_style_reg = this->registry->RegGetInt(1, "Mouse Style");
+        if (interface_style_reg == 2) {
+            this->prog_info->interface_style = 2;
+        } else if (interface_style_reg == 1) {
+            this->prog_info->interface_style = 1;
+        }
+
+        int game_speed_reg = this->registry->RegGetInt(1, "Game Speed");
+        if (game_speed_reg != -1) {
+            this->game_speed = (float)game_speed_reg * 0.01f;
+        }
+
+        int difficulty_reg = this->registry->RegGetInt(1, "Difficulty");
+        if (difficulty_reg != -1) {
+            this->single_player_difficulty = difficulty_reg;
+        }
+
+        int pf_reg = this->registry->RegGetInt(1, "Path Finding");
+        if (pf_reg >= 1 && pf_reg <= 3) {
+            this->setPathFinding((unsigned char)(pf_reg - 1));
+        }
+
+        int mp_pf_reg = this->registry->RegGetInt(1, "MP Path Finding");
+        if (mp_pf_reg >= 1 && mp_pf_reg <= 3) {
+            this->setMpPathFinding((unsigned char)(mp_pf_reg - 1));
+        }
+
+        int scroll_speed = this->registry->RegGetInt(1, "Scroll Speed");
+        if (scroll_speed != -1 && scroll_speed >= 10 && scroll_speed <= 200) {
+            this->prog_info->mouse_scroll_interval = scroll_speed;
+            this->prog_info->key_scroll_interval = scroll_speed;
+        }
+    }
+
+    // Check if empires.exe exists (minimal version check)
+    struct _finddata_t file_info;
+    if (_findfirst("empires.exe", &file_info) == -1) {
+        this->error_code = 0x17;
+        return 0;
+    }
+
+    // Call setup_cmd_options (offset 0x64 in vtable)
+    if (!this->setup_cmd_options()) {
+        this->error_code = 0;
+        return 0;
+    }
+
+    // Load language.dll
+    StringTable = LoadLibraryA("language.dll");
+    if (!StringTable) {
+        this->error_code = 1;
         return 0;
     }
 
     // Check Memory
     MEMORYSTATUS memStatus;
     GlobalMemoryStatus(&memStatus);
-    if (memStatus.dwTotalPhys < 0x1000000) { // 16MB
-        // Usually shows a message box in a real game
+    // 0x1400000 = 20MB, 0xa00000 = 10MB
+    if (memStatus.dwTotalPhys < 0xa00000) {
+        this->error_code = 0x14; // TODO: verify code
         return 0;
     }
 
-    // Check DX Version (Stubbed for now, usually calls a helper)
-    // if (GetDXVersion() < 0x500) return 0;
+    // Music setup
+    if (!this->setup_music_system()) {
+        // ...
+    }
+
+    // Expiration check
+    if (this->prog_info->check_expiration && !this->check_expiration()) {
+        this->error_code = 3;
+        return 0;
+    }
+
+    // DX Version check
+    unsigned long dx_version, dx_platform;
+    // GetDXVersion(&dx_version, &dx_platform); // Stubbed for now
+    // if (dx_version < 0x501) {
+    //     this->error_code = 0x14;
+    //     return 0;
+    // }
+
+    // System Parameter updates (ASM 0x0041bdd7)
+    SystemParametersInfoA(SPI_GETMOUSE, 0, &this->screen_saver_enabled, 0); // ESI + 0x38
+    if (this->screen_saver_enabled != 0) {
+        SystemParametersInfoA(SPI_SETMOUSE, 0, &this->screen_saver_enabled, 0);
+    }
+    SystemParametersInfoA(SPI_GETSCREENSAVEACTIVE, 0, &this->low_power_enabled, 0); // ESI + 0x3C
+    if (this->low_power_enabled != 0) {
+        SystemParametersInfoA(SPI_SETSCREENSAVEACTIVE, 0, &this->low_power_enabled, 0);
+    }
+
+    // CD check (ASM 0x0041be15)
+    this->save_check_for_cd = this->check_for_cd(0); // ESI + 0x9AC
+
+    // Initialization sequence
+    if (!this->setup_class()) {
+        this->error_code = 5;
+        return 0;
+    }
+
+    if (!this->setup_main_window()) {
+        this->error_code = 6;
+        return 0;
+    }
+
+    if (!this->setup_graphics_system()) {
+        if (this->error_code == 0) this->error_code = 7;
+        return 0;
+    }
+
+    if (!this->setup_palette()) {
+        this->error_code = 0x11;
+        return 0;
+    }
+
+    if (!this->setup_shapes()) {
+        this->error_code = 7;
+        return 0;
+    }
+
+    if (!this->setup_map_save_area()) {
+        this->error_code = 7;
+        return 0;
+    }
+
+    if (!this->setup_mouse()) {
+        this->error_code = 8;
+        return 0;
+    }
+
+    if (!this->setup_sound_system()) {
+        this->error_code = 0xa;
+        return 0;
+    }
+
+    if (!this->setup_chat()) {
+        this->error_code = 0x10;
+        return 0;
+    }
+
+    if (!this->setup_comm()) {
+        this->error_code = 9;
+        return 0;
+    }
+
+    if (!this->setup_fonts()) {
+        this->error_code = 0xb;
+        return 0;
+    }
+
+    if (!this->setup_sounds()) {
+        this->error_code = 0xc;
+        return 0;
+    }
+
+    // Drive Info (ASM 0x0041bf40) - TODO: implement DriveInformation class
+    // driveInfo = new DriveInformation();
+    
+    if (!this->setup_blank_screen()) { // vtable offset 0x9c (index 39)
+        this->error_code = 0xd;
+        return 0;
+    }
+
+    this->set_prog_mode(0); // vtable offset 0xc (index 3)
+    this->setup_timings();
+
+    this->handle_size((void*)this->prog_window, WM_SIZE, 0, 0);
+
+    ShowWindow((HWND)this->prog_window, SW_SHOW);
+    SetFocus((HWND)this->prog_window);
+
+    this->mouse_on();
+
+    this->is_timer = SetTimer((HWND)this->prog_window, 1, 0, NULL);
 
     return 1;
 }
-int RGE_Base_Game::get_error_code() { return error_code; }
-char* RGE_Base_Game::get_string(int p1, long p2, char* p3, int p4) { return p3; }
+
+int RGE_Base_Game::check_for_cd(int p1) {
+    // TODO: implement logic from 0x0041FD40
+    return 1;
+}
+
+void RGE_Base_Game::mouse_on() {
+    // TODO: implement logic from 0x00420394
+    this->is_mouse_on = 1;
+}
+
+void RGE_Base_Game::mouse_off() {
+    // TODO: implement logic from 0x00420404
+    this->is_mouse_on = 0;
+}
+int RGE_Base_Game::get_error_code() { 
+    return this->error_code; 
+}
+char* RGE_Base_Game::get_string(int p1, long p2, char* p3, int p4) { 
+    if (StringTable) {
+        if (LoadStringA(StringTable, p1, p3, p4) > 0) {
+            return p3;
+        }
+    }
+    if (p4 > 0) p3[0] = '\0';
+    return p3;
+}
 char* RGE_Base_Game::get_string2(int p1, long p2, long p3, char* p4, int p5) { return p4; }
-int RGE_Base_Game::run() { return 0; }
 unsigned char RGE_Base_Game::check_prog_argument(const char* p1) { return 0; }
-void RGE_Base_Game::close() {}
+void RGE_Base_Game::close() {
+    if (this->prog_window) {
+        SendMessageA((HWND)this->prog_window, WM_CLOSE, 0, 0);
+    }
+}
 
 int RGE_Base_Game::check_expiration() { return 1; }
 int RGE_Base_Game::check_multi_copies() { return 1; }
@@ -155,10 +482,41 @@ int RGE_Base_Game::check_multi_copies() { return 1; }
 // Virtual stubs to satisfy vftable
 long RGE_Base_Game::wnd_proc(void* p1, uint p2, uint p3, long p4) { return 0; }
 void RGE_Base_Game::set_prog_mode(int p1) {}
-void RGE_Base_Game::set_game_mode(int p1, int p2) {}
-void RGE_Base_Game::set_player(short p1) {}
-char* RGE_Base_Game::get_string(long p1, char* p2, int p3) { return p2; }
+void RGE_Base_Game::set_game_mode(int p1, int p2) {
+    this->game_mode = p1;
+    this->sub_game_mode = p2;
+}
+void RGE_Base_Game::set_player(short p1) {
+    // ASM 0x00420150: Sets world->curr_player and clears map view info
+    // NOTE: From basegame.cpp.asm analysis, this checks player_num before assignment
+    if (this->world) {
+        // ASM shows this writes to [world + 0x7C] which is curr_player
+        this->world->curr_player = p1;
+        if (this->world->map) {
+            // TODO: implement clear_map_view_info when RGE_Map is available
+            // this->world->map->clear_map_view_info();
+        }
+    }
+}
+char* RGE_Base_Game::get_string(long p1, char* p2, int p3) { 
+    if (StringTable) {
+        if (LoadStringA(StringTable, p1, p2, p3) > 0) {
+            return p2;
+        }
+    }
+    if (p3 > 0) p2[0] = '\0';
+    return p2; 
+}
 char* RGE_Base_Game::get_string(long p1) { return nullptr; }
+int RGE_Base_Game::get_paused() {
+    if (this->prog_mode == 7) {
+        return 1;
+    }
+    if (this->comm_handler) {
+        return this->comm_handler->IsPaused();
+    }
+    return 0;
+}
 TPanel* RGE_Base_Game::get_view_panel() { return nullptr; }
 TPanel* RGE_Base_Game::get_map_panel() { return nullptr; }
 RGE_Scenario_Header* RGE_Base_Game::new_scenario_header(RGE_Scenario* p1) { return nullptr; }
@@ -173,26 +531,303 @@ int RGE_Base_Game::processCheatCode(int p1, char* p2) { return 0; }
 int RGE_Base_Game::setup_music_system() { return 1; }
 void RGE_Base_Game::shutdown_music_system() {}
 int RGE_Base_Game::setup_cmd_options() { return 1; }
-int RGE_Base_Game::setup_class() { return 1; }
-int RGE_Base_Game::setup_main_window() { return 1; }
-int RGE_Base_Game::setup_graphics_system() { return 1; }
-int RGE_Base_Game::setup_palette() { return 1; }
-int RGE_Base_Game::setup_mouse() { return 1; }
-int RGE_Base_Game::setup_chat() { return 1; }
-int RGE_Base_Game::setup_comm() { return 1; }
-int RGE_Base_Game::setup_sound_system() { return 1; }
-int RGE_Base_Game::setup_fonts() { return 1; }
-int RGE_Base_Game::setup_sounds() { return 1; }
-int RGE_Base_Game::setup_shapes() { return 1; }
-int RGE_Base_Game::setup_blank_screen() { return 1; }
+int RGE_Base_Game::setup_class() {
+    if (!this->prog_info) return 0;
+    
+    WNDCLASSA cls;
+    memset(&cls, 0, sizeof(cls));
+    cls.style = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
+    cls.lpfnWndProc = (WNDPROC)rge_base_game_wnd_proc;
+    cls.cbClsExtra = 0;
+    cls.cbWndExtra = 0;
+    cls.hInstance = (HINSTANCE)this->prog_info->instance;
+    cls.hIcon = LoadIconA((HINSTANCE)this->prog_info->instance, (char*)this->prog_info + 0x61C);
+    cls.hCursor = LoadCursorA(NULL, IDC_ARROW);
+    cls.hbrBackground = NULL;
+    cls.lpszMenuName = NULL;
+    cls.lpszClassName = (char*)this->prog_info + 0x645;
+    
+    if (RegisterClassA(&cls)) {
+        return 1;
+    }
+    return 0;
+}
+
+int RGE_Base_Game::setup_main_window() {
+    if (!this->prog_info) return 0;
+
+    int screen_wid = GetSystemMetrics(SM_CXSCREEN);
+    int screen_hgt = GetSystemMetrics(SM_CYSCREEN);
+    
+    DWORD style;
+    if (!this->prog_info->full_screen || (screen_wid == this->prog_info->main_wid && screen_hgt == this->prog_info->main_hgt)) {
+         style = WS_POPUP | WS_VISIBLE | WS_SYSMENU | WS_MINIMIZEBOX;
+    } else {
+         style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
+    }
+    
+    this->prog_window = CreateWindowExA(0, (char*)this->prog_info + 0x645, (char*)this->prog_info + 0x7A, style, 
+                                        0, 0, this->prog_info->main_wid, this->prog_info->main_hgt, 
+                                        NULL, NULL, (HINSTANCE)this->prog_info->instance, this);
+                                        
+    if (!this->prog_window) return 0;
+
+    // Adjust window size if not in window mode to ensure it covers the screen correctly
+    if (this->prog_info->full_screen) {
+        SetWindowPos((HWND)this->prog_window, HWND_TOP, 0, 0, this->prog_info->main_wid, this->prog_info->main_hgt, SWP_SHOWWINDOW);
+    }
+    
+    ShowWindow((HWND)this->prog_window, SW_SHOW);
+    UpdateWindow((HWND)this->prog_window);
+    SetFocus((HWND)this->prog_window);
+    
+    AppWnd = (HWND)this->prog_window;
+    
+    return 1;
+}
+
+// Graphics System Setup
+// Graphics System Setup
+int RGE_Base_Game::setup_graphics_system() {
+    int draw_type = 0;
+    int draw_mode = 0; // 0 = default
+    // ERROR FIX: game_mode is in RGE_Base_Game, not prog_info
+    if (this->game_mode == 2) draw_type = 1; 
+    if (this->prog_info->full_screen) draw_mode = 1;
+
+    TDrawSystem* ds = new TDrawSystem(); // 0x41e9db
+    if (!ds) {
+        this->draw_system = nullptr;
+        return 0;
+    }
+    this->draw_system = ds;
+
+    ds->CheckAvailModes(1);
+
+    long w = 640, h = 480;
+    if (this->prog_info->main_wid) w = this->prog_info->main_wid;
+    if (this->prog_info->main_hgt) h = this->prog_info->main_hgt;
+
+    if (ds->IsModeAvail(w, h, 8)) {
+        // Mode is available
+    } else if (ds->IsModeAvail(640, 480, 8)) {
+        w = 640; h = 480;
+        this->prog_info->main_wid = 640;
+        this->prog_info->main_hgt = 480;
+    } else {
+        // Fallback or error
+    }
+
+    // ERROR FIX: Init takes 8 args, passed 8. use_system_memory is NOT in RGE_Prog_Info, check RGE_Base_Game or pass 0.
+    // TDrawSystem::Init(Inst, Wnd, Pal, Mode, Err, W, H, Flags)
+    if (!ds->Init(this->prog_info->instance, this->prog_window, NULL, 
+                  (uchar)draw_type, (uchar)draw_mode, w, h, 
+                  0)) { // Assuming 0 for flags for now
+        return 0;
+    }
+
+    // Palette handling
+    if (this->prog_palette) {
+        // TPanelSystem::release_palette call if needed
+    }
+    // this->prog_palette = TPanelSystem::get_palette(0xc544); // Stubbed
+
+    TDrawArea* da = new TDrawArea("Primary");
+    if (!da) return 0;
+    this->draw_area = da;
+
+    // ERROR FIX: TDrawArea::Init(System, Wnd, W, H, Trans, Primary, SysMem) - 7 args
+    if (!da->Init(ds, this->prog_window, w, h, 0, 1, 0)) { // Assuming 0 for use_system_memory
+        return 0;
+    }
+
+    // setup_view, setup_map would go here
+
+    return 1;
+}
+
+int RGE_Base_Game::setup_palette() {
+    // Stub: TPanelSystem::get_palette integration needed
+    // void* pal = TPanelSystem::get_palette((char*)0xc544 + 0x66e);
+    // if (pal) {
+    //     this->prog_palette = pal;
+    //     return 1;
+    // }
+    return 1;
+}
+
+int RGE_Base_Game::setup_mouse() {
+    if (!this->registry) return 0;
+
+    int custom_mouse_reg = this->registry->RegGetInt(1, "Custom Mouse");
+    if (custom_mouse_reg == -1) {
+        this->registry->RegSetInt(1, "Custom Mouse", 0);
+        custom_mouse_reg = 0;
+    }
+
+    if (custom_mouse_reg == 1 || custom_mouse_reg == 2) {
+        // Stub: TMousePointer implementation
+        // this->mouse_pointer = new TMousePointer(custom_mouse_reg);
+        // setup call...
+    } else {
+        this->mouse_pointer = nullptr;
+    }
+    return 1;
+}
+
+void* RGE_Base_Game::create_font(void* dc, int id1, int id2) {
+    char font_name[256];
+    // id1 is resource ID for font name
+    if (!this->get_string(id1, font_name, 256)) return nullptr;
+
+    // id2 seems to be bold flag based on usage (case 8 passes 1)
+    int weight = id2 ? FW_BOLD : FW_NORMAL;
+
+    // Height logic isn't clear from ASM view (might be fixed or derived). 
+    // Using a reasonable default for now (e.g. 15 for readability).
+    // In original game, different indices might imply different sizes if not passed explicitly.
+    // However, the ASM didn't show size being passed. 
+    // It's possible 'id1' (the string ID) implies the size if the string contains it, but it looked like just name.
+    int height = 15; 
+    if (id1 == 110) height = 12; // Copperplate Gothic Light
+    
+    return CreateFontA(height, 0, 0, 0, weight, 0, 0, 0, ANSI_CHARSET, 
+                       OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, 
+                       DEFAULT_PITCH | FF_DONTCARE, font_name);
+}
+
+int RGE_Base_Game::setup_fonts() {
+    this->fonts = (RGE_Font*)calloc(12, sizeof(RGE_Font));
+    if (!this->fonts) return 0;
+    this->font_num = 12;
+
+    HDC hdc = GetDC((HWND)this->prog_window); 
+    
+    for (int i = 0; i < 12; i++) {
+        int id1 = 0;
+        int id2 = 0;
+        switch (i) {
+            case 0: id1 = 110; break; // 0x6e
+            case 1: id1 = 113; break; // 0x71
+            case 4: id1 = 116; break; // 0x74
+            case 6: id1 = 131; break; // 0x83
+            case 7: id1 = 119; break; // 0x77
+            case 8: id1 = 128; id2 = 1; break; // 0x80
+            case 9: id1 = 122; break; // 0x7a
+            case 10: id1 = 125; break; // 0x7d
+            case 11: id1 = 128; break; // 0x80
+            // Cases 2, 3, 5 are NULL
+            default: break; 
+        }
+
+        if (id1 == 0) {
+            this->fonts[i].font = nullptr;
+            continue;
+        }
+
+        this->fonts[i].font = this->create_font(hdc, id1, id2);
+        
+        if (this->fonts[i].font) {
+            SelectObject(hdc, (HFONT)this->fonts[i].font);
+            TEXTMETRICA tm;
+            GetTextMetricsA(hdc, &tm);
+            this->fonts[i].font_wid = tm.tmAveCharWidth;
+            // Combining logic from ASM: add descent? or external leading? 
+            // Going with Height + ExternalLeading as a safe bet for line spacing
+            this->fonts[i].font_hgt = tm.tmHeight + tm.tmExternalLeading;
+        }
+    }
+
+    ReleaseDC((HWND)this->prog_window, hdc);
+    return 1;
+}
+
+int RGE_Base_Game::setup_sounds() { 
+    // Stub implementation
+    return 1; 
+}
+
+int RGE_Base_Game::setup_shapes() { 
+    // Stub implementation
+    return 1; 
+}
+
+int RGE_Base_Game::setup_blank_screen() { 
+    // Stub implementation
+    return 1; 
+}
 void RGE_Base_Game::setup_timings() {}
 void RGE_Base_Game::stop_sound_system() {}
 int RGE_Base_Game::restart_sound_system() { return 1; }
 void RGE_Base_Game::stop_music_system() {}
 int RGE_Base_Game::restart_music_system() { return 1; }
-RGE_Game_World* RGE_Base_Game::create_world() { return nullptr; }
-int RGE_Base_Game::handle_message(struct tagMSG* p1) { return 0; }
-int RGE_Base_Game::handle_idle() { return 0; }
+RGE_Game_World* RGE_Base_Game::create_world() {
+    if (this->world) {
+        delete this->world;
+    }
+    this->world = new RGE_Game_World();
+    return this->world;
+}
+int RGE_Base_Game::run() {
+    MSG msg;
+
+    while (this->prog_info && (this->game_mode == 4 || this->game_mode == 2)) {
+        if (this->comm_handler && this->comm_handler->IsPaused()) {
+            if (GetMessageA(&msg, NULL, 0, 0)) {
+                if (msg.message == WM_QUIT) return msg.wParam;
+                if (!this->handle_message(&msg)) {
+                    TranslateMessage(&msg);
+                    DispatchMessageA(&msg);
+                }
+            } else {
+                return msg.wParam;
+            }
+        } else {
+            if (PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE)) {
+                if (msg.message == WM_QUIT) return msg.wParam;
+                if (!this->handle_message(&msg)) {
+                    TranslateMessage(&msg);
+                    DispatchMessageA(&msg);
+                }
+            } else {
+                this->handle_idle();
+            }
+        }
+    }
+
+    while (GetMessageA(&msg, NULL, 0, 0)) {
+        if (msg.message == WM_QUIT) break;
+        TranslateMessage(&msg);
+        DispatchMessageA(&msg);
+    }
+
+    return msg.wParam;
+}
+int RGE_Base_Game::handle_message(struct tagMSG* p1) {
+    // Process messages based on assembly 0x0041FB40 or similar
+    switch (p1->message) {
+        case WM_PAINT:
+            return this->handle_paint((void*)p1->hwnd, (uint)p1->message, (uint)p1->wParam, (long)p1->lParam);
+        case WM_ACTIVATE:
+            return this->handle_activate((void*)p1->hwnd, (uint)p1->message, (uint)p1->wParam, (long)p1->lParam);
+        case WM_KEYDOWN:
+            return this->handle_key_down((void*)p1->hwnd, (uint)p1->message, (uint)p1->wParam, (long)p1->lParam);
+        case WM_MOUSEMOVE:
+            return this->handle_mouse_move((void*)p1->hwnd, (uint)p1->message, (uint)p1->wParam, (long)p1->lParam);
+        case WM_CLOSE:
+            return this->handle_close((void*)p1->hwnd, (uint)p1->message, (uint)p1->wParam, (long)p1->lParam);
+    }
+    return 0;
+}
+
+int RGE_Base_Game::handle_idle() {
+    // Idle processing: update world, render, etc.
+    if (this->world) {
+        // this->world->update();
+    }
+    this->action_update();
+    return 1;
+}
 int RGE_Base_Game::handle_mouse_move(void* p1, uint p2, uint p3, long p4) { return 0; }
 int RGE_Base_Game::handle_key_down(void* p1, uint p2, uint p3, long p4) { return 0; }
 int RGE_Base_Game::handle_user_command(void* p1, uint p2, uint p3, long p4) { return 0; }
@@ -226,3 +861,35 @@ void RGE_Base_Game::show_comm() {}
 void RGE_Base_Game::show_ai() {}
 int RGE_Base_Game::setup_map_save_area() { return 1; }
 void RGE_Base_Game::set_interface_messages() {}
+
+RGE_Font* RGE_Base_Game::get_font(int index) {
+    if (index >= 0 && index < this->font_num) {
+        return &this->fonts[index];
+    }
+    return nullptr;
+}
+
+unsigned long RGE_Base_Game::get_last_max_time() {
+    return this->last_view_time;
+}
+
+unsigned long RGE_Base_Game::get_last_world_update_count() {
+    return this->last_world_update_count;
+}
+
+unsigned long RGE_Base_Game::get_last_view_update_count() {
+    return this->last_view_update_count;
+}
+
+unsigned long RGE_Base_Game::get_world_update_count() {
+    return this->world_update_count;
+}
+
+unsigned long RGE_Base_Game::get_view_update_count() {
+    return this->view_update_count;
+}
+
+// Linker fix stubs
+int RGE_Base_Game::setup_chat() { return 1; }
+int RGE_Base_Game::setup_comm() { return 1; }
+int RGE_Base_Game::setup_sound_system() { return 1; }

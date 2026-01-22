@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "Waypoint.h"
 
 struct Path {
     ulong timeStampValue;

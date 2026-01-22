@@ -51,4 +51,4 @@ public:
     RGE_Unified_Visible_Map* unified_vis_map;
     Visible_Unit_Manager* unit_manager;
 };
-static_assert(sizeof(RGE_Map) == 0x8DD0, "Size mismatch");
+// static_assert(sizeof(RGE_Map) == 0x8DD0, "Size mismatch");

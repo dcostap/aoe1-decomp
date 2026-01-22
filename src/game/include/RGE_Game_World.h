@@ -1,5 +1,7 @@
 #pragma once
 #include "common.h"
+#include "RGE_Sound.h"
+#include <cstddef>
 
 class RGE_Game_World {
 public:
@@ -69,64 +71,78 @@ public:
     virtual int addObject(RGE_Static_Object* param_1); // vt[62] (0xF8)
     virtual int removeObject(int param_1); // vt[63] (0xFC)
 
-    unsigned long world_time;
-    unsigned long old_world_time;
-    unsigned long world_time_delta;
-    float timer;
-    unsigned long old_time;
-    float game_speed;
-    unsigned char temp_pause;
-    unsigned char game_state;
-    unsigned char game_end_condition;
-    long sound_update_index;
-    long sprite_update_index;
-    RGE_Map* map;
-    short sound_num;
-    RGE_Sound** sounds;
-    short sprite_num;
-    RGE_Sprite** sprites;
-    short player_num;
-    RGE_Player** players;
-    short master_player_num;
-    RGE_Master_Player** master_players;
-    RGE_Effects* effects;
-    short terrain_num;
-    short terrain_size;
-    float** terrains;
-    RGE_Command* commands;
-    RGE_Scenario* scenario;
-    short color_table_num;
-    RGE_Color_Table** color_tables;
-    long next_object_id;
-    long next_reusable_object_id;
-    long scenario_object_id;
-    unsigned char scenario_object_flag;
-    unsigned int random_seed;
-    short curr_player;
-    TSound_Driver* sound_driver;
-    float world_time_delta_seconds;
-    RGE_Static_Object** objectsValue;
-    int numberObjectsValue;
-    int maxNumberObjectsValue;
-    RGE_Static_Object** negativeObjectsValue;
-    int numberNegativeObjectsValue;
-    int maxNumberNegativeObjectsValue;
-    AIPlayBook* playbook;
-    long campaign;
-    long campaign_player;
-    long campaign_scenario;
-    int player_turn;
-    unsigned long player_time_delta[9];
-    RGE_Object_List* reusable_static_objects;
-    RGE_Object_List* reusable_animated_objects;
-    RGE_Object_List* reusable_moving_objects;
-    RGE_Object_List* reusable_action_objects;
-    RGE_Object_List* reusable_combat_objects;
-    RGE_Object_List* reusable_missile_objects;
-    RGE_Object_List* reusable_doppleganger_objects;
-    unsigned long maximumComputerPlayerUpdateTime;
-    unsigned long availableComputerPlayerUpdateTime;
-    int currentUpdateComputerPlayer;
-    int difficultyLevelValue;
+    unsigned long world_time; // +0x4
+    unsigned long old_world_time; // +0x8
+    unsigned long world_time_delta; // +0xC
+    float timer; // +0x10
+    unsigned long old_time; // +0x14
+    float game_speed; // +0x18
+    unsigned char temp_pause; // +0x1C
+    unsigned char game_state; // +0x1D
+    unsigned char game_end_condition; // +0x1E
+    unsigned char _pad_0[0x1]; // +0x1F
+    long sound_update_index; // +0x20
+    long sprite_update_index; // +0x24
+    RGE_Map* map; // +0x28
+    short sound_num; // +0x2C
+    unsigned char _pad_1[0x2]; // +0x2E
+    RGE_Sound** sounds; // +0x30
+    short sprite_num; // +0x34
+    unsigned char _pad_2[0x2]; // +0x36
+    RGE_Sprite** sprites; // +0x38
+    short player_num; // +0x3C
+    unsigned char _pad_3[0x2]; // +0x3E
+    RGE_Player** players; // +0x40
+    short master_player_num; // +0x44
+    unsigned char _pad_4[0x2]; // +0x46
+    RGE_Master_Player** master_players; // +0x48
+    RGE_Effects* effects; // +0x4C
+    short terrain_num; // +0x50
+    short terrain_size; // +0x52
+    float** terrains; // +0x54
+    RGE_Command* commands; // +0x58
+    RGE_Scenario* scenario; // +0x5C
+    short color_table_num; // +0x60
+    unsigned char _pad_5[0x2]; // +0x62
+    RGE_Color_Table** color_tables; // +0x64
+    long next_object_id; // +0x68
+    long next_reusable_object_id; // +0x6C
+    long scenario_object_id; // +0x70
+    unsigned char scenario_object_flag; // +0x74
+    unsigned char _pad_6[0x3]; // +0x75
+    unsigned int random_seed; // +0x78
+    short curr_player; // +0x7C
+    unsigned char _pad_7[0x2]; // +0x7E
+    TSound_Driver* sound_driver; // +0x80
+    float world_time_delta_seconds; // +0x84
+    RGE_Static_Object** objectsValue; // +0x88
+    int numberObjectsValue; // +0x8C
+    int maxNumberObjectsValue; // +0x90
+    RGE_Static_Object** negativeObjectsValue; // +0x94
+    int numberNegativeObjectsValue; // +0x98
+    int maxNumberNegativeObjectsValue; // +0x9C
+    AIPlayBook* playbook; // +0xA0
+    long campaign; // +0xA4
+    long campaign_player; // +0xA8
+    long campaign_scenario; // +0xAC
+    int player_turn; // +0xB0
+    unsigned long player_time_delta[9]; // +0xB4
+    RGE_Object_List* reusable_static_objects; // +0xD8
+    RGE_Object_List* reusable_animated_objects; // +0xDC
+    RGE_Object_List* reusable_moving_objects; // +0xE0
+    RGE_Object_List* reusable_action_objects; // +0xE4
+    RGE_Object_List* reusable_combat_objects; // +0xE8
+    RGE_Object_List* reusable_missile_objects; // +0xEC
+    RGE_Object_List* reusable_doppleganger_objects; // +0xF0
+    unsigned long maximumComputerPlayerUpdateTime; // +0xF4
+    unsigned long availableComputerPlayerUpdateTime; // +0xF8
+    int currentUpdateComputerPlayer; // +0xFC
+    int difficultyLevelValue; // +0x100
 };
-static_assert(sizeof(RGE_Game_World) == 0x104, "Size mismatch");
+static_assert(offsetof(RGE_Game_World, world_time) == 0x4, "Offset mismatch: world_time");
+static_assert(offsetof(RGE_Game_World, map) == 0x28, "Offset mismatch: map");
+static_assert(offsetof(RGE_Game_World, sound_driver) == 0x80, "Offset mismatch: sound_driver");
+static_assert(offsetof(RGE_Game_World, playbook) == 0xA0, "Offset mismatch: playbook");
+static_assert(offsetof(RGE_Game_World, reusable_static_objects) == 0xD8, "Offset mismatch: reusable_static_objects");
+static_assert(offsetof(RGE_Game_World, maximumComputerPlayerUpdateTime) == 0xF4, "Offset mismatch: maximumComputerPlayerUpdateTime");
+static_assert(sizeof(RGE_Game_World) == 0x104, "Size mismatch: RGE_Game_World");

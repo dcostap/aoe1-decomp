@@ -1,9 +1,4 @@
-#include <windows.h>
-#include <stdio.h>
-
-class RGE_Base_Game;
-class TRegistry;
-class TPanelSystem;
+#include "../include/globals.h"
 
 RGE_Base_Game* rge_base_game = nullptr;
 int do_draw_log = 0;
@@ -18,6 +13,7 @@ void* chat = nullptr;
 void* comm = nullptr;
 void* sound_driver = nullptr;
 void* driveInfo = nullptr;
+TMousePointer* MouseSystem = nullptr;
 
 int do_run_log = 0;
 int run_log_created = 0;
@@ -32,3 +28,8 @@ int debugActions = 0;
 FILE* actionFile = nullptr;
 int video_codec_available = 0;
 int log_output = 0;
+
+int quick_start_game_mode = 0;
+int restore_mouse_after_paint = 1;
+
+void run_log(char* param_1, int param_2) {}

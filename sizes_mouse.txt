@@ -1,0 +1,6 @@
+Microsoft (R) C/C++ Optimizing Compiler Version 19.36.32537 for x86
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+Mouseptr.cpp
+C:\Projects\my_decomps\aoe1\src\game\src\../include/TMousePointer.h(64): error C2079: 's_mouse' uses undefined struct 'ShowMouseSize<596>'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/TMousePointer.h(65): error C2338: static_assert failed: 'Size report'
