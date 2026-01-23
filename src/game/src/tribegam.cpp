@@ -383,22 +383,25 @@ int TRIBE_Game::setup_palette() {
         // peFlags are set to 0.
         
         // Basic mapping based on assembly 0x00522200:
-        // Index 0x17 (pe[0]): 17 27 7c
+        // Index 0xF8 (pe[0]): 17 27 7c (Match ASM PUSH 0xF8)
         pe[0].peRed = 0x17; pe[0].peGreen = 0x27; pe[0].peBlue = 0x7c;
-        // Index 0x18 (pe[1]): 27 3f 90
+        // Index 0xF9 (pe[1]): 27 3f 90
         pe[1].peRed = 0x27; pe[1].peGreen = 0x3f; pe[1].peBlue = 0x90;
-        // Index 0x19 (pe[2]): 3f 5f 9f
+        // Index 0xFA (pe[2]): 3f 5f 9f
         pe[2].peRed = 0x3f; pe[2].peGreen = 0x5f; pe[2].peBlue = 0x9f;
-        // Index 0x1a (pe[3]): 57 7b b4
+        // Index 0xFB (pe[3]): 57 7b b4
         pe[3].peRed = 0x57; pe[3].peGreen = 0x7b; pe[3].peBlue = 0xb4;
-        // Index 0x1b (pe[4]): 3f 5f a0
+        // Index 0xFC (pe[4]): 3f 5f a0
         pe[4].peRed = 0x3f; pe[4].peGreen = 0x5f; pe[4].peBlue = 0xa0;
-        // Index 0x1c (pe[5]): 27 3f 91
+        // Index 0xFD (pe[5]): 27 3f 91
         pe[5].peRed = 0x27; pe[5].peGreen = 0x3f; pe[5].peBlue = 0x91;
-        // Index 0x1d (pe[6]): 17 27 7b (local_4/3/2 in ASM)
+        // Index 0xFE (pe[6]): 17 27 7b
         pe[6].peRed = 0x17; pe[6].peGreen = 0x27; pe[6].peBlue = 0x7b;
 
-        SetPaletteEntries((HPALETTE)this->prog_palette, 0x17, 7, pe); // ASM says 7 entries in this block
+        SetPaletteEntries((HPALETTE)this->prog_palette, 0xF8, 7, pe); 
+        if (this->draw_system) {
+            this->draw_system->SetPalette(this->prog_palette);
+        }
     }
 
     return 1;

@@ -5,6 +5,7 @@
 #include <io.h>
 #include <fcntl.h>
 #include "../include/Res_file.h"
+#include "../include/custom_debug.h"
 
 // TODO: Move these to a common header if needed elsewhere
 void CreateIdentityPalette(void* pal);
@@ -88,12 +89,17 @@ void* ReadPalette(char* filename, long resource_id, int flag) {
         }
     }
 
-    if (!data) return nullptr;
+    if (!data) {
+        CUSTOM_DEBUG_LOG_FMT("ReadPalette: failed to load '%s' / id %d", filename ? filename : "(null)", (int)resource_id);
+        return nullptr;
+    }
 
     HPALETTE hPal = nullptr;
 
     // Check for "JASC-PAL" header
     if (strncmp((char*)data, "JASC-PAL", 8) == 0) {
+        CUSTOM_DEBUG_LOG_FMT("ReadPalette: parsing JASC-PAL '%s' / id %d", filename ? filename : "(null)", (int)resource_id);
+		CUSTOM_DEBUG_LOG_FMT("ReadPalette: raw header: %.20s", (char*)data);
         // Parse JASC-PAL format
         // Line 1: JASC-PAL
         // Line 2: 0100 (version)
@@ -130,7 +136,7 @@ void* ReadPalette(char* filename, long resource_id, int flag) {
     if (own_mem) free(data);
 
     if (hPal && flag) {
-        CreateIdentityPalette(hPal);
+        // CreateIdentityPalette(hPal);
     }
 
     return hPal;

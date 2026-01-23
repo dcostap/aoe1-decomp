@@ -176,6 +176,11 @@ void TDrawSystem::Paint(tagRECT* rect) {
 
     HDC hdcSurf;
     HRESULT hr = this->PrimarySurface->GetDC(&hdcSurf);
+    if (hr == DDERR_SURFACELOST) {
+        if (this->PrimarySurface->Restore() == DD_OK) {
+            hr = this->PrimarySurface->GetDC(&hdcSurf);
+        }
+    }
     if (SUCCEEDED(hr)) {
         HDC hdcWin = GetDC((HWND)this->Wnd);
         if (hdcWin) {
@@ -202,10 +207,19 @@ void TDrawSystem::Paint(tagRECT* rect) {
 void TDrawSystem::SetPalette(void* pal) {
     this->Pal = pal;
     PALETTEENTRY color_table[256];
+    memset(color_table, 0, sizeof(color_table));
     if (pal) {
-        GetPaletteEntries((HPALETTE)pal, 0, 256, color_table);
+        int retrieved = GetPaletteEntries((HPALETTE)pal, 0, 256, color_table);
+        CUSTOM_DEBUG_LOG_FMT("TDrawSystem::SetPalette: retrieved %d entries from HPALETTE %p", retrieved, pal);
+        if (retrieved > 0) {
+            CUSTOM_DEBUG_LOG_FMT("TDrawSystem::SetPalette: Entry 0: R=%d G=%d B=%d", (int)color_table[0].peRed, (int)color_table[0].peGreen, (int)color_table[0].peBlue);
+            for (int i = 0; i < 16; i++) {
+                CUSTOM_DEBUG_LOG_FMT("  Pal[%d]: R=%d G=%d B=%d", i, (int)color_table[i].peRed, (int)color_table[i].peGreen, (int)color_table[i].peBlue);
+            }
+            CUSTOM_DEBUG_LOG_FMT("TDrawSystem::SetPalette: Entry 255: R=%d G=%d B=%d", (int)color_table[255].peRed, (int)color_table[255].peGreen, (int)color_table[255].peBlue);
+        }
     } else {
-        memset(color_table, 0, sizeof(color_table));
+        CUSTOM_DEBUG_LOG("TDrawSystem::SetPalette: NULL HPALETTE provided");
     }
     this->ModifyPalette(0, 256, color_table);
 }
@@ -280,10 +294,10 @@ int TDrawArea::Init(TDrawSystem* system, void* wnd, int width, int height, int u
     ddsd.dwSize = sizeof(ddsd);
 
     HRESULT hr;
-    
+
     int actual_type_is_primary = is_primary;
-    if (system->Wnd) { 
-         actual_type_is_primary = 0; 
+    if (system->Wnd) {
+        actual_type_is_primary = 0;
     }
 
     if (actual_type_is_primary) {
@@ -298,11 +312,11 @@ int TDrawArea::Init(TDrawSystem* system, void* wnd, int width, int height, int u
         else ddsd.ddsCaps.dwCaps |= DDSCAPS_VIDEOMEMORY;
         ddsd.dwWidth = width;
         ddsd.dwHeight = height;
-        
+
         hr = system->DirDraw->CreateSurface(&ddsd, &system->PrimarySurface, NULL);
         this->DrawSurface = system->PrimarySurface;
     }
-    
+
     if (FAILED(hr)) return 0;
     return 1;
 }
@@ -331,19 +345,30 @@ void TDrawArea::PtrClear(tagRECT* rect) {}
 void TDrawArea::OverlayMemCopy(tagRECT* rect, TDrawArea* src, int x, int y) {}
 
 uchar* TDrawArea::Lock(char* name, int p2) {
-    if (!this->DrawSystem || !this->DrawSystem->PrimarySurface) return NULL;
+    if (!this->DrawSurface) return NULL;
     DDSURFACEDESC ddsd;
     memset(&ddsd, 0, sizeof(ddsd));
     ddsd.dwSize = sizeof(ddsd);
-    if (FAILED(this->DrawSystem->PrimarySurface->Lock(NULL, &ddsd, DDLOCK_WAIT, NULL))) return NULL;
+    HRESULT hr = this->DrawSurface->Lock(NULL, &ddsd, DDLOCK_WAIT, NULL);
+    if (hr == DDERR_SURFACELOST) {
+        if (this->DrawSurface->Restore() == DD_OK) {
+            hr = this->DrawSurface->Lock(NULL, &ddsd, DDLOCK_WAIT, NULL);
+        }
+    }
+    if (FAILED(hr)) return NULL;
+    static bool logged_lock = false;
+    if (!logged_lock) {
+        CUSTOM_DEBUG_LOG_FMT("TDrawArea::Lock: %s bpp=%lu pitch=%ld R=0x%08lx G=0x%08lx B=0x%08lx", name ? name : "(null)", (unsigned long)ddsd.ddpfPixelFormat.dwRGBBitCount, (long)ddsd.lPitch, (unsigned long)ddsd.ddpfPixelFormat.dwRBitMask, (unsigned long)ddsd.ddpfPixelFormat.dwGBitMask, (unsigned long)ddsd.ddpfPixelFormat.dwBBitMask);
+        logged_lock = true;
+    }
     this->Bits = (uchar*)ddsd.lpSurface;
     this->Pitch = ddsd.lPitch;
     return this->Bits;
 }
 
 void TDrawArea::Unlock(char* name) {
-    if (!this->DrawSystem || !this->DrawSystem->PrimarySurface) return;
-    this->DrawSystem->PrimarySurface->Unlock(NULL);
+    if (!this->DrawSurface) return;
+    this->DrawSurface->Unlock(NULL);
     this->Bits = NULL;
 }
 

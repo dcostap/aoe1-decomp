@@ -6,7 +6,7 @@ These rules exist to keep progress steady, builds stable, and the original infor
 
 ## Non-negotiables
 
-* `*.cpp.asm` is **immutable reference**. Never edit it.
+* `*.cpp.asm` is **immutable reference**. Never edit it. ALWAYS REFERENCE IT. ALWAYS GO BACK TO IT, TO REMEMBER THE TRUE BEHAVIOUR OF THE CODE.
 * `.h` files define **layout truth**. Keep size/offset/`static_assert(sizeof(...))` checks intact.
 * Prefer **small changes** that unblock the current goal. Don’t refactor for style.
 

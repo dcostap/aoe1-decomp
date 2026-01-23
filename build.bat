@@ -36,6 +36,9 @@ REM --- Create directories ---
 if not exist "%OBJ_DIR%" mkdir "%OBJ_DIR%"
 if not exist "%OUT_DIR%" mkdir "%OUT_DIR%"
 
+taskkill /im empiresx.exe /f >nul 2>nul
+del /f /q "%OUT_DIR%\empiresx.exe" >nul 2>nul
+
 REM --- Sanity checks ---
 if not exist "%DP_INC%\dplay.h" (
     echo ERROR: dplay.h not found at "%DP_INC%\dplay.h"

@@ -162,6 +162,9 @@ int RESFILE_locate_resource(unsigned long type, unsigned long id, int* handle, i
                             *offset = *(int*)(resource_ptr + 4);
                             *size = *(int*)(resource_ptr + 8);
                             *data = curr->mapped_data;
+                            char type_str[5] = {0};
+                            memcpy(type_str, &type, 4);
+                            CUSTOM_DEBUG_LOG_FMT("RESFILE_locate_resource: found %s id %d in %s", type_str, (int)id, curr->filename);
                             return 1;
                         }
                         resource_ptr += 12;
@@ -196,6 +199,9 @@ int RESFILE_locate_resource(unsigned long type, unsigned long id, int* handle, i
                             *offset = res_offset;
                             *size = res_size;
                             *data = nullptr;
+                            char type_str[5] = {0};
+                            memcpy(type_str, &type, 4);
+                            CUSTOM_DEBUG_LOG_FMT("RESFILE_locate_resource: found %s id %d in %s (file mode)", type_str, (int)id, curr->filename);
                             return 1;
                         }
                     }

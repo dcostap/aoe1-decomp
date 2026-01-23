@@ -682,7 +682,10 @@ int RGE_Base_Game::setup_graphics_system() {
 
     if (panel_system) {
         panel_system->release_palette(this->prog_palette);
-        this->prog_palette = panel_system->get_palette(this->prog_info->pal_file, 50500);
+        this->prog_palette = panel_system->get_palette(this->prog_info->pal_file, 50501);
+        if (this->prog_palette) {
+            this->draw_system->SetPalette(this->prog_palette);
+        }
     }
 
     this->draw_area = ds->DrawArea;
@@ -698,7 +701,7 @@ int RGE_Base_Game::setup_graphics_system() {
 int RGE_Base_Game::setup_palette() {
     if (!this->prog_info || !panel_system) return 0;
 
-    void* pal = panel_system->get_palette(this->prog_info->pal_file, 50500); // 0xc544 = 50500
+    void* pal = panel_system->get_palette(this->prog_info->pal_file, 50501); // 0xc545 = 50501
     if (pal) {
         this->prog_palette = pal;
         return 1;

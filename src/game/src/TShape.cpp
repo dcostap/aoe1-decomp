@@ -2,6 +2,7 @@
 #include "../include/Res_file.h"
 #include "../include/custom_debug.h"
 #include "../include/TDrawArea.h"
+#include "../include/TDrawSystem.h"
 #include <string.h>
 #include <stdio.h>
 #include <io.h>
@@ -205,42 +206,270 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
         return 0; // Failure
     }
     
-    // For now, implement a PLACEHOLDER draw routine
-    // Real implementation requires complex assembly for SLP decompression and clipping
-    
-    // Calculate simple bounds if possible
-    int width = 20;
-    int height = 20;
-    int x_origin = 10;
-    int y_origin = 10;
-    
-    if (this->FShape && this->shape_info) {
-        // SLP format
-        Shape_Info* info = &this->shape_info[shape_idx];
-        width = info->Width;
-        height = info->Height;
-        x_origin = info->Hotspot_X;
-        y_origin = info->Hotspot_Y;
-    } 
-    
-    // Adjust x,y by origin (SLP hotspots are offsets from top-left)
-    int draw_x = (int)x - x_origin;
-    int draw_y = (int)y - y_origin;
-    
-    if (draw_area) {
-        // Draw a colored rectangle representing the sprite
-        // Use a color that stands out but varies by shape index to distinguish them
-        unsigned char color = (unsigned char)(240 + (shape_idx % 16)); 
-        
-        // Debug logging for the first few draws
-        static int log_count = 0;
-        if (log_count < 5) {
-            CUSTOM_DEBUG_LOG_FMT("shape_draw: x=%d y=%d w=%d h=%d idx=%d", draw_x, draw_y, width, height, (int)shape_idx);
-            log_count++;
-        }
-
-        draw_area->FillRect(draw_x, draw_y, draw_x + width, draw_y + height, color);
+    // Get shape info
+    if (!this->FShape || !this->shape_info) {
+        CUSTOM_DEBUG_LOG("shape_draw: No FShape or shape_info");
+        return 0;
     }
     
+    Shape_Info* info = &this->shape_info[shape_idx];
+    long width = info->Width;
+    long height = info->Height;
+    long x_origin = info->Hotspot_X;
+    long y_origin = info->Hotspot_Y;
+    
+    // Adjust x,y by origin (SLP hotspots are offsets from top-left)
+    long draw_x = x - x_origin;
+    long draw_y = y - y_origin;
+    
+    if (!draw_area) {
+        return 0;
+    }
+    
+    // Lock the draw area surface
+    uchar* dest_bits = draw_area->Lock("shape_draw", 0);
+    if (!dest_bits) {
+        CUSTOM_DEBUG_LOG("shape_draw: Failed to lock draw area");
+        return 0;
+    }
+    long dest_pitch = draw_area->Pitch;
+    int da_w = draw_area->Width;
+    int da_h = draw_area->Height;
+    int bytes_per_pixel = 1;
+    if (da_w > 0 && dest_pitch > 0) {
+        bytes_per_pixel = dest_pitch / da_w;
+        if (bytes_per_pixel <= 0) bytes_per_pixel = 1;
+    }
+    tagPALETTEENTRY* pal = nullptr;
+    if (draw_area->DrawSystem) {
+        pal = draw_area->DrawSystem->palette;
+    }
+
+    unsigned char* slp_base = (unsigned char*)this->FShape;
+    unsigned long* row_offsets = (unsigned long*)(slp_base + info->Shape_Data_Offsets);
+    unsigned short* outline = (unsigned short*)(slp_base + info->Shape_Outline_Offset);
+    unsigned char* xlate = param_7;
+
+    for (long row = 0; row < height; row++) {
+        long dst_y = draw_y + row;
+        if (dst_y < 0 || dst_y >= da_h) {
+            continue;
+        }
+
+        unsigned short left = outline[row * 2 + 0];
+        if (left & 0x8000) {
+            continue;
+        }
+
+        unsigned short right = outline[row * 2 + 1];
+
+        left = (unsigned short)(left & 0x7FFF);
+        right = (unsigned short)(right & 0x7FFF);
+
+        unsigned long row_off = row_offsets[row];
+        unsigned char* src = slp_base + row_off;
+
+        long dst_x = draw_x + (long)left;
+        long max_x = draw_x + width - 1 - (long)right;
+        uchar* dst_row = dest_bits + dst_y * dest_pitch;
+        unsigned long* dst_row32 = (unsigned long*)dst_row;
+        static int shape_draw_log_once = 0;
+        if (shape_draw_log_once == 0 && row == 0) {
+            CUSTOM_DEBUG_LOG_FMT("shape_draw bounds: idx=%ld w=%ld h=%ld left=%u right=%u dst_x=%ld max_x=%ld span=%ld", shape_idx, width, height, (unsigned int)left, (unsigned int)right, dst_x, max_x, (max_x - dst_x + 1));
+            shape_draw_log_once = 1;
+        }
+
+        for (;;) {
+            unsigned char cmd = *src++;
+            unsigned char op = (unsigned char)(cmd & 0x0F);
+
+            if (op == 0x0F) {
+                break;
+            }
+
+            if (dst_x > max_x) {
+                break;
+            }
+
+            if (op == 0x02) {
+                unsigned int len = (unsigned int)(((cmd & 0xF0) << 4) | (*src++));
+                unsigned int to_copy = len;
+                if (dst_x + (long)to_copy - 1 > max_x) {
+                    to_copy = (unsigned int)(max_x - dst_x + 1);
+                }
+                for (unsigned int i = 0; i < to_copy; i++) {
+                    unsigned char px = *src++;
+                    unsigned char idx = xlate ? xlate[px] : px;
+                    if (dst_x >= 0 && dst_x < da_w) {
+                        if (bytes_per_pixel == 4 && pal) {
+                            tagPALETTEENTRY pe = pal[idx];
+                            unsigned int rgb = (unsigned int)((pe.peRed << 16) | (pe.peGreen << 8) | pe.peBlue);
+                            if (rgb == 0 && idx != 0 && pe.peRed == 0 && pe.peGreen == 0 && pe.peBlue == 0) {
+                                rgb = (unsigned int)((idx << 16) | (idx << 8) | idx);
+                            }
+                            dst_row32[dst_x] = (unsigned long)rgb;
+                            
+                            static int pixel_log_count = 0;
+                            if (pixel_log_count < 5 && row == height / 2 && i == to_copy / 2) {
+                                CUSTOM_DEBUG_LOG_FMT("shape_draw pixel diag: idx=%d palR=%d palG=%d palB=%d -> rgb=0x%08X", (int)idx, (int)pe.peRed, (int)pe.peGreen, (int)pe.peBlue, rgb);
+                                pixel_log_count++;
+                            }
+                        } else {
+                            dst_row[dst_x] = idx;
+                        }
+                    }
+                    dst_x++;
+                }
+                if (to_copy < len) {
+                    src += (len - to_copy);
+                }
+                continue;
+            }
+
+            if (op == 0x03) {
+                unsigned int len = (unsigned int)(((cmd & 0xF0) << 4) | (*src++));
+                dst_x += (long)len;
+                continue;
+            }
+
+            if (op == 0x07) {
+                unsigned int len = (unsigned int)(cmd >> 4);
+                if (len == 0) {
+                    len = (unsigned int)(*src++);
+                }
+                unsigned char px = *src++;
+                unsigned char out_px = xlate ? xlate[px] : px;
+                unsigned int to_write = len;
+                if (dst_x + (long)to_write - 1 > max_x) {
+                    to_write = (unsigned int)(max_x - dst_x + 1);
+                }
+                for (unsigned int i = 0; i < to_write; i++) {
+                    if (dst_x >= 0 && dst_x < da_w) {
+                        if (bytes_per_pixel == 4 && pal) {
+                            tagPALETTEENTRY pe = pal[out_px];
+                            unsigned int rgb = (unsigned int)((pe.peRed << 16) | (pe.peGreen << 8) | pe.peBlue);
+                            if (rgb == 0 && out_px != 0 && pe.peRed == 0 && pe.peGreen == 0 && pe.peBlue == 0) {
+                                rgb = (unsigned int)((out_px << 16) | (out_px << 8) | out_px);
+                            }
+                            dst_row32[dst_x] = (unsigned long)rgb;
+                        } else {
+                            dst_row[dst_x] = out_px;
+                        }
+                    }
+                    dst_x++;
+                }
+                continue;
+            }
+
+            if (op == 0x06 || op == 0x0B || op == 0x0E) {
+                unsigned int len = (unsigned int)(cmd >> 4);
+                if (len == 0) {
+                    len = (unsigned int)(*src++);
+                }
+                unsigned int to_copy = len;
+                if (dst_x + (long)to_copy - 1 > max_x) {
+                    to_copy = (unsigned int)(max_x - dst_x + 1);
+                }
+                for (unsigned int i = 0; i < to_copy; i++) {
+                    unsigned char px = *src++;
+                    unsigned char idx = xlate ? xlate[px] : px;
+                    if (dst_x >= 0 && dst_x < da_w) {
+                        if (bytes_per_pixel == 4 && pal) {
+                            tagPALETTEENTRY pe = pal[idx];
+                            unsigned int rgb = (unsigned int)((pe.peRed << 16) | (pe.peGreen << 8) | pe.peBlue);
+                            if (rgb == 0 && idx != 0 && pe.peRed == 0 && pe.peGreen == 0 && pe.peBlue == 0) {
+                                rgb = (unsigned int)((idx << 16) | (idx << 8) | idx);
+                            }
+                            dst_row32[dst_x] = (unsigned long)rgb;
+                        } else {
+                            dst_row[dst_x] = idx;
+                        }
+                    }
+                    dst_x++;
+                }
+                if (to_copy < len) {
+                    src += (len - to_copy);
+                }
+                continue;
+            }
+
+            if (op == 0x0A) {
+                unsigned int len = (unsigned int)(cmd >> 4);
+                if (len == 0) {
+                    len = (unsigned int)(*src++);
+                }
+                unsigned char px0 = *src++;
+                unsigned char px1 = *src++;
+                unsigned char out0 = xlate ? xlate[px0] : px0;
+                unsigned char out1 = xlate ? xlate[px1] : px1;
+                unsigned int to_write = len;
+                if (dst_x + (long)to_write - 1 > max_x) {
+                    to_write = (unsigned int)(max_x - dst_x + 1);
+                }
+                for (unsigned int i = 0; i < to_write; i++) {
+                    unsigned char out_px = (i & 1) ? out1 : out0;
+                    if (dst_x >= 0 && dst_x < da_w) {
+                        if (bytes_per_pixel == 4 && pal) {
+                            tagPALETTEENTRY pe = pal[out_px];
+                            unsigned int rgb = (unsigned int)((pe.peRed << 16) | (pe.peGreen << 8) | pe.peBlue);
+                            if (rgb == 0 && out_px != 0 && pe.peRed == 0 && pe.peGreen == 0 && pe.peBlue == 0) {
+                                rgb = (unsigned int)((out_px << 16) | (out_px << 8) | out_px);
+                            }
+                            dst_row32[dst_x] = (unsigned long)rgb;
+                        } else {
+                            dst_row[dst_x] = out_px;
+                        }
+                    }
+                    dst_x++;
+                }
+                continue;
+            }
+
+            if ((op & 0x03) == 0x00) {
+                unsigned int len = (unsigned int)(cmd >> 2);
+                unsigned int to_copy = len;
+                if (dst_x + (long)to_copy - 1 > max_x) {
+                    to_copy = (unsigned int)(max_x - dst_x + 1);
+                }
+                for (unsigned int i = 0; i < to_copy; i++) {
+                    unsigned char px = *src++;
+                    unsigned char idx = xlate ? xlate[px] : px;
+                    if (dst_x >= 0 && dst_x < da_w) {
+                        if (bytes_per_pixel == 4 && pal) {
+                            tagPALETTEENTRY pe = pal[idx];
+                            unsigned int rgb = (unsigned int)((pe.peRed << 16) | (pe.peGreen << 8) | pe.peBlue);
+                            if (rgb == 0 && idx != 0 && pe.peRed == 0 && pe.peGreen == 0 && pe.peBlue == 0) {
+                                rgb = (unsigned int)((idx << 16) | (idx << 8) | idx);
+                            }
+                            dst_row32[dst_x] = (unsigned long)rgb;
+                        } else {
+                            dst_row[dst_x] = idx;
+                        }
+                    }
+                    dst_x++;
+                }
+                if (to_copy < len) {
+                    src += (len - to_copy);
+                }
+                continue;
+            }
+
+            if ((op & 0x03) == 0x01) {
+                unsigned int len = (unsigned int)(cmd >> 2);
+                dst_x += (long)len;
+                continue;
+            }
+
+            static int shape_draw_unknown_once = 0;
+            if (shape_draw_unknown_once == 0) {
+                CUSTOM_DEBUG_LOG_FMT("shape_draw unknown: idx=%ld row=%ld cmd=0x%02X op=0x%X dst_x=%ld", shape_idx, row, (unsigned int)cmd, (unsigned int)op, dst_x);
+                shape_draw_unknown_once = 1;
+            }
+
+            break;
+        }
+    }
+
+    draw_area->Unlock("shape_draw");
     return 1; // Success
 }

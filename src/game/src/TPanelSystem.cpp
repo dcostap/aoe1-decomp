@@ -1,11 +1,13 @@
 #include <windows.h>
 #include <string.h>
 #include "../include/TPanelSystem.h"
+#include "../include/custom_debug.h"
 
 // External declaration from Dib.cpp
 void* ReadPalette(char* filename, long resource_id, int flag);
 
 void* TPanelSystem::get_palette(char* file, long id) {
+    CUSTOM_DEBUG_LOG_FMT("TPanelSystem::get_palette: requested file=%s, id=%d", file ? file : "NULL", (int)id);
     char file_name_upper[260];
     
     if (file) {
