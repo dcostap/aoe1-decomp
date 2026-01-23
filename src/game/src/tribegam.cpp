@@ -8,10 +8,13 @@
 #include "../include/globals.h"
 #include "../include/screens.h"
 #include "../include/TRIBE_World.h"
+#include "../include/TDrawSystem.h"
+#include "../include/TDrawArea.h"
+#include "../include/custom_debug.h"
 #include <windows.h>
 
-#define CMD_LINE ((char*)((unsigned char*)this->prog_info + 0x518))
-#define RESOURCE_DIR ((char*)((unsigned char*)this->prog_info + 0xF26))
+// Static global to track current screen until TPanel_System is implemented
+static TPanel* gCurrentScreen = nullptr;
 
 TRIBE_Game::TRIBE_Game(RGE_Prog_Info* info, int param_2) : RGE_Base_Game(info, 0) {
     // tribegam.cpp:263
@@ -92,15 +95,15 @@ int TRIBE_Game::setup() {
         return 0;
     }
 
-    if (strstr(CMD_LINE, "makeres") || strstr(CMD_LINE, "Makeres") || strstr(CMD_LINE, "MAKERES")) {
-        RESFILE_build_res_file(RESOURCE_DIR, "resource\\", "graphics.rm");
-        RESFILE_build_res_file(RESOURCE_DIR, "resource\\", "sounds.rm");
-        RESFILE_build_res_file(RESOURCE_DIR, "resource\\", "interfac.rm");
+    if (strstr(this->prog_info->cmd_line, "makeres") || strstr(this->prog_info->cmd_line, "Makeres") || strstr(this->prog_info->cmd_line, "MAKERES")) {
+        RESFILE_build_res_file(this->prog_info->resource_dir, "resource\\", "graphics.rm");
+        RESFILE_build_res_file(this->prog_info->resource_dir, "resource\\", "sounds.rm");
+        RESFILE_build_res_file(this->prog_info->resource_dir, "resource\\", "interfac.rm");
     }
 
-    RESFILE_open_new_resource_file(RESOURCE_DIR, "sounds.drs", "tribe", 1);
-    RESFILE_open_new_resource_file(RESOURCE_DIR, "graphics.drs", "tribe", 0);
-    RESFILE_open_new_resource_file(RESOURCE_DIR, "Interfac.drs", "tribe", 0);
+    RESFILE_open_new_resource_file(this->prog_info->resource_dir, "sounds.drs", "tribe", 1);
+    RESFILE_open_new_resource_file(this->prog_info->resource_dir, "graphics.drs", "tribe", 0);
+    RESFILE_open_new_resource_file(this->prog_info->resource_dir, "Interfac.drs", "tribe", 0);
 
     RESFILE_open_new_resource_file("data\\", "sounds.drs", "tribe", 1);
     RESFILE_open_new_resource_file("data\\", "graphics.drs", "tribe", 0);
@@ -112,9 +115,21 @@ int TRIBE_Game::setup() {
         return 0;
     }
 
+    // Set initial game mode to Menu (2)
+    this->game_mode = 2;
+
+    // Create and initialize the main menu screen
+    gCurrentScreen = new TRIBE_Screen_Main_Menu();
+    if (gCurrentScreen) {
+        gCurrentScreen->render_area = this->draw_area;
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("Main menu screen created and linked to draw_area");
+CUSTOM_DEBUG_END
+    }
+
     // Command line STRING= handler (ASM 0x0052194a)
     char cmd_line_str[260];
-    strncpy(cmd_line_str, CMD_LINE, 255);
+    strncpy(cmd_line_str, this->prog_info->cmd_line, 255);
     cmd_line_str[255] = '\0';
     CharUpperA(cmd_line_str);
     
@@ -139,23 +154,8 @@ int TRIBE_Game::setup() {
         return 0;
     }
 
-    // Palette setup (ASM 0x00521a55)
-    if (this->prog_palette) {
-        PALETTEENTRY pe[39];
-        memset(pe, 0, sizeof(pe));
-        
-        // ASM hardcoded values at 0x00521A55
-        // This is a partial manual mapping of the push/mov sequence in ASM
-        pe[0].peRed = 0x17; pe[0].peGreen = 0x27; pe[0].peBlue = 0x7c; 
-        pe[1].peRed = 0x17; pe[1].peGreen = 0x27; pe[1].peBlue = 0x90;
-        pe[2].peRed = 0x5f; pe[2].peGreen = 0x9f; pe[2].peBlue = 0x00;
-        pe[3].peRed = 0x57; pe[3].peGreen = 0xb4; pe[3].peBlue = 0x00;
-        pe[4].peRed = 0x5f; pe[4].peGreen = 0xa0; pe[4].peBlue = 0x00;
-        pe[5].peRed = 0x27; pe[5].peGreen = 0x91; pe[5].peBlue = 0x00;
-        pe[6].peRed = 0x17; pe[6].peGreen = 0x27; pe[6].peBlue = 0x00;
-        
-        SetPaletteEntries((HPALETTE)this->prog_palette, 0x17, 39, pe); 
-    }
+    // Simplified selection of mouse click tables
+    // (Palette setup removed and moved to setup_palette override)
 
     this->input_disabled_window = CreateWindowExA(0, "STATIC", "InputDisabledWindow", WS_CHILD, 0, 0, 1, 1, 
         (HWND)this->prog_window, NULL, (HINSTANCE)this->prog_info->instance, NULL);
@@ -215,7 +215,7 @@ FINAL_SETUP:
     }
 
     char options_log[1024];
-    sprintf(options_log, "options=%s", CMD_LINE);
+    sprintf(options_log, "options=%s", this->prog_info->cmd_line);
     run_log(options_log, 0);
 
     return 1;
@@ -223,7 +223,7 @@ FINAL_SETUP:
 
 int TRIBE_Game::setup_cmd_options() {
     char cmd_line_upper[260];
-    strncpy(cmd_line_upper, CMD_LINE, 255);
+    strncpy(cmd_line_upper, this->prog_info->cmd_line, 255);
     cmd_line_upper[255] = '\0';
     _strupr(cmd_line_upper);
 
@@ -292,10 +292,14 @@ int TRIBE_Game::start_menu() {
     TRIBE_Screen_Main_Menu* menu = new TRIBE_Screen_Main_Menu();
     if (!menu) return 0;
     
+    // Setup the menu screen
+    menu->setup(this->draw_area, 0, 0, this->prog_info->main_wid, this->prog_info->main_hgt, 0);
+    gCurrentScreen = menu;
+
     // ASM logic checks for panel error states
     
     // Set current panel and change mode
-    // panel_system->setCurrentPanel("Main Menu", 0);
+    this->set_game_mode(2, 0); 
     this->set_prog_mode(2);
     
     // Play music etc.
@@ -304,7 +308,8 @@ int TRIBE_Game::start_menu() {
 
 int TRIBE_Game::start_video(const char* p1, int p2) {
     // TODO: implement logic from 0x00523910
-    return 0;
+    // Transition to main menu for now
+    return this->start_menu();
 }
 
 // Virtual overrides
@@ -358,20 +363,56 @@ int TRIBE_Game::processCheatCode(int p1, char* p2) { return 0; }
 int TRIBE_Game::setup_music_system() { return 1; }
 void TRIBE_Game::shutdown_music_system() {}
 
-int TRIBE_Game::setup_class() { return 1; }
-int TRIBE_Game::setup_main_window() { return 1; }
-int TRIBE_Game::setup_graphics_system() { return 1; }
-int TRIBE_Game::setup_palette() { return 1; }
-int TRIBE_Game::setup_mouse() { return 1; }
+// NOTE: These setup_* functions delegate to parent class per ASM analysis.
+// TRIBE_Game does NOT override initialization behavior - only TRIBE_Game::setup() is overridden.
+int TRIBE_Game::setup_class() { return RGE_Base_Game::setup_class(); }
+int TRIBE_Game::setup_main_window() { return RGE_Base_Game::setup_main_window(); }
+int TRIBE_Game::setup_graphics_system() { return RGE_Base_Game::setup_graphics_system(); }
+int TRIBE_Game::setup_palette() {
+    if (!RGE_Base_Game::setup_palette()) {
+        return 0;
+    }
+
+    // ASM hardcoded values for player colors (starts at index 0x17)
+    // tribegam.cpp:813-818
+    if (this->prog_palette) {
+        PALETTEENTRY pe[39];
+        memset(pe, 0, sizeof(pe));
+
+        // Note: The original ASM sets specific entries. We map them here from the assembly at 0x00522200.
+        // peFlags are set to 0.
+        
+        // Basic mapping based on assembly 0x00522200:
+        // Index 0x17 (pe[0]): 17 27 7c
+        pe[0].peRed = 0x17; pe[0].peGreen = 0x27; pe[0].peBlue = 0x7c;
+        // Index 0x18 (pe[1]): 27 3f 90
+        pe[1].peRed = 0x27; pe[1].peGreen = 0x3f; pe[1].peBlue = 0x90;
+        // Index 0x19 (pe[2]): 3f 5f 9f
+        pe[2].peRed = 0x3f; pe[2].peGreen = 0x5f; pe[2].peBlue = 0x9f;
+        // Index 0x1a (pe[3]): 57 7b b4
+        pe[3].peRed = 0x57; pe[3].peGreen = 0x7b; pe[3].peBlue = 0xb4;
+        // Index 0x1b (pe[4]): 3f 5f a0
+        pe[4].peRed = 0x3f; pe[4].peGreen = 0x5f; pe[4].peBlue = 0xa0;
+        // Index 0x1c (pe[5]): 27 3f 91
+        pe[5].peRed = 0x27; pe[5].peGreen = 0x3f; pe[5].peBlue = 0x91;
+        // Index 0x1d (pe[6]): 17 27 7b (local_4/3/2 in ASM)
+        pe[6].peRed = 0x17; pe[6].peGreen = 0x27; pe[6].peBlue = 0x7b;
+
+        SetPaletteEntries((HPALETTE)this->prog_palette, 0x17, 7, pe); // ASM says 7 entries in this block
+    }
+
+    return 1;
+}
+int TRIBE_Game::setup_mouse() { return RGE_Base_Game::setup_mouse(); }
 int TRIBE_Game::setup_registry() { return RGE_Base_Game::setup_registry(); }
 int TRIBE_Game::setup_debugging_log() { return RGE_Base_Game::setup_debugging_log(); }
-int TRIBE_Game::setup_chat() { return 1; }
-int TRIBE_Game::setup_comm() { return 1; }
-int TRIBE_Game::setup_sound_system() { return 1; }
-int TRIBE_Game::setup_fonts() { return 1; }
-int TRIBE_Game::setup_sounds() { return 1; }
-int TRIBE_Game::setup_shapes() { return 1; }
-int TRIBE_Game::setup_blank_screen() { return 1; }
+int TRIBE_Game::setup_chat() { return RGE_Base_Game::setup_chat(); }
+int TRIBE_Game::setup_comm() { return RGE_Base_Game::setup_comm(); }
+int TRIBE_Game::setup_sound_system() { return RGE_Base_Game::setup_sound_system(); }
+int TRIBE_Game::setup_fonts() { return RGE_Base_Game::setup_fonts(); }
+int TRIBE_Game::setup_sounds() { return RGE_Base_Game::setup_sounds(); }
+int TRIBE_Game::setup_shapes() { return RGE_Base_Game::setup_shapes(); }
+int TRIBE_Game::setup_blank_screen() { return RGE_Base_Game::setup_blank_screen(); }
 void TRIBE_Game::setup_timings() {}
 
 void TRIBE_Game::stop_sound_system() {}
@@ -387,14 +428,27 @@ RGE_Game_World* TRIBE_Game::create_world() {
     return this->world;
 }
 
-int TRIBE_Game::handle_message(struct tagMSG* p1) { return 0; }
-int TRIBE_Game::handle_idle() { return 0; }
+int TRIBE_Game::handle_message(struct tagMSG* p1) { return RGE_Base_Game::handle_message(p1); }
+int TRIBE_Game::handle_idle() {
+    if (gCurrentScreen) {
+        gCurrentScreen->draw();
+    }
+    if (this->draw_system) {
+        this->draw_system->Paint(NULL);
+    }
+    return 1;
+}
 int TRIBE_Game::handle_mouse_move(void* p1, uint p2, uint p3, long p4) { return 0; }
 int TRIBE_Game::handle_key_down(void* p1, uint p2, uint p3, long p4) { return 0; }
 int TRIBE_Game::handle_user_command(void* p1, uint p2, uint p3, long p4) { return 0; }
 int TRIBE_Game::handle_command(void* p1, uint p2, uint p3, long p4) { return 0; }
 int TRIBE_Game::handle_music_done(void* p1, uint p2, uint p3, long p4) { return 0; }
-int TRIBE_Game::handle_paint(void* p1, uint p2, uint p3, long p4) { return 0; }
+int TRIBE_Game::handle_paint(void* p1, uint p2, uint p3, long p4) {
+    if (this->draw_system) {
+        this->draw_system->Paint(NULL);
+    }
+    return 1;
+}
 int TRIBE_Game::handle_activate(void* p1, uint p2, uint p3, long p4) { return 0; }
 int TRIBE_Game::handle_init_menu(void* p1, uint p2, uint p3, long p4) { return 0; }
 int TRIBE_Game::handle_exit_menu(void* p1, uint p2, uint p3, long p4) { return 0; }
@@ -423,7 +477,7 @@ void TRIBE_Game::show_timings() {}
 void TRIBE_Game::show_comm() {}
 void TRIBE_Game::show_ai() {}
 
-int TRIBE_Game::setup_map_save_area() { return 1; }
+int TRIBE_Game::setup_map_save_area() { return RGE_Base_Game::setup_map_save_area(); }
 
 void TRIBE_Game::set_interface_messages() {
     // ASM 0x0052A210

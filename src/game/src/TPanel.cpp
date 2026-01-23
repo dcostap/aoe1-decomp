@@ -2,7 +2,17 @@
 #include <string.h>
 
 TPanel::~TPanel() {}
-long TPanel::setup(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5, uchar param_6) { return 0; }
+long TPanel::setup(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5, uchar param_6) { 
+    this->render_area = param_1;
+    this->pnl_x = param_2;
+    this->pnl_y = param_3;
+    this->pnl_wid = param_4;
+    this->pnl_hgt = param_5;
+    this->color = param_6;
+    this->visible = 1;
+    this->active = 1;
+    return 1; 
+}
 void TPanel::set_rect(tagRECT param_1) {}
 void TPanel::set_rect(long param_1, long param_2, long param_3, long param_4) {}
 void TPanel::set_color(uchar param_1) {}

@@ -1,3 +1,55 @@
+# =============================================================================
+# Age of Empires 1 Decompilation - Git Ignore
+# =============================================================================
+
+# Compiler outputs
 build/
+*.pdb
+*.obj
+*.idb
+*.ilk
+*.log
+build_log.txt
+
+# DirectPlay SDK (large, obtain separately)
 src/third_party/directplay/
+
+# Old/temporary folders
 OLD_IGNORE/
+
+# =============================================================================
+# dist/ - The Game Sandbox
+# =============================================================================
+# This is where game assets go and where the compiled exe runs.
+# We track the folder structure but ignore the large binary content.
+# After cloning, copy your full installed AoE:RoR game contents here.
+
+dist/*
+!dist/placeholder.txt
+
+# Explicitly ignore game binaries/assets in dist
+dist/*.exe
+dist/*.dll
+dist/*.drs
+dist/*.avi
+dist/*.dat
+dist/*.col
+dist/*.slp
+dist/data/
+dist/data2/
+dist/campaign/
+dist/scenario/
+dist/savegame/
+dist/sound/
+dist/avi/
+dist/decomp_debug.log
+
+# =============================================================================
+# IDE / User specific
+# =============================================================================
+.vs/
+*.user
+*.suo
+
+# Output exe if accidentally placed in root
+/empiresx.exe

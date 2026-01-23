@@ -15,6 +15,7 @@ public:
 class TRIBE_Screen_Main_Menu : public TEasy_Panel {
 public:
     TRIBE_Screen_Main_Menu();
+    virtual void draw() override;
 };
 
 class TRIBE_Screen_Main_Error : public TEasy_Panel {

@@ -1,0 +1,1 @@
+call build.bat && call run_built_game.bat

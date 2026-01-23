@@ -1,0 +1,7 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        ".\\run_built_game.bat": true,
+        "type": true,
+        ".\\build.bat": true
+    }
+}

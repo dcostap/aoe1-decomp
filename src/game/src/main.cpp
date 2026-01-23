@@ -3,6 +3,7 @@
 #include <string.h>
 #include "../include/TRIBE_Game.h"
 #include "../include/RGE_Prog_Info.h"
+#include "../include/custom_debug.h"
 
 // ASSUMPTION: GUID values are reconstructed from assembly initialization logic at 0x00454c17.
 // _TRIBE_GUID: F2E846A8-08F5-0797-11D1EBE2-60009B83
@@ -11,6 +12,12 @@ const _GUID AGE1_TRIBE_GUID = { 0xF2E846A8, 0x08F5, 0x0797, { 0x11, 0xD1, 0xEB, 
 const _GUID AGE1_ZONE_GUID  = { 0xF2E846AA, 0x08F5, 0x0797, { 0x11, 0xD1, 0xEB, 0xE2, 0x60, 0x00, 0x9B, 0x83 } };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_INIT();
+    CUSTOM_DEBUG_CHECKPOINT("WinMain Entry");
+    CUSTOM_DEBUG_LOG_FMT("CmdLine: %s", lpCmdLine ? lpCmdLine : "(null)");
+CUSTOM_DEBUG_END
+
     RGE_Prog_Info info;
     memset(&info, 0, sizeof(info));
 
@@ -85,8 +92,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     strcpy(info.data_dir, "data2\\");
     // main.cpp:157
     strcpy(info.sounds_dir, "sound\\");
-    // main.cpp:158
-    strcpy(info.resource_dir, "");
+    // main.cpp:158 - ASM at 0x454ea2 shows resource_dir = "data2\\"
+    strcpy(info.resource_dir, "data2\\");
     // main.cpp:159
     strcpy(info.save_dir, "savegame\\");
     // main.cpp:160
@@ -98,13 +105,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     strcpy(info.ai_dir, "data2\\");
     strcpy(info.avi_dir, "avi\\");
 
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_CHECKPOINT("Creating TRIBE_Game");
+CUSTOM_DEBUG_END
+
     int retval = 0;
     TRIBE_Game* game = new TRIBE_Game(&info, 1);
     if (game) {
+CUSTOM_DEBUG_BEGIN
+        int err = game->get_error_code();
+        CUSTOM_DEBUG_LOG_FMT("TRIBE_Game created, error_code=%d", err);
+CUSTOM_DEBUG_END
         if (game->get_error_code() == 0) {
+CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_CHECKPOINT("Starting game->run()");
+CUSTOM_DEBUG_END
             retval = game->run();
         } else {
             int err = game->get_error_code();
+CUSTOM_DEBUG_BEGIN
+            CUSTOM_DEBUG_ERROR(err, "Game initialization failed");
+CUSTOM_DEBUG_END
             if (err != 4) {
                 char msg[256];
                 char title[256];
@@ -115,7 +136,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
             retval = err;
         }
         delete game;
+    } else {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_ERROR(-1, "Failed to allocate TRIBE_Game");
+CUSTOM_DEBUG_END
     }
     
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("WinMain returning %d", retval);
+    CUSTOM_DEBUG_SHUTDOWN();
+CUSTOM_DEBUG_END
     return retval;
 }

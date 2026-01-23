@@ -30,6 +30,7 @@ int video_codec_available = 0;
 int log_output = 0;
 
 int quick_start_game_mode = 0;
-int restore_mouse_after_paint = 1;
+int restoration_count = 0;
+unsigned char shape_file_first = 0;
 
 void run_log(char* param_1, int param_2) {}

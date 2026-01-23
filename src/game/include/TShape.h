@@ -42,6 +42,8 @@ public:
     long palette; // +0x4 (Size: 0x4)
 };
 
+class TDrawArea;
+
 class TShape {
 public:
     // Constructor/Destructor
@@ -52,6 +54,8 @@ public:
     int is_loaded();
     long shape_count();
     
+    unsigned char shape_draw(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5, unsigned char param_6, unsigned char* param_7);
+    
     // Members
     unsigned char* shape; // +0x0 (Size: 0x4)
     int load_type; // +0x4 (Size: 0x4)
@@ -61,5 +65,8 @@ public:
     Shape_Offsets* offsets; // +0x14 (Size: 0x4)
     SLhape_File_Header* FShape; // +0x18 (Size: 0x4)
     Shape_Info* shape_info; // +0x1C (Size: 0x4)
+    
+private:
+    unsigned char Check_shape(long param_1, char* param_2);
 };
 static_assert(sizeof(TShape) == 0x20, "Size mismatch");

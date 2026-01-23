@@ -4,7 +4,7 @@
 
 class RGE_Base_Game;
 class TRegistry;
-class TPanelSystem;
+struct TPanelSystem;
 struct TMousePointer;
 
 extern RGE_Base_Game* rge_base_game;
@@ -38,5 +38,6 @@ extern int log_output;
 
 extern int quick_start_game_mode;
 extern int restore_mouse_after_paint;
+extern unsigned char shape_file_first;
 
 void run_log(char* param_1, int param_2);

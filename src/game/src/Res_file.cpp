@@ -6,6 +6,9 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include "../include/Res_file.h"
+#include "../include/custom_debug.h"  // Must be after windows.h for MessageBox suppression
+
+#include <direct.h>
 
 static ResFile* resFileHead = nullptr;
 
@@ -19,8 +22,11 @@ void RESFILE_open_new_resource_file(char* path, char* filename, char* tag, int u
     if (use_mapping == 0) {
         HANDLE hFile = CreateFileA(fullPath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
         if (hFile == INVALID_HANDLE_VALUE) {
-            char errorMsg[300];
-            sprintf(errorMsg, "Error: Open_new_ResFile, mapped file %s not found.", path);
+            char errorMsg[512];
+            char cwd[260];
+            _getcwd(cwd, sizeof(cwd));
+            sprintf(errorMsg, "Error: Open_new_ResFile, file not found: [%s]\nPath arg: [%s]\nFilename arg: [%s]\nCWD: [%s]\nGLE: %lu", 
+                    fullPath, path, filename, cwd, GetLastError());
             MessageBoxA(NULL, errorMsg, "RESOURCE ERROR", MB_OK | MB_ICONERROR);
             return;
         }
@@ -50,17 +56,37 @@ void RESFILE_open_new_resource_file(char* path, char* filename, char* tag, int u
 
     strcpy(newRes->filename, filename);
     if (use_mapping != 0) {
+        // Non-mapped mode: open and read via file handle
         newRes->file_handle = _open(fullPath, _O_BINARY | _O_RDONLY);
         newRes->mapped_data = nullptr;
         newRes->base_pointer = nullptr;
+        
+        // For file-based access, we read header and validate
+        if (newRes->file_handle != -1) {
+            // Read header (0x40 bytes per ASM at 0047effa-0047f006)
+            char header[0x40];
+            _lseek(newRes->file_handle, 0, SEEK_SET);
+            int bytesRead = _read(newRes->file_handle, header, 0x40);
+            if (bytesRead == 0x40) {
+                // ASM compares tag at header+0x2c with param_3 (the tag)
+                if (strcmp(header + 0x2c, tag) != 0) {
+                    MessageBoxA(NULL, "Error: Open_ResFile, Corruption detected in resfile.", "RESOURCE ERROR", MB_OK | MB_ICONERROR);
+                }
+                // ASM compares version at header+0x28 with "1.00"
+                else if (strncmp(header + 0x28, "1.00", 4) != 0) {
+                    MessageBoxA(NULL, "Error: Open_ResFile, Resfile not correct.", "RESOURCE ERROR", MB_OK | MB_ICONERROR);
+                }
+            }
+        }
     } else {
+        // Mapped mode: use memory-mapped file
         newRes->file_handle = -1;
         newRes->mapped_data = mappedData;
         newRes->base_pointer = mappedData;
     }
     newRes->next = nullptr;
 
-    // Append to list
+    // Append to list (ASM at FUN_0047f076)
     if (!resFileHead) {
         resFileHead = newRes;
     } else {
@@ -69,17 +95,16 @@ void RESFILE_open_new_resource_file(char* path, char* filename, char* tag, int u
         curr->next = newRes;
     }
 
-    // Verification check for "1.00" version tag in header
+    // Validation for mapped files (ASM at 0047f09b-0047f121)
     if (newRes->base_pointer) {
-        if (strncmp((char*)newRes->base_pointer, "1.00", 4) != 0) {
+        unsigned char* base = (unsigned char*)newRes->base_pointer;
+        // ASM compares string at base+0x2c with the tag
+        if (strcmp((char*)(base + 0x2c), tag) != 0) {
             MessageBoxA(NULL, "Error: Open_ResFile, Corruption detected in resfile.", "RESOURCE ERROR", MB_OK | MB_ICONERROR);
         }
-    } else if (newRes->file_handle != -1) {
-        char header[4];
-        _lseek(newRes->file_handle, 0, SEEK_SET);
-        _read(newRes->file_handle, header, 4);
-        if (strncmp(header, "1.00", 4) != 0) {
-             MessageBoxA(NULL, "Error: Open_ResFile, Corruption detected in resfile.", "RESOURCE ERROR", MB_OK | MB_ICONERROR);
+        // ASM compares string at base+0x28 with "1.00"
+        else if (strncmp((char*)(base + 0x28), "1.00", 4) != 0) {
+            MessageBoxA(NULL, "Error: Open_ResFile, Resfile not correct.", "RESOURCE ERROR", MB_OK | MB_ICONERROR);
         }
     }
 }

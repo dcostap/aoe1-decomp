@@ -166,3 +166,68 @@ For each function you touch:
 * If blocked or uncertain on a key point: **ask the user**.
 * ALWAYS GO BACK TO THE ORIGINAL .cpp.asm to verify your work AND REMIND YOURSELF WHAT THE SOURCE OF TRUTH LOOKS LIKE. 
 * BOY SCOUT RULES APPLY: REVIEW EXISTING function implementations, read them, and even improve them. LEAVE IT BETTER THAN YOU FOUND IT.
+
+---
+
+## Custom Debug Infrastructure
+
+We have a custom debug system for **runtime debugging** (NOT in the original game):
+
+### Header: `include/custom_debug.h`
+
+Toggle: `#define CUSTOM_DEBUG_ENABLED 1` (set to 0 to disable all debug code)
+
+### Key Macros
+
+```cpp
+CUSTOM_DEBUG_INIT()           // Call once at startup 
+CUSTOM_DEBUG_SHUTDOWN()       // Call at exit
+CUSTOM_DEBUG_CHECKPOINT(name) // Mark execution phase
+CUSTOM_DEBUG_LOG(msg)         // Log a message
+CUSTOM_DEBUG_LOG_FMT(fmt,...) // Log with printf-style format
+CUSTOM_DEBUG_ERROR(code,desc) // Log error with code
+CUSTOM_DEBUG_WIN_ERROR(ctx)   // Capture Windows GetLastError()
+CUSTOM_DEBUG_FUNC_ENTER()     // Log function entry (uses __FUNCTION__)
+```
+
+### Block Markers
+
+Wrap custom debug code with these to clearly mark it as non-original:
+```cpp
+CUSTOM_DEBUG_BEGIN
+    // debug code here
+CUSTOM_DEBUG_END
+```
+
+### Output
+
+All output goes to `decomp_debug.log` in the working directory. Each line includes:
+- Timestamp (tick count)
+- Category (LOG, CHECKPOINT, ERROR, FUNC, WIN_ERROR)
+- Message
+
+### When to Use
+
+1. **Boot failures**: Add `CUSTOM_DEBUG_CHECKPOINT` at key setup phases
+2. **Error tracking**: Add `CUSTOM_DEBUG_ERROR` when error_code is set
+3. **Function tracing**: Add `CUSTOM_DEBUG_FUNC_ENTER()` to trace call flow
+4. **Windows errors**: Add `CUSTOM_DEBUG_WIN_ERROR("context")` after Windows API calls
+
+### Procedure for LLM Debugging
+
+When the exe crashes or fails:
+1. Run the exe
+2. Check `decomp_debug.log` for the last checkpoint/error
+3. Report the log contents to the agent for analysis
+
+Note: even tho this is Windows, `grep` is installed and in the PATH.
+
+---
+
+## Build & Assets
+
+* **Output**: `dist\empiresx.exe` (Run from `dist/` folder).
+* **Game Assets**: Assets (DRS, DLLs, etc.) are in `dist/`. `resource_dir` in `main.cpp` is set to `"."`.
+* **Resources**: `empires.rc` is compiled into the EXE for the `.rsrc` section and "AppIcon" (Fixes Error 1812).
+* **Graphics**: `TDrawSystem` is currently patched to use **Windowed mode** (`DDSCL_NORMAL`) and forced resolutions for stability.
+

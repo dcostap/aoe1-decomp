@@ -15,13 +15,16 @@
 #include "../include/RGE_Scenario.h"
 #include "../include/RGE_Scenario_Header.h"
 #include "../include/TPanel.h"
+#include "../include/TPanelSystem.h"
 #include "../include/debug_helpers.h"
 #include <windows.h>
 #include <stdio.h>
 #include <io.h>
 #include <timeapi.h>
+#include <direct.h>
 
 #include "../include/globals.h"
+#include "../include/custom_debug.h"
 
 LRESULT CALLBACK rge_base_game_wnd_proc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     if (rge_base_game) {
@@ -121,7 +124,7 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
     this->fonts = nullptr;
     
     GetCurrentDirectoryA(sizeof(this->work_dir), this->work_dir);
-    strcpy(this->string_dll_name, "language.dll");
+    strcpy(this->string_dll_name, "languagex.dll");
     
     this->master_obj_id = -1;
     this->terrain_id = -1;
@@ -186,7 +189,12 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
     }
 }
 
-RGE_Base_Game::~RGE_Base_Game() {}
+RGE_Base_Game::~RGE_Base_Game() {
+    if (panel_system) {
+        delete panel_system;
+        panel_system = nullptr;
+    }
+}
 
 // Stubs for now
 void RGE_Base_Game::setVersion(float p1) { rge_game_options.versionValue = p1; }
@@ -236,12 +244,14 @@ int RGE_Base_Game::setup_debugging_log() {
 }
 
 int RGE_Base_Game::setup() {
-    if (this->prog_info->check_multi_copies && !this->check_multi_copies()) {
-        this->error_code = 4;
-        return 0;
-    }
+    // ASM order: srand -> registry -> empires.exe check -> cmd_options -> language.dll -> memory check
+    //            -> music -> expiration -> multi_copies -> DX version -> system params -> setup chain
 
-    // Random seed initialization
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_FUNC_ENTER();
+CUSTOM_DEBUG_END
+
+    // Random seed initialization (ASM 0x0041bacb)
     debug_srand("C:\\msdev\\work\\age1_x1\\basegame.cpp", 522, debug_timeGetTime("C:\\msdev\\work\\age1_x1\\basegame.cpp", 522));
 
     // Registry settings
@@ -298,8 +308,15 @@ int RGE_Base_Game::setup() {
     }
 
     // Check if empires.exe exists (minimal version check)
+    // NOTE: Also accept empiresx.exe for decompiled version
     struct _finddata_t file_info;
-    if (_findfirst("empires.exe", &file_info) == -1) {
+    if (_findfirst("empires.exe", &file_info) == -1 &&
+        _findfirst("empiresx.exe", &file_info) == -1) {
+CUSTOM_DEBUG_BEGIN
+        char cwd[260];
+        _getcwd(cwd, sizeof(cwd));
+        CUSTOM_DEBUG_LOG_FMT("Failed empires.exe check. CWD: %s", cwd);
+CUSTOM_DEBUG_END
         this->error_code = 0x17;
         return 0;
     }
@@ -310,8 +327,12 @@ int RGE_Base_Game::setup() {
         return 0;
     }
 
-    // Load language.dll
+    // Load language.dll (or languagex.dll for expansion)
     StringTable = LoadLibraryA("language.dll");
+    if (!StringTable) {
+        // Try expansion DLL name
+        StringTable = LoadLibraryA("languagex.dll");
+    }
     if (!StringTable) {
         this->error_code = 1;
         return 0;
@@ -331,19 +352,28 @@ int RGE_Base_Game::setup() {
         // ...
     }
 
-    // Expiration check
+    // Expiration check (ASM 0x0041bd56)
     if (this->prog_info->check_expiration && !this->check_expiration()) {
         this->error_code = 3;
         return 0;
     }
 
-    // DX Version check
-    unsigned long dx_version, dx_platform;
-    // GetDXVersion(&dx_version, &dx_platform); // Stubbed for now
-    // if (dx_version < 0x501) {
-    //     this->error_code = 0x14;
-    //     return 0;
-    // }
+    // Multi-copy check (ASM 0x0041bd7a) - NOTE: this is after expiration check per ASM order
+    if (this->prog_info->check_multi_copies && !this->check_multi_copies()) {
+        this->error_code = 4;
+        return 0;
+    }
+
+    // DX Version check (ASM 0x0041bd9e-0x0041bdd2)
+    extern void GetDXVersion(unsigned long*, unsigned long*);
+    if (!this->check_prog_argument("NODXCHECK")) {
+        unsigned long dx_version, dx_platform;
+        GetDXVersion(&dx_version, &dx_platform);
+        if (dx_version < 0x501) {
+            this->error_code = 0x14;
+            return 0;
+        }
+    }
 
     // System Parameter updates (ASM 0x0041bdd7)
     SystemParametersInfoA(SPI_GETMOUSE, 0, &this->screen_saver_enabled, 0); // ESI + 0x38
@@ -359,6 +389,11 @@ int RGE_Base_Game::setup() {
     this->save_check_for_cd = this->check_for_cd(0); // ESI + 0x9AC
 
     // Initialization sequence
+    if (!panel_system) {
+        panel_system = new TPanelSystem;
+        memset(panel_system, 0, sizeof(TPanelSystem));
+    }
+
     if (!this->setup_class()) {
         this->error_code = 5;
         return 0;
@@ -480,8 +515,14 @@ int RGE_Base_Game::check_expiration() { return 1; }
 int RGE_Base_Game::check_multi_copies() { return 1; }
 
 // Virtual stubs to satisfy vftable
-long RGE_Base_Game::wnd_proc(void* p1, uint p2, uint p3, long p4) { return 0; }
-void RGE_Base_Game::set_prog_mode(int p1) {}
+long RGE_Base_Game::wnd_proc(void* p1, uint p2, uint p3, long p4) { 
+    // CUSTOM_DEBUG_LOG_FMT("wnd_proc: msg=%u", p2);
+    // TODO: Implement actual message handling logic
+    return DefWindowProcA((HWND)p1, p2, p3, p4); 
+}
+void RGE_Base_Game::set_prog_mode(int p1) {
+    this->prog_mode = p1;
+}
 void RGE_Base_Game::set_game_mode(int p1, int p2) {
     this->game_mode = p1;
     this->sub_game_mode = p2;
@@ -532,7 +573,11 @@ int RGE_Base_Game::setup_music_system() { return 1; }
 void RGE_Base_Game::shutdown_music_system() {}
 int RGE_Base_Game::setup_cmd_options() { return 1; }
 int RGE_Base_Game::setup_class() {
-    if (!this->prog_info) return 0;
+    CUSTOM_DEBUG_FUNC_ENTER();
+    if (!this->prog_info) {
+        CUSTOM_DEBUG_LOG("setup_class: prog_info is NULL");
+        return 0;
+    }
     
     WNDCLASSA cls;
     memset(&cls, 0, sizeof(cls));
@@ -547,30 +592,46 @@ int RGE_Base_Game::setup_class() {
     cls.lpszMenuName = NULL;
     cls.lpszClassName = (char*)this->prog_info + 0x645;
     
+    CUSTOM_DEBUG_LOG_FMT("setup_class: className='%s'", cls.lpszClassName);
+    
     if (RegisterClassA(&cls)) {
+        CUSTOM_DEBUG_LOG("setup_class: RegisterClassA succeeded");
         return 1;
     }
+    CUSTOM_DEBUG_WIN_ERROR("RegisterClassA");
     return 0;
 }
 
 int RGE_Base_Game::setup_main_window() {
-    if (!this->prog_info) return 0;
+    CUSTOM_DEBUG_FUNC_ENTER();
+    if (!this->prog_info) {
+        CUSTOM_DEBUG_LOG("setup_main_window: prog_info is NULL");
+        return 0;
+    }
 
     int screen_wid = GetSystemMetrics(SM_CXSCREEN);
     int screen_hgt = GetSystemMetrics(SM_CYSCREEN);
     
-    DWORD style;
-    if (!this->prog_info->full_screen || (screen_wid == this->prog_info->main_wid && screen_hgt == this->prog_info->main_hgt)) {
-         style = WS_POPUP | WS_VISIBLE | WS_SYSMENU | WS_MINIMIZEBOX;
-    } else {
-         style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
-    }
+    CUSTOM_DEBUG_LOG_FMT("setup_main_window: screen=%dx%d, main=%ldx%ld", 
+                         screen_wid, screen_hgt, this->prog_info->main_wid, this->prog_info->main_hgt);
     
-    this->prog_window = CreateWindowExA(0, (char*)this->prog_info + 0x645, (char*)this->prog_info + 0x7A, style, 
+    DWORD style = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
+    CUSTOM_DEBUG_LOG_FMT("setup_main_window: forced style 0x%lx", style);
+    
+    const char* className = (char*)this->prog_info + 0x645;
+    const char* windowTitle = (char*)this->prog_info + 0x7A;
+    CUSTOM_DEBUG_LOG_FMT("setup_main_window: className='%s', title='%s'", className, windowTitle);
+    
+    this->prog_window = CreateWindowExA(0, className, windowTitle, style, 
                                         0, 0, this->prog_info->main_wid, this->prog_info->main_hgt, 
                                         NULL, NULL, (HINSTANCE)this->prog_info->instance, this);
                                         
-    if (!this->prog_window) return 0;
+    if (!this->prog_window) {
+        CUSTOM_DEBUG_WIN_ERROR("CreateWindowExA");
+        return 0;
+    }
+    
+    CUSTOM_DEBUG_LOG("setup_main_window: window created successfully");
 
     // Adjust window size if not in window mode to ensure it covers the screen correctly
     if (this->prog_info->full_screen) {
@@ -590,16 +651,12 @@ int RGE_Base_Game::setup_main_window() {
 // Graphics System Setup
 int RGE_Base_Game::setup_graphics_system() {
     int draw_type = 0;
-    int draw_mode = 0; // 0 = default
-    // ERROR FIX: game_mode is in RGE_Base_Game, not prog_info
+    int draw_mode = 0;
     if (this->game_mode == 2) draw_type = 1; 
     if (this->prog_info->full_screen) draw_mode = 1;
 
-    TDrawSystem* ds = new TDrawSystem(); // 0x41e9db
-    if (!ds) {
-        this->draw_system = nullptr;
-        return 0;
-    }
+    TDrawSystem* ds = new TDrawSystem();
+    if (!ds) return 0;
     this->draw_system = ds;
 
     ds->CheckAvailModes(1);
@@ -608,52 +665,45 @@ int RGE_Base_Game::setup_graphics_system() {
     if (this->prog_info->main_wid) w = this->prog_info->main_wid;
     if (this->prog_info->main_hgt) h = this->prog_info->main_hgt;
 
-    if (ds->IsModeAvail(w, h, 8)) {
-        // Mode is available
-    } else if (ds->IsModeAvail(640, 480, 8)) {
-        w = 640; h = 480;
-        this->prog_info->main_wid = 640;
-        this->prog_info->main_hgt = 480;
-    } else {
-        // Fallback or error
+    if (!ds->IsModeAvail(w, h, 8)) {
+        if (ds->IsModeAvail(640, 480, 8)) {
+            w = 640; h = 480;
+            this->prog_info->main_wid = 640;
+            this->prog_info->main_hgt = 480;
+        } else {
+            return 0;
+        }
     }
 
-    // ERROR FIX: Init takes 8 args, passed 8. use_system_memory is NOT in RGE_Prog_Info, check RGE_Base_Game or pass 0.
-    // TDrawSystem::Init(Inst, Wnd, Pal, Mode, Err, W, H, Flags)
-    if (!ds->Init(this->prog_info->instance, this->prog_window, NULL, 
-                  (uchar)draw_type, (uchar)draw_mode, w, h, 
-                  0)) { // Assuming 0 for flags for now
+    if (!ds->Init(this->prog_info->instance, this->prog_window, this->prog_palette, 
+                  (uchar)draw_type, (uchar)draw_mode, w, h, 0)) {
         return 0;
     }
 
-    // Palette handling
-    if (this->prog_palette) {
-        // TPanelSystem::release_palette call if needed
-    }
-    // this->prog_palette = TPanelSystem::get_palette(0xc544); // Stubbed
-
-    TDrawArea* da = new TDrawArea("Primary");
-    if (!da) return 0;
-    this->draw_area = da;
-
-    // ERROR FIX: TDrawArea::Init(System, Wnd, W, H, Trans, Primary, SysMem) - 7 args
-    if (!da->Init(ds, this->prog_window, w, h, 0, 1, 0)) { // Assuming 0 for use_system_memory
-        return 0;
+    if (panel_system) {
+        panel_system->release_palette(this->prog_palette);
+        this->prog_palette = panel_system->get_palette(this->prog_info->pal_file, 50500);
     }
 
-    // setup_view, setup_map would go here
+    this->draw_area = ds->DrawArea;
+    if (this->draw_area) {
+        this->draw_area->Clear(NULL);
+    }
+    
+    this->draw_system->Paint(NULL);
 
     return 1;
 }
 
 int RGE_Base_Game::setup_palette() {
-    // Stub: TPanelSystem::get_palette integration needed
-    // void* pal = TPanelSystem::get_palette((char*)0xc544 + 0x66e);
-    // if (pal) {
-    //     this->prog_palette = pal;
-    //     return 1;
-    // }
-    return 1;
+    if (!this->prog_info || !panel_system) return 0;
+
+    void* pal = panel_system->get_palette(this->prog_info->pal_file, 50500); // 0xc544 = 50500
+    if (pal) {
+        this->prog_palette = pal;
+        return 1;
+    }
+    return 0;
 }
 
 int RGE_Base_Game::setup_mouse() {
@@ -769,6 +819,8 @@ RGE_Game_World* RGE_Base_Game::create_world() {
     return this->world;
 }
 int RGE_Base_Game::run() {
+    // NOTE: Simplified message loop for initial boot. Original ASM handles more complex
+    // timer-based updates and additional game state checks in the full implementation.
     MSG msg;
 
     while (this->prog_info && (this->game_mode == 4 || this->game_mode == 2)) {
