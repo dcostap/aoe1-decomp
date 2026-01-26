@@ -1,0 +1,24 @@
+// Auto-generated decompiler unit: TRIBE_Screen_Info.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x0049D5E0
+void* TRIBE_Screen_Info::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TRIBE_Screen_Info::`scalar deleting destructor'(unsigned int)
+    //     */
+    // 
+    // void * __thiscall
+    // TRIBE_Screen_Info::_scalar_deleting_destructor_(TRIBE_Screen_Info *this,uint param_1)
+    // 
+    // {
+    //   ~TRIBE_Screen_Info(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

@@ -1,0 +1,67 @@
+// Auto-generated decompiler unit: bucket_052A.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x0052AB80
+void T_Scenario(T_Scenario* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall T_Scenario::~T_Scenario(void) */
+    // 
+    // void __thiscall T_Scenario::~T_Scenario(T_Scenario *this)
+    // 
+    // {
+    //   TPicture *this_00;
+    //   int *piVar1;
+    //   int iVar2;
+    //   
+    //   this->_padding_ = (int)&RGE_Scenario::_vftable_;
+    //   if ((undefined4 *)this->_padding_ != (undefined4 *)0x0) {
+    //     (*(code *)**(undefined4 **)this->_padding_)(1);
+    //     this->_padding_ = 0;
+    //   }
+    //   if (this->_padding_ != 0) {
+    //     free(this->_padding_);
+    //   }
+    //   if (this->_padding_ != 0) {
+    //     free(this->_padding_);
+    //   }
+    //   if (this->_padding_ != 0) {
+    //     free(this->_padding_);
+    //   }
+    //   if (this->_padding_ != 0) {
+    //     free(this->_padding_);
+    //   }
+    //   if (this->_padding_ != 0) {
+    //     free(this->_padding_);
+    //   }
+    //   operator_delete((void *)this->_padding_);
+    //   this_00 = (TPicture *)this->_padding_;
+    //   if (this_00 != (TPicture *)0x0) {
+    //     TPicture::~TPicture(this_00);
+    //     operator_delete(this_00);
+    //     this->_padding_ = 0;
+    //   }
+    //   piVar1 = &this->_padding_;
+    //   iVar2 = 0x10;
+    //   do {
+    //     operator_delete((void *)piVar1[-0x10]);
+    //     operator_delete((void *)*piVar1);
+    //     operator_delete((void *)piVar1[0x10]);
+    //     if (piVar1[0x20] != 0) {
+    //       free(piVar1[0x20]);
+    //     }
+    //     if (piVar1[0x30] != 0) {
+    //       free(piVar1[0x30]);
+    //     }
+    //     if (piVar1[0x40] != 0) {
+    //       free(piVar1[0x40]);
+    //     }
+    //     piVar1 = piVar1 + 1;
+    //     iVar2 = iVar2 + -1;
+    //   } while (iVar2 != 0);
+    //   return;
+    // }
+    // 
+    // 
+}
+

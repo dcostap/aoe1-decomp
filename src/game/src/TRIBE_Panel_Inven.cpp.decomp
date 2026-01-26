@@ -1,0 +1,24 @@
+// Auto-generated decompiler unit: TRIBE_Panel_Inven.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x0051A690
+void* TRIBE_Panel_Inven::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TRIBE_Panel_Inven::`scalar deleting destructor'(unsigned int)
+    //     */
+    // 
+    // void * __thiscall
+    // TRIBE_Panel_Inven::_scalar_deleting_destructor_(TRIBE_Panel_Inven *this,uint param_1)
+    // 
+    // {
+    //   ~TRIBE_Panel_Inven(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

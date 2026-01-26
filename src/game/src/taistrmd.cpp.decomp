@@ -1,0 +1,3298 @@
+// Auto-generated decompiler unit: taistrmd.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/taistrmd.cpp
+#include "../include/common.h"
+
+// Offset: 0x004E6E10
+undefined VictoryConditionRuleSystem(VictoryConditionRuleSystem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall VictoryConditionRuleSystem::VictoryConditionRuleSystem(void) */
+    // 
+    // void __thiscall
+    // VictoryConditionRuleSystem::VictoryConditionRuleSystem(VictoryConditionRuleSystem *this)
+    // 
+    // {
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->sn[0] = 0x22;
+    //   this->sn[1] = 0;
+    //   this->sn[2] = 0x42;
+    //   this->sn[3] = 2;
+    //   this->sn[4] = 2;
+    //   this->sn[5] = -1;
+    //   this->sn[6] = -1;
+    //   this->sn[7] = -1;
+    //   this->sn[8] = -1;
+    //   this->sn[9] = -1;
+    //   this->sn[10] = -1;
+    //   this->sn[0xb] = -1;
+    //   this->sn[0xc] = -1;
+    //   this->sn[0xd] = -1;
+    //   this->sn[0xe] = -1;
+    //   this->sn[0xf] = -1;
+    //   this->sn[0x10] = 4;
+    //   this->sn[0x11] = -1;
+    //   this->sn[0x12] = 4;
+    //   this->sn[0x13] = 0x32;
+    //   this->sn[0x14] = 0x32;
+    //   this->sn[0x15] = -1;
+    //   this->sn[0x16] = 0xc;
+    //   this->sn[0x17] = 10;
+    //   this->sn[0x18] = 0x4b;
+    //   this->sn[0x19] = 1;
+    //   this->sn[0x1a] = 10;
+    //   this->sn[0x1b] = -1;
+    //   this->sn[0x1c] = 4;
+    //   this->sn[0x1d] = 0x55;
+    //   this->sn[0x1e] = 0x46;
+    //   this->sn[0x1f] = 0x4b;
+    //   this->sn[0x20] = 100;
+    //   this->sn[0x21] = -1;
+    //   this->sn[0x22] = 0x32;
+    //   this->sn[0x23] = 0;
+    //   this->sn[0x24] = 3;
+    //   this->sn[0x25] = 0;
+    //   this->sn[0x26] = 0;
+    //   this->sn[0x27] = 0;
+    //   this->sn[0x28] = 0;
+    //   this->sn[0x29] = 4;
+    //   this->sn[0x2a] = 0;
+    //   this->sn[0x2b] = 1;
+    //   this->sn[0x2c] = 3;
+    //   this->sn[0x2d] = 0;
+    //   this->sn[0x2e] = 0x1e;
+    //   this->sn[0x2f] = 1;
+    //   this->sn[0x30] = 0x1e;
+    //   this->sn[0x31] = 3;
+    //   this->sn[0x32] = 0;
+    //   this->sn[0x33] = 0;
+    //   this->sn[0x34] = 0;
+    //   this->sn[0x35] = 0;
+    //   this->sn[0x36] = 0;
+    //   this->sn[0x37] = 0;
+    //   this->sn[0x38] = 7;
+    //   this->sn[0x39] = 3;
+    //   this->sn[0x3a] = 2;
+    //   this->sn[0x3b] = 1;
+    //   this->sn[0x3c] = 5;
+    //   this->sn[0x3d] = 1;
+    //   this->sn[0x3e] = 1;
+    //   this->sn[0x3f] = 2;
+    //   this->sn[0x40] = 0;
+    //   this->sn[0x41] = 0;
+    //   this->sn[0x42] = 0;
+    //   this->sn[0x43] = 0;
+    //   this->sn[0x44] = 0;
+    //   this->sn[0x45] = 0;
+    //   this->sn[0x46] = 0;
+    //   this->sn[0x47] = 1;
+    //   this->sn[0x48] = 2;
+    //   this->sn[0x49] = 0xc;
+    //   this->sn[0x4a] = 0x14;
+    //   this->sn[0x4b] = 3;
+    //   this->sn[0x4c] = 0xf;
+    //   this->sn[0x4d] = 0x32;
+    //   this->sn[0x4e] = 0;
+    //   this->sn[0x4f] = 0;
+    //   this->sn[0x50] = 0;
+    //   this->sn[0x51] = 0;
+    //   this->sn[0x52] = 0;
+    //   this->sn[0x53] = 0;
+    //   this->sn[0x54] = 4;
+    //   this->sn[0x55] = 2;
+    //   this->sn[0x56] = 0x19;
+    //   this->sn[0x57] = 100;
+    //   this->sn[0x58] = 3;
+    //   this->sn[0x59] = -0x19;
+    //   this->sn[0x5a] = 0;
+    //   this->sn[0x5b] = 100;
+    //   this->sn[0x5c] = 5;
+    //   this->sn[0x5d] = 1;
+    //   this->sn[0x5e] = 0;
+    //   this->sn[0x5f] = 0;
+    //   this->sn[0x60] = 0;
+    //   this->sn[0x61] = 0;
+    //   this->sn[0x62] = 1;
+    //   this->sn[99] = 10;
+    //   this->sn[100] = 3;
+    //   this->sn[0x65] = 1;
+    //   this->sn[0x66] = 0xf;
+    //   this->sn[0x67] = 0;
+    //   this->sn[0x68] = 0;
+    //   this->sn[0x69] = 0;
+    //   this->sn[0x6a] = -1;
+    //   this->sn[0x6b] = -1;
+    //   this->sn[0x6c] = -1;
+    //   this->sn[0x6d] = 0;
+    //   this->sn[0x6e] = 0;
+    //   this->sn[0x6f] = 0;
+    //   this->sn[0x70] = 300;
+    //   this->sn[0x71] = 0;
+    //   this->sn[0x72] = 0x19;
+    //   this->sn[0x73] = 10;
+    //   this->sn[0x74] = 10;
+    //   this->sn[0x75] = 0;
+    //   this->sn[0x76] = 0;
+    //   this->sn[0x77] = 0;
+    //   this->sn[0x78] = 0;
+    //   this->sn[0x79] = 0;
+    //   this->sn[0x7a] = 100;
+    //   this->sn[0x7b] = 0;
+    //   this->sn[0x7c] = 0;
+    //   this->sn[0x7d] = 0;
+    //   this->sn[0x7e] = 0;
+    //   this->sn[0x7f] = 0;
+    //   this->sn[0x80] = -1;
+    //   this->sn[0x81] = 0;
+    //   this->sn[0x82] = 0;
+    //   this->sn[0x83] = 3;
+    //   this->sn[0x84] = 0;
+    //   this->sn[0x85] = 0;
+    //   this->sn[0x86] = 0;
+    //   this->sn[0x87] = 1;
+    //   this->sn[0x88] = 0xf;
+    //   this->sn[0x89] = 0;
+    //   this->sn[0x8a] = 0;
+    //   this->sn[0x8b] = 0;
+    //   this->sn[0x8c] = 0;
+    //   this->sn[0x8d] = 0;
+    //   this->sn[0x8e] = 0;
+    //   this->sn[0x8f] = 1;
+    //   this->sn[0x90] = 0;
+    //   this->sn[0x91] = 10;
+    //   this->sn[0x92] = 0x32;
+    //   this->sn[0x93] = 10;
+    //   this->sn[0x94] = 0x14;
+    //   this->sn[0x95] = 0x28;
+    //   this->sn[0x96] = -1;
+    //   this->sn[0x97] = 3;
+    //   this->sn[0x98] = 0;
+    //   this->sn[0x99] = -1;
+    //   this->sn[0x9a] = -1;
+    //   this->sn[0x9b] = 10;
+    //   this->sn[0x9c] = 0;
+    //   this->sn[0x9d] = 0;
+    //   this->sn[0x9e] = 0;
+    //   this->sn[0x9f] = 0;
+    //   this->sn[0xa0] = 0x32;
+    //   this->sn[0xa1] = 2;
+    //   this->sn[0xa2] = 0;
+    //   this->sn[0xa3] = 7;
+    //   this->sn[0xa4] = 10;
+    //   this->sn[0xa5] = 0x19;
+    //   this->sn[0xa6] = 7;
+    //   this->sn[0xa7] = 2;
+    //   this->sn[0xa8] = 0x32;
+    //   this->sn[0xa9] = 10;
+    //   this->sn[0xaa] = 200;
+    //   this->sn[0xab] = 0xfa;
+    //   this->sn[0xac] = 0x96;
+    //   this->sn[0xad] = 200;
+    //   this->sn[0xae] = 2;
+    //   this->sn[0xaf] = -1;
+    //   this->sn[0xb0] = 0;
+    //   this->sn[0xb1] = -1;
+    //   this->sn[0xb2] = 10;
+    //   this->sn[0xb3] = 0x1e;
+    //   this->sn[0xb4] = 1;
+    //   this->sn[0xb5] = 1;
+    //   this->sn[0xb6] = 0;
+    //   this->sn[0xb7] = 0;
+    //   this->sn[0xb8] = 0x14;
+    //   this->sn[0xb9] = 0x32;
+    //   this->sn[0xba] = 0;
+    //   this->sn[0xbb] = 0;
+    //   this->sn[0xbc] = 1;
+    //   this->sn[0xbd] = 0x32;
+    //   this->sn[0xbe] = 3000;
+    //   this->sn[0xbf] = 2000;
+    //   this->sn[0xc0] = 0x5dc;
+    //   this->sn[0xc1] = 3000;
+    //   this->sn[0xc2] = 1;
+    //   this->sn[0xc3] = 0x19;
+    //   this->sn[199] = 0x19;
+    //   this->sn[0xca] = 0x19;
+    //   this->sn[0xc4] = 1;
+    //   this->sn[0xc5] = 0x78;
+    //   this->sn[0xc6] = 0x32;
+    //   this->sn[200] = 0x32;
+    //   this->sn[0xc9] = 0;
+    //   this->sn[0xcb] = 1;
+    //   this->sn[0xcc] = 5;
+    //   this->sn[0xcd] = 1;
+    //   this->sn[0xce] = 1;
+    //   this->sn[0xcf] = 1;
+    //   this->sn[0xd0] = 0;
+    //   this->sn[0xd1] = 0;
+    //   this->sn[0xd2] = 0;
+    //   this->sn[0xd3] = 1;
+    //   this->sn[0xd4] = 0;
+    //   this->sn[0xd5] = 0;
+    //   this->sn[0xd6] = 0;
+    //   this->sn[0xd7] = 1;
+    //   this->sn[0xd8] = 0x32;
+    //   this->sn[0xd9] = 0;
+    //   this->sn[0xda] = 100;
+    //   this->sn[0xdb] = 100;
+    //   this->sn[0xdc] = 8;
+    //   this->sn[0xdd] = 3;
+    //   this->sn[0xde] = 10;
+    //   this->sn[0xdf] = 0;
+    //   this->sn[0xe0] = 0;
+    //   this->sn[0xe1] = 1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004E7430
+void VictoryConditionRuleSystem(VictoryConditionRuleSystem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall VictoryConditionRuleSystem::~VictoryConditionRuleSystem(void) */
+    // 
+    // void __thiscall
+    // VictoryConditionRuleSystem::~VictoryConditionRuleSystem(VictoryConditionRuleSystem *this)
+    // 
+    // {
+    //   this->_padding_ = (int)&_vftable_;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004E7440
+int loadRules(VictoryConditionRuleSystem* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: commentTemp1 */
+    // /* public: int __thiscall VictoryConditionRuleSystem::loadRules(char *) */
+    // 
+    // int __thiscall VictoryConditionRuleSystem::loadRules(VictoryConditionRuleSystem *this,char *param_1)
+    // 
+    // {
+    //   char cVar1;
+    //   byte bVar2;
+    //   byte *pbVar3;
+    //   int iVar4;
+    //   int iVar5;
+    //   byte *pbVar6;
+    //   char *pcVar7;
+    //   bool bVar8;
+    //   char commentTemp1;
+    //   char commentTemp2;
+    //   int ruleIndex;
+    //   int ruleValue;
+    //   char temp [256];
+    //   
+    //   pbVar6 = &s_NONE;
+    //   pbVar3 = (byte *)param_1;
+    //   do {
+    //     bVar2 = *pbVar3;
+    //     bVar8 = bVar2 < *pbVar6;
+    //     if (bVar2 != *pbVar6) {
+    // LAB_004e747e:
+    //       iVar4 = (1 - (uint)bVar8) - (uint)(bVar8 != 0);
+    //       goto LAB_004e7483;
+    //     }
+    //     if (bVar2 == 0) break;
+    //     bVar2 = pbVar3[1];
+    //     bVar8 = bVar2 < pbVar6[1];
+    //     if (bVar2 != pbVar6[1]) goto LAB_004e747e;
+    //     pbVar3 = pbVar3 + 2;
+    //     pbVar6 = pbVar6 + 2;
+    //   } while (bVar2 != 0);
+    //   iVar4 = 0;
+    // LAB_004e7483:
+    //   if ((iVar4 != 0) && (param_1 != (char *)0x0)) {
+    //     iVar4 = -1;
+    //     pcVar7 = param_1;
+    //     do {
+    //       if (iVar4 == 0) break;
+    //       iVar4 = iVar4 + -1;
+    //       cVar1 = *pcVar7;
+    //       pcVar7 = pcVar7 + 1;
+    //     } while (cVar1 != '\0');
+    //     if (iVar4 != -2) {
+    //       sprintf(temp + 4,s__s,param_1);
+    //       iVar4 = fopen(temp + 4,s_r);
+    //       if (iVar4 != 0) {
+    //         iVar5 = fgets(temp + 4,0x100,iVar4);
+    //         while (iVar5 != 0) {
+    //           sscanf(temp + 4,s___c_c,(int)&ruleIndex + 2,(int)&ruleIndex + 3);
+    //           if ((((ruleIndex._2_1_ != '/') || (ruleIndex._3_1_ != '/')) &&
+    //               ((ruleIndex._2_1_ != 'D' || (ruleIndex._3_1_ != 'E')))) &&
+    //              ((ruleIndex._2_1_ != 'V' || (ruleIndex._3_1_ != 'C')))) {
+    //             if ((ruleIndex._2_1_ == 'E') && (ruleIndex._3_1_ == 'N')) break;
+    //             sscanf(temp + 4,s__d__d_,&ruleValue,temp);
+    //             if ((-1 < ruleValue) && (ruleValue < 0xe2)) {
+    //               this->sn[ruleValue] = temp._0_4_;
+    //             }
+    //           }
+    //           iVar5 = fgets(temp + 4,0x100,iVar4);
+    //         }
+    //         fclose(iVar4);
+    //         iVar4 = strstr(param_1,s__tmp);
+    //         if (iVar4 != 0) {
+    //           __unlink(param_1);
+    //         }
+    //         return 1;
+    //       }
+    //     }
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004E75D0
+void setRule(VictoryConditionRuleSystem* this_, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall VictoryConditionRuleSystem::setRule(int,int) */
+    // 
+    // void __thiscall
+    // VictoryConditionRuleSystem::setRule(VictoryConditionRuleSystem *this,int param_1,int param_2)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < 0xe2)) {
+    //     this->sn[param_1] = param_2;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004E75F0
+int rule(VictoryConditionRuleSystem* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall VictoryConditionRuleSystem::rule(int) */
+    // 
+    // int __thiscall VictoryConditionRuleSystem::rule(VictoryConditionRuleSystem *this,int param_1)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < 0xe2)) {
+    //     return this->sn[param_1];
+    //   }
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004E7610
+int evaluateAsInProgress(VictoryConditionRuleSystem* this_, TRIBE_Player* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall VictoryConditionRuleSystem::evaluateAsInProgress(class TRIBE_Player *,int)
+    //     */
+    // 
+    // int __thiscall
+    // VictoryConditionRuleSystem::evaluateAsInProgress
+    //           (VictoryConditionRuleSystem *this,TRIBE_Player *param_1,int param_2)
+    // 
+    // {
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004E7620
+int evaluateAsNonInProgress(VictoryConditionRuleSystem* this_, TRIBE_Player* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall VictoryConditionRuleSystem::evaluateAsNonInProgress(class TRIBE_Player
+    //    *,int) */
+    // 
+    // int __thiscall
+    // VictoryConditionRuleSystem::evaluateAsNonInProgress
+    //           (VictoryConditionRuleSystem *this,TRIBE_Player *param_1,int param_2)
+    // 
+    // {
+    //   switch(param_2) {
+    //   case 1:
+    //   case 2:
+    //   case 0xc:
+    //   case 0xd:
+    //   case 0xe:
+    //   case 0x10:
+    //   case 0x11:
+    //   case 0x12:
+    //   case 0x15:
+    //   case 0x16:
+    //   case 0x17:
+    //   case 0x18:
+    //   case 0x19:
+    //   case 0x1a:
+    //   case 0x1b:
+    //   case 0x1c:
+    //   case 0x1d:
+    //   case 0x1e:
+    //   case 0x1f:
+    //   case 0x20:
+    //   case 0x21:
+    //   case 0x22:
+    //   case 0x23:
+    //   case 0x24:
+    //   case 0x25:
+    //   case 0x26:
+    //   case 0x27:
+    //   case 0x28:
+    //   case 0x29:
+    //   case 0x2a:
+    //   case 0x2b:
+    //   case 0x2c:
+    //   case 0x2d:
+    //   case 0x2e:
+    //   case 0x2f:
+    //   case 0x30:
+    //   case 0x31:
+    //     return -2;
+    //   default:
+    //     return 0;
+    //   }
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004E7646
+undefined FUN_004e7646() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Instruction at (ram,0x004e76a5) overlaps instruction at (ram,0x004e76a3)
+    //     */
+    // 
+    // undefined4
+    // FUN_004e7646(undefined4 param_1,undefined4 param_2,int param_3,undefined4 param_4,undefined4 param_5
+    //             )
+    // 
+    // {
+    //   byte bVar1;
+    //   char cVar2;
+    //   char *in_EAX;
+    //   undefined3 uVar5;
+    //   uint uVar3;
+    //   char *pcVar4;
+    //   byte *in_ECX;
+    //   int iVar6;
+    //   char *in_EDX;
+    //   byte bVar7;
+    //   int *unaff_EBX;
+    //   byte *unaff_ESI;
+    //   int iVar8;
+    //   int iVar9;
+    //   
+    //   bVar1 = *in_ECX;
+    //   bVar7 = (byte)((uint)unaff_EBX >> 8);
+    //   *in_ECX = *in_ECX + bVar7;
+    //   if (CARRY1(bVar1,bVar7) || *in_ECX == 0) {
+    //     in_EAX = in_EAX + CARRY1(bVar1,bVar7) + 0xf8830000;
+    // code_r0x004e76a2:
+    //     pcVar4 = (char *)((uint)in_EAX | 0x15928d0f);
+    //     *pcVar4 = *pcVar4 + (char)pcVar4;
+    //   }
+    //   else {
+    //     bVar1 = *in_ECX;
+    //     *in_ECX = *in_ECX + bVar7;
+    //     if (CARRY1(bVar1,bVar7) || *in_ECX == 0) goto code_r0x004e76a2;
+    //     bVar1 = *in_ECX;
+    //     *in_ECX = *in_ECX + bVar7;
+    //     if (!CARRY1(bVar1,bVar7) && *in_ECX != 0) {
+    //       cVar2 = (char)in_EAX;
+    //       in_ECX[0x76] = in_ECX[0x76] + cVar2;
+    //       *in_EAX = *in_EAX + cVar2;
+    //       in_EAX[(int)&stack0x00000000] = in_EAX[(int)&stack0x00000000] + cVar2;
+    //       uVar5 = (undefined3)((uint)in_EAX >> 8);
+    //       *(int *)in_ECX = *(int *)in_ECX + CONCAT31(uVar5,cVar2 + '\r');
+    //       uVar3 = CONCAT31(uVar5,cVar2 + *in_EDX + '\x13') + *unaff_EBX + *unaff_EBX + *unaff_EBX +
+    //               *unaff_EBX + *unaff_EBX + *unaff_EBX + *unaff_EBX + *unaff_EBX + *unaff_EBX +
+    //               *unaff_EBX + *unaff_EBX + *unaff_EBX + *unaff_EBX + *unaff_EBX & 0xffffff08;
+    //       if ((int)uVar3 < 0) {
+    //         return 0;
+    //       }
+    //       unaff_ESI = in_ECX;
+    //       if (0xc < (int)uVar3) {
+    //         return 0;
+    //       }
+    //     }
+    //   }
+    //   switch(param_5) {
+    //   case 1:
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0,
+    //                *(int *)(unaff_ESI + 4));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),1,
+    //                *(int *)(unaff_ESI + 8));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),2,
+    //                *(int *)(unaff_ESI + 0xc));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),3,
+    //                *(int *)(unaff_ESI + 0x10));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),4,
+    //                *(int *)(unaff_ESI + 0x14));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),5,
+    //                *(int *)(unaff_ESI + 0x18));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x23,
+    //                *(int *)(unaff_ESI + 0x90));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),100,
+    //                *(int *)(unaff_ESI + 0x194));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xe1,
+    //                *(int *)(unaff_ESI + 0x388));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x75,
+    //                *(int *)(unaff_ESI + 0x1d8));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x76,
+    //                *(int *)(unaff_ESI + 0x1dc));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x77,
+    //                *(int *)(unaff_ESI + 0x1e0));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x78,
+    //                *(int *)(unaff_ESI + 0x1e4));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x9c,
+    //                *(int *)(unaff_ESI + 0x274));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x9f,
+    //                *(int *)(unaff_ESI + 0x280));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x9e,
+    //                *(int *)(unaff_ESI + 0x27c));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x9d,
+    //                *(int *)(unaff_ESI + 0x278));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xa0,
+    //                *(int *)(unaff_ESI + 0x284));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x8e,
+    //                *(int *)(unaff_ESI + 0x23c));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x94,
+    //                *(int *)(unaff_ESI + 0x254));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x95,
+    //                *(int *)(unaff_ESI + 600));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xcb,
+    //                *(int *)(unaff_ESI + 0x330));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xa3,
+    //                *(int *)(unaff_ESI + 0x290));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xa4,
+    //                *(int *)(unaff_ESI + 0x294));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xa6,
+    //                *(int *)(unaff_ESI + 0x29c));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xa5,
+    //                *(int *)(unaff_ESI + 0x298));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xa7,
+    //                *(int *)(unaff_ESI + 0x2a0));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xb3,
+    //                *(int *)(unaff_ESI + 0x2d0));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xb4,
+    //                *(int *)(unaff_ESI + 0x2d4));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xcd,
+    //                *(int *)(unaff_ESI + 0x338));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xcf,
+    //                *(int *)(unaff_ESI + 0x340));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xce,
+    //                *(int *)(unaff_ESI + 0x33c));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xdc,
+    //                *(int *)(unaff_ESI + 0x374));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xde,
+    //                *(int *)(unaff_ESI + 0x37c));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xd0,
+    //                *(int *)(unaff_ESI + 0x344));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xd1,
+    //                *(int *)(unaff_ESI + 0x348));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xd2,
+    //                *(int *)(unaff_ESI + 0x34c));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xd3,
+    //                *(int *)(unaff_ESI + 0x350));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xdf,
+    //                *(int *)(unaff_ESI + 0x380));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xd4,
+    //                *(int *)(unaff_ESI + 0x354));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xd5,
+    //                *(int *)(unaff_ESI + 0x358));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xd6,
+    //                *(int *)(unaff_ESI + 0x35c));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xe0,
+    //                *(int *)(unaff_ESI + 900));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xa9,
+    //                *(int *)(unaff_ESI + 0x2a8));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xaa,
+    //                *(int *)(unaff_ESI + 0x2ac));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xab,
+    //                *(int *)(unaff_ESI + 0x2b0));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xac,
+    //                *(int *)(unaff_ESI + 0x2b4));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xad,
+    //                *(int *)(unaff_ESI + 0x2b8));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xbe,
+    //                *(int *)(unaff_ESI + 0x2fc));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xbf,
+    //                *(int *)(unaff_ESI + 0x300));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xc0,
+    //                *(int *)(unaff_ESI + 0x304));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xc1,
+    //                *(int *)(unaff_ESI + 0x308));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xae,
+    //                *(int *)(unaff_ESI + 700));
+    //     iVar9 = *(int *)(unaff_ESI + 0x334);
+    //     iVar8 = 0xcc;
+    //     break;
+    //   case 2:
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x10,
+    //                *(int *)(unaff_ESI + 0x44));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x1a,
+    //                *(int *)(unaff_ESI + 0x6c));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x24,
+    //                *(int *)(unaff_ESI + 0x94));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x25,
+    //                *(int *)(unaff_ESI + 0x98));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x5d,
+    //                *(int *)(unaff_ESI + 0x178));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x5e,
+    //                *(int *)(unaff_ESI + 0x17c));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x62,
+    //                *(int *)(unaff_ESI + 0x18c));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x79,
+    //                *(int *)(unaff_ESI + 0x1e8));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x83,
+    //                *(int *)(unaff_ESI + 0x210));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x8f,
+    //                *(int *)(unaff_ESI + 0x240));
+    //     iVar9 = *(int *)(unaff_ESI + 0x28c);
+    //     iVar8 = 0xa2;
+    //     break;
+    //   default:
+    //     return 0;
+    //   case 0xc:
+    //     iVar9 = *(int *)(unaff_ESI + 0x4c);
+    //     iVar8 = 0x12;
+    //     iVar6 = *(int *)(param_3 + 0x238);
+    //     goto LAB_004e8c26;
+    //   case 0xd:
+    //     iVar9 = *(int *)(unaff_ESI + 0x50);
+    //     iVar8 = 0x13;
+    //     iVar6 = *(int *)(param_3 + 0x238);
+    //     goto LAB_004e8c26;
+    //   case 0xe:
+    //     iVar9 = *(int *)(unaff_ESI + 0x54);
+    //     iVar8 = 0x14;
+    //     iVar6 = *(int *)(param_3 + 0x238);
+    //     goto LAB_004e8c26;
+    //   case 0x10:
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x16,
+    //                *(int *)(unaff_ESI + 0x5c));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x48,
+    //                *(int *)(unaff_ESI + 0x124));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x39,
+    //                *(int *)(unaff_ESI + 0xe8));
+    //     iVar9 = *(int *)(unaff_ESI + 0x174);
+    //     iVar8 = 0x5c;
+    //     break;
+    //   case 0x11:
+    //     iVar9 = *(int *)(unaff_ESI + 0x60);
+    //     iVar8 = 0x17;
+    //     iVar6 = *(int *)(param_3 + 0x238);
+    //     goto LAB_004e8c26;
+    //   case 0x12:
+    //     iVar9 = *(int *)(unaff_ESI + 100);
+    //     iVar8 = 0x18;
+    //     iVar6 = *(int *)(param_3 + 0x238);
+    //     goto LAB_004e8c26;
+    //   case 0x15:
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x19,
+    //                *(int *)(unaff_ESI + 0x68));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x1c,
+    //                *(int *)(unaff_ESI + 0x74));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x26,
+    //                *(int *)(unaff_ESI + 0x9c));
+    //     iVar9 = *(int *)(unaff_ESI + 0xa0);
+    //     iVar8 = 0x27;
+    //     break;
+    //   case 0x16:
+    //     iVar9 = *(int *)(unaff_ESI + 0x78);
+    //     iVar8 = 0x1d;
+    //     iVar6 = *(int *)(param_3 + 0x238);
+    //     goto LAB_004e8c26;
+    //   case 0x17:
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x20,
+    //                *(int *)(unaff_ESI + 0x84));
+    //     iVar9 = *(int *)(unaff_ESI + 0x248);
+    //     iVar8 = 0x91;
+    //     break;
+    //   case 0x18:
+    //     iVar9 = *(int *)(unaff_ESI + 0x8c);
+    //     iVar8 = 0x22;
+    //     iVar6 = *(int *)(param_3 + 0x238);
+    //     goto LAB_004e8c26;
+    //   case 0x19:
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x28,
+    //                *(int *)(unaff_ESI + 0xa4));
+    //     iVar9 = *(int *)(unaff_ESI + 0x130);
+    //     iVar8 = 0x4b;
+    //     break;
+    //   case 0x1a:
+    //     iVar9 = *(int *)(unaff_ESI + 0xa8);
+    //     iVar8 = 0x29;
+    //     iVar6 = *(int *)(param_3 + 0x238);
+    //     goto LAB_004e8c26;
+    //   case 0x1b:
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x2b,
+    //                *(int *)(unaff_ESI + 0xb0));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x2c,
+    //                *(int *)(unaff_ESI + 0xb4));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x2a,
+    //                *(int *)(unaff_ESI + 0xac));
+    //     iVar9 = *(int *)(unaff_ESI + 0xb8);
+    //     iVar8 = 0x2d;
+    //     break;
+    //   case 0x1c:
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x1e,
+    //                *(int *)(unaff_ESI + 0x7c));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x1f,
+    //                *(int *)(unaff_ESI + 0x80));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x5b,
+    //                *(int *)(unaff_ESI + 0x170));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x5f,
+    //                *(int *)(unaff_ESI + 0x180));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x60,
+    //                *(int *)(unaff_ESI + 0x184));
+    //     iVar9 = *(int *)(unaff_ESI + 0x188);
+    //     iVar8 = 0x61;
+    //     break;
+    //   case 0x1d:
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x2e,
+    //                *(int *)(unaff_ESI + 0xbc));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x66,
+    //                *(int *)(unaff_ESI + 0x19c));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x2f,
+    //                *(int *)(unaff_ESI + 0xc0));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x67,
+    //                *(int *)(unaff_ESI + 0x1a0));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x68,
+    //                *(int *)(unaff_ESI + 0x1a4));
+    //     iVar9 = *(int *)(unaff_ESI + 0x21c);
+    //     iVar8 = 0x86;
+    //     break;
+    //   case 0x1e:
+    //     iVar9 = *(int *)(unaff_ESI + 0xc4);
+    //     iVar8 = 0x30;
+    //     iVar6 = *(int *)(param_3 + 0x238);
+    //     goto LAB_004e8c26;
+    //   case 0x1f:
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x31,
+    //                *(int *)(unaff_ESI + 200));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x87,
+    //                *(int *)(unaff_ESI + 0x220));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x88,
+    //                *(int *)(unaff_ESI + 0x224));
+    //     iVar9 = *(int *)(unaff_ESI + 0x324);
+    //     iVar8 = 200;
+    //     break;
+    //   case 0x20:
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x32,
+    //                *(int *)(unaff_ESI + 0xcc));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x33,
+    //                *(int *)(unaff_ESI + 0xd0));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x34,
+    //                *(int *)(unaff_ESI + 0xd4));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x35,
+    //                *(int *)(unaff_ESI + 0xd8));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x36,
+    //                *(int *)(unaff_ESI + 0xdc));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x37,
+    //                *(int *)(unaff_ESI + 0xe0));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x38,
+    //                *(int *)(unaff_ESI + 0xe4));
+    //     iVar9 = *(int *)(unaff_ESI + 0x11c);
+    //     iVar8 = 0x46;
+    //     break;
+    //   case 0x21:
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x3a,
+    //                *(int *)(unaff_ESI + 0xec));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x3b,
+    //                *(int *)(unaff_ESI + 0xf0));
+    //     iVar9 = *(int *)(unaff_ESI + 0xf4);
+    //     iVar8 = 0x3c;
+    //     break;
+    //   case 0x22:
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x3d,
+    //                *(int *)(unaff_ESI + 0xf8));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x3e,
+    //                *(int *)(unaff_ESI + 0xfc));
+    //     iVar9 = *(int *)(unaff_ESI + 0x100);
+    //     iVar8 = 0x3f;
+    //     break;
+    //   case 0x23:
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x40,
+    //                *(int *)(unaff_ESI + 0x104));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x41,
+    //                *(int *)(unaff_ESI + 0x108));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x42,
+    //                *(int *)(unaff_ESI + 0x10c));
+    //     iVar9 = *(int *)(unaff_ESI + 0x364);
+    //     iVar8 = 0xd8;
+    //     break;
+    //   case 0x24:
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x43,
+    //                *(int *)(unaff_ESI + 0x110));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x44,
+    //                *(int *)(unaff_ESI + 0x114));
+    //     iVar9 = *(int *)(unaff_ESI + 0x118);
+    //     iVar8 = 0x45;
+    //     break;
+    //   case 0x25:
+    //     iVar9 = *(int *)(unaff_ESI + 0x120);
+    //     iVar8 = 0x47;
+    //     iVar6 = *(int *)(param_3 + 0x238);
+    //     goto LAB_004e8c26;
+    //   case 0x26:
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x49,
+    //                *(int *)(unaff_ESI + 0x128));
+    //     iVar9 = *(int *)(unaff_ESI + 300);
+    //     iVar8 = 0x4a;
+    //     break;
+    //   case 0x27:
+    //     iVar9 = *(int *)(unaff_ESI + 0x134);
+    //     iVar8 = 0x4c;
+    //     iVar6 = *(int *)(param_3 + 0x238);
+    //     goto LAB_004e8c26;
+    //   case 0x28:
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x4d,
+    //                *(int *)(unaff_ESI + 0x138));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x4e,
+    //                *(int *)(unaff_ESI + 0x13c));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x4f,
+    //                *(int *)(unaff_ESI + 0x140));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x50,
+    //                *(int *)(unaff_ESI + 0x144));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x51,
+    //                *(int *)(unaff_ESI + 0x148));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x52,
+    //                *(int *)(unaff_ESI + 0x14c));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x53,
+    //                *(int *)(unaff_ESI + 0x150));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x59,
+    //                *(int *)(unaff_ESI + 0x168));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x5a,
+    //                *(int *)(unaff_ESI + 0x16c));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x6a,
+    //                *(int *)(unaff_ESI + 0x1ac));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x6b,
+    //                *(int *)(unaff_ESI + 0x1b0));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x6c,
+    //                *(int *)(unaff_ESI + 0x1b4));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x6d,
+    //                *(int *)(unaff_ESI + 0x1b8));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x6e,
+    //                *(int *)(unaff_ESI + 0x1bc));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x6f,
+    //                *(int *)(unaff_ESI + 0x1c0));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x7a,
+    //                *(int *)(unaff_ESI + 0x1ec));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x7b,
+    //                *(int *)(unaff_ESI + 0x1f0));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x90,
+    //                *(int *)(unaff_ESI + 0x244));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xb8,
+    //                *(int *)(unaff_ESI + 0x2e4));
+    //     iVar9 = *(int *)(unaff_ESI + 0x2e8);
+    //     iVar8 = 0xb9;
+    //     break;
+    //   case 0x29:
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x54,
+    //                *(int *)(unaff_ESI + 0x154));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x55,
+    //                *(int *)(unaff_ESI + 0x158));
+    //     iVar9 = *(int *)(unaff_ESI + 0x228);
+    //     iVar8 = 0x89;
+    //     break;
+    //   case 0x2a:
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x56,
+    //                *(int *)(unaff_ESI + 0x15c));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x57,
+    //                *(int *)(unaff_ESI + 0x160));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xca,
+    //                *(int *)(unaff_ESI + 0x32c));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x96,
+    //                *(int *)(unaff_ESI + 0x25c));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x97,
+    //                *(int *)(unaff_ESI + 0x260));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x98,
+    //                *(int *)(unaff_ESI + 0x264));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xa1,
+    //                *(int *)(unaff_ESI + 0x288));
+    //     iVar9 = *(int *)(unaff_ESI + 0x2a4);
+    //     iVar8 = 0xa8;
+    //     break;
+    //   case 0x2b:
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x58,
+    //                *(int *)(unaff_ESI + 0x164));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x65,
+    //                *(int *)(unaff_ESI + 0x198));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x9b,
+    //                *(int *)(unaff_ESI + 0x270));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xaf,
+    //                *(int *)(unaff_ESI + 0x2c0));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xb0,
+    //                *(int *)(unaff_ESI + 0x2c4));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xb1,
+    //                *(int *)(unaff_ESI + 0x2c8));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xb5,
+    //                *(int *)(unaff_ESI + 0x2d8));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xb6,
+    //                *(int *)(unaff_ESI + 0x2dc));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xb7,
+    //                *(int *)(unaff_ESI + 0x2e0));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xba,
+    //                *(int *)(unaff_ESI + 0x2ec));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xbb,
+    //                *(int *)(unaff_ESI + 0x2f0));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xc2,
+    //                *(int *)(unaff_ESI + 0x30c));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xc4,
+    //                *(int *)(unaff_ESI + 0x314));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xc5,
+    //                *(int *)(unaff_ESI + 0x318));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xbc,
+    //                *(int *)(unaff_ESI + 0x2f4));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xc3,
+    //                *(int *)(unaff_ESI + 0x310));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xbd,
+    //                *(int *)(unaff_ESI + 0x2f8));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xc6,
+    //                *(int *)(unaff_ESI + 0x31c));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),199,
+    //                *(int *)(unaff_ESI + 800));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xd7,
+    //                *(int *)(unaff_ESI + 0x360));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xd9,
+    //                *(int *)(unaff_ESI + 0x368));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xda,
+    //                *(int *)(unaff_ESI + 0x36c));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xdb,
+    //                *(int *)(unaff_ESI + 0x370));
+    //     iVar9 = *(int *)(unaff_ESI + 0x378);
+    //     iVar8 = 0xdd;
+    //     break;
+    //   case 0x2c:
+    //     iVar9 = *(int *)(unaff_ESI + 400);
+    //     iVar8 = 99;
+    //     iVar6 = *(int *)(param_3 + 0x238);
+    //     goto LAB_004e8c26;
+    //   case 0x2d:
+    //     iVar9 = *(int *)(unaff_ESI + 0x1a8);
+    //     iVar8 = 0x69;
+    //     iVar6 = *(int *)(param_3 + 0x238);
+    //     goto LAB_004e8c26;
+    //   case 0x2e:
+    //     iVar9 = *(int *)(unaff_ESI + 0x1c4);
+    //     iVar8 = 0x70;
+    //     iVar6 = *(int *)(param_3 + 0x238);
+    //     goto LAB_004e8c26;
+    //   case 0x2f:
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x71,
+    //                *(int *)(unaff_ESI + 0x1c8));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x72,
+    //                *(int *)(unaff_ESI + 0x1cc));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x73,
+    //                *(int *)(unaff_ESI + 0x1d0));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x74,
+    //                *(int *)(unaff_ESI + 0x1d4));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x92,
+    //                *(int *)(unaff_ESI + 0x24c));
+    //     iVar9 = *(int *)(unaff_ESI + 0x250);
+    //     iVar8 = 0x93;
+    //     break;
+    //   case 0x30:
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x7c,
+    //                *(int *)(unaff_ESI + 500));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x7d,
+    //                *(int *)(unaff_ESI + 0x1f8));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x7e,
+    //                *(int *)(unaff_ESI + 0x1fc));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x7f,
+    //                *(int *)(unaff_ESI + 0x200));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x80,
+    //                *(int *)(unaff_ESI + 0x204));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x81,
+    //                *(int *)(unaff_ESI + 0x208));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x82,
+    //                *(int *)(unaff_ESI + 0x20c));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x84,
+    //                *(int *)(unaff_ESI + 0x214));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x85,
+    //                *(int *)(unaff_ESI + 0x218));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0xb2,
+    //                *(int *)(unaff_ESI + 0x2cc));
+    //     iVar9 = *(int *)(unaff_ESI + 0x328);
+    //     iVar8 = 0xc9;
+    //     break;
+    //   case 0x31:
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x8a,
+    //                *(int *)(unaff_ESI + 0x22c));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x8b,
+    //                *(int *)(unaff_ESI + 0x230));
+    //     TribeTacticalAIModule::setStrategicNumber
+    //               ((TribeTacticalAIModule *)(*(int *)(param_3 + 0x238) + 0x1146c),0x8c,
+    //                *(int *)(unaff_ESI + 0x234));
+    //     iVar9 = *(int *)(unaff_ESI + 0x238);
+    //     iVar8 = 0x8d;
+    //   }
+    //   iVar6 = *(int *)(param_3 + 0x238);
+    // LAB_004e8c26:
+    //   TribeTacticalAIModule::setStrategicNumber((TribeTacticalAIModule *)(iVar6 + 0x1146c),iVar8,iVar9);
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004E7690
+int execute(VictoryConditionRuleSystem* this_, TRIBE_Player* param_2, int param_3, int param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall VictoryConditionRuleSystem::execute(class TRIBE_Player *,int,int) */
+    // 
+    // int __thiscall
+    // VictoryConditionRuleSystem::execute
+    //           (VictoryConditionRuleSystem *this,TRIBE_Player *param_1,int param_2,int param_3)
+    // 
+    // {
+    //   TribeMainDecisionAIModule *pTVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   
+    //   if ((param_2 < 0) || (0xc < param_2)) {
+    // switchD_004e76b7_caseD_3:
+    //     return 0;
+    //   }
+    //   switch(param_3) {
+    //   case 1:
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0,this->sn[0]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,1,this->sn[1]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,2,this->sn[2]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,3,this->sn[3]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,4,this->sn[4]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,5,this->sn[5]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x23,this->sn[0x23]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,100,this->sn[100]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xe1,this->sn[0xe1]);
+    //                     /* language.dll match for 0x75: "12" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x75,this->sn[0x75]);
+    //                     /* language.dll match for 0x76: "B" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x76,this->sn[0x76]);
+    //                     /* language.dll match for 0x77: "Arial" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x77,this->sn[0x77]);
+    //                     /* language.dll match for 0x78: "10" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x78,this->sn[0x78]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x9c,this->sn[0x9c]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x9f,this->sn[0x9f]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x9e,this->sn[0x9e]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x9d,this->sn[0x9d]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xa0,this->sn[0xa0]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x8e,this->sn[0x8e]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x94,this->sn[0x94]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x95,this->sn[0x95]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xcb,this->sn[0xcb]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xa3,this->sn[0xa3]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xa4,this->sn[0xa4]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xa6,this->sn[0xa6]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xa5,this->sn[0xa5]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xa7,this->sn[0xa7]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xb3,this->sn[0xb3]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xb4,this->sn[0xb4]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xcd,this->sn[0xcd]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xcf,this->sn[0xcf]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xce,this->sn[0xce]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xdc,this->sn[0xdc]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xde,this->sn[0xde]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xd0,this->sn[0xd0]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xd1,this->sn[0xd1]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xd2,this->sn[0xd2]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xd3,this->sn[0xd3]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xdf,this->sn[0xdf]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xd4,this->sn[0xd4]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xd5,this->sn[0xd5]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xd6,this->sn[0xd6]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xe0,this->sn[0xe0]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xa9,this->sn[0xa9]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xaa,this->sn[0xaa]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xab,this->sn[0xab]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xac,this->sn[0xac]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xad,this->sn[0xad]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xbe,this->sn[0xbe]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xbf,this->sn[0xbf]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xc0,this->sn[0xc0]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xc1,this->sn[0xc1]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xae,this->sn[0xae]);
+    //     iVar3 = this->sn[0xcc];
+    //     iVar2 = 0xcc;
+    //     break;
+    //   case 2:
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x10,this->sn[0x10]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x1a,this->sn[0x1a]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x24,this->sn[0x24]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x25,this->sn[0x25]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x5d,this->sn[0x5d]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x5e,this->sn[0x5e]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x62,this->sn[0x62]);
+    //                     /* language.dll match for 0x79: "N" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x79,this->sn[0x79]);
+    //                     /* language.dll match for 0x83: "Arial" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x83,this->sn[0x83]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x8f,this->sn[0x8f]);
+    //     iVar3 = this->sn[0xa2];
+    //     iVar2 = 0xa2;
+    //     break;
+    //   default:
+    //     goto switchD_004e76b7_caseD_3;
+    //   case 0xc:
+    //     iVar3 = this->sn[0x12];
+    //     iVar2 = 0x12;
+    //     pTVar1 = param_1->playerAI;
+    //     goto LAB_004e8c26;
+    //   case 0xd:
+    //     iVar3 = this->sn[0x13];
+    //     iVar2 = 0x13;
+    //     pTVar1 = param_1->playerAI;
+    //     goto LAB_004e8c26;
+    //   case 0xe:
+    //     iVar3 = this->sn[0x14];
+    //     iVar2 = 0x14;
+    //     pTVar1 = param_1->playerAI;
+    //     goto LAB_004e8c26;
+    //   case 0x10:
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x16,this->sn[0x16]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x48,this->sn[0x48]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x39,this->sn[0x39]);
+    //     iVar3 = this->sn[0x5c];
+    //     iVar2 = 0x5c;
+    //     break;
+    //   case 0x11:
+    //     iVar3 = this->sn[0x17];
+    //     iVar2 = 0x17;
+    //     pTVar1 = param_1->playerAI;
+    //     goto LAB_004e8c26;
+    //   case 0x12:
+    //     iVar3 = this->sn[0x18];
+    //     iVar2 = 0x18;
+    //     pTVar1 = param_1->playerAI;
+    //     goto LAB_004e8c26;
+    //   case 0x15:
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x19,this->sn[0x19]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x1c,this->sn[0x1c]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x26,this->sn[0x26]);
+    //     iVar3 = this->sn[0x27];
+    //     iVar2 = 0x27;
+    //     break;
+    //   case 0x16:
+    //     iVar3 = this->sn[0x1d];
+    //     iVar2 = 0x1d;
+    //     pTVar1 = param_1->playerAI;
+    //     goto LAB_004e8c26;
+    //   case 0x17:
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x20,this->sn[0x20]);
+    //     iVar3 = this->sn[0x91];
+    //     iVar2 = 0x91;
+    //     break;
+    //   case 0x18:
+    //     iVar3 = this->sn[0x22];
+    //     iVar2 = 0x22;
+    //     pTVar1 = param_1->playerAI;
+    //     goto LAB_004e8c26;
+    //   case 0x19:
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x28,this->sn[0x28]);
+    //     iVar3 = this->sn[0x4b];
+    //     iVar2 = 0x4b;
+    //     break;
+    //   case 0x1a:
+    //     iVar3 = this->sn[0x29];
+    //     iVar2 = 0x29;
+    //     pTVar1 = param_1->playerAI;
+    //     goto LAB_004e8c26;
+    //   case 0x1b:
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x2b,this->sn[0x2b]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x2c,this->sn[0x2c]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x2a,this->sn[0x2a]);
+    //     iVar3 = this->sn[0x2d];
+    //     iVar2 = 0x2d;
+    //     break;
+    //   case 0x1c:
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x1e,this->sn[0x1e]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x1f,this->sn[0x1f]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x5b,this->sn[0x5b]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x5f,this->sn[0x5f]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x60,this->sn[0x60]);
+    //     iVar3 = this->sn[0x61];
+    //     iVar2 = 0x61;
+    //     break;
+    //   case 0x1d:
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x2e,this->sn[0x2e]);
+    //                     /* language.dll match for 0x66: "Copperplate Gothic Light" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x66,this->sn[0x66]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x2f,this->sn[0x2f]);
+    //                     /* language.dll match for 0x67: "Comic Sans MS" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x67,this->sn[0x67]);
+    //                     /* language.dll match for 0x68: "Arial" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x68,this->sn[0x68]);
+    //     iVar3 = this->sn[0x86];
+    //     iVar2 = 0x86;
+    //     break;
+    //   case 0x1e:
+    //     iVar3 = this->sn[0x30];
+    //     iVar2 = 0x30;
+    //     pTVar1 = param_1->playerAI;
+    //     goto LAB_004e8c26;
+    //   case 0x1f:
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x31,this->sn[0x31]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x87,this->sn[0x87]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x88,this->sn[0x88]);
+    //     iVar3 = this->sn[200];
+    //     iVar2 = 200;
+    //     break;
+    //   case 0x20:
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x32,this->sn[0x32]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x33,this->sn[0x33]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x34,this->sn[0x34]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x35,this->sn[0x35]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x36,this->sn[0x36]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x37,this->sn[0x37]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x38,this->sn[0x38]);
+    //     iVar3 = this->sn[0x46];
+    //     iVar2 = 0x46;
+    //     break;
+    //   case 0x21:
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x3a,this->sn[0x3a]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x3b,this->sn[0x3b]);
+    //     iVar3 = this->sn[0x3c];
+    //     iVar2 = 0x3c;
+    //     break;
+    //   case 0x22:
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x3d,this->sn[0x3d]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x3e,this->sn[0x3e]);
+    //     iVar3 = this->sn[0x3f];
+    //     iVar2 = 0x3f;
+    //     break;
+    //   case 0x23:
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x40,this->sn[0x40]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x41,this->sn[0x41]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x42,this->sn[0x42]);
+    //     iVar3 = this->sn[0xd8];
+    //     iVar2 = 0xd8;
+    //     break;
+    //   case 0x24:
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x43,this->sn[0x43]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x44,this->sn[0x44]);
+    //     iVar3 = this->sn[0x45];
+    //     iVar2 = 0x45;
+    //     break;
+    //   case 0x25:
+    //     iVar3 = this->sn[0x47];
+    //     iVar2 = 0x47;
+    //     pTVar1 = param_1->playerAI;
+    //     goto LAB_004e8c26;
+    //   case 0x26:
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x49,this->sn[0x49]);
+    //     iVar3 = this->sn[0x4a];
+    //     iVar2 = 0x4a;
+    //     break;
+    //   case 0x27:
+    //     iVar3 = this->sn[0x4c];
+    //     iVar2 = 0x4c;
+    //     pTVar1 = param_1->playerAI;
+    //     goto LAB_004e8c26;
+    //   case 0x28:
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x4d,this->sn[0x4d]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x4e,this->sn[0x4e]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x4f,this->sn[0x4f]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x50,this->sn[0x50]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x51,this->sn[0x51]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x52,this->sn[0x52]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x53,this->sn[0x53]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x59,this->sn[0x59]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x5a,this->sn[0x5a]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x6a,this->sn[0x6a]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x6b,this->sn[0x6b]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x6c,this->sn[0x6c]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x6d,this->sn[0x6d]);
+    //                     /* language.dll match for 0x6e: "Copperplate Gothic Light" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x6e,this->sn[0x6e]);
+    //                     /* language.dll match for 0x6f: "12" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x6f,this->sn[0x6f]);
+    //                     /* language.dll match for 0x7a: "Arial" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x7a,this->sn[0x7a]);
+    //                     /* language.dll match for 0x7b: "9" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x7b,this->sn[0x7b]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x90,this->sn[0x90]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xb8,this->sn[0xb8]);
+    //     iVar3 = this->sn[0xb9];
+    //     iVar2 = 0xb9;
+    //     break;
+    //   case 0x29:
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x54,this->sn[0x54]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x55,this->sn[0x55]);
+    //     iVar3 = this->sn[0x89];
+    //     iVar2 = 0x89;
+    //     break;
+    //   case 0x2a:
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x56,this->sn[0x56]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x57,this->sn[0x57]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xca,this->sn[0xca]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x96,this->sn[0x96]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x97,this->sn[0x97]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x98,this->sn[0x98]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xa1,this->sn[0xa1]);
+    //     iVar3 = this->sn[0xa8];
+    //     iVar2 = 0xa8;
+    //     break;
+    //   case 0x2b:
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x58,this->sn[0x58]);
+    //                     /* language.dll match for 0x65: "1" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x65,this->sn[0x65]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x9b,this->sn[0x9b]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xaf,this->sn[0xaf]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xb0,this->sn[0xb0]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xb1,this->sn[0xb1]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xb5,this->sn[0xb5]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xb6,this->sn[0xb6]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xb7,this->sn[0xb7]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xba,this->sn[0xba]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xbb,this->sn[0xbb]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xc2,this->sn[0xc2]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xc4,this->sn[0xc4]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xc5,this->sn[0xc5]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xbc,this->sn[0xbc]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xc3,this->sn[0xc3]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xbd,this->sn[0xbd]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xc6,this->sn[0xc6]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,199,this->sn[199]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xd7,this->sn[0xd7]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xd9,this->sn[0xd9]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xda,this->sn[0xda]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xdb,this->sn[0xdb]);
+    //     iVar3 = this->sn[0xdd];
+    //     iVar2 = 0xdd;
+    //     break;
+    //   case 0x2c:
+    //     iVar3 = this->sn[99];
+    //     iVar2 = 99;
+    //     pTVar1 = param_1->playerAI;
+    //     goto LAB_004e8c26;
+    //   case 0x2d:
+    //     iVar3 = this->sn[0x69];
+    //     iVar2 = 0x69;
+    //     pTVar1 = param_1->playerAI;
+    //     goto LAB_004e8c26;
+    //   case 0x2e:
+    //     iVar3 = this->sn[0x70];
+    //     iVar2 = 0x70;
+    //     pTVar1 = param_1->playerAI;
+    //     goto LAB_004e8c26;
+    //   case 0x2f:
+    //                     /* language.dll match for 0x71: "Copperplate Gothic Light" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x71,this->sn[0x71]);
+    //                     /* language.dll match for 0x72: "21" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x72,this->sn[0x72]);
+    //                     /* language.dll match for 0x73: "B" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x73,this->sn[0x73]);
+    //                     /* language.dll match for 0x74: "Copperplate Gothic Light" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x74,this->sn[0x74]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x92,this->sn[0x92]);
+    //     iVar3 = this->sn[0x93];
+    //     iVar2 = 0x93;
+    //     break;
+    //   case 0x30:
+    //                     /* language.dll match for 0x7c: "B" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x7c,this->sn[0x7c]);
+    //                     /* language.dll match for 0x7d: "Arial" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x7d,this->sn[0x7d]);
+    //                     /* language.dll match for 0x7e: "10" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x7e,this->sn[0x7e]);
+    //                     /* language.dll match for 0x7f: "N" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x7f,this->sn[0x7f]);
+    //                     /* language.dll match for 0x80: "Arial" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x80,this->sn[0x80]);
+    //                     /* language.dll match for 0x81: "10" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x81,this->sn[0x81]);
+    //                     /* language.dll match for 0x82: "B" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x82,this->sn[0x82]);
+    //                     /* language.dll match for 0x84: "8" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x84,this->sn[0x84]);
+    //                     /* language.dll match for 0x85: "N" */
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x85,this->sn[0x85]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0xb2,this->sn[0xb2]);
+    //     iVar3 = this->sn[0xc9];
+    //     iVar2 = 0xc9;
+    //     break;
+    //   case 0x31:
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x8a,this->sn[0x8a]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x8b,this->sn[0x8b]);
+    //     TribeTacticalAIModule::setStrategicNumber(&param_1->playerAI->tacticalAI,0x8c,this->sn[0x8c]);
+    //     iVar3 = this->sn[0x8d];
+    //     iVar2 = 0x8d;
+    //   }
+    //   pTVar1 = param_1->playerAI;
+    // LAB_004e8c26:
+    //   TribeTacticalAIModule::setStrategicNumber(&pTVar1->tacticalAI,iVar2,iVar3);
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004E8C42
+undefined FUN_004e8c42() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Instruction at (ram,0x004e8d01) overlaps instruction at (ram,0x004e8cff)
+    //     */
+    // /* WARNING: Control flow encountered bad instruction data */
+    // 
+    // undefined4 FUN_004e8c42(void)
+    // 
+    // {
+    //   char *pcVar1;
+    //   char cVar2;
+    //   int in_EAX;
+    //   char cVar3;
+    //   uint in_ECX;
+    //   uint uVar5;
+    //   char in_DL;
+    //   char in_DH;
+    //   char cVar6;
+    //   char cVar7;
+    //   char *unaff_EBX;
+    //   int unaff_EBP;
+    //   uint *puVar8;
+    //   int unaff_EDI;
+    //   undefined2 in_CS;
+    //   undefined1 in_ZF;
+    //   char in_SF;
+    //   char in_OF;
+    //   float10 in_ST0;
+    //   uint uVar4;
+    //   
+    //   puVar8 = (uint *)0x9e004e76;
+    //   uVar4 = in_ECX;
+    //   if (in_OF == in_SF) {
+    //     cVar7 = (char)((uint)unaff_EBX >> 8);
+    //     *unaff_EBX = *unaff_EBX + cVar7;
+    //     *unaff_EBX = *unaff_EBX + cVar7;
+    //     *unaff_EBX = *unaff_EBX + cVar7;
+    //     pcVar1 = (char *)(unaff_EDI + -0x33ffb183);
+    //     cVar2 = *pcVar1;
+    //     uRam9e004e76 = in_CS;
+    //     *pcVar1 = *pcVar1 + in_DH;
+    //     if (SCARRY1(cVar2,in_DH) == *pcVar1 < '\0') goto code_r0x004e8cc5;
+    //     cVar2 = (char)((uint)in_EAX >> 8);
+    //     cVar3 = (char)in_ECX + cVar2;
+    //     uVar4 = CONCAT31((int3)(in_ECX >> 8),cVar3);
+    //     if (SCARRY1((char)in_ECX,cVar2) != cVar3 < '\0') {
+    //       *unaff_EBX = *unaff_EBX + cVar7;
+    //       in_EAX = CONCAT22((short)((uint)in_EAX >> 0x10),
+    //                         CONCAT11((char)((short)in_EAX % (short)*(char *)(unaff_EBP + 0x4e)),
+    //                                  (char)((short)in_EAX / (short)*(char *)(unaff_EBP + 0x4e))));
+    //       uRam9e004e76 = in_CS;
+    //       unaff_EBX[0x7e] = unaff_EBX[0x7e] + in_DL;
+    //       *(char *)(in_EAX + 0x7e) = *(char *)(in_EAX + 0x7e) + (char)(in_ECX >> 8);
+    //       puVar8 = (uint *)0x9e004e74;
+    //       *unaff_EBX = *unaff_EBX + cVar7;
+    //       in_OF = SCARRY1(cVar7,in_DL);
+    //       cVar7 = cVar7 + in_DL;
+    //       unaff_EBX = (char *)CONCAT22((short)((uint)unaff_EBX >> 0x10),CONCAT11(cVar7,(char)unaff_EBX))
+    //       ;
+    //       in_SF = cVar7 < '\0';
+    //       in_ZF = cVar7 == '\0';
+    //       uRam9e004e74 = in_CS;
+    //       goto code_r0x004e8c99;
+    //     }
+    //   }
+    //   else {
+    // code_r0x004e8c99:
+    //     if ((bool)in_ZF || in_OF != in_SF) {
+    //       LOCK();
+    //       uVar5 = *puVar8;
+    //       *(byte *)puVar8 = (byte)uVar4;
+    //       uVar5 = CONCAT31((int3)(uVar4 >> 8),(byte)uVar5);
+    //       UNLOCK();
+    // code_r0x004e8cf1:
+    //       *puVar8 = uVar5;
+    //                     /* WARNING: Bad instruction - Truncating control flow here */
+    //       halt_baddata();
+    //     }
+    //     cVar7 = (char)((uint)in_EAX >> 8);
+    //     cVar3 = (char)(uVar4 >> 8);
+    //     cVar2 = cVar7 + cVar3;
+    //     if (cVar2 == '\0' || SCARRY1(cVar7,cVar3) != cVar2 < '\0') {
+    //       LOCK();
+    //       uVar5 = *puVar8;
+    //       *puVar8 = uVar4;
+    //       UNLOCK();
+    //       goto code_r0x004e8cf1;
+    //     }
+    //     cVar7 = *unaff_EBX;
+    //     cVar6 = (char)unaff_EBX;
+    //     *unaff_EBX = *unaff_EBX + cVar6;
+    //     uVar5 = uVar4;
+    //     if (*unaff_EBX != '\0' && SCARRY1(cVar7,cVar6) == *unaff_EBX < '\0') goto code_r0x004e8cf1;
+    //     cVar7 = *unaff_EBX;
+    //     *unaff_EBX = *unaff_EBX + in_DH;
+    //     if (*unaff_EBX != '\0' && SCARRY1(cVar7,in_DH) == *unaff_EBX < '\0') goto code_r0x004e8cf5;
+    //     *(char *)(unaff_EDI + 0x7f) = *(char *)(unaff_EDI + 0x7f) + cVar6;
+    //     *(char *)(unaff_EDI + 0x7f) = *(char *)(unaff_EDI + 0x7f) + in_DH;
+    //     cVar6 = (char)((uint)unaff_EBX >> 8);
+    //     cVar7 = cVar6 + in_DL;
+    //     if (cVar7 != '\0' && SCARRY1(cVar6,in_DL) == cVar7 < '\0') {
+    //       return 0;
+    //     }
+    //     pcVar1 = (char *)(CONCAT22((short)((uint)in_EAX >> 0x10),CONCAT11(cVar2,(char)in_EAX)) + -0x80);
+    //     *pcVar1 = *pcVar1 + cVar3;
+    //     puVar8 = (uint *)((int)puVar8 + -3);
+    //     *(byte *)puVar8 = *(byte *)puVar8 | 0x17;
+    //     *puVar8 = *puVar8 | 0x4e8180;
+    // code_r0x004e8cc5:
+    //     *(byte *)puVar8 = (byte)*puVar8 | 0x8e;
+    //   }
+    //   *(byte *)puVar8 = (byte)*puVar8 | 0xd4;
+    //   *(byte *)puVar8 = (byte)*puVar8 | 0x37;
+    //   *puVar8 = *puVar8 | 0x7d;
+    //   *puVar8 = *puVar8 | 0xffffff95;
+    //   *puVar8 = *puVar8 | 0xffffffc1;
+    //   *puVar8 = *puVar8 | 0xffffffd9;
+    //   *puVar8 = *puVar8 | 0xffffffe2;
+    //   puVar8 = (uint *)((int)puVar8 + -1);
+    //   *(char *)(unaff_EDI + -0x38ffb177) = *(char *)(unaff_EDI + -0x38ffb177) + (char)(uVar4 >> 8);
+    // code_r0x004e8cf5:
+    //   *puVar8 = uVar4;
+    //   *(short *)(uVar4 + 0x89f7004e) = (short)in_ST0;
+    //   *(char *)(uVar4 + 0xb9004e8a) = *(char *)(uVar4 + 0xb9004e8a) + in_DL;
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004E8D10
+int stopExecution(VictoryConditionRuleSystem* this_, TRIBE_Player* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall VictoryConditionRuleSystem::stopExecution(class TRIBE_Player *,int) */
+    // 
+    // int __thiscall
+    // VictoryConditionRuleSystem::stopExecution
+    //           (VictoryConditionRuleSystem *this,TRIBE_Player *param_1,int param_2)
+    // 
+    // {
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004E8D20
+void modifyForDifficultyLevel(VictoryConditionRuleSystem* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: scale1 */
+    // /* public: void __thiscall VictoryConditionRuleSystem::modifyForDifficultyLevel(int) */
+    // 
+    // void __thiscall
+    // VictoryConditionRuleSystem::modifyForDifficultyLevel(VictoryConditionRuleSystem *this,int param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   int iVar4;
+    //   float scale1;
+    //   float scale3;
+    //   
+    //   if (param_1 != 0) {
+    //     iVar2 = 0;
+    //     iVar4 = 0;
+    //     iVar3 = 0;
+    //     switch(param_1) {
+    //     case 1:
+    //       iVar1 = RGE_Base_Game::scenarioGame(rge_base_game);
+    //       if (iVar1 == 1) {
+    //         iVar2 = 0x1e;
+    //                     /* language.dll match for 0x78: "10" */
+    //         iVar4 = 0x78;
+    //         iVar3 = 1;
+    //       }
+    //       break;
+    //     case 2:
+    //       iVar2 = 0x3c;
+    //       iVar4 = 0xf0;
+    //       iVar3 = 2;
+    //       break;
+    //     case 3:
+    //       iVar2 = 0x5a;
+    //       iVar4 = RGE_Base_Game::scenarioGame(rge_base_game);
+    //       iVar3 = 3;
+    //       iVar4 = (-(uint)(iVar4 != 1) & 0x21c) + 0x168;
+    //       break;
+    //     case 4:
+    //                     /* language.dll match for 0x78: "10" */
+    //       iVar2 = 0x78;
+    //       iVar4 = RGE_Base_Game::scenarioGame(rge_base_game);
+    //       iVar3 = 4;
+    //       iVar4 = (-(uint)(iVar4 != 1) & 0x30c) + 0x1e0;
+    //       break;
+    //     default:
+    //       goto switchD_004e8d55_default;
+    //     }
+    //     if (0 < this->sn[0x24]) {
+    //       iVar1 = __ftol();
+    //       this->sn[0x24] = iVar1;
+    //       if (iVar1 == 0) {
+    //         this->sn[0x24] = 1;
+    //       }
+    //     }
+    //     if (0 < this->sn[0x10]) {
+    //       iVar1 = __ftol();
+    //       this->sn[0x10] = iVar1;
+    //       if (iVar1 == 0) {
+    //         this->sn[0x10] = 1;
+    //       }
+    //     }
+    //     if (0 < this->sn[0x1a]) {
+    //       iVar1 = __ftol();
+    //       this->sn[0x1a] = iVar1;
+    //       if (iVar1 == 0) {
+    //         this->sn[0x1a] = 1;
+    //       }
+    //     }
+    //     this->sn[0x2e] = this->sn[0x2e] + iVar2;
+    //     this->sn[0x30] = this->sn[0x30] + iVar2;
+    //     if (0 < this->sn[0x13]) {
+    //       iVar2 = __ftol();
+    //       this->sn[0x13] = iVar2;
+    //       if (iVar2 == 0) {
+    //         this->sn[0x13] = 1;
+    //       }
+    //     }
+    //     if (0 < this->sn[0x14]) {
+    //       iVar2 = __ftol();
+    //       this->sn[0x14] = iVar2;
+    //       if (iVar2 == 0) {
+    //         this->sn[0x14] = 1;
+    //       }
+    //     }
+    //     this->sn[0x68] = this->sn[0x68] + iVar4;
+    //     if (0 < this->sn[0x19]) {
+    //       iVar2 = __ftol();
+    //       this->sn[0x19] = iVar2;
+    //       if (iVar2 == 0) {
+    //         this->sn[0x19] = 1;
+    //       }
+    //     }
+    //     if (0 < this->sn[0x1c]) {
+    //       iVar2 = __ftol();
+    //       this->sn[0x1c] = iVar2;
+    //       if (iVar2 == 0) {
+    //         this->sn[0x1c] = 1;
+    //       }
+    //     }
+    //     if (0 < this->sn[0x26]) {
+    //       iVar2 = __ftol();
+    //       this->sn[0x26] = iVar2;
+    //       if (iVar2 == 0) {
+    //         this->sn[0x26] = 1;
+    //       }
+    //     }
+    //     if (0 < this->sn[0x3a]) {
+    //       iVar2 = __ftol();
+    //       this->sn[0x3a] = iVar2;
+    //       if (iVar2 == 0) {
+    //         this->sn[0x3a] = 1;
+    //       }
+    //     }
+    //     if (0 < this->sn[0x3b]) {
+    //       iVar2 = __ftol();
+    //       this->sn[0x3b] = iVar2;
+    //       if (iVar2 == 0) {
+    //         this->sn[0x3b] = 1;
+    //       }
+    //     }
+    //     if (0 < this->sn[0x3c]) {
+    //       iVar2 = __ftol();
+    //       this->sn[0x3c] = iVar2;
+    //       if (iVar2 == 0) {
+    //         this->sn[0x3c] = 1;
+    //       }
+    //     }
+    //     if (0 < this->sn[0x43]) {
+    //       iVar2 = __ftol();
+    //       this->sn[0x43] = iVar2;
+    //       if (iVar2 == 0) {
+    //         this->sn[0x43] = 1;
+    //       }
+    //     }
+    //     if (0 < this->sn[0x44]) {
+    //       iVar2 = __ftol();
+    //       this->sn[0x44] = iVar2;
+    //       if (iVar2 == 0) {
+    //         this->sn[0x44] = 1;
+    //       }
+    //     }
+    //     if (0 < this->sn[0x45]) {
+    //       iVar2 = __ftol();
+    //       this->sn[0x45] = iVar2;
+    //       if (iVar2 == 0) {
+    //         this->sn[0x45] = 1;
+    //       }
+    //     }
+    //     this->sn[0x58] = this->sn[0x58] + iVar3;
+    //     if (param_1 < 4) {
+    //       this->sn[0x67] = 1;
+    //       return;
+    //     }
+    //     this->sn[0x67] = 0;
+    //   }
+    // switchD_004e8d55_default:
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004E90E9
+undefined FUN_004e90e9() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Unable to track spacebase fully for stack */
+    // 
+    // StrategyAIModule * FUN_004e90e9(void)
+    // 
+    // {
+    //   char cVar1;
+    //   uint uVar2;
+    //   uint uVar3;
+    //   undefined4 unaff_EBX;
+    //   undefined4 unaff_EBP;
+    //   int unaff_ESI;
+    //   StrategyAIModule *this;
+    //   char *pcVar4;
+    //   undefined4 unaff_EDI;
+    //   char *pcVar5;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   int unaff_retaddr;
+    //   
+    //   this = (StrategyAIModule *)(unaff_ESI + -1);
+    //   *(undefined4 *)(unaff_retaddr + -4) = 0xffffffff;
+    //   *(code **)(unaff_retaddr + -8) = FUN_005607b2;
+    //   *(undefined4 *)(unaff_retaddr + -0xc) = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = unaff_retaddr + -0xc;
+    //   *(StrategyAIModule **)(unaff_retaddr + -0x10) = this;
+    //   *(undefined4 *)(unaff_retaddr + -0x14) = unaff_EBX;
+    //   *(undefined4 *)(unaff_retaddr + -0x18) = unaff_EBP;
+    //   *(StrategyAIModule **)(unaff_retaddr + -0x1c) = this;
+    //   *(undefined4 *)(unaff_retaddr + -0x20) = unaff_EDI;
+    //   *(undefined4 *)(unaff_retaddr + -0x24) = *(undefined4 *)(unaff_retaddr + 8);
+    //   *(undefined4 *)(unaff_retaddr + -0x28) = *(undefined4 *)(unaff_retaddr + 4);
+    //   *(StrategyAIModule **)(unaff_retaddr + -0x10) = this;
+    //   *(undefined4 *)(unaff_retaddr + -0x2c) = 0x4e9131;
+    //   StrategyAIModule::StrategyAIModule
+    //             (this,*(void **)(unaff_retaddr + -0x28),*(int *)(unaff_retaddr + -0x24));
+    //   *(undefined4 *)(unaff_ESI + 0xef) = 0;
+    //   *(undefined4 *)(unaff_ESI + 0xf3) = 0xffffffff;
+    //   *(undefined4 *)(unaff_ESI + 0x1fb) = 0xffffffff;
+    //   *(undefined4 *)(unaff_ESI + 0x1ff) = 0xffffffff;
+    //   *(undefined4 *)(unaff_ESI + 0x203) = 0xffffffff;
+    //   *(undefined4 *)(unaff_ESI + 0x207) = 0xffffffff;
+    //   *(undefined4 *)(unaff_ESI + 0x22b) = 0xffffffff;
+    //   *(undefined4 *)(unaff_ESI + 0x22f) = 0xffffffff;
+    //   *(undefined4 *)(unaff_ESI + 0x233) = 0;
+    //   *(undefined4 *)(unaff_retaddr + -4) = 0;
+    //   *(undefined4 *)(unaff_ESI + 0x237) = 0;
+    //   *(undefined4 *)(unaff_ESI + 0x23b) = 0;
+    //   *(undefined4 *)(unaff_ESI + 0x23f) = 0;
+    //   *(undefined4 *)(unaff_ESI + 0x243) = 0;
+    //   *(undefined4 *)(unaff_ESI + 0x247) = 0;
+    //   *(undefined4 *)(unaff_ESI + 0x24b) = 0;
+    //   *(undefined4 *)(unaff_ESI + 0x24f) = 0;
+    //   *(undefined4 *)(unaff_ESI + 0x253) = 0;
+    //   *(undefined4 *)(unaff_ESI + 599) = 0;
+    //   *(undefined4 *)(unaff_ESI + 0x25b) = 0;
+    //   *(undefined4 *)(unaff_ESI + 0x25f) = 0;
+    //   *(undefined4 *)(unaff_ESI + 0x263) = 0;
+    //   *(undefined1 *)(unaff_retaddr + -4) = 3;
+    //   *(undefined4 *)(unaff_retaddr + -0x24) = 0x4e91c8;
+    //   VictoryConditionRuleSystem::VictoryConditionRuleSystem
+    //             ((VictoryConditionRuleSystem *)(unaff_ESI + 0x267));
+    //   *(undefined4 *)(unaff_ESI + 0x20b) = 0xbf800000;
+    //   *(undefined4 *)(unaff_ESI + 0x20f) = 0xbf800000;
+    //   *(undefined4 *)(unaff_ESI + 0x213) = 0xbf800000;
+    //   *(undefined4 *)(unaff_ESI + 0x21b) = 0xbf800000;
+    //   *(undefined4 *)(unaff_ESI + 0x21f) = 0xbf800000;
+    //   *(undefined4 *)(unaff_ESI + 0x223) = 0xbf800000;
+    //   uVar2 = 0xffffffff;
+    //   *(undefined4 *)(unaff_ESI + 0x5f3) = 0;
+    //   *(undefined ***)this = &TribeStrategyAIModule::_vftable_;
+    //   pcVar4 = s_;
+    //   do {
+    //     pcVar5 = pcVar4;
+    //     if (uVar2 == 0) break;
+    //     uVar2 = uVar2 - 1;
+    //     pcVar5 = pcVar4 + 1;
+    //     cVar1 = *pcVar4;
+    //     pcVar4 = pcVar5;
+    //   } while (cVar1 != '\0');
+    //   uVar2 = ~uVar2;
+    //   pcVar4 = pcVar5 + -uVar2;
+    //   pcVar5 = (char *)(unaff_ESI + 0xf7);
+    //   for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //     *(undefined4 *)pcVar5 = *(undefined4 *)pcVar4;
+    //     pcVar4 = pcVar4 + 4;
+    //     pcVar5 = pcVar5 + 4;
+    //   }
+    //   for (uVar2 = uVar2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+    //     *pcVar5 = *pcVar4;
+    //     pcVar4 = pcVar4 + 1;
+    //     pcVar5 = pcVar5 + 1;
+    //   }
+    //   *unaff_FS_OFFSET = *(undefined4 *)(unaff_retaddr + -0xc);
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004E9100
+undefined TribeStrategyAIModule(TribeStrategyAIModule* this_, void* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TribeStrategyAIModule::TribeStrategyAIModule(void *,int) */
+    // 
+    // TribeStrategyAIModule * __thiscall
+    // TribeStrategyAIModule::TribeStrategyAIModule(TribeStrategyAIModule *this,void *param_1,int param_2)
+    // 
+    // {
+    //   char cVar1;
+    //   uint uVar2;
+    //   uint uVar3;
+    //   char *pcVar4;
+    //   char *pcVar5;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_005607b2;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   StrategyAIModule::StrategyAIModule((StrategyAIModule *)this,param_1,param_2);
+    //   this->md = (TribeMainDecisionAIModule *)0x0;
+    //   this->currentVictoryConditionValue = -1;
+    //   this->targetIDValue = -1;
+    //   this->targetTypeValue = -1;
+    //   this->secondTargetIDValue = -1;
+    //   this->secondTargetTypeValue = -1;
+    //   this->targetAttributeValue = -1;
+    //   this->targetNumberValue = -1;
+    //   this->victoryConditionChangeTimeout = 0;
+    //   (this->vcRuleSet).value = (int *)0x0;
+    //   (this->vcRuleSet).numberValue = 0;
+    //   (this->vcRuleSet).desiredNumberValue = 0;
+    //   (this->vcRuleSet).maximumSizeValue = 0;
+    //   (this->executingRules).value = (int *)0x0;
+    //   (this->executingRules).numberValue = 0;
+    //   (this->executingRules).desiredNumberValue = 0;
+    //   (this->executingRules).maximumSizeValue = 0;
+    //   (this->idleRules).value = (int *)0x0;
+    //   (this->idleRules).numberValue = 0;
+    //   (this->idleRules).desiredNumberValue = 0;
+    //   (this->idleRules).maximumSizeValue = 0;
+    //   local_4 = 3;
+    //   VictoryConditionRuleSystem::VictoryConditionRuleSystem(&this->vcRules);
+    //   (this->targetPoint1Value).x = -1.0;
+    //   (this->targetPoint1Value).y = -1.0;
+    //   (this->targetPoint1Value).z = -1.0;
+    //   (this->targetPoint2Value).x = -1.0;
+    //   (this->targetPoint2Value).y = -1.0;
+    //   (this->targetPoint2Value).z = -1.0;
+    //   uVar2 = 0xffffffff;
+    //   this->difficultyLevel = 0;
+    //   this->_padding_ = (int)&_vftable_;
+    //   pcVar4 = s_;
+    //   do {
+    //     pcVar5 = pcVar4;
+    //     if (uVar2 == 0) break;
+    //     uVar2 = uVar2 - 1;
+    //     pcVar5 = pcVar4 + 1;
+    //     cVar1 = *pcVar4;
+    //     pcVar4 = pcVar5;
+    //   } while (cVar1 != '\0');
+    //   uVar2 = ~uVar2;
+    //   pcVar4 = pcVar5 + -uVar2;
+    //   pcVar5 = this->ruleSetNameValue;
+    //   for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //     *(undefined4 *)pcVar5 = *(undefined4 *)pcVar4;
+    //     pcVar4 = pcVar4 + 4;
+    //     pcVar5 = pcVar5 + 4;
+    //   }
+    //   for (uVar2 = uVar2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+    //     *pcVar5 = *pcVar4;
+    //     pcVar4 = pcVar4 + 1;
+    //     pcVar5 = pcVar5 + 1;
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004E9260
+undefined TribeStrategyAIModule(TribeStrategyAIModule* this_, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: i */
+    // /* public: __thiscall TribeStrategyAIModule::TribeStrategyAIModule(int,int) */
+    // 
+    // TribeStrategyAIModule * __thiscall
+    // TribeStrategyAIModule::TribeStrategyAIModule(TribeStrategyAIModule *this,int param_1,int param_2)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   int *piVar3;
+    //   int iVar4;
+    //   int iVar5;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   int i;
+    //   int tempIntNum;
+    //   int local_18;
+    //   int local_14;
+    //   TribeStrategyAIModule *local_10;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_00560800;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   local_10 = this;
+    //   StrategyAIModule::StrategyAIModule((StrategyAIModule *)this,(void *)0x0,param_1);
+    //   this->md = (TribeMainDecisionAIModule *)0x0;
+    //   (this->vcRuleSet).value = (int *)0x0;
+    //   (this->vcRuleSet).numberValue = 0;
+    //   (this->vcRuleSet).desiredNumberValue = 0;
+    //   (this->vcRuleSet).maximumSizeValue = 0;
+    //   (this->executingRules).value = (int *)0x0;
+    //   (this->executingRules).numberValue = 0;
+    //   (this->executingRules).desiredNumberValue = 0;
+    //   (this->executingRules).maximumSizeValue = 0;
+    //   (this->idleRules).value = (int *)0x0;
+    //   (this->idleRules).numberValue = 0;
+    //   (this->idleRules).desiredNumberValue = 0;
+    //   (this->idleRules).maximumSizeValue = 0;
+    //   local_4._0_1_ = 3;
+    //   local_4._1_3_ = 0;
+    //   VictoryConditionRuleSystem::VictoryConditionRuleSystem(&this->vcRules);
+    //   iVar5 = param_2;
+    //   piVar3 = &this->difficultyLevel;
+    //   *piVar3 = 0;
+    //   local_4 = CONCAT31(local_4._1_3_,4);
+    //   this->_padding_ = (int)&_vftable_;
+    //   rge_read(param_2,&this->currentVictoryConditionValue,4);
+    //   rge_read(iVar5,&this->targetIDValue,4);
+    //   rge_read(iVar5,&this->secondTargetIDValue,4);
+    //   rge_read(iVar5,&this->secondTargetTypeValue,4);
+    //   rge_read(iVar5,&this->targetPoint1Value,0x10);
+    //   rge_read(iVar5,&this->targetPoint2Value,0x10);
+    //   rge_read(iVar5,&this->targetAttributeValue,4);
+    //   rge_read(iVar5,&this->targetNumberValue,4);
+    //   rge_read(iVar5,&this->victoryConditionChangeTimeout,4);
+    //   if (1.5 <= save_game_version) {
+    //     rge_read(iVar5,piVar3,4);
+    //   }
+    //   rge_read(iVar5,&param_1,4);
+    //   rge_read(iVar5,this->ruleSetNameValue,param_1);
+    //   this->ruleSetNameValue[param_1] = '\0';
+    //   loadRules(this,this->ruleSetNameValue);
+    //   setDifficultyLevel(this,*piVar3);
+    //   rge_read(iVar5,&local_18,4);
+    //   tempIntNum = 0;
+    //   if (0 < local_18) {
+    //     do {
+    //       rge_read(iVar5,&param_1,4);
+    //       iVar1 = (this->vcRuleSet).numberValue;
+    //       iVar2 = 0;
+    //       local_14 = param_1;
+    //       if (0 < iVar1) {
+    //         do {
+    //           if ((this->vcRuleSet).maximumSizeValue <= iVar2) break;
+    //           if ((this->vcRuleSet).value[iVar2] == param_1) goto LAB_004e94fb;
+    //           iVar2 = iVar2 + 1;
+    //         } while (iVar2 < iVar1);
+    //       }
+    //       if ((this->vcRuleSet).maximumSizeValue + -1 < iVar1) {
+    //         iVar1 = iVar1 + 1;
+    //         piVar3 = (int *)operator_new(iVar1 * 4);
+    //         if (piVar3 != (int *)0x0) {
+    //           iVar2 = 0;
+    //           if (0 < (this->vcRuleSet).maximumSizeValue) {
+    //             do {
+    //               if (iVar1 <= iVar2) break;
+    //               iVar4 = iVar2 + 1;
+    //               piVar3[iVar2] = (this->vcRuleSet).value[iVar2];
+    //               iVar2 = iVar4;
+    //             } while (iVar4 < (this->vcRuleSet).maximumSizeValue);
+    //           }
+    //           operator_delete((this->vcRuleSet).value);
+    //           (this->vcRuleSet).value = piVar3;
+    //           (this->vcRuleSet).maximumSizeValue = iVar1;
+    //         }
+    //       }
+    //       (this->vcRuleSet).value[(this->vcRuleSet).numberValue] = local_14;
+    //       (this->vcRuleSet).numberValue = (this->vcRuleSet).numberValue + 1;
+    // LAB_004e94fb:
+    //       tempIntNum = tempIntNum + 1;
+    //     } while (tempIntNum < local_18);
+    //   }
+    //   rge_read(iVar5,&local_18,4);
+    //   tempIntNum = 0;
+    //   if (0 < local_18) {
+    //     do {
+    //       rge_read(iVar5,&param_1,4);
+    //       iVar1 = (this->executingRules).numberValue;
+    //       iVar2 = 0;
+    //       local_14 = param_1;
+    //       if (0 < iVar1) {
+    //         do {
+    //           if ((this->executingRules).maximumSizeValue <= iVar2) break;
+    //           if ((this->executingRules).value[iVar2] == param_1) goto LAB_004e95ff;
+    //           iVar2 = iVar2 + 1;
+    //         } while (iVar2 < iVar1);
+    //       }
+    //       if ((this->executingRules).maximumSizeValue + -1 < iVar1) {
+    //         iVar1 = iVar1 + 1;
+    //         piVar3 = (int *)operator_new(iVar1 * 4);
+    //         if (piVar3 != (int *)0x0) {
+    //           iVar2 = 0;
+    //           if (0 < (this->executingRules).maximumSizeValue) {
+    //             do {
+    //               if (iVar1 <= iVar2) break;
+    //               iVar4 = iVar2 + 1;
+    //               piVar3[iVar2] = (this->executingRules).value[iVar2];
+    //               iVar2 = iVar4;
+    //             } while (iVar4 < (this->executingRules).maximumSizeValue);
+    //           }
+    //           operator_delete((this->executingRules).value);
+    //           (this->executingRules).value = piVar3;
+    //           (this->executingRules).maximumSizeValue = iVar1;
+    //         }
+    //       }
+    //       (this->executingRules).value[(this->executingRules).numberValue] = local_14;
+    //       (this->executingRules).numberValue = (this->executingRules).numberValue + 1;
+    // LAB_004e95ff:
+    //       tempIntNum = tempIntNum + 1;
+    //     } while (tempIntNum < local_18);
+    //   }
+    //   rge_read(iVar5,&local_18,4);
+    //   tempIntNum = 0;
+    //   if (0 < local_18) {
+    //     do {
+    //       rge_read(iVar5,&param_1,4);
+    //       iVar1 = param_1;
+    //       iVar5 = (this->idleRules).numberValue;
+    //       iVar2 = 0;
+    //       if (0 < iVar5) {
+    //         do {
+    //           if ((this->idleRules).maximumSizeValue <= iVar2) break;
+    //           if ((this->idleRules).value[iVar2] == param_1) goto LAB_004e9703;
+    //           iVar2 = iVar2 + 1;
+    //         } while (iVar2 < iVar5);
+    //       }
+    //       if ((this->idleRules).maximumSizeValue + -1 < iVar5) {
+    //         iVar5 = iVar5 + 1;
+    //         piVar3 = (int *)operator_new(iVar5 * 4);
+    //         if (piVar3 != (int *)0x0) {
+    //           iVar2 = 0;
+    //           if (0 < (this->idleRules).maximumSizeValue) {
+    //             do {
+    //               if (iVar5 <= iVar2) break;
+    //               iVar4 = iVar2 + 1;
+    //               piVar3[iVar2] = (this->idleRules).value[iVar2];
+    //               iVar2 = iVar4;
+    //             } while (iVar4 < (this->idleRules).maximumSizeValue);
+    //           }
+    //           operator_delete((this->idleRules).value);
+    //           (this->idleRules).value = piVar3;
+    //           (this->idleRules).maximumSizeValue = iVar5;
+    //         }
+    //       }
+    //       (this->idleRules).value[(this->idleRules).numberValue] = iVar1;
+    //       (this->idleRules).numberValue = (this->idleRules).numberValue + 1;
+    // LAB_004e9703:
+    //       tempIntNum = tempIntNum + 1;
+    //       iVar5 = param_2;
+    //     } while (tempIntNum < local_18);
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004E9730
+void TribeStrategyAIModule(TribeStrategyAIModule* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall TribeStrategyAIModule::~TribeStrategyAIModule(void) */
+    // 
+    // void __thiscall TribeStrategyAIModule::~TribeStrategyAIModule(TribeStrategyAIModule *this)
+    // 
+    // {
+    //   int *piVar1;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   int local_4;
+    //   
+    //   pcStack_8 = FUN_00560842;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   this->_padding_ = (int)&_vftable_;
+    //   local_4 = 3;
+    //   VictoryConditionRuleSystem::~VictoryConditionRuleSystem(&this->vcRules);
+    //   piVar1 = (this->idleRules).value;
+    //   local_4._0_1_ = 2;
+    //   if (piVar1 != (int *)0x0) {
+    //     operator_delete(piVar1);
+    //     (this->idleRules).value = (int *)0x0;
+    //   }
+    //   (this->idleRules).numberValue = 0;
+    //   (this->idleRules).desiredNumberValue = 0;
+    //   (this->idleRules).maximumSizeValue = 0;
+    //   piVar1 = (this->executingRules).value;
+    //   local_4._0_1_ = 1;
+    //   if (piVar1 != (int *)0x0) {
+    //     operator_delete(piVar1);
+    //     (this->executingRules).value = (int *)0x0;
+    //   }
+    //   (this->executingRules).numberValue = 0;
+    //   (this->executingRules).desiredNumberValue = 0;
+    //   (this->executingRules).maximumSizeValue = 0;
+    //   piVar1 = (this->vcRuleSet).value;
+    //   local_4 = (uint)local_4._1_3_ << 8;
+    //   if (piVar1 != (int *)0x0) {
+    //     operator_delete(piVar1);
+    //     (this->vcRuleSet).value = (int *)0x0;
+    //   }
+    //   (this->vcRuleSet).numberValue = 0;
+    //   (this->vcRuleSet).desiredNumberValue = 0;
+    //   (this->vcRuleSet).maximumSizeValue = 0;
+    //   local_4 = 0xffffffff;
+    //   StrategyAIModule::~StrategyAIModule((StrategyAIModule *)this);
+    //   *unaff_FS_OFFSET = local_c;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004E9820
+int TribeStrategyAIModule::update(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: worstRuleResult */
+    // /* public: virtual int __thiscall TribeStrategyAIModule::update(int) */
+    // 
+    // int __thiscall TribeStrategyAIModule::update(TribeStrategyAIModule *this,int param_1)
+    // 
+    // {
+    //   ManagedArray<int> *pMVar1;
+    //   int iVar2;
+    //   RGE_Victory_Entry *pRVar3;
+    //   int iVar4;
+    //   int *piVar5;
+    //   int iVar6;
+    //   int iVar7;
+    //   uint uVar8;
+    //   int worstRuleResult;
+    //   int result;
+    //   int local_4;
+    //   
+    //   iVar7 = 0;
+    //   iVar2 = this->victoryConditionChangeTimeout + 1;
+    //   this->victoryConditionChangeTimeout = iVar2;
+    //   if (-1 < iVar2) {
+    //     this->victoryConditionChangeTimeout = 0;
+    //     uVar8 = 0xb;
+    //     pRVar3 = RGE_Victory_Conditions::condition_raw_info
+    //                        (*(RGE_Victory_Conditions **)(this->md->_padding_ + 0x34),0);
+    //     if (pRVar3 != (RGE_Victory_Entry *)0x0) {
+    //       uVar8 = (uint)pRVar3->command;
+    //       if (pRVar3->target_obj != (RGE_Static_Object *)0x0) {
+    //         this->targetIDValue = pRVar3->target_obj->id;
+    //         this->targetTypeValue = (int)pRVar3->target_obj->master_obj->id;
+    //       }
+    //       if (pRVar3->this_obj != (RGE_Static_Object *)0x0) {
+    //         this->secondTargetIDValue = pRVar3->this_obj->id;
+    //         this->secondTargetTypeValue = (int)pRVar3->this_obj->master_obj->id;
+    //       }
+    //       (this->targetPoint1Value).x = pRVar3->x0;
+    //       (this->targetPoint1Value).y = pRVar3->y0;
+    //       (this->targetPoint1Value).z = 1.0;
+    //       (this->targetPoint2Value).x = pRVar3->x1;
+    //       (this->targetPoint2Value).y = pRVar3->y1;
+    //       (this->targetPoint2Value).z = 1.0;
+    //       this->targetAttributeValue = pRVar3->number;
+    //       this->targetNumberValue = pRVar3->count;
+    //     }
+    //     if (uVar8 != this->currentVictoryConditionValue) {
+    //       setVictoryCondition(this,uVar8);
+    //     }
+    //   }
+    //   iVar2 = 0;
+    //   result = -1;
+    //   iVar4 = -1;
+    //   if (0 < (this->idleRules).numberValue) {
+    //     pMVar1 = &this->idleRules;
+    //     do {
+    //       if ((this->idleRules).maximumSizeValue + -1 < iVar7) {
+    //         ManagedArray<int>::resize(pMVar1,iVar7 + 1);
+    //       }
+    //       iVar4 = VictoryConditionRuleSystem::evaluateAsNonInProgress
+    //                         (&this->vcRules,this->md->aiPlayer,pMVar1->value[iVar7]);
+    //       if (iVar2 < iVar4) {
+    //         if (((this->idleRules).maximumSizeValue + -1 < iVar7) &&
+    //            (piVar5 = (int *)operator_new(iVar7 * 4 + 4), piVar5 != (int *)0x0)) {
+    //           iVar2 = 0;
+    //           if (0 < (this->idleRules).maximumSizeValue) {
+    //             do {
+    //               if (iVar7 + 1 <= iVar2) break;
+    //               iVar6 = iVar2 + 1;
+    //               piVar5[iVar2] = pMVar1->value[iVar2];
+    //               iVar2 = iVar6;
+    //             } while (iVar6 < (this->idleRules).maximumSizeValue);
+    //           }
+    //           operator_delete(pMVar1->value);
+    //           pMVar1->value = piVar5;
+    //           (this->idleRules).maximumSizeValue = iVar7 + 1;
+    //         }
+    //         result = pMVar1->value[iVar7];
+    //         iVar2 = iVar4;
+    //       }
+    //       iVar7 = iVar7 + 1;
+    //       iVar4 = result;
+    //     } while (iVar7 < (this->idleRules).numberValue);
+    //   }
+    //   if ((iVar4 != -1) &&
+    //      (iVar2 = VictoryConditionRuleSystem::execute
+    //                         (&this->vcRules,this->md->aiPlayer,this->currentVictoryConditionValue,iVar4)
+    //      , iVar2 == 1)) {
+    //     iVar2 = (this->executingRules).numberValue;
+    //     pMVar1 = &this->executingRules;
+    //     iVar7 = 0;
+    //     if (0 < iVar2) {
+    //       do {
+    //         if ((this->executingRules).maximumSizeValue <= iVar7) break;
+    //         if (pMVar1->value[iVar7] == iVar4) goto LAB_004e9a47;
+    //         iVar7 = iVar7 + 1;
+    //       } while (iVar7 < iVar2);
+    //     }
+    //     if ((this->executingRules).maximumSizeValue + -1 < iVar2) {
+    //       ManagedArray<int>::resize(pMVar1,iVar2 + 1);
+    //     }
+    //     pMVar1->value[(this->executingRules).numberValue] = iVar4;
+    //     (this->executingRules).numberValue = (this->executingRules).numberValue + 1;
+    // LAB_004e9a47:
+    //     iVar2 = (this->idleRules).maximumSizeValue;
+    //     iVar7 = 0;
+    //     if (0 < iVar2) {
+    //       piVar5 = (this->idleRules).value;
+    //       do {
+    //         if (*piVar5 == iVar4) break;
+    //         iVar7 = iVar7 + 1;
+    //         piVar5 = piVar5 + 1;
+    //       } while (iVar7 < iVar2);
+    //     }
+    //     if (iVar7 < iVar2) {
+    //       if (iVar7 < iVar2 + -1) {
+    //         do {
+    //           piVar5 = (this->idleRules).value;
+    //           iVar2 = iVar7 + 1;
+    //           piVar5[iVar7] = piVar5[iVar2];
+    //           iVar7 = iVar2;
+    //         } while (iVar2 < (this->idleRules).maximumSizeValue + -1);
+    //       }
+    //       iVar2 = (this->idleRules).numberValue + -1;
+    //       (this->idleRules).numberValue = iVar2;
+    //       if (iVar2 < 0) {
+    //         (this->idleRules).numberValue = 0;
+    //       }
+    //     }
+    //   }
+    //   iVar7 = 0;
+    //   local_4 = -1;
+    //                     /* language.dll match for 0x65: "1" */
+    //   result = 0x65;
+    //   iVar2 = -1;
+    //   if (0 < (this->executingRules).numberValue) {
+    //     pMVar1 = &this->executingRules;
+    //     do {
+    //       if (((this->executingRules).maximumSizeValue + -1 < iVar7) &&
+    //          (piVar5 = (int *)operator_new(iVar7 * 4 + 4), piVar5 != (int *)0x0)) {
+    //         iVar2 = 0;
+    //         if (0 < (this->executingRules).maximumSizeValue) {
+    //           do {
+    //             if (iVar7 + 1 <= iVar2) break;
+    //             iVar4 = iVar2 + 1;
+    //             piVar5[iVar2] = pMVar1->value[iVar2];
+    //             iVar2 = iVar4;
+    //           } while (iVar4 < (this->executingRules).maximumSizeValue);
+    //         }
+    //         operator_delete(pMVar1->value);
+    //         pMVar1->value = piVar5;
+    //         (this->executingRules).maximumSizeValue = iVar7 + 1;
+    //       }
+    //       iVar2 = VictoryConditionRuleSystem::evaluateAsInProgress
+    //                         (&this->vcRules,this->md->aiPlayer,pMVar1->value[iVar7]);
+    //       if (iVar2 < result) {
+    //         if ((this->executingRules).maximumSizeValue + -1 < iVar7) {
+    //           ManagedArray<int>::resize(pMVar1,iVar7 + 1);
+    //         }
+    //         local_4 = pMVar1->value[iVar7];
+    //         result = iVar2;
+    //       }
+    //       iVar7 = iVar7 + 1;
+    //       iVar2 = local_4;
+    //     } while (iVar7 < (this->executingRules).numberValue);
+    //   }
+    //   if ((iVar2 != -1) &&
+    //      (iVar7 = VictoryConditionRuleSystem::stopExecution(&this->vcRules,this->md->aiPlayer,iVar2),
+    //      iVar7 == 1)) {
+    //     iVar7 = (this->executingRules).maximumSizeValue;
+    //     iVar4 = 0;
+    //     if (0 < iVar7) {
+    //       piVar5 = (this->executingRules).value;
+    //       do {
+    //         if (*piVar5 == iVar2) break;
+    //         iVar4 = iVar4 + 1;
+    //         piVar5 = piVar5 + 1;
+    //       } while (iVar4 < iVar7);
+    //     }
+    //     if (iVar4 < iVar7) {
+    //       if (iVar4 < iVar7 + -1) {
+    //         do {
+    //           piVar5 = (this->executingRules).value;
+    //           iVar7 = iVar4 + 1;
+    //           piVar5[iVar4] = piVar5[iVar7];
+    //           iVar4 = iVar7;
+    //         } while (iVar7 < (this->executingRules).maximumSizeValue + -1);
+    //       }
+    //       iVar7 = (this->executingRules).numberValue + -1;
+    //       (this->executingRules).numberValue = iVar7;
+    //       if (iVar7 < 0) {
+    //         (this->executingRules).numberValue = 0;
+    //       }
+    //     }
+    //     iVar7 = (this->idleRules).numberValue;
+    //     pMVar1 = &this->idleRules;
+    //     iVar4 = 0;
+    //     if (0 < iVar7) {
+    //       do {
+    //         if ((this->idleRules).maximumSizeValue <= iVar4) break;
+    //         if (pMVar1->value[iVar4] == iVar2) goto LAB_004e9c3d;
+    //         iVar4 = iVar4 + 1;
+    //       } while (iVar4 < iVar7);
+    //     }
+    //     if ((this->idleRules).maximumSizeValue + -1 < iVar7) {
+    //       ManagedArray<int>::resize(pMVar1,iVar7 + 1);
+    //     }
+    //     pMVar1->value[(this->idleRules).numberValue] = iVar2;
+    //     (this->idleRules).numberValue = (this->idleRules).numberValue + 1;
+    //   }
+    // LAB_004e9c3d:
+    //   iVar2 = 0;
+    //   if (0 < (this->vcRuleSet).numberValue) {
+    //     do {
+    //       if ((this->vcRuleSet).maximumSizeValue + -1 < iVar2) {
+    //         piVar5 = (int *)operator_new(iVar2 * 4 + 4);
+    //         if (piVar5 != (int *)0x0) {
+    //           iVar7 = 0;
+    //           if (0 < (this->vcRuleSet).maximumSizeValue) {
+    //             do {
+    //               if (iVar2 + 1 <= iVar7) break;
+    //               iVar4 = iVar7 + 1;
+    //               piVar5[iVar7] = (this->vcRuleSet).value[iVar7];
+    //               iVar7 = iVar4;
+    //             } while (iVar4 < (this->vcRuleSet).maximumSizeValue);
+    //           }
+    //           operator_delete((this->vcRuleSet).value);
+    //           (this->vcRuleSet).value = piVar5;
+    //           (this->vcRuleSet).maximumSizeValue = iVar2 + 1;
+    //         }
+    //       }
+    //       iVar7 = VictoryConditionRuleSystem::evaluateAsNonInProgress
+    //                         (&this->vcRules,this->md->aiPlayer,(this->vcRuleSet).value[iVar2]);
+    //       if (iVar7 == -1) {
+    //         if ((this->vcRuleSet).maximumSizeValue + -1 < iVar2) {
+    //           piVar5 = (int *)operator_new(iVar2 * 4 + 4);
+    //           if (piVar5 != (int *)0x0) {
+    //             iVar7 = 0;
+    //             if (0 < (this->vcRuleSet).maximumSizeValue) {
+    //               do {
+    //                 if (iVar2 + 1 <= iVar7) break;
+    //                 iVar4 = iVar7 + 1;
+    //                 piVar5[iVar7] = (this->vcRuleSet).value[iVar7];
+    //                 iVar7 = iVar4;
+    //               } while (iVar4 < (this->vcRuleSet).maximumSizeValue);
+    //             }
+    //             operator_delete((this->vcRuleSet).value);
+    //             (this->vcRuleSet).value = piVar5;
+    //             (this->vcRuleSet).maximumSizeValue = iVar2 + 1;
+    //           }
+    //         }
+    //         VictoryConditionRuleSystem::execute
+    //                   (&this->vcRules,this->md->aiPlayer,this->currentVictoryConditionValue,
+    //                    (this->vcRuleSet).value[iVar2]);
+    //       }
+    //       iVar2 = iVar2 + 1;
+    //     } while (iVar2 < (this->vcRuleSet).numberValue);
+    //   }
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004E9D90
+void setMainDecisionAI(TribeStrategyAIModule* this_, TribeMainDecisionAIModule* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall TribeStrategyAIModule::setMainDecisionAI(class TribeMainDecisionAIModule
+    //    *) */
+    // 
+    // void __thiscall
+    // TribeStrategyAIModule::setMainDecisionAI
+    //           (TribeStrategyAIModule *this,TribeMainDecisionAIModule *param_1)
+    // 
+    // {
+    //   this->md = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004E9DA0
+int TribeStrategyAIModule::save(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: tempInt */
+    // /* public: virtual int __thiscall TribeStrategyAIModule::save(int) */
+    // 
+    // int __thiscall TribeStrategyAIModule::save(TribeStrategyAIModule *this,int param_1)
+    // 
+    // {
+    //   char cVar1;
+    //   int *piVar2;
+    //   int iVar3;
+    //   int iVar4;
+    //   uint uVar5;
+    //   uint uVar6;
+    //   char *pcVar7;
+    //   char *pcVar8;
+    //   int iVar9;
+    //   int tempInt;
+    //   char tempString [257];
+    //   
+    //   rge_write(param_1,&this->currentVictoryConditionValue,4);
+    //   rge_write(param_1,&this->targetIDValue,4);
+    //   rge_write(param_1,&this->secondTargetIDValue,4);
+    //   rge_write(param_1,&this->secondTargetTypeValue,4);
+    //   rge_write(param_1,&this->targetPoint1Value,0x10);
+    //   rge_write(param_1,&this->targetPoint2Value,0x10);
+    //   rge_write(param_1,&this->targetAttributeValue,4);
+    //   rge_write(param_1,&this->targetNumberValue,4);
+    //   rge_write(param_1,&this->victoryConditionChangeTimeout,4);
+    //   rge_write(param_1,&this->difficultyLevel,4);
+    //   uVar5 = 0xffffffff;
+    //   pcVar8 = this->ruleSetNameValue;
+    //   do {
+    //     pcVar7 = pcVar8;
+    //     if (uVar5 == 0) break;
+    //     uVar5 = uVar5 - 1;
+    //     pcVar7 = pcVar8 + 1;
+    //     cVar1 = *pcVar8;
+    //     pcVar8 = pcVar7;
+    //   } while (cVar1 != '\0');
+    //   uVar5 = ~uVar5;
+    //   pcVar8 = tempString;
+    //   pcVar7 = pcVar7 + -uVar5;
+    //   for (uVar6 = uVar5 >> 2; pcVar8 = pcVar8 + 4, uVar6 != 0; uVar6 = uVar6 - 1) {
+    //     *(undefined4 *)pcVar8 = *(undefined4 *)pcVar7;
+    //     pcVar7 = pcVar7 + 4;
+    //   }
+    //   for (uVar5 = uVar5 & 3; uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *pcVar8 = *pcVar7;
+    //     pcVar7 = pcVar7 + 1;
+    //     pcVar8 = pcVar8 + 1;
+    //   }
+    //   uVar5 = 0xffffffff;
+    //   pcVar8 = tempString + 4;
+    //   do {
+    //     if (uVar5 == 0) break;
+    //     uVar5 = uVar5 - 1;
+    //     cVar1 = *pcVar8;
+    //     pcVar8 = pcVar8 + 1;
+    //   } while (cVar1 != '\0');
+    //   tempString._0_4_ = ~uVar5 - 1;
+    //   rge_write(param_1,tempString,4);
+    //   uVar5 = 0xffffffff;
+    //   pcVar8 = tempString + 4;
+    //   do {
+    //     if (uVar5 == 0) break;
+    //     uVar5 = uVar5 - 1;
+    //     cVar1 = *pcVar8;
+    //     pcVar8 = pcVar8 + 1;
+    //   } while (cVar1 != '\0');
+    //   rge_write(param_1,tempString + 4,~uVar5 - 1);
+    //   tempString._0_4_ = (this->vcRuleSet).numberValue;
+    //   rge_write(param_1,tempString,4);
+    //   iVar9 = 0;
+    //   if (0 < (this->vcRuleSet).numberValue) {
+    //     do {
+    //       if (((this->vcRuleSet).maximumSizeValue + -1 < iVar9) &&
+    //          (piVar2 = (int *)operator_new(iVar9 * 4 + 4), piVar2 != (int *)0x0)) {
+    //         iVar4 = 0;
+    //         if (0 < (this->vcRuleSet).maximumSizeValue) {
+    //           do {
+    //             if (iVar9 + 1 <= iVar4) break;
+    //             iVar3 = iVar4 + 1;
+    //             piVar2[iVar4] = (this->vcRuleSet).value[iVar4];
+    //             iVar4 = iVar3;
+    //           } while (iVar3 < (this->vcRuleSet).maximumSizeValue);
+    //         }
+    //         operator_delete((this->vcRuleSet).value);
+    //         (this->vcRuleSet).value = piVar2;
+    //         (this->vcRuleSet).maximumSizeValue = iVar9 + 1;
+    //       }
+    //       tempString._0_4_ = (this->vcRuleSet).value[iVar9];
+    //       rge_write(param_1,tempString,4);
+    //       iVar9 = iVar9 + 1;
+    //     } while (iVar9 < (this->vcRuleSet).numberValue);
+    //   }
+    //   tempString._0_4_ = (this->executingRules).numberValue;
+    //   rge_write(param_1,tempString,4);
+    //   iVar9 = 0;
+    //   if (0 < (this->executingRules).numberValue) {
+    //     do {
+    //       if (((this->executingRules).maximumSizeValue + -1 < iVar9) &&
+    //          (piVar2 = (int *)operator_new(iVar9 * 4 + 4), piVar2 != (int *)0x0)) {
+    //         iVar4 = 0;
+    //         if (0 < (this->executingRules).maximumSizeValue) {
+    //           do {
+    //             if (iVar9 + 1 <= iVar4) break;
+    //             iVar3 = iVar4 + 1;
+    //             piVar2[iVar4] = (this->executingRules).value[iVar4];
+    //             iVar4 = iVar3;
+    //           } while (iVar3 < (this->executingRules).maximumSizeValue);
+    //         }
+    //         operator_delete((this->executingRules).value);
+    //         (this->executingRules).value = piVar2;
+    //         (this->executingRules).maximumSizeValue = iVar9 + 1;
+    //       }
+    //       tempString._0_4_ = (this->executingRules).value[iVar9];
+    //       rge_write(param_1,tempString,4);
+    //       iVar9 = iVar9 + 1;
+    //     } while (iVar9 < (this->executingRules).numberValue);
+    //   }
+    //   tempString._0_4_ = (this->idleRules).numberValue;
+    //   rge_write(param_1,tempString,4);
+    //   iVar9 = 0;
+    //   if (0 < (this->idleRules).numberValue) {
+    //     do {
+    //       if ((this->idleRules).maximumSizeValue + -1 < iVar9) {
+    //         piVar2 = (int *)operator_new(iVar9 * 4 + 4);
+    //         if (piVar2 != (int *)0x0) {
+    //           iVar4 = 0;
+    //           if (0 < (this->idleRules).maximumSizeValue) {
+    //             do {
+    //               if (iVar9 + 1 <= iVar4) break;
+    //               iVar3 = iVar4 + 1;
+    //               piVar2[iVar4] = (this->idleRules).value[iVar4];
+    //               iVar4 = iVar3;
+    //             } while (iVar3 < (this->idleRules).maximumSizeValue);
+    //           }
+    //           operator_delete((this->idleRules).value);
+    //           (this->idleRules).value = piVar2;
+    //           (this->idleRules).maximumSizeValue = iVar9 + 1;
+    //         }
+    //       }
+    //       tempString._0_4_ = (this->idleRules).value[iVar9];
+    //       rge_write(param_1,tempString,4);
+    //       iVar9 = iVar9 + 1;
+    //     } while (iVar9 < (this->idleRules).numberValue);
+    //   }
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004EA130
+char* ruleSetName(TribeStrategyAIModule* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: char * __thiscall TribeStrategyAIModule::ruleSetName(void) */
+    // 
+    // char * __thiscall TribeStrategyAIModule::ruleSetName(TribeStrategyAIModule *this)
+    // 
+    // {
+    //   return this->ruleSetNameValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004EA140
+int loadRules(TribeStrategyAIModule* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall TribeStrategyAIModule::loadRules(char *) */
+    // 
+    // int __thiscall TribeStrategyAIModule::loadRules(TribeStrategyAIModule *this,char *param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   if (param_1 == (char *)0x0) {
+    //     return (int)param_1;
+    //   }
+    //   strncpy(this->ruleSetNameValue,param_1,0xff);
+    //   iVar1 = VictoryConditionRuleSystem::loadRules(&this->vcRules,this->ruleSetNameValue);
+    //   return iVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004EA180
+void setRule(TribeStrategyAIModule* this_, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall TribeStrategyAIModule::setRule(int,int) */
+    // 
+    // void __thiscall TribeStrategyAIModule::setRule(TribeStrategyAIModule *this,int param_1,int param_2)
+    // 
+    // {
+    //   AIModule::logCommonHistory((AIModule *)this,(char *)this,s_Setting_SN__d__to__d_,param_1,param_2);
+    //   VictoryConditionRuleSystem::setRule(&this->vcRules,param_1,param_2);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004EA1B0
+int rule(TribeStrategyAIModule* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall TribeStrategyAIModule::rule(int) */
+    // 
+    // int __thiscall TribeStrategyAIModule::rule(TribeStrategyAIModule *this,int param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   iVar1 = VictoryConditionRuleSystem::rule(&this->vcRules,param_1);
+    //   return iVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004EA1D0
+void setDifficultyLevel(TribeStrategyAIModule* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall TribeStrategyAIModule::setDifficultyLevel(int) */
+    // 
+    // void __thiscall TribeStrategyAIModule::setDifficultyLevel(TribeStrategyAIModule *this,int param_1)
+    // 
+    // {
+    //   VictoryConditionRuleSystem::modifyForDifficultyLevel(&this->vcRules,param_1);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004EA1F0
+int currentVictoryCondition(TribeStrategyAIModule* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall TribeStrategyAIModule::currentVictoryCondition(void)const  */
+    // 
+    // int __thiscall TribeStrategyAIModule::currentVictoryCondition(TribeStrategyAIModule *this)
+    // 
+    // {
+    //   return this->currentVictoryConditionValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004EA200
+int targetID(TribeStrategyAIModule* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall TribeStrategyAIModule::targetID(void)const  */
+    // 
+    // int __thiscall TribeStrategyAIModule::targetID(TribeStrategyAIModule *this)
+    // 
+    // {
+    //   return this->targetIDValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004EA210
+int targetType(TribeStrategyAIModule* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall TribeStrategyAIModule::targetType(void)const  */
+    // 
+    // int __thiscall TribeStrategyAIModule::targetType(TribeStrategyAIModule *this)
+    // 
+    // {
+    //   return this->targetTypeValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004EA220
+int secondTargetID(TribeStrategyAIModule* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall TribeStrategyAIModule::secondTargetID(void)const  */
+    // 
+    // int __thiscall TribeStrategyAIModule::secondTargetID(TribeStrategyAIModule *this)
+    // 
+    // {
+    //   return this->secondTargetIDValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004EA230
+int secondTargetType(TribeStrategyAIModule* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall TribeStrategyAIModule::secondTargetType(void)const  */
+    // 
+    // int __thiscall TribeStrategyAIModule::secondTargetType(TribeStrategyAIModule *this)
+    // 
+    // {
+    //   return this->secondTargetTypeValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004EA240
+Waypoint* targetPoint1(TribeStrategyAIModule* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: struct Waypoint const & __thiscall TribeStrategyAIModule::targetPoint1(void)const  */
+    // 
+    // Waypoint * __thiscall TribeStrategyAIModule::targetPoint1(TribeStrategyAIModule *this)
+    // 
+    // {
+    //   return &this->targetPoint1Value;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004EA250
+Waypoint* targetPoint2(TribeStrategyAIModule* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: struct Waypoint const & __thiscall TribeStrategyAIModule::targetPoint2(void)const  */
+    // 
+    // Waypoint * __thiscall TribeStrategyAIModule::targetPoint2(TribeStrategyAIModule *this)
+    // 
+    // {
+    //   return &this->targetPoint2Value;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004EA260
+int targetAttribute(TribeStrategyAIModule* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall TribeStrategyAIModule::targetAttribute(void)const  */
+    // 
+    // int __thiscall TribeStrategyAIModule::targetAttribute(TribeStrategyAIModule *this)
+    // 
+    // {
+    //   return this->targetAttributeValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004EA270
+int targetNumber(TribeStrategyAIModule* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall TribeStrategyAIModule::targetNumber(void)const  */
+    // 
+    // int __thiscall TribeStrategyAIModule::targetNumber(TribeStrategyAIModule *this)
+    // 
+    // {
+    //   return this->targetNumberValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004EA280
+void setVictoryCondition(TribeStrategyAIModule* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall TribeStrategyAIModule::setVictoryCondition(int) */
+    // 
+    // void __thiscall TribeStrategyAIModule::setVictoryCondition(TribeStrategyAIModule *this,int param_1)
+    // 
+    // {
+    //   ManagedArray<int> *this_00;
+    //   int iVar1;
+    //   int *piVar2;
+    //   ManagedArray<int> *this_01;
+    //   int iVar3;
+    //   
+    //   this_00 = &this->vcRuleSet;
+    //   iVar3 = 0;
+    //   this->currentVictoryConditionValue = param_1;
+    //   (this->vcRuleSet).numberValue = 0;
+    //   param_1 = 1;
+    //   iVar1 = ManagedArray<int>::contains(this_00,&param_1);
+    //   if (iVar1 != 1) {
+    //     iVar1 = (this->vcRuleSet).numberValue;
+    //     if ((this->vcRuleSet).maximumSizeValue + -1 < iVar1) {
+    //       ManagedArray<int>::resize(this_00,iVar1 + 1);
+    //     }
+    //     this_00->value[(this->vcRuleSet).numberValue] = param_1;
+    //     (this->vcRuleSet).numberValue = (this->vcRuleSet).numberValue + 1;
+    //   }
+    //   param_1 = 2;
+    //   iVar1 = ManagedArray<int>::contains(this_00,&param_1);
+    //   if (iVar1 != 1) {
+    //     iVar1 = (this->vcRuleSet).numberValue;
+    //     if ((this->vcRuleSet).maximumSizeValue + -1 < iVar1) {
+    //       ManagedArray<int>::resize(this_00,iVar1 + 1);
+    //     }
+    //     this_00->value[(this->vcRuleSet).numberValue] = param_1;
+    //     (this->vcRuleSet).numberValue = (this->vcRuleSet).numberValue + 1;
+    //   }
+    //   param_1 = 0xc;
+    //   iVar1 = ManagedArray<int>::contains(this_00,&param_1);
+    //   if (iVar1 != 1) {
+    //     iVar1 = (this->vcRuleSet).numberValue;
+    //     if ((this->vcRuleSet).maximumSizeValue + -1 < iVar1) {
+    //       ManagedArray<int>::resize(this_00,iVar1 + 1);
+    //     }
+    //     this_00->value[(this->vcRuleSet).numberValue] = param_1;
+    //     (this->vcRuleSet).numberValue = (this->vcRuleSet).numberValue + 1;
+    //   }
+    //   param_1 = 0xd;
+    //   iVar1 = ManagedArray<int>::contains(this_00,&param_1);
+    //   if (iVar1 != 1) {
+    //     iVar1 = (this->vcRuleSet).numberValue;
+    //     if ((this->vcRuleSet).maximumSizeValue + -1 < iVar1) {
+    //       ManagedArray<int>::resize(this_00,iVar1 + 1);
+    //     }
+    //     this_00->value[(this->vcRuleSet).numberValue] = param_1;
+    //     (this->vcRuleSet).numberValue = (this->vcRuleSet).numberValue + 1;
+    //   }
+    //   param_1 = 0xe;
+    //   iVar1 = ManagedArray<int>::contains(this_00,&param_1);
+    //   if (iVar1 != 1) {
+    //     iVar1 = (this->vcRuleSet).numberValue;
+    //     if ((this->vcRuleSet).maximumSizeValue + -1 < iVar1) {
+    //       ManagedArray<int>::resize(this_00,iVar1 + 1);
+    //     }
+    //     this_00->value[(this->vcRuleSet).numberValue] = param_1;
+    //     (this->vcRuleSet).numberValue = (this->vcRuleSet).numberValue + 1;
+    //   }
+    //   param_1 = 0x10;
+    //   iVar1 = ManagedArray<int>::contains(this_00,&param_1);
+    //   if (iVar1 != 1) {
+    //     iVar1 = (this->vcRuleSet).numberValue;
+    //     if ((this->vcRuleSet).maximumSizeValue + -1 < iVar1) {
+    //       ManagedArray<int>::resize(this_00,iVar1 + 1);
+    //     }
+    //     this_00->value[(this->vcRuleSet).numberValue] = param_1;
+    //     (this->vcRuleSet).numberValue = (this->vcRuleSet).numberValue + 1;
+    //   }
+    //   param_1 = 0x11;
+    //   iVar1 = ManagedArray<int>::contains(this_00,&param_1);
+    //   if (iVar1 != 1) {
+    //     iVar1 = (this->vcRuleSet).numberValue;
+    //     if ((this->vcRuleSet).maximumSizeValue + -1 < iVar1) {
+    //       ManagedArray<int>::resize(this_00,iVar1 + 1);
+    //     }
+    //     this_00->value[(this->vcRuleSet).numberValue] = param_1;
+    //     (this->vcRuleSet).numberValue = (this->vcRuleSet).numberValue + 1;
+    //   }
+    //   param_1 = 0x12;
+    //   iVar1 = ManagedArray<int>::contains(this_00,&param_1);
+    //   if (iVar1 != 1) {
+    //     iVar1 = (this->vcRuleSet).numberValue;
+    //     if ((this->vcRuleSet).maximumSizeValue + -1 < iVar1) {
+    //       ManagedArray<int>::resize(this_00,iVar1 + 1);
+    //     }
+    //     this_00->value[(this->vcRuleSet).numberValue] = param_1;
+    //     (this->vcRuleSet).numberValue = (this->vcRuleSet).numberValue + 1;
+    //   }
+    //   param_1 = 0x15;
+    //   iVar1 = ManagedArray<int>::contains(this_00,&param_1);
+    //   if (iVar1 != 1) {
+    //     iVar1 = (this->vcRuleSet).numberValue;
+    //     if ((this->vcRuleSet).maximumSizeValue + -1 < iVar1) {
+    //       ManagedArray<int>::resize(this_00,iVar1 + 1);
+    //     }
+    //     this_00->value[(this->vcRuleSet).numberValue] = param_1;
+    //     (this->vcRuleSet).numberValue = (this->vcRuleSet).numberValue + 1;
+    //   }
+    //   param_1 = 0x16;
+    //   iVar1 = ManagedArray<int>::contains(this_00,&param_1);
+    //   if (iVar1 != 1) {
+    //     iVar1 = (this->vcRuleSet).numberValue;
+    //     if ((this->vcRuleSet).maximumSizeValue + -1 < iVar1) {
+    //       ManagedArray<int>::resize(this_00,iVar1 + 1);
+    //     }
+    //     this_00->value[(this->vcRuleSet).numberValue] = param_1;
+    //     (this->vcRuleSet).numberValue = (this->vcRuleSet).numberValue + 1;
+    //   }
+    //   param_1 = 0x17;
+    //   iVar1 = ManagedArray<int>::contains(this_00,&param_1);
+    //   if (iVar1 != 1) {
+    //     iVar1 = (this->vcRuleSet).numberValue;
+    //     if ((this->vcRuleSet).maximumSizeValue + -1 < iVar1) {
+    //       ManagedArray<int>::resize(this_00,iVar1 + 1);
+    //     }
+    //     this_00->value[(this->vcRuleSet).numberValue] = param_1;
+    //     (this->vcRuleSet).numberValue = (this->vcRuleSet).numberValue + 1;
+    //   }
+    //   param_1 = 0x18;
+    //   iVar1 = ManagedArray<int>::contains(this_00,&param_1);
+    //   if (iVar1 != 1) {
+    //     iVar1 = (this->vcRuleSet).numberValue;
+    //     if ((this->vcRuleSet).maximumSizeValue + -1 < iVar1) {
+    //       ManagedArray<int>::resize(this_00,iVar1 + 1);
+    //     }
+    //     this_00->value[(this->vcRuleSet).numberValue] = param_1;
+    //     (this->vcRuleSet).numberValue = (this->vcRuleSet).numberValue + 1;
+    //   }
+    //   param_1 = 0x19;
+    //   iVar1 = ManagedArray<int>::contains(this_00,&param_1);
+    //   if (iVar1 != 1) {
+    //     iVar1 = (this->vcRuleSet).numberValue;
+    //     if ((this->vcRuleSet).maximumSizeValue + -1 < iVar1) {
+    //       ManagedArray<int>::resize(this_00,iVar1 + 1);
+    //     }
+    //     this_00->value[(this->vcRuleSet).numberValue] = param_1;
+    //     (this->vcRuleSet).numberValue = (this->vcRuleSet).numberValue + 1;
+    //   }
+    //   ManagedArray<int>::add(this_00,0x1a);
+    //   ManagedArray<int>::add(this_00,0x1b);
+    //   ManagedArray<int>::add(this_00,0x1c);
+    //   ManagedArray<int>::add(this_00,0x1d);
+    //   ManagedArray<int>::add(this_00,0x1e);
+    //   ManagedArray<int>::add(this_00,0x1f);
+    //   ManagedArray<int>::add(this_00,0x20);
+    //   ManagedArray<int>::add(this_00,0x21);
+    //   ManagedArray<int>::add(this_00,0x22);
+    //   ManagedArray<int>::add(this_00,0x23);
+    //   ManagedArray<int>::add(this_00,0x24);
+    //   ManagedArray<int>::add(this_00,0x25);
+    //   ManagedArray<int>::add(this_00,0x26);
+    //   ManagedArray<int>::add(this_00,0x27);
+    //   ManagedArray<int>::add(this_00,0x28);
+    //   ManagedArray<int>::add(this_00,0x29);
+    //   ManagedArray<int>::add(this_00,0x2a);
+    //   ManagedArray<int>::add(this_00,0x2b);
+    //   ManagedArray<int>::add(this_00,0x2c);
+    //   ManagedArray<int>::add(this_00,0x2d);
+    //   ManagedArray<int>::add(this_00,0x2e);
+    //   ManagedArray<int>::add(this_00,0x2f);
+    //   ManagedArray<int>::add(this_00,0x30);
+    //   ManagedArray<int>::add(this_00,0x31);
+    //   if (0 < (this->vcRuleSet).numberValue) {
+    //     do {
+    //       piVar2 = ManagedArray<int>::operator[](this_00,iVar3);
+    //       iVar1 = VictoryConditionRuleSystem::evaluateAsNonInProgress
+    //                         (&this->vcRules,this->md->aiPlayer,*piVar2);
+    //       if (iVar1 == -2) {
+    //         piVar2 = ManagedArray<int>::operator[](this_00,iVar3);
+    //         iVar1 = VictoryConditionRuleSystem::execute
+    //                           (&this->vcRules,this->md->aiPlayer,this->currentVictoryConditionValue,
+    //                            *piVar2);
+    //         if (iVar1 == 1) {
+    //           piVar2 = ManagedArray<int>::operator[](this_00,iVar3);
+    //           iVar1 = *piVar2;
+    //           this_01 = &this->executingRules;
+    //         }
+    //         else {
+    //           piVar2 = ManagedArray<int>::operator[](this_00,iVar3);
+    //           iVar1 = *piVar2;
+    //           this_01 = &this->idleRules;
+    //         }
+    //         ManagedArray<int>::add(this_01,iVar1);
+    //       }
+    //       iVar3 = iVar3 + 1;
+    //     } while (iVar3 < (this->vcRuleSet).numberValue);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004EA7C0
+int isRuleExecuting(TribeStrategyAIModule* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall TribeStrategyAIModule::isRuleExecuting(int) */
+    // 
+    // int __thiscall TribeStrategyAIModule::isRuleExecuting(TribeStrategyAIModule *this,int param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   
+    //   iVar1 = (this->executingRules).numberValue;
+    //   iVar2 = 0;
+    //   if (0 < iVar1) {
+    //     while (iVar2 < (this->executingRules).maximumSizeValue) {
+    //       if ((this->executingRules).value[iVar2] == param_1) {
+    //         return 1;
+    //       }
+    //       iVar2 = iVar2 + 1;
+    //       if (iVar1 <= iVar2) {
+    //         return 0;
+    //       }
+    //     }
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004EA810
+int isRuleIdle(TribeStrategyAIModule* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall TribeStrategyAIModule::isRuleIdle(int) */
+    // 
+    // int __thiscall TribeStrategyAIModule::isRuleIdle(TribeStrategyAIModule *this,int param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   
+    //   iVar1 = (this->idleRules).numberValue;
+    //   iVar2 = 0;
+    //   if (0 < iVar1) {
+    //     while (iVar2 < (this->idleRules).maximumSizeValue) {
+    //       if ((this->idleRules).value[iVar2] == param_1) {
+    //         return 1;
+    //       }
+    //       iVar2 = iVar2 + 1;
+    //       if (iVar1 <= iVar2) {
+    //         return 0;
+    //       }
+    //     }
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+

@@ -1,0 +1,24 @@
+// Auto-generated decompiler unit: TRIBE_Mission_Screen.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x004B87B0
+void* TRIBE_Mission_Screen::vector_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TRIBE_Mission_Screen::`vector deleting destructor'(unsigned
+    //    int) */
+    // 
+    // void * __thiscall
+    // TRIBE_Mission_Screen::_vector_deleting_destructor_(TRIBE_Mission_Screen *this,uint param_1)
+    // 
+    // {
+    //   ~TRIBE_Mission_Screen(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

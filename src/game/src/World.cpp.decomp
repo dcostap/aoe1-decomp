@@ -1,0 +1,19 @@
+// Auto-generated decompiler unit: world.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/world.h
+#include "../include/common.h"
+
+// Offset: 0x00540A10
+void RGE_Game_World::logStatus(FILE* param_1, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual void __thiscall RGE_Game_World::logStatus(struct _iobuf *,int) */
+    // 
+    // void __thiscall RGE_Game_World::logStatus(RGE_Game_World *this,_iobuf *param_1,int param_2)
+    // 
+    // {
+    //   return;
+    // }
+    // 
+    // 
+}
+

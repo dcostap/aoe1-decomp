@@ -1,0 +1,55 @@
+// Auto-generated decompiler unit: bucket_04CD.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x004CD200
+void TRIBE_Action_Build(TRIBE_Action_Build* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall TRIBE_Action_Build::~TRIBE_Action_Build(void) */
+    // 
+    // void __thiscall TRIBE_Action_Build::~TRIBE_Action_Build(TRIBE_Action_Build *this)
+    // 
+    // {
+    //   RGE_Action_List *this_00;
+    //   
+    //   *(undefined ***)this = &RGE_Action::_vftable_;
+    //   RGE_Action::set_target_obj((RGE_Action *)this,(RGE_Static_Object *)0x0);
+    //   RGE_Action::set_target_obj2((RGE_Action *)this,(RGE_Static_Object *)0x0);
+    //   this_00 = *(RGE_Action_List **)&this->field_0x34;
+    //   if (this_00 != (RGE_Action_List *)0x0) {
+    //     RGE_Action_List::~RGE_Action_List(this_00);
+    //     operator_delete(this_00);
+    //     *(undefined4 *)&this->field_0x34 = 0;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004CDA80
+void TRIBE_Action_Convert(TRIBE_Action_Convert* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall TRIBE_Action_Convert::~TRIBE_Action_Convert(void) */
+    // 
+    // void __thiscall TRIBE_Action_Convert::~TRIBE_Action_Convert(TRIBE_Action_Convert *this)
+    // 
+    // {
+    //   RGE_Action_List *this_00;
+    //   
+    //   this->_padding_ = (int)&RGE_Action::_vftable_;
+    //   RGE_Action::set_target_obj((RGE_Action *)this,(RGE_Static_Object *)0x0);
+    //   RGE_Action::set_target_obj2((RGE_Action *)this,(RGE_Static_Object *)0x0);
+    //   this_00 = (RGE_Action_List *)this->_padding_;
+    //   if (this_00 != (RGE_Action_List *)0x0) {
+    //     RGE_Action_List::~RGE_Action_List(this_00);
+    //     operator_delete(this_00);
+    //     this->_padding_ = 0;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+

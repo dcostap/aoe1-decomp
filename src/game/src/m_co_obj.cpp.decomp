@@ -1,0 +1,1081 @@
+// Auto-generated decompiler unit: m_co_obj.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/m_co_obj.cpp
+#include "../include/common.h"
+
+// Offset: 0x0044FE40
+undefined RGE_Master_Combat_Object(RGE_Master_Combat_Object* this_, RGE_Master_Combat_Object* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Master_Combat_Object::RGE_Master_Combat_Object(class
+    //    RGE_Master_Combat_Object *,int) */
+    // 
+    // RGE_Master_Combat_Object * __thiscall
+    // RGE_Master_Combat_Object::RGE_Master_Combat_Object
+    //           (RGE_Master_Combat_Object *this,RGE_Master_Combat_Object *param_1,int param_2)
+    // 
+    // {
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055d7b8;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   RGE_Master_Action_Object::RGE_Master_Action_Object
+    //             ((RGE_Master_Action_Object *)this,(RGE_Master_Action_Object *)param_1,0);
+    //   local_4 = 0;
+    //   this->_padding_ = (int)&_vftable_;
+    //   if (param_2 != 0) {
+    //     setup(this,param_1);
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044FEC0
+undefined RGE_Master_Combat_Object(RGE_Master_Combat_Object* this_, int param_2, RGE_Sprite** param_3, RGE_Sound** param_4, int param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Master_Combat_Object::RGE_Master_Combat_Object(int,class RGE_Sprite *
+    //    *,class RGE_Sound * *,int) */
+    // 
+    // RGE_Master_Combat_Object * __thiscall
+    // RGE_Master_Combat_Object::RGE_Master_Combat_Object
+    //           (RGE_Master_Combat_Object *this,int param_1,RGE_Sprite **param_2,RGE_Sound **param_3,
+    //           int param_4)
+    // 
+    // {
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055d7d8;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   RGE_Master_Action_Object::RGE_Master_Action_Object
+    //             ((RGE_Master_Action_Object *)this,param_1,param_2,param_3,0);
+    //   local_4 = 0;
+    //   this->_padding_ = (int)&_vftable_;
+    //   if (param_4 != 0) {
+    //     setup(this,param_1,param_2,param_3);
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044FF30
+undefined RGE_Master_Combat_Object(RGE_Master_Combat_Object* this_, FILE* param_2, RGE_Sprite** param_3, RGE_Sound** param_4, short param_5, int param_6) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Master_Combat_Object::RGE_Master_Combat_Object(struct _iobuf *,class
+    //    RGE_Sprite * *,class RGE_Sound * *,short,int) */
+    // 
+    // RGE_Master_Combat_Object * __thiscall
+    // RGE_Master_Combat_Object::RGE_Master_Combat_Object
+    //           (RGE_Master_Combat_Object *this,_iobuf *param_1,RGE_Sprite **param_2,RGE_Sound **param_3,
+    //           short param_4,int param_5)
+    // 
+    // {
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055d7f8;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   RGE_Master_Action_Object::RGE_Master_Action_Object
+    //             ((RGE_Master_Action_Object *)this,param_1,param_2,param_3,param_4,0);
+    //   local_4 = 0;
+    //   this->_padding_ = (int)&_vftable_;
+    //   if (param_5 != 0) {
+    //     setup(this,param_1,param_2,param_3,param_4);
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044FFB0
+int setup(RGE_Master_Combat_Object* this_, RGE_Master_Combat_Object* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: int __thiscall RGE_Master_Combat_Object::setup(class RGE_Master_Combat_Object *) */
+    // 
+    // int __thiscall
+    // RGE_Master_Combat_Object::setup(RGE_Master_Combat_Object *this,RGE_Master_Combat_Object *param_1)
+    // 
+    // {
+    //   short sVar1;
+    //   RGE_Armor_Weapon_Info *pRVar2;
+    //   uint uVar3;
+    //   int iVar4;
+    //   RGE_Armor_Weapon_Info *pRVar5;
+    //   
+    //   RGE_Master_Action_Object::setup
+    //             ((RGE_Master_Action_Object *)this,(RGE_Master_Action_Object *)param_1);
+    //   *(undefined1 *)&this->_padding_ = 0x32;
+    //   this->fight_sprite = param_1->fight_sprite;
+    //   this->base_armor = param_1->base_armor;
+    //   sVar1 = param_1->weapon_num;
+    //   this->weapon_num = sVar1;
+    //   if (sVar1 < 1) {
+    //     this->weapon = (RGE_Armor_Weapon_Info *)0x0;
+    //   }
+    //   else {
+    //     pRVar2 = (RGE_Armor_Weapon_Info *)calloc((int)sVar1,4);
+    //     this->weapon = pRVar2;
+    //     pRVar5 = param_1->weapon;
+    //     for (uVar3 = (int)this->weapon_num & 0x3fffffff; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //       *pRVar2 = *pRVar5;
+    //       pRVar5 = pRVar5 + 1;
+    //       pRVar2 = pRVar2 + 1;
+    //     }
+    //     for (iVar4 = 0; iVar4 != 0; iVar4 = iVar4 + -1) {
+    //       *(char *)&pRVar2->type = (char)pRVar5->type;
+    //       pRVar5 = (RGE_Armor_Weapon_Info *)((int)&pRVar5->type + 1);
+    //       pRVar2 = (RGE_Armor_Weapon_Info *)((int)&pRVar2->type + 1);
+    //     }
+    //   }
+    //   sVar1 = param_1->armor_num;
+    //   this->armor_num = sVar1;
+    //   if (sVar1 < 1) {
+    //     this->armor = (RGE_Armor_Weapon_Info *)0x0;
+    //   }
+    //   else {
+    //     pRVar2 = (RGE_Armor_Weapon_Info *)calloc((int)sVar1,4);
+    //     this->armor = pRVar2;
+    //     pRVar5 = param_1->armor;
+    //     for (uVar3 = (int)this->armor_num & 0x3fffffff; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //       *pRVar2 = *pRVar5;
+    //       pRVar5 = pRVar5 + 1;
+    //       pRVar2 = pRVar2 + 1;
+    //     }
+    //     for (iVar4 = 0; iVar4 != 0; iVar4 = iVar4 + -1) {
+    //       *(char *)&pRVar2->type = (char)pRVar5->type;
+    //       pRVar5 = (RGE_Armor_Weapon_Info *)((int)&pRVar5->type + 1);
+    //       pRVar2 = (RGE_Armor_Weapon_Info *)((int)&pRVar2->type + 1);
+    //     }
+    //   }
+    //   this->defense_terrain_bonus = param_1->defense_terrain_bonus;
+    //   this->weapon_range = param_1->weapon_range;
+    //   this->area_effect_range = param_1->area_effect_range;
+    //   this->speed_of_attack = param_1->speed_of_attack;
+    //   this->missile_id = param_1->missile_id;
+    //   this->base_hit_chance = param_1->base_hit_chance;
+    //   this->break_off_combat = param_1->break_off_combat;
+    //   this->fire_missile_at_frame = param_1->fire_missile_at_frame;
+    //   this->weapon_offset_x = param_1->weapon_offset_x;
+    //   this->weapon_offset_y = param_1->weapon_offset_y;
+    //   this->weapon_offset_z = param_1->weapon_offset_z;
+    //   this->area_effect_level = param_1->area_effect_level;
+    //   this->minimum_weapon_range = param_1->minimum_weapon_range;
+    //   this->orig_armor = param_1->orig_armor;
+    //   this->orig_weapon = param_1->orig_weapon;
+    //   this->orig_weapon_range = param_1->orig_weapon_range;
+    //   this->orig_speed_of_attack = param_1->orig_speed_of_attack;
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00450170
+int setup(RGE_Master_Combat_Object* this_, int param_2, RGE_Sprite** param_3, RGE_Sound** param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: int __thiscall RGE_Master_Combat_Object::setup(int,class RGE_Sprite * *,class
+    //    RGE_Sound * *) */
+    // 
+    // int __thiscall
+    // RGE_Master_Combat_Object::setup
+    //           (RGE_Master_Combat_Object *this,int param_1,RGE_Sprite **param_2,RGE_Sound **param_3)
+    // 
+    // {
+    //   RGE_Armor_Weapon_Info *pRVar1;
+    //   RGE_Sprite *pRVar2;
+    //   short *psVar3;
+    //   int iVar4;
+    //   
+    //   RGE_Master_Action_Object::setup((RGE_Master_Action_Object *)this,param_1,param_2,param_3);
+    //   *(undefined1 *)&this->_padding_ = 0x32;
+    //   rge_read(param_1,&this->base_armor,1);
+    //   psVar3 = &this->weapon_num;
+    //   rge_read(param_1,psVar3,2);
+    //   if (*psVar3 < 1) {
+    //     this->weapon = (RGE_Armor_Weapon_Info *)0x0;
+    //   }
+    //   else {
+    //     pRVar1 = (RGE_Armor_Weapon_Info *)calloc((int)*psVar3,4);
+    //     this->weapon = pRVar1;
+    //     rge_read(param_1,pRVar1,(int)*psVar3 << 2);
+    //   }
+    //   psVar3 = &this->armor_num;
+    //   rge_read(param_1,psVar3,2);
+    //   if (*psVar3 < 1) {
+    //     this->armor = (RGE_Armor_Weapon_Info *)0x0;
+    //   }
+    //   else {
+    //     pRVar1 = (RGE_Armor_Weapon_Info *)calloc((int)*psVar3,4);
+    //     this->armor = pRVar1;
+    //     rge_read(param_1,pRVar1,(int)*psVar3 << 2);
+    //   }
+    //   rge_read(param_1,&this->defense_terrain_bonus,2);
+    //   rge_read(param_1,&this->weapon_range,4);
+    //   rge_read(param_1,&this->area_effect_range,4);
+    //   rge_read(param_1,&this->speed_of_attack,4);
+    //   rge_read(param_1,&this->missile_id,2);
+    //   rge_read(param_1,&this->base_hit_chance,2);
+    //   rge_read(param_1,&this->break_off_combat,1);
+    //   rge_read(param_1,&this->fire_missile_at_frame,2);
+    //   rge_read(param_1,&this->weapon_offset_x,4);
+    //   rge_read(param_1,&this->weapon_offset_y,4);
+    //   rge_read(param_1,&this->weapon_offset_z,4);
+    //   rge_read(param_1,&this->area_effect_level,1);
+    //   rge_read(param_1,&this->minimum_weapon_range,4);
+    //   rge_read(param_1,&param_3,2);
+    //   if ((short)param_3 < 0) {
+    //     pRVar2 = (RGE_Sprite *)0x0;
+    //   }
+    //   else {
+    //     pRVar2 = param_2[(short)param_3];
+    //   }
+    //   this->fight_sprite = pRVar2;
+    //   if (7.01 <= save_game_version) {
+    //     rge_read(param_1,&this->orig_armor,2);
+    //     rge_read(param_1,&this->orig_weapon,2);
+    //     rge_read(param_1,&this->orig_weapon_range,4);
+    //     rge_read(param_1,&this->orig_speed_of_attack,4);
+    //     return 1;
+    //   }
+    //   this->orig_armor = (ushort)this->base_armor;
+    //   iVar4 = (int)*psVar3;
+    //   if (0 < iVar4) {
+    //     psVar3 = &this->armor->value;
+    //     do {
+    //       if (this->orig_armor < *psVar3) {
+    //         this->orig_armor = *psVar3;
+    //       }
+    //       psVar3 = psVar3 + 2;
+    //       iVar4 = iVar4 + -1;
+    //     } while (iVar4 != 0);
+    //   }
+    //   iVar4 = (int)this->weapon_num;
+    //   this->orig_weapon = 0;
+    //   if (0 < iVar4) {
+    //     psVar3 = &this->weapon->value;
+    //     do {
+    //       if (this->orig_weapon < *psVar3) {
+    //         this->orig_weapon = *psVar3;
+    //       }
+    //       psVar3 = psVar3 + 2;
+    //       iVar4 = iVar4 + -1;
+    //     } while (iVar4 != 0);
+    //   }
+    //   this->orig_weapon_range = this->weapon_range;
+    //   this->orig_speed_of_attack = this->speed_of_attack;
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00450450
+int setup(RGE_Master_Combat_Object* this_, FILE* param_2, RGE_Sprite** param_3, RGE_Sound** param_4, short param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: temp_break_off_combat */
+    // /* protected: int __thiscall RGE_Master_Combat_Object::setup(struct _iobuf *,class RGE_Sprite *
+    //    *,class RGE_Sound * *,short) */
+    // 
+    // int __thiscall
+    // RGE_Master_Combat_Object::setup
+    //           (RGE_Master_Combat_Object *this,_iobuf *param_1,RGE_Sprite **param_2,RGE_Sound **param_3,
+    //           short param_4)
+    // 
+    // {
+    //   _iobuf *p_Var1;
+    //   RGE_Armor_Weapon_Info *pRVar2;
+    //   RGE_Sprite *pRVar3;
+    //   short *psVar4;
+    //   int iVar5;
+    //   short sVar6;
+    //   undefined2 in_stack_00000012;
+    //   short temp_break_off_combat;
+    //   short temp_fire_missile_at_frame;
+    //   undefined4 local_4;
+    //   
+    //   p_Var1 = param_1;
+    //   local_4 = this;
+    //   RGE_Master_Action_Object::setup((RGE_Master_Action_Object *)this,param_1,param_2,param_3,param_4);
+    //   psVar4 = &this->armor_num;
+    //   *(undefined1 *)&this->_padding_ = 0x32;
+    //   fscanf(p_Var1,s__hd__hd__hd__hd__hd__f__f__f__hd,&param_4,&param_1,psVar4,&this->weapon_num,
+    //          &this->defense_terrain_bonus,&this->weapon_range,&this->area_effect_range,
+    //          &this->speed_of_attack,&this->missile_id,&this->base_hit_chance,&local_4,(int)&local_4 + 2,
+    //          &this->weapon_offset_x,&this->weapon_offset_y,&this->weapon_offset_z,&param_3,
+    //          &this->minimum_weapon_range);
+    //   sVar6 = 0;
+    //   if (*psVar4 < 1) {
+    //     this->armor = (RGE_Armor_Weapon_Info *)0x0;
+    //   }
+    //   else {
+    //     pRVar2 = (RGE_Armor_Weapon_Info *)calloc((int)*psVar4,4);
+    //     this->armor = pRVar2;
+    //     if (0 < *psVar4) {
+    //       do {
+    //         fscanf(p_Var1,s__hd__hd,this->armor + sVar6,&this->armor[sVar6].value);
+    //         sVar6 = sVar6 + 1;
+    //       } while (sVar6 < *psVar4);
+    //     }
+    //   }
+    //   sVar6 = 0;
+    //   if (this->weapon_num < 1) {
+    //     this->weapon = (RGE_Armor_Weapon_Info *)0x0;
+    //   }
+    //   else {
+    //     pRVar2 = (RGE_Armor_Weapon_Info *)calloc((int)this->weapon_num,4);
+    //     this->weapon = pRVar2;
+    //     if (0 < this->weapon_num) {
+    //       do {
+    //         fscanf(p_Var1,s__hd__hd,this->weapon + sVar6,&this->weapon[sVar6].value);
+    //         sVar6 = sVar6 + 1;
+    //       } while (sVar6 < this->weapon_num);
+    //     }
+    //   }
+    //   if (param_4 < 0) {
+    //     pRVar3 = (RGE_Sprite *)0x0;
+    //   }
+    //   else {
+    //     pRVar3 = param_2[param_4];
+    //   }
+    //   this->fight_sprite = pRVar3;
+    //   this->break_off_combat = (uchar)local_4;
+    //   this->area_effect_level = (uchar)param_3;
+    //   iVar5 = (int)*psVar4;
+    //   this->base_armor = (byte)param_1;
+    //   this->fire_missile_at_frame = (ushort)local_4._2_1_;
+    //   this->orig_armor = (ushort)(byte)param_1;
+    //   if (0 < iVar5) {
+    //     psVar4 = &this->armor->value;
+    //     do {
+    //       if (this->orig_armor < *psVar4) {
+    //         this->orig_armor = *psVar4;
+    //       }
+    //       psVar4 = psVar4 + 2;
+    //       iVar5 = iVar5 + -1;
+    //     } while (iVar5 != 0);
+    //   }
+    //   iVar5 = (int)this->weapon_num;
+    //   this->orig_weapon = 0;
+    //   if (0 < iVar5) {
+    //     psVar4 = &this->weapon->value;
+    //     do {
+    //       if (this->orig_weapon < *psVar4) {
+    //         this->orig_weapon = *psVar4;
+    //       }
+    //       psVar4 = psVar4 + 2;
+    //       iVar5 = iVar5 + -1;
+    //     } while (iVar5 != 0);
+    //   }
+    //   this->orig_weapon_range = this->weapon_range;
+    //   this->orig_speed_of_attack = this->speed_of_attack;
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00450680
+void RGE_Master_Combat_Object(RGE_Master_Combat_Object* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall RGE_Master_Combat_Object::~RGE_Master_Combat_Object(void) */
+    // 
+    // void __thiscall RGE_Master_Combat_Object::~RGE_Master_Combat_Object(RGE_Master_Combat_Object *this)
+    // 
+    // {
+    //   this->_padding_ = (int)&_vftable_;
+    //   if (this->weapon != (RGE_Armor_Weapon_Info *)0x0) {
+    //     free(this->weapon);
+    //     this->weapon = (RGE_Armor_Weapon_Info *)0x0;
+    //   }
+    //   if (this->armor != (RGE_Armor_Weapon_Info *)0x0) {
+    //     free(this->armor);
+    //     this->armor = (RGE_Armor_Weapon_Info *)0x0;
+    //   }
+    //   RGE_Master_Action_Object::~RGE_Master_Action_Object((RGE_Master_Action_Object *)this);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004506D0
+RGE_Static_Object* RGE_Master_Combat_Object::make_new_obj(RGE_Player* param_1, float param_2, float param_3, float param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual class RGE_Static_Object * __thiscall RGE_Master_Combat_Object::make_new_obj(class
+    //    RGE_Player *,float,float,float) */
+    // 
+    // RGE_Static_Object * __thiscall
+    // RGE_Master_Combat_Object::make_new_obj
+    //           (RGE_Master_Combat_Object *this,RGE_Player *param_1,float param_2,float param_3,
+    //           float param_4)
+    // 
+    // {
+    //   RGE_Static_Object *pRVar1;
+    //   RGE_Combat_Object *this_00;
+    //   float *unaff_FS_OFFSET;
+    //   float local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_c = *unaff_FS_OFFSET;
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055d81b;
+    //   *unaff_FS_OFFSET = (float)&local_c;
+    //   if ((char)this->_padding_ != '\0') {
+    //     pRVar1 = RGE_Game_World::recycle_object_in_to_game(param_1->world,(uchar)this->_padding_);
+    //     if (pRVar1 != (RGE_Static_Object *)0x0) {
+    //       (**(code **)(pRVar1->_padding_ + 4))(this,param_1,param_2,param_3,param_4);
+    //       *unaff_FS_OFFSET = param_3;
+    //       return pRVar1;
+    //     }
+    //   }
+    //   this_00 = (RGE_Combat_Object *)operator_new(0x1c4);
+    //   local_4 = 0;
+    //   if (this_00 != (RGE_Combat_Object *)0x0) {
+    //     pRVar1 = (RGE_Static_Object *)
+    //              RGE_Combat_Object::RGE_Combat_Object(this_00,this,param_1,param_2,param_3,param_4,1);
+    //     *unaff_FS_OFFSET = local_c;
+    //     return pRVar1;
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return (RGE_Static_Object *)0x0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004507A0
+RGE_Master_Static_Object* RGE_Master_Combat_Object::make_new_master() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual class RGE_Master_Static_Object * __thiscall
+    //    RGE_Master_Combat_Object::make_new_master(void) */
+    // 
+    // RGE_Master_Static_Object * __thiscall
+    // RGE_Master_Combat_Object::make_new_master(RGE_Master_Combat_Object *this)
+    // 
+    // {
+    //   RGE_Master_Combat_Object *this_00;
+    //   RGE_Master_Static_Object *pRVar1;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055d83b;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   this_00 = (RGE_Master_Combat_Object *)operator_new(0x148);
+    //   local_4 = 0;
+    //   if (this_00 != (RGE_Master_Combat_Object *)0x0) {
+    //     pRVar1 = (RGE_Master_Static_Object *)RGE_Master_Combat_Object(this_00,this,1);
+    //     *unaff_FS_OFFSET = local_c;
+    //     return pRVar1;
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return (RGE_Master_Static_Object *)0x0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00450810
+void RGE_Master_Combat_Object::copy_obj(RGE_Master_Static_Object* param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Master_Combat_Object::copy_obj(class RGE_Master_Static_Object
+    //    *) */
+    // 
+    // void __thiscall
+    // RGE_Master_Combat_Object::copy_obj(RGE_Master_Combat_Object *this,RGE_Master_Static_Object *param_1)
+    // 
+    // {
+    //   RGE_Armor_Weapon_Info *pRVar1;
+    //   uint uVar2;
+    //   int iVar3;
+    //   RGE_Armor_Weapon_Info *pRVar4;
+    //   
+    //   RGE_Master_Action_Object::copy_obj((RGE_Master_Action_Object *)this,param_1);
+    //   this->fight_sprite = (RGE_Sprite *)param_1[1].death_sound;
+    //   this->base_armor = (uchar)param_1[1].death_spawn_obj_id;
+    //   this->weapon_num = param_1[1].portrait_pict;
+    //   if (this->weapon != (RGE_Armor_Weapon_Info *)0x0) {
+    //     free(this->weapon);
+    //   }
+    //   if (this->weapon_num < 1) {
+    //     this->weapon = (RGE_Armor_Weapon_Info *)0x0;
+    //   }
+    //   else {
+    //     pRVar1 = (RGE_Armor_Weapon_Info *)calloc((int)this->weapon_num,4);
+    //     this->weapon = pRVar1;
+    //     pRVar4 = *(RGE_Armor_Weapon_Info **)&param_1[1].tile_req1;
+    //     for (uVar2 = (int)this->weapon_num & 0x3fffffff; uVar2 != 0; uVar2 = uVar2 - 1) {
+    //       *pRVar1 = *pRVar4;
+    //       pRVar4 = pRVar4 + 1;
+    //       pRVar1 = pRVar1 + 1;
+    //     }
+    //     for (iVar3 = 0; iVar3 != 0; iVar3 = iVar3 + -1) {
+    //       *(char *)&pRVar1->type = (char)pRVar4->type;
+    //       pRVar4 = (RGE_Armor_Weapon_Info *)((int)&pRVar4->type + 1);
+    //       pRVar1 = (RGE_Armor_Weapon_Info *)((int)&pRVar1->type + 1);
+    //     }
+    //   }
+    //   this->armor_num = *(short *)&param_1[1].sort_number;
+    //   if (this->armor != (RGE_Armor_Weapon_Info *)0x0) {
+    //     free(this->armor);
+    //   }
+    //   if (this->armor_num < 1) {
+    //     this->armor = (RGE_Armor_Weapon_Info *)0x0;
+    //   }
+    //   else {
+    //     pRVar1 = (RGE_Armor_Weapon_Info *)calloc((int)this->armor_num,4);
+    //     this->armor = pRVar1;
+    //     pRVar4 = *(RGE_Armor_Weapon_Info **)&param_1[1].button_pict;
+    //     for (uVar2 = (int)this->armor_num & 0x3fffffff; uVar2 != 0; uVar2 = uVar2 - 1) {
+    //       *pRVar1 = *pRVar4;
+    //       pRVar4 = pRVar4 + 1;
+    //       pRVar1 = pRVar1 + 1;
+    //     }
+    //     for (iVar3 = 0; iVar3 != 0; iVar3 = iVar3 + -1) {
+    //       *(char *)&pRVar1->type = (char)pRVar4->type;
+    //       pRVar4 = (RGE_Armor_Weapon_Info *)((int)&pRVar4->type + 1);
+    //       pRVar1 = (RGE_Armor_Weapon_Info *)((int)&pRVar1->type + 1);
+    //     }
+    //   }
+    //   this->defense_terrain_bonus = param_1[1].center_tile_req1;
+    //   this->weapon_range = param_1[1].construction_radius_x;
+    //   this->area_effect_range = param_1[1].construction_radius_y;
+    //   this->speed_of_attack = *(float *)&param_1[1].movement_type;
+    //   this->missile_id = param_1[1].attribute_type_held[1];
+    //   this->base_hit_chance = param_1[1].attribute_type_held[2];
+    //   this->break_off_combat = *(uchar *)param_1[1].attribute_amount_held;
+    //   this->fire_missile_at_frame = *(short *)((int)param_1[1].attribute_amount_held + 2);
+    //   this->weapon_offset_x = param_1[1].attribute_amount_held[1];
+    //   this->weapon_offset_y = param_1[1].attribute_amount_held[2];
+    //   this->weapon_offset_z = *(float *)&param_1[1].attribute_max_amount;
+    //   this->area_effect_level = param_1[1].elevation_flag;
+    //   this->minimum_weapon_range = param_1[1].attribute_rot;
+    //   this->orig_armor = *(short *)&param_1[1].multiple_attribute_mod;
+    //   this->orig_weapon = *(short *)((int)&param_1[1].multiple_attribute_mod + 2);
+    //   this->orig_weapon_range = *(float *)param_1[1].attribute_flag;
+    //   this->orig_speed_of_attack = *(float *)&param_1[1].combat_level;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00450A00
+void RGE_Master_Combat_Object::modify(float param_1, uchar param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Master_Combat_Object::modify(float,unsigned char) */
+    // 
+    // void __thiscall
+    // RGE_Master_Combat_Object::modify(RGE_Master_Combat_Object *this,float param_1,uchar param_2)
+    // 
+    // {
+    //   uchar uVar1;
+    //   byte bVar2;
+    //   ushort uVar3;
+    //   short sVar4;
+    //   RGE_Armor_Weapon_Info *pRVar6;
+    //   uint uVar5;
+    //   
+    //   switch(param_2) {
+    //   case '\b':
+    //     uVar5 = __ftol();
+    //     uVar3 = (ushort)uVar5;
+    //     pRVar6 = this->armor;
+    //     if (pRVar6 == (RGE_Armor_Weapon_Info *)0x0) {
+    //       return;
+    //     }
+    //     sVar4 = this->armor_num;
+    //     break;
+    //   case '\t':
+    //     uVar5 = __ftol();
+    //     uVar3 = (ushort)uVar5;
+    //     pRVar6 = this->weapon;
+    //     if (pRVar6 == (RGE_Armor_Weapon_Info *)0x0) {
+    //       return;
+    //     }
+    //     sVar4 = this->weapon_num;
+    //     break;
+    //   case '\n':
+    //     this->speed_of_attack = param_1;
+    //     return;
+    //   case '\v':
+    //     sVar4 = __ftol();
+    //     this->base_hit_chance = sVar4;
+    //     return;
+    //   case '\f':
+    //     this->weapon_range = param_1;
+    //     return;
+    //   default:
+    //     RGE_Master_Action_Object::modify((RGE_Master_Action_Object *)this,param_1,param_2);
+    //     return;
+    //   case '\x0f':
+    //     uVar1 = __ftol();
+    //     this->base_armor = uVar1;
+    //     return;
+    //   case '\x10':
+    //     bVar2 = __ftol();
+    //     this->missile_id = (ushort)bVar2;
+    //     return;
+    //   case '\x12':
+    //     sVar4 = __ftol();
+    //     this->defense_terrain_bonus = sVar4;
+    //     return;
+    //   }
+    //   uVar5 = uVar5 >> 8 & 0xff;
+    //   if ((int)sVar4 <= (int)uVar5) {
+    //     return;
+    //   }
+    //   pRVar6[uVar5].value = uVar3 & 0xff;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00450B09
+undefined FUN_00450b09() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00450b09(float param_1,uchar param_2)
+    // 
+    // {
+    //   char *pcVar1;
+    //   short *psVar2;
+    //   undefined4 *puVar3;
+    //   undefined1 uVar4;
+    //   char cVar5;
+    //   ushort uVar6;
+    //   short sVar7;
+    //   undefined4 in_EAX;
+    //   undefined3 uVar9;
+    //   uint in_ECX;
+    //   uint uVar10;
+    //   uint *in_EDX;
+    //   uint uVar11;
+    //   int unaff_EBX;
+    //   int unaff_EBP;
+    //   undefined4 *unaff_EDI;
+    //   int iVar12;
+    //   uint uVar8;
+    //   
+    //   *in_EDX = *in_EDX & in_ECX;
+    //   *(char *)(unaff_EBX + 10) = *(char *)(unaff_EBX + 10) + (char)in_ECX;
+    //   *(char *)(in_ECX + 0x9700450a) = *(char *)(in_ECX + 0x9700450a) + (char)in_ECX;
+    //   uVar9 = (undefined3)((uint)in_EAX >> 8);
+    //   puVar3 = unaff_EDI + 1;
+    //   *unaff_EDI = CONCAT31(uVar9,(byte)in_EAX | *(byte *)(unaff_EBP + 2));
+    //   uVar4 = in(10);
+    //   pcVar1 = (char *)(CONCAT31(uVar9,uVar4) + -0x6f6f6f70);
+    //   *pcVar1 = *pcVar1 + (char)in_EDX;
+    //   switch(param_2) {
+    //   case '\x06':
+    //     fRamcc0045ce = param_1 + fRamcc0045ce;
+    //     return;
+    //   default:
+    //     RGE_Master_Action_Object::modify_delta((RGE_Master_Action_Object *)0xcc00450a,param_1,param_2);
+    //     break;
+    //   case '\b':
+    //     uVar8 = __ftol(puVar3);
+    //     uVar6 = (ushort)uVar8;
+    //     if (iRamcc00460e != 0) {
+    //       uVar11 = 0;
+    //       if (0 < sRamcc00460c) {
+    //         uVar10 = 0;
+    //         while (iVar12 = iRamcc00460e,
+    //               (int)*(short *)(iRamcc00460e + uVar10 * 4) != (uVar8 >> 8 & 0xff)) {
+    //           uVar11 = uVar11 + 1;
+    //           uVar10 = uVar11 & 0xffff;
+    //           if ((int)sRamcc00460c <= (int)uVar10) {
+    //             return;
+    //           }
+    //         }
+    // LAB_00450c01:
+    //         psVar2 = (short *)(iVar12 + 2 + (uVar11 & 0xffff) * 4);
+    //         *psVar2 = *psVar2 + (uVar6 & 0xff);
+    //         return;
+    //       }
+    //     }
+    //     break;
+    //   case '\t':
+    //     uVar8 = __ftol(puVar3);
+    //     uVar6 = (ushort)uVar8;
+    //     if (iRamcc004616 != 0) {
+    //       uVar11 = 0;
+    //       if (0 < sRamcc004612) {
+    //         uVar10 = 0;
+    //         while (iVar12 = iRamcc004616,
+    //               (int)*(short *)(iRamcc004616 + uVar10 * 4) != (uVar8 >> 8 & 0xff)) {
+    //           uVar11 = uVar11 + 1;
+    //           uVar10 = uVar11 & 0xffff;
+    //           if ((int)sRamcc004612 <= (int)uVar10) {
+    //             return;
+    //           }
+    //         }
+    //         goto LAB_00450c01;
+    //       }
+    //     }
+    //     break;
+    //   case '\n':
+    //     fRamcc00462a = param_1 + fRamcc00462a;
+    //     return;
+    //   case '\v':
+    //     sVar7 = __ftol(puVar3);
+    //     sRamcc004630 = sRamcc004630 + sVar7;
+    //     return;
+    //   case '\f':
+    //     fRamcc00461e = param_1 + fRamcc00461e;
+    //     return;
+    //   case '\x0f':
+    //     cVar5 = __ftol(puVar3);
+    //     cRamcc00460a = cRamcc00460a + cVar5;
+    //     return;
+    //   case '\x10':
+    //     sVar7 = __ftol(puVar3);
+    //     sRamcc00462e = sRamcc00462e + sVar7;
+    //     return;
+    //   case '\x12':
+    //     uRamcc00461a = __ftol(puVar3);
+    //     return;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00450B40
+void RGE_Master_Combat_Object::modify_delta(float param_1, uchar param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Master_Combat_Object::modify_delta(float,unsigned char) */
+    // 
+    // void __thiscall
+    // RGE_Master_Combat_Object::modify_delta(RGE_Master_Combat_Object *this,float param_1,uchar param_2)
+    // 
+    // {
+    //   char cVar1;
+    //   ushort uVar2;
+    //   short sVar3;
+    //   uint uVar5;
+    //   uint uVar6;
+    //   RGE_Armor_Weapon_Info *pRVar7;
+    //   uint uVar4;
+    //   
+    //   switch(param_2) {
+    //   case '\x06':
+    //     this->_padding_ = (int)(param_1 + (float)this->_padding_);
+    //     return;
+    //   default:
+    //     RGE_Master_Action_Object::modify_delta((RGE_Master_Action_Object *)this,param_1,param_2);
+    //     break;
+    //   case '\b':
+    //     uVar4 = __ftol();
+    //     uVar2 = (ushort)uVar4;
+    //     pRVar7 = this->armor;
+    //     if (pRVar7 != (RGE_Armor_Weapon_Info *)0x0) {
+    //       uVar6 = 0;
+    //       if (0 < this->armor_num) {
+    //         uVar5 = 0;
+    //         while ((int)pRVar7[uVar5].type != (uVar4 >> 8 & 0xff)) {
+    //           uVar6 = uVar6 + 1;
+    //           uVar5 = uVar6 & 0xffff;
+    //           if ((int)this->armor_num <= (int)uVar5) {
+    //             return;
+    //           }
+    //         }
+    // LAB_00450c01:
+    //         pRVar7[uVar6 & 0xffff].value = pRVar7[uVar6 & 0xffff].value + (uVar2 & 0xff);
+    //         return;
+    //       }
+    //     }
+    //     break;
+    //   case '\t':
+    //     uVar4 = __ftol();
+    //     uVar2 = (ushort)uVar4;
+    //     pRVar7 = this->weapon;
+    //     if (pRVar7 != (RGE_Armor_Weapon_Info *)0x0) {
+    //       uVar6 = 0;
+    //       if (0 < this->weapon_num) {
+    //         uVar5 = 0;
+    //         while ((int)pRVar7[uVar5].type != (uVar4 >> 8 & 0xff)) {
+    //           uVar6 = uVar6 + 1;
+    //           uVar5 = uVar6 & 0xffff;
+    //           if ((int)this->weapon_num <= (int)uVar5) {
+    //             return;
+    //           }
+    //         }
+    //         goto LAB_00450c01;
+    //       }
+    //     }
+    //     break;
+    //   case '\n':
+    //     this->speed_of_attack = param_1 + this->speed_of_attack;
+    //     return;
+    //   case '\v':
+    //     sVar3 = __ftol();
+    //     this->base_hit_chance = this->base_hit_chance + sVar3;
+    //     return;
+    //   case '\f':
+    //     this->weapon_range = param_1 + this->weapon_range;
+    //     return;
+    //   case '\x0f':
+    //     cVar1 = __ftol();
+    //     this->base_armor = this->base_armor + cVar1;
+    //     return;
+    //   case '\x10':
+    //     sVar3 = __ftol();
+    //     this->missile_id = this->missile_id + sVar3;
+    //     return;
+    //   case '\x12':
+    //     sVar3 = __ftol();
+    //     this->defense_terrain_bonus = sVar3;
+    //     return;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00450D00
+void RGE_Master_Combat_Object::modify_percent(float param_1, uchar param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Master_Combat_Object::modify_percent(float,unsigned char) */
+    // 
+    // void __thiscall
+    // RGE_Master_Combat_Object::modify_percent(RGE_Master_Combat_Object *this,float param_1,uchar param_2)
+    // 
+    // {
+    //   uchar uVar1;
+    //   short sVar2;
+    //   
+    //   switch(param_2) {
+    //   case '\x06':
+    //     this->_padding_ = (int)(param_1 * (float)this->_padding_);
+    //     return;
+    //   default:
+    //     RGE_Master_Action_Object::modify_percent((RGE_Master_Action_Object *)this,param_1,param_2);
+    // switchD_00450d1a_caseD_8:
+    //     return;
+    //   case '\b':
+    //   case '\t':
+    //     goto switchD_00450d1a_caseD_8;
+    //   case '\n':
+    //     this->speed_of_attack = param_1 * this->speed_of_attack;
+    //     return;
+    //   case '\v':
+    //     sVar2 = __ftol();
+    //     this->base_hit_chance = sVar2;
+    //     return;
+    //   case '\f':
+    //     this->weapon_range = param_1 * this->weapon_range;
+    //     return;
+    //   case '\x0f':
+    //     uVar1 = __ftol();
+    //     this->base_armor = uVar1;
+    //     return;
+    //   case '\x10':
+    //     sVar2 = __ftol();
+    //     this->missile_id = sVar2;
+    //     return;
+    //   case '\x12':
+    //     sVar2 = __ftol();
+    //     this->defense_terrain_bonus = sVar2;
+    //     return;
+    //   }
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00450DEA
+undefined FUN_00450dea() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00450dea(undefined4 param_1,undefined4 param_2,int param_3)
+    // 
+    // {
+    //   char *pcVar1;
+    //   short *psVar2;
+    //   int iVar3;
+    //   int iVar4;
+    //   uint in_EAX;
+    //   uint in_ECX;
+    //   RGE_Master_Action_Object *this;
+    //   undefined4 in_EDX;
+    //   char unaff_BL;
+    //   
+    //   iVar4 = param_3;
+    //   uRam0dd90045 = uRam0dd90045 & in_ECX;
+    //   cRam4900450d = cRam4900450d + (char)((uint)in_EDX >> 8) + (char)(in_EAX >> 8);
+    //   pcVar1 = (char *)((in_EAX | 0xdff0045) + 0xa200450d);
+    //   *pcVar1 = *pcVar1 + (char)(in_EAX | 0xdff0045);
+    //   this = (RGE_Master_Action_Object *)
+    //          CONCAT22((short)(in_ECX >> 0x10),
+    //                   CONCAT11((char)(in_ECX >> 8) + ((byte)in_EAX | 0x45),(char)in_ECX + unaff_BL));
+    //   RGE_Master_Action_Object::save(this,param_3);
+    //   iVar3 = this[1]._padding_;
+    //   if (iVar3 == 0) {
+    //     param_3 = 0xffffffff;
+    //   }
+    //   else {
+    //     param_3 = CONCAT22((short)((uint)iVar3 >> 0x10),*(undefined2 *)(iVar3 + 0x72));
+    //   }
+    //   rge_write(iVar4,&this[1]._padding_,1);
+    //   rge_write(iVar4,&this[1]._padding_,2);
+    //   if ((void *)this[1]._padding_ != (void *)0x0) {
+    //     rge_write(iVar4,(void *)this[1]._padding_,(int)(short)this[1]._padding_ << 2);
+    //   }
+    //   psVar2 = (short *)((int)&this[1]._padding_ + 2);
+    //   rge_write(iVar4,psVar2,2);
+    //   if ((void *)this[1]._padding_ != (void *)0x0) {
+    //     rge_write(iVar4,(void *)this[1]._padding_,(int)*psVar2 << 2);
+    //   }
+    //   rge_write(iVar4,&this[1]._padding_,2);
+    //   rge_write(iVar4,&this[1]._padding_,4);
+    //   rge_write(iVar4,&this[1]._padding_,4);
+    //   rge_write(iVar4,&this[1]._padding_,4);
+    //   rge_write(iVar4,&this[1]._padding_,2);
+    //   rge_write(iVar4,(void *)((int)&this[1]._padding_ + 2),2);
+    //   rge_write(iVar4,&this[1]._padding_,1);
+    //   rge_write(iVar4,(void *)((int)&this[1]._padding_ + 2),2);
+    //   rge_write(iVar4,&this[1]._padding_,4);
+    //   rge_write(iVar4,&this[1]._padding_,4);
+    //   rge_write(iVar4,&this[1]._padding_,4);
+    //   rge_write(iVar4,&this[1]._padding_,1);
+    //   rge_write(iVar4,&this[1]._padding_,4);
+    //   rge_write(iVar4,&param_3,2);
+    //   rge_write(iVar4,&this[1]._padding_,2);
+    //   rge_write(iVar4,(void *)((int)&this[1]._padding_ + 2),2);
+    //   rge_write(iVar4,&this[1]._padding_,4);
+    //   rge_write(iVar4,&this[1]._padding_,4);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00450E20
+void RGE_Master_Combat_Object::save(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Master_Combat_Object::save(int) */
+    // 
+    // void __thiscall RGE_Master_Combat_Object::save(RGE_Master_Combat_Object *this,int param_1)
+    // 
+    // {
+    //   RGE_Sprite *pRVar1;
+    //   int iVar2;
+    //   
+    //   iVar2 = param_1;
+    //   RGE_Master_Action_Object::save((RGE_Master_Action_Object *)this,param_1);
+    //   pRVar1 = this->fight_sprite;
+    //   if (pRVar1 == (RGE_Sprite *)0x0) {
+    //     param_1 = -1;
+    //   }
+    //   else {
+    //     param_1 = CONCAT22((short)((uint)pRVar1 >> 0x10),pRVar1->id);
+    //   }
+    //   rge_write(iVar2,&this->base_armor,1);
+    //   rge_write(iVar2,&this->weapon_num,2);
+    //   if (this->weapon != (RGE_Armor_Weapon_Info *)0x0) {
+    //     rge_write(iVar2,this->weapon,(int)this->weapon_num << 2);
+    //   }
+    //   rge_write(iVar2,&this->armor_num,2);
+    //   if (this->armor != (RGE_Armor_Weapon_Info *)0x0) {
+    //     rge_write(iVar2,this->armor,(int)this->armor_num << 2);
+    //   }
+    //   rge_write(iVar2,&this->defense_terrain_bonus,2);
+    //   rge_write(iVar2,&this->weapon_range,4);
+    //   rge_write(iVar2,&this->area_effect_range,4);
+    //   rge_write(iVar2,&this->speed_of_attack,4);
+    //   rge_write(iVar2,&this->missile_id,2);
+    //   rge_write(iVar2,&this->base_hit_chance,2);
+    //   rge_write(iVar2,&this->break_off_combat,1);
+    //   rge_write(iVar2,&this->fire_missile_at_frame,2);
+    //   rge_write(iVar2,&this->weapon_offset_x,4);
+    //   rge_write(iVar2,&this->weapon_offset_y,4);
+    //   rge_write(iVar2,&this->weapon_offset_z,4);
+    //   rge_write(iVar2,&this->area_effect_level,1);
+    //   rge_write(iVar2,&this->minimum_weapon_range,4);
+    //   rge_write(iVar2,&param_1,2);
+    //   rge_write(iVar2,&this->orig_armor,2);
+    //   rge_write(iVar2,&this->orig_weapon,2);
+    //   rge_write(iVar2,&this->orig_weapon_range,4);
+    //   rge_write(iVar2,&this->orig_speed_of_attack,4);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00451000
+long RGE_Master_Combat_Object::calc_base_damage_ability() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual long __thiscall RGE_Master_Combat_Object::calc_base_damage_ability(class
+    //    RGE_Master_Combat_Object *) */
+    // 
+    // long __thiscall
+    // RGE_Master_Combat_Object::calc_base_damage_ability
+    //           (RGE_Master_Combat_Object *this,RGE_Master_Combat_Object *param_1)
+    // 
+    // {
+    //   long lVar1;
+    //   int iVar2;
+    //   int local_8;
+    //   
+    //   local_8 = (int)param_1->weapon_num;
+    //   if (0 < local_8) {
+    //     do {
+    //       iVar2 = (int)this->armor_num;
+    //       if (0 < this->armor_num) {
+    //         do {
+    //           iVar2 = iVar2 + -1;
+    //         } while (iVar2 != 0);
+    //       }
+    //       local_8 = local_8 + -1;
+    //     } while (local_8 != 0);
+    //   }
+    //   lVar1 = __ftol();
+    //   return lVar1;
+    // }
+    // 
+    // 
+}
+

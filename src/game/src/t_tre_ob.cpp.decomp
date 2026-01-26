@@ -1,0 +1,92 @@
+// Auto-generated decompiler unit: t_tre_ob.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/t_tre_ob.cpp
+#include "../include/common.h"
+
+// Offset: 0x004CCA60
+undefined TRIBE_Tree_Object(TRIBE_Tree_Object* this_, TRIBE_Master_Tree_Object* param_2, RGE_Player* param_3, float param_4, float param_5, float param_6, int param_7) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TRIBE_Tree_Object::TRIBE_Tree_Object(class TRIBE_Master_Tree_Object *,class
+    //    RGE_Player *,float,float,float,int) */
+    // 
+    // TRIBE_Tree_Object * __thiscall
+    // TRIBE_Tree_Object::TRIBE_Tree_Object
+    //           (TRIBE_Tree_Object *this,TRIBE_Master_Tree_Object *param_1,RGE_Player *param_2,
+    //           float param_3,float param_4,float param_5,int param_6)
+    // 
+    // {
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055fd28;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   RGE_Static_Object::RGE_Static_Object
+    //             ((RGE_Static_Object *)this,(RGE_Master_Static_Object *)param_1,param_2,param_3,param_4,
+    //              param_5,0);
+    //   local_4 = 0;
+    //   *(undefined ***)this = &_vftable_;
+    //   if (param_6 != 0) {
+    //     RGE_Static_Object::setup
+    //               ((RGE_Static_Object *)this,(RGE_Master_Static_Object *)param_1,param_2,param_3,param_4
+    //                ,param_5);
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004CCB20
+undefined TRIBE_Tree_Object(TRIBE_Tree_Object* this_, int param_2, RGE_Game_World* param_3, int param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TRIBE_Tree_Object::TRIBE_Tree_Object(int,class RGE_Game_World *,int) */
+    // 
+    // TRIBE_Tree_Object * __thiscall
+    // TRIBE_Tree_Object::TRIBE_Tree_Object
+    //           (TRIBE_Tree_Object *this,int param_1,RGE_Game_World *param_2,int param_3)
+    // 
+    // {
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055fd48;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   RGE_Static_Object::RGE_Static_Object((RGE_Static_Object *)this,param_1,param_2,0);
+    //   local_4 = 0;
+    //   *(undefined ***)this = &_vftable_;
+    //   if (param_3 != 0) {
+    //     RGE_Static_Object::setup((RGE_Static_Object *)this,param_1,param_2);
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004CCB90
+void TRIBE_Tree_Object::set_object_state(uchar param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall TRIBE_Tree_Object::set_object_state(unsigned char) */
+    // 
+    // void __thiscall TRIBE_Tree_Object::set_object_state(TRIBE_Tree_Object *this,uchar param_1)
+    // 
+    // {
+    //   RGE_Static_Object::set_object_state((RGE_Static_Object *)this,param_1);
+    //   return;
+    // }
+    // 
+    // 
+}
+

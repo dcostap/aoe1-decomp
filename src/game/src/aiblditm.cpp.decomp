@@ -1,0 +1,618 @@
+// Auto-generated decompiler unit: aiblditm.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/aiblditm.cpp
+#include "../include/common.h"
+
+// Offset: 0x00408190
+undefined BuildItem(BuildItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall BuildItem::BuildItem(void) */
+    // 
+    // BuildItem * __thiscall BuildItem::BuildItem(BuildItem *this)
+    // 
+    // {
+    //   BaseItem::BaseItem((BaseItem *)this);
+    //   this->next = (BuildItem *)0x0;
+    //   this->prev = (BuildItem *)0x0;
+    //   this->numberValue = 0;
+    //   this->priorityValue = 0;
+    //   this->progressValue = 0;
+    //   this->builtValue = 0;
+    //   this->buildAttemptsValue = 0;
+    //   this->placeOnElevationValue = 0;
+    //   this->numberBuildsValue = 0;
+    //   this->skipCyclesValue = 0;
+    //   this->permanentSkipValue = '\0';
+    //   this->buildCategoryValue = -1;
+    //   this->buildFromValue = -1;
+    //   this->terrainSetValue = -1;
+    //   this->buildCapValue = -1;
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->terrainAdjacencyValue[0] = -1;
+    //   this->terrainAdjacencyValue[1] = -1;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408220
+undefined BuildItem(BuildItem* this_, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7, char* param_8, float param_9, float param_10, float param_11, int param_12, int param_13, int param_14, int param_15) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall BuildItem::BuildItem(int,int,int,int,int,int,char
+    //    *,float,float,float,int,int,int,int) */
+    // 
+    // BuildItem * __thiscall
+    // BuildItem::BuildItem
+    //           (BuildItem *this,int param_1,int param_2,int param_3,int param_4,int param_5,int param_6,
+    //           char *param_7,float param_8,float param_9,float param_10,int param_11,int param_12,
+    //           int param_13,int param_14)
+    // 
+    // {
+    //   BaseItem::BaseItem((BaseItem *)this,param_2,-1,param_3,param_7,-1.0,-1.0,-1.0,param_8,param_9,
+    //                      param_10);
+    //   this->buildCategoryValue = param_1;
+    //   this->numberValue = param_4;
+    //   this->priorityValue = param_5;
+    //   this->next = (BuildItem *)0x0;
+    //   this->prev = (BuildItem *)0x0;
+    //   this->progressValue = 0;
+    //   this->builtValue = 0;
+    //   this->buildAttemptsValue = 0;
+    //   this->numberBuildsValue = 0;
+    //   this->skipCyclesValue = 0;
+    //   this->permanentSkipValue = '\0';
+    //   this->buildFromValue = param_6;
+    //   this->terrainSetValue = param_11;
+    //   this->terrainAdjacencyValue[0] = param_12;
+    //   this->placeOnElevationValue = param_14;
+    //   this->buildCapValue = -1;
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->terrainAdjacencyValue[1] = param_13;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004082F0
+undefined BuildItem(BuildItem* this_, BuildItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall BuildItem::BuildItem(class BuildItem *) */
+    // 
+    // BuildItem * __thiscall BuildItem::BuildItem(BuildItem *this,BuildItem *param_1)
+    // 
+    // {
+    //   BaseItem::BaseItem((BaseItem *)this,(BaseItem *)param_1);
+    //   this->next = (BuildItem *)0x0;
+    //   this->prev = (BuildItem *)0x0;
+    //   this->buildCategoryValue = param_1->buildCategoryValue;
+    //   this->numberValue = param_1->numberValue;
+    //   this->priorityValue = param_1->priorityValue;
+    //   this->progressValue = param_1->progressValue;
+    //   this->builtValue = param_1->progressValue;
+    //   this->buildAttemptsValue = param_1->buildAttemptsValue;
+    //   this->buildFromValue = param_1->buildFromValue;
+    //   this->terrainSetValue = param_1->terrainSetValue;
+    //   this->placeOnElevationValue = param_1->placeOnElevationValue;
+    //   this->numberBuildsValue = 0;
+    //   this->buildCapValue = -1;
+    //   this->skipCyclesValue = 0;
+    //   this->permanentSkipValue = '\0';
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->terrainAdjacencyValue[0] = param_1->terrainAdjacencyValue[0];
+    //   this->terrainAdjacencyValue[1] = param_1->terrainAdjacencyValue[1];
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004083B0
+undefined BuildItem(BuildItem* this_, BuildItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall BuildItem::BuildItem(class BuildItem const &) */
+    // 
+    // BuildItem * __thiscall BuildItem::BuildItem(BuildItem *this,BuildItem *param_1)
+    // 
+    // {
+    //   BaseItem::BaseItem((BaseItem *)this,(BaseItem *)param_1);
+    //   this->next = (BuildItem *)0x0;
+    //   this->prev = (BuildItem *)0x0;
+    //   this->buildCategoryValue = param_1->buildCategoryValue;
+    //   this->numberValue = param_1->numberValue;
+    //   this->priorityValue = param_1->priorityValue;
+    //   this->progressValue = param_1->progressValue;
+    //   this->builtValue = param_1->progressValue;
+    //   this->buildAttemptsValue = param_1->buildAttemptsValue;
+    //   this->buildFromValue = param_1->buildFromValue;
+    //   this->terrainSetValue = param_1->terrainSetValue;
+    //   this->placeOnElevationValue = param_1->placeOnElevationValue;
+    //   this->numberBuildsValue = 0;
+    //   this->buildCapValue = -1;
+    //   this->skipCyclesValue = 0;
+    //   this->permanentSkipValue = '\0';
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->terrainAdjacencyValue[0] = param_1->terrainAdjacencyValue[0];
+    //   this->terrainAdjacencyValue[1] = param_1->terrainAdjacencyValue[1];
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408470
+void BuildItem(BuildItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall BuildItem::~BuildItem(void) */
+    // 
+    // void __thiscall BuildItem::~BuildItem(BuildItem *this)
+    // 
+    // {
+    //   this->_padding_ = (int)&_vftable_;
+    //   BaseItem::~BaseItem((BaseItem *)this);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408480
+int operator(BuildItem* param_1, BuildItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* int __cdecl operator==(class BuildItem const &,class BuildItem const &) */
+    // 
+    // int __cdecl operator==(BuildItem *param_1,BuildItem *param_2)
+    // 
+    // {
+    //   return (uint)(param_1->_padding_ == param_2->_padding_);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004084A0
+int operator(BuildItem* param_1, BuildItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* int __cdecl operator!=(class BuildItem const &,class BuildItem const &) */
+    // 
+    // int __cdecl operator!=(BuildItem *param_1,BuildItem *param_2)
+    // 
+    // {
+    //   return (uint)(param_1->_padding_ != param_2->_padding_);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004084C0
+int operator(BuildItem* param_1, BuildItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* int __cdecl operator<(class BuildItem const &,class BuildItem const &) */
+    // 
+    // int __cdecl operator<(BuildItem *param_1,BuildItem *param_2)
+    // 
+    // {
+    //   return (uint)(param_1->_padding_ < param_2->_padding_);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004084E0
+int operator(BuildItem* param_1, BuildItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* int __cdecl operator>(class BuildItem const &,class BuildItem const &) */
+    // 
+    // int __cdecl operator>(BuildItem *param_1,BuildItem *param_2)
+    // 
+    // {
+    //   return (uint)(param_2->_padding_ < param_1->_padding_);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408500
+int buildCategory(BuildItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BuildItem::buildCategory(void)const  */
+    // 
+    // int __thiscall BuildItem::buildCategory(BuildItem *this)
+    // 
+    // {
+    //   return this->buildCategoryValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408510
+int number(BuildItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BuildItem::number(void)const  */
+    // 
+    // int __thiscall BuildItem::number(BuildItem *this)
+    // 
+    // {
+    //   return this->numberValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408520
+int priority(BuildItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BuildItem::priority(void)const  */
+    // 
+    // int __thiscall BuildItem::priority(BuildItem *this)
+    // 
+    // {
+    //   return this->priorityValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408530
+int inProgress(BuildItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BuildItem::inProgress(void)const  */
+    // 
+    // int __thiscall BuildItem::inProgress(BuildItem *this)
+    // 
+    // {
+    //   return this->progressValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408540
+int built(BuildItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BuildItem::built(void)const  */
+    // 
+    // int __thiscall BuildItem::built(BuildItem *this)
+    // 
+    // {
+    //   return this->builtValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408550
+int buildAttempts(BuildItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BuildItem::buildAttempts(void)const  */
+    // 
+    // int __thiscall BuildItem::buildAttempts(BuildItem *this)
+    // 
+    // {
+    //   return this->buildAttemptsValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408560
+int buildFrom(BuildItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BuildItem::buildFrom(void)const  */
+    // 
+    // int __thiscall BuildItem::buildFrom(BuildItem *this)
+    // 
+    // {
+    //   return this->buildFromValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408570
+int terrainSet(BuildItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BuildItem::terrainSet(void)const  */
+    // 
+    // int __thiscall BuildItem::terrainSet(BuildItem *this)
+    // 
+    // {
+    //   return this->terrainSetValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408580
+int terrainAdjacency(BuildItem* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BuildItem::terrainAdjacency(int)const  */
+    // 
+    // int __thiscall BuildItem::terrainAdjacency(BuildItem *this,int param_1)
+    // 
+    // {
+    //   if ((0 < param_1) && (param_1 < 3)) {
+    //     return this->terrainAdjacencyValue[param_1 + -1];
+    //   }
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004085A0
+int placeOnElevation(BuildItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BuildItem::placeOnElevation(void)const  */
+    // 
+    // int __thiscall BuildItem::placeOnElevation(BuildItem *this)
+    // 
+    // {
+    //   return this->placeOnElevationValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004085B0
+void setInProgress(BuildItem* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BuildItem::setInProgress(int) */
+    // 
+    // void __thiscall BuildItem::setInProgress(BuildItem *this,int param_1)
+    // 
+    // {
+    //   this->progressValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004085C0
+void setBuilt(BuildItem* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BuildItem::setBuilt(int) */
+    // 
+    // void __thiscall BuildItem::setBuilt(BuildItem *this,int param_1)
+    // 
+    // {
+    //   this->builtValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004085D0
+void setBuildAttempts(BuildItem* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BuildItem::setBuildAttempts(int) */
+    // 
+    // void __thiscall BuildItem::setBuildAttempts(BuildItem *this,int param_1)
+    // 
+    // {
+    //   this->buildAttemptsValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004085E0
+void incrementBuildAttempts(BuildItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BuildItem::incrementBuildAttempts(void) */
+    // 
+    // void __thiscall BuildItem::incrementBuildAttempts(BuildItem *this)
+    // 
+    // {
+    //   this->buildAttemptsValue = this->buildAttemptsValue + 1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004085F0
+void decrementBuildAttempts(BuildItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BuildItem::decrementBuildAttempts(void) */
+    // 
+    // void __thiscall BuildItem::decrementBuildAttempts(BuildItem *this)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   iVar1 = this->buildAttemptsValue + -1;
+    //   this->buildAttemptsValue = iVar1;
+    //   if (iVar1 < 0) {
+    //     this->buildAttemptsValue = 0;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408610
+int numberBuilds(BuildItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BuildItem::numberBuilds(void) */
+    // 
+    // int __thiscall BuildItem::numberBuilds(BuildItem *this)
+    // 
+    // {
+    //   return this->numberBuildsValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408620
+void incrementNumberBuilds(BuildItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BuildItem::incrementNumberBuilds(void) */
+    // 
+    // void __thiscall BuildItem::incrementNumberBuilds(BuildItem *this)
+    // 
+    // {
+    //   this->numberBuildsValue = this->numberBuildsValue + 1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408630
+void setNumberBuilds(BuildItem* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BuildItem::setNumberBuilds(int) */
+    // 
+    // void __thiscall BuildItem::setNumberBuilds(BuildItem *this,int param_1)
+    // 
+    // {
+    //   this->numberBuildsValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408640
+int buildCap(BuildItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BuildItem::buildCap(void) */
+    // 
+    // int __thiscall BuildItem::buildCap(BuildItem *this)
+    // 
+    // {
+    //   return this->buildCapValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408650
+void setBuildCap(BuildItem* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BuildItem::setBuildCap(int) */
+    // 
+    // void __thiscall BuildItem::setBuildCap(BuildItem *this,int param_1)
+    // 
+    // {
+    //   this->buildCapValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408660
+int skipCycles(BuildItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BuildItem::skipCycles(void) */
+    // 
+    // int __thiscall BuildItem::skipCycles(BuildItem *this)
+    // 
+    // {
+    //   return this->skipCyclesValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408670
+void incrementSkipCycles(BuildItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BuildItem::incrementSkipCycles(void) */
+    // 
+    // void __thiscall BuildItem::incrementSkipCycles(BuildItem *this)
+    // 
+    // {
+    //   this->skipCyclesValue = this->skipCyclesValue + 1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408680
+void setSkipCycles(BuildItem* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BuildItem::setSkipCycles(int) */
+    // 
+    // void __thiscall BuildItem::setSkipCycles(BuildItem *this,int param_1)
+    // 
+    // {
+    //   this->skipCyclesValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408690
+uchar permanentSkip(BuildItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall BuildItem::permanentSkip(void) */
+    // 
+    // uchar __thiscall BuildItem::permanentSkip(BuildItem *this)
+    // 
+    // {
+    //   return this->permanentSkipValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004086A0
+void setPermanentSkip(BuildItem* this_, uchar param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BuildItem::setPermanentSkip(unsigned char) */
+    // 
+    // void __thiscall BuildItem::setPermanentSkip(BuildItem *this,uchar param_1)
+    // 
+    // {
+    //   this->permanentSkipValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+

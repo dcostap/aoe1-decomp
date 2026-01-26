@@ -1,0 +1,22 @@
+// Auto-generated decompiler unit: TRIBE_Command.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x00509740
+void* TRIBE_Command::vector_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TRIBE_Command::`vector deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall TRIBE_Command::_vector_deleting_destructor_(TRIBE_Command *this,uint param_1)
+    // 
+    // {
+    //   ~TRIBE_Command(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

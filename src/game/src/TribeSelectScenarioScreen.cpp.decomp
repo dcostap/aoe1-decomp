@@ -1,0 +1,25 @@
+// Auto-generated decompiler unit: TribeSelectScenarioScreen.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x004B4100
+void* TribeSelectScenarioScreen::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TribeSelectScenarioScreen::`scalar deleting
+    //    destructor'(unsigned int) */
+    // 
+    // void * __thiscall
+    // TribeSelectScenarioScreen::_scalar_deleting_destructor_
+    //           (TribeSelectScenarioScreen *this,uint param_1)
+    // 
+    // {
+    //   ~TribeSelectScenarioScreen(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

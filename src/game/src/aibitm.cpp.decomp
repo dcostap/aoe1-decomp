@@ -1,0 +1,622 @@
+// Auto-generated decompiler unit: aibitm.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/aibitm.cpp
+#include "../include/common.h"
+
+// Offset: 0x00407D80
+undefined BaseItem(BaseItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall BaseItem::BaseItem(void) */
+    // 
+    // BaseItem * __thiscall BaseItem::BaseItem(BaseItem *this)
+    // 
+    // {
+    //   char cVar1;
+    //   uint uVar2;
+    //   uint uVar3;
+    //   char *pcVar4;
+    //   char *pcVar5;
+    //   
+    //   uVar2 = 0xffffffff;
+    //   this->typeIDValue = -1;
+    //   this->gameIDValue = -1;
+    //   this->uniqueIDValue = -1;
+    //   this->xValue = 0.0;
+    //   this->yValue = 0.0;
+    //   this->zValue = 0.0;
+    //   this->xSizeValue = 0.0;
+    //   this->ySizeValue = 0.0;
+    //   this->zSizeValue = 0.0;
+    //   this->skipValue = 0;
+    //   this->_padding_ = (int)&_vftable_;
+    //   pcVar4 = s_;
+    //   do {
+    //     pcVar5 = pcVar4;
+    //     if (uVar2 == 0) break;
+    //     uVar2 = uVar2 - 1;
+    //     pcVar5 = pcVar4 + 1;
+    //     cVar1 = *pcVar4;
+    //     pcVar4 = pcVar5;
+    //   } while (cVar1 != '\0');
+    //   uVar2 = ~uVar2;
+    //   pcVar4 = pcVar5 + -uVar2;
+    //   pcVar5 = this->nameValue;
+    //   for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //     *(undefined4 *)pcVar5 = *(undefined4 *)pcVar4;
+    //     pcVar4 = pcVar4 + 4;
+    //     pcVar5 = pcVar5 + 4;
+    //   }
+    //   for (uVar2 = uVar2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+    //     *pcVar5 = *pcVar4;
+    //     pcVar4 = pcVar4 + 1;
+    //     pcVar5 = pcVar5 + 1;
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407E00
+undefined BaseItem(BaseItem* this_, int param_2, int param_3, int param_4, char* param_5, float param_6, float param_7, float param_8, float param_9, float param_10, float param_11) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall BaseItem::BaseItem(int,int,int,char *,float,float,float,float,float,float) */
+    // 
+    // BaseItem * __thiscall
+    // BaseItem::BaseItem(BaseItem *this,int param_1,int param_2,int param_3,char *param_4,float param_5,
+    //                   float param_6,float param_7,float param_8,float param_9,float param_10)
+    // 
+    // {
+    //   this->typeIDValue = param_1;
+    //   this->gameIDValue = param_2;
+    //   this->xValue = param_5;
+    //   this->yValue = param_6;
+    //   this->uniqueIDValue = param_3;
+    //   this->xSizeValue = param_8;
+    //   this->ySizeValue = param_9;
+    //   this->zValue = param_7;
+    //   this->zSizeValue = param_10;
+    //   this->skipValue = 0;
+    //   this->_padding_ = (int)&_vftable_;
+    //   strncpy(this->nameValue,param_4,0x3f);
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407E70
+undefined BaseItem(BaseItem* this_, BaseItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall BaseItem::BaseItem(class BaseItem *) */
+    // 
+    // BaseItem * __thiscall BaseItem::BaseItem(BaseItem *this,BaseItem *param_1)
+    // 
+    // {
+    //   char cVar1;
+    //   uint uVar2;
+    //   uint uVar3;
+    //   char *pcVar4;
+    //   char *pcVar5;
+    //   
+    //   this->typeIDValue = param_1->typeIDValue;
+    //   this->gameIDValue = param_1->gameIDValue;
+    //   this->uniqueIDValue = param_1->uniqueIDValue;
+    //   this->xValue = param_1->xValue;
+    //   this->yValue = param_1->yValue;
+    //   this->zValue = param_1->zValue;
+    //   this->xSizeValue = param_1->xSizeValue;
+    //   this->ySizeValue = param_1->ySizeValue;
+    //   this->zSizeValue = param_1->zSizeValue;
+    //   this->skipValue = param_1->skipValue;
+    //   uVar2 = 0xffffffff;
+    //   this->_padding_ = (int)&_vftable_;
+    //   pcVar4 = param_1->nameValue;
+    //   do {
+    //     pcVar5 = pcVar4;
+    //     if (uVar2 == 0) break;
+    //     uVar2 = uVar2 - 1;
+    //     pcVar5 = pcVar4 + 1;
+    //     cVar1 = *pcVar4;
+    //     pcVar4 = pcVar5;
+    //   } while (cVar1 != '\0');
+    //   uVar2 = ~uVar2;
+    //   pcVar4 = pcVar5 + -uVar2;
+    //   pcVar5 = this->nameValue;
+    //   for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //     *(undefined4 *)pcVar5 = *(undefined4 *)pcVar4;
+    //     pcVar4 = pcVar4 + 4;
+    //     pcVar5 = pcVar5 + 4;
+    //   }
+    //   for (uVar2 = uVar2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+    //     *pcVar5 = *pcVar4;
+    //     pcVar4 = pcVar4 + 1;
+    //     pcVar5 = pcVar5 + 1;
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407EF0
+undefined BaseItem(BaseItem* this_, BaseItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall BaseItem::BaseItem(class BaseItem const &) */
+    // 
+    // BaseItem * __thiscall BaseItem::BaseItem(BaseItem *this,BaseItem *param_1)
+    // 
+    // {
+    //   char cVar1;
+    //   uint uVar2;
+    //   uint uVar3;
+    //   char *pcVar4;
+    //   char *pcVar5;
+    //   
+    //   this->typeIDValue = param_1->typeIDValue;
+    //   this->gameIDValue = param_1->gameIDValue;
+    //   this->uniqueIDValue = param_1->uniqueIDValue;
+    //   this->xValue = param_1->xValue;
+    //   this->yValue = param_1->yValue;
+    //   this->zValue = param_1->zValue;
+    //   this->xSizeValue = param_1->xSizeValue;
+    //   this->ySizeValue = param_1->ySizeValue;
+    //   this->zSizeValue = param_1->zSizeValue;
+    //   this->skipValue = param_1->skipValue;
+    //   uVar2 = 0xffffffff;
+    //   this->_padding_ = (int)&_vftable_;
+    //   pcVar4 = param_1->nameValue;
+    //   do {
+    //     pcVar5 = pcVar4;
+    //     if (uVar2 == 0) break;
+    //     uVar2 = uVar2 - 1;
+    //     pcVar5 = pcVar4 + 1;
+    //     cVar1 = *pcVar4;
+    //     pcVar4 = pcVar5;
+    //   } while (cVar1 != '\0');
+    //   uVar2 = ~uVar2;
+    //   pcVar4 = pcVar5 + -uVar2;
+    //   pcVar5 = this->nameValue;
+    //   for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //     *(undefined4 *)pcVar5 = *(undefined4 *)pcVar4;
+    //     pcVar4 = pcVar4 + 4;
+    //     pcVar5 = pcVar5 + 4;
+    //   }
+    //   for (uVar2 = uVar2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+    //     *pcVar5 = *pcVar4;
+    //     pcVar4 = pcVar4 + 1;
+    //     pcVar5 = pcVar5 + 1;
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407F70
+void BaseItem(BaseItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall BaseItem::~BaseItem(void) */
+    // 
+    // void __thiscall BaseItem::~BaseItem(BaseItem *this)
+    // 
+    // {
+    //   this->_padding_ = (int)&_vftable_;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407F80
+int operator(BaseItem* param_1, BaseItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* int __cdecl operator==(class BaseItem const &,class BaseItem const &) */
+    // 
+    // int __cdecl operator==(BaseItem *param_1,BaseItem *param_2)
+    // 
+    // {
+    //   if (((param_1->gameIDValue == param_2->gameIDValue) && (param_1->xValue == param_2->xValue)) &&
+    //      (param_1->yValue == param_2->yValue)) {
+    //     return 1;
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407FC0
+int operator(BaseItem* param_1, BaseItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* int __cdecl operator!=(class BaseItem const &,class BaseItem const &) */
+    // 
+    // int __cdecl operator!=(BaseItem *param_1,BaseItem *param_2)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   iVar1 = operator==(param_1,param_2);
+    //   return (uint)(iVar1 == 0);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407FE0
+int operator(BaseItem* param_1, BaseItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* int __cdecl operator<(class BaseItem const &,class BaseItem const &) */
+    // 
+    // int __cdecl operator<(BaseItem *param_1,BaseItem *param_2)
+    // 
+    // {
+    //   return (uint)(param_1->gameIDValue < param_2->gameIDValue);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408000
+int operator(BaseItem* param_1, BaseItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* int __cdecl operator>(class BaseItem const &,class BaseItem const &) */
+    // 
+    // int __cdecl operator>(BaseItem *param_1,BaseItem *param_2)
+    // 
+    // {
+    //   return (uint)(param_2->gameIDValue < param_1->gameIDValue);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408020
+int typeID(BaseItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BaseItem::typeID(void)const  */
+    // 
+    // int __thiscall BaseItem::typeID(BaseItem *this)
+    // 
+    // {
+    //   return this->typeIDValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408030
+int gameID(BaseItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BaseItem::gameID(void)const  */
+    // 
+    // int __thiscall BaseItem::gameID(BaseItem *this)
+    // 
+    // {
+    //   return this->gameIDValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408040
+int uniqueID(BaseItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BaseItem::uniqueID(void)const  */
+    // 
+    // int __thiscall BaseItem::uniqueID(BaseItem *this)
+    // 
+    // {
+    //   return this->uniqueIDValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408050
+char* name(BaseItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: char * __thiscall BaseItem::name(void) */
+    // 
+    // char * __thiscall BaseItem::name(BaseItem *this)
+    // 
+    // {
+    //   return this->nameValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408060
+float x(BaseItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: float __thiscall BaseItem::x(void)const  */
+    // 
+    // float __thiscall BaseItem::x(BaseItem *this)
+    // 
+    // {
+    //   return this->xValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408070
+float y(BaseItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: float __thiscall BaseItem::y(void)const  */
+    // 
+    // float __thiscall BaseItem::y(BaseItem *this)
+    // 
+    // {
+    //   return this->yValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408080
+float z(BaseItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: float __thiscall BaseItem::z(void)const  */
+    // 
+    // float __thiscall BaseItem::z(BaseItem *this)
+    // 
+    // {
+    //   return this->zValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408090
+float xSize(BaseItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: float __thiscall BaseItem::xSize(void)const  */
+    // 
+    // float __thiscall BaseItem::xSize(BaseItem *this)
+    // 
+    // {
+    //   return this->xSizeValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004080A0
+float ySize(BaseItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: float __thiscall BaseItem::ySize(void)const  */
+    // 
+    // float __thiscall BaseItem::ySize(BaseItem *this)
+    // 
+    // {
+    //   return this->ySizeValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004080B0
+float zSize(BaseItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: float __thiscall BaseItem::zSize(void)const  */
+    // 
+    // float __thiscall BaseItem::zSize(BaseItem *this)
+    // 
+    // {
+    //   return this->zSizeValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004080C0
+int skip(BaseItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BaseItem::skip(void)const  */
+    // 
+    // int __thiscall BaseItem::skip(BaseItem *this)
+    // 
+    // {
+    //   return this->skipValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004080D0
+void setTypeID(BaseItem* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseItem::setTypeID(int) */
+    // 
+    // void __thiscall BaseItem::setTypeID(BaseItem *this,int param_1)
+    // 
+    // {
+    //   this->typeIDValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004080E0
+void setGameID(BaseItem* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseItem::setGameID(int) */
+    // 
+    // void __thiscall BaseItem::setGameID(BaseItem *this,int param_1)
+    // 
+    // {
+    //   this->gameIDValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004080F0
+void setUniqueID(BaseItem* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseItem::setUniqueID(int) */
+    // 
+    // void __thiscall BaseItem::setUniqueID(BaseItem *this,int param_1)
+    // 
+    // {
+    //   this->uniqueIDValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408100
+void setName(BaseItem* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseItem::setName(char *) */
+    // 
+    // void __thiscall BaseItem::setName(BaseItem *this,char *param_1)
+    // 
+    // {
+    //   strncpy(this->nameValue,param_1,0x3f);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408120
+void setX(BaseItem* this_, float param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseItem::setX(float) */
+    // 
+    // void __thiscall BaseItem::setX(BaseItem *this,float param_1)
+    // 
+    // {
+    //   this->xValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408130
+void setY(BaseItem* this_, float param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseItem::setY(float) */
+    // 
+    // void __thiscall BaseItem::setY(BaseItem *this,float param_1)
+    // 
+    // {
+    //   this->yValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408140
+void setZ(BaseItem* this_, float param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseItem::setZ(float) */
+    // 
+    // void __thiscall BaseItem::setZ(BaseItem *this,float param_1)
+    // 
+    // {
+    //   this->zValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408150
+void setXSize(BaseItem* this_, float param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseItem::setXSize(float) */
+    // 
+    // void __thiscall BaseItem::setXSize(BaseItem *this,float param_1)
+    // 
+    // {
+    //   this->xSizeValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408160
+void setYSize(BaseItem* this_, float param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseItem::setYSize(float) */
+    // 
+    // void __thiscall BaseItem::setYSize(BaseItem *this,float param_1)
+    // 
+    // {
+    //   this->ySizeValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408170
+void setZSize(BaseItem* this_, float param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseItem::setZSize(float) */
+    // 
+    // void __thiscall BaseItem::setZSize(BaseItem *this,float param_1)
+    // 
+    // {
+    //   this->zSizeValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00408180
+void setSkip(BaseItem* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseItem::setSkip(int) */
+    // 
+    // void __thiscall BaseItem::setSkip(BaseItem *this,int param_1)
+    // 
+    // {
+    //   this->skipValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+

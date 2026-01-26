@@ -1,0 +1,631 @@
+// Auto-generated decompiler unit: bucket_044A.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x0044A4B9
+undefined FUN_0044a4b9() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0044a4b9(void)
+    // 
+    // {
+    //   int *piVar1;
+    //   char cVar2;
+    //   char cVar4;
+    //   int in_EAX;
+    //   char *pcVar3;
+    //   char cVar5;
+    //   char cVar6;
+    //   char cVar8;
+    //   int in_ECX;
+    //   char cVar9;
+    //   char cVar10;
+    //   char cVar12;
+    //   char *in_EDX;
+    //   int unaff_EBX;
+    //   int iVar13;
+    //   int unaff_EBP;
+    //   int unaff_ESI;
+    //   int unaff_EDI;
+    //   char *pcVar7;
+    //   char *pcVar11;
+    //   char cVar14;
+    //   
+    //   cVar5 = (char)in_ECX;
+    //   *(char *)(in_EAX + -0x5a) = *(char *)(in_EAX + -0x5a) + cVar5;
+    //   *(char *)(unaff_EDI + -0x59) = *(char *)(unaff_EDI + -0x59) + cVar5;
+    //   cVar10 = (char)unaff_EBX;
+    //   *(char *)(unaff_ESI + 0x44) = *(char *)(unaff_ESI + 0x44) + cVar10;
+    //   cVar2 = (char)in_EAX;
+    //   *(char *)(unaff_EBP + -0x1affbb57) = *(char *)(unaff_EBP + -0x1affbb57) + cVar2;
+    //   in_EDX[-0x58] = in_EDX[-0x58] + cVar2;
+    //   cVar4 = (char)((uint)in_EAX >> 8);
+    //   in_EDX[0x20044a7] = in_EDX[0x20044a7] + cVar4;
+    //   in_EDX[-0x55] = in_EDX[-0x55] + cVar5;
+    //   cVar8 = (char)((uint)in_ECX >> 8);
+    //   *(char *)(unaff_EBP + 0x130044aa) = *(char *)(unaff_EBP + 0x130044aa) + cVar8;
+    //   *(char *)(unaff_EDI + 5) = cVar2;
+    //   cVar14 = (char)((uint)unaff_EBX >> 8);
+    //   *(char *)(in_ECX + -0x57) = *(char *)(in_ECX + -0x57) + cVar14;
+    //   cVar5 = cVar5 + cVar10;
+    //   cVar12 = (char)((uint)in_EDX >> 8);
+    //   *(char *)(unaff_ESI + 4) = *(char *)(unaff_ESI + 4) + cVar12;
+    //   cVar9 = (char)in_EDX;
+    //   *(char *)(unaff_ESI + -0x9ffbb55) = *(char *)(unaff_ESI + -0x9ffbb55) + cVar9;
+    //   *(char *)(unaff_ESI + 5) = *(char *)(unaff_ESI + 5) + cVar14;
+    //   *(int *)(unaff_EDI + 7) = in_EAX;
+    //   pcVar3 = (char *)(CONCAT31((int3)((uint)in_ECX >> 8),cVar5) + 0x70044aa);
+    //   *pcVar3 = *pcVar3 + cVar4;
+    //   *(char *)(unaff_EDI + 0xb) = cVar2;
+    //   *(char *)(unaff_EBP + -0x57) = *(char *)(unaff_EBP + -0x57) + cVar8;
+    //   cVar8 = cVar8 + cVar5;
+    //   *in_EDX = *in_EDX + cVar8;
+    //   in_EDX[-0x15ffbb59] = in_EDX[-0x15ffbb59] + cVar5;
+    //   piVar1 = (int *)(unaff_EDI + 0xd);
+    //   *(char *)piVar1 = *(char *)piVar1 + cVar8;
+    //   *piVar1 = in_EAX;
+    //   in_EDX[-0x7ffbb56] = in_EDX[-0x7ffbb56] + cVar9;
+    //   *(char *)(unaff_ESI + 0x1b0044ae) = *(char *)(unaff_ESI + 0x1b0044ae) + cVar14;
+    //   *(char *)(unaff_EBX + -0x59) = *(char *)(unaff_EBX + -0x59) + cVar14;
+    //   cVar10 = cVar10 * '\x02';
+    //   pcVar3 = (char *)CONCAT31((int3)((uint)unaff_EBX >> 8),cVar10);
+    //   *pcVar3 = *pcVar3 + cVar4;
+    //   *(int *)(unaff_EDI + 0x12) = in_EAX;
+    //   *(char *)(unaff_ESI + -0x13ffbb4f) = *(char *)(unaff_ESI + -0x13ffbb4f) + cVar2;
+    //   in_EDX[0xf0044a8] = in_EDX[0xf0044a8] + cVar12;
+    //   *(char *)(unaff_EDI + -0x43) = *(char *)(unaff_EDI + -0x43) + cVar8;
+    //   cVar14 = cVar14 + cVar5;
+    //   iVar13 = CONCAT22((short)((uint)unaff_EBX >> 0x10),CONCAT11(cVar14,cVar10));
+    //   pcVar3 = (char *)(iVar13 + unaff_EBP * 4);
+    //   *pcVar3 = *pcVar3 + cVar9;
+    //   *(char *)(unaff_EDI + -0x3f) = *(char *)(unaff_EDI + -0x3f) + cVar12;
+    //   cVar8 = cVar8 + cVar10;
+    //   *(char *)(iVar13 + 0x44a8) = *(char *)(iVar13 + 0x44a8) + cVar4;
+    //   *(char *)(in_EAX + -0x59) = *(char *)(in_EAX + -0x59) + cVar4;
+    //   cVar2 = cVar2 * '\x02';
+    //   pcVar3 = (char *)CONCAT31((int3)((uint)in_EAX >> 8),cVar2);
+    //   *pcVar3 = *pcVar3 + cVar5;
+    //   *(char **)(unaff_EDI + 0x18) = pcVar3;
+    //   *(char *)(iVar13 + -0x56) = *(char *)(iVar13 + -0x56) + cVar8;
+    //   *(char *)(unaff_EDI + -0xbffbb3c) = *(char *)(unaff_EDI + -0xbffbb3c) + cVar9;
+    //   *(char *)(unaff_EDI + 100) = *(char *)(unaff_EDI + 100) + cVar9;
+    //   *(char *)(unaff_ESI + -0x5506ffaf) = *(char *)(unaff_ESI + -0x5506ffaf) + cVar12;
+    //   in_EDX[unaff_EBP * 4 + 0x44] = in_EDX[unaff_EBP * 4 + 0x44] + cVar10;
+    //   pcVar3[-0x1affbb58] = pcVar3[-0x1affbb58] + cVar5 + cVar9;
+    //   *(char *)(unaff_EBP + -0x59) = *(char *)(unaff_EBP + -0x59) + cVar2;
+    //   *(char *)(unaff_EBP + -0x12ffbb5a) = *(char *)(unaff_EBP + -0x12ffbb5a) + cVar4;
+    //   *(char *)(unaff_EDI + 0x24) = cVar2;
+    //   pcVar3[-0x56] = pcVar3[-0x56] + cVar9 + cVar2;
+    //   *(char *)(unaff_ESI + 0x1c0044ba) = *(char *)(unaff_ESI + 0x1c0044ba) + cVar12;
+    //   cVar6 = cVar5 + cVar9 + cVar10;
+    //   pcVar7 = (char *)CONCAT31((int3)(CONCAT22((short)((uint)in_ECX >> 0x10),CONCAT11(cVar8,cVar5)) >>
+    //                                   8),cVar6);
+    //   *pcVar7 = *pcVar7 + cVar14;
+    //   pcVar7[-0x21ffbb5a] = pcVar7[-0x21ffbb5a] + cVar10;
+    //   *(char *)(unaff_EDI + 0x2d) = cVar2;
+    //   pcVar7[-0x56] = pcVar7[-0x56] + cVar2;
+    //   *(char *)(unaff_EDI + 0xd0044d7) = *(char *)(unaff_EDI + 0xd0044d7) + cVar4;
+    //   cVar10 = cVar9 + cVar2 + cVar6;
+    //   pcVar11 = (char *)CONCAT31((int3)((uint)in_EDX >> 8),cVar10);
+    //   *pcVar11 = *pcVar11 + cVar8;
+    //   pcVar11[-0x2dffbb5a] = pcVar11[-0x2dffbb5a] + cVar6;
+    //   *(char *)(unaff_EDI + 0x36) = cVar2;
+    //   DAT_9b0044aa = DAT_9b0044aa + cVar12;
+    //   pcVar7[-0x58] = pcVar7[-0x58] + cVar4;
+    //   *(char *)(unaff_ESI + 0x1e0044c8) = *(char *)(unaff_ESI + 0x1e0044c8) + cVar14;
+    //   *(char *)(unaff_ESI + -0x35) = *(char *)(unaff_ESI + -0x35) + cVar14;
+    //   *(char *)(unaff_EDI + 0x3b) = cVar2;
+    //   *(char *)(unaff_ESI + 0x25) = *(char *)(unaff_ESI + 0x25) + cVar4;
+    //   *(char *)(unaff_EDI + 0x3c) = cVar2;
+    //   pcVar7[unaff_EBP * 4 + -0x570dffbc] = pcVar7[unaff_EBP * 4 + -0x570dffbc] + cVar6;
+    //   pcVar11[-0x58] = pcVar11[-0x58] + cVar10;
+    //   *(char *)(unaff_EDI + 0xf0044e4) = *(char *)(unaff_EDI + 0xf0044e4) + cVar8;
+    //   *(char *)(unaff_EDI + -0x19) = *(char *)(unaff_EDI + -0x19) + cVar8;
+    //   *pcVar3 = *pcVar3 + cVar4;
+    //   *pcVar3 = *pcVar3 + cVar2;
+    //   *(undefined1 *)(unaff_EDI + 0x40) = *(undefined1 *)(unaff_ESI + 0x28);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044A64F
+undefined FUN_0044a64f() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0044a64f(void)
+    // 
+    // {
+    //   undefined1 uVar1;
+    //   int unaff_ESI;
+    //   int unaff_EDI;
+    //   
+    //   uVar1 = *(undefined1 *)(unaff_ESI + -1);
+    //   *(undefined1 *)(unaff_EDI + -2) = *(undefined1 *)(unaff_ESI + -2);
+    //   *(undefined1 *)(unaff_EDI + -1) = uVar1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044A65C
+undefined FUN_0044a65c() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0044a65c(void)
+    // 
+    // {
+    //   undefined1 uVar1;
+    //   undefined1 uVar2;
+    //   int unaff_ESI;
+    //   int unaff_EDI;
+    //   
+    //   uVar1 = *(undefined1 *)(unaff_ESI + -2);
+    //   uVar2 = *(undefined1 *)(unaff_ESI + -1);
+    //   *(undefined1 *)(unaff_EDI + -3) = *(undefined1 *)(unaff_ESI + -3);
+    //   *(undefined1 *)(unaff_EDI + -2) = uVar1;
+    //   *(undefined1 *)(unaff_EDI + -1) = uVar2;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044A66F
+undefined FUN_0044a66f() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0044a66f(void)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   int unaff_ESI;
+    //   int unaff_EDI;
+    //   
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x5c);
+    //   *(undefined4 *)(unaff_EDI + -0x60) = *(undefined4 *)(unaff_ESI + -0x60);
+    //   *(undefined4 *)(unaff_EDI + -0x5c) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x54);
+    //   *(undefined4 *)(unaff_EDI + -0x58) = *(undefined4 *)(unaff_ESI + -0x58);
+    //   *(undefined4 *)(unaff_EDI + -0x54) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x4c);
+    //   *(undefined4 *)(unaff_EDI + -0x50) = *(undefined4 *)(unaff_ESI + -0x50);
+    //   *(undefined4 *)(unaff_EDI + -0x4c) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x44);
+    //   *(undefined4 *)(unaff_EDI + -0x48) = *(undefined4 *)(unaff_ESI + -0x48);
+    //   *(undefined4 *)(unaff_EDI + -0x44) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x3c);
+    //   *(undefined4 *)(unaff_EDI + -0x40) = *(undefined4 *)(unaff_ESI + -0x40);
+    //   *(undefined4 *)(unaff_EDI + -0x3c) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x34);
+    //   *(undefined4 *)(unaff_EDI + -0x38) = *(undefined4 *)(unaff_ESI + -0x38);
+    //   *(undefined4 *)(unaff_EDI + -0x34) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x2c);
+    //   *(undefined4 *)(unaff_EDI + -0x30) = *(undefined4 *)(unaff_ESI + -0x30);
+    //   *(undefined4 *)(unaff_EDI + -0x2c) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x24);
+    //   *(undefined4 *)(unaff_EDI + -0x28) = *(undefined4 *)(unaff_ESI + -0x28);
+    //   *(undefined4 *)(unaff_EDI + -0x24) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x1c);
+    //   *(undefined4 *)(unaff_EDI + -0x20) = *(undefined4 *)(unaff_ESI + -0x20);
+    //   *(undefined4 *)(unaff_EDI + -0x1c) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x14);
+    //   *(undefined4 *)(unaff_EDI + -0x18) = *(undefined4 *)(unaff_ESI + -0x18);
+    //   *(undefined4 *)(unaff_EDI + -0x14) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0xc);
+    //   *(undefined4 *)(unaff_EDI + -0x10) = *(undefined4 *)(unaff_ESI + -0x10);
+    //   *(undefined4 *)(unaff_EDI + -0xc) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -4);
+    //   *(undefined4 *)(unaff_EDI + -8) = *(undefined4 *)(unaff_ESI + -8);
+    //   *(undefined4 *)(unaff_EDI + -4) = uVar1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044A70F
+undefined FUN_0044a70f() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0044a70f(void)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   int unaff_ESI;
+    //   int unaff_EDI;
+    //   
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x5b);
+    //   *(undefined4 *)(unaff_EDI + -0x5f) = *(undefined4 *)(unaff_ESI + -0x5f);
+    //   *(undefined4 *)(unaff_EDI + -0x5b) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x53);
+    //   *(undefined4 *)(unaff_EDI + -0x57) = *(undefined4 *)(unaff_ESI + -0x57);
+    //   *(undefined4 *)(unaff_EDI + -0x53) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x4b);
+    //   *(undefined4 *)(unaff_EDI + -0x4f) = *(undefined4 *)(unaff_ESI + -0x4f);
+    //   *(undefined4 *)(unaff_EDI + -0x4b) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x43);
+    //   *(undefined4 *)(unaff_EDI + -0x47) = *(undefined4 *)(unaff_ESI + -0x47);
+    //   *(undefined4 *)(unaff_EDI + -0x43) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x3b);
+    //   *(undefined4 *)(unaff_EDI + -0x3f) = *(undefined4 *)(unaff_ESI + -0x3f);
+    //   *(undefined4 *)(unaff_EDI + -0x3b) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x33);
+    //   *(undefined4 *)(unaff_EDI + -0x37) = *(undefined4 *)(unaff_ESI + -0x37);
+    //   *(undefined4 *)(unaff_EDI + -0x33) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x2b);
+    //   *(undefined4 *)(unaff_EDI + -0x2f) = *(undefined4 *)(unaff_ESI + -0x2f);
+    //   *(undefined4 *)(unaff_EDI + -0x2b) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x23);
+    //   *(undefined4 *)(unaff_EDI + -0x27) = *(undefined4 *)(unaff_ESI + -0x27);
+    //   *(undefined4 *)(unaff_EDI + -0x23) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x1b);
+    //   *(undefined4 *)(unaff_EDI + -0x1f) = *(undefined4 *)(unaff_ESI + -0x1f);
+    //   *(undefined4 *)(unaff_EDI + -0x1b) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x13);
+    //   *(undefined4 *)(unaff_EDI + -0x17) = *(undefined4 *)(unaff_ESI + -0x17);
+    //   *(undefined4 *)(unaff_EDI + -0x13) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0xb);
+    //   *(undefined4 *)(unaff_EDI + -0xf) = *(undefined4 *)(unaff_ESI + -0xf);
+    //   *(undefined4 *)(unaff_EDI + -0xb) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -4);
+    //   *(undefined4 *)(unaff_EDI + -7) = *(undefined4 *)(unaff_ESI + -7);
+    //   *(undefined4 *)(unaff_EDI + -4) = uVar1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044A7AF
+undefined FUN_0044a7af() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0044a7af(void)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   int unaff_ESI;
+    //   int unaff_EDI;
+    //   
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x5a);
+    //   *(undefined4 *)(unaff_EDI + -0x5e) = *(undefined4 *)(unaff_ESI + -0x5e);
+    //   *(undefined4 *)(unaff_EDI + -0x5a) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x52);
+    //   *(undefined4 *)(unaff_EDI + -0x56) = *(undefined4 *)(unaff_ESI + -0x56);
+    //   *(undefined4 *)(unaff_EDI + -0x52) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x4a);
+    //   *(undefined4 *)(unaff_EDI + -0x4e) = *(undefined4 *)(unaff_ESI + -0x4e);
+    //   *(undefined4 *)(unaff_EDI + -0x4a) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x42);
+    //   *(undefined4 *)(unaff_EDI + -0x46) = *(undefined4 *)(unaff_ESI + -0x46);
+    //   *(undefined4 *)(unaff_EDI + -0x42) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x3a);
+    //   *(undefined4 *)(unaff_EDI + -0x3e) = *(undefined4 *)(unaff_ESI + -0x3e);
+    //   *(undefined4 *)(unaff_EDI + -0x3a) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x32);
+    //   *(undefined4 *)(unaff_EDI + -0x36) = *(undefined4 *)(unaff_ESI + -0x36);
+    //   *(undefined4 *)(unaff_EDI + -0x32) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x2a);
+    //   *(undefined4 *)(unaff_EDI + -0x2e) = *(undefined4 *)(unaff_ESI + -0x2e);
+    //   *(undefined4 *)(unaff_EDI + -0x2a) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x22);
+    //   *(undefined4 *)(unaff_EDI + -0x26) = *(undefined4 *)(unaff_ESI + -0x26);
+    //   *(undefined4 *)(unaff_EDI + -0x22) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x1a);
+    //   *(undefined4 *)(unaff_EDI + -0x1e) = *(undefined4 *)(unaff_ESI + -0x1e);
+    //   *(undefined4 *)(unaff_EDI + -0x1a) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x12);
+    //   *(undefined4 *)(unaff_EDI + -0x16) = *(undefined4 *)(unaff_ESI + -0x16);
+    //   *(undefined4 *)(unaff_EDI + -0x12) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -10);
+    //   *(undefined4 *)(unaff_EDI + -0xe) = *(undefined4 *)(unaff_ESI + -0xe);
+    //   *(undefined4 *)(unaff_EDI + -10) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -2);
+    //   *(undefined4 *)(unaff_EDI + -6) = *(undefined4 *)(unaff_ESI + -6);
+    //   *(char *)(unaff_EDI + -2) = (char)uVar1;
+    //   *(char *)(unaff_EDI + -1) = (char)((uint)uVar1 >> 8);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044A852
+undefined FUN_0044a852() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0044a852(void)
+    // 
+    // {
+    //   undefined1 uVar1;
+    //   undefined4 uVar2;
+    //   int unaff_ESI;
+    //   int unaff_EDI;
+    //   
+    //   uVar2 = *(undefined4 *)(unaff_ESI + -0x59);
+    //   *(undefined4 *)(unaff_EDI + -0x5d) = *(undefined4 *)(unaff_ESI + -0x5d);
+    //   *(undefined4 *)(unaff_EDI + -0x59) = uVar2;
+    //   uVar2 = *(undefined4 *)(unaff_ESI + -0x51);
+    //   *(undefined4 *)(unaff_EDI + -0x55) = *(undefined4 *)(unaff_ESI + -0x55);
+    //   *(undefined4 *)(unaff_EDI + -0x51) = uVar2;
+    //   uVar2 = *(undefined4 *)(unaff_ESI + -0x49);
+    //   *(undefined4 *)(unaff_EDI + -0x4d) = *(undefined4 *)(unaff_ESI + -0x4d);
+    //   *(undefined4 *)(unaff_EDI + -0x49) = uVar2;
+    //   uVar2 = *(undefined4 *)(unaff_ESI + -0x41);
+    //   *(undefined4 *)(unaff_EDI + -0x45) = *(undefined4 *)(unaff_ESI + -0x45);
+    //   *(undefined4 *)(unaff_EDI + -0x41) = uVar2;
+    //   uVar2 = *(undefined4 *)(unaff_ESI + -0x39);
+    //   *(undefined4 *)(unaff_EDI + -0x3d) = *(undefined4 *)(unaff_ESI + -0x3d);
+    //   *(undefined4 *)(unaff_EDI + -0x39) = uVar2;
+    //   uVar2 = *(undefined4 *)(unaff_ESI + -0x31);
+    //   *(undefined4 *)(unaff_EDI + -0x35) = *(undefined4 *)(unaff_ESI + -0x35);
+    //   *(undefined4 *)(unaff_EDI + -0x31) = uVar2;
+    //   uVar2 = *(undefined4 *)(unaff_ESI + -0x29);
+    //   *(undefined4 *)(unaff_EDI + -0x2d) = *(undefined4 *)(unaff_ESI + -0x2d);
+    //   *(undefined4 *)(unaff_EDI + -0x29) = uVar2;
+    //   uVar2 = *(undefined4 *)(unaff_ESI + -0x21);
+    //   *(undefined4 *)(unaff_EDI + -0x25) = *(undefined4 *)(unaff_ESI + -0x25);
+    //   *(undefined4 *)(unaff_EDI + -0x21) = uVar2;
+    //   uVar2 = *(undefined4 *)(unaff_ESI + -0x19);
+    //   *(undefined4 *)(unaff_EDI + -0x1d) = *(undefined4 *)(unaff_ESI + -0x1d);
+    //   *(undefined4 *)(unaff_EDI + -0x19) = uVar2;
+    //   uVar2 = *(undefined4 *)(unaff_ESI + -0x11);
+    //   *(undefined4 *)(unaff_EDI + -0x15) = *(undefined4 *)(unaff_ESI + -0x15);
+    //   *(undefined4 *)(unaff_EDI + -0x11) = uVar2;
+    //   uVar2 = *(undefined4 *)(unaff_ESI + -9);
+    //   *(undefined4 *)(unaff_EDI + -0xd) = *(undefined4 *)(unaff_ESI + -0xd);
+    //   *(undefined4 *)(unaff_EDI + -9) = uVar2;
+    //   uVar1 = *(undefined1 *)(unaff_ESI + -1);
+    //   *(undefined4 *)(unaff_EDI + -5) = *(undefined4 *)(unaff_ESI + -5);
+    //   *(undefined1 *)(unaff_EDI + -1) = uVar1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044A8F2
+undefined FUN_0044a8f2() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0044a8f2(void)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   int unaff_ESI;
+    //   int unaff_EDI;
+    //   
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x58);
+    //   *(undefined4 *)(unaff_EDI + -0x5c) = *(undefined4 *)(unaff_ESI + -0x5c);
+    //   *(undefined4 *)(unaff_EDI + -0x58) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x50);
+    //   *(undefined4 *)(unaff_EDI + -0x54) = *(undefined4 *)(unaff_ESI + -0x54);
+    //   *(undefined4 *)(unaff_EDI + -0x50) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x48);
+    //   *(undefined4 *)(unaff_EDI + -0x4c) = *(undefined4 *)(unaff_ESI + -0x4c);
+    //   *(undefined4 *)(unaff_EDI + -0x48) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x40);
+    //   *(undefined4 *)(unaff_EDI + -0x44) = *(undefined4 *)(unaff_ESI + -0x44);
+    //   *(undefined4 *)(unaff_EDI + -0x40) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x38);
+    //   *(undefined4 *)(unaff_EDI + -0x3c) = *(undefined4 *)(unaff_ESI + -0x3c);
+    //   *(undefined4 *)(unaff_EDI + -0x38) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x30);
+    //   *(undefined4 *)(unaff_EDI + -0x34) = *(undefined4 *)(unaff_ESI + -0x34);
+    //   *(undefined4 *)(unaff_EDI + -0x30) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x28);
+    //   *(undefined4 *)(unaff_EDI + -0x2c) = *(undefined4 *)(unaff_ESI + -0x2c);
+    //   *(undefined4 *)(unaff_EDI + -0x28) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x20);
+    //   *(undefined4 *)(unaff_EDI + -0x24) = *(undefined4 *)(unaff_ESI + -0x24);
+    //   *(undefined4 *)(unaff_EDI + -0x20) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x18);
+    //   *(undefined4 *)(unaff_EDI + -0x1c) = *(undefined4 *)(unaff_ESI + -0x1c);
+    //   *(undefined4 *)(unaff_EDI + -0x18) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x10);
+    //   *(undefined4 *)(unaff_EDI + -0x14) = *(undefined4 *)(unaff_ESI + -0x14);
+    //   *(undefined4 *)(unaff_EDI + -0x10) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -8);
+    //   *(undefined4 *)(unaff_EDI + -0xc) = *(undefined4 *)(unaff_ESI + -0xc);
+    //   *(undefined4 *)(unaff_EDI + -8) = uVar1;
+    //   *(undefined4 *)(unaff_EDI + -4) = *(undefined4 *)(unaff_ESI + -4);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044A98C
+undefined FUN_0044a98c() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0044a98c(void)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   undefined4 uVar2;
+    //   int unaff_ESI;
+    //   int unaff_EDI;
+    //   
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x57);
+    //   *(undefined4 *)(unaff_EDI + -0x5b) = *(undefined4 *)(unaff_ESI + -0x5b);
+    //   *(undefined4 *)(unaff_EDI + -0x57) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x4f);
+    //   *(undefined4 *)(unaff_EDI + -0x53) = *(undefined4 *)(unaff_ESI + -0x53);
+    //   *(undefined4 *)(unaff_EDI + -0x4f) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x47);
+    //   *(undefined4 *)(unaff_EDI + -0x4b) = *(undefined4 *)(unaff_ESI + -0x4b);
+    //   *(undefined4 *)(unaff_EDI + -0x47) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x3f);
+    //   *(undefined4 *)(unaff_EDI + -0x43) = *(undefined4 *)(unaff_ESI + -0x43);
+    //   *(undefined4 *)(unaff_EDI + -0x3f) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x37);
+    //   *(undefined4 *)(unaff_EDI + -0x3b) = *(undefined4 *)(unaff_ESI + -0x3b);
+    //   *(undefined4 *)(unaff_EDI + -0x37) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x2f);
+    //   *(undefined4 *)(unaff_EDI + -0x33) = *(undefined4 *)(unaff_ESI + -0x33);
+    //   *(undefined4 *)(unaff_EDI + -0x2f) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x27);
+    //   *(undefined4 *)(unaff_EDI + -0x2b) = *(undefined4 *)(unaff_ESI + -0x2b);
+    //   *(undefined4 *)(unaff_EDI + -0x27) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x1f);
+    //   *(undefined4 *)(unaff_EDI + -0x23) = *(undefined4 *)(unaff_ESI + -0x23);
+    //   *(undefined4 *)(unaff_EDI + -0x1f) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x17);
+    //   *(undefined4 *)(unaff_EDI + -0x1b) = *(undefined4 *)(unaff_ESI + -0x1b);
+    //   *(undefined4 *)(unaff_EDI + -0x17) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0xf);
+    //   *(undefined4 *)(unaff_EDI + -0x13) = *(undefined4 *)(unaff_ESI + -0x13);
+    //   *(undefined4 *)(unaff_EDI + -0xf) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -7);
+    //   uVar2 = *(undefined4 *)(unaff_ESI + -4);
+    //   *(undefined4 *)(unaff_EDI + -0xb) = *(undefined4 *)(unaff_ESI + -0xb);
+    //   *(undefined4 *)(unaff_EDI + -7) = uVar1;
+    //   *(undefined4 *)(unaff_EDI + -4) = uVar2;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044AA26
+undefined FUN_0044aa26() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0044aa26(void)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   int unaff_ESI;
+    //   int unaff_EDI;
+    //   
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x56);
+    //   *(undefined4 *)(unaff_EDI + -0x5a) = *(undefined4 *)(unaff_ESI + -0x5a);
+    //   *(undefined4 *)(unaff_EDI + -0x56) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x4e);
+    //   *(undefined4 *)(unaff_EDI + -0x52) = *(undefined4 *)(unaff_ESI + -0x52);
+    //   *(undefined4 *)(unaff_EDI + -0x4e) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x46);
+    //   *(undefined4 *)(unaff_EDI + -0x4a) = *(undefined4 *)(unaff_ESI + -0x4a);
+    //   *(undefined4 *)(unaff_EDI + -0x46) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x3e);
+    //   *(undefined4 *)(unaff_EDI + -0x42) = *(undefined4 *)(unaff_ESI + -0x42);
+    //   *(undefined4 *)(unaff_EDI + -0x3e) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x36);
+    //   *(undefined4 *)(unaff_EDI + -0x3a) = *(undefined4 *)(unaff_ESI + -0x3a);
+    //   *(undefined4 *)(unaff_EDI + -0x36) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x2e);
+    //   *(undefined4 *)(unaff_EDI + -0x32) = *(undefined4 *)(unaff_ESI + -0x32);
+    //   *(undefined4 *)(unaff_EDI + -0x2e) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x26);
+    //   *(undefined4 *)(unaff_EDI + -0x2a) = *(undefined4 *)(unaff_ESI + -0x2a);
+    //   *(undefined4 *)(unaff_EDI + -0x26) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x1e);
+    //   *(undefined4 *)(unaff_EDI + -0x22) = *(undefined4 *)(unaff_ESI + -0x22);
+    //   *(undefined4 *)(unaff_EDI + -0x1e) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0x16);
+    //   *(undefined4 *)(unaff_EDI + -0x1a) = *(undefined4 *)(unaff_ESI + -0x1a);
+    //   *(undefined4 *)(unaff_EDI + -0x16) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -0xe);
+    //   *(undefined4 *)(unaff_EDI + -0x12) = *(undefined4 *)(unaff_ESI + -0x12);
+    //   *(undefined4 *)(unaff_EDI + -0xe) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -6);
+    //   *(undefined4 *)(unaff_EDI + -10) = *(undefined4 *)(unaff_ESI + -10);
+    //   *(undefined4 *)(unaff_EDI + -6) = uVar1;
+    //   uVar1 = *(undefined4 *)(unaff_ESI + -2);
+    //   *(char *)(unaff_EDI + -2) = (char)uVar1;
+    //   *(char *)(unaff_EDI + -1) = (char)((uint)uVar1 >> 8);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044AAC3
+undefined FUN_0044aac3() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0044aac3(void)
+    // 
+    // {
+    //   undefined1 uVar1;
+    //   undefined4 uVar2;
+    //   int unaff_ESI;
+    //   int unaff_EDI;
+    //   
+    //   uVar2 = *(undefined4 *)(unaff_ESI + -0x55);
+    //   *(undefined4 *)(unaff_EDI + -0x59) = *(undefined4 *)(unaff_ESI + -0x59);
+    //   *(undefined4 *)(unaff_EDI + -0x55) = uVar2;
+    //   uVar2 = *(undefined4 *)(unaff_ESI + -0x4d);
+    //   *(undefined4 *)(unaff_EDI + -0x51) = *(undefined4 *)(unaff_ESI + -0x51);
+    //   *(undefined4 *)(unaff_EDI + -0x4d) = uVar2;
+    //   uVar2 = *(undefined4 *)(unaff_ESI + -0x45);
+    //   *(undefined4 *)(unaff_EDI + -0x49) = *(undefined4 *)(unaff_ESI + -0x49);
+    //   *(undefined4 *)(unaff_EDI + -0x45) = uVar2;
+    //   uVar2 = *(undefined4 *)(unaff_ESI + -0x3d);
+    //   *(undefined4 *)(unaff_EDI + -0x41) = *(undefined4 *)(unaff_ESI + -0x41);
+    //   *(undefined4 *)(unaff_EDI + -0x3d) = uVar2;
+    //   uVar2 = *(undefined4 *)(unaff_ESI + -0x35);
+    //   *(undefined4 *)(unaff_EDI + -0x39) = *(undefined4 *)(unaff_ESI + -0x39);
+    //   *(undefined4 *)(unaff_EDI + -0x35) = uVar2;
+    //   uVar2 = *(undefined4 *)(unaff_ESI + -0x2d);
+    //   *(undefined4 *)(unaff_EDI + -0x31) = *(undefined4 *)(unaff_ESI + -0x31);
+    //   *(undefined4 *)(unaff_EDI + -0x2d) = uVar2;
+    //   uVar2 = *(undefined4 *)(unaff_ESI + -0x25);
+    //   *(undefined4 *)(unaff_EDI + -0x29) = *(undefined4 *)(unaff_ESI + -0x29);
+    //   *(undefined4 *)(unaff_EDI + -0x25) = uVar2;
+    //   uVar2 = *(undefined4 *)(unaff_ESI + -0x1d);
+    //   *(undefined4 *)(unaff_EDI + -0x21) = *(undefined4 *)(unaff_ESI + -0x21);
+    //   *(undefined4 *)(unaff_EDI + -0x1d) = uVar2;
+    //   uVar2 = *(undefined4 *)(unaff_ESI + -0x15);
+    //   *(undefined4 *)(unaff_EDI + -0x19) = *(undefined4 *)(unaff_ESI + -0x19);
+    //   *(undefined4 *)(unaff_EDI + -0x15) = uVar2;
+    //   uVar2 = *(undefined4 *)(unaff_ESI + -0xd);
+    //   *(undefined4 *)(unaff_EDI + -0x11) = *(undefined4 *)(unaff_ESI + -0x11);
+    //   *(undefined4 *)(unaff_EDI + -0xd) = uVar2;
+    //   uVar2 = *(undefined4 *)(unaff_ESI + -5);
+    //   uVar1 = *(undefined1 *)(unaff_ESI + -1);
+    //   *(undefined4 *)(unaff_EDI + -9) = *(undefined4 *)(unaff_ESI + -9);
+    //   *(undefined4 *)(unaff_EDI + -5) = uVar2;
+    //   *(undefined1 *)(unaff_EDI + -1) = uVar1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044AB5D
+undefined x_StandardMemCopy() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void _x_StandardMemCopy(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   int in_ECX;
+    //   uint uVar2;
+    //   uint uVar3;
+    //   undefined4 *unaff_ESI;
+    //   undefined4 *puVar4;
+    //   undefined4 *unaff_EDI;
+    //   undefined4 *puVar5;
+    //   
+    //   uVar2 = -(int)unaff_EDI & 3;
+    //   *unaff_EDI = *unaff_ESI;
+    //   uVar1 = in_ECX - uVar2 & 3;
+    //   puVar4 = (undefined4 *)((int)unaff_ESI + uVar2);
+    //   puVar5 = (undefined4 *)((int)unaff_EDI + uVar2);
+    //   for (uVar3 = in_ECX - uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //     *puVar5 = *puVar4;
+    //     puVar4 = puVar4 + 1;
+    //     puVar5 = puVar5 + 1;
+    //   }
+    //   *(undefined4 *)((uVar1 - 4) + (int)puVar5) = *(undefined4 *)((uVar1 - 4) + (int)puVar4);
+    //   return;
+    // }
+    // 
+    // 
+}
+

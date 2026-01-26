@@ -1,0 +1,811 @@
+// Auto-generated decompiler unit: asprite.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/asprite.cpp
+#include "../include/common.h"
+
+// Offset: 0x0041AD20
+undefined RGE_Active_Sprite(RGE_Active_Sprite* this_, RGE_Sprite* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Active_Sprite::RGE_Active_Sprite(class RGE_Sprite *) */
+    // 
+    // void __thiscall RGE_Active_Sprite::RGE_Active_Sprite(RGE_Active_Sprite *this,RGE_Sprite *param_1)
+    // 
+    // {
+    //   this->sprite = param_1;
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->type = '\x01';
+    //   this->offset_x = 0;
+    //   this->offset_y = 0;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041AD60
+undefined RGE_Active_Sprite(RGE_Active_Sprite* this_, int param_2, RGE_Sprite** param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Active_Sprite::RGE_Active_Sprite(int,class RGE_Sprite * *) */
+    // 
+    // RGE_Active_Sprite * __thiscall
+    // RGE_Active_Sprite::RGE_Active_Sprite(RGE_Active_Sprite *this,int param_1,RGE_Sprite **param_2)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   iVar1 = param_1;
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->type = '\x01';
+    //   rge_read(param_1,&param_1,2);
+    //   if ((short)param_1 < 0) {
+    //     this->sprite = (RGE_Sprite *)0x0;
+    //   }
+    //   else {
+    //     this->sprite = param_2[(short)param_1];
+    //   }
+    //   rge_read(iVar1,&this->offset_x,4);
+    //   rge_read(iVar1,&this->offset_y,4);
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041ADD0
+void RGE_Active_Sprite(RGE_Active_Sprite* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall RGE_Active_Sprite::~RGE_Active_Sprite(void) */
+    // 
+    // void __thiscall RGE_Active_Sprite::~RGE_Active_Sprite(RGE_Active_Sprite *this)
+    // 
+    // {
+    //   this->_padding_ = (int)&_vftable_;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041ADE0
+void RGE_Active_Animated_Sprite::set_offset(long param_1, long param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Active_Sprite::set_offset(long,long) */
+    // 
+    // void __thiscall RGE_Active_Sprite::set_offset(RGE_Active_Sprite *this,long param_1,long param_2)
+    // 
+    // {
+    //   this->offset_x = param_1;
+    //   this->offset_y = param_2;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041AE00
+void RGE_Active_Sprite::save(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Active_Sprite::save(int) */
+    // 
+    // void __thiscall RGE_Active_Sprite::save(RGE_Active_Sprite *this,int param_1)
+    // 
+    // {
+    //   rge_write(param_1,&this->type,1);
+    //   rge_write(param_1,&this->sprite->id,2);
+    //   rge_write(param_1,&this->offset_x,4);
+    //   rge_write(param_1,&this->offset_y,4);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041AE50
+void RGE_Active_Sprite::update(float param_1, float param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Active_Sprite::update(float,float) */
+    // 
+    // void __thiscall RGE_Active_Sprite::update(RGE_Active_Sprite *this,float param_1,float param_2)
+    // 
+    // {
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041AE60
+void RGE_Active_Sprite::draw(short param_1, long param_2, long param_3, long param_4, long param_5, RGE_Color_Table* param_6, TDrawArea* param_7) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Active_Sprite::draw(short,long,long,long,long,class
+    //    RGE_Color_Table *,class TDrawArea *) */
+    // 
+    // void __thiscall
+    // RGE_Active_Sprite::draw
+    //           (RGE_Active_Sprite *this,short param_1,long param_2,long param_3,long param_4,long param_5
+    //           ,RGE_Color_Table *param_6,TDrawArea *param_7)
+    // 
+    // {
+    //   RGE_Sprite::draw(this->sprite,(int)param_1,0,param_2 + this->offset_x,param_3 + this->offset_y,
+    //                    param_4 + this->offset_x,param_5 + this->offset_y,param_6,param_7,'\0');
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041AEB0
+void RGE_Active_Sprite::normal_draw(short param_1, long param_2, long param_3, RGE_Color_Table* param_4, TDrawArea* param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Active_Sprite::normal_draw(short,long,long,class
+    //    RGE_Color_Table *,class TDrawArea *) */
+    // 
+    // void __thiscall
+    // RGE_Active_Sprite::normal_draw
+    //           (RGE_Active_Sprite *this,short param_1,long param_2,long param_3,RGE_Color_Table *param_4,
+    //           TDrawArea *param_5)
+    // 
+    // {
+    //   RGE_Sprite::normal_draw
+    //             (this->sprite,(int)param_1,0,this->offset_x + param_2,this->offset_y + param_3,param_4,
+    //              param_5);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041AEF0
+void RGE_Active_Sprite::shadow_draw(short param_1, long param_2, long param_3, RGE_Color_Table* param_4, TDrawArea* param_5, uchar param_6) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Active_Sprite::shadow_draw(short,long,long,class
+    //    RGE_Color_Table *,class TDrawArea *,unsigned char) */
+    // 
+    // void __thiscall
+    // RGE_Active_Sprite::shadow_draw
+    //           (RGE_Active_Sprite *this,short param_1,long param_2,long param_3,RGE_Color_Table *param_4,
+    //           TDrawArea *param_5,uchar param_6)
+    // 
+    // {
+    //   RGE_Sprite::shadow_draw
+    //             (this->sprite,(int)param_1,0,this->offset_x + param_2,this->offset_y + param_3,param_4,
+    //              param_5,param_6);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041AF30
+short RGE_Active_Sprite::what_frame() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual short __thiscall RGE_Active_Sprite::what_frame(void) */
+    // 
+    // short __thiscall RGE_Active_Sprite::what_frame(RGE_Active_Sprite *this)
+    // 
+    // {
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041AF40
+void RGE_Active_Sprite::set_frame(short param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Active_Sprite::set_frame(short) */
+    // 
+    // void __thiscall RGE_Active_Sprite::set_frame(RGE_Active_Sprite *this,short param_1)
+    // 
+    // {
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041AF50
+uchar RGE_Active_Sprite::is_animating() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual unsigned char __thiscall RGE_Active_Sprite::is_animating(void) */
+    // 
+    // uchar __thiscall RGE_Active_Sprite::is_animating(RGE_Active_Sprite *this)
+    // 
+    // {
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041AF60
+uchar RGE_Active_Sprite::frame_passed(short param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual unsigned char __thiscall RGE_Active_Sprite::frame_passed(short) */
+    // 
+    // uchar __thiscall RGE_Active_Sprite::frame_passed(RGE_Active_Sprite *this,short param_1)
+    // 
+    // {
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041AF70
+uchar RGE_Active_Sprite::looped() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual unsigned char __thiscall RGE_Active_Sprite::looped(void) */
+    // 
+    // uchar __thiscall RGE_Active_Sprite::looped(RGE_Active_Sprite *this)
+    // 
+    // {
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041AF80
+short RGE_Active_Sprite::get_facetindex(short param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: facet_index */
+    // /* public: virtual short __thiscall RGE_Active_Sprite::get_facetindex(short) */
+    // 
+    // short __thiscall RGE_Active_Sprite::get_facetindex(RGE_Active_Sprite *this,short param_1)
+    // 
+    // {
+    //   long facet_index;
+    //   long local_4;
+    //   
+    //   local_4 = 0;
+    //   RGE_Sprite::get_facetindex(this->sprite,(int)param_1,0,&local_4);
+    //   return (short)local_4;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041AFB0
+uchar RGE_Active_Sprite::get_frame(short* param_1, short* param_2, short* param_3, short* param_4, long param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual unsigned char __thiscall RGE_Active_Sprite::get_frame(short &,short &,short
+    //    &,short &,long) */
+    // 
+    // uchar __thiscall
+    // RGE_Active_Sprite::get_frame
+    //           (RGE_Active_Sprite *this,short *param_1,short *param_2,short *param_3,short *param_4,
+    //           long param_5)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   iVar1 = RGE_Sprite::get_frame(this->sprite,param_1,param_2,param_3,param_4,param_5,0);
+    //   return (uchar)iVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041AFE0
+uchar get_lowest_draw_level(RGE_Active_Sprite* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall RGE_Active_Sprite::get_lowest_draw_level(void) */
+    // 
+    // uchar __thiscall RGE_Active_Sprite::get_lowest_draw_level(RGE_Active_Sprite *this)
+    // 
+    // {
+    //   uchar uVar1;
+    //   
+    //   if (this->sprite != (RGE_Sprite *)0x0) {
+    //     uVar1 = RGE_Sprite::get_lowest_draw_level(this->sprite);
+    //     return uVar1;
+    //   }
+    //   return '\x14';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041AFF0
+void RGE_Active_Sprite::setToFirstFrame() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Active_Sprite::setToFirstFrame(void) */
+    // 
+    // void __thiscall RGE_Active_Sprite::setToFirstFrame(RGE_Active_Sprite *this)
+    // 
+    // {
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041B000
+int check_for_shadows(RGE_Active_Sprite* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall RGE_Active_Sprite::check_for_shadows(void) */
+    // 
+    // int __thiscall RGE_Active_Sprite::check_for_shadows(RGE_Active_Sprite *this)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   if (this->sprite != (RGE_Sprite *)0x0) {
+    //     iVar1 = RGE_Sprite::check_for_shadows(this->sprite);
+    //     return iVar1;
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041B010
+undefined RGE_Active_Animated_Sprite(RGE_Active_Animated_Sprite* this_, RGE_Sprite* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: tot_time */
+    // /* public: __thiscall RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite(class RGE_Sprite *) */
+    // 
+    // RGE_Active_Animated_Sprite * __thiscall
+    // RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite
+    //           (RGE_Active_Animated_Sprite *this,RGE_Sprite *param_1)
+    // 
+    // {
+    //   float fVar1;
+    //   short sVar2;
+    //   int iVar3;
+    //   short sVar4;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   float10 extraout_ST0;
+    //   float tot_time;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055c988;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   RGE_Active_Sprite::RGE_Active_Sprite((RGE_Active_Sprite *)this,param_1);
+    //   this->_padding_ = (int)&_vftable_;
+    //   *(undefined1 *)&this->_padding_ = 2;
+    //   this->last_frame = 0;
+    //   local_4 = 0;
+    //   fVar1 = *(float *)(this->_padding_ + 0x68);
+    //   this->animate_interval = fVar1;
+    //   if (fVar1 < 0.001) {
+    //     this->animate_interval = 0.001;
+    //   }
+    //   if ((*(byte *)(this->_padding_ + 0x70) & 4) == 0) {
+    //     this->frame = 0;
+    //   }
+    //   else {
+    //     debug_rand(s_C__msdev_work_age1_x1_asprite_cp,0xb7);
+    //     iVar3 = this->_padding_;
+    //     sVar4 = __ftol();
+    //     this->frame = sVar4;
+    //     sVar2 = *(short *)(iVar3 + 0x5e);
+    //     if (sVar2 <= sVar4) {
+    //       sVar2 = sVar2 + -1;
+    //       this->frame = sVar2;
+    //       this->animate_interval =
+    //            (float)(extraout_ST0 - (float10)(int)sVar2 * (float10)*(float *)(iVar3 + 0x68));
+    //     }
+    //     this->last_frame = this->frame;
+    //   }
+    //   this->animate_last = 0.0;
+    //   this->frame_changed = '\0';
+    //   this->frame_looped = '\0';
+    //   this->animate_flag = '\x01';
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041B140
+undefined RGE_Active_Animated_Sprite(RGE_Active_Animated_Sprite* this_, int param_2, RGE_Sprite** param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite(int,class RGE_Sprite *
+    //    *) */
+    // 
+    // RGE_Active_Animated_Sprite * __thiscall
+    // RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite
+    //           (RGE_Active_Animated_Sprite *this,int param_1,RGE_Sprite **param_2)
+    // 
+    // {
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055c9a8;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   RGE_Active_Sprite::RGE_Active_Sprite((RGE_Active_Sprite *)this,param_1,param_2);
+    //   local_4 = 0;
+    //   this->_padding_ = (int)&_vftable_;
+    //   *(undefined1 *)&this->_padding_ = 2;
+    //   rge_read(param_1,&this->frame,2);
+    //   rge_read(param_1,&this->animate_interval,4);
+    //   rge_read(param_1,&this->animate_last,4);
+    //   rge_read(param_1,&this->last_frame,2);
+    //   rge_read(param_1,&this->frame_changed,1);
+    //   rge_read(param_1,&this->frame_looped,1);
+    //   rge_read(param_1,&this->animate_flag,1);
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041B200
+void RGE_Active_Animated_Sprite(RGE_Active_Animated_Sprite* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall RGE_Active_Animated_Sprite::~RGE_Active_Animated_Sprite(void) */
+    // 
+    // void __thiscall
+    // RGE_Active_Animated_Sprite::~RGE_Active_Animated_Sprite(RGE_Active_Animated_Sprite *this)
+    // 
+    // {
+    //   this->_padding_ = (int)&_vftable_;
+    //   RGE_Active_Sprite::~RGE_Active_Sprite((RGE_Active_Sprite *)this);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041B210
+void RGE_Active_Animated_Sprite::save(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Active_Animated_Sprite::save(int) */
+    // 
+    // void __thiscall RGE_Active_Animated_Sprite::save(RGE_Active_Animated_Sprite *this,int param_1)
+    // 
+    // {
+    //   RGE_Active_Sprite::save((RGE_Active_Sprite *)this,param_1);
+    //   rge_write(param_1,&this->frame,2);
+    //   rge_write(param_1,&this->animate_interval,4);
+    //   rge_write(param_1,&this->animate_last,4);
+    //   rge_write(param_1,&this->last_frame,2);
+    //   rge_write(param_1,&this->frame_changed,1);
+    //   rge_write(param_1,&this->frame_looped,1);
+    //   rge_write(param_1,&this->animate_flag,1);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041B290
+void RGE_Active_Animated_Sprite::update(float param_1, float param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Active_Animated_Sprite::update(float,float) */
+    // 
+    // void __thiscall
+    // RGE_Active_Animated_Sprite::update(RGE_Active_Animated_Sprite *this,float param_1,float param_2)
+    // 
+    // {
+    //   int iVar1;
+    //   float fVar2;
+    //   ushort uVar3;
+    //   short sVar4;
+    //   float10 extraout_ST0;
+    //   
+    //   iVar1 = this->_padding_;
+    //   this->frame_changed = '\0';
+    //   this->frame_looped = '\0';
+    //   if ((iVar1 != 0) && (this->animate_flag != '\0')) {
+    //     if (*(short *)(iVar1 + 0x5e) <= this->frame) {
+    //       this->frame = *(short *)(iVar1 + 0x5e) + -1;
+    //     }
+    //     if (((*(byte *)(iVar1 + 0x70) & 1) != 0) &&
+    //        (fVar2 = param_1 + this->animate_last, this->animate_last = fVar2,
+    //        this->animate_interval <= fVar2)) {
+    //       this->frame_changed = '\x01';
+    //       this->last_frame = this->frame;
+    //       uVar3 = __ftol();
+    //       this->animate_last =
+    //            (float)(extraout_ST0 - (float10)(int)(short)uVar3 * (float10)this->animate_interval);
+    //       if (((0.0 < param_2) || (*(float *)(iVar1 + 100) == 0.0)) &&
+    //          (this->frame = this->frame + (uVar3 & 0xff), *(short *)(iVar1 + 0x5e) <= this->frame)) {
+    //         this->frame_looped = '\x01';
+    //       }
+    //       if ((*(float *)(iVar1 + 100) == 0.0) || (param_2 == 0.0)) {
+    //         this->animate_interval = *(float *)(iVar1 + 0x68);
+    //       }
+    //       else {
+    //         this->animate_interval = (*(float *)(iVar1 + 0x68) * *(float *)(iVar1 + 100)) / param_2;
+    //       }
+    //       if (this->animate_interval < 0.001) {
+    //         this->animate_interval = 0.001;
+    //       }
+    //       if (this->frame_looped == '\0') {
+    //         return;
+    //       }
+    //       if ((*(float *)(iVar1 + 0x6c) <= 0.0) || (this->animate_flag == '\x02')) {
+    //         this->animate_flag = '\x01';
+    //         sVar4 = *(short *)(iVar1 + 0x5e);
+    //         if (sVar4 <= this->frame) {
+    //           do {
+    //             this->frame = this->frame - sVar4;
+    //             sVar4 = *(short *)(iVar1 + 0x5e);
+    //           } while (sVar4 <= this->frame);
+    //         }
+    //       }
+    //       else {
+    //         this->animate_interval =
+    //              *(float *)(iVar1 + 0x6c) -
+    //              (float)((int)this->frame - (int)*(short *)(iVar1 + 0x5e)) * *(float *)(iVar1 + 0x68);
+    //         sVar4 = *(short *)(iVar1 + 0x5e);
+    //         this->animate_flag = '\x02';
+    //         this->frame_looped = '\0';
+    //         this->frame = sVar4 + -1;
+    //       }
+    //     }
+    //   }
+    //   if ((this->frame_looped != '\0') && ((*(byte *)(iVar1 + 0x70) & 8) != 0)) {
+    //     this->animate_flag = '\0';
+    //     this->frame = *(short *)(iVar1 + 0x5e) + -1;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041B430
+void RGE_Active_Animated_Sprite::draw(short param_1, long param_2, long param_3, long param_4, long param_5, RGE_Color_Table* param_6, TDrawArea* param_7) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Active_Animated_Sprite::draw(short,long,long,long,long,class
+    //    RGE_Color_Table *,class TDrawArea *) */
+    // 
+    // void __thiscall
+    // RGE_Active_Animated_Sprite::draw
+    //           (RGE_Active_Animated_Sprite *this,short param_1,long param_2,long param_3,long param_4,
+    //           long param_5,RGE_Color_Table *param_6,TDrawArea *param_7)
+    // 
+    // {
+    //   RGE_Sprite::draw((RGE_Sprite *)this->_padding_,(int)param_1,(int)this->frame,param_2,param_3,
+    //                    param_4,param_5,param_6,param_7,'\0');
+    //   if (this->frame_changed != '\0') {
+    //     if (fog_next_shape == 0) {
+    //       RGE_Sprite::play_sound((RGE_Sprite *)this->_padding_,this->last_frame,this->frame,param_1);
+    //     }
+    //     this->frame_changed = '\0';
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041B4A0
+void RGE_Active_Animated_Sprite::normal_draw(short param_1, long param_2, long param_3, RGE_Color_Table* param_4, TDrawArea* param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Active_Animated_Sprite::normal_draw(short,long,long,class
+    //    RGE_Color_Table *,class TDrawArea *) */
+    // 
+    // void __thiscall
+    // RGE_Active_Animated_Sprite::normal_draw
+    //           (RGE_Active_Animated_Sprite *this,short param_1,long param_2,long param_3,
+    //           RGE_Color_Table *param_4,TDrawArea *param_5)
+    // 
+    // {
+    //   RGE_Sprite::normal_draw
+    //             ((RGE_Sprite *)this->_padding_,(int)param_1,(int)this->frame,param_2,param_3,param_4,
+    //              param_5);
+    //   if (this->frame_changed != '\0') {
+    //     RGE_Sprite::play_sound((RGE_Sprite *)this->_padding_,this->last_frame,this->frame,param_1);
+    //     this->frame_changed = '\0';
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041B4F0
+void RGE_Active_Animated_Sprite::shadow_draw(short param_1, long param_2, long param_3, RGE_Color_Table* param_4, TDrawArea* param_5, uchar param_6) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Active_Animated_Sprite::shadow_draw(short,long,long,class
+    //    RGE_Color_Table *,class TDrawArea *,unsigned char) */
+    // 
+    // void __thiscall
+    // RGE_Active_Animated_Sprite::shadow_draw
+    //           (RGE_Active_Animated_Sprite *this,short param_1,long param_2,long param_3,
+    //           RGE_Color_Table *param_4,TDrawArea *param_5,uchar param_6)
+    // 
+    // {
+    //   RGE_Sprite::shadow_draw
+    //             ((RGE_Sprite *)this->_padding_,(int)param_1,(int)this->frame,param_2,param_3,param_4,
+    //              param_5,param_6);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041B520
+short RGE_Active_Animated_Sprite::what_frame() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual short __thiscall RGE_Active_Animated_Sprite::what_frame(void) */
+    // 
+    // short __thiscall RGE_Active_Animated_Sprite::what_frame(RGE_Active_Animated_Sprite *this)
+    // 
+    // {
+    //   return this->frame;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041B530
+uchar RGE_Active_Animated_Sprite::is_animating() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual unsigned char __thiscall RGE_Active_Animated_Sprite::is_animating(void) */
+    // 
+    // uchar __thiscall RGE_Active_Animated_Sprite::is_animating(RGE_Active_Animated_Sprite *this)
+    // 
+    // {
+    //   uchar uVar1;
+    //   
+    //   if ((this->animate_flag == '\0') || (uVar1 = '\x01', (*(byte *)(this->_padding_ + 0x70) & 1) == 0)
+    //      ) {
+    //     uVar1 = '\0';
+    //   }
+    //   return uVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041B550
+void RGE_Active_Animated_Sprite::set_frame(short param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Active_Animated_Sprite::set_frame(short) */
+    // 
+    // void __thiscall
+    // RGE_Active_Animated_Sprite::set_frame(RGE_Active_Animated_Sprite *this,short param_1)
+    // 
+    // {
+    //   this->frame = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041B560
+uchar RGE_Active_Animated_Sprite::frame_passed(short param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual unsigned char __thiscall RGE_Active_Animated_Sprite::frame_passed(short) */
+    // 
+    // uchar __thiscall
+    // RGE_Active_Animated_Sprite::frame_passed(RGE_Active_Animated_Sprite *this,short param_1)
+    // 
+    // {
+    //   if ((this->frame_changed != '\0') &&
+    //      ((this->frame_looped != '\0' || ((param_1 <= this->frame && (this->last_frame < param_1)))))) {
+    //     return '\x01';
+    //   }
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041B590
+uchar RGE_Active_Animated_Sprite::looped() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual unsigned char __thiscall RGE_Active_Animated_Sprite::looped(void) */
+    // 
+    // uchar __thiscall RGE_Active_Animated_Sprite::looped(RGE_Active_Animated_Sprite *this)
+    // 
+    // {
+    //   return this->frame_looped;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041B5A0
+short RGE_Active_Animated_Sprite::get_facetindex(short param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: facet_index */
+    // /* public: virtual short __thiscall RGE_Active_Animated_Sprite::get_facetindex(short) */
+    // 
+    // short __thiscall
+    // RGE_Active_Animated_Sprite::get_facetindex(RGE_Active_Animated_Sprite *this,short param_1)
+    // 
+    // {
+    //   long facet_index;
+    //   long local_4;
+    //   
+    //   local_4 = 0;
+    //   RGE_Sprite::get_facetindex((RGE_Sprite *)this->_padding_,(int)param_1,(int)this->frame,&local_4);
+    //   return (short)local_4;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041B5D0
+uchar RGE_Active_Animated_Sprite::get_frame(short* param_1, short* param_2, short* param_3, short* param_4, long param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual unsigned char __thiscall RGE_Active_Animated_Sprite::get_frame(short &,short
+    //    &,short &,short &,long) */
+    // 
+    // uchar __thiscall
+    // RGE_Active_Animated_Sprite::get_frame
+    //           (RGE_Active_Animated_Sprite *this,short *param_1,short *param_2,short *param_3,
+    //           short *param_4,long param_5)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   iVar1 = RGE_Sprite::get_frame
+    //                     ((RGE_Sprite *)this->_padding_,param_1,param_2,param_3,param_4,param_5,
+    //                      (int)this->frame);
+    //   return (uchar)iVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0041B600
+void RGE_Active_Animated_Sprite::setToFirstFrame() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Active_Animated_Sprite::setToFirstFrame(void) */
+    // 
+    // void __thiscall RGE_Active_Animated_Sprite::setToFirstFrame(RGE_Active_Animated_Sprite *this)
+    // 
+    // {
+    //   this->frame_changed = '\x01';
+    //   this->last_frame = this->frame;
+    //   this->frame = 0;
+    //   return;
+    // }
+    // 
+    // 
+}
+

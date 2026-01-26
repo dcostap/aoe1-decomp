@@ -1,0 +1,582 @@
+// Auto-generated decompiler unit: act_entr.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/act_entr.cpp
+#include "../include/common.h"
+
+// Offset: 0x004023C0
+undefined RGE_Action_Enter(RGE_Action_Enter* this_, int param_2, RGE_Action_Object* param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Action_Enter::RGE_Action_Enter(int,class RGE_Action_Object *) */
+    // 
+    // RGE_Action_Enter * __thiscall
+    // RGE_Action_Enter::RGE_Action_Enter(RGE_Action_Enter *this,int param_1,RGE_Action_Object *param_2)
+    // 
+    // {
+    //   RGE_Action::RGE_Action((RGE_Action *)this,param_1,param_2,1);
+    //   *(undefined ***)this = &_vftable_;
+    //   *(undefined2 *)&this->field_0x4 = 3;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00402410
+undefined RGE_Action_Enter(RGE_Action_Enter* this_, RGE_Action_Object* param_2, RGE_Task* param_3, RGE_Static_Object* param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Action_Enter::RGE_Action_Enter(class RGE_Action_Object *,class RGE_Task
+    //    *,class RGE_Static_Object *) */
+    // 
+    // RGE_Action_Enter * __thiscall
+    // RGE_Action_Enter::RGE_Action_Enter
+    //           (RGE_Action_Enter *this,RGE_Action_Object *param_1,RGE_Task *param_2,
+    //           RGE_Static_Object *param_3)
+    // 
+    // {
+    //   code *pcVar1;
+    //   char cVar2;
+    //   uchar uVar3;
+    //   int iVar4;
+    //   RGE_Action *pRVar5;
+    //   int unaff_EBX;
+    //   int *unaff_FS_OFFSET;
+    //   float fVar6;
+    //   XYPoint dest;
+    //   XYPoint start;
+    //   XYPoint rVal;
+    //   int local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055c138;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = (int)&local_c;
+    //   dest.x = (int)this;
+    //   RGE_Action::RGE_Action((RGE_Action *)this,param_1,1);
+    //   local_4 = 0;
+    //   *(undefined ***)this = &_vftable_;
+    //   *(undefined2 *)&this->field_0x4 = 3;
+    //   *(RGE_Task **)&this->field_0x30 = param_2;
+    //   RGE_Action::set_target_obj((RGE_Action *)this,param_3);
+    //   if (param_3 == (RGE_Static_Object *)0x0) goto LAB_004025d6;
+    //   *(float *)&this->field_0x20 = param_3->world_x;
+    //   *(float *)&this->field_0x24 = param_3->world_y;
+    //   *(float *)&this->field_0x28 = param_3->world_z;
+    //   pcVar1 = *(code **)(param_3->_padding_ + 0x134);
+    //   cVar2 = (*pcVar1)();
+    //   if (cVar2 == '\x02') {
+    //     uVar3 = RGE_Static_Object::more_room(param_3);
+    //     if (uVar3 == '\x01') {
+    //       iVar4 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x8 + 0xc));
+    //       if (iVar4 != 0) goto LAB_004024ad;
+    //     }
+    //     else {
+    // LAB_004024ad:
+    //       iVar4 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x8 + 0xc));
+    //       if (iVar4 != 1) goto LAB_004024bd;
+    //     }
+    // LAB_004024df:
+    //     start.y = __ftol();
+    //     rVal.x = __ftol();
+    //     dest.y = __ftol();
+    //     start.x = __ftol();
+    //     iVar4 = (**(code **)(param_1->_padding_ + 0x1b4))(&start.y,&dest.y,&rVal.y,2,2,1);
+    //     if (iVar4 == 1) {
+    //       *(float *)&this->field_0x20 = (float)unaff_EBX - -0.5;
+    //       rVal.y = (int)(float)dest.x;
+    //       *(float *)&this->field_0x24 = (float)rVal.y - -0.5;
+    //       (**(code **)(local_c + 0x154))((float)unaff_EBX,rVal.y,param_3->world_z,0x3f000000,1);
+    //     }
+    //     else {
+    //       *(float *)&this->field_0x20 = param_3->world_x;
+    //       *(float *)&this->field_0x24 = param_3->world_y;
+    //       (**(code **)(local_c + 0x154))
+    //                 (param_1->_padding_,param_1->_padding_,param_3->world_z,0x3f000000,1);
+    //     }
+    //   }
+    //   else {
+    // LAB_004024bd:
+    //     cVar2 = (*pcVar1)();
+    //     if (cVar2 == '\v') {
+    //       pRVar5 = RGE_Action_List::get_action((RGE_Action_List *)param_3[2].unitAIValue);
+    //       if (pRVar5->target2ID == 0) goto LAB_004024df;
+    //     }
+    //     cVar2 = (*pcVar1)();
+    //     if (cVar2 == '\v') {
+    //       pRVar5 = RGE_Action_List::get_action((RGE_Action_List *)param_3[2].unitAIValue);
+    //       fVar6 = RGE_Action::targetX(pRVar5);
+    //       *(float *)&this->field_0x20 = fVar6;
+    //       pRVar5 = RGE_Action_List::get_action((RGE_Action_List *)param_3[2].unitAIValue);
+    //       fVar6 = RGE_Action::targetY(pRVar5);
+    //       *(float *)&this->field_0x24 = fVar6;
+    //     }
+    //   }
+    // LAB_004025d6:
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004025F0
+void RGE_Action_Enter(RGE_Action_Enter* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall RGE_Action_Enter::~RGE_Action_Enter(void) */
+    // 
+    // void __thiscall RGE_Action_Enter::~RGE_Action_Enter(RGE_Action_Enter *this)
+    // 
+    // {
+    //   *(undefined ***)this = &_vftable_;
+    //   RGE_Action::~RGE_Action((RGE_Action *)this);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00402600
+void RGE_Action_Enter::first_in_stack(uchar param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Action_Enter::first_in_stack(unsigned char) */
+    // 
+    // void __thiscall RGE_Action_Enter::first_in_stack(RGE_Action_Enter *this,uchar param_1)
+    // 
+    // {
+    //   (**(code **)(*(int *)this + 0x5c))(4);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00402610
+void RGE_Action_Enter::set_state(uchar param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual void __thiscall RGE_Action_Enter::set_state(unsigned char) */
+    // 
+    // void __thiscall RGE_Action_Enter::set_state(RGE_Action_Enter *this,uchar param_1)
+    // 
+    // {
+    //   RGE_Action_Move_To *this_00;
+    //   RGE_Action *this_01;
+    //   undefined4 unaff_ESI;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_c = *unaff_FS_OFFSET;
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055c15b;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   RGE_Action_List::delete_list(*(RGE_Action_List **)&this->field_0x34);
+    //   this->field_0xc = param_1;
+    //   switch(param_1) {
+    //   case '\x02':
+    //     *(undefined4 *)&this->field_0x2c = 0x3f800000;
+    //   case '\x01':
+    //   case '\r':
+    //   case '\x0e':
+    //     (**(code **)(**(int **)&this->field_0x8 + 0x38))
+    //               (*(undefined4 *)((*(int **)&this->field_0x8)[2] + 0x18));
+    //   default:
+    //     *unaff_FS_OFFSET = local_c;
+    //     return;
+    //   case '\x04':
+    //     break;
+    //   }
+    //   this_00 = (RGE_Action_Move_To *)operator_new(0x44);
+    //   local_4 = 0;
+    //   if (this_00 == (RGE_Action_Move_To *)0x0) {
+    //     this_01 = (RGE_Action *)0x0;
+    //   }
+    //   else {
+    //     this_01 = (RGE_Action *)
+    //               RGE_Action_Move_To::RGE_Action_Move_To
+    //                         (this_00,*(RGE_Action_Object **)&this->field_0x8,*(float *)&this->field_0x20
+    //                          ,*(float *)&this->field_0x24,*(float *)&this->field_0x28,
+    //                          *(float *)(*(int *)&this->field_0x30 + 0x24),
+    //                          *(RGE_Sprite **)(*(int *)&this->field_0x30 + 0x34));
+    //   }
+    //   local_4 = 0xffffffff;
+    //   if (this_01 == (RGE_Action *)0x0) {
+    //     (**(code **)(*(int *)this + 0x5c))(0xd);
+    //     *unaff_FS_OFFSET = unaff_ESI;
+    //     return;
+    //   }
+    //   RGE_Action_List::add_action(*(RGE_Action_List **)&this->field_0x34,this_01);
+    //   RGE_Action::setSubAction(this_01,'\x01');
+    //   *unaff_FS_OFFSET = local_c;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040270E
+undefined FUN_0040270e() {
+    // --- Ghidra decompiler output ---
+    // 
+    // undefined4 FUN_0040270e(void)
+    // 
+    // {
+    //   int *piVar1;
+    //   float fVar2;
+    //   undefined1 uVar3;
+    //   uchar uVar4;
+    //   undefined4 in_EAX;
+    //   int iVar5;
+    //   char *pcVar6;
+    //   RGE_Static_Object *pRVar7;
+    //   uint uVar8;
+    //   RGE_Action *pRVar9;
+    //   undefined4 in_ECX;
+    //   int *piVar10;
+    //   int in_EDX;
+    //   int unaff_ESI;
+    //   float fVar12;
+    //   int iStack_20;
+    //   int iStack_1c;
+    //   undefined4 uStack_18;
+    //   undefined4 uStack_14;
+    //   undefined4 uStack_10;
+    //   undefined4 uStack_c;
+    //   undefined1 auStack_8 [8];
+    //   char cVar11;
+    //   
+    //   uVar3 = in((short)in_EDX);
+    //   iVar5 = CONCAT31((int3)((uint)in_EAX >> 8),uVar3);
+    //   cVar11 = (char)((uint)in_ECX >> 8) + (char)((uint)(iVar5 + 1) >> 8);
+    //   piVar10 = (int *)CONCAT22((short)((uint)in_ECX >> 0x10),CONCAT11(cVar11,(char)in_ECX));
+    //   *(char *)(unaff_ESI + 0x26) = *(char *)(unaff_ESI + 0x26) + (char)in_EDX;
+    //   iVar5 = iVar5 + 3;
+    //   pcVar6 = (char *)(CONCAT22((short)((uint)iVar5 >> 0x10),
+    //                              CONCAT11((char)((uint)iVar5 >> 8) + cVar11,(char)iVar5)) + 2);
+    //   *pcVar6 = *pcVar6 + (char)pcVar6;
+    //   *(char **)(pcVar6 + in_EDX) = pcVar6 + *(int *)(pcVar6 + in_EDX);
+    //   if ((piVar10[6] == -1) ||
+    //      (pRVar7 = RGE_Game_World::object
+    //                          (*(RGE_Game_World **)(*(int *)(piVar10[2] + 0xc) + 0x3c),piVar10[6]),
+    //      pRVar7 != (RGE_Static_Object *)0x0)) {
+    //     if ((piVar10[7] != -1) &&
+    //        (pRVar7 = RGE_Game_World::object
+    //                            (*(RGE_Game_World **)(*(int *)(piVar10[2] + 0xc) + 0x3c),piVar10[7]),
+    //        pRVar7 == (RGE_Static_Object *)0x0)) {
+    //       (**(code **)(*piVar10 + 0x58))(0);
+    //     }
+    //     iVar5 = piVar10[4];
+    //     if ((iVar5 == 0) ||
+    //        ((*(byte *)(iVar5 + 0x48) < 3 &&
+    //         ((iVar5 == 0 ||
+    //          (iVar5 = (**(code **)(**(int **)(piVar10[2] + 0xc) + 0x1c))
+    //                             ((int)*(short *)(*(int *)(iVar5 + 0xc) + 0x4a)), iVar5 != 0)))))) {
+    //       switch((char)piVar10[3]) {
+    //       case '\x01':
+    //         return 1;
+    //       case '\x02':
+    //         fVar12 = (float)piVar10[0xb] -
+    //                  ((RGE_Static_Object *)piVar10[2])->owner->world->world_time_delta_seconds;
+    //         piVar10[0xb] = (int)fVar12;
+    //         if (fVar12 <= 0.0) {
+    //           fVar12 = RGE_Static_Object::distance_to_object
+    //                              ((RGE_Static_Object *)piVar10[2],(RGE_Static_Object *)piVar10[4]);
+    //           if (*(float *)(piVar10[0xc] + 0x24) < fVar12 - 1.0) {
+    //             cVar11 = (**(code **)(*(int *)piVar10[4] + 0x134))();
+    //             if (cVar11 != '\x02') {
+    //               cVar11 = (**(code **)(*(int *)piVar10[4] + 0x134))();
+    //               if (cVar11 == '\v') {
+    //                 pRVar9 = RGE_Action_List::get_action(*(RGE_Action_List **)(piVar10[4] + 0x184));
+    //                 fVar12 = RGE_Action::targetX(pRVar9);
+    //                 piVar10[8] = (int)fVar12;
+    //                 pRVar9 = RGE_Action_List::get_action(*(RGE_Action_List **)(piVar10[4] + 0x184));
+    //                 fVar12 = RGE_Action::targetY(pRVar9);
+    //                 piVar10[9] = (int)fVar12;
+    //               }
+    //               (**(code **)(*piVar10 + 0x5c))(4);
+    //               return 0;
+    //             }
+    //             piVar1 = (int *)piVar10[2];
+    //             uStack_10 = __ftol();
+    //             uStack_c = __ftol();
+    //             uStack_18 = __ftol();
+    //             uStack_14 = __ftol();
+    //             iVar5 = (**(code **)(*piVar1 + 0x1b4))(&uStack_10,&uStack_18,auStack_8,2,2,1);
+    //             if (iVar5 == 1) {
+    //               fVar12 = (float)iStack_20 - -0.5;
+    //               fVar2 = (float)iStack_1c - -0.5;
+    //               if (((float)piVar10[8] == fVar12) && (fVar2 == (float)piVar10[9])) {
+    //                 piVar10[8] = *(int *)(piVar10[4] + 0x38);
+    //                 piVar10[9] = *(int *)(piVar10[4] + 0x3c);
+    //                 (**(code **)(*piVar10 + 0x5c))(4);
+    //                 return 0;
+    //               }
+    //               piVar10[8] = (int)fVar12;
+    //               piVar10[9] = (int)fVar2;
+    //               (**(code **)(*(int *)piVar10[4] + 0x154))
+    //                         ((float)iStack_20,(float)iStack_1c,((int *)piVar10[4])[0x10],0,1);
+    //               (**(code **)(*piVar10 + 0x5c))(4);
+    //               return 0;
+    //             }
+    //             piVar1 = (int *)piVar10[4];
+    //             piVar10[8] = piVar1[0xe];
+    //             iVar5 = *piVar1;
+    //             piVar10[9] = piVar1[0xf];
+    //             (**(code **)(iVar5 + 0x154))
+    //                       (*(undefined4 *)(piVar10[2] + 0x38),*(undefined4 *)(piVar10[2] + 0x3c),
+    //                        piVar1[0x10],0x3f000000,1);
+    //             (**(code **)(*piVar10 + 0x5c))(4);
+    //             return 0;
+    //           }
+    //           (**(code **)(*(int *)piVar10[2] + 0xd0))(piVar10[4]);
+    // LAB_004028ef:
+    //           if ((char)piVar10[0xf] == '\0') {
+    //             iVar5 = ((int *)piVar10[2])[1];
+    //             (**(code **)(*(int *)piVar10[2] + 0x148))(iVar5,iVar5,0x1fa,0x269,0,0);
+    //           }
+    //           (**(code **)(*piVar10 + 0x5c))(1);
+    //           return 2;
+    //         }
+    //       default:
+    // switchD_004027fc_caseD_3:
+    //         return 0;
+    //       case '\x04':
+    //         goto switchD_004027fc_caseD_4;
+    //       case '\r':
+    //         iVar5 = ((int *)piVar10[2])[1];
+    //         (**(code **)(*(int *)piVar10[2] + 0x148))(iVar5,iVar5,0x1f9,0x269,0,0);
+    //         return 3;
+    //       }
+    //     }
+    //   }
+    //   iVar5 = *piVar10;
+    //   (**(code **)(iVar5 + 0x5c))(1);
+    //   (**(code **)(iVar5 + 0x54))(0);
+    //   iVar5 = ((int *)piVar10[2])[1];
+    //   (**(code **)(*(int *)piVar10[2] + 0x148))(iVar5,iVar5,0x1fb,0x269,0,0);
+    //   return 4;
+    // switchD_004027fc_caseD_4:
+    //   if (((RGE_Static_Object *)piVar10[4] != (RGE_Static_Object *)0x0) &&
+    //      (uVar4 = RGE_Static_Object::is_dying((RGE_Static_Object *)piVar10[4]), uVar4 == '\0')) {
+    //     uVar8 = (**(code **)(*(int *)piVar10[0xd] + 0xc))();
+    //     switch((uVar8 & 0xff) - 1) {
+    //     case 0:
+    //     case 1:
+    //       fVar12 = RGE_Static_Object::distance_to_object
+    //                          ((RGE_Static_Object *)piVar10[2],(RGE_Static_Object *)piVar10[4]);
+    //       if (*(float *)(piVar10[0xc] + 0x24) < fVar12 - 1.0) {
+    //         (**(code **)(*piVar10 + 0x5c))(2);
+    //         return 0;
+    //       }
+    //       (**(code **)(*(int *)piVar10[2] + 0xd0))(piVar10[4]);
+    //       goto LAB_004028ef;
+    //     case 2:
+    //       (**(code **)(*piVar10 + 0x5c))(2);
+    //       return 0;
+    //     case 3:
+    //     case 4:
+    //       break;
+    //     default:
+    //       goto switchD_004027fc_caseD_3;
+    //     }
+    //   }
+    //   iVar5 = *piVar10;
+    //   (**(code **)(iVar5 + 0x54))(0);
+    //   (**(code **)(iVar5 + 0x5c))(0xd);
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00402740
+uchar RGE_Action_Enter::update() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual unsigned char __thiscall RGE_Action_Enter::update(void) */
+    // 
+    // uchar __thiscall RGE_Action_Enter::update(RGE_Action_Enter *this)
+    // 
+    // {
+    //   int *piVar1;
+    //   float fVar2;
+    //   uchar uVar3;
+    //   undefined1 uVar4;
+    //   char cVar5;
+    //   RGE_Static_Object *pRVar6;
+    //   int iVar7;
+    //   RGE_Action *pRVar8;
+    //   float fVar9;
+    //   int iStack_20;
+    //   XYPoint dest;
+    //   XYPoint start;
+    //   XYPoint rVal;
+    //   
+    //   if ((*(int *)&this->field_0x18 == -1) ||
+    //      (pRVar6 = RGE_Game_World::object
+    //                          (*(RGE_Game_World **)(*(int *)(*(int *)&this->field_0x8 + 0xc) + 0x3c),
+    //                           *(int *)&this->field_0x18), pRVar6 != (RGE_Static_Object *)0x0)) {
+    //     if ((*(int *)&this->field_0x1c != -1) &&
+    //        (pRVar6 = RGE_Game_World::object
+    //                            (*(RGE_Game_World **)(*(int *)(*(int *)&this->field_0x8 + 0xc) + 0x3c),
+    //                             *(int *)&this->field_0x1c), pRVar6 == (RGE_Static_Object *)0x0)) {
+    //       (**(code **)(*(int *)this + 0x58))(0);
+    //     }
+    //     iVar7 = *(int *)&this->field_0x10;
+    //     if ((iVar7 == 0) ||
+    //        ((*(byte *)(iVar7 + 0x48) < 3 &&
+    //         ((iVar7 == 0 ||
+    //          (iVar7 = (**(code **)(**(int **)(*(int *)&this->field_0x8 + 0xc) + 0x1c))
+    //                             ((int)*(short *)(*(int *)(iVar7 + 0xc) + 0x4a)), iVar7 != 0)))))) {
+    //       switch(this->field_0xc) {
+    //       case 1:
+    //         return '\x01';
+    //       case 2:
+    //         fVar9 = *(float *)&this->field_0x2c -
+    //                 (*(RGE_Static_Object **)&this->field_0x8)->owner->world->world_time_delta_seconds;
+    //         *(float *)&this->field_0x2c = fVar9;
+    //         if (fVar9 <= 0.0) {
+    //           fVar9 = RGE_Static_Object::distance_to_object
+    //                             (*(RGE_Static_Object **)&this->field_0x8,
+    //                              *(RGE_Static_Object **)&this->field_0x10);
+    //           if (*(float *)(*(int *)&this->field_0x30 + 0x24) < fVar9 - 1.0) {
+    //             cVar5 = (**(code **)(**(int **)&this->field_0x10 + 0x134))();
+    //             if (cVar5 != '\x02') {
+    //               cVar5 = (**(code **)(**(int **)&this->field_0x10 + 0x134))();
+    //               if (cVar5 == '\v') {
+    //                 pRVar8 = RGE_Action_List::get_action
+    //                                    (*(RGE_Action_List **)(*(int *)&this->field_0x10 + 0x184));
+    //                 fVar9 = RGE_Action::targetX(pRVar8);
+    //                 *(float *)&this->field_0x20 = fVar9;
+    //                 pRVar8 = RGE_Action_List::get_action
+    //                                    (*(RGE_Action_List **)(*(int *)&this->field_0x10 + 0x184));
+    //                 fVar9 = RGE_Action::targetY(pRVar8);
+    //                 *(float *)&this->field_0x24 = fVar9;
+    //               }
+    //               (**(code **)(*(int *)this + 0x5c))(4);
+    //               return '\0';
+    //             }
+    //             piVar1 = *(int **)&this->field_0x8;
+    //             start.y = __ftol();
+    //             rVal.x = __ftol();
+    //             dest.y = __ftol();
+    //             start.x = __ftol();
+    //             iVar7 = (**(code **)(*piVar1 + 0x1b4))(&start.y,&dest.y,&rVal.y,2,2,1);
+    //             if (iVar7 == 1) {
+    //               fVar9 = (float)iStack_20 - -0.5;
+    //               fVar2 = (float)dest.x - -0.5;
+    //               if ((*(float *)&this->field_0x20 == fVar9) && (fVar2 == *(float *)&this->field_0x24))
+    //               {
+    //                 *(undefined4 *)&this->field_0x20 = *(undefined4 *)(*(int *)&this->field_0x10 + 0x38)
+    //                 ;
+    //                 *(undefined4 *)&this->field_0x24 = *(undefined4 *)(*(int *)&this->field_0x10 + 0x3c)
+    //                 ;
+    //                 (**(code **)(*(int *)this + 0x5c))(4);
+    //                 return '\0';
+    //               }
+    //               *(float *)&this->field_0x20 = fVar9;
+    //               *(float *)&this->field_0x24 = fVar2;
+    //               (**(code **)(**(int **)&this->field_0x10 + 0x154))
+    //                         ((float)iStack_20,(float)dest.x,(*(int **)&this->field_0x10)[0x10],0,1);
+    //               (**(code **)(*(int *)this + 0x5c))(4);
+    //               return '\0';
+    //             }
+    //             piVar1 = *(int **)&this->field_0x10;
+    //             *(int *)&this->field_0x20 = piVar1[0xe];
+    //             iVar7 = *piVar1;
+    //             *(int *)&this->field_0x24 = piVar1[0xf];
+    //             (**(code **)(iVar7 + 0x154))
+    //                       (*(undefined4 *)(*(int *)&this->field_0x8 + 0x38),
+    //                        *(undefined4 *)(*(int *)&this->field_0x8 + 0x3c),piVar1[0x10],0x3f000000,1);
+    //             (**(code **)(*(int *)this + 0x5c))(4);
+    //             return '\0';
+    //           }
+    //           (**(code **)(**(int **)&this->field_0x8 + 0xd0))(*(undefined4 *)&this->field_0x10);
+    // LAB_004028ef:
+    //           if (this->field_0x3c == '\0') {
+    //             iVar7 = (*(int **)&this->field_0x8)[1];
+    //             (**(code **)(**(int **)&this->field_0x8 + 0x148))(iVar7,iVar7,0x1fa,0x269,0,0);
+    //           }
+    //           (**(code **)(*(int *)this + 0x5c))(1);
+    //           return '\x02';
+    //         }
+    //       default:
+    // switchD_004027fc_caseD_3:
+    //         return '\0';
+    //       case 4:
+    //         goto switchD_004027fc_caseD_4;
+    //       case 0xd:
+    //         iVar7 = (*(int **)&this->field_0x8)[1];
+    //         (**(code **)(**(int **)&this->field_0x8 + 0x148))(iVar7,iVar7,0x1f9,0x269,0,0);
+    //         return '\x03';
+    //       }
+    //     }
+    //   }
+    //   iVar7 = *(int *)this;
+    //   (**(code **)(iVar7 + 0x5c))(1);
+    //   (**(code **)(iVar7 + 0x54))(0);
+    //   iVar7 = (*(int **)&this->field_0x8)[1];
+    //   (**(code **)(**(int **)&this->field_0x8 + 0x148))(iVar7,iVar7,0x1fb,0x269,0,0);
+    //   return '\x04';
+    // switchD_004027fc_caseD_4:
+    //   if ((*(RGE_Static_Object **)&this->field_0x10 != (RGE_Static_Object *)0x0) &&
+    //      (uVar3 = RGE_Static_Object::is_dying(*(RGE_Static_Object **)&this->field_0x10), uVar3 == '\0'))
+    //   {
+    //     uVar4 = (**(code **)(**(int **)&this->field_0x34 + 0xc))();
+    //     switch(uVar4) {
+    //     case 1:
+    //     case 2:
+    //       fVar9 = RGE_Static_Object::distance_to_object
+    //                         (*(RGE_Static_Object **)&this->field_0x8,
+    //                          *(RGE_Static_Object **)&this->field_0x10);
+    //       if (*(float *)(*(int *)&this->field_0x30 + 0x24) < fVar9 - 1.0) {
+    //         (**(code **)(*(int *)this + 0x5c))(2);
+    //         return '\0';
+    //       }
+    //       (**(code **)(**(int **)&this->field_0x8 + 0xd0))(*(undefined4 *)&this->field_0x10);
+    //       goto LAB_004028ef;
+    //     case 3:
+    //       (**(code **)(*(int *)this + 0x5c))(2);
+    //       return '\0';
+    //     case 4:
+    //     case 5:
+    //       break;
+    //     default:
+    //       goto switchD_004027fc_caseD_3;
+    //     }
+    //   }
+    //   iVar7 = *(int *)this;
+    //   (**(code **)(iVar7 + 0x54))(0);
+    //   (**(code **)(iVar7 + 0x5c))(0xd);
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00402AFA
+undefined FUN_00402afa() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00402afa(void)
+    // 
+    // {
+    //   char *in_EAX;
+    //   undefined4 *in_EDX;
+    //   char unaff_BL;
+    //   int unaff_ESI;
+    //   
+    //   *in_EDX = *in_EDX;
+    //   *(char *)(unaff_ESI + 0x3004028) = *(char *)(unaff_ESI + 0x3004028) + unaff_BL;
+    //   *in_EAX = *in_EAX - (char)in_EAX;
+    //   return;
+    // }
+    // 
+    // 
+}
+

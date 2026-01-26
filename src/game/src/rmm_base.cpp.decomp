@@ -1,0 +1,1123 @@
+// Auto-generated decompiler unit: rmm_base.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/rmm_base.cpp
+#include "../include/common.h"
+
+// Offset: 0x00480790
+undefined RGE_Random_Map_Module(RGE_Random_Map_Module* this_, RGE_Map* param_2, RGE_Random_Map_Module* param_3, uchar param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Random_Map_Module::RGE_Random_Map_Module(class RGE_Map *,class
+    //    RGE_Random_Map_Module *,unsigned char) */
+    // 
+    // RGE_Random_Map_Module * __thiscall
+    // RGE_Random_Map_Module::RGE_Random_Map_Module
+    //           (RGE_Random_Map_Module *this,RGE_Map *param_1,RGE_Random_Map_Module *param_2,uchar param_3
+    //           )
+    // 
+    // {
+    //   RGE_Tile **ppRVar1;
+    //   long lVar2;
+    //   
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->parent = param_2;
+    //   this->map = param_1;
+    //   if (param_1 == (RGE_Map *)0x0) {
+    //     this->map_row_offset = (RGE_Tile **)0x0;
+    //     this->map_width = 0;
+    //     this->map_height = 0;
+    //   }
+    //   else {
+    //     ppRVar1 = RGE_Map::give_up_map_offsets(param_1);
+    //     this->map_row_offset = ppRVar1;
+    //     lVar2 = RGE_Map::get_map_width(this->map);
+    //     this->map_width = lVar2;
+    //     lVar2 = RGE_Map::get_map_height(this->map);
+    //     this->map_height = lVar2;
+    //   }
+    //   this->list = (RGE_Random_Map_Module_List *)0x0;
+    //   this->search_map = (uchar *)0x0;
+    //   this->stack_array = (Map_Stack *)0x0;
+    //   this->search_map_rows = (uchar **)0x0;
+    //   this->stack_offsets = (Map_Stack **)0x0;
+    //   if (this->parent == (RGE_Random_Map_Module *)0x0) {
+    //     if (param_3 != '\0') {
+    //       create_shared_resources(this);
+    //       return this;
+    //     }
+    //   }
+    //   else {
+    //     add_module(this->parent,this);
+    //     share_resources(this->parent,&this->search_map,&this->search_map_rows,&this->stack_array,
+    //                     &this->stack_offsets);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00480840
+void RGE_Random_Map_Module(RGE_Random_Map_Module* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Random_Map_Module::~RGE_Random_Map_Module(void) */
+    // 
+    // void __thiscall RGE_Random_Map_Module::~RGE_Random_Map_Module(RGE_Random_Map_Module *this)
+    // 
+    // {
+    //   RGE_Random_Map_Module_List *pRVar1;
+    //   RGE_Random_Map_Module *this_00;
+    //   
+    //   pRVar1 = this->list;
+    //   this->_padding_ = (int)&_vftable_;
+    //   while (pRVar1 != (RGE_Random_Map_Module_List *)0x0) {
+    //     this_00 = pRVar1->module;
+    //     if (this_00 != (RGE_Random_Map_Module *)0x0) {
+    //       ~RGE_Random_Map_Module(this_00);
+    //       operator_delete(this_00);
+    //     }
+    //     pRVar1 = this->list;
+    //   }
+    //   if (this->parent != (RGE_Random_Map_Module *)0x0) {
+    //     remove_module(this->parent,this);
+    //     this->search_map = (uchar *)0x0;
+    //     this->search_map_rows = (uchar **)0x0;
+    //     this->stack_array = (Map_Stack *)0x0;
+    //     this->stack_offsets = (Map_Stack **)0x0;
+    //     this->map = (RGE_Map *)0x0;
+    //     this->map_row_offset = (RGE_Tile **)0x0;
+    //     this->map_width = 0;
+    //     this->map_height = 0;
+    //     return;
+    //   }
+    //   destroy_shared_resources(this);
+    //   this->map = (RGE_Map *)0x0;
+    //   this->map_row_offset = (RGE_Tile **)0x0;
+    //   this->map_width = 0;
+    //   this->map_height = 0;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004808C0
+float get_schedule(RGE_Random_Map_Module* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: float __thiscall RGE_Random_Map_Module::get_schedule(void) */
+    // 
+    // float __thiscall RGE_Random_Map_Module::get_schedule(RGE_Random_Map_Module *this)
+    // 
+    // {
+    //   return this->schedule;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004808D0
+uchar RGE_Random_Map_Module::generate() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual unsigned char __thiscall RGE_Random_Map_Module::generate(void) */
+    // 
+    // uchar __thiscall RGE_Random_Map_Module::generate(RGE_Random_Map_Module *this)
+    // 
+    // {
+    //   RGE_Random_Map_Module_List **ppRVar1;
+    //   RGE_Random_Map_Module_List *pRVar2;
+    //   RGE_Random_Map_Module_List *pRVar3;
+    //   char cVar4;
+    //   int iVar5;
+    //   TDebuggingLog *this_00;
+    //   RGE_Random_Map_Module_List *pRVar6;
+    //   RGE_Random_Map_Module_List *pRVar7;
+    //   float fVar8;
+    //   float fVar9;
+    //   
+    //   pRVar2 = (RGE_Random_Map_Module_List *)0x0;
+    //   pRVar7 = this->list;
+    // joined_r0x004808e4:
+    //   do {
+    //     pRVar3 = pRVar7;
+    //     if (pRVar3 == (RGE_Random_Map_Module_List *)0x0) {
+    //       this->list = pRVar2;
+    //       iVar5 = debug_rand(s_C__msdev_work_age1_x1_rmm_base_c,0x8a);
+    //       TDebuggingLog::Log(this_00,(char *)L,s_RGE_RANDOM_MAP_MODULE__map_start,iVar5);
+    //       pRVar7 = this->list;
+    //       if (pRVar7 == (RGE_Random_Map_Module_List *)0x0) {
+    //         return '\x01';
+    //       }
+    //       do {
+    //         cVar4 = (**(code **)pRVar7->module->_padding_)();
+    //         if (cVar4 == '\0') {
+    //           return '\0';
+    //         }
+    //         iVar5 = debug_rand(s_C__msdev_work_age1_x1_rmm_base_c,0x8f);
+    //         TDebuggingLog::Log(L,(char *)L,s_RGE_RANDOM_MAP_MODULE__module_co,iVar5);
+    //         pRVar7 = pRVar7->next;
+    //       } while (pRVar7 != (RGE_Random_Map_Module_List *)0x0);
+    //       return '\x01';
+    //     }
+    //     pRVar7 = pRVar3->next;
+    //     if (pRVar2 != (RGE_Random_Map_Module_List *)0x0) {
+    //       fVar8 = get_schedule(pRVar3->module);
+    //       fVar9 = get_schedule(pRVar2->module);
+    //       pRVar6 = pRVar2;
+    //       if (fVar9 <= fVar8) {
+    //         do {
+    //           if (pRVar6->next == (RGE_Random_Map_Module_List *)0x0) {
+    // LAB_0048093c:
+    //             pRVar3->next = pRVar6->next;
+    //             pRVar6->next = pRVar3;
+    //             break;
+    //           }
+    //           fVar8 = get_schedule(pRVar3->module);
+    //           fVar9 = get_schedule(pRVar6->next->module);
+    //           if (fVar8 < fVar9) goto LAB_0048093c;
+    //           ppRVar1 = &pRVar6->next;
+    //           pRVar6 = *ppRVar1;
+    //         } while (*ppRVar1 != (RGE_Random_Map_Module_List *)0x0);
+    //         goto joined_r0x004808e4;
+    //       }
+    //     }
+    //     pRVar3->next = pRVar2;
+    //     pRVar2 = pRVar3;
+    //   } while( true );
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004809E0
+uchar add_module(RGE_Random_Map_Module* this_, RGE_Random_Map_Module* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: unsigned char __thiscall RGE_Random_Map_Module::add_module(class RGE_Random_Map_Module
+    //    *) */
+    // 
+    // uchar __thiscall
+    // RGE_Random_Map_Module::add_module(RGE_Random_Map_Module *this,RGE_Random_Map_Module *param_1)
+    // 
+    // {
+    //   RGE_Random_Map_Module_List *pRVar1;
+    //   
+    //   if (param_1 == (RGE_Random_Map_Module *)0x0) {
+    //     return '\0';
+    //   }
+    //   pRVar1 = (RGE_Random_Map_Module_List *)calloc(1,8);
+    //   pRVar1->next = this->list;
+    //   pRVar1->module = param_1;
+    //   this->list = pRVar1;
+    //   return '\x01';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00480A20
+uchar remove_module(RGE_Random_Map_Module* this_, RGE_Random_Map_Module* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: unsigned char __thiscall RGE_Random_Map_Module::remove_module(class
+    //    RGE_Random_Map_Module *) */
+    // 
+    // uchar __thiscall
+    // RGE_Random_Map_Module::remove_module(RGE_Random_Map_Module *this,RGE_Random_Map_Module *param_1)
+    // 
+    // {
+    //   RGE_Random_Map_Module_List *pRVar1;
+    //   RGE_Random_Map_Module_List **ppRVar2;
+    //   RGE_Random_Map_Module_List *pRVar3;
+    //   
+    //   pRVar1 = this->list;
+    //   pRVar3 = (RGE_Random_Map_Module_List *)0x0;
+    //   if (pRVar1 != (RGE_Random_Map_Module_List *)0x0) {
+    //     if (pRVar1->module == param_1) {
+    //       this->list = pRVar1->next;
+    //       pRVar3 = pRVar1;
+    //     }
+    //     else {
+    //       ppRVar2 = &pRVar1->next;
+    //       pRVar1 = pRVar1->next;
+    //       while (pRVar1 != (RGE_Random_Map_Module_List *)0x0) {
+    //         if (pRVar1->module == param_1) {
+    //           *ppRVar2 = pRVar1->next;
+    //           pRVar3 = pRVar1;
+    //         }
+    //         ppRVar2 = &(*ppRVar2)->next;
+    //         pRVar1 = *ppRVar2;
+    //       }
+    //     }
+    //   }
+    //   if (pRVar3 == (RGE_Random_Map_Module_List *)0x0) {
+    //     return '\0';
+    //   }
+    //   free(pRVar3);
+    //   return '\x01';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00480A80
+void create_shared_resources(RGE_Random_Map_Module* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall RGE_Random_Map_Module::create_shared_resources(void) */
+    // 
+    // void __thiscall RGE_Random_Map_Module::create_shared_resources(RGE_Random_Map_Module *this)
+    // 
+    // {
+    //   uchar *puVar1;
+    //   uchar **ppuVar2;
+    //   int iVar3;
+    //   Map_Stack *pMVar4;
+    //   Map_Stack **ppMVar5;
+    //   int iVar6;
+    //   int iVar7;
+    //   
+    //   puVar1 = (uchar *)calloc(this->map_height * this->map_width,1);
+    //   this->search_map = puVar1;
+    //   ppuVar2 = (uchar **)calloc(this->map_height,4);
+    //   this->search_map_rows = ppuVar2;
+    //   iVar3 = 0;
+    //   if (0 < this->map_height) {
+    //     do {
+    //       this->search_map_rows[iVar3] = this->search_map + iVar3 * this->map_width;
+    //       iVar3 = iVar3 + 1;
+    //     } while (iVar3 < this->map_height);
+    //   }
+    //   pMVar4 = (Map_Stack *)calloc(this->map_height * this->map_width,0x18);
+    //   this->stack_array = pMVar4;
+    //   ppMVar5 = (Map_Stack **)calloc(this->map_height,4);
+    //   this->stack_offsets = ppMVar5;
+    //   iVar3 = 0;
+    //   if (0 < this->map_height) {
+    //     do {
+    //       iVar7 = iVar3 + 1;
+    //       this->stack_offsets[iVar3] = this->stack_array + iVar3 * this->map_width;
+    //       iVar3 = iVar7;
+    //     } while (iVar7 < this->map_height);
+    //   }
+    //   iVar3 = 0;
+    //   if (0 < this->map_height) {
+    //     do {
+    //       iVar7 = 0;
+    //       if (0 < this->map_width) {
+    //         iVar6 = 0;
+    //         do {
+    //           *(int *)((int)&this->stack_offsets[iVar3]->x + iVar6) = iVar7;
+    //           iVar7 = iVar7 + 1;
+    //           *(int *)((int)&this->stack_offsets[iVar3]->y + iVar6) = iVar3;
+    //           iVar6 = iVar6 + 0x18;
+    //         } while (iVar7 < this->map_width);
+    //       }
+    //       iVar3 = iVar3 + 1;
+    //     } while (iVar3 < this->map_height);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00480B60
+void destroy_shared_resources(RGE_Random_Map_Module* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall RGE_Random_Map_Module::destroy_shared_resources(void) */
+    // 
+    // void __thiscall RGE_Random_Map_Module::destroy_shared_resources(RGE_Random_Map_Module *this)
+    // 
+    // {
+    //   if (this->search_map != (uchar *)0x0) {
+    //     free(this->search_map);
+    //   }
+    //   this->search_map = (uchar *)0x0;
+    //   if (this->search_map_rows != (uchar **)0x0) {
+    //     free(this->search_map_rows);
+    //   }
+    //   this->search_map_rows = (uchar **)0x0;
+    //   if (this->stack_array != (Map_Stack *)0x0) {
+    //     free(this->stack_array);
+    //   }
+    //   this->stack_array = (Map_Stack *)0x0;
+    //   if (this->stack_offsets != (Map_Stack **)0x0) {
+    //     free(this->stack_offsets);
+    //   }
+    //   this->stack_offsets = (Map_Stack **)0x0;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00480BC0
+void update_child_resources(RGE_Random_Map_Module* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall RGE_Random_Map_Module::update_child_resources(void) */
+    // 
+    // void __thiscall RGE_Random_Map_Module::update_child_resources(RGE_Random_Map_Module *this)
+    // 
+    // {
+    //   RGE_Random_Map_Module_List *pRVar1;
+    //   
+    //   for (pRVar1 = this->list; pRVar1 != (RGE_Random_Map_Module_List *)0x0; pRVar1 = pRVar1->next) {
+    //     update_resources(pRVar1->module);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00480BE0
+void update_resources(RGE_Random_Map_Module* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall RGE_Random_Map_Module::update_resources(void) */
+    // 
+    // void __thiscall RGE_Random_Map_Module::update_resources(RGE_Random_Map_Module *this)
+    // 
+    // {
+    //   share_resources(this->parent,&this->search_map,&this->search_map_rows,&this->stack_array,
+    //                   &this->stack_offsets);
+    //   update_child_resources(this);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00480C10
+void update_child_map_info(RGE_Random_Map_Module* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall RGE_Random_Map_Module::update_child_map_info(void) */
+    // 
+    // void __thiscall RGE_Random_Map_Module::update_child_map_info(RGE_Random_Map_Module *this)
+    // 
+    // {
+    //   RGE_Random_Map_Module_List *pRVar1;
+    //   
+    //   for (pRVar1 = this->list; pRVar1 != (RGE_Random_Map_Module_List *)0x0; pRVar1 = pRVar1->next) {
+    //     update_map_info(pRVar1->module,this->map);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00480C30
+void update_map_info(RGE_Random_Map_Module* this_, RGE_Map* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall RGE_Random_Map_Module::update_map_info(class RGE_Map *) */
+    // 
+    // void __thiscall RGE_Random_Map_Module::update_map_info(RGE_Random_Map_Module *this,RGE_Map *param_1)
+    // 
+    // {
+    //   RGE_Tile **ppRVar1;
+    //   long lVar2;
+    //   
+    //   this->map = param_1;
+    //   if (param_1 != (RGE_Map *)0x0) {
+    //     ppRVar1 = RGE_Map::give_up_map_offsets(param_1);
+    //     this->map_row_offset = ppRVar1;
+    //     lVar2 = RGE_Map::get_map_width(this->map);
+    //     this->map_width = lVar2;
+    //     lVar2 = RGE_Map::get_map_height(this->map);
+    //     this->map_height = lVar2;
+    //     update_child_map_info(this);
+    //     return;
+    //   }
+    //   this->map_row_offset = (RGE_Tile **)0x0;
+    //   this->map_width = 0;
+    //   this->map_height = 0;
+    //   update_child_map_info(this);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00480C80
+void share_resources(RGE_Random_Map_Module* this_, uchar** param_2, uchar*** param_3, Map_Stack** param_4, Map_Stack*** param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall RGE_Random_Map_Module::share_resources(unsigned char * *,unsigned char
+    //    * * *,struct Map_Stack * *,struct Map_Stack * * *) */
+    // 
+    // void __thiscall
+    // RGE_Random_Map_Module::share_resources
+    //           (RGE_Random_Map_Module *this,uchar **param_1,uchar ***param_2,Map_Stack **param_3,
+    //           Map_Stack ***param_4)
+    // 
+    // {
+    //   if (param_1 != (uchar **)0x0) {
+    //     *param_1 = this->search_map;
+    //   }
+    //   if (param_2 != (uchar ***)0x0) {
+    //     *param_2 = this->search_map_rows;
+    //   }
+    //   if (param_3 != (Map_Stack **)0x0) {
+    //     *param_3 = this->stack_array;
+    //   }
+    //   if (param_4 != (Map_Stack ***)0x0) {
+    //     *param_4 = this->stack_offsets;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00480CC0
+void init_stack(RGE_Random_Map_Module* this_, Map_Stack* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall RGE_Random_Map_Module::init_stack(struct Map_Stack &) */
+    // 
+    // void __thiscall RGE_Random_Map_Module::init_stack(RGE_Random_Map_Module *this,Map_Stack *param_1)
+    // 
+    // {
+    //   param_1->x = -1;
+    //   param_1->y = -1;
+    //   param_1->next = (Map_Stack *)0x0;
+    //   param_1->prev = (Map_Stack *)0x0;
+    //   param_1->cost = 0.0;
+    //   param_1->tot_cost = 0.0;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00480CF0
+void deinit_stack(RGE_Random_Map_Module* this_, Map_Stack* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall RGE_Random_Map_Module::deinit_stack(struct Map_Stack &) */
+    // 
+    // void __thiscall RGE_Random_Map_Module::deinit_stack(RGE_Random_Map_Module *this,Map_Stack *param_1)
+    // 
+    // {
+    //   if (param_1->next != (Map_Stack *)0x0) {
+    //     param_1->next->prev = (Map_Stack *)0x0;
+    //     param_1->next = (Map_Stack *)0x0;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00480D10
+void push_stack(RGE_Random_Map_Module* this_, Map_Stack* param_2, long param_3, long param_4, float param_5, float param_6) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall RGE_Random_Map_Module::push_stack(struct Map_Stack
+    //    &,long,long,float,float) */
+    // 
+    // void __thiscall
+    // RGE_Random_Map_Module::push_stack
+    //           (RGE_Random_Map_Module *this,Map_Stack *param_1,long param_2,long param_3,float param_4,
+    //           float param_5)
+    // 
+    // {
+    //   Map_Stack *pMVar1;
+    //   Map_Stack *pMVar2;
+    //   Map_Stack *pMVar3;
+    //   
+    //   pMVar1 = this->stack_offsets[param_3] + param_2;
+    //   remove_stack_node(this,pMVar1);
+    //   pMVar2 = param_1->next;
+    //   if ((pMVar2 == (Map_Stack *)0x0) || (param_5 <= pMVar2->tot_cost)) {
+    //     add_stack_node(this,param_1,pMVar1);
+    //     pMVar1->cost = param_4;
+    //     pMVar1->tot_cost = param_5;
+    //     return;
+    //   }
+    //   do {
+    //     pMVar3 = pMVar2;
+    //     pMVar2 = pMVar3->next;
+    //     if (pMVar2 == (Map_Stack *)0x0) break;
+    //   } while (pMVar2->tot_cost < param_5);
+    //   add_stack_node(this,pMVar3,pMVar1);
+    //   pMVar1->cost = param_4;
+    //   pMVar1->tot_cost = param_5;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00480DA0
+Map_Stack* pop_stack(RGE_Random_Map_Module* this_, Map_Stack* param_2, long* param_3, long* param_4, float* param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: struct Map_Stack * __thiscall RGE_Random_Map_Module::pop_stack(struct Map_Stack &,long
+    //    &,long &,float &) */
+    // 
+    // Map_Stack * __thiscall
+    // RGE_Random_Map_Module::pop_stack
+    //           (RGE_Random_Map_Module *this,Map_Stack *param_1,long *param_2,long *param_3,float *param_4
+    //           )
+    // 
+    // {
+    //   Map_Stack *pMVar1;
+    //   
+    //   pMVar1 = param_1->next;
+    //   if (pMVar1 == (Map_Stack *)0x0) {
+    //     return (Map_Stack *)0x0;
+    //   }
+    //   *param_2 = pMVar1->x;
+    //   *param_3 = pMVar1->y;
+    //   *param_4 = pMVar1->cost;
+    //   remove_stack_node(this,pMVar1);
+    //   return pMVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00480DE0
+void add_stack_node(RGE_Random_Map_Module* this_, Map_Stack* param_2, Map_Stack* param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall RGE_Random_Map_Module::add_stack_node(struct Map_Stack *,struct
+    //    Map_Stack *) */
+    // 
+    // void __thiscall
+    // RGE_Random_Map_Module::add_stack_node
+    //           (RGE_Random_Map_Module *this,Map_Stack *param_1,Map_Stack *param_2)
+    // 
+    // {
+    //   Map_Stack *pMVar1;
+    //   
+    //   if ((param_2->next != (Map_Stack *)0x0) || (param_2->prev != (Map_Stack *)0x0)) {
+    //     remove_stack_node(this,param_2);
+    //   }
+    //   pMVar1 = param_1->next;
+    //   param_2->prev = param_1;
+    //   param_2->next = pMVar1;
+    //   if (param_1->next != (Map_Stack *)0x0) {
+    //     param_1->next->prev = param_2;
+    //   }
+    //   param_1->next = param_2;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00480E20
+void remove_stack_node(RGE_Random_Map_Module* this_, Map_Stack* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall RGE_Random_Map_Module::remove_stack_node(struct Map_Stack *) */
+    // 
+    // void __thiscall
+    // RGE_Random_Map_Module::remove_stack_node(RGE_Random_Map_Module *this,Map_Stack *param_1)
+    // 
+    // {
+    //   if (param_1->prev != (Map_Stack *)0x0) {
+    //     param_1->prev->next = param_1->next;
+    //   }
+    //   if (param_1->next != (Map_Stack *)0x0) {
+    //     param_1->next->prev = param_1->prev;
+    //   }
+    //   param_1->next = (Map_Stack *)0x0;
+    //   param_1->prev = (Map_Stack *)0x0;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00480E50
+void clear_stack(RGE_Random_Map_Module* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall RGE_Random_Map_Module::clear_stack(void) */
+    // 
+    // void __thiscall RGE_Random_Map_Module::clear_stack(RGE_Random_Map_Module *this)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   
+    //   iVar3 = 0;
+    //   if (0 < this->map_height) {
+    //     do {
+    //       iVar2 = 0;
+    //       if (0 < this->map_width) {
+    //         iVar1 = 0;
+    //         do {
+    //           iVar2 = iVar2 + 1;
+    //           *(undefined4 *)((int)&this->stack_offsets[iVar3]->next + iVar1) = 0;
+    //           *(undefined4 *)((int)&this->stack_offsets[iVar3]->prev + iVar1) = 0;
+    //           iVar1 = iVar1 + 0x18;
+    //         } while (iVar2 < this->map_width);
+    //       }
+    //       iVar3 = iVar3 + 1;
+    //     } while (iVar3 < this->map_height);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00480EA0
+uchar check_stack(RGE_Random_Map_Module* this_, Map_Stack* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: unsigned char __thiscall RGE_Random_Map_Module::check_stack(struct Map_Stack *) */
+    // 
+    // uchar __thiscall RGE_Random_Map_Module::check_stack(RGE_Random_Map_Module *this,Map_Stack *param_1)
+    // 
+    // {
+    //   if ((param_1->next == (Map_Stack *)0x0) && (param_1->prev == (Map_Stack *)0x0)) {
+    //     return '\0';
+    //   }
+    //   return '\x01';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00480EC0
+void randomize_stack(RGE_Random_Map_Module* this_, Map_Stack* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall RGE_Random_Map_Module::randomize_stack(struct Map_Stack *) */
+    // 
+    // void __thiscall
+    // RGE_Random_Map_Module::randomize_stack(RGE_Random_Map_Module *this,Map_Stack *param_1)
+    // 
+    // {
+    //   int *piVar1;
+    //   Map_Stack **ppMVar2;
+    //   Map_Stack *pMVar3;
+    //   int iVar4;
+    //   int local_968;
+    //   Map_Stack sub_stacks [100];
+    //   
+    //   pMVar3 = (Map_Stack *)&sub_stacks[0].y;
+    //   iVar4 = 100;
+    //   do {
+    //     init_stack(this,pMVar3);
+    //     pMVar3 = pMVar3 + 1;
+    //     iVar4 = iVar4 + -1;
+    //   } while (iVar4 != 0);
+    //   local_968 = 2;
+    // LAB_00480ef2:
+    //   pMVar3 = param_1->next;
+    //   while (pMVar3 != (Map_Stack *)0x0) {
+    //     iVar4 = debug_rand(s_C__msdev_work_age1_x1_rmm_base_c,0x1e8);
+    //     add_stack_node(this,(Map_Stack *)&sub_stacks[(iVar4 * 100) / 0x7fff].y,param_1->next);
+    //     pMVar3 = param_1->next;
+    //   }
+    //   ppMVar2 = &sub_stacks[0].prev;
+    //   sub_stacks[0].x = 0x18;
+    // LAB_00480f4e:
+    //   piVar1 = (int *)((int)&sub_stacks[0].prev + sub_stacks[0].x);
+    // LAB_00480f52:
+    //   if (*ppMVar2 == (Map_Stack *)0x0) {
+    //     if (*piVar1 == 0) goto LAB_00480f7c;
+    //   }
+    //   else {
+    //     add_stack_node(this,param_1,*ppMVar2);
+    //   }
+    //   pMVar3 = (Map_Stack *)*piVar1;
+    //   if (pMVar3 != (Map_Stack *)0x0) {
+    //     add_stack_node(this,param_1,pMVar3);
+    //   }
+    //   goto LAB_00480f52;
+    // LAB_00480f7c:
+    //   ppMVar2 = ppMVar2 + 0xc;
+    //   sub_stacks[0].x = sub_stacks[0].x + 0x30;
+    //   if (0x977 < sub_stacks[0].x) goto code_r0x00480f91;
+    //   goto LAB_00480f4e;
+    // code_r0x00480f91:
+    //   local_968 = local_968 + -1;
+    //   if (local_968 == 0) {
+    //     return;
+    //   }
+    //   goto LAB_00480ef2;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00480FB0
+uchar find_path(RGE_Random_Map_Module* this_, long param_2, long param_3, long* param_4, long* param_5, float* param_6) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: path_stack */
+    // /* protected: unsigned char __thiscall RGE_Random_Map_Module::find_path(long,long,long &,long
+    //    &,float *) */
+    // 
+    // uchar __thiscall
+    // RGE_Random_Map_Module::find_path
+    //           (RGE_Random_Map_Module *this,long param_1,long param_2,long *param_3,long *param_4,
+    //           float *param_5)
+    // 
+    // {
+    //   uchar uVar1;
+    //   Map_Stack path_stack;
+    //   
+    //   init_stack(this,(Map_Stack *)&path_stack.y);
+    //   uVar1 = find_path(this,(Map_Stack *)&path_stack.y,param_1,param_2,param_3,param_4,param_5);
+    //   deinit_stack(this,(Map_Stack *)&path_stack.y);
+    //   return uVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00481000
+uchar find_path(RGE_Random_Map_Module* this_, Map_Stack* param_2, long param_3, long param_4, long* param_5, long* param_6, float* param_7) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: up */
+    // /* protected: unsigned char __thiscall RGE_Random_Map_Module::find_path(struct Map_Stack
+    //    &,long,long,long &,long &,float *) */
+    // 
+    // uchar __thiscall
+    // RGE_Random_Map_Module::find_path
+    //           (RGE_Random_Map_Module *this,Map_Stack *param_1,long param_2,long param_3,long *param_4,
+    //           long *param_5,float *param_6)
+    // 
+    // {
+    //   float fVar1;
+    //   float fVar2;
+    //   byte bVar3;
+    //   uchar uVar4;
+    //   int iVar5;
+    //   float fVar6;
+    //   float fVar7;
+    //   Map_Stack *pMVar8;
+    //   uint uVar9;
+    //   uint uVar10;
+    //   int iVar11;
+    //   uchar *puVar12;
+    //   bool bVar13;
+    //   bool bVar14;
+    //   bool bVar15;
+    //   uchar up;
+    //   uchar down;
+    //   uchar right;
+    //   float calc_cost;
+    //   uchar tile_type;
+    //   float tcost;
+    //   float hcost;
+    //   float cost;
+    //   long ty;
+    //   long map_h;
+    //   long map_w;
+    //   int local_4;
+    //   
+    //   ty = 0;
+    //   local_4 = this->map_width + -1;
+    //   map_w = this->map_height + -1;
+    //   clear_stack(this);
+    //   uVar9 = this->map_height * this->map_width;
+    //   puVar12 = this->search_map;
+    //   for (uVar10 = uVar9 >> 2; uVar10 != 0; uVar10 = uVar10 - 1) {
+    //     puVar12[0] = '\0';
+    //     puVar12[1] = '\0';
+    //     puVar12[2] = '\0';
+    //     puVar12[3] = '\0';
+    //     puVar12 = puVar12 + 4;
+    //   }
+    //   for (uVar9 = uVar9 & 3; uVar9 != 0; uVar9 = uVar9 - 1) {
+    //     *puVar12 = '\0';
+    //     puVar12 = puVar12 + 1;
+    //   }
+    //   this->search_map_rows[param_3][param_2] = '\x03';
+    //   bVar3 = this->map_row_offset[*param_5][*param_4].field_0x5;
+    //   this->search_map_rows[*param_5][*param_4] = '\x02';
+    //   if (0.0 < param_6[bVar3 & 0x1f]) {
+    //     iVar5 = *param_5;
+    //     map_h = (param_2 - *param_4) * (param_2 - *param_4) + (param_3 - iVar5) * (param_3 - iVar5);
+    //     while( true ) {
+    //       fVar7 = SQRT((float)map_h);
+    //       if (fVar7 == 0.0) {
+    //         if (param_1->next == (Map_Stack *)0x0) {
+    //           return '\x01';
+    //         }
+    //         param_1->next->prev = (Map_Stack *)0x0;
+    //         return '\x01';
+    //       }
+    //       if (param_3 < map_w) {
+    //         if (param_3 < iVar5) {
+    //           fVar2 = 1.0;
+    //         }
+    //         else {
+    //           fVar2 = -1.0;
+    //         }
+    //         iVar5 = param_3 + 1;
+    //         puVar12 = this->search_map_rows[iVar5] + param_2;
+    //         uVar4 = this->search_map_rows[iVar5][param_2];
+    //         if (uVar4 == '\0') {
+    //           uVar10 = (byte)this->map_row_offset[iVar5][param_2].field_0x5 & 0x1f;
+    //           if (param_6[uVar10] <= 0.0) {
+    //             *puVar12 = '\x01';
+    //             bVar13 = false;
+    //           }
+    //           else {
+    //             fVar1 = param_6[uVar10];
+    //             *puVar12 = '\a';
+    //             push_stack(this,param_1,param_2,iVar5,(float)ty + fVar1,
+    //                        (float)ty + fVar1 + (fVar7 - fVar2));
+    //             bVar13 = true;
+    //           }
+    //         }
+    //         else {
+    //           if (uVar4 == '\x02') {
+    //             this->search_map_rows[iVar5][param_2] = '\a';
+    //             *param_4 = param_2;
+    //             *param_5 = iVar5;
+    //             return '\x01';
+    //           }
+    //           bVar13 = uVar4 != '\x01';
+    //         }
+    //       }
+    //       else {
+    //         bVar13 = false;
+    //       }
+    //       if (param_3 < 1) {
+    //         bVar14 = false;
+    //       }
+    //       else {
+    //         if (*param_5 < param_3) {
+    //           fVar2 = 1.0;
+    //         }
+    //         else {
+    //           fVar2 = -1.0;
+    //         }
+    //         iVar5 = param_3 + -1;
+    //         puVar12 = this->search_map_rows[iVar5] + param_2;
+    //         uVar4 = this->search_map_rows[iVar5][param_2];
+    //         if (uVar4 == '\0') {
+    //           uVar10 = (byte)this->map_row_offset[iVar5][param_2].field_0x5 & 0x1f;
+    //           if (param_6[uVar10] <= 0.0) {
+    //             *puVar12 = '\x01';
+    //             bVar14 = false;
+    //           }
+    //           else {
+    //             fVar1 = param_6[uVar10];
+    //             *puVar12 = '\x06';
+    //             push_stack(this,param_1,param_2,iVar5,(float)ty + fVar1,
+    //                        (float)ty + fVar1 + (fVar7 - fVar2));
+    //             bVar14 = true;
+    //           }
+    //         }
+    //         else {
+    //           if (uVar4 == '\x02') {
+    //             this->search_map_rows[iVar5][param_2] = '\x06';
+    //             *param_4 = param_2;
+    //             *param_5 = iVar5;
+    //             return '\x01';
+    //           }
+    //           bVar14 = uVar4 != '\x01';
+    //         }
+    //       }
+    //       if (0 < param_2) {
+    //         if (*param_4 < param_2) {
+    //           fVar2 = 1.0;
+    //         }
+    //         else {
+    //           fVar2 = -1.0;
+    //         }
+    //         fVar2 = fVar7 - fVar2;
+    //         iVar5 = param_2 + -1;
+    //         puVar12 = this->search_map_rows[param_3] + iVar5;
+    //         uVar4 = this->search_map_rows[param_3][iVar5];
+    //         if (uVar4 == '\0') {
+    //           bVar3 = this->map_row_offset[param_3][iVar5].field_0x5;
+    //           if (param_6[bVar3 & 0x1f] <= 0.0) {
+    //             *puVar12 = '\x01';
+    //             bVar15 = false;
+    //           }
+    //           else {
+    //             fVar1 = param_6[bVar3 & 0x1f];
+    //             *puVar12 = '\x04';
+    //             push_stack(this,param_1,iVar5,param_3,fVar1 + (float)ty,fVar1 + (float)ty + fVar2);
+    //             bVar15 = true;
+    //           }
+    //         }
+    //         else {
+    //           if (uVar4 == '\x02') {
+    //             this->search_map_rows[param_3][iVar5] = '\x04';
+    //             *param_4 = iVar5;
+    //             *param_5 = param_3;
+    //             return '\x01';
+    //           }
+    //           bVar15 = uVar4 != '\x01';
+    //         }
+    //         if (0 < param_3) {
+    //           map_h = param_3 + -1;
+    //           puVar12 = this->search_map_rows[map_h] + iVar5;
+    //           if (*puVar12 == '\0') {
+    //             uVar10 = (byte)this->map_row_offset[map_h][iVar5].field_0x5 & 0x1f;
+    //             if (param_6[uVar10] <= 0.0) {
+    //               *puVar12 = '\x01';
+    //             }
+    //             else if ((bVar14) && (bVar15)) {
+    //               fVar1 = (float)ty - param_6[uVar10] * -1.36;
+    //               *puVar12 = '\b';
+    //               if (*param_5 < param_3) {
+    //                 fVar6 = 0.41;
+    //               }
+    //               else {
+    //                 fVar6 = -0.41;
+    //               }
+    //               push_stack(this,param_1,iVar5,map_h,fVar1,fVar1 + (fVar2 - fVar6));
+    //             }
+    //           }
+    //           else if (*puVar12 == '\x02') {
+    //             this->search_map_rows[map_h][iVar5] = '\b';
+    //             *param_4 = iVar5;
+    //             *param_5 = map_h;
+    //             return '\x01';
+    //           }
+    //         }
+    //         if (param_3 < map_w) {
+    //           map_h = param_3 + 1;
+    //           puVar12 = this->search_map_rows[map_h] + iVar5;
+    //           if (*puVar12 == '\0') {
+    //             uVar10 = (byte)this->map_row_offset[map_h][iVar5].field_0x5 & 0x1f;
+    //             if (param_6[uVar10] <= 0.0) {
+    //               *puVar12 = '\x01';
+    //             }
+    //             else if ((bVar13) && (bVar15)) {
+    //               fVar1 = (float)ty - param_6[uVar10] * -1.36;
+    //               *puVar12 = '\t';
+    //               if (param_3 < *param_5) {
+    //                 fVar6 = 0.41;
+    //               }
+    //               else {
+    //                 fVar6 = -0.41;
+    //               }
+    //               push_stack(this,param_1,iVar5,map_h,fVar1,fVar1 + (fVar2 - fVar6));
+    //             }
+    //           }
+    //           else if (*puVar12 == '\x02') {
+    //             this->search_map_rows[map_h][iVar5] = '\t';
+    //             *param_4 = iVar5;
+    //             *param_5 = map_h;
+    //             return '\x01';
+    //           }
+    //         }
+    //       }
+    //       if (param_2 < local_4) {
+    //         if (param_2 < *param_4) {
+    //           fVar2 = 1.0;
+    //         }
+    //         else {
+    //           fVar2 = -1.0;
+    //         }
+    //         fVar7 = fVar7 - fVar2;
+    //         iVar5 = param_2 + 1;
+    //         puVar12 = this->search_map_rows[param_3] + iVar5;
+    //         uVar4 = this->search_map_rows[param_3][iVar5];
+    //         if (uVar4 == '\0') {
+    //           uVar10 = (byte)this->map_row_offset[param_3][iVar5].field_0x5 & 0x1f;
+    //           if (param_6[uVar10] <= 0.0) {
+    //             *puVar12 = '\x01';
+    //             bVar15 = false;
+    //           }
+    //           else {
+    //             fVar2 = param_6[uVar10];
+    //             *puVar12 = '\x05';
+    //             push_stack(this,param_1,iVar5,param_3,(float)ty + fVar2,(float)ty + fVar2 + fVar7);
+    //             bVar15 = true;
+    //           }
+    //         }
+    //         else {
+    //           if (uVar4 == '\x02') {
+    //             this->search_map_rows[param_3][iVar5] = '\x05';
+    //             *param_4 = iVar5;
+    //             *param_5 = param_3;
+    //             return '\x01';
+    //           }
+    //           bVar15 = uVar4 != '\x01';
+    //         }
+    //         if (0 < param_3) {
+    //           map_h = param_3 + -1;
+    //           puVar12 = this->search_map_rows[map_h] + iVar5;
+    //           uVar4 = this->search_map_rows[map_h][iVar5];
+    //           if (uVar4 == '\0') {
+    //             uVar10 = (byte)this->map_row_offset[map_h][iVar5].field_0x5 & 0x1f;
+    //             if (param_6[uVar10] <= 0.0) {
+    //               *puVar12 = '\x01';
+    //             }
+    //             else if ((bVar14) && (bVar15)) {
+    //               fVar2 = (float)ty - param_6[uVar10] * -1.36;
+    //               *puVar12 = '\n';
+    //               if (*param_5 < param_3) {
+    //                 fVar1 = 0.4;
+    //               }
+    //               else {
+    //                 fVar1 = -0.4;
+    //               }
+    //               push_stack(this,param_1,iVar5,map_h,fVar2,fVar2 + (fVar7 - fVar1));
+    //             }
+    //           }
+    //           else if (uVar4 == '\x02') {
+    //             this->search_map_rows[map_h][iVar5] = '\n';
+    //             *param_4 = iVar5;
+    //             *param_5 = map_h;
+    //             return '\x01';
+    //           }
+    //         }
+    //         if (param_3 < map_w) {
+    //           iVar11 = param_3 + 1;
+    //           uVar4 = this->search_map_rows[iVar11][iVar5];
+    //           puVar12 = this->search_map_rows[iVar11] + iVar5;
+    //           if (uVar4 == '\0') {
+    //             uVar10 = (byte)this->map_row_offset[iVar11][iVar5].field_0x5 & 0x1f;
+    //             if (param_6[uVar10] <= 0.0) {
+    //               *puVar12 = '\x01';
+    //             }
+    //             else if ((bVar13) && (bVar15)) {
+    //               fVar2 = (float)ty - param_6[uVar10] * -1.36;
+    //               *puVar12 = '\v';
+    //               if (param_3 < *param_5) {
+    //                 fVar1 = 0.4;
+    //               }
+    //               else {
+    //                 fVar1 = -0.4;
+    //               }
+    //               push_stack(this,param_1,iVar5,iVar11,fVar2,fVar2 + (fVar7 - fVar1));
+    //             }
+    //           }
+    //           else if (uVar4 == '\x02') {
+    //             this->search_map_rows[iVar11][iVar5] = '\v';
+    //             *param_4 = iVar5;
+    //             *param_5 = iVar11;
+    //             return '\x01';
+    //           }
+    //         }
+    //       }
+    //       pMVar8 = pop_stack(this,param_1,&param_2,&param_3,(float *)&ty);
+    //       if (pMVar8 == (Map_Stack *)0x0) break;
+    //       iVar5 = *param_5;
+    //       map_h = (param_2 - *param_4) * (param_2 - *param_4) + (param_3 - iVar5) * (param_3 - iVar5);
+    //     }
+    //     return '\0';
+    //   }
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+

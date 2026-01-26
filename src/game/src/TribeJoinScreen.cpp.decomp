@@ -1,0 +1,22 @@
+// Auto-generated decompiler unit: TribeJoinScreen.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x00491970
+void* TribeJoinScreen::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TribeJoinScreen::`scalar deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall TribeJoinScreen::_scalar_deleting_destructor_(TribeJoinScreen *this,uint param_1)
+    // 
+    // {
+    //   ~TribeJoinScreen(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

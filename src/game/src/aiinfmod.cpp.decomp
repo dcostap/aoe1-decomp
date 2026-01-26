@@ -1,0 +1,39 @@
+// Auto-generated decompiler unit: aiinfmod.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/aiinfmod.cpp
+#include "../include/common.h"
+
+// Offset: 0x0040CD90
+undefined InformationAIModule(InformationAIModule* this_, void* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall InformationAIModule::InformationAIModule(void *,int) */
+    // 
+    // InformationAIModule * __thiscall
+    // InformationAIModule::InformationAIModule(InformationAIModule *this,void *param_1,int param_2)
+    // 
+    // {
+    //   AIModule::AIModule((AIModule *)this,s_InfAI,0x3ed,param_2,param_1);
+    //   *(undefined ***)this = &_vftable_;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040CDE0
+void InformationAIModule(InformationAIModule* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall InformationAIModule::~InformationAIModule(void) */
+    // 
+    // void __thiscall InformationAIModule::~InformationAIModule(InformationAIModule *this)
+    // 
+    // {
+    //   *(undefined ***)this = &_vftable_;
+    //   AIModule::~AIModule((AIModule *)this);
+    //   return;
+    // }
+    // 
+    // 
+}
+

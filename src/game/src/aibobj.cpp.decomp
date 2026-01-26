@@ -1,0 +1,1071 @@
+// Auto-generated decompiler unit: aibobj.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/aibobj.cpp
+#include "../include/common.h"
+
+// Offset: 0x00409FA0
+undefined BaseObject(BaseObject* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall BaseObject::BaseObject(void) */
+    // 
+    // BaseObject * __thiscall BaseObject::BaseObject(BaseObject *this)
+    // 
+    // {
+    //   char cVar1;
+    //   uint uVar2;
+    //   uint uVar3;
+    //   char *pcVar4;
+    //   char *pcVar5;
+    //   
+    //   uVar2 = 0xffffffff;
+    //   this->next = (BaseObject *)0x0;
+    //   this->prev = (BaseObject *)0x0;
+    //   this->numberGroupsValue = 0;
+    //   this->groupIDValue = (int *)0x0;
+    //   this->categoryIDValue = -1;
+    //   this->typeIDValue = -1;
+    //   this->gameIDValue = -1;
+    //   this->xPositionValue = -1.0;
+    //   this->yPositionValue = -1.0;
+    //   this->zPositionValue = -1.0;
+    //   this->xSizeValue = -1.0;
+    //   this->ySizeValue = -1.0;
+    //   this->zSizeValue = -1.0;
+    //   this->hitPointValue = 0;
+    //   this->minHitPointValue = 0;
+    //   this->maxHitPointValue = 0;
+    //   this->busyValue = 0;
+    //   this->currentTaskValue = -1;
+    //   this->currentTargetValue = -1;
+    //   this->currentTargetTypeValue = -1;
+    //   this->currentTargetXPositionValue = 0.0;
+    //   this->currentTargetYPositionValue = 0.0;
+    //   this->currentTargetZPositionValue = 0.0;
+    //   this->_padding_ = (int)&_vftable_;
+    //   pcVar4 = s_;
+    //   do {
+    //     pcVar5 = pcVar4;
+    //     if (uVar2 == 0) break;
+    //     uVar2 = uVar2 - 1;
+    //     pcVar5 = pcVar4 + 1;
+    //     cVar1 = *pcVar4;
+    //     pcVar4 = pcVar5;
+    //   } while (cVar1 != '\0');
+    //   uVar2 = ~uVar2;
+    //   pcVar4 = pcVar5 + -uVar2;
+    //   pcVar5 = this->nameValue;
+    //   for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //     *(undefined4 *)pcVar5 = *(undefined4 *)pcVar4;
+    //     pcVar4 = pcVar4 + 4;
+    //     pcVar5 = pcVar5 + 4;
+    //   }
+    //   for (uVar2 = uVar2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+    //     *pcVar5 = *pcVar4;
+    //     pcVar4 = pcVar4 + 1;
+    //     pcVar5 = pcVar5 + 1;
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A060
+undefined BaseObject(BaseObject* this_, int param_2, int param_3, int param_4, int param_5, char* param_6, float param_7, float param_8, float param_9, float param_10, float param_11, float param_12, int param_13, int param_14, int param_15) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall BaseObject::BaseObject(int,int,int,int,char
+    //    *,float,float,float,float,float,float,int,int,int) */
+    // 
+    // BaseObject * __thiscall
+    // BaseObject::BaseObject
+    //           (BaseObject *this,int param_1,int param_2,int param_3,int param_4,char *param_5,
+    //           float param_6,float param_7,float param_8,float param_9,float param_10,float param_11,
+    //           int param_12,int param_13,int param_14)
+    // 
+    // {
+    //   int *piVar1;
+    //   
+    //   this->categoryIDValue = param_2;
+    //   this->typeIDValue = param_3;
+    //   this->gameIDValue = param_4;
+    //   this->xPositionValue = param_9;
+    //   this->yPositionValue = param_10;
+    //   this->zPositionValue = param_11;
+    //   this->xSizeValue = param_6;
+    //   this->ySizeValue = param_7;
+    //   this->zSizeValue = param_8;
+    //   this->hitPointValue = param_12;
+    //   this->minHitPointValue = param_13;
+    //   this->next = (BaseObject *)0x0;
+    //   this->prev = (BaseObject *)0x0;
+    //   this->numberGroupsValue = 1;
+    //   this->maxHitPointValue = param_14;
+    //   this->busyValue = 0;
+    //   this->currentTaskValue = -1;
+    //   this->currentTargetValue = -1;
+    //   this->currentTargetTypeValue = -1;
+    //   this->currentTargetXPositionValue = 0.0;
+    //   this->currentTargetYPositionValue = 0.0;
+    //   this->currentTargetZPositionValue = 0.0;
+    //   this->_padding_ = (int)&_vftable_;
+    //   piVar1 = (int *)operator_new(4);
+    //   this->groupIDValue = piVar1;
+    //   *piVar1 = param_1;
+    //   strncpy(this->nameValue,param_5,0x3f);
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A130
+undefined BaseObject(BaseObject* this_, BaseObject* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall BaseObject::BaseObject(class BaseObject *) */
+    // 
+    // BaseObject * __thiscall BaseObject::BaseObject(BaseObject *this,BaseObject *param_1)
+    // 
+    // {
+    //   float fVar1;
+    //   int *piVar2;
+    //   int iVar3;
+    //   
+    //   this->next = (BaseObject *)0x0;
+    //   this->prev = (BaseObject *)0x0;
+    //   this->numberGroupsValue = param_1->numberGroupsValue;
+    //   this->categoryIDValue = param_1->categoryIDValue;
+    //   this->typeIDValue = param_1->typeIDValue;
+    //   this->gameIDValue = param_1->gameIDValue;
+    //   this->xPositionValue = param_1->xPositionValue;
+    //   this->yPositionValue = param_1->yPositionValue;
+    //   this->zPositionValue = param_1->zPositionValue;
+    //   this->xSizeValue = param_1->xSizeValue;
+    //   this->ySizeValue = param_1->ySizeValue;
+    //   this->zSizeValue = param_1->zSizeValue;
+    //   this->hitPointValue = param_1->hitPointValue;
+    //   this->minHitPointValue = param_1->minHitPointValue;
+    //   this->maxHitPointValue = param_1->maxHitPointValue;
+    //   this->busyValue = param_1->busyValue;
+    //   this->currentTaskValue = param_1->currentTaskValue;
+    //   this->currentTargetValue = param_1->currentTargetValue;
+    //   this->currentTargetTypeValue = param_1->currentTargetTypeValue;
+    //   this->currentTargetXPositionValue = param_1->currentTargetXPositionValue;
+    //   this->currentTargetYPositionValue = param_1->currentTargetYPositionValue;
+    //   fVar1 = param_1->currentTargetZPositionValue;
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->currentTargetZPositionValue = fVar1;
+    //   piVar2 = (int *)operator_new(this->numberGroupsValue << 2);
+    //   this->groupIDValue = piVar2;
+    //   iVar3 = 0;
+    //   if (0 < this->numberGroupsValue) {
+    //     do {
+    //       this->groupIDValue[iVar3] = param_1->groupIDValue[iVar3];
+    //       iVar3 = iVar3 + 1;
+    //     } while (iVar3 < this->numberGroupsValue);
+    //   }
+    //   strncpy(this->nameValue,param_1->nameValue,0x3f);
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A240
+undefined BaseObject(BaseObject* this_, BaseObject* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall BaseObject::BaseObject(class BaseObject const &) */
+    // 
+    // BaseObject * __thiscall BaseObject::BaseObject(BaseObject *this,BaseObject *param_1)
+    // 
+    // {
+    //   float fVar1;
+    //   int *piVar2;
+    //   int iVar3;
+    //   
+    //   this->next = (BaseObject *)0x0;
+    //   this->prev = (BaseObject *)0x0;
+    //   this->numberGroupsValue = param_1->numberGroupsValue;
+    //   this->categoryIDValue = param_1->categoryIDValue;
+    //   this->typeIDValue = param_1->typeIDValue;
+    //   this->gameIDValue = param_1->gameIDValue;
+    //   this->xPositionValue = param_1->xPositionValue;
+    //   this->yPositionValue = param_1->yPositionValue;
+    //   this->zPositionValue = param_1->zPositionValue;
+    //   this->xSizeValue = param_1->xSizeValue;
+    //   this->ySizeValue = param_1->ySizeValue;
+    //   this->zSizeValue = param_1->zSizeValue;
+    //   this->hitPointValue = param_1->hitPointValue;
+    //   this->minHitPointValue = param_1->minHitPointValue;
+    //   this->maxHitPointValue = param_1->maxHitPointValue;
+    //   this->busyValue = param_1->busyValue;
+    //   this->currentTaskValue = param_1->currentTaskValue;
+    //   this->currentTargetValue = param_1->currentTargetValue;
+    //   this->currentTargetTypeValue = param_1->currentTargetTypeValue;
+    //   this->currentTargetXPositionValue = param_1->currentTargetXPositionValue;
+    //   this->currentTargetYPositionValue = param_1->currentTargetYPositionValue;
+    //   fVar1 = param_1->currentTargetZPositionValue;
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->currentTargetZPositionValue = fVar1;
+    //   piVar2 = (int *)operator_new(this->numberGroupsValue << 2);
+    //   this->groupIDValue = piVar2;
+    //   iVar3 = 0;
+    //   if (0 < this->numberGroupsValue) {
+    //     do {
+    //       this->groupIDValue[iVar3] = param_1->groupIDValue[iVar3];
+    //       iVar3 = iVar3 + 1;
+    //     } while (iVar3 < this->numberGroupsValue);
+    //   }
+    //   strncpy(this->nameValue,param_1->nameValue,0x3f);
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A350
+void BaseObject(BaseObject* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall BaseObject::~BaseObject(void) */
+    // 
+    // void __thiscall BaseObject::~BaseObject(BaseObject *this)
+    // 
+    // {
+    //   this->_padding_ = (int)&_vftable_;
+    //   operator_delete(this->groupIDValue);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A370
+int operator(BaseObject* param_1, BaseObject* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* int __cdecl operator==(class BaseObject const &,class BaseObject const &) */
+    // 
+    // int __cdecl operator==(BaseObject *param_1,BaseObject *param_2)
+    // 
+    // {
+    //   return (uint)(param_1->gameIDValue == param_2->gameIDValue);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A390
+int operator(BaseObject* param_1, BaseObject* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* int __cdecl operator!=(class BaseObject const &,class BaseObject const &) */
+    // 
+    // int __cdecl operator!=(BaseObject *param_1,BaseObject *param_2)
+    // 
+    // {
+    //   return (uint)(param_1->gameIDValue != param_2->gameIDValue);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A3B0
+int operator(BaseObject* param_1, BaseObject* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* int __cdecl operator<(class BaseObject const &,class BaseObject const &) */
+    // 
+    // int __cdecl operator<(BaseObject *param_1,BaseObject *param_2)
+    // 
+    // {
+    //   return (uint)(param_1->gameIDValue < param_2->gameIDValue);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A3D0
+int operator(BaseObject* param_1, BaseObject* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* int __cdecl operator>(class BaseObject const &,class BaseObject const &) */
+    // 
+    // int __cdecl operator>(BaseObject *param_1,BaseObject *param_2)
+    // 
+    // {
+    //   return (uint)(param_2->gameIDValue < param_1->gameIDValue);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A3F0
+int numberGroups(BaseObject* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BaseObject::numberGroups(void)const  */
+    // 
+    // int __thiscall BaseObject::numberGroups(BaseObject *this)
+    // 
+    // {
+    //   return this->numberGroupsValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A400
+int groupID(BaseObject* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BaseObject::groupID(int)const  */
+    // 
+    // int __thiscall BaseObject::groupID(BaseObject *this,int param_1)
+    // 
+    // {
+    //   if (((this->groupIDValue != (int *)0x0) && (-1 < param_1)) && (param_1 < this->numberGroupsValue))
+    //   {
+    //     return this->groupIDValue[param_1];
+    //   }
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A420
+int inGroup(BaseObject* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BaseObject::inGroup(int)const  */
+    // 
+    // int __thiscall BaseObject::inGroup(BaseObject *this,int param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   int *piVar2;
+    //   
+    //   iVar1 = 0;
+    //   if (this->numberGroupsValue < 1) {
+    //     return 0;
+    //   }
+    //   piVar2 = this->groupIDValue;
+    //   do {
+    //     if (*piVar2 == param_1) {
+    //       return 1;
+    //     }
+    //     iVar1 = iVar1 + 1;
+    //     piVar2 = piVar2 + 1;
+    //   } while (iVar1 < this->numberGroupsValue);
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A460
+int addGroup(BaseObject* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BaseObject::addGroup(int) */
+    // 
+    // int __thiscall BaseObject::addGroup(BaseObject *this,int param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   int *piVar2;
+    //   int iVar3;
+    //   
+    //   iVar1 = inGroup(this,param_1);
+    //   if (iVar1 != 0) {
+    //     return 0;
+    //   }
+    //   piVar2 = (int *)operator_new(this->numberGroupsValue * 4 + 4);
+    //   if (piVar2 == (int *)0x0) {
+    //     return 0;
+    //   }
+    //   iVar1 = 0;
+    //   if (0 < this->numberGroupsValue) {
+    //     do {
+    //       iVar3 = iVar1 + 1;
+    //       piVar2[iVar1] = this->groupIDValue[iVar1];
+    //       iVar1 = iVar3;
+    //     } while (iVar3 < this->numberGroupsValue);
+    //   }
+    //   piVar2[this->numberGroupsValue] = param_1;
+    //   this->numberGroupsValue = this->numberGroupsValue + 1;
+    //   operator_delete(this->groupIDValue);
+    //   this->groupIDValue = piVar2;
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A4E0
+int removeGroup(BaseObject* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BaseObject::removeGroup(int) */
+    // 
+    // int __thiscall BaseObject::removeGroup(BaseObject *this,int param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   int *piVar2;
+    //   int *piVar3;
+    //   
+    //   iVar1 = inGroup(this,param_1);
+    //   if (iVar1 == 0) {
+    //     return 0;
+    //   }
+    //   piVar2 = (int *)operator_new(this->numberGroupsValue * 4 - 4);
+    //   if (piVar2 != (int *)0x0) {
+    //     iVar1 = 0;
+    //     piVar3 = piVar2;
+    //     if (0 < this->numberGroupsValue) {
+    //       do {
+    //         if (this->groupIDValue[iVar1] != param_1) {
+    //           *piVar3 = this->groupIDValue[iVar1];
+    //           piVar3 = piVar3 + 1;
+    //         }
+    //         iVar1 = iVar1 + 1;
+    //       } while (iVar1 < this->numberGroupsValue);
+    //     }
+    //     this->numberGroupsValue = this->numberGroupsValue + -1;
+    //     operator_delete(this->groupIDValue);
+    //     this->groupIDValue = piVar2;
+    //     return 1;
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A560
+int categoryID(BaseObject* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BaseObject::categoryID(void)const  */
+    // 
+    // int __thiscall BaseObject::categoryID(BaseObject *this)
+    // 
+    // {
+    //   return this->categoryIDValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A570
+int typeID(BaseObject* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BaseObject::typeID(void)const  */
+    // 
+    // int __thiscall BaseObject::typeID(BaseObject *this)
+    // 
+    // {
+    //   return this->typeIDValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A580
+int* gameID(BaseObject* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int const & __thiscall BaseObject::gameID(void)const  */
+    // 
+    // int * __thiscall BaseObject::gameID(BaseObject *this)
+    // 
+    // {
+    //   return &this->gameIDValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A590
+char* name(BaseObject* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: char * __thiscall BaseObject::name(void) */
+    // 
+    // char * __thiscall BaseObject::name(BaseObject *this)
+    // 
+    // {
+    //   return this->nameValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A5A0
+float xPosition(BaseObject* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: float __thiscall BaseObject::xPosition(void)const  */
+    // 
+    // float __thiscall BaseObject::xPosition(BaseObject *this)
+    // 
+    // {
+    //   return this->xPositionValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A5B0
+float yPosition(BaseObject* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: float __thiscall BaseObject::yPosition(void)const  */
+    // 
+    // float __thiscall BaseObject::yPosition(BaseObject *this)
+    // 
+    // {
+    //   return this->yPositionValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A5C0
+float zPosition(BaseObject* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: float __thiscall BaseObject::zPosition(void)const  */
+    // 
+    // float __thiscall BaseObject::zPosition(BaseObject *this)
+    // 
+    // {
+    //   return this->zPositionValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A5D0
+float xSize(BaseObject* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: float __thiscall BaseObject::xSize(void)const  */
+    // 
+    // float __thiscall BaseObject::xSize(BaseObject *this)
+    // 
+    // {
+    //   return this->xSizeValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A5E0
+float ySize(BaseObject* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: float __thiscall BaseObject::ySize(void)const  */
+    // 
+    // float __thiscall BaseObject::ySize(BaseObject *this)
+    // 
+    // {
+    //   return this->ySizeValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A5F0
+float zSize(BaseObject* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: float __thiscall BaseObject::zSize(void)const  */
+    // 
+    // float __thiscall BaseObject::zSize(BaseObject *this)
+    // 
+    // {
+    //   return this->zSizeValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A600
+int hitPoints(BaseObject* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BaseObject::hitPoints(void)const  */
+    // 
+    // int __thiscall BaseObject::hitPoints(BaseObject *this)
+    // 
+    // {
+    //   return this->hitPointValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A610
+int minHitPoints(BaseObject* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BaseObject::minHitPoints(void)const  */
+    // 
+    // int __thiscall BaseObject::minHitPoints(BaseObject *this)
+    // 
+    // {
+    //   return this->minHitPointValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A620
+int maxHitPoints(BaseObject* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BaseObject::maxHitPoints(void)const  */
+    // 
+    // int __thiscall BaseObject::maxHitPoints(BaseObject *this)
+    // 
+    // {
+    //   return this->maxHitPointValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A630
+int busy(BaseObject* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BaseObject::busy(void)const  */
+    // 
+    // int __thiscall BaseObject::busy(BaseObject *this)
+    // 
+    // {
+    //   return this->busyValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A640
+int currentTask(BaseObject* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BaseObject::currentTask(void)const  */
+    // 
+    // int __thiscall BaseObject::currentTask(BaseObject *this)
+    // 
+    // {
+    //   return this->currentTaskValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A650
+int currentTarget(BaseObject* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BaseObject::currentTarget(void)const  */
+    // 
+    // int __thiscall BaseObject::currentTarget(BaseObject *this)
+    // 
+    // {
+    //   return this->currentTargetValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A660
+int currentTargetType(BaseObject* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall BaseObject::currentTargetType(void)const  */
+    // 
+    // int __thiscall BaseObject::currentTargetType(BaseObject *this)
+    // 
+    // {
+    //   return this->currentTargetTypeValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A670
+float currentTargetXPosition(BaseObject* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: float __thiscall BaseObject::currentTargetXPosition(void)const  */
+    // 
+    // float __thiscall BaseObject::currentTargetXPosition(BaseObject *this)
+    // 
+    // {
+    //   return this->currentTargetXPositionValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A680
+float currentTargetYPosition(BaseObject* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: float __thiscall BaseObject::currentTargetYPosition(void)const  */
+    // 
+    // float __thiscall BaseObject::currentTargetYPosition(BaseObject *this)
+    // 
+    // {
+    //   return this->currentTargetYPositionValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A690
+float currentTargetZPosition(BaseObject* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: float __thiscall BaseObject::currentTargetZPosition(void)const  */
+    // 
+    // float __thiscall BaseObject::currentTargetZPosition(BaseObject *this)
+    // 
+    // {
+    //   return this->currentTargetZPositionValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A6A0
+void setXPosition(BaseObject* this_, float param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseObject::setXPosition(float) */
+    // 
+    // void __thiscall BaseObject::setXPosition(BaseObject *this,float param_1)
+    // 
+    // {
+    //   this->xPositionValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A6B0
+void setYPosition(BaseObject* this_, float param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseObject::setYPosition(float) */
+    // 
+    // void __thiscall BaseObject::setYPosition(BaseObject *this,float param_1)
+    // 
+    // {
+    //   this->yPositionValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A6C0
+void setZPosition(BaseObject* this_, float param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseObject::setZPosition(float) */
+    // 
+    // void __thiscall BaseObject::setZPosition(BaseObject *this,float param_1)
+    // 
+    // {
+    //   this->zPositionValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A6D0
+void setXSize(BaseObject* this_, float param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseObject::setXSize(float) */
+    // 
+    // void __thiscall BaseObject::setXSize(BaseObject *this,float param_1)
+    // 
+    // {
+    //   this->xSizeValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A6E0
+void setYSize(BaseObject* this_, float param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseObject::setYSize(float) */
+    // 
+    // void __thiscall BaseObject::setYSize(BaseObject *this,float param_1)
+    // 
+    // {
+    //   this->ySizeValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A6F0
+void setZSize(BaseObject* this_, float param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseObject::setZSize(float) */
+    // 
+    // void __thiscall BaseObject::setZSize(BaseObject *this,float param_1)
+    // 
+    // {
+    //   this->zSizeValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A700
+void setHitPoints(BaseObject* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseObject::setHitPoints(int) */
+    // 
+    // void __thiscall BaseObject::setHitPoints(BaseObject *this,int param_1)
+    // 
+    // {
+    //   this->hitPointValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A710
+void incrementHitPoints(BaseObject* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseObject::incrementHitPoints(int) */
+    // 
+    // void __thiscall BaseObject::incrementHitPoints(BaseObject *this,int param_1)
+    // 
+    // {
+    //   this->hitPointValue = this->hitPointValue + param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A720
+void decrementHitPoints(BaseObject* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseObject::decrementHitPoints(int) */
+    // 
+    // void __thiscall BaseObject::decrementHitPoints(BaseObject *this,int param_1)
+    // 
+    // {
+    //   this->hitPointValue = this->hitPointValue - param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A730
+void setMinHitPoints(BaseObject* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseObject::setMinHitPoints(int) */
+    // 
+    // void __thiscall BaseObject::setMinHitPoints(BaseObject *this,int param_1)
+    // 
+    // {
+    //   this->minHitPointValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A740
+void incrementMinHitPoints(BaseObject* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseObject::incrementMinHitPoints(int) */
+    // 
+    // void __thiscall BaseObject::incrementMinHitPoints(BaseObject *this,int param_1)
+    // 
+    // {
+    //   this->minHitPointValue = this->minHitPointValue + param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A750
+void decrementMinHitPoints(BaseObject* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseObject::decrementMinHitPoints(int) */
+    // 
+    // void __thiscall BaseObject::decrementMinHitPoints(BaseObject *this,int param_1)
+    // 
+    // {
+    //   this->minHitPointValue = this->minHitPointValue - param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A760
+void setMaxHitPoints(BaseObject* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseObject::setMaxHitPoints(int) */
+    // 
+    // void __thiscall BaseObject::setMaxHitPoints(BaseObject *this,int param_1)
+    // 
+    // {
+    //   this->maxHitPointValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A770
+void incrementMaxHitPoints(BaseObject* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseObject::incrementMaxHitPoints(int) */
+    // 
+    // void __thiscall BaseObject::incrementMaxHitPoints(BaseObject *this,int param_1)
+    // 
+    // {
+    //   this->maxHitPointValue = this->maxHitPointValue + param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A790
+void decrementMaxHitPoints(BaseObject* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseObject::decrementMaxHitPoints(int) */
+    // 
+    // void __thiscall BaseObject::decrementMaxHitPoints(BaseObject *this,int param_1)
+    // 
+    // {
+    //   this->maxHitPointValue = this->maxHitPointValue - param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A7B0
+void setBusy(BaseObject* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseObject::setBusy(int) */
+    // 
+    // void __thiscall BaseObject::setBusy(BaseObject *this,int param_1)
+    // 
+    // {
+    //   this->busyValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A7C0
+void setCurrentTask(BaseObject* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseObject::setCurrentTask(int) */
+    // 
+    // void __thiscall BaseObject::setCurrentTask(BaseObject *this,int param_1)
+    // 
+    // {
+    //   this->currentTaskValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A7D0
+void setCurrentTarget(BaseObject* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseObject::setCurrentTarget(int) */
+    // 
+    // void __thiscall BaseObject::setCurrentTarget(BaseObject *this,int param_1)
+    // 
+    // {
+    //   this->currentTargetValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A7E0
+void setCurrentTargetType(BaseObject* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseObject::setCurrentTargetType(int) */
+    // 
+    // void __thiscall BaseObject::setCurrentTargetType(BaseObject *this,int param_1)
+    // 
+    // {
+    //   this->currentTargetTypeValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A7F0
+void setCurrentTargetPosition(BaseObject* this_, float param_2, float param_3, float param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall BaseObject::setCurrentTargetPosition(float,float,float) */
+    // 
+    // void __thiscall
+    // BaseObject::setCurrentTargetPosition(BaseObject *this,float param_1,float param_2,float param_3)
+    // 
+    // {
+    //   this->currentTargetXPositionValue = param_1;
+    //   this->currentTargetYPositionValue = param_2;
+    //   this->currentTargetZPositionValue = param_3;
+    //   return;
+    // }
+    // 
+    // 
+}
+

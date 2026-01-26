@@ -1,0 +1,24 @@
+// Auto-generated decompiler unit: TribeTacticalAIModule.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x004ED4D0
+void* TribeTacticalAIModule::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TribeTacticalAIModule::`scalar deleting destructor'(unsigned
+    //    int) */
+    // 
+    // void * __thiscall
+    // TribeTacticalAIModule::_scalar_deleting_destructor_(TribeTacticalAIModule *this,uint param_1)
+    // 
+    // {
+    //   ~TribeTacticalAIModule(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

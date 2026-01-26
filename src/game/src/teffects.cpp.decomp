@@ -1,0 +1,115 @@
+// Auto-generated decompiler unit: teffects.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/teffects.cpp
+#include "../include/common.h"
+
+// Offset: 0x0050D460
+undefined TRIBE_Effects(TRIBE_Effects* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TRIBE_Effects::TRIBE_Effects(int) */
+    // 
+    // TRIBE_Effects * __thiscall TRIBE_Effects::TRIBE_Effects(TRIBE_Effects *this,int param_1)
+    // 
+    // {
+    //   RGE_Effects::RGE_Effects((RGE_Effects *)this,param_1);
+    //   *(undefined ***)this = &_vftable_;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0050D4B0
+undefined TRIBE_Effects(TRIBE_Effects* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TRIBE_Effects::TRIBE_Effects(char *) */
+    // 
+    // TRIBE_Effects * __thiscall TRIBE_Effects::TRIBE_Effects(TRIBE_Effects *this,char *param_1)
+    // 
+    // {
+    //   RGE_Effects::RGE_Effects((RGE_Effects *)this,param_1);
+    //   *(undefined ***)this = &_vftable_;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0050D4D0
+void TRIBE_Effects::do_effect(short param_1, RGE_Player* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall TRIBE_Effects::do_effect(short,class RGE_Player *) */
+    // 
+    // void __thiscall TRIBE_Effects::do_effect(TRIBE_Effects *this,short param_1,RGE_Player *param_2)
+    // 
+    // {
+    //   int iVar1;
+    //   char cVar2;
+    //   long lVar3;
+    //   int iVar4;
+    //   int iVar5;
+    //   uchar uVar6;
+    //   
+    //   if (((int)param_1 < *(int *)&this->field_0x8) &&
+    //      (iVar1 = *(int *)&this->field_0x4 + param_1 * 0x2c, iVar1 != 0)) {
+    //     iVar4 = 0;
+    //     if (0 < *(short *)(iVar1 + 0x24)) {
+    //       iVar5 = 0;
+    //       do {
+    //         cVar2 = *(char *)(*(int *)(iVar1 + 0x28) + iVar5);
+    //         if ((cVar2 != 'e') && (cVar2 == 'f')) {
+    //           uVar6 = '\0';
+    //           lVar3 = __ftol();
+    //           TRIBE_Player::tech_abling((TRIBE_Player *)param_2,lVar3,uVar6);
+    //         }
+    //         iVar4 = iVar4 + 1;
+    //         iVar5 = iVar5 + 0xc;
+    //       } while (iVar4 < *(short *)(iVar1 + 0x24));
+    //     }
+    //     RGE_Effects::do_effect((RGE_Effects *)this,param_1,param_2);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0050D550
+void do_tech_effect(TRIBE_Effects* this_, short param_2, RGE_Player* param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall TRIBE_Effects::do_tech_effect(short,class RGE_Player *) */
+    // 
+    // void __thiscall TRIBE_Effects::do_tech_effect(TRIBE_Effects *this,short param_1,RGE_Player *param_2)
+    // 
+    // {
+    //   int iVar1;
+    //   char cVar2;
+    //   long lVar3;
+    //   int iVar4;
+    //   int iVar5;
+    //   uchar uVar6;
+    //   
+    //   iVar4 = 0;
+    //   iVar1 = *(int *)&this->field_0x4 + param_1 * 0x2c;
+    //   if (0 < *(short *)(*(int *)&this->field_0x4 + 0x24 + param_1 * 0x2c)) {
+    //     iVar5 = 0;
+    //     do {
+    //       cVar2 = *(char *)(*(int *)(iVar1 + 0x28) + iVar5);
+    //       if ((cVar2 != 'e') && (cVar2 == 'f')) {
+    //         uVar6 = '\0';
+    //         lVar3 = __ftol();
+    //         TRIBE_Player::tech_abling((TRIBE_Player *)param_2,lVar3,uVar6);
+    //       }
+    //       iVar4 = iVar4 + 1;
+    //       iVar5 = iVar5 + 0xc;
+    //     } while (iVar4 < *(short *)(iVar1 + 0x24));
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+

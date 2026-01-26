@@ -1,0 +1,39 @@
+// Auto-generated decompiler unit: aitacmod.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/aitacmod.cpp
+#include "../include/common.h"
+
+// Offset: 0x00412B50
+undefined TacticalAIModule(TacticalAIModule* this_, void* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TacticalAIModule::TacticalAIModule(void *,int) */
+    // 
+    // TacticalAIModule * __thiscall
+    // TacticalAIModule::TacticalAIModule(TacticalAIModule *this,void *param_1,int param_2)
+    // 
+    // {
+    //   AIModule::AIModule((AIModule *)this,s_TacAI,0x3f1,param_2,param_1);
+    //   *(undefined ***)this = &_vftable_;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412BA0
+void TacticalAIModule(TacticalAIModule* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall TacticalAIModule::~TacticalAIModule(void) */
+    // 
+    // void __thiscall TacticalAIModule::~TacticalAIModule(TacticalAIModule *this)
+    // 
+    // {
+    //   *(undefined ***)this = &_vftable_;
+    //   AIModule::~AIModule((AIModule *)this);
+    //   return;
+    // }
+    // 
+    // 
+}
+

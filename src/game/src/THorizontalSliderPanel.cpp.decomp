@@ -1,0 +1,24 @@
+// Auto-generated decompiler unit: THorizontalSliderPanel.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x0047BE10
+void* THorizontalSliderPanel::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall THorizontalSliderPanel::`scalar deleting destructor'(unsigned
+    //    int) */
+    // 
+    // void * __thiscall
+    // THorizontalSliderPanel::_scalar_deleting_destructor_(THorizontalSliderPanel *this,uint param_1)
+    // 
+    // {
+    //   ~THorizontalSliderPanel(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

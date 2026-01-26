@@ -1,0 +1,22 @@
+// Auto-generated decompiler unit: RGE_Player.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x0046E750
+void* RGE_Player::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall RGE_Player::`scalar deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall RGE_Player::_scalar_deleting_destructor_(RGE_Player *this,uint param_1)
+    // 
+    // {
+    //   ~RGE_Player(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

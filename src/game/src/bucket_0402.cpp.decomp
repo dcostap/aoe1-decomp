@@ -1,0 +1,81 @@
+// Auto-generated decompiler unit: bucket_0402.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x00402030
+void RGE_Action_Bird(RGE_Action_Bird* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall RGE_Action_Bird::~RGE_Action_Bird(void) */
+    // 
+    // void __thiscall RGE_Action_Bird::~RGE_Action_Bird(RGE_Action_Bird *this)
+    // 
+    // {
+    //   RGE_Action_List *this_00;
+    //   
+    //   *(undefined ***)this = &RGE_Action::_vftable_;
+    //   RGE_Action::set_target_obj((RGE_Action *)this,(RGE_Static_Object *)0x0);
+    //   RGE_Action::set_target_obj2((RGE_Action *)this,(RGE_Static_Object *)0x0);
+    //   this_00 = *(RGE_Action_List **)&this->field_0x34;
+    //   if (this_00 != (RGE_Action_List *)0x0) {
+    //     RGE_Action_List::~RGE_Action_List(this_00);
+    //     operator_delete(this_00);
+    //     *(undefined4 *)&this->field_0x34 = 0;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00402B90
+void RGE_Action_Explore(RGE_Action_Explore* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall RGE_Action_Explore::~RGE_Action_Explore(void) */
+    // 
+    // void __thiscall RGE_Action_Explore::~RGE_Action_Explore(RGE_Action_Explore *this)
+    // 
+    // {
+    //   RGE_Action_List *this_00;
+    //   
+    //   *(undefined ***)this = &RGE_Action::_vftable_;
+    //   RGE_Action::set_target_obj((RGE_Action *)this,(RGE_Static_Object *)0x0);
+    //   RGE_Action::set_target_obj2((RGE_Action *)this,(RGE_Static_Object *)0x0);
+    //   this_00 = *(RGE_Action_List **)&this->field_0x34;
+    //   if (this_00 != (RGE_Action_List *)0x0) {
+    //     RGE_Action_List::~RGE_Action_List(this_00);
+    //     operator_delete(this_00);
+    //     *(undefined4 *)&this->field_0x34 = 0;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00402F30
+void RGE_Action_Gather(RGE_Action_Gather* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall RGE_Action_Gather::~RGE_Action_Gather(void) */
+    // 
+    // void __thiscall RGE_Action_Gather::~RGE_Action_Gather(RGE_Action_Gather *this)
+    // 
+    // {
+    //   RGE_Action_List *this_00;
+    //   
+    //   this->_padding_ = (int)&RGE_Action::_vftable_;
+    //   RGE_Action::set_target_obj((RGE_Action *)this,(RGE_Static_Object *)0x0);
+    //   RGE_Action::set_target_obj2((RGE_Action *)this,(RGE_Static_Object *)0x0);
+    //   this_00 = (RGE_Action_List *)this->_padding_;
+    //   if (this_00 != (RGE_Action_List *)0x0) {
+    //     RGE_Action_List::~RGE_Action_List(this_00);
+    //     operator_delete(this_00);
+    //     this->_padding_ = 0;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+

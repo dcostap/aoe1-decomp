@@ -1,0 +1,2903 @@
+// Auto-generated decompiler unit: scenario.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/scenario.cpp
+#include "../include/common.h"
+
+// Offset: 0x0048AB10
+undefined RGE_Scenario_Header(RGE_Scenario_Header* this_, RGE_Scenario* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Scenario_Header::RGE_Scenario_Header(class RGE_Scenario *) */
+    // 
+    // RGE_Scenario_Header * __thiscall
+    // RGE_Scenario_Header::RGE_Scenario_Header(RGE_Scenario_Header *this,RGE_Scenario *param_1)
+    // 
+    // {
+    //   char cVar1;
+    //   ulong uVar2;
+    //   char *pcVar3;
+    //   uint uVar4;
+    //   uint uVar5;
+    //   RGE_Scenario *pRVar6;
+    //   char *pcVar7;
+    //   
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->error_code = 0;
+    //   this->version = 2;
+    //   uVar2 = time(0);
+    //   this->checksum = uVar2;
+    //   pcVar3 = RGE_Scenario::Get_description(param_1);
+    //   if (pcVar3 == (char *)0x0) {
+    //     this->description = (char *)0x0;
+    //     pRVar6 = param_1;
+    //   }
+    //   else {
+    //     pcVar3 = RGE_Scenario::Get_description(param_1);
+    //     uVar4 = 0xffffffff;
+    //     do {
+    //       if (uVar4 == 0) break;
+    //       uVar4 = uVar4 - 1;
+    //       cVar1 = *pcVar3;
+    //       pcVar3 = pcVar3 + 1;
+    //     } while (cVar1 != '\0');
+    //     pcVar3 = (char *)malloc((RGE_Scenario *)~uVar4);
+    //     this->description = pcVar3;
+    //     pRVar6 = (RGE_Scenario *)~uVar4;
+    //   }
+    //   if (this->description != (char *)0x0) {
+    //     pcVar3 = RGE_Scenario::Get_description(param_1);
+    //     uVar4 = 0xffffffff;
+    //     do {
+    //       pcVar7 = pcVar3;
+    //       if (uVar4 == 0) break;
+    //       uVar4 = uVar4 - 1;
+    //       pcVar7 = pcVar3 + 1;
+    //       cVar1 = *pcVar3;
+    //       pcVar3 = pcVar7;
+    //     } while (cVar1 != '\0');
+    //     uVar4 = ~uVar4;
+    //     pcVar3 = pcVar7 + -uVar4;
+    //     pcVar7 = this->description;
+    //     for (uVar5 = uVar4 >> 2; uVar5 != 0; uVar5 = uVar5 - 1) {
+    //       *(undefined4 *)pcVar7 = *(undefined4 *)pcVar3;
+    //       pcVar3 = pcVar3 + 4;
+    //       pcVar7 = pcVar7 + 4;
+    //     }
+    //     for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //       *pcVar7 = *pcVar3;
+    //       pcVar3 = pcVar3 + 1;
+    //       pcVar7 = pcVar7 + 1;
+    //     }
+    //     ((undefined1 *)((int)&pRVar6[-1].mission_picture + 3))[(int)this->description] = 0;
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048ABB0
+undefined RGE_Scenario_Header(RGE_Scenario_Header* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: header_size */
+    // /* public: __thiscall RGE_Scenario_Header::RGE_Scenario_Header(int) */
+    // 
+    // RGE_Scenario_Header * __thiscall
+    // RGE_Scenario_Header::RGE_Scenario_Header(RGE_Scenario_Header *this,int param_1)
+    // 
+    // {
+    //   long *plVar1;
+    //   int iVar2;
+    //   char *pcVar3;
+    //   long header_size;
+    //   RGE_Scenario_Header *local_4;
+    //   
+    //   iVar2 = param_1;
+    //   plVar1 = &this->version;
+    //   this->error_code = 0;
+    //   *plVar1 = 0;
+    //   this->checksum = 0;
+    //   this->description = (char *)0x0;
+    //   this->_padding_ = (int)&_vftable_;
+    //   local_4 = this;
+    //   rge_read_uncompressed(param_1,&local_4,4);
+    //   rge_read_uncompressed(iVar2,plVar1,4);
+    //   if (1 < *plVar1) {
+    //     rge_read_uncompressed(iVar2,&this->checksum,4);
+    //   }
+    //   rge_read_uncompressed(iVar2,&param_1,4);
+    //   if (0 < param_1) {
+    //     pcVar3 = (char *)malloc(param_1);
+    //     this->description = pcVar3;
+    //     if (pcVar3 == (char *)0x0) {
+    //       this->error_code = 1;
+    //       return this;
+    //     }
+    //     rge_read_uncompressed(iVar2,pcVar3,param_1);
+    //     return this;
+    //   }
+    //   this->description = (char *)0x0;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048AC70
+void RGE_Scenario_Header(RGE_Scenario_Header* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Scenario_Header::~RGE_Scenario_Header(void) */
+    // 
+    // void __thiscall RGE_Scenario_Header::~RGE_Scenario_Header(RGE_Scenario_Header *this)
+    // 
+    // {
+    //   this->_padding_ = (int)&_vftable_;
+    //   if (this->description != (char *)0x0) {
+    //     free(this->description);
+    //     this->description = (char *)0x0;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048ACA0
+long RGE_Scenario_Header::get_size() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual long __thiscall RGE_Scenario_Header::get_size(void) */
+    // 
+    // long __thiscall RGE_Scenario_Header::get_size(RGE_Scenario_Header *this)
+    // 
+    // {
+    //   char cVar1;
+    //   uint uVar2;
+    //   char *pcVar3;
+    //   
+    //   if (this->description == (char *)0x0) {
+    //     return 0xc;
+    //   }
+    //   uVar2 = 0xffffffff;
+    //   pcVar3 = this->description;
+    //   do {
+    //     if (uVar2 == 0) break;
+    //     uVar2 = uVar2 - 1;
+    //     cVar1 = *pcVar3;
+    //     pcVar3 = pcVar3 + 1;
+    //   } while (cVar1 != '\0');
+    //   return ~uVar2 + 0xc;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048ACC0
+void RGE_Scenario_Header::save(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: desc_size */
+    // /* public: virtual void __thiscall RGE_Scenario_Header::save(int) */
+    // 
+    // void __thiscall RGE_Scenario_Header::save(RGE_Scenario_Header *this,int param_1)
+    // 
+    // {
+    //   char cVar1;
+    //   uint uVar2;
+    //   char *pcVar3;
+    //   long desc_size;
+    //   long header_size;
+    //   undefined4 uStack_4;
+    //   
+    //   uStack_4 = (**(code **)this->_padding_)();
+    //   rge_write_uncompressed(param_1,&uStack_4,4);
+    //   rge_write_uncompressed(param_1,&this->version,4);
+    //   if (1 < this->version) {
+    //     rge_write_uncompressed(param_1,&this->checksum,4);
+    //   }
+    //   if (this->description == (char *)0x0) {
+    //     header_size = 0;
+    //   }
+    //   else {
+    //     uVar2 = 0xffffffff;
+    //     pcVar3 = this->description;
+    //     do {
+    //       if (uVar2 == 0) break;
+    //       uVar2 = uVar2 - 1;
+    //       cVar1 = *pcVar3;
+    //       pcVar3 = pcVar3 + 1;
+    //     } while (cVar1 != '\0');
+    //     header_size = ~uVar2;
+    //   }
+    //   rge_write_uncompressed(param_1,&header_size,4);
+    //   if (this->description != (char *)0x0) {
+    //     rge_write_uncompressed(param_1,this->description,header_size);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048AD60
+undefined RGE_Scenario(RGE_Scenario* this_, RGE_Game_World* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Scenario::RGE_Scenario(class RGE_Game_World *) */
+    // 
+    // RGE_Scenario * __thiscall RGE_Scenario::RGE_Scenario(RGE_Scenario *this,RGE_Game_World *param_1)
+    // 
+    // {
+    //   RGE_Timeline *pRVar1;
+    //   int iVar2;
+    //   PlayerName *pPVar3;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_c = *unaff_FS_OFFSET;
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055e7bb;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->world = param_1;
+    //   pRVar1 = (RGE_Timeline *)operator_new(0x14);
+    //   local_4 = 0;
+    //   if (pRVar1 == (RGE_Timeline *)0x0) {
+    //     pRVar1 = (RGE_Timeline *)0x0;
+    //   }
+    //   else {
+    //     pRVar1 = (RGE_Timeline *)RGE_Timeline::RGE_Timeline(pRVar1,this->world);
+    //   }
+    //   local_4 = 0xffffffff;
+    //   this->time_line = pRVar1;
+    //   InitializeTextValues(this);
+    //   this->mission_picture = (TPicture *)0x0;
+    //   this->victory_conquest = '\x01';
+    //   pPVar3 = this->player_name;
+    //   for (iVar2 = 0x400; iVar2 != 0; iVar2 = iVar2 + -1) {
+    //     pPVar3->Name[0] = '\0';
+    //     pPVar3->Name[1] = '\0';
+    //     pPVar3->Name[2] = '\0';
+    //     pPVar3->Name[3] = '\0';
+    //     pPVar3 = (PlayerName *)(pPVar3->Name + 4);
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048AE10
+undefined RGE_Scenario(RGE_Scenario* this_, int param_2, RGE_Game_World* param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: length */
+    // /* public: __thiscall RGE_Scenario::RGE_Scenario(int,class RGE_Game_World *) */
+    // 
+    // RGE_Scenario * __thiscall
+    // RGE_Scenario::RGE_Scenario(RGE_Scenario *this,int param_1,RGE_Game_World *param_2)
+    // 
+    // {
+    //   int *piVar1;
+    //   RGE_Timeline *pRVar2;
+    //   char *pcVar3;
+    //   TPicture *pTVar4;
+    //   uchar *puVar5;
+    //   int iVar6;
+    //   PlayerName *pPVar7;
+    //   char **ppcVar8;
+    //   int *piVar9;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   short length;
+    //   short local_f6;
+    //   int val;
+    //   char text [224];
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_c = *unaff_FS_OFFSET;
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055e7ec;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->world = param_2;
+    //   InitializeTextValues(this);
+    //   rge_read(param_1,&this->Version,4);
+    //   if (1.13 < this->Version) {
+    //     pPVar7 = this->player_name;
+    //     iVar6 = 0x10;
+    //     do {
+    //       rge_read(param_1,pPVar7,0x100);
+    //       pPVar7 = pPVar7 + 1;
+    //       iVar6 = iVar6 + -1;
+    //     } while (iVar6 != 0);
+    //   }
+    //   if (1.13 < this->Version) {
+    //     piVar9 = this->PlType;
+    //     iVar6 = 0x10;
+    //     do {
+    //       rge_read(param_1,piVar9 + 0x20,4);
+    //       rge_read(param_1,piVar9,4);
+    //       rge_read(param_1,piVar9 + 0x10,4);
+    //       rge_read(param_1,piVar9 + -0x10,4);
+    //       piVar9 = piVar9 + 1;
+    //       iVar6 = iVar6 + -1;
+    //     } while (iVar6 != 0);
+    //   }
+    //   if (this->Version < 1.07) {
+    //     this->victory_conquest = '\x01';
+    //   }
+    //   else {
+    //     rge_read(param_1,&this->victory_conquest,1);
+    //   }
+    //   val = (int)operator_new(0x14);
+    //   local_4 = 0;
+    //   if ((RGE_Timeline *)val == (RGE_Timeline *)0x0) {
+    //     pRVar2 = (RGE_Timeline *)0x0;
+    //   }
+    //   else {
+    //     pRVar2 = (RGE_Timeline *)RGE_Timeline::RGE_Timeline((RGE_Timeline *)val,param_1,this->world);
+    //   }
+    //   this->time_line = pRVar2;
+    //   local_4 = 0xffffffff;
+    //   rge_read(param_1,&local_f6,2);
+    //   if (0 < local_f6) {
+    //     rge_read(param_1,this->scenario_name,(int)local_f6);
+    //   }
+    //   this->scenario_name[local_f6] = '\0';
+    //   rge_read(param_1,&local_f6,2);
+    //   if (local_f6 < 1) {
+    //     this->description = (char *)0x0;
+    //   }
+    //   else {
+    //     pcVar3 = (char *)calloc((int)local_f6,1);
+    //     this->description = pcVar3;
+    //     rge_read(param_1,pcVar3,(int)local_f6);
+    //     this->description[local_f6 + -1] = '\0';
+    //   }
+    //   if (this->Version < 1.11) {
+    //     this->hints = (char *)0x0;
+    //     this->win_message = (char *)0x0;
+    //     this->loss_message = (char *)0x0;
+    //   }
+    //   else {
+    //     rge_read(param_1,&local_f6,2);
+    //     if (local_f6 < 1) {
+    //       this->hints = (char *)0x0;
+    //     }
+    //     else {
+    //       pcVar3 = (char *)calloc((int)local_f6,1);
+    //       this->hints = pcVar3;
+    //       rge_read(param_1,pcVar3,(int)local_f6);
+    //       this->hints[local_f6 + -1] = '\0';
+    //     }
+    //     rge_read(param_1,&local_f6,2);
+    //     if (local_f6 < 1) {
+    //       this->win_message = (char *)0x0;
+    //     }
+    //     else {
+    //       pcVar3 = (char *)calloc((int)local_f6,1);
+    //       this->win_message = pcVar3;
+    //       rge_read(param_1,pcVar3,(int)local_f6);
+    //       this->win_message[local_f6 + -1] = '\0';
+    //     }
+    //     rge_read(param_1,&local_f6,2);
+    //     if (local_f6 < 1) {
+    //       this->loss_message = (char *)0x0;
+    //     }
+    //     else {
+    //       pcVar3 = (char *)calloc((int)local_f6,1);
+    //       this->loss_message = pcVar3;
+    //       rge_read(param_1,pcVar3,(int)local_f6);
+    //       this->loss_message[local_f6 + -1] = '\0';
+    //     }
+    //     rge_read(param_1,&local_f6,2);
+    //     if (0 < local_f6) {
+    //       pcVar3 = (char *)calloc((int)local_f6,1);
+    //       this->historicle_notes = pcVar3;
+    //       rge_read(param_1,pcVar3,(int)local_f6);
+    //       goto LAB_0048b152;
+    //     }
+    //   }
+    //   this->historicle_notes = (char *)0x0;
+    // LAB_0048b152:
+    //   if (this->Version < 1.03) {
+    //     rge_read(param_1,&local_f6,2);
+    //     if (0 < local_f6) {
+    //       rge_read(param_1,text + 4,(int)local_f6);
+    //     }
+    //     rge_read(param_1,&local_f6,2);
+    //     if (0 < local_f6) {
+    //       rge_read(param_1,text + 4,(int)local_f6);
+    //     }
+    //     rge_read(param_1,&local_f6,2);
+    //     if (0 < local_f6) {
+    //       rge_read(param_1,text + 4,(int)local_f6);
+    //     }
+    //   }
+    //   rge_read(param_1,&local_f6,2);
+    //   if (0 < local_f6) {
+    //     rge_read(param_1,this->Cine_PreGame,(int)local_f6);
+    //   }
+    //   this->Cine_PreGame[local_f6] = '\0';
+    //   rge_read(param_1,&local_f6,2);
+    //   if (0 < local_f6) {
+    //     rge_read(param_1,this->Cine_Victory,(int)local_f6);
+    //   }
+    //   this->Cine_Victory[local_f6] = '\0';
+    //   rge_read(param_1,&local_f6,2);
+    //   if (0 < local_f6) {
+    //     rge_read(param_1,this->Cine_Loss,(int)local_f6);
+    //   }
+    //   this->Cine_Loss[local_f6] = '\0';
+    //   if (1.09 <= this->Version) {
+    //     rge_read(param_1,&local_f6,2);
+    //     if (0 < local_f6) {
+    //       rge_read(param_1,this->Mission_Bmp,(int)local_f6);
+    //     }
+    //     this->Mission_Bmp[local_f6] = '\0';
+    //   }
+    //   if (this->Version < 1.1) {
+    //     this->mission_picture = (TPicture *)0x0;
+    //   }
+    //   else {
+    //     val = (int)operator_new(0x20);
+    //     local_4 = 1;
+    //     if ((TPicture *)val == (TPicture *)0x0) {
+    //       local_4 = 0xffffffff;
+    //       this->mission_picture = (TPicture *)0x0;
+    //     }
+    //     else {
+    //       pTVar4 = (TPicture *)TPicture::TPicture((TPicture *)val,param_1,1);
+    //       local_4 = 0xffffffff;
+    //       this->mission_picture = pTVar4;
+    //     }
+    //   }
+    //   ppcVar8 = this->BuildList;
+    //   iVar6 = 0x10;
+    //   do {
+    //     rge_read(param_1,&local_f6,2);
+    //     if (0 < local_f6) {
+    //       rge_read(param_1,*ppcVar8,(int)local_f6);
+    //     }
+    //     pcVar3 = *ppcVar8;
+    //     ppcVar8 = ppcVar8 + 1;
+    //     iVar6 = iVar6 + -1;
+    //     pcVar3[local_f6] = '\0';
+    //   } while (iVar6 != 0);
+    //   ppcVar8 = this->CityPlan;
+    //   iVar6 = 0x10;
+    //   do {
+    //     rge_read(param_1,&local_f6,2);
+    //     if (0 < local_f6) {
+    //       rge_read(param_1,*ppcVar8,(int)local_f6);
+    //     }
+    //     pcVar3 = *ppcVar8;
+    //     ppcVar8 = ppcVar8 + 1;
+    //     iVar6 = iVar6 + -1;
+    //     pcVar3[local_f6] = '\0';
+    //   } while (iVar6 != 0);
+    //   if (1.08 <= this->Version) {
+    //     ppcVar8 = this->AiRules;
+    //     iVar6 = 0x10;
+    //     do {
+    //       rge_read(param_1,&local_f6,2);
+    //       if (0 < local_f6) {
+    //         rge_read(param_1,*ppcVar8,(int)local_f6);
+    //       }
+    //       pcVar3 = *ppcVar8;
+    //       ppcVar8 = ppcVar8 + 1;
+    //       iVar6 = iVar6 + -1;
+    //       pcVar3[local_f6] = '\0';
+    //     } while (iVar6 != 0);
+    //   }
+    //   piVar9 = this->BuildListFileSize;
+    //   val = 0x10;
+    //   do {
+    //     rge_read(param_1,piVar9,4);
+    //     piVar1 = piVar9 + 0x10;
+    //     rge_read(param_1,piVar1,4);
+    //     if (1.08 <= this->Version) {
+    //       rge_read(param_1,piVar9 + 0x20,4);
+    //     }
+    //     piVar9[-0x30] = 0;
+    //     piVar9[-0x20] = 0;
+    //     piVar9[-0x10] = 0;
+    //     if (1.15 <= this->Version) {
+    //       if (0 < *piVar9) {
+    //         puVar5 = (uchar *)calloc(*piVar9,1);
+    //         piVar9[-0x30] = (int)puVar5;
+    //         rge_read(param_1,puVar5,*piVar9);
+    //       }
+    //       if (0 < *piVar1) {
+    //         puVar5 = (uchar *)calloc(*piVar1,1);
+    //         piVar9[-0x20] = (int)puVar5;
+    //         rge_read(param_1,puVar5,*piVar1);
+    //       }
+    //       if (0 < piVar9[0x20]) {
+    //         puVar5 = (uchar *)calloc(piVar9[0x20],1);
+    //         piVar9[-0x10] = (int)puVar5;
+    //         rge_read(param_1,puVar5,piVar9[0x20]);
+    //       }
+    //     }
+    //     piVar9 = piVar9 + 1;
+    //     val = val + -1;
+    //   } while (val != 0);
+    //   text[0] = '\0';
+    //   text[1] = '\0';
+    //   text[2] = '\0';
+    //   text[3] = '\0';
+    //   if (1.02 < this->Version) {
+    //     rge_read(param_1,text,4);
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048B580
+RGE_Static_Object* RGE_Scenario::get_object_pointer(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual class RGE_Static_Object * __thiscall RGE_Scenario::get_object_pointer(int) */
+    // 
+    // RGE_Static_Object * __thiscall RGE_Scenario::get_object_pointer(RGE_Scenario *this,int param_1)
+    // 
+    // {
+    //   return (RGE_Static_Object *)0x0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048B590
+void RGE_Scenario::rehook() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Scenario::rehook(void) */
+    // 
+    // void __thiscall RGE_Scenario::rehook(RGE_Scenario *this)
+    // 
+    // {
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048B5A0
+void RGE_Scenario(RGE_Scenario* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall RGE_Scenario::~RGE_Scenario(void) */
+    // 
+    // void __thiscall RGE_Scenario::~RGE_Scenario(RGE_Scenario *this)
+    // 
+    // {
+    //   TPicture *this_00;
+    //   char **ppcVar1;
+    //   int iVar2;
+    //   
+    //   this->_padding_ = (int)&_vftable_;
+    //   if (this->time_line != (RGE_Timeline *)0x0) {
+    //     (**(code **)this->time_line->_padding_)(1);
+    //     this->time_line = (RGE_Timeline *)0x0;
+    //   }
+    //   if (this->description != (char *)0x0) {
+    //     free(this->description);
+    //   }
+    //   if (this->hints != (char *)0x0) {
+    //     free(this->hints);
+    //   }
+    //   if (this->win_message != (char *)0x0) {
+    //     free(this->win_message);
+    //   }
+    //   if (this->loss_message != (char *)0x0) {
+    //     free(this->loss_message);
+    //   }
+    //   if (this->historicle_notes != (char *)0x0) {
+    //     free(this->historicle_notes);
+    //   }
+    //   operator_delete(this->scenario_name);
+    //   this_00 = this->mission_picture;
+    //   if (this_00 != (TPicture *)0x0) {
+    //     TPicture::~TPicture(this_00);
+    //     operator_delete(this_00);
+    //     this->mission_picture = (TPicture *)0x0;
+    //   }
+    //   ppcVar1 = this->CityPlan;
+    //   iVar2 = 0x10;
+    //   do {
+    //     operator_delete(ppcVar1[-0x10]);
+    //     operator_delete(*ppcVar1);
+    //     operator_delete(ppcVar1[0x10]);
+    //     if ((uchar *)ppcVar1[0x20] != (uchar *)0x0) {
+    //       free(ppcVar1[0x20]);
+    //     }
+    //     if ((uchar *)ppcVar1[0x30] != (uchar *)0x0) {
+    //       free(ppcVar1[0x30]);
+    //     }
+    //     if ((uchar *)ppcVar1[0x40] != (uchar *)0x0) {
+    //       free(ppcVar1[0x40]);
+    //     }
+    //     ppcVar1 = ppcVar1 + 1;
+    //     iVar2 = iVar2 + -1;
+    //   } while (iVar2 != 0);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048B6C0
+void InitializeTextValues(RGE_Scenario* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Scenario::InitializeTextValues(void) */
+    // 
+    // void __thiscall RGE_Scenario::InitializeTextValues(RGE_Scenario *this)
+    // 
+    // {
+    //   char cVar1;
+    //   char *pcVar2;
+    //   int iVar3;
+    //   uint uVar4;
+    //   uint uVar5;
+    //   int iVar6;
+    //   int *piVar7;
+    //   char *pcVar8;
+    //   PlayerName *pPVar9;
+    //   char none_string [30];
+    //   char default_string [30];
+    //   
+    //                     /* language.dll match for 0x2775: " <None> " */
+    //   (**(code **)(rge_base_game->_padding_ + 0x20))(0x2775,none_string + 4,0x1e);
+    //                     /* language.dll match for 0x277b: "Random" */
+    //   (**(code **)(rge_base_game->_padding_ + 0x20))(0x277b,none_string + 0x18,0x1e);
+    //   this->description = (char *)0x0;
+    //   this->hints = (char *)0x0;
+    //   this->win_message = (char *)0x0;
+    //   this->loss_message = (char *)0x0;
+    //   this->historicle_notes = (char *)0x0;
+    //   pcVar2 = (char *)operator_new(0xe0);
+    //   this->scenario_name = pcVar2;
+    //   for (iVar3 = 0x38; iVar3 != 0; iVar3 = iVar3 + -1) {
+    //     pcVar2[0] = '\0';
+    //     pcVar2[1] = '\0';
+    //     pcVar2[2] = '\0';
+    //     pcVar2[3] = '\0';
+    //     pcVar2 = pcVar2 + 4;
+    //   }
+    //   uVar4 = 0xffffffff;
+    //   pcVar2 = &stack0xffffffa8;
+    //   do {
+    //     pcVar8 = pcVar2;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar8 = pcVar2 + 1;
+    //     cVar1 = *pcVar2;
+    //     pcVar2 = pcVar8;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar2 = pcVar8 + -uVar4;
+    //   pcVar8 = this->Cine_PreGame;
+    //   for (uVar5 = uVar4 >> 2; uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar8 = *(undefined4 *)pcVar2;
+    //     pcVar2 = pcVar2 + 4;
+    //     pcVar8 = pcVar8 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar8 = *pcVar2;
+    //     pcVar2 = pcVar2 + 1;
+    //     pcVar8 = pcVar8 + 1;
+    //   }
+    //   uVar4 = 0xffffffff;
+    //   pcVar2 = &stack0xffffffa8;
+    //   do {
+    //     pcVar8 = pcVar2;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar8 = pcVar2 + 1;
+    //     cVar1 = *pcVar2;
+    //     pcVar2 = pcVar8;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar2 = pcVar8 + -uVar4;
+    //   pcVar8 = this->Cine_Victory;
+    //   for (uVar5 = uVar4 >> 2; uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar8 = *(undefined4 *)pcVar2;
+    //     pcVar2 = pcVar2 + 4;
+    //     pcVar8 = pcVar8 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar8 = *pcVar2;
+    //     pcVar2 = pcVar2 + 1;
+    //     pcVar8 = pcVar8 + 1;
+    //   }
+    //   uVar4 = 0xffffffff;
+    //   pcVar2 = &stack0xffffffa8;
+    //   do {
+    //     pcVar8 = pcVar2;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar8 = pcVar2 + 1;
+    //     cVar1 = *pcVar2;
+    //     pcVar2 = pcVar8;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar2 = pcVar8 + -uVar4;
+    //   pcVar8 = this->Cine_Loss;
+    //   for (uVar5 = uVar4 >> 2; uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar8 = *(undefined4 *)pcVar2;
+    //     pcVar2 = pcVar2 + 4;
+    //     pcVar8 = pcVar8 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar8 = *pcVar2;
+    //     pcVar2 = pcVar2 + 1;
+    //     pcVar8 = pcVar8 + 1;
+    //   }
+    //   uVar4 = 0xffffffff;
+    //   pcVar2 = &stack0xffffffa8;
+    //   do {
+    //     pcVar8 = pcVar2;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar8 = pcVar2 + 1;
+    //     cVar1 = *pcVar2;
+    //     pcVar2 = pcVar8;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   iVar3 = 0x10;
+    //   pcVar2 = pcVar8 + -uVar4;
+    //   pcVar8 = this->Mission_Bmp;
+    //   for (uVar5 = uVar4 >> 2; uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar8 = *(undefined4 *)pcVar2;
+    //     pcVar2 = pcVar2 + 4;
+    //     pcVar8 = pcVar8 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar8 = *pcVar2;
+    //     pcVar2 = pcVar2 + 1;
+    //     pcVar8 = pcVar8 + 1;
+    //   }
+    //   pPVar9 = this->player_name;
+    //   piVar7 = this->PlType;
+    //   do {
+    //     piVar7[-0x10] = 0;
+    //     *piVar7 = 0;
+    //     piVar7[0x10] = 0;
+    //     piVar7[0x20] = 0;
+    //     pPVar9->Name[0] = '\0';
+    //     pcVar2 = (char *)operator_new(0xe0);
+    //     piVar7[-0x181] = (int)pcVar2;
+    //     for (iVar6 = 0x38; iVar6 != 0; iVar6 = iVar6 + -1) {
+    //       pcVar2[0] = '\0';
+    //       pcVar2[1] = '\0';
+    //       pcVar2[2] = '\0';
+    //       pcVar2[3] = '\0';
+    //       pcVar2 = pcVar2 + 4;
+    //     }
+    //     uVar4 = 0xffffffff;
+    //     pcVar2 = none_string + 0xc;
+    //     do {
+    //       pcVar8 = pcVar2;
+    //       if (uVar4 == 0) break;
+    //       uVar4 = uVar4 - 1;
+    //       pcVar8 = pcVar2 + 1;
+    //       cVar1 = *pcVar2;
+    //       pcVar2 = pcVar8;
+    //     } while (cVar1 != '\0');
+    //     uVar4 = ~uVar4;
+    //     pcVar2 = pcVar8 + -uVar4;
+    //     pcVar8 = (char *)piVar7[-0x181];
+    //     for (uVar5 = uVar4 >> 2; uVar5 != 0; uVar5 = uVar5 - 1) {
+    //       *(undefined4 *)pcVar8 = *(undefined4 *)pcVar2;
+    //       pcVar2 = pcVar2 + 4;
+    //       pcVar8 = pcVar8 + 4;
+    //     }
+    //     for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //       *pcVar8 = *pcVar2;
+    //       pcVar2 = pcVar2 + 1;
+    //       pcVar8 = pcVar8 + 1;
+    //     }
+    //     pcVar2 = (char *)operator_new(0xe0);
+    //     piVar7[-0x171] = (int)pcVar2;
+    //     for (iVar6 = 0x38; iVar6 != 0; iVar6 = iVar6 + -1) {
+    //       pcVar2[0] = '\0';
+    //       pcVar2[1] = '\0';
+    //       pcVar2[2] = '\0';
+    //       pcVar2[3] = '\0';
+    //       pcVar2 = pcVar2 + 4;
+    //     }
+    //     uVar4 = 0xffffffff;
+    //     pcVar2 = &stack0xffffffa8;
+    //     do {
+    //       pcVar8 = pcVar2;
+    //       if (uVar4 == 0) break;
+    //       uVar4 = uVar4 - 1;
+    //       pcVar8 = pcVar2 + 1;
+    //       cVar1 = *pcVar2;
+    //       pcVar2 = pcVar8;
+    //     } while (cVar1 != '\0');
+    //     uVar4 = ~uVar4;
+    //     pcVar2 = pcVar8 + -uVar4;
+    //     pcVar8 = (char *)piVar7[-0x171];
+    //     for (uVar5 = uVar4 >> 2; uVar5 != 0; uVar5 = uVar5 - 1) {
+    //       *(undefined4 *)pcVar8 = *(undefined4 *)pcVar2;
+    //       pcVar2 = pcVar2 + 4;
+    //       pcVar8 = pcVar8 + 4;
+    //     }
+    //     for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //       *pcVar8 = *pcVar2;
+    //       pcVar2 = pcVar2 + 1;
+    //       pcVar8 = pcVar8 + 1;
+    //     }
+    //     pcVar2 = (char *)operator_new(0xe0);
+    //     piVar7[-0x161] = (int)pcVar2;
+    //     for (iVar6 = 0x38; iVar6 != 0; iVar6 = iVar6 + -1) {
+    //       pcVar2[0] = '\0';
+    //       pcVar2[1] = '\0';
+    //       pcVar2[2] = '\0';
+    //       pcVar2[3] = '\0';
+    //       pcVar2 = pcVar2 + 4;
+    //     }
+    //     uVar4 = 0xffffffff;
+    //     pcVar2 = none_string + 0xc;
+    //     do {
+    //       pcVar8 = pcVar2;
+    //       if (uVar4 == 0) break;
+    //       uVar4 = uVar4 - 1;
+    //       pcVar8 = pcVar2 + 1;
+    //       cVar1 = *pcVar2;
+    //       pcVar2 = pcVar8;
+    //     } while (cVar1 != '\0');
+    //     uVar4 = ~uVar4;
+    //     pcVar2 = pcVar8 + -uVar4;
+    //     pcVar8 = (char *)piVar7[-0x161];
+    //     for (uVar5 = uVar4 >> 2; uVar5 != 0; uVar5 = uVar5 - 1) {
+    //       *(undefined4 *)pcVar8 = *(undefined4 *)pcVar2;
+    //       pcVar2 = pcVar2 + 4;
+    //       pcVar8 = pcVar8 + 4;
+    //     }
+    //     for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //       *pcVar8 = *pcVar2;
+    //       pcVar2 = pcVar2 + 1;
+    //       pcVar8 = pcVar8 + 1;
+    //     }
+    //     piVar7[-0x151] = 0;
+    //     piVar7[-0x141] = 0;
+    //     piVar7[-0x131] = 0;
+    //     piVar7[-0x121] = 0;
+    //     piVar7[-0x111] = 0;
+    //     piVar7[-0x101] = 0;
+    //     pPVar9 = pPVar9 + 1;
+    //     iVar3 = iVar3 + -1;
+    //     piVar7 = piVar7 + 1;
+    //     if (iVar3 == 0) {
+    //       return;
+    //     }
+    //   } while( true );
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048B910
+void Set_scenario_name(RGE_Scenario* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Scenario::Set_scenario_name(char *) */
+    // 
+    // void __thiscall RGE_Scenario::Set_scenario_name(RGE_Scenario *this,char *param_1)
+    // 
+    // {
+    //   char cVar1;
+    //   uint uVar2;
+    //   uint uVar3;
+    //   char *pcVar4;
+    //   char *pcVar5;
+    //   
+    //   if (param_1 == (char *)0x0) {
+    //     *this->scenario_name = '\0';
+    //     return;
+    //   }
+    //   uVar2 = 0xffffffff;
+    //   do {
+    //     pcVar4 = param_1;
+    //     if (uVar2 == 0) break;
+    //     uVar2 = uVar2 - 1;
+    //     pcVar4 = param_1 + 1;
+    //     cVar1 = *param_1;
+    //     param_1 = pcVar4;
+    //   } while (cVar1 != '\0');
+    //   uVar2 = ~uVar2;
+    //   pcVar4 = pcVar4 + -uVar2;
+    //   pcVar5 = this->scenario_name;
+    //   for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //     *(undefined4 *)pcVar5 = *(undefined4 *)pcVar4;
+    //     pcVar4 = pcVar4 + 4;
+    //     pcVar5 = pcVar5 + 4;
+    //   }
+    //   for (uVar2 = uVar2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+    //     *pcVar5 = *pcVar4;
+    //     pcVar4 = pcVar4 + 1;
+    //     pcVar5 = pcVar5 + 1;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048B950
+void Set_description(RGE_Scenario* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Scenario::Set_description(char *) */
+    // 
+    // void __thiscall RGE_Scenario::Set_description(RGE_Scenario *this,char *param_1)
+    // 
+    // {
+    //   Set_message(this,param_1,0);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048B960
+void Set_Cine_PreGame(RGE_Scenario* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Scenario::Set_Cine_PreGame(char *) */
+    // 
+    // void __thiscall RGE_Scenario::Set_Cine_PreGame(RGE_Scenario *this,char *param_1)
+    // 
+    // {
+    //   char cVar1;
+    //   uint uVar2;
+    //   uint uVar3;
+    //   char *pcVar4;
+    //   char *pcVar5;
+    //   
+    //   if (param_1 == (char *)0x0) {
+    //     this->Cine_PreGame[0] = '\0';
+    //     return;
+    //   }
+    //   uVar2 = 0xffffffff;
+    //   do {
+    //     pcVar4 = param_1;
+    //     if (uVar2 == 0) break;
+    //     uVar2 = uVar2 - 1;
+    //     pcVar4 = param_1 + 1;
+    //     cVar1 = *param_1;
+    //     param_1 = pcVar4;
+    //   } while (cVar1 != '\0');
+    //   uVar2 = ~uVar2;
+    //   pcVar4 = pcVar4 + -uVar2;
+    //   pcVar5 = this->Cine_PreGame;
+    //   for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //     *(undefined4 *)pcVar5 = *(undefined4 *)pcVar4;
+    //     pcVar4 = pcVar4 + 4;
+    //     pcVar5 = pcVar5 + 4;
+    //   }
+    //   for (uVar2 = uVar2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+    //     *pcVar5 = *pcVar4;
+    //     pcVar4 = pcVar4 + 1;
+    //     pcVar5 = pcVar5 + 1;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048B9A0
+void Set_Cine_Victory(RGE_Scenario* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Scenario::Set_Cine_Victory(char *) */
+    // 
+    // void __thiscall RGE_Scenario::Set_Cine_Victory(RGE_Scenario *this,char *param_1)
+    // 
+    // {
+    //   char cVar1;
+    //   uint uVar2;
+    //   uint uVar3;
+    //   char *pcVar4;
+    //   char *pcVar5;
+    //   
+    //   if (param_1 == (char *)0x0) {
+    //     this->Cine_Victory[0] = '\0';
+    //     return;
+    //   }
+    //   uVar2 = 0xffffffff;
+    //   do {
+    //     pcVar4 = param_1;
+    //     if (uVar2 == 0) break;
+    //     uVar2 = uVar2 - 1;
+    //     pcVar4 = param_1 + 1;
+    //     cVar1 = *param_1;
+    //     param_1 = pcVar4;
+    //   } while (cVar1 != '\0');
+    //   uVar2 = ~uVar2;
+    //   pcVar4 = pcVar4 + -uVar2;
+    //   pcVar5 = this->Cine_Victory;
+    //   for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //     *(undefined4 *)pcVar5 = *(undefined4 *)pcVar4;
+    //     pcVar4 = pcVar4 + 4;
+    //     pcVar5 = pcVar5 + 4;
+    //   }
+    //   for (uVar2 = uVar2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+    //     *pcVar5 = *pcVar4;
+    //     pcVar4 = pcVar4 + 1;
+    //     pcVar5 = pcVar5 + 1;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048B9E0
+void Set_Cine_Loss(RGE_Scenario* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Scenario::Set_Cine_Loss(char *) */
+    // 
+    // void __thiscall RGE_Scenario::Set_Cine_Loss(RGE_Scenario *this,char *param_1)
+    // 
+    // {
+    //   char cVar1;
+    //   uint uVar2;
+    //   uint uVar3;
+    //   char *pcVar4;
+    //   char *pcVar5;
+    //   
+    //   if (param_1 == (char *)0x0) {
+    //     this->Cine_Loss[0] = '\0';
+    //     return;
+    //   }
+    //   uVar2 = 0xffffffff;
+    //   do {
+    //     pcVar4 = param_1;
+    //     if (uVar2 == 0) break;
+    //     uVar2 = uVar2 - 1;
+    //     pcVar4 = param_1 + 1;
+    //     cVar1 = *param_1;
+    //     param_1 = pcVar4;
+    //   } while (cVar1 != '\0');
+    //   uVar2 = ~uVar2;
+    //   pcVar4 = pcVar4 + -uVar2;
+    //   pcVar5 = this->Cine_Loss;
+    //   for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //     *(undefined4 *)pcVar5 = *(undefined4 *)pcVar4;
+    //     pcVar4 = pcVar4 + 4;
+    //     pcVar5 = pcVar5 + 4;
+    //   }
+    //   for (uVar2 = uVar2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+    //     *pcVar5 = *pcVar4;
+    //     pcVar4 = pcVar4 + 1;
+    //     pcVar5 = pcVar5 + 1;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048BA20
+void Set_Mission_Bmp(RGE_Scenario* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Scenario::Set_Mission_Bmp(char *) */
+    // 
+    // void __thiscall RGE_Scenario::Set_Mission_Bmp(RGE_Scenario *this,char *param_1)
+    // 
+    // {
+    //   char cVar1;
+    //   uint uVar2;
+    //   uint uVar3;
+    //   char *pcVar4;
+    //   char *pcVar5;
+    //   
+    //   if (param_1 == (char *)0x0) {
+    //     this->Mission_Bmp[0] = '\0';
+    //     return;
+    //   }
+    //   uVar2 = 0xffffffff;
+    //   do {
+    //     pcVar4 = param_1;
+    //     if (uVar2 == 0) break;
+    //     uVar2 = uVar2 - 1;
+    //     pcVar4 = param_1 + 1;
+    //     cVar1 = *param_1;
+    //     param_1 = pcVar4;
+    //   } while (cVar1 != '\0');
+    //   uVar2 = ~uVar2;
+    //   pcVar4 = pcVar4 + -uVar2;
+    //   pcVar5 = this->Mission_Bmp;
+    //   for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //     *(undefined4 *)pcVar5 = *(undefined4 *)pcVar4;
+    //     pcVar4 = pcVar4 + 4;
+    //     pcVar5 = pcVar5 + 4;
+    //   }
+    //   for (uVar2 = uVar2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+    //     *pcVar5 = *pcVar4;
+    //     pcVar4 = pcVar4 + 1;
+    //     pcVar5 = pcVar5 + 1;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048BA60
+void Set_BuildList(RGE_Scenario* this_, int param_2, char* param_3, int param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Scenario::Set_BuildList(int,char *,int) */
+    // 
+    // void __thiscall
+    // RGE_Scenario::Set_BuildList(RGE_Scenario *this,int param_1,char *param_2,int param_3)
+    // 
+    // {
+    //   char cVar1;
+    //   uint uVar2;
+    //   uint uVar3;
+    //   char **ppcVar4;
+    //   char *pcVar5;
+    //   char *pcVar6;
+    //   
+    //   if (param_2 == (char *)0x0) {
+    //     ppcVar4 = this->BuildList + param_1;
+    //     *this->BuildList[param_1] = '\0';
+    //   }
+    //   else {
+    //     ppcVar4 = this->BuildList + param_1;
+    //     uVar2 = 0xffffffff;
+    //     pcVar5 = param_2;
+    //     do {
+    //       pcVar6 = pcVar5;
+    //       if (uVar2 == 0) break;
+    //       uVar2 = uVar2 - 1;
+    //       pcVar6 = pcVar5 + 1;
+    //       cVar1 = *pcVar5;
+    //       pcVar5 = pcVar6;
+    //     } while (cVar1 != '\0');
+    //     uVar2 = ~uVar2;
+    //     pcVar5 = pcVar6 + -uVar2;
+    //     pcVar6 = *ppcVar4;
+    //     for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //       *(undefined4 *)pcVar6 = *(undefined4 *)pcVar5;
+    //       pcVar5 = pcVar5 + 4;
+    //       pcVar6 = pcVar6 + 4;
+    //     }
+    //     for (uVar2 = uVar2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+    //       *pcVar6 = *pcVar5;
+    //       pcVar5 = pcVar5 + 1;
+    //       pcVar6 = pcVar6 + 1;
+    //     }
+    //   }
+    //   if (param_3 == 1) {
+    //     uVar2 = 0xffffffff;
+    //     do {
+    //       if (uVar2 == 0) break;
+    //       uVar2 = uVar2 - 1;
+    //       cVar1 = *param_2;
+    //       param_2 = param_2 + 1;
+    //     } while (cVar1 != '\0');
+    //     (*ppcVar4)[~uVar2 - 5] = '\0';
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048BAD0
+void Set_CityPlan(RGE_Scenario* this_, int param_2, char* param_3, int param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Scenario::Set_CityPlan(int,char *,int) */
+    // 
+    // void __thiscall RGE_Scenario::Set_CityPlan(RGE_Scenario *this,int param_1,char *param_2,int param_3)
+    // 
+    // {
+    //   char cVar1;
+    //   uint uVar2;
+    //   uint uVar3;
+    //   char **ppcVar4;
+    //   char *pcVar5;
+    //   char *pcVar6;
+    //   
+    //   if (param_2 == (char *)0x0) {
+    //     ppcVar4 = this->CityPlan + param_1;
+    //     *this->CityPlan[param_1] = '\0';
+    //   }
+    //   else {
+    //     ppcVar4 = this->CityPlan + param_1;
+    //     uVar2 = 0xffffffff;
+    //     pcVar5 = param_2;
+    //     do {
+    //       pcVar6 = pcVar5;
+    //       if (uVar2 == 0) break;
+    //       uVar2 = uVar2 - 1;
+    //       pcVar6 = pcVar5 + 1;
+    //       cVar1 = *pcVar5;
+    //       pcVar5 = pcVar6;
+    //     } while (cVar1 != '\0');
+    //     uVar2 = ~uVar2;
+    //     pcVar5 = pcVar6 + -uVar2;
+    //     pcVar6 = *ppcVar4;
+    //     for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //       *(undefined4 *)pcVar6 = *(undefined4 *)pcVar5;
+    //       pcVar5 = pcVar5 + 4;
+    //       pcVar6 = pcVar6 + 4;
+    //     }
+    //     for (uVar2 = uVar2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+    //       *pcVar6 = *pcVar5;
+    //       pcVar5 = pcVar5 + 1;
+    //       pcVar6 = pcVar6 + 1;
+    //     }
+    //   }
+    //   if (param_3 == 1) {
+    //     uVar2 = 0xffffffff;
+    //     do {
+    //       if (uVar2 == 0) break;
+    //       uVar2 = uVar2 - 1;
+    //       cVar1 = *param_2;
+    //       param_2 = param_2 + 1;
+    //     } while (cVar1 != '\0');
+    //     (*ppcVar4)[~uVar2 - 5] = '\0';
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048BB40
+void Set_player_AI(RGE_Scenario* this_, int param_2, char* param_3, int param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Scenario::Set_player_AI(int,char *,int) */
+    // 
+    // void __thiscall
+    // RGE_Scenario::Set_player_AI(RGE_Scenario *this,int param_1,char *param_2,int param_3)
+    // 
+    // {
+    //   char cVar1;
+    //   uint uVar2;
+    //   uint uVar3;
+    //   char **ppcVar4;
+    //   char *pcVar5;
+    //   char *pcVar6;
+    //   
+    //   if (param_2 == (char *)0x0) {
+    //     ppcVar4 = this->AiRules + param_1;
+    //     *this->AiRules[param_1] = '\0';
+    //   }
+    //   else {
+    //     ppcVar4 = this->AiRules + param_1;
+    //     uVar2 = 0xffffffff;
+    //     pcVar5 = param_2;
+    //     do {
+    //       pcVar6 = pcVar5;
+    //       if (uVar2 == 0) break;
+    //       uVar2 = uVar2 - 1;
+    //       pcVar6 = pcVar5 + 1;
+    //       cVar1 = *pcVar5;
+    //       pcVar5 = pcVar6;
+    //     } while (cVar1 != '\0');
+    //     uVar2 = ~uVar2;
+    //     pcVar5 = pcVar6 + -uVar2;
+    //     pcVar6 = *ppcVar4;
+    //     for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //       *(undefined4 *)pcVar6 = *(undefined4 *)pcVar5;
+    //       pcVar5 = pcVar5 + 4;
+    //       pcVar6 = pcVar6 + 4;
+    //     }
+    //     for (uVar2 = uVar2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+    //       *pcVar6 = *pcVar5;
+    //       pcVar5 = pcVar5 + 1;
+    //       pcVar6 = pcVar6 + 1;
+    //     }
+    //   }
+    //   if (param_3 == 1) {
+    //     uVar2 = 0xffffffff;
+    //     do {
+    //       if (uVar2 == 0) break;
+    //       uVar2 = uVar2 - 1;
+    //       cVar1 = *param_2;
+    //       param_2 = param_2 + 1;
+    //     } while (cVar1 != '\0');
+    //     (*ppcVar4)[~uVar2 - 5] = '\0';
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048BBB0
+void Set_Version(RGE_Scenario* this_, float param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Scenario::Set_Version(float) */
+    // 
+    // void __thiscall RGE_Scenario::Set_Version(RGE_Scenario *this,float param_1)
+    // 
+    // {
+    //   this->Version = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048BBC0
+void Set_player_Type(RGE_Scenario* this_, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Scenario::Set_player_Type(int,int) */
+    // 
+    // void __thiscall RGE_Scenario::Set_player_Type(RGE_Scenario *this,int param_1,int param_2)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < 0x10)) {
+    //     this->PlType[param_1] = param_2;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048BBE0
+void Set_player_Civ(RGE_Scenario* this_, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Scenario::Set_player_Civ(int,int) */
+    // 
+    // void __thiscall RGE_Scenario::Set_player_Civ(RGE_Scenario *this,int param_1,int param_2)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < 0x10)) {
+    //     this->PlCivilization[param_1] = param_2;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048BC00
+void Set_player_Active(RGE_Scenario* this_, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Scenario::Set_player_Active(int,int) */
+    // 
+    // void __thiscall RGE_Scenario::Set_player_Active(RGE_Scenario *this,int param_1,int param_2)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < 0x10)) {
+    //     this->PlActive[param_1] = param_2;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048BC20
+void SetPlayerName(RGE_Scenario* this_, int param_2, char* param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Scenario::SetPlayerName(int,char *) */
+    // 
+    // void __thiscall RGE_Scenario::SetPlayerName(RGE_Scenario *this,int param_1,char *param_2)
+    // 
+    // {
+    //   char cVar1;
+    //   uint uVar2;
+    //   uint uVar3;
+    //   char *pcVar4;
+    //   PlayerName *pPVar5;
+    //   
+    //   uVar2 = 0xffffffff;
+    //   pcVar4 = param_2;
+    //   do {
+    //     if (uVar2 == 0) break;
+    //     uVar2 = uVar2 - 1;
+    //     cVar1 = *pcVar4;
+    //     pcVar4 = pcVar4 + 1;
+    //   } while (cVar1 != '\0');
+    //   pPVar5 = this->player_name + param_1;
+    //   for (uVar3 = ~uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //     *(undefined4 *)pPVar5->Name = *(undefined4 *)param_2;
+    //     param_2 = param_2 + 4;
+    //     pPVar5 = (PlayerName *)(pPVar5->Name + 4);
+    //   }
+    //   for (uVar2 = ~uVar2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+    //     pPVar5->Name[0] = *param_2;
+    //     param_2 = param_2 + 1;
+    //     pPVar5 = (PlayerName *)(pPVar5->Name + 1);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048BC60
+char* Get_scenario_name(RGE_Scenario* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: char * __thiscall RGE_Scenario::Get_scenario_name(void) */
+    // 
+    // char * __thiscall RGE_Scenario::Get_scenario_name(RGE_Scenario *this)
+    // 
+    // {
+    //   return this->scenario_name;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048BC70
+char* Get_description(RGE_Scenario* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: char * __thiscall RGE_Scenario::Get_description(void) */
+    // 
+    // char * __thiscall RGE_Scenario::Get_description(RGE_Scenario *this)
+    // 
+    // {
+    //   return this->description;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048BC80
+char* Get_Cine_PreGame(RGE_Scenario* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: char * __thiscall RGE_Scenario::Get_Cine_PreGame(void) */
+    // 
+    // char * __thiscall RGE_Scenario::Get_Cine_PreGame(RGE_Scenario *this)
+    // 
+    // {
+    //   return this->Cine_PreGame;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048BC90
+char* Get_Cine_Victory(RGE_Scenario* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: char * __thiscall RGE_Scenario::Get_Cine_Victory(void) */
+    // 
+    // char * __thiscall RGE_Scenario::Get_Cine_Victory(RGE_Scenario *this)
+    // 
+    // {
+    //   return this->Cine_Victory;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048BCA0
+char* Get_Cine_Loss(RGE_Scenario* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: char * __thiscall RGE_Scenario::Get_Cine_Loss(void) */
+    // 
+    // char * __thiscall RGE_Scenario::Get_Cine_Loss(RGE_Scenario *this)
+    // 
+    // {
+    //   return this->Cine_Loss;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048BCB0
+char* Get_Mission_Bmp(RGE_Scenario* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: char * __thiscall RGE_Scenario::Get_Mission_Bmp(void) */
+    // 
+    // char * __thiscall RGE_Scenario::Get_Mission_Bmp(RGE_Scenario *this)
+    // 
+    // {
+    //   return this->Mission_Bmp;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048BCC0
+char* Get_BuildList(RGE_Scenario* this_, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: random_str */
+    // /* public: char * __thiscall RGE_Scenario::Get_BuildList(int,int) */
+    // 
+    // char * __thiscall RGE_Scenario::Get_BuildList(RGE_Scenario *this,int param_1,int param_2)
+    // 
+    // {
+    //   char cVar1;
+    //   byte bVar2;
+    //   byte *pbVar3;
+    //   int iVar4;
+    //   byte *pbVar5;
+    //   uint uVar6;
+    //   uint uVar7;
+    //   int iVar8;
+    //   char *pcVar9;
+    //   byte *pbVar10;
+    //   char *pcVar11;
+    //   bool bVar12;
+    //   byte abStack_18c [8];
+    //   undefined1 *puStack_184;
+    //   undefined4 uStack_180;
+    //   char random_str [50];
+    //   char none_str [50];
+    //   char temp_path [260];
+    //   
+    //   puStack_184 = random_str + 4;
+    //   uStack_180 = 0x32;
+    //   abStack_18c[4] = 0x7b;
+    //   abStack_18c[5] = 0x27;
+    //   abStack_18c[6] = 0;
+    //   abStack_18c[7] = 0;
+    //                     /* language.dll match for 0x277b: "Random" */
+    //   iVar8 = -1;
+    //   abStack_18c[0] = 0xe6;
+    //   abStack_18c[1] = 0xbc;
+    //   abStack_18c[2] = 0x48;
+    //   abStack_18c[3] = 0;
+    //   (**(code **)(rge_base_game->_padding_ + 0x20))();
+    //   abStack_18c[0] = 0x32;
+    //   abStack_18c[1] = 0;
+    //   abStack_18c[2] = 0;
+    //   abStack_18c[3] = 0;
+    //                     /* language.dll match for 0x2775: " <None> " */
+    //   (**(code **)(rge_base_game->_padding_ + 0x20))(0x2775,random_str + 0x2c);
+    //   iVar4 = GetTempPathA(0x104,none_str + 0x20);
+    //   if (iVar4 == 0) {
+    //     uVar6 = 0xffffffff;
+    //     pcVar9 = &s__;
+    //     do {
+    //       pcVar11 = pcVar9;
+    //       if (uVar6 == 0) break;
+    //       uVar6 = uVar6 - 1;
+    //       pcVar11 = pcVar9 + 1;
+    //       cVar1 = *pcVar9;
+    //       pcVar9 = pcVar11;
+    //     } while (cVar1 != '\0');
+    //     uVar6 = ~uVar6;
+    //     pcVar9 = pcVar11 + -uVar6;
+    //     pcVar11 = none_str + 0x18;
+    //     for (uVar7 = uVar6 >> 2; uVar7 != 0; uVar7 = uVar7 - 1) {
+    //       *(undefined4 *)pcVar11 = *(undefined4 *)pcVar9;
+    //       pcVar9 = pcVar9 + 4;
+    //       pcVar11 = pcVar11 + 4;
+    //     }
+    //     for (uVar6 = uVar6 & 3; uVar6 != 0; uVar6 = uVar6 - 1) {
+    //       *pcVar11 = *pcVar9;
+    //       pcVar9 = pcVar9 + 1;
+    //       pcVar11 = pcVar11 + 1;
+    //     }
+    //   }
+    //   if (((temp_path._240_4_ == 1) && (0 < this->BuildListFileSize[temp_path._236_4_])) &&
+    //      (this->BuildListFile[temp_path._236_4_] != (uchar *)0x0)) {
+    //     sprintf(this->TempText1,s__stemp_buildlist_d_tmp,none_str + 0x18,temp_path._236_4_);
+    //     iVar8 = __open(this->TempText1,0x8301,0x180);
+    //   }
+    //   if (iVar8 != -1) {
+    //     write(iVar8,this->BuildListFile[temp_path._236_4_],this->BuildListFileSize[temp_path._236_4_]);
+    //     close(iVar8);
+    //     return this->TempText1;
+    //   }
+    //   if (temp_path._240_4_ == 1) {
+    //     pbVar3 = (byte *)this->BuildList[temp_path._236_4_];
+    //     pbVar10 = (byte *)(random_str + 0x18);
+    //     pbVar5 = pbVar3;
+    //     do {
+    //       bVar2 = *pbVar5;
+    //       bVar12 = bVar2 < *pbVar10;
+    //       if (bVar2 != *pbVar10) {
+    // LAB_0048be0e:
+    //         iVar4 = (1 - (uint)bVar12) - (uint)(bVar12 != 0);
+    //         goto LAB_0048be13;
+    //       }
+    //       if (bVar2 == 0) break;
+    //       bVar2 = pbVar5[1];
+    //       bVar12 = bVar2 < pbVar10[1];
+    //       if (bVar2 != pbVar10[1]) goto LAB_0048be0e;
+    //       pbVar5 = pbVar5 + 2;
+    //       pbVar10 = pbVar10 + 2;
+    //     } while (bVar2 != 0);
+    //     iVar4 = 0;
+    // LAB_0048be13:
+    //     if (iVar4 != 0) {
+    //       pbVar10 = abStack_18c;
+    //       pbVar5 = pbVar3;
+    //       do {
+    //         bVar2 = *pbVar5;
+    //         bVar12 = bVar2 < *pbVar10;
+    //         if (bVar2 != *pbVar10) {
+    // LAB_0048be45:
+    //           iVar4 = (1 - (uint)bVar12) - (uint)(bVar12 != 0);
+    //           goto LAB_0048be4a;
+    //         }
+    //         if (bVar2 == 0) break;
+    //         bVar2 = pbVar5[1];
+    //         bVar12 = bVar2 < pbVar10[1];
+    //         if (bVar2 != pbVar10[1]) goto LAB_0048be45;
+    //         pbVar5 = pbVar5 + 2;
+    //         pbVar10 = pbVar10 + 2;
+    //       } while (bVar2 != 0);
+    //       iVar4 = 0;
+    // LAB_0048be4a:
+    //       if (iVar4 != 0) {
+    //         sprintf(this->TempText1,s__s_s_ai,rge_base_game->prog_info->ai_dir,pbVar3);
+    //         return this->TempText1;
+    //       }
+    //     }
+    //   }
+    //   sprintf(this->TempText1,s__s,this->BuildList[temp_path._236_4_]);
+    //   return this->TempText1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048BEC0
+char* Get_CityPlan(RGE_Scenario* this_, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: random_str */
+    // /* public: char * __thiscall RGE_Scenario::Get_CityPlan(int,int) */
+    // 
+    // char * __thiscall RGE_Scenario::Get_CityPlan(RGE_Scenario *this,int param_1,int param_2)
+    // 
+    // {
+    //   char cVar1;
+    //   byte bVar2;
+    //   int iVar3;
+    //   byte *pbVar4;
+    //   byte *pbVar5;
+    //   uint uVar6;
+    //   uint uVar7;
+    //   int iVar8;
+    //   char *pcVar9;
+    //   byte *pbVar10;
+    //   char *pcVar11;
+    //   bool bVar12;
+    //   byte abStack_18c [8];
+    //   undefined1 *puStack_184;
+    //   undefined4 uStack_180;
+    //   char random_str [50];
+    //   char none_str [50];
+    //   char temp_path [260];
+    //   
+    //   puStack_184 = random_str + 4;
+    //   uStack_180 = 0x32;
+    //   abStack_18c[4] = 0x7b;
+    //   abStack_18c[5] = 0x27;
+    //   abStack_18c[6] = 0;
+    //   abStack_18c[7] = 0;
+    //                     /* language.dll match for 0x277b: "Random" */
+    //   iVar8 = -1;
+    //   abStack_18c[0] = 0xe6;
+    //   abStack_18c[1] = 0xbe;
+    //   abStack_18c[2] = 0x48;
+    //   abStack_18c[3] = 0;
+    //   (**(code **)(rge_base_game->_padding_ + 0x20))();
+    //   abStack_18c[0] = 0x32;
+    //   abStack_18c[1] = 0;
+    //   abStack_18c[2] = 0;
+    //   abStack_18c[3] = 0;
+    //                     /* language.dll match for 0x2775: " <None> " */
+    //   (**(code **)(rge_base_game->_padding_ + 0x20))(0x2775,random_str + 0x2c);
+    //   iVar3 = GetTempPathA(0x104,none_str + 0x20);
+    //   if (iVar3 == 0) {
+    //     uVar6 = 0xffffffff;
+    //     pcVar9 = &s__;
+    //     do {
+    //       pcVar11 = pcVar9;
+    //       if (uVar6 == 0) break;
+    //       uVar6 = uVar6 - 1;
+    //       pcVar11 = pcVar9 + 1;
+    //       cVar1 = *pcVar9;
+    //       pcVar9 = pcVar11;
+    //     } while (cVar1 != '\0');
+    //     uVar6 = ~uVar6;
+    //     pcVar9 = pcVar11 + -uVar6;
+    //     pcVar11 = none_str + 0x18;
+    //     for (uVar7 = uVar6 >> 2; uVar7 != 0; uVar7 = uVar7 - 1) {
+    //       *(undefined4 *)pcVar11 = *(undefined4 *)pcVar9;
+    //       pcVar9 = pcVar9 + 4;
+    //       pcVar11 = pcVar11 + 4;
+    //     }
+    //     for (uVar6 = uVar6 & 3; uVar6 != 0; uVar6 = uVar6 - 1) {
+    //       *pcVar11 = *pcVar9;
+    //       pcVar9 = pcVar9 + 1;
+    //       pcVar11 = pcVar11 + 1;
+    //     }
+    //   }
+    //   if (((temp_path._240_4_ == 1) && (0 < this->CityPlanFileSize[temp_path._236_4_])) &&
+    //      (this->CityPlanFile[temp_path._236_4_] != (uchar *)0x0)) {
+    //     sprintf(this->TempText2,s__stemp_CityPlan_d_tmp,none_str + 0x18,temp_path._236_4_);
+    //     iVar8 = __open(this->TempText2,0x8301,0x180);
+    //   }
+    //   if (iVar8 != -1) {
+    //     write(iVar8,this->CityPlanFile[temp_path._236_4_],this->CityPlanFileSize[temp_path._236_4_]);
+    //     close(iVar8);
+    //     return this->TempText2;
+    //   }
+    //   if (temp_path._240_4_ == 1) {
+    //     pbVar5 = (byte *)this->BuildList[temp_path._236_4_];
+    //     pbVar10 = (byte *)(random_str + 0x18);
+    //     pbVar4 = pbVar5;
+    //     do {
+    //       bVar2 = *pbVar4;
+    //       bVar12 = bVar2 < *pbVar10;
+    //       if (bVar2 != *pbVar10) {
+    // LAB_0048c00e:
+    //         iVar3 = (1 - (uint)bVar12) - (uint)(bVar12 != 0);
+    //         goto LAB_0048c013;
+    //       }
+    //       if (bVar2 == 0) break;
+    //       bVar2 = pbVar4[1];
+    //       bVar12 = bVar2 < pbVar10[1];
+    //       if (bVar2 != pbVar10[1]) goto LAB_0048c00e;
+    //       pbVar4 = pbVar4 + 2;
+    //       pbVar10 = pbVar10 + 2;
+    //     } while (bVar2 != 0);
+    //     iVar3 = 0;
+    // LAB_0048c013:
+    //     if (iVar3 != 0) {
+    //       pbVar10 = abStack_18c;
+    //       do {
+    //         bVar2 = *pbVar5;
+    //         bVar12 = bVar2 < *pbVar10;
+    //         if (bVar2 != *pbVar10) {
+    // LAB_0048c045:
+    //           iVar3 = (1 - (uint)bVar12) - (uint)(bVar12 != 0);
+    //           goto LAB_0048c04a;
+    //         }
+    //         if (bVar2 == 0) break;
+    //         bVar2 = pbVar5[1];
+    //         bVar12 = bVar2 < pbVar10[1];
+    //         if (bVar2 != pbVar10[1]) goto LAB_0048c045;
+    //         pbVar5 = pbVar5 + 2;
+    //         pbVar10 = pbVar10 + 2;
+    //       } while (bVar2 != 0);
+    //       iVar3 = 0;
+    // LAB_0048c04a:
+    //       if (iVar3 != 0) {
+    //         sprintf(this->TempText2,s__s_s_cty,rge_base_game->prog_info->ai_dir,
+    //                 this->CityPlan[temp_path._236_4_]);
+    //         return this->TempText2;
+    //       }
+    //     }
+    //   }
+    //   sprintf(this->TempText2,s__s,this->CityPlan[temp_path._236_4_]);
+    //   return this->TempText2;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048C0D0
+float Get_Version(RGE_Scenario* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: float __thiscall RGE_Scenario::Get_Version(void) */
+    // 
+    // float __thiscall RGE_Scenario::Get_Version(RGE_Scenario *this)
+    // 
+    // {
+    //   return 1.15;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048C0E0
+char* Get_player_AI(RGE_Scenario* this_, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: random_str */
+    // /* public: char * __thiscall RGE_Scenario::Get_player_AI(int,int) */
+    // 
+    // char * __thiscall RGE_Scenario::Get_player_AI(RGE_Scenario *this,int param_1,int param_2)
+    // 
+    // {
+    //   char cVar1;
+    //   byte bVar2;
+    //   int iVar3;
+    //   byte *pbVar4;
+    //   byte *pbVar5;
+    //   uint uVar6;
+    //   uint uVar7;
+    //   int iVar8;
+    //   char *pcVar9;
+    //   byte *pbVar10;
+    //   char *pcVar11;
+    //   bool bVar12;
+    //   byte abStack_18c [8];
+    //   undefined1 *puStack_184;
+    //   undefined4 uStack_180;
+    //   char random_str [50];
+    //   char none_str [50];
+    //   char temp_path [260];
+    //   
+    //   puStack_184 = random_str + 4;
+    //   uStack_180 = 0x32;
+    //   abStack_18c[4] = 0x7b;
+    //   abStack_18c[5] = 0x27;
+    //   abStack_18c[6] = 0;
+    //   abStack_18c[7] = 0;
+    //                     /* language.dll match for 0x277b: "Random" */
+    //   iVar8 = -1;
+    //   abStack_18c[0] = 6;
+    //   abStack_18c[1] = 0xc1;
+    //   abStack_18c[2] = 0x48;
+    //   abStack_18c[3] = 0;
+    //   (**(code **)(rge_base_game->_padding_ + 0x20))();
+    //   abStack_18c[0] = 0x32;
+    //   abStack_18c[1] = 0;
+    //   abStack_18c[2] = 0;
+    //   abStack_18c[3] = 0;
+    //                     /* language.dll match for 0x2775: " <None> " */
+    //   (**(code **)(rge_base_game->_padding_ + 0x20))(0x2775,random_str + 0x2c);
+    //   iVar3 = GetTempPathA(0x104,none_str + 0x20);
+    //   if (iVar3 == 0) {
+    //     uVar6 = 0xffffffff;
+    //     pcVar9 = &s__;
+    //     do {
+    //       pcVar11 = pcVar9;
+    //       if (uVar6 == 0) break;
+    //       uVar6 = uVar6 - 1;
+    //       pcVar11 = pcVar9 + 1;
+    //       cVar1 = *pcVar9;
+    //       pcVar9 = pcVar11;
+    //     } while (cVar1 != '\0');
+    //     uVar6 = ~uVar6;
+    //     pcVar9 = pcVar11 + -uVar6;
+    //     pcVar11 = none_str + 0x18;
+    //     for (uVar7 = uVar6 >> 2; uVar7 != 0; uVar7 = uVar7 - 1) {
+    //       *(undefined4 *)pcVar11 = *(undefined4 *)pcVar9;
+    //       pcVar9 = pcVar9 + 4;
+    //       pcVar11 = pcVar11 + 4;
+    //     }
+    //     for (uVar6 = uVar6 & 3; uVar6 != 0; uVar6 = uVar6 - 1) {
+    //       *pcVar11 = *pcVar9;
+    //       pcVar9 = pcVar9 + 1;
+    //       pcVar11 = pcVar11 + 1;
+    //     }
+    //   }
+    //   if (((temp_path._240_4_ == 1) && (0 < this->AiRulesFileSize[temp_path._236_4_])) &&
+    //      (this->AiRulesFile[temp_path._236_4_] != (uchar *)0x0)) {
+    //     sprintf(this->TempText3,s__stemp_AiRules_d_tmp,none_str + 0x18,temp_path._236_4_);
+    //     iVar8 = __open(this->TempText3,0x8301,0x180);
+    //   }
+    //   if (iVar8 != -1) {
+    //     write(iVar8,this->AiRulesFile[temp_path._236_4_],this->AiRulesFileSize[temp_path._236_4_]);
+    //     close(iVar8);
+    //     return this->TempText3;
+    //   }
+    //   if (temp_path._240_4_ == 1) {
+    //     pbVar5 = (byte *)this->BuildList[temp_path._236_4_];
+    //     pbVar10 = (byte *)(random_str + 0x18);
+    //     pbVar4 = pbVar5;
+    //     do {
+    //       bVar2 = *pbVar4;
+    //       bVar12 = bVar2 < *pbVar10;
+    //       if (bVar2 != *pbVar10) {
+    // LAB_0048c22e:
+    //         iVar3 = (1 - (uint)bVar12) - (uint)(bVar12 != 0);
+    //         goto LAB_0048c233;
+    //       }
+    //       if (bVar2 == 0) break;
+    //       bVar2 = pbVar4[1];
+    //       bVar12 = bVar2 < pbVar10[1];
+    //       if (bVar2 != pbVar10[1]) goto LAB_0048c22e;
+    //       pbVar4 = pbVar4 + 2;
+    //       pbVar10 = pbVar10 + 2;
+    //     } while (bVar2 != 0);
+    //     iVar3 = 0;
+    // LAB_0048c233:
+    //     if (iVar3 != 0) {
+    //       pbVar10 = abStack_18c;
+    //       do {
+    //         bVar2 = *pbVar5;
+    //         bVar12 = bVar2 < *pbVar10;
+    //         if (bVar2 != *pbVar10) {
+    // LAB_0048c265:
+    //           iVar3 = (1 - (uint)bVar12) - (uint)(bVar12 != 0);
+    //           goto LAB_0048c26a;
+    //         }
+    //         if (bVar2 == 0) break;
+    //         bVar2 = pbVar5[1];
+    //         bVar12 = bVar2 < pbVar10[1];
+    //         if (bVar2 != pbVar10[1]) goto LAB_0048c265;
+    //         pbVar5 = pbVar5 + 2;
+    //         pbVar10 = pbVar10 + 2;
+    //       } while (bVar2 != 0);
+    //       iVar3 = 0;
+    // LAB_0048c26a:
+    //       if (iVar3 != 0) {
+    //         sprintf(this->TempText3,s__s_s_per,rge_base_game->prog_info->ai_dir,
+    //                 this->AiRules[temp_path._236_4_]);
+    //         return this->TempText3;
+    //       }
+    //     }
+    //   }
+    //   sprintf(this->TempText3,s__s,this->AiRules[temp_path._236_4_]);
+    //   return this->TempText3;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048C2F0
+int GetPlayerPosture(RGE_Scenario* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall RGE_Scenario::GetPlayerPosture(int) */
+    // 
+    // int __thiscall RGE_Scenario::GetPlayerPosture(RGE_Scenario *this,int param_1)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < 9)) {
+    //     switch(this->PlayerPosture[param_1]) {
+    //     case 1:
+    //       return 1;
+    //     case 2:
+    //       return 2;
+    //     case 3:
+    //       return 3;
+    //     case 4:
+    //       return 4;
+    //     case 5:
+    //       return 5;
+    //     }
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048C33D
+undefined FUN_0048c33d() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0048c33d(void)
+    // 
+    // {
+    //   int in_EAX;
+    //   char in_DL;
+    //   
+    //   *(char *)(in_EAX + -1) = *(char *)(in_EAX + -1) + in_DL;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048C360
+char* GetPlayerName(RGE_Scenario* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: char * __thiscall RGE_Scenario::GetPlayerName(int) */
+    // 
+    // char * __thiscall RGE_Scenario::GetPlayerName(RGE_Scenario *this,int param_1)
+    // 
+    // {
+    //   return this->player_name[param_1].Name;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048C370
+int Get_player_Type(RGE_Scenario* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall RGE_Scenario::Get_player_Type(int) */
+    // 
+    // int __thiscall RGE_Scenario::Get_player_Type(RGE_Scenario *this,int param_1)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < 0x10)) {
+    //     return this->PlType[param_1];
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048C390
+int Get_player_Civ(RGE_Scenario* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall RGE_Scenario::Get_player_Civ(int) */
+    // 
+    // int __thiscall RGE_Scenario::Get_player_Civ(RGE_Scenario *this,int param_1)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < 0x10)) {
+    //     return this->PlCivilization[param_1];
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048C3B0
+int Get_player_Active(RGE_Scenario* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall RGE_Scenario::Get_player_Active(int) */
+    // 
+    // int __thiscall RGE_Scenario::Get_player_Active(RGE_Scenario *this,int param_1)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < 0x10)) {
+    //     return this->PlActive[param_1];
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048C3D0
+void update(RGE_Scenario* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Scenario::update(void) */
+    // 
+    // void __thiscall RGE_Scenario::update(RGE_Scenario *this)
+    // 
+    // {
+    //   if (this->time_line != (RGE_Timeline *)0x0) {
+    //     RGE_Timeline::update(this->time_line);
+    //     return;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048C3E0
+void RGE_Scenario::save(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: length */
+    // /* public: virtual void __thiscall RGE_Scenario::save(int) */
+    // 
+    // void __thiscall RGE_Scenario::save(RGE_Scenario *this,int param_1)
+    // 
+    // {
+    //   float *pfVar1;
+    //   char cVar2;
+    //   TPicture *this_00;
+    //   int iVar3;
+    //   uchar *puVar4;
+    //   uint uVar5;
+    //   PlayerName *pPVar6;
+    //   int *piVar7;
+    //   char **ppcVar8;
+    //   int iVar9;
+    //   char *pcVar10;
+    //   TPicture *pTVar11;
+    //   char *pcVar12;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   float fVar13;
+    //   short length;
+    //   uint local_1e0;
+    //   int local_1dc;
+    //   TPicture *local_1d8;
+    //   int val;
+    //   char temp_file_name [224];
+    //   char file_name [224];
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055e80e;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   pfVar1 = &this->Version;
+    //   val = (int)pfVar1;
+    //   fVar13 = Get_Version(this);
+    //   *pfVar1 = fVar13;
+    //   rge_write(param_1,pfVar1,4);
+    //   pPVar6 = this->player_name;
+    //   iVar9 = 0x10;
+    //   do {
+    //     rge_write(param_1,pPVar6,0x100);
+    //     pPVar6 = pPVar6 + 1;
+    //     iVar9 = iVar9 + -1;
+    //   } while (iVar9 != 0);
+    //   piVar7 = this->PlType;
+    //   iVar9 = 0x10;
+    //   do {
+    //     rge_write(param_1,piVar7 + 0x20,4);
+    //     rge_write(param_1,piVar7,4);
+    //     rge_write(param_1,piVar7 + 0x10,4);
+    //     rge_write(param_1,piVar7 + -0x10,4);
+    //     piVar7 = piVar7 + 1;
+    //     iVar9 = iVar9 + -1;
+    //   } while (iVar9 != 0);
+    //   rge_write(param_1,&this->victory_conquest,1);
+    //   if (this->time_line != (RGE_Timeline *)0x0) {
+    //     RGE_Timeline::save(this->time_line,param_1);
+    //   }
+    //   if (this->scenario_name == (char *)0x0) {
+    //     local_1e0 = 0;
+    //   }
+    //   else {
+    //     uVar5 = 0xffffffff;
+    //     pcVar12 = this->scenario_name;
+    //     do {
+    //       if (uVar5 == 0) break;
+    //       uVar5 = uVar5 - 1;
+    //       cVar2 = *pcVar12;
+    //       pcVar12 = pcVar12 + 1;
+    //     } while (cVar2 != '\0');
+    //     local_1e0 = ~uVar5 - 1;
+    //   }
+    //   rge_write(param_1,&local_1e0,2);
+    //   if (0 < (short)local_1e0) {
+    //     rge_write(param_1,this->scenario_name,(int)(short)local_1e0);
+    //   }
+    //   if (this->description == (char *)0x0) {
+    //     local_1e0 = 0;
+    //   }
+    //   else {
+    //     local_1e0 = 0xffffffff;
+    //     pcVar12 = this->description;
+    //     do {
+    //       if (local_1e0 == 0) break;
+    //       local_1e0 = local_1e0 - 1;
+    //       cVar2 = *pcVar12;
+    //       pcVar12 = pcVar12 + 1;
+    //     } while (cVar2 != '\0');
+    //     local_1e0 = ~local_1e0;
+    //   }
+    //   rge_write(param_1,&local_1e0,2);
+    //   if (0 < (short)local_1e0) {
+    //     rge_write(param_1,this->description,(int)(short)local_1e0);
+    //   }
+    //   if (this->hints == (char *)0x0) {
+    //     local_1e0 = 0;
+    //   }
+    //   else {
+    //     local_1e0 = 0xffffffff;
+    //     pcVar12 = this->hints;
+    //     do {
+    //       if (local_1e0 == 0) break;
+    //       local_1e0 = local_1e0 - 1;
+    //       cVar2 = *pcVar12;
+    //       pcVar12 = pcVar12 + 1;
+    //     } while (cVar2 != '\0');
+    //     local_1e0 = ~local_1e0;
+    //   }
+    //   rge_write(param_1,&local_1e0,2);
+    //   if (0 < (short)local_1e0) {
+    //     rge_write(param_1,this->hints,(int)(short)local_1e0);
+    //   }
+    //   if (this->win_message == (char *)0x0) {
+    //     local_1e0 = 0;
+    //   }
+    //   else {
+    //     local_1e0 = 0xffffffff;
+    //     pcVar12 = this->win_message;
+    //     do {
+    //       if (local_1e0 == 0) break;
+    //       local_1e0 = local_1e0 - 1;
+    //       cVar2 = *pcVar12;
+    //       pcVar12 = pcVar12 + 1;
+    //     } while (cVar2 != '\0');
+    //     local_1e0 = ~local_1e0;
+    //   }
+    //   rge_write(param_1,&local_1e0,2);
+    //   if (0 < (short)local_1e0) {
+    //     rge_write(param_1,this->win_message,(int)(short)local_1e0);
+    //   }
+    //   if (this->loss_message == (char *)0x0) {
+    //     local_1e0 = 0;
+    //   }
+    //   else {
+    //     local_1e0 = 0xffffffff;
+    //     pcVar12 = this->loss_message;
+    //     do {
+    //       if (local_1e0 == 0) break;
+    //       local_1e0 = local_1e0 - 1;
+    //       cVar2 = *pcVar12;
+    //       pcVar12 = pcVar12 + 1;
+    //     } while (cVar2 != '\0');
+    //     local_1e0 = ~local_1e0;
+    //   }
+    //   rge_write(param_1,&local_1e0,2);
+    //   if (0 < (short)local_1e0) {
+    //     rge_write(param_1,this->loss_message,(int)(short)local_1e0);
+    //   }
+    //   if (this->historicle_notes == (char *)0x0) {
+    //     local_1e0 = 0;
+    //   }
+    //   else {
+    //     local_1e0 = 0xffffffff;
+    //     pcVar12 = this->historicle_notes;
+    //     do {
+    //       if (local_1e0 == 0) break;
+    //       local_1e0 = local_1e0 - 1;
+    //       cVar2 = *pcVar12;
+    //       pcVar12 = pcVar12 + 1;
+    //     } while (cVar2 != '\0');
+    //     local_1e0 = ~local_1e0;
+    //   }
+    //   rge_write(param_1,&local_1e0,2);
+    //   if (0 < (short)local_1e0) {
+    //     rge_write(param_1,this->historicle_notes,(int)(short)local_1e0);
+    //   }
+    //   uVar5 = 0xffffffff;
+    //   pcVar12 = this->Cine_PreGame;
+    //   do {
+    //     if (uVar5 == 0) break;
+    //     uVar5 = uVar5 - 1;
+    //     cVar2 = *pcVar12;
+    //     pcVar12 = pcVar12 + 1;
+    //   } while (cVar2 != '\0');
+    //   local_1e0 = ~uVar5 - 1;
+    //   rge_write(param_1,&local_1e0,2);
+    //   if (0 < (short)local_1e0) {
+    //     rge_write(param_1,this->Cine_PreGame,(int)(short)local_1e0);
+    //   }
+    //   uVar5 = 0xffffffff;
+    //   pcVar12 = this->Cine_Victory;
+    //   do {
+    //     if (uVar5 == 0) break;
+    //     uVar5 = uVar5 - 1;
+    //     cVar2 = *pcVar12;
+    //     pcVar12 = pcVar12 + 1;
+    //   } while (cVar2 != '\0');
+    //   local_1e0 = ~uVar5 - 1;
+    //   rge_write(param_1,&local_1e0,2);
+    //   if (0 < (short)local_1e0) {
+    //     rge_write(param_1,this->Cine_Victory,(int)(short)local_1e0);
+    //   }
+    //   uVar5 = 0xffffffff;
+    //   pcVar12 = this->Cine_Loss;
+    //   do {
+    //     if (uVar5 == 0) break;
+    //     uVar5 = uVar5 - 1;
+    //     cVar2 = *pcVar12;
+    //     pcVar12 = pcVar12 + 1;
+    //   } while (cVar2 != '\0');
+    //   local_1e0 = ~uVar5 - 1;
+    //   rge_write(param_1,&local_1e0,2);
+    //   if (0 < (short)local_1e0) {
+    //     rge_write(param_1,this->Cine_Loss,(int)(short)local_1e0);
+    //   }
+    //   pcVar12 = this->Mission_Bmp;
+    //   uVar5 = 0xffffffff;
+    //   pcVar10 = pcVar12;
+    //   do {
+    //     if (uVar5 == 0) break;
+    //     uVar5 = uVar5 - 1;
+    //     cVar2 = *pcVar10;
+    //     pcVar10 = pcVar10 + 1;
+    //   } while (cVar2 != '\0');
+    //   local_1e0 = ~uVar5 - 1;
+    //   rge_write(param_1,&local_1e0,2);
+    //   if (0 < (short)local_1e0) {
+    //     rge_write(param_1,pcVar12,(int)(short)local_1e0);
+    //   }
+    //   sprintf(file_name + 4,s__s_bmp,pcVar12);
+    //   local_1d8 = (TPicture *)operator_new(0x20);
+    //   pTVar11 = (TPicture *)0x0;
+    //   local_4 = 0;
+    //   if (local_1d8 != (TPicture *)0x0) {
+    //     pTVar11 = (TPicture *)TPicture::TPicture(local_1d8,file_name + 4,-1,0,(void *)0x0,0);
+    //   }
+    //   this_00 = this->mission_picture;
+    //   local_4 = 0xffffffff;
+    //   if (this_00 != (TPicture *)0x0) {
+    //     if (pTVar11->Dib == (tagBITMAPINFOHEADER *)0x0) {
+    //       if (pTVar11 != (TPicture *)0x0) {
+    //         TPicture::~TPicture(pTVar11);
+    //         operator_delete(pTVar11);
+    //       }
+    //       goto LAB_0048c7f6;
+    //     }
+    //     if (this_00 != (TPicture *)0x0) {
+    //       TPicture::~TPicture(this_00);
+    //       operator_delete(this_00);
+    //     }
+    //   }
+    //   this->mission_picture = pTVar11;
+    // LAB_0048c7f6:
+    //   TPicture::Save(this->mission_picture,param_1);
+    //   ppcVar8 = this->BuildList;
+    //   local_1dc = 0x10;
+    //   do {
+    //     uVar5 = 0xffffffff;
+    //     pcVar12 = *ppcVar8;
+    //     do {
+    //       if (uVar5 == 0) break;
+    //       uVar5 = uVar5 - 1;
+    //       cVar2 = *pcVar12;
+    //       pcVar12 = pcVar12 + 1;
+    //     } while (cVar2 != '\0');
+    //     local_1e0 = ~uVar5 - 1;
+    //     rge_write(param_1,&local_1e0,2);
+    //     if (0 < (short)local_1e0) {
+    //       rge_write(param_1,*ppcVar8,(int)(short)local_1e0);
+    //     }
+    //     ppcVar8 = ppcVar8 + 1;
+    //     local_1dc = local_1dc + -1;
+    //   } while (local_1dc != 0);
+    //   ppcVar8 = this->CityPlan;
+    //   local_1dc = 0x10;
+    //   local_1d8 = (TPicture *)ppcVar8;
+    //   do {
+    //     uVar5 = 0xffffffff;
+    //     pcVar12 = *ppcVar8;
+    //     do {
+    //       if (uVar5 == 0) break;
+    //       uVar5 = uVar5 - 1;
+    //       cVar2 = *pcVar12;
+    //       pcVar12 = pcVar12 + 1;
+    //     } while (cVar2 != '\0');
+    //     local_1e0 = ~uVar5 - 1;
+    //     rge_write(param_1,&local_1e0,2);
+    //     if (0 < (short)local_1e0) {
+    //       rge_write(param_1,*ppcVar8,(int)(short)local_1e0);
+    //     }
+    //     ppcVar8 = ppcVar8 + 1;
+    //     local_1dc = local_1dc + -1;
+    //   } while (local_1dc != 0);
+    //   if (1.08 <= *(float *)val) {
+    //     ppcVar8 = this->AiRules;
+    //     iVar9 = 0x10;
+    //     local_1dc = 0;
+    //     do {
+    //       uVar5 = 0xffffffff;
+    //       pcVar12 = *ppcVar8;
+    //       do {
+    //         if (uVar5 == 0) break;
+    //         uVar5 = uVar5 - 1;
+    //         cVar2 = *pcVar12;
+    //         pcVar12 = pcVar12 + 1;
+    //       } while (cVar2 != '\0');
+    //       local_1e0 = ~uVar5 - 1;
+    //       rge_write(param_1,&local_1e0,2);
+    //       if (0 < (short)local_1e0) {
+    //         rge_write(param_1,*ppcVar8,(int)(short)local_1e0);
+    //       }
+    //       ppcVar8 = ppcVar8 + 1;
+    //       iVar9 = iVar9 + -1;
+    //     } while (iVar9 != 0);
+    //   }
+    //   local_1dc = 0x10;
+    //   pTVar11 = local_1d8;
+    //   do {
+    //     if (*(char **)((int)pTVar11 + -0x40) != (char *)0x0) {
+    //       sprintf(temp_file_name + 4,s__s_s_ai,rge_base_game->prog_info->ai_dir,
+    //               *(char **)((int)pTVar11 + -0x40));
+    //       iVar9 = __open(temp_file_name + 4,0x8000);
+    //       if (-1 < iVar9) {
+    //         lseek(iVar9,0,2);
+    //         iVar3 = __tell(iVar9);
+    //         *(int *)((int)pTVar11 + 0x140) = iVar3;
+    //         if (*(uchar **)((int)pTVar11 + 0x80) != (uchar *)0x0) {
+    //           free(*(uchar **)((int)pTVar11 + 0x80));
+    //         }
+    //         puVar4 = (uchar *)calloc(*(int *)((int)pTVar11 + 0x140),1);
+    //         *(uchar **)((int)pTVar11 + 0x80) = puVar4;
+    //         lseek(iVar9,0,0);
+    //         read(iVar9,*(uchar **)((int)pTVar11 + 0x80),*(int *)((int)pTVar11 + 0x140));
+    //         close(iVar9);
+    //       }
+    //     }
+    //     if (*(char **)pTVar11 != (char *)0x0) {
+    //       sprintf(temp_file_name + 4,s__s_s_cty,rge_base_game->prog_info->ai_dir,*(char **)pTVar11);
+    //       iVar9 = __open(temp_file_name + 4,0x8000);
+    //       if (-1 < iVar9) {
+    //         lseek(iVar9,0,2);
+    //         iVar3 = __tell(iVar9);
+    //         *(int *)((int)pTVar11 + 0x180) = iVar3;
+    //         if (*(uchar **)((int)pTVar11 + 0xc0) != (uchar *)0x0) {
+    //           free(*(uchar **)((int)pTVar11 + 0xc0));
+    //         }
+    //         puVar4 = (uchar *)calloc(*(int *)((int)pTVar11 + 0x180),1);
+    //         *(uchar **)((int)pTVar11 + 0xc0) = puVar4;
+    //         lseek(iVar9,0,0);
+    //         read(iVar9,*(uchar **)((int)pTVar11 + 0xc0),*(int *)((int)pTVar11 + 0x180));
+    //         close(iVar9);
+    //       }
+    //     }
+    //     if (*(char **)((int)pTVar11 + 0x40) != (char *)0x0) {
+    //       sprintf(temp_file_name + 4,s__s_s_per,rge_base_game->prog_info->ai_dir,
+    //               *(char **)((int)pTVar11 + 0x40));
+    //       iVar9 = __open(temp_file_name + 4,0x8000);
+    //       if (-1 < iVar9) {
+    //         lseek(iVar9,0,2);
+    //         iVar3 = __tell(iVar9);
+    //         *(int *)((int)pTVar11 + 0x1c0) = iVar3;
+    //         if (*(uchar **)((int)pTVar11 + 0x100) != (uchar *)0x0) {
+    //           free(*(uchar **)((int)pTVar11 + 0x100));
+    //         }
+    //         puVar4 = (uchar *)calloc(*(int *)((int)pTVar11 + 0x1c0),1);
+    //         *(uchar **)((int)pTVar11 + 0x100) = puVar4;
+    //         lseek(iVar9,0,0);
+    //         read(iVar9,*(uchar **)((int)pTVar11 + 0x100),*(int *)((int)pTVar11 + 0x1c0));
+    //         close(iVar9);
+    //       }
+    //     }
+    //     rge_write(param_1,(int *)((int)pTVar11 + 0x140),4);
+    //     rge_write(param_1,(int *)((int)pTVar11 + 0x180),4);
+    //     if (1.08 <= *(float *)val) {
+    //       rge_write(param_1,(int *)((int)pTVar11 + 0x1c0),4);
+    //     }
+    //     if (*(uchar **)((int)pTVar11 + 0x80) != (uchar *)0x0) {
+    //       rge_write(param_1,*(uchar **)((int)pTVar11 + 0x80),*(int *)((int)pTVar11 + 0x140));
+    //     }
+    //     if (*(uchar **)((int)pTVar11 + 0xc0) != (uchar *)0x0) {
+    //       rge_write(param_1,*(uchar **)((int)pTVar11 + 0xc0),*(int *)((int)pTVar11 + 0x180));
+    //     }
+    //     if (*(uchar **)((int)pTVar11 + 0x100) != (uchar *)0x0) {
+    //       rge_write(param_1,*(uchar **)((int)pTVar11 + 0x100),*(int *)((int)pTVar11 + 0x1c0));
+    //     }
+    //     pTVar11 = (TPicture *)((int)pTVar11 + 4);
+    //     local_1dc = local_1dc + -1;
+    //   } while (local_1dc != 0);
+    //   temp_file_name[0] = -99;
+    //   temp_file_name[1] = -1;
+    //   temp_file_name[2] = -1;
+    //   temp_file_name[3] = -1;
+    //   rge_write(param_1,temp_file_name,4);
+    //   *unaff_FS_OFFSET = local_c;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048CC20
+int active_player_count(RGE_Scenario* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall RGE_Scenario::active_player_count(void) */
+    // 
+    // int __thiscall RGE_Scenario::active_player_count(RGE_Scenario *this)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   
+    //   iVar2 = 0;
+    //   iVar3 = 0;
+    //   do {
+    //     iVar1 = Get_player_Active(this,iVar3);
+    //     if (iVar1 != 0) {
+    //       iVar2 = iVar2 + 1;
+    //     }
+    //     iVar3 = iVar3 + 1;
+    //   } while (iVar3 < 0x10);
+    //   return iVar2;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048CC50
+int any_player_count(RGE_Scenario* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall RGE_Scenario::any_player_count(void) */
+    // 
+    // int __thiscall RGE_Scenario::any_player_count(RGE_Scenario *this)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   
+    //   iVar2 = 0;
+    //   iVar3 = 0;
+    //   do {
+    //     iVar1 = Get_player_Active(this,iVar3);
+    //     if (iVar1 != 0) {
+    //       iVar1 = Get_player_Type(this,iVar3);
+    //       if (iVar1 == 1) {
+    //         iVar2 = iVar2 + 1;
+    //       }
+    //     }
+    //     iVar3 = iVar3 + 1;
+    //   } while (iVar3 < 0x10);
+    //   return iVar2;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048CC80
+int computer_player_count(RGE_Scenario* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall RGE_Scenario::computer_player_count(void) */
+    // 
+    // int __thiscall RGE_Scenario::computer_player_count(RGE_Scenario *this)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   
+    //   iVar2 = 0;
+    //   iVar3 = 0;
+    //   do {
+    //     iVar1 = Get_player_Active(this,iVar3);
+    //     if (iVar1 != 0) {
+    //       iVar1 = Get_player_Type(this,iVar3);
+    //       if (iVar1 == 0) {
+    //         iVar2 = iVar2 + 1;
+    //       }
+    //     }
+    //     iVar3 = iVar3 + 1;
+    //   } while (iVar3 < 0x10);
+    //   return iVar2;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048CCB0
+void Set_conquest_victory(RGE_Scenario* this_, uchar param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Scenario::Set_conquest_victory(unsigned char) */
+    // 
+    // void __thiscall RGE_Scenario::Set_conquest_victory(RGE_Scenario *this,uchar param_1)
+    // 
+    // {
+    //   this->victory_conquest = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048CCC0
+uchar Get_conquest_victory(RGE_Scenario* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall RGE_Scenario::Get_conquest_victory(void) */
+    // 
+    // uchar __thiscall RGE_Scenario::Get_conquest_victory(RGE_Scenario *this)
+    // 
+    // {
+    //   return this->victory_conquest;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048CCD0
+void add_description(RGE_Scenario* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Scenario::add_description(char *) */
+    // 
+    // void __thiscall RGE_Scenario::add_description(RGE_Scenario *this,char *param_1)
+    // 
+    // {
+    //   if (this->description == (char *)0x0) {
+    //     getstring(&this->description,param_1);
+    //     return;
+    //   }
+    //   addstring(&this->description,this->description,param_1);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048CD10
+void Set_message(RGE_Scenario* this_, char* param_2, long param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Scenario::Set_message(char *,long) */
+    // 
+    // void __thiscall RGE_Scenario::Set_message(RGE_Scenario *this,char *param_1,long param_2)
+    // 
+    // {
+    //   char cVar1;
+    //   char *pcVar2;
+    //   uint uVar3;
+    //   uint uVar4;
+    //   char *pcVar5;
+    //   
+    //   if (param_1 == (char *)0x0) {
+    //     uVar4 = 0;
+    //   }
+    //   else {
+    //     uVar4 = 0xffffffff;
+    //     pcVar2 = param_1;
+    //     do {
+    //       if (uVar4 == 0) break;
+    //       uVar4 = uVar4 - 1;
+    //       cVar1 = *pcVar2;
+    //       pcVar2 = pcVar2 + 1;
+    //     } while (cVar1 != '\0');
+    //     uVar4 = ~uVar4;
+    //   }
+    //   if ((int)uVar4 < 1) {
+    //     pcVar2 = (char *)0x0;
+    //   }
+    //   else {
+    //     pcVar2 = (char *)calloc(uVar4,1);
+    //   }
+    //   pcVar5 = pcVar2;
+    //   for (uVar3 = uVar4 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //     *(undefined4 *)pcVar5 = *(undefined4 *)param_1;
+    //     param_1 = param_1 + 4;
+    //     pcVar5 = pcVar5 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar5 = *param_1;
+    //     param_1 = param_1 + 1;
+    //     pcVar5 = pcVar5 + 1;
+    //   }
+    //   switch(param_2) {
+    //   case 0:
+    //     if (this->description != (char *)0x0) {
+    //       free(this->description);
+    //     }
+    //     break;
+    //   case 1:
+    //     if (this->hints != (char *)0x0) {
+    //       free(this->hints);
+    //     }
+    //     this->hints = pcVar2;
+    //     return;
+    //   case 2:
+    //     if (this->win_message == (char *)0x0) {
+    //       free(0);
+    //     }
+    //     this->win_message = pcVar2;
+    //     return;
+    //   case 3:
+    //     if (this->loss_message != (char *)0x0) {
+    //       free(this->loss_message);
+    //     }
+    //     this->loss_message = pcVar2;
+    //     return;
+    //   case 4:
+    //     if (this->historicle_notes != (char *)0x0) {
+    //       free(this->historicle_notes);
+    //     }
+    //     this->historicle_notes = pcVar2;
+    //     return;
+    //   default:
+    //     if (pcVar2 != (char *)0x0) {
+    //       free(pcVar2);
+    //     }
+    //     return;
+    //   }
+    //   this->description = pcVar2;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048CE21
+undefined FUN_0048ce21() {
+    // --- Ghidra decompiler output ---
+    // 
+    // undefined4 FUN_0048ce21(void)
+    // 
+    // {
+    //   char *pcVar1;
+    //   undefined1 uVar2;
+    //   code *pcVar3;
+    //   int iVar4;
+    //   int extraout_ECX;
+    //   int extraout_ECX_00;
+    //   char extraout_DL;
+    //   undefined2 in_DX;
+    //   int unaff_EBP;
+    //   undefined1 *unaff_EDI;
+    //   undefined4 in_stack_00000010;
+    //   
+    //   uVar2 = in(in_DX);
+    //   *unaff_EDI = uVar2;
+    //   pcVar3 = (code *)swi(0x48);
+    //   (*pcVar3)();
+    //   pcVar1 = (char *)(unaff_EBP + -0x3253ffb8 + extraout_ECX * 8);
+    //   *pcVar1 = *pcVar1 + (char)extraout_ECX;
+    //   pcVar3 = (code *)swi(0x48);
+    //   (*pcVar3)();
+    //   pcVar3 = (code *)swi(0x48);
+    //   iVar4 = (*pcVar3)();
+    //   *(char *)(iVar4 + -0x6f6f6f70) = *(char *)(iVar4 + -0x6f6f6f70) + extraout_DL;
+    //   switch(in_stack_00000010) {
+    //   case 0:
+    //     return *(undefined4 *)(extraout_ECX_00 + 0x1014);
+    //   case 1:
+    //     return *(undefined4 *)(extraout_ECX_00 + 0x1018);
+    //   case 2:
+    //     return *(undefined4 *)(extraout_ECX_00 + 0x101c);
+    //   case 3:
+    //     return *(undefined4 *)(extraout_ECX_00 + 0x1020);
+    //   case 4:
+    //     return *(undefined4 *)(extraout_ECX_00 + 0x1024);
+    //   default:
+    //     return 0;
+    //   }
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048CE40
+char* Get_message(RGE_Scenario* this_, long param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: char * __thiscall RGE_Scenario::Get_message(long) */
+    // 
+    // char * __thiscall RGE_Scenario::Get_message(RGE_Scenario *this,long param_1)
+    // 
+    // {
+    //   switch(param_1) {
+    //   case 0:
+    //     return this->description;
+    //   case 1:
+    //     return this->hints;
+    //   case 2:
+    //     return this->win_message;
+    //   case 3:
+    //     return this->loss_message;
+    //   case 4:
+    //     return this->historicle_notes;
+    //   default:
+    //     return (char *)0x0;
+    //   }
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0048CE82
+undefined FUN_0048ce82() {
+    // --- Ghidra decompiler output ---
+    // 
+    // RGE_Scenario_File_Info * FUN_0048ce82(void)
+    // 
+    // {
+    //   long *plVar1;
+    //   char cVar2;
+    //   code *pcVar3;
+    //   undefined4 in_EAX;
+    //   int iVar4;
+    //   RGE_Scenario_File_Entry *pRVar5;
+    //   undefined4 uVar6;
+    //   RGE_Scenario_File_Info *in_ECX;
+    //   RGE_Scenario_File_Info *extraout_ECX;
+    //   uint uVar7;
+    //   uint uVar8;
+    //   undefined4 in_EDX;
+    //   int unaff_EBX;
+    //   int iVar9;
+    //   int unaff_ESI;
+    //   char *pcVar10;
+    //   int iVar11;
+    //   RGE_Scenario_File_Info *pRVar12;
+    //   char in_OF;
+    //   undefined8 uVar13;
+    //   char *unaff_retaddr;
+    //   
+    //   uVar13 = CONCAT44(in_EDX,in_EAX);
+    //   pcVar3 = (code *)swi(4);
+    //   if (in_OF == '\x01') {
+    //     uVar13 = (*pcVar3)();
+    //     in_ECX = extraout_ECX;
+    //   }
+    //   in_ECX[-1].filename[0xda] = in_ECX[-1].filename[0xda] + (char)unaff_EBX;
+    //   pcVar10 = (char *)((int)((ulonglong)uVar13 >> 0x20) + -0x32);
+    //   *pcVar10 = *pcVar10 + (char)((uint)((int)uVar13 + -2) >> 8);
+    //   *(char *)(unaff_EBX + -0x32) = *(char *)(unaff_EBX + -0x32) + (char)((uint)in_ECX >> 8);
+    //   pcVar10 = (char *)(unaff_ESI + 0x48 + (int)in_ECX * 8);
+    //   *pcVar10 = *pcVar10 + (char)((ulonglong)uVar13 >> 0x28);
+    //   pcVar10 = (char *)((int)uVar13 + -0x6f6f6f74);
+    //   *pcVar10 = *pcVar10 + (char)((ulonglong)uVar13 >> 0x20);
+    //   uVar7 = 0xffffffff;
+    //   do {
+    //     pcVar10 = unaff_retaddr;
+    //     if (uVar7 == 0) break;
+    //     uVar7 = uVar7 - 1;
+    //     pcVar10 = unaff_retaddr + 1;
+    //     cVar2 = *unaff_retaddr;
+    //     unaff_retaddr = pcVar10;
+    //   } while (cVar2 != '\0');
+    //   uVar7 = ~uVar7;
+    //   pcVar10 = pcVar10 + -uVar7;
+    //   pRVar12 = in_ECX;
+    //   for (uVar8 = uVar7 >> 2; uVar8 != 0; uVar8 = uVar8 - 1) {
+    //     *(undefined4 *)pRVar12->filename = *(undefined4 *)pcVar10;
+    //     pcVar10 = pcVar10 + 4;
+    //     pRVar12 = (RGE_Scenario_File_Info *)(pRVar12->filename + 4);
+    //   }
+    //   for (uVar7 = uVar7 & 3; uVar7 != 0; uVar7 = uVar7 - 1) {
+    //     pRVar12->filename[0] = *pcVar10;
+    //     pcVar10 = pcVar10 + 1;
+    //     pRVar12 = (RGE_Scenario_File_Info *)(pRVar12->filename + 1);
+    //   }
+    //   iVar4 = rge_open(in_ECX->filename,0x8000);
+    //   if (iVar4 != -1) {
+    //     plVar1 = &in_ECX->scenario_num;
+    //     rge_read_uncompressed(iVar4,plVar1,4);
+    //     iVar9 = 0;
+    //     if (*plVar1 < 1) {
+    //       in_ECX->scenarios = (RGE_Scenario_File_Entry *)0x0;
+    //     }
+    //     else {
+    //       pRVar5 = (RGE_Scenario_File_Entry *)calloc(*plVar1,0x10c);
+    //       in_ECX->scenarios = pRVar5;
+    //       if (0 < *plVar1) {
+    //         iVar11 = 0;
+    //         do {
+    //           rge_read_uncompressed(iVar4,in_ECX->scenarios->name + iVar11 + -8,4);
+    //           rge_read_uncompressed(iVar4,in_ECX->scenarios->name + iVar11,0x104);
+    //           uVar6 = (**(code **)(rge_base_game->_padding_ + 0x38))(iVar4);
+    //           iVar9 = iVar9 + 1;
+    //           *(undefined4 *)(in_ECX->scenarios->name + iVar11 + -4) = uVar6;
+    //           iVar11 = iVar11 + 0x10c;
+    //         } while (iVar9 < in_ECX->scenario_num);
+    //         rge_close(iVar4);
+    //         RGE_Scenario_File_Info::reload_scenarios(in_ECX);
+    //         return in_ECX;
+    //       }
+    //     }
+    //     rge_close(iVar4);
+    //     RGE_Scenario_File_Info::reload_scenarios(in_ECX);
+    //     return in_ECX;
+    //   }
+    //   in_ECX->scenario_num = 0;
+    //   in_ECX->scenarios = (RGE_Scenario_File_Entry *)0x0;
+    //   RGE_Scenario_File_Info::reload_scenarios(in_ECX);
+    //   return in_ECX;
+    // }
+    // 
+    // 
+}
+

@@ -1,0 +1,871 @@
+// Auto-generated decompiler unit: action.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/action.cpp
+#include "../include/common.h"
+
+// Offset: 0x00401130
+RGE_Static_Object* TRIBE_Action_Heal::get_target_obj() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual class RGE_Static_Object * __thiscall RGE_Action::get_target_obj(void) */
+    // 
+    // RGE_Static_Object * __thiscall RGE_Action::get_target_obj(RGE_Action *this)
+    // 
+    // {
+    //   return this->target_obj;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00401140
+RGE_Static_Object* TRIBE_Action_Heal::get_target_obj2() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual class RGE_Static_Object * __thiscall RGE_Action::get_target_obj2(void) */
+    // 
+    // RGE_Static_Object * __thiscall RGE_Action::get_target_obj2(RGE_Action *this)
+    // 
+    // {
+    //   return this->target_obj2;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407460
+undefined RGE_Action(RGE_Action* this_, int param_2, RGE_Action_Object* param_3, int param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Action::RGE_Action(int,class RGE_Action_Object *,int) */
+    // 
+    // RGE_Action * __thiscall
+    // RGE_Action::RGE_Action(RGE_Action *this,int param_1,RGE_Action_Object *param_2,int param_3)
+    // 
+    // {
+    //   this->targetID = -1;
+    //   this->target2ID = -1;
+    //   this->_padding_ = (int)&_vftable_;
+    //   if (param_3 != 0) {
+    //     setup(this,param_1,param_2);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004074C0
+undefined RGE_Action(RGE_Action* this_, RGE_Action_Object* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Action::RGE_Action(class RGE_Action_Object *,int) */
+    // 
+    // RGE_Action * __thiscall
+    // RGE_Action::RGE_Action(RGE_Action *this,RGE_Action_Object *param_1,int param_2)
+    // 
+    // {
+    //   this->targetID = -1;
+    //   this->target2ID = -1;
+    //   this->_padding_ = (int)&_vftable_;
+    //   if (param_2 != 0) {
+    //     setup(this,param_1);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004074F0
+void RGE_Action(RGE_Action* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall RGE_Action::~RGE_Action(void) */
+    // 
+    // void __thiscall RGE_Action::~RGE_Action(RGE_Action *this)
+    // 
+    // {
+    //   RGE_Action_List *this_00;
+    //   
+    //   this->_padding_ = (int)&_vftable_;
+    //   set_target_obj(this,(RGE_Static_Object *)0x0);
+    //   set_target_obj2(this,(RGE_Static_Object *)0x0);
+    //   this_00 = this->sub_actions;
+    //   if (this_00 != (RGE_Action_List *)0x0) {
+    //     RGE_Action_List::~RGE_Action_List(this_00);
+    //     operator_delete(this_00);
+    //     this->sub_actions = (RGE_Action_List *)0x0;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407530
+int TRIBE_Action_Heal::setup(int param_1, RGE_Action_Object* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: short_val */
+    // /* public: virtual int __thiscall RGE_Action::setup(int,class RGE_Action_Object *) */
+    // 
+    // int __thiscall RGE_Action::setup(RGE_Action *this,int param_1,RGE_Action_Object *param_2)
+    // 
+    // {
+    //   RGE_Action_List *pRVar1;
+    //   RGE_Sprite *pRVar2;
+    //   short unaff_BX;
+    //   int unaff_retaddr;
+    //   short short_val;
+    //   RGE_Action *pRStack_4;
+    //   
+    //   this->action_type = 0;
+    //   this->obj = param_2;
+    //   pRStack_4 = this;
+    //   short_val = unaff_BX;
+    //   pRVar1 = (RGE_Action_List *)(**(code **)(this->_padding_ + 0xc))(param_2);
+    //   this->sub_actions = pRVar1;
+    //   rge_read(unaff_retaddr,&this->state,1);
+    //   rge_read(unaff_retaddr,&param_1,4);
+    //   if (param_1 == -1) {
+    //     this->target_obj = (RGE_Static_Object *)0x0;
+    //   }
+    //   else {
+    //     this->target_obj = (RGE_Static_Object *)param_1;
+    //   }
+    //   rge_read(unaff_retaddr,&param_1,4);
+    //   if (param_1 == -1) {
+    //     this->target_obj2 = (RGE_Static_Object *)0x0;
+    //   }
+    //   else {
+    //     this->target_obj2 = (RGE_Static_Object *)param_1;
+    //   }
+    //   rge_read(unaff_retaddr,&this->targetID,4);
+    //   rge_read(unaff_retaddr,&this->target2ID,4);
+    //   rge_read(unaff_retaddr,&this->target_x,4);
+    //   rge_read(unaff_retaddr,&this->target_y,4);
+    //   rge_read(unaff_retaddr,&this->target_z,4);
+    //   rge_read(unaff_retaddr,&this->timer,4);
+    //   rge_read(unaff_retaddr,&short_val,2);
+    //   if (short_val == -1) {
+    //     this->task = (RGE_Task *)0x0;
+    //   }
+    //   else {
+    //     this->task = *(RGE_Task **)(*(int *)(*(int *)(this->obj->_padding_ + 0xd8) + 4) + short_val * 4)
+    //     ;
+    //   }
+    //   rge_read(unaff_retaddr,&this->subActionValue,1);
+    //   RGE_Action_List::load(this->sub_actions,unaff_retaddr);
+    //   rge_read(unaff_retaddr,&short_val,2);
+    //   pRVar2 = RGE_Static_Object::get_sprite_pointer((RGE_Static_Object *)this->obj,short_val);
+    //   this->sprite = pRVar2;
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407680
+int TRIBE_Action_Heal::setup(RGE_Action_Object* param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall RGE_Action::setup(class RGE_Action_Object *) */
+    // 
+    // int __thiscall RGE_Action::setup(RGE_Action *this,RGE_Action_Object *param_1)
+    // 
+    // {
+    //   RGE_Action_List *pRVar1;
+    //   
+    //   this->action_type = 0;
+    //   this->obj = param_1;
+    //   this->state = '\0';
+    //   this->target_obj = (RGE_Static_Object *)0x0;
+    //   this->target_obj2 = (RGE_Static_Object *)0x0;
+    //   this->target_x = 0.0;
+    //   this->target_y = 0.0;
+    //   this->target_z = 0.0;
+    //   this->timer = 0.0;
+    //   this->task = (RGE_Task *)0x0;
+    //   pRVar1 = (RGE_Action_List *)(**(code **)(this->_padding_ + 0xc))(param_1);
+    //   this->sub_actions = pRVar1;
+    //   this->sprite = (RGE_Sprite *)0x0;
+    //   this->subActionValue = '\0';
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004076D0
+RGE_Action_List* TRIBE_Action_Heal::create_action_list(RGE_Action_Object* param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual class RGE_Action_List * __thiscall RGE_Action::create_action_list(class
+    //    RGE_Action_Object *) */
+    // 
+    // RGE_Action_List * __thiscall
+    // RGE_Action::create_action_list(RGE_Action *this,RGE_Action_Object *param_1)
+    // 
+    // {
+    //   RGE_Action_List *pRVar1;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055c42b;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   pRVar1 = (RGE_Action_List *)operator_new(0xc);
+    //   local_4 = 0;
+    //   if (pRVar1 != (RGE_Action_List *)0x0) {
+    //     pRVar1 = (RGE_Action_List *)RGE_Action_List::RGE_Action_List(pRVar1,this->obj);
+    //     *unaff_FS_OFFSET = local_c;
+    //     return pRVar1;
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return (RGE_Action_List *)0x0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407740
+void TRIBE_Action_Heal::rehook() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Action::rehook(void) */
+    // 
+    // void __thiscall RGE_Action::rehook(RGE_Action *this)
+    // 
+    // {
+    //   RGE_Static_Object *pRVar1;
+    //   
+    //   if (this->target_obj != (RGE_Static_Object *)0x0) {
+    //     pRVar1 = RGE_Static_Object::get_object_pointer
+    //                        ((RGE_Static_Object *)this->obj,(long)this->target_obj);
+    //     this->target_obj = pRVar1;
+    //     if (pRVar1 != (RGE_Static_Object *)0x0) {
+    //       this->targetID = pRVar1->id;
+    //     }
+    //   }
+    //   if (this->target_obj2 != (RGE_Static_Object *)0x0) {
+    //     pRVar1 = RGE_Static_Object::get_object_pointer
+    //                        ((RGE_Static_Object *)this->obj,(long)this->target_obj2);
+    //     this->target_obj2 = pRVar1;
+    //     if (pRVar1 != (RGE_Static_Object *)0x0) {
+    //       this->target2ID = pRVar1->id;
+    //     }
+    //   }
+    //   if (this->sub_actions != (RGE_Action_List *)0x0) {
+    //     RGE_Action_List::rehook(this->sub_actions);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407790
+void TRIBE_Action_Heal::save(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: short_val */
+    // /* public: virtual void __thiscall RGE_Action::save(int) */
+    // 
+    // void __thiscall RGE_Action::save(RGE_Action *this,int param_1)
+    // 
+    // {
+    //   RGE_Task *pRVar1;
+    //   int iVar2;
+    //   undefined2 extraout_var;
+    //   short short_val;
+    //   RGE_Action *local_4;
+    //   
+    //   iVar2 = param_1;
+    //   local_4 = this;
+    //   rge_write(param_1,&this->action_type,2);
+    //   rge_write(iVar2,&this->state,1);
+    //   if (this->target_obj == (RGE_Static_Object *)0x0) {
+    //     param_1 = -1;
+    //   }
+    //   else {
+    //     param_1 = this->target_obj->id;
+    //   }
+    //   rge_write(iVar2,&param_1,4);
+    //   if (this->target_obj2 == (RGE_Static_Object *)0x0) {
+    //     param_1 = -1;
+    //   }
+    //   else {
+    //     param_1 = this->target_obj2->id;
+    //   }
+    //   rge_write(iVar2,&param_1,4);
+    //   rge_write(iVar2,&this->targetID,4);
+    //   rge_write(iVar2,&this->target2ID,4);
+    //   rge_write(iVar2,&this->target_x,4);
+    //   rge_write(iVar2,&this->target_y,4);
+    //   rge_write(iVar2,&this->target_z,4);
+    //   rge_write(iVar2,&this->timer,4);
+    //   pRVar1 = this->task;
+    //   if (pRVar1 == (RGE_Task *)0x0) {
+    //     local_4 = (RGE_Action *)0xffffffff;
+    //   }
+    //   else {
+    //     local_4 = (RGE_Action *)CONCAT22((short)((uint)pRVar1 >> 0x10),pRVar1->id);
+    //   }
+    //   rge_write(iVar2,&local_4,2);
+    //   rge_write(iVar2,&this->subActionValue,1);
+    //   RGE_Action_List::save(this->sub_actions,iVar2);
+    //   if (this->sprite == (RGE_Sprite *)0x0) {
+    //     local_4 = (RGE_Action *)0xffffffff;
+    //   }
+    //   else {
+    //     local_4 = (RGE_Action *)CONCAT22(extraout_var,this->sprite->id);
+    //   }
+    //   rge_write(iVar2,&local_4,2);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004078D0
+short TRIBE_Action_Heal::type() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual short __thiscall RGE_Action::type(void) */
+    // 
+    // short __thiscall RGE_Action::type(RGE_Action *this)
+    // 
+    // {
+    //   return this->action_type;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004078E0
+void TRIBE_Action::first_in_stack(uchar param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Action::first_in_stack(unsigned char) */
+    // 
+    // void __thiscall RGE_Action::first_in_stack(RGE_Action *this,uchar param_1)
+    // 
+    // {
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004078F0
+int TRIBE_Action_Heal::stop() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall RGE_Action::stop(void) */
+    // 
+    // int __thiscall RGE_Action::stop(RGE_Action *this)
+    // 
+    // {
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407900
+int TRIBE_Action_Heal::move_to(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall RGE_Action::move_to(class RGE_Static_Object *,float,float,float)
+    //     */
+    // 
+    // int __thiscall
+    // RGE_Action::move_to(RGE_Action *this,RGE_Static_Object *param_1,float param_2,float param_3,
+    //                    float param_4)
+    // 
+    // {
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407910
+int RGE_Action_Make::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall RGE_Action::work(class RGE_Static_Object *,float,float,float) */
+    // 
+    // int __thiscall
+    // RGE_Action::work(RGE_Action *this,RGE_Static_Object *param_1,float param_2,float param_3,
+    //                 float param_4)
+    // 
+    // {
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407920
+uchar TRIBE_Action_Heal::attack_response(RGE_Static_Object* param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual unsigned char __thiscall RGE_Action::attack_response(class RGE_Static_Object *)
+    //     */
+    // 
+    // uchar __thiscall RGE_Action::attack_response(RGE_Action *this,RGE_Static_Object *param_1)
+    // 
+    // {
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407930
+uchar TRIBE_Action_Heal::relation_response(long param_1, uchar param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual unsigned char __thiscall RGE_Action::relation_response(long,unsigned char) */
+    // 
+    // uchar __thiscall RGE_Action::relation_response(RGE_Action *this,long param_1,uchar param_2)
+    // 
+    // {
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407940
+void TRIBE_Action::set_state(uchar param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual void __thiscall RGE_Action::set_state(unsigned char) */
+    // 
+    // void __thiscall RGE_Action::set_state(RGE_Action *this,uchar param_1)
+    // 
+    // {
+    //   this->state = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407950
+uchar TRIBE_Action_Heal::inside_obj_update() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual unsigned char __thiscall RGE_Action::inside_obj_update(void) */
+    // 
+    // uchar __thiscall RGE_Action::inside_obj_update(RGE_Action *this)
+    // 
+    // {
+    //   if ((this->target_obj != (RGE_Static_Object *)0x0) && (6 < this->target_obj->object_state)) {
+    //     (**(code **)(this->_padding_ + 0x54))(0);
+    //   }
+    //   if ((this->target_obj2 != (RGE_Static_Object *)0x0) && (6 < this->target_obj2->object_state)) {
+    //     (**(code **)(this->_padding_ + 0x58))(0);
+    //   }
+    //   return '\x01';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407990
+uchar TRIBE_Action_Heal::idle_update() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual unsigned char __thiscall RGE_Action::idle_update(void) */
+    // 
+    // uchar __thiscall RGE_Action::idle_update(RGE_Action *this)
+    // 
+    // {
+    //   if ((this->target_obj != (RGE_Static_Object *)0x0) && (6 < this->target_obj->object_state)) {
+    //     (**(code **)(this->_padding_ + 0x54))(0);
+    //   }
+    //   if ((this->target_obj2 != (RGE_Static_Object *)0x0) && (6 < this->target_obj2->object_state)) {
+    //     (**(code **)(this->_padding_ + 0x58))(0);
+    //   }
+    //   return '\x01';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004079D0
+uchar TRIBE_Action::update() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual unsigned char __thiscall RGE_Action::update(void) */
+    // 
+    // uchar __thiscall RGE_Action::update(RGE_Action *this)
+    // 
+    // {
+    //   uchar uVar1;
+    //   
+    //   if ((this->target_obj != (RGE_Static_Object *)0x0) && (6 < this->target_obj->object_state)) {
+    //     (**(code **)(this->_padding_ + 0x54))(0);
+    //   }
+    //   if ((this->target_obj2 != (RGE_Static_Object *)0x0) && (6 < this->target_obj2->object_state)) {
+    //     (**(code **)(this->_padding_ + 0x58))(0);
+    //   }
+    //   if (this->sub_actions->list != (RGE_Action_Node *)0x0) {
+    //     uVar1 = (**(code **)(this->sub_actions->_padding_ + 0xc))();
+    //     return uVar1;
+    //   }
+    //   return this->state == '\x01';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407A20
+void TRIBE_Action_Heal::set_target_obj(RGE_Static_Object* param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Action::set_target_obj(class RGE_Static_Object *) */
+    // 
+    // void __thiscall RGE_Action::set_target_obj(RGE_Action *this,RGE_Static_Object *param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   RGE_Static_Object *pRVar2;
+    //   
+    //   if ((this->target_obj != (RGE_Static_Object *)0x0) && (this->target_obj != param_1)) {
+    //     pRVar2 = RGE_Game_World::object
+    //                        (*(RGE_Game_World **)(this->obj->_padding_ + 0x3c),this->targetID);
+    //     if (pRVar2 != (RGE_Static_Object *)0x0) {
+    //       (**(code **)(pRVar2->_padding_ + 0xc4))(this->obj);
+    //     }
+    //   }
+    //   if (this->target_obj != param_1) {
+    //     this->target_obj = param_1;
+    //     if (param_1 != (RGE_Static_Object *)0x0) {
+    //       iVar1 = param_1->_padding_;
+    //       this->targetID = param_1->id;
+    //       (**(code **)(iVar1 + 0xc0))(this->obj,this->action_type,0);
+    //       return;
+    //     }
+    //     this->targetID = -1;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407A90
+void TRIBE_Action_Heal::set_target_obj2(RGE_Static_Object* param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Action::set_target_obj2(class RGE_Static_Object *) */
+    // 
+    // void __thiscall RGE_Action::set_target_obj2(RGE_Action *this,RGE_Static_Object *param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   RGE_Static_Object *pRVar2;
+    //   
+    //   if ((this->target_obj2 != (RGE_Static_Object *)0x0) && (this->target_obj2 != param_1)) {
+    //     pRVar2 = RGE_Game_World::object
+    //                        (*(RGE_Game_World **)(this->obj->_padding_ + 0x3c),this->target2ID);
+    //     if (pRVar2 != (RGE_Static_Object *)0x0) {
+    //       (**(code **)(pRVar2->_padding_ + 0xc4))(this->obj);
+    //     }
+    //   }
+    //   if (this->target_obj2 != param_1) {
+    //     this->target_obj2 = param_1;
+    //     if (param_1 != (RGE_Static_Object *)0x0) {
+    //       iVar1 = param_1->_padding_;
+    //       this->target2ID = param_1->id;
+    //       (**(code **)(iVar1 + 0xc0))(this->obj,this->action_type,0);
+    //       return;
+    //     }
+    //     this->target2ID = -1;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407B00
+void TRIBE_Action_Heal::copy_obj(RGE_Master_Action_Object* param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: new_sprite */
+    // /* public: virtual void __thiscall RGE_Action::copy_obj(class RGE_Master_Action_Object *) */
+    // 
+    // void __thiscall RGE_Action::copy_obj(RGE_Action *this,RGE_Master_Action_Object *param_1)
+    // 
+    // {
+    //   RGE_Task_List *pRVar1;
+    //   RGE_Task **ppRVar2;
+    //   RGE_Task *pRVar3;
+    //   RGE_Sprite *pRVar4;
+    //   RGE_Sprite *pRVar5;
+    //   RGE_Task **ppRVar6;
+    //   int iVar7;
+    //   RGE_Sprite *new_sprite;
+    //   RGE_Sprite *local_4;
+    //   
+    //   local_4 = (RGE_Sprite *)0x0;
+    //   if ((this->task == (RGE_Task *)0x0) || (pRVar1 = param_1->tasks, pRVar1 == (RGE_Task_List *)0x0))
+    //   {
+    //     (**(code **)(this->_padding_ + 0x44))(param_1,0,0);
+    //     (**(code **)(this->sub_actions->_padding_ + 0x18))(param_1,0,0);
+    //   }
+    //   else {
+    //     ppRVar2 = pRVar1->list;
+    //     iVar7 = pRVar1->list_num + -1;
+    //     if (-1 < iVar7) {
+    //       ppRVar6 = ppRVar2 + iVar7;
+    //       do {
+    //         if ((*ppRVar6)->action_type == this->task->action_type) break;
+    //         iVar7 = iVar7 + -1;
+    //         ppRVar6 = ppRVar6 + -1;
+    //       } while (-1 < iVar7);
+    //     }
+    //     if (-1 < iVar7) {
+    //       pRVar3 = ppRVar2[iVar7];
+    //       pRVar4 = (RGE_Sprite *)this->obj->_padding_;
+    //       pRVar5 = pRVar3->move_sprite;
+    //       if ((((pRVar4 != pRVar3->move_sprite) &&
+    //            (pRVar5 = pRVar3->work_sprite, pRVar4 != pRVar3->work_sprite)) &&
+    //           (pRVar5 = pRVar3->work_sprite2, pRVar4 != pRVar3->work_sprite2)) &&
+    //          (pRVar5 = local_4, pRVar4 == pRVar3->carry_sprite)) {
+    //         pRVar5 = pRVar3->carry_sprite;
+    //       }
+    //       local_4 = pRVar5;
+    //       if (local_4 != (RGE_Sprite *)0x0) {
+    //         (**(code **)(this->obj->_padding_ + 0x38))(local_4);
+    //       }
+    //       (**(code **)(this->_padding_ + 0x44))(param_1,this->task,ppRVar2[iVar7]);
+    //       (**(code **)(this->sub_actions->_padding_ + 0x18))(param_1,this->task,ppRVar2[iVar7]);
+    //       this->task = ppRVar2[iVar7];
+    //       return;
+    //     }
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407C00
+void TRIBE_Action_Heal::copy_obj_sprites(RGE_Master_Action_Object* param_1, RGE_Task* param_2, RGE_Task* param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Action::copy_obj_sprites(class RGE_Master_Action_Object
+    //    *,class RGE_Task *,class RGE_Task *) */
+    // 
+    // void __thiscall
+    // RGE_Action::copy_obj_sprites
+    //           (RGE_Action *this,RGE_Master_Action_Object *param_1,RGE_Task *param_2,RGE_Task *param_3)
+    // 
+    // {
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407C10
+void TRIBE_Action_Heal::get_state_name(char* param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Action::get_state_name(char *) */
+    // 
+    // void __thiscall RGE_Action::get_state_name(RGE_Action *this,char *param_1)
+    // 
+    // {
+    //   char cVar1;
+    //   uint uVar2;
+    //   uint uVar3;
+    //   char *pcVar4;
+    //   char *pcVar5;
+    //   
+    //   switch(this->state) {
+    //   case '\0':
+    //     pcVar5 = &s_None;
+    //     break;
+    //   case '\x01':
+    //     pcVar5 = s_Done;
+    //     goto LAB_00407c9b;
+    //   case '\x02':
+    //     pcVar5 = &s_Wait;
+    //     break;
+    //   case '\x03':
+    //     pcVar5 = s_Search;
+    //     goto LAB_00407c9b;
+    //   case '\x04':
+    //     pcVar5 = s_Goto;
+    //     break;
+    //   case '\x05':
+    //     pcVar5 = s_Goto2;
+    //     goto LAB_00407c9b;
+    //   case '\x06':
+    //     pcVar5 = s_Work;
+    //     break;
+    //   case '\a':
+    //     pcVar5 = s_Work2;
+    //     goto LAB_00407c9b;
+    //   case '\b':
+    //     pcVar5 = s_Return;
+    //     break;
+    //   case '\t':
+    //     pcVar5 = s_Turn;
+    //     goto LAB_00407c9b;
+    //   case '\n':
+    //     pcVar5 = s_Delay;
+    //     break;
+    //   case '\v':
+    //     pcVar5 = &s_Move;
+    //     goto LAB_00407c9b;
+    //   case '\f':
+    //     pcVar5 = &s_Attack;
+    //     break;
+    //   case '\r':
+    //     pcVar5 = s_Failed;
+    //     goto LAB_00407c9b;
+    //   case '\x0e':
+    //     pcVar5 = &s_Invalidated;
+    //     break;
+    //   case '\x0f':
+    //     pcVar5 = &s_MoveNoSearch;
+    // LAB_00407c9b:
+    //     uVar2 = 0xffffffff;
+    //     do {
+    //       pcVar4 = pcVar5;
+    //       if (uVar2 == 0) break;
+    //       uVar2 = uVar2 - 1;
+    //       pcVar4 = pcVar5 + 1;
+    //       cVar1 = *pcVar5;
+    //       pcVar5 = pcVar4;
+    //     } while (cVar1 != '\0');
+    //     uVar2 = ~uVar2;
+    //     pcVar5 = pcVar4 + -uVar2;
+    //     for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //       *(undefined4 *)param_1 = *(undefined4 *)pcVar5;
+    //       pcVar5 = pcVar5 + 4;
+    //       param_1 = param_1 + 4;
+    //     }
+    //     for (uVar2 = uVar2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+    //       *param_1 = *pcVar5;
+    //       pcVar5 = pcVar5 + 1;
+    //       param_1 = param_1 + 1;
+    //     }
+    //     return;
+    //   default:
+    //     pcVar5 = &s_Unknown;
+    //   }
+    //   uVar2 = 0xffffffff;
+    //   do {
+    //     pcVar4 = pcVar5;
+    //     if (uVar2 == 0) break;
+    //     uVar2 = uVar2 - 1;
+    //     pcVar4 = pcVar5 + 1;
+    //     cVar1 = *pcVar5;
+    //     pcVar5 = pcVar4;
+    //   } while (cVar1 != '\0');
+    //   uVar2 = ~uVar2;
+    //   pcVar5 = pcVar4 + -uVar2;
+    //   for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //     *(undefined4 *)param_1 = *(undefined4 *)pcVar5;
+    //     pcVar5 = pcVar5 + 4;
+    //     param_1 = param_1 + 4;
+    //   }
+    //   for (uVar2 = uVar2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+    //     *param_1 = *pcVar5;
+    //     pcVar5 = pcVar5 + 1;
+    //     param_1 = param_1 + 1;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407D30
+float targetX(RGE_Action* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: float __thiscall RGE_Action::targetX(void)const  */
+    // 
+    // float __thiscall RGE_Action::targetX(RGE_Action *this)
+    // 
+    // {
+    //   return this->target_x;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407D40
+float targetY(RGE_Action* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: float __thiscall RGE_Action::targetY(void)const  */
+    // 
+    // float __thiscall RGE_Action::targetY(RGE_Action *this)
+    // 
+    // {
+    //   return this->target_y;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407D50
+float targetZ(RGE_Action* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: float __thiscall RGE_Action::targetZ(void)const  */
+    // 
+    // float __thiscall RGE_Action::targetZ(RGE_Action *this)
+    // 
+    // {
+    //   return this->target_z;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407D60
+uchar subAction(RGE_Action* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall RGE_Action::subAction(void)const  */
+    // 
+    // uchar __thiscall RGE_Action::subAction(RGE_Action *this)
+    // 
+    // {
+    //   return this->subActionValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00407D70
+void setSubAction(RGE_Action* this_, uchar param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Action::setSubAction(unsigned char) */
+    // 
+    // void __thiscall RGE_Action::setSubAction(RGE_Action *this,uchar param_1)
+    // 
+    // {
+    //   this->subActionValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+

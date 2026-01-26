@@ -1,0 +1,25 @@
+// Auto-generated decompiler unit: TribeElephantUnitAIModule.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x00504190
+void* TribeElephantUnitAIModule::vector_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TribeElephantUnitAIModule::`vector deleting
+    //    destructor'(unsigned int) */
+    // 
+    // void * __thiscall
+    // TribeElephantUnitAIModule::_vector_deleting_destructor_
+    //           (TribeElephantUnitAIModule *this,uint param_1)
+    // 
+    // {
+    //   ~TribeElephantUnitAIModule(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

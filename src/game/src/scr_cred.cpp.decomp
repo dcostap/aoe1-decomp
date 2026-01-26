@@ -1,0 +1,850 @@
+// Auto-generated decompiler unit: scr_cred.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/scr_cred.cpp
+#include "../include/common.h"
+
+// Offset: 0x004926E0
+undefined TRIBE_Credits_Screen(TRIBE_Credits_Screen* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: size */
+    // /* public: __thiscall TRIBE_Credits_Screen::TRIBE_Credits_Screen(void) */
+    // 
+    // TRIBE_Credits_Screen * __thiscall
+    // TRIBE_Credits_Screen::TRIBE_Credits_Screen(TRIBE_Credits_Screen *this)
+    // 
+    // {
+    //   TMusic_System *this_00;
+    //   long lVar1;
+    //   RGE_Font *pRVar2;
+    //   int iVar3;
+    //   TScrollTextPanel *pTVar4;
+    //   TShape *pTVar5;
+    //   int iVar6;
+    //   TShape **ppTVar7;
+    //   char *pcVar8;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   long size;
+    //   char temp_file_name [13];
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055eace;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   temp_file_name._0_4_ = this;
+    //   TScreenPanel::TScreenPanel((TScreenPanel *)this,s_Credits_Screen);
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->text_panel = (TScrollTextPanel *)0x0;
+    //   this->text_set = 1;
+    //   this->picture_set = 1;
+    //   this->last_picture_time = 0;
+    //   this->last_pause_time = 0;
+    //   this->mode = ModeNone;
+    //   this->first_draw = 1;
+    //   this->text_done = 0;
+    //   ppTVar7 = this->back_pics;
+    //   for (iVar6 = 7; iVar6 != 0; iVar6 = iVar6 + -1) {
+    //     *ppTVar7 = (TShape *)0x0;
+    //     ppTVar7 = ppTVar7 + 1;
+    //   }
+    //   local_4 = 0;
+    //   lVar1 = TScreenPanel::setup((TScreenPanel *)this,rge_base_game->draw_area,s_scr_cred,0xc38b,1);
+    //   if (lVar1 == 0) {
+    //     this->_padding_ = 1;
+    //     *unaff_FS_OFFSET = local_c;
+    //     return this;
+    //   }
+    //   TEasy_Panel::set_ideal_size((TEasy_Panel *)this,0x280,0x1e0);
+    //   pRVar2 = RGE_Base_Game::get_font(rge_base_game,4);
+    //   pcVar8 = (char *)0x0;
+    //   iVar6 = __open(s_data2_list_cr,0x8000);
+    //   if (iVar6 != -1) {
+    //     lseek(iVar6,0,2);
+    //     iVar3 = __tell(iVar6);
+    //     pcVar8 = (char *)calloc(iVar3 + 1,0x400);
+    //     if (pcVar8 != (char *)0x0) {
+    //       lseek(iVar6,0,0);
+    //       read(iVar6,pcVar8,iVar3);
+    //     }
+    //     close(iVar6);
+    //   }
+    //   pTVar4 = (TScrollTextPanel *)operator_new(0x198);
+    //   local_4._0_1_ = 1;
+    //   if (pTVar4 == (TScrollTextPanel *)0x0) {
+    //     pTVar4 = (TScrollTextPanel *)0x0;
+    //   }
+    //   else {
+    //     pTVar4 = (TScrollTextPanel *)
+    //              TScrollTextPanel::TScrollTextPanel
+    //                        (pTVar4,(TPanel *)this,(TDrawArea *)this->_padding_,
+    //                         this->_padding_ / 2 + -0xfa,this->_padding_ / 2 + -0x96,500,300,0x1e,
+    //                         pRVar2->font,pRVar2->font_wid,pRVar2->font_hgt,pcVar8);
+    //   }
+    //   local_4._0_1_ = 0;
+    //   this->text_panel = pTVar4;
+    //   if (pcVar8 != (char *)0x0) {
+    //     free(pcVar8);
+    //   }
+    //   this->back_pics[0] = (TShape *)this->_padding_;
+    //   ppTVar7 = this->back_pics;
+    //   iVar6 = 0xc3eb;
+    //   do {
+    //     ppTVar7 = ppTVar7 + 1;
+    //     sprintf(temp_file_name + 4,s_credit_d,iVar6 + -0xc3e9);
+    //     pTVar5 = (TShape *)operator_new(0x20);
+    //     local_4._0_1_ = 2;
+    //     if (pTVar5 == (TShape *)0x0) {
+    //       pTVar5 = (TShape *)0x0;
+    //     }
+    //     else {
+    //       pTVar5 = (TShape *)TShape::TShape(pTVar5,temp_file_name + 4,iVar6);
+    //     }
+    //     *ppTVar7 = pTVar5;
+    //     local_4._0_1_ = 0;
+    //     iVar3 = iVar6 + -0xc3e9;
+    //     iVar6 = iVar6 + 1;
+    //   } while (iVar3 < 7);
+    //   this_00 = rge_base_game->music_system;
+    //   if (((this_00 != (TMusic_System *)0x0) && (this_00->music_type == '\x01')) &&
+    //      (this_00->track_count == 0xf)) {
+    //     TMusic_System::play_tracks(this_00,0xf,0xf,1,0,0);
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00492970
+void TRIBE_Credits_Screen(TRIBE_Credits_Screen* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall TRIBE_Credits_Screen::~TRIBE_Credits_Screen(void) */
+    // 
+    // void __thiscall TRIBE_Credits_Screen::~TRIBE_Credits_Screen(TRIBE_Credits_Screen *this)
+    // 
+    // {
+    //   TShape *this_00;
+    //   TMusic_System *this_01;
+    //   int iVar1;
+    //   TShape **ppTVar2;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 uStack_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   pcStack_8 = FUN_0055eae8;
+    //   uStack_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &uStack_c;
+    //   this->_padding_ = (int)&_vftable_;
+    //   local_4 = 0;
+    //   ppTVar2 = this->back_pics;
+    //   iVar1 = 7;
+    //   do {
+    //     this_00 = *ppTVar2;
+    //     if (this_00 != (TShape *)0x0) {
+    //       TShape::~TShape(this_00);
+    //       operator_delete(this_00);
+    //       *ppTVar2 = (TShape *)0x0;
+    //     }
+    //     ppTVar2 = ppTVar2 + 1;
+    //     iVar1 = iVar1 + -1;
+    //   } while (iVar1 != 0);
+    //   this->_padding_ = 0;
+    //   if (this->text_panel != (TScrollTextPanel *)0x0) {
+    //     (**(code **)this->text_panel->_padding_)(1);
+    //     this->text_panel = (TScrollTextPanel *)0x0;
+    //   }
+    //   this_01 = rge_base_game->music_system;
+    //   if (((this_01 != (TMusic_System *)0x0) && (this_01->music_type == '\x01')) &&
+    //      (this_01->track_count == 0xf)) {
+    //     TMusic_System::play_tracks(this_01,5,0xe,1,0,0);
+    //   }
+    //   local_4 = 0xffffffff;
+    //   TScreenPanel::~TScreenPanel((TScreenPanel *)this);
+    //   *unaff_FS_OFFSET = uStack_c;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00492A40
+long TRIBE_Credits_Screen::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual long __thiscall TRIBE_Credits_Screen::handle_mouse_down(unsigned
+    //    char,long,long,int,int) */
+    // 
+    // long __thiscall
+    // TRIBE_Credits_Screen::handle_mouse_down
+    //           (TRIBE_Credits_Screen *this,uchar param_1,long param_2,long param_3,int param_4,
+    //           int param_5)
+    // 
+    // {
+    //   close_screen(this);
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00492A50
+long TRIBE_Credits_Screen::handle_idle() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual long __thiscall TRIBE_Credits_Screen::handle_idle(void) */
+    // 
+    // long __thiscall TRIBE_Credits_Screen::handle_idle(TRIBE_Credits_Screen *this)
+    // 
+    // {
+    //   ScreenMode SVar1;
+    //   TDrawArea *this_00;
+    //   TDrawSystem *pTVar2;
+    //   ulong uVar3;
+    //   long lVar4;
+    //   int iVar5;
+    //   
+    //   SVar1 = this->mode;
+    //   if (SVar1 == ModeNone) {
+    //     if (this->last_picture_time != 0) {
+    //       uVar3 = debug_timeGetTime(s_C__msdev_work_age1_x1_scr_cred_c,0xf5);
+    //       if (9999 < uVar3 - this->last_picture_time) {
+    //         this_00 = (TDrawArea *)this->_padding_;
+    //         pTVar2 = this_00->DrawSystem;
+    //         if ((pTVar2->ScreenMode == '\x02') || (pTVar2->DrawType == '\x01')) {
+    //           iVar5 = this->_padding_;
+    //           this->mode = ModeFadeOut;
+    //           (this->color).peRed = '\0';
+    //           (this->color).peGreen = '\0';
+    //           (this->color).peBlue = '\0';
+    //           if (iVar5 == 0) {
+    //             TDrawArea::GetPalette(this_00,this->color_table);
+    //           }
+    //           else {
+    //             GetPaletteEntries(iVar5,0,0x100,this->color_table);
+    //           }
+    //           RGE_fade_palette_start
+    //                     ((TDrawArea *)this->_padding_,this->color,0.5,'\x01',(tagPALETTEENTRY *)0x0,0xff
+    //                      ,-1);
+    //         }
+    //         else {
+    //           this->mode = ModePause;
+    //         }
+    //       }
+    //       goto LAB_00492c91;
+    //     }
+    //     iVar5 = 0xf1;
+    //   }
+    //   else {
+    //     if (SVar1 == ModeFadeOut) {
+    //       iVar5 = RGE_fade_palette_step();
+    //       if (iVar5 != 0) {
+    //         iVar5 = this->_padding_;
+    //         this->mode = ModePause;
+    //         this->last_pause_time = 0;
+    //         (**(code **)(iVar5 + 0x20))(1);
+    //         (**(code **)(iVar5 + 0x54))();
+    //         TDrawSystem::Paint(*(TDrawSystem **)this->_padding_,(tagRECT *)0x0);
+    //       }
+    //       goto LAB_00492c91;
+    //     }
+    //     if (SVar1 == ModePause) {
+    //       if (this->last_pause_time == 0) {
+    //         uVar3 = debug_timeGetTime(s_C__msdev_work_age1_x1_scr_cred_c,0x11a);
+    //         this->last_pause_time = uVar3;
+    //         goto LAB_00492c91;
+    //       }
+    //       debug_timeGetTime(s_C__msdev_work_age1_x1_scr_cred_c,0x11e);
+    //       iVar5 = this->picture_set + 1;
+    //       this->mode = ModeFadeIn;
+    //       this->picture_set = iVar5;
+    //       if (7 < iVar5) {
+    //         this->picture_set = 1;
+    //       }
+    //       iVar5 = this->_padding_;
+    //       this->_padding_ = (int)this->back_pics[this->picture_set + -1];
+    //       (**(code **)(iVar5 + 0x20))(1);
+    //       (**(code **)(iVar5 + 0x54))();
+    //       TDrawSystem::Paint(*(TDrawSystem **)this->_padding_,(tagRECT *)0x0);
+    //       pTVar2 = ((TDrawArea *)this->_padding_)->DrawSystem;
+    //       if ((pTVar2->ScreenMode == '\x02') || (pTVar2->DrawType == '\x01')) {
+    //         RGE_fade_palette_start
+    //                   ((TDrawArea *)this->_padding_,this->color,0.5,'\x02',this->color_table,0xff,-1);
+    //         goto LAB_00492c91;
+    //       }
+    //       this->mode = ModeNone;
+    //       iVar5 = 0x138;
+    //     }
+    //     else {
+    //       if (SVar1 != ModeFadeIn) goto LAB_00492c91;
+    //       iVar5 = RGE_fade_palette_step();
+    //       if (iVar5 == 0) goto LAB_00492c91;
+    //       this->mode = ModeNone;
+    //       iVar5 = 0x142;
+    //     }
+    //   }
+    //   uVar3 = debug_timeGetTime(s_C__msdev_work_age1_x1_scr_cred_c,iVar5);
+    //   this->last_picture_time = uVar3;
+    // LAB_00492c91:
+    //   if (this->text_done != 0) {
+    //     close_screen(this);
+    //     return 1;
+    //   }
+    //   lVar4 = TPanel::handle_idle((TPanel *)this);
+    //   return lVar4;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00492CC0
+void TRIBE_Credits_Screen::draw() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall TRIBE_Credits_Screen::draw(void) */
+    // 
+    // void __thiscall TRIBE_Credits_Screen::draw(TRIBE_Credits_Screen *this)
+    // 
+    // {
+    //   TDrawSystem *pTVar1;
+    //   int iVar2;
+    //   TShape **ppTVar3;
+    //   
+    //   if (this->mode == ModePause) {
+    //     pTVar1 = ((TDrawArea *)this->_padding_)->DrawSystem;
+    //     if ((pTVar1->ScreenMode == '\x02') || (pTVar1->DrawType == '\x01')) {
+    //       TDrawArea::Clear((TDrawArea *)this->_padding_,(tagRECT *)&this->_padding_,0);
+    //       return;
+    //     }
+    //   }
+    //   if (this->first_draw != 0) {
+    //     iVar2 = 7;
+    //     ppTVar3 = this->back_pics;
+    //     do {
+    //       this->_padding_ = (int)*ppTVar3;
+    //       TScreenPanel::draw((TScreenPanel *)this);
+    //       ppTVar3 = ppTVar3 + 1;
+    //       iVar2 = iVar2 + -1;
+    //     } while (iVar2 != 0);
+    //     this->first_draw = 0;
+    //     this->_padding_ = (int)this->back_pics[0];
+    //   }
+    //   TScreenPanel::draw((TScreenPanel *)this);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00492D50
+long TRIBE_Credits_Screen::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual long __thiscall TRIBE_Credits_Screen::key_down_action(long,short,int,int,int) */
+    // 
+    // long __thiscall
+    // TRIBE_Credits_Screen::key_down_action
+    //           (TRIBE_Credits_Screen *this,long param_1,short param_2,int param_3,int param_4,int param_5
+    //           )
+    // 
+    // {
+    //   if ((param_1 != 0xd) && (param_1 != 0x1b)) {
+    //     return 0;
+    //   }
+    //   close_screen(this);
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00492D70
+long TRIBE_Credits_Screen::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual long __thiscall TRIBE_Credits_Screen::action(class TPanel *,long,unsigned
+    //    long,unsigned long) */
+    // 
+    // long __thiscall
+    // TRIBE_Credits_Screen::action
+    //           (TRIBE_Credits_Screen *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
+    // 
+    // {
+    //   long lVar1;
+    //   
+    //   if (((param_1 != (TPanel *)0x0) && ((TScrollTextPanel *)param_1 == this->text_panel)) &&
+    //      (param_2 == 1)) {
+    //     this->text_done = 1;
+    //     return 1;
+    //   }
+    //   lVar1 = TEasy_Panel::action((TEasy_Panel *)this,param_1,param_2,param_3,param_4);
+    //   return lVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00492DB0
+void close_screen(TRIBE_Credits_Screen* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall TRIBE_Credits_Screen::close_screen(void) */
+    // 
+    // void __thiscall TRIBE_Credits_Screen::close_screen(TRIBE_Credits_Screen *this)
+    // 
+    // {
+    //   TPanel *pTVar1;
+    //   int iVar2;
+    //   TRIBE_Screen_Main_Menu *this_00;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   char *pcVar3;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055eb0b;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   pTVar1 = TPanelSystem::panel(&panel_system,s_Game_Screen);
+    //   if (pTVar1 == (TPanel *)0x0) {
+    //                     /* language.dll match for 0x4b0: "Ready" */
+    //     this_00 = (TRIBE_Screen_Main_Menu *)operator_new(0x4b0);
+    //     local_4 = 0;
+    //     if (this_00 != (TRIBE_Screen_Main_Menu *)0x0) {
+    //       TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu(this_00);
+    //     }
+    //     local_4 = 0xffffffff;
+    //     pcVar3 = s_Main_Menu;
+    //   }
+    //   else {
+    //     iVar2 = RGE_Base_Game::singlePlayerGame(rge_base_game);
+    //     if ((iVar2 == 1) && (rge_base_game->save_paused == 0)) {
+    //       RGE_Base_Game::set_paused(rge_base_game,0,0);
+    //     }
+    //     pcVar3 = s_Game_Screen;
+    //   }
+    //   TPanelSystem::setCurrentPanel(&panel_system,pcVar3,0);
+    //   TPanelSystem::destroyPanel(&panel_system,s_Credits_Screen);
+    //   *unaff_FS_OFFSET = local_c;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00492E70
+undefined TScrollTextPanel(TScrollTextPanel* this_, TPanel* param_2, TDrawArea* param_3, long param_4, long param_5, long param_6, long param_7, int param_8, void* param_9, long param_10, long param_11, char* param_12) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TScrollTextPanel::TScrollTextPanel(class TPanel *,class TDrawArea
+    //    *,long,long,long,long,int,void *,long,long,char *) */
+    // 
+    // TScrollTextPanel * __thiscall
+    // TScrollTextPanel::TScrollTextPanel
+    //           (TScrollTextPanel *this,TPanel *param_1,TDrawArea *param_2,long param_3,long param_4,
+    //           long param_5,long param_6,int param_7,void *param_8,long param_9,long param_10,
+    //           char *param_11)
+    // 
+    // {
+    //   long lVar1;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055eb28;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   TTextPanel::TTextPanel((TTextPanel *)this);
+    //   this->speed = param_7;
+    //   local_4 = 0;
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->scroll = 0;
+    //   this->last_time = 0;
+    //   this->done = 0;
+    //   lVar1 = TTextPanel::setup((TTextPanel *)this,param_2,param_1,param_3,param_4,param_5,param_6,
+    //                             param_8,param_9,param_10,(char *)0x0,0,'\0',0,'\0',0,(char *)0x0);
+    //   if (lVar1 != 0) {
+    //     TTextPanel::set_alignment((TTextPanel *)this,AlignTop,AlignCenter);
+    //     TTextPanel::set_word_wrap((TTextPanel *)this,1);
+    //     set_text(this,param_11);
+    //     TTextPanel::set_text_color((TTextPanel *)this,this->_padding_,this->_padding_);
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00492F70
+void TScrollTextPanel(TScrollTextPanel* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall TScrollTextPanel::~TScrollTextPanel(void) */
+    // 
+    // void __thiscall TScrollTextPanel::~TScrollTextPanel(TScrollTextPanel *this)
+    // 
+    // {
+    //   this->_padding_ = (int)&_vftable_;
+    //   TTextPanel::~TTextPanel((TTextPanel *)this);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00492F80
+void TScrollTextPanel::set_text(char* param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall TScrollTextPanel::set_text(char *) */
+    // 
+    // void __thiscall TScrollTextPanel::set_text(TScrollTextPanel *this,char *param_1)
+    // 
+    // {
+    //   TTextPanel::set_text((TTextPanel *)this,param_1);
+    //   this->last_time = 0;
+    //   this->scroll = 0;
+    //   this->done = 0;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00492FB0
+long TScrollTextPanel::handle_idle() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual long __thiscall TScrollTextPanel::handle_idle(void) */
+    // 
+    // long __thiscall TScrollTextPanel::handle_idle(TScrollTextPanel *this)
+    // 
+    // {
+    //   ulong uVar1;
+    //   int iVar2;
+    //   long lVar3;
+    //   
+    //   if (this->last_time == 0) {
+    //     uVar1 = debug_timeGetTime(s_C__msdev_work_age1_x1_scr_cred_c,0x1dc);
+    //     this->last_time = uVar1;
+    //   }
+    //   else {
+    //     uVar1 = debug_timeGetTime(s_C__msdev_work_age1_x1_scr_cred_c,0x1df);
+    //     iVar2 = __ftol();
+    //     if (0 < iVar2) {
+    //       this->scroll = this->scroll + iVar2;
+    //       (**(code **)(this->_padding_ + 0x20))(1);
+    //       this->last_time = uVar1;
+    //     }
+    //   }
+    //   if ((this->done != 0) && ((int *)this->_padding_ != (int *)0x0)) {
+    //     (**(code **)(*(int *)this->_padding_ + 0xb4))(this,1,0,0);
+    //   }
+    //   lVar3 = TPanel::handle_idle((TPanel *)this);
+    //   return lVar3;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00493070
+void TScrollTextPanel::draw() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: old_font */
+    // /* public: virtual void __thiscall TScrollTextPanel::draw(void) */
+    // 
+    // void __thiscall TScrollTextPanel::draw(TScrollTextPanel *this)
+    // 
+    // {
+    //   void *pvVar1;
+    //   undefined4 uVar2;
+    //   short sVar3;
+    //   int iVar4;
+    //   void *old_font;
+    //   int iStack_8;
+    //   
+    //   this->_padding_ = 0;
+    //   if (((this->_padding_ != 0) && (this->_padding_ != 0)) && (this->_padding_ != 0)) {
+    //     TTextPanel::draw_background((TTextPanel *)this);
+    //     iVar4 = this->_padding_;
+    //     (**(code **)(iVar4 + 0x28))(0);
+    //     pvVar1 = TDrawArea::GetDc((TDrawArea *)this->_padding_,s_scr_cred__draw);
+    //     if (pvVar1 != (void *)0x0) {
+    //       SelectClipRgn(pvVar1,this->_padding_);
+    //       uVar2 = SelectObject(pvVar1,this->_padding_);
+    //       SetBkMode(pvVar1,1);
+    //       sVar3 = 0;
+    //       if (0 < (short)this->_padding_) {
+    //         do {
+    //           draw_scrolled_line(this,pvVar1,sVar3,sVar3,this->_padding_,this->_padding_);
+    //           sVar3 = sVar3 + 1;
+    //         } while (sVar3 < (short)this->_padding_);
+    //       }
+    //       SelectObject(pvVar1,uVar2);
+    //       SelectClipRgn(pvVar1,0);
+    //       TDrawArea::ReleaseDc((TDrawArea *)this->_padding_,s_scr_cred__draw);
+    //       iVar4 = iStack_8;
+    //     }
+    //     TTextPanel::draw_border((TTextPanel *)this);
+    //     (**(code **)(iVar4 + 0x2c))();
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00493160
+void draw_scrolled_line(TScrollTextPanel* this_, void* param_2, short param_3, short param_4, ulong param_5, ulong param_6) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: text_len */
+    // /* public: void __thiscall TScrollTextPanel::draw_scrolled_line(void *,short,short,unsigned
+    //    long,unsigned long) */
+    // 
+    // void __thiscall
+    // TScrollTextPanel::draw_scrolled_line
+    //           (TScrollTextPanel *this,void *param_1,short param_2,short param_3,ulong param_4,
+    //           ulong param_5)
+    // 
+    // {
+    //   char cVar1;
+    //   long lVar2;
+    //   char *pcVar3;
+    //   char *pcVar4;
+    //   int iVar5;
+    //   int iVar6;
+    //   char *pcVar7;
+    //   int iVar8;
+    //   short text_len;
+    //   char *temp_text2;
+    //   short text2_len;
+    //   short local_1c;
+    //   tagRECT line_rect;
+    //   
+    //   iVar6 = (int)param_3;
+    //   temp_text2._0_2_ = 0;
+    //   local_1c = 0;
+    //   line_rect.left = (long)this;
+    //   pcVar3 = TTextPanel::get_text((TTextPanel *)this,iVar6);
+    //   pcVar4 = TTextPanel::get_text2((TTextPanel *)this,iVar6);
+    //   if (pcVar3 == (char *)0x0) {
+    //     if (pcVar4 == (char *)0x0) {
+    //       return;
+    //     }
+    //   }
+    //   else {
+    //     iVar5 = -1;
+    //     pcVar7 = pcVar3;
+    //     do {
+    //       if (iVar5 == 0) break;
+    //       iVar5 = iVar5 + -1;
+    //       cVar1 = *pcVar7;
+    //       pcVar7 = pcVar7 + 1;
+    //     } while (cVar1 != '\0');
+    //     temp_text2._0_2_ = ~(ushort)iVar5 - 1;
+    //   }
+    //   if (pcVar4 != (char *)0x0) {
+    //     iVar5 = -1;
+    //     pcVar7 = pcVar4;
+    //     do {
+    //       if (iVar5 == 0) break;
+    //       iVar5 = iVar5 + -1;
+    //       cVar1 = *pcVar7;
+    //       pcVar7 = pcVar7 + 1;
+    //     } while (cVar1 != '\0');
+    //     local_1c = ~(ushort)iVar5 - 1;
+    //   }
+    //   TTextPanel::calc_line_pos
+    //             ((TTextPanel *)this,param_1,param_2,param_3,(tagRECT *)&line_rect.top,(long *)0x0);
+    //   _param_3 = line_rect.top;
+    //   if ((this->_padding_ != 0) && (this->_padding_ != 6)) {
+    //     _param_3 = line_rect.top + 5;
+    //   }
+    //   iVar5 = this->_padding_ + _param_3;
+    //   iVar8 = (this->_padding_ - this->scroll) + line_rect.right;
+    //   if ((iVar6 == (short)this->_padding_ + -1) && (this->_padding_ + iVar8 < this->_padding_)) {
+    //     this->done = 1;
+    //   }
+    //   if (this->_padding_ != 0) {
+    //     SelectClipRgn(param_1,this->_padding_);
+    //   }
+    //   iVar6 = this->_padding_;
+    //   if (iVar6 == 0) {
+    //     SetTextColor(param_1,param_4);
+    //   }
+    //   else if (iVar6 == 1) {
+    //     SetTextColor(param_1,param_4);
+    //     if (pcVar3 != (char *)0x0) {
+    //       TextOutA(param_1,_param_3 + -1,iVar8 + 1,pcVar3,(int)(short)temp_text2);
+    //     }
+    //     SetTextColor(param_1,param_5);
+    //   }
+    //   else {
+    //     if (iVar6 != 2) goto LAB_00493317;
+    //     SetTextColor(param_1,param_5);
+    //     if (pcVar3 != (char *)0x0) {
+    //       TextOutA(param_1,_param_3 + -1,iVar8 + 1,pcVar3,(int)(short)temp_text2);
+    //     }
+    //     SetTextColor(param_1,param_4);
+    //   }
+    //   if (pcVar3 != (char *)0x0) {
+    //     TextOutA(param_1,_param_3,iVar8,pcVar3,(int)(short)temp_text2);
+    //   }
+    // LAB_00493317:
+    //   lVar2 = line_rect.left;
+    //   if (pcVar4 != (char *)0x0) {
+    //     if (*(int *)(line_rect.left + 0x17c) != 0) {
+    //       SelectClipRgn(param_1,*(undefined4 *)(line_rect.left + 0x88));
+    //     }
+    //     iVar6 = *(int *)(lVar2 + 0x11c);
+    //     if (iVar6 == 0) {
+    //       SetTextColor(param_1,param_4);
+    //       TextOutA(param_1,iVar5,iVar8,pcVar4,(int)local_1c);
+    //     }
+    //     else {
+    //       if (iVar6 == 1) {
+    //         SetTextColor(param_1,param_4);
+    //         TextOutA(param_1,iVar5 + -1,iVar8 + 1,pcVar4,(int)local_1c);
+    //         SetTextColor(param_1,param_5);
+    //         TextOutA(param_1,iVar5,iVar8,pcVar4,(int)local_1c);
+    //         return;
+    //       }
+    //       if (iVar6 == 2) {
+    //         SetTextColor(param_1,param_5);
+    //         TextOutA(param_1,iVar5 + -1,iVar8 + 1,pcVar4,(int)local_1c);
+    //         SetTextColor(param_1,param_4);
+    //         TextOutA(param_1,iVar5,iVar8,pcVar4,(int)local_1c);
+    //         return;
+    //       }
+    //     }
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00493420
+void RGE_fade_palette_start(TDrawArea* param_1, tagPALETTEENTRY param_2, float param_3, uchar param_4, tagPALETTEENTRY* param_5, int param_6, int param_7) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* void __cdecl RGE_fade_palette_start(class TDrawArea *,struct tagPALETTEENTRY,float,unsigned
+    //    char,struct tagPALETTEENTRY *,int,int) */
+    // 
+    // void __cdecl
+    // RGE_fade_palette_start
+    //           (TDrawArea *param_1,tagPALETTEENTRY param_2,float param_3,uchar param_4,
+    //           tagPALETTEENTRY *param_5,int param_6,int param_7)
+    // 
+    // {
+    //   int iVar1;
+    //   uchar *puVar2;
+    //   uchar *puVar3;
+    //   uchar *puVar4;
+    //   
+    //   DAT_0086b2a8 = param_2;
+    //   UNK_0086b28c._4_4_ = param_3;
+    //   DAT_0086b2a4 = param_4;
+    //   DAT_0086b298 = param_6;
+    //   DAT_0086b29c = param_7;
+    //   DAT_0086bab0 = param_1;
+    //   iVar1 = 0;
+    //   do {
+    //     (&DAT_0086b2b0)[iVar1] = 0;
+    //     (&DAT_0086b6b0)[iVar1] = 0;
+    //     (&DAT_0086b2b2)[iVar1] = 0;
+    //     (&DAT_0086b6b2)[iVar1] = 0;
+    //     (&DAT_0086b2b1)[iVar1] = 0;
+    //     (&DAT_0086b6b1)[iVar1] = 0;
+    //     (&DAT_0086b2b3)[iVar1] = 0;
+    //     (&DAT_0086b6b3)[iVar1] = 0;
+    //     iVar1 = iVar1 + 4;
+    //   } while (iVar1 < 0x400);
+    //   if (param_5 == (tagPALETTEENTRY *)0x0) {
+    //     TDrawArea::GetPalette(param_1,(tagPALETTEENTRY *)&DAT_0086b2b0);
+    //   }
+    //   else {
+    //     puVar4 = &DAT_0086b2b0;
+    //     puVar2 = &param_5->peGreen;
+    //     do {
+    //       puVar3 = puVar2 + 4;
+    //       *puVar4 = ((tagPALETTEENTRY *)(puVar2 + -1))->peRed;
+    //       puVar3[0x86b2ad - (int)param_5] = puVar2[1];
+    //       puVar3[(int)&DAT_0086b2ac - (int)param_5] = *puVar2;
+    //       puVar3[0x86b2ae - (int)param_5] = puVar2[2];
+    //       puVar4 = puVar4 + 4;
+    //       puVar2 = puVar3;
+    //     } while ((int)puVar4 < 0x86b6b0);
+    //   }
+    //   DAT_0086b294 = debug_timeGetTime(s_C__msdev_work_age1_x1_scr_cred_c,0x2b5);
+    //   DAT_0086b2ac = UNK_0086b28c._4_4_ * UNK_0086b28c._4_4_;
+    //   DAT_0086b2a0 = -(uint)(DAT_0086b2a4 != '\x01') & 100;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00493540
+int RGE_fade_palette_step() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: delta_time */
+    // /* int __cdecl RGE_fade_palette_step(void) */
+    // 
+    // int __cdecl RGE_fade_palette_step(void)
+    // 
+    // {
+    //   float fVar1;
+    //   ulong uVar2;
+    //   float delta_time;
+    //   uchar done;
+    //   int local_4;
+    //   
+    //   local_4 = 0;
+    //   if (DAT_0086b2a4 == '\x01') {
+    //     uVar2 = debug_timeGetTime(s_C__msdev_work_age1_x1_scr_cred_c,0x2c8);
+    //     fVar1 = (float)(int)(uVar2 - DAT_0086b294) * 0.001;
+    //     if (((UNK_0086b28c._4_4_ <= 0.0) || (UNK_0086b28c._4_4_ < fVar1)) || (fVar1 < 0.0)) {
+    //       DAT_0086b2a0 = 100;
+    //     }
+    //     else {
+    //       DAT_0086b2a0 = __ftol();
+    //     }
+    //     if (DAT_0086b2a0 < 100) goto LAB_00493687;
+    //     DAT_0086b2a0 = 100;
+    //   }
+    //   else {
+    //     uVar2 = debug_timeGetTime(s_C__msdev_work_age1_x1_scr_cred_c,0x2dc);
+    //     fVar1 = UNK_0086b28c._4_4_ - (float)(int)(uVar2 - DAT_0086b294) * 0.001;
+    //     if (((UNK_0086b28c._4_4_ <= 0.0) || (UNK_0086b28c._4_4_ < fVar1)) || (fVar1 < 0.0)) {
+    //       DAT_0086b2a0 = 0;
+    //     }
+    //     else {
+    //       DAT_0086b2a0 = __ftol();
+    //     }
+    //     if (0 < DAT_0086b2a0) goto LAB_00493687;
+    //     DAT_0086b2a0 = 0;
+    //   }
+    //   local_4 = 1;
+    // LAB_00493687:
+    //   RGE_translate_palette
+    //             ((tagPALETTEENTRY *)&DAT_0086b2b0,(tagPALETTEENTRY *)&DAT_0086b6b0,DAT_0086b2a8,
+    //              DAT_0086b2a0,DAT_0086b298,DAT_0086b29c);
+    //   TDrawArea::SetPalette(DAT_0086bab0,(tagPALETTEENTRY *)&DAT_0086b6b0);
+    //   return local_4;
+    // }
+    // 
+    // 
+}
+

@@ -1,0 +1,72 @@
+// Auto-generated decompiler unit: bucket_0426.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x004260F0
+void* vector_deleting_destructor(RESENDER* this_, uint param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void * __thiscall RESENDER::`vector deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall RESENDER::_vector_deleting_destructor_(RESENDER *this,uint param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   uint *puVar2;
+    //   
+    //   if ((param_1 & 2) != 0) {
+    //     _eh_vector_destructor_iterator_(this,0x38,this[-1].DestMap[9],~RESENDER);
+    //     operator_delete(this[-1].DestMap + 9);
+    //     return this;
+    //   }
+    //   this->TimeSent = 0;
+    //   if (this->ResendMsg != (char *)0x0) {
+    //     operator_delete(this->ResendMsg);
+    //   }
+    //   this->ResendMsg = (char *)0x0;
+    //   this->Serial = 0;
+    //   this->Length = 0;
+    //   puVar2 = this->DestMap;
+    //   for (iVar1 = 10; iVar1 != 0; iVar1 = iVar1 + -1) {
+    //     *puVar2 = 0;
+    //     puVar2 = puVar2 + 1;
+    //   }
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00426170
+void* vector_deleting_destructor(HOLDER* this_, uint param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void * __thiscall HOLDER::`vector deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall HOLDER::_vector_deleting_destructor_(HOLDER *this,uint param_1)
+    // 
+    // {
+    //   if ((param_1 & 2) != 0) {
+    //     _eh_vector_destructor_iterator_(this,0x18,this[-1].fromPlayer,~HOLDER);
+    //     operator_delete(&this[-1].fromPlayer);
+    //     return this;
+    //   }
+    //   if (this->HoldMsg != (char *)0x0) {
+    //     operator_delete(this->HoldMsg);
+    //   }
+    //   this->HoldMsg = (char *)0x0;
+    //   this->Serial = 0;
+    //   this->Length = 0;
+    //   this->dcoFromID = 0;
+    //   this->dcoReceiveID = 0;
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

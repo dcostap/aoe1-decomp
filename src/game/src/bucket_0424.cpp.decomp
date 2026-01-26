@@ -1,0 +1,26 @@
+// Auto-generated decompiler unit: bucket_0424.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x00424AC0
+void* vector_deleting_destructor(IPAD* this_, uint param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void * __thiscall IPAD::`vector deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall IPAD::_vector_deleting_destructor_(IPAD *this,uint param_1)
+    // 
+    // {
+    //   if ((param_1 & 2) != 0) {
+    //     _eh_vector_destructor_iterator_(this,0xa0,*(int *)(this[-1].Alias + 0x7c),~IPAD);
+    //     operator_delete(this[-1].Alias + 0x7c);
+    //     return this;
+    //   }
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

@@ -1,0 +1,646 @@
+// Auto-generated decompiler unit: airesmod.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/airesmod.cpp
+#include "../include/common.h"
+
+// Offset: 0x00412310
+undefined ResourceAIModule(ResourceAIModule* this_, void* param_2, int param_3, int param_4, int param_5, int param_6, int param_7) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall ResourceAIModule::ResourceAIModule(void *,int,int,int,int,int) */
+    // 
+    // ResourceAIModule * __thiscall
+    // ResourceAIModule::ResourceAIModule
+    //           (ResourceAIModule *this,void *param_1,int param_2,int param_3,int param_4,int param_5,
+    //           int param_6)
+    // 
+    // {
+    //   int *piVar1;
+    //   int **ppiVar2;
+    //   int iVar3;
+    //   int iVar4;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055c808;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   AIModule::AIModule((AIModule *)this,s_Resource_AI,0x3ef,param_2,param_1);
+    //   local_4 = 0;
+    //   this->md = (MainDecisionAIModule *)0x0;
+    //   this->numberResourcesValue = param_3;
+    //   this->_padding_ = (int)&_vftable_;
+    //   piVar1 = (int *)operator_new(param_3 * 4);
+    //   this->resourceValue = piVar1;
+    //   piVar1 = (int *)operator_new(this->numberResourcesValue << 2);
+    //   this->minValue = piVar1;
+    //   piVar1 = (int *)operator_new(this->numberResourcesValue << 2);
+    //   this->maxValue = piVar1;
+    //   ppiVar2 = (int **)operator_new(this->numberResourcesValue << 2);
+    //   this->resourceTypesValue = ppiVar2;
+    //   piVar1 = (int *)operator_new(this->numberResourcesValue << 2);
+    //   this->numberResourceTypesValue = piVar1;
+    //   iVar3 = 0;
+    //   if (0 < this->numberResourcesValue) {
+    //     do {
+    //       iVar4 = iVar3 + 1;
+    //       this->resourceValue[iVar3] = param_4;
+    //       this->minValue[iVar3] = param_5;
+    //       this->maxValue[iVar3] = param_6;
+    //       this->numberResourceTypesValue[iVar3] = 0;
+    //       this->resourceTypesValue[iVar3] = (int *)0x0;
+    //       iVar3 = iVar4;
+    //     } while (iVar4 < this->numberResourcesValue);
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412480
+void ResourceAIModule(ResourceAIModule* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall ResourceAIModule::~ResourceAIModule(void) */
+    // 
+    // void __thiscall ResourceAIModule::~ResourceAIModule(ResourceAIModule *this)
+    // 
+    // {
+    //   int iVar1;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   pcStack_8 = FUN_0055c828;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   this->_padding_ = (int)&_vftable_;
+    //   iVar1 = 0;
+    //   local_4 = 0;
+    //   operator_delete(this->resourceValue);
+    //   operator_delete(this->minValue);
+    //   operator_delete(this->maxValue);
+    //   if (0 < this->numberResourcesValue) {
+    //     do {
+    //       operator_delete(this->resourceTypesValue[iVar1]);
+    //       iVar1 = iVar1 + 1;
+    //     } while (iVar1 < this->numberResourcesValue);
+    //   }
+    //   operator_delete(this->resourceTypesValue);
+    //   operator_delete(this->numberResourceTypesValue);
+    //   local_4 = 0xffffffff;
+    //   AIModule::~AIModule((AIModule *)this);
+    //   *unaff_FS_OFFSET = local_c;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412540
+int ResourceAIModule::processMessage(AIModuleMessage* param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall ResourceAIModule::processMessage(class AIModuleMessage *) */
+    // 
+    // int __thiscall ResourceAIModule::processMessage(ResourceAIModule *this,AIModuleMessage *param_1)
+    // 
+    // {
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412550
+int ResourceAIModule::update(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall ResourceAIModule::update(int) */
+    // 
+    // int __thiscall ResourceAIModule::update(ResourceAIModule *this,int param_1)
+    // 
+    // {
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412560
+void ResourceAIModule::setCallbackMessage(AIModuleMessage* param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall ResourceAIModule::setCallbackMessage(class AIModuleMessage *) */
+    // 
+    // void __thiscall
+    // ResourceAIModule::setCallbackMessage(ResourceAIModule *this,AIModuleMessage *param_1)
+    // 
+    // {
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412570
+void setMainDecisionAI(ResourceAIModule* this_, MainDecisionAIModule* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall ResourceAIModule::setMainDecisionAI(class MainDecisionAIModule *) */
+    // 
+    // void __thiscall
+    // ResourceAIModule::setMainDecisionAI(ResourceAIModule *this,MainDecisionAIModule *param_1)
+    // 
+    // {
+    //   this->md = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412580
+int numberResources(ResourceAIModule* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall ResourceAIModule::numberResources(void)const  */
+    // 
+    // int __thiscall ResourceAIModule::numberResources(ResourceAIModule *this)
+    // 
+    // {
+    //   return this->numberResourcesValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412590
+int resource(ResourceAIModule* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall ResourceAIModule::resource(int)const  */
+    // 
+    // int __thiscall ResourceAIModule::resource(ResourceAIModule *this,int param_1)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < this->numberResourcesValue)) {
+    //     return this->resourceValue[param_1];
+    //   }
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004125C0
+int resourcesAvailable(ResourceAIModule* this_, ResourceItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall ResourceAIModule::resourcesAvailable(class ResourceItem *) */
+    // 
+    // int __thiscall ResourceAIModule::resourcesAvailable(ResourceAIModule *this,ResourceItem *param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   
+    //   if (param_1 == (ResourceItem *)0x0) {
+    //     return 0;
+    //   }
+    //   iVar1 = ResourceItem::number(param_1);
+    //   if (this->numberResourcesValue != iVar1) {
+    //     return 0;
+    //   }
+    //   iVar2 = 0;
+    //   iVar1 = ResourceItem::number(param_1);
+    //   if (iVar1 < 1) {
+    //     return 1;
+    //   }
+    //   do {
+    //     iVar1 = ResourceItem::value(param_1,iVar2);
+    //     if (this->resourceValue[iVar2] < iVar1) {
+    //       return 0;
+    //     }
+    //     iVar2 = iVar2 + 1;
+    //     iVar1 = ResourceItem::number(param_1);
+    //   } while (iVar2 < iVar1);
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412640
+int unavailableResource(ResourceAIModule* this_, ResourceItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall ResourceAIModule::unavailableResource(class ResourceItem *) */
+    // 
+    // int __thiscall ResourceAIModule::unavailableResource(ResourceAIModule *this,ResourceItem *param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   
+    //   if (param_1 == (ResourceItem *)0x0) {
+    //     return 0;
+    //   }
+    //   iVar1 = ResourceItem::number(param_1);
+    //   if (this->numberResourcesValue == iVar1) {
+    //     iVar2 = 0;
+    //     iVar1 = ResourceItem::number(param_1);
+    //     if (0 < iVar1) {
+    //       do {
+    //         iVar1 = ResourceItem::value(param_1,iVar2);
+    //         if (this->resourceValue[iVar2] < iVar1) {
+    //           return iVar2;
+    //         }
+    //         iVar2 = iVar2 + 1;
+    //         iVar1 = ResourceItem::number(param_1);
+    //       } while (iVar2 < iVar1);
+    //       return -1;
+    //     }
+    //   }
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004126B0
+int minValueOfResource(ResourceAIModule* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall ResourceAIModule::minValueOfResource(int)const  */
+    // 
+    // int __thiscall ResourceAIModule::minValueOfResource(ResourceAIModule *this,int param_1)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < this->numberResourcesValue)) {
+    //     return this->minValue[param_1];
+    //   }
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004126E0
+int maxValueOfResource(ResourceAIModule* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall ResourceAIModule::maxValueOfResource(int)const  */
+    // 
+    // int __thiscall ResourceAIModule::maxValueOfResource(ResourceAIModule *this,int param_1)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < this->numberResourcesValue)) {
+    //     return this->maxValue[param_1];
+    //   }
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412710
+void setResource(ResourceAIModule* this_, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall ResourceAIModule::setResource(int,int) */
+    // 
+    // void __thiscall ResourceAIModule::setResource(ResourceAIModule *this,int param_1,int param_2)
+    // 
+    // {
+    //   AIModule::logCommonHistory
+    //             ((AIModule *)this,(char *)this,s_setResource__n__d__v__d_,param_1,param_2);
+    //   if ((-1 < param_1) && (param_1 < this->numberResourcesValue)) {
+    //     this->resourceValue[param_1] = param_2;
+    //     AIModule::logCommonHistory
+    //               ((AIModule *)this->resourceValue,(char *)this,s___setResource__r__d___d_,param_1,
+    //                *(undefined4 *)
+    //                 ((((AIModule *)this->resourceValue)->idValue).name + param_1 * 4 + -0xc));
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412770
+void setResources(ResourceAIModule* this_, ResourceItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall ResourceAIModule::setResources(class ResourceItem *) */
+    // 
+    // void __thiscall ResourceAIModule::setResources(ResourceAIModule *this,ResourceItem *param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   
+    //   if (param_1 != (ResourceItem *)0x0) {
+    //     iVar1 = ResourceItem::number(param_1);
+    //     if (this->numberResourcesValue == iVar1) {
+    //       iVar2 = 0;
+    //       iVar1 = ResourceItem::number(param_1);
+    //       if (0 < iVar1) {
+    //         do {
+    //           iVar1 = ResourceItem::value(param_1,iVar2);
+    //           setResource(this,iVar2,iVar1);
+    //           iVar2 = iVar2 + 1;
+    //           iVar1 = ResourceItem::number(param_1);
+    //         } while (iVar2 < iVar1);
+    //       }
+    //     }
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004127C0
+void incrementResource(ResourceAIModule* this_, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall ResourceAIModule::incrementResource(int,int) */
+    // 
+    // void __thiscall ResourceAIModule::incrementResource(ResourceAIModule *this,int param_1,int param_2)
+    // 
+    // {
+    //   AIModule::logCommonHistory
+    //             ((AIModule *)this,(char *)this,s_incrementResource__n__d__v__d_,param_1,param_2);
+    //   if (((-1 < param_1) && (param_1 < this->numberResourcesValue)) &&
+    //      (this->resourceValue[param_1] = this->resourceValue[param_1] + param_2, param_2 != 0)) {
+    //     AIModule::logCommonHistory
+    //               ((AIModule *)this->resourceValue,(char *)this,s___incrementResource__r__d___d_,param_1
+    //                ,*(undefined4 *)
+    //                  ((((AIModule *)this->resourceValue)->idValue).name + param_1 * 4 + -0xc));
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412820
+void incrementResources(ResourceAIModule* this_, ResourceItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall ResourceAIModule::incrementResources(class ResourceItem *) */
+    // 
+    // void __thiscall ResourceAIModule::incrementResources(ResourceAIModule *this,ResourceItem *param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   
+    //   if (param_1 != (ResourceItem *)0x0) {
+    //     iVar1 = ResourceItem::number(param_1);
+    //     if (this->numberResourcesValue == iVar1) {
+    //       iVar2 = 0;
+    //       iVar1 = ResourceItem::number(param_1);
+    //       if (0 < iVar1) {
+    //         do {
+    //           iVar1 = ResourceItem::value(param_1,iVar2);
+    //           incrementResource(this,iVar2,iVar1);
+    //           iVar2 = iVar2 + 1;
+    //           iVar1 = ResourceItem::number(param_1);
+    //         } while (iVar2 < iVar1);
+    //       }
+    //     }
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412870
+void decrementResource(ResourceAIModule* this_, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall ResourceAIModule::decrementResource(int,int) */
+    // 
+    // void __thiscall ResourceAIModule::decrementResource(ResourceAIModule *this,int param_1,int param_2)
+    // 
+    // {
+    //   AIModule::logCommonHistory
+    //             ((AIModule *)this,(char *)this,s_decrementResource__n__d__v__d_,param_1,param_2);
+    //   if (((-1 < param_1) && (param_1 < this->numberResourcesValue)) &&
+    //      (this->resourceValue[param_1] = this->resourceValue[param_1] - param_2, param_2 != 0)) {
+    //     AIModule::logCommonHistory
+    //               ((AIModule *)this->resourceValue,(char *)this,s___decrementResource__r__d___d_,param_1
+    //                ,*(undefined4 *)
+    //                  ((((AIModule *)this->resourceValue)->idValue).name + param_1 * 4 + -0xc));
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004128D0
+void decrementResources(ResourceAIModule* this_, ResourceItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall ResourceAIModule::decrementResources(class ResourceItem *) */
+    // 
+    // void __thiscall ResourceAIModule::decrementResources(ResourceAIModule *this,ResourceItem *param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   
+    //   if (param_1 != (ResourceItem *)0x0) {
+    //     iVar1 = ResourceItem::number(param_1);
+    //     if (this->numberResourcesValue == iVar1) {
+    //       iVar2 = 0;
+    //       iVar1 = ResourceItem::number(param_1);
+    //       if (0 < iVar1) {
+    //         do {
+    //           iVar1 = ResourceItem::value(param_1,iVar2);
+    //           decrementResource(this,iVar2,iVar1);
+    //           iVar2 = iVar2 + 1;
+    //           iVar1 = ResourceItem::number(param_1);
+    //         } while (iVar2 < iVar1);
+    //       }
+    //     }
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412920
+void setResourceMin(ResourceAIModule* this_, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall ResourceAIModule::setResourceMin(int,int) */
+    // 
+    // void __thiscall ResourceAIModule::setResourceMin(ResourceAIModule *this,int param_1,int param_2)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < this->numberResourcesValue)) {
+    //     this->minValue[param_1] = param_2;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412940
+void setResourceMax(ResourceAIModule* this_, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall ResourceAIModule::setResourceMax(int,int) */
+    // 
+    // void __thiscall ResourceAIModule::setResourceMax(ResourceAIModule *this,int param_1,int param_2)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < this->numberResourcesValue)) {
+    //     this->maxValue[param_1] = param_2;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412960
+int ResourceAIModule::filterOutMessage(AIModuleMessage* param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual int __thiscall ResourceAIModule::filterOutMessage(class AIModuleMessage *) */
+    // 
+    // int __thiscall ResourceAIModule::filterOutMessage(ResourceAIModule *this,AIModuleMessage *param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   iVar1 = AIModule::filterOutMessage((AIModule *)this,param_1);
+    //   return iVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412970
+void addResourceType(ResourceAIModule* this_, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall ResourceAIModule::addResourceType(int,int) */
+    // 
+    // void __thiscall ResourceAIModule::addResourceType(ResourceAIModule *this,int param_1,int param_2)
+    // 
+    // {
+    //   int *piVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   
+    //   piVar1 = (int *)operator_new(this->numberResourceTypesValue[param_1] * 4 + 4);
+    //   iVar2 = 0;
+    //   iVar3 = iVar2;
+    //   if (0 < this->numberResourceTypesValue[param_1]) {
+    //     do {
+    //       iVar2 = iVar3 + 1;
+    //       piVar1[iVar3] = this->resourceTypesValue[param_1][iVar3];
+    //       iVar3 = iVar2;
+    //     } while (iVar2 < this->numberResourceTypesValue[param_1]);
+    //   }
+    //   piVar1[iVar2] = param_2;
+    //   if (this->resourceTypesValue[param_1] != (int *)0x0) {
+    //     operator_delete(this->resourceTypesValue[param_1]);
+    //   }
+    //   this->resourceTypesValue[param_1] = piVar1;
+    //   this->numberResourceTypesValue[param_1] = this->numberResourceTypesValue[param_1] + 1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412A10
+int isResourceType(ResourceAIModule* this_, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall ResourceAIModule::isResourceType(int,int) */
+    // 
+    // int __thiscall ResourceAIModule::isResourceType(ResourceAIModule *this,int param_1,int param_2)
+    // 
+    // {
+    //   int *piVar1;
+    //   AIModule *extraout_ECX;
+    //   AIModule *this_00;
+    //   AIModule *this_01;
+    //   int iVar2;
+    //   
+    //   AIModule::logCommonHistory
+    //             ((AIModule *)this,(char *)this,s_Entering_isResourceType__r__d__t,param_1,param_2);
+    //   AIModule::logCommonHistory
+    //             ((AIModule *)this->numberResourceTypesValue[param_1],(char *)this,
+    //              s___There_are__d_resource_types_fo,(AIModule *)this->numberResourceTypesValue[param_1],
+    //              param_1);
+    //   iVar2 = 0;
+    //   this_01 = extraout_ECX;
+    //   if (0 < this->numberResourceTypesValue[param_1]) {
+    //     piVar1 = this->resourceTypesValue[param_1];
+    //     do {
+    //       AIModule::logCommonHistory
+    //                 ((AIModule *)piVar1[iVar2],(char *)this,s_____Checking_against_type__d_,
+    //                  (AIModule *)piVar1[iVar2]);
+    //       piVar1 = this->resourceTypesValue[param_1];
+    //       if (piVar1[iVar2] == param_2) {
+    //         AIModule::logCommonHistory(this_00,(char *)this,s_______Match___Returning_TRUE_);
+    //         return 1;
+    //       }
+    //       this_01 = (AIModule *)this->numberResourceTypesValue;
+    //       iVar2 = iVar2 + 1;
+    //     } while (iVar2 < *(int *)((this_01->idValue).name + param_1 * 4 + -0xc));
+    //   }
+    //   AIModule::logCommonHistory(this_01,(char *)this,s___No_match___Returning_FALSE_);
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412AD0
+int numberResourceTypes(ResourceAIModule* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall ResourceAIModule::numberResourceTypes(int) */
+    // 
+    // int __thiscall ResourceAIModule::numberResourceTypes(ResourceAIModule *this,int param_1)
+    // 
+    // {
+    //   return this->numberResourceTypesValue[param_1];
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412AE0
+int lowestResourceType(ResourceAIModule* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall ResourceAIModule::lowestResourceType(void)const  */
+    // 
+    // int __thiscall ResourceAIModule::lowestResourceType(ResourceAIModule *this)
+    // 
+    // {
+    //   return 1;
+    // }
+    // 
+    // 
+}
+

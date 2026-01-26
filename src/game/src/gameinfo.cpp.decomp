@@ -1,0 +1,1695 @@
+// Auto-generated decompiler unit: gameinfo.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/gameinfo.cpp
+#include "../include/common.h"
+
+// Offset: 0x0044C5A0
+undefined RGE_Campaign_Info(RGE_Campaign_Info* this_, int param_2, RGE_Campaign** param_3, long param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Campaign_Info::RGE_Campaign_Info(int,class RGE_Campaign * *,long) */
+    // 
+    // RGE_Campaign_Info * __thiscall
+    // RGE_Campaign_Info::RGE_Campaign_Info
+    //           (RGE_Campaign_Info *this,int param_1,RGE_Campaign **param_2,long param_3)
+    // 
+    // {
+    //   long *plVar1;
+    //   byte bVar2;
+    //   RGE_Campaign *this_00;
+    //   RGE_Scenario_Info *pRVar3;
+    //   byte *pbVar4;
+    //   int iVar5;
+    //   long lVar6;
+    //   RGE_Scenario_Info *pRVar7;
+    //   uint uVar8;
+    //   uint uVar9;
+    //   RGE_Campaign_Info *pRVar10;
+    //   RGE_Scenario_Info *pRVar11;
+    //   bool bVar12;
+    //   undefined4 uVar13;
+    //   
+    //   rge_read(param_1,this,0xff);
+    //   rge_read(param_1,&this->current_scenario,4);
+    //   plVar1 = &this->scenario_num;
+    //   rge_read(param_1,plVar1,4);
+    //   rge_read(param_1,&this->last_scenario,4);
+    //   if (*plVar1 < 1) {
+    //     this->scenario_info = (RGE_Scenario_Info *)0x0;
+    //   }
+    //   else {
+    //     pRVar3 = (RGE_Scenario_Info *)calloc(*plVar1,1);
+    //     this->scenario_info = pRVar3;
+    //     rge_read(param_1,pRVar3,*plVar1);
+    //   }
+    //   this->campaign = (RGE_Campaign *)0x0;
+    //   if (0 < param_3) {
+    //     param_1 = (int)param_2;
+    //     do {
+    //       pbVar4 = (byte *)RGE_Campaign::get_name(*(RGE_Campaign **)param_1);
+    //       pRVar10 = this;
+    //       do {
+    //         bVar2 = *pbVar4;
+    //         bVar12 = bVar2 < (byte)pRVar10->campaign_name[0];
+    //         if (bVar2 != pRVar10->campaign_name[0]) {
+    // LAB_0044c66c:
+    //           iVar5 = (1 - (uint)bVar12) - (uint)(bVar12 != 0);
+    //           goto LAB_0044c671;
+    //         }
+    //         if (bVar2 == 0) break;
+    //         bVar2 = pbVar4[1];
+    //         bVar12 = bVar2 < (byte)pRVar10->campaign_name[1];
+    //         if (bVar2 != pRVar10->campaign_name[1]) goto LAB_0044c66c;
+    //         pbVar4 = pbVar4 + 2;
+    //         pRVar10 = (RGE_Campaign_Info *)(pRVar10->campaign_name + 2);
+    //       } while (bVar2 != 0);
+    //       iVar5 = 0;
+    // LAB_0044c671:
+    //       if (iVar5 == 0) {
+    //         this_00 = *(RGE_Campaign **)param_1;
+    //         this->campaign = this_00;
+    //         lVar6 = RGE_Campaign::scenario_number(this_00);
+    //         if (this->scenario_num != lVar6) {
+    //           lVar6 = RGE_Campaign::scenario_number(this->campaign);
+    //           if (lVar6 < this->scenario_num) {
+    //             uVar13 = 1;
+    //             lVar6 = RGE_Campaign::scenario_number(this->campaign);
+    //             pRVar7 = (RGE_Scenario_Info *)calloc(lVar6,uVar13);
+    //             uVar9 = this->scenario_num;
+    //             lVar6 = RGE_Campaign::scenario_number(this->campaign);
+    //             pRVar3 = pRVar7;
+    //             if ((int)uVar9 < lVar6) {
+    //               pRVar11 = this->scenario_info;
+    //               for (uVar8 = uVar9 >> 2; uVar8 != 0; uVar8 = uVar8 - 1) {
+    //                 *(undefined4 *)pRVar3 = *(undefined4 *)pRVar11;
+    //                 pRVar11 = pRVar11 + 4;
+    //                 pRVar3 = pRVar3 + 4;
+    //               }
+    //             }
+    //             else {
+    //               uVar9 = RGE_Campaign::scenario_number(this->campaign);
+    //               pRVar11 = this->scenario_info;
+    //               for (uVar8 = uVar9 >> 2; uVar8 != 0; uVar8 = uVar8 - 1) {
+    //                 *(undefined4 *)pRVar3 = *(undefined4 *)pRVar11;
+    //                 pRVar11 = pRVar11 + 4;
+    //                 pRVar3 = pRVar3 + 4;
+    //               }
+    //             }
+    //             for (uVar9 = uVar9 & 3; uVar9 != 0; uVar9 = uVar9 - 1) {
+    //               pRVar3->scenario_status = pRVar11->scenario_status;
+    //               pRVar11 = pRVar11 + 1;
+    //               pRVar3 = pRVar3 + 1;
+    //             }
+    //             free(this->scenario_info);
+    //             this->scenario_info = pRVar7;
+    //           }
+    //           lVar6 = RGE_Campaign::scenario_number(this->campaign);
+    //           this->scenario_num = lVar6;
+    //           if (lVar6 <= this->last_scenario) {
+    //             this->last_scenario = lVar6 + -1;
+    //           }
+    //           if (this->last_scenario < this->current_scenario) {
+    //             this->current_scenario = this->last_scenario;
+    //           }
+    //         }
+    //       }
+    //       param_1 = param_1 + 4;
+    //       param_3 = param_3 + -1;
+    //     } while (param_3 != 0);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044C780
+undefined RGE_Campaign_Info(RGE_Campaign_Info* this_, RGE_Campaign* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Campaign_Info::RGE_Campaign_Info(class RGE_Campaign *) */
+    // 
+    // RGE_Campaign_Info * __thiscall
+    // RGE_Campaign_Info::RGE_Campaign_Info(RGE_Campaign_Info *this,RGE_Campaign *param_1)
+    // 
+    // {
+    //   char cVar1;
+    //   char *pcVar2;
+    //   long lVar3;
+    //   RGE_Scenario_Info *pRVar4;
+    //   uint uVar5;
+    //   uint uVar6;
+    //   char *pcVar7;
+    //   RGE_Campaign_Info *pRVar8;
+    //   
+    //   if (param_1 == (RGE_Campaign *)0x0) {
+    //     uVar5 = 0xffffffff;
+    //     this->campaign = (RGE_Campaign *)0x0;
+    //     pcVar2 = s_;
+    //     do {
+    //       pcVar7 = pcVar2;
+    //       if (uVar5 == 0) break;
+    //       uVar5 = uVar5 - 1;
+    //       pcVar7 = pcVar2 + 1;
+    //       cVar1 = *pcVar2;
+    //       pcVar2 = pcVar7;
+    //     } while (cVar1 != '\0');
+    //     uVar5 = ~uVar5;
+    //     pcVar2 = pcVar7 + -uVar5;
+    //     pRVar8 = this;
+    //     for (uVar6 = uVar5 >> 2; uVar6 != 0; uVar6 = uVar6 - 1) {
+    //       *(undefined4 *)pRVar8->campaign_name = *(undefined4 *)pcVar2;
+    //       pcVar2 = pcVar2 + 4;
+    //       pRVar8 = (RGE_Campaign_Info *)(pRVar8->campaign_name + 4);
+    //     }
+    //     for (uVar5 = uVar5 & 3; uVar5 != 0; uVar5 = uVar5 - 1) {
+    //       pRVar8->campaign_name[0] = *pcVar2;
+    //       pcVar2 = pcVar2 + 1;
+    //       pRVar8 = (RGE_Campaign_Info *)(pRVar8->campaign_name + 1);
+    //     }
+    //     this->current_scenario = 0;
+    //     this->last_scenario = 0;
+    //     this->scenario_num = 0;
+    //     this->scenario_info = (RGE_Scenario_Info *)0x0;
+    //     return this;
+    //   }
+    //   this->campaign = param_1;
+    //   pcVar2 = RGE_Campaign::get_name(param_1);
+    //   uVar5 = 0xffffffff;
+    //   do {
+    //     pcVar7 = pcVar2;
+    //     if (uVar5 == 0) break;
+    //     uVar5 = uVar5 - 1;
+    //     pcVar7 = pcVar2 + 1;
+    //     cVar1 = *pcVar2;
+    //     pcVar2 = pcVar7;
+    //   } while (cVar1 != '\0');
+    //   uVar5 = ~uVar5;
+    //   pcVar2 = pcVar7 + -uVar5;
+    //   pRVar8 = this;
+    //   for (uVar6 = uVar5 >> 2; uVar6 != 0; uVar6 = uVar6 - 1) {
+    //     *(undefined4 *)pRVar8->campaign_name = *(undefined4 *)pcVar2;
+    //     pcVar2 = pcVar2 + 4;
+    //     pRVar8 = (RGE_Campaign_Info *)(pRVar8->campaign_name + 4);
+    //   }
+    //   for (uVar5 = uVar5 & 3; uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     pRVar8->campaign_name[0] = *pcVar2;
+    //     pcVar2 = pcVar2 + 1;
+    //     pRVar8 = (RGE_Campaign_Info *)(pRVar8->campaign_name + 1);
+    //   }
+    //   lVar3 = RGE_Campaign::scenario_number(this->campaign);
+    //   this->scenario_num = lVar3;
+    //   if (0 < lVar3) {
+    //     this->current_scenario = 0;
+    //     this->last_scenario = 0;
+    //     pRVar4 = (RGE_Scenario_Info *)calloc(lVar3,1);
+    //     this->scenario_info = pRVar4;
+    //     pRVar4->scenario_status = '\x02';
+    //     return this;
+    //   }
+    //   this->scenario_info = (RGE_Scenario_Info *)0x0;
+    //   this->current_scenario = -1;
+    //   this->last_scenario = -1;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044C870
+void RGE_Campaign_Info(RGE_Campaign_Info* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Campaign_Info::~RGE_Campaign_Info(void) */
+    // 
+    // void __thiscall RGE_Campaign_Info::~RGE_Campaign_Info(RGE_Campaign_Info *this)
+    // 
+    // {
+    //   if (this->scenario_info != (RGE_Scenario_Info *)0x0) {
+    //     free(this->scenario_info);
+    //     this->scenario_info = (RGE_Scenario_Info *)0x0;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044C8A0
+void save(RGE_Campaign_Info* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Campaign_Info::save(int) */
+    // 
+    // void __thiscall RGE_Campaign_Info::save(RGE_Campaign_Info *this,int param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   TDebuggingLog::Log(L,(char *)L,s____PIF_Saving_campaign_____d___s,this->last_scenario,this);
+    //   rge_write(param_1,this,0xff);
+    //   rge_write(param_1,&this->current_scenario,4);
+    //   rge_write(param_1,&this->scenario_num,4);
+    //   rge_write(param_1,&this->last_scenario,4);
+    //   iVar1 = this->scenario_num;
+    //   if (0 < iVar1) {
+    //     rge_write(param_1,this->scenario_info,iVar1);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044C930
+void rehook_campaigns(RGE_Campaign_Info* this_, RGE_Campaign** param_2, long param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Campaign_Info::rehook_campaigns(class RGE_Campaign * *,long) */
+    // 
+    // void __thiscall
+    // RGE_Campaign_Info::rehook_campaigns(RGE_Campaign_Info *this,RGE_Campaign **param_1,long param_2)
+    // 
+    // {
+    //   byte bVar1;
+    //   RGE_Campaign *this_00;
+    //   byte *pbVar2;
+    //   int iVar3;
+    //   long lVar4;
+    //   RGE_Scenario_Info *pRVar5;
+    //   uint uVar6;
+    //   uint uVar7;
+    //   RGE_Scenario_Info *pRVar8;
+    //   RGE_Campaign_Info *pRVar9;
+    //   RGE_Scenario_Info *pRVar10;
+    //   bool bVar11;
+    //   undefined4 uVar12;
+    //   
+    //   lVar4 = param_2;
+    //   this->campaign = (RGE_Campaign *)0x0;
+    //   if (0 < param_2) {
+    //     param_2 = (long)param_1;
+    //     param_1 = (RGE_Campaign **)lVar4;
+    //     do {
+    //       pbVar2 = (byte *)RGE_Campaign::get_name(*(RGE_Campaign **)param_2);
+    //       pRVar9 = this;
+    //       do {
+    //         bVar1 = *pbVar2;
+    //         bVar11 = bVar1 < (byte)pRVar9->campaign_name[0];
+    //         if (bVar1 != pRVar9->campaign_name[0]) {
+    // LAB_0044c98c:
+    //           iVar3 = (1 - (uint)bVar11) - (uint)(bVar11 != 0);
+    //           goto LAB_0044c991;
+    //         }
+    //         if (bVar1 == 0) break;
+    //         bVar1 = pbVar2[1];
+    //         bVar11 = bVar1 < (byte)pRVar9->campaign_name[1];
+    //         if (bVar1 != pRVar9->campaign_name[1]) goto LAB_0044c98c;
+    //         pbVar2 = pbVar2 + 2;
+    //         pRVar9 = (RGE_Campaign_Info *)(pRVar9->campaign_name + 2);
+    //       } while (bVar1 != 0);
+    //       iVar3 = 0;
+    // LAB_0044c991:
+    //       if (iVar3 == 0) {
+    //         this_00 = *(RGE_Campaign **)param_2;
+    //         this->campaign = this_00;
+    //         lVar4 = RGE_Campaign::scenario_number(this_00);
+    //         if (this->scenario_num != lVar4) {
+    //           uVar12 = 1;
+    //           lVar4 = RGE_Campaign::scenario_number(this->campaign);
+    //           pRVar5 = (RGE_Scenario_Info *)calloc(lVar4,uVar12);
+    //           uVar7 = this->scenario_num;
+    //           lVar4 = RGE_Campaign::scenario_number(this->campaign);
+    //           pRVar10 = pRVar5;
+    //           if ((int)uVar7 < lVar4) {
+    //             pRVar8 = this->scenario_info;
+    //             for (uVar6 = uVar7 >> 2; uVar6 != 0; uVar6 = uVar6 - 1) {
+    //               *(undefined4 *)pRVar10 = *(undefined4 *)pRVar8;
+    //               pRVar8 = pRVar8 + 4;
+    //               pRVar10 = pRVar10 + 4;
+    //             }
+    //           }
+    //           else {
+    //             uVar7 = RGE_Campaign::scenario_number(this->campaign);
+    //             pRVar8 = this->scenario_info;
+    //             for (uVar6 = uVar7 >> 2; uVar6 != 0; uVar6 = uVar6 - 1) {
+    //               *(undefined4 *)pRVar10 = *(undefined4 *)pRVar8;
+    //               pRVar8 = pRVar8 + 4;
+    //               pRVar10 = pRVar10 + 4;
+    //             }
+    //           }
+    //           for (uVar7 = uVar7 & 3; uVar7 != 0; uVar7 = uVar7 - 1) {
+    //             pRVar10->scenario_status = pRVar8->scenario_status;
+    //             pRVar8 = pRVar8 + 1;
+    //             pRVar10 = pRVar10 + 1;
+    //           }
+    //           free(this->scenario_info);
+    //           this->scenario_info = pRVar5;
+    //         }
+    //         lVar4 = RGE_Campaign::scenario_number(this->campaign);
+    //         this->scenario_num = lVar4;
+    //         if (lVar4 <= this->last_scenario) {
+    //           this->last_scenario = lVar4 + -1;
+    //         }
+    //         if (this->last_scenario < this->current_scenario) {
+    //           this->current_scenario = this->last_scenario;
+    //         }
+    //       }
+    //       param_2 = param_2 + 4;
+    //       param_1 = (RGE_Campaign **)((int)param_1 + -1);
+    //     } while (param_1 != (RGE_Campaign **)0x0);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044CA90
+uchar set_current_scenario(RGE_Campaign_Info* this_, long param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall RGE_Campaign_Info::set_current_scenario(long) */
+    // 
+    // uchar __thiscall RGE_Campaign_Info::set_current_scenario(RGE_Campaign_Info *this,long param_1)
+    // 
+    // {
+    //   if ((param_1 < this->scenario_num) && (this->scenario_info[param_1].scenario_status != '\0')) {
+    //     if (this->last_scenario < param_1) {
+    //       this->current_scenario = this->last_scenario;
+    //       return '\x01';
+    //     }
+    //     this->current_scenario = param_1;
+    //     return '\x01';
+    //   }
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044CAD0
+uchar verify_campaign_name(RGE_Campaign_Info* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall RGE_Campaign_Info::verify_campaign_name(char *) */
+    // 
+    // uchar __thiscall RGE_Campaign_Info::verify_campaign_name(RGE_Campaign_Info *this,char *param_1)
+    // 
+    // {
+    //   byte bVar1;
+    //   bool bVar2;
+    //   
+    //   while( true ) {
+    //     bVar1 = this->campaign_name[0];
+    //     bVar2 = bVar1 < (byte)*param_1;
+    //     if (bVar1 != *param_1) break;
+    //     if (bVar1 == 0) {
+    //       return '\x01';
+    //     }
+    //     bVar1 = this->campaign_name[1];
+    //     bVar2 = bVar1 < ((byte *)param_1)[1];
+    //     if (bVar1 != ((byte *)param_1)[1]) break;
+    //     this = (RGE_Campaign_Info *)(this->campaign_name + 2);
+    //     param_1 = (char *)((byte *)param_1 + 2);
+    //     if (bVar1 == 0) {
+    //       return '\x01';
+    //     }
+    //   }
+    //   return 1 - bVar2 == (uint)(bVar2 != 0);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044CB20
+long get_scenario_list(RGE_Campaign_Info* this_, char*** param_2, long* param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: long __thiscall RGE_Campaign_Info::get_scenario_list(char * * *,long &) */
+    // 
+    // long __thiscall
+    // RGE_Campaign_Info::get_scenario_list(RGE_Campaign_Info *this,char ***param_1,long *param_2)
+    // 
+    // {
+    //   char **ppcVar1;
+    //   char *pcVar2;
+    //   int iVar3;
+    //   
+    //   if (this->campaign != (RGE_Campaign *)0x0) {
+    //     ppcVar1 = (char **)calloc(this->last_scenario + 1,4);
+    //     iVar3 = 0;
+    //     *param_1 = ppcVar1;
+    //     if (-1 < this->last_scenario) {
+    //       do {
+    //         pcVar2 = RGE_Campaign::get_scenario_name(this->campaign,iVar3);
+    //         getstring(*param_1 + iVar3,pcVar2);
+    //         iVar3 = iVar3 + 1;
+    //       } while (iVar3 <= this->last_scenario);
+    //     }
+    //     *param_2 = this->current_scenario;
+    //     return this->last_scenario + 1;
+    //   }
+    //   *param_2 = -1;
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044CBB0
+long get_current_scenario(RGE_Campaign_Info* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: long __thiscall RGE_Campaign_Info::get_current_scenario(void) */
+    // 
+    // long __thiscall RGE_Campaign_Info::get_current_scenario(RGE_Campaign_Info *this)
+    // 
+    // {
+    //   return this->current_scenario;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044CBC0
+void notify_of_scenario_complete(RGE_Campaign_Info* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Campaign_Info::notify_of_scenario_complete(void) */
+    // 
+    // void __thiscall RGE_Campaign_Info::notify_of_scenario_complete(RGE_Campaign_Info *this)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   if (-1 < this->current_scenario) {
+    //     this->scenario_info[this->current_scenario].scenario_status = '\x01';
+    //     if (this->last_scenario <= this->current_scenario) {
+    //       iVar1 = this->current_scenario + 1;
+    //       this->last_scenario = iVar1;
+    //       set_current_scenario(this,iVar1);
+    //     }
+    //     if (this->scenario_num <= this->last_scenario) {
+    //       this->last_scenario = this->scenario_num + -1;
+    //     }
+    //     this->scenario_info[this->last_scenario].scenario_status = '\x02';
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044CC20
+int open_scenario(RGE_Campaign_Info* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall RGE_Campaign_Info::open_scenario(void) */
+    // 
+    // int __thiscall RGE_Campaign_Info::open_scenario(RGE_Campaign_Info *this)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   if (-1 < this->current_scenario) {
+    //     iVar1 = RGE_Campaign::open_scenario(this->campaign,this->current_scenario);
+    //     return iVar1;
+    //   }
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044CC40
+undefined RGE_Person_Info(RGE_Person_Info* this_, int param_2, RGE_Campaign** param_3, long param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Person_Info::RGE_Person_Info(int,class RGE_Campaign * *,long) */
+    // 
+    // RGE_Person_Info * __thiscall
+    // RGE_Person_Info::RGE_Person_Info
+    //           (RGE_Person_Info *this,int param_1,RGE_Campaign **param_2,long param_3)
+    // 
+    // {
+    //   long *plVar1;
+    //   RGE_Campaign_Info **ppRVar2;
+    //   RGE_Campaign_Info *pRVar3;
+    //   int iVar4;
+    //   int iVar5;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_c = *unaff_FS_OFFSET;
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055d58b;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   this->campaign_num = param_3;
+    //   this->campaigns = param_2;
+    //   rge_read(param_1,this,0xff);
+    //   rge_read(param_1,&this->current_campaign,4);
+    //   plVar1 = &this->campaign_info_num;
+    //   rge_read(param_1,plVar1,4);
+    //   if (*plVar1 < 1) {
+    //     this->campaign_info = (RGE_Campaign_Info **)0x0;
+    //   }
+    //   else {
+    //     ppRVar2 = (RGE_Campaign_Info **)calloc(*plVar1,4);
+    //     this->campaign_info = ppRVar2;
+    //     iVar4 = 0;
+    //     if (0 < *plVar1) {
+    //       do {
+    //         pRVar3 = (RGE_Campaign_Info *)operator_new(0x114);
+    //         local_4 = 0;
+    //         if (pRVar3 == (RGE_Campaign_Info *)0x0) {
+    //           pRVar3 = (RGE_Campaign_Info *)0x0;
+    //         }
+    //         else {
+    //           pRVar3 = (RGE_Campaign_Info *)
+    //                    RGE_Campaign_Info::RGE_Campaign_Info
+    //                              (pRVar3,param_1,this->campaigns,this->campaign_num);
+    //         }
+    //         iVar5 = iVar4 + 1;
+    //         local_4 = 0xffffffff;
+    //         this->campaign_info[iVar4] = pRVar3;
+    //         iVar4 = iVar5;
+    //       } while (iVar5 < *plVar1);
+    //     }
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044CD40
+undefined RGE_Person_Info(RGE_Person_Info* this_, char* param_2, RGE_Campaign** param_3, long param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Person_Info::RGE_Person_Info(char *,class RGE_Campaign * *,long) */
+    // 
+    // RGE_Person_Info * __thiscall
+    // RGE_Person_Info::RGE_Person_Info
+    //           (RGE_Person_Info *this,char *param_1,RGE_Campaign **param_2,long param_3)
+    // 
+    // {
+    //   char cVar1;
+    //   uint uVar2;
+    //   uint uVar3;
+    //   char *pcVar4;
+    //   RGE_Person_Info *pRVar5;
+    //   
+    //   uVar2 = 0xffffffff;
+    //   do {
+    //     pcVar4 = param_1;
+    //     if (uVar2 == 0) break;
+    //     uVar2 = uVar2 - 1;
+    //     pcVar4 = param_1 + 1;
+    //     cVar1 = *param_1;
+    //     param_1 = pcVar4;
+    //   } while (cVar1 != '\0');
+    //   uVar2 = ~uVar2;
+    //   pcVar4 = pcVar4 + -uVar2;
+    //   pRVar5 = this;
+    //   for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //     *(undefined4 *)pRVar5->name = *(undefined4 *)pcVar4;
+    //     pcVar4 = pcVar4 + 4;
+    //     pRVar5 = (RGE_Person_Info *)(pRVar5->name + 4);
+    //   }
+    //   for (uVar2 = uVar2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+    //     pRVar5->name[0] = *pcVar4;
+    //     pcVar4 = pcVar4 + 1;
+    //     pRVar5 = (RGE_Person_Info *)(pRVar5->name + 1);
+    //   }
+    //   this->campaign_info_num = 0;
+    //   this->campaign_info = (RGE_Campaign_Info **)0x0;
+    //   this->campaigns = param_2;
+    //   this->current_campaign = -1;
+    //   this->campaign_num = param_3;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044CDA0
+void RGE_Person_Info(RGE_Person_Info* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Person_Info::~RGE_Person_Info(void) */
+    // 
+    // void __thiscall RGE_Person_Info::~RGE_Person_Info(RGE_Person_Info *this)
+    // 
+    // {
+    //   RGE_Campaign_Info *this_00;
+    //   int iVar1;
+    //   
+    //   if (this->campaign_info != (RGE_Campaign_Info **)0x0) {
+    //     iVar1 = 0;
+    //     if (0 < this->campaign_info_num) {
+    //       do {
+    //         this_00 = this->campaign_info[iVar1];
+    //         if (this_00 != (RGE_Campaign_Info *)0x0) {
+    //           RGE_Campaign_Info::~RGE_Campaign_Info(this_00);
+    //           operator_delete(this_00);
+    //         }
+    //         iVar1 = iVar1 + 1;
+    //       } while (iVar1 < this->campaign_info_num);
+    //     }
+    //     free(this->campaign_info);
+    //     this->campaign_info = (RGE_Campaign_Info **)0x0;
+    //     this->campaign_info_num = 0;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044CE10
+void save(RGE_Person_Info* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Person_Info::save(int) */
+    // 
+    // void __thiscall RGE_Person_Info::save(RGE_Person_Info *this,int param_1)
+    // 
+    // {
+    //   long *plVar1;
+    //   int iVar2;
+    //   
+    //   TDebuggingLog::Log((TDebuggingLog *)this,(char *)L,s__PIF_Saving_player____s,this);
+    //   rge_write(param_1,this,0xff);
+    //   rge_write(param_1,&this->current_campaign,4);
+    //   plVar1 = &this->campaign_info_num;
+    //   rge_write(param_1,plVar1,4);
+    //   iVar2 = 0;
+    //   if (0 < *plVar1) {
+    //     do {
+    //       RGE_Campaign_Info::save(this->campaign_info[iVar2],param_1);
+    //       iVar2 = iVar2 + 1;
+    //     } while (iVar2 < *plVar1);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044CE90
+void rehook_campaigns(RGE_Person_Info* this_, RGE_Campaign** param_2, long param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Person_Info::rehook_campaigns(class RGE_Campaign * *,long) */
+    // 
+    // void __thiscall
+    // RGE_Person_Info::rehook_campaigns(RGE_Person_Info *this,RGE_Campaign **param_1,long param_2)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   iVar1 = 0;
+    //   this->campaign_num = param_2;
+    //   this->campaigns = param_1;
+    //   if (0 < this->campaign_info_num) {
+    //     do {
+    //       RGE_Campaign_Info::rehook_campaigns
+    //                 (this->campaign_info[iVar1],this->campaigns,this->campaign_num);
+    //       iVar1 = iVar1 + 1;
+    //     } while (iVar1 < this->campaign_info_num);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044CEE0
+char* get_name(RGE_Person_Info* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: char * __thiscall RGE_Person_Info::get_name(void) */
+    // 
+    // char * __thiscall RGE_Person_Info::get_name(RGE_Person_Info *this)
+    // 
+    // {
+    //   return this->name;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044CEF0
+uchar set_current_campaign(RGE_Person_Info* this_, long param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall RGE_Person_Info::set_current_campaign(long) */
+    // 
+    // uchar __thiscall RGE_Person_Info::set_current_campaign(RGE_Person_Info *this,long param_1)
+    // 
+    // {
+    //   uchar uVar1;
+    //   char *pcVar2;
+    //   RGE_Campaign_Info **ppRVar3;
+    //   RGE_Campaign_Info *pRVar4;
+    //   uint uVar5;
+    //   int iVar6;
+    //   RGE_Campaign_Info **ppRVar7;
+    //   RGE_Campaign_Info **ppRVar8;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_c = *unaff_FS_OFFSET;
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055d5ab;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   if (((param_1 < 0) || (this->campaign_num <= param_1)) ||
+    //      (this->campaigns[param_1] == (RGE_Campaign *)0x0)) {
+    //     uVar1 = '\0';
+    //   }
+    //   else {
+    //     iVar6 = 0;
+    //     if (0 < this->campaign_info_num) {
+    //       do {
+    //         pcVar2 = RGE_Campaign::get_name(this->campaigns[param_1]);
+    //         uVar1 = RGE_Campaign_Info::verify_campaign_name(this->campaign_info[iVar6],pcVar2);
+    //         if (uVar1 != '\0') {
+    //           this->current_campaign = iVar6;
+    //           uVar1 = '\x01';
+    //           goto LAB_0044d022;
+    //         }
+    //         iVar6 = iVar6 + 1;
+    //       } while (iVar6 < this->campaign_info_num);
+    //     }
+    //     ppRVar3 = (RGE_Campaign_Info **)calloc(this->campaign_info_num + 1,4);
+    //     if (this->campaign_info != (RGE_Campaign_Info **)0x0) {
+    //       ppRVar7 = this->campaign_info;
+    //       ppRVar8 = ppRVar3;
+    //       for (uVar5 = this->campaign_info_num & 0x3fffffff; uVar5 != 0; uVar5 = uVar5 - 1) {
+    //         *ppRVar8 = *ppRVar7;
+    //         ppRVar7 = ppRVar7 + 1;
+    //         ppRVar8 = ppRVar8 + 1;
+    //       }
+    //       for (iVar6 = 0; iVar6 != 0; iVar6 = iVar6 + -1) {
+    //         *(undefined1 *)ppRVar8 = *(undefined1 *)ppRVar7;
+    //         ppRVar7 = (RGE_Campaign_Info **)((int)ppRVar7 + 1);
+    //         ppRVar8 = (RGE_Campaign_Info **)((int)ppRVar8 + 1);
+    //       }
+    //     }
+    //     free(this->campaign_info);
+    //     this->campaign_info = ppRVar3;
+    //     pRVar4 = (RGE_Campaign_Info *)operator_new(0x114);
+    //     local_4 = 0;
+    //     if (pRVar4 == (RGE_Campaign_Info *)0x0) {
+    //       pRVar4 = (RGE_Campaign_Info *)0x0;
+    //     }
+    //     else {
+    //       pRVar4 = (RGE_Campaign_Info *)
+    //                RGE_Campaign_Info::RGE_Campaign_Info(pRVar4,this->campaigns[param_1]);
+    //     }
+    //     this->campaign_info[this->campaign_info_num] = pRVar4;
+    //     this->current_campaign = this->campaign_info_num;
+    //     this->campaign_info_num = this->campaign_info_num + 1;
+    //     uVar1 = '\x01';
+    //   }
+    // LAB_0044d022:
+    //   *unaff_FS_OFFSET = local_c;
+    //   return uVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044D050
+long get_current_campaign(RGE_Person_Info* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: long __thiscall RGE_Person_Info::get_current_campaign(void) */
+    // 
+    // long __thiscall RGE_Person_Info::get_current_campaign(RGE_Person_Info *this)
+    // 
+    // {
+    //   uchar uVar1;
+    //   char *pcVar2;
+    //   int iVar3;
+    //   
+    //   if (((-1 < this->current_campaign) && (this->current_campaign < this->campaign_info_num)) &&
+    //      (iVar3 = 0, 0 < this->campaign_num)) {
+    //     do {
+    //       pcVar2 = RGE_Campaign::get_name(this->campaigns[iVar3]);
+    //       uVar1 = RGE_Campaign_Info::verify_campaign_name
+    //                         (this->campaign_info[this->current_campaign],pcVar2);
+    //       if (uVar1 != '\0') {
+    //         return iVar3;
+    //       }
+    //       iVar3 = iVar3 + 1;
+    //     } while (iVar3 < this->campaign_num);
+    //     return -1;
+    //   }
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044D0C0
+long get_current_scenario(RGE_Person_Info* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: long __thiscall RGE_Person_Info::get_current_scenario(void) */
+    // 
+    // long __thiscall RGE_Person_Info::get_current_scenario(RGE_Person_Info *this)
+    // 
+    // {
+    //   int iVar1;
+    //   long lVar2;
+    //   
+    //   iVar1 = this->current_campaign;
+    //   if ((-1 < iVar1) && (this->campaigns[iVar1] != (RGE_Campaign *)0x0)) {
+    //     lVar2 = RGE_Campaign_Info::get_current_scenario(this->campaign_info[iVar1]);
+    //     return lVar2;
+    //   }
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044D0F0
+uchar set_current_scenario(RGE_Person_Info* this_, long param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall RGE_Person_Info::set_current_scenario(long) */
+    // 
+    // uchar __thiscall RGE_Person_Info::set_current_scenario(RGE_Person_Info *this,long param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   uchar uVar2;
+    //   
+    //   iVar1 = this->current_campaign;
+    //   if ((-1 < iVar1) && (this->campaigns[iVar1] != (RGE_Campaign *)0x0)) {
+    //     uVar2 = RGE_Campaign_Info::set_current_scenario(this->campaign_info[iVar1],param_1);
+    //     return uVar2;
+    //   }
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044D130
+long get_scenario_list(RGE_Person_Info* this_, char*** param_2, long* param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: long __thiscall RGE_Person_Info::get_scenario_list(char * * *,long &) */
+    // 
+    // long __thiscall
+    // RGE_Person_Info::get_scenario_list(RGE_Person_Info *this,char ***param_1,long *param_2)
+    // 
+    // {
+    //   long lVar1;
+    //   
+    //   if (-1 < this->current_campaign) {
+    //     lVar1 = RGE_Campaign_Info::get_scenario_list
+    //                       (this->campaign_info[this->current_campaign],param_1,param_2);
+    //     return lVar1;
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044D160
+void notify_of_scenario_complete(RGE_Person_Info* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Person_Info::notify_of_scenario_complete(void) */
+    // 
+    // void __thiscall RGE_Person_Info::notify_of_scenario_complete(RGE_Person_Info *this)
+    // 
+    // {
+    //   if (-1 < this->current_campaign) {
+    //     RGE_Campaign_Info::notify_of_scenario_complete(this->campaign_info[this->current_campaign]);
+    //     return;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044D180
+int open_scenario(RGE_Person_Info* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall RGE_Person_Info::open_scenario(void) */
+    // 
+    // int __thiscall RGE_Person_Info::open_scenario(RGE_Person_Info *this)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   if (-1 < this->current_campaign) {
+    //     iVar1 = RGE_Campaign_Info::open_scenario(this->campaign_info[this->current_campaign]);
+    //     return iVar1;
+    //   }
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044D1A0
+undefined RGE_Game_Info(RGE_Game_Info* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: version */
+    // /* public: __thiscall RGE_Game_Info::RGE_Game_Info(char *) */
+    // 
+    // RGE_Game_Info * __thiscall RGE_Game_Info::RGE_Game_Info(RGE_Game_Info *this,char *param_1)
+    // 
+    // {
+    //   long *plVar1;
+    //   char cVar2;
+    //   int iVar3;
+    //   RGE_Person_Info **ppRVar4;
+    //   RGE_Person_Info *pRVar5;
+    //   uint uVar6;
+    //   uint uVar7;
+    //   char *pcVar8;
+    //   int iVar9;
+    //   int iVar10;
+    //   char *pcVar11;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   long version;
+    //   RGE_Game_Info *local_10;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055d5cb;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   plVar1 = &this->people_num;
+    //   this->people_info = (RGE_Person_Info **)0x0;
+    //   *plVar1 = 0;
+    //   this->campaign_num = 0;
+    //   this->campaigns = (RGE_Campaign **)0x0;
+    //   local_10 = this;
+    //   find_campaigns(this);
+    //   uVar6 = 0xffffffff;
+    //   pcVar8 = param_1;
+    //   do {
+    //     pcVar11 = pcVar8;
+    //     if (uVar6 == 0) break;
+    //     uVar6 = uVar6 - 1;
+    //     pcVar11 = pcVar8 + 1;
+    //     cVar2 = *pcVar8;
+    //     pcVar8 = pcVar11;
+    //   } while (cVar2 != '\0');
+    //   uVar6 = ~uVar6;
+    //   pcVar8 = pcVar11 + -uVar6;
+    //   pcVar11 = this->save_filename;
+    //   for (uVar7 = uVar6 >> 2; uVar7 != 0; uVar7 = uVar7 - 1) {
+    //     *(undefined4 *)pcVar11 = *(undefined4 *)pcVar8;
+    //     pcVar8 = pcVar8 + 4;
+    //     pcVar11 = pcVar11 + 4;
+    //   }
+    //   for (uVar6 = uVar6 & 3; uVar6 != 0; uVar6 = uVar6 - 1) {
+    //     *pcVar11 = *pcVar8;
+    //     pcVar8 = pcVar8 + 1;
+    //     pcVar11 = pcVar11 + 1;
+    //   }
+    //   iVar3 = rge_open(param_1,0x8000);
+    //   if (-1 < iVar3) {
+    //     rge_read(iVar3,&local_10,4);
+    //     if (local_10 == (RGE_Game_Info *)s_1_00._0_4_) {
+    //       rge_read(iVar3,this,4);
+    //       rge_read(iVar3,plVar1,4);
+    //       if (*plVar1 < 1) {
+    //         this->people_info = (RGE_Person_Info **)0x0;
+    //       }
+    //       else {
+    //         ppRVar4 = (RGE_Person_Info **)calloc(*plVar1,4);
+    //         this->people_info = ppRVar4;
+    //         iVar9 = 0;
+    //         if (0 < *plVar1) {
+    //           do {
+    //             pRVar5 = (RGE_Person_Info *)operator_new(0x114);
+    //             local_4 = 0;
+    //             if (pRVar5 == (RGE_Person_Info *)0x0) {
+    //               pRVar5 = (RGE_Person_Info *)0x0;
+    //             }
+    //             else {
+    //               pRVar5 = (RGE_Person_Info *)
+    //                        RGE_Person_Info::RGE_Person_Info
+    //                                  (pRVar5,iVar3,this->campaigns,this->campaign_num);
+    //             }
+    //             iVar10 = iVar9 + 1;
+    //             local_4 = 0xffffffff;
+    //             this->people_info[iVar9] = pRVar5;
+    //             iVar9 = iVar10;
+    //           } while (iVar10 < *plVar1);
+    //           rge_close(iVar3);
+    //           goto LAB_0044d2e3;
+    //         }
+    //       }
+    //       rge_close(iVar3);
+    //       goto LAB_0044d2e3;
+    //     }
+    //   }
+    //   this->current_person = -1;
+    //   *plVar1 = 0;
+    //   this->people_info = (RGE_Person_Info **)0x0;
+    // LAB_0044d2e3:
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044D300
+void RGE_Game_Info(RGE_Game_Info* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Game_Info::~RGE_Game_Info(void) */
+    // 
+    // void __thiscall RGE_Game_Info::~RGE_Game_Info(RGE_Game_Info *this)
+    // 
+    // {
+    //   RGE_Campaign *this_00;
+    //   RGE_Person_Info *this_01;
+    //   int iVar1;
+    //   
+    //   if (this->save_filename[0] != '\0') {
+    //     save(this,this->save_filename);
+    //   }
+    //   if (this->campaigns != (RGE_Campaign **)0x0) {
+    //     iVar1 = 0;
+    //     if (0 < this->campaign_num) {
+    //       do {
+    //         this_00 = this->campaigns[iVar1];
+    //         if (this_00 != (RGE_Campaign *)0x0) {
+    //           RGE_Campaign::~RGE_Campaign(this_00);
+    //           operator_delete(this_00);
+    //         }
+    //         iVar1 = iVar1 + 1;
+    //       } while (iVar1 < this->campaign_num);
+    //     }
+    //     free(this->campaigns);
+    //     this->campaigns = (RGE_Campaign **)0x0;
+    //   }
+    //   if (this->people_info != (RGE_Person_Info **)0x0) {
+    //     iVar1 = 0;
+    //     if (0 < this->people_num) {
+    //       do {
+    //         this_01 = this->people_info[iVar1];
+    //         if (this_01 != (RGE_Person_Info *)0x0) {
+    //           RGE_Person_Info::~RGE_Person_Info(this_01);
+    //           operator_delete(this_01);
+    //         }
+    //         iVar1 = iVar1 + 1;
+    //       } while (iVar1 < this->people_num);
+    //     }
+    //     free(this->people_info);
+    //     this->people_info = (RGE_Person_Info **)0x0;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044D3B0
+void save(RGE_Game_Info* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Game_Info::save(char *) */
+    // 
+    // void __thiscall RGE_Game_Info::save(RGE_Game_Info *this,char *param_1)
+    // 
+    // {
+    //   long *plVar1;
+    //   char cVar2;
+    //   int iVar3;
+    //   uint uVar4;
+    //   uint uVar5;
+    //   char *pcVar6;
+    //   int iVar7;
+    //   char *pcVar8;
+    //   
+    //   TDebuggingLog::Log((TDebuggingLog *)this,(char *)L,s__PIF_Creating_Player_Info_File);
+    //   uVar4 = 0xffffffff;
+    //   pcVar6 = param_1;
+    //   do {
+    //     pcVar8 = pcVar6;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar8 = pcVar6 + 1;
+    //     cVar2 = *pcVar6;
+    //     pcVar6 = pcVar8;
+    //   } while (cVar2 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar6 = pcVar8 + -uVar4;
+    //   pcVar8 = this->save_filename;
+    //   for (uVar5 = uVar4 >> 2; uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar8 = *(undefined4 *)pcVar6;
+    //     pcVar6 = pcVar6 + 4;
+    //     pcVar8 = pcVar8 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar8 = *pcVar6;
+    //     pcVar6 = pcVar6 + 1;
+    //     pcVar8 = pcVar8 + 1;
+    //   }
+    //   iVar3 = rge_open(param_1,0x8309,0x180);
+    //   if (iVar3 != -1) {
+    //     rge_write(iVar3,s_1_00,4);
+    //     rge_write(iVar3,this,4);
+    //     plVar1 = &this->people_num;
+    //     rge_write(iVar3,plVar1,4);
+    //     if ((0 < *plVar1) && (iVar7 = 0, 0 < *plVar1)) {
+    //       do {
+    //         RGE_Person_Info::save(this->people_info[iVar7],iVar3);
+    //         iVar7 = iVar7 + 1;
+    //       } while (iVar7 < *plVar1);
+    //     }
+    //     rge_close(iVar3);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044D470
+void find_campaigns(RGE_Game_Info* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Game_Info::find_campaigns(void) */
+    // 
+    // void __thiscall RGE_Game_Info::find_campaigns(RGE_Game_Info *this)
+    // 
+    // {
+    //   int iVar1;
+    //   RGE_Campaign **ppRVar2;
+    //   int iVar3;
+    //   RGE_Campaign *pRVar4;
+    //   undefined4 uVar5;
+    //   int iVar6;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   _finddata_t file_info;
+    //   char file_name [260];
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_c = *unaff_FS_OFFSET;
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055d5fc;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   if (this->campaigns != (RGE_Campaign **)0x0) {
+    //     iVar6 = 0;
+    //     if (0 < this->campaign_num) {
+    //       do {
+    //         pRVar4 = this->campaigns[iVar6];
+    //         if (pRVar4 != (RGE_Campaign *)0x0) {
+    //           RGE_Campaign::~RGE_Campaign(pRVar4);
+    //           operator_delete(pRVar4);
+    //         }
+    //         iVar6 = iVar6 + 1;
+    //       } while (iVar6 < this->campaign_num);
+    //     }
+    //     free(this->campaigns);
+    //     this->campaigns = (RGE_Campaign **)0x0;
+    //   }
+    //   sprintf(file_name + 4,s__s__cpn,rge_base_game->prog_info->campaign_dir);
+    //   iVar1 = __findfirst(file_name + 4,&file_info.time_create);
+    //   this->campaign_num = 0;
+    //   iVar6 = iVar1;
+    //   while (iVar6 != -1) {
+    //     this->campaign_num = this->campaign_num + 1;
+    //     iVar6 = __findnext(iVar1,&file_info.time_create);
+    //   }
+    //   sprintf(file_name + 4,s__s__cpx,rge_base_game->prog_info->campaign_dir);
+    //   iVar1 = __findfirst(file_name + 4,&file_info.time_create);
+    //   iVar6 = iVar1;
+    //   while (iVar6 != -1) {
+    //     this->campaign_num = this->campaign_num + 1;
+    //     iVar6 = __findnext(iVar1,&file_info.time_create);
+    //   }
+    //   iVar6 = 0;
+    //   if (this->campaign_num < 1) {
+    //     this->campaigns = (RGE_Campaign **)0x0;
+    //   }
+    //   else {
+    //     ppRVar2 = (RGE_Campaign **)calloc(this->campaign_num,4);
+    //     this->campaigns = ppRVar2;
+    //     sprintf(file_name + 4,s__s__cpn,rge_base_game->prog_info->campaign_dir);
+    //     iVar3 = __findfirst(file_name + 4,&file_info.time_create);
+    //     iVar1 = iVar3;
+    //     while (iVar1 != -1) {
+    //       file_info.attrib = (uint)operator_new(0x20c);
+    //       local_4 = 0;
+    //       if ((RGE_Campaign *)file_info.attrib == (RGE_Campaign *)0x0) {
+    //         pRVar4 = (RGE_Campaign *)0x0;
+    //       }
+    //       else {
+    //         pRVar4 = (RGE_Campaign *)
+    //                  RGE_Campaign::RGE_Campaign((RGE_Campaign *)file_info.attrib,file_info.name + 4);
+    //       }
+    //       local_4 = 0xffffffff;
+    //       this->campaigns[iVar6] = pRVar4;
+    //       iVar6 = iVar6 + 1;
+    //       iVar1 = __findnext(iVar3,&file_info.time_create);
+    //     }
+    //     sprintf(file_name + 4,s__s__cpx,rge_base_game->prog_info->campaign_dir);
+    //     iVar1 = __findfirst(file_name + 4,&file_info.time_create);
+    //     if (iVar1 != -1) {
+    //       iVar6 = iVar6 << 2;
+    //       while( true ) {
+    //         file_info.attrib = (uint)operator_new(0x20c);
+    //         local_4 = 1;
+    //         if ((RGE_Campaign *)file_info.attrib == (RGE_Campaign *)0x0) {
+    //           uVar5 = 0;
+    //         }
+    //         else {
+    //           uVar5 = RGE_Campaign::RGE_Campaign((RGE_Campaign *)file_info.attrib,file_info.name + 4);
+    //         }
+    //         local_4 = 0xffffffff;
+    //         *(undefined4 *)(iVar6 + (int)this->campaigns) = uVar5;
+    //         iVar3 = __findnext(iVar1,&file_info.time_create);
+    //         if (iVar3 == -1) break;
+    //         iVar6 = iVar6 + 4;
+    //       }
+    //     }
+    //   }
+    //   iVar6 = 0;
+    //   if (0 < this->people_num) {
+    //     do {
+    //       RGE_Person_Info::rehook_campaigns(this->people_info[iVar6],this->campaigns,this->campaign_num)
+    //       ;
+    //       iVar6 = iVar6 + 1;
+    //     } while (iVar6 < this->people_num);
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044D710
+uchar add_new_person(RGE_Game_Info* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall RGE_Game_Info::add_new_person(char *) */
+    // 
+    // uchar __thiscall RGE_Game_Info::add_new_person(RGE_Game_Info *this,char *param_1)
+    // 
+    // {
+    //   RGE_Person_Info **ppRVar1;
+    //   RGE_Person_Info *pRVar2;
+    //   uint uVar3;
+    //   int iVar4;
+    //   RGE_Person_Info **ppRVar5;
+    //   RGE_Person_Info **ppRVar6;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055d61b;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   ppRVar1 = (RGE_Person_Info **)calloc(this->people_num + 1,4);
+    //   ppRVar5 = this->people_info;
+    //   ppRVar6 = ppRVar1;
+    //   for (uVar3 = this->people_num & 0x3fffffff; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //     *ppRVar6 = *ppRVar5;
+    //     ppRVar5 = ppRVar5 + 1;
+    //     ppRVar6 = ppRVar6 + 1;
+    //   }
+    //   for (iVar4 = 0; iVar4 != 0; iVar4 = iVar4 + -1) {
+    //     *(undefined1 *)ppRVar6 = *(undefined1 *)ppRVar5;
+    //     ppRVar5 = (RGE_Person_Info **)((int)ppRVar5 + 1);
+    //     ppRVar6 = (RGE_Person_Info **)((int)ppRVar6 + 1);
+    //   }
+    //   free(this->people_info);
+    //   this->people_info = ppRVar1;
+    //   pRVar2 = (RGE_Person_Info *)operator_new(0x114);
+    //   local_4 = 0;
+    //   if (pRVar2 == (RGE_Person_Info *)0x0) {
+    //     pRVar2 = (RGE_Person_Info *)0x0;
+    //   }
+    //   else {
+    //     pRVar2 = (RGE_Person_Info *)
+    //              RGE_Person_Info::RGE_Person_Info(pRVar2,param_1,this->campaigns,this->campaign_num);
+    //   }
+    //   this->people_info[this->people_num] = pRVar2;
+    //   this->current_person = this->people_num;
+    //   this->people_num = this->people_num + 1;
+    //   *unaff_FS_OFFSET = local_c;
+    //   return '\x01';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044D7D0
+uchar set_current_person(RGE_Game_Info* this_, long param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall RGE_Game_Info::set_current_person(long) */
+    // 
+    // uchar __thiscall RGE_Game_Info::set_current_person(RGE_Game_Info *this,long param_1)
+    // 
+    // {
+    //   if (param_1 < this->people_num) {
+    //     this->current_person = param_1;
+    //     return '\x01';
+    //   }
+    //   this->current_person = -1;
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044D7F0
+uchar set_current_campaign(RGE_Game_Info* this_, long param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall RGE_Game_Info::set_current_campaign(long) */
+    // 
+    // uchar __thiscall RGE_Game_Info::set_current_campaign(RGE_Game_Info *this,long param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   uchar uVar2;
+    //   
+    //   iVar1 = this->current_person;
+    //   if ((iVar1 < this->people_num) && (-1 < iVar1)) {
+    //     uVar2 = RGE_Person_Info::set_current_campaign(this->people_info[iVar1],param_1);
+    //     return uVar2;
+    //   }
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044D820
+uchar set_current_scenario(RGE_Game_Info* this_, long param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall RGE_Game_Info::set_current_scenario(long) */
+    // 
+    // uchar __thiscall RGE_Game_Info::set_current_scenario(RGE_Game_Info *this,long param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   uchar uVar2;
+    //   
+    //   iVar1 = this->current_person;
+    //   if ((-1 < iVar1) && (iVar1 < this->people_num)) {
+    //     uVar2 = RGE_Person_Info::set_current_scenario(this->people_info[iVar1],param_1);
+    //     return uVar2;
+    //   }
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044D850
+long get_people_list(RGE_Game_Info* this_, char*** param_2, long* param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: long __thiscall RGE_Game_Info::get_people_list(char * * *,long &) */
+    // 
+    // long __thiscall RGE_Game_Info::get_people_list(RGE_Game_Info *this,char ***param_1,long *param_2)
+    // 
+    // {
+    //   char **ppcVar1;
+    //   char *pcVar2;
+    //   int iVar3;
+    //   
+    //   if (0 < this->people_num) {
+    //     ppcVar1 = (char **)calloc(this->people_num,4);
+    //     iVar3 = 0;
+    //     *param_1 = ppcVar1;
+    //     if (0 < this->people_num) {
+    //       do {
+    //         pcVar2 = RGE_Person_Info::get_name(this->people_info[iVar3]);
+    //         getstring(*param_1 + iVar3,pcVar2);
+    //         iVar3 = iVar3 + 1;
+    //       } while (iVar3 < this->people_num);
+    //     }
+    //     *param_2 = this->current_person;
+    //   }
+    //   return this->people_num;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044D8C0
+long get_campaign_list(RGE_Game_Info* this_, char*** param_2, long* param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: long __thiscall RGE_Game_Info::get_campaign_list(char * * *,long &) */
+    // 
+    // long __thiscall RGE_Game_Info::get_campaign_list(RGE_Game_Info *this,char ***param_1,long *param_2)
+    // 
+    // {
+    //   char **ppcVar1;
+    //   char *pcVar2;
+    //   long lVar3;
+    //   int iVar4;
+    //   
+    //   if (0 < this->campaign_num) {
+    //     ppcVar1 = (char **)calloc(this->campaign_num,4);
+    //     iVar4 = 0;
+    //     *param_1 = ppcVar1;
+    //     if (0 < this->campaign_num) {
+    //       do {
+    //         pcVar2 = RGE_Campaign::get_name(this->campaigns[iVar4]);
+    //         getstring(*param_1 + iVar4,pcVar2);
+    //         iVar4 = iVar4 + 1;
+    //       } while (iVar4 < this->campaign_num);
+    //     }
+    //     iVar4 = this->current_person;
+    //     if ((iVar4 < this->people_num) && (-1 < iVar4)) {
+    //       lVar3 = RGE_Person_Info::get_current_campaign(this->people_info[iVar4]);
+    //       *param_2 = lVar3;
+    //     }
+    //   }
+    //   return this->campaign_num;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044D940
+long get_scenario_list(RGE_Game_Info* this_, char*** param_2, long* param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: long __thiscall RGE_Game_Info::get_scenario_list(char * * *,long &) */
+    // 
+    // long __thiscall RGE_Game_Info::get_scenario_list(RGE_Game_Info *this,char ***param_1,long *param_2)
+    // 
+    // {
+    //   int iVar1;
+    //   long lVar2;
+    //   
+    //   iVar1 = this->current_person;
+    //   if ((iVar1 < this->people_num) && (-1 < iVar1)) {
+    //     lVar2 = RGE_Person_Info::get_current_scenario(this->people_info[iVar1]);
+    //     *param_2 = lVar2;
+    //     lVar2 = RGE_Person_Info::get_scenario_list
+    //                       (this->people_info[this->current_person],param_1,param_2);
+    //     return lVar2;
+    //   }
+    //   *param_2 = -1;
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044D990
+long get_current_scenario(RGE_Game_Info* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: long __thiscall RGE_Game_Info::get_current_scenario(void) */
+    // 
+    // long __thiscall RGE_Game_Info::get_current_scenario(RGE_Game_Info *this)
+    // 
+    // {
+    //   int iVar1;
+    //   long lVar2;
+    //   
+    //   iVar1 = this->current_person;
+    //   if ((iVar1 < this->people_num) && (-1 < iVar1)) {
+    //     lVar2 = RGE_Person_Info::get_current_scenario(this->people_info[iVar1]);
+    //     return lVar2;
+    //   }
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044D9B0
+long get_current_campaign(RGE_Game_Info* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: long __thiscall RGE_Game_Info::get_current_campaign(void) */
+    // 
+    // long __thiscall RGE_Game_Info::get_current_campaign(RGE_Game_Info *this)
+    // 
+    // {
+    //   int iVar1;
+    //   long lVar2;
+    //   
+    //   iVar1 = this->current_person;
+    //   if ((iVar1 < this->people_num) && (-1 < iVar1)) {
+    //     lVar2 = RGE_Person_Info::get_current_campaign(this->people_info[iVar1]);
+    //     return lVar2;
+    //   }
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044D9D0
+long get_current_player(RGE_Game_Info* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: long __thiscall RGE_Game_Info::get_current_player(void) */
+    // 
+    // long __thiscall RGE_Game_Info::get_current_player(RGE_Game_Info *this)
+    // 
+    // {
+    //   return this->current_person;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044D9E0
+char* get_current_player_name(RGE_Game_Info* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: char * __thiscall RGE_Game_Info::get_current_player_name(void) */
+    // 
+    // char * __thiscall RGE_Game_Info::get_current_player_name(RGE_Game_Info *this)
+    // 
+    // {
+    //   char *pcVar1;
+    //   
+    //   if (this->current_person < 0) {
+    //     return (char *)0x0;
+    //   }
+    //   pcVar1 = RGE_Person_Info::get_name(this->people_info[this->current_person]);
+    //   return pcVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044DA00
+void notify_of_scenario_complete(RGE_Game_Info* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Game_Info::notify_of_scenario_complete(void) */
+    // 
+    // void __thiscall RGE_Game_Info::notify_of_scenario_complete(RGE_Game_Info *this)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   iVar1 = this->current_person;
+    //   if ((iVar1 < this->people_num) && (-1 < iVar1)) {
+    //     RGE_Person_Info::notify_of_scenario_complete(this->people_info[iVar1]);
+    //   }
+    //   save(this,this->save_filename);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044DA30
+int open_scenario(RGE_Game_Info* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall RGE_Game_Info::open_scenario(void) */
+    // 
+    // int __thiscall RGE_Game_Info::open_scenario(RGE_Game_Info *this)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   iVar1 = this->current_person;
+    //   if ((iVar1 < this->people_num) && (-1 < iVar1)) {
+    //     iVar1 = RGE_Person_Info::open_scenario(this->people_info[iVar1]);
+    //     return iVar1;
+    //   }
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044DA50
+void remove_player(RGE_Game_Info* this_, long param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Game_Info::remove_player(long) */
+    // 
+    // void __thiscall RGE_Game_Info::remove_player(RGE_Game_Info *this,long param_1)
+    // 
+    // {
+    //   RGE_Person_Info *this_00;
+    //   int iVar1;
+    //   int iVar2;
+    //   
+    //   if ((-1 < param_1) && (param_1 < this->people_num)) {
+    //     this_00 = this->people_info[param_1];
+    //     if (this_00 != (RGE_Person_Info *)0x0) {
+    //       RGE_Person_Info::~RGE_Person_Info(this_00);
+    //       operator_delete(this_00);
+    //     }
+    //     if (param_1 < this->people_num + -1) {
+    //       do {
+    //         iVar1 = param_1 + 1;
+    //         this->people_info[param_1] = this->people_info[iVar1];
+    //         param_1 = iVar1;
+    //       } while (iVar1 < this->people_num + -1);
+    //     }
+    //     iVar1 = this->people_num;
+    //     iVar2 = iVar1 + -1;
+    //     this->people_num = iVar2;
+    //     if (this->current_person == iVar2) {
+    //       this->current_person = iVar1 + -2;
+    //     }
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+

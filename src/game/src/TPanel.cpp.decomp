@@ -1,0 +1,22 @@
+// Auto-generated decompiler unit: TPanel.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x00464890
+void* TPanel::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TPanel::`scalar deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall TPanel::_scalar_deleting_destructor_(TPanel *this,uint param_1)
+    // 
+    // {
+    //   ~TPanel(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

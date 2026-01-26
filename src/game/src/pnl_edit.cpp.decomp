@@ -1,0 +1,1582 @@
+// Auto-generated decompiler unit: pnl_edit.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/pnl_edit.cpp
+#include "../include/common.h"
+
+// Offset: 0x004755C0
+undefined TEditPanel(TEditPanel* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TEditPanel::TEditPanel(void) */
+    // 
+    // TEditPanel * __thiscall TEditPanel::TEditPanel(TEditPanel *this)
+    // 
+    // {
+    //   TPanel::TPanel((TPanel *)this);
+    //   this->edit_wnd = (void *)0x0;
+    //   this->text = (char *)0x0;
+    //   this->fixed_len = 0;
+    //   this->brush = (void *)0x0;
+    //   this->old_sub_wnd_proc = (void *)0x0;
+    //   this->text_color1 = 0;
+    //   this->text_color2 = 0;
+    //   this->highlight_text_color1 = 0;
+    //   this->highlight_text_color2 = 0;
+    //   this->back_color = 0;
+    //   this->sel_len = 0;
+    //   this->bevel_color1 = '\0';
+    //   this->bevel_color2 = '\0';
+    //   this->bevel_color3 = '\0';
+    //   this->bevel_color4 = '\0';
+    //   this->bevel_color5 = '\0';
+    //   this->bevel_color6 = '\0';
+    //   this->bevel_size = 0;
+    //   this->imc = 0;
+    //   this->enable_ime = 0;
+    //   this->turn_ime_on = 0;
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->_padding_ = 1;
+    //   this->hidden = 1;
+    //   this->bevel_type = 1;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00475690
+void TEditPanel(TEditPanel* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall TEditPanel::~TEditPanel(void) */
+    // 
+    // void __thiscall TEditPanel::~TEditPanel(TEditPanel *this)
+    // 
+    // {
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 uStack_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   pcStack_8 = FUN_0055e468;
+    //   uStack_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &uStack_c;
+    //   this->_padding_ = (int)&_vftable_;
+    //   local_4 = 0;
+    //   if ((this->edit_wnd != (void *)0x0) && (this->hidden == 0)) {
+    //     ShowWindow(this->edit_wnd,0);
+    //     this->hidden = 1;
+    //   }
+    //   if (this->text != (char *)0x0) {
+    //     free(this->text);
+    //     this->text = (char *)0x0;
+    //   }
+    //   if (this->edit_wnd != (void *)0x0) {
+    //     if (this->imc != 0) {
+    //       _ImmNotifyIME_16(this->imc,0x15,4,0);
+    //       if (this->enable_ime != 0) {
+    //         _ImmReleaseContext_8(this->edit_wnd,this->imc);
+    //       }
+    //       this->imc = 0;
+    //     }
+    //     DestroyWindow(this->edit_wnd);
+    //     this->edit_wnd = (void *)0x0;
+    //   }
+    //   local_4 = 0xffffffff;
+    //   TPanel::~TPanel((TPanel *)this);
+    //   *unaff_FS_OFFSET = uStack_c;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00475770
+long setup(TEditPanel* this_, TDrawArea* param_2, TPanel* param_3, long param_4, long param_5, long param_6, long param_7, void* param_8, short param_9, char* param_10, FormatType param_11, int param_12) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: long __thiscall TEditPanel::setup(class TDrawArea *,class TPanel
+    //    *,long,long,long,long,void *,short,char *,enum TEditPanel::FormatType,int) */
+    // 
+    // long __thiscall
+    // TEditPanel::setup(TEditPanel *this,TDrawArea *param_1,TPanel *param_2,long param_3,long param_4,
+    //                  long param_5,long param_6,void *param_7,short param_8,char *param_9,
+    //                  FormatType param_10,int param_11)
+    // 
+    // {
+    //   long lVar1;
+    //   void *pvVar2;
+    //   char *pcVar3;
+    //   
+    //   this->format = param_10;
+    //   if (0 < param_8) {
+    //     param_8 = param_8 + 1;
+    //   }
+    //   this->fixed_len = param_8;
+    //   this->font = param_7;
+    //   this->auto_sel = param_11;
+    //   lVar1 = TPanel::setup((TPanel *)this,param_1,param_2,param_3,param_4,param_5,param_6,0xff);
+    //   if (lVar1 == 0) {
+    //     return 0;
+    //   }
+    //   pvVar2 = (void *)CreateWindowExA(0,s_edit,0,
+    //                                    (-(uint)(this->format != FormatMultiLine) & 0xffe0003c) +
+    //                                    0x40200044,param_3 + 1,param_4 + 1,param_5 + -2,param_6 + -2,
+    //                                    param_1->Wnd,1,**(undefined4 **)this->_padding_,0);
+    //   this->edit_wnd = pvVar2;
+    //   if (pvVar2 == (void *)0x0) {
+    //     return 0;
+    //   }
+    //   SetWindowLongA(pvVar2,0xffffffeb,this);
+    //   pvVar2 = (void *)GetWindowLongA(this->edit_wnd,0xfffffffc);
+    //   this->old_sub_wnd_proc = pvVar2;
+    //   SetWindowLongA(this->edit_wnd,0xfffffffc,pnl_sub_wnd_proc);
+    //   pcVar3 = (char *)calloc(this->fixed_len + 2,1);
+    //   this->text = pcVar3;
+    //   if (pcVar3 == (char *)0x0) {
+    //     return 0;
+    //   }
+    //   *pcVar3 = '\0';
+    //   this->text_len = 0;
+    //   if ((param_9 != (char *)0x0) && (*param_9 != '\0')) {
+    //     set_text(this,param_9);
+    //   }
+    //   pvVar2 = (void *)GetStockObject(4);
+    //   this->brush = pvVar2;
+    //   this->text_color1 = 0xffffff;
+    //   this->highlight_text_color1 = 0xffffff;
+    //   this->back_color = 0;
+    //   this->text_color2 = 0;
+    //   this->highlight_text_color2 = 0;
+    //   if (this->font != (void *)0x0) {
+    //     SendMessageA(this->edit_wnd,0x30,this->font,0);
+    //   }
+    //   this->draw_format = 0x2000;
+    //   this->draw_format = (-(uint)(this->format != FormatMultiLine) & 0x10) + 0x2010;
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00475930
+undefined pnl_sub_wnd_proc() {
+    // --- Ghidra decompiler output ---
+    // 
+    // long pnl_sub_wnd_proc(void *param_1,uint param_2,uint param_3,long param_4)
+    // 
+    // {
+    //   TEditPanel *this;
+    //   long lVar1;
+    //   
+    //   this = (TEditPanel *)GetWindowLongA(param_1,0xffffffeb);
+    //   if (this != (TEditPanel *)0x0) {
+    //     lVar1 = TEditPanel::sub_wnd_proc(this,param_1,param_2,param_3,param_4);
+    //     return lVar1;
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00475970
+void set_text(TEditPanel* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall TEditPanel::set_text(char *) */
+    // 
+    // void __thiscall TEditPanel::set_text(TEditPanel *this,char *param_1)
+    // 
+    // {
+    //   char cVar1;
+    //   short sVar2;
+    //   uint uVar3;
+    //   char *pcVar4;
+    //   
+    //   if (this->edit_wnd != (void *)0x0) {
+    //     if (param_1 == (char *)0x0) {
+    //       *this->text = '\0';
+    //       this->text_len = 0;
+    //     }
+    //     else {
+    //       sVar2 = this->fixed_len;
+    //       pcVar4 = this->text;
+    //       for (uVar3 = (uint)(int)sVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //         pcVar4[0] = '\0';
+    //         pcVar4[1] = '\0';
+    //         pcVar4[2] = '\0';
+    //         pcVar4[3] = '\0';
+    //         pcVar4 = pcVar4 + 4;
+    //       }
+    //       for (uVar3 = (int)sVar2 & 3; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //         *pcVar4 = '\0';
+    //         pcVar4 = pcVar4 + 1;
+    //       }
+    //       strncpy(this->text,param_1,this->fixed_len + -1);
+    //       uVar3 = 0xffffffff;
+    //       this->text[this->fixed_len + -1] = '\0';
+    //       pcVar4 = this->text;
+    //       do {
+    //         if (uVar3 == 0) break;
+    //         uVar3 = uVar3 - 1;
+    //         cVar1 = *pcVar4;
+    //         pcVar4 = pcVar4 + 1;
+    //       } while (cVar1 != '\0');
+    //       this->text_len = ~uVar3 - 1;
+    //     }
+    //     SetWindowTextA(this->edit_wnd,this->text);
+    //     this->sel_len = 0;
+    //   }
+    //   (**(code **)(this->_padding_ + 0x20))(1);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00475A30
+void update_text(TEditPanel* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: end */
+    // /* public: void __thiscall TEditPanel::update_text(void) */
+    // 
+    // void __thiscall TEditPanel::update_text(TEditPanel *this)
+    // 
+    // {
+    //   char cVar1;
+    //   uint uVar2;
+    //   char *pcVar3;
+    //   ulong end;
+    //   ulong start;
+    //   int iStack_4;
+    //   
+    //   if (this->edit_wnd != (void *)0x0) {
+    //     GetWindowTextA(this->edit_wnd,this->text,this->fixed_len + 1);
+    //     uVar2 = 0xffffffff;
+    //     pcVar3 = this->text;
+    //     do {
+    //       if (uVar2 == 0) break;
+    //       uVar2 = uVar2 - 1;
+    //       cVar1 = *pcVar3;
+    //       pcVar3 = pcVar3 + 1;
+    //     } while (cVar1 != '\0');
+    //     this->text_len = ~uVar2 - 1;
+    //     this->text[this->fixed_len + -1] = '\0';
+    //     if (this->fixed_len + -1 < this->text_len) {
+    //       SetWindowTextA(this->edit_wnd,this->text);
+    //       MessageBeep(0xffffffff);
+    //     }
+    //     iStack_4 = 0;
+    //     start = 0;
+    //     SendMessageA(this->edit_wnd,0xb0,&iStack_4,&start);
+    //     this->sel_len = start - iStack_4;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00475AF0
+char* get_text(TEditPanel* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: char * __thiscall TEditPanel::get_text(void) */
+    // 
+    // char * __thiscall TEditPanel::get_text(TEditPanel *this)
+    // 
+    // {
+    //   update_text(this);
+    //   return this->text;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00475B00
+char* get_input_buffer(TEditPanel* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: char * __thiscall TEditPanel::get_input_buffer(void) */
+    // 
+    // char * __thiscall TEditPanel::get_input_buffer(TEditPanel *this)
+    // 
+    // {
+    //   update_text(this);
+    //   return this->text;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00475B10
+char* currentLine(TEditPanel* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: char * __thiscall TEditPanel::currentLine(void) */
+    // 
+    // char * __thiscall TEditPanel::currentLine(TEditPanel *this)
+    // 
+    // {
+    //   update_text(this);
+    //   return this->text;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00475B20
+void TEditPanel::set_active(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall TEditPanel::set_active(int) */
+    // 
+    // void __thiscall TEditPanel::set_active(TEditPanel *this,int param_1)
+    // 
+    // {
+    //   TPanel::set_active((TPanel *)this,param_1);
+    //   if ((this->edit_wnd != (void *)0x0) && (this->_padding_ == 0)) {
+    //     ShowWindow(this->edit_wnd,0);
+    //     this->hidden = 1;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00475B60
+void TEditPanel::set_focus(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall TEditPanel::set_focus(int) */
+    // 
+    // void __thiscall TEditPanel::set_focus(TEditPanel *this,int param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   void *pvVar2;
+    //   void *pvVar3;
+    //   ulong uVar4;
+    //   
+    //   iVar1 = this->_padding_;
+    //   TPanel::set_focus((TPanel *)this,param_1);
+    //   if (this->edit_wnd != (void *)0x0) {
+    //     pvVar3 = (void *)GetFocus();
+    //     pvVar2 = this->edit_wnd;
+    //     if (this->_padding_ == 0) {
+    //       if ((pvVar3 == pvVar2) && (pvVar2 = *(void **)(this->_padding_ + 4), pvVar3 != pvVar2)) {
+    //         SetFocus(pvVar2);
+    //       }
+    //     }
+    //     else {
+    //       if (pvVar3 != pvVar2) {
+    //         SetFocus(pvVar2);
+    //       }
+    //       if (this->imc == 0) {
+    //         if (this->enable_ime == 0) {
+    //           uVar4 = _ImmAssociateContext_8(this->edit_wnd,0);
+    //         }
+    //         else {
+    //           uVar4 = _ImmGetContext_4(this->edit_wnd);
+    //         }
+    //         this->imc = uVar4;
+    //       }
+    //       uVar4 = this->imc;
+    //       if ((uVar4 != 0) && (this->enable_ime != 0)) {
+    //         if (this->turn_ime_on == 0) {
+    //           imc_retval = _ImmSetOpenStatus_8(uVar4,0);
+    //         }
+    //         else {
+    //           imc_retval = _ImmSetOpenStatus_8(uVar4,1);
+    //         }
+    //       }
+    //     }
+    //   }
+    //   if ((iVar1 != 0) && (this->_padding_ == 0)) {
+    //     update_text(this);
+    //     (**(code **)(this->_padding_ + 0x20))(1);
+    //   }
+    //   if ((((this->edit_wnd != (void *)0x0) && (this->_padding_ != 0)) && (iVar1 == 0)) &&
+    //      (this->auto_sel != 0)) {
+    //     SendMessageA(this->edit_wnd,0xb1,0,0xffffffff);
+    //   }
+    //   if (((DAT_0086b240 == 0) && (this->edit_wnd != (void *)0x0)) &&
+    //      ((this->_padding_ == 0 && (this->hidden == 0)))) {
+    //     ShowWindow(this->edit_wnd,0);
+    //     this->hidden = 1;
+    //   }
+    //   if (this->_padding_ != 0) {
+    //     DAT_0086b244 = 0;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00475CC0
+void TEditPanel::set_rect(long param_1, long param_2, long param_3, long param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall TEditPanel::set_rect(long,long,long,long) */
+    // 
+    // void __thiscall
+    // TEditPanel::set_rect(TEditPanel *this,long param_1,long param_2,long param_3,long param_4)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   undefined4 uVar4;
+    //   
+    //   TPanel::set_rect((TPanel *)this,param_1,param_2,param_3,param_4);
+    //   if (this->edit_wnd != (void *)0x0) {
+    //     if (((this->hidden == 0) && (this->_padding_ != 0)) && (this->_padding_ != 0)) {
+    //       uVar4 = 1;
+    //     }
+    //     else {
+    //       uVar4 = 0;
+    //     }
+    //     iVar1 = this->bevel_size;
+    //     MoveWindow(this->edit_wnd,this->_padding_ + iVar1,this->_padding_ + iVar1,
+    //                this->_padding_ + iVar1 * -2 + -1,this->_padding_ + iVar1 * -2 + -1,uVar4);
+    //   }
+    //   iVar1 = this->bevel_size;
+    //   if (this->format == FormatMultiLine) {
+    //     iVar2 = this->_padding_;
+    //     (this->draw_rect).left = this->_padding_ + 1 + iVar1;
+    //     (this->draw_rect).top = iVar2 + iVar1;
+    //     iVar3 = GetSystemMetrics(0x15);
+    //     iVar2 = this->_padding_;
+    //     (this->draw_rect).right = ((this->_padding_ - iVar1) - iVar3) + -1;
+    //     (this->draw_rect).bottom = iVar2 - iVar1;
+    //     return;
+    //   }
+    //   iVar2 = this->_padding_;
+    //   (this->draw_rect).left = this->_padding_ + 8 + iVar1;
+    //   iVar3 = this->_padding_;
+    //   (this->draw_rect).top = iVar2 + iVar1;
+    //   iVar2 = this->_padding_;
+    //   (this->draw_rect).right = iVar3 - iVar1;
+    //   (this->draw_rect).bottom = iVar2 - iVar1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00475DD0
+void TEditPanel::set_redraw(RedrawMode param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall TEditPanel::set_redraw(enum TPanel::RedrawMode) */
+    // 
+    // void __thiscall TEditPanel::set_redraw(TEditPanel *this,RedrawMode param_1)
+    // 
+    // {
+    //   TPanel::set_redraw((TPanel *)this,RedrawNormal);
+    //   if ((((this->_padding_ != 0) && (param_1 != RedrawNone)) && (this->edit_wnd != (void *)0x0)) &&
+    //      (this->hidden == 0)) {
+    //     InvalidateRect(this->edit_wnd,0,1);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00475E10
+void set_text_color(TEditPanel* this_, ulong param_2, ulong param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall TEditPanel::set_text_color(unsigned long,unsigned long) */
+    // 
+    // void __thiscall TEditPanel::set_text_color(TEditPanel *this,ulong param_1,ulong param_2)
+    // 
+    // {
+    //   this->text_color1 = param_1;
+    //   this->text_color2 = param_2;
+    //   (**(code **)(this->_padding_ + 0x20))(1);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00475E30
+void set_highlight_text_color(TEditPanel* this_, ulong param_2, ulong param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall TEditPanel::set_highlight_text_color(unsigned long,unsigned long) */
+    // 
+    // void __thiscall TEditPanel::set_highlight_text_color(TEditPanel *this,ulong param_1,ulong param_2)
+    // 
+    // {
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00475E40
+void set_back_color(TEditPanel* this_, void* param_2, ulong param_3, uchar param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall TEditPanel::set_back_color(void *,unsigned long,unsigned char) */
+    // 
+    // void __thiscall
+    // TEditPanel::set_back_color(TEditPanel *this,void *param_1,ulong param_2,uchar param_3)
+    // 
+    // {
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00475E50
+void set_bevel_info(TEditPanel* this_, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7, int param_8) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall TEditPanel::set_bevel_info(int,int,int,int,int,int,int) */
+    // 
+    // void __thiscall
+    // TEditPanel::set_bevel_info
+    //           (TEditPanel *this,int param_1,int param_2,int param_3,int param_4,int param_5,int param_6,
+    //           int param_7)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   this->bevel_color1 = (uchar)param_2;
+    //   this->bevel_color2 = (uchar)param_3;
+    //   this->bevel_type = param_1;
+    //   this->bevel_color3 = (uchar)param_4;
+    //   this->bevel_color4 = (uchar)param_5;
+    //   this->bevel_color5 = (uchar)param_6;
+    //   this->bevel_color6 = (uchar)param_7;
+    //   switch(param_1) {
+    //   case 1:
+    //   case 2:
+    //   case 5:
+    //     this->bevel_size = 1;
+    //     break;
+    //   case 3:
+    //   case 6:
+    //     this->bevel_size = 2;
+    //     break;
+    //   case 4:
+    //   case 7:
+    //     this->bevel_size = 3;
+    //     break;
+    //   default:
+    //     this->bevel_size = 0;
+    //   }
+    //   iVar1 = this->_padding_;
+    //   (**(code **)(iVar1 + 0xc))(this->_padding_,this->_padding_,this->_padding_,this->_padding_);
+    //   (**(code **)(iVar1 + 0x20))(1);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00475F20
+void set_ime_info(TEditPanel* this_, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall TEditPanel::set_ime_info(int,int) */
+    // 
+    // void __thiscall TEditPanel::set_ime_info(TEditPanel *this,int param_1,int param_2)
+    // 
+    // {
+    //   this->enable_ime = param_1;
+    //   this->turn_ime_on = param_2;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00475F40
+long TEditPanel::wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual long __thiscall TEditPanel::wnd_proc(void *,unsigned int,unsigned int,long) */
+    // 
+    // long __thiscall
+    // TEditPanel::wnd_proc(TEditPanel *this,void *param_1,uint param_2,uint param_3,long param_4)
+    // 
+    // {
+    //   void *pvVar1;
+    //   long lVar2;
+    //   
+    //   pvVar1 = this->edit_wnd;
+    //   if ((((pvVar1 != (void *)0x0) && (this->_padding_ != 0)) && (this->_padding_ != 0)) &&
+    //      (this->hidden == 0)) {
+    //     if (param_2 == 7) {
+    //       lVar2 = TPanel::wnd_proc((TPanel *)this,param_1,7,param_3,param_4);
+    //       return lVar2;
+    //     }
+    //     if (param_2 == 0x111) {
+    //       if (((void *)param_4 == pvVar1) && ((short)(param_3 >> 0x10) == 0x400)) {
+    //         InvalidateRect(pvVar1,0,1);
+    //       }
+    //     }
+    //     else if (((param_2 == 0x133) && (this->brush != (void *)0x0)) &&
+    //             ((void *)(param_4 & 0xffffU) == pvVar1)) {
+    //       SetBkColor(param_3,this->back_color);
+    //       SetBkMode(param_3,2);
+    //       SetTextColor(param_3,this->highlight_text_color1);
+    //       return (long)this->brush;
+    //     }
+    //   }
+    //   lVar2 = TPanel::wnd_proc((TPanel *)this,param_1,param_2,param_3,param_4);
+    //   return lVar2;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00476040
+long sub_wnd_proc(TEditPanel* this_, void* param_2, uint param_3, uint param_4, long param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: old_start */
+    // /* public: long __thiscall TEditPanel::sub_wnd_proc(void *,unsigned int,unsigned int,long) */
+    // 
+    // long __thiscall
+    // TEditPanel::sub_wnd_proc(TEditPanel *this,void *param_1,uint param_2,uint param_3,long param_4)
+    // 
+    // {
+    //   int iVar1;
+    //   uint uVar2;
+    //   long lVar3;
+    //   short sVar4;
+    //   short sVar5;
+    //   int iVar6;
+    //   long lVar7;
+    //   TPanel *pTVar8;
+    //   uint uVar9;
+    //   ulong old_start;
+    //   ulong new_end;
+    //   ulong old_end;
+    //   tagRECT rect;
+    //   
+    //   lVar3 = param_4;
+    //   uVar9 = param_3;
+    //   uVar2 = param_2;
+    //   if ((((this->edit_wnd != (void *)0x0) && (this->_padding_ != 0)) && (this->_padding_ != 0)) &&
+    //      (this->hidden == 0)) {
+    //     if (param_2 < 0x15) {
+    //       if (param_2 == 0x14) {
+    //         if (this->brush != (void *)0x0) {
+    //           SelectObject(param_3,this->brush);
+    //           GetClientRect(param_1,&rect.top);
+    //           FillRect(uVar9,&rect.top,this->brush);
+    //           return 1;
+    //         }
+    //       }
+    //       else if (param_2 == 0xf) {
+    //         InvalidateRect(param_1,0,1);
+    //       }
+    //     }
+    //     else if (param_2 < 0x201) {
+    //       if (param_2 == 0x200) {
+    //         if (rge_base_game->windows_mouse == 0) {
+    //           MouseCursorInChildContol = 1;
+    //           RGE_Base_Game::mouse_off(rge_base_game);
+    //         }
+    //       }
+    //       else {
+    //         switch(param_2) {
+    //         case 0x100:
+    //           if ((int *)this->_padding_ == (int *)0x0) {
+    //             if (param_3 == 0x1b) {
+    //               SendMessageA(this->edit_wnd,199,0,0);
+    //               return 0;
+    //             }
+    //           }
+    //           else {
+    //             iVar6 = (**(code **)(*(int *)this->_padding_ + 0x48))(param_1,param_2,param_3,param_4);
+    //             if (iVar6 != 0) {
+    //               return 0;
+    //             }
+    //             if (uVar9 == 9) {
+    //               sVar4 = GetKeyState(0x12);
+    //               sVar5 = GetKeyState(0x11);
+    //               param_3 = (uint)(sVar5 < 0);
+    //               sVar5 = GetKeyState(0x10);
+    //               DAT_0086b240 = 1;
+    //               (**(code **)(this->_padding_ + 0x58))(9,lVar3,sVar4 < 0,param_3,sVar5 < 0);
+    //               DAT_0086b240 = 0;
+    //               return 0;
+    //             }
+    //             if (uVar9 == 0xd) {
+    //               (**(code **)(*(int *)this->_padding_ + 0xb4))(this,0,0,0);
+    //               return 0;
+    //             }
+    //             if (uVar9 == 0x1b) {
+    //               iVar6 = (**(code **)(*(int *)this->_padding_ + 0xb4))(this,1,0,0);
+    //               if (iVar6 != 0) {
+    //                 return 0;
+    //               }
+    //               SendMessageA(this->edit_wnd,199,0,0);
+    //               return 0;
+    //             }
+    //           }
+    //           goto LAB_004762dd;
+    //         case 0x101:
+    //           if (param_3 == 9) {
+    //             return 0;
+    //           }
+    //           break;
+    //         case 0x102:
+    //           iVar6 = verify_char(this,param_3);
+    //           if (iVar6 == 0) {
+    //             return 0;
+    //           }
+    //           break;
+    //         case 0x104:
+    //           if ((this->imc == 0) || (this->enable_ime == 0)) {
+    //             SetFocus(*(undefined4 *)(this->_padding_ + 4));
+    //             PostMessageA(*(undefined4 *)(this->_padding_ + 4),uVar2,param_2,param_3);
+    //           }
+    //           return 0;
+    //         }
+    //       }
+    //     }
+    //   }
+    //   uVar9 = param_3;
+    // LAB_004762dd:
+    //   new_end = 0;
+    //   rect.left = 0;
+    //   param_2 = 0;
+    //   old_end = 0;
+    //   if ((this->edit_wnd == (void *)0x0) || (uVar2 == 0xb0)) {
+    //     param_4 = 0;
+    //   }
+    //   else {
+    //     param_4 = 1;
+    //     SendMessageA(this->edit_wnd,0xb0,&new_end,&rect);
+    //   }
+    //   lVar7 = CallWindowProcA(this->old_sub_wnd_proc,param_1,uVar2,uVar9,lVar3);
+    //   if ((param_4 != 0) &&
+    //      ((SendMessageA(this->edit_wnd,0xb0,&param_2,&old_end), param_2 != new_end ||
+    //       (old_end != rect.left)))) {
+    //     InvalidateRect(this->edit_wnd,0,1);
+    //     UpdateWindow(this->edit_wnd);
+    //   }
+    //   if (uVar2 == 0x302) {
+    //     update_text(this);
+    //   }
+    //   if ((((uVar2 == 0x201) || (uVar2 == 0x202)) || (uVar2 == 0x204)) || (uVar2 == 0x205)) {
+    //     iVar6 = this->_padding_;
+    //     iVar1 = this->_padding_;
+    //     pTVar8 = TPanelSystem::currentPanel(&panel_system);
+    //     lVar7 = (**(code **)(pTVar8->_padding_ + 0x48))
+    //                       (*(undefined4 *)(this->_padding_ + 4),uVar2,param_3,
+    //                        (((uint)lVar3 >> 0x10) + iVar1) * 0x10000 |
+    //                        iVar6 + (lVar3 & 0xffffU) & 0xffff);
+    //   }
+    //   return lVar7;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00476422
+undefined FUN_00476422() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Instruction at (ram,0x00476498) overlaps instruction at (ram,0x00476493)
+    //     */
+    // /* WARNING: Control flow encountered bad instruction data */
+    // /* WARNING (jumptable): Unable to track spacebase fully for stack */
+    // /* WARNING: Unable to track spacebase fully for stack */
+    // 
+    // undefined4 FUN_00476422(void)
+    // 
+    // {
+    //   int iVar1;
+    //   char *pcVar2;
+    //   int iVar3;
+    //   int in_EAX;
+    //   int iVar4;
+    //   char cVar5;
+    //   int in_ECX;
+    //   int in_EDX;
+    //   int unaff_EBX;
+    //   undefined1 *puVar6;
+    //   int unaff_EBP;
+    //   undefined4 unaff_ESI;
+    //   int unaff_EDI;
+    //   byte in_CF;
+    //   bool bVar7;
+    //   int aiStack_10 [2];
+    //   int aiStack_8 [2];
+    //   TEditPanel *this;
+    //   
+    //   iVar4 = *(int *)(in_ECX + 0x47);
+    //   iVar3 = -(uint)in_CF;
+    //   *(char *)(in_EDX + 0x47) = *(char *)(in_EDX + 0x47) + (char)in_EAX;
+    //   *(char *)(unaff_EBX + 0x62) = *(char *)(unaff_EBX + 0x62) + (char)unaff_EBX;
+    //   cVar5 = (char)in_ECX + (char)unaff_EBX;
+    //   this = (TEditPanel *)CONCAT31((int3)((uint)in_ECX >> 8),cVar5);
+    //   if (cVar5 != '\0') {
+    //     *(char *)(unaff_EBP + 0xf5d75c0) = *(char *)(unaff_EBP + 0xf5d75c0) + (char)in_EAX;
+    //     *(char *)(unaff_EBX + 0x10096) = *(char *)(unaff_EBX + 0x10096) + cVar5;
+    //     pcVar2 = (char *)((int)&this->_padding_ + 3);
+    //     *pcVar2 = *pcVar2 + cVar5;
+    //     this[0xaf]._padding_ = this[0xaf]._padding_ >> 1;
+    //                     /* WARNING: Bad instruction - Truncating control flow here */
+    //     halt_baddata();
+    //   }
+    //   *(char *)(in_EAX + -0x6f6f6f70) = *(char *)(in_EAX + -0x6f6f6f70) + (char)in_EDX;
+    //   *(undefined4 *)((int)aiStack_8 + (iVar3 - iVar4) + 4) = unaff_ESI;
+    //   *(int *)((int)aiStack_8 + (iVar3 - iVar4)) = unaff_EDI + 2;
+    //   if (DAT_0086b244 != 0) {
+    //     DAT_0086b244 = 0;
+    //     return 0;
+    //   }
+    //   iVar1 = *(int *)(&stack0x00000004 + (iVar3 - iVar4));
+    //   if (iVar1 == 9) {
+    //     return 0;
+    //   }
+    //   if ((iVar1 == 0xd) && (this->format != FormatMultiLine)) {
+    //     return 0;
+    //   }
+    //   if (iVar1 == 8) {
+    //     return 1;
+    //   }
+    //   *(undefined4 *)((int)aiStack_10 + (iVar3 - iVar4) + 4) = 0x476493;
+    //   TEditPanel::update_text(this);
+    //   puVar6 = (undefined1 *)((int)aiStack_8 + (iVar3 - iVar4));
+    //   if (this->sel_len == 0) {
+    //     if (this->fixed_len + -1 <= this->text_len) {
+    //       *(undefined4 *)((int)aiStack_10 + (iVar3 - iVar4) + 4) = 0xffffffff;
+    //       *(undefined4 *)((int)aiStack_10 + (iVar3 - iVar4)) = 0x4764b7;
+    //       MessageBeep();
+    //       return 0;
+    //     }
+    //     puVar6 = (undefined1 *)((int)aiStack_8 + (iVar3 - iVar4));
+    //     if (this->fixed_len + -2 <= this->text_len) {
+    //       *(int *)((int)aiStack_10 + (iVar3 - iVar4) + 4) = iVar1;
+    //       puVar6 = (undefined1 *)((int)aiStack_10 + (iVar3 - iVar4));
+    //       *(undefined4 *)((int)aiStack_10 + (iVar3 - iVar4)) = 0x4764dd;
+    //       iVar4 = IsDBCSLeadByte();
+    //       if (iVar4 != 0) {
+    //         *(undefined4 *)(puVar6 + -4) = 0xffffffff;
+    //         DAT_0086b244 = 1;
+    //         *(undefined4 *)(puVar6 + -8) = 0x4764f3;
+    //         MessageBeep();
+    //         return 0;
+    //       }
+    //     }
+    //   }
+    //   switch(this->format) {
+    //   default:
+    //     goto switchD_00476509_caseD_0;
+    //   case FormatNumber:
+    //   case FormatInteger:
+    //   case FormatUnsignedInt:
+    //     *(undefined4 *)(puVar6 + -4) = 0x47655a;
+    //     TEditPanel::update_text(this);
+    //     if ((0x2f < iVar1) && (iVar1 < 0x3a)) {
+    //       return 1;
+    //     }
+    //     if (((iVar1 == 0x2d) && (*this->text == '\0')) && (this->format != FormatUnsignedInt)) {
+    //       return 1;
+    //     }
+    //     if (iVar1 != 0x2e) goto LAB_00476634;
+    //     pcVar2 = this->text;
+    //     *(undefined4 *)(puVar6 + -4) = 0x2e;
+    //     *(char **)(puVar6 + -8) = pcVar2;
+    //     *(undefined4 *)(puVar6 + -0xc) = 0x47659b;
+    //     iVar4 = __mbschr();
+    //     if (iVar4 == 0) goto LAB_00476634;
+    //     bVar7 = this->format == FormatNumber;
+    //     break;
+    //   case FormatFile:
+    //   case FormatFileNoExt:
+    //     *(undefined4 *)(puVar6 + -4) = 0x4765c9;
+    //     TEditPanel::update_text(this);
+    //     if (iVar1 == 0x2e) {
+    //       if (this->format == FormatFile) {
+    //         pcVar2 = this->text;
+    //         *(undefined4 *)(puVar6 + -4) = 0x2e;
+    //         *(char **)(puVar6 + -8) = pcVar2;
+    //         *(undefined4 *)(puVar6 + -0xc) = 0x4765e4;
+    //         iVar4 = __mbschr();
+    //         if (iVar4 == 0) {
+    //           return 1;
+    //         }
+    //       }
+    //       goto LAB_00476634;
+    //     }
+    //     if ((iVar1 == 0x5c) || (iVar1 == 0x3a)) goto LAB_00476634;
+    //     goto LAB_00476611;
+    //   case FormatPath:
+    //     *(undefined4 *)(puVar6 + -4) = 0x476603;
+    //     TEditPanel::update_text(this);
+    //     if ((iVar1 == 0x3a) && (this->text_len != 1)) goto LAB_00476634;
+    // LAB_00476611:
+    //     if (((iVar1 != 0x2f) && (((iVar1 != 0x22 && (iVar1 != 0x2a)) && (iVar1 != 0x3f)))) &&
+    //        (((iVar1 != 0x3e && (iVar1 != 0x3c)) && (iVar1 != 0x7c)))) {
+    //       return 1;
+    //     }
+    // LAB_00476634:
+    //     *(undefined4 *)(puVar6 + -4) = 0xffffffff;
+    //     *(undefined4 *)(puVar6 + -8) = 0x47663c;
+    //     MessageBeep();
+    //     return 0;
+    //   case FormatPercent:
+    //     if (((this->text_len < 2) && (0x2f < iVar1)) && (iVar1 < 0x3a)) {
+    //       return 1;
+    //     }
+    //     if ((this->text_len != 2) || (iVar1 != 0x30)) goto LAB_00476634;
+    //     *(char **)(puVar6 + -4) = this->text;
+    //     *(char **)(puVar6 + -8) = s_10;
+    //     *(undefined4 *)(puVar6 + -0xc) = 0x47654c;
+    //     iVar4 = __mbscmp();
+    //     bVar7 = iVar4 == 0;
+    //   }
+    //   if (!bVar7) {
+    //     *(undefined4 *)(puVar6 + -4) = 0xffffffff;
+    //     *(undefined4 *)(puVar6 + -8) = 0x4765bb;
+    //     MessageBeep();
+    //     return 0;
+    //   }
+    // switchD_00476509_caseD_0:
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00476440
+int verify_char(TEditPanel* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall TEditPanel::verify_char(int) */
+    // 
+    // int __thiscall TEditPanel::verify_char(TEditPanel *this,int param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   bool bVar2;
+    //   
+    //   if (DAT_0086b244 != 0) {
+    //     DAT_0086b244 = 0;
+    //     return 0;
+    //   }
+    //   if (param_1 == 9) {
+    //     return 0;
+    //   }
+    //   if ((param_1 == 0xd) && (this->format != FormatMultiLine)) {
+    //     return 0;
+    //   }
+    //   if (param_1 == 8) {
+    //     return 1;
+    //   }
+    //   update_text(this);
+    //   if (this->sel_len == 0) {
+    //     if (this->fixed_len + -1 <= this->text_len) {
+    //       MessageBeep(0xffffffff);
+    //       return 0;
+    //     }
+    //     if ((this->fixed_len + -2 <= this->text_len) && (iVar1 = IsDBCSLeadByte(param_1), iVar1 != 0)) {
+    //       DAT_0086b244 = 1;
+    //       MessageBeep(0xffffffff);
+    //       return 0;
+    //     }
+    //   }
+    //   switch(this->format) {
+    //   default:
+    //     goto switchD_00476509_caseD_0;
+    //   case FormatNumber:
+    //   case FormatInteger:
+    //   case FormatUnsignedInt:
+    //     update_text(this);
+    //     if ((0x2f < param_1) && (param_1 < 0x3a)) {
+    //       return 1;
+    //     }
+    //     if (((param_1 == 0x2d) && (*this->text == '\0')) && (this->format != FormatUnsignedInt)) {
+    //       return 1;
+    //     }
+    //     if ((param_1 != 0x2e) || (iVar1 = __mbschr(this->text,0x2e), iVar1 == 0)) goto LAB_00476634;
+    //     bVar2 = this->format == FormatNumber;
+    //     break;
+    //   case FormatFile:
+    //   case FormatFileNoExt:
+    //     update_text(this);
+    //     if (param_1 == 0x2e) {
+    //       if ((this->format == FormatFile) && (iVar1 = __mbschr(this->text,0x2e), iVar1 == 0)) {
+    //         return 1;
+    //       }
+    //       goto LAB_00476634;
+    //     }
+    //     if ((param_1 == 0x5c) || (param_1 == 0x3a)) goto LAB_00476634;
+    //     goto LAB_00476611;
+    //   case FormatPath:
+    //     update_text(this);
+    //     if ((param_1 == 0x3a) && (this->text_len != 1)) goto LAB_00476634;
+    // LAB_00476611:
+    //     if (((param_1 != 0x2f) &&
+    //         ((((param_1 != 0x22 && (param_1 != 0x2a)) && (param_1 != 0x3f)) &&
+    //          ((param_1 != 0x3e && (param_1 != 0x3c)))))) && (param_1 != 0x7c)) {
+    //       return 1;
+    //     }
+    // LAB_00476634:
+    //     MessageBeep(0xffffffff);
+    //     return 0;
+    //   case FormatPercent:
+    //     if (((this->text_len < 2) && (0x2f < param_1)) && (param_1 < 0x3a)) {
+    //       return 1;
+    //     }
+    //     if ((this->text_len != 2) || (param_1 != 0x30)) goto LAB_00476634;
+    //     iVar1 = __mbscmp(s_10,this->text);
+    //     bVar2 = iVar1 == 0;
+    //   }
+    //   if (!bVar2) {
+    //     MessageBeep(0xffffffff);
+    //     return 0;
+    //   }
+    // switchD_00476509_caseD_0:
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047664D
+undefined FUN_0047664d() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0047664d(void)
+    // 
+    // {
+    //   uchar uVar1;
+    //   uchar uVar2;
+    //   uchar uVar3;
+    //   uchar uVar4;
+    //   uchar uVar5;
+    //   uchar uVar6;
+    //   int *piVar7;
+    //   char cVar8;
+    //   byte bVar9;
+    //   undefined4 in_EAX;
+    //   char *pcVar10;
+    //   uchar *puVar11;
+    //   int iVar12;
+    //   void *pvVar13;
+    //   undefined4 uVar14;
+    //   int *in_ECX;
+    //   int iVar15;
+    //   char in_DL;
+    //   char cVar16;
+    //   int unaff_EBX;
+    //   int iVar17;
+    //   undefined4 unaff_EDI;
+    //   int iStack_18;
+    //   int iStack_14;
+    //   int iStack_10;
+    //   int iStack_c;
+    //   int iStack_8;
+    //   
+    //   *(char *)(unaff_EBX + 0x66) = *(char *)(unaff_EBX + 0x66) + in_DL;
+    //   *(char *)(unaff_EBX + 0x66) = *(char *)(unaff_EBX + 0x66) + in_DL;
+    //   *(char *)(unaff_EBX + 0x66) = *(char *)(unaff_EBX + 0x66) + in_DL;
+    //   cVar8 = (char)in_EAX;
+    //   cVar16 = in_DL + cVar8 * '\x02';
+    //   pcVar10 = (char *)CONCAT22((short)((uint)in_EAX >> 0x10),
+    //                              CONCAT11((char)((uint)in_EAX >> 8) + (char)((uint)(unaff_EBX + 1) >> 8)
+    //                                       ,cVar8));
+    //   *(char *)(unaff_EBX + 0x67) = *(char *)(unaff_EBX + 0x67) + cVar8;
+    //   *pcVar10 = *pcVar10 + cVar16;
+    //   pcVar10[-0x6f6f6f70] = pcVar10[-0x6f6f6f70] + cVar16;
+    //   in_ECX[0xe] = 0;
+    //   if (in_ECX[0x1c] == 0) {
+    //     return;
+    //   }
+    //   iVar17 = *in_ECX;
+    //   iStack_14 = iVar17;
+    //   (**(code **)(iVar17 + 0x28))
+    //             (0,unaff_EBX + 1,CONCAT22((short)((uint)unaff_EDI >> 0x10),(short)unaff_EDI + 1) + 8);
+    //   if (((in_ECX[0x42] == 0) || (in_ECX[0x1b] == 0)) || (in_ECX[0x1e] == 0)) {
+    //     piVar7 = (int *)in_ECX[0x10];
+    //     if (piVar7 == (int *)0x0) {
+    //       bVar9 = *(byte *)((int)in_ECX + 0xef);
+    //       goto LAB_00476722;
+    //     }
+    //     if ((in_ECX[0x54] < 2) || (7 < in_ECX[0x54])) {
+    //       if (piVar7[0x21] == 0) {
+    //         (**(code **)(*piVar7 + 0x34))(in_ECX + 9);
+    //       }
+    //     }
+    //     else {
+    //       (**(code **)(*piVar7 + 0x3c))(in_ECX + 9);
+    //     }
+    //   }
+    //   else {
+    //     bVar9 = GetNearestPaletteIndex(*(undefined4 *)(*(int *)in_ECX[8] + 8),in_ECX[0x49]);
+    // LAB_00476722:
+    //     TDrawArea::Clear((TDrawArea *)in_ECX[8],(tagRECT *)(in_ECX + 9),(uint)bVar9);
+    //   }
+    //   if (in_ECX[0x54] == 0) goto LAB_004768c7;
+    //   puVar11 = TDrawArea::Lock((TDrawArea *)in_ECX[8],s_pnl_edit__draw,1);
+    //   if (puVar11 == (uchar *)0x0) goto switchD_0047675d_default;
+    //   switch(in_ECX[0x54]) {
+    //   case 1:
+    //     TDrawArea::DrawRect((TDrawArea *)in_ECX[8],in_ECX[3],in_ECX[4],in_ECX[5] + -1 + in_ECX[3],
+    //                         in_ECX[6] + -1 + in_ECX[4],(uchar)in_ECX[0x55]);
+    //     break;
+    //   case 2:
+    //     uVar3 = (uchar)in_ECX[0x55];
+    //     iVar12 = in_ECX[4];
+    //     iVar15 = in_ECX[3];
+    //     uVar1 = *(uchar *)((int)in_ECX + 0x159);
+    //     goto LAB_00476812;
+    //   case 3:
+    //     uVar3 = (uchar)in_ECX[0x55];
+    //     iVar12 = in_ECX[4];
+    //     iVar15 = in_ECX[3];
+    //     uVar1 = *(uchar *)((int)in_ECX + 0x155);
+    //     uVar4 = (uchar)in_ECX[0x56];
+    //     uVar5 = *(uchar *)((int)in_ECX + 0x159);
+    //     goto LAB_00476853;
+    //   case 4:
+    //     uVar3 = (uchar)in_ECX[0x55];
+    //     iVar12 = in_ECX[4];
+    //     uVar1 = *(uchar *)((int)in_ECX + 0x155);
+    //     uVar4 = *(uchar *)((int)in_ECX + 0x156);
+    //     iVar15 = in_ECX[3];
+    //     uVar5 = *(uchar *)((int)in_ECX + 0x157);
+    //     uVar6 = (uchar)in_ECX[0x56];
+    //     uVar2 = *(uchar *)((int)in_ECX + 0x159);
+    //     goto LAB_0047689f;
+    //   case 5:
+    //     uVar3 = *(uchar *)((int)in_ECX + 0x159);
+    //     iVar12 = in_ECX[4];
+    //     iVar15 = in_ECX[3];
+    //     uVar1 = (uchar)in_ECX[0x55];
+    // LAB_00476812:
+    //     TDrawArea::DrawBevel
+    //               ((TDrawArea *)in_ECX[8],iVar15,iVar12,in_ECX[5] + -1 + iVar15,in_ECX[6] + -1 + iVar12,
+    //                uVar1,uVar3);
+    //     break;
+    //   case 6:
+    //     uVar3 = *(uchar *)((int)in_ECX + 0x159);
+    //     iVar12 = in_ECX[4];
+    //     iVar15 = in_ECX[3];
+    //     uVar1 = (uchar)in_ECX[0x56];
+    //     uVar4 = *(uchar *)((int)in_ECX + 0x155);
+    //     uVar5 = (uchar)in_ECX[0x55];
+    // LAB_00476853:
+    //     TDrawArea::DrawBevel2
+    //               ((TDrawArea *)in_ECX[8],iVar15,iVar12,in_ECX[5] + -1 + iVar15,in_ECX[6] + -1 + iVar12,
+    //                uVar5,uVar4,uVar1,uVar3);
+    //     break;
+    //   case 7:
+    //     uVar3 = *(uchar *)((int)in_ECX + 0x159);
+    //     iVar12 = in_ECX[4];
+    //     uVar1 = (uchar)in_ECX[0x56];
+    //     uVar4 = *(uchar *)((int)in_ECX + 0x157);
+    //     iVar15 = in_ECX[3];
+    //     uVar5 = *(uchar *)((int)in_ECX + 0x156);
+    //     uVar6 = *(uchar *)((int)in_ECX + 0x155);
+    //     uVar2 = (uchar)in_ECX[0x55];
+    // LAB_0047689f:
+    //     TDrawArea::DrawBevel3
+    //               ((TDrawArea *)in_ECX[8],iVar15,iVar12,in_ECX[5] + -1 + iVar15,in_ECX[6] + -1 + iVar12,
+    //                uVar2,uVar6,uVar5,uVar4,uVar1,uVar3);
+    //   }
+    // switchD_0047675d_default:
+    //   TDrawArea::Unlock((TDrawArea *)in_ECX[8],s_pnl_edit__draw);
+    // LAB_004768c7:
+    //   iVar12 = in_ECX[0x3d];
+    //   if ((iVar12 != 0) && (in_ECX[0x1b] != 0)) {
+    //     if (in_ECX[0x1e] == 0) {
+    //       if (in_ECX[0x41] == 0) {
+    //         ShowWindow(iVar12,0);
+    //         in_ECX[0x41] = 1;
+    //       }
+    //       pvVar13 = TDrawArea::GetDc((TDrawArea *)in_ECX[8],s_pnl_edit__draw);
+    //       if (pvVar13 != (void *)0x0) {
+    //         SelectClipRgn(pvVar13,in_ECX[0x22]);
+    //         uVar14 = SelectObject(pvVar13,in_ECX[0x4b]);
+    //         SetBkMode(pvVar13,1);
+    //         SetTextColor(pvVar13,in_ECX[0x46]);
+    //         iStack_14 = in_ECX[0x4d] + -1;
+    //         iStack_10 = in_ECX[0x4e] + 1;
+    //         iStack_c = in_ECX[0x4f] + -1;
+    //         iStack_8 = in_ECX[0x50] + 1;
+    //         DrawTextExA(pvVar13,in_ECX[0x3f],0xffffffff,&iStack_14,in_ECX[0x51],0);
+    //         SetTextColor(pvVar13,in_ECX[0x45]);
+    //         DrawTextExA(pvVar13,in_ECX[0x3f],0xffffffff,in_ECX + 0x4d,in_ECX[0x51],0);
+    //         SelectObject(pvVar13,uVar14);
+    //         SelectClipRgn(pvVar13,0);
+    //         TDrawArea::ReleaseDc((TDrawArea *)in_ECX[8],s_pnl_edit__draw);
+    //         iVar17 = iStack_18;
+    //       }
+    //     }
+    //     else if (in_ECX[0x41] != 0) {
+    //       ShowWindow(iVar12,5);
+    //       InvalidateRect(in_ECX[0x3d],0,1);
+    //       in_ECX[0x41] = 0;
+    //       (**(code **)(iVar17 + 0x2c))();
+    //       return;
+    //     }
+    //   }
+    //   (**(code **)(iVar17 + 0x2c))();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00476680
+void TEditPanel::draw() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: old_font */
+    // /* public: virtual void __thiscall TEditPanel::draw(void) */
+    // 
+    // void __thiscall TEditPanel::draw(TEditPanel *this)
+    // 
+    // {
+    //   uchar uVar1;
+    //   uchar uVar2;
+    //   uchar uVar3;
+    //   uchar uVar4;
+    //   uchar uVar5;
+    //   uchar uVar6;
+    //   int *piVar7;
+    //   byte bVar8;
+    //   uchar *puVar9;
+    //   int iVar10;
+    //   void *pvVar11;
+    //   undefined4 uVar12;
+    //   int iVar13;
+    //   int iVar14;
+    //   void *old_font;
+    //   int iStack_18;
+    //   tagRECT r;
+    //   
+    //   this->_padding_ = 0;
+    //   if (this->_padding_ == 0) {
+    //     return;
+    //   }
+    //   iVar14 = this->_padding_;
+    //   r.left = iVar14;
+    //   (**(code **)(iVar14 + 0x28))(0);
+    //   if (((this->brush == (void *)0x0) || (this->_padding_ == 0)) || (this->_padding_ == 0)) {
+    //     piVar7 = (int *)this->_padding_;
+    //     if (piVar7 == (int *)0x0) {
+    //       bVar8 = *(byte *)((int)&this->_padding_ + 3);
+    //       goto LAB_00476722;
+    //     }
+    //     if ((this->bevel_type < 2) || (7 < this->bevel_type)) {
+    //       if (piVar7[0x21] == 0) {
+    //         (**(code **)(*piVar7 + 0x34))(&this->_padding_);
+    //       }
+    //     }
+    //     else {
+    //       (**(code **)(*piVar7 + 0x3c))(&this->_padding_);
+    //     }
+    //   }
+    //   else {
+    //     bVar8 = GetNearestPaletteIndex(*(undefined4 *)(*(int *)this->_padding_ + 8),this->back_color);
+    // LAB_00476722:
+    //     TDrawArea::Clear((TDrawArea *)this->_padding_,(tagRECT *)&this->_padding_,(uint)bVar8);
+    //   }
+    //   if (this->bevel_type == 0) goto LAB_004768c7;
+    //   puVar9 = TDrawArea::Lock((TDrawArea *)this->_padding_,s_pnl_edit__draw,1);
+    //   if (puVar9 == (uchar *)0x0) goto switchD_0047675d_default;
+    //   switch(this->bevel_type) {
+    //   case 1:
+    //     TDrawArea::DrawRect((TDrawArea *)this->_padding_,this->_padding_,this->_padding_,
+    //                         this->_padding_ + -1 + this->_padding_,
+    //                         this->_padding_ + -1 + this->_padding_,this->bevel_color1);
+    //     break;
+    //   case 2:
+    //     uVar1 = this->bevel_color1;
+    //     iVar10 = this->_padding_;
+    //     iVar13 = this->_padding_;
+    //     uVar2 = this->bevel_color6;
+    //     goto LAB_00476812;
+    //   case 3:
+    //     uVar1 = this->bevel_color1;
+    //     iVar10 = this->_padding_;
+    //     iVar13 = this->_padding_;
+    //     uVar2 = this->bevel_color2;
+    //     uVar3 = this->bevel_color5;
+    //     uVar4 = this->bevel_color6;
+    //     goto LAB_00476853;
+    //   case 4:
+    //     uVar1 = this->bevel_color1;
+    //     iVar10 = this->_padding_;
+    //     uVar2 = this->bevel_color2;
+    //     uVar3 = this->bevel_color3;
+    //     iVar13 = this->_padding_;
+    //     uVar4 = this->bevel_color4;
+    //     uVar5 = this->bevel_color5;
+    //     uVar6 = this->bevel_color6;
+    //     goto LAB_0047689f;
+    //   case 5:
+    //     uVar1 = this->bevel_color6;
+    //     iVar10 = this->_padding_;
+    //     iVar13 = this->_padding_;
+    //     uVar2 = this->bevel_color1;
+    // LAB_00476812:
+    //     TDrawArea::DrawBevel
+    //               ((TDrawArea *)this->_padding_,iVar13,iVar10,this->_padding_ + -1 + iVar13,
+    //                this->_padding_ + -1 + iVar10,uVar2,uVar1);
+    //     break;
+    //   case 6:
+    //     uVar1 = this->bevel_color6;
+    //     iVar10 = this->_padding_;
+    //     iVar13 = this->_padding_;
+    //     uVar2 = this->bevel_color5;
+    //     uVar3 = this->bevel_color2;
+    //     uVar4 = this->bevel_color1;
+    // LAB_00476853:
+    //     TDrawArea::DrawBevel2
+    //               ((TDrawArea *)this->_padding_,iVar13,iVar10,this->_padding_ + -1 + iVar13,
+    //                this->_padding_ + -1 + iVar10,uVar4,uVar3,uVar2,uVar1);
+    //     break;
+    //   case 7:
+    //     uVar1 = this->bevel_color6;
+    //     iVar10 = this->_padding_;
+    //     uVar2 = this->bevel_color5;
+    //     uVar3 = this->bevel_color4;
+    //     iVar13 = this->_padding_;
+    //     uVar4 = this->bevel_color3;
+    //     uVar5 = this->bevel_color2;
+    //     uVar6 = this->bevel_color1;
+    // LAB_0047689f:
+    //     TDrawArea::DrawBevel3
+    //               ((TDrawArea *)this->_padding_,iVar13,iVar10,this->_padding_ + -1 + iVar13,
+    //                this->_padding_ + -1 + iVar10,uVar6,uVar5,uVar4,uVar3,uVar2,uVar1);
+    //   }
+    // switchD_0047675d_default:
+    //   TDrawArea::Unlock((TDrawArea *)this->_padding_,s_pnl_edit__draw);
+    // LAB_004768c7:
+    //   pvVar11 = this->edit_wnd;
+    //   if ((pvVar11 != (void *)0x0) && (this->_padding_ != 0)) {
+    //     if (this->_padding_ == 0) {
+    //       if (this->hidden == 0) {
+    //         ShowWindow(pvVar11,0);
+    //         this->hidden = 1;
+    //       }
+    //       pvVar11 = TDrawArea::GetDc((TDrawArea *)this->_padding_,s_pnl_edit__draw);
+    //       if (pvVar11 != (void *)0x0) {
+    //         SelectClipRgn(pvVar11,this->_padding_);
+    //         uVar12 = SelectObject(pvVar11,this->font);
+    //         SetBkMode(pvVar11,1);
+    //         SetTextColor(pvVar11,this->text_color2);
+    //         r.left = (this->draw_rect).left + -1;
+    //         r.top = (this->draw_rect).top + 1;
+    //         r.right = (this->draw_rect).right + -1;
+    //         r.bottom = (this->draw_rect).bottom + 1;
+    //         DrawTextExA(pvVar11,this->text,0xffffffff,&r,this->draw_format,0);
+    //         SetTextColor(pvVar11,this->text_color1);
+    //         DrawTextExA(pvVar11,this->text,0xffffffff,&this->draw_rect,this->draw_format,0);
+    //         SelectObject(pvVar11,uVar12);
+    //         SelectClipRgn(pvVar11,0);
+    //         TDrawArea::ReleaseDc((TDrawArea *)this->_padding_,s_pnl_edit__draw);
+    //         iVar14 = iStack_18;
+    //       }
+    //     }
+    //     else if (this->hidden != 0) {
+    //       ShowWindow(pvVar11,5);
+    //       InvalidateRect(this->edit_wnd,0,1);
+    //       this->hidden = 0;
+    //       (**(code **)(iVar14 + 0x2c))();
+    //       return;
+    //     }
+    //   }
+    //   (**(code **)(iVar14 + 0x2c))();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00476A50
+void TEditPanel::paint() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall TEditPanel::paint(void) */
+    // 
+    // void __thiscall TEditPanel::paint(TEditPanel *this)
+    // 
+    // {
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00476A60
+int is_blank(TEditPanel* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall TEditPanel::is_blank(void) */
+    // 
+    // int __thiscall TEditPanel::is_blank(TEditPanel *this)
+    // 
+    // {
+    //   int iVar1;
+    //   char *pcVar2;
+    //   
+    //   update_text(this);
+    //   pcVar2 = this->text;
+    //   if ((pcVar2 != (char *)0x0) && (*pcVar2 != '\0')) {
+    //     for (; *pcVar2 != '\0'; pcVar2 = (char *)__mbsinc(pcVar2)) {
+    //       iVar1 = __ismbcspace(*pcVar2);
+    //       if (iVar1 == 0) {
+    //         return 0;
+    //       }
+    //     }
+    //   }
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00476AB0
+char* get_trimmed_str(TEditPanel* this_, char* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: temp_str */
+    // /* public: char * __thiscall TEditPanel::get_trimmed_str(char *,int) */
+    // 
+    // char * __thiscall TEditPanel::get_trimmed_str(TEditPanel *this,char *param_1,int param_2)
+    // 
+    // {
+    //   char cVar1;
+    //   char *pcVar2;
+    //   char *pcVar3;
+    //   int iVar4;
+    //   uint uVar5;
+    //   uint uVar6;
+    //   char *pcVar7;
+    //   char temp_str [256];
+    //   
+    //   update_text(this);
+    //   pcVar2 = temp_str;
+    //   pcVar3 = temp_str;
+    //   for (iVar4 = 0x40; pcVar2 = pcVar2 + 4, iVar4 != 0; iVar4 = iVar4 + -1) {
+    //     pcVar2[0] = '\0';
+    //     pcVar2[1] = '\0';
+    //     pcVar2[2] = '\0';
+    //     pcVar2[3] = '\0';
+    //   }
+    //   uVar5 = 0xffffffff;
+    //   pcVar2 = this->text;
+    //   do {
+    //     pcVar7 = pcVar2;
+    //     if (uVar5 == 0) break;
+    //     uVar5 = uVar5 - 1;
+    //     pcVar7 = pcVar2 + 1;
+    //     cVar1 = *pcVar2;
+    //     pcVar2 = pcVar7;
+    //   } while (cVar1 != '\0');
+    //   uVar5 = ~uVar5;
+    //   pcVar2 = pcVar7 + -uVar5;
+    //   for (uVar6 = uVar5 >> 2; pcVar3 = pcVar3 + 4, uVar6 != 0; uVar6 = uVar6 - 1) {
+    //     *(undefined4 *)pcVar3 = *(undefined4 *)pcVar2;
+    //     pcVar2 = pcVar2 + 4;
+    //   }
+    //   for (uVar5 = uVar5 & 3; uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *pcVar3 = *pcVar2;
+    //     pcVar2 = pcVar2 + 1;
+    //     pcVar3 = pcVar3 + 1;
+    //   }
+    //   pcVar2 = param_1;
+    //   for (uVar5 = (uint)param_2 >> 2; uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     pcVar2[0] = '\0';
+    //     pcVar2[1] = '\0';
+    //     pcVar2[2] = '\0';
+    //     pcVar2[3] = '\0';
+    //     pcVar2 = pcVar2 + 4;
+    //   }
+    //   for (uVar5 = param_2 & 3; uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *pcVar2 = '\0';
+    //     pcVar2 = pcVar2 + 1;
+    //   }
+    //   pcVar2 = temp_str + 4;
+    //   iVar4 = __ismbcspace(temp_str._4_4_ & 0xff);
+    //   while (iVar4 != 0) {
+    //     pcVar2 = (char *)__mbsinc(pcVar2);
+    //     iVar4 = __ismbcspace(*pcVar2);
+    //   }
+    //   cVar1 = *pcVar2;
+    //   pcVar3 = param_1;
+    //   while (cVar1 != '\0') {
+    //     __mbsncpy(pcVar3,pcVar2,1);
+    //     pcVar3 = (char *)__mbsinc(pcVar3);
+    //     pcVar2 = (char *)__mbsinc(pcVar2);
+    //     cVar1 = *pcVar2;
+    //   }
+    //   do {
+    //     *pcVar3 = '\0';
+    //     if (pcVar3 == param_1) {
+    //       return param_1;
+    //     }
+    //     pcVar3 = (char *)__mbsdec(param_1,pcVar3);
+    //     iVar4 = __ismbcspace(*pcVar3);
+    //   } while (iVar4 != 0);
+    //   return param_1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00476BB0
+void TEditPanel::handle_reactivate() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall TEditPanel::handle_reactivate(void) */
+    // 
+    // void __thiscall TEditPanel::handle_reactivate(TEditPanel *this)
+    // 
+    // {
+    //   void *pvVar1;
+    //   
+    //   if ((this->edit_wnd != (void *)0x0) && (this->_padding_ != 0)) {
+    //     pvVar1 = (void *)GetFocus();
+    //     if (pvVar1 != this->edit_wnd) {
+    //       SetFocus(this->edit_wnd);
+    //     }
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00476BE0
+long TEditPanel::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual long __thiscall TEditPanel::handle_mouse_down(unsigned char,long,long,int,int) */
+    // 
+    // long __thiscall
+    // TEditPanel::handle_mouse_down
+    //           (TEditPanel *this,uchar param_1,long param_2,long param_3,int param_4,int param_5)
+    // 
+    // {
+    //   long lVar1;
+    //   
+    //   lVar1 = TPanel::handle_mouse_down((TPanel *)this,param_1,param_2,param_3,param_4,param_5);
+    //   return lVar1;
+    // }
+    // 
+    // 
+}
+

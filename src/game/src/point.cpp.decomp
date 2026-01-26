@@ -1,0 +1,172 @@
+// Auto-generated decompiler unit: point.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/point.cpp
+#include "../include/common.h"
+
+// Offset: 0x0047E480
+undefined XYZ(XYZ* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall XYZ::XYZ(void) */
+    // 
+    // void __thiscall XYZ::XYZ(XYZ *this)
+    // 
+    // {
+    //   this->xValue = 0;
+    //   this->yValue = 0;
+    //   this->zValue = 0;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047E490
+undefined XYZ(XYZ* this_, int param_2, int param_3, int param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall XYZ::XYZ(int,int,int) */
+    // 
+    // void __thiscall XYZ::XYZ(XYZ *this,int param_1,int param_2,int param_3)
+    // 
+    // {
+    //   this->xValue = param_1;
+    //   this->yValue = param_2;
+    //   this->zValue = param_3;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047E4B0
+int operator(XYZ* param_1, XYZ* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* int __cdecl operator==(class XYZ const &,class XYZ const &) */
+    // 
+    // int __cdecl operator==(XYZ *param_1,XYZ *param_2)
+    // 
+    // {
+    //   if (((param_1->xValue == param_2->xValue) && (param_1->yValue == param_2->yValue)) &&
+    //      (param_1->zValue == param_2->zValue)) {
+    //     return 1;
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047E4E0
+int operator(XYZ* param_1, XYZ* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* int __cdecl operator!=(class XYZ const &,class XYZ const &) */
+    // 
+    // int __cdecl operator!=(XYZ *param_1,XYZ *param_2)
+    // 
+    // {
+    //   if (((param_1->xValue == param_2->xValue) && (param_1->yValue == param_2->yValue)) &&
+    //      (param_1->zValue == param_2->zValue)) {
+    //     return 0;
+    //   }
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047E510
+XYZ* operator(XYZ* this_, XYZ* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: class XYZ & __thiscall XYZ::operator=(class XYZ const &) */
+    // 
+    // XYZ * __thiscall XYZ::operator=(XYZ *this,XYZ *param_1)
+    // 
+    // {
+    //   this->xValue = param_1->xValue;
+    //   this->yValue = param_1->yValue;
+    //   this->zValue = param_1->zValue;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047E530
+XYZ operator(XYZ* this_, XYZ* return_storage_ptr, XYZ* param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: newP */
+    // /* public: class XYZ __thiscall XYZ::operator+(class XYZ const &)const  */
+    // 
+    // XYZ * __thiscall XYZ::operator+(XYZ *this,XYZ *__return_storage_ptr__,XYZ *param_1)
+    // 
+    // {
+    //   XYZ newP;
+    //   int local_4;
+    //   
+    //   XYZ((XYZ *)&newP.yValue,this->xValue + param_1->xValue,this->yValue + param_1->yValue,
+    //       param_1->zValue + this->zValue);
+    //   __return_storage_ptr__->xValue = newP.yValue;
+    //   __return_storage_ptr__->yValue = newP.zValue;
+    //   __return_storage_ptr__->zValue = local_4;
+    //   return __return_storage_ptr__;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047E580
+XYZ operator(XYZ* this_, XYZ* return_storage_ptr, XYZ* param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: newP */
+    // /* public: class XYZ __thiscall XYZ::operator-(class XYZ const &)const  */
+    // 
+    // XYZ * __thiscall XYZ::operator-(XYZ *this,XYZ *__return_storage_ptr__,XYZ *param_1)
+    // 
+    // {
+    //   XYZ newP;
+    //   int local_4;
+    //   
+    //   XYZ((XYZ *)&newP.yValue,this->xValue - param_1->xValue,this->yValue - param_1->yValue,
+    //       this->zValue - param_1->zValue);
+    //   __return_storage_ptr__->xValue = newP.yValue;
+    //   __return_storage_ptr__->yValue = newP.zValue;
+    //   __return_storage_ptr__->zValue = local_4;
+    //   return __return_storage_ptr__;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0047E5D0
+void rotateXYByFacet(XYZ* this_, XYZ* param_2, XYZ* param_3, uchar param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall XYZ::rotateXYByFacet(class XYZ const &,class XYZ &,unsigned char) */
+    // 
+    // void __thiscall XYZ::rotateXYByFacet(XYZ *this,XYZ *param_1,XYZ *param_2,uchar param_3)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   param_2->xValue = this->xValue;
+    //   param_2->yValue = this->yValue;
+    //   param_2->zValue = this->zValue;
+    //   if (param_3 != '\0') {
+    //     fsin((float10)param_3 * (float10)0.7853982);
+    //     fcos((float10)(float)((float10)param_3 * (float10)0.7853982));
+    //     iVar1 = __ftol();
+    //     param_2->xValue = iVar1;
+    //     iVar1 = __ftol();
+    //     param_2->yValue = iVar1;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+

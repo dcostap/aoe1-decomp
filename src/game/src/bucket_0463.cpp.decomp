@@ -1,0 +1,46 @@
+// Auto-generated decompiler unit: bucket_0463.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x00463BA0
+undefined E4() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void _E4(void)
+    // 
+    // {
+    //   _E1();
+    //   _E3();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00463BC0
+undefined E3() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void _E3(void)
+    // 
+    // {
+    //   atexit(_E2);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00463BD0
+undefined E2() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void _E2(void)
+    // 
+    // {
+    //   TPanelSystem::~TPanelSystem(&panel_system);
+    //   return;
+    // }
+    // 
+    // 
+}
+

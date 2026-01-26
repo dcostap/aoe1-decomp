@@ -1,0 +1,48 @@
+// Auto-generated decompiler unit: bucket_0520.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x00520E20
+void TRIBE_Panel_Text_Line(TRIBE_Panel_Text_Line* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall TRIBE_Panel_Text_Line::~TRIBE_Panel_Text_Line(void) */
+    // 
+    // void __thiscall TRIBE_Panel_Text_Line::~TRIBE_Panel_Text_Line(TRIBE_Panel_Text_Line *this)
+    // 
+    // {
+    //   int iVar1;
+    //   char *pcVar2;
+    //   
+    //   this->_padding_ = (int)&TPanel::_vftable_;
+    //   TPanel::release_mouse((TPanel *)this);
+    //   if (this->_padding_ != 0) {
+    //     iVar1 = TPanelSystem::inSystem(&panel_system,(TPanel *)this);
+    //     if (iVar1 != 0) {
+    //       pcVar2 = TPanel::panelName((TPanel *)this);
+    //       TPanelSystem::removePanel(&panel_system,pcVar2);
+    //     }
+    //   }
+    //   if ((PanelNode *)this->_padding_ != (PanelNode *)0x0) {
+    //     if ((TPanel *)this->_padding_ != (TPanel *)0x0) {
+    //       TPanel::remove_panel_node((TPanel *)this->_padding_,(PanelNode *)this->_padding_);
+    //     }
+    //     free(this->_padding_);
+    //     this->_padding_ = 0;
+    //   }
+    //   this->_padding_ = 0;
+    //   if (this->_padding_ != 0) {
+    //     DeleteObject(this->_padding_);
+    //     this->_padding_ = 0;
+    //   }
+    //   if ((int *)this->_padding_ != (int *)0x0) {
+    //     (**(code **)(*(int *)this->_padding_ + 0x20))(2);
+    //   }
+    //   if (this->_padding_ != 0) {
+    //     free(this->_padding_);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+

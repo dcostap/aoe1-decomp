@@ -1,0 +1,50 @@
+// Auto-generated decompiler unit: bucket_0562.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x00562026
+undefined FUN_00562026() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00562026(void)
+    // 
+    // {
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00562030
+undefined FUN_00562030() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00562030(void)
+    // 
+    // {
+    //   int unaff_EBP;
+    //   
+    //   if ((*(uint *)(unaff_EBP + -0x14) & 1) != 0) {
+    //     ios::~ios((ios *)(*(int *)(unaff_EBP + -0x10) + 0xc));
+    //     return;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00562046
+undefined FUN_00562046() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00562046(void)
+    // 
+    // {
+    //   ___CxxFrameHandler();
+    //   return;
+    // }
+    // 
+    // 
+}
+

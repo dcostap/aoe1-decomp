@@ -1,0 +1,4273 @@
+// Auto-generated decompiler unit: taiuaimd.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/taiuaimd.cpp
+#include "../include/common.h"
+
+// Offset: 0x00503BB0
+undefined TribeHuntedAnimalUnitAIModule(TribeHuntedAnimalUnitAIModule* this_, RGE_Static_Object* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TribeHuntedAnimalUnitAIModule::TribeHuntedAnimalUnitAIModule(class
+    //    RGE_Static_Object *,int) */
+    // 
+    // TribeHuntedAnimalUnitAIModule * __thiscall
+    // TribeHuntedAnimalUnitAIModule::TribeHuntedAnimalUnitAIModule
+    //           (TribeHuntedAnimalUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
+    // 
+    // {
+    //   undefined4 *puVar1;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_00560c08;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   UnitAIModule::UnitAIModule((UnitAIModule *)this,param_1,param_2);
+    //   local_4 = 0;
+    //   *(undefined ***)this = &_vftable_;
+    //   *(undefined4 *)&this->field_0x128 = 0x10;
+    //   puVar1 = (undefined4 *)operator_new(0x40);
+    //   *(undefined4 **)&this->field_0x124 = puVar1;
+    //   if (puVar1 != (undefined4 *)0x0) {
+    //     *puVar1 = 0;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 4) = 4;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 8) = 0x1a;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0xc) = 0x18;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x10) = 6;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x14) = 0x19;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x18) = 0x11;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x1c) = 10;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x20) = 0xc;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x24) = 0x23;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x28) = 0x17;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x2c) = 0x24;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x30) = 0x1c;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x34) = 0x12;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x38) = 0xd;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x3c) = 0x27;
+    //   }
+    //   *(undefined4 *)&this->field_0x100 = 4000;
+    //   UnitAIModule::setAdjustedIdleTimeout((UnitAIModule *)this);
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00503D30
+int TribeHuntedAnimalUnitAIModule::processNotify(NotifyEvent* param_1, ulong param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual int __thiscall TribeHuntedAnimalUnitAIModule::processNotify(struct NotifyEvent
+    //    *,unsigned long) */
+    // 
+    // int __thiscall
+    // TribeHuntedAnimalUnitAIModule::processNotify
+    //           (TribeHuntedAnimalUnitAIModule *this,NotifyEvent *param_1,ulong param_2)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   void *pvVar4;
+    //   
+    //   if (param_1->mType != 500) {
+    //     if (param_1->mType != 0x20f) {
+    //       iVar2 = UnitAIModule::processNotify((UnitAIModule *)this,param_1,param_2);
+    //       return iVar2;
+    //     }
+    //     return 2;
+    //   }
+    //   if (param_1->p2 < 1) {
+    //     UnitAIModule::purgeNotifyQueue((UnitAIModule *)this,param_2);
+    //     return 4;
+    //   }
+    //   iVar1 = param_1->caller;
+    //   iVar2 = *(int *)&this->field_0x64;
+    //   iVar3 = 0;
+    //   if (0 < iVar2) {
+    //     do {
+    //       if (*(int *)&this->field_0x6c <= iVar3) break;
+    //       if (*(int *)(*(int *)&this->field_0x60 + iVar3 * 4) == iVar1) goto LAB_00503e0b;
+    //       iVar3 = iVar3 + 1;
+    //     } while (iVar3 < iVar2);
+    //   }
+    //   if (*(int *)&this->field_0x6c + -1 < iVar2) {
+    //     iVar2 = iVar2 + 1;
+    //     pvVar4 = operator_new(iVar2 * 4);
+    //     if (pvVar4 != (void *)0x0) {
+    //       iVar3 = 0;
+    //       if (0 < *(int *)&this->field_0x6c) {
+    //         do {
+    //           if (iVar2 <= iVar3) break;
+    //           iVar3 = iVar3 + 1;
+    //           *(undefined4 *)((int)pvVar4 + iVar3 * 4 + -4) =
+    //                *(undefined4 *)(*(int *)&this->field_0x60 + -4 + iVar3 * 4);
+    //         } while (iVar3 < *(int *)&this->field_0x6c);
+    //       }
+    //       operator_delete(*(void **)&this->field_0x60);
+    //       *(void **)&this->field_0x60 = pvVar4;
+    //       *(int *)&this->field_0x6c = iVar2;
+    //     }
+    //   }
+    //   *(int *)(*(int *)&this->field_0x60 + *(int *)&this->field_0x64 * 4) = iVar1;
+    //   *(int *)&this->field_0x64 = *(int *)&this->field_0x64 + 1;
+    // LAB_00503e0b:
+    //   (**(code **)(**(int **)&this->field_0x4 + 0xec))(1);
+    //   (**(code **)(*(int *)this + 0xa4))(1);
+    //   return 3;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00503E30
+int TribeHuntedAnimalUnitAIModule::processIdle(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: yDiff */
+    // /* protected: virtual int __thiscall TribeHuntedAnimalUnitAIModule::processIdle(int) */
+    // 
+    // int __thiscall
+    // TribeHuntedAnimalUnitAIModule::processIdle(TribeHuntedAnimalUnitAIModule *this,int param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   float fVar2;
+    //   float fVar3;
+    //   float fVar4;
+    //   int iVar5;
+    //   RGE_Static_Object *pRVar6;
+    //   float10 fVar7;
+    //   float yDiff;
+    //   float xDiff;
+    //   
+    //   iVar1 = *(int *)this;
+    //   iVar5 = (**(code **)(iVar1 + 0x40))(0xffffffff,0xffffffff,0xffffffff,0xffffffff,0);
+    //   if (iVar5 != -1) {
+    //     pRVar6 = RGE_Game_World::object
+    //                        (*(RGE_Game_World **)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x3c),iVar5)
+    //     ;
+    //     if (pRVar6 != (RGE_Static_Object *)0x0) {
+    //       fVar7 = (float10)(**(code **)(**(int **)&this->field_0x4 + 0xfc))();
+    //       iVar5 = *(int *)&this->field_0x4;
+    //       fVar4 = pRVar6->world_x - *(float *)(iVar5 + 0x38);
+    //       fVar2 = pRVar6->world_y - *(float *)(iVar5 + 0x3c);
+    //       fVar3 = SQRT(fVar2 * fVar2 + fVar4 * fVar4);
+    //       (**(code **)(iVar1 + 0x9c))
+    //                 (-((fVar4 / fVar3) * (float)(fVar7 * (float10)3.0)) + *(float *)(iVar5 + 0x38),
+    //                  -((fVar2 / fVar3) * (float)(fVar7 * (float10)3.0)) + *(float *)(iVar5 + 0x3c),
+    //                  *(undefined4 *)(iVar5 + 0x40),1);
+    //       return 6;
+    //     }
+    //   }
+    //   return 5;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00503F20
+undefined TribePreditorUnitAIModule(TribePreditorUnitAIModule* this_, RGE_Static_Object* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TribePreditorUnitAIModule::TribePreditorUnitAIModule(class RGE_Static_Object
+    //    *,int) */
+    // 
+    // TribePreditorUnitAIModule * __thiscall
+    // TribePreditorUnitAIModule::TribePreditorUnitAIModule
+    //           (TribePreditorUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
+    // 
+    // {
+    //   undefined4 *puVar1;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_00560c28;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   UnitAIModule::UnitAIModule((UnitAIModule *)this,param_1,param_2);
+    //   local_4 = 0;
+    //   *(undefined ***)this = &_vftable_;
+    //   *(undefined4 *)&this->field_0x128 = 0x11;
+    //   puVar1 = (undefined4 *)operator_new(0x44);
+    //   *(undefined4 **)&this->field_0x124 = puVar1;
+    //   if (puVar1 != (undefined4 *)0x0) {
+    //     *puVar1 = 0x1d;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 4) = 9;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 8) = 0;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0xc) = 4;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x10) = 0x1a;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x14) = 0x18;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x18) = 6;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x1c) = 0x19;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x20) = 0x11;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x24) = 0xd;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x28) = 0xc;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x2c) = 0x23;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x30) = 0x17;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x34) = 0x24;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x38) = 0x1c;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x3c) = 0x12;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x40) = 0x27;
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005040A0
+int TribePreditorUnitAIModule::canAttackUnitAtNeutrality(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall TribePreditorUnitAIModule::canAttackUnitAtNeutrality(int) */
+    // 
+    // int __thiscall
+    // TribePreditorUnitAIModule::canAttackUnitAtNeutrality(TribePreditorUnitAIModule *this,int param_1)
+    // 
+    // {
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005040B0
+int TribePreditorUnitAIModule::processNotify(NotifyEvent* param_1, ulong param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual int __thiscall TribePreditorUnitAIModule::processNotify(struct NotifyEvent
+    //    *,unsigned long) */
+    // 
+    // int __thiscall
+    // TribePreditorUnitAIModule::processNotify
+    //           (TribePreditorUnitAIModule *this,NotifyEvent *param_1,ulong param_2)
+    // 
+    // {
+    //   RGE_Static_Object *pRVar1;
+    //   undefined4 uVar2;
+    //   int iVar3;
+    //   float fVar4;
+    //   
+    //   if (param_1->mType == 0x1fc) {
+    //     pRVar1 = RGE_Game_World::object
+    //                        (*(RGE_Game_World **)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x3c),
+    //                         *(int *)&this->field_0x34);
+    //     if (pRVar1 != (RGE_Static_Object *)0x0) {
+    //       fVar4 = RGE_Static_Object::distance_to_object(*(RGE_Static_Object **)&this->field_0x4,pRVar1);
+    //       if (fVar4 <= *(float *)(*(int *)(*(int *)&this->field_0x4 + 8) + 0x28)) {
+    //         (**(code **)(*(int *)this + 0x5c))(*(undefined4 *)&this->field_0x34,1);
+    //         return 3;
+    //       }
+    //     }
+    //     UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //     if (actionFile != (_iobuf *)0x0) {
+    //       if (*(int *)&this->field_0x4 == 0) {
+    //         uVar2 = 0xffffffff;
+    //       }
+    //       else {
+    //         uVar2 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //       }
+    //       fprintf(actionFile,s___d_call_stopObject__s__d_,uVar2,s_C__msdev_work_age1_x1_taiuaimd_c,0xfa)
+    //       ;
+    //     }
+    //     iVar3 = *(int *)this;
+    //     (**(code **)(iVar3 + 0x58))(1);
+    //     (**(code **)(iVar3 + 0x1c))(param_1);
+    //   }
+    //   iVar3 = UnitAIModule::processNotify((UnitAIModule *)this,param_1,param_2);
+    //   return iVar3;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00504170
+undefined TribeElephantUnitAIModule(TribeElephantUnitAIModule* this_, RGE_Static_Object* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TribeElephantUnitAIModule::TribeElephantUnitAIModule(class RGE_Static_Object
+    //    *,int) */
+    // 
+    // TribeElephantUnitAIModule * __thiscall
+    // TribeElephantUnitAIModule::TribeElephantUnitAIModule
+    //           (TribeElephantUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
+    // 
+    // {
+    //   UnitAIModule::UnitAIModule((UnitAIModule *)this,param_1,param_2);
+    //   *(undefined ***)this = &_vftable_;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005041C0
+int TribeElephantUnitAIModule::processNotify(NotifyEvent* param_1, ulong param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual int __thiscall TribeElephantUnitAIModule::processNotify(struct NotifyEvent
+    //    *,unsigned long) */
+    // 
+    // int __thiscall
+    // TribeElephantUnitAIModule::processNotify
+    //           (TribeElephantUnitAIModule *this,NotifyEvent *param_1,ulong param_2)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   void *pvVar4;
+    //   undefined4 uVar5;
+    //   
+    //   if (param_1->mType != 500) {
+    //     if (param_1->mType != 0x20f) {
+    //       iVar2 = UnitAIModule::processNotify((UnitAIModule *)this,param_1,param_2);
+    //       return iVar2;
+    //     }
+    //     return 2;
+    //   }
+    //   if (param_1->p2 < 1) {
+    //     UnitAIModule::purgeNotifyQueue((UnitAIModule *)this,param_2);
+    //     return 4;
+    //   }
+    //   iVar1 = param_1->caller;
+    //   iVar2 = *(int *)&this->field_0x64;
+    //   iVar3 = 0;
+    //   if (0 < iVar2) {
+    //     do {
+    //       if (*(int *)&this->field_0x6c <= iVar3) break;
+    //       if (*(int *)(*(int *)&this->field_0x60 + iVar3 * 4) == iVar1) goto LAB_0050429b;
+    //       iVar3 = iVar3 + 1;
+    //     } while (iVar3 < iVar2);
+    //   }
+    //   if (*(int *)&this->field_0x6c + -1 < iVar2) {
+    //     iVar2 = iVar2 + 1;
+    //     pvVar4 = operator_new(iVar2 * 4);
+    //     if (pvVar4 != (void *)0x0) {
+    //       iVar3 = 0;
+    //       if (0 < *(int *)&this->field_0x6c) {
+    //         do {
+    //           if (iVar2 <= iVar3) break;
+    //           iVar3 = iVar3 + 1;
+    //           *(undefined4 *)((int)pvVar4 + iVar3 * 4 + -4) =
+    //                *(undefined4 *)(*(int *)&this->field_0x60 + -4 + iVar3 * 4);
+    //         } while (iVar3 < *(int *)&this->field_0x6c);
+    //       }
+    //       operator_delete(*(void **)&this->field_0x60);
+    //       *(void **)&this->field_0x60 = pvVar4;
+    //       *(int *)&this->field_0x6c = iVar2;
+    //     }
+    //   }
+    //   *(int *)(*(int *)&this->field_0x60 + *(int *)&this->field_0x64 * 4) = iVar1;
+    //   *(int *)&this->field_0x64 = *(int *)&this->field_0x64 + 1;
+    // LAB_0050429b:
+    //   (**(code **)(**(int **)&this->field_0x4 + 0xec))(1);
+    //   iVar2 = *(int *)this;
+    //   uVar5 = (**(code **)(iVar2 + 0x3c))(0);
+    //   (**(code **)(iVar2 + 0x5c))(uVar5,0);
+    //   return 3;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005042D0
+int TribeElephantUnitAIModule::processIdle(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual int __thiscall TribeElephantUnitAIModule::processIdle(int) */
+    // 
+    // int __thiscall TribeElephantUnitAIModule::processIdle(TribeElephantUnitAIModule *this,int param_1)
+    // 
+    // {
+    //   return 5;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005042E0
+undefined TribeLionUnitAIModule(TribeLionUnitAIModule* this_, RGE_Static_Object* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TribeLionUnitAIModule::TribeLionUnitAIModule(class RGE_Static_Object *,int) */
+    // 
+    // TribeLionUnitAIModule * __thiscall
+    // TribeLionUnitAIModule::TribeLionUnitAIModule
+    //           (TribeLionUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
+    // 
+    // {
+    //   undefined4 *puVar1;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_00560c48;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   UnitAIModule::UnitAIModule((UnitAIModule *)this,param_1,param_2);
+    //   local_4 = 0;
+    //   *(undefined ***)this = &_vftable_;
+    //   *(undefined4 *)&this->field_0x128 = 0x11;
+    //   puVar1 = (undefined4 *)operator_new(0x44);
+    //   *(undefined4 **)&this->field_0x124 = puVar1;
+    //   if (puVar1 != (undefined4 *)0x0) {
+    //     *puVar1 = 0x1d;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 4) = 9;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 8) = 0;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0xc) = 4;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x10) = 0x1a;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x14) = 0x18;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x18) = 6;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x1c) = 0x19;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x20) = 0x11;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x24) = 0xd;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x28) = 0xc;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x2c) = 0x23;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x30) = 0x17;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x34) = 0x24;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x38) = 0x1c;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x3c) = 0x12;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x40) = 0x27;
+    //   }
+    //   *(undefined4 *)&this->field_0x100 = 6000;
+    //   UnitAIModule::setAdjustedIdleTimeout((UnitAIModule *)this);
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00504470
+int TribeLionUnitAIModule::canAttackUnitAtNeutrality(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall TribeLionUnitAIModule::canAttackUnitAtNeutrality(int) */
+    // 
+    // int __thiscall
+    // TribeLionUnitAIModule::canAttackUnitAtNeutrality(TribeLionUnitAIModule *this,int param_1)
+    // 
+    // {
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00504480
+int TribeLionUnitAIModule::processNotify(NotifyEvent* param_1, ulong param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual int __thiscall TribeLionUnitAIModule::processNotify(struct NotifyEvent
+    //    *,unsigned long) */
+    // 
+    // int __thiscall
+    // TribeLionUnitAIModule::processNotify(TribeLionUnitAIModule *this,NotifyEvent *param_1,ulong param_2)
+    // 
+    // {
+    //   RGE_Static_Object *pRVar1;
+    //   undefined4 uVar2;
+    //   int iVar3;
+    //   float fVar4;
+    //   ulong unaff_retaddr;
+    //   
+    //   if (param_1->mType != 0x1fa) {
+    //     if (param_1->mType == 0x1fc) {
+    //       pRVar1 = RGE_Game_World::object
+    //                          (*(RGE_Game_World **)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x3c),
+    //                           *(int *)&this->field_0x34);
+    //       if (pRVar1 != (RGE_Static_Object *)0x0) {
+    //         fVar4 = RGE_Static_Object::distance_to_object
+    //                           (*(RGE_Static_Object **)&this->field_0x4,pRVar1);
+    //         if (fVar4 <= *(float *)(*(int *)(*(int *)&this->field_0x4 + 8) + 0x28)) {
+    //           (**(code **)(*(int *)this + 0x5c))(*(undefined4 *)&this->field_0x34,1);
+    //           return 3;
+    //         }
+    //       }
+    //       UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //       if (actionFile != (_iobuf *)0x0) {
+    //         if (*(int *)&this->field_0x4 == 0) {
+    //           uVar2 = 0xffffffff;
+    //         }
+    //         else {
+    //           uVar2 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //         }
+    //         fprintf(actionFile,s___d_call_stopObject__s__d_,uVar2,s_C__msdev_work_age1_x1_taiuaimd_c,
+    //                 0x1ac);
+    //       }
+    //       iVar3 = *(int *)this;
+    //       (**(code **)(iVar3 + 0x58))(1);
+    //       (**(code **)(iVar3 + 0x1c))(param_1);
+    //       iVar3 = UnitAIModule::processNotify((UnitAIModule *)this,param_1,unaff_retaddr);
+    //       return iVar3;
+    //     }
+    //     goto LAB_005045ea;
+    //   }
+    //   if (param_1->p1 != 600) goto LAB_005045ea;
+    //   iVar3 = RGE_Base_Game::scenarioGame(rge_base_game);
+    //   if (iVar3 == 1) {
+    //     iVar3 = RGE_Base_Game::singlePlayerGame(rge_base_game);
+    //     if (iVar3 != 1) goto LAB_00504597;
+    //     iVar3 = RGE_Game_World::difficultyLevel
+    //                       (*(RGE_Game_World **)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x3c));
+    //     *(int *)&this->field_0x100 = (iVar3 + 3) * 5000;
+    //   }
+    //   else {
+    // LAB_00504597:
+    //     *(undefined4 *)&this->field_0x100 = 25000;
+    //   }
+    //   UnitAIModule::setAdjustedIdleTimeout((UnitAIModule *)this);
+    //   UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //   if (actionFile != (_iobuf *)0x0) {
+    //     if (*(int *)&this->field_0x4 == 0) {
+    //       uVar2 = 0xffffffff;
+    //     }
+    //     else {
+    //       uVar2 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //     }
+    //     fprintf(actionFile,s___d_call_stopObject__s__d_,uVar2,s_C__msdev_work_age1_x1_taiuaimd_c,0x191);
+    //   }
+    //   (**(code **)(*(int *)this + 0x58))(1);
+    // LAB_005045ea:
+    //   iVar3 = UnitAIModule::processNotify((UnitAIModule *)this,param_1,param_2);
+    //   return iVar3;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00504600
+int TribeLionUnitAIModule::processIdle(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: maxReactDistance */
+    // /* protected: virtual int __thiscall TribeLionUnitAIModule::processIdle(int) */
+    // 
+    // int __thiscall TribeLionUnitAIModule::processIdle(TribeLionUnitAIModule *this,int param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   RGE_Static_Object *pRVar3;
+    //   int iVar4;
+    //   int iVar5;
+    //   RGE_Static_Object *this_00;
+    //   float fVar6;
+    //   float fVar7;
+    //   float maxReactDistance;
+    //   RGE_Static_Object *newTarget;
+    //   
+    //   *(undefined4 *)&this->field_0x100 = 6000;
+    //   UnitAIModule::setAdjustedIdleTimeout((UnitAIModule *)this);
+    //   iVar1 = *(int *)this;
+    //   iVar2 = (**(code **)(iVar1 + 0x40))(0xffffffff,0xffffffff,0xffffffff,0xffffffff,0);
+    //   pRVar3 = UnitAIModule::lookupObject((UnitAIModule *)this,iVar2);
+    //   if (iVar2 == -1) {
+    //     return 5;
+    //   }
+    //   if (pRVar3 != (RGE_Static_Object *)0x0) {
+    //     iVar4 = RGE_Game_World::difficultyLevel
+    //                       (*(RGE_Game_World **)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x3c));
+    //     iVar5 = RGE_Base_Game::scenarioGame(rge_base_game);
+    //     if (((iVar5 == 1) && (iVar5 = RGE_Base_Game::singlePlayerGame(rge_base_game), iVar5 == 1)) &&
+    //        (2 < iVar4)) {
+    //       if (iVar4 == 3) {
+    //         fVar7 = 0.75;
+    //       }
+    //       else {
+    //         fVar7 = 0.5;
+    //       }
+    //       this_00 = *(RGE_Static_Object **)&this->field_0x4;
+    //       fVar7 = fVar7 * this_00->master_obj->los;
+    //       if (fVar7 < 1.0) {
+    //         fVar7 = 1.0;
+    //       }
+    //     }
+    //     else {
+    //       this_00 = *(RGE_Static_Object **)&this->field_0x4;
+    //       fVar7 = this_00->master_obj->los;
+    //       fVar7 = fVar7 + fVar7;
+    //     }
+    //     fVar6 = RGE_Static_Object::distance_to_object(this_00,pRVar3);
+    //     if (fVar7 < fVar6) {
+    //       return 5;
+    //     }
+    //     (**(code **)(iVar1 + 0x5c))(iVar2,0);
+    //     return 6;
+    //   }
+    //   return 5;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00504700
+undefined TribeRangedUnitAIModule(TribeRangedUnitAIModule* this_, RGE_Static_Object* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TribeRangedUnitAIModule::TribeRangedUnitAIModule(class RGE_Static_Object
+    //    *,int) */
+    // 
+    // TribeRangedUnitAIModule * __thiscall
+    // TribeRangedUnitAIModule::TribeRangedUnitAIModule
+    //           (TribeRangedUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
+    // 
+    // {
+    //   UnitAIModule::UnitAIModule((UnitAIModule *)this,param_1,param_2);
+    //   *(undefined ***)this = &_vftable_;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00504750
+int TribeRangedUnitAIModule::processNotify(NotifyEvent* param_1, ulong param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual int __thiscall TribeRangedUnitAIModule::processNotify(struct NotifyEvent
+    //    *,unsigned long) */
+    // 
+    // int __thiscall
+    // TribeRangedUnitAIModule::processNotify
+    //           (TribeRangedUnitAIModule *this,NotifyEvent *param_1,ulong param_2)
+    // 
+    // {
+    //   int *piVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   RGE_Static_Object *pRVar4;
+    //   float10 fVar5;
+    //   float10 fVar6;
+    //   float10 fVar7;
+    //   float fVar8;
+    //   
+    //   if (param_1->mType != 0x200) {
+    //     iVar3 = UnitAIModule::processNotify((UnitAIModule *)this,param_1,param_2);
+    //     return iVar3;
+    //   }
+    //   if (*(int *)&this->field_0x30 == 600) {
+    //     pRVar4 = RGE_Game_World::object
+    //                        (*(RGE_Game_World **)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x3c),
+    //                         *(int *)&this->field_0x34);
+    //     if (pRVar4 != (RGE_Static_Object *)0x0) {
+    //       fVar5 = (float10)(**(code **)(pRVar4->_padding_ + 0xf4))();
+    //       if (fVar5 != (float10)0.0) {
+    //         iVar3 = *(int *)this;
+    //         (**(code **)(iVar3 + 0x10))
+    //                   (*(undefined4 *)(*(int *)&this->field_0x4 + 4),700,
+    //                    *(undefined4 *)&this->field_0x34,0xffffffff,*(undefined4 *)&this->field_0x3c,
+    //                    *(undefined4 *)&this->field_0x40,*(undefined4 *)&this->field_0x44,
+    //                    *(undefined4 *)&this->field_0x48,0,1,*(undefined4 *)&this->field_0x2c);
+    //         piVar1 = *(int **)&this->field_0x4;
+    //         fVar5 = (float10)(**(code **)(*piVar1 + 0x100))();
+    //         fVar8 = (float)fVar5;
+    //         fVar5 = (float10)(**(code **)(*piVar1 + 0xfc))();
+    //         iVar2 = *(int *)&this->field_0x4;
+    //         fVar5 = fVar5 * (float10)fVar8 * (float10)3.0;
+    //         fVar6 = (float10)pRVar4->world_x - (float10)*(float *)(iVar2 + 0x38);
+    //         fVar7 = (float10)pRVar4->world_y - (float10)*(float *)(iVar2 + 0x3c);
+    //         fVar8 = (float)SQRT(fVar7 * fVar7 + fVar6 * fVar6);
+    //         (**(code **)(iVar3 + 0x9c))
+    //                   ((float)(-((fVar6 / (float10)fVar8) * fVar5) + (float10)*(float *)(iVar2 + 0x38)),
+    //                    (float)(-((fVar7 / (float10)fVar8) * fVar5) + (float10)*(float *)(iVar2 + 0x3c)),
+    //                    *(undefined4 *)(iVar2 + 0x40),1);
+    //         return 3;
+    //       }
+    //     }
+    //   }
+    //   return 2;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00504880
+undefined TribeRangedUnitAIModule2(TribeRangedUnitAIModule2* this_, RGE_Static_Object* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TribeRangedUnitAIModule2::TribeRangedUnitAIModule2(class RGE_Static_Object
+    //    *,int) */
+    // 
+    // TribeRangedUnitAIModule2 * __thiscall
+    // TribeRangedUnitAIModule2::TribeRangedUnitAIModule2
+    //           (TribeRangedUnitAIModule2 *this,RGE_Static_Object *param_1,int param_2)
+    // 
+    // {
+    //   UnitAIModule::UnitAIModule((UnitAIModule *)this,param_1,param_2);
+    //   *(undefined ***)this = &_vftable_;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005048D0
+int TribeRangedUnitAIModule2::processNotify(NotifyEvent* param_1, ulong param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: evasiveMoveDistance */
+    // /* protected: virtual int __thiscall TribeRangedUnitAIModule2::processNotify(struct NotifyEvent
+    //    *,unsigned long) */
+    // 
+    // int __thiscall
+    // TribeRangedUnitAIModule2::processNotify
+    //           (TribeRangedUnitAIModule2 *this,NotifyEvent *param_1,ulong param_2)
+    // 
+    // {
+    //   int *piVar1;
+    //   float fVar2;
+    //   int iVar3;
+    //   RGE_Static_Object *pRVar4;
+    //   void *pvVar5;
+    //   int iVar6;
+    //   int iVar7;
+    //   float10 fVar8;
+    //   float fVar9;
+    //   float fVar10;
+    //   float fVar11;
+    //   float evasiveMoveDistance;
+    //   
+    //   if (param_1->mType != 0x200) {
+    //     iVar3 = UnitAIModule::processNotify((UnitAIModule *)this,param_1,param_2);
+    //     return iVar3;
+    //   }
+    //   if (((*(int *)&this->field_0x30 != 600) ||
+    //       (pRVar4 = RGE_Game_World::object
+    //                           (*(RGE_Game_World **)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x3c),
+    //                            *(int *)&this->field_0x34), pRVar4 == (RGE_Static_Object *)0x0)) ||
+    //      (fVar8 = (float10)(**(code **)(pRVar4->_padding_ + 0xf4))(), fVar8 == (float10)0.0)) {
+    //     return 2;
+    //   }
+    //   iVar3 = *(int *)&this->field_0x40;
+    //   iVar7 = *(int *)this;
+    //   (**(code **)(iVar7 + 0x10))
+    //             (*(undefined4 *)(*(int *)&this->field_0x4 + 4),700,*(undefined4 *)&this->field_0x34,
+    //              0xffffffff,*(undefined4 *)&this->field_0x3c,iVar3,*(undefined4 *)&this->field_0x44,
+    //              *(undefined4 *)&this->field_0x48,0,1,*(undefined4 *)&this->field_0x2c);
+    //   piVar1 = *(int **)&this->field_0x4;
+    //   fVar8 = (float10)(**(code **)(*piVar1 + 0x100))();
+    //   fVar9 = (float)fVar8;
+    //   fVar8 = (float10)(**(code **)(*piVar1 + 0xfc))();
+    //   fVar9 = (float)(fVar8 * (float10)fVar9 * (float10)3.0);
+    //   fVar11 = pRVar4->world_x - *(float *)(*(int *)&this->field_0x4 + 0x38);
+    //   fVar10 = pRVar4->world_y - *(float *)(*(int *)&this->field_0x4 + 0x3c);
+    //   if ((0 < *(int *)&this->field_0x64) && (iVar6 = 0, iVar7 = iVar3, 0 < *(int *)&this->field_0x64))
+    //   {
+    //     do {
+    //       if (*(int *)&this->field_0x6c + -1 < iVar6) {
+    //         pvVar5 = operator_new(iVar6 * 4 + 4);
+    //         if (pvVar5 != (void *)0x0) {
+    //           iVar3 = 0;
+    //           if (0 < *(int *)&this->field_0x6c) {
+    //             do {
+    //               if (iVar6 + 1 <= iVar3) break;
+    //               iVar3 = iVar3 + 1;
+    //               *(undefined4 *)((int)pvVar5 + iVar3 * 4 + -4) =
+    //                    *(undefined4 *)(*(int *)&this->field_0x60 + -4 + iVar3 * 4);
+    //             } while (iVar3 < *(int *)&this->field_0x6c);
+    //           }
+    //           operator_delete(*(void **)&this->field_0x60);
+    //           *(void **)&this->field_0x60 = pvVar5;
+    //           *(int *)&this->field_0x6c = iVar6 + 1;
+    //         }
+    //       }
+    //       if (*(int *)(*(int *)&this->field_0x60 + iVar6 * 4) != *(int *)&this->field_0x34) {
+    //         if (*(int *)&this->field_0x6c + -1 < iVar6) {
+    //           pvVar5 = operator_new(iVar6 * 4 + 4);
+    //           if (pvVar5 != (void *)0x0) {
+    //             iVar3 = 0;
+    //             if (0 < *(int *)&this->field_0x6c) {
+    //               do {
+    //                 if (iVar6 + 1 <= iVar3) break;
+    //                 iVar3 = iVar3 + 1;
+    //                 *(undefined4 *)((int)pvVar5 + iVar3 * 4 + -4) =
+    //                      *(undefined4 *)(*(int *)&this->field_0x60 + -4 + iVar3 * 4);
+    //               } while (iVar3 < *(int *)&this->field_0x6c);
+    //             }
+    //             operator_delete(*(void **)&this->field_0x60);
+    //             *(void **)&this->field_0x60 = pvVar5;
+    //             *(int *)&this->field_0x6c = iVar6 + 1;
+    //           }
+    //         }
+    //         pRVar4 = RGE_Game_World::object
+    //                            (*(RGE_Game_World **)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x3c),
+    //                             *(int *)(*(int *)&this->field_0x60 + iVar6 * 4));
+    //         if (pRVar4 != (RGE_Static_Object *)0x0) {
+    //           fVar11 = (pRVar4->world_x - *(float *)(*(int *)&this->field_0x4 + 0x38)) + fVar11;
+    //           fVar10 = (pRVar4->world_y - *(float *)(*(int *)&this->field_0x4 + 0x3c)) + fVar10;
+    //         }
+    //       }
+    //       iVar6 = iVar6 + 1;
+    //     } while (iVar6 < *(int *)&this->field_0x64);
+    //   }
+    //   iVar3 = *(int *)&this->field_0x4;
+    //   fVar2 = SQRT(fVar10 * fVar10 + fVar11 * fVar11);
+    //   (**(code **)(iVar7 + 0x9c))
+    //             (-((fVar11 / fVar2) * fVar9) + *(float *)(iVar3 + 0x38),
+    //              -((fVar10 / fVar2) * fVar9) + *(float *)(iVar3 + 0x3c),*(undefined4 *)(iVar3 + 0x40),1)
+    //   ;
+    //   return 3;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00504B60
+undefined TribeCivilianUnitAIModule(TribeCivilianUnitAIModule* this_, RGE_Static_Object* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TribeCivilianUnitAIModule::TribeCivilianUnitAIModule(class RGE_Static_Object
+    //    *,int) */
+    // 
+    // TribeCivilianUnitAIModule * __thiscall
+    // TribeCivilianUnitAIModule::TribeCivilianUnitAIModule
+    //           (TribeCivilianUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
+    // 
+    // {
+    //   undefined4 *puVar1;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_00560c68;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   UnitAIModule::UnitAIModule((UnitAIModule *)this,param_1,param_2);
+    //   local_4 = 0;
+    //   *(undefined ***)this = &_vftable_;
+    //   *(undefined4 *)&this->field_0x128 = 0xb;
+    //   puVar1 = (undefined4 *)operator_new(0x2c);
+    //   *(undefined4 **)&this->field_0x124 = puVar1;
+    //   if (puVar1 != (undefined4 *)0x0) {
+    //     *puVar1 = 3;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 4) = 7;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 8) = 8;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0xc) = 9;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x10) = 10;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x14) = 0xf;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x18) = 0x11;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x1c) = 0x12;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x20) = 0x20;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x24) = 0x21;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x28) = 0x1b;
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00504C90
+int TribeCivilianUnitAIModule::importantWhenDead(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall TribeCivilianUnitAIModule::importantWhenDead(int) */
+    // 
+    // int __thiscall
+    // TribeCivilianUnitAIModule::importantWhenDead(TribeCivilianUnitAIModule *this,int param_1)
+    // 
+    // {
+    //   if ((((param_1 != 7) && (param_1 != 9)) && (param_1 != 10)) &&
+    //      (((param_1 != 0xf && (param_1 != 8)) && (param_1 != 0x20)))) {
+    //     return 0;
+    //   }
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00504CC0
+int TribeCivilianUnitAIModule::attackObject(int param_1, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall TribeCivilianUnitAIModule::attackObject(int,int) */
+    // 
+    // int __thiscall
+    // TribeCivilianUnitAIModule::attackObject(TribeCivilianUnitAIModule *this,int param_1,int param_2)
+    // 
+    // {
+    //   short sVar1;
+    //   RGE_Static_Object *pRVar2;
+    //   int iVar3;
+    //   
+    //   pRVar2 = RGE_Game_World::object
+    //                      (*(RGE_Game_World **)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x3c),param_1)
+    //   ;
+    //   if (pRVar2 == (RGE_Static_Object *)0x0) {
+    //     return 0;
+    //   }
+    //   sVar1 = pRVar2->master_obj->object_group;
+    //   if (((sVar1 != 9) && (sVar1 != 10)) && (sVar1 != 0xf)) {
+    //     iVar3 = UnitAIModule::attackObject((UnitAIModule *)this,param_1,param_2);
+    //     return iVar3;
+    //   }
+    //   iVar3 = (**(code **)(*(int *)this + 100))(param_1,param_2);
+    //   return iVar3;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00504D20
+int TribeCivilianUnitAIModule::canAttackUnit(RGE_Static_Object* param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall TribeCivilianUnitAIModule::canAttackUnit(class RGE_Static_Object
+    //    *) */
+    // 
+    // int __thiscall
+    // TribeCivilianUnitAIModule::canAttackUnit(TribeCivilianUnitAIModule *this,RGE_Static_Object *param_1)
+    // 
+    // {
+    //   if (param_1 == (RGE_Static_Object *)0x0) {
+    //     return (int)param_1;
+    //   }
+    //   return (uint)(param_1->master_obj->object_group != 1);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00504D40
+int TribeCivilianUnitAIModule::canAttackUnitAtNeutrality(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall TribeCivilianUnitAIModule::canAttackUnitAtNeutrality(int) */
+    // 
+    // int __thiscall
+    // TribeCivilianUnitAIModule::canAttackUnitAtNeutrality(TribeCivilianUnitAIModule *this,int param_1)
+    // 
+    // {
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00504D50
+int TribeCivilianUnitAIModule::retryableOrder(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall TribeCivilianUnitAIModule::retryableOrder(int) */
+    // 
+    // int __thiscall
+    // TribeCivilianUnitAIModule::retryableOrder(TribeCivilianUnitAIModule *this,int param_1)
+    // 
+    // {
+    //   if (((param_1 != 0x2c1) && (param_1 != 0x2c5)) && (param_1 != 0x2c9)) {
+    //     return 0;
+    //   }
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00504D80
+int TribeCivilianUnitAIModule::convertToLOSResourceType(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall TribeCivilianUnitAIModule::convertToLOSResourceType(int) */
+    // 
+    // int __thiscall
+    // TribeCivilianUnitAIModule::convertToLOSResourceType(TribeCivilianUnitAIModule *this,int param_1)
+    // 
+    // {
+    //   switch(param_1) {
+    //   case 5:
+    //   case 0x1f:
+    //   case 0x21:
+    //     return 2;
+    //   default:
+    //     return -1;
+    //   case 7:
+    //     return 1;
+    //   case 8:
+    //     return 3;
+    //   case 0xf:
+    //     return 0;
+    //   case 0x20:
+    //     return 4;
+    //   }
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00504DC6
+undefined FUN_00504dc6() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Removing unreachable block (ram,0x00504ef5) */
+    // 
+    // int FUN_00504dc6(void)
+    // 
+    // {
+    //   code *pcVar1;
+    //   char cVar2;
+    //   RGE_Static_Object *pRVar3;
+    //   int iVar4;
+    //   int iVar5;
+    //   int *piVar6;
+    //   int iVar7;
+    //   long lVar8;
+    //   int iVar9;
+    //   UnitAIModule *in_ECX;
+    //   int *in_EDX;
+    //   int unaff_EBX;
+    //   int unaff_EBP;
+    //   ulong unaff_ESI;
+    //   float10 fVar10;
+    //   float fVar11;
+    //   int iStack00000034;
+    //   UnitAIModule *pUStack0000003c;
+    //   NotifyEvent *in_stack_00000044;
+    //   ulong in_stack_00000048;
+    //   
+    //   *(char *)(unaff_EBX + -0x4cffafb3) =
+    //        *(char *)(unaff_EBX + -0x4cffafb3) + (char)((uint)in_ECX >> 8);
+    //   cVar2 = (char)((uint)unaff_EBX >> 8);
+    //   cRam3e00a09a = cRam3e00a09a + cVar2;
+    //   cRam5b00a09a = cRam5b00a09a + cVar2;
+    //   iStack00000034 = unaff_EBP + -4;
+    //   cRam9b00504d = cRam9b00504d + 'M';
+    //   *in_EDX = *in_EDX + -0x64ffafb3;
+    //   pUStack0000003c = in_ECX;
+    //   switch(in_stack_00000044->mType) {
+    //   case 500:
+    //     goto switchD_00504e34_caseD_1f4;
+    //   default:
+    //     iVar9 = UnitAIModule::processNotify(in_ECX,in_stack_00000044,in_stack_00000048);
+    //     return iVar9;
+    //   case 0x1f9:
+    //     if (in_ECX->currentActionValue != in_stack_00000044->p1) {
+    //       return 2;
+    //     }
+    //     UnitAIModule::removeCurrentTarget(in_ECX);
+    //     if (actionFile != (_iobuf *)0x0) {
+    //       fprintf();
+    //       iVar9 = in_ECX->_padding_;
+    //       (**(code **)(iVar9 + 0x58))();
+    //       (**(code **)(iVar9 + 0x1c))();
+    //       return 2;
+    //     }
+    //     break;
+    //   case 0x1fa:
+    //     if (in_ECX->currentActionValue != in_stack_00000044->p1) {
+    //       return 2;
+    //     }
+    //     UnitAIModule::removeCurrentTarget(in_ECX);
+    //     if (actionFile != (_iobuf *)0x0) {
+    //       fprintf();
+    //       iVar9 = in_ECX->_padding_;
+    //       (**(code **)(iVar9 + 0x58))();
+    //       (**(code **)(iVar9 + 0x1c))();
+    //       return 2;
+    //     }
+    //     break;
+    //   case 0x1fb:
+    //   case 0x202:
+    //     iVar9 = in_ECX->currentActionValue;
+    //     if (iVar9 == 0x265) {
+    //       if ((in_ECX->currentTargetTypeValue == -1) && (in_ECX->lastTargetTypeValue == -1)) {
+    //         UnitAIModule::removeCurrentTarget(in_ECX);
+    //         if (actionFile != (_iobuf *)0x0) {
+    //           fprintf();
+    //         }
+    //         iVar9 = in_ECX->_padding_;
+    //         (**(code **)(iVar9 + 0x58))();
+    //         (**(code **)(iVar9 + 0x1c))();
+    //         return 2;
+    //       }
+    //       iVar9 = in_ECX->_padding_;
+    //       iVar4 = (**(code **)(iVar9 + 0xc0))();
+    //       if (iVar4 == -1) {
+    //         iVar4 = (**(code **)(iVar9 + 0x40))();
+    //       }
+    //       else {
+    //         iVar4 = (**(code **)(iVar9 + 0x44))();
+    //       }
+    //       if (iVar4 == -1) {
+    //         iVar4 = RGE_Player::computerPlayer(in_ECX->objectValue->owner);
+    //         if (iVar4 == 1) {
+    //           UnitAIModule::removeCurrentTarget(in_ECX);
+    //           goto joined_r0x0050570c;
+    //         }
+    //       }
+    //       else {
+    //         iVar4 = (**(code **)(iVar9 + 100))();
+    //         if (iVar4 == 1) {
+    //           return 3;
+    //         }
+    //         UnitAIModule::removeCurrentTarget(in_ECX);
+    //         if (actionFile != (_iobuf *)0x0) {
+    //           fprintf();
+    //         }
+    //         (**(code **)(iVar9 + 0x58))();
+    // LAB_00505742:
+    //         (**(code **)(iVar9 + 0x1c))();
+    //       }
+    //     }
+    //     else if (iVar9 == 0x261) {
+    //       if ((in_ECX->currentTargetTypeValue == -1) && (in_ECX->lastTargetTypeValue == -1)) {
+    //         UnitAIModule::removeCurrentTarget(in_ECX);
+    //         if (actionFile != (_iobuf *)0x0) {
+    //           fprintf();
+    //         }
+    //         iVar9 = in_ECX->_padding_;
+    //         (**(code **)(iVar9 + 0x58))();
+    //         (**(code **)(iVar9 + 0x1c))();
+    //         return 2;
+    //       }
+    //       iVar9 = in_ECX->_padding_;
+    //       iVar4 = (**(code **)(iVar9 + 0xc0))();
+    //       if (iVar4 == -1) {
+    //         iVar4 = (**(code **)(iVar9 + 0x40))();
+    //       }
+    //       else {
+    //         iVar4 = (**(code **)(iVar9 + 0x44))();
+    //       }
+    //       if (iVar4 != -1) {
+    //         iVar4 = (**(code **)(iVar9 + 0x68))();
+    //         if (iVar4 == 1) {
+    //           return 3;
+    //         }
+    //         UnitAIModule::removeCurrentTarget(in_ECX);
+    // joined_r0x0050570c:
+    //         if (actionFile != (_iobuf *)0x0) {
+    //           fprintf();
+    //         }
+    //         (**(code **)(iVar9 + 0x58))();
+    //         goto LAB_00505742;
+    //       }
+    //       iVar4 = RGE_Player::computerPlayer(in_ECX->objectValue->owner);
+    //       if (iVar4 == 1) {
+    //         UnitAIModule::removeCurrentTarget(in_ECX);
+    //         if (actionFile == (_iobuf *)0x0) {
+    // LAB_005056e2:
+    //           (**(code **)(iVar9 + 0x58))();
+    //         }
+    //         else {
+    //           fprintf();
+    //           (**(code **)(iVar9 + 0x58))();
+    //         }
+    //         goto LAB_00505742;
+    //       }
+    //       if (in_stack_00000044->p2 == 0x32) {
+    //         if (in_ECX->objectValue->world_x <= 5.0) {
+    //           fVar11 = -2.5;
+    //         }
+    //         else {
+    //           fVar11 = 2.5;
+    //         }
+    //         pUStack0000003c = (UnitAIModule *)(in_ECX->objectValue->world_x - fVar11);
+    //         (**(code **)(iVar9 + 0x9c))();
+    //       }
+    //     }
+    //     else if (iVar9 == 0x25a) {
+    //       iVar9 = in_ECX->_padding_;
+    //       pcVar1 = *(code **)(iVar9 + 0x40);
+    //       iVar4 = (*pcVar1)();
+    //       if (((iVar4 == -1) && (iVar4 = (*pcVar1)(), iVar4 == -1)) ||
+    //          (iVar4 = (**(code **)(in_ECX->objectValue->_padding_ + 0x194))(), iVar4 != 1)) {
+    //         pRVar3 = UnitAIModule::lookupObject(in_ECX,in_ECX->currentTargetValue);
+    //         if ((pRVar3 == (RGE_Static_Object *)0x0) ||
+    //            (fVar11 = RGE_Static_Object::distance_to_object(in_ECX->objectValue,pRVar3), 1.0 < fVar11
+    //            )) {
+    //           (**(code **)(iVar9 + 0x90))();
+    //         }
+    //       }
+    //       else {
+    //         iVar9 = (**(code **)(iVar9 + 0x78))();
+    //         if (iVar9 == 1) {
+    //           return 3;
+    //         }
+    //       }
+    //     }
+    //     else if (iVar9 == 0x25d) {
+    //       iVar9 = in_ECX->_padding_;
+    //       iVar4 = (**(code **)(iVar9 + 0x48))();
+    //       if (iVar4 == 1) {
+    //         UnitAIModule::addToWaypointQueue(in_ECX,(int)pUStack0000003c,in_stack_00000048);
+    //         iVar4 = (**(code **)(iVar9 + 0x80))();
+    //         if (iVar4 != 0) {
+    //           return 3;
+    //         }
+    //         UnitAIModule::removeCurrentTarget(in_ECX);
+    //         if (actionFile != (_iobuf *)0x0) {
+    //           fprintf();
+    //         }
+    //         goto LAB_005056e2;
+    //       }
+    //       UnitAIModule::removeCurrentTarget(in_ECX);
+    //       goto joined_r0x0050570c;
+    //     }
+    //     if (in_stack_00000044->mType == 0x202) {
+    //       return 2;
+    //     }
+    //     UnitAIModule::removeCurrentTarget(in_ECX);
+    //     if (actionFile != (_iobuf *)0x0) {
+    //       fprintf();
+    //     }
+    //     break;
+    //   case 0x20f:
+    //     iVar9 = RGE_Game_World::difficultyLevel(in_ECX->objectValue->owner->world);
+    //     if (2 < iVar9) {
+    //       return 2;
+    //     }
+    // switchD_00504e34_caseD_1f4:
+    //     if (in_stack_00000044->p2 < 1) {
+    //       (**(code **)(in_ECX->objectValue->owner->_padding_ + 0xe8))();
+    //       UnitAIModule::purgeNotifyQueue(in_ECX,unaff_ESI);
+    //       return 4;
+    //     }
+    //     pRVar3 = UnitAIModule::lookupObject(in_ECX,in_stack_00000044->caller);
+    //     pUStack0000003c = (UnitAIModule *)UnitAIModule::lookupObject(in_ECX,in_ECX->currentTargetValue);
+    //     if (pRVar3 == (RGE_Static_Object *)0x0) {
+    //       return 2;
+    //     }
+    //     iVar9 = RGE_Player::computerPlayer(in_ECX->objectValue->owner);
+    //     if (iVar9 == 1) {
+    //       if ((pRVar3->owner->id == 0) && (pRVar3->id == in_ECX->currentTargetValue)) goto LAB_00504f1d;
+    //     }
+    //     else if ((in_ECX->attackingUnitsValue).numberValue != 0) goto LAB_00504f1d;
+    //     (**(code **)(in_ECX->objectValue->owner->_padding_ + 0xe8))();
+    // LAB_00504f1d:
+    //     iVar9 = (in_ECX->attackingUnitsValue).numberValue;
+    //     iVar4 = 0;
+    //     if (0 < iVar9) {
+    //       do {
+    //         if ((in_ECX->attackingUnitsValue).maximumSizeValue <= iVar4) break;
+    //         if ((in_ECX->attackingUnitsValue).value[iVar4] == in_stack_00000044->caller)
+    //         goto LAB_00504f5e;
+    //         iVar4 = iVar4 + 1;
+    //       } while (iVar4 < iVar9);
+    //     }
+    //     iVar9 = RGE_Player::computerPlayer(in_ECX->objectValue->owner);
+    //     if ((iVar9 == 0) && (in_ECX->currentTargetValue != in_stack_00000044->caller)) {
+    //       UnitAIModule::askForHelp(in_ECX,in_stack_00000044->caller);
+    //     }
+    // LAB_00504f5e:
+    //     iVar9 = (in_ECX->attackingUnitsValue).numberValue;
+    //     iVar4 = in_stack_00000044->caller;
+    //     iVar5 = 0;
+    //     if (0 < iVar9) {
+    //       do {
+    //         if ((in_ECX->attackingUnitsValue).maximumSizeValue <= iVar5) break;
+    //         if ((in_ECX->attackingUnitsValue).value[iVar5] == iVar4) goto LAB_00504fe4;
+    //         iVar5 = iVar5 + 1;
+    //       } while (iVar5 < iVar9);
+    //     }
+    //     if ((in_ECX->attackingUnitsValue).maximumSizeValue + -1 < iVar9) {
+    //       iVar9 = iVar9 + 1;
+    //       piVar6 = (int *)operator_new(iVar9 * 4);
+    //       if (piVar6 != (int *)0x0) {
+    //         iVar5 = 0;
+    //         if (0 < (in_ECX->attackingUnitsValue).maximumSizeValue) {
+    //           do {
+    //             if (iVar9 <= iVar5) break;
+    //             iVar7 = iVar5 + 1;
+    //             piVar6[iVar5] = (in_ECX->attackingUnitsValue).value[iVar5];
+    //             iVar5 = iVar7;
+    //           } while (iVar7 < (in_ECX->attackingUnitsValue).maximumSizeValue);
+    //         }
+    //         operator_delete((in_ECX->attackingUnitsValue).value);
+    //         (in_ECX->attackingUnitsValue).value = piVar6;
+    //         (in_ECX->attackingUnitsValue).maximumSizeValue = iVar9;
+    //       }
+    //     }
+    //     (in_ECX->attackingUnitsValue).value[(in_ECX->attackingUnitsValue).numberValue] = iVar4;
+    //     (in_ECX->attackingUnitsValue).numberValue = (in_ECX->attackingUnitsValue).numberValue + 1;
+    // LAB_00504fe4:
+    //     (**(code **)(in_ECX->objectValue->_padding_ + 0xec))();
+    //     fVar10 = (float10)(**(code **)(in_ECX->objectValue->_padding_ + 0xf4))();
+    //     cVar2 = (**(code **)(in_ECX->objectValue->_padding_ + 0x134))();
+    //     iVar9 = in_ECX->currentOrderValue;
+    //     if ((iVar9 == 0x2c6) && (0.0 < (float)fVar10)) {
+    //       return 2;
+    //     }
+    //     if (iVar9 == 700) {
+    //       return 2;
+    //     }
+    //     if ((((iVar9 == 0x2c9) && (cVar2 == '\f')) && (unaff_EBX != 0)) &&
+    //        ((*(short *)(*(int *)(unaff_EBX + 8) + 0x14) == 10 &&
+    //         (*(short *)(in_stack_00000044->p1 + 0x4a) == 0)))) {
+    //       return 2;
+    //     }
+    //     if (iVar9 == 0x2ce) {
+    //       return 2;
+    //     }
+    //     if (*(short *)(in_stack_00000044->p1 + 0x4a) != 0) {
+    //       if ((in_ECX->currentActionValue == 0x262) && ((float)fVar10 != 0.0)) {
+    //         return 3;
+    //       }
+    //       iVar9 = in_ECX->_padding_;
+    //       (**(code **)(iVar9 + 0x10))(in_ECX->objectValue->id);
+    //       if (actionFile != (_iobuf *)0x0) {
+    //         if (in_ECX->objectValue == (RGE_Static_Object *)0x0) {
+    //           lVar8 = -1;
+    //         }
+    //         else {
+    //           lVar8 = in_ECX->objectValue->id;
+    //         }
+    //         fprintf(actionFile,s___d_call_stopObject__s__d_,lVar8,s_C__msdev_work_age1_x1_taiuaimd_c,
+    //                 0x39a);
+    //       }
+    //       (**(code **)(iVar9 + 0x58))(1);
+    //       (**(code **)(iVar9 + 0xa4))(1);
+    //       return 3;
+    //     }
+    //     if (iVar9 != -1) {
+    //       iVar9 = in_ECX->_padding_;
+    //       (**(code **)(iVar9 + 0x10))(in_ECX->objectValue->id);
+    //       in_ECX->currentOrderValue = 700;
+    //       in_ECX->currentOrderPriorityValue = 100;
+    //       (**(code **)(iVar9 + 0x5c))(in_stack_00000044->caller,1);
+    //       in_ECX->stopAfterTargetKilledValue = '\x01';
+    //       return 3;
+    //     }
+    //     (**(code **)(in_ECX->_padding_ + 0x5c))();
+    //     return 3;
+    //   }
+    //   iVar9 = in_ECX->_padding_;
+    //   (**(code **)(iVar9 + 0x58))();
+    //   (**(code **)(iVar9 + 0x1c))();
+    //   return 2;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00504E10
+int TribeCivilianUnitAIModule::processNotify(NotifyEvent* param_1, ulong param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: tileX */
+    // /* WARNING: Removing unreachable block (ram,0x00504ef5) */
+    // /* protected: virtual int __thiscall TribeCivilianUnitAIModule::processNotify(struct NotifyEvent
+    //    *,unsigned long) */
+    // 
+    // int __thiscall
+    // TribeCivilianUnitAIModule::processNotify
+    //           (TribeCivilianUnitAIModule *this,NotifyEvent *param_1,ulong param_2)
+    // 
+    // {
+    //   code *pcVar1;
+    //   char cVar2;
+    //   RGE_Static_Object *pRVar3;
+    //   int iVar4;
+    //   void *pvVar5;
+    //   undefined4 uVar6;
+    //   int iVar7;
+    //   int iVar8;
+    //   int unaff_EBX;
+    //   ulong unaff_ESI;
+    //   float10 fVar9;
+    //   float fVar10;
+    //   int unaff_retaddr;
+    //   undefined4 uVar11;
+    //   int tileX;
+    //   TribeCivilianUnitAIModule *local_4;
+    //   
+    //   local_4 = this;
+    //   switch(param_1->mType) {
+    //   case 500:
+    //     goto switchD_00504e34_caseD_1f4;
+    //   default:
+    //     iVar8 = UnitAIModule::processNotify((UnitAIModule *)this,param_1,param_2);
+    //     return iVar8;
+    //   case 0x1f9:
+    //     if (*(int *)&this->field_0x30 != param_1->p1) {
+    //       return 2;
+    //     }
+    //     UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //     if (actionFile != (_iobuf *)0x0) {
+    //       if (*(int *)&this->field_0x4 == 0) {
+    //         uVar6 = 0xffffffff;
+    //       }
+    //       else {
+    //         uVar6 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //       }
+    //       fprintf(actionFile,s___d_call_stopObject__s__d_,uVar6,s_C__msdev_work_age1_x1_taiuaimd_c,0x3b9
+    //              );
+    //       iVar8 = *(int *)this;
+    //       (**(code **)(iVar8 + 0x58))(1);
+    //       (**(code **)(iVar8 + 0x1c))(param_1);
+    //       return 2;
+    //     }
+    //     break;
+    //   case 0x1fa:
+    //     if (*(int *)&this->field_0x30 != param_1->p1) {
+    //       return 2;
+    //     }
+    //     UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //     if (actionFile != (_iobuf *)0x0) {
+    //       if (*(int *)&this->field_0x4 == 0) {
+    //         uVar6 = 0xffffffff;
+    //       }
+    //       else {
+    //         uVar6 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //       }
+    //       fprintf(actionFile,s___d_call_stopObject__s__d_,uVar6,s_C__msdev_work_age1_x1_taiuaimd_c,0x3aa
+    //              );
+    //       iVar8 = *(int *)this;
+    //       (**(code **)(iVar8 + 0x58))(1);
+    //       (**(code **)(iVar8 + 0x1c))(param_1);
+    //       return 2;
+    //     }
+    //     break;
+    //   case 0x1fb:
+    //   case 0x202:
+    //     iVar8 = *(int *)&this->field_0x30;
+    //     if (iVar8 == 0x265) {
+    //       iVar7 = *(int *)&this->field_0x38;
+    //       if ((iVar7 == -1) && (iVar7 = *(int *)&this->field_0x5c, iVar7 == -1)) {
+    //         UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //         if (actionFile != (_iobuf *)0x0) {
+    //           if (*(int *)&this->field_0x4 == 0) {
+    //             uVar6 = 0xffffffff;
+    //           }
+    //           else {
+    //             uVar6 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //           }
+    //           fprintf(actionFile,s___d_call_stopObject__s__d_,uVar6,s_C__msdev_work_age1_x1_taiuaimd_c,
+    //                   0x3d3);
+    //         }
+    //         iVar8 = *(int *)this;
+    //         (**(code **)(iVar8 + 0x58))(1);
+    //         (**(code **)(iVar8 + 0x1c))(unaff_retaddr);
+    //         return 2;
+    //       }
+    //       iVar8 = *(int *)this;
+    //       iVar4 = (**(code **)(iVar8 + 0xc0))(iVar7);
+    //       if (iVar4 == -1) {
+    //         iVar7 = (**(code **)(iVar8 + 0x40))(iVar7,0xffffffff,0xffffffff,0xffffffff,0);
+    //       }
+    //       else {
+    //         iVar7 = (**(code **)(iVar8 + 0x44))(iVar4);
+    //       }
+    //       if (iVar7 == -1) {
+    //         iVar7 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x4 + 0xc));
+    //         if (iVar7 != 1) goto LAB_00505747;
+    //         UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //         if (actionFile != (_iobuf *)0x0) {
+    //           if (*(int *)&this->field_0x4 == 0) {
+    //             uVar6 = 0xffffffff;
+    //             uVar11 = 0x40f;
+    //           }
+    //           else {
+    //             uVar6 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //             uVar11 = 0x40f;
+    //           }
+    // LAB_00505722:
+    //           fprintf(actionFile,s___d_call_stopObject__s__d_,uVar6,s_C__msdev_work_age1_x1_taiuaimd_c,
+    //                   uVar11);
+    //         }
+    // LAB_00505736:
+    //         (**(code **)(iVar8 + 0x58))(1);
+    //       }
+    //       else {
+    //         iVar7 = (**(code **)(iVar8 + 100))(iVar7,1);
+    //         if (iVar7 == 1) {
+    //           return 3;
+    //         }
+    //         UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //         if (actionFile != (_iobuf *)0x0) {
+    //           if (*(int *)&this->field_0x4 == 0) {
+    //             uVar6 = 0xffffffff;
+    //           }
+    //           else {
+    //             uVar6 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //           }
+    //           fprintf(actionFile,s___d_call_stopObject__s__d_,uVar6,s_C__msdev_work_age1_x1_taiuaimd_c,
+    //                   0x3f6);
+    //         }
+    //         (**(code **)(iVar8 + 0x58))(1);
+    //       }
+    // LAB_00505742:
+    //       (**(code **)(iVar8 + 0x1c))(unaff_EBX);
+    //     }
+    //     else if (iVar8 == 0x261) {
+    //       iVar7 = *(int *)&this->field_0x38;
+    //       if ((iVar7 == -1) && (iVar7 = *(int *)&this->field_0x5c, iVar7 == -1)) {
+    //         UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //         if (actionFile != (_iobuf *)0x0) {
+    //           if (*(int *)&this->field_0x4 == 0) {
+    //             uVar6 = 0xffffffff;
+    //           }
+    //           else {
+    //             uVar6 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //           }
+    //           fprintf(actionFile,s___d_call_stopObject__s__d_,uVar6,s_C__msdev_work_age1_x1_taiuaimd_c,
+    //                   0x421);
+    //         }
+    //         iVar8 = *(int *)this;
+    //         (**(code **)(iVar8 + 0x58))(1);
+    //         (**(code **)(iVar8 + 0x1c))(unaff_retaddr);
+    //         return 2;
+    //       }
+    //       iVar8 = *(int *)this;
+    //       iVar4 = (**(code **)(iVar8 + 0xc0))(iVar7);
+    //       if (iVar4 == -1) {
+    //         if (*(int *)(unaff_retaddr + 0x10) == 0x32) {
+    //           uVar11 = 0x32;
+    //           uVar6 = 2;
+    //         }
+    //         else {
+    //           uVar11 = 0xffffffff;
+    //           uVar6 = 0xffffffff;
+    //         }
+    //         iVar7 = (**(code **)(iVar8 + 0x40))(iVar7,0xffffffff,uVar6,uVar11,0);
+    //       }
+    //       else {
+    //         iVar7 = (**(code **)(iVar8 + 0x44))(iVar4,0);
+    //       }
+    //       if (iVar7 != -1) {
+    //         iVar7 = (**(code **)(iVar8 + 0x68))(iVar7,1);
+    //         if (iVar7 == 1) {
+    //           return 3;
+    //         }
+    //         UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //         if (actionFile != (_iobuf *)0x0) {
+    //           if (*(int *)&this->field_0x4 == 0) {
+    //             uVar6 = 0xffffffff;
+    //             uVar11 = 0x446;
+    //           }
+    //           else {
+    //             uVar6 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //             uVar11 = 0x446;
+    //           }
+    //           goto LAB_00505722;
+    //         }
+    //         goto LAB_00505736;
+    //       }
+    //       iVar7 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x4 + 0xc));
+    //       if (iVar7 == 1) {
+    //         UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //         if (actionFile == (_iobuf *)0x0) {
+    // LAB_005056e2:
+    //           (**(code **)(iVar8 + 0x58))(1);
+    //         }
+    //         else {
+    //           if (*(int *)&this->field_0x4 == 0) {
+    //             uVar6 = 0xffffffff;
+    //           }
+    //           else {
+    //             uVar6 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //           }
+    //                     /* language.dll match for 0x453: "Saving game..." */
+    //           fprintf(actionFile,s___d_call_stopObject__s__d_,uVar6,s_C__msdev_work_age1_x1_taiuaimd_c,
+    //                   0x453);
+    //           (**(code **)(iVar8 + 0x58))(1);
+    //         }
+    //         goto LAB_00505742;
+    //       }
+    //       if (param_1->p2 == 0x32) {
+    //         iVar7 = *(int *)&this->field_0x4;
+    //         if (*(float *)(iVar7 + 0x38) <= 5.0) {
+    //           fVar10 = -2.5;
+    //         }
+    //         else {
+    //           fVar10 = 2.5;
+    //         }
+    //         local_4 = (TribeCivilianUnitAIModule *)(*(float *)(iVar7 + 0x38) - fVar10);
+    //         if (*(float *)(iVar7 + 0x3c) <= 5.0) {
+    //           fVar10 = -2.5;
+    //         }
+    //         else {
+    //           fVar10 = 2.5;
+    //         }
+    //         param_2 = (ulong)(*(float *)(iVar7 + 0x3c) - fVar10);
+    //         (**(code **)(iVar8 + 0x9c))(local_4,param_2,*(undefined4 *)(iVar7 + 0x40),1);
+    //       }
+    //     }
+    //     else if (iVar8 == 0x25a) {
+    //       iVar8 = *(int *)this;
+    //       pcVar1 = *(code **)(iVar8 + 0x40);
+    //       iVar7 = (*pcVar1)(*(undefined4 *)&this->field_0x38,3,0,0xffffffff,0);
+    //       if (iVar7 == -1) {
+    //         if (*(int *)&this->field_0x38 == 0x1b) {
+    //           uVar6 = 3;
+    //         }
+    //         else {
+    //           uVar6 = 0x1b;
+    //         }
+    //         iVar7 = (*pcVar1)(uVar6,3,0,0xffffffff,0);
+    //         if (iVar7 != -1) goto LAB_005055d9;
+    //       }
+    //       else {
+    // LAB_005055d9:
+    //         iVar4 = (**(code **)(**(int **)&this->field_0x4 + 0x194))
+    //                           (iVar7,0x3f800000,0,0,0xffffffff,0xffffffff);
+    //         if (iVar4 == 1) {
+    //           iVar8 = (**(code **)(iVar8 + 0x78))(iVar7,1);
+    //           if (iVar8 == 1) {
+    //             return 3;
+    //           }
+    //           goto LAB_00505747;
+    //         }
+    //       }
+    //       pRVar3 = UnitAIModule::lookupObject((UnitAIModule *)this,*(int *)&this->field_0x34);
+    //       if ((pRVar3 == (RGE_Static_Object *)0x0) ||
+    //          (fVar10 = RGE_Static_Object::distance_to_object
+    //                              (*(RGE_Static_Object **)&this->field_0x4,pRVar3), 1.0 < fVar10)) {
+    //         (**(code **)(iVar8 + 0x90))
+    //                   (*(undefined4 *)&this->field_0x3c,*(undefined4 *)&this->field_0x40,
+    //                    *(undefined4 *)&this->field_0x44,0x3f800000,1);
+    //       }
+    //     }
+    //     else if (iVar8 == 0x25d) {
+    //       iVar8 = *(int *)this;
+    //       iVar7 = (**(code **)(iVar8 + 0x48))(&local_4,&param_2,1);
+    //       if (iVar7 == 1) {
+    //         UnitAIModule::addToWaypointQueue((UnitAIModule *)this,(int)local_4,param_2);
+    //         iVar7 = (**(code **)(iVar8 + 0x80))(local_4,param_2,1);
+    //         if (iVar7 != 0) {
+    //           return 3;
+    //         }
+    //         UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //         if (actionFile != (_iobuf *)0x0) {
+    //           if (*(int *)&this->field_0x4 == 0) {
+    //             uVar6 = 0xffffffff;
+    //           }
+    //           else {
+    //             uVar6 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //           }
+    //                     /* language.dll match for 0x4b4: "Waiting" */
+    //           fprintf(actionFile,s___d_call_stopObject__s__d_,uVar6,s_C__msdev_work_age1_x1_taiuaimd_c,
+    //                   0x4b4);
+    //         }
+    //         goto LAB_005056e2;
+    //       }
+    //       UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //       if (actionFile != (_iobuf *)0x0) {
+    //         if (*(int *)&this->field_0x4 == 0) {
+    //           uVar6 = 0xffffffff;
+    //         }
+    //         else {
+    //           uVar6 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //         }
+    //                     /* language.dll match for 0x4c3: "Creating multiplayer game...\\n\\n\\n\\nPlease
+    //                        press ESC if the game is not\\ncreated within 15 seconds.\\n\\nAlso, make
+    //                        sure you are connected to the Internet\\nbefore starting Age of Empires." */
+    //         uVar11 = 0x4c3;
+    //         goto LAB_00505722;
+    //       }
+    //       goto LAB_00505736;
+    //     }
+    // LAB_00505747:
+    //     if (param_1->mType == 0x202) {
+    //       return 2;
+    //     }
+    //     UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //     if (actionFile != (_iobuf *)0x0) {
+    //       if (*(int *)&this->field_0x4 == 0) {
+    //         uVar6 = 0xffffffff;
+    //       }
+    //       else {
+    //         uVar6 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //       }
+    //       fprintf(actionFile,s___d_call_stopObject__s__d_,uVar6,s_C__msdev_work_age1_x1_taiuaimd_c,0x4cc
+    //              );
+    //     }
+    //     break;
+    //   case 0x20f:
+    //     iVar8 = RGE_Game_World::difficultyLevel
+    //                       (*(RGE_Game_World **)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x3c));
+    //     if (2 < iVar8) {
+    //       return 2;
+    //     }
+    // switchD_00504e34_caseD_1f4:
+    //     if (param_1->p2 < 1) {
+    //       uVar6 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //       (**(code **)(**(int **)(*(int *)&this->field_0x4 + 0xc) + 0xe8))
+    //                 (uVar6,uVar6,0x209,param_1->caller,0,0);
+    //       UnitAIModule::purgeNotifyQueue((UnitAIModule *)this,unaff_ESI);
+    //       return 4;
+    //     }
+    //     pRVar3 = UnitAIModule::lookupObject((UnitAIModule *)this,param_1->caller);
+    //     param_2 = (ulong)pRVar3;
+    //     local_4 = (TribeCivilianUnitAIModule *)
+    //               UnitAIModule::lookupObject((UnitAIModule *)this,*(int *)&this->field_0x34);
+    //     if (pRVar3 == (RGE_Static_Object *)0x0) {
+    //       return 2;
+    //     }
+    //     iVar8 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x4 + 0xc));
+    //     if (iVar8 == 1) {
+    //       if ((pRVar3->owner->id == 0) && (pRVar3->id == *(int *)&this->field_0x34)) goto LAB_00504f1d;
+    //     }
+    //     else if (*(int *)&this->field_0x64 != 0) goto LAB_00504f1d;
+    //     uVar6 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //     (**(code **)(**(int **)(*(int *)&this->field_0x4 + 0xc) + 0xe8))
+    //               (uVar6,uVar6,0x201,param_1->caller,0,0);
+    // LAB_00504f1d:
+    //     iVar8 = 0;
+    //     if (0 < *(int *)&this->field_0x64) {
+    //       do {
+    //         if (*(int *)&this->field_0x6c <= iVar8) break;
+    //         if (*(int *)(*(int *)&this->field_0x60 + iVar8 * 4) == param_1->caller) goto LAB_00504f5e;
+    //         iVar8 = iVar8 + 1;
+    //       } while (iVar8 < *(int *)&this->field_0x64);
+    //     }
+    //     iVar8 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x4 + 0xc));
+    //     if ((iVar8 == 0) && (*(int *)&this->field_0x34 != param_1->caller)) {
+    //       UnitAIModule::askForHelp((UnitAIModule *)this,param_1->caller);
+    //     }
+    // LAB_00504f5e:
+    //     iVar8 = *(int *)&this->field_0x64;
+    //     iVar7 = param_1->caller;
+    //     iVar4 = 0;
+    //     if (0 < iVar8) {
+    //       do {
+    //         if (*(int *)&this->field_0x6c <= iVar4) break;
+    //         if (*(int *)(*(int *)&this->field_0x60 + iVar4 * 4) == iVar7) goto LAB_00504fe4;
+    //         iVar4 = iVar4 + 1;
+    //       } while (iVar4 < iVar8);
+    //     }
+    //     if (*(int *)&this->field_0x6c + -1 < iVar8) {
+    //       iVar8 = iVar8 + 1;
+    //       pvVar5 = operator_new(iVar8 * 4);
+    //       if (pvVar5 != (void *)0x0) {
+    //         iVar4 = 0;
+    //         if (0 < *(int *)&this->field_0x6c) {
+    //           do {
+    //             if (iVar8 <= iVar4) break;
+    //             iVar4 = iVar4 + 1;
+    //             *(undefined4 *)((int)pvVar5 + iVar4 * 4 + -4) =
+    //                  *(undefined4 *)(*(int *)&this->field_0x60 + -4 + iVar4 * 4);
+    //           } while (iVar4 < *(int *)&this->field_0x6c);
+    //         }
+    //         operator_delete(*(void **)&this->field_0x60);
+    //         *(void **)&this->field_0x60 = pvVar5;
+    //         *(int *)&this->field_0x6c = iVar8;
+    //       }
+    //     }
+    //     *(int *)(*(int *)&this->field_0x60 + *(int *)&this->field_0x64 * 4) = iVar7;
+    //     *(int *)&this->field_0x64 = *(int *)&this->field_0x64 + 1;
+    // LAB_00504fe4:
+    //     (**(code **)(**(int **)&this->field_0x4 + 0xec))(1);
+    //     fVar9 = (float10)(**(code **)(**(int **)&this->field_0x4 + 0xf4))();
+    //     cVar2 = (**(code **)(**(int **)&this->field_0x4 + 0x134))();
+    //     iVar8 = *(int *)&this->field_0x28;
+    //     if ((iVar8 == 0x2c6) && (0.0 < (float)fVar9)) {
+    //       return 2;
+    //     }
+    //     if (iVar8 == 700) {
+    //       return 2;
+    //     }
+    //     if ((((iVar8 == 0x2c9) && (cVar2 == '\f')) && (unaff_EBX != 0)) &&
+    //        ((*(short *)(*(int *)(unaff_EBX + 8) + 0x14) == 10 && (*(short *)(param_1->p1 + 0x4a) == 0)))
+    //        ) {
+    //       return 2;
+    //     }
+    //     if (iVar8 == 0x2ce) {
+    //       return 2;
+    //     }
+    //     if (*(short *)(param_1->p1 + 0x4a) != 0) {
+    //       if ((*(int *)&this->field_0x30 == 0x262) && ((float)fVar9 != 0.0)) {
+    //         return 3;
+    //       }
+    //       iVar7 = *(int *)this;
+    //       (**(code **)(iVar7 + 0x10))
+    //                 (*(undefined4 *)(*(int *)&this->field_0x4 + 4),iVar8,
+    //                  *(undefined4 *)&this->field_0x34,0xffffffff,*(undefined4 *)&this->field_0x3c,
+    //                  *(undefined4 *)&this->field_0x40,*(undefined4 *)&this->field_0x44,
+    //                  *(undefined4 *)&this->field_0x48,0,0,*(undefined4 *)&this->field_0x2c);
+    //       if (actionFile != (_iobuf *)0x0) {
+    //         if (*(int *)&this->field_0x4 == 0) {
+    //           uVar6 = 0xffffffff;
+    //         }
+    //         else {
+    //           uVar6 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //         }
+    //         fprintf(actionFile,s___d_call_stopObject__s__d_,uVar6,s_C__msdev_work_age1_x1_taiuaimd_c,
+    //                 0x39a);
+    //       }
+    //       (**(code **)(iVar7 + 0x58))(1);
+    //       (**(code **)(iVar7 + 0xa4))(1);
+    //       return 3;
+    //     }
+    //     if (iVar8 != -1) {
+    //       iVar7 = *(int *)this;
+    //       (**(code **)(iVar7 + 0x10))
+    //                 (*(undefined4 *)(*(int *)&this->field_0x4 + 4),iVar8,
+    //                  *(undefined4 *)&this->field_0x34,0xffffffff,*(undefined4 *)&this->field_0x3c,
+    //                  *(undefined4 *)&this->field_0x40,*(undefined4 *)&this->field_0x44,
+    //                  *(undefined4 *)&this->field_0x48,0,0,*(undefined4 *)&this->field_0x2c);
+    //       *(undefined4 *)&this->field_0x28 = 700;
+    //       *(undefined4 *)&this->field_0x2c = 100;
+    //       (**(code **)(iVar7 + 0x5c))(param_1->caller,1);
+    //       this->field_0x130 = 1;
+    //       return 3;
+    //     }
+    //     (**(code **)(*(int *)this + 0x5c))(param_1->caller,1);
+    //     return 3;
+    //   }
+    //   iVar8 = *(int *)this;
+    //   (**(code **)(iVar8 + 0x58))(1);
+    //   (**(code **)(iVar8 + 0x1c))(param_1);
+    //   return 2;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005057BE
+undefined FUN_005057be() {
+    // --- Ghidra decompiler output ---
+    // 
+    // undefined4 FUN_005057be(void)
+    // 
+    // {
+    //   int in_EAX;
+    //   char cVar1;
+    //   int in_ECX;
+    //   int *in_EDX;
+    //   char *unaff_retaddr;
+    //   
+    //   *(char *)in_EDX = (char)*in_EDX + (char)in_EAX;
+    //   unaff_retaddr[0x69005051] = unaff_retaddr[0x69005051] + (char)unaff_retaddr;
+    //   cVar1 = (char)((uint)in_ECX >> 8);
+    //   *(char *)(in_ECX + 0x52) = *(char *)(in_ECX + 0x52) + cVar1;
+    //   *unaff_retaddr = *unaff_retaddr + (char)((uint)unaff_retaddr >> 8);
+    //   *(char *)(in_ECX + 0x5057) = *(char *)(in_ECX + 0x5057) + cVar1;
+    //   *in_EDX = *in_EDX + in_EAX;
+    //   return 5;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00505800
+int TribeCivilianUnitAIModule::processIdle(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual int __thiscall TribeCivilianUnitAIModule::processIdle(int) */
+    // 
+    // int __thiscall TribeCivilianUnitAIModule::processIdle(TribeCivilianUnitAIModule *this,int param_1)
+    // 
+    // {
+    //   return 5;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00505810
+int TribeCivilianUnitAIModule::processMisc() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual int __thiscall TribeCivilianUnitAIModule::processMisc(void) */
+    // 
+    // int __thiscall TribeCivilianUnitAIModule::processMisc(TribeCivilianUnitAIModule *this)
+    // 
+    // {
+    //   return 9;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00505820
+undefined TribePriestUnitAIModule(TribePriestUnitAIModule* this_, RGE_Static_Object* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TribePriestUnitAIModule::TribePriestUnitAIModule(class RGE_Static_Object
+    //    *,int) */
+    // 
+    // TribePriestUnitAIModule * __thiscall
+    // TribePriestUnitAIModule::TribePriestUnitAIModule
+    //           (TribePriestUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
+    // 
+    // {
+    //   undefined4 *puVar1;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_00560c88;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   UnitAIModule::UnitAIModule((UnitAIModule *)this,param_1,param_2);
+    //   local_4 = 0;
+    //   *(undefined ***)this = &_vftable_;
+    //   *(undefined4 *)&this->field_0x128 = 0x11;
+    //   puVar1 = (undefined4 *)operator_new(0x44);
+    //   *(undefined4 **)&this->field_0x124 = puVar1;
+    //   if (puVar1 != (undefined4 *)0x0) {
+    //     *puVar1 = 3;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 4) = 0;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 8) = 4;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0xc) = 0x1a;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x10) = 0x18;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x14) = 6;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x18) = 0x19;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x1c) = 0x11;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x20) = 10;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x24) = 0xc;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x28) = 0x23;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x2c) = 0x17;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x30) = 0x24;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x34) = 0x1c;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x38) = 0x12;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x3c) = 0xd;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x40) = 0x27;
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005059A0
+int TribePriestUnitAIModule::attackObject(int param_1, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall TribePriestUnitAIModule::attackObject(int,int) */
+    // 
+    // int __thiscall
+    // TribePriestUnitAIModule::attackObject(TribePriestUnitAIModule *this,int param_1,int param_2)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   float10 fVar3;
+    //   
+    //   iVar2 = *(int *)this;
+    //   iVar1 = (**(code **)(iVar2 + 0xc4))(param_1);
+    //   if (iVar1 != 0) {
+    //     iVar2 = (**(code **)(iVar2 + 0x6c))(param_1,param_1);
+    //     return iVar2;
+    //   }
+    //   if (*(int *)&this->field_0x28 == -1) {
+    //     iVar1 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x4 + 0xc));
+    //     if (iVar1 != 0) {
+    //       fVar3 = (float10)(**(code **)(**(int **)&this->field_0x4 + 0x10c))(param_1);
+    //       iVar2 = (**(code **)(iVar2 + 0x94))(param_1,(float)fVar3);
+    //       return iVar2;
+    //     }
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00505A10
+int TribePriestUnitAIModule::retryableOrder(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall TribePriestUnitAIModule::retryableOrder(int) */
+    // 
+    // int __thiscall TribePriestUnitAIModule::retryableOrder(TribePriestUnitAIModule *this,int param_1)
+    // 
+    // {
+    //   if ((param_1 != 0x2c0) && (param_1 != 0x2bf)) {
+    //     return 0;
+    //   }
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00505A30
+int TribePriestUnitAIModule::canConvert(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall TribePriestUnitAIModule::canConvert(int) */
+    // 
+    // int __thiscall TribePriestUnitAIModule::canConvert(TribePriestUnitAIModule *this,int param_1)
+    // 
+    // {
+    //   short sVar1;
+    //   short sVar2;
+    //   RGE_Static_Object *pRVar3;
+    //   
+    //   if (100.0 <= *(float *)(*(int *)&this->field_0x4 + 0x44)) {
+    //     pRVar3 = RGE_Game_World::object
+    //                        (*(RGE_Game_World **)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x3c),
+    //                         param_1);
+    //     if (pRVar3 != (RGE_Static_Object *)0x0) {
+    //       sVar1 = pRVar3->master_obj->object_group;
+    //       sVar2 = pRVar3->master_obj->id;
+    //       if ((((((sVar2 != 0x6d) && (sVar1 != 0x1b)) && (sVar2 != 0x9f)) &&
+    //            ((sVar2 != 0x114 && (sVar2 != 0x9e)))) && ((sVar2 != 0xa3 && (sVar1 != 0x1e)))) &&
+    //          (((sVar1 != 0x12 ||
+    //            (0.0 < *(float *)(*(int *)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x50) + 0x6c))) &&
+    //           ((sVar1 != 3 ||
+    //            (0.0 < *(float *)(*(int *)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x50) + 0x70)))))))
+    //       {
+    //         return 1;
+    //       }
+    //     }
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00505AE0
+int TribePriestUnitAIModule::canAttackUnit(RGE_Static_Object* param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall TribePriestUnitAIModule::canAttackUnit(class RGE_Static_Object *)
+    //     */
+    // 
+    // int __thiscall
+    // TribePriestUnitAIModule::canAttackUnit(TribePriestUnitAIModule *this,RGE_Static_Object *param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   if (param_1 != (RGE_Static_Object *)0x0) {
+    //     iVar1 = (**(code **)(*(int *)this + 0xc4))(param_1->id);
+    //     return iVar1;
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00505B00
+int TribePriestUnitAIModule::bestUnitToHeal(int param_1, float* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: allyToHealID */
+    // /* protected: virtual int __thiscall TribePriestUnitAIModule::bestUnitToHeal(int,float *) */
+    // 
+    // int __thiscall
+    // TribePriestUnitAIModule::bestUnitToHeal(TribePriestUnitAIModule *this,int param_1,float *param_2)
+    // 
+    // {
+    //   int *piVar1;
+    //   float fVar2;
+    //   float fVar3;
+    //   int iVar4;
+    //   RGE_Static_Object *pRVar5;
+    //   int iVar6;
+    //   int allyToHealID;
+    //   int maxLimit;
+    //   float allyNeed;
+    //   int i;
+    //   int a;
+    //   int iStack_c;
+    //   int iStack_8;
+    //   
+    //   (**(code **)(*(int *)this + 0x20))();
+    //   iVar4 = -1;
+    //   maxLimit = -1;
+    //   i = 0;
+    //   allyNeed = 2.8026e-45;
+    //   if (*(short *)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x4a) == 0) {
+    //     allyNeed = 5.60519e-45;
+    //   }
+    //   iStack_c = 1;
+    //   if (allyNeed != 0.0) {
+    //     iStack_8 = 0;
+    //     do {
+    //       a = 0;
+    //       if (0 < *(int *)((int)&DAT_0087d7cc + iStack_8)) {
+    //         piVar1 = (int *)((int)&DAT_0087d7e4 + iStack_8);
+    //         do {
+    //           iVar4 = a * 8;
+    //           if ((((((*(int *)(iVar4 + *piVar1) != *(int *)(*(int *)&this->field_0x4 + 4)) &&
+    //                  (pRVar5 = UnitAIModule::lookupObject
+    //                                      ((UnitAIModule *)this,*(int *)(iVar4 + *piVar1)),
+    //                  pRVar5 != (RGE_Static_Object *)0x0)) && (pRVar5->master_obj->object_group != 3)) &&
+    //                (((pRVar5->hp < (float)(int)pRVar5->master_obj->hp && (pRVar5->object_state < 3)) &&
+    //                 ((param_1 != 0 || (*(byte *)(iVar4 + 4 + *piVar1) < 5)))))) &&
+    //               ((*(short *)((*(int **)&this->field_0x4)[3] + 0x4a) != 0 ||
+    //                (*(byte *)(iVar4 + 4 + *piVar1) < 3)))) &&
+    //              (iVar6 = (**(code **)(**(int **)&this->field_0x4 + 0x194))
+    //                                 (*(undefined4 *)(iVar4 + *piVar1),0x3f800000,0,0,0xffffffff,
+    //                                  0xffffffff), iVar6 != 0)) {
+    //             fVar3 = (float)*(byte *)(iVar4 + 4 + *piVar1);
+    //             fVar2 = (float)(int)pRVar5->master_obj->hp - pRVar5->hp / fVar3;
+    //             if (((maxLimit == -1) || (fVar2 < (float)i)) &&
+    //                (maxLimit = pRVar5->id, i = (int)fVar2, param_2 != (float *)0x0)) {
+    //               *param_2 = fVar3;
+    //             }
+    //           }
+    //           a = a + 1;
+    //           iVar4 = maxLimit;
+    //         } while (a < *(int *)((int)&DAT_0087d7cc + iStack_8));
+    //       }
+    //       if (iVar4 != -1) {
+    //         return iVar4;
+    //       }
+    //       iStack_c = iStack_c + 1;
+    //       iStack_8 = iStack_8 + 4;
+    //     } while (iStack_c <= (int)allyNeed);
+    //   }
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00505CC0
+int TribePriestUnitAIModule::bestUnitToConvert(float* param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: targetValue */
+    // /* protected: virtual int __thiscall TribePriestUnitAIModule::bestUnitToConvert(float *) */
+    // 
+    // int __thiscall
+    // TribePriestUnitAIModule::bestUnitToConvert(TribePriestUnitAIModule *this,float *param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   float fVar2;
+    //   float fVar3;
+    //   int iVar4;
+    //   RGE_Static_Object *pRVar5;
+    //   long lVar6;
+    //   float targetValue;
+    //   int i;
+    //   int iStack_8;
+    //   
+    //   (**(code **)(*(int *)this + 0x20))();
+    //   lVar6 = -1;
+    //   i = 0;
+    //   iStack_8 = 0;
+    //   if (0 < DAT_0087d7d8) {
+    //     do {
+    //       iVar1 = iStack_8 * 8;
+    //       iVar4 = (**(code **)(**(int **)(*(int *)&this->field_0x4 + 0xc) + 0x18))
+    //                         (*(undefined1 *)(DAT_0087d7f0 + 5 + iVar1));
+    //       if ((((iVar4 != 0) &&
+    //            (pRVar5 = UnitAIModule::lookupObject((UnitAIModule *)this,*(int *)(DAT_0087d7f0 + iVar1))
+    //            , pRVar5 != (RGE_Static_Object *)0x0)) && (pRVar5->object_state < 3)) &&
+    //          (iVar4 = (**(code **)(*(int *)this + 0xc4))(pRVar5->id), iVar4 != 0)) {
+    //         fVar2 = (float)*(byte *)(DAT_0087d7f0 + 4 + iVar1);
+    //         if (fVar2 < 1.0) {
+    //           fVar2 = 1.0;
+    //         }
+    //         fVar3 = (float)(int)pRVar5->master_obj->hp / fVar2;
+    //         if (((lVar6 == -1) || ((float)i < fVar3)) &&
+    //            (lVar6 = pRVar5->id, i = (int)fVar3, param_1 != (float *)0x0)) {
+    //           *param_1 = fVar2;
+    //         }
+    //       }
+    //       iStack_8 = iStack_8 + 1;
+    //     } while (iStack_8 < DAT_0087d7d8);
+    //   }
+    //   return lVar6;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00505DD0
+int TribePriestUnitAIModule::processNotify(NotifyEvent* param_1, ulong param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual int __thiscall TribePriestUnitAIModule::processNotify(struct NotifyEvent
+    //    *,unsigned long) */
+    // 
+    // int __thiscall
+    // TribePriestUnitAIModule::processNotify
+    //           (TribePriestUnitAIModule *this,NotifyEvent *param_1,ulong param_2)
+    // 
+    // {
+    //   uchar uVar1;
+    //   int iVar2;
+    //   RGE_Static_Object *pRVar3;
+    //   int iVar4;
+    //   undefined4 uVar5;
+    //   
+    //   switch(param_1->mType) {
+    //   case 0x1f9:
+    //   case 0x1fb:
+    //   case 0x202:
+    //     break;
+    //   case 0x1fc:
+    //     pRVar3 = UnitAIModule::lookupObject((UnitAIModule *)this,*(int *)&this->field_0x34);
+    //     if (pRVar3 != (RGE_Static_Object *)0x0) {
+    //       iVar4 = __ftol();
+    //       iVar2 = __ftol();
+    //       uVar1 = UnitAIModule::visibleStatus
+    //                         ((UnitAIModule *)this,
+    //                          *(RGE_Visible_Map **)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x38),
+    //                          iVar2,iVar4);
+    //       if (uVar1 == '\x0f') {
+    //         return 2;
+    //       }
+    //     }
+    //     UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //     if (actionFile != (_iobuf *)0x0) {
+    //       if (*(int *)&this->field_0x4 == 0) {
+    //         uVar5 = 0xffffffff;
+    //       }
+    //       else {
+    //         uVar5 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //       }
+    //       fprintf(actionFile,s___d_call_stopObject__s__d_,uVar5,s_C__msdev_work_age1_x1_taiuaimd_c,0x68f
+    //              );
+    //     }
+    //     iVar4 = *(int *)this;
+    //     (**(code **)(iVar4 + 0x58))(1);
+    //     (**(code **)(iVar4 + 0x1c))(param_1);
+    //   default:
+    //     iVar4 = UnitAIModule::processNotify((UnitAIModule *)this,param_1,param_2);
+    //     return iVar4;
+    //   }
+    //   iVar4 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x4 + 0xc));
+    //   if ((iVar4 == 0) && (*(int *)&this->field_0x30 == 0x25c)) {
+    //     UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //     if (actionFile != (_iobuf *)0x0) {
+    //       if (*(int *)&this->field_0x4 == 0) {
+    //         uVar5 = 0xffffffff;
+    //       }
+    //       else {
+    //         uVar5 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //       }
+    //       fprintf(actionFile,s___d_call_stopObject__s__d_,uVar5,s_C__msdev_work_age1_x1_taiuaimd_c,0x63b
+    //              );
+    //     }
+    //     iVar4 = *(int *)this;
+    //     uVar5 = 1;
+    //   }
+    //   else {
+    //     if (*(int *)&this->field_0x30 == 0x25c) {
+    //       iVar4 = *(int *)this;
+    //       iVar2 = (**(code **)(iVar4 + 0xe4))(0);
+    //       if ((iVar2 != -1) && (iVar4 = (**(code **)(iVar4 + 0x6c))(iVar2,1), iVar4 == 1)) {
+    //         return 3;
+    //       }
+    //     }
+    //     else if (*(int *)&this->field_0x30 == 0x25b) {
+    //       iVar4 = *(int *)this;
+    //       iVar2 = (**(code **)(iVar4 + 0xe0))(0,0);
+    //       if ((iVar2 != -1) && (iVar4 = (**(code **)(iVar4 + 0x70))(iVar2,1), iVar4 == 1)) {
+    //         return 3;
+    //       }
+    //     }
+    //     UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //     if (actionFile != (_iobuf *)0x0) {
+    //       if (*(int *)&this->field_0x4 == 0) {
+    //         uVar5 = 0xffffffff;
+    //       }
+    //       else {
+    //         uVar5 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //       }
+    //       fprintf(actionFile,s___d_call_stopObject__s__d_,uVar5,s_C__msdev_work_age1_x1_taiuaimd_c,0x675
+    //              );
+    //     }
+    //     iVar4 = *(int *)this;
+    //     uVar5 = 0;
+    //   }
+    //   (**(code **)(iVar4 + 0x58))(uVar5);
+    //   (**(code **)(iVar4 + 0x1c))(param_1);
+    //   return 2;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00505FA9
+undefined FUN_00505fa9() {
+    // --- Ghidra decompiler output ---
+    // 
+    // undefined4 FUN_00505fa9(void)
+    // 
+    // {
+    //   RGE_Static_Object *pRVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   RGE_Static_Object *pRVar4;
+    //   char cVar5;
+    //   undefined4 in_ECX;
+    //   UnitAIModule *this;
+    //   char in_DL;
+    //   char cVar6;
+    //   char *unaff_EBX;
+    //   int unaff_ESI;
+    //   float10 fVar7;
+    //   float fVar8;
+    //   float fVar9;
+    //   float fVar10;
+    //   undefined1 auStack_4 [4];
+    //   
+    //   cVar6 = (char)((uint)unaff_EBX >> 8);
+    //   cVar5 = (char)in_ECX + cVar6;
+    //   *unaff_EBX = *unaff_EBX + cVar5;
+    //   this = (UnitAIModule *)CONCAT31((int3)((uint)in_ECX >> 8),cVar5 + cVar6);
+    //   *(char *)(unaff_ESI + 0x505f) = *(char *)(unaff_ESI + 0x505f) + in_DL;
+    //   iVar2 = RGE_Player::computerPlayer(this->objectValue->owner);
+    //   if (iVar2 != 0) {
+    //     iVar3 = UnitAIModule::processIdle(this,1);
+    //     iVar2 = DAT_0087d7d8;
+    //     if (iVar3 == 6) {
+    //       return 6;
+    //     }
+    //     iVar3 = debug_rand(s_C__msdev_work_age1_x1_taiuaimd_c,0x6ac);
+    //     if ((0 < iVar2) && (iVar2 < iVar3 % (iVar2 + 2))) {
+    //       iVar2 = this->_padding_;
+    //       iVar3 = (**(code **)(iVar2 + 0xe0))(1,auStack_4);
+    //       if (iVar3 != -1) {
+    //         (**(code **)(iVar2 + 0x70))(iVar3,0);
+    //         return 6;
+    //       }
+    //     }
+    //     iVar2 = this->_padding_;
+    //     iVar3 = (**(code **)(iVar2 + 0x40))(0xffffffff,2,0xffffffff,0xffffffff,0);
+    //     if (iVar3 != -1) {
+    //       pRVar4 = RGE_Game_World::object(this->objectValue->owner->world,iVar3);
+    //       if (pRVar4 != (RGE_Static_Object *)0x0) {
+    //         pRVar1 = this->objectValue;
+    //         fVar9 = pRVar4->world_x - pRVar1->world_x;
+    //         fVar8 = pRVar4->world_y - pRVar1->world_y;
+    //         fVar10 = SQRT(fVar8 * fVar8 + fVar9 * fVar9);
+    //         fVar7 = (float10)(**(code **)(pRVar1->_padding_ + 0x10c))();
+    //         fVar7 = fVar7 - (float10)fVar10;
+    //         if (fVar7 <= (float10)0.0) {
+    //           return 5;
+    //         }
+    //         pRVar4 = this->objectValue;
+    //         (**(code **)(iVar2 + 0x9c))
+    //                   ((float)(-(((float10)fVar9 / (float10)fVar10) * fVar7) + (float10)pRVar4->world_x)
+    //                    ,(float)(-(((float10)fVar8 / (float10)fVar10) * fVar7) + (float10)pRVar4->world_y
+    //                            ),pRVar4->world_z,1);
+    //         return 6;
+    //       }
+    //     }
+    //   }
+    //   return 5;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00505FD0
+int TribePriestUnitAIModule::processIdle(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: yDiff */
+    // /* protected: virtual int __thiscall TribePriestUnitAIModule::processIdle(int) */
+    // 
+    // int __thiscall TribePriestUnitAIModule::processIdle(TribePriestUnitAIModule *this,int param_1)
+    // 
+    // {
+    //   int *piVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   RGE_Static_Object *pRVar4;
+    //   float10 fVar5;
+    //   float fVar6;
+    //   float fVar7;
+    //   float fVar8;
+    //   float yDiff;
+    //   float xDiff;
+    //   float distanceDiff;
+    //   undefined1 local_4 [4];
+    //   
+    //   iVar2 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x4 + 0xc));
+    //   if (iVar2 != 0) {
+    //     iVar3 = UnitAIModule::processIdle((UnitAIModule *)this,1);
+    //     iVar2 = DAT_0087d7d8;
+    //     if (iVar3 == 6) {
+    //       return 6;
+    //     }
+    //     iVar3 = debug_rand(s_C__msdev_work_age1_x1_taiuaimd_c,0x6ac);
+    //     if ((0 < iVar2) && (iVar2 < iVar3 % (iVar2 + 2))) {
+    //       iVar2 = *(int *)this;
+    //       iVar3 = (**(code **)(iVar2 + 0xe0))(1,local_4);
+    //       if (iVar3 != -1) {
+    //         (**(code **)(iVar2 + 0x70))(iVar3,0);
+    //         return 6;
+    //       }
+    //     }
+    //     iVar2 = *(int *)this;
+    //     iVar3 = (**(code **)(iVar2 + 0x40))(0xffffffff,2,0xffffffff,0xffffffff,0);
+    //     if (iVar3 != -1) {
+    //       pRVar4 = RGE_Game_World::object
+    //                          (*(RGE_Game_World **)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x3c),
+    //                           iVar3);
+    //       if (pRVar4 != (RGE_Static_Object *)0x0) {
+    //         piVar1 = *(int **)&this->field_0x4;
+    //         fVar7 = pRVar4->world_x - (float)piVar1[0xe];
+    //         fVar6 = pRVar4->world_y - (float)piVar1[0xf];
+    //         fVar8 = SQRT(fVar6 * fVar6 + fVar7 * fVar7);
+    //         fVar5 = (float10)(**(code **)(*piVar1 + 0x10c))();
+    //         fVar5 = fVar5 - (float10)fVar8;
+    //         if (fVar5 <= (float10)0.0) {
+    //           return 5;
+    //         }
+    //         iVar3 = *(int *)&this->field_0x4;
+    //         (**(code **)(iVar2 + 0x9c))
+    //                   ((float)(-(((float10)fVar7 / (float10)fVar8) * fVar5) +
+    //                           (float10)*(float *)(iVar3 + 0x38)),
+    //                    (float)(-(((float10)fVar6 / (float10)fVar8) * fVar5) +
+    //                           (float10)*(float *)(iVar3 + 0x3c)),*(undefined4 *)(iVar3 + 0x40),1);
+    //         return 6;
+    //       }
+    //     }
+    //   }
+    //   return 5;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00506140
+int TribePriestUnitAIModule::processMisc() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual int __thiscall TribePriestUnitAIModule::processMisc(void) */
+    // 
+    // int __thiscall TribePriestUnitAIModule::processMisc(TribePriestUnitAIModule *this)
+    // 
+    // {
+    //   uchar uVar1;
+    //   int iVar2;
+    //   RGE_Action *pRVar3;
+    //   int iVar4;
+    //   undefined4 uVar5;
+    //   
+    //   iVar2 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x4 + 0xc));
+    //   if (((iVar2 == 1) && (iVar2 = *(int *)&this->field_0x4, 100.0 <= *(float *)(iVar2 + 0x44))) &&
+    //      ((uVar1 = RGE_Action_List::have_action(*(RGE_Action_List **)(iVar2 + 0x184)), uVar1 != '\x01'
+    //       || (pRVar3 = RGE_Action_List::get_action(*(RGE_Action_List **)(iVar2 + 0x184)),
+    //          pRVar3->state != '\a')))) {
+    //     iVar2 = *(int *)this;
+    //     iVar4 = (**(code **)(iVar2 + 0x30))(1,1,0);
+    //     if ((iVar4 != -1) && (*(int *)&this->field_0x34 != iVar4)) {
+    //       if (*(int *)&this->field_0x28 != -1) {
+    //         (**(code **)(iVar2 + 0x10))
+    //                   (*(undefined4 *)(*(int *)&this->field_0x4 + 4),*(int *)&this->field_0x28,
+    //                    *(int *)&this->field_0x34,0xffffffff,*(undefined4 *)&this->field_0x3c,
+    //                    *(undefined4 *)&this->field_0x40,*(undefined4 *)&this->field_0x44,
+    //                    *(undefined4 *)&this->field_0x48,0,0,*(undefined4 *)&this->field_0x2c);
+    //         if (actionFile != (_iobuf *)0x0) {
+    //           if (*(int *)&this->field_0x4 == 0) {
+    //             uVar5 = 0xffffffff;
+    //           }
+    //           else {
+    //             uVar5 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //           }
+    //           fprintf(actionFile,s___d_call_stopObject__s__d_,uVar5,s_C__msdev_work_age1_x1_taiuaimd_c,
+    //                   0x6f8);
+    //         }
+    //         (**(code **)(iVar2 + 0x58))(1);
+    //       }
+    //       iVar2 = (**(code **)(iVar2 + 0x5c))(iVar4,1);
+    //       if (iVar2 == 1) {
+    //         return 10;
+    //       }
+    //     }
+    //   }
+    //   return 9;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00506240
+undefined TribeTradeShipUnitAIModule(TribeTradeShipUnitAIModule* this_, RGE_Static_Object* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TribeTradeShipUnitAIModule::TribeTradeShipUnitAIModule(class RGE_Static_Object
+    //    *,int) */
+    // 
+    // TribeTradeShipUnitAIModule * __thiscall
+    // TribeTradeShipUnitAIModule::TribeTradeShipUnitAIModule
+    //           (TribeTradeShipUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
+    // 
+    // {
+    //   undefined4 *puVar1;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_00560ca8;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   UnitAIModule::UnitAIModule((UnitAIModule *)this,param_1,param_2);
+    //   local_4 = 0;
+    //   *(undefined ***)this = &_vftable_;
+    //   *(undefined4 *)&this->field_0x128 = 5;
+    //   puVar1 = (undefined4 *)operator_new(0x14);
+    //   *(undefined4 **)&this->field_0x124 = puVar1;
+    //   if (puVar1 != (undefined4 *)0x0) {
+    //     *puVar1 = 3;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 4) = 0x16;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 8) = 0x14;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0xc) = 2;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x10) = 0x15;
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00506320
+int TribeTradeShipUnitAIModule::processNotify(NotifyEvent* param_1, ulong param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual int __thiscall TribeTradeShipUnitAIModule::processNotify(struct NotifyEvent
+    //    *,unsigned long) */
+    // 
+    // int __thiscall
+    // TribeTradeShipUnitAIModule::processNotify
+    //           (TribeTradeShipUnitAIModule *this,NotifyEvent *param_1,ulong param_2)
+    // 
+    // {
+    //   code *pcVar1;
+    //   NotifyEvent *pNVar2;
+    //   int iVar3;
+    //   int iVar4;
+    //   int iVar5;
+    //   void *pvVar6;
+    //   undefined4 uVar7;
+    //   ulong unaff_EDI;
+    //   undefined4 uVar8;
+    //   
+    //   pNVar2 = param_1;
+    //   iVar3 = param_1->mType;
+    //   if (iVar3 != 500) {
+    //     if (iVar3 == 0x202) {
+    //       if (*(int *)&this->field_0x30 == 0x267) {
+    //         iVar3 = *(int *)this;
+    //         pcVar1 = *(code **)(iVar3 + 0x40);
+    //         iVar4 = (*pcVar1)(0xffffffff,0,2,0x2d,0);
+    //         if (iVar4 != -1) {
+    //           iVar4 = (**(code **)(iVar3 + 0x7c))(iVar4,1);
+    //           if (iVar4 == 1) {
+    //             return 6;
+    //           }
+    //         }
+    //         iVar4 = (*pcVar1)(0xffffffff,1,2,0x2d,0);
+    //         if (iVar4 != -1) {
+    //           iVar3 = (**(code **)(iVar3 + 0x7c))(iVar4,1);
+    //           if (iVar3 == 1) {
+    //             return 6;
+    //           }
+    //         }
+    //         goto LAB_00506485;
+    //       }
+    //       if (*(int *)&this->field_0x30 != 0x25d) goto LAB_00506485;
+    //       iVar3 = *(int *)this;
+    //       iVar4 = (**(code **)(iVar3 + 0x48))(&param_1,&param_2,1);
+    //       if (iVar4 == 1) {
+    //         UnitAIModule::addToWaypointQueue((UnitAIModule *)this,(int)param_1,param_2);
+    //         iVar4 = (**(code **)(iVar3 + 0x80))(param_1,param_2,1);
+    //         if (iVar4 != 0) goto LAB_00506485;
+    //         UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //         if (actionFile != (_iobuf *)0x0) {
+    //           if (*(int *)&this->field_0x4 == 0) {
+    //             uVar7 = 0xffffffff;
+    //             uVar8 = 0x79c;
+    //           }
+    //           else {
+    //             uVar7 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //             uVar8 = 0x79c;
+    //           }
+    //           goto LAB_00506464;
+    //         }
+    //       }
+    //       else {
+    //         UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //         if (actionFile != (_iobuf *)0x0) {
+    //           if (*(int *)&this->field_0x4 == 0) {
+    //             uVar7 = 0xffffffff;
+    //           }
+    //           else {
+    //             uVar7 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //           }
+    //           uVar8 = 0x7a8;
+    // LAB_00506464:
+    //           fprintf(actionFile,s___d_call_stopObject__s__d_,uVar7,s_C__msdev_work_age1_x1_taiuaimd_c,
+    //                   uVar8);
+    //         }
+    //       }
+    //       (**(code **)(iVar3 + 0x58))(1);
+    //       (**(code **)(iVar3 + 0x1c))(pNVar2);
+    // LAB_00506485:
+    //       UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //       if (actionFile != (_iobuf *)0x0) {
+    //         if (*(int *)&this->field_0x4 == 0) {
+    //           uVar7 = 0xffffffff;
+    //         }
+    //         else {
+    //           uVar7 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //         }
+    //         fprintf(actionFile,s___d_call_stopObject__s__d_,uVar7,s_C__msdev_work_age1_x1_taiuaimd_c,
+    //                 0x7b0);
+    //       }
+    //       iVar3 = *(int *)this;
+    //       (**(code **)(iVar3 + 0x58))(1);
+    //       (**(code **)(iVar3 + 0x1c))(pNVar2);
+    //       return 2;
+    //     }
+    //     if (iVar3 != 0x20f) {
+    //       iVar3 = UnitAIModule::processNotify((UnitAIModule *)this,param_1,param_2);
+    //       return iVar3;
+    //     }
+    //   }
+    //   if (param_1->p2 < 1) {
+    //     uVar7 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //     (**(code **)(**(int **)(*(int *)&this->field_0x4 + 0xc) + 0xe8))
+    //               (uVar7,uVar7,0x209,param_1->caller,0,0);
+    //     UnitAIModule::purgeNotifyQueue((UnitAIModule *)this,unaff_EDI);
+    //     return 4;
+    //   }
+    //   if (*(int *)&this->field_0x64 != 0) {
+    //     iVar3 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x4 + 0xc));
+    //     if (iVar3 != 1) goto LAB_0050654f;
+    //   }
+    //   uVar7 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //   (**(code **)(**(int **)(*(int *)&this->field_0x4 + 0xc) + 0xe8))
+    //             (uVar7,uVar7,0x201,pNVar2->caller,0,0);
+    // LAB_0050654f:
+    //   iVar3 = 0;
+    //   if (0 < *(int *)&this->field_0x64) {
+    //     do {
+    //       if (*(int *)&this->field_0x6c <= iVar3) break;
+    //       if (*(int *)(*(int *)&this->field_0x60 + iVar3 * 4) == pNVar2->caller) goto LAB_00506592;
+    //       iVar3 = iVar3 + 1;
+    //     } while (iVar3 < *(int *)&this->field_0x64);
+    //   }
+    //   iVar3 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x4 + 0xc));
+    //   if ((iVar3 == 0) && (*(int *)&this->field_0x34 != pNVar2->caller)) {
+    //     UnitAIModule::askForHelp((UnitAIModule *)this,pNVar2->caller);
+    //   }
+    // LAB_00506592:
+    //   iVar3 = *(int *)&this->field_0x64;
+    //   iVar4 = pNVar2->caller;
+    //   iVar5 = 0;
+    //   if (0 < iVar3) {
+    //     do {
+    //       if (*(int *)&this->field_0x6c <= iVar5) break;
+    //       if (*(int *)(*(int *)&this->field_0x60 + iVar5 * 4) == iVar4) goto LAB_00506615;
+    //       iVar5 = iVar5 + 1;
+    //     } while (iVar5 < iVar3);
+    //   }
+    //   if (*(int *)&this->field_0x6c + -1 < iVar3) {
+    //     iVar3 = iVar3 + 1;
+    //     pvVar6 = operator_new(iVar3 * 4);
+    //     if (pvVar6 != (void *)0x0) {
+    //       iVar5 = 0;
+    //       if (0 < *(int *)&this->field_0x6c) {
+    //         do {
+    //           if (iVar3 <= iVar5) break;
+    //           iVar5 = iVar5 + 1;
+    //           *(undefined4 *)((int)pvVar6 + iVar5 * 4 + -4) =
+    //                *(undefined4 *)(*(int *)&this->field_0x60 + -4 + iVar5 * 4);
+    //         } while (iVar5 < *(int *)&this->field_0x6c);
+    //       }
+    //       operator_delete(*(void **)&this->field_0x60);
+    //       *(void **)&this->field_0x60 = pvVar6;
+    //       *(int *)&this->field_0x6c = iVar3;
+    //     }
+    //   }
+    //   *(int *)(*(int *)&this->field_0x60 + *(int *)&this->field_0x64 * 4) = iVar4;
+    //   *(int *)&this->field_0x64 = *(int *)&this->field_0x64 + 1;
+    // LAB_00506615:
+    //   (**(code **)(**(int **)&this->field_0x4 + 0xec))(1);
+    //   iVar3 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x4 + 0xc));
+    //   if ((iVar3 == 0) && (*(int *)&this->field_0x28 != -1)) {
+    //     return 2;
+    //   }
+    //   if (*(int *)&this->field_0x30 != 0x262) {
+    //     iVar3 = *(int *)this;
+    //     (**(code **)(iVar3 + 0x10))
+    //               (*(undefined4 *)(*(int *)&this->field_0x4 + 4),*(undefined4 *)&this->field_0x28,
+    //                *(undefined4 *)&this->field_0x34,0xffffffff,*(undefined4 *)&this->field_0x3c,
+    //                *(undefined4 *)&this->field_0x40,*(undefined4 *)&this->field_0x44,
+    //                *(undefined4 *)&this->field_0x48,0,0,*(undefined4 *)&this->field_0x2c);
+    //     if (actionFile != (_iobuf *)0x0) {
+    //       if (*(int *)&this->field_0x4 == 0) {
+    //         uVar7 = 0xffffffff;
+    //       }
+    //       else {
+    //         uVar7 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //       }
+    //       fprintf(actionFile,s___d_call_stopObject__s__d_,uVar7,s_C__msdev_work_age1_x1_taiuaimd_c,0x761
+    //              );
+    //     }
+    //     (**(code **)(iVar3 + 0x58))(1);
+    //   }
+    //   (**(code **)(*(int *)this + 0xa4))(1);
+    //   return 3;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005066D0
+int TribeTradeShipUnitAIModule::processIdle(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: yDiff */
+    // /* protected: virtual int __thiscall TribeTradeShipUnitAIModule::processIdle(int) */
+    // 
+    // int __thiscall TribeTradeShipUnitAIModule::processIdle(TribeTradeShipUnitAIModule *this,int param_1)
+    // 
+    // {
+    //   float fVar1;
+    //   float fVar2;
+    //   float fVar3;
+    //   int iVar4;
+    //   int iVar5;
+    //   RGE_Static_Object *pRVar6;
+    //   float10 fVar7;
+    //   float yDiff;
+    //   float xDiff;
+    //   
+    //   iVar4 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x4 + 0xc));
+    //   if (iVar4 != 0) {
+    //     iVar4 = *(int *)this;
+    //     iVar5 = (**(code **)(iVar4 + 0x40))(0xffffffff,0xffffffff,0xffffffff,0xffffffff,0);
+    //     if (iVar5 != -1) {
+    //       pRVar6 = RGE_Game_World::object
+    //                          (*(RGE_Game_World **)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x3c),
+    //                           iVar5);
+    //       if (pRVar6 != (RGE_Static_Object *)0x0) {
+    //         fVar7 = (float10)(**(code **)(**(int **)&this->field_0x4 + 0xfc))();
+    //         iVar5 = *(int *)&this->field_0x4;
+    //         fVar3 = pRVar6->world_x - *(float *)(iVar5 + 0x38);
+    //         fVar1 = pRVar6->world_y - *(float *)(iVar5 + 0x3c);
+    //         fVar2 = SQRT(fVar1 * fVar1 + fVar3 * fVar3);
+    //         (**(code **)(iVar4 + 0x9c))
+    //                   (-((fVar3 / fVar2) * (float)(fVar7 * (float10)7.0)) + *(float *)(iVar5 + 0x38),
+    //                    -((fVar1 / fVar2) * (float)(fVar7 * (float10)7.0)) + *(float *)(iVar5 + 0x3c),
+    //                    *(undefined4 *)(iVar5 + 0x40),1);
+    //         return 6;
+    //       }
+    //     }
+    //   }
+    //   return 5;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005067D0
+undefined TribeTransportShipUnitAIModule(TribeTransportShipUnitAIModule* this_, RGE_Static_Object* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TribeTransportShipUnitAIModule::TribeTransportShipUnitAIModule(class
+    //    RGE_Static_Object *,int) */
+    // 
+    // TribeTransportShipUnitAIModule * __thiscall
+    // TribeTransportShipUnitAIModule::TribeTransportShipUnitAIModule
+    //           (TribeTransportShipUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
+    // 
+    // {
+    //   undefined4 *puVar1;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_00560cc8;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   UnitAIModule::UnitAIModule((UnitAIModule *)this,param_1,param_2);
+    //   local_4 = 0;
+    //   *(undefined ***)this = &_vftable_;
+    //   *(undefined4 *)&this->field_0x128 = 5;
+    //   puVar1 = (undefined4 *)operator_new(0x14);
+    //   *(undefined4 **)&this->field_0x124 = puVar1;
+    //   if (puVar1 != (undefined4 *)0x0) {
+    //     *puVar1 = 3;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 4) = 0x16;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 8) = 0x14;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0xc) = 2;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x10) = 0x15;
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005068B0
+int TribeTransportShipUnitAIModule::processNotify(NotifyEvent* param_1, ulong param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual int __thiscall TribeTransportShipUnitAIModule::processNotify(struct
+    //    NotifyEvent *,unsigned long) */
+    // 
+    // int __thiscall
+    // TribeTransportShipUnitAIModule::processNotify
+    //           (TribeTransportShipUnitAIModule *this,NotifyEvent *param_1,ulong param_2)
+    // 
+    // {
+    //   undefined4 uVar1;
+    //   int iVar2;
+    //   uchar uVar3;
+    //   int iVar4;
+    //   int iVar5;
+    //   void *pvVar6;
+    //   RGE_Action *pRVar7;
+    //   ulong unaff_EDI;
+    //   
+    //   if ((param_1->mType != 500) && (param_1->mType != 0x20f)) {
+    //     iVar4 = UnitAIModule::processNotify((UnitAIModule *)this,param_1,param_2);
+    //     return iVar4;
+    //   }
+    //   if (param_1->p2 < 1) {
+    //     uVar1 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //     (**(code **)(**(int **)(*(int *)&this->field_0x4 + 0xc) + 0xe8))
+    //               (uVar1,uVar1,0x209,param_1->caller,0,0);
+    //     UnitAIModule::purgeNotifyQueue((UnitAIModule *)this,unaff_EDI);
+    //     return 4;
+    //   }
+    //   if ((*(int *)&this->field_0x64 == 0) ||
+    //      (iVar4 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x4 + 0xc)),
+    //      iVar4 == 1)) {
+    //     uVar1 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //     (**(code **)(**(int **)(*(int *)&this->field_0x4 + 0xc) + 0xe8))
+    //               (uVar1,uVar1,0x201,param_1->caller,0,0);
+    //   }
+    //   iVar4 = 0;
+    //   if (0 < *(int *)&this->field_0x64) {
+    //     do {
+    //       if (*(int *)&this->field_0x6c <= iVar4) break;
+    //       if (*(int *)(*(int *)&this->field_0x60 + iVar4 * 4) == param_1->caller) goto LAB_00506990;
+    //       iVar4 = iVar4 + 1;
+    //     } while (iVar4 < *(int *)&this->field_0x64);
+    //   }
+    //   iVar4 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x4 + 0xc));
+    //   if ((iVar4 == 0) && (*(int *)&this->field_0x34 != param_1->caller)) {
+    //     UnitAIModule::askForHelp((UnitAIModule *)this,param_1->caller);
+    //   }
+    // LAB_00506990:
+    //   iVar4 = *(int *)&this->field_0x64;
+    //   iVar2 = param_1->caller;
+    //   iVar5 = 0;
+    //   if (0 < iVar4) {
+    //     do {
+    //       if (*(int *)&this->field_0x6c <= iVar5) break;
+    //       if (*(int *)(*(int *)&this->field_0x60 + iVar5 * 4) == iVar2) goto LAB_00506a12;
+    //       iVar5 = iVar5 + 1;
+    //     } while (iVar5 < iVar4);
+    //   }
+    //   if (*(int *)&this->field_0x6c + -1 < iVar4) {
+    //     iVar4 = iVar4 + 1;
+    //     pvVar6 = operator_new(iVar4 * 4);
+    //     if (pvVar6 != (void *)0x0) {
+    //       iVar5 = 0;
+    //       if (0 < *(int *)&this->field_0x6c) {
+    //         do {
+    //           if (iVar4 <= iVar5) break;
+    //           iVar5 = iVar5 + 1;
+    //           *(undefined4 *)((int)pvVar6 + iVar5 * 4 + -4) =
+    //                *(undefined4 *)(*(int *)&this->field_0x60 + -4 + iVar5 * 4);
+    //         } while (iVar5 < *(int *)&this->field_0x6c);
+    //       }
+    //       operator_delete(*(void **)&this->field_0x60);
+    //       *(void **)&this->field_0x60 = pvVar6;
+    //       *(int *)&this->field_0x6c = iVar4;
+    //     }
+    //   }
+    //   *(int *)(*(int *)&this->field_0x60 + *(int *)&this->field_0x64 * 4) = iVar2;
+    //   *(int *)&this->field_0x64 = *(int *)&this->field_0x64 + 1;
+    // LAB_00506a12:
+    //   (**(code **)(**(int **)&this->field_0x4 + 0xec))(1);
+    //   if (*(int *)&this->field_0x28 != -1) {
+    //     return 2;
+    //   }
+    //   iVar4 = *(int *)&this->field_0x4;
+    //   uVar3 = RGE_Action_List::have_action(*(RGE_Action_List **)(iVar4 + 0x184));
+    //   if ((uVar3 != '\0') &&
+    //      (pRVar7 = RGE_Action_List::get_action(*(RGE_Action_List **)(iVar4 + 0x184)),
+    //      pRVar7->state != '\x02')) {
+    //     return 3;
+    //   }
+    //   (**(code **)(*(int *)this + 0xa4))(1);
+    //   return 3;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00506A70
+int TribeTransportShipUnitAIModule::processIdle(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: yDiff */
+    // /* protected: virtual int __thiscall TribeTransportShipUnitAIModule::processIdle(int) */
+    // 
+    // int __thiscall
+    // TribeTransportShipUnitAIModule::processIdle(TribeTransportShipUnitAIModule *this,int param_1)
+    // 
+    // {
+    //   float fVar1;
+    //   float fVar2;
+    //   float fVar3;
+    //   int iVar4;
+    //   int iVar5;
+    //   RGE_Static_Object *pRVar6;
+    //   float10 fVar7;
+    //   float yDiff;
+    //   float xDiff;
+    //   
+    //   iVar4 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x4 + 0xc));
+    //   if (iVar4 != 0) {
+    //     iVar4 = *(int *)this;
+    //     iVar5 = (**(code **)(iVar4 + 0x40))(0xffffffff,0xffffffff,0xffffffff,0xffffffff,0);
+    //     if (iVar5 != -1) {
+    //       pRVar6 = RGE_Game_World::object
+    //                          (*(RGE_Game_World **)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x3c),
+    //                           iVar5);
+    //       if (pRVar6 != (RGE_Static_Object *)0x0) {
+    //         fVar7 = (float10)(**(code **)(**(int **)&this->field_0x4 + 0xfc))();
+    //         iVar5 = *(int *)&this->field_0x4;
+    //         fVar3 = pRVar6->world_x - *(float *)(iVar5 + 0x38);
+    //         fVar1 = pRVar6->world_y - *(float *)(iVar5 + 0x3c);
+    //         fVar2 = SQRT(fVar1 * fVar1 + fVar3 * fVar3);
+    //         (**(code **)(iVar4 + 0x9c))
+    //                   (-((fVar3 / fVar2) * (float)(fVar7 * (float10)7.0)) + *(float *)(iVar5 + 0x38),
+    //                    -((fVar1 / fVar2) * (float)(fVar7 * (float10)7.0)) + *(float *)(iVar5 + 0x3c),
+    //                    *(undefined4 *)(iVar5 + 0x40),1);
+    //         return 6;
+    //       }
+    //     }
+    //   }
+    //   return 5;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00506B70
+undefined TribeFishingShipUnitAIModule(TribeFishingShipUnitAIModule* this_, RGE_Static_Object* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TribeFishingShipUnitAIModule::TribeFishingShipUnitAIModule(class
+    //    RGE_Static_Object *,int) */
+    // 
+    // TribeFishingShipUnitAIModule * __thiscall
+    // TribeFishingShipUnitAIModule::TribeFishingShipUnitAIModule
+    //           (TribeFishingShipUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
+    // 
+    // {
+    //   undefined4 *puVar1;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_00560ce8;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   UnitAIModule::UnitAIModule((UnitAIModule *)this,param_1,param_2);
+    //   local_4 = 0;
+    //   *(undefined ***)this = &_vftable_;
+    //   *(undefined4 *)&this->field_0x128 = 8;
+    //   puVar1 = (undefined4 *)operator_new(0x20);
+    //   *(undefined4 **)&this->field_0x124 = puVar1;
+    //   if (puVar1 != (undefined4 *)0x0) {
+    //     *puVar1 = 3;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 4) = 0x16;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 8) = 0x14;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0xc) = 2;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x10) = 0x15;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x14) = 5;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x18) = 0x1f;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x1c) = 0x21;
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00506C70
+int TribeFishingShipUnitAIModule::importantWhenDead(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall TribeFishingShipUnitAIModule::importantWhenDead(int) */
+    // 
+    // int __thiscall
+    // TribeFishingShipUnitAIModule::importantWhenDead(TribeFishingShipUnitAIModule *this,int param_1)
+    // 
+    // {
+    //   if ((param_1 != 0x1f) && (param_1 != 5)) {
+    //     return 0;
+    //   }
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00506C90
+int TribeFishingShipUnitAIModule::convertToLOSResourceType(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall TribeFishingShipUnitAIModule::convertToLOSResourceType(int) */
+    // 
+    // int __thiscall
+    // TribeFishingShipUnitAIModule::convertToLOSResourceType
+    //           (TribeFishingShipUnitAIModule *this,int param_1)
+    // 
+    // {
+    //   if (((param_1 != 0x1f) && (param_1 != 5)) && (param_1 != 0x21)) {
+    //     return -1;
+    //   }
+    //   return 2;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00506CC0
+int TribeFishingShipUnitAIModule::processNotify(NotifyEvent* param_1, ulong param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual int __thiscall TribeFishingShipUnitAIModule::processNotify(struct NotifyEvent
+    //    *,unsigned long) */
+    // 
+    // int __thiscall
+    // TribeFishingShipUnitAIModule::processNotify
+    //           (TribeFishingShipUnitAIModule *this,NotifyEvent *param_1,ulong param_2)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   void *pvVar4;
+    //   undefined4 uVar5;
+    //   ulong unaff_EDI;
+    //   
+    //   if ((param_1->mType != 500) && (param_1->mType != 0x20f)) {
+    //     iVar2 = UnitAIModule::processNotify((UnitAIModule *)this,param_1,param_2);
+    //     return iVar2;
+    //   }
+    //   if (param_1->p2 < 1) {
+    //     uVar5 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //     (**(code **)(**(int **)(*(int *)&this->field_0x4 + 0xc) + 0xe8))
+    //               (uVar5,uVar5,0x209,param_1->caller,0,0);
+    //     UnitAIModule::purgeNotifyQueue((UnitAIModule *)this,unaff_EDI);
+    //     return 4;
+    //   }
+    //   if (*(int *)&this->field_0x64 != 0) {
+    //     iVar2 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x4 + 0xc));
+    //     if (iVar2 != 1) goto LAB_00506d5f;
+    //   }
+    //   uVar5 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //   (**(code **)(**(int **)(*(int *)&this->field_0x4 + 0xc) + 0xe8))
+    //             (uVar5,uVar5,0x201,param_1->caller,0,0);
+    // LAB_00506d5f:
+    //   iVar2 = 0;
+    //   if (0 < *(int *)&this->field_0x64) {
+    //     do {
+    //       if (*(int *)&this->field_0x6c <= iVar2) break;
+    //       if (*(int *)(*(int *)&this->field_0x60 + iVar2 * 4) == param_1->caller) goto LAB_00506da0;
+    //       iVar2 = iVar2 + 1;
+    //     } while (iVar2 < *(int *)&this->field_0x64);
+    //   }
+    //   iVar2 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x4 + 0xc));
+    //   if ((iVar2 == 0) && (*(int *)&this->field_0x34 != param_1->caller)) {
+    //     UnitAIModule::askForHelp((UnitAIModule *)this,param_1->caller);
+    //   }
+    // LAB_00506da0:
+    //   iVar2 = *(int *)&this->field_0x64;
+    //   iVar1 = param_1->caller;
+    //   iVar3 = 0;
+    //   if (0 < iVar2) {
+    //     do {
+    //       if (*(int *)&this->field_0x6c <= iVar3) break;
+    //       if (*(int *)(*(int *)&this->field_0x60 + iVar3 * 4) == iVar1) goto LAB_00506e22;
+    //       iVar3 = iVar3 + 1;
+    //     } while (iVar3 < iVar2);
+    //   }
+    //   if (*(int *)&this->field_0x6c + -1 < iVar2) {
+    //     iVar2 = iVar2 + 1;
+    //     pvVar4 = operator_new(iVar2 * 4);
+    //     if (pvVar4 != (void *)0x0) {
+    //       iVar3 = 0;
+    //       if (0 < *(int *)&this->field_0x6c) {
+    //         do {
+    //           if (iVar2 <= iVar3) break;
+    //           iVar3 = iVar3 + 1;
+    //           *(undefined4 *)((int)pvVar4 + iVar3 * 4 + -4) =
+    //                *(undefined4 *)(*(int *)&this->field_0x60 + -4 + iVar3 * 4);
+    //         } while (iVar3 < *(int *)&this->field_0x6c);
+    //       }
+    //       operator_delete(*(void **)&this->field_0x60);
+    //       *(void **)&this->field_0x60 = pvVar4;
+    //       *(int *)&this->field_0x6c = iVar2;
+    //     }
+    //   }
+    //   *(int *)(*(int *)&this->field_0x60 + *(int *)&this->field_0x64 * 4) = iVar1;
+    //   *(int *)&this->field_0x64 = *(int *)&this->field_0x64 + 1;
+    // LAB_00506e22:
+    //   (**(code **)(**(int **)&this->field_0x4 + 0xec))(1);
+    //   iVar2 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x4 + 0xc));
+    //   if ((iVar2 == 0) && (*(int *)&this->field_0x28 != -1)) {
+    //     return 2;
+    //   }
+    //   if (*(int *)&this->field_0x30 != 0x262) {
+    //     iVar2 = *(int *)this;
+    //     (**(code **)(iVar2 + 0x10))
+    //               (*(undefined4 *)(*(int *)&this->field_0x4 + 4),*(undefined4 *)&this->field_0x28,
+    //                *(undefined4 *)&this->field_0x34,0xffffffff,*(undefined4 *)&this->field_0x3c,
+    //                *(undefined4 *)&this->field_0x40,*(undefined4 *)&this->field_0x44,
+    //                *(undefined4 *)&this->field_0x48,0,0,*(undefined4 *)&this->field_0x2c);
+    //     if (actionFile != (_iobuf *)0x0) {
+    //       if (*(int *)&this->field_0x4 == 0) {
+    //         uVar5 = 0xffffffff;
+    //       }
+    //       else {
+    //         uVar5 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //       }
+    //       fprintf(actionFile,s___d_call_stopObject__s__d_,uVar5,s_C__msdev_work_age1_x1_taiuaimd_c,0x8d4
+    //              );
+    //     }
+    //     (**(code **)(iVar2 + 0x58))(1);
+    //   }
+    //   (**(code **)(*(int *)this + 0xa4))(1);
+    //   return 3;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00506EE0
+int TribeFishingShipUnitAIModule::processIdle(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: yDiff */
+    // /* protected: virtual int __thiscall TribeFishingShipUnitAIModule::processIdle(int) */
+    // 
+    // int __thiscall
+    // TribeFishingShipUnitAIModule::processIdle(TribeFishingShipUnitAIModule *this,int param_1)
+    // 
+    // {
+    //   float fVar1;
+    //   float fVar2;
+    //   float fVar3;
+    //   int iVar4;
+    //   int iVar5;
+    //   RGE_Static_Object *pRVar6;
+    //   float10 fVar7;
+    //   float yDiff;
+    //   float xDiff;
+    //   
+    //   iVar4 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x4 + 0xc));
+    //   if (iVar4 != 0) {
+    //     iVar4 = *(int *)this;
+    //     iVar5 = (**(code **)(iVar4 + 0x40))(0xffffffff,0xffffffff,0xffffffff,0xffffffff,0);
+    //     if (iVar5 != -1) {
+    //       pRVar6 = RGE_Game_World::object
+    //                          (*(RGE_Game_World **)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x3c),
+    //                           iVar5);
+    //       if (pRVar6 != (RGE_Static_Object *)0x0) {
+    //         fVar7 = (float10)(**(code **)(**(int **)&this->field_0x4 + 0xfc))();
+    //         iVar5 = *(int *)&this->field_0x4;
+    //         fVar3 = pRVar6->world_x - *(float *)(iVar5 + 0x38);
+    //         fVar1 = pRVar6->world_y - *(float *)(iVar5 + 0x3c);
+    //         fVar2 = SQRT(fVar1 * fVar1 + fVar3 * fVar3);
+    //         (**(code **)(iVar4 + 0x9c))
+    //                   (-((fVar3 / fVar2) * (float)(fVar7 * (float10)7.0)) + *(float *)(iVar5 + 0x38),
+    //                    -((fVar1 / fVar2) * (float)(fVar7 * (float10)7.0)) + *(float *)(iVar5 + 0x3c),
+    //                    *(undefined4 *)(iVar5 + 0x40),1);
+    //         return 6;
+    //       }
+    //     }
+    //   }
+    //   return 5;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00506FE0
+undefined TribeSoldierUnitAIModule(TribeSoldierUnitAIModule* this_, RGE_Static_Object* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TribeSoldierUnitAIModule::TribeSoldierUnitAIModule(class RGE_Static_Object
+    //    *,int) */
+    // 
+    // TribeSoldierUnitAIModule * __thiscall
+    // TribeSoldierUnitAIModule::TribeSoldierUnitAIModule
+    //           (TribeSoldierUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
+    // 
+    // {
+    //   undefined4 *puVar1;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_00560d08;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   UnitAIModule::UnitAIModule((UnitAIModule *)this,param_1,param_2);
+    //   local_4 = 0;
+    //   *(undefined ***)this = &_vftable_;
+    //   *(undefined4 *)&this->field_0x128 = 0x15;
+    //   puVar1 = (undefined4 *)operator_new(0x54);
+    //   *(undefined4 **)&this->field_0x124 = puVar1;
+    //   if (puVar1 != (undefined4 *)0x0) {
+    //     *puVar1 = 0;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 4) = 3;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 8) = 4;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0xc) = 0x1a;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x10) = 0x18;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x14) = 6;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x18) = 0x23;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x1c) = 0x19;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x20) = 0x11;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x24) = 0xc;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x28) = 0x17;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x2c) = 0x24;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x30) = 0x1c;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x34) = 0x12;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x38) = 0xd;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x3c) = 0x1b;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x40) = 0x16;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x44) = 0x14;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x48) = 2;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x4c) = 0x15;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x50) = 0x27;
+    //   }
+    //   *(undefined4 *)&this->field_0x100 = 0x5dc;
+    //   UnitAIModule::setAdjustedIdleTimeout((UnitAIModule *)this);
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005071A0
+int TribeSoldierUnitAIModule::canAttackUnit(RGE_Static_Object* param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall TribeSoldierUnitAIModule::canAttackUnit(class RGE_Static_Object *)
+    //     */
+    // 
+    // int __thiscall
+    // TribeSoldierUnitAIModule::canAttackUnit(TribeSoldierUnitAIModule *this,RGE_Static_Object *param_1)
+    // 
+    // {
+    //   if (param_1 == (RGE_Static_Object *)0x0) {
+    //     return (int)param_1;
+    //   }
+    //   return (uint)(param_1->master_obj->object_group != 1);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005071C0
+int TribeSoldierUnitAIModule::canAttackUnitAtNeutrality(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall TribeSoldierUnitAIModule::canAttackUnitAtNeutrality(int) */
+    // 
+    // int __thiscall
+    // TribeSoldierUnitAIModule::canAttackUnitAtNeutrality(TribeSoldierUnitAIModule *this,int param_1)
+    // 
+    // {
+    //   if ((((param_1 != 3) && (param_1 != 0x1b)) && (param_1 != 4)) &&
+    //      (((param_1 != 0x15 && (param_1 != 2)) && (param_1 != 0x14)))) {
+    //     return 1;
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x005071F0
+int TribeSoldierUnitAIModule::processNotify(NotifyEvent* param_1, ulong param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: evasiveMoveDistance */
+    // /* protected: virtual int __thiscall TribeSoldierUnitAIModule::processNotify(struct NotifyEvent
+    //    *,unsigned long) */
+    // 
+    // int __thiscall
+    // TribeSoldierUnitAIModule::processNotify
+    //           (TribeSoldierUnitAIModule *this,NotifyEvent *param_1,ulong param_2)
+    // 
+    // {
+    //   short sVar1;
+    //   float fVar2;
+    //   NotifyEvent *pNVar3;
+    //   int iVar4;
+    //   RGE_Static_Object *pRVar5;
+    //   uint uVar6;
+    //   void *pvVar7;
+    //   uint uVar8;
+    //   int iVar9;
+    //   int iVar10;
+    //   float10 fVar11;
+    //   float fVar12;
+    //   float fVar13;
+    //   float fVar14;
+    //   float evasiveMoveDistance;
+    //   float fStack_8;
+    //   
+    //   pNVar3 = param_1;
+    //   if (param_1->mType == 0x200) {
+    //     iVar4 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x4 + 0xc));
+    //     if (((iVar4 != 0) &&
+    //         (fVar11 = (float10)(**(code **)(**(int **)&this->field_0x4 + 0x10c))(),
+    //         (float10)1.0 <= fVar11)) &&
+    //        (*(short *)(*(int *)(*(int *)&this->field_0x4 + 8) + 0x14) != 0x1a)) {
+    //       if (*(int *)&this->field_0x30 != 600) {
+    //         return 2;
+    //       }
+    //       pRVar5 = RGE_Game_World::object
+    //                          (*(RGE_Game_World **)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x3c),
+    //                           *(int *)&this->field_0x34);
+    //       if (pRVar5 != (RGE_Static_Object *)0x0) {
+    //         fVar11 = (float10)(**(code **)(**(int **)&this->field_0x4 + 0x10c))();
+    //         fVar12 = RGE_Static_Object::distance_to_object
+    //                            (*(RGE_Static_Object **)&this->field_0x4,pRVar5);
+    //         if (1.0 <= (float)fVar11 - fVar12) {
+    //           fVar12 = *(float *)&this->field_0x48;
+    //           fVar14 = 0.0;
+    //           iVar4 = *(int *)&this->field_0x40;
+    //           fVar13 = *(float *)&this->field_0x3c;
+    //           iVar10 = *(int *)this;
+    //           (**(code **)(iVar10 + 0x10))
+    //                     (*(undefined4 *)(*(int *)&this->field_0x4 + 4),700,
+    //                      *(undefined4 *)&this->field_0x34,0xffffffff,fVar13,iVar4,
+    //                      *(undefined4 *)&this->field_0x44,fVar12,0,1,*(undefined4 *)&this->field_0x2c);
+    //           if ((0 < *(int *)&this->field_0x64) && (iVar9 = 0, 0 < *(int *)&this->field_0x64)) {
+    //             do {
+    //               iVar10 = iVar4;
+    //               if (*(int *)&this->field_0x6c + -1 < iVar9) {
+    //                 pvVar7 = operator_new(iVar9 * 4 + 4);
+    //                 if (pvVar7 != (void *)0x0) {
+    //                   iVar4 = 0;
+    //                   if (0 < *(int *)&this->field_0x6c) {
+    //                     do {
+    //                       if (iVar9 + 1 <= iVar4) break;
+    //                       iVar4 = iVar4 + 1;
+    //                       *(undefined4 *)((int)pvVar7 + iVar4 * 4 + -4) =
+    //                            *(undefined4 *)(*(int *)&this->field_0x60 + -4 + iVar4 * 4);
+    //                     } while (iVar4 < *(int *)&this->field_0x6c);
+    //                   }
+    //                   operator_delete(*(void **)&this->field_0x60);
+    //                   *(void **)&this->field_0x60 = pvVar7;
+    //                   *(int *)&this->field_0x6c = iVar9 + 1;
+    //                 }
+    //               }
+    //               if (*(int *)(*(int *)&this->field_0x60 + iVar9 * 4) != *(int *)&this->field_0x34) {
+    //                 if (*(int *)&this->field_0x6c + -1 < iVar9) {
+    //                   pvVar7 = operator_new(iVar9 * 4 + 4);
+    //                   if (pvVar7 != (void *)0x0) {
+    //                     iVar4 = 0;
+    //                     if (0 < *(int *)&this->field_0x6c) {
+    //                       do {
+    //                         if (iVar9 + 1 <= iVar4) break;
+    //                         iVar4 = iVar4 + 1;
+    //                         *(undefined4 *)((int)pvVar7 + iVar4 * 4 + -4) =
+    //                              *(undefined4 *)(*(int *)&this->field_0x60 + -4 + iVar4 * 4);
+    //                       } while (iVar4 < *(int *)&this->field_0x6c);
+    //                     }
+    //                     operator_delete(*(void **)&this->field_0x60);
+    //                     *(void **)&this->field_0x60 = pvVar7;
+    //                     *(int *)&this->field_0x6c = iVar9 + 1;
+    //                   }
+    //                 }
+    //                 pRVar5 = RGE_Game_World::object
+    //                                    (*(RGE_Game_World **)
+    //                                      (*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x3c),
+    //                                     *(int *)(*(int *)&this->field_0x60 + iVar9 * 4));
+    //                 if (pRVar5 != (RGE_Static_Object *)0x0) {
+    //                   fVar14 = (pRVar5->world_x - *(float *)(*(int *)&this->field_0x4 + 0x38)) + fVar14;
+    //                   fVar12 = (pRVar5->world_y - *(float *)(*(int *)&this->field_0x4 + 0x3c)) + fVar12;
+    //                 }
+    //               }
+    //               iVar9 = iVar9 + 1;
+    //               iVar4 = iVar10;
+    //             } while (iVar9 < *(int *)&this->field_0x64);
+    //           }
+    //           iVar4 = *(int *)&this->field_0x4;
+    //           fVar2 = SQRT(fVar12 * fVar12 + fVar14 * fVar14);
+    //           iVar4 = (**(code **)(iVar10 + 0xa0))
+    //                             (-((fVar14 / fVar2) * fVar13) + *(float *)(iVar4 + 0x38),
+    //                              -((fVar12 / fVar2) * fVar13) + *(float *)(iVar4 + 0x3c),
+    //                              *(undefined4 *)(iVar4 + 0x40),0,1);
+    //           if (iVar4 != 1) {
+    //             return 2;
+    //           }
+    //           return 3;
+    //         }
+    //       }
+    //     }
+    //   }
+    //   else if (((param_1->mType == 0x20f) &&
+    //            (iVar4 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x4 + 0xc)),
+    //            iVar4 != 0)) &&
+    //           ((pRVar5 = RGE_Game_World::object
+    //                                (*(RGE_Game_World **)
+    //                                  (*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x3c),param_1->caller),
+    //            pRVar5 != (RGE_Static_Object *)0x0 &&
+    //            (((sVar1 = pRVar5->master_obj->id, sVar1 == 0x23 || (sVar1 == 0x24)) &&
+    //             (*(int *)&this->field_0x30 != -1)))))) {
+    //     if (*(int *)&this->field_0x28 != -1) {
+    //       (**(code **)(*(int *)this + 0x10))
+    //                 (*(undefined4 *)(*(int *)&this->field_0x4 + 4),*(int *)&this->field_0x28,
+    //                  *(undefined4 *)&this->field_0x34,0xffffffff,*(undefined4 *)&this->field_0x3c,
+    //                  *(undefined4 *)&this->field_0x40,*(undefined4 *)&this->field_0x44,
+    //                  *(undefined4 *)&this->field_0x48,0,0,*(undefined4 *)&this->field_0x2c);
+    //     }
+    //     iVar4 = *(int *)&this->field_0x4;
+    //     uVar6 = debug_rand(s_C__msdev_work_age1_x1_taiuaimd_c,0x97c);
+    //     uVar8 = (int)uVar6 >> 0x1f;
+    //     fStack_8 = (*(float *)(iVar4 + 0x38) - 4.0) +
+    //                (float)(int)(((uVar6 ^ uVar8) - uVar8 & 7 ^ uVar8) - uVar8);
+    //     if (fStack_8 == *(float *)(iVar4 + 0x38)) {
+    //       if (fStack_8 <= 10.0) {
+    //         fVar12 = -2.0;
+    //       }
+    //       else {
+    //         fVar12 = 2.0;
+    //       }
+    //       fStack_8 = fStack_8 - fVar12;
+    //     }
+    //     iVar4 = *(int *)&this->field_0x4;
+    //     uVar6 = debug_rand(s_C__msdev_work_age1_x1_taiuaimd_c,0x983);
+    //     uVar8 = (int)uVar6 >> 0x1f;
+    //     param_1 = (NotifyEvent *)
+    //               ((*(float *)(iVar4 + 0x3c) - 4.0) +
+    //               (float)(int)(((uVar6 ^ uVar8) - uVar8 & 7 ^ uVar8) - uVar8));
+    //     if ((float)param_1 == *(float *)(iVar4 + 0x3c)) {
+    //       if ((float)param_1 <= 10.0) {
+    //         fVar12 = -2.0;
+    //       }
+    //       else {
+    //         fVar12 = 2.0;
+    //       }
+    //       param_1 = (NotifyEvent *)((float)param_1 - fVar12);
+    //     }
+    //     iVar4 = (**(code **)(*(int *)this + 0xa0))(fStack_8,param_1,*(undefined4 *)(iVar4 + 0x40),1,1);
+    //     if (iVar4 == 1) {
+    //       taskedThisUpdate = iVar4;
+    //       return 3;
+    //     }
+    //   }
+    //   iVar4 = UnitAIModule::processNotify((UnitAIModule *)this,pNVar3,param_2);
+    //   return iVar4;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00507640
+int TribeSoldierUnitAIModule::processIdle(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: xDiff */
+    // /* protected: virtual int __thiscall TribeSoldierUnitAIModule::processIdle(int) */
+    // 
+    // int __thiscall TribeSoldierUnitAIModule::processIdle(TribeSoldierUnitAIModule *this,int param_1)
+    // 
+    // {
+    //   short sVar1;
+    //   RGE_Player *this_00;
+    //   float fVar2;
+    //   float fVar3;
+    //   float fVar4;
+    //   int iVar5;
+    //   int iVar6;
+    //   RGE_Static_Object *pRVar7;
+    //   float10 fVar8;
+    //   float xDiff;
+    //   
+    //   if ((param_1 == 1) && (iVar5 = (**(code **)(*(int *)this + 0xdc))(), iVar5 == 8)) {
+    //     return 6;
+    //   }
+    //   this_00 = *(RGE_Player **)(*(int *)&this->field_0x4 + 0xc);
+    //   if (((this_00->id != 0) &&
+    //       ((iVar5 = RGE_Player::computerPlayer(this_00), iVar5 != 0 ||
+    //        (*(short *)(*(int *)(*(int *)&this->field_0x4 + 8) + 0x10) != 299)))) &&
+    //      ((*(int *)&this->field_0x28 != 0x2d5 ||
+    //       (((sVar1 = *(short *)(*(int *)(*(int *)&this->field_0x4 + 8) + 0x10), sVar1 != 0x23 &&
+    //         (sVar1 != 0x24)) && (sVar1 != 0xfa)))))) {
+    //     iVar5 = *(int *)this;
+    //     iVar6 = (**(code **)(iVar5 + 0x30))(1,0,0);
+    //     if ((iVar6 != -1) && (iVar6 = (**(code **)(iVar5 + 0x5c))(iVar6,1), iVar6 == 1)) {
+    //       return 6;
+    //     }
+    //     iVar6 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x4 + 0xc));
+    //     if ((iVar6 != 0) &&
+    //        (iVar6 = RGE_Static_Object::inGroup(*(RGE_Static_Object **)&this->field_0x4), iVar6 != 1)) {
+    //       RGE_Game_World::difficultyLevel
+    //                 (*(RGE_Game_World **)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x3c));
+    //       iVar6 = RGE_Base_Game::scenarioGame(rge_base_game);
+    //       if ((iVar6 == 1) &&
+    //          ((iVar6 = RGE_Base_Game::singlePlayerGame(rge_base_game), iVar6 == 1 &&
+    //           (iVar6 = (**(code **)(**(int **)(*(int *)&this->field_0x4 + 0xc) + 0x3c))(0x8f),
+    //           iVar6 == 0)))) {
+    //         return 5;
+    //       }
+    //       iVar6 = RGE_Base_Game::singlePlayerGame(rge_base_game);
+    //       if ((iVar6 == 1) &&
+    //          (iVar6 = (**(code **)(**(int **)(*(int *)&this->field_0x4 + 0xc) + 0x3c))(0x8f), iVar6 == 0
+    //          )) {
+    //         return 5;
+    //       }
+    //       if ((((*(int *)&this->field_0x28 != 0x2bd) && (*(int *)&this->field_0x28 != 0x2d5)) &&
+    //           (iVar6 = (**(code **)(iVar5 + 0x40))(0xffffffff,0xffffffff,0xffffffff,0xffffffff,0),
+    //           iVar6 != -1)) &&
+    //          (pRVar7 = RGE_Game_World::object
+    //                              (*(RGE_Game_World **)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x3c),
+    //                               iVar6), pRVar7 != (RGE_Static_Object *)0x0)) {
+    //         fVar8 = (float10)(**(code **)(**(int **)&this->field_0x4 + 0xfc))();
+    //         iVar6 = *(int *)&this->field_0x4;
+    //         fVar4 = pRVar7->world_x - *(float *)(iVar6 + 0x38);
+    //         fVar2 = pRVar7->world_y - *(float *)(iVar6 + 0x3c);
+    //         fVar3 = SQRT(fVar2 * fVar2 + fVar4 * fVar4);
+    //         (**(code **)(iVar5 + 0x9c))
+    //                   (-((fVar4 / fVar3) * (float)(fVar8 * (float10)3.0)) + *(float *)(iVar6 + 0x38),
+    //                    -((fVar2 / fVar3) * (float)(fVar8 * (float10)3.0)) + *(float *)(iVar6 + 0x3c),
+    //                    *(undefined4 *)(iVar6 + 0x40),1);
+    //         return 6;
+    //       }
+    //     }
+    //   }
+    //   return 5;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00507880
+undefined TribeArtifactUnitAIModule(TribeArtifactUnitAIModule* this_, RGE_Static_Object* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TribeArtifactUnitAIModule::TribeArtifactUnitAIModule(class RGE_Static_Object
+    //    *,int) */
+    // 
+    // TribeArtifactUnitAIModule * __thiscall
+    // TribeArtifactUnitAIModule::TribeArtifactUnitAIModule
+    //           (TribeArtifactUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
+    // 
+    // {
+    //   undefined4 *puVar1;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_00560d28;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   UnitAIModule::UnitAIModule((UnitAIModule *)this,param_1,param_2);
+    //   local_4 = 0;
+    //   *(undefined ***)this = &_vftable_;
+    //   *(undefined4 *)&this->field_0x128 = 0x13;
+    //   puVar1 = (undefined4 *)operator_new(0x4c);
+    //   *(undefined4 **)&this->field_0x124 = puVar1;
+    //   if (puVar1 != (undefined4 *)0x0) {
+    //     *puVar1 = 0;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 4) = 4;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 8) = 0x1a;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0xc) = 0x18;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x10) = 6;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x14) = 0x23;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x18) = 0x19;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x1c) = 0x11;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x20) = 0xc;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x24) = 0x17;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x28) = 0x24;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x2c) = 0x1c;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x30) = 0x12;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x34) = 0xd;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x38) = 0x16;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x3c) = 0x14;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x40) = 2;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x44) = 0x15;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x48) = 0x27;
+    //   }
+    //   *(undefined4 *)&this->field_0x100 = 5000;
+    //   UnitAIModule::setAdjustedIdleTimeout((UnitAIModule *)this);
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00507A30
+int TribeArtifactUnitAIModule::processNotify(NotifyEvent* param_1, ulong param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual int __thiscall TribeArtifactUnitAIModule::processNotify(struct NotifyEvent
+    //    *,unsigned long) */
+    // 
+    // int __thiscall
+    // TribeArtifactUnitAIModule::processNotify
+    //           (TribeArtifactUnitAIModule *this,NotifyEvent *param_1,ulong param_2)
+    // 
+    // {
+    //   uchar uVar1;
+    //   RGE_Static_Object *pRVar2;
+    //   int iVar3;
+    //   int iVar4;
+    //   int iVar5;
+    //   void *pvVar6;
+    //   undefined4 uVar7;
+    //   undefined4 uVar8;
+    //   
+    //   switch(param_1->mType) {
+    //   case 500:
+    //   case 0x1f6:
+    //   case 0x1f7:
+    //   case 0x1f8:
+    //   case 0x1fd:
+    //   case 0x1fe:
+    //   case 0x1ff:
+    //   case 0x200:
+    //   case 0x202:
+    //   case 0x203:
+    //   case 0x20b:
+    //   case 0x20f:
+    //   case 0x259:
+    //   case 0x25a:
+    //   case 0x25b:
+    //   case 0x25c:
+    //   case 0x25d:
+    //   case 0x25e:
+    //   case 0x25f:
+    //   case 0x260:
+    //   case 0x261:
+    //   case 0x262:
+    //   case 0x265:
+    //   case 0x266:
+    //   case 0x267:
+    //   case 0x268:
+    //   case 0x269:
+    //   case 699:
+    //     goto switchD_00507a55_caseD_1f4;
+    //   default:
+    //     UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //     if (actionFile != (_iobuf *)0x0) {
+    //       if (*(int *)&this->field_0x4 == 0) {
+    //         uVar7 = 0xffffffff;
+    //       }
+    //       else {
+    //         uVar7 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //       }
+    //       uVar8 = 0xb1f;
+    // LAB_00507d51:
+    //       fprintf(actionFile,s___d_call_stopObject__s__d_,uVar7,s_C__msdev_work_age1_x1_taiuaimd_c,uVar8
+    //              );
+    //     }
+    //     break;
+    //   case 0x1f9:
+    //     iVar3 = *(int *)&this->field_0x28;
+    //     if (iVar3 != -1) {
+    //       if (*(int *)&this->field_0x30 + 100 == iVar3) {
+    //         UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //         if (actionFile != (_iobuf *)0x0) {
+    //           if (*(int *)&this->field_0x4 == 0) {
+    //             uVar7 = 0xffffffff;
+    //             uVar8 = 0xac6;
+    //           }
+    //           else {
+    //             uVar7 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //             uVar8 = 0xac6;
+    //           }
+    //           goto LAB_00507d51;
+    //         }
+    //         break;
+    //       }
+    //       if (iVar3 != -1) {
+    //         return 2;
+    //       }
+    //     }
+    //     if (*(int *)&this->field_0x30 != param_1->p1) {
+    //       return 2;
+    //     }
+    //     UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //     if (actionFile != (_iobuf *)0x0) {
+    //       if (*(int *)&this->field_0x4 == 0) {
+    //         uVar7 = 0xffffffff;
+    //         uVar8 = 0xacf;
+    //       }
+    //       else {
+    //         uVar7 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //         uVar8 = 0xacf;
+    //       }
+    //       goto LAB_00507d51;
+    //     }
+    //     break;
+    //   case 0x1fa:
+    //     iVar3 = *(int *)&this->field_0x28;
+    //     if (iVar3 != -1) {
+    //       if (*(int *)&this->field_0x30 + 100 == iVar3) {
+    //         UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //         if (actionFile != (_iobuf *)0x0) {
+    //           if (*(int *)&this->field_0x4 == 0) {
+    //             uVar7 = 0xffffffff;
+    //             uVar8 = 0xaae;
+    //           }
+    //           else {
+    //             uVar7 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //             uVar8 = 0xaae;
+    //           }
+    //           goto LAB_00507d51;
+    //         }
+    //         break;
+    //       }
+    //       if (iVar3 != -1) {
+    //         return 2;
+    //       }
+    //     }
+    //     if (*(int *)&this->field_0x30 != param_1->p1) {
+    //       return 2;
+    //     }
+    //     UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //     if (actionFile != (_iobuf *)0x0) {
+    //       if (*(int *)&this->field_0x4 == 0) {
+    //         uVar7 = 0xffffffff;
+    //         uVar8 = 0xab7;
+    //       }
+    //       else {
+    //         uVar7 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //         uVar8 = 0xab7;
+    //       }
+    //       goto LAB_00507d51;
+    //     }
+    //     break;
+    //   case 0x1fb:
+    //     iVar3 = *(int *)&this->field_0x28;
+    //     if (iVar3 != -1) {
+    //       if (*(int *)&this->field_0x30 + 100 == iVar3) {
+    //         UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //         if (actionFile != (_iobuf *)0x0) {
+    //           if (*(int *)&this->field_0x4 == 0) {
+    //             uVar7 = 0xffffffff;
+    //             uVar8 = 0xade;
+    //           }
+    //           else {
+    //             uVar7 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //             uVar8 = 0xade;
+    //           }
+    //           goto LAB_00507d51;
+    //         }
+    //         break;
+    //       }
+    //       if (iVar3 != -1) {
+    //         return 2;
+    //       }
+    //     }
+    //     if (*(int *)&this->field_0x30 != param_1->p1) {
+    //       return 2;
+    //     }
+    //     UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //     if (actionFile != (_iobuf *)0x0) {
+    //       if (*(int *)&this->field_0x4 == 0) {
+    //         uVar7 = 0xffffffff;
+    //         uVar8 = 0xae7;
+    //       }
+    //       else {
+    //         uVar7 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //         uVar8 = 0xae7;
+    //       }
+    //       goto LAB_00507d51;
+    //     }
+    //     break;
+    //   case 0x1fc:
+    //     pRVar2 = RGE_Game_World::object
+    //                        (*(RGE_Game_World **)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x3c),
+    //                         *(int *)&this->field_0x34);
+    //     if (pRVar2 != (RGE_Static_Object *)0x0) {
+    //       iVar3 = __ftol();
+    //       iVar4 = __ftol();
+    //       uVar1 = RGE_Visible_Map::get_visible
+    //                         (*(RGE_Visible_Map **)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x38),
+    //                          iVar4,iVar3);
+    //       if (uVar1 == '\x0f') {
+    //         return 2;
+    //       }
+    //     }
+    //     UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //     if (actionFile != (_iobuf *)0x0) {
+    //       if (*(int *)&this->field_0x4 == 0) {
+    //         uVar7 = 0xffffffff;
+    //         uVar8 = 0xa9f;
+    //       }
+    //       else {
+    //         uVar7 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //         uVar8 = 0xa9f;
+    //       }
+    //       goto LAB_00507d51;
+    //     }
+    //     break;
+    //   case 600:
+    //     iVar3 = *(int *)&this->field_0x64;
+    //     iVar4 = param_1->caller;
+    //     iVar5 = 0;
+    //     if (0 < iVar3) {
+    //       do {
+    //         if (*(int *)&this->field_0x6c <= iVar5) break;
+    //         if (*(int *)(*(int *)&this->field_0x60 + iVar5 * 4) == iVar4) goto LAB_00507d13;
+    //         iVar5 = iVar5 + 1;
+    //       } while (iVar5 < iVar3);
+    //     }
+    //     if (*(int *)&this->field_0x6c + -1 < iVar3) {
+    //       iVar3 = iVar3 + 1;
+    //       pvVar6 = operator_new(iVar3 * 4);
+    //       if (pvVar6 != (void *)0x0) {
+    //         iVar5 = 0;
+    //         if (0 < *(int *)&this->field_0x6c) {
+    //           do {
+    //             if (iVar3 <= iVar5) break;
+    //             iVar5 = iVar5 + 1;
+    //             *(undefined4 *)((int)pvVar6 + iVar5 * 4 + -4) =
+    //                  *(undefined4 *)(*(int *)&this->field_0x60 + -4 + iVar5 * 4);
+    //           } while (iVar5 < *(int *)&this->field_0x6c);
+    //         }
+    //         operator_delete(*(void **)&this->field_0x60);
+    //         *(void **)&this->field_0x60 = pvVar6;
+    //         *(int *)&this->field_0x6c = iVar3;
+    //       }
+    //     }
+    //     *(int *)(*(int *)&this->field_0x60 + *(int *)&this->field_0x64 * 4) = iVar4;
+    //     *(int *)&this->field_0x64 = *(int *)&this->field_0x64 + 1;
+    // LAB_00507d13:
+    //     (**(code **)(**(int **)&this->field_0x4 + 0xec))(1);
+    //     return 2;
+    //   }
+    //   iVar3 = *(int *)this;
+    //   (**(code **)(iVar3 + 0x58))(1);
+    //   (**(code **)(iVar3 + 0x1c))(param_1);
+    // switchD_00507a55_caseD_1f4:
+    //   return 2;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00507E90
+int TribeArtifactUnitAIModule::processIdle(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual int __thiscall TribeArtifactUnitAIModule::processIdle(int) */
+    // 
+    // int __thiscall TribeArtifactUnitAIModule::processIdle(TribeArtifactUnitAIModule *this,int param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   RGE_Static_Object *pRVar2;
+    //   
+    //   iVar1 = (**(code **)(*(int *)this + 0x40))(0xffffffff,0xffffffff,0xffffffff,0xffffffff,0);
+    //   if ((numberDifferentPlayerObjectsVisible < 2) && (iVar1 != -1)) {
+    //     pRVar2 = RGE_Game_World::object
+    //                        (*(RGE_Game_World **)(*(int *)(*(int *)&this->field_0x4 + 0xc) + 0x3c),iVar1)
+    //     ;
+    //     if (pRVar2 != (RGE_Static_Object *)0x0) {
+    //       if ((RGE_Player *)(*(int **)&this->field_0x4)[3] != pRVar2->owner) {
+    //         (**(code **)(**(int **)&this->field_0x4 + 0x44))(pRVar2->owner);
+    //         return 6;
+    //       }
+    //     }
+    //   }
+    //   return 5;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00507EF0
+int TribeArtifactUnitAIModule::processMisc() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual int __thiscall TribeArtifactUnitAIModule::processMisc(void) */
+    // 
+    // int __thiscall TribeArtifactUnitAIModule::processMisc(TribeArtifactUnitAIModule *this)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   undefined4 uVar3;
+    //   
+    //   iVar1 = *(int *)this;
+    //   iVar2 = (**(code **)(iVar1 + 0xd4))(1);
+    //   if (iVar2 == 6) {
+    //     UnitAIModule::removeCurrentTarget((UnitAIModule *)this);
+    //     if (actionFile != (_iobuf *)0x0) {
+    //       if (*(int *)&this->field_0x4 == 0) {
+    //         uVar3 = 0xffffffff;
+    //       }
+    //       else {
+    //         uVar3 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //       }
+    //       fprintf(actionFile,s___d_call_stopObject__s__d_,uVar3,s_C__msdev_work_age1_x1_taiuaimd_c,0xb60
+    //              );
+    //     }
+    //     (**(code **)(iVar1 + 0x58))(1);
+    //     *(undefined4 *)&this->field_0xf8 = 0;
+    //     return 10;
+    //   }
+    //   return 9;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00507F60
+undefined TribeTowerUnitAIModule(TribeTowerUnitAIModule* this_, RGE_Static_Object* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TribeTowerUnitAIModule::TribeTowerUnitAIModule(class RGE_Static_Object *,int)
+    //     */
+    // 
+    // TribeTowerUnitAIModule * __thiscall
+    // TribeTowerUnitAIModule::TribeTowerUnitAIModule
+    //           (TribeTowerUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
+    // 
+    // {
+    //   undefined4 *puVar1;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_00560d48;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   UnitAIModule::UnitAIModule((UnitAIModule *)this,param_1,param_2);
+    //   local_4 = 0;
+    //   *(undefined ***)this = &_vftable_;
+    //   *(undefined4 *)&this->field_0x128 = 0x15;
+    //   puVar1 = (undefined4 *)operator_new(0x54);
+    //   *(undefined4 **)&this->field_0x124 = puVar1;
+    //   if (puVar1 != (undefined4 *)0x0) {
+    //     *puVar1 = 0;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 4) = 3;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 8) = 4;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0xc) = 0x1a;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x10) = 0x18;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x14) = 6;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x18) = 0x23;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x1c) = 0x19;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x20) = 0x11;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x24) = 0xc;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x28) = 0x17;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x2c) = 0x24;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x30) = 0x1c;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x34) = 0x12;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x38) = 0xd;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x3c) = 0x1b;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x40) = 0x16;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x44) = 0x14;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x48) = 2;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x4c) = 0x15;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x50) = 0x27;
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00508110
+int TribeTowerUnitAIModule::canAttackUnit(RGE_Static_Object* param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall TribeTowerUnitAIModule::canAttackUnit(class RGE_Static_Object *)
+    //     */
+    // 
+    // int __thiscall
+    // TribeTowerUnitAIModule::canAttackUnit(TribeTowerUnitAIModule *this,RGE_Static_Object *param_1)
+    // 
+    // {
+    //   if (param_1 == (RGE_Static_Object *)0x0) {
+    //     return (int)param_1;
+    //   }
+    //   if (param_1->master_obj->object_group == 1) {
+    //     return 0;
+    //   }
+    //   return (uint)(1 < *(byte *)(*(int *)&this->field_0x4 + 0x48));
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00508140
+int TribeTowerUnitAIModule::canAttackUnitAtNeutrality(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall TribeTowerUnitAIModule::canAttackUnitAtNeutrality(int) */
+    // 
+    // int __thiscall
+    // TribeTowerUnitAIModule::canAttackUnitAtNeutrality(TribeTowerUnitAIModule *this,int param_1)
+    // 
+    // {
+    //   if ((((param_1 != 3) && (param_1 != 0x1b)) && (param_1 != 4)) &&
+    //      ((param_1 != 0x15 && (param_1 != 2)))) {
+    //     return 1;
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00508170
+undefined TribeBuildingUnitAIModule(TribeBuildingUnitAIModule* this_, RGE_Static_Object* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TribeBuildingUnitAIModule::TribeBuildingUnitAIModule(class RGE_Static_Object
+    //    *,int) */
+    // 
+    // TribeBuildingUnitAIModule * __thiscall
+    // TribeBuildingUnitAIModule::TribeBuildingUnitAIModule
+    //           (TribeBuildingUnitAIModule *this,RGE_Static_Object *param_1,int param_2)
+    // 
+    // {
+    //   undefined4 *puVar1;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_00560d68;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   UnitAIModule::UnitAIModule((UnitAIModule *)this,param_1,param_2);
+    //   local_4 = 0;
+    //   *(undefined ***)this = &_vftable_;
+    //   *(undefined4 *)&this->field_0x128 = 0x15;
+    //   puVar1 = (undefined4 *)operator_new(0x54);
+    //   *(undefined4 **)&this->field_0x124 = puVar1;
+    //   if (puVar1 != (undefined4 *)0x0) {
+    //     *puVar1 = 0;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 4) = 3;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 8) = 4;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0xc) = 0x1a;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x10) = 0x18;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x14) = 6;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x18) = 0x23;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x1c) = 0x19;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x20) = 0x11;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x24) = 0xc;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x28) = 0x17;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x2c) = 0x24;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x30) = 0x1c;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x34) = 0x12;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x38) = 0xd;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x3c) = 0x1b;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x40) = 0x16;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x44) = 0x14;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x48) = 2;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x4c) = 0x15;
+    //     *(undefined4 *)(*(int *)&this->field_0x124 + 0x50) = 0x27;
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00508320
+int TribeBuildingUnitAIModule::processNotify(NotifyEvent* param_1, ulong param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual int __thiscall TribeBuildingUnitAIModule::processNotify(struct NotifyEvent
+    //    *,unsigned long) */
+    // 
+    // int __thiscall
+    // TribeBuildingUnitAIModule::processNotify
+    //           (TribeBuildingUnitAIModule *this,NotifyEvent *param_1,ulong param_2)
+    // 
+    // {
+    //   undefined1 *this_00;
+    //   undefined4 uVar1;
+    //   int iVar2;
+    //   void *pvVar3;
+    //   int iVar4;
+    //   int iVar5;
+    //   int *piVar6;
+    //   ulong unaff_EDI;
+    //   
+    //   switch(param_1->mType) {
+    //   case 500:
+    //     break;
+    //   default:
+    //     return 2;
+    //   case 600:
+    //     iVar4 = *(int *)&this->field_0x64;
+    //     iVar5 = param_1->caller;
+    //     iVar2 = 0;
+    //     if (0 < iVar4) {
+    //       do {
+    //         if (*(int *)&this->field_0x6c <= iVar2) break;
+    //         if (*(int *)(*(int *)&this->field_0x60 + iVar2 * 4) == iVar5) goto LAB_005084e0;
+    //         iVar2 = iVar2 + 1;
+    //       } while (iVar2 < iVar4);
+    //     }
+    //     if (*(int *)&this->field_0x6c + -1 < iVar4) {
+    //       iVar4 = iVar4 + 1;
+    //       pvVar3 = operator_new(iVar4 * 4);
+    //       if (pvVar3 != (void *)0x0) {
+    //         iVar2 = 0;
+    //         if (0 < *(int *)&this->field_0x6c) {
+    //           do {
+    //             if (iVar4 <= iVar2) break;
+    //             iVar2 = iVar2 + 1;
+    //             *(undefined4 *)((int)pvVar3 + iVar2 * 4 + -4) =
+    //                  *(undefined4 *)(*(int *)&this->field_0x60 + -4 + iVar2 * 4);
+    //           } while (iVar2 < *(int *)&this->field_0x6c);
+    //         }
+    //         operator_delete(*(void **)&this->field_0x60);
+    //         *(void **)&this->field_0x60 = pvVar3;
+    //         *(int *)&this->field_0x6c = iVar4;
+    //       }
+    //     }
+    //     *(int *)(*(int *)&this->field_0x60 + *(int *)&this->field_0x64 * 4) = iVar5;
+    //     *(int *)&this->field_0x64 = *(int *)&this->field_0x64 + 1;
+    // LAB_005084e0:
+    //     (**(code **)(**(int **)&this->field_0x4 + 0xec))(1);
+    //     return 2;
+    //   case 699:
+    //     iVar4 = 0;
+    //     if (*(int *)&this->field_0x64 < 1) {
+    //       return 2;
+    //     }
+    //     while( true ) {
+    //       if (*(int *)&this->field_0x6c <= iVar4) {
+    //         return 2;
+    //       }
+    //       if (*(int *)(*(int *)&this->field_0x60 + iVar4 * 4) == param_1->caller) break;
+    //       iVar4 = iVar4 + 1;
+    //       if (*(int *)&this->field_0x64 <= iVar4) {
+    //         return 2;
+    //       }
+    //     }
+    //     iVar4 = *(int *)&this->field_0x6c;
+    //     iVar5 = 0;
+    //     if (0 < iVar4) {
+    //       piVar6 = *(int **)&this->field_0x60;
+    //       do {
+    //         if (*piVar6 == param_1->caller) break;
+    //         iVar5 = iVar5 + 1;
+    //         piVar6 = piVar6 + 1;
+    //       } while (iVar5 < iVar4);
+    //     }
+    //     if (iVar4 <= iVar5) {
+    //       return 2;
+    //     }
+    //     if (iVar5 < iVar4 + -1) {
+    //       do {
+    //         iVar5 = iVar5 + 1;
+    //         *(undefined4 *)(*(int *)&this->field_0x60 + -4 + iVar5 * 4) =
+    //              *(undefined4 *)(*(int *)&this->field_0x60 + iVar5 * 4);
+    //       } while (iVar5 < *(int *)&this->field_0x6c + -1);
+    //     }
+    //     iVar4 = *(int *)&this->field_0x64 + -1;
+    //     *(int *)&this->field_0x64 = iVar4;
+    //     if (iVar4 < 0) {
+    //       *(undefined4 *)&this->field_0x64 = 0;
+    //       return 2;
+    //     }
+    //     return 2;
+    //   }
+    //   if (param_1->p2 < 1) {
+    //     uVar1 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //     (**(code **)(**(int **)(*(int *)&this->field_0x4 + 0xc) + 0xe8))
+    //               (uVar1,uVar1,0x209,param_1->caller,0,0);
+    //     UnitAIModule::purgeNotifyQueue((UnitAIModule *)this,unaff_EDI);
+    //     return 4;
+    //   }
+    //   if ((*(int *)&this->field_0x64 == 0) ||
+    //      (iVar4 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x4 + 0xc)),
+    //      iVar4 == 1)) {
+    //     uVar1 = *(undefined4 *)(*(int *)&this->field_0x4 + 4);
+    //     (**(code **)(**(int **)(*(int *)&this->field_0x4 + 0xc) + 0xe8))
+    //               (uVar1,uVar1,0x201,param_1->caller,0,0);
+    //   }
+    //   this_00 = &this->field_0x60;
+    //   iVar4 = 0;
+    //   if (0 < *(int *)&this->field_0x64) {
+    //     do {
+    //       if (*(int *)&this->field_0x6c <= iVar4) break;
+    //       if (*(int *)(*(int *)this_00 + iVar4 * 4) == param_1->caller) goto LAB_00508402;
+    //       iVar4 = iVar4 + 1;
+    //     } while (iVar4 < *(int *)&this->field_0x64);
+    //   }
+    //   iVar4 = RGE_Player::computerPlayer(*(RGE_Player **)(*(int *)&this->field_0x4 + 0xc));
+    //   if ((iVar4 == 0) && (*(int *)&this->field_0x34 != param_1->caller)) {
+    //     UnitAIModule::askForHelp((UnitAIModule *)this,param_1->caller);
+    //   }
+    // LAB_00508402:
+    //   iVar4 = *(int *)&this->field_0x64;
+    //   iVar5 = param_1->caller;
+    //   iVar2 = 0;
+    //   if (0 < iVar4) {
+    //     do {
+    //       if (*(int *)&this->field_0x6c <= iVar2) break;
+    //       if (*(int *)(*(int *)this_00 + iVar2 * 4) == iVar5) goto LAB_005084e0;
+    //       iVar2 = iVar2 + 1;
+    //     } while (iVar2 < iVar4);
+    //   }
+    //   if (*(int *)&this->field_0x6c + -1 < iVar4) {
+    //     ManagedArray<int>::resize((ManagedArray<int> *)this_00,iVar4 + 1);
+    //   }
+    //   *(int *)(*(int *)this_00 + *(int *)&this->field_0x64 * 4) = iVar5;
+    //   *(int *)&this->field_0x64 = *(int *)&this->field_0x64 + 1;
+    //   (**(code **)(**(int **)&this->field_0x4 + 0xec))(1);
+    //   return 2;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00508660
+int TribeBuildingUnitAIModule::processIdle(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual int __thiscall TribeBuildingUnitAIModule::processIdle(int) */
+    // 
+    // int __thiscall TribeBuildingUnitAIModule::processIdle(TribeBuildingUnitAIModule *this,int param_1)
+    // 
+    // {
+    //   return 5;
+    // }
+    // 
+    // 
+}
+

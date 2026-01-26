@@ -1,0 +1,24 @@
+// Auto-generated decompiler unit: bucket_0509.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x00509760
+void TRIBE_Command(TRIBE_Command* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall TRIBE_Command::~TRIBE_Command(void) */
+    // 
+    // void __thiscall TRIBE_Command::~TRIBE_Command(TRIBE_Command *this)
+    // 
+    // {
+    //   *(undefined ***)this = &RGE_Command::_vftable_;
+    //   *(undefined4 *)&this->field_0x4 = 0;
+    //   *(undefined4 *)&this->field_0x14 = 0;
+    //   if (*(int *)&this->field_0x8 != 0) {
+    //     free(*(int *)&this->field_0x8);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+

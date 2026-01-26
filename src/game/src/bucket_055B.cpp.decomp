@@ -1,0 +1,1166 @@
+// Auto-generated decompiler unit: bucket_055B.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x0055B110
+undefined ios(ios* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: __thiscall ios::ios(void) */
+    // 
+    // void __thiscall ios::ios(ios *this)
+    // 
+    // {
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->bp = (streambuf *)0x0;
+    //   this->state = 4;
+    //   this->ispecial = 0;
+    //   this->ospecial = 0;
+    //   this->x_tie = (ostream *)0x0;
+    //   this->x_flags = 0;
+    //   this->x_precision = 6;
+    //   this->x_fill = ' ';
+    //   this->x_width = 0;
+    //   this->x_delbuf = 0;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055B170
+undefined ios(ios* this_, streambuf* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall ios::ios(class streambuf *) */
+    // 
+    // void __thiscall ios::ios(ios *this,streambuf *param_1)
+    // 
+    // {
+    //   this->bp = param_1;
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->x_precision = 6;
+    //   this->x_fill = ' ';
+    //   this->state = (-(uint)(param_1 != (streambuf *)0x0) & 0xfffffffc) + 4;
+    //   this->ispecial = 0;
+    //   this->ospecial = 0;
+    //   this->x_tie = (ostream *)0x0;
+    //   this->x_flags = 0;
+    //   this->x_width = 0;
+    //   this->x_delbuf = 0;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055B1B0
+undefined ios(ios* this_, ios* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: __thiscall ios::ios(class ios const &) */
+    // 
+    // ios * __thiscall ios::ios(ios *this,ios *param_1)
+    // 
+    // {
+    //   this->bp = (streambuf *)0x0;
+    //   this->x_delbuf = 0;
+    //   this->_padding_ = (int)&_vftable_;
+    //   operator=(this,param_1);
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055B1E0
+void ios(ios* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall ios::~ios(void) */
+    // 
+    // void __thiscall ios::~ios(ios *this)
+    // 
+    // {
+    //   this->_padding_ = (int)&_vftable_;
+    //   if ((this->x_delbuf != 0) && (this->bp != (streambuf *)0x0)) {
+    //     (**(code **)this->bp->_padding_)(1);
+    //   }
+    //   this->bp = (streambuf *)0x0;
+    //   this->state = 4;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055B210
+void init(ios* this_, streambuf* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall ios::init(class streambuf *) */
+    // 
+    // void __thiscall ios::init(ios *this,streambuf *param_1)
+    // 
+    // {
+    //   if ((this->x_delbuf != 0) && (this->bp != (streambuf *)0x0)) {
+    //     (**(code **)this->bp->_padding_)(1);
+    //   }
+    //   this->bp = param_1;
+    //   if (param_1 != (streambuf *)0x0) {
+    //     this->state = this->state & 0xfffffffb;
+    //     return;
+    //   }
+    //   this->state = this->state | 4;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055B250
+ios* operator(ios* this_, ios* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: class ios & __thiscall ios::operator=(class ios const &) */
+    // 
+    // ios * __thiscall ios::operator=(ios *this,ios *param_1)
+    // 
+    // {
+    //   uint uVar1;
+    //   
+    //   this->x_tie = param_1->x_tie;
+    //   this->x_flags = param_1->x_flags;
+    //   this->x_precision = (int)(char)param_1->x_precision;
+    //   this->x_fill = param_1->x_fill;
+    //   this->x_width = (int)(char)param_1->x_width;
+    //   uVar1 = param_1->state;
+    //   this->state = uVar1;
+    //   if (this->bp == (streambuf *)0x0) {
+    //     this->state = uVar1 | 4;
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055B290
+int xalloc() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: static int __cdecl ios::xalloc(void) */
+    // 
+    // int __cdecl ios::xalloc(void)
+    // 
+    // {
+    //   long *plVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   
+    //   plVar1 = (long *)operator_new(x_curindex * 4 + 8);
+    //   if (plVar1 == (long *)0x0) {
+    //     return -1;
+    //   }
+    //   iVar2 = 0;
+    //   if (-1 < x_curindex) {
+    //     do {
+    //       iVar3 = iVar2 + 1;
+    //       plVar1[iVar2] = x_statebuf[iVar2];
+    //       iVar2 = iVar3;
+    //     } while (iVar3 <= x_curindex);
+    //   }
+    //   x_curindex = x_curindex + 1;
+    //   plVar1[x_curindex] = 0;
+    //   if (x_statebuf != (long *)0x0) {
+    //     operator_delete(x_statebuf);
+    //   }
+    //   x_statebuf = plVar1;
+    //   return x_curindex;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055B310
+long bitalloc() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: static long __cdecl ios::bitalloc(void) */
+    // 
+    // long __cdecl ios::bitalloc(void)
+    // 
+    // {
+    //   x_maxbit = x_maxbit << 1;
+    //   return x_maxbit;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055B320
+int snextc(streambuf* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall streambuf::snextc(void) */
+    // 
+    // int __thiscall streambuf::snextc(streambuf *this)
+    // 
+    // {
+    //   int iVar1;
+    //   byte *pbVar2;
+    //   
+    //   if (this->_fUnbuf != 0) {
+    //     if (this->x_lastc == -1) {
+    //       (**(code **)(this->_padding_ + 0x20))();
+    //     }
+    //     iVar1 = (**(code **)(this->_padding_ + 0x20))();
+    //     this->x_lastc = iVar1;
+    //     return iVar1;
+    //   }
+    //   if ((this->_egptr == (char *)0x0) || (this->_egptr <= this->_gptr)) {
+    //     (**(code **)(this->_padding_ + 0x20))();
+    //   }
+    //   pbVar2 = (byte *)(this->_gptr + 1);
+    //   this->_gptr = (char *)pbVar2;
+    //   if (pbVar2 < this->_egptr) {
+    //     return (uint)*pbVar2;
+    //   }
+    //   iVar1 = (**(code **)(this->_padding_ + 0x20))();
+    //   return iVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055B380
+int sbumpc(streambuf* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall streambuf::sbumpc(void) */
+    // 
+    // int __thiscall streambuf::sbumpc(streambuf *this)
+    // 
+    // {
+    //   byte bVar1;
+    //   int iVar2;
+    //   
+    //   if (this->_fUnbuf == 0) {
+    //     if (this->_gptr < this->_egptr) {
+    //       bVar1 = *this->_gptr;
+    //       this->_gptr = this->_gptr + 1;
+    //       return (uint)bVar1;
+    //     }
+    //     iVar2 = (**(code **)(this->_padding_ + 0x20))();
+    //     this->_gptr = this->_gptr + 1;
+    //     return iVar2;
+    //   }
+    //   iVar2 = this->x_lastc;
+    //   if (iVar2 == -1) {
+    //     iVar2 = (**(code **)(this->_padding_ + 0x20))();
+    //     return iVar2;
+    //   }
+    //   this->x_lastc = -1;
+    //   return iVar2;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055B3D0
+void stossc(streambuf* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall streambuf::stossc(void) */
+    // 
+    // void __thiscall streambuf::stossc(streambuf *this)
+    // 
+    // {
+    //   if (this->_fUnbuf == 0) {
+    //     if (this->_egptr <= this->_gptr) {
+    //       (**(code **)(this->_padding_ + 0x20))();
+    //     }
+    //     if (this->_gptr < this->_egptr) {
+    //       this->_gptr = this->_gptr + 1;
+    //     }
+    //     return;
+    //   }
+    //   if (this->x_lastc == -1) {
+    //     (**(code **)(this->_padding_ + 0x20))();
+    //     return;
+    //   }
+    //   this->x_lastc = -1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055B420
+int sgetc(streambuf* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall streambuf::sgetc(void) */
+    // 
+    // int __thiscall streambuf::sgetc(streambuf *this)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   if (this->_fUnbuf != 0) {
+    //     if (this->x_lastc == -1) {
+    //       iVar1 = (**(code **)(this->_padding_ + 0x20))();
+    //       this->x_lastc = iVar1;
+    //     }
+    //     return this->x_lastc;
+    //   }
+    //   iVar1 = (**(code **)(this->_padding_ + 0x20))();
+    //   return iVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055B450
+undefined istream(istream* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: __thiscall istream::istream(void) */
+    // 
+    // istream * __thiscall istream::istream(istream *this)
+    // 
+    // {
+    //   int in_stack_00000004;
+    //   
+    //   if (in_stack_00000004 != 0) {
+    //     *(undefined1 **)this = &_vbtable_;
+    //     ios::ios((ios *)&this->field_0xc);
+    //   }
+    //   *(undefined ***)(&this->field_0x0 + *(int *)(*(int *)this + 4)) = &_vftable_;
+    //   *(uint *)(&this->field_0x24 + *(int *)(*(int *)this + 4)) =
+    //        *(uint *)(&this->field_0x24 + *(int *)(*(int *)this + 4)) | 1;
+    //   this->x_gcount = 0;
+    //   this->_fGline = 0;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055B4E0
+undefined istream(istream* this_, streambuf* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall istream::istream(class streambuf *) */
+    // 
+    // istream * __thiscall istream::istream(istream *this,streambuf *param_1)
+    // 
+    // {
+    //   undefined4 *unaff_FS_OFFSET;
+    //   int in_stack_00000008;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_00561faa;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   if (in_stack_00000008 != 0) {
+    //     *(undefined1 **)this = &_vbtable_;
+    //     ios::ios((ios *)&this->field_0xc);
+    //     local_4 = 0;
+    //   }
+    //   *(undefined ***)(&this->field_0x0 + *(int *)(*(int *)this + 4)) = &_vftable_;
+    //   ios::init((ios *)(&this->field_0x0 + *(int *)(*(int *)this + 4)),param_1);
+    //   *(uint *)(&this->field_0x24 + *(int *)(*(int *)this + 4)) =
+    //        *(uint *)(&this->field_0x24 + *(int *)(*(int *)this + 4)) | 1;
+    //   this->x_gcount = 0;
+    //   this->_fGline = 0;
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055B580
+undefined istream(istream* this_, istream* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: __thiscall istream::istream(class istream const &) */
+    // 
+    // istream * __thiscall istream::istream(istream *this,istream *param_1)
+    // 
+    // {
+    //   undefined4 *unaff_FS_OFFSET;
+    //   int in_stack_00000008;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_00561fda;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   if (in_stack_00000008 != 0) {
+    //     *(undefined1 **)this = &_vbtable_;
+    //     ios::ios((ios *)&this->field_0xc);
+    //     local_4 = 0;
+    //   }
+    //   *(undefined ***)(&this->field_0x0 + *(int *)(*(int *)this + 4)) = &_vftable_;
+    //   ios::init((ios *)(&this->field_0x0 + *(int *)(*(int *)this + 4)),
+    //             *(streambuf **)((int)&param_1->_fGline + *(int *)(*(int *)param_1 + 4)));
+    //   *(uint *)(&this->field_0x24 + *(int *)(*(int *)this + 4)) =
+    //        *(uint *)(&this->field_0x24 + *(int *)(*(int *)this + 4)) | 1;
+    //   this->x_gcount = 0;
+    //   this->_fGline = 0;
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055B620
+void istream(istream* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall istream::~istream(void) */
+    // 
+    // void __thiscall istream::~istream(istream *this)
+    // 
+    // {
+    //   *(undefined ***)(*(int *)(*(int *)&this[-1].field_0x34 + 4) + -0xc + (int)this) = &_vftable_;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055B630
+istream* operator(istream* this_, streambuf* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: class istream & __thiscall istream::operator=(class streambuf *) */
+    // 
+    // istream * __thiscall istream::operator=(istream *this,streambuf *param_1)
+    // 
+    // {
+    //   undefined4 *puVar1;
+    //   ios *piVar2;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   ios local_40;
+    //   undefined4 uStack_c;
+    //   code *pcStack_8;
+    //   undefined4 uStack_4;
+    //   
+    //   uStack_c = *unaff_FS_OFFSET;
+    //   uStack_4 = 0xffffffff;
+    //   pcStack_8 = FUN_00561ff8;
+    //   *unaff_FS_OFFSET = &uStack_c;
+    //   if ((*(int *)(&this->field_0x1c + *(int *)(*(int *)this + 4)) != 0) &&
+    //      (puVar1 = *(undefined4 **)((int)&this->_fGline + *(int *)(*(int *)this + 4)),
+    //      puVar1 != (undefined4 *)0x0)) {
+    //     (**(code **)*puVar1)(1);
+    //   }
+    //   *(undefined4 *)((int)&this->_fGline + *(int *)(*(int *)this + 4)) = 0;
+    //   piVar2 = (ios *)ios::ios(&local_40);
+    //   uStack_4 = 0;
+    //   ios::operator=((ios *)(&this->field_0x0 + *(int *)(*(int *)this + 4)),piVar2);
+    //   uStack_4 = 0xffffffff;
+    //   ios::~ios(&local_40);
+    //   *(undefined4 *)(&this->field_0x1c + *(int *)(*(int *)this + 4)) = 0;
+    //   ios::init((ios *)(&this->field_0x0 + *(int *)(*(int *)this + 4)),param_1);
+    //   *(uint *)(&this->field_0x24 + *(int *)(*(int *)this + 4)) =
+    //        *(uint *)(&this->field_0x24 + *(int *)(*(int *)this + 4)) | 1;
+    //   this->x_gcount = 0;
+    //   *unaff_FS_OFFSET = uStack_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055B6F0
+int ipfx(istream* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall istream::ipfx(int) */
+    // 
+    // int __thiscall istream::ipfx(istream *this,int param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   uint uVar2;
+    //   uint uVar3;
+    //   int iVar4;
+    //   
+    //   if (param_1 != 0) {
+    //     this->x_gcount = 0;
+    //   }
+    //   iVar1 = *(int *)(*(int *)this + 4);
+    //   uVar2 = *(uint *)((int)&this->x_gcount + iVar1);
+    //   if (uVar2 != 0) {
+    //     *(uint *)((int)&this->x_gcount + iVar1) = uVar2 | 2;
+    //     return 0;
+    //   }
+    //   if (*(ostream **)(&this->field_0x20 + iVar1) != (ostream *)0x0) {
+    //     if (param_1 != 0) {
+    //       iVar4 = *(int *)((int)&this->_fGline + iVar1);
+    //       uVar2 = *(uint *)(iVar4 + 0x2c);
+    //       uVar3 = *(uint *)(iVar4 + 0x28);
+    //       if (uVar3 < uVar2) {
+    //         iVar4 = uVar2 - uVar3;
+    //       }
+    //       else {
+    //         iVar4 = 0;
+    //       }
+    //       if (param_1 <= iVar4) goto LAB_0055b747;
+    //     }
+    //     ostream::flush(*(ostream **)(&this->field_0x20 + iVar1));
+    //   }
+    // LAB_0055b747:
+    //   if ((param_1 == 0) && (((&this->field_0x24)[*(int *)(*(int *)this + 4)] & 1) != 0)) {
+    //     eatwhite(this);
+    //     uVar2 = *(uint *)((int)&this->x_gcount + *(int *)(*(int *)this + 4));
+    //     if (uVar2 != 0) {
+    //       *(uint *)((int)&this->x_gcount + *(int *)(*(int *)this + 4)) = uVar2 | 2;
+    //       return 0;
+    //     }
+    //   }
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055B790
+istream* operator(istream* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: class istream & __thiscall istream::operator>>(char *) */
+    // 
+    // istream * __thiscall istream::operator>>(istream *this,char *param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   uint uVar4;
+    //   
+    //   iVar1 = ipfx(this,0);
+    //   if (iVar1 != 0) {
+    //     iVar1 = *(int *)(&this->field_0x30 + *(int *)(*(int *)this + 4));
+    //     *(undefined4 *)(&this->field_0x30 + *(int *)(*(int *)this + 4)) = 0;
+    //     if (param_1 == (char *)0x0) {
+    //       *(uint *)((int)&this->x_gcount + *(int *)(*(int *)this + 4)) =
+    //            *(uint *)((int)&this->x_gcount + *(int *)(*(int *)this + 4)) | 2;
+    //       return this;
+    //     }
+    //     uVar4 = 0;
+    //     if (iVar1 != 1) {
+    //       do {
+    //         iVar2 = streambuf::sgetc(*(streambuf **)((int)&this->_fGline + *(int *)(*(int *)this + 4)));
+    //         if (iVar2 == -1) {
+    //           *(uint *)((int)&this->x_gcount + *(int *)(*(int *)this + 4)) =
+    //                *(uint *)((int)&this->x_gcount + *(int *)(*(int *)this + 4)) | 1;
+    //           if (uVar4 != 0) goto LAB_0055b867;
+    //           *(uint *)((int)&this->x_gcount + *(int *)(*(int *)this + 4)) =
+    //                *(uint *)((int)&this->x_gcount + *(int *)(*(int *)this + 4)) | 6;
+    //           break;
+    //         }
+    //         iVar3 = isspace(iVar2);
+    //         if (iVar3 != 0) break;
+    //         param_1[uVar4] = (char)iVar2;
+    //         streambuf::stossc(*(streambuf **)((int)&this->_fGline + *(int *)(*(int *)this + 4)));
+    //         uVar4 = uVar4 + 1;
+    //       } while (uVar4 < iVar1 - 1U);
+    //     }
+    //     if (uVar4 == 0) {
+    //       *(uint *)((int)&this->x_gcount + *(int *)(*(int *)this + 4)) =
+    //            *(uint *)((int)&this->x_gcount + *(int *)(*(int *)this + 4)) | 2;
+    //       return this;
+    //     }
+    // LAB_0055b867:
+    //     param_1[uVar4] = '\0';
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055B880
+int peek(istream* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall istream::peek(void) */
+    // 
+    // int __thiscall istream::peek(istream *this)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   iVar1 = ipfx(this,1);
+    //   if (iVar1 != 0) {
+    //     iVar1 = streambuf::sgetc(*(streambuf **)((int)&this->_fGline + *(int *)(*(int *)this + 4)));
+    //     return iVar1;
+    //   }
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055B8B0
+istream* putback(istream* this_, char param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: class istream & __thiscall istream::putback(char) */
+    // 
+    // istream * __thiscall istream::putback(istream *this,char param_1)
+    // 
+    // {
+    //   int *piVar1;
+    //   char *pcVar2;
+    //   int iVar3;
+    //   
+    //   if (*(int *)((int)&this->x_gcount + *(int *)(*(int *)this + 4)) == 0) {
+    //     piVar1 = *(int **)((int)&this->_fGline + *(int *)(*(int *)this + 4));
+    //     if ((uint)piVar1[9] < (uint)piVar1[10]) {
+    //       pcVar2 = (char *)(piVar1[10] - 1);
+    //       piVar1[10] = (int)pcVar2;
+    //       *pcVar2 = param_1;
+    //       iVar3 = (int)param_1;
+    //     }
+    //     else {
+    //       iVar3 = (**(code **)(*piVar1 + 0x24))((int)param_1);
+    //     }
+    //     if (iVar3 == -1) {
+    //       *(uint *)((int)&this->x_gcount + *(int *)(*(int *)this + 4)) =
+    //            *(uint *)((int)&this->x_gcount + *(int *)(*(int *)this + 4)) | 2;
+    //     }
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055B910
+int sync(istream* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall istream::sync(void) */
+    // 
+    // int __thiscall istream::sync(istream *this)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   iVar1 = (**(code **)(**(int **)((int)&this->_fGline + *(int *)(*(int *)this + 4)) + 4))();
+    //   if (iVar1 == -1) {
+    //     *(uint *)((int)&this->x_gcount + *(int *)(*(int *)this + 4)) =
+    //          *(uint *)((int)&this->x_gcount + *(int *)(*(int *)this + 4)) | 6;
+    //   }
+    //   return iVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055B940
+void eatwhite(istream* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall istream::eatwhite(void) */
+    // 
+    // void __thiscall istream::eatwhite(istream *this)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   iVar1 = streambuf::sgetc(*(streambuf **)((int)&this->_fGline + *(int *)(*(int *)this + 4)));
+    //   while( true ) {
+    //     if (iVar1 == -1) {
+    //       *(uint *)((int)&this->x_gcount + *(int *)(*(int *)this + 4)) =
+    //            *(uint *)((int)&this->x_gcount + *(int *)(*(int *)this + 4)) | 1;
+    //       return;
+    //     }
+    //     iVar1 = isspace(iVar1);
+    //     if (iVar1 == 0) break;
+    //     iVar1 = streambuf::snextc(*(streambuf **)((int)&this->_fGline + *(int *)(*(int *)this + 4)));
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055B990
+undefined istream_withassign(istream_withassign* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall istream_withassign::istream_withassign(void) */
+    // 
+    // istream_withassign * __thiscall istream_withassign::istream_withassign(istream_withassign *this)
+    // 
+    // {
+    //   undefined4 *unaff_FS_OFFSET;
+    //   int in_stack_00000004;
+    //   undefined4 uStack_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_00562026;
+    //   uStack_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &uStack_c;
+    //   if (in_stack_00000004 != 0) {
+    //     *(undefined1 **)this = &_vbtable_;
+    //     ios::ios((ios *)(this + 0xc));
+    //     local_4 = 0;
+    //   }
+    //   istream::istream((istream *)this);
+    //   *(undefined ***)(this + *(int *)(*(int *)this + 4)) = &_vftable_;
+    //   *unaff_FS_OFFSET = this;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055BA40
+undefined istream_withassign(istream_withassign* this_, streambuf* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall istream_withassign::istream_withassign(class streambuf *) */
+    // 
+    // istream_withassign * __thiscall
+    // istream_withassign::istream_withassign(istream_withassign *this,streambuf *param_1)
+    // 
+    // {
+    //   undefined4 *unaff_FS_OFFSET;
+    //   int in_stack_00000008;
+    //   undefined4 uStack_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_00562046;
+    //   uStack_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &uStack_c;
+    //   if (in_stack_00000008 != 0) {
+    //     *(undefined1 **)this = &_vbtable_;
+    //     ios::ios((ios *)(this + 0xc));
+    //     local_4 = 0;
+    //   }
+    //   istream::istream((istream *)this,param_1);
+    //   *(undefined ***)(this + *(int *)(*(int *)this + 4)) = &_vftable_;
+    //   *unaff_FS_OFFSET = this;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055BAC0
+void istream_withassign(istream_withassign* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall istream_withassign::~istream_withassign(void) */
+    // 
+    // void __thiscall istream_withassign::~istream_withassign(istream_withassign *this)
+    // 
+    // {
+    //   *(undefined ***)(this + *(int *)(*(int *)(this + -0xc) + 4) + -0xc) = &_vftable_;
+    //   istream::~istream((istream *)this);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055BAEC
+undefined gethostname() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* __stdcall gethostname,8 */
+    // 
+    // void gethostname(void)
+    // 
+    // {
+    //                     /* WARNING: Could not recover jumptable at 0x0055baec. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   gethostname();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055BAF2
+undefined gethostbyname() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* __stdcall gethostbyname,4 */
+    // 
+    // void gethostbyname(void)
+    // 
+    // {
+    //                     /* WARNING: Could not recover jumptable at 0x0055baf2. Too many branches */
+    //                     /* WARNING: Treating indirect jump as call */
+    //   gethostbyname();
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055BC40
+undefined strupr() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* strupr */
+    // 
+    // char * __cdecl strupr(char *param_1)
+    // 
+    // {
+    //   char cVar1;
+    //   int iVar2;
+    //   uint uVar3;
+    //   uint uVar4;
+    //   char *pcVar5;
+    //   char *pcVar6;
+    //   char *pcVar7;
+    //   
+    //   pcVar5 = (char *)0x0;
+    //   if (DAT_008882c0 == 0) {
+    //     pcVar5 = param_1;
+    //     if (*param_1 != '\0') {
+    //       do {
+    //         cVar1 = *param_1;
+    //         if (('`' < cVar1) && (cVar1 < '{')) {
+    //           *param_1 = cVar1 + -0x20;
+    //         }
+    //         pcVar6 = param_1 + 1;
+    //         param_1 = param_1 + 1;
+    //       } while (*pcVar6 != '\0');
+    //       return pcVar5;
+    //     }
+    //   }
+    //   else {
+    //     iVar2 = ___crtLCMapStringA(DAT_008882c0,0x200,param_1,0xffffffff,0,0,0);
+    //     if (((iVar2 != 0) && (pcVar5 = (char *)malloc(iVar2), pcVar5 != (char *)0x0)) &&
+    //        (iVar2 = ___crtLCMapStringA(DAT_008882c0,0x200,param_1,0xffffffff,pcVar5,iVar2,0), iVar2 != 0
+    //        )) {
+    //       uVar3 = 0xffffffff;
+    //       pcVar6 = pcVar5;
+    //       do {
+    //         pcVar7 = pcVar6;
+    //         if (uVar3 == 0) break;
+    //         uVar3 = uVar3 - 1;
+    //         pcVar7 = pcVar6 + 1;
+    //         cVar1 = *pcVar6;
+    //         pcVar6 = pcVar7;
+    //       } while (cVar1 != '\0');
+    //       uVar3 = ~uVar3;
+    //       pcVar6 = pcVar7 + -uVar3;
+    //       pcVar7 = param_1;
+    //       for (uVar4 = uVar3 >> 2; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //         *(undefined4 *)pcVar7 = *(undefined4 *)pcVar6;
+    //         pcVar6 = pcVar6 + 4;
+    //         pcVar7 = pcVar7 + 4;
+    //       }
+    //       for (uVar3 = uVar3 & 3; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //         *pcVar7 = *pcVar6;
+    //         pcVar6 = pcVar6 + 1;
+    //         pcVar7 = pcVar7 + 1;
+    //       }
+    //     }
+    //     free(pcVar5);
+    //   }
+    //   return param_1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055BD00
+undefined itoa() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* itoa */
+    // 
+    // undefined4 __cdecl itoa(int param_1,undefined4 param_2,int param_3)
+    // 
+    // {
+    //   if ((param_3 == 10) && (param_1 < 0)) {
+    //     FUN_0055bd40(param_1,param_2,10,1);
+    //     return param_2;
+    //   }
+    //   FUN_0055bd40(param_1,param_2,param_3,0);
+    //   return param_2;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055BD40
+undefined FUN_0055bd40() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0055bd40(uint param_1,char *param_2,uint param_3,int param_4)
+    // 
+    // {
+    //   ulonglong uVar1;
+    //   char *pcVar2;
+    //   char cVar3;
+    //   char *pcVar4;
+    //   
+    //   pcVar2 = param_2;
+    //   if (param_4 != 0) {
+    //     *param_2 = '-';
+    //     param_2 = param_2 + 1;
+    //     param_1 = -param_1;
+    //     pcVar2 = param_2;
+    //   }
+    //   do {
+    //     pcVar4 = pcVar2;
+    //     uVar1 = (ulonglong)param_1;
+    //     param_1 = param_1 / param_3;
+    //     cVar3 = (char)(uVar1 % (ulonglong)param_3);
+    //     if ((uint)(uVar1 % (ulonglong)param_3) < 10) {
+    //       cVar3 = cVar3 + '0';
+    //     }
+    //     else {
+    //       cVar3 = cVar3 + 'W';
+    //     }
+    //     *pcVar4 = cVar3;
+    //     pcVar2 = pcVar4 + 1;
+    //   } while (param_1 != 0);
+    //   pcVar4[1] = '\0';
+    //   do {
+    //     cVar3 = *pcVar4;
+    //     *pcVar4 = *param_2;
+    //     *param_2 = cVar3;
+    //     pcVar4 = pcVar4 + -1;
+    //     param_2 = param_2 + 1;
+    //   } while (param_2 < pcVar4);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055BDA1
+undefined FUN_0055bda1() {
+    // --- Ghidra decompiler output ---
+    // 
+    // undefined4 FUN_0055bda1(int param_1,undefined4 param_2,int param_3)
+    // 
+    // {
+    //   if ((param_3 == 10) && (param_1 < 0)) {
+    //     FUN_0055bd40(param_1,param_2,10,1);
+    //     return param_2;
+    //   }
+    //   FUN_0055bd40(param_1,param_2,param_3,0);
+    //   return param_2;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055BDF1
+undefined FUN_0055bdf1() {
+    // --- Ghidra decompiler output ---
+    // 
+    // undefined4 FUN_0055bdf1(undefined4 param_1,undefined4 param_2,undefined4 param_3)
+    // 
+    // {
+    //   FUN_0055bd40(param_1,param_2,param_3,0);
+    //   return param_2;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055BE1E
+undefined FUN_0055be1e() {
+    // --- Ghidra decompiler output ---
+    // 
+    // undefined4 FUN_0055be1e(undefined4 param_1,int param_2,undefined4 param_3,int param_4)
+    // 
+    // {
+    //   if (((param_4 == 10) && (param_2 < 1)) && (param_2 < 0)) {
+    //     FUN_0055be70(param_1,param_2,param_3,10,1);
+    //     return param_3;
+    //   }
+    //   FUN_0055be70(param_1,param_2,param_3,param_4,0);
+    //   return param_3;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055BE70
+undefined FUN_0055be70() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0055be70(undefined4 param_1,undefined4 param_2,char *param_3,undefined4 param_4,int param_5
+    //                  )
+    // 
+    // {
+    //   uint uVar1;
+    //   char *pcVar2;
+    //   char cVar3;
+    //   char *pcVar4;
+    //   char *pcVar5;
+    //   longlong lVar6;
+    //   
+    //   pcVar2 = param_3;
+    //   lVar6 = CONCAT44(param_2,param_1);
+    //   if (param_5 != 0) {
+    //     *param_3 = '-';
+    //     param_3 = param_3 + 1;
+    //     pcVar2 = param_3;
+    //     lVar6 = CONCAT44(param_2,param_1);
+    //   }
+    //   do {
+    //     pcVar4 = pcVar2;
+    //     uVar1 = __aullrem(lVar6,param_4,0);
+    //     lVar6 = __aulldiv(lVar6,param_4,0);
+    //     if (uVar1 < 10) {
+    //       cVar3 = (char)uVar1 + '0';
+    //     }
+    //     else {
+    //       cVar3 = (char)uVar1 + 'W';
+    //     }
+    //     *pcVar4 = cVar3;
+    //     pcVar2 = pcVar4 + 1;
+    //   } while (lVar6 != 0);
+    //   pcVar4[1] = '\0';
+    //   do {
+    //     cVar3 = *pcVar4;
+    //     pcVar5 = pcVar4 + -1;
+    //     pcVar2 = param_3 + 1;
+    //     *pcVar4 = *param_3;
+    //     *param_3 = cVar3;
+    //     pcVar4 = pcVar5;
+    //     param_3 = pcVar2;
+    //   } while (pcVar2 < pcVar5);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055BEF1
+undefined FUN_0055bef1() {
+    // --- Ghidra decompiler output ---
+    // 
+    // undefined4 FUN_0055bef1(undefined4 param_1,undefined4 param_2,undefined4 param_3,undefined4 param_4)
+    // 
+    // {
+    //   FUN_0055be70(param_1,param_2,param_3,param_4,0);
+    //   return param_3;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055BF20
+void type_info(type_info* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall type_info::~type_info(void) */
+    // 
+    // void __thiscall type_info::~type_info(type_info *this)
+    // 
+    // {
+    //   *(undefined ***)this = &_vftable_;
+    //   if (*(int *)(this + 4) != 0) {
+    //     free(*(int *)(this + 4));
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055BF60
+int operator(type_info* this_, type_info* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall type_info::operator==(class type_info const &)const  */
+    // 
+    // int __thiscall type_info::operator==(type_info *this,type_info *param_1)
+    // 
+    // {
+    //   type_info tVar1;
+    //   type_info *ptVar2;
+    //   type_info *ptVar3;
+    //   bool bVar4;
+    //   
+    //   ptVar3 = this + 9;
+    //   ptVar2 = param_1 + 9;
+    //   while( true ) {
+    //     tVar1 = *ptVar2;
+    //     bVar4 = (byte)tVar1 < (byte)*ptVar3;
+    //     if (tVar1 != *ptVar3) break;
+    //     if (tVar1 == (type_info)0x0) {
+    //       return 1;
+    //     }
+    //     tVar1 = ptVar2[1];
+    //     bVar4 = (byte)tVar1 < (byte)ptVar3[1];
+    //     if (tVar1 != ptVar3[1]) break;
+    //     ptVar2 = ptVar2 + 2;
+    //     ptVar3 = ptVar3 + 2;
+    //     if (tVar1 == (type_info)0x0) {
+    //       return 1;
+    //     }
+    //   }
+    //   return (uint)(1 - bVar4 == (uint)(bVar4 != 0));
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0055BFC0
+int operator(type_info* this_, type_info* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall type_info::operator!=(class type_info const &)const  */
+    // 
+    // int __thiscall type_info::operator!=(type_info *this,type_info *param_1)
+    // 
+    // {
+    //   type_info tVar1;
+    //   type_info *ptVar2;
+    //   type_info *ptVar3;
+    //   bool bVar4;
+    //   
+    //   ptVar3 = this + 9;
+    //   ptVar2 = param_1 + 9;
+    //   while( true ) {
+    //     tVar1 = *ptVar2;
+    //     bVar4 = (byte)tVar1 < (byte)*ptVar3;
+    //     if (tVar1 != *ptVar3) break;
+    //     if (tVar1 == (type_info)0x0) {
+    //       return 0;
+    //     }
+    //     tVar1 = ptVar2[1];
+    //     bVar4 = (byte)tVar1 < (byte)ptVar3[1];
+    //     if (tVar1 != ptVar3[1]) break;
+    //     ptVar2 = ptVar2 + 2;
+    //     ptVar3 = ptVar3 + 2;
+    //     if (tVar1 == (type_info)0x0) {
+    //       return 0;
+    //     }
+    //   }
+    //   return (uint)(1 - bVar4 != (uint)(bVar4 != 0));
+    // }
+    // 
+    // 
+}
+

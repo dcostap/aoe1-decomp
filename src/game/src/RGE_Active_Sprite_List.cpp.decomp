@@ -1,0 +1,24 @@
+// Auto-generated decompiler unit: RGE_Active_Sprite_List.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x0041A660
+void* RGE_Active_Sprite_List::vector_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall RGE_Active_Sprite_List::`vector deleting destructor'(unsigned
+    //    int) */
+    // 
+    // void * __thiscall
+    // RGE_Active_Sprite_List::_vector_deleting_destructor_(RGE_Active_Sprite_List *this,uint param_1)
+    // 
+    // {
+    //   ~RGE_Active_Sprite_List(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

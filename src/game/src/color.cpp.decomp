@@ -1,0 +1,538 @@
+// Auto-generated decompiler unit: color.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/color.cpp
+#include "../include/common.h"
+
+// Offset: 0x00423EE0
+void RGE_translate_palette(tagPALETTEENTRY* param_1, tagPALETTEENTRY* param_2, tagPALETTEENTRY param_3, long param_4, int param_5, int param_6) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: index1 */
+    // /* void __cdecl RGE_translate_palette(struct tagPALETTEENTRY *,struct tagPALETTEENTRY *,struct
+    //    tagPALETTEENTRY,long,int,int) */
+    // 
+    // void __cdecl
+    // RGE_translate_palette
+    //           (tagPALETTEENTRY *param_1,tagPALETTEENTRY *param_2,tagPALETTEENTRY param_3,long param_4,
+    //           int param_5,int param_6)
+    // 
+    // {
+    //   byte bVar1;
+    //   tagPALETTEENTRY tVar2;
+    //   int *piVar3;
+    //   int iVar4;
+    //   int iVar5;
+    //   uchar *puVar6;
+    //   int iVar7;
+    //   uchar *puVar8;
+    //   long index1;
+    //   long intense [3];
+    //   
+    //   puVar6 = &param_2->peFlags;
+    //   iVar4 = (int)param_2 - (int)param_1;
+    //   intense[0] = 0;
+    //   puVar8 = &param_1->peGreen;
+    //   do {
+    //     if ((intense[0] == param_5) || (intense[0] == param_6)) {
+    //       ((tagPALETTEENTRY *)(puVar6 + -3))->peRed = ((tagPALETTEENTRY *)(puVar8 + -1))->peRed;
+    //       puVar8[iVar4] = *puVar8;
+    //       puVar6[-1] = puVar8[1];
+    //       *puVar6 = puVar8[2];
+    //     }
+    //     else {
+    //       tVar2 = *(tagPALETTEENTRY *)(puVar8 + -1);
+    //       intense[1] = (uint)tVar2 & 0xff;
+    //       bVar1 = puVar8[1];
+    //       intense[2] = (uint)*puVar8;
+    //       param_2 = (tagPALETTEENTRY *)0x2;
+    //       do {
+    //         piVar3 = intense + 2;
+    //         iVar7 = 2;
+    //         do {
+    //           iVar5 = piVar3[-1];
+    //           if (iVar5 < *piVar3) {
+    //             piVar3[-1] = *piVar3;
+    //             *piVar3 = iVar5;
+    //           }
+    //           piVar3 = piVar3 + 1;
+    //           iVar7 = iVar7 + -1;
+    //         } while (iVar7 != 0);
+    //         param_2 = (tagPALETTEENTRY *)&param_2[-1].peFlags;
+    //       } while (param_2 != (tagPALETTEENTRY *)0x0);
+    //       iVar7 = ((uint)bVar1 + intense[2]) * (0xff - intense[1]);
+    //       iVar7 = ((int)(iVar7 + (iVar7 >> 0x1f & 0x1ffU)) >> 9) + intense[1];
+    //       iVar5 = ((int)(((uint)param_3 & 0xff) * iVar7) / 0xff - ((uint)tVar2 & 0xff)) * param_4;
+    //       ((tagPALETTEENTRY *)(puVar6 + -3))->peRed =
+    //            (((char)(iVar5 / 100) + (char)(iVar5 >> 0x1f)) -
+    //            (char)((longlong)iVar5 * 0x51eb851f >> 0x3f)) + ((tagPALETTEENTRY *)(puVar8 + -1))->peRed
+    //       ;
+    //       iVar5 = ((int)(((uint)param_3 >> 8 & 0xff) * iVar7) / 0xff - (uint)*puVar8) * param_4;
+    //       puVar8[iVar4] =
+    //            (((char)(iVar5 / 100) + (char)(iVar5 >> 0x1f)) -
+    //            (char)((longlong)iVar5 * 0x51eb851f >> 0x3f)) + *puVar8;
+    //       iVar7 = ((int)(((uint)param_3 >> 0x10 & 0xff) * iVar7) / 0xff - (uint)puVar8[1]) * param_4;
+    //       puVar6[-1] = (((char)(iVar7 / 100) + (char)(iVar7 >> 0x1f)) -
+    //                    (char)((longlong)iVar7 * 0x51eb851f >> 0x3f)) + puVar8[1];
+    //       *puVar6 = puVar8[2];
+    //     }
+    //     intense[0] = intense[0] + 1;
+    //     puVar8 = puVar8 + 4;
+    //     puVar6 = puVar6 + 4;
+    //   } while (intense[0] < 0x100);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004240B0
+void RGE_fade_palette(TDrawArea* param_1, tagPALETTEENTRY param_2, float param_3, uchar param_4, tagPALETTEENTRY* param_5, int param_6, int param_7) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: delta_time */
+    // /* void __cdecl RGE_fade_palette(class TDrawArea *,struct tagPALETTEENTRY,float,unsigned char,struct
+    //    tagPALETTEENTRY *,int,int) */
+    // 
+    // void __cdecl
+    // RGE_fade_palette(TDrawArea *param_1,tagPALETTEENTRY param_2,float param_3,uchar param_4,
+    //                 tagPALETTEENTRY *param_5,int param_6,int param_7)
+    // 
+    // {
+    //   float fVar1;
+    //   bool bVar2;
+    //   int iVar3;
+    //   uchar *puVar4;
+    //   uchar *puVar5;
+    //   ulong uVar6;
+    //   ulong uVar7;
+    //   long lVar8;
+    //   tagPALETTEENTRY *ptVar9;
+    //   float delta_time;
+    //   uchar done;
+    //   long old_time;
+    //   float fade_time2;
+    //   tagPALETTEENTRY palette1 [256];
+    //   tagPALETTEENTRY palette2 [256];
+    //   
+    //   iVar3 = 0;
+    //   do {
+    //     (&palette1[1].peRed)[iVar3] = '\0';
+    //     (&palette2[1].peRed)[iVar3] = '\0';
+    //     (&palette1[1].peBlue)[iVar3] = '\0';
+    //     (&palette2[1].peBlue)[iVar3] = '\0';
+    //     (&palette1[1].peGreen)[iVar3] = '\0';
+    //     (&palette2[1].peGreen)[iVar3] = '\0';
+    //     (&palette1[1].peFlags)[iVar3] = '\0';
+    //     (&palette2[1].peFlags)[iVar3] = '\0';
+    //     iVar3 = iVar3 + 4;
+    //   } while (iVar3 < 0x400);
+    //   if (param_5 == (tagPALETTEENTRY *)0x0) {
+    //     TDrawArea::GetPalette(param_1,palette1 + 1);
+    //   }
+    //   else {
+    //     ptVar9 = palette1;
+    //     iVar3 = 0x100;
+    //     puVar4 = &param_5->peGreen;
+    //     do {
+    //       ptVar9 = ptVar9 + 1;
+    //       puVar5 = puVar4 + 4;
+    //       ptVar9->peRed = ((tagPALETTEENTRY *)(puVar4 + -1))->peRed;
+    //       puVar5[(int)palette1 + (1 - (int)param_5)] = puVar4[1];
+    //       puVar5[(int)palette1 - (int)param_5] = *puVar4;
+    //       puVar5[(int)palette1 + (2 - (int)param_5)] = puVar4[2];
+    //       iVar3 = iVar3 + -1;
+    //       puVar4 = puVar5;
+    //     } while (iVar3 != 0);
+    //   }
+    //   bVar2 = false;
+    //   uVar6 = debug_timeGetTime(s_C__msdev_work_age1_x1_color_cpp,0x69);
+    //   palette1[0] = (tagPALETTEENTRY)(param_3 * param_3);
+    //   if (param_4 != '\x01') {
+    //     do {
+    //       uVar7 = debug_timeGetTime(s_C__msdev_work_age1_x1_color_cpp,0x88);
+    //       fVar1 = param_3 - (float)(int)(uVar7 - uVar6) * 0.001;
+    //       if (((param_3 <= 0.0) || (param_3 < fVar1)) || (fVar1 < 0.0)) {
+    //         lVar8 = 0;
+    //       }
+    //       else {
+    //         lVar8 = __ftol();
+    //       }
+    //       if (lVar8 < 1) {
+    //         lVar8 = 0;
+    //         bVar2 = true;
+    //       }
+    //       RGE_translate_palette(palette1 + 1,palette2 + 1,param_2,lVar8,param_6,param_7);
+    //       TDrawArea::SetPalette(param_1,palette2 + 1);
+    //     } while (!bVar2);
+    //     return;
+    //   }
+    //   do {
+    //                     /* language.dll match for 0x70: "B" */
+    //     uVar7 = debug_timeGetTime(s_C__msdev_work_age1_x1_color_cpp,0x70);
+    //     fVar1 = (float)(int)(uVar7 - uVar6) * 0.001;
+    //     if (((param_3 <= 0.0) || (param_3 < fVar1)) || (fVar1 < 0.0)) {
+    //       lVar8 = 100;
+    //     }
+    //     else {
+    //       lVar8 = __ftol();
+    //     }
+    //     if (99 < lVar8) {
+    //       lVar8 = 100;
+    //       bVar2 = true;
+    //     }
+    //     RGE_translate_palette(palette1 + 1,palette2 + 1,param_2,lVar8,param_6,param_7);
+    //     TDrawArea::SetPalette(param_1,palette2 + 1);
+    //   } while (!bVar2);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00424350
+undefined RGE_Color_Table(RGE_Color_Table* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: temp_color */
+    // /* public: __thiscall RGE_Color_Table::RGE_Color_Table(int) */
+    // 
+    // RGE_Color_Table * __thiscall RGE_Color_Table::RGE_Color_Table(RGE_Color_Table *this,int param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   short temp_color;
+    //   char tempname [300];
+    //   
+    //   this->_padding_ = (int)&_vftable_;
+    //   rge_read(param_1,this->color_table_name,0x1e);
+    //   rge_read(param_1,&this->id,2);
+    //   rge_read(param_1,&this->resource_id,2);
+    //   rge_read(param_1,&this->map_color,1);
+    //   rge_read(param_1,&this->type,1);
+    //   sprintf(tempname + 4,s_data__s,this->color_table_name);
+    //   iVar1 = fopen(tempname + 4,s_r);
+    //   if (iVar1 != 0) {
+    //     iVar2 = 0;
+    //     do {
+    //       fscanf(iVar1,s__hd,tempname + 2);
+    //       this->table[iVar2] = tempname[2];
+    //       iVar2 = iVar2 + 1;
+    //     } while (iVar2 < 0x100);
+    //     fclose(iVar1);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00424440
+undefined RGE_Color_Table(RGE_Color_Table* this_, FILE* param_2, short param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: file_name */
+    // /* public: __thiscall RGE_Color_Table::RGE_Color_Table(struct _iobuf *,short) */
+    // 
+    // RGE_Color_Table * __thiscall
+    // RGE_Color_Table::RGE_Color_Table(RGE_Color_Table *this,_iobuf *param_1,short param_2)
+    // 
+    // {
+    //   char cVar1;
+    //   int iVar2;
+    //   uint uVar3;
+    //   uint uVar4;
+    //   char *pcVar5;
+    //   uchar *puVar6;
+    //   char *pcVar7;
+    //   char *pcVar8;
+    //   char *file_name;
+    //   char *local_4;
+    //   
+    //   this->id = param_2;
+    //   this->_padding_ = (int)&_vftable_;
+    //   puVar6 = this->table;
+    //   for (iVar2 = 0x40; iVar2 != 0; iVar2 = iVar2 + -1) {
+    //     puVar6[0] = '\0';
+    //     puVar6[1] = '\0';
+    //     puVar6[2] = '\0';
+    //     puVar6[3] = '\0';
+    //     puVar6 = puVar6 + 4;
+    //   }
+    //   pcVar8 = this->color_table_name;
+    //   local_4 = (char *)0x0;
+    //   fscanf(param_1,s__hd__s__hd__hd,&this->resource_id,pcVar8,&param_2,&param_1);
+    //   this->map_color = (uchar)param_2;
+    //   this->type = (uchar)param_1;
+    //   addstring(&local_4,pcVar8,&s__col);
+    //   uVar3 = 0xffffffff;
+    //   pcVar5 = local_4;
+    //   do {
+    //     pcVar7 = pcVar5;
+    //     if (uVar3 == 0) break;
+    //     uVar3 = uVar3 - 1;
+    //     pcVar7 = pcVar5 + 1;
+    //     cVar1 = *pcVar5;
+    //     pcVar5 = pcVar7;
+    //   } while (cVar1 != '\0');
+    //   uVar3 = ~uVar3;
+    //   pcVar5 = pcVar7 + -uVar3;
+    //   for (uVar4 = uVar3 >> 2; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *(undefined4 *)pcVar8 = *(undefined4 *)pcVar5;
+    //     pcVar5 = pcVar5 + 4;
+    //     pcVar8 = pcVar8 + 4;
+    //   }
+    //   for (uVar3 = uVar3 & 3; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //     *pcVar8 = *pcVar5;
+    //     pcVar5 = pcVar5 + 1;
+    //     pcVar8 = pcVar8 + 1;
+    //   }
+    //   if (local_4 != (char *)0x0) {
+    //     free(local_4);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004244F0
+undefined RGE_Color_Table(RGE_Color_Table* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: temp_color */
+    // /* public: __thiscall RGE_Color_Table::RGE_Color_Table(char *) */
+    // 
+    // RGE_Color_Table * __thiscall RGE_Color_Table::RGE_Color_Table(RGE_Color_Table *this,char *param_1)
+    // 
+    // {
+    //   char cVar1;
+    //   int iVar2;
+    //   uint uVar3;
+    //   uint uVar4;
+    //   char *pcVar5;
+    //   int iVar6;
+    //   uchar *puVar7;
+    //   char *pcVar8;
+    //   char *pcVar9;
+    //   short temp_color;
+    //   char tempname [300];
+    //   
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->resource_id = 0;
+    //   this->map_color = '\0';
+    //   this->type = '\0';
+    //   puVar7 = this->table;
+    //   for (iVar2 = 0x40; iVar2 != 0; iVar2 = iVar2 + -1) {
+    //     puVar7[0] = '\0';
+    //     puVar7[1] = '\0';
+    //     puVar7[2] = '\0';
+    //     puVar7[3] = '\0';
+    //     puVar7 = puVar7 + 4;
+    //   }
+    //   uVar3 = 0xffffffff;
+    //   do {
+    //     pcVar5 = param_1;
+    //     if (uVar3 == 0) break;
+    //     uVar3 = uVar3 - 1;
+    //     pcVar5 = param_1 + 1;
+    //     cVar1 = *param_1;
+    //     param_1 = pcVar5;
+    //   } while (cVar1 != '\0');
+    //   uVar3 = ~uVar3;
+    //   pcVar5 = pcVar5 + -uVar3;
+    //   pcVar9 = this->color_table_name;
+    //   for (uVar4 = uVar3 >> 2; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *(undefined4 *)pcVar9 = *(undefined4 *)pcVar5;
+    //     pcVar5 = pcVar5 + 4;
+    //     pcVar9 = pcVar9 + 4;
+    //   }
+    //   for (uVar3 = uVar3 & 3; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //     *pcVar9 = *pcVar5;
+    //     pcVar5 = pcVar5 + 1;
+    //     pcVar9 = pcVar9 + 1;
+    //   }
+    //   uVar3 = 0xffffffff;
+    //   pcVar5 = &s__col;
+    //   do {
+    //     pcVar9 = pcVar5;
+    //     if (uVar3 == 0) break;
+    //     uVar3 = uVar3 - 1;
+    //     pcVar9 = pcVar5 + 1;
+    //     cVar1 = *pcVar5;
+    //     pcVar5 = pcVar9;
+    //   } while (cVar1 != '\0');
+    //   tempname._0_4_ = ~uVar3;
+    //   iVar2 = -1;
+    //   pcVar5 = this->color_table_name;
+    //   do {
+    //     pcVar8 = pcVar5;
+    //     if (iVar2 == 0) break;
+    //     iVar2 = iVar2 + -1;
+    //     pcVar8 = pcVar5 + 1;
+    //     cVar1 = *pcVar5;
+    //     pcVar5 = pcVar8;
+    //   } while (cVar1 != '\0');
+    //   pcVar5 = pcVar9 + -tempname._0_4_;
+    //   pcVar9 = pcVar8 + -1;
+    //   for (uVar3 = (uint)tempname._0_4_ >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //     *(undefined4 *)pcVar9 = *(undefined4 *)pcVar5;
+    //     pcVar5 = pcVar5 + 4;
+    //     pcVar9 = pcVar9 + 4;
+    //   }
+    //   for (uVar3 = tempname._0_4_ & 3; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //     *pcVar9 = *pcVar5;
+    //     pcVar5 = pcVar5 + 1;
+    //     pcVar9 = pcVar9 + 1;
+    //   }
+    //   sprintf(tempname + 4,s_data__s,this->color_table_name);
+    //   iVar2 = fopen(tempname + 4,s_r);
+    //   if (iVar2 != 0) {
+    //     iVar6 = 0;
+    //     do {
+    //       fscanf(iVar2,s__hd,tempname);
+    //       this->table[iVar6] = tempname[0];
+    //       iVar6 = iVar6 + 1;
+    //     } while (iVar6 < 0x100);
+    //     fclose(iVar2);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004245F0
+undefined RGE_Color_Table(RGE_Color_Table* this_, TDrawArea* param_2, long param_3, tagPALETTEENTRY* param_4, tagPALETTEENTRY* param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: temp_color */
+    // /* public: __thiscall RGE_Color_Table::RGE_Color_Table(class TDrawArea *,long,struct tagPALETTEENTRY
+    //    *,struct tagPALETTEENTRY *) */
+    // 
+    // void __thiscall
+    // RGE_Color_Table::RGE_Color_Table
+    //           (RGE_Color_Table *this,TDrawArea *param_1,long param_2,tagPALETTEENTRY *param_3,
+    //           tagPALETTEENTRY *param_4)
+    // 
+    // {
+    //   uchar *puVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   uchar *puVar4;
+    //   int iVar5;
+    //   uchar *puVar6;
+    //   long temp_color;
+    //   tagPALETTEENTRY local_81c;
+    //   long index1;
+    //   int local_814;
+    //   tagPALETTEENTRY palette [256];
+    //   tagPALETTEENTRY temp_palette [256];
+    //   
+    //   this->_padding_ = (int)&_vftable_;
+    //   if (param_4 == (tagPALETTEENTRY *)0x0) {
+    //     TDrawArea::GetPalette(param_1,palette + 1);
+    //   }
+    //   else {
+    //     puVar4 = &palette[1].peGreen;
+    //     iVar3 = 0x100;
+    //     puVar6 = &param_4->peBlue;
+    //     do {
+    //       puVar1 = puVar6 + 4;
+    //       ((tagPALETTEENTRY *)(puVar4 + -1))->peRed = ((tagPALETTEENTRY *)(puVar6 + -2))->peRed;
+    //       *puVar4 = puVar6[-1];
+    //       puVar1[(int)palette - (int)param_4] = *puVar6;
+    //       puVar1[(int)palette + (1 - (int)param_4)] = puVar6[1];
+    //       puVar4 = puVar4 + 4;
+    //       iVar3 = iVar3 + -1;
+    //       puVar6 = puVar1;
+    //     } while (iVar3 != 0);
+    //   }
+    //   if (param_3 == (tagPALETTEENTRY *)0x0) {
+    //     local_81c.peRed = '\0';
+    //     local_81c.peGreen = '\0';
+    //     local_81c.peBlue = '\0';
+    //     local_81c.peFlags = '\0';
+    //   }
+    //   else {
+    //     local_81c = *param_3;
+    //   }
+    //   this->resource_id = 0;
+    //   this->map_color = '\0';
+    //   this->type = '\0';
+    //   puVar4 = this->table;
+    //   for (iVar3 = 0x40; iVar3 != 0; iVar3 = iVar3 + -1) {
+    //     puVar4[0] = '\0';
+    //     puVar4[1] = '\0';
+    //     puVar4[2] = '\0';
+    //     puVar4[3] = '\0';
+    //     puVar4 = puVar4 + 4;
+    //   }
+    //   RGE_translate_palette(palette + 1,temp_palette + 1,local_81c,param_2,-1,-1);
+    //   puVar4 = &temp_palette[1].peGreen;
+    //   local_814 = 0;
+    //   do {
+    //     iVar5 = 0;
+    //     local_81c.peRed = '\0';
+    //     local_81c.peGreen = '\0';
+    //     local_81c.peBlue = '\0';
+    //     local_81c.peFlags = '\0';
+    //     iVar3 = 20000;
+    //     puVar6 = &palette[1].peGreen;
+    //     do {
+    //       iVar2 = (uint)((tagPALETTEENTRY *)(puVar4 + -1))->peRed -
+    //               (uint)((tagPALETTEENTRY *)(puVar6 + -1))->peRed;
+    //       iVar2 = iVar2 * iVar2 + ((uint)*puVar4 - (uint)*puVar6) * ((uint)*puVar4 - (uint)*puVar6) +
+    //               ((uint)puVar4[1] - (uint)puVar6[1]) * ((uint)puVar4[1] - (uint)puVar6[1]);
+    //       if (iVar2 < iVar3) {
+    //         iVar3 = iVar2;
+    //         local_81c = (tagPALETTEENTRY)iVar5;
+    //       }
+    //       iVar5 = iVar5 + 1;
+    //       puVar6 = puVar6 + 4;
+    //     } while (iVar5 < 0x100);
+    //     this->table[local_814] = local_81c.peRed;
+    //     local_814 = local_814 + 1;
+    //     puVar4 = puVar4 + 4;
+    //   } while (local_814 < 0x100);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004247A0
+void RGE_Color_Table(RGE_Color_Table* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall RGE_Color_Table::~RGE_Color_Table(void) */
+    // 
+    // void __thiscall RGE_Color_Table::~RGE_Color_Table(RGE_Color_Table *this)
+    // 
+    // {
+    //   this->_padding_ = (int)&_vftable_;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004247B0
+void save(RGE_Color_Table* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Color_Table::save(int) */
+    // 
+    // void __thiscall RGE_Color_Table::save(RGE_Color_Table *this,int param_1)
+    // 
+    // {
+    //   rge_write(param_1,this->color_table_name,0x1e);
+    //   rge_write(param_1,&this->id,2);
+    //   rge_write(param_1,&this->resource_id,2);
+    //   rge_write(param_1,&this->map_color,1);
+    //   rge_write(param_1,&this->type,1);
+    //   return;
+    // }
+    // 
+    // 
+}
+

@@ -1,0 +1,22 @@
+// Auto-generated decompiler unit: RGE_Map.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x00455080
+void* RGE_Map::vector_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall RGE_Map::`vector deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall RGE_Map::_vector_deleting_destructor_(RGE_Map *this,uint param_1)
+    // 
+    // {
+    //   ~RGE_Map(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

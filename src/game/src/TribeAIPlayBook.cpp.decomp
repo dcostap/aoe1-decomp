@@ -1,0 +1,22 @@
+// Auto-generated decompiler unit: TribeAIPlayBook.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x004E68D0
+void* TribeAIPlayBook::vector_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TribeAIPlayBook::`vector deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall TribeAIPlayBook::_vector_deleting_destructor_(TribeAIPlayBook *this,uint param_1)
+    // 
+    // {
+    //   ~TribeAIPlayBook(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

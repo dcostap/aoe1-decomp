@@ -1,0 +1,25 @@
+// Auto-generated decompiler unit: TribeFishingShipUnitAIModule.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x00506C40
+void* TribeFishingShipUnitAIModule::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TribeFishingShipUnitAIModule::`scalar deleting
+    //    destructor'(unsigned int) */
+    // 
+    // void * __thiscall
+    // TribeFishingShipUnitAIModule::_scalar_deleting_destructor_
+    //           (TribeFishingShipUnitAIModule *this,uint param_1)
+    // 
+    // {
+    //   ~TribeFishingShipUnitAIModule(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

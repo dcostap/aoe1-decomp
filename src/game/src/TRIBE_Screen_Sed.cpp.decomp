@@ -1,0 +1,23 @@
+// Auto-generated decompiler unit: TRIBE_Screen_Sed.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x004A8750
+void* TRIBE_Screen_Sed::vector_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TRIBE_Screen_Sed::`vector deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall
+    // TRIBE_Screen_Sed::_vector_deleting_destructor_(TRIBE_Screen_Sed *this,uint param_1)
+    // 
+    // {
+    //   ~TRIBE_Screen_Sed(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

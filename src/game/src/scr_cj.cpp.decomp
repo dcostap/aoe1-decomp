@@ -1,0 +1,780 @@
+// Auto-generated decompiler unit: scr_cj.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/scr_cj.cpp
+#include "../include/common.h"
+
+// Offset: 0x00491650
+undefined TribeJoinScreen(TribeJoinScreen* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TribeJoinScreen::TribeJoinScreen(void) */
+    // 
+    // TribeJoinScreen * __thiscall TribeJoinScreen::TribeJoinScreen(TribeJoinScreen *this)
+    // 
+    // {
+    //   TListPanel **ppTVar1;
+    //   TButtonPanel **ppTVar2;
+    //   TButtonPanel *pTVar3;
+    //   long lVar4;
+    //   int iVar5;
+    //   uint uVar6;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   TPanel *tabList [5];
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055e9a8;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   tabList[0] = (TPanel *)this;
+    //   TScreenPanel::TScreenPanel((TScreenPanel *)this,s_Join_Screen);
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->startedSession = 0;
+    //   this->listFilled = 0;
+    //   Sess = (TCommunications_Sessions *)0x0;
+    //   this->game_count = 0;
+    //   this->waitingToStart = 0;
+    //   this->joinTime = 0;
+    //   this->close_button = (TButtonPanel *)0x0;
+    //   local_4 = 0;
+    //   TCommunications_Handler::SetPlayerHumanity(comm,1,ME_HUMAN);
+    //   uVar6 = 2;
+    //   do {
+    //     TCommunications_Handler::SetPlayerHumanity(comm,uVar6,ME_ABSENT);
+    //     uVar6 = uVar6 + 1;
+    //   } while ((int)uVar6 < 10);
+    //   lVar4 = TScreenPanel::setup((TScreenPanel *)this,rge_base_game->draw_area,&s_scr3,0xc385,1);
+    //   if (lVar4 == 0) {
+    //     this->_padding_ = 1;
+    //     *unaff_FS_OFFSET = local_c;
+    //     return this;
+    //   }
+    //   TEasy_Panel::setup_shadow_area((TEasy_Panel *)this,0);
+    //   TEasy_Panel::set_ideal_size((TEasy_Panel *)this,0x280,0x1e0);
+    //                     /* language.dll match for 0x259f: "Multiplayer Games" */
+    //   iVar5 = TEasy_Panel::create_text
+    //                     ((TEasy_Panel *)this,(TPanel *)this,&this->title,0x259f,0x14,0x14,600,0x1e,1,1,0
+    //                      ,0);
+    //   if (iVar5 != 0) {
+    //                     /* language.dll match for 0x25a8: "Select Game to Join" */
+    //     TEasy_Panel::create_text
+    //               ((TEasy_Panel *)this,(TPanel *)this,&this->listTitle,0x25a8,0x14,0x41,600,0x14,4,0,0,0
+    //               );
+    //     ppTVar1 = &this->list;
+    //     iVar5 = TEasy_Panel::create_list
+    //                       ((TEasy_Panel *)this,(TPanel *)this,ppTVar1,0x14,0x5a,600,0x10e,0xb);
+    //     if (iVar5 != 0) {
+    //       iVar5 = TEasy_Panel::create_auto_scrollbar
+    //                         ((TEasy_Panel *)this,&this->scrollbar,(TTextPanel *)*ppTVar1,0x14);
+    //       if (iVar5 != 0) {
+    //                     /* language.dll match for 0x25ab: "Click Show Games to see a list of games.
+    //                        Click Create to start a new game." */
+    //         this->listFilled = 1;
+    //         (**(code **)((*ppTVar1)->_padding_ + 0xe4))(0x25ab);
+    //         ppTVar2 = &this->refreshButton;
+    //                     /* language.dll match for 0x25a1: "Show Games" */
+    //         iVar5 = TEasy_Panel::create_button
+    //                           ((TEasy_Panel *)this,(TPanel *)this,ppTVar2,0x25a1,0,0xd2,0x172,0xdc,0x1e,
+    //                            0,0,0);
+    //         if (iVar5 != 0) {
+    //                     /* language.dll match for 0x25a0: "Join" */
+    //           iVar5 = TEasy_Panel::create_button
+    //                             ((TEasy_Panel *)this,(TPanel *)this,&this->joinButton,0x25a0,0,10,0x1b8,
+    //                              200,0x1e,0,0,0);
+    //           if (iVar5 != 0) {
+    //                     /* language.dll match for 0x25a2: "Create" */
+    //             iVar5 = TEasy_Panel::create_button
+    //                               ((TEasy_Panel *)this,(TPanel *)this,&this->createButton,0x25a2,0,0xdc,
+    //                                0x1b8,200,0x1e,0,0,0);
+    //             if (iVar5 != 0) {
+    //                     /* language.dll match for 0xfa2: "Cancel" */
+    //               iVar5 = TEasy_Panel::create_button
+    //                                 ((TEasy_Panel *)this,(TPanel *)this,&this->cancelButton,0xfa2,0,
+    //                                  0x1ae,0x1b8,200,0x1e,0,0,0);
+    //               if (iVar5 != 0) {
+    //                 pTVar3 = this->cancelButton;
+    //                 pTVar3->hotkey = 0x1b;
+    //                 pTVar3->hotkey_shift = 0;
+    //                     /* language.dll match for 0x3ea: "X" */
+    //                 iVar5 = TEasy_Panel::create_button
+    //                                   ((TEasy_Panel *)this,(TPanel *)this,&this->close_button,0x3ea,0,0,
+    //                                    0,0,0,-1,-1,0);
+    //                 if (iVar5 != 0) {
+    //                   (**(code **)(this->close_button->_padding_ + 0x14))(1);
+    //                   (**(code **)(this->close_button->_padding_ + 0x18))
+    //                             (9,4,4,4,4,0x11,0x11,0x11,0x11,0,0,0,0);
+    //                   TPanel::set_curr_child((TPanel *)this,(TPanel *)*ppTVar2);
+    //                   tabList[3] = (TPanel *)this->joinButton;
+    //                   tabList[1] = (TPanel *)*ppTVar1;
+    //                   tabList[2] = (TPanel *)*ppTVar2;
+    //                   tabList[4] = (TPanel *)this->createButton;
+    //                   TPanel::set_tab_order((TPanel *)this,tabList + 1,5);
+    //                 }
+    //               }
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00491990
+void TribeJoinScreen(TribeJoinScreen* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall TribeJoinScreen::~TribeJoinScreen(void) */
+    // 
+    // void __thiscall TribeJoinScreen::~TribeJoinScreen(TribeJoinScreen *this)
+    // 
+    // {
+    //   TCommunications_Sessions *pTVar1;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   pcStack_8 = FUN_0055e9c8;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   this->_padding_ = (int)&_vftable_;
+    //   pTVar1 = Sess;
+    //   local_4 = 0;
+    //   if (Sess != (TCommunications_Sessions *)0x0) {
+    //     TCommunications_Sessions::~TCommunications_Sessions(Sess);
+    //     operator_delete(pTVar1);
+    //   }
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->title);
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->listTitle);
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->list);
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->scrollbar);
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->refreshButton);
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->joinButton);
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->createButton);
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->cancelButton);
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->close_button);
+    //   local_4 = 0xffffffff;
+    //   TScreenPanel::~TScreenPanel((TScreenPanel *)this);
+    //   *unaff_FS_OFFSET = local_c;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00491A80
+long TribeJoinScreen::handle_idle() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual long __thiscall TribeJoinScreen::handle_idle(void) */
+    // 
+    // long __thiscall TribeJoinScreen::handle_idle(TribeJoinScreen *this)
+    // 
+    // {
+    //   ulong uVar1;
+    //   long lVar2;
+    //   
+    //   if (this->waitingToStart == 0) {
+    //     if ((this->listFilled != 0) && (rge_base_game->input_enabled == 0)) {
+    //       RGE_Base_Game::enable_input(rge_base_game);
+    //     }
+    //     if (this->waitingToStart == 0) goto LAB_00491b15;
+    //   }
+    //   uVar1 = debug_timeGetTime(s_C__msdev_work_age1_x1_scr_cj_cpp,0xaa);
+    //   if (10000 < uVar1 - this->joinTime) {
+    //     TCommunications_Handler::UnlinkToLevel(comm,SERVICE_AVAILABLE);
+    //     this->waitingToStart = 0;
+    //     RGE_Base_Game::enable_input(rge_base_game);
+    //                     /* language.dll match for 0x25a3: "Unable to join game." */
+    //     TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x25a3,(char *)0x0,0x1c2,100);
+    //     return 1;
+    //   }
+    // LAB_00491b15:
+    //   lVar2 = TPanel::handle_idle((TPanel *)this);
+    //   return lVar2;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00491B20
+long TribeJoinScreen::handle_user_command(uint param_1, long param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual long __thiscall TribeJoinScreen::handle_user_command(unsigned int,long) */
+    // 
+    // long __thiscall
+    // TribeJoinScreen::handle_user_command(TribeJoinScreen *this,uint param_1,long param_2)
+    // 
+    // {
+    //   TribeMPSetupScreen *this_00;
+    //   long lVar1;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_c = *unaff_FS_OFFSET;
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055e9eb;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   switch(param_1) {
+    //   case 0x17a8:
+    //   case 0x17a9:
+    //   case 0x17aa:
+    //   case 0x17b2:
+    //     if (this->waitingToStart != 0) {
+    //       TCommunications_Handler::UnlinkToLevel(comm,SERVICE_AVAILABLE);
+    //       this->waitingToStart = 0;
+    //       RGE_Base_Game::enable_input(rge_base_game);
+    //                     /* language.dll match for 0x25a3: "Unable to join game." */
+    //       TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x25a3,(char *)0x0,0x1c2,100);
+    //       *unaff_FS_OFFSET = local_c;
+    //       return 1;
+    //     }
+    //     break;
+    //   case 0x17b8:
+    //     if (this->waitingToStart != 0) {
+    //       this_00 = (TribeMPSetupScreen *)operator_new(0x890);
+    //       local_4 = 0;
+    //       if (this_00 != (TribeMPSetupScreen *)0x0) {
+    //         TribeMPSetupScreen::TribeMPSetupScreen(this_00);
+    //       }
+    //       local_4 = 0xffffffff;
+    //       TPanelSystem::setCurrentPanel(&panel_system,s_MP_Setup_Screen,0);
+    //       TPanelSystem::destroyPanel(&panel_system,s_Join_Screen);
+    //       *unaff_FS_OFFSET = local_c;
+    //       return 1;
+    //     }
+    //   }
+    //   lVar1 = TPanel::handle_user_command((TPanel *)this,param_1,param_2);
+    //   *unaff_FS_OFFSET = local_c;
+    //   return lVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00491C42
+undefined FUN_00491c42() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_00491c42(void)
+    // 
+    // {
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00491C70
+void fillList(TribeJoinScreen* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall TribeJoinScreen::fillList(void) */
+    // 
+    // void __thiscall TribeJoinScreen::fillList(TribeJoinScreen *this)
+    // 
+    // {
+    //   TCommunications_Sessions *this_00;
+    //   int iVar1;
+    //   ulong uVar2;
+    //   ulong uVar3;
+    //   char *pcVar4;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   char szTemp [126];
+    //   undefined4 uStack_10;
+    //   undefined4 uStack_c;
+    //   code *pcStack_8;
+    //   undefined4 uStack_4;
+    //   
+    //   uStack_c = *unaff_FS_OFFSET;
+    //   uStack_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055ea0e;
+    //   *unaff_FS_OFFSET = &uStack_c;
+    //   RGE_Base_Game::disable_input(rge_base_game);
+    //                     /* language.dll match for 0x25a9: "Looking for games..." */
+    //   this->listFilled = 0;
+    //   this->game_count = 0;
+    //   (**(code **)(this->list->_padding_ + 0xe4))(0x25a9);
+    //   RGE_Base_Game::draw_window(rge_base_game);
+    //   if (this->startedSession == 0) {
+    //     this_00 = (TCommunications_Sessions *)operator_new(0x457b0);
+    //     pcStack_8 = (code *)0x0;
+    //     if (this_00 == (TCommunications_Sessions *)0x0) {
+    //       Sess = (TCommunications_Sessions *)0x0;
+    //     }
+    //     else {
+    //       Sess = (TCommunications_Sessions *)
+    //              TCommunications_Sessions::TCommunications_Sessions(this_00,comm);
+    //     }
+    //     pcStack_8 = (code *)0xffffffff;
+    //     if (Sess == (TCommunications_Sessions *)0x0) {
+    //                     /* language.dll match for 0x25ab: "Click Show Games to see a list of games.
+    //                        Click Create to start a new game." */
+    //       (**(code **)(this->list->_padding_ + 0xe4))(0x25ab);
+    //       *unaff_FS_OFFSET = stack0xffffffec;
+    //       return;
+    //     }
+    //     this->startedSession = 1;
+    //   }
+    //   else {
+    //     TCommunications_Sessions::Refresh(Sess);
+    //   }
+    //   iVar1 = TCommunications_Sessions::GetSessionCount(Sess);
+    //   this->game_count = iVar1;
+    //   if (iVar1 < 1) {
+    //                     /* language.dll match for 0x25ab: "Click Show Games to see a list of games.
+    //                        Click Create to start a new game." */
+    //     (**(code **)(this->list->_padding_ + 0xe4))(0x25ab);
+    //   }
+    //   else {
+    //     TTextPanel::empty_list((TTextPanel *)this->list);
+    //     iVar1 = 0;
+    //     if (0 < this->game_count) {
+    //       do {
+    //         uVar2 = TCommunications_Sessions::GetSessionMaxPlayers(Sess,iVar1);
+    //         uVar3 = TCommunications_Sessions::GetSessionCurrentPlayers(Sess,iVar1);
+    //         pcVar4 = TCommunications_Sessions::GetSessionName(Sess,iVar1);
+    //         sprintf(szTemp,s__s_____1d_____1d__,pcVar4,uVar3,uVar2);
+    //         TTextPanel::append_line((TTextPanel *)this->list,szTemp,0);
+    //         iVar1 = iVar1 + 1;
+    //       } while (iVar1 < this->game_count);
+    //     }
+    //     TPanel::set_curr_child((TPanel *)this,(TPanel *)this->list);
+    //   }
+    //   this->listFilled = 1;
+    //   *unaff_FS_OFFSET = uStack_10;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00491E20
+long TribeJoinScreen::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual long __thiscall TribeJoinScreen::action(class TPanel *,long,unsigned
+    //    long,unsigned long) */
+    // 
+    // long __thiscall
+    // TribeJoinScreen::action
+    //           (TribeJoinScreen *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
+    // 
+    // {
+    //   long lVar1;
+    //   int iVar2;
+    //   _GUID *p_Var3;
+    //   char *pcVar4;
+    //   ulong uVar5;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   char temp [256];
+    //   char string [256];
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_c = *unaff_FS_OFFSET;
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055ea3c;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   if (param_1 == (TPanel *)0x0) {
+    // LAB_0049208e:
+    //     lVar1 = TEasy_Panel::action((TEasy_Panel *)this,param_1,param_2,param_3,param_4);
+    //   }
+    //   else {
+    //     if ((TListPanel *)param_1 == this->list) {
+    //       if ((param_2 == 3) && (0 < this->game_count)) {
+    //         (**(code **)(this->_padding_ + 0xb4))(this->joinButton,1,0,0);
+    //         lVar1 = 1;
+    //         goto LAB_004920a7;
+    //       }
+    //     }
+    //     else if ((TButtonPanel *)param_1 == this->joinButton) {
+    //       if (param_2 == 1) {
+    //         if (this->game_count < 1) {
+    //                     /* language.dll match for 0x25a4: "There are no games to join." */
+    //           TEasy_Panel::popupOKDialog((TEasy_Panel *)this,0x25a4,(char *)0x0,0x1c2,100);
+    //           lVar1 = 1;
+    //         }
+    //         else {
+    //           iVar2 = TTextPanel::currentLineNumber((TTextPanel *)this->list);
+    //           p_Var3 = TCommunications_Sessions::GetSessionGUID(Sess,iVar2);
+    //           iVar2 = TCommunications_Handler::JoinMultiplayerGame(comm,p_Var3);
+    //           if (iVar2 == 0) {
+    //                     /* language.dll match for 0x25a3: "Unable to join game." */
+    //             TPanel::get_string((TPanel *)this,0x25a3,temp + 4,0x100);
+    //             pcVar4 = TTextPanel::currentLine((TTextPanel *)this->list);
+    //             sprintf(string + 4,temp + 4,pcVar4);
+    //             TEasy_Panel::popupOKDialog((TEasy_Panel *)this,string + 4,(char *)0x0,0x1c2,100);
+    //             lVar1 = 1;
+    //           }
+    //           else {
+    //             RGE_Base_Game::disable_input(rge_base_game);
+    //             this->waitingToStart = 1;
+    //             uVar5 = debug_timeGetTime(s_C__msdev_work_age1_x1_scr_cj_cpp,0x140);
+    //             this->joinTime = uVar5;
+    //             lVar1 = 1;
+    //           }
+    //         }
+    //         goto LAB_004920a7;
+    //       }
+    //     }
+    //     else if ((TButtonPanel *)param_1 == this->cancelButton) {
+    //       if (param_2 == 1) {
+    //         RGE_Base_Game::disable_input(rge_base_game);
+    //         TCommunications_Handler::UnlinkToLevel(comm,SINGLE_PLAYER);
+    //         temp._0_4_ = operator_new(0x6a0);
+    //         local_4 = 0;
+    //         if ((TribeMPStartupScreen *)temp._0_4_ != (TribeMPStartupScreen *)0x0) {
+    //           TribeMPStartupScreen::TribeMPStartupScreen((TribeMPStartupScreen *)temp._0_4_);
+    //         }
+    //         local_4 = 0xffffffff;
+    //         TPanelSystem::setCurrentPanel(&panel_system,s_MP_Startup_Screen,0);
+    //         TPanelSystem::destroyPanel(&panel_system,s_Join_Screen);
+    //         lVar1 = 1;
+    //         goto LAB_004920a7;
+    //       }
+    //     }
+    //     else if (((TButtonPanel *)param_1 == this->createButton) && (param_2 == 1)) {
+    //       temp._0_4_ = operator_new(0x4a4);
+    //       local_4 = 1;
+    //       if ((TribeMPCreateDialog *)temp._0_4_ != (TribeMPCreateDialog *)0x0) {
+    //         TribeMPCreateDialog::TribeMPCreateDialog((TribeMPCreateDialog *)temp._0_4_,(TPanel *)this);
+    //         lVar1 = 1;
+    //         goto LAB_004920a7;
+    //       }
+    //     }
+    //     else if ((TButtonPanel *)param_1 == this->refreshButton) {
+    //       if (param_2 == 1) {
+    //         fillList(this);
+    //         lVar1 = 1;
+    //         goto LAB_004920a7;
+    //       }
+    //     }
+    //     else {
+    //       if (((TButtonPanel *)param_1 != this->close_button) || (param_2 != 1)) goto LAB_0049208e;
+    //       RGE_Base_Game::close(rge_base_game);
+    //     }
+    //     lVar1 = 1;
+    //   }
+    // LAB_004920a7:
+    //   *unaff_FS_OFFSET = local_c;
+    //   return lVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004920C0
+undefined TribeMPCreateDialog(TribeMPCreateDialog* this_, TPanel* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: tab_list */
+    // /* public: __thiscall TribeMPCreateDialog::TribeMPCreateDialog(class TPanel *) */
+    // 
+    // TribeMPCreateDialog * __thiscall
+    // TribeMPCreateDialog::TribeMPCreateDialog(TribeMPCreateDialog *this,TPanel *param_1)
+    // 
+    // {
+    //   TEditPanel **ppTVar1;
+    //   char cVar2;
+    //   TButtonPanel *pTVar3;
+    //   long lVar4;
+    //   char *pcVar5;
+    //   TDrawArea *pTVar6;
+    //   char *pcVar7;
+    //   uint uVar8;
+    //   uint uVar9;
+    //   char *pcVar10;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   long lVar11;
+    //   long lVar12;
+    //   int iVar13;
+    //   TPanel *tab_list [3];
+    //   char str [256];
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055ea5b;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   str._0_4_ = this;
+    //   TDialogPanel::TDialogPanel((TDialogPanel *)this,s_Create_Dialog);
+    //   ppTVar1 = &this->inputGamename;
+    //   iVar13 = 1;
+    //   local_4 = 0;
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->title = (TTextPanel *)0x0;
+    //   this->input_title = (TTextPanel *)0x0;
+    //   *ppTVar1 = (TEditPanel *)0x0;
+    //   this->okButton = (TButtonPanel *)0x0;
+    //   this->cancelButton = (TButtonPanel *)0x0;
+    //   lVar4 = TEasy_Panel::get_popup_info_id((TEasy_Panel *)param_1);
+    //   pcVar5 = TEasy_Panel::get_popup_info_file((TEasy_Panel *)param_1);
+    //   lVar12 = 0xe6;
+    //   lVar11 = 500;
+    //   pTVar6 = TPanel::renderArea(param_1);
+    //   iVar13 = TDialogPanel::setup((TDialogPanel *)this,pTVar6,param_1,lVar11,lVar12,pcVar5,lVar4,iVar13
+    //                               );
+    //                     /* language.dll match for 0x25a6: "Create Game" */
+    //                     /* language.dll match for 0x25aa: "Game Name" */
+    //   if (((iVar13 != 0) &&
+    //       (iVar13 = TEasy_Panel::create_text
+    //                           ((TEasy_Panel *)this,(TPanel *)this,&this->title,0x25a6,0x14,0x14,0x1cc,
+    //                            0x1e,1,1,1,0), iVar13 != 0)) &&
+    //      (iVar13 = TEasy_Panel::create_text
+    //                          ((TEasy_Panel *)this,(TPanel *)this,&this->input_title,0x25aa,0x28,0x55,
+    //                           0x1a4,0x14,4,0,1,0), iVar13 != 0)) {
+    //     pcVar5 = TRegistry::RegGetAscii(Regs,1,s_Default_Age_Of_Empires_MP_Gamena);
+    //     if (pcVar5 == (char *)0x0) {
+    //       str[4] = '\0';
+    //     }
+    //     else {
+    //       pcVar7 = TRegistry::RegGetAscii(Regs,1,s_Default_Age_Of_Empires_MP_Gamena);
+    //       uVar8 = 0xffffffff;
+    //       pcVar5 = str;
+    //       do {
+    //         pcVar10 = pcVar7;
+    //         if (uVar8 == 0) break;
+    //         uVar8 = uVar8 - 1;
+    //         pcVar10 = pcVar7 + 1;
+    //         cVar2 = *pcVar7;
+    //         pcVar7 = pcVar10;
+    //       } while (cVar2 != '\0');
+    //       uVar8 = ~uVar8;
+    //       pcVar7 = pcVar10 + -uVar8;
+    //       for (uVar9 = uVar8 >> 2; pcVar5 = pcVar5 + 4, uVar9 != 0; uVar9 = uVar9 - 1) {
+    //         *(undefined4 *)pcVar5 = *(undefined4 *)pcVar7;
+    //         pcVar7 = pcVar7 + 4;
+    //       }
+    //       for (uVar8 = uVar8 & 3; uVar8 != 0; uVar8 = uVar8 - 1) {
+    //         *pcVar5 = *pcVar7;
+    //         pcVar7 = pcVar7 + 1;
+    //         pcVar5 = pcVar5 + 1;
+    //       }
+    //     }
+    //                     /* language.dll match for 0x6e: "Copperplate Gothic Light" */
+    //     iVar13 = TEasy_Panel::create_edit
+    //                        ((TEasy_Panel *)this,(TPanel *)this,ppTVar1,str + 4,0x28,FormatText,0x28,0x6e
+    //                         ,0x1a4,0x17,0xb,1,0);
+    //     if (iVar13 != 0) {
+    //                     /* language.dll match for 0xfa1: "OK" */
+    //       iVar13 = TEasy_Panel::create_button
+    //                          ((TEasy_Panel *)this,(TPanel *)this,&this->okButton,0xfa1,0,0x3c,0xb4,0xb4,
+    //                           0x1e,0,0,0);
+    //       if (iVar13 != 0) {
+    //                     /* language.dll match for 0xfa2: "Cancel" */
+    //         iVar13 = TEasy_Panel::create_button
+    //                            ((TEasy_Panel *)this,(TPanel *)this,&this->cancelButton,0xfa2,0,0x104,
+    //                             0xb4,0xb4,0x1e,0,0,0);
+    //         if (iVar13 != 0) {
+    //           pTVar3 = this->cancelButton;
+    //           pTVar3->hotkey = 0x1b;
+    //           pTVar3->hotkey_shift = 0;
+    //           tab_list[1] = (TPanel *)*ppTVar1;
+    //           tab_list[2] = (TPanel *)this->okButton;
+    //           TPanel::set_tab_order((TPanel *)this,tab_list + 1,3);
+    //           TPanel::set_curr_child((TPanel *)this,(TPanel *)*ppTVar1);
+    //         }
+    //       }
+    //     }
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00492330
+void TribeMPCreateDialog(TribeMPCreateDialog* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall TribeMPCreateDialog::~TribeMPCreateDialog(void) */
+    // 
+    // void __thiscall TribeMPCreateDialog::~TribeMPCreateDialog(TribeMPCreateDialog *this)
+    // 
+    // {
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   pcStack_8 = FUN_0055ea78;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   this->_padding_ = (int)&_vftable_;
+    //   local_4 = 0;
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->title);
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->input_title);
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->inputGamename);
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->okButton);
+    //   TPanel::delete_panel((TPanel *)this,(TPanel **)&this->cancelButton);
+    //   local_4 = 0xffffffff;
+    //   TDialogPanel::~TDialogPanel((TDialogPanel *)this);
+    //   *unaff_FS_OFFSET = local_c;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004923C0
+long TribeMPCreateDialog::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: virtual long __thiscall TribeMPCreateDialog::action(class TPanel *,long,unsigned
+    //    long,unsigned long) */
+    // 
+    // long __thiscall
+    // TribeMPCreateDialog::action
+    //           (TribeMPCreateDialog *this,TPanel *param_1,long param_2,ulong param_3,ulong param_4)
+    // 
+    // {
+    //   char cVar1;
+    //   int *piVar2;
+    //   TEasy_Panel *this_00;
+    //   int iVar3;
+    //   long lVar4;
+    //   char *pcVar5;
+    //   uchar *puVar6;
+    //   int iVar7;
+    //   TribeMPSetupScreen *this_01;
+    //   uint uVar8;
+    //   ulong *puVar9;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   bool bVar10;
+    //   ulong local_1c;
+    //   undefined4 local_18;
+    //   undefined4 local_14;
+    //   undefined4 local_10;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 uStack_4;
+    //   
+    //   local_c = *unaff_FS_OFFSET;
+    //   uStack_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055ea9b;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   if (param_1 != (TPanel *)0x0) {
+    //     if ((((TButtonPanel *)param_1 == this->okButton) && (param_2 == 1)) ||
+    //        (((TEditPanel *)param_1 == this->inputGamename && (param_2 == 0)))) {
+    //       iVar3 = TEditPanel::is_blank(this->inputGamename);
+    //       if (iVar3 == 0) {
+    //         RGE_Base_Game::disable_input(rge_base_game);
+    //         pcVar5 = TEditPanel::currentLine(this->inputGamename);
+    //         uVar8 = 0xffffffff;
+    //         do {
+    //           if (uVar8 == 0) break;
+    //           uVar8 = uVar8 - 1;
+    //           cVar1 = *pcVar5;
+    //           pcVar5 = pcVar5 + 1;
+    //         } while (cVar1 != '\0');
+    //         uVar8 = ~uVar8;
+    //         puVar6 = (uchar *)TEditPanel::currentLine(this->inputGamename);
+    //         TRegistry::RegSetAscii(Regs,1,s_Default_Age_Of_Empires_MP_Gamena,puVar6,uVar8);
+    //         pcVar5 = TEditPanel::currentLine(this->inputGamename);
+    //         TCommunications_Handler::SetGameTitle(comm,pcVar5);
+    //         piVar2 = (int *)this->_padding_;
+    //         TDebuggingLog::Log(L,(char *)L,s_____CALLING_CreateMultiplayerGam);
+    //         TPanelSystem::setCurrentPanel(&panel_system,s_Join_Screen,0);
+    //         RGE_Base_Game::draw_window(rge_base_game);
+    //         local_1c = (comm->ServiceGUID).Data1;
+    //         local_18._0_2_ = (comm->ServiceGUID).Data2;
+    //         local_18._2_2_ = (comm->ServiceGUID).Data3;
+    //         local_14 = *(undefined4 *)(comm->ServiceGUID).Data4;
+    //         bVar10 = true;
+    //         local_10 = *(undefined4 *)((comm->ServiceGUID).Data4 + 4);
+    //         iVar3 = 0x10;
+    //         puVar9 = &local_1c;
+    //         pcVar5 = &_DPSPGUID_TCPIP;
+    //         do {
+    //           if (iVar3 == 0) break;
+    //           iVar3 = iVar3 + -1;
+    //           bVar10 = (char)*puVar9 == *pcVar5;
+    //           puVar9 = (ulong *)((int)puVar9 + 1);
+    //           pcVar5 = pcVar5 + 1;
+    //         } while (bVar10);
+    //         if (bVar10) {
+    //           iVar3 = 0x4c3;
+    //         }
+    //         else {
+    //                     /* language.dll match for 0x4c2: "Creating multiplayer game...\\n\\n\\n\\nPlease
+    //                        press ESC if the game is not\\ncreated within 15 seconds." */
+    //           iVar3 = 0x4c2;
+    //         }
+    //         TRIBE_Game::show_status_message((TRIBE_Game *)rge_base_game,iVar3,&s_scr3,0xc385);
+    //         RGE_Base_Game::draw_window(rge_base_game);
+    //         WinExec(s_data_closedpw_exe,0);
+    //         iVar3 = *piVar2;
+    //         if ((*(char *)(iVar3 + 0x478) == '\x02') && (*(char *)(iVar3 + 0x479) == '\x02')) {
+    //           (**(code **)(**(int **)(iVar3 + 0x18) + 0x28))(*(int **)(iVar3 + 0x18));
+    //         }
+    //         puVar9 = comm->PlayerStopTurn;
+    //         for (iVar3 = 9; puVar9 = puVar9 + 1, iVar3 != 0; iVar3 = iVar3 + -1) {
+    //           *puVar9 = 0;
+    //         }
+    //         iVar3 = TCommunications_Handler::CreateMultiplayerGame(comm);
+    //         TDebuggingLog::Log(L,(char *)L,s_____RETURNED_FROM_CreateMultipla);
+    //         iVar7 = FindWindowA(s_closedpw,s_closedpw);
+    //         if (iVar7 != 0) {
+    //           SendMessageA(iVar7,0x10,0,0);
+    //         }
+    //         if (iVar3 == 0) {
+    //           this_00 = (TEasy_Panel *)this->_padding_;
+    //           TPanelSystem::destroyPanel(&panel_system,s_Create_Dialog);
+    //           TPanelSystem::setCurrentPanel(&panel_system,s_Join_Screen,0);
+    //           TPanelSystem::destroyPanel(&panel_system,s_Status_Screen);
+    //                     /* language.dll match for 0x25ad: "Unable to create game. For TCP/IP games, you
+    //                        may need to connect to the Internet before starting Age of Empires." */
+    //           TEasy_Panel::popupOKDialog(this_00,0x25ad,(char *)0x0,0x1c2,100);
+    //           lVar4 = 1;
+    //         }
+    //         else {
+    //           this_01 = (TribeMPSetupScreen *)operator_new(0x890);
+    //           uStack_4 = 0;
+    //           if (this_01 != (TribeMPSetupScreen *)0x0) {
+    //             TribeMPSetupScreen::TribeMPSetupScreen(this_01);
+    //           }
+    //           uStack_4 = 0xffffffff;
+    //           TPanelSystem::setCurrentPanel(&panel_system,s_MP_Setup_Screen,0);
+    //           TPanelSystem::destroyPanel(&panel_system,s_Status_Screen);
+    //           TPanelSystem::destroyPanel(&panel_system,s_Create_Dialog);
+    //           TPanelSystem::destroyPanel(&panel_system,s_Join_Screen);
+    //           lVar4 = 1;
+    //         }
+    //       }
+    //       else {
+    //         TPanel::set_curr_child((TPanel *)this,(TPanel *)this->inputGamename);
+    //         lVar4 = 1;
+    //       }
+    //       goto LAB_004926c1;
+    //     }
+    //     if ((((TButtonPanel *)param_1 == this->cancelButton) && (param_2 == 1)) ||
+    //        (((TEditPanel *)param_1 == this->inputGamename && (param_2 == 1)))) {
+    //       TPanelSystem::setCurrentPanel(&panel_system,s_Join_Screen,0);
+    //       TPanelSystem::destroyPanel(&panel_system,s_Create_Dialog);
+    //       lVar4 = 1;
+    //       goto LAB_004926c1;
+    //     }
+    //   }
+    //   lVar4 = TPanel::action((TPanel *)this,param_1,param_2,param_3,param_4);
+    // LAB_004926c1:
+    //   *unaff_FS_OFFSET = local_c;
+    //   return lVar4;
+    // }
+    // 
+    // 
+}
+

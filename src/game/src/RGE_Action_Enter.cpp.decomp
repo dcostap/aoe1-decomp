@@ -1,0 +1,23 @@
+// Auto-generated decompiler unit: RGE_Action_Enter.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x004023F0
+void* RGE_Action_Enter::scalar_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall RGE_Action_Enter::`scalar deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall
+    // RGE_Action_Enter::_scalar_deleting_destructor_(RGE_Action_Enter *this,uint param_1)
+    // 
+    // {
+    //   ~RGE_Action_Enter(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

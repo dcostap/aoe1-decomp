@@ -1,0 +1,304 @@
+// Auto-generated decompiler unit: getdxver.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/getdxver.cpp
+#include "../include/common.h"
+
+// Offset: 0x0044DAC0
+void GetDXVersion(ulong* param_1, ulong* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: pDDraw */
+    // /* void __cdecl GetDXVersion(unsigned long *,unsigned long *) */
+    // 
+    // void __cdecl GetDXVersion(ulong *param_1,ulong *param_2)
+    // 
+    // {
+    //   int iVar1;
+    //   int *piVar2;
+    //   int iVar3;
+    //   code *pcVar4;
+    //   char **ppcVar5;
+    //   int *unaff_retaddr;
+    //   undefined **ppuVar6;
+    //   int *piVar7;
+    //   int *piVar8;
+    //   undefined4 *puVar9;
+    //   int *piStack_14c;
+    //   ulong *puStack_148;
+    //   ulong *puStack_144;
+    //   int *piStack_140;
+    //   int *piStack_13c;
+    //   undefined *puStack_138;
+    //   int *piStack_134;
+    //   int *piStack_130;
+    //   char *apcStack_12c [2];
+    //   IDirectDraw *pDDraw;
+    //   IDirectPlay3 *dp3;
+    //   IDirectDrawSurface *pSurf;
+    //   IDirectDraw2 *pDDraw2;
+    //   IDirectDrawSurface3 *pSurf3;
+    //   _DDSURFACEDESC desc;
+    //   _OSVERSIONINFOA osVer;
+    //   undefined4 *puStack_4;
+    //   
+    //   apcStack_12c[1] = (char *)&osVer.dwMajorVersion;
+    //   osVer.dwMajorVersion = 0x94;
+    //   apcStack_12c[0] = (char *)0x44daf5;
+    //   iVar1 = GetVersionExA();
+    //   if (iVar1 == 0) {
+    //     *unaff_retaddr = 0;
+    //     *param_1 = 0;
+    //     return;
+    //   }
+    //   if (osVer.dwPlatformId == 2) {
+    //     *param_1 = 2;
+    //     if (osVer.dwMajorVersion < 4) {
+    //       *param_1 = 0;
+    //       return;
+    //     }
+    //     if (osVer.dwMajorVersion != 4) {
+    //       *unaff_retaddr = 0x501;
+    //       return;
+    //     }
+    //     apcStack_12c[0] = s_DINPUT_DLL;
+    //     *unaff_retaddr = 0x200;
+    //     piStack_130 = (int *)0x44db68;
+    //     piVar2 = (int *)LoadLibraryA();
+    //     if (piVar2 == (int *)0x0) {
+    //       piStack_130 = (int *)s_Couldn_t_LoadLibrary_DInput__;
+    //       piStack_134 = (int *)0x44db79;
+    //       OutputDebugStringA();
+    //       return;
+    //     }
+    //     piStack_130 = (int *)s_DirectInputCreateA;
+    //     puStack_138 = (undefined *)0x44db90;
+    //     piStack_134 = piVar2;
+    //     iVar1 = GetProcAddress();
+    //     piStack_134 = (int *)0x44db99;
+    //     piStack_130 = piVar2;
+    //     FreeLibrary();
+    //     if (iVar1 == 0) {
+    //       piStack_134 = (int *)s_Couldn_t_GetProcAddress_DInputCr;
+    //       puStack_138 = (undefined *)0x44dba8;
+    //       OutputDebugStringA();
+    //       return;
+    //     }
+    //     piStack_134 = (int *)0x0;
+    //     *unaff_retaddr = 0x300;
+    //     puStack_138 = (undefined *)0x44dbc1;
+    //     iVar1 = CoInitialize();
+    //     piStack_134 = (int *)&stack0xfffffee4;
+    //     puStack_138 = &_IID_IDirectPlay3;
+    //     piStack_13c = (int *)0x1;
+    //     piStack_140 = (int *)0x0;
+    //     puStack_144 = (ulong *)&_CLSID_DirectPlay;
+    //     puStack_148 = (ulong *)0x44dbdc;
+    //     iVar3 = CoCreateInstance();
+    //     if (-1 < iVar3) {
+    //       puStack_148 = (ulong *)piStack_130;
+    //       piStack_14c = (int *)0x44dc03;
+    //       (**(code **)(*piStack_130 + 8))();
+    //       if (iVar1 != 0) {
+    //         piStack_14c = (int *)0x44dc0d;
+    //         CoUninitialize();
+    //       }
+    //       piStack_14c = (int *)0x44dc12;
+    //       iVar1 = IsDPlay501a();
+    //       *unaff_retaddr = (iVar1 != 0) + 0x500;
+    //       return;
+    //     }
+    //     if (iVar1 != 0) {
+    //       puStack_148 = (ulong *)0x44dbee;
+    //       CoUninitialize();
+    //       return;
+    //     }
+    //   }
+    //   else {
+    //     *param_1 = 1;
+    //     if (0x549 < (osVer.dwBuildNumber & 0xffff)) {
+    //       *unaff_retaddr = 0x501;
+    //       return;
+    //     }
+    //     apcStack_12c[0] = s_DDRAW_DLL;
+    //     piStack_130 = (int *)0x44dc87;
+    //     piVar2 = (int *)LoadLibraryA();
+    //     if (piVar2 == (int *)0x0) {
+    //       piStack_130 = (int *)0x0;
+    //       *puStack_4 = 0;
+    //       *param_1 = 0;
+    //       piStack_134 = (int *)0x44dc9f;
+    //       FreeLibrary();
+    //       return;
+    //     }
+    //     piStack_130 = (int *)s_DirectDrawCreate;
+    //     puStack_138 = (undefined *)0x44dcb6;
+    //     piStack_134 = piVar2;
+    //     pcVar4 = (code *)GetProcAddress();
+    //     if (pcVar4 == (code *)0x0) {
+    //       *puStack_4 = 0;
+    //       *param_1 = 0;
+    //       piStack_134 = (int *)0x44dccc;
+    //       piStack_130 = piVar2;
+    //       FreeLibrary();
+    //       piStack_134 = (int *)s_Couldn_t_LoadLibrary_DDraw__;
+    //       puStack_138 = (undefined *)0x44dcd7;
+    //       OutputDebugStringA();
+    //       return;
+    //     }
+    //     piStack_134 = (int *)&stack0xfffffee4;
+    //     piStack_130 = (int *)0x0;
+    //     puStack_138 = (undefined *)0x0;
+    //     piStack_13c = (int *)0x44dceb;
+    //     iVar1 = (*pcVar4)();
+    //     if (iVar1 < 0) {
+    //       *(undefined4 *)osVer.szCSDVersion._116_4_ = 0;
+    //       *param_1 = 0;
+    //       piStack_140 = (int *)0x44dd01;
+    //       piStack_13c = piVar2;
+    //       FreeLibrary();
+    //       piStack_140 = (int *)s_Couldn_t_create_DDraw__;
+    //       puStack_144 = (ulong *)0x44dd0c;
+    //       OutputDebugStringA();
+    //       return;
+    //     }
+    //     piStack_13c = (int *)&stack0xfffffee4;
+    //     puVar9 = *(undefined4 **)apcStack_12c[1];
+    //     piStack_140 = (int *)&_IID_IDirectDraw2;
+    //     puStack_144 = (ulong *)apcStack_12c[1];
+    //     *(undefined4 *)osVer.szCSDVersion._116_4_ = 0x100;
+    //     puStack_148 = (ulong *)0x44dd37;
+    //     iVar1 = (*(code *)*puVar9)();
+    //     if (iVar1 < 0) {
+    //       puStack_148 = (ulong *)piStack_134;
+    //       piStack_14c = (int *)0x44dd45;
+    //       (**(code **)(*piStack_134 + 8))();
+    //       piStack_14c = piVar2;
+    //       FreeLibrary();
+    //       OutputDebugStringA(s_Couldn_t_QI_DDraw2__);
+    //       return;
+    //     }
+    //     puStack_148 = (ulong *)apcStack_12c[1];
+    //     piStack_14c = (int *)0x44dd6c;
+    //     (**(code **)(*(ulong *)apcStack_12c[1] + 8))();
+    //     piStack_14c = (int *)s_DINPUT_DLL;
+    //     *(undefined4 *)osVer.szCSDVersion._116_4_ = 0x200;
+    //     iVar1 = LoadLibraryA();
+    //     if (iVar1 == 0) {
+    //       OutputDebugStringA(s_Couldn_t_LoadLibrary_DInput__);
+    //       (**(code **)(*piStack_140 + 8))(piStack_140);
+    //       FreeLibrary(piVar2);
+    //       return;
+    //     }
+    //     puStack_138 = (undefined *)GetProcAddress(iVar1,s_DirectInputCreateA);
+    //     FreeLibrary(iVar1);
+    //     if (piStack_13c == (int *)0x0) {
+    //       FreeLibrary(piVar2);
+    //       (**(code **)(*puStack_144 + 8))(puStack_144);
+    //       OutputDebugStringA(s_Couldn_t_GetProcAddress_DInputCr);
+    //       return;
+    //     }
+    //     puVar9 = (undefined4 *)0x8;
+    //     ppcVar5 = apcStack_12c;
+    //     for (iVar1 = 0x1b; iVar1 != 0; iVar1 = iVar1 + -1) {
+    //       *ppcVar5 = (char *)0x0;
+    //       ppcVar5 = ppcVar5 + 1;
+    //     }
+    //     *(undefined4 *)osVer.szCSDVersion._116_4_ = 0x300;
+    //     apcStack_12c[0] = (char *)0x6c;
+    //     apcStack_12c[1] = (char *)0x1;
+    //     piVar8 = piStack_140;
+    //     iVar1 = (**(code **)(*piStack_140 + 0x50))(piStack_140,0);
+    //     if (iVar1 < 0) {
+    //       (**(code **)(*piStack_14c + 8))(piStack_14c);
+    //       FreeLibrary(piVar2);
+    //       *(undefined4 *)osVer.szCSDVersion._116_4_ = 0;
+    //       OutputDebugStringA(s_Couldn_t_Set_coop_level__);
+    //       return;
+    //     }
+    //     piVar7 = (int *)0x0;
+    //     ppuVar6 = &puStack_138;
+    //     iVar1 = (**(code **)(*piStack_14c + 0x18))(piStack_14c,ppuVar6,&puStack_144);
+    //     if (iVar1 < 0) {
+    //       (**(code **)(*piVar8 + 8))(piVar8);
+    //       FreeLibrary(piVar2);
+    //       *(undefined4 *)osVer.szCSDVersion._116_4_ = 0;
+    //       OutputDebugStringA(s_Couldn_t_CreateSurface__);
+    //       return;
+    //     }
+    //     iVar1 = (**(code **)*puVar9)(puVar9,&_IID_IDirectDrawSurface3,&piStack_14c);
+    //     if (-1 < iVar1) {
+    //       iVar1 = IsDPlay501a();
+    //       *(uint *)osVer.szCSDVersion._116_4_ = (iVar1 != 0) + 0x500;
+    //       (**(code **)(*piVar7 + 8))(piVar7);
+    //     }
+    //     (**(code **)(*ppuVar6 + 8))(ppuVar6);
+    //     FreeLibrary(piVar2);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0044DEE0
+int IsDPlay501a() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: verInfo */
+    // /* int __cdecl IsDPlay501a(void) */
+    // 
+    // int __cdecl IsDPlay501a(void)
+    // 
+    // {
+    //   uint uVar1;
+    //   void *pvVar2;
+    //   int iVar3;
+    //   bool bVar4;
+    //   bool bVar5;
+    //   uint *puVar6;
+    //   uint uStack_24;
+    //   char *pcStack_1c;
+    //   uint *puStack_18;
+    //   tagVS_FIXEDFILEINFO *verInfo;
+    //   ulong zero;
+    //   uint verSize;
+    //   
+    //   puStack_18 = &verSize;
+    //   pcStack_1c = s_dplayx_dll;
+    //   uVar1 = _GetFileVersionInfoSizeA_8();
+    //   if (uVar1 == 0) {
+    //     GetLastError();
+    //     return 0;
+    //   }
+    //   uStack_24 = 0x44df0e;
+    //   pvVar2 = operator_new(uVar1);
+    //   if (pvVar2 != (void *)0x0) {
+    //     uStack_24 = uVar1;
+    //     iVar3 = _GetFileVersionInfoA_16(s_dplayx_dll,0);
+    //     if (iVar3 == 0) {
+    //       GetLastError();
+    //       return 0;
+    //     }
+    //     puVar6 = &uStack_24;
+    //     iVar3 = _VerQueryValueA_16(pvVar2,s__,puVar6,&pcStack_1c);
+    //     if (iVar3 == 0) {
+    //       return 0;
+    //     }
+    //     bVar4 = puVar6[2] < 0x40005;
+    //     bVar5 = puVar6[2] == 0x40005;
+    //     if (bVar5) {
+    //       if (0x1062e < puVar6[3]) {
+    //         return 1;
+    //       }
+    //       bVar4 = false;
+    //       bVar5 = true;
+    //     }
+    //     if (!bVar4 && !bVar5) {
+    //       return 1;
+    //     }
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+

@@ -1,0 +1,315 @@
+// Auto-generated decompiler unit: aiconitm.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/aiconitm.cpp
+#include "../include/common.h"
+
+// Offset: 0x0040A820
+undefined ConstructionItem(ConstructionItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall ConstructionItem::ConstructionItem(void) */
+    // 
+    // ConstructionItem * __thiscall ConstructionItem::ConstructionItem(ConstructionItem *this)
+    // 
+    // {
+    //   BaseItem::BaseItem((BaseItem *)this);
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->next = (ConstructionItem *)0x0;
+    //   this->prev = (ConstructionItem *)0x0;
+    //   this->inProgressValue = 0;
+    //   this->builtValue = 0;
+    //   this->buildAttemptsValue = 0;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A870
+undefined ConstructionItem(ConstructionItem* this_, float param_2, float param_3, float param_4, float param_5, float param_6, float param_7, int param_8, char* param_9) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall
+    //    ConstructionItem::ConstructionItem(float,float,float,float,float,float,int,char *) */
+    // 
+    // ConstructionItem * __thiscall
+    // ConstructionItem::ConstructionItem
+    //           (ConstructionItem *this,float param_1,float param_2,float param_3,float param_4,
+    //           float param_5,float param_6,int param_7,char *param_8)
+    // 
+    // {
+    //   BaseItem::BaseItem((BaseItem *)this,param_7,-1,-1,param_8,param_1,param_2,param_3,param_4,param_5,
+    //                      param_6);
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->next = (ConstructionItem *)0x0;
+    //   this->prev = (ConstructionItem *)0x0;
+    //   this->inProgressValue = 0;
+    //   this->builtValue = 0;
+    //   this->buildAttemptsValue = 0;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A8D0
+undefined ConstructionItem(ConstructionItem* this_, ConstructionItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall ConstructionItem::ConstructionItem(class ConstructionItem *) */
+    // 
+    // ConstructionItem * __thiscall
+    // ConstructionItem::ConstructionItem(ConstructionItem *this,ConstructionItem *param_1)
+    // 
+    // {
+    //   BaseItem::BaseItem((BaseItem *)this,(BaseItem *)param_1);
+    //   this->next = (ConstructionItem *)0x0;
+    //   this->prev = (ConstructionItem *)0x0;
+    //   this->inProgressValue = param_1->inProgressValue;
+    //   this->builtValue = param_1->builtValue;
+    //   this->buildAttemptsValue = param_1->buildAttemptsValue;
+    //   this->_padding_ = (int)&_vftable_;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A910
+undefined ConstructionItem(ConstructionItem* this_, ConstructionItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall ConstructionItem::ConstructionItem(class ConstructionItem const &) */
+    // 
+    // ConstructionItem * __thiscall
+    // ConstructionItem::ConstructionItem(ConstructionItem *this,ConstructionItem *param_1)
+    // 
+    // {
+    //   BaseItem::BaseItem((BaseItem *)this,(BaseItem *)param_1);
+    //   this->next = (ConstructionItem *)0x0;
+    //   this->prev = (ConstructionItem *)0x0;
+    //   this->inProgressValue = param_1->inProgressValue;
+    //   this->builtValue = param_1->builtValue;
+    //   this->buildAttemptsValue = param_1->buildAttemptsValue;
+    //   this->_padding_ = (int)&_vftable_;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A950
+void ConstructionItem(ConstructionItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall ConstructionItem::~ConstructionItem(void) */
+    // 
+    // void __thiscall ConstructionItem::~ConstructionItem(ConstructionItem *this)
+    // 
+    // {
+    //   this->_padding_ = (int)&_vftable_;
+    //   BaseItem::~BaseItem((BaseItem *)this);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A960
+int operator(ConstructionItem* param_1, ConstructionItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* int __cdecl operator==(class ConstructionItem const &,class ConstructionItem const &) */
+    // 
+    // int __cdecl operator==(ConstructionItem *param_1,ConstructionItem *param_2)
+    // 
+    // {
+    //   if (((float)param_1->_padding_ == (float)param_2->_padding_) &&
+    //      ((float)param_1->_padding_ == (float)param_2->_padding_)) {
+    //     return 1;
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A990
+int operator(ConstructionItem* param_1, ConstructionItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* int __cdecl operator!=(class ConstructionItem const &,class ConstructionItem const &) */
+    // 
+    // int __cdecl operator!=(ConstructionItem *param_1,ConstructionItem *param_2)
+    // 
+    // {
+    //   if (((float)param_1->_padding_ == (float)param_2->_padding_) &&
+    //      ((float)param_1->_padding_ == (float)param_2->_padding_)) {
+    //     return 0;
+    //   }
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A9C0
+int operator(ConstructionItem* param_1, ConstructionItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* int __cdecl operator<(class ConstructionItem const &,class ConstructionItem const &) */
+    // 
+    // int __cdecl operator<(ConstructionItem *param_1,ConstructionItem *param_2)
+    // 
+    // {
+    //   return (uint)(param_1->_padding_ < param_2->_padding_);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040A9E0
+int operator(ConstructionItem* param_1, ConstructionItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* int __cdecl operator>(class ConstructionItem const &,class ConstructionItem const &) */
+    // 
+    // int __cdecl operator>(ConstructionItem *param_1,ConstructionItem *param_2)
+    // 
+    // {
+    //   return (uint)(param_2->_padding_ < param_1->_padding_);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040AA00
+int inProgress(ConstructionItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall ConstructionItem::inProgress(void)const  */
+    // 
+    // int __thiscall ConstructionItem::inProgress(ConstructionItem *this)
+    // 
+    // {
+    //   return this->inProgressValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040AA10
+int built(ConstructionItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall ConstructionItem::built(void)const  */
+    // 
+    // int __thiscall ConstructionItem::built(ConstructionItem *this)
+    // 
+    // {
+    //   return this->builtValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040AA20
+int buildAttempts(ConstructionItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall ConstructionItem::buildAttempts(void)const  */
+    // 
+    // int __thiscall ConstructionItem::buildAttempts(ConstructionItem *this)
+    // 
+    // {
+    //   return this->buildAttemptsValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040AA30
+void setInProgress(ConstructionItem* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall ConstructionItem::setInProgress(int) */
+    // 
+    // void __thiscall ConstructionItem::setInProgress(ConstructionItem *this,int param_1)
+    // 
+    // {
+    //   this->inProgressValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040AA40
+void setBuilt(ConstructionItem* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall ConstructionItem::setBuilt(int) */
+    // 
+    // void __thiscall ConstructionItem::setBuilt(ConstructionItem *this,int param_1)
+    // 
+    // {
+    //   this->builtValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040AA50
+void incrementBuildAttempts(ConstructionItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall ConstructionItem::incrementBuildAttempts(void) */
+    // 
+    // void __thiscall ConstructionItem::incrementBuildAttempts(ConstructionItem *this)
+    // 
+    // {
+    //   this->buildAttemptsValue = this->buildAttemptsValue + 1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040AA60
+void decrementBuildAttempts(ConstructionItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall ConstructionItem::decrementBuildAttempts(void) */
+    // 
+    // void __thiscall ConstructionItem::decrementBuildAttempts(ConstructionItem *this)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   iVar1 = this->buildAttemptsValue + -1;
+    //   this->buildAttemptsValue = iVar1;
+    //   if (iVar1 < 0) {
+    //     this->buildAttemptsValue = 0;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040AA80
+void setBuildAttempts(ConstructionItem* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall ConstructionItem::setBuildAttempts(int) */
+    // 
+    // void __thiscall ConstructionItem::setBuildAttempts(ConstructionItem *this,int param_1)
+    // 
+    // {
+    //   this->buildAttemptsValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+

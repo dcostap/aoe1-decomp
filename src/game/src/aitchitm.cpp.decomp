@@ -1,0 +1,318 @@
+// Auto-generated decompiler unit: aitchitm.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/aitchitm.cpp
+#include "../include/common.h"
+
+// Offset: 0x00412BB0
+undefined TechnologyItem(TechnologyItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TechnologyItem::TechnologyItem(void) */
+    // 
+    // TechnologyItem * __thiscall TechnologyItem::TechnologyItem(TechnologyItem *this)
+    // 
+    // {
+    //   char cVar1;
+    //   uint uVar2;
+    //   uint uVar3;
+    //   char *pcVar4;
+    //   char *pcVar5;
+    //   
+    //   uVar2 = 0xffffffff;
+    //   this->next = (TechnologyItem *)0x0;
+    //   this->prev = (TechnologyItem *)0x0;
+    //   this->idValue = 0;
+    //   this->resourceCostValue = (ResourceItem *)0x0;
+    //   this->_padding_ = (int)&_vftable_;
+    //   pcVar4 = s_;
+    //   do {
+    //     pcVar5 = pcVar4;
+    //     if (uVar2 == 0) break;
+    //     uVar2 = uVar2 - 1;
+    //     pcVar5 = pcVar4 + 1;
+    //     cVar1 = *pcVar4;
+    //     pcVar4 = pcVar5;
+    //   } while (cVar1 != '\0');
+    //   uVar2 = ~uVar2;
+    //   pcVar4 = pcVar5 + -uVar2;
+    //   pcVar5 = this->nameValue;
+    //   for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //     *(undefined4 *)pcVar5 = *(undefined4 *)pcVar4;
+    //     pcVar4 = pcVar4 + 4;
+    //     pcVar5 = pcVar5 + 4;
+    //   }
+    //   for (uVar2 = uVar2 & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
+    //     *pcVar5 = *pcVar4;
+    //     pcVar4 = pcVar4 + 1;
+    //     pcVar5 = pcVar5 + 1;
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412C20
+undefined TechnologyItem(TechnologyItem* this_, int param_2, char* param_3, ResourceItem param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TechnologyItem::TechnologyItem(int,char *,class ResourceItem) */
+    // 
+    // TechnologyItem * __thiscall
+    // TechnologyItem::TechnologyItem(TechnologyItem *this,int param_1,char *param_2,ResourceItem param_3)
+    // 
+    // {
+    //   char cVar1;
+    //   ResourceItem *pRVar2;
+    //   uint uVar3;
+    //   uint uVar4;
+    //   char *pcVar5;
+    //   char *pcVar6;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_c = *unaff_FS_OFFSET;
+    //   pcStack_8 = FUN_0055c853;
+    //   *unaff_FS_OFFSET = &local_c;
+    //                     /* language.dll match for 0x70: "B" */
+    //   local_4 = 0;
+    //   this->next = (TechnologyItem *)0x0;
+    //   this->prev = (TechnologyItem *)0x0;
+    //   this->idValue = param_1;
+    //   this->_padding_ = (int)&_vftable_;
+    //   pRVar2 = (ResourceItem *)operator_new(0x70);
+    //   local_4 = CONCAT31(local_4._1_3_,1);
+    //   if (pRVar2 == (ResourceItem *)0x0) {
+    //     pRVar2 = (ResourceItem *)0x0;
+    //   }
+    //   else {
+    //     pRVar2 = (ResourceItem *)ResourceItem::ResourceItem(pRVar2,&param_3);
+    //   }
+    //   this->resourceCostValue = pRVar2;
+    //   uVar3 = 0xffffffff;
+    //   do {
+    //     pcVar5 = param_2;
+    //     if (uVar3 == 0) break;
+    //     uVar3 = uVar3 - 1;
+    //     pcVar5 = param_2 + 1;
+    //     cVar1 = *param_2;
+    //     param_2 = pcVar5;
+    //   } while (cVar1 != '\0');
+    //   uVar3 = ~uVar3;
+    //   local_4 = 0xffffffff;
+    //   pcVar5 = pcVar5 + -uVar3;
+    //   pcVar6 = this->nameValue;
+    //   for (uVar4 = uVar3 >> 2; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *(undefined4 *)pcVar6 = *(undefined4 *)pcVar5;
+    //     pcVar5 = pcVar5 + 4;
+    //     pcVar6 = pcVar6 + 4;
+    //   }
+    //   for (uVar3 = uVar3 & 3; uVar3 != 0; uVar3 = uVar3 - 1) {
+    //     *pcVar6 = *pcVar5;
+    //     pcVar5 = pcVar5 + 1;
+    //     pcVar6 = pcVar6 + 1;
+    //   }
+    //   ResourceItem::~ResourceItem(&param_3);
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412CD0
+undefined TechnologyItem(TechnologyItem* this_, TechnologyItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TechnologyItem::TechnologyItem(class TechnologyItem const &) */
+    // 
+    // TechnologyItem * __thiscall
+    // TechnologyItem::TechnologyItem(TechnologyItem *this,TechnologyItem *param_1)
+    // 
+    // {
+    //   char cVar1;
+    //   int iVar2;
+    //   ResourceItem *pRVar3;
+    //   uint uVar4;
+    //   uint uVar5;
+    //   char *pcVar6;
+    //   char *pcVar7;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_c = *unaff_FS_OFFSET;
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055c86b;
+    //   *unaff_FS_OFFSET = &local_c;
+    //                     /* language.dll match for 0x70: "B" */
+    //   this->next = (TechnologyItem *)0x0;
+    //   this->prev = (TechnologyItem *)0x0;
+    //   iVar2 = param_1->idValue;
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->idValue = iVar2;
+    //   pRVar3 = (ResourceItem *)operator_new(0x70);
+    //   local_4 = 0;
+    //   if (pRVar3 == (ResourceItem *)0x0) {
+    //     pRVar3 = (ResourceItem *)0x0;
+    //   }
+    //   else {
+    //     pRVar3 = (ResourceItem *)ResourceItem::ResourceItem(pRVar3,param_1->resourceCostValue);
+    //   }
+    //   this->resourceCostValue = pRVar3;
+    //   uVar4 = 0xffffffff;
+    //   pcVar6 = param_1->nameValue;
+    //   do {
+    //     pcVar7 = pcVar6;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar7 = pcVar6 + 1;
+    //     cVar1 = *pcVar6;
+    //     pcVar6 = pcVar7;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar6 = pcVar7 + -uVar4;
+    //   pcVar7 = this->nameValue;
+    //   for (uVar5 = uVar4 >> 2; uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar7 = *(undefined4 *)pcVar6;
+    //     pcVar6 = pcVar6 + 4;
+    //     pcVar7 = pcVar7 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar7 = *pcVar6;
+    //     pcVar6 = pcVar6 + 1;
+    //     pcVar7 = pcVar7 + 1;
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412D70
+void TechnologyItem(TechnologyItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall TechnologyItem::~TechnologyItem(void) */
+    // 
+    // void __thiscall TechnologyItem::~TechnologyItem(TechnologyItem *this)
+    // 
+    // {
+    //   this->_padding_ = (int)&_vftable_;
+    //   if (this->resourceCostValue != (ResourceItem *)0x0) {
+    //     (**(code **)this->resourceCostValue->_padding_)(1);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412D90
+int operator(TechnologyItem* param_1, TechnologyItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* int __cdecl operator==(class TechnologyItem const &,class TechnologyItem const &) */
+    // 
+    // int __cdecl operator==(TechnologyItem *param_1,TechnologyItem *param_2)
+    // 
+    // {
+    //   return (uint)(param_1->idValue == param_2->idValue);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412DB0
+int operator(TechnologyItem* param_1, TechnologyItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* int __cdecl operator!=(class TechnologyItem const &,class TechnologyItem const &) */
+    // 
+    // int __cdecl operator!=(TechnologyItem *param_1,TechnologyItem *param_2)
+    // 
+    // {
+    //   return (uint)(param_1->idValue != param_2->idValue);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412DD0
+int operator(TechnologyItem* param_1, TechnologyItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* int __cdecl operator<(class TechnologyItem const &,class TechnologyItem const &) */
+    // 
+    // int __cdecl operator<(TechnologyItem *param_1,TechnologyItem *param_2)
+    // 
+    // {
+    //   return (uint)(param_1->idValue < param_2->idValue);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412DF0
+int operator(TechnologyItem* param_1, TechnologyItem* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* int __cdecl operator>(class TechnologyItem const &,class TechnologyItem const &) */
+    // 
+    // int __cdecl operator>(TechnologyItem *param_1,TechnologyItem *param_2)
+    // 
+    // {
+    //   return (uint)(param_2->idValue < param_1->idValue);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412E10
+int id(TechnologyItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall TechnologyItem::id(void)const  */
+    // 
+    // int __thiscall TechnologyItem::id(TechnologyItem *this)
+    // 
+    // {
+    //   return this->idValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412E20
+char* name(TechnologyItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: char * __thiscall TechnologyItem::name(void) */
+    // 
+    // char * __thiscall TechnologyItem::name(TechnologyItem *this)
+    // 
+    // {
+    //   return this->nameValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00412E30
+ResourceItem* resourceCost(TechnologyItem* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: class ResourceItem * __thiscall TechnologyItem::resourceCost(void) */
+    // 
+    // ResourceItem * __thiscall TechnologyItem::resourceCost(TechnologyItem *this)
+    // 
+    // {
+    //   return this->resourceCostValue;
+    // }
+    // 
+    // 
+}
+

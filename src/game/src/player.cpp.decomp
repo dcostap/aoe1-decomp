@@ -1,0 +1,4242 @@
+// Auto-generated decompiler unit: player.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/player.cpp
+#include "../include/common.h"
+
+// Offset: 0x0046E4B0
+undefined RGE_Player(RGE_Player* this_, int param_2, RGE_Game_World* param_3, uchar param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: index */
+    // /* public: __thiscall RGE_Player::RGE_Player(int,class RGE_Game_World *,unsigned char) */
+    // 
+    // RGE_Player * __thiscall
+    // RGE_Player::RGE_Player(RGE_Player *this,int param_1,RGE_Game_World *param_2,uchar param_3)
+    // 
+    // {
+    //   int *piVar1;
+    //   short *psVar2;
+    //   int iVar3;
+    //   RGE_Doppleganger_Creator *pRVar4;
+    //   uchar *puVar5;
+    //   char *pcVar6;
+    //   float *pfVar7;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   short index;
+    //   uchar table;
+    //   short local_16;
+    //   uchar local_14 [4];
+    //   RGE_Player *local_10;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055e241;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   piVar1 = &this->pathingAttemptCapValue;
+    //   this->computerPlayerValue = 0;
+    //   *piVar1 = 5;
+    //   this->pathingDelayCapValue = 10;
+    //   local_10 = this;
+    //   RGE_Tile_List::RGE_Tile_List(&this->tile_list,400);
+    //   local_4 = 0;
+    //   RGE_Tile_List::RGE_Tile_List(&this->diam_tile_list,400);
+    //   this->_padding_ = (int)&_vftable_;
+    //   iVar3 = pathingCapValue;
+    //   this->id = (ushort)param_3;
+    //   local_4._0_1_ = 1;
+    //   *piVar1 = iVar3;
+    //   this->world = param_2;
+    //   reset_selected(this);
+    //   pRVar4 = (RGE_Doppleganger_Creator *)operator_new(0x1c);
+    //   local_4._0_1_ = 2;
+    //   if (pRVar4 == (RGE_Doppleganger_Creator *)0x0) {
+    //     pRVar4 = (RGE_Doppleganger_Creator *)0x0;
+    //   }
+    //   else {
+    //     pRVar4 = (RGE_Doppleganger_Creator *)
+    //              RGE_Doppleganger_Creator::RGE_Doppleganger_Creator(pRVar4,this,100);
+    //   }
+    //   this->doppleganger_creator = pRVar4;
+    //   local_4 = CONCAT31(local_4._1_3_,1);
+    //   puVar5 = (uchar *)calloc(1,(int)this->world->player_num);
+    //   this->relations = puVar5;
+    //   rge_read(param_1,puVar5,(int)this->world->player_num);
+    //   rge_read(param_1,this->unitDiplomacy,0x24);
+    //   if (save_game_version < 4.01) {
+    //     this->allied_LOS_Enable = 0;
+    //   }
+    //   else {
+    //     rge_read(param_1,&this->allied_LOS_Enable,4);
+    //   }
+    //   rge_read(param_1,&this->allied_victory,1);
+    //   rge_read(param_1,&local_16,2);
+    //   if (local_16 < 1) {
+    //     this->name = (char *)0x0;
+    //   }
+    //   else {
+    //     pcVar6 = (char *)calloc((int)local_16,1);
+    //     this->name = pcVar6;
+    //     rge_read(param_1,pcVar6,(int)local_16);
+    //   }
+    //   psVar2 = &this->attribute_num;
+    //   rge_read(param_1,psVar2,2);
+    //   if (*psVar2 < 1) {
+    //     this->attributes = (float *)0x0;
+    //   }
+    //   else {
+    //     pfVar7 = (float *)calloc((int)*psVar2,4);
+    //     this->attributes = pfVar7;
+    //     rge_read(param_1,pfVar7,(int)*psVar2 << 2);
+    //   }
+    //   rge_read(param_1,&this->view_x,4);
+    //   rge_read(param_1,&this->view_y,4);
+    //   rge_read(param_1,&this->map_x,2);
+    //   rge_read(param_1,&this->map_y,2);
+    //   rge_read(param_1,&this->culture,1);
+    //   rge_read(param_1,&this->master_player_id,1);
+    //   rge_read(param_1,&this->game_status,1);
+    //   rge_read(param_1,&this->resigned,1);
+    //   rge_read(param_1,local_14,1);
+    //   set_color_table(this,local_14[0]);
+    //   rge_read(param_1,piVar1,4);
+    //   rge_read(param_1,&this->pathingDelayCapValue,4);
+    //   this->checksum_created_this_update = '\0';
+    //   this->checksum = 0;
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046E770
+undefined RGE_Player(RGE_Player* this_, RGE_Game_World* param_2, RGE_Master_Player* param_3, uchar param_4, char* param_5, uchar param_6, uchar param_7) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Player::RGE_Player(class RGE_Game_World *,class RGE_Master_Player
+    //    *,unsigned char,char *,unsigned char,unsigned char) */
+    // 
+    // RGE_Player * __thiscall
+    // RGE_Player::RGE_Player
+    //           (RGE_Player *this,RGE_Game_World *param_1,RGE_Master_Player *param_2,uchar param_3,
+    //           char *param_4,uchar param_5,uchar param_6)
+    // 
+    // {
+    //   RGE_Map *pRVar1;
+    //   uchar *puVar2;
+    //   RGE_Master_Static_Object **ppRVar3;
+    //   RGE_Master_Static_Object *pRVar4;
+    //   RGE_Object_List *pRVar5;
+    //   RGE_Visible_Map *pRVar6;
+    //   RGE_Doppleganger_Creator *pRVar7;
+    //   float *pfVar8;
+    //   short sVar9;
+    //   int iVar10;
+    //   uint uVar11;
+    //   float *pfVar12;
+    //   int *piVar13;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 uStack_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055e29d;
+    //   uStack_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &uStack_c;
+    //   this->computerPlayerValue = 0;
+    //   this->pathingAttemptCapValue = 5;
+    //   this->pathingDelayCapValue = 10;
+    //   RGE_Tile_List::RGE_Tile_List(&this->tile_list,400);
+    //   local_4 = 0;
+    //   RGE_Tile_List::RGE_Tile_List(&this->diam_tile_list,400);
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->pathingAttemptCapValue = pathingCapValue;
+    //   this->master_player_id = param_5;
+    //   local_4._0_1_ = 1;
+    //   this->type = '\0';
+    //   this->world = param_1;
+    //   this->id = (ushort)param_3;
+    //   reset_selected(this);
+    //   this->name = (char *)0x0;
+    //   if (param_4 != (char *)0x0) {
+    //     getstring(&this->name,param_4);
+    //   }
+    //   puVar2 = (uchar *)calloc(1,(int)this->world->player_num);
+    //   this->relations = puVar2;
+    //   piVar13 = this->unitDiplomacy;
+    //   for (iVar10 = 9; iVar10 != 0; iVar10 = iVar10 + -1) {
+    //     *piVar13 = -1;
+    //     piVar13 = piVar13 + 1;
+    //   }
+    //   sVar9 = 0;
+    //   if (0 < this->world->player_num) {
+    //     do {
+    //       this->relations[sVar9] = '\x01';
+    //       if (sVar9 == this->id) {
+    //         this->unitDiplomacy[sVar9] = 1;
+    //       }
+    //       else if (sVar9 == 0) {
+    //         this->unitDiplomacy[0] = 0;
+    //       }
+    //       else {
+    //         this->unitDiplomacy[sVar9] = 3;
+    //       }
+    //       sVar9 = sVar9 + 1;
+    //     } while (sVar9 < this->world->player_num);
+    //   }
+    //   this->mutualExploredMask = 0;
+    //   this->mutualVisibleMask = 0;
+    //   this->nonMutualVisibleMask = 0;
+    //   this->allied_LOS_Enable = 0;
+    //   this->allied_victory = '\0';
+    //   sVar9 = param_2->master_object_num;
+    //   this->master_object_num = sVar9;
+    //   if (0 < sVar9) {
+    //     ppRVar3 = (RGE_Master_Static_Object **)calloc((int)sVar9,4);
+    //     sVar9 = 0;
+    //     this->master_objects = ppRVar3;
+    //     if (0 < this->master_object_num) {
+    //       do {
+    //         if (param_2->master_objects[sVar9] != (RGE_Master_Static_Object *)0x0) {
+    //           pRVar4 = (RGE_Master_Static_Object *)
+    //                    (**(code **)(param_2->master_objects[sVar9]->_padding_ + 0x1c))();
+    //           this->master_objects[sVar9] = pRVar4;
+    //         }
+    //         sVar9 = sVar9 + 1;
+    //       } while (sVar9 < this->master_object_num);
+    //     }
+    //   }
+    //   if (param_6 == '\0') {
+    //     this->objects = (RGE_Object_List *)0x0;
+    //     this->sleeping_objects = (RGE_Object_List *)0x0;
+    //     this->doppleganger_objects = (RGE_Object_List *)0x0;
+    //     this->victory_conditions = (RGE_Victory_Conditions *)0x0;
+    //     this->visible = (RGE_Visible_Map *)0x0;
+    //   }
+    //   else {
+    //     pRVar5 = (RGE_Object_List *)operator_new(0xc);
+    //     local_4._0_1_ = 2;
+    //     if (pRVar5 == (RGE_Object_List *)0x0) {
+    //       pRVar5 = (RGE_Object_List *)0x0;
+    //     }
+    //     else {
+    //       pRVar5 = (RGE_Object_List *)RGE_Object_List::RGE_Object_List(pRVar5);
+    //     }
+    //     local_4._0_1_ = 1;
+    //     this->objects = pRVar5;
+    //     pRVar5 = (RGE_Object_List *)operator_new(0xc);
+    //     local_4._0_1_ = 3;
+    //     if (pRVar5 == (RGE_Object_List *)0x0) {
+    //       pRVar5 = (RGE_Object_List *)0x0;
+    //     }
+    //     else {
+    //       pRVar5 = (RGE_Object_List *)RGE_Object_List::RGE_Object_List(pRVar5);
+    //     }
+    //     local_4._0_1_ = 1;
+    //     this->sleeping_objects = pRVar5;
+    //     pRVar5 = (RGE_Object_List *)operator_new(0xc);
+    //     local_4._0_1_ = 4;
+    //     if (pRVar5 == (RGE_Object_List *)0x0) {
+    //       pRVar5 = (RGE_Object_List *)0x0;
+    //     }
+    //     else {
+    //       pRVar5 = (RGE_Object_List *)RGE_Object_List::RGE_Object_List(pRVar5);
+    //     }
+    //     local_4._0_1_ = 1;
+    //     this->doppleganger_objects = pRVar5;
+    //     new_victory(this);
+    //     pRVar6 = (RGE_Visible_Map *)operator_new(0x38);
+    //     local_4._0_1_ = 5;
+    //     if (pRVar6 == (RGE_Visible_Map *)0x0) {
+    //       local_4._0_1_ = 1;
+    //       this->visible = (RGE_Visible_Map *)0x0;
+    //     }
+    //     else {
+    //       pRVar6 = (RGE_Visible_Map *)RGE_Visible_Map::RGE_Visible_Map(pRVar6,param_1->map,this);
+    //       local_4._0_1_ = 1;
+    //       this->visible = pRVar6;
+    //     }
+    //   }
+    //   pRVar7 = (RGE_Doppleganger_Creator *)operator_new(0x1c);
+    //   local_4._0_1_ = 6;
+    //   if (pRVar7 == (RGE_Doppleganger_Creator *)0x0) {
+    //     pRVar7 = (RGE_Doppleganger_Creator *)0x0;
+    //   }
+    //   else {
+    //     pRVar7 = (RGE_Doppleganger_Creator *)
+    //              RGE_Doppleganger_Creator::RGE_Doppleganger_Creator(pRVar7,this,100);
+    //   }
+    //   this->doppleganger_creator = pRVar7;
+    //   sVar9 = param_2->attribute_num;
+    //   local_4 = CONCAT31(local_4._1_3_,1);
+    //   this->attribute_num = sVar9;
+    //   if (sVar9 < 1) {
+    //     this->attributes = (float *)0x0;
+    //   }
+    //   else {
+    //     pfVar8 = (float *)calloc((int)sVar9,4);
+    //     this->attributes = pfVar8;
+    //     pfVar12 = param_2->attributes;
+    //     for (uVar11 = (int)this->attribute_num & 0x3fffffff; uVar11 != 0; uVar11 = uVar11 - 1) {
+    //       *pfVar8 = *pfVar12;
+    //       pfVar12 = pfVar12 + 1;
+    //       pfVar8 = pfVar8 + 1;
+    //     }
+    //     for (iVar10 = 0; iVar10 != 0; iVar10 = iVar10 + -1) {
+    //       *(undefined1 *)pfVar8 = *(undefined1 *)pfVar12;
+    //       pfVar12 = (float *)((int)pfVar12 + 1);
+    //       pfVar8 = (float *)((int)pfVar8 + 1);
+    //     }
+    //   }
+    //   this->culture = param_2->culture;
+    //   pRVar1 = this->world->map;
+    //   set_view_loc(this,(float)(pRVar1->map_width / 2),(float)(pRVar1->map_height / 2));
+    //   pRVar1 = this->world->map;
+    //   set_map_loc(this,(short)(pRVar1->map_width / 2),(short)(pRVar1->map_height / 2));
+    //   this->game_status = '\0';
+    //   this->resigned = '\0';
+    //   this->color_table = (RGE_Color_Table *)0x0;
+    //   sVar9 = param_2->tribe_effect;
+    //   this->tribe_effect = (int)sVar9;
+    //   if ((param_6 != '\0') && (-1 < sVar9)) {
+    //     (**(code **)(this->world->effects->_padding_ + 8))
+    //               (CONCAT22(sVar9 >> 0xf,(short)this->tribe_effect),this);
+    //   }
+    //   this->checksum = 0;
+    //   this->checksum_created_this_update = '\0';
+    //   *unaff_FS_OFFSET = uStack_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046EB00
+void RGE_Player(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall RGE_Player::~RGE_Player(void) */
+    // 
+    // void __thiscall RGE_Player::~RGE_Player(RGE_Player *this)
+    // 
+    // {
+    //   RGE_Object_List *pRVar1;
+    //   RGE_Victory_Conditions *this_00;
+    //   RGE_Visible_Map *this_01;
+    //   RGE_Doppleganger_Creator *this_02;
+    //   Visible_Resource_Manager *this_03;
+    //   short sVar2;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 uStack_c;
+    //   code *pcStack_8;
+    //   uint local_4;
+    //   
+    //   pcStack_8 = FUN_0055e2c6;
+    //   uStack_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &uStack_c;
+    //   this->_padding_ = (int)&_vftable_;
+    //   pRVar1 = this->objects;
+    //   local_4 = 1;
+    //   if (pRVar1 != (RGE_Object_List *)0x0) {
+    //     RGE_Object_List::~RGE_Object_List(pRVar1);
+    //     operator_delete(pRVar1);
+    //   }
+    //   pRVar1 = this->sleeping_objects;
+    //   if (pRVar1 != (RGE_Object_List *)0x0) {
+    //     RGE_Object_List::~RGE_Object_List(pRVar1);
+    //     operator_delete(pRVar1);
+    //   }
+    //   pRVar1 = this->doppleganger_objects;
+    //   if (pRVar1 != (RGE_Object_List *)0x0) {
+    //     RGE_Object_List::~RGE_Object_List(pRVar1);
+    //     operator_delete(pRVar1);
+    //   }
+    //   this_00 = this->victory_conditions;
+    //   if (this_00 != (RGE_Victory_Conditions *)0x0) {
+    //     RGE_Victory_Conditions::~RGE_Victory_Conditions(this_00);
+    //     operator_delete(this_00);
+    //   }
+    //   free(this->relations);
+    //   this->relations = (uchar *)0x0;
+    //   if (0 < this->master_object_num) {
+    //     sVar2 = 0;
+    //     if (0 < this->master_object_num) {
+    //       do {
+    //         if (this->master_objects[sVar2] != (RGE_Master_Static_Object *)0x0) {
+    //           (**(code **)this->master_objects[sVar2]->_padding_)(1);
+    //         }
+    //         sVar2 = sVar2 + 1;
+    //       } while (sVar2 < this->master_object_num);
+    //     }
+    //     free(this->master_objects);
+    //     this->master_objects = (RGE_Master_Static_Object **)0x0;
+    //     this->master_object_num = 0;
+    //   }
+    //   this_01 = this->visible;
+    //   if (this_01 != (RGE_Visible_Map *)0x0) {
+    //     RGE_Visible_Map::~RGE_Visible_Map(this_01);
+    //     operator_delete(this_01);
+    //   }
+    //   this_02 = this->doppleganger_creator;
+    //   if (this_02 != (RGE_Doppleganger_Creator *)0x0) {
+    //     RGE_Doppleganger_Creator::~RGE_Doppleganger_Creator(this_02);
+    //     operator_delete(this_02);
+    //   }
+    //   this_03 = this->VR_List;
+    //   if (this_03 != (Visible_Resource_Manager *)0x0) {
+    //     Visible_Resource_Manager::~Visible_Resource_Manager(this_03);
+    //     operator_delete(this_03);
+    //   }
+    //   if (this->name != (char *)0x0) {
+    //     free(this->name);
+    //     this->name = (char *)0x0;
+    //   }
+    //   if (0 < this->attribute_num) {
+    //     free(this->attributes);
+    //     this->attribute_num = 0;
+    //   }
+    //   local_4 = local_4 & 0xffffff00;
+    //   RGE_Tile_List::~RGE_Tile_List(&this->diam_tile_list);
+    //   local_4 = 0xffffffff;
+    //   RGE_Tile_List::~RGE_Tile_List(&this->tile_list);
+    //   *unaff_FS_OFFSET = uStack_c;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046EC80
+void RGE_Player::changeToHumanPlayer() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::changeToHumanPlayer(void) */
+    // 
+    // void __thiscall RGE_Player::changeToHumanPlayer(RGE_Player *this)
+    // 
+    // {
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046EC90
+void RGE_Player::changeToComputerPlayer() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::changeToComputerPlayer(void) */
+    // 
+    // void __thiscall RGE_Player::changeToComputerPlayer(RGE_Player *this)
+    // 
+    // {
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046ECA0
+void RGE_Player::kickAI(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::kickAI(int) */
+    // 
+    // void __thiscall RGE_Player::kickAI(RGE_Player *this,int param_1)
+    // 
+    // {
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046ECB0
+int RGE_Player::strategicNumber(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall RGE_Player::strategicNumber(int) */
+    // 
+    // int __thiscall RGE_Player::strategicNumber(RGE_Player *this,int param_1)
+    // 
+    // {
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046ECC0
+int RGE_Player::sendAICommand(int param_1, int param_2, int param_3, int param_4, int param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall RGE_Player::sendAICommand(int,int,int,int,int) */
+    // 
+    // int __thiscall
+    // RGE_Player::sendAICommand
+    //           (RGE_Player *this,int param_1,int param_2,int param_3,int param_4,int param_5)
+    // 
+    // {
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046ECD0
+int RGE_Player::objectCostByType(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall RGE_Player::objectCostByType(int) */
+    // 
+    // int __thiscall RGE_Player::objectCostByType(RGE_Player *this,int param_1)
+    // 
+    // {
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046ECE0
+void TRIBE_Gaia::set_game_status(uchar param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::set_game_status(unsigned char) */
+    // 
+    // void __thiscall RGE_Player::set_game_status(RGE_Player *this,uchar param_1)
+    // 
+    // {
+    //   if (((param_1 != this->game_status) &&
+    //       (((this->resigned == '\0' || (param_1 == '\x02')) &&
+    //        (this->game_status = param_1, param_1 == '\x02')))) && (this->resigned == '\0')) {
+    //     (**(code **)(rge_base_game->_padding_ + 0x40))(6,(int)this->id,0,0,0);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046ED30
+void RGE_Player::trackUnitGather(int param_1, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::trackUnitGather(int,int,int) */
+    // 
+    // void __thiscall RGE_Player::trackUnitGather(RGE_Player *this,int param_1,int param_2,int param_3)
+    // 
+    // {
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046ED40
+void RGE_Player::logStatus(FILE* param_1, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::logStatus(struct _iobuf *,int) */
+    // 
+    // void __thiscall RGE_Player::logStatus(RGE_Player *this,_iobuf *param_1,int param_2)
+    // 
+    // {
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046ED50
+void TRIBE_Gaia::do_resign(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::do_resign(int) */
+    // 
+    // void __thiscall RGE_Player::do_resign(RGE_Player *this,int param_1)
+    // 
+    // {
+    //   uchar uVar1;
+    //   undefined4 unaff_retaddr;
+    //   
+    //   uVar1 = this->resigned;
+    //   this->resigned = '\x01';
+    //   (**(code **)(this->_padding_ + 4))(2);
+    //   if (uVar1 == '\0') {
+    //     (**(code **)(rge_base_game->_padding_ + 0x40))(5,(int)this->id,unaff_retaddr,0,0);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046ED90
+uchar get_resigned(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall RGE_Player::get_resigned(void) */
+    // 
+    // uchar __thiscall RGE_Player::get_resigned(RGE_Player *this)
+    // 
+    // {
+    //   return this->resigned;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046EDA0
+char* RGE_Player::aiStatus(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual char * __thiscall RGE_Player::aiStatus(int) */
+    // 
+    // char * __thiscall RGE_Player::aiStatus(RGE_Player *this,int param_1)
+    // 
+    // {
+    //   return (char *)0x0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046EDB0
+int computerPlayer(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall RGE_Player::computerPlayer(void)const  */
+    // 
+    // int __thiscall RGE_Player::computerPlayer(RGE_Player *this)
+    // 
+    // {
+    //   return this->computerPlayerValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046EDC0
+int TRIBE_Gaia::isEnemy(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall RGE_Player::isEnemy(int) */
+    // 
+    // int __thiscall RGE_Player::isEnemy(RGE_Player *this,int param_1)
+    // 
+    // {
+    //   if ((((param_1 != this->id) && (0 < param_1)) && (param_1 < this->world->player_num)) &&
+    //      (this->relations[param_1] == '\x03')) {
+    //     return 1;
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046EE00
+int TRIBE_Gaia::isAlly(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall RGE_Player::isAlly(int) */
+    // 
+    // int __thiscall RGE_Player::isAlly(RGE_Player *this,int param_1)
+    // 
+    // {
+    //   if (param_1 == this->id) {
+    //     return 1;
+    //   }
+    //   if (((0 < param_1) && (param_1 < this->world->player_num)) && (this->relations[param_1] == '\0'))
+    //   {
+    //     return 1;
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046EE40
+int TRIBE_Gaia::isNeutral(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall RGE_Player::isNeutral(int) */
+    // 
+    // int __thiscall RGE_Player::isNeutral(RGE_Player *this,int param_1)
+    // 
+    // {
+    //   if ((((param_1 != this->id) && (0 < param_1)) && (param_1 < this->world->player_num)) &&
+    //      (this->relations[param_1] == '\x01')) {
+    //     return 1;
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046EE80
+int TRIBE_Gaia::isAllNeutral() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall RGE_Player::isAllNeutral(void) */
+    // 
+    // int __thiscall RGE_Player::isAllNeutral(RGE_Player *this)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   
+    //   iVar2 = 1;
+    //   if (this->world->player_num < 2) {
+    //     return 1;
+    //   }
+    //   do {
+    //     if (iVar2 != this->id) {
+    //       iVar1 = (**(code **)(this->_padding_ + 0x20))(iVar2);
+    //       if (iVar1 == 0) {
+    //         return 0;
+    //       }
+    //     }
+    //     iVar2 = iVar2 + 1;
+    //   } while (iVar2 < this->world->player_num);
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046EED0
+void RGE_Player::setDiplomaticStance(int param_1, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::setDiplomaticStance(int,int) */
+    // 
+    // void __thiscall RGE_Player::setDiplomaticStance(RGE_Player *this,int param_1,int param_2)
+    // 
+    // {
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046EEE0
+void RGE_Player::loadAIInformation(char* param_1, char* param_2, char* param_3, int param_4, int param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::loadAIInformation(char *,char *,char *,int,int) */
+    // 
+    // void __thiscall
+    // RGE_Player::loadAIInformation
+    //           (RGE_Player *this,char *param_1,char *param_2,char *param_3,int param_4,int param_5)
+    // 
+    // {
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046EEF0
+void TRIBE_Gaia::sendUnitAIOrder(int param_1, int param_2, int param_3, int param_4, int param_5, float param_6, float param_7, float param_8, float param_9, int param_10, int param_11, int param_12) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall
+    //    RGE_Player::sendUnitAIOrder(int,int,int,int,int,float,float,float,float,int,int,int) */
+    // 
+    // void __thiscall
+    // RGE_Player::sendUnitAIOrder
+    //           (RGE_Player *this,int param_1,int param_2,int param_3,int param_4,int param_5,
+    //           float param_6,float param_7,float param_8,float param_9,int param_10,int param_11,
+    //           int param_12)
+    // 
+    // {
+    //   RGE_Command::command_ai_order
+    //             (this->world->commands,param_1,param_1,param_2,param_3,param_4,param_5,param_6,param_7,
+    //              param_8,param_9,(uchar)param_10,(uchar)param_11,(uchar)param_12);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046EF40
+void TRIBE_Gaia::processAIOrder(int param_1, int param_2, int param_3, int param_4, int param_5, float param_6, float param_7, float param_8, float param_9, int param_10, int param_11, int param_12) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall
+    //    RGE_Player::processAIOrder(int,int,int,int,int,float,float,float,float,int,int,int) */
+    // 
+    // void __thiscall
+    // RGE_Player::processAIOrder
+    //           (RGE_Player *this,int param_1,int param_2,int param_3,int param_4,int param_5,
+    //           float param_6,float param_7,float param_8,float param_9,int param_10,int param_11,
+    //           int param_12)
+    // 
+    // {
+    //   RGE_Static_Object *this_00;
+    //   UnitAIModule *pUVar1;
+    //   
+    //   this_00 = RGE_Game_World::object(this->world,param_2);
+    //   if (this_00 != (RGE_Static_Object *)0x0) {
+    //     pUVar1 = RGE_Static_Object::unitAI(this_00);
+    //     if (pUVar1 != (UnitAIModule *)0x0) {
+    //       pUVar1 = RGE_Static_Object::unitAI(this_00);
+    //       (**(code **)(pUVar1->_padding_ + 0x10))
+    //                 (param_1,param_3,param_4,param_5,param_6,param_7,param_8,param_9,param_10,param_11,
+    //                  param_12);
+    //     }
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046EFB0
+void TRIBE_Gaia::sendGameOrder(RGE_Static_Object* param_1, RGE_Static_Object* param_2, float param_3, float param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::sendGameOrder(class RGE_Static_Object *,class
+    //    RGE_Static_Object *,float,float) */
+    // 
+    // void __thiscall
+    // RGE_Player::sendGameOrder
+    //           (RGE_Player *this,RGE_Static_Object *param_1,RGE_Static_Object *param_2,float param_3,
+    //           float param_4)
+    // 
+    // {
+    //   RGE_Command::command_order(this->world->commands,&param_1,1,param_2,param_3,param_4);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046EFE0
+void TRIBE_Gaia::sendAddWaypointCommand(int param_1, XYZBYTEPoint* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::sendAddWaypointCommand(int,struct XYZBYTEPoint *,int)
+    //     */
+    // 
+    // void __thiscall
+    // RGE_Player::sendAddWaypointCommand(RGE_Player *this,int param_1,XYZBYTEPoint *param_2,int param_3)
+    // 
+    // {
+    //   RGE_Command::command_add_waypoint(this->world->commands,(int)this->id,param_1,param_2,param_3);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046F010
+void TRIBE_Gaia::processAddWaypointCommand(int param_1, XYZBYTEPoint* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::processAddWaypointCommand(int,struct XYZBYTEPoint
+    //    *,int) */
+    // 
+    // void __thiscall
+    // RGE_Player::processAddWaypointCommand
+    //           (RGE_Player *this,int param_1,XYZBYTEPoint *param_2,int param_3)
+    // 
+    // {
+    //   code *pcVar1;
+    //   RGE_Static_Object *pRVar2;
+    //   
+    //   pRVar2 = RGE_Game_World::object(this->world,param_1);
+    //   if ((pRVar2 != (RGE_Static_Object *)0x0) && (0 < param_3)) {
+    //     pcVar1 = *(code **)(pRVar2->_padding_ + 0x1bc);
+    //     do {
+    //       (*pcVar1)(param_2,1);
+    //       param_2 = param_2 + 1;
+    //       param_3 = param_3 + -1;
+    //     } while (param_3 != 0);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046F050
+void TRIBE_Gaia::sendPlayCommand(int param_1, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: selectedUnits */
+    // /* public: virtual void __thiscall RGE_Player::sendPlayCommand(int,int,int) */
+    // 
+    // void __thiscall RGE_Player::sendPlayCommand(RGE_Player *this,int param_1,int param_2,int param_3)
+    // 
+    // {
+    //   int iVar1;
+    //   AIPlay *pAVar2;
+    //   long *plVar3;
+    //   RGE_Static_Object **ppRVar4;
+    //   int iVar5;
+    //   int iVar6;
+    //   undefined4 unaff_retaddr;
+    //   int selectedUnits [25];
+    //   
+    //   iVar1 = this->_padding_;
+    //   (**(code **)(iVar1 + 0xd0))(param_1);
+    //   pAVar2 = AIPlayBook::play(this->world->playbook,param_2);
+    //   if (pAVar2 == (AIPlay *)0x0) {
+    //     (**(code **)(iVar1 + 0x30))
+    //               ((int)this->id,param_1,0x2d7,0xffffffff,0xffffffff,0xbf800000,0xbf800000,0xbf800000,
+    //                0xbf800000,1,0,100);
+    //     return;
+    //   }
+    //   iVar6 = 0;
+    //   plVar3 = selectedUnits;
+    //   ppRVar4 = this->sel_list;
+    //   iVar5 = 0x19;
+    //   do {
+    //     if (*ppRVar4 != (RGE_Static_Object *)0x0) {
+    //       iVar6 = iVar6 + 1;
+    //       *plVar3 = (*ppRVar4)->id;
+    //       plVar3 = plVar3 + 1;
+    //     }
+    //     ppRVar4 = ppRVar4 + 1;
+    //     iVar5 = iVar5 + -1;
+    //   } while (iVar5 != 0);
+    //   if (iVar6 != 0) {
+    //     (**(code **)(iVar1 + 0xc4))(unaff_retaddr,selectedUnits,iVar6,0x40000000);
+    //     (**(code **)(iVar1 + 0x30))
+    //               ((int)this->id,unaff_retaddr,0x2d6,selectedUnits[0x17],selectedUnits[0x18],0xbf800000,
+    //                0xbf800000,0xbf800000,0xbf800000,1,0,100);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046F140
+void TRIBE_Gaia::sendPlayCommand(int param_1, int* param_2, int param_3, int param_4, int param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::sendPlayCommand(int,int *,int,int,int) */
+    // 
+    // void __thiscall
+    // RGE_Player::sendPlayCommand
+    //           (RGE_Player *this,int param_1,int *param_2,int param_3,int param_4,int param_5)
+    // 
+    // {
+    //   int iVar1;
+    //   AIPlay *pAVar2;
+    //   undefined4 unaff_EBX;
+    //   
+    //   iVar1 = this->_padding_;
+    //   (**(code **)(iVar1 + 0xd0))(param_1);
+    //   pAVar2 = AIPlayBook::play(this->world->playbook,param_4);
+    //   if (pAVar2 == (AIPlay *)0x0) {
+    //     (**(code **)(iVar1 + 0x30))
+    //               ((int)this->id,param_1,0x2d7,0xffffffff,0xffffffff,0xbf800000,0xbf800000,0xbf800000,
+    //                0xbf800000,1,0,100);
+    //     return;
+    //   }
+    //   if (param_2 != (int *)0x0) {
+    //     (**(code **)(iVar1 + 0xc4))(param_1,param_1,param_2,0x40000000);
+    //     (**(code **)(iVar1 + 0x30))
+    //               ((int)this->id,param_1,0x2d6,unaff_EBX,param_4,0xbf800000,0xbf800000,0xbf800000,
+    //                0xbf800000,1,0,100);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046F200
+int pathingAttemptCap(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall RGE_Player::pathingAttemptCap(void) */
+    // 
+    // int __thiscall RGE_Player::pathingAttemptCap(RGE_Player *this)
+    // 
+    // {
+    //   return this->pathingAttemptCapValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046F210
+void setPathingAttemptCap(RGE_Player* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::setPathingAttemptCap(int) */
+    // 
+    // void __thiscall RGE_Player::setPathingAttemptCap(RGE_Player *this,int param_1)
+    // 
+    // {
+    //   this->pathingAttemptCapValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046F220
+int pathingDelayCap(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall RGE_Player::pathingDelayCap(void) */
+    // 
+    // int __thiscall RGE_Player::pathingDelayCap(RGE_Player *this)
+    // 
+    // {
+    //   return this->pathingDelayCapValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046F230
+void setPathingDelayCap(RGE_Player* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::setPathingDelayCap(int) */
+    // 
+    // void __thiscall RGE_Player::setPathingDelayCap(RGE_Player *this,int param_1)
+    // 
+    // {
+    //   this->pathingDelayCapValue = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046F240
+int currentUpdatePathingAttempts(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall RGE_Player::currentUpdatePathingAttempts(void) */
+    // 
+    // int __thiscall RGE_Player::currentUpdatePathingAttempts(RGE_Player *this)
+    // 
+    // {
+    //   return this->currentUpdatePathingAttemptsValue;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046F250
+int availablePathingAttempts(RGE_Player* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall RGE_Player::availablePathingAttempts(int) */
+    // 
+    // int __thiscall RGE_Player::availablePathingAttempts(RGE_Player *this,int param_1)
+    // 
+    // {
+    //   if ((this->pathingDelayCapValue != -1) && (this->pathingDelayCapValue < param_1)) {
+    //     return 1;
+    //   }
+    //   if (this->pathingAttemptCapValue == -1) {
+    //     return 1;
+    //   }
+    //   return (uint)(this->currentUpdatePathingAttemptsValue < this->pathingAttemptCapValue);
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046F290
+void incrementPathingAttempts(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::incrementPathingAttempts(void) */
+    // 
+    // void __thiscall RGE_Player::incrementPathingAttempts(RGE_Player *this)
+    // 
+    // {
+    //   this->currentUpdatePathingAttemptsValue = this->currentUpdatePathingAttemptsValue + 1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046F2A0
+void sendChatMessage(RGE_Player* this_, int param_2, int param_3, char* param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: textOut */
+    // /* public: void __cdecl RGE_Player::sendChatMessage(int,int,char *,...) */
+    // 
+    // void __thiscall
+    // RGE_Player::sendChatMessage(RGE_Player *this,int param_1,int param_2,char *param_3,...)
+    // 
+    // {
+    //   char cVar1;
+    //   uint uVar2;
+    //   int iVar3;
+    //   uint uVar4;
+    //   char *pcVar5;
+    //   undefined4 in_stack_00000010;
+    //   char textOut [1025];
+    //   
+    //   vsprintf(textOut + 4,in_stack_00000010,&stack0x00000014);
+    //   iVar3 = -1;
+    //   pcVar5 = textOut + 4;
+    //   do {
+    //     if (iVar3 == 0) break;
+    //     iVar3 = iVar3 + -1;
+    //     cVar1 = *pcVar5;
+    //     pcVar5 = pcVar5 + 1;
+    //   } while (cVar1 != '\0');
+    //   if (iVar3 != -2) {
+    //     uVar4 = 1;
+    //     iVar3 = RGE_Base_Game::numberPlayers(rge_base_game);
+    //     if (0 < iVar3) {
+    //       do {
+    //         iVar3 = RGE_Base_Game::playerID(rge_base_game,uVar4);
+    //         if (iVar3 == param_2) {
+    //           TCommunications_Handler::SendChatMsg
+    //                     (*(TCommunications_Handler **)(*(int *)(*(int *)(param_1 + 0x3c) + 0x58) + 0x14)
+    //                      ,(int)*(short *)(param_1 + 0x4a),uVar4,textOut + 4);
+    //         }
+    //         uVar4 = uVar4 + 1;
+    //         iVar3 = RGE_Base_Game::numberPlayers(rge_base_game);
+    //       } while ((int)uVar4 <= iVar3);
+    //     }
+    //     if ((param_3 == (char *)0x1) && (param_2 != *(short *)(param_1 + 0x4a))) {
+    //       uVar4 = 1;
+    //       iVar3 = RGE_Base_Game::numberPlayers(rge_base_game);
+    //       if (0 < iVar3) {
+    //         do {
+    //           uVar2 = RGE_Base_Game::playerID(rge_base_game,uVar4);
+    //           if (uVar2 == (int)*(short *)(param_1 + 0x4a)) {
+    //             TCommunications_Handler::SendChatMsg
+    //                       (*(TCommunications_Handler **)
+    //                         (*(int *)(*(int *)(param_1 + 0x3c) + 0x58) + 0x14),
+    //                        (int)*(short *)(param_1 + 0x4a),uVar4,textOut + 4);
+    //           }
+    //           uVar4 = uVar4 + 1;
+    //           iVar3 = RGE_Base_Game::numberPlayers(rge_base_game);
+    //         } while ((int)uVar4 <= iVar3);
+    //       }
+    //     }
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046F3A0
+RGE_Static_Object* RGE_Player::make_scenario_obj(float param_1, float param_2, float param_3, short param_4, uchar param_5, float param_6) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual class RGE_Static_Object * __thiscall
+    //    RGE_Player::make_scenario_obj(float,float,float,short,unsigned char,float) */
+    // 
+    // RGE_Static_Object * __thiscall
+    // RGE_Player::make_scenario_obj
+    //           (RGE_Player *this,float param_1,float param_2,float param_3,short param_4,uchar param_5,
+    //           float param_6)
+    // 
+    // {
+    //   RGE_Static_Object *pRVar1;
+    //   
+    //   pRVar1 = (RGE_Static_Object *)0x0;
+    //   if (this->master_objects[param_4] != (RGE_Master_Static_Object *)0x0) {
+    //     pRVar1 = (RGE_Static_Object *)
+    //              (**(code **)(this->master_objects[param_4]->_padding_ + 0x18))
+    //                        (this,param_1,param_2,param_3);
+    //     if (6 < param_1._0_1_) {
+    //       (**(code **)(pRVar1->_padding_ + 0x68))();
+    //       return pRVar1;
+    //     }
+    //     if (2 < param_1._0_1_) {
+    //       (**(code **)(pRVar1->_padding_ + 0x6c))();
+    //       return pRVar1;
+    //     }
+    //     (**(code **)(pRVar1->_padding_ + 0xb4))(param_2);
+    //   }
+    //   return pRVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046F410
+void RGE_Player::scenario_save(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::scenario_save(int) */
+    // 
+    // void __thiscall RGE_Player::scenario_save(RGE_Player *this,int param_1)
+    // 
+    // {
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046F420
+void RGE_Player::scenario_load(int param_1, long* param_2, float param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: temp_byte */
+    // /* public: virtual void __thiscall RGE_Player::scenario_load(int,long *,float) */
+    // 
+    // void __thiscall RGE_Player::scenario_load(RGE_Player *this,int param_1,long *param_2,float param_3)
+    // 
+    // {
+    //   RGE_Victory_Conditions *this_00;
+    //   int iVar1;
+    //   char *pcVar2;
+    //   int iVar3;
+    //   int iVar4;
+    //   short sVar5;
+    //   uint uVar6;
+    //   uchar temp_byte;
+    //   short count;
+    //   short player_count;
+    //   int has_team;
+    //   int local_4;
+    //   
+    //   iVar1 = param_1;
+    //   if (param_3 <= 1.05) {
+    //     rge_read(param_1,&has_team,2);
+    //     if (0 < (short)has_team) {
+    //       pcVar2 = (char *)calloc((int)(short)has_team,1);
+    //       rge_read(iVar1,pcVar2,(int)(short)has_team);
+    //       if (this->name == (char *)0x0) {
+    //         this->name = pcVar2;
+    //       }
+    //       else {
+    //         free(pcVar2);
+    //       }
+    //     }
+    //     rge_read(iVar1,&this->view_x,4);
+    //     rge_read(iVar1,&this->view_y,4);
+    //     rge_read(iVar1,&this->map_x,2);
+    //     rge_read(iVar1,&this->map_y,2);
+    //     iVar4 = 0;
+    //     local_4 = 0;
+    //     if (rge_base_game->prog_mode != 7) {
+    //       uVar6 = 1;
+    //       do {
+    //         iVar3 = RGE_Base_Game::playerID(rge_base_game,uVar6);
+    //         if ((iVar3 == this->id) &&
+    //            ((iVar3 = TCommunications_Handler::GetPlayerHumanity(comm,uVar6), iVar3 == 2 ||
+    //             (iVar3 = TCommunications_Handler::GetPlayerHumanity(comm,uVar6), iVar3 == 4)))) {
+    //           iVar3 = RGE_Base_Game::playerTeam(rge_base_game,uVar6 - 1);
+    //           if (1 < iVar3) {
+    //             iVar4 = 1;
+    //             local_4 = 1;
+    //           }
+    //           break;
+    //         }
+    //         uVar6 = uVar6 + 1;
+    //       } while ((int)uVar6 < 9);
+    //     }
+    //     if ((1.0 < param_3) && (rge_read(iVar1,(void *)((int)&player_count + 1),1), iVar4 == 0)) {
+    //       this->allied_victory = player_count._1_1_;
+    //     }
+    //     sVar5 = 0;
+    //     this->allied_LOS_Enable = 0;
+    //     if (0 < this->attribute_num) {
+    //                     /* language.dll match for 0x74: "Copperplate Gothic Light" */
+    //       rge_read(iVar1,this->attributes,0x74);
+    //     }
+    //     rge_read(iVar1,(void *)((int)&has_team + 2),2);
+    //     if (0 < has_team._2_2_) {
+    //       do {
+    //         rge_read(iVar1,&param_1,1);
+    //         if (iVar4 == 0) {
+    //           iVar4 = param_2[sVar5];
+    //           if ((iVar4 < this->world->player_num) && (-1 < iVar4)) {
+    //             this->relations[iVar4] = (uchar)param_1;
+    //             iVar4 = param_2[sVar5];
+    //             if (iVar4 == 0) {
+    //               this->unitDiplomacy[0] = 0;
+    //             }
+    //             else if (sVar5 == this->id) {
+    //               this->unitDiplomacy[iVar4] = 1;
+    //             }
+    //             else if ((uchar)param_1 == '\0') {
+    //               this->unitDiplomacy[iVar4] = 2;
+    //             }
+    //             else if ((uchar)param_1 == '\x01') {
+    //               this->unitDiplomacy[iVar4] = 3;
+    //             }
+    //             else {
+    //               this->unitDiplomacy[iVar4] = 4;
+    //             }
+    //           }
+    //         }
+    //         sVar5 = sVar5 + 1;
+    //         iVar4 = local_4;
+    //       } while (sVar5 < has_team._2_2_);
+    //     }
+    //     if (1.08 < param_3) {
+    //       rge_read(iVar1,this->unitDiplomacy,0x24);
+    //     }
+    //     this_00 = this->victory_conditions;
+    //     if (this_00 != (RGE_Victory_Conditions *)0x0) {
+    //       RGE_Victory_Conditions::~RGE_Victory_Conditions(this_00);
+    //       operator_delete(this_00);
+    //     }
+    //     (**(code **)(this->_padding_ + 0xf0))(iVar1,param_2,0);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046F6B0
+void TRIBE_Gaia::scenario_postsave(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: count */
+    // /* public: virtual void __thiscall RGE_Player::scenario_postsave(int) */
+    // 
+    // void __thiscall RGE_Player::scenario_postsave(RGE_Player *this,int param_1)
+    // 
+    // {
+    //   char cVar1;
+    //   char *pcVar2;
+    //   short count;
+    //   uint local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcVar2 = this->name;
+    //   do {
+    //     if (local_4 == 0) break;
+    //     local_4 = local_4 - 1;
+    //     cVar1 = *pcVar2;
+    //     pcVar2 = pcVar2 + 1;
+    //   } while (cVar1 != '\0');
+    //   local_4 = ~local_4;
+    //   rge_write(param_1,&local_4,2);
+    //   rge_write(param_1,this->name,(int)(short)local_4);
+    //   rge_write(param_1,&this->view_x,4);
+    //   rge_write(param_1,&this->view_y,4);
+    //   rge_write(param_1,&this->map_x,2);
+    //   rge_write(param_1,&this->map_y,2);
+    //   rge_write(param_1,&this->allied_victory,1);
+    //   rge_write(param_1,&this->world->player_num,2);
+    //   rge_write(param_1,this->relations,(int)this->world->player_num);
+    //   rge_write(param_1,this->unitDiplomacy,0x24);
+    //   (**(code **)(this->victory_conditions->_padding_ + 0xc))(param_1);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046F7A0
+void RGE_Player::scenario_postload(int param_1, long* param_2, float param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: temp_byte */
+    // /* public: virtual void __thiscall RGE_Player::scenario_postload(int,long *,float) */
+    // 
+    // void __thiscall
+    // RGE_Player::scenario_postload(RGE_Player *this,int param_1,long *param_2,float param_3)
+    // 
+    // {
+    //   RGE_Victory_Conditions *this_00;
+    //   int iVar1;
+    //   long *plVar2;
+    //   short sVar3;
+    //   char *pcVar4;
+    //   int iVar5;
+    //   short sVar6;
+    //   uint uVar7;
+    //   uchar temp_byte;
+    //   short count;
+    //   short player_count;
+    //   int has_team;
+    //   int local_4;
+    //   
+    //   iVar1 = param_1;
+    //   rge_read(param_1,&has_team,2);
+    //   if (0 < (short)has_team) {
+    //     pcVar4 = (char *)calloc((int)(short)has_team,1);
+    //     rge_read(iVar1,pcVar4,(int)(short)has_team);
+    //     if (this->name == (char *)0x0) {
+    //       this->name = pcVar4;
+    //     }
+    //     else {
+    //       free(pcVar4);
+    //     }
+    //   }
+    //   rge_read(iVar1,&this->view_x,4);
+    //   rge_read(iVar1,&this->view_y,4);
+    //   rge_read(iVar1,&this->map_x,2);
+    //   rge_read(iVar1,&this->map_y,2);
+    //   local_4 = 0;
+    //   if (rge_base_game->prog_mode != 7) {
+    //     uVar7 = 1;
+    //     do {
+    //       iVar5 = RGE_Base_Game::playerID(rge_base_game,uVar7);
+    //       if ((iVar5 == this->id) &&
+    //          ((iVar5 = TCommunications_Handler::GetPlayerHumanity(comm,uVar7), iVar5 == 2 ||
+    //           (iVar5 = TCommunications_Handler::GetPlayerHumanity(comm,uVar7), iVar5 == 4)))) {
+    //         iVar5 = RGE_Base_Game::playerTeam(rge_base_game,uVar7 - 1);
+    //         if (1 < iVar5) {
+    //           local_4 = 1;
+    //         }
+    //         break;
+    //       }
+    //       uVar7 = uVar7 + 1;
+    //     } while ((int)uVar7 < 9);
+    //   }
+    //   if ((1.0 < param_3) && (rge_read(iVar1,(void *)((int)&player_count + 1),1), local_4 == 0)) {
+    //     this->allied_victory = player_count._1_1_;
+    //   }
+    //   this->allied_LOS_Enable = 0;
+    //   if ((param_3 <= 1.06) && (0 < this->attribute_num)) {
+    //                     /* language.dll match for 0x74: "Copperplate Gothic Light" */
+    //     rge_read(iVar1,this->attributes,0x74);
+    //   }
+    //   rge_read(iVar1,(void *)((int)&has_team + 2),2);
+    //   sVar6 = 0;
+    //   if (0 < has_team._2_2_) {
+    //     do {
+    //       plVar2 = param_2;
+    //       rge_read(iVar1,&param_1,1);
+    //       if (local_4 == 0) {
+    //         sVar3 = sVar6;
+    //         if (plVar2 != (long *)0x0) {
+    //           sVar3 = (short)plVar2[sVar6];
+    //         }
+    //         if ((sVar3 < this->world->player_num) && (-1 < sVar3)) {
+    //           this->relations[sVar3] = (uchar)param_1;
+    //           if (sVar3 == 0) {
+    //             this->unitDiplomacy[0] = 0;
+    //           }
+    //           else if (sVar3 == this->id) {
+    //             this->unitDiplomacy[sVar3] = 1;
+    //           }
+    //           else if ((uchar)param_1 == '\0') {
+    //             this->unitDiplomacy[sVar3] = 2;
+    //           }
+    //           else if ((uchar)param_1 == '\x01') {
+    //             this->unitDiplomacy[sVar3] = 3;
+    //           }
+    //           else {
+    //             this->unitDiplomacy[sVar3] = 4;
+    //           }
+    //         }
+    //       }
+    //       sVar6 = sVar6 + 1;
+    //     } while (sVar6 < has_team._2_2_);
+    //   }
+    //   plVar2 = param_2;
+    //   if (1.08 <= param_3) {
+    //     rge_read(iVar1,this->unitDiplomacy,0x24);
+    //   }
+    //   this_00 = this->victory_conditions;
+    //   if (this_00 != (RGE_Victory_Conditions *)0x0) {
+    //     RGE_Victory_Conditions::~RGE_Victory_Conditions(this_00);
+    //     operator_delete(this_00);
+    //   }
+    //   if (param_3 < 1.09) {
+    //     (**(code **)(this->_padding_ + 0xf0))(iVar1,plVar2,0);
+    //     return;
+    //   }
+    //   (**(code **)(this->_padding_ + 0xf0))(iVar1,plVar2,1);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046FA60
+void RGE_Player::load(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::load(int) */
+    // 
+    // void __thiscall RGE_Player::load(RGE_Player *this,int param_1)
+    // 
+    // {
+    //   short *psVar1;
+    //   int iVar2;
+    //   RGE_Master_Static_Object **ppRVar3;
+    //   RGE_Visible_Map *pRVar4;
+    //   Visible_Resource_Manager *pVVar5;
+    //   RGE_Object_List *pRVar6;
+    //   short sVar7;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   iVar2 = param_1;
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055e307;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   psVar1 = &this->master_object_num;
+    //   rge_read(param_1,psVar1,2);
+    //   sVar7 = 0;
+    //   if (*psVar1 < 1) {
+    //     this->master_objects = (RGE_Master_Static_Object **)0x0;
+    //   }
+    //   else {
+    //     ppRVar3 = (RGE_Master_Static_Object **)calloc((int)*psVar1,4);
+    //     this->master_objects = ppRVar3;
+    //     rge_read(iVar2,ppRVar3,(int)*psVar1 << 2);
+    //     if (0 < *psVar1) {
+    //       do {
+    //         if (this->master_objects[sVar7] != (RGE_Master_Static_Object *)0x0) {
+    //           rge_read(iVar2,&param_1,1);
+    //           load_master_object(this,iVar2,sVar7,(uchar)param_1,this->world->sprites,
+    //                              this->world->sounds);
+    //         }
+    //         sVar7 = sVar7 + 1;
+    //       } while (sVar7 < *psVar1);
+    //     }
+    //   }
+    //   pRVar4 = (RGE_Visible_Map *)operator_new(0x38);
+    //   local_4 = 0;
+    //   if (pRVar4 == (RGE_Visible_Map *)0x0) {
+    //     pRVar4 = (RGE_Visible_Map *)0x0;
+    //   }
+    //   else {
+    //     pRVar4 = (RGE_Visible_Map *)RGE_Visible_Map::RGE_Visible_Map(pRVar4,iVar2,this->world);
+    //   }
+    //   local_4 = 0xffffffff;
+    //   this->visible = pRVar4;
+    //   pVVar5 = (Visible_Resource_Manager *)operator_new(0x14);
+    //   local_4 = 1;
+    //   if (pVVar5 == (Visible_Resource_Manager *)0x0) {
+    //     pVVar5 = (Visible_Resource_Manager *)0x0;
+    //   }
+    //   else {
+    //     pVVar5 = (Visible_Resource_Manager *)
+    //              Visible_Resource_Manager::Visible_Resource_Manager(pVVar5,iVar2,this);
+    //   }
+    //   local_4 = 0xffffffff;
+    //   this->VR_List = pVVar5;
+    //   pRVar6 = (RGE_Object_List *)operator_new(0xc);
+    //   local_4 = 2;
+    //   if (pRVar6 == (RGE_Object_List *)0x0) {
+    //     pRVar6 = (RGE_Object_List *)0x0;
+    //   }
+    //   else {
+    //     pRVar6 = (RGE_Object_List *)RGE_Object_List::RGE_Object_List(pRVar6);
+    //   }
+    //   local_4 = 0xffffffff;
+    //   this->objects = pRVar6;
+    //   RGE_Object_List::load_list(pRVar6,iVar2,this->world);
+    //   pRVar6 = (RGE_Object_List *)operator_new(0xc);
+    //   local_4 = 3;
+    //   if (pRVar6 == (RGE_Object_List *)0x0) {
+    //     pRVar6 = (RGE_Object_List *)0x0;
+    //   }
+    //   else {
+    //     pRVar6 = (RGE_Object_List *)RGE_Object_List::RGE_Object_List(pRVar6);
+    //   }
+    //   local_4 = 0xffffffff;
+    //   this->sleeping_objects = pRVar6;
+    //   pRVar6 = (RGE_Object_List *)operator_new(0xc);
+    //   local_4 = 4;
+    //   if (pRVar6 == (RGE_Object_List *)0x0) {
+    //     pRVar6 = (RGE_Object_List *)0x0;
+    //   }
+    //   else {
+    //     pRVar6 = (RGE_Object_List *)RGE_Object_List::RGE_Object_List(pRVar6);
+    //   }
+    //   local_4 = 0xffffffff;
+    //   this->doppleganger_objects = pRVar6;
+    //   RGE_Object_List::load_list(this->sleeping_objects,iVar2,this->world);
+    //   if (7.09 <= save_game_version) {
+    //     RGE_Object_List::load_list(this->doppleganger_objects,iVar2,this->world);
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046FC40
+void load_master_object(RGE_Player* this_, int param_2, short param_3, uchar param_4, RGE_Sprite** param_5, RGE_Sound** param_6) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::load_master_object(int,short,unsigned char,class RGE_Sprite *
+    //    *,class RGE_Sound * *) */
+    // 
+    // void __thiscall
+    // RGE_Player::load_master_object
+    //           (RGE_Player *this,int param_1,short param_2,uchar param_3,RGE_Sprite **param_4,
+    //           RGE_Sound **param_5)
+    // 
+    // {
+    //   RGE_Master_Animated_Object *this_00;
+    //   RGE_Master_Moving_Object *this_01;
+    //   RGE_Master_Missile_Object *this_02;
+    //   RGE_Master_Static_Object *pRVar1;
+    //   RGE_Master_Action_Object *this_03;
+    //   RGE_Master_Combat_Object *this_04;
+    //   RGE_Master_Doppleganger_Object *this_05;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_c = *unaff_FS_OFFSET;
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055e36d;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   switch(param_3) {
+    //   case '\n':
+    //     pRVar1 = (RGE_Master_Static_Object *)operator_new(0xb8);
+    //     local_4 = 0;
+    //     if (pRVar1 == (RGE_Master_Static_Object *)0x0) {
+    // LAB_0046fe8a:
+    //       pRVar1 = (RGE_Master_Static_Object *)0x0;
+    //     }
+    //     else {
+    //       pRVar1 = (RGE_Master_Static_Object *)
+    //                RGE_Master_Static_Object::RGE_Master_Static_Object(pRVar1,param_1,param_4,param_5,1);
+    //     }
+    //     break;
+    //   default:
+    //     goto switchD_0046fc75_caseD_b;
+    //   case '\x14':
+    //     this_00 = (RGE_Master_Animated_Object *)operator_new(0xbc);
+    //     local_4 = 1;
+    //     if (this_00 != (RGE_Master_Animated_Object *)0x0) {
+    //       pRVar1 = (RGE_Master_Static_Object *)
+    //                RGE_Master_Animated_Object::RGE_Master_Animated_Object
+    //                          (this_00,param_1,param_4,param_5,1);
+    //       this->master_objects[param_2] = pRVar1;
+    //       *unaff_FS_OFFSET = local_c;
+    //       return;
+    //     }
+    //     goto LAB_0046fe34;
+    //   case '\x19':
+    //     this_05 = (RGE_Master_Doppleganger_Object *)operator_new(0xbc);
+    //     local_4 = 6;
+    //     if (this_05 == (RGE_Master_Doppleganger_Object *)0x0) goto LAB_0046fe8a;
+    //     pRVar1 = (RGE_Master_Static_Object *)
+    //              RGE_Master_Doppleganger_Object::RGE_Master_Doppleganger_Object
+    //                        (this_05,param_1,param_4,param_5,1);
+    //     break;
+    //   case '\x1e':
+    //     this_01 = (RGE_Master_Moving_Object *)operator_new(0xd8);
+    //     local_4 = 2;
+    //     if (this_01 == (RGE_Master_Moving_Object *)0x0) goto LAB_0046fe8a;
+    //     pRVar1 = (RGE_Master_Static_Object *)
+    //              RGE_Master_Moving_Object::RGE_Master_Moving_Object(this_01,param_1,param_4,param_5,1);
+    //     break;
+    //   case '(':
+    //     this_03 = (RGE_Master_Action_Object *)operator_new(0xfc);
+    //     local_4 = 4;
+    //     if (this_03 == (RGE_Master_Action_Object *)0x0) goto LAB_0046fe8a;
+    //     pRVar1 = (RGE_Master_Static_Object *)
+    //              RGE_Master_Action_Object::RGE_Master_Action_Object(this_03,param_1,param_4,param_5,1);
+    //     break;
+    //   case '2':
+    //     this_04 = (RGE_Master_Combat_Object *)operator_new(0x148);
+    //     local_4 = 5;
+    //     if (this_04 != (RGE_Master_Combat_Object *)0x0) {
+    //       pRVar1 = (RGE_Master_Static_Object *)
+    //                RGE_Master_Combat_Object::RGE_Master_Combat_Object(this_04,param_1,param_4,param_5,1)
+    //       ;
+    //       this->master_objects[param_2] = pRVar1;
+    //       *unaff_FS_OFFSET = local_c;
+    //       return;
+    //     }
+    //     goto LAB_0046fe34;
+    //   case '<':
+    //     this_02 = (RGE_Master_Missile_Object *)operator_new(0x154);
+    //     local_4 = 3;
+    //     if (this_02 != (RGE_Master_Missile_Object *)0x0) {
+    //       pRVar1 = (RGE_Master_Static_Object *)
+    //                RGE_Master_Missile_Object::RGE_Master_Missile_Object
+    //                          (this_02,param_1,param_4,param_5,1);
+    //       this->master_objects[param_2] = pRVar1;
+    //       *unaff_FS_OFFSET = local_c;
+    //       return;
+    //     }
+    // LAB_0046fe34:
+    //     this->master_objects[param_2] = (RGE_Master_Static_Object *)0x0;
+    //     *unaff_FS_OFFSET = local_c;
+    //     return;
+    //   }
+    //   this->master_objects[param_2] = pRVar1;
+    // switchD_0046fc75_caseD_b:
+    //   *unaff_FS_OFFSET = local_c;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046FEA9
+undefined FUN_0046fea9() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0046fea9(void)
+    // 
+    // {
+    //   byte *pbVar1;
+    //   char *pcVar2;
+    //   byte bVar3;
+    //   int in_EAX;
+    //   undefined4 in_ECX;
+    //   int *piVar4;
+    //   int in_EDX;
+    //   byte unaff_BH;
+    //   int unaff_EBP;
+    //   char *unaff_ESI;
+    //   int *unaff_EDI;
+    //   char in_SF;
+    //   char in_OF;
+    //   undefined4 uStack00000078;
+    //   undefined4 uStack0000007c;
+    //   undefined4 uStack00000080;
+    //   undefined4 uStack00000084;
+    //   char *pcStack00000088;
+    //   undefined4 in_stack_00000090;
+    //   
+    //   do {
+    //   } while (in_OF != in_SF);
+    //   pbVar1 = (byte *)(in_EDX + 0x530046fc);
+    //   bVar3 = *pbVar1;
+    //   *pbVar1 = *pbVar1 + unaff_BH;
+    //   unaff_ESI[1] = unaff_ESI[1] + '\x01';
+    //   piVar4 = (int *)CONCAT22((short)((uint)in_ECX >> 0x10),
+    //                            CONCAT11((char)((uint)in_ECX >> 8) + unaff_BH + CARRY1(bVar3,unaff_BH),
+    //                                     (char)in_ECX));
+    //   pcVar2 = (char *)(unaff_EBP + -0x21dffba + (int)unaff_EDI * 8);
+    //   *pcVar2 = *pcVar2 + (char)((uint)in_EAX >> 8);
+    //   *unaff_ESI = *unaff_ESI + (char)in_ECX;
+    //   pcStack00000088 = unaff_ESI + 4;
+    //   *(char *)((int)unaff_EDI + 0x46fe) = *(char *)((int)unaff_EDI + 0x46fe) + (char)in_EDX;
+    //   *unaff_EDI = *unaff_EDI + in_EAX;
+    //   uStack00000084 = 1;
+    //   uStack00000080 = 0;
+    //   uStack0000007c = in_stack_00000090;
+    //   uStack00000078 = 0x46ff16;
+    //   (**(code **)(*piVar4 + 0xf0))();
+    //   uStack00000078 = 0x46ff1e;
+    //   RGE_Object_List::rehook_list((RGE_Object_List *)piVar4[10]);
+    //   uStack00000078 = 0x46ff26;
+    //   RGE_Object_List::rehook_list((RGE_Object_List *)piVar4[0xb]);
+    //   uStack00000078 = 0x46ff2e;
+    //   RGE_Object_List::rehook_list((RGE_Object_List *)piVar4[0xc]);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046FF00
+void load_info(RGE_Player* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::load_info(int) */
+    // 
+    // void __thiscall RGE_Player::load_info(RGE_Player *this,int param_1)
+    // 
+    // {
+    //   (**(code **)(this->_padding_ + 0xf0))(param_1,0,1);
+    //   RGE_Object_List::rehook_list(this->objects);
+    //   RGE_Object_List::rehook_list(this->sleeping_objects);
+    //   RGE_Object_List::rehook_list(this->doppleganger_objects);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046FF40
+long get_checksum(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: long __thiscall RGE_Player::get_checksum(void) */
+    // 
+    // long __thiscall RGE_Player::get_checksum(RGE_Player *this)
+    // 
+    // {
+    //   if (this->checksum_created_this_update == '\0') {
+    //     create_checksum(this);
+    //   }
+    //   return this->checksum;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046FF60
+uchar get_checksums(RGE_Player* this_, long* param_2, long* param_3, long* param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall RGE_Player::get_checksums(long &,long &,long &) */
+    // 
+    // uchar __thiscall
+    // RGE_Player::get_checksums(RGE_Player *this,long *param_1,long *param_2,long *param_3)
+    // 
+    // {
+    //   if (this->checksum_created_this_update == '\0') {
+    //     create_checksum(this);
+    //   }
+    //   *param_1 = this->checksum;
+    //   *param_2 = this->position_checksum;
+    //   *param_3 = this->action_checksum;
+    //   return '\x01';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046FF90
+long create_checksum(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: num3 */
+    // /* public: long __thiscall RGE_Player::create_checksum(void) */
+    // 
+    // long __thiscall RGE_Player::create_checksum(RGE_Player *this)
+    // 
+    // {
+    //   byte bVar1;
+    //   short sVar2;
+    //   short sVar3;
+    //   short sVar4;
+    //   short sVar5;
+    //   RGE_Object_Node *pRVar6;
+    //   RGE_Static_Object *pRVar7;
+    //   int iVar8;
+    //   int iVar9;
+    //   long lVar10;
+    //   int iVar11;
+    //   long num3;
+    //   long num1;
+    //   float temp_position_checksum;
+    //   long num2;
+    //   long num4;
+    //   
+    //   sVar2 = this->id;
+    //   this->checksum_created_this_update = '\x01';
+    //   this->action_checksum = 0;
+    //   sVar3 = this->sleeping_objects->number_of_objects;
+    //   iVar11 = 0;
+    //   sVar4 = this->doppleganger_objects->number_of_objects;
+    //   num2 = (long)this->attribute_num;
+    //   temp_position_checksum = 0.0;
+    //   num1 = 0;
+    //   if (0 < num2) {
+    //     do {
+    //       iVar8 = __ftol();
+    //       temp_position_checksum = (float)((int)temp_position_checksum + iVar8);
+    //       num2 = num2 + -1;
+    //     } while (num2 != 0);
+    //   }
+    //   for (pRVar6 = this->objects->list; pRVar6 != (RGE_Object_Node *)0x0; pRVar6 = pRVar6->next) {
+    //     pRVar7 = pRVar6->node;
+    //     bVar1 = pRVar7->object_state;
+    //     iVar8 = __ftol();
+    //     sVar5 = pRVar7->master_obj->id;
+    //     iVar9 = (**(code **)(pRVar7->_padding_ + 0x1d4))();
+    //     iVar11 = (uint)bVar1 + iVar8 + sVar5 + iVar11 + iVar9;
+    //     num1 = num1 + 1;
+    //     iVar8 = (**(code **)(pRVar6->node->_padding_ + 0x1d0))();
+    //     this->action_checksum = this->action_checksum + iVar8;
+    //   }
+    //   iVar11 = ((((int)sVar2 + (int)sVar3 + (int)sVar4) * 0x100 + num1) * 0x100 + iVar11) * 0x100 +
+    //            (int)temp_position_checksum;
+    //   this->checksum = iVar11;
+    //   lVar10 = __ftol();
+    //   this->position_checksum = lVar10;
+    //   return iVar11;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004700B0
+void new_attribute_num(RGE_Player* this_, short param_2, float param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::new_attribute_num(short,float) */
+    // 
+    // void __thiscall RGE_Player::new_attribute_num(RGE_Player *this,short param_1,float param_2)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < this->attribute_num)) {
+    //     this->attributes[param_1] = param_2;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004700D0
+void RGE_Player::add_attribute_num(short param_1, float param_2, uchar param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::add_attribute_num(short,float,unsigned char) */
+    // 
+    // void __thiscall
+    // RGE_Player::add_attribute_num(RGE_Player *this,short param_1,float param_2,uchar param_3)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < this->attribute_num)) {
+    //     this->attributes[param_1] = param_2 + this->attributes[param_1];
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470100
+void make_available(RGE_Player* this_, short param_2, uchar param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::make_available(short,unsigned char) */
+    // 
+    // void __thiscall RGE_Player::make_available(RGE_Player *this,short param_1,uchar param_2)
+    // 
+    // {
+    //   if (this->master_objects[param_1] != (RGE_Master_Static_Object *)0x0) {
+    //     RGE_Master_Static_Object::make_available(this->master_objects[param_1],param_2);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470120
+void RGE_Player::update() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::update(void) */
+    // 
+    // void __thiscall RGE_Player::update(RGE_Player *this)
+    // 
+    // {
+    //   uchar uVar1;
+    //   
+    //   if (MouseSystem != (TMousePointer *)0x0) {
+    //     TMousePointer::Poll(MouseSystem);
+    //   }
+    //   this->currentUpdatePathingAttemptsValue = 0;
+    //   RGE_Object_List::update(this->objects);
+    //   update_selected(this);
+    //   uVar1 = RGE_Victory_Conditions::update(this->victory_conditions);
+    //   if (uVar1 == '\x01') {
+    //     (**(code **)(this->_padding_ + 4))(2);
+    //   }
+    //   this->checksum_created_this_update = '\0';
+    //   if (this->VR_List != (Visible_Resource_Manager *)0x0) {
+    //     Visible_Resource_Manager::Process_New_Tiles(this->VR_List,&this->tile_list);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470180
+void RGE_Player::update_dopplegangers() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::update_dopplegangers(void) */
+    // 
+    // void __thiscall RGE_Player::update_dopplegangers(RGE_Player *this)
+    // 
+    // {
+    //   if (MouseSystem != (TMousePointer *)0x0) {
+    //     TMousePointer::Poll(MouseSystem);
+    //   }
+    //   RGE_Object_List::update(this->doppleganger_objects);
+    //   RGE_Doppleganger_Creator::perform_doppleganger_checks(this->doppleganger_creator);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004701B0
+void RGE_Player::save(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: table */
+    // /* public: virtual void __thiscall RGE_Player::save(int) */
+    // 
+    // void __thiscall RGE_Player::save(RGE_Player *this,int param_1)
+    // 
+    // {
+    //   char cVar1;
+    //   short sVar2;
+    //   char *pcVar3;
+    //   uchar table;
+    //   short index;
+    //   undefined1 local_5;
+    //   uint local_4;
+    //   
+    //   color_log('2','2',3);
+    //   rge_write(param_1,&this->type,1);
+    //   rge_write(param_1,this->relations,(int)this->world->player_num);
+    //   rge_write(param_1,this->unitDiplomacy,0x24);
+    //   rge_write(param_1,&this->allied_LOS_Enable,4);
+    //   rge_write(param_1,&this->allied_victory,1);
+    //   local_4 = 0xffffffff;
+    //   pcVar3 = this->name;
+    //   do {
+    //     if (local_4 == 0) break;
+    //     local_4 = local_4 - 1;
+    //     cVar1 = *pcVar3;
+    //     pcVar3 = pcVar3 + 1;
+    //   } while (cVar1 != '\0');
+    //   local_4 = ~local_4;
+    //   rge_write(param_1,&local_4,2);
+    //   if (0 < (short)local_4) {
+    //     rge_write(param_1,this->name,(int)(short)local_4);
+    //   }
+    //   rge_write(param_1,&this->attribute_num,2);
+    //   sVar2 = this->attribute_num;
+    //   if (0 < sVar2) {
+    //     rge_write(param_1,this->attributes,(int)sVar2 << 2);
+    //   }
+    //   rge_write(param_1,&this->view_x,4);
+    //   rge_write(param_1,&this->view_y,4);
+    //   rge_write(param_1,&this->map_x,2);
+    //   rge_write(param_1,&this->map_y,2);
+    //   rge_write(param_1,&this->culture,1);
+    //   rge_write(param_1,&this->master_player_id,1);
+    //   rge_write(param_1,&this->game_status,1);
+    //   rge_write(param_1,&this->resigned,1);
+    //   if (this->color_table == (RGE_Color_Table *)0x0) {
+    //     local_5 = 0;
+    //   }
+    //   else {
+    //     local_5 = (undefined1)this->color_table->id;
+    //   }
+    //   rge_write(param_1,&local_5,1);
+    //   rge_write(param_1,&this->pathingAttemptCapValue,4);
+    //   rge_write(param_1,&this->pathingDelayCapValue,4);
+    //   color_log('2','_',3);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470380
+void TRIBE_Gaia::save2(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::save2(int) */
+    // 
+    // void __thiscall RGE_Player::save2(RGE_Player *this,int param_1)
+    // 
+    // {
+    //   short *psVar1;
+    //   int iVar2;
+    //   short sVar3;
+    //   int iVar4;
+    //   
+    //   color_log('L','L',4);
+    //   iVar2 = param_1;
+    //   psVar1 = &this->master_object_num;
+    //   rge_write(param_1,psVar1,2);
+    //   if (0 < *psVar1) {
+    //     iVar4 = 0;
+    //     if (0 < *psVar1) {
+    //       do {
+    //         param_1 = (int)this->master_objects[iVar4];
+    //         if ((RGE_Master_Static_Object *)param_1 != (RGE_Master_Static_Object *)0x0) {
+    //           param_1 = 1;
+    //         }
+    //         rge_write(iVar2,&param_1,4);
+    //         iVar4 = iVar4 + 1;
+    //       } while (iVar4 < *psVar1);
+    //     }
+    //     sVar3 = 0;
+    //     if (0 < *psVar1) {
+    //       do {
+    //         if (this->master_objects[sVar3] != (RGE_Master_Static_Object *)0x0) {
+    //           (**(code **)(this->master_objects[sVar3]->_padding_ + 0x14))(iVar2);
+    //         }
+    //         sVar3 = sVar3 + 1;
+    //       } while (sVar3 < *psVar1);
+    //     }
+    //   }
+    //   color_log('L','$',4);
+    //   RGE_Visible_Map::save(this->visible,iVar2);
+    //   Visible_Resource_Manager::save(this->VR_List,iVar2);
+    //   color_log('L','\x16',4);
+    //   RGE_Object_List::save(this->objects,iVar2);
+    //   color_log('L','2',4);
+    //   RGE_Object_List::save(this->sleeping_objects,iVar2);
+    //   color_log('L','2',4);
+    //   RGE_Object_List::save(this->doppleganger_objects,iVar2);
+    //   color_log('L','_',4);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470490
+void TRIBE_Gaia::save_info(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::save_info(int) */
+    // 
+    // void __thiscall RGE_Player::save_info(RGE_Player *this,int param_1)
+    // 
+    // {
+    //   (**(code **)(this->victory_conditions->_padding_ + 0xc))(param_1);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004704A0
+void set_map_loc(RGE_Player* this_, short param_2, short param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::set_map_loc(short,short) */
+    // 
+    // void __thiscall RGE_Player::set_map_loc(RGE_Player *this,short param_1,short param_2)
+    // 
+    // {
+    //   this->map_x = param_1;
+    //   this->map_y = param_2;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004704C0
+void set_view_loc(RGE_Player* this_, float param_2, float param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::set_view_loc(float,float) */
+    // 
+    // void __thiscall RGE_Player::set_view_loc(RGE_Player *this,float param_1,float param_2)
+    // 
+    // {
+    //   float fVar1;
+    //   
+    //   this->view_x = param_1;
+    //   this->view_y = param_2;
+    //   if (0.0 <= param_1) {
+    //     fVar1 = (float)(this->world->map->map_width + -1);
+    //     if (fVar1 < param_1) {
+    //       this->view_x = fVar1;
+    //     }
+    //   }
+    //   else {
+    //     this->view_x = 0.0;
+    //   }
+    //   if (0.0 <= param_2) {
+    //     fVar1 = (float)(this->world->map->map_height + -1);
+    //     if (param_2 <= fVar1) {
+    //       return;
+    //     }
+    //     this->view_y = fVar1;
+    //     return;
+    //   }
+    //   this->view_y = 0.0;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470570
+void RGE_Player::random_start() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::random_start(void) */
+    // 
+    // void __thiscall RGE_Player::random_start(RGE_Player *this)
+    // 
+    // {
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470580
+void destroy_objects(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::destroy_objects(void) */
+    // 
+    // void __thiscall RGE_Player::destroy_objects(RGE_Player *this)
+    // 
+    // {
+    //   RGE_Object_Node *pRVar1;
+    //   
+    //   for (pRVar1 = this->objects->list; pRVar1 != (RGE_Object_Node *)0x0; pRVar1 = pRVar1->next) {
+    //     (**(code **)(pRVar1->node->_padding_ + 0x68))();
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004705A0
+void set_color_table(RGE_Player* this_, uchar param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::set_color_table(unsigned char) */
+    // 
+    // void __thiscall RGE_Player::set_color_table(RGE_Player *this,uchar param_1)
+    // 
+    // {
+    //   this->color_table = this->world->color_tables[param_1];
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004705C0
+void victory_if_game_on(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::victory_if_game_on(void) */
+    // 
+    // void __thiscall RGE_Player::victory_if_game_on(RGE_Player *this)
+    // 
+    // {
+    //   if (this->game_status == '\0') {
+    //     (**(code **)(this->_padding_ + 4))(1);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004705E0
+void loss_if_game_on(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::loss_if_game_on(void) */
+    // 
+    // void __thiscall RGE_Player::loss_if_game_on(RGE_Player *this)
+    // 
+    // {
+    //   if (this->game_status == '\0') {
+    //     (**(code **)(this->_padding_ + 4))(2);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470600
+void win_game_now(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::win_game_now(void) */
+    // 
+    // void __thiscall RGE_Player::win_game_now(RGE_Player *this)
+    // 
+    // {
+    //   RGE_Player *this_00;
+    //   uchar uVar1;
+    //   int iVar2;
+    //   
+    //   victory_if_game_on(this);
+    //   iVar2 = 1;
+    //   if (1 < this->world->player_num) {
+    //     do {
+    //       if (iVar2 != this->id) {
+    //         if (this->allied_victory != '\0') {
+    //           uVar1 = relation(this,iVar2);
+    //           if (uVar1 == '\0') {
+    //             uVar1 = relation(this->world->players[iVar2],(int)this->id);
+    //             if ((uVar1 == '\0') &&
+    //                (this_00 = this->world->players[iVar2], this_00->allied_victory != '\0')) {
+    //               victory_if_game_on(this_00);
+    //               goto LAB_00470674;
+    //             }
+    //           }
+    //         }
+    //         loss_if_game_on(this->world->players[iVar2]);
+    //       }
+    // LAB_00470674:
+    //       iVar2 = iVar2 + 1;
+    //     } while (iVar2 < this->world->player_num);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470690
+uchar check_victory_conditions(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall RGE_Player::check_victory_conditions(void) */
+    // 
+    // uchar __thiscall RGE_Player::check_victory_conditions(RGE_Player *this)
+    // 
+    // {
+    //   uchar uVar1;
+    //   
+    //   if (this->game_status != '\x02') {
+    //     uVar1 = RGE_Victory_Conditions::victory_achieved(this->victory_conditions);
+    //     return uVar1;
+    //   }
+    //   return '\x01';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004706B0
+uchar check_ally_group(RGE_Player* this_, long* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall RGE_Player::check_ally_group(long &) */
+    // 
+    // uchar __thiscall RGE_Player::check_ally_group(RGE_Player *this,long *param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   uchar uVar2;
+    //   RGE_Game_World *pRVar3;
+    //   uchar uVar4;
+    //   int iVar5;
+    //   
+    //   iVar1 = *param_1;
+    //   uVar4 = '\x01';
+    //   if (this->game_status != '\x02') {
+    //     *param_1 = 0;
+    //     pRVar3 = this->world;
+    //     iVar5 = 1;
+    //     if (1 < pRVar3->player_num) {
+    //       do {
+    //         if ((this->relations[iVar5] == '\0') &&
+    //            ((uVar2 = relation(pRVar3->players[iVar5],(int)this->id), uVar2 != '\0' ||
+    //             (this->world->players[iVar5]->allied_victory == '\0')))) {
+    //           uVar4 = '\0';
+    //           break;
+    //         }
+    //         iVar5 = iVar5 + 1;
+    //         *param_1 = *param_1 + 1;
+    //         pRVar3 = this->world;
+    //       } while (iVar5 < pRVar3->player_num);
+    //     }
+    //   }
+    //   if ((-1 < iVar1) && (*param_1 != iVar1)) {
+    //     uVar4 = '\0';
+    //   }
+    //   return uVar4;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470750
+uchar check_victory(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: count */
+    // /* public: unsigned char __thiscall RGE_Player::check_victory(void) */
+    // 
+    // uchar __thiscall RGE_Player::check_victory(RGE_Player *this)
+    // 
+    // {
+    //   bool bVar1;
+    //   uchar uVar2;
+    //   RGE_Game_World *pRVar3;
+    //   int iVar4;
+    //   long count;
+    //   long local_4;
+    //   
+    //   local_4 = -1;
+    //   if ((this->game_status != '\x02') &&
+    //      (uVar2 = RGE_Victory_Conditions::victory_achieved(this->victory_conditions), uVar2 != '\0')) {
+    //     bVar1 = false;
+    //     if (this->allied_victory != '\0') {
+    //       pRVar3 = this->world;
+    //       iVar4 = 1;
+    //       if (1 < pRVar3->player_num) {
+    //         do {
+    //           if (((iVar4 == this->id) || (this->relations[iVar4] == '\0')) &&
+    //              (uVar2 = check_ally_group(pRVar3->players[iVar4],&local_4), uVar2 == '\0')) {
+    //             bVar1 = true;
+    //             break;
+    //           }
+    //           pRVar3 = this->world;
+    //           iVar4 = iVar4 + 1;
+    //         } while (iVar4 < pRVar3->player_num);
+    //       }
+    //       if (this->allied_victory != '\0') {
+    //         if (bVar1) goto LAB_0047082c;
+    //         pRVar3 = this->world;
+    //         iVar4 = 1;
+    //         if (1 < pRVar3->player_num) {
+    //           do {
+    //             if ((this->relations[iVar4] == '\0') &&
+    //                (uVar2 = check_victory_conditions(pRVar3->players[iVar4]), uVar2 == '\0')) {
+    //               bVar1 = true;
+    //               break;
+    //             }
+    //             pRVar3 = this->world;
+    //             iVar4 = iVar4 + 1;
+    //           } while (iVar4 < pRVar3->player_num);
+    //         }
+    //       }
+    //     }
+    //     if (!bVar1) {
+    //       (**(code **)(this->_padding_ + 4))(1);
+    //       this->world->game_end_condition = '\x02';
+    //     }
+    //   }
+    // LAB_0047082c:
+    //   return this->game_status;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470840
+void modify_tobj(RGE_Player* this_, short param_2, short param_3, float param_4, uchar param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::modify_tobj(short,short,float,unsigned char) */
+    // 
+    // void __thiscall
+    // RGE_Player::modify_tobj(RGE_Player *this,short param_1,short param_2,float param_3,uchar param_4)
+    // 
+    // {
+    //   RGE_Object_Node *pRVar1;
+    //   short sVar2;
+    //   int iVar3;
+    //   undefined3 in_stack_00000011;
+    //   
+    //   if (param_1 < 0) {
+    //     if ((-1 < param_2) && (sVar2 = 0, 0 < this->master_object_num)) {
+    //       do {
+    //         if ((this->master_objects[sVar2] != (RGE_Master_Static_Object *)0x0) &&
+    //            (this->master_objects[sVar2]->object_group == param_2)) {
+    //           if (this->objects != (RGE_Object_List *)0x0) {
+    //             for (pRVar1 = this->objects->list; pRVar1 != (RGE_Object_Node *)0x0;
+    //                 pRVar1 = pRVar1->next) {
+    //               if (pRVar1->node->master_obj == this->master_objects[sVar2]) {
+    //                 (**(code **)(pRVar1->node->_padding_ + 0x48))(param_3,_param_4);
+    //               }
+    //             }
+    //           }
+    //           (**(code **)(this->master_objects[sVar2]->_padding_ + 8))(param_3,_param_4);
+    //         }
+    //         sVar2 = sVar2 + 1;
+    //       } while (sVar2 < this->master_object_num);
+    //     }
+    //   }
+    //   else {
+    //     iVar3 = (int)param_1;
+    //     if (this->master_objects[iVar3] != (RGE_Master_Static_Object *)0x0) {
+    //       if (this->objects != (RGE_Object_List *)0x0) {
+    //         for (pRVar1 = this->objects->list; pRVar1 != (RGE_Object_Node *)0x0; pRVar1 = pRVar1->next)
+    //         {
+    //           if (pRVar1->node->master_obj == this->master_objects[iVar3]) {
+    //             (**(code **)(pRVar1->node->_padding_ + 0x48))(param_3,_param_4);
+    //           }
+    //         }
+    //       }
+    //       (**(code **)(this->master_objects[iVar3]->_padding_ + 8))(param_3,_param_4);
+    //       return;
+    //     }
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470940
+void modify_tobj_delta(RGE_Player* this_, short param_2, short param_3, float param_4, uchar param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::modify_tobj_delta(short,short,float,unsigned char) */
+    // 
+    // void __thiscall
+    // RGE_Player::modify_tobj_delta
+    //           (RGE_Player *this,short param_1,short param_2,float param_3,uchar param_4)
+    // 
+    // {
+    //   RGE_Object_Node *pRVar1;
+    //   short sVar2;
+    //   int iVar3;
+    //   undefined3 in_stack_00000011;
+    //   
+    //   if (param_1 < 0) {
+    //     if ((-1 < param_2) && (sVar2 = 0, 0 < this->master_object_num)) {
+    //       do {
+    //         if ((this->master_objects[sVar2] != (RGE_Master_Static_Object *)0x0) &&
+    //            (this->master_objects[sVar2]->object_group == param_2)) {
+    //           if (this->objects != (RGE_Object_List *)0x0) {
+    //             for (pRVar1 = this->objects->list; pRVar1 != (RGE_Object_Node *)0x0;
+    //                 pRVar1 = pRVar1->next) {
+    //               if (pRVar1->node->master_obj == this->master_objects[sVar2]) {
+    //                 (**(code **)(pRVar1->node->_padding_ + 0x4c))(param_3,_param_4);
+    //               }
+    //             }
+    //           }
+    //           (**(code **)(this->master_objects[sVar2]->_padding_ + 0xc))(param_3,_param_4);
+    //         }
+    //         sVar2 = sVar2 + 1;
+    //       } while (sVar2 < this->master_object_num);
+    //     }
+    //   }
+    //   else {
+    //     iVar3 = (int)param_1;
+    //     if (this->master_objects[iVar3] != (RGE_Master_Static_Object *)0x0) {
+    //       if (this->objects != (RGE_Object_List *)0x0) {
+    //         for (pRVar1 = this->objects->list; pRVar1 != (RGE_Object_Node *)0x0; pRVar1 = pRVar1->next)
+    //         {
+    //           if (pRVar1->node->master_obj == this->master_objects[iVar3]) {
+    //             (**(code **)(pRVar1->node->_padding_ + 0x4c))(param_3,_param_4);
+    //           }
+    //         }
+    //       }
+    //       (**(code **)(this->master_objects[iVar3]->_padding_ + 0xc))(param_3,_param_4);
+    //       return;
+    //     }
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470A40
+void modify_tobj_percent(RGE_Player* this_, short param_2, short param_3, float param_4, uchar param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::modify_tobj_percent(short,short,float,unsigned char) */
+    // 
+    // void __thiscall
+    // RGE_Player::modify_tobj_percent
+    //           (RGE_Player *this,short param_1,short param_2,float param_3,uchar param_4)
+    // 
+    // {
+    //   RGE_Object_Node *pRVar1;
+    //   short sVar2;
+    //   int iVar3;
+    //   undefined3 in_stack_00000011;
+    //   
+    //   if (param_1 < 0) {
+    //     if ((-1 < param_2) && (sVar2 = 0, 0 < this->master_object_num)) {
+    //       do {
+    //         if ((this->master_objects[sVar2] != (RGE_Master_Static_Object *)0x0) &&
+    //            (this->master_objects[sVar2]->object_group == param_2)) {
+    //           if (this->objects != (RGE_Object_List *)0x0) {
+    //             for (pRVar1 = this->objects->list; pRVar1 != (RGE_Object_Node *)0x0;
+    //                 pRVar1 = pRVar1->next) {
+    //               if (pRVar1->node->master_obj == this->master_objects[sVar2]) {
+    //                 (**(code **)(pRVar1->node->_padding_ + 0x50))(param_3,_param_4);
+    //               }
+    //             }
+    //           }
+    //           (**(code **)(this->master_objects[sVar2]->_padding_ + 0x10))(param_3,_param_4);
+    //         }
+    //         sVar2 = sVar2 + 1;
+    //       } while (sVar2 < this->master_object_num);
+    //     }
+    //   }
+    //   else {
+    //     iVar3 = (int)param_1;
+    //     if (this->master_objects[iVar3] != (RGE_Master_Static_Object *)0x0) {
+    //       if (this->objects != (RGE_Object_List *)0x0) {
+    //         for (pRVar1 = this->objects->list; pRVar1 != (RGE_Object_Node *)0x0; pRVar1 = pRVar1->next)
+    //         {
+    //           if (pRVar1->node->master_obj == this->master_objects[iVar3]) {
+    //             (**(code **)(pRVar1->node->_padding_ + 0x50))(param_3,_param_4);
+    //           }
+    //         }
+    //       }
+    //       (**(code **)(this->master_objects[iVar3]->_padding_ + 0x10))(param_3,_param_4);
+    //       return;
+    //     }
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470B40
+void copy_obj(RGE_Player* this_, short param_2, short param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::copy_obj(short,short) */
+    // 
+    // void __thiscall RGE_Player::copy_obj(RGE_Player *this,short param_1,short param_2)
+    // 
+    // {
+    //   RGE_Object_Node *pRVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   
+    //   iVar3 = (int)param_1;
+    //   if ((this->master_objects[iVar3] != (RGE_Master_Static_Object *)0x0) &&
+    //      (iVar2 = (int)param_2, this->master_objects[iVar2] != (RGE_Master_Static_Object *)0x0)) {
+    //     if (this->objects != (RGE_Object_List *)0x0) {
+    //       for (pRVar1 = this->objects->list; pRVar1 != (RGE_Object_Node *)0x0; pRVar1 = pRVar1->next) {
+    //         if (pRVar1->node->master_obj == this->master_objects[iVar3]) {
+    //           (**(code **)(pRVar1->node->_padding_ + 0x58))(this->master_objects[iVar2]);
+    //         }
+    //       }
+    //     }
+    //     (**(code **)(this->master_objects[iVar3]->_padding_ + 4))(this->master_objects[iVar2]);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470BB0
+void set_allied_victory(RGE_Player* this_, uchar param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::set_allied_victory(unsigned char) */
+    // 
+    // void __thiscall RGE_Player::set_allied_victory(RGE_Player *this,uchar param_1)
+    // 
+    // {
+    //   this->allied_victory = param_1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470BC0
+uchar get_allied_victory(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall RGE_Player::get_allied_victory(void) */
+    // 
+    // uchar __thiscall RGE_Player::get_allied_victory(RGE_Player *this)
+    // 
+    // {
+    //   return this->allied_victory;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470BD0
+uchar relation(RGE_Player* this_, long param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall RGE_Player::relation(long) */
+    // 
+    // uchar __thiscall RGE_Player::relation(RGE_Player *this,long param_1)
+    // 
+    // {
+    //   return this->relations[param_1];
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470BE0
+void set_relation(RGE_Player* this_, long param_2, uchar param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::set_relation(long,unsigned char) */
+    // 
+    // void __thiscall RGE_Player::set_relation(RGE_Player *this,long param_1,uchar param_2)
+    // 
+    // {
+    //   RGE_Object_Node *pRVar1;
+    //   undefined3 in_stack_00000009;
+    //   
+    //   this->relations[param_1] = param_2;
+    //   if (param_1 == 0) {
+    //     this->unitDiplomacy[0] = 0;
+    //   }
+    //   else if (param_1 == this->id) {
+    //     this->unitDiplomacy[param_1] = 1;
+    //   }
+    //   else if (param_2 == '\0') {
+    //     this->unitDiplomacy[param_1] = 2;
+    //   }
+    //   else if (param_2 == '\x01') {
+    //     this->unitDiplomacy[param_1] = 3;
+    //   }
+    //   else {
+    //     this->unitDiplomacy[param_1] = 4;
+    //   }
+    //   for (pRVar1 = this->objects->list; pRVar1 != (RGE_Object_Node *)0x0; pRVar1 = pRVar1->next) {
+    //     (**(code **)(pRVar1->node->_padding_ + 0x94))(param_1,_param_2);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470C70
+RGE_Static_Object* RGE_Player::make_new_object(long param_1, float param_2, float param_3, float param_4, int param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual class RGE_Static_Object * __thiscall
+    //    RGE_Player::make_new_object(long,float,float,float,int) */
+    // 
+    // RGE_Static_Object * __thiscall
+    // RGE_Player::make_new_object
+    //           (RGE_Player *this,long param_1,float param_2,float param_3,float param_4,int param_5)
+    // 
+    // {
+    //   RGE_Static_Object *pRVar1;
+    //   
+    //   if ((-1 < param_1) && (this->master_objects[param_1] != (RGE_Master_Static_Object *)0x0)) {
+    //     pRVar1 = (RGE_Static_Object *)
+    //              (**(code **)(this->master_objects[param_1]->_padding_ + 0x18))
+    //                        (this,param_2,param_3,param_4);
+    //     return pRVar1;
+    //   }
+    //   return (RGE_Static_Object *)0x0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470CB0
+void reset_selected(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::reset_selected(void) */
+    // 
+    // void __thiscall RGE_Player::reset_selected(RGE_Player *this)
+    // 
+    // {
+    //   int iVar1;
+    //   RGE_Static_Object **ppRVar2;
+    //   uchar *puVar3;
+    //   
+    //   this->selected_start_col = -1;
+    //   this->selected_start_row = -1;
+    //   this->selected_end_col = -1;
+    //   this->selected_end_row = -1;
+    //   this->replacement_terrain = -1;
+    //   this->replacement_overlay = -1;
+    //   this->replacement_overlay_shape = -1;
+    //   this->sel_count = 0;
+    //   this->selected_obj = (RGE_Static_Object *)0x0;
+    //   ppRVar2 = this->sel_list;
+    //   for (iVar1 = 0x19; iVar1 != 0; iVar1 = iVar1 + -1) {
+    //     *ppRVar2 = (RGE_Static_Object *)0x0;
+    //     ppRVar2 = ppRVar2 + 1;
+    //   }
+    //   puVar3 = this->groups_used;
+    //   for (iVar1 = 0x1f; iVar1 != 0; iVar1 = iVar1 + -1) {
+    //     puVar3[0] = '\0';
+    //     puVar3[1] = '\0';
+    //     puVar3[2] = '\0';
+    //     puVar3[3] = '\0';
+    //     puVar3 = puVar3 + 4;
+    //   }
+    //   puVar3[0] = '\0';
+    //   puVar3[1] = '\0';
+    //   puVar3[2] = '\0';
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470D20
+int select_object(RGE_Player* this_, RGE_Static_Object* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall RGE_Player::select_object(class RGE_Static_Object *) */
+    // 
+    // int __thiscall RGE_Player::select_object(RGE_Player *this,RGE_Static_Object *param_1)
+    // 
+    // {
+    //   byte bVar1;
+    //   RGE_Object_Node *pRVar2;
+    //   RGE_Static_Object *pRVar3;
+    //   int iVar4;
+    //   
+    //   iVar4 = select_one_object(this,param_1,1);
+    //   if (iVar4 == 0) {
+    //     return 0;
+    //   }
+    //   bVar1 = param_1->selected_group;
+    //   if (10 < bVar1) {
+    //     pRVar2 = this->objects->list;
+    //     while ((pRVar2 != (RGE_Object_Node *)0x0 &&
+    //            (((pRVar3 = pRVar2->node, pRVar3 == param_1 || (pRVar3->selected_group != bVar1)) ||
+    //             (iVar4 = select_one_object(this,pRVar3,0), iVar4 != 0))))) {
+    //       pRVar2 = pRVar2->next;
+    //     }
+    //   }
+    //   this->selected_obj = param_1;
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470D80
+int select_one_object(RGE_Player* this_, RGE_Static_Object* param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall RGE_Player::select_one_object(class RGE_Static_Object *,int) */
+    // 
+    // int __thiscall
+    // RGE_Player::select_one_object(RGE_Player *this,RGE_Static_Object *param_1,int param_2)
+    // 
+    // {
+    //   short sVar1;
+    //   RGE_Sound *this_00;
+    //   short sVar2;
+    //   short sVar3;
+    //   
+    //   sVar1 = this->sel_count;
+    //   if (sVar1 < 0x19) {
+    //     sVar3 = sVar1;
+    //     if ((this->sel_list[sVar1] != (RGE_Static_Object *)0x0) && (sVar2 = 0, sVar3 = -1, 0 < sVar1)) {
+    //       do {
+    //         sVar3 = sVar2;
+    //         if (this->sel_list[sVar2] == (RGE_Static_Object *)0x0) break;
+    //         sVar2 = sVar2 + 1;
+    //         sVar3 = -1;
+    //       } while (sVar2 < sVar1);
+    //     }
+    //     if (sVar3 != -1) {
+    //       this->sel_list[sVar3] = param_1;
+    //       this->sel_count = this->sel_count + 1;
+    //       this->selected_obj = param_1;
+    //       param_1->selected = '\x01';
+    //       if (((param_2 != 0) &&
+    //           (this_00 = param_1->master_obj->selected_sound, this_00 != (RGE_Sound *)0x0)) &&
+    //          ((param_1->owner == this || (param_1->owner->id == 0)))) {
+    //         RGE_Sound::play(this_00,1);
+    //       }
+    //       return 1;
+    //     }
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470E30
+void unselect_object(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::unselect_object(void) */
+    // 
+    // void __thiscall RGE_Player::unselect_object(RGE_Player *this)
+    // 
+    // {
+    //   short sVar1;
+    //   short sVar2;
+    //   
+    //   if (0 < this->sel_count) {
+    //     sVar1 = 0;
+    //     this->selected_obj = (RGE_Static_Object *)0x0;
+    //     sVar2 = 0;
+    //     do {
+    //       if (this->sel_count <= sVar2) break;
+    //       if (this->sel_list[sVar1] != (RGE_Static_Object *)0x0) {
+    //         this->sel_list[sVar1]->selected = '\0';
+    //         sVar2 = sVar2 + 1;
+    //         this->sel_list[sVar1] = (RGE_Static_Object *)0x0;
+    //       }
+    //       sVar1 = sVar1 + 1;
+    //     } while (sVar1 < 0x19);
+    //     this->sel_count = 0;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470E80
+void unselect_one_object(RGE_Player* this_, RGE_Static_Object* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::unselect_one_object(class RGE_Static_Object *) */
+    // 
+    // void __thiscall RGE_Player::unselect_one_object(RGE_Player *this,RGE_Static_Object *param_1)
+    // 
+    // {
+    //   short sVar1;
+    //   short sVar2;
+    //   
+    //   if (0 < this->sel_count) {
+    //     sVar1 = 0;
+    //     sVar2 = 0;
+    //     while (sVar2 < this->sel_count) {
+    //       if (this->sel_list[sVar1] != (RGE_Static_Object *)0x0) {
+    //         if (this->sel_list[sVar1] == param_1) {
+    //           unselect_one_object(this,sVar1);
+    //           return;
+    //         }
+    //         sVar2 = sVar2 + 1;
+    //       }
+    //       sVar1 = sVar1 + 1;
+    //       if (0x18 < sVar1) {
+    //         return;
+    //       }
+    //     }
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470ED0
+void unselect_one_object(RGE_Player* this_, short param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::unselect_one_object(short) */
+    // 
+    // void __thiscall RGE_Player::unselect_one_object(RGE_Player *this,short param_1)
+    // 
+    // {
+    //   RGE_Static_Object *pRVar1;
+    //   short sVar2;
+    //   int iVar3;
+    //   
+    //   iVar3 = (int)param_1;
+    //   pRVar1 = this->sel_list[iVar3];
+    //   if (pRVar1 != (RGE_Static_Object *)0x0) {
+    //     pRVar1->selected = '\0';
+    //     if (iVar3 < this->sel_count + -1) {
+    //       this->sel_list[iVar3] = this->sel_list[this->sel_count + -1];
+    //       this->sel_list[this->sel_count + -1] = (RGE_Static_Object *)0x0;
+    //     }
+    //     else {
+    //       this->sel_list[iVar3] = (RGE_Static_Object *)0x0;
+    //     }
+    //     this->sel_count = this->sel_count + -1;
+    //     if ((this->selected_obj == pRVar1) &&
+    //        (this->selected_obj = (RGE_Static_Object *)0x0, 0 < this->sel_count)) {
+    //       sVar2 = 0;
+    //       while (this->sel_list[sVar2] == (RGE_Static_Object *)0x0) {
+    //         sVar2 = sVar2 + 1;
+    //         if (0x18 < sVar2) {
+    //           return;
+    //         }
+    //       }
+    //       this->selected_obj = this->sel_list[sVar2];
+    //     }
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00470F80
+int group_objects(RGE_Player* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall RGE_Player::group_objects(int) */
+    // 
+    // int __thiscall RGE_Player::group_objects(RGE_Player *this,int param_1)
+    // 
+    // {
+    //   byte bVar1;
+    //   RGE_Object_Node *pRVar2;
+    //   RGE_Static_Object *pRVar3;
+    //   int iVar4;
+    //   short sVar5;
+    //   short sVar6;
+    //   uchar *puVar7;
+    //   
+    //   if (this->sel_count == 0) {
+    //     return 0;
+    //   }
+    //   if (param_1 == -1) {
+    //     sVar5 = 0xb;
+    //     do {
+    //       if (this->groups_used[sVar5] == '\0') {
+    //         param_1._0_1_ = (byte)sVar5;
+    //         this->groups_used[sVar5] = '\x01';
+    //         break;
+    //       }
+    //       sVar5 = sVar5 + 1;
+    //     } while (sVar5 < 0x7f);
+    //     if (sVar5 == 0x7f) {
+    //       puVar7 = this->groups_used + 1;
+    //       for (iVar4 = 0x1f; iVar4 != 0; iVar4 = iVar4 + -1) {
+    //         puVar7[0] = '\0';
+    //         puVar7[1] = '\0';
+    //         puVar7[2] = '\0';
+    //         puVar7[3] = '\0';
+    //         puVar7 = puVar7 + 4;
+    //       }
+    //       puVar7[0] = '\0';
+    //       puVar7[1] = '\0';
+    //       for (pRVar2 = this->objects->list; pRVar2 != (RGE_Object_Node *)0x0; pRVar2 = pRVar2->next) {
+    //         bVar1 = pRVar2->node->selected_group;
+    //         param_1 = (int)bVar1;
+    //         if ((bVar1 != 0) && (this->groups_used[param_1] == '\0')) {
+    //           this->groups_used[param_1] = '\x01';
+    //         }
+    //         param_1._0_1_ = bVar1;
+    //       }
+    //       sVar5 = 1;
+    //       do {
+    //         if (this->groups_used[sVar5] == '\0') {
+    //           param_1._0_1_ = (byte)sVar5;
+    //           this->groups_used[sVar5] = '\x01';
+    //           break;
+    //         }
+    //         sVar5 = sVar5 + 1;
+    //       } while (sVar5 < 0x7f);
+    //       if (sVar5 == 0x7f) {
+    //         return 0;
+    //       }
+    //     }
+    //   }
+    //   else {
+    //     for (pRVar2 = this->objects->list; pRVar2 != (RGE_Object_Node *)0x0; pRVar2 = pRVar2->next) {
+    //       if (pRVar2->node->selected_group == (byte)param_1) {
+    //         pRVar2->node->selected_group = '\0';
+    //       }
+    //     }
+    //   }
+    //   sVar5 = 0;
+    //   sVar6 = 0;
+    //   do {
+    //     if (this->sel_count <= sVar6) {
+    //       return 1;
+    //     }
+    //     pRVar3 = this->sel_list[sVar5];
+    //     if ((pRVar3 != (RGE_Static_Object *)0x0) && (pRVar3->owner == this)) {
+    //       sVar6 = sVar6 + 1;
+    //       pRVar3->selected_group = (byte)param_1;
+    //     }
+    //     sVar5 = sVar5 + 1;
+    //   } while (sVar5 < 0x19);
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004710C0
+int select_group(RGE_Player* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall RGE_Player::select_group(int) */
+    // 
+    // int __thiscall RGE_Player::select_group(RGE_Player *this,int param_1)
+    // 
+    // {
+    //   RGE_Static_Object *pRVar1;
+    //   bool bVar2;
+    //   int iVar3;
+    //   RGE_Object_Node *pRVar4;
+    //   
+    //   bVar2 = true;
+    //   pRVar4 = this->objects->list;
+    //   if (pRVar4 != (RGE_Object_Node *)0x0) {
+    //     do {
+    //       pRVar1 = pRVar4->node;
+    //       if (pRVar1->selected_group == (uchar)param_1) {
+    //         if (bVar2) {
+    //           iVar3 = select_one_object(this,pRVar1,1);
+    //           if (iVar3 == 0) break;
+    //           bVar2 = false;
+    //         }
+    //         else {
+    //           iVar3 = select_one_object(this,pRVar1,0);
+    //           if (iVar3 == 0) break;
+    //         }
+    //       }
+    //       pRVar4 = pRVar4->next;
+    //     } while (pRVar4 != (RGE_Object_Node *)0x0);
+    //   }
+    //   return (uint)!bVar2;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471120
+int own_selected(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall RGE_Player::own_selected(void) */
+    // 
+    // int __thiscall RGE_Player::own_selected(RGE_Player *this)
+    // 
+    // {
+    //   short sVar1;
+    //   short sVar2;
+    //   
+    //   sVar1 = 0;
+    //   sVar2 = 0;
+    //   do {
+    //     if (this->sel_count <= sVar2) {
+    //       return 0;
+    //     }
+    //     if (this->sel_list[sVar1] != (RGE_Static_Object *)0x0) {
+    //       sVar2 = sVar2 + 1;
+    //       if (this->sel_list[sVar1]->owner == this) {
+    //         return 1;
+    //       }
+    //     }
+    //     sVar1 = sVar1 + 1;
+    //   } while (sVar1 < 0x19);
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471170
+int is_category_selected(RGE_Player* this_, short param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall RGE_Player::is_category_selected(short) */
+    // 
+    // int __thiscall RGE_Player::is_category_selected(RGE_Player *this,short param_1)
+    // 
+    // {
+    //   short sVar1;
+    //   short sVar2;
+    //   
+    //   sVar1 = 0;
+    //   sVar2 = 0;
+    //   do {
+    //     if (this->sel_count <= sVar2) {
+    //       return 0;
+    //     }
+    //     if (this->sel_list[sVar1] != (RGE_Static_Object *)0x0) {
+    //       sVar2 = sVar2 + 1;
+    //       if (this->sel_list[sVar1]->master_obj->id == param_1) {
+    //         return 1;
+    //       }
+    //     }
+    //     sVar1 = sVar1 + 1;
+    //   } while (sVar1 < 0x19);
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004711D0
+int is_group_selected(RGE_Player* this_, short param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall RGE_Player::is_group_selected(short) */
+    // 
+    // int __thiscall RGE_Player::is_group_selected(RGE_Player *this,short param_1)
+    // 
+    // {
+    //   short sVar1;
+    //   short sVar2;
+    //   
+    //   sVar1 = 0;
+    //   sVar2 = 0;
+    //   do {
+    //     if (this->sel_count <= sVar2) {
+    //       return 0;
+    //     }
+    //     if (this->sel_list[sVar1] != (RGE_Static_Object *)0x0) {
+    //       sVar2 = sVar2 + 1;
+    //       if (this->sel_list[sVar1]->master_obj->object_group == param_1) {
+    //         return 1;
+    //       }
+    //     }
+    //     sVar1 = sVar1 + 1;
+    //   } while (sVar1 < 0x19);
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471230
+uchar unit_level_selected(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall RGE_Player::unit_level_selected(void) */
+    // 
+    // uchar __thiscall RGE_Player::unit_level_selected(RGE_Player *this)
+    // 
+    // {
+    //   RGE_Static_Object *pRVar1;
+    //   uchar uVar2;
+    //   short sVar3;
+    //   short sVar4;
+    //   
+    //   uVar2 = '\0';
+    //   sVar3 = 0;
+    //   sVar4 = 0;
+    //   do {
+    //     if (this->sel_count <= sVar4) {
+    //       return uVar2;
+    //     }
+    //     pRVar1 = this->sel_list[sVar3];
+    //     if (pRVar1 != (RGE_Static_Object *)0x0) {
+    //       if ((sVar4 != 0) && (pRVar1->master_obj->unit_level != uVar2)) {
+    //         return '\0';
+    //       }
+    //       sVar4 = sVar4 + 1;
+    //       uVar2 = pRVar1->master_obj->unit_level;
+    //     }
+    //     sVar3 = sVar3 + 1;
+    //     if (0x18 < sVar3) {
+    //       return uVar2;
+    //     }
+    //   } while( true );
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471290
+uchar get_select_level(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: select_level */
+    // /* public: unsigned char __thiscall RGE_Player::get_select_level(void) */
+    // 
+    // uchar __thiscall RGE_Player::get_select_level(RGE_Player *this)
+    // 
+    // {
+    //   byte bVar1;
+    //   short sVar2;
+    //   byte bVar3;
+    //   short sVar4;
+    //   uchar select_level;
+    //   
+    //   bVar3 = 0xff;
+    //   sVar2 = 0;
+    //   sVar4 = 0;
+    //   do {
+    //     if (this->sel_count <= sVar4) break;
+    //     if (this->sel_list[sVar2] != (RGE_Static_Object *)0x0) {
+    //       bVar1 = this->sel_list[sVar2]->master_obj->select_level;
+    //       if (bVar1 < bVar3) {
+    //         bVar3 = bVar1;
+    //       }
+    //       sVar4 = sVar4 + 1;
+    //     }
+    //     sVar2 = sVar2 + 1;
+    //   } while (sVar2 < 0x19);
+    //   return (bVar3 == 0xff) - 1U & bVar3;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004712F0
+uchar get_selected_objects_to_command(RGE_Player* this_, RGE_Static_Object*** param_2, short* param_3, short param_4, short param_5, short param_6, short param_7) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: j */
+    // /* public: unsigned char __thiscall RGE_Player::get_selected_objects_to_command(class
+    //    RGE_Static_Object * * *,short *,short,short,short,short) */
+    // 
+    // uchar __thiscall
+    // RGE_Player::get_selected_objects_to_command
+    //           (RGE_Player *this,RGE_Static_Object ***param_1,short *param_2,short param_3,short param_4,
+    //           short param_5,short param_6)
+    // 
+    // {
+    //   RGE_Static_Object *pRVar1;
+    //   RGE_Master_Static_Object *pRVar2;
+    //   RGE_Static_Object **ppRVar3;
+    //   int iVar4;
+    //   short sVar5;
+    //   int iVar6;
+    //   RGE_Static_Object **ppRVar7;
+    //   long j;
+    //   RGE_Static_Object **list;
+    //   
+    //   iVar6 = 0;
+    //   *param_1 = (RGE_Static_Object **)0x0;
+    //   sVar5 = 0;
+    //   *param_2 = 0;
+    //   if (this->sel_count == 0) {
+    //     return '\0';
+    //   }
+    //   ppRVar3 = (RGE_Static_Object **)calloc(4,(int)this->sel_count);
+    //   if (param_3 == -1) {
+    //     param_3 = 4;
+    //   }
+    //   list = (RGE_Static_Object **)0x0;
+    //   ppRVar7 = this->sel_list;
+    //   do {
+    //     if ((int)this->sel_count <= (int)list) break;
+    //     pRVar1 = *ppRVar7;
+    //     if (pRVar1 != (RGE_Static_Object *)0x0) {
+    //       if ((((pRVar1->object_state == '\x02') && (pRVar1->owner == this)) &&
+    //           ((pRVar2 = pRVar1->master_obj, param_3 <= (short)(ushort)pRVar2->select_level ||
+    //            (this->id == 0)))) &&
+    //          ((((param_4 == -1 || (pRVar2->object_group == (param_4 & 0xffU))) &&
+    //            ((param_5 == -1 || (pRVar2->id == (param_5 & 0xffU))))) &&
+    //           ((((param_6 == -1 || (pRVar2->unit_level == (uchar)param_6)) &&
+    //             (0x27 < pRVar2->master_type)) && (pRVar2->master_type != 0x5a)))))) {
+    //         iVar4 = (int)sVar5;
+    //         sVar5 = sVar5 + 1;
+    //         ppRVar3[iVar4] = pRVar1;
+    //       }
+    //       list = (RGE_Static_Object **)((int)list + 1);
+    //     }
+    //     iVar6 = iVar6 + 1;
+    //     ppRVar7 = ppRVar7 + 1;
+    //   } while (iVar6 < 0x19);
+    //   if (sVar5 == 0) {
+    //     free(ppRVar3);
+    //     return '\0';
+    //   }
+    //   *param_1 = ppRVar3;
+    //   *param_2 = sVar5;
+    //   return '\x01';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471430
+void update_selected(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::update_selected(void) */
+    // 
+    // void __thiscall RGE_Player::update_selected(RGE_Player *this)
+    // 
+    // {
+    //   RGE_Static_Object *pRVar1;
+    //   short sVar2;
+    //   short sVar3;
+    //   
+    //   sVar3 = 0;
+    //   sVar2 = 0;
+    //   do {
+    //     if (this->sel_count <= sVar2) {
+    //       return;
+    //     }
+    //     pRVar1 = this->sel_list[sVar3];
+    //     if (pRVar1 != (RGE_Static_Object *)0x0) {
+    //       if ((pRVar1->object_state < 7) && (pRVar1->inside_obj == (RGE_Static_Object *)0x0)) {
+    //         sVar2 = sVar2 + 1;
+    //       }
+    //       else {
+    //         unselect_one_object(this,sVar3);
+    //       }
+    //     }
+    //     sVar3 = sVar3 + 1;
+    //   } while (sVar3 < 0x19);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471480
+void select_area(RGE_Player* this_, short param_2, short param_3, short param_4, short param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::select_area(short,short,short,short) */
+    // 
+    // void __thiscall
+    // RGE_Player::select_area(RGE_Player *this,short param_1,short param_2,short param_3,short param_4)
+    // 
+    // {
+    //   this->selected_start_col = param_1;
+    //   this->selected_start_row = param_2;
+    //   this->selected_end_col = param_3;
+    //   this->selected_end_row = param_4;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004714C0
+void unselect_area(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::unselect_area(void) */
+    // 
+    // void __thiscall RGE_Player::unselect_area(RGE_Player *this)
+    // 
+    // {
+    //   this->selected_start_col = -1;
+    //   this->selected_start_row = -1;
+    //   this->selected_end_col = -1;
+    //   this->selected_end_row = -1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004714E0
+void ungroup_objects(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::ungroup_objects(void) */
+    // 
+    // void __thiscall RGE_Player::ungroup_objects(RGE_Player *this)
+    // 
+    // {
+    //   RGE_Static_Object **ppRVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   
+    //   iVar2 = 0;
+    //   iVar3 = 0;
+    //   ppRVar1 = this->sel_list;
+    //   do {
+    //     if (this->sel_count <= iVar3) {
+    //       return;
+    //     }
+    //     if (*ppRVar1 != (RGE_Static_Object *)0x0) {
+    //       iVar3 = iVar3 + 1;
+    //       (*ppRVar1)->selected_group = '\0';
+    //     }
+    //     iVar2 = iVar2 + 1;
+    //     ppRVar1 = ppRVar1 + 1;
+    //   } while (iVar2 < 0x19);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471520
+void RGE_Player::analyize_selected_objects() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::analyize_selected_objects(void) */
+    // 
+    // void __thiscall RGE_Player::analyize_selected_objects(RGE_Player *this)
+    // 
+    // {
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471530
+int RGE_Player::get_mouse_pointer_action_vars(int param_1, int* param_2, int* param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall RGE_Player::get_mouse_pointer_action_vars(int,int &,int &) */
+    // 
+    // int __thiscall
+    // RGE_Player::get_mouse_pointer_action_vars(RGE_Player *this,int param_1,int *param_2,int *param_3)
+    // 
+    // {
+    //   *param_2 = 0;
+    //   *param_3 = 0;
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471550
+uchar TRIBE_Gaia::command_make_move(RGE_Static_Object* param_1, float param_2, float param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: list */
+    // /* public: virtual unsigned char __thiscall RGE_Player::command_make_move(class RGE_Static_Object
+    //    *,float,float) */
+    // 
+    // uchar __thiscall
+    // RGE_Player::command_make_move
+    //           (RGE_Player *this,RGE_Static_Object *param_1,float param_2,float param_3)
+    // 
+    // {
+    //   uchar uVar1;
+    //   RGE_Static_Object **list;
+    //   short list_num;
+    //   short local_4 [2];
+    //   
+    //   uVar1 = get_selected_objects_to_command(this,(RGE_Static_Object ***)&list_num,local_4,-1,-1,-1,-1)
+    //   ;
+    //   if (uVar1 != '\0') {
+    //     (**(code **)((*_list_num)->_padding_ + 0xb0))();
+    //     RGE_Command::command_move(this->world->commands,_list_num,local_4[0],param_1,param_2,param_3);
+    //     free(_list_num);
+    //     return '\x01';
+    //   }
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004715D0
+uchar TRIBE_Gaia::command_make_work(RGE_Static_Object* param_1, float param_2, float param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: list */
+    // /* public: virtual unsigned char __thiscall RGE_Player::command_make_work(class RGE_Static_Object
+    //    *,float,float) */
+    // 
+    // uchar __thiscall
+    // RGE_Player::command_make_work
+    //           (RGE_Player *this,RGE_Static_Object *param_1,float param_2,float param_3)
+    // 
+    // {
+    //   code *pcVar1;
+    //   uchar uVar2;
+    //   int *piVar3;
+    //   RGE_Static_Object **unaff_EBP;
+    //   undefined4 unaff_ESI;
+    //   int iVar4;
+    //   RGE_Static_Object **list;
+    //   short list_num;
+    //   short local_4 [2];
+    //   
+    //   uVar2 = get_selected_objects_to_command(this,(RGE_Static_Object ***)&list_num,local_4,-1,-1,-1,-1)
+    //   ;
+    //   if (uVar2 != '\0') {
+    //     piVar3 = (int *)(**(code **)((*_list_num)->_padding_ + 0xbc))(param_1,param_2,param_3,0);
+    //     if (piVar3 != (int *)0x0) {
+    //       (**(code **)(*piVar3 + 0x2c))();
+    //     }
+    //     RGE_Command::command_work
+    //               (this->world->commands,unaff_EBP,(short)unaff_ESI,param_1,param_2,param_3);
+    //     if ((param_1 != (RGE_Static_Object *)0x0) && (iVar4 = 0, 0 < (short)unaff_ESI)) {
+    //       pcVar1 = *(code **)(this->_padding_ + 0x30);
+    //       do {
+    //         (*pcVar1)((int)this->id,unaff_EBP[iVar4]->id,0x2bd,param_1->id,(int)param_1->owner->id,
+    //                   param_1->world_x,param_1->world_y,0x3f800000,param_1->master_obj->los * 0.5,0,0,
+    //                   100);
+    //         iVar4 = iVar4 + 1;
+    //       } while (iVar4 < (short)unaff_ESI);
+    //     }
+    //     free(unaff_EBP);
+    //     return '\x01';
+    //   }
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004716D0
+uchar TRIBE_Gaia::command_make_do(RGE_Static_Object* param_1, float param_2, float param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: list */
+    // /* public: virtual unsigned char __thiscall RGE_Player::command_make_do(class RGE_Static_Object
+    //    *,float,float) */
+    // 
+    // uchar __thiscall
+    // RGE_Player::command_make_do(RGE_Player *this,RGE_Static_Object *param_1,float param_2,float param_3)
+    // 
+    // {
+    //   uchar uVar1;
+    //   int *piVar2;
+    //   RGE_Static_Object **unaff_EBX;
+    //   short unaff_SI;
+    //   RGE_Static_Object **list;
+    //   short list_num;
+    //   short local_4 [2];
+    //   
+    //   uVar1 = get_selected_objects_to_command(this,(RGE_Static_Object ***)&list_num,local_4,-1,-1,-1,-1)
+    //   ;
+    //   if (uVar1 != '\0') {
+    //     piVar2 = (int *)(**(code **)((*_list_num)->_padding_ + 0xbc))(param_1,param_2,param_3,0);
+    //     if (piVar2 != (int *)0x0) {
+    //       (**(code **)(*piVar2 + 0x2c))();
+    //     }
+    //     RGE_Command::command_order(this->world->commands,unaff_EBX,unaff_SI,param_1,param_2,param_3);
+    //     free(unaff_EBX);
+    //     return '\x01';
+    //   }
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471760
+uchar TRIBE_Gaia::command_stop() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: list */
+    // /* public: virtual unsigned char __thiscall RGE_Player::command_stop(void) */
+    // 
+    // uchar __thiscall RGE_Player::command_stop(RGE_Player *this)
+    // 
+    // {
+    //   uchar uVar1;
+    //   RGE_Static_Object **list;
+    //   short list_num;
+    //   short local_4 [2];
+    //   
+    //   uVar1 = get_selected_objects_to_command(this,(RGE_Static_Object ***)&list_num,local_4,3,-1,-1,-1);
+    //   if (uVar1 != '\0') {
+    //     (**(code **)((*_list_num)->_padding_ + 0xac))();
+    //     RGE_Command::command_stop(this->world->commands,_list_num,local_4[0]);
+    //     free(_list_num);
+    //     return '\x01';
+    //   }
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004717D0
+uchar TRIBE_Gaia::command_place_object(short param_1, float param_2, float param_3, float param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual unsigned char __thiscall
+    //    RGE_Player::command_place_object(short,float,float,float) */
+    // 
+    // uchar __thiscall
+    // RGE_Player::command_place_object
+    //           (RGE_Player *this,short param_1,float param_2,float param_3,float param_4)
+    // 
+    // {
+    //   if ((param_1 != -1) && (this->master_objects[param_1] != (RGE_Master_Static_Object *)0x0)) {
+    //     RGE_Command::command_create(this->world->commands,param_1,this->id,param_2,param_3,param_4);
+    //     return '\x01';
+    //   }
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471820
+uchar TRIBE_Gaia::command_add_attribute(int param_1, float param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual unsigned char __thiscall RGE_Player::command_add_attribute(int,float) */
+    // 
+    // uchar __thiscall RGE_Player::command_add_attribute(RGE_Player *this,int param_1,float param_2)
+    // 
+    // {
+    //   if ((param_1 != -1) && (param_2 != 0.0)) {
+    //     RGE_Command::command_add_attribute(this->world->commands,(int)this->id,param_1,param_2);
+    //     return '\x01';
+    //   }
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471860
+uchar TRIBE_Gaia::command_give_attribute(int param_1, int param_2, float param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual unsigned char __thiscall RGE_Player::command_give_attribute(int,int,float) */
+    // 
+    // uchar __thiscall
+    // RGE_Player::command_give_attribute(RGE_Player *this,int param_1,int param_2,float param_3)
+    // 
+    // {
+    //   if (((param_2 != -1) && (param_3 != 0.0)) && (param_3 <= this->attributes[param_2])) {
+    //     (**(code **)(this->world->commands->_padding_ + 0xc))((int)this->id,param_1,param_2,param_3);
+    //     return '\x01';
+    //   }
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004718C0
+uchar TRIBE_Gaia::command_formation(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: list */
+    // /* public: virtual unsigned char __thiscall RGE_Player::command_formation(int) */
+    // 
+    // uchar __thiscall RGE_Player::command_formation(RGE_Player *this,int param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   uchar uVar2;
+    //   RGE_Static_Object **list;
+    //   RGE_Player *local_4;
+    //   
+    //   iVar1 = param_1;
+    //   if ((-1 < param_1) && (param_1 < 6)) {
+    //     local_4 = this;
+    //     uVar2 = get_selected_objects_to_command
+    //                       (this,(RGE_Static_Object ***)&local_4,(short *)&param_1,-1,-1,-1,-1);
+    //     if (uVar2 != '\0') {
+    //       (**(code **)(*(int *)local_4->_padding_ + 0xac))();
+    //       RGE_Command::command_formation
+    //                 (this->world->commands,(RGE_Static_Object **)local_4,(int)(short)param_1,iVar1);
+    //       free(local_4);
+    //       return '\x01';
+    //     }
+    //   }
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471940
+uchar TRIBE_Gaia::command_stand_ground() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: list */
+    // /* public: virtual unsigned char __thiscall RGE_Player::command_stand_ground(void) */
+    // 
+    // uchar __thiscall RGE_Player::command_stand_ground(RGE_Player *this)
+    // 
+    // {
+    //   uchar uVar1;
+    //   RGE_Static_Object **list;
+    //   short listNum;
+    //   short local_4 [2];
+    //   
+    //   uVar1 = get_selected_objects_to_command(this,(RGE_Static_Object ***)&listNum,local_4,-1,-1,-1,-1);
+    //   if (uVar1 != '\0') {
+    //     (**(code **)((*_listNum)->_padding_ + 0xac))();
+    //     RGE_Command::command_group_ai_order
+    //               (this->world->commands,(int)this->id,(int)this->id,_listNum,local_4[0],0x2d5,-1,-1,
+    //                -1.0,-1.0,-1.0,1.0,'\x01','\0','d');
+    //     free(_listNum);
+    //     return '\x01';
+    //   }
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004719D0
+uchar TRIBE_Gaia::command_create_group(int param_1, int* param_2, int param_3, float param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual unsigned char __thiscall RGE_Player::command_create_group(int,int *,int,float) */
+    // 
+    // uchar __thiscall
+    // RGE_Player::command_create_group
+    //           (RGE_Player *this,int param_1,int *param_2,int param_3,float param_4)
+    // 
+    // {
+    //   RGE_Command::command_create_group
+    //             (this->world->commands,(int)this->id,param_1,param_2,param_3,param_4);
+    //   return '\x01';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471A00
+uchar TRIBE_Gaia::command_add_to_group(int param_1, int param_2, float param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual unsigned char __thiscall RGE_Player::command_add_to_group(int,int,float) */
+    // 
+    // uchar __thiscall
+    // RGE_Player::command_add_to_group(RGE_Player *this,int param_1,int param_2,float param_3)
+    // 
+    // {
+    //   RGE_Command::command_add_to_group(this->world->commands,(int)this->id,param_1,param_2,param_3);
+    //   return '\x01';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471A30
+uchar TRIBE_Gaia::command_remove_from_group(int param_1, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual unsigned char __thiscall RGE_Player::command_remove_from_group(int,int) */
+    // 
+    // uchar __thiscall RGE_Player::command_remove_from_group(RGE_Player *this,int param_1,int param_2)
+    // 
+    // {
+    //   RGE_Command::command_remove_from_group(this->world->commands,(int)this->id,param_1,param_2);
+    //   return '\x01';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471A50
+uchar TRIBE_Gaia::command_destroy_group(int param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual unsigned char __thiscall RGE_Player::command_destroy_group(int) */
+    // 
+    // uchar __thiscall RGE_Player::command_destroy_group(RGE_Player *this,int param_1)
+    // 
+    // {
+    //   RGE_Command::command_destroy_group(this->world->commands,(int)this->id,param_1);
+    //   return '\x01';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471A70
+uchar TRIBE_Gaia::command_resign(int param_1, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual unsigned char __thiscall RGE_Player::command_resign(int,int) */
+    // 
+    // uchar __thiscall RGE_Player::command_resign(RGE_Player *this,int param_1,int param_2)
+    // 
+    // {
+    //   if (this->game_status == '\0') {
+    //     RGE_Command::command_resign(this->world->commands,(int)this->id,param_1,param_2);
+    //     return '\x01';
+    //   }
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471AA0
+uchar TRIBE_Gaia::command_add_waypoint(float param_1, float param_2, float param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: list */
+    // /* public: virtual unsigned char __thiscall RGE_Player::command_add_waypoint(float,float,float) */
+    // 
+    // uchar __thiscall
+    // RGE_Player::command_add_waypoint(RGE_Player *this,float param_1,float param_2,float param_3)
+    // 
+    // {
+    //   uchar uVar1;
+    //   uchar uVar2;
+    //   RGE_Static_Object **list;
+    //   short list_num;
+    //   short local_4 [2];
+    //   
+    //   uVar1 = get_selected_objects_to_command(this,(RGE_Static_Object ***)&list_num,local_4,-1,-1,-1,-1)
+    //   ;
+    //   if (uVar1 != '\0') {
+    //     (**(code **)((*_list_num)->_padding_ + 0xac))();
+    //     uVar1 = __ftol();
+    //     uVar2 = __ftol();
+    //     RGE_Command::command_group_waypoint(this->world->commands,_list_num,local_4[0],uVar2,uVar1);
+    //     free(_list_num);
+    //     return '\x01';
+    //   }
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471B20
+RGE_Object_Node* RGE_Player::addObject(RGE_Static_Object* param_1, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual struct RGE_Object_Node * __thiscall RGE_Player::addObject(class RGE_Static_Object
+    //    *,int,int) */
+    // 
+    // RGE_Object_Node * __thiscall
+    // RGE_Player::addObject(RGE_Player *this,RGE_Static_Object *param_1,int param_2,int param_3)
+    // 
+    // {
+    //   RGE_Object_Node *pRVar1;
+    //   RGE_Object_List *this_00;
+    //   
+    //   if (param_2 == 0) {
+    //     if (param_3 == 0) {
+    //       this_00 = this->objects;
+    //     }
+    //     else {
+    //       this_00 = this->doppleganger_objects;
+    //     }
+    //   }
+    //   else {
+    //     this_00 = this->sleeping_objects;
+    //   }
+    //   pRVar1 = RGE_Object_List::add_node(this_00,param_1);
+    //   (**(code **)(this->world->_padding_ + 0xf8))(param_1);
+    //   return pRVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471B70
+void RGE_Player::removeObject(RGE_Static_Object* param_1, int param_2, int param_3, RGE_Object_Node* param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::removeObject(class RGE_Static_Object *,int,int,struct
+    //    RGE_Object_Node *) */
+    // 
+    // void __thiscall
+    // RGE_Player::removeObject
+    //           (RGE_Player *this,RGE_Static_Object *param_1,int param_2,int param_3,
+    //           RGE_Object_Node *param_4)
+    // 
+    // {
+    //   RGE_Object_List *this_00;
+    //   
+    //   if (param_2 == 0) {
+    //     if (param_3 == 0) {
+    //       this_00 = this->objects;
+    //     }
+    //     else {
+    //       this_00 = this->doppleganger_objects;
+    //     }
+    //   }
+    //   else {
+    //     this_00 = this->sleeping_objects;
+    //   }
+    //   RGE_Object_List::remove_node(this_00,param_1,param_4);
+    //   (**(code **)(this->world->_padding_ + 0xfc))(param_1->id);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471BD0
+void RGE_Player::logMessage(char* param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __cdecl RGE_Player::logMessage(char *,...) */
+    // 
+    // void __thiscall RGE_Player::logMessage(RGE_Player *this,char *param_1,...)
+    // 
+    // {
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471BE0
+void RGE_Player::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::notify(int,int,int,long,long,long) */
+    // 
+    // void __thiscall
+    // RGE_Player::notify(RGE_Player *this,int param_1,int param_2,int param_3,long param_4,long param_5,
+    //                   long param_6)
+    // 
+    // {
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471BF0
+void set_map_visible(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::set_map_visible(void) */
+    // 
+    // void __thiscall RGE_Player::set_map_visible(RGE_Player *this)
+    // 
+    // {
+    //   RGE_Visible_Map::set_all(this->visible,'\x01');
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471C00
+void remake_visible_map(RGE_Player* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Player::remake_visible_map(void) */
+    // 
+    // void __thiscall RGE_Player::remake_visible_map(RGE_Player *this)
+    // 
+    // {
+    //   RGE_Visible_Map *pRVar1;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055e38b;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   pRVar1 = this->visible;
+    //   if (pRVar1 != (RGE_Visible_Map *)0x0) {
+    //     RGE_Visible_Map::~RGE_Visible_Map(pRVar1);
+    //     operator_delete(pRVar1);
+    //   }
+    //   pRVar1 = (RGE_Visible_Map *)operator_new(0x38);
+    //   local_4 = 0;
+    //   if (pRVar1 != (RGE_Visible_Map *)0x0) {
+    //     pRVar1 = (RGE_Visible_Map *)RGE_Visible_Map::RGE_Visible_Map(pRVar1,this->world->map,this);
+    //     this->visible = pRVar1;
+    //     *unaff_FS_OFFSET = local_c;
+    //     return;
+    //   }
+    //   this->visible = (RGE_Visible_Map *)0x0;
+    //   *unaff_FS_OFFSET = local_c;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471C90
+void RGE_Player::load_victory(int param_1, long* param_2, uchar param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::load_victory(int,long *,unsigned char) */
+    // 
+    // void __thiscall RGE_Player::load_victory(RGE_Player *this,int param_1,long *param_2,uchar param_3)
+    // 
+    // {
+    //   RGE_Victory_Conditions *pRVar1;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055e3ab;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   pRVar1 = (RGE_Victory_Conditions *)operator_new(0x20);
+    //   local_4 = 0;
+    //   if (pRVar1 == (RGE_Victory_Conditions *)0x0) {
+    //     pRVar1 = (RGE_Victory_Conditions *)0x0;
+    //   }
+    //   else {
+    //     pRVar1 = (RGE_Victory_Conditions *)
+    //              RGE_Victory_Conditions::RGE_Victory_Conditions(pRVar1,this,param_1,param_2,param_3);
+    //   }
+    //   this->victory_conditions = pRVar1;
+    //   *unaff_FS_OFFSET = local_c;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471D00
+void RGE_Player::new_victory() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall RGE_Player::new_victory(void) */
+    // 
+    // void __thiscall RGE_Player::new_victory(RGE_Player *this)
+    // 
+    // {
+    //   RGE_Victory_Conditions *pRVar1;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055e3cb;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   pRVar1 = (RGE_Victory_Conditions *)operator_new(0x20);
+    //   local_4 = 0;
+    //   if (pRVar1 != (RGE_Victory_Conditions *)0x0) {
+    //     pRVar1 = (RGE_Victory_Conditions *)RGE_Victory_Conditions::RGE_Victory_Conditions(pRVar1,this);
+    //     this->victory_conditions = pRVar1;
+    //     *unaff_FS_OFFSET = local_c;
+    //     return;
+    //   }
+    //   this->victory_conditions = (RGE_Victory_Conditions *)0x0;
+    //   *unaff_FS_OFFSET = local_c;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471D70
+void add_node(RGE_Tile_List* this_, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Tile_List::add_node(int,int) */
+    // 
+    // void __thiscall RGE_Tile_List::add_node(RGE_Tile_List *this,int param_1,int param_2)
+    // 
+    // {
+    //   RGE_Tile_List_Node *pRVar1;
+    //   uint uVar2;
+    //   int iVar3;
+    //   RGE_Tile_List_Node *pRVar4;
+    //   RGE_Tile_List_Node *pRVar5;
+    //   
+    //   if (this->list_size <= this->num_active) {
+    //     pRVar1 = (RGE_Tile_List_Node *)calloc(this->list_size * 2,8);
+    //     pRVar4 = this->list;
+    //     pRVar5 = pRVar1;
+    //     for (uVar2 = (uint)(this->list_size << 3) >> 2; uVar2 != 0; uVar2 = uVar2 - 1) {
+    //       pRVar5->col = pRVar4->col;
+    //       pRVar4 = (RGE_Tile_List_Node *)&pRVar4->row;
+    //       pRVar5 = (RGE_Tile_List_Node *)&pRVar5->row;
+    //     }
+    //     for (iVar3 = 0; iVar3 != 0; iVar3 = iVar3 + -1) {
+    //       *(char *)&pRVar5->col = (char)pRVar4->col;
+    //       pRVar4 = (RGE_Tile_List_Node *)((int)&pRVar4->col + 1);
+    //       pRVar5 = (RGE_Tile_List_Node *)((int)&pRVar5->col + 1);
+    //     }
+    //     free(this->list);
+    //     this->list = pRVar1;
+    //     this->list_size = this->list_size << 1;
+    //   }
+    //   this->list[this->num_active].col = param_1;
+    //   this->list[this->num_active].row = param_2;
+    //   this->num_active = this->num_active + 1;
+    //   this->new_count = this->new_count + 1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471DF0
+void del_list(RGE_Tile_List* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Tile_List::del_list(void) */
+    // 
+    // void __thiscall RGE_Tile_List::del_list(RGE_Tile_List *this)
+    // 
+    // {
+    //   RGE_Tile_List_Node *pRVar1;
+    //   
+    //   this->num_active = 0;
+    //   this->new_count = 0;
+    //   if (this->collapse_list != 0) {
+    //     free(this->list);
+    //     this->list_size = 8;
+    //     pRVar1 = (RGE_Tile_List_Node *)calloc(8,8);
+    //     this->list = pRVar1;
+    //     this->collapse_list = 0;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471E40
+undefined RGE_Tile_List(RGE_Tile_List* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Tile_List::RGE_Tile_List(int) */
+    // 
+    // RGE_Tile_List * __thiscall RGE_Tile_List::RGE_Tile_List(RGE_Tile_List *this,int param_1)
+    // 
+    // {
+    //   RGE_Tile_List_Node *pRVar1;
+    //   
+    //   pRVar1 = (RGE_Tile_List_Node *)calloc(param_1,8);
+    //   this->list = pRVar1;
+    //   this->list_size = param_1;
+    //   this->num_active = 0;
+    //   this->new_count = 0;
+    //   this->collapse_list = 0;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471E70
+void RGE_Tile_List(RGE_Tile_List* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall RGE_Tile_List::~RGE_Tile_List(void) */
+    // 
+    // void __thiscall RGE_Tile_List::~RGE_Tile_List(RGE_Tile_List *this)
+    // 
+    // {
+    //   if (this->list != (RGE_Tile_List_Node *)0x0) {
+    //     free(this->list);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471E90
+void get_list_info(RGE_Tile_List* this_, RGE_Tile_List_Node** param_2, int* param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall RGE_Tile_List::get_list_info(struct RGE_Tile_List_Node * &,int &) */
+    // 
+    // void __thiscall
+    // RGE_Tile_List::get_list_info(RGE_Tile_List *this,RGE_Tile_List_Node **param_1,int *param_2)
+    // 
+    // {
+    //   *param_1 = this->list;
+    //   *param_2 = this->num_active;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00471EB0
+int get_new_count(RGE_Tile_List* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall RGE_Tile_List::get_new_count(void) */
+    // 
+    // int __thiscall RGE_Tile_List::get_new_count(RGE_Tile_List *this)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   iVar1 = this->new_count;
+    //   this->new_count = 0;
+    //   return iVar1;
+    // }
+    // 
+    // 
+}
+

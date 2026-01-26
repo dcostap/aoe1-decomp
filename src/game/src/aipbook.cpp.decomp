@@ -1,0 +1,3724 @@
+// Auto-generated decompiler unit: aipbook.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/aipbook.cpp
+#include "../include/common.h"
+
+// Offset: 0x0040E930
+undefined AIPlayPhaseCommand(AIPlayPhaseCommand* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall AIPlayPhaseCommand::AIPlayPhaseCommand(void) */
+    // 
+    // void __thiscall AIPlayPhaseCommand::AIPlayPhaseCommand(AIPlayPhaseCommand *this)
+    // 
+    // {
+    //   this->groupValue = '\0';
+    //   this->typeValue = '\0';
+    //   this->value1Value = 0;
+    //   this->value2Value = 0;
+    //   this->value3Value = 0;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040E950
+undefined AIPlayPhaseCommand(AIPlayPhaseCommand* this_, uchar param_2, uchar param_3, int param_4, int param_5, int param_6) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall AIPlayPhaseCommand::AIPlayPhaseCommand(unsigned char,unsigned
+    //    char,int,int,int) */
+    // 
+    // void __thiscall
+    // AIPlayPhaseCommand::AIPlayPhaseCommand
+    //           (AIPlayPhaseCommand *this,uchar param_1,uchar param_2,int param_3,int param_4,int param_5)
+    // 
+    // {
+    //   this->groupValue = param_1;
+    //   this->typeValue = param_2;
+    //   this->value1Value = param_3;
+    //   this->value2Value = param_4;
+    //   this->value3Value = param_5;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040E980
+undefined AIPlayPhaseCommand(AIPlayPhaseCommand* this_, uchar param_2, char* param_3, int param_4, int param_5, int param_6) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall AIPlayPhaseCommand::AIPlayPhaseCommand(unsigned char,char *,int,int,int) */
+    // 
+    // AIPlayPhaseCommand * __thiscall
+    // AIPlayPhaseCommand::AIPlayPhaseCommand
+    //           (AIPlayPhaseCommand *this,uchar param_1,char *param_2,int param_3,int param_4,int param_5)
+    // 
+    // {
+    //   uchar uVar1;
+    //   
+    //   this->groupValue = param_1;
+    //   uVar1 = convertToIntType(this,param_2);
+    //   this->typeValue = uVar1;
+    //   this->value2Value = param_4;
+    //   this->value1Value = param_3;
+    //   this->value3Value = param_5;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040E9C0
+char* nameType(AIPlayPhaseCommand* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: char * __thiscall AIPlayPhaseCommand::nameType(void)const  */
+    // 
+    // char * __thiscall AIPlayPhaseCommand::nameType(AIPlayPhaseCommand *this)
+    // 
+    // {
+    //   char *pcVar1;
+    //   
+    //   pcVar1 = convertToNameType(this,this->typeValue);
+    //   return pcVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040E9D0
+uchar convertToIntType(AIPlayPhaseCommand* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: unsigned char __thiscall AIPlayPhaseCommand::convertToIntType(char *)const  */
+    // 
+    // uchar __thiscall AIPlayPhaseCommand::convertToIntType(AIPlayPhaseCommand *this,char *param_1)
+    // 
+    // {
+    //   byte bVar1;
+    //   byte *pbVar2;
+    //   int iVar3;
+    //   byte *pbVar4;
+    //   bool bVar5;
+    //   
+    //   pbVar4 = &s_Move;
+    //   pbVar2 = (byte *)param_1;
+    //   do {
+    //     bVar1 = *pbVar2;
+    //     bVar5 = bVar1 < *pbVar4;
+    //     if (bVar1 != *pbVar4) {
+    // LAB_0040ea06:
+    //       iVar3 = (1 - (uint)bVar5) - (uint)(bVar5 != 0);
+    //       goto LAB_0040ea0b;
+    //     }
+    //     if (bVar1 == 0) break;
+    //     bVar1 = pbVar2[1];
+    //     bVar5 = bVar1 < pbVar4[1];
+    //     if (bVar1 != pbVar4[1]) goto LAB_0040ea06;
+    //     pbVar2 = pbVar2 + 2;
+    //     pbVar4 = pbVar4 + 2;
+    //   } while (bVar1 != 0);
+    //   iVar3 = 0;
+    // LAB_0040ea0b:
+    //   if (iVar3 == 0) {
+    //     return '\x01';
+    //   }
+    //   pbVar4 = &s_Attack;
+    //   pbVar2 = (byte *)param_1;
+    //   do {
+    //     bVar1 = *pbVar2;
+    //     bVar5 = bVar1 < *pbVar4;
+    //     if (bVar1 != *pbVar4) {
+    // LAB_0040ea46:
+    //       iVar3 = (1 - (uint)bVar5) - (uint)(bVar5 != 0);
+    //       goto LAB_0040ea4b;
+    //     }
+    //     if (bVar1 == 0) break;
+    //     bVar1 = pbVar2[1];
+    //     bVar5 = bVar1 < pbVar4[1];
+    //     if (bVar1 != pbVar4[1]) goto LAB_0040ea46;
+    //     pbVar2 = pbVar2 + 2;
+    //     pbVar4 = pbVar4 + 2;
+    //   } while (bVar1 != 0);
+    //   iVar3 = 0;
+    // LAB_0040ea4b:
+    //   if (iVar3 == 0) {
+    //     return '\x02';
+    //   }
+    //   pbVar4 = &s_AttackSavedTarget;
+    //   pbVar2 = (byte *)param_1;
+    //   do {
+    //     bVar1 = *pbVar2;
+    //     bVar5 = bVar1 < *pbVar4;
+    //     if (bVar1 != *pbVar4) {
+    // LAB_0040ea86:
+    //       iVar3 = (1 - (uint)bVar5) - (uint)(bVar5 != 0);
+    //       goto LAB_0040ea8b;
+    //     }
+    //     if (bVar1 == 0) break;
+    //     bVar1 = pbVar2[1];
+    //     bVar5 = bVar1 < pbVar4[1];
+    //     if (bVar1 != pbVar4[1]) goto LAB_0040ea86;
+    //     pbVar2 = pbVar2 + 2;
+    //     pbVar4 = pbVar4 + 2;
+    //   } while (bVar1 != 0);
+    //   iVar3 = 0;
+    // LAB_0040ea8b:
+    //   if (iVar3 == 0) {
+    //     return '\x03';
+    //   }
+    //   pbVar4 = &s_Retreat;
+    //   pbVar2 = (byte *)param_1;
+    //   do {
+    //     bVar1 = *pbVar2;
+    //     bVar5 = bVar1 < *pbVar4;
+    //     if (bVar1 != *pbVar4) {
+    // LAB_0040eac6:
+    //       iVar3 = (1 - (uint)bVar5) - (uint)(bVar5 != 0);
+    //       goto LAB_0040eacb;
+    //     }
+    //     if (bVar1 == 0) break;
+    //     bVar1 = pbVar2[1];
+    //     bVar5 = bVar1 < pbVar4[1];
+    //     if (bVar1 != pbVar4[1]) goto LAB_0040eac6;
+    //     pbVar2 = pbVar2 + 2;
+    //     pbVar4 = pbVar4 + 2;
+    //   } while (bVar1 != 0);
+    //   iVar3 = 0;
+    // LAB_0040eacb:
+    //   if (iVar3 == 0) {
+    //     return '\x04';
+    //   }
+    //   pbVar4 = &s_Heal;
+    //   pbVar2 = (byte *)param_1;
+    //   do {
+    //     bVar1 = *pbVar2;
+    //     bVar5 = bVar1 < *pbVar4;
+    //     if (bVar1 != *pbVar4) {
+    // LAB_0040eb06:
+    //       iVar3 = (1 - (uint)bVar5) - (uint)(bVar5 != 0);
+    //       goto LAB_0040eb0b;
+    //     }
+    //     if (bVar1 == 0) break;
+    //     bVar1 = pbVar2[1];
+    //     bVar5 = bVar1 < pbVar4[1];
+    //     if (bVar1 != pbVar4[1]) goto LAB_0040eb06;
+    //     pbVar2 = pbVar2 + 2;
+    //     pbVar4 = pbVar4 + 2;
+    //   } while (bVar1 != 0);
+    //   iVar3 = 0;
+    // LAB_0040eb0b:
+    //   if (iVar3 == 0) {
+    //     return '\x05';
+    //   }
+    //   pbVar4 = &s_ResetHitPoints;
+    //   pbVar2 = (byte *)param_1;
+    //   do {
+    //     bVar1 = *pbVar2;
+    //     bVar5 = bVar1 < *pbVar4;
+    //     if (bVar1 != *pbVar4) {
+    // LAB_0040eb46:
+    //       iVar3 = (1 - (uint)bVar5) - (uint)(bVar5 != 0);
+    //       goto LAB_0040eb4b;
+    //     }
+    //     if (bVar1 == 0) break;
+    //     bVar1 = pbVar2[1];
+    //     bVar5 = bVar1 < pbVar4[1];
+    //     if (bVar1 != pbVar4[1]) goto LAB_0040eb46;
+    //     pbVar2 = pbVar2 + 2;
+    //     pbVar4 = pbVar4 + 2;
+    //   } while (bVar1 != 0);
+    //   iVar3 = 0;
+    // LAB_0040eb4b:
+    //   if (iVar3 == 0) {
+    //     return '\x06';
+    //   }
+    //   pbVar4 = &s_ResetAliveCount;
+    //   pbVar2 = (byte *)param_1;
+    //   do {
+    //     bVar1 = *pbVar2;
+    //     bVar5 = bVar1 < *pbVar4;
+    //     if (bVar1 != *pbVar4) {
+    // LAB_0040eb86:
+    //       iVar3 = (1 - (uint)bVar5) - (uint)(bVar5 != 0);
+    //       goto LAB_0040eb8b;
+    //     }
+    //     if (bVar1 == 0) break;
+    //     bVar1 = pbVar2[1];
+    //     bVar5 = bVar1 < pbVar4[1];
+    //     if (bVar1 != pbVar4[1]) goto LAB_0040eb86;
+    //     pbVar2 = pbVar2 + 2;
+    //     pbVar4 = pbVar4 + 2;
+    //   } while (bVar1 != 0);
+    //   iVar3 = 0;
+    // LAB_0040eb8b:
+    //   if (iVar3 == 0) {
+    //     return '\a';
+    //   }
+    //   pbVar2 = &s_Wait;
+    //   while( true ) {
+    //     bVar1 = *param_1;
+    //     bVar5 = bVar1 < *pbVar2;
+    //     if (bVar1 != *pbVar2) break;
+    //     if (bVar1 == 0) {
+    //       return '\b';
+    //     }
+    //     bVar1 = ((byte *)param_1)[1];
+    //     bVar5 = bVar1 < pbVar2[1];
+    //     if (bVar1 != pbVar2[1]) break;
+    //     param_1 = (char *)((byte *)param_1 + 2);
+    //     pbVar2 = pbVar2 + 2;
+    //     if (bVar1 == 0) {
+    //       return '\b';
+    //     }
+    //   }
+    //   return (1 - bVar5 != (uint)(bVar5 != 0)) - 1U & 8;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040EBF0
+char* convertToNameType(AIPlayPhaseCommand* this_, uchar param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: char * __thiscall AIPlayPhaseCommand::convertToNameType(unsigned char)const  */
+    // 
+    // char * __thiscall AIPlayPhaseCommand::convertToNameType(AIPlayPhaseCommand *this,uchar param_1)
+    // 
+    // {
+    //   switch(param_1) {
+    //   case '\x01':
+    //     return &s_Move;
+    //   case '\x02':
+    //     return &s_Attack;
+    //   case '\x03':
+    //     return &s_AttackSavedTarget;
+    //   case '\x04':
+    //     return &s_Retreat;
+    //   case '\x05':
+    //     return &s_Heal;
+    //   case '\x06':
+    //     return &s_ResetHitPoints;
+    //   case '\a':
+    //     return &s_ResetAliveCount;
+    //   case '\b':
+    //     return &s_Wait;
+    //   default:
+    //     return s_Invalid;
+    //   }
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040EC4E
+undefined FUN_0040ec4e() {
+    // --- Ghidra decompiler output ---
+    // 
+    // void FUN_0040ec4e(void)
+    // 
+    // {
+    //   undefined1 uVar1;
+    //   undefined1 uVar2;
+    //   undefined1 uVar3;
+    //   undefined1 uVar4;
+    //   undefined4 in_EAX;
+    //   int iVar5;
+    //   undefined4 in_ECX;
+    //   char cVar6;
+    //   undefined2 in_DX;
+    //   int unaff_EBX;
+    //   char *unaff_ESI;
+    //   
+    //   uVar1 = in(in_DX);
+    //   *unaff_ESI = *unaff_ESI + (char)in_ECX;
+    //   uVar2 = in(in_DX);
+    //   cVar6 = (char)in_DX;
+    //   *unaff_ESI = *unaff_ESI + cVar6;
+    //   uVar3 = in(in_DX);
+    //   *unaff_ESI = *unaff_ESI + (char)unaff_EBX;
+    //   uVar4 = in(in_DX);
+    //   iVar5 = CONCAT31((int3)((uint)(CONCAT31((int3)((uint)(CONCAT31((int3)((uint)(CONCAT31((int3)((uint
+    //                                                   )in_EAX >> 8),uVar1) + 1) >> 8),uVar2) + 1) >> 8),
+    //                                           uVar3) + 1) >> 8),uVar4) + 1;
+    //   *unaff_ESI = *unaff_ESI + (char)((uint)iVar5 >> 8);
+    //   uVar1 = in(in_DX);
+    //   *unaff_ESI = *unaff_ESI + (char)((uint)in_ECX >> 8);
+    //   uVar2 = in(in_DX);
+    //   *unaff_ESI = *unaff_ESI + (char)((ushort)in_DX >> 8);
+    //   uVar3 = in(in_DX);
+    //   *unaff_ESI = *unaff_ESI + (char)((uint)unaff_EBX >> 8);
+    //   uVar4 = in(in_DX);
+    //   iVar5 = CONCAT31((int3)((uint)(CONCAT31((int3)((uint)(CONCAT31((int3)((uint)(CONCAT31((int3)((uint
+    //                                                   )iVar5 >> 8),uVar1) + 1) >> 8),uVar2) + 1) >> 8),
+    //                                           uVar3) + 1) >> 8),uVar4);
+    //   *(char *)(unaff_EBX + -0x7c2dcd3f) = *(char *)(unaff_EBX + -0x7c2dcd3f) + (char)in_ECX;
+    //   *(int *)(iVar5 + 0x4488911) = *(int *)(iVar5 + 0x4488911) + -1;
+    //   *(undefined4 *)(iVar5 + 9) = in_ECX;
+    //   *(char *)(iVar5 + 0xd) = cVar6;
+    //   *(char *)(iVar5 + 0xe) = cVar6;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040EC70
+undefined AIPlayPhaseTrigger(AIPlayPhaseTrigger* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall AIPlayPhaseTrigger::AIPlayPhaseTrigger(void) */
+    // 
+    // void __thiscall AIPlayPhaseTrigger::AIPlayPhaseTrigger(AIPlayPhaseTrigger *this)
+    // 
+    // {
+    //   this->typeValue = '\0';
+    //   this->value1Value = -1;
+    //   this->value2Value = -1;
+    //   this->phaseValue = '\0';
+    //   this->nextPhaseValue = '\0';
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040EC90
+undefined AIPlayPhaseTrigger(AIPlayPhaseTrigger* this_, uchar param_2, int param_3, int param_4, uchar param_5, uchar param_6, int param_7) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall AIPlayPhaseTrigger::AIPlayPhaseTrigger(unsigned char,int,int,unsigned
+    //    char,unsigned char,int) */
+    // 
+    // void __thiscall
+    // AIPlayPhaseTrigger::AIPlayPhaseTrigger
+    //           (AIPlayPhaseTrigger *this,uchar param_1,int param_2,int param_3,uchar param_4,
+    //           uchar param_5,int param_6)
+    // 
+    // {
+    //   this->typeValue = param_1;
+    //   this->value1Value = param_2;
+    //   this->value2Value = param_3;
+    //   this->phaseValue = param_4;
+    //   this->nextPhaseValue = param_5;
+    //   this->randomnessValue = param_6;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040ECC0
+undefined AIPlayPhaseTrigger(AIPlayPhaseTrigger* this_, char* param_2, int param_3, int param_4, uchar param_5, uchar param_6, int param_7) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall AIPlayPhaseTrigger::AIPlayPhaseTrigger(char *,int,int,unsigned char,unsigned
+    //    char,int) */
+    // 
+    // AIPlayPhaseTrigger * __thiscall
+    // AIPlayPhaseTrigger::AIPlayPhaseTrigger
+    //           (AIPlayPhaseTrigger *this,char *param_1,int param_2,int param_3,uchar param_4,
+    //           uchar param_5,int param_6)
+    // 
+    // {
+    //   uchar uVar1;
+    //   
+    //   uVar1 = convertToIntType(this,param_1);
+    //   this->typeValue = uVar1;
+    //   this->value1Value = param_2;
+    //   this->value2Value = param_3;
+    //   this->phaseValue = param_4;
+    //   this->nextPhaseValue = param_5;
+    //   this->randomnessValue = param_6;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040ED00
+char* nameType(AIPlayPhaseTrigger* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: char * __thiscall AIPlayPhaseTrigger::nameType(void)const  */
+    // 
+    // char * __thiscall AIPlayPhaseTrigger::nameType(AIPlayPhaseTrigger *this)
+    // 
+    // {
+    //   char *pcVar1;
+    //   
+    //   pcVar1 = convertToNameType(this,this->typeValue);
+    //   return pcVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040ED10
+uchar convertToIntType(AIPlayPhaseTrigger* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: unsigned char __thiscall AIPlayPhaseTrigger::convertToIntType(char *)const  */
+    // 
+    // uchar __thiscall AIPlayPhaseTrigger::convertToIntType(AIPlayPhaseTrigger *this,char *param_1)
+    // 
+    // {
+    //   byte bVar1;
+    //   byte *pbVar2;
+    //   int iVar3;
+    //   byte *pbVar4;
+    //   bool bVar5;
+    //   
+    //   pbVar4 = &s_Gather;
+    //   pbVar2 = (byte *)param_1;
+    //   do {
+    //     bVar1 = *pbVar2;
+    //     bVar5 = bVar1 < *pbVar4;
+    //     if (bVar1 != *pbVar4) {
+    // LAB_0040ed46:
+    //       iVar3 = (1 - (uint)bVar5) - (uint)(bVar5 != 0);
+    //       goto LAB_0040ed4b;
+    //     }
+    //     if (bVar1 == 0) break;
+    //     bVar1 = pbVar2[1];
+    //     bVar5 = bVar1 < pbVar4[1];
+    //     if (bVar1 != pbVar4[1]) goto LAB_0040ed46;
+    //     pbVar2 = pbVar2 + 2;
+    //     pbVar4 = pbVar4 + 2;
+    //   } while (bVar1 != 0);
+    //   iVar3 = 0;
+    // LAB_0040ed4b:
+    //   if (iVar3 == 0) {
+    //     return '\x01';
+    //   }
+    //   pbVar4 = &s_Death;
+    //   pbVar2 = (byte *)param_1;
+    //   do {
+    //     bVar1 = *pbVar2;
+    //     bVar5 = bVar1 < *pbVar4;
+    //     if (bVar1 != *pbVar4) {
+    // LAB_0040ed86:
+    //       iVar3 = (1 - (uint)bVar5) - (uint)(bVar5 != 0);
+    //       goto LAB_0040ed8b;
+    //     }
+    //     if (bVar1 == 0) break;
+    //     bVar1 = pbVar2[1];
+    //     bVar5 = bVar1 < pbVar4[1];
+    //     if (bVar1 != pbVar4[1]) goto LAB_0040ed86;
+    //     pbVar2 = pbVar2 + 2;
+    //     pbVar4 = pbVar4 + 2;
+    //   } while (bVar1 != 0);
+    //   iVar3 = 0;
+    // LAB_0040ed8b:
+    //   if (iVar3 == 0) {
+    //     return '\x02';
+    //   }
+    //   pbVar4 = &s_HealthLost;
+    //   pbVar2 = (byte *)param_1;
+    //   do {
+    //     bVar1 = *pbVar2;
+    //     bVar5 = bVar1 < *pbVar4;
+    //     if (bVar1 != *pbVar4) {
+    // LAB_0040edc6:
+    //       iVar3 = (1 - (uint)bVar5) - (uint)(bVar5 != 0);
+    //       goto LAB_0040edcb;
+    //     }
+    //     if (bVar1 == 0) break;
+    //     bVar1 = pbVar2[1];
+    //     bVar5 = bVar1 < pbVar4[1];
+    //     if (bVar1 != pbVar4[1]) goto LAB_0040edc6;
+    //     pbVar2 = pbVar2 + 2;
+    //     pbVar4 = pbVar4 + 2;
+    //   } while (bVar1 != 0);
+    //   iVar3 = 0;
+    // LAB_0040edcb:
+    //   if (iVar3 == 0) {
+    //     return '\x03';
+    //   }
+    //   pbVar4 = &s_DamageToGroup;
+    //   pbVar2 = (byte *)param_1;
+    //   do {
+    //     bVar1 = *pbVar2;
+    //     bVar5 = bVar1 < *pbVar4;
+    //     if (bVar1 != *pbVar4) {
+    // LAB_0040ee06:
+    //       iVar3 = (1 - (uint)bVar5) - (uint)(bVar5 != 0);
+    //       goto LAB_0040ee0b;
+    //     }
+    //     if (bVar1 == 0) break;
+    //     bVar1 = pbVar2[1];
+    //     bVar5 = bVar1 < pbVar4[1];
+    //     if (bVar1 != pbVar4[1]) goto LAB_0040ee06;
+    //     pbVar2 = pbVar2 + 2;
+    //     pbVar4 = pbVar4 + 2;
+    //   } while (bVar1 != 0);
+    //   iVar3 = 0;
+    // LAB_0040ee0b:
+    //   if (iVar3 == 0) {
+    //     return '\x04';
+    //   }
+    //   pbVar4 = &s_DamageToAnyGroup;
+    //   pbVar2 = (byte *)param_1;
+    //   do {
+    //     bVar1 = *pbVar2;
+    //     bVar5 = bVar1 < *pbVar4;
+    //     if (bVar1 != *pbVar4) {
+    // LAB_0040ee46:
+    //       iVar3 = (1 - (uint)bVar5) - (uint)(bVar5 != 0);
+    //       goto LAB_0040ee4b;
+    //     }
+    //     if (bVar1 == 0) break;
+    //     bVar1 = pbVar2[1];
+    //     bVar5 = bVar1 < pbVar4[1];
+    //     if (bVar1 != pbVar4[1]) goto LAB_0040ee46;
+    //     pbVar2 = pbVar2 + 2;
+    //     pbVar4 = pbVar4 + 2;
+    //   } while (bVar1 != 0);
+    //   iVar3 = 0;
+    // LAB_0040ee4b:
+    //   if (iVar3 == 0) {
+    //     return '\x05';
+    //   }
+    //   pbVar4 = &s_Level1EnemySighted;
+    //   pbVar2 = (byte *)param_1;
+    //   do {
+    //     bVar1 = *pbVar2;
+    //     bVar5 = bVar1 < *pbVar4;
+    //     if (bVar1 != *pbVar4) {
+    // LAB_0040ee86:
+    //       iVar3 = (1 - (uint)bVar5) - (uint)(bVar5 != 0);
+    //       goto LAB_0040ee8b;
+    //     }
+    //     if (bVar1 == 0) break;
+    //     bVar1 = pbVar2[1];
+    //     bVar5 = bVar1 < pbVar4[1];
+    //     if (bVar1 != pbVar4[1]) goto LAB_0040ee86;
+    //     pbVar2 = pbVar2 + 2;
+    //     pbVar4 = pbVar4 + 2;
+    //   } while (bVar1 != 0);
+    //   iVar3 = 0;
+    // LAB_0040ee8b:
+    //   if (iVar3 == 0) {
+    //     return '\x06';
+    //   }
+    //   pbVar4 = &s_Level2EnemySighted;
+    //   pbVar2 = (byte *)param_1;
+    //   do {
+    //     bVar1 = *pbVar2;
+    //     bVar5 = bVar1 < *pbVar4;
+    //     if (bVar1 != *pbVar4) {
+    // LAB_0040eec6:
+    //       iVar3 = (1 - (uint)bVar5) - (uint)(bVar5 != 0);
+    //       goto LAB_0040eecb;
+    //     }
+    //     if (bVar1 == 0) break;
+    //     bVar1 = pbVar2[1];
+    //     bVar5 = bVar1 < pbVar4[1];
+    //     if (bVar1 != pbVar4[1]) goto LAB_0040eec6;
+    //     pbVar2 = pbVar2 + 2;
+    //     pbVar4 = pbVar4 + 2;
+    //   } while (bVar1 != 0);
+    //   iVar3 = 0;
+    // LAB_0040eecb:
+    //   if (iVar3 == 0) {
+    //     return '\a';
+    //   }
+    //   pbVar4 = &s_DeathOfGroup;
+    //   pbVar2 = (byte *)param_1;
+    //   do {
+    //     bVar1 = *pbVar2;
+    //     bVar5 = bVar1 < *pbVar4;
+    //     if (bVar1 != *pbVar4) {
+    // LAB_0040ef06:
+    //       iVar3 = (1 - (uint)bVar5) - (uint)(bVar5 != 0);
+    //       goto LAB_0040ef0b;
+    //     }
+    //     if (bVar1 == 0) break;
+    //     bVar1 = pbVar2[1];
+    //     bVar5 = bVar1 < pbVar4[1];
+    //     if (bVar1 != pbVar4[1]) goto LAB_0040ef06;
+    //     pbVar2 = pbVar2 + 2;
+    //     pbVar4 = pbVar4 + 2;
+    //   } while (bVar1 != 0);
+    //   iVar3 = 0;
+    // LAB_0040ef0b:
+    //   if (iVar3 == 0) {
+    //     return '\b';
+    //   }
+    //   pbVar4 = &s_HealOfGroup;
+    //   pbVar2 = (byte *)param_1;
+    //   do {
+    //     bVar1 = *pbVar2;
+    //     bVar5 = bVar1 < *pbVar4;
+    //     if (bVar1 != *pbVar4) {
+    // LAB_0040ef46:
+    //       iVar3 = (1 - (uint)bVar5) - (uint)(bVar5 != 0);
+    //       goto LAB_0040ef4b;
+    //     }
+    //     if (bVar1 == 0) break;
+    //     bVar1 = pbVar2[1];
+    //     bVar5 = bVar1 < pbVar4[1];
+    //     if (bVar1 != pbVar4[1]) goto LAB_0040ef46;
+    //     pbVar2 = pbVar2 + 2;
+    //     pbVar4 = pbVar4 + 2;
+    //   } while (bVar1 != 0);
+    //   iVar3 = 0;
+    // LAB_0040ef4b:
+    //   if (iVar3 == 0) {
+    //     return '\t';
+    //   }
+    //   pbVar4 = &s_Immediate;
+    //   pbVar2 = (byte *)param_1;
+    //   do {
+    //     bVar1 = *pbVar2;
+    //     bVar5 = bVar1 < *pbVar4;
+    //     if (bVar1 != *pbVar4) {
+    // LAB_0040ef86:
+    //       iVar3 = (1 - (uint)bVar5) - (uint)(bVar5 != 0);
+    //       goto LAB_0040ef8b;
+    //     }
+    //     if (bVar1 == 0) break;
+    //     bVar1 = pbVar2[1];
+    //     bVar5 = bVar1 < pbVar4[1];
+    //     if (bVar1 != pbVar4[1]) goto LAB_0040ef86;
+    //     pbVar2 = pbVar2 + 2;
+    //     pbVar4 = pbVar4 + 2;
+    //   } while (bVar1 != 0);
+    //   iVar3 = 0;
+    // LAB_0040ef8b:
+    //   if (iVar3 == 0) {
+    //     return '\n';
+    //   }
+    //   pbVar2 = &s_Time;
+    //   while( true ) {
+    //     bVar1 = *param_1;
+    //     bVar5 = bVar1 < *pbVar2;
+    //     if (bVar1 != *pbVar2) break;
+    //     if (bVar1 == 0) {
+    //       return '\v';
+    //     }
+    //     bVar1 = ((byte *)param_1)[1];
+    //     bVar5 = bVar1 < pbVar2[1];
+    //     if (bVar1 != pbVar2[1]) break;
+    //     param_1 = (char *)((byte *)param_1 + 2);
+    //     pbVar2 = pbVar2 + 2;
+    //     if (bVar1 == 0) {
+    //       return '\v';
+    //     }
+    //   }
+    //   return (1 - bVar5 != (uint)(bVar5 != 0)) - 1U & 0xb;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040EFF0
+char* convertToNameType(AIPlayPhaseTrigger* this_, uchar param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: char * __thiscall AIPlayPhaseTrigger::convertToNameType(unsigned char)const  */
+    // 
+    // char * __thiscall AIPlayPhaseTrigger::convertToNameType(AIPlayPhaseTrigger *this,uchar param_1)
+    // 
+    // {
+    //   switch(param_1) {
+    //   case '\x01':
+    //     return &s_Gather;
+    //   case '\x02':
+    //     return &s_Death;
+    //   case '\x03':
+    //     return &s_HealthLost;
+    //   case '\x04':
+    //     return &s_DamageToGroup;
+    //   case '\x05':
+    //     return &s_DamageToAnyGroup;
+    //   case '\x06':
+    //     return &s_Level1EnemySighted;
+    //   case '\a':
+    //     return &s_Level2EnemySighted;
+    //   case '\b':
+    //     return &s_DeathOfGroup;
+    //   case '\t':
+    //     return &s_HealOfGroup;
+    //   case '\n':
+    //     return &s_Immediate;
+    //   case '\v':
+    //     return &s_Time;
+    //   default:
+    //     return s_Invalid;
+    //   }
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F066
+undefined FUN_0040f066() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Control flow encountered bad instruction data */
+    // 
+    // void FUN_0040f066(void)
+    // 
+    // {
+    //                     /* WARNING: Bad instruction - Truncating control flow here */
+    //   halt_baddata();
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F0A0
+undefined AIPlayPhase(AIPlayPhase* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall AIPlayPhase::AIPlayPhase(void) */
+    // 
+    // AIPlayPhase * __thiscall AIPlayPhase::AIPlayPhase(AIPlayPhase *this)
+    // 
+    // {
+    //   AIPlayPhase *this_00;
+    //   AIPlayPhaseTrigger *this_01;
+    //   int iVar1;
+    //   
+    //   iVar1 = 5;
+    //   this_00 = this;
+    //   do {
+    //     AIPlayPhaseCommand::AIPlayPhaseCommand(this_00->commands);
+    //     this_00 = (AIPlayPhase *)(this_00->commands + 1);
+    //     iVar1 = iVar1 + -1;
+    //   } while (iVar1 != 0);
+    //   this_01 = this->triggers;
+    //   iVar1 = 3;
+    //   do {
+    //     AIPlayPhaseTrigger::AIPlayPhaseTrigger(this_01);
+    //     this_01 = this_01 + 1;
+    //     iVar1 = iVar1 + -1;
+    //   } while (iVar1 != 0);
+    //   initialize(this);
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F110
+AIPlayPhaseCommand* command(AIPlayPhase* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: class AIPlayPhaseCommand * __thiscall AIPlayPhase::command(int) */
+    // 
+    // AIPlayPhaseCommand * __thiscall AIPlayPhase::command(AIPlayPhase *this,int param_1)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < 5)) {
+    //     return this->commands + param_1;
+    //   }
+    //   return (AIPlayPhaseCommand *)0x0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F130
+AIPlayPhaseTrigger* trigger(AIPlayPhase* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: class AIPlayPhaseTrigger * __thiscall AIPlayPhase::trigger(int) */
+    // 
+    // AIPlayPhaseTrigger * __thiscall AIPlayPhase::trigger(AIPlayPhase *this,int param_1)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < 3)) {
+    //     return this->triggers + param_1;
+    //   }
+    //   return (AIPlayPhaseTrigger *)0x0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F150
+int addCommand(AIPlayPhase* this_, AIPlayPhaseCommand* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall AIPlayPhase::addCommand(class AIPlayPhaseCommand &) */
+    // 
+    // int __thiscall AIPlayPhase::addCommand(AIPlayPhase *this,AIPlayPhaseCommand *param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   AIPlayPhaseCommand *pAVar2;
+    //   uchar *puVar3;
+    //   
+    //   iVar1 = 0;
+    //   puVar3 = &this->commands[0].typeValue;
+    //   do {
+    //     if (*puVar3 == '\0') {
+    //       pAVar2 = this->commands + iVar1;
+    //       pAVar2->groupValue = param_1->groupValue;
+    //       pAVar2->typeValue = param_1->typeValue;
+    //       pAVar2->value1Value = param_1->value1Value;
+    //       pAVar2->value2Value = param_1->value2Value;
+    //       pAVar2->value3Value = param_1->value3Value;
+    //       return 1;
+    //     }
+    //     iVar1 = iVar1 + 1;
+    //     puVar3 = puVar3 + 0x10;
+    //   } while (iVar1 < 5);
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F1A0
+int addTrigger(AIPlayPhase* this_, AIPlayPhaseTrigger* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall AIPlayPhase::addTrigger(class AIPlayPhaseTrigger &) */
+    // 
+    // int __thiscall AIPlayPhase::addTrigger(AIPlayPhase *this,AIPlayPhaseTrigger *param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   AIPlayPhaseTrigger *pAVar2;
+    //   
+    //   iVar1 = 0;
+    //   pAVar2 = this->triggers;
+    //   do {
+    //     if (pAVar2->typeValue == '\0') {
+    //       this->triggers[iVar1].typeValue = param_1->typeValue;
+    //       this->triggers[iVar1].value1Value = param_1->value1Value;
+    //       this->triggers[iVar1].value2Value = param_1->value2Value;
+    //       this->triggers[iVar1].phaseValue = param_1->phaseValue;
+    //       this->triggers[iVar1].nextPhaseValue = param_1->nextPhaseValue;
+    //       this->triggers[iVar1].randomnessValue = param_1->randomnessValue;
+    //       return 1;
+    //     }
+    //     iVar1 = iVar1 + 1;
+    //     pAVar2 = pAVar2 + 1;
+    //   } while (iVar1 < 3);
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F200
+void initialize(AIPlayPhase* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall AIPlayPhase::initialize(void) */
+    // 
+    // void __thiscall AIPlayPhase::initialize(AIPlayPhase *this)
+    // 
+    // {
+    //   uchar *puVar1;
+    //   AIPlayPhaseTrigger *pAVar2;
+    //   int iVar3;
+    //   
+    //   puVar1 = &this->commands[0].typeValue;
+    //   iVar3 = 5;
+    //   do {
+    //     *puVar1 = '\0';
+    //     puVar1 = puVar1 + 0x10;
+    //     iVar3 = iVar3 + -1;
+    //   } while (iVar3 != 0);
+    //   pAVar2 = this->triggers;
+    //   iVar3 = 3;
+    //   do {
+    //     pAVar2->typeValue = '\0';
+    //     pAVar2 = pAVar2 + 1;
+    //     iVar3 = iVar3 + -1;
+    //   } while (iVar3 != 0);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F230
+undefined AIPlayGroup(AIPlayGroup* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall AIPlayGroup::AIPlayGroup(void) */
+    // 
+    // AIPlayGroup * __thiscall AIPlayGroup::AIPlayGroup(AIPlayGroup *this)
+    // 
+    // {
+    //   initialize(this);
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F240
+uchar minimum(AIPlayGroup* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall AIPlayGroup::minimum(int)const  */
+    // 
+    // uchar __thiscall AIPlayGroup::minimum(AIPlayGroup *this,int param_1)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < 6)) {
+    //     return this->minValue[param_1];
+    //   }
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F260
+void setMinimum(AIPlayGroup* this_, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall AIPlayGroup::setMinimum(int,int) */
+    // 
+    // void __thiscall AIPlayGroup::setMinimum(AIPlayGroup *this,int param_1,int param_2)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < 6)) {
+    //     this->minValue[param_1] = (uchar)param_2;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F280
+uchar maximum(AIPlayGroup* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall AIPlayGroup::maximum(int)const  */
+    // 
+    // uchar __thiscall AIPlayGroup::maximum(AIPlayGroup *this,int param_1)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < 6)) {
+    //     return this->maxValue[param_1];
+    //   }
+    //   return 0xff;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F2A0
+void setMaximum(AIPlayGroup* this_, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall AIPlayGroup::setMaximum(int,int) */
+    // 
+    // void __thiscall AIPlayGroup::setMaximum(AIPlayGroup *this,int param_1,int param_2)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < 6)) {
+    //     this->maxValue[param_1] = (uchar)param_2;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F2C0
+void initialize(AIPlayGroup* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: void __thiscall AIPlayGroup::initialize(void) */
+    // 
+    // void __thiscall AIPlayGroup::initialize(AIPlayGroup *this)
+    // 
+    // {
+    //   uchar *puVar1;
+    //   
+    //   puVar1 = this->maxValue;
+    //   do {
+    //     ((AIPlayGroup *)(puVar1 + -6))->minValue[0] = '\0';
+    //     *puVar1 = 0xfe;
+    //     puVar1 = puVar1 + 1;
+    //   } while ((int)(puVar1 + (-6 - (int)this)) < 6);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F2E0
+undefined AIPlay(AIPlay* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall AIPlay::AIPlay(void) */
+    // 
+    // AIPlay * __thiscall AIPlay::AIPlay(AIPlay *this)
+    // 
+    // {
+    //   uchar *puVar1;
+    //   int iVar2;
+    //   AIPlayGroup *this_00;
+    //   AIPlayPhase *this_01;
+    //   
+    //   this->minimumNumberUnitsValue = '\x01';
+    //   this->typeValue = '\x01';
+    //   this->overflowValue = '\x01';
+    //   this->maximumNumberUnitsValue = 0xff;
+    //   this->powerValue = '\0';
+    //   this->intelligenceValue = '2';
+    //   this->deathPercentageValue = '2';
+    //   this_00 = this->groups;
+    //   iVar2 = 5;
+    //   do {
+    //     AIPlayGroup::AIPlayGroup(this_00);
+    //     this_00 = this_00 + 1;
+    //     iVar2 = iVar2 + -1;
+    //   } while (iVar2 != 0);
+    //   this_01 = this->phases;
+    //   iVar2 = 10;
+    //   do {
+    //     AIPlayPhase::AIPlayPhase(this_01);
+    //     this_01 = this_01 + 1;
+    //     iVar2 = iVar2 + -1;
+    //   } while (iVar2 != 0);
+    //   puVar1 = this->targetCharacteristicValue;
+    //   do {
+    //     puVar1[-5] = '\x05';
+    //     *puVar1 = '\x05';
+    //     puVar1 = puVar1 + 1;
+    //   } while ((int)(puVar1 + (-0x49 - (int)this)) < 5);
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F360
+void setName(AIPlay* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall AIPlay::setName(char *) */
+    // 
+    // void __thiscall AIPlay::setName(AIPlay *this,char *param_1)
+    // 
+    // {
+    //   if (param_1 != (char *)0x0) {
+    //     strncpy(this,param_1,0x40);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F380
+int humanPlay(AIPlay* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall AIPlay::humanPlay(void)const  */
+    // 
+    // int __thiscall AIPlay::humanPlay(AIPlay *this)
+    // 
+    // {
+    //   if ((this->nameValue[0] == 'H') && (this->nameValue[1] == 'P')) {
+    //     return 1;
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F3A0
+char* typeName(AIPlay* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: char * __thiscall AIPlay::typeName(void)const  */
+    // 
+    // char * __thiscall AIPlay::typeName(AIPlay *this)
+    // 
+    // {
+    //   char *pcVar1;
+    //   
+    //   pcVar1 = convertToNameType(this,this->typeValue);
+    //   return pcVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F3B0
+uchar targetType(AIPlay* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall AIPlay::targetType(int)const  */
+    // 
+    // uchar __thiscall AIPlay::targetType(AIPlay *this,int param_1)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < 5)) {
+    //     return this->targetTypeValue[param_1];
+    //   }
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F3D0
+int isTargetType(AIPlay* this_, uchar param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall AIPlay::isTargetType(unsigned char)const  */
+    // 
+    // int __thiscall AIPlay::isTargetType(AIPlay *this,uchar param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   iVar1 = 0;
+    //   do {
+    //     if (this->targetTypeValue[iVar1] == param_1) {
+    //       return 1;
+    //     }
+    //     iVar1 = iVar1 + 1;
+    //   } while (iVar1 < 5);
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F3F0
+int addTargetType(AIPlay* this_, uchar param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall AIPlay::addTargetType(unsigned char) */
+    // 
+    // int __thiscall AIPlay::addTargetType(AIPlay *this,uchar param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   iVar1 = 0;
+    //   while( true ) {
+    //     if ((this->targetTypeValue[iVar1] == '\0') || (this->targetTypeValue[iVar1] == '\x05')) break;
+    //     iVar1 = iVar1 + 1;
+    //     if (4 < iVar1) {
+    //       return 0;
+    //     }
+    //   }
+    //   this->targetTypeValue[iVar1] = param_1;
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F420
+uchar targetCharacteristic(AIPlay* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall AIPlay::targetCharacteristic(int)const  */
+    // 
+    // uchar __thiscall AIPlay::targetCharacteristic(AIPlay *this,int param_1)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < 5)) {
+    //     return this->targetCharacteristicValue[param_1];
+    //   }
+    //   return '\0';
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F440
+int isTargetCharacteristic(AIPlay* this_, uchar param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall AIPlay::isTargetCharacteristic(unsigned char)const  */
+    // 
+    // int __thiscall AIPlay::isTargetCharacteristic(AIPlay *this,uchar param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   iVar1 = 0;
+    //   do {
+    //     if (this->targetCharacteristicValue[iVar1] == param_1) {
+    //       return 1;
+    //     }
+    //     iVar1 = iVar1 + 1;
+    //   } while (iVar1 < 5);
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F460
+int addTargetCharacteristic(AIPlay* this_, uchar param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall AIPlay::addTargetCharacteristic(unsigned char) */
+    // 
+    // int __thiscall AIPlay::addTargetCharacteristic(AIPlay *this,uchar param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   iVar1 = 0;
+    //   while( true ) {
+    //     if ((this->targetCharacteristicValue[iVar1] == '\0') ||
+    //        (this->targetCharacteristicValue[iVar1] == '\x05')) break;
+    //     iVar1 = iVar1 + 1;
+    //     if (4 < iVar1) {
+    //       return 0;
+    //     }
+    //   }
+    //   this->targetCharacteristicValue[iVar1] = param_1;
+    //   return 1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F490
+int gatherTolerance(AIPlay* this_, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall AIPlay::gatherTolerance(int,int) */
+    // 
+    // int __thiscall AIPlay::gatherTolerance(AIPlay *this,int param_1,int param_2)
+    // 
+    // {
+    //   AIPlayPhase *this_00;
+    //   AIPlayPhaseTrigger *pAVar1;
+    //   int iVar2;
+    //   
+    //   this_00 = phase(this,param_2);
+    //   if (this_00 == (AIPlayPhase *)0x0) {
+    //     return 2;
+    //   }
+    //   iVar2 = 0;
+    //   while( true ) {
+    //     pAVar1 = AIPlayPhase::trigger(this_00,iVar2);
+    //     if ((pAVar1 != (AIPlayPhaseTrigger *)0x0) && (pAVar1->typeValue == '\x01')) break;
+    //     iVar2 = iVar2 + 1;
+    //     if (2 < iVar2) {
+    //       return 2;
+    //     }
+    //   }
+    //   return pAVar1->value1Value;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F4E0
+AIPlayGroup* group(AIPlay* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: class AIPlayGroup * __thiscall AIPlay::group(int) */
+    // 
+    // AIPlayGroup * __thiscall AIPlay::group(AIPlay *this,int param_1)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < 5)) {
+    //     return this->groups + param_1;
+    //   }
+    //   return (AIPlayGroup *)0x0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F500
+AIPlayPhase* phase(AIPlay* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: class AIPlayPhase * __thiscall AIPlay::phase(int) */
+    // 
+    // AIPlayPhase * __thiscall AIPlay::phase(AIPlay *this,int param_1)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < 10)) {
+    //     return this->phases + param_1;
+    //   }
+    //   return (AIPlayPhase *)0x0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F530
+int fillGroups(AIPlay* this_, AIPlayStatus* param_2, int* param_3, int param_4, RGE_Game_World* param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall AIPlay::fillGroups(class AIPlayStatus *,int *,int,class RGE_Game_World *)
+    //     */
+    // 
+    // int __thiscall
+    // AIPlay::fillGroups(AIPlay *this,AIPlayStatus *param_1,int *param_2,int param_3,
+    //                   RGE_Game_World *param_4)
+    // 
+    // {
+    //   uchar uVar1;
+    //   byte bVar2;
+    //   uchar uVar3;
+    //   byte bVar4;
+    //   AIPlay *this_00;
+    //   RGE_Static_Object *pRVar5;
+    //   AIPlayGroup *pAVar6;
+    //   int iVar7;
+    //   int iVar8;
+    //   int iVar9;
+    //   int *piVar10;
+    //   int iVar11;
+    //   AIPlay *play;
+    //   int deviation;
+    //   int j;
+    //   int i;
+    //   int local_4e8;
+    //   int rVal;
+    //   int minUnits;
+    //   int smallestGroupSize;
+    //   int a;
+    //   int iStack_4d4;
+    //   AIPlayGroup *group;
+    //   int unitsByTypeCount [6];
+    //   int unitsByType [6] [50];
+    //   
+    //   unitsByTypeCount[0] = (int)this;
+    //   this_00 = AIPlayBook::play(param_4->playbook,param_1->playNumberValue);
+    //   if (this_00 == (AIPlay *)0x0) {
+    //     return 0;
+    //   }
+    //   piVar10 = unitsByTypeCount;
+    //   minUnits = 1;
+    //   for (iVar8 = 6; piVar10 = piVar10 + 1, iVar8 != 0; iVar8 = iVar8 + -1) {
+    //     *piVar10 = 0;
+    //   }
+    //   if (0 < param_3) {
+    //     j = param_3;
+    //     do {
+    //       pRVar5 = RGE_Game_World::object(param_4,*param_2);
+    //       if (((pRVar5 == (RGE_Static_Object *)0x0) ||
+    //           (iVar8 = (**(code **)(param_4->playbook->_padding_ + 0x10))(pRVar5), iVar8 < 0)) ||
+    //          (5 < iVar8)) {
+    //         minUnits = 0;
+    //       }
+    //       else {
+    //         iVar9 = unitsByTypeCount[iVar8 + 1];
+    //         iVar11 = *param_2;
+    //         unitsByTypeCount[iVar8 + 1] = iVar9 + 1;
+    //         unitsByType[iVar8][iVar9 + 1] = iVar11;
+    //       }
+    //       param_2 = param_2 + 1;
+    //       j = j + -1;
+    //     } while (j != 0);
+    //   }
+    //   local_4e8 = 0;
+    //   if (this_00->numberGroupsValue != '\0') {
+    //     do {
+    //       pAVar6 = AIPlay::group(this_00,local_4e8);
+    //       if (pAVar6 == (AIPlayGroup *)0x0) {
+    //         return 0;
+    //       }
+    //       j = (int)unitsByTypeCount;
+    //       i = 0;
+    //       rVal = 0;
+    //       do {
+    //         j = j + 4;
+    //         bVar2 = AIPlayGroup::minimum(pAVar6,i);
+    //         if (bVar2 != 0) {
+    //           iVar9 = 0;
+    //           iVar11 = 0;
+    //           iVar8 = *(int *)j;
+    //           if (0 < iVar8) {
+    //             do {
+    //               if ((int)(uint)bVar2 <= iVar9) break;
+    //               if (unitsByType[0][iVar11 + rVal + 1] != -1) {
+    //                 iVar7 = AIPlayStatus::addGrouping
+    //                                   (param_1,unitsByType[0][iVar11 + rVal + 1],(uchar)local_4e8,
+    //                                    (uchar)i);
+    //                 if (iVar7 == 1) {
+    //                   iVar9 = iVar9 + 1;
+    //                   uVar1 = this_00->maximumNumberUnitsValue;
+    //                   unitsByType[0][iVar11 + rVal + 1] = -1;
+    //                   uVar3 = AIPlayStatus::numberInPlay(param_1);
+    //                   if (uVar3 == uVar1) goto LAB_0040f918;
+    //                 }
+    //                 else {
+    //                   minUnits = 0;
+    //                 }
+    //               }
+    //               iVar11 = iVar11 + 1;
+    //             } while (iVar11 < iVar8);
+    //           }
+    //         }
+    //         rVal = rVal + 0x32;
+    //         i = i + 1;
+    //       } while (rVal < 300);
+    //       local_4e8 = local_4e8 + 1;
+    //     } while (local_4e8 < (int)(uint)this_00->numberGroupsValue);
+    //   }
+    //   rVal = (int)unitsByTypeCount;
+    //   j = (int)(unitsByType[0] + 1);
+    //   local_4e8 = 0;
+    //   do {
+    //     rVal = rVal + 4;
+    //     iStack_4d4 = 0;
+    //     iVar8 = *(int *)rVal;
+    //     if (0 < iVar8) {
+    //       i = j;
+    //       do {
+    //         iVar9 = *(int *)i;
+    //         if (iVar9 != -1) {
+    //           if (*(char *)(unitsByTypeCount[0] + 0x4f) == '\x01') {
+    //             iVar11 = -1;
+    //             iVar7 = 0;
+    //             a = 0;
+    //             if (this_00->numberGroupsValue != '\0') {
+    //               do {
+    //                 pAVar6 = AIPlay::group(this_00,iVar7);
+    //                 if (pAVar6 != (AIPlayGroup *)0x0) {
+    //                   bVar2 = AIPlayStatus::numberOfTypeInGroup(param_1,iVar7,local_4e8);
+    //                   bVar4 = AIPlayGroup::maximum(pAVar6,local_4e8);
+    //                   if ((bVar2 < bVar4) &&
+    //                      ((iVar11 == -1 ||
+    //                       (bVar2 = AIPlayStatus::numberInGroup(param_1,iVar7), (uint)bVar2 < (uint)a))))
+    //                   {
+    //                     bVar2 = AIPlayStatus::numberInGroup(param_1,iVar7);
+    //                     a = (int)bVar2;
+    //                     iVar11 = iVar7;
+    //                   }
+    //                 }
+    //                 iVar7 = iVar7 + 1;
+    //               } while (iVar7 < (int)(uint)this_00->numberGroupsValue);
+    //             }
+    //             if (iVar11 != -1) {
+    //               iVar9 = AIPlayStatus::addGrouping(param_1,iVar9,(uchar)iVar11,(uchar)local_4e8);
+    //               if (iVar9 == 1) {
+    //                 uVar1 = this_00->maximumNumberUnitsValue;
+    //                 *(undefined4 *)i = 0xffffffff;
+    //                 uVar3 = AIPlayStatus::numberInPlay(param_1);
+    //                 if (uVar3 == uVar1) goto LAB_0040f918;
+    //               }
+    //               else {
+    //                 minUnits = 0;
+    //               }
+    //             }
+    //           }
+    //           else if ((*(char *)(unitsByTypeCount[0] + 0x4f) == '\x02') &&
+    //                   (iVar11 = 0, this_00->numberGroupsValue != '\0')) {
+    //             do {
+    //               pAVar6 = AIPlay::group(this_00,iVar11);
+    //               if (pAVar6 != (AIPlayGroup *)0x0) {
+    //                 bVar2 = AIPlayStatus::numberOfTypeInGroup(param_1,iVar11,local_4e8);
+    //                 bVar4 = AIPlayGroup::maximum(pAVar6,local_4e8);
+    //                 if (bVar2 < bVar4) {
+    //                   iVar7 = AIPlayStatus::addGrouping(param_1,iVar9,(uchar)iVar11,(uchar)local_4e8);
+    //                   if (iVar7 == 1) {
+    //                     uVar1 = this_00->maximumNumberUnitsValue;
+    //                     *(undefined4 *)i = 0xffffffff;
+    //                     uVar3 = AIPlayStatus::numberInPlay(param_1);
+    //                     if (uVar3 == uVar1) goto LAB_0040f918;
+    //                     break;
+    //                   }
+    //                   minUnits = 0;
+    //                 }
+    //               }
+    //               iVar11 = iVar11 + 1;
+    //             } while (iVar11 < (int)(uint)this_00->numberGroupsValue);
+    //           }
+    //         }
+    //         iStack_4d4 = iStack_4d4 + 1;
+    //         i = i + 4;
+    //       } while (iStack_4d4 < iVar8);
+    //     }
+    //     local_4e8 = local_4e8 + 1;
+    //     j = j + 200;
+    //   } while (local_4e8 < 6);
+    // LAB_0040f918:
+    //                     /* Symbol Ref: {@symbol CountDeviation} */
+    //   iVar8 = 0;
+    //   j = 0;
+    //   j._0_1_ = '\0';
+    //   if (this_00->numberGroupsValue != '\0') {
+    //     do {
+    //       unitsByTypeCount[0] = (int)AIPlay::group(this_00,iVar8);
+    //       if ((AIPlayGroup *)unitsByTypeCount[0] != (AIPlayGroup *)0x0) {
+    //         iVar9 = 0;
+    //         do {
+    //           bVar2 = AIPlayGroup::minimum((AIPlayGroup *)unitsByTypeCount[0],iVar9);
+    //           bVar4 = AIPlayStatus::numberOfTypeInGroup(param_1,iVar8,iVar9);
+    //           if ((uint)bVar4 < (uint)bVar2) {
+    //             j = j + ((uint)bVar2 - (uint)bVar4);
+    //           }
+    //           iVar9 = iVar9 + 1;
+    //         } while (iVar9 < 6);
+    //       }
+    //       iVar8 = iVar8 + 1;
+    //     } while (iVar8 < (int)(uint)this_00->numberGroupsValue);
+    //   }
+    //   param_1->deviationValue = (uchar)j;
+    //   return minUnits;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040F9B0
+int groupGivenCommandOnPhase(AIPlay* this_, int param_2, int param_3, int param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall AIPlay::groupGivenCommandOnPhase(int,int,int) */
+    // 
+    // int __thiscall AIPlay::groupGivenCommandOnPhase(AIPlay *this,int param_1,int param_2,int param_3)
+    // 
+    // {
+    //   AIPlayPhaseCommand *pAVar1;
+    //   int iVar2;
+    //   
+    //   if ((((-1 < param_1) && (param_1 < 5)) && (-1 < param_3)) && (param_3 < 10)) {
+    //     iVar2 = 0;
+    //     do {
+    //       pAVar1 = AIPlayPhase::command(this->phases + param_3,iVar2);
+    //       if ((uint)pAVar1->groupValue == param_1) {
+    //         pAVar1 = AIPlayPhase::command(this->phases + param_3,iVar2);
+    //         if ((uint)pAVar1->typeValue == param_2) {
+    //           return iVar2;
+    //         }
+    //       }
+    //       iVar2 = iVar2 + 1;
+    //     } while (iVar2 < 5);
+    //     return -1;
+    //   }
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040FA40
+uchar convertToIntType(AIPlay* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: unsigned char __thiscall AIPlay::convertToIntType(char *)const  */
+    // 
+    // uchar __thiscall AIPlay::convertToIntType(AIPlay *this,char *param_1)
+    // 
+    // {
+    //   byte bVar1;
+    //   byte *pbVar2;
+    //   int iVar3;
+    //   byte *pbVar4;
+    //   bool bVar5;
+    //   
+    //   pbVar4 = &s_Attack;
+    //   pbVar2 = (byte *)param_1;
+    //   do {
+    //     bVar1 = *pbVar2;
+    //     bVar5 = bVar1 < *pbVar4;
+    //     if (bVar1 != *pbVar4) {
+    // LAB_0040fa76:
+    //       iVar3 = (1 - (uint)bVar5) - (uint)(bVar5 != 0);
+    //       goto LAB_0040fa7b;
+    //     }
+    //     if (bVar1 == 0) break;
+    //     bVar1 = pbVar2[1];
+    //     bVar5 = bVar1 < pbVar4[1];
+    //     if (bVar1 != pbVar4[1]) goto LAB_0040fa76;
+    //     pbVar2 = pbVar2 + 2;
+    //     pbVar4 = pbVar4 + 2;
+    //   } while (bVar1 != 0);
+    //   iVar3 = 0;
+    // LAB_0040fa7b:
+    //   if (iVar3 == 0) {
+    //     return '\x01';
+    //   }
+    //   pbVar4 = &s_Annoy;
+    //   pbVar2 = (byte *)param_1;
+    //   do {
+    //     bVar1 = *pbVar2;
+    //     bVar5 = bVar1 < *pbVar4;
+    //     if (bVar1 != *pbVar4) {
+    // LAB_0040fab6:
+    //       iVar3 = (1 - (uint)bVar5) - (uint)(bVar5 != 0);
+    //       goto LAB_0040fabb;
+    //     }
+    //     if (bVar1 == 0) break;
+    //     bVar1 = pbVar2[1];
+    //     bVar5 = bVar1 < pbVar4[1];
+    //     if (bVar1 != pbVar4[1]) goto LAB_0040fab6;
+    //     pbVar2 = pbVar2 + 2;
+    //     pbVar4 = pbVar4 + 2;
+    //   } while (bVar1 != 0);
+    //   iVar3 = 0;
+    // LAB_0040fabb:
+    //   if (iVar3 == 0) {
+    //     return '\x02';
+    //   }
+    //   pbVar4 = &s_Flank;
+    //   pbVar2 = (byte *)param_1;
+    //   do {
+    //     bVar1 = *pbVar2;
+    //     bVar5 = bVar1 < *pbVar4;
+    //     if (bVar1 != *pbVar4) {
+    // LAB_0040faf6:
+    //       iVar3 = (1 - (uint)bVar5) - (uint)(bVar5 != 0);
+    //       goto LAB_0040fafb;
+    //     }
+    //     if (bVar1 == 0) break;
+    //     bVar1 = pbVar2[1];
+    //     bVar5 = bVar1 < pbVar4[1];
+    //     if (bVar1 != pbVar4[1]) goto LAB_0040faf6;
+    //     pbVar2 = pbVar2 + 2;
+    //     pbVar4 = pbVar4 + 2;
+    //   } while (bVar1 != 0);
+    //   iVar3 = 0;
+    // LAB_0040fafb:
+    //   if (iVar3 == 0) {
+    //     return '\x03';
+    //   }
+    //   pbVar2 = &s_Recon;
+    //   while( true ) {
+    //     bVar1 = *param_1;
+    //     bVar5 = bVar1 < *pbVar2;
+    //     if (bVar1 != *pbVar2) break;
+    //     if (bVar1 == 0) {
+    //       return '\x04';
+    //     }
+    //     bVar1 = ((byte *)param_1)[1];
+    //     bVar5 = bVar1 < pbVar2[1];
+    //     if (bVar1 != pbVar2[1]) break;
+    //     param_1 = (char *)((byte *)param_1 + 2);
+    //     pbVar2 = pbVar2 + 2;
+    //     if (bVar1 == 0) {
+    //       return '\x04';
+    //     }
+    //   }
+    //   return (1 - bVar5 != (uint)(bVar5 != 0)) - 1U & 4;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040FB60
+char* convertToNameType(AIPlay* this_, uchar param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* protected: char * __thiscall AIPlay::convertToNameType(unsigned char)const  */
+    // 
+    // char * __thiscall AIPlay::convertToNameType(AIPlay *this,uchar param_1)
+    // 
+    // {
+    //   switch(param_1) {
+    //   case '\x01':
+    //     return &s_Attack;
+    //   case '\x02':
+    //     return &s_Annoy;
+    //   case '\x03':
+    //     return &s_Flank;
+    //   case '\x04':
+    //     return &s_Recon;
+    //   default:
+    //     return s_Invalid;
+    //   }
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040FB9E
+undefined FUN_0040fb9e() {
+    // --- Ghidra decompiler output ---
+    // 
+    // undefined4
+    // FUN_0040fb9e(undefined4 param_1,undefined4 param_2,int param_3,int param_4,int param_5,int param_6)
+    // 
+    // {
+    //   char in_AL;
+    //   AIPlayPhaseCommand *pAVar1;
+    //   int iVar2;
+    //   int in_ECX;
+    //   int iVar3;
+    //   char in_DL;
+    //   int unaff_EBX;
+    //   int unaff_ESI;
+    //   int iVar4;
+    //   AIPlayPhase *this;
+    //   bool in_CF;
+    //   bool in_ZF;
+    //   
+    //   if (in_CF || in_ZF) {
+    //     *(char *)(unaff_EBX + 0x40fb76ff) = *(char *)(unaff_EBX + 0x40fb76ff) + (char)in_ECX;
+    //   }
+    //   else {
+    //     in_AL = in_AL + '\x01';
+    //   }
+    //   *(char *)(unaff_ESI + -5) = *(char *)(unaff_ESI + -5) + (char)((uint)unaff_EBX >> 8);
+    //   *(char *)(unaff_ESI + -0x71ffbf05) = *(char *)(unaff_ESI + -0x71ffbf05) + in_AL + '\x01';
+    //   *(char *)(in_ECX + 0x53) = *(char *)(in_ECX + 0x53) + in_DL;
+    //   param_1 = 0;
+    //   this = (AIPlayPhase *)(in_ECX + 0x90);
+    //   do {
+    //     iVar4 = 0;
+    //     do {
+    //       pAVar1 = AIPlayPhase::command(this,iVar4);
+    //       if (pAVar1->typeValue == '\x01') {
+    //         iVar3 = pAVar1->value1Value + param_3;
+    //         iVar2 = pAVar1->value2Value + param_4;
+    //         if ((((iVar3 < 0) || (iVar2 < 0)) || (param_5 <= iVar3)) || (param_6 <= iVar2)) {
+    //           return 0;
+    //         }
+    //       }
+    //       iVar4 = iVar4 + 1;
+    //     } while (iVar4 < 5);
+    //     this = this + 1;
+    //     param_1 = param_1 + 1;
+    //     if (9 < param_1) {
+    //       return 1;
+    //     }
+    //   } while( true );
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040FBB0
+int locationsOnMap(AIPlay* this_, int param_2, int param_3, int param_4, int param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: p */
+    // /* public: int __thiscall AIPlay::locationsOnMap(int,int,int,int) */
+    // 
+    // int __thiscall AIPlay::locationsOnMap(AIPlay *this,int param_1,int param_2,int param_3,int param_4)
+    // 
+    // {
+    //   AIPlayPhaseCommand *pAVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   int iVar4;
+    //   AIPlayPhase *this_00;
+    //   int p;
+    //   int local_4;
+    //   
+    //   local_4 = 0;
+    //   this_00 = this->phases;
+    //   do {
+    //     iVar4 = 0;
+    //     do {
+    //       pAVar1 = AIPlayPhase::command(this_00,iVar4);
+    //       if (pAVar1->typeValue == '\x01') {
+    //         iVar3 = pAVar1->value1Value + param_1;
+    //         iVar2 = pAVar1->value2Value + param_2;
+    //         if ((((iVar3 < 0) || (iVar2 < 0)) || (param_3 <= iVar3)) || (param_4 <= iVar2)) {
+    //           return 0;
+    //         }
+    //       }
+    //       iVar4 = iVar4 + 1;
+    //     } while (iVar4 < 5);
+    //     this_00 = this_00 + 1;
+    //     local_4 = local_4 + 1;
+    //     if (9 < local_4) {
+    //       return 1;
+    //     }
+    //   } while( true );
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040FC30
+undefined AIPlayStatus(AIPlayStatus* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall AIPlayStatus::AIPlayStatus(void) */
+    // 
+    // AIPlayStatus * __thiscall AIPlayStatus::AIPlayStatus(AIPlayStatus *this)
+    // 
+    // {
+    //   uchar *puVar1;
+    //   int iVar2;
+    //   
+    //   this->playNumberValue = -1;
+    //   this->targetValue = -1;
+    //   XYZ::XYZ(&this->originalPointValue,0,0,0);
+    //   this->currentPhaseValue = 0xfd;
+    //   this->savedAttackerValue = -1;
+    //   this->lastPhaseChangeTimeValue = 0;
+    //   this->deviationValue = '\0';
+    //   puVar1 = &this->groupings[0].type;
+    //   iVar2 = 0x32;
+    //   do {
+    //     ((GroupingStruct *)(puVar1 + -5))->id = -1;
+    //     puVar1[-1] = 0xff;
+    //     *puVar1 = 0xff;
+    //     puVar1 = puVar1 + 8;
+    //     iVar2 = iVar2 + -1;
+    //   } while (iVar2 != 0);
+    //   this->originalHitPointsValue[0] = -1;
+    //   this->originalHitPointsValue[1] = -1;
+    //   this->originalHitPointsValue[2] = -1;
+    //   this->originalHitPointsValue[3] = -1;
+    //   this->originalHitPointsValue[4] = -1;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040FCB0
+int originalHitPoints(AIPlayStatus* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall AIPlayStatus::originalHitPoints(int)const  */
+    // 
+    // int __thiscall AIPlayStatus::originalHitPoints(AIPlayStatus *this,int param_1)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < 5)) {
+    //     return this->originalHitPointsValue[param_1];
+    //   }
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040FCD0
+void setOriginalHitPoints(AIPlayStatus* this_, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall AIPlayStatus::setOriginalHitPoints(int,int) */
+    // 
+    // void __thiscall AIPlayStatus::setOriginalHitPoints(AIPlayStatus *this,int param_1,int param_2)
+    // 
+    // {
+    //   if ((-1 < param_1) && (param_1 < 5)) {
+    //     this->originalHitPointsValue[param_1] = param_2;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040FCF0
+uchar numberInPlay(AIPlayStatus* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall AIPlayStatus::numberInPlay(void)const  */
+    // 
+    // uchar __thiscall AIPlayStatus::numberInPlay(AIPlayStatus *this)
+    // 
+    // {
+    //   uchar uVar1;
+    //   int iVar2;
+    //   
+    //   uVar1 = '\0';
+    //   iVar2 = 0x32;
+    //   do {
+    //     if (this->groupings[0].id != -1) {
+    //       uVar1 = uVar1 + '\x01';
+    //     }
+    //     this = (AIPlayStatus *)(this->groupings + 1);
+    //     iVar2 = iVar2 + -1;
+    //   } while (iVar2 != 0);
+    //   return uVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040FD10
+uchar numberInGroup(AIPlayStatus* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall AIPlayStatus::numberInGroup(int) */
+    // 
+    // uchar __thiscall AIPlayStatus::numberInGroup(AIPlayStatus *this,int param_1)
+    // 
+    // {
+    //   uchar uVar1;
+    //   int iVar2;
+    //   
+    //   uVar1 = '\0';
+    //   iVar2 = 0x32;
+    //   do {
+    //     if ((this->groupings[0].id != -1) && ((uint)this->groupings[0].groupID == param_1)) {
+    //       uVar1 = uVar1 + '\x01';
+    //     }
+    //     this = (AIPlayStatus *)(this->groupings + 1);
+    //     iVar2 = iVar2 + -1;
+    //   } while (iVar2 != 0);
+    //   return uVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040FD40
+uchar numberOfTypeInGroup(AIPlayStatus* this_, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall AIPlayStatus::numberOfTypeInGroup(int,int) */
+    // 
+    // uchar __thiscall AIPlayStatus::numberOfTypeInGroup(AIPlayStatus *this,int param_1,int param_2)
+    // 
+    // {
+    //   uchar uVar1;
+    //   uchar *puVar2;
+    //   int iVar3;
+    //   
+    //   uVar1 = '\0';
+    //   puVar2 = &this->groupings[0].type;
+    //   iVar3 = 0x32;
+    //   do {
+    //     if (((((GroupingStruct *)(puVar2 + -5))->id != -1) && ((uint)puVar2[-1] == param_1)) &&
+    //        ((uint)*puVar2 == param_2)) {
+    //       uVar1 = uVar1 + '\x01';
+    //     }
+    //     puVar2 = puVar2 + 8;
+    //     iVar3 = iVar3 + -1;
+    //   } while (iVar3 != 0);
+    //   return uVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040FD80
+uchar group(AIPlayStatus* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall AIPlayStatus::group(int) */
+    // 
+    // uchar __thiscall AIPlayStatus::group(AIPlayStatus *this,int param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   AIPlayStatus *pAVar2;
+    //   
+    //   if (param_1 < 0) {
+    //     return 0xff;
+    //   }
+    //   iVar1 = 0;
+    //   pAVar2 = this;
+    //   do {
+    //     if (pAVar2->groupings[0].id == param_1) {
+    //       return this->groupings[iVar1].groupID;
+    //     }
+    //     iVar1 = iVar1 + 1;
+    //     pAVar2 = (AIPlayStatus *)(pAVar2->groupings + 1);
+    //   } while (iVar1 < 0x32);
+    //   return 0xff;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040FDB0
+int addGrouping(AIPlayStatus* this_, int param_2, uchar param_3, uchar param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall AIPlayStatus::addGrouping(int,unsigned char,unsigned char) */
+    // 
+    // int __thiscall AIPlayStatus::addGrouping(AIPlayStatus *this,int param_1,uchar param_2,uchar param_3)
+    // 
+    // {
+    //   int iVar1;
+    //   AIPlayStatus *pAVar2;
+    //   
+    //   iVar1 = 0;
+    //   pAVar2 = this;
+    //   do {
+    //     if (pAVar2->groupings[0].id == -1) {
+    //       this->groupings[iVar1].id = param_1;
+    //       this->groupings[iVar1].groupID = param_2;
+    //       this->groupings[iVar1].type = param_3;
+    //       return 1;
+    //     }
+    //     iVar1 = iVar1 + 1;
+    //     pAVar2 = (AIPlayStatus *)(pAVar2->groupings + 1);
+    //   } while (iVar1 < 0x32);
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040FDF0
+int removeGrouping(AIPlayStatus* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall AIPlayStatus::removeGrouping(int) */
+    // 
+    // int __thiscall AIPlayStatus::removeGrouping(AIPlayStatus *this,int param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   AIPlayStatus *pAVar2;
+    //   
+    //   iVar1 = 0;
+    //   pAVar2 = this;
+    //   do {
+    //     if (pAVar2->groupings[0].id == param_1) {
+    //       this->groupings[iVar1].id = -1;
+    //       this->groupings[iVar1].groupID = 0xff;
+    //       this->groupings[iVar1].type = 0xff;
+    //       return 1;
+    //     }
+    //     iVar1 = iVar1 + 1;
+    //     pAVar2 = (AIPlayStatus *)(pAVar2->groupings + 1);
+    //   } while (iVar1 < 0x32);
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040FE30
+void zeroAllGroupings(AIPlayStatus* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall AIPlayStatus::zeroAllGroupings(void) */
+    // 
+    // void __thiscall AIPlayStatus::zeroAllGroupings(AIPlayStatus *this)
+    // 
+    // {
+    //   uchar *puVar1;
+    //   int iVar2;
+    //   
+    //   puVar1 = &this->groupings[0].type;
+    //   iVar2 = 0x32;
+    //   do {
+    //     ((GroupingStruct *)(puVar1 + -5))->id = -1;
+    //     puVar1[-1] = 0xff;
+    //     *puVar1 = 0xff;
+    //     puVar1 = puVar1 + 8;
+    //     iVar2 = iVar2 + -1;
+    //   } while (iVar2 != 0);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040FE50
+void copyUnits(AIPlayStatus* this_, int* param_2, int* param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall AIPlayStatus::copyUnits(int *,int &) */
+    // 
+    // void __thiscall AIPlayStatus::copyUnits(AIPlayStatus *this,int *param_1,int *param_2)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   
+    //   *param_2 = 0;
+    //   iVar2 = 0x32;
+    //   do {
+    //     iVar1 = this->groupings[0].id;
+    //     if (iVar1 != -1) {
+    //       param_1[*param_2] = iVar1;
+    //       *param_2 = *param_2 + 1;
+    //     }
+    //     this = (AIPlayStatus *)(this->groupings + 1);
+    //     iVar2 = iVar2 + -1;
+    //   } while (iVar2 != 0);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040FE90
+void load(AIPlayStatus* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall AIPlayStatus::load(int) */
+    // 
+    // void __thiscall AIPlayStatus::load(AIPlayStatus *this,int param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   iVar1 = param_1;
+    //   rge_read(param_1,&this->playNumberValue,4);
+    //   rge_read(iVar1,&this->targetValue,4);
+    //   rge_read(iVar1,&param_1,4);
+    //   (this->originalPointValue).xValue = param_1;
+    //   rge_read(iVar1,&param_1,4);
+    //   (this->originalPointValue).yValue = param_1;
+    //   rge_read(iVar1,&param_1,4);
+    //   (this->originalPointValue).zValue = param_1;
+    //   rge_read(iVar1,this->originalHitPointsValue,0x14);
+    //   rge_read(iVar1,&this->currentPhaseValue,1);
+    //   rge_read(iVar1,this,400);
+    //   rge_read(iVar1,&this->savedAttackerValue,4);
+    //   rge_read(iVar1,&this->lastPhaseChangeTimeValue,4);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0040FF70
+void save(AIPlayStatus* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall AIPlayStatus::save(int) */
+    // 
+    // void __thiscall AIPlayStatus::save(AIPlayStatus *this,int param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   iVar1 = param_1;
+    //   rge_write(param_1,&this->playNumberValue,4);
+    //   rge_write(iVar1,&this->targetValue,4);
+    //   param_1 = (this->originalPointValue).xValue;
+    //   rge_write(iVar1,&param_1,4);
+    //   param_1 = (this->originalPointValue).yValue;
+    //   rge_write(iVar1,&param_1,4);
+    //   param_1 = (this->originalPointValue).zValue;
+    //   rge_write(iVar1,&param_1,4);
+    //   rge_write(iVar1,this->originalHitPointsValue,0x14);
+    //   rge_write(iVar1,&this->currentPhaseValue,1);
+    //   rge_write(iVar1,this,400);
+    //   rge_write(iVar1,&this->savedAttackerValue,4);
+    //   rge_write(iVar1,&this->lastPhaseChangeTimeValue,4);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00410050
+void copy(AIPlayStatus* this_, AIPlayStatus* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall AIPlayStatus::copy(class AIPlayStatus *) */
+    // 
+    // void __thiscall AIPlayStatus::copy(AIPlayStatus *this,AIPlayStatus *param_1)
+    // 
+    // {
+    //   int iVar1;
+    //   uchar *puVar2;
+    //   int *piVar3;
+    //   int iVar4;
+    //   int iVar5;
+    //   AIPlayStatus *pAVar6;
+    //   
+    //   iVar5 = 0x32;
+    //   this->playNumberValue = param_1->playNumberValue;
+    //   this->targetValue = param_1->targetValue;
+    //   iVar4 = (param_1->originalPointValue).zValue;
+    //   iVar1 = (param_1->originalPointValue).yValue;
+    //   (this->originalPointValue).xValue = (param_1->originalPointValue).xValue;
+    //   (this->originalPointValue).yValue = iVar1;
+    //   (this->originalPointValue).zValue = iVar4;
+    //   this->currentPhaseValue = param_1->currentPhaseValue;
+    //   this->savedAttackerValue = param_1->savedAttackerValue;
+    //   this->lastPhaseChangeTimeValue = param_1->lastPhaseChangeTimeValue;
+    //   puVar2 = &this->groupings[0].groupID;
+    //   pAVar6 = param_1;
+    //   do {
+    //     ((GroupingStruct *)(puVar2 + -4))->id = pAVar6->groupings[0].id;
+    //     *puVar2 = puVar2[(int)param_1 - (int)this];
+    //     puVar2[1] = pAVar6->groupings[0].type;
+    //     puVar2 = puVar2 + 8;
+    //     iVar5 = iVar5 + -1;
+    //     pAVar6 = (AIPlayStatus *)(pAVar6->groupings + 1);
+    //   } while (iVar5 != 0);
+    //   piVar3 = this->originalHitPointsValue;
+    //   iVar4 = 5;
+    //   do {
+    //     *piVar3 = *(int *)((int)piVar3 + ((int)param_1 - (int)this));
+    //     piVar3 = piVar3 + 1;
+    //     iVar4 = iVar4 + -1;
+    //   } while (iVar4 != 0);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00410100
+void removeDeadUnits(AIPlayStatus* this_, int param_2, RGE_Game_World* param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall AIPlayStatus::removeDeadUnits(int,class RGE_Game_World *) */
+    // 
+    // void __thiscall
+    // AIPlayStatus::removeDeadUnits(AIPlayStatus *this,int param_1,RGE_Game_World *param_2)
+    // 
+    // {
+    //   int iVar1;
+    //   RGE_Static_Object *pRVar2;
+    //   int iVar3;
+    //   
+    //   iVar3 = 0x32;
+    //   do {
+    //     iVar1 = this->groupings[0].id;
+    //     if (iVar1 != -1) {
+    //       pRVar2 = RGE_Game_World::object(param_2,iVar1);
+    //       if ((pRVar2 == (RGE_Static_Object *)0x0) || (2 < pRVar2->object_state)) {
+    //         this->groupings[0].id = -1;
+    //         this->groupings[0].groupID = 0xff;
+    //         this->groupings[0].type = 0xff;
+    //       }
+    //     }
+    //     this = (AIPlayStatus *)(this->groupings + 1);
+    //     iVar3 = iVar3 + -1;
+    //   } while (iVar3 != 0);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00410150
+void resetHitPoints(AIPlayStatus* this_, int param_2, RGE_Game_World* param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall AIPlayStatus::resetHitPoints(int,class RGE_Game_World *) */
+    // 
+    // void __thiscall AIPlayStatus::resetHitPoints(AIPlayStatus *this,int param_1,RGE_Game_World *param_2)
+    // 
+    // {
+    //   RGE_Static_Object *pRVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   int iVar4;
+    //   AIPlayStatus *pAVar5;
+    //   
+    //   iVar4 = 0;
+    //   iVar3 = 0x32;
+    //   pAVar5 = this;
+    //   do {
+    //     iVar2 = pAVar5->groupings[0].id;
+    //     if ((iVar2 != -1) && ((uint)pAVar5->groupings[0].groupID == param_1)) {
+    //       pRVar1 = RGE_Game_World::object(param_2,iVar2);
+    //       if (pRVar1 != (RGE_Static_Object *)0x0) {
+    //         iVar2 = __ftol();
+    //         iVar4 = iVar4 + iVar2;
+    //       }
+    //     }
+    //     pAVar5 = (AIPlayStatus *)(pAVar5->groupings + 1);
+    //     iVar3 = iVar3 + -1;
+    //   } while (iVar3 != 0);
+    //   setOriginalHitPoints(this,param_1,iVar4);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004101B0
+undefined AIPlayBook(AIPlayBook* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall AIPlayBook::AIPlayBook(void) */
+    // 
+    // void __thiscall AIPlayBook::AIPlayBook(AIPlayBook *this)
+    // 
+    // {
+    //   this->numberPlaysValue = 0;
+    //   this->plays = (AIPlay *)0x0;
+    //   this->_padding_ = (int)&_vftable_;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004101F0
+void AIPlayBook(AIPlayBook* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall AIPlayBook::~AIPlayBook(void) */
+    // 
+    // void __thiscall AIPlayBook::~AIPlayBook(AIPlayBook *this)
+    // 
+    // {
+    //   this->_padding_ = (int)&_vftable_;
+    //   if (this->plays != (AIPlay *)0x0) {
+    //     this->numberPlaysValue = 0;
+    //     operator_delete(this->plays);
+    //     this->plays = (AIPlay *)0x0;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00410220
+int loadPlays(AIPlayBook* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: temp3 */
+    // /* public: int __thiscall AIPlayBook::loadPlays(char *) */
+    // 
+    // int __thiscall AIPlayBook::loadPlays(AIPlayBook *this,char *param_1)
+    // 
+    // {
+    //   char cVar1;
+    //   uchar uVar2;
+    //   byte bVar3;
+    //   int iVar4;
+    //   int iVar5;
+    //   AIPlay *pAVar6;
+    //   AIPlay *pAVar7;
+    //   AIPlayGroup *pAVar8;
+    //   AIPlayPhase *pAVar9;
+    //   AIPlayPhaseCommand *pAVar10;
+    //   AIPlayPhaseTrigger *pAVar11;
+    //   uint uVar12;
+    //   uint uVar13;
+    //   char *pcVar14;
+    //   AIPlayPhase *pAVar15;
+    //   byte *pbVar16;
+    //   char *pcVar17;
+    //   byte *pbVar18;
+    //   char *pcVar19;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   bool bVar20;
+    //   int iVar21;
+    //   int temp3;
+    //   int temp4;
+    //   int iStack_3b0;
+    //   char commentTemp2;
+    //   int currentPhase;
+    //   int iStack_3a8;
+    //   char commentTemp1;
+    //   int j;
+    //   AIPlayPhase *curPhase;
+    //   int a;
+    //   int currentPlay;
+    //   AIPlayPhase *refPhase;
+    //   int temp5;
+    //   int i;
+    //   int temp8;
+    //   int temp7;
+    //   _iobuf *fileIn;
+    //   XYZ rotatedPoint;
+    //   XYZ originalPoint;
+    //   XYZ origin;
+    //   char temp2 [256];
+    //   AIPlayPhaseCommand command;
+    //   AIPlayPhaseCommand newCommand;
+    //   char temp [256];
+    //   AIPlayPhaseTrigger trigger;
+    //   AIPlayPhaseTrigger trigger_fffffedc;
+    //   char temp6 [256];
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_c = *unaff_FS_OFFSET;
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_0055c73e;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   if (param_1 == (char *)0x0) {
+    // LAB_004112e9:
+    //     pcVar14 = &s_NULL;
+    // LAB_004112fb:
+    //     uVar12 = 0xffffffff;
+    //     do {
+    //       pcVar17 = pcVar14;
+    //       if (uVar12 == 0) break;
+    //       uVar12 = uVar12 - 1;
+    //       pcVar17 = pcVar14 + 1;
+    //       cVar1 = *pcVar14;
+    //       pcVar14 = pcVar17;
+    //     } while (cVar1 != '\0');
+    //     uVar12 = ~uVar12;
+    //     pcVar14 = pcVar17 + -uVar12;
+    //     pcVar17 = this->nameValue;
+    //     for (uVar13 = uVar12 >> 2; uVar13 != 0; uVar13 = uVar13 - 1) {
+    //       *(undefined4 *)pcVar17 = *(undefined4 *)pcVar14;
+    //       pcVar14 = pcVar14 + 4;
+    //       pcVar17 = pcVar17 + 4;
+    //     }
+    //     for (uVar12 = uVar12 & 3; uVar12 != 0; uVar12 = uVar12 - 1) {
+    //       *pcVar17 = *pcVar14;
+    //       pcVar14 = pcVar14 + 1;
+    //       pcVar17 = pcVar17 + 1;
+    //     }
+    //   }
+    //   else {
+    //     pbVar18 = &s_NONE;
+    //     pbVar16 = (byte *)param_1;
+    //     do {
+    //       bVar3 = *pbVar16;
+    //       bVar20 = bVar3 < *pbVar18;
+    //       if (bVar3 != *pbVar18) {
+    // LAB_0041027f:
+    //         iVar4 = (1 - (uint)bVar20) - (uint)(bVar20 != 0);
+    //         goto LAB_00410284;
+    //       }
+    //       if (bVar3 == 0) break;
+    //       bVar3 = pbVar16[1];
+    //       bVar20 = bVar3 < pbVar18[1];
+    //       if (bVar3 != pbVar18[1]) goto LAB_0041027f;
+    //       pbVar16 = pbVar16 + 2;
+    //       pbVar18 = pbVar18 + 2;
+    //     } while (bVar3 != 0);
+    //     iVar4 = 0;
+    // LAB_00410284:
+    //     if (iVar4 == 0) {
+    //       if (param_1 == (char *)0x0) goto LAB_004112e9;
+    //       pcVar14 = &s_NONE;
+    //       goto LAB_004112fb;
+    //     }
+    //     strncpy(this->nameValue,param_1,0x40);
+    //     sprintf(temp + 4,s__s,this->nameValue);
+    //     iVar4 = fopen(temp + 4,s_r);
+    //     if (iVar4 != 0) {
+    //       rotatedPoint.xValue = iVar4;
+    //       if (this->plays != (AIPlay *)0x0) {
+    //         operator_delete(this->plays);
+    //         this->plays = (AIPlay *)0x0;
+    //       }
+    //       this->numberPlaysValue = 0;
+    //       iVar5 = fgets(temp + 4,0x100,iVar4);
+    //       while (iVar5 != 0) {
+    //         iVar5 = -1;
+    //         pcVar14 = temp + 4;
+    //         do {
+    //           if (iVar5 == 0) break;
+    //           iVar5 = iVar5 + -1;
+    //           cVar1 = *pcVar14;
+    //           pcVar14 = pcVar14 + 1;
+    //         } while (cVar1 != '\0');
+    //         if (iVar5 != -2) {
+    //           sscanf(temp + 4,s__s_,temp2 + 4);
+    //           pbVar16 = (byte *)(temp2 + 4);
+    //           pbVar18 = &s_Play;
+    //           do {
+    //             bVar3 = *pbVar18;
+    //             bVar20 = bVar3 < *pbVar16;
+    //             if (bVar3 != *pbVar16) {
+    // LAB_00410368:
+    //               iVar5 = (1 - (uint)bVar20) - (uint)(bVar20 != 0);
+    //               goto LAB_0041036d;
+    //             }
+    //             if (bVar3 == 0) break;
+    //             bVar3 = pbVar18[1];
+    //             bVar20 = bVar3 < pbVar16[1];
+    //             if (bVar3 != pbVar16[1]) goto LAB_00410368;
+    //             pbVar18 = pbVar18 + 2;
+    //             pbVar16 = pbVar16 + 2;
+    //           } while (bVar3 != 0);
+    //           iVar5 = 0;
+    // LAB_0041036d:
+    //           if (iVar5 == 0) {
+    //             this->numberPlaysValue = this->numberPlaysValue + 8;
+    //           }
+    //         }
+    //         iVar5 = fgets(temp + 4,0x100,iVar4);
+    //       }
+    //       if (16000 < this->numberPlaysValue) {
+    //         this->numberPlaysValue = 16000;
+    //       }
+    //       iVar4 = this->numberPlaysValue;
+    //       pAVar6 = (AIPlay *)operator_new(iVar4 * 0x608);
+    //       local_4 = 0;
+    //       pAVar7 = (AIPlay *)0x0;
+    //       temp5 = (int)pAVar6;
+    //       if ((pAVar6 != (AIPlay *)0x0) && (pAVar7 = pAVar6, -1 < iVar4 + -1)) {
+    //         do {
+    //           AIPlay::AIPlay(pAVar6);
+    //           iVar4 = iVar4 + -1;
+    //           pAVar6 = pAVar6 + 1;
+    //         } while (iVar4 != 0);
+    //       }
+    //       local_4 = 0xffffffff;
+    //       this->plays = pAVar7;
+    //       if (pAVar7 != (AIPlay *)0x0) {
+    //         rewind(rotatedPoint.xValue);
+    //         pAVar15 = (AIPlayPhase *)0xffffffff;
+    //         refPhase = (AIPlayPhase *)0xffffffff;
+    //         iStack_3a8 = -1;
+    //         do {
+    //           iVar4 = fgets(temp + 4,0x100,rotatedPoint.xValue);
+    //           if (iVar4 == 0) break;
+    //           iVar4 = -1;
+    //           pcVar14 = temp + 4;
+    //           do {
+    //             if (iVar4 == 0) break;
+    //             iVar4 = iVar4 + -1;
+    //             cVar1 = *pcVar14;
+    //             pcVar14 = pcVar14 + 1;
+    //           } while (cVar1 != '\0');
+    //           if (iVar4 != -2) {
+    //             uVar12 = 0xffffffff;
+    //             pcVar14 = s_;
+    //             do {
+    //               pcVar17 = pcVar14;
+    //               if (uVar12 == 0) break;
+    //               uVar12 = uVar12 - 1;
+    //               pcVar17 = pcVar14 + 1;
+    //               cVar1 = *pcVar14;
+    //               pcVar14 = pcVar17;
+    //             } while (cVar1 != '\0');
+    //             uVar12 = ~uVar12;
+    //             pcVar14 = temp2;
+    //             pcVar19 = temp6;
+    //             pcVar17 = pcVar17 + -uVar12;
+    //             for (uVar13 = uVar12 >> 2; pcVar14 = pcVar14 + 4, uVar13 != 0; uVar13 = uVar13 - 1) {
+    //               *(undefined4 *)pcVar14 = *(undefined4 *)pcVar17;
+    //               pcVar17 = pcVar17 + 4;
+    //             }
+    //             for (uVar12 = uVar12 & 3; uVar12 != 0; uVar12 = uVar12 - 1) {
+    //               *pcVar14 = *pcVar17;
+    //               pcVar17 = pcVar17 + 1;
+    //               pcVar14 = pcVar14 + 1;
+    //             }
+    //             uVar12 = 0xffffffff;
+    //             pcVar14 = s_;
+    //             do {
+    //               pcVar17 = pcVar14;
+    //               if (uVar12 == 0) break;
+    //               uVar12 = uVar12 - 1;
+    //               pcVar17 = pcVar14 + 1;
+    //               cVar1 = *pcVar14;
+    //               pcVar14 = pcVar17;
+    //             } while (cVar1 != '\0');
+    //             uVar12 = ~uVar12;
+    //             pcVar14 = pcVar17 + -uVar12;
+    //             for (uVar13 = uVar12 >> 2; pcVar19 = pcVar19 + 4, uVar13 != 0; uVar13 = uVar13 - 1) {
+    //               *(undefined4 *)pcVar19 = *(undefined4 *)pcVar14;
+    //               pcVar14 = pcVar14 + 4;
+    //             }
+    //             temp4 = 0;
+    //             for (uVar12 = uVar12 & 3; uVar12 != 0; uVar12 = uVar12 - 1) {
+    //               *pcVar19 = *pcVar14;
+    //               pcVar14 = pcVar14 + 1;
+    //               pcVar19 = pcVar19 + 1;
+    //             }
+    //             iStack_3b0 = 0;
+    //             i = 0;
+    //             fileIn = (_iobuf *)0x0;
+    //             temp7 = 0;
+    //             iVar4 = sscanf(temp + 4,s___c_c,(int)&j + 3,(int)&currentPhase + 3);
+    //             if ((iVar4 != -1) && ((j._3_1_ != '/' || (currentPhase._3_1_ != '/')))) {
+    //               sscanf(temp + 4,s__s_,temp2 + 4);
+    //               pAVar9 = refPhase;
+    //               pbVar18 = &s_Play;
+    //               pbVar16 = (byte *)(temp2 + 4);
+    //               do {
+    //                 bVar3 = *pbVar16;
+    //                 bVar20 = bVar3 < *pbVar18;
+    //                 if (bVar3 != *pbVar18) {
+    // LAB_00410539:
+    //                   iVar4 = (1 - (uint)bVar20) - (uint)(bVar20 != 0);
+    //                   goto LAB_0041053e;
+    //                 }
+    //                 if (bVar3 == 0) break;
+    //                 bVar3 = pbVar16[1];
+    //                 bVar20 = bVar3 < pbVar18[1];
+    //                 if (bVar3 != pbVar18[1]) goto LAB_00410539;
+    //                 pbVar16 = pbVar16 + 2;
+    //                 pbVar18 = pbVar18 + 2;
+    //               } while (bVar3 != 0);
+    //               iVar4 = 0;
+    // LAB_0041053e:
+    //               if (iVar4 == 0) {
+    //                 iVar4 = 0;
+    //                 iVar5 = 0;
+    //                 cVar1 = temp[4];
+    //                 while (cVar1 != '\"') {
+    //                   iVar21 = iVar5 + 5;
+    //                   iVar5 = iVar5 + 1;
+    //                   iVar4 = iVar4 + 1;
+    //                   cVar1 = temp[iVar21];
+    //                 }
+    //                 temp4 = iVar4 + 1;
+    //                 pcVar14 = temp + iVar5 + 5;
+    //                 cVar1 = temp[iVar5 + 5];
+    //                 iStack_3b0 = temp4;
+    //                 while (cVar1 != '\"') {
+    //                   pcVar14 = pcVar14 + 1;
+    //                   iStack_3b0 = iStack_3b0 + 1;
+    //                   cVar1 = *pcVar14;
+    //                 }
+    //                 uVar12 = 0;
+    //                 if (temp4 < iStack_3b0) {
+    //                   uVar12 = iStack_3b0 - temp4;
+    //                   pcVar14 = temp2;
+    //                   pcVar17 = temp + iVar4 + 5;
+    //                   for (uVar13 = uVar12 >> 2; pcVar14 = pcVar14 + 4, uVar13 != 0; uVar13 = uVar13 - 1
+    //                       ) {
+    //                     *(undefined4 *)pcVar14 = *(undefined4 *)pcVar17;
+    //                     pcVar17 = pcVar17 + 4;
+    //                   }
+    //                   for (uVar13 = uVar12 & 3; uVar13 != 0; uVar13 = uVar13 - 1) {
+    //                     *pcVar14 = *pcVar17;
+    //                     pcVar17 = pcVar17 + 1;
+    //                     pcVar14 = pcVar14 + 1;
+    //                   }
+    //                 }
+    //                 pAVar15 = (AIPlayPhase *)&pAVar15->commands[0].typeValue;
+    //                 temp2[uVar12 + 4] = '\0';
+    //                 refPhase = pAVar15;
+    //                 if (15999 < (int)pAVar15) break;
+    //                 AIPlay::setName(this->plays + (int)pAVar15,temp2 + 4);
+    //               }
+    //               else {
+    //                 pbVar18 = &s_PlayType;
+    //                 pbVar16 = (byte *)(temp2 + 4);
+    //                 do {
+    //                   bVar3 = *pbVar16;
+    //                   bVar20 = bVar3 < *pbVar18;
+    //                   if (bVar3 != *pbVar18) {
+    // LAB_00410612:
+    //                     iVar4 = (1 - (uint)bVar20) - (uint)(bVar20 != 0);
+    //                     goto LAB_00410617;
+    //                   }
+    //                   if (bVar3 == 0) break;
+    //                   bVar3 = pbVar16[1];
+    //                   bVar20 = bVar3 < pbVar18[1];
+    //                   if (bVar3 != pbVar18[1]) goto LAB_00410612;
+    //                   pbVar16 = pbVar16 + 2;
+    //                   pbVar18 = pbVar18 + 2;
+    //                 } while (bVar3 != 0);
+    //                 iVar4 = 0;
+    // LAB_00410617:
+    //                 if ((iVar4 == 0) && (pAVar15 != (AIPlayPhase *)0xffffffff)) {
+    //                   sscanf(temp + 4,s___s__s_,temp2 + 4);
+    //                   pAVar7 = this->plays;
+    //                   uVar2 = AIPlay::convertToIntType(pAVar7 + (int)pAVar15,temp2 + 4);
+    //                   pAVar7[(int)pAVar15].typeValue = uVar2;
+    //                 }
+    //                 else {
+    //                   pbVar18 = &s_MinUnits;
+    //                   pbVar16 = (byte *)(temp2 + 4);
+    //                   do {
+    //                     bVar3 = *pbVar16;
+    //                     bVar20 = bVar3 < *pbVar18;
+    //                     if (bVar3 != *pbVar18) {
+    // LAB_0041068e:
+    //                       iVar4 = (1 - (uint)bVar20) - (uint)(bVar20 != 0);
+    //                       goto LAB_00410693;
+    //                     }
+    //                     if (bVar3 == 0) break;
+    //                     bVar3 = pbVar16[1];
+    //                     bVar20 = bVar3 < pbVar18[1];
+    //                     if (bVar3 != pbVar18[1]) goto LAB_0041068e;
+    //                     pbVar16 = pbVar16 + 2;
+    //                     pbVar18 = pbVar18 + 2;
+    //                   } while (bVar3 != 0);
+    //                   iVar4 = 0;
+    // LAB_00410693:
+    //                   if ((iVar4 == 0) && (pAVar15 != (AIPlayPhase *)0xffffffff)) {
+    //                     sscanf(temp + 4,s___s__d_,&temp4);
+    //                     this->plays[(int)pAVar15].minimumNumberUnitsValue = (uchar)temp4;
+    //                   }
+    //                   else {
+    //                     pbVar18 = &s_MaxUnits;
+    //                     pbVar16 = (byte *)(temp2 + 4);
+    //                     do {
+    //                       bVar3 = *pbVar16;
+    //                       bVar20 = bVar3 < *pbVar18;
+    //                       if (bVar3 != *pbVar18) {
+    // LAB_00410702:
+    //                         iVar4 = (1 - (uint)bVar20) - (uint)(bVar20 != 0);
+    //                         goto LAB_00410707;
+    //                       }
+    //                       if (bVar3 == 0) break;
+    //                       bVar3 = pbVar16[1];
+    //                       bVar20 = bVar3 < pbVar18[1];
+    //                       if (bVar3 != pbVar18[1]) goto LAB_00410702;
+    //                       pbVar16 = pbVar16 + 2;
+    //                       pbVar18 = pbVar18 + 2;
+    //                     } while (bVar3 != 0);
+    //                     iVar4 = 0;
+    // LAB_00410707:
+    //                     if ((iVar4 == 0) && (pAVar15 != (AIPlayPhase *)0xffffffff)) {
+    //                       sscanf(temp + 4,s___s__d_,&temp4);
+    //                       this->plays[(int)pAVar15].maximumNumberUnitsValue = (uchar)temp4;
+    //                     }
+    //                     else {
+    //                       pbVar18 = &s_Power;
+    //                       pbVar16 = (byte *)(temp2 + 4);
+    //                       do {
+    //                         bVar3 = *pbVar16;
+    //                         bVar20 = bVar3 < *pbVar18;
+    //                         if (bVar3 != *pbVar18) {
+    // LAB_00410776:
+    //                           iVar4 = (1 - (uint)bVar20) - (uint)(bVar20 != 0);
+    //                           goto LAB_0041077b;
+    //                         }
+    //                         if (bVar3 == 0) break;
+    //                         bVar3 = pbVar16[1];
+    //                         bVar20 = bVar3 < pbVar18[1];
+    //                         if (bVar3 != pbVar18[1]) goto LAB_00410776;
+    //                         pbVar16 = pbVar16 + 2;
+    //                         pbVar18 = pbVar18 + 2;
+    //                       } while (bVar3 != 0);
+    //                       iVar4 = 0;
+    // LAB_0041077b:
+    //                       if ((iVar4 == 0) && (pAVar15 != (AIPlayPhase *)0xffffffff)) {
+    //                         sscanf(temp + 4,s___s__d_,&temp4);
+    //                         this->plays[(int)pAVar15].powerValue = (uchar)temp4;
+    //                       }
+    //                       else {
+    //                         pbVar18 = &s_Overflow;
+    //                         pbVar16 = (byte *)(temp2 + 4);
+    //                         do {
+    //                           bVar3 = *pbVar16;
+    //                           bVar20 = bVar3 < *pbVar18;
+    //                           if (bVar3 != *pbVar18) {
+    // LAB_004107ea:
+    //                             iVar4 = (1 - (uint)bVar20) - (uint)(bVar20 != 0);
+    //                             goto LAB_004107ef;
+    //                           }
+    //                           if (bVar3 == 0) break;
+    //                           bVar3 = pbVar16[1];
+    //                           bVar20 = bVar3 < pbVar18[1];
+    //                           if (bVar3 != pbVar18[1]) goto LAB_004107ea;
+    //                           pbVar16 = pbVar16 + 2;
+    //                           pbVar18 = pbVar18 + 2;
+    //                         } while (bVar3 != 0);
+    //                         iVar4 = 0;
+    // LAB_004107ef:
+    //                         if ((iVar4 == 0) && (pAVar15 != (AIPlayPhase *)0xffffffff)) {
+    //                           sscanf(temp + 4,s___s__s_,temp2 + 4);
+    //                           pbVar18 = &s_Balance;
+    //                           pbVar16 = (byte *)(temp2 + 4);
+    //                           do {
+    //                             bVar3 = *pbVar16;
+    //                             bVar20 = bVar3 < *pbVar18;
+    //                             if (bVar3 != *pbVar18) {
+    // LAB_0041084b:
+    //                               iVar4 = (1 - (uint)bVar20) - (uint)(bVar20 != 0);
+    //                               goto LAB_00410850;
+    //                             }
+    //                             if (bVar3 == 0) break;
+    //                             bVar3 = pbVar16[1];
+    //                             bVar20 = bVar3 < pbVar18[1];
+    //                             if (bVar3 != pbVar18[1]) goto LAB_0041084b;
+    //                             pbVar16 = pbVar16 + 2;
+    //                             pbVar18 = pbVar18 + 2;
+    //                           } while (bVar3 != 0);
+    //                           iVar4 = 0;
+    // LAB_00410850:
+    //                           if (iVar4 == 0) {
+    //                             this->plays[(int)pAVar15].overflowValue = '\x01';
+    //                           }
+    //                           else {
+    //                             pbVar18 = &s_FirstGroup;
+    //                             pbVar16 = (byte *)(temp2 + 4);
+    //                             do {
+    //                               bVar3 = *pbVar16;
+    //                               bVar20 = bVar3 < *pbVar18;
+    //                               if (bVar3 != *pbVar18) {
+    // LAB_0041089d:
+    //                                 iVar4 = (1 - (uint)bVar20) - (uint)(bVar20 != 0);
+    //                                 goto LAB_004108a2;
+    //                               }
+    //                               if (bVar3 == 0) break;
+    //                               bVar3 = pbVar16[1];
+    //                               bVar20 = bVar3 < pbVar18[1];
+    //                               if (bVar3 != pbVar18[1]) goto LAB_0041089d;
+    //                               pbVar16 = pbVar16 + 2;
+    //                               pbVar18 = pbVar18 + 2;
+    //                             } while (bVar3 != 0);
+    //                             iVar4 = 0;
+    // LAB_004108a2:
+    //                             if (iVar4 == 0) {
+    //                               this->plays[(int)pAVar15].overflowValue = '\x02';
+    //                             }
+    //                           }
+    //                         }
+    //                         else {
+    //                           pbVar18 = &s_DeathPercentage;
+    //                           pbVar16 = (byte *)(temp2 + 4);
+    //                           do {
+    //                             bVar3 = *pbVar16;
+    //                             bVar20 = bVar3 < *pbVar18;
+    //                             if (bVar3 != *pbVar18) {
+    // LAB_004108f3:
+    //                               iVar4 = (1 - (uint)bVar20) - (uint)(bVar20 != 0);
+    //                               goto LAB_004108f8;
+    //                             }
+    //                             if (bVar3 == 0) break;
+    //                             bVar3 = pbVar16[1];
+    //                             bVar20 = bVar3 < pbVar18[1];
+    //                             if (bVar3 != pbVar18[1]) goto LAB_004108f3;
+    //                             pbVar16 = pbVar16 + 2;
+    //                             pbVar18 = pbVar18 + 2;
+    //                           } while (bVar3 != 0);
+    //                           iVar4 = 0;
+    // LAB_004108f8:
+    //                           if ((iVar4 == 0) && (pAVar15 != (AIPlayPhase *)0xffffffff)) {
+    //                             sscanf(temp + 4,s___s__d_,&temp4);
+    //                             if (temp4 < 0) {
+    //                               this->plays[(int)pAVar15].deathPercentageValue = '\0';
+    //                             }
+    //                             else if (temp4 < 0x65) {
+    //                               this->plays[(int)pAVar15].deathPercentageValue = (uchar)temp4;
+    //                             }
+    //                             else {
+    //                               this->plays[(int)pAVar15].deathPercentageValue = 'd';
+    //                             }
+    //                           }
+    //                           else {
+    //                             pbVar18 = &s_Intelligence;
+    //                             pbVar16 = (byte *)(temp2 + 4);
+    //                             do {
+    //                               bVar3 = *pbVar16;
+    //                               bVar20 = bVar3 < *pbVar18;
+    //                               if (bVar3 != *pbVar18) {
+    // LAB_0041099c:
+    //                                 iVar4 = (1 - (uint)bVar20) - (uint)(bVar20 != 0);
+    //                                 goto LAB_004109a1;
+    //                               }
+    //                               if (bVar3 == 0) break;
+    //                               bVar3 = pbVar16[1];
+    //                               bVar20 = bVar3 < pbVar18[1];
+    //                               if (bVar3 != pbVar18[1]) goto LAB_0041099c;
+    //                               pbVar16 = pbVar16 + 2;
+    //                               pbVar18 = pbVar18 + 2;
+    //                             } while (bVar3 != 0);
+    //                             iVar4 = 0;
+    // LAB_004109a1:
+    //                             if ((iVar4 == 0) && (pAVar15 != (AIPlayPhase *)0xffffffff)) {
+    //                               sscanf(temp + 4,s___s__d_,&temp4);
+    //                               if (temp4 < 0) {
+    //                                 this->plays[(int)pAVar15].intelligenceValue = '\0';
+    //                               }
+    //                               else if (temp4 < 0x65) {
+    //                                 this->plays[(int)pAVar15].intelligenceValue = (uchar)temp4;
+    //                               }
+    //                               else {
+    //                                 this->plays[(int)pAVar15].intelligenceValue = 'd';
+    //                               }
+    //                             }
+    //                             else {
+    //                               pbVar18 = &s_TargetChar;
+    //                               pbVar16 = (byte *)(temp2 + 4);
+    //                               do {
+    //                                 bVar3 = *pbVar16;
+    //                                 bVar20 = bVar3 < *pbVar18;
+    //                                 if (bVar3 != *pbVar18) {
+    // LAB_00410a45:
+    //                                   iVar4 = (1 - (uint)bVar20) - (uint)(bVar20 != 0);
+    //                                   goto LAB_00410a4a;
+    //                                 }
+    //                                 if (bVar3 == 0) break;
+    //                                 bVar3 = pbVar16[1];
+    //                                 bVar20 = bVar3 < pbVar18[1];
+    //                                 if (bVar3 != pbVar18[1]) goto LAB_00410a45;
+    //                                 pbVar16 = pbVar16 + 2;
+    //                                 pbVar18 = pbVar18 + 2;
+    //                               } while (bVar3 != 0);
+    //                               iVar4 = 0;
+    // LAB_00410a4a:
+    //                               if ((iVar4 == 0) && (pAVar15 != (AIPlayPhase *)0xffffffff)) {
+    //                                 sscanf(temp + 4,s___s__s_,temp6 + 4);
+    //                                 iVar4 = (**(code **)(this->_padding_ + 8))(temp6 + 4);
+    //                                 if (iVar4 != 0) {
+    //                                   AIPlay::addTargetCharacteristic
+    //                                             (this->plays + (int)pAVar15,(uchar)iVar4);
+    //                                 }
+    //                               }
+    //                               else {
+    //                                 pbVar18 = &s_TargetType;
+    //                                 pbVar16 = (byte *)(temp2 + 4);
+    //                                 do {
+    //                                   bVar3 = *pbVar16;
+    //                                   bVar20 = bVar3 < *pbVar18;
+    //                                   if (bVar3 != *pbVar18) {
+    // LAB_00410ad2:
+    //                                     iVar4 = (1 - (uint)bVar20) - (uint)(bVar20 != 0);
+    //                                     goto LAB_00410ad7;
+    //                                   }
+    //                                   if (bVar3 == 0) break;
+    //                                   bVar3 = pbVar16[1];
+    //                                   bVar20 = bVar3 < pbVar18[1];
+    //                                   if (bVar3 != pbVar18[1]) goto LAB_00410ad2;
+    //                                   pbVar16 = pbVar16 + 2;
+    //                                   pbVar18 = pbVar18 + 2;
+    //                                 } while (bVar3 != 0);
+    //                                 iVar4 = 0;
+    // LAB_00410ad7:
+    //                                 if ((iVar4 == 0) && (pAVar15 != (AIPlayPhase *)0xffffffff)) {
+    //                                   sscanf(temp + 4,s___s__s_,temp6 + 4);
+    //                                   iVar4 = (**(code **)(this->_padding_ + 4))(temp6 + 4);
+    //                                   if (iVar4 != 0) {
+    //                                     AIPlay::addTargetType(this->plays + (int)pAVar15,(uchar)iVar4);
+    //                                   }
+    //                                 }
+    //                                 else {
+    //                                   pbVar18 = &s_NumberGroups;
+    //                                   pbVar16 = (byte *)(temp2 + 4);
+    //                                   do {
+    //                                     bVar3 = *pbVar16;
+    //                                     bVar20 = bVar3 < *pbVar18;
+    //                                     if (bVar3 != *pbVar18) {
+    // LAB_00410b5f:
+    //                                       iVar4 = (1 - (uint)bVar20) - (uint)(bVar20 != 0);
+    //                                       goto LAB_00410b64;
+    //                                     }
+    //                                     if (bVar3 == 0) break;
+    //                                     bVar3 = pbVar16[1];
+    //                                     bVar20 = bVar3 < pbVar18[1];
+    //                                     if (bVar3 != pbVar18[1]) goto LAB_00410b5f;
+    //                                     pbVar16 = pbVar16 + 2;
+    //                                     pbVar18 = pbVar18 + 2;
+    //                                   } while (bVar3 != 0);
+    //                                   iVar4 = 0;
+    // LAB_00410b64:
+    //                                   if ((iVar4 == 0) && (pAVar15 != (AIPlayPhase *)0xffffffff)) {
+    //                                     sscanf(temp + 4,s___s__d_,&temp4);
+    //                                     this->plays[(int)pAVar15].numberGroupsValue = (uchar)temp4;
+    //                                   }
+    //                                   else {
+    //                                     pbVar18 = &s_Group;
+    //                                     pbVar16 = (byte *)(temp2 + 4);
+    //                                     do {
+    //                                       bVar3 = *pbVar16;
+    //                                       bVar20 = bVar3 < *pbVar18;
+    //                                       if (bVar3 != *pbVar18) {
+    // LAB_00410bd3:
+    //                                         iVar4 = (1 - (uint)bVar20) - (uint)(bVar20 != 0);
+    //                                         goto LAB_00410bd8;
+    //                                       }
+    //                                       if (bVar3 == 0) break;
+    //                                       bVar3 = pbVar16[1];
+    //                                       bVar20 = bVar3 < pbVar18[1];
+    //                                       if (bVar3 != pbVar18[1]) goto LAB_00410bd3;
+    //                                       pbVar16 = pbVar16 + 2;
+    //                                       pbVar18 = pbVar18 + 2;
+    //                                     } while (bVar3 != 0);
+    //                                     iVar4 = 0;
+    // LAB_00410bd8:
+    //                                     if (((iVar4 == 0) && (pAVar15 != (AIPlayPhase *)0xffffffff)) &&
+    //                                        (iStack_3a8 == -1)) {
+    //                                       sscanf(temp + 4,s___s__d__s__d____d_,&temp4,temp6 + 4,
+    //                                              &stack0xfffffc50,&i);
+    //                                       if (((-1 < temp4) && (temp4 < 5)) &&
+    //                                          (iVar4 = (**(code **)(this->_padding_ + 0xc))(temp6 + 4),
+    //                                          iVar4 != -1)) {
+    //                                         iVar5 = iStack_3b0;
+    //                                         if (i < 0) {
+    //                                           iVar5 = 0;
+    //                                         }
+    //                                         iVar21 = iVar4;
+    //                                         pAVar8 = AIPlay::group(this->plays + (int)pAVar15,temp4);
+    //                                         AIPlayGroup::setMinimum(pAVar8,iVar21,iVar5);
+    //                                         iVar5 = i;
+    //                                         if (0x32 < i) {
+    //                                           iVar5 = 0x32;
+    //                                         }
+    //                                         pAVar8 = AIPlay::group(this->plays + (int)pAVar15,temp4);
+    //                                         AIPlayGroup::setMaximum(pAVar8,iVar4,iVar5);
+    //                                       }
+    //                                     }
+    //                                     else {
+    //                                       pbVar18 = &s_Phase;
+    //                                       pbVar16 = (byte *)(temp2 + 4);
+    //                                       do {
+    //                                         bVar3 = *pbVar16;
+    //                                         bVar20 = bVar3 < *pbVar18;
+    //                                         if (bVar3 != *pbVar18) {
+    // LAB_00410cf8:
+    //                                           iVar4 = (1 - (uint)bVar20) - (uint)(bVar20 != 0);
+    //                                           goto LAB_00410cfd;
+    //                                         }
+    //                                         if (bVar3 == 0) break;
+    //                                         bVar3 = pbVar16[1];
+    //                                         bVar20 = bVar3 < pbVar18[1];
+    //                                         if (bVar3 != pbVar18[1]) goto LAB_00410cf8;
+    //                                         pbVar16 = pbVar16 + 2;
+    //                                         pbVar18 = pbVar18 + 2;
+    //                                       } while (bVar3 != 0);
+    //                                       iVar4 = 0;
+    // LAB_00410cfd:
+    //                                       if ((iVar4 == 0) && (pAVar15 != (AIPlayPhase *)0xffffffff)) {
+    //                                         sscanf(temp + 4,s___s__d_,&temp4);
+    //                                         iStack_3a8 = temp4;
+    //                                       }
+    //                                       else {
+    //                                         pbVar18 = &s_Group;
+    //                                         pbVar16 = (byte *)(temp2 + 4);
+    //                                         do {
+    //                                           bVar3 = *pbVar16;
+    //                                           bVar20 = bVar3 < *pbVar18;
+    //                                           if (bVar3 != *pbVar18) {
+    // LAB_00410d5a:
+    //                                             iVar4 = (1 - (uint)bVar20) - (uint)(bVar20 != 0);
+    //                                             goto LAB_00410d5f;
+    //                                           }
+    //                                           if (bVar3 == 0) break;
+    //                                           bVar3 = pbVar16[1];
+    //                                           bVar20 = bVar3 < pbVar18[1];
+    //                                           if (bVar3 != pbVar18[1]) goto LAB_00410d5a;
+    //                                           pbVar16 = pbVar16 + 2;
+    //                                           pbVar18 = pbVar18 + 2;
+    //                                         } while (bVar3 != 0);
+    //                                         iVar4 = 0;
+    // LAB_00410d5f:
+    //                                         if (((iVar4 == 0) && (pAVar15 != (AIPlayPhase *)0xffffffff))
+    //                                            && (iStack_3a8 != -1)) {
+    //                                           sscanf(temp + 4,s___s__d__s__d__d__d_,&temp4,temp6 + 4,
+    //                                                  &stack0xfffffc50,&i,&fileIn);
+    //                                           if ((-1 < temp4) && (temp4 < 5)) {
+    //                                             pAVar9 = AIPlay::phase(this->plays + (int)pAVar15,
+    //                                                                    iStack_3a8);
+    //                                             AIPlayPhaseCommand::AIPlayPhaseCommand
+    //                                                       ((AIPlayPhaseCommand *)&command.value1Value,
+    //                                                        (uchar)temp4,temp6 + 4,iStack_3b0,i,
+    //                                                        (int)fileIn);
+    //                                             AIPlayPhase::addCommand
+    //                                                       (pAVar9,(AIPlayPhaseCommand *)
+    //                                                               &command.value1Value);
+    //                                           }
+    //                                         }
+    //                                         else {
+    //                                           pbVar18 = &s_Trigger;
+    //                                           pbVar16 = (byte *)(temp2 + 4);
+    //                                           do {
+    //                                             bVar3 = *pbVar16;
+    //                                             bVar20 = bVar3 < *pbVar18;
+    //                                             if (bVar3 != *pbVar18) {
+    // LAB_00410e43:
+    //                                               iVar4 = (1 - (uint)bVar20) - (uint)(bVar20 != 0);
+    //                                               goto LAB_00410e48;
+    //                                             }
+    //                                             if (bVar3 == 0) break;
+    //                                             bVar3 = pbVar16[1];
+    //                                             bVar20 = bVar3 < pbVar18[1];
+    //                                             if (bVar3 != pbVar18[1]) goto LAB_00410e43;
+    //                                             pbVar16 = pbVar16 + 2;
+    //                                             pbVar18 = pbVar18 + 2;
+    //                                           } while (bVar3 != 0);
+    //                                           iVar4 = 0;
+    // LAB_00410e48:
+    //                                           if (((iVar4 == 0) &&
+    //                                               (pAVar15 != (AIPlayPhase *)0xffffffff)) &&
+    //                                              (iStack_3a8 != -1)) {
+    //                                             sscanf(temp + 4,s___s__d__s__d__d_,&temp4,temp6 + 4,
+    //                                                    &stack0xfffffc50,&temp7);
+    //                                             iVar4 = iStack_3a8;
+    //                                             pAVar9 = AIPlay::phase(this->plays + (int)pAVar15,
+    //                                                                    iStack_3a8);
+    //                                             AIPlayPhaseTrigger::AIPlayPhaseTrigger
+    //                                                       ((AIPlayPhaseTrigger *)&trigger.value1Value,
+    //                                                        temp6 + 4,iStack_3b0,temp7,(uchar)iVar4,
+    //                                                        (uchar)temp4,0);
+    //                                             AIPlayPhase::addTrigger
+    //                                                       (pAVar9,(AIPlayPhaseTrigger *)
+    //                                                               &trigger.value1Value);
+    //                                           }
+    //                                           else {
+    //                                             pbVar18 = &s_RTrigger;
+    //                                             pbVar16 = (byte *)(temp2 + 4);
+    //                                             do {
+    //                                               bVar3 = *pbVar16;
+    //                                               bVar20 = bVar3 < *pbVar18;
+    //                                               if (bVar3 != *pbVar18) {
+    // LAB_00410f10:
+    //                                                 iVar4 = (1 - (uint)bVar20) - (uint)(bVar20 != 0);
+    //                                                 goto LAB_00410f15;
+    //                                               }
+    //                                               if (bVar3 == 0) break;
+    //                                               bVar3 = pbVar16[1];
+    //                                               bVar20 = bVar3 < pbVar18[1];
+    //                                               if (bVar3 != pbVar18[1]) goto LAB_00410f10;
+    //                                               pbVar16 = pbVar16 + 2;
+    //                                               pbVar18 = pbVar18 + 2;
+    //                                             } while (bVar3 != 0);
+    //                                             iVar4 = 0;
+    // LAB_00410f15:
+    //                                             if (((iVar4 == 0) &&
+    //                                                 (pAVar15 != (AIPlayPhase *)0xffffffff)) &&
+    //                                                (iStack_3a8 != -1)) {
+    //                                               sscanf(temp + 4,s___s__d__s__d__d__d_,&temp4,temp6 + 4
+    //                                                      ,&stack0xfffffc50,&temp7,&fileIn);
+    //                                               iVar4 = iStack_3a8;
+    //                                               pAVar9 = AIPlay::phase(this->plays + (int)pAVar15,
+    //                                                                      iStack_3a8);
+    //                                               AIPlayPhaseTrigger::AIPlayPhaseTrigger
+    //                                                         ((AIPlayPhaseTrigger *)
+    //                                                          &trigger_fffffedc.value1Value,temp6 + 4,
+    //                                                          iStack_3b0,temp7,(uchar)iVar4,(uchar)temp4,
+    //                                                          (int)fileIn);
+    //                                               AIPlayPhase::addTrigger
+    //                                                         (pAVar9,(AIPlayPhaseTrigger *)
+    //                                                                 &trigger_fffffedc.value1Value);
+    //                                             }
+    //                                             else {
+    //                                               pbVar18 = &s_EndPlay;
+    //                                               pbVar16 = (byte *)(temp2 + 4);
+    //                                               do {
+    //                                                 bVar3 = *pbVar16;
+    //                                                 bVar20 = bVar3 < *pbVar18;
+    //                                                 if (bVar3 != *pbVar18) {
+    // LAB_00410fe9:
+    //                                                   iVar4 = (1 - (uint)bVar20) - (uint)(bVar20 != 0);
+    //                                                   goto LAB_00410fee;
+    //                                                 }
+    //                                                 if (bVar3 == 0) break;
+    //                                                 bVar3 = pbVar16[1];
+    //                                                 bVar20 = bVar3 < pbVar18[1];
+    //                                                 if (bVar3 != pbVar18[1]) goto LAB_00410fe9;
+    //                                                 pbVar16 = pbVar16 + 2;
+    //                                                 pbVar18 = pbVar18 + 2;
+    //                                               } while (bVar3 != 0);
+    //                                               iVar4 = 0;
+    // LAB_00410fee:
+    //                                               if ((iVar4 == 0) &&
+    //                                                  (pAVar15 != (AIPlayPhase *)0xffffffff)) {
+    //                                                 uVar12 = 0xffffffff;
+    //                                                 iStack_3a8 = -1;
+    //                                                 iVar4 = (int)refPhase * 0x608;
+    //                                                 temp5 = (int)(temp2 + 4);
+    //                                                 pAVar7 = this->plays + (int)refPhase;
+    //                                                 do {
+    //                                                   pAVar6 = pAVar7;
+    //                                                   if (uVar12 == 0) break;
+    //                                                   uVar12 = uVar12 - 1;
+    //                                                   pAVar6 = (AIPlay *)(pAVar7->nameValue + 1);
+    //                                                   pcVar14 = pAVar7->nameValue;
+    //                                                   pAVar7 = pAVar6;
+    //                                                 } while (*pcVar14 != '\0');
+    //                                                 uVar12 = ~uVar12;
+    //                                                 pcVar14 = (char *)((int)pAVar6 - uVar12);
+    //                                                 pcVar17 = (char *)temp5;
+    //                                                 for (uVar13 = uVar12 >> 2; uVar13 != 0;
+    //                                                     uVar13 = uVar13 - 1) {
+    //                                                   *(undefined4 *)pcVar17 = *(undefined4 *)pcVar14;
+    //                                                   pcVar14 = pcVar14 + 4;
+    //                                                   pcVar17 = pcVar17 + 4;
+    //                                                 }
+    //                                                 for (uVar12 = uVar12 & 3; uVar12 != 0;
+    //                                                     uVar12 = uVar12 - 1) {
+    //                                                   *pcVar17 = *pcVar14;
+    //                                                   pcVar14 = pcVar14 + 1;
+    //                                                   pcVar17 = pcVar17 + 1;
+    //                                                 }
+    //                                                 if ((temp2[4] == 'H') && (temp2[5] == 'P')) {
+    //                                                   this->numberPlaysValue =
+    //                                                        this->numberPlaysValue + -7;
+    //                                                   pAVar15 = refPhase;
+    //                                                 }
+    //                                                 else {
+    //                                                   refPhase = (AIPlayPhase *)
+    //                                                              ((int)&refPhase->commands[0].
+    //                                                                     value1Value + 3);
+    //                                                   temp8 = 1;
+    //                                                   do {
+    //                                                     sprintf(temp2 + 4,s__sF_d,
+    //                                                             this->plays + (int)pAVar9,temp8);
+    //                                                     AIPlay::setName((AIPlay *)
+    //                                                                     (this->plays[1].nameValue +
+    //                                                                     iVar4),temp2 + 4);
+    //                                                     iVar5 = 0;
+    //                                                     this->plays[1].targetTypeValue[iVar4 + -1] =
+    //                                                          this->plays[(int)pAVar9].typeValue;
+    //                                                     this->plays[1].targetTypeValue[iVar4 + -3] =
+    //                                                          this->plays[(int)pAVar9].
+    //                                                          minimumNumberUnitsValue;
+    //                                                     this->plays[1].targetTypeValue[iVar4 + -2] =
+    //                                                          this->plays[(int)pAVar9].
+    //                                                          maximumNumberUnitsValue;
+    //                                                     this->plays[1].targetCharacteristicValue
+    //                                                     [iVar4 + 5] = this->plays[(int)pAVar9].
+    //                                                                   powerValue;
+    //                                                     this->plays[1].groups[0].minValue[iVar4 + -4] =
+    //                                                          this->plays[(int)pAVar9].overflowValue;
+    //                                                     this->plays[1].groups[0].minValue[iVar4 + -2] =
+    //                                                          this->plays[(int)pAVar9].
+    //                                                          deathPercentageValue;
+    //                                                     this->plays[1].groups[0].minValue[iVar4 + -3] =
+    //                                                          this->plays[(int)pAVar9].intelligenceValue;
+    //                                                     do {
+    //                                                       uVar2 = AIPlay::targetType(this->plays +
+    //                                                                                  (int)pAVar9,iVar5);
+    //                                                       AIPlay::addTargetType
+    //                                                                 ((AIPlay *)
+    //                                                                  (this->plays[1].nameValue + iVar4),
+    //                                                                  uVar2);
+    //                                                       uVar2 = AIPlay::targetCharacteristic
+    //                                                                         (this->plays + (int)pAVar9,
+    //                                                                          iVar5);
+    //                                                       AIPlay::addTargetCharacteristic
+    //                                                                 ((AIPlay *)
+    //                                                                  (this->plays[1].nameValue + iVar4),
+    //                                                                  uVar2);
+    //                                                       iVar5 = iVar5 + 1;
+    //                                                     } while (iVar5 < 5);
+    //                                                     curPhase = (AIPlayPhase *)0x0;
+    //                                                     this->plays[1].groups[0].minValue[iVar4 + -1] =
+    //                                                          this->plays[(int)pAVar9].numberGroupsValue;
+    //                                                     do {
+    //                                                       pAVar15 = curPhase;
+    //                                                       a = (int)AIPlay::group(this->plays +
+    //                                                                              (int)pAVar9,
+    //                                                                              (int)curPhase);
+    //                                                       currentPlay = (int)AIPlay::group((AIPlay *)
+    //                                                                                        (this->plays
+    //                                                                                         [1].
+    //                                                   nameValue + iVar4),(int)pAVar15);
+    //                                                   iVar5 = 0;
+    //                                                   do {
+    //                                                     bVar3 = AIPlayGroup::minimum
+    //                                                                       ((AIPlayGroup *)a,iVar5);
+    //                                                     AIPlayGroup::setMinimum
+    //                                                               ((AIPlayGroup *)currentPlay,iVar5,
+    //                                                                (uint)bVar3);
+    //                                                     bVar3 = AIPlayGroup::maximum
+    //                                                                       ((AIPlayGroup *)a,iVar5);
+    //                                                     AIPlayGroup::setMaximum
+    //                                                               ((AIPlayGroup *)currentPlay,iVar5,
+    //                                                                (uint)bVar3);
+    //                                                     iVar5 = iVar5 + 1;
+    //                                                   } while (iVar5 < 6);
+    //                                                   curPhase = (AIPlayPhase *)
+    //                                                              &curPhase->commands[0].typeValue;
+    //                                                   } while ((int)curPhase < 5);
+    //                                                   curPhase = (AIPlayPhase *)0x0;
+    //                                                   do {
+    //                                                     pAVar15 = curPhase;
+    //                                                     temp5 = (int)AIPlay::phase(this->plays +
+    //                                                                                (int)pAVar9,
+    //                                                                                (int)curPhase);
+    //                                                     a = (int)AIPlay::phase((AIPlay *)
+    //                                                                            (this->plays[1].nameValue
+    //                                                                            + iVar4),(int)pAVar15);
+    //                                                     currentPlay = 0;
+    //                                                     do {
+    //                                                       pAVar10 = AIPlayPhase::command
+    //                                                                           ((AIPlayPhase *)temp5,
+    //                                                                            currentPlay);
+    //                                                       if (pAVar10->typeValue == '\x01') {
+    //                                                         XYZ::XYZ((XYZ *)&origin.yValue,0,0,0);
+    //                                                         XYZ::XYZ((XYZ *)&rotatedPoint.yValue);
+    //                                                         XYZ::XYZ((XYZ *)&originalPoint.yValue,
+    //                                                                  pAVar10->value1Value,
+    //                                                                  pAVar10->value2Value,
+    //                                                                  pAVar10->value3Value);
+    //                                                         XYZ::rotateXYByFacet
+    //                                                                   ((XYZ *)&originalPoint.yValue,
+    //                                                                    (XYZ *)&origin.yValue,
+    //                                                                    (XYZ *)&rotatedPoint.yValue,
+    //                                                                    (uchar)temp8);
+    //                                                         AIPlayPhaseCommand::AIPlayPhaseCommand
+    //                                                                   ((AIPlayPhaseCommand *)
+    //                                                                    &newCommand.value1Value,
+    //                                                                    pAVar10->groupValue,
+    //                                                                    pAVar10->typeValue,
+    //                                                                    rotatedPoint.yValue,
+    //                                                                    rotatedPoint.zValue,
+    //                                                                    originalPoint.xValue);
+    //                                                         pAVar10 = (AIPlayPhaseCommand *)
+    //                                                                   &newCommand.value1Value;
+    //                                                       }
+    //                                                       AIPlayPhase::addCommand
+    //                                                                 ((AIPlayPhase *)a,pAVar10);
+    //                                                       currentPlay = currentPlay + 1;
+    //                                                     } while (currentPlay < 5);
+    //                                                     iVar5 = 0;
+    //                                                     do {
+    //                                                       pAVar11 = AIPlayPhase::trigger
+    //                                                                           ((AIPlayPhase *)temp5,
+    //                                                                            iVar5);
+    //                                                       AIPlayPhase::addTrigger
+    //                                                                 ((AIPlayPhase *)a,pAVar11);
+    //                                                       iVar5 = iVar5 + 1;
+    //                                                     } while (iVar5 < 3);
+    //                                                     curPhase = (AIPlayPhase *)
+    //                                                                &curPhase->commands[0].typeValue;
+    //                                                   } while ((int)curPhase < 10);
+    //                                                   temp8 = temp8 + 1;
+    //                                                   pAVar15 = refPhase;
+    //                                                   iVar4 = iVar4 + 0x608;
+    //                                                   } while (temp8 < 8);
+    //                                                 }
+    //                                               }
+    //                                             }
+    //                                           }
+    //                                         }
+    //                                       }
+    //                                     }
+    //                                   }
+    //                                 }
+    //                               }
+    //                             }
+    //                           }
+    //                         }
+    //                       }
+    //                     }
+    //                   }
+    //                 }
+    //               }
+    //             }
+    //           }
+    //         } while ((int)pAVar15 < 16000);
+    //         fclose(rotatedPoint.xValue);
+    //         iVar4 = 1;
+    //         goto LAB_0041131a;
+    //       }
+    //     }
+    //   }
+    //   iVar4 = 0;
+    // LAB_0041131a:
+    //   *unaff_FS_OFFSET = local_c;
+    //   return iVar4;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00411340
+AIPlay* play(AIPlayBook* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: class AIPlay * __thiscall AIPlayBook::play(int) */
+    // 
+    // AIPlay * __thiscall AIPlayBook::play(AIPlayBook *this,int param_1)
+    // 
+    // {
+    //   if (((this->plays != (AIPlay *)0x0) && (-1 < param_1)) && (param_1 < this->numberPlaysValue)) {
+    //     return this->plays + param_1;
+    //   }
+    //   return (AIPlay *)0x0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00411370
+AIPlay* play(AIPlayBook* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: class AIPlay * __thiscall AIPlayBook::play(char *) */
+    // 
+    // AIPlay * __thiscall AIPlayBook::play(AIPlayBook *this,char *param_1)
+    // 
+    // {
+    //   byte bVar1;
+    //   AIPlay *pAVar2;
+    //   AIPlay *pAVar3;
+    //   int iVar4;
+    //   int iVar5;
+    //   byte *pbVar6;
+    //   AIPlay *pAVar7;
+    //   bool bVar8;
+    //   
+    //   pAVar2 = this->plays;
+    //   if (pAVar2 != (AIPlay *)0x0) {
+    //     iVar5 = 0;
+    //     pAVar3 = pAVar2;
+    //     pbVar6 = (byte *)param_1;
+    //     pAVar7 = pAVar2;
+    //     if (0 < this->numberPlaysValue) {
+    // LAB_0041138f:
+    //       do {
+    //         bVar1 = pAVar3->nameValue[0];
+    //         bVar8 = bVar1 < *pbVar6;
+    //         if (bVar1 == *pbVar6) {
+    //           if (bVar1 != 0) {
+    //             bVar1 = pAVar3->nameValue[1];
+    //             bVar8 = bVar1 < pbVar6[1];
+    //             if (bVar1 != pbVar6[1]) goto LAB_004113b3;
+    //             pAVar3 = (AIPlay *)(pAVar3->nameValue + 2);
+    //             pbVar6 = pbVar6 + 2;
+    //             if (bVar1 != 0) goto LAB_0041138f;
+    //           }
+    //           iVar4 = 0;
+    //         }
+    //         else {
+    // LAB_004113b3:
+    //           iVar4 = (1 - (uint)bVar8) - (uint)(bVar8 != 0);
+    //         }
+    //         if (iVar4 == 0) {
+    //           return pAVar2 + iVar5;
+    //         }
+    //         iVar5 = iVar5 + 1;
+    //         pAVar3 = pAVar7 + 1;
+    //         pbVar6 = (byte *)param_1;
+    //         pAVar7 = pAVar3;
+    //         if (this->numberPlaysValue <= iVar5) {
+    //           return (AIPlay *)0x0;
+    //         }
+    //       } while( true );
+    //     }
+    //   }
+    //   return (AIPlay *)0x0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00411400
+int playNumber(AIPlayBook* this_, char* param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall AIPlayBook::playNumber(char *) */
+    // 
+    // int __thiscall AIPlayBook::playNumber(AIPlayBook *this,char *param_1)
+    // 
+    // {
+    //   byte bVar1;
+    //   AIPlay *pAVar2;
+    //   int iVar3;
+    //   int iVar4;
+    //   byte *pbVar5;
+    //   AIPlay *pAVar6;
+    //   bool bVar7;
+    //   
+    //   pAVar2 = this->plays;
+    //   if (pAVar2 != (AIPlay *)0x0) {
+    //     iVar4 = 0;
+    //     pbVar5 = (byte *)param_1;
+    //     pAVar6 = pAVar2;
+    //     if (0 < this->numberPlaysValue) {
+    // LAB_0041141c:
+    //       do {
+    //         bVar1 = pAVar2->nameValue[0];
+    //         bVar7 = bVar1 < *pbVar5;
+    //         if (bVar1 == *pbVar5) {
+    //           if (bVar1 != 0) {
+    //             bVar1 = pAVar2->nameValue[1];
+    //             bVar7 = bVar1 < pbVar5[1];
+    //             if (bVar1 != pbVar5[1]) goto LAB_00411440;
+    //             pAVar2 = (AIPlay *)(pAVar2->nameValue + 2);
+    //             pbVar5 = pbVar5 + 2;
+    //             if (bVar1 != 0) goto LAB_0041141c;
+    //           }
+    //           iVar3 = 0;
+    //         }
+    //         else {
+    // LAB_00411440:
+    //           iVar3 = (1 - (uint)bVar7) - (uint)(bVar7 != 0);
+    //         }
+    //         if (iVar3 == 0) {
+    //           return iVar4;
+    //         }
+    //         iVar4 = iVar4 + 1;
+    //         pAVar2 = pAVar6 + 1;
+    //         pbVar5 = (byte *)param_1;
+    //         pAVar6 = pAVar2;
+    //         if (this->numberPlaysValue <= iVar4) {
+    //           return -1;
+    //         }
+    //       } while( true );
+    //     }
+    //   }
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00411480
+int AIPlayBook::convertTargetNameToIntType(char* param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall AIPlayBook::convertTargetNameToIntType(char *)const  */
+    // 
+    // int __thiscall AIPlayBook::convertTargetNameToIntType(AIPlayBook *this,char *param_1)
+    // 
+    // {
+    //   byte bVar1;
+    //   byte *pbVar2;
+    //   bool bVar3;
+    //   
+    //   pbVar2 = &s_Any;
+    //   while( true ) {
+    //     bVar1 = *param_1;
+    //     bVar3 = bVar1 < *pbVar2;
+    //     if (bVar1 != *pbVar2) break;
+    //     if (bVar1 == 0) {
+    //       return 5;
+    //     }
+    //     bVar1 = ((byte *)param_1)[1];
+    //     bVar3 = bVar1 < pbVar2[1];
+    //     if (bVar1 != pbVar2[1]) break;
+    //     param_1 = (char *)((byte *)param_1 + 2);
+    //     pbVar2 = pbVar2 + 2;
+    //     if (bVar1 == 0) {
+    //       return 5;
+    //     }
+    //   }
+    //   return (-(uint)(1 - bVar3 != (uint)(bVar3 != 0)) & 0xfffffffb) + 5;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x004114E0
+int AIPlayBook::convertTargetCharacteristicNameToIntType(char* param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall AIPlayBook::convertTargetCharacteristicNameToIntType(char *)const
+    //     */
+    // 
+    // int __thiscall AIPlayBook::convertTargetCharacteristicNameToIntType(AIPlayBook *this,char *param_1)
+    // 
+    // {
+    //   byte bVar1;
+    //   byte *pbVar2;
+    //   int iVar3;
+    //   byte *pbVar4;
+    //   bool bVar5;
+    //   
+    //   pbVar4 = &s_Stationary;
+    //   pbVar2 = (byte *)param_1;
+    //   do {
+    //     bVar1 = *pbVar2;
+    //     bVar5 = bVar1 < *pbVar4;
+    //     if (bVar1 != *pbVar4) {
+    // LAB_00411516:
+    //       iVar3 = (1 - (uint)bVar5) - (uint)(bVar5 != 0);
+    //       goto LAB_0041151b;
+    //     }
+    //     if (bVar1 == 0) break;
+    //     bVar1 = pbVar2[1];
+    //     bVar5 = bVar1 < pbVar4[1];
+    //     if (bVar1 != pbVar4[1]) goto LAB_00411516;
+    //     pbVar2 = pbVar2 + 2;
+    //     pbVar4 = pbVar4 + 2;
+    //   } while (bVar1 != 0);
+    //   iVar3 = 0;
+    // LAB_0041151b:
+    //   if (iVar3 == 0) {
+    //     return 1;
+    //   }
+    //   pbVar4 = &s_Moving;
+    //   pbVar2 = (byte *)param_1;
+    //   do {
+    //     bVar1 = *pbVar2;
+    //     bVar5 = bVar1 < *pbVar4;
+    //     if (bVar1 != *pbVar4) {
+    // LAB_00411559:
+    //       iVar3 = (1 - (uint)bVar5) - (uint)(bVar5 != 0);
+    //       goto LAB_0041155e;
+    //     }
+    //     if (bVar1 == 0) break;
+    //     bVar1 = pbVar2[1];
+    //     bVar5 = bVar1 < pbVar4[1];
+    //     if (bVar1 != pbVar4[1]) goto LAB_00411559;
+    //     pbVar2 = pbVar2 + 2;
+    //     pbVar4 = pbVar4 + 2;
+    //   } while (bVar1 != 0);
+    //   iVar3 = 0;
+    // LAB_0041155e:
+    //   if (iVar3 == 0) {
+    //     return 2;
+    //   }
+    //   pbVar4 = &s_Slow;
+    //   pbVar2 = (byte *)param_1;
+    //   do {
+    //     bVar1 = *pbVar2;
+    //     bVar5 = bVar1 < *pbVar4;
+    //     if (bVar1 != *pbVar4) {
+    // LAB_0041159c:
+    //       iVar3 = (1 - (uint)bVar5) - (uint)(bVar5 != 0);
+    //       goto LAB_004115a1;
+    //     }
+    //     if (bVar1 == 0) break;
+    //     bVar1 = pbVar2[1];
+    //     bVar5 = bVar1 < pbVar4[1];
+    //     if (bVar1 != pbVar4[1]) goto LAB_0041159c;
+    //     pbVar2 = pbVar2 + 2;
+    //     pbVar4 = pbVar4 + 2;
+    //   } while (bVar1 != 0);
+    //   iVar3 = 0;
+    // LAB_004115a1:
+    //   if (iVar3 == 0) {
+    //     return 3;
+    //   }
+    //   pbVar4 = &s_Fast;
+    //   pbVar2 = (byte *)param_1;
+    //   do {
+    //     bVar1 = *pbVar2;
+    //     bVar5 = bVar1 < *pbVar4;
+    //     if (bVar1 != *pbVar4) {
+    // LAB_004115df:
+    //       iVar3 = (1 - (uint)bVar5) - (uint)(bVar5 != 0);
+    //       goto LAB_004115e4;
+    //     }
+    //     if (bVar1 == 0) break;
+    //     bVar1 = pbVar2[1];
+    //     bVar5 = bVar1 < pbVar4[1];
+    //     if (bVar1 != pbVar4[1]) goto LAB_004115df;
+    //     pbVar2 = pbVar2 + 2;
+    //     pbVar4 = pbVar4 + 2;
+    //   } while (bVar1 != 0);
+    //   iVar3 = 0;
+    // LAB_004115e4:
+    //   if (iVar3 == 0) {
+    //     return 4;
+    //   }
+    //   pbVar2 = &s_Any;
+    //   while( true ) {
+    //     bVar1 = *param_1;
+    //     bVar5 = bVar1 < *pbVar2;
+    //     if (bVar1 != *pbVar2) break;
+    //     if (bVar1 == 0) {
+    //       return 5;
+    //     }
+    //     bVar1 = ((byte *)param_1)[1];
+    //     bVar5 = bVar1 < pbVar2[1];
+    //     if (bVar1 != pbVar2[1]) break;
+    //     param_1 = (char *)((byte *)param_1 + 2);
+    //     pbVar2 = pbVar2 + 2;
+    //     if (bVar1 == 0) {
+    //       return 5;
+    //     }
+    //   }
+    //   return (-(uint)(1 - bVar5 != (uint)(bVar5 != 0)) & 0xfffffffb) + 5;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00411650
+int AIPlayBook::convertUnitNameToIntType(char* param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall AIPlayBook::convertUnitNameToIntType(char *)const  */
+    // 
+    // int __thiscall AIPlayBook::convertUnitNameToIntType(AIPlayBook *this,char *param_1)
+    // 
+    // {
+    //   return -1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x00411660
+int AIPlayBook::convertUnitToIntType(RGE_Static_Object* param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual int __thiscall AIPlayBook::convertUnitToIntType(class RGE_Static_Object *)const
+    //     */
+    // 
+    // int __thiscall AIPlayBook::convertUnitToIntType(AIPlayBook *this,RGE_Static_Object *param_1)
+    // 
+    // {
+    //   return -1;
+    // }
+    // 
+    // 
+}
+

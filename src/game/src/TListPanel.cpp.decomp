@@ -1,0 +1,22 @@
+// Auto-generated decompiler unit: TListPanel.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x00478310
+void* TListPanel::vector_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TListPanel::`vector deleting destructor'(unsigned int) */
+    // 
+    // void * __thiscall TListPanel::_vector_deleting_destructor_(TListPanel *this,uint param_1)
+    // 
+    // {
+    //   ~TListPanel(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

@@ -1,0 +1,476 @@
+// Auto-generated decompiler unit: tpnl_pop.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/tpnl_pop.cpp
+#include "../include/common.h"
+
+// Offset: 0x0051CCA0
+undefined TRIBE_Panel_Pop(TRIBE_Panel_Pop* this_, TDrawArea* param_2, TPanel* param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TRIBE_Panel_Pop::TRIBE_Panel_Pop(class TDrawArea *,class TPanel *) */
+    // 
+    // TRIBE_Panel_Pop * __thiscall
+    // TRIBE_Panel_Pop::TRIBE_Panel_Pop(TRIBE_Panel_Pop *this,TDrawArea *param_1,TPanel *param_2)
+    // 
+    // {
+    //   RGE_Font *pRVar1;
+    //   long lVar2;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   pcStack_8 = FUN_005613a8;
+    //   local_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &local_c;
+    //   TPanel::TPanel((TPanel *)this);
+    //   this->_padding_ = (int)&_vftable_;
+    //   this->_padding_ = 0;
+    //   local_4 = 0;
+    //   pRVar1 = RGE_Base_Game::get_font(rge_base_game,0xb);
+    //   this->font = pRVar1->font;
+    //   this->color1 = 0xffffff;
+    //   this->color2 = 0;
+    //   this->color3 = 0xffff;
+    //   this->player_id = 0;
+    //   this->world = (TRIBE_World *)0x0;
+    //   this->player = (TRIBE_Player *)0x0;
+    //   this->pop = 0;
+    //   this->max_pop = 0;
+    //   this->mode = '\0';
+    //   this->timer = 0.0;
+    //   this->ImageBuffer = (TDrawArea *)0x0;
+    //   this->LastIBWidth = -1;
+    //   this->LastIBHeight = -1;
+    //   this->ImageTextActive = 0;
+    //   this->image_clip_region = (void *)0x0;
+    //   lVar2 = TPanel::setup((TPanel *)this,param_1,param_2,0,0,0,0,'\0');
+    //   if (lVar2 == 0) {
+    //     this->_padding_ = 1;
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0051CDB0
+void TRIBE_Panel_Pop(TRIBE_Panel_Pop* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual __thiscall TRIBE_Panel_Pop::~TRIBE_Panel_Pop(void) */
+    // 
+    // void __thiscall TRIBE_Panel_Pop::~TRIBE_Panel_Pop(TRIBE_Panel_Pop *this)
+    // 
+    // {
+    //   TDrawArea *this_00;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 uStack_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   pcStack_8 = FUN_005613c8;
+    //   uStack_c = *unaff_FS_OFFSET;
+    //   *unaff_FS_OFFSET = &uStack_c;
+    //   this->_padding_ = (int)&_vftable_;
+    //   local_4 = 0;
+    //   if (this->image_clip_region != (void *)0x0) {
+    //     DeleteObject(this->image_clip_region);
+    //     this->image_clip_region = (void *)0x0;
+    //   }
+    //   this_00 = this->ImageBuffer;
+    //   if (this_00 != (TDrawArea *)0x0) {
+    //     TDrawArea::~TDrawArea(this_00);
+    //     operator_delete(this_00);
+    //     this->ImageBuffer = (TDrawArea *)0x0;
+    //   }
+    //   local_4 = 0xffffffff;
+    //   TPanel::~TPanel((TPanel *)this);
+    //   *unaff_FS_OFFSET = uStack_c;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0051CE40
+void TRIBE_Panel_Pop::set_rect(long param_1, long param_2, long param_3, long param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall TRIBE_Panel_Pop::set_rect(long,long,long,long) */
+    // 
+    // void __thiscall
+    // TRIBE_Panel_Pop::set_rect(TRIBE_Panel_Pop *this,long param_1,long param_2,long param_3,long param_4)
+    // 
+    // {
+    //   TDrawArea *pTVar1;
+    //   int iVar2;
+    //   void *pvVar3;
+    //   int iVar4;
+    //   undefined4 unaff_EBX;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   undefined4 uStack_c;
+    //   code *pcStack_8;
+    //   undefined4 uStack_4;
+    //   
+    //   uStack_c = *unaff_FS_OFFSET;
+    //   uStack_4 = 0xffffffff;
+    //   pcStack_8 = FUN_005613eb;
+    //   *unaff_FS_OFFSET = &uStack_c;
+    //   TPanel::set_rect((TPanel *)this,param_1,param_2,param_3,param_4);
+    //   if (((this->LastIBWidth < this->_padding_) || (this->LastIBHeight < this->_padding_)) ||
+    //      (*(int *)(this->_padding_ + 0x18) <= param_1 + this->LastIBWidth)) {
+    //     if (this->image_clip_region != (void *)0x0) {
+    //       DeleteObject(this->image_clip_region);
+    //       this->image_clip_region = (void *)0x0;
+    //     }
+    //     pTVar1 = this->ImageBuffer;
+    //     if (pTVar1 != (TDrawArea *)0x0) {
+    //       TDrawArea::~TDrawArea(pTVar1);
+    //       operator_delete(pTVar1);
+    //       this->ImageBuffer = (TDrawArea *)0x0;
+    //     }
+    //     pTVar1 = (TDrawArea *)operator_new(0x100);
+    //     uStack_4 = 0;
+    //     if (pTVar1 == (TDrawArea *)0x0) {
+    //       pTVar1 = (TDrawArea *)0x0;
+    //     }
+    //     else {
+    //       pTVar1 = (TDrawArea *)TDrawArea::TDrawArea(pTVar1,s_time_message_panel,0);
+    //     }
+    //     this->ImageBuffer = pTVar1;
+    //     uStack_4 = 0xffffffff;
+    //     TDrawArea::Init(pTVar1,*(TDrawSystem **)this->_padding_,this->_padding_,this->_padding_,0,0);
+    //     this->LastIBWidth = this->_padding_;
+    //     this->LastIBHeight = this->_padding_;
+    //     iVar2 = this->_padding_ + -1;
+    //     iVar4 = this->_padding_ + -1;
+    //     (this->ImageRect).left = 0;
+    //     (this->ImageRect).top = 0;
+    //     (this->ImageRect).right = iVar2;
+    //     (this->ImageRect).bottom = iVar4;
+    //     pvVar3 = (void *)CreateRectRgn(0,0,iVar2,iVar4);
+    //     this->image_clip_region = pvVar3;
+    //   }
+    //   if (this->ImageBuffer == (TDrawArea *)0x0) {
+    //     this->LastIBWidth = -1;
+    //     this->LastIBHeight = -1;
+    //   }
+    //   else {
+    //     (this->UsedImageRect).left = (this->ImageRect).left;
+    //     (this->UsedImageRect).top = (this->ImageRect).top;
+    //     (this->UsedImageRect).right = (this->ImageRect).right;
+    //     (this->UsedImageRect).bottom = (this->ImageRect).bottom;
+    //   }
+    //   iVar2 = this->_padding_;
+    //   *(undefined1 *)((int)&this->_padding_ + 3) = 1;
+    //   (**(code **)(iVar2 + 0x20))(1);
+    //   *unaff_FS_OFFSET = unaff_EBX;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0051CFD0
+void startup(TRIBE_Panel_Pop* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall TRIBE_Panel_Pop::startup(void) */
+    // 
+    // void __thiscall TRIBE_Panel_Pop::startup(TRIBE_Panel_Pop *this)
+    // 
+    // {
+    //   TRIBE_Player *pTVar1;
+    //   int iVar2;
+    //   int iVar3;
+    //   int iVar4;
+    //   
+    //   this->world = (TRIBE_World *)rge_base_game->world;
+    //   pTVar1 = (TRIBE_Player *)RGE_Base_Game::get_player(rge_base_game);
+    //   this->player = pTVar1;
+    //   iVar2 = __ftol();
+    //   this->pop = iVar2;
+    //   iVar3 = __ftol();
+    //   this->max_pop = iVar2 + iVar3;
+    //   iVar4 = __ftol();
+    //   if (iVar4 < iVar2 + iVar3) {
+    //     this->max_pop = iVar4;
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0051D040
+int get_player_id(TRIBE_Panel_Pop* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: int __thiscall TRIBE_Panel_Pop::get_player_id(void) */
+    // 
+    // int __thiscall TRIBE_Panel_Pop::get_player_id(TRIBE_Panel_Pop *this)
+    // 
+    // {
+    //   if (this->player != (TRIBE_Player *)0x0) {
+    //     return (int)*(short *)((int)&this->player->_padding_ + 2);
+    //   }
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0051D060
+void TRIBE_Panel_Pop::draw() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: changed_mode */
+    // /* public: virtual void __thiscall TRIBE_Panel_Pop::draw(void) */
+    // 
+    // void __thiscall TRIBE_Panel_Pop::draw(TRIBE_Panel_Pop *this)
+    // 
+    // {
+    //   float fVar1;
+    //   bool bVar2;
+    //   byte bVar3;
+    //   TRIBE_Player *pTVar4;
+    //   int iVar5;
+    //   int iVar6;
+    //   int iVar7;
+    //   void *pvVar8;
+    //   undefined4 uVar9;
+    //   char *pcVar10;
+    //   TDrawArea *pTVar11;
+    //   int iVar12;
+    //   ulong uVar13;
+    //   uchar changed_mode;
+    //   tagRECT rect;
+    //   int iStack_110;
+    //   void *old_font;
+    //   char str [256];
+    //   
+    //   if (((this->_padding_ != 0) && (this->_padding_ != 0)) && (this->_padding_ != 0)) {
+    //     this->_padding_ = this->_padding_ + 1;
+    //     (**(code **)(this->_padding_ + 0x28))(0);
+    //     pTVar4 = (TRIBE_Player *)RGE_Base_Game::get_player(rge_base_game);
+    //     this->player = pTVar4;
+    //     bVar2 = false;
+    //     if ((this->mode == '\0') &&
+    //        (0 < *(int *)(rge_base_game[1].save_music_file +
+    //                     *(short *)((int)&pTVar4->_padding_ + 2) * 4 + -0x70))) {
+    //       this->mode = '\x01';
+    //       this->timer = 0.0;
+    //       bVar2 = true;
+    //     }
+    //     if ((this->mode != '\0') &&
+    //        (fVar1 = ((RGE_Game_World *)pTVar4->_padding_)->world_time_delta_seconds + this->timer,
+    //        this->timer = fVar1, 1.0 < fVar1)) {
+    //       bVar2 = true;
+    //       bVar3 = this->mode + 1;
+    //       this->timer = 0.0;
+    //       this->mode = bVar3;
+    //       if (2 < bVar3) {
+    //         this->mode = '\0';
+    //       }
+    //     }
+    //     iVar5 = __ftol();
+    //     iVar6 = __ftol();
+    //     iVar7 = __ftol();
+    //     iVar12 = iVar6 + iVar5;
+    //     if (iVar7 < iVar6 + iVar5) {
+    //       iVar12 = iVar7;
+    //     }
+    //     if ((this->ImageBuffer != (TDrawArea *)0x0) &&
+    //        ((((bVar2 || (*(char *)((int)&this->_padding_ + 3) != '\0')) || (this->pop != iVar5)) ||
+    //         (this->max_pop != iVar12)))) {
+    //       this->pop = iVar5;
+    //       this->max_pop = iVar12;
+    //       render_to_image_buffer(this);
+    //       if (*(char *)((int)&this->_padding_ + 3) != '\0') {
+    //         *(undefined1 *)((int)&this->_padding_ + 3) = 0;
+    //         (**(code **)(iStack_110 + 0x2c))();
+    //         return;
+    //       }
+    //     }
+    //     if ((this->ImageTextActive != 0) && (this->ImageBuffer != (TDrawArea *)0x0)) {
+    //       TDrawArea::SetTrans(this->ImageBuffer,1,'\x01');
+    //       TDrawArea::Copy(this->ImageBuffer,(TDrawArea *)this->_padding_,(this->UsedScreenRect).left,
+    //                       (this->UsedScreenRect).top,&this->UsedImageRect,1);
+    //       TDrawArea::SetTrans(this->ImageBuffer,0,'\x01');
+    //       (**(code **)(iStack_110 + 0x2c))();
+    //       return;
+    //     }
+    //     pvVar8 = TDrawArea::GetDc((TDrawArea *)this->_padding_,s_tpnl_tim__draw);
+    //     if (pvVar8 != (void *)0x0) {
+    //       SelectClipRgn(*(undefined4 *)(this->_padding_ + 0x38),this->_padding_);
+    //       uVar9 = SelectObject(*(undefined4 *)(this->_padding_ + 0x38),this->font);
+    //       SetBkMode(*(undefined4 *)(this->_padding_ + 0x38),1);
+    //       iVar12 = this->max_pop;
+    //       iVar5 = this->pop;
+    //                     /* language.dll match for 0x2b2a: "pop: " */
+    //       pcVar10 = TPanel::get_string((TPanel *)this,0x2b2a);
+    //       sprintf(str,s__s_ld__ld,pcVar10,iVar5,iVar12);
+    //       SetTextColor(*(undefined4 *)(this->_padding_ + 0x38),this->color2);
+    //       iVar12 = this->_padding_;
+    //       iVar5 = this->_padding_;
+    //       iVar7 = this->_padding_ + -2 + iVar5 + 1;
+    //       iVar6 = this->_padding_ + -2 + iVar12 + 1;
+    //       SetRect(&rect,iVar12,iVar5,iVar6 + -2,iVar7 + -2);
+    //       DrawTextA(*(undefined4 *)(this->_padding_ + 0x38),str,0xffffffff,&rect,0x21);
+    //       SetRect(&rect,iVar12,iVar5 + 2,iVar6 + -2,iVar7);
+    //       DrawTextA(*(undefined4 *)(this->_padding_ + 0x38),str,0xffffffff,&rect,0x21);
+    //       SetRect(&rect,iVar12 + 2,iVar5,iVar6,iVar7 + -2);
+    //       DrawTextA(*(undefined4 *)(this->_padding_ + 0x38),str,0xffffffff,&rect,0x21);
+    //       SetRect(&rect,iVar12 + 2,iVar5 + 2,iVar6,iVar7);
+    //       DrawTextA(*(undefined4 *)(this->_padding_ + 0x38),str,0xffffffff,&rect,0x21);
+    //       if (this->mode == '\x01') {
+    //         uVar13 = this->color3;
+    //         pTVar11 = this->ImageBuffer;
+    //       }
+    //       else {
+    //         uVar13 = this->color1;
+    //         pTVar11 = (TDrawArea *)this->_padding_;
+    //       }
+    //       SetTextColor(pTVar11->DrawDc,uVar13);
+    //       SetRect(&rect,iVar12 + 1,iVar5 + 1,iVar6 + -1,iVar7 + -1);
+    //       DrawTextA(*(undefined4 *)(this->_padding_ + 0x38),str,0xffffffff,&rect,0x21);
+    //       SelectObject(*(undefined4 *)(this->_padding_ + 0x38),uVar9);
+    //       SelectClipRgn(*(undefined4 *)(this->_padding_ + 0x38),0);
+    //       TDrawArea::ReleaseDc((TDrawArea *)this->_padding_,s_tpnl_tim__draw);
+    //     }
+    //                     /* Symbol Ref: {@symbol finish_up} */
+    //     (**(code **)(iStack_110 + 0x2c))();
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0051D470
+void TRIBE_Panel_Pop::get_true_render_rect(tagRECT* param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void __thiscall TRIBE_Panel_Pop::get_true_render_rect(struct tagRECT &) */
+    // 
+    // void __thiscall TRIBE_Panel_Pop::get_true_render_rect(TRIBE_Panel_Pop *this,tagRECT *param_1)
+    // 
+    // {
+    //   if ((((this->ImageBuffer != (TDrawArea *)0x0) && (this->_padding_ != 0)) && (this->_padding_ != 0)
+    //       ) && (this->_padding_ != 0)) {
+    //     param_1->left = (this->UsedScreenRect).left;
+    //     param_1->top = (this->UsedScreenRect).top;
+    //     param_1->right = (this->UsedScreenRect).right;
+    //     param_1->bottom = (this->UsedScreenRect).bottom;
+    //     return;
+    //   }
+    //   param_1->left = this->_padding_;
+    //   param_1->top = this->_padding_;
+    //   param_1->right = this->_padding_;
+    //   param_1->bottom = this->_padding_;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0051D4E0
+long TRIBE_Panel_Pop::handle_idle() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual long __thiscall TRIBE_Panel_Pop::handle_idle(void) */
+    // 
+    // long __thiscall TRIBE_Panel_Pop::handle_idle(TRIBE_Panel_Pop *this)
+    // 
+    // {
+    //   TPanel::handle_idle((TPanel *)this);
+    //   return 0;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0051D4F0
+int render_to_image_buffer(TRIBE_Panel_Pop* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: rect */
+    // /* protected: int __thiscall TRIBE_Panel_Pop::render_to_image_buffer(void) */
+    // 
+    // int __thiscall TRIBE_Panel_Pop::render_to_image_buffer(TRIBE_Panel_Pop *this)
+    // 
+    // {
+    //   int iVar1;
+    //   int iVar2;
+    //   void *pvVar3;
+    //   char *pcVar4;
+    //   int iVar5;
+    //   ulong uVar6;
+    //   int iVar7;
+    //   tagRECT rect;
+    //   void *old_font;
+    //   char str [256];
+    //   
+    //   if (this->ImageBuffer == (TDrawArea *)0x0) {
+    //     return 0;
+    //   }
+    //   TDrawArea::PtrClear(this->ImageBuffer,&this->ImageRect,1);
+    //   pvVar3 = TDrawArea::GetDc(this->ImageBuffer,s_tpnl_tim__render_to_image_buffer);
+    //   if (pvVar3 == (void *)0x0) {
+    //     return 0;
+    //   }
+    //   TDrawArea::SetClipRect(this->ImageBuffer,&this->ImageRect);
+    //   SelectClipRgn(this->ImageBuffer->DrawDc,this->image_clip_region);
+    //   str._0_4_ = SelectObject(this->ImageBuffer->DrawDc,this->font);
+    //   SetBkMode(this->ImageBuffer->DrawDc,1);
+    //   iVar5 = this->max_pop;
+    //   iVar7 = this->pop;
+    //                     /* language.dll match for 0x2b2a: "pop: " */
+    //   pcVar4 = TPanel::get_string((TPanel *)this,0x2b2a);
+    //   sprintf(str + 4,s__s_ld__ld,pcVar4,iVar7,iVar5);
+    //   SetTextColor(this->ImageBuffer->DrawDc,this->color2);
+    //   iVar5 = this->_padding_;
+    //   iVar7 = this->_padding_;
+    //   SetRect(&rect.top,0,0,iVar5 + -3,iVar7 + -3);
+    //   DrawTextA(this->ImageBuffer->DrawDc,str + 4,0xffffffff,&rect.top,0x21);
+    //   SetRect(&rect.top,0,2,iVar5 + -3,iVar7 + -1);
+    //   DrawTextA(this->ImageBuffer->DrawDc,str + 4,0xffffffff,&rect.top,0x21);
+    //   SetRect(&rect.top,2,0,iVar5 + -1,iVar7 + -3);
+    //   DrawTextA(this->ImageBuffer->DrawDc,str + 4,0xffffffff,&rect.top,0x21);
+    //   SetRect(&rect.top,2,2,iVar5 + -1,iVar7 + -1);
+    //   DrawTextA(this->ImageBuffer->DrawDc,str + 4,0xffffffff,&rect.top,0x21);
+    //   if (this->mode == '\x01') {
+    //     uVar6 = this->color3;
+    //   }
+    //   else {
+    //     uVar6 = this->color1;
+    //   }
+    //   SetTextColor(this->ImageBuffer->DrawDc,uVar6);
+    //   SetRect(&rect.top,1,1,iVar5 + -2,iVar7 + -2);
+    //   DrawTextA(this->ImageBuffer->DrawDc,str + 4,0xffffffff,&rect.top,0x21);
+    //   SelectObject(this->ImageBuffer->DrawDc,str._0_4_);
+    //   SelectClipRgn(this->ImageBuffer->DrawDc,0);
+    //   TDrawArea::ReleaseDc(this->ImageBuffer,s_tpnl_tim__render_to_image_buffer);
+    //   iVar5 = this->_padding_;
+    //   iVar7 = this->_padding_;
+    //   iVar1 = this->_padding_;
+    //   (this->UsedImageRect).left = 0;
+    //   (this->UsedImageRect).top = 0;
+    //   iVar2 = this->_padding_;
+    //   iVar5 = iVar5 + -1;
+    //   iVar7 = iVar7 + -1;
+    //   (this->UsedScreenRect).left = iVar1;
+    //   (this->UsedScreenRect).top = iVar2;
+    //   (this->UsedScreenRect).bottom = iVar2 + iVar7;
+    //   (this->UsedImageRect).right = iVar5;
+    //   (this->UsedImageRect).bottom = iVar7;
+    //   (this->UsedScreenRect).right = iVar1 + iVar5;
+    //   this->ImageTextActive = 1;
+    //   return 1;
+    // }
+    // 
+    // 
+}
+

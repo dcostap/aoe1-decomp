@@ -1,0 +1,426 @@
+// Auto-generated decompiler unit: Picture.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/Picture.cpp
+#include "../include/common.h"
+
+// Offset: 0x0046DDE0
+undefined TPicture(TPicture* this_, char* param_2, long param_3, int param_4, void* param_5, int param_6) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TPicture::TPicture(char *,long,int,void *,int) */
+    // 
+    // TPicture * __thiscall
+    // TPicture::TPicture(TPicture *this,char *param_1,long param_2,int param_3,void *param_4,int param_5)
+    // 
+    // {
+    //   this->Dib = (tagBITMAPINFOHEADER *)0x0;
+    //   this->BitmapInfo = (BITMAPINFO256 *)0x0;
+    //   this->Bits = (uchar *)0x0;
+    //   this->TransInfo = (TRANSINFO *)0x0;
+    //   this->OwnMemory = 0;
+    //   this->Width = 0;
+    //   this->Height = 0;
+    //   this->Orien = 1;
+    //   Load(this,param_1,param_2,param_3,param_4,param_5);
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046DE30
+undefined TPicture(TPicture* this_, int param_2, int param_3) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TPicture::TPicture(int,int) */
+    // 
+    // TPicture * __thiscall TPicture::TPicture(TPicture *this,int param_1,int param_2)
+    // 
+    // {
+    //   int *piVar1;
+    //   long *plVar2;
+    //   BITMAPINFO256 *pBVar3;
+    //   long lVar4;
+    //   tagBITMAPINFOHEADER *ptVar5;
+    //   TRANSINFO *pTVar6;
+    //   undefined4 uVar7;
+    //   
+    //   piVar1 = &this->OwnMemory;
+    //   plVar2 = &this->Height;
+    //   this->Dib = (tagBITMAPINFOHEADER *)0x0;
+    //   this->BitmapInfo = (BITMAPINFO256 *)0x0;
+    //   this->Bits = (uchar *)0x0;
+    //   this->TransInfo = (TRANSINFO *)0x0;
+    //   *piVar1 = 0;
+    //   this->Width = 0;
+    //   *plVar2 = 0;
+    //   this->Orien = 1;
+    //   rge_read(param_1,piVar1,4);
+    //   rge_read(param_1,&this->Width,4);
+    //   rge_read(param_1,plVar2,4);
+    //   rge_read(param_1,&this->Orien,2);
+    //   if (*piVar1 != 0) {
+    //     *piVar1 = 2;
+    //   }
+    //   if ((this->Width < 1) || (*plVar2 < 1)) {
+    //     this->Dib = (tagBITMAPINFOHEADER *)0x0;
+    //     this->BitmapInfo = (BITMAPINFO256 *)0x0;
+    //     this->Bits = (uchar *)0x0;
+    //   }
+    //   else {
+    //     uVar7 = 1;
+    //     lVar4 = AlignedWidth(this);
+    //     ptVar5 = (tagBITMAPINFOHEADER *)calloc(lVar4 * *plVar2 + 0x428,uVar7);
+    //     this->Dib = ptVar5;
+    //     lVar4 = AlignedWidth(this);
+    //     rge_read(param_1,this->Dib,lVar4 * *plVar2 + 0x428);
+    //     this->BitmapInfo = (BITMAPINFO256 *)this->Dib;
+    //     this->Bits = (uchar *)((BITMAPINFO256 *)this->Dib + 1);
+    //   }
+    //   this->TransInfo = (TRANSINFO *)0x0;
+    //   if ((param_2 != 0) && (this->Dib != (tagBITMAPINFOHEADER *)0x0)) {
+    //     pTVar6 = (TRANSINFO *)malloc(0x18);
+    //     this->TransInfo = pTVar6;
+    //     if (pTVar6 != (TRANSINFO *)0x0) {
+    //       pBVar3 = (BITMAPINFO256 *)this->Dib;
+    //       if ((pBVar3->bmiHeader).biCompression == 3) {
+    //         DibCheckTrans(pBVar3,pTVar6,
+    //                       (uchar *)((int)(pBVar3->bmiColors + -7) + (pBVar3->bmiHeader).biSize));
+    //         return this;
+    //       }
+    //       DibCheckTrans(pBVar3,pTVar6,
+    //                     &pBVar3->bmiColors[(pBVar3->bmiHeader).biClrUsed - 10].rgbBlue +
+    //                     (pBVar3->bmiHeader).biSize);
+    //       return this;
+    //     }
+    //     DibFree(this->Dib);
+    //     this->Dib = (tagBITMAPINFOHEADER *)0x0;
+    //     this->BitmapInfo = (BITMAPINFO256 *)0x0;
+    //     *piVar1 = 0;
+    //     this->Width = 0;
+    //     *plVar2 = 0;
+    //     this->Orien = 1;
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046DFA0
+undefined TPicture(TPicture* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TPicture::TPicture(void) */
+    // 
+    // void __thiscall TPicture::TPicture(TPicture *this)
+    // 
+    // {
+    //   this->Dib = (tagBITMAPINFOHEADER *)0x0;
+    //   this->BitmapInfo = (BITMAPINFO256 *)0x0;
+    //   this->Bits = (uchar *)0x0;
+    //   this->TransInfo = (TRANSINFO *)0x0;
+    //   this->OwnMemory = 0;
+    //   this->Width = 0;
+    //   this->Height = 0;
+    //   this->Orien = 1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046DFC0
+void TPicture(TPicture* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: __thiscall TPicture::~TPicture(void) */
+    // 
+    // void __thiscall TPicture::~TPicture(TPicture *this)
+    // 
+    // {
+    //   TRANSINFO *pTVar1;
+    //   
+    //   if (this->OwnMemory != 0) {
+    //     pTVar1 = this->TransInfo;
+    //     if (pTVar1 != (TRANSINFO *)0x0) {
+    //       if ((pTVar1->LineInfo != (LINEINFO *)0x0) && (pTVar1->AnyTrans != 0)) {
+    //         free(pTVar1->LineInfo);
+    //       }
+    //       free(this->TransInfo);
+    //     }
+    //     if (this->Dib != (tagBITMAPINFOHEADER *)0x0) {
+    //       if (this->OwnMemory == 2) {
+    //         free();
+    //         return;
+    //       }
+    //       DibFree(this->Dib);
+    //     }
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046E020
+void Save(TPicture* this_, int param_2) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall TPicture::Save(int) */
+    // 
+    // void __thiscall TPicture::Save(TPicture *this,int param_1)
+    // 
+    // {
+    //   long *plVar1;
+    //   long lVar2;
+    //   
+    //   rge_write(param_1,&this->OwnMemory,4);
+    //   rge_write(param_1,&this->Width,4);
+    //   plVar1 = &this->Height;
+    //   rge_write(param_1,plVar1,4);
+    //   rge_write(param_1,&this->Orien,2);
+    //   if ((0 < this->Width) && (0 < *plVar1)) {
+    //     rge_write(param_1,this->BitmapInfo,0x428);
+    //     lVar2 = AlignedWidth(this);
+    //     rge_write(param_1,this->Bits,lVar2 * *plVar1);
+    //   }
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046E0B0
+void Load(TPicture* this_, char* param_2, long param_3, int param_4, void* param_5, int param_6) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Variable defined which should be unmapped: temp_file */
+    // /* public: void __thiscall TPicture::Load(char *,long,int,void *,int) */
+    // 
+    // void __thiscall
+    // TPicture::Load(TPicture *this,char *param_1,long param_2,int param_3,void *param_4,int param_5)
+    // 
+    // {
+    //   BITMAPINFO256 *pBVar1;
+    //   tagBITMAPINFOHEADER *ptVar2;
+    //   int iVar3;
+    //   TRANSINFO *pTVar4;
+    //   _iobuf *temp_file;
+    //   char temp_file_name [260];
+    //   
+    //                     /* language.dll match for 0x7f: "N" */
+    //   debug_timeGetTime(s_C__msdev_work_age1_x1_Picture_cp,0x7f);
+    //   this->TransInfo = (TRANSINFO *)0x0;
+    //   this->OwnMemory = 1;
+    //   if (shape_file_first != '\0') {
+    //     ptVar2 = DibOpenFile(param_1);
+    //     this->Dib = ptVar2;
+    //   }
+    //   if (((this->Dib == (tagBITMAPINFOHEADER *)0x0) && (param_2 != -1)) &&
+    //      (iVar3 = RESFILE_Extract_to_File
+    //                         (0x62696e61,param_2,temp_file_name + 4,(_iobuf **)temp_file_name),
+    //      iVar3 != 0)) {
+    //     fclose(temp_file_name._0_4_);
+    //     ptVar2 = DibOpenFile(temp_file_name + 4);
+    //     this->Dib = ptVar2;
+    //     __unlink(temp_file_name + 4);
+    //   }
+    //   if ((shape_file_first == '\0') && (this->Dib == (tagBITMAPINFOHEADER *)0x0)) {
+    //     ptVar2 = DibOpenFile(param_1);
+    //     this->Dib = ptVar2;
+    //   }
+    //   pBVar1 = (BITMAPINFO256 *)this->Dib;
+    //   if (pBVar1 == (BITMAPINFO256 *)0x0) {
+    //     this->Dib = (tagBITMAPINFOHEADER *)0x0;
+    //     this->BitmapInfo = (BITMAPINFO256 *)0x0;
+    //     this->Bits = (uchar *)0x0;
+    //     this->TransInfo = (TRANSINFO *)0x0;
+    //   }
+    //   else {
+    //     this->BitmapInfo = pBVar1;
+    //     if ((pBVar1->bmiHeader).biCompression == 3) {
+    //       iVar3 = (pBVar1->bmiHeader).biSize + 0xc;
+    //     }
+    //     else {
+    //       iVar3 = (pBVar1->bmiHeader).biSize + (pBVar1->bmiHeader).biClrUsed * 4;
+    //     }
+    //     this->Bits = (uchar *)((int)&(((BITMAPINFO256 *)(pBVar1->bmiColors + -10))->bmiHeader).biSize +
+    //                           iVar3);
+    //     this->Width = (pBVar1->bmiHeader).biWidth;
+    //     iVar3 = (pBVar1->bmiHeader).biHeight;
+    //     this->Height = iVar3;
+    //     if (iVar3 < 0) {
+    //       this->Orien = 1;
+    //       this->Height = -iVar3;
+    //     }
+    //     else {
+    //       this->Orien = -1;
+    //     }
+    //     if (param_4 != (void *)0x0) {
+    //       DibMapToPalette((tagBITMAPINFOHEADER *)pBVar1,param_4,param_3,param_5);
+    //     }
+    //     if (param_3 == 0) {
+    //       return;
+    //     }
+    //     pTVar4 = (TRANSINFO *)malloc(0x18);
+    //     this->TransInfo = pTVar4;
+    //     if (pTVar4 != (TRANSINFO *)0x0) {
+    //       pBVar1 = (BITMAPINFO256 *)this->Dib;
+    //       if ((pBVar1->bmiHeader).biCompression != 3) {
+    //         DibCheckTrans(pBVar1,pTVar4,
+    //                       &pBVar1->bmiColors[(pBVar1->bmiHeader).biClrUsed - 10].rgbBlue +
+    //                       (pBVar1->bmiHeader).biSize);
+    //         return;
+    //       }
+    //       DibCheckTrans(pBVar1,pTVar4,
+    //                     (uchar *)((int)(pBVar1->bmiColors + -7) + (pBVar1->bmiHeader).biSize));
+    //       return;
+    //     }
+    //     DibFree(this->Dib);
+    //     this->Dib = (tagBITMAPINFOHEADER *)0x0;
+    //     this->BitmapInfo = (BITMAPINFO256 *)0x0;
+    //   }
+    //   this->OwnMemory = 0;
+    //   this->Width = 0;
+    //   this->Height = 0;
+    //   this->Orien = 1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046E270
+void Init(TPicture* this_, BITMAPINFO256* param_2, uchar* param_3, TRANSINFO* param_4) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall TPicture::Init(struct BITMAPINFO256 *,unsigned char *,struct TRANSINFO *)
+    //     */
+    // 
+    // void __thiscall
+    // TPicture::Init(TPicture *this,BITMAPINFO256 *param_1,uchar *param_2,TRANSINFO *param_3)
+    // 
+    // {
+    //   int iVar1;
+    //   
+    //   this->Bits = param_2;
+    //   this->Dib = &param_1->bmiHeader;
+    //   this->BitmapInfo = param_1;
+    //   this->TransInfo = param_3;
+    //   this->OwnMemory = 0;
+    //   this->Width = (param_1->bmiHeader).biWidth;
+    //   iVar1 = (param_1->bmiHeader).biHeight;
+    //   this->Height = iVar1;
+    //   if (iVar1 < 0) {
+    //     this->Orien = 1;
+    //     this->Height = -iVar1;
+    //     return;
+    //   }
+    //   this->Orien = -1;
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046E2C0
+long AlignedWidth(TPicture* this_) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: long __thiscall TPicture::AlignedWidth(void) */
+    // 
+    // long __thiscall TPicture::AlignedWidth(TPicture *this)
+    // 
+    // {
+    //   return this->Width + 3U & 0xfffffffc;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046E2D0
+void Draw(TPicture* this_, TDrawArea* param_2, long param_3, long param_4, int param_5, int param_6) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: void __thiscall TPicture::Draw(class TDrawArea *,long,long,int,int) */
+    // 
+    // void __thiscall
+    // TPicture::Draw(TPicture *this,TDrawArea *param_1,long param_2,long param_3,int param_4,int param_5)
+    // 
+    // {
+    //   if (this->TransInfo != (TRANSINFO *)0x0) {
+    //     TransDibBlt(param_1->BitmapInfo,param_1->Bits,&param_1->ClipRect,param_2,param_3,this->Width,
+    //                 this->Height,this->BitmapInfo,this->Bits,this->TransInfo,0,0,this->Width,
+    //                 this->Height,1,param_4,param_5,0);
+    //     return;
+    //   }
+    //   DibBlt(param_1->BitmapInfo,param_1->Bits,&param_1->ClipRect,param_2,param_3,this->Width,
+    //          this->Height,this->BitmapInfo,this->Bits,0,0,this->Width,this->Height,1,param_4,param_5);
+    //   return;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046E370
+long Tile(TPicture* this_, TDrawArea* param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, long param_10, long param_11, long param_12) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: long __thiscall TPicture::Tile(class TDrawArea
+    //    *,long,long,long,long,long,long,long,long,long,long) */
+    // 
+    // long __thiscall
+    // TPicture::Tile(TPicture *this,TDrawArea *param_1,long param_2,long param_3,long param_4,long param_5
+    //               ,long param_6,long param_7,long param_8,long param_9,long param_10,long param_11)
+    // 
+    // {
+    //   long lVar1;
+    //   
+    //   lVar1 = TileDibBlt(param_1->BitmapInfo,param_1->Bits,&param_1->ClipRect,param_2,param_3,param_4,
+    //                      param_5,param_6,param_7,this->BitmapInfo,this->Bits,this->TransInfo,param_8,
+    //                      param_9,param_10,param_11,(uint)(this->TransInfo != (TRANSINFO *)0x0),0,0);
+    //   return lVar1;
+    // }
+    // 
+    // 
+}
+
+// Offset: 0x0046E3E0
+uchar GetPixel(TPicture* this_, long param_2, long param_3, int param_4, int param_5) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: unsigned char __thiscall TPicture::GetPixel(long,long,int,int) */
+    // 
+    // uchar __thiscall
+    // TPicture::GetPixel(TPicture *this,long param_1,long param_2,int param_3,int param_4)
+    // 
+    // {
+    //   char cVar1;
+    //   long lVar2;
+    //   
+    //   cVar1 = (char)this->Orien;
+    //   if (param_4 != 0) {
+    //     cVar1 = (-(cVar1 != '\x01') & 2U) - 1;
+    //   }
+    //   if ((((param_1 < 1) || (this->Width <= param_1)) || (param_2 < 0)) || (this->Height <= param_2)) {
+    //     return '\0';
+    //   }
+    //   if (param_3 == 0) {
+    //     if (cVar1 == '\x01') {
+    //       lVar2 = AlignedWidth(this);
+    //       return this->Bits[param_1 + lVar2 * param_2];
+    //     }
+    //     lVar2 = AlignedWidth(this);
+    //     return this->Bits[param_1 + lVar2 * ((this->Height - param_2) + -1)];
+    //   }
+    //   if (cVar1 == '\x01') {
+    //     lVar2 = AlignedWidth(this);
+    //     return this->Bits[this->Width + (lVar2 * param_2 - param_1) + -1];
+    //   }
+    //   lVar2 = AlignedWidth(this);
+    //   return this->Bits[this->Width + (lVar2 * ((this->Height - param_2) + -1) - param_1) + -1];
+    // }
+    // 
+    // 
+}
+

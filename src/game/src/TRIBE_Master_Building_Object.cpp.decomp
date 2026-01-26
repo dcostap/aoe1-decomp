@@ -1,0 +1,25 @@
+// Auto-generated decompiler unit: TRIBE_Master_Building_Object.cpp.decomp
+#include "../include/common.h"
+
+// Offset: 0x0050E0A0
+void* TRIBE_Master_Building_Object::vector_deleting_destructor(uint param_1) {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* public: virtual void * __thiscall TRIBE_Master_Building_Object::`vector deleting
+    //    destructor'(unsigned int) */
+    // 
+    // void * __thiscall
+    // TRIBE_Master_Building_Object::_vector_deleting_destructor_
+    //           (TRIBE_Master_Building_Object *this,uint param_1)
+    // 
+    // {
+    //   ~TRIBE_Master_Building_Object(this);
+    //   if ((param_1 & 1) != 0) {
+    //     operator_delete(this);
+    //   }
+    //   return this;
+    // }
+    // 
+    // 
+}
+

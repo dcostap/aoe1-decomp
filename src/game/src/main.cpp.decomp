@@ -1,0 +1,575 @@
+// Auto-generated decompiler unit: main.cpp.decomp
+// SourceMap: C:/msdev/work/age1_x1/main.cpp
+#include "../include/common.h"
+
+// Offset: 0x004549E0
+undefined WinMain_16() {
+    // --- Ghidra decompiler output ---
+    // 
+    // /* WARNING: Function: __alloca_probe replaced with injection: alloca_probe */
+    // /* WARNING: Variable defined which should be unmapped: retval */
+    // 
+    // int _WinMain_16(void *param_1,undefined4 param_2,char *param_3,undefined4 param_4)
+    // 
+    // {
+    //   char cVar1;
+    //   undefined4 *puVar2;
+    //   int *piVar3;
+    //   uint uVar4;
+    //   uint uVar5;
+    //   undefined4 unaff_EBP;
+    //   char *pcVar6;
+    //   char *pcVar7;
+    //   char *pcVar8;
+    //   undefined4 *unaff_FS_OFFSET;
+    //   int retval;
+    //   int error_code;
+    //   RGE_Prog_Info info;
+    //   char title [256];
+    //   char msg [256];
+    //   undefined4 local_c;
+    //   code *pcStack_8;
+    //   undefined4 local_4;
+    //   
+    //   local_4 = 0xffffffff;
+    //   local_c = *unaff_FS_OFFSET;
+    //   pcStack_8 = FUN_0055da7e;
+    //                     /* language.dll match for 0x1440: "Axeman" */
+    //   *unaff_FS_OFFSET = &local_c;
+    //   uVar4 = 0xffffffff;
+    //   pcVar7 = info.prog_name;
+    //   pcVar8 = &s_Age_of_Empires__Roman_Expansion;
+    //   do {
+    //     pcVar6 = pcVar8;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar6 = pcVar8 + 1;
+    //     cVar1 = *pcVar8;
+    //     pcVar8 = pcVar6;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar8 = info.prog_version;
+    //   pcVar6 = pcVar6 + -uVar4;
+    //   for (uVar5 = uVar4 >> 2; pcVar7 = pcVar7 + 4, uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar7 = *(undefined4 *)pcVar6;
+    //     pcVar6 = pcVar6 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar7 = *pcVar6;
+    //     pcVar6 = pcVar6 + 1;
+    //     pcVar7 = pcVar7 + 1;
+    //   }
+    //   uVar4 = 0xffffffff;
+    //   pcVar7 = &s_00_03_01_0717;
+    //   do {
+    //     pcVar6 = pcVar7;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar6 = pcVar7 + 1;
+    //     cVar1 = *pcVar7;
+    //     pcVar7 = pcVar6;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar7 = pcVar6 + -uVar4;
+    //   for (uVar5 = uVar4 >> 2; pcVar8 = pcVar8 + 4, uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar8 = *(undefined4 *)pcVar7;
+    //     pcVar7 = pcVar7 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar8 = *pcVar7;
+    //     pcVar7 = pcVar7 + 1;
+    //     pcVar8 = pcVar8 + 1;
+    //   }
+    //   sprintf(info.prog_title + 4,s__s,info.prog_name + 4);
+    //   uVar4 = 0xffffffff;
+    //   pcVar7 = &s_tr_wrld_txt;
+    //   do {
+    //     pcVar8 = pcVar7;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar8 = pcVar7 + 1;
+    //     cVar1 = *pcVar7;
+    //     pcVar7 = pcVar8;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar7 = info.world_db_file;
+    //   pcVar6 = info.game_data_file;
+    //   pcVar8 = pcVar8 + -uVar4;
+    //   for (uVar5 = uVar4 >> 2; pcVar7 = pcVar7 + 4, uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar7 = *(undefined4 *)pcVar8;
+    //     pcVar8 = pcVar8 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar7 = *pcVar8;
+    //     pcVar8 = pcVar8 + 1;
+    //     pcVar7 = pcVar7 + 1;
+    //   }
+    //   uVar4 = 0xffffffff;
+    //   pcVar7 = &s_data2_empires_dat;
+    //   do {
+    //     pcVar8 = pcVar7;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar8 = pcVar7 + 1;
+    //     cVar1 = *pcVar7;
+    //     pcVar7 = pcVar8;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar7 = info.registry_key;
+    //   pcVar8 = pcVar8 + -uVar4;
+    //   for (uVar5 = uVar4 >> 2; pcVar6 = pcVar6 + 4, uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar6 = *(undefined4 *)pcVar8;
+    //     pcVar8 = pcVar8 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar6 = *pcVar8;
+    //     pcVar8 = pcVar8 + 1;
+    //     pcVar6 = pcVar6 + 1;
+    //   }
+    //   uVar4 = 0xffffffff;
+    //   pcVar8 = &s_Software_Microsoft_Games_Age_of_;
+    //   do {
+    //     pcVar6 = pcVar8;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar6 = pcVar8 + 1;
+    //     cVar1 = *pcVar8;
+    //     pcVar8 = pcVar6;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar8 = info.cmd_line;
+    //   pcVar6 = pcVar6 + -uVar4;
+    //   for (uVar5 = uVar4 >> 2; pcVar7 = pcVar7 + 4, uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar7 = *(undefined4 *)pcVar6;
+    //     pcVar6 = pcVar6 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar7 = *pcVar6;
+    //     pcVar6 = pcVar6 + 1;
+    //     pcVar7 = pcVar7 + 1;
+    //   }
+    //   uVar4 = 0xffffffff;
+    //   do {
+    //     pcVar7 = param_3;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar7 = param_3 + 1;
+    //     cVar1 = *param_3;
+    //     param_3 = pcVar7;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar6 = info.icon_name;
+    //   pcVar7 = pcVar7 + -uVar4;
+    //   for (uVar5 = uVar4 >> 2; pcVar8 = pcVar8 + 4, uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar8 = *(undefined4 *)pcVar7;
+    //     pcVar7 = pcVar7 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar8 = *pcVar7;
+    //     pcVar7 = pcVar7 + 1;
+    //     pcVar8 = pcVar8 + 1;
+    //   }
+    //   uVar4 = 0xffffffff;
+    //   pcVar7 = &s_AppIcon;
+    //   do {
+    //     pcVar8 = pcVar7;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar8 = pcVar7 + 1;
+    //     cVar1 = *pcVar7;
+    //     pcVar7 = pcVar8;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar7 = info.menu_name;
+    //   pcVar8 = pcVar8 + -uVar4;
+    //   for (uVar5 = uVar4 >> 2; pcVar6 = pcVar6 + 4, uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar6 = *(undefined4 *)pcVar8;
+    //     pcVar8 = pcVar8 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar6 = *pcVar8;
+    //     pcVar8 = pcVar8 + 1;
+    //     pcVar6 = pcVar6 + 1;
+    //   }
+    //   uVar4 = 0xffffffff;
+    //   pcVar8 = s_;
+    //   do {
+    //     pcVar6 = pcVar8;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar6 = pcVar8 + 1;
+    //     cVar1 = *pcVar8;
+    //     pcVar8 = pcVar6;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar8 = info.pal_file;
+    //   pcVar6 = pcVar6 + -uVar4;
+    //   for (uVar5 = uVar4 >> 2; pcVar7 = pcVar7 + 4, uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar7 = *(undefined4 *)pcVar6;
+    //     pcVar6 = pcVar6 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar7 = *pcVar6;
+    //     pcVar6 = pcVar6 + 1;
+    //     pcVar7 = pcVar7 + 1;
+    //   }
+    //   uVar4 = 0xffffffff;
+    //   pcVar7 = &s_palette;
+    //   do {
+    //     pcVar6 = pcVar7;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar6 = pcVar7 + 1;
+    //     cVar1 = *pcVar7;
+    //     pcVar7 = pcVar6;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar7 = info.cursor_file;
+    //   pcVar6 = pcVar6 + -uVar4;
+    //   for (uVar5 = uVar4 >> 2; pcVar8 = pcVar8 + 4, uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar8 = *(undefined4 *)pcVar6;
+    //     pcVar6 = pcVar6 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar8 = *pcVar6;
+    //     pcVar6 = pcVar6 + 1;
+    //     pcVar8 = pcVar8 + 1;
+    //   }
+    //   uVar4 = 0xffffffff;
+    //   pcVar8 = &s_mcursors;
+    //   do {
+    //     pcVar6 = pcVar8;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar6 = pcVar8 + 1;
+    //     cVar1 = *pcVar8;
+    //     pcVar8 = pcVar6;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar8 = pcVar6 + -uVar4;
+    //   for (uVar5 = uVar4 >> 2; pcVar7 = pcVar7 + 4, uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar7 = *(undefined4 *)pcVar8;
+    //     pcVar8 = pcVar8 + 4;
+    //   }
+    //   pcVar6 = info.vol_name;
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar7 = *pcVar8;
+    //     pcVar8 = pcVar8 + 1;
+    //     pcVar7 = pcVar7 + 1;
+    //   }
+    //   uVar4 = 0xffffffff;
+    //   pcVar7 = &s_AOE;
+    //   do {
+    //     pcVar8 = pcVar7;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar8 = pcVar7 + 1;
+    //     cVar1 = *pcVar7;
+    //     pcVar7 = pcVar8;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar7 = pcVar8 + -uVar4;
+    //   for (uVar5 = uVar4 >> 2; pcVar6 = pcVar6 + 4, uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar6 = *(undefined4 *)pcVar7;
+    //     pcVar7 = pcVar7 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar6 = *pcVar7;
+    //     pcVar7 = pcVar7 + 1;
+    //     pcVar6 = pcVar6 + 1;
+    //   }
+    //   info.registry_key._0_4_ = param_2;
+    //   info.prev_instance = param_1;
+    //   info.icon_name._0_4_ = param_4;
+    //   info.mouse_scroll_max_dist = 1.17709e-43;
+    //   info.key_scroll_max_dist = 1.17709e-43;
+    //   info.game_guid.Data4[0] = 0xe2;
+    //   info.game_guid.Data4[1] = 0xeb;
+    //   info.game_guid.Data4[2] = 0xd1;
+    //   info.game_guid.Data4[3] = '\x11';
+    //   info.game_guid.Data2 = 0x46a8;
+    //   info.game_guid.Data3 = 0xf2e8;
+    //   info.zone_guid.Data1 = 0x8f50797;
+    //   info.game_guid.Data4[4] = 0x83;
+    //   info.game_guid.Data4[5] = 0x9b;
+    //   info.game_guid.Data4[6] = '\0';
+    //   info.game_guid.Data4[7] = '`';
+    //   info.zone_guid.Data4[0] = 0xe2;
+    //   info.zone_guid.Data4[1] = 0xeb;
+    //   info.zone_guid.Data4[2] = 0xd1;
+    //   info.zone_guid.Data4[3] = '\x11';
+    //   info.zone_guid.Data2 = 0x46aa;
+    //   info.zone_guid.Data3 = 0xf2e8;
+    //   info.data_dir[0] = -0x69;
+    //   info.data_dir[1] = '\a';
+    //   info.data_dir[2] = -0xb;
+    //   info.data_dir[3] = '\b';
+    //   info.verify_cd = 0;
+    //   info.max_players_per_cd = 1;
+    //   info.instance = &DAT_00000003;
+    //   info.check_expiration = 8;
+    //   info.expire_month = 0;
+    //   info.expire_day = 0;
+    //   info.expire_year = 0;
+    //   info._2182_2_ = 0;
+    //   info.update_interval._0_2_ = 0;
+    //   info.check_multi_copies = 1;
+    //   info.skip_startup = 1;
+    //   info.full_screen = 0;
+    //   info.fixed_window_size = 1;
+    //   info.use_dir_draw = 1;
+    //   info.use_sys_mem = 1;
+    //   info.use_music = 0;
+    //   info.use_sound = 1;
+    //   info.use_cd_audio = 1;
+    //   info.auto_scroll = 1;
+    //   info.mouse_scroll_edge = 1;
+    //   info.mouse_scroll_interval = 3;
+    //   info.key_scroll_interval = 0x40800000;
+    //   info.key_scroll_object_move = 4.0;
+    //   info.interface_style = -0x3333;
+    //   info._2270_2_ = 0x3d4c;
+    //   info.main_wid._0_2_ = 2;
+    //   info.use_ima = 0;
+    //   info.use_midi = 0;
+    //   info.use_wave_music = 0;
+    //   info.fast_view = 0;
+    //   info.main_hgt = 800;
+    //   info.game_guid.Data1 = 600;
+    //   info.zone_guid.Data4[4] = 0x83;
+    //   info.zone_guid.Data4[5] = 0x9b;
+    //   info.zone_guid.Data4[6] = '\0';
+    //   info.zone_guid.Data4[7] = '`';
+    //   pcVar7 = info.data_dir;
+    //   uVar4 = 0xffffffff;
+    //   pcVar8 = &s_data2_;
+    //   do {
+    //     pcVar6 = pcVar8;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar6 = pcVar8 + 1;
+    //     cVar1 = *pcVar8;
+    //     pcVar8 = pcVar6;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar8 = pcVar6 + -uVar4;
+    //   for (uVar5 = uVar4 >> 2; pcVar7 = pcVar7 + 4, uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar7 = *(undefined4 *)pcVar8;
+    //     pcVar8 = pcVar8 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar7 = *pcVar8;
+    //     pcVar8 = pcVar8 + 1;
+    //     pcVar7 = pcVar7 + 1;
+    //   }
+    //   uVar4 = 0xffffffff;
+    //   pcVar7 = &s_sound_;
+    //   do {
+    //     pcVar8 = pcVar7;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar8 = pcVar7 + 1;
+    //     cVar1 = *pcVar7;
+    //     pcVar7 = pcVar8;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar7 = info.sounds_dir;
+    //   pcVar8 = pcVar8 + -uVar4;
+    //   for (uVar5 = uVar4 >> 2; pcVar7 = pcVar7 + 4, uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar7 = *(undefined4 *)pcVar8;
+    //     pcVar8 = pcVar8 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar7 = *pcVar8;
+    //     pcVar8 = pcVar8 + 1;
+    //     pcVar7 = pcVar7 + 1;
+    //   }
+    //   uVar4 = 0xffffffff;
+    //   pcVar7 = s_;
+    //   do {
+    //     pcVar8 = pcVar7;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar8 = pcVar7 + 1;
+    //     cVar1 = *pcVar7;
+    //     pcVar7 = pcVar8;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar7 = info.graphics_dir;
+    //   pcVar8 = pcVar8 + -uVar4;
+    //   for (uVar5 = uVar4 >> 2; pcVar7 = pcVar7 + 4, uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar7 = *(undefined4 *)pcVar8;
+    //     pcVar8 = pcVar8 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar7 = *pcVar8;
+    //     pcVar8 = pcVar8 + 1;
+    //     pcVar7 = pcVar7 + 1;
+    //   }
+    //   uVar4 = 0xffffffff;
+    //   pcVar7 = &s_savegame_;
+    //   do {
+    //     pcVar8 = pcVar7;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar8 = pcVar7 + 1;
+    //     cVar1 = *pcVar7;
+    //     pcVar7 = pcVar8;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar7 = info.save_dir;
+    //   pcVar8 = pcVar8 + -uVar4;
+    //   for (uVar5 = uVar4 >> 2; pcVar7 = pcVar7 + 4, uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar7 = *(undefined4 *)pcVar8;
+    //     pcVar8 = pcVar8 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar7 = *pcVar8;
+    //     pcVar8 = pcVar8 + 1;
+    //     pcVar7 = pcVar7 + 1;
+    //   }
+    //   uVar4 = 0xffffffff;
+    //   pcVar7 = &s_scenario_;
+    //   do {
+    //     pcVar8 = pcVar7;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar8 = pcVar7 + 1;
+    //     cVar1 = *pcVar7;
+    //     pcVar7 = pcVar8;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar7 = info.scenario_dir;
+    //   pcVar8 = pcVar8 + -uVar4;
+    //   for (uVar5 = uVar4 >> 2; pcVar7 = pcVar7 + 4, uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar7 = *(undefined4 *)pcVar8;
+    //     pcVar8 = pcVar8 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar7 = *pcVar8;
+    //     pcVar8 = pcVar8 + 1;
+    //     pcVar7 = pcVar7 + 1;
+    //   }
+    //   uVar4 = 0xffffffff;
+    //   pcVar7 = info.campaign_dir;
+    //   pcVar8 = &s_campaign_;
+    //   do {
+    //     pcVar6 = pcVar8;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar6 = pcVar8 + 1;
+    //     cVar1 = *pcVar8;
+    //     pcVar8 = pcVar6;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar8 = pcVar6 + -uVar4;
+    //   for (uVar5 = uVar4 >> 2; pcVar7 = pcVar7 + 4, uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar7 = *(undefined4 *)pcVar8;
+    //     pcVar8 = pcVar8 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar7 = *pcVar8;
+    //     pcVar8 = pcVar8 + 1;
+    //     pcVar7 = pcVar7 + 1;
+    //   }
+    //   uVar4 = 0xffffffff;
+    //   pcVar7 = &s_data2_;
+    //   do {
+    //     pcVar8 = pcVar7;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar8 = pcVar7 + 1;
+    //     cVar1 = *pcVar7;
+    //     pcVar7 = pcVar8;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar7 = info.resource_dir;
+    //   pcVar8 = pcVar8 + -uVar4;
+    //   for (uVar5 = uVar4 >> 2; pcVar7 = pcVar7 + 4, uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar7 = *(undefined4 *)pcVar8;
+    //     pcVar8 = pcVar8 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar7 = *pcVar8;
+    //     pcVar8 = pcVar8 + 1;
+    //     pcVar7 = pcVar7 + 1;
+    //   }
+    //   uVar4 = 0xffffffff;
+    //   pcVar7 = &s_data2_;
+    //   do {
+    //     pcVar8 = pcVar7;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar8 = pcVar7 + 1;
+    //     cVar1 = *pcVar7;
+    //     pcVar7 = pcVar8;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar7 = info.ai_dir;
+    //   pcVar8 = pcVar8 + -uVar4;
+    //   for (uVar5 = uVar4 >> 2; pcVar7 = pcVar7 + 4, uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar7 = *(undefined4 *)pcVar8;
+    //     pcVar8 = pcVar8 + 4;
+    //   }
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar7 = *pcVar8;
+    //     pcVar8 = pcVar8 + 1;
+    //     pcVar7 = pcVar7 + 1;
+    //   }
+    //   uVar4 = 0xffffffff;
+    //   pcVar7 = &s_avi_;
+    //   do {
+    //     pcVar8 = pcVar7;
+    //     if (uVar4 == 0) break;
+    //     uVar4 = uVar4 - 1;
+    //     pcVar8 = pcVar7 + 1;
+    //     cVar1 = *pcVar7;
+    //     pcVar7 = pcVar8;
+    //   } while (cVar1 != '\0');
+    //   uVar4 = ~uVar4;
+    //   pcVar7 = info.avi_dir;
+    //   pcVar8 = pcVar8 + -uVar4;
+    //   for (uVar5 = uVar4 >> 2; pcVar7 = pcVar7 + 4, uVar5 != 0; uVar5 = uVar5 - 1) {
+    //     *(undefined4 *)pcVar7 = *(undefined4 *)pcVar8;
+    //     pcVar8 = pcVar8 + 4;
+    //   }
+    //   error_code = 0;
+    //   for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
+    //     *pcVar7 = *pcVar8;
+    //     pcVar8 = pcVar8 + 1;
+    //     pcVar7 = pcVar7 + 1;
+    //   }
+    //   info.prog_name._0_4_ = operator_new(0x1254);
+    //   local_4 = 0;
+    //   if ((TRIBE_Game *)info.prog_name._0_4_ == (TRIBE_Game *)0x0) {
+    //     piVar3 = (int *)0x0;
+    //   }
+    //   else {
+    //     piVar3 = (int *)TRIBE_Game::TRIBE_Game
+    //                               ((TRIBE_Game *)info.prog_name._0_4_,
+    //                                (RGE_Prog_Info *)(info.prog_name + 4),1);
+    //   }
+    //   local_4 = 0xffffffff;
+    //   if (piVar3 != (int *)0x0) {
+    //     puVar2 = (undefined4 *)*piVar3;
+    //     info.prog_name._0_4_ = (*(code *)puVar2[6])();
+    //     if (info.prog_name._0_4_ == 0) {
+    //       error_code = (*(code *)puVar2[1])();
+    //       (*(code *)puVar2[6])();
+    //       (*(code *)*puVar2)(1);
+    //     }
+    //     else if (info.prog_name._0_4_ != 4) {
+    //                     /* language.dll match for 0x7d1: "Error" */
+    //       (*(code *)puVar2[8])(0x7d1,title + 4,0x100);
+    //       (*(code *)puVar2[10])(1,unaff_EBP,0,title + 0xf8,0x100);
+    //       (*(code *)*puVar2)(1);
+    //       MessageBoxA(0,msg + 4,title + 4,0x10);
+    //     }
+    //   }
+    //   *unaff_FS_OFFSET = local_c;
+    //   return error_code;
+    // }
+    // 
+    // 
+}
+
