@@ -292,8 +292,8 @@ int TRIBE_Game::start_menu() {
     TRIBE_Screen_Main_Menu* menu = new TRIBE_Screen_Main_Menu();
     if (!menu) return 0;
     
-    // Setup the menu screen
-    menu->setup(this->draw_area, 0, 0, this->prog_info->main_wid, this->prog_info->main_hgt, 0);
+    // Setup the menu screen (2 args)
+    menu->setup(this->draw_area, "scr1");
     gCurrentScreen = menu;
 
     // ASM logic checks for panel error states

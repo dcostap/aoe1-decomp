@@ -690,7 +690,7 @@ int RGE_Base_Game::setup_graphics_system() {
 
     this->draw_area = ds->DrawArea;
     if (this->draw_area) {
-        this->draw_area->Clear(NULL);
+        this->draw_area->Clear(NULL, 0);
     }
     
     this->draw_system->Paint(NULL);
@@ -825,7 +825,7 @@ int RGE_Base_Game::run() {
     // NOTE: Simplified message loop for initial boot. Original ASM handles more complex
     // timer-based updates and additional game state checks in the full implementation.
     MSG msg;
-
+    
     while (this->prog_info && (this->game_mode == 4 || this->game_mode == 2)) {
         if (this->comm_handler && this->comm_handler->IsPaused()) {
             if (GetMessageA(&msg, NULL, 0, 0)) {

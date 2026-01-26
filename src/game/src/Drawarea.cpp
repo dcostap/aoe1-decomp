@@ -332,16 +332,16 @@ void TDrawArea::SetFloatOffsets(int p1, int p2) {
     this->Float_Y_Delta = p2;
 }
 
-void TDrawArea::Clear(tagRECT* rect) {
+void TDrawArea::Clear(tagRECT* rect, int color) {
     if (!this->DrawSystem || !this->DrawSystem->PrimarySurface) return;
     DDBLTFX ddbltfx;
     memset(&ddbltfx, 0, sizeof(ddbltfx));
     ddbltfx.dwSize = sizeof(ddbltfx);
-    ddbltfx.dwFillColor = 0;
+    ddbltfx.dwFillColor = color;
     this->DrawSystem->PrimarySurface->Blt(rect, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &ddbltfx);
 }
 
-void TDrawArea::PtrClear(tagRECT* rect) {}
+void TDrawArea::PtrClear(tagRECT* rect, int color) {}
 void TDrawArea::OverlayMemCopy(tagRECT* rect, TDrawArea* src, int x, int y) {}
 
 uchar* TDrawArea::Lock(char* name, int p2) {
@@ -392,6 +392,114 @@ void TDrawArea::FillRect(long left, long top, long right, long bottom, uchar col
         CUSTOM_DEBUG_LOG_FMT("FillRect: Blt result=0x%x", hr);
         logged = true;
     }
+}
+
+void TDrawArea::SaveBitmap(char* filename) {
+    if (!this->DrawSurface) {
+         CUSTOM_DEBUG_LOG("SaveBitmap: No DrawSurface");
+         return;
+    }
+
+    DDSURFACEDESC ddsd;
+    memset(&ddsd, 0, sizeof(ddsd));
+    ddsd.dwSize = sizeof(ddsd);
+    HRESULT hr = this->DrawSurface->Lock(NULL, &ddsd, DDLOCK_WAIT | DDLOCK_READONLY, NULL);
+    if (FAILED(hr)) {
+        CUSTOM_DEBUG_LOG_FMT("SaveBitmap: Lock failed hr=0x%x", hr);
+        return;
+    }
+
+    int width = ddsd.dwWidth;
+    int height = ddsd.dwHeight;
+    int depth = ddsd.ddpfPixelFormat.dwRGBBitCount;
+    int pitch = ddsd.lPitch;
+    void* bits = ddsd.lpSurface;
+    
+    // Support 8-bit and 32-bit
+    if (depth != 8 && depth != 32) {
+         CUSTOM_DEBUG_LOG_FMT("SaveBitmap: Unsupported depth %d", depth);
+         this->DrawSurface->Unlock(NULL);
+         return;
+    }
+
+    FILE* f = fopen(filename, "wb");
+    if (!f) {
+         CUSTOM_DEBUG_LOG_FMT("SaveBitmap: Failed to open %s", filename);
+         this->DrawSurface->Unlock(NULL);
+         return;
+    }
+
+    // Bitmap Header
+    BITMAPFILEHEADER bmfh;
+    BITMAPINFOHEADER bmih;
+    
+    memset(&bmfh, 0, sizeof(bmfh));
+    memset(&bmih, 0, sizeof(bmih));
+
+    bmih.biSize = sizeof(bmih);
+    bmih.biWidth = width;
+    bmih.biHeight = -height; // Top-down
+    bmih.biPlanes = 1;
+    bmih.biBitCount = depth; // 8 or 32
+    bmih.biCompression = BI_RGB;
+    bmih.biSizeImage = (width * depth / 8) * height; // Rough estimate, actual size includes padding
+
+    // Palette handling
+    int paletteSize = 0;
+    if (depth == 8) {
+        paletteSize = 256 * 4; // RGBQUAD
+    }
+
+    bmfh.bfType = 0x4D42; // BM
+    bmfh.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + paletteSize;
+    bmfh.bfSize = bmfh.bfOffBits + bmih.biSizeImage;
+
+    fwrite(&bmfh, sizeof(bmfh), 1, f);
+    fwrite(&bmih, sizeof(bmih), 1, f);
+
+    // Write Palette (only for 8-bit)
+    if (depth == 8) {
+        PALETTEENTRY palEntries[256];
+        memset(palEntries, 0, sizeof(palEntries));
+        
+        if (this->DrawSystem && this->DrawSystem->DirDrawPal) {
+            this->DrawSystem->DirDrawPal->GetEntries(0, 0, 256, palEntries);
+        } else {
+            for(int i=0; i<256; i++) {
+                palEntries[i].peRed = i;
+                palEntries[i].peGreen = i;
+                palEntries[i].peBlue = i;
+            }
+        }
+
+        for(int i=0; i<256; i++) {
+            RGBQUAD rgb;
+            rgb.rgbBlue = palEntries[i].peBlue;
+            rgb.rgbGreen = palEntries[i].peGreen;
+            rgb.rgbRed = palEntries[i].peRed;
+            rgb.rgbReserved = 0;
+            fwrite(&rgb, sizeof(rgb), 1, f);
+        }
+    }
+
+    // Write Data
+    uchar* line = (uchar*)bits;
+    int bytesPerPixel = depth / 8;
+    int rowBytes = width * bytesPerPixel;
+    int pad = (4 - (rowBytes % 4)) % 4;
+
+    for (int y = 0; y < height; y++) {
+         fwrite(line, 1, rowBytes, f);
+         if (pad > 0) {
+             uchar zeroes[4] = {0};
+             fwrite(zeroes, 1, pad, f);
+         }
+         line += pitch;
+    }
+
+    fclose(f);
+    this->DrawSurface->Unlock(NULL);
+    CUSTOM_DEBUG_LOG_FMT("SaveBitmap: Saved to %s (%dx%d @ %dbpp)", filename, width, height, depth);
 }
 
 void* TDrawArea::GetDc(char* name) { return this->DrawDc; }

@@ -246,6 +246,18 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
     }
 
     unsigned char* slp_base = (unsigned char*)this->FShape;
+    
+    // Bounds check offsets with height awareness
+    // row_offsets needs 4 bytes per row
+    // outline needs 4 bytes per row (2 shorts)
+    if (info->Shape_Data_Offsets + height * 4 > (unsigned long)this->load_size || 
+        info->Shape_Outline_Offset + height * 4 > (unsigned long)this->load_size) {
+         CUSTOM_DEBUG_LOG_FMT("shape_draw: invalid offsets/size data=0x%lx outline=0x%lx size=0x%x height=%ld", 
+             info->Shape_Data_Offsets, info->Shape_Outline_Offset, this->load_size, height);
+         draw_area->Unlock("shape_draw"); 
+         return 0;
+    }
+
     unsigned long* row_offsets = (unsigned long*)(slp_base + info->Shape_Data_Offsets);
     unsigned short* outline = (unsigned short*)(slp_base + info->Shape_Outline_Offset);
     unsigned char* xlate = param_7;
@@ -267,6 +279,10 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
         right = (unsigned short)(right & 0x7FFF);
 
         unsigned long row_off = row_offsets[row];
+        if (row_off >= (unsigned long)this->load_size) {
+             CUSTOM_DEBUG_LOG_FMT("shape_draw: invalid row_off 0x%lx at row %ld", row_off, row);
+             continue; // Skip invalid row
+        }
         unsigned char* src = slp_base + row_off;
 
         long dst_x = draw_x + (long)left;
@@ -279,7 +295,13 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
             shape_draw_log_once = 1;
         }
 
+        unsigned char* shape_end = slp_base + this->load_size;
+        
         for (;;) {
+            if (src >= shape_end) {
+                CUSTOM_DEBUG_LOG_FMT("shape_draw: src buffer overrun at row %ld", row);
+                break;
+            }
             unsigned char cmd = *src++;
             unsigned char op = (unsigned char)(cmd & 0x0F);
 
@@ -288,15 +310,27 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
             }
 
             if (dst_x > max_x) {
+                // Skip remaining bytes for this row if we passed max_x? 
+                // ASM logic usually keeps processing commands to maintain src pointer sync, 
+                // but if we are crashing, maybe just break.
+                // However, breaking here desyncs src for next ops in same row (which shouldn't happen if data is valid).
+                // Let's just break for safety.
                 break;
             }
 
             if (op == 0x02) {
+                if (src >= shape_end) break;
                 unsigned int len = (unsigned int)(((cmd & 0xF0) << 4) | (*src++));
                 unsigned int to_copy = len;
                 if (dst_x + (long)to_copy - 1 > max_x) {
                     to_copy = (unsigned int)(max_x - dst_x + 1);
                 }
+                
+                if (src + to_copy > shape_end) {
+                     CUSTOM_DEBUG_LOG("shape_draw: src buffer overrun in op 0x02");
+                     break; 
+                }
+
                 for (unsigned int i = 0; i < to_copy; i++) {
                     unsigned char px = *src++;
                     unsigned char idx = xlate ? xlate[px] : px;
@@ -308,25 +342,23 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
                                 rgb = (unsigned int)((idx << 16) | (idx << 8) | idx);
                             }
                             dst_row32[dst_x] = (unsigned long)rgb;
-                            
-                            static int pixel_log_count = 0;
-                            if (pixel_log_count < 5 && row == height / 2 && i == to_copy / 2) {
-                                CUSTOM_DEBUG_LOG_FMT("shape_draw pixel diag: idx=%d palR=%d palG=%d palB=%d -> rgb=0x%08X", (int)idx, (int)pe.peRed, (int)pe.peGreen, (int)pe.peBlue, rgb);
-                                pixel_log_count++;
-                            }
                         } else {
                             dst_row[dst_x] = idx;
                         }
                     }
                     dst_x++;
                 }
+                // Skip source bytes we didn't copy if clipped
                 if (to_copy < len) {
-                    src += (len - to_copy);
+                    unsigned int skip = len - to_copy;
+                    if (src + skip > shape_end) break;
+                    src += skip;
                 }
                 continue;
             }
 
             if (op == 0x03) {
+                if (src >= shape_end) break;
                 unsigned int len = (unsigned int)(((cmd & 0xF0) << 4) | (*src++));
                 dst_x += (long)len;
                 continue;
@@ -335,8 +367,10 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
             if (op == 0x07) {
                 unsigned int len = (unsigned int)(cmd >> 4);
                 if (len == 0) {
+                    if (src >= shape_end) break;
                     len = (unsigned int)(*src++);
                 }
+                if (src >= shape_end) break;
                 unsigned char px = *src++;
                 unsigned char out_px = xlate ? xlate[px] : px;
                 unsigned int to_write = len;
@@ -364,12 +398,16 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
             if (op == 0x06 || op == 0x0B || op == 0x0E) {
                 unsigned int len = (unsigned int)(cmd >> 4);
                 if (len == 0) {
+                    if (src >= shape_end) break;
                     len = (unsigned int)(*src++);
                 }
                 unsigned int to_copy = len;
                 if (dst_x + (long)to_copy - 1 > max_x) {
                     to_copy = (unsigned int)(max_x - dst_x + 1);
                 }
+                
+                if (src + to_copy > shape_end) break;
+
                 for (unsigned int i = 0; i < to_copy; i++) {
                     unsigned char px = *src++;
                     unsigned char idx = xlate ? xlate[px] : px;
@@ -388,7 +426,9 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
                     dst_x++;
                 }
                 if (to_copy < len) {
-                    src += (len - to_copy);
+                    unsigned int skip = len - to_copy;
+                    if (src + skip > shape_end) break;
+                    src += skip;
                 }
                 continue;
             }
@@ -396,8 +436,10 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
             if (op == 0x0A) {
                 unsigned int len = (unsigned int)(cmd >> 4);
                 if (len == 0) {
+                    if (src >= shape_end) break;
                     len = (unsigned int)(*src++);
                 }
+                if (src + 2 > shape_end) break;
                 unsigned char px0 = *src++;
                 unsigned char px1 = *src++;
                 unsigned char out0 = xlate ? xlate[px0] : px0;
@@ -431,6 +473,9 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
                 if (dst_x + (long)to_copy - 1 > max_x) {
                     to_copy = (unsigned int)(max_x - dst_x + 1);
                 }
+                
+                if (src + to_copy > shape_end) break;
+
                 for (unsigned int i = 0; i < to_copy; i++) {
                     unsigned char px = *src++;
                     unsigned char idx = xlate ? xlate[px] : px;
@@ -449,7 +494,9 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
                     dst_x++;
                 }
                 if (to_copy < len) {
-                    src += (len - to_copy);
+                    unsigned int skip = len - to_copy;
+                    if (src + skip > shape_end) break;
+                    src += skip;
                 }
                 continue;
             }

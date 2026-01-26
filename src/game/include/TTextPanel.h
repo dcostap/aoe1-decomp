@@ -2,8 +2,20 @@
 #include "common.h"
 #include "TPanel.h"
 
+class TScrollBarPanel;
+
 class TTextPanel : public TPanel {
 public:
+    enum Alignment : int {};
+    enum Style : int {};
+
+    struct TextNode {
+        char* text;
+        TextNode* next;
+    };
+    
+    TTextPanel();
+
     // Virtuals (best-effort)
     virtual ~TTextPanel(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)
@@ -50,7 +62,7 @@ public:
     virtual long mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4); // vt[42] (0xA8)
     virtual long key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5); // vt[43] (0xAC)
     virtual long char_action(long param_1, short param_2); // vt[44] (0xB0)
-    virtual long action(TPanel* param_1, long param_2, ulong param_3, ulong param_4); // vt[45] (0xB4)
+    virtual long action(long param_1, ulong param_2, ulong param_3); // vt[45] (0xB4)
     virtual void get_true_render_rect(tagRECT* param_1); // vt[46] (0xB8)
     virtual int is_inside(long param_1, long param_2); // vt[47] (0xBC)
     virtual void set_focus(int param_1); // vt[48] (0xC0)
@@ -87,6 +99,7 @@ public:
     TScrollBarPanel* scbar_panel;
     int auto_scbar;
     short fixed_len;
+    unsigned char _pad_0[2]; // Padding after short
     long text_wid;
     long text_hgt;
     TShape* back_pic;
@@ -94,8 +107,10 @@ public:
     short back_pic_hgt;
     int fill_back;
     unsigned char back_color;
+    unsigned char _pad_1[3]; // Padding after char
     int outline;
     unsigned char outline_color;
+    unsigned char _pad_2[3]; // Padding after char
     int sorted;
     long second_column_pos;
     long full_width;
@@ -108,6 +123,7 @@ public:
     unsigned char bevel_color4;
     unsigned char bevel_color5;
     unsigned char bevel_color6;
+    unsigned char _pad_3[2]; // Padding after 6 bytes
     void* clip_rgn2;
     int border_size;
     int spacer_size;

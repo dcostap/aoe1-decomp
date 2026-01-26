@@ -4,17 +4,45 @@
 
 class TButtonPanel : public TPanel {
 public:
+    enum ButtonType : int {};
+    enum DrawType : int {};
+    enum NotifyType : int {};
+    
+    TButtonPanel();
+
     // Virtuals (best-effort)
     virtual ~TButtonPanel(); // vt[0] (0x0)
-    virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)
+    virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, TButtonPanel::DrawType param_7, TDigital* param_8, TButtonPanel::NotifyType param_9, long param_10); // vt[1] (0x4)
+    
+    // Non-virtuals found in ASM
+    void set_text(short state, char* text);
+    void set_text(short state, long resid);
+    void set_text(long resid);
+    void set_text(short state, long resid1, long resid2);
+    void set_text(short state, char* text1, char* text2);
+    void set_font(void* font, long wid = -1, long hgt = -1);
+    void set_text_pos(long x, long y);
+    void set_text_info(char* text, void* font, long p3, long p4, long p5, long p6);
+    void set_text_info(long resid, void* font, long p3, long p4, long p5, long p6);
+    void set_picture(short state, TShape* shape, short index);
+    void set_radio_info(TButtonPanel** buttons, short num);
+    void set_state_info(short num_states);
+    int get_state();
+    long get_id();
+    long get_id2();
+    int get_text(short state, char** text1, char** text2);
+    void get_text_color(short state, ulong* color1, ulong* color2);
+    void set_sound_number(int num);
+    void set_id(long val);
+    void set_sound(TDigital* s);
     virtual void set_rect(tagRECT param_1); // vt[2] (0x8)
     virtual void set_rect(long param_1, long param_2, long param_3, long param_4); // vt[3] (0xC)
     virtual void set_color(uchar param_1); // vt[4] (0x10)
     virtual void set_active(int param_1); // vt[5] (0x14)
     virtual void set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10, TPanel* param_11, TPanel* param_12, TPanel* param_13); // vt[6] (0x18)
     virtual void set_fixed_position(long param_1, long param_2, long param_3, long param_4); // vt[7] (0x1C)
-    virtual void set_redraw(RedrawMode param_1); // vt[8] (0x20)
-    virtual void set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3); // vt[9] (0x24)
+    virtual void set_redraw(TPanel::RedrawMode param_1); // vt[8] (0x20)
+    virtual void set_overlapped_redraw(TPanel* param_1, TPanel* param_2, TPanel::RedrawMode param_3); // vt[9] (0x24)
     virtual void draw_setup(int param_1); // vt[10] (0x28)
     virtual void draw_finish(); // vt[11] (0x2C)
     virtual void draw(); // vt[12] (0x30)
@@ -50,7 +78,7 @@ public:
     virtual long mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4); // vt[42] (0xA8)
     virtual long key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5); // vt[43] (0xAC)
     virtual long char_action(long param_1, short param_2); // vt[44] (0xB0)
-    virtual long action(TPanel* param_1, long param_2, ulong param_3, ulong param_4); // vt[45] (0xB4)
+    virtual long action(long param_1, ulong param_2, ulong param_3); // vt[45] (0xB4)
     virtual void get_true_render_rect(tagRECT* param_1); // vt[46] (0xB8)
     virtual int is_inside(long param_1, long param_2); // vt[47] (0xBC)
     virtual void set_focus(int param_1); // vt[48] (0xC0)
@@ -64,47 +92,50 @@ public:
     virtual void set_state(short param_1); // vt[56] (0xE0)
     virtual int hit_button(long param_1, long param_2); // vt[57] (0xE4)
 
-    long id[9];
-    long id2[9];
-    TButtonPanel::ButtonType buttonTypeValue;
-    TButtonPanel::DrawType drawTypeValue;
-    TButtonPanel::NotifyType notifyTypeValue;
-    TDigital* sound;
-    TShape* pic[9];
-    short pic_index[9];
-    int auto_pic_pos;
-    long pic_x;
-    long pic_y;
-    int all_hot;
-    int draw_reverse;
-    char* text1[9];
-    char* text2[9];
-    long text_x;
-    long text_y;
-    void* font;
-    long font_wid;
-    long font_hgt;
-    short num_states;
-    short cur_state;
-    int is_down;
-    TButtonPanel** radio_buttons;
-    short num_radio_buttons;
-    unsigned long button_down_time;
-    unsigned long text_color1[9];
-    unsigned long text_color2[9];
-    unsigned long highlight_text_color1[9];
-    unsigned long highlight_text_color2[9];
-    long hotkey;
-    int hotkey_shift;
-    int bevel_type;
-    unsigned char bevel_color1;
-    unsigned char bevel_color2;
-    unsigned char bevel_color3;
-    unsigned char bevel_color4;
-    unsigned char bevel_color5;
-    unsigned char bevel_color6;
-    long key_down;
-    int disabled;
-    int sound_number;
+    long id[9]; // +0xF4 (Size: 0x24)
+    long id2[9]; // +0x118 (Size: 0x24)
+    ButtonType buttonTypeValue; // +0x13C (Size: 0x4)
+    DrawType drawTypeValue; // +0x140 (Size: 0x4)
+    NotifyType notifyTypeValue; // +0x144 (Size: 0x4)
+    TDigital* sound; // +0x148 (Size: 0x4)
+    TShape* pic[9]; // +0x14C (Size: 0x24)
+    short pic_index[9]; // +0x170 (Size: 0x12)
+    unsigned char _pad_0[0x2]; // 0x0182 (Gap: 2)
+    int auto_pic_pos; // +0x184 (Size: 0x4)
+    long pic_x; // +0x188 (Size: 0x4)
+    long pic_y; // +0x18C (Size: 0x4)
+    int all_hot; // +0x190 (Size: 0x4)
+    int draw_reverse; // +0x194 (Size: 0x4)
+    char* text1[9]; // +0x198 (Size: 0x24)
+    char* text2[9]; // +0x1BC (Size: 0x24)
+    long text_x; // +0x1E0 (Size: 0x4)
+    long text_y; // +0x1E4 (Size: 0x4)
+    void* font; // +0x1E8 (Size: 0x4)
+    long font_wid; // +0x1EC (Size: 0x4)
+    long font_hgt; // +0x1F0 (Size: 0x4)
+    short num_states; // +0x1F4 (Size: 0x2)
+    short cur_state; // +0x1F6 (Size: 0x2)
+    int is_down; // +0x1F8 (Size: 0x4)
+    TButtonPanel** radio_buttons; // +0x1FC (Size: 0x4)
+    short num_radio_buttons; // +0x200 (Size: 0x2)
+    unsigned char _pad_1[0x2]; // 0x0202 (Gap: 2)
+    unsigned long button_down_time; // +0x204 (Size: 0x4)
+    unsigned long text_color1[9]; // +0x208 (Size: 0x24)
+    unsigned long text_color2[9]; // +0x22C (Size: 0x24)
+    unsigned long highlight_text_color1[9]; // +0x250 (Size: 0x24)
+    unsigned long highlight_text_color2[9]; // +0x274 (Size: 0x24)
+    long hotkey; // +0x298 (Size: 0x4)
+    int hotkey_shift; // +0x29C (Size: 0x4)
+    int bevel_type; // +0x2A0 (Size: 0x4)
+    unsigned char bevel_color1; // +0x2A4 (Size: 0x1)
+    unsigned char bevel_color2; // +0x2A5 (Size: 0x1)
+    unsigned char bevel_color3; // +0x2A6 (Size: 0x1)
+    unsigned char bevel_color4; // +0x2A7 (Size: 0x1)
+    unsigned char bevel_color5; // +0x2A8 (Size: 0x1)
+    unsigned char bevel_color6; // +0x2A9 (Size: 0x1)
+    unsigned char _pad_2[0x2]; // 0x02aa (Gap: 2)
+    long key_down; // +0x2AC (Size: 0x4)
+    int disabled; // +0x2B0 (Size: 0x4)
+    int sound_number; // +0x2B4 (Size: 0x4)
 };
 static_assert(sizeof(TButtonPanel) == 0x2B8, "Size mismatch");

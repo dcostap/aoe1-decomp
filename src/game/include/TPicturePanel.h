@@ -4,17 +4,21 @@
 
 class TPicturePanel : public TPanel {
 public:
+    enum PictureType : int {};
+    
+    TPicturePanel();
+
     // Virtuals (best-effort)
     virtual ~TPicturePanel(); // vt[0] (0x0)
-    virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)
+    virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, char* param_7, long param_8, int param_9, int param_10); // vt[1] (0x4)
     virtual void set_rect(tagRECT param_1); // vt[2] (0x8)
     virtual void set_rect(long param_1, long param_2, long param_3, long param_4); // vt[3] (0xC)
     virtual void set_color(uchar param_1); // vt[4] (0x10)
     virtual void set_active(int param_1); // vt[5] (0x14)
     virtual void set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10, TPanel* param_11, TPanel* param_12, TPanel* param_13); // vt[6] (0x18)
     virtual void set_fixed_position(long param_1, long param_2, long param_3, long param_4); // vt[7] (0x1C)
-    virtual void set_redraw(RedrawMode param_1); // vt[8] (0x20)
-    virtual void set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3); // vt[9] (0x24)
+    virtual void set_redraw(TPanel::RedrawMode param_1); // vt[8] (0x20)
+    virtual void set_overlapped_redraw(TPanel* param_1, TPanel* param_2, TPanel::RedrawMode param_3); // vt[9] (0x24)
     virtual void draw_setup(int param_1); // vt[10] (0x28)
     virtual void draw_finish(); // vt[11] (0x2C)
     virtual void draw(); // vt[12] (0x30)
@@ -50,7 +54,7 @@ public:
     virtual long mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4); // vt[42] (0xA8)
     virtual long key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5); // vt[43] (0xAC)
     virtual long char_action(long param_1, short param_2); // vt[44] (0xB0)
-    virtual long action(TPanel* param_1, long param_2, ulong param_3, ulong param_4); // vt[45] (0xB4)
+    virtual long action(long param_1, ulong param_2, ulong param_3); // vt[45] (0xB4)
     virtual void get_true_render_rect(tagRECT* param_1); // vt[46] (0xB8)
     virtual int is_inside(long param_1, long param_2); // vt[47] (0xBC)
     virtual void set_focus(int param_1); // vt[48] (0xC0)

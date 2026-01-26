@@ -89,9 +89,14 @@ cl /nologo /EHsc /std:c++17 /MDd /D_DEBUG /DWIN32 /D_X86_ ^
    %SRC_DIR%\debug_helpers.cpp ^
    %SRC_DIR%\screens.cpp ^
    %SRC_DIR%\TPanel.cpp ^
+   %SRC_DIR%\TButtonPanel.cpp ^
+   %SRC_DIR%\TTextPanel.cpp ^
+   %SRC_DIR%\Panel_ez.cpp ^
+   %SRC_DIR%\TRIBE_Panel_Button.cpp ^
    %SRC_DIR%\TPanelSystem.cpp ^
    %SRC_DIR%\Dib.cpp ^
    %SRC_DIR%\Drawarea.cpp ^
+   %SRC_DIR%\Pnl_pic.cpp ^
    /link /LIBPATH:"%DP_LIB%" ^
    kernel32.lib user32.lib gdi32.lib advapi32.lib ole32.lib ^
    ddraw.lib dxguid.lib dplayx.lib dplay.lib uuid.lib winmm.lib ws2_32.lib ^

@@ -1,0 +1,53 @@
+Setting up VS 2022 x86 environment...
+**********************************************************************
+** Visual Studio 2022 Developer Command Prompt v17.0
+** Copyright (c) 2022 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x86'
+
+[1/2] Compiling resources...
+Microsoft (R) Windows (R) Resource Compiler Version 10.0.10011.16384
+
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+[2/2] Compiling code...
+main.cpp
+tribegam.cpp
+basegame.cpp
+RGE_Game_World.cpp
+TRIBE_World.cpp
+RGE_Player.cpp
+TRIBE_Player.cpp
+RGE_Static_Object.cpp
+RGE_Map.cpp
+com_hand.cpp
+globals.cpp
+Res_file.cpp
+sceninfo.cpp
+gameinfo.cpp
+file_stf.cpp
+getdxver.cpp
+TRegistry.cpp
+TDebuggingLog.cpp
+Mouseptr.cpp
+TShape.cpp
+Generating Code...
+Compiling...
+Chat.cpp
+debug_helpers.cpp
+screens.cpp
+TPanel.cpp
+TButtonPanel.cpp
+TTextPanel.cpp
+Panel_ez.cpp
+TRIBE_Panel_Button.cpp
+TPanelSystem.cpp
+Dib.cpp
+Drawarea.cpp
+Pnl_pic.cpp
+Generating Code...
+TRIBE_Panel_Button.obj : error LNK2001: unresolved external symbol "public: virtual long __thiscall TButtonPanel::setup(struct TDrawArea *,class TPanel *,long,long,long,long,enum TButtonPanel::DrawType,class TDigital *,enum TButtonPanel::NotifyType,long)" (?setup@TButtonPanel@@UAEJPAUTDrawArea@@PAVTPanel@@JJJJW4DrawType@1@PAVTDigital@@W4NotifyType@1@J@Z)
+dist\empiresx.exe : fatal error LNK1120: 1 unresolved externals
+
+Compilation FAILED!

@@ -5,15 +5,20 @@
 class TPanel {
 public:
     enum PositionMode : int {
-        // Enums used in virtual functions
+        Fixed = 0,
+        Relative = 1,
+        Center = 2
     };
     enum RedrawMode : int {
-        // Enums used in virtual functions
+        NoRedraw = 0,
+        Redraw = 1
     };
+
+    TPanel(char* name = nullptr);
 
     // Virtuals (best-effort)
     virtual ~TPanel(); // vt[0] (0x0)
-    virtual long setup(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5, uchar param_6); // vt[1] (0x4)
+    virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)
     virtual void set_rect(tagRECT param_1); // vt[2] (0x8)
     virtual void set_rect(long param_1, long param_2, long param_3, long param_4); // vt[3] (0xC)
     virtual void set_color(uchar param_1); // vt[4] (0x10)
@@ -68,66 +73,69 @@ public:
     virtual int restart_sound_system(); // vt[53] (0xD4)
     virtual void take_snapshot(); // vt[54] (0xD8)
     virtual void handle_reactivate(); // vt[55] (0xDC)
+    
+    int get_string(int resid, char* buffer, int len);
+    char* get_string(int resid);
 
-    TPanel* previousPanelValue;
-    TPanel* previousModalPanelValue;
-    long pnl_x;
-    long pnl_y;
-    long pnl_wid;
-    long pnl_hgt;
-    char* panelNameValue;
-    TDrawArea* render_area;
-    tagRECT clip_rect;
-    TPanel::PositionMode position_mode;
-    TPanel::RedrawMode need_redraw;
-    TPanel* curr_child;
-    TPanel* parent_panel;
-    TPanel* left_panel;
-    TPanel* top_panel;
-    TPanel* right_panel;
-    TPanel* bottom_panel;
-    PanelNode* node;
-    PanelNode* first_child_node;
-    PanelNode* last_child_node;
-    TPanel* tab_prev_panel;
-    TPanel* tab_next_panel;
-    int mouse_captured;
-    int active;
-    int visible;
-    int tab_stop;
-    int have_focus;
-    int overlapping_children;
-    int handle_mouse_input;
-    int just_drawn;
-    void* clip_rgn;
-    tagRECT render_rect;
-    long left_border;
-    long top_border;
-    long right_border;
-    long bottom_border;
-    long min_wid;
-    long max_wid;
-    long min_hgt;
-    long max_hgt;
-    long mouse_hold_interval;
-    long mouse_move_tolerance;
-    long mouse_down_x;
-    long mouse_down_y;
-    int mouse_down_ctrl;
-    int mouse_down_shift;
-    unsigned long mouse_down_time;
-    int error_code;
-    int z_order;
-    int display_changed_count;
-    long help_string_id;
-    long help_page_id;
-    unsigned char mouse_action;
-    unsigned char mouse_down_button;
-    unsigned char panel_type;
-    unsigned char color;
-    unsigned char fill_in_background;
-    unsigned char clip_to_parent;
-    unsigned char draw_rect2_flag;
-    unsigned char need_restore;
+    TPanel* previousPanelValue; // +0x4 (Size: 0x4)
+    TPanel* previousModalPanelValue; // +0x8 (Size: 0x4)
+    long pnl_x; // +0xC (Size: 0x4)
+    long pnl_y; // +0x10 (Size: 0x4)
+    long pnl_wid; // +0x14 (Size: 0x4)
+    long pnl_hgt; // +0x18 (Size: 0x4)
+    char* panelNameValue; // +0x1C (Size: 0x4)
+    TDrawArea* render_area; // +0x20 (Size: 0x4)
+    tagRECT clip_rect; // +0x24 (Size: 0x10)
+    TPanel::PositionMode position_mode; // +0x34 (Size: 0x4)
+    TPanel::RedrawMode need_redraw; // +0x38 (Size: 0x4)
+    TPanel* curr_child; // +0x3C (Size: 0x4)
+    TPanel* parent_panel; // +0x40 (Size: 0x4)
+    TPanel* left_panel; // +0x44 (Size: 0x4)
+    TPanel* top_panel; // +0x48 (Size: 0x4)
+    TPanel* right_panel; // +0x4C (Size: 0x4)
+    TPanel* bottom_panel; // +0x50 (Size: 0x4)
+    PanelNode* node; // +0x54 (Size: 0x4)
+    PanelNode* first_child_node; // +0x58 (Size: 0x4)
+    PanelNode* last_child_node; // +0x5C (Size: 0x4)
+    TPanel* tab_prev_panel; // +0x60 (Size: 0x4)
+    TPanel* tab_next_panel; // +0x64 (Size: 0x4)
+    int mouse_captured; // +0x68 (Size: 0x4)
+    int active; // +0x6C (Size: 0x4)
+    int visible; // +0x70 (Size: 0x4)
+    int tab_stop; // +0x74 (Size: 0x4)
+    int have_focus; // +0x78 (Size: 0x4)
+    int overlapping_children; // +0x7C (Size: 0x4)
+    int handle_mouse_input; // +0x80 (Size: 0x4)
+    int just_drawn; // +0x84 (Size: 0x4)
+    void* clip_rgn; // +0x88 (Size: 0x4)
+    tagRECT render_rect; // +0x8C (Size: 0x10)
+    long left_border; // +0x9C (Size: 0x4)
+    long top_border; // +0xA0 (Size: 0x4)
+    long right_border; // +0xA4 (Size: 0x4)
+    long bottom_border; // +0xA8 (Size: 0x4)
+    long min_wid; // +0xAC (Size: 0x4)
+    long max_wid; // +0xB0 (Size: 0x4)
+    long min_hgt; // +0xB4 (Size: 0x4)
+    long max_hgt; // +0xB8 (Size: 0x4)
+    long mouse_hold_interval; // +0xBC (Size: 0x4)
+    long mouse_move_tolerance; // +0xC0 (Size: 0x4)
+    long mouse_down_x; // +0xC4 (Size: 0x4)
+    long mouse_down_y; // +0xC8 (Size: 0x4)
+    int mouse_down_ctrl; // +0xCC (Size: 0x4)
+    int mouse_down_shift; // +0xD0 (Size: 0x4)
+    unsigned long mouse_down_time; // +0xD4 (Size: 0x4)
+    int error_code; // +0xD8 (Size: 0x4)
+    int z_order; // +0xDC (Size: 0x4)
+    int display_changed_count; // +0xE0 (Size: 0x4)
+    long help_string_id; // +0xE4 (Size: 0x4)
+    long help_page_id; // +0xE8 (Size: 0x4)
+    unsigned char mouse_action; // +0xEC (Size: 0x1)
+    unsigned char mouse_down_button; // +0xED (Size: 0x1)
+    unsigned char panel_type; // +0xEE (Size: 0x1)
+    unsigned char color; // +0xEF (Size: 0x1)
+    unsigned char fill_in_background; // +0xF0 (Size: 0x1)
+    unsigned char clip_to_parent; // +0xF1 (Size: 0x1)
+    unsigned char draw_rect2_flag; // +0xF2 (Size: 0x1)
+    unsigned char need_restore; // +0xF3 (Size: 0x1)
 };
 static_assert(sizeof(TPanel) == 0xF4, "Size mismatch");

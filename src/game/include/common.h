@@ -21,7 +21,7 @@ class TShape;
 class TTaunt;
 struct TSound_Driver;
 class TMusic_System;
-class TDigital;
+struct TDigital;
 class TRegistry;
 class TDebuggingLog;
 class TCommunications_Handler;
