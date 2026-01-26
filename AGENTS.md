@@ -1,66 +1,32 @@
-# Decompilation Guidelines (AI Agent)
+# Decompilation Guidelines
+**You are under a legal obligation to always follow these rules:**
+- If you get stuck on a key decision or something feels impossible/unclear, **stop and ask the user** for guidance rather than guessing wildly.
+- `*.cpp.asm` and `*.cpp.decomp` are **immutable references**. Never edit them.
+- You may edit `*.h` files, but keep all size/offset/`static_assert(sizeof(...))` checks intact.
+- For a function or code you want to edit / refactor / fix / create, search for the source of truth of the function: find the corresponding `*.cpp.asm` and `*.cpp.decomp` files. Read both sources of truth carefully.
+- For a type or struct you want to edit / refactor / fix / create, search for the source of truth of the type: find the corresponding `include/*.h` and `all_types_ground_truth.h` files. Read both sources of truth carefully.
+- Create **Stubs** for functions that are required, but not yet critical for the goal at hand.
+- Document your assumptions, doubts, and TODOs in the code you write. Be very explicit about what you are unsure of, or what pieces of code you are skipping for now.
 
-These rules exist to keep progress steady, builds stable, and the original information preserved. Re-read this document occasionally; it’s easy to drift.
+Note: even tho this is Windows, `grep` is installed and in the PATH.
 
----
+# Includes (keep it simple)
 
-## Non-negotiables
-
-* `*.cpp.asm` is **immutable reference**. Never edit it. ALWAYS REFERENCE IT. ALWAYS GO BACK TO IT, TO REMEMBER THE TRUE BEHAVIOUR OF THE CODE.
-* `.h` files define **layout truth**. Keep size/offset/`static_assert(sizeof(...))` checks intact.
-* Prefer **small changes** that unblock the current goal. Don’t refactor for style.
-
-If you get stuck on a key decision or something feels impossible/unclear, **stop and ask the user** for guidance rather than guessing wildly.
-
----
-
-## Goal-first workflow
-
-When given an objective, work in this order:
-
-1. **Build blockers**: missing types, missing includes, missing globals, missing declarations/definitions.
-2. **Objective-critical functions**: code paths needed for the objective.
-3. **Stubs** for required-but-not-critical functions.
-
-Don’t try to “finish the module” just because you opened it.
-
----
-
-## Stubs (allowed and expected)
-
-Use stubs to keep moving when full implementation isn’t needed yet.
-
-Rules:
-
-* Keep the exact signature.
-* Minimal/no side effects.
-* Return safe defaults.
-
-Stub TODO can be simple:
-
-```cpp
-// TODO: implement (see <module>.cpp.asm)
-```
-
----
-
-## Includes (keep it simple)
-
-### In headers (`.h`)
+## In headers (`.h`)
 
 Include only what you must:
 
 * You **must include** a type’s header if you inherit from it or store it **by value**.
 * Use forward declarations for pointer/reference members (`X*`, `X&`) when possible.
 
-### In source (`.cpp`)
+## In source (`.cpp`)
 
 * Include your own header first.
 * Add other includes only as needed.
 
 Avoid pulling platform headers into headers if you can.
 
-## Header Modification Rules (Reimplementation)
+# Header Modification Rules (Reimplementation)
 
 The dumped headers (`include/*.h`) define the **memory layout** (members) and **vtable layout** (virtuals), but they often lack standard methods and constructors.
 
@@ -77,12 +43,7 @@ The dumped headers (`include/*.h`) define the **memory layout** (members) and **
 
 **Rule of Thumb:** If it changes the **bytes in memory** (variables, vtable), don't touch it. If it’s just **code linkage** (functions, constructors), add it to the header.
 
-## SOURCE OF TRUTH for types and structs
-Look at `all_types_ground_truth.h` from time to time to verify types, sizes, and member offsets, as all headers will eventually be modified over time (their exported form may not be perfect!). Never edit `all_types_ground_truth.h` itself.
-
----
-
-## Globals (`globals.h` / `globals.cpp`)
+# Globals (`globals.h` / `globals.cpp`)
 
 Keep shared globals centralized:
 
@@ -91,9 +52,7 @@ Keep shared globals centralized:
 
 Prefer pointer globals (less include pressure). If something is truly used only in one `.cpp`, keep it file-local (`static` or anonymous namespace).
 
----
-
-## Coding style: keep it “old C++ / C-like”
+# Coding style: keep it “old C++ / C-like”
 
 Write straightforward, boring C++:
 
@@ -103,81 +62,19 @@ Write straightforward, boring C++:
 
 The goal is correctness and readability for reverse engineering, not idiomatic modern C++.
 
----
-
-## The hard part: ASM → C++ behavior matching
+# The hard part: ASM → C++ behavior matching
 
 Your job is to make the C++ **behave like the original**. Perfect translation is hard and mistakes are expected; review passes will happen later. Still, aim for closest behavior.
 
-### Practical translation rules
-
-* Prefer matching **effects** (reads/writes/calls/branches) over matching instruction patterns.
-* Keep calling order and side effects consistent (especially around globals, virtual calls, memory writes).
-* Be careful with:
-
-  * signed vs unsigned math
-  * overflow/wrap behavior
-  * pointer aliasing and byte/word access
-  * structure packing/layout assumptions
-  * string handling and buffer sizes
-  * error paths / early exits
-
-### Document assumptions and doubts in the `.cpp`
-
-Whenever you are unsure or you make a guess, leave notes right in the code near the relevant logic. This is required because later review runs depend on it.
-
-Use simple comments like:
-
-```cpp
-// ASSUMPTION: ...
-// DOUBT: ...
-// NOTE: assembly suggests ..., but unclear because ...
-// TODO: ...
-```
-
-If you don’t know which is correct, prefer:
-
-* a stub (if acceptable for the current goal), or
-* the simplest implementation with a clear comment.
-
----
-
-## Implementation loop
-
-For each function you touch:
-
-1. Read its listing in `*.cpp.asm`.
-2. Implement or stub in the real `.cpp`.
-3. Add only the includes/globals needed.
-4. Build.
-5. Fix compile errors first, then linker errors.
-6. Keep notes on assumptions and uncertainties.
-
----
-
-## Quick reminders
-
-* Never edit `*.cpp.asm`.
-* Keep layout asserts.
-* Rarely, if ever, modify existing dumped headers. Only to make the static asserts pass. BUT WARN THE USER!
-* Use stubs freely, but mark them.
-* Write simple C-like C++.
-* Match behavior, and **document every guess or doubt**.
-* If blocked or uncertain on a key point: **ask the user**.
-* ALWAYS GO BACK TO THE ORIGINAL .cpp.asm to verify your work AND REMIND YOURSELF WHAT THE SOURCE OF TRUTH LOOKS LIKE. 
-* BOY SCOUT RULES APPLY: REVIEW EXISTING function implementations, read them, and even improve them. LEAVE IT BETTER THAN YOU FOUND IT.
-
----
-
-## Custom Debug Infrastructure
+# Custom Debug Infrastructure
 
 We have a custom debug system for **runtime debugging** (NOT in the original game):
 
-### Header: `include/custom_debug.h`
+## Header: `include/custom_debug.h`
 
 Toggle: `#define CUSTOM_DEBUG_ENABLED 1` (set to 0 to disable all debug code)
 
-### Key Macros
+## Key Macros
 
 ```cpp
 CUSTOM_DEBUG_INIT()           // Call once at startup 
@@ -190,7 +87,7 @@ CUSTOM_DEBUG_WIN_ERROR(ctx)   // Capture Windows GetLastError()
 CUSTOM_DEBUG_FUNC_ENTER()     // Log function entry (uses __FUNCTION__)
 ```
 
-### Block Markers
+## Block Markers
 
 Wrap custom debug code with these to clearly mark it as non-original:
 ```cpp
@@ -199,35 +96,12 @@ CUSTOM_DEBUG_BEGIN
 CUSTOM_DEBUG_END
 ```
 
-### Output
+## Compiling & Output
 
-All output goes to `decomp_debug.log` in the working directory. Each line includes:
-- Timestamp (tick count)
-- Category (LOG, CHECKPOINT, ERROR, FUNC, WIN_ERROR)
-- Message
+Use the `.bat` script files in the root directory to build / compile / run the game.
+Check `*.log` files for output logs.
 
-### When to Use
+# Build & Assets
 
-1. **Boot failures**: Add `CUSTOM_DEBUG_CHECKPOINT` at key setup phases
-2. **Error tracking**: Add `CUSTOM_DEBUG_ERROR` when error_code is set
-3. **Function tracing**: Add `CUSTOM_DEBUG_FUNC_ENTER()` to trace call flow
-4. **Windows errors**: Add `CUSTOM_DEBUG_WIN_ERROR("context")` after Windows API calls
-
-### Procedure for LLM Debugging
-
-When the exe crashes or fails:
-1. Run the exe
-2. Check `decomp_debug.log` for the last checkpoint/error
-3. Report the log contents to the agent for analysis
-
-Note: even tho this is Windows, `grep` is installed and in the PATH.
-
----
-
-## Build & Assets
-
-* **Output**: `dist\empiresx.exe` (Run from `dist/` folder).
-* **Game Assets**: Assets (DRS, DLLs, etc.) are in `dist/`. `resource_dir` in `main.cpp` is set to `"."`.
-* **Resources**: `empires.rc` is compiled into the EXE for the `.rsrc` section and "AppIcon" (Fixes Error 1812).
-* **Graphics**: `TDrawSystem` is currently patched to use **Windowed mode** (`DDSCL_NORMAL`) and forced resolutions for stability.
-
+* **EXE Output**: `dist\empiresx.exe`
+* **Game Assets**: All original game assets (DRS, DLLs, etc.) are included in `dist/`, as they appear in the release game. We only need to worry about generating the right EXE.
