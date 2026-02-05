@@ -92,10 +92,12 @@ cl /nologo /EHsc /std:c++17 /MDd /D_DEBUG /DWIN32 /D_X86_ ^
    %SRC_DIR%\TButtonPanel.cpp ^
    %SRC_DIR%\TTextPanel.cpp ^
    %SRC_DIR%\Panel_ez.cpp ^
-   %SRC_DIR%\TRIBE_Panel_Button.cpp ^
+   %SRC_DIR%\Pnl_scr.cpp ^
+   %SRC_DIR%\Scr_main_impl.cpp ^
    %SRC_DIR%\TPanelSystem.cpp ^
    %SRC_DIR%\Dib.cpp ^
    %SRC_DIR%\Drawarea.cpp ^
+   %SRC_DIR%\RGE_Color_Table.cpp ^
    %SRC_DIR%\Pnl_pic.cpp ^
    /link /LIBPATH:"%DP_LIB%" ^
    kernel32.lib user32.lib gdi32.lib advapi32.lib ole32.lib ^

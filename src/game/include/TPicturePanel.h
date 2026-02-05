@@ -54,7 +54,7 @@ public:
     virtual long mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4); // vt[42] (0xA8)
     virtual long key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5); // vt[43] (0xAC)
     virtual long char_action(long param_1, short param_2); // vt[44] (0xB0)
-    virtual long action(long param_1, ulong param_2, ulong param_3); // vt[45] (0xB4)
+    virtual long action(TPanel* param_1, long param_2, ulong param_3, ulong param_4); // vt[45] (0xB4)
     virtual void get_true_render_rect(tagRECT* param_1); // vt[46] (0xB8)
     virtual int is_inside(long param_1, long param_2); // vt[47] (0xBC)
     virtual void set_focus(int param_1); // vt[48] (0xC0)

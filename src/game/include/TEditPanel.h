@@ -4,6 +4,10 @@
 
 class TEditPanel : public TPanel {
 public:
+    // NOTE: The original code uses `enum TEditPanel::FormatType` (see immutable `pnl_edit.cpp.asm`).
+    // Many dumped headers refer to the unqualified `FormatType`, so we alias the global enum here.
+    typedef ::FormatType FormatType;
+
     // Virtuals (best-effort)
     virtual ~TEditPanel(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)

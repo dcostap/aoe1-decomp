@@ -1,12 +1,11 @@
 # Decompilation Guidelines
 **You are under a legal obligation to always follow these rules:**
-- If you get stuck on a key decision or something feels impossible/unclear, **stop and ask the user** for guidance rather than guessing wildly.
 - `*.cpp.asm` and `*.cpp.decomp` are **immutable references**. Never edit them.
 - You may edit `*.h` files, but keep all size/offset/`static_assert(sizeof(...))` checks intact.
 - For a function or code you want to edit / refactor / fix / create, search for the source of truth of the function: find the corresponding `*.cpp.asm` and `*.cpp.decomp` files. Read both sources of truth carefully.
 - For a type or struct you want to edit / refactor / fix / create, search for the source of truth of the type: find the corresponding `include/*.h` and `all_types_ground_truth.h` files. Read both sources of truth carefully.
 - Create **Stubs** for functions that are required, but not yet critical for the goal at hand.
-- Document your assumptions, doubts, and TODOs in the code you write. Be very explicit about what you are unsure of, or what pieces of code you are skipping for now.
+- Document your assumptions, doubts, and TODOs in the code you write. Be very explicit about what you are unsure of, or what pieces of code you are skipping for now. Use comments liberally to explain your thinking and assumptions.
 
 Note: even tho this is Windows, `grep` is installed and in the PATH.
 
@@ -64,7 +63,7 @@ The goal is correctness and readability for reverse engineering, not idiomatic m
 
 # The hard part: ASM → C++ behavior matching
 
-Your job is to make the C++ **behave like the original**. Perfect translation is hard and mistakes are expected; review passes will happen later. Still, aim for closest behavior.
+Your job is to make the C++ **behave like the original**. Perfect translation is hard and mistakes are expected; review passes will happen later. Still, aim for closest behavior. Regularly review both the original `.cpp.asm` and `.cpp.decomp` to remember what the original code is actually doing.
 
 # Custom Debug Infrastructure
 

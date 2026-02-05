@@ -14,6 +14,21 @@ typedef unsigned short ushort;
 typedef unsigned int   uint;
 typedef unsigned long  ulong;
 
+// NOTE: `FormatType` is used throughout many dumped UI panel vtable signatures (e.g. TEasy_Panel::create_input/create_edit).
+// Immutable references (`Pnl_inp.cpp.asm`, `pnl_edit.cpp.asm`) show numeric comparisons against values 7 (multi-line) and 8 (percent).
+// TODO: Confirm the exact original name for value 0 (no filtering / general text).
+enum FormatType : int {
+    FormatAny = 0,
+    FormatNumber = 1,
+    FormatInteger = 2,
+    FormatUnsignedInt = 3,
+    FormatFile = 4,
+    FormatFileNoExt = 5,
+    FormatPath = 6,
+    FormatMultiLine = 7,
+    FormatPercent = 8,
+};
+
 // External struct/class forward declarations
 struct TDrawArea;
 struct TDrawSystem;

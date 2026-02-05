@@ -123,6 +123,27 @@ void TPanelSystem::remove_panel(TPanel* panel) {
 long TPanelSystem::check_message(void* hwnd, uint msg, uint wparam, long lparam) {
     if (!this->InputEnabled) return 0;
 
+    // Mouse capture / hover tracking (best-effort).
+    //
+    // The original engine supports mouse capture so a button can receive the matching mouse-up even
+    // if the cursor leaves the button while held. Our simplified `TPanel::handle_mouse_*` routing
+    // only dispatches to children when `is_inside` is true, so without this a pressed button can
+    // get stuck "down" and hover highlight won't clear reliably.
+    if (msg == WM_MOUSEMOVE || msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP || msg == WM_RBUTTONDOWN || msg == WM_RBUTTONUP) {
+        const long x = (long)(short)LOWORD(lparam);
+        const long y = (long)(short)HIWORD(lparam);
+
+        if (this->mouseOwnerValue && this->mouseOwnerValue->mouse_captured) {
+            return this->mouseOwnerValue->wnd_proc(hwnd, msg, wparam, lparam);
+        }
+
+        // Clear hover focus when leaving the previous owner.
+        if (msg == WM_MOUSEMOVE && this->mouseOwnerValue && !this->mouseOwnerValue->is_inside(x, y)) {
+            this->mouseOwnerValue->set_focus(0);
+            this->mouseOwnerValue = nullptr;
+        }
+    }
+
     // Dispatch to screens in reverse order (top screen first)
     // Actually, panelList is usually LIFO (newest on top)
     PanelNode* curr = this->panelListValue;

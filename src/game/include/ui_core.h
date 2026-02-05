@@ -28,7 +28,9 @@ struct PanelNode {
 class TPanel {
 public:
     enum PositionMode : int { Fixed = 0, Relative = 1, Center = 2 };
-    enum RedrawMode : int { NoRedraw = 0, Redraw = 1 };
+    // Source of truth: `src/game/src/panel.cpp.asm` / `.decomp` (immutable reference).
+    // NOTE: The original has at least three redraw levels (none/normal/full).
+    enum RedrawMode : int { NoRedraw = 0, Redraw = 1, RedrawFull = 2 };
 
     TPanel(char* name = nullptr);
     virtual ~TPanel();
@@ -76,7 +78,7 @@ public:
     virtual long mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4);
     virtual long key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5);
     virtual long char_action(long param_1, short param_2);
-    virtual long action(long param_1, ulong param_2, ulong param_3);
+    virtual long action(TPanel* param_1, long param_2, ulong param_3, ulong param_4);
     virtual void get_true_render_rect(tagRECT* param_1);
     virtual int is_inside(long param_1, long param_2);
     virtual void set_focus(int param_1);
@@ -90,6 +92,16 @@ public:
     
     int get_string(int resid, char* buffer, int len);
     char* get_string(int resid);
+
+    long xPosition() const;
+    long yPosition() const;
+    long width() const;
+    long height() const;
+
+    // Non-virtual helper: draw this panel and all children.
+    // NOTE: This is not an original method; it exists to let our simplified game loop render the UI
+    // tree while keeping the original semantics of `TPanel::draw()` (panel-only, no child recursion).
+    void draw_tree();
 
     TPanel* previousPanelValue;
     TPanel* previousModalPanelValue;
@@ -157,9 +169,24 @@ static_assert(sizeof(TPanel) == 0xF4, "Size mismatch");
 // --- TButtonPanel ---
 class TButtonPanel : public TPanel {
 public:
-    enum ButtonType : int {};
-    enum DrawType : int {};
-    enum NotifyType : int {};
+    // Enum values verified against `src/game/src/Pnl_btn.cpp.asm` (immutable reference).
+    // Only values we currently rely on are defined here; add more as confirmed by ASM.
+    enum ButtonType : int {
+        Normal = 0,
+        // CheckBox likely exists but value not yet confirmed from ASM.
+        Radio = 2,
+        State = 3,
+    };
+    enum DrawType : int {
+        DrawClear = 0,
+        // DrawBevelPicture etc exist but values not yet confirmed from ASM.
+        DrawTextA = 3,
+        DrawFillAndText = 5,
+    };
+    enum NotifyType : int {
+        // NOTE: `NotifyAction == 1` confirmed by `TButtonPanel::do_action` in `Pnl_btn.cpp.asm`.
+        NotifyAction = 1,
+    };
     
     TButtonPanel();
     virtual ~TButtonPanel();
@@ -173,9 +200,13 @@ public:
     void set_font(void* font, long wid = -1, long hgt = -1);
     void set_sound_number(int num);
     void set_id(long val);
+    void set_id(short state, long id, long id2);
     void set_sound(TDigital* s);
     void set_state(short param_1);
     int hit_button(long param_1, long param_2);
+    void do_action();
+    void do_right_action(int param_1);
+    void set_radio_button();
 
     virtual void set_rect(tagRECT param_1) override;
     virtual void set_rect(long param_1, long param_2, long param_3, long param_4) override;
@@ -207,7 +238,7 @@ public:
     virtual long mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) override;
     virtual long key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) override;
     virtual long char_action(long param_1, short param_2) override;
-    virtual long action(long param_1, ulong param_2, ulong param_3) override;
+    virtual long action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) override;
     virtual void get_true_render_rect(tagRECT* param_1) override;
     virtual void set_focus(int param_1) override;
     virtual void set_tab_order(TPanel* param_1, TPanel* param_2);

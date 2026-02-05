@@ -4,6 +4,13 @@
 
 class TScreenPanel : public TEasy_Panel {
 public:
+    TScreenPanel();
+    TScreenPanel(char* name);
+
+    // Non-virtual overloads used by screens (see `src/game/src/Pnl_scr.cpp.asm` / `.decomp`).
+    long setup(TDrawArea* param_1, char* param_2, long param_3, int param_4);
+    long setup(TDrawArea* param_1, char* param_2, long param_3, uchar param_4, int param_5);
+
     // Virtuals (best-effort)
     virtual ~TScreenPanel(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)

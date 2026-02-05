@@ -183,6 +183,32 @@ long TShape::shape_count() {
     return 0;
 }
 
+void TShape::shape_minmax(long* x_min, long* y_min, long* x_max, long* y_max, int shape_idx) {
+    // Best-effort implementation based on how `shape_draw` interprets SLP hotspots and dimensions.
+    // Source-of-truth usage: `Panel_ez.cpp.decomp` / `Pnl_btn.cpp.decomp` call sites.
+    //
+    // ASSUMPTION: For SLP shapes, bounds are `[-Hotspot_X, -Hotspot_Y]` .. `[-Hotspot_X+Width-1, -Hotspot_Y+Height-1]`.
+    if (x_min) *x_min = 0;
+    if (y_min) *y_min = 0;
+    if (x_max) *x_max = 0;
+    if (y_max) *y_max = 0;
+
+    if (!this->FShape || !this->shape_info) return;
+    long count = this->shape_count();
+    if (shape_idx < 0 || shape_idx >= count) return;
+
+    Shape_Info* info = &this->shape_info[shape_idx];
+    long xmin = -info->Hotspot_X;
+    long ymin = -info->Hotspot_Y;
+    long xmax = xmin + info->Width - 1;
+    long ymax = ymin + info->Height - 1;
+
+    if (x_min) *x_min = xmin;
+    if (y_min) *y_min = ymin;
+    if (x_max) *x_max = xmax;
+    if (y_max) *y_max = ymax;
+}
+
 // Helper logic to validate shape index (ASM 0x004B8E40)
 unsigned char TShape::Check_shape(long shape_idx, char* msg) {
     if (!this->shape && !this->FShape) {
@@ -226,8 +252,13 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
         return 0;
     }
     
-    // Lock the draw area surface
-    uchar* dest_bits = draw_area->Lock("shape_draw", 0);
+    // Lock the draw area surface, unless the caller already locked it.
+    int locked_here = 0;
+    uchar* dest_bits = draw_area->Bits;
+    if (!dest_bits) {
+        dest_bits = draw_area->Lock("shape_draw", 0);
+        locked_here = 1;
+    }
     if (!dest_bits) {
         CUSTOM_DEBUG_LOG("shape_draw: Failed to lock draw area");
         return 0;
@@ -245,6 +276,16 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
         pal = draw_area->DrawSystem->palette;
     }
 
+    // Clip rect is inclusive (matches `TDrawArea::SetClipRect` in `Drawarea.cpp.decomp`).
+    long clip_l = draw_area->ClipRect.left;
+    long clip_t = draw_area->ClipRect.top;
+    long clip_r = draw_area->ClipRect.right;
+    long clip_b = draw_area->ClipRect.bottom;
+    if (clip_l < 0) clip_l = 0;
+    if (clip_t < 0) clip_t = 0;
+    if (clip_r >= da_w) clip_r = da_w - 1;
+    if (clip_b >= da_h) clip_b = da_h - 1;
+
     unsigned char* slp_base = (unsigned char*)this->FShape;
     
     // Bounds check offsets with height awareness
@@ -254,7 +295,7 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
         info->Shape_Outline_Offset + height * 4 > (unsigned long)this->load_size) {
          CUSTOM_DEBUG_LOG_FMT("shape_draw: invalid offsets/size data=0x%lx outline=0x%lx size=0x%x height=%ld", 
              info->Shape_Data_Offsets, info->Shape_Outline_Offset, this->load_size, height);
-         draw_area->Unlock("shape_draw"); 
+         if (locked_here) draw_area->Unlock("shape_draw");
          return 0;
     }
 
@@ -265,6 +306,9 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
     for (long row = 0; row < height; row++) {
         long dst_y = draw_y + row;
         if (dst_y < 0 || dst_y >= da_h) {
+            continue;
+        }
+        if (dst_y < clip_t || dst_y > clip_b) {
             continue;
         }
 
@@ -334,7 +378,7 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
                 for (unsigned int i = 0; i < to_copy; i++) {
                     unsigned char px = *src++;
                     unsigned char idx = xlate ? xlate[px] : px;
-                    if (dst_x >= 0 && dst_x < da_w) {
+                    if (dst_x >= clip_l && dst_x <= clip_r) {
                         if (bytes_per_pixel == 4 && pal) {
                             tagPALETTEENTRY pe = pal[idx];
                             unsigned int rgb = (unsigned int)((pe.peRed << 16) | (pe.peGreen << 8) | pe.peBlue);
@@ -378,7 +422,7 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
                     to_write = (unsigned int)(max_x - dst_x + 1);
                 }
                 for (unsigned int i = 0; i < to_write; i++) {
-                    if (dst_x >= 0 && dst_x < da_w) {
+                    if (dst_x >= clip_l && dst_x <= clip_r) {
                         if (bytes_per_pixel == 4 && pal) {
                             tagPALETTEENTRY pe = pal[out_px];
                             unsigned int rgb = (unsigned int)((pe.peRed << 16) | (pe.peGreen << 8) | pe.peBlue);
@@ -411,7 +455,7 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
                 for (unsigned int i = 0; i < to_copy; i++) {
                     unsigned char px = *src++;
                     unsigned char idx = xlate ? xlate[px] : px;
-                    if (dst_x >= 0 && dst_x < da_w) {
+                    if (dst_x >= clip_l && dst_x <= clip_r) {
                         if (bytes_per_pixel == 4 && pal) {
                             tagPALETTEENTRY pe = pal[idx];
                             unsigned int rgb = (unsigned int)((pe.peRed << 16) | (pe.peGreen << 8) | pe.peBlue);
@@ -450,7 +494,7 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
                 }
                 for (unsigned int i = 0; i < to_write; i++) {
                     unsigned char out_px = (i & 1) ? out1 : out0;
-                    if (dst_x >= 0 && dst_x < da_w) {
+                    if (dst_x >= clip_l && dst_x <= clip_r) {
                         if (bytes_per_pixel == 4 && pal) {
                             tagPALETTEENTRY pe = pal[out_px];
                             unsigned int rgb = (unsigned int)((pe.peRed << 16) | (pe.peGreen << 8) | pe.peBlue);
@@ -479,7 +523,7 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
                 for (unsigned int i = 0; i < to_copy; i++) {
                     unsigned char px = *src++;
                     unsigned char idx = xlate ? xlate[px] : px;
-                    if (dst_x >= 0 && dst_x < da_w) {
+                    if (dst_x >= clip_l && dst_x <= clip_r) {
                         if (bytes_per_pixel == 4 && pal) {
                             tagPALETTEENTRY pe = pal[idx];
                             unsigned int rgb = (unsigned int)((pe.peRed << 16) | (pe.peGreen << 8) | pe.peBlue);
@@ -517,6 +561,6 @@ unsigned char TShape::shape_draw(TDrawArea* draw_area, long x, long y, long shap
         }
     }
 
-    draw_area->Unlock("shape_draw");
+    if (locked_here) draw_area->Unlock("shape_draw");
     return 1; // Success
 }

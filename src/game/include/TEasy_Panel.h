@@ -2,8 +2,30 @@
 #include "common.h"
 #include "TPanel.h"
 
+class TButtonPanel;
+class TTextPanel;
+class TInputPanel;
+class TEditPanel;
+class TDropDownPanel;
+class TListPanel;
+class TScrollBarPanel;
+class TVerticalSliderPanel;
+class THorizontalSliderPanel;
+class TShape;
+struct RGE_Color_Table;
+
 class TEasy_Panel : public TPanel {
 public:
+    TEasy_Panel();
+    TEasy_Panel(char* name);
+
+    // Non-virtual overload used heavily by screens (see `src/game/src/Panel_ez.cpp.asm` / `.decomp`).
+    long setup(TDrawArea* param_1, TPanel* param_2, char* param_3, long param_4, int param_5, long param_6, long param_7, long param_8, long param_9, int param_10);
+
+    // Shadow/shading helpers (non-virtual in original; see `Panel_ez.cpp.asm` / `.decomp`).
+    void set_shadow_amount(long amount_percent);
+    void setup_shadow_area(int force_rebuild);
+
     // Virtuals (best-effort)
     virtual ~TEasy_Panel(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)

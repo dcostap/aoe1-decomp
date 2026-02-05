@@ -9,6 +9,7 @@ struct TDrawArea {
     int Init(TDrawSystem* system, void* wnd, int width, int height, int use_trans, int is_primary, int use_sys_mem);
     void SetSize(long width, long height, int pitch);
     void SetFloatOffsets(int p1, int p2);
+    // NOTE: `tagRECT` coordinates are inclusive (matches `Drawarea.cpp.decomp`).
     void Clear(tagRECT* rect, int color);
     void PtrClear(tagRECT* rect, int color);
     void OverlayMemCopy(tagRECT* rect, TDrawArea* src, int x, int y);
@@ -16,10 +17,32 @@ struct TDrawArea {
     void Unlock(char* name);
     void PtrSpanCopy(TDrawArea* src, int x, int y);
     void DrawLine(int x1, int y1, int x2, int y2, uchar color);
+    // NOTE: coordinates are inclusive (matches `Drawarea.cpp.decomp`).
     void FillRect(long left, long top, long right, long bottom, uchar color);
+    // Primitive helpers (best-effort) used by UI bevel drawing.
+    // Source of truth: `src/game/src/Drawarea.cpp.asm` / `.decomp` and call sites like `Pnl_btn.cpp.asm`.
+    void DrawHorzLine(long x1, long x2, long y, uchar color);
+    void DrawVertLine(long x, long y1, long y2, uchar color);
+    void DrawRect(long x1, long y1, long x2, long y2, uchar color);
+    void DrawRect(tagRECT* rect, uchar color);
+    void DrawBevel(long x1, long y1, long x2, long y2, uchar c_tl, uchar c_br);
+    void DrawBevel2(long x1, long y1, long x2, long y2, uchar c1, uchar c2, uchar c3, uchar c4);
+    void DrawBevel21(long x1, long y1, long x2, long y2, uchar c1, uchar c2, uchar c3, uchar c4);
+    void DrawBevel3(long x1, long y1, long x2, long y2, uchar c1, uchar c2, uchar c3, uchar c4, uchar c5, uchar c6);
+    void DrawBevel32(long x1, long y1, long x2, long y2, uchar c1, uchar c2, uchar c3, uchar c4, uchar c5, uchar c6);
     void* GetDc(char* name);
     void ReleaseDc(char* name);
     void SaveBitmap(char* filename);
+
+    // Source-of-truth methods needed by `Panel_ez` and UI shading.
+    long AlignedWidth();
+    void SetClipRect(tagRECT* rect);
+    void SetClipRect(long left, long top, long right, long bottom);
+    void Copy(TDrawArea* dest, long x, long y, tagRECT* src_rect, int flags);
+    void SetShadowTable(RGE_Color_Table* table);
+    void DrawShadowBox(long left, long top, long right, long bottom);
+    void GetPalette(tagPALETTEENTRY* out_entries);
+    void SetPalette(tagPALETTEENTRY* entries);
 
     TDrawSystem* DrawSystem;
     void* Wnd;

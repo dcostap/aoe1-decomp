@@ -2,8 +2,13 @@
 #include "common.h"
 #include "TScreenPanel.h"
 
+class TTextPanel;
+class TPicturePanel;
+
 class TRIBE_Screen_Main_Menu : public TScreenPanel {
 public:
+    TRIBE_Screen_Main_Menu();
+
     // Virtuals (best-effort)
     virtual ~TRIBE_Screen_Main_Menu(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)

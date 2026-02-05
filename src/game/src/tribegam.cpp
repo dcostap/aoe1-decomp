@@ -6,7 +6,7 @@
 #include "../include/Res_file.h"
 #include "../include/RGE_Prog_Info.h"
 #include "../include/globals.h"
-#include "../include/screens.h"
+#include "../include/TRIBE_Screen_Main_Menu.h"
 #include "../include/TRIBE_World.h"
 #include "../include/TDrawSystem.h"
 #include "../include/TDrawArea.h"
@@ -289,25 +289,33 @@ int TRIBE_Game::load_game(char* p1) {
 }
 
 int TRIBE_Game::start_menu() {
-    // ASM 0x00524030
-    if (this->video_setup) {
-        // this->shutdown_video_system();
+    // Best-effort reimplementation based on immutable reference:
+    // `src/game/src/tribegam.cpp.asm` / `.decomp` (start_menu @ 0x00524030).
+
+    if (this->video_setup != 0) {
+        // TODO: Implement `TRIBE_Game::shutdown_video_system` accurately, then call it here.
+        // The original does: shutdown_video_system(this);
     }
 
     TRIBE_Screen_Main_Menu* menu = new TRIBE_Screen_Main_Menu();
     if (!menu) return 0;
-    
-    // Setup the menu screen (2 args)
-    menu->setup(this->draw_area, "scr1");
+
+    // The constructor calls `TScreenPanel::setup(...)`. If it failed, `TPanel::error_code` is set.
+    if (menu->error_code != 0) {
+        delete menu;
+        return 0;
+    }
+
+    // The original uses `TPanelSystem::setCurrentPanel(panel_system, "Main Menu", 0)`.
+    // Our panel system impl is incomplete; keep using the current simplified path for now.
     gCurrentScreen = menu;
 
-    // ASM logic checks for panel error states
-    
-    // Set current panel and change mode
-    this->set_game_mode(2, 0); 
+    // In the original, this is done via a virtual call at vtable +0xC (set_prog_mode).
     this->set_prog_mode(2);
-    
-    // Play music etc.
+
+    // TODO: Menu music startup via `TMusic_System` (`open.mid` / `open.wav` / track 2).
+    this->started_menu_music = 1;
+
     return 1;
 }
 
@@ -331,7 +339,9 @@ void TRIBE_Game::set_game_mode(int param_1, int param_2) {
     int old_mode = this->game_mode;
     RGE_Base_Game::set_game_mode(param_1, param_2);
     if (this->game_screen) {
-        this->game_screen->game_mode_changed(this->game_mode, old_mode);
+        // TODO: Implement `TRIBE_Screen_Game` accurately and call `game_mode_changed(new_mode, old_mode)`.
+        // This call exists in the original (`src/game/src/tribegam.cpp.asm`), but `TRIBE_Screen_Game.h`
+        // is currently incomplete/broken, so we avoid dereferencing an incomplete type here.
     }
 }
 
@@ -439,7 +449,7 @@ RGE_Game_World* TRIBE_Game::create_world() {
 int TRIBE_Game::handle_message(struct tagMSG* p1) { return RGE_Base_Game::handle_message(p1); }
 int TRIBE_Game::handle_idle() {
     if (gCurrentScreen) {
-        gCurrentScreen->draw();
+        gCurrentScreen->draw_tree();
     }
     if (this->draw_system) {
         this->draw_system->Paint(NULL);

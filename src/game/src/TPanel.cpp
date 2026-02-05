@@ -1,5 +1,7 @@
 #include "../include/ui_core.h"
 #include "../include/RGE_Base_Game.h"
+#include "../include/TDrawArea.h"
+#include "../include/TDrawSystem.h"
 #include "../include/custom_debug.h"
 #include <string.h>
 
@@ -51,51 +53,168 @@ long TPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param
     return 1;
 }
 void TPanel::set_rect(tagRECT param_1) {
-    this->set_rect(param_1.left, param_1.top, param_1.right - param_1.left, param_1.bottom - param_1.top);
+    // Source of truth: `src/game/src/panel.cpp.decomp` uses inclusive rects.
+    this->set_rect(param_1.left, param_1.top, (param_1.right - param_1.left) + 1, (param_1.bottom - param_1.top) + 1);
 }
 
 void TPanel::set_rect(long param_1, long param_2, long param_3, long param_4) {
-    this->pnl_x = param_1;
-    this->pnl_y = param_2;
+    // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::set_rect(long,long,long,long)`).
     this->pnl_wid = param_3;
     this->pnl_hgt = param_4;
-    
-    // Set render_rect relative to panel for now, or screen absolute?
-    // TDrawArea::Clear takes a rect. TButtonPanel::draw clears using render_rect.
-    // Assuming screen logic:
+
+    const long right = param_1 + param_3 - 1;
+    const long bottom = param_2 + param_4 - 1;
+
+    this->pnl_x = param_1;
+    this->pnl_y = param_2;
+
     this->render_rect.left = param_1;
     this->render_rect.top = param_2;
-    this->render_rect.right = param_1 + param_3;
-    this->render_rect.bottom = param_2 + param_4;
+    this->render_rect.right = right;
+    this->render_rect.bottom = bottom;
 
-    this->visible = 1;
+    this->clip_rect = this->render_rect;
+
+    if (this->parent_panel && this->clip_to_parent) {
+        if (this->clip_rect.left < this->parent_panel->clip_rect.left) this->clip_rect.left = this->parent_panel->clip_rect.left;
+        if (this->clip_rect.top < this->parent_panel->clip_rect.top) this->clip_rect.top = this->parent_panel->clip_rect.top;
+        if (this->clip_rect.right > this->parent_panel->clip_rect.right) this->clip_rect.right = this->parent_panel->clip_rect.right;
+        if (this->clip_rect.bottom > this->parent_panel->clip_rect.bottom) this->clip_rect.bottom = this->parent_panel->clip_rect.bottom;
+    }
+
+    if (this->clip_rect.left < 0) this->clip_rect.left = 0;
+    if (this->clip_rect.top < 0) this->clip_rect.top = 0;
+
+    if (this->render_area) {
+        if (this->render_area->Width > 0 && this->clip_rect.right >= this->render_area->Width) this->clip_rect.right = this->render_area->Width - 1;
+        if (this->render_area->Height > 0 && this->clip_rect.bottom >= this->render_area->Height) this->clip_rect.bottom = this->render_area->Height - 1;
+    }
+
+    if (this->clip_rgn) {
+        DeleteObject((HGDIOBJ)this->clip_rgn);
+        this->clip_rgn = 0;
+    }
+
+    if (this->clip_rect.left <= this->clip_rect.right && this->clip_rect.top <= this->clip_rect.bottom) {
+        this->visible = 1;
+        // NOTE: The original passes inclusive coords to CreateRectRgn (Win32 uses exclusive right/bottom).
+        // Keep this as-is for now to match the reference behavior.
+        this->clip_rgn = (void*)CreateRectRgn(this->clip_rect.left, this->clip_rect.top, this->clip_rect.right, this->clip_rect.bottom);
+    } else {
+        this->visible = 0;
+    }
+
+    if (this->active) {
+        this->set_redraw(TPanel::RedrawMode::RedrawFull);
+    }
 }
 
 void TPanel::set_color(uchar param_1) { this->color = param_1; }
 void TPanel::set_active(int param_1) { this->active = param_1; }
 void TPanel::set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) {}
 void TPanel::set_fixed_position(long param_1, long param_2, long param_3, long param_4) {}
-void TPanel::set_redraw(RedrawMode param_1) {}
-void TPanel::set_overlapped_redraw(RedrawMode param_1) {}
-void TPanel::draw_setup(int param_1) {}
-void TPanel::draw_finish() {}
-void TPanel::draw() {
-    if (!this->visible || !this->active) return;
-    
-    // Draw children
-    PanelNode* node = this->first_child_node;
-    while (node) {
-        if (node->panel) {
-            node->panel->draw();
-        }
-        node = node->next_node;
+void TPanel::set_redraw(RedrawMode param_1) {
+    // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::set_redraw`).
+    if (param_1 == NoRedraw) {
+        this->need_redraw = NoRedraw;
+        return;
+    }
+
+    if (this->need_redraw != RedrawFull) {
+        this->need_redraw = param_1;
+    }
+
+    if (this->render_area && this->render_area->Wnd && this->visible && this->active) {
+        InvalidateRect((HWND)this->render_area->Wnd, (RECT*)&this->clip_rect, FALSE);
     }
 }
-void TPanel::draw_rect(tagRECT* param_1) {}
-void TPanel::draw_offset(long param_1, long param_2, tagRECT* param_3) {}
-void TPanel::draw_rect2(tagRECT* param_1) {}
-void TPanel::draw_offset2(long param_1, long param_2, tagRECT* param_3) {}
-void TPanel::paint() {}
+void TPanel::set_overlapped_redraw(RedrawMode param_1) {}
+void TPanel::draw_setup(int param_1) {
+    // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::draw_setup`).
+    if (!this->render_area) return;
+    if (this->render_area->DrawDc) {
+        SelectClipRgn((HDC)this->render_area->DrawDc, (HRGN)this->clip_rgn);
+    }
+    this->render_area->SetClipRect(&this->clip_rect);
+    if (param_1) {
+        this->render_area->Clear(&this->clip_rect, (int)this->color);
+    }
+}
+
+void TPanel::draw_finish() {
+    // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::draw_finish`).
+    this->need_redraw = NoRedraw;
+    if (this->render_area && this->render_area->DrawDc) {
+        SelectClipRgn((HDC)this->render_area->DrawDc, 0);
+    }
+    if (this->render_area) {
+        this->render_area->SetClipRect((tagRECT*)0);
+    }
+    this->need_restore = 0;
+}
+void TPanel::draw() {
+    // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::draw`).
+    this->need_redraw = NoRedraw;
+
+    if (!this->render_area || !this->visible || !this->active) return;
+
+    if (this->fill_in_background == 0 && this->parent_panel) {
+        if (this->draw_rect2_flag) {
+            this->parent_panel->draw_rect2(&this->clip_rect);
+        } else {
+            this->parent_panel->draw_rect(&this->clip_rect);
+        }
+        return;
+    }
+
+    this->render_area->Clear(&this->clip_rect, (int)this->color);
+}
+void TPanel::draw_rect(tagRECT* param_1) {
+    // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::draw_rect`).
+    if (!param_1) return;
+    tagRECT save = this->clip_rect;
+    this->clip_rect = *param_1;
+    this->draw();
+    this->clip_rect = save;
+}
+
+void TPanel::draw_offset(long param_1, long param_2, tagRECT* param_3) {
+    // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::draw_offset`).
+    if (!param_3) return;
+    this->pnl_x += param_1;
+    this->pnl_y += param_2;
+    tagRECT save = this->clip_rect;
+    this->clip_rect = *param_3;
+    this->draw();
+    this->clip_rect = save;
+    this->pnl_x -= param_1;
+    this->pnl_y -= param_2;
+}
+
+void TPanel::draw_rect2(tagRECT* param_1) {
+    // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::draw_rect2`).
+    this->draw_rect2_flag = 1;
+    this->draw_rect(param_1);
+    this->draw_rect2_flag = 0;
+}
+
+void TPanel::draw_offset2(long param_1, long param_2, tagRECT* param_3) {
+    // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::draw_offset2`).
+    this->draw_rect2_flag = 1;
+    this->draw_offset(param_1, param_2, param_3);
+    this->draw_rect2_flag = 0;
+}
+
+void TPanel::paint() {
+    // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::paint`).
+    if (!this->render_area || !this->visible || !this->active) return;
+    if (this->render_area->DrawSystem) {
+        this->render_area->DrawSystem->Paint((tagRECT*)0);
+    }
+    if (this->render_area->Wnd) {
+        ValidateRect((HWND)this->render_area->Wnd, (RECT*)&this->clip_rect);
+    }
+}
 long TPanel::wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) {
     if (!this->active || !this->visible) return 0;
 
@@ -184,7 +303,7 @@ long TPanel::mouse_right_up_action(long param_1, long param_2, int param_3, int 
 long TPanel::mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
 long TPanel::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) { return 0; }
 long TPanel::char_action(long param_1, short param_2) { return 0; }
-long TPanel::action(long param_1, ulong param_2, ulong param_3) { return 0; }
+long TPanel::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) { return 0; }
 void TPanel::get_true_render_rect(tagRECT* param_1) {}
 int TPanel::is_inside(long x, long y) {
     return (x >= this->pnl_x && x < this->pnl_x + this->pnl_wid &&
@@ -224,4 +343,21 @@ char* TPanel::get_string(int resid) {
         return static_buffer;
     }
     return nullptr;
+}
+
+long TPanel::xPosition() const { return this->pnl_x; }
+long TPanel::yPosition() const { return this->pnl_y; }
+long TPanel::width() const { return this->pnl_wid; }
+long TPanel::height() const { return this->pnl_hgt; }
+
+void TPanel::draw_tree() {
+    // Non-original helper (see `ui_core.h`); used by the current simplified game loop.
+    this->draw();
+    PanelNode* n = this->first_child_node;
+    while (n) {
+        if (n->panel) {
+            n->panel->draw_tree();
+        }
+        n = n->next_node;
+    }
 }

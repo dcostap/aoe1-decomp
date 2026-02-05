@@ -107,7 +107,7 @@ long TPicturePanel::mouse_right_up_action(long param_1, long param_2, int param_
 long TPicturePanel::mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
 long TPicturePanel::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) { return 0; }
 long TPicturePanel::char_action(long param_1, short param_2) { return 0; }
-long TPicturePanel::action(long param_1, ulong param_2, ulong param_3) { return 0; }
+long TPicturePanel::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) { return 0; }
 void TPicturePanel::get_true_render_rect(tagRECT* param_1) {}
 int TPicturePanel::is_inside(long param_1, long param_2) { return 0; }
 void TPicturePanel::set_focus(int param_1) {}

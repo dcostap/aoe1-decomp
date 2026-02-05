@@ -1,5 +1,5 @@
 #include "../include/ui_core.h"
-#include "../include/screens.h"
+#include "../include/TRIBE_Panel_Button.h"
 #include "../include/custom_debug.h"
 
 // TRIBE_Panel_Button stubs

@@ -6,8 +6,18 @@ class TScrollBarPanel;
 
 class TTextPanel : public TPanel {
 public:
-    enum Alignment : int {};
-    enum Style : int {};
+    // Enum values are best-effort; only a subset is currently needed.
+    // Source of truth for behavior: `src/game/src/Pnl_txt.cpp.asm` / `.decomp` (immutable references).
+    enum Alignment : int {
+        AlignTop = 0,
+        AlignCenter = 1,
+        AlignBottom = 2,
+        AlignLeft = 0,
+        AlignRight = 2,
+    };
+    enum Style : int {
+        ChiseledStyle = 0,
+    };
 
     struct TextNode {
         char* text;
@@ -62,7 +72,7 @@ public:
     virtual long mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4); // vt[42] (0xA8)
     virtual long key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5); // vt[43] (0xAC)
     virtual long char_action(long param_1, short param_2); // vt[44] (0xB0)
-    virtual long action(long param_1, ulong param_2, ulong param_3); // vt[45] (0xB4)
+    virtual long action(TPanel* param_1, long param_2, ulong param_3, ulong param_4); // vt[45] (0xB4)
     virtual void get_true_render_rect(tagRECT* param_1); // vt[46] (0xB8)
     virtual int is_inside(long param_1, long param_2); // vt[47] (0xBC)
     virtual void set_focus(int param_1); // vt[48] (0xC0)
@@ -77,6 +87,14 @@ public:
     virtual void set_text(long param_1); // vt[57] (0xE4)
     virtual void set_text(char* param_1); // vt[58] (0xE8)
     virtual void set_bevel_info(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7); // vt[59] (0xEC)
+
+    // Non-virtual helpers / overloads used by TEasy_Panel screens.
+    long setup(TDrawArea* area, TPanel* parent, long x, long y, long w, long h, void* font, long font_wid, long font_hgt, char* back_pic_name, int fill_back, uchar back_color, int outline, uchar outline_color, short fixed_len, char* initial_text);
+    void set_alignment(Alignment vert, Alignment horz);
+    void set_word_wrap(int enable);
+    void set_text_color(unsigned long c1, unsigned long c2);
+    void set_highlight_text_color(unsigned long c1, unsigned long c2);
+    int get_text_rect(tagRECT* out_rect);
 
     TTextPanel::TextNode* list;
     short num_lines;
