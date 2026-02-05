@@ -1,1 +1,3 @@
-cd dist && empiresx.exe
+pushd dist
+empiresx.exe
+popd

@@ -1,4 +1,7 @@
 #include "../include/RGE_Base_Game.h"
+#include "../include/ui_core.h"
+#include "../include/TPanel.h"
+#include "../include/TPanelSystem.h"
 #include "../include/TRegistry.h"
 #include "../include/TDebuggingLog.h"
 #include "../include/TCommunications_Handler.h"
@@ -14,14 +17,16 @@
 #include "../include/RGE_Game_World.h"
 #include "../include/RGE_Scenario.h"
 #include "../include/RGE_Scenario_Header.h"
-#include "../include/TPanel.h"
-#include "../include/TPanelSystem.h"
-#include "../include/debug_helpers.h"
 #include <windows.h>
 #include <stdio.h>
 #include <io.h>
 #include <timeapi.h>
 #include <direct.h>
+
+#include "../include/debug_helpers.h"
+
+struct TPanelSystem;
+extern struct TPanelSystem* panel_system;
 
 #include "../include/globals.h"
 #include "../include/custom_debug.h"
@@ -392,6 +397,8 @@ CUSTOM_DEBUG_END
     if (!panel_system) {
         panel_system = new TPanelSystem;
         memset(panel_system, 0, sizeof(TPanelSystem));
+        panel_system->InputEnabled = 1;
+        panel_system->ImeEnabled = 1;
     }
 
     if (!this->setup_class()) {
@@ -516,8 +523,28 @@ int RGE_Base_Game::check_multi_copies() { return 1; }
 
 // Virtual stubs to satisfy vftable
 long RGE_Base_Game::wnd_proc(void* p1, uint p2, uint p3, long p4) { 
-    // CUSTOM_DEBUG_LOG_FMT("wnd_proc: msg=%u", p2);
-    // TODO: Implement actual message handling logic
+    if (panel_system) {
+        long res = panel_system->check_message(p1, p2, p3, p4);
+        if (res) return res;
+    }
+
+    switch (p2) {
+        case WM_DESTROY:
+            PostQuitMessage(0);
+            return 0;
+        case WM_ACTIVATEAPP:
+            this->prog_active = (int)p3;
+            if (this->prog_active) this->action_activate();
+            else this->action_deactivate();
+            break;
+        case WM_SETCURSOR:
+            if (this->is_mouse_on && this->windows_mouse == 0) {
+                SetCursor(NULL);
+                return 1;
+            }
+            break;
+    }
+
     return DefWindowProcA((HWND)p1, p2, p3, p4); 
 }
 void RGE_Base_Game::set_prog_mode(int p1) {

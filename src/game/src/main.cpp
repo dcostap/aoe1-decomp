@@ -85,8 +85,8 @@ CUSTOM_DEBUG_END
     info.key_scroll_interval = 4;
     info.key_scroll_object_move = 1.2f; // 0x3f99999a
     info.interface_style = 2;
-    info.main_wid = 800;
-    info.main_hgt = 600;
+    info.main_wid = 640;
+    info.main_hgt = 480;
 
     // main.cpp:156 (Directories)
     strcpy(info.data_dir, "data2\\");

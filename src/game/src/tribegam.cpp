@@ -10,6 +10,8 @@
 #include "../include/TRIBE_World.h"
 #include "../include/TDrawSystem.h"
 #include "../include/TDrawArea.h"
+#include "../include/TPanel.h"
+#include "../include/TPanelSystem.h"
 #include "../include/custom_debug.h"
 #include <windows.h>
 
@@ -122,8 +124,11 @@ int TRIBE_Game::setup() {
     gCurrentScreen = new TRIBE_Screen_Main_Menu();
     if (gCurrentScreen) {
         gCurrentScreen->render_area = this->draw_area;
+        if (panel_system) {
+            panel_system->add_panel(gCurrentScreen);
+        }
 CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG("Main menu screen created and linked to draw_area");
+        CUSTOM_DEBUG_LOG("Main menu screen created and linked to draw_area/panel_system");
 CUSTOM_DEBUG_END
     }
 

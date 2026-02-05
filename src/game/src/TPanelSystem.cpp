@@ -1,6 +1,8 @@
 #include <windows.h>
 #include <string.h>
 #include "../include/TPanelSystem.h"
+#include "../include/TPanel.h"
+#include "../include/PanelNode.h"
 #include "../include/custom_debug.h"
 
 // External declaration from Dib.cpp
@@ -77,5 +79,60 @@ void TPanelSystem::release_palette(void* pal) {
 }
 
 void TPanelSystem::DisableIME() {
-    // Stub for now, per plan
+    // Stub
+}
+
+void TPanelSystem::add_panel(TPanel* panel) {
+    if (!panel) return;
+
+    PanelNode* newNode = new PanelNode();
+    newNode->panel = panel;
+    newNode->next_node = this->panelListValue;
+    newNode->prev_node = nullptr;
+
+    if (this->panelListValue) {
+        this->panelListValue->prev_node = newNode;
+    }
+    this->panelListValue = newNode;
+    this->numberActivePanelsValue++;
+    
+    // Original engine sets curr_child/currentPanelValue too
+    this->currentPanelValue = panel;
+}
+
+void TPanelSystem::remove_panel(TPanel* panel) {
+    if (!panel || !this->panelListValue) return;
+
+    PanelNode* curr = this->panelListValue;
+    while (curr) {
+        if (curr->panel == panel) {
+            if (curr->prev_node) curr->prev_node->next_node = curr->next_node;
+            else this->panelListValue = curr->next_node;
+
+            if (curr->next_node) curr->next_node->prev_node = curr->prev_node;
+
+            delete curr;
+            this->numberActivePanelsValue--;
+            if (this->currentPanelValue == panel) this->currentPanelValue = nullptr;
+            break;
+        }
+        curr = curr->next_node;
+    }
+}
+
+long TPanelSystem::check_message(void* hwnd, uint msg, uint wparam, long lparam) {
+    if (!this->InputEnabled) return 0;
+
+    // Dispatch to screens in reverse order (top screen first)
+    // Actually, panelList is usually LIFO (newest on top)
+    PanelNode* curr = this->panelListValue;
+    while (curr) {
+        if (curr->panel && curr->panel->active) {
+            long res = curr->panel->wnd_proc(hwnd, msg, wparam, lparam);
+            if (res) return res;
+        }
+        curr = curr->next_node;
+    }
+
+    return 0;
 }

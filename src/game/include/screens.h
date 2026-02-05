@@ -44,6 +44,7 @@ public:
     virtual ~TRIBE_Screen_Main_Menu();
     virtual long setup(TDrawArea* render_area, char* name);
     virtual void draw() override;
+    virtual long handle_command(uint id, long p2) override;
 };
 static_assert(sizeof(TRIBE_Screen_Main_Menu) == 0x4B0, "Size mismatch for TRIBE_Screen_Main_Menu");
 

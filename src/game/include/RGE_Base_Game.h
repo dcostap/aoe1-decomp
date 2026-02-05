@@ -1,11 +1,13 @@
 #pragma once
 #include <windows.h>
 #include "common.h"
+#include "ui_core.h"
 #include "RGE_Prog_Info.h"
 #include "RGE_Game_Options.h"
 #include "RGE_Timing_Info.h"
 
 class TPanel;
+struct TPanelSystem;
 class RGE_Scenario_Header;
 class RGE_Scenario;
 class TDrawSystem;

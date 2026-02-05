@@ -28,7 +28,8 @@ class TCommunications_Handler;
 class TMousePointer;
 class TChat;
 class TPanel;
-class TPanelSystem;
+class TButtonPanel;
+struct TPanelSystem;
 class TPicture;
 
 // RGE and TRIBE game classes

@@ -1,0 +1,141 @@
+Setting up VS 2022 x86 environment...
+**********************************************************************
+** Visual Studio 2022 Developer Command Prompt v17.0
+** Copyright (c) 2022 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x86'
+
+[1/2] Compiling resources...
+Microsoft (R) Windows (R) Resource Compiler Version 10.0.10011.16384
+
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+[2/2] Compiling code...
+main.cpp
+tribegam.cpp
+basegame.cpp
+RGE_Game_World.cpp
+TRIBE_World.cpp
+RGE_Player.cpp
+TRIBE_Player.cpp
+RGE_Static_Object.cpp
+RGE_Map.cpp
+com_hand.cpp
+globals.cpp
+Res_file.cpp
+sceninfo.cpp
+gameinfo.cpp
+file_stf.cpp
+getdxver.cpp
+TRegistry.cpp
+TDebuggingLog.cpp
+Mouseptr.cpp
+TShape.cpp
+Generating Code...
+Compiling...
+Chat.cpp
+debug_helpers.cpp
+screens.cpp
+TPanel.cpp
+TButtonPanel.cpp
+src\game\src\TButtonPanel.cpp(42): error C2509: 'set_rect': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(43): error C2509: 'set_rect': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(44): error C2509: 'set_color': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(45): error C2509: 'set_active': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(46): error C2509: 'set_positioning': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(47): error C2509: 'set_fixed_position': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(48): error C2509: 'set_redraw': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(49): error C2509: 'set_overlapped_redraw': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(50): error C2509: 'draw_setup': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(51): error C2509: 'draw_finish': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(52): error C2509: 'draw_rect': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(53): error C2509: 'draw_offset': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(54): error C2509: 'draw_rect2': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(55): error C2509: 'draw_offset2': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(56): error C2509: 'paint': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(58): error C2509: 'handle_paint': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(59): error C2509: 'handle_key_down': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(60): error C2509: 'handle_char': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(61): error C2509: 'handle_user_command': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(62): error C2509: 'handle_timer_command': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(63): error C2509: 'handle_scroll': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(64): error C2509: 'handle_mouse_dbl_click': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(65): error C2509: 'mouse_move_action': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(66): error C2509: 'mouse_right_down_action': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(67): error C2509: 'mouse_right_hold_action': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(68): error C2509: 'mouse_right_move_action': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(69): error C2509: 'mouse_right_up_action': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(70): error C2509: 'mouse_right_dbl_click_action': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(71): error C2509: 'key_down_action': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(72): error C2509: 'char_action': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(73): error C2509: 'action': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(74): error C2509: 'get_true_render_rect': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(76): error C2509: 'set_focus': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(77): error C2509: 'set_tab_order': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(78): error C2509: 'set_tab_order': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(79): error C2509: 'get_help_info': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(80): error C2509: 'stop_sound_system': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(81): error C2509: 'restart_sound_system': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(82): error C2509: 'take_snapshot': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(83): error C2509: 'handle_reactivate': member function not declared in 'TButtonPanel'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/ui_core.h(158): note: see declaration of 'TButtonPanel'
+src\game\src\TButtonPanel.cpp(222): error C2027: use of undefined type 'TDrawArea'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/RGE_Base_Game.h(14): note: see declaration of 'TDrawArea'
+src\game\src\TButtonPanel.cpp(237): error C2027: use of undefined type 'TDrawArea'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/RGE_Base_Game.h(14): note: see declaration of 'TDrawArea'
+src\game\src\TButtonPanel.cpp(247): error C2027: use of undefined type 'TDrawArea'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/RGE_Base_Game.h(14): note: see declaration of 'TDrawArea'
+src\game\src\TButtonPanel.cpp(253): error C2027: use of undefined type 'TDrawArea'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/RGE_Base_Game.h(14): note: see declaration of 'TDrawArea'
+src\game\src\TButtonPanel.cpp(287): error C2027: use of undefined type 'TDrawArea'
+C:\Projects\my_decomps\aoe1\src\game\src\../include/RGE_Base_Game.h(14): note: see declaration of 'TDrawArea'
+TTextPanel.cpp
+Panel_ez.cpp
+TRIBE_Panel_Button.cpp
+TPanelSystem.cpp
+Dib.cpp
+Drawarea.cpp
+Pnl_pic.cpp
+Generating Code...
+
+Compilation FAILED!

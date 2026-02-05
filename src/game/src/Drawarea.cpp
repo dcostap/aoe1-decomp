@@ -502,5 +502,33 @@ void TDrawArea::SaveBitmap(char* filename) {
     CUSTOM_DEBUG_LOG_FMT("SaveBitmap: Saved to %s (%dx%d @ %dbpp)", filename, width, height, depth);
 }
 
-void* TDrawArea::GetDc(char* name) { return this->DrawDc; }
-void TDrawArea::ReleaseDc(char* name) {}
+void* TDrawArea::GetDc(char* name) {
+    if (!this->DrawSurface) return nullptr;
+
+    HDC hdc = nullptr;
+    HRESULT hr = this->DrawSurface->GetDC(&hdc);
+    if (hr == DDERR_SURFACELOST) {
+        if (this->DrawSurface->Restore() == DD_OK) {
+            hr = this->DrawSurface->GetDC(&hdc);
+        }
+    }
+
+    if (SUCCEEDED(hr)) {
+        if (this->DrawSystem && this->DrawSystem->Pal) {
+            SelectPalette(hdc, (HPALETTE)this->DrawSystem->Pal, FALSE);
+            RealizePalette(hdc);
+        }
+        this->DrawDc = hdc;
+        return hdc;
+    }
+
+    CUSTOM_DEBUG_LOG_FMT("TDrawArea::GetDc: Failed to get DC from surface hr=0x%x", hr);
+    return nullptr;
+}
+
+void TDrawArea::ReleaseDc(char* name) {
+    if (this->DrawSurface && this->DrawDc) {
+        this->DrawSurface->ReleaseDC((HDC)this->DrawDc);
+        this->DrawDc = nullptr;
+    }
+}

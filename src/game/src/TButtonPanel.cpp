@@ -1,11 +1,17 @@
-#include "../include/TButtonPanel.h"
-#include "../include/TDrawArea.h"
+#include "../include/ui_core.h"
 #include "../include/TShape.h"
+#include "../include/TDrawArea.h"
 #include "../include/TDigital.h"
+#include "../include/RGE_Base_Game.h"
+#include "../include/RGE_Font.h"
+#include "../include/globals.h"
 #include "../include/custom_debug.h"
 
 // Constructor
-TButtonPanel::TButtonPanel() : TPanel("Button") {}
+TButtonPanel::TButtonPanel() : TPanel("Button") {
+    memset((unsigned char*)this + sizeof(TPanel), 0, sizeof(TButtonPanel) - sizeof(TPanel));
+    this->num_states = 1; // Default to 1 state
+}
 
 // Destructor
 TButtonPanel::~TButtonPanel() {}
@@ -18,6 +24,19 @@ long TButtonPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long
     this->notifyTypeValue = param_9;
     this->set_sound(param_8);
     this->set_id(param_10);
+
+    // Default font initialization
+    if (rge_base_game && rge_base_game->fonts) {
+        this->font = rge_base_game->fonts[0].font;
+        this->font_wid = rge_base_game->fonts[0].font_wid;
+        this->font_hgt = rge_base_game->fonts[0].font_hgt;
+    }
+
+    // Default color initialization (ensure visibility)
+    for (int i = 0; i < 9; ++i) {
+        this->text_color1[i] = RGB(255, 255, 255); // White
+        this->text_color2[i] = RGB(0, 0, 0);       // Black
+    }
 
     return 1;
 }
@@ -36,26 +55,15 @@ void TButtonPanel::draw_offset(long param_1, long param_2, tagRECT* param_3) {}
 void TButtonPanel::draw_rect2(tagRECT* param_1) {}
 void TButtonPanel::draw_offset2(long param_1, long param_2, tagRECT* param_3) {}
 void TButtonPanel::paint() {}
-long TButtonPanel::wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) { return 0; }
-long TButtonPanel::handle_idle() { return 0; }
-long TButtonPanel::handle_size(long param_1, long param_2) { return 0; }
+// TButtonPanel inherited stubs (removed to use TPanel base or new overrides)
 long TButtonPanel::handle_paint() { return 0; }
 long TButtonPanel::handle_key_down(long param_1, short param_2, int param_3, int param_4, int param_5) { return 0; }
 long TButtonPanel::handle_char(long param_1, short param_2) { return 0; }
-long TButtonPanel::handle_command(uint param_1, long param_2) { return 0; }
 long TButtonPanel::handle_user_command(uint param_1, long param_2) { return 0; }
 long TButtonPanel::handle_timer_command(uint param_1, long param_2) { return 0; }
 long TButtonPanel::handle_scroll(long param_1, long param_2) { return 0; }
-long TButtonPanel::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return 0; }
-long TButtonPanel::handle_mouse_move(long param_1, long param_2, int param_3, int param_4) { return 0; }
-long TButtonPanel::handle_mouse_up(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return 0; }
 long TButtonPanel::handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return 0; }
 long TButtonPanel::mouse_move_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
-long TButtonPanel::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
-long TButtonPanel::mouse_left_hold_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
-long TButtonPanel::mouse_left_move_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
-long TButtonPanel::mouse_left_up_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
-long TButtonPanel::mouse_left_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
 long TButtonPanel::mouse_right_down_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
 long TButtonPanel::mouse_right_hold_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
 long TButtonPanel::mouse_right_move_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
@@ -65,7 +73,7 @@ long TButtonPanel::key_down_action(long param_1, short param_2, int param_3, int
 long TButtonPanel::char_action(long param_1, short param_2) { return 0; }
 long TButtonPanel::action(long param_1, ulong param_2, ulong param_3) { return 0; }
 void TButtonPanel::get_true_render_rect(tagRECT* param_1) {}
-int TButtonPanel::is_inside(long param_1, long param_2) { return 0; }
+int TButtonPanel::is_inside(long param_1, long param_2) { return TPanel::is_inside(param_1, param_2); }
 void TButtonPanel::set_focus(int param_1) {}
 void TButtonPanel::set_tab_order(TPanel* param_1, TPanel* param_2) {}
 void TButtonPanel::set_tab_order(TPanel** param_1, short param_2) {}
@@ -85,6 +93,13 @@ void TButtonPanel::set_id(long val) {
     for (int i = 0; i < 9; ++i) this->id[i] = val;
 }
 void TButtonPanel::set_sound(TDigital* s) { this->sound = s; }
+
+void TButtonPanel::set_font(void* font, long wid, long hgt) {
+    this->font = font;
+    if (wid != -1) this->font_wid = wid;
+    if (hgt != -1) this->font_hgt = hgt;
+    this->set_redraw(TPanel::RedrawMode::Redraw);
+}
 
 // Non-Virtuals
 void TButtonPanel::set_text(short state, char* text) {
@@ -170,6 +185,29 @@ void TButtonPanel::set_text(short state, char* text1, char* text2) {
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 
+long TButtonPanel::mouse_left_down_action(long x, long y, int wparam, int param_4) {
+    if (!this->active || !this->visible) return 0;
+    this->is_down = 1;
+    this->set_redraw(TPanel::RedrawMode::Redraw);
+    CUSTOM_DEBUG_LOG_FMT("TButtonPanel::mouse_left_down: id=%ld", this->id[0]);
+    return 1;
+}
+
+long TButtonPanel::mouse_left_up_action(long x, long y, int wparam, int param_4) {
+    if (!this->is_down) return 0;
+    this->is_down = 0;
+    this->set_redraw(TPanel::RedrawMode::Redraw);
+    
+    CUSTOM_DEBUG_LOG_FMT("TButtonPanel::mouse_left_up: id=%ld, notifying parent...", this->id[0]);
+    
+    // Notify parent
+    if (this->parent_panel) {
+        this->parent_panel->handle_command(this->id[0], 0);
+    }
+    
+    return 1;
+}
+
 void TButtonPanel::draw() {
     // Debug log to confirm button draw attempt and state
     CUSTOM_DEBUG_LOG_FMT("TButtonPanel::draw: id=%ld, vis=%d, act=%d, area=%p, w=%ld, h=%ld", 
@@ -215,8 +253,9 @@ void TButtonPanel::draw() {
     if (draw_type == 3 || draw_type == 4 || draw_type == 5) {
         HDC hdc = (HDC)this->render_area->GetDc("pnl_btn::draw");
         if (hdc) {
-            SelectClipRgn(hdc, (HRGN)this->clip_rgn);
-            SelectObject(hdc, (HGDIOBJ)this->font);
+            CUSTOM_DEBUG_LOG_FMT("TButtonPanel::draw: text draw start. hdc=%p, font=%p", hdc, this->font);
+            if (this->clip_rgn) SelectClipRgn(hdc, (HRGN)this->clip_rgn);
+            if (this->font) SelectObject(hdc, (HGDIOBJ)this->font);
             SetBkMode(hdc, TRANSPARENT);
 
             short state = this->cur_state;
@@ -231,8 +270,15 @@ void TButtonPanel::draw() {
                     tx++; ty++;
                 }
 
-                SetTextColor(hdc, this->text_color1[state]);
-                TextOutA(hdc, tx, ty, this->text1[state], strlen(this->text1[state]));
+                if (this->text1[state]) {
+                     CUSTOM_DEBUG_LOG_FMT("TButtonPanel::draw: text1='%s' at %ld,%ld len=%d color=%x", 
+                         this->text1[state], tx, ty, strlen(this->text1[state]), this->text_color1[state]);
+                     SetTextColor(hdc, this->text_color1[state]);
+                     TextOutA(hdc, tx, ty, this->text1[state], strlen(this->text1[state]));
+                } else {
+                     CUSTOM_DEBUG_LOG_FMT("TButtonPanel::draw: text1 is NULL for state %d", state);
+                }
+                // CUSTOM_DEBUG_LOG_FMT("TButtonPanel::draw: text1='%s' at %ld,%ld", this->text1[state], tx, ty);
 
                 if (this->text2[state]) {
                     GetTextExtentPoint32A(hdc, this->text2[state], strlen(this->text2[state]), &sz);

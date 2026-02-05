@@ -1,6 +1,4 @@
-#include <windows.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include "../include/ui_core.h"
 #include "../include/screens.h"
 #include "../include/custom_debug.h"
 

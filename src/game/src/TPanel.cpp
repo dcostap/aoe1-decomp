@@ -1,7 +1,12 @@
-#include "../include/TPanel.h"
+#include "../include/ui_core.h"
+#include "../include/RGE_Base_Game.h"
+#include "../include/custom_debug.h"
 #include <string.h>
 
+extern RGE_Base_Game* rge_base_game;
+
 TPanel::TPanel(char* name) {
+    memset((unsigned char*)this + 4, 0, sizeof(TPanel) - 4); // Clear everything after vtable
     if (name) {
         this->panelNameValue = strdup(name);
     } else {
@@ -25,7 +30,23 @@ long TPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param
     this->set_rect(param_3, param_4, param_5, param_6);
     this->color = param_7;
     this->active = 1;
-    // set_rect sets visible to 1
+    this->visible = 1;
+
+    // Link to parent
+    if (this->parent_panel) {
+        PanelNode* newNode = new PanelNode();
+        newNode->panel = this;
+        newNode->next_node = nullptr;
+        newNode->prev_node = this->parent_panel->last_child_node;
+        
+        if (this->parent_panel->last_child_node) {
+            this->parent_panel->last_child_node->next_node = newNode;
+        } else {
+            this->parent_panel->first_child_node = newNode;
+        }
+        this->parent_panel->last_child_node = newNode;
+        this->node = newNode;
+    }
 
     return 1;
 }
@@ -75,7 +96,71 @@ void TPanel::draw_offset(long param_1, long param_2, tagRECT* param_3) {}
 void TPanel::draw_rect2(tagRECT* param_1) {}
 void TPanel::draw_offset2(long param_1, long param_2, tagRECT* param_3) {}
 void TPanel::paint() {}
-long TPanel::wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) { return 0; }
+long TPanel::wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) {
+    if (!this->active || !this->visible) return 0;
+
+    switch (param_2) {
+        case WM_MOUSEMOVE:
+            return this->handle_mouse_move(LOWORD(param_4), HIWORD(param_4), (int)param_3, 0);
+        case WM_LBUTTONDOWN:
+            return this->handle_mouse_down(1, LOWORD(param_4), HIWORD(param_4), (int)param_3, 0);
+        case WM_LBUTTONUP:
+            return this->handle_mouse_up(1, LOWORD(param_4), HIWORD(param_4), (int)param_3, 0);
+        case WM_RBUTTONDOWN:
+            return this->handle_mouse_down(2, LOWORD(param_4), HIWORD(param_4), (int)param_3, 0);
+        case WM_RBUTTONUP:
+            return this->handle_mouse_up(2, LOWORD(param_4), HIWORD(param_4), (int)param_3, 0);
+        case WM_KEYDOWN:
+            return this->handle_key_down(param_3, 0, 0, 0, 0);
+        case WM_CHAR:
+            return this->handle_char(param_3, 0);
+    }
+    return 0;
+}
+
+long TPanel::handle_mouse_move(long x, long y, int wparam, int param_4) {
+    PanelNode* curr = this->last_child_node;
+    while (curr) {
+        if (curr->panel && curr->panel->active && curr->panel->visible) {
+            if (curr->panel->is_inside(x, y)) {
+                if (curr->panel->handle_mouse_move(x, y, wparam, param_4)) return 1;
+            }
+        }
+        curr = curr->prev_node;
+    }
+    return this->mouse_move_action(x, y, wparam, param_4);
+}
+
+long TPanel::handle_mouse_down(uchar button, long x, long y, int wparam, int param_5) {
+    PanelNode* curr = this->last_child_node;
+    while (curr) {
+        if (curr->panel && curr->panel->active && curr->panel->visible) {
+            if (curr->panel->is_inside(x, y)) {
+                if (curr->panel->handle_mouse_down(button, x, y, wparam, param_5)) return 1;
+            }
+        }
+        curr = curr->prev_node;
+    }
+    if (button == 1) return this->mouse_left_down_action(x, y, wparam, param_5);
+    if (button == 2) return this->mouse_right_down_action(x, y, wparam, param_5);
+    return 0;
+}
+
+long TPanel::handle_mouse_up(uchar button, long x, long y, int wparam, int param_5) {
+    PanelNode* curr = this->last_child_node;
+    while (curr) {
+        if (curr->panel && curr->panel->active && curr->panel->visible) {
+            if (curr->panel->is_inside(x, y)) {
+                if (curr->panel->handle_mouse_up(button, x, y, wparam, param_5)) return 1;
+            }
+        }
+        curr = curr->prev_node;
+    }
+    if (button == 1) return this->mouse_left_up_action(x, y, wparam, param_5);
+    if (button == 2) return this->mouse_right_up_action(x, y, wparam, param_5);
+    return 0;
+}
+
 long TPanel::handle_idle() { return 0; }
 long TPanel::handle_size(long param_1, long param_2) { return 0; }
 long TPanel::handle_paint() { return 0; }
@@ -85,9 +170,6 @@ long TPanel::handle_command(uint param_1, long param_2) { return 0; }
 long TPanel::handle_user_command(uint param_1, long param_2) { return 0; }
 long TPanel::handle_timer_command(uint param_1, long param_2) { return 0; }
 long TPanel::handle_scroll(long param_1, long param_2) { return 0; }
-long TPanel::handle_mouse_down(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return 0; }
-long TPanel::handle_mouse_move(long param_1, long param_2, int param_3, int param_4) { return 0; }
-long TPanel::handle_mouse_up(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return 0; }
 long TPanel::handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return 0; }
 long TPanel::mouse_move_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
 long TPanel::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
@@ -104,7 +186,10 @@ long TPanel::key_down_action(long param_1, short param_2, int param_3, int param
 long TPanel::char_action(long param_1, short param_2) { return 0; }
 long TPanel::action(long param_1, ulong param_2, ulong param_3) { return 0; }
 void TPanel::get_true_render_rect(tagRECT* param_1) {}
-int TPanel::is_inside(long param_1, long param_2) { return 0; }
+int TPanel::is_inside(long x, long y) {
+    return (x >= this->pnl_x && x < this->pnl_x + this->pnl_wid &&
+            y >= this->pnl_y && y < this->pnl_y + this->pnl_hgt);
+}
 void TPanel::set_focus(int param_1) {}
 void TPanel::set_tab_order() {}
 void TPanel::set_tab_order(TPanel** param_1, short param_2) {}
@@ -116,7 +201,21 @@ void TPanel::handle_reactivate() {}
 
 int TPanel::get_string(int resid, char* buffer, int len) {
     if (!buffer || len <= 0) return 0;
-    return LoadStringA(GetModuleHandle(NULL), resid, buffer, len);
+    
+    if (rge_base_game) {
+        if (rge_base_game->get_string(resid, buffer, len)) {
+            // Check if string was found (not empty)
+            if (buffer[0] != '\0') return 1;
+        }
+    }
+    
+    // Fallback: try loading from module resources directly (just in case)
+    if (LoadStringA(GetModuleHandle(NULL), resid, buffer, len) > 0) {
+        return 1;
+    }
+    
+    buffer[0] = '\0';
+    return 0;
 }
 
 char* TPanel::get_string(int resid) {
