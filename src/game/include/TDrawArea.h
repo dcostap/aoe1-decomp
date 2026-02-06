@@ -15,14 +15,16 @@ struct TDrawArea {
     void OverlayMemCopy(tagRECT* rect, TDrawArea* src, int x, int y);
     uchar* Lock(char* name, int p2);
     void Unlock(char* name);
+    void SetAccessOffsets();
+    void SetInfo();
     void PtrSpanCopy(TDrawArea* src, int x, int y);
     void DrawLine(int x1, int y1, int x2, int y2, uchar color);
     // NOTE: coordinates are inclusive (matches `Drawarea.cpp.decomp`).
     void FillRect(long left, long top, long right, long bottom, uchar color);
-    // Primitive helpers (best-effort) used by UI bevel drawing.
-    // Source of truth: `src/game/src/Drawarea.cpp.asm` / `.decomp` and call sites like `Pnl_btn.cpp.asm`.
-    void DrawHorzLine(long x1, long x2, long y, uchar color);
-    void DrawVertLine(long x, long y1, long y2, uchar color);
+    // Primitive helpers (source of truth: `src/game/src/Drawarea.cpp.asm` / `.decomp`).
+    // NOTE: `DrawHorzLine`/`DrawVertLine` take a start coordinate and a length (not x1/x2).
+    void DrawHorzLine(long x, long y, long len, uchar color);
+    void DrawVertLine(long x, long y, long len, uchar color);
     void DrawRect(long x1, long y1, long x2, long y2, uchar color);
     void DrawRect(tagRECT* rect, uchar color);
     void DrawBevel(long x1, long y1, long x2, long y2, uchar c_tl, uchar c_br);

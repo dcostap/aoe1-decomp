@@ -97,6 +97,7 @@ cl /nologo /EHsc /std:c++17 /MDd /D_DEBUG /DWIN32 /D_X86_ ^
    %SRC_DIR%\TPanelSystem.cpp ^
    %SRC_DIR%\Dib.cpp ^
    %SRC_DIR%\Drawarea.cpp ^
+   %SRC_DIR%\spanlist.cpp ^
    %SRC_DIR%\RGE_Color_Table.cpp ^
    %SRC_DIR%\Pnl_pic.cpp ^
    /link /LIBPATH:"%DP_LIB%" ^

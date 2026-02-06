@@ -528,44 +528,47 @@ void TButtonPanel::draw() {
     // 4. Bevel
     // The original draws bevels for several draw types, including `DrawTextA`.
     if (draw_type == TButtonPanel::DrawTextA || draw_type == 4 || draw_type == TButtonPanel::DrawFillAndText || draw_type == 6) {
-        const long x1 = this->pnl_x;
-        const long y1 = this->pnl_y;
-        const long x2 = this->pnl_x + this->pnl_wid - 1;
-        const long y2 = this->pnl_y + this->pnl_hgt - 1;
+        if (this->render_area->Lock((char*)"pnl_btn::draw2", 1)) {
+            const long x1 = this->pnl_x;
+            const long y1 = this->pnl_y;
+            const long x2 = this->pnl_x + this->pnl_wid - 1;
+            const long y2 = this->pnl_y + this->pnl_hgt - 1;
 
-        if (x2 > x1 && y2 > y1) {
-            if (this->disabled != 0) {
-                this->render_area->DrawRect(x1, y1, x2, y2, this->bevel_color6);
-                this->render_area->DrawRect(x1 + 1, y1 + 1, x2 - 1, y2 - 1, this->bevel_color1);
-            } else {
-                const int down_for_bevel = pressed ? 1 : 0;
-                switch (this->bevel_type) {
-                    case 2:
-                        if (down_for_bevel) this->render_area->DrawBevel(x1, y1, x2, y2, this->bevel_color1, this->bevel_color6);
-                        else this->render_area->DrawBevel(x1, y1, x2, y2, this->bevel_color6, this->bevel_color1);
-                        break;
-                    case 3:
-                        if (down_for_bevel) this->render_area->DrawBevel2(x1, y1, x2, y2, this->bevel_color1, this->bevel_color2, this->bevel_color5, this->bevel_color6);
-                        else this->render_area->DrawBevel21(x1, y1, x2, y2, this->bevel_color6, this->bevel_color5, this->bevel_color2, this->bevel_color1);
-                        break;
-                    case 4:
-                        if (down_for_bevel) {
-                            this->render_area->DrawBevel3(x1, y1, x2, y2,
-                                this->bevel_color1, this->bevel_color2, this->bevel_color3,
-                                this->bevel_color4, this->bevel_color5, this->bevel_color6);
-                        } else {
-                            this->render_area->DrawBevel32(x1, y1, x2, y2,
-                                this->bevel_color6, this->bevel_color5, this->bevel_color4,
-                                this->bevel_color3, this->bevel_color2, this->bevel_color1);
-                        }
-                        break;
-                    case 1:
-                    default:
-                        // Default: 1px border.
-                        this->render_area->DrawRect(x1 + 1, y1 + 1, x2 - 1, y2 - 1, 0xFF);
-                        break;
+            if (x2 > x1 && y2 > y1) {
+                if (this->disabled != 0) {
+                    this->render_area->DrawRect(x1, y1, x2, y2, this->bevel_color6);
+                    this->render_area->DrawRect(x1 + 1, y1 + 1, x2 - 1, y2 - 1, this->bevel_color1);
+                } else {
+                    const int down_for_bevel = pressed ? 1 : 0;
+                    switch (this->bevel_type) {
+                        case 2:
+                            if (down_for_bevel) this->render_area->DrawBevel(x1, y1, x2, y2, this->bevel_color1, this->bevel_color6);
+                            else this->render_area->DrawBevel(x1, y1, x2, y2, this->bevel_color6, this->bevel_color1);
+                            break;
+                        case 3:
+                            if (down_for_bevel) this->render_area->DrawBevel2(x1, y1, x2, y2, this->bevel_color1, this->bevel_color2, this->bevel_color5, this->bevel_color6);
+                            else this->render_area->DrawBevel21(x1, y1, x2, y2, this->bevel_color6, this->bevel_color5, this->bevel_color2, this->bevel_color1);
+                            break;
+                        case 4:
+                            if (down_for_bevel) {
+                                this->render_area->DrawBevel3(x1, y1, x2, y2,
+                                    this->bevel_color1, this->bevel_color2, this->bevel_color3,
+                                    this->bevel_color4, this->bevel_color5, this->bevel_color6);
+                            } else {
+                                this->render_area->DrawBevel32(x1, y1, x2, y2,
+                                    this->bevel_color6, this->bevel_color5, this->bevel_color4,
+                                    this->bevel_color3, this->bevel_color2, this->bevel_color1);
+                            }
+                            break;
+                        case 1:
+                        default:
+                            // Default: 1px border.
+                            this->render_area->DrawRect(x1 + 1, y1 + 1, x2 - 1, y2 - 1, 0xFF);
+                            break;
+                    }
                 }
             }
+            this->render_area->Unlock((char*)"pnl_btn::draw2");
         }
     }
 
