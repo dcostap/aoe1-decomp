@@ -485,6 +485,53 @@ int RGE_Base_Game::check_for_cd(int p1) {
     return 1;
 }
 
+void RGE_Base_Game::set_mouse_cursor(void* p1) {
+    // Source of truth: `src/game/src/basegame.cpp.decomp` (`set_mouse_cursor` @ 0x00420500).
+    this->mouse_cursor = p1;
+
+    if ((this->is_mouse_on != 0) && ((this->custom_mouse == 0) || (this->windows_mouse != 0))) {
+        SetCursor((HCURSOR)this->mouse_cursor);
+        SetClassLongA((HWND)this->prog_window, GCL_HCURSOR, (LONG)this->mouse_cursor);
+    }
+}
+
+void RGE_Base_Game::disable_input() {
+    // Source of truth: `src/game/src/basegame.cpp.decomp` (`disable_input` @ 0x00422A50).
+    if (this->is_mouse_on != 0) {
+        this->set_mouse_cursor(LoadCursorA(NULL, IDC_WAIT));
+    }
+
+    if (panel_system) {
+        panel_system->InputEnabled = 0;
+    }
+    this->input_enabled = 0;
+
+    if (this->input_disabled_window != nullptr) {
+        if (GetCapture() != NULL) {
+            ReleaseCapture();
+        }
+        SetCapture((HWND)this->input_disabled_window);
+    }
+}
+
+void RGE_Base_Game::enable_input() {
+    // Source of truth: `src/game/src/basegame.cpp.decomp` (`enable_input` @ 0x00422AB0).
+    if (this->input_disabled_window != nullptr) {
+        if (GetCapture() != NULL) {
+            ReleaseCapture();
+        }
+    }
+
+    if (panel_system) {
+        panel_system->InputEnabled = 1;
+    }
+    this->input_enabled = 1;
+
+    if (this->is_mouse_on != 0) {
+        this->set_mouse_cursor(LoadCursorA(NULL, IDC_ARROW));
+    }
+}
+
 void RGE_Base_Game::mouse_on() {
     if (this->is_mouse_on == 0) {
         if ((this->custom_mouse != 0) && (this->windows_mouse == 0)) {

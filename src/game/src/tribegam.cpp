@@ -12,28 +12,133 @@
 #include "../include/TDrawArea.h"
 #include "../include/TPanel.h"
 #include "../include/TPanelSystem.h"
+#include "../include/TScreenPanel.h"
 #include "../include/custom_debug.h"
 #include <windows.h>
 
 // Static global to track current screen until TPanel_System is implemented
 static TPanel* gCurrentScreen = nullptr;
 static TPanel* gPendingScreen = nullptr;
+static TPanel* gRetiredScreens[32];
+static int gRetiredScreenCount = 0;
+static int gStatusMessageActive = 0;
+static char gStatusMessageText[512];
+
+static void tribe_retire_screen_for_later_delete(TPanel* screen) {
+    // Non-original safety shim:
+    // several screen dtors still rely on not-yet-reimplemented panel teardown paths.
+    // Defer deletion so menu transitions remain stable while those dtors are filled in.
+    if (!screen) return;
+
+    if (gRetiredScreenCount < (int)(sizeof(gRetiredScreens) / sizeof(gRetiredScreens[0]))) {
+        gRetiredScreens[gRetiredScreenCount++] = screen;
+        return;
+    }
+
+    // Fallback if retire buffer is full.
+    delete screen;
+}
+
+static int tribe_panel_belongs_to_screen(TPanel* panel, TPanel* screen) {
+    if (!panel || !screen) {
+        return 0;
+    }
+
+    // Non-original safety helper:
+    // avoid dereferencing dangling panel pointers after screen switches by clearing owner references
+    // that still point into the outgoing screen tree.
+    TPanel* cursor = panel;
+    int guard = 0;
+    while (cursor && guard < 1024) {
+        if (cursor == screen) {
+            return 1;
+        }
+        cursor = cursor->parent_panel;
+        ++guard;
+    }
+
+    return 0;
+}
+
+static void tribe_clear_panel_system_owners_for_screen(TPanel* screen) {
+    if (!panel_system || !screen) {
+        return;
+    }
+
+    if (tribe_panel_belongs_to_screen(panel_system->mouseOwnerValue, screen)) {
+        panel_system->mouseOwnerValue = nullptr;
+    }
+    if (tribe_panel_belongs_to_screen(panel_system->keyboardOwnerValue, screen)) {
+        panel_system->keyboardOwnerValue = nullptr;
+    }
+    if (tribe_panel_belongs_to_screen(panel_system->modalPanelValue, screen)) {
+        panel_system->modalPanelValue = nullptr;
+    }
+    if (tribe_panel_belongs_to_screen(panel_system->currentPanelValue, screen)) {
+        panel_system->currentPanelValue = nullptr;
+    }
+    if (tribe_panel_belongs_to_screen(panel_system->prevCurrentChildValue, screen)) {
+        panel_system->prevCurrentChildValue = nullptr;
+    }
+}
 
 static void tribe_apply_screen_switch(TPanel* new_screen) {
     if (new_screen == gCurrentScreen) return;
 
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("screen_switch: begin old=%p new=%p", gCurrentScreen, new_screen);
+CUSTOM_DEBUG_END
+
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("screen_switch: clear owners (before)");
+CUSTOM_DEBUG_END
+    tribe_clear_panel_system_owners_for_screen(gCurrentScreen);
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("screen_switch: clear owners (after)");
+CUSTOM_DEBUG_END
+
     if (panel_system && gCurrentScreen) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("screen_switch: remove old panel");
+CUSTOM_DEBUG_END
         panel_system->remove_panel(gCurrentScreen);
     }
     if (gCurrentScreen) {
-        delete gCurrentScreen;
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("screen_switch: retire old screen begin");
+CUSTOM_DEBUG_END
+        tribe_retire_screen_for_later_delete(gCurrentScreen);
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("screen_switch: retire old screen end");
+CUSTOM_DEBUG_END
         gCurrentScreen = nullptr;
     }
 
     gCurrentScreen = new_screen;
     if (panel_system && gCurrentScreen) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("screen_switch: add new panel");
+CUSTOM_DEBUG_END
         panel_system->add_panel(gCurrentScreen);
     }
+
+    // Non-original safety shim:
+    // some transitions disable input before queueing the new screen and rely on idle to re-enable.
+    // If idle gets starved by a message storm, force one activation pass here so the UI does not
+    // remain stuck with wait-cursor/captured input.
+    if (gCurrentScreen && rge_base_game && rge_base_game->input_enabled == 0) {
+CUSTOM_DEBUG_BEGIN
+        CUSTOM_DEBUG_LOG("screen_switch: forcing post-switch handle_idle/enable_input");
+CUSTOM_DEBUG_END
+        gCurrentScreen->handle_idle();
+        if (rge_base_game->input_enabled == 0) {
+            rge_base_game->enable_input();
+        }
+    }
+
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG("screen_switch: end");
+CUSTOM_DEBUG_END
 }
 
 void tribe_set_current_screen(TPanel* new_screen) {
@@ -214,7 +319,7 @@ int TRIBE_Game::setup() {
             this->start_menu();
         } else {
             // Check for NOVIDEO/SKIPVIDEO etc inside start_video
-            this->start_video("logo1", 0);
+            this->start_video(0, (char*)"logo1");
         }
     }
 
@@ -307,8 +412,217 @@ void TRIBE_Game::resetRandomComputerName() {
     memset(this->computerNameUsed, 0, sizeof(this->computerNameUsed));
 }
 
+void TRIBE_Game::set_save_game_name(char* p1) {
+    if (!p1) {
+        this->save_game_name[0] = '\0';
+        return;
+    }
+    strncpy(this->save_game_name, p1, sizeof(this->save_game_name) - 1);
+    this->save_game_name[sizeof(this->save_game_name) - 1] = '\0';
+}
+
+void TRIBE_Game::set_load_game_name(char* p1) {
+    if (!p1) {
+        this->load_game_name[0] = '\0';
+        return;
+    }
+    strncpy(this->load_game_name, p1, sizeof(this->load_game_name) - 1);
+    this->load_game_name[sizeof(this->load_game_name) - 1] = '\0';
+}
+
+unsigned char TRIBE_Game::quickStartGame() { return this->quick_start_game; }
+
+void TRIBE_Game::show_status_message(char* p1, char* p2, long p3) {
+    (void)p2;
+    (void)p3;
+
+    // Source of truth: `tribegam.cpp.asm/.decomp` (`show_status_message` @ 0x00523670 / 0x00523710).
+    // TODO(accuracy): replace this light-weight tracker with real `TRIBE_Screen_Status_Message`
+    // lifecycle (`Status Screen` panel creation + panel-system integration).
+    if (!p1) {
+        gStatusMessageText[0] = '\0';
+    } else {
+        strncpy(gStatusMessageText, p1, sizeof(gStatusMessageText) - 1);
+        gStatusMessageText[sizeof(gStatusMessageText) - 1] = '\0';
+    }
+    gStatusMessageActive = 1;
+
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("status_message: '%s'", gStatusMessageText[0] ? gStatusMessageText : "(empty)");
+CUSTOM_DEBUG_END
+}
+
+void TRIBE_Game::show_status_message(int p1, char* p2, long p3) {
+    char msg[512];
+    msg[0] = '\0';
+    this->get_string(p1, msg, sizeof(msg));
+    if (msg[0] == '\0') {
+        sprintf(msg, "Missing status string %d", p1);
+    }
+    this->show_status_message(msg, p2, p3);
+}
+
+void TRIBE_Game::close_status_message() {
+    // Source of truth: `tribegam.cpp.asm/.decomp` (`close_status_message` @ 0x00523790).
+    // TODO(accuracy): restore original `TPanelSystem::restorePreviousPanel` behavior once status
+    // screen panels are reimplemented.
+    gStatusMessageActive = 0;
+    gStatusMessageText[0] = '\0';
+}
+
+int TRIBE_Game::load_game_data() {
+    // Source of truth:
+    // - `src/game/src/tribegam.cpp.asm` (`load_game_data` @ 0x005245D0)
+    // - `src/game/src/tribegam.cpp.decomp`
+    if (!this->world) {
+        RGE_Game_World* world = this->create_world();
+        if (!world) {
+            return 0;
+        }
+
+        if (!world->init(this->prog_info->game_data_file, this->sound_system, this->comm_handler)) {
+            delete world;
+            this->world = nullptr;
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int TRIBE_Game::create_game(int p1) {
+    (void)p1;
+
+    // Source of truth:
+    // - `src/game/src/tribegam.cpp.asm` (`create_game` @ 0x00526E60)
+    // - `src/game/src/tribegam.cpp.decomp`
+    //
+    // This is currently scoped to single-player random-map/death-match launch only.
+    // TODO(accuracy): reimplement full original player/scenario/map init chain.
+    this->inHandleIdle = 0;
+    for (int i = 0; i < 5; ++i) {
+        this->notification_loc_x[i] = -1;
+        this->notification_loc_y[i] = -1;
+    }
+    this->current_notification_loc = -1;
+    this->current_notification_recalled = -1;
+    out_of_sync = 0;
+    out_of_sync2 = 0;
+
+    if (!this->world && !this->load_game_data()) {
+        return 0;
+    }
+
+    if (!this->world) {
+        return 0;
+    }
+
+    if (this->rge_game_options.scenarioGameValue != 0) {
+        // TODO(accuracy): scenario/campaign launch path is deferred in the current branch.
+        return 0;
+    }
+
+    // Random map/death match: keep launch chain alive using current world stubs.
+    if (!this->world->new_game((RGE_Player_Info*)0, 0)) {
+        return 0;
+    }
+
+    return 1;
+}
+
+int TRIBE_Game::create_game_screen() {
+    // Source of truth:
+    // - `src/game/src/tribegam.cpp.asm` (`create_game_screen` @ 0x00527830)
+    // - `src/game/src/tribegam.cpp.decomp`
+    //
+    // TODO(accuracy): replace this temporary `TScreenPanel` with real `TRIBE_Screen_Game`
+    // allocation/flow once `scr_game` is reimplemented.
+    this->disable_input();
+    this->set_game_mode(0, 0);
+
+    TScreenPanel* screen = new TScreenPanel((char*)"Game Screen");
+    if (!screen) {
+        this->close_status_message();
+        this->enable_input();
+        return 0;
+    }
+
+    // Best-effort blank screen setup (original `TScreenPanel` supports null info file/id path).
+    if (!screen->setup(this->draw_area, (char*)0, -1, 0)) {
+        delete screen;
+        this->close_status_message();
+        this->enable_input();
+        return 0;
+    }
+
+    screen->set_ideal_size(this->prog_info ? this->prog_info->main_wid : 0x280,
+                           this->prog_info ? this->prog_info->main_hgt : 0x1e0);
+
+    // Queueing the switch avoids mutating panel lists during button/action dispatch.
+    tribe_queue_screen_switch(screen);
+    this->set_game_mode(4, 0);
+
+    // Non-original fallback behavior for the temporary `TScreenPanel` path:
+    // the original game-screen constructor/switch destroys the status screen and leaves the app in
+    // a responsive in-game state. Our placeholder screen does not run that full lifecycle yet, so
+    // we close the tracked status message and restore input explicitly to prevent wait-cursor stalls.
+    this->close_status_message();
+    this->enable_input();
+
+    return 1;
+}
+
 void TRIBE_Game::close_game_screens(int p1) {
     // TODO: implement logic from 0x00523E10
+}
+
+int TRIBE_Game::start_game(int p1) {
+    // Source of truth:
+    // - `src/game/src/tribegam.cpp.asm` (`start_game` @ 0x00525D20)
+    // - `src/game/src/tribegam.cpp.decomp`
+    char info_file[256];
+    long info_id;
+
+    if (this->rge_game_options.singlePlayerGameValue != 0) {
+        strcpy(info_file, "scr2");
+        info_id = 0xc384;
+    } else {
+        strcpy(info_file, "scr3");
+        info_id = 0xc385;
+    }
+
+    this->disable_input();
+
+    if (!this->world) {
+        this->show_status_message(0x44d, info_file, info_id);
+        if (!this->load_game_data()) {
+            this->close_status_message();
+            this->enable_input();
+            return 0;
+        }
+    }
+
+    this->show_status_message(0x451, info_file, info_id);
+    if (!this->create_game(0)) {
+        this->close_status_message();
+        this->enable_input();
+        return 0;
+    }
+
+    this->set_save_game_name((char*)0);
+    this->set_load_game_name((char*)0);
+
+    if (p1 != 0) {
+        return this->create_game_screen();
+    }
+
+    // Original path starts intro video id=3 and reaches game screen through video callbacks.
+    // Our current video system is not reimplemented yet; `start_video(3, ...)` forwards directly
+    // to `create_game_screen` below.
+    //
+    // Source-of-truth note: `start_game` does not branch on `start_video` return; it returns
+    // success after scheduling video/start transition.
+    this->start_video(3, (char*)0);
+    return 1;
 }
 
 int TRIBE_Game::start_scenario(char* p1) {
@@ -358,9 +672,14 @@ int TRIBE_Game::start_menu() {
     return 1;
 }
 
-int TRIBE_Game::start_video(const char* p1, int p2) {
-    // TODO: implement logic from 0x00523910
-    // Transition to main menu for now
+int TRIBE_Game::start_video(int p1, char* p2) {
+    (void)p2;
+
+    // Source of truth: `src/game/src/tribegam.cpp.asm/.decomp` (`start_video` @ 0x00523910).
+    // TODO(accuracy): restore full AVI playback / callback flow.
+    if (p1 == 3) {
+        return this->create_game_screen();
+    }
     return this->start_menu();
 }
 
@@ -501,8 +820,28 @@ int TRIBE_Game::handle_message(struct tagMSG* p1) { return RGE_Base_Game::handle
 int TRIBE_Game::handle_idle() {
     tribe_process_pending_screen_switch();
 
-    if (gCurrentScreen) {
-        gCurrentScreen->draw_tree();
+    TPanel* active = nullptr;
+    if (panel_system && panel_system->currentPanelValue) {
+        active = panel_system->currentPanelValue;
+    } else {
+        active = gCurrentScreen;
+    }
+
+    // Source-of-truth intent:
+    // current panel idle handlers are expected to run each frame. SP menu uses this path to
+    // re-enable input after transition (`TribeSPMenuScreen::handle_idle`).
+    if (active) {
+        if (this->input_enabled == 0) {
+            static DWORD s_last_input_block_log = 0;
+            const DWORD now = GetTickCount();
+            if (now - s_last_input_block_log >= 2000) {
+                CUSTOM_DEBUG_LOG_FMT("handle_idle: input still disabled, active panel='%s' (%p)",
+                                     active->panelNameValue ? active->panelNameValue : "(null)", active);
+                s_last_input_block_log = now;
+            }
+        }
+        active->handle_idle();
+        active->draw_tree();
     }
     if (this->draw_system) {
         this->draw_system->Paint(NULL);
@@ -530,6 +869,14 @@ int TRIBE_Game::handle_paint(void* p1, uint p2, uint p3, long p4) {
     }
 
     if (to_draw) {
+        if (this->input_enabled == 0) {
+            // Same safety intent as `tribe_apply_screen_switch`: keep UI responsive even if the
+            // idle path is not reached frequently.
+            to_draw->handle_idle();
+            if (this->input_enabled == 0) {
+                this->enable_input();
+            }
+        }
         to_draw->draw_tree();
     }
 

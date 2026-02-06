@@ -114,12 +114,22 @@ public:
     void setPlayerColor(int p1, int p2);
     void setComputerName(int p1, int p2);
     void resetRandomComputerName();
+    void set_save_game_name(char* p1);
+    void set_load_game_name(char* p1);
+    unsigned char quickStartGame();
+    void show_status_message(char* p1, char* p2, long p3);
+    void show_status_message(int p1, char* p2, long p3);
+    void close_status_message();
+    int load_game_data();
+    int create_game(int p1);
+    int create_game_screen();
     void close_game_screens(int p1);
+    int start_game(int p1);
     int start_scenario(char* p1);
     int load_game(char* p1);
     int load_db_files();
     int start_menu();
-    int start_video(const char* p1, int p2);
+    int start_video(int p1, char* p2);
     void close();
 
     MouseClickInfo* MouseRightClickTable;

@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <string.h>
+#include <excpt.h>
 #include "../include/TRIBE_Game.h"
 #include "../include/RGE_Prog_Info.h"
 #include "../include/custom_debug.h"
@@ -11,12 +12,43 @@ const _GUID AGE1_TRIBE_GUID = { 0xF2E846A8, 0x08F5, 0x0797, { 0x11, 0xD1, 0xEB, 
 // _ZONE_GUID: F2E846AA-08F5-0797-11D1EBE2-60009B83
 const _GUID AGE1_ZONE_GUID  = { 0xF2E846AA, 0x08F5, 0x0797, { 0x11, 0xD1, 0xEB, 0xE2, 0x60, 0x00, 0x9B, 0x83 } };
 
+static int aoe_log_unhandled_exception(EXCEPTION_POINTERS* ep) {
+CUSTOM_DEBUG_BEGIN
+    if (!ep || !ep->ExceptionRecord) {
+        CUSTOM_DEBUG_ERROR(-1, "Unhandled exception (missing exception record)");
+        return EXCEPTION_EXECUTE_HANDLER;
+    }
+
+    const DWORD code = ep->ExceptionRecord->ExceptionCode;
+    const void* addr = ep->ExceptionRecord->ExceptionAddress;
+    CUSTOM_DEBUG_LOG_FMT("UNHANDLED_EXCEPTION code=0x%08lX address=%p flags=0x%08lX",
+                         (unsigned long)code, addr, (unsigned long)ep->ExceptionRecord->ExceptionFlags);
+
+    if (ep->ContextRecord) {
+        CUSTOM_DEBUG_LOG_FMT("UNHANDLED_EXCEPTION regs: EIP=0x%08lX ESP=0x%08lX EBP=0x%08lX",
+                             (unsigned long)ep->ContextRecord->Eip,
+                             (unsigned long)ep->ContextRecord->Esp,
+                             (unsigned long)ep->ContextRecord->Ebp);
+    }
+CUSTOM_DEBUG_END
+    return EXCEPTION_EXECUTE_HANDLER;
+}
+
+static LONG WINAPI aoe_unhandled_exception_filter(EXCEPTION_POINTERS* ep) {
+    aoe_log_unhandled_exception(ep);
+    return EXCEPTION_EXECUTE_HANDLER;
+}
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_INIT();
     CUSTOM_DEBUG_CHECKPOINT("WinMain Entry");
     CUSTOM_DEBUG_LOG_FMT("CmdLine: %s", lpCmdLine ? lpCmdLine : "(null)");
 CUSTOM_DEBUG_END
+
+    // Non-original safety/debug hook:
+    // ensure hard faults are recorded in `decomp_debug.log` before process exit.
+    SetUnhandledExceptionFilter(aoe_unhandled_exception_filter);
 
     RGE_Prog_Info info;
     memset(&info, 0, sizeof(info));

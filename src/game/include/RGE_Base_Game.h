@@ -134,6 +134,9 @@ public:
     void setNumberPlayers(int p1);
     void setScenarioName(char* p1);
     int check_for_cd(int p1);
+    void set_mouse_cursor(void* p1);
+    void disable_input();
+    void enable_input();
     void mouse_on();
     void mouse_off();
     int check_expiration();

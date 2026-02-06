@@ -1,6 +1,8 @@
 #pragma once
 #include "common.h"
 
+struct RGE_Scenario_File_Entry;
+
 struct RGE_Scenario_File_Info {
     char filename[260];
     long scenario_num;

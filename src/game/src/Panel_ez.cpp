@@ -87,6 +87,10 @@ TEasy_Panel::TEasy_Panel(char* name) : TPanel(name) {
 }
 
 TEasy_Panel::~TEasy_Panel() {
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TEasy_Panel dtor: begin panel='%s' this=%p", this->panelNameValue ? this->panelNameValue : "(null)", this);
+CUSTOM_DEBUG_END
+
     // Best-effort match for `prepare_for_close` behavior; keep minimal for now.
     if (this->background_pic) {
         delete this->background_pic;
@@ -112,6 +116,10 @@ TEasy_Panel::~TEasy_Panel() {
         panel_system->release_palette(this->palette);
         this->palette = nullptr;
     }
+
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TEasy_Panel dtor: end panel='%s' this=%p", this->panelNameValue ? this->panelNameValue : "(null)", this);
+CUSTOM_DEBUG_END
 }
 
 // Virtual setup (base signature): forward to TPanel::setup.
@@ -488,6 +496,9 @@ CUSTOM_DEBUG_BEGIN
 CUSTOM_DEBUG_END
 
     this->set_shadow_amount(cfg.shade_amount_percent);
+CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TEasy_Panel::setup done: info='%s' id=%ld shade=%ld", this->info_file_name, this->info_id, this->shadow_amount);
+CUSTOM_DEBUG_END
     return 1;
 }
 

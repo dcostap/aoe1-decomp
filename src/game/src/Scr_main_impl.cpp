@@ -4,6 +4,7 @@
 #include "../include/globals.h"
 #include "../include/RGE_Base_Game.h"
 #include "../include/TRIBE_Game.h"
+#include "../include/TribeSPMenuScreen.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -12,18 +13,12 @@ namespace {
 
 void menu_disable_input() {
     if (!rge_base_game) return;
-    rge_base_game->input_enabled = 0;
-    if (panel_system) {
-        panel_system->InputEnabled = 0;
-    }
+    rge_base_game->disable_input();
 }
 
 void menu_enable_input() {
     if (!rge_base_game) return;
-    rge_base_game->input_enabled = 1;
-    if (panel_system) {
-        panel_system->InputEnabled = 1;
-    }
+    rge_base_game->enable_input();
 }
 
 void menu_popup_resid(TRIBE_Screen_Main_Menu* owner, int resid) {
@@ -54,6 +49,30 @@ int menu_cd_gate(TRIBE_Screen_Main_Menu* owner, int error_resid) {
 
     rge_base_game->save_check_for_cd = 1;
     return 1;
+}
+
+void menu_dispatch_confirm_dialog(TRIBE_Screen_Main_Menu* owner) {
+    if (!owner || !rge_base_game) {
+        return;
+    }
+
+    // TODO(accuracy): replace this MessageBox-based shim with real `TEasy_Panel::popupOKDialog`
+    // / panel-system lifecycle once dialog screens are reimplemented in this branch.
+    char text[512];
+    text[0] = '\0';
+    owner->get_string(0x1d4f7, text, sizeof(text));
+    if (text[0] == '\0') {
+        strncpy(text, "Open Help?", sizeof(text) - 1);
+        text[sizeof(text) - 1] = '\0';
+    }
+
+    MessageBoxA((HWND)rge_base_game->prog_window, text, "Age of Empires", MB_OK | MB_ICONINFORMATION);
+
+    // Re-route through `action(..., param_2=0)` with panel name "Confirm Dialog" to keep the
+    // callback shape aligned with original control flow.
+    TPanel confirm_panel((char*)0);
+    confirm_panel.panelNameValue = (char*)"Confirm Dialog";
+    owner->action(&confirm_panel, 0, 0, 0);
 }
 
 class MainMenuStubScreen : public TScreenPanel {
@@ -376,10 +395,13 @@ long TRIBE_Screen_Main_Menu::action(TPanel* param_1, long param_2, ulong param_3
             }
 
             menu_disable_input();
-            TPanel* next = create_stub_screen((char*)"Single Player Menu", (char*)"scr2", 0xc384, (char*)"Single Player Menu (Stub)");
-            if (next) {
+            TribeSPMenuScreen* next = new TribeSPMenuScreen();
+            if (next && next->error_code == 0) {
                 tribe_queue_screen_switch(next);
             } else {
+                if (next) {
+                    delete next;
+                }
                 menu_enable_input();
             }
             return 1;
@@ -397,10 +419,7 @@ long TRIBE_Screen_Main_Menu::action(TPanel* param_1, long param_2, ulong param_3
         }
 
         if ((TButtonPanel*)param_1 == this->button[2]) {
-            // TODO(accuracy): original shows a confirm dialog named "Confirm Dialog" before WinHelp.
-            if (rge_base_game && rge_base_game->prog_window) {
-                WinHelpA((HWND)rge_base_game->prog_window, "empires.hlp", HELP_FINDER, 0);
-            }
+            menu_dispatch_confirm_dialog(this);
             return 1;
         }
 
