@@ -4,9 +4,14 @@
 
 class TPicturePanel : public TPanel {
 public:
-    enum PictureType : int {};
+    enum PictureType : int {
+        Picture = 0,
+        Shape = 1,
+    };
     
     TPicturePanel();
+
+    void set_picture(TShape* shape, long res_id);
 
     // Virtuals (best-effort)
     virtual ~TPicturePanel(); // vt[0] (0x0)
@@ -65,6 +70,10 @@ public:
     virtual int restart_sound_system(); // vt[53] (0xD4)
     virtual void take_snapshot(); // vt[54] (0xD8)
     virtual void handle_reactivate(); // vt[55] (0xDC)
+
+protected:
+    int load_pic();
+    void free_pic();
 
     char pic_name[12];
     long res_id;

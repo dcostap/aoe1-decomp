@@ -7,6 +7,26 @@
 #include "../include/globals.h"
 #include "../include/custom_debug.h"
 
+static unsigned long button_time_ms() {
+    return (unsigned long)GetTickCount();
+}
+
+static void button_notify_parent(TButtonPanel* btn, long code) {
+    if (!btn || !btn->parent_panel) return;
+    btn->parent_panel->action(btn, code, (ulong)btn->id[btn->cur_state], (ulong)btn->id2[btn->cur_state]);
+}
+
+static void button_send_command(TButtonPanel* btn, short state) {
+    if (!btn || !btn->render_area || !btn->render_area->Wnd) return;
+    if (state < 0 || state >= 9) return;
+
+    const long id = btn->id[state];
+    const long id2 = btn->id2[state];
+    if (id != 0 || id2 != 0) {
+        SendMessageA((HWND)btn->render_area->Wnd, WM_COMMAND, (WPARAM)id, (LPARAM)id2);
+    }
+}
+
 // Constructor
 TButtonPanel::TButtonPanel() : TPanel("Button") {
     memset((unsigned char*)this + sizeof(TPanel), 0, sizeof(TButtonPanel) - sizeof(TPanel));
@@ -52,15 +72,31 @@ TButtonPanel::TButtonPanel() : TPanel("Button") {
         this->pic_index[i] = -1;
         this->text1[i] = nullptr;
         this->text2[i] = nullptr;
-        this->text_color1[i] = 0;
+        this->text_color1[i] = 0x00FFFFFF;
         this->text_color2[i] = 0;
-        this->highlight_text_color1[i] = 0;
+        this->highlight_text_color1[i] = 0x0000FFFF;
         this->highlight_text_color2[i] = 0;
     }
 }
 
 // Destructor
-TButtonPanel::~TButtonPanel() {}
+TButtonPanel::~TButtonPanel() {
+    for (int i = 0; i < 9; ++i) {
+        if (this->text1[i]) {
+            free(this->text1[i]);
+            this->text1[i] = nullptr;
+        }
+        if (this->text2[i]) {
+            free(this->text2[i]);
+            this->text2[i] = nullptr;
+        }
+    }
+
+    if (this->radio_buttons) {
+        free(this->radio_buttons);
+        this->radio_buttons = nullptr;
+    }
+}
 
 // Virtual Implementations
 long TButtonPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, TButtonPanel::DrawType param_7, TDigital* param_8, TButtonPanel::NotifyType param_9, long param_10) {
@@ -70,20 +106,6 @@ long TButtonPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long
     this->notifyTypeValue = param_9;
     this->set_sound(param_8);
     this->set_id(0, param_10, 0);
-
-    // Default font initialization
-    if (rge_base_game && rge_base_game->fonts) {
-        this->font = rge_base_game->fonts[0].font;
-        this->font_wid = rge_base_game->fonts[0].font_wid;
-        this->font_hgt = rge_base_game->fonts[0].font_hgt;
-    }
-
-    // Default color initialization (ensure visibility)
-    for (int i = 0; i < 9; ++i) {
-        this->text_color1[i] = RGB(255, 255, 255); // White
-        this->text_color2[i] = RGB(0, 0, 0);       // Black
-    }
-
     return 1;
 }
 void TButtonPanel::set_rect(tagRECT param_1) { TPanel::set_rect(param_1); }
@@ -109,6 +131,22 @@ long TButtonPanel::handle_user_command(uint param_1, long param_2) { return 0; }
 long TButtonPanel::handle_timer_command(uint param_1, long param_2) { return 0; }
 long TButtonPanel::handle_scroll(long param_1, long param_2) { return 0; }
 long TButtonPanel::handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return 0; }
+long TButtonPanel::handle_mouse_move(long x, long y, int wparam, int param_4) {
+    if (!this->active) return 0;
+
+    if (!this->mouse_captured) {
+        return TPanel::handle_mouse_move(x, y, wparam, param_4);
+    }
+
+    if (this->mouse_down_button == 1) {
+        return this->mouse_left_move_action(x, y, wparam, param_4);
+    }
+    if (this->mouse_down_button == 2) {
+        return this->mouse_right_move_action(x, y, wparam, param_4);
+    }
+
+    return this->mouse_move_action(x, y, wparam, param_4);
+}
 long TButtonPanel::mouse_move_action(long x, long y, int wparam, int param_4) {
     (void)wparam;
     (void)param_4;
@@ -135,10 +173,91 @@ long TButtonPanel::mouse_move_action(long x, long y, int wparam, int param_4) {
 
     return 1;
 }
-long TButtonPanel::mouse_right_down_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
+long TButtonPanel::mouse_left_move_action(long x, long y, int wparam, int param_4) {
+    (void)wparam;
+    (void)param_4;
+
+    const int down_now = this->hit_button(x, y) ? 1 : 0;
+    if (this->is_down != down_now) {
+        this->is_down = down_now;
+        if (down_now) {
+            this->button_down_time = button_time_ms();
+            this->set_focus(1);
+            button_notify_parent(this, 2);
+        } else {
+            this->set_focus(0);
+            button_notify_parent(this, 3);
+        }
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+    }
+
+    return 1;
+}
+long TButtonPanel::mouse_right_down_action(long param_1, long param_2, int param_3, int param_4) {
+    (void)param_1;
+    (void)param_2;
+    (void)param_3;
+    (void)param_4;
+
+    if (!this->active || !this->visible) return 0;
+    if (this->disabled != 0) return 0;
+
+    this->mouse_captured = 1;
+    this->mouse_down_button = 2;
+    this->is_down = 1;
+    this->button_down_time = button_time_ms();
+    this->set_focus(1);
+    this->set_redraw(TPanel::RedrawMode::Redraw);
+    if (panel_system) panel_system->mouseOwnerValue = this;
+    button_notify_parent(this, 5);
+    return 1;
+}
 long TButtonPanel::mouse_right_hold_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
-long TButtonPanel::mouse_right_move_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
-long TButtonPanel::mouse_right_up_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
+long TButtonPanel::mouse_right_move_action(long x, long y, int param_3, int param_4) {
+    (void)param_3;
+    (void)param_4;
+
+    const int down_now = this->hit_button(x, y) ? 1 : 0;
+    if (this->is_down != down_now) {
+        this->is_down = down_now;
+        if (down_now) {
+            this->button_down_time = button_time_ms();
+            this->set_focus(1);
+            button_notify_parent(this, 5);
+        } else {
+            this->set_focus(0);
+            button_notify_parent(this, 6);
+        }
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+    }
+    return 1;
+}
+long TButtonPanel::mouse_right_up_action(long x, long y, int param_3, int param_4) {
+    (void)param_3;
+    (void)param_4;
+
+    this->mouse_captured = 0;
+    if (this->mouse_down_button == 2) this->mouse_down_button = 0;
+
+    if (this->is_down != 0) {
+        if (this->buttonTypeValue != TButtonPanel::Radio) {
+            this->is_down = 0;
+        }
+        this->set_focus(this->hit_button(x, y) ? 1 : 0);
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+        if (this->render_area && this->render_area->Wnd) {
+            SendMessageA((HWND)this->render_area->Wnd, WM_PAINT, 0, 0);
+        }
+        this->do_right_action(param_3);
+        return 1;
+    }
+
+    if (this->buttonTypeValue == TButtonPanel::Radio && this->cur_state == 1) {
+        this->is_down = 1;
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+    }
+    return 1;
+}
 long TButtonPanel::mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
 long TButtonPanel::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) { return 0; }
 long TButtonPanel::char_action(long param_1, short param_2) { return 0; }
@@ -155,20 +274,37 @@ void TButtonPanel::set_focus(int focused) {
 void TButtonPanel::set_tab_order(TPanel* param_1, TPanel* param_2) {}
 void TButtonPanel::set_tab_order(TPanel** param_1, short param_2) {}
 uchar TButtonPanel::get_help_info(char** param_1, long* param_2, long param_3, long param_4) { return 0; }
-void TButtonPanel::stop_sound_system() {}
-int TButtonPanel::restart_sound_system() { return 1; }
+void TButtonPanel::stop_sound_system() {
+    if (this->sound != nullptr) {
+        this->sound = nullptr;
+    }
+}
+int TButtonPanel::restart_sound_system() {
+    if (this->sound_number != -1) {
+        this->sound = (rge_base_game != nullptr) ? rge_base_game->get_sound(this->sound_number) : nullptr;
+    }
+    return 1;
+}
 void TButtonPanel::take_snapshot() {}
 void TButtonPanel::handle_reactivate() {}
 void TButtonPanel::set_state(short param_1) {
-    if (param_1 < 0 || param_1 >= this->num_states) return;
     this->cur_state = param_1;
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
 int TButtonPanel::hit_button(long x, long y) {
-    // `all_hot` means the whole panel rect is clickable (matches typical button behavior).
-    // NOTE: Some button styles may use picture bounds instead; keep this simple until needed.
-    (void)this->all_hot;
-    return this->is_inside(x, y);
+    if (!this->is_inside(x, y)) return 0;
+    if (this->all_hot != 0) return 1;
+
+    if (this->cur_state >= 0 && this->cur_state < 9) {
+        TShape* shp = this->pic[this->cur_state];
+        if (shp) {
+            long local_x = (x - this->pic_x) - this->pnl_x;
+            long local_y = (y - this->pic_y) - this->pnl_y;
+            return shp->shape_check(local_x, local_y, (long)this->pic_index[this->cur_state]) ? 1 : 0;
+        }
+    }
+
+    return 1;
 }
 void TButtonPanel::set_sound_number(int num) { this->sound_number = num; }
 void TButtonPanel::set_id(long val) {
@@ -218,7 +354,7 @@ void TButtonPanel::do_action() {
         return;
     }
 
-    // TODO: non-NotifyAction path uses SendMessageA(WM_COMMAND, id, id2) in original.
+    button_send_command(this, this->cur_state);
 }
 
 void TButtonPanel::do_right_action(int param_1) {
@@ -245,7 +381,7 @@ void TButtonPanel::do_right_action(int param_1) {
         return;
     }
 
-    // TODO: non-NotifyAction path uses SendMessageA(WM_COMMAND, id, id2) in original.
+    button_send_command(this, this->cur_state);
 }
 
 void TButtonPanel::set_font(void* font, long wid, long hgt) {
@@ -375,12 +511,14 @@ long TButtonPanel::mouse_left_down_action(long x, long y, int wparam, int param_
 
     this->is_down = 1;
     this->mouse_captured = 1;
+    this->mouse_down_button = 1;
+    this->button_down_time = button_time_ms();
     this->set_focus(1);
     if (panel_system) {
         panel_system->mouseOwnerValue = this;
     }
     this->set_redraw(TPanel::RedrawMode::Redraw);
-    CUSTOM_DEBUG_LOG_FMT("TButtonPanel::mouse_left_down: id=%ld", this->id[0]);
+    button_notify_parent(this, 2);
     return 1;
 }
 
@@ -388,24 +526,27 @@ long TButtonPanel::mouse_left_up_action(long x, long y, int wparam, int param_4)
     (void)wparam;
     (void)param_4;
 
-    if (this->disabled != 0) return 0;
-
-    // If we didn't capture the mouse, ignore stray ups. (Without capture this only fires when inside.)
-    if (!this->mouse_captured && !this->is_down) return 0;
-
-    const int inside = this->hit_button(x, y);
-    const int was_down = this->is_down;
-
-    if (this->buttonTypeValue != TButtonPanel::Radio) {
-        this->is_down = 0;
-    }
-
     this->mouse_captured = 0;
-    this->set_focus(inside != 0);
-    this->set_redraw(TPanel::RedrawMode::Redraw);
-    if (was_down && inside) {
+    if (this->mouse_down_button == 1) this->mouse_down_button = 0;
+
+    if (this->is_down != 0) {
+        if (this->buttonTypeValue != TButtonPanel::Radio) {
+            this->is_down = 0;
+        }
+        this->set_focus(this->hit_button(x, y) ? 1 : 0);
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+        if (this->render_area && this->render_area->Wnd) {
+            SendMessageA((HWND)this->render_area->Wnd, WM_PAINT, 0, 0);
+        }
         this->do_action();
+        return 1;
     }
+
+    if (this->buttonTypeValue == TButtonPanel::Radio && this->cur_state == 1) {
+        this->is_down = 1;
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+    }
+
     return 1;
 }
 
@@ -417,9 +558,12 @@ void TButtonPanel::draw() {
     // TODO: The original draw path uses `TDrawArea::Lock` and span-based primitives. Our draw-area
     //       implementation is still incomplete, so bevel drawing below uses `FillRect`-based helpers.
 
-    if (!this->visible || !this->active) return;
-    if (!this->render_area || this->pnl_hgt <= 0 || this->pnl_wid <= 0) return;
-    if (this->drawTypeValue == TButtonPanel::DrawClear) return;
+    if (!this->visible || !this->active || !this->render_area || this->pnl_hgt <= 0 || this->pnl_wid <= 0 ||
+        this->drawTypeValue == TButtonPanel::DrawClear) {
+        // Source of truth: `Pnl_btn.cpp.asm` writes zero to `[this+0x38]` on early return.
+        this->curr_child = nullptr;
+        return;
+    }
 
     // 1. Clear/Background restore (source of truth: `Pnl_btn.cpp.decomp`).
     //
@@ -443,29 +587,40 @@ void TButtonPanel::draw() {
 
     const int draw_type = (int)this->drawTypeValue;
     const bool pressed = (this->draw_reverse == 0) ? (this->is_down != 0) : (this->is_down == 0);
+    short state = this->cur_state;
+    if (state < 0 || state >= 9) state = 0;
 
-    // 2. SLP Graphics (best-effort; most main-menu buttons are text-only).
-    if (draw_type == 2 || draw_type == 4 || draw_type == 6) {
-        if (this->render_area->Lock((char*)"pnl_btn::draw", 0)) {
-            short state = this->cur_state;
-            if (state >= 0 && state < 9) {
-                TShape* shape = this->pic[state];
-                if (shape) {
-                    long x = this->pnl_x + this->pic_x;
-                    long y = this->pnl_y + this->pic_y;
-                    if (pressed) {
-                        x++;
-                        y--;
+    // 2. Picture draw path (`Pnl_btn.cpp.decomp`): draw for DrawPicture / DrawPictureAndText / DrawBevelPicture.
+    if (draw_type == (int)TButtonPanel::DrawPicture ||
+        draw_type == (int)TButtonPanel::DrawPictureAndText ||
+        draw_type == (int)TButtonPanel::DrawBevelPicture) {
+        if (this->render_area->Lock((char*)"pnl_btn::draw", 1)) {
+            TShape* shape = this->pic[state];
+            if (shape) {
+                if (this->auto_pic_pos != 0) {
+                    long x_min = 0, y_min = 0, x_max = 0, y_max = 0;
+                    if (shape->shape_minmax(&x_min, &y_min, &x_max, &y_max, (int)this->pic_index[state])) {
+                        this->pic_x = ((this->pnl_wid / 2) - (((x_max - x_min) + 1) / 2)) - x_min;
+                        this->pic_y = ((this->pnl_hgt / 2) - (((y_max - y_min) + 1) / 2)) - y_min;
                     }
-                    shape->shape_draw(this->render_area, x, y, this->pic_index[state], 0, 0, nullptr);
                 }
+
+                long draw_x = this->pnl_x + this->pic_x;
+                long draw_y = this->pnl_y + this->pic_y;
+                if (pressed) {
+                    draw_x++;
+                    draw_y--;
+                }
+                shape->shape_draw(this->render_area, draw_x, draw_y, this->pic_index[state], 0, 0, nullptr);
             }
             this->render_area->Unlock((char*)"pnl_btn::draw");
         }
     }
 
     // 3. GDI Text (source of truth: `Pnl_btn.cpp.decomp`).
-    if (draw_type == TButtonPanel::DrawTextA || draw_type == 4 || draw_type == TButtonPanel::DrawFillAndText) {
+    if (draw_type == (int)TButtonPanel::DrawTextA ||
+        draw_type == (int)TButtonPanel::DrawPictureAndText ||
+        draw_type == (int)TButtonPanel::DrawFillAndText) {
         HDC hdc = (HDC)this->render_area->GetDc("pnl_btn::draw");
         if (hdc) {
             if (this->clip_rgn) SelectClipRgn(hdc, (HRGN)this->clip_rgn);
@@ -473,11 +628,9 @@ void TButtonPanel::draw() {
             if (this->font) old_font = SelectObject(hdc, (HGDIOBJ)this->font);
             SetBkMode(hdc, 1);
 
-            short state = this->cur_state;
-            if (state < 0 || state >= 9) state = 0;
-
             char* line1 = this->text1[state] ? this->text1[state] : this->text1[0];
-            char* line2 = this->text2[state] ? this->text2[state] : this->text2[0];
+            char* line2_state = this->text2[state];
+            char* line2 = line2_state ? line2_state : this->text2[0];
 
             if (line1 && line1[0] != '\0') {
                 SIZE sz1;
@@ -487,7 +640,7 @@ void TButtonPanel::draw() {
                 long cy = (this->text_y == -1) ? (this->pnl_hgt / 2) : this->text_y;
 
                 long tx = this->pnl_x + (cx - (sz1.cx / 2));
-                long ty = this->pnl_y + (cy - ((line2 && line2[0] != '\0') ? this->font_hgt : (this->font_hgt / 2)));
+                long ty = this->pnl_y + (cy - (line2_state ? this->font_hgt : (this->font_hgt / 2)));
 
                 if (pressed) {
                     tx++;
@@ -525,9 +678,11 @@ void TButtonPanel::draw() {
         }
     }
 
-    // 4. Bevel
-    // The original draws bevels for several draw types, including `DrawTextA`.
-    if (draw_type == TButtonPanel::DrawTextA || draw_type == 4 || draw_type == TButtonPanel::DrawFillAndText || draw_type == 6) {
+    // 4. Bevel.
+    if (draw_type == (int)TButtonPanel::DrawTextA ||
+        draw_type == (int)TButtonPanel::DrawPictureAndText ||
+        draw_type == (int)TButtonPanel::DrawFillAndText ||
+        draw_type == (int)TButtonPanel::DrawBevelPicture) {
         if (this->render_area->Lock((char*)"pnl_btn::draw2", 1)) {
             const long x1 = this->pnl_x;
             const long y1 = this->pnl_y;
@@ -542,28 +697,33 @@ void TButtonPanel::draw() {
                     const int down_for_bevel = pressed ? 1 : 0;
                     switch (this->bevel_type) {
                         case 2:
-                            if (down_for_bevel) this->render_area->DrawBevel(x1, y1, x2, y2, this->bevel_color1, this->bevel_color6);
-                            else this->render_area->DrawBevel(x1, y1, x2, y2, this->bevel_color6, this->bevel_color1);
+                            if (down_for_bevel) this->render_area->DrawBevel(x1, y1, x2, y2, this->bevel_color6, this->bevel_color1);
+                            else this->render_area->DrawBevel(x1, y1, x2, y2, this->bevel_color1, this->bevel_color6);
                             break;
                         case 3:
-                            if (down_for_bevel) this->render_area->DrawBevel2(x1, y1, x2, y2, this->bevel_color1, this->bevel_color2, this->bevel_color5, this->bevel_color6);
-                            else this->render_area->DrawBevel21(x1, y1, x2, y2, this->bevel_color6, this->bevel_color5, this->bevel_color2, this->bevel_color1);
+                            if (down_for_bevel) this->render_area->DrawBevel21(x1, y1, x2, y2, this->bevel_color6, this->bevel_color5, this->bevel_color2, this->bevel_color1);
+                            else this->render_area->DrawBevel2(x1, y1, x2, y2, this->bevel_color1, this->bevel_color2, this->bevel_color5, this->bevel_color6);
                             break;
                         case 4:
                             if (down_for_bevel) {
-                                this->render_area->DrawBevel3(x1, y1, x2, y2,
-                                    this->bevel_color1, this->bevel_color2, this->bevel_color3,
-                                    this->bevel_color4, this->bevel_color5, this->bevel_color6);
-                            } else {
                                 this->render_area->DrawBevel32(x1, y1, x2, y2,
                                     this->bevel_color6, this->bevel_color5, this->bevel_color4,
                                     this->bevel_color3, this->bevel_color2, this->bevel_color1);
+                            } else {
+                                this->render_area->DrawBevel3(x1, y1, x2, y2,
+                                    this->bevel_color1, this->bevel_color2, this->bevel_color3,
+                                    this->bevel_color4, this->bevel_color5, this->bevel_color6);
                             }
                             break;
                         case 1:
                         default:
-                            // Default: 1px border.
-                            this->render_area->DrawRect(x1 + 1, y1 + 1, x2 - 1, y2 - 1, 0xFF);
+                            if (down_for_bevel) {
+                                this->render_area->DrawRect(x1 + 1, y1 + 1, x2 - 1, y2 - 1, 0xFF);
+                            } else {
+                                this->render_area->DrawVertLine(x2, y1 + 1, this->pnl_hgt - 1, 0);
+                                this->render_area->DrawHorzLine(x1 + 1, y2, this->pnl_wid - 1, 0);
+                                this->render_area->DrawRect(x1, y1, x2 - 1, y2 - 1, 0xFF);
+                            }
                             break;
                     }
                 }

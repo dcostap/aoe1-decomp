@@ -142,6 +142,7 @@ public:
     void close();
     int get_paused();
     RGE_Font* get_font(int index);
+    TDigital* get_sound(int index);
     unsigned long get_last_max_time();
     unsigned long get_last_world_update_count();
     unsigned long get_last_view_update_count();

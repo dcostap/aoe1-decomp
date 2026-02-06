@@ -17,6 +17,51 @@
 
 // Static global to track current screen until TPanel_System is implemented
 static TPanel* gCurrentScreen = nullptr;
+static TPanel* gPendingScreen = nullptr;
+
+static void tribe_apply_screen_switch(TPanel* new_screen) {
+    if (new_screen == gCurrentScreen) return;
+
+    if (panel_system && gCurrentScreen) {
+        panel_system->remove_panel(gCurrentScreen);
+    }
+    if (gCurrentScreen) {
+        delete gCurrentScreen;
+        gCurrentScreen = nullptr;
+    }
+
+    gCurrentScreen = new_screen;
+    if (panel_system && gCurrentScreen) {
+        panel_system->add_panel(gCurrentScreen);
+    }
+}
+
+void tribe_set_current_screen(TPanel* new_screen) {
+    tribe_apply_screen_switch(new_screen);
+}
+
+void tribe_queue_screen_switch(TPanel* new_screen) {
+    // Non-original safety shim:
+    // queue screen destruction/creation until idle so we do not mutate panel lists while dispatching
+    // the current input message.
+    if (new_screen == gCurrentScreen) {
+        return;
+    }
+
+    if (gPendingScreen && gPendingScreen != new_screen) {
+        delete gPendingScreen;
+    }
+    gPendingScreen = new_screen;
+}
+
+static void tribe_process_pending_screen_switch() {
+    if (!gPendingScreen) {
+        return;
+    }
+    TPanel* next = gPendingScreen;
+    gPendingScreen = nullptr;
+    tribe_apply_screen_switch(next);
+}
 
 TRIBE_Game::TRIBE_Game(RGE_Prog_Info* info, int param_2) : RGE_Base_Game(info, 0) {
     // tribegam.cpp:263
@@ -119,18 +164,6 @@ int TRIBE_Game::setup() {
 
     // Set initial game mode to Menu (2)
     this->game_mode = 2;
-
-    // Create and initialize the main menu screen
-    gCurrentScreen = new TRIBE_Screen_Main_Menu();
-    if (gCurrentScreen) {
-        gCurrentScreen->render_area = this->draw_area;
-        if (panel_system) {
-            panel_system->add_panel(gCurrentScreen);
-        }
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG("Main menu screen created and linked to draw_area/panel_system");
-CUSTOM_DEBUG_END
-    }
 
     // Command line STRING= handler (ASM 0x0052194a)
     char cmd_line_str[260];
@@ -288,6 +321,12 @@ int TRIBE_Game::load_game(char* p1) {
     return 0;
 }
 
+int TRIBE_Game::load_db_files() {
+    // TODO: implement logic from 0x00524510.
+    // For now return success so developer hotkey paths can be wired without regressing UI flow.
+    return 1;
+}
+
 int TRIBE_Game::start_menu() {
     // Best-effort reimplementation based on immutable reference:
     // `src/game/src/tribegam.cpp.asm` / `.decomp` (start_menu @ 0x00524030).
@@ -307,8 +346,8 @@ int TRIBE_Game::start_menu() {
     }
 
     // The original uses `TPanelSystem::setCurrentPanel(panel_system, "Main Menu", 0)`.
-    // Our panel system impl is incomplete; keep using the current simplified path for now.
-    gCurrentScreen = menu;
+    // We do best-effort equivalent with our simplified panel-system implementation.
+    tribe_set_current_screen(menu);
 
     // In the original, this is done via a virtual call at vtable +0xC (set_prog_mode).
     this->set_prog_mode(2);
@@ -358,7 +397,19 @@ void TRIBE_Game::set_player(short p1) {
 int TRIBE_Game::get_error_code() { return RGE_Base_Game::get_error_code(); }
 
 char* TRIBE_Game::get_string(int p1, long p2, char* p3, int p4) { return RGE_Base_Game::get_string(p1, p2, p3, p4); }
-char* TRIBE_Game::get_string(long p1, char* p2, int p3) { return RGE_Base_Game::get_string(p1, p2, p3); }
+char* TRIBE_Game::get_string(long p1, char* p2, int p3) {
+    // Source of truth: `src/game/src/tribegam.cpp.decomp` @ 0x005228E0.
+    // Expansion string table is checked first, then base table fallback.
+    if (!p2 || p3 <= 0) return p2;
+
+    const int loaded = (StringTableX != nullptr) ? LoadStringA((HMODULE)StringTableX, (UINT)p1, p2, p3) : 0;
+    if (loaded == 0) {
+        return RGE_Base_Game::get_string(p1, p2, p3);
+    }
+
+    p2[p3 - 1] = '\0';
+    return p2;
+}
 char* TRIBE_Game::get_string(long p1) { return RGE_Base_Game::get_string(p1); }
 char* TRIBE_Game::get_string2(int p1, long p2, long p3, char* p4, int p5) { return RGE_Base_Game::get_string2(p1, p2, p3, p4, p5); }
 
@@ -448,6 +499,8 @@ RGE_Game_World* TRIBE_Game::create_world() {
 
 int TRIBE_Game::handle_message(struct tagMSG* p1) { return RGE_Base_Game::handle_message(p1); }
 int TRIBE_Game::handle_idle() {
+    tribe_process_pending_screen_switch();
+
     if (gCurrentScreen) {
         gCurrentScreen->draw_tree();
     }
@@ -462,6 +515,24 @@ int TRIBE_Game::handle_user_command(void* p1, uint p2, uint p3, long p4) { retur
 int TRIBE_Game::handle_command(void* p1, uint p2, uint p3, long p4) { return 0; }
 int TRIBE_Game::handle_music_done(void* p1, uint p2, uint p3, long p4) { return 0; }
 int TRIBE_Game::handle_paint(void* p1, uint p2, uint p3, long p4) {
+    (void)p1;
+    (void)p2;
+    (void)p3;
+    (void)p4;
+
+    tribe_process_pending_screen_switch();
+
+    TPanel* to_draw = nullptr;
+    if (panel_system && panel_system->currentPanelValue) {
+        to_draw = panel_system->currentPanelValue;
+    } else {
+        to_draw = gCurrentScreen;
+    }
+
+    if (to_draw) {
+        to_draw->draw_tree();
+    }
+
     if (this->draw_system) {
         this->draw_system->Paint(NULL);
     }

@@ -14,9 +14,14 @@ public:
         AlignBottom = 2,
         AlignLeft = 0,
         AlignRight = 2,
+        // NOTE: Values inferred from `Pnl_txt.cpp.asm/.decomp`.
+        AlignWordwrap = 3,
+        AlignHorizontalScroll = 4,
     };
     enum Style : int {
-        ChiseledStyle = 0,
+        NormalStyle = 0,
+        BeveledStyle = 1,
+        ChiseledStyle = 2,
     };
 
     struct TextNode {

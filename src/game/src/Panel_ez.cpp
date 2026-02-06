@@ -174,11 +174,11 @@ static void easycfg_init(EasyCfg* cfg) {
     cfg->popup_file[0] = '\0'; cfg->popup_id = -1;
     cfg->background_pos = 0;
     cfg->background_color = 0;
-    cfg->use_bevels = -1;
+    cfg->use_bevels = 1;
     for (int i = 0; i < 6; ++i) cfg->bevel[i] = 0;
     for (int i = 0; i < 3; ++i) {
         cfg->text1[i] = 255; cfg->text2[i] = 0;
-        cfg->focus1[i] = 255; cfg->focus2[i] = 0;
+        cfg->focus1[i] = (i < 2) ? 255 : 0; cfg->focus2[i] = 0;
         cfg->state1[i] = 255; cfg->state2[i] = 0;
     }
 }
@@ -192,9 +192,10 @@ static void parse_background_line(EasyCfgBackground* out, const char* file1, con
     out->id2 = id2;
 }
 
-static void parse_easy_cfg_text(EasyCfg* cfg, char* text) {
+static int parse_easy_cfg_text(EasyCfg* cfg, char* text) {
     // The `bina` config is line-oriented and whitespace-separated.
     // We intentionally parse it loosely to tolerate formatting differences.
+    int parsed_items = 0;
     char* ctx_line = nullptr;
     for (char* line = strtok_s(text, "\n", &ctx_line); line; line = strtok_s(nullptr, "\n", &ctx_line)) {
         trim_in_place(line);
@@ -217,6 +218,7 @@ static void parse_easy_cfg_text(EasyCfg* cfg, char* text) {
             if (_stricmp(key, "background1_files") == 0) parse_background_line(&cfg->bg1, file1, file2, id1, id2);
             if (_stricmp(key, "background2_files") == 0) parse_background_line(&cfg->bg2, file1, file2, id1, id2);
             if (_stricmp(key, "background3_files") == 0) parse_background_line(&cfg->bg3, file1, file2, id1, id2);
+            parsed_items++;
             continue;
         }
 
@@ -228,6 +230,7 @@ static void parse_easy_cfg_text(EasyCfg* cfg, char* text) {
                 cfg->pal_file[sizeof(cfg->pal_file) - 1] = '\0';
             }
             cfg->pal_id = id ? strtol(id, nullptr, 0) : -1;
+            parsed_items++;
             continue;
         }
 
@@ -239,6 +242,7 @@ static void parse_easy_cfg_text(EasyCfg* cfg, char* text) {
                 cfg->cursor_file[sizeof(cfg->cursor_file) - 1] = '\0';
             }
             cfg->cursor_id = id ? strtol(id, nullptr, 0) : -1;
+            parsed_items++;
             continue;
         }
 
@@ -246,6 +250,7 @@ static void parse_easy_cfg_text(EasyCfg* cfg, char* text) {
             strtok_s(nullptr, " \t", &ctx_tok); // "percent"
             char* val = strtok_s(nullptr, " \t", &ctx_tok);
             cfg->shade_amount_percent = val ? atoi(val) : 0;
+            parsed_items++;
             continue;
         }
 
@@ -257,6 +262,7 @@ static void parse_easy_cfg_text(EasyCfg* cfg, char* text) {
                 cfg->button_file[sizeof(cfg->button_file) - 1] = '\0';
             }
             cfg->button_id = id ? strtol(id, nullptr, 0) : -1;
+            parsed_items++;
             continue;
         }
 
@@ -268,24 +274,28 @@ static void parse_easy_cfg_text(EasyCfg* cfg, char* text) {
                 cfg->popup_file[sizeof(cfg->popup_file) - 1] = '\0';
             }
             cfg->popup_id = id ? strtol(id, nullptr, 0) : -1;
+            parsed_items++;
             continue;
         }
 
         if (_stricmp(key, "background_position") == 0) {
             char* val = strtok_s(nullptr, " \t", &ctx_tok);
             cfg->background_pos = val ? atoi(val) : 0;
+            parsed_items++;
             continue;
         }
 
         if (_stricmp(key, "background_color") == 0) {
             char* val = strtok_s(nullptr, " \t", &ctx_tok);
             cfg->background_color = val ? atoi(val) : 0;
+            parsed_items++;
             continue;
         }
 
         if (_stricmp(key, "use_bevels") == 0) {
             char* val = strtok_s(nullptr, " \t", &ctx_tok);
             cfg->use_bevels = val ? atoi(val) : 0;
+            parsed_items++;
             continue;
         }
 
@@ -294,6 +304,7 @@ static void parse_easy_cfg_text(EasyCfg* cfg, char* text) {
                 char* v = strtok_s(nullptr, " \t", &ctx_tok);
                 cfg->bevel[i] = v ? atoi(v) : 0;
             }
+            parsed_items++;
             continue;
         }
 
@@ -311,9 +322,11 @@ static void parse_easy_cfg_text(EasyCfg* cfg, char* text) {
             if (_stricmp(key, "focus_color2") == 0) { cfg->focus2[0] = rgb[0]; cfg->focus2[1] = rgb[1]; cfg->focus2[2] = rgb[2]; }
             if (_stricmp(key, "state_color1") == 0) { cfg->state1[0] = rgb[0]; cfg->state1[1] = rgb[1]; cfg->state1[2] = rgb[2]; }
             if (_stricmp(key, "state_color2") == 0) { cfg->state2[0] = rgb[0]; cfg->state2[1] = rgb[1]; cfg->state2[2] = rgb[2]; }
+            parsed_items++;
             continue;
         }
     }
+    return parsed_items;
 }
 
 static void load_bg_shape_pair(TShape** out1, TShape** out2, const EasyCfgBackground* bg) {
@@ -390,8 +403,14 @@ long TEasy_Panel::setup(TDrawArea* param_1, TPanel* param_2, char* param_3, long
 
     EasyCfg cfg;
     easycfg_init(&cfg);
-    parse_easy_cfg_text(&cfg, cfg_text);
+    const int parsed_items = parse_easy_cfg_text(&cfg, cfg_text);
     free(cfg_text);
+
+    if (parsed_items <= 0) {
+        // Source of truth: `Panel_ez.cpp.decomp` only applies parsed style/state data when `sscanf != -1`.
+        // If parsing failed, keep constructor defaults and treat setup as successful.
+        return 1;
+    }
 
     // Palette.
     if (panel_system && !is_none_token(cfg.pal_file) && cfg.pal_id >= 0) {
@@ -422,19 +441,8 @@ long TEasy_Panel::setup(TDrawArea* param_1, TPanel* param_2, char* param_3, long
     this->background_color1 = (unsigned char)cfg.background_color;
     this->background_color2 = (unsigned char)cfg.background_color;
 
-    int use_bevels = cfg.use_bevels;
-    if (use_bevels < 0) {
-        // Heuristic fallback: if the config provides bevel colors, assume bevel drawing is desired.
-        // TODO: Confirm exact default behavior from `Panel_ez.cpp.asm` when `use_bevels` isn't present.
-        use_bevels = 0;
-        for (int i = 0; i < 6; ++i) {
-            if (cfg.bevel[i] != 0) {
-                use_bevels = 1;
-                break;
-            }
-        }
-    }
-    this->use_bevels = use_bevels;
+    // Source of truth: `Panel_ez.cpp.asm` calls `set_use_bevels(this,1)` on parse success.
+    this->use_bevels = 1;
     this->bevel_color1 = (unsigned char)cfg.bevel[0];
     this->bevel_color2 = (unsigned char)cfg.bevel[1];
     this->bevel_color3 = (unsigned char)cfg.bevel[2];
@@ -758,11 +766,9 @@ int TEasy_Panel::create_button(TPanel* param_1, TButtonPanel** param_2, char* pa
     long scaled_w = (this->ideal_width > 0) ? (param_7 * this->pnl_wid) / this->ideal_width : param_7;
     long scaled_h = (this->ideal_height > 0) ? (param_8 * this->pnl_hgt) / this->ideal_height : param_8;
 
-    // Sound lookup is not implemented yet in this codebase; keep behavior but return nullptr sound.
     TDigital* sound = nullptr;
     if (rge_base_game && (int)param_10 >= 0) {
-        // TODO: implement `RGE_Base_Game::get_sound(int)` and use it here.
-        sound = nullptr;
+        sound = rge_base_game->get_sound((int)param_10);
     }
 
     long ok = (*param_2)->setup(this->render_area, param_1, scaled_x, scaled_y, scaled_w, scaled_h, TButtonPanel::DrawTextA, sound, TButtonPanel::NotifyAction, param_11);

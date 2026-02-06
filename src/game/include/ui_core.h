@@ -179,9 +179,11 @@ public:
     };
     enum DrawType : int {
         DrawClear = 0,
-        // DrawBevelPicture etc exist but values not yet confirmed from ASM.
+        DrawPicture = 2,
         DrawTextA = 3,
+        DrawPictureAndText = 4,
         DrawFillAndText = 5,
+        DrawBevelPicture = 6,
     };
     enum NotifyType : int {
         // NOTE: `NotifyAction == 1` confirmed by `TButtonPanel::do_action` in `Pnl_btn.cpp.asm`.
@@ -230,7 +232,9 @@ public:
     virtual long handle_timer_command(uint param_1, long param_2) override;
     virtual long handle_scroll(long param_1, long param_2) override;
     virtual long handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) override;
+    virtual long handle_mouse_move(long param_1, long param_2, int param_3, int param_4) override;
     virtual long mouse_move_action(long param_1, long param_2, int param_3, int param_4) override;
+    virtual long mouse_left_move_action(long param_1, long param_2, int param_3, int param_4) override;
     virtual long mouse_right_down_action(long param_1, long param_2, int param_3, int param_4) override;
     virtual long mouse_right_hold_action(long param_1, long param_2, int param_3, int param_4) override;
     virtual long mouse_right_move_action(long param_1, long param_2, int param_3, int param_4) override;

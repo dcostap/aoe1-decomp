@@ -28,3 +28,4 @@ void RESFILE_build_res_file(char* path, char* file, char* tag);
 unsigned char* RESFILE_load(unsigned long type, unsigned long id, int* size, int* out_type);
 int RESFILE_locate_resource(unsigned long type, unsigned long id, int* handle, int* offset, unsigned char** data, int* size);
 int RESFILE_Extract_to_File(unsigned long type, unsigned long id, char* path, FILE** file);
+int RESFILE_Decommit_Mapped_Memory(unsigned char* param_1, int param_2);

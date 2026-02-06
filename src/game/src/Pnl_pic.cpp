@@ -1,57 +1,131 @@
-#include <windows.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include "../include/TPicturePanel.h"
-#include "../include/custom_debug.h"
 #include "../include/TDrawArea.h"
+#include "../include/TPicture.h"
 #include "../include/TShape.h"
 
-// Constructor
+#include <stdio.h>
+#include <string.h>
+
 TPicturePanel::TPicturePanel() : TPanel("Picture") {
-    this->res_id = -1;
+    this->keep_loaded = 1;
+    this->size_from_pic = 0;
+    this->own_pic = 0;
+    this->pic_type = TPicturePanel::Picture;
     this->pic = nullptr;
     this->shape = nullptr;
+    this->pic_name[0] = '\0';
+    this->res_id = -1;
 }
 
-// Destructor
 TPicturePanel::~TPicturePanel() {
-    if (this->shape) delete this->shape;
-    if (this->pic) { 
-        // Assuming TPicture has destructor or we should delete it. 
-        // Since we don't know TPicture implementation yet, and original code managed it, we should be careful.
-        // But for now, if we own it, we should delete it.
-        // delete this->pic; // Commented out until TPicture is known
-    }
+    this->free_pic();
 }
-
-// Virtual Implementations
 
 long TPicturePanel::setup(TDrawArea* param_1, TPanel* param_2, long x, long y, long w, long h, char* name, long res_id, int size_from_pic, int keep_loaded) {
+    if (name == nullptr) {
+        this->pic_name[0] = '\0';
+    } else {
+        // NOTE: Original uses a raw copy and assumes short picture names.
+        strncpy(this->pic_name, name, sizeof(this->pic_name) - 1);
+        this->pic_name[sizeof(this->pic_name) - 1] = '\0';
+    }
     this->res_id = res_id;
-    if (name) {
-        strncpy(this->pic_name, name, 11);
-        this->pic_name[11] = '\0';
-        
-        // Load the picture
-        char filename[32];
-        if (!strstr(name, ".slp") && !strstr(name, ".SLP")) {
-            sprintf(filename, "%s.slp", name);
-        } else {
-            strcpy(filename, name);
+    this->size_from_pic = size_from_pic;
+    this->keep_loaded = keep_loaded;
+
+    if ((size_from_pic != 0 || keep_loaded != 0) && this->load_pic()) {
+        if (this->size_from_pic != 0) {
+            if (this->pic_type == TPicturePanel::Picture) {
+                if (this->pic) {
+                    w = this->pic->Width;
+                    h = this->pic->Height;
+                }
+            } else {
+                long x_min = 0;
+                long y_min = 0;
+                long x_max = 0;
+                long y_max = 0;
+                if (this->shape && this->shape->shape_minmax(&x_min, &y_min, &x_max, &y_max, 0)) {
+                    w = (x_max - x_min) + 1;
+                    h = (y_max - y_min) + 1;
+                }
+            }
         }
-        
-        if (this->shape) delete this->shape;
-        this->shape = new TShape(filename, res_id);
-        
-        if (this->shape && this->shape->is_loaded()) {
-             if (size_from_pic) {
-                 // Update dimensions from pic if requested
-             }
+        if (this->keep_loaded == 0) {
+            this->free_pic();
         }
     }
 
+    TPanel::setup(param_1, param_2, x, y, w, h, 0);
+    return 1;
+}
 
-    return TPanel::setup(param_1, param_2, x, y, w, h, 0);
+void TPicturePanel::set_picture(TShape* shape, long res_id) {
+    this->free_pic();
+    this->res_id = res_id;
+    this->shape = shape;
+    this->own_pic = 0;
+    this->set_redraw(TPanel::Redraw);
+}
+
+int TPicturePanel::load_pic() {
+    this->free_pic();
+
+    if (this->pic_name[0] == '\0') {
+        if (this->res_id == -1) {
+            return 0;
+        }
+        this->shape = new TShape((char*)"", this->res_id);
+    } else {
+        char file_name[80];
+        sprintf(file_name, "%s.shp", this->pic_name);
+        this->shape = new TShape(file_name, this->res_id);
+    }
+
+    if (this->shape) {
+        if (this->shape->is_loaded()) {
+            this->pic_type = TPicturePanel::Shape;
+            this->own_pic = 1;
+            return 1;
+        }
+
+        delete this->shape;
+        this->shape = nullptr;
+    }
+
+    char file_name[80];
+    sprintf(file_name, "%s.bmp", this->pic_name);
+    this->pic = new TPicture(file_name, -1, 0, 0, 0);
+    if (this->pic) {
+        if (this->pic->Dib) {
+            this->pic_type = TPicturePanel::Picture;
+            this->own_pic = 1;
+            return 1;
+        }
+
+        delete this->pic;
+        this->pic = 0;
+    }
+
+    return 0;
+}
+
+void TPicturePanel::free_pic() {
+    if (this->pic) {
+        if (this->own_pic) {
+            delete this->pic;
+        }
+        this->pic = nullptr;
+    }
+
+    if (this->shape) {
+        if (this->own_pic) {
+            delete this->shape;
+        }
+        this->shape = nullptr;
+    }
+
+    this->own_pic = 0;
 }
 
 void TPicturePanel::set_rect(tagRECT param_1) { TPanel::set_rect(param_1); }
@@ -60,19 +134,34 @@ void TPicturePanel::set_color(uchar param_1) {}
 void TPicturePanel::set_active(int param_1) {}
 void TPicturePanel::set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10, TPanel* param_11, TPanel* param_12, TPanel* param_13) {}
 void TPicturePanel::set_fixed_position(long param_1, long param_2, long param_3, long param_4) {}
-void TPicturePanel::set_redraw(TPanel::RedrawMode param_1) {}
-void TPicturePanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, TPanel::RedrawMode param_3) {}
-void TPicturePanel::draw_setup(int param_1) {}
-void TPicturePanel::draw_finish() {}
+void TPicturePanel::set_redraw(TPanel::RedrawMode param_1) { TPanel::set_redraw(param_1); }
+void TPicturePanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, TPanel::RedrawMode param_3) { (void)param_1; (void)param_2; TPanel::set_overlapped_redraw(param_3); }
+void TPicturePanel::draw_setup(int param_1) { TPanel::draw_setup(param_1); }
+void TPicturePanel::draw_finish() { TPanel::draw_finish(); }
 
 void TPicturePanel::draw() {
-    if (!this->visible || !this->active) return;
-    if (!this->render_area) return;
+    if (!this->render_area || !this->active || !this->visible) return;
 
-    if (this->shape && this->shape->is_loaded()) {
-        // Draw at panel position
-        this->shape->shape_draw(this->render_area, this->pnl_x, this->pnl_y, 0, 0, 0, nullptr);
+    this->draw_setup(0);
+    if (this->keep_loaded == 0) {
+        this->load_pic();
     }
+
+    if (this->render_area->Lock((char*)"pnl_pic::draw", 1)) {
+        if (this->pic_type == TPicturePanel::Picture) {
+            if (this->pic) {
+                this->pic->Draw(this->render_area, this->pnl_x, this->pnl_y, 0, 0);
+            }
+        } else if (this->shape) {
+            this->shape->shape_draw(this->render_area, this->pnl_x, this->pnl_y, 0, 0, 0, nullptr);
+        }
+        this->render_area->Unlock((char*)"pnl_pic::draw");
+    }
+
+    if (this->keep_loaded == 0) {
+        this->free_pic();
+    }
+    this->draw_finish();
 }
 
 void TPicturePanel::draw_rect(tagRECT* param_1) {}

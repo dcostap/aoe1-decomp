@@ -1,6 +1,8 @@
 #pragma once
 #include "common.h"
 
+struct LINEINFO;
+
 struct TRANSINFO {
     int AnyTrans;
     long x;

@@ -117,6 +117,7 @@ public:
     void close_game_screens(int p1);
     int start_scenario(char* p1);
     int load_game(char* p1);
+    int load_db_files();
     int start_menu();
     int start_video(const char* p1, int p2);
     void close();
@@ -162,3 +163,8 @@ public:
     int inHandleIdle;
 };
 static_assert(sizeof(TRIBE_Game) == 0x1254, "Size mismatch");
+
+// Non-original helper API used by the current simplified panel manager.
+// TODO(accuracy): replace these with `TPanelSystem::setCurrentPanel/destroyPanel` when that path is fully reimplemented.
+void tribe_set_current_screen(TPanel* new_screen);
+void tribe_queue_screen_switch(TPanel* new_screen);

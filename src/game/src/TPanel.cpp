@@ -8,46 +8,61 @@
 extern RGE_Base_Game* rge_base_game;
 
 TPanel::TPanel(char* name) {
-    memset((unsigned char*)this + 4, 0, sizeof(TPanel) - 4); // Clear everything after vtable
-    if (name) {
-        this->panelNameValue = strdup(name);
-    } else {
-        this->panelNameValue = nullptr;
-    }
+    memset((unsigned char*)this + 4, 0, sizeof(TPanel) - 4); // Keep vtable intact; initialize data fields.
+
+    // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::TPanel(char*)` / `TPanel::TPanel(void)`).
+    this->position_mode = TPanel::PositionMode::Fixed;
+    this->need_redraw = TPanel::RedrawMode::RedrawFull;
+    this->active = 1;
+    this->visible = 0;
+    this->overlapping_children = 1;
+    this->handle_mouse_input = 1;
+    this->mouse_hold_interval = 0xFA;
+    this->help_string_id = -1;
+    this->help_page_id = -1;
+
+    if (name) this->panelNameValue = strdup(name);
+    else this->panelNameValue = nullptr;
 }
 
 TPanel::~TPanel() {}
 long TPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7) {
     this->parent_panel = param_2;
     this->render_area = param_1;
-    
-    // In original engine, setup sets these "base" values which might be borders or min/max
-    this->left_border = param_3;
-    this->top_border = param_4;
-    this->min_wid = param_5;
-    this->max_wid = param_5;
-    this->min_hgt = param_6;
-    this->max_hgt = param_6;
 
+    // Original behavior for PositionFixed: cache border/size constraints from setup args.
+    if (this->position_mode == TPanel::PositionMode::Fixed) {
+        this->top_border = param_4;
+        this->min_wid = param_5;
+        this->max_wid = param_5;
+        this->left_border = param_3;
+        this->right_border = 0;
+        this->bottom_border = 0;
+        this->min_hgt = param_6;
+        this->max_hgt = param_6;
+    }
+
+    // Keep current implementation model simple: fixed-position panels still get a concrete rect here.
+    // The original setup routes through virtual size/color calls before node-linking.
     this->set_rect(param_3, param_4, param_5, param_6);
-    this->color = param_7;
-    this->active = 1;
-    this->visible = 1;
+    this->set_color(param_7);
+    this->mouse_captured = 0;
 
-    // Link to parent
-    if (this->parent_panel) {
-        PanelNode* newNode = new PanelNode();
+    // Link to parent once, matching original "allocate node if null" behavior.
+    if (!this->node) {
+        PanelNode* newNode = (PanelNode*)calloc(1, sizeof(PanelNode));
+        if (!newNode) return 0;
         newNode->panel = this;
         newNode->next_node = nullptr;
-        newNode->prev_node = this->parent_panel->last_child_node;
-        
-        if (this->parent_panel->last_child_node) {
-            this->parent_panel->last_child_node->next_node = newNode;
-        } else {
-            this->parent_panel->first_child_node = newNode;
-        }
-        this->parent_panel->last_child_node = newNode;
+        newNode->prev_node = nullptr;
         this->node = newNode;
+
+        if (this->parent_panel) {
+            newNode->prev_node = this->parent_panel->last_child_node;
+            if (this->parent_panel->last_child_node) this->parent_panel->last_child_node->next_node = newNode;
+            else this->parent_panel->first_child_node = newNode;
+            this->parent_panel->last_child_node = newNode;
+        }
     }
 
     return 1;
@@ -109,8 +124,24 @@ void TPanel::set_rect(long param_1, long param_2, long param_3, long param_4) {
     }
 }
 
-void TPanel::set_color(uchar param_1) { this->color = param_1; }
-void TPanel::set_active(int param_1) { this->active = param_1; }
+void TPanel::set_color(uchar param_1) {
+    this->color = param_1;
+    if (this->active) this->set_redraw(TPanel::RedrawMode::RedrawFull);
+}
+
+void TPanel::set_active(int param_1) {
+    if (this->active == param_1) return;
+
+    this->active = param_1;
+    if (param_1) {
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+        return;
+    }
+
+    // NOTE: `TPanel::release_mouse` is not reimplemented in this branch yet.
+    this->mouse_captured = 0;
+    if (this->parent_panel) this->parent_panel->set_redraw(TPanel::RedrawMode::Redraw);
+}
 void TPanel::set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) {}
 void TPanel::set_fixed_position(long param_1, long param_2, long param_3, long param_4) {}
 void TPanel::set_redraw(RedrawMode param_1) {

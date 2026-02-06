@@ -249,6 +249,16 @@ int RESFILE_Extract_to_File(unsigned long type, unsigned long id, char* path, FI
     return 0;
 }
 
+int RESFILE_Decommit_Mapped_Memory(unsigned char* param_1, int param_2) {
+    // Source-of-truth note:
+    // The original engine can decommit mapped resource memory. In this reimplementation,
+    // mapped resource views are owned by `ResFile` and released on file close, so this is a no-op.
+    // TODO(decomp): revisit if per-resource mapping ownership is reintroduced.
+    (void)param_1;
+    (void)param_2;
+    return 1;
+}
+
 void RESFILE_build_res_file(char* path, char* file, char* tag) {
     // Stub
 }

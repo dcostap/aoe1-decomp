@@ -122,14 +122,14 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
     this->mouse_pointer = nullptr;
     this->erase_mouse = 0;
     this->mouse_blit_sync = 0;
-    this->is_mouse_on = 0;
-    this->windows_mouse = 0;
+    this->is_mouse_on = 1;
+    this->windows_mouse = 1;
     this->mouse_cursor = LoadCursorA(NULL, (LPCSTR)IDC_ARROW);
     this->font_num = 0;
     this->fonts = nullptr;
     
     GetCurrentDirectoryA(sizeof(this->work_dir), this->work_dir);
-    strcpy(this->string_dll_name, "languagex.dll");
+    strcpy(this->string_dll_name, "language.dll");
     
     this->master_obj_id = -1;
     this->terrain_id = -1;
@@ -332,12 +332,8 @@ CUSTOM_DEBUG_END
         return 0;
     }
 
-    // Load language.dll (or languagex.dll for expansion)
-    StringTable = LoadLibraryA("language.dll");
-    if (!StringTable) {
-        // Try expansion DLL name
-        StringTable = LoadLibraryA("languagex.dll");
-    }
+    // Source of truth: `basegame.cpp.decomp` loads exactly `this->string_dll_name`.
+    StringTable = LoadLibraryA(this->string_dll_name);
     if (!StringTable) {
         this->error_code = 1;
         return 0;
@@ -490,13 +486,33 @@ int RGE_Base_Game::check_for_cd(int p1) {
 }
 
 void RGE_Base_Game::mouse_on() {
-    // TODO: implement logic from 0x00420394
-    this->is_mouse_on = 1;
+    if (this->is_mouse_on == 0) {
+        if ((this->custom_mouse != 0) && (this->windows_mouse == 0)) {
+            if (this->mouse_pointer) {
+                this->mouse_pointer->on();
+            }
+            this->is_mouse_on = 1;
+            return;
+        }
+        SetCursor((HCURSOR)this->mouse_cursor);
+        SetClassLongA((HWND)this->prog_window, GCL_HCURSOR, (LONG)this->mouse_cursor);
+        this->is_mouse_on = 1;
+    }
 }
 
 void RGE_Base_Game::mouse_off() {
-    // TODO: implement logic from 0x00420404
-    this->is_mouse_on = 0;
+    if (this->is_mouse_on != 0) {
+        if ((this->custom_mouse != 0) && (this->windows_mouse == 0)) {
+            if (this->mouse_pointer) {
+                this->mouse_pointer->off();
+            }
+            this->is_mouse_on = 0;
+            return;
+        }
+        SetCursor(NULL);
+        SetClassLongA((HWND)this->prog_window, GCL_HCURSOR, 0);
+        this->is_mouse_on = 0;
+    }
 }
 int RGE_Base_Game::get_error_code() { 
     return this->error_code; 
@@ -638,39 +654,58 @@ int RGE_Base_Game::setup_main_window() {
 
     int screen_wid = GetSystemMetrics(SM_CXSCREEN);
     int screen_hgt = GetSystemMetrics(SM_CYSCREEN);
-    
-    CUSTOM_DEBUG_LOG_FMT("setup_main_window: screen=%dx%d, main=%ldx%ld", 
+
+    CUSTOM_DEBUG_LOG_FMT("setup_main_window: screen=%dx%d, main=%ldx%ld",
                          screen_wid, screen_hgt, this->prog_info->main_wid, this->prog_info->main_hgt);
-    
-    DWORD style = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
-    CUSTOM_DEBUG_LOG_FMT("setup_main_window: forced style 0x%lx", style);
-    
+
+    int wnd_w = screen_wid;
+    int wnd_h = screen_hgt;
+    DWORD style = 0x82080000;
+    if ((this->prog_info->full_screen == 0) &&
+        ((screen_wid != this->prog_info->main_wid) || (screen_hgt != this->prog_info->main_hgt))) {
+        style = 0x02CA0000;
+        wnd_w = (int)this->prog_info->main_wid;
+        wnd_h = (int)this->prog_info->main_hgt;
+    }
+
     const char* className = (char*)this->prog_info + 0x645;
     const char* windowTitle = (char*)this->prog_info + 0x7A;
-    CUSTOM_DEBUG_LOG_FMT("setup_main_window: className='%s', title='%s'", className, windowTitle);
-    
-    this->prog_window = CreateWindowExA(0, className, windowTitle, style, 
-                                        0, 0, this->prog_info->main_wid, this->prog_info->main_hgt, 
-                                        NULL, NULL, (HINSTANCE)this->prog_info->instance, this);
-                                        
+    CUSTOM_DEBUG_LOG_FMT("setup_main_window: className='%s', title='%s', style=0x%lx", className, windowTitle, style);
+
+    this->prog_window = CreateWindowExA(0, className, windowTitle, style, 0, 0, wnd_w, wnd_h, NULL, NULL,
+                                        (HINSTANCE)this->prog_info->instance, NULL);
+
     if (!this->prog_window) {
         CUSTOM_DEBUG_WIN_ERROR("CreateWindowExA");
         return 0;
     }
-    
+
     CUSTOM_DEBUG_LOG("setup_main_window: window created successfully");
 
-    // Adjust window size if not in window mode to ensure it covers the screen correctly
-    if (this->prog_info->full_screen) {
-        SetWindowPos((HWND)this->prog_window, HWND_TOP, 0, 0, this->prog_info->main_wid, this->prog_info->main_hgt, SWP_SHOWWINDOW);
+    RECT win_rect;
+    RECT client_rect;
+    GetWindowRect((HWND)this->prog_window, &win_rect);
+    GetClientRect((HWND)this->prog_window, &client_rect);
+    if (((long)client_rect.right != this->prog_info->main_wid) ||
+        ((long)client_rect.bottom != this->prog_info->main_hgt)) {
+        int non_client_w = (win_rect.right - win_rect.left) - (client_rect.right - client_rect.left);
+        int non_client_h = (win_rect.bottom - win_rect.top) - (client_rect.bottom - client_rect.top);
+        SetWindowPos((HWND)this->prog_window, NULL, win_rect.left, win_rect.top,
+                     (int)this->prog_info->main_wid + non_client_w,
+                     (int)this->prog_info->main_hgt + non_client_h, 0);
     }
-    
-    ShowWindow((HWND)this->prog_window, SW_SHOW);
-    UpdateWindow((HWND)this->prog_window);
-    SetFocus((HWND)this->prog_window);
-    
+
+    if (this->prog_info->full_screen != 0) {
+        ShowWindow((HWND)this->prog_window, this->prog_info->show_wnd_flag);
+        UpdateWindow((HWND)this->prog_window);
+        SetFocus((HWND)this->prog_window);
+    }
+
     AppWnd = (HWND)this->prog_window;
-    
+    if (panel_system) {
+        panel_system->DisableIME();
+    }
+
     return 1;
 }
 
@@ -756,24 +791,63 @@ int RGE_Base_Game::setup_mouse() {
 }
 
 void* RGE_Base_Game::create_font(void* dc, int id1, int id2) {
-    char font_name[256];
-    // id1 is resource ID for font name
-    if (!this->get_string(id1, font_name, 256)) return nullptr;
+    (void)dc;
+    // Source of truth: `basegame.cpp.asm/.decomp` (`make_font` helpers).
+    // The original reads 3 consecutive string IDs:
+    //   id     -> face name
+    //   id + 1 -> point size
+    //   id + 2 -> style marker (contains 'B'/'b' when bold)
+    char face_name[256];
+    char point_size_str[32];
+    char style[32];
+    char charset_str[32];
 
-    // id2 seems to be bold flag based on usage (case 8 passes 1)
-    int weight = id2 ? FW_BOLD : FW_NORMAL;
+    face_name[0] = '\0';
+    point_size_str[0] = '\0';
+    style[0] = '\0';
+    charset_str[0] = '\0';
 
-    // Height logic isn't clear from ASM view (might be fixed or derived). 
-    // Using a reasonable default for now (e.g. 15 for readability).
-    // In original game, different indices might imply different sizes if not passed explicitly.
-    // However, the ASM didn't show size being passed. 
-    // It's possible 'id1' (the string ID) implies the size if the string contains it, but it looked like just name.
-    int height = 15; 
-    if (id1 == 110) height = 12; // Copperplate Gothic Light
-    
-    return CreateFontA(height, 0, 0, 0, weight, 0, 0, 0, ANSI_CHARSET, 
-                       OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, 
-                       DEFAULT_PITCH | FF_DONTCARE, font_name);
+    this->get_string(id1, face_name, sizeof(face_name));
+    if (face_name[0] == '\0') return nullptr;
+    this->get_string(id1 + 1, point_size_str, sizeof(point_size_str));
+    this->get_string(id1 + 2, style, sizeof(style));
+    this->get_string(0x65, charset_str, sizeof(charset_str)); // language.dll: "1"
+
+    const int point_size = atoi(point_size_str);
+    if (point_size <= 0) return nullptr;
+
+    int weight = 400;
+    if (strstr(style, "B") || strstr(style, "b")) {
+        weight = 700;
+    }
+
+    LOGFONTA lf;
+    memset(&lf, 0, sizeof(lf));
+    // Source of truth: `make_font` uses current DC vertical DPI (LOGPIXELSY).
+    int log_pixels_y = 96;
+    if (dc) {
+        const int dpi = GetDeviceCaps((HDC)dc, LOGPIXELSY);
+        if (dpi > 0) log_pixels_y = dpi;
+    }
+    lf.lfHeight = -MulDiv(point_size, log_pixels_y, 72);
+    lf.lfWidth = 0;
+    lf.lfEscapement = 0;
+    lf.lfOrientation = 0;
+    lf.lfWeight = weight;
+    lf.lfItalic = 0;
+    lf.lfUnderline = 0;
+    // NOTE: `id2` is the final arg in original `make_font(..., param_5)` and maps to
+    // `LOGFONT::lfStrikeOut` in the assembly write sequence.
+    lf.lfStrikeOut = (BYTE)(id2 ? 1 : 0);
+    lf.lfCharSet = (BYTE)atoi(charset_str);
+    lf.lfOutPrecision = 0;
+    lf.lfClipPrecision = 0;
+    lf.lfQuality = 2;
+    lf.lfPitchAndFamily = 2;
+    strncpy(lf.lfFaceName, face_name, LF_FACESIZE - 1);
+    lf.lfFaceName[LF_FACESIZE - 1] = '\0';
+
+    return CreateFontIndirectA(&lf);
 }
 
 int RGE_Base_Game::setup_fonts() {
@@ -781,7 +855,14 @@ int RGE_Base_Game::setup_fonts() {
     if (!this->fonts) return 0;
     this->font_num = 12;
 
-    HDC hdc = GetDC((HWND)this->prog_window); 
+    HDC hdc = nullptr;
+    int use_draw_area_dc = 0;
+    if (this->draw_area) {
+        hdc = (HDC)this->draw_area->GetDc((char*)"basegame::setup_fonts");
+        if (hdc) use_draw_area_dc = 1;
+    }
+    if (!hdc) hdc = GetDC((HWND)this->prog_window);
+    if (!hdc) return 0;
     
     for (int i = 0; i < 12; i++) {
         int id1 = 0;
@@ -808,17 +889,20 @@ int RGE_Base_Game::setup_fonts() {
         this->fonts[i].font = this->create_font(hdc, id1, id2);
         
         if (this->fonts[i].font) {
-            SelectObject(hdc, (HFONT)this->fonts[i].font);
+            HGDIOBJ old_font = SelectObject(hdc, (HFONT)this->fonts[i].font);
             TEXTMETRICA tm;
             GetTextMetricsA(hdc, &tm);
-            this->fonts[i].font_wid = tm.tmAveCharWidth;
-            // Combining logic from ASM: add descent? or external leading? 
-            // Going with Height + ExternalLeading as a safe bet for line spacing
+            // Source of truth note: `basegame.cpp.decomp` points at `tmMaxCharWidth` for width.
+            this->fonts[i].font_wid = tm.tmMaxCharWidth;
+            // TODO(asm-parity): field mapping in the decomp is noisy here; this line-height formula
+            // may still differ from original and can be revisited with tighter stack-var mapping.
             this->fonts[i].font_hgt = tm.tmHeight + tm.tmExternalLeading;
+            if (old_font) SelectObject(hdc, old_font);
         }
     }
 
-    ReleaseDC((HWND)this->prog_window, hdc);
+    if (use_draw_area_dc) this->draw_area->ReleaseDc((char*)"basegame::setup_fonts");
+    else ReleaseDC((HWND)this->prog_window, hdc);
     return 1;
 }
 
@@ -949,6 +1033,15 @@ RGE_Font* RGE_Base_Game::get_font(int index) {
         return &this->fonts[index];
     }
     return nullptr;
+}
+
+TDigital* RGE_Base_Game::get_sound(int index) {
+    // Source of truth: `src/game/src/basegame.cpp.decomp` (`RGE_Base_Game::get_sound`).
+    // The original only checks for null `sounds` and then indexes directly.
+    if (!this->sounds) {
+        return nullptr;
+    }
+    return this->sounds[index];
 }
 
 unsigned long RGE_Base_Game::get_last_max_time() {

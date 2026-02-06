@@ -56,7 +56,8 @@ public:
 
     // Source of truth: `src/game/src/Panel_ez.cpp.asm` / `.decomp` call sites use `shape_minmax` to
     // query bounds for centering/tiling.
-    void shape_minmax(long* x_min, long* y_min, long* x_max, long* y_max, int shape_idx);
+    unsigned char shape_minmax(long* x_min, long* y_min, long* x_max, long* y_max, int shape_idx);
+    unsigned char shape_check(long x, long y, long shape_idx);
     
     unsigned char shape_draw(TDrawArea* param_1, long param_2, long param_3, long param_4, long param_5, unsigned char param_6, unsigned char* param_7);
     
