@@ -7,6 +7,7 @@
 #include "../include/RGE_Scenario_File_Entry.h"
 #include "../include/RGE_Scenario_Header.h"
 #include "../include/TTextPanel.h"
+#include "../include/TPanelSystem.h"
 #include "../include/globals.h"
 
 #include <stdio.h>
@@ -268,6 +269,19 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen() : TScreenPanel((char*)"Se
 }
 
 TribeSelectScenarioScreen::~TribeSelectScenarioScreen() {
+    // Source of truth: Scr_sels.cpp.decomp @ 0x004B4190
+    // Delete all child panels before base destructor runs
+    this->delete_panel((TPanel**)&this->title);
+    this->delete_panel((TPanel**)&this->scenarioTitle);
+    this->delete_panel((TPanel**)&this->scenarioPlayersTitle);
+    this->delete_panel((TPanel**)&this->scenarioList);
+    this->delete_panel((TPanel**)&this->scenarioScrollbar);
+    this->delete_panel((TPanel**)&this->missionTitle);
+    this->delete_panel((TPanel**)&this->missionText);
+    this->delete_panel((TPanel**)&this->missionScrollbar);
+    this->delete_panel((TPanel**)&this->okButton);
+    this->delete_panel((TPanel**)&this->cancelButton);
+    this->delete_panel((TPanel**)&this->close_button);
     sels_free_cached_scenarios(this);
 }
 
@@ -287,14 +301,17 @@ long TribeSelectScenarioScreen::handle_idle() {
 }
 
 long TribeSelectScenarioScreen::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
-    if (param_1 && param_2 == 1) {
-        if ((TButtonPanel*)param_1 == this->okButton) {
+    // Source of truth: scr_sels.cpp.decomp @ 0x004B42E0
+    if (param_1 && this->scenariosLoaded != 0) {
+        if ((TButtonPanel*)param_1 == this->okButton && param_2 == 1) {
+            this->set_curr_child((TPanel*)this->scenarioList);
             sels_send_settings(this);
             rge_base_game->disable_input();
 
             TribeMPSetupScreen* setup = new TribeMPSetupScreen();
             if (setup && setup->error_code == 0) {
-                tribe_queue_screen_switch(setup);
+                panel_system->setCurrentPanel((TPanel*)setup, 0);
+                panel_system->destroyPanel("Select_Scenario_Screen");
             } else {
                 if (setup) delete setup;
                 sels_enable_input();
@@ -302,12 +319,14 @@ long TribeSelectScenarioScreen::action(TPanel* param_1, long param_2, ulong para
             return 1;
         }
 
-        if ((TButtonPanel*)param_1 == this->cancelButton) {
+        if ((TButtonPanel*)param_1 == this->cancelButton && param_2 == 1) {
+            this->set_curr_child((TPanel*)this->scenarioList);
             rge_base_game->disable_input();
 
             TribeSPMenuScreen* menu = new TribeSPMenuScreen();
             if (menu && menu->error_code == 0) {
-                tribe_queue_screen_switch(menu);
+                panel_system->setCurrentPanel((TPanel*)menu, 0);
+                panel_system->destroyPanel("Select_Scenario_Screen");
             } else {
                 if (menu) delete menu;
                 sels_enable_input();
@@ -315,9 +334,23 @@ long TribeSelectScenarioScreen::action(TPanel* param_1, long param_2, ulong para
             return 1;
         }
 
-        if ((TButtonPanel*)param_1 == this->close_button) {
+        if ((TButtonPanel*)param_1 == this->close_button && param_2 == 1) {
             rge_base_game->close();
             return 1;
+        }
+
+        // Handle scenario list interactions
+        if ((TListPanel*)param_1 == this->scenarioList) {
+            if (param_2 == 3) {
+                // Double-click triggers OK action
+                return this->action((TPanel*)this->okButton, 1, 0, 0);
+            }
+            if (param_2 == 1) {
+                // Single click updates mission text
+                sels_set_mission_text(this);
+                sels_activate_panels(this);
+                return 1;
+            }
         }
     }
 

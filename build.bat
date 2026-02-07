@@ -1,5 +1,5 @@
 @echo off
-setlocal
+setlocal EnableExtensions
 
 REM ============================================================================
 REM Age of Empires 1 Decompilation - Build Script
@@ -21,16 +21,29 @@ set "INC_DIR=src\game\include"
 set "OBJ_DIR=build"
 set "OUT_DIR=dist"
 
-REM --- Setup VS Environment (only if not already set) ---
-if not defined DevEnvDir (
-    echo Setting up VS 2022 x86 environment...
-    call "%VC_VARS%" x86
-    if %errorlevel% neq 0 (
-        echo Failed to setup environment!
-        popd
-        exit /b %errorlevel%
-    )
+REM --- Setup VS Environment (only if required tools are not already available) ---
+where cl >nul 2>nul
+set "HAS_CL=%errorlevel%"
+where rc >nul 2>nul
+set "HAS_RC=%errorlevel%"
+
+if "%HAS_CL%"=="0" if "%HAS_RC%"=="0" goto :have_vs_env
+
+echo Setting up VS 2022 x86 environment...
+if not exist "%VC_VARS%" (
+    echo Failed to setup environment: vcvarsall.bat not found!
+    echo Expected at: "%VC_VARS%"
+    popd
+    exit /b 1
 )
+call "%VC_VARS%" x86
+if %errorlevel% neq 0 (
+    echo Failed to setup environment!
+    popd
+    exit /b %errorlevel%
+)
+
+:have_vs_env
 
 REM --- Create directories ---
 if not exist "%OBJ_DIR%" mkdir "%OBJ_DIR%"
@@ -92,6 +105,10 @@ cl /nologo /EHsc /std:c++17 /MDd /D_DEBUG /DWIN32 /D_X86_ ^
    %SRC_DIR%\TButtonPanel.cpp ^
    %SRC_DIR%\TTextPanel.cpp ^
    %SRC_DIR%\Panel_ez.cpp ^
+   %SRC_DIR%\Pnl_drop.cpp ^
+   %SRC_DIR%\Pnl_drop_btn.cpp ^
+   %SRC_DIR%\Pnl_lst.cpp ^
+   %SRC_DIR%\Pnl_sbar.cpp ^
    %SRC_DIR%\Pnl_scr.cpp ^
    %SRC_DIR%\Scr_main_impl.cpp ^
    %SRC_DIR%\Scr_sing_impl.cpp ^

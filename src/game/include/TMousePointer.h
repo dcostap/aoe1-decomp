@@ -8,6 +8,8 @@ struct TMousePointer {
     void off();
     void set_facet(int facet_index);
     void set_game_facet(int facet_index);
+    void set_game_enable(int enabled);
+    int get_game_enable();
     
     // Helper methods
     int LoadCursors(char* filename, int file_id, int reload);

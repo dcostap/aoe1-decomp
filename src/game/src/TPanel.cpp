@@ -2,10 +2,191 @@
 #include "../include/RGE_Base_Game.h"
 #include "../include/TDrawArea.h"
 #include "../include/TDrawSystem.h"
+#include "../include/debug_helpers.h"
+#include "../include/globals.h"
 #include "../include/custom_debug.h"
 #include <string.h>
 
 extern RGE_Base_Game* rge_base_game;
+
+static long panel_abs_long(long value) {
+    return (value < 0) ? -value : value;
+}
+
+static void panel_get_mouse_info(uint wparam, long lparam, long* out_x, long* out_y, int* out_ctrl, int* out_shift) {
+    if (out_x) {
+        uint ux = (uint)lparam & 0xFFFFu;
+        long x = (long)ux;
+        if (ux > 60000u) {
+            x = (long)(ux - 0x10000u);
+        }
+        *out_x = x;
+    }
+    if (out_y) {
+        uint uy = ((uint)lparam >> 16) & 0xFFFFu;
+        long y = (long)uy;
+        if (uy > 60000u) {
+            y = (long)(uy - 0x10000u);
+        }
+        *out_y = y;
+    }
+    if (out_ctrl) {
+        *out_ctrl = (int)(wparam & 0x8u);
+    }
+    if (out_shift) {
+        *out_shift = (int)(wparam & 0x4u);
+    }
+}
+
+static void panel_add_node(TPanel* owner, PanelNode* node, PanelNode* anchor, int add_after) {
+    if (!owner || !node) {
+        return;
+    }
+
+    if (anchor == nullptr) {
+        PanelNode* tail = owner->first_child_node;
+        if (tail == nullptr) {
+            node->prev_node = nullptr;
+            node->next_node = nullptr;
+        } else {
+            for (PanelNode* next = tail->next_node; next != nullptr; next = next->next_node) {
+                tail = next;
+            }
+            tail->next_node = node;
+            node->prev_node = tail;
+            node->next_node = nullptr;
+        }
+    } else if (add_after == 0) {
+        PanelNode* prev = anchor->prev_node;
+        node->next_node = anchor;
+        node->prev_node = prev;
+        anchor->prev_node = node;
+        if (node->prev_node != nullptr) {
+            node->prev_node->next_node = node;
+        }
+    } else {
+        node->prev_node = anchor;
+        node->next_node = anchor->next_node;
+        anchor->next_node = node;
+        if (node->next_node != nullptr) {
+            node->next_node->prev_node = node;
+        }
+    }
+
+    if (node->prev_node == nullptr) {
+        owner->first_child_node = node;
+    }
+    if (node->next_node == nullptr) {
+        owner->last_child_node = node;
+    }
+}
+
+static void panel_remove_node(TPanel* owner, PanelNode* node) {
+    if (!owner || !node) {
+        return;
+    }
+
+    if (node == owner->first_child_node) {
+        owner->first_child_node = node->next_node;
+    }
+    if (node == owner->last_child_node) {
+        owner->last_child_node = node->prev_node;
+    }
+    if (node->prev_node != nullptr) {
+        node->prev_node->next_node = node->next_node;
+    }
+    if (node->next_node != nullptr) {
+        node->next_node->prev_node = node->prev_node;
+    }
+
+    node->prev_node = nullptr;
+    node->next_node = nullptr;
+
+    if (owner->curr_child == node->panel) {
+        owner->curr_child = nullptr;
+    }
+}
+
+static void panel_set_child_z_order(TPanel* owner, TPanel* child, unsigned char mode, short requested_z) {
+    if (!owner || !child) {
+        return;
+    }
+
+    if (mode == '\0') {
+        PanelNode* n = owner->first_child_node;
+        bool has_requested = false;
+        if (n != nullptr) {
+            for (PanelNode* it = n; it != nullptr; it = it->next_node) {
+                if (it->panel->z_order == (int)requested_z) {
+                    has_requested = true;
+                    break;
+                }
+            }
+        }
+
+        if (has_requested && n != nullptr) {
+            do {
+                int z = n->panel->z_order;
+                if ((int)requested_z <= z) {
+                    n->panel->z_order = z + 1;
+                }
+                n = n->next_node;
+            } while (n != nullptr);
+        }
+
+        child->z_order = (int)requested_z;
+    } else if (mode == '\x01') {
+        short max_z = 0;
+        for (PanelNode* n = owner->first_child_node; n != nullptr; n = n->next_node) {
+            TPanel* p = n->panel;
+            if (p != child && (int)max_z < p->z_order) {
+                max_z = (short)p->z_order;
+            }
+        }
+        child->z_order = (int)(max_z + 1);
+    } else if (mode == '\x02') {
+        short min_z = 0;
+        for (PanelNode* n = owner->first_child_node; n != nullptr; n = n->next_node) {
+            TPanel* p = n->panel;
+            if (p != child && p->z_order < (int)min_z) {
+                min_z = (short)p->z_order;
+            }
+        }
+        child->z_order = (int)(min_z - 1);
+    }
+
+    PanelNode* found = nullptr;
+    TPanel* saved_curr_child = owner->curr_child;
+    owner->curr_child = nullptr;
+
+    for (PanelNode* n = owner->first_child_node; n != nullptr; n = n->next_node) {
+        if (n->panel == child) {
+            panel_remove_node(owner, n);
+            found = n;
+            break;
+        }
+    }
+
+    if (found != nullptr) {
+        PanelNode* n = owner->first_child_node;
+        bool inserted = false;
+        if (n != nullptr) {
+            do {
+                if (child->z_order < n->panel->z_order) {
+                    panel_add_node(owner, found, n, 0);
+                    inserted = true;
+                    break;
+                }
+                n = n->next_node;
+            } while (n != nullptr);
+        }
+        if (!inserted) {
+            panel_add_node(owner, found, owner->last_child_node, 1);
+        }
+    }
+
+    owner->curr_child = saved_curr_child;
+}
 
 TPanel::TPanel(char* name) {
     memset((unsigned char*)this + 4, 0, sizeof(TPanel) - 4); // Keep vtable intact; initialize data fields.
@@ -138,12 +319,46 @@ void TPanel::set_active(int param_1) {
         return;
     }
 
-    // NOTE: `TPanel::release_mouse` is not reimplemented in this branch yet.
-    this->mouse_captured = 0;
+    this->release_mouse();
     if (this->parent_panel) this->parent_panel->set_redraw(TPanel::RedrawMode::Redraw);
 }
-void TPanel::set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) {}
-void TPanel::set_fixed_position(long param_1, long param_2, long param_3, long param_4) {}
+void TPanel::set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10, TPanel* param_11, TPanel* param_12, TPanel* param_13) {
+    // Source of truth: `panel.cpp.decomp` (`TPanel::set_positioning`).
+    this->position_mode = param_1;
+    this->right_border = param_4;
+    this->max_wid = param_7;
+    this->left_border = param_2;
+    this->top_border = param_3;
+    this->left_panel = param_10;
+    this->bottom_border = param_5;
+    this->min_wid = param_6;
+    this->bottom_panel = param_13;
+    this->min_hgt = param_8;
+    this->max_hgt = param_9;
+    this->top_panel = param_11;
+    this->right_panel = param_12;
+
+    long calc_w = 0;
+    long calc_h = 0;
+    if (this->render_area) {
+        calc_w = this->render_area->Width;
+        calc_h = this->render_area->Height;
+    }
+
+    this->handle_size(calc_w, calc_h);
+    if (this->active) {
+        this->set_redraw(TPanel::RedrawMode::RedrawFull);
+    }
+}
+
+void TPanel::set_fixed_position(long param_1, long param_2, long param_3, long param_4) {
+    // Source of truth: `panel.cpp.decomp` (`TPanel::set_fixed_position`).
+    this->set_positioning(
+        TPanel::PositionMode::Fixed,
+        param_1, param_2, 0, 0,
+        param_3, param_3, param_4, param_4,
+        nullptr, nullptr, nullptr, nullptr);
+}
 void TPanel::set_redraw(RedrawMode param_1) {
     // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::set_redraw`).
     if (param_1 == NoRedraw) {
@@ -240,87 +455,498 @@ void TPanel::paint() {
     // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::paint`).
     if (!this->render_area || !this->visible || !this->active) return;
     if (this->render_area->DrawSystem) {
-        this->render_area->DrawSystem->Paint((tagRECT*)0);
+        this->render_area->DrawSystem->Paint((tagRECT*)&this->clip_rect);
     }
     if (this->render_area->Wnd) {
         ValidateRect((HWND)this->render_area->Wnd, (RECT*)&this->clip_rect);
     }
 }
-long TPanel::wnd_proc(void* param_1, uint param_2, uint param_3, long param_4) {
-    if (!this->active || !this->visible) return 0;
-
-    switch (param_2) {
-        case WM_MOUSEMOVE:
-            return this->handle_mouse_move(LOWORD(param_4), HIWORD(param_4), (int)param_3, 0);
-        case WM_LBUTTONDOWN:
-            return this->handle_mouse_down(1, LOWORD(param_4), HIWORD(param_4), (int)param_3, 0);
-        case WM_LBUTTONUP:
-            return this->handle_mouse_up(1, LOWORD(param_4), HIWORD(param_4), (int)param_3, 0);
-        case WM_RBUTTONDOWN:
-            return this->handle_mouse_down(2, LOWORD(param_4), HIWORD(param_4), (int)param_3, 0);
-        case WM_RBUTTONUP:
-            return this->handle_mouse_up(2, LOWORD(param_4), HIWORD(param_4), (int)param_3, 0);
-        case WM_KEYDOWN:
-            return this->handle_key_down(param_3, 0, 0, 0, 0);
-        case WM_CHAR:
-            return this->handle_char(param_3, 0);
+long TPanel::wnd_proc(void* hwnd, uint msg, uint wparam, long lparam) {
+    // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::wnd_proc` @ 0x004653E0).
+    if (!this->active) {
+        return 0;
     }
+
+    if (msg < 0x207) {
+        if (msg >= 0x200) {
+            // Mouse path: WM_MOUSEMOVE..WM_RBUTTONDBLCLK
+            if (!this->render_area || hwnd != this->render_area->Wnd) {
+                return 0;
+            }
+            if (!panel_system || panel_system->InputEnabled == 0) {
+                return 0;
+            }
+
+            long x = 0;
+            long y = 0;
+            int ctrl = 0;
+            int shift = 0;
+            panel_get_mouse_info(wparam, lparam, &x, &y, &ctrl, &shift);
+
+            TPanel* target = this;
+            if (panel_system->mouseOwnerValue != nullptr) {
+                target = panel_system->mouseOwnerValue;
+            } else if (panel_system->keyboardOwnerValue != nullptr) {
+                target = panel_system->keyboardOwnerValue;
+            } else if (panel_system->modalPanelValue != nullptr) {
+                target = panel_system->modalPanelValue;
+            }
+
+            switch (msg) {
+            case WM_MOUSEMOVE:
+                return target->handle_mouse_move(x, y, ctrl, shift);
+            case WM_LBUTTONDOWN:
+                return target->handle_mouse_down(1, x, y, ctrl, shift);
+            case WM_LBUTTONUP:
+                return target->handle_mouse_up(1, x, y, ctrl, shift);
+            case WM_LBUTTONDBLCLK:
+                return target->handle_mouse_dbl_click(1, x, y, ctrl, shift);
+            case WM_RBUTTONDOWN:
+                return target->handle_mouse_down(2, x, y, ctrl, shift);
+            case WM_RBUTTONUP:
+                return target->handle_mouse_up(2, x, y, ctrl, shift);
+            case WM_RBUTTONDBLCLK:
+                return target->handle_mouse_dbl_click(2, x, y, ctrl, shift);
+            default:
+                break;
+            }
+        } else {
+            // Keyboard path: WM_KEYDOWN / WM_CHAR / WM_SYSKEYDOWN
+            if ((msg == WM_KEYDOWN || msg == WM_CHAR || msg == WM_SYSKEYDOWN) &&
+                this->render_area && hwnd == this->render_area->Wnd &&
+                panel_system && panel_system->InputEnabled != 0) {
+                TPanel* target = this;
+                if (panel_system->keyboardOwnerValue != nullptr) {
+                    target = panel_system->keyboardOwnerValue;
+                } else if (panel_system->modalPanelValue != nullptr) {
+                    target = panel_system->modalPanelValue;
+                }
+
+                if (msg == WM_CHAR) {
+                    return target->handle_char((long)wparam, (short)lparam);
+                }
+
+                short alt_down = GetKeyState(VK_MENU);
+                short ctrl_down = GetKeyState(VK_CONTROL);
+                short shift_down = GetKeyState(VK_SHIFT);
+                return target->handle_key_down((long)wparam, (short)lparam,
+                                               (alt_down < 0) ? 1 : 0,
+                                               (ctrl_down < 0) ? 1 : 0,
+                                               (shift_down < 0) ? 1 : 0);
+            }
+        }
+    }
+
+    // Non-input messages: children first (reverse z-order), then this panel.
+    for (PanelNode* curr = this->last_child_node; curr != nullptr; curr = curr->prev_node) {
+        if (!curr->panel) {
+            continue;
+        }
+        long child_res = curr->panel->wnd_proc(hwnd, msg, wparam, lparam);
+        if (child_res != 0) {
+            return child_res;
+        }
+    }
+
+    if (msg < 0x401) {
+        if (msg == WM_USER) {
+            return this->handle_user_command(wparam, lparam);
+        }
+        switch (msg) {
+        case WM_COMMAND:
+            return this->handle_command(wparam, lparam);
+        case WM_TIMER:
+            return this->handle_timer_command(wparam, lparam);
+        case WM_HSCROLL:
+        case WM_VSCROLL:
+            return this->handle_scroll((long)(wparam & 0xFFFFu), (long)((wparam >> 16) & 0xFFFFu));
+        default:
+            break;
+        }
+    }
+
     return 0;
 }
 
 long TPanel::handle_mouse_move(long x, long y, int wparam, int param_4) {
-    PanelNode* curr = this->last_child_node;
-    while (curr) {
-        if (curr->panel && curr->panel->active && curr->panel->visible) {
-            if (curr->panel->is_inside(x, y)) {
-                if (curr->panel->handle_mouse_move(x, y, wparam, param_4)) return 1;
+    if (!this->active) {
+        return 0;
+    }
+
+    if (!this->mouse_captured) {
+        if (!this->is_inside(x, y)) {
+            return 0;
+        }
+
+        for (PanelNode* curr = this->last_child_node; curr; curr = curr->prev_node) {
+            if (!curr->panel) {
+                continue;
+            }
+            long child_res = curr->panel->handle_mouse_move(x, y, wparam, param_4);
+            if (child_res != 0) {
+                return child_res;
             }
         }
-        curr = curr->prev_node;
+
+        if (!this->handle_mouse_input) {
+            return 0;
+        }
+
+        return this->mouse_move_action(x, y, wparam, param_4);
     }
-    return this->mouse_move_action(x, y, wparam, param_4);
+
+    if (!this->handle_mouse_input) {
+        return 0;
+    }
+
+    if (this->mouse_action == 1 || this->mouse_action == 2) {
+        if (this->mouse_down_button == 1) {
+            if (panel_abs_long(x - this->mouse_down_x) <= this->mouse_move_tolerance &&
+                panel_abs_long(y - this->mouse_down_y) <= this->mouse_move_tolerance) {
+                return 1;
+            }
+        } else {
+            if (panel_abs_long(x - this->mouse_down_x) <= 10 &&
+                panel_abs_long(y - this->mouse_down_y) <= 10) {
+                return 1;
+            }
+        }
+    }
+
+    this->mouse_action = 3;
+
+    if (this->mouse_down_button == 1) {
+        this->mouse_left_move_action(x, y, wparam, param_4);
+        return 1;
+    }
+
+    if (this->mouse_down_button == 2) {
+        this->mouse_right_move_action(x, y, wparam, param_4);
+        return 1;
+    }
+
+    this->mouse_move_action(x, y, wparam, param_4);
+    return 1;
 }
 
 long TPanel::handle_mouse_down(uchar button, long x, long y, int wparam, int param_5) {
-    PanelNode* curr = this->last_child_node;
-    while (curr) {
-        if (curr->panel && curr->panel->active && curr->panel->visible) {
-            if (curr->panel->is_inside(x, y)) {
-                if (curr->panel->handle_mouse_down(button, x, y, wparam, param_5)) return 1;
+    if (!this->active) {
+        return 0;
+    }
+
+    if (!this->mouse_captured) {
+        if (!this->is_inside(x, y)) {
+            return 0;
+        }
+
+        for (PanelNode* curr = this->last_child_node; curr; curr = curr->prev_node) {
+            if (!curr->panel) {
+                continue;
+            }
+            long child_res = curr->panel->handle_mouse_down(button, x, y, wparam, param_5);
+            if (child_res != 0) {
+                return child_res;
             }
         }
-        curr = curr->prev_node;
+
+        if (!this->handle_mouse_input) {
+            return 0;
+        }
+
+        this->mouse_down_button = button;
+        this->mouse_down_x = x;
+        this->mouse_down_y = y;
+        this->mouse_down_ctrl = wparam;
+        this->mouse_down_shift = param_5;
+        this->mouse_down_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Panel.cpp", 0x72c);
+        this->mouse_action = 1;
+
+        if (this->tab_stop && this->parent_panel && this->mouse_down_button == 1) {
+            this->parent_panel->set_curr_child(this);
+        }
     }
-    if (button == 1) return this->mouse_left_down_action(x, y, wparam, param_5);
-    if (button == 2) return this->mouse_right_down_action(x, y, wparam, param_5);
-    return 0;
+
+    if (!this->handle_mouse_input) {
+        return 0;
+    }
+
+    if (this->mouse_down_button == 1) {
+        this->mouse_left_down_action(x, y, wparam, param_5);
+    } else {
+        this->mouse_right_down_action(x, y, wparam, param_5);
+    }
+    return 1;
 }
 
 long TPanel::handle_mouse_up(uchar button, long x, long y, int wparam, int param_5) {
-    PanelNode* curr = this->last_child_node;
-    while (curr) {
-        if (curr->panel && curr->panel->active && curr->panel->visible) {
-            if (curr->panel->is_inside(x, y)) {
-                if (curr->panel->handle_mouse_up(button, x, y, wparam, param_5)) return 1;
+    if (!this->active) {
+        return 0;
+    }
+
+    if (!this->mouse_captured) {
+        if (!this->is_inside(x, y)) {
+            return 0;
+        }
+
+        for (PanelNode* curr = this->last_child_node; curr; curr = curr->prev_node) {
+            if (!curr->panel) {
+                continue;
+            }
+            long child_res = curr->panel->handle_mouse_up(button, x, y, wparam, param_5);
+            if (child_res != 0) {
+                return child_res;
             }
         }
-        curr = curr->prev_node;
+
+        return 0;
     }
-    if (button == 1) return this->mouse_left_up_action(x, y, wparam, param_5);
-    if (button == 2) return this->mouse_right_up_action(x, y, wparam, param_5);
-    return 0;
+
+    if (!this->handle_mouse_input) {
+        return 0;
+    }
+
+    long action_res;
+    if (this->mouse_down_button == 1) {
+        action_res = this->mouse_left_up_action(x, y, wparam, param_5);
+    } else {
+        action_res = this->mouse_right_up_action(x, y, wparam, param_5);
+    }
+
+    if (action_res != 0) {
+        return 0;
+    }
+
+    if (button == this->mouse_down_button) {
+        this->mouse_down_button = 0;
+        this->mouse_action = 0;
+    }
+
+    return 1;
 }
 
-long TPanel::handle_idle() { return 0; }
-long TPanel::handle_size(long param_1, long param_2) { return 0; }
+long TPanel::handle_idle() {
+    // Source of truth: `panel.cpp.decomp` (`TPanel::handle_idle`).
+    // We keep the original hold-transition behavior because button/list panels depend on it.
+    if (this->active && this->mouse_action == 1) {
+        ulong now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Panel.cpp", 0x5fd);
+        if (this->mouse_hold_interval <= (long)(now - this->mouse_down_time)) {
+            this->mouse_action = 2;
+            if (this->mouse_down_button == 1) {
+                this->mouse_left_hold_action(this->mouse_down_x, this->mouse_down_y, this->mouse_down_ctrl, this->mouse_down_shift);
+            } else {
+                this->mouse_right_hold_action(this->mouse_down_x, this->mouse_down_y, this->mouse_down_ctrl, this->mouse_down_shift);
+            }
+        }
+    }
+
+    for (PanelNode* curr = this->last_child_node; curr; curr = curr->prev_node) {
+        if (!curr->panel) {
+            continue;
+        }
+        long child_res = curr->panel->handle_idle();
+        if (child_res != 0) {
+            return child_res;
+        }
+    }
+
+    return 0;
+}
+long TPanel::handle_size(long param_1, long param_2) {
+    // Source of truth: `panel.cpp.asm/.decomp` (`TPanel::handle_size`).
+    // Numeric mode values used by the original layout logic:
+    //   0 = fixed, 2 = centered, 3/7/8 = left-anchored width clamp, 4/7/9 = top-anchored height clamp.
+    const int MODE_FIXED = 0;
+    const int MODE_CENTERED = 2;
+    const int MODE_LEFT = 3;
+    const int MODE_TOP = 4;
+    const int MODE_LEFT_TOP = 7;
+    const int MODE_LEFT_BOTTOM = 8;
+    const int MODE_RIGHT_TOP = 9;
+
+    long parent_left;
+    long parent_top;
+    long right;
+    long bottom;
+
+    if (this->parent_panel) {
+        parent_left = this->parent_panel->render_rect.left;
+        parent_top = this->parent_panel->render_rect.top;
+        right = this->parent_panel->render_rect.right;
+        bottom = this->parent_panel->render_rect.bottom;
+        param_1 = (right - parent_left) + 1;
+        param_2 = (bottom - parent_top) + 1;
+    } else {
+        parent_left = 0;
+        parent_top = 0;
+        right = param_1 - 1;
+        bottom = param_2 - 1;
+    }
+
+    long calc_x = 0;
+    long calc_y = 0;
+    long calc_bottom_span = 0;
+
+    if ((int)this->position_mode == MODE_FIXED) {
+        calc_bottom_span = this->min_hgt;
+        calc_x = this->left_border + parent_left;
+        calc_y = this->top_border + parent_top;
+        right = calc_x + this->min_wid - 1;
+    } else {
+        if (this->left_panel && this->left_panel->active) {
+            calc_x = this->left_border + this->left_panel->render_rect.right + 1;
+        } else {
+            calc_x = this->left_border + parent_left;
+        }
+
+        if (this->top_panel && this->top_panel->active) {
+            calc_y = this->top_border + this->top_panel->render_rect.bottom + 1;
+        } else {
+            calc_y = this->top_border + parent_top;
+        }
+
+        if (this->right_panel && this->right_panel->active) {
+            right = this->right_panel->render_rect.left - this->right_border - 1;
+        } else {
+            right -= this->right_border;
+        }
+
+        if (this->bottom_panel && this->bottom_panel->active) {
+            bottom = this->bottom_panel->render_rect.top - this->bottom_border - 1;
+        } else {
+            bottom -= this->bottom_border;
+        }
+
+        long calc_w = (right - calc_x) + 1;
+        long calc_h = (bottom - calc_y) + 1;
+        calc_bottom_span = calc_h;
+
+        if (this->min_wid != 0 && calc_w < this->min_wid) {
+            right = calc_x + this->min_wid - 1;
+        } else if (this->max_wid != 0 && calc_w > this->max_wid) {
+            const int pm = (int)this->position_mode;
+            if (pm == MODE_LEFT || pm == MODE_LEFT_TOP || pm == MODE_LEFT_BOTTOM) {
+                right = calc_x + this->max_wid - 1;
+            } else {
+                calc_x = right - this->max_wid + 1;
+            }
+        }
+
+        if (this->min_hgt != 0 && calc_h < this->min_hgt) {
+            bottom = calc_y + this->min_hgt - 1;
+            calc_bottom_span = this->min_hgt;
+        } else if (this->max_hgt != 0 && calc_h > this->max_hgt) {
+            const int pm = (int)this->position_mode;
+            if (pm == MODE_TOP || pm == MODE_LEFT_TOP || pm == MODE_RIGHT_TOP) {
+                bottom = calc_y + this->max_hgt - 1;
+            } else {
+                calc_y = bottom - this->max_hgt + 1;
+            }
+            calc_bottom_span = this->max_hgt;
+        }
+
+        if ((int)this->position_mode == MODE_CENTERED) {
+            long width = (right - calc_x) + 1;
+            long height = (bottom - calc_y) + 1;
+            calc_bottom_span = height;
+
+            if (width == param_1) {
+                calc_x = 0;
+            } else {
+                calc_x = (param_1 / 2) - (width / 2);
+            }
+            right = calc_x + width - 1;
+
+            if (height == param_2) {
+                calc_y = 0;
+            } else {
+                calc_y = (param_2 / 2) - (height / 2);
+            }
+        }
+    }
+
+    bottom = calc_y + calc_bottom_span - 1;
+
+    tagRECT rect;
+    rect.left = calc_x;
+    rect.top = calc_y;
+    rect.right = right;
+    rect.bottom = bottom;
+    this->set_rect(rect);
+
+    // Original code runs child layout passes twice.
+    for (int pass = 0; pass < 2; ++pass) {
+        for (PanelNode* n = this->first_child_node; n; n = n->next_node) {
+            long rc = n->panel->handle_size(param_1, param_2);
+            if (rc != 0) {
+                return rc;
+            }
+        }
+    }
+
+    return 0;
+}
 long TPanel::handle_paint() { return 0; }
-long TPanel::handle_key_down(long param_1, short param_2, int param_3, int param_4, int param_5) { return 0; }
-long TPanel::handle_char(long param_1, short param_2) { return 0; }
+long TPanel::handle_key_down(long param_1, short param_2, int param_3, int param_4, int param_5) {
+    if (this->curr_child && this->curr_child->active && this->curr_child->visible) {
+        if (this->curr_child->handle_key_down(param_1, param_2, param_3, param_4, param_5)) {
+            return 1;
+        }
+    }
+    return this->key_down_action(param_1, param_2, param_3, param_4, param_5);
+}
+long TPanel::handle_char(long param_1, short param_2) {
+    if (this->curr_child && this->curr_child->active && this->curr_child->visible) {
+        if (this->curr_child->handle_char(param_1, param_2)) {
+            return 1;
+        }
+    }
+    return this->char_action(param_1, param_2);
+}
 long TPanel::handle_command(uint param_1, long param_2) { return 0; }
 long TPanel::handle_user_command(uint param_1, long param_2) { return 0; }
 long TPanel::handle_timer_command(uint param_1, long param_2) { return 0; }
 long TPanel::handle_scroll(long param_1, long param_2) { return 0; }
-long TPanel::handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return 0; }
+long TPanel::handle_mouse_dbl_click(uchar button, long x, long y, int wparam, int param_5) {
+    if (!this->active) {
+        return 0;
+    }
+
+    if (!this->mouse_captured) {
+        if (!this->is_inside(x, y)) {
+            return 0;
+        }
+
+        for (PanelNode* curr = this->last_child_node; curr; curr = curr->prev_node) {
+            if (!curr->panel) {
+                continue;
+            }
+            long child_res = curr->panel->handle_mouse_dbl_click(button, x, y, wparam, param_5);
+            if (child_res != 0) {
+                return child_res;
+            }
+        }
+    }
+
+    if (!this->handle_mouse_input) {
+        return 0;
+    }
+
+    long action_res;
+    if (button == 1) {
+        action_res = this->mouse_left_dbl_click_action(x, y, wparam, param_5);
+    } else {
+        action_res = this->mouse_right_dbl_click_action(x, y, wparam, param_5);
+    }
+
+    // Original fallback: if dbl-click action does nothing, run normal mouse-down path.
+    if (action_res == 0) {
+        this->handle_mouse_down(button, x, y, wparam, param_5);
+        return 1;
+    }
+
+    return action_res;
+}
+
 long TPanel::mouse_move_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
 long TPanel::mouse_left_down_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
 long TPanel::mouse_left_hold_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
@@ -334,13 +960,35 @@ long TPanel::mouse_right_up_action(long param_1, long param_2, int param_3, int 
 long TPanel::mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return 0; }
 long TPanel::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) { return 0; }
 long TPanel::char_action(long param_1, short param_2) { return 0; }
-long TPanel::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) { return 0; }
+long TPanel::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
+    if (this->parent_panel) {
+        return this->parent_panel->action(param_1, param_2, param_3, param_4);
+    }
+    return 0;
+}
 void TPanel::get_true_render_rect(tagRECT* param_1) {}
 int TPanel::is_inside(long x, long y) {
-    return (x >= this->pnl_x && x < this->pnl_x + this->pnl_wid &&
-            y >= this->pnl_y && y < this->pnl_y + this->pnl_hgt);
+    if (!this->active) {
+        return 0;
+    }
+
+    if (x < this->clip_rect.left || x > this->clip_rect.right) {
+        return 0;
+    }
+    if (y < this->clip_rect.top || y > this->clip_rect.bottom) {
+        return 0;
+    }
+    return 1;
 }
-void TPanel::set_focus(int param_1) {}
+void TPanel::set_focus(int param_1) {
+    if (param_1 != this->have_focus) {
+        this->have_focus = param_1;
+        this->set_redraw(TPanel::RedrawMode::Redraw);
+        if (this->curr_child) {
+            this->curr_child->set_focus(this->have_focus);
+        }
+    }
+}
 void TPanel::set_tab_order() {}
 void TPanel::set_tab_order(TPanel** param_1, short param_2) {}
 uchar TPanel::get_help_info(char** param_1, long* param_2, long param_3, long param_4) { return 0; }
@@ -348,6 +996,39 @@ void TPanel::stop_sound_system() {}
 int TPanel::restart_sound_system() { return 1; }
 void TPanel::take_snapshot() {}
 void TPanel::handle_reactivate() {}
+
+void TPanel::delete_panel(TPanel** panel) {
+    // Source of truth: panel.cpp.decomp @ 0x00466820
+    // If the panel pointer is valid, delete the panel and null the pointer
+    if (panel && *panel) {
+        delete *panel;
+        *panel = nullptr;
+    }
+}
+
+void TPanel::set_curr_child(TPanel* child) {
+    // Source of truth: panel.cpp.decomp @ 0x004663A0
+    if (child == this->curr_child) {
+        return;
+    }
+
+    if (this->curr_child && this->have_focus) {
+        this->curr_child->set_focus(0);
+    }
+
+    this->curr_child = child;
+
+    if (this->curr_child && this->have_focus) {
+        this->curr_child->set_focus(1);
+    }
+}
+
+void TPanel::set_help_info(long help_id, long page_id) {
+    // Source of truth: panel.cpp.decomp
+    // Set help information for this panel
+    this->help_string_id = help_id;
+    this->help_page_id = page_id;
+}
 
 int TPanel::get_string(int resid, char* buffer, int len) {
     if (!buffer || len <= 0) return 0;
@@ -381,8 +1062,64 @@ long TPanel::yPosition() const { return this->pnl_y; }
 long TPanel::width() const { return this->pnl_wid; }
 long TPanel::height() const { return this->pnl_hgt; }
 
+void TPanel::set_z_order(char param_1, int param_2) {
+    // Source of truth: panel.cpp.decomp @ 0x00466430 + set_child_z_order @ 0x00466490
+    if (this->parent_panel != nullptr) {
+        panel_set_child_z_order(this->parent_panel, this, (unsigned char)param_1, (short)param_2);
+        return;
+    }
+
+    if (param_1 == '\0') {
+        this->z_order = (int)(short)param_2;
+    } else if (param_1 == '\x01') {
+        this->z_order = 0;
+    } else if (param_1 == '\x02') {
+        this->z_order = 0;
+    }
+}
+
+// Stub: capture_mouse / release_mouse
+void TPanel::capture_mouse() {
+    if (panel_system) {
+        if (panel_system->mouseOwnerValue && panel_system->mouseOwnerValue != this) {
+            return;
+        }
+        if (panel_system->mouseOwnerValue == this) {
+            return;
+        }
+    }
+
+    if (this->render_area && this->render_area->Wnd) {
+        SetCapture((HWND)this->render_area->Wnd);
+    }
+
+    if (panel_system) {
+        panel_system->mouseOwnerValue = this;
+    }
+    this->mouse_captured = 1;
+}
+
+void TPanel::release_mouse() {
+    if (!this->mouse_captured) {
+        return;
+    }
+
+    if (panel_system && panel_system->mouseOwnerValue == this) {
+        panel_system->mouseOwnerValue = nullptr;
+        ReleaseCapture();
+    }
+
+    this->mouse_captured = 0;
+}
+
 void TPanel::draw_tree() {
     // Non-original helper (see `ui_core.h`); used by the current simplified game loop.
+    // Parent visibility/active state gates child drawing in the original panel system flow.
+    // Without this, inactive dropdowns/scrollbars still draw active child controls.
+    if (!this->active || !this->visible) {
+        return;
+    }
+
     this->draw();
     PanelNode* n = this->first_child_node;
     while (n) {

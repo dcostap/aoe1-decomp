@@ -34,6 +34,10 @@ public:
     void HandleMessage();
     void UpdatePlayers();
     void UpdatePlayer(uint id, int timeout);
+    void NotifyWindow(int message);
+    long SendSharedData(int send_mode);
+    int GetPlayerHumanity(uint player_number);
+    void SetPlayerHumanity(uint player_number, int humanity);
     void ReceiveGameMessages();
     int DoCycle(ulong now);
     void EvaluateSystemMessage(ulong p1, char* p2, ulong p3, ulong p4);

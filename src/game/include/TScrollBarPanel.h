@@ -2,21 +2,34 @@
 #include "common.h"
 #include "TPanel.h"
 
+class TShape;
+
 class TScrollBarPanel : public TPanel {
 public:
-    enum Orientation : int {};
+    enum Orientation : int {
+        Vertical = 0,
+        Horizontal = 1
+    };
 
-    // Virtuals (best-effort)
+    enum ActionType : int {
+        ActionUp = 0,
+        ActionDown = 1,
+        ActionPrior = 2,
+        ActionNext = 3,
+        ActionPosition = 4
+    };
+
+    TScrollBarPanel();
     virtual ~TScrollBarPanel(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)
     virtual void set_rect(tagRECT param_1); // vt[2] (0x8)
     virtual void set_rect(long param_1, long param_2, long param_3, long param_4); // vt[3] (0xC)
     virtual void set_color(uchar param_1); // vt[4] (0x10)
     virtual void set_active(int param_1); // vt[5] (0x14)
-    virtual void set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10, TPanel* param_11, TPanel* param_12, TPanel* param_13); // vt[6] (0x18)
+    virtual void set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10 = nullptr, TPanel* param_11 = nullptr, TPanel* param_12 = nullptr, TPanel* param_13 = nullptr); // vt[6] (0x18)
     virtual void set_fixed_position(long param_1, long param_2, long param_3, long param_4); // vt[7] (0x1C)
     virtual void set_redraw(RedrawMode param_1); // vt[8] (0x20)
-    virtual void set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3); // vt[9] (0x24)
+    virtual void set_overlapped_redraw(RedrawMode param_1); // vt[9] (0x24)
     virtual void draw_setup(int param_1); // vt[10] (0x28)
     virtual void draw_finish(); // vt[11] (0x2C)
     virtual void draw(); // vt[12] (0x30)
@@ -56,7 +69,7 @@ public:
     virtual void get_true_render_rect(tagRECT* param_1); // vt[46] (0xB8)
     virtual int is_inside(long param_1, long param_2); // vt[47] (0xBC)
     virtual void set_focus(int param_1); // vt[48] (0xC0)
-    virtual void set_tab_order(TPanel* param_1, TPanel* param_2); // vt[49] (0xC4)
+    virtual void set_tab_order(); // vt[49] (0xC4)
     virtual void set_tab_order(TPanel** param_1, short param_2); // vt[50] (0xC8)
     virtual uchar get_help_info(char** param_1, long* param_2, long param_3, long param_4); // vt[51] (0xCC)
     virtual void stop_sound_system(); // vt[52] (0xD0)
@@ -105,5 +118,18 @@ public:
     unsigned char bevel_color4;
     unsigned char bevel_color5;
     unsigned char bevel_color6;
+
+    // Non-virtual methods
+    long setup(TDrawArea* draw_area, TPanel* parent, long x, long y, long wid, long hgt,
+               char* pic1, char* pic2, char* pic3, char* pic4,
+               long arrow_hgt, long tab_hgt, TPanel* list, int back_frame,
+               Orientation orientation);
+    void set_tab_pos(long list_index);
+    void set_list_len(long list_len_value, long list_index);
+    void scroll(ActionType action, long value);
+    void set_buttons(TShape* pics, int back, int up, int down, int tab);
+    void set_bevel_info(int type, unsigned char c1, unsigned char c2,
+                        unsigned char c3, unsigned char c4,
+                        unsigned char c5, unsigned char c6);
 };
 static_assert(sizeof(TScrollBarPanel) == 0x1C4, "Size mismatch");

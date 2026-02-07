@@ -5,6 +5,7 @@
 #include "../include/RGE_Base_Game.h"
 #include "../include/TRIBE_Game.h"
 #include "../include/TribeSPMenuScreen.h"
+#include "../include/TPanelSystem.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -124,7 +125,8 @@ public:
 
             TRIBE_Screen_Main_Menu* menu = new TRIBE_Screen_Main_Menu();
             if (menu && menu->error_code == 0) {
-                tribe_queue_screen_switch(menu);
+                panel_system->setCurrentPanel((TPanel*)menu, 0);
+                panel_system->destroyPanel("Main_Menu");
             } else {
                 if (menu) delete menu;
                 menu_enable_input();
@@ -294,7 +296,20 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu() : TScreenPanel((char*)"Main Men
     this->curr_child = (TPanel*)this->button[0];
 }
 
-TRIBE_Screen_Main_Menu::~TRIBE_Screen_Main_Menu() {}
+TRIBE_Screen_Main_Menu::~TRIBE_Screen_Main_Menu() {
+    // Source of truth: Scr_main.cpp.decomp
+    // Delete all child panels before base destructor runs
+    this->delete_panel((TPanel**)&this->title1);
+    this->delete_panel((TPanel**)&this->title2);
+    for (int i = 0; i < 7; ++i) {
+        this->delete_panel((TPanel**)&this->button[i]);
+    }
+    this->delete_panel((TPanel**)&this->ms_title_text);
+    this->delete_panel((TPanel**)&this->ms_copy_text1);
+    this->delete_panel((TPanel**)&this->ms_copy_text2);
+    this->delete_panel((TPanel**)&this->warning_text);
+    this->delete_panel((TPanel**)&this->circle_p_pic);
+}
 
 // Virtual wrappers: forward to TScreenPanel unless overridden.
 long TRIBE_Screen_Main_Menu::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7) { return TScreenPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7); }
@@ -359,7 +374,8 @@ long TRIBE_Screen_Main_Menu::key_down_action(long param_1, short param_2, int pa
     if ((param_1 == 'C') || (param_1 == 'c')) {
         TPanel* credits = create_stub_screen((char*)"Credits Screen", (char*)"scr_cred", 0xc38b, (char*)"Credits (Stub)");
         if (credits) {
-            tribe_queue_screen_switch(credits);
+            panel_system->setCurrentPanel(credits, 0);
+            panel_system->destroyPanel("Main_Menu");
         }
         return 1;
     }
@@ -397,7 +413,8 @@ long TRIBE_Screen_Main_Menu::action(TPanel* param_1, long param_2, ulong param_3
             menu_disable_input();
             TribeSPMenuScreen* next = new TribeSPMenuScreen();
             if (next && next->error_code == 0) {
-                tribe_queue_screen_switch(next);
+                panel_system->setCurrentPanel((TPanel*)next, 0);
+                panel_system->destroyPanel("Main_Menu");
             } else {
                 if (next) {
                     delete next;
@@ -411,7 +428,8 @@ long TRIBE_Screen_Main_Menu::action(TPanel* param_1, long param_2, ulong param_3
             menu_disable_input();
             TPanel* next = create_stub_screen((char*)"MP Startup Screen", (char*)"scr3", 0xc385, (char*)"Multiplayer Startup (Stub)");
             if (next) {
-                tribe_queue_screen_switch(next);
+                panel_system->setCurrentPanel(next, 0);
+                panel_system->destroyPanel("Main_Menu");
             } else {
                 menu_enable_input();
             }
@@ -431,7 +449,8 @@ long TRIBE_Screen_Main_Menu::action(TPanel* param_1, long param_2, ulong param_3
             menu_disable_input();
             TPanel* next = create_stub_screen((char*)"Scenario Editor Menu", (char*)"scr4", 0xc386, (char*)"Scenario Editor Menu (Stub)");
             if (next) {
-                tribe_queue_screen_switch(next);
+                panel_system->setCurrentPanel(next, 0);
+                panel_system->destroyPanel("Main_Menu");
             } else {
                 menu_enable_input();
             }

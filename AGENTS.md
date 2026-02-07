@@ -1,5 +1,14 @@
 # Decompilation Guidelines
+
 **You are under a legal obligation to always follow these rules:**
+1. Define exact scope and target behavior deltas.
+2. Identify immutable source-of-truth artifacts (`*.asm`, `*.decomp`, ground-truth headers) for every touched function/type.
+3. Do a line-by-line parity audit from call entry to rendering/input side effects.
+4. Prioritize fixes by impact: core dispatch/state/layout before cosmetic details.
+5. Apply one small, source-backed change at a time; document assumptions/TODOs where parity is uncertain.
+6. Rebuild and validate after each change; stop regressions before continuing.
+7. Repeat audit-fix-validate cycles until observed behavior and source behavior match.
+
 - `*.cpp.asm` and `*.cpp.decomp` are **immutable references**. Never edit them.
 - You may edit `*.h` files, but keep all size/offset/`static_assert(sizeof(...))` checks intact.
 - For a function or code you want to edit / refactor / fix / create, search for the source of truth of the function: find the corresponding `*.cpp.asm` and `*.cpp.decomp` files. Read both sources of truth carefully.
@@ -97,8 +106,9 @@ CUSTOM_DEBUG_END
 
 ## Compiling & Output
 
-Use the `.bat` script files in the root directory to build / compile / run the game.
+Use the `.bat` script files in the root directory to build / compile the game.
 Check `*.log` files for output logs.
+Ask the user to run the game and provide feedback, ONLY IF ESSENTIAL FOR PROGRESS.
 
 # Build & Assets
 

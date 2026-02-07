@@ -147,6 +147,16 @@ void TMousePointer::set_game_facet(int facet_index) {
     // this->g_bottom = this->gHeight - frame->y_offset;
 }
 
+void TMousePointer::set_game_enable(int enabled) {
+    // Source of truth: `src/game/src/Mouseptr.cpp.decomp` (`set_game_enable` @ 0x0045B2A0).
+    this->GameEnabled = enabled;
+}
+
+int TMousePointer::get_game_enable() {
+    // Source of truth: `src/game/src/Mouseptr.cpp.decomp` (`get_game_enable` @ 0x0045B2B0).
+    return this->GameEnabled;
+}
+
 // Helper method stubs
 
 int TMousePointer::LoadCursors(char* filename, int file_id, int reload) {

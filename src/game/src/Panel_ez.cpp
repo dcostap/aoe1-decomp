@@ -1,12 +1,16 @@
 #include "../include/TEasy_Panel.h"
 #include "../include/TButtonPanel.h"
 #include "../include/TTextPanel.h"
+#include "../include/TDropDownPanel.h"
+#include "../include/TListPanel.h"
+#include "../include/TScrollBarPanel.h"
 #include "../include/TDrawArea.h"
 #include "../include/TDrawSystem.h"
 #include "../include/TShape.h"
 #include "../include/RGE_Color_Table.h"
 #include "../include/Res_file.h"
 #include "../include/RGE_Base_Game.h"
+#include "../include/TMousePointer.h"
 #include "../include/RGE_Font.h"
 #include "../include/globals.h"
 #include "../include/custom_debug.h"
@@ -558,7 +562,21 @@ long TEasy_Panel::mouse_right_up_action(long param_1, long param_2, int param_3,
 long TEasy_Panel::mouse_right_dbl_click_action(long param_1, long param_2, int param_3, int param_4) { return TPanel::mouse_right_dbl_click_action(param_1, param_2, param_3, param_4); }
 long TEasy_Panel::key_down_action(long param_1, short param_2, int param_3, int param_4, int param_5) { return TPanel::key_down_action(param_1, param_2, param_3, param_4, param_5); }
 long TEasy_Panel::char_action(long param_1, short param_2) { return TPanel::char_action(param_1, param_2); }
-long TEasy_Panel::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) { return TPanel::action(param_1, param_2, param_3, param_4); }
+long TEasy_Panel::action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) {
+    (void)param_1;
+    (void)param_3;
+    (void)param_4;
+
+    // Minimal parity for popup-help mode:
+    // original TEasy_Panel::action routes clicks through command_do_popup_help.
+    // We at least clear help mode on the next click so cursor/game-mouse state is restored.
+    if (this->help_mode == 1 && (param_2 == 0 || param_2 == 1)) {
+        this->clear_popup_help();
+        return 1;
+    }
+
+    return TPanel::action(param_1, param_2, param_3, param_4);
+}
 void TEasy_Panel::get_true_render_rect(tagRECT* param_1) { TPanel::get_true_render_rect(param_1); }
 int TEasy_Panel::is_inside(long param_1, long param_2) { return TPanel::is_inside(param_1, param_2); }
 void TEasy_Panel::set_focus(int param_1) { TPanel::set_focus(param_1); }
@@ -708,6 +726,33 @@ void TEasy_Panel::set_shadow_amount(long amount_percent) {
 
     if (this->active) {
         this->set_redraw(TPanel::RedrawMode::RedrawFull);
+    }
+}
+
+void TEasy_Panel::setup_popup_help() {
+    // Source of truth: `Panel_ez.cpp.decomp` (`setup_popup_help` @ 0x0046A360).
+    this->help_mode = 1;
+    if (rge_base_game) {
+        void* cursor = (void*)LoadCursorA(0, (LPCSTR)0x7f8b);
+        rge_base_game->set_mouse_cursor(cursor);
+        rge_base_game->set_mouse_facet(6);
+        if (rge_base_game->mouse_pointer) {
+            this->saved_mouse_mode = rge_base_game->mouse_pointer->get_game_enable();
+            rge_base_game->mouse_pointer->set_game_enable(0);
+        }
+    }
+}
+
+void TEasy_Panel::clear_popup_help() {
+    // Source of truth: `Panel_ez.cpp.decomp` (`clear_popup_help` @ 0x0046A3C0).
+    this->help_mode = 0;
+    if (rge_base_game) {
+        void* cursor = (void*)LoadCursorA(0, (LPCSTR)0x7f00);
+        rge_base_game->set_mouse_cursor(cursor);
+        rge_base_game->set_mouse_facet(0);
+        if (rge_base_game->mouse_pointer) {
+            rge_base_game->mouse_pointer->set_game_enable(this->saved_mouse_mode);
+        }
     }
 }
 
@@ -936,8 +981,107 @@ int TEasy_Panel::create_edit(TPanel* param_1, TEditPanel** param_2, char* param_
 }
 
 int TEasy_Panel::create_drop_down(TPanel* param_1, TDropDownPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) {
-    (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; (void)param_6; (void)param_7; (void)param_8; (void)param_9;
-    return 0;
+    // Source of truth: Panel_ez.cpp.decomp @ 0x00469380
+    // param_1=parent, param_2=out_ptr, param_3=val_width, param_4=val_height,
+    // param_5=x, param_6=y, param_7=wid, param_8=hgt, param_9=font_id
+    if (!param_2) return 0;
+    *param_2 = nullptr;
+
+    // Scale coordinates from ideal to actual screen size
+    // decomp: iVar17 = this->_padding_ (actual_width), iVar2 = this->ideal_width
+    //         iVar3 = this->_padding_ (actual_height), iVar4 = this->ideal_height
+    long actual_w = this->pnl_wid;
+    long actual_h = this->pnl_hgt;
+    long ideal_w = this->ideal_width;
+    long ideal_h = this->ideal_height;
+
+    // iVar5 = (param_8 * actual_h) / ideal_h  -- scaled height
+    // iVar6 = (actual_w * 0x12) / ideal_w     -- scaled button width (18 ideal pixels)
+    long scaled_hgt = (param_8 * actual_h) / ideal_h;
+    long scaled_btn = (actual_w * 0x12) / ideal_w;
+
+    // Get font
+    int font_id = (param_9 < 0) ? 10 : (int)param_9;
+    RGE_Font* font_info = rge_base_game ? rge_base_game->get_font(font_id) : nullptr;
+    if (!font_info) return 0;
+
+    // Create empty string list (1 entry with empty string)
+    char** string_list = (char**)calloc(1, sizeof(char*));
+    if (!string_list) { this->error_code = 1; return 0; }
+    string_list[0] = (char*)calloc(0x14, 1);
+    if (!string_list[0]) { free(string_list); return 0; }
+    // Copy empty string into it
+    string_list[0][0] = '\0';
+
+    // Create dropdown
+    TDropDownPanel* drop = new TDropDownPanel();
+    if (!drop) { free(string_list[0]); free(string_list); this->error_code = 1; return 0; }
+
+    *param_2 = drop;
+
+    // From decomp: TDropDownPanel::setup call
+    // setup(draw_area, parent, font, font_wid, font_hgt,
+    //       fill_back=0, back_color='\0', have_outline=1, outline_color=0xff,
+    //       x=(param_5*actual_w)/ideal_w, y=(param_6*actual_h)/ideal_h,
+    //       wid=(param_7*actual_w)/ideal_w, hgt=scaled_hgt,
+    //       bevel_type=0, btn_wid=0, btn_hgt=scaled_btn, list_wid_unused=scaled_hgt,
+    //       back_pic_name=nullptr,
+    //       val_width=(param_3*actual_w)/ideal_w, val_height=(param_4*actual_h)/ideal_h,
+    //       string_list, sorted=1, scbar_wid=scaled_btn,
+    //       pic1-4=nullptr, scbar_arrow_hgt=scaled_btn, scbar_tab_hgt=scaled_btn)
+    long result = drop->setup(
+        this->render_area, param_1,
+        font_info->font, font_info->font_wid, font_info->font_hgt,
+        0, '\0', 1, (uchar)0xff,
+        (param_5 * actual_w) / ideal_w, (param_6 * actual_h) / ideal_h,
+        (param_7 * actual_w) / ideal_w, scaled_hgt,
+        0, 0, scaled_btn, scaled_hgt, nullptr,
+        (param_3 * actual_w) / ideal_w, (param_4 * actual_h) / ideal_h,
+        string_list, 1, scaled_btn,
+        nullptr, nullptr, nullptr, nullptr,
+        scaled_btn, scaled_btn
+    );
+
+    // Free temp string list
+    if (string_list[0]) free(string_list[0]);
+    free(string_list);
+
+    if (result == 0) {
+        this->error_code = 1;
+        // Don't delete drop - it's assigned to *param_2 already
+        return 0;
+    }
+
+    // Set button pics if available
+    if (this->button_pics) {
+        drop->set_buttons(this->button_pics, 0xe, -1, 8, 10, 0xc);
+    }
+
+    // Set bevel info
+    if (this->use_bevels) {
+        drop->set_bevel_info(3, (int)this->bevel_color1, (int)this->bevel_color2,
+                            (int)this->bevel_color3, (int)this->bevel_color4,
+                            (int)this->bevel_color5, (int)this->bevel_color6);
+    }
+
+    // Set text colors on val_panel and list_panel
+    drop->set_val_text_color(this->text_color1, this->text_color2);
+    if (drop->list_panel) {
+        ((TTextPanel*)drop->list_panel)->set_text_color(this->text_color1, this->text_color2);
+        ((TTextPanel*)drop->list_panel)->set_highlight_text_color(this->focus_color1, this->focus_color2);
+    }
+
+    // From decomp: set bevel_info on val_panel directly
+    // (**(code**)((*param_2)->val_panel->_padding_ + 0xec))(3, bevel_color1..6)
+    // 0xec = vt[59] = set_bevel_info
+    if (drop->val_panel) {
+        drop->val_panel->set_bevel_info(3,
+            (int)this->bevel_color1, (int)this->bevel_color2,
+            (int)this->bevel_color3, (int)this->bevel_color4,
+            (int)this->bevel_color5, (int)this->bevel_color6);
+    }
+
+    return 1;
 }
 
 int TEasy_Panel::create_list(TPanel* param_1, TListPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7) {

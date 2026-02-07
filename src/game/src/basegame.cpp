@@ -495,6 +495,13 @@ void RGE_Base_Game::set_mouse_cursor(void* p1) {
     }
 }
 
+void RGE_Base_Game::set_mouse_facet(long p1) {
+    // Source of truth: `src/game/src/basegame.cpp.decomp` (`set_mouse_facet` @ 0x00420560).
+    if (this->mouse_pointer) {
+        this->mouse_pointer->set_facet((int)p1);
+    }
+}
+
 void RGE_Base_Game::disable_input() {
     // Source of truth: `src/game/src/basegame.cpp.decomp` (`disable_input` @ 0x00422A50).
     if (this->is_mouse_on != 0) {

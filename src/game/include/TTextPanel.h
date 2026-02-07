@@ -26,6 +26,7 @@ public:
 
     struct TextNode {
         char* text;
+        long id;
         TextNode* next;
     };
     
@@ -95,11 +96,34 @@ public:
 
     // Non-virtual helpers / overloads used by TEasy_Panel screens.
     long setup(TDrawArea* area, TPanel* parent, long x, long y, long w, long h, void* font, long font_wid, long font_hgt, char* back_pic_name, int fill_back, uchar back_color, int outline, uchar outline_color, short fixed_len, char* initial_text);
+    long setup(TDrawArea* area, TPanel* parent, long x, long y, long w, long h, void* font, long font_wid, long font_hgt, char* back_pic_name, int fill_back, uchar back_color, int outline, uchar outline_color, short fixed_len, long text_resid);
+    long setup(TDrawArea* area, TPanel* parent, long x, long y, long w, long h, void* font, long font_wid, long font_hgt, char* back_pic_name, int fill_back, uchar back_color, int outline, uchar outline_color, short fixed_len, char** text_list, short text_count);
+    void set_font(void* font, long font_wid, long font_hgt);
+    void set_fill_back(int fill_back, uchar back_color);
+    void set_back_pic(char* back_pic_name);
     void set_alignment(Alignment vert, Alignment horz);
     void set_word_wrap(int enable);
     void set_text_color(unsigned long c1, unsigned long c2);
     void set_highlight_text_color(unsigned long c1, unsigned long c2);
     int get_text_rect(tagRECT* out_rect);
+    void set_outline(int param_1, uchar param_2);
+    void set_scrollbar(TScrollBarPanel* param_1, int param_2);
+    int numberLines();
+    int numberDrawLines();
+    int currentLineNumber();
+    void setCurrentLineNumber(int param_1);
+    void scroll(uchar param_1, short param_2, int param_3);
+
+    // List management methods (needed for TDropDownPanel / TListPanel)
+    void empty_list();
+    int append_line(char* text, long id);
+    int append_line(long str_id, long id);
+    void set_line(long line_num);
+    long get_line();
+    long get_line(long line_num);
+    long get_id();
+    long get_id(long line_num);
+    char* get_text(long line_num);
 
     TTextPanel::TextNode* list;
     short num_lines;

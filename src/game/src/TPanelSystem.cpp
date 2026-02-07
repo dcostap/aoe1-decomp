@@ -157,3 +157,89 @@ long TPanelSystem::check_message(void* hwnd, uint msg, uint wparam, long lparam)
 
     return 0;
 }
+
+int TPanelSystem::setCurrentPanel(char* name, int modal) {
+    // Source of truth: panel.cpp.decomp @ 0x00463E60
+    // Find panel by name and make it current
+    if (!name) return 0;
+
+    PanelNode* curr = this->panelListValue;
+    while (curr) {
+        if (curr->panel && curr->panel->panelNameValue) {
+            if (strcmp(curr->panel->panelNameValue, name) == 0) {
+                this->setCurrentPanel(curr->panel, modal);
+                return 1;
+            }
+        }
+        curr = curr->next_node;
+    }
+    return 0;
+}
+
+void TPanelSystem::setCurrentPanel(TPanel* panel, int modal) {
+    // Source of truth: panel.cpp.decomp @ 0x00464260
+    // Set the current panel and handle modal state
+    if (!panel) return;
+
+    // Add panel to system if not already present
+    // This handles the case where a newly created screen is being set as current
+    bool found = false;
+    PanelNode* curr = this->panelListValue;
+    while (curr) {
+        if (curr->panel == panel) {
+            found = true;
+            break;
+        }
+        curr = curr->next_node;
+    }
+    if (!found) {
+        this->add_panel(panel);
+    }
+
+    this->currentPanelValue = panel;
+    this->modalPanelValue = modal ? panel : nullptr;
+
+    // Trigger redraw of the new current panel
+    if (panel->active) {
+        panel->set_redraw(TPanel::RedrawMode::RedrawFull);
+    }
+}
+
+int TPanelSystem::destroyPanel(char* name) {
+    // Source of truth: panel.cpp.decomp @ 0x00464060
+    // Find panel by name and destroy it
+    if (!name) return 0;
+
+    PanelNode* curr = this->panelListValue;
+    while (curr) {
+        if (curr->panel && curr->panel->panelNameValue) {
+            if (strcmp(curr->panel->panelNameValue, name) == 0) {
+                TPanel* panel_to_delete = curr->panel;
+                this->remove_panel(panel_to_delete);
+                delete panel_to_delete;
+                return 1;
+            }
+        }
+        curr = curr->next_node;
+    }
+    return 0;
+}
+
+// From decomp: sets the modal panel (captures all input)
+void TPanelSystem::setModalPanel(TPanel* panel) {
+    if (panel) {
+        // Save previous modal panel in the panel's own field
+        panel->previousModalPanelValue = this->modalPanelValue;
+    }
+    this->modalPanelValue = panel;
+}
+
+// From decomp: restores the previous modal panel
+int TPanelSystem::restorePreviousModalPanel() {
+    if (this->modalPanelValue && this->modalPanelValue->previousModalPanelValue) {
+        this->modalPanelValue = this->modalPanelValue->previousModalPanelValue;
+        return 1;
+    }
+    this->modalPanelValue = nullptr;
+    return 0;
+}

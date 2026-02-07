@@ -39,7 +39,7 @@ public:
     virtual void set_rect(long param_1, long param_2, long param_3, long param_4);
     virtual void set_color(uchar param_1);
     virtual void set_active(int param_1);
-    virtual void set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9);
+    virtual void set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10 = nullptr, TPanel* param_11 = nullptr, TPanel* param_12 = nullptr, TPanel* param_13 = nullptr);
     virtual void set_fixed_position(long param_1, long param_2, long param_3, long param_4);
     virtual void set_redraw(RedrawMode param_1);
     virtual void set_overlapped_redraw(RedrawMode param_1);
@@ -89,6 +89,13 @@ public:
     virtual int restart_sound_system();
     virtual void take_snapshot();
     virtual void handle_reactivate();
+    
+    void delete_panel(TPanel** panel);
+    void set_curr_child(TPanel* child);
+    void set_help_info(long help_id, long page_id);
+    void set_z_order(char param_1, int param_2);
+    void capture_mouse();
+    void release_mouse();
     
     int get_string(int resid, char* buffer, int len);
     char* get_string(int resid);
@@ -205,10 +212,13 @@ public:
     void set_id(short state, long id, long id2);
     void set_sound(TDigital* s);
     void set_state(short param_1);
+    void set_state_info(int num_states); // Added for scr_mps team buttons
     int hit_button(long param_1, long param_2);
     void do_action();
     void do_right_action(int param_1);
     void set_radio_button();
+    void set_picture(short state, TShape* pic, short pic_index);
+    void set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5, int c6);
 
     virtual void set_rect(tagRECT param_1) override;
     virtual void set_rect(long param_1, long param_2, long param_3, long param_4) override;
@@ -334,6 +344,13 @@ struct TPanelSystem {
     long check_message(void* hwnd, uint msg, uint wparam, long lparam);
     void add_panel(TPanel* panel);
     void remove_panel(TPanel* panel);
+
+    // Missing methods needed for original game behavior
+    int setCurrentPanel(char* name, int modal);
+    void setCurrentPanel(TPanel* panel, int modal);
+    int destroyPanel(char* name);
+    void setModalPanel(TPanel* panel);
+    int restorePreviousModalPanel();
 };
 static_assert(sizeof(TPanelSystem) == 0xAD8, "Size mismatch");
 

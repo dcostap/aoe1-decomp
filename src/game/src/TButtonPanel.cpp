@@ -110,12 +110,18 @@ long TButtonPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long
 }
 void TButtonPanel::set_rect(tagRECT param_1) { TPanel::set_rect(param_1); }
 void TButtonPanel::set_rect(long param_1, long param_2, long param_3, long param_4) { TPanel::set_rect(param_1, param_2, param_3, param_4); }
-void TButtonPanel::set_color(uchar param_1) {}
-void TButtonPanel::set_active(int param_1) {}
-void TButtonPanel::set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10, TPanel* param_11, TPanel* param_12, TPanel* param_13) {}
-void TButtonPanel::set_fixed_position(long param_1, long param_2, long param_3, long param_4) {}
+void TButtonPanel::set_color(uchar param_1) { TPanel::set_color(param_1); }
+void TButtonPanel::set_active(int param_1) { TPanel::set_active(param_1); }
+void TButtonPanel::set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10, TPanel* param_11, TPanel* param_12, TPanel* param_13) {
+    TPanel::set_positioning(param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11, param_12, param_13);
+}
+void TButtonPanel::set_fixed_position(long param_1, long param_2, long param_3, long param_4) { TPanel::set_fixed_position(param_1, param_2, param_3, param_4); }
 void TButtonPanel::set_redraw(TPanel::RedrawMode param_1) { TPanel::set_redraw(param_1); }
-void TButtonPanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, TPanel::RedrawMode param_3) {}
+void TButtonPanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, TPanel::RedrawMode param_3) {
+    (void)param_1;
+    (void)param_2;
+    TPanel::set_overlapped_redraw(param_3);
+}
 void TButtonPanel::draw_setup(int param_1) { TPanel::draw_setup(param_1); }
 void TButtonPanel::draw_finish() { TPanel::draw_finish(); }
 void TButtonPanel::draw_rect(tagRECT* param_1) { TPanel::draw_rect(param_1); }
@@ -733,4 +739,34 @@ void TButtonPanel::draw() {
     }
 
     this->draw_finish();
+}
+
+void TButtonPanel::set_state_info(int num_states) {
+    // Source of truth: `src/game/src/Pnl_btn.cpp.decomp` (`set_state_info` @ 0x004722C0).
+    // Original behavior is intentionally minimal:
+    //   this->buttonTypeValue = State;
+    //   this->num_states = param_1;
+    // Keep this exact so state-cycling buttons (team/color/etc.) enter the State mode path in do_action().
+    this->buttonTypeValue = TButtonPanel::State;
+    this->num_states = (short)num_states;
+}
+
+// From decomp: sets a picture for a given button state
+void TButtonPanel::set_picture(short state, TShape* pic_ptr, short pic_idx) {
+    if (state < 0 || state >= 9) return;
+    this->pic[state] = pic_ptr;
+    this->pic_index[state] = pic_idx;
+    this->set_redraw(TPanel::RedrawMode::Redraw);
+}
+
+// From decomp: sets bevel info on the button panel
+void TButtonPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5, int c6) {
+    this->bevel_type = type;
+    this->bevel_color1 = (unsigned char)c1;
+    this->bevel_color2 = (unsigned char)c2;
+    this->bevel_color3 = (unsigned char)c3;
+    this->bevel_color4 = (unsigned char)c4;
+    this->bevel_color5 = (unsigned char)c5;
+    this->bevel_color6 = (unsigned char)c6;
+    this->set_redraw(TPanel::RedrawMode::Redraw);
 }

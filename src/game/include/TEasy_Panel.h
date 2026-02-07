@@ -25,6 +25,8 @@ public:
     // Shadow/shading helpers (non-virtual in original; see `Panel_ez.cpp.asm` / `.decomp`).
     void set_shadow_amount(long amount_percent);
     void setup_shadow_area(int force_rebuild);
+    void setup_popup_help();
+    void clear_popup_help();
 
     // Virtuals (best-effort)
     virtual ~TEasy_Panel(); // vt[0] (0x0)

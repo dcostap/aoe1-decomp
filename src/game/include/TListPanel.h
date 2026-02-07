@@ -4,7 +4,7 @@
 
 class TListPanel : public TTextPanel {
 public:
-    // Virtuals (best-effort)
+    TListPanel();
     virtual ~TListPanel(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)
     virtual void set_rect(tagRECT param_1); // vt[2] (0x8)
@@ -72,5 +72,13 @@ public:
     int mouse_scroll_up;
     int mouse_scroll_down;
     int drawHighlightBar;
+
+    void set_auto_track(int track);
+
+    // Non-virtual setup (matches TTextPanel signature)
+    long setup(TDrawArea* draw_area, TPanel* parent, long x, long y, long wid, long hgt,
+               void* font, long font_wid, long font_hgt, void* back_pic, int fill_back,
+               unsigned char back_color, int have_outline, unsigned char outline_color,
+               int word_wrap, char** string_list, short sorted);
 };
 static_assert(sizeof(TListPanel) == 0x1A0, "Size mismatch");

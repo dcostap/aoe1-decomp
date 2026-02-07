@@ -5,6 +5,7 @@
 #include "../include/TribeLoadSavedGameScreen.h"
 #include "../include/RGE_Base_Game.h"
 #include "../include/TRIBE_Game.h"
+#include "../include/TPanelSystem.h"
 #include "../include/globals.h"
 #include "../include/custom_debug.h"
 
@@ -125,26 +126,34 @@ CUSTOM_DEBUG_END
     this->button[5]->hotkey = 0x1b;
     this->button[5]->hotkey_shift = 0;
 
-    this->curr_child = (TPanel*)this->button[0];
+    this->set_curr_child((TPanel*)this->button[0]);
 
     TPanel* tab_list[6];
     for (int i = 0; i < 6; ++i) {
         tab_list[i] = (TPanel*)this->button[i];
     }
-    this->set_tab_order(tab_list, 6);
+    // Source of truth: scr_sing.cpp.decomp - skip first button in tab order
+    // but pass count as 6 (the original passes all 6 buttons starting from index 1)
+    this->set_tab_order(tab_list + 1, 6);
 
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG("SP ctor: completed");
 CUSTOM_DEBUG_END
 }
 
-TribeSPMenuScreen::~TribeSPMenuScreen() {}
+TribeSPMenuScreen::~TribeSPMenuScreen() {
+    // Source of truth: scr_sing.cpp.decomp @ 0x004B6C00
+    // Delete all child panels before base destructor runs
+    this->delete_panel((TPanel**)&this->title);
+    for (int i = 0; i < 7; ++i) {
+        this->delete_panel((TPanel**)&this->button[i]);
+    }
+    this->delete_panel((TPanel**)&this->close_button);
+}
 
 long TribeSPMenuScreen::handle_idle() {
-    if (rge_base_game && rge_base_game->input_enabled == 0) {
-CUSTOM_DEBUG_BEGIN
-        CUSTOM_DEBUG_LOG("SP handle_idle: input disabled -> enabling");
-CUSTOM_DEBUG_END
+    // Source of truth: scr_sing.cpp.decomp @ 0x004B6C90
+    if (rge_base_game->input_enabled == 0) {
         rge_base_game->enable_input();
     }
     return TPanel::handle_idle();
@@ -162,7 +171,8 @@ long TribeSPMenuScreen::action(TPanel* param_1, long param_2, ulong param_3, ulo
 
             TribeMPSetupScreen* setup = new TribeMPSetupScreen();
             if (setup && setup->error_code == 0) {
-                tribe_queue_screen_switch(setup);
+                panel_system->setCurrentPanel((TPanel*)setup, 0);
+                panel_system->destroyPanel("Single_Player_Menu");
             } else {
                 if (setup) delete setup;
                 sp_enable_input();
@@ -180,7 +190,8 @@ long TribeSPMenuScreen::action(TPanel* param_1, long param_2, ulong param_3, ulo
 
             TribeMPSetupScreen* setup = new TribeMPSetupScreen();
             if (setup && setup->error_code == 0) {
-                tribe_queue_screen_switch(setup);
+                panel_system->setCurrentPanel((TPanel*)setup, 0);
+                panel_system->destroyPanel("Single_Player_Menu");
             } else {
                 if (setup) delete setup;
                 sp_enable_input();
@@ -198,7 +209,8 @@ long TribeSPMenuScreen::action(TPanel* param_1, long param_2, ulong param_3, ulo
 
             TribeSelectScenarioScreen* scenario = new TribeSelectScenarioScreen();
             if (scenario && scenario->error_code == 0) {
-                tribe_queue_screen_switch(scenario);
+                panel_system->setCurrentPanel((TPanel*)scenario, 0);
+                panel_system->destroyPanel("Single_Player_Menu");
             } else {
                 if (scenario) delete scenario;
                 sp_enable_input();
@@ -211,7 +223,8 @@ long TribeSPMenuScreen::action(TPanel* param_1, long param_2, ulong param_3, ulo
 
             TribeLoadSavedGameScreen* load_screen = new TribeLoadSavedGameScreen();
             if (load_screen && load_screen->error_code == 0) {
-                tribe_queue_screen_switch(load_screen);
+                panel_system->setCurrentPanel((TPanel*)load_screen, 0);
+                panel_system->destroyPanel("Single_Player_Menu");
             } else {
                 if (load_screen) delete load_screen;
                 sp_enable_input();
@@ -234,7 +247,8 @@ long TribeSPMenuScreen::action(TPanel* param_1, long param_2, ulong param_3, ulo
 
             TRIBE_Screen_Main_Menu* menu = new TRIBE_Screen_Main_Menu();
             if (menu && menu->error_code == 0) {
-                tribe_queue_screen_switch(menu);
+                panel_system->setCurrentPanel((TPanel*)menu, 0);
+                panel_system->destroyPanel("Single_Player_Menu");
             } else {
                 if (menu) delete menu;
                 sp_enable_input();

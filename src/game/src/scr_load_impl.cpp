@@ -5,6 +5,7 @@
 #include "../include/TEasy_Panel.h"
 #include "../include/TPanelSystem.h"
 #include "../include/TTextPanel.h"
+#include "../include/TListPanel.h"
 #include "../include/globals.h"
 
 #include <io.h>
@@ -391,11 +392,26 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel((char*)"Load
     this->deleteButton->hotkey = 0x2e;
     this->deleteButton->hotkey_shift = 0;
 
+    // Source of truth: scr_load.cpp.decomp - set help info for buttons
+    this->okButton->set_help_info(0x7531, -1);
+    this->cancelButton->set_help_info(0x7532, -1);
+    this->deleteButton->set_help_info(0x7533, -1);
+
     // TODO(accuracy): restore real TListPanel + scrollbar once TEasy_Panel list infrastructure
     // (`create_list`/`create_auto_scrollbar`) is reimplemented.
     this->fillList();
 
-    this->curr_child = (TPanel*)this->list;
+    // Source of truth: scr_load.cpp.decomp - disable buttons if list is empty
+    if (this->list) {
+        long cur_line = this->list->get_line();
+        char* text = this->list->get_text(cur_line);
+        if (!text || text[0] == '\0') {
+            this->okButton->set_active(0);
+            this->deleteButton->set_active(0);
+        }
+    }
+
+    this->set_curr_child((TPanel*)this->list);
     TPanel* tab_list[4];
     tab_list[0] = (TPanel*)this->list;
     tab_list[1] = (TPanel*)this->okButton;
@@ -405,6 +421,15 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel((char*)"Load
 }
 
 TribeLoadSavedGameScreen::~TribeLoadSavedGameScreen() {
+    // Source of truth: scr_load.cpp.decomp @ 0x0049E0A0
+    // Delete all child panels before base destructor runs
+    this->delete_panel((TPanel**)&this->screenTitle);
+    this->delete_panel((TPanel**)&this->listTitle);
+    this->delete_panel((TPanel**)&this->list);
+    this->delete_panel((TPanel**)&this->scrollbar);
+    this->delete_panel((TPanel**)&this->okButton);
+    this->delete_panel((TPanel**)&this->cancelButton);
+    this->delete_panel((TPanel**)&this->deleteButton);
     load_destroy_state(this);
 }
 
@@ -429,7 +454,8 @@ void TribeLoadSavedGameScreen::fillList() {
 }
 
 long TribeLoadSavedGameScreen::handle_idle() {
-    if (rge_base_game && rge_base_game->input_enabled == 0) {
+    // Source of truth: scr_load.cpp.decomp @ 0x0049E2B0
+    if (rge_base_game->input_enabled == 0) {
         rge_base_game->enable_input();
     }
     return TPanel::handle_idle();
@@ -487,7 +513,8 @@ long TribeLoadSavedGameScreen::action(TPanel* param_1, long param_2, ulong param
             // to "Single Player Menu" in the SP-only flow.
             TribeSPMenuScreen* menu = new TribeSPMenuScreen();
             if (menu && menu->error_code == 0) {
-                tribe_queue_screen_switch(menu);
+                panel_system->setCurrentPanel((TPanel*)menu, 0);
+                panel_system->destroyPanel("Load_Saved_Game_Screen");
             } else {
                 if (menu) delete menu;
                 load_enable_input();

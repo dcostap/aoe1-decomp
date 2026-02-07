@@ -2,9 +2,24 @@
 #include "common.h"
 #include "TPanel.h"
 
+class TTextPanel;
+class TButtonPanel;
+class TListPanel;
+class TScrollBarPanel;
+
 class TDropDownPanel : public TPanel {
 public:
-    // Virtuals (best-effort)
+    enum DropdownMode : int {
+        ModeNone = 0,
+        ModeValue = 1,
+        ModeList = 2
+    };
+    enum DrawStyle : int {
+        DrawStyleNormal = 0,
+        DrawStyleLeftButton = 1
+    };
+
+    TDropDownPanel();
     virtual ~TDropDownPanel(); // vt[0] (0x0)
     virtual long setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4, long param_5, long param_6, uchar param_7); // vt[1] (0x4)
     virtual void set_rect(tagRECT param_1); // vt[2] (0x8)
@@ -14,7 +29,7 @@ public:
     virtual void set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10, TPanel* param_11, TPanel* param_12, TPanel* param_13); // vt[6] (0x18)
     virtual void set_fixed_position(long param_1, long param_2, long param_3, long param_4); // vt[7] (0x1C)
     virtual void set_redraw(RedrawMode param_1); // vt[8] (0x20)
-    virtual void set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3); // vt[9] (0x24)
+    virtual void set_overlapped_redraw(RedrawMode param_1); // vt[9] (0x24)
     virtual void draw_setup(int param_1); // vt[10] (0x28)
     virtual void draw_finish(); // vt[11] (0x2C)
     virtual void draw(); // vt[12] (0x30)
@@ -54,7 +69,7 @@ public:
     virtual void get_true_render_rect(tagRECT* param_1); // vt[46] (0xB8)
     virtual int is_inside(long param_1, long param_2); // vt[47] (0xBC)
     virtual void set_focus(int param_1); // vt[48] (0xC0)
-    virtual void set_tab_order(TPanel* param_1, TPanel* param_2); // vt[49] (0xC4)
+    virtual void set_tab_order(); // vt[49] (0xC4)
     virtual void set_tab_order(TPanel** param_1, short param_2); // vt[50] (0xC8)
     virtual uchar get_help_info(char** param_1, long* param_2, long param_3, long param_4); // vt[51] (0xCC)
     virtual void stop_sound_system(); // vt[52] (0xD0)
@@ -82,5 +97,25 @@ public:
     int outline_color;
     TDropDownPanel::DrawStyle draw_style;
     int draw_val_rect;
+
+    // Non-virtual methods
+    long setup(TDrawArea* draw_area, TPanel* parent, void* font, long font_wid, long font_hgt,
+               int fill_back, uchar back_color, int have_outline, uchar outline_color,
+               long x, long y, long wid, long hgt, short bevel_type,
+               short initial_line_param, long btn_wid_param, long btn_hgt_param, char* back_pic_name,
+               long list_wid_param, long list_hgt_param, char** string_list, short sorted,
+               long scbar_wid_param, char* pic1, char* pic2, char* pic3, char* pic4,
+               long scbar_arrow_hgt_param, long scbar_tab_hgt_param);
+    void set_mode(TDropDownPanel::DropdownMode mode);
+    void set_draw_style(TDropDownPanel::DrawStyle style);
+    void set_draw_val_rect(int draw);
+    void empty_list();
+    int append_line(char* text, long id);
+    int append_line(long str_id, long id);
+    void set_line(long line_num);
+    long get_id();
+    void set_val_text_color(unsigned long c1, unsigned long c2);
+    void set_bevel_info(int bevel_type, int c1, int c2, int c3, int c4, int c5, int c6);
+    void set_buttons(TShape* button_pics, int pic_id, int highlight_id, int w, int h, int offset);
 };
 static_assert(sizeof(TDropDownPanel) == 0x144, "Size mismatch");
