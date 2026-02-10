@@ -181,6 +181,12 @@ int TPanelSystem::setCurrentPanel(char* name, int modal) {
     while (curr) {
         if (curr->panel && curr->panel->panelNameValue) {
             if (strcmp(curr->panel->panelNameValue, name) == 0) {
+                // Decomp: release mouse owner, clear modal and keyboard before switching
+                if (this->mouseOwnerValue != nullptr) {
+                    this->mouseOwnerValue->release_mouse();
+                }
+                this->modalPanelValue = nullptr;
+                this->keyboardOwnerValue = nullptr;
                 this->setCurrentPanel(curr->panel, modal);
                 return 1;
             }
@@ -192,11 +198,10 @@ int TPanelSystem::setCurrentPanel(char* name, int modal) {
 
 void TPanelSystem::setCurrentPanel(TPanel* panel, int modal) {
     // Source of truth: panel.cpp.decomp @ 0x00464260
-    // Set the current panel and handle modal state
     if (!panel) return;
 
     // Add panel to system if not already present
-    // This handles the case where a newly created screen is being set as current
+    // (not in decomp, but needed for newly created screens)
     bool found = false;
     PanelNode* curr = this->panelListValue;
     while (curr) {
@@ -210,12 +215,19 @@ void TPanelSystem::setCurrentPanel(TPanel* panel, int modal) {
         this->add_panel(panel);
     }
 
+    // Decomp: save previous panel, unfocus old, focus new
+    panel->previousPanelValue = this->currentPanelValue;
+    if (this->currentPanelValue != nullptr) {
+        this->currentPanelValue->set_focus(0);
+    }
     this->currentPanelValue = panel;
-    this->modalPanelValue = modal ? panel : nullptr;
+    panel->set_focus(1);
+    this->currentPanelValue->set_redraw(TPanel::RedrawMode::RedrawFull);
+    // Decomp: UpdateWindow(AppWnd) — skip, our loop handles redraws
 
-    // Trigger redraw of the new current panel
-    if (panel->active) {
-        panel->set_redraw(TPanel::RedrawMode::RedrawFull);
+    // Decomp: if modal flag, set modal panel
+    if (modal != 0) {
+        this->setModalPanel(this->currentPanelValue);
     }
 }
 

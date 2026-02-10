@@ -1351,6 +1351,22 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, ulong param_3, ul
         }
     }
 
+    // Decomp @ 004a1c3c: Handle "Game Settings Screen" returning via action
+    // The settings screen calls chat_scr->action(this, 1, 0, 0) for OK
+    // or chat_scr->action(this, 0, 0, 0) for Cancel.
+    if (param_1 && param_1->panelNameValue != nullptr) {
+        if (strcmp(param_1->panelNameValue, "Game Settings Screen") == 0) {
+            if (param_2 != 0) {
+                // OK: update summary for SP (decomp: updateSummary + sync game options)
+                // TODO: updateSummary(this) when implemented
+                // SP: no game option sync needed (decomp checks singlePlayerGame)
+            }
+            // Both OK and Cancel: return to MP Setup Screen
+            panel_system->setCurrentPanel((char*)"MP Setup Screen", 0);
+            return 1;
+        }
+    }
+
     // Handle drop-down selections (param_2 == 0 for selection)
     if (param_2 == 0) {
         // Handle number of players dropdown
