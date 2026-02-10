@@ -572,7 +572,7 @@ void TTextPanel::set_positioning(PositionMode param_1, long param_2, long param_
 }
 void TTextPanel::set_fixed_position(long param_1, long param_2, long param_3, long param_4) { TPanel::set_fixed_position(param_1, param_2, param_3, param_4); }
 void TTextPanel::set_redraw(RedrawMode param_1) { TPanel::set_redraw(param_1); }
-void TTextPanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3) { (void)param_1; (void)param_2; TPanel::set_overlapped_redraw(param_3); }
+void TTextPanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3) { TPanel::set_overlapped_redraw(param_1, param_2, param_3); }
 void TTextPanel::draw_setup(int param_1) { TPanel::draw_setup(param_1); }
 void TTextPanel::draw_finish() { TPanel::draw_finish(); }
 
@@ -705,7 +705,7 @@ long TTextPanel::action(TPanel* param_1, long param_2, ulong param_3, ulong para
 void TTextPanel::get_true_render_rect(tagRECT* param_1) { (void)param_1; }
 int TTextPanel::is_inside(long param_1, long param_2) { return TPanel::is_inside(param_1, param_2); }
 void TTextPanel::set_focus(int param_1) { TPanel::set_focus(param_1); }
-void TTextPanel::set_tab_order(TPanel* param_1, TPanel* param_2) { (void)param_1; (void)param_2; }
+void TTextPanel::set_tab_order(TPanel* param_1, TPanel* param_2) { TPanel::set_tab_order(param_1, param_2); }
 void TTextPanel::set_tab_order(TPanel** param_1, short param_2) { (void)param_1; (void)param_2; }
 uchar TTextPanel::get_help_info(char** param_1, long* param_2, long param_3, long param_4) { (void)param_1; (void)param_2; (void)param_3; (void)param_4; return 0; }
 void TTextPanel::stop_sound_system() {}

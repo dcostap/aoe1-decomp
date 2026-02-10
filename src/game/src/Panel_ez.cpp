@@ -519,7 +519,7 @@ void TEasy_Panel::set_positioning(PositionMode param_1, long param_2, long param
 }
 void TEasy_Panel::set_fixed_position(long param_1, long param_2, long param_3, long param_4) { TPanel::set_fixed_position(param_1, param_2, param_3, param_4); }
 void TEasy_Panel::set_redraw(RedrawMode param_1) { TPanel::set_redraw(param_1); }
-void TEasy_Panel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3) { (void)param_1; (void)param_2; TPanel::set_overlapped_redraw(param_3); }
+void TEasy_Panel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3) { TPanel::set_overlapped_redraw(param_1, param_2, param_3); }
 void TEasy_Panel::draw_setup(int param_1) { TPanel::draw_setup(param_1); }
 void TEasy_Panel::draw_finish() { TPanel::draw_finish(); }
 
@@ -580,7 +580,7 @@ long TEasy_Panel::action(TPanel* param_1, long param_2, ulong param_3, ulong par
 void TEasy_Panel::get_true_render_rect(tagRECT* param_1) { TPanel::get_true_render_rect(param_1); }
 int TEasy_Panel::is_inside(long param_1, long param_2) { return TPanel::is_inside(param_1, param_2); }
 void TEasy_Panel::set_focus(int param_1) { TPanel::set_focus(param_1); }
-void TEasy_Panel::set_tab_order(TPanel* param_1, TPanel* param_2) { (void)param_1; (void)param_2; }
+void TEasy_Panel::set_tab_order(TPanel* param_1, TPanel* param_2) { TPanel::set_tab_order(param_1, param_2); }
 void TEasy_Panel::set_tab_order(TPanel** param_1, short param_2) { TPanel::set_tab_order(param_1, param_2); }
 uchar TEasy_Panel::get_help_info(char** param_1, long* param_2, long param_3, long param_4) { return TPanel::get_help_info(param_1, param_2, param_3, param_4); }
 void TEasy_Panel::stop_sound_system() { TPanel::stop_sound_system(); }
@@ -876,8 +876,80 @@ int TEasy_Panel::create_button(TPanel* param_1, TButtonPanel** param_2, char* pa
 }
 
 int TEasy_Panel::create_check_box(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8) {
-    (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; (void)param_6; (void)param_7; (void)param_8;
-    return 0;
+    // Source of truth: Panel_ez.cpp.decomp @ 0x00468760
+    // params: parent, out_ptr, x, y, w, h, sound_id, unk
+    if (!param_2) return 0;
+
+    *param_2 = new TButtonPanel();
+    if (!*param_2) {
+        this->error_code = 1;
+        return 0;
+    }
+
+    // Scale from ideal coords to current panel size
+    long scaled_x = (this->ideal_width > 0) ? (param_3 * this->pnl_wid) / this->ideal_width : param_3;
+    long scaled_y = (this->ideal_height > 0) ? (param_4 * this->pnl_hgt) / this->ideal_height : param_4;
+    long scaled_w = (this->ideal_width > 0) ? (param_5 * this->pnl_wid) / this->ideal_width : param_5;
+    long scaled_h = (this->ideal_height > 0) ? (param_6 * this->pnl_hgt) / this->ideal_height : param_6;
+
+    TDigital* sound = nullptr;
+    if (rge_base_game && (int)param_7 >= 0) {
+        sound = rge_base_game->get_sound((int)param_7);
+    }
+
+    // Decomp: setup with DrawBevelPicture, NotifyAction
+    long ok = (*param_2)->setup(this->render_area, param_1, scaled_x, scaled_y, scaled_w, scaled_h,
+                                TButtonPanel::DrawBevelPicture, sound, TButtonPanel::NotifyAction, param_8);
+    if (!ok) {
+        this->error_code = 1;
+        return 0;
+    }
+
+    (*param_2)->set_sound_number((int)param_7);
+
+    // Decomp: set_state_info(2) — 2 states for checkbox (unchecked/checked)
+    (*param_2)->set_state_info(2);
+
+    // Decomp: if button_pics is null, use text fallback ("" for unchecked, "X" for checked)
+    if (this->button_pics == nullptr) {
+        RGE_Font* font = (rge_base_game) ? rge_base_game->get_font(0) : nullptr;
+        if (font) {
+            (*param_2)->set_font(font->font, font->font_wid, font->font_hgt);
+        }
+        (*param_2)->text_x = -1;
+        (*param_2)->text_y = -1;
+        (*param_2)->set_text(0, (char*)"");
+        (*param_2)->set_text(1, (char*)"X");
+        (*param_2)->drawTypeValue = TButtonPanel::DrawTextA;
+    } else {
+        // Decomp: use button_pics for checkbox graphics
+        (*param_2)->drawTypeValue = TButtonPanel::DrawBevelPicture;
+        (*param_2)->set_picture(0, this->button_pics, 0);
+        (*param_2)->set_picture(1, this->button_pics, 2);
+    }
+
+    // Decomp: apply bevels if enabled
+    if (this->use_bevels) {
+        (*param_2)->bevel_type = 4;
+        (*param_2)->bevel_color1 = this->bevel_color1;
+        (*param_2)->bevel_color2 = this->bevel_color2;
+        (*param_2)->bevel_color3 = this->bevel_color3;
+        (*param_2)->bevel_color4 = this->bevel_color4;
+        (*param_2)->bevel_color5 = this->bevel_color5;
+        (*param_2)->bevel_color6 = this->bevel_color6;
+    }
+
+    // Decomp: set text colors for both states
+    (*param_2)->text_color1[0] = this->text_color1;
+    (*param_2)->text_color2[0] = this->text_color2;
+    (*param_2)->highlight_text_color1[0] = this->focus_color1;
+    (*param_2)->highlight_text_color2[0] = this->focus_color2;
+    (*param_2)->text_color1[1] = this->state_color1;
+    (*param_2)->text_color2[1] = this->state_color2;
+    (*param_2)->highlight_text_color1[1] = this->focus_color1;
+    (*param_2)->highlight_text_color2[1] = this->focus_color2;
+
+    return 1;
 }
 
 int TEasy_Panel::create_radio_button(TPanel* param_1, TButtonPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8) {
@@ -1085,8 +1157,90 @@ int TEasy_Panel::create_drop_down(TPanel* param_1, TDropDownPanel** param_2, lon
 }
 
 int TEasy_Panel::create_list(TPanel* param_1, TListPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7) {
-    (void)param_1; (void)param_2; (void)param_3; (void)param_4; (void)param_5; (void)param_6; (void)param_7;
-    return 0;
+    // Source of truth: Panel_ez.cpp.decomp @ 0x004696B0
+    // params: parent, out_ptr, x, y, w, h, font_index
+    if (!param_2) return 0;
+
+    // Scale from ideal coords to current panel size
+    long scaled_x = (this->ideal_width > 0) ? (param_3 * this->pnl_wid) / this->ideal_width : param_3;
+    long scaled_y = (this->ideal_height > 0) ? (param_4 * this->pnl_hgt) / this->ideal_height : param_4;
+    long scaled_w = (this->ideal_width > 0) ? (param_5 * this->pnl_wid) / this->ideal_width : param_5;
+    long scaled_h = (this->ideal_height > 0) ? (param_6 * this->pnl_hgt) / this->ideal_height : param_6;
+
+    int font_index = (int)param_7;
+    if (font_index < 0) font_index = 10;
+
+    // Decomp: allocate a string list with 1 empty string entry
+    char** string_list = (char**)calloc(1, sizeof(char*));
+    if (!string_list) {
+        this->error_code = 1;
+        return 0;
+    }
+    string_list[0] = (char*)calloc(20, 1);
+    if (!string_list[0]) {
+        free(string_list);
+        this->error_code = 1;
+        return 0;
+    }
+    strcpy(string_list[0], "");
+
+    // Decomp: create TListPanel
+    *param_2 = new TListPanel();
+    if (!*param_2 || (*param_2)->error_code != 0) {
+        if (string_list[0]) free(string_list[0]);
+        free(string_list);
+        this->error_code = 1;
+        return 0;
+    }
+
+    // Decomp: get font and call setup
+    RGE_Font* font = (rge_base_game) ? rge_base_game->get_font(font_index) : nullptr;
+    if (!font) {
+        if (string_list[0]) free(string_list[0]);
+        free(string_list);
+        this->error_code = 1;
+        return 0;
+    }
+
+    // Decomp: TTextPanel::setup(list, draw_area, parent, x, y, w, h, font, font_wid, font_hgt,
+    //                           back_pic=0, fill_back=0, back_color=0, have_outline=1, outline_color=0xff,
+    //                           word_wrap=0, string_list, sorted=1)
+    long ok = (*param_2)->setup(this->render_area, param_1,
+                                scaled_x, scaled_y, scaled_w, scaled_h,
+                                font->font, font->font_wid, font->font_hgt,
+                                nullptr, 0, 0, 1, 0xff, 0,
+                                string_list, 1);
+
+    if (!ok) {
+        if (string_list[0]) free(string_list[0]);
+        free(string_list);
+        this->error_code = 1;
+        return 0;
+    }
+
+    // Decomp: scroll_cur_line (stubbed — just scroll to top)
+    // TListPanel::scroll_cur_line(*param_2, 1, 0, 1);
+
+    // Decomp: free the temporary string list
+    if (string_list[0]) {
+        free(string_list[0]);
+        string_list[0] = nullptr;
+    }
+    free(string_list);
+
+    // Decomp: apply bevels if enabled (vtable+0xec = set_bevel_info)
+    if (this->use_bevels) {
+        (*param_2)->set_bevel_info(3,
+            (int)this->bevel_color1, (int)this->bevel_color2,
+            (int)this->bevel_color3, (int)this->bevel_color4,
+            (int)this->bevel_color5, (int)this->bevel_color6);
+    }
+
+    // Decomp: set text colors
+    (*param_2)->set_text_color(this->text_color1, this->text_color2);
+    (*param_2)->set_highlight_text_color(this->focus_color1, this->focus_color2);
+
+    return 1;
 }
 
 int TEasy_Panel::create_scrollbar(TPanel* param_1, TScrollBarPanel** param_2, TTextPanel* param_3, long param_4, long param_5, long param_6, long param_7, long param_8) {
@@ -1095,8 +1249,12 @@ int TEasy_Panel::create_scrollbar(TPanel* param_1, TScrollBarPanel** param_2, TT
 }
 
 int TEasy_Panel::create_auto_scrollbar(TScrollBarPanel** param_1, TTextPanel* param_2, long param_3) {
-    (void)param_1; (void)param_2; (void)param_3;
-    return 0;
+    // Source of truth: Panel_ez.cpp.decomp @ 0x00469A80
+    // Decomp: calls create_scrollbar(parent, param_1, param_2, 0, 0, 0, param_3, 0)
+    //         then set_scrollbar(param_2, *param_1, 1)
+    // TODO: create_scrollbar is not yet implemented; stub by setting output to null and returning success
+    if (param_1) *param_1 = nullptr;
+    return 1;
 }
 
 int TEasy_Panel::create_vert_slider(TPanel* param_1, TVerticalSliderPanel** param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9) {

@@ -320,7 +320,7 @@ void TScrollBarPanel::set_positioning(PositionMode m, long p1, long p2, long p3,
 }
 void TScrollBarPanel::set_fixed_position(long x, long y, long w, long h) { TPanel::set_fixed_position(x, y, w, h); }
 void TScrollBarPanel::set_redraw(RedrawMode m) { TPanel::set_redraw(m); }
-void TScrollBarPanel::set_overlapped_redraw(RedrawMode m) { TPanel::set_overlapped_redraw(m); }
+void TScrollBarPanel::set_overlapped_redraw(TPanel* p1, TPanel* p2, RedrawMode m) { TPanel::set_overlapped_redraw(p1, p2, m); }
 void TScrollBarPanel::draw_setup(int p) { TPanel::draw_setup(p); }
 void TScrollBarPanel::draw_finish() { TPanel::draw_finish(); }
 
@@ -675,7 +675,7 @@ long TScrollBarPanel::action(TPanel* p, long a, ulong p3, ulong p4) { return TPa
 void TScrollBarPanel::get_true_render_rect(tagRECT* r) { TPanel::get_true_render_rect(r); }
 int TScrollBarPanel::is_inside(long x, long y) { return TPanel::is_inside(x, y); }
 void TScrollBarPanel::set_focus(int f) { TPanel::set_focus(f); }
-void TScrollBarPanel::set_tab_order() { TPanel::set_tab_order(); }
+void TScrollBarPanel::set_tab_order(TPanel* p1, TPanel* p2) { TPanel::set_tab_order(p1, p2); }
 void TScrollBarPanel::set_tab_order(TPanel** p, short s) { TPanel::set_tab_order(p, s); }
 uchar TScrollBarPanel::get_help_info(char** p1, long* p2, long p3, long p4) { return TPanel::get_help_info(p1, p2, p3, p4); }
 void TScrollBarPanel::stop_sound_system() { TPanel::stop_sound_system(); }

@@ -42,7 +42,7 @@ public:
     virtual void set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10 = nullptr, TPanel* param_11 = nullptr, TPanel* param_12 = nullptr, TPanel* param_13 = nullptr);
     virtual void set_fixed_position(long param_1, long param_2, long param_3, long param_4);
     virtual void set_redraw(RedrawMode param_1);
-    virtual void set_overlapped_redraw(RedrawMode param_1);
+    virtual void set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3);
     virtual void draw_setup(int param_1);
     virtual void draw_finish();
     virtual void draw();
@@ -82,7 +82,7 @@ public:
     virtual void get_true_render_rect(tagRECT* param_1);
     virtual int is_inside(long param_1, long param_2);
     virtual void set_focus(int param_1);
-    virtual void set_tab_order();
+    virtual void set_tab_order(TPanel* param_1, TPanel* param_2);
     virtual void set_tab_order(TPanel** param_1, short param_2);
     virtual uchar get_help_info(char** param_1, long* param_2, long param_3, long param_4);
     virtual void stop_sound_system();
@@ -212,6 +212,7 @@ public:
     void set_id(short state, long id, long id2);
     void set_sound(TDigital* s);
     void set_state(short param_1);
+    int get_state();
     void set_state_info(int num_states); // Added for scr_mps team buttons
     int hit_button(long param_1, long param_2);
     void do_action();
@@ -227,7 +228,7 @@ public:
     virtual void set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10, TPanel* param_11, TPanel* param_12, TPanel* param_13);
     virtual void set_fixed_position(long param_1, long param_2, long param_3, long param_4) override;
     virtual void set_redraw(RedrawMode param_1) override;
-    virtual void set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3);
+    virtual void set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3) override;
     virtual void draw_setup(int param_1) override;
     virtual void draw_finish() override;
     virtual void draw_rect(tagRECT* param_1) override;
@@ -255,7 +256,7 @@ public:
     virtual long action(TPanel* param_1, long param_2, ulong param_3, ulong param_4) override;
     virtual void get_true_render_rect(tagRECT* param_1) override;
     virtual void set_focus(int param_1) override;
-    virtual void set_tab_order(TPanel* param_1, TPanel* param_2);
+    virtual void set_tab_order(TPanel* param_1, TPanel* param_2) override;
     virtual void set_tab_order(TPanel** param_1, short param_2) override;
     virtual uchar get_help_info(char** param_1, long* param_2, long param_3, long param_4) override;
     virtual void stop_sound_system() override;
@@ -346,6 +347,7 @@ struct TPanelSystem {
     void remove_panel(TPanel* panel);
 
     // Missing methods needed for original game behavior
+    TPanel* panel(char* name);
     int setCurrentPanel(char* name, int modal);
     void setCurrentPanel(TPanel* panel, int modal);
     int destroyPanel(char* name);

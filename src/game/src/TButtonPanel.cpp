@@ -13,6 +13,10 @@ static unsigned long button_time_ms() {
 
 static void button_notify_parent(TButtonPanel* btn, long code) {
     if (!btn || !btn->parent_panel) return;
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("button_notify_parent btn=%p code=%ld parent=%p id=%ld id2=%ld",
+        btn, code, btn->parent_panel, btn->id[btn->cur_state], btn->id2[btn->cur_state]);
+    CUSTOM_DEBUG_END
     btn->parent_panel->action(btn, code, (ulong)btn->id[btn->cur_state], (ulong)btn->id2[btn->cur_state]);
 }
 
@@ -118,9 +122,7 @@ void TButtonPanel::set_positioning(PositionMode param_1, long param_2, long para
 void TButtonPanel::set_fixed_position(long param_1, long param_2, long param_3, long param_4) { TPanel::set_fixed_position(param_1, param_2, param_3, param_4); }
 void TButtonPanel::set_redraw(TPanel::RedrawMode param_1) { TPanel::set_redraw(param_1); }
 void TButtonPanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, TPanel::RedrawMode param_3) {
-    (void)param_1;
-    (void)param_2;
-    TPanel::set_overlapped_redraw(param_3);
+    TPanel::set_overlapped_redraw(param_1, param_2, param_3);
 }
 void TButtonPanel::draw_setup(int param_1) { TPanel::draw_setup(param_1); }
 void TButtonPanel::draw_finish() { TPanel::draw_finish(); }
@@ -210,11 +212,13 @@ long TButtonPanel::mouse_right_down_action(long param_1, long param_2, int param
 
     this->mouse_captured = 1;
     this->mouse_down_button = 2;
+    if (panel_system) {
+        panel_system->mouseOwnerValue = this;
+    }
     this->is_down = 1;
     this->button_down_time = button_time_ms();
     this->set_focus(1);
     this->set_redraw(TPanel::RedrawMode::Redraw);
-    if (panel_system) panel_system->mouseOwnerValue = this;
     button_notify_parent(this, 5);
     return 1;
 }
@@ -244,6 +248,9 @@ long TButtonPanel::mouse_right_up_action(long x, long y, int param_3, int param_
 
     this->mouse_captured = 0;
     if (this->mouse_down_button == 2) this->mouse_down_button = 0;
+    if (panel_system && panel_system->mouseOwnerValue == this) {
+        panel_system->mouseOwnerValue = nullptr;
+    }
 
     if (this->is_down != 0) {
         if (this->buttonTypeValue != TButtonPanel::Radio) {
@@ -277,7 +284,7 @@ void TButtonPanel::set_focus(int focused) {
     this->have_focus = want;
     this->set_redraw(TPanel::RedrawMode::Redraw);
 }
-void TButtonPanel::set_tab_order(TPanel* param_1, TPanel* param_2) {}
+void TButtonPanel::set_tab_order(TPanel* param_1, TPanel* param_2) { TPanel::set_tab_order(param_1, param_2); }
 void TButtonPanel::set_tab_order(TPanel** param_1, short param_2) {}
 uchar TButtonPanel::get_help_info(char** param_1, long* param_2, long param_3, long param_4) { return 0; }
 void TButtonPanel::stop_sound_system() {
@@ -296,6 +303,11 @@ void TButtonPanel::handle_reactivate() {}
 void TButtonPanel::set_state(short param_1) {
     this->cur_state = param_1;
     this->set_redraw(TPanel::RedrawMode::Redraw);
+}
+
+// Decomp @ Pnl_btn.cpp: returns (int)this->cur_state
+int TButtonPanel::get_state() {
+    return (int)this->cur_state;
 }
 int TButtonPanel::hit_button(long x, long y) {
     if (!this->is_inside(x, y)) return 0;
@@ -339,6 +351,11 @@ void TButtonPanel::set_radio_button() {
 }
 
 void TButtonPanel::do_action() {
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TButtonPanel::do_action this=%p parent=%p notify=%d btnType=%d id=%ld id2=%ld",
+        this, this->parent_panel, (int)this->notifyTypeValue, (int)this->buttonTypeValue,
+        this->id[this->cur_state], this->id2[this->cur_state]);
+    CUSTOM_DEBUG_END
     if (this->buttonTypeValue == TButtonPanel::State) {
         if (this->cur_state == (short)(this->num_states - 1)) {
             this->set_state(0);
@@ -515,6 +532,10 @@ long TButtonPanel::mouse_left_down_action(long x, long y, int wparam, int param_
     if (!this->active || !this->visible) return 0;
     if (this->disabled != 0) return 0;
 
+    // Original ASM @ 0x00473190: calls TPanel::capture_mouse.
+    // Our capture_mouse stub has defensive guards that can prevent mouse_captured
+    // from being set, so we write the fields directly here (matching old behavior)
+    // and ensure mouseOwnerValue is set so wnd_proc routes mouse-up to us.
     this->is_down = 1;
     this->mouse_captured = 1;
     this->mouse_down_button = 1;
@@ -532,14 +553,19 @@ long TButtonPanel::mouse_left_up_action(long x, long y, int wparam, int param_4)
     (void)wparam;
     (void)param_4;
 
+    // Original ASM @ 0x00473310: calls TPanel::release_mouse.
+    // Must clear BOTH mouse_captured AND mouseOwnerValue. Without clearing
+    // mouseOwnerValue, all subsequent mouse events get permanently routed here.
     this->mouse_captured = 0;
     if (this->mouse_down_button == 1) this->mouse_down_button = 0;
+    if (panel_system && panel_system->mouseOwnerValue == this) {
+        panel_system->mouseOwnerValue = nullptr;
+    }
 
     if (this->is_down != 0) {
         if (this->buttonTypeValue != TButtonPanel::Radio) {
             this->is_down = 0;
         }
-        this->set_focus(this->hit_button(x, y) ? 1 : 0);
         this->set_redraw(TPanel::RedrawMode::Redraw);
         if (this->render_area && this->render_area->Wnd) {
             SendMessageA((HWND)this->render_area->Wnd, WM_PAINT, 0, 0);

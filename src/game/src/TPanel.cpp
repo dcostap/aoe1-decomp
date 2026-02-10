@@ -374,7 +374,10 @@ void TPanel::set_redraw(RedrawMode param_1) {
         InvalidateRect((HWND)this->render_area->Wnd, (RECT*)&this->clip_rect, FALSE);
     }
 }
-void TPanel::set_overlapped_redraw(RedrawMode param_1) {}
+void TPanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, RedrawMode param_3) {
+    // TODO: implement per panel.cpp.decomp @ 0x00464E80
+    (void)param_1; (void)param_2; (void)param_3;
+}
 void TPanel::draw_setup(int param_1) {
     // Source of truth: `src/game/src/panel.cpp.decomp` (`TPanel::draw_setup`).
     if (!this->render_area) return;
@@ -989,7 +992,10 @@ void TPanel::set_focus(int param_1) {
         }
     }
 }
-void TPanel::set_tab_order() {}
+void TPanel::set_tab_order(TPanel* param_1, TPanel* param_2) {
+    // TODO: implement per panel.cpp.decomp
+    (void)param_1; (void)param_2;
+}
 void TPanel::set_tab_order(TPanel** param_1, short param_2) {}
 uchar TPanel::get_help_info(char** param_1, long* param_2, long param_3, long param_4) { return 0; }
 void TPanel::stop_sound_system() {}

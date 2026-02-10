@@ -135,7 +135,7 @@ void TPicturePanel::set_active(int param_1) {}
 void TPicturePanel::set_positioning(PositionMode param_1, long param_2, long param_3, long param_4, long param_5, long param_6, long param_7, long param_8, long param_9, TPanel* param_10, TPanel* param_11, TPanel* param_12, TPanel* param_13) {}
 void TPicturePanel::set_fixed_position(long param_1, long param_2, long param_3, long param_4) {}
 void TPicturePanel::set_redraw(TPanel::RedrawMode param_1) { TPanel::set_redraw(param_1); }
-void TPicturePanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, TPanel::RedrawMode param_3) { (void)param_1; (void)param_2; TPanel::set_overlapped_redraw(param_3); }
+void TPicturePanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, TPanel::RedrawMode param_3) { TPanel::set_overlapped_redraw(param_1, param_2, param_3); }
 void TPicturePanel::draw_setup(int param_1) { TPanel::draw_setup(param_1); }
 void TPicturePanel::draw_finish() { TPanel::draw_finish(); }
 

@@ -115,6 +115,10 @@ long TDropDownPanel::setup(TDrawArea* draw_area, TPanel* parent, void* font, lon
                                 TButtonPanel::NotifyAction, 0)) {
         return 0;
     }
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TDropDownPanel::setup btn_panel=%p btn_parent=%p dropdown_this=%p (match=%d)",
+        this->btn_panel, this->btn_panel->parent_panel, this, (this->btn_panel->parent_panel == this));
+    CUSTOM_DEBUG_END
 
     // Create list panel
     this->list_panel = new TListPanel();
@@ -442,6 +446,31 @@ void TDropDownPanel::set_line(long line_num) {
     }
 }
 
+// Decomp @ 0x00475380: get_line() - returns current line index
+long TDropDownPanel::get_line() {
+    if (this->list_panel) {
+        return ((TTextPanel*)this->list_panel)->get_line();
+    }
+    return 0;
+}
+
+// Decomp @ 0x004753A0: get_line(long) - find line by id
+long TDropDownPanel::get_line(long id) {
+    if (this->list_panel) {
+        return ((TTextPanel*)this->list_panel)->get_line(id);
+    }
+    return 0;
+}
+
+// Decomp @ 0x004753C0: get_line(char*) - find line by text
+long TDropDownPanel::get_line(char* text) {
+    if (this->list_panel) {
+        // TODO: TTextPanel::get_line(char*) not yet declared; stub returns 0
+        return 0;
+    }
+    return 0;
+}
+
 long TDropDownPanel::get_id() {
     if (this->list_panel) {
         return this->list_panel->get_id();
@@ -529,6 +558,10 @@ void TDropDownPanel::set_buttons(TShape* button_pics, int pic_id, int highlight_
 
 // Action handler - from decomp at 0x004744A0
 long TDropDownPanel::action(TPanel* p, long a, ulong p3, ulong p4) {
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TDropDownPanel::action this=%p p=%p a=%ld p3=%lu p4=%lu btn=%p list=%p mode=%d",
+        this, p, a, p3, p4, this->btn_panel, this->list_panel, (int)this->mode);
+    CUSTOM_DEBUG_END
     if ((TButtonPanel*)p == this->btn_panel) {
         // Button click: open dropdown if in value mode
         if (a == 2 && this->mode == ModeValue) {
@@ -549,12 +582,17 @@ long TDropDownPanel::action(TPanel* p, long a, ulong p3, ulong p4) {
         }
     }
 
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TDropDownPanel::action FALLTHROUGH to TPanel::action p=%p a=%ld parent=%p",
+        p, a, this->parent_panel);
+    CUSTOM_DEBUG_END
     return TPanel::action(p, a, p3, p4);
 }
 
 // handle_key_down - from decomp at 0x00474450
+// ASM @ 0x00474450: checks [ECX+0x6C] (active), then key==0x28||0x26, then mode==ModeValue
 long TDropDownPanel::handle_key_down(long k, short s, int p1, int p2, int p3) {
-    if (this->parent_panel && (k == 0x28 || k == 0x26) && this->mode == ModeValue) {
+    if (this->active != 0 && (k == 0x28 || k == 0x26) && this->mode == ModeValue) {
         this->set_mode(ModeList);
         return 1;
     }
@@ -562,23 +600,33 @@ long TDropDownPanel::handle_key_down(long k, short s, int p1, int p2, int p3) {
 }
 
 // handle_mouse_down - from decomp at 0x00474350
+// Critical override: when dropdown is open (ModeList), clicking outside
+// the list/scrollbar closes the dropdown instead of letting the click
+// propagate to child buttons (which would trigger spurious actions).
 long TDropDownPanel::handle_mouse_down(uchar b, long x, long y, int p1, int p2) {
-    // Set this as current child of parent
-    if (this->parent_panel) {
+    CUSTOM_DEBUG_BEGIN
+    CUSTOM_DEBUG_LOG_FMT("TDropDownPanel::handle_mouse_down this=%p mode=%d x=%ld y=%ld",
+        this, (int)this->mode, x, y);
+    CUSTOM_DEBUG_END
+    // ASM @ 0x00474356: MOV EAX, [ESI+0x74] (tab_stop), TEST EAX / JZ
+    // ASM @ 0x0047435d: MOV ECX, [ESI+0x40] (parent_panel), TEST ECX / JZ
+    if (this->tab_stop != 0 && this->parent_panel != nullptr) {
         this->parent_panel->set_curr_child(this);
     }
 
     if (this->mode == ModeList) {
+        // ASM @ 0x0047437d: call list_panel->is_inside(x, y) via vtable[0xBC]
         int in_list = this->list_panel ? this->list_panel->is_inside(x, y) : 0;
         int in_scbar = 0;
-        if (this->scbar_panel) {
+        // ASM @ 0x00474399: call scbar_panel->is_inside(x, y) if scbar_panel != NULL
+        if (this->scbar_panel != nullptr) {
             in_scbar = this->scbar_panel->is_inside(x, y);
         }
 
         if (!in_list && !in_scbar) {
-            // Click outside list/scrollbar: close dropdown
+            // Click outside list/scrollbar: close dropdown, restore line
             this->set_mode(ModeValue);
-            set_line(this->val_num);
+            this->set_line((long)(int)this->val_num);
             return 1;
         }
     }
@@ -623,7 +671,7 @@ void TDropDownPanel::set_positioning(PositionMode m, long p1, long p2, long p3, 
 }
 void TDropDownPanel::set_fixed_position(long x, long y, long w, long h) { TPanel::set_fixed_position(x, y, w, h); }
 void TDropDownPanel::set_redraw(RedrawMode m) { TPanel::set_redraw(m); }
-void TDropDownPanel::set_overlapped_redraw(RedrawMode m) { TPanel::set_overlapped_redraw(m); }
+void TDropDownPanel::set_overlapped_redraw(TPanel* p1, TPanel* p2, RedrawMode m) { TPanel::set_overlapped_redraw(p1, p2, m); }
 void TDropDownPanel::draw_setup(int p) { TPanel::draw_setup(p); }
 void TDropDownPanel::draw_finish() { TPanel::draw_finish(); }
 void TDropDownPanel::draw_rect(tagRECT* r) { TPanel::draw_rect(r); }
@@ -659,7 +707,7 @@ long TDropDownPanel::char_action(long p1, short p2) { return TPanel::char_action
 void TDropDownPanel::get_true_render_rect(tagRECT* r) { TPanel::get_true_render_rect(r); }
 int TDropDownPanel::is_inside(long x, long y) { return TPanel::is_inside(x, y); }
 void TDropDownPanel::set_focus(int f) { TPanel::set_focus(f); }
-void TDropDownPanel::set_tab_order() { TPanel::set_tab_order(); }
+void TDropDownPanel::set_tab_order(TPanel* p1, TPanel* p2) { TPanel::set_tab_order(p1, p2); }
 void TDropDownPanel::set_tab_order(TPanel** p, short s) { TPanel::set_tab_order(p, s); }
 uchar TDropDownPanel::get_help_info(char** p1, long* p2, long p3, long p4) { return TPanel::get_help_info(p1, p2, p3, p4); }
 void TDropDownPanel::stop_sound_system() { TPanel::stop_sound_system(); }

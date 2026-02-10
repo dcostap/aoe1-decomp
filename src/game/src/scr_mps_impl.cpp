@@ -1,4 +1,5 @@
 #include "../include/TribeMPSetupScreen.h"
+#include "../include/TribeGameSettingsScreen.h"
 #include "../include/TribeSPMenuScreen.h"
 #include "../include/RGE_Base_Game.h"
 #include "../include/TRIBE_Game.h"
@@ -1300,17 +1301,18 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, ulong param_3, ul
         }
 
         if ((TButtonPanel*)param_1 == this->gameSettingsButton) {
-            // Open the game settings screen if it already exists in the panel system.
-            // TODO: Construct TribeGameSettingsScreen when the full scr_set implementation is wired.
-            rge_base_game->disable_input();
-
-            int switched = 0;
-            if (panel_system) {
-                switched = panel_system->setCurrentPanel((char*)"Game Settings Screen", 0);
-            }
-            if (!switched) {
-                mps_popup_resid(this, 0x25d2, "Settings");
-                rge_base_game->enable_input();
+            // Decomp @ 004a1aaf: check if settings screen already exists
+            TPanel* existing = panel_system->panel((char*)"Game Settings Screen");
+            if (existing == nullptr) {
+                rge_base_game->disable_input();
+                // Decomp: operator_new(0x560) then constructor does all setup
+                TribeGameSettingsScreen* settingsScreen = new TribeGameSettingsScreen();
+                // Use pointer overload — name-based lookup won't find it yet
+                if (settingsScreen) {
+                    panel_system->setCurrentPanel((TPanel*)settingsScreen, 0);
+                }
+            } else {
+                panel_system->setCurrentPanel(existing, 0);
             }
             return 1;
         }

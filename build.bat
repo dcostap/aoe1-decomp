@@ -115,6 +115,7 @@ cl /nologo /EHsc /std:c++17 /MDd /D_DEBUG /DWIN32 /D_X86_ ^
    %SRC_DIR%\scr_load_impl.cpp ^
    %SRC_DIR%\scr_mps_impl.cpp ^
    %SRC_DIR%\scr_sels_impl.cpp ^
+   %SRC_DIR%\scr_set.cpp ^
    %SRC_DIR%\TPanelSystem.cpp ^
    %SRC_DIR%\Dib.cpp ^
    %SRC_DIR%\Drawarea.cpp ^

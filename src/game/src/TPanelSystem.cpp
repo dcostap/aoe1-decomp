@@ -144,18 +144,32 @@ long TPanelSystem::check_message(void* hwnd, uint msg, uint wparam, long lparam)
         }
     }
 
-    // Dispatch to screens in reverse order (top screen first)
-    // Actually, panelList is usually LIFO (newest on top)
-    PanelNode* curr = this->panelListValue;
-    while (curr) {
-        if (curr->panel && curr->panel->active) {
-            long res = curr->panel->wnd_proc(hwnd, msg, wparam, lparam);
-            if (res) return res;
-        }
-        curr = curr->next_node;
+    // Original game dispatches to panel_system->currentPanel() only
+    // (see panel.cpp.asm: currentPanel is called from wnd_proc at 0x00420774 etc.)
+    // Modal panel takes priority if set, otherwise use current panel.
+    TPanel* target = this->modalPanelValue ? this->modalPanelValue : this->currentPanelValue;
+    if (target && target->active) {
+        return target->wnd_proc(hwnd, msg, wparam, lparam);
     }
 
     return 0;
+}
+
+TPanel* TPanelSystem::panel(char* name) {
+    // Source of truth: panel.cpp.decomp / panel.cpp.asm
+    // Find panel by name and return it
+    if (!name) return nullptr;
+
+    PanelNode* curr = this->panelListValue;
+    while (curr) {
+        if (curr->panel && curr->panel->panelNameValue) {
+            if (strcmp(curr->panel->panelNameValue, name) == 0) {
+                return curr->panel;
+            }
+        }
+        curr = curr->next_node;
+    }
+    return nullptr;
 }
 
 int TPanelSystem::setCurrentPanel(char* name, int modal) {
