@@ -505,8 +505,7 @@ long TButtonPanel::mouse_left_down_action(long x, long y, int wparam, int param_
     if (this->disabled != 0) return 0;
 
     // Decomp @ 0x00473190: play sound if set
-    // TODO: TDigital::is_playing / stop / play not yet implemented
-    // if (this->sound) { if (this->sound->is_playing()) this->sound->stop(); this->sound->play(); }
+    if (this->sound) { if (this->sound->is_playing()) this->sound->stop(); this->sound->play(); }
 
     // Decomp @ 0x00473190: TPanel::capture_mouse
     this->capture_mouse();

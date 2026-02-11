@@ -1,4 +1,5 @@
 #include "../include/globals.h"
+#include <io.h>
 
 RGE_Base_Game* rge_base_game = nullptr;
 int do_draw_log = 0;
@@ -32,5 +33,15 @@ int log_output = 0;
 int quick_start_game_mode = 0;
 int restoration_count = 0;
 unsigned char shape_file_first = 0;
+unsigned char sound_file_first = 0;
+int debug_timeGetTime_on = 0;
 
 void run_log(char* param_1, int param_2) {}
+
+void rge_read(int handle, void* buf, int size) {
+    _read(handle, buf, size);
+}
+
+void rge_write(int handle, void* buf, int size) {
+    _write(handle, buf, size);
+}

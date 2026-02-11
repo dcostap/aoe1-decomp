@@ -22,6 +22,21 @@ public:
     unsigned long cache_time; // +0x8 (Size: 0x4)
     short id; // +0xC (Size: 0x2)
     unsigned char _pad_end[0x2]; // 0x000e (Gap: 2)
+
+    RGE_Sound(FILE* infile, short id);
+    RGE_Sound(int handle, TSound_Driver* driver);
+    RGE_Sound();
+    ~RGE_Sound();
+    void save(int handle);
+    void restart_sound(TSound_Driver* driver);
+    void update(ulong time);
+    void set_cache_time(ulong time);
+    void play_at_update();
+    void update_play();
+    void play(int add_to_list);
+    char* get_file_name();
+    void stop();
+    int is_playing();
 };
 static_assert(sizeof(RGE_Sound) == 0x10, "Size mismatch");
 static_assert(sizeof(RGE_Sound_Info) == 0x24, "Size mismatch");

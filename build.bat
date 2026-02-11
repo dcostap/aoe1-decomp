@@ -123,9 +123,14 @@ cl /nologo /EHsc /std:c++17 /MDd /D_DEBUG /DWIN32 /D_X86_ ^
    %SRC_DIR%\RGE_Color_Table.cpp ^
    %SRC_DIR%\Picture.cpp ^
    %SRC_DIR%\Pnl_pic.cpp ^
+   %SRC_DIR%\Cdaudio.cpp ^
+   %SRC_DIR%\Dsutil.cpp ^
+   %SRC_DIR%\Sounddrv.cpp ^
+   %SRC_DIR%\Sound.cpp ^
+   %SRC_DIR%\music.cpp ^
    /link /LIBPATH:"%DP_LIB%" ^
    kernel32.lib user32.lib gdi32.lib advapi32.lib ole32.lib ^
-   ddraw.lib dxguid.lib dplayx.lib dplay.lib uuid.lib winmm.lib ws2_32.lib ^
+   ddraw.lib dsound.lib dxguid.lib dplayx.lib dplay.lib uuid.lib winmm.lib ws2_32.lib ^
    /OUT:"%OUT_DIR%\empiresx.exe"
 
 if %errorlevel% neq 0 (

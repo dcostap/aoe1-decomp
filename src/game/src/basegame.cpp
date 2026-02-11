@@ -593,6 +593,14 @@ int RGE_Base_Game::check_multi_copies() { return 1; }
 
 // Virtual stubs to satisfy vftable
 long RGE_Base_Game::wnd_proc(void* p1, uint p2, uint p3, long p4) { 
+    // Forward messages to sound and music systems (per decomp at 0x00420700)
+    if (this->sound_system != nullptr) {
+        this->sound_system->handle_messages(p1, p2, p3, p4);
+    }
+    if (this->music_system != nullptr) {
+        this->music_system->handle_messages(p1, p2, p3, p4);
+    }
+
     if (panel_system) {
         long res = panel_system->check_message(p1, p2, p3, p4);
         if (res) return res;
@@ -666,7 +674,60 @@ void RGE_Base_Game::send_game_options() {}
 void RGE_Base_Game::receive_game_options() {}
 char* RGE_Base_Game::gameSummary() { return nullptr; }
 int RGE_Base_Game::processCheatCode(int p1, char* p2) { return 0; }
-int RGE_Base_Game::setup_music_system() { return 1; }
+int RGE_Base_Game::setup_music_system() {
+    // Offset: 0x0041F110
+    if (this->prog_info->use_music != 0) {
+        int vol = -5000;
+        if (this->registry != nullptr) {
+            int regVal = this->registry->RegGetInt(1, "Music Volume");
+            if (regVal != -1) {
+                vol = -regVal;
+            }
+        }
+        // If volume is too low, disable music
+        if (vol < -9899) {
+            this->prog_info->use_music = 0;
+            if (this->music_system != nullptr) {
+                delete this->music_system;
+                this->music_system = nullptr;
+            }
+        }
+        else if (this->music_system == nullptr) {
+            // Determine music type
+            uchar mtype;
+            if (this->prog_info->use_cd_audio != 0) {
+                mtype = 1;
+            } else if (this->prog_info->use_midi != 0) {
+                mtype = 2;
+            } else if (this->prog_info->use_ima != 0) {
+                mtype = 4;
+            } else {
+                mtype = (this->prog_info->use_wave_music != 0) ? 3 : 1;
+            }
+
+            char music_path[260];
+            sprintf(music_path, "%s%s", this->work_dir, this->prog_info->sounds_dir);
+
+            TMusic_System* pMusic = new TMusic_System(mtype, this->prog_info->instance,
+                this->prog_window, this->sound_system, music_path);
+            this->music_system = pMusic;
+
+            // If CD was chosen but isn't available, fallback to MIDI then WAV
+            if (pMusic != nullptr && mtype == 1 &&
+                this->prog_info->use_cd_audio == 0 &&
+                (pMusic->device_open == 0 || pMusic->track_count < 2)) {
+                if (pMusic->set_music_type(2) == 0) {
+                    pMusic->set_music_type(3);
+                }
+            }
+
+            if (this->music_system != nullptr) {
+                this->music_system->set_volume(vol, 1);
+            }
+        }
+    }
+    return 1;
+}
 void RGE_Base_Game::shutdown_music_system() {}
 int RGE_Base_Game::setup_cmd_options() { return 1; }
 int RGE_Base_Game::setup_class() {
@@ -960,9 +1021,30 @@ int RGE_Base_Game::setup_fonts() {
     return 1;
 }
 
-int RGE_Base_Game::setup_sounds() { 
-    // Stub implementation
-    return 1; 
+int RGE_Base_Game::setup_sounds() {
+    // Offset: 0x0041F400
+    // Creates 3 UI sounds: button1.wav (0xC47C), button2.wav (0xC47D), chatrcvd.wav (0xC47E)
+    this->sound_num = 3;
+    this->sounds = (TDigital**)calloc(3, sizeof(TDigital*));
+    if (this->sounds == nullptr) return 0;
+
+    for (int i = 0; i < this->sound_num; i++) {
+        this->sounds[i] = nullptr;
+    }
+
+    this->sounds[0] = new TDigital(this->sound_system, (char*)"button1.wav", 0xC47C);
+    this->sounds[1] = new TDigital(this->sound_system, (char*)"button2.wav", 0xC47D);
+    this->sounds[2] = new TDigital(this->sound_system, (char*)"chatrcvd.wav", 0xC47E);
+
+    for (int i = 0; i < this->sound_num; i++) {
+        if (this->sounds[i] != nullptr) {
+            int r = this->sounds[i]->load(nullptr, -1);
+            CUSTOM_DEBUG_LOG_FMT("setup_sounds[%d]: load=%d loaded=%d failed=%d",
+                i, r, (int)this->sounds[i]->loaded, (int)this->sounds[i]->failed);
+        }
+    }
+    CUSTOM_DEBUG_LOG_FMT("setup_sounds: sound_system=%p", this->sound_system);
+    return 1;
 }
 
 int RGE_Base_Game::setup_shapes() { 
@@ -1121,4 +1203,34 @@ unsigned long RGE_Base_Game::get_view_update_count() {
 // Linker fix stubs
 int RGE_Base_Game::setup_chat() { return 1; }
 int RGE_Base_Game::setup_comm() { return 1; }
-int RGE_Base_Game::setup_sound_system() { return 1; }
+int RGE_Base_Game::setup_sound_system() {
+    // Offset: 0x0041F030
+    int vol = 0;
+    CUSTOM_DEBUG_LOG_FMT("setup_sound_system: use_sound=%d, prog_window=%p, sounds_dir=%s",
+        this->prog_info->use_sound, this->prog_window, this->prog_info->sounds_dir);
+    if (this->prog_info->use_sound != 0) {
+        TSound_Driver* pDriver = new TSound_Driver(this->prog_window, this->prog_info->sounds_dir);
+        this->sound_system = pDriver;
+        if (pDriver != nullptr) {
+            CUSTOM_DEBUG_LOG_FMT("setup_sound_system: driver_active=%d, dsrval=0x%lx",
+                pDriver->driver_active(), pDriver->dsrval);
+            if (pDriver->driver_active() == 0) {
+                CUSTOM_DEBUG_LOG("setup_sound_system: DirectSound init FAILED, deleting driver");
+                delete this->sound_system;
+                this->sound_system = nullptr;
+            }
+        }
+        sound_driver = this->sound_system;
+        if (this->registry != nullptr) {
+            int regVal = this->registry->RegGetInt(1, "Sound Volume");
+            if (regVal != -1) {
+                vol = -regVal;
+            }
+        }
+        if (this->sound_system != nullptr) {
+            this->sound_system->set_volume(vol, 1);
+        }
+    }
+    this->setup_music_system();
+    return 1;
+}

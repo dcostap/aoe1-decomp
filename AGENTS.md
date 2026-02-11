@@ -1,78 +1,92 @@
 # Decompilation Guidelines
 
-**You are under a legal obligation to always follow these rules:**
-1. Define exact scope and target behavior deltas.
-2. Identify immutable source-of-truth artifacts (`*.asm`, `*.decomp`, ground-truth headers) for every touched function/type.
-3. Do a line-by-line parity audit from call entry to rendering/input side effects.
-4. Prioritize fixes by impact: core dispatch/state/layout before cosmetic details.
-5. Apply one small, source-backed change at a time; document assumptions/TODOs where parity is uncertain.
-6. Rebuild and validate after each change; stop regressions before continuing.
-7. Repeat audit-fix-validate cycles until observed behavior and source behavior match.
+**You are under a legal obligation to always follow these rules.**
+
+## Workflow: Decomp-First, ASM-When-Needed
+
+The proven approach for this project is a **two-pass** strategy:
+
+### Pass 1: Fast Transliteration (~95% of the work)
+
+1. Read the `*.cpp.decomp` file (Ghidra's C decompiler output) for the target module.
+2. **Transliterate** it into compilable C++ — same control flow, same constants, same logic. Don't try to be clever or "improve" it.
+3. Add method declarations to the corresponding `include/*.h` headers.
+4. Stub out any missing external dependencies (globals, helper functions).
+5. Add to `build.bat`, compile, fix errors. Ship it.
+
+This gets you working code fast. The decomp gives you the logic, the types, the API calls, and the overall structure.
+
+### Pass 2: ASM Audit (the remaining ~5%, done during bug-fixing)
+
+The decomp **lies** about:
+- **Signedness**: `(uint)param_2 > 0x7FFFFFFF` vs signed comparison — the ASM shows `JA` (unsigned) vs `JG` (signed).
+- **Struct sizes and padding**: the decomp may alias stack variables or get field boundaries wrong. The ASM shows exact byte counts (`REP MOVSD` with `ECX=0xB` = 44 bytes).
+- **Bitfield packing**: the decomp may merge or split fields incorrectly.
+- **Calling conventions**: parameter order, `this` pointer handling.
+
+**When to do an ASM audit:**
+- A function doesn't behave correctly at runtime.
+- The decomp output looks suspicious (weird casts, aliased variables, confusing struct access).
+- You're touching struct layouts or sizes.
+
+**How:** Open the `*.cpp.asm`, find the function by offset, and compare instruction-by-instruction against your C++. Focus on comparisons, memory copies, struct offsets, and branch conditions.
+
+## Source of Truth
 
 - `*.cpp.asm` and `*.cpp.decomp` are **immutable references**. Never edit them.
+- `include/*.h` headers define **memory layout** (members) and **vtable layout** (virtuals).
+- `all_types_ground_truth.h` is the definitive type reference.
 - You may edit `*.h` files, but keep all size/offset/`static_assert(sizeof(...))` checks intact.
-- For a function or code you want to edit / refactor / fix / create, search for the source of truth of the function: find the corresponding `*.cpp.asm` and `*.cpp.decomp` files. Read both sources of truth carefully.
-- For a type or struct you want to edit / refactor / fix / create, search for the source of truth of the type: find the corresponding `include/*.h` and `all_types_ground_truth.h` files. Read both sources of truth carefully.
-- Create **Stubs** for functions that are required, but not yet critical for the goal at hand.
-- Document your assumptions, doubts, and TODOs in the code you write. Be very explicit about what you are unsure of, or what pieces of code you are skipping for now. Use comments liberally to explain your thinking and assumptions.
+- Create **stubs** for functions that are required but not yet critical.
+- Document your assumptions, doubts, and TODOs in comments. Be explicit about what you're unsure of.
 
 Note: even tho this is Windows, `grep` is installed and in the PATH.
 
-# Includes (keep it simple)
+## Includes (keep it simple)
 
-## In headers (`.h`)
+### In headers (`.h`)
 
-Include only what you must:
-
-* You **must include** a type’s header if you inherit from it or store it **by value**.
+* You **must include** a type's header if you inherit from it or store it **by value**.
 * Use forward declarations for pointer/reference members (`X*`, `X&`) when possible.
 
-## In source (`.cpp`)
+### In source (`.cpp`)
 
 * Include your own header first.
 * Add other includes only as needed.
 
 Avoid pulling platform headers into headers if you can.
 
-# Header Modification Rules (Reimplementation)
+## Header Modification Rules
 
-The dumped headers (`include/*.h`) define the **memory layout** (members) and **vtable layout** (virtuals), but they often lack standard methods and constructors.
+The dumped headers (`include/*.h`) often lack method declarations and constructors.
 
-### 🛑 IMMUTABLE (Do Not Touch)
-*   **Member Variables:** Never add, remove, or reorder member variables. This breaks `sizeof` and offsets.
-*   **Virtual Functions:** Never reorder or remove existing `virtual` functions. This breaks the vtable.
-*   **Inheritance:** Do not change the base class unless confirmed by the dump.
+### IMMUTABLE (Do Not Touch)
+* **Member Variables:** Never add, remove, or reorder. This breaks `sizeof` and offsets.
+* **Virtual Functions:** Never reorder or remove. This breaks the vtable.
+* **Inheritance:** Do not change the base class unless confirmed by the dump.
 
-### ✅ MUTABLE (Add as needed)
-*   **Constructors:** You **must** add declarations for constructors (e.g., `RGE_Base_Game(args...);`) to the class.
-*   **Non-Virtual Methods:** You **must** add declarations for regular functions found in the ASM calls (e.g., `void setVersion(float v);`).
-*   **Static Methods:** Safe to add.
-*   **Inner Structs/Enums:** If a member variable uses an undefined inner type (e.g., `RGE_Game_Options`), define it so the member variable compiles.
+### MUTABLE (Add as needed)
+* **Constructors / Destructors:** Add declarations as you implement them.
+* **Non-Virtual Methods:** Add declarations for functions found in the decomp/ASM.
+* **Static Methods:** Safe to add.
+* **Inner Structs/Enums:** Define them if a member variable needs the type to compile.
 
-**Rule of Thumb:** If it changes the **bytes in memory** (variables, vtable), don't touch it. If it’s just **code linkage** (functions, constructors), add it to the header.
+**Rule of Thumb:** If it changes the **bytes in memory** (variables, vtable), don't touch it. If it's just **code linkage** (functions, constructors), add it.
 
-# Globals (`globals.h` / `globals.cpp`)
-
-Keep shared globals centralized:
+## Globals (`globals.h` / `globals.cpp`)
 
 * `globals.h`: `extern` declarations
 * `globals.cpp`: one actual definition
 
-Prefer pointer globals (less include pressure). If something is truly used only in one `.cpp`, keep it file-local (`static` or anonymous namespace).
+Prefer pointer globals (less include pressure). File-local stuff stays `static` or in an anonymous namespace.
 
-# Coding style: keep it “old C++ / C-like”
+## Coding Style
 
-Write straightforward, boring C++:
+Write straightforward, boring C++. It's fine to look like C with classes.
 
-* Avoid modern/clever features (templates-heavy helpers, fancy RAII patterns, complex STL use).
-* Prefer simple control flow, simple data, explicit local variables.
-* It’s fine to look like C with classes.
-
-The goal is correctness and readability for reverse engineering, not idiomatic modern C++.
-
-# The hard part: ASM → C++ behavior matching
-
-Your job is to make the C++ **behave like the original**. Perfect translation is hard and mistakes are expected; review passes will happen later. Still, aim for closest behavior. Regularly review both the original `.cpp.asm` and `.cpp.decomp` to remember what the original code is actually doing.
+* No modern/clever features (heavy templates, fancy RAII, complex STL).
+* Simple control flow, simple data, explicit local variables.
+* Match the decomp's style — the goal is behavioral parity, not idiomatic code.
 
 # Custom Debug Infrastructure
 
