@@ -195,6 +195,171 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
 }
 
 RGE_Base_Game::~RGE_Base_Game() {
+    // Source of truth: basegame.cpp.decomp @ destructor
+    // Close log files
+    if (actionFile != nullptr) {
+        fclose(actionFile);
+        actionFile = nullptr;
+    }
+    if (draw_log != nullptr) {
+        fclose(draw_log);
+        draw_log = nullptr;
+    }
+
+    // Delete scenario info
+    if (this->scenario_info != nullptr) {
+        delete this->scenario_info;
+        this->scenario_info = nullptr;
+    }
+
+    // Delete player game info
+    if (this->player_game_info != nullptr) {
+        delete this->player_game_info;
+        this->player_game_info = nullptr;
+    }
+
+    this->prog_mode = 0;
+
+    // Delete world
+    if (this->world != nullptr) {
+        delete this->world;
+        this->world = nullptr;
+    }
+
+    // Delete map save area
+    if (this->map_save_area != nullptr) {
+        delete this->map_save_area;
+        this->map_save_area = nullptr;
+    }
+
+    // Delete mouse pointer
+    if (this->mouse_pointer != nullptr) {
+        delete this->mouse_pointer;
+        this->mouse_pointer = nullptr;
+    }
+
+    // Delete drive info
+    if (driveInfo != nullptr) {
+        free(driveInfo);
+        driveInfo = nullptr;
+    }
+
+    // Delete comm handler
+    if (this->comm_handler != nullptr) {
+        delete this->comm_handler;
+        this->comm_handler = nullptr;
+    }
+
+    // Delete fonts
+    if (this->fonts != nullptr) {
+        for (int i = 0; i < this->font_num; i++) {
+            if (this->fonts[i].font != nullptr) {
+                DeleteObject(this->fonts[i].font);
+            }
+        }
+        free(this->fonts);
+        this->fonts = nullptr;
+    }
+
+    // Stop sound system
+    this->stop_sound_system();
+
+    // Delete sounds array
+    if (this->sounds != nullptr) {
+        for (int i = 0; i < this->sound_num; i++) {
+            if (this->sounds[i] != nullptr) {
+                delete this->sounds[i];
+                this->sounds[i] = nullptr;
+            }
+        }
+        free(this->sounds);
+        this->sounds = nullptr;
+    }
+
+    // Delete sound system
+    if (this->sound_system != nullptr) {
+        delete this->sound_system;
+        this->sound_system = nullptr;
+        sound_driver = nullptr;
+    }
+
+    // Delete music system
+    if (this->music_system != nullptr) {
+        delete this->music_system;
+        this->music_system = nullptr;
+    }
+
+    // Destroy blank screen
+    if (panel_system) {
+        panel_system->destroyPanel((char*)"Blank Screen");
+    }
+
+    // Delete draw system
+    if (this->draw_system != nullptr) {
+        delete this->draw_system;
+        this->draw_system = nullptr;
+        this->draw_area = nullptr;
+    }
+
+    // Restore system parameters
+    if (this->screen_saver_enabled != 0) {
+        SystemParametersInfoA(0x11, 1, NULL, 2); // SPI_SETSCREENSAVEACTIVE
+    }
+    if (this->low_power_enabled != 0) {
+        SystemParametersInfoA(0x55, 1, NULL, 2); // SPI_SETLOWPOWERACTIVE
+    }
+
+    // Release palette
+    if (this->prog_palette != nullptr) {
+        if (panel_system) {
+            panel_system->release_palette(this->prog_palette);
+        }
+        this->prog_palette = nullptr;
+    }
+
+    // Delete registry
+    if (this->registry != nullptr) {
+        delete this->registry;
+        this->registry = nullptr;
+    }
+
+    // Close mutex
+    if (this->prog_mutex != nullptr) {
+        CloseHandle(this->prog_mutex);
+        this->prog_mutex = nullptr;
+    }
+
+    rge_base_game = nullptr;
+
+    // Destroy window
+    if (this->prog_window != nullptr) {
+        DestroyWindow((HWND)this->prog_window);
+    }
+
+    // Free string table
+    if (StringTable != nullptr && StringTable != this->prog_info->instance) {
+        FreeLibrary(StringTable);
+        StringTable = nullptr;
+    }
+
+    // Delete debug log
+    if (this->debugLog != nullptr) {
+        delete this->debugLog;
+        this->debugLog = nullptr;
+    }
+
+    // Delete shapes
+    if (this->shapes != nullptr) {
+        for (int i = 0; i < this->shape_num; i++) {
+            if (this->shapes[i] != nullptr) {
+                delete this->shapes[i];
+            }
+        }
+        free(this->shapes);
+        this->shapes = nullptr;
+    }
+
+    // Delete panel system
     if (panel_system) {
         delete panel_system;
         panel_system = nullptr;
@@ -581,7 +746,15 @@ char* RGE_Base_Game::get_string(int p1, long p2, char* p3, int p4) {
     return p3;
 }
 char* RGE_Base_Game::get_string2(int p1, long p2, long p3, char* p4, int p5) { return p4; }
-unsigned char RGE_Base_Game::check_prog_argument(const char* p1) { return 0; }
+unsigned char RGE_Base_Game::check_prog_argument(const char* p1) {
+    // Source of truth: basegame.cpp.decomp @ 0x00422CC0
+    if (!this->prog_info || !this->prog_info->cmd_line || !p1) return 0;
+    char cmd_line[256];
+    strncpy(cmd_line, this->prog_info->cmd_line, 255);
+    cmd_line[255] = '\0';
+    CharUpperA(cmd_line);
+    return (strstr(cmd_line, p1) != nullptr) ? 1 : 0;
+}
 void RGE_Base_Game::close() {
     if (this->prog_window) {
         SendMessageA((HWND)this->prog_window, WM_CLOSE, 0, 0);
@@ -591,9 +764,12 @@ void RGE_Base_Game::close() {
 int RGE_Base_Game::check_expiration() { return 1; }
 int RGE_Base_Game::check_multi_copies() { return 1; }
 
-// Virtual stubs to satisfy vftable
+// Source of truth: basegame.cpp.decomp @ 0x004206D0
 long RGE_Base_Game::wnd_proc(void* p1, uint p2, uint p3, long p4) { 
-    // Forward messages to sound and music systems (per decomp at 0x00420700)
+    // p1=HWND, p2=message, p3=wParam, p4=lParam
+    long result = 0;
+
+    // Forward messages to sound and music systems
     if (this->sound_system != nullptr) {
         this->sound_system->handle_messages(p1, p2, p3, p4);
     }
@@ -601,25 +777,153 @@ long RGE_Base_Game::wnd_proc(void* p1, uint p2, uint p3, long p4) {
         this->music_system->handle_messages(p1, p2, p3, p4);
     }
 
+    // Route through currentPanel first
+    TPanel* curPanel = nullptr;
     if (panel_system) {
-        long res = panel_system->check_message(p1, p2, p3, p4);
-        if (res) return res;
+        curPanel = panel_system->currentPanelValue;
     }
 
+    if (curPanel != nullptr) {
+        result = curPanel->wnd_proc(p1, p2, p3, p4);
+        // If panel consumed the message AND it's not WM_MOUSEMOVE or WM_TIMER,
+        // return the result directly (decomp: goto LAB_004207c2 only if result==0 or msg==0x200 or msg==0x113)
+        if (result != 0 && p2 != 0x200 && p2 != 0x113) {
+            return result;
+        }
+    }
+
+    // Big message switch (decomp @ LAB_004207c2)
+    int iVar3;
     switch (p2) {
-        case WM_DESTROY:
-            PostQuitMessage(0);
-            return 0;
-        case WM_ACTIVATEAPP:
-            this->prog_active = (int)p3;
-            if (this->prog_active) this->action_activate();
-            else this->action_deactivate();
+        case WM_DESTROY: // 0x02
+            iVar3 = this->handle_destroy(p1, p2, p3, p4);
+            if (iVar3 == 0) return 0;
             break;
-        case WM_SETCURSOR:
+
+        case WM_SIZE: // 0x05
+            if (system_ignore_size_messages != 0) break;
+            iVar3 = this->handle_size(p1, p2, p3, p4);
+            if (iVar3 == 0) return 0;
+            break;
+
+        case WM_PAINT: // 0x0F
+            iVar3 = this->handle_paint(p1, p2, p3, p4);
+            if (iVar3 == 0) return 0;
+            break;
+
+        case WM_CLOSE: // 0x10
+            iVar3 = this->handle_close(p1, p2, p3, p4);
+            if (iVar3 == 0) return 0;
+            break;
+
+        case WM_ACTIVATEAPP: // 0x1C
+            // Decomp: complex activate/deactivate with surface restoration
+            if (this->prog_active != 0) {
+                if ((long)p3 == 1) {
+                    // Activating
+                    if (this->draw_system != nullptr) {
+                        this->draw_system->CheckSurfaces();
+                        this->draw_system->ClearRestored();
+                    }
+                    this->render_all = 1;
+                    if (this->draw_system != nullptr) {
+                        this->draw_system->ClearPrimarySurface();
+                        this->draw_system->ModifyPalette(0, 0x100, this->draw_system->palette);
+                    }
+                    this->render_all = 1;
+                    InvalidateRect((HWND)this->prog_window, NULL, 1);
+                    do_restore_palette = 10;
+                    restore_palette_timer = debug_timeGetTime("basegame.cpp", 0xe9b);
+                    restore_mouse_after_paint = 1;
+                } else {
+                    // Deactivating
+                    SetClassLongA((HWND)this->prog_window, GCL_HCURSOR, 0);
+                }
+            }
+            iVar3 = this->handle_activate(p1, 0x1c, p3, p4);
+            if (iVar3 == 0) return 0;
+            break;
+
+        case WM_SETCURSOR: // 0x20
             if (this->is_mouse_on && this->windows_mouse == 0) {
                 SetCursor(NULL);
                 return 1;
             }
+            break;
+
+        case WM_KEYDOWN: // 0x100
+        case 0x104:      // WM_SYSKEYDOWN
+            iVar3 = this->handle_key_down(p1, p2, p3, p4);
+            if (iVar3 == 0) return 0;
+            break;
+
+        case 0x105: // WM_SYSKEYUP — Alt key release handling
+            if (p3 == 0x12 && panel_system != nullptr) {
+                TPanel* cp = panel_system->currentPanelValue;
+                if (cp != nullptr) {
+                    cp->handle_key_down(p3, 0, 0, 1, 0);
+                }
+            }
+            break;
+
+        case WM_COMMAND: // 0x111
+            iVar3 = this->handle_command(p1, p2, p3, p4);
+            if (iVar3 == 0) return 0;
+            break;
+
+        case WM_SYSCOMMAND: // 0x112
+            // Block SC_KEYMENU (Alt+key) if full-screen to prevent menu activation
+            if (p3 == 0xf100 && this->prog_info != nullptr &&
+                this->prog_info->full_screen != 0) {
+                if (!IsIconic((HWND)this->prog_window)) {
+                    return 0;
+                }
+            }
+            break;
+
+        case WM_TIMER: // 0x113
+            this->handle_idle();
+            break;
+
+        case 0x200: // WM_MOUSEMOVE
+            iVar3 = this->handle_mouse_move(p1, p2, p3, p4);
+            if (iVar3 == 0) return 0;
+            break;
+
+        case 0x212: // WM_EXITMENULOOP
+            iVar3 = this->handle_exit_menu(p1, p2, p3, p4);
+            if (iVar3 == 0) return 0;
+            break;
+
+        case 0x218: // WM_POWERBROADCAST
+            if (p3 == 0) {
+                return 0x424d5144; // "DMBQ" — deny power suspend
+            }
+            break;
+
+        case 0x30f: // WM_QUERYNEWPALETTE
+            iVar3 = this->handle_query_new_palette(p1, p2, p3, p4);
+            if (iVar3 != 0) {
+                // Fall through to handle_close path per decomp (goto LAB_00420dc9)
+                iVar3 = this->handle_close(p1, p2, p3, p4);
+                if (iVar3 == 0) return 0;
+            }
+            break;
+
+        case 0x311: // WM_PALETTECHANGED
+            iVar3 = this->handle_palette_changed(p1, p2, p3, p4);
+            if (iVar3 == 0) return 0;
+            break;
+
+        case 0x3b9: // MM_MCINOTIFY
+        case 0x500: // Custom music message
+            iVar3 = this->handle_music_done(p1, p2, p3, p4);
+            if (iVar3 == 0) return 0;
+            break;
+
+        case 0x400: // WM_USER
+            iVar3 = this->handle_user_command(p1, p2, p3, p4);
+            if (iVar3 == 0) return 0;
             break;
     }
 
@@ -729,7 +1033,87 @@ int RGE_Base_Game::setup_music_system() {
     return 1;
 }
 void RGE_Base_Game::shutdown_music_system() {}
-int RGE_Base_Game::setup_cmd_options() { return 1; }
+int RGE_Base_Game::setup_cmd_options() {
+    // Source of truth: basegame.cpp.decomp @ 0x0041D0A0
+    if (!this->prog_info || !this->prog_info->cmd_line) return 1;
+
+    char cmd_line[256];
+    strncpy(cmd_line, this->prog_info->cmd_line, 255);
+    cmd_line[255] = '\0';
+    CharUpperA(cmd_line);
+
+    if (strstr(cmd_line, "NOSTARTUP") || strstr(cmd_line, "NO STARTUP") || strstr(cmd_line, "NO_STARTUP")) {
+        this->prog_info->skip_startup = 1;
+    }
+    if (strstr(cmd_line, "SYSTEMMEMORY") || strstr(cmd_line, "SYSTEM MEMORY") || strstr(cmd_line, "SYSTEM_MEMORY")) {
+        this->prog_info->use_sys_mem = 1;
+    }
+    if (strstr(cmd_line, "MIDIMUSIC") || strstr(cmd_line, "MIDI MUSIC") || strstr(cmd_line, "MIDI_MUSIC")) {
+        this->prog_info->use_music = 1;
+        this->prog_info->use_cd_audio = 0;
+        this->prog_info->use_ima = 0;
+        this->prog_info->use_midi = 1;
+        this->prog_info->use_wave_music = 0;
+    }
+    if (strstr(cmd_line, "MSYNC")) {
+        this->mouse_blit_sync = 1;
+    }
+    if (strstr(cmd_line, "MFILL")) {
+        DDSys_CanColorFill = 0;
+    }
+    if (strstr(cmd_line, "NOSOUND") || strstr(cmd_line, "NO SOUND") || strstr(cmd_line, "NO_SOUND")) {
+        this->prog_info->use_sound = 0;
+    }
+    if (strstr(cmd_line, "640")) {
+        this->prog_info->main_wid = 640;
+        this->prog_info->main_hgt = 480;
+    }
+    if (strstr(cmd_line, "800")) {
+        this->prog_info->main_wid = 800;
+        this->prog_info->main_hgt = 600;
+    }
+    if (strstr(cmd_line, "1024")) {
+        this->prog_info->main_wid = 1024;
+        this->prog_info->main_hgt = 768;
+    }
+    if (strstr(cmd_line, "NOMOUSE") || strstr(cmd_line, "NO MOUSE") || strstr(cmd_line, "NO_MOUSE")) {
+        this->custom_mouse = 0;
+    }
+    if (strstr(cmd_line, "FULLSCREEN") || strstr(cmd_line, "FULL SCREEN") || strstr(cmd_line, "FULL_SCREEN")) {
+        this->prog_info->full_screen = 1;
+        this->prog_info->use_dir_draw = 1;
+    }
+    if (strstr(cmd_line, "VIDEOMEMORY") || strstr(cmd_line, "VIDEO MEMORY") || strstr(cmd_line, "VIDEO_MEMORY")) {
+        this->prog_info->use_sys_mem = 0;
+    }
+    if (strstr(cmd_line, "STREAMMUSIC") || strstr(cmd_line, "STREAM MUSIC") || strstr(cmd_line, "STREAM_MUSIC")) {
+        this->prog_info->use_music = 1;
+        this->prog_info->use_cd_audio = 0;
+        this->prog_info->use_ima = 0;
+        this->prog_info->use_midi = 0;
+        this->prog_info->use_wave_music = 1;
+    }
+    if (strstr(cmd_line, "RUNLOG")) {
+        do_run_log = 1;
+    }
+    if (strstr(cmd_line, "SYNCMSG")) {
+        this->comm_syncmsg = 1;
+    }
+    if (strstr(cmd_line, "DROPPACKETS")) {
+        this->comm_droppackets = 1;
+    }
+    if (strstr(cmd_line, "NOCOMMSPEED")) {
+        this->comm_speed = 0;
+    }
+    if (strstr(cmd_line, "SYNCSTOP")) {
+        this->comm_syncstop = 1;
+    }
+    if (strstr(cmd_line, "STEPMODE")) {
+        this->comm_stepmode = 1;
+    }
+
+    return 1;
+}
 int RGE_Base_Game::setup_class() {
     CUSTOM_DEBUG_FUNC_ENTER();
     if (!this->prog_info) {
@@ -1039,11 +1423,15 @@ int RGE_Base_Game::setup_sounds() {
     for (int i = 0; i < this->sound_num; i++) {
         if (this->sounds[i] != nullptr) {
             int r = this->sounds[i]->load(nullptr, -1);
+CUSTOM_DEBUG_BEGIN
             CUSTOM_DEBUG_LOG_FMT("setup_sounds[%d]: load=%d loaded=%d failed=%d",
                 i, r, (int)this->sounds[i]->loaded, (int)this->sounds[i]->failed);
+CUSTOM_DEBUG_END
         }
     }
+CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG_FMT("setup_sounds: sound_system=%p", this->sound_system);
+CUSTOM_DEBUG_END
     return 1;
 }
 
@@ -1069,65 +1457,84 @@ RGE_Game_World* RGE_Base_Game::create_world() {
     return this->world;
 }
 int RGE_Base_Game::run() {
-    // NOTE: Simplified message loop for initial boot. Original ASM handles more complex
-    // timer-based updates and additional game state checks in the full implementation.
+    // Source of truth: basegame.cpp.decomp @ 0x0041CFD0
     MSG msg;
     
-    while (this->prog_info && (this->game_mode == 4 || this->game_mode == 2)) {
-        if (this->comm_handler && this->comm_handler->IsPaused()) {
-            if (GetMessageA(&msg, NULL, 0, 0)) {
-                if (msg.message == WM_QUIT) return msg.wParam;
-                if (!this->handle_message(&msg)) {
-                    TranslateMessage(&msg);
-                    DispatchMessageA(&msg);
+    while (1) {
+        while (1) {
+            // Innermost loop: blocking GetMessage when inactive/wrong mode/paused
+            while (this->prog_active == 0 ||
+                   (this->prog_mode != 4 && this->prog_mode != 2) ||
+                   (this->comm_handler != nullptr && this->comm_handler->IsPaused() != 0)) {
+                int ret = GetMessageA(&msg, NULL, 0, 0);
+                if (ret == 0) {
+                    return msg.lParam;
                 }
-            } else {
-                return msg.wParam;
+                TranslateMessage(&msg);
+                DispatchMessageA(&msg);
             }
-        } else {
-            if (PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE)) {
-                if (msg.message == WM_QUIT) return msg.wParam;
-                if (!this->handle_message(&msg)) {
-                    TranslateMessage(&msg);
-                    DispatchMessageA(&msg);
-                }
-            } else {
-                this->handle_idle();
-            }
+            // Active mode: PeekMessage for non-blocking processing
+            int got = PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE);
+            if (got != 0) break;
+            this->handle_idle();
+        }
+        // Quit check: decomp uses msg.wParam == 0x12
+        if (msg.wParam == 0x12) break;
+        // handle_message returns non-zero if message should still be dispatched
+        int result = this->handle_message(&msg);
+        if (result != 0) {
+            TranslateMessage(&msg);
+            DispatchMessageA(&msg);
         }
     }
 
-    while (GetMessageA(&msg, NULL, 0, 0)) {
-        if (msg.message == WM_QUIT) break;
-        TranslateMessage(&msg);
-        DispatchMessageA(&msg);
-    }
-
-    return msg.wParam;
+    return msg.lParam;
 }
 int RGE_Base_Game::handle_message(struct tagMSG* p1) {
-    // Process messages based on assembly 0x0041FB40 or similar
-    switch (p1->message) {
-        case WM_PAINT:
-            return this->handle_paint((void*)p1->hwnd, (uint)p1->message, (uint)p1->wParam, (long)p1->lParam);
-        case WM_ACTIVATE:
-            return this->handle_activate((void*)p1->hwnd, (uint)p1->message, (uint)p1->wParam, (long)p1->lParam);
-        case WM_KEYDOWN:
-            return this->handle_key_down((void*)p1->hwnd, (uint)p1->message, (uint)p1->wParam, (long)p1->lParam);
-        case WM_MOUSEMOVE:
-            return this->handle_mouse_move((void*)p1->hwnd, (uint)p1->message, (uint)p1->wParam, (long)p1->lParam);
-        case WM_CLOSE:
-            return this->handle_close((void*)p1->hwnd, (uint)p1->message, (uint)p1->wParam, (long)p1->lParam);
-    }
-    return 0;
+    // Source of truth: basegame.cpp.decomp @ 0x0041C700
+    // Base class just returns 1 (not consumed). All message routing is done in wnd_proc.
+    return 1;
 }
 
 int RGE_Base_Game::handle_idle() {
-    // Idle processing: update world, render, etc.
-    if (this->world) {
-        // this->world->update();
+    // Source of truth: basegame.cpp.decomp @ 0x00420F60
+    if (this->prog_ready == 0 || this->prog_window == nullptr) {
+        return 0;
     }
-    this->action_update();
+
+    // Palette restoration timing
+    if (do_restore_palette != 0 && this->prog_active != 0) {
+        unsigned int threshold = (do_restore_palette > 5) ? 500 : 250;
+        unsigned long now = debug_timeGetTime("basegame.cpp", 0xf9a);
+        if (threshold <= (now - restore_palette_timer)) {
+            if (this->draw_system != nullptr) {
+                this->draw_system->ModifyPalette(0, 0x100, this->draw_system->palette);
+            }
+            do_restore_palette = do_restore_palette - 1;
+            restore_palette_timer = debug_timeGetTime("basegame.cpp", 0xfa4);
+        }
+    }
+
+    // Sound system timer processing
+    if (this->sound_system != nullptr) {
+        this->sound_system->handle_messages(this->prog_window, 0x113, 0, 0);
+    }
+
+    // Current panel idle
+    if (panel_system != nullptr) {
+        TPanel* curPanel = panel_system->currentPanelValue;
+        if (curPanel != nullptr) {
+            curPanel->handle_idle();
+        }
+    }
+
+    // Comm handler message receiving
+    if (this->comm_handler != nullptr) {
+        if (this->rge_game_options.multiplayerGameValue != 0) {
+            this->comm_handler->ReceiveGameMessages();
+        }
+    }
+
     return 1;
 }
 int RGE_Base_Game::handle_mouse_move(void* p1, uint p2, uint p3, long p4) { return 0; }
@@ -1142,8 +1549,14 @@ int RGE_Base_Game::handle_exit_menu(void* p1, uint p2, uint p3, long p4) { retur
 int RGE_Base_Game::handle_size(void* p1, uint p2, uint p3, long p4) { return 0; }
 int RGE_Base_Game::handle_palette_changed(void* p1, uint p2, uint p3, long p4) { return 0; }
 int RGE_Base_Game::handle_query_new_palette(void* p1, uint p2, uint p3, long p4) { return 0; }
-int RGE_Base_Game::handle_close(void* p1, uint p2, uint p3, long p4) { return 0; }
-int RGE_Base_Game::handle_destroy(void* p1, uint p2, uint p3, long p4) { return 0; }
+int RGE_Base_Game::handle_close(void* p1, uint p2, uint p3, long p4) {
+    // Return 1 (not consumed) so DefWindowProcA handles it → calls DestroyWindow
+    return 1;
+}
+int RGE_Base_Game::handle_destroy(void* p1, uint p2, uint p3, long p4) {
+    PostQuitMessage(0);
+    return 0; // consumed
+}
 int RGE_Base_Game::action_update() { return 0; }
 int RGE_Base_Game::action_mouse_move(long p1, long p2, int p3, int p4, int p5, int p6) { return 0; }
 int RGE_Base_Game::action_key_down(ulong p1, int p2, int p3, int p4, int p5) { return 0; }
@@ -1206,16 +1619,22 @@ int RGE_Base_Game::setup_comm() { return 1; }
 int RGE_Base_Game::setup_sound_system() {
     // Offset: 0x0041F030
     int vol = 0;
+CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG_FMT("setup_sound_system: use_sound=%d, prog_window=%p, sounds_dir=%s",
         this->prog_info->use_sound, this->prog_window, this->prog_info->sounds_dir);
+CUSTOM_DEBUG_END
     if (this->prog_info->use_sound != 0) {
         TSound_Driver* pDriver = new TSound_Driver(this->prog_window, this->prog_info->sounds_dir);
         this->sound_system = pDriver;
         if (pDriver != nullptr) {
+CUSTOM_DEBUG_BEGIN
             CUSTOM_DEBUG_LOG_FMT("setup_sound_system: driver_active=%d, dsrval=0x%lx",
                 pDriver->driver_active(), pDriver->dsrval);
+CUSTOM_DEBUG_END
             if (pDriver->driver_active() == 0) {
+CUSTOM_DEBUG_BEGIN
                 CUSTOM_DEBUG_LOG("setup_sound_system: DirectSound init FAILED, deleting driver");
+CUSTOM_DEBUG_END
                 delete this->sound_system;
                 this->sound_system = nullptr;
             }

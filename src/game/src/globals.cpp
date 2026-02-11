@@ -31,10 +31,17 @@ int video_codec_available = 0;
 int log_output = 0;
 
 int quick_start_game_mode = 0;
+int restore_mouse_after_paint = 0;
 int restoration_count = 0;
 unsigned char shape_file_first = 0;
 unsigned char sound_file_first = 0;
 int debug_timeGetTime_on = 0;
+// system_ignore_size_messages defined in Drawarea.cpp
+int do_restore_palette = 0;
+unsigned long restore_palette_timer = 0;
+void* save_active_wnd = nullptr;
+int MouseCursorInChildContol = 0;
+int DDSys_CanColorFill = 1;
 
 void run_log(char* param_1, int param_2) {}
 

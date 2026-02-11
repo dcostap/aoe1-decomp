@@ -134,7 +134,7 @@ CUSTOM_DEBUG_END
     }
     // Source of truth: scr_sing.cpp.decomp - skip first button in tab order
     // but pass count as 6 (the original passes all 6 buttons starting from index 1)
-    this->set_tab_order(tab_list + 1, 6);
+    this->set_tab_order(tab_list + 1, 5);
 
 CUSTOM_DEBUG_BEGIN
     CUSTOM_DEBUG_LOG("SP ctor: completed");

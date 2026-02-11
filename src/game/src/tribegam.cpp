@@ -892,8 +892,14 @@ int TRIBE_Game::handle_exit_menu(void* p1, uint p2, uint p3, long p4) { return 0
 int TRIBE_Game::handle_size(void* p1, uint p2, uint p3, long p4) { return 0; }
 int TRIBE_Game::handle_palette_changed(void* p1, uint p2, uint p3, long p4) { return 0; }
 int TRIBE_Game::handle_query_new_palette(void* p1, uint p2, uint p3, long p4) { return 0; }
-int TRIBE_Game::handle_close(void* p1, uint p2, uint p3, long p4) { return 0; }
-int TRIBE_Game::handle_destroy(void* p1, uint p2, uint p3, long p4) { return 0; }
+int TRIBE_Game::handle_close(void* p1, uint p2, uint p3, long p4) {
+    // Return 1 (not consumed) so DefWindowProcA handles it → calls DestroyWindow
+    return 1;
+}
+int TRIBE_Game::handle_destroy(void* p1, uint p2, uint p3, long p4) {
+    PostQuitMessage(0);
+    return 0; // consumed
+}
 
 int TRIBE_Game::action_update() { return 0; }
 int TRIBE_Game::action_mouse_move(long p1, long p2, int p3, int p4, int p5, int p6) { return 0; }

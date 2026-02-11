@@ -41,6 +41,12 @@ extern int restore_mouse_after_paint;
 extern unsigned char shape_file_first;
 extern unsigned char sound_file_first;
 extern int debug_timeGetTime_on;
+extern int system_ignore_size_messages;
+extern int do_restore_palette;
+extern unsigned long restore_palette_timer;
+extern void* save_active_wnd;
+extern int MouseCursorInChildContol;
+extern int DDSys_CanColorFill;
 
 void run_log(char* param_1, int param_2);
 void rge_read(int handle, void* buf, int size);
