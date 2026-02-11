@@ -1240,6 +1240,10 @@ int RGE_Base_Game::setup_graphics_system() {
 
     // Decomp passes full_screen to CheckAvailModes
     ds->CheckAvailModes(this->prog_info->full_screen);
+    // Modern Windows: fullscreen 8-bit enum finds nothing — retry windowed
+    if (this->prog_info->full_screen && !ds->ModeAvail640) {
+        ds->CheckAvailModes(0);
+    }
 
     // Mode fallback chain per decomp
     long w = this->prog_info->main_wid;
@@ -1288,7 +1292,7 @@ int RGE_Base_Game::setup_graphics_system() {
 int RGE_Base_Game::setup_palette() {
     if (!this->prog_info || !panel_system) return 0;
 
-    void* pal = panel_system->get_palette(this->prog_info->pal_file, 50501); // 0xc545 = 50501
+    void* pal = panel_system->get_palette(this->prog_info->pal_file, 50500); // 0xc544 per decomp
     if (pal) {
         this->prog_palette = pal;
         return 1;

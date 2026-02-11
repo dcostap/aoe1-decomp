@@ -435,12 +435,13 @@ int TDropDownPanel::append_line(long str_id, long id) {
     return 0;
 }
 
+// Source of truth: ASM @ 0x00475250
 void TDropDownPanel::set_line(long line_num) {
     this->val_num = (short)line_num;
     if (this->list_panel) {
-        this->list_panel->set_line(line_num);
+        ((TTextPanel*)this->list_panel)->set_line(line_num);
         if (this->val_panel) {
-            char* text = ((TTextPanel*)this->list_panel)->get_text((int)(short)line_num);
+            char* text = ((TTextPanel*)this->list_panel)->get_text(line_num);
             this->val_panel->set_text(text);
         }
     }
@@ -707,7 +708,13 @@ long TDropDownPanel::char_action(long p1, short p2) { return TPanel::char_action
 void TDropDownPanel::get_true_render_rect(tagRECT* r) { TPanel::get_true_render_rect(r); }
 int TDropDownPanel::is_inside(long x, long y) { return TPanel::is_inside(x, y); }
 void TDropDownPanel::set_focus(int f) { TPanel::set_focus(f); }
-void TDropDownPanel::set_tab_order(TPanel* p1, TPanel* p2) { TPanel::set_tab_order(p1, p2); }
+// Source of truth: ASM @ 0x004751E0
+void TDropDownPanel::set_tab_order(TPanel* p1, TPanel* p2) {
+    TPanel::set_tab_order(p1, p2);
+    if (this->val_panel != nullptr) {
+        this->val_panel->set_tab_order(nullptr, nullptr);
+    }
+}
 void TDropDownPanel::set_tab_order(TPanel** p, short s) { TPanel::set_tab_order(p, s); }
 uchar TDropDownPanel::get_help_info(char** p1, long* p2, long p3, long p4) { return TPanel::get_help_info(p1, p2, p3, p4); }
 void TDropDownPanel::stop_sound_system() { TPanel::stop_sound_system(); }

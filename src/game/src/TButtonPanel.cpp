@@ -138,7 +138,11 @@ long TButtonPanel::handle_char(long param_1, short param_2) { return 0; }
 long TButtonPanel::handle_user_command(uint param_1, long param_2) { return 0; }
 long TButtonPanel::handle_timer_command(uint param_1, long param_2) { return 0; }
 long TButtonPanel::handle_scroll(long param_1, long param_2) { return 0; }
-long TButtonPanel::handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) { return 0; }
+// ASM: TButtonPanel does NOT override handle_mouse_dbl_click — inherit TPanel's default
+// which includes is_inside check and fallback to handle_mouse_down.
+long TButtonPanel::handle_mouse_dbl_click(uchar param_1, long param_2, long param_3, int param_4, int param_5) {
+    return TPanel::handle_mouse_dbl_click(param_1, param_2, param_3, param_4, param_5);
+}
 long TButtonPanel::handle_mouse_move(long x, long y, int wparam, int param_4) {
     if (!this->active) return 0;
 
@@ -338,8 +342,11 @@ void TButtonPanel::do_action() {
         this->set_radio_button();
     }
 
+    // ASM @ 0x004739B0: decomp says action code 3 here but that's wrong.
+    // TDropDownPanel::action ASM @ 004744ba checks CMP EBP,0x2 for btn_panel click.
+    // List panel sends 2=click, 3=dblclick. Pattern: 1=notify, 2=click, 3=dblclick.
     if (this->parent_panel) {
-        this->parent_panel->action(this, 3, (ulong)this->id[this->cur_state], (ulong)this->id2[this->cur_state]);
+        this->parent_panel->action(this, 2, (ulong)this->id[this->cur_state], (ulong)this->id2[this->cur_state]);
     }
 
     if (this->notifyTypeValue == TButtonPanel::NotifyAction) {
@@ -365,8 +372,9 @@ void TButtonPanel::do_right_action(int param_1) {
         this->set_radio_button();
     }
 
+    // ASM: decomp says 6 but correct right-click code is 5. Pattern mirrors left: 5=rclick, 6=rdblclick.
     if (this->parent_panel) {
-        this->parent_panel->action(this, 6, (ulong)this->id[this->cur_state], (ulong)this->id2[this->cur_state]);
+        this->parent_panel->action(this, 5, (ulong)this->id[this->cur_state], (ulong)this->id2[this->cur_state]);
     }
 
     if (this->notifyTypeValue == TButtonPanel::NotifyAction) {

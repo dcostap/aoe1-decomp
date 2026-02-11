@@ -129,17 +129,30 @@ TDrawSystem::TDrawSystem() {
     _ASMSet_Shadowing(0x1111, 0xFF00FF, 0); 
 }
 
+// Source of truth: Drawarea.cpp.decomp @ 0x00442710
 TDrawSystem::~TDrawSystem() {
+    // In fullscreen, clear the primary surface before shutdown
+    if (this->ScreenMode == 2 && this->PrimarySurface != nullptr) {
+        DDBLTFX ddbltfx;
+        memset(&ddbltfx, 0, sizeof(ddbltfx));
+        ddbltfx.dwSize = sizeof(ddbltfx);
+        ddbltfx.dwFillColor = 0;
+        this->PrimarySurface->Blt(NULL, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &ddbltfx);
+    }
     this->DeleteSurfaces();
-    if (this->DirDrawPal) {
-        this->DirDrawPal->Release();
-        this->DirDrawPal = NULL;
-    }
-    if (this->Clipper) {
-        this->Clipper->Release();
-        this->Clipper = NULL;
-    }
-    if (this->DirDraw) {
+    if (this->DirDraw != nullptr) {
+        if (this->DirDrawPal) {
+            this->DirDrawPal->Release();
+            this->DirDrawPal = NULL;
+        }
+        if (this->Clipper) {
+            this->Clipper->Release();
+            this->Clipper = NULL;
+        }
+        if (this->ChangedMode != 0) {
+            this->DirDraw->RestoreDisplayMode();
+            this->ChangedMode = 0;
+        }
         this->DirDraw->Release();
         this->DirDraw = NULL;
     }
@@ -268,6 +281,15 @@ int TDrawSystem::Init(void* inst, void* wnd, void* pal, uchar draw_type, uchar s
         }
     }
 
+    // Decomp: clear primary surface in fullscreen after init
+    if (this->ScreenMode == 2 && this->PrimarySurface != nullptr) {
+        DDBLTFX ddbltfx;
+        memset(&ddbltfx, 0, sizeof(ddbltfx));
+        ddbltfx.dwSize = sizeof(ddbltfx);
+        ddbltfx.dwFillColor = 0;
+        this->PrimarySurface->Blt(NULL, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &ddbltfx);
+    }
+
     return 1;
 }
 
@@ -339,27 +361,33 @@ int TDrawSystem::CreateSurfaces() {
     return 1;
 }
 
+// Source of truth: Drawarea.cpp.decomp @ 0x004427A0
 void TDrawSystem::CheckAvailModes(int p1) {
-    this->ModeAvail640 = 1;
-    this->ModeAvail800 = 1;
-    this->ModeAvail1024 = 1;
-    this->ModeAvail1280 = 1;
-
-    if (!p1) {
+    if (p1 == 0) {
+        // Windowed mode: check desktop resolution via GDI
+        this->ModeAvail640 = 1;
         HDC hdc = CreateICA("DISPLAY", NULL, NULL, NULL);
-        if (hdc) {
+        if (hdc != NULL) {
             int horz = GetDeviceCaps(hdc, HORZRES);
-            int vert = GetDeviceCaps(hdc, VERTRES);
+            GetDeviceCaps(hdc, VERTRES); // decomp calls but ignores result
             DeleteDC(hdc);
-            if (vert >= 600) this->ModeAvail800 = 1;
-            if (vert >= 768) this->ModeAvail1024 = 1;
-            if (vert >= 1024) this->ModeAvail1280 = 1;
+            if (horz > 799)  this->ModeAvail800 = 1;
+            if (horz > 1023) this->ModeAvail1024 = 1;
+            if (horz > 1279) this->ModeAvail1280 = 1;
         }
-        return;
-    }
-
-    if (this->DirDraw) {
+    } else {
+        // Fullscreen mode: enumerate via DirectDraw
+        int created_temp = 0;
+        if (this->DirDraw == nullptr) {
+            HRESULT hr = DirectDrawCreate(NULL, &this->DirDraw, NULL);
+            if (hr != DD_OK) return;
+            created_temp = 1;
+        }
         this->DirDraw->EnumDisplayModes(0, NULL, this, TDrawSystem::CheckAvailModesCallback);
+        if (created_temp) {
+            this->DirDraw->Release();
+            this->DirDraw = nullptr;
+        }
     }
 }
 
@@ -453,36 +481,36 @@ void TDrawSystem::Paint(tagRECT* param_rect) {
     this->PrimarySurface->Blt(&dest, this->DrawArea->DrawSurface, &src, DDBLT_WAIT, NULL);
 }
 
+// Source of truth: Drawarea.cpp.decomp @ 0x00443CB0
 void TDrawSystem::SetPalette(void* pal) {
     this->Pal = pal;
     PALETTEENTRY color_table[256];
-    memset(color_table, 0, sizeof(color_table));
-    if (pal) {
-        int retrieved = GetPaletteEntries((HPALETTE)pal, 0, 256, color_table);
-        CUSTOM_DEBUG_LOG_FMT("TDrawSystem::SetPalette: retrieved %d entries from HPALETTE %p", retrieved, pal);
-        if (retrieved > 0) {
-            CUSTOM_DEBUG_LOG_FMT("TDrawSystem::SetPalette: Entry 0: R=%d G=%d B=%d", (int)color_table[0].peRed, (int)color_table[0].peGreen, (int)color_table[0].peBlue);
-            for (int i = 0; i < 16; i++) {
-                CUSTOM_DEBUG_LOG_FMT("  Pal[%d]: R=%d G=%d B=%d", i, (int)color_table[i].peRed, (int)color_table[i].peGreen, (int)color_table[i].peBlue);
-            }
-            CUSTOM_DEBUG_LOG_FMT("TDrawSystem::SetPalette: Entry 255: R=%d G=%d B=%d", (int)color_table[255].peRed, (int)color_table[255].peGreen, (int)color_table[255].peBlue);
-        }
+    if (pal == nullptr) {
+        memset(color_table, 0, sizeof(color_table));
     } else {
-        CUSTOM_DEBUG_LOG("TDrawSystem::SetPalette: NULL HPALETTE provided");
+        GetPaletteEntries((HPALETTE)pal, 0, 256, color_table);
     }
+    // Decomp zeros entry 0 (transparent/black) after reading
+    color_table[0].peRed = 0;
+    color_table[0].peGreen = 0;
+    color_table[0].peBlue = 0;
+    color_table[0].peFlags = 0;
     this->ModifyPalette(0, 256, color_table);
 }
 
+// Source of truth: Drawarea.cpp.decomp @ 0x00443D40
 void TDrawSystem::ModifyPalette(int start, int count, tagPALETTEENTRY* entries) {
-    if (start < 0 || start + count > 256) return;
-    memcpy(&this->palette[start], entries, count * sizeof(tagPALETTEENTRY));
-    if (this->DirDrawPal) {
+    if (start < start + count) {
+        memcpy(&this->palette[start], entries, count * sizeof(tagPALETTEENTRY));
+    }
+    if (this->DrawType != 1 && this->DirDrawPal != nullptr) {
         this->DirDrawPal->SetEntries(0, start, count, entries);
     }
 }
 
+// Source of truth: Drawarea.cpp.decomp @ 0x00442EF0
 void TDrawSystem::ClearPrimarySurface() {
-    if (this->PrimarySurface) {
+    if (this->ScreenMode == 2 && this->PrimarySurface != nullptr) {
         DDBLTFX ddbltfx;
         memset(&ddbltfx, 0, sizeof(ddbltfx));
         ddbltfx.dwSize = sizeof(ddbltfx);
@@ -491,20 +519,63 @@ void TDrawSystem::ClearPrimarySurface() {
     }
 }
 
+// Source of truth: Drawarea.cpp.decomp @ 0x00442F30
+// Returns: 0=OK, 1=display mode changed, 2=surfaces restored, 3=fatal error
 uchar TDrawSystem::CheckSurfaces() {
-    if (!this->PrimarySurface) return 0;
-    if (this->PrimarySurface->IsLost() == DDERR_SURFACELOST) {
-        if (this->PrimarySurface->Restore() == DD_OK) {
-            this->Restored = 1;
-            return 1;
-        }
-        return 0;
+    if (this->DrawType != 2) return 0;
+    if (this->PrimarySurface == nullptr || this->DrawArea == nullptr ||
+        this->DrawArea->DrawSurface == nullptr) {
+        return 3;
     }
-    return 1;
+
+    uchar result = 0;
+    HRESULT hr = this->PrimarySurface->IsLost();
+    if (hr != DD_OK) {
+        // Primary surface is lost — check if display mode changed
+        DDSURFACEDESC ddsd;
+        memset(&ddsd, 0, sizeof(ddsd));
+        ddsd.dwSize = sizeof(ddsd);
+        hr = this->DirDraw->GetDisplayMode(&ddsd);
+        if (hr == DD_OK &&
+            ((int)ddsd.dwWidth != this->ScreenWidth ||
+             (int)ddsd.dwHeight != this->ScreenHeight ||
+             (int)ddsd.ddpfPixelFormat.dwRGBBitCount != 8)) {
+            return 1; // display mode changed
+        }
+        hr = this->PrimarySurface->Restore();
+        if (hr != DD_OK) {
+            return 3; // fatal
+        }
+        this->Restored = 1;
+        result = 2;
+        // Clear primary surface after restore
+        DDBLTFX ddbltfx;
+        memset(&ddbltfx, 0, sizeof(ddbltfx));
+        ddbltfx.dwSize = sizeof(ddbltfx);
+        ddbltfx.dwFillColor = 0;
+        this->PrimarySurface->Blt(NULL, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &ddbltfx);
+    }
+
+    // Walk DrawAreaList — check each surface (except PrimaryArea)
+    DrawAreaNode* node = this->DrawAreaList;
+    while (node != nullptr) {
+        if (node->DrawArea != this->PrimaryArea) {
+            uchar chk = node->DrawArea->CheckSurface();
+            if (chk == 3) return 3;
+        }
+        node = node->NextNode;
+    }
+
+    return result;
 }
 
+// Source of truth: Drawarea.cpp.decomp @ 0x00443070
 void TDrawSystem::ClearRestored() {
     this->Restored = 0;
+    DrawAreaNode* node = this->DrawAreaList;
+    for (; node != nullptr; node = node->NextNode) {
+        node->DrawArea->Restored = 0;
+    }
 }
 
 int TDrawSystem::SetDisplaySize(long p1, long p2, int p3) {
@@ -565,6 +636,52 @@ TDrawArea::~TDrawArea() {
     if (this->Name) {
         free(this->Name);
     }
+}
+
+// Source of truth: Drawarea.cpp.decomp @ 0x00444110
+// Returns: 0=OK, 1=display mode changed, 2=restored, 3=fatal
+uchar TDrawArea::CheckSurface() {
+    if (this->DrawSystem != nullptr && this->DrawSystem->DrawType == 2) {
+        if (this->DrawSurface == nullptr) {
+            return 3;
+        }
+        HRESULT hr = this->DrawSurface->IsLost();
+        if (hr != DD_OK) {
+            // Check if display mode changed
+            DDSURFACEDESC ddsd;
+            memset(&ddsd, 0, sizeof(ddsd));
+            ddsd.dwSize = sizeof(ddsd);
+            HRESULT hr2 = this->DrawSystem->DirDraw->GetDisplayMode(&ddsd);
+            if (hr2 == DD_OK &&
+                ((int)ddsd.dwWidth != this->DrawSystem->ScreenWidth ||
+                 (int)ddsd.dwHeight != this->DrawSystem->ScreenHeight ||
+                 (int)ddsd.ddpfPixelFormat.dwRGBBitCount != 8)) {
+                return 1;
+            }
+            hr = this->DrawSurface->Restore();
+            if (hr == DD_OK) {
+                // Clear after restore
+                DDBLTFX ddbltfx;
+                memset(&ddbltfx, 0, sizeof(ddbltfx));
+                ddbltfx.dwSize = sizeof(ddbltfx);
+                ddbltfx.dwFillColor = 0;
+                this->DrawSurface->Blt(NULL, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &ddbltfx);
+                this->Restored = 1;
+                return 2;
+            }
+            // Restore failed — try recreating via SetSize
+            if (hr == DDERR_INVALIDOBJECT || hr == DDERR_INVALIDPARAMS) {
+                this->DrawSurface->Release();
+                this->DrawSurface = nullptr;
+                this->SetSize(this->Width, this->Height, 0);
+                if (this->DrawSurface != nullptr) {
+                    return 2;
+                }
+            }
+            return 3;
+        }
+    }
+    return 0;
 }
 
 // Source of truth: Drawarea.cpp.decomp @ 0x00443F60
@@ -646,14 +763,17 @@ void TDrawArea::SetSize(long width, long height, int pitch) {
             HRESULT hr = ds->DirDraw->CreateSurface(&ddsd, &this->DrawSurface, NULL);
             if (hr == DD_OK) {
                 this->SurfaceDesc.dwSize = sizeof(DDSURFACEDESC);
-                this->DrawSurface->GetSurfaceDesc(&this->SurfaceDesc);
-                this->Pitch = (int)this->SurfaceDesc.lPitch;
-                // Clear the surface
-                DDBLTFX ddbltfx;
-                memset(&ddbltfx, 0, sizeof(ddbltfx));
-                ddbltfx.dwSize = sizeof(ddbltfx);
-                ddbltfx.dwFillColor = 0;
-                this->DrawSurface->Blt(NULL, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &ddbltfx);
+                hr = this->DrawSurface->GetSurfaceDesc(&this->SurfaceDesc);
+                if (hr == DD_OK) {
+                    this->SetInfo();
+                    this->SetAccessOffsets();
+                    // Clear the surface
+                    DDBLTFX ddbltfx;
+                    memset(&ddbltfx, 0, sizeof(ddbltfx));
+                    ddbltfx.dwSize = sizeof(ddbltfx);
+                    ddbltfx.dwFillColor = 0;
+                    this->DrawSurface->Blt(NULL, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &ddbltfx);
+                }
             }
         } else {
             // Primary area: reuse the DD primary surface
@@ -743,30 +863,19 @@ void TDrawArea::Clear(tagRECT* rect, int color) {
 void TDrawArea::PtrClear(tagRECT* rect, int color) {}
 void TDrawArea::OverlayMemCopy(tagRECT* rect, TDrawArea* src, int x, int y) {}
 
+// Source of truth: Drawarea.cpp.decomp @ 0x00444270
 uchar* TDrawArea::Lock(char* name, int p2) {
-    if (!this->DrawSurface) return NULL;
-    if (this->Bits) return this->Bits;
-    if (this->DrawDc) return NULL;
-
-    DDSURFACEDESC ddsd;
-    memset(&ddsd, 0, sizeof(ddsd));
-    ddsd.dwSize = sizeof(ddsd);
-    HRESULT hr = this->DrawSurface->Lock(NULL, &ddsd, DDLOCK_WAIT, NULL);
-    if (hr == DDERR_SURFACELOST) {
-        if (this->DrawSurface->Restore() == DD_OK) {
-            hr = this->DrawSurface->Lock(NULL, &ddsd, DDLOCK_WAIT, NULL);
-        }
+    if (this->DrawSystem != nullptr && this->DrawSystem->DrawType == 1) {
+        return this->Bits; // WinG path
     }
-    if (FAILED(hr)) return NULL;
-    static bool logged_lock = false;
-    if (!logged_lock) {
-        CUSTOM_DEBUG_LOG_FMT("TDrawArea::Lock: %s bpp=%lu pitch=%ld R=0x%08lx G=0x%08lx B=0x%08lx", name ? name : "(null)", (unsigned long)ddsd.ddpfPixelFormat.dwRGBBitCount, (long)ddsd.lPitch, (unsigned long)ddsd.ddpfPixelFormat.dwRBitMask, (unsigned long)ddsd.ddpfPixelFormat.dwGBitMask, (unsigned long)ddsd.ddpfPixelFormat.dwBBitMask);
-        logged_lock = true;
-    }
+    if (this->DrawSurface == nullptr) return nullptr;
+    if (this->Bits != nullptr) return this->Bits;
+    if (this->DrawDc != nullptr) return nullptr;
 
-    memcpy(&this->SurfaceDesc, &ddsd, sizeof(ddsd));
-    this->Bits = (uchar*)ddsd.lpSurface;
-    this->Pitch = ddsd.lPitch;
+    HRESULT hr = this->DrawSurface->Lock(NULL, &this->SurfaceDesc, (name != nullptr) ? 1 : 0, NULL);
+    if (hr != DD_OK) return nullptr;
+
+    this->Bits = (uchar*)this->SurfaceDesc.lpSurface;
     this->SetInfo();
     if (this->Bits != this->LastBits) {
         this->SetAccessOffsets();
@@ -774,11 +883,12 @@ uchar* TDrawArea::Lock(char* name, int p2) {
     return this->Bits;
 }
 
+// Source of truth: Drawarea.cpp.decomp @ 0x00444300
 void TDrawArea::Unlock(char* name) {
-    if (!this->DrawSurface) return;
-    if (this->Bits) {
+    if (this->DrawSystem != nullptr && this->DrawSystem->DrawType == 1) return;
+    if (this->DrawSurface != nullptr && this->Bits != nullptr) {
         this->DrawSurface->Unlock(this->Bits);
-        this->Bits = NULL;
+        this->Bits = nullptr;
     }
 }
 

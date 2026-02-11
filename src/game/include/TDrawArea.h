@@ -38,6 +38,7 @@ struct TDrawArea {
 
     // Source-of-truth methods needed by `Panel_ez` and UI shading.
     long AlignedWidth();
+    uchar CheckSurface();
     void SetClipRect(tagRECT* rect);
     void SetClipRect(long left, long top, long right, long bottom);
     void Copy(TDrawArea* dest, long x, long y, tagRECT* src_rect, int flags);

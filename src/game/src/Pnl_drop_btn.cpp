@@ -38,5 +38,6 @@ long TDropDownButtonPanel::handle_mouse_move(long x, long y, int wparam, int par
         }
     }
 
-    return TButtonPanel::handle_mouse_move(x, y, wparam, param_4);
+    // ASM @ 0x004755B1: explicitly calls TPanel::handle_mouse_move (not TButtonPanel)
+    return TPanel::handle_mouse_move(x, y, wparam, param_4);
 }

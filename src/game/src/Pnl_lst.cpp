@@ -604,11 +604,10 @@ long TListPanel::handle_scroll(long p1, long p2) { return TTextPanel::handle_scr
 long TListPanel::handle_mouse_down(uchar b, long x, long y, int p1, int p2) { return TPanel::handle_mouse_down(b, x, y, p1, p2); }
 long TListPanel::handle_mouse_move(long x, long y, int p1, int p2) { return TPanel::handle_mouse_move(x, y, p1, p2); }
 long TListPanel::handle_mouse_up(uchar b, long x, long y, int p1, int p2) { return TPanel::handle_mouse_up(b, x, y, p1, p2); }
+// ASM: TListPanel does NOT override handle_mouse_dbl_click — inherit TPanel's default
+// which includes the critical is_inside check before calling mouse_left_dbl_click_action.
 long TListPanel::handle_mouse_dbl_click(uchar b, long x, long y, int p1, int p2) {
-    if (b == 1) {
-        return mouse_left_dbl_click_action(x, y, p1, p2);
-    }
-    return mouse_right_dbl_click_action(x, y, p1, p2);
+    return TPanel::handle_mouse_dbl_click(b, x, y, p1, p2);
 }
 long TListPanel::mouse_left_hold_action(long x, long y, int p1, int p2) { return TTextPanel::mouse_left_hold_action(x, y, p1, p2); }
 long TListPanel::mouse_right_down_action(long x, long y, int p1, int p2) { return TTextPanel::mouse_right_down_action(x, y, p1, p2); }
