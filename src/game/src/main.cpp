@@ -104,7 +104,7 @@ CUSTOM_DEBUG_END
     info.update_interval = 0;
     info.check_multi_copies = 1;
     info.skip_startup = 1;
-    info.full_screen = 0;
+    info.full_screen = 1;
     info.fixed_window_size = 1;
     info.use_dir_draw = 1;
     info.use_sys_mem = 1;

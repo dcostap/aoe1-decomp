@@ -145,74 +145,194 @@ TDrawSystem::~TDrawSystem() {
     }
 }
 
-int TDrawSystem::Init(void* inst, void* wnd, void* pal, uchar draw_mode, uchar err, long width, long height, ulong flags) {
-    this->Inst = inst;
+int TDrawSystem::Init(void* inst, void* wnd, void* pal, uchar draw_type, uchar screen_mode, long width, long height, ulong flags) {
     this->Wnd = wnd;
     this->Pal = pal;
-    this->ScreenMode = draw_mode;
-    this->ErrorCode = err;
+    this->Inst = inst;
+    this->ScreenMode = screen_mode;
     this->ScreenWidth = width;
+    this->DrawType = draw_type;
     this->ScreenHeight = height;
     this->Flags = flags;
 
+    // DrawType 1 = WinG (unsupported)
+    if (draw_type == 1) {
+        return 0;
+    }
+
     // DirectDraw initialization
     HRESULT hr = DirectDrawCreate(NULL, &this->DirDraw, NULL);
-    if (FAILED(hr)) {
-        CUSTOM_DEBUG_LOG_FMT("TDrawSystem::Init: DirectDrawCreate failed hr=0x%x", hr);
+    if (hr != DD_OK) {
         this->ErrorCode = 1;
         return 0;
     }
 
-    // Set Cooperative Level
-    DWORD coopFlags = DDSCL_NORMAL;
-    if (this->ScreenMode == 2) coopFlags = DDSCL_FULLSCREEN | DDSCL_EXCLUSIVE | DDSCL_ALLOWREBOOT;
-    
-    if (this->Wnd) {
-        hr = this->DirDraw->SetCooperativeLevel((HWND)this->Wnd, coopFlags);
-        if (FAILED(hr)) {
-             CUSTOM_DEBUG_LOG_FMT("TDrawSystem::Init: SetCooperativeLevel failed hr=0x%x", hr);
-        }
-    }
-    
     this->CheckAvailModes(1);
 
-    // Initial palette update if provided
-    if (this->Pal) {
-        this->SetPalette(this->Pal);
+    if (this->ScreenMode == 2) {
+        // Try fullscreen mode: DDSCL_FULLSCREEN | DDSCL_EXCLUSIVE
+        hr = this->DirDraw->SetCooperativeLevel((HWND)this->Wnd, DDSCL_FULLSCREEN | DDSCL_EXCLUSIVE);
+        if (hr == DD_OK) {
+            this->ColorBits = 8;
+            hr = this->DirDraw->SetDisplayMode(this->ScreenWidth, this->ScreenHeight, 8);
+        }
+        if (hr != DD_OK) {
+            // Fullscreen 8-bit failed (common on modern Windows) — fall back to windowed
+            CUSTOM_DEBUG_LOG_FMT("TDrawSystem::Init: Fullscreen failed (hr=0x%x), falling back to windowed", hr);
+            this->DirDraw->SetCooperativeLevel((HWND)this->Wnd, DDSCL_NORMAL);
+            this->ScreenMode = 1;
+            this->ChangedMode = 0;
+            // Resize window to game resolution BEFORE surfaces are created
+            DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
+            SetWindowLongA((HWND)this->Wnd, GWL_STYLE, style);
+            RECT rc = {0, 0, this->ScreenWidth, this->ScreenHeight};
+            AdjustWindowRect(&rc, style, FALSE);
+            SetWindowPos((HWND)this->Wnd, HWND_TOP, 0, 0,
+                         rc.right - rc.left, rc.bottom - rc.top,
+                         SWP_NOMOVE | SWP_FRAMECHANGED);
+            ShowWindow((HWND)this->Wnd, SW_SHOW);
+        } else {
+            this->ChangedMode = 1;
+        }
     }
 
-    // Create Surfaces (Primary DrawArea)
-    if (!this->CreateSurfaces()) {
-        CUSTOM_DEBUG_LOG("TDrawSystem::Init: CreateSurfaces failed");
+    if (this->ScreenMode == 1) {
+        // Windowed mode: DDSCL_NORMAL
+        hr = this->DirDraw->SetCooperativeLevel((HWND)this->Wnd, DDSCL_NORMAL);
+        if (hr != DD_OK) {
+            this->ErrorCode = 1;
+            return 0;
+        }
+        // Query actual display mode (don't require 8-bit — modern displays are 32-bit)
+        DDSURFACEDESC ddsd;
+        memset(&ddsd, 0, sizeof(ddsd));
+        ddsd.dwSize = sizeof(ddsd);
+        hr = this->DirDraw->GetDisplayMode(&ddsd);
+        if (hr == DD_OK) {
+            this->ColorBits = (int)ddsd.ddpfPixelFormat.dwRGBBitCount;
+            CUSTOM_DEBUG_LOG_FMT("TDrawSystem::Init: Windowed mode, display=%d-bit", this->ColorBits);
+        }
+    }
+
+    // Palette initialization
+    tagPALETTEENTRY color_table[256];
+    if (this->Pal == nullptr) {
+        memset(color_table, 0, sizeof(color_table));
+    } else {
+        GetPaletteEntries((HPALETTE)this->Pal, 0, 256, color_table);
+    }
+
+    // Zero internal palette
+    memset(this->palette, 0, sizeof(this->palette));
+
+    // Create DirectDraw palette (may fail on non-8-bit displays — that's OK)
+    hr = this->DirDraw->CreatePalette(DDPCAPS_8BIT | DDPCAPS_INITIALIZE, color_table, &this->DirDrawPal, NULL);
+    if (hr == DD_OK) {
+        this->DirDrawPal->GetEntries(0, 0, 256, this->palette);
+    } else {
+        CUSTOM_DEBUG_LOG_FMT("TDrawSystem::Init: CreatePalette failed hr=0x%x (non-8-bit display, OK)", hr);
+        // Copy color_table to internal palette directly
+        memcpy(this->palette, color_table, sizeof(this->palette));
+    }
+
+    // Create clipper
+    hr = this->DirDraw->CreateClipper(0, &this->Clipper, NULL);
+    if (hr != DD_OK) {
+        this->ErrorCode = 1;
         return 0;
+    }
+    hr = this->Clipper->SetHWnd(0, (HWND)this->Wnd);
+    if (hr != DD_OK) {
+        this->ErrorCode = 1;
+        return 0;
+    }
+
+    // Create surfaces
+    if (!this->CreateSurfaces()) {
+        this->ErrorCode = 1;
+        return 0;
+    }
+
+    // Query hardware caps
+    this->IsBanked = 0;
+    DDCAPS ddcaps;
+    memset(&ddcaps, 0, sizeof(ddcaps));
+    ddcaps.dwSize = sizeof(ddcaps);
+    hr = this->DirDraw->GetCaps(&ddcaps, NULL);
+    if (hr == DD_OK) {
+        if ((ddcaps.dwCaps & DDCAPS_BANKSWITCHED) != 0) {
+            this->IsBanked = 1;
+        }
+        if ((ddcaps.dwCaps & DDCAPS_BLT) != 0 && (ddcaps.dwCaps & DDCAPS_BLTCOLORFILL) != 0) {
+            this->CanSrcBlt = 1;
+        }
     }
 
     return 1;
 }
 
+// Source of truth: Drawarea.cpp.decomp @ 0x004430F0
 int TDrawSystem::CreateSurfaces() {
-    if (this->PrimaryArea) return 1;
+    // When DrawType == 2 (DirectDraw), create the DD primary surface
+    if (this->DrawType == 2) {
+        if (this->PrimarySurface == nullptr) {
+            DDSURFACEDESC ddsd;
+            memset(&ddsd, 0, sizeof(ddsd));
+            ddsd.dwSize = sizeof(ddsd);
+            ddsd.dwFlags = DDSD_CAPS;
+            ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
+            HRESULT hr = this->DirDraw->CreateSurface(&ddsd, &this->PrimarySurface, NULL);
+            if (hr != DD_OK) {
+                return 0;
+            }
+            // Attach palette to primary surface
+            if (this->ColorBits == 8 && this->DirDrawPal) {
+                hr = this->PrimarySurface->SetPalette(this->DirDrawPal);
+            }
+            // Attach clipper to primary surface
+            if (this->Clipper) {
+                hr = this->PrimarySurface->SetClipper(this->Clipper);
+            }
+        }
 
-    // Create the TDrawArea object for the primary surface
-    TDrawArea* da = new TDrawArea("Primary");
-    if (!da) return 0;
-    
-    this->PrimaryArea = da;
-    this->DrawArea = da;
-
-    // da->Init will create the DirectDraw surface
-    if (!da->Init(this, this->Wnd, this->ScreenWidth, this->ScreenHeight, 0, 1, 0)) {
-        return 0;
+        // Create PrimaryArea TDrawArea ("Primary Surface", is_primary=1)
+        if (this->PrimaryArea == nullptr) {
+            TDrawArea* pa = new TDrawArea("Primary Surface");
+            if (!pa) return 0;
+            this->PrimaryArea = pa;
+            int w, h;
+            if (this->ScreenMode == 1) {
+                RECT rc;
+                GetClientRect((HWND)this->Wnd, &rc);
+                w = rc.right;
+                h = rc.bottom;
+            } else {
+                w = this->ScreenWidth;
+                h = this->ScreenHeight;
+            }
+            if (!pa->Init(this, this->Wnd, w, h, 0, 1, 0)) {
+                return 0;
+            }
+        }
     }
 
-    // Palette handling if screen mode is 8-bit
-    if (this->ColorBits == 8 && this->DirDraw) {
-        // Create DirectDraw palette
-        HRESULT hr = this->DirDraw->CreatePalette(DDPCAPS_8BIT | DDPCAPS_INITIALIZE, this->palette, &this->DirDrawPal, NULL);
-        if (SUCCEEDED(hr)) {
-            if (this->PrimarySurface) {
-                this->PrimarySurface->SetPalette(this->DirDrawPal);
-            }
+    // Create DrawArea TDrawArea ("Back Buffer", is_primary=0)
+    if (this->DrawArea == nullptr) {
+        TDrawArea* da = new TDrawArea("Back Buffer");
+        if (!da) return 0;
+        this->DrawArea = da;
+        int w, h;
+        if (this->ScreenMode == 1) {
+            RECT rc;
+            GetClientRect((HWND)this->Wnd, &rc);
+            w = rc.right;
+            h = rc.bottom;
+        } else {
+            w = this->ScreenWidth;
+            h = this->ScreenHeight;
+        }
+        if (!da->Init(this, this->Wnd, w, h, 0, 0, 0)) {
+            return 0;
         }
     }
 
@@ -255,61 +375,82 @@ long __stdcall TDrawSystem::CheckAvailModesCallback(_DDSURFACEDESC* p1, void* p2
 }
 
 int TDrawSystem::IsModeAvail(long w, long h, int bpp) {
+    // Decomp calls this with h=0 for width-only checks
     if (bpp == 8) {
-        if (w == 640 && h == 480) return this->ModeAvail640;
-        if (w == 800 && h == 600) return this->ModeAvail800;
-        if (w == 1024 && h == 768) return this->ModeAvail1024;
-        if (w == 1280 && h == 1024) return this->ModeAvail1280;
+        if (w == 640  && (h == 0 || h == 480))  return this->ModeAvail640;
+        if (w == 800  && (h == 0 || h == 600))  return this->ModeAvail800;
+        if (w == 1024 && (h == 0 || h == 768))  return this->ModeAvail1024;
+        if (w == 1280 && (h == 0 || h == 1024)) return this->ModeAvail1280;
     }
     return 0;
 }
 
+// Source of truth: Drawarea.cpp.decomp @ 0x00443090
 void TDrawSystem::DeleteSurfaces() {
-    if (this->PrimarySurface) {
-        this->PrimarySurface->Release();
-        this->PrimarySurface = NULL;
+    // Delete back buffer first
+    if (this->DrawArea != nullptr) {
+        delete this->DrawArea;
+        this->DrawArea = nullptr;
     }
-    this->Restored = 0;
+    // Delete primary area (doesn't release PrimarySurface — IsPrimarySurface flag prevents it)
+    if (this->PrimarySurface != nullptr) {
+        if (this->PrimaryArea != nullptr) {
+            delete this->PrimaryArea;
+        }
+        this->PrimaryArea = nullptr;
+        this->PrimarySurface->Release();
+        this->PrimarySurface = nullptr;
+    }
 }
 
-void TDrawSystem::Paint(tagRECT* rect) {
-    if (!this->PrimarySurface || !this->Wnd) {
-        static bool logged = false;
-        if (!logged) {
-            CUSTOM_DEBUG_LOG_FMT("Paint: early return - PrimarySurface=%p, Wnd=%p", this->PrimarySurface, this->Wnd);
-            logged = true;
-        }
-        return;
+// Source of truth: Drawarea.cpp.decomp @ 0x00443520
+void TDrawSystem::Paint(tagRECT* param_rect) {
+    if (this->DrawType == 1) return;
+    if (this->PrimarySurface == nullptr) return;
+    if (this->DrawArea == nullptr) return;
+    if (this->DrawArea->DrawSurface == nullptr) return;
+
+    RECT dest;
+    RECT src;
+
+    if (this->ScreenMode == 1) {
+        // Windowed: get client rect and convert dest to screen coords
+        GetClientRect((HWND)this->Wnd, &src);
+        dest = src;
+        ClientToScreen((HWND)this->Wnd, (POINT*)&dest.left);
+        ClientToScreen((HWND)this->Wnd, (POINT*)&dest.right);
+    } else {
+        // Fullscreen: full screen blit
+        src.left = 0;
+        src.top = 0;
+        src.right = this->ScreenWidth;
+        src.bottom = this->ScreenHeight;
+        dest.left = 0;
+        dest.top = 0;
+        dest.right = this->ScreenWidth;
+        dest.bottom = this->ScreenHeight;
     }
 
-    HDC hdcSurf;
-    HRESULT hr = this->PrimarySurface->GetDC(&hdcSurf);
-    if (hr == DDERR_SURFACELOST) {
-        if (this->PrimarySurface->Restore() == DD_OK) {
-            hr = this->PrimarySurface->GetDC(&hdcSurf);
-        }
+    if (param_rect != nullptr) {
+        int sx = param_rect->left;
+        int sy = param_rect->top;
+        int ex = param_rect->right;
+        int ey = param_rect->bottom;
+        if (sx < 0) sx = 0;
+        if (sy < 0) sy = 0;
+        if (ex >= this->ScreenWidth) ex = this->ScreenWidth - 1;
+        if (ey >= this->ScreenHeight) ey = this->ScreenHeight - 1;
+        dest.left = dest.left + sx;
+        dest.top = dest.top + sy;
+        dest.right = dest.left + (ex - sx) + 1;
+        dest.bottom = dest.top + (ey - sy) + 1;
+        src.left = sx;
+        src.top = sy;
+        src.right = ex + 1;
+        src.bottom = ey + 1;
     }
-    if (SUCCEEDED(hr)) {
-        HDC hdcWin = GetDC((HWND)this->Wnd);
-        if (hdcWin) {
-            RECT r;
-            GetClientRect((HWND)this->Wnd, &r);
-            BitBlt(hdcWin, 0, 0, r.right - r.left, r.bottom - r.top, hdcSurf, 0, 0, SRCCOPY);
-            ReleaseDC((HWND)this->Wnd, hdcWin);
-            static bool logged2 = false;
-            if (!logged2) {
-                CUSTOM_DEBUG_LOG_FMT("Paint: BitBlt executed, size=%dx%d", r.right - r.left, r.bottom - r.top);
-                logged2 = true;
-            }
-        }
-        this->PrimarySurface->ReleaseDC(hdcSurf);
-    } else {
-        static bool logged3 = false;
-        if (!logged3) {
-            CUSTOM_DEBUG_LOG_FMT("Paint: GetDC failed hr=0x%x", hr);
-            logged3 = true;
-        }
-    }
+
+    this->PrimarySurface->Blt(&dest, this->DrawArea->DrawSurface, &src, DDBLT_WAIT, NULL);
 }
 
 void TDrawSystem::SetPalette(void* pal) {
@@ -380,92 +521,153 @@ TDrawArea::TDrawArea(char* name) {
     }
 }
 
+// Source of truth: Drawarea.cpp.decomp @ TDrawArea::~TDrawArea
 TDrawArea::~TDrawArea() {
-    if (this->SpanList) {
-        delete this->SpanList;
-        this->SpanList = nullptr;
-        this->CurSpanList = nullptr;
+    // Unlink from DrawSystem's DrawAreaList
+    if (this->Node != nullptr) {
+        TDrawSystem* ds = this->DrawSystem;
+        if (ds != nullptr && this->Node == ds->DrawAreaList) {
+            ds->DrawAreaList = this->Node->NextNode;
+        }
+        if (this->Node->PrevNode != nullptr) {
+            this->Node->PrevNode->NextNode = this->Node->NextNode;
+        }
+        if (this->Node->NextNode != nullptr) {
+            this->Node->NextNode->PrevNode = this->Node->PrevNode;
+        }
+        free(this->Node);
+        this->Node = nullptr;
+    }
+
+    // Only release DrawSurface if this is NOT the primary (primary is shared)
+    if (this->DrawSystem == nullptr || this->DrawSystem->DrawType != 1) {
+        if (this->DrawSurface != nullptr && this->IsPrimarySurface == 0) {
+            this->DrawSurface->Release();
+            this->DrawSurface = nullptr;
+        }
+    }
+
+    if (this->BitmapInfo != nullptr) {
+        free(this->BitmapInfo);
     }
     if (this->DisplayOffsets) {
         free(this->DisplayOffsets);
         this->DisplayOffsets = nullptr;
-        this->CurDisplayOffsets = nullptr;
-        this->DisplayOffsetsSz = 0;
     }
     if (this->FloatOffsets) {
         free(this->FloatOffsets);
         this->FloatOffsets = nullptr;
-        this->FloatOffsetsSz = 0;
     }
-    if (this->DrawSurface) {
-        this->DrawSurface->Release();
-        this->DrawSurface = nullptr;
+    if (this->SpanList) {
+        delete this->SpanList;
+        this->SpanList = nullptr;
     }
     if (this->Name) {
         free(this->Name);
     }
 }
 
+// Source of truth: Drawarea.cpp.decomp @ 0x00443F60
+// Decomp signature: Init(TDrawSystem*, long width, long height, int use_trans, int is_primary)
+// Our signature keeps wnd/use_sys_mem for compat but ignores them per decomp
 int TDrawArea::Init(TDrawSystem* system, void* wnd, int width, int height, int use_trans, int is_primary, int use_sys_mem) {
     this->DrawSystem = system;
-    this->Wnd = wnd;
-    this->Width = width;
-    this->Height = height;
-    this->UseTrans = use_trans;
     this->IsPrimarySurface = is_primary;
-    this->SystemMemOnly = use_sys_mem;
 
-    if (!system || !system->DirDraw) return 0;
+    if (system != nullptr) {
+        this->Wnd = system->Wnd;
 
-    DDSURFACEDESC ddsd;
-    memset(&ddsd, 0, sizeof(ddsd));
-    ddsd.dwSize = sizeof(ddsd);
+        // Link into DrawSystem's DrawAreaList
+        if (this->Node == nullptr) {
+            DrawAreaNode* node = (DrawAreaNode*)calloc(1, sizeof(DrawAreaNode));
+            if (!node) return 0;
+            this->Node = node;
+            node->DrawArea = this;
+            node->PrevNode = nullptr;
+            node->NextNode = nullptr;
+            DrawAreaNode* list = system->DrawAreaList;
+            if (list == nullptr) {
+                system->DrawAreaList = node;
+            } else {
+                while (list->NextNode != nullptr) {
+                    list = list->NextNode;
+                }
+                list->NextNode = node;
+                node->PrevNode = list;
+            }
+        }
 
-    HRESULT hr;
-
-    int actual_type_is_primary = is_primary;
-    if (system->Wnd) {
-        actual_type_is_primary = 0;
-    }
-
-    IDirectDrawSurface* created_surface = NULL;
-
-    if (actual_type_is_primary) {
-        ddsd.dwFlags = DDSD_CAPS;
-        ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
-        hr = system->DirDraw->CreateSurface(&ddsd, &created_surface, NULL);
-    } else {
-        ddsd.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH;
-        ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN;
-        if (use_sys_mem) ddsd.ddsCaps.dwCaps |= DDSCAPS_SYSTEMMEMORY;
-        else ddsd.ddsCaps.dwCaps |= DDSCAPS_VIDEOMEMORY;
-        ddsd.dwWidth = width;
-        ddsd.dwHeight = height;
-
-        hr = system->DirDraw->CreateSurface(&ddsd, &created_surface, NULL);
-    }
-
-    if (FAILED(hr)) return 0;
-
-    this->DrawSurface = created_surface;
-
-    // In windowed mode the original engine often treats the main draw surface as an offscreen
-    // surface and still stores it as `PrimarySurface` for paint/blt purposes. Preserve that.
-    if (is_primary) {
-        system->PrimarySurface = created_surface;
+        if (system->DrawType == 1) {
+            return 0; // WinG not supported
+        }
     }
 
     this->Orien = 1;
-    this->SetClipRect((tagRECT*)0);
+    this->SetSize(width, height, 0);
     return 1;
 }
 
+// Source of truth: Drawarea.cpp.decomp @ 0x00443600
 void TDrawArea::SetSize(long width, long height, int pitch) {
-    this->Width = width;
-    this->Height = height;
-    this->Pitch = pitch;
+    TDrawSystem* ds = this->DrawSystem;
 
-    // SpanList setup (source of truth: `Drawarea.cpp.decomp` / `.asm`).
+    // Surface creation/update (only for DirectDraw mode with valid params)
+    if (ds != nullptr && ds->DrawType != 1 && ds != nullptr &&
+        ds->DirDraw != nullptr && width != 0 && height != 0 &&
+        (width != this->Width || height != this->Height || this->DrawSurface == nullptr)) {
+
+        if (width < 1) width = 1;
+        if (height < 1) height = 1;
+
+        this->Width = width;
+        this->Height = height;
+
+        if (this->IsPrimarySurface == 0) {
+            // Back buffer: create offscreen surface
+            if (this->DrawSurface != nullptr) {
+                this->DrawSurface->Release();
+                this->DrawSurface = nullptr;
+                memset(&this->SurfaceDesc, 0, sizeof(this->SurfaceDesc));
+                this->Pitch = 0;
+                this->UsingVidMem = 0;
+            }
+
+            DDSURFACEDESC ddsd;
+            memset(&ddsd, 0, sizeof(ddsd));
+            ddsd.dwSize = sizeof(ddsd);
+            ddsd.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH;
+            ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN;
+            if ((ds->Flags & 1) != 0 || pitch != 0 || this->SystemMemOnly != 0) {
+                ddsd.ddsCaps.dwCaps |= DDSCAPS_SYSTEMMEMORY;
+            }
+            ddsd.dwWidth = width;
+            ddsd.dwHeight = height;
+
+            HRESULT hr = ds->DirDraw->CreateSurface(&ddsd, &this->DrawSurface, NULL);
+            if (hr == DD_OK) {
+                this->SurfaceDesc.dwSize = sizeof(DDSURFACEDESC);
+                this->DrawSurface->GetSurfaceDesc(&this->SurfaceDesc);
+                this->Pitch = (int)this->SurfaceDesc.lPitch;
+                // Clear the surface
+                DDBLTFX ddbltfx;
+                memset(&ddbltfx, 0, sizeof(ddbltfx));
+                ddbltfx.dwSize = sizeof(ddbltfx);
+                ddbltfx.dwFillColor = 0;
+                this->DrawSurface->Blt(NULL, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &ddbltfx);
+            }
+        } else {
+            // Primary area: reuse the DD primary surface
+            this->DrawSurface = ds->PrimarySurface;
+        }
+
+        this->SetClipRect((tagRECT*)nullptr);
+        this->Clear(nullptr, 0);
+    } else {
+        this->Width = width;
+        this->Height = height;
+    }
+
+    // SpanList setup
     if (this->SpanList) {
         delete this->SpanList;
         this->SpanList = nullptr;

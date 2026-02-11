@@ -577,6 +577,12 @@ CUSTOM_DEBUG_END
         return 0;
     }
 
+    // Sync prog_info if fullscreen fell back to windowed inside Init
+    if (this->draw_system && this->draw_system->ScreenMode == 1 &&
+        this->prog_info->full_screen != 0) {
+        this->prog_info->full_screen = 0;
+    }
+
     if (!this->setup_palette()) {
         this->error_code = 0x11;
         return 0;
@@ -1079,6 +1085,9 @@ int RGE_Base_Game::setup_cmd_options() {
     if (strstr(cmd_line, "NOMOUSE") || strstr(cmd_line, "NO MOUSE") || strstr(cmd_line, "NO_MOUSE")) {
         this->custom_mouse = 0;
     }
+    if (strstr(cmd_line, "NORMSCRN") || strstr(cmd_line, "WINDOWED")) {
+        this->prog_info->full_screen = 0;
+    }
     if (strstr(cmd_line, "FULLSCREEN") || strstr(cmd_line, "FULL SCREEN") || strstr(cmd_line, "FULL_SCREEN")) {
         this->prog_info->full_screen = 1;
         this->prog_info->use_dir_draw = 1;
@@ -1208,52 +1217,69 @@ int RGE_Base_Game::setup_main_window() {
     return 1;
 }
 
-// Graphics System Setup
-// Graphics System Setup
+// Source of truth: basegame.cpp.decomp @ 0x0041E920
 int RGE_Base_Game::setup_graphics_system() {
-    int draw_type = 0;
-    int draw_mode = 0;
-    if (this->game_mode == 2) draw_type = 1; 
-    if (this->prog_info->full_screen) draw_mode = 1;
+    // Device caps check — need at least 8-bit color when using DirectDraw
+    if (this->prog_info->use_dir_draw != 0) {
+        HDC hdc = GetDC(NULL);
+        int bits = GetDeviceCaps(hdc, BITSPIXEL);
+        ReleaseDC(NULL, hdc);
+        if (bits < 8) {
+            this->error_code = 0x13;
+            return 0;
+        }
+    }
+
+    int iVar5 = this->prog_info->use_dir_draw;
+    int iVar2 = this->prog_info->use_sys_mem;
+    int iVar3 = this->prog_info->full_screen;
 
     TDrawSystem* ds = new TDrawSystem();
     if (!ds) return 0;
     this->draw_system = ds;
 
-    ds->CheckAvailModes(1);
+    // Decomp passes full_screen to CheckAvailModes
+    ds->CheckAvailModes(this->prog_info->full_screen);
 
-    long w = 640, h = 480;
-    if (this->prog_info->main_wid) w = this->prog_info->main_wid;
-    if (this->prog_info->main_hgt) h = this->prog_info->main_hgt;
-
-    if (!ds->IsModeAvail(w, h, 8)) {
-        if (ds->IsModeAvail(640, 480, 8)) {
+    // Mode fallback chain per decomp
+    long w = this->prog_info->main_wid;
+    long h = this->prog_info->main_hgt;
+    if (!ds->IsModeAvail(w, 0, 8)) {
+        if (w != 640 && ds->IsModeAvail(640, 0, 8)) {
             w = 640; h = 480;
-            this->prog_info->main_wid = 640;
-            this->prog_info->main_hgt = 480;
+        } else if (w != 800 && ds->IsModeAvail(800, 0, 8)) {
+            w = 800; h = 600;
+        } else if (w != 1024 && ds->IsModeAvail(1024, 0, 8)) {
+            w = 1024; h = 768;
+        } else if (w != 1280 && ds->IsModeAvail(1280, 0, 8)) {
+            w = 1280; h = 1024;
         } else {
             return 0;
         }
+        this->prog_info->main_wid = w;
+        this->prog_info->main_hgt = h;
     }
 
-    if (!ds->Init(this->prog_info->instance, this->prog_window, this->prog_palette, 
-                  (uchar)draw_type, (uchar)draw_mode, w, h, 0)) {
+    // Decomp: draw_type = (use_dir_draw != 0) + 1  →  1=WinG, 2=DirectDraw
+    //         draw_mode = (full_screen != 0) + 1    →  1=windowed, 2=fullscreen
+    uchar draw_type = (uchar)((iVar5 != 0) + 1);
+    uchar draw_mode = (uchar)((iVar3 != 0) + 1);
+
+    if (!ds->Init(this->prog_info->instance, this->prog_window, this->prog_palette,
+                  draw_type, draw_mode, w, h, (ulong)(iVar2 != 0))) {
         return 0;
     }
 
     if (panel_system) {
         panel_system->release_palette(this->prog_palette);
-        this->prog_palette = panel_system->get_palette(this->prog_info->pal_file, 50501);
-        if (this->prog_palette) {
-            this->draw_system->SetPalette(this->prog_palette);
-        }
+        this->prog_palette = panel_system->get_palette(this->prog_info->pal_file, 50500);
     }
 
     this->draw_area = ds->DrawArea;
     if (this->draw_area) {
         this->draw_area->Clear(NULL, 0);
     }
-    
+
     this->draw_system->Paint(NULL);
 
     return 1;
