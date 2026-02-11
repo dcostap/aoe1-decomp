@@ -120,6 +120,7 @@ CUSTOM_DEBUG_BEGIN
         CUSTOM_DEBUG_LOG("screen_switch: add new panel");
 CUSTOM_DEBUG_END
         panel_system->add_panel(gCurrentScreen);
+        panel_system->setCurrentPanel(gCurrentScreen, 0);
     }
 
     // Non-original safety shim:

@@ -94,7 +94,7 @@ public:
     void set_curr_child(TPanel* child);
     void set_help_info(long help_id, long page_id);
     void set_z_order(char param_1, int param_2);
-    void capture_mouse();
+    int capture_mouse();
     void release_mouse();
     
     int get_string(int resid, char* buffer, int len);

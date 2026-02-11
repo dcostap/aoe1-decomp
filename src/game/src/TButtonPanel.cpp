@@ -156,30 +156,10 @@ long TButtonPanel::handle_mouse_move(long x, long y, int wparam, int param_4) {
     return this->mouse_move_action(x, y, wparam, param_4);
 }
 long TButtonPanel::mouse_move_action(long x, long y, int wparam, int param_4) {
-    (void)wparam;
-    (void)param_4;
-
-    if (!this->active || !this->visible) return 0;
-
-    const int inside = this->hit_button(x, y);
-
-    // Hover highlighting: update `have_focus` even during mouse capture so the visual state can track
-    // "drag out / drag back in" behavior.
-    this->set_focus(inside != 0);
-
-    if (panel_system && inside) {
-        panel_system->mouseOwnerValue = this;
-    }
-
-    // While capturing the mouse, emulate standard button behavior: only render as "down" if the
-    // cursor is still inside the button.
-    if (this->mouse_captured && this->buttonTypeValue != TButtonPanel::Radio) {
-        if (this->is_down != inside) {
-            this->is_down = inside;
-        }
-    }
-
-    return 1;
+    // Original TButtonPanel does NOT override mouse_move_action (not in Pnl_btn.cpp.asm).
+    // Hover focus is NOT set here; captured-path tracking is in mouse_left_move_action.
+    (void)x; (void)y; (void)wparam; (void)param_4;
+    return 0;
 }
 long TButtonPanel::mouse_left_move_action(long x, long y, int wparam, int param_4) {
     (void)wparam;
@@ -210,11 +190,7 @@ long TButtonPanel::mouse_right_down_action(long param_1, long param_2, int param
     if (!this->active || !this->visible) return 0;
     if (this->disabled != 0) return 0;
 
-    this->mouse_captured = 1;
-    this->mouse_down_button = 2;
-    if (panel_system) {
-        panel_system->mouseOwnerValue = this;
-    }
+    this->capture_mouse();
     this->is_down = 1;
     this->button_down_time = button_time_ms();
     this->set_focus(1);
@@ -246,11 +222,7 @@ long TButtonPanel::mouse_right_up_action(long x, long y, int param_3, int param_
     (void)param_3;
     (void)param_4;
 
-    this->mouse_captured = 0;
-    if (this->mouse_down_button == 2) this->mouse_down_button = 0;
-    if (panel_system && panel_system->mouseOwnerValue == this) {
-        panel_system->mouseOwnerValue = nullptr;
-    }
+    this->release_mouse();
 
     if (this->is_down != 0) {
         if (this->buttonTypeValue != TButtonPanel::Radio) {
@@ -532,18 +504,14 @@ long TButtonPanel::mouse_left_down_action(long x, long y, int wparam, int param_
     if (!this->active || !this->visible) return 0;
     if (this->disabled != 0) return 0;
 
-    // Original ASM @ 0x00473190: calls TPanel::capture_mouse.
-    // Our capture_mouse stub has defensive guards that can prevent mouse_captured
-    // from being set, so we write the fields directly here (matching old behavior)
-    // and ensure mouseOwnerValue is set so wnd_proc routes mouse-up to us.
+    // Decomp @ 0x00473190: play sound if set
+    // TODO: TDigital::is_playing / stop / play not yet implemented
+    // if (this->sound) { if (this->sound->is_playing()) this->sound->stop(); this->sound->play(); }
+
+    // Decomp @ 0x00473190: TPanel::capture_mouse
+    this->capture_mouse();
     this->is_down = 1;
-    this->mouse_captured = 1;
-    this->mouse_down_button = 1;
     this->button_down_time = button_time_ms();
-    this->set_focus(1);
-    if (panel_system) {
-        panel_system->mouseOwnerValue = this;
-    }
     this->set_redraw(TPanel::RedrawMode::Redraw);
     button_notify_parent(this, 2);
     return 1;
@@ -553,14 +521,8 @@ long TButtonPanel::mouse_left_up_action(long x, long y, int wparam, int param_4)
     (void)wparam;
     (void)param_4;
 
-    // Original ASM @ 0x00473310: calls TPanel::release_mouse.
-    // Must clear BOTH mouse_captured AND mouseOwnerValue. Without clearing
-    // mouseOwnerValue, all subsequent mouse events get permanently routed here.
-    this->mouse_captured = 0;
-    if (this->mouse_down_button == 1) this->mouse_down_button = 0;
-    if (panel_system && panel_system->mouseOwnerValue == this) {
-        panel_system->mouseOwnerValue = nullptr;
-    }
+    // Decomp @ 0x00473310: TPanel::release_mouse
+    this->release_mouse();
 
     if (this->is_down != 0) {
         if (this->buttonTypeValue != TButtonPanel::Radio) {

@@ -1084,14 +1084,14 @@ void TPanel::set_z_order(char param_1, int param_2) {
     }
 }
 
-// Stub: capture_mouse / release_mouse
-void TPanel::capture_mouse() {
+// Source of truth: panel.cpp.decomp @ 0x00466220
+int TPanel::capture_mouse() {
     if (panel_system) {
-        if (panel_system->mouseOwnerValue && panel_system->mouseOwnerValue != this) {
-            return;
-        }
-        if (panel_system->mouseOwnerValue == this) {
-            return;
+        if (panel_system->mouseOwnerValue != nullptr) {
+            if (panel_system->mouseOwnerValue != this) {
+                return 0; // Another panel owns the mouse
+            }
+            return 1; // Already captured by us
         }
     }
 
@@ -1103,6 +1103,7 @@ void TPanel::capture_mouse() {
         panel_system->mouseOwnerValue = this;
     }
     this->mouse_captured = 1;
+    return 1;
 }
 
 void TPanel::release_mouse() {
