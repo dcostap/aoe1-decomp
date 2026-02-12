@@ -3,6 +3,7 @@
 #include "../include/TRIBE_Game.h"
 #include "../include/TRIBE_Tech.h"
 #include "../include/TRIBE_Map.h"
+#include "../include/RGE_Tile.h"
 #include "../include/TRIBE_Command.h"
 #include "../include/TRIBE_Effects.h"
 #include "../include/T_Scenario.h"
@@ -188,7 +189,59 @@ void TRIBE_World::setup_players(RGE_Player_Info* param_1) {
         this->players[i] = (RGE_Player*)player;
     }
 }
-uchar TRIBE_World::new_random_game(RGE_Player_Info* param_1) { return RGE_Game_World::new_random_game(param_1); }
+uchar TRIBE_World::new_random_game(RGE_Player_Info* param_1) {
+    // Scaffolding: allocate a flat default map instead of random generation.
+    // Creates a 120x120 tile grid (AoE1 small map size) filled with grass.
+
+    // Only allocate if map doesn't exist yet (map_init may have created a partial one)
+    if (!this->map) {
+        this->map = new TRIBE_Map(0, this->sounds, '\x01');
+    }
+
+    RGE_Map* m = this->map;
+    if (!m) return 0;
+
+    const long MAP_W = 120;
+    const long MAP_H = 120;
+
+    m->map_width = MAP_W;
+    m->map_height = MAP_H;
+    m->tile_width = 64;      // AoE1 standard: full tile width in pixels
+    m->tile_height = 32;     // AoE1 standard: full tile height in pixels
+    m->tile_half_width = 32;
+    m->tile_half_height = 16;
+    m->elev_height = 12;
+    m->world_width = MAP_W;
+    m->world_height = MAP_H;
+
+    // Allocate tile array
+    long total_tiles = MAP_W * MAP_H;
+    m->map = (RGE_Tile*)calloc(total_tiles, sizeof(RGE_Tile));
+    if (!m->map) return 0;
+
+    // Set up row offset pointers for fast row access
+    m->map_row_offset = (RGE_Tile**)calloc(MAP_H, sizeof(RGE_Tile*));
+    if (!m->map_row_offset) {
+        free(m->map);
+        m->map = nullptr;
+        return 0;
+    }
+    for (long r = 0; r < MAP_H; r++) {
+        m->map_row_offset[r] = &m->map[r * MAP_W];
+    }
+
+    // Initialize all tiles: flat grass (terrain_type=0, height=0)
+    // calloc already zeroed everything, which gives us terrain_type=0, height=0.
+    // Mark tiles as needing draw.
+    for (long i = 0; i < total_tiles; i++) {
+        m->map[i].draw_as = 0;        // terrain type 0
+        m->map[i].tile_type = 0;
+    }
+
+    m->game_world = this;
+
+    return 1;
+}
 void TRIBE_World::save(int param_1) {
     // Source of truth: tworld.cpp.decomp @ 0x0052E790
     RGE_Game_World::save(param_1);

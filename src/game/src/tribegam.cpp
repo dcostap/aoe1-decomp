@@ -6,6 +6,8 @@
 #include "../include/Res_file.h"
 #include "../include/RGE_Prog_Info.h"
 #include "../include/globals.h"
+#include "../include/GameViewPanel.h"
+#include "../include/RGE_Map.h"
 #include "../include/TRIBE_Screen_Main_Menu.h"
 #include "../include/TRIBE_World.h"
 #include "../include/TDrawSystem.h"
@@ -1029,19 +1031,22 @@ int TRIBE_Game::create_game_screen() {
     // - `src/game/src/tribegam.cpp.asm` (`create_game_screen` @ 0x00527830)
     // - `src/game/src/tribegam.cpp.decomp`
     //
-    // TODO(accuracy): replace this temporary `TScreenPanel` with real `TRIBE_Screen_Game`
+    // TODO(accuracy): replace GameViewPanel with real `TRIBE_Screen_Game`
     // allocation/flow once `scr_game` is reimplemented.
     this->disable_input();
     this->set_game_mode(0, 0);
 
-    TScreenPanel* screen = new TScreenPanel((char*)"Game Screen");
+    // Get the map from the world for the game view panel
+    RGE_Map* map = this->world ? this->world->map : nullptr;
+
+    GameViewPanel* screen = new GameViewPanel(map);
     if (!screen) {
         this->close_status_message();
         this->enable_input();
         return 0;
     }
 
-    // Best-effort blank screen setup (original `TScreenPanel` supports null info file/id path).
+    // Setup the screen panel with draw area
     if (!screen->setup(this->draw_area, (char*)0, -1, 0)) {
         delete screen;
         this->close_status_message();
@@ -1051,6 +1056,19 @@ int TRIBE_Game::create_game_screen() {
 
     screen->set_ideal_size(this->prog_info ? this->prog_info->main_wid : 0x280,
                            this->prog_info ? this->prog_info->main_hgt : 0x1e0);
+
+    // Center camera on the map initially
+    if (map && map->map_width > 0 && map->map_height > 0) {
+        long origin_x = (map->map_height - 1) * 32; // TILE_HALF_W
+        long world_pixel_w = (map->map_width + map->map_height) * 32;
+        long world_pixel_h = (map->map_width + map->map_height) * 16;
+        long scr_w = this->prog_info ? this->prog_info->main_wid : 0x280;
+        long scr_h = this->prog_info ? this->prog_info->main_hgt : 0x1e0;
+        screen->cam_x = (world_pixel_w - scr_w) / 2;
+        screen->cam_y = (world_pixel_h - scr_h) / 2;
+        if (screen->cam_x < 0) screen->cam_x = 0;
+        if (screen->cam_y < 0) screen->cam_y = 0;
+    }
 
     // Queueing the switch avoids mutating panel lists during button/action dispatch.
     tribe_queue_screen_switch(screen);
@@ -1221,20 +1239,14 @@ void TRIBE_Game::let_game_begin() {
     // The original does extensive run_log of game settings (map type, size, victory, etc.)
     // We skip the logging and focus on the critical state transitions.
 
-    // Set current panel to game screen, destroy menu panels
+    // Set current panel to game screen.
+    // NOTE: We do NOT destroy menu panels here because let_game_begin is called
+    // from within a button action handler (Start Game). Destroying panels during
+    // button dispatch causes use-after-free crashes (access violation).
+    // The deferred screen switch (tribe_queue_screen_switch) already handles the
+    // panel transition safely during the next idle tick.
     if (panel_system) {
         panel_system->setCurrentPanel((char*)"Game Screen", 0);
-        panel_system->destroyPanel((char*)"Status Screen");
-        panel_system->destroyPanel((char*)"Single Player Menu");
-        panel_system->destroyPanel((char*)"Game Setup Screen");
-        panel_system->destroyPanel((char*)"Select Scenario Screen");
-        panel_system->destroyPanel((char*)"Game Settings Screen");
-        panel_system->destroyPanel((char*)"Load Saved Game Screen");
-        panel_system->destroyPanel((char*)"MP Setup Screen");
-        panel_system->destroyPanel((char*)"Join Screen");
-        panel_system->destroyPanel((char*)"MP Startup Screen");
-        panel_system->destroyPanel((char*)"Main Menu");
-        panel_system->destroyPanel((char*)"Campaign Selection Screen");
     }
 
     run_log((char*)"game_started", 1);

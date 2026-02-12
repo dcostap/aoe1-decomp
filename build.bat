@@ -83,6 +83,7 @@ cl /nologo /EHsc /std:c++17 /MDd /D_DEBUG /DWIN32 /D_X86_ ^
    %SRC_DIR%\basegame.cpp ^
    %SRC_DIR%\RGE_Game_World.cpp ^
    %SRC_DIR%\TRIBE_World.cpp ^
+   %SRC_DIR%\GameViewPanel.cpp ^
    %SRC_DIR%\TRIBE_World_types.cpp ^
    %SRC_DIR%\TRIBE_Tech.cpp ^
    %SRC_DIR%\TRIBE_Player_Tech.cpp ^
