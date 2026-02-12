@@ -155,6 +155,37 @@ void TCommunications_Handler::SetPlayerHumanity(uint player_number, int humanity
     }
 }
 
+char* TCommunications_Handler::GetPlayerName(uint player_number) {
+    // Source of truth: com_hand.cpp.decomp @ GetPlayerName
+    // TODO(accuracy): implement full name lookup from PlayerOptions
+    // Returns pointer to internal name buffer for the given player slot.
+    // For now return the friendly name as a fallback.
+    static char empty_name[65] = {0};
+    if (player_number == 0 || player_number >= 10) {
+        return empty_name;
+    }
+    // TODO(accuracy): actual offset into PlayerOptions name array
+    return empty_name;
+}
+
+void TCommunications_Handler::SetPlayerName(uint player_number, char* name) {
+    // Source of truth: com_hand.cpp.decomp @ SetPlayerName
+    // TODO(accuracy): implement full name storage in PlayerOptions
+    (void)player_number;
+    (void)name;
+}
+
+uint TCommunications_Handler::GetRandomSeed() {
+    // Source of truth: com_hand.cpp.decomp @ GetRandomSeed
+    // TODO(accuracy): implement proper seed from comm shared data
+    return (uint)GetTickCount();
+}
+
+uint TCommunications_Handler::WhoAmI() {
+    // Source of truth: com_hand.cpp.decomp @ WhoAmI
+    return this->Me;
+}
+
 void TCommunications_Handler::DropDeadPlayer(uint id, ulong turn) {
     // TODO: Implement (ASM 0x00428B60)
 }
@@ -175,4 +206,20 @@ int TCommunications_Handler::PreprocessMessages(void* p1, ulong p2, void* p3, ul
 long TCommunications_Handler::CommOut(uchar p1, void* p2, long p3, ulong p4) {
     // TODO: Implement (ASM 0x00426C40)
     return 0;
+}
+
+void TCommunications_Handler::TogglePauseGame() {
+    // Source of truth: com_hand.cpp.asm
+    // Toggles the pause state in multiplayer games.
+    // For single player, this is a no-op since pause is managed locally.
+    // TODO(accuracy): implement full MP pause toggle
+}
+
+int TCommunications_Handler::MultiplayerGameStart() {
+    // Returns nonzero if a multiplayer game has started.
+    return (this->Multiplayer != 0 && this->CommunicationsStatus == COMM_ACTIVE) ? 1 : 0;
+}
+
+int TCommunications_Handler::IsLobbyLaunched() {
+    return this->LobbyLaunched;
 }

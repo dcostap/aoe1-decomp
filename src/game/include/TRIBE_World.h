@@ -4,6 +4,8 @@
 
 class TRIBE_World : public RGE_Game_World {
 public:
+    TRIBE_World();
+
     // Virtuals (best-effort)
     virtual uchar data_load_world(FILE* param_1); // vt[0] (0x0)
     virtual uchar data_load_terrain_tables(char* param_1); // vt[1] (0x4)

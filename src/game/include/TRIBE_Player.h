@@ -4,6 +4,9 @@
 
 class TRIBE_Player : public RGE_Player {
 public:
+    TRIBE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar player_id, char* name, uchar civ, uchar is_computer, uchar is_active, char* ai1, char* ai2, char* ai3);
+    TRIBE_Player(int param_1, RGE_Game_World* world, uchar player_id);
+
     // Virtuals (best-effort)
     virtual ~TRIBE_Player(); // vt[0] (0x0)
     virtual void set_game_status(uchar param_1); // vt[1] (0x4)

@@ -55,3 +55,7 @@ void RGE_Map::map_generate2(RGE_Game_World* param_1, long param_2, long param_3,
 void RGE_Map::save(int param_1) {
     // TODO: implement (see RGE_Map.cpp.asm)
 }
+
+void RGE_Map::load_terrain_obj_types(char* param_1) {
+    // TODO: implement (see RGE_Map.cpp.asm)
+}

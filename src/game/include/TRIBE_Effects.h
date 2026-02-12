@@ -4,6 +4,10 @@
 
 class TRIBE_Effects : public RGE_Effects {
 public:
+    TRIBE_Effects(int param_1);
+
+    void do_tech_effect(short param_1, RGE_Player* param_2);
+
     // Virtuals (best-effort)
     virtual ~TRIBE_Effects(); // vt[0] (0x0)
     virtual void save(int param_1); // vt[1] (0x4)

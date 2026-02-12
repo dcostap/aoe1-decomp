@@ -30,6 +30,9 @@ struct COMMPLAYEROPTIONS {
 class TCommunications_Handler {
 public:
     int IsPaused();
+    void TogglePauseGame();
+    int MultiplayerGameStart();
+    int IsLobbyLaunched();
     void Update();
     void HandleMessage();
     void UpdatePlayers();
@@ -38,6 +41,10 @@ public:
     long SendSharedData(int send_mode);
     int GetPlayerHumanity(uint player_number);
     void SetPlayerHumanity(uint player_number, int humanity);
+    char* GetPlayerName(uint player_number);
+    void SetPlayerName(uint player_number, char* name);
+    uint GetRandomSeed();
+    uint WhoAmI();
     void ReceiveGameMessages();
     int DoCycle(ulong now);
     void EvaluateSystemMessage(ulong p1, char* p2, ulong p3, ulong p4);

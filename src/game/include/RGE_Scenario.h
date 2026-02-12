@@ -1,3 +1,9 @@
+#pragma once
+#include "common.h"
+
+class RGE_Static_Object;
+class RGE_Game_World;
+
 typedef char PlayerName[256];
 
 class RGE_Scenario {

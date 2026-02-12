@@ -50,5 +50,7 @@ public:
     RGE_Zone_Map_List* map_zones;
     RGE_Unified_Visible_Map* unified_vis_map;
     Visible_Unit_Manager* unit_manager;
+
+    void load_terrain_obj_types(char* param_1);
 };
 // static_assert(sizeof(RGE_Map) == 0x8DD0, "Size mismatch");

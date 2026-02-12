@@ -1,9 +1,16 @@
 #pragma once
 #include "common.h"
 #include "RGE_Scenario.h"
+#include "Player_Start_Info.h"
+#include "Victory_StartInfo.h"
+#include "SP_Victory_Info.h"
+#include "Friendliness.h"
 
 class T_Scenario : public RGE_Scenario {
 public:
+    T_Scenario(int param_1, RGE_Game_World* param_2);
+    T_Scenario(RGE_Game_World* param_1);
+
     // Virtuals (best-effort)
     virtual RGE_Static_Object* get_object_pointer(int param_1); // vt[0] (0x0)
     virtual ~T_Scenario(); // vt[1] (0x4)

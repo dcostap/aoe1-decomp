@@ -47,6 +47,13 @@ extern unsigned long restore_palette_timer;
 extern void* save_active_wnd;
 extern int MouseCursorInChildContol;
 extern int DDSys_CanColorFill;
+extern int no_other_humans_count;
+extern int all_cp;
+extern int numberPathingIterations;
+extern int useComputerPlayers;
+extern int show_timing_max;
+extern float save_game_version;
+extern unsigned char die_die_die;
 
 void run_log(char* param_1, int param_2);
 void rge_read(int handle, void* buf, int size);

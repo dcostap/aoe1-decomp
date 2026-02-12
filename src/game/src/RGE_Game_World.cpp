@@ -1,11 +1,76 @@
 #include "../include/RGE_Game_World.h"
+#include "../include/RGE_Player.h"
+#include "../include/RGE_Player_Info.h"
+#include "../include/RGE_Map_Gen_Info.h"
 
 // Forward declarations for types used in function signatures
-class RGE_Player_Info;
 class RGE_Static_Object;
 class TCommunications_Handler;
 struct TSound_Driver;
 class RGE_Scenario;
+
+// Constructor — zero-init all members
+RGE_Game_World::RGE_Game_World() {
+    this->world_time = 0;
+    this->old_world_time = 0;
+    this->world_time_delta = 0;
+    this->timer = 0.0f;
+    this->old_time = 0;
+    this->game_speed = 1.5f;
+    this->temp_pause = 0;
+    this->game_state = 0;
+    this->game_end_condition = 0;
+    this->sound_update_index = 0;
+    this->sprite_update_index = 0;
+    this->map = nullptr;
+    this->sound_num = 0;
+    this->sounds = nullptr;
+    this->sprite_num = 0;
+    this->sprites = nullptr;
+    this->player_num = 0;
+    this->players = nullptr;
+    this->master_player_num = 0;
+    this->master_players = nullptr;
+    this->effects = nullptr;
+    this->terrain_num = 0;
+    this->terrain_size = 0;
+    this->terrains = nullptr;
+    this->commands = nullptr;
+    this->scenario = nullptr;
+    this->color_table_num = 0;
+    this->color_tables = nullptr;
+    this->next_object_id = 0;
+    this->next_reusable_object_id = 0;
+    this->scenario_object_id = 0;
+    this->scenario_object_flag = 0;
+    this->random_seed = 0;
+    this->curr_player = 0;
+    this->sound_driver = nullptr;
+    this->world_time_delta_seconds = 0.0f;
+    this->objectsValue = nullptr;
+    this->numberObjectsValue = 0;
+    this->maxNumberObjectsValue = 0;
+    this->negativeObjectsValue = nullptr;
+    this->numberNegativeObjectsValue = 0;
+    this->maxNumberNegativeObjectsValue = 0;
+    this->playbook = nullptr;
+    this->campaign = 0;
+    this->campaign_player = 0;
+    this->campaign_scenario = 0;
+    this->player_turn = 0;
+    memset(this->player_time_delta, 0, sizeof(this->player_time_delta));
+    this->reusable_static_objects = nullptr;
+    this->reusable_animated_objects = nullptr;
+    this->reusable_moving_objects = nullptr;
+    this->reusable_action_objects = nullptr;
+    this->reusable_combat_objects = nullptr;
+    this->reusable_missile_objects = nullptr;
+    this->reusable_doppleganger_objects = nullptr;
+    this->maximumComputerPlayerUpdateTime = 0;
+    this->availableComputerPlayerUpdateTime = 0;
+    this->currentUpdateComputerPlayer = 0;
+    this->difficultyLevelValue = 0;
+}
 
 // Stub implementations for RGE_Game_World virtual methods
 // TODO: implement actual logic for each method (see worldload.cpp.asm, world.cpp.asm, etc.)
@@ -110,7 +175,20 @@ void RGE_Game_World::command_init(int param_1, TCommunications_Handler* param_2)
 }
 
 void RGE_Game_World::world_init(int param_1, TSound_Driver* param_2, TCommunications_Handler* param_3) {
-    // TODO: implement
+    // Inferred from TRIBE_World::world_init override pattern and call chain.
+    // param_1 = file descriptor from data_load (or 0 if stub)
+    // param_2 = TSound_Driver*
+    // param_3 = TCommunications_Handler*
+    //
+    // Calls sub-init functions which TRIBE_World overrides to create TRIBE-specific types.
+    this->color_table_init(param_1);
+    this->terrain_tables_init(param_1);
+    this->init_sounds(param_1, param_2);
+    this->init_sprites(param_1);
+    this->map_init(param_1, param_2);
+    this->effects_init(param_1);
+    this->master_player_init(param_1);
+    this->command_init(param_1, param_3);
 }
 
 void RGE_Game_World::setup_gaia() {
@@ -187,7 +265,67 @@ void RGE_Game_World::logStatus(FILE* param_1, int param_2) {
 
 // Destructor
 RGE_Game_World::~RGE_Game_World() {
-    // TODO: implement cleanup
+    // Clean up allocated arrays. Since most are stubs returning null,
+    // only free what was actually allocated.
+    if (this->players) {
+        for (short i = 0; i < this->player_num; i++) {
+            if (this->players[i]) {
+                delete this->players[i];
+            }
+        }
+        free(this->players);
+        this->players = nullptr;
+    }
+    if (this->master_players) {
+        for (short i = 0; i < this->master_player_num; i++) {
+            if (this->master_players[i]) {
+                delete this->master_players[i];
+            }
+        }
+        free(this->master_players);
+        this->master_players = nullptr;
+    }
+    if (this->sounds) {
+        free(this->sounds);
+        this->sounds = nullptr;
+    }
+    if (this->sprites) {
+        free(this->sprites);
+        this->sprites = nullptr;
+    }
+    if (this->terrains) {
+        free(this->terrains);
+        this->terrains = nullptr;
+    }
+    if (this->color_tables) {
+        free(this->color_tables);
+        this->color_tables = nullptr;
+    }
+    if (this->objectsValue) {
+        free(this->objectsValue);
+        this->objectsValue = nullptr;
+    }
+    if (this->negativeObjectsValue) {
+        free(this->negativeObjectsValue);
+        this->negativeObjectsValue = nullptr;
+    }
+    if (this->map) {
+        delete this->map;
+        this->map = nullptr;
+    }
+    if (this->effects) {
+        delete this->effects;
+        this->effects = nullptr;
+    }
+    if (this->commands) {
+        delete this->commands;
+        this->commands = nullptr;
+    }
+    if (this->scenario) {
+        delete this->scenario;
+        this->scenario = nullptr;
+    }
+    // playbook, reusable_* lists — not yet allocated by stubs
 }
 
 // Utility virtuals
@@ -205,7 +343,34 @@ uchar RGE_Game_World::data_load(char* param_1, char* param_2) {
 }
 
 uchar RGE_Game_World::init(char* param_1, TSound_Driver* param_2, TCommunications_Handler* param_3) {
-    // TODO: implement
+    // Source of truth: inferred from call chain (decomp not available).
+    // Called by TRIBE_Game::load_game_data() with (game_data_file, sound_system, comm_handler).
+    // param_1 = "data2\\empires.dat" (or similar game data file path)
+    // param_2 = TSound_Driver*
+    // param_3 = TCommunications_Handler*
+    //
+    // The original likely:
+    //   1. Stores sound_driver
+    //   2. Opens param_1 as binary, calls data_load() to parse empires.dat
+    //   3. Calls world_init() to initialize subsystems (map, players, sounds, etc.)
+    //   4. Returns success/failure
+    //
+    // Since data_load and world_init are stubs, we store params and return success.
+
+    this->sound_driver = param_2;
+
+    // data_load reads the binary game database (empires.dat).
+    // The second param is typically the world_db_file ("tr_wrld.txt") from prog_info.
+    // Since we access prog_info through rge_base_game, pass null for now.
+    if (!this->data_load(param_1, nullptr)) {
+        return 0;
+    }
+
+    // world_init initializes subsystems using the loaded data.
+    // param_1 is reinterpreted as a file handle/descriptor in some decomps,
+    // but since our data_load is a stub, pass 0.
+    this->world_init(0, param_2, param_3);
+
     return 1;
 }
 
@@ -218,7 +383,47 @@ void RGE_Game_World::del_game_info() {
 }
 
 uchar RGE_Game_World::update() {
-    // TODO: implement
+    // Source of truth: World.cpp.asm (update @ various offsets)
+    // Minimal world tick: advance world time based on real time and game speed.
+    // TODO(accuracy): full update chain — player updates, object updates, AI ticks,
+    //                 command processing, pathing, etc.
+
+    if (this->game_state != 1) {
+        return 0; // not playing
+    }
+
+    if (this->temp_pause != 0) {
+        return 1; // paused — don't advance time
+    }
+
+    unsigned long now = GetTickCount();
+    if (this->old_time == 0) {
+        this->old_time = now;
+    }
+
+    unsigned long elapsed_ms = now - this->old_time;
+    this->old_time = now;
+
+    // Apply game speed (default 1.5)
+    unsigned long game_ms = (unsigned long)(elapsed_ms * this->game_speed);
+
+    this->old_world_time = this->world_time;
+    this->world_time += game_ms;
+    this->world_time_delta = this->world_time - this->old_world_time;
+    this->world_time_delta_seconds = (float)this->world_time_delta / 1000.0f;
+
+    // Update all players
+    if (this->players) {
+        for (short i = 0; i < this->player_num; i++) {
+            if (this->players[i]) {
+                this->players[i]->update();
+            }
+        }
+    }
+
+    // Check victory/defeat conditions
+    this->check_game_state();
+
     return 1;
 }
 
@@ -242,7 +447,48 @@ uchar RGE_Game_World::load_game(char* param_1) {
 }
 
 uchar RGE_Game_World::new_game(RGE_Player_Info* param_1, int param_2) {
-    // TODO: implement
+    // Inferred from TRIBE_World::new_game decomp and call chain.
+    // param_1 = RGE_Player_Info with player setup data
+    // param_2 = scenario type flag
+
+    if (!param_1) return 0;
+
+    // player_num = player_info.player_num + 1 (gaia is player 0)
+    this->player_num = param_1->player_num + 1;
+
+    // Allocate players array
+    if (this->players) {
+        for (short i = 0; i < this->player_num; i++) {
+            if (this->players[i]) {
+                delete this->players[i];
+                this->players[i] = nullptr;
+            }
+        }
+        free(this->players);
+    }
+    this->players = (RGE_Player**)calloc(this->player_num, sizeof(RGE_Player*));
+
+    // Setup gaia (player 0) and human/computer players (1..player_num-1)
+    this->setup_gaia();
+    this->setup_players(param_1);
+
+    // Reset world time
+    this->world_time = 0;
+    this->old_world_time = 0;
+    this->world_time_delta = 0;
+    this->old_time = 0;
+    this->timer = 0.0f;
+    this->game_speed = 1.5f; // default game speed
+    this->game_state = 1; // playing
+    this->temp_pause = 0;
+    this->curr_player = 1; // human player
+
+    // Generate random map
+    this->new_random_game(param_1);
+
+    // Setup player colors
+    this->setup_player_colors(param_1);
+
     return 1;
 }
 
@@ -275,7 +521,8 @@ RGE_Scenario* RGE_Game_World::get_scenario_info(char* param_1) {
 }
 
 void RGE_Game_World::pause(uchar param_1) {
-    // TODO: implement
+    // param_1: 1 = pause, 0 = unpause
+    this->temp_pause = param_1;
 }
 
 void RGE_Game_World::scenario_init() {

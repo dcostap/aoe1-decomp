@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "RGE_Effect_Command.h"
 
 struct RGE_Effect {
     short id;

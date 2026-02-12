@@ -4,6 +4,9 @@
 
 class TRIBE_Master_Player : public RGE_Master_Player {
 public:
+    TRIBE_Master_Player(int param_1);
+    TRIBE_Master_Player(FILE* param_1);
+
     // Virtuals (best-effort)
     virtual ~TRIBE_Master_Player(); // vt[0] (0x0)
     virtual void finish_init(int param_1, RGE_Sprite** param_2, RGE_Sound** param_3); // vt[1] (0x4)

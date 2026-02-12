@@ -155,6 +155,33 @@ public:
     
     void* create_font(void* dc, int id1, int id2);
 
+    // Accessor methods used by create_game and game start paths
+    int numberPlayers();
+    int mapXSize();
+    int mapYSize();
+    int scenarioGame();
+    int campaignGame();
+    int multiplayerGame();
+    int singlePlayerGame();
+    int randomGame();
+    int fullVisibility();
+    int fogOfWar();
+    int playerID(int index);
+    void setPlayerID(int index, int value);
+    unsigned char pathFinding();
+    unsigned char mpPathFinding();
+    void set_map_visible(unsigned char p1);
+    void set_map_fog(unsigned char p1);
+    void reset_countdown_timer(int p1);
+    void set_paused(int p1, int p2);
+    void request_pause();
+    void reset_timings();
+    void add_to_timing(int param_1, ulong param_2);
+    void increment_world_update_count();
+    void increment_view_update_count();
+    char* scenarioName();
+    RGE_Scenario* get_scenario_info(char* p1, int p2);
+
     RGE_Game_Info* player_game_info; // +0x4 (Size: 0x4)
     RGE_Scenario_File_Info* scenario_info; // +0x8 (Size: 0x4)
     RGE_Prog_Info* prog_info; // +0xC (Size: 0x4)

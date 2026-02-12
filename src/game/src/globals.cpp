@@ -42,6 +42,13 @@ unsigned long restore_palette_timer = 0;
 void* save_active_wnd = nullptr;
 int MouseCursorInChildContol = 0;
 int DDSys_CanColorFill = 1;
+int no_other_humans_count = 0;
+int all_cp = 0;
+int numberPathingIterations = 2500; // default per decomp (0x9c4)
+int useComputerPlayers = 1; // default per ASM (= 1h)
+int show_timing_max = 0;
+float save_game_version = 0.0f;
+unsigned char die_die_die = 0;
 
 void run_log(char* param_1, int param_2) {}
 

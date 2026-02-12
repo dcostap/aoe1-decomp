@@ -116,7 +116,22 @@ public:
     void resetRandomComputerName();
     void set_save_game_name(char* p1);
     void set_load_game_name(char* p1);
+    char* get_save_game_name();
+    char* get_load_game_name();
     unsigned char quickStartGame();
+    int civilization(int p1);
+    int playerColor(int p1);
+    int computerName(int p1);
+    MapSize mapSize();
+    MapType mapType();
+    VictoryType victoryType();
+    int victoryAmount();
+    ResourceLevel resourceLevel();
+    Age startingAge();
+    int randomizePositions();
+    int fullTechTree();
+    unsigned char popLimit();
+    int randomComputerName(int civ);
     void show_status_message(char* p1, char* p2, long p3);
     void show_status_message(int p1, char* p2, long p3);
     void close_status_message();
@@ -130,6 +145,8 @@ public:
     int load_db_files();
     int start_menu();
     int start_video(int p1, char* p2);
+    void stop_video(int p1);
+    void let_game_begin();
     void close();
 
     MouseClickInfo* MouseRightClickTable;

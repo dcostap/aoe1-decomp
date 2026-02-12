@@ -65,7 +65,7 @@ class RGE_Scenario;
 class RGE_Timeline;
 class RGE_Font;
 class RGE_Scenario_Header;
-class RGE_Player_Info;
+struct RGE_Player_Info;
 class RGE_Color_Table;
 class RGE_Map;
 class RGE_Action_List;

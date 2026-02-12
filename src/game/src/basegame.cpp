@@ -196,11 +196,26 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int param_2) {
 
 RGE_Base_Game::~RGE_Base_Game() {
     // Source of truth: basegame.cpp.decomp @ destructor
+    // Save settings to registry before cleanup
+    if (this->registry && this->draw_system) {
+        this->registry->RegSetInt(1, "Screen Size", this->draw_system->ScreenWidth);
+    }
+    if (this->registry) {
+        this->registry->RegSetInt(1, "Rollover Text", 2 - (this->rollover != 0 ? 1 : 0));
+        int mouse_style = (this->prog_info && this->prog_info->interface_style == 2) ? 2 : 1;
+        this->registry->RegSetInt(1, "Mouse Style", mouse_style);
+        this->registry->RegSetInt(1, "Difficulty", this->single_player_difficulty);
+        if (this->prog_info) {
+            this->registry->RegSetInt(1, "Scroll Speed", this->prog_info->mouse_scroll_interval);
+        }
+    }
+
     // Close log files
     if (actionFile != nullptr) {
         fclose(actionFile);
         actionFile = nullptr;
     }
+    // fps_log close skipped — not declared as global yet
     if (draw_log != nullptr) {
         fclose(draw_log);
         draw_log = nullptr;
@@ -248,6 +263,12 @@ RGE_Base_Game::~RGE_Base_Game() {
     if (this->comm_handler != nullptr) {
         delete this->comm_handler;
         this->comm_handler = nullptr;
+    }
+
+    // Delete chat
+    if (chat != nullptr) {
+        delete chat;
+        chat = nullptr;
     }
 
     // Delete fonts
@@ -963,7 +984,13 @@ char* RGE_Base_Game::get_string(long p1, char* p2, int p3) {
     if (p3 > 0) p2[0] = '\0';
     return p2; 
 }
-char* RGE_Base_Game::get_string(long p1) { return nullptr; }
+char* RGE_Base_Game::get_string(long p1) {
+    // Source of truth: basegame.cpp.decomp @ 0x0041C9A0
+    // Loads string into a static buffer and returns it.
+    static char static_string_buf[512];
+    this->get_string(p1, static_string_buf, sizeof(static_string_buf));
+    return static_string_buf;
+}
 int RGE_Base_Game::get_paused() {
     if (this->prog_mode == 7) {
         return 1;
@@ -1508,8 +1535,10 @@ int RGE_Base_Game::run() {
             if (got != 0) break;
             this->handle_idle();
         }
-        // Quit check: decomp uses msg.wParam == 0x12
-        if (msg.wParam == 0x12) break;
+        // Quit check: decomp says msg.wParam == 0x12, but 0x12 = WM_QUIT (message ID).
+        // Ghidra got the struct field wrong (off by 4 bytes). PostQuitMessage(0) sets wParam=0.
+        // The correct standard pattern is msg.message == WM_QUIT.
+        if (msg.message == WM_QUIT) break;
         // handle_message returns non-zero if message should still be dispatched
         int result = this->handle_message(&msg);
         if (result != 0) {
@@ -1567,16 +1596,179 @@ int RGE_Base_Game::handle_idle() {
 
     return 1;
 }
-int RGE_Base_Game::handle_mouse_move(void* p1, uint p2, uint p3, long p4) { return 0; }
-int RGE_Base_Game::handle_key_down(void* p1, uint p2, uint p3, long p4) { return 0; }
-int RGE_Base_Game::handle_user_command(void* p1, uint p2, uint p3, long p4) { return 0; }
-int RGE_Base_Game::handle_command(void* p1, uint p2, uint p3, long p4) { return 0; }
-int RGE_Base_Game::handle_music_done(void* p1, uint p2, uint p3, long p4) { return 0; }
-int RGE_Base_Game::handle_paint(void* p1, uint p2, uint p3, long p4) { return 0; }
-int RGE_Base_Game::handle_activate(void* p1, uint p2, uint p3, long p4) { return 0; }
-int RGE_Base_Game::handle_init_menu(void* p1, uint p2, uint p3, long p4) { return 0; }
-int RGE_Base_Game::handle_exit_menu(void* p1, uint p2, uint p3, long p4) { return 0; }
-int RGE_Base_Game::handle_size(void* p1, uint p2, uint p3, long p4) { return 0; }
+int RGE_Base_Game::handle_mouse_move(void* p1, uint p2, uint p3, long p4) {
+    // Source of truth: basegame.cpp.decomp @ 0x00421110
+    if (this->prog_ready == 0) {
+        return 1;
+    }
+
+    // Custom mouse pointer update
+    if (this->custom_mouse != 0 && this->windows_mouse == 0) {
+        // TODO(accuracy): TMousePointer::in_game_mode check → draw(0) vs Poll()
+        // Requires adding Poll/draw/in_game_mode to TMousePointer.h
+    }
+
+    // Extract mouse position from lParam
+    short mouse_x = (short)(p4 & 0xFFFF);
+    short mouse_y = (short)((p4 >> 16) & 0xFFFF);
+    int left_btn = (p3 & MK_LBUTTON) ? 1 : 0;
+    int right_btn = (p3 & MK_RBUTTON) ? 1 : 0;
+    int ctrl_key = (p3 & MK_CONTROL) ? 1 : 0;
+
+    // Dispatch to virtual action_mouse_move
+    this->action_mouse_move(mouse_x, mouse_y, left_btn, right_btn, ctrl_key, 0);
+
+    return 1;
+}
+int RGE_Base_Game::handle_key_down(void* p1, uint p2, uint p3, long p4) {
+    // Source of truth: basegame.cpp.decomp @ 0x004211D0
+    if (this->prog_ready == 0) {
+        return 1;
+    }
+
+    int repeat_count = p4 & 0xFFFF;
+    int key_code = p3;
+
+    // Get modifier key states
+    int ctrl_down = (GetKeyState(0x11) < 0) ? 1 : 0;  // VK_CONTROL
+    int alt_down = (GetKeyState(0x12) < 0) ? 1 : 0;    // VK_MENU
+    int shift_down = (GetKeyState(0x10) < 0) ? 1 : 0;  // VK_SHIFT
+
+    // Block Alt+Space, Alt+F10 in fullscreen (WM_SYSKEYDOWN = 0x104)
+    if (p1 == this->prog_window && p2 == 0x104) {
+        if ((key_code == 0x12 || key_code == 0x20 || key_code == 0x79) &&
+            this->prog_info->full_screen != 0) {
+            if (!IsIconic((HWND)this->prog_window)) {
+                return 0; // consume
+            }
+        }
+    }
+
+    // Ctrl+F12 takes screenshot
+    if (ctrl_down != 0 && key_code == 0x7B) { // VK_F12
+        // TODO(accuracy): TDrawArea::take_snapshot
+        return 0;
+    }
+
+    // Dispatch to virtual action_key_down
+    int result = this->action_key_down(key_code, repeat_count, ctrl_down, alt_down, shift_down);
+    return (result != 0) ? 1 : 0;
+}
+int RGE_Base_Game::handle_user_command(void* p1, uint p2, uint p3, long p4) {
+    // Source of truth: basegame.cpp.decomp @ 0x004212E0
+    // p3 (wParam): 0x17a2 = pause world, 0x17a3 = unpause world
+    // 0x17b3/0x17b4 = MP player commands (need players allocated)
+    if (p3 == 0x17a2) {
+        if (this->world != nullptr) {
+            this->world->pause(1);
+        }
+    } else if (p3 == 0x17a3) {
+        if (this->world != nullptr) {
+            this->world->pause(0);
+        }
+    }
+
+    int result = this->action_user_command(p3, p4);
+    return (result != 0) ? 1 : 0;
+}
+int RGE_Base_Game::handle_command(void* p1, uint p2, uint p3, long p4) {
+    // Source of truth: basegame.cpp.decomp @ 0x004213A0
+    int result = this->action_command(p3, p4);
+    return (result != 0) ? 1 : 0;
+}
+int RGE_Base_Game::handle_music_done(void* p1, uint p2, uint p3, long p4) {
+    // Source of truth: basegame.cpp.decomp @ 0x004213C0
+    int result = this->action_music_done();
+    return (result != 0) ? 1 : 0;
+}
+int RGE_Base_Game::handle_paint(void* p1, uint p2, uint p3, long p4) {
+    // Source of truth: basegame.cpp.decomp @ 0x004213E0
+    // Simplified: the original does DirectDraw surface locking, check_paint,
+    // panel draw_tree, timing calculations, mouse pointer draw, and Paint.
+    // We handle the essential parts: draw current panel, Paint, ValidateRect.
+
+    TPanel* current = panel_system ? panel_system->currentPanelValue : nullptr;
+    if (current) {
+        current->draw_tree();
+    }
+
+    if (this->draw_system) {
+        this->draw_system->Paint(NULL);
+    }
+
+    ValidateRect((HWND)this->prog_window, NULL);
+    this->render_all = 0;
+    this->frame_count++;
+
+    return 1;
+}
+int RGE_Base_Game::handle_activate(void* p1, uint p2, uint p3, long p4) {
+    // Source of truth: basegame.cpp.decomp @ 0x00421830
+    // p3 (wParam): 0 = deactivated, nonzero = activated
+    if (p3 == 0) {
+        this->prog_active = 0;
+    } else {
+        this->prog_active = 1;
+    }
+
+    int pm = this->prog_mode;
+
+    if (this->prog_active != 0) {
+        // Activated: unpause if auto-paused
+        if ((pm == 4 || pm == 6 || pm == 7) && this->auto_paused == 1) {
+            this->auto_paused = 0;
+            this->set_paused(0, 0);
+        }
+        // Notify current panel and call action_activate
+        this->action_activate();
+        return 1;
+    }
+
+    // Deactivated: auto-pause single-player in-game
+    if (pm == 4 || pm == 6 || pm == 7) {
+        if (this->singlePlayerGame() == 1) {
+            if (this->get_paused() == 0) {
+                this->auto_paused = 1;
+                this->set_paused(1, 0);
+            }
+        }
+    }
+    this->action_deactivate();
+    return 1;
+}
+int RGE_Base_Game::handle_init_menu(void* p1, uint p2, uint p3, long p4) {
+    // Source of truth: basegame.cpp.decomp @ 0x00421910
+    int result = this->action_init_menu();
+    return (result != 0) ? 1 : 0;
+}
+int RGE_Base_Game::handle_exit_menu(void* p1, uint p2, uint p3, long p4) {
+    // Source of truth: basegame.cpp.decomp @ 0x00421930
+    int result = this->action_exit_menu();
+    return (result != 0) ? 1 : 0;
+}
+int RGE_Base_Game::handle_size(void* p1, uint p2, uint p3, long p4) {
+    // Source of truth: basegame.cpp.decomp @ 0x00421950
+    // p3 (wParam): SIZE_MINIMIZED = 1
+    if (p3 == 1) {
+        return 1; // minimized — do nothing
+    }
+
+    if (this->draw_system != nullptr) {
+        // TODO(accuracy): TDrawSystem::HandleSize(p1, p2, p3, p4)
+        // Update prog_info from draw system dimensions if available
+        if (this->draw_system->ScreenWidth != 0) {
+            this->prog_info->main_wid = this->draw_system->ScreenWidth;
+            this->prog_info->main_hgt = this->draw_system->ScreenHeight;
+        }
+        // Notify current panel of resize
+        TPanel* current = panel_system ? panel_system->currentPanelValue : nullptr;
+        if (current) {
+            current->handle_size(this->prog_info->main_wid, this->prog_info->main_hgt);
+        }
+    }
+    this->action_size();
+    return 1;
+}
 int RGE_Base_Game::handle_palette_changed(void* p1, uint p2, uint p3, long p4) { return 0; }
 int RGE_Base_Game::handle_query_new_palette(void* p1, uint p2, uint p3, long p4) { return 0; }
 int RGE_Base_Game::handle_close(void* p1, uint p2, uint p3, long p4) {
@@ -1587,18 +1779,54 @@ int RGE_Base_Game::handle_destroy(void* p1, uint p2, uint p3, long p4) {
     PostQuitMessage(0);
     return 0; // consumed
 }
-int RGE_Base_Game::action_update() { return 0; }
-int RGE_Base_Game::action_mouse_move(long p1, long p2, int p3, int p4, int p5, int p6) { return 0; }
-int RGE_Base_Game::action_key_down(ulong p1, int p2, int p3, int p4, int p5) { return 0; }
-int RGE_Base_Game::action_user_command(ulong p1, ulong p2) { return 0; }
-int RGE_Base_Game::action_command(ulong p1, ulong p2) { return 0; }
-int RGE_Base_Game::action_music_done() { return 0; }
-int RGE_Base_Game::action_activate() { return 0; }
-int RGE_Base_Game::action_deactivate() { return 0; }
-int RGE_Base_Game::action_init_menu() { return 0; }
-int RGE_Base_Game::action_exit_menu() { return 0; }
-int RGE_Base_Game::action_size() { return 0; }
-int RGE_Base_Game::action_close() { return 0; }
+int RGE_Base_Game::action_update() { return 1; }
+int RGE_Base_Game::action_mouse_move(long p1, long p2, int p3, int p4, int p5, int p6) { return 1; }
+int RGE_Base_Game::action_key_down(ulong p1, int p2, int p3, int p4, int p5) { return 1; }
+int RGE_Base_Game::action_user_command(ulong p1, ulong p2) { return 1; }
+int RGE_Base_Game::action_command(ulong p1, ulong p2) { return 1; }
+int RGE_Base_Game::action_music_done() { return 1; }
+int RGE_Base_Game::action_activate() { return 1; }
+int RGE_Base_Game::action_deactivate() { return 1; }
+int RGE_Base_Game::action_init_menu() { return 1; }
+int RGE_Base_Game::action_exit_menu() { return 1; }
+int RGE_Base_Game::action_size() { return 1; }
+int RGE_Base_Game::action_close() { return 1; }
+void RGE_Base_Game::reset_timings() {
+    // Source of truth: basegame.cpp.decomp @ 0x0041C7D0
+    this->frame_count = 0;
+    this->world_update_count = 0;
+    this->view_update_count = 0;
+    this->last_frame_count = 0;
+    this->last_world_update_count = 0;
+    this->last_view_update_count = 0;
+    this->fps = 0;
+    this->world_update_fps = 0;
+    this->view_update_fps = 0;
+    for (int i = 0; i < 30; i++) {
+        this->timings[i].accum_time = 0;
+        this->timings[i].last_time = 0;
+        this->timings[i].start_time = 0;
+        this->timings[i].max_time = 0;
+        this->timings[i].last_max_time = 0;
+        this->timings[i].last_single_time = 0;
+    }
+}
+void RGE_Base_Game::add_to_timing(int param_1, ulong param_2) {
+    // Source of truth: basegame.cpp.decomp @ 0x0041C830
+    this->timings[param_1].accum_time += param_2;
+    this->timings[param_1].last_single_time = param_2;
+    if (this->timings[param_1].max_time < param_2) {
+        this->timings[param_1].max_time = param_2;
+    }
+}
+void RGE_Base_Game::increment_world_update_count() {
+    // Source of truth: basegame.cpp.decomp @ 0x0041C870
+    this->world_update_count++;
+}
+void RGE_Base_Game::increment_view_update_count() {
+    // Source of truth: basegame.cpp.decomp @ 0x0041C880
+    this->view_update_count++;
+}
 void RGE_Base_Game::calc_timings() {}
 void RGE_Base_Game::calc_timing_text() {}
 void RGE_Base_Game::show_timings() {}
@@ -1641,6 +1869,122 @@ unsigned long RGE_Base_Game::get_world_update_count() {
 
 unsigned long RGE_Base_Game::get_view_update_count() {
     return this->view_update_count;
+}
+
+// --- Accessor methods used by create_game and game start paths ---
+
+int RGE_Base_Game::numberPlayers() {
+    return (int)this->rge_game_options.numberPlayersValue;
+}
+
+int RGE_Base_Game::mapXSize() {
+    return (int)this->rge_game_options.mapXSizeValue;
+}
+
+int RGE_Base_Game::mapYSize() {
+    return (int)this->rge_game_options.mapYSizeValue;
+}
+
+int RGE_Base_Game::scenarioGame() {
+    return (int)this->rge_game_options.scenarioGameValue;
+}
+
+int RGE_Base_Game::campaignGame() {
+    return this->campaignGameValue;
+}
+
+int RGE_Base_Game::multiplayerGame() {
+    return (int)this->rge_game_options.multiplayerGameValue;
+}
+
+int RGE_Base_Game::singlePlayerGame() {
+    return (int)this->rge_game_options.singlePlayerGameValue;
+}
+
+int RGE_Base_Game::randomGame() {
+    // Random game = not scenario and not campaign
+    return (this->rge_game_options.scenarioGameValue == 0 && this->campaignGameValue == 0) ? 1 : 0;
+}
+
+int RGE_Base_Game::fullVisibility() {
+    return (int)this->rge_game_options.fullVisibilityValue;
+}
+
+int RGE_Base_Game::fogOfWar() {
+    return (int)this->rge_game_options.fogOfWarValue;
+}
+
+int RGE_Base_Game::playerID(int index) {
+    if (index >= 0 && index < 9) {
+        return this->playerIDValue[index];
+    }
+    return 0;
+}
+
+void RGE_Base_Game::setPlayerID(int index, int value) {
+    if (index >= 0 && index < 9) {
+        this->playerIDValue[index] = value;
+    }
+}
+
+unsigned char RGE_Base_Game::pathFinding() {
+    return this->pathFindingValue;
+}
+
+unsigned char RGE_Base_Game::mpPathFinding() {
+    return this->rge_game_options.mpPathFindingValue;
+}
+
+void RGE_Base_Game::set_map_visible(unsigned char p1) {
+    // TODO(accuracy): implement full map visibility toggle via RGE_Game_World
+    (void)p1;
+}
+
+void RGE_Base_Game::set_map_fog(unsigned char p1) {
+    // TODO(accuracy): implement full fog-of-war toggle via RGE_Game_World
+    (void)p1;
+}
+
+void RGE_Base_Game::reset_countdown_timer(int p1) {
+    if (p1 >= 0 && p1 < 9) {
+        this->countdown_timer[p1] = 0;
+    }
+}
+
+void RGE_Base_Game::set_paused(int p1, int p2) {
+    // Source of truth: basegame.cpp.decomp @ 0x00420220
+    int was_paused = this->get_paused();
+    this->save_paused = was_paused;
+    if (p1 != was_paused) {
+        if (p1 != 0) {
+            this->non_user_pause = p2;
+        } else {
+            this->non_user_pause = 0;
+        }
+        this->request_pause();
+    }
+}
+
+void RGE_Base_Game::request_pause() {
+    // Source of truth: basegame.cpp.decomp @ 0x00420200
+    if (this->comm_handler) {
+        this->comm_handler->TogglePauseGame();
+    }
+    if (this->world) {
+        this->world->temp_pause = 1;
+    }
+}
+
+char* RGE_Base_Game::scenarioName() {
+    return this->rge_game_options.scenarioNameValue;
+}
+
+RGE_Scenario* RGE_Base_Game::get_scenario_info(char* p1, int p2) {
+    // TODO(accuracy): implement full scenario loading from file
+    // Source of truth: basegame.cpp.decomp @ 0x00422170
+    (void)p1;
+    (void)p2;
+    return nullptr;
 }
 
 // Linker fix stubs

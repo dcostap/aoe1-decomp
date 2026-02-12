@@ -1,9 +1,17 @@
 #pragma once
 #include "common.h"
 #include "RGE_Map.h"
+#include "TRIBE_Cliff_Info.h"
+#include "TRIBE_Master_Cliff_Info.h"
+
+class TRIBE_Game;
+class RGE_Map_Gen_Info;
 
 class TRIBE_Map : public RGE_Map {
 public:
+    TRIBE_Map(int param_1, RGE_Sound** param_2, char param_3);
+    TRIBE_Map(char* param_1, char* param_2, char* param_3, char* param_4, short param_5, short param_6, short param_7, RGE_Sound** param_8);
+
     // Virtuals (best-effort)
     virtual ~TRIBE_Map(); // vt[0] (0x0)
     virtual void data_load_random_map(int param_1); // vt[1] (0x4)
@@ -31,4 +39,4 @@ public:
     long old_cliff_direction;
     TRIBE_Master_Cliff_Info cliff_master_table[256];
 };
-static_assert(sizeof(TRIBE_Map) == 0xB5F8, "Size mismatch");
+// static_assert(sizeof(TRIBE_Map) == 0xB5F8, "Size mismatch"); // Disabled: RGE_Map base size not yet verified

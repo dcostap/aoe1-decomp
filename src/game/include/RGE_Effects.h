@@ -3,6 +3,9 @@
 
 class RGE_Effects {
 public:
+    RGE_Effects(int param_1);
+    RGE_Effects(char* param_1);
+
     // Virtuals (best-effort)
     virtual ~RGE_Effects(); // vt[0] (0x0)
     virtual void save(int param_1); // vt[1] (0x4)

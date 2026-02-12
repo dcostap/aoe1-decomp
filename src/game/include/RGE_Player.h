@@ -4,6 +4,10 @@
 
 class RGE_Player {
 public:
+    RGE_Player();
+    RGE_Player(RGE_Game_World* world, RGE_Master_Player* master, uchar player_id, char* name, uchar civ, uchar is_computer, uchar is_active, char* ai1, char* ai2, char* ai3);
+    RGE_Player(int param_1, RGE_Game_World* world, uchar player_id);
+
     // Virtuals (best-effort)
     virtual ~RGE_Player(); // vt[0] (0x0)
     virtual void set_game_status(uchar param_1); // vt[1] (0x4)
@@ -67,6 +71,37 @@ public:
     virtual void logStatus(FILE* param_1, int param_2); // vt[59] (0xEC)
     virtual void load_victory(int param_1, long* param_2, uchar param_3); // vt[60] (0xF0)
     virtual void new_victory(); // vt[61] (0xF4)
+
+    // Non-virtual methods
+    void set_relation(long param_1, uchar param_2);
+    void set_view_loc(float x, float y);
+    void set_map_loc(short x, short y);
+    uchar get_resigned();
+    int computerPlayer();
+    int pathingAttemptCap();
+    void setPathingAttemptCap(int param_1);
+    int pathingDelayCap();
+    void setPathingDelayCap(int param_1);
+    int currentUpdatePathingAttempts();
+    int availablePathingAttempts(int param_1);
+    void incrementPathingAttempts();
+    void sendChatMessage(int param_1, int param_2, char* param_3);
+    void set_color_table(uchar param_1);
+    void win_game_now();
+    void victory_if_game_on();
+    void loss_if_game_on();
+    void set_allied_victory(uchar param_1);
+    uchar get_allied_victory();
+    uchar relation(long param_1);
+    void reset_selected();
+    void unselect_one_object(RGE_Static_Object* param_1);
+    void unselect_one_object(short param_1);
+    void select_one_object(RGE_Static_Object* param_1);
+    void select_area(long param_1, long param_2, long param_3, long param_4);
+    void unselect_area();
+    void unselect_object();
+    void update_selected();
+    int select_object(RGE_Static_Object* param_1);
 
     int computerPlayerValue;
     int pathingAttemptCapValue;
