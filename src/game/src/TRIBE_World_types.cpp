@@ -8,8 +8,12 @@
 #include "../include/globals.h"
 
 // --- TRIBE_Map ---
-TRIBE_Map::TRIBE_Map(int param_1, RGE_Sound** param_2, char param_3) {
-    // TODO(accuracy): full constructor from tmap.cpp.decomp
+TRIBE_Map::TRIBE_Map(int param_1, RGE_Sound** param_2, char param_3)
+    : RGE_Map(param_1, param_2, (uchar)param_3) {
+    // Source of truth: tmap.cpp.decomp
+    // Delegates to RGE_Map(int fd, RGE_Sound** sounds, uchar load_map)
+    // which reads 0x8DD0 bytes from empires.dat via rge_read, then
+    // loads terrain/border TShape SLPs and initializes tile sizes.
     this->Game = nullptr;
     this->rge_player = nullptr;
     this->rge_game_world = nullptr;
@@ -23,8 +27,11 @@ TRIBE_Map::TRIBE_Map(int param_1, RGE_Sound** param_2, char param_3) {
     memset(this->cliff_master_table, 0, sizeof(this->cliff_master_table));
 }
 
-TRIBE_Map::TRIBE_Map(char* param_1, char* param_2, char* param_3, char* param_4, short param_5, short param_6, short param_7, RGE_Sound** param_8) {
-    // TODO(accuracy): full data_load constructor from tmap.cpp.decomp
+TRIBE_Map::TRIBE_Map(char* param_1, char* param_2, char* param_3, char* param_4, short param_5, short param_6, short param_7, RGE_Sound** param_8)
+    : RGE_Map(param_1, param_2, param_3, param_5, param_6, param_7, param_8) {
+    // Source of truth: tmap.cpp.decomp
+    // Delegates to RGE_Map(char*, char*, char*, short, short, short, RGE_Sound**)
+    // which loads terrain/border definitions from text files.
     this->Game = nullptr;
     this->rge_player = nullptr;
     this->rge_game_world = nullptr;

@@ -1070,13 +1070,14 @@ int TRIBE_Game::create_game_screen() {
         if (screen->cam_y < 0) screen->cam_y = 0;
     }
 
-    // Queueing the switch avoids mutating panel lists during button/action dispatch.
+    // Source of truth: tribegam.cpp.decomp @ create_game_screen (0x00527830)
+    // The original calls setCurrentPanel + destroyPanel for all menu screens here.
+    // In our implementation, we use the deferred screen switch which safely handles
+    // panel transitions outside the button dispatch call stack.
     tribe_queue_screen_switch(screen);
     this->set_game_mode(4, 0);
 
     // For single-player (prog_mode != 3), call let_game_begin to transition into gameplay.
-    // Source of truth: tribegam.cpp.decomp @ create_game_screen (0x00527830)
-    // The decomp calls let_game_begin when prog_mode != 3 (not multiplayer wait).
     if (this->prog_mode != 3) {
         this->let_game_begin();
     }
@@ -1239,15 +1240,10 @@ void TRIBE_Game::let_game_begin() {
     // The original does extensive run_log of game settings (map type, size, victory, etc.)
     // We skip the logging and focus on the critical state transitions.
 
-    // Set current panel to game screen.
-    // NOTE: We do NOT destroy menu panels here because let_game_begin is called
-    // from within a button action handler (Start Game). Destroying panels during
-    // button dispatch causes use-after-free crashes (access violation).
-    // The deferred screen switch (tribe_queue_screen_switch) already handles the
-    // panel transition safely during the next idle tick.
-    if (panel_system) {
-        panel_system->setCurrentPanel((char*)"Game Screen", 0);
-    }
+    // Source of truth: tribegam.cpp.decomp @ 0x00528670
+    // The original calls setCurrentPanel("Game Screen") and destroys "Status Screen" +
+    // "Multiplayer" here. We skip these because the deferred screen switch
+    // (tribe_queue_screen_switch) handles panel transitions safely.
 
     run_log((char*)"game_started", 1);
 

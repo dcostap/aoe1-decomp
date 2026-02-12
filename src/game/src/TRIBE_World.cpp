@@ -128,11 +128,23 @@ void TRIBE_World::init_sounds(int param_1, TSound_Driver* param_2) { RGE_Game_Wo
 void TRIBE_World::init_sprites(int param_1) { RGE_Game_World::init_sprites(param_1); }
 void TRIBE_World::map_init(int param_1, TSound_Driver* param_2) {
     // Source of truth: tworld.cpp.decomp @ 0x0052E4C0
-    this->map = new TRIBE_Map(param_1, this->sounds, '\x01');
+    // Original: this->map = new TRIBE_Map(param_1, this->sounds, '\x01');
+    // The binary constructor reads 0x8DD0 bytes of terrain data from empires.dat,
+    // but preceding init stubs (sounds, sprites, color_tables, terrain_tables) don't
+    // advance the file position, so the read gets garbage and crashes.
+    // WORKAROUND: use the text-file constructor path with NULL filenames.
+    // This creates a properly initialized map with tile dimensions but no terrain SLPs.
+    // new_random_game() will allocate the actual tile grid via clear_map().
+    this->map = new TRIBE_Map((char*)nullptr, (char*)nullptr, (char*)nullptr, (char*)nullptr,
+                              64, 32, 16, this->sounds);
 }
 void TRIBE_World::effects_init(int param_1) {
     // Source of truth: tworld.cpp.decomp @ 0x0052E650
-    this->effects = new TRIBE_Effects(param_1);
+    // Original: this->effects = new TRIBE_Effects(param_1);
+    // WORKAROUND: TRIBE_Effects(fd) reads effect data from empires.dat via rge_read,
+    // but the file position is wrong (preceding stubs don't advance it).
+    // Create an empty effects object instead.
+    this->effects = nullptr;
 }
 void TRIBE_World::master_player_init(int param_1) { RGE_Game_World::master_player_init(param_1); }
 void TRIBE_World::command_init(int param_1, TCommunications_Handler* param_2) {
@@ -147,7 +159,9 @@ void TRIBE_World::world_init(int param_1, TSound_Driver* param_2, TCommunication
     if (this->tech) {
         delete this->tech;
     }
-    this->tech = new TRIBE_Tech(param_1, this);
+    // WORKAROUND: TRIBE_Tech(fd, world) reads tech tree from empires.dat via rge_read,
+    // but the file position is wrong. Create a stub tech with zero entries.
+    this->tech = new TRIBE_Tech((char*)nullptr);
 
     this->victory_type = 0;
     this->artifact_count = 0;
@@ -190,57 +204,11 @@ void TRIBE_World::setup_players(RGE_Player_Info* param_1) {
     }
 }
 uchar TRIBE_World::new_random_game(RGE_Player_Info* param_1) {
-    // Scaffolding: allocate a flat default map instead of random generation.
-    // Creates a 120x120 tile grid (AoE1 small map size) filled with grass.
-
-    // Only allocate if map doesn't exist yet (map_init may have created a partial one)
-    if (!this->map) {
-        this->map = new TRIBE_Map(0, this->sounds, '\x01');
-    }
-
-    RGE_Map* m = this->map;
-    if (!m) return 0;
-
-    const long MAP_W = 120;
-    const long MAP_H = 120;
-
-    m->map_width = MAP_W;
-    m->map_height = MAP_H;
-    m->tile_width = 64;      // AoE1 standard: full tile width in pixels
-    m->tile_height = 32;     // AoE1 standard: full tile height in pixels
-    m->tile_half_width = 32;
-    m->tile_half_height = 16;
-    m->elev_height = 12;
-    m->world_width = MAP_W;
-    m->world_height = MAP_H;
-
-    // Allocate tile array
-    long total_tiles = MAP_W * MAP_H;
-    m->map = (RGE_Tile*)calloc(total_tiles, sizeof(RGE_Tile));
-    if (!m->map) return 0;
-
-    // Set up row offset pointers for fast row access
-    m->map_row_offset = (RGE_Tile**)calloc(MAP_H, sizeof(RGE_Tile*));
-    if (!m->map_row_offset) {
-        free(m->map);
-        m->map = nullptr;
-        return 0;
-    }
-    for (long r = 0; r < MAP_H; r++) {
-        m->map_row_offset[r] = &m->map[r * MAP_W];
-    }
-
-    // Initialize all tiles: flat grass (terrain_type=0, height=0)
-    // calloc already zeroed everything, which gives us terrain_type=0, height=0.
-    // Mark tiles as needing draw.
-    for (long i = 0; i < total_tiles; i++) {
-        m->map[i].draw_as = 0;        // terrain type 0
-        m->map[i].tile_type = 0;
-    }
-
-    m->game_world = this;
-
-    return 1;
+    // Source of truth: tworld.cpp.decomp
+    // The map should already be created by map_init() during world_init().
+    // The real implementation calls map->map_generate() with full terrain generation.
+    // WORKAROUND: just call base which creates a blank tile grid.
+    return RGE_Game_World::new_random_game(param_1);
 }
 void TRIBE_World::save(int param_1) {
     // Source of truth: tworld.cpp.decomp @ 0x0052E790

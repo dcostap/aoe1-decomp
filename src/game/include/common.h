@@ -124,18 +124,10 @@ struct BITMAPINFO256 {
     tagRGBQUAD bmiColors[256];
 };
 
-struct RGE_Tile_Size {
-    short width;
-    short height;
-};
-
-struct RGE_Tile_Set {
-    char data[4]; // placeholder size
-};
-
-struct RGE_Border_Set {
-    char data[4]; // placeholder size
-};
+// Forward declare these structs — real definitions are in dedicated headers
+struct RGE_Tile_Size;
+struct RGE_Tile_Set;
+struct RGE_Border_Set;
 
 class RGE_RMM_Database_Controller;
 class RGE_Zone_Map_List;

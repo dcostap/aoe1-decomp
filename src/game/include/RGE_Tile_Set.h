@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "RGE_TOB_Picts.h"
 
 struct RGE_Tile_Set {
     uchar loaded;

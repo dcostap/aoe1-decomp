@@ -22,7 +22,7 @@ struct RGE_Border_Set {
     float animate_last;
     uchar frame_changed;
     uchar drawn;
-    RGE_TOB_Picts borders[19];
+    RGE_TOB_Picts borders[19][12];
     uchar draw_tile;
     short underlay_terrain;
     short border_style;
