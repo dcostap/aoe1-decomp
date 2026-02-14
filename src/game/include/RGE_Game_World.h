@@ -68,10 +68,17 @@ public:
     virtual uchar save_scenario(char* param_1); // vt[57] (0xE4)
     virtual RGE_Scenario* get_scenario_info(char* param_1); // vt[58] (0xE8)
     virtual void pause(uchar param_1); // vt[59] (0xEC)
-    virtual void scenario_init(); // vt[60] (0xF0)
-    virtual void scenario_init(int param_1); // vt[61] (0xF4)
+    virtual void scenario_init(RGE_Game_World* param_1); // vt[60] (0xF0)
+    virtual void scenario_init(int param_1, RGE_Game_World* param_2); // vt[61] (0xF4)
     virtual int addObject(RGE_Static_Object* param_1); // vt[62] (0xF8)
     virtual int removeObject(int param_1); // vt[63] (0xFC)
+
+    // Non-virtual methods
+    void reset_object_count();
+    void reset_player_visible_maps();
+    void set_map_visible(uchar param_1);
+    void set_map_fog(uchar param_1);
+    int initializePathingSystem();
 
     unsigned long world_time; // +0x4
     unsigned long old_world_time; // +0x8

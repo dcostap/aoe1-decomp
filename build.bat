@@ -1,5 +1,5 @@
 @echo off
-setlocal EnableExtensions
+setlocal EnableExtensions EnableDelayedExpansion
 
 REM ============================================================================
 REM Age of Empires 1 Decompilation - Build Script
@@ -20,14 +20,20 @@ set "SRC_DIR=src\game\src"
 set "INC_DIR=src\game\include"
 set "OBJ_DIR=build"
 set "OUT_DIR=dist"
+set "RES_FILE=%OBJ_DIR%\empires.res"
+set "OUT_EXE=%OUT_DIR%\empiresx.exe"
+set "BUILD_STAMP=%OBJ_DIR%\build.stamp"
+set "EXCLUDE_FILE=build_exclude_sources.txt"
 
 REM --- Setup VS Environment (only if required tools are not already available) ---
 where cl >nul 2>nul
 set "HAS_CL=%errorlevel%"
 where rc >nul 2>nul
 set "HAS_RC=%errorlevel%"
+where link >nul 2>nul
+set "HAS_LINK=%errorlevel%"
 
-if "%HAS_CL%"=="0" if "%HAS_RC%"=="0" goto :have_vs_env
+if "%HAS_CL%"=="0" if "%HAS_RC%"=="0" if "%HAS_LINK%"=="0" goto :have_vs_env
 
 echo Setting up VS 2022 x86 environment...
 if not exist "%VC_VARS%" (
@@ -37,10 +43,10 @@ if not exist "%VC_VARS%" (
     exit /b 1
 )
 call "%VC_VARS%" x86
-if %errorlevel% neq 0 (
+if errorlevel 1 (
     echo Failed to setup environment!
     popd
-    exit /b %errorlevel%
+    exit /b 1
 )
 
 :have_vs_env
@@ -48,9 +54,22 @@ if %errorlevel% neq 0 (
 REM --- Create directories ---
 if not exist "%OBJ_DIR%" mkdir "%OBJ_DIR%"
 if not exist "%OUT_DIR%" mkdir "%OUT_DIR%"
+if not exist "%EXCLUDE_FILE%" (
+    > "%EXCLUDE_FILE%" echo TRIBE_Panel_Button.cpp
+)
 
-taskkill /im empiresx.exe /f >nul 2>nul
-del /f /q "%OUT_DIR%\empiresx.exe" >nul 2>nul
+REM --- Ensure output EXE can be replaced ---
+set "RUNNING_EXE=0"
+for /f %%P in ('tasklist /FI "IMAGENAME eq empiresx.exe" /NH 2^>nul ^| find /I "empiresx.exe"') do set "RUNNING_EXE=1"
+if "%RUNNING_EXE%"=="1" (
+    taskkill /im empiresx.exe /f >nul 2>nul
+    if errorlevel 1 (
+        echo ERROR: empiresx.exe is running and could not be terminated.
+        echo        Close the game manually and rerun build.
+        popd
+        exit /b 1
+    )
+)
 
 REM --- Sanity checks ---
 if not exist "%DP_INC%\dplay.h" (
@@ -64,95 +83,115 @@ if not exist "%OUT_DIR%\languagex.dll" (
     echo          Copy game assets to %OUT_DIR% before running!
 )
 
-echo.
-echo [1/2] Compiling resources...
-rc /fo"%OBJ_DIR%\empires.res" %SRC_DIR%\empires.rc
-if %errorlevel% neq 0 (
-    echo Resource compilation FAILED!
-    popd
-    exit /b %errorlevel%
+REM --- Header invalidation ---
+set "REBUILD_ALL=0"
+if not exist "%BUILD_STAMP%" (
+    set "REBUILD_ALL=1"
+) else (
+    for /f %%I in ('powershell -NoProfile -Command "$s=(Get-Item '%BUILD_STAMP%').LastWriteTimeUtc; if (Get-ChildItem '%INC_DIR%' -File -Recurse -Filter *.h | Where-Object { $_.LastWriteTimeUtc -gt $s } | Select-Object -First 1) { '1' } else { '0' }"') do set "REBUILD_ALL=%%I"
 )
 
-echo [2/2] Compiling code...
-cl /nologo /EHsc /std:c++17 /MDd /D_DEBUG /DWIN32 /D_X86_ ^
-   /I"%INC_DIR%" /I"%DP_INC%" ^
-   /Fo"%OBJ_DIR%\\" /Fd"%OBJ_DIR%\empiresx.pdb" ^
-   "%OBJ_DIR%\empires.res" ^
-   %SRC_DIR%\main.cpp ^
-   %SRC_DIR%\tribegam.cpp ^
-   %SRC_DIR%\basegame.cpp ^
-   %SRC_DIR%\RGE_Game_World.cpp ^
-   %SRC_DIR%\TRIBE_World.cpp ^
-   %SRC_DIR%\GameViewPanel.cpp ^
-   %SRC_DIR%\TRIBE_World_types.cpp ^
-   %SRC_DIR%\TRIBE_Tech.cpp ^
-   %SRC_DIR%\TRIBE_Player_Tech.cpp ^
-   %SRC_DIR%\TRIBE_History_Info.cpp ^
-   %SRC_DIR%\RGE_Player.cpp ^
-   %SRC_DIR%\TRIBE_Player.cpp ^
-   %SRC_DIR%\RGE_Static_Object.cpp ^
-   %SRC_DIR%\RGE_Map.cpp ^
-   %SRC_DIR%\view.cpp ^
-   %SRC_DIR%\RGE_Visible_Map.cpp ^
-   %SRC_DIR%\com_hand.cpp ^
-   %SRC_DIR%\globals.cpp ^
-   %SRC_DIR%\Res_file.cpp ^
-   %SRC_DIR%\sceninfo.cpp ^
-   %SRC_DIR%\gameinfo.cpp ^
-   %SRC_DIR%\file_stf.cpp ^
-   %SRC_DIR%\getdxver.cpp ^
-   %SRC_DIR%\TRegistry.cpp ^
-   %SRC_DIR%\TDebuggingLog.cpp ^
-   %SRC_DIR%\Mouseptr.cpp ^
-   %SRC_DIR%\TShape.cpp ^
-   %SRC_DIR%\Chat.cpp ^
-   %SRC_DIR%\debug_helpers.cpp ^
-   %SRC_DIR%\screens.cpp ^
-   %SRC_DIR%\TPanel.cpp ^
-   %SRC_DIR%\TButtonPanel.cpp ^
-   %SRC_DIR%\TTextPanel.cpp ^
-   %SRC_DIR%\Panel_ez.cpp ^
-   %SRC_DIR%\Pnl_drop.cpp ^
-   %SRC_DIR%\Pnl_drop_btn.cpp ^
-   %SRC_DIR%\Pnl_lst.cpp ^
-   %SRC_DIR%\Pnl_sbar.cpp ^
-   %SRC_DIR%\Pnl_scr.cpp ^
-   %SRC_DIR%\Scr_main_impl.cpp ^
-   %SRC_DIR%\Scr_sing_impl.cpp ^
-   %SRC_DIR%\scr_load_impl.cpp ^
-   %SRC_DIR%\scr_mps_impl.cpp ^
-   %SRC_DIR%\scr_sels_impl.cpp ^
-   %SRC_DIR%\scr_set.cpp ^
-   %SRC_DIR%\TPanelSystem.cpp ^
-   %SRC_DIR%\Dib.cpp ^
-   %SRC_DIR%\Drawarea.cpp ^
-   %SRC_DIR%\spanlist.cpp ^
-   %SRC_DIR%\RGE_Color_Table.cpp ^
-   %SRC_DIR%\Picture.cpp ^
-   %SRC_DIR%\Pnl_pic.cpp ^
-   %SRC_DIR%\Cdaudio.cpp ^
-   %SRC_DIR%\Dsutil.cpp ^
-   %SRC_DIR%\Sounddrv.cpp ^
-   %SRC_DIR%\Sound.cpp ^
-   %SRC_DIR%\RGE_Sprite.cpp ^
-   %SRC_DIR%\RGE_Master_Player.cpp ^
-   %SRC_DIR%\RGE_Effects.cpp ^
-   %SRC_DIR%\music.cpp ^
-   /link /LIBPATH:"%DP_LIB%" ^
-   kernel32.lib user32.lib gdi32.lib advapi32.lib ole32.lib ^
-   ddraw.lib dsound.lib dxguid.lib dplayx.lib dplay.lib uuid.lib winmm.lib ws2_32.lib ^
-   /OUT:"%OUT_DIR%\empiresx.exe"
+REM --- Incremental resource compile ---
+set "RES_CHANGED=0"
+set "NEED_RES_COMPILE=0"
+if not exist "%RES_FILE%" (
+    set "NEED_RES_COMPILE=1"
+) else (
+    for /f %%I in ('powershell -NoProfile -Command "if ((Get-Item '%SRC_DIR%\empires.rc').LastWriteTimeUtc -gt (Get-Item '%RES_FILE%').LastWriteTimeUtc) { '1' } else { '0' }"') do set "NEED_RES_COMPILE=%%I"
+)
 
-if %errorlevel% neq 0 (
+if "%NEED_RES_COMPILE%"=="1" (
     echo.
-    echo Compilation FAILED!
-    popd
-    exit /b %errorlevel%
+    echo [1/3] Compiling resources...
+    rc /fo"%RES_FILE%" %SRC_DIR%\empires.rc
+    if errorlevel 1 (
+        echo Resource compilation FAILED!
+        popd
+        exit /b 1
+    )
+    set "RES_CHANGED=1"
+) else (
+    echo.
+    echo [1/3] Resources are up to date.
 )
 
-echo [3/3] Build successful!
+REM --- Discover sources and compute incremental compile list ---
+set "SOURCE_META=%OBJ_DIR%\source_meta.env"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0build_discover_sources.ps1" ^
+    -SrcDir "%SRC_DIR%" ^
+    -ObjDir "%OBJ_DIR%" ^
+    -ResFile "%RES_FILE%" ^
+    -ExcludeFile "%EXCLUDE_FILE%" ^
+    -RebuildAll %REBUILD_ALL% > "%SOURCE_META%"
+if errorlevel 1 (
+    echo ERROR: failed to discover source file state.
+    popd
+    exit /b 1
+)
+
+set "OBJECT_LIST="
+set "CHANGED_SOURCES="
+set /a SOURCE_COUNT=0
+set /a CHANGED_COUNT=0
+set /a EXCLUDED_COUNT=0
+for /f "usebackq delims=" %%L in ("%SOURCE_META%") do set "%%L"
+del /f /q "%SOURCE_META%" >nul 2>nul
+
+if !SOURCE_COUNT! EQU 0 (
+    echo ERROR: no source files found in %SRC_DIR%
+    popd
+    exit /b 1
+)
+
+if !CHANGED_COUNT! GTR 0 (
+    if "%REBUILD_ALL%"=="1" (
+        echo [2/3] Rebuilding !CHANGED_COUNT! source file^(s^)...
+    ) else (
+        echo [2/3] Compiling !CHANGED_COUNT! changed source file^(s^)...
+    )
+    cl /nologo /c /EHsc /std:c++17 /MDd /D_DEBUG /DWIN32 /D_X86_ /MP /FS ^
+       /I"%INC_DIR%" /I"%DP_INC%" ^
+       /Fo"%OBJ_DIR%\\" /Fd"%OBJ_DIR%\empiresx.pdb" ^
+       !CHANGED_SOURCES!
+    if errorlevel 1 (
+        echo.
+        echo Compilation FAILED!
+        popd
+        exit /b 1
+    )
+) else (
+    echo [2/3] Source files are up to date.
+)
+if !EXCLUDED_COUNT! GTR 0 echo      Skipped !EXCLUDED_COUNT! source file^(s^) listed in %EXCLUDE_FILE%.
+
+REM --- Incremental link ---
+set "NEED_LINK=0"
+if not exist "%OUT_EXE%" set "NEED_LINK=1"
+if !CHANGED_COUNT! GTR 0 set "NEED_LINK=1"
+if "%RES_CHANGED%"=="1" set "NEED_LINK=1"
+
+if "%NEED_LINK%"=="1" (
+    echo [3/3] Linking...
+    link /nologo /DEBUG /INCREMENTAL /OUT:"%OUT_EXE%" ^
+         !OBJECT_LIST! ^
+         /LIBPATH:"%DP_LIB%" ^
+         kernel32.lib user32.lib gdi32.lib advapi32.lib ole32.lib ^
+         ddraw.lib dsound.lib dxguid.lib dplayx.lib dplay.lib uuid.lib winmm.lib ws2_32.lib
+    if errorlevel 1 (
+        echo.
+        echo Link FAILED!
+        popd
+        exit /b 1
+    )
+) else (
+    echo [3/3] Link is up to date.
+)
+
+> "%BUILD_STAMP%" echo Build stamp %date% %time%
+
+echo [done] Build successful.
 echo.
-echo Output: %OUT_DIR%\empiresx.exe
+echo Output: %OUT_EXE%
 echo.
 
 popd

@@ -47,6 +47,9 @@ public:
     void set_map_fog(uchar flag);
     void request_redraw(int col0, int row0, int col1, int row1, uchar attr);
     void clear_map_view_info();
+    uchar get_tile_type(short col, short row);
+    void rebuild_tile_types(short col0, short row0, short col1, short row1);
+    void rebuild_border_types(short col0, short row0, short col1, short row1);
     uchar get_border_type(short col, short row);
     void load_terrain_obj_types(char* param_1);
 

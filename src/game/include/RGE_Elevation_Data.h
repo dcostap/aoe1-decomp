@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "RGE_Elevation_Data_Entry.h"
 
 struct RGE_Elevation_Data {
     long elevation_num;

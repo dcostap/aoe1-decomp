@@ -5,6 +5,7 @@
 #include "../include/RGE_Map.h"
 #include "../include/RGE_Tile.h"
 #include "../include/RGE_Tile_Set.h"
+#include "../include/RGE_Border_Set.h"
 #include "../include/RGE_TOB_Picts.h"
 #include "../include/TShape.h"
 #include "../include/TDrawArea.h"
@@ -19,6 +20,69 @@ extern TMousePointer* MouseSystem;
 // AoE1 standard tile dimensions
 static const int TILE_HALF_W = 32; // half-width of isometric diamond
 static const int TILE_HALF_H = 16; // half-height of isometric diamond
+static const int FORCE_FALLBACK_TILES = 0;
+
+// RGE_Map::set_map_screen_pos() stores coordinates as:
+//   x = (row + col) * tile_half_width
+//   y = (row - col) * tile_half_height - elevation
+// Y can be negative, so we add a fixed map-space shift for viewport rendering.
+static long gameview_origin_y(const RGE_Map* map) {
+    if (!map || map->map_row_offset == nullptr || map->map_width <= 0 || map->map_height <= 0) {
+        return 0;
+    }
+
+    long min_y = 0;
+    int have_min = 0;
+    for (long y = 0; y < map->map_height; ++y) {
+        for (long x = 0; x < map->map_width; ++x) {
+            RGE_Tile* tile = &map->map_row_offset[y][x];
+            long draw_y = (long)tile->screen_ypos;
+            if (!have_min || draw_y < min_y) {
+                min_y = draw_y;
+                have_min = 1;
+            }
+        }
+    }
+
+    long half_h = map->tile_half_height > 0 ? map->tile_half_height : TILE_HALF_H;
+    if (min_y < 0) {
+        return -min_y + half_h;
+    }
+    return half_h;
+}
+
+static void draw_fallback_iso_tile(TDrawArea* area, long sx, long sy, uchar terrain_idx) {
+    if (!area) {
+        return;
+    }
+
+    // Non-original fallback: draw a simple filled diamond when terrain SLP data is unavailable.
+    uchar fill = (uchar)(170 + (terrain_idx % 12));
+    if (fill == 0) fill = 170;
+    uchar edge = (uchar)(fill > 8 ? fill - 8 : fill);
+
+    // Upper half (16 rows): width grows by 4 pixels per row.
+    for (int i = 0; i < TILE_HALF_H; ++i) {
+        int y = (int)(sy + i);
+        int x = (int)(sx - i * 2);
+        int len = i * 4 + 1;
+        area->DrawHorzLine(x, y, len, fill);
+    }
+
+    // Lower half (16 rows): width shrinks by 4 pixels per row.
+    for (int i = 0; i < TILE_HALF_H; ++i) {
+        int y = (int)(sy + TILE_HALF_H + i);
+        int x = (int)(sx - (TILE_HALF_H - 1 - i) * 2);
+        int len = (TILE_HALF_H - 1 - i) * 4 + 1;
+        area->DrawHorzLine(x, y, len, fill);
+    }
+
+    // Outline to improve readability on flat backgrounds.
+    area->DrawLine((int)sx, (int)sy, (int)(sx + TILE_HALF_W - 1), (int)(sy + TILE_HALF_H), edge);
+    area->DrawLine((int)sx, (int)sy, (int)(sx - TILE_HALF_W + 1), (int)(sy + TILE_HALF_H), edge);
+    area->DrawLine((int)(sx - TILE_HALF_W + 1), (int)(sy + TILE_HALF_H), (int)sx, (int)(sy + TILE_HALF_H * 2 - 1), edge);
+    area->DrawLine((int)(sx + TILE_HALF_W - 1), (int)(sy + TILE_HALF_H), (int)sx, (int)(sy + TILE_HALF_H * 2 - 1), edge);
+}
 
 GameViewPanel::GameViewPanel(RGE_Map* map) : TScreenPanel((char*)"Game Screen") {
     this->world_map = map;
@@ -76,6 +140,53 @@ static short get_tile_picture(RGE_Map* map, unsigned char terrain_type, unsigned
     return ts->tiles[tt].shape_index + ts->tiles[tt].animations * sub_tile;
 }
 
+// get_border_picture — transliterated from view.cpp.decomp @ 0x00539B90 / view.cpp.asm.
+// Returns the SLP frame index for a given border type/tile context, or -1 if unavailable.
+static short get_border_picture(RGE_Map* map, unsigned char border_type, unsigned char tile_type,
+                                unsigned char border_shape, short col, short row) {
+    if (!map || border_type >= 16) {
+        return -1;
+    }
+
+    RGE_Border_Set* bs = &map->border_types[border_type];
+    if (!bs->shape) {
+        return -1;
+    }
+
+    // Source-of-truth quirk: original code indexes the 19x12 border table via a flattened
+    // offset (shape + tile_type*12 + 10), not a direct [tile_type-1][shape+11] expression.
+    const int flat_index = (int)border_shape + (int)tile_type * 12 + 10;
+    if (flat_index < 0 || flat_index >= (19 * 12)) {
+        return -1;
+    }
+
+    RGE_TOB_Picts* pict = &bs->borders[0][0] + flat_index;
+    short count = pict->count;
+    if (count == 0) {
+        return -1;
+    }
+
+    short sub_index = 0;
+    if (count > 1) {
+        short border_style = bs->border_style;
+        if (((border_style == 0) && (border_shape == 0x0B || border_shape == 0x0C)) ||
+            ((border_style == 1) && (border_shape == 0x03 || border_shape == 0x02))) {
+            sub_index = (short)(row % count);
+        } else if (((border_style == 0) && (border_shape == 0x09 || border_shape == 0x0A)) ||
+                   ((border_style == 1) && (border_shape == 0x01 || border_shape == 0x04))) {
+            sub_index = (short)(col % count);
+        } else {
+            sub_index = 0;
+        }
+    }
+
+    if (sub_index > count - 1) {
+        sub_index = 0;
+    }
+
+    return (short)(pict->animations * sub_index + pict->shape_index);
+}
+
 void GameViewPanel::draw() {
     if (!this->render_area || !this->world_map || !this->world_map->map) {
         CUSTOM_DEBUG_LOG("GameViewPanel::draw: SKIPPING - missing render_area/map/tiles");
@@ -101,55 +212,104 @@ void GameViewPanel::draw() {
         return;
     }
 
-    // Origin offset: place tile (0,0) at the center-top of the isometric diamond
-    long origin_x = (map_h - 1) * TILE_HALF_W;
-    long origin_y = 0;
+    // screen_xpos/screen_ypos are already in world-space from RGE_Map::set_map_screen_pos.
+    // Only Y needs a positive shift because map-space Y spans negative..positive.
+    long origin_x = 0;
+    long origin_y = gameview_origin_y(this->world_map);
+    long half_w = this->world_map->tile_half_width > 0 ? this->world_map->tile_half_width : TILE_HALF_W;
+    long half_h = this->world_map->tile_half_height > 0 ? this->world_map->tile_half_height : TILE_HALF_H;
 
     int drawn_tiles = 0;
+    int real_tiles = 0;
+    int fallback_tiles = 0;
+    int bad_terrain_idx = 0;
+    int missing_shape = 0;
+    int missing_frame = 0;
+    int border_drawn = 0;
+    int border_missing = 0;
     int checked_tiles = 0;
+    int culled_x = 0;
+    int culled_y = 0;
+    long min_sx = 2147483647L;
+    long max_sx = -2147483647L - 1;
+    long min_sy = 2147483647L;
+    long max_sy = -2147483647L - 1;
 
-    // Iterate all tiles and draw terrain SLP sprites.
-    // For each tile, use the pre-computed screen_xpos/screen_ypos from RGE_Map,
-    // or compute isometric coords directly.
-    for (long row = 0; row < map_h; row++) {
-        for (long col = 0; col < map_w; col++) {
+    // Draw in diagonal order with constant (row-col), top-to-bottom in screen space.
+    long min_diff = -(map_w - 1);
+    long max_diff = map_h - 1;
+    for (long diff = min_diff; diff <= max_diff; ++diff) {
+        long row0 = (diff > 0) ? diff : 0;
+        long row1 = diff + (map_w - 1);
+        if (row1 > map_h - 1) row1 = map_h - 1;
+
+        for (long row = row0; row <= row1; ++row) {
+            long col = row - diff;
+            if (col < 0 || col >= map_w) continue;
+
             checked_tiles++;
             RGE_Tile* tile = &this->world_map->map_row_offset[row][col];
 
-            // Use the tile's pre-computed screen position (set by set_map_screen_pos)
-            // screen_xpos = (col - row) * tile_half_width
-            // screen_ypos = (col + row) * tile_half_height
+            unsigned char tile_type = tile->tile_type;
+
+            // Source of truth: map.cpp::set_map_screen_pos already applies elevation and
+            // tile_type-specific vertical adjustments for terrain draw.
             long wx = origin_x + (long)tile->screen_xpos;
             long wy = origin_y + (long)tile->screen_ypos;
 
             // Convert to screen position with camera offset
             long sx = wx - this->cam_x + this->pnl_x;
             long sy = wy - this->cam_y + this->pnl_y;
+            if (sx < min_sx) min_sx = sx;
+            if (sx > max_sx) max_sx = sx;
+            if (sy < min_sy) min_sy = sy;
+            if (sy > max_sy) max_sy = sy;
 
-            // Early cull: skip if tile is fully outside the panel
-            // Terrain tiles are 64x32 (TILE_HALF_W*2 x TILE_HALF_H*2)
-            if (sx + TILE_HALF_W < this->pnl_x || sx - TILE_HALF_W > this->pnl_x + scr_w)
+            long tile_draw_h = half_h * 2;
+            if (tile_type < 19 && this->world_map->tilesizes[tile_type].height > 0) {
+                tile_draw_h = this->world_map->tilesizes[tile_type].height;
+            }
+
+            // Early cull: skip if tile is fully outside the panel.
+            if (sx + half_w < this->pnl_x || sx - half_w > this->pnl_x + scr_w) {
+                culled_x++;
                 continue;
-            if (sy + TILE_HALF_H * 2 < this->pnl_y || sy - TILE_HALF_H > this->pnl_y + scr_h)
+            }
+            if (sy + tile_draw_h < this->pnl_y || sy - half_h > this->pnl_y + scr_h) {
+                culled_y++;
                 continue;
+            }
 
             // Look up the terrain type and get the SLP shape
             unsigned char terrain_idx = tile->terrain_type; // 5-bit field (0-31)
-            unsigned char tile_type = tile->tile_type;
 
             if (terrain_idx >= 32) {
-                 if (checked_tiles % 1000 == 0) CUSTOM_DEBUG_LOG_FMT("Bad terrain idx %d at %ld,%ld", terrain_idx, col, row);
-                 continue;
+                bad_terrain_idx++;
+                if (checked_tiles % 1000 == 0) CUSTOM_DEBUG_LOG_FMT("Bad terrain idx %d at %ld,%ld", terrain_idx, col, row);
+                continue;
+            }
+
+            if (FORCE_FALLBACK_TILES) {
+                draw_fallback_iso_tile(this->render_area, sx, sy, terrain_idx);
+                drawn_tiles++;
+                fallback_tiles++;
+                continue;
             }
 
             RGE_Tile_Set* ts = &this->world_map->terrain_types[terrain_idx];
             if (!ts->loaded) {
-                 if (checked_tiles % 1000 == 0) CUSTOM_DEBUG_LOG_FMT("Terrain %d not loaded at %ld,%ld", terrain_idx, col, row);
-                 continue;
+                missing_shape++;
+                draw_fallback_iso_tile(this->render_area, sx, sy, terrain_idx);
+                drawn_tiles++;
+                fallback_tiles++;
+                continue;
             }
             if (!ts->shape) {
-                 if (checked_tiles % 1000 == 0) CUSTOM_DEBUG_LOG_FMT("Terrain %d no shape at %ld,%ld", terrain_idx, col, row);
-                 continue;
+                missing_shape++;
+                draw_fallback_iso_tile(this->render_area, sx, sy, terrain_idx);
+                drawn_tiles++;
+                fallback_tiles++;
+                continue;
             }
 
             // Get the SLP frame index for this terrain at this tile position
@@ -157,8 +317,30 @@ void GameViewPanel::draw() {
                                            (short)col, (short)row);
             
             if (frame < 0) {
-                 if (checked_tiles % 1000 == 0) CUSTOM_DEBUG_LOG_FMT("Terrain %d frame < 0 at %ld,%ld", terrain_idx, col, row);
-                 continue;
+                missing_frame++;
+                draw_fallback_iso_tile(this->render_area, sx, sy, terrain_idx);
+                drawn_tiles++;
+                fallback_tiles++;
+                continue;
+            }
+
+            if (frame >= ts->shape->shape_count()) {
+                missing_frame++;
+                draw_fallback_iso_tile(this->render_area, sx, sy, terrain_idx);
+                drawn_tiles++;
+                fallback_tiles++;
+                continue;
+            }
+
+            // Non-original seam stabilization:
+            // Some transition/elevation tile frames appear to be partial overlays in the
+            // current renderer path. Draw a flat same-terrain underlay first so transparent
+            // portions never expose the clear color.
+            if (tile_type != 0) {
+                short underlay = get_tile_picture(this->world_map, terrain_idx, 0, (short)col, (short)row);
+                if (underlay >= 0 && underlay < ts->shape->shape_count()) {
+                    ts->shape->shape_draw(this->render_area, sx, sy, (long)underlay, 0, 0, nullptr);
+                }
             }
 
             // Draw the terrain SLP sprite
@@ -166,15 +348,35 @@ void GameViewPanel::draw() {
             // The tile's SLP hotspot handles positioning — we draw at the tile's
             // screen position. The SLP frame's hotspot aligns it correctly.
             ts->shape->shape_draw(this->render_area, sx, sy, (long)frame, 0, 0, nullptr);
+
+            // Border overlay pass (terrain transitions/cliff-edge blending).
+            unsigned char border_idx = tile->border_type;
+            if (border_idx != 0 && border_idx < 16) {
+                RGE_Border_Set* bs = &this->world_map->border_types[border_idx];
+                if (bs->loaded && bs->shape != nullptr) {
+                    short border_frame = get_border_picture(this->world_map, border_idx, tile_type,
+                                                            tile->border_shape, (short)col, (short)row);
+                    if (border_frame >= 0 && border_frame < bs->shape->shape_count()) {
+                        bs->shape->shape_draw(this->render_area, sx, sy, (long)border_frame, 0, 0, nullptr);
+                        border_drawn++;
+                    } else {
+                        border_missing++;
+                    }
+                }
+            }
+
             drawn_tiles++;
+            real_tiles++;
         }
     }
     
     // Log summary (throttled)
     static int log_counter = 0;
     if (log_counter++ % 60 == 0) {
-        CUSTOM_DEBUG_LOG_FMT("GameViewPanel::draw: cam=%ld,%ld drawn=%d checked=%d map=%ldx%ld pnl=%dx%d",
-            this->cam_x, this->cam_y, drawn_tiles, checked_tiles, map_w, map_h, scr_w, scr_h);
+        CUSTOM_DEBUG_LOG_FMT("GameViewPanel::draw: cam=%ld,%ld drawn=%d real=%d fallback=%d borderDraw=%d borderMiss=%d checked=%d cullX=%d cullY=%d badTerrain=%d missShape=%d missFrame=%d sx=[%ld..%ld] sy=[%ld..%ld] map=%ldx%ld pnl=%d,%d %dx%d origin=%ld,%ld",
+            this->cam_x, this->cam_y, drawn_tiles, real_tiles, fallback_tiles, border_drawn, border_missing, checked_tiles, culled_x, culled_y, bad_terrain_idx, missing_shape, missing_frame,
+            min_sx, max_sx, min_sy, max_sy,
+            map_w, map_h, this->pnl_x, this->pnl_y, scr_w, scr_h, origin_x, origin_y);
     }
 }
 

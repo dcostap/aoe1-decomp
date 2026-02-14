@@ -672,7 +672,9 @@ int TRIBE_Game::load_game_data() {
             return 0;
         }
 
-        if (!world->init(this->prog_info->game_data_file, this->sound_system, this->comm_handler)) {
+        // Source of truth uses virtual dispatch. Current decomp tree still has vtable fidelity gaps,
+        // so call the base implementation explicitly to keep binary data bootstrap deterministic.
+        if (!world->RGE_Game_World::init(this->prog_info->game_data_file, this->sound_system, this->comm_handler)) {
             delete world;
             this->world = nullptr;
             return 0;
@@ -1082,7 +1084,6 @@ int TRIBE_Game::create_game_screen() {
 
     // Center camera on the map initially
     if (map && map->map_width > 0 && map->map_height > 0) {
-        long origin_x = (map->map_height - 1) * 32; // TILE_HALF_W
         long world_pixel_w = (map->map_width + map->map_height) * 32;
         long world_pixel_h = (map->map_width + map->map_height) * 16;
         long scr_w = this->prog_info ? this->prog_info->main_wid : 0x280;

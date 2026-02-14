@@ -1,5 +1,7 @@
 #pragma once
 #include "common.h"
+#include "RGE_Elevation_Info_Line.h"
+#include "RGE_Elevation_Hot_Spots.h"
 
 struct RGE_Elevation_Info {
     RGE_Elevation_Info_Line elevation[99];

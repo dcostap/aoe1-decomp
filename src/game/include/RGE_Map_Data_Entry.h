@@ -1,5 +1,9 @@
 #pragma once
 #include "common.h"
+#include "RGE_Land_Data.h"
+#include "RGE_Terrain_Data.h"
+#include "RGE_Object_Data.h"
+#include "RGE_Elevation_Data.h"
 
 struct RGE_Map_Data_Entry {
     long map_id;

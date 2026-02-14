@@ -54,7 +54,17 @@ extern int useComputerPlayers;
 extern int show_timing_max;
 extern float save_game_version;
 extern unsigned char die_die_die;
+extern int world_update_counter;
+extern int ENABLE_COMPRESSION;
+extern int rge_write_error;
 
 void run_log(char* param_1, int param_2);
+int rge_fake_open(int handle, int remaining_bytes);
+int rge_open(char* path, int oflag);
+int rge_open(char* path, int oflag, int pmode);
+int rge_fake_close(int handle);
+int rge_close(int handle);
 void rge_read(int handle, void* buf, int size);
 void rge_write(int handle, void* buf, int size);
+long rge_stream_tell(int handle);
+long rge_stream_seek(int handle, long pos);

@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "RGE_Land_Info_Line.h"
 
 struct RGE_Land_Info {
     RGE_Land_Info_Line land[99];

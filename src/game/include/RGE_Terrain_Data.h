@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "RGE_Terrain_Data_Entry.h"
 
 struct RGE_Terrain_Data {
     long terrain_num;

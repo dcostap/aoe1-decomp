@@ -1,5 +1,6 @@
 // Stub constructors/destructors for types used by TRIBE_World init overrides.
 #include "../include/TRIBE_Map.h"
+#include "../include/TRIBE_RMM_Database_Controller.h"
 #include "../include/custom_debug.h"
 #include "../include/TRIBE_Command.h"
 #include "../include/TRIBE_Effects.h"
@@ -12,19 +13,10 @@
 // --- TRIBE_Map ---
 TRIBE_Map::TRIBE_Map(int param_1, RGE_Sound** param_2, char param_3)
     : RGE_Map(param_1, param_2, 0) { // Decomp passes 0 (false) for load_map
-    CUSTOM_DEBUG_LOG_FMT("TRIBE_Map::TRIBE_Map(binary) param_1=%d param_3=%d", param_1, param_3);
-    
-    // Decomp logic: if param_3 (load_random_map flag) is set, load it.
-    // Note: Since param_1 is at EOF due to init_sprites, this will likely crash.
-    // We add a safety check.
-    if (param_3 && param_1 > 0) {
-        long pos = _tell(param_1);
-        long len = _filelength(param_1);
-        if (pos >= 0 && pos < len) {
-             this->data_load_random_map(param_1);
-        } else {
-             CUSTOM_DEBUG_LOG_FMT("TRIBE_Map::TRIBE_Map: SKIPPING data_load_random_map (fd=%d pos=%ld len=%ld)", param_1, pos, len);
-        }
+    CUSTOM_DEBUG_LOG_FMT("TRIBE_Map::TRIBE_Map(binary) param_1=%d param_3=%d", param_1, (int)param_3);
+
+    if (param_3) {
+        this->data_load_random_map(param_1);
     }
 
     this->Game = nullptr;
@@ -32,11 +24,11 @@ TRIBE_Map::TRIBE_Map(int param_1, RGE_Sound** param_2, char param_3)
     this->rge_game_world = nullptr;
     this->rge_map_gen_information = nullptr;
     this->zones = nullptr;
-    this->old_cliff_x = 0;
-    this->old_cliff_y = 0;
-    this->safe_cliff_x = 0;
-    this->safe_cliff_y = 0;
-    this->old_cliff_direction = 0;
+    this->old_cliff_x = -1;
+    this->old_cliff_y = -1;
+    this->safe_cliff_x = -1;
+    this->safe_cliff_y = -1;
+    this->old_cliff_direction = -1;
     memset(this->cliff_master_table, 0, sizeof(this->cliff_master_table));
 }
 
@@ -50,17 +42,25 @@ TRIBE_Map::TRIBE_Map(char* param_1, char* param_2, char* param_3, char* param_4,
     this->rge_game_world = nullptr;
     this->rge_map_gen_information = nullptr;
     this->zones = nullptr;
-    this->old_cliff_x = 0;
-    this->old_cliff_y = 0;
-    this->safe_cliff_x = 0;
-    this->safe_cliff_y = 0;
-    this->old_cliff_direction = 0;
+    this->old_cliff_x = -1;
+    this->old_cliff_y = -1;
+    this->safe_cliff_x = -1;
+    this->safe_cliff_y = -1;
+    this->old_cliff_direction = -1;
     memset(this->cliff_master_table, 0, sizeof(this->cliff_master_table));
 }
 
 TRIBE_Map::~TRIBE_Map() {}
-void TRIBE_Map::data_load_random_map(int p1) {}
-void TRIBE_Map::load_random_map(char* p1, char* p2, char* p3, char* p4) {}
+void TRIBE_Map::data_load_random_map(int p1) {
+    // Source of truth: tmap.cpp.decomp @ 0x0050F800.
+    this->random_map = (RGE_RMM_Database_Controller*)new TRIBE_RMM_Database_Controller(p1);
+}
+
+void TRIBE_Map::load_random_map(char* p1, char* p2, char* p3, char* p4) {
+    // Source of truth: tmap.cpp.decomp @ 0x0050F860.
+    // Constructor argument order is (param_2, param_3, param_4, param_1).
+    this->random_map = (RGE_RMM_Database_Controller*)new TRIBE_RMM_Database_Controller(p2, p3, p4, p1);
+}
 uchar TRIBE_Map::do_terrain_brush(long p1, long p2, long p3, uchar p4) { return 0; }
 uchar TRIBE_Map::do_terrain_brush_stroke(long p1, long p2, long p3, long p4, long p5, uchar p6) { return 0; }
 uchar TRIBE_Map::do_elevation_brush(long p1, long p2, long p3, uchar p4) { return 0; }
@@ -68,7 +68,6 @@ uchar TRIBE_Map::do_elevation_brush_stroke(long p1, long p2, long p3, long p4, l
 uchar TRIBE_Map::do_cliff_brush(long p1, long p2, uchar p3, uchar p4) { return 0; }
 uchar TRIBE_Map::do_cliff_brush_stroke(long p1, long p2, long p3, long p4, uchar p5, uchar p6) { return 0; }
 void TRIBE_Map::map_generate(RGE_Player* p1, RGE_Game_World* p2, RGE_Player_Info* p3, uchar* p4) {}
-void TRIBE_Map::map_generate2(RGE_Game_World* p1, long p2, long p3, uchar p4, long p5) {}
 void TRIBE_Map::save(int p1) {}
 void TRIBE_Map::delete_cliff(long p1, long p2) {}
 

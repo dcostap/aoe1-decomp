@@ -1,5 +1,7 @@
 #pragma once
 #include "common.h"
+#include "RGE_Object_Info_Line.h"
+#include "RGE_Land_Point_Info_Line.h"
 
 struct RGE_Object_Info {
     RGE_Object_Info_Line objects[99];

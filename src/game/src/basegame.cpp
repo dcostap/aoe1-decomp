@@ -1956,13 +1956,15 @@ unsigned char RGE_Base_Game::mpPathFinding() {
 }
 
 void RGE_Base_Game::set_map_visible(unsigned char p1) {
-    // TODO(accuracy): implement full map visibility toggle via RGE_Game_World
-    (void)p1;
+    if (this->world != nullptr) {
+        this->world->set_map_visible(p1);
+    }
 }
 
 void RGE_Base_Game::set_map_fog(unsigned char p1) {
-    // TODO(accuracy): implement full fog-of-war toggle via RGE_Game_World
-    (void)p1;
+    if (this->world != nullptr) {
+        this->world->set_map_fog(p1);
+    }
 }
 
 void RGE_Base_Game::reset_countdown_timer(int p1) {

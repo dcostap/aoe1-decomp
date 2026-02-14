@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "RGE_Land_Data_Entry.h"
 
 struct RGE_Land_Data {
     long map_edge_buffer[4];

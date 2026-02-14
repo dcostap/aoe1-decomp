@@ -50,6 +50,7 @@ class TPicture;
 // RGE and TRIBE game classes
 class RGE_Base_Game;
 class RGE_Game_World;
+class RGE_Random_Map_Module;
 class RGE_Player;
 class RGE_Master_Player;
 class RGE_Static_Object;

@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "RGE_Object_Data_Entry.h"
 
 struct RGE_Object_Data {
     long object_num;

@@ -1,5 +1,7 @@
 #pragma once
 #include "common.h"
+#include "RGE_Terrain_Info_Line.h"
+#include "RGE_Terrain_Hot_Spots.h"
 
 struct RGE_Terrain_Info {
     RGE_Terrain_Info_Line terrain[99];

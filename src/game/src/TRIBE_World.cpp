@@ -128,46 +128,8 @@ void TRIBE_World::terrain_tables_init(int param_1) { RGE_Game_World::terrain_tab
 void TRIBE_World::init_sounds(int param_1, TSound_Driver* param_2) { RGE_Game_World::init_sounds(param_1, param_2); }
 void TRIBE_World::init_sprites(int param_1) { RGE_Game_World::init_sprites(param_1); }
 void TRIBE_World::map_init(int param_1, TSound_Driver* param_2) {
-    CUSTOM_DEBUG_LOG_FMT("TRIBE_World::map_init: calling binary constructor with fd=%d", param_1);
+    // Source of truth: tworld.cpp.decomp @ 0x0052E500.
     this->map = new TRIBE_Map(param_1, this->sounds, (char)1);
-    if (this->map) {
-         CUSTOM_DEBUG_LOG("TRIBE_World::map_init: map created successfully");
-         
-         // Fallback for corrupt/missing empires.dat map section
-         if (this->map->num_terrain < 0 || this->map->num_terrain > 100) {
-             CUSTOM_DEBUG_LOG("TRIBE_World::map_init: DETECTED CORRUPT MAP DATA! Initializing defaults.");
-             this->map->num_terrain = 1;
-             this->map->num_borders = 0;
-             
-             // Setup default Grass terrain (Slot 0)
-             RGE_Tile_Set* ts = &this->map->terrain_types[0];
-             strcpy(ts->name, "Grass");
-             strcpy(ts->pict_name, "5000"); // Attempt to load by name if ID fails
-             ts->resource_id = 15000; // Guessing a valid SLP ID for terrain
-             ts->shape = nullptr;
-             ts->loaded = 0;
-             
-             // Sanitize other critical members
-             this->map->map_width = 120;
-             this->map->map_height = 120;
-             this->map->tile_width = 64;
-             this->map->tile_height = 32;
-             this->map->tile_half_width = 32;
-             this->map->tile_half_height = 16;
-             
-             // Retry loading shapes with manual config
-             this->map->load_terrain_types(this->sounds);
-             
-             // Populate the tile lookup table for the default terrain (Grass)
-             // We map Tile Type 0 to Shape Frame 0
-             // UNCONDITIONAL ASSIGNMENT (memory might be 0xCDCD)
-             ts->tiles[0].count = 1;
-             ts->tiles[0].animations = 1;
-             ts->tiles[0].shape_index = 0;
-         }
-    } else {
-         CUSTOM_DEBUG_LOG("TRIBE_World::map_init: FAILED to create map");
-    }
 }
 void TRIBE_World::effects_init(int param_1) {
     // Source of truth: tworld.cpp.decomp @ 0x0052E650

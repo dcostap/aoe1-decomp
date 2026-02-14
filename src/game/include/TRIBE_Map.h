@@ -23,7 +23,6 @@ public:
     virtual uchar do_cliff_brush(long param_1, long param_2, uchar param_3, uchar param_4); // vt[7] (0x1C)
     virtual uchar do_cliff_brush_stroke(long param_1, long param_2, long param_3, long param_4, uchar param_5, uchar param_6); // vt[8] (0x20)
     virtual void map_generate(RGE_Player* param_1, RGE_Game_World* param_2, RGE_Player_Info* param_3, uchar* param_4); // vt[9] (0x24)
-    virtual void map_generate2(RGE_Game_World* param_1, long param_2, long param_3, uchar param_4, long param_5); // vt[10] (0x28)
     virtual void save(int param_1); // vt[11] (0x2C)
     virtual void delete_cliff(long param_1, long param_2); // vt[12] (0x30)
 

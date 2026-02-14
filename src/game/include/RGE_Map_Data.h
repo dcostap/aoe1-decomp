@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+struct RGE_Map_Data_Entry;
 
 struct RGE_Map_Data {
     long map_num;

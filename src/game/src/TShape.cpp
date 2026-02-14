@@ -3,6 +3,7 @@
 #include "../include/TDrawArea.h"
 #include "../include/TDrawSystem.h"
 #include "../include/RGE_Color_Table.h"
+#include "../include/custom_debug.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -11,6 +12,13 @@
 
 extern unsigned char shape_file_first;
 extern int RESFILE_Decommit_Mapped_Memory(unsigned char* param_1, int param_2);
+
+static unsigned long g_slp_cmd_total = 0;
+static unsigned long g_slp_op_counts[16] = {0};
+static unsigned long g_slp_ext_counts[256] = {0};
+static unsigned long g_slp_px_total[16] = {0};
+static unsigned long g_slp_px_zero[16] = {0};
+static int g_slp_decode_logged = 0;
 
 static int shape_file_load(const char* path, unsigned char** out_data, int* out_size) {
     if (!path || !out_data || !out_size) return 0;
@@ -418,7 +426,12 @@ unsigned char TShape::shape_check(long x, long y, long shape_idx) {
     short right = *(short*)(base + outline_off + 2);
     if (left < 0) return 0;
 
-    long row_max_x = (info->Width - right) - 1;
+    // Source-of-truth note: shape_check applies both x < Width and x <= Width - right.
+    // This means right values 0/1 both allow the right-most pixel.
+    long row_max_x = info->Width - 1;
+    if (right > 1) {
+        row_max_x = info->Width - right;
+    }
     if (lx < left || lx > row_max_x) return 0;
 
     unsigned long row_off = *(unsigned long*)(base + data_off_tbl);
@@ -434,7 +447,7 @@ unsigned char TShape::shape_check(long x, long y, long shape_idx) {
         if (op == 0x0F) return 0;
         if (op == 0x02 || op == 0x03) {
             if (src >= end) return 0;
-            run = (unsigned int)(((cmd & 0xF0) << 4) | *src++);
+            run = (unsigned int)(((unsigned int)cmd << 4) | *src++);
             if (op == 0x02) {
                 if (lx < cur_x + (long)run) return 1;
                 if (src + run > end) return 0;
@@ -443,7 +456,7 @@ unsigned char TShape::shape_check(long x, long y, long shape_idx) {
             cur_x += run;
             continue;
         }
-        if (op == 0x07 || op == 0x0A || op == 0x06 || op == 0x0B || op == 0x0E) {
+        if (op == 0x07 || op == 0x0A || op == 0x06 || op == 0x0B) {
             run = (unsigned int)(cmd >> 4);
             if (run == 0) {
                 if (src >= end) return 0;
@@ -461,6 +474,23 @@ unsigned char TShape::shape_check(long x, long y, long shape_idx) {
                 if (src + run > end) return 0;
                 src += run;
             }
+            continue;
+        }
+        if (op == 0x0E) {
+            // Extended SLP commands (0x?E). For hit-test, only their x-advance matters.
+            if (cmd == 0x4E || cmd == 0x6E) {
+                if (lx < cur_x + 1) return 1;
+                cur_x += 1;
+                continue;
+            }
+            if (cmd == 0x5E || cmd == 0x7E) {
+                if (src >= end) return 0;
+                run = *src++;
+                if (lx < cur_x + (long)run) return 1;
+                cur_x += run;
+                continue;
+            }
+            // 0x0E/0x1E/0x2E/0x3E and unknown extended commands have no direct x advance.
             continue;
         }
         if ((op & 0x03) == 0x00 || (op & 0x03) == 0x01) {
@@ -655,7 +685,10 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
         unsigned char* src = slp_base + row_off;
 
         long dst_x = draw_x + (long)left;
-        long max_x = draw_x + width - 1 - (long)right;
+        long max_x = draw_x + width - 1;
+        if (right > 1) {
+            max_x = draw_x + width - (long)right;
+        }
         int off = (draw_area->Orien == 1) ? (int)(dst_y * dest_pitch) : (int)(((draw_area->Height - dst_y) - 1) * dest_pitch);
         unsigned char* dst_row = dest_bits + off;
 
@@ -663,13 +696,17 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
             if (src >= shape_end) break;
             unsigned char cmd = *src++;
             unsigned char op = (unsigned char)(cmd & 0x0F);
+            g_slp_cmd_total++;
+            g_slp_op_counts[op & 0x0F]++;
+            if (op == 0x0E) {
+                g_slp_ext_counts[cmd]++;
+            }
 
             if (op == 0x0F) break;
-            if (dst_x > max_x) break;
 
             if (op == 0x02 || op == 0x03) {
                 if (src >= shape_end) break;
-                unsigned int len = (unsigned int)(((cmd & 0xF0) << 4) | (*src++));
+                unsigned int len = (unsigned int)(((unsigned int)cmd << 4) | (*src++));
                 if (op == 0x03) {
                     dst_x += (long)len;
                     continue;
@@ -678,6 +715,8 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                 if (src + len > shape_end) break;
                 for (unsigned int i = 0; i < len; ++i) {
                     unsigned char px = *src++;
+                    g_slp_px_total[op]++;
+                    if (px == 0) g_slp_px_zero[op]++;
                     if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x) {
                         unsigned char out_idx = xlate ? xlate[px] : px;
                         unsigned long out_px = shape_index_to_pixel(draw_area, out_idx, bytes_per_pixel);
@@ -727,6 +766,8 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                         if (op == 0x0B) {
                             shape_shadow_pixel(dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, shadow_table);
                         } else {
+                            g_slp_px_total[op]++;
+                            if (px == 0) g_slp_px_zero[op]++;
                             unsigned char out_idx = xlate ? xlate[px] : px;
                             unsigned long out_px = shape_index_to_pixel(draw_area, out_idx, bytes_per_pixel);
                             shape_store_pixel(dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, out_px);
@@ -738,9 +779,36 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
             }
 
             if (op == 0x0E) {
-                // Source-of-truth note: Shape.cpp decomp hit-test treats low-nibble 0x0E as a special/unsupported opcode.
-                // Stop this row to avoid stream desync from mis-decoding unknown extended commands.
-                break;
+                // Extended SLP commands (0x?E). We only implement non-xflipped behavior used by terrain.
+                if (cmd == 0x4E || cmd == 0x6E) {
+                    // Special colors are mostly used by outline-enabled sprites; terrain typically doesn't rely on them.
+                    unsigned char px = (cmd == 0x4E) ? 1 : 2;
+                    if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x) {
+                        unsigned char out_idx = xlate ? xlate[px] : px;
+                        unsigned long out_px = shape_index_to_pixel(draw_area, out_idx, bytes_per_pixel);
+                        shape_store_pixel(dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, out_px);
+                    }
+                    dst_x++;
+                    continue;
+                }
+
+                if (cmd == 0x5E || cmd == 0x7E) {
+                    if (src >= shape_end) break;
+                    unsigned int len = (unsigned int)(*src++);
+                    unsigned char px = (cmd == 0x5E) ? 1 : 2;
+                    for (unsigned int i = 0; i < len; ++i) {
+                        if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x) {
+                            unsigned char out_idx = xlate ? xlate[px] : px;
+                            unsigned long out_px = shape_index_to_pixel(draw_area, out_idx, bytes_per_pixel);
+                            shape_store_pixel(dst_row + dst_x * bytes_per_pixel, bytes_per_pixel, out_px);
+                        }
+                        dst_x++;
+                    }
+                    continue;
+                }
+
+                // 0x0E/0x1E/0x2E/0x3E and unknown extended commands are rendering hints or xform-table toggles.
+                continue;
             }
 
             if ((op & 0x03) == 0x00 || (op & 0x03) == 0x01) {
@@ -753,6 +821,8 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
                 if (src + len > shape_end) break;
                 for (unsigned int i = 0; i < len; ++i) {
                     unsigned char px = *src++;
+                    g_slp_px_total[op & 0x0F]++;
+                    if (px == 0) g_slp_px_zero[op & 0x0F]++;
                     if (dst_x >= clip_l && dst_x <= clip_r && dst_x <= max_x) {
                         unsigned char out_idx = xlate ? xlate[px] : px;
                         unsigned long out_px = shape_index_to_pixel(draw_area, out_idx, bytes_per_pixel);
@@ -765,6 +835,51 @@ static unsigned char shape_draw_slp_internal(TShape* self, TDrawArea* draw_area,
 
             break;
         }
+    }
+
+    if (!g_slp_decode_logged && g_slp_cmd_total > 50000) {
+        g_slp_decode_logged = 1;
+        CUSTOM_DEBUG_LOG_FMT(
+            "TShape::SLP decode cmd stats: total=%lu op0=%lu op1=%lu op2=%lu op3=%lu op4=%lu op5=%lu op6=%lu op7=%lu op8=%lu op9=%lu opA=%lu opB=%lu opC=%lu opD=%lu opE=%lu opF=%lu",
+            g_slp_cmd_total,
+            g_slp_op_counts[0],
+            g_slp_op_counts[1],
+            g_slp_op_counts[2],
+            g_slp_op_counts[3],
+            g_slp_op_counts[4],
+            g_slp_op_counts[5],
+            g_slp_op_counts[6],
+            g_slp_op_counts[7],
+            g_slp_op_counts[8],
+            g_slp_op_counts[9],
+            g_slp_op_counts[10],
+            g_slp_op_counts[11],
+            g_slp_op_counts[12],
+            g_slp_op_counts[13],
+            g_slp_op_counts[14],
+            g_slp_op_counts[15]);
+        if (g_slp_op_counts[14] > 0) {
+            CUSTOM_DEBUG_LOG_FMT(
+                "TShape::SLP ext cmds: 0x0E=%lu 0x1E=%lu 0x2E=%lu 0x3E=%lu 0x4E=%lu 0x5E=%lu 0x6E=%lu 0x7E=%lu",
+                g_slp_ext_counts[0x0E],
+                g_slp_ext_counts[0x1E],
+                g_slp_ext_counts[0x2E],
+                g_slp_ext_counts[0x3E],
+                g_slp_ext_counts[0x4E],
+                g_slp_ext_counts[0x5E],
+                g_slp_ext_counts[0x6E],
+                g_slp_ext_counts[0x7E]);
+        }
+        CUSTOM_DEBUG_LOG_FMT(
+            "TShape::SLP px zero ratio: op0=%lu/%lu op2=%lu/%lu op4=%lu/%lu op6=%lu/%lu op7=%lu/%lu op8=%lu/%lu opA=%lu/%lu opC=%lu/%lu",
+            g_slp_px_zero[0], g_slp_px_total[0],
+            g_slp_px_zero[2], g_slp_px_total[2],
+            g_slp_px_zero[4], g_slp_px_total[4],
+            g_slp_px_zero[6], g_slp_px_total[6],
+            g_slp_px_zero[7], g_slp_px_total[7],
+            g_slp_px_zero[8], g_slp_px_total[8],
+            g_slp_px_zero[10], g_slp_px_total[10],
+            g_slp_px_zero[12], g_slp_px_total[12]);
     }
 
     if (locked_here) draw_area->Unlock((char*)"shape_draw");

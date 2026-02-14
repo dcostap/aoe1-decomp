@@ -11,11 +11,13 @@
 #include "../include/RGE_Command.h"
 #include "../include/globals.h"
 #include "../include/custom_debug.h"
+#include "../include/debug_helpers.h"
 
 #include <io.h>
 #include <fcntl.h>
 #include <share.h>
 #include <stdio.h>
+#include <string.h>
 
 // Forward declarations for types used in function signatures
 class RGE_Static_Object;
@@ -160,6 +162,7 @@ void RGE_Game_World::color_table_init(int fd) {
     if (fd <= 0) return;
     CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::color_table_init fd=%d pos=%ld", fd, _tell(fd));
     rge_read(fd, &this->color_table_num, 2);
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::color_table_init: color_table_num=%d", (int)this->color_table_num);
     if (this->color_table_num > 0) {
         this->color_tables = (RGE_Color_Table**)calloc(this->color_table_num, sizeof(RGE_Color_Table*));
         for (short i = 0; i < this->color_table_num; i++) {
@@ -173,12 +176,17 @@ void RGE_Game_World::terrain_tables_init(int fd) {
     CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::terrain_tables_init fd=%d pos=%ld", fd, _tell(fd));
     rge_read(fd, &this->terrain_num, 2);
     rge_read(fd, &this->terrain_size, 2);
-    if (this->terrain_num > 0) {
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::terrain_tables_init: terrain_num=%d terrain_size=%d",
+        (int)this->terrain_num, (int)this->terrain_size);
+    if (this->terrain_num > 0 && this->terrain_size > 0) {
+        // Source of truth: world.cpp.decomp @ 0x00541880.
+        // Serialized data stores pointer-presence flags first, then optional float tables.
         this->terrains = (float**)calloc(this->terrain_num, sizeof(float*));
+        rge_read(fd, this->terrains, (long)this->terrain_num * (long)sizeof(float*));
         for (short i = 0; i < this->terrain_num; i++) {
-            if (this->terrain_size > 0) {
+            if (this->terrains[i] != nullptr) {
                 this->terrains[i] = (float*)calloc(this->terrain_size, sizeof(float));
-                rge_read(fd, this->terrains[i], this->terrain_size * sizeof(float));
+                rge_read(fd, this->terrains[i], (long)this->terrain_size * (long)sizeof(float));
             }
         }
     }
@@ -188,6 +196,7 @@ void RGE_Game_World::init_sounds(int fd, TSound_Driver* param_2) {
     if (fd <= 0) return;
     CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::init_sounds fd=%d pos=%ld", fd, _tell(fd));
     rge_read(fd, &this->sound_num, 2);
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::init_sounds: sound_num=%d", (int)this->sound_num);
     if (this->sound_num > 0) {
         this->sounds = (RGE_Sound**)calloc(this->sound_num, sizeof(RGE_Sound*));
         for (short i = 0; i < this->sound_num; i++) {
@@ -200,10 +209,26 @@ void RGE_Game_World::init_sprites(int fd) {
     if (fd <= 0) return;
     CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::init_sprites fd=%d pos=%ld", fd, _tell(fd));
     rge_read(fd, &this->sprite_num, 2);
-    if (this->sprite_num > 0) {
-        this->sprites = (RGE_Sprite**)calloc(this->sprite_num, sizeof(RGE_Sprite*));
-        for (short i = 0; i < this->sprite_num; i++) {
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::init_sprites: sprite_num=%d", (int)this->sprite_num);
+    if (this->sprite_num <= 0) {
+        this->sprites = nullptr;
+        return;
+    }
+
+    // Source of truth: world.cpp.decomp @ 0x00541A80.
+    // Read serialized sprite pointer flags first; only non-null entries are materialized.
+    this->sprites = (RGE_Sprite**)calloc(this->sprite_num, sizeof(RGE_Sprite*));
+    rge_read(fd, this->sprites, (long)this->sprite_num * (long)sizeof(RGE_Sprite*));
+
+    for (short i = 0; i < this->sprite_num; i++) {
+        if (this->sprites[i] != nullptr) {
             this->sprites[i] = new RGE_Sprite(fd, this->sounds, this->color_tables);
+        }
+    }
+
+    for (short i = 0; i < this->sprite_num; i++) {
+        if (this->sprites[i] != nullptr) {
+            this->sprites[i]->rehook(this->sprites);
         }
     }
 }
@@ -224,6 +249,7 @@ void RGE_Game_World::master_player_init(int fd) {
     if (fd <= 0) return;
     CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::master_player_init fd=%d pos=%ld", fd, _tell(fd));
     rge_read(fd, &this->master_player_num, 2);
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::master_player_init: master_player_num=%d", (int)this->master_player_num);
     if (this->master_player_num > 0) {
         this->master_players = (RGE_Master_Player**)calloc(this->master_player_num, sizeof(RGE_Master_Player*));
         for (short i = 0; i < this->master_player_num; i++) {
@@ -244,8 +270,10 @@ void RGE_Game_World::world_init(int param_1, TSound_Driver* param_2, TCommunicat
     // param_3 = TCommunications_Handler*
     //
     // Calls sub-init functions which TRIBE_World overrides to create TRIBE-specific types.
-    this->color_table_init(param_1);
+    // Source of truth: world.cpp.decomp @ 0x00541D60.
+    // vtable order call sequence is terrain first, then color.
     this->terrain_tables_init(param_1);
+    this->color_table_init(param_1);
     this->init_sounds(param_1, param_2);
     this->init_sprites(param_1);
     this->map_init(param_1, param_2);
@@ -263,20 +291,39 @@ void RGE_Game_World::setup_players(RGE_Player_Info* param_1) {
 }
 
 uchar RGE_Game_World::new_random_game(RGE_Player_Info* param_1) {
-    // Source of truth: inferred from decomp call chain.
-    // Creates the tile grid from player_info map dimensions.
-    // The real implementation calls map->map_generate() with terrain generation,
-    // but for now we just create a blank grass map.
-    if (!param_1 || !this->map) return 0;
+    // Source of truth: world.cpp.decomp @ 0x00542D10.
+    if (param_1 == nullptr || this->map == nullptr) {
+        return 0;
+    }
 
-    long w = param_1->map_width;
-    long h = param_1->map_height;
-    if (w <= 0) w = 120;
-    if (h <= 0) h = 120;
+    world_update_counter = 0;
 
-    // Allocate tile grid and fill with terrain 0 (grass)
-    this->map->clear_map(this->players ? this->players[0] : nullptr, this, 0, w, h);
+    this->setup_player_colors(param_1);
+    this->scenario_init(this);
 
+    this->random_seed = (unsigned int)debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x612);
+
+    int player_count_minus_one = (int)this->player_num - 1;
+    this->map->map_generate2(this, -1, -1, (uchar)param_1->map_type, player_count_minus_one);
+    this->initializePathingSystem();
+
+    this->random_seed = (unsigned int)debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x61a);
+    this->random_seed = (unsigned int)debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x622);
+
+    short saved_curr_player = this->curr_player;
+    this->curr_player = -1;
+
+    for (int pass = 0; pass < 3; ++pass) {
+        world_update_counter = world_update_counter + 1;
+        for (int i = 0; i < this->player_num; ++i) {
+            if (this->players != nullptr && this->players[i] != nullptr) {
+                this->players[i]->update();
+            }
+        }
+    }
+
+    this->curr_player = saved_curr_player;
+    this->random_seed = (unsigned int)debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x631);
     return 1;
 }
 
@@ -438,51 +485,35 @@ uchar RGE_Game_World::data_load(char* param_1, char* param_2) {
 }
 
 uchar RGE_Game_World::init(char* param_1, TSound_Driver* param_2, TCommunications_Handler* param_3) {
-    // Source of truth: inferred from call chain and decomp patterns.
-    // Called by TRIBE_Game::load_game_data() with (game_data_file, sound_system, comm_handler).
-    // param_1 = "data2\\empires.dat" (binary game data file path)
-    // param_2 = TSound_Driver*
-    // param_3 = TCommunications_Handler*
-    //
-    // Opens empires.dat with _open(), calls data_load() for binary parsing,
-    // then world_init() with the file descriptor so map_init can read terrain data.
-
+    // Source of truth: world.cpp.decomp @ 0x00541DB0.
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::init enter file='%s'", (param_1 != nullptr) ? param_1 : "(null)");
     this->sound_driver = param_2;
+    this->next_object_id = 0;
 
-    // Open empires.dat as binary read-only
-    int fd = -1;
-    if (param_1) {
-        fd = _open(param_1, _O_RDONLY | _O_BINARY);
-        if (fd == -1) {
-            // Try alternate path
-            char alt_path[260];
-            sprintf(alt_path, "data\\%s", param_1);
-            fd = _open(alt_path, _O_RDONLY | _O_BINARY);
-        }
-    }
-
+    int fd = rge_open(param_1, _O_RDONLY | _O_BINARY);
     if (fd == -1) {
-        // Cannot open game data file — non-fatal for now,
-        // map_init will create an empty map
-        fd = 0;
-    }
-
-    // data_load does any pre-init parsing (currently minimal)
-    if (!this->data_load(param_1, nullptr)) {
-        if (fd > 0) _close(fd);
+        CUSTOM_DEBUG_LOG("RGE_Game_World::init: open failed");
         return 0;
     }
 
-    // world_init initializes subsystems using the file descriptor.
-    // The fd is passed through to map_init → TRIBE_Map(fd, sounds, 1)
-    // which calls rge_read(fd, this, 0x8DD0) to load terrain data.
-    this->world_init(fd, param_2, param_3);
+    char version[8];
+    memset(version, 0, sizeof(version));
+    rge_read(fd, version, 8);
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::init: version bytes='%c%c%c%c%c%c%c%c' pos=%ld",
+        version[0], version[1], version[2], version[3],
+        version[4], version[5], version[6], version[7], _tell(fd));
 
-    // Close the file after all reading is done
-    if (fd > 0) {
-        _close(fd);
+    // Exact binary gate from original: file must begin with "VER 3.7\0".
+    if (memcmp(version, "VER 3.7", 8) != 0) {
+        CUSTOM_DEBUG_LOG("RGE_Game_World::init: version mismatch");
+        rge_close(fd);
+        return 0;
     }
 
+    CUSTOM_DEBUG_LOG_FMT("RGE_Game_World::init: calling world_init fd=%d pos=%ld", fd, _tell(fd));
+    this->world_init(fd, param_2, param_3);
+    rge_close(fd);
+    CUSTOM_DEBUG_LOG("RGE_Game_World::init: success");
     return 1;
 }
 
@@ -568,6 +599,10 @@ uchar RGE_Game_World::new_game(RGE_Player_Info* param_1, int param_2) {
     // player_num = player_info.player_num + 1 (gaia is player 0)
     this->player_num = param_1->player_num + 1;
 
+    if (this->map != nullptr) {
+        this->map->new_map((long)param_1->map_width, (long)param_1->map_height);
+    }
+
     // Allocate players array
     if (this->players) {
         for (short i = 0; i < this->player_num; i++) {
@@ -637,11 +672,50 @@ void RGE_Game_World::pause(uchar param_1) {
     this->temp_pause = param_1;
 }
 
-void RGE_Game_World::scenario_init() {
+void RGE_Game_World::set_map_visible(uchar param_1) {
+    if (this->map != nullptr) {
+        this->map->set_map_visible(param_1);
+    }
+}
+
+void RGE_Game_World::set_map_fog(uchar param_1) {
+    if (this->map != nullptr) {
+        this->map->set_map_fog(param_1);
+    }
+}
+
+void RGE_Game_World::reset_object_count() {
+    this->world_time = 0;
+    this->old_world_time = 0;
+    this->world_time_delta = 0;
+    this->world_time_delta_seconds = 0.0f;
+    this->timer = 0.0f;
+    this->old_time = 0;
+    this->temp_pause = 0;
+    this->next_object_id = 0;
+    this->player_turn = 0;
+    for (int i = 0; i < 9; ++i) {
+        this->player_time_delta[i] = 0;
+    }
+}
+
+void RGE_Game_World::reset_player_visible_maps() {
+    // TODO(accuracy): call RGE_Player::remake_visible_map for each player slot.
+}
+
+int RGE_Game_World::initializePathingSystem() {
+    // TODO(accuracy): call PathingSystem::initialize(pathSystem/aiPathSystem).
+    return (this->map != nullptr) ? 1 : 0;
+}
+
+void RGE_Game_World::scenario_init(RGE_Game_World* param_1) {
+    (void)param_1;
     // TODO: implement
 }
 
-void RGE_Game_World::scenario_init(int param_1) {
+void RGE_Game_World::scenario_init(int param_1, RGE_Game_World* param_2) {
+    (void)param_1;
+    (void)param_2;
     // TODO: implement
 }
 
